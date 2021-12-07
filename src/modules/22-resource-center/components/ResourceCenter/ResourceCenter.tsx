@@ -76,6 +76,7 @@ const ResourceCenterHome = () => {
           {menuItems(
             getString('resourceCenter.ticketmenu.tickets'),
             getString('resourceCenter.ticketmenu.ticketsDesc'),
+            // eslint-disable-next-line @typescript-eslint/no-empty-function
             () => {}
           )}
         </Layout.Horizontal>
