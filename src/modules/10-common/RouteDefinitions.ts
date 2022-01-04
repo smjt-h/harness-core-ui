@@ -1416,6 +1416,7 @@ const routes = {
   toCEPerspectiveDashboard: withAccountId(() => `/ce/perspective`),
   toCEAnomalyDetection: withAccountId(() => `/ce/anomaly-detection`),
   toBusinessMapping: withAccountId(() => `/ce/cost-categories/`),
+  toCEMicro: withAccountId(() => '/ce/micro'),
   /********************************************************************************************************************/
   toSTO: withAccountId(() => `/sto`),
   toSTOHome: withAccountId(() => `/sto/home`),

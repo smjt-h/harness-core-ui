@@ -25,7 +25,7 @@ import {
 } from 'services/ce/services'
 
 import routes from '@common/RouteDefinitions'
-import { Page } from '@common/exports'
+// import { Page } from '@common/exports'
 import { useQueryParams } from '@common/hooks'
 import formatCost from '@ce/utils/formatCost'
 import { getViewFilterForId, GROUP_BY_CLUSTER_NAME } from '@ce/utils/perspectiveUtils'

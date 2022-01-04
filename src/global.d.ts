@@ -94,4 +94,9 @@ declare module 'errortracking/App' {
   export default ChildApp
 }
 
+declare module 'ccmui/MicroFrontendApp' {
+  const ChildApp: ChildAppComponent
+  export default ChildApp
+}
+
 declare type Optional<T, K extends keyof T = keyof T> = Omit<T, K> & Partial<Pick<T, K>>
