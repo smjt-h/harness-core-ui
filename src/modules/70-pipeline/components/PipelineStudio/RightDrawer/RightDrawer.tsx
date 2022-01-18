@@ -66,7 +66,7 @@ export const FullscreenDrawers: DrawerTypes[] = [
 ]
 
 const checkDuplicateStep = (
-  formikRef: React.MutableRefObject<StepFormikRef<unknown> | null>,
+  formikRef: React.MutableRefObject<StepFormikRef | null>,
   data: DrawerData['data'],
   getString: UseStringsReturn['getString']
 ): boolean => {
@@ -99,7 +99,7 @@ export const updateStepWithinStage = (
     if (stepWithinStage.stepGroup) {
       // If stage has a step group, loop over the step group steps and update the matching identifier with node
       if (stepWithinStage.stepGroup?.identifier === processingNodeIdentifier) {
-        stepWithinStage.stepGroup = processedNode as any
+        stepWithinStage.stepGroup = processedNode
       } else {
         updateStepWithinStage(stepWithinStage.stepGroup, processingNodeIdentifier, processedNode)
       }
@@ -107,7 +107,7 @@ export const updateStepWithinStage = (
       // If stage has a parallel steps, loop over and update the matching identifier with node
       stepWithinStage.parallel.forEach(parallelStep => {
         if (parallelStep?.stepGroup?.identifier === processingNodeIdentifier) {
-          parallelStep.stepGroup = processedNode as any
+          parallelStep.stepGroup = processedNode
         } else if (parallelStep.step?.identifier === processingNodeIdentifier) {
           parallelStep.step = processedNode
         } else if (parallelStep?.stepGroup) {
@@ -240,12 +240,10 @@ export const RightDrawer: React.FC = (): JSX.Element => {
       </div>
     )
   } else {
-    switch (type) {
-      case DrawerTypes.PipelineNotifications:
-        title = getString('notifications.name')
-        break
-      default:
-        title = null
+    if (type === DrawerTypes.PipelineNotifications) {
+      title = getString('notifications.name')
+    } else {
+      title = null
     }
   }
 
