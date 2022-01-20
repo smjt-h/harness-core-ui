@@ -11,12 +11,18 @@ import { TestWrapper } from '@common/utils/testUtils'
 import StepSuccessVerifcation from '../StepSuccessVerification/StepSuccessVerifcation'
 
 const onClose = jest.fn()
+const createGroupFn = jest.fn().mockReturnValue({
+  ok: true
+})
 jest.mock('services/portal', () => ({
-  useGetDelegatesHeartbeatDetailsV2: jest.fn().mockImplementation(() => {
-    return { data: {}, refetch: jest.fn(), error: null, loading: false }
-  }),
-  useGetDelegatesInitializationDetailsV2: jest.fn().mockImplementation(() => {
-    return { data: {}, refetch: jest.fn(), error: null, loading: false }
+  useGetDelegatesHeartbeatDetailsV2: jest
+    .fn()
+    .mockReturnValue({ data: {}, refetch: jest.fn(), error: null, loading: false }),
+  useGetDelegatesInitializationDetailsV2: jest
+    .fn()
+    .mockReturnValue({ data: {}, refetch: jest.fn(), error: null, loading: false }),
+  useCreateDelegateGroup: jest.fn().mockReturnValue({
+    mutate: createGroupFn
   })
 }))
 describe('Create Step Verification Script Delegate', () => {

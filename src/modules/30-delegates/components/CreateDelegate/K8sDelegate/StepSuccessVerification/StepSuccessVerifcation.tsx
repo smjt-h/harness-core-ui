@@ -23,7 +23,7 @@ interface StepSuccessVerifcationProps {
 }
 const StepSuccessVerification: React.FC<StepProps<K8sDelegateWizardData> & StepSuccessVerifcationProps> = props => {
   const { previousStep, prevStepData, onClose } = props
-  const { accountId, orgIdentifier, projectIdentifier } = useParams<ProjectPathProps>()
+  const { accountId } = useParams<ProjectPathProps>()
   const { getString } = useStrings()
   const { showError } = useToaster()
 
@@ -39,16 +39,10 @@ const StepSuccessVerification: React.FC<StepProps<K8sDelegateWizardData> & StepS
     }
   })
 
-  const onDone = async () => {
+  const onDone = async (): Promise<void> => {
     const dockerData = {
-      delegateType: 'KUBERNETES',
-      orgIdentifier,
-      projectIdentifier,
-      name: prevStepData?.name,
-      identifier: prevStepData?.identifier,
-      description: prevStepData?.description,
-      tags: prevStepData?.tags,
-      tokenName: prevStepData?.tokenName
+      ...prevStepData?.delegateYaml,
+      delegateType: 'KUBERNETES'
     } as any
     const response = (await createDelegateGroup(dockerData)) as any
     if (response?.ok) {
