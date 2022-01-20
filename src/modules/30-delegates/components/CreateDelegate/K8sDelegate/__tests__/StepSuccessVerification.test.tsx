@@ -7,13 +7,10 @@
 
 import React from 'react'
 import { act, fireEvent, render, waitFor } from '@testing-library/react'
+import userEvent from '@testing-library/user-event'
 import { TestWrapper } from '@common/utils/testUtils'
 import StepSuccessVerifcation from '../StepSuccessVerification/StepSuccessVerifcation'
 
-const onClose = jest.fn()
-const createGroupFn = jest.fn().mockReturnValue({
-  ok: true
-})
 jest.mock('services/portal', () => ({
   useGetDelegatesHeartbeatDetailsV2: jest
     .fn()
@@ -22,7 +19,9 @@ jest.mock('services/portal', () => ({
     .fn()
     .mockReturnValue({ data: {}, refetch: jest.fn(), error: null, loading: false }),
   useCreateDelegateGroup: jest.fn().mockReturnValue({
-    mutate: createGroupFn
+    mutate: jest.fn().mockReturnValue({
+      ok: true
+    })
   })
 }))
 describe('Create Step Verification Script Delegate', () => {
@@ -47,15 +46,14 @@ describe('Create Step Verification Script Delegate', () => {
     await waitFor(() => expect(container).toMatchSnapshot())
   })
   test('Click Done button', async () => {
+    const onClose = jest.fn()
     const { getAllByText } = render(
       <TestWrapper>
         <StepSuccessVerifcation onClose={onClose} />
       </TestWrapper>
     )
     const stepReviewScriptDoneButton = getAllByText('done')[0]
-    act(() => {
-      fireEvent.click(stepReviewScriptDoneButton!)
-    })
-    expect(onClose).toBeCalled()
+    userEvent.click(stepReviewScriptDoneButton!)
+    await waitFor(() => expect(onClose).toBeCalled())
   })
 })
