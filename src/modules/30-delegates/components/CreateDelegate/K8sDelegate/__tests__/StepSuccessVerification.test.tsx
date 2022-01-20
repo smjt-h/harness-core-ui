@@ -47,13 +47,12 @@ describe('Create Step Verification Script Delegate', () => {
   })
   test('Click Done button', async () => {
     const onClose = jest.fn()
-    const { getAllByText } = render(
+    const { getByRole } = render(
       <TestWrapper>
         <StepSuccessVerifcation onClose={onClose} />
       </TestWrapper>
     )
-    const stepReviewScriptDoneButton = getAllByText('done')[0]
-    userEvent.click(stepReviewScriptDoneButton!)
+    userEvent.click(getByRole('button', { name: 'done' }))
     await waitFor(() => expect(onClose).toBeCalled())
   })
 })
