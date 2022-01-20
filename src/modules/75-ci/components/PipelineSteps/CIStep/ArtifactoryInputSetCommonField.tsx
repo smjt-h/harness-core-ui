@@ -1,3 +1,10 @@
+/*
+ * Copyright 2022 Harness Inc. All rights reserved.
+ * Use of this source code is governed by the PolyForm Shield 1.0.0 license
+ * that can be found in the licenses directory at the root of this repository, also available at
+ * https://polyformproject.org/wp-content/uploads/2020/06/PolyForm-Shield-1.0.0.txt.
+ */
+
 import React from 'react'
 import { Text, getMultiTypeFromValue, MultiTypeInputType } from '@wings-software/uicore'
 import { isEmpty } from 'lodash-es'
@@ -7,7 +14,6 @@ import MultiTypeMapInputSet from '@common/components/MultiTypeMapInputSet/MultiT
 import { FormMultiTypeCheckboxField } from '@common/components/MultiTypeCheckbox/MultiTypeCheckbox'
 import { MultiTypeTextField } from '@common/components/MultiTypeText/MultiTypeText'
 import { useVariablesExpression } from '@pipeline/components/PipelineStudio/PiplineHooks/useVariablesExpression'
-import { StepViewType } from '@pipeline/components/AbstractSteps/Step'
 import { shouldRenderRunTimeInputView } from './StepUtils'
 import css from '@pipeline/components/PipelineSteps/Steps/Steps.module.scss'
 
@@ -16,15 +22,13 @@ interface ArtifactoryInputSetProps {
   path?: string
   readonly?: boolean
   formik?: any
-  stepViewType: StepViewType
 }
 
 export const ArtifactoryInputSetCommonField: React.FC<ArtifactoryInputSetProps> = ({
   template,
   path,
   readonly,
-  formik,
-  stepViewType
+  formik
 }) => {
   const { getString } = useStrings()
 
@@ -101,7 +105,7 @@ export const ArtifactoryInputSetCommonField: React.FC<ArtifactoryInputSetProps> 
           }}
           disabled={readonly}
           style={{ marginBottom: 'var(--spacing-small)' }}
-          formik={stepViewType === StepViewType.DeploymentForm ? formik : undefined}
+          formik={formik}
         />
       )}
       {shouldRenderRunTimeInputView(template?.spec?.buildArgs) && (
@@ -121,7 +125,7 @@ export const ArtifactoryInputSetCommonField: React.FC<ArtifactoryInputSetProps> 
           }}
           disabled={readonly}
           style={{ marginBottom: 'var(--spacing-small)' }}
-          formik={stepViewType === StepViewType.DeploymentForm ? formik : undefined}
+          formik={formik}
         />
       )}
       {getMultiTypeFromValue(template?.spec?.target) === MultiTypeInputType.RUNTIME && (

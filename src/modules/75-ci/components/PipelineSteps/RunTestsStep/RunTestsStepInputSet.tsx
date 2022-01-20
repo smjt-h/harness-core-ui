@@ -309,7 +309,7 @@ export const RunTestsStepInputSetBasic: React.FC<RunTestsStepProps> = ({
               allowedTypes: allowableTypes.filter(type => type !== MultiTypeInputType.EXPRESSION)
             }}
             disabled={readonly}
-            formik={stepViewType === StepViewType.DeploymentForm ? formik : undefined}
+            formik={formik}
           />
         </Container>
       )}

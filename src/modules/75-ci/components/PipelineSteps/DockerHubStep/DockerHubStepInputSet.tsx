@@ -112,13 +112,7 @@ export const DockerHubStepInputSetBasic: React.FC<DockerHubStepProps> = ({
           style={{ marginBottom: 'var(--spacing-small)' }}
         />
       )}
-      <ArtifactoryInputSetCommonField
-        template={template}
-        path={path}
-        readonly={readonly}
-        formik={formik}
-        stepViewType={stepViewType}
-      />
+      <ArtifactoryInputSetCommonField template={template} path={path} readonly={readonly} formik={formik} />
       {getMultiTypeFromValue(template?.spec?.remoteCacheRepo) === MultiTypeInputType.RUNTIME && (
         <MultiTypeTextField
           className={css.removeBpLabelMargin}
