@@ -154,27 +154,28 @@ export default function OverrideSets({
     const items: SelectOption[] = []
 
     if (parentStageData?.stage?.spec?.serviceConfig?.serviceDefinition?.spec) {
-      selectedTab === artifactTab &&
+      if (selectedTab === artifactTab) {
         parentStageData.stage.spec.serviceConfig.serviceDefinition.spec?.artifactOverrideSets?.forEach(
           ({ overrideSet: { identifier } }: { overrideSet: { identifier: string } }) => {
             items.push({ label: identifier, value: identifier })
           }
         )
-      selectedTab === manifestTab &&
+      }
+      if (selectedTab === manifestTab) {
         parentStageData.stage.spec.serviceConfig.serviceDefinition.spec?.manifestOverrideSets?.forEach(
           ({ overrideSet: { identifier } }: { overrideSet: { identifier: string } }) => {
             items.push({ label: identifier, value: identifier })
           }
         )
-
-      selectedTab === variableTab &&
+      }
+      if (selectedTab === variableTab) {
         parentStageData.stage.spec.serviceConfig.serviceDefinition.spec?.variableOverrideSets?.forEach(
           ({ overrideSet: { identifier } }: { overrideSet: { identifier: string } }) => {
             items.push({ label: identifier, value: identifier })
           }
         )
+      }
     }
-
     return items
   }, [parentStageData, selectedTab])
 

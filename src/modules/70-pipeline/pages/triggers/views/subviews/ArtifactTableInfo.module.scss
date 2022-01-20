@@ -10,7 +10,7 @@
 }
 
 .selectArtifactTable {
-  > div:not(first-child) {
+  > div:not(:first-child) {
     [role*='row'] {
       padding: 0;
       box-shadow: none !important;
@@ -42,7 +42,7 @@
 .appliedArtifact {
   width: 100%;
   display: inline-block;
-  > div:not(first-child) {
+  > div:not(:first-child) {
     > div {
       cursor: auto !important;
     }
@@ -65,9 +65,6 @@
   > [role='row'] {
     padding-top: 0;
   }
-}
-
-.actionButton {
 }
 
 .disabledRow {

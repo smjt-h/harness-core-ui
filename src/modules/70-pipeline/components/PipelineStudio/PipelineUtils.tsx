@@ -12,6 +12,7 @@ import get from 'lodash-es/get'
 import type { UseStringsReturn } from 'framework/strings'
 
 import type { PipelineInfoConfig, StageElementConfig } from 'services/cd-ng'
+import { StageType } from '@pipeline/utils/stageHelpers'
 
 export interface NodeClasses {
   primary?: string
@@ -19,49 +20,18 @@ export interface NodeClasses {
   empty?: string
 }
 
-const getStageTree = (
+const addServiceRelatedNodes = (
+  stageNode: ITreeNode,
   stage: StageElementConfig,
-  classes: NodeClasses = {},
   getString: UseStringsReturn['getString'],
+  classes: NodeClasses = {},
   {
     hideNonRuntimeFields = false,
     template = {}
   }: { hideNonRuntimeFields?: boolean; template?: Record<string, never> } = {}
 ): ITreeNode => {
-  const stageNode: ITreeNode = {
-    id: `Stage.${stage.identifier}`,
-    hasCaret: true,
-    label: (
-      <Text color={Color.GREY_800} style={{ fontWeight: 600 }} width="147" lineClamp={1}>
-        {stage.name}
-      </Text>
-    ),
-    className: classes.primary,
-    childNodes: []
-  }
-
-  // common to ci and cd stage
-  if (hideNonRuntimeFields) {
-    const hasVariables = get(template, 'variables', null)
-    hasVariables &&
-      stageNode.childNodes?.push({
-        id: `Stage.${stage.identifier}.Variables`,
-        hasCaret: false,
-        label: <Text>{getString('customVariables.title')}</Text>,
-        className: classes.secondary
-      })
-  } else {
-    stageNode.childNodes?.push({
-      id: `Stage.${stage.identifier}.Variables`,
-      hasCaret: false,
-      label: <Text>{getString('customVariables.title')}</Text>,
-      className: classes.secondary
-    })
-  }
-
   // only cd stage
-  // TODO: Replace 'Deployment' literal with enum
-  if (stage.type === 'Deployment') {
+  if (stage.type === StageType.DEPLOY) {
     const enabledChildList = Object.keys(get(template, 'spec.serviceConfig.serviceDefinition.spec', {}))
     const childNodes = []
     if (hideNonRuntimeFields) {
@@ -111,7 +81,7 @@ const getStageTree = (
       )
     }
     if (hideNonRuntimeFields) {
-      Object.keys(get(template, 'spec', {})).includes('serviceConfig') &&
+      if (Object.keys(get(template, 'spec', {})).includes('serviceConfig')) {
         stageNode.childNodes?.push({
           id: `Stage.${stage.identifier}.Service`,
           hasCaret: false,
@@ -120,6 +90,7 @@ const getStageTree = (
           isExpanded: true,
           childNodes
         })
+      }
     } else {
       stageNode.childNodes?.push({
         id: `Stage.${stage.identifier}.Service`,
@@ -132,39 +103,39 @@ const getStageTree = (
     }
   }
 
-  // only ci stage
-  // TODO: Replace 'ci' literal with enum
-  // TODO: hide as implementation is not done
-  /*if (stage.type === 'CI') {
-    stageNode.childNodes?.push({
-      id: `Stage.${stage.identifier}.Dependencies`,
-      hasCaret: false,
-      label: <Text>{i18n.dependencies}</Text>,
-      className: classes.secondary,
-      isExpanded: false
-    })
-  }*/
+  return stageNode
+}
 
+const addInfraRelatedNodes = (
+  stageNode: ITreeNode,
+  stage: StageElementConfig,
+  getString: UseStringsReturn['getString'],
+  classes: NodeClasses = {},
+  {
+    hideNonRuntimeFields = false,
+    template = {}
+  }: { hideNonRuntimeFields?: boolean; template?: Record<string, never> } = {}
+): ITreeNode => {
   // common to ci and cd stage
-  // TODO: temporary enable only for CD as Ci is not implemented
-  if (stage.type === 'Deployment') {
+  if (stage.type === StageType.DEPLOY) {
     if (hideNonRuntimeFields) {
       const enabledChildList = Object.keys(get(template, 'spec', {}))
-      enabledChildList.includes('infrastructure') &&
+      if (enabledChildList.includes('infrastructure')) {
         stageNode.childNodes?.push({
           id: `Stage.${stage.identifier}.Infrastructure`,
           hasCaret: false,
           label: <Text>{getString('infrastructureText')}</Text>,
           className: classes.secondary
         })
-
-      enabledChildList.includes('execution') &&
+      }
+      if (enabledChildList.includes('execution')) {
         stageNode.childNodes?.push({
           id: `Stage.${stage.identifier}.Execution`,
           hasCaret: false,
           label: <Text>{getString('executionText')}</Text>,
           className: classes.secondary
         })
+      }
     } else {
       stageNode.childNodes?.push(
         {
@@ -182,13 +153,62 @@ const getStageTree = (
       )
     }
   }
+
+  return stageNode
+}
+
+const getStageTree = (
+  stage: StageElementConfig,
+  getString: UseStringsReturn['getString'],
+  classes: NodeClasses = {},
+  {
+    hideNonRuntimeFields = false,
+    template = {}
+  }: { hideNonRuntimeFields?: boolean; template?: Record<string, never> } = {}
+): ITreeNode => {
+  let stageNode: ITreeNode = {
+    id: `Stage.${stage.identifier}`,
+    hasCaret: true,
+    label: (
+      <Text color={Color.GREY_800} style={{ fontWeight: 600 }} width="147" lineClamp={1}>
+        {stage.name}
+      </Text>
+    ),
+    className: classes.primary,
+    childNodes: []
+  }
+
+  // common to ci and cd stage
+  if (hideNonRuntimeFields) {
+    const hasVariables = get(template, 'variables', null)
+    if (hasVariables) {
+      stageNode.childNodes?.push({
+        id: `Stage.${stage.identifier}.Variables`,
+        hasCaret: false,
+        label: <Text>{getString('customVariables.title')}</Text>,
+        className: classes.secondary
+      })
+    }
+  } else {
+    stageNode.childNodes?.push({
+      id: `Stage.${stage.identifier}.Variables`,
+      hasCaret: false,
+      label: <Text>{getString('customVariables.title')}</Text>,
+      className: classes.secondary
+    })
+  }
+
+  stageNode = addServiceRelatedNodes(stageNode, stage, getString, classes, { hideNonRuntimeFields, template })
+
+  stageNode = addInfraRelatedNodes(stageNode, stage, getString, classes, { hideNonRuntimeFields, template })
+
   return stageNode
 }
 
 export const getPipelineTree = (
   pipeline: PipelineInfoConfig,
-  classes: NodeClasses = {},
   getString: UseStringsReturn['getString'],
+  classes: NodeClasses = {},
   options: { hideNonRuntimeFields?: boolean; template?: { stages: [{ stage: Record<string, never> }] } } = {}
 ): ITreeNode[] => {
   const returnNodes: ITreeNode[] = [
@@ -246,14 +266,16 @@ export const getPipelineTree = (
     pipeline.stages.forEach((data, index) => {
       if (data.parallel && data.parallel.length > 0) {
         data.parallel.forEach(nodeP => {
-          nodeP.stage && stages.childNodes?.push(getStageTree(nodeP.stage, classes, getString))
+          if (nodeP.stage) {
+            stages.childNodes?.push(getStageTree(nodeP.stage, getString, classes))
+          }
         })
       } /* istanbul ignore else */ else if (
         data.stage &&
         (!options.template || options.template?.stages?.[index]?.stage)
       ) {
         stages.childNodes?.push(
-          getStageTree(data.stage, classes, getString, {
+          getStageTree(data.stage, getString, classes, {
             ...options,
             template: options.template?.stages?.[index]?.stage
           })
