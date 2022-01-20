@@ -8,7 +8,7 @@ import { getEntityIconName } from '../entities/EntityHelper'
 
 interface GitFullSyncEntityListProps {
   data: PageGitFullSyncEntityInfoDTO
-  gotoPage: (page: number) => void
+  gotoPage: (pageNumber: number) => void
 }
 
 const RenderEntityStatus = (prop: Record<'status', GitFullSyncEntityInfoDTO['syncStatus']>): JSX.Element => {
@@ -74,25 +74,13 @@ const RenderColumnEntityType: Renderer<CellProps<GitFullSyncEntityInfoDTO>> = ({
 const RenderColumnRepo: Renderer<CellProps<GitFullSyncEntityInfoDTO>> = ({ row }) => {
   const data = row.original
 
-  return <Text> {data.repo} </Text>
+  return <Text> {data.repoName} </Text>
 }
 
 const RenderColumnBranch: Renderer<CellProps<GitFullSyncEntityInfoDTO>> = ({ row }) => {
   const data = row.original
 
   return <Text> {data.branch} </Text>
-}
-
-const RenderColumnFilePath: Renderer<CellProps<GitFullSyncEntityInfoDTO>> = ({ row }) => {
-  const data = row.original
-
-  return (
-    <a href={data.filePath} target="_blank" rel="noopener noreferrer">
-      <Text color={Color.PRIMARY_7} lineClamp={1}>
-        {data.filePath}
-      </Text>
-    </a>
-  )
 }
 
 const GitFullSyncEntityList: React.FC<GitFullSyncEntityListProps> = props => {
@@ -105,43 +93,35 @@ const GitFullSyncEntityList: React.FC<GitFullSyncEntityListProps> = props => {
       Header: 'Entity Name',
       accessor: row => row.name,
       id: 'name',
-      width: '20%',
+      width: '30%',
       Cell: RenderEntityDetails
     },
     {
       Header: 'Status',
       accessor: row => row.syncStatus,
-      width: '10%',
+      width: '15%',
       Cell: RenderColumnEntityStatus
     },
     {
       Header: 'Type',
       accessor: row => row.entityType,
       id: 'type',
-      width: '10%',
+      width: '15%',
       Cell: RenderColumnEntityType
     },
     {
       Header: 'Repository',
-      accessor: row => row.repo,
+      accessor: row => row.repoName,
       id: 'repository',
-      width: '12%',
+      width: '15%',
       Cell: RenderColumnRepo
     },
     {
       Header: 'Branch',
       accessor: row => row.branch,
       id: 'branch',
-      width: '13%',
+      width: '15%',
       Cell: RenderColumnBranch
-    },
-    {
-      Header: 'Path',
-      accessor: row => row.filePath,
-      id: 'path',
-      width: '35%',
-      Cell: RenderColumnFilePath,
-      disableSortBy: true
     }
   ]
 
