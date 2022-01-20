@@ -1,9 +1,16 @@
+/*
+ * Copyright 2022 Harness Inc. All rights reserved.
+ * Use of this source code is governed by the PolyForm Shield 1.0.0 license
+ * that can be found in the licenses directory at the root of this repository, also available at
+ * https://polyformproject.org/wp-content/uploads/2020/06/PolyForm-Shield-1.0.0.txt.
+ */
+
 import React, { Dispatch, SetStateAction } from 'react'
 import * as Yup from 'yup'
 import type { FormikErrors } from 'formik'
 import type { MutateMethod } from 'restful-react'
 import { omit } from 'lodash-es'
-import { Button, ButtonVariation, Formik, Layout, Popover } from '@wings-software/uicore'
+import { Text, Button, ButtonVariation, Formik, Layout, Popover } from '@wings-software/uicore'
 import { Classes } from '@blueprintjs/core'
 import type { PipelineInfoConfig } from 'services/cd-ng'
 import type {
@@ -154,7 +161,6 @@ const SaveAsInputSet = ({
     },
     [createInputSet, showSuccess, showError, isGitSyncEnabled, pipeline]
   )
-
   if (pipeline && currentPipeline && template) {
     return (
       <Popover
@@ -240,6 +246,11 @@ const SaveAsInputSet = ({
               resourceType: ResourceType.PIPELINE
             }
           }}
+          tooltip={
+            disabled ? (
+              <Text padding="medium">{getString('pipeline.runPipelineForm.disallowStageExecution')}</Text>
+            ) : undefined
+          }
         />
       </Popover>
     )

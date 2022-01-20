@@ -1,3 +1,10 @@
+/*
+ * Copyright 2022 Harness Inc. All rights reserved.
+ * Use of this source code is governed by the PolyForm Shield 1.0.0 license
+ * that can be found in the licenses directory at the root of this repository, also available at
+ * https://polyformproject.org/wp-content/uploads/2020/06/PolyForm-Shield-1.0.0.txt.
+ */
+
 import type { MultiSelectOption } from '@wings-software/uicore'
 import uniqBy from 'lodash/uniqBy'
 import type { AuditTrailFormType, ProjectSelectOption } from '@audit-trail/components/FilterDrawer/FilterDrawer'
@@ -17,7 +24,10 @@ export const actionToLabelMap: Record<AuditEventDTO['action'], StringKeys> = {
   REMOVE_COLLABORATOR: 'auditTrail.actions.removed_collaborator',
   ADD_MEMBERSHIP: 'auditTrail.actions.added_membership',
   REMOVE_MEMBERSHIP: 'auditTrail.actions.removed_membership',
-  REVOKE_TOKEN: 'auditTrail.actions.revoke_token'
+  REVOKE_TOKEN: 'auditTrail.actions.revoke_token',
+  LOGIN: 'auditTrail.actions.login',
+  LOGIN2FA: 'auditTrail.actions.login2fa',
+  UNSUCCESSFUL_LOGIN: 'auditTrail.actions.unsuccessfullLogin'
 }
 
 export const moduleToLabelMap: Record<AuditEventDTO['module'], StringKeys> = {

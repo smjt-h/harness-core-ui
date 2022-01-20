@@ -1,3 +1,10 @@
+/*
+ * Copyright 2021 Harness Inc. All rights reserved.
+ * Use of this source code is governed by the PolyForm Shield 1.0.0 license
+ * that can be found in the licenses directory at the root of this repository, also available at
+ * https://polyformproject.org/wp-content/uploads/2020/06/PolyForm-Shield-1.0.0.txt.
+ */
+
 import React from 'react'
 import { fireEvent, render, waitFor } from '@testing-library/react'
 import { Container, Button } from '@wings-software/uicore'
@@ -108,5 +115,36 @@ describe('Unit tests for Configuration', () => {
     fireEvent.click(container.querySelector('button [data-icon*="send-data"]')!)
 
     await waitFor(() => expect(getByText('mock error')).not.toBeNull())
+  })
+
+  test('Ensure that error data should be rendered by default when there is no detailedMessage and message in the error response data', async () => {
+    jest.spyOn(configUtils, 'onSubmit').mockImplementation(() => {
+      throw new Error(
+        JSON.stringify([{ field: 'metricDefinitions', message: 'same identifier is used by multiple entities' }])
+      )
+    })
+
+    jest.spyOn(dbHook, 'useIndexedDBHook').mockReturnValue({
+      dbInstance: {
+        put: jest.fn(),
+        get: jest.fn().mockReturnValue(Promise.resolve({ currentData: cachedData }))
+      } as any,
+      isInitializingDB: false
+    })
+
+    const { container, getByText } = render(
+      <TestWrapper>
+        <Configurations />
+      </TestWrapper>
+    )
+
+    await waitFor(() => expect(container.querySelector('input[value="Application"]')).toBeTruthy())
+    fireEvent.click(container.querySelector('button [data-icon*="send-data"]')!)
+
+    await waitFor(() =>
+      expect(
+        getByText('[{"field":"metricDefinitions","message":"same identifier is used by multiple entities"}]')
+      ).toBeInTheDocument()
+    )
   })
 })

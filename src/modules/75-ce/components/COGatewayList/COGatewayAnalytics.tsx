@@ -1,3 +1,10 @@
+/*
+ * Copyright 2021 Harness Inc. All rights reserved.
+ * Use of this source code is governed by the PolyForm Shield 1.0.0 license
+ * that can be found in the licenses directory at the root of this repository, also available at
+ * https://polyformproject.org/wp-content/uploads/2020/06/PolyForm-Shield-1.0.0.txt.
+ */
+
 import React, { useEffect, useState } from 'react'
 import { isEmpty as _isEmpty } from 'lodash-es'
 import { Switch, Tab } from '@blueprintjs/core'
@@ -286,9 +293,9 @@ const COGatewayAnalytics: React.FC<COGatewayAnalyticsProps> = props => {
             <Container className={css.serviceDetailsItemContainer}>
               <Text className={css.detailItemHeader}>Resources managed</Text>
               <Layout.Horizontal spacing="medium" className={css.detailItemValue}>
-                {!resourcesLoading && resources ? (
+                {!resourcesLoading && resources && props.service?.data ? (
                   <Link
-                    href={getInstancesLink(resources as AllResourcesOfAccountResponse)}
+                    href={getInstancesLink(props.service?.data as Service, resources as AllResourcesOfAccountResponse)}
                     target="_blank"
                     style={{ textOverflow: 'ellipsis', whiteSpace: 'nowrap' }}
                   >

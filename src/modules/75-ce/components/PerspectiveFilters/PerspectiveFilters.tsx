@@ -1,3 +1,10 @@
+/*
+ * Copyright 2021 Harness Inc. All rights reserved.
+ * Use of this source code is governed by the PolyForm Shield 1.0.0 license
+ * that can be found in the licenses directory at the root of this repository, also available at
+ * https://polyformproject.org/wp-content/uploads/2020/06/PolyForm-Shield-1.0.0.txt.
+ */
+
 import React from 'react'
 import { useParams } from 'react-router-dom'
 import { FieldArray, FormikProps } from 'formik'
@@ -6,6 +13,8 @@ import cx from 'classnames'
 import { useStrings } from 'framework/strings'
 import type { CEView } from 'services/ce/'
 import { QlceViewFieldIdentifierData, useFetchViewFieldsQuery, QlceViewFilterWrapperInput } from 'services/ce/services'
+import { useTelemetry } from '@common/hooks/useTelemetry'
+import { USER_JOURNEY_EVENTS } from '@ce/TrackingEventsConstants'
 import PerspectiveBuilderFilters from '../PerspectiveBuilderFilters/PerspectiveBuilderFilters'
 import css from './PerspectiveFilters.module.scss'
 
@@ -16,6 +25,7 @@ interface PerspectiveFiltersProps {
 const PerspectiveFiltersNew: React.FC<PerspectiveFiltersProps> = ({ formikProps }) => {
   const { perspectiveId } = useParams<{ perspectiveId: string }>()
   const { getString } = useStrings()
+  const { trackEvent } = useTelemetry()
 
   const [result] = useFetchViewFieldsQuery({
     variables: {
@@ -100,6 +110,7 @@ const PerspectiveFiltersNew: React.FC<PerspectiveFiltersProps> = ({ formikProps 
                 <div
                   className={css.addFilters}
                   onClick={() => {
+                    trackEvent(USER_JOURNEY_EVENTS.ADD_PERSPECTIVE_RULE, {})
                     arrayHelper.push({
                       viewConditions: [
                         {

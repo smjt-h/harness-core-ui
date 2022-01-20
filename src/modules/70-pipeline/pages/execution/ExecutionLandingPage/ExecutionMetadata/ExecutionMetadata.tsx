@@ -1,3 +1,10 @@
+/*
+ * Copyright 2021 Harness Inc. All rights reserved.
+ * Use of this source code is governed by the PolyForm Shield 1.0.0 license
+ * that can be found in the licenses directory at the root of this repository, also available at
+ * https://polyformproject.org/wp-content/uploads/2020/06/PolyForm-Shield-1.0.0.txt.
+ */
+
 import React from 'react'
 import { Text, Icon, Tag } from '@wings-software/uicore'
 import { useStrings } from 'framework/strings'
@@ -62,14 +69,11 @@ export default function ExecutionMetadata(): React.ReactElement {
 
   const { RUN_INDIVIDUAL_STAGE } = useFeatureFlags()
   const renderSingleStageExecutionInfo = (): React.ReactElement | null => {
-    return RUN_INDIVIDUAL_STAGE &&
-      pipelineExecutionSummary?.stagesExecution &&
-      pipelineExecutionSummary.stagesExecuted?.length === 1 ? (
-      <Tag className={css.singleExecutionTag}>{`${getString('pipeline.singleStageExecution')} ${
-        pipelineExecutionSummary?.stagesExecutedNames?.[pipelineExecutionSummary?.stagesExecuted?.[0]]
+    return RUN_INDIVIDUAL_STAGE && pipelineExecutionSummary?.stagesExecuted?.length ? (
+      <Tag className={css.singleExecutionTag}>{`${getString('pipeline.singleStageExecution')}   ${
+        !!pipelineExecutionSummary.stagesExecutedNames &&
+        Object.values(pipelineExecutionSummary.stagesExecutedNames).join(', ')
       }`}</Tag>
-    ) : pipelineExecutionSummary?.stagesExecution ? (
-      <Tag className={css.singleExecutionTag}>{getString('pipeline.multiStageExecution')}</Tag>
     ) : null
   }
   return (

@@ -1,3 +1,10 @@
+/*
+ * Copyright 2021 Harness Inc. All rights reserved.
+ * Use of this source code is governed by the PolyForm Shield 1.0.0 license
+ * that can be found in the licenses directory at the root of this repository, also available at
+ * https://polyformproject.org/wp-content/uploads/2020/06/PolyForm-Shield-1.0.0.txt.
+ */
+
 import React from 'react'
 import * as Yup from 'yup'
 import { Card, Formik, FormikForm, FormInput, Icon, IconName, Layout, Text } from '@wings-software/uicore'
@@ -6,6 +13,7 @@ import { Utils } from '@ce/common/Utils'
 import type { GatewayDetails } from '@ce/components/COCreateGateway/models'
 import { CONFIG_IDLE_TIME_CONSTRAINTS, CONFIG_STEP_IDS } from '@ce/constants'
 import { useStrings } from 'framework/strings'
+import { useGatewayContext } from '@ce/context/GatewayContext'
 import COGatewayConfigStep from '../COGatewayConfigStep'
 import css from '../COGatewayConfig.module.scss'
 
@@ -18,7 +26,7 @@ interface DefineRuleProps {
 
 const DefineRule: React.FC<DefineRuleProps> = props => {
   const { getString } = useStrings()
-
+  const { isEditFlow } = useGatewayContext()
   const { totalStepsCount } = props
   const isAwsProvider = Utils.isProviderAws(props.gatewayDetails.provider)
   const isK8sRule = Utils.isK8sRule(props.gatewayDetails)
@@ -58,7 +66,8 @@ const DefineRule: React.FC<DefineRuleProps> = props => {
                       const updatedGatewayDetails = { ...props.gatewayDetails }
                       updatedGatewayDetails.name = e.target.value
                       props.setGatewayDetails(updatedGatewayDetails)
-                    }
+                    },
+                    disabled: isK8sRule && isEditFlow
                   }}
                 />
                 <InputDataContainer

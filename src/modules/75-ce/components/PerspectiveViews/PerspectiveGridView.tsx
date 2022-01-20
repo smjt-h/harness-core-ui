@@ -1,3 +1,10 @@
+/*
+ * Copyright 2021 Harness Inc. All rights reserved.
+ * Use of this source code is governed by the PolyForm Shield 1.0.0 license
+ * that can be found in the licenses directory at the root of this repository, also available at
+ * https://polyformproject.org/wp-content/uploads/2020/06/PolyForm-Shield-1.0.0.txt.
+ */
+
 import React from 'react'
 import { useHistory, useParams } from 'react-router-dom'
 import {
@@ -20,7 +27,12 @@ import css from './PerspectiveGridView.module.scss'
 
 interface PerspectiveGridCardProps {
   data: QlceView
-  navigateToPerspectiveDetailsPage: (perspectiveId: string, viewState: ViewState, name: string) => void
+  navigateToPerspectiveDetailsPage: (
+    perspectiveId: string,
+    viewState: ViewState,
+    name: string,
+    viewType: ViewType
+  ) => void
   deletePerpsective: (perspectiveId: string, perspectiveName: string) => void
   clonePerspective: (values: QlceView | Record<string, string>, isClone: boolean) => void
 }
@@ -93,7 +105,14 @@ const PerpsectiveGridCard: (props: PerspectiveGridCardProps) => JSX.Element | nu
       interactive
       className={css.cardClass}
       onClick={() => {
-        data.id && data.viewState && navigateToPerspectiveDetailsPage(data?.id, data.viewState, data?.name || data.id)
+        data.id &&
+          data.viewState &&
+          navigateToPerspectiveDetailsPage(
+            data?.id,
+            data.viewState,
+            data?.name || data.id,
+            data.viewType || ViewType.Customer
+          )
       }}
     >
       <CardBody.Menu
@@ -171,7 +190,12 @@ const PerpsectiveGridCard: (props: PerspectiveGridCardProps) => JSX.Element | nu
 
 interface PerspectiveListViewProps {
   pespectiveData: QlceView[]
-  navigateToPerspectiveDetailsPage: (perspectiveId: string, viewState: ViewState, name: string) => void
+  navigateToPerspectiveDetailsPage: (
+    perspectiveId: string,
+    viewState: ViewState,
+    name: string,
+    viewType: ViewType
+  ) => void
   deletePerpsective: (perspectiveId: string, perspectiveName: string) => void
   clonePerspective: (values: QlceView | Record<string, string>, isClone: boolean) => void
 }

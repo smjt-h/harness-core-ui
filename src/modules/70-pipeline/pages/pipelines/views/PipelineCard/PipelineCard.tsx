@@ -1,3 +1,10 @@
+/*
+ * Copyright 2022 Harness Inc. All rights reserved.
+ * Use of this source code is governed by the PolyForm Shield 1.0.0 license
+ * that can be found in the licenses directory at the root of this repository, also available at
+ * https://polyformproject.org/wp-content/uploads/2020/06/PolyForm-Shield-1.0.0.txt.
+ */
+
 import React from 'react'
 import {
   Card,
@@ -160,11 +167,11 @@ const LEFT_COLUMN_WIDTH = 80
 const AdditionalEntitiesCountPopUp = (props: { entityList: string[]; iconName?: IconName }) => {
   const { entityList, iconName } = props
   return (
-    <Layout.Vertical padding="small">
+    <Layout.Vertical style={{ padding: 'var(--spacing-4)' }}>
       {entityList.map(entity => (
         <Container key={entity} flex={{ justifyContent: 'flex-start' }}>
-          {iconName && <Icon name={iconName} style={{ height: 'var(--spacing-5)' }} />}
-          <Text font="xsmall" margin={{ left: 'xsmall' }} color={Color.WHITE}>
+          {iconName && <Icon name={iconName} style={{ height: 'var(--spacing-5)', marginRight: 'var(--spacing-3)' }} />}
+          <Text font="small" color={Color.WHITE} style={{ lineHeight: '22px' }}>
             {entity}
           </Text>
         </Container>

@@ -1,3 +1,10 @@
+/*
+ * Copyright 2021 Harness Inc. All rights reserved.
+ * Use of this source code is governed by the PolyForm Shield 1.0.0 license
+ * that can be found in the licenses directory at the root of this repository, also available at
+ * https://polyformproject.org/wp-content/uploads/2020/06/PolyForm-Shield-1.0.0.txt.
+ */
+
 import React, { useEffect, useMemo, useState } from 'react'
 import { useParams, useHistory } from 'react-router-dom'
 import cx from 'classnames'
@@ -19,6 +26,7 @@ import { useStrings } from 'framework/strings'
 import routes from '@common/RouteDefinitions'
 import { PageSpinner, useToaster } from '@common/components'
 import { useFeature } from '@common/hooks/useFeatures'
+import { useTelemetry } from '@common/hooks/useTelemetry'
 import { FeatureIdentifier } from 'framework/featureStore/FeatureIdentifier'
 import { useCreatePerspective, useDeletePerspective, CEView } from 'services/ce'
 import {
@@ -37,6 +45,7 @@ import { FeatureWarningWithTooltip } from '@common/components/FeatureWarning/Fea
 import PerspectiveGridView from '@ce/components/PerspectiveViews/PerspectiveGridView'
 import { useCreateConnectorMinimal } from '@ce/components/CreateConnector/CreateConnector'
 import { Utils } from '@ce/common/Utils'
+import { PAGE_EVENTS, USER_JOURNEY_EVENTS } from '@ce/TrackingEventsConstants'
 import bgImage from './images/perspectiveBg.png'
 import css from './PerspectiveListPage.module.scss'
 
@@ -224,7 +233,12 @@ const NoDataPerspectivePage: (props: NoDataPerspectivePageProps) => JSX.Element 
 interface PerspectiveListGridViewProps {
   pespectiveList: QlceView[]
   recentViewList: QlceView[]
-  navigateToPerspectiveDetailsPage: (perspectiveId: string, viewState: ViewState, name: string) => void
+  navigateToPerspectiveDetailsPage: (
+    perspectiveId: string,
+    viewState: ViewState,
+    name: string,
+    viewType: ViewType
+  ) => void
   deletePerpsective: (perspectiveId: string, perspectiveName: string) => void
   createNewPerspective: (values: QlceView | Record<string, string>, isClone: boolean) => void
   filteredPerspectiveData: QlceView[]
@@ -353,6 +367,7 @@ const PerspectiveListPage: React.FC = () => {
   const { showError, showSuccess } = useToaster()
   const [view, setView] = useState(Views.GRID)
   const [quickFilters, setQuickFilters] = useState<Record<string, boolean>>({})
+  const { trackPage, trackEvent } = useTelemetry()
 
   const [result, executeQuery] = useFetchAllPerspectivesQuery()
   const { data, fetching } = result
@@ -436,11 +451,16 @@ const PerspectiveListPage: React.FC = () => {
     }
   }
 
-  const navigateToPerspectiveDetailsPage: (perspectiveId: string, viewState: ViewState, name: string) => void = (
-    perspectiveId,
-    viewState,
-    name
-  ) => {
+  const navigateToPerspectiveDetailsPage: (
+    perspectiveId: string,
+    viewState: ViewState,
+    name: string,
+    viewType: ViewType
+  ) => void = (perspectiveId, viewState, name, viewType) => {
+    trackEvent(USER_JOURNEY_EVENTS.OPEN_PERSPECTIVE_DETAILS, {
+      perspectiveType: viewType
+    })
+
     if (viewState !== ViewState.Draft) {
       history.push(
         routes.toPerspectiveDetails({
@@ -466,6 +486,10 @@ const PerspectiveListPage: React.FC = () => {
   })
 
   const pespectiveList = (data?.perspectives?.customerViews || []) as QlceView[]
+
+  useEffect(() => {
+    trackPage(PAGE_EVENTS.PERSPECTIVE_LIST, {})
+  }, [])
 
   useMemo(() => {
     pespectiveList.sort(perspectiveSortFunction)
@@ -518,6 +542,7 @@ const PerspectiveListPage: React.FC = () => {
             icon="plus"
             disabled={!featureEnabled}
             onClick={async () => {
+              trackEvent(USER_JOURNEY_EVENTS.CREATE_NEW_PERSPECTIVE, {})
               await createNewPerspective({}, false)
             }}
           />

@@ -1,4 +1,12 @@
+/*
+ * Copyright 2021 Harness Inc. All rights reserved.
+ * Use of this source code is governed by the PolyForm Shield 1.0.0 license
+ * that can be found in the licenses directory at the root of this repository, also available at
+ * https://polyformproject.org/wp-content/uploads/2020/06/PolyForm-Shield-1.0.0.txt.
+ */
+
 import type { EntityGitDetails } from 'services/pipeline-ng'
+import type { Module as ModuleName } from 'framework/types/ModuleName'
 
 export interface AccountPathProps {
   accountId: string
@@ -127,17 +135,9 @@ export interface ServicePathProps {
   serviceId: string
 }
 
-export type Module =
-  | 'ci'
-  | 'cd'
-  | 'cf'
-  | 'cv'
-  | 'ce'
-  | ':module(ci)'
-  | ':module(cd)'
-  | ':module(cf)'
-  | ':module'
-  | ':module(cv)'
+export type ModuleNameMatch = ':module' | ':module(ci)' | ':module(cd)' | ':module(cf)' | ':module(cv)' | ':module(ce)'
+
+export type Module = ModuleName | ModuleNameMatch
 
 export interface ModulePathParams {
   module: Module

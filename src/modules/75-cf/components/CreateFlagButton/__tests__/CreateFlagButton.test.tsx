@@ -1,3 +1,10 @@
+/*
+ * Copyright 2022 Harness Inc. All rights reserved.
+ * Use of this source code is governed by the PolyForm Shield 1.0.0 license
+ * that can be found in the licenses directory at the root of this repository, also available at
+ * https://polyformproject.org/wp-content/uploads/2020/06/PolyForm-Shield-1.0.0.txt.
+ */
+
 import { render, RenderResult, screen, waitFor, fireEvent } from '@testing-library/react'
 import React from 'react'
 import { TestWrapper } from '@common/utils/testUtils'
@@ -19,7 +26,9 @@ const renderComponent = (props: Partial<CreateFlagButtonProps> = {}): RenderResu
 }
 
 describe('CreateFlagButton', () => {
-  beforeEach(() => jest.spyOn(usePlanEnforcementMock, 'default').mockReturnValue({ isPlanEnforcementEnabled: true }))
+  beforeEach(() =>
+    jest.spyOn(usePlanEnforcementMock, 'default').mockReturnValue({ isPlanEnforcementEnabled: true, isFreePlan: true })
+  )
 
   test('it should display plan enforcement popup when limits reached', async () => {
     jest

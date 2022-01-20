@@ -1,9 +1,18 @@
+/*
+ * Copyright 2021 Harness Inc. All rights reserved.
+ * Use of this source code is governed by the PolyForm Shield 1.0.0 license
+ * that can be found in the licenses directory at the root of this repository, also available at
+ * https://polyformproject.org/wp-content/uploads/2020/06/PolyForm-Shield-1.0.0.txt.
+ */
+
 import React from 'react'
 import { Container, Layout, Text } from '@wings-software/uicore'
 import cx from 'classnames'
 
 import { useStrings } from 'framework/strings'
 import formatCost from '@ce/utils/formatCost'
+import { useTelemetry } from '@common/hooks/useTelemetry'
+import { USER_JOURNEY_EVENTS } from '@ce/TrackingEventsConstants'
 import { RecommendationType } from './constants'
 
 import css from './RecommendationDetails.module.scss'
@@ -34,6 +43,7 @@ const RecommendationTabs: React.FC<RecommendationTabsProps> = ({
   isCostOptimizedCustomized
 }) => {
   const { getString } = useStrings()
+  const { trackEvent } = useTelemetry()
 
   return (
     <Container padding="small" className={css.recommendationTypeContainer}>
@@ -44,6 +54,9 @@ const RecommendationTabs: React.FC<RecommendationTabsProps> = ({
           })}
           spacing="xsmall"
           onClick={() => {
+            trackEvent(USER_JOURNEY_EVENTS.RECOMMENDATION_COST_PERFORMANCE_OPTIMISED_CLICK, {
+              type: RecommendationType.CostOptimized
+            })
             setCPUReqVal(50)
             setMemReqVal(50)
             setMemLimitVal(95)
@@ -91,6 +104,9 @@ const RecommendationTabs: React.FC<RecommendationTabsProps> = ({
           })}
           spacing="xsmall"
           onClick={() => {
+            trackEvent(USER_JOURNEY_EVENTS.RECOMMENDATION_COST_PERFORMANCE_OPTIMISED_CLICK, {
+              type: RecommendationType.PerformanceOptimized
+            })
             setCPUReqVal(95)
             setMemReqVal(95)
             setMemLimitVal(95)

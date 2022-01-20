@@ -1,3 +1,10 @@
+/*
+ * Copyright 2022 Harness Inc. All rights reserved.
+ * Use of this source code is governed by the PolyForm Shield 1.0.0 license
+ * that can be found in the licenses directory at the root of this repository, also available at
+ * https://polyformproject.org/wp-content/uploads/2020/06/PolyForm-Shield-1.0.0.txt.
+ */
+
 import React from 'react'
 import {
   Formik,
@@ -26,6 +33,8 @@ import {
 import { useStrings } from 'framework/strings'
 import type { ViewIdCondition } from 'services/ce/'
 import { DEFAULT_GROUP_BY } from '@ce/utils/perspectiveUtils'
+import { useTelemetry } from '@common/hooks/useTelemetry'
+import { USER_JOURNEY_EVENTS } from '@ce/TrackingEventsConstants'
 import PerspectiveFilters from '../PerspectiveFilters'
 import PerspectiveBuilderPreview from '../PerspectiveBuilderPreview/PerspectiveBuilderPreview'
 // import ProTipIcon from './images/pro-tip.svg'
@@ -56,6 +65,7 @@ const PerspectiveBuilder: React.FC<{ perspectiveData?: CEView; onNext: (resource
   const { perspectiveId, accountId } = useParams<{ perspectiveId: string; accountId: string }>()
   const history = useHistory()
   const { showError } = useToaster()
+  const { trackEvent } = useTelemetry()
 
   const { perspectiveData } = props
 
@@ -278,6 +288,7 @@ const PerspectiveBuilder: React.FC<{ perspectiveData?: CEView; onNext: (resource
                       disabled={!!Object.keys(formikProps.errors).length}
                       text={getString('ce.perspectives.createPerspective.nextButton')}
                       onClick={() => {
+                        trackEvent(USER_JOURNEY_EVENTS.PERSPECTIVE_STEP1_NEXT, {})
                         makeCreateCall(formikProps.values)
                       }}
                     />

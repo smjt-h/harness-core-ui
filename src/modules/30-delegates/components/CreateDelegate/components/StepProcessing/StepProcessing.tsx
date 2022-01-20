@@ -1,4 +1,11 @@
-import React from 'react'
+/*
+ * Copyright 2021 Harness Inc. All rights reserved.
+ * Use of this source code is governed by the PolyForm Shield 1.0.0 license
+ * that can be found in the licenses directory at the root of this repository, also available at
+ * https://polyformproject.org/wp-content/uploads/2020/06/PolyForm-Shield-1.0.0.txt.
+ */
+
+import React, { useState, FC } from 'react'
 import { useParams } from 'react-router-dom'
 import { Layout, Icon, Text, Color } from '@wings-software/uicore'
 import { useStrings } from 'framework/strings'
@@ -10,21 +17,20 @@ import DelegateInstallationError from '@delegates/components/CreateDelegate/comp
 
 import css from './StepProcessing.module.scss'
 
-let counter = 0
-
 interface StepDelegateData {
   name?: string
   replicas?: number
   onSuccessHandler?: () => void
 }
 
-const StepProcessing: React.FC<StepDelegateData> = props => {
+const StepProcessing: FC<StepDelegateData> = props => {
   const { name, replicas, onSuccessHandler } = props
   const { accountId, projectIdentifier, orgIdentifier } = useParams<ProjectPathProps>()
   const { getString } = useStrings()
-  const [showSuccess, setShowSuccess] = React.useState(false)
-  const [showError, setShowError] = React.useState(false)
-  const [isHeartBeatVerified, setVerifyHeartBeat] = React.useState(false)
+  const [showSuccess, setShowSuccess] = useState(false)
+  const [showError, setShowError] = useState(false)
+  const [isHeartBeatVerified, setVerifyHeartBeat] = useState(false)
+  const [counter, setCounter] = useState(0)
   const {
     data,
     loading,
@@ -47,7 +53,7 @@ const StepProcessing: React.FC<StepDelegateData> = props => {
       !showSuccess
     ) {
       const timerId = window.setTimeout(() => {
-        counter += POLL_INTERVAL
+        setCounter(counter + POLL_INTERVAL)
         verifyHeartBeat()
       }, POLL_INTERVAL)
 

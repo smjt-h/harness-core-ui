@@ -1,3 +1,10 @@
+/*
+ * Copyright 2021 Harness Inc. All rights reserved.
+ * Use of this source code is governed by the PolyForm Shield 1.0.0 license
+ * that can be found in the licenses directory at the root of this repository, also available at
+ * https://polyformproject.org/wp-content/uploads/2020/06/PolyForm-Shield-1.0.0.txt.
+ */
+
 import React, { useState } from 'react'
 import { Dialog, Divider, Intent } from '@blueprintjs/core'
 import * as yup from 'yup'
@@ -31,6 +38,8 @@ import RbacButton from '@rbac/components/Button/Button'
 import { AUTO_COMMIT_MESSAGES } from '@cf/constants/GitSyncConstants'
 
 import { GIT_SYNC_ERROR_CODE, UseGitSync } from '@cf/hooks/useGitSync'
+import usePlanEnforcement from '@cf/hooks/usePlanEnforcement'
+import { FeatureIdentifier } from 'framework/featureStore/FeatureIdentifier'
 import patch from '../../utils/instructions'
 
 import SaveFlagToGitSubForm from '../SaveFlagToGitSubForm/SaveFlagToGitSubForm'
@@ -62,6 +71,8 @@ export const EditVariationsModal: React.FC<EditVariationsModalProps> = ({
   onSuccess,
   ...props
 }) => {
+  const { isPlanEnforcementEnabled } = usePlanEnforcement()
+
   const ModalComponent: React.FC = () => {
     const { getString } = useStrings()
     const validateVariationValues = useValidateVariationValues()
@@ -89,6 +100,7 @@ export const EditVariationsModal: React.FC<EditVariationsModalProps> = ({
       gitDetails: gitSyncFormData?.gitSyncInitialValues.gitDetails,
       autoCommit: gitSyncFormData?.gitSyncInitialValues.autoCommit
     }
+
     const [defaultRules, setDefaultRules] = useState<SelectOption[]>(
       initialValues.variations.map(({ identifier, name }) => ({ label: name as string, value: identifier }))
     )
@@ -179,13 +191,7 @@ export const EditVariationsModal: React.FC<EditVariationsModalProps> = ({
     }
 
     return (
-      <Dialog
-        isOpen
-        onClose={hideModal}
-        enforceFocus={false}
-        title=""
-        style={{ width: 800, minHeight: 'fit-content', maxHeight: '90vh' }}
-      >
+      <Dialog isOpen onClose={hideModal} enforceFocus={false} title="" style={{ width: 800, minHeight: 'fit-content' }}>
         <Formik
           initialValues={initialValues}
           formName="editVariations"
@@ -372,5 +378,30 @@ export const EditVariationsModal: React.FC<EditVariationsModalProps> = ({
     gitSync.isAutoCommitEnabled
   ])
 
-  return <RbacButton permission={permission} onClick={openModal} {...props} data-testid="open-edit-variations-modal" />
+  const planEnforcementProps = isPlanEnforcementEnabled
+    ? {
+        featuresProps: {
+          featuresRequest: {
+            featureNames: [FeatureIdentifier.MAUS]
+          }
+        }
+      }
+    : undefined
+
+  return isPlanEnforcementEnabled ? (
+    <RbacButton
+      permission={permission}
+      featuresProps={{
+        featuresRequest: {
+          featureNames: [FeatureIdentifier.MAUS]
+        }
+      }}
+      {...planEnforcementProps}
+      onClick={openModal}
+      {...props}
+      data-testid="open-edit-variations-modal"
+    />
+  ) : (
+    <RbacButton permission={permission} onClick={openModal} {...props} data-testid="open-edit-variations-modal" />
+  )
 }

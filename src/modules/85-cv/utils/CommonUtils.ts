@@ -1,3 +1,10 @@
+/*
+ * Copyright 2022 Harness Inc. All rights reserved.
+ * Use of this source code is governed by the PolyForm Shield 1.0.0 license
+ * that can be found in the licenses directory at the root of this repository, also available at
+ * https://polyformproject.org/wp-content/uploads/2020/06/PolyForm-Shield-1.0.0.txt.
+ */
+
 import { get } from 'lodash-es'
 import { Color, Utils, Views, SelectOption, MultiSelectOption } from '@wings-software/uicore'
 import type { UseStringsReturn } from 'framework/strings'
@@ -97,7 +104,14 @@ export function roundNumber(value: number, precision = 2) {
 }
 
 export function getErrorMessage(errorObj?: any): string | undefined {
-  return get(errorObj, 'data.detailedMessage') || get(errorObj, 'data.message') || get(errorObj, 'message')
+  if (get(errorObj, 'data')) {
+    return (
+      get(errorObj, 'data.detailedMessage') ||
+      get(errorObj, 'data.message') ||
+      JSON.stringify(get(errorObj, 'data'), null, '\t')
+    )
+  }
+  return get(errorObj, 'message')
 }
 
 export const getEnvironmentOptions = (

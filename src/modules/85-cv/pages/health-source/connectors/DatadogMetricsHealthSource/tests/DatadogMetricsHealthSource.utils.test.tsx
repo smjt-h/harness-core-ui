@@ -1,6 +1,13 @@
+/*
+ * Copyright 2022 Harness Inc. All rights reserved.
+ * Use of this source code is governed by the PolyForm Shield 1.0.0 license
+ * that can be found in the licenses directory at the root of this repository, also available at
+ * https://polyformproject.org/wp-content/uploads/2020/06/PolyForm-Shield-1.0.0.txt.
+ */
+
 import {
   getIsAllIDsUnique,
-  getManuallyCreatedQueries,
+  getCustomCreatedMetrics,
   getSelectedDashboards,
   mapDatadogMetricHealthSourceToDatadogMetricSetupSource,
   mapDatadogMetricSetupSourceToDatadogHealthSource,
@@ -13,7 +20,7 @@ import {
   DatadogMetricsSetupSource,
   EXPECTED_DATADOG_METRIC_INFO,
   METRIC_VALIDATION_RESULT,
-  MOCK_MANUAL_QUERIES_LIST,
+  MOCK_CUSTOM_CREATED_METRICS_LIST,
   MOCK_SELECTED_DASHBOARDS_WIDGETS,
   MOCK_SELECTED_WIDGET_DATA
 } from '@cv/pages/health-source/connectors/DatadogMetricsHealthSource/tests/mock'
@@ -30,8 +37,10 @@ describe('Validate DatadogMetricsHealthSource Utils', () => {
       DatadogMetricsHealthSourceMock
     )
   })
-  test('it should return expected number of manual queries', () => {
-    expect(getManuallyCreatedQueries(DatadogMetricsSetupSource.metricDefinition)).toEqual(MOCK_MANUAL_QUERIES_LIST)
+  test('it should return expected number of custom created metrics', () => {
+    expect(getCustomCreatedMetrics(DatadogMetricsSetupSource.metricDefinition)).toEqual(
+      MOCK_CUSTOM_CREATED_METRICS_LIST
+    )
   })
   test('it should extract selected dashboards from source data and map them to MetricDashboardItems', () => {
     expect(getSelectedDashboards(DatadogMetricsSetupSource)).toEqual(MOCK_SELECTED_DASHBOARDS_WIDGETS)
@@ -41,7 +50,7 @@ describe('Validate DatadogMetricsHealthSource Utils', () => {
     expect(
       mapSelectedWidgetDataToDatadogMetricInfo(
         MOCK_SELECTED_WIDGET_DATA,
-        'avg:datadog.agent.running{*}.rollup(avg,60)',
+        'avg:datadog.agent.running{*} by {host}.rollup(avg, 60)',
         []
       )
     ).toEqual(EXPECTED_DATADOG_METRIC_INFO)

@@ -1,3 +1,10 @@
+/*
+ * Copyright 2021 Harness Inc. All rights reserved.
+ * Use of this source code is governed by the PolyForm Shield 1.0.0 license
+ * that can be found in the licenses directory at the root of this repository, also available at
+ * https://polyformproject.org/wp-content/uploads/2020/06/PolyForm-Shield-1.0.0.txt.
+ */
+
 import React, { useEffect, useState } from 'react'
 import { useParams } from 'react-router-dom'
 import { Button, Checkbox, Color, Layout, Popover, Text } from '@wings-software/uicore'
@@ -127,10 +134,19 @@ const SideNavItems = () => {
     <Layout.Vertical spacing="small">
       <React.Fragment>
         <SidebarLink label={getString('overview')} to={routes.toCEOverview({ accountId })} />
-        <SidebarLink label={getString('ce.perspectives.sideNavText')} to={routes.toCEPerspectives({ accountId })} />
+        <SidebarLink
+          onClick={() => {
+            trackEvent(USER_JOURNEY_EVENTS.PERSPECTIVE_NAV_CLICK, {})
+          }}
+          label={getString('ce.perspectives.sideNavText')}
+          to={routes.toCEPerspectives({ accountId })}
+        />
         <SidebarLink label={getString('ce.budgets.sideNavText')} to={routes.toCEBudgets({ accountId })} />
 
         <SidebarLink
+          onClick={() => {
+            trackEvent(USER_JOURNEY_EVENTS.RECOMMENDATIONS_NAV_CLICK, {})
+          }}
           label={getString('ce.recommendation.sideNavText')}
           to={routes.toCERecommendations({ accountId })}
         />

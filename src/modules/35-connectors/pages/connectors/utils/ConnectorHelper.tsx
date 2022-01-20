@@ -1,3 +1,10 @@
+/*
+ * Copyright 2022 Harness Inc. All rights reserved.
+ * Use of this source code is governed by the PolyForm Shield 1.0.0 license
+ * that can be found in the licenses directory at the root of this repository, also available at
+ * https://polyformproject.org/wp-content/uploads/2020/06/PolyForm-Shield-1.0.0.txt.
+ */
+
 import type { IconName } from '@wings-software/uicore'
 import type { IconProps } from '@wings-software/uicore/dist/icons/Icon'
 import { Connectors } from '@connectors/constants'
@@ -124,6 +131,8 @@ export const getConnectorTitleIdByType = (type: string): StringKeys => {
       return 'connectors.title.sumologic'
     case Connectors.AZURE_KEY_VAULT:
       return 'connectors.title.azureKeyVault'
+    case Connectors.ERROR_TRACKING:
+      return 'connectors.title.errorTracking'
     default:
       return 'connector'
   }
@@ -201,6 +210,8 @@ export const getConnectorIconByType = (type: string): IconName => {
       return 'harness'
     case Connectors.CUSTOM_HEALTH:
       return 'service-custom-connector'
+    case Connectors.ERROR_TRACKING:
+      return 'placeholder'
     default:
       return 'placeholder'
   }

@@ -1,3 +1,10 @@
+/*
+ * Copyright 2021 Harness Inc. All rights reserved.
+ * Use of this source code is governed by the PolyForm Shield 1.0.0 license
+ * that can be found in the licenses directory at the root of this repository, also available at
+ * https://polyformproject.org/wp-content/uploads/2020/06/PolyForm-Shield-1.0.0.txt.
+ */
+
 import type { LinkModelListener, NodeModelListener } from '@projectstorm/react-diagrams-core'
 import type { BaseModelListener } from '@projectstorm/react-canvas-core'
 import cx from 'classnames'
@@ -178,7 +185,7 @@ export class ExecutionStageDiagramModel extends Diagram.DiagramModel {
         icon: stage.icon,
         skipCondition: stage?.skipCondition,
         defaultSelected: isSelected,
-        conditionalExecutionEnabled: getConditionalExecutionFlag(stage.when!),
+        conditionalExecutionEnabled: getConditionalExecutionFlag(stage.when),
         disableClick: stage.disableClick
       }
       if (!nodeRender) {
@@ -415,7 +422,7 @@ export class ExecutionStageDiagramModel extends Diagram.DiagramModel {
           containerCss: node.group.containerCss,
           textCss: node.group.textCss,
           skipCondition: node.group.skipCondition,
-          conditionalExecutionEnabled: getConditionalExecutionFlag(node.group.when!),
+          conditionalExecutionEnabled: getConditionalExecutionFlag(node.group.when),
           showRollback: false,
           disableCollapseButton: disableCollapseButton
           //hideOutPort: !outLineStatus.displayLines
@@ -521,7 +528,7 @@ export class ExecutionStageDiagramModel extends Diagram.DiagramModel {
             icon: node.group.icon,
             secondaryIcon: 'plus',
             skipCondition: node.group.skipCondition,
-            conditionalExecutionEnabled: getConditionalExecutionFlag(node.group.when!),
+            conditionalExecutionEnabled: getConditionalExecutionFlag(node.group.when),
             customNodeStyle: node.group.cssProps
           })
         this.addNode(nodeRender)

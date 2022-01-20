@@ -1,3 +1,10 @@
+/*
+ * Copyright 2022 Harness Inc. All rights reserved.
+ * Use of this source code is governed by the PolyForm Shield 1.0.0 license
+ * that can be found in the licenses directory at the root of this repository, also available at
+ * https://polyformproject.org/wp-content/uploads/2020/06/PolyForm-Shield-1.0.0.txt.
+ */
+
 import { getMultiTypeFromValue, MultiTypeInputType } from '@wings-software/uicore'
 import { isEmpty } from 'lodash-es'
 import { getScopeFromValue } from '@common/components/EntityReference/EntityReference'
@@ -68,8 +75,8 @@ export const handleCommandFlagsSubmitData = (
     const filteredCommandFlags = manifestObj?.manifest?.spec?.commandFlags.filter(
       (currFlag: CommandFlags) => !isEmpty(currFlag)
     )
-    if (filteredCommandFlags.length === 0) {
-      delete manifestObj?.manifest?.spec?.commandFlags
+    if (filteredCommandFlags.length === 0 && manifestObj?.manifest?.spec) {
+      delete manifestObj.manifest.spec.commandFlags
     }
   }
 }

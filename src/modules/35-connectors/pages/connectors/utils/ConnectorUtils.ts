@@ -1,3 +1,10 @@
+/*
+ * Copyright 2022 Harness Inc. All rights reserved.
+ * Use of this source code is governed by the PolyForm Shield 1.0.0 license
+ * that can be found in the licenses directory at the root of this repository, also available at
+ * https://polyformproject.org/wp-content/uploads/2020/06/PolyForm-Shield-1.0.0.txt.
+ */
+
 import { pick, isString } from 'lodash-es'
 import type { IconName, StepProps } from '@wings-software/uicore'
 import { Connectors, EntityTypes } from '@connectors/constants'
@@ -1258,6 +1265,14 @@ export interface DatadogInitialValue {
   loading?: boolean
 }
 
+export interface ErrorTrackingInitialValue {
+  apiKeyRef?: SecretReferenceInterface | void
+  accountId?: string
+  projectIdentifier?: string
+  orgIdentifier?: string
+  loading?: boolean
+}
+
 export interface PagerDutyInitialValue {
   apiTokenRef?: SecretReferenceInterface | void
   accountId?: string | undefined
@@ -1320,6 +1335,38 @@ export const buildDatadogPayload = (formData: FormData) => {
         url,
         apiKeyRef: apiReferenceKey,
         applicationKeyRef: appReferenceKey,
+        delegateSelectors: delegateSelectors || {}
+      }
+    }
+  }
+}
+
+export const buildErrorTrackingPayload = (formData: FormData) => {
+  const {
+    name,
+    identifier,
+    projectIdentifier,
+    orgIdentifier,
+    delegateSelectors,
+    url,
+    sid,
+    apiKeyRef: { referenceString: apiReferenceKey },
+    description,
+    tags
+  } = formData
+  return {
+    connector: {
+      name,
+      identifier,
+      type: Connectors.ERROR_TRACKING,
+      projectIdentifier,
+      orgIdentifier,
+      description,
+      tags,
+      spec: {
+        url,
+        sid,
+        apiKeyRef: apiReferenceKey,
         delegateSelectors: delegateSelectors || {}
       }
     }

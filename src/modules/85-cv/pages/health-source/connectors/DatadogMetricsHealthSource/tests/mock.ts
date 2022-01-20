@@ -1,3 +1,10 @@
+/*
+ * Copyright 2022 Harness Inc. All rights reserved.
+ * Use of this source code is governed by the PolyForm Shield 1.0.0 license
+ * that can be found in the licenses directory at the root of this repository, also available at
+ * https://polyformproject.org/wp-content/uploads/2020/06/PolyForm-Shield-1.0.0.txt.
+ */
+
 import { DatadogProduct } from '@cv/pages/health-source/connectors/DatadogMetricsHealthSource/DatadogMetricsHealthSource.utils'
 import type { SelectedWidgetMetricData } from '@cv/components/CloudMetricsHealthSource/CloudMetricsHealthSource.type'
 import type {
@@ -50,6 +57,7 @@ export const DatadogMetricsHealthSourceMock = {
         dashboardName: 'mock_dashboard_name',
         groupingQuery: 'mock_grouping_query',
         isManualQuery: true,
+        isCustomCreatedMetric: true,
         metricPath: 'mock_metric_path',
         metric: 'mock_active_metric',
         metricName: 'mock_metric_name',
@@ -101,6 +109,7 @@ const mockMetricDefinitionsMap: Map<string, DatadogMetricInfo> = new Map([
       higherBaselineDeviation: false,
       metricPath: 'mock_metric_path',
       isManualQuery: true,
+      isCustomCreatedMetric: true,
       lowerBaselineDeviation: false,
       metric: 'mock_active_metric',
       metricName: 'mock_metric_name',
@@ -132,7 +141,7 @@ export const DatadogMetricsSetupSource: DatadogMetricSetupSource = {
   ]
 }
 
-export const MOCK_MANUAL_QUERIES_LIST = ['mock_metric_path']
+export const MOCK_CUSTOM_CREATED_METRICS_LIST = ['mock_metric_path']
 
 export const MOCK_SELECTED_DASHBOARDS_WIDGETS = [
   {
@@ -159,10 +168,12 @@ export const EXPECTED_DATADOG_METRIC_INFO = {
   metricPath: 'mock_metric_path',
   dashboardId: 'mock_dashboard_id',
   isNew: true,
-  isManualQuery: false,
+  isCustomCreatedMetric: false,
   metricName: 'mock_metric_name',
   identifier: 'mock_metric_name',
-  query: 'avg:datadog.agent.running{*}.rollup(avg,60)'
+  metric: 'datadog.agent.running',
+  metricTags: [],
+  query: 'avg:datadog.agent.running{*} by {host}.rollup(avg, 60)'
 }
 
 export const METRIC_VALIDATION_RESULT = { overall: undefined, sli: undefined }

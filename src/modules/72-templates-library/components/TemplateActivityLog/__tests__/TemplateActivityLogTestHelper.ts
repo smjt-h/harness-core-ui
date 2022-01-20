@@ -1,5 +1,12 @@
+/*
+ * Copyright 2021 Harness Inc. All rights reserved.
+ * Use of this source code is governed by the PolyForm Shield 1.0.0 license
+ * that can be found in the licenses directory at the root of this repository, also available at
+ * https://polyformproject.org/wp-content/uploads/2020/06/PolyForm-Shield-1.0.0.txt.
+ */
+
 import type { UseGetMockDataWithMutateAndRefetch } from '@common/utils/testUtils'
-import type { ResponsePageAuditEventDTO } from 'services/audit'
+import type { AuditEventDTO, ResponsePageAuditEventDTO } from 'services/audit'
 
 export const mockApiErrorResponse: UseGetMockDataWithMutateAndRefetch<ResponsePageAuditEventDTO> = {
   loading: false,
@@ -26,6 +33,117 @@ export const mockApiFetchingResponse: UseGetMockDataWithMutateAndRefetch<Respons
   data: {}
 }
 
+export const mockActivityLogs: AuditEventDTO[] = [
+  {
+    auditId: '6177eba01c56557bc73d1689',
+    resourceScope: {
+      accountIdentifier: 'acId',
+      orgIdentifier: 'orgId',
+      projectIdentifier: 'pId'
+    },
+    httpRequestInfo: {
+      requestMethod: 'PUT'
+    },
+    requestMetadata: {
+      clientIP: '125.19.67.142'
+    },
+    timestamp: 1635249054964,
+    authenticationInfo: {
+      principal: {
+        type: 'USER',
+        identifier: 'admin@harness.io'
+      },
+      labels: {
+        userId: 'userId',
+        username: 'Admin'
+      }
+    },
+    auditEventData: {
+      // eslint-disable-next-line
+      // @ts-ignore
+      comments: 'someauditactivity',
+      type: 'USER_INVITE'
+    },
+    module: 'TEMPLATESERVICE',
+    resource: {
+      type: 'TEMPLATE',
+      identifier: 'NewTemplate',
+      labels: {
+        versionLabel: 'v2'
+      }
+    },
+    // eslint-disable-next-line
+    // @ts-ignore
+    action: 'DEFAULT'
+  },
+  {
+    auditId: '6177eba01c56557bc73d1687',
+    insertId: 's',
+    resourceScope: {
+      accountIdentifier: 'kmpySmUISimoRrJL6NL73w',
+      orgIdentifier: 'default',
+      projectIdentifier: 'ArchitProject'
+    },
+    httpRequestInfo: {
+      requestMethod: 'PUT'
+    },
+    requestMetadata: {
+      clientIP: '125.19.67.142'
+    },
+    timestamp: 1635249054951,
+    authenticationInfo: {
+      principal: {
+        type: 'USER',
+        identifier: 'admin@harness.io'
+      }
+    },
+    module: 'TEMPLATESERVICE',
+    resource: {
+      type: 'TEMPLATE',
+      identifier: 'NewTemplate',
+      labels: {
+        versionLabel: 'v2'
+      }
+    },
+    action: 'UPDATE'
+  },
+  {
+    auditId: '6177eba01c56557bc73d1685',
+    insertId: 's2',
+    resourceScope: {
+      accountIdentifier: 'kmpySmUISimoRrJL6NL73w',
+      orgIdentifier: 'default',
+      projectIdentifier: 'ArchitProject'
+    },
+    httpRequestInfo: {
+      requestMethod: 'POST'
+    },
+    requestMetadata: {
+      clientIP: '125.19.67.142'
+    },
+    timestamp: 1635249054937,
+    authenticationInfo: {
+      principal: {
+        type: 'USER',
+        identifier: 'admin@harness.io'
+      },
+      labels: {
+        userId: 'lv0euRhKRCyiXWzS7pOg6g',
+        username: 'Admin'
+      }
+    },
+    module: 'TEMPLATESERVICE',
+    resource: {
+      type: 'TEMPLATE',
+      identifier: 'NewTemplate',
+      labels: {
+        versionLabel: 'v1'
+      }
+    },
+    action: 'CREATE'
+  }
+]
+
 export const mockApiSuccessResponse: UseGetMockDataWithMutateAndRefetch<ResponsePageAuditEventDTO> = {
   loading: false,
   refetch: jest.fn(),
@@ -34,116 +152,7 @@ export const mockApiSuccessResponse: UseGetMockDataWithMutateAndRefetch<Response
   data: {
     status: 'SUCCESS',
     data: {
-      content: [
-        {
-          auditId: '6177eba01c56557bc73d1689',
-          resourceScope: {
-            accountIdentifier: 'acId',
-            orgIdentifier: 'orgId',
-            projectIdentifier: 'pId'
-          },
-          httpRequestInfo: {
-            requestMethod: 'PUT'
-          },
-          requestMetadata: {
-            clientIP: '125.19.67.142'
-          },
-          timestamp: 1635249054964,
-          authenticationInfo: {
-            principal: {
-              type: 'USER',
-              identifier: 'admin@harness.io'
-            },
-            labels: {
-              userId: 'userId',
-              username: 'Admin'
-            }
-          },
-          auditEventData: {
-            // eslint-disable-next-line
-            // @ts-ignore
-            comments: 'someauditactivity',
-            type: ''
-          },
-          module: 'TEMPLATESERVICE',
-          resource: {
-            type: 'TEMPLATE',
-            identifier: 'NewTemplate',
-            labels: {
-              versionLabel: 'v2'
-            }
-          },
-          // eslint-disable-next-line
-          // @ts-ignore
-          action: 'DEFAULT'
-        },
-        {
-          auditId: '6177eba01c56557bc73d1687',
-          insertId: 's',
-          resourceScope: {
-            accountIdentifier: 'kmpySmUISimoRrJL6NL73w',
-            orgIdentifier: 'default',
-            projectIdentifier: 'ArchitProject'
-          },
-          httpRequestInfo: {
-            requestMethod: 'PUT'
-          },
-          requestMetadata: {
-            clientIP: '125.19.67.142'
-          },
-          timestamp: 1635249054951,
-          authenticationInfo: {
-            principal: {
-              type: 'USER',
-              identifier: 'admin@harness.io'
-            }
-          },
-          module: 'TEMPLATESERVICE',
-          resource: {
-            type: 'TEMPLATE',
-            identifier: 'NewTemplate',
-            labels: {
-              versionLabel: 'v2'
-            }
-          },
-          action: 'UPDATE'
-        },
-        {
-          auditId: '6177eba01c56557bc73d1685',
-          insertId: 's2',
-          resourceScope: {
-            accountIdentifier: 'kmpySmUISimoRrJL6NL73w',
-            orgIdentifier: 'default',
-            projectIdentifier: 'ArchitProject'
-          },
-          httpRequestInfo: {
-            requestMethod: 'POST'
-          },
-          requestMetadata: {
-            clientIP: '125.19.67.142'
-          },
-          timestamp: 1635249054937,
-          authenticationInfo: {
-            principal: {
-              type: 'USER',
-              identifier: 'admin@harness.io'
-            },
-            labels: {
-              userId: 'lv0euRhKRCyiXWzS7pOg6g',
-              username: 'Admin'
-            }
-          },
-          module: 'TEMPLATESERVICE',
-          resource: {
-            type: 'TEMPLATE',
-            identifier: 'NewTemplate',
-            labels: {
-              versionLabel: 'v1'
-            }
-          },
-          action: 'CREATE'
-        }
-      ]
+      content: mockActivityLogs
     }
   }
 }

@@ -1,3 +1,10 @@
+/*
+ * Copyright 2022 Harness Inc. All rights reserved.
+ * Use of this source code is governed by the PolyForm Shield 1.0.0 license
+ * that can be found in the licenses directory at the root of this repository, also available at
+ * https://polyformproject.org/wp-content/uploads/2020/06/PolyForm-Shield-1.0.0.txt.
+ */
+
 import React from 'react'
 import * as Yup from 'yup'
 import { cloneDeep, defaultTo, isEmpty, isNull, isUndefined, omit, omitBy } from 'lodash-es'
@@ -18,7 +25,7 @@ import {
 } from '@wings-software/uicore'
 import { useHistory, useParams } from 'react-router-dom'
 import { parse } from 'yaml'
-import type { FormikErrors } from 'formik'
+import type { FormikErrors, FormikProps } from 'formik'
 import type { PipelineInfoConfig } from 'services/cd-ng'
 import {
   useGetTemplateFromPipeline,
@@ -104,7 +111,7 @@ const yamlBuilderReadOnlyModeProps: YamlBuilderProps = {
 
 const clearNullUndefined = /* istanbul ignore next */ (data: InputSetDTO): InputSetDTO => {
   const omittedInputset = omitBy(omitBy(data, isUndefined), isNull)
-  return changeEmptyValuesToRunTimeInput(cloneDeep(omittedInputset))
+  return changeEmptyValuesToRunTimeInput(cloneDeep(omittedInputset), '')
 }
 
 export interface InputSetFormProps {
@@ -287,6 +294,8 @@ export const InputSetForm: React.FC<InputSetFormProps> = (props): JSX.Element =>
 
   const [disableVisualView, setDisableVisualView] = React.useState(inputSet.entityValidityDetails?.valid === false)
 
+  const formikRef = React.useRef<FormikProps<InputSetDTO & GitContextProps>>()
+
   React.useEffect(() => {
     if (inputSet.entityValidityDetails?.valid === false || selectedView === SelectedView.YAML) {
       setSelectedView(SelectedView.YAML)
@@ -340,6 +349,12 @@ export const InputSetForm: React.FC<InputSetFormProps> = (props): JSX.Element =>
           inputSet.identifier = inputSetYamlVisual.identifier
           inputSet.description = inputSetYamlVisual.description
           inputSet.pipeline = inputSetYamlVisual.pipeline
+
+          formikRef.current?.setValues({
+            ...omit(inputSet, 'gitDetails', 'entityValidityDetails'),
+            repo: defaultTo(repoIdentifier, ''),
+            branch: defaultTo(branch, '')
+          })
         }
       }
       setSelectedView(view)
@@ -460,8 +475,8 @@ export const InputSetForm: React.FC<InputSetFormProps> = (props): JSX.Element =>
         <Formik<InputSetDTO & GitContextProps>
           initialValues={{
             ...omit(inputSet, 'gitDetails', 'entityValidityDetails'),
-            repo: repoIdentifier || '',
-            branch: branch || ''
+            repo: defaultTo(repoIdentifier, ''),
+            branch: defaultTo(branch, '')
           }}
           enableReinitialize={true}
           formName="inputSetForm"
@@ -498,6 +513,7 @@ export const InputSetForm: React.FC<InputSetFormProps> = (props): JSX.Element =>
           }}
         >
           {formikProps => {
+            formikRef.current = formikProps
             return (
               <>
                 {selectedView === SelectedView.VISUAL ? (

@@ -1,5 +1,12 @@
+/*
+ * Copyright 2022 Harness Inc. All rights reserved.
+ * Use of this source code is governed by the PolyForm Shield 1.0.0 license
+ * that can be found in the licenses directory at the root of this repository, also available at
+ * https://polyformproject.org/wp-content/uploads/2020/06/PolyForm-Shield-1.0.0.txt.
+ */
+
 import React, { useContext, useEffect, useMemo, useState } from 'react'
-import { Color, Container, Heading, Utils } from '@wings-software/uicore'
+import { Color, Container, Heading, Text, useConfirmationDialog } from '@wings-software/uicore'
 
 import { useParams } from 'react-router-dom'
 import { useStrings } from 'framework/strings'
@@ -15,7 +22,7 @@ import MetricDashboardWidgetNav from '@cv/components/MetricDashboardWidgetNav/Me
 import type { CloudMetricsHealthSourceProps } from '@cv/components/CloudMetricsHealthSource/CloudMetricsHealthSource.type'
 import SelectHealthSourceServices from '@cv/pages/health-source/common/SelectHealthSourceServices/SelectHealthSourceServices'
 import type { ProjectPathProps } from '@common/interfaces/RouteInterfaces'
-import { useGetLabelNames, useGetMetricPacks } from 'services/cv'
+import { useGetMetricPacks } from 'services/cv'
 import css from '@cv/components/CloudMetricsHealthSource/CloudMetricHealthSource.module.scss'
 
 export default function CloudMetricsHealthSource<T>(props: CloudMetricsHealthSourceProps<T>): JSX.Element {
@@ -34,7 +41,8 @@ export default function CloudMetricsHealthSource<T>(props: CloudMetricsHealthSou
     dataSourceType,
     dashboardDetailRequest,
     dashboardDetailMapper,
-    formikProps
+    formikProps,
+    onChangeManualEditQuery
   } = props
   const { getString } = useStrings()
   const { onPrevious } = useContext(SetupSourceTabsContext)
@@ -53,17 +61,25 @@ export default function CloudMetricsHealthSource<T>(props: CloudMetricsHealthSou
   const metricPackResponse = useGetMetricPacks({
     queryParams: { projectIdentifier, orgIdentifier, accountId, dataSourceType: dataSourceType }
   })
-  const labelNameTracingId = useMemo(() => Utils.randomId(), [])
-  const labelNamesResponse = useGetLabelNames({
-    queryParams: {
-      projectIdentifier,
-      orgIdentifier,
-      accountId,
-      connectorIdentifier: connectorRef,
-      tracingId: labelNameTracingId
+
+  const { openDialog } = useConfirmationDialog({
+    titleText: getString('cv.monitoringSources.prometheus.querySettingsNotEditable'),
+    contentText: getString('cv.monitoringSources.prometheus.querySettingsSubtext'),
+    confirmButtonText: getString('cv.proceedToEdit'),
+    cancelButtonText: getString('cancel'),
+    onCloseDialog: (proceed: boolean) => {
+      if (proceed) {
+        onChangeManualEditQuery?.(true)
+      }
     }
   })
-  const { sli = false, healthScore = false, continuousVerification = false } = formikProps?.values
+  const {
+    sli = false,
+    healthScore = false,
+    continuousVerification = false,
+    isManualQuery,
+    isCustomCreatedMetric
+  } = formikProps?.values
   return (
     <Container>
       <SetupSourceLayout
@@ -93,6 +109,16 @@ export default function CloudMetricsHealthSource<T>(props: CloudMetricsHealthSou
             <Heading level={3} color={Color.BLACK} className={css.sectionHeading}>
               {getString('cv.monitoringSources.gco.mapMetricsToServicesPage.querySpecifications')}
             </Heading>
+            {formikProps.values?.isManualQuery && (
+              <Container className={css.manualQueryWarning}>
+                <Text icon="warning-sign" iconProps={{ size: 14 }}>
+                  {getString('cv.monitoringSources.prometheus.isManualQuery')}
+                </Text>
+                <Text intent="primary" onClick={() => onChangeManualEditQuery?.(false)}>
+                  {getString('cv.monitoringSources.prometheus.undoManualQuery')}
+                </Text>
+              </Container>
+            )}
             <Container className={css.metricsMappingContent}>
               <Container className={css.metricsQueryBuilderContainer}>
                 {metricDetailsContent}
@@ -104,7 +130,6 @@ export default function CloudMetricsHealthSource<T>(props: CloudMetricsHealthSou
                       continuousVerification
                     }}
                     metricPackResponse={metricPackResponse}
-                    labelNamesResponse={labelNamesResponse}
                     hideServiceIdentifier
                   />
                 </Container>
@@ -116,9 +141,13 @@ export default function CloudMetricsHealthSource<T>(props: CloudMetricsHealthSou
                     if (!shouldShowChart) {
                       setShouldShowChart(true)
                     }
-                    onFetchTimeseriesData()
+                    if (!formikProps?.values?.query?.length) {
+                      return
+                    }
+                    onFetchTimeseriesData(formikProps.values.query)
                   }}
                   isDialogOpen={false}
+                  onEditQuery={isCustomCreatedMetric && !isManualQuery ? openDialog : undefined}
                   query={selectedMetricInfo.query}
                   loading={!selectedMetricInfo}
                   textAreaName={FieldNames.QUERY}
@@ -131,10 +160,10 @@ export default function CloudMetricsHealthSource<T>(props: CloudMetricsHealthSou
                   queryValue={selectedMetricInfo?.query}
                   isQueryExecuted={shouldShowChart}
                   onRetry={async () => {
-                    if (!selectedMetricInfo?.query?.length) {
+                    if (!formikProps?.values?.query?.length) {
                       return
                     }
-                    onFetchTimeseriesData()
+                    onFetchTimeseriesData(formikProps.values.query)
                   }}
                 />
               </Container>
