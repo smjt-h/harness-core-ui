@@ -6,7 +6,8 @@ import {
   Button,
   ButtonVariation,
   PageSpinner,
-  ExpandingSearchInput
+  ExpandingSearchInput,
+  Checkbox
 } from '@wings-software/uicore'
 import { useParams } from 'react-router-dom'
 import type { ProjectPathProps } from '@common/interfaces/RouteInterfaces'
@@ -20,6 +21,7 @@ const GitSyncConfigTab: React.FC = () => {
   const { getString } = useStrings()
   const [searchTerm, setSearchTerm] = useState('')
   const [page, setPage] = useState(0)
+  const [showOnlyFailed, setShowOnlyFailed] = useState(false)
 
   const {
     data: fullSyncEntities,
@@ -32,6 +34,7 @@ const GitSyncConfigTab: React.FC = () => {
       projectIdentifier,
       pageIndex: page,
       pageSize: 1,
+      syncStatus: showOnlyFailed ? 'FAILED' : undefined,
       searchTerm
     },
     debounce: 500
@@ -44,7 +47,7 @@ const GitSyncConfigTab: React.FC = () => {
 
   useEffect(() => {
     refetch()
-  }, [searchTerm, page, refetch])
+  }, [searchTerm, page, showOnlyFailed, refetch])
 
   //   const mockData: GitFullSyncEntityInfoDTO[] = [
   //     {
@@ -123,25 +126,36 @@ const GitSyncConfigTab: React.FC = () => {
       <Page.SubHeader>
         <Layout.Horizontal flex={{ justifyContent: 'space-between' }} width={'100%'}>
           <Layout.Horizontal spacing="medium">
-            <Button variation={ButtonVariation.SECONDARY} text={'Resync Failed Entities'}></Button>
-            <Button variation={ButtonVariation.SECONDARY} text={'Edit Config'}></Button>
+            <Container border padding={{ top: 'xsmall', right: 'small', bottom: 'xsmall', left: 'small' }}>
+              <Checkbox
+                disabled={loading}
+                name="syncFailedFilter"
+                label={'Sync Failed'}
+                onChange={e => {
+                  setShowOnlyFailed(!!e.currentTarget.checked)
+                }}
+              />
+            </Container>
           </Layout.Horizontal>
-          <ExpandingSearchInput
-            alwaysExpanded
-            width={250}
-            placeholder={getString('search')}
-            throttle={200}
-            onChange={text => {
-              setSearchTerm(text.trim())
-              setPage(0)
-            }}
-          />
+          <Layout.Horizontal spacing="medium">
+            <ExpandingSearchInput
+              alwaysExpanded
+              width={250}
+              placeholder={getString('search')}
+              throttle={200}
+              onChange={text => {
+                setSearchTerm(text.trim())
+                setPage(0)
+              }}
+            />
+            <Button variation={ButtonVariation.SECONDARY} text={'Resync Failed Entities'}></Button>
+          </Layout.Horizontal>
         </Layout.Horizontal>
       </Page.SubHeader>
       <Page.Body>
         {loading ? (
           <PageSpinner />
-        ) : fullSyncEntities?.data ? (
+        ) : fullSyncEntities?.data?.totalItems ? (
           <Container padding="xlarge">
             <GitFullSyncEntityList
               data={fullSyncEntities?.data}
