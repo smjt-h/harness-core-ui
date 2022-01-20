@@ -8,7 +8,7 @@
 import React from 'react'
 import { useParams } from 'react-router-dom'
 import { Button, Layout, StepProps, Heading, Text, Container } from '@wings-software/uicore'
-import { useCreateDelegateGroup } from 'services/portal'
+import { useCreateDelegateGroup, DelegateSetupDetails } from 'services/portal'
 import { useStrings } from 'framework/strings'
 import { useToaster } from '@common/exports'
 import CopyToClipboard from '@common/components/CopyToClipBoard/CopyToClipBoard'
@@ -43,7 +43,7 @@ const StepSuccessVerification: React.FC<StepProps<K8sDelegateWizardData> & StepS
     const dockerData = {
       ...prevStepData?.delegateYaml,
       delegateType: 'KUBERNETES'
-    } as any
+    } as DelegateSetupDetails
     const response = (await createDelegateGroup(dockerData)) as any
     if (response?.ok) {
       onClose()
