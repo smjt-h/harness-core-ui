@@ -7,11 +7,12 @@ import {
   ButtonVariation,
   PageSpinner,
   ExpandingSearchInput,
-  Checkbox
+  Checkbox,
+  useToaster
 } from '@wings-software/uicore'
 import { useParams } from 'react-router-dom'
 import type { ProjectPathProps } from '@common/interfaces/RouteInterfaces'
-import { useListFullSyncFiles } from 'services/cd-ng'
+import { triggerFullSyncPromise, useListFullSyncFiles } from 'services/cd-ng'
 import { useStrings } from 'framework/strings'
 import { setPageNumber } from '@common/utils/utils'
 import GitFullSyncEntityList from './GitFullSyncEntityList'
@@ -19,6 +20,7 @@ import GitFullSyncEntityList from './GitFullSyncEntityList'
 const GitSyncConfigTab: React.FC = () => {
   const { accountId, projectIdentifier, orgIdentifier } = useParams<ProjectPathProps>()
   const { getString } = useStrings()
+  const { showError, showSuccess } = useToaster()
   const [searchTerm, setSearchTerm] = useState('')
   const [page, setPage] = useState(0)
   const [showOnlyFailed, setShowOnlyFailed] = useState(false)
@@ -33,12 +35,30 @@ const GitSyncConfigTab: React.FC = () => {
       orgIdentifier,
       projectIdentifier,
       pageIndex: page,
-      pageSize: 1,
+      pageSize: 10,
       syncStatus: showOnlyFailed ? 'FAILED' : undefined,
       searchTerm
     },
     debounce: 500
   })
+
+  const handleReSync = async (): Promise<void> => {
+    const triggerFullSync = await triggerFullSyncPromise({
+      queryParams: {
+        accountIdentifier: accountId,
+        orgIdentifier,
+        projectIdentifier
+      },
+      body: undefined
+    })
+    refetch()
+
+    if (triggerFullSync.status === 'SUCCESS') {
+      showSuccess('Resync triggered')
+    } else {
+      showError((triggerFullSync as Error)?.message || 'Resync failed')
+    }
+  }
 
   useEffect(() => {
     setPageNumber({ setPage, page, pageItemsCount: fullSyncEntities?.data?.pageItemCount })
@@ -148,7 +168,12 @@ const GitSyncConfigTab: React.FC = () => {
                 setPage(0)
               }}
             />
-            <Button variation={ButtonVariation.SECONDARY} text={'Resync Failed Entities'}></Button>
+            <Button
+              variation={ButtonVariation.SECONDARY}
+              text={'Resync Failed Entities'}
+              disabled={loading}
+              onClick={handleReSync}
+            ></Button>
           </Layout.Horizontal>
         </Layout.Horizontal>
       </Page.SubHeader>
