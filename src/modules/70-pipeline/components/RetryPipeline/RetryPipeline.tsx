@@ -1,3 +1,10 @@
+/*
+ * Copyright 2021 Harness Inc. All rights reserved.
+ * Use of this source code is governed by the PolyForm Shield 1.0.0 license
+ * that can be found in the licenses directory at the root of this repository, also available at
+ * https://polyformproject.org/wp-content/uploads/2020/06/PolyForm-Shield-1.0.0.txt.
+ */
+
 import React, { FormEvent, useCallback, useEffect, useRef, useState } from 'react'
 import {
   Button,
@@ -69,10 +76,11 @@ import { clearRuntimeInput, getErrorsList, validatePipeline } from '../PipelineS
 
 import SaveAsInputSet from '../RunPipelineModal/SaveAsInputSet'
 import type { InputSetDTO } from '../InputSetForm/InputSetForm'
-import { InputSetSelector, InputSetSelectorProps, InputSetValue } from '../InputSetSelector/InputSetSelector'
+import { InputSetSelector, InputSetSelectorProps } from '../InputSetSelector/InputSetSelector'
 import SelectExistingInputsOrProvideNew from '../RunPipelineModal/SelectExistingOrProvide'
 import { PreFlightCheckModal } from '../PreFlightCheckModal/PreFlightCheckModal'
 import type { Values } from '../PipelineStudio/StepCommands/StepCommandTypes'
+import type { InputSetValue } from '../InputSetSelector/utils'
 import css from './RetryPipeline.module.scss'
 
 export interface ParallelStageOption extends SelectOption {

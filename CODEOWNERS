@@ -25,7 +25,7 @@ certificates/ @harness/ui-council
 src/modules/15-notifications @harness/ui-platform
 src/modules/18-audit-trail @harness/ui-platform
 src/modules/20-rbac @harness/ui-platform
-src/modules/30-auth-settings @harness/ui-platform
+src/modules/33-auth-settings @harness/ui-platform
 src/modules/30-secrets @harness/ui-platform
 src/modules/35-connectors @harness/ui-platform
 src/modules/35-user-profile @harness/ui-platform

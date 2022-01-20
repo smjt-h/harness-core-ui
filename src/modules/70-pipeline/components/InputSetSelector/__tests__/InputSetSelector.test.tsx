@@ -1,8 +1,15 @@
+/*
+ * Copyright 2022 Harness Inc. All rights reserved.
+ * Use of this source code is governed by the PolyForm Shield 1.0.0 license
+ * that can be found in the licenses directory at the root of this repository, also available at
+ * https://polyformproject.org/wp-content/uploads/2020/06/PolyForm-Shield-1.0.0.txt.
+ */
+
 import React from 'react'
 import { render, act, fireEvent, waitFor } from '@testing-library/react'
 import { InputSetSummaryResponse, useGetInputSetsListForPipeline } from 'services/pipeline-ng'
 import { TestWrapper } from '@common/utils/testUtils'
-import { InputSetSelector, InputSetSelectorProps, InputSetValue } from '../InputSetSelector'
+import { InputSetSelector, InputSetSelectorProps } from '../InputSetSelector'
 import {
   mockInputSetsList,
   mockInputSetsListEmpty,
@@ -10,6 +17,7 @@ import {
   mockInputSetsListWithGitDetails,
   mockInputSetsValue
 } from './mocks'
+import type { InputSetValue } from '../utils'
 
 const commonProps: InputSetSelectorProps = {
   pipelineIdentifier: 'pipId'

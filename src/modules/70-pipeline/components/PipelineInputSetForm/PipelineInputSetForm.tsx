@@ -1,4 +1,12 @@
-import React from 'react'
+/*
+ * Copyright 2022 Harness Inc. All rights reserved.
+ * Use of this source code is governed by the PolyForm Shield 1.0.0 license
+ * that can be found in the licenses directory at the root of this repository, also available at
+ * https://polyformproject.org/wp-content/uploads/2020/06/PolyForm-Shield-1.0.0.txt.
+ */
+
+import React, { useState, useEffect } from 'react'
+import { parse } from 'yaml'
 import {
   Layout,
   getMultiTypeFromValue,
@@ -18,15 +26,16 @@ import type {
   StageElementConfig,
   StageElementWrapperConfig
 } from 'services/cd-ng'
+import { useGetYamlWithTemplateRefsResolved } from 'services/template-ng'
 import { useStrings } from 'framework/strings'
 import type { AllNGVariables } from '@pipeline/utils/types'
 import type { StepViewType } from '@pipeline/components/AbstractSteps/Step'
-
+import { yamlStringify } from '@common/utils/YamlHelperMethods'
 import { FormMultiTypeDurationField } from '@common/components/MultiTypeDuration/MultiTypeDuration'
 import { PubSubPipelineActions } from '@pipeline/factories/PubSubPipelineAction'
 import { PipelineActions } from '@pipeline/factories/PubSubPipelineAction/types'
-import type { AccountPathProps } from '@common/interfaces/RouteInterfaces'
-import { useDeepCompareEffect } from '@common/hooks'
+import type { AccountPathProps, ExecutionPathProps, PipelineType } from '@common/interfaces/RouteInterfaces'
+import { useDeepCompareEffect, useMutateAsGet } from '@common/hooks'
 import { TEMPLATE_INPUT_PATH } from '@pipeline/utils/templateUtils'
 import { StageInputSetForm } from './StageInputSetForm'
 import { CICodebaseInputSetForm } from './CICodebaseInputSetForm'
@@ -178,12 +187,75 @@ const PipelineInputSetFormInternal: React.FC<PipelineInputSetFormProps> = props 
   const { originalPipeline, template, path = '', readonly, viewType, maybeContainerClass = '' } = props
   const { getString } = useStrings()
   const allowableTypes = [MultiTypeInputType.FIXED, MultiTypeInputType.EXPRESSION]
+  const { projectIdentifier, orgIdentifier, accountId, pipelineIdentifier } =
+    useParams<PipelineType<ExecutionPathProps>>()
+  const [shouldRenderCodebaseForm, setShouldRenderCodebaseForm] = useState<boolean>(true)
+  const [pipeline, setPipeline] = useState<PipelineInfoConfig>(originalPipeline)
+  const CLONE_CODEBASE_JSON_PATH = 'stage.spec.cloneCodebase'
 
-  const isCloneCodebaseEnabledAtLeastAtOneStage = originalPipeline?.stages?.some(
-    stage =>
-      Object.is(get(stage, 'stage.spec.cloneCodebase'), true) ||
-      stage.parallel?.some(parallelStage => Object.is(get(parallelStage, 'stage.spec.cloneCodebase'), true))
-  )
+  const {
+    data: pipelineYamlWithTemplateRefsResolved,
+    loading: loadingPipelineYamlWithTemplateRefsResolved,
+    refetch: getPipelineYamlWithTemplateRefsResolved
+  } = useMutateAsGet(useGetYamlWithTemplateRefsResolved, {
+    queryParams: {
+      accountIdentifier: accountId,
+      orgIdentifier,
+      pipelineIdentifier,
+      projectIdentifier
+    },
+    body: {
+      originalEntityYaml: yamlStringify(originalPipeline)
+    },
+    lazy: true
+  })
+
+  useDeepCompareEffect(() => {
+    // Limiting api call for a pipeline having atleast one stage template ref
+    const shouldResolveTemplateRefs = originalPipeline?.stages?.some(
+      stage =>
+        !isEmpty(get(stage, 'stage.template.templateRef')) ||
+        stage.parallel?.some(parallelStage => !isEmpty(get(parallelStage, 'template.templateRef')))
+    )
+    if (shouldResolveTemplateRefs) {
+      ;(async function () {
+        try {
+          await getPipelineYamlWithTemplateRefsResolved()
+        } catch (e) {
+          //Ignore error
+        }
+      })()
+    } else {
+      setShouldRenderCodebaseForm(
+        originalPipeline?.stages?.some(
+          stage =>
+            Object.is(get(stage, CLONE_CODEBASE_JSON_PATH), true) ||
+            stage.parallel?.some(parallelStage => Object.is(get(parallelStage, CLONE_CODEBASE_JSON_PATH), true))
+        ) || false
+      )
+      setPipeline(originalPipeline)
+    }
+  }, [originalPipeline])
+
+  useEffect(() => {
+    if (pipelineYamlWithTemplateRefsResolved?.data?.mergedPipelineYaml) {
+      try {
+        const pipelineJSONWithoutRefs = parse(
+          pipelineYamlWithTemplateRefsResolved?.data?.mergedPipelineYaml
+        ) as PipelineInfoConfig
+        setShouldRenderCodebaseForm(
+          pipelineJSONWithoutRefs?.stages?.some(
+            stage =>
+              Object.is(get(stage, CLONE_CODEBASE_JSON_PATH), true) ||
+              stage.parallel?.some(parallelStage => Object.is(get(parallelStage, CLONE_CODEBASE_JSON_PATH), true))
+          ) || false
+        )
+        setPipeline(pipelineJSONWithoutRefs)
+      } catch (e) {
+        //Ignore error
+      }
+    }
+  }, [pipelineYamlWithTemplateRefsResolved])
 
   const { expressions } = useVariablesExpression()
 
@@ -239,7 +311,7 @@ const PipelineInputSetFormInternal: React.FC<PipelineInputSetFormProps> = props 
             />
           </>
         )}
-        {isCloneCodebaseEnabledAtLeastAtOneStage &&
+        {shouldRenderCodebaseForm &&
           getMultiTypeFromValue(template?.properties?.ci?.codebase?.build as unknown as string) ===
             MultiTypeInputType.RUNTIME && (
             <>
@@ -252,7 +324,12 @@ const PipelineInputSetFormInternal: React.FC<PipelineInputSetFormProps> = props 
               <div className={css.topAccordion}>
                 <div className={css.accordionSummary}>
                   <div className={css.nestedAccordions} style={{ width: '50%' }}>
-                    <CICodebaseInputSetForm path={path} readonly={readonly} originalPipeline={props.originalPipeline} />
+                    <CICodebaseInputSetForm
+                      path={path}
+                      readonly={readonly}
+                      originalPipeline={pipeline}
+                      loadingPipelineDetails={loadingPipelineYamlWithTemplateRefsResolved}
+                    />
                   </div>
                 </div>
               </div>

@@ -1,3 +1,10 @@
+/*
+ * Copyright 2021 Harness Inc. All rights reserved.
+ * Use of this source code is governed by the PolyForm Shield 1.0.0 license
+ * that can be found in the licenses directory at the root of this repository, also available at
+ * https://polyformproject.org/wp-content/uploads/2020/06/PolyForm-Shield-1.0.0.txt.
+ */
+
 import React from 'react'
 import * as Yup from 'yup'
 import cx from 'classnames'
@@ -52,7 +59,6 @@ import {
   generateSchemaForLimitMemory
 } from '@pipeline/components/PipelineSteps/Steps/StepsValidateUtils'
 import { useQueryParams } from '@common/hooks'
-import { StageType } from '@pipeline/utils/stageHelpers'
 import { usePipelineContext } from '../PipelineContext/PipelineContext'
 import { DrawerTypes } from '../PipelineContext/PipelineActions'
 import { RightDrawer } from '../RightDrawer/RightDrawer'
@@ -205,19 +211,15 @@ export const RightBar = (): JSX.Element => {
 
   const pipelineStages = flatten(pipeline?.stages?.map(s => s?.parallel || s))
 
-  const ciStageExists = pipelineStages?.some?.(stage => {
-    if (stage?.stage?.type) {
-      return stage?.stage?.type === StageType.BUILD
-    } else {
-      return false
-    }
-  })
+  const ciCodebasePropertiesExist =
+    !isEmpty(get(pipeline, 'properties.ci.codebase.connectorRef')) &&
+    !isEmpty(get(pipeline, 'properties.ci.codebase.build'))
 
   const isCodebaseEnabled =
     typeof codebaseStatus !== 'undefined' &&
     selectedProject?.modules &&
     selectedProject.modules.indexOf?.('CI') > -1 &&
-    ciStageExists
+    ciCodebasePropertiesExist
 
   const atLeastOneCloneCodebaseEnabled = pipelineStages?.some?.(stage => (stage?.stage?.spec as any)?.cloneCodebase)
 

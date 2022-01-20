@@ -1,12 +1,20 @@
+/*
+ * Copyright 2021 Harness Inc. All rights reserved.
+ * Use of this source code is governed by the PolyForm Shield 1.0.0 license
+ * that can be found in the licenses directory at the root of this repository, also available at
+ * https://polyformproject.org/wp-content/uploads/2020/06/PolyForm-Shield-1.0.0.txt.
+ */
+
 import React, { useCallback, useEffect, useState } from 'react'
 import { useParams } from 'react-router-dom'
 import { Dialog, IDialogProps } from '@blueprintjs/core'
 import { Button, ButtonVariation, Layout, PageSpinner, useModalHook } from '@wings-software/uicore'
 
-import type { InputSetSelectorProps, InputSetValue } from '@pipeline/components/InputSetSelector/InputSetSelector'
+import type { InputSetSelectorProps } from '@pipeline/components/InputSetSelector/InputSetSelector'
 import type { ExecutionPathProps, GitQueryParams, PipelineType } from '@common/interfaces/RouteInterfaces'
 import { useGetInputsetYaml } from 'services/pipeline-ng'
 import { RunPipelineForm } from './RunPipelineForm'
+import type { InputSetValue } from '../InputSetSelector/utils'
 import css from './RunPipelineForm.module.scss'
 
 export interface RunPipelineModalParams {

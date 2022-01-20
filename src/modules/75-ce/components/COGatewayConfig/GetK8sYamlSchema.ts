@@ -1,7 +1,18 @@
+/*
+ * Copyright 2021 Harness Inc. All rights reserved.
+ * Use of this source code is governed by the PolyForm Shield 1.0.0 license
+ * that can be found in the licenses directory at the root of this repository, also available at
+ * https://polyformproject.org/wp-content/uploads/2020/06/PolyForm-Shield-1.0.0.txt.
+ */
+
 import { isEmpty as _isEmpty } from 'lodash-es'
 import { Utils } from '@ce/common/Utils'
 
-const getK8sYamlSchema = () => ({
+interface K8sYamlSchemaProps {
+  isEdit: boolean
+}
+
+const getK8sYamlSchema = ({ isEdit }: K8sYamlSchemaProps) => ({
   $schema: 'http://json-schema.org/draft-07/schema',
   $id: 'http://example.com/example.json',
   type: 'object',
@@ -27,7 +38,9 @@ const getK8sYamlSchema = () => ({
         name: {
           $id: '#/properties/metadata/properties/name',
           type: 'string',
-          title: 'The name schema'
+          title: 'The name schema',
+          maxLength: 32,
+          readOnly: isEdit
         },
         namespace: {
           $id: '#/properties/metadata/properties/namespace',
@@ -55,7 +68,8 @@ const getK8sYamlSchema = () => ({
           $id: '#/properties/spec/properties/idleTimeMins',
           type: 'integer',
           title: 'The idleTimeMins schema',
-          description: ''
+          description: '',
+          maximum: 360
         },
         hideProgressPage: {
           $id: '#/properties/spec/properties/hideProgressPage',

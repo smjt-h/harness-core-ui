@@ -1,3 +1,10 @@
+/*
+ * Copyright 2021 Harness Inc. All rights reserved.
+ * Use of this source code is governed by the PolyForm Shield 1.0.0 license
+ * that can be found in the licenses directory at the root of this repository, also available at
+ * https://polyformproject.org/wp-content/uploads/2020/06/PolyForm-Shield-1.0.0.txt.
+ */
+
 import React, { FormEvent, useCallback, useEffect, useMemo, useRef, useState } from 'react'
 import { Tooltip, Dialog, Classes } from '@blueprintjs/core'
 import {
@@ -23,7 +30,7 @@ import {
 import cx from 'classnames'
 import { useHistory } from 'react-router-dom'
 import { parse } from 'yaml'
-import { pick, merge, isEmpty, isEqual, defaultTo, keyBy } from 'lodash-es'
+import { pick, merge, isEmpty, isEqual, defaultTo, keyBy, get } from 'lodash-es'
 import type { FormikErrors } from 'formik'
 import type { PipelineInfoConfig, ResponseJsonNode } from 'services/cd-ng'
 import {
@@ -40,6 +47,7 @@ import {
   useRunStagesWithRuntimeInputYaml,
   useRerunStagesWithRuntimeInputYaml
 } from 'services/pipeline-ng'
+import { getYamlWithTemplateRefsResolvedPromise, ResponseTemplateMergeResponse } from 'services/template-ng'
 import { useToaster } from '@common/exports'
 import routes from '@common/RouteDefinitions'
 import type { YamlBuilderHandlerBinding, YamlBuilderProps } from '@common/interfaces/YAMLBuilderProps'
@@ -1053,7 +1061,36 @@ function RunPipelineFormBasic({
         validate={async values => {
           const latestPipeline = { ...currentPipeline, pipeline: values as PipelineInfoConfig }
           setCurrentPipeline(latestPipeline)
-          const runPipelineFormErrors = await getFormErrors(latestPipeline, yamlTemplate, pipeline)
+
+          const shouldResolveTemplateRefs = pipeline?.stages?.some(
+            stage =>
+              !isEmpty(get(stage, 'stage.template.templateRef')) ||
+              stage.parallel?.some(parallelStage => !isEmpty(get(parallelStage, 'template.templateRef')))
+          )
+
+          let pipelineYamlWithTemplateRefsResolved
+          if (shouldResolveTemplateRefs) {
+            const response = (await getYamlWithTemplateRefsResolvedPromise({
+              queryParams: {
+                accountIdentifier: accountId,
+                orgIdentifier,
+                projectIdentifier
+              },
+              body: {
+                originalEntityYaml: yamlStringify(pipeline)
+              }
+            })) as ResponseTemplateMergeResponse
+
+            if (response?.data?.mergedPipelineYaml) {
+              pipelineYamlWithTemplateRefsResolved = parse(response?.data?.mergedPipelineYaml)
+            }
+          }
+
+          const runPipelineFormErrors = await getFormErrors(
+            latestPipeline,
+            yamlTemplate,
+            shouldResolveTemplateRefs ? pipelineYamlWithTemplateRefsResolved : pipeline
+          )
           // https://github.com/formium/formik/issues/1392
           throw runPipelineFormErrors
         }}

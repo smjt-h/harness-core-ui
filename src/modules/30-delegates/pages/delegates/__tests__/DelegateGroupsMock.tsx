@@ -1,3 +1,10 @@
+/*
+ * Copyright 2021 Harness Inc. All rights reserved.
+ * Use of this source code is governed by the PolyForm Shield 1.0.0 license
+ * that can be found in the licenses directory at the root of this repository, also available at
+ * https://polyformproject.org/wp-content/uploads/2020/06/PolyForm-Shield-1.0.0.txt.
+ */
+
 import type { DelegateGroupDetails, DelegateInsightsDetails } from 'services/portal'
 
 const insightsMock = {
@@ -35,10 +42,12 @@ export const delegateGroupsMock: DelegateGroupDetails[] = [
     delegateInsightsDetails: insightsMock,
     delegateInstanceDetails: [],
     delegateType: 'KUBERNETES',
-    groupCustomSelectors: [],
+    groupCustomSelectors: ['customtag1', 'customtag2'],
     groupHostName: 'groupHostName1',
     groupId: 'dsadsadsad22',
-    groupImplicitSelectors: {},
+    groupImplicitSelectors: {
+      implicitSelector1: 'GROUP_SELECTORS'
+    },
     groupName: 'delegate-1',
     lastHeartBeat: 1616541640941,
     sizeDetails: {

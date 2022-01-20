@@ -30,7 +30,7 @@
       "@audit-trail/*": ["modules/18-audit-trail/*"],
       "@rbac/*": ["modules/20-rbac/*"],
       "@governance/*": ["modules/25-governance/*"],
-      "@auth-settings/*": ["modules/30-auth-settings/*"],
+      "@auth-settings/*": ["modules/33-auth-settings/*"],
       "@secrets/*": ["modules/30-secrets/*"],
       "@connectors/*": ["modules/35-connectors/*"],
       "@user-profile/*": ["modules/35-user-profile/*"],
