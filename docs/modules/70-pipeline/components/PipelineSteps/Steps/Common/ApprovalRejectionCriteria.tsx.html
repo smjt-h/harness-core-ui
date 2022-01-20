@@ -23,16 +23,16 @@
         <div class='clearfix'>
             
             <div class='fl pad1y space-right2'>
-                <span class="strong">71.21% </span>
+                <span class="strong">72.06% </span>
                 <span class="quiet">Statements</span>
-                <span class='fraction'>47/66</span>
+                <span class='fraction'>49/68</span>
             </div>
         
             
             <div class='fl pad1y space-right2'>
-                <span class="strong">46.51% </span>
+                <span class="strong">44.19% </span>
                 <span class="quiet">Branches</span>
-                <span class='fraction'>20/43</span>
+                <span class='fraction'>19/43</span>
             </div>
         
             
@@ -44,9 +44,9 @@
         
             
             <div class='fl pad1y space-right2'>
-                <span class="strong">70.97% </span>
+                <span class="strong">71.88% </span>
                 <span class="quiet">Lines</span>
-                <span class='fraction'>44/62</span>
+                <span class='fraction'>46/64</span>
             </div>
         
             
@@ -382,7 +382,8 @@
 <a name='L323'></a><a href='#L323'>323</a>
 <a name='L324'></a><a href='#L324'>324</a>
 <a name='L325'></a><a href='#L325'>325</a>
-<a name='L326'></a><a href='#L326'>326</a></td><td class="line-coverage quiet"><span class="cline-any cline-neutral">&nbsp;</span>
+<a name='L326'></a><a href='#L326'>326</a>
+<a name='L327'></a><a href='#L327'>327</a></td><td class="line-coverage quiet"><span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
@@ -412,6 +413,7 @@
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">76x</span>
 <span class="cline-any cline-yes">76x</span>
 <span class="cline-any cline-yes">76x</span>
 <span class="cline-any cline-yes">76x</span>
@@ -483,6 +485,7 @@
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">30x</span>
 <span class="cline-any cline-yes">30x</span>
 <span class="cline-any cline-yes">30x</span>
 <span class="cline-any cline-yes">30x</span>
@@ -586,7 +589,6 @@
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-yes">1x</span>
-<span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
@@ -716,7 +718,7 @@
 &nbsp;
 import React, { useEffect, useState } from 'react'
 import { FieldArray } from 'formik'
-import { isEmpty } from 'lodash-es'
+import { get, isEmpty } from 'lodash-es'
 import {
   Button,
   FormInput,
@@ -738,6 +740,7 @@ import {
   ApprovalRejectionCriteriaType
 } from '@pipeline/components/PipelineSteps/Steps/Common/types'
 import { StepType } from '@pipeline/components/PipelineSteps/PipelineStepInterface'
+import { errorCheck } from '@common/utils/formikHelpers'
 import { isApprovalStepFieldDisabled } from './ApprovalCommons'
 import {
   filterOutMultiOperators,
@@ -803,13 +806,14 @@ export const Conditions = ({
   isFetchingFields,
   allowedValuesForFields,
   allowedFieldKeys,
-  formikErrors,
+  formik,
   fieldList,
   readonly,
   stepType
 }: ConditionsInterface) =&gt; {
   const { getString } = useStrings()
   const { expressions } = useVariablesExpression()
+  const name = `spec.${mode}.spec.conditions`
   <span class="missing-if-branch" title="if path not taken" >I</span>if (isFetchingFields) {
 <span class="cstat-no" title="statement not covered" >    return &lt;div className={css.fetching}&gt;{getString('pipeline.approvalCriteria.fetchingFields')}&lt;/div&gt;</span>
   }
@@ -835,7 +839,7 @@ export const Conditions = ({
 &nbsp;
       &lt;div className={stepCss.formGroup}&gt;
         &lt;FieldArray
-          name={`spec.${mode}.spec.conditions`}
+          name={name}
           render={({ push, remove }) =&gt; {
             return (
               &lt;div className={css.criteriaRow}&gt;
@@ -919,10 +923,9 @@ export const Conditions = ({
           }}
         /&gt;
       &lt;/div&gt;
-&nbsp;
-      {formikErrors?.conditions ? (
+      {errorCheck(name, formik) ? (
         &lt;Text className={css.formikError} intent="danger"&gt;
-          {formikErrors.conditions}
+          {get(formik<span class="branch-0 cbranch-no" title="branch not covered" >?.e</span>rrors, name)}
         &lt;/Text&gt;
       ) : null}
     &lt;/div&gt;
@@ -1039,7 +1042,7 @@ export const ApprovalRejectionCriteria: React.FC&lt;ApprovalRejectionCriteriaPro
             <div class='footer quiet pad2 space-top1 center small'>
                 Code coverage generated by
                 <a href="https://istanbul.js.org/" target="_blank">istanbul</a>
-                at Thu Jan 20 2022 11:47:37 GMT+0000 (Greenwich Mean Time)
+                at Thu Jan 20 2022 15:28:33 GMT+0000 (Greenwich Mean Time)
             </div>
         </div>
         <script src="../../../../../../prettify.js"></script>
