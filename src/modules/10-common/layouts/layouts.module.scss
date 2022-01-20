@@ -5,11 +5,23 @@
  * https://polyformproject.org/wp-content/uploads/2020/06/PolyForm-Shield-1.0.0.txt.
  */
 
+.featuresBanner {
+  height: 56px;
+}
+
 .children {
   height: 100vh;
   min-height: 100%;
   overflow: auto;
   background-color: var(--primary-bg);
+}
+
+.featuresBanner + .children {
+  height: calc(100vh - 56px);
+}
+
+.rhs {
+  height: 100vh;
 }
 
 .main {

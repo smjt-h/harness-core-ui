@@ -6,6 +6,7 @@
  */
 
 import type { EntityGitDetails } from 'services/pipeline-ng'
+import type { Module as ModuleName } from 'framework/types/ModuleName'
 
 export interface AccountPathProps {
   accountId: string
@@ -134,17 +135,9 @@ export interface ServicePathProps {
   serviceId: string
 }
 
-export type Module =
-  | 'ci'
-  | 'cd'
-  | 'cf'
-  | 'cv'
-  | 'ce'
-  | ':module(ci)'
-  | ':module(cd)'
-  | ':module(cf)'
-  | ':module'
-  | ':module(cv)'
+export type ModuleNameMatch = ':module' | ':module(ci)' | ':module(cd)' | ':module(cf)' | ':module(cv)' | ':module(ce)'
+
+export type Module = ModuleName | ModuleNameMatch
 
 export interface ModulePathParams {
   module: Module

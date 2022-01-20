@@ -8,6 +8,7 @@
 // this is an auto-generated file, do not update this manually
 declare const styles: {
   readonly healthServicesContainer: string
+  readonly manualQueryWarning: string
   readonly metricsMappingContent: string
   readonly metricsQueryBuilderContainer: string
   readonly query: string

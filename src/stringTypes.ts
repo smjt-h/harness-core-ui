@@ -705,10 +705,13 @@ export interface StringsMap {
   'auditTrail.actions.invite_resent': string
   'auditTrail.actions.invite_revoked': string
   'auditTrail.actions.invited': string
+  'auditTrail.actions.login': string
+  'auditTrail.actions.login2fa': string
   'auditTrail.actions.removed_collaborator': string
   'auditTrail.actions.removed_membership': string
   'auditTrail.actions.restored': string
   'auditTrail.actions.revoke_token': string
+  'auditTrail.actions.unsuccessfullLogin': string
   'auditTrail.actions.updated': string
   'auditTrail.auditLogAPI': string
   'auditTrail.emptyStateMessage': string
@@ -1669,6 +1672,9 @@ export interface StringsMap {
   'connectors.editConnector': string
   'connectors.encryptedAPIKeyLabel': string
   'connectors.encryptedAPIKeyValidation': string
+  'connectors.errorTracking.sidLabel': string
+  'connectors.errorTracking.sidValidation': string
+  'connectors.errorTracking.urlValidation': string
   'connectors.gcpKms.credentialsFile': string
   'connectors.gcpKms.credentialsFileRequired': string
   'connectors.gcpKms.keyName': string
@@ -1846,6 +1852,7 @@ export interface StringsMap {
   'connectors.title.ceAzureConnector': string
   'connectors.title.datadog': string
   'connectors.title.delegateSelection': string
+  'connectors.title.errorTracking': string
   'connectors.title.gcpConnector': string
   'connectors.title.gcpKms': string
   'connectors.title.gitConnector': string
@@ -2595,6 +2602,7 @@ export interface StringsMap {
   'pipeline.runAllParallelstages': string
   'pipeline.runFailedStages': string
   'pipeline.runModalNoPipelineText': string
+  'pipeline.runPipelineForm.disallowStageExecution': string
   'pipeline.runPipelineForm.notifyOnlyMe': string
   'pipeline.runstageError': string
   'pipeline.savingInProgress': string
@@ -2634,6 +2642,8 @@ export interface StringsMap {
   'pipeline.singleStageExecution': string
   'pipeline.sslVerify': string
   'pipeline.stageDependencyError': string
+  'pipeline.stageExecutionSettings': string
+  'pipeline.stageExecutionsHelperText': string
   'pipeline.stageVariables': string
   'pipeline.stagetoRetryFrom': string
   'pipeline.startTime': string
@@ -2951,6 +2961,7 @@ export interface StringsMap {
   'templatesLibrary.entityType': string
   'templatesLibrary.fetchingActivityLogs': string
   'templatesLibrary.inputsCount': string
+  'templatesLibrary.noActivityLogs': string
   'templatesLibrary.noInputsRequired': string
   'templatesLibrary.openEditTemplate': string
   'templatesLibrary.openInTemplateStudio': string
@@ -4598,6 +4609,7 @@ export interface StringsMap {
   'cv.monitoringSources.datadog.noMetricsWidgets': string
   'cv.monitoringSources.datadog.selectDashboardsPage.dashboardColumnName': string
   'cv.monitoringSources.datadog.selectDashboardsPage.noDataText': string
+  'cv.monitoringSources.datadog.validation.queryContains': string
   'cv.monitoringSources.datadogLogs.datadogLogsQuery': string
   'cv.monitoringSources.datadogLogs.logIndexesLabel': string
   'cv.monitoringSources.datadogLogs.submitQueryToSeeRecords': string
@@ -4880,6 +4892,7 @@ export interface StringsMap {
   'cv.slos.sliTypeChooseMetric': string
   'cv.slos.slis.metricOptions.ratioBased': string
   'cv.slos.slis.metricOptions.thresholdBased': string
+  'cv.slos.slis.ratioMetricType.badRequestsMetrics': string
   'cv.slos.slis.ratioMetricType.eventType': string
   'cv.slos.slis.ratioMetricType.goodRequestsMetrics': string
   'cv.slos.slis.ratioMetricType.selectMetric1': string

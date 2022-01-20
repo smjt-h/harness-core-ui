@@ -1,3 +1,10 @@
+/*
+ * Copyright 2022 Harness Inc. All rights reserved.
+ * Use of this source code is governed by the PolyForm Shield 1.0.0 license
+ * that can be found in the licenses directory at the root of this repository, also available at
+ * https://polyformproject.org/wp-content/uploads/2020/06/PolyForm-Shield-1.0.0.txt.
+ */
+
 import React, { Dispatch, SetStateAction } from 'react'
 import { clone } from 'lodash-es'
 import cx from 'classnames'
@@ -51,7 +58,7 @@ export function RenderValue({
     <div className={cx(css.renderSelectedValue, selectedValueClass)}>
       {value?.map((item, index) => (
         <li
-          key={item.label}
+          key={index + item.label}
           data-testid={item.value}
           className={css.selectedInputSetLi}
           draggable={true}
@@ -64,7 +71,6 @@ export function RenderValue({
           onDrop={event => onDrop(event, item)}
         >
           <Button
-            key={item.label}
             data-testid={`button-${item.label}`}
             round={true}
             rightIcon="cross"

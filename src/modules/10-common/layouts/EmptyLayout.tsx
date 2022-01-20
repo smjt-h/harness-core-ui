@@ -7,12 +7,14 @@
 
 import React from 'react'
 
+import FeatureBanner from './FeatureBanner'
 import css from './layouts.module.scss'
 
 export function EmptyLayout(props: React.PropsWithChildren<unknown>): React.ReactElement {
   return (
-    <div className={css.children} data-layout="empty">
-      {props.children}
+    <div className={css.main} data-layout="empty">
+      <FeatureBanner />
+      <div className={css.children}>{props.children}</div>
     </div>
   )
 }

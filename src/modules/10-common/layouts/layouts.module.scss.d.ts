@@ -8,6 +8,8 @@
 // this is an auto-generated file, do not update this manually
 declare const styles: {
   readonly children: string
+  readonly featuresBanner: string
   readonly main: string
+  readonly rhs: string
 }
 export default styles
