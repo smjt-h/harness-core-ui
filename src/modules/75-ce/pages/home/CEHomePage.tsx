@@ -76,7 +76,7 @@ const CEHomePage: React.FC = () => {
       })
     )
   } else {
-    history.push(routes.toCEOverview({ accountId }))
+    history.push(routes.toCE({ accountId }))
   }
 
   return <></>

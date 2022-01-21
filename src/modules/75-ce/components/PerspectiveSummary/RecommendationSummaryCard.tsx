@@ -40,7 +40,8 @@ const RecommendationSummaryCard: () => JSX.Element = () => {
   const nagvigateToRecommendations: () => void = () => {
     history.push({
       pathname: routes.toCERecommendations({
-        accountId
+        accountId,
+        module: 'ce'
       }),
       search: qs.stringify({
         perspectiveId,

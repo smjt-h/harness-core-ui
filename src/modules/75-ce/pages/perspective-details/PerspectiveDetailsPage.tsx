@@ -102,7 +102,8 @@ const PerspectiveHeader: React.FC<{ title: string; viewType: string }> = ({ titl
     history.push(
       routes.toCECreatePerspective({
         perspectiveId,
-        accountId
+        accountId,
+        module: 'ce'
       })
     )
   }
@@ -124,7 +125,7 @@ const PerspectiveHeader: React.FC<{ title: string; viewType: string }> = ({ titl
         <Breadcrumbs
           links={[
             {
-              url: routes.toCEPerspectives({ accountId }),
+              url: routes.toCEPerspectives({ accountId, module: 'ce' }),
               label: getString('ce.perspectives.sideNavText')
             },
             {
@@ -343,7 +344,8 @@ const PerspectiveDetailsPage: React.FC = () => {
         perspectiveName: perspectiveData?.name || perspectiveId,
         clusterName,
         namespace,
-        workloadName
+        workloadName,
+        module: 'ce'
       })
     )
   }
@@ -355,7 +357,8 @@ const PerspectiveDetailsPage: React.FC = () => {
         perspectiveId,
         perspectiveName: perspectiveData?.name || perspectiveId,
         clusterName,
-        nodeId
+        nodeId,
+        module: 'ce'
       })
     )
   }

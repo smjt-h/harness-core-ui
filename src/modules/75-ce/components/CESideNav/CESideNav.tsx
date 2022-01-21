@@ -133,35 +133,35 @@ const SideNavItems = () => {
   return (
     <Layout.Vertical spacing="small">
       <React.Fragment>
-        <SidebarLink label={getString('overview')} to={routes.toCEOverview({ accountId })} />
+        <SidebarLink label={getString('overview')} to={routes.toCEOverview({ accountId, module: 'ce' })} />
         <SidebarLink
           onClick={() => {
             trackEvent(USER_JOURNEY_EVENTS.PERSPECTIVE_NAV_CLICK, {})
           }}
           label={getString('ce.perspectives.sideNavText')}
-          to={routes.toCEPerspectives({ accountId })}
+          to={routes.toCEPerspectives({ accountId, module: 'ce' })}
         />
-        <SidebarLink label={getString('ce.budgets.sideNavText')} to={routes.toCEBudgets({ accountId })} />
+        <SidebarLink label={getString('ce.budgets.sideNavText')} to={routes.toCEBudgets({ accountId, module: 'ce' })} />
 
         <SidebarLink
           onClick={() => {
             trackEvent(USER_JOURNEY_EVENTS.RECOMMENDATIONS_NAV_CLICK, {})
           }}
           label={getString('ce.recommendation.sideNavText')}
-          to={routes.toCERecommendations({ accountId })}
+          to={routes.toCERecommendations({ accountId, module: 'ce' })}
         />
         <SidebarLink
           onClick={() => {
             trackEvent(USER_JOURNEY_EVENTS.AS_NAV_CLICK, {})
           }}
           label={getString('ce.co.breadCrumb.rules')}
-          to={routes.toCECORules({ accountId })}
+          to={routes.toCECORules({ accountId, module: 'ce' })}
         />
-        <NavExpandable title={getString('common.setup')} route={routes.toCECOAccessPoints({ accountId })}>
+        <NavExpandable title={getString('common.setup')} route={routes.toCECOAccessPoints({ accountId, module: 'ce' })}>
           <Layout.Vertical spacing="small">
             <SidebarLink
               label={getString('ce.co.accessPoint.loadbalancers')}
-              to={routes.toCECOAccessPoints({ accountId })}
+              to={routes.toCECOAccessPoints({ accountId, module: 'ce' })}
             />
           </Layout.Vertical>
         </NavExpandable>

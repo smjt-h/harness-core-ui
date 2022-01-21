@@ -174,7 +174,7 @@ const RecommendationFilters: React.FC<RecommendationFiltersProps> = ({
     }
 
     const onClear: () => void = () => {
-      history.replace(routes.toCERecommendations({ accountId }))
+      history.replace(routes.toCERecommendations({ accountId, module: 'ce' }))
     }
 
     return <FilterPill keyName="Perspective" value={perspectiveName} onClear={onClear} />

@@ -1260,32 +1260,41 @@ const routes = {
   toProjects: withAccountId(() => '/home/projects'),
   toLandingDashboard: withAccountId(() => '/home/get-started'),
   /********************************************************************************************************************/
-  toCE: (params: Partial<ProjectPathProps>) =>
-    params.orgIdentifier && params.projectIdentifier
-      ? routes.toCECORules(params as ProjectPathProps)
-      : routes.toCEDashboard(params as AccountPathProps),
-  toCEDashboard: withAccountId(() => `/ce`),
-  toCEHome: withAccountId(() => '/ce/home'),
+  // toCE: (params: Partial<ProjectPathProps>) =>
+  //   params.orgIdentifier && params.projectIdentifier
+  //     ? routes.toCECORules(params as ProjectPathProps)
+  //     : routes.toCEDashboard(params as AccountPathProps),
+  toCE: withAccountId(({ module = 'ce' }: Optional<ModulePathParams>) => `/${module}`),
+  toCEHome: withAccountId(({ module }: ModulePathParams) => `/${module}/home`),
   // toCEProject: withAccountId(
   //   ({ orgIdentifier, projectIdentifier }: ProjectPathProps) =>
   //     `/ce/orgs/${orgIdentifier}/projects/${projectIdentifier}`
   // ),
-  toCEProjectOverview: withAccountId(() => `/ce/dashboard`),
-  toCECODashboard: withAccountId(() => `/ce/dashboard`),
-  toCECOCreateGateway: withAccountId(() => `/ce/autostopping-rules/create`),
+  toCEProjectOverview: withAccountId(({ module }: ModulePathParams) => `/${module}/dashboard`),
+  toCECODashboard: withAccountId(({ module }: ModulePathParams) => `/${module}/dashboard`),
+  toCECOCreateGateway: withAccountId(({ module }: ModulePathParams) => `/${module}/autostopping-rules/create`),
   toCECOEditGateway: withAccountId(
-    ({ gatewayIdentifier }: { gatewayIdentifier: string }) => `/ce/autostopping-rules/edit/${gatewayIdentifier}`
+    ({ gatewayIdentifier, module }: ModulePathParams & { gatewayIdentifier: string }) =>
+      `/${module}/autostopping-rules/edit/${gatewayIdentifier}`
   ),
-  toCECOAccessPoints: withAccountId(() => `/ce/access-points`),
-  toCECORules: withAccountId(() => `/ce/autostopping-rules`),
-  toCERecommendations: withAccountId(() => `/ce/recommendations`),
+  toCECOAccessPoints: withAccountId(({ module }: ModulePathParams) => `/${module}/access-points`),
+  toCECORules: withAccountId(({ module }: ModulePathParams) => `/${module}/autostopping-rules`),
+  toCERecommendations: withAccountId(({ module }: ModulePathParams) => `/${module}/recommendations`),
   toCERecommendationDetails: withAccountId(
-    ({ recommendation, recommendationName }: { recommendation: string; recommendationName: string }) =>
-      `/ce/recommendations/${recommendation}/name/${recommendationName}/details`
+    ({
+      recommendation,
+      recommendationName,
+      module
+    }: ModulePathParams & { recommendation: string; recommendationName: string }) =>
+      `/${module}/recommendations/${recommendation}/name/${recommendationName}/details`
   ),
   toCENodeRecommendationDetails: withAccountId(
-    ({ recommendation, recommendationName }: { recommendation: string; recommendationName: string }) =>
-      `/ce/node-recommendations/${recommendation}/name/${recommendationName}/details`
+    ({
+      recommendation,
+      recommendationName,
+      module
+    }: ModulePathParams & { recommendation: string; recommendationName: string }) =>
+      `/${module}/node-recommendations/${recommendation}/name/${recommendationName}/details`
   ),
   toCERecommendationWorkloadDetails: withAccountId(
     ({
@@ -1293,33 +1302,41 @@ const routes = {
       clusterName,
       namespace,
       workloadName,
-      recommendationName
-    }: {
+      recommendationName,
+      module
+    }: ModulePathParams & {
       recommendation: string
       workloadName: string
       clusterName: string
       namespace: string
       recommendationName: string
     }) =>
-      `/ce/recommendations/${recommendation}/name/${recommendationName}/cluster/${clusterName}/namespace/${namespace}/workload/${workloadName}/details`
+      `/${module}/recommendations/${recommendation}/name/${recommendationName}/cluster/${clusterName}/namespace/${namespace}/workload/${workloadName}/details`
   ),
   toPerspectiveDetails: withAccountId(
-    ({ perspectiveId, perspectiveName }: AccountPathProps & { perspectiveId: string; perspectiveName: string }) =>
-      `/ce/perspectives/${perspectiveId}/name/${perspectiveName}`
+    ({
+      perspectiveId,
+      perspectiveName,
+      module
+    }: AccountPathProps & ModulePathParams & { perspectiveId: string; perspectiveName: string }) =>
+      `/${module}/perspectives/${perspectiveId}/name/${perspectiveName}`
   ),
   toCECreatePerspective: withAccountId(
-    ({ perspectiveId }: AccountPathProps & { perspectiveId: string }) => `/ce/perspectives/${perspectiveId}/create`
+    ({ perspectiveId, module }: AccountPathProps & ModuleHomeParams & { perspectiveId: string }) =>
+      `/${module}/perspectives/${perspectiveId}/create`
   ),
-  toCEPerspectives: withAccountId(() => `/ce/perspectives`),
-  toCEBudgets: withAccountId(() => '/ce/budgets'),
+  toCEPerspectives: withAccountId(({ module }: ModulePathParams) => `/${module}/perspectives`),
+  toCEBudgets: withAccountId(({ module }: ModulePathParams) => `/${module}/budgets`),
   toCEBudgetDetails: withAccountId(
     ({
       budgetId,
-      budgetName
-    }: AccountPathProps & {
-      budgetId: string
-      budgetName: string
-    }) => `/ce/budget/${budgetId}/${budgetName}`
+      budgetName,
+      module
+    }: AccountPathProps &
+      ModulePathParams & {
+        budgetId: string
+        budgetName: string
+      }) => `/${module}/budget/${budgetId}/${budgetName}`
   ),
   toCEPerspectiveWorkloadDetails: withAccountId(
     ({
@@ -1327,31 +1344,36 @@ const routes = {
       perspectiveName,
       clusterName,
       namespace,
-      workloadName
-    }: AccountPathProps & {
-      perspectiveId: string
-      perspectiveName: string
-      clusterName: string
-      namespace: string
-      workloadName: string
-    }) =>
-      `/ce/perspectives/${perspectiveId}/name/${perspectiveName}/cluster/${clusterName}/namespace/${namespace}/workload/${workloadName}/details`
+      workloadName,
+      module
+    }: AccountPathProps &
+      ModulePathParams & {
+        perspectiveId: string
+        perspectiveName: string
+        clusterName: string
+        namespace: string
+        workloadName: string
+      }) =>
+      `/${module}/perspectives/${perspectiveId}/name/${perspectiveName}/cluster/${clusterName}/namespace/${namespace}/workload/${workloadName}/details`
   ),
   toCEPerspectiveNodeDetails: withAccountId(
     ({
       perspectiveId,
       perspectiveName,
       clusterName,
-      nodeId
-    }: AccountPathProps & {
-      perspectiveId: string
-      perspectiveName: string
-      clusterName: string
-      nodeId: string
-    }) => `/ce/perspectives/${perspectiveId}/name/${perspectiveName}/cluster/${clusterName}/node/${nodeId}/details`
+      nodeId,
+      module
+    }: AccountPathProps &
+      ModulePathParams & {
+        perspectiveId: string
+        perspectiveName: string
+        clusterName: string
+        nodeId: string
+      }) =>
+      `/${module}/perspectives/${perspectiveId}/name/${perspectiveName}/cluster/${clusterName}/node/${nodeId}/details`
   ),
-  toCEOverview: withAccountId(() => '/ce/overview'),
-  toCEPerspectiveDashboard: withAccountId(() => `/ce/perspective`),
+  toCEOverview: withAccountId(({ module }: ModulePathParams) => `/${module}/overview`),
+  toCEPerspectiveDashboard: withAccountId(({ module }: ModulePathParams) => `/${module}/perspective`),
   /********************************************************************************************************************/
   toCustomDashboard: withAccountId(() => '/dashboards'),
   toCustomDashboardHome: withAccountId(

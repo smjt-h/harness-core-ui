@@ -31,6 +31,7 @@ import EmptyView from '@ce/images/empty-state.svg'
 import OverviewAddCluster from '@ce/components/OverviewPage/OverviewAddCluster'
 import { PAGE_EVENTS, USER_JOURNEY_EVENTS } from '@ce/TrackingEventsConstants'
 import { useTelemetry } from '@common/hooks/useTelemetry'
+import type { AccountPathProps, ModulePathParams } from '@common/interfaces/RouteInterfaces'
 import RecommendationSavingsCard from '../../components/RecommendationSavingsCard/RecommendationSavingsCard'
 import RecommendationFilters from '../../components/RecommendationFilters'
 import css from './RecommendationList.module.scss'
@@ -39,9 +40,8 @@ type RouteFn = (
   params: {
     recommendation: string
     recommendationName: string
-  } & {
-    accountId: string
-  }
+  } & AccountPathProps &
+    ModulePathParams
 ) => string
 
 interface RecommendationListProps {
@@ -190,7 +190,8 @@ const RecommendationsList: React.FC<RecommendationListProps> = ({
                 resourceTypeToRoute[resourceType]({
                   accountId,
                   recommendation: id,
-                  recommendationName: resourceName || id
+                  recommendationName: resourceName || id,
+                  module: 'ce'
                 })
               )
             }}
@@ -307,7 +308,8 @@ const RecommendationList: React.FC = () => {
       routes.toPerspectiveDetails({
         perspectiveId,
         perspectiveName,
-        accountId
+        accountId,
+        module: 'ce'
       })
     )
   }

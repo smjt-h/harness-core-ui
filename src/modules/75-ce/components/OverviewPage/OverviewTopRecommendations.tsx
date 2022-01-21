@@ -42,7 +42,7 @@ const OverviewTopRecommendations = () => {
             {getString('ce.overview.cardtitles.topRecommendation')}
           </Text>
           {recommendationItems.length ? (
-            <Link to={routes.toCERecommendations({ ...pathParams })}>
+            <Link to={routes.toCERecommendations({ ...pathParams, module: 'ce' })}>
               <Text inline color="primary7">
                 {getString('ce.overview.seeAll')}
               </Text>
@@ -86,7 +86,12 @@ const Recommendation = (props: RecommendationProps) => {
 
   return (
     <Link
-      to={routes.toCERecommendationDetails({ accountId, recommendation: id, recommendationName: resourceName || id })}
+      to={routes.toCERecommendationDetails({
+        accountId,
+        recommendation: id,
+        recommendationName: resourceName || id,
+        module: 'ce'
+      })}
     >
       <div className={css.recommendation}>
         <Layout.Vertical spacing="xsmall">

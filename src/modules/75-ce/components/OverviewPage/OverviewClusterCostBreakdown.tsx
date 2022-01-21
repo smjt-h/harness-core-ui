@@ -101,7 +101,8 @@ const OverviewClusterCostBreakdown = (props: ClusterCostBreakdownProps) => {
               to={routes.toPerspectiveDetails({
                 accountId: accountId,
                 perspectiveId: defaultClusterPerspectiveId,
-                perspectiveName: defaultClusterPerspectiveId
+                perspectiveName: defaultClusterPerspectiveId,
+                module: 'ce'
               })}
             >
               <Text inline color="primary7">

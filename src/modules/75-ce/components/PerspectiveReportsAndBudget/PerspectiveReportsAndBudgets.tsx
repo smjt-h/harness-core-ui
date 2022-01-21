@@ -96,7 +96,8 @@ const ReportsAndBudgets: React.FC<ReportsAndBudgetsProps> = ({ values, onPrevBut
       routes.toPerspectiveDetails({
         accountId,
         perspectiveId,
-        perspectiveName: perspectiveId
+        perspectiveName: perspectiveId,
+        module: 'ce'
       })
     )
   }

@@ -93,7 +93,7 @@ const BudgetDetails: () => JSX.Element | null = () => {
                 name: budgetName
               })
             )
-            history.replace(routes.toCEBudgets({ accountId: accountId }))
+            history.replace(routes.toCEBudgets({ accountId: accountId, module: 'ce' }))
           }
         } catch (e) {
           const errMessage = e.data.message
@@ -208,7 +208,7 @@ const BudgetDetails: () => JSX.Element | null = () => {
           <Breadcrumbs
             links={[
               {
-                url: routes.toCEBudgets({ accountId }),
+                url: routes.toCEBudgets({ accountId, module: 'ce' }),
                 label: getString('ce.budgets.sideNavText')
               },
               {

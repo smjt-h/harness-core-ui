@@ -291,7 +291,8 @@ const Budgets: () => JSX.Element = () => {
       routes.toCEBudgetDetails({
         accountId,
         budgetName,
-        budgetId
+        budgetId,
+        module: 'ce'
       })
     )
   }

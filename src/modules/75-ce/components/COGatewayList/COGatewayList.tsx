@@ -442,7 +442,8 @@ const COGatewayList: React.FC = () => {
     history.push(
       routes.toCECOEditGateway({
         accountId: _service.account_identifier as string,
-        gatewayIdentifier: _service.id?.toString() as string
+        gatewayIdentifier: _service.id?.toString() as string,
+        module: 'ce'
       })
     )
 
@@ -479,7 +480,7 @@ const COGatewayList: React.FC = () => {
             className={css.breadCrumb}
             links={[
               {
-                url: routes.toCECORules({ accountId }),
+                url: routes.toCECORules({ accountId, module: 'ce' }),
                 label: getString('ce.co.breadCrumb.rules')
               }
             ]}
@@ -512,7 +513,8 @@ const COGatewayList: React.FC = () => {
               onClick={() => {
                 history.push(
                   routes.toCECOCreateGateway({
-                    accountId
+                    accountId,
+                    module: 'ce'
                   })
                 )
                 trackEvent(USER_JOURNEY_EVENTS.CREATE_NEW_AS_CLICK, {})
@@ -579,7 +581,8 @@ const COGatewayList: React.FC = () => {
                       onClick={() => {
                         history.push(
                           routes.toCECOCreateGateway({
-                            accountId
+                            accountId,
+                            module: 'ce'
                           })
                         )
                         trackEvent('StartedMakingAutoStoppingRule', {})

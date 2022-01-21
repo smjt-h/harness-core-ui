@@ -219,7 +219,8 @@ export const FlexList = (props: ListProps) => {
               to={routes.toPerspectiveDetails({
                 accountId: accountId,
                 perspectiveId: item.linkId,
-                perspectiveName: item.linkId
+                perspectiveName: item.linkId,
+                module: 'ce'
               })}
             >
               <Text inline color="primary7" font="small" lineClamp={1} style={{ width: 100 }}>
@@ -272,7 +273,8 @@ export const TableList = (props: ListProps) => {
               to={routes.toPerspectiveDetails({
                 accountId: accountId,
                 perspectiveId: item.linkId,
-                perspectiveName: item.linkId
+                perspectiveName: item.linkId,
+                module: 'ce'
               })}
             >
               <Text inline color="primary7" font="small" lineClamp={1} style={{ maxWidth: 100 }}>

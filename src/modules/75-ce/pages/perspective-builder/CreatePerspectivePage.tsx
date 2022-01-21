@@ -36,7 +36,7 @@ const PerspectiveHeader: React.FC<{ title: string }> = ({ title }) => {
         <Breadcrumbs
           links={[
             {
-              url: routes.toCEPerspectives({ accountId }),
+              url: routes.toCEPerspectives({ accountId, module: 'ce' }),
               label: 'Perspectives'
             },
             {

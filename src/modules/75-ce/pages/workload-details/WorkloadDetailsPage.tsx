@@ -183,11 +183,16 @@ const WorkloadDetailsPage: () => JSX.Element = () => {
               recommendation
                 ? [
                     {
-                      url: routes.toCERecommendations({ accountId }),
+                      url: routes.toCERecommendations({ accountId, module: 'ce' }),
                       label: getString('ce.recommendation.sideNavText')
                     },
                     {
-                      url: routes.toCERecommendationDetails({ accountId, recommendation, recommendationName }),
+                      url: routes.toCERecommendationDetails({
+                        accountId,
+                        recommendation,
+                        recommendationName,
+                        module: 'ce'
+                      }),
                       label: workloadName
                     },
                     {
@@ -197,11 +202,11 @@ const WorkloadDetailsPage: () => JSX.Element = () => {
                   ]
                 : [
                     {
-                      url: routes.toCEPerspectives({ accountId }),
+                      url: routes.toCEPerspectives({ accountId, module: 'ce' }),
                       label: getString('ce.perspectives.sideNavText')
                     },
                     {
-                      url: routes.toPerspectiveDetails({ accountId, perspectiveId, perspectiveName }),
+                      url: routes.toPerspectiveDetails({ accountId, perspectiveId, perspectiveName, module: 'ce' }),
                       label: perspectiveName
                     },
                     {

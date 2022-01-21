@@ -96,7 +96,8 @@ const PerspectiveListView: React.FC<PerspectiveListViewProps> = ({
     history.push(
       routes.toCECreatePerspective({
         accountId: accountId,
-        perspectiveId: perspectiveId
+        perspectiveId: perspectiveId,
+        module: 'ce'
       })
     )
   }

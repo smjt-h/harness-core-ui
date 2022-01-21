@@ -266,7 +266,7 @@ const COLoadBalancerList: React.FC = () => {
         className={css.breadCrumb}
         links={[
           {
-            url: routes.toCECOAccessPoints({ accountId }),
+            url: routes.toCECOAccessPoints({ accountId, module: 'ce' }),
             label: getString('ce.co.accessPoint.loadbalancers')
           }
         ]}

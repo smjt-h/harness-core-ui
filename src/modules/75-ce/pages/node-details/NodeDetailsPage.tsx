@@ -199,11 +199,11 @@ const NodeDetailsPage: () => JSX.Element = () => {
           <Breadcrumbs
             links={[
               {
-                url: routes.toCEPerspectives({ accountId }),
+                url: routes.toCEPerspectives({ accountId, module: 'ce' }),
                 label: getString('ce.perspectives.sideNavText')
               },
               {
-                url: routes.toPerspectiveDetails({ accountId, perspectiveId, perspectiveName }),
+                url: routes.toPerspectiveDetails({ accountId, perspectiveId, perspectiveName, module: 'ce' }),
                 label: perspectiveName
               },
               {

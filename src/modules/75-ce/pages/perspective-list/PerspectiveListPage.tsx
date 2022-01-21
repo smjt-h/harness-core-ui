@@ -411,7 +411,8 @@ const PerspectiveListPage: React.FC = () => {
         history.push(
           routes.toCECreatePerspective({
             accountId: accountId,
-            perspectiveId: uuid
+            perspectiveId: uuid,
+            module: 'ce'
           })
         )
       }
@@ -466,14 +467,16 @@ const PerspectiveListPage: React.FC = () => {
         routes.toPerspectiveDetails({
           accountId: accountId,
           perspectiveId: perspectiveId,
-          perspectiveName: name
+          perspectiveName: name,
+          module: 'ce'
         })
       )
     } else {
       history.push(
         routes.toCECreatePerspective({
           accountId,
-          perspectiveId
+          perspectiveId,
+          module: 'ce'
         })
       )
     }

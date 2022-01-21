@@ -92,7 +92,8 @@ const SelectPerspective: (props: StepProps<BudgetStepData> & SelectPerspectivePr
         history.push(
           routes.toCECreatePerspective({
             accountId: accountId,
-            perspectiveId: uuid
+            perspectiveId: uuid,
+            module: 'ce'
           })
         )
       }

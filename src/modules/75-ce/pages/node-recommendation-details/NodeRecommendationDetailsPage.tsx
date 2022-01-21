@@ -40,7 +40,10 @@ const NodeRecommendationDetailsPage = () => {
 
   const breadCrumbLinks = useMemo(() => {
     return [
-      { url: routes.toCERecommendations({ accountId }), label: getString('ce.recommendation.sideNavText') },
+      {
+        url: routes.toCERecommendations({ accountId, module: 'ce' }),
+        label: getString('ce.recommendation.sideNavText')
+      },
       { url: '', label: recommendationName }
     ]
   }, [])

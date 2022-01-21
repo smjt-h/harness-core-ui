@@ -36,10 +36,10 @@ const CETrialHomePage: React.FC = () => {
 
   const { openModal } = useCreateConnector({
     onSuccess: () => {
-      history.push(routes.toCEOverview({ accountId }))
+      history.push(routes.toCE({ accountId }))
     },
     onClose: () => {
-      history.push(routes.toCEOverview({ accountId }))
+      history.push(routes.toCE({ accountId }))
     }
   })
 

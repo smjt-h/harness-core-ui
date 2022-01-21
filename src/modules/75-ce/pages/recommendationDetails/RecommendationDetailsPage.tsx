@@ -203,7 +203,8 @@ const RecommendationSavingsComponent: React.FC<RecommendationSavingsComponentPro
                     recommendationName,
                     clusterName: workloadData.clusterName,
                     namespace: workloadData.namespace,
-                    workloadName: workloadData.resourceName
+                    workloadName: workloadData.resourceName,
+                    module: 'ce'
                   })
                 )
             }}
@@ -274,7 +275,7 @@ const RecommendationDetailsPage: React.FC = () => {
           className={css.breadCrumb}
           links={[
             {
-              url: routes.toCERecommendations({ accountId }),
+              url: routes.toCERecommendations({ accountId, module: 'ce' }),
               label: getString('ce.recommendation.sideNavText')
             },
             {

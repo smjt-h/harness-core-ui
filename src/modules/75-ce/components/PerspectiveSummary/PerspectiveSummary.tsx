@@ -165,7 +165,8 @@ const BudgetCard: (props: BudgetCardProps) => JSX.Element | null = ({ budgetData
               routes.toCEBudgetDetails({
                 budgetId: budgetData.id,
                 budgetName: budgetData.name,
-                accountId: accountId
+                accountId: accountId,
+                module: 'ce'
               })
             )
           }

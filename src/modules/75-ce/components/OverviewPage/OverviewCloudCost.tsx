@@ -159,7 +159,8 @@ const OverviewCloudCost = (props: CloudCostProps) => {
         to={routes.toPerspectiveDetails({
           accountId: accountId,
           perspectiveId: providers[provider]!,
-          perspectiveName: providers[provider]!
+          perspectiveName: providers[provider]!,
+          module: 'ce'
         })}
       >
         <Text inline color="primary7">

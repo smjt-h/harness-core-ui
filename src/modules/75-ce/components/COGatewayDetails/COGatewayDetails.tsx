@@ -145,7 +145,8 @@ const COGatewayDetails: React.FC<COGatewayDetailsProps> = props => {
       await saveStaticSchedules(response?.id as number)
       history.push(
         routes.toCECORules({
-          accountId
+          accountId,
+          module: 'ce'
         })
       )
     }
@@ -219,7 +220,7 @@ const COGatewayDetails: React.FC<COGatewayDetailsProps> = props => {
         className={css.breadCrumb}
         links={[
           {
-            url: routes.toCECORules({ accountId }),
+            url: routes.toCECORules({ accountId, module: 'ce' }),
             label: getString('ce.co.breadCrumb.rules')
           },
           {

@@ -101,7 +101,7 @@ export default function L1Nav(): React.ReactElement {
         )}
         {CENG_ENABLED && (
           <li className={css.navItem}>
-            <Link {...commonLinkProps} to={paths.toCEOverview(params)}>
+            <Link {...commonLinkProps} to={paths.toCE(params)}>
               <Layout.Vertical flex={{ align: 'center-center' }} spacing="small">
                 <Icon name="ce-main" size={30} />
                 <Text

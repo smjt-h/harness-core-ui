@@ -32,7 +32,8 @@ const CERenderer: React.FC<CERendererProps> = ({ isPreview }) => {
         !isPreview &&
           history.push(
             routes.toCEHome({
-              accountId
+              accountId,
+              module: 'ce'
             })
           )
       }}
