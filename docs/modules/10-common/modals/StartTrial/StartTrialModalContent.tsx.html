@@ -23,16 +23,16 @@
         <div class='clearfix'>
             
             <div class='fl pad1y space-right2'>
-                <span class="strong">92% </span>
+                <span class="strong">94.34% </span>
                 <span class="quiet">Statements</span>
-                <span class='fraction'>46/50</span>
+                <span class='fraction'>50/53</span>
             </div>
         
             
             <div class='fl pad1y space-right2'>
-                <span class="strong">70.83% </span>
+                <span class="strong">72.92% </span>
                 <span class="quiet">Branches</span>
-                <span class='fraction'>34/48</span>
+                <span class='fraction'>35/48</span>
             </div>
         
             
@@ -44,9 +44,9 @@
         
             
             <div class='fl pad1y space-right2'>
-                <span class="strong">92% </span>
+                <span class="strong">94.34% </span>
                 <span class="quiet">Lines</span>
-                <span class='fraction'>46/50</span>
+                <span class='fraction'>50/53</span>
             </div>
         
             
@@ -220,13 +220,17 @@
 <a name='L161'></a><a href='#L161'>161</a>
 <a name='L162'></a><a href='#L162'>162</a>
 <a name='L163'></a><a href='#L163'>163</a>
-<a name='L164'></a><a href='#L164'>164</a></td><td class="line-coverage quiet"><span class="cline-any cline-neutral">&nbsp;</span>
+<a name='L164'></a><a href='#L164'>164</a>
+<a name='L165'></a><a href='#L165'>165</a>
+<a name='L166'></a><a href='#L166'>166</a>
+<a name='L167'></a><a href='#L167'>167</a></td><td class="line-coverage quiet"><span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">14x</span>
 <span class="cline-any cline-yes">14x</span>
 <span class="cline-any cline-yes">14x</span>
 <span class="cline-any cline-yes">14x</span>
@@ -261,6 +265,7 @@
 <span class="cline-any cline-yes">11x</span>
 <span class="cline-any cline-yes">11x</span>
 <span class="cline-any cline-yes">11x</span>
+<span class="cline-any cline-yes">11x</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-yes">11x</span>
 <span class="cline-any cline-yes">11x</span>
@@ -270,9 +275,10 @@
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-yes">2x</span>
-<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-yes">1x</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">1x</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-yes">2x</span>
 <span class="cline-any cline-yes">2x</span>
@@ -393,6 +399,7 @@
 import React, { useState } from 'react'
 import { Button, Heading, Color, Container, Layout, IconName, Icon, Text } from '@wings-software/uicore'
 import { useParams } from 'react-router-dom'
+import { useUpdateLSDefaultExperience } from '@common/hooks/useUpdateLSDefaultExperience'
 import { String, useStrings } from 'framework/strings'
 import { useQueryParams } from '@common/hooks'
 import type { StringsMap } from 'stringTypes'
@@ -424,6 +431,7 @@ const StartTrialModalContent: React.FC&lt;StartTrialModalContentProps&gt; = prop
   const initialSelectedInfoCard = moduleInfoCards ? moduleInfoCards[0] : undefined
   const [selectedInfoCard, setSelectedInfoCard] = useState&lt;ModuleInfoCard | undefined&gt;(initialSelectedInfoCard)
   const { licenseInformation } = useLicenseStore()
+  const { updateLSDefaultExperience } = useUpdateLSDefaultExperience()
 &nbsp;
   const getModuleButton = (): React.ReactElement =&gt; {
     const handleOnClick = async (): Promise&lt;void&gt; =&gt; {
@@ -432,10 +440,11 @@ const StartTrialModalContent: React.FC&lt;StartTrialModalContentProps&gt; = prop
       } else <span class="missing-if-branch" title="else path not taken" >E</span>if (selectedInfoCard<span class="branch-0 cbranch-no" title="branch not covered" >?.r</span>oute) {
         // eslint-disable-next-line @typescript-eslint/ban-ts-comment
         // @ts-ignore
-        <span class="missing-if-branch" title="if path not taken" >I</span>if (Object.keys(licenseInformation).length === 0) {
-<span class="cstat-no" title="statement not covered" >          await updateDefaultExperience({</span>
+        if (Object.keys(licenseInformation).length === 0) {
+          await updateDefaultExperience({
             defaultExperience: Experiences.CG
           })
+          updateLSDefaultExperience(Experiences.CG)
         }
         window.location.href = selectedInfoCard.route<span class="branch-0 cbranch-no" title="branch not covered" >?.()</span>
         return
@@ -553,7 +562,7 @@ export default StartTrialModalContent
             <div class='footer quiet pad2 space-top1 center small'>
                 Code coverage generated by
                 <a href="https://istanbul.js.org/" target="_blank">istanbul</a>
-                at Fri Jan 21 2022 14:50:06 GMT+0000 (Greenwich Mean Time)
+                at Fri Jan 21 2022 16:21:38 GMT+0000 (Greenwich Mean Time)
             </div>
         </div>
         <script src="../../../../prettify.js"></script>

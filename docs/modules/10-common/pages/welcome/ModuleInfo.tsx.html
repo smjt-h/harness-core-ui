@@ -23,30 +23,30 @@
         <div class='clearfix'>
             
             <div class='fl pad1y space-right2'>
-                <span class="strong">89.36% </span>
+                <span class="strong">94.12% </span>
                 <span class="quiet">Statements</span>
-                <span class='fraction'>42/47</span>
+                <span class='fraction'>48/51</span>
             </div>
         
             
             <div class='fl pad1y space-right2'>
-                <span class="strong">55.81% </span>
+                <span class="strong">71.43% </span>
                 <span class="quiet">Branches</span>
-                <span class='fraction'>24/43</span>
+                <span class='fraction'>25/35</span>
             </div>
         
             
             <div class='fl pad1y space-right2'>
-                <span class="strong">62.5% </span>
+                <span class="strong">75% </span>
                 <span class="quiet">Functions</span>
-                <span class='fraction'>5/8</span>
+                <span class='fraction'>6/8</span>
             </div>
         
             
             <div class='fl pad1y space-right2'>
-                <span class="strong">89.36% </span>
+                <span class="strong">94.12% </span>
                 <span class="quiet">Lines</span>
-                <span class='fraction'>42/47</span>
+                <span class='fraction'>48/51</span>
             </div>
         
             
@@ -199,14 +199,14 @@
 <a name='L140'></a><a href='#L140'>140</a>
 <a name='L141'></a><a href='#L141'>141</a>
 <a name='L142'></a><a href='#L142'>142</a>
-<a name='L143'></a><a href='#L143'>143</a>
-<a name='L144'></a><a href='#L144'>144</a></td><td class="line-coverage quiet"><span class="cline-any cline-neutral">&nbsp;</span>
+<a name='L143'></a><a href='#L143'>143</a></td><td class="line-coverage quiet"><span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">7x</span>
 <span class="cline-any cline-yes">7x</span>
 <span class="cline-any cline-yes">7x</span>
 <span class="cline-any cline-yes">7x</span>
@@ -241,13 +241,16 @@
 <span class="cline-any cline-yes">5x</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">5x</span>
+<span class="cline-any cline-yes">5x</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-yes">5x</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-no">&nbsp;</span>
-<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-yes">1x</span>
+<span class="cline-any cline-yes">1x</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">1x</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-no">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
@@ -277,13 +280,8 @@
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-yes">1x</span>
-<span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-yes">1x</span>
-<span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-yes">1x</span>
-<span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-yes">1x</span>
 <span class="cline-any cline-yes">1x</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
@@ -353,6 +351,7 @@
 import React, { useEffect, useState } from 'react'
 import { useHistory, useParams } from 'react-router-dom'
 import { Button, Color, Container, Text, Layout, Heading } from '@wings-software/uicore'
+import { useUpdateLSDefaultExperience } from '@common/hooks/useUpdateLSDefaultExperience'
 import { useTelemetry } from '@common/hooks/useTelemetry'
 import routes from '@common/RouteDefinitions'
 import type { Module } from '@common/interfaces/RouteInterfaces'
@@ -384,13 +383,16 @@ const ModuleInfo: React.FC&lt;ModuleProps&gt; = ({ module = 'cd' }) =&gt; {
   const { mutate: updateDefaultExperience, loading: updatingDefaultExperience } = useUpdateAccountDefaultExperienceNG({
     accountIdentifier: accountId
   })
+  const updatedDefaultExperience = !selectedInfoCard || selectedInfoCard<span class="branch-0 cbranch-no" title="branch not covered" >?.i</span>sNgRoute ? Experiences.NG : Experiences.CG
+  const { updateLSDefaultExperience } = useUpdateLSDefaultExperience()
 &nbsp;
   const getModuleLink = (moduleLinkArg: Module): React.ReactElement =&gt; {
-    async function <span class="fstat-no" title="function not covered" >handleUpdateDefaultExperience(</span>): Promise&lt;void&gt; {
-<span class="cstat-no" title="statement not covered" >      try {</span>
-<span class="cstat-no" title="statement not covered" >        await updateDefaultExperience({</span>
-          defaultExperience: !selectedInfoCard || selectedInfoCard?.isNgRoute ? Experiences.NG : Experiences.CG
+    async function handleUpdateDefaultExperience(): Promise&lt;void&gt; {
+      try {
+        await updateDefaultExperience({
+          defaultExperience: updatedDefaultExperience
         })
+        updateLSDefaultExperience(updatedDefaultExperience)
       } catch (error) {
 <span class="cstat-no" title="statement not covered" >        showError(error.data?.message || getString('somethingWentWrong'))</span>
       }
@@ -403,9 +405,9 @@ const ModuleInfo: React.FC&lt;ModuleProps&gt; = ({ module = 'cd' }) =&gt; {
           intent="primary"
           className={css.continueButton}
           onClick={<span class="fstat-no" title="function not covered" >() =</span>&gt; {
-<span class="cstat-no" title="statement not covered" >            handleUpdateDefaultExperience().then(<span class="fstat-no" title="function not covered" >() =</span>&gt;</span>
+<span class="cstat-no" title="statement not covered" >            handleUpdateDefaultExperience().then(<span class="fstat-no" title="function not covered" >() =</span>&gt; {</span>
 <span class="cstat-no" title="statement not covered" >              history.push(routes.toModuleHome({ accountId, module: moduleLinkArg, source: 'purpose' }))</span>
-            )
+            })
           }}
           data-testid="continueNg"
         &gt;
@@ -420,13 +422,8 @@ const ModuleInfo: React.FC&lt;ModuleProps&gt; = ({ module = 'cd' }) =&gt; {
         intent="primary"
         onClick={async () =&gt; {
           trackEvent(PurposeActions.CDCGModuleSelected, { category: Category.SIGNUP, module: ModuleName.CD })
-&nbsp;
-          await updateDefaultExperience({
-            defaultExperience: !selectedInfoCard || selectedInfoCard<span class="branch-0 cbranch-no" title="branch not covered" >?.i</span>sNgRoute ? <span class="branch-0 cbranch-no" title="branch not covered" >Experiences.NG </span>: Experiences.CG
-          })
-&nbsp;
+          await handleUpdateDefaultExperience()
           const route = selectedInfoCard.route<span class="branch-0 cbranch-no" title="branch not covered" >?.()</span>
-&nbsp;
           <span class="missing-if-branch" title="else path not taken" >E</span>if (route) {
             window.location.href = route
           }
@@ -493,7 +490,7 @@ export default ModuleInfo
             <div class='footer quiet pad2 space-top1 center small'>
                 Code coverage generated by
                 <a href="https://istanbul.js.org/" target="_blank">istanbul</a>
-                at Fri Jan 21 2022 14:50:06 GMT+0000 (Greenwich Mean Time)
+                at Fri Jan 21 2022 16:21:38 GMT+0000 (Greenwich Mean Time)
             </div>
         </div>
         <script src="../../../../prettify.js"></script>
