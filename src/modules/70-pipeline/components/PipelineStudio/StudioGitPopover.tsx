@@ -33,7 +33,6 @@ const breakWord = 'break-word'
 
 export const GitDetails = (props: StudioGitPopoverProps): JSX.Element => {
   const { gitDetails, identifier, isReadonly, onGitBranchChange, entityType } = props
-
   const { repoIdentifier, branch } = useQueryParams<GitQueryParams>()
   const { gitSyncRepos, loadingRepos } = useGitSyncStore()
   const { getString } = useStrings()
@@ -45,6 +44,7 @@ export const GitDetails = (props: StudioGitPopoverProps): JSX.Element => {
   if (gitDetails?.objectId || (identifier === DefaultNewPipelineId && gitDetails.repoIdentifier)) {
     const repoName: string = defaultTo(getRepoDetailsByIndentifier(gitDetails?.repoIdentifier, gitSyncRepos)?.name, '')
     const folderName = `${defaultTo(gitDetails?.rootFolder, '')}${defaultTo(gitDetails?.filePath, '')}`
+    const repoBaseUrl = defaultTo(getRepoDetailsByIndentifier(gitDetails?.repoIdentifier, gitSyncRepos)?.repo, '')
     return (
       <>
         <Layout.Vertical spacing="large">
@@ -75,7 +75,7 @@ export const GitDetails = (props: StudioGitPopoverProps): JSX.Element => {
                 lineClamp={1}
                 color={Color.GREY_800}
               >
-                {folderName}
+                {`${repoBaseUrl}/${branch}/${folderName}`}
               </Text>
             )}
           </Layout.Horizontal>

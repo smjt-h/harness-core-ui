@@ -1,15 +1,16 @@
-/* eslint-disable */
-/**
- * Copyright 2021 Harness Inc. All rights reserved.
+/*
+ * Copyright 2022 Harness Inc. All rights reserved.
  * Use of this source code is governed by the PolyForm Shield 1.0.0 license
  * that can be found in the licenses directory at the root of this repository, also available at
  * https://polyformproject.org/wp-content/uploads/2020/06/PolyForm-Shield-1.0.0.txt.
- **/
-// this is an auto-generated file, do not update this manually
+ */
+
+/* eslint-disable */
+// this is an auto-generated file
 declare const styles: {
+  readonly textCentered: string
+  readonly selectArtifactTable: string
   readonly appliedArtifact: string
   readonly disabledRow: string
-  readonly selectArtifactTable: string
-  readonly textCentered: string
 }
 export default styles
