@@ -1,3 +1,10 @@
+/*
+ * Copyright 2021 Harness Inc. All rights reserved.
+ * Use of this source code is governed by the PolyForm Shield 1.0.0 license
+ * that can be found in the licenses directory at the root of this repository, also available at
+ * https://polyformproject.org/wp-content/uploads/2020/06/PolyForm-Shield-1.0.0.txt.
+ */
+
 import { groupBy, omit } from 'lodash-es'
 import type { SelectOption } from '@pipeline/components/PipelineSteps/Steps/StepsTypes'
 import type { UseStringsReturn } from 'framework/strings'
@@ -8,7 +15,13 @@ import { MetricPathInitValue } from '../MetricPath/MetricPath.constants'
 import type { MapAppDynamicsMetric } from '../../AppDHealthSource.types'
 import type { GroupedMetric, GroupedCreatedMetrics } from './AppDMappedMetric.types'
 
-export function updateSelectedMetricsMap({ updatedMetric, oldMetric, mappedMetrics, formikValues }: any): any {
+export function updateSelectedMetricsMap({
+  updatedMetric,
+  oldMetric,
+  mappedMetrics,
+  formikValues,
+  getString
+}: any): any {
   const updatedMap = new Map(mappedMetrics)
 
   // in the case where user updates metric name, update the key for current value
@@ -27,7 +40,7 @@ export function updateSelectedMetricsMap({ updatedMetric, oldMetric, mappedMetri
         basePath: BasePathInitValue,
         metricPath: MetricPathInitValue,
         metricName: updatedMetric,
-        groupName: { label: 'Please Select Group Name', value: 'placeholder' },
+        groupName: { label: getString('cv.addGroupName'), value: '' },
         metricIdentifier: updatedMetric.split(' ').join('_')
       }
     })
@@ -67,17 +80,21 @@ export const getMetricPathValue = (basePath: MetricPathData): string => {
 
 export const getGroupAndMetric = (
   mappedMetrics: Map<string, MapAppDynamicsMetric>,
+  getString: UseStringsReturn['getString'],
   formikValues?: MapAppDynamicsMetric
 ): GroupedMetric[] => {
   return Array.from(mappedMetrics?.values()).map(item => {
     return {
-      groupName: item.groupName || formikValues?.groupName,
+      groupName: item.groupName || formikValues?.groupName || { label: getString('cv.addGroupName'), value: '' },
       metricName: item.metricName || formikValues?.metricName
     }
   })
 }
 
-export const initGroupedCreatedMetrics = (mappedMetrics: Map<string, MapAppDynamicsMetric>): GroupedCreatedMetrics =>
-  groupBy(getGroupAndMetric(mappedMetrics), function (item) {
+export const initGroupedCreatedMetrics = (
+  mappedMetrics: Map<string, MapAppDynamicsMetric>,
+  getString: UseStringsReturn['getString']
+): GroupedCreatedMetrics =>
+  groupBy(getGroupAndMetric(mappedMetrics, getString), function (item) {
     return item?.groupName?.label
   })

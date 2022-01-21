@@ -109,7 +109,7 @@ export default function AppDMappedMetric({
   )
 
   const [groupedCreatedMetrics, setGroupedCreatedMetrics] = useState<GroupedCreatedMetrics>(
-    initGroupedCreatedMetrics(mappedMetrics)
+    initGroupedCreatedMetrics(mappedMetrics, getString)
   )
 
   useEffect(() => {
@@ -118,7 +118,8 @@ export default function AppDMappedMetric({
         updatedMetric: formikValues.metricName,
         oldMetric: oldState.selectedMetric,
         mappedMetrics: oldState.mappedMetrics,
-        formikValues
+        formikValues,
+        getString
       })
     })
   }, [formikValues?.groupName, formikValues?.metricName])
@@ -191,7 +192,8 @@ export default function AppDMappedMetric({
                 updatedMetric: newMetric,
                 oldMetric: oldState.selectedMetric,
                 mappedMetrics: oldState.mappedMetrics,
-                formikValues
+                formikValues,
+                getString
               })
             })
           }}

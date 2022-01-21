@@ -58,6 +58,7 @@ addNew: + Add New
 turnService: Turn service
 showYAMLChange: Show YAML Change
 seeYAML: See full event YAML
+addGroupName: Please Select Group Name
 serviceDashboardPage:
   fiveMinutes: 5 Minutes
   fifteenMinutes: 15 Minutes
@@ -206,6 +207,7 @@ monitoringSources:
   addMetric: Add Metric
   addQuery: Add Query
   totalMappedQueries: '{{total}} {{query}} mapped'
+
   appD:
     appdPathTitle: AppDynamics Path
     appdChartTitle: Chart & Record

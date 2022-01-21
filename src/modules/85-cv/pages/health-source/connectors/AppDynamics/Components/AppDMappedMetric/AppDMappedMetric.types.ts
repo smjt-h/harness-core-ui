@@ -25,8 +25,8 @@ export interface AppDMappedMetricInterface {
 }
 
 export interface GroupedMetric {
-  groupName: SelectOption | undefined
-  metricName: string | undefined
+  groupName?: SelectOption
+  metricName?: string
 }
 
 export interface GroupedCreatedMetrics {
