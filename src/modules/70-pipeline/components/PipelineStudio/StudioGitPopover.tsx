@@ -9,7 +9,7 @@ import React from 'react'
 import { defaultTo } from 'lodash-es'
 
 import { Color, FontVariation, Icon, Layout, Text } from '@wings-software/uicore'
-import type { PipelineInfoConfig } from 'services/cd-ng'
+import type { GitSyncEntityDTO, PipelineInfoConfig } from 'services/cd-ng'
 import type { EntityGitDetails, NGTemplateInfoConfig } from 'services/template-ng'
 import { useGitSyncStore } from 'framework/GitRepoStore/GitSyncStoreContext'
 import { useStrings } from 'framework/strings'
@@ -19,6 +19,7 @@ import { useQueryParams } from '@common/hooks'
 import type { GitQueryParams } from '@common/interfaces/RouteInterfaces'
 import { DefaultNewPipelineId } from './PipelineContext/PipelineActions'
 import GitPopover from '../GitPopover/GitPopover'
+import { getEntityUrl } from '@gitsync/common/gitSyncUtils'
 
 interface StudioGitPopoverProps {
   gitDetails: EntityGitDetails
@@ -42,9 +43,14 @@ export const GitDetails = (props: StudioGitPopoverProps): JSX.Element => {
   }
 
   if (gitDetails?.objectId || (identifier === DefaultNewPipelineId && gitDetails.repoIdentifier)) {
+    const repo = getRepoDetailsByIndentifier(gitDetails?.repoIdentifier, gitSyncRepos)
+    const repoEntity: GitSyncEntityDTO = {
+      repoUrl: repo?.repo,
+      folderPath: gitDetails?.rootFolder,
+      branch: repo?.branch,
+      entityGitPath: gitDetails?.filePath
+    }
     const repoName: string = defaultTo(getRepoDetailsByIndentifier(gitDetails?.repoIdentifier, gitSyncRepos)?.name, '')
-    const folderName = `${defaultTo(gitDetails?.rootFolder, '')}${defaultTo(gitDetails?.filePath, '')}`
-    const repoBaseUrl = defaultTo(getRepoDetailsByIndentifier(gitDetails?.repoIdentifier, gitSyncRepos)?.repo, '')
     return (
       <>
         <Layout.Vertical spacing="large">
@@ -75,7 +81,7 @@ export const GitDetails = (props: StudioGitPopoverProps): JSX.Element => {
                 lineClamp={1}
                 color={Color.GREY_800}
               >
-                {`${repoBaseUrl}/${branch}/${folderName}`}
+                {getEntityUrl(repoEntity)}
               </Text>
             )}
           </Layout.Horizontal>
