@@ -743,6 +743,7 @@ export interface DatadogMetricHealthDefinition {
   dashboardName?: string
   groupingQuery?: string
   identifier: string
+  isCustomCreatedMetric?: boolean
   isManualQuery?: boolean
   metric?: string
   metricName: string

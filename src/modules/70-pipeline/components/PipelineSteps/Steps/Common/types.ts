@@ -6,7 +6,7 @@
  */
 
 import type { MultiSelectOption, SelectOption } from '@wings-software/uicore'
-import type { FormikErrors } from 'formik'
+import type { FormikContext } from 'formik'
 import type { JiraFieldNG, JiraStatusNG } from 'services/cd-ng'
 import type { StepType } from '@pipeline/components/PipelineSteps/PipelineStepInterface'
 
@@ -40,11 +40,7 @@ export interface ApprovalRejectionCriteriaProps {
   statusList: JiraStatusNG[]
   fieldList: JiraFieldNG[]
   isFetchingFields?: boolean
-  formikErrors?: FormikErrors<{
-    expression?: string | undefined
-    matchAnyCondition?: boolean | undefined
-    conditions?: ApprovalRejectionCriteriaCondition[] | undefined
-  }>
+  formik: FormikContext<any>
   readonly?: boolean
   title: string
   stepType: StepType

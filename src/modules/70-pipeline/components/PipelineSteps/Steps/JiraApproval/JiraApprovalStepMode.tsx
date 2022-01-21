@@ -375,7 +375,7 @@ const FormContent = ({
         mode="approvalCriteria"
         values={formik.values.spec.approvalCriteria}
         onChange={values => formik.setFieldValue('spec.approvalCriteria', values)}
-        formikErrors={formik.errors.spec?.approvalCriteria?.spec}
+        formik={formik}
         readonly={readonly}
         stepType={StepType.JiraApproval}
       />
@@ -395,6 +395,7 @@ const FormContent = ({
               mode="rejectionCriteria"
               values={formik.values.spec.rejectionCriteria}
               onChange={values => formik.setFieldValue('spec.rejectionCriteria', values)}
+              formik={formik}
               readonly={readonly}
               stepType={StepType.JiraApproval}
             />
@@ -456,7 +457,6 @@ function JiraApprovalStepMode(props: JiraApprovalStepModeProps, formikRef: StepF
       onSubmit={values => onUpdate?.(values)}
       formName="jiraApproval"
       initialValues={props.initialValues}
-      enableReinitialize={true}
       validate={data => {
         onChange?.(data)
       }}

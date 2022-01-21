@@ -12,6 +12,8 @@ import SideNav from '@common/navigation/SideNav'
 
 import { useSidebar } from '@common/navigation/SidebarProvider'
 
+import FeatureBanner from './FeatureBanner'
+
 import css from './layouts.module.scss'
 
 export function DefaultLayout(props: React.PropsWithChildren<unknown>): React.ReactElement {
@@ -23,7 +25,10 @@ export function DefaultLayout(props: React.PropsWithChildren<unknown>): React.Re
       <SideNav title={title} subtitle={subtitle} icon={icon}>
         <NavComponent />
       </SideNav>
-      <div className={css.children}>{props.children}</div>
+      <div className={css.rhs}>
+        <FeatureBanner />
+        <div className={css.children}>{props.children}</div>
+      </div>
     </div>
   )
 }

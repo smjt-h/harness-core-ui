@@ -6,6 +6,7 @@
  */
 
 import React, { useEffect, useRef } from 'react'
+import { unset } from 'lodash-es'
 import YAML from 'yaml'
 import produce from 'immer'
 import { Button, Color, Icon, Layout, Tab, Tabs } from '@wings-software/uicore'
@@ -102,7 +103,7 @@ export const ApprovalStageSetupShellMode: React.FC = () => {
                 (jsonFromYaml.spec as ApprovalStageConfig)?.execution || {}
               // approvalType is just used in the UI, to populate the default steps for different approval types
               // For BE, the stage type is always 'Approval' and approval type is defined inside the step
-              delete (draft.stage as any)?.approvalType
+              unset(draft.stage as ApprovalStageElementConfig, 'approvalType')
             }
           }).stage as ApprovalStageElementConfig
         ).then(() => {

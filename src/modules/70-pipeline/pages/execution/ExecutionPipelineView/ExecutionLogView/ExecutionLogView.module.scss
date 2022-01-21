@@ -8,7 +8,7 @@
 .logsContainer {
   display: grid;
   grid-template-columns: 290px 1fr;
-  font-family: Inter !important;
+  font-family: var(--font-family) !important;
   height: 100%;
 }
 

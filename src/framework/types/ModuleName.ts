@@ -17,3 +17,5 @@ export enum ModuleName {
   FRAMEWORK = 'FRAMEWORK',
   TEMPLATES = 'TEMPLATES'
 }
+
+export type Module = 'ci' | 'cd' | 'cf' | 'cv' | 'ce'

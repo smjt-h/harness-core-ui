@@ -12,7 +12,9 @@ declare const styles: {
   readonly isSelected: string
   readonly main: string
   readonly navHeader: string
-  readonly selectedApp: string
+  readonly collapsePanel: string
+  readonly collapseHeading: string
   readonly seletedAppContainer: string
+  readonly selectedApp: string
 }
 export default styles

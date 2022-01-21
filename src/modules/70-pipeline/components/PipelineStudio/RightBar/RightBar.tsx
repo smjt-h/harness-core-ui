@@ -25,7 +25,7 @@ import {
   VisualYamlSelectedView as SelectedView
 } from '@wings-software/uicore'
 import { useParams } from 'react-router-dom'
-import { isEmpty, get, set } from 'lodash-es'
+import { isEmpty, get, set, unset } from 'lodash-es'
 import { Classes, Dialog } from '@blueprintjs/core'
 import flatten from 'lodash-es/flatten'
 import produce from 'immer'
@@ -71,8 +71,8 @@ interface CodebaseValues {
   depth?: string
   sslVerify?: number
   prCloneStrategy?: MultiTypeSelectOption
-  memoryLimit?: any
-  cpuLimit?: any
+  memoryLimit?: string
+  cpuLimit?: string
 }
 
 enum CodebaseStatuses {
@@ -122,7 +122,7 @@ export const RightBar = (): JSX.Element => {
     updatePipeline,
     updatePipelineView
   } = usePipelineContext()
-  const codebase = (pipeline as PipelineInfoConfig)?.properties?.ci?.codebase
+  const codebase = pipeline?.properties?.ci?.codebase
   const [codebaseStatus, setCodebaseStatus] = React.useState<CodebaseStatuses>(CodebaseStatuses.ZeroState)
   const enableGovernanceSidebar = useFeatureFlag(FeatureFlag.OPA_PIPELINE_GOVERNANCE)
 
@@ -518,7 +518,7 @@ export const RightBar = (): JSX.Element => {
 
                 // Repo level connectors should not have repoName
                 if (connectionType === 'Repo' && (draft as PipelineInfoConfig)?.properties?.ci?.codebase?.repoName) {
-                  delete (draft as PipelineInfoConfig)?.properties?.ci?.codebase?.repoName
+                  unset(draft, 'properties.ci.codebase.repoName')
                 }
 
                 if (get(draft, 'properties.ci.codebase.depth') !== values.depth) {
