@@ -23,30 +23,30 @@
         <div class='clearfix'>
             
             <div class='fl pad1y space-right2'>
-                <span class="strong">83.33% </span>
+                <span class="strong">79.45% </span>
                 <span class="quiet">Statements</span>
-                <span class='fraction'>60/72</span>
+                <span class='fraction'>58/73</span>
             </div>
         
             
             <div class='fl pad1y space-right2'>
-                <span class="strong">65.45% </span>
+                <span class="strong">63.06% </span>
                 <span class="quiet">Branches</span>
-                <span class='fraction'>72/110</span>
+                <span class='fraction'>70/111</span>
             </div>
         
             
             <div class='fl pad1y space-right2'>
-                <span class="strong">75% </span>
+                <span class="strong">62.5% </span>
                 <span class="quiet">Functions</span>
-                <span class='fraction'>12/16</span>
+                <span class='fraction'>10/16</span>
             </div>
         
             
             <div class='fl pad1y space-right2'>
-                <span class="strong">82.86% </span>
+                <span class="strong">78.87% </span>
                 <span class="quiet">Lines</span>
-                <span class='fraction'>58/70</span>
+                <span class='fraction'>56/71</span>
             </div>
         
             
@@ -339,7 +339,21 @@
 <a name='L280'></a><a href='#L280'>280</a>
 <a name='L281'></a><a href='#L281'>281</a>
 <a name='L282'></a><a href='#L282'>282</a>
-<a name='L283'></a><a href='#L283'>283</a></td><td class="line-coverage quiet"><span class="cline-any cline-neutral">&nbsp;</span>
+<a name='L283'></a><a href='#L283'>283</a>
+<a name='L284'></a><a href='#L284'>284</a>
+<a name='L285'></a><a href='#L285'>285</a>
+<a name='L286'></a><a href='#L286'>286</a>
+<a name='L287'></a><a href='#L287'>287</a>
+<a name='L288'></a><a href='#L288'>288</a>
+<a name='L289'></a><a href='#L289'>289</a>
+<a name='L290'></a><a href='#L290'>290</a>
+<a name='L291'></a><a href='#L291'>291</a>
+<a name='L292'></a><a href='#L292'>292</a>
+<a name='L293'></a><a href='#L293'>293</a>
+<a name='L294'></a><a href='#L294'>294</a>
+<a name='L295'></a><a href='#L295'>295</a>
+<a name='L296'></a><a href='#L296'>296</a>
+<a name='L297'></a><a href='#L297'>297</a></td><td class="line-coverage quiet"><span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
@@ -472,20 +486,34 @@
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-yes">2x</span>
-<span class="cline-any cline-yes">4x</span>
+<span class="cline-any cline-yes">2x</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-no">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-yes">4x</span>
-<span class="cline-any cline-yes">4x</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-yes">92x</span>
-<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">2x</span>
+<span class="cline-any cline-no">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-yes">288x</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">2x</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-no">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
@@ -674,7 +702,7 @@ export const TemplateSelectorLeftView: React.FC&lt;TemplateSelectorLeftViewProps
       }
     }
   } = usePipelineContext()
-  const { templateType, childTypes, selectedTemplateRef } = data<span class="branch-0 cbranch-no" title="branch not covered" >?.s</span>electorData || <span class="branch-1 cbranch-no" title="branch not covered" >{}</span>
+  const { templateType, selectedChildType, allChildTypes, selectedTemplateRef } = data<span class="branch-0 cbranch-no" title="branch not covered" >?.s</span>electorData || <span class="branch-1 cbranch-no" title="branch not covered" >{}</span>
   const [selectedTemplate, setSelectedTemplate] = useState&lt;TemplateSummaryResponse | undefined&gt;()
   const { getString } = useStrings()
   const [page, setPage] = useState(0)
@@ -683,7 +711,7 @@ export const TemplateSelectorLeftView: React.FC&lt;TemplateSelectorLeftViewProps
   const { projectIdentifier, orgIdentifier, accountId, module } = useParams&lt;ProjectPathProps &amp; ModulePathParams&gt;()
   const { repoIdentifier, branch } = useQueryParams&lt;GitQueryParams&gt;()
   const { isGitSyncEnabled } = useAppStore()
-  const [childType, setChildType] = React.useState&lt;string | undefined&gt;(childTypes<span class="branch-0 cbranch-no" title="branch not covered" >?.[0</span>])
+  const [childType, setChildType] = React.useState&lt;string | undefined&gt;(selectedChildType)
   const scopeOptions: SelectOption[] = React.useMemo(
     () =&gt; [
       {
@@ -723,9 +751,9 @@ export const TemplateSelectorLeftView: React.FC&lt;TemplateSelectorLeftViewProps
     return {
       filterType: 'Template',
       templateEntityTypes: [templateType],
-      ...(childType &amp;&amp; { childTypes: [childType] })
+      childTypes: childType ? <span class="branch-0 cbranch-no" title="branch not covered" >[childType] </span>: allChildTypes
     }
-  }, [templateType, childType])
+  }, [templateType, childType, allChildTypes])
 &nbsp;
   const queryParams = React.useMemo(() =&gt; {
     return {
@@ -754,22 +782,36 @@ export const TemplateSelectorLeftView: React.FC&lt;TemplateSelectorLeftViewProps
   }, [searchParam, searchRef.current])
 &nbsp;
   const getDropDownItems = React.useCallback((): SelectOption[] =&gt; {
-    <span class="missing-if-branch" title="if path not taken" >I</span>if (templateType === TemplateType.Stage) {
-<span class="cstat-no" title="statement not covered" >      return [</span>
-        { label: 'Approval', value: StageType.APPROVAL },
-        { label: 'Build', value: StageType.BUILD },
-        { label: 'Deploy', value: StageType.DEPLOY }
-      ]
-    } else <span class="missing-if-branch" title="else path not taken" >E</span>if (templateType === TemplateType.Step) {
-      return factory
-        .getAllStepsDataList()
-        .map(stepData =&gt; ({
-          label: stepData.name,
-          value: stepData.type
-        }))
-        .sort((a, b) =&gt; a.label.localeCompare(b.label))
-    } else {
-<span class="cstat-no" title="statement not covered" >      return []</span>
+    switch (templateType) {
+<span class="branch-0 cbranch-no" title="branch not covered" >      case TemplateType.Stage:</span>
+<span class="cstat-no" title="statement not covered" >        return [</span>
+          { label: getString('approvalStage.title'), value: StageType.APPROVAL },
+          { label: getString('buildText'), value: StageType.BUILD },
+          { label: getString('pipelineSteps.deploy.create.deployStageName'), value: StageType.DEPLOY }
+        ]
+      case TemplateType.Step:
+        <span class="missing-if-branch" title="if path not taken" >I</span>if (childType) {
+<span class="cstat-no" title="statement not covered" >          return [</span>
+            {
+              label: defaultTo(factory.getStepName(childType), childType),
+              value: childType
+            }
+          ]
+        } else {
+          return defaultTo(
+<span class="branch-1 cbranch-no" title="branch not covered" >            allChildTypes</span>
+              ?.map(<span class="fstat-no" title="function not covered" >item </span>=&gt; {
+<span class="cstat-no" title="statement not covered" >                return {</span>
+                  label: defaultTo(factory.getStepName(item), item),
+                  value: item
+                }
+              })
+              .sort(<span class="fstat-no" title="function not covered" >(a</span>, b) =&gt; <span class="cstat-no" title="statement not covered" >a.label.localeCompare(b.label))</span>,
+            []
+          )
+        }
+<span class="branch-2 cbranch-no" title="branch not covered" >      default:</span>
+<span class="cstat-no" title="statement not covered" >        return []</span>
     }
   }, [templateType])
 &nbsp;
@@ -849,13 +891,13 @@ export const TemplateSelectorLeftView: React.FC&lt;TemplateSelectorLeftViewProps
                 &lt;Container&gt;
                   &lt;Layout.Horizontal flex={{ alignItems: 'center' }} spacing={'medium'}&gt;
                     {getDropDownItems().length &gt; 0 &amp;&amp; (
-                      &lt;DropDown
+<span class="branch-1 cbranch-no" title="branch not covered" >                      &lt;DropDown</span>
                         onChange={<span class="fstat-no" title="function not covered" >item </span>=&gt; {
 <span class="cstat-no" title="statement not covered" >                          setChildType(item.value.toString())</span>
                         }}
                         items={getDropDownItems()}
                         addClearBtn={true}
-                        disabled={!!childTypes}
+                        disabled={!!selectedChildType}
                         filterable={false}
                         placeholder={`${getString('typeLabel')}: ${getString('all')}`}
                         value={childType}
@@ -910,7 +952,7 @@ export const TemplateSelectorLeftView: React.FC&lt;TemplateSelectorLeftViewProps
             <div class='footer quiet pad2 space-top1 center small'>
                 Code coverage generated by
                 <a href="https://istanbul.js.org/" target="_blank">istanbul</a>
-                at Thu Jan 20 2022 18:09:53 GMT+0000 (Greenwich Mean Time)
+                at Fri Jan 21 2022 06:05:31 GMT+0000 (Greenwich Mean Time)
             </div>
         </div>
         <script src="../../../../../prettify.js"></script>
