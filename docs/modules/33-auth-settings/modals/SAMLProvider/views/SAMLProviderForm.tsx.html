@@ -23,16 +23,16 @@
         <div class='clearfix'>
             
             <div class='fl pad1y space-right2'>
-                <span class="strong">93.55% </span>
+                <span class="strong">93.22% </span>
                 <span class="quiet">Statements</span>
-                <span class='fraction'>58/62</span>
+                <span class='fraction'>55/59</span>
             </div>
         
             
             <div class='fl pad1y space-right2'>
-                <span class="strong">66.38% </span>
+                <span class="strong">68.52% </span>
                 <span class="quiet">Branches</span>
-                <span class='fraction'>77/116</span>
+                <span class='fraction'>74/108</span>
             </div>
         
             
@@ -44,9 +44,9 @@
         
             
             <div class='fl pad1y space-right2'>
-                <span class="strong">93.55% </span>
+                <span class="strong">93.22% </span>
                 <span class="quiet">Lines</span>
-                <span class='fraction'>58/62</span>
+                <span class='fraction'>55/59</span>
             </div>
         
             
@@ -416,14 +416,7 @@
 <a name='L357'></a><a href='#L357'>357</a>
 <a name='L358'></a><a href='#L358'>358</a>
 <a name='L359'></a><a href='#L359'>359</a>
-<a name='L360'></a><a href='#L360'>360</a>
-<a name='L361'></a><a href='#L361'>361</a>
-<a name='L362'></a><a href='#L362'>362</a>
-<a name='L363'></a><a href='#L363'>363</a>
-<a name='L364'></a><a href='#L364'>364</a>
-<a name='L365'></a><a href='#L365'>365</a>
-<a name='L366'></a><a href='#L366'>366</a>
-<a name='L367'></a><a href='#L367'>367</a></td><td class="line-coverage quiet"><span class="cline-any cline-neutral">&nbsp;</span>
+<a name='L360'></a><a href='#L360'>360</a></td><td class="line-coverage quiet"><span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
@@ -471,11 +464,6 @@
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-yes">2x</span>
-<span class="cline-any cline-yes">2x</span>
-<span class="cline-any cline-yes">2x</span>
-<span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
@@ -514,9 +502,6 @@
 <span class="cline-any cline-yes">10x</span>
 <span class="cline-any cline-yes">10x</span>
 <span class="cline-any cline-yes">1x</span>
-<span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
@@ -634,9 +619,6 @@
 <span class="cline-any cline-yes">1x</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-yes">1x</span>
-<span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-yes">16x</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
@@ -714,6 +696,10 @@
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
@@ -825,7 +811,7 @@ import type { ToasterProps } from '@wings-software/uicore/dist/hooks/useToaster/
 import { useStrings } from 'framework/strings'
 import { useToaster } from '@common/components'
 import { CopyText } from '@common/components/CopyText/CopyText'
-import { useUploadSamlMetaData, useUpdateSamlMetaData, SamlSettings } from 'services/cd-ng'
+import { useUploadSamlMetaData, useUpdateSamlMetaData, SAMLSettings } from 'services/cd-ng'
 import { getSamlEndpoint } from '@auth-settings/constants/utils'
 import { useFeatureFlags } from '@common/hooks/useFeatureFlag'
 import type { AccountPathProps } from '@common/interfaces/RouteInterfaces'
@@ -836,19 +822,14 @@ import {
   Providers,
   getSelectedSAMLProvider
 } from '@auth-settings/modals/SAMLProvider/utils'
-import SecretInput from '@secrets/components/SecretInput/SecretInput'
-import { SecretReferenceInterface, setSecretField } from '@secrets/utils/SecretField'
 import css from '../useSAMLProvider.module.scss'
 &nbsp;
 interface Props {
   onSubmit?: () =&gt; void
   onCancel: () =&gt; void
-  samlProvider?: SamlSettings
+  samlProvider?: SAMLSettings
 }
 &nbsp;
-interface SAMLFormsValues extends Omit&lt;FormValues, 'clientSecret'&gt; {
-  clientSecret: SecretReferenceInterface | void
-}
 const handleSuccess = (
   successCallback: ToasterProps['showSuccess'],
   isCreate: boolean,
@@ -873,12 +854,12 @@ const SAMLProviderForm: React.FC&lt;Props&gt; = ({ onSubmit, onCancel, samlProvi
   const { showSuccess } = useToaster()
   const { AZURE_SAML_150_GROUPS_SUPPORT } = useFeatureFlags()
   const { accountId } = useParams&lt;AccountPathProps&gt;()
-  const [initialValues, setInitialValues] = React.useState&lt;SAMLFormsValues&gt;(defaultInitialData)
+  const [initialValues, setInitialValues] = React.useState&lt;FormValues&gt;(defaultInitialData)
   const [initialLoading, setIntitalLoading] = React.useState&lt;boolean&gt;(!!samlProvider)
   const [selected, setSelected] = React.useState&lt;SAMLProviderType&gt;()
   const [modalErrorHandler, setModalErrorHandler] = React.useState&lt;ModalErrorHandlerBinding&gt;()
   const hasSamlProvider = selected || samlProvider
-  const setupInitialData = async (): Promise&lt;SAMLFormsValues&gt; =&gt; {
+  const setupInitialData = async (): Promise&lt;FormValues&gt; =&gt; {
     return {
       displayName: defaultTo(samlProvider<span class="branch-0 cbranch-no" title="branch not covered" >?.d</span>isplayName, ''),
       authorizationEnabled: samlProvider ? !!samlProvider<span class="branch-0 cbranch-no" title="branch not covered" >?.a</span>uthorizationEnabled : <span class="branch-1 cbranch-no" title="branch not covered" >true,</span>
@@ -886,10 +867,7 @@ const SAMLProviderForm: React.FC&lt;Props&gt; = ({ onSubmit, onCancel, samlProvi
       entityIdEnabled: samlProvider ? !!samlProvider<span class="branch-0 cbranch-no" title="branch not covered" >?.e</span>ntityIdentifier : <span class="branch-1 cbranch-no" title="branch not covered" >false,</span>
       entityIdentifier: defaultTo(samlProvider<span class="branch-0 cbranch-no" title="branch not covered" >?.e</span>ntityIdentifier, ''),
       enableClientIdAndSecret: samlProvider ? !!samlProvider<span class="branch-0 cbranch-no" title="branch not covered" >?.c</span>lientSecret || !!samlProvider<span class="branch-0 cbranch-no" title="branch not covered" >?.c</span>lientId : <span class="branch-1 cbranch-no" title="branch not covered" >false,</span>
-      clientSecret:
-        samlProvider &amp;&amp; samlProvider<span class="branch-0 cbranch-no" title="branch not covered" >?.c</span>lientSecret
-          ? <span class="branch-0 cbranch-no" title="branch not covered" >await setSecretField(samlProvider?.clientSecret.toString(), { accountIdentifier: accountId })</span>
-          : undefined,
+      clientSecret: samlProvider ? samlProvider<span class="branch-0 cbranch-no" title="branch not covered" >?.c</span>lientSecret : <span class="branch-1 cbranch-no" title="branch not covered" >undefined,</span>
       clientId: samlProvider ? samlProvider<span class="branch-0 cbranch-no" title="branch not covered" >?.c</span>lientId : <span class="branch-1 cbranch-no" title="branch not covered" >'',</span>
       samlProviderType:
         samlProvider &amp;&amp; samlProvider<span class="branch-0 cbranch-no" title="branch not covered" >?.s</span>amlProviderType ? (<span class="branch-0 cbranch-no" title="branch not covered" >samlProvider?.samlProviderType as Providers) </span>: undefined
@@ -973,7 +951,7 @@ const SAMLProviderForm: React.FC&lt;Props&gt; = ({ onSubmit, onCancel, samlProvi
         {initialLoading ? (
           &lt;Page.Spinner /&gt;
         ) : (
-          &lt;Formik&lt;SAMLFormsValues&gt;
+          &lt;Formik&lt;FormValues&gt;
             formName="samlProviderForm"
             initialValues={initialValues}
             validationSchema={yup.object().shape({
@@ -997,10 +975,7 @@ const SAMLProviderForm: React.FC&lt;Props&gt; = ({ onSubmit, onCancel, samlProvi
               })
             })}
             onSubmit={values =&gt; {
-              const clientSecret = values.clientSecret
-                ? (<span class="branch-0 cbranch-no" title="branch not covered" >values.clientSecret as SecretReferenceInterface).referenceString</span>
-                : undefined
-              handleSubmit({ ...values, clientSecret: clientSecret })
+              handleSubmit({ ...values })
             }}
           &gt;
             {({ values, setFieldValue }) =&gt; (
@@ -1085,7 +1060,11 @@ const SAMLProviderForm: React.FC&lt;Props&gt; = ({ onSubmit, onCancel, samlProvi
                               {Providers.AZURE === values?.samlProviderType &amp;&amp; values.enableClientIdAndSecret &amp;&amp; (
                                 &lt;Container width={300} margin={{ top: 'medium' }}&gt;
                                   &lt;FormInput.Text name="clientId" label={getString('common.clientId')} /&gt;
-                                  &lt;SecretInput name="clientSecret" label={getString('common.clientSecret')} /&gt;
+                                  &lt;FormInput.Text
+                                    name="clientSecret"
+                                    inputGroup={{ type: 'password' }}
+                                    label={getString('common.clientSecret')}
+                                  /&gt;
                                 &lt;/Container&gt;
                               )}
                             &lt;/&gt;
@@ -1162,7 +1141,7 @@ export default SAMLProviderForm
             <div class='footer quiet pad2 space-top1 center small'>
                 Code coverage generated by
                 <a href="https://istanbul.js.org/" target="_blank">istanbul</a>
-                at Fri Jan 21 2022 11:29:37 GMT+0000 (Greenwich Mean Time)
+                at Fri Jan 21 2022 13:33:46 GMT+0000 (Greenwich Mean Time)
             </div>
         </div>
         <script src="../../../../../prettify.js"></script>

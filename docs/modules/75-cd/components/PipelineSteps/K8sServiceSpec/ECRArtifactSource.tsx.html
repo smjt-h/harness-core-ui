@@ -23,16 +23,16 @@
         <div class='clearfix'>
             
             <div class='fl pad1y space-right2'>
-                <span class="strong">35.59% </span>
+                <span class="strong">34.43% </span>
                 <span class="quiet">Statements</span>
-                <span class='fraction'>21/59</span>
+                <span class='fraction'>21/61</span>
             </div>
         
             
             <div class='fl pad1y space-right2'>
                 <span class="strong">0% </span>
                 <span class="quiet">Branches</span>
-                <span class='fraction'>0/383</span>
+                <span class='fraction'>0/385</span>
             </div>
         
             
@@ -44,9 +44,9 @@
         
             
             <div class='fl pad1y space-right2'>
-                <span class="strong">36.84% </span>
+                <span class="strong">35.59% </span>
                 <span class="quiet">Lines</span>
-                <span class='fraction'>21/57</span>
+                <span class='fraction'>21/59</span>
             </div>
         
             
@@ -533,7 +533,7 @@
 <span class="cline-any cline-no">&nbsp;</span>
 <span class="cline-any cline-no">&nbsp;</span>
 <span class="cline-any cline-no">&nbsp;</span>
-<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
@@ -582,7 +582,7 @@
 <span class="cline-any cline-no">&nbsp;</span>
 <span class="cline-any cline-no">&nbsp;</span>
 <span class="cline-any cline-no">&nbsp;</span>
-<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
@@ -711,11 +711,11 @@ import {
 import { ArtifactSourceBase, ArtifactSourceRenderProps } from '@cd/factory/ArtifactSourceFactory/ArtifactSourceBase'
 import { yamlStringify } from '@common/utils/YamlHelperMethods'
 import { useMutateAsGet } from '@common/hooks'
-import { ErrorHandler } from '@common/components/ErrorHandler/ErrorHandler'
+import { ErrorHandler, ErrorHandlerProps } from '@common/components/ErrorHandler/ErrorHandler'
 import { FormMultiTypeConnectorField } from '@connectors/components/ConnectorReferenceField/FormMultiTypeConnectorField'
 import { EXPRESSION_STRING } from '@pipeline/utils/constants'
-import { useGetBuildDetailsForEcrWithYaml } from 'services/cd-ng'
-import { useListAwsRegions } from 'services/portal'
+import { PipelineInfoConfig, useGetBuildDetailsForEcrWithYaml } from 'services/cd-ng'
+import { NameValuePair, useListAwsRegions } from 'services/portal'
 import ExperimentalInput from './K8sServiceSpecForms/ExperimentalInput'
 import { clearRuntimeInputValue, isFieldRuntime } from './K8sServiceSpecHelper'
 import css from './K8sServiceSpec.module.scss'
@@ -724,7 +724,7 @@ interface ECRRenderContent extends ArtifactSourceRenderProps {
   isTagsSelectionDisabled: (data: ArtifactSourceRenderProps) =&gt; boolean
 }
 &nbsp;
-const Content = <span class="fstat-no" title="function not covered" >(p</span>rops: ECRRenderContent) =&gt; {
+const Content = <span class="fstat-no" title="function not covered" >(p</span>rops: ECRRenderContent): JSX.Element =&gt; {
   const {
     getString,
     isPrimaryArtifactsRuntime,
@@ -745,7 +745,7 @@ const Content = <span class="fstat-no" title="function not covered" >(p</span>ro
     isTagsSelectionDisabled
   } = <span class="cstat-no" title="statement not covered" >props</span>
 &nbsp;
-  const getYamlData = <span class="cstat-no" title="statement not covered" ><span class="fstat-no" title="function not covered" >() =</span>&gt;</span>
+  const getYamlData = <span class="cstat-no" title="statement not covered" ><span class="fstat-no" title="function not covered" >(): PipelineInfoConfig =</span>&gt;</span>
 <span class="cstat-no" title="statement not covered" >    clearRuntimeInputValue(</span>
       cloneDeep(
         parse(
@@ -813,7 +813,7 @@ const Content = <span class="fstat-no" title="function not covered" >(p</span>ro
       accountId
     }
   })
-  const regions = <span class="cstat-no" title="statement not covered" >(regionData?.resource || []).map(<span class="fstat-no" title="function not covered" >(r</span>egion: any) =&gt; (<span class="cstat-no" title="statement not covered" >{</span></span>
+  const regions = <span class="cstat-no" title="statement not covered" >(regionData?.resource || []).map(<span class="fstat-no" title="function not covered" >(r</span>egion: NameValuePair) =&gt; (<span class="cstat-no" title="statement not covered" >{</span></span>
     value: region.value,
     label: region.name
   }))
@@ -847,9 +847,9 @@ const Content = <span class="fstat-no" title="function not covered" >(p</span>ro
                 onChange={<span class="fstat-no" title="function not covered" >() =</span>&gt; {
                   const tagPath = <span class="cstat-no" title="statement not covered" >`${path}.artifacts.primary.spec.tag`</span>
                   const tagValue = <span class="cstat-no" title="statement not covered" >get(formik?.values, tagPath, '')</span>
-<span class="cstat-no" title="statement not covered" >                  getMultiTypeFromValue(tagValue) === MultiTypeInputType.FIXED &amp;&amp;</span>
-                    tagValue?.length &amp;&amp;
-                    formik?.setFieldValue(tagPath, '')
+<span class="cstat-no" title="statement not covered" >                  if (getMultiTypeFromValue(tagValue) === MultiTypeInputType.FIXED &amp;&amp; tagValue?.length) {</span>
+<span class="cstat-no" title="statement not covered" >                    formik?.setFieldValue(tagPath, '')</span>
+                  }
                 }}
                 className={css.connectorMargin}
                 type="Aws"
@@ -896,9 +896,9 @@ const Content = <span class="fstat-no" title="function not covered" >(p</span>ro
                 onChange={<span class="fstat-no" title="function not covered" >() =</span>&gt; {
                   const tagPath = <span class="cstat-no" title="statement not covered" >`${path}.artifacts.primary.spec.tag`</span>
                   const tagValue = <span class="cstat-no" title="statement not covered" >get(formik?.values, tagPath, '')</span>
-<span class="cstat-no" title="statement not covered" >                  getMultiTypeFromValue(tagValue) === MultiTypeInputType.FIXED &amp;&amp;</span>
-                    tagValue?.length &amp;&amp;
-                    formik?.setFieldValue(tagPath, '')
+<span class="cstat-no" title="statement not covered" >                  if (getMultiTypeFromValue(tagValue) === MultiTypeInputType.FIXED &amp;&amp; tagValue?.length) {</span>
+<span class="cstat-no" title="statement not covered" >                    formik?.setFieldValue(tagPath, '')</span>
+                  }
                 }}
               /&gt;
             )}
@@ -911,7 +911,7 @@ const Content = <span class="fstat-no" title="function not covered" >(p</span>ro
                   selectItems={tagsList}
                   useValue
                   multiTypeInputProps={{
-                    onFocus: <span class="fstat-no" title="function not covered" >(e</span>: any) =&gt; {
+                    onFocus: <span class="fstat-no" title="function not covered" >(e</span>: React.ChangeEvent&lt;HTMLInputElement&gt;) =&gt; {
 <span class="cstat-no" title="statement not covered" >                      if (</span>
                         e?.target?.type !== 'text' ||
                         (e?.target?.type === 'text' &amp;&amp; e?.target?.placeholder === EXPRESSION_STRING)
@@ -951,7 +951,7 @@ const Content = <span class="fstat-no" title="function not covered" >(p</span>ro
                   name={`${path}.artifacts.primary.spec.tag`}
                 /&gt;
                 {fetchTagsError ? (
-                  &lt;ErrorHandler responseMessages={(fetchTagsError.data as any)?.responseMessages} /&gt;
+                  &lt;ErrorHandler responseMessages={(fetchTagsError.data as ErrorHandlerProps)?.responseMessages} /&gt;
                 ) : null}
               &lt;/Layout.Vertical&gt;
             )}
@@ -977,7 +977,7 @@ export class ECRArtifactSource extends ArtifactSourceBase&lt;ArtifactSourceRende
   protected artifactType = 'Ecr'
   protected isSidecar = false
 &nbsp;
-<span class="fstat-no" title="function not covered" >  isTagsSelectionDisabled(</span>props: ArtifactSourceRenderProps) {
+<span class="fstat-no" title="function not covered" >  isTagsSelectionDisabled(</span>props: ArtifactSourceRenderProps): boolean {
     const { artifacts, initialValues } = <span class="cstat-no" title="statement not covered" >props</span>
     const isImagePathPresent =
 <span class="cstat-no" title="statement not covered" >      getMultiTypeFromValue(artifacts?.primary?.spec?.imagePath) !== MultiTypeInputType.RUNTIME</span>
@@ -994,7 +994,7 @@ export class ECRArtifactSource extends ArtifactSourceBase&lt;ArtifactSourceRende
 <span class="cstat-no" title="statement not covered" >    return !(isImagePathPresent &amp;&amp; isConnectorPresent &amp;&amp; isRegionPresent)</span>
   }
 &nbsp;
-<span class="fstat-no" title="function not covered" >  renderContent(</span>props: ArtifactSourceRenderProps) {
+<span class="fstat-no" title="function not covered" >  renderContent(</span>props: ArtifactSourceRenderProps): JSX.Element | null {
 <span class="cstat-no" title="statement not covered" >    if (!props.isArtifactsRuntime) {</span>
 <span class="cstat-no" title="statement not covered" >      return null</span>
     }
@@ -1009,7 +1009,7 @@ export class ECRArtifactSource extends ArtifactSourceBase&lt;ArtifactSourceRende
             <div class='footer quiet pad2 space-top1 center small'>
                 Code coverage generated by
                 <a href="https://istanbul.js.org/" target="_blank">istanbul</a>
-                at Fri Jan 21 2022 11:29:37 GMT+0000 (Greenwich Mean Time)
+                at Fri Jan 21 2022 13:33:46 GMT+0000 (Greenwich Mean Time)
             </div>
         </div>
         <script src="../../../../../prettify.js"></script>
