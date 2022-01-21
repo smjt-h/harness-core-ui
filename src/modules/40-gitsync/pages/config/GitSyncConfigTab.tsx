@@ -35,7 +35,7 @@ const GitSyncConfigTab: React.FC = () => {
   const { accountId, projectIdentifier, orgIdentifier } = useParams<ProjectPathProps>()
   const { getString } = useStrings()
   const { showError, showSuccess } = useToaster()
-  const [fullSyncEntities, setFullSyncEntities] = useState<PageGitFullSyncEntityInfoDTO | void>()
+  const [fullSyncEntities, setFullSyncEntities] = useState<PageGitFullSyncEntityInfoDTO | undefined>()
   const [searchTerm, setSearchTerm] = useState('')
   const [page, setPage] = useState(0)
   const [showOnlyFailed, setShowOnlyFailed] = useState(false)
