@@ -7,16 +7,7 @@
 
 import React, { SyntheticEvent } from 'react'
 import { Drawer, Intent, Position } from '@blueprintjs/core'
-import {
-  Button,
-  Icon,
-  Text,
-  Color,
-  useConfirmationDialog,
-  FontVariation,
-  ButtonVariation,
-  ButtonSize
-} from '@wings-software/uicore'
+import { Button, useConfirmationDialog } from '@wings-software/uicore'
 import { cloneDeep, defaultTo, get, isEmpty, isEqual, isNil, set } from 'lodash-es'
 import cx from 'classnames'
 import produce from 'immer'
@@ -55,6 +46,7 @@ import type { StepData } from '../../AbstractSteps/AbstractStepFactory'
 import { StepType } from '../../PipelineSteps/PipelineStepInterface'
 import { FlowControl } from '../FlowControl/FlowControl'
 import { AdvancedOptions } from '../AdvancedOptions/AdvancedOptions'
+import { RightDrawerTitle } from './RightDrawerTitle'
 import css from './RightDrawer.module.scss'
 
 export const FullscreenDrawers: DrawerTypes[] = [
@@ -99,7 +91,7 @@ export const updateStepWithinStage = (
     if (stepWithinStage.stepGroup) {
       // If stage has a step group, loop over the step group steps and update the matching identifier with node
       if (stepWithinStage.stepGroup?.identifier === processingNodeIdentifier) {
-        stepWithinStage.stepGroup = processedNode
+        stepWithinStage.stepGroup = processedNode as any
       } else {
         updateStepWithinStage(stepWithinStage.stepGroup, processingNodeIdentifier, processedNode)
       }
@@ -107,16 +99,16 @@ export const updateStepWithinStage = (
       // If stage has a parallel steps, loop over and update the matching identifier with node
       stepWithinStage.parallel.forEach(parallelStep => {
         if (parallelStep?.stepGroup?.identifier === processingNodeIdentifier) {
-          parallelStep.stepGroup = processedNode
+          parallelStep.stepGroup = processedNode as any
         } else if (parallelStep.step?.identifier === processingNodeIdentifier) {
-          parallelStep.step = processedNode
+          parallelStep.step = processedNode as any
         } else if (parallelStep?.stepGroup) {
           updateStepWithinStage(parallelStep?.stepGroup, processingNodeIdentifier, processedNode)
         }
       })
     } else if (stepWithinStage.step?.identifier === processingNodeIdentifier) {
       // Else simply find the matching step ad update the node
-      stepWithinStage.step = processedNode
+      stepWithinStage.step = processedNode as any
     }
   })
   if (execution?.rollbackSteps) {
@@ -147,11 +139,11 @@ export const RightDrawer: React.FC = (): JSX.Element => {
   const { trackEvent } = useTelemetry()
   const { openTemplateSelector, closeTemplateSelector } = useTemplateSelector()
 
-  const { stage: selectedStage } = getStageFromPipeline(selectedStageId || '')
+  const { stage: selectedStage } = getStageFromPipeline(defaultTo(selectedStageId, ''))
   const stageType = selectedStage?.stage?.type
 
   let stepData = (data?.stepConfig?.node as StepElementConfig)?.type
-    ? stepsFactory.getStepData((data?.stepConfig?.node as StepElementConfig)?.type || '')
+    ? stepsFactory.getStepData(defaultTo((data?.stepConfig?.node as StepElementConfig)?.type, ''))
     : null
   const templateStepTemplate = (data?.stepConfig?.node as TemplateStepNode)?.template
   const formikRef = React.useRef<StepFormikRef | null>(null)
@@ -181,12 +173,12 @@ export const RightDrawer: React.FC = (): JSX.Element => {
       setSelectedStepId(undefined)
       if (data?.stepConfig?.isStepGroup) {
         trackEvent(StepActions.AddEditStepGroup, {
-          name: (formikRef?.current?.getValues?.() as Values).name || ''
+          name: defaultTo((formikRef?.current?.getValues?.() as Values).name, '')
         })
       } else {
         trackEvent(StepActions.AddEditStep, {
-          name: data?.stepConfig?.node?.name || '',
-          type: (data?.stepConfig?.node as StepElementConfig)?.type || ''
+          name: defaultTo(data?.stepConfig?.node?.name, ''),
+          type: defaultTo((data?.stepConfig?.node as StepElementConfig)?.type, '')
         })
       }
     }
@@ -208,36 +200,13 @@ export const RightDrawer: React.FC = (): JSX.Element => {
       : get(templateTypes, getIdentifierFromValue(templateStepTemplate.templateRef))
     const toolTipType = type ? `_${type}` : ''
     title = (
-      <div className={css.stepConfig}>
-        <div className={css.title}>
-          <Icon
-            name={stepsFactory.getStepIcon(stepType || '')}
-            {...(stepsFactory.getStepIconColor(stepType || '')
-              ? { color: stepsFactory.getStepIconColor(stepType || '') }
-              : {})}
-            style={{ color: stepsFactory.getStepIconColor(stepType || '') }}
-            size={24}
-          />
-          <Text
-            lineClamp={1}
-            color={Color.BLACK}
-            tooltipProps={{ dataTooltipId: `${stepType}_stepName${toolTipType}` }}
-            font={{ variation: FontVariation.H4 }}
-          >
-            {stepData ? stepData?.name : stepsFactory.getStepName(stepType || '')}
-          </Text>
-        </div>
-        <div>
-          <Button
-            variation={ButtonVariation.SECONDARY}
-            size={ButtonSize.SMALL}
-            className={css.applyChanges}
-            text={getString('applyChanges')}
-            onClick={applyChanges}
-          />
-          <Button minimal className={css.discard} text={getString('pipeline.discard')} onClick={discardChanges} />
-        </div>
-      </div>
+      <RightDrawerTitle
+        stepType={stepType}
+        toolTipType={toolTipType}
+        stepData={stepData}
+        discardChanges={discardChanges}
+        applyChanges={applyChanges}
+      ></RightDrawerTitle>
     )
   } else {
     if (type === DrawerTypes.PipelineNotifications) {
@@ -258,7 +227,7 @@ export const RightDrawer: React.FC = (): JSX.Element => {
         drawerType = DrawerTypes.ConfigureService
         // 2. search for step in serviceDependencies
         const depStep = (selectedStage?.stage as BuildStageElementConfig)?.spec?.serviceDependencies?.find(
-          (item: any) => item.identifier === selectedStepId
+          (item: DependencyElement) => item.identifier === selectedStepId
         )
         step = depStep
       }
@@ -389,7 +358,7 @@ export const RightDrawer: React.FC = (): JSX.Element => {
     const { stage: pipelineStage } = (selectedStageId && cloneDeep(getStageFromPipeline(selectedStageId))) || {}
     if (data?.stepConfig?.addOrEdit === 'add' && pipelineStage) {
       const newServiceData: DependencyElement = {
-        identifier: item.identifier || '',
+        identifier: defaultTo(item.identifier, ''),
         name: item.name,
         type: StepType.Dependency,
         ...((item as StepElementConfig).description && { description: (item as StepElementConfig).description }),
@@ -398,7 +367,10 @@ export const RightDrawer: React.FC = (): JSX.Element => {
       if (!(pipelineStage.stage as BuildStageElementConfig)?.spec?.serviceDependencies?.length) {
         set(pipelineStage, 'stage.spec.serviceDependencies', [])
       }
-      addService((pipelineStage.stage as BuildStageElementConfig)?.spec?.serviceDependencies || [], newServiceData)
+      addService(
+        defaultTo((pipelineStage.stage as BuildStageElementConfig)?.spec?.serviceDependencies, []),
+        newServiceData
+      )
       if (pipelineStage.stage) {
         await updateStage(pipelineStage.stage)
       }
@@ -468,7 +440,7 @@ export const RightDrawer: React.FC = (): JSX.Element => {
   const onStepSelection = async (item: StepData): Promise<void> => {
     const paletteData = data?.paletteData
     if (paletteData?.entity) {
-      const { stage: pipelineStage } = cloneDeep(getStageFromPipeline(selectedStageId || ''))
+      const { stage: pipelineStage } = cloneDeep(getStageFromPipeline(defaultTo(selectedStageId, '')))
       const newStepData = {
         step: {
           type: item.type,
@@ -527,7 +499,7 @@ export const RightDrawer: React.FC = (): JSX.Element => {
       set(draft, 'drawerData.data.stepConfig.node', processNode)
     })
     updatePipelineView(newPipelineView)
-    const processingNodeIdentifier = drawerData.data?.stepConfig?.node?.identifier || ''
+    const processingNodeIdentifier = defaultTo(drawerData.data?.stepConfig?.node?.identifier, '')
     const stageData = produce(selectedStage, draft => {
       if (draft?.stage?.spec?.execution) {
         updateStepWithinStage(draft.stage.spec.execution, processingNodeIdentifier, processNode as any)
@@ -560,7 +532,7 @@ export const RightDrawer: React.FC = (): JSX.Element => {
           return
         }
         const processNode = isCopied
-          ? produce(defaultTo(parse(template?.yaml || '').template.spec, {}) as StepElementConfig, draft => {
+          ? produce(defaultTo(parse(defaultTo(template?.yaml, '')).template.spec, {}) as StepElementConfig, draft => {
               draft.name = defaultTo(node?.name, '')
               draft.identifier = defaultTo(node?.identifier, '')
             })
@@ -661,7 +633,7 @@ export const RightDrawer: React.FC = (): JSX.Element => {
       {type === DrawerTypes.PipelineVariables && <PipelineVariables />}
       {type === DrawerTypes.Templates && <PipelineTemplates />}
       {type === DrawerTypes.ExecutionStrategy && (
-        <ExecutionStrategy selectedStage={selectedStage || {}} ref={executionStrategyRef} />
+        <ExecutionStrategy selectedStage={defaultTo(selectedStage, {})} ref={executionStrategyRef} />
       )}
       {type === DrawerTypes.PipelineNotifications && <PipelineNotifications />}
       {type === DrawerTypes.FlowControl && <FlowControl />}
