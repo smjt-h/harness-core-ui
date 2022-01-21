@@ -91,7 +91,7 @@ export default function RouteDestinations(): React.ReactElement {
         <AuthSettingsRoutes />
       </Route>
       {CENG_ENABLED ? (
-        <Route path="/account/:accountId/:module(ce)">
+        <Route path="/account/:accountId">
           <CERoutes />
         </Route>
       ) : null}
