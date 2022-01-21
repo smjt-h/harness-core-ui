@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from 'react'
+import React, { useCallback, useEffect, useState } from 'react'
 import {
   Container,
   Layout,
@@ -8,39 +8,70 @@ import {
   PageSpinner,
   ExpandingSearchInput,
   Checkbox,
-  useToaster
+  useToaster,
+  MultiSelectDropDown,
+  SelectOption,
+  MultiSelectOption
 } from '@wings-software/uicore'
 import { useParams } from 'react-router-dom'
+import { defaultTo } from 'lodash-es'
+import debounce from 'p-debounce'
 import type { ProjectPathProps } from '@common/interfaces/RouteInterfaces'
-import { triggerFullSyncPromise, useListFullSyncFiles } from 'services/cd-ng'
+import {
+  GitFullSyncEntityInfoFilterKeys,
+  PageGitFullSyncEntityInfoDTO,
+  triggerFullSyncPromise,
+  useListFullSyncFiles
+} from 'services/cd-ng'
 import { useStrings } from 'framework/strings'
 import { setPageNumber } from '@common/utils/utils'
+import { Entities } from '@common/interfaces/GitSyncInterface'
 import GitFullSyncEntityList from './GitFullSyncEntityList'
+import css from './GitSyncConfigTab.module.scss'
+
+const debounceWait = 500
 
 const GitSyncConfigTab: React.FC = () => {
   const { accountId, projectIdentifier, orgIdentifier } = useParams<ProjectPathProps>()
   const { getString } = useStrings()
   const { showError, showSuccess } = useToaster()
+  const [fullSyncEntities, setFullSyncEntities] = useState<PageGitFullSyncEntityInfoDTO | void>()
   const [searchTerm, setSearchTerm] = useState('')
   const [page, setPage] = useState(0)
   const [showOnlyFailed, setShowOnlyFailed] = useState(false)
+  const [selectedEntity, setSelectedEntity] = useState<MultiSelectOption[]>()
 
-  const {
-    data: fullSyncEntities,
-    loading,
-    refetch
-  } = useListFullSyncFiles({
+  const { mutate: getFullSyncFiles, loading } = useListFullSyncFiles({
     queryParams: {
       accountIdentifier: accountId,
       orgIdentifier,
       projectIdentifier,
       pageIndex: page,
       pageSize: 10,
-      syncStatus: showOnlyFailed ? 'FAILED' : undefined,
       searchTerm
-    },
-    debounce: 500
+    }
   })
+
+  const debouncedGetFullSyncFiles = useCallback(
+    debounce(() => {
+      return getFullSyncFiles({
+        syncStatus: showOnlyFailed ? 'FAILED' : undefined,
+        entityTypes: selectedEntity?.map(
+          (option: MultiSelectOption) => option.value
+        ) as GitFullSyncEntityInfoFilterKeys['entityTypes']
+      })
+    }, debounceWait),
+    [getFullSyncFiles, showOnlyFailed, debounceWait, selectedEntity]
+  )
+
+  useEffect(() => {
+    setPageNumber({ setPage, page, pageItemsCount: fullSyncEntities?.pageItemCount })
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [fullSyncEntities])
+
+  useEffect(() => {
+    debouncedGetFullSyncFiles().then(response => setFullSyncEntities(response.data))
+  }, [searchTerm, page, showOnlyFailed, selectedEntity, debouncedGetFullSyncFiles])
 
   const handleReSync = async (): Promise<void> => {
     const triggerFullSync = await triggerFullSyncPromise({
@@ -51,7 +82,7 @@ const GitSyncConfigTab: React.FC = () => {
       },
       body: undefined
     })
-    refetch()
+    setFullSyncEntities((await debouncedGetFullSyncFiles()).data)
 
     if (triggerFullSync.status === 'SUCCESS') {
       showSuccess('Resync triggered')
@@ -60,86 +91,24 @@ const GitSyncConfigTab: React.FC = () => {
     }
   }
 
-  useEffect(() => {
-    setPageNumber({ setPage, page, pageItemsCount: fullSyncEntities?.data?.pageItemCount })
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [fullSyncEntities?.data])
-
-  useEffect(() => {
-    refetch()
-  }, [searchTerm, page, showOnlyFailed, refetch])
-
-  //   const mockData: GitFullSyncEntityInfoDTO[] = [
-  //     {
-  //       accountIdentifier: accountId,
-  //       branch: 'master',
-  //       entityType: 'Connectors',
-  //       filePath: 'connectors/dummy.yaml',
-  //       name: 'dummy',
-  //       orgIdentifier,
-  //       projectIdentifier,
-  //       repoName: 'repoOne',
-  //       retryCount: 0,
-  //       syncStatus: 'SUCCESS'
-  //     },
-  //     {
-  //       accountIdentifier: accountId,
-  //       branch: 'master',
-  //       entityType: 'Pipelines',
-  //       filePath: 'pipelines/abc.yaml',
-  //       name: 'abc',
-  //       orgIdentifier,
-  //       projectIdentifier,
-  //       repoName: 'repoOne',
-  //       retryCount: 0,
-  //       syncStatus: 'SUCCESS'
-  //     },
-  //     {
-  //       accountIdentifier: accountId,
-  //       branch: 'master',
-  //       entityType: 'Template',
-  //       filePath: 'template.yaml',
-  //       name: 'template',
-  //       orgIdentifier,
-  //       projectIdentifier,
-  //       repoName: 'repoOne',
-  //       retryCount: 0,
-  //       syncStatus: 'FAILED'
-  //     },
-  //     {
-  //       accountIdentifier: accountId,
-  //       branch: 'dev',
-  //       entityType: 'Pipelines',
-  //       filePath: 'pipeline.yaml',
-  //       name: 'pipeline',
-  //       orgIdentifier,
-  //       projectIdentifier,
-  //       repoName: 'repoOne',
-  //       retryCount: 0,
-  //       syncStatus: 'QUEUED'
-  //     },
-  //     {
-  //       accountIdentifier: accountId,
-  //       branch: 'dev',
-  //       entityType: 'InputSets',
-  //       filePath: 'inputSet.yaml',
-  //       name: 'inputSet',
-  //       orgIdentifier,
-  //       projectIdentifier,
-  //       repoName: 'repoOne',
-  //       retryCount: 0,
-  //       syncStatus: 'FAILED'
-  //     }
-  //   ]
-  //   const mockResponse = {
-  //     content: mockData,
-  //     empty: false,
-  //     pageIndex: 0,
-  //     pageItemCount: 4,
-  //     pageSize: 10,
-  //     totalItems: 5,
-  //     totalPages: 1
-  //   }
+  const supportedGitEntities: SelectOption[] = [
+    {
+      label: 'CONNECTORS',
+      value: defaultTo(Entities.CONNECTORS?.toString(), '')
+    },
+    {
+      label: 'PIPELINES',
+      value: defaultTo(Entities.PIPELINES?.toString(), '')
+    },
+    {
+      label: 'INPUT_SETS',
+      value: defaultTo(Entities.INPUT_SETS?.toString(), '')
+    },
+    {
+      label: 'TEMPLATE',
+      value: defaultTo(Entities.TEMPLATE?.toString(), '')
+    }
+  ]
 
   return (
     <>
@@ -156,6 +125,16 @@ const GitSyncConfigTab: React.FC = () => {
                 }}
               />
             </Container>
+            <MultiSelectDropDown
+              buttonTestId={'entityTypeFilter'}
+              value={selectedEntity}
+              width={200}
+              items={supportedGitEntities}
+              usePortal={true}
+              placeholder={'Entity Type'}
+              className={css.entityTypeFilter}
+              onChange={setSelectedEntity}
+            />
           </Layout.Horizontal>
           <Layout.Horizontal spacing="medium">
             <ExpandingSearchInput
@@ -180,12 +159,9 @@ const GitSyncConfigTab: React.FC = () => {
       <Page.Body>
         {loading ? (
           <PageSpinner />
-        ) : fullSyncEntities?.data?.totalItems ? (
+        ) : fullSyncEntities?.totalItems ? (
           <Container padding="xlarge">
-            <GitFullSyncEntityList
-              data={fullSyncEntities?.data}
-              gotoPage={(pageNumber: number) => setPage(pageNumber)}
-            />
+            <GitFullSyncEntityList data={fullSyncEntities} gotoPage={(pageNumber: number) => setPage(pageNumber)} />
           </Container>
         ) : (
           <Page.NoDataCard message={getString('noData')} />

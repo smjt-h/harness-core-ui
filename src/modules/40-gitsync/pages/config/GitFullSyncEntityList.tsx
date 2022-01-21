@@ -85,7 +85,6 @@ const RenderColumnBranch: Renderer<CellProps<GitFullSyncEntityInfoDTO>> = ({ row
 
 const GitFullSyncEntityList: React.FC<GitFullSyncEntityListProps> = props => {
   const { data, gotoPage } = props
-  //const { getString } = useStrings()
 
   const listData: GitFullSyncEntityInfoDTO[] = data?.content || []
   const columns: Column<GitFullSyncEntityInfoDTO>[] = [
