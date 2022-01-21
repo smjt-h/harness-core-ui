@@ -6,10 +6,10 @@
  */
 
 const packageJSON = require('../package.json')
-const { pick, omit, mapValues } = require('lodash')
+const { pick, mapValues } = require('lodash')
 
 /**
- * These packages must be stricly shared with exact versions
+ * These packages must be strictly shared with exact versions
  */
 const ExactSharedPackages = [
   'formik',
@@ -36,12 +36,12 @@ module.exports = ({ enableGitOpsUI }) => {
   return {
     name: 'nextgenui',
     remotes,
-    shared: Object.assign(
-      {},
-      mapValues(pick(packageJSON.dependencies, ExactSharedPackages), version => ({
+    shared: {
+      ...packageJSON.dependencies,
+      ...mapValues(pick(packageJSON.dependencies, ExactSharedPackages), version => ({
         singleton: true,
         requiredVersion: version
       }))
-    )
+    }
   }
 }
