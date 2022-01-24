@@ -23,16 +23,16 @@
         <div class='clearfix'>
             
             <div class='fl pad1y space-right2'>
-                <span class="strong">96.43% </span>
+                <span class="strong">96.67% </span>
                 <span class="quiet">Statements</span>
-                <span class='fraction'>27/28</span>
+                <span class='fraction'>29/30</span>
             </div>
         
             
             <div class='fl pad1y space-right2'>
-                <span class="strong">82.93% </span>
+                <span class="strong">82.76% </span>
                 <span class="quiet">Branches</span>
-                <span class='fraction'>34/41</span>
+                <span class='fraction'>24/29</span>
             </div>
         
             
@@ -44,9 +44,9 @@
         
             
             <div class='fl pad1y space-right2'>
-                <span class="strong">96.15% </span>
+                <span class="strong">96.43% </span>
                 <span class="quiet">Lines</span>
-                <span class='fraction'>25/26</span>
+                <span class='fraction'>27/28</span>
             </div>
         
             
@@ -184,7 +184,10 @@
 <a name='L125'></a><a href='#L125'>125</a>
 <a name='L126'></a><a href='#L126'>126</a>
 <a name='L127'></a><a href='#L127'>127</a>
-<a name='L128'></a><a href='#L128'>128</a></td><td class="line-coverage quiet"><span class="cline-any cline-neutral">&nbsp;</span>
+<a name='L128'></a><a href='#L128'>128</a>
+<a name='L129'></a><a href='#L129'>129</a>
+<a name='L130'></a><a href='#L130'>130</a>
+<a name='L131'></a><a href='#L131'>131</a></td><td class="line-coverage quiet"><span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
@@ -205,6 +208,7 @@
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-yes">9x</span>
 <span class="cline-any cline-yes">9x</span>
+<span class="cline-any cline-yes">9x</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
@@ -219,7 +223,6 @@
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-yes">9x</span>
 <span class="cline-any cline-yes">9x</span>
-<span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-yes">9x</span>
 <span class="cline-any cline-yes">9x</span>
 <span class="cline-any cline-yes">9x</span>
@@ -232,6 +235,9 @@
 <span class="cline-any cline-yes">9x</span>
 <span class="cline-any cline-yes">9x</span>
 <span class="cline-any cline-yes">9x</span>
+<span class="cline-any cline-yes">9x</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
@@ -322,7 +328,7 @@ import React from 'react'
 import { defaultTo } from 'lodash-es'
 &nbsp;
 import { Color, FontVariation, Icon, Layout, Text } from '@wings-software/uicore'
-import type { PipelineInfoConfig } from 'services/cd-ng'
+import type { GitSyncEntityDTO, PipelineInfoConfig } from 'services/cd-ng'
 import type { EntityGitDetails, NGTemplateInfoConfig } from 'services/template-ng'
 import { useGitSyncStore } from 'framework/GitRepoStore/GitSyncStoreContext'
 import { useStrings } from 'framework/strings'
@@ -330,6 +336,7 @@ import { getRepoDetailsByIndentifier } from '@common/utils/gitSyncUtils'
 import GitFilters, { GitFilterScope } from '@common/components/GitFilters/GitFilters'
 import { useQueryParams } from '@common/hooks'
 import type { GitQueryParams } from '@common/interfaces/RouteInterfaces'
+import { getEntityUrl, getRepoEntityObject } from '@gitsync/common/gitSyncUtils'
 import { DefaultNewPipelineId } from './PipelineContext/PipelineActions'
 import GitPopover from '../GitPopover/GitPopover'
 &nbsp;
@@ -346,7 +353,6 @@ const breakWord = 'break-word'
 &nbsp;
 export const GitDetails = (props: StudioGitPopoverProps): JSX.Element =&gt; {
   const { gitDetails, identifier, isReadonly, onGitBranchChange, entityType } = props
-&nbsp;
   const { repoIdentifier, branch } = useQueryParams&lt;GitQueryParams&gt;()
   const { gitSyncRepos, loadingRepos } = useGitSyncStore()
   const { getString } = useStrings()
@@ -356,43 +362,46 @@ export const GitDetails = (props: StudioGitPopoverProps): JSX.Element =&gt; {
   }
 &nbsp;
   <span class="missing-if-branch" title="else path not taken" >E</span>if (gitDetails<span class="branch-0 cbranch-no" title="branch not covered" >?.o</span>bjectId || (identifier === DefaultNewPipelineId &amp;&amp; gitDetails.repoIdentifier)) {
-    const repoName: string = defaultTo(getRepoDetailsByIndentifier(gitDetails<span class="branch-0 cbranch-no" title="branch not covered" >?.r</span>epoIdentifier, gitSyncRepos)<span class="branch-0 cbranch-no" title="branch not covered" >?.n</span>ame, '')
-    const folderName = `${defaultTo(gitDetails<span class="branch-0 cbranch-no" title="branch not covered" >?.r</span>ootFolder, '')}${defaultTo(gitDetails<span class="branch-0 cbranch-no" title="branch not covered" >?.f</span>ilePath, '')}`
+    const repo = getRepoDetailsByIndentifier(gitDetails<span class="branch-0 cbranch-no" title="branch not covered" >?.r</span>epoIdentifier, gitSyncRepos)
+    const repoEntity: GitSyncEntityDTO = getRepoEntityObject(repo, gitDetails)
+    const repoName: string = defaultTo(repo<span class="branch-0 cbranch-no" title="branch not covered" >?.n</span>ame, '')
     return (
       &lt;&gt;
         &lt;Layout.Vertical spacing="large"&gt;
-          {identifier === DefaultNewPipelineId &amp;&amp; !loadingRepos ? (
-            &lt;Text font={{ size: 'small' }} color={Color.GREY_400}&gt;
-              {getString('repository')}
+          &lt;Text font={{ size: 'small' }} color={Color.GREY_400}&gt;
+            {getString('repository')}
+          &lt;/Text&gt;
+          &lt;Layout.Horizontal spacing="small" style={{ alignItems: 'center' }}&gt;
+            &lt;Icon name="repository" size={16} color={Color.GREY_700} /&gt;
+            &lt;Text
+              font={FontVariation.SMALL}
+              style={{ wordWrap: breakWord, maxWidth: '200px' }}
+              lineClamp={1}
+              color={Color.GREY_800}
+            &gt;
+              {repoName}
             &lt;/Text&gt;
-          ) : (
+          &lt;/Layout.Horizontal&gt;
+        &lt;/Layout.Vertical&gt;
+        {identifier === DefaultNewPipelineId &amp;&amp; !loadingRepos ? null : (
+          &lt;Layout.Vertical spacing="large"&gt;
             &lt;Text font={{ size: 'small' }} color={Color.GREY_400}&gt;
               {getString('common.git.filePath')}
             &lt;/Text&gt;
-          )}
-          &lt;Layout.Horizontal spacing="small" style={{ alignItems: 'center' }}&gt;
-            &lt;Icon name="repository" size={16} color={Color.GREY_700} /&gt;
-            {identifier === DefaultNewPipelineId &amp;&amp; !loadingRepos ? (
+            &lt;Layout.Horizontal spacing="small" style={{ alignItems: 'center' }}&gt;
+              &lt;Icon name="repository" size={16} color={Color.GREY_700} /&gt;
               &lt;Text
+                data-testid={`${repoEntity.folderPath}${repoEntity.entityGitPath}`}
                 font={FontVariation.SMALL}
                 style={{ wordWrap: breakWord, maxWidth: '200px' }}
                 lineClamp={1}
                 color={Color.GREY_800}
               &gt;
-                {repoName}
+                {getEntityUrl(repoEntity)}
               &lt;/Text&gt;
-            ) : (
-              &lt;Text
-                font={FontVariation.SMALL}
-                style={{ wordWrap: breakWord, maxWidth: '200px' }}
-                lineClamp={1}
-                color={Color.GREY_800}
-              &gt;
-                {folderName}
-              &lt;/Text&gt;
-            )}
-          &lt;/Layout.Horizontal&gt;
-        &lt;/Layout.Vertical&gt;
+            &lt;/Layout.Horizontal&gt;
+          &lt;/Layout.Vertical&gt;
+        )}
 &nbsp;
         &lt;Layout.Vertical spacing="large"&gt;
           &lt;Text font={{ size: 'small' }} color={Color.GREY_400}&gt;
@@ -445,7 +454,7 @@ export default StudioGitPopover
             <div class='footer quiet pad2 space-top1 center small'>
                 Code coverage generated by
                 <a href="https://istanbul.js.org/" target="_blank">istanbul</a>
-                at Mon Jan 24 2022 07:21:12 GMT+0000 (Greenwich Mean Time)
+                at Mon Jan 24 2022 11:32:11 GMT+0000 (Greenwich Mean Time)
             </div>
         </div>
         <script src="../../../../prettify.js"></script>
