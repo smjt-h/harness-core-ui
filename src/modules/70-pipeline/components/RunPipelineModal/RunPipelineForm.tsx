@@ -968,13 +968,27 @@ function RunPipelineFormBasic({
     return existingProvide === 'existing' && selectedInputSets?.length
   }
 
-  const visualView = () => {
+  const visualView = (submitForm: () => void) => {
     const noRuntimeInputs = checkIfRuntimeInputsNotPresent()
     return (
       <div
         className={cx(executionView ? css.runModalFormContentExecutionView : css.runModalFormContent, {
           [css.noRuntimeInput]: (template as any)?.data?.replacedExpressions?.length > 0 && noRuntimeInputs
         })}
+        data-testid="runPipelineVisualView"
+        onKeyDown={ev => {
+          if (ev.key === 'Enter') {
+            ev.preventDefault()
+            ev.stopPropagation()
+            setRunClicked(true)
+
+            if ((!selectedInputSets || selectedInputSets.length === 0) && existingProvide === 'existing') {
+              setExistingProvide('provide')
+            } else {
+              submitForm()
+            }
+          }
+        }}
       >
         <FormikForm>
           {noRuntimeInputs ? (
@@ -1076,7 +1090,7 @@ function RunPipelineFormBasic({
               )}
               {runIndividualStageInfo()}
               {selectedView === SelectedView.VISUAL ? (
-                visualView()
+                visualView(submitForm)
               ) : (
                 <div className={css.editor}>
                   <Layout.Vertical className={css.content} padding="xlarge">

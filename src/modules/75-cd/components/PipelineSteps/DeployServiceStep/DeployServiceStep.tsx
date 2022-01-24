@@ -471,6 +471,7 @@ const DeployServiceWidget: React.FC<DeployServiceProps> = ({
                       ? getString('editService')
                       : getString('cd.pipelineSteps.serviceTab.plusNewService')
                   }
+                  id={isEditService(initialValues) ? 'edit-service' : 'add-new-service'}
                 />
               ) : null}
             </Layout.Horizontal>

@@ -51,7 +51,7 @@ export const TemplateSelectorLeftView: React.FC<TemplateSelectorLeftViewProps> =
       }
     }
   } = usePipelineContext()
-  const { templateType, childTypes, selectedTemplateRef } = data?.selectorData || {}
+  const { templateType, selectedChildType, allChildTypes, selectedTemplateRef } = data?.selectorData || {}
   const [selectedTemplate, setSelectedTemplate] = useState<TemplateSummaryResponse | undefined>()
   const { getString } = useStrings()
   const [page, setPage] = useState(0)
@@ -60,7 +60,7 @@ export const TemplateSelectorLeftView: React.FC<TemplateSelectorLeftViewProps> =
   const { projectIdentifier, orgIdentifier, accountId, module } = useParams<ProjectPathProps & ModulePathParams>()
   const { repoIdentifier, branch } = useQueryParams<GitQueryParams>()
   const { isGitSyncEnabled } = useAppStore()
-  const [childType, setChildType] = React.useState<string | undefined>(childTypes?.[0])
+  const [childType, setChildType] = React.useState<string | undefined>(selectedChildType)
   const scopeOptions: SelectOption[] = React.useMemo(
     () => [
       {
@@ -100,9 +100,9 @@ export const TemplateSelectorLeftView: React.FC<TemplateSelectorLeftViewProps> =
     return {
       filterType: 'Template',
       templateEntityTypes: [templateType],
-      ...(childType && { childTypes: [childType] })
+      childTypes: childType ? [childType] : allChildTypes
     }
-  }, [templateType, childType])
+  }, [templateType, childType, allChildTypes])
 
   const queryParams = React.useMemo(() => {
     return {
@@ -131,22 +131,36 @@ export const TemplateSelectorLeftView: React.FC<TemplateSelectorLeftViewProps> =
   }, [searchParam, searchRef.current])
 
   const getDropDownItems = React.useCallback((): SelectOption[] => {
-    if (templateType === TemplateType.Stage) {
-      return [
-        { label: 'Approval', value: StageType.APPROVAL },
-        { label: 'Build', value: StageType.BUILD },
-        { label: 'Deploy', value: StageType.DEPLOY }
-      ]
-    } else if (templateType === TemplateType.Step) {
-      return factory
-        .getAllStepsDataList()
-        .map(stepData => ({
-          label: stepData.name,
-          value: stepData.type
-        }))
-        .sort((a, b) => a.label.localeCompare(b.label))
-    } else {
-      return []
+    switch (templateType) {
+      case TemplateType.Stage:
+        return [
+          { label: getString('approvalStage.title'), value: StageType.APPROVAL },
+          { label: getString('buildText'), value: StageType.BUILD },
+          { label: getString('pipelineSteps.deploy.create.deployStageName'), value: StageType.DEPLOY }
+        ]
+      case TemplateType.Step:
+        if (childType) {
+          return [
+            {
+              label: defaultTo(factory.getStepName(childType), childType),
+              value: childType
+            }
+          ]
+        } else {
+          return defaultTo(
+            allChildTypes
+              ?.map(item => {
+                return {
+                  label: defaultTo(factory.getStepName(item), item),
+                  value: item
+                }
+              })
+              .sort((a, b) => a.label.localeCompare(b.label)),
+            []
+          )
+        }
+      default:
+        return []
     }
   }, [templateType])
 
@@ -232,7 +246,7 @@ export const TemplateSelectorLeftView: React.FC<TemplateSelectorLeftViewProps> =
                         }}
                         items={getDropDownItems()}
                         addClearBtn={true}
-                        disabled={!!childTypes}
+                        disabled={!!selectedChildType}
                         filterable={false}
                         placeholder={`${getString('typeLabel')}: ${getString('all')}`}
                         value={childType}

@@ -667,6 +667,7 @@ testsReports:
     requiresEnterprisePlan: Requires Enterprise Plan to access Test Intelligence
 uniqueIdentifier: Identifier must be unique
 inputSets:
+  inputSetNameLabel: Input Set Name
   applyInputSet: Apply Input Set
   applyInputSets: Apply Input Sets
   applyingInputSets: Applying Input Sets
@@ -924,6 +925,9 @@ runstageError: '{{count}} Error(s): Unable to run stages.'
 stageDependencyError: 'Stage {{stageId}} has a ‘useFromStage’ dependency on Stage {{dependentStage}}. Please select Stage {{dependentStage}} to run Stage {{stageId}}.'
 noApprovalInstanceCreated: Approval instance not created, no details to display
 approvalTypeRequired: Approval type is required
+executionList:
+  servicesDeployedText: 'Services deployed ({{size}})'
+  EnvironmentsText: 'Environments ({{size}})'
 commentModal:
   heading: 'Save {{ name }} ({{ version }})'
   info: 'By saving, all pipelines referencing the stable version will receive your changes.'
@@ -943,3 +947,5 @@ dashboardDeploymentsWidget:
   runningPipeline:
     singular: Currently running pipeline
     plural: Currently running pipelines
+security:
+  title: Security

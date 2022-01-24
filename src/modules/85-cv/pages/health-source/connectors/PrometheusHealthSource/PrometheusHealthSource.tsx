@@ -58,6 +58,7 @@ export function PrometheusHealthSource(props: PrometheusHealthSourceProps): JSX.
   } = useContext(SetupSourceTabsContext)
 
   const metricDefinitions = existingMetricDetails?.spec?.metricDefinitions
+
   const { getString } = useStrings()
   const connectorIdentifier = sourceData?.connectorRef || ''
   const [labelNameTracingId, metricNameTracingId] = useMemo(() => [Utils.randomId(), Utils.randomId()], [])
@@ -91,6 +92,7 @@ export function PrometheusHealthSource(props: PrometheusHealthSourceProps): JSX.
   const [prometheusGroupNames, setPrometheusGroupName] = useState<SelectOption[]>(
     initializePrometheusGroupNames(mappedMetrics, getString)
   )
+
   const [{ createdMetrics, selectedMetricIndex }, setCreatedMetrics] = useState<CreatedMetricsWithSelectedIndex>(
     initializeCreatedMetrics(
       getString('cv.monitoringSources.prometheus.prometheusMetric'),
@@ -107,12 +109,13 @@ export function PrometheusHealthSource(props: PrometheusHealthSourceProps): JSX.
       initialValues={initialFormValues}
       key={rerenderKey}
       isInitialValid={(args: any) =>
-        Object.keys(validateMappings(getString, createdMetrics, selectedMetricIndex, args.initialValues)).length === 0
+        Object.keys(validateMappings(getString, createdMetrics, selectedMetricIndex, args.initialValues, mappedMetrics))
+          .length === 0
       }
       onSubmit={noop}
       enableReinitialize={true}
       validate={values => {
-        return validateMappings(getString, createdMetrics, selectedMetricIndex, values)
+        return validateMappings(getString, createdMetrics, selectedMetricIndex, values, mappedMetrics)
       }}
     >
       {formikProps => {
@@ -120,6 +123,14 @@ export function PrometheusHealthSource(props: PrometheusHealthSourceProps): JSX.
           (metricDefinition: StackdriverDefinition) =>
             metricDefinition.metricName === mappedMetrics.get(selectedMetric || '')?.metricName
         )
+
+        if (!formikProps.touched?.identifier) {
+          formikProps.setTouched({
+            ...formikProps.touched,
+            [PrometheusMonitoringSourceFieldNames.METRIC_IDENTIFIER]: true,
+            [PrometheusMonitoringSourceFieldNames.METRIC_NAME]: true
+          })
+        }
 
         return (
           <FormikForm>
@@ -155,19 +166,28 @@ export function PrometheusHealthSource(props: PrometheusHealthSourceProps): JSX.
                         setRerenderKey(Utils.randomId())
                       }
 
-                      setCreatedMetrics({ selectedMetricIndex: smIndex, createdMetrics: updatedList })
+                      setCreatedMetrics({
+                        selectedMetricIndex: smIndex,
+                        createdMetrics: updatedList
+                      })
                       return { selectedMetric: updatedMetric, mappedMetrics: updatedMap }
                     })
                   }}
                   onSelectMetric={(newMetric, updatedList, smIndex) => {
-                    setCreatedMetrics({ selectedMetricIndex: smIndex, createdMetrics: updatedList })
                     setMappedMetrics(oldState => {
-                      return updateSelectedMetricsMap({
+                      const updatedMetricsMap = updateSelectedMetricsMap({
                         updatedMetric: newMetric,
                         oldMetric: oldState.selectedMetric,
                         mappedMetrics: oldState.mappedMetrics,
                         formikProps
                       })
+
+                      setCreatedMetrics({
+                        selectedMetricIndex: smIndex,
+                        createdMetrics: updatedList
+                      })
+
+                      return updatedMetricsMap
                     })
                     setRerenderKey(Utils.randomId())
                   }}
@@ -294,7 +314,9 @@ export function PrometheusHealthSource(props: PrometheusHealthSourceProps): JSX.
                   ...formikProps.touched,
                   [PrometheusMonitoringSourceFieldNames.SLI]: true,
                   [PrometheusMonitoringSourceFieldNames.RISK_CATEGORY]: true,
-                  [PrometheusMonitoringSourceFieldNames.LOWER_BASELINE_DEVIATION]: true
+                  [PrometheusMonitoringSourceFieldNames.LOWER_BASELINE_DEVIATION]: true,
+                  [PrometheusMonitoringSourceFieldNames.METRIC_IDENTIFIER]: true,
+                  [PrometheusMonitoringSourceFieldNames.METRIC_NAME]: true
                 })
 
                 if (Object.keys(formikProps.errors || {})?.length > 0) {

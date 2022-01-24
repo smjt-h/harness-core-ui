@@ -80,3 +80,27 @@ export const MockManualQueryDataForCreate = {
   isEdit: false,
   healthSourceList: []
 }
+
+export const MockManualQueryDataForIdentifierCheck = {
+  ...MockManualQueryData,
+  healthSourceList: [
+    {
+      ...MockManualQueryData.healthSourceList[0],
+      spec: {
+        ...MockManualQueryData.healthSourceList[0].spec,
+        metricDefinitions: [
+          {
+            ...MockManualQueryData.healthSourceList[0].spec.metricDefinitions[0],
+            metricName: 'Test 1',
+            identifier: 'aa'
+          },
+          {
+            ...MockManualQueryData.healthSourceList[0].spec.metricDefinitions[0],
+            metricName: 'Test 2',
+            identifier: 'aa'
+          }
+        ]
+      }
+    }
+  ]
+}

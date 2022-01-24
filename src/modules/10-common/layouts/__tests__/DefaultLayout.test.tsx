@@ -14,7 +14,7 @@ jest.mock('@common/hooks/useFeatures', () => ({
 
 const BANNER_TEXT = 'This is a feature banner'
 const DISMISS_TEST_ID = 'feature-banner-dismiss'
-const TEST_PATH = '/:module'
+const TEST_PATH = '/account/my_account/:module'
 
 function renderMessage(): React.ReactNode {
   return BANNER_TEXT
@@ -64,8 +64,8 @@ describe('<DefaultLayout /> tests', () => {
       const { getByText } = render(
         <TestWrapper path={TEST_PATH} pathParams={{ module: 'cd' }}>
           <DefaultLayout />
-          <Link to="/ci">To CI</Link>
-          <Link to="/cd">To CD</Link>
+          <Link to="/account/my_account/ci">To CI</Link>
+          <Link to="/account/my_account/cd">To CD</Link>
         </TestWrapper>
       )
 

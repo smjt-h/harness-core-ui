@@ -7,7 +7,7 @@
 
 import React, { useEffect, useState } from 'react'
 import { FieldArray } from 'formik'
-import { isEmpty, set } from 'lodash-es'
+import { get, isEmpty, set } from 'lodash-es'
 import {
   Button,
   FormInput,
@@ -28,6 +28,7 @@ import {
 } from '@pipeline/components/PipelineSteps/Steps/Common/types'
 import { useDeepCompareEffect } from '@common/hooks'
 import type { ServiceNowFieldNG } from 'services/cd-ng'
+import { errorCheck } from '@common/utils/formikHelpers'
 import { filterOutMultiOperators, handleOperatorChange, operatorValues } from '../JiraApproval/helper'
 import { isApprovalStepFieldDisabled } from '../Common/ApprovalCommons'
 import stepCss from '@pipeline/components/PipelineSteps/Steps/Steps.module.scss'
@@ -98,12 +99,13 @@ export const Conditions = ({
   isFetchingFields,
   allowedValuesForFields,
   allowedFieldKeys,
-  formikErrors,
+  formik,
   fieldList,
   readonly
 }: ServiceNowConditionsInterface): JSX.Element => {
   const { getString } = useStrings()
   const { expressions } = useVariablesExpression()
+  const name = `spec.${mode}.spec.conditions`
   if (isFetchingFields) {
     return <div className={css.fetching}>{getString('pipeline.approvalCriteria.fetchingFields')}</div>
   }
@@ -129,7 +131,7 @@ export const Conditions = ({
 
       <div className={stepCss.formGroup}>
         <FieldArray
-          name={`spec.${mode}.spec.conditions`}
+          name={name}
           render={({ push, remove }) => {
             return (
               <div className={css.criteriaRow}>
@@ -209,10 +211,9 @@ export const Conditions = ({
           }}
         />
       </div>
-
-      {formikErrors?.conditions ? (
+      {errorCheck(name, formik) ? (
         <Text className={css.formikError} intent="danger">
-          {formikErrors.conditions}
+          {get(formik?.errors, name)}
         </Text>
       ) : null}
     </div>

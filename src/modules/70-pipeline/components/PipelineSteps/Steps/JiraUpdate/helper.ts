@@ -37,6 +37,7 @@ export const processFormData = (values: JiraUpdateData): JiraUpdateData => {
   return {
     ...values,
     spec: {
+      ...values.spec,
       connectorRef:
         getMultiTypeFromValue(values.spec.connectorRef as SelectOption) === MultiTypeInputType.FIXED
           ? (values.spec.connectorRef as SelectOption)?.value?.toString()
@@ -61,6 +62,7 @@ export const processInitialValues = (values: JiraUpdateData): JiraUpdateData => 
   return {
     ...values,
     spec: {
+      ...values.spec,
       connectorRef: values.spec.connectorRef,
       issueKey: values.spec.issueKey,
       transitionTo: values.spec.transitionTo

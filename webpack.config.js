@@ -30,6 +30,7 @@ const moduleFederationConfig = require('./configs/modulefederation.config.js')
 const ExternalRemotesPlugin = require('external-remotes-plugin')
 
 const DEV = process.env.NODE_ENV === 'development'
+const HARNESS_ENABLE_NG_AUTH_UI = process.env.HARNESS_ENABLE_NG_AUTH_UI !== 'false'
 // this BUGSNAG_TOKEN needs to be same which is passed in the docker file
 const BUGSNAG_TOKEN = process.env.BUGSNAG_TOKEN
 const BUGSNAG_SOURCEMAPS_UPLOAD = `${process.env.BUGSNAG_SOURCEMAPS_UPLOAD}` === 'true'
@@ -58,6 +59,7 @@ if (isCypress && isCypressCoverage) {
  */
 const ChildAppError = path.resolve(CONTEXT, './src/microfrontends/ChildAppError.tsx')
 const enableGitOpsUI = process.env.ENABLE_GITOPSUI === 'true'
+const enableSTO = process.env.ENABLE_STO === 'true'
 const moduleFederationEnabled = true
 
 const certificateExists = fs.existsSync('./certificates/localhost.pem')
@@ -242,7 +244,8 @@ const commonPlugins = [
   new webpack.DefinePlugin({
     'process.env': '{}', // required for @blueprintjs/core
     __DEV__: DEV,
-    __BUGSNAG_RELEASE_VERSION__: buildVersion
+    __BUGSNAG_RELEASE_VERSION__: buildVersion,
+    HARNESS_ENABLE_NG_AUTH_UI: HARNESS_ENABLE_NG_AUTH_UI
   }),
   new MonacoWebpackPlugin({
     // available options are documented at https://github.com/Microsoft/monaco-editor-webpack-plugin#options
@@ -253,12 +256,17 @@ const commonPlugins = [
 
 if (moduleFederationEnabled) {
   commonPlugins.unshift(new ExternalRemotesPlugin())
-  commonPlugins.unshift(new ModuleFederationPlugin(moduleFederationConfig({ enableGitOpsUI })))
+  commonPlugins.unshift(new ModuleFederationPlugin(moduleFederationConfig({ enableGitOpsUI, enableSTO })))
 }
 
 if (!enableGitOpsUI) {
   // render a mock app when MF is disabled
   config.resolve.alias['gitopsui/MicroFrontendApp'] = ChildAppError
+}
+
+if (!enableSTO) {
+  config.resolve.alias['sto/App'] = ChildAppError
+  config.resolve.alias['sto/PipelineSecurityView'] = ChildAppError
 }
 
 const devOnlyPlugins = [
@@ -305,7 +313,8 @@ console.table({
   DEV,
   FsEvents: process.env.TSC_WATCHFILE === 'UseFsEvents',
   BUGSNAG_SOURCEMAPS_UPLOAD,
-  BugsnagTokenPresent: !!BUGSNAG_TOKEN
+  BugsnagTokenPresent: !!BUGSNAG_TOKEN,
+  HARNESS_ENABLE_NG_AUTH_UI
 })
 
 module.exports = config

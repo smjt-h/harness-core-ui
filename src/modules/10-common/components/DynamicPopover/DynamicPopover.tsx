@@ -22,9 +22,11 @@ export interface DynamicPopoverHandlerBinding<T> {
     ref: Element | PopperJS.VirtualElement | string,
     data?: T,
     options?: { darkMode?: boolean; useArrows?: boolean; fixedPosition?: boolean; placement?: PopperJS.Placement },
-    onHideCallBack?: () => void
+    onHideCallBack?: () => void,
+    isHoverView?: boolean
   ) => void
   hide: () => void
+  isHoverView?: () => boolean
 }
 
 export interface DynamicPopoverProps<T> {
@@ -60,6 +62,7 @@ export function DynamicPopover<T>(props: DynamicPopoverProps<T>): JSX.Element {
   const [placement, setPlacement] = useState<PopperJS.Placement>('auto')
   const timerRef = React.useRef<number | null>(null)
   const mouseInRef = React.useRef<boolean>(false)
+  const [isHoverView, setIsHoverView] = React.useState<boolean>()
 
   const { styles, attributes, forceUpdate } = usePopper(referenceElement, popperElement, {
     modifiers: [{ name: 'arrow', options: { element: arrowElement } }],
@@ -73,13 +76,13 @@ export function DynamicPopover<T>(props: DynamicPopoverProps<T>): JSX.Element {
   const handler = useMemo(
     () =>
       ({
-        show: (ref, dataTemp, options, callback) => {
+        show: (ref, dataTemp, options, callback, hoverView) => {
           if (timerRef.current) {
             window.clearTimeout(timerRef.current)
           }
           setVisibility(true)
           setData(dataTemp)
-
+          setIsHoverView(hoverView)
           if (typeof ref === 'string') {
             setReferenceElement(document.querySelector(ref))
           } else {
@@ -105,9 +108,10 @@ export function DynamicPopover<T>(props: DynamicPopoverProps<T>): JSX.Element {
           if (!mouseInRef.current) {
             timerRef.current = window.setTimeout(() => setVisibility(false), 300)
           }
-        }
+        },
+        isHoverView: () => isHoverView
       } as DynamicPopoverHandlerBinding<T>),
-    [setVisibility]
+    [setVisibility, isHoverView]
   )
 
   React.useEffect(() => {

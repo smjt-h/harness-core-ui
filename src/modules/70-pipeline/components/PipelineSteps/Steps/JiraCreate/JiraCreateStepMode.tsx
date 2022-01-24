@@ -170,6 +170,8 @@ const FormContent = ({
         }
       })
       formik.setFieldValue('spec.selectedFields', formikSelectedFields)
+      const toBeUpdatedKVFields = getKVFieldsToBeAddedInForm(formik.values.spec.fields, [], formikSelectedFields)
+      formik.setFieldValue('spec.fields', toBeUpdatedKVFields)
     } else if (issueTypeFixedValue !== undefined) {
       // Undefined check is needed so that form is not set to dirty as soon as we open
       // This means we've cleared the value or marked runtime/expression
@@ -586,7 +588,6 @@ function JiraCreateStepMode(props: JiraCreateStepModeProps, formikRef: StepFormi
       }}
       formName="jiraCreate"
       initialValues={props.initialValues}
-      enableReinitialize={true}
       validate={data => {
         onChange?.(processFormData(data))
       }}

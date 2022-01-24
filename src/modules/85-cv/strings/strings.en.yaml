@@ -58,6 +58,7 @@ addNew: + Add New
 turnService: Turn service
 showYAMLChange: Show YAML Change
 seeYAML: See full event YAML
+addGroupName: Please Select Group Name
 serviceDashboardPage:
   fiveMinutes: 5 Minutes
   fifteenMinutes: 15 Minutes
@@ -361,6 +362,7 @@ monitoringSources:
       serviceInstanceIdentifier: Service Instance Identifier is required.
       deviation: Deviation Compared to Baseline is required.
       metricNameUnique: Metric name must be unique.
+      metricIdentifierUnique: Metric identifier must be unique.
       groupName: Group Name is required.
       uniqueName: '{{existingName}} already exists. Provide a unique name.'
       recordCount: Current query yields too many records. Please change query to yield one record.
@@ -608,6 +610,7 @@ healthSource:
         basePath: Please select base path
         metricPath: Please select metric path
         metricPathWithoutLeafNode: Please select metric in metric path
+        fullPath: Please provide full metric path
       metricPathType:
         text: Specify a complete metric path
         dropdown: Select the path from the AppD metric

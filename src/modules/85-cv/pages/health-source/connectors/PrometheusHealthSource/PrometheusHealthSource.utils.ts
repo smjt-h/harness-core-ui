@@ -46,7 +46,7 @@ export function updateSelectedMetricsMap({
   // if newly created metric create form object
   if (!updatedMap.has(updatedMetric)) {
     updatedMap.set(updatedMetric, {
-      identifier: formikProps?.values?.identifier as string,
+      identifier: updatedMetric.split(' ').join('_'),
       metricName: updatedMetric,
       query: '',
       isManualQuery: false
@@ -120,7 +120,8 @@ export function validateMappings(
   getString: UseStringsReturn['getString'],
   createdMetrics: string[],
   selectedMetricIndex: number,
-  values?: MapPrometheusQueryToService
+  values?: MapPrometheusQueryToService,
+  mappedMetrics?: Map<string, MapPrometheusQueryToService>
 ): { [fieldName: string]: string } {
   let requiredFieldErrors = {
     [PrometheusMonitoringSourceFieldNames.ENVIRONMENT_FILTER]: getString(
@@ -172,6 +173,21 @@ export function validateMappings(
     }
     return metricName === values.metricName
   })
+
+  const identifiers = createdMetrics.map(metricName => mappedMetrics?.get(metricName)?.identifier)
+
+  const duplicateIdentifier = identifiers?.filter((identifier, index) => {
+    if (index === selectedMetricIndex) {
+      return false
+    }
+    return identifier === values.identifier
+  })
+
+  if (values.identifier && duplicateIdentifier.length) {
+    requiredFieldErrors[PrometheusMonitoringSourceFieldNames.METRIC_IDENTIFIER] = getString(
+      'cv.monitoringSources.prometheus.validation.metricIdentifierUnique'
+    )
+  }
 
   if (values.metricName && duplicateNames.length) {
     requiredFieldErrors[PrometheusMonitoringSourceFieldNames.METRIC_NAME] = getString(

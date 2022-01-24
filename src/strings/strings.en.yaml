@@ -771,8 +771,6 @@ pre-flight-check:
   verifyingPipelineInputs: Verifying Pipeline inputs
   verifyingConnectors: Verifying Connectors
 titleOptional: '(Optional)'
-executionList:
-  servicesDeployedText: 'Services deployed ({{size}})'
 moduleRenderer:
   start: No modules-specific data
   newPipeLine: Create new Pipeline

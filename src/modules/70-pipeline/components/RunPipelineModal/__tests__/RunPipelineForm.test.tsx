@@ -153,6 +153,28 @@ describe('STUDIO MODE', () => {
     expect(buttonShouldBeDisabled).toBeTruthy()
   })
 
+  test('should not allow submit if form is incomplete and enter key pressed', async () => {
+    const { container, getByText, queryByText, getByTestId } = render(
+      <TestWrapper>
+        <RunPipelineForm {...commonProps} />
+      </TestWrapper>
+    )
+    // Navigate to 'Provide Values'
+    fireEvent.click(getByText('pipeline.triggers.pipelineInputPanel.provide'))
+    await waitFor(() => expect(queryByText('customVariables.pipelineVariablesTitle')).toBeTruthy())
+
+    // Submit the incomplete form by pressing enter
+    act(() => {
+      fireEvent.keyDown(getByTestId('runPipelineVisualView'), { key: 'Enter', code: 'Enter', charCode: 13 })
+    })
+
+    // Verify the ErrorStrip is present and submit is disabled
+    await waitFor(() => expect(queryByText('common.errorCount')).toBeTruthy())
+    await waitFor(() => expect(queryByText('common.seeDetails')).toBeTruthy())
+    const buttonShouldBeDisabled = container.querySelector('.bp3-disabled')
+    expect(buttonShouldBeDisabled).toBeTruthy()
+  })
+
   test('should submit and call the run pipeine method if form is valid', async () => {
     const { container, getByText, queryByText } = render(
       <TestWrapper>

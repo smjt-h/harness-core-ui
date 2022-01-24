@@ -35,6 +35,10 @@ module.exports = {
   '/api': {
     target: targetLocalHost ? 'https://localhost:9090' : baseUrl
   },
+  '/gateway/api': {
+    pathRewrite: { '^/gateway': '' },
+    target: targetLocalHost ? 'https://localhost:9090' : baseUrl
+  },
   '/template/api': {
     pathRewrite: { '^/template/api': '/api' },
     target: targetLocalHost ? 'http://localhost:15001' : baseUrl
@@ -84,6 +88,14 @@ module.exports = {
     pathRewrite: { '^/pm': '' },
     target: process.env.OPA_GOVERNANCE_UI_URL || 'http://localhost:3000'
   },
+  '/sto/api': {
+    pathRewrite: { '^/sto': '' },
+    target: process.env.STO_API_URL || 'http://localhost:3001'
+  },
+  '/sto': {
+    pathRewrite: { '^/sto': '' },
+    target: process.env.STO_UI_URL || 'http://localhost:3000'
+  },
   '/gitops': {
     pathRewrite: { '^/gitops': '' },
     target: process.env.GITOPS_URL || 'https://localhost:8183'
@@ -91,5 +103,9 @@ module.exports = {
   '/audit/api': {
     pathRewrite: { '^/ng/api': '' },
     target: targetLocalHost ? 'http://localhost:9005' : baseUrl
+  },
+  '/auth': {
+    pathRewrite: { '^/auth': '' },
+    target: 'https://app.harness.io/auth'
   }
 }

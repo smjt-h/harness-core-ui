@@ -137,6 +137,7 @@ export interface StringsMap {
   'common.connectThroughPlatformInfo': string
   'common.connectivityErrors': string
   'common.contactSupport': string
+  'common.copy': string
   'common.createPipeline': string
   'common.creating': string
   'common.current': string
@@ -752,6 +753,9 @@ export interface StringsMap {
   'rbac.categoryLabels.sharedResources': string
   'rbac.communityErrorMessages.resourceGroup': string
   'rbac.communityErrorMessages.role': string
+  'rbac.copyGroup.copyToProjects': string
+  'rbac.copyGroup.success': string
+  'rbac.copyGroup.title': string
   'rbac.customResourceGroups': string
   'rbac.customRoles': string
   'rbac.forUser': string
@@ -2298,6 +2302,8 @@ export interface StringsMap {
   'pipeline.executionFilters.labels.Running': string
   'pipeline.executionFilters.labels.Success': string
   'pipeline.executionFilters.labels.Waiting': string
+  'pipeline.executionList.EnvironmentsText': string
+  'pipeline.executionList.servicesDeployedText': string
   'pipeline.executionStatus.Aborted': string
   'pipeline.executionStatus.Aborting': string
   'pipeline.executionStatus.ApprovalRejected': string
@@ -2424,6 +2430,7 @@ export interface StringsMap {
   'pipeline.inputSets.applyInputSets': string
   'pipeline.inputSets.applyingInputSet': string
   'pipeline.inputSets.applyingInputSets': string
+  'pipeline.inputSets.inputSetNameLabel': string
   'pipeline.inputSets.inputSetPlaceholder': string
   'pipeline.inputSets.noRuntimeInputsCurrently': string
   'pipeline.inputSets.noRuntimeInputsWhileExecution': string
@@ -2615,6 +2622,7 @@ export interface StringsMap {
   'pipeline.savingInProgress': string
   'pipeline.scriptInputVariables': string
   'pipeline.scriptOutputVariables': string
+  'pipeline.security.title': string
   'pipeline.selectOrCreateForm.description': string
   'pipeline.selectOrCreatePipeline.pipelineNameRequired': string
   'pipeline.selectOrCreatePipeline.selectAPipeline': string
@@ -4323,6 +4331,7 @@ export interface StringsMap {
   'cv.activitySources.harnessCD.validation.environmentValidation': string
   'cv.activitySources.harnessCD.validation.serviceValidation': string
   'cv.activitySources.name': string
+  'cv.addGroupName': string
   'cv.addNew': string
   'cv.admin.activitySources.dialogDeleteTitle': string
   'cv.allMetrics': string
@@ -4433,6 +4442,7 @@ export interface StringsMap {
   'cv.healthSource.connectors.AppDynamics.trierLabel': string
   'cv.healthSource.connectors.AppDynamics.validation.application': string
   'cv.healthSource.connectors.AppDynamics.validation.basePath': string
+  'cv.healthSource.connectors.AppDynamics.validation.fullPath': string
   'cv.healthSource.connectors.AppDynamics.validation.metricPath': string
   'cv.healthSource.connectors.AppDynamics.validation.metricPathWithoutLeafNode': string
   'cv.healthSource.connectors.AppDynamics.validation.tier': string
@@ -4734,6 +4744,7 @@ export interface StringsMap {
   'cv.monitoringSources.prometheus.validation.filterOnEnvironment': string
   'cv.monitoringSources.prometheus.validation.filterOnService': string
   'cv.monitoringSources.prometheus.validation.groupName': string
+  'cv.monitoringSources.prometheus.validation.metricIdentifierUnique': string
   'cv.monitoringSources.prometheus.validation.metricNameUnique': string
   'cv.monitoringSources.prometheus.validation.promethusMetric': string
   'cv.monitoringSources.prometheus.validation.recordCount': string
@@ -6102,10 +6113,6 @@ export interface StringsMap {
    * @deprecated migrate this string to module level file
    */
   executionHeaderText: string
-  /**
-   * @deprecated migrate this string to module level file
-   */
-  'executionList.servicesDeployedText': string
   /**
    * @deprecated migrate this string to module level file
    */

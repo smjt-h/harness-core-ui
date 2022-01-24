@@ -1,5 +1,4 @@
 import React from 'react'
-import { useParams } from 'react-router-dom'
 import { Button, ButtonVariation } from '@harness/uicore'
 import { defaultTo } from 'lodash-es'
 
@@ -8,13 +7,14 @@ import type { FeatureProps } from 'framework/featureStore/FeaturesFactory'
 import type { Module } from 'framework/types/ModuleName'
 import { useFeatures } from '@common/hooks/useFeatures'
 import { useLocalStorage } from '@common/hooks/useLocalStorage'
+import { useModuleInfo } from '@common/hooks/useModuleInfo'
 
 import css from './layouts.module.scss'
 
 export const BANNER_KEY = 'feature_banner_dismissed'
 
 export default function FeatureBanner(): React.ReactElement | null {
-  const { module } = useParams<{ module: Module }>()
+  const { module } = useModuleInfo()
   const [activeModuleFeatures, setActiveModuleFeatures] = React.useState<FeatureProps | null>(null)
   const [isBannerDismissed, setIsBannerDismissed] = useLocalStorage<Partial<Record<Module, boolean>>>(
     BANNER_KEY,
@@ -24,13 +24,15 @@ export default function FeatureBanner(): React.ReactElement | null {
   const features = useFeatures({ featuresRequest: { featureNames: defaultTo(activeModuleFeatures?.features, []) } })
 
   React.useEffect(() => {
-    const moduleFeatures = featuresFactory.getFeaturesByModule(module)
-    setActiveModuleFeatures(moduleFeatures || null)
+    if (module) {
+      const moduleFeatures = featuresFactory.getFeaturesByModule(module)
+      setActiveModuleFeatures(moduleFeatures || null)
+    }
   }, [module])
 
   const message = activeModuleFeatures?.renderMessage(features)
 
-  if (!message || isBannerDismissed[module]) {
+  if (!message || (module && isBannerDismissed[module])) {
     return null
   }
 
@@ -41,7 +43,7 @@ export default function FeatureBanner(): React.ReactElement | null {
         variation={ButtonVariation.ICON}
         icon="cross"
         data-testid="feature-banner-dismiss"
-        onClick={() => setIsBannerDismissed(prev => ({ ...prev, [module]: true }))}
+        onClick={() => setIsBannerDismissed(prev => (module ? { ...prev, [module]: true } : prev))}
       />
     </div>
   )

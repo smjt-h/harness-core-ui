@@ -493,6 +493,7 @@ const DeployEnvironmentWidget: React.FC<DeployEnvironmentProps> = ({
                         ? getString('editEnvironment')
                         : getString('cd.pipelineSteps.environmentTab.plusNewEnvironment')
                     }
+                    id={isEditEnvironment(values) ? 'edit-environment' : 'add-new-environment'}
                   />
                 )}
               </Layout.Horizontal>

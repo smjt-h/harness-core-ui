@@ -13,6 +13,7 @@ import { RouteWithLayout } from '@common/router'
 import routes from '@common/RouteDefinitions'
 import { accountPathProps, withAccountId } from '@common/utils/routeUtils'
 
+import SessionToken from 'framework/utils/SessionToken'
 import type { SidebarContext } from './navigation/SidebarProvider'
 import type { AccountPathProps } from './interfaces/RouteInterfaces'
 import GenericErrorPage from './pages/GenericError/GenericErrorPage'
@@ -43,6 +44,13 @@ const justAccountPath = withAccountId(() => '/')
 
 export default (
   <>
+    {__DEV__ && (
+      // Redirecting users whose default experience is CG from CG dashboard route to NG home page.
+      // This will happen when auth pages are fetched from prod URL (default experience in DEV now)
+      <Route path="/account/:accountId/dashboard">
+        <Redirect to={routes.toHome({ accountId: SessionToken.accountId() })} />
+      </Route>
+    )}
     <Route exact path={[justAccountPath({ ...accountPathProps }), routes.toHome({ ...accountPathProps })]}>
       <RedirectToHome />
     </Route>

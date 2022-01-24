@@ -309,7 +309,7 @@ const FormContent = ({
         mode="approvalCriteria"
         values={formik.values.spec.approvalCriteria}
         onChange={values => formik.setFieldValue('spec.approvalCriteria', values)}
-        formikErrors={formik.errors.spec?.approvalCriteria?.spec}
+        formik={formik}
         readonly={readonly}
       />
       <div className={stepCss.noLookDivider} />
@@ -325,6 +325,7 @@ const FormContent = ({
               mode="rejectionCriteria"
               values={formik.values.spec.rejectionCriteria}
               onChange={values => formik.setFieldValue('spec.rejectionCriteria', values)}
+              formik={formik}
               readonly={readonly}
             />
           }
@@ -379,7 +380,6 @@ function ServiceNowApprovalStepMode(
       onSubmit={values => onUpdate?.(values)}
       formName="serviceNowApproval"
       initialValues={props.initialValues}
-      enableReinitialize={true}
       validate={data => {
         onChange?.(data)
       }}

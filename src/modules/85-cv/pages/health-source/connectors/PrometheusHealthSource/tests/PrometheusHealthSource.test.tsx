@@ -18,6 +18,7 @@ import { PrometheusMonitoringSourceFieldNames } from '../PrometheusHealthSource.
 import {
   MockManualQueryData,
   MockManualQueryDataForCreate,
+  MockManualQueryDataForIdentifierCheck,
   MockManualQueryDataWithoutIdentifier
 } from './PrometheusHealthSource.mock'
 
@@ -143,7 +144,7 @@ describe('Unit tests for PrometheusHealthSource', () => {
     cloneMockManualQueryData.healthSourceList[0].spec.metricDefinitions[0].analysis.deploymentVerification.enabled =
       false
     cloneMockManualQueryData.healthSourceList[0].spec.metricDefinitions[0].analysis.liveMonitoring.enabled = false
-    cloneMockManualQueryData.healthSourceList[0].spec.metricDefinitions[0].sli.enabled = false
+    // cloneMockManualQueryData.healthSourceList[0].spec.metricDefinitions[0].sli.enabled = false
     cloneMockManualQueryData.healthSourceList[0].spec.metricDefinitions[0].analysis.riskProfile = {} as any
     const { container, getByText } = render(
       <WrapperComponent data={cloneMockManualQueryData} onSubmit={onSubmitMock} />
@@ -163,9 +164,9 @@ describe('Unit tests for PrometheusHealthSource', () => {
     await waitFor(() => expect(container.querySelector('input[name="sli"')).toBeInTheDocument())
 
     // Correct warning message is shown
-    await waitFor(() =>
-      expect(getByText('cv.monitoringSources.gco.mapMetricsToServicesPage.validation.baseline')).not.toBeNull()
-    )
+    // await waitFor(() =>
+    //   expect(getByText('cv.monitoringSources.gco.mapMetricsToServicesPage.validation.baseline')).not.toBeNull()
+    // )
 
     await waitFor(() =>
       expect(onSubmitMock).toHaveBeenCalledWith(MockManualQueryData, {
@@ -200,7 +201,7 @@ describe('Unit tests for PrometheusHealthSource', () => {
               prometheusMetric: 'container_cpu_load_average_10s',
               query: 'count(container_cpu_load_average_10s{container="cv-demo",namespace="cv-demo"})',
               serviceFilter: [{ labelName: 'container:cv-demo', labelValue: 'cv-demo' }],
-              sli: { enabled: false }
+              sli: { enabled: true }
             }
           ]
         },
@@ -238,6 +239,32 @@ describe('Unit tests for PrometheusHealthSource', () => {
 
     expect(screen.getByText(/validation.identifierRequired/i)).toBeInTheDocument()
     expect(container.querySelector('.FormError--error')).toBeInTheDocument()
+
+    expect(onSubmitMock).not.toHaveBeenCalled()
+  })
+
+  test('should show error when identifier is duplicate', async () => {
+    const onSubmitMock = jest.fn()
+    const { container, getByText, queryByText } = render(
+      <WrapperComponent data={MockManualQueryDataForIdentifierCheck} onSubmit={onSubmitMock} />
+    )
+
+    await waitFor(() => expect(getByText('cv.monitoringSources.prometheus.customizeQuery')).not.toBeNull())
+    expect(container.querySelectorAll('[class*="Accordion--panel"]').length).toBe(3)
+
+    act(() => {
+      userEvent.click(container.querySelector('button[class*="manualQuery"]')!)
+    })
+    await waitFor(() => expect(getByText('cv.monitoringSources.prometheus.isManualQuery')).not.toBeNull())
+    expect(container.querySelectorAll('[class*="Accordion--panel"]').length).toBe(2)
+
+    act(() => {
+      userEvent.click(getByText('submit'))
+    })
+
+    await waitFor(() =>
+      expect(queryByText('cv.monitoringSources.prometheus.validation.metricIdentifierUnique')).toBeInTheDocument()
+    )
 
     expect(onSubmitMock).not.toHaveBeenCalled()
   })

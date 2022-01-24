@@ -88,7 +88,7 @@ exports[`<DefaultLayout /> tests feature banner tests features banner is rendere
                 </svg>
               </span>
               <p
-                class="StyledProps--font StyledProps--main hiddenText StyledProps--font-size-xsmall StyledProps--font-align-center StyledProps--color StyledProps--color-white"
+                class="StyledProps--font StyledProps--main hoverText StyledProps--font-size-xsmall StyledProps--font-align-center StyledProps--color StyledProps--color-white"
               >
                 <span>
                   common.accountSettings
@@ -105,7 +105,7 @@ exports[`<DefaultLayout /> tests feature banner tests features banner is rendere
             href="/account/undefined/user"
           >
             <div
-              class="Layout--vertical Layout--layout-spacing-small StyledProps--main StyledProps--flex"
+              class="Layout--vertical Layout--layout-spacing-xsmall StyledProps--main StyledProps--flex"
             >
               <p
                 class="StyledProps--font StyledProps--main hiddenText StyledProps--font-size-xsmall StyledProps--font-align-center StyledProps--color StyledProps--color-white"

@@ -9,11 +9,5 @@
 declare const styles: {
   readonly cardSummary: string
   readonly heading: string
-  readonly serviceName: string
-  readonly serviceWrapper: string
-  readonly servicesContainer: string
-  readonly servicesIcon: string
-  readonly servicesList: string
-  readonly toggle: string
 }
 export default styles

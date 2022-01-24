@@ -20,7 +20,7 @@ import {
 } from '@wings-software/uicore'
 
 import produce from 'immer'
-import { get, set, debounce, isEmpty } from 'lodash-es'
+import { get, set, debounce, isEmpty, unset } from 'lodash-es'
 import { StepViewType } from '@pipeline/components/AbstractSteps/Step'
 import { useStrings } from 'framework/strings'
 
@@ -257,7 +257,7 @@ export default function DeployServiceSpecifications(props: React.PropsWithChildr
     } else {
       const stageData = produce(stage, draft => {
         if (stage?.stage?.spec?.serviceConfig?.stageOverrides) {
-          delete draft?.stage?.spec?.serviceConfig?.stageOverrides
+          unset(draft?.stage?.spec?.serviceConfig, 'stageOverrides')
         }
       })
 

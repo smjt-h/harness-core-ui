@@ -133,7 +133,7 @@ export default function RunPipelineListView({ data, refetch, gotoPage }: Pipelin
       },
       {
         accessor: 'tags',
-        width: isGitSyncEnabled ? '20%' : '20%',
+        width: '20%',
         Cell: RenderColumnMenu,
         disableSortBy: true
       }

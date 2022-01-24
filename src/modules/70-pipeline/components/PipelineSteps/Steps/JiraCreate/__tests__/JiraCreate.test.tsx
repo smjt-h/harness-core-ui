@@ -255,7 +255,21 @@ describe('Jira Create tests', () => {
       type: 'JiraCreate',
       spec: {
         connectorRef: 'cid1',
+        description: 'descriptionval',
         projectKey: 'pid1',
+        selectedFields: [
+          {
+            allowedValues: [],
+            key: 'f1',
+            name: 'f1',
+            schema: {
+              type: 'string',
+              typeStr: ''
+            },
+            value: ''
+          }
+        ],
+        summary: 'summary',
         issueType: 'itd1',
         fields: [
           { name: 'Summary', value: 'summary' },
