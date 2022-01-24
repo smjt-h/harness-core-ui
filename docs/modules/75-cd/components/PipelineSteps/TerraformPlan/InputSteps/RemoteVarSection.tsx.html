@@ -23,30 +23,30 @@
         <div class='clearfix'>
             
             <div class='fl pad1y space-right2'>
-                <span class="strong">63.16% </span>
+                <span class="strong">100% </span>
                 <span class="quiet">Statements</span>
-                <span class='fraction'>12/19</span>
+                <span class='fraction'>19/19</span>
             </div>
         
             
             <div class='fl pad1y space-right2'>
-                <span class="strong">0% </span>
+                <span class="strong">58.51% </span>
                 <span class="quiet">Branches</span>
-                <span class='fraction'>0/94</span>
+                <span class='fraction'>55/94</span>
             </div>
         
             
             <div class='fl pad1y space-right2'>
-                <span class="strong">0% </span>
+                <span class="strong">100% </span>
                 <span class="quiet">Functions</span>
-                <span class='fraction'>0/1</span>
+                <span class='fraction'>1/1</span>
             </div>
         
             
             <div class='fl pad1y space-right2'>
-                <span class="strong">63.16% </span>
+                <span class="strong">100% </span>
                 <span class="quiet">Lines</span>
-                <span class='fraction'>12/19</span>
+                <span class='fraction'>19/19</span>
             </div>
         
             
@@ -177,44 +177,44 @@
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-yes">64x</span>
-<span class="cline-any cline-yes">64x</span>
+<span class="cline-any cline-yes">66x</span>
+<span class="cline-any cline-yes">66x</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-yes">64x</span>
-<span class="cline-any cline-yes">64x</span>
+<span class="cline-any cline-yes">66x</span>
+<span class="cline-any cline-yes">66x</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-yes">64x</span>
-<span class="cline-any cline-yes">64x</span>
-<span class="cline-any cline-yes">64x</span>
-<span class="cline-any cline-yes">64x</span>
+<span class="cline-any cline-yes">66x</span>
+<span class="cline-any cline-yes">66x</span>
+<span class="cline-any cline-yes">66x</span>
+<span class="cline-any cline-yes">66x</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-yes">64x</span>
+<span class="cline-any cline-yes">66x</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-yes">64x</span>
-<span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-yes">64x</span>
-<span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-yes">64x</span>
+<span class="cline-any cline-yes">66x</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">66x</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-no">&nbsp;</span>
-<span class="cline-any cline-no">&nbsp;</span>
-<span class="cline-any cline-no">&nbsp;</span>
-<span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-no">&nbsp;</span>
-<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-yes">66x</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-yes">2x</span>
+<span class="cline-any cline-yes">1x</span>
+<span class="cline-any cline-yes">1x</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-yes">1x</span>
+<span class="cline-any cline-yes">1x</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">1x</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">1x</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
@@ -308,34 +308,34 @@ import type { GitQueryParams } from '@common/interfaces/RouteInterfaces'
 import type { TerraformPlanProps } from '../../Common/Terraform/TerraformInterfaces'
 import stepCss from '@pipeline/components/PipelineSteps/Steps/Steps.module.scss'
 &nbsp;
-export default function <span class="fstat-no" title="function not covered" >TFRemoteSection(</span>
+export default function TFRemoteSection(
   props: TerraformPlanProps &amp; {
     remoteVar: any
     index: number
   }
 ): React.ReactElement {
-  const { remoteVar, index, allowableTypes } = <span class="cstat-no" title="statement not covered" >props</span>
-  const { getString } = <span class="cstat-no" title="statement not covered" >useStrings()</span>
-  const { expressions } = <span class="cstat-no" title="statement not covered" >useVariablesExpression()</span>
+  const { remoteVar, index, allowableTypes } = props
+  const { getString } = useStrings()
+  const { expressions } = useVariablesExpression()
 &nbsp;
-  const { readonly, initialValues, path } = <span class="cstat-no" title="statement not covered" >props</span>
-  const { accountId, projectIdentifier, orgIdentifier } = <span class="cstat-no" title="statement not covered" >useParams&lt;{</span>
+  const { readonly, initialValues, path } = props
+  const { accountId, projectIdentifier, orgIdentifier } = useParams&lt;{
     projectIdentifier: string
     orgIdentifier: string
     accountId: string
   }&gt;()
 &nbsp;
-  const { repoIdentifier, branch } = <span class="cstat-no" title="statement not covered" >useQueryParams&lt;GitQueryParams&gt;()</span>
+  const { repoIdentifier, branch } = useQueryParams&lt;GitQueryParams&gt;()
 &nbsp;
-<span class="cstat-no" title="statement not covered" >  return (</span>
+  return (
     &lt;&gt;
       &lt;Container flex width={120} padding={{ bottom: 'small' }}&gt;
         &lt;Text font={{ weight: 'bold' }}&gt;{getString('cd.varFile')}:&lt;/Text&gt;
-        {remoteVar.varFile?.identifier}
+        {remoteVar.varFile<span class="branch-0 cbranch-no" title="branch not covered" >?.i</span>dentifier}
       &lt;/Container&gt;
 &nbsp;
-      {getMultiTypeFromValue(remoteVar.varFile?.spec?.store?.spec?.connectorRef) === MultiTypeInputType.RUNTIME &amp;&amp; (
-        &lt;div className={cx(stepCss.formGroup, stepCss.md)}&gt;
+      {getMultiTypeFromValue(remoteVar.varFile<span class="branch-0 cbranch-no" title="branch not covered" >?.s</span>pec<span class="branch-0 cbranch-no" title="branch not covered" >?.s</span>tore<span class="branch-1 cbranch-no" title="branch not covered" >?.spec<span class="branch-1 cbranch-no" title="branch not covered" >?</span>.connectorRef)</span> === MultiTypeInputType.RUNTIME &amp;&amp; (
+<span class="branch-1 cbranch-no" title="branch not covered" >        &lt;div className={cx(stepCss.formGroup, stepCss.md)}&gt;</span>
           &lt;FormMultiTypeConnectorField
             accountIdentifier={accountId}
             selected={get(
@@ -358,8 +358,8 @@ export default function <span class="fstat-no" title="function not covered" >TFR
         &lt;/div&gt;
       )}
 &nbsp;
-      {getMultiTypeFromValue(remoteVar.varFile?.spec?.store?.spec?.branch) === MultiTypeInputType.RUNTIME &amp;&amp; (
-        &lt;div className={cx(stepCss.formGroup, stepCss.md)}&gt;
+      {getMultiTypeFromValue(remoteVar.varFile<span class="branch-0 cbranch-no" title="branch not covered" >?.s</span>pec<span class="branch-0 cbranch-no" title="branch not covered" >?.s</span>tore<span class="branch-1 cbranch-no" title="branch not covered" >?.spec<span class="branch-1 cbranch-no" title="branch not covered" >?</span>.branch)</span> === MultiTypeInputType.RUNTIME &amp;&amp; (
+<span class="branch-1 cbranch-no" title="branch not covered" >        &lt;div className={cx(stepCss.formGroup, stepCss.md)}&gt;</span>
           &lt;FormInput.MultiTextInput
             name={`${path}.spec.configuration.varFiles[${index}].varFile.spec.store.spec.branch`}
             label={getString('pipelineSteps.deploy.inputSet.branch')}
@@ -370,8 +370,8 @@ export default function <span class="fstat-no" title="function not covered" >TFR
           /&gt;
         &lt;/div&gt;
       )}
-      {getMultiTypeFromValue(remoteVar.varFile?.spec?.store?.spec?.commitId) === MultiTypeInputType.RUNTIME &amp;&amp; (
-        &lt;div className={cx(stepCss.formGroup, stepCss.md)}&gt;
+      {getMultiTypeFromValue(remoteVar.varFile<span class="branch-0 cbranch-no" title="branch not covered" >?.s</span>pec<span class="branch-0 cbranch-no" title="branch not covered" >?.s</span>tore<span class="branch-1 cbranch-no" title="branch not covered" >?.spec<span class="branch-1 cbranch-no" title="branch not covered" >?</span>.commitId)</span> === MultiTypeInputType.RUNTIME &amp;&amp; (
+<span class="branch-1 cbranch-no" title="branch not covered" >        &lt;div className={cx(stepCss.formGroup, stepCss.md)}&gt;</span>
           &lt;FormInput.MultiTextInput
             name={`${path}.spec.configuration.varFiles[${index}].varFile.spec.store.spec.commitId`}
             label={getString('pipeline.manifestType.commitId')}
@@ -382,8 +382,8 @@ export default function <span class="fstat-no" title="function not covered" >TFR
           /&gt;
         &lt;/div&gt;
       )}
-      {getMultiTypeFromValue(remoteVar.varFile?.spec?.store?.spec?.paths) === MultiTypeInputType.RUNTIME &amp;&amp; (
-        &lt;div className={cx(stepCss.formGroup, stepCss.md)}&gt;
+      {getMultiTypeFromValue(remoteVar.varFile<span class="branch-0 cbranch-no" title="branch not covered" >?.s</span>pec<span class="branch-0 cbranch-no" title="branch not covered" >?.s</span>tore<span class="branch-1 cbranch-no" title="branch not covered" >?.spec<span class="branch-1 cbranch-no" title="branch not covered" >?</span>.paths)</span> === MultiTypeInputType.RUNTIME &amp;&amp; (
+<span class="branch-1 cbranch-no" title="branch not covered" >        &lt;div className={cx(stepCss.formGroup, stepCss.md)}&gt;</span>
           &lt;List
             label={getString('filePaths')}
             name={`${path}.spec.configuration.varFiles[${index}].varFile.spec.store.spec.paths`}
@@ -403,7 +403,7 @@ export default function <span class="fstat-no" title="function not covered" >TFR
             <div class='footer quiet pad2 space-top1 center small'>
                 Code coverage generated by
                 <a href="https://istanbul.js.org/" target="_blank">istanbul</a>
-                at Sun Jan 23 2022 16:18:03 GMT+0000 (Greenwich Mean Time)
+                at Mon Jan 24 2022 06:28:17 GMT+0000 (Greenwich Mean Time)
             </div>
         </div>
         <script src="../../../../../../prettify.js"></script>

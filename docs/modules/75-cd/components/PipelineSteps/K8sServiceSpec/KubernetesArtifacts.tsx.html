@@ -23,30 +23,30 @@
         <div class='clearfix'>
             
             <div class='fl pad1y space-right2'>
-                <span class="strong">47.06% </span>
+                <span class="strong">100% </span>
                 <span class="quiet">Statements</span>
-                <span class='fraction'>8/17</span>
+                <span class='fraction'>17/17</span>
             </div>
         
             
             <div class='fl pad1y space-right2'>
-                <span class="strong">0% </span>
+                <span class="strong">100% </span>
                 <span class="quiet">Branches</span>
-                <span class='fraction'>0/10</span>
+                <span class='fraction'>10/10</span>
             </div>
         
             
             <div class='fl pad1y space-right2'>
-                <span class="strong">0% </span>
+                <span class="strong">100% </span>
                 <span class="quiet">Functions</span>
-                <span class='fraction'>0/1</span>
+                <span class='fraction'>1/1</span>
             </div>
         
             
             <div class='fl pad1y space-right2'>
-                <span class="strong">47.06% </span>
+                <span class="strong">100% </span>
                 <span class="quiet">Lines</span>
-                <span class='fraction'>8/17</span>
+                <span class='fraction'>17/17</span>
             </div>
         
             
@@ -55,7 +55,7 @@
             Press <em>n</em> or <em>j</em> to go to the next uncovered block, <em>b</em>, <em>p</em> or <em>k</em> for the previous block.
         </p>
     </div>
-    <div class='status-line low'></div>
+    <div class='status-line high'></div>
     <pre><table class="coverage">
 <tr><td class="line-count quiet"><a name='L1'></a><a href='#L1'>1</a>
 <a name='L2'></a><a href='#L2'>2</a>
@@ -131,20 +131,18 @@
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-yes">64x</span>
-<span class="cline-any cline-yes">64x</span>
-<span class="cline-any cline-yes">64x</span>
+<span class="cline-any cline-yes">67x</span>
+<span class="cline-any cline-yes">67x</span>
+<span class="cline-any cline-yes">67x</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-yes">64x</span>
+<span class="cline-any cline-yes">67x</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-yes">64x</span>
-<span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-yes">64x</span>
-<span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-yes">64x</span>
+<span class="cline-any cline-yes">67x</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">67x</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">67x</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
@@ -160,20 +158,22 @@
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-yes">64x</span>
-<span class="cline-any cline-no">&nbsp;</span>
-<span class="cline-any cline-no">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-yes">67x</span>
+<span class="cline-any cline-yes">2x</span>
+<span class="cline-any cline-yes">2x</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-no">&nbsp;</span>
-<span class="cline-any cline-no">&nbsp;</span>
-<span class="cline-any cline-no">&nbsp;</span>
-<span class="cline-any cline-no">&nbsp;</span>
-<span class="cline-any cline-no">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-yes">2x</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">2x</span>
+<span class="cline-any cline-yes">2x</span>
+<span class="cline-any cline-yes">2x</span>
+<span class="cline-any cline-yes">2x</span>
+<span class="cline-any cline-yes">2x</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">2x</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
@@ -227,20 +227,20 @@ export interface KubernetesArtifactsProps {
   onUpdate?: ((data: K8SDirectServiceStep) =&gt; void) | undefined
 }
 &nbsp;
-export function <span class="fstat-no" title="function not covered" >KubernetesArtifacts(</span>props: KubernetesArtifactsProps) {
-  const { getString } = <span class="cstat-no" title="statement not covered" >useStrings()</span>
-  const { projectIdentifier, orgIdentifier, accountId, pipelineIdentifier } = <span class="cstat-no" title="statement not covered" >useParams&lt;</span>
+export function KubernetesArtifacts(props: KubernetesArtifactsProps) {
+  const { getString } = useStrings()
+  const { projectIdentifier, orgIdentifier, accountId, pipelineIdentifier } = useParams&lt;
     PipelineType&lt;InputSetPathProps&gt; &amp; { accountId: string }
   &gt;()
-  const { repoIdentifier, branch } = <span class="cstat-no" title="statement not covered" >useQueryParams&lt;GitQueryParams&gt;()</span>
+  const { repoIdentifier, branch } = useQueryParams&lt;GitQueryParams&gt;()
 &nbsp;
-  const runtimeMode = <span class="cstat-no" title="statement not covered" >props.stepViewType === StepViewType.InputSet || props.stepViewType === StepViewType.DeploymentForm</span>
-  const isArtifactsRuntime = <span class="cstat-no" title="statement not covered" >runtimeMode &amp;&amp; !!get(props.template, 'artifacts', false)</span>
-  const isPrimaryArtifactsRuntime = <span class="cstat-no" title="statement not covered" >runtimeMode &amp;&amp; !!get(props.template, 'artifacts.primary', false)</span>
-  const isSidecarRuntime = <span class="cstat-no" title="statement not covered" >runtimeMode &amp;&amp; !!get(props.template, 'artifacts.sidecars', false)</span>
-  const artifactSource = <span class="cstat-no" title="statement not covered" >artifactSourceBaseFactory.getArtifactSource(props.type)</span>
+  const runtimeMode = props.stepViewType === StepViewType.InputSet || props.stepViewType === StepViewType.DeploymentForm
+  const isArtifactsRuntime = runtimeMode &amp;&amp; !!get(props.template, 'artifacts', false)
+  const isPrimaryArtifactsRuntime = runtimeMode &amp;&amp; !!get(props.template, 'artifacts.primary', false)
+  const isSidecarRuntime = runtimeMode &amp;&amp; !!get(props.template, 'artifacts.sidecars', false)
+  const artifactSource = artifactSourceBaseFactory.getArtifactSource(props.type)
 &nbsp;
-<span class="cstat-no" title="statement not covered" >  return artifactSource ? (</span>
+  return artifactSource ? (
     &lt;&gt;
       {artifactSource.renderContent({
         ...props,
@@ -265,7 +265,7 @@ export function <span class="fstat-no" title="function not covered" >KubernetesA
             <div class='footer quiet pad2 space-top1 center small'>
                 Code coverage generated by
                 <a href="https://istanbul.js.org/" target="_blank">istanbul</a>
-                at Sun Jan 23 2022 16:18:03 GMT+0000 (Greenwich Mean Time)
+                at Mon Jan 24 2022 06:28:17 GMT+0000 (Greenwich Mean Time)
             </div>
         </div>
         <script src="../../../../../prettify.js"></script>

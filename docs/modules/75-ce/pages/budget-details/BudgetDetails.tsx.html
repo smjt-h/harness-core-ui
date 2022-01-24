@@ -30,9 +30,9 @@
         
             
             <div class='fl pad1y space-right2'>
-                <span class="strong">59.09% </span>
+                <span class="strong">60% </span>
                 <span class="quiet">Branches</span>
-                <span class='fraction'>26/44</span>
+                <span class='fraction'>30/50</span>
             </div>
         
             
@@ -289,7 +289,33 @@
 <a name='L230'></a><a href='#L230'>230</a>
 <a name='L231'></a><a href='#L231'>231</a>
 <a name='L232'></a><a href='#L232'>232</a>
-<a name='L233'></a><a href='#L233'>233</a></td><td class="line-coverage quiet"><span class="cline-any cline-neutral">&nbsp;</span>
+<a name='L233'></a><a href='#L233'>233</a>
+<a name='L234'></a><a href='#L234'>234</a>
+<a name='L235'></a><a href='#L235'>235</a>
+<a name='L236'></a><a href='#L236'>236</a>
+<a name='L237'></a><a href='#L237'>237</a>
+<a name='L238'></a><a href='#L238'>238</a>
+<a name='L239'></a><a href='#L239'>239</a>
+<a name='L240'></a><a href='#L240'>240</a>
+<a name='L241'></a><a href='#L241'>241</a>
+<a name='L242'></a><a href='#L242'>242</a>
+<a name='L243'></a><a href='#L243'>243</a>
+<a name='L244'></a><a href='#L244'>244</a>
+<a name='L245'></a><a href='#L245'>245</a>
+<a name='L246'></a><a href='#L246'>246</a>
+<a name='L247'></a><a href='#L247'>247</a>
+<a name='L248'></a><a href='#L248'>248</a>
+<a name='L249'></a><a href='#L249'>249</a>
+<a name='L250'></a><a href='#L250'>250</a>
+<a name='L251'></a><a href='#L251'>251</a>
+<a name='L252'></a><a href='#L252'>252</a>
+<a name='L253'></a><a href='#L253'>253</a>
+<a name='L254'></a><a href='#L254'>254</a>
+<a name='L255'></a><a href='#L255'>255</a>
+<a name='L256'></a><a href='#L256'>256</a>
+<a name='L257'></a><a href='#L257'>257</a>
+<a name='L258'></a><a href='#L258'>258</a>
+<a name='L259'></a><a href='#L259'>259</a></td><td class="line-coverage quiet"><span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
@@ -300,6 +326,7 @@
 <span class="cline-any cline-yes">1x</span>
 <span class="cline-any cline-yes">1x</span>
 <span class="cline-any cline-yes">1x</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
@@ -520,6 +547,31 @@
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-yes">1x</span>
 <span class="cline-any cline-neutral">&nbsp;</span></td><td class="text"><pre class="prettyprint lang-js">/*
  * Copyright 2021 Harness Inc. All rights reserved.
@@ -529,7 +581,7 @@
  */
 &nbsp;
 import React from 'react'
-import { useParams, useHistory } from 'react-router-dom'
+import { useParams, useHistory, Link } from 'react-router-dom'
 import cx from 'classnames'
 import {
   Card,
@@ -543,6 +595,7 @@ import {
   Layout,
   ButtonVariation,
   Container,
+  Heading,
   useConfirmationDialog
 } from '@wings-software/uicore'
 import { Intent } from '@blueprintjs/core'
@@ -573,7 +626,7 @@ const BudgetDetails: () =&gt; JSX.Element | null = () =&gt; {
     }
   })
 &nbsp;
-  const summaryData = <span class="branch-1 cbranch-no" title="branch not covered" >data?.budgetSummary</span>
+  const summaryData = data<span class="branch-0 cbranch-no" title="branch not covered" >?.b</span>udgetSummary
 &nbsp;
   const [{ data: gridData, fetching: gridFetching }, refetchGrid] = useFetchBudgetsGridDataQuery({
     variables: {
@@ -697,7 +750,32 @@ const BudgetDetails: () =&gt; JSX.Element | null = () =&gt; {
   return (
     &lt;&gt;
       &lt;PageHeader
-        title={budgetName}
+        title={
+          &lt;Layout.Horizontal flex={{ alignItems: 'baseline' }} spacing="xsmall"&gt;
+            &lt;Heading level={2} color={Color.GREY_800} font={{ weight: 'bold' }}&gt;
+              {budgetName}
+            &lt;/Heading&gt;
+            {summaryData<span class="branch-0 cbranch-no" title="branch not covered" >?.p</span>erspectiveId ? (
+              &lt;&gt;
+                &lt;Text color={Color.GREY_500} font={{ variation: FontVariation.H6 }}&gt;
+                  {getString('common.on')}
+                &lt;/Text&gt;
+                &lt;Link
+                  to={routes.toPerspectiveDetails({
+                    accountId: accountId,
+                    perspectiveId: summaryData.perspectiveId,
+                    perspectiveName: summaryData.perspectiveName
+                  })}
+                  style={{ textDecoration: 'none' }}
+                &gt;
+                  &lt;Text color={Color.PRIMARY_7} font={{ variation: FontVariation.H6 }}&gt;
+                    {summaryData.perspectiveName}
+                  &lt;/Text&gt;
+                &lt;/Link&gt;
+              &lt;/&gt;
+            ) : <span class="branch-1 cbranch-no" title="branch not covered" >null}</span>
+          &lt;/Layout.Horizontal&gt;
+        }
         toolbar={
           &lt;Layout.Horizontal spacing="medium"&gt;
             &lt;Button
@@ -760,7 +838,7 @@ export default BudgetDetails
             <div class='footer quiet pad2 space-top1 center small'>
                 Code coverage generated by
                 <a href="https://istanbul.js.org/" target="_blank">istanbul</a>
-                at Sun Jan 23 2022 16:18:03 GMT+0000 (Greenwich Mean Time)
+                at Mon Jan 24 2022 06:28:17 GMT+0000 (Greenwich Mean Time)
             </div>
         </div>
         <script src="../../../../prettify.js"></script>
