@@ -45,25 +45,6 @@ const enum SyncStatus {
   OVERRIDDEN = 'OVERRIDDEN'
 }
 
-const supportedGitEntities: SelectOption[] = [
-  {
-    label: 'CONNECTORS',
-    value: defaultTo(Entities.CONNECTORS, '')
-  },
-  {
-    label: 'PIPELINES',
-    value: defaultTo(Entities.PIPELINES, '')
-  },
-  {
-    label: 'INPUT_SETS',
-    value: defaultTo(Entities.INPUT_SETS, '')
-  },
-  {
-    label: 'TEMPLATE',
-    value: defaultTo(Entities.TEMPLATE, '')
-  }
-]
-
 const GitSyncConfigTab: React.FC = () => {
   const { accountId, projectIdentifier, orgIdentifier } = useParams<ProjectPathProps>()
   const { getString } = useStrings()
@@ -73,6 +54,25 @@ const GitSyncConfigTab: React.FC = () => {
   const [page, setPage] = useState(0)
   const [showOnlyFailed, setShowOnlyFailed] = useState(false)
   const [selectedEntity, setSelectedEntity] = useState<MultiSelectOption[]>()
+
+  const supportedGitEntities: SelectOption[] = [
+    {
+      label: getString('connectorsLabel'),
+      value: defaultTo(Entities.CONNECTORS, '')
+    },
+    {
+      label: getString('pipelines'),
+      value: defaultTo(Entities.PIPELINES, '')
+    },
+    {
+      label: getString('inputSetsText'),
+      value: defaultTo(Entities.INPUT_SETS, '')
+    },
+    {
+      label: getString('common.templates'),
+      value: defaultTo(Entities.TEMPLATE, '')
+    }
+  ]
 
   const { mutate: getFullSyncFiles, loading } = useListFullSyncFiles({
     queryParams: {
@@ -133,7 +133,7 @@ const GitSyncConfigTab: React.FC = () => {
               <Checkbox
                 disabled={loading}
                 name="syncFailedFilter"
-                label={'Sync Failed'}
+                label={getString('gitsync.syncFailed')}
                 onChange={e => {
                   setShowOnlyFailed(!!e.currentTarget.checked)
                 }}
@@ -145,7 +145,7 @@ const GitSyncConfigTab: React.FC = () => {
               width={200}
               items={supportedGitEntities}
               usePortal={true}
-              placeholder={'Entity Type'}
+              placeholder={getString('common.entityType')}
               className={css.entityTypeFilter}
               onChange={setSelectedEntity}
             />

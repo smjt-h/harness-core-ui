@@ -34,7 +34,6 @@ saveAsNewLabelModal:
 templateSettingsModal:
   scopeLabel: Save To
   defaultVersionLabel: Stable Version
-entityType: Entity Type
 templateScope: Template Scope
 templatesLabel: '{{entity}} Templates'
 fetchingActivityLogs: Fetching activity logs

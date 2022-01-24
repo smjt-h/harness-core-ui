@@ -175,6 +175,7 @@ export interface StringsMap {
   'common.enableGitSyncPipeline': string
   'common.entityReferenceSubTitle': string
   'common.entityReferenceTitle': string
+  'common.entityType': string
   'common.environmentCreated': string
   'common.environmentUpdated': string
   'common.errorCount': string
@@ -1980,6 +1981,7 @@ export interface StringsMap {
   'gitsync.successfullCreate': string
   'gitsync.successfullySavedConnectivityMode': string
   'gitsync.syncBranchTitle': string
+  'gitsync.syncFailed': string
   'gitsync.syncSucessToaster': string
   'dashboards.createFolder.folderDescriptionPlaceholder': string
   'dashboards.createFolder.folderNameValidation': string
@@ -2976,7 +2978,6 @@ export interface StringsMap {
   'templatesLibrary.default': string
   'templatesLibrary.deleteTemplate': string
   'templatesLibrary.editModal.heading': string
-  'templatesLibrary.entityType': string
   'templatesLibrary.fetchingActivityLogs': string
   'templatesLibrary.inputsCount': string
   'templatesLibrary.noActivityLogs': string
