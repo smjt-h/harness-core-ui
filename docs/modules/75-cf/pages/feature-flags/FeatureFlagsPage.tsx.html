@@ -23,16 +23,16 @@
         <div class='clearfix'>
             
             <div class='fl pad1y space-right2'>
-                <span class="strong">76.32% </span>
+                <span class="strong">76.47% </span>
                 <span class="quiet">Statements</span>
-                <span class='fraction'>116/152</span>
+                <span class='fraction'>117/153</span>
             </div>
         
             
             <div class='fl pad1y space-right2'>
-                <span class="strong">57.07% </span>
+                <span class="strong">57.92% </span>
                 <span class="quiet">Branches</span>
-                <span class='fraction'>113/198</span>
+                <span class='fraction'>117/202</span>
             </div>
         
             
@@ -44,9 +44,9 @@
         
             
             <div class='fl pad1y space-right2'>
-                <span class="strong">76.82% </span>
+                <span class="strong">76.97% </span>
                 <span class="quiet">Lines</span>
-                <span class='fraction'>116/151</span>
+                <span class='fraction'>117/152</span>
             </div>
         
             
@@ -699,7 +699,16 @@
 <a name='L640'></a><a href='#L640'>640</a>
 <a name='L641'></a><a href='#L641'>641</a>
 <a name='L642'></a><a href='#L642'>642</a>
-<a name='L643'></a><a href='#L643'>643</a></td><td class="line-coverage quiet"><span class="cline-any cline-neutral">&nbsp;</span>
+<a name='L643'></a><a href='#L643'>643</a>
+<a name='L644'></a><a href='#L644'>644</a>
+<a name='L645'></a><a href='#L645'>645</a>
+<a name='L646'></a><a href='#L646'>646</a>
+<a name='L647'></a><a href='#L647'>647</a>
+<a name='L648'></a><a href='#L648'>648</a>
+<a name='L649'></a><a href='#L649'>649</a>
+<a name='L650'></a><a href='#L650'>650</a>
+<a name='L651'></a><a href='#L651'>651</a>
+<a name='L652'></a><a href='#L652'>652</a></td><td class="line-coverage quiet"><span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
@@ -1257,6 +1266,15 @@
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-yes">12x</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">12x</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
@@ -1898,30 +1916,39 @@ const FeatureFlagsPage: React.FC = () =&gt; {
     &lt;/Layout.Horizontal&gt;
   )
 &nbsp;
+  const displayToolbar = hasFeatureFlags || searchTerm
+&nbsp;
   return (
     &lt;ListingPageTemplate
       pageTitle={title}
       header={header}
       headerStyle={{ display: 'flex' }}
       toolbar={
-        &lt;Layout.Horizontal flex={{ alignItems: 'center' }}&gt;
-          &lt;Container margin={{ right: 'small' }}&gt;
-            &lt;FlagDialog environment={activeEnvironment} /&gt;
-          &lt;/Container&gt;
-          {gitSync<span class="branch-0 cbranch-no" title="branch not covered" >?.i</span>sGitSyncActionsEnabled &amp;&amp; (
-<span class="branch-1 cbranch-no" title="branch not covered" >            &lt;GitSyncActions</span>
-              isLoading={gitSync.gitSyncLoading || gitSyncing}
-              branch={gitSync.gitRepoDetails?.branch || ''}
-              repository={gitSync.gitRepoDetails?.repoIdentifier || ''}
-              isAutoCommitEnabled={gitSync.isAutoCommitEnabled}
-              isGitSyncPaused={gitSync.isGitSyncPaused}
-              handleToggleAutoCommit={gitSync.handleAutoCommit}
-              handleGitPause={gitSync.handleGitPause}
+        displayToolbar &amp;&amp; (
+          &lt;Layout.Horizontal flex={{ alignItems: 'center' }}&gt;
+            &lt;Container margin={{ right: 'small' }}&gt;
+              &lt;FlagDialog environment={activeEnvironment} /&gt;
+            &lt;/Container&gt;
+            {gitSync<span class="branch-0 cbranch-no" title="branch not covered" >?.i</span>sGitSyncActionsEnabled &amp;&amp; (
+<span class="branch-1 cbranch-no" title="branch not covered" >              &lt;GitSyncActions</span>
+                isLoading={gitSync.gitSyncLoading || gitSyncing}
+                branch={gitSync.gitRepoDetails?.branch || ''}
+                repository={gitSync.gitRepoDetails?.repoIdentifier || ''}
+                isAutoCommitEnabled={gitSync.isAutoCommitEnabled}
+                isGitSyncPaused={gitSync.isGitSyncPaused}
+                handleToggleAutoCommit={gitSync.handleAutoCommit}
+                handleGitPause={gitSync.handleGitPause}
+              /&gt;
+            )}
+            &lt;FlexExpander /&gt;
+            &lt;ExpandingSearchInput
+              alwaysExpanded
+              name="findFlag"
+              placeholder={getString('search')}
+              onChange={onSearchInputChanged}
             /&gt;
-          )}
-          &lt;FlexExpander /&gt;
-          &lt;ExpandingSearchInput name="findFlag" placeholder={getString('search')} onChange={onSearchInputChanged} /&gt;
-        &lt;/Layout.Horizontal&gt;
+          &lt;/Layout.Horizontal&gt;
+        )
       }
       content={
         &lt;&gt;
@@ -1990,7 +2017,7 @@ export default FeatureFlagsPage
             <div class='footer quiet pad2 space-top1 center small'>
                 Code coverage generated by
                 <a href="https://istanbul.js.org/" target="_blank">istanbul</a>
-                at Mon Jan 24 2022 16:13:05 GMT+0000 (Greenwich Mean Time)
+                at Mon Jan 24 2022 17:31:03 GMT+0000 (Greenwich Mean Time)
             </div>
         </div>
         <script src="../../../../prettify.js"></script>
