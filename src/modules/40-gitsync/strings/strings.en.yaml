@@ -42,6 +42,7 @@ baseBranch: Base branch
 PRTitle: Pull request title
 startSync: Start sync
 syncFailed: Sync Failed
+syncStatus: Sync Status
 syncBranchTitle: Select Branch to sync resources
 deafaultSyncTitle: Syncing Harness entities
 createBranchTitle: Create a new branch

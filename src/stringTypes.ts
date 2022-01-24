@@ -1982,6 +1982,7 @@ export interface StringsMap {
   'gitsync.successfullySavedConnectivityMode': string
   'gitsync.syncBranchTitle': string
   'gitsync.syncFailed': string
+  'gitsync.syncStatus': string
   'gitsync.syncSucessToaster': string
   'dashboards.createFolder.folderDescriptionPlaceholder': string
   'dashboards.createFolder.folderNameValidation': string
