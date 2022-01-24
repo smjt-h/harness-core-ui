@@ -14,6 +14,8 @@ import type { ChartConfigType } from './chartUtils'
 import CEChart from '../CEChart/CEChart'
 import ChartLegend from './ChartLegend'
 
+import css from './Chart.module.scss'
+
 export const DAYS_FOR_TICK_INTERVAL = 10
 export const ONE_MONTH = 24 * 3600 * 1000 * 30
 
@@ -122,6 +124,7 @@ const GetChart: React.FC<GetChartProps> = ({
             zoomType: 'x',
             height: 300,
             type: chartType,
+            spacingTop: 65,
             events: {
               load() {
                 setChartObj(this)
@@ -144,7 +147,37 @@ const GetChart: React.FC<GetChartProps> = ({
               }
             }
           },
-          xAxis: xAxisOptions
+          xAxis: xAxisOptions,
+          annotations: [
+            {
+              labels: [
+                {
+                  point: '1642550400000',
+                  useHTML: true,
+                  text: `
+                    <div class=${css.anomaliesWrapper}>
+                      <p class=${css.anomaliesText}>3</p>
+                      <span class=${css.anomaliesTooltip}>
+                        <p class=${css.anomaliesCount}>3 Anomolies</p>
+                        <p class=${css.anomaliesCost}>$1822.79</p>
+                        <a href="" class=${css.anomaliesNav}>View anomalies</a>
+                        <a href="" class=${css.anomaliesNav}>Apply cluster filters</a>
+                      </span>
+                    <div>
+                  `,
+                  y: -40
+                }
+              ],
+              draggable: '',
+              labelOptions: {
+                useHTML: true,
+                backgroundColor: 'white',
+                borderWidth: 0,
+                allowOverlap: true,
+                crop: false
+              }
+            }
+          ]
         }}
       />
       {chartObj && showLegends ? (
