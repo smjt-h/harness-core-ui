@@ -1,0 +1,70 @@
+.anomaliesWrapper {
+  border-left: 12px solid transparent;
+  border-right: 12px solid transparent;
+  border-bottom: 24px solid #cf2318;
+  position: relative;
+}
+
+.anomaliesText {
+  text-align: center;
+  position: absolute;
+  top: 8px;
+  right: -2px;
+  color: white;
+}
+
+.anomaliesWrapper .anomaliesTooltip {
+  visibility: hidden;
+  width: 180px;
+  background-color: black;
+  color: #fff;
+  border-radius: 6px;
+  padding: 16px 12px;
+
+  /* Position the tooltip */
+  position: absolute;
+  z-index: 1;
+  left: 20px;
+  top: -48px;
+}
+
+.anomaliesWrapper:hover .anomaliesTooltip {
+  visibility: visible;
+}
+
+.anomaliesWrapper .anomaliesTooltip::after {
+  content: '';
+  position: absolute;
+  top: 50%;
+  right: 100%;
+  margin-top: -5px;
+  border-width: 5px;
+  border-style: solid;
+  border-color: transparent black transparent transparent;
+}
+
+.anomaliesCount {
+  font-style: normal;
+  font-weight: 500;
+  font-size: 10px;
+  line-height: 12px;
+  color: #fafafa;
+}
+
+.anomaliesCost {
+  font-style: normal;
+  font-weight: 600;
+  font-size: 14px;
+  line-height: 20px;
+  margin-bottom: 4px;
+}
+
+.anomaliesNav {
+  font-style: normal;
+  font-weight: bold;
+  font-size: 10px;
+  line-height: 15px;
+  display: block;
+  color: #00ade4;
+  margin-top: 12px;
+}
