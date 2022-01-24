@@ -1964,6 +1964,9 @@ export interface StringsMap {
   'gitsync.markAsDefaultLabel': string
   'gitsync.moveFolder': string
   'gitsync.pathToHarnessFolder': string
+  'gitsync.resyncButtonText': string
+  'gitsync.resyncFailToaster': string
+  'gitsync.resyncSucessToaster': string
   'gitsync.rootFolderListHeader': string
   'gitsync.rootFolderUpdatedSuccessfully': string
   'gitsync.rootfolderLabel': string

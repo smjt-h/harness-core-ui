@@ -143,7 +143,7 @@ export const getExternalUrl = (config: GitSyncConfig, folderPath?: string): stri
 export const getEntityUrl = (entity: GitSyncEntityDTO): string => {
   const { repoUrl, folderPath, branch, entityGitPath } = entity
   if (repoUrl && branch && folderPath && entityGitPath) {
-    return `${repoUrl}/blob/${branch}/${folderPath}${entityGitPath}`
+    return `${repoUrl}/blob/${branch}${folderPath.startsWith('/') ? '' : '/'}${folderPath}${entityGitPath}`
   } else {
     return ''
   }
