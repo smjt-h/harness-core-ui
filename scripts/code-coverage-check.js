@@ -15,7 +15,8 @@ const filterFiles = fileName => {
     fileName.endsWith('.test.ts') ||
     fileName.endsWith('.test.tsx') ||
     fileName.endsWith('.snap') ||
-    fileName.endsWith('.scss')
+    fileName.endsWith('.scss') ||
+    fileName.endsWith('.js')
   ) {
     return false
   }
