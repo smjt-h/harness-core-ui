@@ -28,8 +28,9 @@ import { useStrings } from 'framework/strings'
 import type { TerraformVarFileWrapper } from 'services/cd-ng'
 
 import { RemoteVar, TFPlanFormData, TerraformStoreTypes } from '../Common/Terraform/TerraformInterfaces'
-import { TFRemoteWizard } from '../Common/Terraform/Editview/TFRemoteWizard'
+// import { TFRemoteWizard } from '../Common/Terraform/Editview/TFRemoteWizard'
 import { TFVarStore } from '../Common/Terraform/Editview/TFVarStore'
+import { TFRemoteWizardArtifactory } from '../Common/Terraform/Editview/TFRemoteWizardArtifactory'
 
 import InlineVarFile from '../Common/Terraform/Editview/InlineVarFile'
 
@@ -284,7 +285,19 @@ export default function TfVarFileList(props: TfVarFileProps): React.ReactElement
                           isEditMode={isEditMode}
                           allowableTypes={allowableTypes}
                         />
-                        <TFRemoteWizard
+                        <TFRemoteWizardArtifactory
+                          isEditMode={isEditMode}
+                          name={getString('cd.varFileDetails')}
+                          onSubmitCallBack={(values: RemoteVar) => {
+                            if (isEditMode) {
+                              arrayHelpers.replace(selectedVarIndex, values)
+                            } else {
+                              arrayHelpers.push(values)
+                            }
+                            onCloseOfRemoteWizard()
+                          }}
+                        />
+                        {/* <TFRemoteWizard
                           name={getString('cd.varFileDetails')}
                           onSubmitCallBack={(values: RemoteVar) => {
                             if (isEditMode) {
@@ -298,7 +311,7 @@ export default function TfVarFileList(props: TfVarFileProps): React.ReactElement
                           // initialValues={remoteInitialValues}
                           isReadonly={isReadonly}
                           allowableTypes={allowableTypes}
-                        />
+                        /> */}
                       </StepWizard>
                     </div>
                     <Button

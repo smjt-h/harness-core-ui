@@ -15,7 +15,7 @@ import {
   Card,
   Color,
   Formik,
-  getMultiTypeFromValue,
+  // getMultiTypeFromValue,
   Heading,
   Icon,
   Layout,
@@ -27,7 +27,7 @@ import {
 import { Form } from 'formik'
 import { useStrings } from 'framework/strings'
 import { FormMultiTypeConnectorField } from '@connectors/components/ConnectorReferenceField/FormMultiTypeConnectorField'
-import type { ConnectorSelectedValue } from '@connectors/components/ConnectorReferenceField/ConnectorReferenceField'
+// import type { ConnectorSelectedValue } from '@connectors/components/ConnectorReferenceField/ConnectorReferenceField'
 
 import { useVariablesExpression } from '@pipeline/components/PipelineStudio/PiplineHooks/useVariablesExpression'
 import type { ConnectorInfoDTO } from 'services/cd-ng'
@@ -40,16 +40,18 @@ export const TFConnectorMap: Record<TFVarStores | string, ConnectorInfoDTO['type
   Git: Connectors.GIT,
   Github: Connectors.GITHUB,
   GitLab: Connectors.GITLAB,
-  Bitbucket: Connectors.BITBUCKET
+  Bitbucket: Connectors.BITBUCKET,
+  Artifactory: Connectors.ARTIFACTORY
 }
 
-const allowedTypes = ['Git', 'Github', 'GitLab', 'Bitbucket']
+const allowedTypes = ['Git', 'Github', 'GitLab', 'Bitbucket', 'Artifactory']
 
 const tfVarIcons: any = {
   Git: 'service-github',
   Github: 'github',
   GitLab: 'service-gotlab',
-  Bitbucket: 'bitbucket'
+  Bitbucket: 'bitbucket',
+  Artifactory: 'service-artifactory'
 }
 
 interface TFVarStoreProps {
@@ -64,6 +66,7 @@ export const TFVarStore: React.FC<StepProps<any> & TFVarStoreProps> = ({
   isEditMode,
   allowableTypes
 }) => {
+  window.console.log('TFVarStore')
   const [selectedType, setSelectedType] = React.useState('')
   const { getString } = useStrings()
   const { accountId, projectIdentifier, orgIdentifier } = useParams<{
@@ -169,13 +172,13 @@ export const TFVarStore: React.FC<StepProps<any> & TFVarStoreProps> = ({
                     /* istanbul ignore next */
                     nextStep?.({ ...formik.values, selectedType })
                   }}
-                  disabled={
-                    /* istanbul ignore next */
-                    !selectedType ||
-                    (getMultiTypeFromValue(formik.values.varFile?.spec?.store?.spec?.connectorRef) ===
-                      MultiTypeInputType.FIXED &&
-                      !(formik.values.varFile?.spec?.store?.spec?.connectorRef as ConnectorSelectedValue)?.connector)
-                  }
+                  // disabled={
+                  //   /* istanbul ignore next */
+                  //   !selectedType ||
+                  //   (getMultiTypeFromValue(formik.values.varFile?.spec?.store?.spec?.connectorRef) ===
+                  //     MultiTypeInputType.FIXED &&
+                  //     !(formik.values.varFile?.spec?.store?.spec?.connectorRef as ConnectorSelectedValue)?.connector)
+                  // }
                 />
               </Layout.Horizontal>
             </Form>

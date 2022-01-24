@@ -1,28 +1,22 @@
 /* eslint-disable */
-/**
- * Copyright 2021 Harness Inc. All rights reserved.
- * Use of this source code is governed by the PolyForm Shield 1.0.0 license
- * that can be found in the licenses directory at the root of this repository, also available at
- * https://polyformproject.org/wp-content/uploads/2020/06/PolyForm-Shield-1.0.0.txt.
- **/
-// this is an auto-generated file, do not update this manually
+// this is an auto-generated file
 declare const styles: {
-  readonly activeServiceInstancePopover: string
-  readonly activeServiceInstancePopoverSection: string
   readonly activeServiceInstances: string
-  readonly activeServiceInstancesEmpty: string
   readonly activeServiceInstancesHeader: string
-  readonly environmentRow: string
-  readonly hex: string
-  readonly hexContainer: string
-  readonly hover: string
   readonly instanceCount: string
-  readonly instanceTable: string
-  readonly overflow: string
-  readonly paddedContainer: string
   readonly pieChartLabelContainerStyles: string
   readonly pieChartLabelStyles: string
-  readonly sectionValue: string
+  readonly instanceTable: string
+  readonly paddedContainer: string
+  readonly environmentRow: string
+  readonly overflow: string
   readonly seeMore: string
+  readonly hexContainer: string
+  readonly hex: string
+  readonly hover: string
+  readonly activeServiceInstancesEmpty: string
+  readonly activeServiceInstancePopover: string
+  readonly activeServiceInstancePopoverSection: string
+  readonly sectionValue: string
 }
 export default styles

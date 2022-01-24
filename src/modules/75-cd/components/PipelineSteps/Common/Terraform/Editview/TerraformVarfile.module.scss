@@ -286,3 +286,23 @@
   margin-bottom: var(--spacing-5);
   border-top: 0.5px solid var(--grey-200);
 }
+
+.textCss {
+  flex-basis: 50%;
+  margin-right: var(--spacing-small) !important;
+  margin-bottom: var(--spacing-small) !important;
+  font-size: var(--font-size-small) !important;
+  color: var(--grey-600) !important;
+  font-size: var(--font-size-normal) !important;
+}
+
+.artifactName {
+  margin-right: 10px !important;
+}
+
+.dropdown {
+  height: 30px;
+  background-color: white;
+  border-radius: 4px;
+  box-shadow: 0 0 0 0 rgb(19 124 189 / 0%), 0 0 0 0 rgb(19 124 189 / 0%), inset 0 0 0 1px rgb(16 22 26 / 15%), inset 0 1px 1px rgb(16 22 26 / 20%);
+}

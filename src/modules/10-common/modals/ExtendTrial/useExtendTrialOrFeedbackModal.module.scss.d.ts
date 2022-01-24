@@ -1,21 +1,15 @@
 /* eslint-disable */
-/**
- * Copyright 2021 Harness Inc. All rights reserved.
- * Use of this source code is governed by the PolyForm Shield 1.0.0 license
- * that can be found in the licenses directory at the root of this repository, also available at
- * https://polyformproject.org/wp-content/uploads/2020/06/PolyForm-Shield-1.0.0.txt.
- **/
-// this is an auto-generated file, do not update this manually
+// this is an auto-generated file
 declare const styles: {
+  readonly dialog: string
+  readonly feedback: string
   readonly crossIcon: string
   readonly description: string
-  readonly dialog: string
-  readonly experience: string
-  readonly extendTrial: string
-  readonly feedback: string
   readonly left: string
   readonly right: string
-  readonly suggestion: string
   readonly tag: string
+  readonly suggestion: string
+  readonly experience: string
+  readonly extendTrial: string
 }
 export default styles

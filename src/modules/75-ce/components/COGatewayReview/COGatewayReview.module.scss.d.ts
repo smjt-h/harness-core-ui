@@ -1,21 +1,15 @@
 /* eslint-disable */
-/**
- * Copyright 2021 Harness Inc. All rights reserved.
- * Use of this source code is governed by the PolyForm Shield 1.0.0 license
- * that can be found in the licenses directory at the root of this repository, also available at
- * https://polyformproject.org/wp-content/uploads/2020/06/PolyForm-Shield-1.0.0.txt.
- **/
-// this is an auto-generated file, do not update this manually
+// this is an auto-generated file
 declare const styles: {
-  readonly borderSpacing: string
   readonly configDetails: string
-  readonly editCta: string
-  readonly equalSpacing: string
-  readonly fulFilmentIcon: string
   readonly instanceTable: string
+  readonly fulFilmentIcon: string
   readonly labelNormal: string
   readonly page: string
   readonly reviewDetailsSection: string
+  readonly editCta: string
+  readonly equalSpacing: string
+  readonly borderSpacing: string
   readonly reviewHeading: string
 }
 export default styles

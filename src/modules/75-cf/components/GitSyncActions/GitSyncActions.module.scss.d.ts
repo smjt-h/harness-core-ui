@@ -1,20 +1,14 @@
 /* eslint-disable */
-/**
- * Copyright 2021 Harness Inc. All rights reserved.
- * Use of this source code is governed by the PolyForm Shield 1.0.0 license
- * that can be found in the licenses directory at the root of this repository, also available at
- * https://polyformproject.org/wp-content/uploads/2020/06/PolyForm-Shield-1.0.0.txt.
- **/
-// this is an auto-generated file, do not update this manually
+// this is an auto-generated file
 declare const styles: {
-  readonly autoCommitDisabled: string
-  readonly autoCommitEnabled: string
-  readonly branchActionButton: string
-  readonly branchActionButtonActive: string
   readonly branchActionButtonWrapper: string
-  readonly gitRepoText: string
+  readonly branchActionButtonActive: string
+  readonly branchActionButton: string
   readonly gitStatusIcon: string
+  readonly autoCommitEnabled: string
+  readonly autoCommitDisabled: string
   readonly loadingSpinner: string
   readonly pausedIcon: string
+  readonly gitRepoText: string
 }
 export default styles

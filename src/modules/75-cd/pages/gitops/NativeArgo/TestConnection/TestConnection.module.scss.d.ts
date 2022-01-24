@@ -1,23 +1,17 @@
 /* eslint-disable */
-/**
- * Copyright 2021 Harness Inc. All rights reserved.
- * Use of this source code is governed by the PolyForm Shield 1.0.0 license
- * that can be found in the licenses directory at the root of this repository, also available at
- * https://polyformproject.org/wp-content/uploads/2020/06/PolyForm-Shield-1.0.0.txt.
- **/
-// this is an auto-generated file, do not update this manually
+// this is an auto-generated file
 declare const styles: {
-  readonly card: string
-  readonly connectorForm: string
-  readonly fullHeight: string
+  readonly stepContainer: string
   readonly heading: string
-  readonly issueInfo: string
-  readonly issueSuggestion: string
+  readonly stepFormContainer: string
   readonly layoutFooter: string
   readonly nextButton: string
-  readonly stepContainer: string
-  readonly stepFormContainer: string
-  readonly success: string
+  readonly fullHeight: string
+  readonly connectorForm: string
   readonly validationStatus: string
+  readonly success: string
+  readonly card: string
+  readonly issueInfo: string
+  readonly issueSuggestion: string
 }
 export default styles
