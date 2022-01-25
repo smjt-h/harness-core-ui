@@ -26,10 +26,10 @@
 
 .main {
   display: grid;
-  grid-template-columns: 88px 184px 1fr;
+  grid-template-columns: 88px 184px calc(100vw - 272px);
 
   &[data-layout='minimal'] {
-    grid-template-columns: 88px 1fr;
+    grid-template-columns: 88px calc(100vw - 88px);
   }
 
   &[data-layout='empty'] {
