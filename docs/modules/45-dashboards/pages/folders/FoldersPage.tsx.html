@@ -25,7 +25,7 @@
             <div class='fl pad1y space-right2'>
                 <span class="strong">0% </span>
                 <span class="quiet">Statements</span>
-                <span class='fraction'>0/115</span>
+                <span class='fraction'>0/114</span>
             </div>
         
             
@@ -46,7 +46,7 @@
             <div class='fl pad1y space-right2'>
                 <span class="strong">0% </span>
                 <span class="quiet">Lines</span>
-                <span class='fraction'>0/113</span>
+                <span class='fraction'>0/112</span>
             </div>
         
             
@@ -665,15 +665,7 @@
 <a name='L606'></a><a href='#L606'>606</a>
 <a name='L607'></a><a href='#L607'>607</a>
 <a name='L608'></a><a href='#L608'>608</a>
-<a name='L609'></a><a href='#L609'>609</a>
-<a name='L610'></a><a href='#L610'>610</a>
-<a name='L611'></a><a href='#L611'>611</a>
-<a name='L612'></a><a href='#L612'>612</a>
-<a name='L613'></a><a href='#L613'>613</a>
-<a name='L614'></a><a href='#L614'>614</a>
-<a name='L615'></a><a href='#L615'>615</a>
-<a name='L616'></a><a href='#L616'>616</a>
-<a name='L617'></a><a href='#L617'>617</a></td><td class="line-coverage quiet"><span class="cline-any cline-neutral">&nbsp;</span>
+<a name='L609'></a><a href='#L609'>609</a></td><td class="line-coverage quiet"><span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
@@ -702,9 +694,9 @@
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-no">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-no">&nbsp;</span>
 <span class="cline-any cline-no">&nbsp;</span>
 <span class="cline-any cline-no">&nbsp;</span>
@@ -772,9 +764,6 @@
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-no">&nbsp;</span>
-<span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
@@ -787,8 +776,6 @@
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-no">&nbsp;</span>
 <span class="cline-any cline-no">&nbsp;</span>
 <span class="cline-any cline-no">&nbsp;</span>
@@ -988,11 +975,8 @@
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-no">&nbsp;</span>
 <span class="cline-any cline-no">&nbsp;</span>
-<span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
@@ -1308,10 +1292,11 @@
   Heading,
   Icon,
   useModalHook,
-  StepWizard,
   CardBody,
+  FontVariation,
   FormInput,
   Formik,
+  FormikForm as Form,
   Pagination,
   SelectOption,
   ExpandingSearchInput,
@@ -1321,7 +1306,6 @@
 <span class="cstat-no" title="statement not covered" >import { Select } from '@blueprintjs/select'</span>
 &nbsp;
 <span class="cstat-no" title="statement not covered" >import { Classes, Dialog, Menu, MenuItem } from '@blueprintjs/core'</span>
-<span class="cstat-no" title="statement not covered" >import { Form } from 'formik'</span>
 <span class="cstat-no" title="statement not covered" >import * as Yup from 'yup'</span>
 <span class="cstat-no" title="statement not covered" >import { NavLink, useParams, useHistory } from 'react-router-dom'</span>
 <span class="cstat-no" title="statement not covered" >import { useGet, useMutate } from 'restful-react'</span>
@@ -1371,7 +1355,7 @@ const defaultSortBy: SelectOption = <span class="cstat-no" title="statement not 
   value: ''
 }
 &nbsp;
-const FirstStep = <span class="cstat-no" title="statement not covered" ><span class="fstat-no" title="function not covered" >(p</span>rops: any): JSX.Element =&gt; {</span>
+const NewFolderForm = <span class="cstat-no" title="statement not covered" ><span class="fstat-no" title="function not covered" >(p</span>rops: any): JSX.Element =&gt; {</span>
   const { getString } = <span class="cstat-no" title="statement not covered" >useStrings()</span>
   const { accountId } = <span class="cstat-no" title="statement not covered" >useParams&lt;AccountPathProps&gt;()</span>
   const [errorMessage, setErrorMessage] = <span class="cstat-no" title="statement not covered" >React.useState('')</span>
@@ -1389,15 +1373,10 @@ const FirstStep = <span class="cstat-no" title="statement not covered" ><span cl
 &nbsp;
 <span class="cstat-no" title="statement not covered" >  return (</span>
     &lt;Layout.Horizontal style={{ height: '100%', justifyContent: 'space-between' }}&gt;
-      &lt;Layout.Horizontal
-        flex
-        padding="medium"
-        style={{ flexDirection: 'column', alignItems: 'baseline', width: '50%' }}
-        spacing="medium"
-      &gt;
-        &lt;Text font="medium" color={Color.BLACK_100}&gt;
+      &lt;Layout.Horizontal padding="xxlarge" style={{ flexDirection: 'column', alignItems: 'baseline' }}&gt;
+        &lt;Heading level={3} font={{ variation: FontVariation.H3 }} padding={{ bottom: 'large' }}&gt;
           {getString('dashboards.createFolder.stepOne')}
-        &lt;/Text&gt;
+        &lt;/Heading&gt;
         &lt;Formik
           initialValues={{ name: '' }}
           formName={'createFolderForm'}
@@ -1433,11 +1412,11 @@ const FirstStep = <span class="cstat-no" title="statement not covered" ><span cl
                   placeholder={getString('dashboards.createFolder.folderPlaceholder')}
                 /&gt;
 &nbsp;
-                &lt;Layout.Vertical style={{ marginTop: '180px' }}&gt;
+                &lt;Layout.Vertical style={{ marginTop: '180px' }} padding={{ top: 'small' }}&gt;
                   &lt;Button
                     type="submit"
                     intent="primary"
-                    style={{ width: '150px', marginTop: '200px' }}
+                    style={{ width: '150px' }}
                     text={getString('continue')}
                     disabled={loading}
                     className={css.button}
@@ -1583,33 +1562,30 @@ const FoldersPage: React.FC = <span class="cstat-no" title="statement not covere
 <span class="cstat-no" title="statement not covered" >          setView(Views.CREATE)</span>
 <span class="cstat-no" title="statement not covered" >          hideModal()</span>
         }}
-        className={cx(css.folderDialog, Classes.DIALOG, {
+        className={cx(css.dashboardFolderDialog, Classes.DIALOG, {
           [css.create]: view === Views.CREATE
         })}
       &gt;
         {view === Views.CREATE ? (
-          &lt;StepWizard stepClassName={css.stepClass}&gt;
-            &lt;FirstStep
-              name={getString('dashboards.createFolder.stepOne')}
-              formData={{}}
-              hideModal={hideModal}
-              handleViewChange={{}}
-            /&gt;
-            {null}
-          &lt;/StepWizard&gt;
+          &lt;NewFolderForm
+            name={getString('dashboards.createFolder.stepOne')}
+            formData={{}}
+            hideModal={hideModal}
+            handleViewChange={{}}
+          /&gt;
         ) : null}
 &nbsp;
         {view === Views.EDIT ? &lt;section&gt;se&lt;/section&gt; : null}
 &nbsp;
         &lt;Button
-          minimal
+          className={css.crossIcon}
           icon="cross"
           iconProps={{ size: 18 }}
+          minimal
           onClick={<span class="fstat-no" title="function not covered" >() =</span>&gt; {
 <span class="cstat-no" title="statement not covered" >            setView(Views.CREATE)</span>
 <span class="cstat-no" title="statement not covered" >            hideModal()</span>
           }}
-          className={css.crossIcon}
         /&gt;
       &lt;/Dialog&gt;
     ),
@@ -1912,7 +1888,7 @@ const FoldersPage: React.FC = <span class="cstat-no" title="statement not covere
             <div class='footer quiet pad2 space-top1 center small'>
                 Code coverage generated by
                 <a href="https://istanbul.js.org/" target="_blank">istanbul</a>
-                at Tue Jan 25 2022 13:49:05 GMT+0000 (Greenwich Mean Time)
+                at Tue Jan 25 2022 16:23:57 GMT+0000 (Greenwich Mean Time)
             </div>
         </div>
         <script src="../../../../prettify.js"></script>
