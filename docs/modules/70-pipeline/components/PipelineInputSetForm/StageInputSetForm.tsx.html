@@ -30,9 +30,9 @@
         
             
             <div class='fl pad1y space-right2'>
-                <span class="strong">49.05% </span>
+                <span class="strong">47.91% </span>
                 <span class="quiet">Branches</span>
-                <span class='fraction'>285/581</span>
+                <span class='fraction'>286/597</span>
             </div>
         
             
@@ -814,7 +814,34 @@
 <a name='L755'></a><a href='#L755'>755</a>
 <a name='L756'></a><a href='#L756'>756</a>
 <a name='L757'></a><a href='#L757'>757</a>
-<a name='L758'></a><a href='#L758'>758</a></td><td class="line-coverage quiet"><span class="cline-any cline-neutral">&nbsp;</span>
+<a name='L758'></a><a href='#L758'>758</a>
+<a name='L759'></a><a href='#L759'>759</a>
+<a name='L760'></a><a href='#L760'>760</a>
+<a name='L761'></a><a href='#L761'>761</a>
+<a name='L762'></a><a href='#L762'>762</a>
+<a name='L763'></a><a href='#L763'>763</a>
+<a name='L764'></a><a href='#L764'>764</a>
+<a name='L765'></a><a href='#L765'>765</a>
+<a name='L766'></a><a href='#L766'>766</a>
+<a name='L767'></a><a href='#L767'>767</a>
+<a name='L768'></a><a href='#L768'>768</a>
+<a name='L769'></a><a href='#L769'>769</a>
+<a name='L770'></a><a href='#L770'>770</a>
+<a name='L771'></a><a href='#L771'>771</a>
+<a name='L772'></a><a href='#L772'>772</a>
+<a name='L773'></a><a href='#L773'>773</a>
+<a name='L774'></a><a href='#L774'>774</a>
+<a name='L775'></a><a href='#L775'>775</a>
+<a name='L776'></a><a href='#L776'>776</a>
+<a name='L777'></a><a href='#L777'>777</a>
+<a name='L778'></a><a href='#L778'>778</a>
+<a name='L779'></a><a href='#L779'>779</a>
+<a name='L780'></a><a href='#L780'>780</a>
+<a name='L781'></a><a href='#L781'>781</a>
+<a name='L782'></a><a href='#L782'>782</a>
+<a name='L783'></a><a href='#L783'>783</a>
+<a name='L784'></a><a href='#L784'>784</a>
+<a name='L785'></a><a href='#L785'>785</a></td><td class="line-coverage quiet"><span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
@@ -1225,6 +1252,33 @@
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-yes">63x</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
@@ -2052,40 +2106,67 @@ export const StageInputSetFormInternal: React.FC&lt;StageInputSetFormProps&gt; =
           &lt;div className={css.inputheader}&gt;{getString('infrastructureText')}&lt;/div&gt;
 &nbsp;
           &lt;div className={css.nestedAccordions} style={{ width: '50%' }}&gt;
-            {(deploymentStageTemplate.infrastructure as any).spec?.connectorRef &amp;&amp; (
-<span class="branch-1 cbranch-no" title="branch not covered" >              &lt;Container className={stepCss.bottomMargin3}&gt;</span>
-                &lt;FormMultiTypeConnectorField
-                  width={ConnectorRefWidth.DefaultView}
-                  name={`${isEmpty(path) ? '' : `${path}.`}infrastructure.spec.connectorRef`}
+            {(deploymentStageTemplate.infrastructure as any).type === 'KubernetesDirect' ? (
+              &lt;&gt;
+                {(deploymentStageTemplate.infrastructure as any).spec<span class="branch-0 cbranch-no" title="branch not covered" >?.c</span>onnectorRef &amp;&amp; (
+<span class="branch-1 cbranch-no" title="branch not covered" >                  &lt;Container className={stepCss.bottomMargin3}&gt;</span>
+                    &lt;FormMultiTypeConnectorField
+                      width={ConnectorRefWidth.DefaultView}
+                      name={`${isEmpty(path) ? '' : `${path}.`}infrastructure.spec.connectorRef`}
+                      label={
+                        &lt;Text font={{ variation: FontVariation.FORM_LABEL }}&gt;
+                          {getString('connectors.title.k8sCluster')}
+                        &lt;/Text&gt;
+                      }
+                      placeholder={getString('pipelineSteps.build.infraSpecifications.kubernetesClusterPlaceholder')}
+                      accountIdentifier={accountId}
+                      projectIdentifier={projectIdentifier}
+                      orgIdentifier={orgIdentifier}
+                      gitScope={gitScope}
+                      multiTypeProps={{ expressions, disabled: readonly, allowableTypes }}
+                      setRefValue
+                    /&gt;
+                  &lt;/Container&gt;
+                )}
+                {(deploymentStageTemplate.infrastructure as any).spec<span class="branch-0 cbranch-no" title="branch not covered" >?.n</span>amespace &amp;&amp; (
+                  &lt;FormInput.MultiTextInput
+                    label={
+                      &lt;Text
+                        font={{ variation: FontVariation.FORM_LABEL }}
+                        tooltipProps={{ dataTooltipId: 'namespace' }}
+                      &gt;
+                        {getString('pipelineSteps.build.infraSpecifications.namespace')}
+                      &lt;/Text&gt;
+                    }
+                    name={`${isEmpty(path) ? <span class="branch-0 cbranch-no" title="branch not covered" >'' </span>: `${path}.`}infrastructure.spec.namespace`}
+                    multiTextInputProps={{
+                      expressions,
+                      allowableTypes: allowableTypes
+                    }}
+                    disabled={readonly}
+                  /&gt;
+                )}
+              &lt;/&gt;
+            ) : (deploymentStageTemplate.infrastructure as any).type === 'VM' ? (
+<span class="branch-0 cbranch-no" title="branch not covered" >              (deploymentStageTemplate.infrastructure as any).spec?.spec?.identifier &amp;&amp; (</span>
+                &lt;MultiTypeTextField
                   label={
-                    &lt;Text font={{ variation: FontVariation.FORM_LABEL }}&gt;
-                      {getString('connectors.title.k8sCluster')}
+                    &lt;Text
+                      tooltipProps={{ dataTooltipId: 'poolId' }}
+                      font={{ variation: FontVariation.FORM_LABEL }}
+                      margin={{ bottom: 'xsmall' }}
+                    &gt;
+                      {getString('pipeline.buildInfra.poolId')}
                     &lt;/Text&gt;
                   }
-                  placeholder={getString('pipelineSteps.build.infraSpecifications.kubernetesClusterPlaceholder')}
-                  accountIdentifier={accountId}
-                  projectIdentifier={projectIdentifier}
-                  orgIdentifier={orgIdentifier}
-                  gitScope={gitScope}
-                  multiTypeProps={{ expressions, disabled: readonly, allowableTypes }}
+                  name={`${isEmpty(path) ? '' : `${path}.`}infrastructure.spec.spec.identifier`}
+                  multiTextInputProps={{
+                    multiTextInputProps: { expressions, allowableTypes },
+                    disabled: readonly
+                  }}
                 /&gt;
-              &lt;/Container&gt;
-            )}
-            {(deploymentStageTemplate.infrastructure as any).spec?.namespace &amp;&amp; (
-              &lt;FormInput.MultiTextInput
-                label={
-                  &lt;Text font={{ variation: FontVariation.FORM_LABEL }} tooltipProps={{ dataTooltipId: 'namespace' }}&gt;
-                    {getString('pipelineSteps.build.infraSpecifications.namespace')}
-                  &lt;/Text&gt;
-                }
-                name={`${isEmpty(path) ? <span class="branch-0 cbranch-no" title="branch not covered" >'' </span>: `${path}.`}infrastructure.spec.namespace`}
-                multiTextInputProps={{
-                  expressions,
-                  allowableTypes: allowableTypes
-                }}
-                disabled={readonly}
-              /&gt;
-            )}
+              )
+            ) : null}
             {(deploymentStageTemplate.infrastructure as any).spec?.serviceAccountName &amp;&amp; (
               &lt;FormInput.MultiTextInput
                 label={
@@ -2335,7 +2416,7 @@ export const StageInputSetForm = connect(StageInputSetFormInternal)
             <div class='footer quiet pad2 space-top1 center small'>
                 Code coverage generated by
                 <a href="https://istanbul.js.org/" target="_blank">istanbul</a>
-                at Tue Jan 25 2022 06:22:01 GMT+0000 (Greenwich Mean Time)
+                at Tue Jan 25 2022 11:28:07 GMT+0000 (Greenwich Mean Time)
             </div>
         </div>
         <script src="../../../../prettify.js"></script>

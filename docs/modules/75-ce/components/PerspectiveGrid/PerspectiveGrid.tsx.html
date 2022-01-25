@@ -23,16 +23,16 @@
         <div class='clearfix'>
             
             <div class='fl pad1y space-right2'>
-                <span class="strong">71.79% </span>
+                <span class="strong">75% </span>
                 <span class="quiet">Statements</span>
-                <span class='fraction'>28/39</span>
+                <span class='fraction'>30/40</span>
             </div>
         
             
             <div class='fl pad1y space-right2'>
-                <span class="strong">41.46% </span>
+                <span class="strong">44.19% </span>
                 <span class="quiet">Branches</span>
-                <span class='fraction'>17/41</span>
+                <span class='fraction'>19/43</span>
             </div>
         
             
@@ -44,9 +44,9 @@
         
             
             <div class='fl pad1y space-right2'>
-                <span class="strong">71.05% </span>
+                <span class="strong">74.36% </span>
                 <span class="quiet">Lines</span>
-                <span class='fraction'>27/38</span>
+                <span class='fraction'>29/39</span>
             </div>
         
             
@@ -193,7 +193,11 @@
 <a name='L134'></a><a href='#L134'>134</a>
 <a name='L135'></a><a href='#L135'>135</a>
 <a name='L136'></a><a href='#L136'>136</a>
-<a name='L137'></a><a href='#L137'>137</a></td><td class="line-coverage quiet"><span class="cline-any cline-neutral">&nbsp;</span>
+<a name='L137'></a><a href='#L137'>137</a>
+<a name='L138'></a><a href='#L138'>138</a>
+<a name='L139'></a><a href='#L139'>139</a>
+<a name='L140'></a><a href='#L140'>140</a>
+<a name='L141'></a><a href='#L141'>141</a></td><td class="line-coverage quiet"><span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
@@ -280,20 +284,23 @@
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-yes">7x</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">7x</span>
 <span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-no">&nbsp;</span>
 <span class="cline-any cline-no">&nbsp;</span>
 <span class="cline-any cline-no">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-no">&nbsp;</span>
-<span class="cline-any cline-no">&nbsp;</span>
-<span class="cline-any cline-no">&nbsp;</span>
-<span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">7x</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-yes">7x</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
@@ -312,6 +319,7 @@
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
@@ -415,8 +423,9 @@ const PerspectiveGrid: React.FC&lt;PerspectiveGridProps&gt; = props =&gt; {
     )
   }
 &nbsp;
+  const { fieldName } = groupBy
+&nbsp;
   const onRowClick = <span class="fstat-no" title="function not covered" >(r</span>ow: Row&lt;GridData&gt;) =&gt; {
-    const { fieldName } = <span class="cstat-no" title="statement not covered" >groupBy</span>
 <span class="cstat-no" title="statement not covered" >    if (fieldName === 'Workload Id' &amp;&amp; isClusterOnly) {</span>
       const { clusterName, namespace, workloadName } = <span class="cstat-no" title="statement not covered" >row.original</span>
 <span class="cstat-no" title="statement not covered" >      goToWorkloadDetails &amp;&amp;</span>
@@ -430,6 +439,8 @@ const PerspectiveGrid: React.FC&lt;PerspectiveGridProps&gt; = props =&gt; {
 <span class="cstat-no" title="statement not covered" >      goToNodeDetails &amp;&amp; clusterName &amp;&amp; nodeId &amp;&amp; goToNodeDetails(clusterName, nodeId)</span>
     }
   }
+&nbsp;
+  const isRowClickable = fieldName === 'Workload Id' || fieldName === 'Node'
 &nbsp;
   return (
     &lt;Container background="white"&gt;
@@ -455,6 +466,7 @@ const PerspectiveGrid: React.FC&lt;PerspectiveGridProps&gt; = props =&gt; {
         gridPageIndex={gridPageIndex}
         pageSize={pageSize}
         fetchData={fetchData}
+        isRowClickable={isRowClickable}
       /&gt;
     &lt;/Container&gt;
   )
@@ -472,7 +484,7 @@ export default PerspectiveGrid
             <div class='footer quiet pad2 space-top1 center small'>
                 Code coverage generated by
                 <a href="https://istanbul.js.org/" target="_blank">istanbul</a>
-                at Tue Jan 25 2022 06:22:01 GMT+0000 (Greenwich Mean Time)
+                at Tue Jan 25 2022 11:28:07 GMT+0000 (Greenwich Mean Time)
             </div>
         </div>
         <script src="../../../../prettify.js"></script>
