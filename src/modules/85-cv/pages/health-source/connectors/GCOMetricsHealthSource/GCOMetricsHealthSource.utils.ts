@@ -144,8 +144,8 @@ export function transformGCOMetricSetupSourceToGCOHealthSource(setupSource: GCOM
 
     const spec: StackdriverMetricHealthSourceSpec = healthSource.spec || []
     spec.metricDefinitions?.push({
-      dashboardName: metricInfo.dashboardName as string,
-      dashboardPath: metricInfo.dashboardPath as string,
+      dashboardName: (metricInfo.dashboardName || '') as string,
+      dashboardPath: (metricInfo.dashboardPath || '') as string,
       metricName: metricInfo.metricName as string,
       metricTags: Object.keys(metricInfo.metricTags || {}),
       identifier: metricInfo.identifier,
