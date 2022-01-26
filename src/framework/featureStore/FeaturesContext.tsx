@@ -262,6 +262,7 @@ export function FeaturesProvider(props: React.PropsWithChildren<unknown>): React
       let limit: number, count: number
       const apiFail = false
       const moduleType = res?.data?.moduleType
+
       if (restriction) {
         limit = restriction.limit
         count = restriction.count
@@ -403,6 +404,7 @@ export function FeaturesProvider(props: React.PropsWithChildren<unknown>): React
   function checkLimitFeature(featureName: FeatureIdentifier): CheckFeatureReturn {
     // api call fails by default set feature to be true
     const featureDetail = featureDetailMap.get(featureName)
+
     const enabled = featureDetail?.apiFail || !!featureDetail?.enabled
     return {
       enabled,

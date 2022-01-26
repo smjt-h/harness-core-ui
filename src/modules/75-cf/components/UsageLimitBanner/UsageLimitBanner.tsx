@@ -6,18 +6,18 @@
  */
 
 import React, { ReactElement } from 'react'
-import FeatureWarningUpgradeBanner from '@common/components/FeatureWarning/FeatureWarningUpgradeBanner'
-import { FeatureIdentifier } from 'framework/featureStore/FeatureIdentifier'
+// import FeatureWarningUpgradeBanner from '@common/components/FeatureWarning/FeatureWarningUpgradeBanner'
+// import { FeatureIdentifier } from 'framework/featureStore/FeatureIdentifier'
 import { useGetUsageAndLimit } from '@auth-settings/hooks/useGetUsageAndLimit'
 import { ModuleName } from 'framework/types/ModuleName'
-import FeatureWarningSubscriptionInfoBanner from '@common/components/FeatureWarning/FeatureWarningSubscriptionInfoBanner'
-import FeatureWarningInfoBanner from '@common/components/FeatureWarning/FeatureWarningInfoBanner'
-import FeatureWarningSubscriptionUpgradeBanner from '@common/components/FeatureWarning/FeatureWarningSubscriptionUpgradeBanner'
+// import FeatureWarningSubscriptionInfoBanner from '@common/components/FeatureWarning/FeatureWarningSubscriptionInfoBanner'
+// import FeatureWarningInfoBanner from '@common/components/FeatureWarning/FeatureWarningInfoBanner'
+// import FeatureWarningSubscriptionUpgradeBanner from '@common/components/FeatureWarning/FeatureWarningSubscriptionUpgradeBanner'
 import { useLicenseStore } from 'framework/LicenseStore/LicenseStoreContext'
 import { formatToCompactNumber } from '@cf/utils/CFUtils'
 import { useStrings } from 'framework/strings'
 
-const UsageLimitBanner = (): ReactElement => {
+const UsageLimitText = (): ReactElement => {
   const { getString } = useStrings()
   const { limitData, usageData } = useGetUsageAndLimit(ModuleName.CF)
   const license = useLicenseStore()
@@ -34,51 +34,76 @@ const UsageLimitBanner = (): ReactElement => {
   const clientMauUsagePercentage = Math.trunc((clientMauUsageCount / clientMauPlanLimit) * 100)
   const clientMauPlanLimitFormatted = formatToCompactNumber(clientMauPlanLimit)
 
-  const showInfoBanner = clientMauPlanLimit > 0 && clientMauUsagePercentage >= 90 && clientMauUsagePercentage < 100
-  const showWarningBanner = clientMauPlanLimit > 0 && clientMauUsagePercentage >= 100
+  const showInfoText = clientMauPlanLimit > 0 && clientMauUsagePercentage >= 90 && clientMauUsagePercentage < 100
+  const showWarningText = clientMauPlanLimit > 0 && clientMauUsagePercentage >= 100
 
-  return (
-    <>
-      {isFreeSubscription && (
-        <>
-          {showInfoBanner && (
-            <FeatureWarningInfoBanner
-              featureName={FeatureIdentifier.MAUS}
-              message={getString('cf.planEnforcement.freePlan.approachingLimit', {
-                clientMauUsagePercentage,
-                clientMauPlanLimitFormatted
-              })}
-            />
-          )}
-          {showWarningBanner && (
-            <FeatureWarningUpgradeBanner
-              featureName={FeatureIdentifier.MAUS}
-              message={getString('cf.planEnforcement.freePlan.upgradeRequired', { clientMauPlanLimitFormatted })}
-            />
-          )}
-        </>
-      )}
+  const getBannerText = (): string | undefined => {
+    if (isFreeSubscription) {
+      if (showInfoText) {
+        return getString('cf.planEnforcement.freePlan.approachingLimit', {
+          clientMauUsagePercentage,
+          clientMauPlanLimitFormatted
+        })
+      } else if (showWarningText) {
+        return getString('cf.planEnforcement.freePlan.upgradeRequired', { clientMauPlanLimitFormatted })
+      }
+    }
 
-      {isTeamOrEnterpriseSubscription && (
-        <>
-          {showInfoBanner && (
-            <FeatureWarningSubscriptionInfoBanner
-              featureName={FeatureIdentifier.DEVELOPERS}
-              message={getString('cf.planEnforcement.teamEnterprisePlan.approachingLimit', {
-                clientMauUsagePercentage
-              })}
-            />
-          )}
-          {showWarningBanner && (
-            <FeatureWarningSubscriptionUpgradeBanner
-              featureName={FeatureIdentifier.DEVELOPERS}
-              message={getString('cf.planEnforcement.teamEnterprisePlan.upgradeRequired')}
-            />
-          )}
-        </>
-      )}
-    </>
-  )
+    if (isTeamOrEnterpriseSubscription) {
+      if (showInfoText) {
+        return getString('cf.planEnforcement.teamEnterprisePlan.approachingLimit', {
+          clientMauUsagePercentage
+        })
+      } else if (showWarningText) {
+        return getString('cf.planEnforcement.teamEnterprisePlan.upgradeRequired')
+      }
+    }
+  }
+
+  return <>{getBannerText()}</>
+
+  // return (
+  //   <>
+  //     {isFreeSubscription && (
+  //       <>
+  //         {showInfoBanner && (
+  //           <FeatureWarningInfoBanner
+  //             featureName={FeatureIdentifier.MAUS}
+  // message={getString('cf.planEnforcement.freePlan.approachingLimit', {
+  //   clientMauUsagePercentage,
+  //   clientMauPlanLimitFormatted
+  // })}
+  //           />
+  //         )}
+  //         {showWarningBanner && (
+  //           <FeatureWarningUpgradeBanner
+  //             featureName={FeatureIdentifier.MAUS}
+  //             message={getString('cf.planEnforcement.freePlan.upgradeRequired', { clientMauPlanLimitFormatted })}
+  //           />
+  //         )}
+  //       </>
+  //     )}
+
+  //     {isTeamOrEnterpriseSubscription && (
+  //       <>
+  //         {showInfoBanner && (
+  //           <FeatureWarningSubscriptionInfoBanner
+  //             featureName={FeatureIdentifier.DEVELOPERS}
+  //             message={getString('cf.planEnforcement.teamEnterprisePlan.approachingLimit', {
+  //               clientMauUsagePercentage
+  //             })}
+  //           />
+  //         )}
+  //         {showWarningBanner && (
+  //           <FeatureWarningSubscriptionUpgradeBanner
+  //             featureName={FeatureIdentifier.DEVELOPERS}
+  //             message={getString('cf.planEnforcement.teamEnterprisePlan.upgradeRequired')}
+  //           />
+  //         )}
+  //       </>
+  //     )}
+  //   </>
+  // )
 }
 
-export default UsageLimitBanner
+export default UsageLimitText

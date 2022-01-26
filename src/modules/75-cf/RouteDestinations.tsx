@@ -55,6 +55,9 @@ import GitSyncPage from '@gitsync/pages/GitSyncPage'
 import GitSyncRepoTab from '@gitsync/pages/repos/GitSyncRepoTab'
 import GitSyncEntityTab from '@gitsync/pages/entities/GitSyncEntityTab'
 import GitSyncErrors from '@gitsync/pages/errors/GitSyncErrors'
+import featureFactory from 'framework/featureStore/FeaturesFactory'
+import { FeatureIdentifier } from 'framework/featureStore/FeatureIdentifier'
+import { BannerType } from '@common/layouts/Constants'
 import { TargetsPage } from './pages/target-management/targets/TargetsPage'
 import { TargetDetailPage } from './pages/target-details/TargetDetailPage'
 import { SegmentsPage } from './pages/target-management/segments/SegmentsPage'
@@ -65,6 +68,7 @@ import { OnboardingPage } from './pages/onboarding/OnboardingPage'
 import { OnboardingDetailPage } from './pages/onboarding/OnboardingDetailPage'
 import CFTrialHomePage from './pages/home/CFTrialHomePage'
 import FeatureFlagsLandingPage from './pages/feature-flags/FeatureFlagsLandingPage'
+// import UsageLimitBanner from './components/UsageLimitBanner/UsageLimitBanner'
 
 const RedirectToCFHome = (): React.ReactElement => {
   const params = useParams<AccountPathProps>()
@@ -123,6 +127,18 @@ RbacFactory.registerResourceTypeHandler(ResourceType.TARGETGROUP, {
   permissionLabels: {
     [PermissionIdentifier.EDIT_FF_TARGETGROUP]: <String stringID="cf.rbac.targetgroup.edit" />,
     [PermissionIdentifier.DELETE_FF_TARGETGROUP]: <String stringID="cf.rbac.targetgroup.delete" />
+  }
+})
+
+featureFactory.registerFeaturesByModule('cf', {
+  features: [FeatureIdentifier.DEVELOPERS],
+  renderMessage: () => {
+    return {
+      // generate the correct warning message based off the props which is CheckFeaturesReturn
+      message: 'test',
+      // return the correct banner type based off the props as well
+      bannerType: BannerType.LEVEL_UP
+    }
   }
 })
 
