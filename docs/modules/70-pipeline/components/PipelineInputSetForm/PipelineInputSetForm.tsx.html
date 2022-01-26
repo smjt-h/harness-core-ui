@@ -30,9 +30,9 @@
         
             
             <div class='fl pad1y space-right2'>
-                <span class="strong">63.53% </span>
+                <span class="strong">63.8% </span>
                 <span class="quiet">Branches</span>
-                <span class='fraction'>209/329</span>
+                <span class='fraction'>215/337</span>
             </div>
         
             
@@ -384,7 +384,9 @@
 <a name='L325'></a><a href='#L325'>325</a>
 <a name='L326'></a><a href='#L326'>326</a>
 <a name='L327'></a><a href='#L327'>327</a>
-<a name='L328'></a><a href='#L328'>328</a></td><td class="line-coverage quiet"><span class="cline-any cline-neutral">&nbsp;</span>
+<a name='L328'></a><a href='#L328'>328</a>
+<a name='L329'></a><a href='#L329'>329</a>
+<a name='L330'></a><a href='#L330'>330</a></td><td class="line-coverage quiet"><span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
@@ -558,20 +560,22 @@
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-yes">42x</span>
-<span class="cline-any cline-yes">237x</span>
-<span class="cline-any cline-yes">236x</span>
-<span class="cline-any cline-yes">236x</span>
+<span class="cline-any cline-yes">222x</span>
+<span class="cline-any cline-yes">221x</span>
+<span class="cline-any cline-yes">221x</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-yes">236x</span>
+<span class="cline-any cline-yes">221x</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-yes">203x</span>
+<span class="cline-any cline-yes">188x</span>
 <span class="cline-any cline-yes">24x</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-yes">236x</span>
+<span class="cline-any cline-yes">221x</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-yes">236x</span>
+<span class="cline-any cline-yes">221x</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
@@ -583,7 +587,7 @@
 <span class="cline-any cline-yes">91x</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-yes">236x</span>
+<span class="cline-any cline-yes">221x</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
@@ -854,10 +858,10 @@ export function StageForm({
   stageClassName?: string
   allowableTypes: MultiTypeInputType[]
 }): JSX.Element {
-  const isTemplateStage = !!allValues<span class="branch-0 cbranch-no" title="branch not covered" >?.s</span>tage<span class="branch-0 cbranch-no" title="branch not covered" >?.t</span>emplate
+  const isTemplateStage = !!template<span class="branch-0 cbranch-no" title="branch not covered" >?.s</span>tage<span class="branch-0 cbranch-no" title="branch not covered" >?.t</span>emplate
   const type = isTemplateStage
-    ? <span class="branch-0 cbranch-no" title="branch not covered" >(allValues?.stage?.template?.templateInputs as StageElementConfig)?.type</span>
-    : allValues<span class="branch-0 cbranch-no" title="branch not covered" >?.s</span>tage<span class="branch-0 cbranch-no" title="branch not covered" >?.t</span>ype
+    ? <span class="branch-0 cbranch-no" title="branch not covered" >(template?.stage?.template?.templateInputs as StageElementConfig)?.type</span>
+    : template<span class="branch-0 cbranch-no" title="branch not covered" >?.s</span>tage<span class="branch-0 cbranch-no" title="branch not covered" >?.t</span>ype
   return (
     &lt;div id={`Stage.${allValues<span class="branch-0 cbranch-no" title="branch not covered" >?.s</span>tage<span class="branch-0 cbranch-no" title="branch not covered" >?.i</span>dentifier}`}&gt;
       {!hideTitle &amp;&amp; (
@@ -873,7 +877,9 @@ export function StageForm({
           isTemplateStage ? <span class="branch-0 cbranch-no" title="branch not covered" >{ stage: template?.stage?.template?.templateInputs as StageElementConfig } </span>: template
         }
         allValues={
-          isTemplateStage ? <span class="branch-0 cbranch-no" title="branch not covered" >{ stage: allValues?.stage?.template?.templateInputs as StageElementConfig } </span>: allValues
+          allValues<span class="branch-0 cbranch-no" title="branch not covered" >?.s</span>tage<span class="branch-0 cbranch-no" title="branch not covered" >?.t</span>emplate
+            ? <span class="branch-0 cbranch-no" title="branch not covered" >{ stage: allValues?.stage?.template?.templateInputs as StageElementConfig }</span>
+            : allValues
         }
         path={isTemplateStage ? <span class="branch-0 cbranch-no" title="branch not covered" >`${path}.${TEMPLATE_INPUT_PATH}` </span>: path}
         readonly={readonly}
@@ -1045,7 +1051,7 @@ export const PipelineInputSetForm: React.FC&lt;PipelineInputSetFormProps&gt; = p
             <div class='footer quiet pad2 space-top1 center small'>
                 Code coverage generated by
                 <a href="https://istanbul.js.org/" target="_blank">istanbul</a>
-                at Tue Jan 25 2022 17:05:23 GMT+0000 (Greenwich Mean Time)
+                at Wed Jan 26 2022 07:40:31 GMT+0000 (Greenwich Mean Time)
             </div>
         </div>
         <script src="../../../../prettify.js"></script>

@@ -23,16 +23,16 @@
         <div class='clearfix'>
             
             <div class='fl pad1y space-right2'>
-                <span class="strong">83.91% </span>
+                <span class="strong">84.09% </span>
                 <span class="quiet">Statements</span>
-                <span class='fraction'>146/174</span>
+                <span class='fraction'>148/176</span>
             </div>
         
             
             <div class='fl pad1y space-right2'>
-                <span class="strong">58.51% </span>
+                <span class="strong">59.22% </span>
                 <span class="quiet">Branches</span>
-                <span class='fraction'>244/417</span>
+                <span class='fraction'>257/434</span>
             </div>
         
             
@@ -44,9 +44,9 @@
         
             
             <div class='fl pad1y space-right2'>
-                <span class="strong">83.63% </span>
+                <span class="strong">83.82% </span>
                 <span class="quiet">Lines</span>
-                <span class='fraction'>143/171</span>
+                <span class='fraction'>145/173</span>
             </div>
         
             
@@ -824,7 +824,24 @@
 <a name='L765'></a><a href='#L765'>765</a>
 <a name='L766'></a><a href='#L766'>766</a>
 <a name='L767'></a><a href='#L767'>767</a>
-<a name='L768'></a><a href='#L768'>768</a></td><td class="line-coverage quiet"><span class="cline-any cline-neutral">&nbsp;</span>
+<a name='L768'></a><a href='#L768'>768</a>
+<a name='L769'></a><a href='#L769'>769</a>
+<a name='L770'></a><a href='#L770'>770</a>
+<a name='L771'></a><a href='#L771'>771</a>
+<a name='L772'></a><a href='#L772'>772</a>
+<a name='L773'></a><a href='#L773'>773</a>
+<a name='L774'></a><a href='#L774'>774</a>
+<a name='L775'></a><a href='#L775'>775</a>
+<a name='L776'></a><a href='#L776'>776</a>
+<a name='L777'></a><a href='#L777'>777</a>
+<a name='L778'></a><a href='#L778'>778</a>
+<a name='L779'></a><a href='#L779'>779</a>
+<a name='L780'></a><a href='#L780'>780</a>
+<a name='L781'></a><a href='#L781'>781</a>
+<a name='L782'></a><a href='#L782'>782</a>
+<a name='L783'></a><a href='#L783'>783</a>
+<a name='L784'></a><a href='#L784'>784</a>
+<a name='L785'></a><a href='#L785'>785</a></td><td class="line-coverage quiet"><span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
@@ -883,6 +900,7 @@
 <span class="cline-any cline-yes">3x</span>
 <span class="cline-any cline-yes">3x</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">3x</span>
 <span class="cline-any cline-yes">3x</span>
 <span class="cline-any cline-yes">3x</span>
 <span class="cline-any cline-yes">3x</span>
@@ -1073,6 +1091,21 @@
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-yes">24x</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">24x</span>
 <span class="cline-any cline-yes">6x</span>
 <span class="cline-any cline-yes">6x</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
@@ -1477,6 +1510,7 @@
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-yes">24x</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
@@ -1655,6 +1689,7 @@ import { IdentifierSchema, NameSchema } from '@common/utils/Validation'
 import { changeEmptyValuesToRunTimeInput } from '@pipeline/utils/stageHelpers'
 import { yamlStringify } from '@common/utils/YamlHelperMethods'
 import { NGBreadcrumbs } from '@common/components/NGBreadcrumbs/NGBreadcrumbs'
+import { useGetYamlWithTemplateRefsResolved } from 'services/template-ng'
 import { PipelineInputSetForm } from '../PipelineInputSetForm/PipelineInputSetForm'
 import { clearRuntimeInput, validatePipeline } from '../PipelineStudio/StepUtil'
 import { factory } from '../PipelineSteps/Steps/__tests__/StepTestUtil'
@@ -1838,6 +1873,21 @@ export const InputSetForm: React.FC&lt;InputSetFormProps&gt; = (props): JSX.Elem
       branch
     }
   })
+&nbsp;
+  const { data: templateRefsResolvedPipeline, loading: loadingResolvedPipeline } = useMutateAsGet(
+    useGetYamlWithTemplateRefsResolved,
+    {
+      queryParams: {
+        accountIdentifier: accountId,
+        orgIdentifier,
+        pipelineIdentifier,
+        projectIdentifier
+      },
+      body: {
+        originalEntityYaml: yamlStringify(parse(pipeline<span class="branch-0 cbranch-no" title="branch not covered" >?.d</span>ata<span class="branch-0 cbranch-no" title="branch not covered" >?.y</span>amlPipeline || <span class="branch-1 cbranch-no" title="branch not covered" >'')<span class="branch-0 cbranch-no" title="branch not covered" ></span>?.p</span>ipeline)
+      }
+    }
+  )
 &nbsp;
   const inputSet = React.useMemo(() =&gt; {
     <span class="missing-if-branch" title="else path not taken" >E</span>if (inputSetResponse<span class="branch-0 cbranch-no" title="branch not covered" >?.d</span>ata) {
@@ -2145,13 +2195,13 @@ export const InputSetForm: React.FC&lt;InputSetFormProps&gt; = (props): JSX.Elem
                                 /&gt;
                               &lt;/GitSyncStoreProvider&gt;
                             )}
-                            {pipeline<span class="branch-0 cbranch-no" title="branch not covered" >?.d</span>ata<span class="branch-0 cbranch-no" title="branch not covered" >?.y</span>amlPipeline &amp;&amp;
+                            {templateRefsResolvedPipeline<span class="branch-0 cbranch-no" title="branch not covered" >?.d</span>ata<span class="branch-0 cbranch-no" title="branch not covered" >?.m</span>ergedPipelineYaml &amp;&amp;
                               template<span class="branch-0 cbranch-no" title="branch not covered" >?.d</span>ata<span class="branch-0 cbranch-no" title="branch not covered" >?.i</span>nputSetTemplateYaml &amp;&amp;
                               parse(template.data.inputSetTemplateYaml) &amp;&amp; (
                                 &lt;PipelineInputSetForm
                                   path="pipeline"
                                   readonly={!isEditable}
-                                  originalPipeline={parse(pipeline.data<span class="branch-0 cbranch-no" title="branch not covered" >?.y</span>amlPipeline || <span class="branch-1 cbranch-no" title="branch not covered" >'')</span>.pipeline}
+                                  originalPipeline={parse(templateRefsResolvedPipeline<span class="branch-0 cbranch-no" title="branch not covered" >?.d</span>ata<span class="branch-0 cbranch-no" title="branch not covered" >?.m</span>ergedPipelineYaml)}
                                   template={parse(template.data<span class="branch-0 cbranch-no" title="branch not covered" >?.i</span>nputSetTemplateYaml || <span class="branch-1 cbranch-no" title="branch not covered" >'')</span>.pipeline}
                                   viewType={StepViewType.InputSet}
                                 /&gt;
@@ -2250,6 +2300,7 @@ export const InputSetForm: React.FC&lt;InputSetFormProps&gt; = (props): JSX.Elem
       loading={
         loadingInputSet ||
         loadingPipeline ||
+        loadingResolvedPipeline ||
         loadingTemplate ||
         (!isGitSyncEnabled &amp;&amp; (createInputSetLoading || updateInputSetLoading)) ||
         loadingMerge
@@ -2365,7 +2416,7 @@ export const EnhancedInputSetForm: React.FC&lt;InputSetFormProps&gt; = props =&g
             <div class='footer quiet pad2 space-top1 center small'>
                 Code coverage generated by
                 <a href="https://istanbul.js.org/" target="_blank">istanbul</a>
-                at Tue Jan 25 2022 17:05:23 GMT+0000 (Greenwich Mean Time)
+                at Wed Jan 26 2022 07:40:31 GMT+0000 (Greenwich Mean Time)
             </div>
         </div>
         <script src="../../../../prettify.js"></script>
