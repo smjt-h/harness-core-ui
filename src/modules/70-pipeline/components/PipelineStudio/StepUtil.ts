@@ -192,17 +192,18 @@ export const validateStage = ({
   getString
 }: ValidateStageProps): FormikErrors<StageElementConfig> => {
   if (originalStage?.template) {
-    return set(
-      {},
-      'template.templateInputs',
-      validateStage({
-        stage: stage.template?.templateInputs as StageElementConfig,
-        template: template?.template?.templateInputs as StageElementConfig,
-        viewType,
-        originalStage: originalStage.template.templateInputs as StageElementConfig,
-        getString
-      })
-    )
+    const errors = validateStage({
+      stage: stage.template?.templateInputs as StageElementConfig,
+      template: template?.template?.templateInputs as StageElementConfig,
+      viewType,
+      originalStage: originalStage.template.templateInputs as StageElementConfig,
+      getString
+    })
+    if (!isEmpty(errors)) {
+      return set({}, 'template.templateInputs', errors)
+    } else {
+      return {}
+    }
   } else {
     const errors = {}
 
