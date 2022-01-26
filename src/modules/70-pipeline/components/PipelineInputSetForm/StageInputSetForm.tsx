@@ -162,10 +162,10 @@ export function StepForm({
   hideTitle?: boolean
 }): JSX.Element {
   const { getString } = useStrings()
-  const isTemplateStep = (allValues?.step as unknown as TemplateStepNode)?.template
+  const isTemplateStep = (template?.step as unknown as TemplateStepNode)?.template
   const type = isTemplateStep
-    ? ((allValues?.step as unknown as TemplateStepNode)?.template.templateInputs as StepElementConfig)?.type
-    : ((allValues?.step as StepElementConfig)?.type as StepType)
+    ? ((template?.step as unknown as TemplateStepNode)?.template.templateInputs as StepElementConfig)?.type
+    : ((template?.step as StepElementConfig)?.type as StepType)
   const iconColor = factory.getStepIconColor(type)
 
   return (
@@ -189,7 +189,7 @@ export function StepForm({
             : template
         }
         allValues={
-          isTemplateStep
+          (allValues?.step as unknown as TemplateStepNode)?.template
             ? { step: (allValues?.step as unknown as TemplateStepNode)?.template?.templateInputs as StepElementConfig }
             : allValues
         }

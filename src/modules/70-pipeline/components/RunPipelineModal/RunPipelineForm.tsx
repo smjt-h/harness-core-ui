@@ -80,6 +80,7 @@ import { yamlStringify } from '@common/utils/YamlHelperMethods'
 import { useFeatureFlags } from '@common/hooks/useFeatureFlag'
 import { PipelineActions } from '@common/constants/TrackingConstants'
 import { useTelemetry } from '@common/hooks/useTelemetry'
+import { useGetYamlWithTemplateRefsResolved } from 'services/template-ng'
 import type { InputSetDTO } from '../InputSetForm/InputSetForm'
 import { InputSetSelector, InputSetSelectorProps } from '../InputSetSelector/InputSetSelector'
 import { clearRuntimeInput, validatePipeline, getErrorsList } from '../PipelineStudio/StepUtil'
@@ -255,6 +256,21 @@ function RunPipelineFormBasic({
       branch
     }
   })
+
+  const { data: templateRefsResolvedPipeline, loading: loadingResolvedPipeline } = useMutateAsGet(
+    useGetYamlWithTemplateRefsResolved,
+    {
+      queryParams: {
+        accountIdentifier: accountId,
+        orgIdentifier,
+        pipelineIdentifier,
+        projectIdentifier
+      },
+      body: {
+        originalEntityYaml: yamlStringify(parse(defaultTo(pipelineResponse?.data?.yamlPipeline, ''))?.pipeline)
+      }
+    }
+  )
 
   const { mutate: runPipeline, loading: runLoading } = usePostPipelineExecuteWithInputSetYaml({
     queryParams: {
@@ -500,6 +516,10 @@ function RunPipelineFormBasic({
   ])
 
   const pipeline: PipelineInfoConfig | undefined = parse(defaultTo(pipelineResponse?.data?.yamlPipeline, ''))?.pipeline
+
+  const resolvedPipeline: PipelineInfoConfig | undefined = parse(
+    defaultTo(templateRefsResolvedPipeline?.data?.mergedPipelineYaml, '')
+  )
 
   const valuesPipelineRef = useRef<PipelineInfoConfig>()
 
@@ -761,6 +781,7 @@ function RunPipelineFormBasic({
   const shouldShowPageSpinner = useCallback(() => {
     return (
       loadingPipeline ||
+      loadingResolvedPipeline ||
       loadingTemplate ||
       runLoading ||
       runStageLoading ||
@@ -768,7 +789,16 @@ function RunPipelineFormBasic({
       reRunLoading ||
       reRunStagesLoading
     )
-  }, [loadingPipeline, loadingTemplate, runLoading, runStageLoading, inputSetLoading, reRunLoading, reRunStagesLoading])
+  }, [
+    loadingPipeline,
+    loadingResolvedPipeline,
+    loadingTemplate,
+    runLoading,
+    runStageLoading,
+    inputSetLoading,
+    reRunLoading,
+    reRunStagesLoading
+  ])
 
   if (shouldShowPageSpinner()) {
     return <PageSpinner />
@@ -779,7 +809,7 @@ function RunPipelineFormBasic({
       return getString('pipeline.inputSets.noRuntimeInputsWhileExecution')
     } else if (
       !executionView &&
-      pipeline &&
+      resolvedPipeline &&
       currentPipeline &&
       !template?.data?.inputSetTemplateYaml &&
       !getTemplateError
@@ -811,13 +841,13 @@ function RunPipelineFormBasic({
         />
       )
     }
-    if (currentPipeline?.pipeline && pipeline && template?.data?.inputSetTemplateYaml) {
+    if (currentPipeline?.pipeline && resolvedPipeline && template?.data?.inputSetTemplateYaml) {
       const templateSource = executionView ? executionInputSetTemplateYaml : template.data.inputSetTemplateYaml
       return (
         <>
           {existingProvide === 'existing' ? <div className={css.divider} /> : null}
           <PipelineInputSetForm
-            originalPipeline={{ ...pipeline }}
+            originalPipeline={resolvedPipeline}
             template={parse(templateSource)?.pipeline}
             readonly={executionView}
             path=""

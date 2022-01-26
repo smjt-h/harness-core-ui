@@ -150,10 +150,10 @@ export function StageForm({
   stageClassName?: string
   allowableTypes: MultiTypeInputType[]
 }): JSX.Element {
-  const isTemplateStage = !!allValues?.stage?.template
+  const isTemplateStage = !!template?.stage?.template
   const type = isTemplateStage
-    ? (allValues?.stage?.template?.templateInputs as StageElementConfig)?.type
-    : allValues?.stage?.type
+    ? (template?.stage?.template?.templateInputs as StageElementConfig)?.type
+    : template?.stage?.type
   return (
     <div id={`Stage.${allValues?.stage?.identifier}`}>
       {!hideTitle && (
@@ -169,7 +169,9 @@ export function StageForm({
           isTemplateStage ? { stage: template?.stage?.template?.templateInputs as StageElementConfig } : template
         }
         allValues={
-          isTemplateStage ? { stage: allValues?.stage?.template?.templateInputs as StageElementConfig } : allValues
+          allValues?.stage?.template
+            ? { stage: allValues?.stage?.template?.templateInputs as StageElementConfig }
+            : allValues
         }
         path={isTemplateStage ? `${path}.${TEMPLATE_INPUT_PATH}` : path}
         readonly={readonly}

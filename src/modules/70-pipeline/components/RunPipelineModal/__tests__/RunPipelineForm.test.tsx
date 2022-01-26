@@ -17,6 +17,7 @@ import { RunPipelineForm } from '../RunPipelineForm'
 import {
   mockCreateInputSetResponse,
   mockGetPipeline,
+  mockGetResolvedPipeline,
   mockInputSetsList,
   mockMergeInputSetResponse,
   mockPipelineTemplateYaml,
@@ -97,8 +98,12 @@ describe('STUDIO MODE', () => {
     // eslint-disable-next-line
     // @ts-ignore
 
-    useMutateAsGet.mockImplementation(() => {
-      return mockPipelineTemplateYaml
+    useMutateAsGet.mockImplementation(props => {
+      if (props?.name === 'useGetYamlWithTemplateRefsResolved') {
+        return mockGetResolvedPipeline
+      } else {
+        return mockPipelineTemplateYaml
+      }
     })
   })
 
@@ -382,8 +387,12 @@ describe('STUDIO MODE - template API error', () => {
     // eslint-disable-next-line
     // @ts-ignore
 
-    useMutateAsGet.mockImplementation(() => {
-      return mockPipelineTemplateYamlErrorResponse
+    useMutateAsGet.mockImplementation(props => {
+      if (props?.name === 'useGetYamlWithTemplateRefsResolved') {
+        return mockGetResolvedPipeline
+      } else {
+        return mockPipelineTemplateYamlErrorResponse
+      }
     })
   })
 
@@ -411,8 +420,12 @@ describe('RERUN MODE', () => {
     startPreflightCheckPromise.mockResolvedValue({})
     // eslint-disable-next-line
     // @ts-ignore
-    useMutateAsGet.mockImplementation(() => {
-      return mockPipelineTemplateYamlForRerun
+    useMutateAsGet.mockImplementation(props => {
+      if (props?.name === 'useGetYamlWithTemplateRefsResolved') {
+        return mockGetResolvedPipeline
+      } else {
+        return mockPipelineTemplateYamlForRerun
+      }
     })
   })
 
@@ -447,8 +460,12 @@ describe('EXECUTION VIEW', () => {
     useQueryParams.mockImplementation(() => ({ executionId: '/testExecutionId' }))
     // eslint-disable-next-line
     // @ts-ignore
-    useMutateAsGet.mockImplementation(() => {
-      return mockPipelineTemplateYamlForRerun
+    useMutateAsGet.mockImplementation(props => {
+      if (props?.name === 'useGetYamlWithTemplateRefsResolved') {
+        return mockGetResolvedPipeline
+      } else {
+        return mockPipelineTemplateYamlForRerun
+      }
     })
   })
   test('should should have the values prefilled and fields as disabled', async () => {

@@ -62,6 +62,7 @@ import { IdentifierSchema, NameSchema } from '@common/utils/Validation'
 import { changeEmptyValuesToRunTimeInput } from '@pipeline/utils/stageHelpers'
 import { yamlStringify } from '@common/utils/YamlHelperMethods'
 import { NGBreadcrumbs } from '@common/components/NGBreadcrumbs/NGBreadcrumbs'
+import { useGetYamlWithTemplateRefsResolved } from 'services/template-ng'
 import { PipelineInputSetForm } from '../PipelineInputSetForm/PipelineInputSetForm'
 import { clearRuntimeInput, validatePipeline } from '../PipelineStudio/StepUtil'
 import { factory } from '../PipelineSteps/Steps/__tests__/StepTestUtil'
@@ -245,6 +246,21 @@ export const InputSetForm: React.FC<InputSetFormProps> = (props): JSX.Element =>
       branch
     }
   })
+
+  const { data: templateRefsResolvedPipeline, loading: loadingResolvedPipeline } = useMutateAsGet(
+    useGetYamlWithTemplateRefsResolved,
+    {
+      queryParams: {
+        accountIdentifier: accountId,
+        orgIdentifier,
+        pipelineIdentifier,
+        projectIdentifier
+      },
+      body: {
+        originalEntityYaml: yamlStringify(parse(pipeline?.data?.yamlPipeline || '')?.pipeline)
+      }
+    }
+  )
 
   const inputSet = React.useMemo(() => {
     if (inputSetResponse?.data) {
@@ -552,13 +568,13 @@ export const InputSetForm: React.FC<InputSetFormProps> = (props): JSX.Element =>
                                 />
                               </GitSyncStoreProvider>
                             )}
-                            {pipeline?.data?.yamlPipeline &&
+                            {templateRefsResolvedPipeline?.data?.mergedPipelineYaml &&
                               template?.data?.inputSetTemplateYaml &&
                               parse(template.data.inputSetTemplateYaml) && (
                                 <PipelineInputSetForm
                                   path="pipeline"
                                   readonly={!isEditable}
-                                  originalPipeline={parse(pipeline.data?.yamlPipeline || '').pipeline}
+                                  originalPipeline={parse(templateRefsResolvedPipeline?.data?.mergedPipelineYaml)}
                                   template={parse(template.data?.inputSetTemplateYaml || '').pipeline}
                                   viewType={StepViewType.InputSet}
                                 />
@@ -657,6 +673,7 @@ export const InputSetForm: React.FC<InputSetFormProps> = (props): JSX.Element =>
       loading={
         loadingInputSet ||
         loadingPipeline ||
+        loadingResolvedPipeline ||
         loadingTemplate ||
         (!isGitSyncEnabled && (createInputSetLoading || updateInputSetLoading)) ||
         loadingMerge
