@@ -10,6 +10,7 @@ import { act, fireEvent, render, waitFor } from '@testing-library/react'
 import { TestWrapper } from '@common/utils/testUtils'
 import { AddStageView, AddStageViewProps } from '../views/AddStageView'
 import { stageMockData } from './mocks'
+import { StageType } from '@pipeline/utils/stageHelpers'
 
 const commonProps: AddStageViewProps = {
   stages: stageMockData,
@@ -152,5 +153,20 @@ describe('Add Stage View', () => {
     expect(emptyStageDescription).toBeDefined()
     const comingSoonText = findByText('common.comingSoon2')
     expect(comingSoonText).toBeDefined()
+  })
+
+  test('callback should be called upon clicking a card', async () => {
+    const { getByTestId } = render(
+      <TestWrapper>
+        <AddStageView {...commonProps} />
+      </TestWrapper>
+    )
+
+    const deployCard = getByTestId(`stage-${StageType.DEPLOY}`)
+    expect(deployCard).toBeDefined()
+    act(() => {
+      fireEvent.click(deployCard)
+    })
+    expect(commonProps.callback).toBeCalled()
   })
 })
