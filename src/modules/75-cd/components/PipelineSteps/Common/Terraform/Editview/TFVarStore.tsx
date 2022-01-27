@@ -31,35 +31,23 @@ import { FormMultiTypeConnectorField } from '@connectors/components/ConnectorRef
 import type { ConnectorSelectedValue } from '@connectors/components/ConnectorReferenceField/ConnectorReferenceField'
 
 import { useVariablesExpression } from '@pipeline/components/PipelineStudio/PiplineHooks/useVariablesExpression'
-import type { ConnectorInfoDTO } from 'services/cd-ng'
-import { Connectors } from '@connectors/constants'
+import {
+  ConnectorTypes,
+  AllowedTypes,
+  tfVarIcons,
+  ConnectorMap,
+  ConnectorLabelMap
+} from '../../../TerraformPlan/TerraformConfigFormHelper'
 
 import { ConnectorRefSchema } from '@common/utils/Validation'
 import css from './TerraformVarfile.module.scss'
-
-export type TFVarStores = 'Git' | 'Github' | 'GitLab' | 'Bitbucket'
-export const TFConnectorMap: Record<TFVarStores | string, ConnectorInfoDTO['type']> = {
-  Git: Connectors.GIT,
-  Github: Connectors.GITHUB,
-  GitLab: Connectors.GITLAB,
-  Bitbucket: Connectors.BITBUCKET
-}
-
-const allowedTypes = ['Git', 'Github', 'GitLab', 'Bitbucket']
-type ConnectorTypes = 'Git' | 'Github' | 'GitLab' | 'Bitbucket'
-
-const tfVarIcons: any = {
-  Git: 'service-github',
-  Github: 'github',
-  GitLab: 'service-gotlab',
-  Bitbucket: 'bitbucket'
-}
 
 interface TFVarStoreProps {
   initialValues: any
   isEditMode: boolean
   allowableTypes: MultiTypeInputType[]
   handleConnectorViewChange?: (val: ConnectorTypes) => void
+  isReadonly?: boolean
 }
 
 export const TFVarStore: React.FC<StepProps<any> & TFVarStoreProps> = ({
@@ -68,7 +56,8 @@ export const TFVarStore: React.FC<StepProps<any> & TFVarStoreProps> = ({
   initialValues,
   isEditMode,
   allowableTypes,
-  handleConnectorViewChange
+  handleConnectorViewChange,
+  isReadonly
 }) => {
   const [selectedType, setSelectedType] = React.useState('')
   const { getString } = useStrings()
@@ -92,6 +81,10 @@ export const TFVarStore: React.FC<StepProps<any> & TFVarStoreProps> = ({
     setSelectedType(initialValues?.varFile?.spec?.store?.type)
   }, [isEditMode])
 
+  const newConnectorLabel = `${getString('newLabel')} ${
+    !!selectedType && getString(ConnectorLabelMap[selectedType as ConnectorTypes])
+  } ${getString('connector')}`
+
   return (
     <Layout.Vertical spacing="xxlarge" padding="small" className={css.tfVarStore}>
       <Heading level={2} style={{ color: Color.GREY_800, fontSize: 24 }} margin={{ bottom: 'large' }}>
@@ -99,7 +92,7 @@ export const TFVarStore: React.FC<StepProps<any> & TFVarStoreProps> = ({
       </Heading>
 
       <Layout.Horizontal flex={{ justifyContent: 'flex-start', alignItems: 'flex-start' }}>
-        {allowedTypes.map(item => (
+        {AllowedTypes.map(item => (
           <div key={item} className={css.squareCardContainer}>
             <Card
               className={css.manifestIcon}
@@ -155,7 +148,7 @@ export const TFVarStore: React.FC<StepProps<any> & TFVarStoreProps> = ({
                           />
                         </Text>
                       }
-                      type={TFConnectorMap[selectedType]}
+                      type={ConnectorMap[selectedType]}
                       width={400}
                       name="varFile.spec.store.spec.connectorRef"
                       placeholder={`${getString('select')} ${selectedType} ${getString('connector')}`}
@@ -168,10 +161,10 @@ export const TFVarStore: React.FC<StepProps<any> & TFVarStoreProps> = ({
                     <Button
                       variation={ButtonVariation.LINK}
                       size={ButtonSize.SMALL}
-                      // disabled={isReadonly || !canCreate}
-                      id="new-manifest-connector"
-                      text="New Connector"
-                      // className={css.addNewManifest}
+                      disabled={isReadonly}
+                      id="new-var-connector"
+                      text={newConnectorLabel}
+                      className={css.newConnectorButton}
                       icon="plus"
                       iconProps={{ size: 12 }}
                       onClick={() => {
