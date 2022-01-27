@@ -23,8 +23,13 @@ import { isEmpty } from 'lodash-es'
 import cx from 'classnames'
 import { Menu, Dialog } from '@blueprintjs/core'
 import { useStrings } from 'framework/strings'
-import { GitBranchDTO, GitSyncConfig, syncGitBranchPromise, useGetListOfBranchesWithStatus } from 'services/cd-ng'
-import { useGitSyncStore } from 'framework/GitRepoStore/GitSyncStoreContext'
+import {
+  GitBranchDTO,
+  GitSyncConfig,
+  syncGitBranchPromise,
+  useGetListOfBranchesWithStatus,
+  useListGitSync
+} from 'services/cd-ng'
 import type { ProjectPathProps } from '@common/interfaces/RouteInterfaces'
 import { useToaster } from '@common/exports'
 import css from './GitFilters.module.scss'
@@ -68,9 +73,25 @@ const GitFilters: React.FC<GitFiltersProps> = props => {
   } = props
   const { showSuccess } = useToaster()
   const { getString } = useStrings()
-  const { gitSyncRepos, loadingRepos } = useGitSyncStore()
+  // const { gitSyncRepos, loadingRepos } = useGitSyncStore()
   const { accountId, orgIdentifier, projectIdentifier } = useParams<ProjectPathProps>()
   const [page] = React.useState<number>(0)
+
+  const {
+    data: gitSyncRepos,
+    loading: loadingRepos,
+    refetch
+  } = useListGitSync({
+    queryParams: { accountIdentifier: accountId, orgIdentifier, projectIdentifier },
+    lazy: true
+  })
+
+  useEffect(() => {
+    if (projectIdentifier) {
+      refetch()
+    }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [projectIdentifier])
 
   const defaultRepoSelect: SelectOption = {
     label: getString('common.gitSync.allRepositories'),

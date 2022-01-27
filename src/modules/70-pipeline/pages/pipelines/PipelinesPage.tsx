@@ -647,16 +647,16 @@ const PipelinesPage: React.FC<CDPipelinesPageProps> = ({ mockData }) => {
               }}
             />
             {isGitSyncEnabled && (
-              <GitSyncStoreProvider>
-                <GitFilters
-                  onChange={filter => {
-                    setGitFilter(filter)
-                    setPage(0)
-                  }}
-                  className={css.gitFilter}
-                  defaultValue={gitFilter || undefined}
-                />
-              </GitSyncStoreProvider>
+              <GitFilters
+                onChange={filter => {
+                  setGitFilter(filter)
+                  setPage(0)
+                }}
+                className={css.gitFilter}
+                defaultValue={gitFilter || undefined}
+              />
+              // <GitSyncStoreProvider>
+              // </GitSyncStoreProvider>
             )}
           </Layout.Horizontal>
           <Layout.Horizontal spacing="small" style={{ alignItems: 'center' }}>
