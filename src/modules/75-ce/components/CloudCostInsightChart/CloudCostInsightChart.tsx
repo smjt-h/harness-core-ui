@@ -12,6 +12,7 @@ import type {
 
 import type { CCM_CHART_TYPES } from '@ce/constants'
 import { CCM_PAGE_TYPE } from '@ce/types'
+import type { PerspectiveAnomalyData } from 'services/ce'
 import Chart from './Chart'
 import WorkloadDetailsChart from './WorkloadDetailsChart'
 import { ResourceType, chartConfigMapping, chartOptionsMapping } from './ChartConfigs'
@@ -29,6 +30,7 @@ interface CloudCostInsightChartProps {
   setFilterUsingChartClick?: (value: string) => void
   showLegends?: boolean
   pageType?: CCM_PAGE_TYPE
+  anomaliesCountData?: PerspectiveAnomalyData[]
 }
 
 function getChartList({
@@ -95,7 +97,8 @@ const CloudCostInsightChart = forwardRef((props: CloudCostInsightChartProps, ref
     showLegends,
     pageType,
     fetching,
-    columnSequence
+    columnSequence,
+    anomaliesCountData
   } = props
 
   const chartListData = useMemo(
@@ -148,6 +151,7 @@ const CloudCostInsightChart = forwardRef((props: CloudCostInsightChartProps, ref
         xAxisPointCount={xAxisPointCount}
         setFilterUsingChartClick={setFilterUsingChartClick}
         showLegends={showLegends || false}
+        anomaliesCountData={anomaliesCountData}
       />
     </div>
   )

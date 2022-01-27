@@ -7,5 +7,8 @@ declare const styles: {
   readonly anomaliesCount: string
   readonly anomaliesCost: string
   readonly anomaliesNav: string
+  readonly costWrapper: string
+  readonly differenceCostPos: string
+  readonly differenceCostNeg: string
 }
 export default styles
