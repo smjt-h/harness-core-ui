@@ -1,4 +1,4 @@
-import React, { useState } from 'react'
+import React, { useEffect, useState } from 'react'
 import {
   Button,
   ButtonSize,
@@ -15,15 +15,28 @@ import {
   TableV2,
   Color
 } from '@wings-software/uicore'
+import { Link, useParams } from 'react-router-dom'
+import type { CellProps, Renderer } from 'react-table'
+import { Classes, Menu, MenuItem, Popover, Position } from '@blueprintjs/core'
 import { useStrings } from 'framework/strings'
 
 import PerspectiveTimeRangePicker from '@ce/components/PerspectiveTimeRangePicker/PerspectiveTimeRangePicker'
-import { CE_DATE_FORMAT_INTERNAL, DATE_RANGE_SHORTCUTS } from '@ce/utils/momentUtils'
+import {
+  ANOMALIES_LIST_FORMAT,
+  CE_DATE_FORMAT_INTERNAL,
+  DATE_RANGE_SHORTCUTS,
+  getTimePeriodString
+} from '@ce/utils/momentUtils'
+import { AnomalyData, useListAnomalies } from 'services/ce'
+import formatCost from '@ce/utils/formatCost'
 import css from './AnomaliesOverviewPage.module.scss'
 
 export interface TimeRange {
   to: string
   from: string
+}
+interface anomalyParams {
+  accountId: string
 }
 
 const AnomalyFilters: React.FC = () => {
@@ -166,62 +179,154 @@ const AnomaliesOverview: React.FC = () => {
   )
 }
 
-const AnomaliesListGridView: React.FC = () => {
+interface listProps {
+  listData: AnomalyData[]
+}
+
+const AnomaliesMenu = () => {
+  const [isOpen, setIsOpen] = useState(false)
+
+  return (
+    <Popover
+      isOpen={isOpen}
+      onInteraction={nextOpenState => {
+        setIsOpen(nextOpenState)
+      }}
+      className={Classes.DARK}
+      position={Position.RIGHT_TOP}
+    >
+      <Button
+        minimal
+        icon="Options"
+        onClick={e => {
+          e.stopPropagation()
+          setIsOpen(true)
+        }}
+      />
+      <Menu>
+        <MenuItem
+          text="Whitelist resource"
+          onClick={(e: any) => {
+            e.stopPropagation()
+            setIsOpen(false)
+            // onEdit()
+          }}
+        />
+        <MenuItem
+          text="This is false anomaly"
+          onClick={(e: any) => {
+            e.stopPropagation()
+            setIsOpen(false)
+          }}
+        />
+      </Menu>
+    </Popover>
+  )
+}
+
+const AnomaliesListGridView: React.FC<listProps> = ({ listData }) => {
+  const DateCell: Renderer<CellProps<AnomalyData>> = ({ row }) => {
+    const timestamp = row.original.time
+    const relativeTime = row.original.anomalyRelativeTime
+
+    return (
+      <Layout.Vertical spacing="small">
+        <Text color={Color.BLACK} font={{ weight: 'semi-bold', size: 'normal' }}>
+          {getTimePeriodString(timestamp as unknown as string, ANOMALIES_LIST_FORMAT)}
+        </Text>
+        <Text color={Color.GREY_600} font={{ size: 'small' }}>
+          {relativeTime}
+        </Text>
+      </Layout.Vertical>
+    )
+  }
+
+  const CostCell: Renderer<CellProps<AnomalyData>> = cell => {
+    return (
+      <Layout.Horizontal style={{ alignItems: 'baseline' }} spacing="small">
+        <Text font={{ weight: 'semi-bold', size: 'normal' }} color={Color.BLACK}>
+          {formatCost(cell.value)}
+        </Text>
+        <Text font={{ size: 'xsmall' }} color={Color.RED_600}>{`(+21.6%)`}</Text>
+      </Layout.Horizontal>
+    )
+  }
+
+  const ResourceCell: Renderer<CellProps<AnomalyData>> = () => {
+    return (
+      <Layout.Vertical spacing="small">
+        <Link to={''}>{'squidward/spongebob/1233445...'}</Link>
+        <Text font={{ size: 'small' }} color={Color.GREY_600}>
+          {'cluster/workload'}
+        </Text>
+      </Layout.Vertical>
+    )
+  }
+
+  const StatusCell: Renderer<CellProps<AnomalyData>> = ({ row }) => {
+    const status = row.original.status
+    const stausRelativeTime = row.original.statusRelativeTime
+
+    return (
+      <Layout.Vertical spacing="small">
+        <Text font={{ size: 'normal' }} color={Color.ORANGE_700}>
+          {status || 'Open'}
+        </Text>
+        <Text font={{ size: 'small' }} color={Color.GREY_600}>
+          {stausRelativeTime || '6 minutes ago'}
+        </Text>
+      </Layout.Vertical>
+    )
+  }
+
+  const MenuCell: Renderer<CellProps<AnomalyData>> = () => {
+    return <AnomaliesMenu />
+  }
+
+  if (!listData.length) {
+    return null
+  }
+
   return (
     <TableV2
       className={css.tableView}
       columns={[
         {
-          Header: 'PERSPECTIVE',
-          accessor: 'name',
-          id: 'name',
+          Header: 'DATE',
+          accessor: 'time',
+          Cell: DateCell,
           width: '25%'
         },
         {
           Header: 'ANOMALOUS SPEND',
-          accessor: 'age',
-          id: 'age',
+          accessor: 'actualAmount',
+          Cell: CostCell,
           width: '25%'
         },
         {
-          Header: 'TOP ANOMALY BY SPEND',
-          accessor: 'col3',
-          id: 'col3',
+          Header: 'RESOURCE',
+          accessor: 'resourceName',
+          Cell: ResourceCell,
           width: '25%'
         },
         {
-          Header: 'ALERTS GO TO',
-          accessor: 'col4',
-          id: 'col4',
+          Header: 'DETAILS',
+          accessor: 'details',
           width: '25%'
+        },
+        {
+          Header: 'STATUS',
+          accessor: 'status',
+          Cell: StatusCell,
+          width: '25%'
+        },
+        {
+          Header: ' ',
+          width: '5%',
+          Cell: MenuCell
         }
       ]}
-      data={[
-        {
-          age: 20,
-          name: 'User 1',
-          col3: 'aws',
-          col4: 'jyoti.arora1@harness.io'
-        },
-        {
-          age: 25,
-          name: 'User 2',
-          col3: 'aws',
-          col4: 'jyoti.arora2@harness.io'
-        },
-        {
-          age: 25,
-          name: 'User 3',
-          col3: 'aws',
-          col4: 'jyoti.arora3@harness.io'
-        },
-        {
-          age: 25,
-          name: 'User 4',
-          col3: 'aws',
-          col4: 'jyoti.arora4@harness.io'
-        }
-      ]}
+      data={listData}
       pagination={{
         itemCount: 100,
         pageCount: 10,
@@ -236,6 +341,45 @@ const AnomaliesListGridView: React.FC = () => {
 const AnomaliesOverviewPage: React.FC = () => {
   const { getString } = useStrings()
   const [searchText, setSearchText] = React.useState('')
+  const { accountId } = useParams<anomalyParams>()
+  const [listData, setListData] = useState<AnomalyData[]>([])
+
+  const { mutate: getAnomaliesList } = useListAnomalies({
+    queryParams: {
+      accountIdentifier: accountId
+    }
+  })
+
+  useEffect(() => {
+    const getList = async () => {
+      try {
+        const response = await getAnomaliesList({
+          filter: {
+            stringFilters: [
+              {
+                field: 'NAMESPACE',
+                operator: 'IN',
+                values: ['ecom-test02-live', 'nnamespace-2']
+              }
+            ]
+          },
+          groupBy: [],
+          orderBy: [
+            {
+              field: 'ACTUAL_COST',
+              order: 'DESCENDING'
+            }
+          ],
+          limit: 100,
+          offset: 0
+        })
+        setListData(response?.data as AnomalyData[])
+      } catch (error) {
+        console.log('AnomaliesOverviewPage: Error in fetching the anomalies list', error)
+      }
+    }
+    getList()
+  }, [getAnomaliesList])
 
   return (
     <>
@@ -253,7 +397,7 @@ const AnomaliesOverviewPage: React.FC = () => {
         >
           <AnomaliesSearch searchText={searchText} onChange={setSearchText} />
           <AnomaliesOverview />
-          <AnomaliesListGridView />
+          <AnomaliesListGridView listData={listData} />
         </Container>
       </PageBody>
     </>
