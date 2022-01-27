@@ -11,7 +11,14 @@ import cronstrue from 'cronstrue'
 import cx from 'classnames'
 import { Button, Container, Text, Color, PageHeader, PageBody, Icon, FontVariation } from '@wings-software/uicore'
 import routes from '@common/RouteDefinitions'
-import { useGetPerspective, useGetReportSetting } from 'services/ce/'
+import {
+  PerspectiveAnomalyData,
+  QLCEViewFilterWrapper,
+  QLCEViewGroupBy,
+  useGetPerspective,
+  useGetReportSetting,
+  useListPerspectiveAnomalies
+} from 'services/ce/'
 import {
   useFetchPerspectiveTimeSeriesQuery,
   QlceViewTimeGroupType,
@@ -184,6 +191,15 @@ const PerspectiveDetailsPage: React.FC = () => {
     }
   })
 
+  const { mutate: getAnomalies } = useListPerspectiveAnomalies({
+    perspectiveId,
+    queryParams: {
+      accountIdentifier: accountId
+    }
+  })
+
+  const [anomaliesCountData, setAnomaliesCountData] = useState<PerspectiveAnomalyData[]>([])
+
   const chartRef = useRef<Highcharts.Chart>()
 
   const perspectiveData = perspectiveRes?.data
@@ -230,6 +246,25 @@ const PerspectiveDetailsPage: React.FC = () => {
       })
     }
   }, [perspectiveData])
+
+  useEffect(() => {
+    const fetchAnomaliesCount = async () => {
+      try {
+        const response = await getAnomalies({
+          filters: [
+            ...getTimeFilters(getGMTStartDateTime(timeRange.from), getGMTEndDateTime(timeRange.to)),
+            ...getFilters(filters)
+          ] as QLCEViewFilterWrapper[],
+          groupBy: [getGroupByFilter(groupBy)] as QLCEViewGroupBy[]
+        })
+        setAnomaliesCountData(response?.data as PerspectiveAnomalyData[])
+        // console.log('response', response)
+      } catch (error) {
+        // console.log('error', error)
+      }
+    }
+    fetchAnomaliesCount()
+  }, [filters, getAnomalies, groupBy, timeRange.from, timeRange.to])
 
   const setFilterUsingChartClick: (value: string) => void = value => {
     setFilters(prevFilter => [
@@ -411,6 +446,7 @@ const PerspectiveDetailsPage: React.FC = () => {
                 data={chartData?.perspectiveTimeSeriesStats as any}
                 aggregation={aggregation}
                 xAxisPointCount={chartData?.perspectiveTimeSeriesStats?.stats?.length || DAYS_FOR_TICK_INTERVAL + 1}
+                anomaliesCountData={anomaliesCountData}
               />
             )}
           </Container>

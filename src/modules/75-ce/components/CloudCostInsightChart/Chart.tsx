@@ -9,7 +9,12 @@ import React, { useEffect, useState } from 'react'
 import type { OptionsStackingValue } from 'highcharts'
 import moment from 'moment'
 import { Icon } from '@wings-software/uicore'
+import { useHistory, useParams } from 'react-router-dom'
 import { QlceViewTimeGroupType } from 'services/ce/services'
+import type { PerspectiveAnomalyData } from 'services/ce'
+import formatCost from '@ce/utils/formatCost'
+import caretDownImg from '@ce/images/caret-down.svg'
+import routes from '@common/RouteDefinitions'
 import type { ChartConfigType } from './chartUtils'
 import CEChart from '../CEChart/CEChart'
 import ChartLegend from './ChartLegend'
@@ -28,6 +33,7 @@ interface GetChartProps {
   xAxisPointCount: number
   setFilterUsingChartClick?: (value: string) => void
   showLegends: boolean
+  anomaliesCountData?: PerspectiveAnomalyData[]
 }
 
 const GetChart: React.FC<GetChartProps> = ({
@@ -38,11 +44,16 @@ const GetChart: React.FC<GetChartProps> = ({
   aggregation,
   xAxisPointCount,
   setFilterUsingChartClick,
-  showLegends
+  showLegends,
+  anomaliesCountData
 }) => {
   const [chartObj, setChartObj] = useState<Highcharts.Chart | null>(null)
 
   const [forceCounter, setForceCounter] = useState(0)
+  const history = useHistory()
+  const { accountId } = useParams<{
+    accountId: string
+  }>()
 
   useEffect(() => {
     // When the chart data changes the legend component is not getting updated due to no deps on data
@@ -115,8 +126,53 @@ const GetChart: React.FC<GetChartProps> = ({
     xAxisOptions.tickInterval = ONE_MONTH
   }
 
+  const redirection = (event: any) => {
+    if (event.target.id === 'navAnomalies') {
+      history.push(
+        routes.toCEAnomalyDetection({
+          accountId: accountId
+        })
+      )
+    } else return
+  }
+
+  const labelsText = (item: Record<string, any>) => {
+    return `
+      <div class=${css.anomaliesWrapper}>
+        <p class=${css.anomaliesText}>${item.anomalyCount}</p>
+        <span class=${css.anomaliesTooltip}>
+          <p class=${css.anomaliesCount}>${item.anomalyCount} Anomolies</p>
+          <div class=${css.costWrapper}>
+            <span class=${css.anomaliesCost}>${item.actualCost && formatCost(item.actualCost)}</span>
+            <span class=${item.differenceFromExpectedCost < 0 ? css.differenceCostNeg : css.differenceCostPos}>
+              <img src=${caretDownImg} />
+              ${item.differenceFromExpectedCost && formatCost(item.differenceFromExpectedCost)}
+            </span>
+          </div>
+          <a id="navAnomalies" class=${css.anomaliesNav}>View anomalies</a>
+          <a class=${css.anomaliesNav}>Apply cluster filters</a>
+        </span>
+      <div>
+    `
+  }
+
+  const anomaliesLabels = () => {
+    const labels =
+      anomaliesCountData &&
+      anomaliesCountData.map(item => {
+        return {
+          point: `${item.timestamp}`,
+          useHTML: true,
+          text: labelsText(item),
+          y: -40
+        }
+      })
+
+    return labels || []
+  }
+
   return (
-    <article key={idx}>
+    <article key={idx} onClick={redirection}>
       <CEChart
         options={{
           series: chart as any,
@@ -150,24 +206,7 @@ const GetChart: React.FC<GetChartProps> = ({
           xAxis: xAxisOptions,
           annotations: [
             {
-              labels: [
-                {
-                  point: '1642550400000',
-                  useHTML: true,
-                  text: `
-                    <div class=${css.anomaliesWrapper}>
-                      <p class=${css.anomaliesText}>3</p>
-                      <span class=${css.anomaliesTooltip}>
-                        <p class=${css.anomaliesCount}>3 Anomolies</p>
-                        <p class=${css.anomaliesCost}>$1822.79</p>
-                        <a href="" class=${css.anomaliesNav}>View anomalies</a>
-                        <a href="" class=${css.anomaliesNav}>Apply cluster filters</a>
-                      </span>
-                    <div>
-                  `,
-                  y: -40
-                }
-              ],
+              labels: anomaliesLabels(),
               draggable: '',
               labelOptions: {
                 useHTML: true,
@@ -197,6 +236,7 @@ interface CCMChartProps {
   xAxisPointCount: number
   setFilterUsingChartClick?: (value: string) => void
   showLegends: boolean
+  anomaliesCountData?: PerspectiveAnomalyData[]
 }
 
 const Chart: React.FC<CCMChartProps> = ({
@@ -206,7 +246,8 @@ const Chart: React.FC<CCMChartProps> = ({
   aggregation,
   xAxisPointCount,
   setFilterUsingChartClick,
-  showLegends
+  showLegends,
+  anomaliesCountData
 }) => {
   return (
     <>
@@ -222,6 +263,7 @@ const Chart: React.FC<CCMChartProps> = ({
             setFilterUsingChartClick={setFilterUsingChartClick}
             onLoad={onLoad}
             showLegends={showLegends}
+            anomaliesCountData={anomaliesCountData}
           />
         ) : null
       })}

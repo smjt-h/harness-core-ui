@@ -2,6 +2,7 @@
   border-left: 12px solid transparent;
   border-right: 12px solid transparent;
   border-bottom: 24px solid #cf2318;
+  border-radius: 6px;
   position: relative;
 }
 
@@ -67,4 +68,27 @@
   display: block;
   color: #00ade4;
   margin-top: 12px;
+}
+
+.costWrapper {
+  display: flex;
+  align-items: baseline;
+}
+
+.differenceCostPos {
+  font-style: normal;
+  font-weight: normal;
+  font-size: 10px;
+  line-height: 15px;
+  color: #ee5f54;
+  margin-left: 12px;
+}
+
+.differenceCostNeg {
+  font-style: normal;
+  font-weight: normal;
+  font-size: 10px;
+  line-height: 15px;
+  color: #4dc952;
+  margin-left: 12px;
 }
