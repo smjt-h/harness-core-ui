@@ -226,13 +226,13 @@ const AnomaliesMenu = () => {
 
 const AnomaliesListGridView: React.FC<listProps> = ({ listData }) => {
   const DateCell: Renderer<CellProps<AnomalyData>> = ({ row }) => {
-    const timestamp = row.original.time
+    const timestamp = row.original.time as number
     const relativeTime = row.original.anomalyRelativeTime
 
     return (
       <Layout.Vertical spacing="small">
         <Text color={Color.BLACK} font={{ weight: 'semi-bold', size: 'normal' }}>
-          {getTimePeriodString(timestamp as unknown as string, ANOMALIES_LIST_FORMAT)}
+          {getTimePeriodString(timestamp, ANOMALIES_LIST_FORMAT)}
         </Text>
         <Text color={Color.GREY_600} font={{ size: 'small' }}>
           {relativeTime}
@@ -241,25 +241,34 @@ const AnomaliesListGridView: React.FC<listProps> = ({ listData }) => {
     )
   }
 
-  const CostCell: Renderer<CellProps<AnomalyData>> = cell => {
+  const CostCell: Renderer<CellProps<AnomalyData>> = ({ row }) => {
+    const actualAmount = row.original.actualAmount as number
+    const trend = row.original.trend
+
     return (
       <Layout.Horizontal style={{ alignItems: 'baseline' }} spacing="small">
         <Text font={{ weight: 'semi-bold', size: 'normal' }} color={Color.BLACK}>
-          {formatCost(cell.value)}
+          {formatCost(actualAmount)}
         </Text>
-        <Text font={{ size: 'xsmall' }} color={Color.RED_600}>{`(+21.6%)`}</Text>
+        {trend ? <Text font={{ size: 'xsmall' }} color={Color.RED_600}>{`+${trend}%`}</Text> : null}
       </Layout.Horizontal>
     )
   }
 
-  const ResourceCell: Renderer<CellProps<AnomalyData>> = () => {
+  const ResourceCell: Renderer<CellProps<AnomalyData>> = ({ row }) => {
+    const resourceName = row.original.resourceName
+    const resourceInfo = row.original.resourceInfo
+
     return (
-      <Layout.Vertical spacing="small">
-        <Link to={''}>{'squidward/spongebob/1233445...'}</Link>
-        <Text font={{ size: 'small' }} color={Color.GREY_600}>
-          {'cluster/workload'}
-        </Text>
-      </Layout.Vertical>
+      <Layout.Horizontal style={{ alignItems: 'center' }}>
+        <Icon name="app-kubernetes" size={24} />
+        <Layout.Vertical spacing="small">
+          <Link to={''}>{resourceName || 'squidward/spongebob/1233445...'}</Link>
+          <Text font={{ size: 'small' }} color={Color.GREY_600}>
+            {resourceInfo || 'cluster/workload'}
+          </Text>
+        </Layout.Vertical>
+      </Layout.Horizontal>
     )
   }
 
