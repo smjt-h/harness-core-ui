@@ -25,7 +25,7 @@
             <div class='fl pad1y space-right2'>
                 <span class="strong">100% </span>
                 <span class="quiet">Statements</span>
-                <span class='fraction'>14/14</span>
+                <span class='fraction'>17/17</span>
             </div>
         
             
@@ -46,7 +46,7 @@
             <div class='fl pad1y space-right2'>
                 <span class="strong">100% </span>
                 <span class="quiet">Lines</span>
-                <span class='fraction'>14/14</span>
+                <span class='fraction'>17/17</span>
             </div>
         
             
@@ -110,7 +110,21 @@
 <a name='L51'></a><a href='#L51'>51</a>
 <a name='L52'></a><a href='#L52'>52</a>
 <a name='L53'></a><a href='#L53'>53</a>
-<a name='L54'></a><a href='#L54'>54</a></td><td class="line-coverage quiet"><span class="cline-any cline-neutral">&nbsp;</span>
+<a name='L54'></a><a href='#L54'>54</a>
+<a name='L55'></a><a href='#L55'>55</a>
+<a name='L56'></a><a href='#L56'>56</a>
+<a name='L57'></a><a href='#L57'>57</a>
+<a name='L58'></a><a href='#L58'>58</a>
+<a name='L59'></a><a href='#L59'>59</a>
+<a name='L60'></a><a href='#L60'>60</a>
+<a name='L61'></a><a href='#L61'>61</a>
+<a name='L62'></a><a href='#L62'>62</a>
+<a name='L63'></a><a href='#L63'>63</a>
+<a name='L64'></a><a href='#L64'>64</a>
+<a name='L65'></a><a href='#L65'>65</a>
+<a name='L66'></a><a href='#L66'>66</a>
+<a name='L67'></a><a href='#L67'>67</a>
+<a name='L68'></a><a href='#L68'>68</a></td><td class="line-coverage quiet"><span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
@@ -121,6 +135,8 @@
 <span class="cline-any cline-yes">9x</span>
 <span class="cline-any cline-yes">9x</span>
 <span class="cline-any cline-yes">9x</span>
+<span class="cline-any cline-yes">9x</span>
+<span class="cline-any cline-yes">9x</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-yes">9x</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
@@ -132,7 +148,9 @@
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-yes">9x</span>
+<span class="cline-any cline-yes">6x</span>
 <span class="cline-any cline-yes">6x</span>
 <span class="cline-any cline-yes">6x</span>
 <span class="cline-any cline-yes">6x</span>
@@ -145,6 +163,16 @@
 <span class="cline-any cline-yes">6x</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-yes">6x</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
@@ -172,7 +200,9 @@
 &nbsp;
 import React, { useState, useCallback } from 'react'
 import { isEqual } from 'lodash-es'
+import cx from 'classnames'
 import { Container, Text } from '@wings-software/uicore'
+import { useStrings } from 'framework/strings'
 import { DeploymentNodes } from '@cv/components/ExecutionVerification/components/DeploymentProgressAndNodes/components/DeploymentNodes/DeploymentNodes'
 import type { DeploymentNodeAnalysisResult } from '../../../DeploymentProgressAndNodes/components/DeploymentNodes/DeploymentNodes.constants'
 import css from './PrimaryAndCanaryNodes.module.scss'
@@ -183,10 +213,12 @@ interface PrimaryAndCanaryNodesProps {
   primaryNodeLabel: string
   canaryNodeLabel: string
   onSelectNode?: (selectedNode?: DeploymentNodeAnalysisResult) =&gt; void
+  isConsoleView?: boolean
 }
 &nbsp;
 export function PrimaryAndCanaryNodes(props: PrimaryAndCanaryNodesProps): JSX.Element {
-  const { canaryNodes, primaryNodes, onSelectNode, primaryNodeLabel, canaryNodeLabel } = props
+  const { canaryNodes, primaryNodes, onSelectNode, primaryNodeLabel, canaryNodeLabel, isConsoleView } = props
+  const { getString } = useStrings()
   const [selectedNode, setSelectedNode] = useState&lt;DeploymentNodeAnalysisResult | undefined&gt;()
   const onNodeSelect = useCallback(
     (newlySelectedNode?: DeploymentNodeAnalysisResult) =&gt; {
@@ -198,13 +230,23 @@ export function PrimaryAndCanaryNodes(props: PrimaryAndCanaryNodesProps): JSX.El
   const onSelectCallback = onSelectNode ? onNodeSelect : undefined
 &nbsp;
   return (
-    &lt;Container className={css.main}&gt;
+    &lt;Container
+      className={cx(css.main, {
+        [css.flexLayout]: !isConsoleView
+      })}
+    &gt;
       &lt;Container className={css.primaryNodes}&gt;
         &lt;Text&gt;{primaryNodeLabel<span class="branch-0 cbranch-no" title="branch not covered" >?.t</span>oLocaleUpperCase()}&lt;/Text&gt;
+        &lt;Text className={css.details}&gt;
+          {primaryNodes.length} {getString('pipeline.nodes')}
+        &lt;/Text&gt;
         &lt;DeploymentNodes nodes={primaryNodes} selectedNode={selectedNode} /&gt;
       &lt;/Container&gt;
       &lt;Container className={css.canaryNodes}&gt;
         &lt;Text&gt;{canaryNodeLabel<span class="branch-0 cbranch-no" title="branch not covered" >?.t</span>oLocaleUpperCase()}&lt;/Text&gt;
+        &lt;Text className={css.details}&gt;
+          {canaryNodes.length} {getString('pipeline.nodes')}
+        &lt;/Text&gt;
         &lt;DeploymentNodes
           nodes={canaryNodes}
           selectedNode={selectedNode}
@@ -223,7 +265,7 @@ export function PrimaryAndCanaryNodes(props: PrimaryAndCanaryNodesProps): JSX.El
             <div class='footer quiet pad2 space-top1 center small'>
                 Code coverage generated by
                 <a href="https://istanbul.js.org/" target="_blank">istanbul</a>
-                at Thu Jan 27 2022 07:00:13 GMT+0000 (Greenwich Mean Time)
+                at Thu Jan 27 2022 11:33:36 GMT+0000 (Greenwich Mean Time)
             </div>
         </div>
         <script src="../../../../../../../../prettify.js"></script>

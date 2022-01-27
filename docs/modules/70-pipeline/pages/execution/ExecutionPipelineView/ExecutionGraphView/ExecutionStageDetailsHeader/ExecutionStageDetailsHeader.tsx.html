@@ -23,16 +23,16 @@
         <div class='clearfix'>
             
             <div class='fl pad1y space-right2'>
-                <span class="strong">97.14% </span>
+                <span class="strong">96.97% </span>
                 <span class="quiet">Statements</span>
-                <span class='fraction'>34/35</span>
+                <span class='fraction'>32/33</span>
             </div>
         
             
             <div class='fl pad1y space-right2'>
-                <span class="strong">65.71% </span>
+                <span class="strong">65.94% </span>
                 <span class="quiet">Branches</span>
-                <span class='fraction'>92/140</span>
+                <span class='fraction'>91/138</span>
             </div>
         
             
@@ -44,9 +44,9 @@
         
             
             <div class='fl pad1y space-right2'>
-                <span class="strong">97.06% </span>
+                <span class="strong">96.88% </span>
                 <span class="quiet">Lines</span>
-                <span class='fraction'>33/34</span>
+                <span class='fraction'>31/32</span>
             </div>
         
             
@@ -237,11 +237,7 @@
 <a name='L178'></a><a href='#L178'>178</a>
 <a name='L179'></a><a href='#L179'>179</a>
 <a name='L180'></a><a href='#L180'>180</a>
-<a name='L181'></a><a href='#L181'>181</a>
-<a name='L182'></a><a href='#L182'>182</a>
-<a name='L183'></a><a href='#L183'>183</a>
-<a name='L184'></a><a href='#L184'>184</a>
-<a name='L185'></a><a href='#L185'>185</a></td><td class="line-coverage quiet"><span class="cline-any cline-neutral">&nbsp;</span>
+<a name='L181'></a><a href='#L181'>181</a></td><td class="line-coverage quiet"><span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
@@ -264,7 +260,6 @@
 <span class="cline-any cline-yes">2x</span>
 <span class="cline-any cline-yes">2x</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-yes">2x</span>
 <span class="cline-any cline-yes">2x</span>
 <span class="cline-any cline-yes">2x</span>
 <span class="cline-any cline-yes">2x</span>
@@ -274,7 +269,6 @@
 <span class="cline-any cline-yes">2x</span>
 <span class="cline-any cline-yes">11x</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-yes">11x</span>
 <span class="cline-any cline-yes">11x</span>
 <span class="cline-any cline-yes">11x</span>
 <span class="cline-any cline-yes">11x</span>
@@ -423,8 +417,6 @@
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span></td><td class="text"><pre class="prettyprint lang-js">/*
  * Copyright 2021 Harness Inc. All rights reserved.
  * Use of this source code is governed by the PolyForm Shield 1.0.0 license
@@ -451,7 +443,6 @@ import type { ExecutionPathProps, PipelineType } from '@common/interfaces/RouteI
 import { ResourceType } from '@rbac/interfaces/ResourceType'
 import { PermissionIdentifier } from '@rbac/interfaces/PermissionIdentifier'
 import RbacButton from '@rbac/components/Button/Button'
-import { useFeatureFlags } from '@common/hooks/useFeatureFlag'
 import { useRunPipelineModal } from '@pipeline/components/RunPipelineModal/useRunPipelineModal'
 import css from './ExecutionStageDetailsHeader.module.scss'
 &nbsp;
@@ -464,7 +455,6 @@ export function ExecutionStageDetailsHeader(): React.ReactElement {
   const shouldShowError = isExecutionFailed(stage?.status)
   const errorMessage = defaultTo(stage?.failureInfo<span class="branch-1 cbranch-no" title="branch not covered" >?.message,</span> '')
   const { getString } = useStrings()
-  const { RUN_INDIVIDUAL_STAGE } = useFeatureFlags()
   const [canEdit, canExecute] = usePermission(
     {
       resourceScope: {
@@ -519,21 +509,19 @@ export function ExecutionStageDetailsHeader(): React.ReactElement {
           &lt;div className={css.stageTop}&gt;
             &lt;div className={css.stageName}&gt;
               {stage?.name}
-              {RUN_INDIVIDUAL_STAGE &amp;&amp; (
-<span class="branch-1 cbranch-no" title="branch not covered" >                &lt;RbacButton</span>
-                  icon="repeat"
-                  tooltip={getString('pipeline.execution.actions.rerunStage')}
-                  onClick={runPipeline}
-                  variation={ButtonVariation.ICON}
-                  disabled={!canExecute}
-                  minimal
-                  withoutBoxShadow
-                  small
-                  tooltipProps={{
-                    isDark: true
-                  }}
-                /&gt;
-              )}
+              &lt;RbacButton
+                icon="repeat"
+                tooltip={getString('pipeline.execution.actions.rerunStage')}
+                onClick={runPipeline}
+                variation={ButtonVariation.ICON}
+                disabled={!canExecute}
+                minimal
+                withoutBoxShadow
+                small
+                tooltipProps={{
+                  isDark: true
+                }}
+              /&gt;
             &lt;/div&gt;
             &lt;ExecutionActions
               executionStatus={<span class="branch-1 cbranch-no" title="branch not covered" >stageNode?.status as ExecutionStatus}</span>
@@ -616,7 +604,7 @@ export function ExecutionStageDetailsHeader(): React.ReactElement {
             <div class='footer quiet pad2 space-top1 center small'>
                 Code coverage generated by
                 <a href="https://istanbul.js.org/" target="_blank">istanbul</a>
-                at Thu Jan 27 2022 07:00:13 GMT+0000 (Greenwich Mean Time)
+                at Thu Jan 27 2022 11:33:36 GMT+0000 (Greenwich Mean Time)
             </div>
         </div>
         <script src="../../../../../../../prettify.js"></script>

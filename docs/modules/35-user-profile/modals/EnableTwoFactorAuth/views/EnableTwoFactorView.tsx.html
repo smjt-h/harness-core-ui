@@ -30,9 +30,9 @@
         
             
             <div class='fl pad1y space-right2'>
-                <span class="strong">60% </span>
+                <span class="strong">55.56% </span>
                 <span class="quiet">Branches</span>
-                <span class='fraction'>12/20</span>
+                <span class='fraction'>10/18</span>
             </div>
         
             
@@ -168,12 +168,7 @@
 <a name='L109'></a><a href='#L109'>109</a>
 <a name='L110'></a><a href='#L110'>110</a>
 <a name='L111'></a><a href='#L111'>111</a>
-<a name='L112'></a><a href='#L112'>112</a>
-<a name='L113'></a><a href='#L113'>113</a>
-<a name='L114'></a><a href='#L114'>114</a>
-<a name='L115'></a><a href='#L115'>115</a>
-<a name='L116'></a><a href='#L116'>116</a>
-<a name='L117'></a><a href='#L117'>117</a></td><td class="line-coverage quiet"><span class="cline-any cline-neutral">&nbsp;</span>
+<a name='L112'></a><a href='#L112'>112</a></td><td class="line-coverage quiet"><span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
@@ -269,16 +264,11 @@
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-yes">1x</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-no">&nbsp;</span>
-<span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
@@ -345,61 +335,56 @@ const EnableTwoFactorAuthView: React.FC&lt;EnableTwoFactorAuthViewProps&gt; = ({
   const authSettings = data<span class="branch-0 cbranch-no" title="branch not covered" >?.d</span>ata
   return (
     &lt;&gt;
-      &lt;Layout.Vertical padding="huge"&gt;
-        &lt;Text color={Color.GREY_900} font={{ size: 'medium', weight: 'semi-bold' }}&gt;
-          {isReset ? getString('userProfile.twoFactor.resetTitle') : getString('userProfile.twoFactor.enableTitle')}
-        &lt;/Text&gt;
-        &lt;Container className={css.view}&gt;
-          {authSettings ? (
-            &lt;&gt;
-              &lt;Layout.Horizontal padding={{ top: 'large', bottom: 'huge' }}&gt;
-                &lt;Layout.Vertical&gt;
-                  &lt;Text padding={{ bottom: 'large' }} color={Color.BLACK_100}&gt;
-                    {getString('userProfile.qrCode')}
-                  &lt;/Text&gt;
-                  &lt;Layout.Horizontal padding="medium" className={css.qrCode}&gt;
-                    &lt;QRCode value={authSettings.totpqrurl || <span class="branch-1 cbranch-no" title="branch not covered" >''}</span> /&gt;
-                  &lt;/Layout.Horizontal&gt;
-                &lt;/Layout.Vertical&gt;
-                &lt;Layout.Vertical padding="huge" className={css.description}&gt;
-                  &lt;Text color={Color.BLACK}&gt;{getString('userProfile.twoFactor.description')}&lt;/Text&gt;
-                  &lt;Layout.Vertical spacing="small" padding={{ top: 'large' }}&gt;
-                    &lt;Text color={Color.BLACK} font={{ weight: 'semi-bold' }}&gt;
-                      {getString('common.secretKey')}
-                    &lt;/Text&gt;
-                    &lt;TextInput
-                      readOnly
-                      value={authSettings.totpSecretKey}
-                      rightElement={
-                        (
-                          &lt;CopyText
-                            className={css.copy}
-                            iconName="duplicate"
-                            textToCopy={authSettings.totpSecretKey || <span class="branch-1 cbranch-no" title="branch not covered" >''}</span>
-                            iconAlwaysVisible
-                          /&gt;
-                        ) as any
-                      }
-                    /&gt;
-                  &lt;/Layout.Vertical&gt;
-                &lt;/Layout.Vertical&gt;
-              &lt;/Layout.Horizontal&gt;
-              &lt;Layout.Horizontal flex&gt;
-                &lt;Layout.Horizontal spacing="small"&gt;
-                  &lt;Button
-                    variation={ButtonVariation.PRIMARY}
-                    text={isReset ? getString('save') : getString('enable')}
-                    onClick={() =&gt; handleEnableTwoFactorAuth(authSettings)}
-                  /&gt;
-                  &lt;Button text={getString('cancel')} onClick={onCancel} variation={ButtonVariation.TERTIARY} /&gt;
+      &lt;Container className={css.view}&gt;
+        {authSettings ? (
+          &lt;&gt;
+            &lt;Layout.Horizontal padding={{ top: 'large', bottom: 'huge' }}&gt;
+              &lt;Layout.Vertical&gt;
+                &lt;Text padding={{ bottom: 'large' }} color={Color.BLACK_100}&gt;
+                  {getString('userProfile.qrCode')}
+                &lt;/Text&gt;
+                &lt;Layout.Horizontal padding="medium" className={css.qrCode}&gt;
+                  &lt;QRCode value={authSettings.totpqrurl || <span class="branch-1 cbranch-no" title="branch not covered" >''}</span> /&gt;
                 &lt;/Layout.Horizontal&gt;
-                &lt;Button icon="reset" minimal onClick={<span class="fstat-no" title="function not covered" >() =</span>&gt; <span class="cstat-no" title="statement not covered" >refetchTwoFactorAuthSettings()}</span> /&gt;
+              &lt;/Layout.Vertical&gt;
+              &lt;Layout.Vertical padding="huge" className={css.description}&gt;
+                &lt;Text color={Color.BLACK}&gt;{getString('userProfile.twoFactor.description')}&lt;/Text&gt;
+                &lt;Layout.Vertical spacing="small" padding={{ top: 'large' }}&gt;
+                  &lt;Text color={Color.BLACK} font={{ weight: 'semi-bold' }}&gt;
+                    {getString('common.secretKey')}
+                  &lt;/Text&gt;
+                  &lt;TextInput
+                    readOnly
+                    value={authSettings.totpSecretKey}
+                    rightElement={
+                      (
+                        &lt;CopyText
+                          className={css.copy}
+                          iconName="duplicate"
+                          textToCopy={authSettings.totpSecretKey || <span class="branch-1 cbranch-no" title="branch not covered" >''}</span>
+                          iconAlwaysVisible
+                        /&gt;
+                      ) as any
+                    }
+                  /&gt;
+                &lt;/Layout.Vertical&gt;
+              &lt;/Layout.Vertical&gt;
+            &lt;/Layout.Horizontal&gt;
+            &lt;Layout.Horizontal flex&gt;
+              &lt;Layout.Horizontal spacing="small"&gt;
+                &lt;Button
+                  variation={ButtonVariation.PRIMARY}
+                  text={isReset ? getString('save') : getString('enable')}
+                  onClick={() =&gt; handleEnableTwoFactorAuth(authSettings)}
+                /&gt;
+                &lt;Button text={getString('cancel')} onClick={onCancel} variation={ButtonVariation.TERTIARY} /&gt;
               &lt;/Layout.Horizontal&gt;
-            &lt;/&gt;
-          ) : <span class="branch-1 cbranch-no" title="branch not covered" >null}</span>
-        &lt;/Container&gt;
-        {loading ? <span class="branch-0 cbranch-no" title="branch not covered" >&lt;PageSpinner /&gt; </span>: null}
-      &lt;/Layout.Vertical&gt;
+              &lt;Button icon="reset" minimal onClick={<span class="fstat-no" title="function not covered" >() =</span>&gt; <span class="cstat-no" title="statement not covered" >refetchTwoFactorAuthSettings()}</span> /&gt;
+            &lt;/Layout.Horizontal&gt;
+          &lt;/&gt;
+        ) : <span class="branch-1 cbranch-no" title="branch not covered" >null}</span>
+      &lt;/Container&gt;
+      {loading ? <span class="branch-0 cbranch-no" title="branch not covered" >&lt;PageSpinner /&gt; </span>: null}
     &lt;/&gt;
   )
 }
@@ -412,7 +397,7 @@ export default EnableTwoFactorAuthView
             <div class='footer quiet pad2 space-top1 center small'>
                 Code coverage generated by
                 <a href="https://istanbul.js.org/" target="_blank">istanbul</a>
-                at Thu Jan 27 2022 07:00:13 GMT+0000 (Greenwich Mean Time)
+                at Thu Jan 27 2022 11:33:36 GMT+0000 (Greenwich Mean Time)
             </div>
         </div>
         <script src="../../../../../prettify.js"></script>

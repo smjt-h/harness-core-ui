@@ -30,9 +30,9 @@
         
             
             <div class='fl pad1y space-right2'>
-                <span class="strong">61.54% </span>
+                <span class="strong">66.67% </span>
                 <span class="quiet">Branches</span>
-                <span class='fraction'>8/13</span>
+                <span class='fraction'>10/15</span>
             </div>
         
             
@@ -172,7 +172,11 @@
 <a name='L113'></a><a href='#L113'>113</a>
 <a name='L114'></a><a href='#L114'>114</a>
 <a name='L115'></a><a href='#L115'>115</a>
-<a name='L116'></a><a href='#L116'>116</a></td><td class="line-coverage quiet"><span class="cline-any cline-neutral">&nbsp;</span>
+<a name='L116'></a><a href='#L116'>116</a>
+<a name='L117'></a><a href='#L117'>117</a>
+<a name='L118'></a><a href='#L118'>118</a>
+<a name='L119'></a><a href='#L119'>119</a>
+<a name='L120'></a><a href='#L120'>120</a></td><td class="line-coverage quiet"><span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
@@ -197,7 +201,9 @@
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-yes">8x</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
@@ -233,6 +239,7 @@
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-no">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
@@ -250,6 +257,7 @@
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-yes">1x</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
@@ -310,13 +318,15 @@ interface ResourcesCardProps {
   resourceValues: string | string[]
   onResourceSelectionChange: (resourceType: ResourceType, isAdd: boolean, identifiers?: string[] | undefined) =&gt; void
   disableAddingResources?: boolean
+  disableSelection?: boolean
 }
 &nbsp;
 const ResourcesCard: React.FC&lt;ResourcesCardProps&gt; = ({
   resourceType,
   resourceValues,
   onResourceSelectionChange,
-  disableAddingResources
+  disableAddingResources,
+  disableSelection
 }) =&gt; {
   const { accountId, orgIdentifier, projectIdentifier } = useParams&lt;ProjectPathProps&gt;()
   const { getString } = useStrings()
@@ -343,35 +353,37 @@ const ResourcesCard: React.FC&lt;ResourcesCardProps&gt; = ({
               {getString(label)}
             &lt;/Text&gt;
           &lt;/Container&gt;
-          &lt;Layout.Horizontal flex&gt;
-            &lt;Radio
-              label={getString('rbac.resourceGroup.all')}
-              data-testid={`dynamic-${resourceType}`}
-              checked={isDynamicResourceSelector(resourceValues)}
-              onChange={<span class="fstat-no" title="function not covered" >e </span>=&gt; <span class="cstat-no" title="statement not covered" >onResourceSelectionChange(resourceType, e.currentTarget.checked)}</span>
-            /&gt;
-            {addResourceModalBody &amp;&amp; (
-              &lt;Layout.Horizontal spacing="small" flex padding={{ left: 'huge' }} className={css.radioBtn}&gt;
-                &lt;Radio
-                  label={getString('common.specified')}
-                  data-testid={`static-${resourceType}`}
-                  checked={!isDynamicResourceSelector(resourceValues)}
-                  onChange={e =&gt; onResourceSelectionChange(resourceType, e.currentTarget.checked, [])}
-                /&gt;
-                &lt;Button
-                  variation={ButtonVariation.LINK}
-                  data-testid={`addResources-${resourceType}`}
-                  disabled={disableAddingResources || isDynamicResourceSelector(resourceValues)}
-                  className={css.addResourceBtn}
-                  onClick={() =&gt; {
-                    openAddResourceModal(resourceType, Array.isArray(resourceValues) ? resourceValues : <span class="branch-1 cbranch-no" title="branch not covered" >[])</span>
-                  }}
-                &gt;
-                  {getString('rbac.resourceGroup.add')}
-                &lt;/Button&gt;
-              &lt;/Layout.Horizontal&gt;
-            )}
-          &lt;/Layout.Horizontal&gt;
+          {!disableSelection &amp;&amp; (
+            &lt;Layout.Horizontal flex&gt;
+              &lt;Radio
+                label={getString('rbac.resourceGroup.all')}
+                data-testid={`dynamic-${resourceType}`}
+                checked={isDynamicResourceSelector(resourceValues)}
+                onChange={<span class="fstat-no" title="function not covered" >e </span>=&gt; <span class="cstat-no" title="statement not covered" >onResourceSelectionChange(resourceType, e.currentTarget.checked)}</span>
+              /&gt;
+              {addResourceModalBody &amp;&amp; (
+                &lt;Layout.Horizontal spacing="small" flex padding={{ left: 'huge' }} className={css.radioBtn}&gt;
+                  &lt;Radio
+                    label={getString('common.specified')}
+                    data-testid={`static-${resourceType}`}
+                    checked={!isDynamicResourceSelector(resourceValues)}
+                    onChange={e =&gt; onResourceSelectionChange(resourceType, e.currentTarget.checked, [])}
+                  /&gt;
+                  &lt;Button
+                    variation={ButtonVariation.LINK}
+                    data-testid={`addResources-${resourceType}`}
+                    disabled={disableAddingResources || isDynamicResourceSelector(resourceValues)}
+                    className={css.addResourceBtn}
+                    onClick={() =&gt; {
+                      openAddResourceModal(resourceType, Array.isArray(resourceValues) ? resourceValues : <span class="branch-1 cbranch-no" title="branch not covered" >[])</span>
+                    }}
+                  &gt;
+                    {getString('rbac.resourceGroup.add')}
+                  &lt;/Button&gt;
+                &lt;/Layout.Horizontal&gt;
+              )}
+            &lt;/Layout.Horizontal&gt;
+          )}
         &lt;/Layout.Horizontal&gt;
 &nbsp;
         {Array.isArray(resourceValues) &amp;&amp; resourceValues.length &gt; 0 &amp;&amp; (
@@ -409,7 +421,7 @@ export default ResourcesCard
             <div class='footer quiet pad2 space-top1 center small'>
                 Code coverage generated by
                 <a href="https://istanbul.js.org/" target="_blank">istanbul</a>
-                at Thu Jan 27 2022 07:00:13 GMT+0000 (Greenwich Mean Time)
+                at Thu Jan 27 2022 11:33:36 GMT+0000 (Greenwich Mean Time)
             </div>
         </div>
         <script src="../../../../prettify.js"></script>

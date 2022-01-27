@@ -23,16 +23,16 @@
         <div class='clearfix'>
             
             <div class='fl pad1y space-right2'>
-                <span class="strong">57.14% </span>
+                <span class="strong">57.89% </span>
                 <span class="quiet">Statements</span>
-                <span class='fraction'>12/21</span>
+                <span class='fraction'>11/19</span>
             </div>
         
             
             <div class='fl pad1y space-right2'>
                 <span class="strong">0% </span>
                 <span class="quiet">Branches</span>
-                <span class='fraction'>0/10</span>
+                <span class='fraction'>0/8</span>
             </div>
         
             
@@ -44,9 +44,9 @@
         
             
             <div class='fl pad1y space-right2'>
-                <span class="strong">55% </span>
+                <span class="strong">55.56% </span>
                 <span class="quiet">Lines</span>
-                <span class='fraction'>11/20</span>
+                <span class='fraction'>10/18</span>
             </div>
         
             
@@ -198,10 +198,7 @@
 <a name='L139'></a><a href='#L139'>139</a>
 <a name='L140'></a><a href='#L140'>140</a>
 <a name='L141'></a><a href='#L141'>141</a>
-<a name='L142'></a><a href='#L142'>142</a>
-<a name='L143'></a><a href='#L143'>143</a>
-<a name='L144'></a><a href='#L144'>144</a>
-<a name='L145'></a><a href='#L145'>145</a></td><td class="line-coverage quiet"><span class="cline-any cline-neutral">&nbsp;</span>
+<a name='L142'></a><a href='#L142'>142</a></td><td class="line-coverage quiet"><span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
@@ -233,7 +230,6 @@
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-yes">11x</span>
 <span class="cline-any cline-yes">11x</span>
-<span class="cline-any cline-yes">11x</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
@@ -253,7 +249,6 @@
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-yes">11x</span>
-<span class="cline-any cline-no">&nbsp;</span>
 <span class="cline-any cline-no">&nbsp;</span>
 <span class="cline-any cline-no">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
@@ -333,7 +328,6 @@
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-no">&nbsp;</span>
 <span class="cline-any cline-no">&nbsp;</span>
-<span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
@@ -375,7 +369,6 @@ import {
   FormMultiTypeDurationField,
   getDurationValidationSchema
 } from '@common/components/MultiTypeDuration/MultiTypeDuration'
-import { useFeatureFlags } from '@common/hooks/useFeatureFlag'
 import { useVariablesExpression } from '../PiplineHooks/useVariablesExpression'
 import css from './AdvancedOptions.module.scss'
 &nbsp;
@@ -399,7 +392,6 @@ const stageExecutionOptions = [
 export const AdvancedOptions: React.FC&lt;AdvancedOptionsProps&gt; = <span class="fstat-no" title="function not covered" >({</span> onApplyChanges, onDiscard, pipeline }) =&gt; {
   const { getString } = <span class="cstat-no" title="statement not covered" >useStrings()</span>
   const { expressions } = <span class="cstat-no" title="statement not covered" >useVariablesExpression()</span>
-  const { RUN_INDIVIDUAL_STAGE } = <span class="cstat-no" title="statement not covered" >useFeatureFlags()</span>
 &nbsp;
 <span class="cstat-no" title="statement not covered" >  return (</span>
     &lt;Formik&lt;PipelineInfoConfig&gt;
@@ -455,34 +447,33 @@ export const AdvancedOptions: React.FC&lt;AdvancedOptionsProps&gt; = <span class
                 &lt;/Layout.Vertical&gt;
               &lt;/Card&gt;
             &lt;/Layout.Vertical&gt;
-            {RUN_INDIVIDUAL_STAGE &amp;&amp; (
-              &lt;Layout.Vertical spacing="small"&gt;
-                &lt;Text font={{ variation: FontVariation.H5 }} data-tooltip-id="stageExecution_settings"&gt;
-                  {getString('pipeline.stageExecutionSettings')}
-                  &lt;HarnessDocTooltip useStandAlone={true} tooltipId="stageExecution_settings" /&gt;
-                &lt;/Text&gt;
-                &lt;Card&gt;
-                  &lt;Layout.Vertical spacing="small"&gt;
-                    &lt;Text
-                      color={Color.GREY_600}
-                      style={{ marginBottom: 4 }}
-                      font={{ variation: FontVariation.SMALL_SEMI }}
-                    &gt;
-                      {getString('pipeline.stageExecutionsHelperText')}
-                    &lt;/Text&gt;
-                    &lt;FormInput.RadioGroup
-                      name="allowStageExecutions"
-                      radioGroup={{ inline: true }}
-                      items={stageExecutionOptions as any}
-                      onChange={<span class="fstat-no" title="function not covered" >e </span>=&gt; {
-                        const currentValue = <span class="cstat-no" title="statement not covered" >e.currentTarget?.value === 'true'</span>
-<span class="cstat-no" title="statement not covered" >                        formikProps?.setFieldValue('allowStageExecutions', currentValue)</span>
-                      }}
-                    /&gt;
-                  &lt;/Layout.Vertical&gt;
-                &lt;/Card&gt;
-              &lt;/Layout.Vertical&gt;
-            )}
+&nbsp;
+            &lt;Layout.Vertical spacing="small"&gt;
+              &lt;Text font={{ variation: FontVariation.H5 }} data-tooltip-id="stageExecution_settings"&gt;
+                {getString('pipeline.stageExecutionSettings')}
+                &lt;HarnessDocTooltip useStandAlone={true} tooltipId="stageExecution_settings" /&gt;
+              &lt;/Text&gt;
+              &lt;Card&gt;
+                &lt;Layout.Vertical spacing="small"&gt;
+                  &lt;Text
+                    color={Color.GREY_600}
+                    style={{ marginBottom: 4 }}
+                    font={{ variation: FontVariation.SMALL_SEMI }}
+                  &gt;
+                    {getString('pipeline.stageExecutionsHelperText')}
+                  &lt;/Text&gt;
+                  &lt;FormInput.RadioGroup
+                    name="allowStageExecutions"
+                    radioGroup={{ inline: true }}
+                    items={stageExecutionOptions as any}
+                    onChange={<span class="fstat-no" title="function not covered" >e </span>=&gt; {
+                      const currentValue = <span class="cstat-no" title="statement not covered" >e.currentTarget?.value === 'true'</span>
+<span class="cstat-no" title="statement not covered" >                      formikProps?.setFieldValue('allowStageExecutions', currentValue)</span>
+                    }}
+                  /&gt;
+                &lt;/Layout.Vertical&gt;
+              &lt;/Card&gt;
+            &lt;/Layout.Vertical&gt;
           &lt;/Page.Body&gt;
         &lt;/&gt;
       )}
@@ -496,7 +487,7 @@ export const AdvancedOptions: React.FC&lt;AdvancedOptionsProps&gt; = <span class
             <div class='footer quiet pad2 space-top1 center small'>
                 Code coverage generated by
                 <a href="https://istanbul.js.org/" target="_blank">istanbul</a>
-                at Thu Jan 27 2022 07:00:13 GMT+0000 (Greenwich Mean Time)
+                at Thu Jan 27 2022 11:33:36 GMT+0000 (Greenwich Mean Time)
             </div>
         </div>
         <script src="../../../../../prettify.js"></script>
