@@ -117,7 +117,8 @@ export const validateMapping = (
   values: any,
   createdMetrics: string[],
   selectedMetricIndex: number,
-  getString: (key: StringKeys) => string
+  getString: (key: StringKeys) => string,
+  mappedMetrics?: Map<string, MapAppDynamicsMetric>
 ): ((key: string | boolean | string[]) => string) => {
   let errors = {} as any
   const metricValueList = values?.metricData ? Object.values(values?.metricData).filter(val => val) : []
@@ -143,7 +144,7 @@ export const validateMapping = (
   }
 
   if (values?.showCustomMetric) {
-    errors = validateCustomMetricFields(values, createdMetrics, selectedMetricIndex, errors, getString)
+    errors = validateCustomMetricFields(values, createdMetrics, selectedMetricIndex, errors, getString, mappedMetrics)
   }
 
   return errors
@@ -154,7 +155,8 @@ const validateCustomMetricFields = (
   createdMetrics: string[],
   selectedMetricIndex: number,
   errors: any,
-  getString: (key: StringKeys) => string
+  getString: (key: StringKeys) => string,
+  mappedMetrics?: Map<string, MapAppDynamicsMetric>
 ): ((key: string | boolean | string[]) => string) => {
   let _error = cloneDeep(errors)
 
@@ -208,6 +210,8 @@ const validateCustomMetricFields = (
     return metricName === values.metricName
   })
 
+  _error = validateIdentifier(values, createdMetrics, selectedMetricIndex, _error, getString, mappedMetrics)
+
   if (!values.groupName) {
     _error[AppDynamicsMonitoringSourceFieldNames.GROUP_NAME] = getString(
       'cv.monitoringSources.prometheus.validation.groupName'
@@ -225,6 +229,32 @@ const validateCustomMetricFields = (
   }
 
   _error = validateAssignComponent(isAssignComponentValid, _error, getString, values, isRiskCategoryValid)
+  return _error
+}
+
+const validateIdentifier = (
+  values: any,
+  createdMetrics: string[],
+  selectedMetricIndex: number,
+  errors: any,
+  getString: (key: StringKeys) => string,
+  mappedMetrics?: Map<string, MapAppDynamicsMetric>
+): ((key: string | boolean | string[]) => string) => {
+  const _error = cloneDeep(errors)
+  const identifiers = createdMetrics.map(metricName => mappedMetrics?.get(metricName)?.metricIdentifier)
+
+  const duplicateIdentifier = identifiers?.filter((identifier, index) => {
+    if (index === selectedMetricIndex) {
+      return false
+    }
+    return identifier === values.metricIdentifier
+  })
+
+  if (values.identifier && duplicateIdentifier.length) {
+    _error[AppDynamicsMonitoringSourceFieldNames.METRIC_IDENTIFIER] = getString(
+      'cv.monitoringSources.prometheus.validation.metricIdentifierUnique'
+    )
+  }
   return _error
 }
 

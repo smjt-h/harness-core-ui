@@ -224,10 +224,11 @@ export default function AppDMonitoredSource({
       enableReinitialize
       formName={'appDHealthSourceform'}
       isInitialValid={(args: any) =>
-        Object.keys(validateMapping(args.initialValues, createdMetrics, selectedMetricIndex, getString)).length === 0
+        Object.keys(validateMapping(args.initialValues, createdMetrics, selectedMetricIndex, getString, mappedMetrics))
+          .length === 0
       }
       validate={values => {
-        return validateMapping(values, createdMetrics, selectedMetricIndex, getString)
+        return validateMapping(values, createdMetrics, selectedMetricIndex, getString, mappedMetrics)
       }}
       initialValues={initPayload}
       onSubmit={noop}

@@ -1,3 +1,10 @@
+/*
+ * Copyright 2022 Harness Inc. All rights reserved.
+ * Use of this source code is governed by the PolyForm Shield 1.0.0 license
+ * that can be found in the licenses directory at the root of this repository, also available at
+ * https://polyformproject.org/wp-content/uploads/2020/06/PolyForm-Shield-1.0.0.txt.
+ */
+
 import { groupBy, omit } from 'lodash-es'
 import type { SelectOption } from '@pipeline/components/PipelineSteps/Steps/StepsTypes'
 import type { UseStringsReturn } from 'framework/strings'
@@ -10,6 +17,12 @@ import type { GroupedMetric, GroupedCreatedMetrics } from './AppDMappedMetric.ty
 
 export function updateSelectedMetricsMap({ updatedMetric, oldMetric, mappedMetrics, formikValues }: any): any {
   const updatedMap = new Map(mappedMetrics)
+
+  const duplicateName =
+    Array.from(mappedMetrics.keys()).indexOf(formikValues.metricName) > -1 && oldMetric !== formikValues?.metricName
+  if (duplicateName) {
+    return { selectedMetric: oldMetric, mappedMetrics: updatedMap }
+  }
 
   // in the case where user updates metric name, update the key for current value
   if (oldMetric !== formikValues?.metricName) {

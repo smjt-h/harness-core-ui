@@ -546,6 +546,7 @@ export const onPreviousPayload = {
 export const validateMappingNoError = {
   name: 'AppD Single Metric',
   identifier: 'AppD_Multiple_Metric',
+  metricIdentifier: 'AppD_Multiple_Metric',
   connectorRef: 'account.appdtest',
   isEdit: true,
   product: { label: 'Application Monitoring', value: 'Application Monitoring' },
@@ -578,6 +579,7 @@ export const validateMappingNoError = {
 export const validateMappingWithMetricPathError = {
   name: 'AppD Single Metric',
   identifier: 'AppD_Multiple_Metric',
+  metricIdentifier: 'AppD_Multiple_Metric',
   connectorRef: 'account.appdtest',
   isEdit: true,
   product: { label: 'Application Monitoring', value: 'Application Monitoring' },

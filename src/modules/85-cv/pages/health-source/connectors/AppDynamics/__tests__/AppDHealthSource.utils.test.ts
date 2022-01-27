@@ -48,7 +48,8 @@ describe('Test Util funcitons', () => {
       lowerBaselineDeviation: 'cv.monitoringSources.prometheus.validation.deviation',
       metricName: 'cv.monitoringSources.metricNameValidation',
       metricPath: 'cv.healthSource.connectors.AppDynamics.validation.metricPath',
-      riskCategory: 'cv.monitoringSources.gco.mapMetricsToServicesPage.validation.riskCategory'
+      riskCategory: 'cv.monitoringSources.gco.mapMetricsToServicesPage.validation.riskCategory',
+      metricIdentifier: 'cv.monitoringSources.prometheus.validation.metricIdentifierUnique'
     })
     expect(
       validateMapping(validateMappingWithMetricPathError, ['appdMetric Two', 'appdMetric One Updated'], 0, val => val)

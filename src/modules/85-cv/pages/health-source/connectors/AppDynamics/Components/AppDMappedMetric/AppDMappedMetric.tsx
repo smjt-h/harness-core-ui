@@ -185,8 +185,9 @@ export default function AppDMappedMetric({
             })
           }}
           onSelectMetric={(newMetric, updatedList, smIndex) => {
-            setCreatedMetrics({ selectedMetricIndex: smIndex, createdMetrics: updatedList })
             setMappedMetrics(oldState => {
+              setCreatedMetrics({ selectedMetricIndex: smIndex, createdMetrics: updatedList })
+
               return updateSelectedMetricsMap({
                 updatedMetric: newMetric,
                 oldMetric: oldState.selectedMetric,
