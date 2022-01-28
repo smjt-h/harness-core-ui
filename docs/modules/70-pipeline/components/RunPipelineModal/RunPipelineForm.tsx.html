@@ -23,9 +23,9 @@
         <div class='clearfix'>
             
             <div class='fl pad1y space-right2'>
-                <span class="strong">73.81% </span>
+                <span class="strong">73.73% </span>
                 <span class="quiet">Statements</span>
-                <span class='fraction'>248/336</span>
+                <span class='fraction'>247/335</span>
             </div>
         
             
@@ -44,9 +44,9 @@
         
             
             <div class='fl pad1y space-right2'>
-                <span class="strong">74.62% </span>
+                <span class="strong">74.55% </span>
                 <span class="quiet">Lines</span>
-                <span class='fraction'>247/331</span>
+                <span class='fraction'>246/330</span>
             </div>
         
             
@@ -1289,22 +1289,7 @@
 <a name='L1230'></a><a href='#L1230'>1230</a>
 <a name='L1231'></a><a href='#L1231'>1231</a>
 <a name='L1232'></a><a href='#L1232'>1232</a>
-<a name='L1233'></a><a href='#L1233'>1233</a>
-<a name='L1234'></a><a href='#L1234'>1234</a>
-<a name='L1235'></a><a href='#L1235'>1235</a>
-<a name='L1236'></a><a href='#L1236'>1236</a>
-<a name='L1237'></a><a href='#L1237'>1237</a>
-<a name='L1238'></a><a href='#L1238'>1238</a>
-<a name='L1239'></a><a href='#L1239'>1239</a>
-<a name='L1240'></a><a href='#L1240'>1240</a>
-<a name='L1241'></a><a href='#L1241'>1241</a>
-<a name='L1242'></a><a href='#L1242'>1242</a>
-<a name='L1243'></a><a href='#L1243'>1243</a>
-<a name='L1244'></a><a href='#L1244'>1244</a>
-<a name='L1245'></a><a href='#L1245'>1245</a>
-<a name='L1246'></a><a href='#L1246'>1246</a>
-<a name='L1247'></a><a href='#L1247'>1247</a>
-<a name='L1248'></a><a href='#L1248'>1248</a></td><td class="line-coverage quiet"><span class="cline-any cline-neutral">&nbsp;</span>
+<a name='L1233'></a><a href='#L1233'>1233</a></td><td class="line-coverage quiet"><span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
@@ -1340,7 +1325,6 @@
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-yes">24x</span>
-<span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
@@ -1477,18 +1461,6 @@
 <span class="cline-any cline-yes">82x</span>
 <span class="cline-any cline-yes">17x</span>
 <span class="cline-any cline-yes">17x</span>
-<span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-yes">82x</span>
-<span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-yes">82x</span>
@@ -2511,8 +2483,6 @@
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-yes">78x</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
@@ -2593,7 +2563,6 @@ import {
   useGetMergeInputSetFromPipelineTemplateWithListInput,
   getInputSetForPipelinePromise,
   useGetInputSetsListForPipeline,
-  useCreateInputSetForPipeline,
   useRePostPipelineExecuteWithInputSetYaml,
   StageExecutionResponse,
   useGetStagesExecutionList,
@@ -2725,18 +2694,6 @@ function RunPipelineFormBasic({
     getInputSetsList()
     getTemplateFromPipeline()
   }, [])
-&nbsp;
-  const { mutate: createInputSet, loading: createInputSetLoading } = useCreateInputSetForPipeline({
-    queryParams: {
-      accountIdentifier: accountId,
-      orgIdentifier,
-      pipelineIdentifier,
-      projectIdentifier,
-      pipelineRepoID: repoIdentifier,
-      pipelineBranch: branch
-    },
-    requestOptions: { headers: { 'content-type': 'application/yaml' } }
-  })
 &nbsp;
   const [canEdit] = usePermission(
     {
@@ -3744,8 +3701,6 @@ function RunPipelineFormBasic({
                     accountId={accountId}
                     projectIdentifier={projectIdentifier}
                     orgIdentifier={orgIdentifier}
-                    createInputSet={createInputSet}
-                    createInputSetLoading={createInputSetLoading}
                     repoIdentifier={repoIdentifier}
                     branch={branch}
                     isGitSyncEnabled={isGitSyncEnabled}
@@ -3805,7 +3760,7 @@ export const RunPipelineForm: React.FC&lt;RunPipelineFormProps &amp; InputSetGit
             <div class='footer quiet pad2 space-top1 center small'>
                 Code coverage generated by
                 <a href="https://istanbul.js.org/" target="_blank">istanbul</a>
-                at Thu Jan 27 2022 18:04:30 GMT+0000 (Greenwich Mean Time)
+                at Fri Jan 28 2022 07:33:04 GMT+0000 (Greenwich Mean Time)
             </div>
         </div>
         <script src="../../../../prettify.js"></script>
