@@ -6,7 +6,7 @@
  */
 
 import React from 'react'
-import { render } from '@testing-library/react'
+import { act, fireEvent, render } from '@testing-library/react'
 import { TestWrapper } from '@common/utils/testUtils'
 import { PipelineStages } from '../PipelineStages'
 
@@ -18,6 +18,8 @@ const pipelineStagesProps = {
   closeTemplateSelector: jest.fn()
 }
 
+const onUseTemplate = jest.fn()
+
 describe('Add Stage View', () => {
   test('AccountSideNav simple snapshot test', () => {
     const { container } = render(
@@ -26,5 +28,21 @@ describe('Add Stage View', () => {
       </TestWrapper>
     )
     expect(container).toMatchSnapshot()
+  })
+
+  test('Open template selector should be getting called', () => {
+    const { queryByText } = render(
+      <TestWrapper>
+        <PipelineStages {...pipelineStagesProps} />
+      </TestWrapper>
+    )
+    const rbacButton = queryByText('common.useTemplate')
+    expect(rbacButton).toBeDefined()
+    if (rbacButton) {
+      act(() => {
+        fireEvent.click(rbacButton)
+      })
+      expect(pipelineStagesProps.openTemplateSelector).toHaveBeenCalledWith({ templateType: 'Stage', onUseTemplate })
+    }
   })
 })
