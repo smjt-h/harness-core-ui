@@ -23,30 +23,30 @@
         <div class='clearfix'>
             
             <div class='fl pad1y space-right2'>
-                <span class="strong">0% </span>
+                <span class="strong">100% </span>
                 <span class="quiet">Statements</span>
-                <span class='fraction'>0/17</span>
+                <span class='fraction'>17/17</span>
             </div>
         
             
             <div class='fl pad1y space-right2'>
-                <span class="strong">0% </span>
+                <span class="strong">75% </span>
                 <span class="quiet">Branches</span>
-                <span class='fraction'>0/4</span>
+                <span class='fraction'>12/16</span>
             </div>
         
             
             <div class='fl pad1y space-right2'>
-                <span class="strong">0% </span>
+                <span class="strong">100% </span>
                 <span class="quiet">Functions</span>
-                <span class='fraction'>0/1</span>
+                <span class='fraction'>1/1</span>
             </div>
         
             
             <div class='fl pad1y space-right2'>
-                <span class="strong">0% </span>
+                <span class="strong">100% </span>
                 <span class="quiet">Lines</span>
-                <span class='fraction'>0/16</span>
+                <span class='fraction'>16/16</span>
             </div>
         
             
@@ -55,7 +55,7 @@
             Press <em>n</em> or <em>j</em> to go to the next uncovered block, <em>b</em>, <em>p</em> or <em>k</em> for the previous block.
         </p>
     </div>
-    <div class='status-line low'></div>
+    <div class='status-line high'></div>
     <pre><table class="coverage">
 <tr><td class="line-count quiet"><a name='L1'></a><a href='#L1'>1</a>
 <a name='L2'></a><a href='#L2'>2</a>
@@ -122,31 +122,31 @@
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-no">&nbsp;</span>
-<span class="cline-any cline-no">&nbsp;</span>
-<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-yes">1x</span>
+<span class="cline-any cline-yes">1x</span>
+<span class="cline-any cline-yes">1x</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-no">&nbsp;</span>
-<span class="cline-any cline-no">&nbsp;</span>
-<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-yes">1x</span>
+<span class="cline-any cline-yes">1x</span>
+<span class="cline-any cline-yes">1x</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-no">&nbsp;</span>
-<span class="cline-any cline-no">&nbsp;</span>
-<span class="cline-any cline-no">&nbsp;</span>
-<span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">1x</span>
+<span class="cline-any cline-yes">1x</span>
+<span class="cline-any cline-yes">1x</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-no">&nbsp;</span>
-<span class="cline-any cline-no">&nbsp;</span>
-<span class="cline-any cline-no">&nbsp;</span>
-<span class="cline-any cline-no">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-no">&nbsp;</span>
-<span class="cline-any cline-no">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-yes">1x</span>
+<span class="cline-any cline-yes">7x</span>
+<span class="cline-any cline-yes">7x</span>
+<span class="cline-any cline-yes">7x</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">7x</span>
+<span class="cline-any cline-yes">7x</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">7x</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
@@ -180,31 +180,31 @@
  * https://polyformproject.org/wp-content/uploads/2020/06/PolyForm-Shield-1.0.0.txt.
  */
 &nbsp;
-<span class="cstat-no" title="statement not covered" >import React from 'react'</span>
-<span class="cstat-no" title="statement not covered" >import { Container, Layout, Text } from '@wings-software/uicore'</span>
-<span class="cstat-no" title="statement not covered" >import { useParams } from 'react-router-dom'</span>
+import React from 'react'
+import { Container, Layout, Text } from '@wings-software/uicore'
+import { useParams } from 'react-router-dom'
 import type { TemplateType } from '@templates-library/utils/templatesUtils'
-<span class="cstat-no" title="statement not covered" >import { NGBreadcrumbs } from '@common/components/NGBreadcrumbs/NGBreadcrumbs'</span>
-<span class="cstat-no" title="statement not covered" >import routes from '@common/RouteDefinitions'</span>
-<span class="cstat-no" title="statement not covered" >import templateFactory from '@templates-library/components/Templates/TemplatesFactory'</span>
+import { NGBreadcrumbs } from '@common/components/NGBreadcrumbs/NGBreadcrumbs'
+import routes from '@common/RouteDefinitions'
+import templateFactory from '@templates-library/components/Templates/TemplatesFactory'
 import type { ProjectPathProps, ModulePathParams } from '@common/interfaces/RouteInterfaces'
-<span class="cstat-no" title="statement not covered" >import { useStrings } from 'framework/strings'</span>
-<span class="cstat-no" title="statement not covered" >import { templateStudioColorStyleMap } from '@templates-library/pages/TemplatesPage/TemplatesPageUtils'</span>
-<span class="cstat-no" title="statement not covered" >import css from './TemplateStudioHeader.module.scss'</span>
+import { useStrings } from 'framework/strings'
+import { templateStudioColorStyleMap } from '@templates-library/pages/TemplatesPage/TemplatesPageUtils'
+import css from './TemplateStudioHeader.module.scss'
 &nbsp;
 export interface TemplateStudioHeaderProps {
   templateType: TemplateType
 }
 &nbsp;
-export const <span class="cstat-no" title="statement not covered" >TemplateStudioHeader: React.FC&lt;TemplateStudioHeaderProps&gt; = <span class="cstat-no" title="statement not covered" ><span class="fstat-no" title="function not covered" >p</span>rops </span>=&gt; {</span>
-  const { templateType } = <span class="cstat-no" title="statement not covered" >props</span>
-  const { getString } = <span class="cstat-no" title="statement not covered" >useStrings()</span>
-  const { accountId, orgIdentifier, projectIdentifier, module } = <span class="cstat-no" title="statement not covered" >useParams&lt;ProjectPathProps &amp; ModulePathParams&gt;()</span>
+export const TemplateStudioHeader: React.FC&lt;TemplateStudioHeaderProps&gt; = props =&gt; {
+  const { templateType } = props
+  const { getString } = useStrings()
+  const { accountId, orgIdentifier, projectIdentifier, module } = useParams&lt;ProjectPathProps &amp; ModulePathParams&gt;()
 &nbsp;
-  const studioTitle = <span class="cstat-no" title="statement not covered" >templateFactory.getTemplateName(templateType) || 'Studio'</span>
-  const style = <span class="cstat-no" title="statement not covered" >templateStudioColorStyleMap[templateType || 'Step']</span>
+  const studioTitle = templateFactory.getTemplateName(templateType) || 'Studio'
+  const style = templateStudioColorStyleMap[templateType || <span class="branch-1 cbranch-no" title="branch not covered" >'Step']</span>
 &nbsp;
-<span class="cstat-no" title="statement not covered" >  return (</span>
+  return (
     &lt;Container&gt;
       &lt;Layout.Horizontal&gt;
         &lt;NGBreadcrumbs
@@ -220,11 +220,11 @@ export const <span class="cstat-no" title="statement not covered" >TemplateStudi
         &lt;svg width="210" height="26" viewBox="0 0 210 26" fill="none" xmlns="http://www.w3.org/2000/svg"&gt;
           &lt;path
             d="M20.3896 22.2945L1.10987 0.5H208.932L190.926 22.0853C189.121 24.2491 186.449 25.5 183.631 25.5H27.505C24.7836 25.5 22.1928 24.3328 20.3896 22.2945Z"
-            fill={style.fill}
-            stroke={style.stroke}
+            fill={<span class="branch-1 cbranch-no" title="branch not covered" >style?.fill}</span>
+            stroke={<span class="branch-1 cbranch-no" title="branch not covered" >style?.stroke}</span>
           /&gt;
         &lt;/svg&gt;
-        &lt;Text font={{ size: 'xsmall', weight: 'bold' }} style={{ color: style.color }} className={css.title}&gt;
+        &lt;Text font={{ size: 'xsmall', weight: 'bold' }} style={{ color: <span class="branch-1 cbranch-no" title="branch not covered" >style?.color </span>}} className={css.title}&gt;
           {studioTitle}
         &lt;/Text&gt;
       &lt;/Container&gt;
@@ -238,7 +238,7 @@ export const <span class="cstat-no" title="statement not covered" >TemplateStudi
             <div class='footer quiet pad2 space-top1 center small'>
                 Code coverage generated by
                 <a href="https://istanbul.js.org/" target="_blank">istanbul</a>
-                at Fri Jan 28 2022 12:43:35 GMT+0000 (Greenwich Mean Time)
+                at Fri Jan 28 2022 17:20:29 GMT+0000 (Greenwich Mean Time)
             </div>
         </div>
         <script src="../../../../../prettify.js"></script>

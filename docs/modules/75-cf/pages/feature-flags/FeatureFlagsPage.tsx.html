@@ -23,9 +23,9 @@
         <div class='clearfix'>
             
             <div class='fl pad1y space-right2'>
-                <span class="strong">76.32% </span>
+                <span class="strong">77.33% </span>
                 <span class="quiet">Statements</span>
-                <span class='fraction'>116/152</span>
+                <span class='fraction'>116/150</span>
             </div>
         
             
@@ -37,16 +37,16 @@
         
             
             <div class='fl pad1y space-right2'>
-                <span class="strong">66.67% </span>
+                <span class="strong">68.75% </span>
                 <span class="quiet">Functions</span>
-                <span class='fraction'>22/33</span>
+                <span class='fraction'>22/32</span>
             </div>
         
             
             <div class='fl pad1y space-right2'>
-                <span class="strong">76.82% </span>
+                <span class="strong">77.85% </span>
                 <span class="quiet">Lines</span>
-                <span class='fraction'>116/151</span>
+                <span class='fraction'>116/149</span>
             </div>
         
             
@@ -679,14 +679,7 @@
 <a name='L620'></a><a href='#L620'>620</a>
 <a name='L621'></a><a href='#L621'>621</a>
 <a name='L622'></a><a href='#L622'>622</a>
-<a name='L623'></a><a href='#L623'>623</a>
-<a name='L624'></a><a href='#L624'>624</a>
-<a name='L625'></a><a href='#L625'>625</a>
-<a name='L626'></a><a href='#L626'>626</a>
-<a name='L627'></a><a href='#L627'>627</a>
-<a name='L628'></a><a href='#L628'>628</a>
-<a name='L629'></a><a href='#L629'>629</a>
-<a name='L630'></a><a href='#L630'>630</a></td><td class="line-coverage quiet"><span class="cline-any cline-neutral">&nbsp;</span>
+<a name='L623'></a><a href='#L623'>623</a></td><td class="line-coverage quiet"><span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
@@ -867,7 +860,6 @@
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-no">&nbsp;</span>
 <span class="cline-any cline-no">&nbsp;</span>
 <span class="cline-any cline-no">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
@@ -1134,7 +1126,7 @@
 <span class="cline-any cline-yes">12x</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-yes">12x</span>
-<span class="cline-any cline-yes">12x</span>
+<span class="cline-any cline-yes">6x</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-yes">52x</span>
@@ -1147,13 +1139,6 @@
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-no">&nbsp;</span>
 <span class="cline-any cline-no">&nbsp;</span>
 <span class="cline-any cline-no">&nbsp;</span>
 <span class="cline-any cline-no">&nbsp;</span>
@@ -1163,7 +1148,6 @@
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-no">&nbsp;</span>
 <span class="cline-any cline-no">&nbsp;</span>
-<span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
@@ -1232,6 +1216,8 @@
 <span class="cline-any cline-yes">12x</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-yes">12x</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
@@ -1495,8 +1481,7 @@ const RenderColumnFlag: React.FC&lt;RenderColumnFlagProps&gt; = ({
             text={getString('confirm')}
             className={Classes.POPOVER_DISMISS}
             disabled={toggleFeatureFlag.loading}
-            onClick={<span class="fstat-no" title="function not covered" >event </span>=&gt; {
-<span class="cstat-no" title="statement not covered" >              event.preventDefault()</span>
+            onClick={<span class="fstat-no" title="function not covered" >() =</span>&gt; {
 <span class="cstat-no" title="statement not covered" >              if (gitSync.isGitSyncEnabled &amp;&amp; !gitSync.isAutoCommitEnabled) {</span>
 <span class="cstat-no" title="statement not covered" >                setIsSaveToggleModalOpen(true)</span>
               } else {
@@ -1528,7 +1513,7 @@ const RenderColumnFlag: React.FC&lt;RenderColumnFlagProps&gt; = ({
 &nbsp;
   return (
     &lt;Container flex&gt;
-      &lt;Container onMouseDown={Utils.stopEvent} onClick={Utils.stopEvent}&gt;
+      &lt;Container onClick={Utils.stopEvent}&gt;
         &lt;Button
           noStyling
           tooltip={
@@ -1776,24 +1761,16 @@ const FeatureFlagsPage: React.FC = () =&gt; {
               toggleFeatureFlag={toggleFeatureFlag}
               cell={cell}
               update={<span class="fstat-no" title="function not covered" >status </span>=&gt; {
-                // Update last updated column to reflect latest change without having to refetch the whole list
-                // The setTimeout makes sure there's enough time for animation in the switch component before re-rendering
-                // takes place and destroy it
-&nbsp;
-                // CB - It appears this isn't used, and needs to be refactored/taken out.
-                //      However taking it out prevents the row from rerendering for some reason
-<span class="cstat-no" title="statement not covered" >                setTimeout(<span class="fstat-no" title="function not covered" >() =</span>&gt; {</span>
-                  const feature = <span class="cstat-no" title="statement not covered" >features?.features?.find(<span class="fstat-no" title="function not covered" >f </span>=&gt; <span class="cstat-no" title="statement not covered" >f.identifier === cell.row.original.identifier)</span></span>
-<span class="cstat-no" title="statement not covered" >                  if (feature) {</span>
-<span class="cstat-no" title="statement not covered" >                    if (feature.envProperties) {</span>
-<span class="cstat-no" title="statement not covered" >                      feature.envProperties.state = (</span>
-                        status ? FeatureFlagActivationStatus.ON : FeatureFlagActivationStatus.OFF
-                      ) as FeatureState
-                    }
-<span class="cstat-no" title="statement not covered" >                    feature.modifiedAt = Date.now()</span>
-<span class="cstat-no" title="statement not covered" >                    setFeatures({ ...features } as Features)</span>
+                const feature = <span class="cstat-no" title="statement not covered" >features?.features?.find(<span class="fstat-no" title="function not covered" >f </span>=&gt; <span class="cstat-no" title="statement not covered" >f.identifier === cell.row.original.identifier)</span></span>
+<span class="cstat-no" title="statement not covered" >                if (feature) {</span>
+<span class="cstat-no" title="statement not covered" >                  if (feature.envProperties) {</span>
+<span class="cstat-no" title="statement not covered" >                    feature.envProperties.state = (</span>
+                      status ? FeatureFlagActivationStatus.ON : FeatureFlagActivationStatus.OFF
+                    ) as FeatureState
                   }
-                }, 0)
+<span class="cstat-no" title="statement not covered" >                  feature.modifiedAt = Date.now()</span>
+<span class="cstat-no" title="statement not covered" >                  setFeatures({ ...features } as Features)</span>
+                }
               }}
             /&gt;
           )
@@ -1844,7 +1821,7 @@ const FeatureFlagsPage: React.FC = () =&gt; {
         refetch
       }
     ],
-    [refetch, features, getString, activeEnvironment, gitSync]
+    [gitSync.isAutoCommitEnabled, gitSync.isGitSyncEnabled, activeEnvironment]
   )
   const onSearchInputChanged = useCallback(
 <span class="fstat-no" title="function not covered" >    name </span>=&gt; {
@@ -1868,18 +1845,20 @@ const FeatureFlagsPage: React.FC = () =&gt; {
       toolbar={
         displayToolbar &amp;&amp; (
           &lt;&gt;
-            &lt;FlagDialog environment={activeEnvironment} /&gt;
-            {gitSync<span class="branch-0 cbranch-no" title="branch not covered" >?.i</span>sGitSyncActionsEnabled &amp;&amp; (
-<span class="branch-1 cbranch-no" title="branch not covered" >              &lt;GitSyncActions</span>
-                isLoading={gitSync.gitSyncLoading || gitSyncing}
-                branch={gitSync.gitRepoDetails?.branch || ''}
-                repository={gitSync.gitRepoDetails?.repoIdentifier || ''}
-                isAutoCommitEnabled={gitSync.isAutoCommitEnabled}
-                isGitSyncPaused={gitSync.isGitSyncPaused}
-                handleToggleAutoCommit={gitSync.handleAutoCommit}
-                handleGitPause={gitSync.handleGitPause}
-              /&gt;
-            )}
+            &lt;div className={css.leftToolbar}&gt;
+              &lt;FlagDialog environment={activeEnvironment} /&gt;
+              {gitSync<span class="branch-0 cbranch-no" title="branch not covered" >?.i</span>sGitSyncActionsEnabled &amp;&amp; (
+<span class="branch-1 cbranch-no" title="branch not covered" >                &lt;GitSyncActions</span>
+                  isLoading={gitSync.gitSyncLoading || gitSyncing}
+                  branch={gitSync.gitRepoDetails?.branch || ''}
+                  repository={gitSync.gitRepoDetails?.repoIdentifier || ''}
+                  isAutoCommitEnabled={gitSync.isAutoCommitEnabled}
+                  isGitSyncPaused={gitSync.isGitSyncPaused}
+                  handleToggleAutoCommit={gitSync.handleAutoCommit}
+                  handleGitPause={gitSync.handleGitPause}
+                /&gt;
+              )}
+            &lt;/div&gt;
             &lt;ExpandingSearchInput
               alwaysExpanded
               name="findFlag"
@@ -1951,7 +1930,7 @@ export default FeatureFlagsPage
             <div class='footer quiet pad2 space-top1 center small'>
                 Code coverage generated by
                 <a href="https://istanbul.js.org/" target="_blank">istanbul</a>
-                at Fri Jan 28 2022 12:43:35 GMT+0000 (Greenwich Mean Time)
+                at Fri Jan 28 2022 17:20:29 GMT+0000 (Greenwich Mean Time)
             </div>
         </div>
         <script src="../../../../prettify.js"></script>
