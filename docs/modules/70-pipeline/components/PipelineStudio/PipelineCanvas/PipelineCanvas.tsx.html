@@ -23,9 +23,9 @@
         <div class='clearfix'>
             
             <div class='fl pad1y space-right2'>
-                <span class="strong">50.45% </span>
+                <span class="strong">50.15% </span>
                 <span class="quiet">Statements</span>
-                <span class='fraction'>169/335</span>
+                <span class='fraction'>167/333</span>
             </div>
         
             
@@ -44,9 +44,9 @@
         
             
             <div class='fl pad1y space-right2'>
-                <span class="strong">50.6% </span>
+                <span class="strong">50.3% </span>
                 <span class="quiet">Lines</span>
-                <span class='fraction'>168/332</span>
+                <span class='fraction'>166/330</span>
             </div>
         
             
@@ -1101,18 +1101,7 @@
 <a name='L1042'></a><a href='#L1042'>1042</a>
 <a name='L1043'></a><a href='#L1043'>1043</a>
 <a name='L1044'></a><a href='#L1044'>1044</a>
-<a name='L1045'></a><a href='#L1045'>1045</a>
-<a name='L1046'></a><a href='#L1046'>1046</a>
-<a name='L1047'></a><a href='#L1047'>1047</a>
-<a name='L1048'></a><a href='#L1048'>1048</a>
-<a name='L1049'></a><a href='#L1049'>1049</a>
-<a name='L1050'></a><a href='#L1050'>1050</a>
-<a name='L1051'></a><a href='#L1051'>1051</a>
-<a name='L1052'></a><a href='#L1052'>1052</a>
-<a name='L1053'></a><a href='#L1053'>1053</a>
-<a name='L1054'></a><a href='#L1054'>1054</a>
-<a name='L1055'></a><a href='#L1055'>1055</a>
-<a name='L1056'></a><a href='#L1056'>1056</a></td><td class="line-coverage quiet"><span class="cline-any cline-neutral">&nbsp;</span>
+<a name='L1045'></a><a href='#L1045'>1045</a></td><td class="line-coverage quiet"><span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
@@ -1172,8 +1161,6 @@
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-yes">8x</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-yes">8x</span>
-<span class="cline-any cline-yes">8x</span>
 <span class="cline-any cline-yes">8x</span>
 <span class="cline-any cline-yes">8x</span>
 <span class="cline-any cline-yes">8x</span>
@@ -2158,15 +2145,6 @@
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span></td><td class="text"><pre class="prettyprint lang-js">/*
  * Copyright 2022 Harness Inc. All rights reserved.
  * Use of this source code is governed by the PolyForm Shield 1.0.0 license
@@ -2230,13 +2208,11 @@ import type { IGitContextFormProps } from '@common/components/GitContextForm/Git
 import { validateJSONWithSchema } from '@common/utils/YamlUtils'
 import { useDocumentTitle } from '@common/hooks/useDocumentTitle'
 import { PipelineVariablesContextProvider } from '@pipeline/components/PipelineVariablesContext/PipelineVariablesContext'
-import { FeatureIdentifier } from 'framework/featureStore/FeatureIdentifier'
 import { useTelemetry } from '@common/hooks/useTelemetry'
 import { PipelineActions } from '@common/constants/TrackingConstants'
 import { useFeatureFlags } from '@common/hooks/useFeatureFlag'
 import { getFeaturePropsForRunPipelineButton } from '@pipeline/utils/runPipelineUtils'
 import { RunPipelineForm } from '@pipeline/components/RunPipelineModal/RunPipelineForm'
-import { PipelineFeatureLimitBreachedBanner } from '@pipeline/factories/PipelineFeatureRestrictionFactory/PipelineFeatureRestrictionFactory'
 import { EvaluationModal } from '@governance/EvaluationModal'
 import { createTemplate } from '@pipeline/utils/templateUtils'
 import { getStepFromStage, validateCICodebaseConfiguration } from '@pipeline/components/PipelineStudio/StepUtil'
@@ -3199,15 +3175,6 @@ export const PipelineCanvas: React.FC&lt;PipelineCanvasProps&gt; = ({
               &lt;/div&gt;
             &lt;/div&gt;
           &lt;/div&gt;
-          &lt;PipelineFeatureLimitBreachedBanner featureIdentifier={FeatureIdentifier.SERVICES} module={module} /&gt;
-          &lt;PipelineFeatureLimitBreachedBanner
-            featureIdentifier={FeatureIdentifier.DEPLOYMENTS_PER_MONTH}
-            module={module}
-          /&gt;
-          &lt;PipelineFeatureLimitBreachedBanner
-            featureIdentifier={FeatureIdentifier.INITIAL_DEPLOYMENTS}
-            module={module}
-          /&gt;
         &lt;/div&gt;
         {isYaml ? <span class="branch-0 cbranch-no" title="branch not covered" >&lt;PipelineYamlView /&gt; </span>: &lt;StageBuilder /&gt;}
         {shouldShowGovernanceEvaluation &amp;&amp; (
@@ -3229,7 +3196,7 @@ export const PipelineCanvas: React.FC&lt;PipelineCanvasProps&gt; = ({
             <div class='footer quiet pad2 space-top1 center small'>
                 Code coverage generated by
                 <a href="https://istanbul.js.org/" target="_blank">istanbul</a>
-                at Fri Jan 28 2022 07:33:04 GMT+0000 (Greenwich Mean Time)
+                at Fri Jan 28 2022 12:43:35 GMT+0000 (Greenwich Mean Time)
             </div>
         </div>
         <script src="../../../../../prettify.js"></script>
