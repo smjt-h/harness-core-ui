@@ -184,6 +184,7 @@ interface listProps {
 }
 
 const AnomaliesMenu = () => {
+  const { getString } = useStrings()
   const [isOpen, setIsOpen] = useState(false)
 
   return (
@@ -205,15 +206,14 @@ const AnomaliesMenu = () => {
       />
       <Menu>
         <MenuItem
-          text="Whitelist resource"
+          text={getString('ce.anomalyDetection.tableMenu.whitelistResource')}
           onClick={(e: any) => {
             e.stopPropagation()
             setIsOpen(false)
-            // onEdit()
           }}
         />
         <MenuItem
-          text="This is false anomaly"
+          text={getString('ce.anomalyDetection.tableMenu.falseAnomaly')}
           onClick={(e: any) => {
             e.stopPropagation()
             setIsOpen(false)
@@ -225,6 +225,8 @@ const AnomaliesMenu = () => {
 }
 
 const AnomaliesListGridView: React.FC<listProps> = ({ listData }) => {
+  const { getString } = useStrings()
+
   const DateCell: Renderer<CellProps<AnomalyData>> = ({ row }) => {
     const timestamp = row.original.time as number
     const relativeTime = row.original.anomalyRelativeTime
@@ -301,30 +303,30 @@ const AnomaliesListGridView: React.FC<listProps> = ({ listData }) => {
       className={css.tableView}
       columns={[
         {
-          Header: 'DATE',
+          Header: getString('ce.anomalyDetection.tableHeaders.date'),
           accessor: 'time',
           Cell: DateCell,
           width: '25%'
         },
         {
-          Header: 'ANOMALOUS SPEND',
+          Header: getString('ce.anomalyDetection.tableHeaders.anomalousSpend'),
           accessor: 'actualAmount',
           Cell: CostCell,
           width: '25%'
         },
         {
-          Header: 'RESOURCE',
+          Header: getString('ce.anomalyDetection.tableHeaders.resource'),
           accessor: 'resourceName',
           Cell: ResourceCell,
           width: '25%'
         },
         {
-          Header: 'DETAILS',
+          Header: getString('ce.anomalyDetection.tableHeaders.details'),
           accessor: 'details',
           width: '25%'
         },
         {
-          Header: 'STATUS',
+          Header: getString('ce.anomalyDetection.tableHeaders.status'),
           accessor: 'status',
           Cell: StatusCell,
           width: '25%'

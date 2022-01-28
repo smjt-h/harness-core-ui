@@ -3206,6 +3206,13 @@ export interface StringsMap {
   'ce.anomalyDetection.summary.perspectiveWise': string
   'ce.anomalyDetection.summary.statusWise': string
   'ce.anomalyDetection.summary.totalCountText': string
+  'ce.anomalyDetection.tableHeaders.anomalousSpend': string
+  'ce.anomalyDetection.tableHeaders.date': string
+  'ce.anomalyDetection.tableHeaders.details': string
+  'ce.anomalyDetection.tableHeaders.resource': string
+  'ce.anomalyDetection.tableHeaders.status': string
+  'ce.anomalyDetection.tableMenu.falseAnomaly': string
+  'ce.anomalyDetection.tableMenu.whitelistResource': string
   'ce.budgets.addNewBudget': string
   'ce.budgets.budgetDeletedTxt': string
   'ce.budgets.confirmDeleteBudgetMsg': string
@@ -3775,7 +3782,6 @@ export interface StringsMap {
   'ce.recommendation.listPage.filters.name': string
   'ce.recommendation.listPage.filters.namespace': string
   'ce.recommendation.listPage.forecatedCostSubText': string
-  'ce.recommendation.listPage.listTableHeaders.details': string
   'ce.recommendation.listPage.listTableHeaders.monthlyCost': string
   'ce.recommendation.listPage.listTableHeaders.monthlySavings': string
   'ce.recommendation.listPage.listTableHeaders.recommendationType': string
@@ -4696,7 +4702,6 @@ export interface StringsMap {
   'cv.monitoringSources.appD.searchPlaceholderApplications': string
   'cv.monitoringSources.appD.searchTiersPlaceHolder': string
   'cv.monitoringSources.appD.selectProduct': string
-  'cv.monitoringSources.appD.status': string
   'cv.monitoringSources.appD.tiersMappedToServices': string
   'cv.monitoringSources.appD.validation': string
   'cv.monitoringSources.appD.validationMsg': string

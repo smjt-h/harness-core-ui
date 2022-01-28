@@ -231,7 +231,6 @@ monitoringSources:
     mappedToHarnessService: MAPPED TO HARNESS SERVICE
     mappedToHarnessEnvironment: MAPPED TO HARNESS ENVIRONMENT
     harnessServices: HARNESS SERVICES
-    status: STATUS
     validation: VALIDATION
     tiersMappedToServices: tiers mapped to services
     errorsFound: errors found

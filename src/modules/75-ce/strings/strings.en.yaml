@@ -440,7 +440,6 @@ recommendation:
       resourceType: 'RESOURCE TYPE'
       monthlyCost: 'MONTHLY COST'
       recommendationType: 'RECOMMENDATION TYPE'
-      details: 'DETAILS'
     recommendationTypes:
       resizing: 'Resizing'
       rightSizing: 'Rightsizing'
@@ -758,3 +757,12 @@ anomalyDetection:
     perspectiveWise: Top 3 perspectives by anomalies
     cloudProvidersWise: ANOMALIES BY ClOUD PROVIDERS
     statusWise: ANOMALIES BY STATUS
+  tableHeaders:
+    date: DATE
+    anomalousSpend: ANOMALOUS SPEND
+    resource: RESOURCE
+    details: DETAILS
+    status: STATUS
+  tableMenu:
+    whitelistResource: Whitelist resource
+    falseAnomaly: This is false anomaly
