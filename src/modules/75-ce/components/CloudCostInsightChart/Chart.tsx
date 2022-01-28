@@ -13,7 +13,6 @@ import { useHistory, useParams } from 'react-router-dom'
 import { QlceViewTimeGroupType } from 'services/ce/services'
 import type { PerspectiveAnomalyData } from 'services/ce'
 import formatCost from '@ce/utils/formatCost'
-import caretDownImg from '@ce/images/caret-down.svg'
 import routes from '@common/RouteDefinitions'
 import type { ChartConfigType } from './chartUtils'
 import CEChart from '../CEChart/CEChart'
@@ -139,13 +138,13 @@ const GetChart: React.FC<GetChartProps> = ({
   const labelsText = (item: Record<string, any>) => {
     return `
       <div class=${css.anomaliesWrapper}>
-        <p class=${css.anomaliesText}>${item.anomalyCount}</p>
+        <span class=${css.anomaliesText}>${item.anomalyCount}</span>
         <span class=${css.anomaliesTooltip}>
           <p class=${css.anomaliesCount}>${item.anomalyCount} Anomolies</p>
           <div class=${css.costWrapper}>
             <span class=${css.anomaliesCost}>${item.actualCost && formatCost(item.actualCost)}</span>
             <span class=${item.differenceFromExpectedCost < 0 ? css.differenceCostNeg : css.differenceCostPos}>
-              <img src=${caretDownImg} />
+              ${item.differenceFromExpectedCost < 0 ? '-' : '+'}
               ${item.differenceFromExpectedCost && formatCost(item.differenceFromExpectedCost)}
             </span>
           </div>
@@ -164,7 +163,7 @@ const GetChart: React.FC<GetChartProps> = ({
           point: `${item.timestamp}`,
           useHTML: true,
           text: labelsText(item),
-          y: -40
+          y: -42
         }
       })
 
@@ -180,7 +179,6 @@ const GetChart: React.FC<GetChartProps> = ({
             zoomType: 'x',
             height: 300,
             type: chartType,
-            spacingTop: 65,
             events: {
               load() {
                 setChartObj(this)
@@ -211,9 +209,7 @@ const GetChart: React.FC<GetChartProps> = ({
               labelOptions: {
                 useHTML: true,
                 backgroundColor: 'white',
-                borderWidth: 0,
-                allowOverlap: true,
-                crop: false
+                borderWidth: 0
               }
             }
           ]
