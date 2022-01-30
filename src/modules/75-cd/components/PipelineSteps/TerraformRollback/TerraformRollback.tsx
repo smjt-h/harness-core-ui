@@ -1,3 +1,10 @@
+/*
+ * Copyright 2021 Harness Inc. All rights reserved.
+ * Use of this source code is governed by the PolyForm Shield 1.0.0 license
+ * that can be found in the licenses directory at the root of this repository, also available at
+ * https://polyformproject.org/wp-content/uploads/2020/06/PolyForm-Shield-1.0.0.txt.
+ */
+
 import React from 'react'
 import { Formik, FormInput, getMultiTypeFromValue, IconName, MultiTypeInputType } from '@wings-software/uicore'
 import * as Yup from 'yup'
@@ -98,7 +105,13 @@ function TerraformRollbackWidget(
             <>
               {stepViewType !== StepViewType.Template && (
                 <div className={cx(stepCss.formGroup, stepCss.lg)}>
-                  <FormInput.InputWithIdentifier inputLabel={getString('name')} isIdentifierEditable={isNewStep} />
+                  <FormInput.InputWithIdentifier
+                    inputLabel={getString('name')}
+                    isIdentifierEditable={isNewStep}
+                    inputGroupProps={{
+                      disabled: readonly
+                    }}
+                  />
                 </div>
               )}
 
@@ -107,6 +120,7 @@ function TerraformRollbackWidget(
                   name="timeout"
                   label={getString('pipelineSteps.timeoutLabel')}
                   multiTypeDurationProps={{ enableConfigureOptions: false, expressions, allowableTypes }}
+                  disabled={readonly}
                 />
                 {getMultiTypeFromValue(values.timeout) === MultiTypeInputType.RUNTIME && (
                   <ConfigureOptions
@@ -130,6 +144,7 @@ function TerraformRollbackWidget(
                   name="spec.provisionerIdentifier"
                   label={getString('pipelineSteps.provisionerIdentifier')}
                   multiTextInputProps={{ expressions, allowableTypes }}
+                  disabled={readonly}
                 />
                 {getMultiTypeFromValue(values.spec.provisionerIdentifier) === MultiTypeInputType.RUNTIME && (
                   <ConfigureOptions

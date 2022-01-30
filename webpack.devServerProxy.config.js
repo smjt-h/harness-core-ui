@@ -1,3 +1,10 @@
+/*
+ * Copyright 2021 Harness Inc. All rights reserved.
+ * Use of this source code is governed by the PolyForm Shield 1.0.0 license
+ * that can be found in the licenses directory at the root of this repository, also available at
+ * https://polyformproject.org/wp-content/uploads/2020/06/PolyForm-Shield-1.0.0.txt.
+ */
+
 require('dotenv').config()
 
 const baseUrl = process.env.BASE_URL ?? 'https://qa.harness.io/gateway'
@@ -28,9 +35,13 @@ module.exports = {
   '/api': {
     target: targetLocalHost ? 'https://localhost:9090' : baseUrl
   },
+  '/gateway/api': {
+    pathRewrite: { '^/gateway': '' },
+    target: targetLocalHost ? 'https://localhost:9090' : baseUrl
+  },
   '/template/api': {
-    pathRewrite: { '^/template/api': '/api' },
-    target: targetLocalHost ? 'http://localhost:15001' : baseUrl
+    pathRewrite: { '^/template/api': '' },
+    target: targetLocalHost ? 'http://localhost:15001/api' : `${baseUrl}/template/api`
   },
   '/cv/api': {
     target: targetLocalHost ? 'https://localhost:6060' : `${baseUrl}`
@@ -66,9 +77,6 @@ module.exports = {
   '/ccm/recommendations/api': {
     target: targetLocalHost ? 'http://localhost:5000' : baseUrl
   },
-  '/template/api': {
-    target: targetLocalHost ? 'http://localhost:15001' : baseUrl
-  },
   '/pm/api': {
     pathRewrite: { '^/pm': '' },
     target: process.env.OPA_GOVERNANCE_API_URL || 'http://localhost:3001'
@@ -77,8 +85,24 @@ module.exports = {
     pathRewrite: { '^/pm': '' },
     target: process.env.OPA_GOVERNANCE_UI_URL || 'http://localhost:3000'
   },
+  '/sto/api': {
+    pathRewrite: { '^/sto': '' },
+    target: process.env.STO_API_URL || 'http://localhost:3001'
+  },
+  '/sto': {
+    pathRewrite: { '^/sto': '' },
+    target: process.env.STO_UI_URL || 'http://localhost:3000'
+  },
   '/gitops': {
     pathRewrite: { '^/gitops': '' },
     target: process.env.GITOPS_URL || 'https://localhost:8183'
+  },
+  '/audit/api': {
+    pathRewrite: { '^/ng/api': '' },
+    target: targetLocalHost ? 'http://localhost:9005' : baseUrl
+  },
+  '/auth': {
+    pathRewrite: { '^/auth': '' },
+    target: 'https://app.harness.io/auth'
   }
 }

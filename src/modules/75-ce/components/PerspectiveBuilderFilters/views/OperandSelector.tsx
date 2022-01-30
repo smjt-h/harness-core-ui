@@ -1,5 +1,12 @@
-import React from 'react'
-import { Container, Layout, Icon } from '@wings-software/uicore'
+/*
+ * Copyright 2021 Harness Inc. All rights reserved.
+ * Use of this source code is governed by the PolyForm Shield 1.0.0 license
+ * that can be found in the licenses directory at the root of this repository, also available at
+ * https://polyformproject.org/wp-content/uploads/2020/06/PolyForm-Shield-1.0.0.txt.
+ */
+
+import React, { useState } from 'react'
+import { Container, Layout, Icon, TextInput, Color } from '@wings-software/uicore'
 import { Popover, PopoverInteractionKind, Position } from '@blueprintjs/core'
 import {
   QlceViewFieldIdentifierData,
@@ -10,6 +17,7 @@ import {
 } from 'services/ce/services'
 import CustomMenuItem from '@ce/components/CustomMenu/CustomMenuItem'
 import { FIELD_TO_ICON_MAPPING } from '@ce/components/PerspectiveFilters/constants'
+import { useStrings } from 'framework/strings'
 import type { ProviderType } from '../PerspectiveBuilderFilter'
 
 import css from '../PerspectiveBuilderFilter.module.scss'
@@ -25,6 +33,13 @@ const LabelSelector: (props: LabelSelectorProps) => JSX.Element = ({
   labelData,
   setProviderAndIdentifier
 }) => {
+  const { getString } = useStrings()
+  const [searchText, setSearchText] = useState('')
+
+  const filteredLabelData = (labelData || []).filter((label: string) =>
+    label.toLocaleLowerCase().indexOf(searchText.toLocaleLowerCase()) < 0 ? false : true
+  )
+
   return (
     <Popover
       key={service.fieldId}
@@ -40,19 +55,40 @@ const LabelSelector: (props: LabelSelectorProps) => JSX.Element = ({
       fill={true}
       usePortal={false}
       content={
-        <div className={css.groupByLabel}>
-          {labelData.length &&
-            labelData.map((label: string) => (
-              <CustomMenuItem
-                hidePopoverOnClick={true}
-                key={label}
-                text={label}
-                onClick={() => {
-                  setProviderAndIdentifier({ id: 'LABEL', name: 'label' }, { id: 'labels.value', name: label || '' })
-                }}
-              />
-            ))}
-        </div>
+        <Container color={Color.WHITE} className={css.groupByLabel}>
+          <Container
+            padding={{
+              top: 'small',
+              left: 'small',
+              right: 'small'
+            }}
+          >
+            <TextInput
+              value={searchText}
+              onChange={(e: any) => {
+                setSearchText(e.target.value)
+              }}
+              placeholder={getString('ce.perspectives.createPerspective.filters.searchText')}
+            />
+          </Container>
+          <Container className={css.labelValueContainer}>
+            {filteredLabelData.length
+              ? filteredLabelData.map((label: string) => (
+                  <CustomMenuItem
+                    hidePopoverOnClick={true}
+                    key={label}
+                    text={label}
+                    onClick={() => {
+                      setProviderAndIdentifier(
+                        { id: 'LABEL', name: 'label' },
+                        { id: 'labels.value', name: label || '' }
+                      )
+                    }}
+                  />
+                ))
+              : null}
+          </Container>
+        </Container>
       }
     >
       <CustomMenuItem
@@ -72,7 +108,11 @@ interface PopoverContentProps {
   labelFetching: boolean
 }
 
-const PopoverContent: React.FC<PopoverContentProps> = ({ fieldValuesList, setProviderAndIdentifier, labelData }) => {
+export const OperandSelectorPopOverContent: React.FC<PopoverContentProps> = ({
+  fieldValuesList,
+  setProviderAndIdentifier,
+  labelData
+}) => {
   const nonCustomFields = fieldValuesList.filter(field => field.identifier !== ViewFieldIdentifier.Custom)
 
   const defaultPanelFields = (
@@ -210,7 +250,7 @@ const OperandSelector: React.FC<OperandSelectorProps> = ({
       fill={true}
       usePortal={true}
       content={
-        <PopoverContent
+        <OperandSelectorPopOverContent
           labelData={labelResData?.perspectiveFilters?.values || []}
           labelFetching={labelFetching}
           fieldValuesList={fieldValuesList}

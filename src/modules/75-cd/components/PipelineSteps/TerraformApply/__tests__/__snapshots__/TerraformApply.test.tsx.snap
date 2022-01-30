@@ -363,13 +363,13 @@ exports[`Test TerraformApply expand backend Spec config 1`] = `
           data-testid="step-1-summary"
         >
           <div
-            class="Accordion--chevron"
-          />
-          <div
             class="Accordion--label"
           >
             common.optionalConfig
           </div>
+          <div
+            class="Accordion--chevron"
+          />
         </div>
         <div
           class="bp3-collapse Accordion--collapse"
@@ -821,17 +821,14 @@ exports[`Test TerraformApply expand backend Spec config 1`] = `
                         <div
                           class="group withoutAligning"
                         >
-                          <div
-                            style="flex-grow: 1;"
-                          >
+                          <div>
                             <p
-                              class="StyledProps--font StyledProps--main StyledProps--margin-bottom-xsmall"
+                              class="StyledProps--font StyledProps--main StyledProps--font-variation-form-label StyledProps--margin-bottom-xsmall"
                             >
                               keyLabel
                             </p>
                             <div
                               class="bp3-form-group"
-                              style="margin: 0px;"
                             >
                               <div
                                 class="bp3-form-content"
@@ -850,11 +847,9 @@ exports[`Test TerraformApply expand backend Spec config 1`] = `
                               </div>
                             </div>
                           </div>
-                          <div
-                            style="flex-grow: 1;"
-                          >
+                          <div>
                             <p
-                              class="StyledProps--font StyledProps--main StyledProps--margin-bottom-xsmall"
+                              class="StyledProps--font StyledProps--main StyledProps--font-variation-form-label StyledProps--margin-bottom-xsmall"
                             >
                               valueLabel
                             </p>
@@ -863,7 +858,6 @@ exports[`Test TerraformApply expand backend Spec config 1`] = `
                             >
                               <div
                                 class="bp3-form-group"
-                                style="flex-grow: 1;"
                               >
                                 
                                 <div
@@ -1337,13 +1331,13 @@ exports[`Test TerraformApply rendering more than one varfile 1`] = `
           data-testid="step-1-summary"
         >
           <div
-            class="Accordion--chevron"
-          />
-          <div
             class="Accordion--label"
           >
             common.optionalConfig
           </div>
+          <div
+            class="Accordion--chevron"
+          />
         </div>
         <div
           class="bp3-collapse Accordion--collapse"
@@ -1723,13 +1717,13 @@ exports[`Test TerraformApply rendering more than one varfile 2`] = `
           data-testid="step-1-summary"
         >
           <div
-            class="Accordion--chevron"
-          />
-          <div
             class="Accordion--label"
           >
             common.optionalConfig
           </div>
+          <div
+            class="Accordion--chevron"
+          />
         </div>
         <div
           class="bp3-collapse Accordion--collapse"
@@ -2298,17 +2292,14 @@ exports[`Test TerraformApply rendering more than one varfile 2`] = `
                         <div
                           class="group withoutAligning"
                         >
-                          <div
-                            style="flex-grow: 1;"
-                          >
+                          <div>
                             <p
-                              class="StyledProps--font StyledProps--main StyledProps--margin-bottom-xsmall"
+                              class="StyledProps--font StyledProps--main StyledProps--font-variation-form-label StyledProps--margin-bottom-xsmall"
                             >
                               keyLabel
                             </p>
                             <div
                               class="bp3-form-group"
-                              style="margin: 0px;"
                             >
                               <div
                                 class="bp3-form-content"
@@ -2327,11 +2318,9 @@ exports[`Test TerraformApply rendering more than one varfile 2`] = `
                               </div>
                             </div>
                           </div>
-                          <div
-                            style="flex-grow: 1;"
-                          >
+                          <div>
                             <p
-                              class="StyledProps--font StyledProps--main StyledProps--margin-bottom-xsmall"
+                              class="StyledProps--font StyledProps--main StyledProps--font-variation-form-label StyledProps--margin-bottom-xsmall"
                             >
                               valueLabel
                             </p>
@@ -2340,7 +2329,6 @@ exports[`Test TerraformApply rendering more than one varfile 2`] = `
                             >
                               <div
                                 class="bp3-form-group"
-                                style="flex-grow: 1;"
                               >
                                 
                                 <div
@@ -2584,7 +2572,8 @@ exports[`Test TerraformApply should be able to edit inline config 1`] = `
                                 class="Tag--main"
                               >
                                 <span
-                                  class="bp3-tag bp3-minimal tag"
+                                  class="bp3-tag bp3-minimal"
+                                  id="tag"
                                 >
                                   <span
                                     class="bp3-text-overflow-ellipsis bp3-fill"
@@ -3621,13 +3610,13 @@ exports[`Test TerraformApply should render edit view as inline 1`] = `
           data-testid="step-1-summary"
         >
           <div
-            class="Accordion--chevron"
-          />
-          <div
             class="Accordion--label"
           >
             common.optionalConfig
           </div>
+          <div
+            class="Accordion--chevron"
+          />
         </div>
         <div
           class="bp3-collapse Accordion--collapse"
@@ -4005,13 +3994,13 @@ exports[`Test TerraformApply should render edit view as new step 1`] = `
           data-testid="step-1-summary"
         >
           <div
-            class="Accordion--chevron"
-          />
-          <div
             class="Accordion--label"
           >
             common.optionalConfig
           </div>
+          <div
+            class="Accordion--chevron"
+          />
         </div>
         <div
           class="bp3-collapse Accordion--collapse"
@@ -4784,13 +4773,13 @@ exports[`Test TerraformApply should submit form for inline config 1`] = `
           data-testid="step-1-summary"
         >
           <div
-            class="Accordion--chevron"
-          />
-          <div
             class="Accordion--label"
           >
             common.optionalConfig
           </div>
+          <div
+            class="Accordion--chevron"
+          />
         </div>
         <div
           class="bp3-collapse Accordion--collapse"

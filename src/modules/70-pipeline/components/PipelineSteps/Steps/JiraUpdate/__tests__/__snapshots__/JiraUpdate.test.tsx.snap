@@ -1121,7 +1121,8 @@ exports[`Jira Update tests Edit stage - readony view: editstage-readonly 1`] = `
                             class="Tag--main"
                           >
                             <span
-                              class="bp3-tag bp3-minimal tag"
+                              class="bp3-tag bp3-minimal"
+                              id="tag"
                             >
                               <span
                                 class="bp3-text-overflow-ellipsis bp3-fill"
@@ -1261,13 +1262,13 @@ exports[`Jira Update tests Edit stage - readony view: editstage-readonly 1`] = `
               data-testid="optional-config-summary"
             >
               <div
-                class="Accordion--chevron"
-              />
-              <div
                 class="Accordion--label"
               >
                 common.optionalConfig
               </div>
+              <div
+                class="Accordion--chevron"
+              />
             </div>
             <div
               class="bp3-collapse Accordion--collapse"

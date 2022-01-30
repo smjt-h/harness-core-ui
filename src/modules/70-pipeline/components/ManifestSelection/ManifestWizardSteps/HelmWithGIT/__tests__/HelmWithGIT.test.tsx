@@ -1,5 +1,13 @@
+/*
+ * Copyright 2021 Harness Inc. All rights reserved.
+ * Use of this source code is governed by the PolyForm Shield 1.0.0 license
+ * that can be found in the licenses directory at the root of this repository, also available at
+ * https://polyformproject.org/wp-content/uploads/2020/06/PolyForm-Shield-1.0.0.txt.
+ */
+
 import React from 'react'
 import { render, fireEvent, act, queryByAttribute, waitFor } from '@testing-library/react'
+import { MultiTypeInputType } from '@wings-software/uicore'
 import { TestWrapper } from '@common/utils/testUtils'
 import { ManifestDataType } from '@pipeline/components/ManifestSelection/Manifesthelper'
 import HelmWithGIT from '../HelmWithGIT'
@@ -7,9 +15,15 @@ import HelmWithGIT from '../HelmWithGIT'
 const props = {
   stepName: 'Manifest details',
   expressions: [],
+  allowableTypes: [MultiTypeInputType.FIXED, MultiTypeInputType.RUNTIME, MultiTypeInputType.EXPRESSION],
   handleSubmit: jest.fn(),
   manifestIdsList: []
 }
+
+jest.mock('services/cd-ng', () => ({
+  useHelmCmdFlags: jest.fn().mockImplementation(() => ({ data: { data: ['Template'] }, refetch: jest.fn() }))
+}))
+
 describe('helm with GIT tests', () => {
   test(`renders without crashing`, () => {
     const initialValues = {

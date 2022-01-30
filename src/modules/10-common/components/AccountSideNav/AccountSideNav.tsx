@@ -1,3 +1,10 @@
+/*
+ * Copyright 2021 Harness Inc. All rights reserved.
+ * Use of this source code is governed by the PolyForm Shield 1.0.0 license
+ * that can be found in the licenses directory at the root of this repository, also available at
+ * https://polyformproject.org/wp-content/uploads/2020/06/PolyForm-Shield-1.0.0.txt.
+ */
+
 import React from 'react'
 import { useParams } from 'react-router-dom'
 import { Layout } from '@wings-software/uicore'
@@ -9,15 +16,13 @@ import { useStrings } from 'framework/strings'
 import { returnLaunchUrl } from '@common/utils/routeUtils'
 import { useAppStore } from 'framework/AppStore/AppStoreContext'
 import { useFeatureFlags } from '@common/hooks/useFeatureFlag'
-import { isCDCommunity, useLicenseStore } from 'framework/LicenseStore/LicenseStoreContext'
 import { LaunchButton } from '../LaunchButton/LaunchButton'
 
 export default function AccountSideNav(): React.ReactElement {
   const { getString } = useStrings()
   const { accountId } = useParams<AccountPathProps>()
   const { currentUserInfo } = useAppStore()
-  const { licenseInformation } = useLicenseStore()
-  const { NG_LICENSES_ENABLED, OPA_PIPELINE_GOVERNANCE } = useFeatureFlags()
+  const { NG_LICENSES_ENABLED, OPA_PIPELINE_GOVERNANCE, AUDIT_TRAIL_WEB_INTERFACE } = useFeatureFlags()
   const { accounts } = currentUserInfo
   const createdFromNG = accounts?.find(account => account.uuid === accountId)?.createdFromNG
 
@@ -33,13 +38,14 @@ export default function AccountSideNav(): React.ReactElement {
       {(createdFromNG || NG_LICENSES_ENABLED) && (
         <SidebarLink exact label={getString('common.subscriptions.title')} to={routes.toSubscriptions({ accountId })} />
       )}
-      <SidebarLink label={getString('orgsText')} to={routes.toOrganizations({ accountId })} />
-      {!isCDCommunity(licenseInformation) && (
-        <LaunchButton
-          launchButtonText={getString('common.cgLaunchText')}
-          redirectUrl={returnLaunchUrl(`#/account/${accountId}/dashboard`)}
-        />
+      {AUDIT_TRAIL_WEB_INTERFACE && (
+        <SidebarLink label={getString('common.auditTrail')} to={routes.toAuditTrail({ accountId })} />
       )}
+      <SidebarLink label={getString('orgsText')} to={routes.toOrganizations({ accountId })} />
+      <LaunchButton
+        launchButtonText={getString('common.cgLaunchText')}
+        redirectUrl={returnLaunchUrl(`#/account/${accountId}/dashboard`)}
+      />
     </Layout.Vertical>
   )
 }

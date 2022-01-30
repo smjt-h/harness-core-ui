@@ -312,9 +312,6 @@ exports[`StepWidget tests renders DeployStageSpecifications without crashing  1`
             data-testid="advanced-summary"
           >
             <div
-              class="Accordion--chevron"
-            />
-            <div
               class=""
             >
               <div
@@ -323,6 +320,9 @@ exports[`StepWidget tests renders DeployStageSpecifications without crashing  1`
                 common.advanced
               </div>
             </div>
+            <div
+              class="Accordion--chevron"
+            />
           </div>
           <div
             class="bp3-collapse Accordion--collapse"

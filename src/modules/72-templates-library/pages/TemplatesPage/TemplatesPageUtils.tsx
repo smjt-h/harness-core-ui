@@ -1,6 +1,12 @@
+/*
+ * Copyright 2021 Harness Inc. All rights reserved.
+ * Use of this source code is governed by the PolyForm Shield 1.0.0 license
+ * that can be found in the licenses directory at the root of this repository, also available at
+ * https://polyformproject.org/wp-content/uploads/2020/06/PolyForm-Shield-1.0.0.txt.
+ */
+
 import type { IconName } from '@wings-software/uicore'
-import { parse } from 'yaml'
-import { get } from 'lodash-es'
+import { defaultTo, get } from 'lodash-es'
 import type { UseStringsReturn } from 'framework/strings'
 import { TemplateType } from '@templates-library/utils/templatesUtils'
 import type { TemplateSummaryResponse } from 'services/template-ng'
@@ -108,12 +114,12 @@ export const getTypeForTemplate = (
   getString: UseStringsReturn['getString']
 ): string => {
   const entityType = template.templateEntityType as TemplateType
-  const type = parse(template.yaml || '')?.template?.spec?.type || ''
+  const type = defaultTo(template.childType, '')
   switch (entityType) {
     case TemplateType.Step:
-      return factory.getStepName(type) || ''
+      return defaultTo(factory.getStepName(type), '')
     case TemplateType.Stage:
-      return stagesCollection.getStageAttributes(type, getString)?.name ?? ''
+      return defaultTo(stagesCollection.getStageAttributes(type, getString)?.name, '')
     default:
       return ''
   }
@@ -126,13 +132,13 @@ export const getIconForTemplate = (
   const entityType =
     (template as TemplateSummaryResponse)?.templateEntityType || (template as NGTemplateInfoConfigWithGitDetails)?.type
   const type =
-    parse((template as TemplateSummaryResponse).yaml || '')?.template?.spec?.type ||
+    (template as TemplateSummaryResponse).childType ||
     get(template as NGTemplateInfoConfigWithGitDetails, 'spec.type', 'disable')
   switch (entityType) {
     case TemplateType.Step:
       return factory.getStepIcon(type)
     case TemplateType.Stage:
-      return stagesCollection.getStageAttributes(type, getString)?.icon ?? 'disable'
+      return defaultTo(stagesCollection.getStageAttributes(type, getString)?.icon, 'disable')
     default:
       return 'disable'
   }

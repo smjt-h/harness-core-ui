@@ -1,3 +1,10 @@
+/*
+ * Copyright 2021 Harness Inc. All rights reserved.
+ * Use of this source code is governed by the PolyForm Shield 1.0.0 license
+ * that can be found in the licenses directory at the root of this repository, also available at
+ * https://polyformproject.org/wp-content/uploads/2020/06/PolyForm-Shield-1.0.0.txt.
+ */
+
 export const appdMetric = {
   metricPath: {
     metricPathDropdown_0: { path: '', value: 'Calls per Minute' },
@@ -8,6 +15,7 @@ export const appdMetric = {
     basePathDropdown_1: { path: 'Overall Application Performance', value: '' }
   },
   metricName: 'appdMetric',
+  metricIdentifier: 'appdMetric',
   riskCategory: 'Errors/ERROR',
   serviceInstance: null,
   lowerBaselineDeviation: true,
@@ -27,6 +35,7 @@ const appdMetricNew = {
     basePathDropdown_1: { path: 'Application Infrastructure Performance', value: '' }
   },
   metricName: 'appdMetric new',
+  metricIdentifier: 'appdMetricNew',
   riskCategory: 'Errors/THROUGHPUT',
   serviceInstance: null,
   lowerBaselineDeviation: true,
@@ -62,6 +71,7 @@ export const formikValues = {
     basePathDropdown_1: { path: 'Overall Application Performance', value: '' }
   },
   metricName: 'appdMetric',
+  metricIdentifier: 'appdMetric',
   riskCategory: 'Errors/ERROR',
   serviceInstance: null,
   lowerBaselineDeviation: true,
@@ -92,6 +102,7 @@ const exectedMetricData = {
     basePathDropdown_1: { path: 'Overall Application Performance', value: '' }
   },
   metricName: 'appdMetric',
+  metricIdentifier: 'appdMetric',
   riskCategory: 'Errors/ERROR',
   serviceInstance: null,
   lowerBaselineDeviation: true,
@@ -112,6 +123,7 @@ const exectedNewMetricData = {
     basePathDropdown_1: { path: 'Application Infrastructure Performance', value: '' }
   },
   metricName: 'appdMetric new',
+  metricIdentifier: 'appdMetricNew',
   riskCategory: 'Errors/THROUGHPUT',
   serviceInstance: null,
   lowerBaselineDeviation: true,

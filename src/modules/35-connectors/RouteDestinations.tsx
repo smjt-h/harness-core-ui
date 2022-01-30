@@ -1,5 +1,13 @@
+/*
+ * Copyright 2021 Harness Inc. All rights reserved.
+ * Use of this source code is governed by the PolyForm Shield 1.0.0 license
+ * that can be found in the licenses directory at the root of this repository, also available at
+ * https://polyformproject.org/wp-content/uploads/2020/06/PolyForm-Shield-1.0.0.txt.
+ */
+
 import React from 'react'
 
+import AuditTrailFactory, { ResourceScope } from '@audit-trail/factories/AuditTrailFactory'
 import { RouteWithLayout } from '@common/router'
 import routes from '@common/RouteDefinitions'
 import { accountPathProps, connectorPathProps } from '@common/utils/routeUtils'
@@ -11,6 +19,7 @@ import { ResourceType, ResourceCategory } from '@rbac/interfaces/ResourceType'
 import RbacFactory from '@rbac/factories/RbacFactory'
 import { String } from 'framework/strings'
 import { AccountSideNavProps } from '@common/RouteDestinations'
+import type { ResourceDTO } from 'services/audit'
 import ConnectorResourceModalBody from './components/ConnectorResourceModalBody/ConnectorResourceModalBody'
 
 RbacFactory.registerResourceTypeHandler(ResourceType.CONNECTOR, {
@@ -25,6 +34,22 @@ RbacFactory.registerResourceTypeHandler(ResourceType.CONNECTOR, {
   },
   // eslint-disable-next-line react/display-name
   addResourceModalBody: props => <ConnectorResourceModalBody {...props} />
+})
+
+AuditTrailFactory.registerResourceHandler('CONNECTOR', {
+  moduleIcon: {
+    name: 'nav-settings'
+  },
+  resourceUrl: (resource: ResourceDTO, resourceScope: ResourceScope) => {
+    const { accountIdentifier, orgIdentifier, projectIdentifier } = resourceScope
+
+    return routes.toConnectorDetails({
+      orgIdentifier,
+      accountId: accountIdentifier,
+      connectorId: resource.identifier,
+      projectIdentifier
+    })
+  }
 })
 
 export default (

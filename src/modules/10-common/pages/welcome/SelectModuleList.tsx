@@ -1,6 +1,14 @@
+/*
+ * Copyright 2021 Harness Inc. All rights reserved.
+ * Use of this source code is governed by the PolyForm Shield 1.0.0 license
+ * that can be found in the licenses directory at the root of this repository, also available at
+ * https://polyformproject.org/wp-content/uploads/2020/06/PolyForm-Shield-1.0.0.txt.
+ */
+
 import React, { useLayoutEffect, useRef, useState } from 'react'
 import { useHistory, useParams } from 'react-router-dom'
 import type { IconName } from '@wings-software/uicore'
+import { useUpdateLSDefaultExperience } from '@common/hooks/useUpdateLSDefaultExperience'
 import { useTelemetry } from '@common/hooks/useTelemetry'
 import { ModuleName } from 'framework/types/ModuleName'
 import routes from '@common/RouteDefinitions'
@@ -52,6 +60,7 @@ const SelectModuleList: React.FC<SelectModuleListProps> = ({ onModuleClick, modu
     trackEvent(PurposeActions.CDModuleContinue, { category: Category.SIGNUP, module: ModuleName.CD })
   }
   const history = useHistory()
+  const { updateLSDefaultExperience } = useUpdateLSDefaultExperience()
 
   const getButtonProps = (buttonType: string): { clickHandle?: () => void; disabled?: boolean } => {
     switch (buttonType) {
@@ -67,7 +76,10 @@ const SelectModuleList: React.FC<SelectModuleListProps> = ({ onModuleClick, modu
             try {
               updateDefaultExperience({
                 defaultExperience: Experiences.NG
-              }).then(() => history.push(routes.toModuleHome({ accountId, module: buttonType, source: 'purpose' })))
+              }).then(() => {
+                updateLSDefaultExperience(Experiences.NG)
+                history.push(routes.toModuleHome({ accountId, module: buttonType, source: 'purpose' }))
+              })
             } catch (error) {
               showError(error.data?.message || getString('somethingWentWrong'))
             }

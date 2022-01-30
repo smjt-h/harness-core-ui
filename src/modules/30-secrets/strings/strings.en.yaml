@@ -40,7 +40,6 @@ createSSHCredWizard:
   labelHostname: 'Add a Host Name to start verification'
   hostnameInfo: 'This URL will only be used for verification process'
   btnVerifyConnection: '{{$.common.labelTestConnection}}'
-  validatePort: 'Port is required'
   validateUsername: '{{$.validation.username}}'
   validateKeypath: 'Key path is required'
   validateSshKey: 'Key file is required'

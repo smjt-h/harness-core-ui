@@ -1,8 +1,15 @@
+/*
+ * Copyright 2021 Harness Inc. All rights reserved.
+ * Use of this source code is governed by the PolyForm Shield 1.0.0 license
+ * that can be found in the licenses directory at the root of this repository, also available at
+ * https://polyformproject.org/wp-content/uploads/2020/06/PolyForm-Shield-1.0.0.txt.
+ */
+
 import React, { useCallback, useContext, useEffect, useState } from 'react'
 import { Color, ExpandingSearchInput, Layout, Text, PageError, TableV2 } from '@wings-software/uicore'
+import type { TableProps } from '@harness/uicore'
 import { noop } from 'lodash-es'
 import { useStrings } from 'framework/strings'
-import type { TableProps } from '@common/components/Table/Table'
 // import FilterSelector from '@common/components/Filter/FilterSelector/FilterSelector'
 import { PageSpinner } from '@common/components'
 import ServiceDetailsEmptyState from '@cd/icons/ServiceDetailsEmptyState.svg'

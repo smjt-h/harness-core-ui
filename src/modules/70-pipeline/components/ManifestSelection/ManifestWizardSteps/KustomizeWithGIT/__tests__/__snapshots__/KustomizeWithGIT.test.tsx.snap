@@ -358,13 +358,13 @@ exports[`Kustomize with Git/ Github/Gitlab/Bitbucket tests expand advanced secti
                 data-testid="advancedTitle-summary"
               >
                 <div
-                  class="Accordion--chevron"
-                />
-                <div
                   class="Accordion--label"
                 >
                   advancedTitle
                 </div>
+                <div
+                  class="Accordion--chevron"
+                />
               </div>
               <div
                 class="bp3-collapse Accordion--collapse"
@@ -871,13 +871,13 @@ exports[`Kustomize with Git/ Github/Gitlab/Bitbucket tests renders correctly in 
                 data-testid="advancedTitle-summary"
               >
                 <div
-                  class="Accordion--chevron"
-                />
-                <div
                   class="Accordion--label"
                 >
                   advancedTitle
                 </div>
+                <div
+                  class="Accordion--chevron"
+                />
               </div>
               <div
                 class="bp3-collapse Accordion--collapse"
@@ -1317,13 +1317,13 @@ exports[`Kustomize with Git/ Github/Gitlab/Bitbucket tests renders while adding 
                 data-testid="advancedTitle-summary"
               >
                 <div
-                  class="Accordion--chevron"
-                />
-                <div
                   class="Accordion--label"
                 >
                   advancedTitle
                 </div>
+                <div
+                  class="Accordion--chevron"
+                />
               </div>
               <div
                 class="bp3-collapse Accordion--collapse"
@@ -1763,13 +1763,13 @@ exports[`Kustomize with Git/ Github/Gitlab/Bitbucket tests renders without crash
                 data-testid="advancedTitle-summary"
               >
                 <div
-                  class="Accordion--chevron"
-                />
-                <div
                   class="Accordion--label"
                 >
                   advancedTitle
                 </div>
+                <div
+                  class="Accordion--chevron"
+                />
               </div>
               <div
                 class="bp3-collapse Accordion--collapse"

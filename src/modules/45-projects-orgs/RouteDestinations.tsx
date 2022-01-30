@@ -1,6 +1,14 @@
+/*
+ * Copyright 2022 Harness Inc. All rights reserved.
+ * Use of this source code is governed by the PolyForm Shield 1.0.0 license
+ * that can be found in the licenses directory at the root of this repository, also available at
+ * https://polyformproject.org/wp-content/uploads/2020/06/PolyForm-Shield-1.0.0.txt.
+ */
+
 import React from 'react'
 import { useParams, Redirect } from 'react-router-dom'
-
+import AuditTrailsPage from '@audit-trail/pages/AuditTrails/AuditTrailsPage'
+import AuditTrailFactory, { ResourceScope } from '@audit-trail/factories/AuditTrailFactory'
 import { RouteWithLayout } from '@common/router'
 import routes from '@common/RouteDefinitions'
 import {
@@ -34,6 +42,7 @@ import DelegatesPage from '@delegates/pages/delegates/DelegatesPage'
 import DelegateListing from '@delegates/pages/delegates/DelegateListing'
 import DelegateConfigurations from '@delegates/pages/delegates/DelegateConfigurations'
 import DelegateDetails from '@delegates/pages/delegates/DelegateDetails'
+import DelegateTokens from '@delegates/components/DelegateTokens/DelegateTokens'
 import ConnectorDetailsPage from '@connectors/pages/connectors/ConnectorDetailsPage'
 import SecretDetails from '@secrets/pages/secretDetails/SecretDetails'
 import { RedirectToSecretDetailHome } from '@secrets/RouteDestinations'
@@ -58,10 +67,12 @@ import { HomeSideNavProps, AccountSideNavProps } from '@common/RouteDestinations
 import GitSyncEntityTab from '@gitsync/pages/entities/GitSyncEntityTab'
 import GitSyncPage from '@gitsync/pages/GitSyncPage'
 import GitSyncRepoTab from '@gitsync/pages/repos/GitSyncRepoTab'
-import { GitSyncErrorsWithRedirect } from '@gitsync/pages/errors/GitSyncErrors'
+import GitSyncErrors from '@gitsync/pages/errors/GitSyncErrors'
 import ServiceAccountDetails from '@rbac/pages/ServiceAccountDetails/ServiceAccountDetails'
 import ServiceAccountsPage from '@rbac/pages/ServiceAccounts/ServiceAccounts'
 import { GovernanceRouteDestinations } from '@governance/RouteDestinations'
+import type { ResourceDTO } from 'services/audit'
+import GitSyncConfigTab from '@gitsync/pages/config/GitSyncConfigTab'
 import LandingDashboardPage from './pages/LandingDashboardPage/LandingDashboardPage'
 
 const ProjectDetailsSideNavProps: SidebarContext = {
@@ -76,8 +87,8 @@ RbacFactory.registerResourceTypeHandler(ResourceType.PROJECT, {
   category: ResourceCategory.ADMINSTRATIVE_FUNCTIONS,
   permissionLabels: {
     [PermissionIdentifier.VIEW_PROJECT]: <String stringID="rbac.permissionLabels.view" />,
-    [PermissionIdentifier.UPDATE_PROJECT]: <String stringID="rbac.permissionLabels.createEdit" />,
     [PermissionIdentifier.CREATE_PROJECT]: <String stringID="rbac.permissionLabels.create" />,
+    [PermissionIdentifier.UPDATE_PROJECT]: <String stringID="rbac.permissionLabels.edit" />,
     [PermissionIdentifier.DELETE_PROJECT]: <String stringID="rbac.permissionLabels.delete" />
   },
   // eslint-disable-next-line react/display-name
@@ -90,12 +101,35 @@ RbacFactory.registerResourceTypeHandler(ResourceType.ORGANIZATION, {
   category: ResourceCategory.ADMINSTRATIVE_FUNCTIONS,
   permissionLabels: {
     [PermissionIdentifier.VIEW_ORG]: <String stringID="rbac.permissionLabels.view" />,
-    [PermissionIdentifier.UPDATE_ORG]: <String stringID="rbac.permissionLabels.createEdit" />,
     [PermissionIdentifier.CREATE_ORG]: <String stringID="rbac.permissionLabels.create" />,
+    [PermissionIdentifier.UPDATE_ORG]: <String stringID="rbac.permissionLabels.edit" />,
     [PermissionIdentifier.DELETE_ORG]: <String stringID="rbac.permissionLabels.delete" />
   },
   // eslint-disable-next-line react/display-name
   addResourceModalBody: props => <OrgResourceModalBody {...props} />
+})
+
+AuditTrailFactory.registerResourceHandler('ORGANIZATION', {
+  moduleIcon: {
+    name: 'nav-settings'
+  },
+  resourceUrl: (_resource: ResourceDTO, resourceScope: ResourceScope) => {
+    const { orgIdentifier, accountIdentifier } = resourceScope
+    return orgIdentifier ? routes.toOrganizationDetails({ orgIdentifier, accountId: accountIdentifier }) : undefined
+  }
+})
+
+AuditTrailFactory.registerResourceHandler('PROJECT', {
+  moduleIcon: {
+    name: 'nav-settings'
+  },
+  resourceUrl: (_resource: ResourceDTO, resourceScope: ResourceScope) => {
+    const { orgIdentifier, accountIdentifier, projectIdentifier } = resourceScope
+    if (orgIdentifier && projectIdentifier) {
+      return routes.toProjectDetails({ orgIdentifier, accountId: accountIdentifier, projectIdentifier })
+    }
+    return undefined
+  }
 })
 
 const RedirectToAccessControlHome = (): React.ReactElement => {
@@ -237,6 +271,30 @@ export default (
     </RouteWithLayout>
     <RouteWithLayout
       sidebarProps={ProjectDetailsSideNavProps}
+      path={routes.toDelegateTokens({
+        ...accountPathProps,
+        ...projectPathProps
+      })}
+      exact
+    >
+      <DelegatesPage>
+        <DelegateTokens />
+      </DelegatesPage>
+    </RouteWithLayout>
+    <RouteWithLayout
+      sidebarProps={AccountSideNavProps}
+      path={routes.toDelegateTokens({
+        ...accountPathProps,
+        ...orgPathProps
+      })}
+      exact
+    >
+      <DelegatesPage>
+        <DelegateTokens />
+      </DelegatesPage>
+    </RouteWithLayout>
+    <RouteWithLayout
+      sidebarProps={ProjectDetailsSideNavProps}
       path={routes.toEditDelegateConfigsDetails({
         ...accountPathProps,
         ...projectPathProps,
@@ -370,6 +428,9 @@ export default (
       <SecretDetailsHomePage>
         <SecretReferences />
       </SecretDetailsHomePage>
+    </RouteWithLayout>
+    <RouteWithLayout sidebarProps={AccountSideNavProps} path={routes.toAuditTrail({ ...orgPathProps })} exact>
+      <AuditTrailsPage />
     </RouteWithLayout>
     <RouteWithLayout sidebarProps={AccountSideNavProps} path={routes.toCreateSecretFromYaml({ ...orgPathProps })} exact>
       <CreateSecretFromYamlPage />
@@ -554,10 +615,18 @@ export default (
       exact
     >
       <GitSyncPage>
-        <GitSyncErrorsWithRedirect />
+        <GitSyncErrors />
       </GitSyncPage>
     </RouteWithLayout>
-
+    <RouteWithLayout
+      sidebarProps={ProjectDetailsSideNavProps}
+      path={routes.toGitSyncConfig({ ...accountPathProps, ...projectPathProps })}
+      exact
+    >
+      <GitSyncPage>
+        <GitSyncConfigTab />
+      </GitSyncPage>
+    </RouteWithLayout>
     {GovernanceRouteDestinations({
       sidebarProps: AccountSideNavProps,
       pathProps: { ...accountPathProps, ...orgPathProps }

@@ -1,3 +1,10 @@
+/*
+ * Copyright 2022 Harness Inc. All rights reserved.
+ * Use of this source code is governed by the PolyForm Shield 1.0.0 license
+ * that can be found in the licenses directory at the root of this repository, also available at
+ * https://polyformproject.org/wp-content/uploads/2020/06/PolyForm-Shield-1.0.0.txt.
+ */
+
 import React from 'react'
 import {
   Formik,
@@ -7,9 +14,10 @@ import {
   Layout,
   FlexExpander,
   Button,
-  Heading,
+  Text,
   PageSpinner,
-  useToaster
+  useToaster,
+  FontVariation
 } from '@wings-software/uicore'
 import { Menu, MenuItem, Popover, Position } from '@blueprintjs/core'
 import { useParams, useHistory } from 'react-router-dom'
@@ -25,6 +33,8 @@ import {
 import { useStrings } from 'framework/strings'
 import type { ViewIdCondition } from 'services/ce/'
 import { DEFAULT_GROUP_BY } from '@ce/utils/perspectiveUtils'
+import { useTelemetry } from '@common/hooks/useTelemetry'
+import { USER_JOURNEY_EVENTS } from '@ce/TrackingEventsConstants'
 import PerspectiveFilters from '../PerspectiveFilters'
 import PerspectiveBuilderPreview from '../PerspectiveBuilderPreview/PerspectiveBuilderPreview'
 // import ProTipIcon from './images/pro-tip.svg'
@@ -55,6 +65,7 @@ const PerspectiveBuilder: React.FC<{ perspectiveData?: CEView; onNext: (resource
   const { perspectiveId, accountId } = useParams<{ perspectiveId: string; accountId: string }>()
   const history = useHistory()
   const { showError } = useToaster()
+  const { trackEvent } = useTelemetry()
 
   const { perspectiveData } = props
 
@@ -64,6 +75,7 @@ const PerspectiveBuilder: React.FC<{ perspectiveData?: CEView; onNext: (resource
     }
   })
 
+  /* istanbul ignore next */
   const makeCreateCall: (value: CEView) => void = async values => {
     const apiObject = {
       ...CREATE_CALL_OBJECT,
@@ -128,7 +140,11 @@ const PerspectiveBuilder: React.FC<{ perspectiveData?: CEView; onNext: (resource
   ]
 
   const validationSchema = Yup.object().shape({
-    name: Yup.string().trim().required(getString('ce.perspectives.createPerspective.validationErrors.nameError')),
+    name: Yup.string()
+      .trim()
+      .required(getString('ce.perspectives.createPerspective.validationErrors.nameError'))
+      .min(1, getString('ce.perspectives.createPerspective.validationErrors.nameLengthError'))
+      .max(32, getString('ce.perspectives.createPerspective.validationErrors.nameLengthError')),
     viewRules: Yup.array().of(
       Yup.object().shape({
         viewConditions: Yup.array().of(
@@ -151,6 +167,7 @@ const PerspectiveBuilder: React.FC<{ perspectiveData?: CEView; onNext: (resource
       {loading && <PageSpinner />}
       <Formik<CEView>
         formName="createPerspective"
+        /* istanbul ignore next */
         initialValues={{
           name: perspectiveData?.name,
           viewVisualization: {
@@ -177,9 +194,9 @@ const PerspectiveBuilder: React.FC<{ perspectiveData?: CEView; onNext: (resource
                   className={css.builderContainer}
                   padding={{ left: 'large', right: 'xxlarge', bottom: 'xxlarge', top: 'xxlarge' }}
                 >
-                  <Heading color="grey800" margin={{ bottom: 'large' }} level={5}>
+                  <Text font={{ variation: FontVariation.H4 }} margin={{ bottom: 'large' }}>
                     {getString('ce.perspectives.createPerspective.title')}
-                  </Heading>
+                  </Text>
                   <Layout.Horizontal>
                     <FormInput.Text
                       name="name"
@@ -271,6 +288,7 @@ const PerspectiveBuilder: React.FC<{ perspectiveData?: CEView; onNext: (resource
                       disabled={!!Object.keys(formikProps.errors).length}
                       text={getString('ce.perspectives.createPerspective.nextButton')}
                       onClick={() => {
+                        trackEvent(USER_JOURNEY_EVENTS.PERSPECTIVE_STEP1_NEXT, {})
                         makeCreateCall(formikProps.values)
                       }}
                     />
@@ -281,8 +299,8 @@ const PerspectiveBuilder: React.FC<{ perspectiveData?: CEView; onNext: (resource
                     formikProps.setFieldValue('viewVisualization.groupBy', groupBy)
                   }}
                   formValues={formikProps.values}
-                  groupBy={formikProps?.values?.viewVisualization?.groupBy as any}
-                  chartType={formikProps?.values?.viewVisualization?.chartType as any}
+                  groupBy={formikProps.values.viewVisualization?.groupBy as any}
+                  chartType={formikProps.values.viewVisualization?.chartType as any}
                   setChartType={(type: ViewChartType) => {
                     formikProps.setFieldValue('viewVisualization.chartType', type)
                   }}

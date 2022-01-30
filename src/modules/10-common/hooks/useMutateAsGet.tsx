@@ -1,3 +1,10 @@
+/*
+ * Copyright 2022 Harness Inc. All rights reserved.
+ * Use of this source code is governed by the PolyForm Shield 1.0.0 license
+ * that can be found in the licenses directory at the root of this repository, also available at
+ * https://polyformproject.org/wp-content/uploads/2020/06/PolyForm-Shield-1.0.0.txt.
+ */
+
 /* eslint-disable @typescript-eslint/no-explicit-any */
 import type { UseMutateProps, UseMutateReturn, MutateMethod, GetDataError } from 'restful-react'
 import { useState, useCallback, useEffect, Dispatch, SetStateAction } from 'react'
@@ -5,7 +12,7 @@ import { useState, useCallback, useEffect, Dispatch, SetStateAction } from 'reac
 import type { Cancelable, DebounceSettings } from 'lodash' // only type imports
 import { debounce, identity } from 'lodash-es'
 
-import { shouldShowError } from '@wings-software/uicore'
+import { shouldShowError } from '@harness/uicore'
 import { useDeepCompareEffect } from './useDeepCompareEffect'
 
 const isCancellable = <T extends (...args: any[]) => any>(func: T): func is T & Cancelable => {
@@ -55,14 +62,23 @@ async function _fetchData<TData, TError, TQueryParams, TRequestBody, TPathParams
   mutate: MutateMethod<TData, TQueryParams, TRequestBody, TPathParams>,
   props: WrappedUseMutateProps<TData, TError, TRequestBody, TQueryParams, TPathParams>,
   setInitLoading: Dispatch<SetStateAction<boolean>>,
-  setData: Dispatch<SetStateAction<TData | null>>
+  setData: Dispatch<SetStateAction<TData | null>>,
+  setError: Dispatch<SetStateAction<TError | null>>
 ): Promise<void> {
-  const data = await mutate(props.body, {
-    queryParams: props.queryParams,
-    pathParams: props.pathParams
-  })
-  setInitLoading(false)
-  setData(data)
+  try {
+    const data = await mutate(props.body, {
+      queryParams: props.queryParams,
+      pathParams: props.pathParams
+    })
+    if (data) {
+      setInitLoading(false)
+      setData(data)
+      setError(null)
+    }
+  } catch (e) {
+    setData(null)
+    setError(e)
+  }
 }
 
 export function useMutateAsGet<
@@ -100,7 +116,7 @@ export function useMutateAsGet<
   useDeepCompareEffect(() => {
     if (!props.lazy && !props.mock) {
       try {
-        fetchData(mutate, props, setInitLoading, setData)?.then(identity, e => {
+        fetchData(mutate, props, setInitLoading, setData, setError)?.then(identity, e => {
           if (shouldShowError(e)) setError(e)
         })
       } catch (e) {
@@ -125,7 +141,7 @@ export function useMutateAsGet<
     cancel,
     refetch: newProps => {
       try {
-        return fetchData(mutate, newProps || props, setInitLoading, setData)?.then(identity, e => {
+        return fetchData(mutate, newProps || props, setInitLoading, setData, setError)?.then(identity, e => {
           if (shouldShowError(e)) setError(e)
         })
       } catch (e) {

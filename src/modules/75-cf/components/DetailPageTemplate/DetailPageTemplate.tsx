@@ -1,8 +1,15 @@
+/*
+ * Copyright 2022 Harness Inc. All rights reserved.
+ * Use of this source code is governed by the PolyForm Shield 1.0.0 license
+ * that can be found in the licenses directory at the root of this repository, also available at
+ * https://polyformproject.org/wp-content/uploads/2020/06/PolyForm-Shield-1.0.0.txt.
+ */
+
 import React from 'react'
-import { Link } from 'react-router-dom'
 import { Container, Layout, Text, IconName, Color, Icon } from '@wings-software/uicore'
 import { TagsViewer } from '@common/components/TagsViewer/TagsViewer'
 import { IdentifierText } from '@cf/components/IdentifierText/IdentifierText'
+import { NGBreadcrumbs } from '@common/components/NGBreadcrumbs/NGBreadcrumbs'
 
 const HEADER_HEIGHT = 145
 const HEADER_HEIGHT_NO_TAGS = 120
@@ -49,16 +56,10 @@ export const DetailPageTemplate: React.FC<DetailPageTemplateProps> = ({
         }}
       >
         <Layout.Vertical spacing="medium">
-          <Layout.Horizontal spacing="small">
-            {breadcrumbs.map(linkInfo => (
-              <React.Fragment key={linkInfo.title + linkInfo.url}>
-                <Link style={{ color: '#0092E4', fontSize: '12px' }} to={linkInfo.url}>
-                  {linkInfo.title}
-                </Link>
-                <span>/</span>
-              </React.Fragment>
-            ))}
-          </Layout.Horizontal>
+          <NGBreadcrumbs
+            customPathParams={{ module: 'cf' }}
+            links={breadcrumbs.map(({ title: label, url }) => ({ label, url }))}
+          />
 
           <Layout.Horizontal spacing="small" style={{ marginLeft: '-5px' }}>
             <Container style={{ borderRadius: '50%', overflow: 'hidden' }}>

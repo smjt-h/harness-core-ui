@@ -1,3 +1,10 @@
+/*
+ * Copyright 2022 Harness Inc. All rights reserved.
+ * Use of this source code is governed by the PolyForm Shield 1.0.0 license
+ * that can be found in the licenses directory at the root of this repository, also available at
+ * https://polyformproject.org/wp-content/uploads/2020/06/PolyForm-Shield-1.0.0.txt.
+ */
+
 import React from 'react'
 import {
   Layout,
@@ -21,8 +28,6 @@ import { ConfigureOptions } from '@common/components/ConfigureOptions/ConfigureO
 import { FormMultiTypeCheckboxField } from '@common/components'
 import { useStrings } from 'framework/strings'
 import type { ConnectorConfigDTO, ManifestConfig, ManifestConfigWrapper } from 'services/cd-ng'
-import { Scope } from '@common/interfaces/SecretsInterface'
-import { getScopeFromValue } from '@common/components/EntityReference/EntityReference'
 import type { OpenShiftTemplateGITDataType } from '../../ManifestInterface'
 import {
   gitFetchTypeList,
@@ -33,12 +38,14 @@ import {
   ManifestStoreMap
 } from '../../Manifesthelper'
 import GitRepositoryName from '../GitRepositoryName/GitRepositoryName'
+import { getRepositoryName } from '../ManifestUtils'
 import css from '../ManifestWizardSteps.module.scss'
 import templateCss from './OSTemplateWithGit.module.scss'
 
 interface OpenshiftTemplateWithGITPropType {
   stepName: string
   expressions: string[]
+  allowableTypes: MultiTypeInputType[]
   initialValues: ManifestConfig
   handleSubmit: (data: ManifestConfigWrapper) => void
   manifestIdsList: Array<string>
@@ -50,6 +57,7 @@ const OpenShiftTemplateWithGit: React.FC<StepProps<ConnectorConfigDTO> & Openshi
   initialValues,
   handleSubmit,
   expressions,
+  allowableTypes,
   prevStepData,
   previousStep,
   manifestIdsList,
@@ -71,32 +79,6 @@ const OpenShiftTemplateWithGit: React.FC<StepProps<ConnectorConfigDTO> & Openshi
         : prevStepData?.url
       : null
 
-  const getRepoName = (): string => {
-    let repoName = ''
-    if (getMultiTypeFromValue(prevStepData?.connectorRef) !== MultiTypeInputType.FIXED) {
-      repoName = prevStepData?.connectorRef
-    } else if (prevStepData?.connectorRef) {
-      const connectorScope = getScopeFromValue(initialValues?.spec?.store?.spec?.connectorRef)
-      if (connectorScope === Scope.ACCOUNT) {
-        if (
-          initialValues?.spec?.store?.spec?.connectorRef ===
-          `account.${prevStepData?.connectorRef?.connector?.identifier}`
-        ) {
-          repoName = initialValues?.spec?.store?.spec?.repoName
-        } else {
-          repoName = ''
-        }
-      } else {
-        repoName =
-          prevStepData?.connectorRef?.connector?.identifier === initialValues?.spec?.store?.spec?.connectorRef
-            ? initialValues?.spec?.store?.spec?.repoName
-            : ''
-      }
-      return repoName
-    }
-    return repoName
-  }
-
   const getInitialValues = React.useCallback((): OpenShiftTemplateGITDataType => {
     const specValues = get(initialValues, 'spec.store.spec', null)
 
@@ -105,7 +87,7 @@ const OpenShiftTemplateWithGit: React.FC<StepProps<ConnectorConfigDTO> & Openshi
         ...specValues,
         identifier: initialValues.identifier,
         paths: specValues.paths,
-        repoName: getRepoName(),
+        repoName: getRepositoryName(prevStepData, initialValues),
         path:
           getMultiTypeFromValue(specValues?.paths) === MultiTypeInputType.RUNTIME
             ? specValues.paths
@@ -122,7 +104,7 @@ const OpenShiftTemplateWithGit: React.FC<StepProps<ConnectorConfigDTO> & Openshi
       gitFetchType: 'Branch',
       path: '',
       skipResourceVersioning: false,
-      repoName: getRepoName()
+      repoName: getRepositoryName(prevStepData, initialValues)
     }
   }, [])
 
@@ -220,6 +202,7 @@ const OpenShiftTemplateWithGit: React.FC<StepProps<ConnectorConfigDTO> & Openshi
                 <GitRepositoryName
                   accountUrl={accountUrl}
                   expressions={expressions}
+                  allowableTypes={allowableTypes}
                   fieldValue={formik.values?.repoName}
                   changeFieldValue={(value: string) => formik.setFieldValue('repoName', value)}
                   isReadonly={isReadonly}
@@ -244,7 +227,7 @@ const OpenShiftTemplateWithGit: React.FC<StepProps<ConnectorConfigDTO> & Openshi
                     <FormInput.MultiTextInput
                       label={getString('pipelineSteps.deploy.inputSet.branch')}
                       placeholder={getString('pipeline.manifestType.branchPlaceholder')}
-                      multiTextInputProps={{ expressions }}
+                      multiTextInputProps={{ expressions, allowableTypes }}
                       name="branch"
                     />
                     {getMultiTypeFromValue(formik.values?.branch) === MultiTypeInputType.RUNTIME && (
@@ -273,7 +256,7 @@ const OpenShiftTemplateWithGit: React.FC<StepProps<ConnectorConfigDTO> & Openshi
                     <FormInput.MultiTextInput
                       label={getString('pipeline.manifestType.commitId')}
                       placeholder={getString('pipeline.manifestType.commitPlaceholder')}
-                      multiTextInputProps={{ expressions }}
+                      multiTextInputProps={{ expressions, allowableTypes }}
                       name="commitId"
                     />
                     {getMultiTypeFromValue(formik.values?.commitId) === MultiTypeInputType.RUNTIME && (
@@ -304,7 +287,7 @@ const OpenShiftTemplateWithGit: React.FC<StepProps<ConnectorConfigDTO> & Openshi
                     label={getString('pipeline.manifestType.osTemplatePath')}
                     placeholder={getString('pipeline.manifestType.osTemplatePathPlaceHolder')}
                     name="path"
-                    multiTextInputProps={{ expressions }}
+                    multiTextInputProps={{ expressions, allowableTypes }}
                   />
                   {getMultiTypeFromValue(formik.values?.path) === MultiTypeInputType.RUNTIME && (
                     <ConfigureOptions
@@ -337,7 +320,7 @@ const OpenShiftTemplateWithGit: React.FC<StepProps<ConnectorConfigDTO> & Openshi
                       <FormMultiTypeCheckboxField
                         name="skipResourceVersioning"
                         label={getString('skipResourceVersion')}
-                        multiTypeTextbox={{ expressions }}
+                        multiTypeTextbox={{ expressions, allowableTypes }}
                         className={cx(templateCss.halfWidth, templateCss.checkbox)}
                       />
                       {getMultiTypeFromValue(formik.values?.skipResourceVersioning) === MultiTypeInputType.RUNTIME && (

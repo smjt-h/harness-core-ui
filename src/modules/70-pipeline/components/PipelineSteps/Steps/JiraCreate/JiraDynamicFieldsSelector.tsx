@@ -1,3 +1,10 @@
+/*
+ * Copyright 2021 Harness Inc. All rights reserved.
+ * Use of this source code is governed by the PolyForm Free Trial 1.0.0 license
+ * that can be found in the licenses directory at the root of this repository, also available at
+ * https://polyformproject.org/wp-content/uploads/2020/05/PolyForm-Free-Trial-1.0.0.txt.
+ */
+
 import React, { useEffect, useState } from 'react'
 import { FieldArray, FormikProps } from 'formik'
 import { useParams } from 'react-router-dom'
@@ -7,6 +14,7 @@ import {
   FormInput,
   HarnessDocTooltip,
   MultiTypeInputType,
+  PageSpinner,
   Radio,
   Select,
   Text
@@ -81,7 +89,7 @@ const SelectFieldList = (props: JiraDynamicFieldsSelectorContentInterface) => {
       const issueTypeData = projectMetadata?.issuetypes[selectedIssueTypeKey || '']
       const fieldListToSet: JiraFieldNG[] = []
       const fieldKeys = Object.keys(issueTypeData?.fields || {})
-      fieldKeys.forEach(keyy => {
+      fieldKeys.sort().forEach(keyy => {
         if (issueTypeData?.fields[keyy] && keyy !== 'Summary' && keyy !== 'Description') {
           fieldListToSet.push(issueTypeData?.fields[keyy])
         }
@@ -139,6 +147,13 @@ const SelectFieldList = (props: JiraDynamicFieldsSelectorContentInterface) => {
           }}
         />
       </div>
+
+      {fetchingProjectMetadata ? (
+        <PageSpinner
+          message={getString('pipeline.jiraCreateStep.fetchingFields')}
+          className={css.fetchingPageSpinner}
+        />
+      ) : null}
 
       {!selectedIssueTypeKey ? (
         <div className={css.fieldsSelectorPlaceholder}>

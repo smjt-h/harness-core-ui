@@ -2629,9 +2629,6 @@ exports[`INPUT VARIABLE VIEW renders the input variable view: input variabe mode
       data-testid="undefined.Variables-summary"
     >
       <div
-        class="Accordion--chevron"
-      />
-      <div
         class=""
       >
         <div
@@ -2704,6 +2701,9 @@ exports[`INPUT VARIABLE VIEW renders the input variable view: input variabe mode
           </p>
         </div>
       </div>
+      <div
+        class="Accordion--chevron"
+      />
     </div>
     <div
       class="bp3-collapse Accordion--collapse"

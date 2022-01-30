@@ -1,3 +1,10 @@
+/*
+ * Copyright 2022 Harness Inc. All rights reserved.
+ * Use of this source code is governed by the PolyForm Shield 1.0.0 license
+ * that can be found in the licenses directory at the root of this repository, also available at
+ * https://polyformproject.org/wp-content/uploads/2020/06/PolyForm-Shield-1.0.0.txt.
+ */
+
 import { isEmpty as _isEmpty, defaultTo as _defaultTo } from 'lodash-es'
 import type { FixedScheduleClient, GatewayDetails, Provider } from '@ce/components/COCreateGateway/models'
 import type { CcmMetaData } from 'services/ce/services'
@@ -89,7 +96,7 @@ export class Utils {
       selector: {
         ruleName: services.find(_s => _s.id === _d.dep_id)?.name as string
       },
-      wait: _d.delay_secs
+      wait: _d.delay_secs as number
     }))
   }
 
@@ -180,5 +187,9 @@ export class Utils {
         }
       }
     }
+  }
+
+  static isUserAbortedRequest = (e: any) => {
+    return e.message.includes('The user aborted a request')
   }
 }

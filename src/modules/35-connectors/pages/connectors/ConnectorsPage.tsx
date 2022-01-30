@@ -1,3 +1,10 @@
+/*
+ * Copyright 2022 Harness Inc. All rights reserved.
+ * Use of this source code is governed by the PolyForm Shield 1.0.0 license
+ * that can be found in the licenses directory at the root of this repository, also available at
+ * https://polyformproject.org/wp-content/uploads/2020/06/PolyForm-Shield-1.0.0.txt.
+ */
+
 import React, { useState, useEffect, useCallback } from 'react'
 import {
   Layout,
@@ -58,6 +65,8 @@ import type { FilterInterface, FilterDataInterface } from '@common/components/Fi
 import type { CrudOperation } from '@common/components/Filter/FilterCRUD/FilterCRUD'
 import { useDocumentTitle } from '@common/hooks/useDocumentTitle'
 import FilterSelector from '@common/components/Filter/FilterSelector/FilterSelector'
+import { FeatureFlag } from '@common/featureFlags'
+import { useFeatureFlag } from '@common/hooks/useFeatureFlag'
 import type { ModulePathParams, ProjectPathProps } from '@common/interfaces/RouteInterfaces'
 import RbacButton from '@rbac/components/Button/Button'
 import { PermissionIdentifier } from '@rbac/interfaces/PermissionIdentifier'
@@ -69,6 +78,11 @@ import { NGBreadcrumbs } from '@common/components/NGBreadcrumbs/NGBreadcrumbs'
 import { ResourceType } from '@rbac/interfaces/ResourceType'
 import { Scope } from '@common/interfaces/SecretsInterface'
 import ScopedTitle from '@common/components/Title/ScopedTitle'
+import { useFeature } from '@common/hooks/useFeatures'
+import type { CheckFeatureReturn } from 'framework/featureStore/featureStoreUtil'
+import { FeatureWarningTooltip } from '@common/components/FeatureWarning/FeatureWarningWithTooltip'
+import { FeatureIdentifier } from 'framework/featureStore/FeatureIdentifier'
+import { getLinkForAccountResources } from '@common/utils/BreadcrumbUtils'
 import ConnectorsListView from './views/ConnectorsListView'
 import { getIconByType, getConnectorDisplayName } from './utils/ConnectorUtils'
 import {
@@ -81,6 +95,7 @@ import {
   validateForm
 } from './utils/RequestUtils'
 import ConnectorsEmptyState from './images/connectors-empty-state.png'
+
 import css from './ConnectorsPage.module.scss'
 
 interface ConnectorsListProps {
@@ -123,6 +138,8 @@ const ConnectorsPage: React.FC<ConnectorsListProps> = ({ catalogueMockData, stat
   }
   const history = useHistory()
   useDocumentTitle(getString('connectorsLabel'))
+  const isCustomHealthEnabled = useFeatureFlag(FeatureFlag.CHI_CUSTOM_HEALTH)
+  const isErrorTrackingEnabled = useFeatureFlag(FeatureFlag.ERROR_TRACKING_ENABLED)
 
   const ConnectorCatalogueNames = new Map<ConnectorCatalogueItem['category'], string>()
   // This list will control which categories will be displayed in UI and its order
@@ -276,7 +293,10 @@ const ConnectorsPage: React.FC<ConnectorsListProps> = ({ catalogueMockData, stat
 
   /* #region Create Connector Catalogue section */
 
-  const computeDrawerMap = (catalogueData: ResponseConnectorCatalogueResponse | null): AddDrawerMapInterface => {
+  const computeDrawerMap = (
+    catalogueData: ResponseConnectorCatalogueResponse | null,
+    featureInfo: CheckFeatureReturn
+  ): AddDrawerMapInterface => {
     const originalData = catalogueData?.data?.catalogue || []
     originalData.forEach(value => {
       if (value.category === 'SECRET_MANAGER') {
@@ -292,6 +312,31 @@ const ConnectorsPage: React.FC<ConnectorsListProps> = ({ catalogueMockData, stat
       }
     })
 
+    const k8sLimitWarningRenderer = () => {
+      const { featureDetail: { count, limit } = {} } = featureInfo
+      return (
+        <section className={css.limitWarningTooltipCtn}>
+          <FeatureWarningTooltip
+            featureName={FeatureIdentifier.CCM_K8S_CLUSTERS}
+            warningMessage={getString('connectors.ceK8.featureWarning', { count, limit })}
+          />
+        </section>
+      )
+    }
+
+    const RestrictionLimitWarningRenderers: Record<string, (item: ItemInterface) => React.ReactNode> = {
+      CEK8sCluster: k8sLimitWarningRenderer
+    }
+
+    const isRestrictedConnector = (item: ConnectorCatalogueItem, connector: string) => {
+      if (!item.category) {
+        return false
+      }
+
+      // TODO: make it generic
+      return connector === 'CEK8sCluster' && !featureInfo.enabled
+    }
+
     return Object.assign(
       {},
       {
@@ -300,15 +345,26 @@ const ConnectorsPage: React.FC<ConnectorsListProps> = ({ catalogueMockData, stat
           orderedCatalogue.map((item: ConnectorCatalogueItem) => {
             return {
               categoryLabel: ConnectorCatalogueNames.get(item['category']) || '',
+              warningTooltipRenderer: i => {
+                const renderer = RestrictionLimitWarningRenderers[i.value]
+                return renderer && renderer(i)
+              },
               items:
                 item.connectors
-                  ?.sort((a, b) => (getConnectorDisplayName(a) < getConnectorDisplayName(b) ? -1 : 1))
+                  ?.filter(connector => (connector === 'ErrorTracking' ? isErrorTrackingEnabled : true))
+                  .sort((a, b) => (getConnectorDisplayName(a) < getConnectorDisplayName(b) ? -1 : 1))
+                  .filter(entry => {
+                    const name = entry.valueOf() || ''
+                    if (name !== 'CustomHealth') return true
+                    return isCustomHealthEnabled !== false
+                  })
                   .map(entry => {
                     const name = entry.valueOf() || ''
                     return {
                       itemLabel: getConnectorDisplayName(entry) || name,
                       iconName: getIconByType(entry),
-                      value: name
+                      value: name,
+                      disabled: isRestrictedConnector(item, entry)
                     }
                   }) || []
             } as CategoryInterface
@@ -316,6 +372,12 @@ const ConnectorsPage: React.FC<ConnectorsListProps> = ({ catalogueMockData, stat
       }
     )
   }
+
+  const featureInfo = useFeature({
+    featureRequest: {
+      featureName: FeatureIdentifier.CCM_K8S_CLUSTERS
+    }
+  })
 
   const { data: catalogueData, loading: loadingCatalogue } = useGetConnectorCatalogue({
     queryParams: { accountIdentifier: accountId },
@@ -373,14 +435,14 @@ const ConnectorsPage: React.FC<ConnectorsListProps> = ({ catalogueMockData, stat
       <PageSpinner />
     ) : (
       <AddDrawer
-        addDrawerMap={computeDrawerMap(catalogueData)}
+        addDrawerMap={computeDrawerMap(catalogueData, featureInfo)}
         onSelect={onSelect}
         onClose={hideDrawer}
         drawerContext={DrawerContext.PAGE}
         showRecentlyUsed={false}
       />
     )
-  }, [catalogueData])
+  }, [catalogueData, featureInfo])
 
   /* #endregion */
 
@@ -646,10 +708,14 @@ const ConnectorsPage: React.FC<ConnectorsListProps> = ({ catalogueMockData, stat
             }}
           />
         }
-        breadcrumbs={<NGBreadcrumbs />}
+        breadcrumbs={
+          <NGBreadcrumbs
+            links={getLinkForAccountResources({ accountId, orgIdentifier, projectIdentifier, getString })}
+          />
+        }
       />
       <Layout.Vertical height={'calc(100vh - 64px'} className={css.listPage}>
-        {connectors?.content?.length || searchTerm || loading || appliedFilter ? (
+        {connectors?.content?.length || isGitSyncEnabled || searchTerm || loading || appliedFilter ? (
           <Layout.Horizontal flex className={css.header}>
             <Layout.Horizontal spacing="small">
               <RbacButton

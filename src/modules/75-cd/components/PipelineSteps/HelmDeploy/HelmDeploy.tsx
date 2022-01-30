@@ -1,3 +1,10 @@
+/*
+ * Copyright 2021 Harness Inc. All rights reserved.
+ * Use of this source code is governed by the PolyForm Shield 1.0.0 license
+ * that can be found in the licenses directory at the root of this repository, also available at
+ * https://polyformproject.org/wp-content/uploads/2020/06/PolyForm-Shield-1.0.0.txt.
+ */
+
 import React from 'react'
 import { IconName, Formik, Layout, FormInput, getMultiTypeFromValue, MultiTypeInputType } from '@wings-software/uicore'
 import * as Yup from 'yup'
@@ -15,6 +22,7 @@ import { VariablesListTable } from '@pipeline/components/VariablesListTable/Vari
 
 import { ConfigureOptions } from '@common/components/ConfigureOptions/ConfigureOptions'
 import { useVariablesExpression } from '@pipeline/components/PipelineStudio/PiplineHooks/useVariablesExpression'
+import type { StringsMap } from 'stringTypes'
 
 import { useStrings } from 'framework/strings'
 
@@ -53,6 +61,8 @@ export interface HelmDeployVariableStepProps {
   variablesData: StepElementConfig
 }
 
+const withUpdatedPayload = (values: StepElementConfig) => ({ ...values, spec: { ...values.spec, skipDryRun: false } })
+
 function HelmDeployWidget(
   props: HelmDeployProps,
   formikRef: StepFormikFowardRef<StepElementConfig>
@@ -65,10 +75,10 @@ function HelmDeployWidget(
       <Formik<StepElementConfig>
         onSubmit={(values: StepElementConfig) => {
           /* istanbul ignore next */
-          onUpdate?.({ ...values, spec: { skipDryRun: false } })
+          onUpdate?.(withUpdatedPayload(values))
         }}
         validate={(values: StepElementConfig) => {
-          onChange?.({ ...values, spec: { skipDryRun: false } })
+          onChange?.(withUpdatedPayload(values))
         }}
         formName="helmDeploy"
         initialValues={initialValues}
@@ -217,6 +227,7 @@ export class HelmDeploy extends PipelineStep<StepElementConfig> {
   protected type = StepType.HelmDeploy
   protected stepName = 'Helm Deploy'
   protected stepIcon: IconName = 'service-helm'
+  protected stepDescription: keyof StringsMap = 'pipeline.stepDescription.HelmDeploy'
 
   validateInputSet({
     data,

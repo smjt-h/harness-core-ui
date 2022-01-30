@@ -1,3 +1,10 @@
+/*
+ * Copyright 2022 Harness Inc. All rights reserved.
+ * Use of this source code is governed by the PolyForm Shield 1.0.0 license
+ * that can be found in the licenses directory at the root of this repository, also available at
+ * https://polyformproject.org/wp-content/uploads/2020/06/PolyForm-Shield-1.0.0.txt.
+ */
+
 import React, { useEffect, useState } from 'react'
 import { useParams } from 'react-router-dom'
 import { isEmpty as _isEmpty, defaultTo as _defaultTo } from 'lodash-es'
@@ -74,7 +81,7 @@ export const CECOEditGatewayPage: React.FC = () => {
   useEffect(() => {
     if (loading) return
     const service = data?.response?.service as Service
-    const deps = data?.response?.deps as ServiceDep[]
+    const deps = _defaultTo(data?.response?.deps as ServiceDep[], [])
     const hasAsg = !_isEmpty(service.routing?.instance?.scale_group)
     const isK8sRule = service.kind === GatewayKindType.KUBERNETES
 

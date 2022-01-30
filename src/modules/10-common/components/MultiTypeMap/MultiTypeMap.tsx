@@ -1,3 +1,10 @@
+/*
+ * Copyright 2021 Harness Inc. All rights reserved.
+ * Use of this source code is governed by the PolyForm Shield 1.0.0 license
+ * that can be found in the licenses directory at the root of this repository, also available at
+ * https://polyformproject.org/wp-content/uploads/2020/06/PolyForm-Shield-1.0.0.txt.
+ */
+
 import React from 'react'
 import { v4 as nameSpace, v5 as uuid } from 'uuid'
 import cx from 'classnames'
@@ -7,7 +14,8 @@ import {
   Button,
   getMultiTypeFromValue,
   MultiTypeInputType,
-  MultiTextInputProps
+  MultiTextInputProps,
+  FontVariation
 } from '@wings-software/uicore'
 import { FieldArray, connect, FormikContext } from 'formik'
 import { get } from 'lodash-es'
@@ -87,24 +95,18 @@ export const MultiTypeMap = (props: MultiTypeMapProps): React.ReactElement => {
                 {Array.isArray(value) &&
                   value.map(({ id }, index: number) => (
                     <div className={cx(css.group, css.withoutAligning)} key={id}>
-                      <div style={{ flexGrow: 1 }}>
+                      <div>
                         {index === 0 && (
-                          <Text
-                            margin={{ bottom: 'xsmall' }}
-                            font={{ size: appearance === 'minimal' ? 'small' : undefined }}
-                          >
+                          <Text font={{ variation: FontVariation.FORM_LABEL }} margin={{ bottom: 'xsmall' }}>
                             {getString('keyLabel')}
                           </Text>
                         )}
-                        <FormInput.Text name={`${name}[${index}].key`} style={{ margin: 0 }} disabled={disabled} />
+                        <FormInput.Text name={`${name}[${index}].key`} disabled={disabled} />
                       </div>
 
-                      <div style={{ flexGrow: 1 }}>
+                      <div>
                         {index === 0 && (
-                          <Text
-                            font={{ size: appearance === 'minimal' ? 'small' : undefined }}
-                            margin={{ bottom: 'xsmall' }}
-                          >
+                          <Text font={{ variation: FontVariation.FORM_LABEL }} margin={{ bottom: 'xsmall' }}>
                             {getString('valueLabel')}
                           </Text>
                         )}
@@ -116,7 +118,6 @@ export const MultiTypeMap = (props: MultiTypeMapProps): React.ReactElement => {
                               allowableTypes: [MultiTypeInputType.FIXED, MultiTypeInputType.EXPRESSION],
                               ...valueMultiTextInputProps
                             }}
-                            style={{ flexGrow: 1 }}
                             disabled={disabled}
                           />
                           <Button

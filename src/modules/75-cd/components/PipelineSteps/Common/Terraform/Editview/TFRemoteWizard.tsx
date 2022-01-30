@@ -1,3 +1,10 @@
+/*
+ * Copyright 2021 Harness Inc. All rights reserved.
+ * Use of this source code is governed by the PolyForm Shield 1.0.0 license
+ * that can be found in the licenses directory at the root of this repository, also available at
+ * https://polyformproject.org/wp-content/uploads/2020/06/PolyForm-Shield-1.0.0.txt.
+ */
+
 import {
   Button,
   ButtonVariation,
@@ -13,6 +20,7 @@ import {
   Text
 } from '@wings-software/uicore'
 import React from 'react'
+import { unset } from 'lodash-es'
 import cx from 'classnames'
 import * as Yup from 'yup'
 import { v4 as uuid } from 'uuid'
@@ -176,9 +184,9 @@ export const TFRemoteWizard: React.FC<StepProps<any> & TFRemoteProps> = ({
           }
           /* istanbul ignore else */
           if (payload.varFile.spec?.store?.spec?.gitFetchType === gitFetchTypes[0].value) {
-            delete data?.varFile?.spec?.store?.spec?.commitId
+            unset(data?.varFile?.spec?.store?.spec, 'commitId')
           } else if (payload.varFile.spec?.store?.spec?.gitFetchType === gitFetchTypes[1].value) {
-            delete data?.varFile?.spec?.store?.spec?.branch
+            unset(data?.varFile?.spec?.store?.spec, 'branch')
           }
           /* istanbul ignore else */
           if (
@@ -187,7 +195,7 @@ export const TFRemoteWizard: React.FC<StepProps<any> & TFRemoteProps> = ({
           ) {
             data.varFile.spec.store.spec['paths'] = payload.varFile.spec?.store?.spec?.paths?.map(
               (item: PathInterface) => item.path
-            ) as any
+            )
           } else if (getMultiTypeFromValue(payload.varFile.spec?.store?.spec?.paths) === MultiTypeInputType.RUNTIME) {
             data.varFile.spec.store.spec['paths'] = payload.varFile.spec?.store?.spec?.paths
           }

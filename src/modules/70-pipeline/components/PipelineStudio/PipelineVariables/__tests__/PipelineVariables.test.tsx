@@ -1,6 +1,13 @@
+/*
+ * Copyright 2021 Harness Inc. All rights reserved.
+ * Use of this source code is governed by the PolyForm Shield 1.0.0 license
+ * that can be found in the licenses directory at the root of this repository, also available at
+ * https://polyformproject.org/wp-content/uploads/2020/06/PolyForm-Shield-1.0.0.txt.
+ */
+
 import React from 'react'
 import { render } from '@testing-library/react'
-import { VisualYamlSelectedView as SelectedView } from '@wings-software/uicore'
+import { MultiTypeInputType, VisualYamlSelectedView as SelectedView } from '@wings-software/uicore'
 
 import { TestWrapper } from '@common/utils/testUtils'
 import * as cdng from 'services/cd-ng'
@@ -8,6 +15,7 @@ import { PipelineVariablesContext } from '@pipeline/components/PipelineVariables
 import { factory } from '@pipeline/components/PipelineSteps/Steps/__tests__/StepTestUtil'
 import { CustomVariables } from '@pipeline/components/PipelineSteps/Steps/CustomVariables/CustomVariables'
 import { branchStatusMock, gitConfigs, sourceCodeManagers } from '@connectors/mocks/mock'
+import { Scope } from '@common/interfaces/SecretsInterface'
 import PipelineVariables from '../PipelineVariables'
 import { PipelineContext, PipelineContextInterface } from '../../PipelineContext/PipelineContext'
 import variablesPipeline from './variables.json'
@@ -18,11 +26,13 @@ const pipelineContext: PipelineContextInterface = {
   updatePipeline: jest.fn(),
   state: { pipeline, pipelineView: { splitViewData: {} }, selectionState: {} } as any,
   contextType: 'Pipeline',
+  allowableTypes: [MultiTypeInputType.FIXED, MultiTypeInputType.RUNTIME, MultiTypeInputType.EXPRESSION],
   stepsFactory: factory,
   stagesMap: {},
   isReadonly: false,
   setSchemaErrorView: jest.fn(),
   view: SelectedView.VISUAL,
+  scope: Scope.PROJECT,
   renderPipelineStage: jest.fn(),
   setView: jest.fn(),
   updateGitDetails: jest.fn(),

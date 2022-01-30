@@ -1,9 +1,16 @@
+/*
+ * Copyright 2021 Harness Inc. All rights reserved.
+ * Use of this source code is governed by the PolyForm Shield 1.0.0 license
+ * that can be found in the licenses directory at the root of this repository, also available at
+ * https://polyformproject.org/wp-content/uploads/2020/06/PolyForm-Shield-1.0.0.txt.
+ */
+
 import React from 'react'
 import { Icon, Text, IconName } from '@wings-software/uicore'
 import cx from 'classnames'
 import { get, mapKeys, omit, defaultTo } from 'lodash-es'
 
-import type { ExecutionNode } from 'services/pipeline-ng'
+import type { ExecutionNode, InterruptEffect } from 'services/pipeline-ng'
 import { String, useStrings } from 'framework/strings'
 import type {
   ExecutionPipelineItem,
@@ -21,11 +28,8 @@ import {
 
 import css from './StepsTree.module.scss'
 
-function hasInterruptHistories(step: ExecutionPipelineNode<ExecutionNode>): boolean {
-  return (
-    Array.isArray(step?.item?.data?.interruptHistories) &&
-    (step?.item?.data?.interruptHistories.length || /* istanbul ignore next */ 0) > 0
-  )
+function getRetryInterrupts(step: ExecutionPipelineNode<ExecutionNode>): InterruptEffect[] {
+  return defaultTo(step?.item?.data?.interruptHistories, []).filter(row => row.interruptType === 'RETRY')
 }
 
 const IconMap: Record<string, IconName> = {
@@ -68,8 +72,9 @@ export function StepsTree(props: StepsTreeProps): React.ReactElement {
       {nodes.map((step, i) => {
         if (step.item) {
           const statusLower = step.item.status.toLowerCase()
+          const retryInterrupts = getRetryInterrupts(step)
 
-          if (hasInterruptHistories(step)) {
+          if (retryInterrupts.length > 0) {
             const retryNodes: Array<ExecutionPipelineNode<ExecutionNode>> = defaultTo(
               step.item.data?.interruptHistories,
               []

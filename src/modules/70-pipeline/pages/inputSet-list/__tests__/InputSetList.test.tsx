@@ -1,3 +1,10 @@
+/*
+ * Copyright 2022 Harness Inc. All rights reserved.
+ * Use of this source code is governed by the PolyForm Shield 1.0.0 license
+ * that can be found in the licenses directory at the root of this repository, also available at
+ * https://polyformproject.org/wp-content/uploads/2020/06/PolyForm-Shield-1.0.0.txt.
+ */
+
 import React from 'react'
 import { render, RenderResult, waitFor, fireEvent, getByText, queryByText, getByTestId } from '@testing-library/react'
 import { act } from 'react-dom/test-utils'
@@ -6,6 +13,7 @@ import { TestWrapper, findDialogContainer, findPopoverContainer } from '@common/
 import routes from '@common/RouteDefinitions'
 import { defaultAppStoreValues } from '@common/utils/DefaultAppStoreData'
 import { accountPathProps, pipelineModuleParams, pipelinePathProps } from '@common/utils/routeUtils'
+import { branchStatusMock, gitConfigs, sourceCodeManagers } from '@connectors/mocks/mock'
 import { PipelineResponse as PipelineDetailsMockResponse } from '../../pipeline-details/__tests__/PipelineDetailsMocks'
 import InputSetList from '../InputSetList'
 import {
@@ -39,7 +47,16 @@ jest.mock('@common/utils/YamlUtils', () => ({}))
 jest.mock('services/cd-ng', () => ({
   useGetConnector: jest.fn(() => ConnectorResponse),
   useCreatePR: jest.fn(() => noop),
-  useGetFileContent: jest.fn(() => noop)
+  useGetFileContent: jest.fn(() => noop),
+  useGetListOfBranchesWithStatus: jest.fn().mockImplementation(() => {
+    return { data: branchStatusMock, refetch: jest.fn(), loading: false }
+  }),
+  useListGitSync: jest.fn().mockImplementation(() => {
+    return { data: gitConfigs, refetch: jest.fn() }
+  }),
+  useGetSourceCodeManagers: jest.fn().mockImplementation(() => {
+    return { data: sourceCodeManagers, refetch: jest.fn() }
+  })
 }))
 
 jest.mock('services/pipeline-ng', () => ({

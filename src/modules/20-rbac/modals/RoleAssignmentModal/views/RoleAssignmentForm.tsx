@@ -1,3 +1,10 @@
+/*
+ * Copyright 2021 Harness Inc. All rights reserved.
+ * Use of this source code is governed by the PolyForm Free Trial 1.0.0 license
+ * that can be found in the licenses directory at the root of this repository, also available at
+ * https://polyformproject.org/wp-content/uploads/2020/05/PolyForm-Free-Trial-1.0.0.txt.
+ */
+
 import React, { useMemo } from 'react'
 import {
   Container,
@@ -19,6 +26,7 @@ import { errorCheck } from '@common/utils/formikHelpers'
 import { useToaster } from '@common/components'
 import { getScopeBasedManagedResourceGroup, isAssignmentFieldDisabled } from '@rbac/utils/utils'
 import { getScopeFromDTO } from '@common/components/EntityReference/EntityReference'
+import NewUserRoleDropdown from '@rbac/components/NewUserRoleDropdown/NewUserRoleDropdown'
 import type { Assignment, RoleOption, UserRoleAssignmentValues } from './UserRoleAssigment'
 import type { RoleAssignmentValues } from './RoleAssignment'
 import css from './RoleAssignmentForm.module.scss'
@@ -121,16 +129,7 @@ const RoleAssignmentForm: React.FC<RoleAssignmentFormProps> = ({ noRoleAssignmen
             // eslint-disable-next-line react/display-name
             renderer: (value, _index, handleChange, error) => (
               <Layout.Vertical flex={{ alignItems: 'end' }} spacing="xsmall">
-                <Select
-                  items={roles}
-                  value={value}
-                  popoverClassName={css.selectPopover}
-                  inputProps={{
-                    placeholder: getString('rbac.usersPage.selectRole')
-                  }}
-                  disabled={isAssignmentFieldDisabled(value)}
-                  onChange={handleChange}
-                />
+                <NewUserRoleDropdown value={value} handleChange={handleChange} roles={roles} />
                 {errorCheck('assignments', formik) && error ? (
                   <Text intent="danger" font="xsmall">
                     {getString('rbac.usersPage.validation.role')}

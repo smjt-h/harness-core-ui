@@ -1,5 +1,12 @@
+/*
+ * Copyright 2022 Harness Inc. All rights reserved.
+ * Use of this source code is governed by the PolyForm Shield 1.0.0 license
+ * that can be found in the licenses directory at the root of this repository, also available at
+ * https://polyformproject.org/wp-content/uploads/2020/06/PolyForm-Shield-1.0.0.txt.
+ */
+
 import React from 'react'
-import { render, act } from '@testing-library/react'
+import { render, act, fireEvent } from '@testing-library/react'
 import { RUNTIME_INPUT_VALUE } from '@wings-software/uicore'
 import { StepViewType, StepFormikRef } from '@pipeline/components/AbstractSteps/Step'
 import { StepType } from '@pipeline/components/PipelineSteps/PipelineStepInterface'
@@ -51,10 +58,13 @@ describe('DockerHub Step', () => {
 
   describe('Edit View', () => {
     test('should render properly', () => {
-      const { container } = render(
+      const { container, getByText } = render(
         <TestStepWidget initialValues={{}} type={StepType.DockerHub} stepViewType={StepViewType.Edit} />
       )
-
+      act(() => {
+        fireEvent.click(getByText('common.optionalConfig'))
+      })
+      expect(getByText('ci.remoteCacheRepository.label')).toBeTruthy()
       expect(container).toMatchSnapshot()
     })
 

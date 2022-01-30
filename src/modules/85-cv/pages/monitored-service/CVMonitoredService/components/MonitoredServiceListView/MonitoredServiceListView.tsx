@@ -1,15 +1,27 @@
+/*
+ * Copyright 2021 Harness Inc. All rights reserved.
+ * Use of this source code is governed by the PolyForm Shield 1.0.0 license
+ * that can be found in the licenses directory at the root of this repository, also available at
+ * https://polyformproject.org/wp-content/uploads/2020/06/PolyForm-Shield-1.0.0.txt.
+ */
+
 import React from 'react'
 import { useParams, Link } from 'react-router-dom'
 import type { CellProps, Renderer } from 'react-table'
 import { Container, Text, Color, FontVariation, Layout, TableV2, NoDataCard, Heading } from '@wings-software/uicore'
 import { useStrings } from 'framework/strings'
-import type { MonitoredServiceListItemDTO } from 'services/cv'
+import { ResourceType } from '@rbac/interfaces/ResourceType'
+import { PermissionIdentifier } from '@rbac/interfaces/PermissionIdentifier'
 import routes from '@common/RouteDefinitions'
 import type { ProjectPathProps } from '@common/interfaces/RouteInterfaces'
-import ToggleOnOff from '@common/components/ToggleOnOff/ToggleOnOff'
+import { usePermission } from '@rbac/hooks/usePermission'
+import ToggleOnOff from '@cv/pages/monitored-service/CVMonitoredService/components/ToggleOnOff/ToggleOnOff'
 import noServiceAvailableImage from '@cv/assets/noServiceAvailable.png'
 import FilterCard from '@cv/components/FilterCard/FilterCard'
 import ContextMenuActions from '@cv/components/ContextMenuActions/ContextMenuActions'
+import type { MonitoredServiceListItemDTO } from 'services/cv'
+import type { ExtendedMonitoredServiceDTO } from '@cv/pages/monitored-service/components/Configurations/Configurations.utils'
+import { EnvironmentToolTipDisplay } from '@cv/components/HarnessServiceAndEnvironment/components/EnvironmentToolTipDisplay'
 import IconGrid from '../IconGrid/IconGrid'
 import {
   calculateChangePercentage,
@@ -21,6 +33,7 @@ import {
 import type { MonitoredServiceListViewProps } from '../../CVMonitoredService.types'
 import MonitoredServiceCategory from '../../../components/Configurations/components/Dependency/component/components/MonitoredServiceCategory/MonitoredServiceCategory'
 import { getListTitle } from './MonitoredServiceListView.utils'
+import SLOsIconGrid from '../SLOsIconGrid/SLOsIconGrid'
 import css from '../../CVMonitoredService.module.scss'
 
 const CategoryProps: Renderer<CellProps<MonitoredServiceListItemDTO>> = ({ row }) => (
@@ -30,6 +43,8 @@ const CategoryProps: Renderer<CellProps<MonitoredServiceListItemDTO>> = ({ row }
 const RenderServiceName: Renderer<CellProps<MonitoredServiceListItemDTO>> = ({ row }) => {
   const { accountId, orgIdentifier, projectIdentifier } = useParams<ProjectPathProps>()
   const monitoredService = row.original
+
+  const envRefList = (monitoredService as ExtendedMonitoredServiceDTO)?.environmentRefList
 
   return (
     <Layout.Vertical>
@@ -55,9 +70,13 @@ const RenderServiceName: Renderer<CellProps<MonitoredServiceListItemDTO>> = ({ r
           module: 'cv'
         })}
       >
-        <Text color={Color.PRIMARY_7} font={{ align: 'left', size: 'xsmall' }}>
-          {monitoredService.environmentName}
-        </Text>
+        <EnvironmentToolTipDisplay
+          type={monitoredService?.type}
+          color={Color.PRIMARY_7}
+          font={{ align: 'left', size: 'xsmall' }}
+          envRefList={envRefList}
+          environmentRef={monitoredService?.environmentRef}
+        />
       </Link>
     </Layout.Vertical>
   )
@@ -132,6 +151,22 @@ const RenderDependenciesHealth: Renderer<CellProps<MonitoredServiceListItemDTO>>
   return null
 }
 
+const RenderSLOErrorBudgetData: Renderer<CellProps<MonitoredServiceListItemDTO>> = ({ row }) => {
+  const monitoredService = row.original
+
+  if (monitoredService.sloHealthIndicators?.length) {
+    return (
+      <SLOsIconGrid
+        iconProps={{ name: 'symbol-square', size: 14, padding: { right: 'xsmall' } }}
+        items={monitoredService.sloHealthIndicators}
+        width={100}
+      />
+    )
+  }
+
+  return <></>
+}
+
 const MonitoredServiceListView: React.FC<MonitoredServiceListViewProps> = ({
   serviceCountData,
   monitoredServiceListData,
@@ -141,19 +176,34 @@ const MonitoredServiceListView: React.FC<MonitoredServiceListViewProps> = ({
   onDeleteService,
   onToggleService,
   healthMonitoringFlagLoading,
+  refetchServiceCountData,
   setPage
 }) => {
   const { getString } = useStrings()
+
+  const { projectIdentifier } = useParams<ProjectPathProps>()
 
   const { content, pageSize = 0, pageIndex = 0, totalPages = 0, totalItems = 0 } = monitoredServiceListData || {}
 
   const RenderStatusToggle: Renderer<CellProps<MonitoredServiceListItemDTO>> = ({ row }) => {
     const monitoredService = row.original
 
+    const [canToggle] = usePermission(
+      {
+        resource: {
+          resourceType: ResourceType.MONITOREDSERVICE,
+          resourceIdentifier: projectIdentifier
+        },
+        permissions: [PermissionIdentifier.TOGGLE_MONITORED_SERVICE]
+      },
+      [projectIdentifier]
+    )
+
     return (
       <Layout.Horizontal flex={{ alignItems: 'center' }}>
         <ToggleOnOff
-          checked={!!monitoredService.healthMonitoringEnabled}
+          disabled={!canToggle}
+          checked={Boolean(monitoredService.healthMonitoringEnabled)}
           loading={healthMonitoringFlagLoading}
           onChange={checked => {
             onToggleService(monitoredService.identifier as string, checked)
@@ -170,6 +220,22 @@ const MonitoredServiceListView: React.FC<MonitoredServiceListViewProps> = ({
           editLabel={getString('cv.monitoredServices.editService')}
           onEdit={() => {
             onEditService(monitoredService.identifier as string)
+          }}
+          RbacPermissions={{
+            edit: {
+              permission: PermissionIdentifier.EDIT_MONITORED_SERVICE,
+              resource: {
+                resourceType: ResourceType.MONITOREDSERVICE,
+                resourceIdentifier: projectIdentifier
+              }
+            },
+            delete: {
+              permission: PermissionIdentifier.DELETE_MONITORED_SERVICE,
+              resource: {
+                resourceType: ResourceType.MONITOREDSERVICE,
+                resourceIdentifier: projectIdentifier
+              }
+            }
           }}
         />
       </Layout.Horizontal>
@@ -206,32 +272,37 @@ const MonitoredServiceListView: React.FC<MonitoredServiceListViewProps> = ({
               },
               {
                 Header: getString('name'),
-                width: '14.5%',
+                width: '12.5%',
                 Cell: RenderServiceName
               },
               {
                 Header: getString('cv.monitoredServices.table.changes'),
-                width: '18%',
+                width: '15%',
                 Cell: RenderServiceChanges
               },
               {
                 Header: getString('cv.monitoredServices.table.lastestHealthTrend'),
-                width: '20%',
+                width: '17%',
                 Cell: RenderHealthTrend
               },
               {
                 Header: getString('cv.monitoredServices.table.serviceHealthScore'),
-                width: '18%',
+                width: '15%',
                 Cell: RenderHealthScore
               },
               {
                 Header: getString('cv.monitoredServices.dependenciesHealth'),
-                width: '18%',
+                width: '15%',
                 Cell: RenderDependenciesHealth
               },
               {
+                Header: getString('cv.monitoredServices.sloErrorBudget'),
+                width: '15%',
+                Cell: RenderSLOErrorBudgetData
+              },
+              {
                 Header: getString('enabledLabel'),
-                width: '10%',
+                width: '8%',
                 Cell: RenderStatusToggle
               }
             ]}
@@ -241,7 +312,10 @@ const MonitoredServiceListView: React.FC<MonitoredServiceListViewProps> = ({
               pageIndex,
               pageCount: totalPages,
               itemCount: totalItems,
-              gotoPage: setPage
+              gotoPage: nextPage => {
+                setPage(nextPage)
+                refetchServiceCountData()
+              }
             }}
           />
         </>

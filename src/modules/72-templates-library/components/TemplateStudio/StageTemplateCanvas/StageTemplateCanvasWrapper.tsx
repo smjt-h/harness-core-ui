@@ -1,3 +1,10 @@
+/*
+ * Copyright 2021 Harness Inc. All rights reserved.
+ * Use of this source code is governed by the PolyForm Shield 1.0.0 license
+ * that can be found in the licenses directory at the root of this repository, also available at
+ * https://polyformproject.org/wp-content/uploads/2020/06/PolyForm-Shield-1.0.0.txt.
+ */
+
 import produce from 'immer'
 import { get, isEmpty, isUndefined, omit, omitBy, set } from 'lodash-es'
 import React from 'react'
@@ -13,6 +20,7 @@ import { TemplateContext } from '@templates-library/components/TemplateStudio/Te
 import type { TemplateFormRef } from '@templates-library/components/TemplateStudio/TemplateStudio'
 import { DefaultPipeline } from '@pipeline/components/PipelineStudio/PipelineContext/PipelineActions'
 import type { ProjectPathProps } from '@common/interfaces/RouteInterfaces'
+import { sanitize } from '@common/utils/JSONUtils'
 
 const StageTemplateCanvasWrapper = (_props: unknown, formikRef: TemplateFormRef) => {
   const {
@@ -42,7 +50,9 @@ const StageTemplateCanvasWrapper = (_props: unknown, formikRef: TemplateFormRef)
 
   const onUpdatePipeline = async (pipelineConfig: PipelineInfoConfig) => {
     const stage = omitBy(omitBy(get(pipelineConfig, 'stages[0].stage'), isUndefined), isEmpty)
-    set(template, 'spec', omit(stage, 'name', 'identifier', 'description', 'tags'))
+    const processNode = omit(stage, 'name', 'identifier', 'description', 'tags')
+    sanitize(processNode, { removeEmptyArray: false, removeEmptyObject: false, removeEmptyString: false })
+    set(template, 'spec', processNode)
     await updateTemplate(template)
   }
 

@@ -1,7 +1,14 @@
+/*
+ * Copyright 2021 Harness Inc. All rights reserved.
+ * Use of this source code is governed by the PolyForm Shield 1.0.0 license
+ * that can be found in the licenses directory at the root of this repository, also available at
+ * https://polyformproject.org/wp-content/uploads/2020/06/PolyForm-Shield-1.0.0.txt.
+ */
+
 import React, { ReactNode } from 'react'
 import type { CellProps } from 'react-table'
 import moment from 'moment'
-import { CircularPercentageChart, Color } from '@wings-software/uicore'
+import { CircularPercentageChart, Color, Text } from '@wings-software/uicore'
 import formatCost from '@ce/utils/formatCost'
 import {
   QlceViewFieldInputInput,
@@ -151,12 +158,14 @@ const GRID_EFFICIENCY_SCORE = {
 const RenderNameCell = ({ row }: CellProps<GridData>): ReactNode => {
   const { legendColor, name } = row.original
   return (
-    <span className={css.nameCell}>
+    <div className={css.nameCell}>
       <span className={css.legendColorCtn}>
         <span style={{ background: legendColor }} className={css.legendColor}></span>
       </span>
-      <span className={css.name}>{name}</span>
-    </span>
+      <Text lineClamp={1} className={css.name}>
+        {name}
+      </Text>
+    </div>
   )
 }
 
@@ -251,7 +260,7 @@ const COLUMNS: Record<string, Column> = {
     Cell: RenderCostTrendCell
   },
   UNALLOCATED_COST: {
-    Header: 'Unallocated',
+    Header: 'Unallocated Cost',
     accessor: 'unallocatedCost',
     width: 200,
     className: 'unallocated-cost cost-column',
@@ -285,15 +294,8 @@ const COLUMNS: Record<string, Column> = {
     className: 'memory-total-cost cost-column',
     Cell: RenderCostCell
   },
-  MEMORY_IDLE_COST: {
-    Header: 'Memory idle cost',
-    accessor: 'memoryIdleCost',
-    width: 200,
-    className: 'workload-memory-idle-cost cost-column',
-    Cell: RenderCostCell
-  },
   MEMORY_ACTUAL_IDLE_COST: {
-    Header: 'Memory Actual Idle Cost',
+    Header: 'Memory Idle Cost',
     accessor: 'memoryActualIdleCost',
     width: 200,
     className: 'workload-memory-idle-cost cost-column',
@@ -316,13 +318,6 @@ const COLUMNS: Record<string, Column> = {
   CPU_ACTUAL_IDLE_COST: {
     Header: 'CPU idle cost',
     accessor: 'cpuActualIdleCost',
-    width: 200,
-    className: 'workload-cpu-idle-cost cost-column',
-    Cell: RenderCostCell
-  },
-  CPU_IDLE_COST: {
-    Header: 'CPU idle cost',
-    accessor: 'cpuIdleCost',
     width: 200,
     className: 'workload-cpu-idle-cost cost-column',
     Cell: RenderCostCell
@@ -814,9 +809,9 @@ export const ECS_TASK_ID_COLS = [
   COLUMNS.ECS_LAUNCH_TYPE_ID
 ]
 
-export const PODS_COLUMNS = [
-  { ...COLUMNS.NAME, sticky: undefined },
-  COLUMNS.CREATION_TIME,
+export const PODS_COLUMNS: Column[] = [
+  { ...COLUMNS.NAME },
+  { ...COLUMNS.CREATION_TIME, sticky: 'left' },
   COLUMNS.DELETION_TIME,
   COLUMNS.CPU_REQUESTED,
   COLUMNS.MEMORY_REQUESTED,
@@ -841,8 +836,8 @@ export const NODE_COLS = [
   COLUMNS.DELETION_TIME,
   COLUMNS.CPU_BILLING_AMOUNT,
   COLUMNS.MEMORY_BILLING_AMOUNT,
-  COLUMNS.MEMORY_IDLE_COST,
-  COLUMNS.CPU_IDLE_COST,
+  COLUMNS.MEMORY_ACTUAL_IDLE_COST,
+  COLUMNS.CPU_ACTUAL_IDLE_COST,
   COLUMNS.MEMORY_UNALLOCATED_COST,
   COLUMNS.CPU_UNALLOCATED_COST
 ]

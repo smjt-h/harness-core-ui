@@ -1,3 +1,10 @@
+/*
+ * Copyright 2022 Harness Inc. All rights reserved.
+ * Use of this source code is governed by the PolyForm Shield 1.0.0 license
+ * that can be found in the licenses directory at the root of this repository, also available at
+ * https://polyformproject.org/wp-content/uploads/2020/06/PolyForm-Shield-1.0.0.txt.
+ */
+
 import React, { ReactNode } from 'react'
 import { TabNavigation } from '@wings-software/uicore'
 import { useParams } from 'react-router-dom'
@@ -8,8 +15,8 @@ import routes from '@common/RouteDefinitions'
 import { GitSyncStoreProvider } from 'framework/GitRepoStore/GitSyncStoreContext'
 import type { ProjectPathProps, ModulePathParams } from '@common/interfaces/RouteInterfaces'
 import { NGBreadcrumbs } from '@common/components/NGBreadcrumbs/NGBreadcrumbs'
-import { useFeatureFlags } from '@common/hooks/useFeatureFlag'
 import { useDocumentTitle } from '@common/hooks/useDocumentTitle'
+import { useFeatureFlags } from '@common/hooks/useFeatureFlag'
 import NewUserView from './newUser/NewUserView'
 
 interface GitSyncPageProps {
@@ -20,8 +27,7 @@ export const GitSyncLandingView: React.FC<GitSyncPageProps> = ({ children }) => 
   const { accountId, projectIdentifier, orgIdentifier, module } = useParams<ProjectPathProps & ModulePathParams>()
   const { isGitSyncEnabled } = useAppStore()
   const { getString } = useStrings()
-  const { NG_GIT_ERROR_EXPERIENCE } = useFeatureFlags()
-
+  const { NG_GIT_FULL_SYNC } = useFeatureFlags()
   useDocumentTitle(getString('gitManagement'))
 
   return (
@@ -42,11 +48,15 @@ export const GitSyncLandingView: React.FC<GitSyncPageProps> = ({ children }) => 
                   label: getString('entities'),
                   to: routes.toGitSyncEntitiesAdmin({ projectIdentifier, orgIdentifier, accountId, module })
                 },
-                ...(NG_GIT_ERROR_EXPERIENCE
+                {
+                  label: getString('errors'),
+                  to: routes.toGitSyncErrors({ projectIdentifier, orgIdentifier, accountId, module })
+                },
+                ...(NG_GIT_FULL_SYNC
                   ? [
                       {
-                        label: getString('errors'),
-                        to: routes.toGitSyncErrors({ projectIdentifier, orgIdentifier, accountId, module })
+                        label: getString('common.config'),
+                        to: routes.toGitSyncConfig({ projectIdentifier, orgIdentifier, accountId, module })
                       }
                     ]
                   : [])

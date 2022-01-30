@@ -1,3 +1,10 @@
+/*
+ * Copyright 2021 Harness Inc. All rights reserved.
+ * Use of this source code is governed by the PolyForm Shield 1.0.0 license
+ * that can be found in the licenses directory at the root of this repository, also available at
+ * https://polyformproject.org/wp-content/uploads/2020/06/PolyForm-Shield-1.0.0.txt.
+ */
+
 import React, { useMemo } from 'react'
 import type { CellProps, Renderer } from 'react-table'
 import { defaultTo } from 'lodash-es'
@@ -5,12 +12,11 @@ import type { GetDataError } from 'restful-react'
 import ReactTimeago from 'react-timeago'
 import { Tooltip } from '@blueprintjs/core'
 import { Color, Container, Icon, Layout, Text, PageError, TableV2 } from '@wings-software/uicore'
+import type { TableProps } from '@harness/uicore'
 import DelegateEmptyState from '@connectors/components/CreateConnector/commonSteps/DelegateSelectorStep/icons/DelegateEmptyState.svg'
-import type { TableProps } from '@common/components/Table/Table'
 import { delegateTypeToIcon } from '@common/utils/delegateUtils'
 import { useStrings } from 'framework/strings'
 import { TagsViewer } from '@common/components/TagsViewer/TagsViewer'
-import { useFeatureFlags } from '@common/hooks/useFeatureFlag'
 import type {
   DelegateInnerCustom,
   DelegateGroupDetailsCustom
@@ -46,23 +52,15 @@ const RenderDelegateName: Renderer<CellProps<DelegateGroupDetailsCustom | Delega
     delegateInstanceDetails,
     sizeDetails
   } = row.original as DelegateGroupDetailsCustom
-  const { delegateName } = row.original as DelegateInnerCustom
-  const { name } = row.values
   const { getString } = useStrings()
-  const { NG_CG_TASK_ASSIGNMENT_ISOLATION } = useFeatureFlags()
   let nameText = ''
   let subText = ''
-  if (NG_CG_TASK_ASSIGNMENT_ISOLATION) {
-    const groupNameSubText = getString('delegates.delegateInstances', {
-      current: delegateInstanceDetails?.length,
-      total: sizeDetails?.replicas
-    })
-    nameText = `${groupName} ${groupNameSubText}`
-    subText = groupHostName || ''
-  } else {
-    nameText = delegateName || name
-    subText = name
-  }
+  const groupNameSubText = getString('delegates.delegateInstances', {
+    current: delegateInstanceDetails?.length,
+    total: sizeDetails?.replicas
+  })
+  nameText = `${groupName} ${groupNameSubText}`
+  subText = groupHostName || ''
   return (
     <Layout.Horizontal>
       <Icon name={delegateTypeToIcon(delegateType)} size={24} />
@@ -85,7 +83,6 @@ const RenderDelegateName: Renderer<CellProps<DelegateGroupDetailsCustom | Delega
 const RenderHeartbeat: Renderer<CellProps<DelegateGroupDetailsCustom | DelegateInnerCustom>> = ({ row, column }) => {
   const { activelyConnected, lastHeartBeat } = row.original
   const { getString } = useStrings()
-  const { NG_CG_TASK_ASSIGNMENT_ISOLATION } = useFeatureFlags()
   const { onClick } = column as unknown as { onClick: () => void }
   if (!lastHeartBeat) {
     return (
@@ -103,45 +100,24 @@ const RenderHeartbeat: Renderer<CellProps<DelegateGroupDetailsCustom | DelegateI
       </Layout.Vertical>
     )
   }
-  if (NG_CG_TASK_ASSIGNMENT_ISOLATION) {
-    const color: Color = activelyConnected ? Color.GREEN_600 : Color.GREY_400
-    return (
-      <Layout.Horizontal flex={{ alignItems: 'center', justifyContent: 'flex-start' }}>
-        <Icon name="full-circle" size={10} color={color} margin={{ right: 'small' }} />
-        <ReactTimeago date={lastHeartBeat} live />
-      </Layout.Horizontal>
-    )
-  } else {
-    const { status, connections = [] } = row.original as DelegateInnerCustom
-    const isApprovalRequired = status === 'WAITING_FOR_APPROVAL'
-    const isConnected = connections?.length > 0
-    return (
-      <Layout.Horizontal flex={{ alignItems: 'center', justifyContent: 'flex-start' }}>
-        <Icon
-          name="full-circle"
-          size={10}
-          color={isApprovalRequired ? Color.YELLOW_500 : isConnected ? Color.GREEN_600 : Color.GREY_400}
-          margin={{ right: 'small' }}
-        />
-        <ReactTimeago date={lastHeartBeat} live />
-      </Layout.Horizontal>
-    )
-  }
+
+  const color: Color = activelyConnected ? Color.GREEN_600 : Color.GREY_400
+  return (
+    <Layout.Horizontal flex={{ alignItems: 'center', justifyContent: 'flex-start' }}>
+      <Icon name="full-circle" size={10} color={color} margin={{ right: 'small' }} />
+      <ReactTimeago date={lastHeartBeat} live />
+    </Layout.Horizontal>
+  )
 }
 
 const RenderTags: Renderer<CellProps<DelegateGroupDetailsCustom | DelegateInnerCustom>> = ({ row }) => {
   let delegateTags = []
-  const { NG_CG_TASK_ASSIGNMENT_ISOLATION } = useFeatureFlags()
-  if (NG_CG_TASK_ASSIGNMENT_ISOLATION) {
-    const delegateTagData = row.original as DelegateGroupDetailsCustom
-    delegateTags = [
-      ...Object.keys(defaultTo(delegateTagData.groupImplicitSelectors, {})),
-      ...defaultTo(delegateTagData.groupCustomSelectors, [])
-    ]
-  } else {
-    const { tags, implicitSelectors } = row.original as DelegateInnerCustom
-    delegateTags = [...(tags || []), ...Object.keys(implicitSelectors || {})]
-  }
+  const delegateTagData = row.original as DelegateGroupDetailsCustom
+  delegateTags = [
+    ...Object.keys(defaultTo(delegateTagData.groupImplicitSelectors, {})),
+    ...defaultTo(delegateTagData.groupCustomSelectors, [])
+  ]
+
   return (
     <Container className={css.tagContainer}>
       <TagsViewer tags={delegateTags} />

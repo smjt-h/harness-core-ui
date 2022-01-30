@@ -1,3 +1,10 @@
+/*
+ * Copyright 2021 Harness Inc. All rights reserved.
+ * Use of this source code is governed by the PolyForm Shield 1.0.0 license
+ * that can be found in the licenses directory at the root of this repository, also available at
+ * https://polyformproject.org/wp-content/uploads/2020/06/PolyForm-Shield-1.0.0.txt.
+ */
+
 export const sourceData = {
   isEdit: true,
   healthSourceList: [
@@ -383,6 +390,7 @@ export const appDMetricValue = {
   higherBaselineDeviation: true,
   lowerBaselineDeviation: true,
   metricName: 'appdMetric',
+  metricIdentifier: 'appdMetric',
   metricPath: {
     metricPathDropdown_0: {
       path: '',
@@ -538,6 +546,7 @@ export const onPreviousPayload = {
 export const validateMappingNoError = {
   name: 'AppD Single Metric',
   identifier: 'AppD_Multiple_Metric',
+  metricIdentifier: 'AppD_Multiple_Metric',
   connectorRef: 'account.appdtest',
   isEdit: true,
   product: { label: 'Application Monitoring', value: 'Application Monitoring' },
@@ -570,6 +579,7 @@ export const validateMappingNoError = {
 export const validateMappingWithMetricPathError = {
   name: 'AppD Single Metric',
   identifier: 'AppD_Multiple_Metric',
+  metricIdentifier: 'AppD_Multiple_Metric',
   connectorRef: 'account.appdtest',
   isEdit: true,
   product: { label: 'Application Monitoring', value: 'Application Monitoring' },
@@ -596,7 +606,8 @@ export const validateMappingWithMetricPathError = {
   continuousVerification: false,
   healthScore: true,
   sli: false,
-  showCustomMetric: true
+  showCustomMetric: true,
+  pathType: 'dropdownPath'
 }
 
 export const validateMappingWithErrors = {
@@ -622,7 +633,8 @@ export const validateMappingWithErrors = {
   continuousVerification: true,
   healthScore: true,
   sli: false,
-  showCustomMetric: true
+  showCustomMetric: true,
+  pathType: 'dropdownPath'
 }
 
 export const createAppDynamicsDataValue = {
@@ -797,7 +809,7 @@ export const formDataExpectedOutput = {
         },
         baseFolder: 'Application Infrastructure Performance',
         groupName: 'Two',
-        identifier: 'MockedUUID',
+        identifier: undefined,
         metricName: 'appdMetric Two',
         metricPath: 'JVM',
         sli: {
@@ -821,7 +833,7 @@ export const formDataExpectedOutput = {
         },
         baseFolder: 'Overall Application Performance',
         groupName: 'One',
-        identifier: 'MockedUUID',
+        identifier: undefined,
         metricName: 'appdMetric One Updated',
         metricPath: 'Calls per Minute',
         sli: {
@@ -879,6 +891,7 @@ const appdMetricData = {
   higherBaselineDeviation: true,
   lowerBaselineDeviation: true,
   metricName: 'appdMetric',
+  metricIdentifier: 'appdMetric',
   metricPath: {
     metricPathDropdown_0: {
       path: '',
@@ -922,8 +935,11 @@ export const formikInitialData = {
   healthScore: true,
   higherBaselineDeviation: true,
   identifier: 'AppD_Single',
+  pathType: 'dropdownPath',
   isEdit: true,
   lowerBaselineDeviation: true,
+  metricIdentifier: 'appdMetric',
+  fullPath: 'Overall Application Performance|cvng|Calls per Minute',
   metricData: {
     Errors: true,
     Performance: true
@@ -981,7 +997,7 @@ export const onSubmitPayload = {
         },
         baseFolder: 'Overall Application Performance',
         groupName: 'Group 1',
-        identifier: 'MockedUUID',
+        identifier: 'appdMetric',
         metricName: 'appdMetric',
         metricPath: 'Calls per Minute',
         sli: { enabled: true }

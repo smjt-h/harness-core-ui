@@ -1,3 +1,10 @@
+/*
+ * Copyright 2022 Harness Inc. All rights reserved.
+ * Use of this source code is governed by the PolyForm Shield 1.0.0 license
+ * that can be found in the licenses directory at the root of this repository, also available at
+ * https://polyformproject.org/wp-content/uploads/2020/06/PolyForm-Shield-1.0.0.txt.
+ */
+
 import React from 'react'
 import { Color, FontVariation, MultiTypeInputType, NestedAccordionPanel, Text } from '@wings-software/uicore'
 import cx from 'classnames'
@@ -25,6 +32,7 @@ export interface InfrastructureCardProps {
   onUpdateInfrastructureProvisioner(data: ExecutionElementConfig): void
   path?: string
   readonly?: boolean
+  allowableTypes: MultiTypeInputType[]
 }
 
 export function InfrastructureCard(props: InfrastructureCardProps): React.ReactElement {
@@ -36,7 +44,8 @@ export function InfrastructureCard(props: InfrastructureCardProps): React.ReactE
     stageIdentifier,
     metadataMap,
     readonly,
-    path
+    path,
+    allowableTypes
   } = props
   const { stepsFactory } = usePipelineContext()
   const { getString } = useStrings()
@@ -63,7 +72,7 @@ export function InfrastructureCard(props: InfrastructureCardProps): React.ReactE
         initialValues={originalInfrastructure.infrastructureDefinition?.spec || {}}
         type={originalInfrastructure.infrastructureDefinition?.type as StepType}
         stepViewType={StepViewType.InputVariable}
-        allowableTypes={[MultiTypeInputType.FIXED, MultiTypeInputType.RUNTIME, MultiTypeInputType.EXPRESSION]}
+        allowableTypes={allowableTypes}
         onUpdate={onUpdateInfrastructure}
         readonly={readonly}
         customStepProps={{
@@ -73,7 +82,8 @@ export function InfrastructureCard(props: InfrastructureCardProps): React.ReactE
           path
         }}
       />
-      {infrastructure.infrastructureDefinition && originalInfrastructure.infrastructureDefinition ? (
+      {infrastructure.infrastructureDefinition?.provisioner &&
+      originalInfrastructure.infrastructureDefinition?.provisioner ? (
         <ExecutionCardPanel
           id={`${props.path}.Provisioner`}
           title={getString('common.provisioner')}
@@ -82,6 +92,7 @@ export function InfrastructureCard(props: InfrastructureCardProps): React.ReactE
           metadataMap={metadataMap}
           stageIdentifier={stageIdentifier}
           readonly={readonly}
+          allowableTypes={allowableTypes}
           onUpdateExecution={onUpdateInfrastructureProvisioner}
           path={`${props.path}.Provisioner`}
         />

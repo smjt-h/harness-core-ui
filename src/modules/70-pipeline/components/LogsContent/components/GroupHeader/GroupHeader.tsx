@@ -1,5 +1,12 @@
+/*
+ * Copyright 2021 Harness Inc. All rights reserved.
+ * Use of this source code is governed by the PolyForm Shield 1.0.0 license
+ * that can be found in the licenses directory at the root of this repository, also available at
+ * https://polyformproject.org/wp-content/uploads/2020/06/PolyForm-Shield-1.0.0.txt.
+ */
+
 import React from 'react'
-import { Icon, IconName } from '@wings-software/uicore'
+import { Button, ButtonSize, ButtonVariation, Icon, IconName } from '@wings-software/uicore'
 import { defaultTo } from 'lodash-es'
 
 import { Duration } from '@common/components/Duration/Duration'
@@ -17,6 +24,8 @@ export type LogViewerAccordionStatus =
 
 export interface GroupHeaderProps {
   title: React.ReactNode
+  onGoToTop: (event: React.MouseEvent<Element, MouseEvent>) => void
+  onGoToBottom: (event: React.MouseEvent<Element, MouseEvent>) => void
   startTime?: number
   endTime?: number
   id: string
@@ -39,7 +48,7 @@ const statusIconMap: Record<LogViewerAccordionStatus, IconName> = {
  * Component which renders a section of a log
  */
 export function GroupHeader(props: GroupHeaderProps): React.ReactElement {
-  const { title, isOpen, status, id, onSectionClick, startTime, endTime } = props
+  const { title, isOpen, status, id, onSectionClick, startTime, endTime, onGoToBottom, onGoToTop } = props
   const [open, setOpen] = React.useState(!!isOpen)
 
   // sync `isOpen` flag
@@ -69,9 +78,31 @@ export function GroupHeader(props: GroupHeaderProps): React.ReactElement {
         <Icon className={css.status} name={defaultTo(statusIconMap[status], 'circle')} size={12} />
         <div className={css.text}>
           <div>{title}</div>
-          {startTime ? (
-            <Duration className={css.duration} durationText=" " startTime={startTime} endTime={endTime} />
-          ) : null}
+          <div>
+            {open ? (
+              <React.Fragment>
+                <Button
+                  className={css.scrollBtn}
+                  variation={ButtonVariation.ICON}
+                  size={ButtonSize.SMALL}
+                  iconProps={{ size: 10 }}
+                  icon="arrow-up"
+                  onClick={onGoToTop}
+                />
+                <Button
+                  className={css.scrollBtn}
+                  variation={ButtonVariation.ICON}
+                  size={ButtonSize.SMALL}
+                  iconProps={{ size: 10 }}
+                  icon="arrow-down"
+                  onClick={onGoToBottom}
+                />
+              </React.Fragment>
+            ) : null}
+            {startTime ? (
+              <Duration className={css.duration} durationText=" " startTime={startTime} endTime={endTime} />
+            ) : null}
+          </div>
         </div>
       </div>
     </div>

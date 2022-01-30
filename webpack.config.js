@@ -1,3 +1,10 @@
+/*
+ * Copyright 2022 Harness Inc. All rights reserved.
+ * Use of this source code is governed by the PolyForm Shield 1.0.0 license
+ * that can be found in the licenses directory at the root of this repository, also available at
+ * https://polyformproject.org/wp-content/uploads/2020/06/PolyForm-Shield-1.0.0.txt.
+ */
+
 /* eslint-disable @typescript-eslint/no-var-requires, no-console  */
 
 const buildVersion = JSON.stringify(require('./package.json').version)
@@ -15,7 +22,7 @@ const TsconfigPathsPlugin = require('tsconfig-paths-webpack-plugin')
 const MiniCssExtractPlugin = require('mini-css-extract-plugin')
 const HTMLWebpackPlugin = require('html-webpack-plugin')
 const BundleAnalyzerPlugin = require('webpack-bundle-analyzer').BundleAnalyzerPlugin
-const JSONGeneratorPlugin = require('@wings-software/jarvis/lib/webpack/json-generator-plugin').default
+const JSONGeneratorPlugin = require('@harness/jarvis/lib/webpack/json-generator-plugin').default
 const MonacoWebpackPlugin = require('monaco-editor-webpack-plugin')
 const GenerateStringTypesPlugin = require('./scripts/webpack/GenerateStringTypesPlugin').GenerateStringTypesPlugin
 const { BugsnagSourceMapUploaderPlugin } = require('webpack-bugsnag-plugins')
@@ -23,6 +30,7 @@ const moduleFederationConfig = require('./configs/modulefederation.config.js')
 const ExternalRemotesPlugin = require('external-remotes-plugin')
 
 const DEV = process.env.NODE_ENV === 'development'
+const HARNESS_ENABLE_NG_AUTH_UI = process.env.HARNESS_ENABLE_NG_AUTH_UI !== 'false'
 // this BUGSNAG_TOKEN needs to be same which is passed in the docker file
 const BUGSNAG_TOKEN = process.env.BUGSNAG_TOKEN
 const BUGSNAG_SOURCEMAPS_UPLOAD = `${process.env.BUGSNAG_SOURCEMAPS_UPLOAD}` === 'true'
@@ -51,6 +59,7 @@ if (isCypress && isCypressCoverage) {
  */
 const ChildAppError = path.resolve(CONTEXT, './src/microfrontends/ChildAppError.tsx')
 const enableGitOpsUI = process.env.ENABLE_GITOPSUI === 'true'
+const enableSTO = process.env.ENABLE_STO === 'true'
 const moduleFederationEnabled = true
 
 const certificateExists = fs.existsSync('./certificates/localhost.pem')
@@ -110,7 +119,7 @@ const config = {
         use: [
           MiniCssExtractPlugin.loader,
           {
-            loader: '@wings-software/css-types-loader',
+            loader: '@harness/css-types-loader',
             options: {
               prettierConfig: CONTEXT
             }
@@ -207,7 +216,9 @@ const config = {
   resolve: {
     extensions: ['.mjs', '.js', '.ts', '.tsx', '.json', '.ttf'],
     plugins: [new TsconfigPathsPlugin()],
-    alias: {}
+    alias: {
+      '@wings-software': '@harness'
+    }
   },
   optimization: {
     splitChunks: {
@@ -233,7 +244,8 @@ const commonPlugins = [
   new webpack.DefinePlugin({
     'process.env': '{}', // required for @blueprintjs/core
     __DEV__: DEV,
-    __BUGSNAG_RELEASE_VERSION__: buildVersion
+    __BUGSNAG_RELEASE_VERSION__: buildVersion,
+    HARNESS_ENABLE_NG_AUTH_UI: HARNESS_ENABLE_NG_AUTH_UI
   }),
   new MonacoWebpackPlugin({
     // available options are documented at https://github.com/Microsoft/monaco-editor-webpack-plugin#options
@@ -244,7 +256,7 @@ const commonPlugins = [
 
 if (moduleFederationEnabled) {
   commonPlugins.unshift(new ExternalRemotesPlugin())
-  commonPlugins.unshift(new ModuleFederationPlugin(moduleFederationConfig({ enableGitOpsUI })))
+  commonPlugins.unshift(new ModuleFederationPlugin(moduleFederationConfig({ enableGitOpsUI, enableSTO })))
 }
 
 if (!enableGitOpsUI) {
@@ -252,9 +264,14 @@ if (!enableGitOpsUI) {
   config.resolve.alias['gitopsui/MicroFrontendApp'] = ChildAppError
 }
 
+if (!enableSTO) {
+  config.resolve.alias['sto/App'] = ChildAppError
+  config.resolve.alias['sto/PipelineSecurityView'] = ChildAppError
+}
+
 const devOnlyPlugins = [
   new webpack.WatchIgnorePlugin({
-    paths: [/node_modules(?!\/@wings-software)/, /\.d\.ts$/, /stringTypes\.ts/]
+    paths: [/node_modules(?!\/@harness)/, /\.d\.ts$/, /stringTypes\.ts/]
   }),
   new ForkTsCheckerWebpackPlugin()
   // new BundleAnalyzerPlugin()
@@ -292,11 +309,12 @@ if (BUGSNAG_SOURCEMAPS_UPLOAD && BUGSNAG_TOKEN) {
 }
 config.plugins = commonPlugins.concat(DEV ? devOnlyPlugins : prodOnlyPlugins)
 
-console.log({
+console.table({
   DEV,
   FsEvents: process.env.TSC_WATCHFILE === 'UseFsEvents',
   BUGSNAG_SOURCEMAPS_UPLOAD,
-  BugsnagTokenPresent: !!BUGSNAG_TOKEN
+  BugsnagTokenPresent: !!BUGSNAG_TOKEN,
+  HARNESS_ENABLE_NG_AUTH_UI
 })
 
 module.exports = config

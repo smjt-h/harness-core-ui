@@ -1,13 +1,24 @@
+/*
+ * Copyright 2021 Harness Inc. All rights reserved.
+ * Use of this source code is governed by the PolyForm Shield 1.0.0 license
+ * that can be found in the licenses directory at the root of this repository, also available at
+ * https://polyformproject.org/wp-content/uploads/2020/06/PolyForm-Shield-1.0.0.txt.
+ */
+
 import React from 'react'
 import { useParams } from 'react-router-dom'
 import { render, act, fireEvent, waitFor } from '@testing-library/react'
 import { putPipelinePromise, createPipelinePromise } from 'services/pipeline-ng'
 import { TestWrapper } from '@common/utils/testUtils'
-
+import { useMutateAsGet } from '@common/hooks'
 import { PipelineCanvas, PipelineCanvasProps } from '../PipelineCanvas'
 import { PipelineContext } from '../../PipelineContext/PipelineContext'
 import { DefaultNewPipelineId, DrawerTypes } from '../../PipelineContext/PipelineActions'
-import { getDummyPipelineCanvasContextValue, mockApiDataEmpty } from './PipelineCanvasTestHelper'
+import {
+  getDummyPipelineCanvasContextValue,
+  mockApiDataEmpty,
+  mockPipelineTemplateYaml
+} from './PipelineCanvasTestHelper'
 
 const getProps = (): PipelineCanvasProps => ({
   toPipelineStudio: jest.fn(),
@@ -51,14 +62,13 @@ jest.mock('react-router-dom', () => ({
 jest.mock('services/pipeline-ng', () => ({
   putPipelinePromise: jest.fn(),
   createPipelinePromise: jest.fn(),
-  useGetInputsetYaml: () => jest.fn()
+  useGetInputsetYaml: () => jest.fn(),
+  useGetTemplateFromPipeline: jest.fn()
 }))
 
 jest.mock('@common/hooks', () => ({
   ...(jest.requireActual('@common/hooks') as any),
-  useMutateAsGet: jest.fn().mockImplementation(() => {
-    return { data: { data: {} }, refetch: jest.fn(), error: null, loading: false }
-  })
+  useMutateAsGet: jest.fn()
 }))
 
 const showError = jest.fn()
@@ -78,6 +88,12 @@ describe('Pipeline Canvas - new pipeline', () => {
     // @ts-ignore
     useParams.mockImplementation(() => {
       return { pipelineIdentifier: DefaultNewPipelineId }
+    })
+
+    // eslint-disable-next-line
+    // @ts-ignore
+    useMutateAsGet.mockImplementation(() => {
+      return mockPipelineTemplateYaml
     })
   })
   test('function calls on switch to YAML mode and back to VISUAL', async () => {
@@ -215,6 +231,12 @@ describe('Existing pipeline', () => {
     // @ts-ignore
     useParams.mockImplementation(() => {
       return { pipelineIdentifier: 'someId' }
+    })
+
+    // eslint-disable-next-line
+    // @ts-ignore
+    useMutateAsGet.mockImplementation(() => {
+      return mockPipelineTemplateYaml
     })
   })
   test('discard button if existing pipeline is touched', () => {

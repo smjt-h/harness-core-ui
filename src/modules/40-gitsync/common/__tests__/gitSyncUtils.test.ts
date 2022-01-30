@@ -1,3 +1,10 @@
+/*
+ * Copyright 2022 Harness Inc. All rights reserved.
+ * Use of this source code is governed by the PolyForm Shield 1.0.0 license
+ * that can be found in the licenses directory at the root of this repository, also available at
+ * https://polyformproject.org/wp-content/uploads/2020/06/PolyForm-Shield-1.0.0.txt.
+ */
+
 import { renderHook } from '@testing-library/react-hooks'
 import type { Module } from '@common/interfaces/RouteInterfaces'
 import type { GitSyncConfig } from 'services/cd-ng'
@@ -119,8 +126,8 @@ describe('gitSyncUtils test', () => {
       )
     })
     test('Repo not ending with a "/"', () => {
-      expect(getCompleteGitPath('https://github.com/testing/somerepo', 'sample', HARNESS_FOLDER_SUFFIX)).toBe(
-        'https://github.com/testing/somerepo/sample/.harness/'
+      expect(getCompleteGitPath('https://github.com/wings-software/dev.git', 'abc/temp', HARNESS_FOLDER_SUFFIX)).toBe(
+        'https://github.com/wings-software/dev/abc/temp/.harness/'
       )
     })
     test('Root folder as ".harness/"', () => {
@@ -139,17 +146,17 @@ describe('gitSyncUtils test', () => {
       )
     })
     test('Repo url ends with "/" and folder name starts with "/" ', () => {
-      expect(getCompleteGitPath('https://github.com/testing/somerepo.git/', '/a/b/c/d/', HARNESS_FOLDER_SUFFIX)).toBe(
-        'https://github.com/testing/somerepo/a/b/c/d/.harness/'
-      )
+      expect(
+        getCompleteGitPath('https://github.com/wings-software/dev.git/', '/abc/temp/', HARNESS_FOLDER_SUFFIX)
+      ).toBe('https://github.com/wings-software/dev/abc/temp/.harness/')
     })
   })
 
   describe('Test getHarnessFolderPathWithSuffix method', () => {
     expect(getHarnessFolderPathWithSuffix('/////a////b////c///dd//eeee', HARNESS_FOLDER_SUFFIX)).toBe(
-      '/a/b/c/d/e/.harness/'
+      '/a/b/c/dd/eeee/.harness/'
     )
-    expect(getHarnessFolderPathWithSuffix('a/b/c/d/e', HARNESS_FOLDER_SUFFIX)).toBe('a/b/c/d/e/.harness/')
+    expect(getHarnessFolderPathWithSuffix('a/b/c/d1/e4', HARNESS_FOLDER_SUFFIX)).toBe('/a/b/c/d1/e4/.harness/')
   })
 
   describe('Test getRepoPath method', () => {

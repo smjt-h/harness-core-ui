@@ -1,3 +1,10 @@
+/*
+ * Copyright 2021 Harness Inc. All rights reserved.
+ * Use of this source code is governed by the PolyForm Shield 1.0.0 license
+ * that can be found in the licenses directory at the root of this repository, also available at
+ * https://polyformproject.org/wp-content/uploads/2020/06/PolyForm-Shield-1.0.0.txt.
+ */
+
 import React, { useEffect, useMemo } from 'react'
 import { useParams } from 'react-router-dom'
 import { useStrings } from 'framework/strings'
@@ -27,7 +34,8 @@ export default function ChangeTimeline(props: ChangeTimelineProps): JSX.Element 
     selectedTimePeriod,
     onSliderMoved,
     changeCategories,
-    changeSourceTypes
+    changeSourceTypes,
+    hideTimeline
   } = props
 
   const { data, refetch, loading, error, cancel } = useChangeEventTimeline({
@@ -37,10 +45,16 @@ export default function ChangeTimeline(props: ChangeTimelineProps): JSX.Element 
     orgIdentifier
   })
 
-  const { startTimeRoundedOffToNearest30min, endTimeRoundedOffToNearest30min } = useMemo(
-    () => getStartAndEndTime((selectedTimePeriod?.value as string) || ''),
-    [selectedTimePeriod]
-  )
+  const { startTimeRoundedOffToNearest30min, endTimeRoundedOffToNearest30min } = useMemo(() => {
+    if (hideTimeline) {
+      return {
+        startTimeRoundedOffToNearest30min: startTime as number,
+        endTimeRoundedOffToNearest30min: endTime as number
+      }
+    } else {
+      return getStartAndEndTime((selectedTimePeriod?.value as string) || '')
+    }
+  }, [endTime, selectedTimePeriod?.value, hideTimeline, startTime])
 
   useEffect(() => {
     cancel()
@@ -50,8 +64,8 @@ export default function ChangeTimeline(props: ChangeTimelineProps): JSX.Element 
         envIdentifiers: Array.isArray(environmentIdentifier) ? environmentIdentifier : [environmentIdentifier],
         changeCategories: changeCategories || [],
         changeSourceTypes: changeSourceTypes || [],
-        startTime: startTimeRoundedOffToNearest30min,
-        endTime: endTimeRoundedOffToNearest30min
+        startTime: startTimeRoundedOffToNearest30min as number,
+        endTime: endTimeRoundedOffToNearest30min as number
       },
       queryParamStringifyOptions: {
         arrayFormat: 'repeat'
@@ -127,6 +141,7 @@ export default function ChangeTimeline(props: ChangeTimelineProps): JSX.Element 
       ]}
       timestamps={[startTimeRoundedOffToNearest30min, endTimeRoundedOffToNearest30min]}
       labelWidth={90}
+      hideTimeline={hideTimeline}
     />
   )
 }

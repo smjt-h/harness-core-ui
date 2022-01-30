@@ -1,3 +1,10 @@
+/*
+ * Copyright 2021 Harness Inc. All rights reserved.
+ * Use of this source code is governed by the PolyForm Shield 1.0.0 license
+ * that can be found in the licenses directory at the root of this repository, also available at
+ * https://polyformproject.org/wp-content/uploads/2020/06/PolyForm-Shield-1.0.0.txt.
+ */
+
 // eslint-disable-next-line import/order
 import type React from 'react'
 import type ReactMonacoEditor from 'react-monaco-editor'
@@ -9,6 +16,7 @@ import type { NGBreadcrumbsProps } from '@common/components/NGBreadcrumbs/NGBrea
 import { ResourceType } from '@rbac/interfaces/ResourceType'
 import { PermissionIdentifier } from '@rbac/interfaces/PermissionIdentifier'
 import type { ButtonProps } from '@rbac/components/Button/Button'
+import type { RbacMenuItemProps } from '@rbac/components/MenuItem/MenuItem'
 import type { Title, UseDocumentTitleReturn } from '@common/hooks/useDocumentTitle'
 import type { ExtendedMonacoEditorProps } from '@common/components/MonacoEditor/MonacoEditor'
 import type { ExtendedMonacoDiffEditorProps } from '@common/components/MonacoDiffEditor/MonacoDiffEditor'
@@ -23,6 +31,7 @@ export interface Scope {
 export interface CommonComponents {
   NGBreadcrumbs: React.ComponentType<Partial<NGBreadcrumbsProps>>
   RbacButton: React.ComponentType<ButtonProps>
+  RbacMenuItem: React.ComponentType<RbacMenuItemProps>
   MonacoEditor: React.ForwardRefExoticComponent<ExtendedMonacoEditorProps & React.RefAttributes<ReactMonacoEditor>>
   YAMLBuilder: React.FC<YamlBuilderProps>
   MonacoDiffEditor: React.ForwardRefExoticComponent<
@@ -46,9 +55,11 @@ export interface ParentContext {
 export interface ChildAppProps {
   parentContextObj: ParentContext
   renderUrl: string
+  matchPath: string
   scope: Scope
   components: CommonComponents
   hooks: Hooks
+  token: string
 }
 
 /**

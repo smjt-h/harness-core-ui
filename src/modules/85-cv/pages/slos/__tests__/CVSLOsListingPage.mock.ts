@@ -1,4 +1,83 @@
+/*
+ * Copyright 2022 Harness Inc. All rights reserved.
+ * Use of this source code is governed by the PolyForm Shield 1.0.0 license
+ * that can be found in the licenses directory at the root of this repository, also available at
+ * https://polyformproject.org/wp-content/uploads/2020/06/PolyForm-Shield-1.0.0.txt.
+ */
+
+import type { ResponsePageSLODashboardWidget, ResponsePageUserJourneyResponse, SLODashboardWidget } from 'services/cv'
+import type { TestWrapperProps } from '@common/utils/testUtils'
+import routes from '@common/RouteDefinitions'
+import { projectPathProps } from '@common/utils/routeUtils'
+import { RiskValues } from '@cv/utils/CommonUtils'
 import { SLIMetricEnum } from '../components/CVCreateSLO/components/CreateSLOForm/components/SLI/SLI.constants'
+import { PeriodTypes, SLITypes } from '../components/CVCreateSLO/CVCreateSLO.types'
+
+export const errorMessage = 'TEST ERROR MESSAGE'
+
+export const pathParams = {
+  accountId: 'account_id',
+  projectIdentifier: 'project_identifier',
+  orgIdentifier: 'org_identifier'
+}
+
+export const testWrapperProps: TestWrapperProps = {
+  path: routes.toCVSLOs({ ...projectPathProps, module: 'cv' }),
+  pathParams
+}
+
+export const dashboardWidgetsContent: SLODashboardWidget = {
+  burnRate: {
+    currentRatePercentage: 90
+  },
+  currentPeriodEndTime: 9000,
+  currentPeriodLengthDays: 10,
+  currentPeriodStartTime: 8000,
+  errorBudgetBurndown: [],
+  errorBudgetRemaining: 60,
+  errorBudgetRemainingPercentage: 60,
+  errorBudgetRisk: RiskValues.HEALTHY,
+  healthSourceIdentifier: 'health_source_identifier',
+  healthSourceName: 'Health Source Name',
+  monitoredServiceIdentifier: 'monitored_service_identifier',
+  monitoredServiceName: 'Monitored Service Name',
+  sloIdentifier: 'slo_identifier',
+  sloPerformanceTrend: [
+    { timestamp: 1639993380000, value: 0 },
+    { timestamp: 1639993440000, value: 0 }
+  ],
+  sloTargetPercentage: 60,
+  sloTargetType: PeriodTypes.ROLLING,
+  tags: {},
+  timeRemainingDays: 10,
+  title: 'Title',
+  totalErrorBudget: 100,
+  type: SLITypes.AVAILABILITY,
+  serviceIdentifier: 'service',
+  environmentIdentifier: 'env',
+  environmentName: 'env',
+  serviceName: 'serviceName'
+}
+
+export const dashboardWidgetsResponse: ResponsePageSLODashboardWidget = {
+  data: {
+    totalItems: 1,
+    totalPages: 1,
+    pageIndex: 0,
+    pageItemCount: 1,
+    pageSize: 4,
+    content: [dashboardWidgetsContent]
+  }
+}
+
+export const userJourneyResponse: ResponsePageUserJourneyResponse = {
+  data: {
+    content: [
+      { userJourney: { name: 'First Journey', identifier: 'First_Journey' } },
+      { userJourney: { name: 'Second Journey', identifier: 'Second_Journey' } }
+    ]
+  }
+}
 
 export const initialFormData = {
   name: '',
@@ -32,96 +111,10 @@ export const initialFormData = {
   }
 }
 
-export const mockedSLOsData = {
-  status: 'SUCCESS',
-  data: {
-    totalPages: 1,
-    totalItems: 3,
-    pageItemCount: 3,
-    pageSize: 10,
-    content: [
-      {
-        serviceLevelObjective: {
-          orgIdentifier: null,
-          projectIdentifier: null,
-          identifier: 'Third_SLO',
-          name: 'Third SLO',
-          description: '',
-          tags: {},
-          userJourneyRef: 'userjourney1',
-          monitoredServiceRef: 'Service_101_QA',
-          healthSourceRef: 'dasdsadsa',
-          serviceLevelIndicators: [
-            {
-              name: 'Third_SLO_metric1',
-              identifier: 'Third_SLO_metric1',
-              type: 'Latency',
-              spec: { type: null, spec: { metric1: 'metric1', metricName: 'metric1' } }
-            }
-          ],
-          target: { type: null, sloTargetPercentage: 0.0, spec: { periodLength: '30d' } }
-        },
-        createdAt: 1636457618486,
-        lastModifiedAt: 1636457728193
-      },
-      {
-        serviceLevelObjective: {
-          orgIdentifier: null,
-          projectIdentifier: null,
-          identifier: 'Second_SLO',
-          name: 'Second SLO',
-          description: '',
-          tags: {},
-          userJourneyRef: 'userjourney1',
-          monitoredServiceRef: 'Service_101_QA',
-          healthSourceRef: 'Test_AppD',
-          serviceLevelIndicators: [
-            {
-              name: 'Second_SLO_metric1',
-              identifier: 'Second_SLO_metric1',
-              type: 'Latency',
-              spec: {
-                type: null,
-                spec: { eventType: 'good', metric1: 'metric1', metric2: 'metric2', metricName: 'metric1' }
-              }
-            }
-          ],
-          target: { type: null, sloTargetPercentage: 0.0, spec: { startDate: '2021-10-20', endDate: '2021-11-08' } }
-        },
-        createdAt: 1636432440836,
-        lastModifiedAt: 1636432440836
-      },
-      {
-        serviceLevelObjective: {
-          orgIdentifier: null,
-          projectIdentifier: null,
-          identifier: 'First_SLO',
-          name: 'First SLO',
-          description: '',
-          tags: {},
-          userJourneyRef: 'userjourney1',
-          monitoredServiceRef: 'Service_101_QA',
-          healthSourceRef: 'dasdsadsa',
-          serviceLevelIndicators: [
-            {
-              name: 'First_SLO_metric1',
-              identifier: 'First_SLO_metric1',
-              type: 'Latency',
-              spec: {
-                type: null,
-                spec: { eventType: 'good', metric1: 'metric1', metric2: 'metric2', metricName: 'metric1' }
-              }
-            }
-          ],
-          target: { type: null, sloTargetPercentage: 0.0, spec: { periodLength: '30' } }
-        },
-        createdAt: 1636432407690,
-        lastModifiedAt: 1636432407690
-      }
-    ],
-    pageIndex: 0,
-    empty: false
-  },
-  metaData: null,
-  correlationId: '63a9bb2b-820e-4832-b200-c5dea88fdd9a'
+export const initialStateForDisableTest = {
+  userJourney: { label: 'all', value: 'all' },
+  monitoredService: { label: 'all', value: 'all' },
+  sliTypes: { label: 'all', value: 'all' },
+  targetTypes: { label: 'all', value: 'all' },
+  sloRiskFilter: null
 }

@@ -1,3 +1,10 @@
+/*
+ * Copyright 2022 Harness Inc. All rights reserved.
+ * Use of this source code is governed by the PolyForm Shield 1.0.0 license
+ * that can be found in the licenses directory at the root of this repository, also available at
+ * https://polyformproject.org/wp-content/uploads/2020/06/PolyForm-Shield-1.0.0.txt.
+ */
+
 import type { UseGetReturn } from 'restful-react'
 import type { ReactNode } from 'react'
 import type { FormikProps } from 'formik'
@@ -11,6 +18,7 @@ import type { StringKeys } from 'framework/strings'
 import type { DatadogMetricInfo } from '@cv/pages/health-source/connectors/DatadogMetricsHealthSource/DatadogMetricsHealthSource.type'
 
 export interface SelectedWidgetMetricData {
+  id: string
   metricName: string
   query: string
   widgetName?: string
@@ -27,7 +35,7 @@ export interface SelectedMetricInfo {
 export interface CloudMetricsHealthSourceProps<T> {
   metricDetailsContent: ReactNode
   selectedMetricInfo: SelectedMetricInfo
-  onFetchTimeseriesData: () => void
+  onFetchTimeseriesData: (query: string) => void
   timeseriesDataLoading: boolean
   timeseriesDataError?: string
   dashboards: MetricDashboardItem[]
@@ -38,6 +46,7 @@ export interface CloudMetricsHealthSourceProps<T> {
   addManualQueryTitle: StringKeys
   dataSourceType: DatasourceTypeEnum
   dashboardDetailRequest: UseGetReturn<any, any, any>
-  dashboardDetailMapper: (detail: T) => MetricWidget
+  dashboardDetailMapper: (dashboardId: string, detail: T) => MetricWidget
   formikProps: FormikProps<DatadogMetricInfo>
+  onChangeManualEditQuery?: (enabled: boolean) => void
 }

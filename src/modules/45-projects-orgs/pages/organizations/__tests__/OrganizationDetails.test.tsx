@@ -1,3 +1,10 @@
+/*
+ * Copyright 2021 Harness Inc. All rights reserved.
+ * Use of this source code is governed by the PolyForm Shield 1.0.0 license
+ * that can be found in the licenses directory at the root of this repository, also available at
+ * https://polyformproject.org/wp-content/uploads/2020/06/PolyForm-Shield-1.0.0.txt.
+ */
+
 import React from 'react'
 import { act, fireEvent, getAllByText, render, RenderResult, waitFor } from '@testing-library/react'
 import { findDialogContainer, TestWrapper } from '@common/utils/testUtils'
@@ -23,6 +30,15 @@ jest.mock('@common/hooks', () => ({
 jest.mock('services/cd-ng', () => ({
   useGetOrganizationAggregateDTO: jest.fn().mockImplementation(() => {
     return { ...getOrgMockData, refetch: jest.fn(), error: null, loading: false }
+  }),
+  useGetSmtpConfig: jest.fn().mockImplementation(() => {
+    return {
+      loading: false,
+      data: {
+        status: 'SUCCESS',
+        data: {}
+      }
+    }
   }),
   useGetInvites: jest.fn().mockImplementation(() => ({ data: invitesMockData, loading: false, refetch: jest.fn() })),
   useAddUsers: jest.fn().mockImplementation(() => ({ mutate: () => Promise.resolve(response) })),
@@ -108,5 +124,23 @@ describe('Organization Details', () => {
     )
 
     expect(getByText('common.governance')).toBeTruthy()
+  })
+
+  test('Audit trail should be visible', async () => {
+    mockImport('@common/hooks/useFeatureFlag', {
+      useFeatureFlags: () => ({ AUDIT_TRAIL_WEB_INTERFACE: true })
+    })
+
+    render(
+      <TestWrapper
+        path={routes.toOrganizationDetails({ ...orgPathProps })}
+        pathParams={{ accountId: 'testAcc', orgIdentifier: 'testOrg' }}
+      >
+        <OrganizationDetailsPage />
+      </TestWrapper>
+    )
+
+    expect(getByText('common.auditTrail')).toBeTruthy()
+    expect(getByText('projectsOrgs.orgAccessCtrlAndAuditTrail')).toBeTruthy()
   })
 })

@@ -1,3 +1,10 @@
+/*
+ * Copyright 2021 Harness Inc. All rights reserved.
+ * Use of this source code is governed by the PolyForm Shield 1.0.0 license
+ * that can be found in the licenses directory at the root of this repository, also available at
+ * https://polyformproject.org/wp-content/uploads/2020/06/PolyForm-Shield-1.0.0.txt.
+ */
+
 import React, { useState } from 'react'
 import {
   Text,
@@ -57,10 +64,22 @@ export interface CustomVariableEditableProps extends CustomVariableEditableExtra
   onUpdate?: (data: CustomVariablesData) => void
   stepViewType?: StepViewType
   readonly?: boolean
+  allowableTypes: MultiTypeInputType[]
 }
 
 export function CustomVariableEditable(props: CustomVariableEditableProps): React.ReactElement {
-  const { initialValues, onUpdate, domId, heading, className, yamlProperties, readonly, path, formName } = props
+  const {
+    initialValues,
+    onUpdate,
+    domId,
+    heading,
+    className,
+    yamlProperties,
+    readonly,
+    path,
+    formName,
+    allowableTypes
+  } = props
   const uids = React.useRef<string[]>([])
 
   const [hoveredVariable, setHoveredVariable] = useState<Record<string, boolean>>({})
@@ -243,7 +262,8 @@ export function CustomVariableEditable(props: CustomVariableEditableProps): Reac
                                 textProps: {
                                   disabled: !initialValues.canAddVariable || readonly,
                                   type: variable.type === VariableType.Number ? 'number' : 'text'
-                                }
+                                },
+                                allowableTypes
                               }}
                               data-testid="variables-test"
                             />

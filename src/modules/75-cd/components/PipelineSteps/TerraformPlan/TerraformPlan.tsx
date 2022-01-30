@@ -1,3 +1,10 @@
+/*
+ * Copyright 2021 Harness Inc. All rights reserved.
+ * Use of this source code is governed by the PolyForm Shield 1.0.0 license
+ * that can be found in the licenses directory at the root of this repository, also available at
+ * https://polyformproject.org/wp-content/uploads/2020/06/PolyForm-Shield-1.0.0.txt.
+ */
+
 import React from 'react'
 import {
   Accordion,
@@ -138,7 +145,13 @@ function TerraformPlanWidget(
             <>
               {stepViewType !== StepViewType.Template && (
                 <div className={cx(stepCss.formGroup, stepCss.md)}>
-                  <FormInput.InputWithIdentifier inputLabel={getString('name')} isIdentifierEditable={isNewStep} />
+                  <FormInput.InputWithIdentifier
+                    inputLabel={getString('name')}
+                    isIdentifierEditable={isNewStep}
+                    inputGroupProps={{
+                      disabled: readonly
+                    }}
+                  />
                 </div>
               )}
 
@@ -147,6 +160,7 @@ function TerraformPlanWidget(
                   name="timeout"
                   label={getString('pipelineSteps.timeoutLabel')}
                   multiTypeDurationProps={{ enableConfigureOptions: false, expressions, allowableTypes }}
+                  disabled={readonly}
                 />
                 {getMultiTypeFromValue(values.timeout) === MultiTypeInputType.RUNTIME && (
                   <ConfigureOptions
@@ -174,6 +188,7 @@ function TerraformPlanWidget(
                   radioGroup={{ inline: true }}
                   items={commandTypeOptions}
                   className={css.radioBtns}
+                  disabled={readonly}
                 />
               </div>
               <div className={cx(stepCss.formGroup, stepCss.md)}>
@@ -181,6 +196,7 @@ function TerraformPlanWidget(
                   name="spec.provisionerIdentifier"
                   label={getString('pipelineSteps.provisionerIdentifier')}
                   multiTextInputProps={{ expressions, allowableTypes }}
+                  disabled={readonly}
                 />
                 {getMultiTypeFromValue(values.spec?.provisionerIdentifier) === MultiTypeInputType.RUNTIME && (
                   <ConfigureOptions
@@ -212,6 +228,7 @@ function TerraformPlanWidget(
                   style={{ marginBottom: 10 }}
                   multiTypeProps={{ expressions, allowableTypes }}
                   gitScope={{ repo: repoIdentifier || '', branch, getDefaultFromOtherRepo: true }}
+                  disabled={readonly}
                 />
               </div>
 
@@ -264,6 +281,7 @@ function TerraformPlanWidget(
                           label={getString('pipelineSteps.workspace')}
                           multiTextInputProps={{ expressions, allowableTypes }}
                           isOptional={true}
+                          disabled={readonly}
                         />
                         {getMultiTypeFromValue(formik.values.spec?.configuration?.workspace) ===
                           MultiTypeInputType.RUNTIME && (
@@ -283,7 +301,7 @@ function TerraformPlanWidget(
                         )}
                       </div>
                       <div className={css.divider} />
-                      <TfVarFileList formik={formik} isReadonly={props.readonly} allowableTypes={allowableTypes} />
+                      <TfVarFileList formik={formik} isReadonly={readonly} allowableTypes={allowableTypes} />
                       <div className={css.divider} />
                       <div className={cx(stepCss.formGroup, css.addMarginTop, css.addMarginBottom)}>
                         <MultiTypeFieldSelector
@@ -296,6 +314,7 @@ function TerraformPlanWidget(
                           }
                           defaultValueToReset=""
                           allowedTypes={allowableTypes}
+                          disabled={readonly}
                           expressionRender={() => {
                             return (
                               <TFMonaco
@@ -345,6 +364,7 @@ function TerraformPlanWidget(
                             )
                           }}
                           style={{ marginTop: 'var(--spacing-small)', marginBottom: 'var(--spacing-small)' }}
+                          disabled={readonly}
                         />
                       </div>
                       <div className={css.divider} />
@@ -363,6 +383,7 @@ function TerraformPlanWidget(
                               </Text>
                             )
                           }}
+                          disabled={readonly}
                         />
                       </div>
                     </>
@@ -403,7 +424,7 @@ function TerraformPlanWidget(
                   }}
                   data={formik.values}
                   onHide={() => setShowModal(false)}
-                  isReadonly={props.readonly}
+                  isReadonly={readonly}
                   allowableTypes={allowableTypes}
                 />
               </Dialog>

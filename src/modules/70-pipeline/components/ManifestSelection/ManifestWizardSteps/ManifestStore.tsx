@@ -1,3 +1,10 @@
+/*
+ * Copyright 2021 Harness Inc. All rights reserved.
+ * Use of this source code is governed by the PolyForm Shield 1.0.0 license
+ * that can be found in the licenses directory at the root of this repository, also available at
+ * https://polyformproject.org/wp-content/uploads/2020/06/PolyForm-Shield-1.0.0.txt.
+ */
+
 import React, { useCallback, useMemo, useState } from 'react'
 import { useParams } from 'react-router-dom'
 import {
@@ -12,7 +19,8 @@ import {
   IconName,
   ButtonVariation,
   FormikForm,
-  FontVariation
+  FontVariation,
+  ButtonSize
 } from '@wings-software/uicore'
 import * as Yup from 'yup'
 import { FormMultiTypeConnectorField } from '@connectors/components/ConnectorReferenceField/FormMultiTypeConnectorField'
@@ -38,6 +46,7 @@ import css from './ManifestWizardSteps.module.scss'
 interface ManifestStorePropType {
   stepName: string
   expressions: string[]
+  allowableTypes: MultiTypeInputType[]
   isReadonly: boolean
   manifestStoreTypes: Array<ManifestStores>
   initialValues: ManifestStepInitData
@@ -46,6 +55,7 @@ interface ManifestStorePropType {
 }
 
 const ManifestStore: React.FC<StepProps<ConnectorConfigDTO> & ManifestStorePropType> = ({
+  handleConnectorViewChange,
   handleStoreChange,
   stepName,
   isReadonly,
@@ -53,6 +63,7 @@ const ManifestStore: React.FC<StepProps<ConnectorConfigDTO> & ManifestStorePropT
   initialValues,
   previousStep,
   expressions,
+  allowableTypes,
   prevStepData,
   nextStep
 }) => {
@@ -174,7 +185,7 @@ const ManifestStore: React.FC<StepProps<ConnectorConfigDTO> & ManifestStorePropT
                       projectIdentifier={projectIdentifier}
                       orgIdentifier={orgIdentifier}
                       width={400}
-                      multiTypeProps={{ expressions }}
+                      multiTypeProps={{ expressions, allowableTypes }}
                       isNewConnectorLabelVisible={
                         !(
                           getMultiTypeFromValue(formik.values.connectorRef) === MultiTypeInputType.RUNTIME &&
@@ -201,7 +212,22 @@ const ManifestStore: React.FC<StepProps<ConnectorConfigDTO> & ManifestStorePropT
                         }}
                         isReadonly={isReadonly}
                       />
-                    ) : null}
+                    ) : (
+                      <Button
+                        variation={ButtonVariation.LINK}
+                        size={ButtonSize.SMALL}
+                        disabled={isReadonly || !canCreate}
+                        id="new-manifest-connector"
+                        text={newConnectorLabel}
+                        className={css.addNewManifest}
+                        icon="plus"
+                        iconProps={{ size: 12 }}
+                        onClick={() => {
+                          handleConnectorViewChange()
+                          nextStep?.({ ...prevStepData, store: selectedStore })
+                        }}
+                      />
+                    )}
                   </Layout.Horizontal>
                 ) : null}
               </Layout.Vertical>

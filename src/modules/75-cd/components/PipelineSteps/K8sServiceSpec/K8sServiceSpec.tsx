@@ -1,3 +1,10 @@
+/*
+ * Copyright 2021 Harness Inc. All rights reserved.
+ * Use of this source code is governed by the PolyForm Shield 1.0.0 license
+ * that can be found in the licenses directory at the root of this repository, also available at
+ * https://polyformproject.org/wp-content/uploads/2020/06/PolyForm-Shield-1.0.0.txt.
+ */
+
 import React from 'react'
 import get from 'lodash-es/get'
 import isEmpty from 'lodash-es/isEmpty'
@@ -446,7 +453,8 @@ export class KubernetesServiceSpec extends Step<ServiceSpec> {
   }
 
   renderStep(props: StepProps<K8SDirectServiceStep>): JSX.Element {
-    const { initialValues, onUpdate, stepViewType, inputSetData, factory, customStepProps, readonly } = props
+    const { initialValues, onUpdate, stepViewType, inputSetData, factory, customStepProps, readonly, allowableTypes } =
+      props
     if (stepViewType === StepViewType.InputVariable) {
       return (
         <K8sServiceSpecVariablesForm
@@ -473,6 +481,7 @@ export class KubernetesServiceSpec extends Step<ServiceSpec> {
           path={inputSetData?.path}
           readonly={inputSetData?.readonly || readonly}
           factory={factory}
+          allowableTypes={allowableTypes}
         />
       )
     }
@@ -491,6 +500,7 @@ export class KubernetesServiceSpec extends Step<ServiceSpec> {
           path={inputSetData?.path}
           readonly={inputSetData?.readonly || readonly}
           factory={factory}
+          allowableTypes={allowableTypes}
         />
       )
     }
@@ -504,6 +514,7 @@ export class KubernetesServiceSpec extends Step<ServiceSpec> {
         stepViewType={stepViewType}
         path={inputSetData?.path}
         readonly={readonly}
+        allowableTypes={allowableTypes}
       />
     )
   }

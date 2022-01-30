@@ -1,21 +1,22 @@
+/*
+ * Copyright 2021 Harness Inc. All rights reserved.
+ * Use of this source code is governed by the PolyForm Shield 1.0.0 license
+ * that can be found in the licenses directory at the root of this repository, also available at
+ * https://polyformproject.org/wp-content/uploads/2020/06/PolyForm-Shield-1.0.0.txt.
+ */
+
 import React, { useEffect, useState } from 'react'
 import { useHistory, useParams } from 'react-router-dom'
 import { defaultTo } from 'lodash-es'
-import {
-  Page,
-  Button,
-  ButtonVariation,
-  Layout,
-  Select,
-  GridListToggle,
-  Views,
-  SelectOption
-} from '@wings-software/uicore'
+import { Page, ButtonVariation, Layout, Select, GridListToggle, Views, SelectOption } from '@wings-software/uicore'
 import { useStrings } from 'framework/strings'
+import { ResourceType } from '@rbac/interfaces/ResourceType'
+import { PermissionIdentifier } from '@rbac/interfaces/PermissionIdentifier'
 import { useGetMonitoredServiceListEnvironments, useGetCountOfServices } from 'services/cv'
 import routes from '@common/RouteDefinitions'
 import { useQueryParams } from '@common/hooks'
 import { NGBreadcrumbs } from '@common/components/NGBreadcrumbs/NGBreadcrumbs'
+import RbacButton from '@rbac/components/Button/Button'
 import type { ProjectPathProps } from '@common/interfaces/RouteInterfaces'
 import { getCVMonitoringServicesSearchParam, getErrorMessage, getEnvironmentOptions } from '@cv/utils/CommonUtils'
 import ServiceDependencyGraph from '@cv/pages/monitored-service/CVMonitoredService/components/MonitoredServiceGraphView/MonitoredServiceGraphView'
@@ -39,6 +40,10 @@ const MonitoredService: React.FC = () => {
   const [selectedView, setSelectedView] = useState<Views>(view === Views.GRID ? Views.GRID : Views.LIST)
   const [environment, setEnvironment] = useState<SelectOption>()
   const [selectedFilter, setSelectedFilter] = useState<FilterTypes>(FilterTypes.ALL)
+
+  useEffect(() => {
+    setPage(0)
+  }, [projectIdentifier])
 
   const { data: environmentDataList, loading: loadingEnvironments } = useGetMonitoredServiceListEnvironments({
     queryParams: pathParams
@@ -65,13 +70,14 @@ const MonitoredService: React.FC = () => {
 
   const onFilter = (type: FilterTypes): void => {
     if (type !== selectedFilter) {
+      setPage(0)
       setSelectedFilter(type)
       refetchServiceCountData()
     }
   }
 
   const createButton = (
-    <Button
+    <RbacButton
       variation={ButtonVariation.PRIMARY}
       icon="plus"
       text={getString('cv.monitoredServices.newMonitoredServices')}
@@ -80,6 +86,13 @@ const MonitoredService: React.FC = () => {
           pathname: routes.toCVAddMonitoringServicesSetup(pathParams),
           search: getCVMonitoringServicesSearchParam({ view: selectedView })
         })
+      }}
+      permission={{
+        permission: PermissionIdentifier.EDIT_MONITORED_SERVICE,
+        resource: {
+          resourceType: ResourceType.MONITOREDSERVICE,
+          resourceIdentifier: projectIdentifier
+        }
       }}
     />
   )

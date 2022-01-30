@@ -1,28 +1,47 @@
-import React, { useState, useMemo, ReactNode } from 'react'
+/*
+ * Copyright 2022 Harness Inc. All rights reserved.
+ * Use of this source code is governed by the PolyForm Shield 1.0.0 license
+ * that can be found in the licenses directory at the root of this repository, also available at
+ * https://polyformproject.org/wp-content/uploads/2020/06/PolyForm-Shield-1.0.0.txt.
+ */
+
+import React, { useState, useMemo, ReactNode, useEffect } from 'react'
 import cronstrue from 'cronstrue'
 import { isEmpty } from 'lodash-es'
 import { useHistory, useParams } from 'react-router-dom'
 import type { Column, CellProps, Renderer } from 'react-table'
-import { Button, Container, Text, Layout, Icon, FlexExpander } from '@wings-software/uicore'
+import {
+  Button,
+  Container,
+  Text,
+  Layout,
+  Icon,
+  FlexExpander,
+  useToaster,
+  Color,
+  FontVariation,
+  ButtonSize,
+  ButtonVariation,
+  Link
+} from '@wings-software/uicore'
 import { Popover, Position, Classes, PopoverInteractionKind } from '@blueprintjs/core'
 import { DEFAULT_GROUP_BY } from '@ce/utils/perspectiveUtils'
 import routes from '@common/RouteDefinitions'
-import { QlceViewFieldInputInput, ViewChartType } from 'services/ce/services'
+import { QlceViewFieldInputInput, ViewChartType, AlertThreshold } from 'services/ce/services'
 import {
   CEView,
   CEReportSchedule,
   useGetReportSetting,
   useListBudgetsForPerspective,
-  AlertThreshold,
   useDeleteBudget,
   useDeleteReportSetting,
-  useGetLastMonthCost,
-  useGetForecastCost
+  Budget
 } from 'services/ce'
 import { useStrings } from 'framework/strings'
 import formatCost from '@ce/utils/formatCost'
-import useDidMountEffect from '@ce/common/useDidMountEffect'
 
+import { useTelemetry } from '@common/hooks/useTelemetry'
+import { USER_JOURNEY_EVENTS } from '@ce/TrackingEventsConstants'
 import Table from './Table'
 import PerspectiveBuilderPreview from '../PerspectiveBuilderPreview/PerspectiveBuilderPreview'
 import useCreateReportModal from './PerspectiveCreateReport'
@@ -30,8 +49,6 @@ import useBudgetModal from './PerspectiveCreateBudget'
 import css from './PerspectiveReportsAndBudgets.module.scss'
 
 interface ListProps {
-  title: string
-  subTitle: string
   grid: ReactNode
   buttonText: string
   hasData: boolean
@@ -61,11 +78,16 @@ const ReportsAndBudgets: React.FC<ReportsAndBudgetsProps> = ({ values, onPrevBut
     return (values?.viewVisualization?.groupBy as QlceViewFieldInputInput) || DEFAULT_GROUP_BY
   })
 
+  useEffect(() => {
+    values?.viewVisualization?.groupBy && setGroupBy(values?.viewVisualization?.groupBy as QlceViewFieldInputInput)
+  }, [values?.viewVisualization?.groupBy])
+
   const [chartType, setChartType] = useState<ViewChartType>(() => {
     return (values?.viewVisualization?.chartType as ViewChartType) || ViewChartType.StackedLineChart
   })
 
   const history = useHistory()
+  const { trackEvent } = useTelemetry()
   const { getString } = useStrings()
   const { perspectiveId, accountId } = useParams<UrlParams>()
 
@@ -98,7 +120,14 @@ const ReportsAndBudgets: React.FC<ReportsAndBudgetsProps> = ({ values, onPrevBut
           <FlexExpander />
           <Layout.Horizontal padding={{ top: 'medium' }} spacing="large">
             <Button icon="chevron-left" text={getString('previous')} onClick={onPrevButtonClick} />
-            <Button intent="primary" text={getString('ce.perspectives.save')} onClick={() => savePerspective()} />
+            <Button
+              intent="primary"
+              text={getString('ce.perspectives.save')}
+              onClick={() => {
+                trackEvent(USER_JOURNEY_EVENTS.SAVE_PERSPECTIVE, {})
+                savePerspective()
+              }}
+            />
           </Layout.Horizontal>
         </Layout.Vertical>
         {values && (
@@ -128,6 +157,7 @@ const useFetchReports = (accountId: string, perspectiveId: string) => {
 const ScheduledReports: React.FC = () => {
   const { getString } = useStrings()
   const { accountId, perspectiveId } = useParams<UrlParams>()
+  const { trackEvent } = useTelemetry()
   const { reports, loading, refetch } = useFetchReports(accountId, perspectiveId)
   const { mutate: deleteReport } = useDeleteReportSetting({})
   const { openModal, hideModal } = useCreateReportModal({
@@ -136,13 +166,26 @@ const ScheduledReports: React.FC = () => {
       refetch()
     }
   })
+  const { showSuccess, showError } = useToaster()
 
   const handleDelete = async (report: CEReportSchedule) => {
     try {
-      const deleted = await deleteReport(accountId, { queryParams: { reportId: report?.uuid } })
-      if (deleted) refetch()
-    } catch (e) {
-      // TODO: Error handling
+      const deleted = await deleteReport(accountId, {
+        queryParams: { reportId: report?.uuid },
+        headers: {
+          'content-type': 'application/json'
+        }
+      })
+      if (deleted) {
+        showSuccess(
+          getString('ce.perspectives.reports.reportDeletedTxt', {
+            name: report.name
+          })
+        )
+        refetch()
+      }
+    } catch (err) {
+      showError(err?.data?.message || err?.message)
     }
   }
 
@@ -178,19 +221,53 @@ const ScheduledReports: React.FC = () => {
     []
   )
 
+  const openCreateReportModal = () => {
+    trackEvent(USER_JOURNEY_EVENTS.CREATE_PERSPECTIVE_ADD_NEW_REPORT, {})
+    openModal()
+  }
+
   return (
-    <List
-      title={getString('ce.perspectives.reports.title')}
-      subTitle={`${getString('ce.perspectives.reports.desc')} ${
-        !reports.length ? getString('ce.perspectives.reports.msg') : ''
-      }`}
-      buttonText={getString('ce.perspectives.reports.createNew')}
-      onButtonClick={() => openModal()}
-      hasData={!!reports.length}
-      loading={loading}
-      grid={<Table<CEReportSchedule> data={reports} columns={columns} />}
-      showCreateButton
-    />
+    <Container>
+      <Layout.Horizontal>
+        <Container>
+          <Text color={Color.GREY_800} font={{ variation: FontVariation.H4 }}>
+            {getString('ce.perspectives.reports.title', {
+              count: reports.length || 0
+            })}
+          </Text>
+        </Container>
+        <FlexExpander />
+        {reports.length ? (
+          <Link
+            onClick={openCreateReportModal}
+            size={ButtonSize.SMALL}
+            padding="none"
+            margin="none"
+            font={FontVariation.SMALL}
+            variation={ButtonVariation.LINK}
+            icon="plus"
+            iconProps={{
+              size: 10
+            }}
+          >
+            {getString('ce.perspectives.reports.addReportSchedule')}
+          </Link>
+        ) : null}
+      </Layout.Horizontal>
+      <Text padding={{ top: 'large', bottom: 'large' }} color={Color.GREY_800} font="small">
+        {`${getString('ce.perspectives.reports.desc')} ${
+          !reports.length ? getString('ce.perspectives.reports.msg') : ''
+        }`}
+      </Text>
+      <List
+        buttonText={getString('ce.perspectives.reports.createNew')}
+        onButtonClick={openCreateReportModal}
+        showCreateButton={!reports.length}
+        hasData={!!reports.length}
+        loading={loading}
+        grid={<Table<CEReportSchedule> data={reports} columns={columns} />}
+      />
+    </Container>
   )
 }
 
@@ -206,47 +283,33 @@ const Budgets = ({ perspectiveName }: { perspectiveName: string }): JSX.Element 
   const { accountId, perspectiveId } = useParams<UrlParams>()
   const { mutate: deleteBudget } = useDeleteBudget({ queryParams: { accountIdentifier: accountId } })
   const { budgets, loading, refetch } = useFetchBudget(accountId, perspectiveId)
+  const { trackEvent } = useTelemetry()
   const { openModal, hideModal } = useBudgetModal({
     onSuccess: () => {
       hideModal()
       refetch()
     }
   })
+  const { showSuccess, showError } = useToaster()
 
-  const budget = budgets[0] || {}
-  const { budgetAmount, alertThresholds = [] } = budget
-
-  const {
-    data: lmc,
-    loading: lmcLoading,
-    refetch: lmcRefetch
-  } = useGetLastMonthCost({
-    queryParams: { accountIdentifier: accountId, perspectiveId },
-    lazy: true
-  })
-
-  const {
-    data: fc,
-    loading: fcLoading,
-    refetch: fcRefetch
-  } = useGetForecastCost({
-    queryParams: { accountIdentifier: accountId, perspectiveId },
-    lazy: true
-  })
-
-  useDidMountEffect(() => {
-    if (isEmpty(budgets[0])) {
-      lmcRefetch()
-      fcRefetch()
-    }
-  }, [loading])
-
-  const handleDeleteBudget = async () => {
+  const handleDeleteBudget: (budget: Budget) => void = async budget => {
     try {
-      const deleted = await (budget?.uuid && deleteBudget(budget.uuid))
-      if (deleted) refetch()
-    } catch (e) {
-      // TODO: Error handling
+      const deleted = await (budget?.uuid &&
+        deleteBudget(budget.uuid, {
+          headers: {
+            'content-type': 'application/json'
+          }
+        }))
+      if (deleted) {
+        showSuccess(
+          getString('ce.budgets.budgetDeletedTxt', {
+            name: budget.name
+          })
+        )
+        refetch()
+      }
+    } catch (err) {
+      showError(err?.data?.message || err?.message)
     }
   }
 
@@ -266,7 +329,7 @@ const Budgets = ({ perspectiveName }: { perspectiveName: string }): JSX.Element 
         Header: getString('ce.perspectives.reports.recipientLabel'),
         accessor: 'emailAddresses',
         Cell: ({ row }: CellProps<AlertThreshold>) => {
-          const emailAddresses = [...(row.original.emailAddresses || [])]
+          const emailAddresses = [...(row.original.emailAddresses || [])] as string[]
           return <RenderEmailAddresses emailAddresses={emailAddresses} />
         }
       }
@@ -274,20 +337,30 @@ const Budgets = ({ perspectiveName }: { perspectiveName: string }): JSX.Element 
     []
   )
 
-  const renderMeta = () => {
+  const renderMeta: (budget: Budget, index: number) => JSX.Element = (budget, index) => {
+    const { budgetAmount = 0, growthRate } = budget
+
     return (
       <Container>
-        <Text inline color="grey800" margin={{ right: 'small' }}>
-          {getString('ce.perspectives.budgets.configureAlerts.budgetAmount')}
-        </Text>
-        <Text inline color="grey800" font={{ weight: 'bold', size: 'normal' }}>
-          {formatCost(+(budgetAmount || 0))}
+        <Text font={{ variation: FontVariation.H6 }}>
+          {growthRate
+            ? getString('ce.perspectives.budgets.budgetTextWithGrowthRate', {
+                index: index + 1,
+                amount: formatCost(budgetAmount),
+                growth: growthRate
+              })
+            : getString('ce.perspectives.budgets.budgetText', {
+                index: index + 1,
+                amount: formatCost(budgetAmount)
+              })}
         </Text>
       </Container>
     )
   }
 
-  const renderGrid = () => {
+  const renderGrid: (budget: Budget) => JSX.Element = budget => {
+    const { alertThresholds = [] } = budget
+
     return (
       <Container>
         <Layout.Horizontal
@@ -298,7 +371,7 @@ const Budgets = ({ perspectiveName }: { perspectiveName: string }): JSX.Element 
             alignItems: 'center'
           }}
         >
-          <Text font="small" color="grey800">
+          <Text font="small" color={Color.GREY_800}>
             {getString('ce.perspectives.budgets.sendAlerts')}
           </Text>
           <Container margin={{ right: 'large' }}>
@@ -311,50 +384,92 @@ const Budgets = ({ perspectiveName }: { perspectiveName: string }): JSX.Element 
                   selectedBudget: budget
                 })
               }
-              onClickDelete={handleDeleteBudget}
+              onClickDelete={() => handleDeleteBudget(budget)}
             />
           </Container>
         </Layout.Horizontal>
-        <Table<AlertThreshold> columns={columns} data={alertThresholds || []} />
+        <Table<AlertThreshold> columns={columns} data={(alertThresholds || []) as any} />
       </Container>
     )
   }
 
+  const openCreateNewBudgetModal = (): void => {
+    trackEvent(USER_JOURNEY_EVENTS.CREATE_PERSPECTIVE_ADD_NEW_BUDGET, {})
+    openModal({
+      isEdit: false,
+      perspectiveName: perspectiveName,
+      perspective: perspectiveId,
+      selectedBudget: {}
+    })
+  }
+
   return (
-    <List
-      title={getString('ce.perspectives.budgets.title')}
-      subTitle={getString('ce.perspectives.budgets.desc')}
-      buttonText={getString('ce.perspectives.budgets.createNew')}
-      onButtonClick={() =>
-        openModal({
-          isEdit: false,
-          perspectiveName: perspectiveName,
-          perspective: perspectiveId,
-          selectedBudget: {
-            lastMonthCost: lmc?.data,
-            forecastCost: fc?.data
-          }
-        })
-      }
-      hasData={!isEmpty(budget)}
-      loading={loading || lmcLoading || fcLoading}
-      // Show create budget button only when there's no exisiting budget.
-      // A user can create only 1 budget at a time. To create a new, they
-      // have to delete the existing one, or just edit it.
-      showCreateButton={isEmpty(budget)}
-      meta={renderMeta()}
-      grid={renderGrid()}
-    />
+    <Container>
+      <Layout.Horizontal>
+        <Text color={Color.GREY_800} font={{ variation: FontVariation.H4 }}>
+          {getString('ce.perspectives.budgets.perspectiveCreateBudgetTitle', {
+            count: budgets.length || 0
+          })}
+        </Text>
+        <FlexExpander />
+        {budgets.length ? (
+          <Link
+            size={ButtonSize.SMALL}
+            padding="none"
+            margin="none"
+            font={FontVariation.SMALL}
+            variation={ButtonVariation.LINK}
+            icon="plus"
+            iconProps={{
+              size: 10
+            }}
+            onClick={openCreateNewBudgetModal}
+          >
+            {getString('ce.budgets.addNewBudget')}
+          </Link>
+        ) : null}
+      </Layout.Horizontal>
+      <Text padding={{ top: 'large', bottom: 'large' }} color={Color.GREY_800} font="small">
+        {getString('ce.perspectives.budgets.desc')}
+      </Text>
+      {budgets.map((budget, idx) => {
+        return (
+          <List
+            key={budget.uuid}
+            buttonText={getString('ce.perspectives.budgets.createNew')}
+            onButtonClick={openCreateNewBudgetModal}
+            hasData={!isEmpty(budget)}
+            loading={loading}
+            // Show create budget button only when there's no exisiting budget.
+            // A user can create only 1 budget at a time. To create a new, they
+            // have to delete the existing one, or just edit it.
+            showCreateButton={isEmpty(budget)}
+            meta={renderMeta(budget, idx)}
+            grid={renderGrid(budget)}
+          />
+        )
+      })}
+      {!budgets.length ? (
+        <List
+          grid={null}
+          loading={loading}
+          onButtonClick={openCreateNewBudgetModal}
+          buttonText={getString('ce.perspectives.budgets.createNew')}
+          hasData={false}
+          showCreateButton={true}
+        />
+      ) : null}
+    </Container>
   )
 }
 
 const List = (props: ListProps): JSX.Element => {
-  const { title, subTitle, grid, buttonText, hasData, onButtonClick, loading, meta, showCreateButton } = props
+  const { grid, buttonText, hasData, onButtonClick, loading, meta, showCreateButton } = props
 
   const renderLoader = (): JSX.Element => {
     return (
       <Container className={css.loader}>
-        <Icon name="spinner" color="blue500" size={30} />
+        <Icon name="spinner" color={Color.BLUE_500} size={30} />
       </Container>
     )
   }
@@ -380,13 +495,11 @@ const List = (props: ListProps): JSX.Element => {
   }
 
   return (
-    <Container>
-      <Text color="grey800" style={{ fontSize: 16 }}>
-        {title}
-      </Text>
-      <Text padding={{ top: 'large', bottom: 'large' }} color="grey800" font="small">
-        {subTitle}
-      </Text>
+    <Container
+      margin={{
+        bottom: 'xlarge'
+      }}
+    >
       {loading && renderLoader()}
       {!loading && hasData && (
         <>
@@ -424,7 +537,7 @@ const RenderEmailAddresses = ({ emailAddresses = [] }: { emailAddresses: string[
 
   return (
     <Layout.Horizontal spacing="xsmall">
-      <Text color="grey700" font="small">
+      <Text color={Color.GREY_700} font="small">
         {email}
       </Text>
       {emailAddresses.length ? (

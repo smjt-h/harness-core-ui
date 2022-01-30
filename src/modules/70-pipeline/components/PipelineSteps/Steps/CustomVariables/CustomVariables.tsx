@@ -1,3 +1,10 @@
+/*
+ * Copyright 2021 Harness Inc. All rights reserved.
+ * Use of this source code is governed by the PolyForm Shield 1.0.0 license
+ * that can be found in the licenses directory at the root of this repository, also available at
+ * https://polyformproject.org/wp-content/uploads/2020/06/PolyForm-Shield-1.0.0.txt.
+ */
+
 import React from 'react'
 import { IconName, getMultiTypeFromValue, MultiTypeInputType } from '@wings-software/uicore'
 import { get, set, isEmpty, isNil } from 'lodash-es'
@@ -44,7 +51,7 @@ export class CustomVariables extends Step<CustomVariablesData> {
   renderStep(
     props: StepProps<CustomVariablesData, CustomVariableEditableExtraProps | CustomVariableInputSetExtraProps>
   ): JSX.Element {
-    const { initialValues, onUpdate, stepViewType, customStepProps, inputSetData, readonly } = props
+    const { initialValues, onUpdate, stepViewType, customStepProps, inputSetData, readonly, allowableTypes } = props
 
     if (stepViewType === StepViewType.InputSet || stepViewType === StepViewType.DeploymentForm) {
       return (
@@ -54,6 +61,7 @@ export class CustomVariables extends Step<CustomVariablesData> {
           stepViewType={stepViewType}
           {...customStepProps}
           inputSetData={inputSetData}
+          allowableTypes={allowableTypes}
         />
       )
     }
@@ -66,6 +74,7 @@ export class CustomVariables extends Step<CustomVariablesData> {
           stepViewType={stepViewType}
           enableValidation
           readonly={readonly}
+          allowableTypes={allowableTypes}
           {...customStepProps}
         />
       )
@@ -77,6 +86,7 @@ export class CustomVariables extends Step<CustomVariablesData> {
         onUpdate={data => onUpdate?.(this.processFormData(data))}
         stepViewType={stepViewType}
         readonly={readonly}
+        allowableTypes={allowableTypes}
         {...customStepProps}
       />
     )

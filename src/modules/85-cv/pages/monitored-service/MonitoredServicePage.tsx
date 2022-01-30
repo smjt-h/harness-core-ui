@@ -1,3 +1,10 @@
+/*
+ * Copyright 2022 Harness Inc. All rights reserved.
+ * Use of this source code is governed by the PolyForm Shield 1.0.0 license
+ * that can be found in the licenses directory at the root of this repository, also available at
+ * https://polyformproject.org/wp-content/uploads/2020/06/PolyForm-Shield-1.0.0.txt.
+ */
+
 import React from 'react'
 import { useHistory, useParams } from 'react-router-dom'
 import { Container, Tabs, PageError, Page, FlexExpander, Views } from '@wings-software/uicore'
@@ -15,6 +22,7 @@ import { MonitoredServiceEnum } from './MonitoredServicePage.constants'
 import ServiceHealth from './components/ServiceHealth/ServiceHealth'
 import HealthScoreCard from './components/ServiceHealth/components/HealthScoreCard/HealthScoreCard'
 import CVSLOsListingPage from '../slos/CVSLOsListingPage'
+import { isProjectChangedOnMonitoredService } from './MonitoredServicePage.utils'
 import css from './MonitoredServicePage.module.scss'
 
 const ServiceHealthAndConfiguration: React.FC = () => {
@@ -43,7 +51,17 @@ const ServiceHealthAndConfiguration: React.FC = () => {
   const { monitoredService, lastModifiedAt } = monitoredServiceData?.data ?? {}
 
   if (error) {
-    return <PageError message={getErrorMessage(error)} onClick={() => refetch()} />
+    if (isProjectChangedOnMonitoredService(error, identifier)) {
+      history.push(
+        routes.toCVMonitoringServices({
+          projectIdentifier,
+          orgIdentifier,
+          accountId
+        })
+      )
+    } else {
+      return <PageError message={getErrorMessage(error)} onClick={() => refetch()} />
+    }
   }
 
   if (!loading && !monitoredService) {
@@ -93,7 +111,7 @@ const ServiceHealthAndConfiguration: React.FC = () => {
       }}
       className={css.pageBody}
     >
-      <CVSLOsListingPage monitoredServiceIdentifier={identifier} />
+      <CVSLOsListingPage monitoredService={monitoredService} />
     </Page.Body>
   )
 

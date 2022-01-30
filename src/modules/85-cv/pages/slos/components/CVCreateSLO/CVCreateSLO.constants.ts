@@ -1,5 +1,13 @@
+/*
+ * Copyright 2021 Harness Inc. All rights reserved.
+ * Use of this source code is governed by the PolyForm Shield 1.0.0 license
+ * that can be found in the licenses directory at the root of this repository, also available at
+ * https://polyformproject.org/wp-content/uploads/2020/06/PolyForm-Shield-1.0.0.txt.
+ */
+
 import type { IOptionProps } from '@blueprintjs/core'
 import type { SelectOption } from '@wings-software/uicore'
+import type { RadioButtonProps } from '@wings-software/uicore/dist/components/RadioButton/RadioButton'
 import * as Yup from 'yup'
 import type { UseStringsReturn } from 'framework/strings'
 import {
@@ -28,7 +36,7 @@ export const initialValuesSLO: SLOForm = {
   [SLOFormFields.VALID_REQUEST_METRIC]: '',
   [SLOFormFields.SLI_MISSING_DATA_TYPE]: SLIMissingDataTypes.GOOD,
   [SLOFormFields.PERIOD_TYPE]: PeriodTypes.ROLLING,
-  [SLOFormFields.SLO_TARGET_PERCENTAGE]: 0
+  [SLOFormFields.SLO_TARGET_PERCENTAGE]: 99
 }
 
 export const comparatorOptions: SelectOption[] = [
@@ -55,7 +63,9 @@ export const defaultOption: SelectOption = {
   value: ''
 }
 
-export const getSLITypeOptions = (getString: UseStringsReturn['getString']): IOptionProps[] => {
+export const getSLITypeOptions = (
+  getString: UseStringsReturn['getString']
+): Pick<RadioButtonProps, 'value' | 'label'>[] => {
   return [
     { label: getString('cv.slos.slis.type.availability'), value: SLITypes.AVAILABILITY },
     { label: getString('cv.slos.slis.type.latency'), value: SLITypes.LATENCY }

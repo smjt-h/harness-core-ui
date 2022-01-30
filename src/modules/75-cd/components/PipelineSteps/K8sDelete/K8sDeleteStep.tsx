@@ -1,3 +1,10 @@
+/*
+ * Copyright 2021 Harness Inc. All rights reserved.
+ * Use of this source code is governed by the PolyForm Shield 1.0.0 license
+ * that can be found in the licenses directory at the root of this repository, also available at
+ * https://polyformproject.org/wp-content/uploads/2020/06/PolyForm-Shield-1.0.0.txt.
+ */
+
 import React from 'react'
 import {
   Button,
@@ -16,7 +23,7 @@ import { FieldArray, FormikErrors, FormikProps, yupToFormErrors } from 'formik'
 import { v4 as uuid } from 'uuid'
 import type { IOptionProps } from '@blueprintjs/core'
 import * as Yup from 'yup'
-import { defaultTo, isEmpty } from 'lodash-es'
+import { defaultTo, isEmpty, unset } from 'lodash-es'
 import {
   StepFormikFowardRef,
   setFormikRef,
@@ -711,7 +718,7 @@ export class K8sDeleteStep extends PipelineStep<K8sDeleteFormData> {
                 MultiTypeInputType.RUNTIME
                   ? initialValues.spec?.deleteResources?.spec?.resourceNames
                   : initialValues.spec?.deleteResources?.spec?.resourceNames?.length
-                  ? (initialValues.spec?.deleteResources?.spec?.resourceNames || []).map((item: any) => ({
+                  ? defaultTo(initialValues.spec?.deleteResources?.spec?.resourceNames, []).map((item: string) => ({
                       value: item,
                       id: uuid()
                     }))
@@ -733,7 +740,7 @@ export class K8sDeleteStep extends PipelineStep<K8sDeleteFormData> {
                 MultiTypeInputType.RUNTIME
                   ? initialValues.spec?.deleteResources?.spec?.manifestPaths
                   : initialValues.spec?.deleteResources?.spec?.manifestPaths?.length
-                  ? (initialValues.spec?.deleteResources?.spec?.manifestPaths || []).map((item: any) => ({
+                  ? defaultTo(initialValues.spec?.deleteResources?.spec?.manifestPaths, []).map((item: string) => ({
                       value: item,
                       id: uuid()
                     }))
@@ -769,7 +776,7 @@ export class K8sDeleteStep extends PipelineStep<K8sDeleteFormData> {
               MultiTypeInputType.RUNTIME
                 ? initialValues.spec?.deleteResources?.spec?.resourceNames
                 : initialValues.spec?.deleteResources?.spec?.resourceNames?.length
-                ? (initialValues.spec?.deleteResources?.spec?.resourceNames).map((item: any) => ({
+                ? (initialValues.spec?.deleteResources?.spec?.resourceNames).map((item: string) => ({
                     value: item,
                     id: uuid()
                   }))
@@ -784,8 +791,8 @@ export class K8sDeleteStep extends PipelineStep<K8sDeleteFormData> {
     /* making sure to remove other entities */
     if (data.spec?.deleteResources?.type === DeleteSpecConstant.ResourceName) {
       /* istanbul ignore next */
-      delete data.spec?.deleteResources?.spec?.deleteNamespace
-      delete data.spec?.deleteResources?.spec?.manifestPaths
+      unset(data.spec?.deleteResources?.spec, 'deleteNamespace')
+      unset(data.spec?.deleteResources?.spec, 'manifestPaths')
       return {
         ...data,
         spec: {
@@ -796,15 +803,15 @@ export class K8sDeleteStep extends PipelineStep<K8sDeleteFormData> {
               resourceNames:
                 getMultiTypeFromValue(data.spec?.deleteResources?.spec?.resourceNames) === MultiTypeInputType.RUNTIME
                   ? data.spec?.deleteResources?.spec?.resourceNames
-                  : (data.spec?.deleteResources?.spec?.resourceNames || []).map((item: any) => item.value)
+                  : defaultTo(data.spec?.deleteResources?.spec?.resourceNames, []).map((item: any) => item.value)
             }
           }
         }
       }
     } else if (data.spec?.deleteResources?.type === DeleteSpecConstant.ManifestPath) {
       /* istanbul ignore next */
-      delete data.spec?.deleteResources?.spec?.deleteNamespace
-      delete data.spec?.deleteResources?.spec?.resourceNames
+      unset(data.spec?.deleteResources?.spec, 'deleteNamespace')
+      unset(data.spec?.deleteResources?.spec, 'resourceNames')
       return {
         ...data,
         spec: {
@@ -815,7 +822,7 @@ export class K8sDeleteStep extends PipelineStep<K8sDeleteFormData> {
               manifestPaths:
                 getMultiTypeFromValue(data.spec?.deleteResources?.spec?.manifestPaths) === MultiTypeInputType.RUNTIME
                   ? data.spec?.deleteResources?.spec?.manifestPaths
-                  : (data.spec?.deleteResources?.spec?.manifestPaths || []).map((item: any) => item.value)
+                  : defaultTo(data.spec?.deleteResources?.spec?.manifestPaths, []).map((item: any) => item.value)
             }
           }
         }
@@ -823,8 +830,8 @@ export class K8sDeleteStep extends PipelineStep<K8sDeleteFormData> {
     }
 
     /* istanbul ignore next */
-    delete data.spec?.deleteResources?.spec?.resourceNames
-    delete data.spec?.deleteResources?.spec?.manifestPaths
+    unset(data.spec?.deleteResources?.spec, 'resourceNames')
+    unset(data.spec?.deleteResources?.spec, 'manifestPaths')
     return {
       ...data,
       spec: {

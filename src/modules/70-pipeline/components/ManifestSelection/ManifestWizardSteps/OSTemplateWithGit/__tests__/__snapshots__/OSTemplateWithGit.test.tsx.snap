@@ -287,13 +287,13 @@ exports[`Open shift template with git tests expand advanced section 1`] = `
                 data-testid="advancedTitle-summary"
               >
                 <div
-                  class="Accordion--chevron"
-                />
-                <div
                   class="Accordion--label"
                 >
                   advancedTitle
                 </div>
+                <div
+                  class="Accordion--chevron"
+                />
               </div>
               <div
                 class="bp3-collapse Accordion--collapse"
@@ -729,13 +729,13 @@ exports[`Open shift template with git tests renders correctly in edit case 1`] =
                 data-testid="advancedTitle-summary"
               >
                 <div
-                  class="Accordion--chevron"
-                />
-                <div
                   class="Accordion--label"
                 >
                   advancedTitle
                 </div>
+                <div
+                  class="Accordion--chevron"
+                />
               </div>
               <div
                 class="bp3-collapse Accordion--collapse"
@@ -1104,13 +1104,13 @@ exports[`Open shift template with git tests renders without crashing 1`] = `
                 data-testid="advancedTitle-summary"
               >
                 <div
-                  class="Accordion--chevron"
-                />
-                <div
                   class="Accordion--label"
                 >
                   advancedTitle
                 </div>
+                <div
+                  class="Accordion--chevron"
+                />
               </div>
               <div
                 class="bp3-collapse Accordion--collapse"

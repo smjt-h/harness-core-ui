@@ -1,3 +1,10 @@
+/*
+ * Copyright 2021 Harness Inc. All rights reserved.
+ * Use of this source code is governed by the PolyForm Shield 1.0.0 license
+ * that can be found in the licenses directory at the root of this repository, also available at
+ * https://polyformproject.org/wp-content/uploads/2020/06/PolyForm-Shield-1.0.0.txt.
+ */
+
 import React, { useState } from 'react'
 import { defaultTo as _defaultTo } from 'lodash-es'
 import { Layout, Tabs, Tab, Button, Container, Icon } from '@wings-software/uicore'
@@ -16,6 +23,7 @@ import { Breadcrumbs } from '@common/components/Breadcrumbs/Breadcrumbs'
 import { ASRuleTabs } from '@ce/constants'
 import { GatewayContextProvider } from '@ce/context/GatewayContext'
 import { useAppStore } from 'framework/AppStore/AppStoreContext'
+import { USER_JOURNEY_EVENTS } from '@ce/TrackingEventsConstants'
 import { ConfigTabTitle, ReviewTabTitle, SetupAccessTabTitle } from './TabTitles'
 import { getServiceObjectFromgatewayDetails, isPrimaryBtnDisable, trackPrimaryBtnClick } from './helper'
 import css from './COGatewayDetails.module.scss'
@@ -167,6 +175,7 @@ const COGatewayDetails: React.FC<COGatewayDetailsProps> = props => {
   const nextTab = (): void => {
     const tabIndex = tabs.findIndex(t => t == selectedTabId)
     if (tabIndex == tabs.length - 1) {
+      trackEvent(USER_JOURNEY_EVENTS.SAVE_RULE_CLICK, {})
       onSave()
     } else if (tabIndex < tabs.length - 1) {
       setSelectedTabId(tabs[tabIndex + 1])
@@ -256,7 +265,13 @@ const COGatewayDetails: React.FC<COGatewayDetailsProps> = props => {
               id="review"
               disabled
               title={<ReviewTabTitle isValidConfig={validConfig} isValidAccessSetup={validAccessSetup} />}
-              panel={<COGatewayReview gatewayDetails={props.gatewayDetails} onEdit={handleReviewDetailsEdit} />}
+              panel={
+                <COGatewayReview
+                  gatewayDetails={props.gatewayDetails}
+                  onEdit={handleReviewDetailsEdit}
+                  allServices={servicesData?.response as Service[]}
+                />
+              }
             />
           </Tabs>
         </Container>

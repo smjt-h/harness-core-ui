@@ -1,3 +1,10 @@
+/*
+ * Copyright 2022 Harness Inc. All rights reserved.
+ * Use of this source code is governed by the PolyForm Shield 1.0.0 license
+ * that can be found in the licenses directory at the root of this repository, also available at
+ * https://polyformproject.org/wp-content/uploads/2020/06/PolyForm-Shield-1.0.0.txt.
+ */
+
 import { EntityTypes, Connectors } from '@connectors/constants'
 import {
   buildAWSPayload,
@@ -591,7 +598,8 @@ describe('Connector Utils', () => {
           name: 'secretdevxDDUx',
           referenceString: 'account.secretdevxDDUx'
         },
-        apiAuthType: 'Token'
+        apiAuthType: 'Token',
+        connectivityMode: 'Delegate'
       })
 
       expect(
@@ -625,7 +633,8 @@ describe('Connector Utils', () => {
           name: 'secretdevxDDUx',
           referenceString: 'account.secret_p024_ssh_password'
         },
-        enableAPIAccess: false
+        enableAPIAccess: false,
+        connectivityMode: 'Delegate'
       })
     }),
     test('test buildGithubPayload', () => {
@@ -999,7 +1008,6 @@ describe('Connector Utils', () => {
       expect(getIconByType(Connectors.CE_KUBERNETES)).toEqual('service-kubernetes')
       expect(getIconByType(Connectors.CE_GCP)).toEqual('service-gcp')
       expect(getIconByType(Connectors.PAGER_DUTY)).toEqual('service-pagerduty')
-      expect(getIconByType(Connectors.ARGO_CONNECTOR)).toEqual('argo')
     }),
     test('test isSMConnector', () => {
       expect(isSMConnector('AwsSecretManager')).toBeTruthy()

@@ -1,3 +1,10 @@
+/*
+ * Copyright 2021 Harness Inc. All rights reserved.
+ * Use of this source code is governed by the PolyForm Shield 1.0.0 license
+ * that can be found in the licenses directory at the root of this repository, also available at
+ * https://polyformproject.org/wp-content/uploads/2020/06/PolyForm-Shield-1.0.0.txt.
+ */
+
 import React from 'react'
 import { act } from 'react-dom/test-utils'
 import { render, fireEvent } from '@testing-library/react'
@@ -62,8 +69,7 @@ jest.mock('services/cd-ng', () => ({
 }))
 
 jest.spyOn(featureFlags, 'useFeatureFlags').mockImplementation(() => ({
-  CDNG_ENABLED: false,
-  NG_CG_TASK_ASSIGNMENT_ISOLATION: true
+  CDNG_ENABLED: false
 }))
 
 describe('DelegateSelectorStep', () => {
@@ -77,13 +83,12 @@ describe('DelegateSelectorStep', () => {
     expect(container).toMatchSnapshot()
     expect(container.querySelector('[value="DelegateOptions.DelegateOptionsAny"]')?.getAttribute('disabled')).toBe(null)
     expect(container.querySelectorAll('[data-name="DelegateSelectors"] [data-tag-index]').length).toBe(0)
-    expect(container.querySelector('[data-name="installNewDelegateButton"]')).toBeFalsy()
+    expect(container.querySelector('[data-name="installNewDelegateButton"]')).toBeTruthy()
   })
 
   test('should confirm that install new delegate button is visible if feature flags are present', async () => {
     jest.spyOn(featureFlags, 'useFeatureFlags').mockImplementation(() => ({
-      CDNG_ENABLED: true,
-      NG_CG_TASK_ASSIGNMENT_ISOLATION: true
+      CDNG_ENABLED: true
     }))
     const { container } = render(
       <TestWrapper>
@@ -327,8 +332,7 @@ describe('DelegateSelectorStep', () => {
 
   test('should open Git Sync modal on clicking Save and Continue', async () => {
     jest.spyOn(featureFlags, 'useFeatureFlags').mockImplementation(() => ({
-      CDNG_ENABLED: true,
-      NG_CG_TASK_ASSIGNMENT_ISOLATION: true
+      CDNG_ENABLED: true
     }))
     const { getByTestId } = render(
       <GitSyncTestWrapper>

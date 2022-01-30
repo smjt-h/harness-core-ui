@@ -1,3 +1,10 @@
+/*
+ * Copyright 2022 Harness Inc. All rights reserved.
+ * Use of this source code is governed by the PolyForm Shield 1.0.0 license
+ * that can be found in the licenses directory at the root of this repository, also available at
+ * https://polyformproject.org/wp-content/uploads/2020/06/PolyForm-Shield-1.0.0.txt.
+ */
+
 import React from 'react'
 import {
   Card,
@@ -10,10 +17,11 @@ import {
   Icon,
   Button,
   ButtonVariation,
-  ButtonSize
+  ButtonSize,
+  IconName
 } from '@wings-software/uicore'
 
-import { Classes, Intent, Menu } from '@blueprintjs/core'
+import { Classes, Intent, Menu, Popover, PopoverInteractionKind, Position } from '@blueprintjs/core'
 import { useParams, useHistory } from 'react-router-dom'
 import { isEmpty } from 'lodash-es'
 import cx from 'classnames'
@@ -156,6 +164,66 @@ const ContextMenu: React.FC<ContextMenuProps> = ({
 
 const LEFT_COLUMN_WIDTH = 80
 
+const AdditionalEntitiesCountPopUp = (props: { entityList: string[]; iconName?: IconName }) => {
+  const { entityList, iconName } = props
+  return (
+    <Layout.Vertical style={{ padding: 'var(--spacing-4)' }}>
+      {entityList.map(entity => (
+        <Container key={entity} flex={{ justifyContent: 'flex-start' }}>
+          {iconName && <Icon name={iconName} style={{ height: 'var(--spacing-5)', marginRight: 'var(--spacing-3)' }} />}
+          <Text font="small" color={Color.WHITE} style={{ lineHeight: '22px' }}>
+            {entity}
+          </Text>
+        </Container>
+      ))}
+    </Layout.Vertical>
+  )
+}
+
+const renderEntityWithAdditionalCountInfo = (entityList: string[], iconName?: IconName) => {
+  if (!entityList?.length) {
+    return null
+  }
+  const [firstElement, ...otherElements] = entityList
+
+  return (
+    <Layout.Horizontal>
+      {firstElement && (
+        <Text
+          font="small"
+          className={css.firstEntity}
+          lineClamp={1}
+          tooltip={
+            <Container style={{ padding: 'var(--spacing-4)' }}>
+              <Text font="small" color={Color.WHITE} style={{ lineHeight: '22px' }}>
+                {firstElement}
+              </Text>
+            </Container>
+          }
+          tooltipProps={{ isDark: true }}
+        >
+          {firstElement}
+        </Text>
+      )}
+      {otherElements && otherElements.length > 0 && (
+        <Popover
+          interactionKind={PopoverInteractionKind.HOVER}
+          position={Position.RIGHT}
+          usePortal={true}
+          className={Classes.DARK}
+          content={<AdditionalEntitiesCountPopUp entityList={otherElements} iconName={iconName} />}
+        >
+          <Text
+            font="small"
+            color={Color.GREY_600}
+            style={{ marginLeft: 'var(--spacing-4)' }}
+          >{`+${otherElements.length}`}</Text>
+        </Popover>
+      )}
+    </Layout.Horizontal>
+  )
+}
+
 export const PipelineCard: React.FC<PipelineCardProps> = ({
   pipeline,
   goToPipelineDetail,
@@ -228,15 +296,18 @@ export const PipelineCard: React.FC<PipelineCardProps> = ({
         />
         <Container>
           <Layout.Horizontal spacing={'small'} margin={{ bottom: 'small' }} flex>
-            {!isEmpty(pipelineIcons) &&
-              pipelineIcons.map(iconObj => <Icon key={iconObj.icon} name={iconObj.icon} size={14} />)}
+            <Container>
+              {!isEmpty(pipelineIcons) &&
+                pipelineIcons.map(iconObj => <Icon key={iconObj.icon} name={iconObj.icon} size={16} />)}
+            </Container>
             {pipeline.entityValidityDetails?.valid === false && (
               <Badge
                 text={'common.invalid'}
-                iconName="warning-sign"
+                iconName="error-outline"
                 showTooltip={true}
                 entityName={pipeline.name}
                 entityType={'Pipeline'}
+                showInvalidText={true}
               />
             )}
           </Layout.Horizontal>
@@ -266,9 +337,7 @@ export const PipelineCard: React.FC<PipelineCardProps> = ({
               <Text className={css.label} font="small" width={LEFT_COLUMN_WIDTH} color={Color.GREY_700}>
                 {getString('stages')}
               </Text>
-              <Text font="small" color={Color.BLACK} lineClamp={1}>
-                {pipeline.stageNames?.join(', ')}
-              </Text>
+              {renderEntityWithAdditionalCountInfo(pipeline.stageNames)}
             </Layout.Horizontal>
           ) : null}
         </Container>
@@ -295,13 +364,11 @@ export const PipelineCard: React.FC<PipelineCardProps> = ({
           )}
           {(module === 'cd' || !!pipeline.filters?.cd?.serviceNames?.length) && (
             <Layout.Horizontal flex={{ justifyContent: 'flex-start' }} spacing={'small'}>
-              <Text font="small" width={LEFT_COLUMN_WIDTH} color={Color.GREY_700}>
+              <Text className={css.label} font="small" width={LEFT_COLUMN_WIDTH} color={Color.GREY_700}>
                 {getString('services')}
               </Text>
               {pipeline.filters?.cd?.serviceNames?.length ? (
-                <Text font="small" color={Color.BLACK} lineClamp={1}>
-                  {pipeline.filters?.cd?.serviceNames.join(', ')}
-                </Text>
+                renderEntityWithAdditionalCountInfo(pipeline.filters?.cd?.serviceNames as string[], 'infrastructure')
               ) : (
                 <Text font="small" color={Color.GREY_500}>
                   {getString('none')}

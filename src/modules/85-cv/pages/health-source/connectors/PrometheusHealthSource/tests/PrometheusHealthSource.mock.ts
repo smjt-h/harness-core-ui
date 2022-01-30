@@ -1,3 +1,10 @@
+/*
+ * Copyright 2021 Harness Inc. All rights reserved.
+ * Use of this source code is governed by the PolyForm Shield 1.0.0 license
+ * that can be found in the licenses directory at the root of this repository, also available at
+ * https://polyformproject.org/wp-content/uploads/2020/06/PolyForm-Shield-1.0.0.txt.
+ */
+
 export const MockManualQueryData = {
   isEdit: true,
   healthSourceList: [
@@ -72,4 +79,28 @@ export const MockManualQueryDataForCreate = {
   ...MockManualQueryData,
   isEdit: false,
   healthSourceList: []
+}
+
+export const MockManualQueryDataForIdentifierCheck = {
+  ...MockManualQueryData,
+  healthSourceList: [
+    {
+      ...MockManualQueryData.healthSourceList[0],
+      spec: {
+        ...MockManualQueryData.healthSourceList[0].spec,
+        metricDefinitions: [
+          {
+            ...MockManualQueryData.healthSourceList[0].spec.metricDefinitions[0],
+            metricName: 'Test 1',
+            identifier: 'aa'
+          },
+          {
+            ...MockManualQueryData.healthSourceList[0].spec.metricDefinitions[0],
+            metricName: 'Test 2',
+            identifier: 'aa'
+          }
+        ]
+      }
+    }
+  ]
 }

@@ -1,15 +1,25 @@
+/*
+ * Copyright 2021 Harness Inc. All rights reserved.
+ * Use of this source code is governed by the PolyForm Shield 1.0.0 license
+ * that can be found in the licenses directory at the root of this repository, also available at
+ * https://polyformproject.org/wp-content/uploads/2020/06/PolyForm-Shield-1.0.0.txt.
+ */
+
 import React, { useCallback } from 'react'
 import { noop } from 'lodash-es'
 import * as Yup from 'yup'
 import { Formik, FormikContext } from 'formik'
 import { useParams } from 'react-router-dom'
 import { Text, Color } from '@wings-software/uicore'
-import { PageSpinner } from '@common/components'
 import { useStrings } from 'framework/strings'
+import { PageSpinner } from '@common/components'
+import type { ProjectPathProps } from '@common/interfaces/RouteInterfaces'
+import { ResourceType } from '@rbac/interfaces/ResourceType'
+import { PermissionIdentifier } from '@rbac/interfaces/PermissionIdentifier'
 import type { ChangeSourceDTO } from 'services/cv'
 import { useDrawer } from '@cv/hooks/useDrawerHook/useDrawerHook'
 import { ChangeSourceDrawer } from '@cv/pages/ChangeSource/ChangeSourceDrawer/ChangeSourceDrawer'
-import SaveAndDiscardButton from '@common/components/SaveAndDiscardButton/SaveAndDiscardButton'
+import SaveAndDiscardButton from '@cv/components/SaveAndDiscardButton/SaveAndDiscardButton'
 import HealthSourceTableContainer from './components/HealthSourceTableContainer/HealthSourceTableContainer'
 import type { MonitoredServiceForm } from './Service.types'
 import MonitoredServiceOverview from './components/MonitoredServiceOverview/MonitoredServiceOverview'
@@ -36,7 +46,7 @@ function Service({
   onChangeMonitoredServiceType: (updatedValues: MonitoredServiceForm) => void
 }): JSX.Element {
   const { getString } = useStrings()
-  const { identifier } = useParams<{ identifier: string }>()
+  const { projectIdentifier, identifier } = useParams<ProjectPathProps & { identifier: string }>()
 
   const isEdit = !!identifier
 
@@ -136,6 +146,13 @@ function Service({
                     onDiscard={() => {
                       formik.resetForm()
                       onDiscard?.()
+                    }}
+                    RbacPermission={{
+                      permission: PermissionIdentifier.EDIT_MONITORED_SERVICE,
+                      resource: {
+                        resourceType: ResourceType.MONITOREDSERVICE,
+                        resourceIdentifier: projectIdentifier
+                      }
                     }}
                   />
                 </div>

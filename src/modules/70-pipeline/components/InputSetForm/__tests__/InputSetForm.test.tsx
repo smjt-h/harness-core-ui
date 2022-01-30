@@ -1,3 +1,10 @@
+/*
+ * Copyright 2022 Harness Inc. All rights reserved.
+ * Use of this source code is governed by the PolyForm Shield 1.0.0 license
+ * that can be found in the licenses directory at the root of this repository, also available at
+ * https://polyformproject.org/wp-content/uploads/2020/06/PolyForm-Shield-1.0.0.txt.
+ */
+
 import React from 'react'
 import { render, waitFor, fireEvent, createEvent, act } from '@testing-library/react'
 import { noop } from 'lodash-es'
@@ -22,7 +29,8 @@ import {
   GetInputSetsResponse,
   GetInputSetEdit,
   MergeInputSetResponse,
-  GetOverlayInputSetEdit
+  GetOverlayInputSetEdit,
+  MergedPipelineResponse
 } from './InputSetMocks'
 
 const eventData = { dataTransfer: { setData: jest.fn(), dropEffect: '', getData: () => '1' } }
@@ -76,8 +84,13 @@ jest.mock('services/cd-ng', () => ({
 
 jest.mock('@common/hooks', () => ({
   ...(jest.requireActual('@common/hooks') as any),
-
-  useMutateAsGet: jest.fn().mockImplementation(() => TemplateResponse)
+  useMutateAsGet: jest.fn().mockImplementation(props => {
+    if (props.name === 'useGetYamlWithTemplateRefsResolved') {
+      return MergedPipelineResponse
+    } else {
+      return TemplateResponse
+    }
+  })
 }))
 
 jest.mock('services/pipeline-ng', () => ({
@@ -197,7 +210,7 @@ describe('Render Forms - Snapshot Testing', () => {
   })
 
   test('render Overlay Input Set Form view', async () => {
-    const { getAllByText } = render(
+    const { getByText } = render(
       <TestWrapper
         path={TEST_INPUT_SET_PATH}
         pathParams={{
@@ -214,13 +227,15 @@ describe('Render Forms - Snapshot Testing', () => {
     )
     jest.runOnlyPendingTimers()
     const container = findDialogContainer()
-    await waitFor(() => getAllByText('inputSets.addInputSetPlus'))
-    const addNew = getAllByText('inputSets.addInputSetPlus')[0]
+
+    await waitFor(() => getByText('pipeline.inputSets.selectPlaceholder'))
     // Add two
-    fireEvent.click(addNew)
-    fireEvent.click(addNew)
+    act(() => {
+      fireEvent.click(getByText('pipeline.inputSets.selectPlaceholder'))
+      fireEvent.click(getByText('pipeline.inputSets.selectPlaceholder'))
+    })
     // Remove the last
-    const remove = container?.querySelectorAll('[data-icon="main-trash"]')[1]
+    const remove = container?.querySelectorAll('[data-icon="cross"]')[1]
     fireEvent.click(remove!)
     expect(container).toMatchSnapshot()
   })
@@ -286,7 +301,7 @@ describe('Render Forms - Snapshot Testing', () => {
     )
     jest.runOnlyPendingTimers()
     const container = findDialogContainer()
-    await waitFor(() => getAllByText('2.'))
+    await waitFor(() => getByText('test'))
     expect(container).toMatchSnapshot()
     fireEvent.click(getByText('save'))
     // Switch Mode
@@ -296,7 +311,7 @@ describe('Render Forms - Snapshot Testing', () => {
   })
 
   test('render Edit Overlay Input Set Form and test drag drop', async () => {
-    const { getByTestId } = render(
+    const { getByTestId, getByText } = render(
       <TestWrapper
         path={TEST_INPUT_SET_PATH}
         pathParams={{
@@ -312,11 +327,14 @@ describe('Render Forms - Snapshot Testing', () => {
       </TestWrapper>
     )
     jest.runOnlyPendingTimers()
-    await waitFor(() => getByTestId('asd'))
+    await waitFor(() => getByText('asd'))
+
+    act(() => {
+      fireEvent.click(getByText('pipeline.inputSets.selectPlaceholder'))
+    })
 
     const container = getByTestId('asd')
     const container2 = getByTestId('test')
-
     act(() => {
       const dragStartEvent = Object.assign(createEvent.dragStart(container), eventData)
 

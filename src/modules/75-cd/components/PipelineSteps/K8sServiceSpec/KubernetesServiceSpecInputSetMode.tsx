@@ -1,3 +1,10 @@
+/*
+ * Copyright 2021 Harness Inc. All rights reserved.
+ * Use of this source code is governed by the PolyForm Shield 1.0.0 license
+ * that can be found in the licenses directory at the root of this repository, also available at
+ * https://polyformproject.org/wp-content/uploads/2020/06/PolyForm-Shield-1.0.0.txt.
+ */
+
 import React from 'react'
 import { connect } from 'formik'
 import { Layout, MultiTypeInputType } from '@wings-software/uicore'
@@ -30,6 +37,7 @@ export interface KubernetesInputSetProps {
   path?: string
   stageIdentifier: string
   formik?: any
+  allowableTypes: MultiTypeInputType[]
 }
 
 const KubernetesServiceSpecInputSetModeFormikForm = (props: KubernetesInputSetProps) => {
@@ -43,7 +51,8 @@ const KubernetesServiceSpecInputSetModeFormikForm = (props: KubernetesInputSetPr
     readonly = false,
     stageIdentifier,
     stepViewType,
-    formik
+    formik,
+    allowableTypes
   } = props
   const { getString } = useStrings()
   return (
@@ -99,12 +108,14 @@ const KubernetesServiceSpecInputSetModeFormikForm = (props: KubernetesInputSetPr
               }}
               type={StepType.CustomVariable}
               stepViewType={StepViewType.InputSet}
-              allowableTypes={[MultiTypeInputType.FIXED, MultiTypeInputType.EXPRESSION]}
-              onUpdate={({ variables }: CustomVariablesData) => {
-                onUpdate?.({
-                  variables: variables as any
-                })
-              }}
+              allowableTypes={allowableTypes}
+              onUpdate={
+                /*istanbul ignore next*/ ({ variables }: CustomVariablesData) => {
+                  onUpdate?.({
+                    variables: variables as any
+                  })
+                }
+              }
               customStepProps={{
                 template: { variables: (template?.variables || []) as AllNGVariables[] },
                 path,

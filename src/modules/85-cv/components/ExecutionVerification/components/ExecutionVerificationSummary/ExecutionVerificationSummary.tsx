@@ -1,3 +1,10 @@
+/*
+ * Copyright 2021 Harness Inc. All rights reserved.
+ * Use of this source code is governed by the PolyForm Shield 1.0.0 license
+ * that can be found in the licenses directory at the root of this repository, also available at
+ * https://polyformproject.org/wp-content/uploads/2020/06/PolyForm-Shield-1.0.0.txt.
+ */
+
 import React, { useEffect, useMemo, useState } from 'react'
 import { Container, Icon, Color, Text, PageError } from '@wings-software/uicore'
 import { useParams } from 'react-router-dom'
@@ -20,7 +27,7 @@ import css from './ExecutionVerificationSummary.module.scss'
 const POLLING_INTERVAL = 15000
 
 export function ExecutionVerificationSummary(props: VerifyExecutionProps): JSX.Element {
-  const { step, displayAnalysisCount = true, className, onSelectNode, stageType } = props
+  const { step, displayAnalysisCount = true, className, onSelectNode, stageType, isConsoleView } = props
   const { accountId } = useParams<ProjectPathProps>()
   const [pollingIntervalId, setPollingIntervalId] = useState(-1)
   const [showSpinner, setShowSpinner] = useState(true)
@@ -69,7 +76,11 @@ export function ExecutionVerificationSummary(props: VerifyExecutionProps): JSX.E
 
   if (showSpinner) {
     return (
-      <Container className={cx(css.main, className)}>
+      <Container
+        className={cx(css.main, className, {
+          [css.fullWidth]: !isConsoleView
+        })}
+      >
         <Icon name="steps-spinner" className={css.loading} color={Color.GREY_400} size={30} />
       </Container>
     )
@@ -77,7 +88,11 @@ export function ExecutionVerificationSummary(props: VerifyExecutionProps): JSX.E
 
   if (error) {
     return (
-      <Container className={cx(css.main, className)}>
+      <Container
+        className={cx(css.main, className, {
+          [css.fullWidth]: !isConsoleView
+        })}
+      >
         <PageError message={getErrorMessage(error)} onClick={() => refetch()} />
       </Container>
     )
@@ -88,7 +103,11 @@ export function ExecutionVerificationSummary(props: VerifyExecutionProps): JSX.E
   }
 
   return (
-    <Container className={cx(css.main, className)}>
+    <Container
+      className={cx(css.main, className, {
+        [css.fullWidth]: !isConsoleView
+      })}
+    >
       {step.failureInfo?.message && (
         <Text
           font={{ size: 'small', weight: 'bold' }}
@@ -103,6 +122,7 @@ export function ExecutionVerificationSummary(props: VerifyExecutionProps): JSX.E
         deploymentSummary={deploymentVerificationJobInstanceSummary}
         className={css.details}
         onSelectNode={onSelectNode}
+        isConsoleView={isConsoleView}
       />
       {displayAnalysisCount && (
         <SummaryOfDeployedNodes

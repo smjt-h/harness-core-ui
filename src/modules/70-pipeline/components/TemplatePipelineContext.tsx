@@ -1,10 +1,18 @@
+/*
+ * Copyright 2021 Harness Inc. All rights reserved.
+ * Use of this source code is governed by the PolyForm Shield 1.0.0 license
+ * that can be found in the licenses directory at the root of this repository, also available at
+ * https://polyformproject.org/wp-content/uploads/2020/06/PolyForm-Shield-1.0.0.txt.
+ */
+
 import React from 'react'
 import { cloneDeep, isEqual, noop } from 'lodash-es'
-import { VisualYamlSelectedView as SelectedView } from '@wings-software/uicore'
+import { MultiTypeInputType, VisualYamlSelectedView as SelectedView } from '@wings-software/uicore'
 import {
   findAllByKey,
   getTemplateTypesByRef,
-  PipelineContext
+  PipelineContext,
+  PipelineContextType
 } from '@pipeline/components/PipelineStudio/PipelineContext/PipelineContext'
 import {
   initialState,
@@ -31,6 +39,7 @@ import { useLicenseStore } from 'framework/LicenseStore/LicenseStoreContext'
 import { LICENSE_STATE_VALUES } from 'framework/LicenseStore/licenseStoreUtil'
 import type { PipelineSelectionState } from '@pipeline/components/PipelineStudio/PipelineQueryParamState/usePipelineQueryParam'
 import type { GetPipelineQueryParams } from 'services/pipeline-ng'
+import { getScopeFromDTO } from '@common/components/EntityReference/EntityReference'
 
 export const TemplatePipelineProvider: React.FC<{
   queryParams: GetPipelineQueryParams
@@ -38,7 +47,8 @@ export const TemplatePipelineProvider: React.FC<{
   onUpdatePipeline: (pipeline: PipelineInfoConfig) => void
   isReadOnly: boolean
 }> = ({ queryParams, initialValue, onUpdatePipeline, isReadOnly, children }) => {
-  const contextType = 'Template'
+  const contextType = PipelineContextType.Template
+  const allowableTypes = [MultiTypeInputType.FIXED, MultiTypeInputType.RUNTIME]
   const { CI_LICENSE_STATE, FF_LICENSE_STATE, CD_LICENSE_STATE } = useLicenseStore()
   const isCDEnabled = useFeatureFlag(FeatureFlag.CDNG_ENABLED) && CD_LICENSE_STATE === LICENSE_STATE_VALUES.ACTIVE
   const isCIEnabled = useFeatureFlag(FeatureFlag.CING_ENABLED) && CI_LICENSE_STATE === LICENSE_STATE_VALUES.ACTIVE
@@ -167,6 +177,8 @@ export const TemplatePipelineProvider: React.FC<{
     [state.pipeline, state.pipeline?.stages]
   )
 
+  const scope = getScopeFromDTO(queryParams)
+
   React.useEffect(() => {
     fetchPipeline()
   }, [initialValue])
@@ -177,7 +189,9 @@ export const TemplatePipelineProvider: React.FC<{
         state,
         view,
         contextType,
+        allowableTypes,
         setView,
+        scope,
         runPipeline: noop,
         stepsFactory: factory,
         setSchemaErrorView,

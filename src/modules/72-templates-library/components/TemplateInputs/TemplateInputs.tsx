@@ -1,3 +1,10 @@
+/*
+ * Copyright 2022 Harness Inc. All rights reserved.
+ * Use of this source code is governed by the PolyForm Shield 1.0.0 license
+ * that can be found in the licenses directory at the root of this repository, also available at
+ * https://polyformproject.org/wp-content/uploads/2020/06/PolyForm-Shield-1.0.0.txt.
+ */
+
 import React from 'react'
 import {
   Color,
@@ -24,7 +31,7 @@ import { useStrings } from 'framework/strings'
 import { StageForm } from '@pipeline/components/PipelineInputSetForm/PipelineInputSetForm'
 import { TemplateType } from '@templates-library/utils/templatesUtils'
 import NoResultsView from '@templates-library/pages/TemplatesPage/views/NoResultsView/NoResultsView'
-import { DefaultNewVersionLabel } from 'framework/Templates/templates'
+import { getTemplateNameWithLabel } from '@pipeline/utils/templateUtils'
 import css from './TemplateInputs.module.scss'
 import stepCss from '@pipeline/components/PipelineSteps/Steps/Steps.module.scss'
 
@@ -38,6 +45,7 @@ export const TemplateInputs: React.FC<TemplateInputsProps> = props => {
   const [count, setCount] = React.useState<number>(0)
   const { showError } = useToaster()
   const { getString } = useStrings()
+  const allowableTypes = [MultiTypeInputType.FIXED, MultiTypeInputType.EXPRESSION, MultiTypeInputType.RUNTIME]
 
   const {
     data: templateInputYaml,
@@ -50,52 +58,48 @@ export const TemplateInputs: React.FC<TemplateInputsProps> = props => {
       accountIdentifier: defaultTo(template.accountId, ''),
       orgIdentifier: template.orgIdentifier,
       projectIdentifier: template.projectIdentifier,
-      versionLabel: template.versionLabel === DefaultNewVersionLabel ? '' : defaultTo(template.versionLabel, '')
+      versionLabel: defaultTo(template.versionLabel, '')
     }
   })
 
   React.useEffect(() => {
-    if (!loading) {
-      try {
-        const templateInput = parse(templateInputYaml?.data || '')
-        setCount((JSON.stringify(templateInput).match(/<\+input>/g) || []).length)
-        setInputSetTemplate(templateInput)
-      } catch (error) {
-        showError(error.message, undefined, 'template.parse.inputSet.error')
-      }
+    try {
+      const templateInput = parse(templateInputYaml?.data || '')
+      setCount((JSON.stringify(templateInput).match(/<\+input>/g) || []).length)
+      setInputSetTemplate(templateInput)
+    } catch (error) {
+      showError(error.message, undefined, 'template.parse.inputSet.error')
     }
-  }, [loading, templateInputYaml?.data])
-
-  React.useEffect(() => {
-    refetch()
-  }, [template])
+  }, [templateInputYaml?.data])
 
   return (
     <Container
       style={{ overflow: 'auto' }}
-      height={'100%'}
-      padding={{ top: 'xlarge', left: 'xxlarge', bottom: 'xlarge', right: 'xxlarge' }}
+      padding={{ top: 'xlarge', left: 'xxlarge', right: 'xxlarge' }}
       className={css.container}
     >
-      <Layout.Vertical flex={{ align: 'center-center' }} height={'100%'}>
+      <Layout.Vertical>
         {loading && <PageSpinner />}
         {!loading && inputSetError && (
-          <PageError
-            message={defaultTo((inputSetError.data as Error)?.message, inputSetError.message)}
-            onClick={() => refetch()}
-          />
+          <Container height={300}>
+            <PageError
+              message={defaultTo((inputSetError.data as Error)?.message, inputSetError.message)}
+              onClick={() => refetch()}
+            />
+          </Container>
         )}
         {!loading && !inputSetError && !inputSetTemplate && (
-          <NoResultsView minimal={true} text={getString('templatesLibrary.noInputsRequired')} />
+          <Container height={300}>
+            <NoResultsView minimal={true} text={getString('templatesLibrary.noInputsRequired')} />
+          </Container>
         )}
         {!loading && !inputSetError && inputSetTemplate && (
-          <Container height={'100%'} width={'100%'} className={css.inputsContainer}>
+          <Container className={css.inputsContainer}>
             <Layout.Vertical spacing={'xlarge'}>
               <Container>
                 <Layout.Horizontal flex={{ alignItems: 'center' }} spacing={'xxxlarge'}>
                   <Text font={{ size: 'normal', weight: 'bold' }} color={Color.GREY_800}>
-                    {template.identifier}:{' '}
-                    {template.versionLabel === DefaultNewVersionLabel ? 'Stable' : template.versionLabel}
+                    {getTemplateNameWithLabel(template)}
                   </Text>
                   <Text className={css.inputsCount} font={{ size: 'small' }}>
                     {getString('templatesLibrary.inputsCount', { count })}
@@ -122,6 +126,7 @@ export const TemplateInputs: React.FC<TemplateInputsProps> = props => {
                           path={'stage'}
                           readonly={true}
                           viewType={StepViewType.InputSet}
+                          allowableTypes={allowableTypes}
                           hideTitle={true}
                           stageClassName={css.stageCard}
                         />
@@ -140,11 +145,7 @@ export const TemplateInputs: React.FC<TemplateInputsProps> = props => {
                             readonly={true}
                             type={(formikProps.values as StepElementConfig)?.type as StepType}
                             stepViewType={StepViewType.InputSet}
-                            allowableTypes={[
-                              MultiTypeInputType.FIXED,
-                              MultiTypeInputType.EXPRESSION,
-                              MultiTypeInputType.RUNTIME
-                            ]}
+                            allowableTypes={allowableTypes}
                           />
                           {getMultiTypeFromValue((formikProps.values as StepElementConfig).spec?.delegateSelectors) ===
                             MultiTypeInputType.RUNTIME && (
@@ -154,11 +155,7 @@ export const TemplateInputs: React.FC<TemplateInputsProps> = props => {
                                   projectIdentifier: template.projectIdentifier,
                                   orgIdentifier: template.orgIdentifier
                                 }}
-                                allowableTypes={[
-                                  MultiTypeInputType.FIXED,
-                                  MultiTypeInputType.EXPRESSION,
-                                  MultiTypeInputType.RUNTIME
-                                ]}
+                                allowableTypes={allowableTypes}
                                 label={getString('delegate.DelegateSelector')}
                                 name={'spec.delegateSelectors'}
                                 disabled={true}

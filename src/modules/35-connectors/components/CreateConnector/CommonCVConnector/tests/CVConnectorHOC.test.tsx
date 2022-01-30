@@ -1,3 +1,10 @@
+/*
+ * Copyright 2021 Harness Inc. All rights reserved.
+ * Use of this source code is governed by the PolyForm Shield 1.0.0 license
+ * that can be found in the licenses directory at the root of this repository, also available at
+ * https://polyformproject.org/wp-content/uploads/2020/06/PolyForm-Shield-1.0.0.txt.
+ */
+
 import React from 'react'
 import { Container, Button } from '@wings-software/uicore'
 import { render, fireEvent, waitFor } from '@testing-library/react'
@@ -6,17 +13,7 @@ import { InputTypes, setFieldValue } from '@common/utils/JestFormHelper'
 import * as portalService from 'services/portal'
 import * as cdService from 'services/cd-ng'
 import { cvConnectorHOC } from '../CVConnectorHOC'
-
-const MockProps = {
-  onClose: jest.fn(),
-  onSuccess: jest.fn(),
-  isEditMode: false,
-  accountId: '1234_accountId',
-  projectIdentifier: '1234_projectIdentifier',
-  orgIdentifier: '1234_orgIdentifier',
-  connectorInfo: undefined,
-  setIsEditMode: () => undefined
-}
+import { DynatraceConfigStep } from '../../DynatraceConnector/CreateDynatraceConnector'
 
 const mockTransFormFunc = jest.fn()
 
@@ -27,10 +24,12 @@ jest.mock('services/portal', () => ({
   }),
   useGetDelegateFromId: jest.fn().mockImplementation(() => jest.fn()),
   useGetDelegateSelectorsUpTheHierarchy: jest.fn().mockImplementation(() => ({ mutate: jest.fn() })),
-  useGetDelegatesUpTheHierarchy: jest.fn().mockImplementation(() => ({ mutate: jest.fn() })),
-  useGetDelegateSelectors: jest.fn().mockImplementation(() => ({ mutate: jest.fn() })),
-  useGetDelegatesStatusV2: jest.fn().mockImplementation(() => ({ mutate: jest.fn() }))
+  useGetDelegatesUpTheHierarchy: jest.fn().mockImplementation(() => ({ mutate: jest.fn() }))
 }))
+
+function nestedComponent(): JSX.Element[] {
+  return [<DynatraceConfigStep key={1} name="parameters" accountId="qq3q4" isEditMode={false} />]
+}
 
 function WrappedComponent(props: any) {
   return (
@@ -41,11 +40,25 @@ function WrappedComponent(props: any) {
   )
 }
 
+const MockProps = {
+  onClose: jest.fn(),
+  onSuccess: jest.fn(),
+  isEditMode: false,
+  accountId: '1234_accountId',
+  projectIdentifier: '1234_projectIdentifier',
+  orgIdentifier: '1234_orgIdentifier',
+  connectorInfo: undefined,
+  setIsEditMode: () => undefined,
+  nestedComponent: null,
+  ConnectorCredentialsStep: WrappedComponent
+}
+
 function WrapperComponent(mockProps: any) {
   const MockComponent = cvConnectorHOC({
     connectorType: 'Prometheus',
-    ConnectorCredentialsStep: WrappedComponent,
-    buildSubmissionPayload: mockTransFormFunc
+    ConnectorCredentialsStep: mockProps.ConnectorCredentialsStep,
+    buildSubmissionPayload: mockTransFormFunc,
+    nestedStep: mockProps.nestedStep
   })
   return (
     <TestWrapper path="/account/:accountId/resources/connectors" pathParams={{ accountId: '1234_accountId' }}>
@@ -86,5 +99,19 @@ describe('Unit tests for cv connector hoc', () => {
 
     // back to step 2
     await waitFor(() => expect(getByText('Dummy component')).not.toBeNull())
+  })
+
+  test('Ensure that nested step component and credentials component are rendered', async () => {
+    const props = { ...MockProps, nestedStep: nestedComponent }
+    const { getByText } = render(<WrapperComponent {...props} />)
+    await waitFor(() => expect(getByText('parameters')).not.toBeNull())
+    expect(getByText('credentials')).not.toBeNull()
+  })
+
+  test('Ensure that credentials component is not rendered', async () => {
+    const props = { ...MockProps, nestedStep: nestedComponent, ConnectorCredentialsStep: null }
+    const { container, getByText } = render(<WrapperComponent {...props} />)
+    await waitFor(() => expect(getByText('parameters')).not.toBeNull())
+    expect(container.querySelectorAll('[class*="navStep"]').length).toBe(5)
   })
 })

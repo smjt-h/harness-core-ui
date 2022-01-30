@@ -1,3 +1,10 @@
+/*
+ * Copyright 2022 Harness Inc. All rights reserved.
+ * Use of this source code is governed by the PolyForm Shield 1.0.0 license
+ * that can be found in the licenses directory at the root of this repository, also available at
+ * https://polyformproject.org/wp-content/uploads/2020/06/PolyForm-Shield-1.0.0.txt.
+ */
+
 import React, { useEffect, useState } from 'react'
 import { useParams } from 'react-router-dom'
 import { TabNavigation } from '@wings-software/uicore'
@@ -7,6 +14,8 @@ import ScopedTitle from '@common/components/Title/ScopedTitle'
 import { Scope } from '@common/interfaces/SecretsInterface'
 import routes from '@common/RouteDefinitions'
 import type { ProjectPathProps, PipelineType } from '@common/interfaces/RouteInterfaces'
+import { getLinkForAccountResources } from '@common/utils/BreadcrumbUtils'
+import { useFeatureFlags } from '@common/hooks/useFeatureFlag'
 import type { GetDelegateGroupsNGV2WithFilterQueryParams } from 'services/portal'
 import { useListDelegateConfigsNgV2WithFilter } from 'services/cd-ng'
 import type { DelegateProfileDetailsNg } from 'services/cd-ng'
@@ -14,6 +23,7 @@ import { useStrings } from 'framework/strings'
 
 const DelegatesPage: React.FC = ({ children }) => {
   const params = useParams<PipelineType<ProjectPathProps>>()
+  const { NG_SHOW_DEL_TOKENS } = useFeatureFlags()
   const { accountId, orgIdentifier, projectIdentifier, module } = params
   const { getString } = useStrings()
   const [profiles, setProfiles] = useState<DelegateProfileDetailsNg[]>([])
@@ -57,10 +67,20 @@ const DelegatesPage: React.FC = ({ children }) => {
       to: routes.toDelegateConfigs({ accountId, orgIdentifier, projectIdentifier, module })
     })
   }
+  if (NG_SHOW_DEL_TOKENS) {
+    links.push({
+      label: getString('common.tokens'),
+      to: routes.toDelegateTokens({ accountId, orgIdentifier, projectIdentifier, module })
+    })
+  }
   return (
     <>
       <Page.Header
-        breadcrumbs={<NGBreadcrumbs />}
+        breadcrumbs={
+          <NGBreadcrumbs
+            links={getLinkForAccountResources({ accountId, orgIdentifier, projectIdentifier, getString })}
+          />
+        }
         title={
           <ScopedTitle
             title={{

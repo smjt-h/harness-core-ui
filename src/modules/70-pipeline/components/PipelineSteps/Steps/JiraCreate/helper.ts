@@ -1,3 +1,10 @@
+/*
+ * Copyright 2021 Harness Inc. All rights reserved.
+ * Use of this source code is governed by the PolyForm Free Trial 1.0.0 license
+ * that can be found in the licenses directory at the root of this repository, also available at
+ * https://polyformproject.org/wp-content/uploads/2020/05/PolyForm-Free-Trial-1.0.0.txt.
+ */
+
 import { getMultiTypeFromValue, MultiSelectOption, MultiTypeInputType, SelectOption } from '@wings-software/uicore'
 import type { FormikProps } from 'formik'
 import { isEmpty } from 'lodash-es'
@@ -83,6 +90,7 @@ export const processFormData = (values: JiraCreateData): JiraCreateData => {
   return {
     ...values,
     spec: {
+      delegateSelectors: values.spec.delegateSelectors,
       connectorRef:
         getMultiTypeFromValue(values.spec.connectorRef as SelectOption) === MultiTypeInputType.FIXED
           ? (values.spec.connectorRef as SelectOption)?.value?.toString()
@@ -108,6 +116,7 @@ export const processInitialValues = (values: JiraCreateData): JiraCreateData => 
   return {
     ...values,
     spec: {
+      delegateSelectors: values.spec.delegateSelectors,
       connectorRef: values.spec.connectorRef,
       projectKey:
         values.spec.projectKey && getMultiTypeFromValue(values.spec.projectKey) === MultiTypeInputType.FIXED

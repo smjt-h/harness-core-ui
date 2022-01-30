@@ -1,3 +1,10 @@
+/*
+ * Copyright 2021 Harness Inc. All rights reserved.
+ * Use of this source code is governed by the PolyForm Shield 1.0.0 license
+ * that can be found in the licenses directory at the root of this repository, also available at
+ * https://polyformproject.org/wp-content/uploads/2020/06/PolyForm-Shield-1.0.0.txt.
+ */
+
 import moment from 'moment'
 import { BudgetCostData, BudgetPeriod } from 'services/ce/services'
 
@@ -32,7 +39,7 @@ export const getTimeRangeExpression: (
 
     case BudgetPeriod.Quarterly:
     case BudgetPeriod.Yearly:
-      rangeTxt = `${startTime.format('MMM YYYY')} - ${endTime.format('MMM YYYY')}`
+      rangeTxt = `${startTime.format('D MMM YYYY')} - ${endTime.format('D MMM YYYY')}`
       break
 
     case BudgetPeriod.Weekly:

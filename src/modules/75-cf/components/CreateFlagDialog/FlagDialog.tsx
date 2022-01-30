@@ -1,14 +1,18 @@
+/*
+ * Copyright 2022 Harness Inc. All rights reserved.
+ * Use of this source code is governed by the PolyForm Shield 1.0.0 license
+ * that can be found in the licenses directory at the root of this repository, also available at
+ * https://polyformproject.org/wp-content/uploads/2020/06/PolyForm-Shield-1.0.0.txt.
+ */
+
 import React, { useState } from 'react'
 import { Dialog } from '@blueprintjs/core'
 import { Color, useModalHook, Button, Container, Text, Icon } from '@wings-software/uicore'
-import { useFeatureFlagTelemetry } from '@cf/hooks/useFeatureFlagTelemetry'
 import { useStrings } from 'framework/strings'
-import RbacButton from '@rbac/components/Button/Button'
-import { ResourceType } from '@rbac/interfaces/ResourceType'
-import { PermissionIdentifier } from '@rbac/interfaces/PermissionIdentifier'
 import { FlagTypeVariations } from './FlagDialogUtils'
 import FlagWizard from '../CreateFlagWizard/FlagWizard'
 import FlagTypeElement from '../CreateFlagType/FlagTypeElement'
+import CreateFlagButton from '../CreateFlagButton/CreateFlagButton'
 import css from './FlagDialog.module.scss'
 
 export interface FlagModalProps {
@@ -20,7 +24,6 @@ const FlagModal: React.FC<FlagModalProps> = ({ disabled, environment }) => {
   const { getString } = useStrings()
   const [flagTypeClicked, setFlagTypeClicked] = useState(false)
   const [flagTypeView, setFlagTypeView] = useState('')
-  const events = useFeatureFlagTelemetry()
 
   const booleanFlagBtn = (typeOfFlag: boolean): void => {
     setFlagTypeClicked(typeOfFlag)
@@ -106,22 +109,7 @@ const FlagModal: React.FC<FlagModalProps> = ({ disabled, environment }) => {
     [flagTypeClicked, flagTypeView]
   )
 
-  return (
-    <RbacButton
-      disabled={disabled}
-      text={getString('cf.featureFlags.newFlag')}
-      intent="primary"
-      onClick={() => {
-        events.createFeatureFlagStart()
-        showModal()
-      }}
-      className={css.openModalBtn}
-      permission={{
-        permission: PermissionIdentifier.EDIT_FF_FEATUREFLAG,
-        resource: { resourceType: ResourceType.FEATUREFLAG }
-      }}
-    />
-  )
+  return <CreateFlagButton disabled={disabled} showModal={showModal} />
 }
 
 export default FlagModal

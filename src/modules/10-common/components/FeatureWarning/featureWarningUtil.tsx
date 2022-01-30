@@ -1,7 +1,14 @@
+/*
+ * Copyright 2022 Harness Inc. All rights reserved.
+ * Use of this source code is governed by the PolyForm Shield 1.0.0 license
+ * that can be found in the licenses directory at the root of this repository, also available at
+ * https://polyformproject.org/wp-content/uploads/2020/06/PolyForm-Shield-1.0.0.txt.
+ */
+
 import React, { ReactElement } from 'react'
 import { capitalize } from 'lodash-es'
 import { useHistory, useParams } from 'react-router-dom'
-import { Button, ButtonSize, ButtonVariation, Text, Color, FontVariation, Layout } from '@wings-software/uicore'
+import { Button, ButtonSize, ButtonVariation, Text, Color, FontVariation, Layout } from '@harness/uicore'
 import { useLicenseStore } from 'framework/LicenseStore/LicenseStoreContext'
 import { LICENSE_STATE_VALUES } from 'framework/LicenseStore/licenseStoreUtil'
 import routes from '@common/RouteDefinitions'
@@ -104,7 +111,24 @@ export const ViewUsageLink = ({ size, featureName }: ExplorePlansBtnProps): Reac
   const redirectToOverviewPage = useRedirectToOverviewPage(featureName)
   return (
     <Button
+      data-name="view-usage-link"
       variation={ButtonVariation.LINK}
+      size={size || ButtonSize.SMALL}
+      onClick={(e: React.MouseEvent<Element, MouseEvent>) => {
+        redirectToOverviewPage(e)
+      }}
+    >
+      {capitalize(getString('common.viewUsage'))}
+    </Button>
+  )
+}
+
+export const ViewUsageBtn = ({ featureName, size }: ExplorePlansBtnProps): ReactElement => {
+  const { getString } = useStrings()
+  const redirectToOverviewPage = useRedirectToOverviewPage(featureName)
+  return (
+    <Button
+      variation={ButtonVariation.SECONDARY}
       size={size || ButtonSize.SMALL}
       onClick={(e: React.MouseEvent<Element, MouseEvent>) => {
         redirectToOverviewPage(e)
@@ -131,6 +155,22 @@ export const UpgradeRequiredText = ({ message }: { message: string }): ReactElem
         {message}
       </Text>
     </Layout.Horizontal>
+  )
+}
+
+export const RequestUpgradeBtn = ({ featureName, size }: ExplorePlansBtnProps): ReactElement => {
+  const { getString } = useStrings()
+  const redirectToOverviewPage = useRedirectToOverviewPage(featureName)
+  return (
+    <Button
+      variation={ButtonVariation.SECONDARY}
+      size={size || ButtonSize.SMALL}
+      onClick={(e: React.MouseEvent<Element, MouseEvent>) => {
+        redirectToOverviewPage(e)
+      }}
+    >
+      {getString('common.feature.keepGettingShipDone.requestUpgrade')}
+    </Button>
   )
 }
 

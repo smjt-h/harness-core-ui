@@ -1,5 +1,12 @@
+/*
+ * Copyright 2021 Harness Inc. All rights reserved.
+ * Use of this source code is governed by the PolyForm Shield 1.0.0 license
+ * that can be found in the licenses directory at the root of this repository, also available at
+ * https://polyformproject.org/wp-content/uploads/2020/06/PolyForm-Shield-1.0.0.txt.
+ */
+
 import React from 'react'
-import { Card, Color, FontVariation, NestedAccordionPanel, Text } from '@wings-software/uicore'
+import { Card, Color, FontVariation, MultiTypeInputType, NestedAccordionPanel, Text } from '@wings-software/uicore'
 import cx from 'classnames'
 import { isEmpty, lowerCase } from 'lodash-es'
 import type { PipelineInfoConfig } from 'services/cd-ng'
@@ -8,8 +15,8 @@ import { StepWidget } from '@pipeline/components/AbstractSteps/StepWidget'
 import { StepViewType } from '@pipeline/components/AbstractSteps/Step'
 import type { AbstractStepFactory } from '@pipeline/components/AbstractSteps/AbstractStepFactory'
 import type {
-  CustomVariablesData,
-  CustomVariableEditableExtraProps
+  CustomVariableEditableExtraProps,
+  CustomVariablesData
 } from '@pipeline/components/PipelineSteps/Steps/CustomVariables/CustomVariableEditable'
 import { useStrings } from 'framework/strings'
 import { VariablesListTable } from '@pipeline/components/VariablesListTable/VariablesListTable'
@@ -26,10 +33,11 @@ export interface PipelineCardProps {
   metadataMap: PipelineVariablesData['metadataMap']
   updatePipeline(pipeline: PipelineInfoConfig): void
   readonly?: boolean
+  allowableTypes: MultiTypeInputType[]
 }
 
 export default function PipelineCard(props: PipelineCardProps): React.ReactElement {
-  const { variablePipeline, pipeline, metadataMap, stepsFactory, updatePipeline, readonly } = props
+  const { variablePipeline, pipeline, metadataMap, stepsFactory, updatePipeline, readonly, allowableTypes } = props
   const { getString } = useStrings()
 
   return (
@@ -73,7 +81,7 @@ export default function PipelineCard(props: PipelineCardProps): React.ReactEleme
             type={StepType.CustomVariable}
             stepViewType={StepViewType.InputVariable}
             readonly={readonly}
-            allowableTypes={[]}
+            allowableTypes={allowableTypes}
             onUpdate={({ variables }: CustomVariablesData) => {
               updatePipeline({ ...pipeline, variables })
             }}

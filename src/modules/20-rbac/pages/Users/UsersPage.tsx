@@ -1,3 +1,10 @@
+/*
+ * Copyright 2021 Harness Inc. All rights reserved.
+ * Use of this source code is governed by the PolyForm Shield 1.0.0 license
+ * that can be found in the licenses directory at the root of this repository, also available at
+ * https://polyformproject.org/wp-content/uploads/2020/06/PolyForm-Shield-1.0.0.txt.
+ */
+
 import React, { useState } from 'react'
 import { Button, ButtonVariation, ExpandingSearchInput, Layout } from '@wings-software/uicore'
 import cx from 'classnames'
@@ -12,6 +19,7 @@ import { useDocumentTitle } from '@common/hooks/useDocumentTitle'
 import { ResourceType } from '@rbac/interfaces/ResourceType'
 import RbacButton from '@rbac/components/Button/Button'
 import { PermissionIdentifier } from '@rbac/interfaces/PermissionIdentifier'
+import DeveloperLimitBanner from '@rbac/components/DeveloperLimitBanner/DeveloperLimitBanner'
 import ActiveUserListView from './views/ActiveUsersListView'
 import PendingUserListView from './views/PendingUsersListView'
 import css from './UsersPage.module.scss'
@@ -98,16 +106,21 @@ const UsersPage: React.FC = () => {
           </Layout.Horizontal>
         }
       />
-      {view == Views.PENDING ? (
-        <PendingUserListView shouldReload={reload} searchTerm={searchParam} />
-      ) : (
-        <ActiveUserListView
-          shouldReload={reload}
-          onRefetch={() => setReload(false)}
-          searchTerm={searchParam}
-          openRoleAssignmentModal={openRoleAssignmentModal}
-        />
-      )}
+      <>
+        <DeveloperLimitBanner />
+        {view == Views.PENDING ? (
+          <PendingUserListView shouldReload={reload} searchTerm={searchParam} />
+        ) : (
+          <>
+            <ActiveUserListView
+              shouldReload={reload}
+              onRefetch={() => setReload(false)}
+              searchTerm={searchParam}
+              openRoleAssignmentModal={openRoleAssignmentModal}
+            />
+          </>
+        )}
+      </>
     </>
   )
 }

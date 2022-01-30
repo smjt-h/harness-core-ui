@@ -43,6 +43,7 @@ serviceAccounts:
 permissionLabels:
   createEdit: Create / Edit
   create: '{{ $.create }}'
+  edit: '{{ $.edit }}'
   view: '{{ $.common.viewText }}'
   pipelineExecution: Use in Pipeline Execution
   delete: '{{ $.delete}}'
@@ -50,6 +51,7 @@ permissionLabels:
   execute: '{{$.common.execute}}'
   manage: '{{$.common.manage}}'
   invite: Invite
+  evaluate: Evaluate
 categoryLabels:
   sharedResources: Shared Resources
 roleBinding: Role Bindings (Role - Resource Group)
@@ -130,7 +132,9 @@ userDetails:
     deleteTitle: Remove from User Group
     deleteSuccessMessage: User is removed from the User Group '{{name}}'
     confirmDeleteText: Are you sure you want to remove this user from the User Group '{{name}}'
-    addToGroup: + Add to Group
+    addToGroup: Add to Group
+    addingToGroups: Adding Groups
+    addSuccessMessage: User is successfully added to the UserGroups '{{Groups}}'.
   linkToSSOProviderModal:
     linkLabel: Link to SSO Provider Group
     delinkLabel: Delink Group
@@ -151,7 +155,6 @@ project: project
 org: organization
 account: account
 accountScope: Account scope
-user: User
 forUser: For User
 generateToken: Generate Token
 myApiKeys: My {{$.common.apiKeys}}
@@ -173,7 +176,6 @@ resourceGroup:
   updateResourceGroupDialogTitle: 'Update Resource Group'
   color: '{{ $.color}}'
   dragAndDropData: Please select or drag and drop the type of resources, you would like to add to your group.
-  resourceGroupColumn: 'Resource Group'
   summary: '{{ $.summary }}'
   createSuccess: 'Resource Group created successfully'
   updateSuccess: 'Resource Group updated successfully'
@@ -188,8 +190,9 @@ resourceGroup:
   builtInResourceGroup: 'Built in resource-group'
   noResourceGroup: 'No Resource Group available'
   noResourceGroupFound: 'No Resource Group Found'
+  selectionHeading: 'Select Resource and define its scope of access.'
 updateNotificationSuccess: Notification preferences updated successfully
-userRequired: User is Required
+userRequired: User is required
 userUpperLimit: Addition of more than 15 users is not allowed
 resourceSelectorErrorMessage: Add atleast one specific resource for the following types [{{resources}}]
 accessControlTitle:
@@ -198,8 +201,27 @@ accessControlTitle:
   serviceAccounts: 'Access Control: Service Acccounts'
   resourceGroups: 'Access Control: Resource Groups'
   roles: 'Access Control: Roles'
+planEnforcement:
+  ff:
+    teamEnterprisePlan:
+      approachingLimit: 'You have used {{ clientMauUsagePercentage }}% of your developer subscription limit'
+      upgradeRequired: 'You have exceeded your developer subscription limit'
+
 customRoles: new Roles
 customResourceGroups: new Resource Groups
 communityErrorMessages:
   role: Requires upgrade to set up Roles
   resourceGroup: Requires upgrade to set up Resource Groups
+group: Group
+manageSCIMText: 'Unable to {{action}} this {{target}} because it is managed using SCIM by your identity provider.'
+unableToEditSCIMMembership: Unable to edit membership to this group because it is managed using SCIM by your identity provider.
+copyGroup:
+  title: 'Copy group: {{name}}'
+  success: User group copied successfully
+  copyToProjects: Copy to project(s)
+scopeItems:
+  accountOnly: Account only
+  orgOnly: Organization only
+  projectOnly: Project only
+  accountAll: All (including all Organizations and Projects)
+  orgAll: All (including all Projects)

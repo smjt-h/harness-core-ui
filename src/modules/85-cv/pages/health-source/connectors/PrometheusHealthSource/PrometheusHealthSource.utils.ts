@@ -1,12 +1,14 @@
+/*
+ * Copyright 2021 Harness Inc. All rights reserved.
+ * Use of this source code is governed by the PolyForm Shield 1.0.0 license
+ * that can be found in the licenses directory at the root of this repository, also available at
+ * https://polyformproject.org/wp-content/uploads/2020/06/PolyForm-Shield-1.0.0.txt.
+ */
+
 import type { SelectOption, MultiSelectOption } from '@wings-software/uicore'
 import { isNumber } from 'lodash-es'
 import type { FormikProps } from 'formik'
-import type {
-  MetricDefinition,
-  PrometheusFilter,
-  PrometheusHealthSourceSpec,
-  TimeSeriesMetricDefinition
-} from 'services/cv'
+import type { PrometheusFilter, PrometheusHealthSourceSpec, TimeSeriesMetricDefinition } from 'services/cv'
 import type { StringsMap } from 'stringTypes'
 import type { UseStringsReturn } from 'framework/strings'
 import {
@@ -44,7 +46,7 @@ export function updateSelectedMetricsMap({
   // if newly created metric create form object
   if (!updatedMap.has(updatedMetric)) {
     updatedMap.set(updatedMetric, {
-      identifier: formikProps?.values?.identifier as string,
+      identifier: updatedMetric.split(' ').join('_'),
       metricName: updatedMetric,
       query: '',
       isManualQuery: false
@@ -118,7 +120,8 @@ export function validateMappings(
   getString: UseStringsReturn['getString'],
   createdMetrics: string[],
   selectedMetricIndex: number,
-  values?: MapPrometheusQueryToService
+  values?: MapPrometheusQueryToService,
+  mappedMetrics?: Map<string, MapPrometheusQueryToService>
 ): { [fieldName: string]: string } {
   let requiredFieldErrors = {
     [PrometheusMonitoringSourceFieldNames.ENVIRONMENT_FILTER]: getString(
@@ -170,6 +173,21 @@ export function validateMappings(
     }
     return metricName === values.metricName
   })
+
+  const identifiers = createdMetrics.map(metricName => mappedMetrics?.get(metricName)?.identifier)
+
+  const duplicateIdentifier = identifiers?.filter((identifier, index) => {
+    if (index === selectedMetricIndex) {
+      return false
+    }
+    return identifier === values.identifier
+  })
+
+  if (values.identifier && duplicateIdentifier.length) {
+    requiredFieldErrors[PrometheusMonitoringSourceFieldNames.METRIC_IDENTIFIER] = getString(
+      'cv.monitoringSources.prometheus.validation.metricIdentifierUnique'
+    )
+  }
 
   if (values.metricName && duplicateNames.length) {
     requiredFieldErrors[PrometheusMonitoringSourceFieldNames.METRIC_NAME] = getString(
@@ -368,7 +386,7 @@ export function transformPrometheusSetupSourceToHealthSource(setupSource: Promet
       analysis: {
         riskProfile: {
           category: category as RiskProfileCatgory,
-          metricType: metricType as MetricDefinition['type'],
+          metricType: metricType,
           thresholdTypes
         },
         liveMonitoring: { enabled: Boolean(healthScore) },

@@ -1,4 +1,11 @@
-import React, { useState } from 'react'
+/*
+ * Copyright 2021 Harness Inc. All rights reserved.
+ * Use of this source code is governed by the PolyForm Shield 1.0.0 license
+ * that can be found in the licenses directory at the root of this repository, also available at
+ * https://polyformproject.org/wp-content/uploads/2020/06/PolyForm-Shield-1.0.0.txt.
+ */
+
+import React, { useEffect, useState } from 'react'
 import { useParams, useHistory } from 'react-router-dom'
 
 import { Color, Container, Layout, Text, Button } from '@wings-software/uicore'
@@ -11,6 +18,8 @@ import { GET_DATE_RANGE } from '@ce/utils/momentUtils'
 import type { RecommendationItem, TimeRangeValue } from '@ce/types'
 import { TimeRange, TimeRangeType } from '@ce/types'
 import { RecommendationOverviewStats, ResourceType, useFetchRecommendationQuery } from 'services/ce/services'
+import { useTelemetry } from '@common/hooks/useTelemetry'
+import { PAGE_EVENTS, USER_JOURNEY_EVENTS } from '@ce/TrackingEventsConstants'
 import CustomizeRecommendationsImg from './images/custom-recommendations.gif'
 
 import RecommendationDetails from '../../components/RecommendationDetails/RecommendationDetails'
@@ -108,6 +117,7 @@ const RecommendationSavingsComponent: React.FC<RecommendationSavingsComponentPro
   workloadData
 }) => {
   const { getString } = useStrings()
+  const { trackEvent } = useTelemetry()
   const history = useHistory()
   const { recommendation, accountId, recommendationName } = useParams<{
     recommendation: string
@@ -182,6 +192,7 @@ const RecommendationSavingsComponent: React.FC<RecommendationSavingsComponentPro
             text={getString('ce.recommendation.detailsPage.viewMoreDetailsText')}
             border={true}
             onClick={() => {
+              trackEvent(USER_JOURNEY_EVENTS.RECOMMENDATION_VIEW_MORE_CLICK, {})
               workloadData.clusterName &&
                 workloadData.resourceName &&
                 workloadData.namespace &&
@@ -230,7 +241,12 @@ const RecommendationDetailsPage: React.FC = () => {
     accountId: string
   }>()
   const { getString } = useStrings()
+  const { trackPage } = useTelemetry()
   const [timeRange, setTimeRange] = useState<TimeRangeValue>({ value: TimeRangeType.LAST_7, label: TimeRange.LAST_7 })
+
+  useEffect(() => {
+    trackPage(PAGE_EVENTS.RECOMMENDATIONS_DETAILS_PAGE, {})
+  }, [])
 
   const timeRangeFilter = GET_DATE_RANGE[timeRange.value]
 

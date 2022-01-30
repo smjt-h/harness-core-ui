@@ -1,3 +1,10 @@
+/*
+ * Copyright 2021 Harness Inc. All rights reserved.
+ * Use of this source code is governed by the PolyForm Free Trial 1.0.0 license
+ * that can be found in the licenses directory at the root of this repository, also available at
+ * https://polyformproject.org/wp-content/uploads/2020/05/PolyForm-Free-Trial-1.0.0.txt.
+ */
+
 import React, { useEffect, useState } from 'react'
 import { useParams } from 'react-router-dom'
 import cx from 'classnames'
@@ -64,7 +71,7 @@ const FormContent = ({
   readonly,
   allowableTypes,
   stepViewType
-}: JiraFormContentInterface) => {
+}: JiraFormContentInterface): JSX.Element => {
   const { getString } = useStrings()
   const { expressions } = useVariablesExpression()
   const { accountId, projectIdentifier, orgIdentifier } =
@@ -368,7 +375,7 @@ const FormContent = ({
         mode="approvalCriteria"
         values={formik.values.spec.approvalCriteria}
         onChange={values => formik.setFieldValue('spec.approvalCriteria', values)}
-        formikErrors={formik.errors.spec?.approvalCriteria?.spec}
+        formik={formik}
         readonly={readonly}
         stepType={StepType.JiraApproval}
       />
@@ -388,6 +395,7 @@ const FormContent = ({
               mode="rejectionCriteria"
               values={formik.values.spec.rejectionCriteria}
               onChange={values => formik.setFieldValue('spec.rejectionCriteria', values)}
+              formik={formik}
               readonly={readonly}
               stepType={StepType.JiraApproval}
             />
@@ -446,10 +454,11 @@ function JiraApprovalStepMode(props: JiraApprovalStepModeProps, formikRef: StepF
 
   return (
     <Formik<JiraApprovalData>
-      onSubmit={values => onUpdate?.(values)}
+      onSubmit={values => {
+        onUpdate?.(values)
+      }}
       formName="jiraApproval"
       initialValues={props.initialValues}
-      enableReinitialize={true}
       validate={data => {
         onChange?.(data)
       }}

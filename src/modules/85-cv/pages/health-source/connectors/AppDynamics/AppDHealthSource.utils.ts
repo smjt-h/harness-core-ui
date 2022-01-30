@@ -1,5 +1,11 @@
+/*
+ * Copyright 2021 Harness Inc. All rights reserved.
+ * Use of this source code is governed by the PolyForm Shield 1.0.0 license
+ * that can be found in the licenses directory at the root of this repository, also available at
+ * https://polyformproject.org/wp-content/uploads/2020/06/PolyForm-Shield-1.0.0.txt.
+ */
+
 import { cloneDeep, isEmpty } from 'lodash-es'
-import { v4 as uuid } from 'uuid'
 import type { FormikProps } from 'formik'
 import type { StringKeys } from 'framework/strings'
 import type { AppDMetricDefinitions, AppDynamicsHealthSourceSpec, MetricPackDTO, RiskProfile } from 'services/cv'
@@ -16,6 +22,7 @@ import type {
 import type { BasePathData } from './Components/BasePath/BasePath.types'
 import type { MetricPathData } from './Components/MetricPath/MetricPath.types'
 import { AppDynamicsMonitoringSourceFieldNames } from './AppDHealthSource.constants'
+import { PATHTYPE } from './Components/AppDMappedMetric/AppDMappedMetric.constant'
 
 export const convertStringBasePathToObject = (baseFolder: string | BasePathData): BasePathData => {
   let basePathObj = {} as any
@@ -87,6 +94,7 @@ export const createAppDynamicsData = (sourceData: any): AppDynamicsData => {
         metricPath: metricPathObj,
         basePath: basePathObj,
         metricName: metricDefinition.metricName,
+        metricIdentifier: metricDefinition.identifier,
         riskCategory:
           metricDefinition?.analysis?.riskProfile?.category && metricDefinition?.analysis?.riskProfile?.metricType
             ? `${metricDefinition?.analysis?.riskProfile?.category}/${metricDefinition?.analysis?.riskProfile?.metricType}`
@@ -109,7 +117,8 @@ export const validateMapping = (
   values: any,
   createdMetrics: string[],
   selectedMetricIndex: number,
-  getString: (key: StringKeys) => string
+  getString: (key: StringKeys) => string,
+  mappedMetrics?: Map<string, MapAppDynamicsMetric>
 ): ((key: string | boolean | string[]) => string) => {
   let errors = {} as any
   const metricValueList = values?.metricData ? Object.values(values?.metricData).filter(val => val) : []
@@ -135,7 +144,7 @@ export const validateMapping = (
   }
 
   if (values?.showCustomMetric) {
-    errors = validateCustomMetricFields(values, createdMetrics, selectedMetricIndex, errors, getString)
+    errors = validateCustomMetricFields(values, createdMetrics, selectedMetricIndex, errors, getString, mappedMetrics)
   }
 
   return errors
@@ -146,28 +155,37 @@ const validateCustomMetricFields = (
   createdMetrics: string[],
   selectedMetricIndex: number,
   errors: any,
-  getString: (key: StringKeys) => string
+  getString: (key: StringKeys) => string,
+  mappedMetrics?: Map<string, MapAppDynamicsMetric>
 ): ((key: string | boolean | string[]) => string) => {
   let _error = cloneDeep(errors)
-  const isBasePathValid = values?.basePath
-    ? Object.values(values?.basePath as BasePathData).some(path => path?.value)
-    : false
-  const isMetricPathValid = values?.metricPath
-    ? Object.values(values?.metricPath as MetricPathData).some(path => path?.value)
-    : false
+
+  if (values.pathType === PATHTYPE.DropdownPath) {
+    _error = validateMetricBasePath(values, _error, getString)
+  }
+
+  if (values.pathType === PATHTYPE.FullPath) {
+    const isfullPathEmpty = !values.fullPath.length
+    const incorrectPairing = values.fullPath.split('|').filter((item: string) => !item.length).length
+    if (incorrectPairing && isfullPathEmpty) {
+      _error[PATHTYPE.FullPath] = getString('cv.healthSource.connectors.AppDynamics.validation.fullPath')
+    }
+  }
+
   const isAssignComponentValid = [values.sli, values.continuousVerification, values.healthScore].find(i => i)
   const isRiskCategoryValid = !!values?.riskCategory
 
-  const metricHasLeafNodeSelected = values?.metricPath
-    ? Object.values(values?.metricPath as MetricPathData).some(item => item.isMetric)
-    : false
+  const selectedMetricIndexNew =
+    createdMetrics.indexOf(values.metricName) > -1 ? selectedMetricIndex : createdMetrics.indexOf(values.metricName)
 
   const duplicateNames = createdMetrics?.filter((metricName, index) => {
-    if (index === selectedMetricIndex) {
+    if (index === selectedMetricIndexNew) {
       return false
     }
     return metricName === values.metricName
   })
+
+  _error = validateIdentifier(values, createdMetrics, selectedMetricIndex, _error, getString, mappedMetrics)
 
   if (!values.groupName) {
     _error[AppDynamicsMonitoringSourceFieldNames.GROUP_NAME] = getString(
@@ -184,6 +202,24 @@ const validateCustomMetricFields = (
       'cv.monitoringSources.prometheus.validation.metricNameUnique'
     )
   }
+
+  _error = validateAssignComponent(isAssignComponentValid, _error, getString, values, isRiskCategoryValid)
+  return _error
+}
+
+const validateMetricBasePath = (values: any, errors: any, getString: (key: StringKeys) => string) => {
+  const _error = cloneDeep(errors)
+  const isBasePathValid = values?.basePath
+    ? Object.values(values?.basePath as BasePathData).some(path => path?.value)
+    : false
+
+  const isMetricPathValid = values?.metricPath
+    ? Object.values(values?.metricPath as MetricPathData).some(path => path?.value)
+    : false
+
+  const metricHasLeafNodeSelected = values?.metricPath
+    ? Object.values(values?.metricPath as MetricPathData).some(item => item.isMetric)
+    : false
 
   if (!isBasePathValid) {
     _error[AppDynamicsMonitoringSourceFieldNames.BASE_PATH] = getString(
@@ -202,8 +238,32 @@ const validateCustomMetricFields = (
       )
     }
   }
+  return _error
+}
 
-  _error = validateAssignComponent(isAssignComponentValid, _error, getString, values, isRiskCategoryValid)
+const validateIdentifier = (
+  values: any,
+  createdMetrics: string[],
+  selectedMetricIndex: number,
+  errors: any,
+  getString: (key: StringKeys) => string,
+  mappedMetrics?: Map<string, MapAppDynamicsMetric>
+): ((key: string | boolean | string[]) => string) => {
+  const _error = cloneDeep(errors)
+  const identifiers = createdMetrics.map(metricName => mappedMetrics?.get(metricName)?.metricIdentifier)
+
+  const duplicateIdentifier = identifiers?.filter((identifier, index) => {
+    if (index === selectedMetricIndex) {
+      return false
+    }
+    return identifier === values.metricIdentifier
+  })
+
+  if (values.identifier && duplicateIdentifier.length) {
+    _error[AppDynamicsMonitoringSourceFieldNames.METRIC_IDENTIFIER] = getString(
+      'cv.monitoringSources.prometheus.validation.metricIdentifierUnique'
+    )
+  }
   return _error
 }
 
@@ -256,7 +316,8 @@ export function initializeSelectedMetricsMap(
             metricPath: {},
             appdApplication: '',
             appDTier: '',
-            metricData: {}
+            metricData: {},
+            metricIdentifier: defaultSelectedMetricName.split(' ').join('_')
           }
         ]
       ])
@@ -272,6 +333,38 @@ export function initializeCreatedMetrics(
     createdMetrics: Array.from(mappedMetrics.keys()) || [defaultSelectedMetricName],
     selectedMetricIndex: Array.from(mappedMetrics.keys()).findIndex(metric => metric === selectedMetric)
   }
+}
+
+export const getBaseAndMetricPath = (
+  basePath: BasePathData,
+  metricPath: MetricPathData,
+  fullPath: string | null,
+  appDTier: string
+): { derivedBasePath: string; derivedMetricPath: string } => {
+  // convert full path to metricPath and basePath
+  let derivedBasePath = ''
+  let derivedMetricPath = ''
+  if (fullPath) {
+    const data = convertFullPathToBaseAndMetric(fullPath, appDTier)
+    derivedBasePath = data.derivedBasePath
+    derivedMetricPath = data.derivedMetricPath
+  } else {
+    derivedBasePath = basePath[Object.keys(basePath)[Object.keys(basePath).length - 1]]?.path
+    derivedMetricPath = metricPath[Object.keys(metricPath)[Object.keys(metricPath).length - 1]]?.path
+  }
+
+  return { derivedBasePath, derivedMetricPath }
+}
+
+export const convertFullPathToBaseAndMetric = (
+  fullPath: string,
+  appDTier: string
+): { derivedBasePath: string; derivedMetricPath: string } => {
+  const fullPathArray = fullPath.split('/').map((item: string) => item.trim())
+  const indexOfManager = fullPathArray.indexOf(appDTier)
+  const derivedBasePath = fullPathArray.slice(0, indexOfManager).join('|')
+  const derivedMetricPath = fullPathArray.slice(indexOfManager + 1, fullPathArray.length).join('|')
+  return { derivedBasePath, derivedMetricPath }
 }
 
 export const createAppDynamicsPayload = (formData: any): UpdatedHealthSource | null => {
@@ -295,8 +388,17 @@ export const createAppDynamicsPayload = (formData: any): UpdatedHealthSource | n
         healthScore,
         basePath,
         metricPath,
-        serviceInstanceMetricPath
+        metricIdentifier,
+        serviceInstanceMetricPath,
+        fullPath
       } = entry[1]
+
+      const { derivedBasePath, derivedMetricPath } = getBaseAndMetricPath(
+        basePath,
+        metricPath,
+        fullPath,
+        formData.appDTier
+      )
 
       const [category, metricType] = riskCategory?.split('/') || []
       const thresholdTypes: RiskProfile['thresholdTypes'] = []
@@ -311,10 +413,10 @@ export const createAppDynamicsPayload = (formData: any): UpdatedHealthSource | n
       const ifOnlySliIsSelected = Boolean(sli) && !(Boolean(healthScore) || Boolean(continuousVerification))
 
       specPayload?.metricDefinitions?.push({
-        identifier: uuid(),
+        identifier: metricIdentifier,
         metricName,
-        baseFolder: basePath[Object.keys(basePath)[Object.keys(basePath).length - 1]]?.path,
-        metricPath: metricPath[Object.keys(metricPath)[Object.keys(metricPath).length - 1]]?.path,
+        baseFolder: derivedBasePath,
+        metricPath: derivedMetricPath,
         groupName: groupName?.value as string,
         sli: { enabled: Boolean(sli) },
         analysis: {
@@ -373,7 +475,8 @@ export const submitData = (
     [AppDynamicsMonitoringSourceFieldNames.RISK_CATEGORY]: true,
     [AppDynamicsMonitoringSourceFieldNames.BASE_PATH]: { basePathDropdown_0: { value: true, path: true } },
     [AppDynamicsMonitoringSourceFieldNames.METRIC_PATH]: { metricPathDropdown_0: { value: true, path: true } },
-    [AppDynamicsMonitoringSourceFieldNames.METRIC_DATA]: { Errors: true, Performance: true }
+    [AppDynamicsMonitoringSourceFieldNames.METRIC_DATA]: { Errors: true, Performance: true },
+    [PATHTYPE.FullPath]: true
   })
   const errors = validateMapping(formik.values, createdMetrics, selectedMetricIndex, getString)
   if (Object.keys(errors || {})?.length > 0) {
@@ -409,6 +512,15 @@ export const createAppDFormData = (
   },
   showCustomMetric: boolean
 ): AppDynamicsFomikFormInterface => {
+  const mappedMetricsData = mappedMetrics.get(selectedMetric)
+  const metricIdentifier = mappedMetricsData?.metricIdentifier || selectedMetric.split(' ').join('_')
+  const { basePath = {}, metricPath = {} } = mappedMetricsData || {}
+  const lastItemBasePath = Object.keys(basePath)[Object.keys(basePath).length - 1]
+  const lastItemMetricPath = Object.keys(metricPath)[Object.keys(metricPath).length - 1]
+  const fullPath =
+    basePath[lastItemBasePath]?.path && metricPath[lastItemMetricPath]?.path
+      ? `${basePath[lastItemBasePath]?.path}|${appDynamicsData.tierName}|${metricPath[lastItemMetricPath]?.path}`
+      : ''
   return {
     name: appDynamicsData.name,
     identifier: appDynamicsData.identifier,
@@ -420,7 +532,10 @@ export const createAppDFormData = (
     ...nonCustomFeilds,
     ...(mappedMetrics.get(selectedMetric) as MapAppDynamicsMetric),
     metricName: selectedMetric,
-    showCustomMetric
+    fullPath,
+    pathType: PATHTYPE.DropdownPath,
+    showCustomMetric,
+    metricIdentifier
   }
 }
 

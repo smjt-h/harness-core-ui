@@ -122,6 +122,7 @@ exports[`Test full flow should render rows with checkbox and return selected dat
                 class="bp3-control bp3-checkbox bp3-large StyledProps--font Checkbox--checkbox checkbox StyledProps--main"
               >
                 <input
+                  data-testid="Checkbox-Chirag_Account_UG"
                   type="checkbox"
                 />
                 <span
@@ -204,6 +205,7 @@ exports[`Test full flow should render rows with checkbox and return selected dat
                 class="bp3-control bp3-checkbox bp3-large StyledProps--font Checkbox--checkbox checkbox StyledProps--main"
               >
                 <input
+                  data-testid="Checkbox-asdfs"
                   type="checkbox"
                 />
                 <span
@@ -324,6 +326,7 @@ exports[`Test full flow should render rows with checkbox and return selected dat
                 class="bp3-control bp3-checkbox bp3-large StyledProps--font Checkbox--checkbox checkbox StyledProps--main"
               >
                 <input
+                  data-testid="Checkbox-abcd"
                   type="checkbox"
                 />
                 <span
@@ -387,6 +390,7 @@ exports[`Test full flow should render rows with checkbox and return selected dat
                 class="bp3-control bp3-checkbox bp3-large StyledProps--font Checkbox--checkbox checkbox StyledProps--main"
               >
                 <input
+                  data-testid="Checkbox-ug_hello"
                   type="checkbox"
                 />
                 <span
@@ -550,6 +554,7 @@ exports[`Test full flow should render rows with checkbox and return selected dat
                 class="bp3-control bp3-checkbox bp3-large StyledProps--font Checkbox--checkbox checkbox StyledProps--main"
               >
                 <input
+                  data-testid="Checkbox-ug1"
                   type="checkbox"
                 />
                 <span
@@ -613,6 +618,7 @@ exports[`Test full flow should render rows with checkbox and return selected dat
                 class="bp3-control bp3-checkbox bp3-large StyledProps--font Checkbox--checkbox checkbox StyledProps--main"
               >
                 <input
+                  data-testid="Checkbox-arvindtest"
                   type="checkbox"
                 />
                 <span
@@ -676,6 +682,7 @@ exports[`Test full flow should render rows with checkbox and return selected dat
                 class="bp3-control bp3-checkbox bp3-large StyledProps--font Checkbox--checkbox checkbox StyledProps--main"
               >
                 <input
+                  data-testid="Checkbox-ug2"
                   type="checkbox"
                 />
                 <span
@@ -874,6 +881,7 @@ exports[`Test full flow should render rows with checkbox and return selected dat
                 class="bp3-control bp3-checkbox bp3-large StyledProps--font Checkbox--checkbox checkbox StyledProps--main"
               >
                 <input
+                  data-testid="Checkbox-Chirag_Account_UG"
                   type="checkbox"
                 />
                 <span
@@ -956,6 +964,7 @@ exports[`Test full flow should render rows with checkbox and return selected dat
                 class="bp3-control bp3-checkbox bp3-large StyledProps--font Checkbox--checkbox checkbox StyledProps--main"
               >
                 <input
+                  data-testid="Checkbox-asdfs"
                   type="checkbox"
                 />
                 <span
@@ -1076,6 +1085,7 @@ exports[`Test full flow should render rows with checkbox and return selected dat
                 class="bp3-control bp3-checkbox bp3-large StyledProps--font Checkbox--checkbox checkbox StyledProps--main"
               >
                 <input
+                  data-testid="Checkbox-abcd"
                   type="checkbox"
                 />
                 <span
@@ -1139,6 +1149,7 @@ exports[`Test full flow should render rows with checkbox and return selected dat
                 class="bp3-control bp3-checkbox bp3-large StyledProps--font Checkbox--checkbox checkbox StyledProps--main"
               >
                 <input
+                  data-testid="Checkbox-ug_hello"
                   type="checkbox"
                 />
                 <span
@@ -1302,6 +1313,7 @@ exports[`Test full flow should render rows with checkbox and return selected dat
                 class="bp3-control bp3-checkbox bp3-large StyledProps--font Checkbox--checkbox checkbox StyledProps--main"
               >
                 <input
+                  data-testid="Checkbox-ug1"
                   type="checkbox"
                 />
                 <span
@@ -1365,6 +1377,7 @@ exports[`Test full flow should render rows with checkbox and return selected dat
                 class="bp3-control bp3-checkbox bp3-large StyledProps--font Checkbox--checkbox checkbox StyledProps--main"
               >
                 <input
+                  data-testid="Checkbox-arvindtest"
                   type="checkbox"
                 />
                 <span
@@ -1428,6 +1441,7 @@ exports[`Test full flow should render rows with checkbox and return selected dat
                 class="bp3-control bp3-checkbox bp3-large StyledProps--font Checkbox--checkbox checkbox StyledProps--main"
               >
                 <input
+                  data-testid="Checkbox-ug2"
                   type="checkbox"
                 />
                 <span

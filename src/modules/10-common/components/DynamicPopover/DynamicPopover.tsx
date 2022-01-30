@@ -1,8 +1,14 @@
-import React, { useState } from 'react'
+/*
+ * Copyright 2021 Harness Inc. All rights reserved.
+ * Use of this source code is governed by the PolyForm Shield 1.0.0 license
+ * that can be found in the licenses directory at the root of this repository, also available at
+ * https://polyformproject.org/wp-content/uploads/2020/06/PolyForm-Shield-1.0.0.txt.
+ */
+
+import React, { useState, useMemo } from 'react'
 import { usePopper } from 'react-popper'
 import cx from 'classnames'
 import type * as PopperJS from '@popperjs/core'
-import { isNil } from 'lodash-es'
 import { useGlobalEventListener } from '@common/hooks'
 import css from './DynamicPopover.module.scss'
 
@@ -20,7 +26,7 @@ export interface DynamicPopoverHandlerBinding<T> {
     isHoverView?: boolean
   ) => void
   hide: () => void
-  isHoverView: () => boolean
+  isHoverView?: () => boolean
 }
 
 export interface DynamicPopoverProps<T> {
@@ -54,7 +60,7 @@ export function DynamicPopover<T>(props: DynamicPopoverProps<T>): JSX.Element {
   const [visible, setVisibility] = useState<boolean>(false)
   const [hideCallback, setHideCallBack] = useState<() => void | undefined>()
   const [placement, setPlacement] = useState<PopperJS.Placement>('auto')
-  const showTimerRef = React.useRef<number | null>(null)
+  const timerRef = React.useRef<number | null>(null)
   const mouseInRef = React.useRef<boolean>(false)
   const [isHoverView, setIsHoverView] = React.useState<boolean>()
 
@@ -67,20 +73,22 @@ export function DynamicPopover<T>(props: DynamicPopoverProps<T>): JSX.Element {
     forceUpdate?.()
   })
 
-  const clearTimeout = React.useCallback(() => {
-    if (showTimerRef.current) {
-      window.clearTimeout(showTimerRef.current)
-      showTimerRef.current = null
-    }
-  }, [showTimerRef.current])
-
-  const show: DynamicPopoverHandlerBinding<T>['show'] = React.useCallback(
-    (ref, dataTemp, options, callback, hoverView) => {
-      clearTimeout()
-      setIsHoverView(!!hoverView)
-      showTimerRef.current = window.setTimeout(
-        () => {
+  const handler = useMemo(
+    () =>
+      ({
+        show: (ref, dataTemp, options, callback, hoverView) => {
+          if (timerRef.current) {
+            window.clearTimeout(timerRef.current)
+          }
+          setVisibility(true)
           setData(dataTemp)
+          setIsHoverView(hoverView)
+          if (typeof ref === 'string') {
+            setReferenceElement(document.querySelector(ref))
+          } else {
+            setReferenceElement(ref)
+          }
+
           if (options) {
             typeof options.darkMode === 'boolean' && setDarkMode(options.darkMode)
             typeof options.useArrows === 'boolean' && setArrowVisibility(options.useArrows)
@@ -91,54 +99,31 @@ export function DynamicPopover<T>(props: DynamicPopoverProps<T>): JSX.Element {
             prev?.()
             return callback
           })
-          if (typeof ref === 'string') {
-            setReferenceElement(document.querySelector(ref))
-          } else {
-            setReferenceElement(ref)
-          }
-          setVisibility(true)
-          clearTimeout()
         },
-        hoverView ? 500 : 100
-      )
-    },
-    [
-      clearTimeout,
-      setIsHoverView,
-      setData,
-      setDarkMode,
-      setArrowVisibility,
-      setFixedPosition,
-      setPlacement,
-      setHideCallBack,
-      setReferenceElement,
-      setVisibility
-    ]
+        hide: () => {
+          if (timerRef.current) {
+            window.clearTimeout(timerRef.current)
+          }
+
+          if (!mouseInRef.current) {
+            timerRef.current = window.setTimeout(() => setVisibility(false), 300)
+          }
+        },
+        isHoverView: () => isHoverView
+      } as DynamicPopoverHandlerBinding<T>),
+    [setVisibility, isHoverView]
   )
-
-  const hide = React.useCallback(() => {
-    if (isNil(showTimerRef.current) && !mouseInRef.current) {
-      setVisibility(false)
-    }
-    clearTimeout()
-  }, [showTimerRef.current, mouseInRef.current, setVisibility, clearTimeout])
-
-  const checkIfHoverView = React.useCallback(() => {
-    return isHoverView
-  }, [isHoverView])
-
-  const handler = React.useMemo(() => {
-    return {
-      show: show,
-      hide: hide,
-      isHoverView: checkIfHoverView
-    } as DynamicPopoverHandlerBinding<T>
-  }, [show, hide, checkIfHoverView])
 
   React.useEffect(() => {
     if (!visible && hideCallback) {
       hideCallback()
       setHideCallBack(undefined)
+    }
+
+    return () => {
+      if (timerRef.current) {
+        window.clearTimeout(timerRef.current)
+      }
     }
   }, [hideCallback, visible])
 
@@ -159,6 +144,9 @@ export function DynamicPopover<T>(props: DynamicPopoverProps<T>): JSX.Element {
           onMouseEnter={() => {
             if (closeOnMouseOut) {
               mouseInRef.current = true
+              if (timerRef.current) {
+                window.clearTimeout(timerRef.current)
+              }
               setVisibility(true)
             }
           }}

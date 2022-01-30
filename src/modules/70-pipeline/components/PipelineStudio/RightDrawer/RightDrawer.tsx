@@ -1,43 +1,46 @@
+/*
+ * Copyright 2022 Harness Inc. All rights reserved.
+ * Use of this source code is governed by the PolyForm Shield 1.0.0 license
+ * that can be found in the licenses directory at the root of this repository, also available at
+ * https://polyformproject.org/wp-content/uploads/2020/06/PolyForm-Shield-1.0.0.txt.
+ */
+
 import React, { SyntheticEvent } from 'react'
-import { Dialog, Drawer, Intent, Position } from '@blueprintjs/core'
-import {
-  Button,
-  Icon,
-  Text,
-  Color,
-  MultiTypeInputType,
-  useModalHook,
-  useConfirmationDialog,
-  FontVariation,
-  ButtonVariation,
-  ButtonSize
-} from '@wings-software/uicore'
-import { cloneDeep, defaultTo, get, isEmpty, isNil, merge, omit, set } from 'lodash-es'
+import { Drawer, Intent, Position } from '@blueprintjs/core'
+import { Button, useConfirmationDialog } from '@wings-software/uicore'
+import { cloneDeep, defaultTo, get, isEmpty, isEqual, isNil, set } from 'lodash-es'
 import cx from 'classnames'
 import produce from 'immer'
-import { useParams } from 'react-router-dom'
 import { parse } from 'yaml'
 import { useStrings, UseStringsReturn } from 'framework/strings'
-import type { ExecutionElementConfig, StepElementConfig, StepGroupElementConfig } from 'services/cd-ng'
+import type {
+  ExecutionElementConfig,
+  StepElementConfig,
+  StepGroupElementConfig,
+  StageElementConfig
+} from 'services/cd-ng'
 import { useTelemetry } from '@common/hooks/useTelemetry'
 import { StepActions } from '@common/constants/TrackingConstants'
 import { StageType } from '@pipeline/utils/stageHelpers'
-import type { BuildStageElementConfig, DeploymentStageElementConfig } from '@pipeline/utils/pipelineTypes'
+import type {
+  BuildStageElementConfig,
+  DeploymentStageElementConfig,
+  StageElementWrapper
+} from '@pipeline/utils/pipelineTypes'
 import type { DependencyElement } from 'services/ci'
 import { usePipelineVariables } from '@pipeline/components/PipelineVariablesContext/PipelineVariablesContext'
-import type { TemplateConfig, TemplateStepData } from '@pipeline/utils/tempates'
-import type { NGTemplateInfoConfig, TemplateSummaryResponse } from 'services/template-ng'
-import { ModalProps, TemplateConfigModal } from 'framework/Templates/TemplateConfigModal/TemplateConfigModal'
-import type { GitQueryParams, ProjectPathProps } from '@common/interfaces/RouteInterfaces'
+import type { TemplateSummaryResponse } from 'services/template-ng'
 import { PipelineGovernanceView } from '@governance/PipelineGovernanceView'
-import { DefaultTemplate } from 'framework/Templates/templates'
-import { useSaveTemplate } from '@pipeline/utils/useSaveTemplate'
-import { useQueryParams } from '@common/hooks'
 import { getStepPaletteModuleInfosFromStage } from '@pipeline/utils/stepUtils'
 import { getIdentifierFromValue } from '@common/components/EntityReference/EntityReference'
+import { useTemplateSelector } from '@pipeline/utils/useTemplateSelector'
+import { createTemplate } from '@pipeline/utils/templateUtils'
+import type { TemplateStepNode } from 'services/pipeline-ng'
+import type { StringsMap } from 'stringTypes'
 import { usePipelineContext } from '../PipelineContext/PipelineContext'
-import { DrawerData, DrawerSizes, DrawerTypes, TemplateDrawerTypes } from '../PipelineContext/PipelineActions'
+import { DrawerData, DrawerSizes, DrawerTypes, PipelineViewData } from '../PipelineContext/PipelineActions'
 import { StepCommandsWithRef as StepCommands, StepFormikRef } from '../StepCommands/StepCommands'
+
 import {
   StepCommandsViews,
   StepOrStepGroupOrTemplateStepData,
@@ -54,6 +57,8 @@ import type { StepData } from '../../AbstractSteps/AbstractStepFactory'
 import { StepType } from '../../PipelineSteps/PipelineStepInterface'
 import { FlowControl } from '../FlowControl/FlowControl'
 import { AdvancedOptions } from '../AdvancedOptions/AdvancedOptions'
+import { RightDrawerTitle } from './RightDrawerTitle'
+
 import css from './RightDrawer.module.scss'
 
 export const FullscreenDrawers: DrawerTypes[] = [
@@ -64,8 +69,10 @@ export const FullscreenDrawers: DrawerTypes[] = [
   DrawerTypes.PolicySets
 ]
 
+type TrackEvent = (eventName: string, properties: Record<string, string>) => void
+
 const checkDuplicateStep = (
-  formikRef: React.MutableRefObject<StepFormikRef<unknown> | null>,
+  formikRef: React.MutableRefObject<StepFormikRef | null>,
   data: DrawerData['data'],
   getString: UseStringsReturn['getString']
 ): boolean => {
@@ -108,19 +115,213 @@ export const updateStepWithinStage = (
         if (parallelStep?.stepGroup?.identifier === processingNodeIdentifier) {
           parallelStep.stepGroup = processedNode as any
         } else if (parallelStep.step?.identifier === processingNodeIdentifier) {
-          parallelStep.step = processedNode
+          parallelStep.step = processedNode as any
         } else if (parallelStep?.stepGroup) {
           updateStepWithinStage(parallelStep?.stepGroup, processingNodeIdentifier, processedNode)
         }
       })
     } else if (stepWithinStage.step?.identifier === processingNodeIdentifier) {
       // Else simply find the matching step ad update the node
-      stepWithinStage.step = processedNode
+      stepWithinStage.step = processedNode as any
     }
   })
   if (execution?.rollbackSteps) {
     updateStepWithinStage({ steps: execution.rollbackSteps }, processingNodeIdentifier, processedNode)
   }
+}
+
+const addReplace = (item: Partial<Values>, node: any): void => {
+  if (item.name && item.tab !== TabTypes.Advanced) node.name = item.name
+  if (item.identifier && item.tab !== TabTypes.Advanced) node.identifier = item.identifier
+  if ((item as StepElementConfig).description && item.tab !== TabTypes.Advanced)
+    node.description = (item as StepElementConfig).description
+  if (item.when && item.tab === TabTypes.Advanced) node.when = item.when
+  if ((item as StepElementConfig).timeout && item.tab !== TabTypes.Advanced)
+    node.timeout = (item as StepElementConfig).timeout
+}
+
+const processNodeImpl = (
+  item: Partial<Values>,
+  data: any,
+  trackEvent: TrackEvent
+): StepElementConfig & TemplateStepNode => {
+  return produce(data.stepConfig.node as StepElementConfig & TemplateStepNode, node => {
+    // Add/replace values only if they are presented
+    addReplace(item, node)
+
+    // default strategies can be present without having the need to click on Advanced Tab. For eg. in CV step.
+    if (Array.isArray(item.failureStrategies)) {
+      node.failureStrategies = item.failureStrategies
+      const telemetryData = item.failureStrategies.map(strategy => ({
+        onError: strategy.onFailure?.errors?.join(', '),
+        action: strategy.onFailure?.action?.type
+      }))
+      telemetryData.length && trackEvent(StepActions.AddEditFailureStrategy, { data: JSON.stringify(telemetryData) })
+    }
+    if (item.delegateSelectors && item.tab === TabTypes.Advanced) {
+      set(node, 'spec.delegateSelectors', item.delegateSelectors)
+    }
+
+    // Delete values if they were already added and now removed
+    if (node.timeout && !(item as StepElementConfig).timeout && item.tab !== TabTypes.Advanced) delete node.timeout
+    if (node.description && !(item as StepElementConfig).description && item.tab !== TabTypes.Advanced)
+      delete node.description
+    if (node.failureStrategies && !item.failureStrategies && item.tab === TabTypes.Advanced)
+      delete node.failureStrategies
+    if (
+      node.spec?.delegateSelectors &&
+      (!item.delegateSelectors || item.delegateSelectors?.length === 0) &&
+      item.tab === TabTypes.Advanced
+    ) {
+      delete node.spec.delegateSelectors
+    }
+    if (item.template) {
+      node.template = item.template
+    }
+    if ((item as StepElementConfig).spec && item.tab !== TabTypes.Advanced) {
+      node.spec = { ...(item as StepElementConfig).spec }
+    }
+  })
+}
+
+const updateWithNodeIdentifier = async (
+  selectedStage: StageElementWrapper<StageElementConfig> | undefined,
+  drawerType: DrawerTypes,
+  processNode: StepElementConfig & TemplateStepNode,
+  updatePipelineView: (data: PipelineViewData) => void,
+  updateStage: (stage: StageElementConfig, existingStage?: StageElementConfig | undefined) => Promise<void>,
+  data: any,
+  pipelineView: PipelineViewData
+): Promise<void> => {
+  const provisioner = (selectedStage?.stage as DeploymentStageElementConfig)?.spec?.infrastructure
+    ?.infrastructureDefinition?.provisioner
+  if (drawerType === DrawerTypes.StepConfig && selectedStage?.stage?.spec?.execution) {
+    const processingNodeIdentifier = data?.stepConfig?.node?.identifier
+    const stageData = produce(selectedStage, draft => {
+      if (draft.stage?.spec?.execution) {
+        updateStepWithinStage(draft.stage.spec.execution, processingNodeIdentifier, processNode)
+      }
+    })
+    // update view data before updating pipeline because its async
+    updatePipelineView(
+      produce(pipelineView, draft => {
+        set(draft, 'drawerData.data.stepConfig.node', processNode)
+      })
+    )
+
+    if (stageData.stage) {
+      await updateStage(stageData.stage)
+    }
+
+    data?.stepConfig?.onUpdate?.(processNode)
+  } else if (drawerType === DrawerTypes.ProvisionerStepConfig && provisioner) {
+    const processingNodeIdentifier = data?.stepConfig?.node?.identifier
+    updateStepWithinStage(provisioner, processingNodeIdentifier, processNode)
+
+    if (selectedStage?.stage) {
+      await updateStage(selectedStage.stage)
+    }
+    data?.stepConfig?.onUpdate?.(processNode)
+  }
+}
+
+const onSubmitStep = async (
+  item: Partial<Values>,
+  drawerType: DrawerTypes,
+  data: any,
+  trackEvent: TrackEvent,
+  selectedStage: StageElementWrapper<StageElementConfig> | undefined,
+  updatePipelineView: (data: PipelineViewData) => void,
+  updateStage: (stage: StageElementConfig, existingStage?: StageElementConfig | undefined) => Promise<void>,
+  stageType: string | undefined,
+  setSelectedStepId: (selectedStepId: string | undefined) => void,
+  pipelineView: PipelineViewData
+): Promise<void> => {
+  if (data?.stepConfig?.node) {
+    const processNode = processNodeImpl(item, data, trackEvent)
+
+    if (data?.stepConfig?.node?.identifier) {
+      updateWithNodeIdentifier(
+        selectedStage,
+        drawerType,
+        processNode,
+        updatePipelineView,
+        updateStage,
+        data,
+        pipelineView
+      )
+    }
+  }
+
+  // TODO: temporary fix for FF
+  // can be removed once the unified solution across modules is implemented
+  if (stageType === StageType.FEATURE) {
+    updatePipelineView({
+      ...pipelineView,
+      isDrawerOpened: false,
+      drawerData: { type: DrawerTypes.StepConfig }
+    })
+    setSelectedStepId(undefined)
+  }
+}
+
+const applyChanges = async (
+  formikRef: React.MutableRefObject<StepFormikRef<unknown> | null>,
+  data: any,
+  getString: (key: keyof StringsMap, vars?: Record<string, any> | undefined) => string,
+  updatePipelineView: (data: PipelineViewData) => void,
+  pipelineView: PipelineViewData,
+  setSelectedStepId: (selectedStepId: string | undefined) => void,
+  trackEvent: TrackEvent
+): Promise<void> => {
+  if (checkDuplicateStep(formikRef, data, getString)) {
+    return
+  }
+  await formikRef?.current?.submitForm()
+  if (!isEmpty(formikRef.current?.getErrors())) {
+    return
+  } else {
+    updatePipelineView({
+      ...pipelineView,
+      isDrawerOpened: false,
+      drawerData: {
+        type: DrawerTypes.AddStep
+      }
+    })
+    setSelectedStepId(undefined)
+    if (data?.stepConfig?.isStepGroup) {
+      trackEvent(StepActions.AddEditStepGroup, {
+        name: defaultTo((formikRef?.current?.getValues?.() as Values).name, '')
+      })
+    } else {
+      trackEvent(StepActions.AddEditStep, {
+        name: defaultTo(data?.stepConfig?.node?.name, ''),
+        type: defaultTo((data?.stepConfig?.node as StepElementConfig)?.type, '')
+      })
+    }
+  }
+}
+
+const closeDrawer = (
+  e: SyntheticEvent<HTMLElement, Event> | undefined,
+  formikRef: React.MutableRefObject<StepFormikRef | null>,
+  data: any,
+  getString: (key: keyof StringsMap, vars?: Record<string, any> | undefined) => string,
+  openConfirmBEUpdateError: () => void,
+  updatePipelineView: (data: PipelineViewData) => void,
+  pipelineView: PipelineViewData,
+  setSelectedStepId: (selectedStepId: string | undefined) => void
+): void => {
+  e?.persist()
+  if (checkDuplicateStep(formikRef, data, getString)) {
+    return
+  }
+  if (formikRef.current?.isDirty()) {
+    openConfirmBEUpdateError()
+    return
+  }
+  updatePipelineView({ ...pipelineView, isDrawerOpened: false, drawerData: { type: DrawerTypes.AddStep } })
+  setSelectedStepId(undefined)
 }
 
 export const RightDrawer: React.FC = (): JSX.Element => {
@@ -132,27 +333,27 @@ export const RightDrawer: React.FC = (): JSX.Element => {
       selectionState: { selectedStageId, selectedStepId },
       pipeline
     },
+    allowableTypes,
     updatePipeline,
     isReadonly,
     updateStage,
     updatePipelineView,
-    updateTemplateView,
     getStageFromPipeline,
     stepsFactory,
-    setSelectedStepId
+    setSelectedStepId,
+    setTemplateTypes
   } = usePipelineContext()
   const { type, data, ...restDrawerProps } = drawerData
   const { trackEvent } = useTelemetry()
-  const { orgIdentifier, projectIdentifier } = useParams<ProjectPathProps>()
-  const { repoIdentifier, branch } = useQueryParams<GitQueryParams>()
+  const { openTemplateSelector, closeTemplateSelector } = useTemplateSelector()
 
-  const { stage: selectedStage } = getStageFromPipeline(selectedStageId || '')
+  const { stage: selectedStage } = getStageFromPipeline(defaultTo(selectedStageId, ''))
   const stageType = selectedStage?.stage?.type
 
   let stepData = (data?.stepConfig?.node as StepElementConfig)?.type
-    ? stepsFactory.getStepData((data?.stepConfig?.node as StepElementConfig)?.type)
+    ? stepsFactory.getStepData(defaultTo((data?.stepConfig?.node as StepElementConfig)?.type, ''))
     : null
-  const templateStepTemplate = (data?.stepConfig?.node as TemplateStepData)?.template
+  const templateStepTemplate = (data?.stepConfig?.node as TemplateStepNode)?.template
   const formikRef = React.useRef<StepFormikRef | null>(null)
   const executionStrategyRef = React.useRef<ExecutionStrategyRefInterface | null>(null)
   const { getString } = useStrings()
@@ -162,34 +363,6 @@ export const RightDrawer: React.FC = (): JSX.Element => {
     stepData = stepsFactory.getStepData(StepType.StepGroup)
   }
 
-  const applyChanges = async (): Promise<void> => {
-    if (checkDuplicateStep(formikRef, data, getString)) {
-      return
-    }
-    await formikRef?.current?.submitForm()
-    if (!isEmpty(formikRef.current?.getErrors())) {
-      return
-    } else {
-      updatePipelineView({
-        ...pipelineView,
-        isDrawerOpened: false,
-        drawerData: {
-          type: DrawerTypes.AddStep
-        }
-      })
-      setSelectedStepId(undefined)
-      if (data?.stepConfig?.isStepGroup) {
-        trackEvent(StepActions.AddEditStepGroup, {
-          name: (formikRef?.current?.getValues?.() as Values).name || ''
-        })
-      } else {
-        trackEvent(StepActions.AddEditStep, {
-          name: data?.stepConfig?.node?.name || '',
-          type: (data?.stepConfig?.node as StepElementConfig)?.type || ''
-        })
-      }
-    }
-  }
   const discardChanges = (): void => {
     updatePipelineView({
       ...pipelineView,
@@ -207,87 +380,22 @@ export const RightDrawer: React.FC = (): JSX.Element => {
       : get(templateTypes, getIdentifierFromValue(templateStepTemplate.templateRef))
     const toolTipType = type ? `_${type}` : ''
     title = (
-      <div className={css.stepConfig}>
-        <div className={css.title}>
-          <Icon
-            name={stepsFactory.getStepIcon(stepType || '')}
-            {...(stepsFactory.getStepIconColor(stepType || '')
-              ? { color: stepsFactory.getStepIconColor(stepType || '') }
-              : {})}
-            style={{ color: stepsFactory.getStepIconColor(stepType || '') }}
-            size={24}
-          />
-          <Text
-            lineClamp={1}
-            color={Color.BLACK}
-            tooltipProps={{ dataTooltipId: `${stepType}_stepName${toolTipType}` }}
-            font={{ variation: FontVariation.H4 }}
-          >
-            {stepData ? stepData?.name : stepsFactory.getStepName(stepType || '')}
-          </Text>
-        </div>
-        <div>
-          <Button
-            variation={ButtonVariation.SECONDARY}
-            size={ButtonSize.SMALL}
-            className={css.applyChanges}
-            text={getString('applyChanges')}
-            onClick={applyChanges}
-          />
-          <Button minimal className={css.discard} text={getString('pipeline.discard')} onClick={discardChanges} />
-        </div>
-      </div>
+      <RightDrawerTitle
+        stepType={stepType}
+        toolTipType={toolTipType}
+        stepData={stepData}
+        discardChanges={discardChanges}
+        applyChanges={() =>
+          applyChanges(formikRef, data, getString, updatePipelineView, pipelineView, setSelectedStepId, trackEvent)
+        }
+      ></RightDrawerTitle>
     )
   } else {
-    switch (type) {
-      case DrawerTypes.PipelineNotifications:
-        title = getString('notifications.name')
-        break
-      default:
-        title = null
+    if (type === DrawerTypes.PipelineNotifications) {
+      title = getString('notifications.name')
+    } else {
+      title = null
     }
-  }
-
-  const [template, setTemplate] = React.useState<NGTemplateInfoConfig>()
-  const [modalProps, setModalProps] = React.useState<ModalProps>()
-
-  const [showConfigModal, hideConfigModal] = useModalHook(
-    () => (
-      <Dialog enforceFocus={false} isOpen={true} className={css.configDialog}>
-        {modalProps && template && (
-          <TemplateConfigModal
-            initialValues={merge(template, { repo: defaultTo(repoIdentifier, ''), branch: defaultTo(branch, '') })}
-            onClose={hideConfigModal}
-            modalProps={modalProps}
-          />
-        )}
-      </Dialog>
-    ),
-    [template, modalProps, repoIdentifier, branch]
-  )
-
-  const { saveAndPublish } = useSaveTemplate(
-    {
-      template: template as NGTemplateInfoConfig,
-      gitDetails: { repoIdentifier, branch },
-      isPipelineStudio: true
-    },
-    hideConfigModal
-  )
-
-  const onSaveAsTemplate = (spec: StepOrStepGroupOrTemplateStepData) => {
-    setTemplate(
-      produce(DefaultTemplate, draft => {
-        draft.projectIdentifier = projectIdentifier
-        draft.orgIdentifier = orgIdentifier
-        draft.spec = omit(spec, 'name', 'identifier')
-      })
-    )
-    setModalProps({
-      title: getString('common.template.saveAsNewTemplateHeading'),
-      promise: saveAndPublish
-    })
-    showConfigModal()
   }
 
   React.useEffect(() => {
@@ -301,7 +409,7 @@ export const RightDrawer: React.FC = (): JSX.Element => {
         drawerType = DrawerTypes.ConfigureService
         // 2. search for step in serviceDependencies
         const depStep = (selectedStage?.stage as BuildStageElementConfig)?.spec?.serviceDependencies?.find(
-          (item: any) => item.identifier === selectedStepId
+          (item: DependencyElement) => item.identifier === selectedStepId
         )
         step = depStep
       }
@@ -337,102 +445,11 @@ export const RightDrawer: React.FC = (): JSX.Element => {
     }
   }, [selectedStepId, selectedStage, isSplitViewOpen])
 
-  const onSubmitStep = async (item: Partial<Values>, drawerType: DrawerTypes): Promise<void> => {
-    if (data?.stepConfig?.node) {
-      const processNode = produce(data.stepConfig.node as StepElementConfig & TemplateStepData, node => {
-        // Add/replace values only if they are presented
-        if (item.name && item.tab !== TabTypes.Advanced) node.name = item.name
-        if (item.identifier && item.tab !== TabTypes.Advanced) node.identifier = item.identifier
-        if ((item as StepElementConfig).description && item.tab !== TabTypes.Advanced)
-          node.description = (item as StepElementConfig).description
-        if (item.when && item.tab === TabTypes.Advanced) node.when = item.when
-        if ((item as StepElementConfig).timeout && item.tab !== TabTypes.Advanced)
-          node.timeout = (item as StepElementConfig).timeout
-        // default strategies can be present without having the need to click on Advanced Tab. For eg. in CV step.
-        if (Array.isArray(item.failureStrategies)) {
-          node.failureStrategies = item.failureStrategies
-          const telemetryData = item.failureStrategies.map(strategy => ({
-            onError: strategy.onFailure?.errors?.join(', '),
-            action: strategy.onFailure?.action?.type
-          }))
-          telemetryData.length &&
-            trackEvent(StepActions.AddEditFailureStrategy, { data: JSON.stringify(telemetryData) })
-        }
-        if (item.delegateSelectors && item.tab === TabTypes.Advanced) {
-          set(node, 'spec.delegateSelectors', item.delegateSelectors)
-        }
-
-        // Delete values if they were already added and now removed
-        if (node.timeout && !(item as StepElementConfig).timeout && item.tab !== TabTypes.Advanced) delete node.timeout
-        if (node.description && !(item as StepElementConfig).description && item.tab !== TabTypes.Advanced)
-          delete node.description
-        if (node.failureStrategies && !item.failureStrategies && item.tab === TabTypes.Advanced)
-          delete node.failureStrategies
-        if (
-          node.spec?.delegateSelectors &&
-          (!item.delegateSelectors || item.delegateSelectors?.length === 0) &&
-          item.tab === TabTypes.Advanced
-        ) {
-          delete node.spec.delegateSelectors
-        }
-        if (item.template) {
-          node.template = item.template
-        }
-        if ((item as StepElementConfig).spec && item.tab !== TabTypes.Advanced) {
-          node.spec = { ...(item as StepElementConfig).spec }
-        }
-      })
-      if (data?.stepConfig?.node?.identifier) {
-        const provisioner = (selectedStage?.stage as DeploymentStageElementConfig)?.spec?.infrastructure
-          ?.infrastructureDefinition?.provisioner
-        if (drawerType === DrawerTypes.StepConfig && selectedStage?.stage?.spec?.execution) {
-          const processingNodeIdentifier = data?.stepConfig?.node?.identifier
-          const stageData = produce(selectedStage, draft => {
-            if (draft.stage?.spec?.execution) {
-              updateStepWithinStage(draft.stage.spec.execution, processingNodeIdentifier, processNode)
-            }
-          })
-          // update view data before updating pipeline because its async
-          updatePipelineView(
-            produce(pipelineView, draft => {
-              set(draft, 'drawerData.data.stepConfig.node', processNode)
-            })
-          )
-
-          if (stageData.stage) {
-            await updateStage(stageData.stage)
-          }
-
-          data?.stepConfig?.onUpdate?.(processNode)
-        } else if (drawerType === DrawerTypes.ProvisionerStepConfig && provisioner) {
-          const processingNodeIdentifier = data?.stepConfig?.node?.identifier
-          updateStepWithinStage(provisioner, processingNodeIdentifier, processNode)
-
-          if (selectedStage?.stage) {
-            await updateStage(selectedStage.stage)
-          }
-          data?.stepConfig?.onUpdate?.(processNode)
-        }
-      }
-    }
-
-    // TODO: temporary fix for FF
-    // can be removed once the unified solution across modules is implemented
-    if (stageType === StageType.FEATURE) {
-      updatePipelineView({
-        ...pipelineView,
-        isDrawerOpened: false,
-        drawerData: { type: DrawerTypes.StepConfig }
-      })
-      setSelectedStepId(undefined)
-    }
-  }
-
   const onServiceDependencySubmit = async (item: Partial<Values>): Promise<void> => {
     const { stage: pipelineStage } = (selectedStageId && cloneDeep(getStageFromPipeline(selectedStageId))) || {}
     if (data?.stepConfig?.addOrEdit === 'add' && pipelineStage) {
       const newServiceData: DependencyElement = {
-        identifier: item.identifier || '',
+        identifier: defaultTo(item.identifier, ''),
         name: item.name,
         type: StepType.Dependency,
         ...((item as StepElementConfig).description && { description: (item as StepElementConfig).description }),
@@ -441,7 +458,10 @@ export const RightDrawer: React.FC = (): JSX.Element => {
       if (!(pipelineStage.stage as BuildStageElementConfig)?.spec?.serviceDependencies?.length) {
         set(pipelineStage, 'stage.spec.serviceDependencies', [])
       }
-      addService((pipelineStage.stage as BuildStageElementConfig)?.spec?.serviceDependencies || [], newServiceData)
+      addService(
+        defaultTo((pipelineStage.stage as BuildStageElementConfig)?.spec?.serviceDependencies, []),
+        newServiceData
+      )
       if (pipelineStage.stage) {
         await updateStage(pipelineStage.stage)
       }
@@ -489,29 +509,17 @@ export const RightDrawer: React.FC = (): JSX.Element => {
     intent: Intent.WARNING,
     onCloseDialog: isConfirmed => {
       if (isConfirmed) {
-        applyChanges()
+        applyChanges(formikRef, data, getString, updatePipelineView, pipelineView, setSelectedStepId, trackEvent)
       }
     }
   })
 
-  const closeDrawer = (e?: SyntheticEvent<HTMLElement, Event> | undefined): void => {
-    e?.persist()
-    if (checkDuplicateStep(formikRef, data, getString)) {
-      return
-    }
-    if (formikRef.current?.isDirty()) {
-      openConfirmBEUpdateError()
-      return
-    }
-    updatePipelineView({ ...pipelineView, isDrawerOpened: false, drawerData: { type: DrawerTypes.AddStep } })
-    setSelectedStepId(undefined)
-  }
   const { onSearchInputChange } = usePipelineVariables()
 
   const onStepSelection = async (item: StepData): Promise<void> => {
     const paletteData = data?.paletteData
     if (paletteData?.entity) {
-      const { stage: pipelineStage } = cloneDeep(getStageFromPipeline(selectedStageId || ''))
+      const { stage: pipelineStage } = cloneDeep(getStageFromPipeline(defaultTo(selectedStageId, '')))
       const newStepData = {
         step: {
           type: item.type,
@@ -565,12 +573,12 @@ export const RightDrawer: React.FC = (): JSX.Element => {
     updatePipelineView({ ...pipelineView, isDrawerOpened: false, drawerData: { type: DrawerTypes.AddStep } })
   }
 
-  const updateNode = async (processNode: StepElementConfig | TemplateStepData) => {
+  const updateNode = async (processNode: StepElementConfig | TemplateStepNode) => {
     const newPipelineView = produce(pipelineView, draft => {
       set(draft, 'drawerData.data.stepConfig.node', processNode)
     })
     updatePipelineView(newPipelineView)
-    const processingNodeIdentifier = drawerData.data?.stepConfig?.node?.identifier || ''
+    const processingNodeIdentifier = defaultTo(drawerData.data?.stepConfig?.node?.identifier, '')
     const stageData = produce(selectedStage, draft => {
       if (draft?.stage?.spec?.execution) {
         updateStepWithinStage(draft.stage.spec.execution, processingNodeIdentifier, processNode as any)
@@ -582,58 +590,43 @@ export const RightDrawer: React.FC = (): JSX.Element => {
     drawerData.data?.stepConfig?.onUpdate?.(processNode)
   }
 
-  const closeTemplatesView = React.useCallback(() => {
-    updateTemplateView({
-      isTemplateDrawerOpened: false,
-      templateDrawerData: { type: TemplateDrawerTypes.UseTemplate }
-    })
-  }, [updateTemplateView])
-
-  const onUseTemplate = (_step: StepOrStepGroupOrTemplateStepData) => {
+  const onUseTemplate = () => {
     const stepType =
       (data?.stepConfig?.node as StepElementConfig)?.type ||
-      get(templateTypes, getIdentifierFromValue((data?.stepConfig?.node as TemplateStepData).template.templateRef))
-    const selectedTemplateRef = (data?.stepConfig?.node as TemplateStepData)?.template?.templateRef || ''
-    updateTemplateView({
-      isTemplateDrawerOpened: true,
-      templateDrawerData: {
-        type: TemplateDrawerTypes.UseTemplate,
-        data: {
-          selectorData: {
-            templateType: 'Step',
-            childTypes: [stepType],
-            selectedTemplateRef: selectedTemplateRef,
-            onCopyTemplate: async (copiedTemplate: TemplateSummaryResponse) => {
-              closeTemplatesView()
-              const node = drawerData.data?.stepConfig?.node as StepOrStepGroupOrTemplateStepData
-              const processNode: StepElementConfig = merge(
-                produce({} as StepElementConfig, draft => {
-                  draft.name = node?.name || ''
-                  draft.identifier = node?.identifier || ''
-                }),
-                parse(copiedTemplate?.yaml || '').template.spec
-              )
-              await updateNode(processNode)
-              formikRef.current?.resetForm()
-            },
-            onUseTemplate: async (templateConfig: TemplateConfig) => {
-              closeTemplatesView()
-              const node = drawerData.data?.stepConfig?.node as StepOrStepGroupOrTemplateStepData
-              const processNode = produce({} as TemplateStepData, draft => {
-                draft.name = node?.name || ''
-                draft.identifier = node?.identifier || ''
-                draft.template = templateConfig
-              })
-              await updateNode(processNode)
-            }
-          }
+      get(templateTypes, getIdentifierFromValue((data?.stepConfig?.node as TemplateStepNode).template.templateRef))
+    openTemplateSelector({
+      templateType: 'Step',
+      selectedChildType: stepType,
+      selectedTemplateRef: getIdentifierFromValue(
+        defaultTo((data?.stepConfig?.node as TemplateStepNode)?.template?.templateRef, '')
+      ),
+      onUseTemplate: async (template: TemplateSummaryResponse, isCopied = false) => {
+        closeTemplateSelector()
+        const node = drawerData.data?.stepConfig?.node as StepOrStepGroupOrTemplateStepData
+        if (
+          !isCopied &&
+          isEqual((node as TemplateStepNode)?.template?.templateRef, template.identifier) &&
+          isEqual((node as TemplateStepNode)?.template?.versionLabel, template.versionLabel)
+        ) {
+          return
+        }
+        const processNode = isCopied
+          ? produce(defaultTo(parse(defaultTo(template?.yaml, '')).template.spec, {}) as StepElementConfig, draft => {
+              draft.name = defaultTo(node?.name, '')
+              draft.identifier = defaultTo(node?.identifier, '')
+            })
+          : createTemplate<TemplateStepNode>(node as unknown as TemplateStepNode, template)
+        await updateNode(processNode)
+        if (!isCopied && template?.identifier && template?.childType) {
+          templateTypes[template.identifier] = template.childType
+          setTemplateTypes(templateTypes)
         }
       }
     })
   }
 
   const onRemoveTemplate = async () => {
-    const node = drawerData.data?.stepConfig?.node as TemplateStepData
+    const node = drawerData.data?.stepConfig?.node as TemplateStepNode
     const processNode = produce({} as StepElementConfig, draft => {
       draft.name = node.name
       draft.identifier = node.identifier
@@ -648,7 +641,16 @@ export const RightDrawer: React.FC = (): JSX.Element => {
         if (type === DrawerTypes.PipelineVariables) {
           onSearchInputChange?.('')
         }
-        closeDrawer(e)
+        closeDrawer(
+          e,
+          formikRef,
+          data,
+          getString,
+          openConfirmBEUpdateError,
+          updatePipelineView,
+          pipelineView,
+          setSelectedStepId
+        )
       }}
       usePortal={true}
       autoFocus={true}
@@ -697,12 +699,24 @@ export const RightDrawer: React.FC = (): JSX.Element => {
           isNewStep={!data.stepConfig.stepsMap.get(data.stepConfig.node.identifier)?.isSaved}
           stepsFactory={stepsFactory}
           hasStepGroupAncestor={!!data?.stepConfig?.isUnderStepGroup}
-          onUpdate={value => onSubmitStep(value, DrawerTypes.StepConfig)}
+          onUpdate={value =>
+            onSubmitStep(
+              value,
+              DrawerTypes.StepConfig,
+              data,
+              trackEvent,
+              selectedStage,
+              updatePipelineView,
+              updateStage,
+              stageType,
+              setSelectedStepId,
+              pipelineView
+            )
+          }
           viewType={StepCommandsViews.Pipeline}
-          allowableTypes={[MultiTypeInputType.FIXED, MultiTypeInputType.RUNTIME, MultiTypeInputType.EXPRESSION]}
+          allowableTypes={allowableTypes}
           onUseTemplate={onUseTemplate}
           onRemoveTemplate={onRemoveTemplate}
-          onSaveAsTemplate={onSaveAsTemplate}
           isStepGroup={data.stepConfig.isStepGroup}
           hiddenPanels={data.stepConfig.hiddenAdvancedPanels}
           stageType={stageType as StageType}
@@ -711,7 +725,7 @@ export const RightDrawer: React.FC = (): JSX.Element => {
       {type === DrawerTypes.AddStep && selectedStageId && data?.paletteData && (
         <StepPalette
           stepsFactory={stepsFactory}
-          stepPaletteModuleInfos={getStepPaletteModuleInfosFromStage(stageType)}
+          stepPaletteModuleInfos={getStepPaletteModuleInfosFromStage(stageType, selectedStage?.stage)}
           stageType={stageType as StageType}
           onSelect={onStepSelection}
         />
@@ -720,7 +734,7 @@ export const RightDrawer: React.FC = (): JSX.Element => {
       {type === DrawerTypes.PipelineVariables && <PipelineVariables />}
       {type === DrawerTypes.Templates && <PipelineTemplates />}
       {type === DrawerTypes.ExecutionStrategy && (
-        <ExecutionStrategy selectedStage={selectedStage || {}} ref={executionStrategyRef} />
+        <ExecutionStrategy selectedStage={defaultTo(selectedStage, {})} ref={executionStrategyRef} />
       )}
       {type === DrawerTypes.PipelineNotifications && <PipelineNotifications />}
       {type === DrawerTypes.FlowControl && <FlowControl />}
@@ -759,7 +773,7 @@ export const RightDrawer: React.FC = (): JSX.Element => {
           stepsFactory={stepsFactory}
           onUpdate={onServiceDependencySubmit}
           isStepGroup={false}
-          allowableTypes={[MultiTypeInputType.FIXED, MultiTypeInputType.RUNTIME, MultiTypeInputType.EXPRESSION]}
+          allowableTypes={allowableTypes}
           withoutTabs
           stageType={stageType as StageType}
         />
@@ -768,7 +782,7 @@ export const RightDrawer: React.FC = (): JSX.Element => {
       {type === DrawerTypes.AddProvisionerStep && selectedStageId && data?.paletteData && (
         <StepPalette
           stepsFactory={stepsFactory}
-          stepPaletteModuleInfos={getStepPaletteModuleInfosFromStage(stageType)}
+          stepPaletteModuleInfos={getStepPaletteModuleInfosFromStage(stageType, undefined, 'Provisioner')}
           stageType={stageType as StageType}
           isProvisioner={true}
           onSelect={async (item: StepData) => {
@@ -843,12 +857,25 @@ export const RightDrawer: React.FC = (): JSX.Element => {
           step={data.stepConfig.node as StepElementConfig}
           ref={formikRef}
           isReadonly={isReadonly}
-          allowableTypes={[MultiTypeInputType.FIXED, MultiTypeInputType.RUNTIME, MultiTypeInputType.EXPRESSION]}
+          allowableTypes={allowableTypes}
           checkDuplicateStep={checkDuplicateStep.bind(null, formikRef, data, getString)}
           isNewStep={!data.stepConfig.stepsMap.get(data.stepConfig.node.identifier)?.isSaved}
           stepsFactory={stepsFactory}
           hasStepGroupAncestor={!!data?.stepConfig?.isUnderStepGroup}
-          onUpdate={value => onSubmitStep(value, DrawerTypes.ProvisionerStepConfig)}
+          onUpdate={value =>
+            onSubmitStep(
+              value,
+              DrawerTypes.ProvisionerStepConfig,
+              data,
+              trackEvent,
+              selectedStage,
+              updatePipelineView,
+              updateStage,
+              stageType,
+              setSelectedStepId,
+              pipelineView
+            )
+          }
           isStepGroup={data.stepConfig.isStepGroup}
           hiddenPanels={data.stepConfig.hiddenAdvancedPanels}
           stageType={stageType as StageType}

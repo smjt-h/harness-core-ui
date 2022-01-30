@@ -1,3 +1,10 @@
+/*
+ * Copyright 2021 Harness Inc. All rights reserved.
+ * Use of this source code is governed by the PolyForm Shield 1.0.0 license
+ * that can be found in the licenses directory at the root of this repository, also available at
+ * https://polyformproject.org/wp-content/uploads/2020/06/PolyForm-Shield-1.0.0.txt.
+ */
+
 import React, { ReactNode } from 'react'
 import { useParams } from 'react-router-dom'
 import { Text, Container, Layout, Color, AvatarGroup } from '@wings-software/uicore'
@@ -28,6 +35,7 @@ export interface UserGroupsReferenceProps {
   scope?: Scope
   mock?: UserGroupDTO[]
   onlyCurrentScope?: boolean
+  disablePreSelectedItems?: boolean
 }
 
 const fetchRecords = (
@@ -89,6 +97,7 @@ const UserGroupsReference: React.FC<UserGroupsReferenceProps> = props => {
     onSelect,
     userGroupsScopeAndUuid,
     onlyCurrentScope,
+    disablePreSelectedItems,
     scope = onlyCurrentScope ? getScopeFromDTO({ accountIdentifier, projectIdentifier, orgIdentifier }) : Scope.ACCOUNT
   } = props
   const { getString } = useStrings()
@@ -101,6 +110,7 @@ const UserGroupsReference: React.FC<UserGroupsReferenceProps> = props => {
         onSelect(selectedData)
       }}
       onlyCurrentScope={onlyCurrentScope}
+      disablePreSelectedItems={disablePreSelectedItems}
       defaultScope={scope}
       fetchRecords={(fetchScope, search = '', done) => {
         fetchRecords(fetchScope, search, done, accountIdentifier, showError, projectIdentifier, orgIdentifier)

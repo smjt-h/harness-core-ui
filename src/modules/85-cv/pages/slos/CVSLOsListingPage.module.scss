@@ -1,12 +1,20 @@
+/*
+ * Copyright 2022 Harness Inc. All rights reserved.
+ * Use of this source code is governed by the PolyForm Shield 1.0.0 license
+ * that can be found in the licenses directory at the root of this repository, also available at
+ * https://polyformproject.org/wp-content/uploads/2020/06/PolyForm-Shield-1.0.0.txt.
+ */
+
 $headerHeight: 146px;
 
 .pageBody {
   --page-header-height: #{$headerHeight} !important;
 
-  .userJourney {
-    padding: var(--spacing-small) !important;
-    margin-right: var(--spacing-small);
+  .sloRiskFilterCard {
+    padding: var(--spacing-medium) !important;
+    margin-right: var(--spacing-medium);
     margin-bottom: var(--spacing-medium);
+    width: calc(var(--card-width) - 50px);
   }
 
   .sloCardContainer {
@@ -19,4 +27,94 @@ $headerHeight: 146px;
       background-color: #fcfeff;
     }
   }
+
+  hr {
+    width: 100%;
+    border: none;
+    border-top: 1px solid var(--grey-200);
+    margin: var(--spacing-medium) 0;
+  }
+
+  .sloFiltersRow1 {
+    margin-bottom: var(--spacing-medium) !important;
+    .createSLOInMonitoredService {
+      margin-right: var(--spacing-medium) !important;
+    }
+  }
+
+  .sloDropdownFilters {
+    border-left: 1px solid var(--grey-200) !important;
+    padding-left: var(--spacing-medium) !important;
+  }
+}
+
+.sloFilters {
+  --primary-bg: var(--grey-0) !important;
+  align-items: center;
+  p {
+    margin-bottom: var(--spacing-xsmall) !important;
+  }
+}
+
+.flexGrowOne {
+  flex-grow: 1;
+}
+
+// SLOCardHeader
+
+.sloTags {
+  background-color: var(--grey-100) !important;
+  border: none !important;
+  font-weight: 500;
+}
+
+.sloGlanceCard {
+  border-radius: var(--spacing-small);
+}
+
+// SLOCardContent
+
+.pillToggle {
+  :global(.PillToggle--item) {
+    width: 100px !important;
+  }
+}
+
+.errorBudgetGaugeContainer {
+  position: relative;
+
+  .errorBudgetRemaining {
+    text-align: center;
+    position: absolute;
+    bottom: 35%;
+  }
+}
+
+.sloCardSpinner {
+  flex-direction: row !important;
+  justify-content: center;
+  align-items: center !important;
+  background: var(--primary) !important;
+  width: fit-content !important;
+  padding: var(--spacing-2) var(--spacing-4) !important;
+  border-radius: var(--spacing-3);
+  color: var(--grey-0) !important;
+
+  > * + * {
+    --layout-spacing: 0px;
+    margin-left: var(--spacing-3) !important;
+    color: var(--grey-0) !important;
+    font-size: var(--font-size-normal) !important;
+  }
+
+  svg {
+    width: 20px;
+    g path {
+      color: var(--grey-0);
+    }
+  }
+}
+
+.clearButton {
+  align-self: flex-end;
 }

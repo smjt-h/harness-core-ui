@@ -562,9 +562,6 @@ exports[`PreflightCheck renders property when has failed checks: after opening t
                 data-testid="org.orgConnectorId-summary"
               >
                 <div
-                  class="Accordion--chevron"
-                />
-                <div
                   class=""
                 >
                   <div
@@ -635,6 +632,9 @@ exports[`PreflightCheck renders property when has failed checks: after opening t
                     </span>
                   </div>
                 </div>
+                <div
+                  class="Accordion--chevron"
+                />
               </div>
               <div
                 class="bp3-collapse Accordion--collapse"
@@ -701,9 +701,6 @@ exports[`PreflightCheck renders property when has failed checks: after opening t
                 class="Accordion--summary"
                 data-testid="projectConnectorId-summary"
               >
-                <div
-                  class="Accordion--chevron"
-                />
                 <div
                   class=""
                 >
@@ -775,6 +772,9 @@ exports[`PreflightCheck renders property when has failed checks: after opening t
                     </span>
                   </div>
                 </div>
+                <div
+                  class="Accordion--chevron"
+                />
               </div>
               <div
                 class="bp3-collapse Accordion--collapse"
@@ -1068,9 +1068,6 @@ exports[`PreflightCheck renders property when has failed checks: before opening 
                 data-testid="org.orgConnectorId-summary"
               >
                 <div
-                  class="Accordion--chevron"
-                />
-                <div
                   class=""
                 >
                   <div
@@ -1141,6 +1138,9 @@ exports[`PreflightCheck renders property when has failed checks: before opening 
                     </span>
                   </div>
                 </div>
+                <div
+                  class="Accordion--chevron"
+                />
               </div>
               <div
                 class="bp3-collapse Accordion--collapse"
@@ -1165,9 +1165,6 @@ exports[`PreflightCheck renders property when has failed checks: before opening 
                 class="Accordion--summary"
                 data-testid="projectConnectorId-summary"
               >
-                <div
-                  class="Accordion--chevron"
-                />
                 <div
                   class=""
                 >
@@ -1239,6 +1236,9 @@ exports[`PreflightCheck renders property when has failed checks: before opening 
                     </span>
                   </div>
                 </div>
+                <div
+                  class="Accordion--chevron"
+                />
               </div>
               <div
                 class="bp3-collapse Accordion--collapse"

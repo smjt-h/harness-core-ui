@@ -23,13 +23,13 @@ exports[`<AdvancedSteps /> tests snapshot test 1`] = `
                 data-testid="delegateSelectors-summary"
               >
                 <div
-                  class="Accordion--chevron"
-                />
-                <div
                   class="Accordion--label"
                 >
                   delegate.DelegateSelector
                 </div>
+                <div
+                  class="Accordion--chevron"
+                />
               </div>
               <div
                 class="bp3-collapse Accordion--collapse"
@@ -60,7 +60,7 @@ exports[`<AdvancedSteps /> tests snapshot test 1`] = `
                             data-name="DelegateSelectors"
                           >
                             <div
-                              class="bp3-popover-wrapper TagInput--tagInput delegatePopover bp3-fill"
+                              class="bp3-popover-wrapper delegateInput delegatePopover bp3-fill"
                             >
                               <div
                                 class="bp3-popover-target"
@@ -130,13 +130,13 @@ exports[`<AdvancedSteps /> tests snapshot test 1`] = `
                 data-testid="conditionalExecution-summary"
               >
                 <div
-                  class="Accordion--chevron"
-                />
-                <div
                   class="Accordion--label"
                 >
                   pipeline.conditionalExecution.title
                 </div>
+                <div
+                  class="Accordion--chevron"
+                />
               </div>
               <div
                 class="bp3-collapse Accordion--collapse"
@@ -158,13 +158,13 @@ exports[`<AdvancedSteps /> tests snapshot test 1`] = `
                 data-testid="failureStrategy-summary"
               >
                 <div
-                  class="Accordion--chevron"
-                />
-                <div
                   class="Accordion--label"
                 >
                   pipeline.failureStrategies.title
                 </div>
+                <div
+                  class="Accordion--chevron"
+                />
               </div>
               <div
                 class="bp3-collapse Accordion--collapse"

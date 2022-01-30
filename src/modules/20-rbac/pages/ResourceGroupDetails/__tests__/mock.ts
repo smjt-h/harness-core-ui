@@ -1,12 +1,23 @@
+/*
+ * Copyright 2021 Harness Inc. All rights reserved.
+ * Use of this source code is governed by the PolyForm Shield 1.0.0 license
+ * that can be found in the licenses directory at the root of this repository, also available at
+ * https://polyformproject.org/wp-content/uploads/2020/06/PolyForm-Shield-1.0.0.txt.
+ */
+
 export const resourceTypes = {
   status: 'SUCCESS',
   data: {
     resourceTypes: [
-      { name: 'ACCOUNT', validatorTypes: ['STATIC'] },
-      { name: 'SECRET', validatorTypes: ['STATIC', 'DYNAMIC'] },
-      { name: 'CONNECTOR', validatorTypes: ['STATIC', 'DYNAMIC'] },
-      { name: 'ORGANIZATION', validatorTypes: ['STATIC', 'DYNAMIC'] },
-      { name: 'PROJECT', validatorTypes: ['STATIC', 'DYNAMIC'] }
+      {
+        name: 'SECRET',
+        validatorTypes: ['BY_RESOURCE_IDENTIFIER', 'BY_RESOURCE_TYPE', 'BY_RESOURCE_TYPE_INCLUDING_CHILD_SCOPES']
+      },
+      {
+        name: 'CONNECTOR',
+        validatorTypes: ['BY_RESOURCE_IDENTIFIER', 'BY_RESOURCE_TYPE', 'BY_RESOURCE_TYPE_INCLUDING_CHILD_SCOPES']
+      },
+      { name: 'PIPELINE', validatorTypes: ['BY_RESOURCE_TYPE_INCLUDING_CHILD_SCOPES'] }
     ]
   },
   metaData: null,
@@ -21,7 +32,7 @@ export const resourceGroupDetails = {
       projectIdentifier: null,
       identifier: 'ewrewew',
       name: 'nameewrewew',
-      resourceSelectors: [{ type: 'DynamicResourceSelector', resourceType: 'ORGANIZATION' }],
+      resourceSelectors: [{ type: 'DynamicResourceSelector', resourceType: 'SECRET', includeChildScopes: false }],
       tags: {},
       description: '',
       color: '#0063f7'
@@ -42,7 +53,7 @@ export const resourceGroupDetailsWithHarnessManaged = {
       projectIdentifier: null,
       identifier: 'ewrewew',
       name: 'nameewrewew',
-      resourceSelectors: [{ type: 'DynamicResourceSelector', resourceType: 'ORGANIZATION' }],
+      resourceSelectors: [{ type: 'DynamicResourceSelector', resourceType: 'SECRET', includeChildScopes: false }],
       tags: {},
       description: '',
       color: '#0063f7'

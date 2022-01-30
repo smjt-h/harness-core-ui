@@ -1,4 +1,11 @@
-import type { SelectOption } from '@wings-software/uicore'
+/*
+ * Copyright 2022 Harness Inc. All rights reserved.
+ * Use of this source code is governed by the PolyForm Shield 1.0.0 license
+ * that can be found in the licenses directory at the root of this repository, also available at
+ * https://polyformproject.org/wp-content/uploads/2020/06/PolyForm-Shield-1.0.0.txt.
+ */
+
+import type { MultiTypeInputType, SelectOption } from '@wings-software/uicore'
 import type { ConnectorSelectedValue } from '@connectors/components/ConnectorReferenceField/ConnectorReferenceField'
 import type {
   ManifestConfig,
@@ -42,6 +49,7 @@ export interface ManifestListViewProps {
   listOfManifests: Array<any>
   isReadonly: boolean
   deploymentType: string
+  allowableTypes: MultiTypeInputType[]
 }
 
 export interface ManifestStepInitData {
@@ -62,12 +70,14 @@ export interface ManifestLastStepProps {
   key: string
   name: string
   expressions: string[]
+  allowableTypes: MultiTypeInputType[]
   stepName: string
   initialValues: ManifestConfig
   handleSubmit: (data: ManifestConfigWrapper) => void
   selectedManifest: ManifestTypes | null
   manifestIdsList: Array<string>
   isReadonly?: boolean
+  deploymentType?: string
 }
 export interface CommandFlags {
   commandType: string | SelectOption | undefined
@@ -81,35 +91,23 @@ export interface HelmWithGITDataType {
   repoName?: string
   gitFetchType: 'Branch' | 'Commit'
   folderPath: string
-  helmVersion: string
+  helmVersion: HelmVersionOptions
   skipResourceVersioning: boolean
   commandFlags: Array<CommandFlags>
 }
 export interface HelmWithHTTPDataType {
   identifier: string
-  helmVersion: string
+  helmVersion: HelmVersionOptions
   skipResourceVersioning: boolean
   chartName: string
   chartVersion: string
   commandFlags: Array<CommandFlags>
 }
 
-export interface HelmWithGcsDataType {
-  identifier: string
-  helmVersion: string
-  skipResourceVersioning: boolean
-  chartName: string
-  chartVersion: string
-  commandFlags: Array<CommandFlags>
-  bucketName: string
-  folderPath: string
-}
-export interface HelmWithS3DataType extends HelmWithHTTPDataType {
-  folderPath: string
-  region: SelectOption | string
+export interface HelmWithGcsDataType extends HelmWithHTTPDataType {
   bucketName: SelectOption | string
+  folderPath: string
 }
-
 export interface OpenShiftTemplateGITDataType {
   identifier: string
   branch: string | undefined

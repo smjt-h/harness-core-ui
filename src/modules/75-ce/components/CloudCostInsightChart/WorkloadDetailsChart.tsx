@@ -1,5 +1,11 @@
+/*
+ * Copyright 2021 Harness Inc. All rights reserved.
+ * Use of this source code is governed by the PolyForm Shield 1.0.0 license
+ * that can be found in the licenses directory at the root of this repository, also available at
+ * https://polyformproject.org/wp-content/uploads/2020/06/PolyForm-Shield-1.0.0.txt.
+ */
+
 import React from 'react'
-import type { OptionsStackingValue } from 'highcharts'
 import Highcharts from 'highcharts/highcharts'
 import moment from 'moment'
 import { Layout } from '@wings-software/uicore'
@@ -97,8 +103,6 @@ const GetChart: React.FC<GetChartProps> = ({ chart, idx, onLoad, chartType, aggr
     }
   }
 
-  const stacking: OptionsStackingValue = 'normal'
-
   const plotOptions = {
     series: {
       connectNulls: true,
@@ -124,8 +128,7 @@ const GetChart: React.FC<GetChartProps> = ({ chart, idx, onLoad, chartType, aggr
             })
           }
         }
-      },
-      stacking
+      }
     },
     line: {
       connectNulls: true,

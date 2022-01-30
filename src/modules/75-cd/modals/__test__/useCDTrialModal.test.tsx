@@ -1,7 +1,15 @@
+/*
+ * Copyright 2021 Harness Inc. All rights reserved.
+ * Use of this source code is governed by the PolyForm Shield 1.0.0 license
+ * that can be found in the licenses directory at the root of this repository, also available at
+ * https://polyformproject.org/wp-content/uploads/2020/06/PolyForm-Shield-1.0.0.txt.
+ */
+
 import React from 'react'
 import { render, fireEvent, waitFor } from '@testing-library/react'
 import { TestWrapper } from '@common/utils/testUtils'
-import { TrialType, useCDTrialModal } from '../CDTrial/useCDTrialModal'
+import { TrialType } from '@pipeline/components/TrialModalTemplate/trialModalUtils'
+import { useCDTrialModal } from '../CDTrial/useCDTrialModal'
 
 jest.mock('services/pipeline-ng', () => ({
   useGetPipelineList: jest.fn().mockImplementation(() => {
@@ -28,37 +36,24 @@ jest.mock('services/pipeline-ng', () => ({
 
 const onCloseModal = jest.fn()
 const TestComponent = ({ trialType = TrialType.SET_UP_PIPELINE }: { trialType?: TrialType }): React.ReactElement => {
-  const { openCDTrialModal, closeCDTrialModal } = useCDTrialModal({
+  const { openTrialModal } = useCDTrialModal({
     actionProps: {
       onSuccess: jest.fn(),
-      onCloseModal,
       onCreateProject: jest.fn()
     },
-    trialType
+    trialType,
+    onCloseModal
   })
   return (
     <>
-      <button className="open" onClick={openCDTrialModal} />
-      <button className="close" onClick={closeCDTrialModal} />
+      <button className="open" onClick={openTrialModal} />
     </>
   )
 }
 
 describe('CDTrial Modal', () => {
   describe('Rendering', () => {
-    test('should open and close CDTrial', async () => {
-      const { container, getByText, getByRole } = render(
-        <TestWrapper>
-          <TestComponent />
-        </TestWrapper>
-      )
-      fireEvent.click(container.querySelector('.open')!)
-      await waitFor(() => expect(() => getByText('cd.cdTrialHomePage.startTrial.description')).toBeDefined())
-      fireEvent.click(getByRole('button', { name: 'close modal' }))
-      await waitFor(() => expect(onCloseModal).toBeCalled())
-    })
-
-    test('should close modal by closeCDTrialModal', async () => {
+    test('should open CDTrial', async () => {
       const { container, getByText } = render(
         <TestWrapper>
           <TestComponent />
@@ -66,8 +61,6 @@ describe('CDTrial Modal', () => {
       )
       fireEvent.click(container.querySelector('.open')!)
       await waitFor(() => expect(() => getByText('cd.cdTrialHomePage.startTrial.description')).toBeDefined())
-      fireEvent.click(container.querySelector('.close')!)
-      await waitFor(() => expect(onCloseModal).toBeCalled())
     })
   })
 

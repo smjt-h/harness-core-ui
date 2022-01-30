@@ -1,7 +1,14 @@
+/*
+ * Copyright 2022 Harness Inc. All rights reserved.
+ * Use of this source code is governed by the PolyForm Shield 1.0.0 license
+ * that can be found in the licenses directory at the root of this repository, also available at
+ * https://polyformproject.org/wp-content/uploads/2020/06/PolyForm-Shield-1.0.0.txt.
+ */
+
 import * as yup from 'yup'
 import type { StringSchema, Lazy, ArraySchema, Schema } from 'yup'
 import type { FormikErrors } from 'formik'
-import { getMultiTypeFromValue, MultiTypeInputType } from '@wings-software/uicore'
+import { getMultiTypeFromValue, MultiTypeInputType, RUNTIME_INPUT_VALUE } from '@wings-software/uicore'
 import { get, set, uniq, uniqBy, isEmpty, isUndefined } from 'lodash-es'
 import type { UseStringsReturn, StringKeys } from 'framework/strings'
 import { getDurationValidationSchema } from '@common/components/MultiTypeDuration/MultiTypeDuration'
@@ -120,8 +127,10 @@ function generateSchemaForList(
       if (Array.isArray(value)) {
         let schema = yup.array().test('valuesShouldBeUnique', getString('validation.uniqueValues'), list => {
           if (!list) return true
-
-          return uniqBy(list, 'value').length === list.length
+          const listWithoutRuntimeInput = (list as Array<{ id: string; value: string }>).filter(
+            item => item?.value !== 'undefined' && item?.value !== RUNTIME_INPUT_VALUE
+          )
+          return uniqBy(listWithoutRuntimeInput, 'value').length === listWithoutRuntimeInput.length
         })
 
         if (Array.isArray(value) && isRequired && label) {
@@ -129,6 +138,13 @@ function generateSchemaForList(
             .ensure()
             .compact((val: any) => !val?.value)
             .min(1, getString('fieldRequired', { field: getString(label as StringKeys) }))
+            .test(
+              'runtimeInputNotSupported',
+              getString('pipeline.runtimeInputNotSupported', { field: getString(label as StringKeys) }),
+              list =>
+                (list as Array<{ id: string; value: string }>).filter(item => item?.value === RUNTIME_INPUT_VALUE)
+                  ?.length === 0
+            )
         }
 
         return schema
@@ -187,7 +203,9 @@ function generateSchemaForMap(
   if (isInputSet) {
     // We can't add validation for key uniqueness and key's value
     return yup.mixed().test('validKeys', getString('validation.validKeyRegex'), map => {
-      if (!map) return true
+      if (!map || getMultiTypeFromValue(map as string) === MultiTypeInputType.RUNTIME) {
+        return true
+      }
       return Object.keys(map).every(key => regexIdentifier.test(key))
     })
   } else {
@@ -287,16 +305,22 @@ export function generateSchemaForLimitMemory({ getString, isRequired = false }: 
             .string()
             .required()
             // ^$ in the end is to pass empty string because otherwise it will fail
-            // .matches(/^\d+$|^\d+(E|P|T|G|M|K|Ei|Pi|Ti|Gi|Mi|Ki)$|^$/, getString('validation.matchPattern'))
-            .matches(/^\d+(\.\d+)?$|^\d+(\.\d+)?(G|M|Gi|Mi)$|^$/, getString('validation.matchPattern'))
+            // .matches(/^\d+$|^\d+(E|P|T|G|M|K|Ei|Pi|Ti|Gi|Mi|Ki)$|^$/, getString('pipeline.stepCommonFields.validation.invalidLimitMemory'))
+            .matches(
+              /^\d+(\.\d+)?$|^\d+(\.\d+)?(G|M|Gi|Mi)$|^$/,
+              getString('pipeline.stepCommonFields.validation.invalidLimitMemory')
+            )
         : yup.string().required()
     }
     return getMultiTypeFromValue(value as string) === MultiTypeInputType.FIXED
       ? yup
           .string()
           // ^$ in the end is to pass empty string because otherwise it will fail
-          // .matches(/^\d+$|^\d+(E|P|T|G|M|K|Ei|Pi|Ti|Gi|Mi|Ki)$|^$/, getString('validation.matchPattern'))
-          .matches(/^\d+(\.\d+)?$|^\d+(\.\d+)?(G|M|Gi|Mi)$|^$/, getString('validation.matchPattern'))
+          // .matches(/^\d+$|^\d+(E|P|T|G|M|K|Ei|Pi|Ti|Gi|Mi|Ki)$|^$/, getString('pipeline.stepCommonFields.validation.invalidLimitMemory'))
+          .matches(
+            /^\d+(\.\d+)?$|^\d+(\.\d+)?(G|M|Gi|Mi)$|^$/,
+            getString('pipeline.stepCommonFields.validation.invalidLimitMemory')
+          )
       : yup.string()
   })
 }
@@ -305,7 +329,9 @@ export function generateSchemaForLimitCPU({ getString }: GenerateSchemaDependenc
   return yup.lazy(value =>
     getMultiTypeFromValue(value as string) === MultiTypeInputType.FIXED
       ? // ^$ in the end is to pass empty string because otherwise it will fail
-        yup.string().matches(/^\d+(\.\d+)?$|^\d+m$|^$/, getString('validation.matchPattern'))
+        yup
+          .string()
+          .matches(/^\d+(\.\d+)?$|^\d+m$|^$/, getString('pipeline.stepCommonFields.validation.invalidLimitCPU'))
       : yup.string()
   )
 }

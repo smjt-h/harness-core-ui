@@ -1,3 +1,10 @@
+/*
+ * Copyright 2021 Harness Inc. All rights reserved.
+ * Use of this source code is governed by the PolyForm Shield 1.0.0 license
+ * that can be found in the licenses directory at the root of this repository, also available at
+ * https://polyformproject.org/wp-content/uploads/2020/06/PolyForm-Shield-1.0.0.txt.
+ */
+
 import { isNull, isUndefined, omitBy, isEmpty, get, set, flatten } from 'lodash-es'
 import { string, array, object, ObjectSchema } from 'yup'
 import type { PipelineInfoConfig, ConnectorInfoDTO, ConnectorResponse, ManifestConfigWrapper } from 'services/cd-ng'
@@ -334,11 +341,7 @@ const checkValidTriggerConfiguration = (formikValues: FlatValidWebhookFormikValu
     if (!formikValues['connectorRef'] || !formikValues['event'] || !formikValues['actions']) return false
     // onEdit case, waiting for api response
     else if (formikValues['connectorRef']?.value && !formikValues['connectorRef'].connector) return true
-    else if (
-      !connectorURLType ||
-      !!(connectorURLType === connectorUrlType.ACCOUNT && !formikValues.repoName) ||
-      (connectorURLType === connectorUrlType.REPO && formikValues.repoName)
-    )
+    else if (!connectorURLType || !!(connectorURLType === connectorUrlType.ACCOUNT && !formikValues.repoName))
       return false
   }
   return true

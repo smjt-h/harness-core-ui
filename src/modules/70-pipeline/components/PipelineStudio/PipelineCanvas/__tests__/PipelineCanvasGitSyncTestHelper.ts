@@ -1,3 +1,12 @@
+/*
+ * Copyright 2022 Harness Inc. All rights reserved.
+ * Use of this source code is governed by the PolyForm Shield 1.0.0 license
+ * that can be found in the licenses directory at the root of this repository, also available at
+ * https://polyformproject.org/wp-content/uploads/2020/06/PolyForm-Shield-1.0.0.txt.
+ */
+
+import { MultiTypeInputType } from '@wings-software/uicore'
+import { Scope } from '@common/interfaces/SecretsInterface'
 import type { PipelineContextInterface } from '../../PipelineContext/PipelineContext'
 import type { PipelineSelectionState } from '../../PipelineQueryParamState/usePipelineQueryParam'
 
@@ -151,7 +160,7 @@ const stateMock = {
     filePath: 'test_pipeline.yaml',
     objectId: '4471ec3aa40c26377353974c29a6670d998db06f',
     repoIdentifier: 'gitSyncRepo',
-    rootFolder: 'rootFolderTest/.harness/'
+    rootFolder: '/rootFolderTest/.harness/'
   },
   entityValidityDetails: { valid: true },
   isLoading: false,
@@ -196,10 +205,12 @@ const pipelineContextMock: PipelineContextInterface = {
     getStepIcon: () => 'run-step'
   } as any,
   contextType: 'Pipeline',
+  allowableTypes: [MultiTypeInputType.FIXED, MultiTypeInputType.RUNTIME, MultiTypeInputType.EXPRESSION],
   stagesMap: {},
   setSchemaErrorView: () => undefined,
   isReadonly: false,
   view: 'VISUAL',
+  scope: Scope.PROJECT,
   updateGitDetails: () => new Promise<void>(() => undefined),
   updateEntityValidityDetails: () => new Promise<void>(() => undefined),
   setView: () => void 0,
@@ -383,7 +394,7 @@ export const putPipelinePromiseArg = {
     orgIdentifier: 'default',
     projectIdentifier: 'testProject',
     repoIdentifier: 'gitSyncRepo',
-    rootFolder: 'rootFolderTest/.harness/',
+    rootFolder: '/rootFolderTest/.harness/',
     targetBranch: ''
   },
   requestOptions: {
@@ -449,7 +460,7 @@ export const createPipelinePromiseArg = {
     orgIdentifier: 'default',
     projectIdentifier: 'testProject',
     repoIdentifier: 'gitSyncRepo',
-    rootFolder: 'rootFolderTest/.harness/',
+    rootFolder: '/rootFolderTest/.harness/',
     targetBranch: ''
   },
   requestOptions: {

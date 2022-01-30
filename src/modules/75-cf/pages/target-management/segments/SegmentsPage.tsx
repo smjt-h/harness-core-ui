@@ -1,20 +1,18 @@
+/*
+ * Copyright 2022 Harness Inc. All rights reserved.
+ * Use of this source code is governed by the PolyForm Shield 1.0.0 license
+ * that can be found in the licenses directory at the root of this repository, also available at
+ * https://polyformproject.org/wp-content/uploads/2020/06/PolyForm-Shield-1.0.0.txt.
+ */
+
 import React, { useCallback, useEffect, useMemo, useState } from 'react'
 import { useParams, useHistory } from 'react-router-dom'
 import moment from 'moment'
 import ReactTimeago from 'react-timeago'
 import { Intent } from '@blueprintjs/core'
-import {
-  Color,
-  Container,
-  ExpandingSearchInput,
-  FlexExpander,
-  Layout,
-  Pagination,
-  TableV2,
-  Text
-} from '@wings-software/uicore'
+import { Color, Container, ExpandingSearchInput, Layout, Pagination, TableV2, Text } from '@wings-software/uicore'
 import type { Cell, Column } from 'react-table'
-import { ListingPageTemplate } from '@cf/components/ListingPageTemplate/ListingPageTemplate'
+import ListingPageTemplate from '@cf/components/ListingPageTemplate/ListingPageTemplate'
 import {
   CF_DEFAULT_PAGE_SIZE,
   getErrorMessage,
@@ -38,6 +36,8 @@ import useActiveEnvironment from '@cf/hooks/useActiveEnvironment'
 import { PermissionIdentifier } from '@rbac/interfaces/PermissionIdentifier'
 import { ResourceType } from '@rbac/interfaces/ResourceType'
 import RbacOptionsMenuButton from '@rbac/components/RbacOptionsMenuButton/RbacOptionsMenuButton'
+import usePlanEnforcement from '@cf/hooks/usePlanEnforcement'
+import UsageLimitBanner from '@cf/components/UsageLimitBanner/UsageLimitBanner'
 import { NoSegmentsView } from './NoSegmentsView'
 import { NewSegmentButton } from './NewSegmentButton'
 
@@ -93,7 +93,9 @@ export const SegmentsPage: React.FC = () => {
   const error = errEnvironments || errSegments
   const noSegmentExists = segmentsData?.segments?.length === 0
   const noEnvironmentExists = !loadingEnvironments && environments?.length === 0
-  const title = getString('cf.shared.segments')
+  const title = `${getString('cf.shared.targetManagement')}: ${getString('cf.shared.segments')}`
+
+  const { isPlanEnforcementEnabled } = usePlanEnforcement()
 
   const gotoSegmentDetailPage = useCallback(
     (identifier: string): void => {
@@ -111,23 +113,30 @@ export const SegmentsPage: React.FC = () => {
     [history, accountId, orgIdentifier, projectIdentifier, withActiveEnvironment]
   )
   const toolbar = (
-    <Layout.Horizontal spacing="medium">
-      <NewSegmentButton
-        accountId={accountId}
-        orgIdentifier={orgIdentifier}
-        projectIdentifier={projectIdentifier}
-        onCreated={segmentIdentifier => {
-          gotoSegmentDetailPage(segmentIdentifier)
-          showToaster(getString('cf.messages.segmentCreated'))
-        }}
+    <>
+      <Layout.Horizontal spacing="medium">
+        <NewSegmentButton
+          accountId={accountId}
+          orgIdentifier={orgIdentifier}
+          projectIdentifier={projectIdentifier}
+          onCreated={segmentIdentifier => {
+            gotoSegmentDetailPage(segmentIdentifier)
+            showToaster(getString('cf.messages.segmentCreated'))
+          }}
+        />
+        <Text font={{ size: 'small' }} color={Color.GREY_400} style={{ alignSelf: 'center' }}>
+          {getString('cf.segments.pageDescription')}
+        </Text>
+      </Layout.Horizontal>
+      <ExpandingSearchInput
+        alwaysExpanded
+        name="findFlag"
+        placeholder={getString('search')}
+        onChange={onSearchInputChanged}
       />
-      <Text font={{ size: 'small' }} color={Color.GREY_400} style={{ alignSelf: 'center' }}>
-        {getString('cf.segments.pageDescription')}
-      </Text>
-      <FlexExpander />
-      <ExpandingSearchInput name="findFlag" placeholder={getString('search')} onChange={onSearchInputChanged} />
-    </Layout.Horizontal>
+    </>
   )
+
   const { showError, clear } = useToaster()
   const deleteSegmentParams = useMemo(
     () => ({
@@ -255,7 +264,7 @@ export const SegmentsPage: React.FC = () => {
         }
       }
     ],
-    [getString, clear, deleteSegment, gotoSegmentDetailPage, showError, refetchSegments]
+    [getString, activeEnvironment, clear, deleteSegment, refetchSegments, showError, gotoSegmentDetailPage]
   )
 
   useEffect(() => {
@@ -283,26 +292,29 @@ export const SegmentsPage: React.FC = () => {
       }}
     />
   ) : (
-    <Container padding={{ top: 'medium', right: 'xxlarge', left: 'xxlarge' }}>
-      <TableV2<Segment>
-        columns={columns}
-        data={segmentsData?.segments || []}
-        onRowClick={segment => {
-          gotoSegmentDetailPage(segment.identifier as string)
-        }}
-      />
-    </Container>
+    <>
+      {isPlanEnforcementEnabled && <UsageLimitBanner />}
+      <Container padding={{ top: 'medium', right: 'xlarge', left: 'xlarge' }}>
+        <TableV2<Segment>
+          columns={columns}
+          data={segmentsData?.segments || []}
+          onRowClick={segment => {
+            gotoSegmentDetailPage(segment.identifier as string)
+          }}
+        />
+      </Container>
+    </>
   )
+
+  const displayToolbar = !noEnvironmentExists && (!noSegmentExists || searchTerm)
 
   return (
     <ListingPageTemplate
-      pageTitle={title}
-      header={
+      title={title}
+      headerContent={
         <TargetManagementHeader environmentSelect={<EnvironmentSelect />} hasEnvironments={!!environments?.length} />
       }
-      headerStyle={{ display: 'flex' }}
-      toolbar={!noEnvironmentExists && toolbar}
-      content={((!error || noEnvironmentExists) && content) || null}
+      toolbar={displayToolbar && toolbar}
       pagination={
         !noEnvironmentExists &&
         !!segmentsData?.segments?.length && (
@@ -323,6 +335,8 @@ export const SegmentsPage: React.FC = () => {
         refetchEnvs()
         refetchSegments()
       }}
-    />
+    >
+      {content}
+    </ListingPageTemplate>
   )
 }

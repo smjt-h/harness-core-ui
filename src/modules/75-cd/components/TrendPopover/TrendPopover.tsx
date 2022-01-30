@@ -1,3 +1,10 @@
+/*
+ * Copyright 2021 Harness Inc. All rights reserved.
+ * Use of this source code is governed by the PolyForm Shield 1.0.0 license
+ * that can be found in the licenses directory at the root of this repository, also available at
+ * https://polyformproject.org/wp-content/uploads/2020/06/PolyForm-Shield-1.0.0.txt.
+ */
+
 import React from 'react'
 import cx from 'classnames'
 import { Classes, PopoverInteractionKind, Position } from '@blueprintjs/core'
@@ -33,7 +40,7 @@ const Trend: React.FC<TrendPopoverProps> = props => {
               dataLabels: {
                 enabled: true,
                 color: 'var(--grey-600)',
-                formatter: function () {
+                formatter: /* istanbul ignore next */ function () {
                   return numberFormatter(this.y ? this.y : 0)
                 }
               }

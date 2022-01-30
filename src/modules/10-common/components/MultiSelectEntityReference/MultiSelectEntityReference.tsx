@@ -1,3 +1,10 @@
+/*
+ * Copyright 2021 Harness Inc. All rights reserved.
+ * Use of this source code is governed by the PolyForm Shield 1.0.0 license
+ * that can be found in the licenses directory at the root of this repository, also available at
+ * https://polyformproject.org/wp-content/uploads/2020/06/PolyForm-Shield-1.0.0.txt.
+ */
+
 import React, { useState, useEffect, useCallback, useRef } from 'react'
 import cx from 'classnames'
 import {
@@ -19,6 +26,7 @@ import { Scope } from '@common/interfaces/SecretsInterface'
 import { useStrings } from 'framework/strings'
 import type { StringKeys } from 'framework/strings'
 import type { EntityReferenceResponse } from '../EntityReference/EntityReference'
+import { disableItems } from './utils'
 import css from './MultiSelectEntityReference.module.scss'
 
 export interface Identifier {
@@ -84,6 +92,7 @@ export interface MultiSelectEntityReferenceProps<T> {
   selectedItemsUuidAndScope?: ScopeAndIdentifier[]
   onMultiSelect: (payLoad: ScopeAndIdentifier[]) => void
   onlyCurrentScope?: boolean
+  disablePreSelectedItems?: boolean
 }
 
 export function getDefaultScope(orgIdentifier?: string, projectIdentifier?: string): Scope {
@@ -117,6 +126,7 @@ export function MultiSelectEntityReference<T extends Identifier>(
     noRecordsText = getString('entityReference.noRecordFound'),
     searchInlineComponent,
     selectedItemsUuidAndScope,
+    disablePreSelectedItems = false,
     onMultiSelect,
     onlyCurrentScope
   } = props
@@ -283,6 +293,8 @@ export function MultiSelectEntityReference<T extends Identifier>(
               >
                 <Checkbox
                   onChange={e => onCheckboxChange((e.target as any).checked, item.record)}
+                  data-testid={`Checkbox-${item.identifier}`}
+                  disabled={disableItems(item.record['identifier'], disablePreSelectedItems, selectedItemsUuidAndScope)}
                   className={css.checkbox}
                   checked={checked}
                   large

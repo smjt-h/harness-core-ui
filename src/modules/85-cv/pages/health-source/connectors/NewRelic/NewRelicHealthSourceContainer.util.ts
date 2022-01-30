@@ -1,3 +1,10 @@
+/*
+ * Copyright 2021 Harness Inc. All rights reserved.
+ * Use of this source code is governed by the PolyForm Shield 1.0.0 license
+ * that can be found in the licenses directory at the root of this repository, also available at
+ * https://polyformproject.org/wp-content/uploads/2020/06/PolyForm-Shield-1.0.0.txt.
+ */
+
 import type { SelectOption } from '@wings-software/uicore'
 import { isEmpty } from 'lodash-es'
 import { v4 as uuid } from 'uuid'
@@ -19,8 +26,8 @@ export const createNewRelicPayload = (formData: any): UpdatedHealthSource | null
     for (const entry of formData.mappedServicesAndEnvs.entries()) {
       const {
         metricName,
+        metricIdentifier,
         groupName,
-        queryType,
         query,
         metricValue,
         timestamp,
@@ -45,11 +52,10 @@ export const createNewRelicPayload = (formData: any): UpdatedHealthSource | null
       }
 
       specPayload?.newRelicMetricDefinitions?.push({
-        identifier: uuid(),
+        identifier: metricIdentifier || uuid(),
         metricName,
         groupName: groupName?.value as string,
         nrql: query,
-        queryType,
         responseMapping: {
           metricValueJsonPath: metricValue,
           serviceInstanceJsonPath: serviceInstanceIdentifier,
@@ -119,13 +125,12 @@ export const createNewRelicData = (sourceData: any): NewRelicData => {
     if (metricDefinition?.metricName) {
       newRelicData.mappedServicesAndEnvs.set(metricDefinition.metricName, {
         metricName: metricDefinition.metricName,
+        metricIdentifier: metricDefinition.identifier,
         groupName: { label: metricDefinition.groupName || '', value: metricDefinition.groupName || '' },
 
-        queryType: (metricDefinition as any)?.queryType,
         query: metricDefinition?.nrql,
 
         metricValue: metricDefinition?.responseMapping?.metricValueJsonPath,
-        serviceInstanceIdentifier: metricDefinition?.responseMapping?.serviceInstanceJsonPath,
         timestampFormat: metricDefinition?.responseMapping?.timestampFormat,
         timestamp: metricDefinition?.responseMapping?.timestampJsonPath,
 

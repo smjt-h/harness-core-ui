@@ -1,27 +1,51 @@
-import React, { useState, useMemo, useEffect } from 'react'
+/*
+ * Copyright 2022 Harness Inc. All rights reserved.
+ * Use of this source code is governed by the PolyForm Shield 1.0.0 license
+ * that can be found in the licenses directory at the root of this repository, also available at
+ * https://polyformproject.org/wp-content/uploads/2020/06/PolyForm-Shield-1.0.0.txt.
+ */
+
+import React, { useState, useMemo, useEffect, useContext } from 'react'
+import { groupBy } from 'lodash-es'
 import { useParams } from 'react-router-dom'
-import { Container, Accordion, FormInput, SelectOption, Utils } from '@wings-software/uicore'
+import {
+  Container,
+  Accordion,
+  SelectOption,
+  FormInput,
+  Text,
+  Color,
+  FontVariation,
+  Radio
+} from '@wings-software/uicore'
+import cx from 'classnames'
 import { useStrings } from 'framework/strings'
-import { useGetMetricPacks, useGetLabelNames, useGetServiceInstanceMetricPath } from 'services/cv'
+import { useGetMetricPacks, useGetServiceInstanceMetricPath, AppDMetricDefinitions } from 'services/cv'
 import type { ProjectPathProps } from '@common/interfaces/RouteInterfaces'
+import { NameId } from '@common/components/NameIdDescriptionTags/NameIdDescriptionTags'
 import { SetupSourceCardHeader } from '@cv/components/CVSetupSourcesView/SetupSourceCardHeader/SetupSourceCardHeader'
 import { SetupSourceLayout } from '@cv/components/CVSetupSourcesView/SetupSourceLayout/SetupSourceLayout'
 import { GroupName } from '@cv/pages/health-source/common/GroupName/GroupName'
 import { MultiItemsSideNav } from '@cv/components/MultiItemsSideNav/MultiItemsSideNav'
 import SelectHealthSourceServices from '@cv/pages/health-source/common/SelectHealthSourceServices/SelectHealthSourceServices'
+import { SetupSourceTabsContext } from '@cv/components/CVSetupSourcesView/SetupSourceTabs/SetupSourceTabs'
 import {
   updateSelectedMetricsMap,
   getBasePathValue,
   getMetricPathValue,
-  initializeGroupNames
+  initializeGroupNames,
+  initGroupedCreatedMetrics,
+  defaultGroupedMetric
 } from './AppDMappedMetric.utils'
 import BasePath from '../BasePath/BasePath'
 import MetricChart from '../MetricChart/MetricChart'
 import MetricPath from '../MetricPath/MetricPath'
-import type { AppDMappedMetricInterface } from './AppDMappedMetric.types'
+import type { AppDMappedMetricInterface, GroupedCreatedMetrics } from './AppDMappedMetric.types'
 import { BasePathInitValue } from '../BasePath/BasePath.constants'
 import { AppDynamicsMonitoringSourceFieldNames } from '../../AppDHealthSource.constants'
+import { PATHTYPE } from './AppDMappedMetric.constant'
 import css from '../../AppDHealthSource.module.scss'
+import basePathStyle from '../BasePath/BasePath.module.scss'
 
 export default function AppDMappedMetric({
   setMappedMetrics,
@@ -32,17 +56,14 @@ export default function AppDMappedMetric({
   mappedMetrics,
   createdMetrics,
   isValidInput,
-  setCreatedMetrics
+  setCreatedMetrics,
+  updateGroupedCreatedMetrics
 }: AppDMappedMetricInterface): JSX.Element {
   const { getString } = useStrings()
-  const labelNameTracingId = useMemo(() => Utils.randomId(), [])
   const { accountId, orgIdentifier, projectIdentifier } = useParams<ProjectPathProps>()
 
   const metricPackResponse = useGetMetricPacks({
-    queryParams: { projectIdentifier, orgIdentifier, accountId, dataSourceType: 'PROMETHEUS' }
-  })
-  const labelNamesResponse = useGetLabelNames({
-    queryParams: { projectIdentifier, orgIdentifier, accountId, connectorIdentifier, tracingId: labelNameTracingId }
+    queryParams: { projectIdentifier, orgIdentifier, accountId, dataSourceType: 'APP_DYNAMICS' }
   })
 
   const { data: serviceInsanceData, refetch: refetchServiceInsance } = useGetServiceInstanceMetricPath({ lazy: true })
@@ -79,6 +100,59 @@ export default function AppDMappedMetric({
 
   const [appdGroupName, setAppdGroupName] = useState<SelectOption[]>(initializeGroupNames(mappedMetrics, getString))
   const basePathValue = getBasePathValue(formikValues?.basePath)
+  const metricPathValue = getMetricPathValue(formikValues?.metricPath)
+  const {
+    sourceData: { existingMetricDetails }
+  } = useContext(SetupSourceTabsContext)
+  const metricDefinitions = existingMetricDetails?.spec?.metricDefinitions
+  const currentSelectedMetricDetail = metricDefinitions?.find(
+    (metricDefinition: AppDMetricDefinitions) =>
+      metricDefinition.metricName === mappedMetrics.get(selectedMetric || '')?.metricName
+  )
+
+  const [groupedCreatedMetrics, setGroupedCreatedMetrics] = useState<GroupedCreatedMetrics>(
+    initGroupedCreatedMetrics(mappedMetrics, getString)
+  )
+
+  useEffect(() => {
+    setMappedMetrics(oldState => {
+      return updateSelectedMetricsMap({
+        updatedMetric: formikValues.metricName,
+        oldMetric: oldState.selectedMetric,
+        mappedMetrics: oldState.mappedMetrics,
+        formikValues,
+        getString
+      })
+    })
+
+    updateGroupedCreatedMetrics(groupedCreatedMetrics)
+  }, [formikValues?.groupName, formikValues?.metricName])
+
+  useEffect(() => {
+    const filteredList = Array.from(mappedMetrics?.values()).map((item, index) => {
+      return {
+        index,
+        groupName: item.groupName || defaultGroupedMetric(getString),
+        metricName: item.metricName
+      }
+    })
+    const updatedGroupedCreatedMetrics = groupBy(filteredList.reverse(), function (item) {
+      return item?.groupName?.label
+    })
+    setGroupedCreatedMetrics(updatedGroupedCreatedMetrics)
+  }, [formikValues?.groupName, mappedMetrics])
+
+  useEffect(() => {
+    if (formikValues.pathType === PATHTYPE.DropdownPath) {
+      formikSetField(PATHTYPE.FullPath, '')
+    }
+  }, [formikValues.pathType])
+
+  const completeMetricPath = useMemo(
+    () => `${basePathValue}|${formikValues.appDTier}|${metricPathValue}`.split('|').join(' / '),
+    [basePathValue, formikValues.appDTier, metricPathValue]
+  )
+
   return (
     <SetupSourceLayout
       leftPanelContent={
@@ -90,6 +164,7 @@ export default function AppDMappedMetric({
           defaultSelectedMetric={selectedMetric}
           renamedMetric={formikValues?.metricName}
           isValidInput={isValidInput}
+          groupedCreatedMetrics={groupedCreatedMetrics}
           onRemoveMetric={(removedMetric, updatedMetric, updatedList, smIndex) => {
             setMappedMetrics(oldState => {
               const { selectedMetric: oldMetric, mappedMetrics: oldMappedMetric } = oldState
@@ -103,7 +178,7 @@ export default function AppDMappedMetric({
               }
 
               // update map with current values
-              if (formikValues?.metricName !== removedMetric) {
+              if (formikValues?.metricName !== removedMetric && formikValues?.metricName === updatedMetric) {
                 updatedMap.set(updatedMetric, { ...formikValues } || { metricName: updatedMetric })
               }
 
@@ -115,13 +190,15 @@ export default function AppDMappedMetric({
             })
           }}
           onSelectMetric={(newMetric, updatedList, smIndex) => {
-            setCreatedMetrics({ selectedMetricIndex: smIndex, createdMetrics: updatedList })
             setMappedMetrics(oldState => {
+              setCreatedMetrics({ selectedMetricIndex: smIndex, createdMetrics: updatedList })
+
               return updateSelectedMetricsMap({
                 updatedMetric: newMetric,
                 oldMetric: oldState.selectedMetric,
                 mappedMetrics: oldState.mappedMetrics,
-                formikValues
+                formikValues,
+                getString
               })
             })
           }}
@@ -140,33 +217,76 @@ export default function AppDMappedMetric({
                 summary={getString('cv.monitoringSources.mapMetricsToServices')}
                 details={
                   <>
-                    <FormInput.Text label={getString('cv.monitoringSources.metricNameLabel')} name={'metricName'} />
+                    <NameId
+                      nameLabel={getString('cv.monitoringSources.metricNameLabel')}
+                      identifierProps={{
+                        inputName: AppDynamicsMonitoringSourceFieldNames.METRIC_NAME,
+                        idName: AppDynamicsMonitoringSourceFieldNames.METRIC_IDENTIFIER,
+                        isIdentifierEditable: Boolean(!currentSelectedMetricDetail?.identifier)
+                      }}
+                    />
                     <GroupName
                       groupNames={appdGroupName}
                       onChange={formikSetField}
                       item={formikValues?.groupName}
                       setGroupNames={setAppdGroupName}
                     />
-                    {formikValues.appdApplication && (
-                      <>
-                        <BasePath
-                          basePathValue={formikValues?.basePath || BasePathInitValue}
+                    <Text padding={{ bottom: 'medium' }} font={{ variation: FontVariation.H6 }}>
+                      {getString('cv.monitoringSources.appD.appdPathTitle')}
+                    </Text>
+                    <Radio
+                      padding={{ bottom: 'medium', left: 'xlarge' }}
+                      label={getString('cv.healthSource.connectors.AppDynamics.metricPathType.text')}
+                      checked={formikValues?.pathType === PATHTYPE.FullPath}
+                      onChange={() => formikSetField('pathType', PATHTYPE.FullPath)}
+                    />
+                    <FormInput.Text
+                      className={css.fullPath}
+                      name={PATHTYPE.FullPath}
+                      disabled={formikValues?.pathType !== PATHTYPE.FullPath}
+                    />
+                    <Radio
+                      padding={{ bottom: 'medium', left: 'xlarge' }}
+                      label={getString('cv.healthSource.connectors.AppDynamics.metricPathType.dropdown')}
+                      checked={formikValues?.pathType === PATHTYPE.DropdownPath}
+                      onChange={() => formikSetField('pathType', PATHTYPE.DropdownPath)}
+                    />
+                    <Container
+                      padding={{ left: 'large' }}
+                      className={cx({ [css.disabled]: formikValues?.pathType !== PATHTYPE.DropdownPath })}
+                    >
+                      <Text padding={{ bottom: 'medium' }}>
+                        {getString('cv.monitoringSources.appD.appdPathDetail')}
+                      </Text>
+                      <BasePath
+                        basePathValue={formikValues?.basePath || BasePathInitValue}
+                        onChange={formikSetField}
+                        appName={formikValues.appdApplication}
+                        connectorIdentifier={connectorIdentifier}
+                      />
+                      {basePathValue && formikValues.appDTier && (
+                        <MetricPath
                           onChange={formikSetField}
-                          appName={formikValues.appdApplication}
+                          metricPathValue={formikValues?.metricPath}
                           connectorIdentifier={connectorIdentifier}
+                          baseFolder={basePathValue}
+                          appName={formikValues.appdApplication}
+                          tier={formikValues.appDTier}
                         />
-                        {basePathValue && formikValues.appDTier && (
-                          <MetricPath
-                            onChange={formikSetField}
-                            metricPathValue={formikValues?.metricPath}
-                            connectorIdentifier={connectorIdentifier}
-                            baseFolder={basePathValue}
-                            appName={formikValues.appdApplication}
-                            tier={formikValues.appDTier}
-                          />
-                        )}
-                      </>
-                    )}
+                      )}
+                      <Container className={basePathStyle.basePathContainer}>
+                        <Text
+                          font={{ variation: FontVariation.SMALL_BOLD }}
+                          color={Color.GREY_400}
+                          className={basePathStyle.basePathLabel}
+                        >
+                          {getString('cv.healthSource.connectors.AppDynamics.selectedPathLabel')}
+                        </Text>
+                        <Text className={basePathStyle.basePathValue} font={{ variation: FontVariation.SMALL_SEMI }}>
+                          {completeMetricPath}
+                        </Text>
+                      </Container>
+                    </Container>
                   </>
                 }
               />
@@ -197,7 +317,6 @@ export default function AppDMappedMetric({
                         continuousVerification: !!formikValues?.continuousVerification
                       }}
                       metricPackResponse={metricPackResponse}
-                      labelNamesResponse={labelNamesResponse}
                       hideServiceIdentifier
                     />
                   </>

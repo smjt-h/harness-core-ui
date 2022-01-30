@@ -1,3 +1,10 @@
+/*
+ * Copyright 2021 Harness Inc. All rights reserved.
+ * Use of this source code is governed by the PolyForm Shield 1.0.0 license
+ * that can be found in the licenses directory at the root of this repository, also available at
+ * https://polyformproject.org/wp-content/uploads/2020/06/PolyForm-Shield-1.0.0.txt.
+ */
+
 import gql from 'graphql-tag'
 import * as Urql from 'urql'
 export type Maybe<T> = T | null
@@ -117,6 +124,7 @@ export const FetchBudgetSummaryDocument = gql`
       forecastCostAlerts
       forecastCost
       perspectiveId
+      perspectiveName
       growthRate
       startTime
       type
@@ -346,7 +354,7 @@ export function useFetchOverviewTimeSeriesQuery(
 }
 export const FetchPerspectiveBudgetDocument = gql`
   query FetchPerspectiveBudget($perspectiveId: String) {
-    budgetSummary(perspectiveId: $perspectiveId) {
+    budgetSummaryList(perspectiveId: $perspectiveId) {
       id
       name
       budgetAmount
@@ -354,6 +362,7 @@ export const FetchPerspectiveBudgetDocument = gql`
       timeLeft
       timeUnit
       timeScope
+      period
     }
   }
 `
@@ -1211,7 +1220,8 @@ export type FetchBudgetSummaryQuery = {
     forecastCostAlerts: Array<Maybe<number>>
     forecastCost: number
     perspectiveId: string
-    growthRate: Maybe<number>
+    perspectiveName: string
+    growthRate: number
     startTime: any
     type: BudgetType
     period: BudgetPeriod
@@ -1249,7 +1259,7 @@ export type FetchBudgetQuery = {
         forecastCostAlerts: Array<Maybe<number>>
         forecastCost: number
         perspectiveId: string
-        growthRate: Maybe<number>
+        growthRate: number
         startTime: any
         type: BudgetType
         period: BudgetPeriod
@@ -1430,16 +1440,21 @@ export type FetchPerspectiveBudgetQueryVariables = Exact<{
 
 export type FetchPerspectiveBudgetQuery = {
   __typename?: 'Query'
-  budgetSummary: Maybe<{
-    __typename?: 'BudgetSummary'
-    id: string
-    name: string
-    budgetAmount: number
-    actualCost: number
-    timeLeft: number
-    timeUnit: string
-    timeScope: string
-  }>
+  budgetSummaryList: Maybe<
+    Array<
+      Maybe<{
+        __typename?: 'BudgetSummary'
+        id: string
+        name: string
+        budgetAmount: number
+        actualCost: number
+        timeLeft: number
+        timeUnit: string
+        timeScope: string
+        period: BudgetPeriod
+      }>
+    >
+  >
 }
 
 export type FetchPerspectiveFiltersValueQueryVariables = Exact<{
@@ -2259,11 +2274,12 @@ export type BudgetSummary = {
   budgetAmount: Scalars['Float']
   forecastCost: Scalars['Float']
   forecastCostAlerts: Array<Maybe<Scalars['Float']>>
-  growthRate: Maybe<Scalars['Float']>
+  growthRate: Scalars['Float']
   id: Scalars['String']
   name: Scalars['String']
   period: BudgetPeriod
   perspectiveId: Scalars['String']
+  perspectiveName: Scalars['String']
   startTime: Scalars['Long']
   timeLeft: Scalars['Int']
   timeScope: Scalars['String']
@@ -2610,6 +2626,8 @@ export type Query = {
   budgetList: Maybe<Array<Maybe<BudgetSummary>>>
   /** Budget card for perspectives */
   budgetSummary: Maybe<BudgetSummary>
+  /** List of budget cards for perspectives */
+  budgetSummaryList: Maybe<Array<Maybe<BudgetSummary>>>
   /** Fetch CCM MetaData for account */
   ccmMetaData: Maybe<CcmMetaData>
   instancedata: Maybe<InstanceDataDemo>
@@ -2677,6 +2695,11 @@ export type QueryBudgetListArgs = {
 /** Query root */
 export type QueryBudgetSummaryArgs = {
   budgetId: Maybe<Scalars['String']>
+  perspectiveId: Maybe<Scalars['String']>
+}
+
+/** Query root */
+export type QueryBudgetSummaryListArgs = {
   perspectiveId: Maybe<Scalars['String']>
 }
 

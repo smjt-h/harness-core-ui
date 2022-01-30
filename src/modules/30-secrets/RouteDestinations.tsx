@@ -1,5 +1,13 @@
+/*
+ * Copyright 2021 Harness Inc. All rights reserved.
+ * Use of this source code is governed by the PolyForm Shield 1.0.0 license
+ * that can be found in the licenses directory at the root of this repository, also available at
+ * https://polyformproject.org/wp-content/uploads/2020/06/PolyForm-Shield-1.0.0.txt.
+ */
+
 import React from 'react'
 import { Redirect, useParams } from 'react-router-dom'
+import AuditTrailFactory, { ResourceScope } from '@audit-trail/factories/AuditTrailFactory'
 import { RouteWithLayout } from '@common/router'
 import routes from '@common/RouteDefinitions'
 import { accountPathProps, secretPathProps } from '@common/utils/routeUtils'
@@ -17,6 +25,7 @@ import { PermissionIdentifier } from '@rbac/interfaces/PermissionIdentifier'
 import { String } from 'framework/strings'
 import SecretResourceRenderer from '@secrets/components/SecretResourceRenderer/SecretResourceRenderer'
 import { AccountSideNavProps } from '@common/RouteDestinations'
+import type { ResourceDTO } from 'services/audit'
 
 RbacFactory.registerResourceTypeHandler(ResourceType.SECRET, {
   icon: 'res-secrets',
@@ -32,6 +41,22 @@ RbacFactory.registerResourceTypeHandler(ResourceType.SECRET, {
   addResourceModalBody: props => <SecretResourceModalBody {...props} />,
   // eslint-disable-next-line react/display-name
   staticResourceRenderer: props => <SecretResourceRenderer {...props} />
+})
+
+AuditTrailFactory.registerResourceHandler('SECRET', {
+  moduleIcon: {
+    name: 'nav-settings'
+  },
+  resourceUrl: (resource: ResourceDTO, resourceScope: ResourceScope) => {
+    const { orgIdentifier, accountIdentifier, projectIdentifier } = resourceScope
+
+    return routes.toSecretDetails({
+      orgIdentifier,
+      accountId: accountIdentifier,
+      projectIdentifier,
+      secretId: resource.identifier
+    })
+  }
 })
 
 const RedirectToSecretDetailHome = () => {

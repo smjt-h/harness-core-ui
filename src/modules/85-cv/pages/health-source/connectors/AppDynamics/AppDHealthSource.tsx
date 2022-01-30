@@ -1,5 +1,12 @@
+/*
+ * Copyright 2021 Harness Inc. All rights reserved.
+ * Use of this source code is governed by the PolyForm Shield 1.0.0 license
+ * that can be found in the licenses directory at the root of this repository, also available at
+ * https://polyformproject.org/wp-content/uploads/2020/06/PolyForm-Shield-1.0.0.txt.
+ */
+
 import React, { useEffect, useMemo, useState } from 'react'
-import { noop } from 'lodash-es'
+import { flatten, noop } from 'lodash-es'
 import { useParams } from 'react-router-dom'
 import {
   Color,
@@ -28,6 +35,7 @@ import DrawerFooter from '@cv/pages/health-source/common/DrawerFooter/DrawerFoot
 import ValidationStatus from '@cv/pages/components/ValidationStatus/ValidationStatus'
 import MetricsVerificationModal from '@cv/components/MetricsVerificationModal/MetricsVerificationModal'
 import { StatusOfValidation } from '@cv/pages/components/ValidationStatus/ValidationStatus.constants'
+import { getErrorMessage } from '@cv/utils/CommonUtils'
 import {
   getOptions,
   getInputGroupProps,
@@ -53,6 +61,7 @@ import type {
   SelectedAndMappedMetrics
 } from './AppDHealthSource.types'
 import MetricPackCustom from '../MetricPackCustom'
+import type { GroupedCreatedMetrics } from './Components/AppDMappedMetric/AppDMappedMetric.types'
 import css from './AppDHealthSource.module.scss'
 
 export default function AppDMonitoredSource({
@@ -152,8 +161,8 @@ export default function AppDMonitoredSource({
 
   if (applicationError || tierError) {
     clear()
-    tierError && showError(tierError?.message)
-    applicationError && showError(applicationError?.message)
+    tierError && showError(getErrorMessage(tierError))
+    applicationError && showError(getErrorMessage(applicationError))
   }
 
   const applicationOptions: SelectOption[] = useMemo(
@@ -205,6 +214,8 @@ export default function AppDMonitoredSource({
     )
   )
 
+  const [groupedCreatedMetrics, setGroupedCreatedMetrics] = useState<string[]>([])
+
   const [nonCustomFeilds, setNonCustomFeilds] = useState(initializeNonCustomFields(appDynamicsData))
 
   const initPayload = useMemo(
@@ -217,10 +228,12 @@ export default function AppDMonitoredSource({
       enableReinitialize
       formName={'appDHealthSourceform'}
       isInitialValid={(args: any) =>
-        Object.keys(validateMapping(args.initialValues, createdMetrics, selectedMetricIndex, getString)).length === 0
+        Object.keys(
+          validateMapping(args.initialValues, groupedCreatedMetrics, selectedMetricIndex, getString, mappedMetrics)
+        ).length === 0
       }
       validate={values => {
-        return validateMapping(values, createdMetrics, selectedMetricIndex, getString)
+        return validateMapping(values, groupedCreatedMetrics, selectedMetricIndex, getString, mappedMetrics)
       }}
       initialValues={initPayload}
       onSubmit={noop}
@@ -357,9 +370,15 @@ export default function AppDMonitoredSource({
                 mappedMetrics={mappedMetrics}
                 createdMetrics={createdMetrics}
                 setCreatedMetrics={setCreatedMetrics}
+                updateGroupedCreatedMetrics={(data: GroupedCreatedMetrics) => {
+                  const vv = flatten(Object.values(data))
+                    .map(item => item.metricName)
+                    .filter(item => Boolean(item))
+                  setGroupedCreatedMetrics(vv as string[])
+                }}
               />
             ) : (
-              <CardWithOuterTitle>
+              <CardWithOuterTitle title={getString('cv.healthSource.connectors.customMetrics')}>
                 <Button
                   disabled={!(!!formik?.values?.appdApplication && !!formik?.values?.appDTier)}
                   icon="plus"

@@ -1,5 +1,13 @@
+/*
+ * Copyright 2021 Harness Inc. All rights reserved.
+ * Use of this source code is governed by the PolyForm Shield 1.0.0 license
+ * that can be found in the licenses directory at the root of this repository, also available at
+ * https://polyformproject.org/wp-content/uploads/2020/06/PolyForm-Shield-1.0.0.txt.
+ */
+
 import React from 'react'
 import { render, findByText, fireEvent, findAllByText, waitFor } from '@testing-library/react'
+import { MultiTypeInputType } from '@wings-software/uicore'
 import { TestWrapper } from '@common/utils/testUtils'
 import {
   PipelineContext,
@@ -174,7 +182,8 @@ describe('ManifestSelection tests', () => {
       refetchConnectors: jest.fn(),
       isReadonly: false,
       listOfManifests: [],
-      deploymentType: 'Kubernetes'
+      deploymentType: 'Kubernetes',
+      allowableTypes: [MultiTypeInputType.FIXED, MultiTypeInputType.RUNTIME, MultiTypeInputType.EXPRESSION]
     }
     const { container } = render(
       <TestWrapper>
@@ -198,7 +207,8 @@ describe('ManifestSelection tests', () => {
       refetchConnectors: jest.fn(),
       isReadonly: false,
       listOfManifests: [],
-      deploymentType: 'Kubernetes'
+      deploymentType: 'Kubernetes',
+      allowableTypes: [MultiTypeInputType.FIXED, MultiTypeInputType.RUNTIME, MultiTypeInputType.EXPRESSION]
     }
     const { container } = render(
       <TestWrapper>
@@ -222,7 +232,8 @@ describe('ManifestSelection tests', () => {
       refetchConnectors: jest.fn(),
       isReadonly: false,
       listOfManifests: [],
-      deploymentType: 'Kubernetes'
+      deploymentType: 'Kubernetes',
+      allowableTypes: [MultiTypeInputType.FIXED, MultiTypeInputType.RUNTIME, MultiTypeInputType.EXPRESSION]
     }
     const { container } = render(
       <TestWrapper>
@@ -246,6 +257,7 @@ describe('ManifestSelection tests', () => {
       refetchConnectors: jest.fn(),
       isReadonly: false,
       deploymentType: 'Kubernetes',
+      allowableTypes: [MultiTypeInputType.FIXED, MultiTypeInputType.RUNTIME, MultiTypeInputType.EXPRESSION],
       listOfManifests: [
         {
           manifest: {
@@ -294,6 +306,7 @@ describe('ManifestSelection tests', () => {
       refetchConnectors: jest.fn(),
       isReadonly: false,
       deploymentType: 'Kubernetes',
+      allowableTypes: [MultiTypeInputType.FIXED, MultiTypeInputType.RUNTIME, MultiTypeInputType.EXPRESSION],
       listOfManifests: [
         {
           manifest: {
@@ -349,7 +362,8 @@ describe('ManifestSelection tests', () => {
       refetchConnectors: jest.fn(),
       isReadonly: false,
       listOfManifests: [],
-      deploymentType: 'Kubernetes'
+      deploymentType: 'Kubernetes',
+      allowableTypes: [MultiTypeInputType.FIXED, MultiTypeInputType.RUNTIME, MultiTypeInputType.EXPRESSION]
     }
 
     const listOfManifests = props.stage.stage.spec.serviceConfig.serviceDefinition.spec.manifestOverrideSets

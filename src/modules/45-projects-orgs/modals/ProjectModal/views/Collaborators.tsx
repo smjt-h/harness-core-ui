@@ -1,3 +1,10 @@
+/*
+ * Copyright 2022 Harness Inc. All rights reserved.
+ * Use of this source code is governed by the PolyForm Free Trial 1.0.0 license
+ * that can be found in the licenses directory at the root of this repository, also available at
+ * https://polyformproject.org/wp-content/uploads/2020/05/PolyForm-Free-Trial-1.0.0.txt.
+ */
+
 import React, { useEffect, useState } from 'react'
 import {
   Formik,
@@ -24,18 +31,20 @@ import {
 import cx from 'classnames'
 import * as Yup from 'yup'
 import { useHistory, useParams } from 'react-router-dom'
-import copy from 'copy-to-clipboard'
 import { defaultTo } from 'lodash-es'
 import { Project, useGetInvites, Organization, useAddUsers, AddUsers, useGetUsers } from 'services/cd-ng'
 import { useStrings } from 'framework/strings'
 import { useGetRoleList } from 'services/rbac'
 import type { AccountPathProps } from '@common/interfaces/RouteInterfaces'
 import { useToaster } from '@common/exports'
+import { CopyText } from '@common/components/CopyText/CopyText'
 import routes from '@common/RouteDefinitions'
-import { InvitationStatus, UserItemRenderer, UserTagRenderer, handleInvitationResponse } from '@rbac/utils/utils'
+import { InvitationStatus, handleInvitationResponse } from '@rbac/utils/utils'
 import { getDefaultRole, getDetailsUrl } from '@projects-orgs/utils/utils'
 import { isCDCommunity, useLicenseStore } from 'framework/LicenseStore/LicenseStoreContext'
 import { useMutateAsGet } from '@common/hooks'
+import UserItemRenderer from '@audit-trail/components/UserItemRenderer/UserItemRenderer'
+import UserTagRenderer from '@audit-trail/components/UserTagRenderer/UserTagRenderer'
 import InviteListRenderer from './InviteListRenderer'
 import css from './Steps.module.scss'
 
@@ -59,7 +68,7 @@ const Collaborators: React.FC<CollaboratorModalData> = props => {
   const { getString } = useStrings()
   const { licenseInformation } = useLicenseStore()
   const isCommunity = isCDCommunity(licenseInformation)
-  const { showSuccess, showError } = useToaster()
+  const { showSuccess } = useToaster()
   const history = useHistory()
   const [search, setSearch] = useState<string>()
   const [modalErrorHandler, setModalErrorHandler] = useState<ModalErrorHandlerBinding>()
@@ -202,16 +211,11 @@ const Collaborators: React.FC<CollaboratorModalData> = props => {
                 disabled
                 rightElement={
                   (
-                    <Button
-                      icon="duplicate"
-                      onClick={() => {
-                        copy(getDetailsUrl({ accountId, orgIdentifier, projectIdentifier }))
-                          ? showSuccess(getString('clipboardCopySuccess'))
-                          : showError(getString('clipboardCopyFail'))
-                      }}
-                      inline
-                      minimal
-                      className={css.clone}
+                    <CopyText
+                      className={css.copy}
+                      iconName="duplicate"
+                      textToCopy={getDetailsUrl({ accountId, orgIdentifier, projectIdentifier })}
+                      iconAlwaysVisible
                     />
                   ) as any
                 }
@@ -253,8 +257,8 @@ const Collaborators: React.FC<CollaboratorModalData> = props => {
                     onQueryChange: (query: string) => {
                       setSearch(query)
                     },
-                    tagRenderer: UserTagRenderer,
-                    itemRender: UserItemRenderer
+                    tagRenderer: (item: MultiSelectOption) => <UserTagRenderer item={item} />,
+                    itemRender: (item, { handleClick }) => <UserItemRenderer item={item} handleClick={handleClick} />
                   }}
                   className={css.input}
                 />

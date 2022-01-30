@@ -1,3 +1,10 @@
+/*
+ * Copyright 2022 Harness Inc. All rights reserved.
+ * Use of this source code is governed by the PolyForm Shield 1.0.0 license
+ * that can be found in the licenses directory at the root of this repository, also available at
+ * https://polyformproject.org/wp-content/uploads/2020/06/PolyForm-Shield-1.0.0.txt.
+ */
+
 import React from 'react'
 import { fireEvent, render, waitFor, act } from '@testing-library/react'
 import { Connectors } from '@connectors/constants'
@@ -20,6 +27,7 @@ import {
   mockedFormDataCreate
 } from './NewRelic.mock'
 import { createNewRelicFormData } from '../NewRelicHealthSource.utils'
+import { newRelicDefaultMetricName } from '../NewRelicHealthSource.constants'
 
 const createModeProps: TestWrapperProps = {
   path: routes.toCVAddMonitoringServicesSetup({ ...accountPathProps, ...projectPathProps }),
@@ -29,6 +37,10 @@ const createModeProps: TestWrapperProps = {
     orgIdentifier: '1234_org'
   }
 }
+
+const onNextMock = jest.fn().mockResolvedValue(jest.fn())
+const onPrevious = jest.fn().mockResolvedValue(jest.fn())
+const refetchMock = jest.fn()
 
 jest.mock('@cv/hooks/IndexedDBHook/IndexedDBHook', () => ({
   useIndexedDBHook: jest.fn().mockReturnValue({
@@ -40,9 +52,6 @@ jest.mock('@cv/hooks/IndexedDBHook/IndexedDBHook', () => ({
   }),
   CVObjectStoreNames: {}
 }))
-
-const onNextMock = jest.fn().mockResolvedValue(jest.fn())
-const onPrevious = jest.fn().mockResolvedValue(jest.fn())
 
 jest.mock('@cv/components/CVSetupSourcesView/SetupSourceTabs/SetupSourceTabs', () => ({
   ...(jest.requireActual('@cv/components/CVSetupSourcesView/SetupSourceTabs/SetupSourceTabs') as any),
@@ -57,8 +66,6 @@ jest.mock('@cv/components/CVSetupSourcesView/SetupSourceTabs/SetupSourceTabs', (
 }))
 
 describe('Unit tests for NewRelic health source', () => {
-  const refetchMock = jest.fn()
-
   beforeAll(() => {
     jest
       .spyOn(cvServices, 'useGetNewRelicApplications')
@@ -124,7 +131,7 @@ describe('Unit tests for NewRelic health source', () => {
       </TestWrapper>
     )
     await waitFor(() => expect(getByText('submit')).not.toBeNull())
-    await act(() => {
+    act(() => {
       fireEvent.click(getByText('submit'))
     })
     await waitFor(() => expect(getByText('cv.healthSource.connectors.NewRelic.validations.application')).toBeTruthy())
@@ -141,7 +148,23 @@ describe('Unit tests for NewRelic health source', () => {
       metricData: {}
     }
     expect(
-      createNewRelicFormData(NewRelicInputFormData as any, new Map(), 'New Relic Metric', nonCustomFeilds, false)
+      createNewRelicFormData(NewRelicInputFormData as any, new Map(), newRelicDefaultMetricName, nonCustomFeilds, false)
     ).toEqual(mockedFormDataCreate)
+  })
+
+  test('Should render form for custom metrics when Add metric link is clicked', async () => {
+    const submitData = jest.fn()
+    const { getByText } = render(
+      <TestWrapper {...createModeProps}>
+        <SetupSourceTabs data={{}} tabTitles={['Tab1']} determineMaxTab={() => 1}>
+          <NewRelicHealthSourceContainer data={{}} onSubmit={submitData} />
+        </SetupSourceTabs>
+      </TestWrapper>
+    )
+    await waitFor(() => expect(getByText('cv.monitoringSources.addMetric')).not.toBeNull())
+    fireEvent.click(getByText('cv.monitoringSources.addMetric'))
+    await waitFor(() =>
+      expect(getByText('cv.monitoringSources.prometheus.querySpecificationsAndMappings')).toBeTruthy()
+    )
   })
 })

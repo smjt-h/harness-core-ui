@@ -1,5 +1,12 @@
+/*
+ * Copyright 2022 Harness Inc. All rights reserved.
+ * Use of this source code is governed by the PolyForm Shield 1.0.0 license
+ * that can be found in the licenses directory at the root of this repository, also available at
+ * https://polyformproject.org/wp-content/uploads/2020/06/PolyForm-Shield-1.0.0.txt.
+ */
+
 import React from 'react'
-import { Color, FontVariation, NestedAccordionPanel, Text } from '@wings-software/uicore'
+import { Color, FontVariation, MultiTypeInputType, NestedAccordionPanel, Text } from '@wings-software/uicore'
 import cx from 'classnames'
 import type { StepElementConfig } from 'services/cd-ng'
 import { StepWidget } from '@pipeline/components/AbstractSteps/StepWidget'
@@ -7,24 +14,31 @@ import { usePipelineContext } from '@pipeline/components/PipelineStudio/Pipeline
 import type { StepType } from '@pipeline/components/PipelineSteps/PipelineStepInterface'
 import { StepViewType } from '@pipeline/components/AbstractSteps/Step'
 import { VariablesListTable } from '@pipeline/components/VariablesListTable/VariablesListTable'
-
+import type { TemplateStepNode } from 'services/pipeline-ng'
 import type { PipelineVariablesData } from '../types'
 import VariableAccordionSummary from '../VariableAccordionSummary'
 import css from '../PipelineVariables.module.scss'
+
 export interface StepCardProps {
-  step: StepElementConfig
-  originalStep: StepElementConfig
+  step: StepElementConfig | TemplateStepNode
+  originalStep: StepElementConfig | TemplateStepNode
   stageIdentifier: string
   metadataMap: PipelineVariablesData['metadataMap']
   onUpdateStep(data: StepElementConfig, path: string): void
   stepPath: string
   readonly?: boolean
   path?: string
+  allowableTypes: MultiTypeInputType[]
 }
 
 export function StepCard(props: StepCardProps): React.ReactElement {
-  const { step, originalStep, metadataMap, stageIdentifier, onUpdateStep, stepPath, readonly, path } = props
+  const { step, originalStep, metadataMap, stageIdentifier, onUpdateStep, stepPath, readonly, path, allowableTypes } =
+    props
   const { stepsFactory } = usePipelineContext()
+
+  if ((originalStep as TemplateStepNode)?.template) {
+    return <></>
+  }
 
   return (
     <React.Fragment>
@@ -34,11 +48,11 @@ export function StepCard(props: StepCardProps): React.ReactElement {
         originalData={originalStep}
         metadataMap={metadataMap}
       />
-      <StepWidget<StepElementConfig>
+      <StepWidget<StepElementConfig | TemplateStepNode>
         factory={stepsFactory}
         initialValues={originalStep}
-        allowableTypes={[]}
-        type={originalStep.type as StepType}
+        allowableTypes={allowableTypes}
+        type={(originalStep as StepElementConfig).type as StepType}
         stepViewType={StepViewType.InputVariable}
         onUpdate={(data: StepElementConfig) => onUpdateStep(data, stepPath)}
         readonly={readonly}
@@ -77,19 +91,33 @@ export function StepCardPanel(props: StepCardProps): React.ReactElement {
 }
 
 export interface StepGroupCardProps {
-  steps: Array<{ step: StepElementConfig; originalStep: StepElementConfig; path: string }>
+  steps: Array<{
+    step: StepElementConfig | TemplateStepNode
+    originalStep: StepElementConfig | TemplateStepNode
+    path: string
+  }>
   stageIdentifier: string
   metadataMap: PipelineVariablesData['metadataMap']
-  onUpdateStep(data: StepElementConfig, path: string): void
+  onUpdateStep(data: StepElementConfig | TemplateStepNode, path: string): void
   stepGroupIdentifier: string
   stepGroupName: string
   stepGroupOriginalName: string
   readonly?: boolean
   path?: string
+  allowableTypes: MultiTypeInputType[]
 }
 
 export function StepGroupCard(props: StepGroupCardProps): React.ReactElement {
-  const { steps, metadataMap, onUpdateStep, stageIdentifier, stepGroupName, stepGroupOriginalName, readonly } = props
+  const {
+    steps,
+    metadataMap,
+    onUpdateStep,
+    stageIdentifier,
+    stepGroupName,
+    stepGroupOriginalName,
+    readonly,
+    allowableTypes
+  } = props
 
   return (
     <React.Fragment>
@@ -109,6 +137,7 @@ export function StepGroupCard(props: StepGroupCardProps): React.ReactElement {
             metadataMap={metadataMap}
             stepPath={path}
             readonly={readonly}
+            allowableTypes={allowableTypes}
             stageIdentifier={stageIdentifier}
             onUpdateStep={onUpdateStep}
           />

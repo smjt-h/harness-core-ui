@@ -1,3 +1,10 @@
+/*
+ * Copyright 2022 Harness Inc. All rights reserved.
+ * Use of this source code is governed by the PolyForm Shield 1.0.0 license
+ * that can be found in the licenses directory at the root of this repository, also available at
+ * https://polyformproject.org/wp-content/uploads/2020/06/PolyForm-Shield-1.0.0.txt.
+ */
+
 import React, { useEffect, useMemo, useState } from 'react'
 import { get } from 'lodash-es'
 import {
@@ -75,11 +82,11 @@ const GrowthRateChart: (props: GrowthRateChartProps) => JSX.Element = ({
                 [Number(moment.utc(startTime).startOf('d').format('x')), +amount],
                 [
                   Number(moment.utc(startTime).startOf('d').add(1, incrementFactor).format('x')),
-                  +amount * (1 + growthRateVal / 100)
+                  +Number(amount * (1 + growthRateVal / 100)).toFixed(2)
                 ],
                 [
                   Number(moment.utc(startTime).startOf('d').add(2, incrementFactor).format('x')),
-                  +amount * (1 + growthRateVal / 100) * (1 + growthRateVal / 100)
+                  +Number(amount * (1 + growthRateVal / 100) * (1 + growthRateVal / 100)).toFixed(2)
                 ]
               ],
               name: '',
@@ -228,15 +235,16 @@ const SetBudgetForm: (props: SetBudgetFormProps) => JSX.Element = ({
             : getString('ce.perspectives.budgets.setBudgetAmount.specifyAmount')
         }
       />
-      <FormInput.CheckBox
-        name="growthRateCheck"
-        disabled={formikProps.values.type === 'PREVIOUS_PERIOD_SPEND' ? true : false}
-        label={getString('ce.perspectives.budgets.setBudgetAmount.growthRateCheck')}
-        tooltipProps={{
-          dataTooltipId: 'growthRateCheckbox'
-        }}
-      />
-      {formikProps.values.growthRateCheck ? (
+      {formikProps.values.type === 'SPECIFIED_AMOUNT' ? (
+        <FormInput.CheckBox
+          name="growthRateCheck"
+          label={getString('ce.perspectives.budgets.setBudgetAmount.growthRateCheck')}
+          tooltipProps={{
+            dataTooltipId: 'growthRateCheckbox'
+          }}
+        />
+      ) : null}
+      {formikProps.values.growthRateCheck && formikProps.values.type === 'SPECIFIED_AMOUNT' ? (
         <Layout.Horizontal
           margin={{
             top: 'xlarge'
@@ -394,7 +402,12 @@ const SetBudgetAmount: React.FC<StepProps<BudgetStepData> & Props> = props => {
                 </Container>
               ) : null}
               <Container className={css.selectPerspectiveContainer}>
-                <Text font={{ variation: FontVariation.H4 }}>
+                <Text
+                  font={{ variation: FontVariation.H4 }}
+                  tooltipProps={{
+                    dataTooltipId: 'createBudgetSetBudget'
+                  }}
+                >
                   {getString('ce.perspectives.budgets.setBudgetAmount.title')}
                 </Text>
 

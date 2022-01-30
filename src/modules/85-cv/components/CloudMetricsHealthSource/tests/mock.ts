@@ -1,3 +1,10 @@
+/*
+ * Copyright 2021 Harness Inc. All rights reserved.
+ * Use of this source code is governed by the PolyForm Shield 1.0.0 license
+ * that can be found in the licenses directory at the root of this repository, also available at
+ * https://polyformproject.org/wp-content/uploads/2020/06/PolyForm-Shield-1.0.0.txt.
+ */
+
 import type { ReactNode } from 'react'
 import type { UseGetReturn } from 'restful-react'
 import type { CloudMetricsHealthSourceProps } from '@cv/components/CloudMetricsHealthSource/CloudMetricsHealthSource.type'
@@ -25,6 +32,7 @@ export const mockCloudMetricHealthSourceProps = (
   return {
     formikProps: {
       values: {
+        query: 'test_query',
         sli: true,
         healthScore: false,
         continuousVerification: false

@@ -1,10 +1,29 @@
+/*
+ * Copyright 2022 Harness Inc. All rights reserved.
+ * Use of this source code is governed by the PolyForm Shield 1.0.0 license
+ * that can be found in the licenses directory at the root of this repository, also available at
+ * https://polyformproject.org/wp-content/uploads/2020/06/PolyForm-Shield-1.0.0.txt.
+ */
+
 import React, { useState, useEffect, useRef } from 'react'
 import { useParams, useHistory } from 'react-router-dom'
+import cronstrue from 'cronstrue'
 import cx from 'classnames'
-import { Button, Heading, Layout, Container, Text, Color, PageHeader, PageBody } from '@wings-software/uicore'
+import {
+  Button,
+  Heading,
+  Layout,
+  Container,
+  Text,
+  Color,
+  PageHeader,
+  PageBody,
+  Icon,
+  FontVariation
+} from '@wings-software/uicore'
 import { Breadcrumbs } from '@common/components/Breadcrumbs/Breadcrumbs'
 import routes from '@common/RouteDefinitions'
-import { useGetPerspective } from 'services/ce/'
+import { useGetPerspective, useGetReportSetting } from 'services/ce/'
 import {
   useFetchPerspectiveTimeSeriesQuery,
   QlceViewTimeGroupType,
@@ -44,9 +63,19 @@ import {
   getGMTEndDateTime,
   CE_DATE_FORMAT_INTERNAL
 } from '@ce/utils/momentUtils'
+import { useLicenseStore } from 'framework/LicenseStore/LicenseStoreContext'
+import { ModuleLicenseType } from '@common/constants/SubscriptionTypes'
 import EmptyView from '@ce/images/empty-state.svg'
-import { CCM_CHART_TYPES } from '@ce/constants'
+import { CCM_CHART_TYPES, ENFORCEMENT_USAGE_THRESHOLD } from '@ce/constants'
 import { DAYS_FOR_TICK_INTERVAL } from '@ce/components/CloudCostInsightChart/Chart'
+import { ModuleName } from 'framework/types/ModuleName'
+import { useGetUsageAndLimit } from '@common/hooks/useGetUsageAndLimit'
+import { FeatureIdentifier } from 'framework/featureStore/FeatureIdentifier'
+import FeatureWarningSubscriptionInfoBanner from '@common/components/FeatureWarning/FeatureWarningSubscriptionInfoBanner'
+import { useFeatureFlag } from '@common/hooks/useFeatureFlag'
+import { FeatureFlag } from '@common/featureFlags'
+import { useTelemetry } from '@common/hooks/useTelemetry'
+import { PAGE_EVENTS } from '@ce/TrackingEventsConstants'
 import css from './PerspectiveDetailsPage.module.scss'
 
 const PAGE_SIZE = 10
@@ -61,6 +90,13 @@ const PerspectiveHeader: React.FC<{ title: string; viewType: string }> = ({ titl
   const history = useHistory()
   const { getString } = useStrings()
   const isDefaultPerspective = viewType === ViewType.Default
+
+  const { data, loading } = useGetReportSetting({
+    accountIdentifier: accountId,
+    queryParams: { perspectiveId }
+  })
+
+  const reports = data?.data || []
 
   const goToEditPerspective: () => void = () => {
     history.push(
@@ -97,9 +133,48 @@ const PerspectiveHeader: React.FC<{ title: string; viewType: string }> = ({ titl
             }
           ]}
         />
-        <Heading color="grey800" level={2} style={{ flexGrow: 1 }}>
-          {title}
-        </Heading>
+        <Layout.Horizontal spacing="small">
+          <Heading color="grey800" level={2}>
+            {title}
+          </Heading>
+          <Container
+            padding={{
+              top: 'xsmall'
+            }}
+          >
+            {loading ? <Icon name="spinner" color={Color.BLUE_500} /> : null}
+
+            {reports.length ? (
+              <Container flex>
+                <Icon name="notification" size={14} color={Color.PRIMARY_7} />
+                <Text
+                  margin={{
+                    left: 'xsmall'
+                  }}
+                  color={Color.GREY_500}
+                  font={{ variation: FontVariation.SMALL }}
+                >
+                  {getString('ce.perspectives.perspectiveReportsTxt', {
+                    reportInfo: cronstrue.toString(reports[0].userCron || '')
+                  })}
+                </Text>
+                {reports.length > 1 ? (
+                  <Text
+                    margin={{
+                      left: 'xsmall'
+                    }}
+                    color={Color.GREY_500}
+                    font={{ variation: FontVariation.SMALL }}
+                  >
+                    {getString('ce.perspectives.perspectiveReportsMoreTxt', {
+                      count: reports.length - 1
+                    })}
+                  </Text>
+                ) : null}
+              </Container>
+            ) : null}
+          </Container>
+        </Layout.Horizontal>
       </Container>
 
       <Button
@@ -117,6 +192,10 @@ const PerspectiveDetailsPage: React.FC = () => {
   const history = useHistory()
   const { perspectiveId, accountId } = useParams<PerspectiveParams>()
   const { getString } = useStrings()
+
+  const { trackPage } = useTelemetry()
+
+  const { limitData, usageData } = useGetUsageAndLimit(ModuleName.CE)
 
   const { data: perspectiveRes, loading } = useGetPerspective({
     queryParams: {
@@ -143,6 +222,10 @@ const PerspectiveDetailsPage: React.FC = () => {
     to: DATE_RANGE_SHORTCUTS.LAST_7_DAYS[1].format(CE_DATE_FORMAT_INTERNAL),
     from: DATE_RANGE_SHORTCUTS.LAST_7_DAYS[0].format(CE_DATE_FORMAT_INTERNAL)
   })
+
+  useEffect(() => {
+    trackPage(PAGE_EVENTS.PERSPECTIVE_DETAILS_PAGE, {})
+  }, [])
 
   useEffect(() => {
     if (perspectiveData) {
@@ -283,6 +366,16 @@ const PerspectiveDetailsPage: React.FC = () => {
     !chartFetching &&
     !gridFetching
 
+  const featureEnforced = useFeatureFlag(FeatureFlag.FEATURE_ENFORCEMENT_ENABLED)
+
+  const { licenseInformation } = useLicenseStore()
+  const isFreeEdition = licenseInformation['CE']?.edition === ModuleLicenseType.FREE
+
+  const totalSpend = limitData.limit?.ccm?.totalSpendLimit || 1
+  const activeSpend = usageData.usage?.ccm?.activeSpend?.count || 0
+
+  const usagePercentage = Math.ceil((activeSpend / totalSpend) * 100)
+
   return (
     <>
       <PageHeader
@@ -296,6 +389,7 @@ const PerspectiveDetailsPage: React.FC = () => {
       <PageBody>
         {loading && <PageSpinner />}
         <PersepectiveExplorerFilters
+          featureEnabled={!isFreeEdition}
           setFilters={setFilters}
           filters={filters}
           setAggregation={setAggregation}
@@ -304,6 +398,12 @@ const PerspectiveDetailsPage: React.FC = () => {
           timeRange={timeRange}
           showHourlyAggr={isClusterOnly}
         />
+        {featureEnforced && usagePercentage > ENFORCEMENT_USAGE_THRESHOLD ? (
+          <FeatureWarningSubscriptionInfoBanner
+            featureName={FeatureIdentifier.PERSPECTIVES}
+            message={getString('ce.perspectives.featureWarningSubInfoText', { usagePercentage: usagePercentage })}
+          />
+        ) : null}
         <PerspectiveSummary
           data={summaryData?.perspectiveTrendStats as any}
           fetching={summaryFetching}
@@ -311,16 +411,20 @@ const PerspectiveDetailsPage: React.FC = () => {
           isDefaultPerspective={!!(perspectiveData?.viewType === ViewType.Default)}
           hasClusterAsSource={hasClusterAsSource}
         />
-        <Container margin="xlarge" background="white" className={css.chartGridContainer}>
-          {!isChartGridEmpty && (
-            <Container padding="small">
-              <PerspectiveExplorerGroupBy
-                chartType={chartType}
-                setChartType={setChartType}
-                groupBy={groupBy}
-                setGroupBy={setGroupBy}
-                timeFilter={getTimeFilters(getGMTStartDateTime(timeRange.from), getGMTEndDateTime(timeRange.to))}
-              />
+        <Container
+          margin="xlarge"
+          background="white"
+          className={cx(css.chartGridContainer, { [css.emptyContainer]: isChartGridEmpty })}
+        >
+          <Container padding="small">
+            <PerspectiveExplorerGroupBy
+              chartType={chartType}
+              setChartType={setChartType}
+              groupBy={groupBy}
+              setGroupBy={setGroupBy}
+              timeFilter={getTimeFilters(getGMTStartDateTime(timeRange.from), getGMTEndDateTime(timeRange.to))}
+            />
+            {!isChartGridEmpty && (
               <CloudCostInsightChart
                 showLegends={true}
                 ref={chartRef as any}
@@ -332,41 +436,11 @@ const PerspectiveDetailsPage: React.FC = () => {
                 aggregation={aggregation}
                 xAxisPointCount={chartData?.perspectiveTimeSeriesStats?.stats?.length || DAYS_FOR_TICK_INTERVAL + 1}
               />
-            </Container>
-          )}
-          {!isChartGridEmpty && (
-            <PerspectiveGrid
-              goToWorkloadDetails={goToWorkloadDetails}
-              goToNodeDetails={goToNodeDetails}
-              isClusterOnly={isClusterOnly}
-              gridData={gridData?.perspectiveGrid?.data as any}
-              gridFetching={gridFetching}
-              columnSequence={columnSequence}
-              highlightNode={
-                /* istanbul ignore next */
-                id => {
-                  highlightNode(chartRef, id)
-                }
-              }
-              resetNodeState={
-                /* istanbul ignore next */
-                () => {
-                  resetNodeState(chartRef)
-                }
-              }
-              setColumnSequence={colSeq => setColumnSequence(colSeq)}
-              groupBy={groupBy}
-              totalItemCount={perspectiveTotalCount || 0}
-              gridPageIndex={gridPageIndex}
-              pageSize={PAGE_SIZE}
-              fetchData={(pageIndex, pageSize) => {
-                setPageIndex(pageIndex)
-                setGridPageOffset(pageIndex * pageSize)
-              }}
-            />
-          )}
+            )}
+          </Container>
+
           {isChartGridEmpty && (
-            <Container className={cx(css.chartGridContainer, css.empty)}>
+            <Container className={css.emptyIllustrationContainer}>
               <img src={EmptyView} />
               <Text
                 margin={{
@@ -384,6 +458,36 @@ const PerspectiveDetailsPage: React.FC = () => {
               <Text font="small">{getString('ce.pageErrorMsg.perspectiveNoData')}</Text>
             </Container>
           )}
+
+          <PerspectiveGrid
+            goToWorkloadDetails={goToWorkloadDetails}
+            goToNodeDetails={goToNodeDetails}
+            isClusterOnly={isClusterOnly}
+            gridData={gridData?.perspectiveGrid?.data as any}
+            gridFetching={gridFetching}
+            columnSequence={columnSequence}
+            highlightNode={
+              /* istanbul ignore next */
+              id => {
+                highlightNode(chartRef, id)
+              }
+            }
+            resetNodeState={
+              /* istanbul ignore next */
+              () => {
+                resetNodeState(chartRef)
+              }
+            }
+            setColumnSequence={colSeq => setColumnSequence(colSeq)}
+            groupBy={groupBy}
+            totalItemCount={perspectiveTotalCount || 0}
+            gridPageIndex={gridPageIndex}
+            pageSize={PAGE_SIZE}
+            fetchData={(pageIndex, pageSize) => {
+              setPageIndex(pageIndex)
+              setGridPageOffset(pageIndex * pageSize)
+            }}
+          />
         </Container>
       </PageBody>
     </>

@@ -1,3 +1,10 @@
+/*
+ * Copyright 2022 Harness Inc. All rights reserved.
+ * Use of this source code is governed by the PolyForm Shield 1.0.0 license
+ * that can be found in the licenses directory at the root of this repository, also available at
+ * https://polyformproject.org/wp-content/uploads/2020/06/PolyForm-Shield-1.0.0.txt.
+ */
+
 import React from 'react'
 import { Text, Layout, Color, Card, Avatar, Icon, ButtonVariation, PageError } from '@wings-software/uicore'
 import { useParams } from 'react-router-dom'
@@ -42,9 +49,15 @@ const UserDetails: React.FC = () => {
 
   useDocumentTitle([user?.name || '', getString('users')])
 
-  if (loading) return <PageSpinner />
-  if (error) return <PageError message={error.message} onClick={() => refetch()} />
-  if (!user) return <></>
+  if (loading) {
+    return <PageSpinner />
+  }
+  if (error) {
+    return <PageError message={error.message} onClick={() => refetch()} />
+  }
+  if (!data?.data || !user) {
+    return <></>
+  }
   return (
     <>
       <Page.Header
@@ -54,12 +67,8 @@ const UserDetails: React.FC = () => {
           <NGBreadcrumbs
             links={[
               {
-                url: routes.toAccessControl({ accountId, orgIdentifier, projectIdentifier, module }),
-                label: getString('accessControl')
-              },
-              {
                 url: routes.toUsers({ accountId, orgIdentifier, projectIdentifier, module }),
-                label: getString('users')
+                label: `${getString('accessControl')}: ${getString('users')}`
               }
             ]}
           />
@@ -97,7 +106,6 @@ const UserDetails: React.FC = () => {
       />
       <Page.Body className={css.body}>
         <Layout.Vertical width="100%" padding="large">
-          <UserGroupTable />
           {!isCommunity && (
             <Layout.Vertical spacing="medium" padding={{ bottom: 'large' }}>
               <Text color={Color.BLACK} font={{ size: 'medium', weight: 'semi-bold' }}>
@@ -124,6 +132,7 @@ const UserDetails: React.FC = () => {
               </Layout.Horizontal>
             </Layout.Vertical>
           )}
+          <UserGroupTable user={data.data} />
         </Layout.Vertical>
       </Page.Body>
     </>

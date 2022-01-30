@@ -382,7 +382,7 @@ exports[`RouteWithLayout basic 1`] = `
                 </svg>
               </span>
               <p
-                class="StyledProps--font StyledProps--main hiddenText StyledProps--font-size-xsmall StyledProps--font-align-center StyledProps--color StyledProps--color-white"
+                class="StyledProps--font StyledProps--main hoverText StyledProps--font-size-xsmall StyledProps--font-align-center StyledProps--color StyledProps--color-white"
               >
                 <span>
                   common.accountSettings
@@ -399,7 +399,7 @@ exports[`RouteWithLayout basic 1`] = `
             href="/account/dummy/user"
           >
             <div
-              class="Layout--vertical Layout--layout-spacing-small StyledProps--main StyledProps--flex"
+              class="Layout--vertical Layout--layout-spacing-xsmall StyledProps--main StyledProps--flex"
             >
               <div
                 class="Avatar--Avatar Avatar--contentStyle"
@@ -412,7 +412,7 @@ exports[`RouteWithLayout basic 1`] = `
                   >
                     <div
                       class="Avatar--AvatarInner"
-                      style="border-radius: 100%; line-height: 12px; width: 16px; height: 16px; font-size: 7px;"
+                      style="border-radius: 100%; line-height: 18px; width: 24px; height: 24px; font-size: 10px;"
                       tabindex="0"
                     >
                       D
@@ -464,10 +464,14 @@ exports[`RouteWithLayout basic 1`] = `
       </div>
     </div>
     <div
-      class="children"
+      class="rhs"
     >
-      <div>
-        matched-route
+      <div
+        class="children"
+      >
+        <div>
+          matched-route
+        </div>
       </div>
     </div>
   </div>
@@ -477,11 +481,15 @@ exports[`RouteWithLayout basic 1`] = `
 exports[`RouteWithLayout empty 1`] = `
 <div>
   <div
-    class="children"
+    class="main"
     data-layout="empty"
   >
-    <div>
-      matched-route
+    <div
+      class="children"
+    >
+      <div>
+        matched-route
+      </div>
     </div>
   </div>
 </div>
@@ -869,7 +877,7 @@ exports[`RouteWithLayout minimal 1`] = `
                 </svg>
               </span>
               <p
-                class="StyledProps--font StyledProps--main hiddenText StyledProps--font-size-xsmall StyledProps--font-align-center StyledProps--color StyledProps--color-white"
+                class="StyledProps--font StyledProps--main hoverText StyledProps--font-size-xsmall StyledProps--font-align-center StyledProps--color StyledProps--color-white"
               >
                 <span>
                   common.accountSettings
@@ -886,7 +894,7 @@ exports[`RouteWithLayout minimal 1`] = `
             href="/account/dummy/user"
           >
             <div
-              class="Layout--vertical Layout--layout-spacing-small StyledProps--main StyledProps--flex"
+              class="Layout--vertical Layout--layout-spacing-xsmall StyledProps--main StyledProps--flex"
             >
               <div
                 class="Avatar--Avatar Avatar--contentStyle"
@@ -899,7 +907,7 @@ exports[`RouteWithLayout minimal 1`] = `
                   >
                     <div
                       class="Avatar--AvatarInner"
-                      style="border-radius: 100%; line-height: 12px; width: 16px; height: 16px; font-size: 7px;"
+                      style="border-radius: 100%; line-height: 18px; width: 24px; height: 24px; font-size: 10px;"
                       tabindex="0"
                     >
                       D
@@ -920,10 +928,14 @@ exports[`RouteWithLayout minimal 1`] = `
       </ul>
     </nav>
     <div
-      class="children"
+      class="rhs"
     >
-      <div>
-        matched-route
+      <div
+        class="children"
+      >
+        <div>
+          matched-route
+        </div>
       </div>
     </div>
   </div>
@@ -1312,7 +1324,7 @@ exports[`RouteWithLayout that the license store will render the child if the lic
                 </svg>
               </span>
               <p
-                class="StyledProps--font StyledProps--main hiddenText StyledProps--font-size-xsmall StyledProps--font-align-center StyledProps--color StyledProps--color-white"
+                class="StyledProps--font StyledProps--main hoverText StyledProps--font-size-xsmall StyledProps--font-align-center StyledProps--color StyledProps--color-white"
               >
                 <span>
                   common.accountSettings
@@ -1329,7 +1341,7 @@ exports[`RouteWithLayout that the license store will render the child if the lic
             href="/account/dummy/user"
           >
             <div
-              class="Layout--vertical Layout--layout-spacing-small StyledProps--main StyledProps--flex"
+              class="Layout--vertical Layout--layout-spacing-xsmall StyledProps--main StyledProps--flex"
             >
               <div
                 class="Avatar--Avatar Avatar--contentStyle"
@@ -1342,7 +1354,7 @@ exports[`RouteWithLayout that the license store will render the child if the lic
                   >
                     <div
                       class="Avatar--AvatarInner"
-                      style="border-radius: 100%; line-height: 12px; width: 16px; height: 16px; font-size: 7px;"
+                      style="border-radius: 100%; line-height: 18px; width: 24px; height: 24px; font-size: 10px;"
                       tabindex="0"
                     >
                       D
@@ -1394,10 +1406,14 @@ exports[`RouteWithLayout that the license store will render the child if the lic
       </div>
     </div>
     <div
-      class="children"
+      class="rhs"
     >
-      <div>
-        matched-route
+      <div
+        class="children"
+      >
+        <div>
+          matched-route
+        </div>
       </div>
     </div>
   </div>
@@ -1816,7 +1832,7 @@ exports[`RouteWithLayout that the license store will route to the subscriptions 
                 </svg>
               </span>
               <p
-                class="StyledProps--font StyledProps--main hiddenText StyledProps--font-size-xsmall StyledProps--font-align-center StyledProps--color StyledProps--color-white"
+                class="StyledProps--font StyledProps--main hoverText StyledProps--font-size-xsmall StyledProps--font-align-center StyledProps--color StyledProps--color-white"
               >
                 <span>
                   common.accountSettings
@@ -1833,7 +1849,7 @@ exports[`RouteWithLayout that the license store will route to the subscriptions 
             href="/account/dummy/user"
           >
             <div
-              class="Layout--vertical Layout--layout-spacing-small StyledProps--main StyledProps--flex"
+              class="Layout--vertical Layout--layout-spacing-xsmall StyledProps--main StyledProps--flex"
             >
               <div
                 class="Avatar--Avatar Avatar--contentStyle"
@@ -1846,7 +1862,7 @@ exports[`RouteWithLayout that the license store will route to the subscriptions 
                   >
                     <div
                       class="Avatar--AvatarInner"
-                      style="border-radius: 100%; line-height: 12px; width: 16px; height: 16px; font-size: 7px;"
+                      style="border-radius: 100%; line-height: 18px; width: 24px; height: 24px; font-size: 10px;"
                       tabindex="0"
                     >
                       D
@@ -1883,10 +1899,14 @@ exports[`RouteWithLayout that the license store will route to the subscriptions 
       </div>
     </div>
     <div
-      class="children"
+      class="rhs"
     >
-      <div>
-        matched-route
+      <div
+        class="children"
+      >
+        <div>
+          matched-route
+        </div>
       </div>
     </div>
   </div>

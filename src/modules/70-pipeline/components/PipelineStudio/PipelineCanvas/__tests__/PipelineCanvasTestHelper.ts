@@ -1,5 +1,14 @@
+/*
+ * Copyright 2021 Harness Inc. All rights reserved.
+ * Use of this source code is governed by the PolyForm Shield 1.0.0 license
+ * that can be found in the licenses directory at the root of this repository, also available at
+ * https://polyformproject.org/wp-content/uploads/2020/06/PolyForm-Shield-1.0.0.txt.
+ */
+
 import type { IconName } from '@wings-software/uicore'
 import { AbstractStepFactory } from '@pipeline/components/AbstractSteps/AbstractStepFactory'
+import type { UseGetMockDataWithMutateAndRefetch } from '@common/utils/testUtils'
+import type { ResponseInputSetTemplateResponse } from 'services/pipeline-ng'
 import type { PipelineContextInterface } from '../../PipelineContext/PipelineContext'
 
 class StepFactory extends AbstractStepFactory {
@@ -150,4 +159,19 @@ export const mockApiDataError = {
   data: '',
   metaData: null,
   correlationId: '2ffac0a7-2447-49f8-b586-d922085f7536'
+}
+
+export const mockPipelineTemplateYaml: UseGetMockDataWithMutateAndRefetch<ResponseInputSetTemplateResponse> = {
+  loading: false,
+  refetch: jest.fn(),
+  mutate: jest.fn(),
+  data: {
+    correlationId: '',
+    status: 'SUCCESS',
+    metaData: null as unknown as undefined,
+    data: {
+      inputSetTemplateYaml:
+        'pipeline:\n  identifier: "First"\n  variables:\n  - name: "checkVariable1"\n    type: "String"\n    value: "<+input>"\n'
+    }
+  }
 }

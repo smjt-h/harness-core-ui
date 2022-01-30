@@ -1,3 +1,10 @@
+/*
+ * Copyright 2021 Harness Inc. All rights reserved.
+ * Use of this source code is governed by the PolyForm Shield 1.0.0 license
+ * that can be found in the licenses directory at the root of this repository, also available at
+ * https://polyformproject.org/wp-content/uploads/2020/06/PolyForm-Shield-1.0.0.txt.
+ */
+
 import type { IconName } from '@wings-software/uicore'
 import { isEmpty } from 'lodash-es'
 import type { ChangeSourceDTO, Sources } from 'services/cv'
@@ -20,7 +27,7 @@ export const getTypeByFeature = (feature: string, getString: UseStringsReturn['g
     case HealthSourceTypes.Splunk:
       return getString('pipeline.verification.analysisTab.logs')
     default:
-      return ''
+      return getString('common.repo_provider.customLabel')
   }
 }
 
@@ -66,6 +73,8 @@ export const getIconBySourceType = (type: string): IconName => {
       return 'service-splunk'
     case 'PagerDuty':
       return 'service-pagerduty'
+    case 'CustomHealth':
+      return 'service-custom-connector'
     default:
       return 'placeholder'
   }

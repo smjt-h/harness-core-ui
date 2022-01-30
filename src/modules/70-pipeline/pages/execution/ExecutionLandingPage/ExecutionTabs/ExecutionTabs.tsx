@@ -1,3 +1,10 @@
+/*
+ * Copyright 2021 Harness Inc. All rights reserved.
+ * Use of this source code is governed by the PolyForm Shield 1.0.0 license
+ * that can be found in the licenses directory at the root of this repository, also available at
+ * https://polyformproject.org/wp-content/uploads/2020/06/PolyForm-Shield-1.0.0.txt.
+ */
+
 import React from 'react'
 import { HarnessDocTooltip, Icon, Tabs } from '@wings-software/uicore'
 import { Switch } from '@blueprintjs/core'
@@ -21,7 +28,8 @@ const TAB_ID_MAP = {
   ARTIFACTS: 'artifacts_view',
   COMMITS: 'commits_view',
   TESTS: 'tests_view',
-  POLICY_EVALUATIONS: 'policy_evaluations'
+  POLICY_EVALUATIONS: 'policy_evaluations',
+  STO_SECURITY: 'sto_security'
 }
 
 export default function ExecutionTabs(props: React.PropsWithChildren<unknown>): React.ReactElement {
@@ -34,10 +42,13 @@ export default function ExecutionTabs(props: React.PropsWithChildren<unknown>): 
   const { view } = useQueryParams<ExecutionQueryParams>()
   const { updateQueryParams } = useUpdateQueryParams<ExecutionQueryParams>()
   const opaBasedGovernanceEnabled = useFeatureFlag(FeatureFlag.OPA_PIPELINE_GOVERNANCE)
+  const stoCDPipelineSecurityEnabled = useFeatureFlag(FeatureFlag.STO_CD_PIPELINE_SECURITY)
+  const stoCIPipelineSecurityEnabled = useFeatureFlag(FeatureFlag.STO_CI_PIPELINE_SECURITY)
 
   const routeParams = { ...accountPathProps, ...executionPathProps, ...pipelineModuleParams }
   // const isGraphView = !view || view === 'graph'
   const isLogView = view === 'log'
+  const isCD = params.module === 'cd'
   const isCI = params.module === 'ci'
   const isCIInPipeline = pipelineExecutionDetail?.pipelineExecutionSummary?.moduleInfo?.ci
 
@@ -50,7 +61,7 @@ export default function ExecutionTabs(props: React.PropsWithChildren<unknown>): 
   function handleLogViewChange(e: React.ChangeEvent<HTMLInputElement>): void {
     const { checked } = e.target as HTMLInputElement
 
-    updateQueryParams({ view: checked ? 'log' : 'graph' })
+    updateQueryParams({ view: checked ? 'log' : 'graph', filterAnomalous: 'false' })
   }
 
   React.useEffect(() => {
@@ -90,6 +101,12 @@ export default function ExecutionTabs(props: React.PropsWithChildren<unknown>): 
     if (isPolicyEvaluationsView) {
       return setSelectedTabId(TAB_ID_MAP.POLICY_EVALUATIONS)
     }
+    const isSecurityView = !!matchPath(location.pathname, {
+      path: routes.toExecutionSecurityView(routeParams)
+    })
+    if (isSecurityView) {
+      return setSelectedTabId(TAB_ID_MAP.STO_SECURITY)
+    }
     // Defaults to Pipelines Tab
     return setSelectedTabId(TAB_ID_MAP.PIPELINE)
   }, [location.pathname])
@@ -122,6 +139,26 @@ export default function ExecutionTabs(props: React.PropsWithChildren<unknown>): 
       )
     }
   ]
+
+  if (
+    (isCD && stoCDPipelineSecurityEnabled) ||
+    (isCI && stoCIPipelineSecurityEnabled) ||
+    localStorage.STO_PIPELINE_SECURITY_ENABLED
+  ) {
+    tabList.push({
+      id: TAB_ID_MAP.STO_SECURITY,
+      title: (
+        <NavLink
+          to={routes.toExecutionSecurityView(params) + location.search}
+          className={css.tabLink}
+          activeClassName={css.activeLink}
+        >
+          <Icon name="report-gear-grey" size={16} />
+          <span>{getString('pipeline.security.title')}</span>
+        </NavLink>
+      )
+    })
+  }
 
   if (opaBasedGovernanceEnabled) {
     tabList.push({

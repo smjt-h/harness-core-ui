@@ -1,10 +1,17 @@
+/*
+ * Copyright 2021 Harness Inc. All rights reserved.
+ * Use of this source code is governed by the PolyForm Free Trial 1.0.0 license
+ * that can be found in the licenses directory at the root of this repository, also available at
+ * https://polyformproject.org/wp-content/uploads/2020/05/PolyForm-Free-Trial-1.0.0.txt.
+ */
+
 import React from 'react'
 import { Button, Color, Container, Layout, Text, TextInput, ButtonVariation } from '@wings-software/uicore'
 import QRCode from 'react-qr-code'
-import copy from 'copy-to-clipboard'
 import { TwoFactorAuthSettingsInfo, useEnableTwoFactorAuth, useGetTwoFactorAuthSettings } from 'services/cd-ng'
 import { useStrings } from 'framework/strings'
 import { PageSpinner, useToaster } from '@common/components'
+import { CopyText } from '@common/components/CopyText/CopyText'
 import { useAppStore } from 'framework/AppStore/AppStoreContext'
 import css from '../useEnableTwoFactorAuthModal.module.scss'
 
@@ -47,65 +54,56 @@ const EnableTwoFactorAuthView: React.FC<EnableTwoFactorAuthViewProps> = ({ isRes
   const authSettings = data?.data
   return (
     <>
-      <Layout.Vertical padding="huge">
-        <Text color={Color.GREY_900} font={{ size: 'medium', weight: 'semi-bold' }}>
-          {isReset ? getString('userProfile.twoFactor.resetTitle') : getString('userProfile.twoFactor.enableTitle')}
-        </Text>
-        <Container className={css.view}>
-          {authSettings ? (
-            <>
-              <Layout.Horizontal padding={{ top: 'large', bottom: 'huge' }}>
-                <Layout.Vertical>
-                  <Text padding={{ bottom: 'large' }} color={Color.BLACK_100}>
-                    {getString('userProfile.qrCode')}
-                  </Text>
-                  <Layout.Horizontal padding="medium" className={css.qrCode}>
-                    <QRCode value={authSettings.totpqrurl || ''} />
-                  </Layout.Horizontal>
-                </Layout.Vertical>
-                <Layout.Vertical padding="huge" className={css.description}>
-                  <Text color={Color.BLACK}>{getString('userProfile.twoFactor.description')}</Text>
-                  <Layout.Vertical spacing="small" padding={{ top: 'large' }}>
-                    <Text color={Color.BLACK} font={{ weight: 'semi-bold' }}>
-                      {getString('common.secretKey')}
-                    </Text>
-                    <TextInput
-                      readOnly
-                      value={authSettings.totpSecretKey}
-                      rightElement={
-                        (
-                          <Button
-                            icon="duplicate"
-                            inline
-                            minimal
-                            onClick={() => {
-                              copy(authSettings.totpSecretKey || '')
-                                ? showSuccess(getString('clipboardCopySuccess'))
-                                : showError(getString('clipboardCopyFail'))
-                            }}
-                          />
-                        ) as any
-                      }
-                    />
-                  </Layout.Vertical>
-                </Layout.Vertical>
-              </Layout.Horizontal>
-              <Layout.Horizontal flex>
-                <Layout.Horizontal spacing="small">
-                  <Button
-                    variation={ButtonVariation.PRIMARY}
-                    text={isReset ? getString('save') : getString('enable')}
-                    onClick={() => handleEnableTwoFactorAuth(authSettings)}
-                  />
-                  <Button text={getString('cancel')} onClick={onCancel} variation={ButtonVariation.TERTIARY} />
+      <Container className={css.view}>
+        {authSettings ? (
+          <>
+            <Layout.Horizontal padding={{ top: 'large', bottom: 'huge' }}>
+              <Layout.Vertical>
+                <Text padding={{ bottom: 'large' }} color={Color.BLACK_100}>
+                  {getString('userProfile.qrCode')}
+                </Text>
+                <Layout.Horizontal padding="medium" className={css.qrCode}>
+                  <QRCode value={authSettings.totpqrurl || ''} />
                 </Layout.Horizontal>
-                <Button icon="reset" minimal onClick={() => refetchTwoFactorAuthSettings()} />
+              </Layout.Vertical>
+              <Layout.Vertical padding="huge" className={css.description}>
+                <Text color={Color.BLACK}>{getString('userProfile.twoFactor.description')}</Text>
+                <Layout.Vertical spacing="small" padding={{ top: 'large' }}>
+                  <Text color={Color.BLACK} font={{ weight: 'semi-bold' }}>
+                    {getString('common.secretKey')}
+                  </Text>
+                  <TextInput
+                    readOnly
+                    value={authSettings.totpSecretKey}
+                    rightElement={
+                      (
+                        <CopyText
+                          className={css.copy}
+                          iconName="duplicate"
+                          textToCopy={authSettings.totpSecretKey || ''}
+                          iconAlwaysVisible
+                        />
+                      ) as any
+                    }
+                  />
+                </Layout.Vertical>
+              </Layout.Vertical>
+            </Layout.Horizontal>
+            <Layout.Horizontal flex>
+              <Layout.Horizontal spacing="small">
+                <Button
+                  variation={ButtonVariation.PRIMARY}
+                  text={isReset ? getString('save') : getString('enable')}
+                  onClick={() => handleEnableTwoFactorAuth(authSettings)}
+                />
+                <Button text={getString('cancel')} onClick={onCancel} variation={ButtonVariation.TERTIARY} />
               </Layout.Horizontal>
-            </>
-          ) : null}
-        </Container>
-        {loading ? <PageSpinner /> : null}
-      </Layout.Vertical>
+              <Button icon="reset" minimal onClick={() => refetchTwoFactorAuthSettings()} />
+            </Layout.Horizontal>
+          </>
+        ) : null}
+      </Container>
+      {loading ? <PageSpinner /> : null}
     </>
   )
 }

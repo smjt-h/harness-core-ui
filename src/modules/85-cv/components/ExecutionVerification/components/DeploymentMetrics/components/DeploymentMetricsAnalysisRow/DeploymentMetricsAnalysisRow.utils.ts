@@ -1,6 +1,15 @@
+/*
+ * Copyright 2021 Harness Inc. All rights reserved.
+ * Use of this source code is governed by the PolyForm Shield 1.0.0 license
+ * that can be found in the licenses directory at the root of this repository, also available at
+ * https://polyformproject.org/wp-content/uploads/2020/06/PolyForm-Shield-1.0.0.txt.
+ */
+
+import type Highcharts from 'highcharts'
 import type { IconName } from '@wings-software/uicore'
 import { getRiskColorValue } from '@cv/utils/CommonUtils'
 import type { HostTestData } from './DeploymentMetricsAnalysisRow.constants'
+import type { DeploymentMetricsAnalysisRowChartSeries } from './DeploymentMetricsAnalysisRow.types'
 
 export function healthSourceTypeToLogo(healthSourceType: any): IconName {
   switch (healthSourceType) {
@@ -24,40 +33,63 @@ export function healthSourceTypeToLogo(healthSourceType: any): IconName {
 }
 
 export function transformControlAndTestDataToHighChartsSeries(
-  controlData: Highcharts.SeriesLineOptions['data'][],
+  controlData: Highcharts.SeriesSplineOptions['data'][],
   testData: HostTestData[]
-): Highcharts.SeriesLineOptions[][] {
-  const highchartsOptions: Highcharts.SeriesLineOptions[][] = []
+): DeploymentMetricsAnalysisRowChartSeries[][] {
+  const highchartsOptions: DeploymentMetricsAnalysisRowChartSeries[][] = []
 
   for (let index = 0; index < controlData.length; index++) {
     const testDataLineColor = getRiskColorValue(testData[index].risk)
+
     highchartsOptions.push([
       {
-        type: 'line',
+        type: 'spline',
         data: controlData[index] || [],
-        color: 'var(--grey-200)',
+        color: 'var(--primary-7)',
         name: testData[index].name,
+        connectNulls: true,
         marker: {
-          enabled: controlData[index]?.length === 1,
+          enabled: true,
           lineWidth: 1,
+          symbol: 'circle',
           fillColor: 'var(--white)',
-          lineColor: 'var(--grey-200)'
-        }
+          lineColor: 'var(--primary-7)'
+        },
+        lineWidth: 1,
+        dashStyle: 'Dash',
+        baseData: controlData[index] || [],
+        actualTestData: testData[index] || []
       },
       {
-        type: 'line',
+        type: 'spline',
         data: testData[index].points || [],
         color: testDataLineColor,
         name: testData[index].name,
+        connectNulls: true,
         marker: {
-          enabled: testData[index]?.points?.length === 1,
+          enabled: true,
           lineWidth: 1,
+          symbol: 'circle',
           fillColor: 'var(--white)',
           lineColor: testDataLineColor
-        }
+        },
+        lineWidth: 1,
+        baseData: controlData[index] || [],
+        actualTestData: testData[index] || []
       }
     ])
   }
 
   return highchartsOptions
+}
+
+export function filterRenderCharts(
+  charts: DeploymentMetricsAnalysisRowChartSeries[][],
+  offset: number
+): DeploymentMetricsAnalysisRowChartSeries[][] {
+  if (charts.length <= 6) {
+    return charts
+  }
+
+  return charts.slice(0, 6 * offset)
 }

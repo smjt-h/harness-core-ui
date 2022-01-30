@@ -17,9 +17,6 @@ exports[`OverrideSet tests renders without crashing 1`] = `
         data-testid="{overridesets}-summary"
       >
         <div
-          class="Accordion--chevron"
-        />
-        <div
           class=""
         >
           <p
@@ -35,6 +32,9 @@ exports[`OverrideSet tests renders without crashing 1`] = `
             pipeline.overrideSets.overrideSetInfo
           </p>
         </div>
+        <div
+          class="Accordion--chevron"
+        />
       </div>
       <div
         class="bp3-collapse Accordion--collapse"

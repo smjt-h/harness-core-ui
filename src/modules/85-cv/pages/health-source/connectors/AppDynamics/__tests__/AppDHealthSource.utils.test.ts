@@ -1,14 +1,23 @@
+/*
+ * Copyright 2021 Harness Inc. All rights reserved.
+ * Use of this source code is governed by the PolyForm Shield 1.0.0 license
+ * that can be found in the licenses directory at the root of this repository, also available at
+ * https://polyformproject.org/wp-content/uploads/2020/06/PolyForm-Shield-1.0.0.txt.
+ */
+
 import * as uuid from 'uuid'
 import {
   validateMapping,
   createAppDFormData,
+  getBaseAndMetricPath,
   createAppDynamicsPayload,
   initializeCreatedMetrics,
   initializeNonCustomFields,
   initializeSelectedMetricsMap,
   convertMetricPackToMetricData,
   convertStringMetricPathToObject,
-  convertStringBasePathToObject
+  convertStringBasePathToObject,
+  convertFullPathToBaseAndMetric
 } from '../AppDHealthSource.utils'
 import {
   appDMetricValue,
@@ -39,7 +48,8 @@ describe('Test Util funcitons', () => {
       lowerBaselineDeviation: 'cv.monitoringSources.prometheus.validation.deviation',
       metricName: 'cv.monitoringSources.metricNameValidation',
       metricPath: 'cv.healthSource.connectors.AppDynamics.validation.metricPath',
-      riskCategory: 'cv.monitoringSources.gco.mapMetricsToServicesPage.validation.riskCategory'
+      riskCategory: 'cv.monitoringSources.gco.mapMetricsToServicesPage.validation.riskCategory',
+      metricIdentifier: 'cv.monitoringSources.prometheus.validation.metricIdentifierUnique'
     })
     expect(
       validateMapping(validateMappingWithMetricPathError, ['appdMetric Two', 'appdMetric One Updated'], 0, val => val)
@@ -153,6 +163,36 @@ describe('Test Util funcitons', () => {
         path: 'performance|call per minute',
         value: ''
       }
+    })
+  })
+
+  test('should validate convertFullPathToBaseAndMetric', () => {
+    expect(
+      convertFullPathToBaseAndMetric('Overall Application Performance / manager / Exceptions per Minute', 'manager')
+    ).toEqual({ derivedBasePath: 'Overall Application Performance', derivedMetricPath: 'Exceptions per Minute' })
+  })
+
+  test('should validate getBaseAndMetricPath', () => {
+    const basePath = {
+      basePathDropdown_0: { path: '', value: 'Overall Application Performance' },
+      basePathDropdown_1: { path: 'Overall Application Performance', value: '' }
+    }
+    const metricPath = {
+      metricPathDropdown_0: { value: 'Exceptions per Minute', path: '', isMetric: true },
+      metricPathDropdown_1: { value: '', path: 'Exceptions per Minute', isMetric: false }
+    }
+    expect(
+      getBaseAndMetricPath(
+        basePath,
+        metricPath,
+        'Overall Application Performance / manager / Exceptions per Minute',
+        'manager'
+      )
+    ).toEqual({ derivedBasePath: 'Overall Application Performance', derivedMetricPath: 'Exceptions per Minute' })
+
+    expect(getBaseAndMetricPath(basePath, metricPath, null, 'manager')).toEqual({
+      derivedBasePath: 'Overall Application Performance',
+      derivedMetricPath: 'Exceptions per Minute'
     })
   })
 })

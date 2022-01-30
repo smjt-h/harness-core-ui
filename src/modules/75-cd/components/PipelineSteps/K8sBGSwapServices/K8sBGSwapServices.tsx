@@ -1,3 +1,10 @@
+/*
+ * Copyright 2021 Harness Inc. All rights reserved.
+ * Use of this source code is governed by the PolyForm Shield 1.0.0 license
+ * that can be found in the licenses directory at the root of this repository, also available at
+ * https://polyformproject.org/wp-content/uploads/2020/06/PolyForm-Shield-1.0.0.txt.
+ */
+
 import React from 'react'
 import {
   IconName,
@@ -64,6 +71,8 @@ export interface K8sBGSwapServicesVariablesStepProps {
   variablesData: K8sBGSwapServicesData
 }
 
+const withUpdatedPayload = (values: StepElementConfig) => ({ ...values, spec: { ...values.spec, skipDryRun: false } })
+
 function K8sBGSwapWidget(
   props: K8sBGSwapProps,
   formikRef: StepFormikFowardRef<K8sBGSwapServicesData>
@@ -76,10 +85,10 @@ function K8sBGSwapWidget(
       <Formik<K8sBGSwapServicesData>
         onSubmit={(values: K8sBGSwapServicesData) => {
           /* istanbul ignore next */
-          onUpdate?.({ ...values, spec: { skipDryRun: false } })
+          onUpdate?.(withUpdatedPayload(values))
         }}
         validate={(values: K8sBGSwapServicesData) => {
-          onChange?.({ ...values, spec: { skipDryRun: false } })
+          onChange?.(withUpdatedPayload(values))
         }}
         formName="k8BgSwap"
         initialValues={initialValues}

@@ -1,3 +1,10 @@
+/*
+ * Copyright 2021 Harness Inc. All rights reserved.
+ * Use of this source code is governed by the PolyForm Shield 1.0.0 license
+ * that can be found in the licenses directory at the root of this repository, also available at
+ * https://polyformproject.org/wp-content/uploads/2020/06/PolyForm-Shield-1.0.0.txt.
+ */
+
 import React from 'react'
 import type { IconName, MultiTypeInputType } from '@wings-software/uicore'
 import type { FormikErrors } from 'formik'
@@ -89,6 +96,7 @@ export interface RunTestsStepProps {
   onUpdate?: (data: RunTestsStepData) => void
   onChange?: (data: RunTestsStepData) => void
   allowableTypes: MultiTypeInputType[]
+  formik?: any
 }
 
 export class RunTestsStep extends PipelineStep<RunTestsStepData> {
@@ -111,8 +119,8 @@ export class RunTestsStep extends PipelineStep<RunTestsStepData> {
       connectorRef: '',
       image: '',
       args: '',
-      buildTool: 'maven',
-      language: 'java',
+      buildTool: '',
+      language: '',
       packages: '',
       runOnlySelectedTests: true
     }

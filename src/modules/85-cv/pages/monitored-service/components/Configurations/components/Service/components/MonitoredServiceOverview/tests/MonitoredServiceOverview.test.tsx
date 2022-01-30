@@ -1,3 +1,10 @@
+/*
+ * Copyright 2021 Harness Inc. All rights reserved.
+ * Use of this source code is governed by the PolyForm Shield 1.0.0 license
+ * that can be found in the licenses directory at the root of this repository, also available at
+ * https://polyformproject.org/wp-content/uploads/2020/06/PolyForm-Shield-1.0.0.txt.
+ */
+
 import React from 'react'
 import type { UseGetReturn } from 'restful-react'
 import { fireEvent, render, waitFor } from '@testing-library/react'
@@ -130,7 +137,7 @@ describe('Unit tests for MonitoredServiceOverview', () => {
 
   test('Ensure that clicking on new env/service createes new entity', async () => {
     const onSubmitMock = jest.fn()
-    const { container, getByText } = render(
+    const { container, getByText, getAllByText } = render(
       <WrapperComponent
         onSubmit={onSubmitMock}
         initialValues={{ type: MonitoredServiceType.APPLICATION, serviceRef: 'service1' }}
@@ -145,7 +152,7 @@ describe('Unit tests for MonitoredServiceOverview', () => {
 
     // create new service
     fireEvent.click(container.querySelector('.newService')!)
-    await waitFor(() => getByText('newService'))
+    await waitFor(() => getAllByText('newService'))
   })
 
   test('Ensure that switching monitored service type works', async () => {

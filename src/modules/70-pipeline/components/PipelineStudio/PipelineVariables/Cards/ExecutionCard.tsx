@@ -1,10 +1,18 @@
+/*
+ * Copyright 2022 Harness Inc. All rights reserved.
+ * Use of this source code is governed by the PolyForm Shield 1.0.0 license
+ * that can be found in the licenses directory at the root of this repository, also available at
+ * https://polyformproject.org/wp-content/uploads/2020/06/PolyForm-Shield-1.0.0.txt.
+ */
+
 import React from 'react'
 import produce from 'immer'
 import { set } from 'lodash-es'
-import { Color, FontVariation, NestedAccordionPanel, Text } from '@wings-software/uicore'
+import { Color, FontVariation, MultiTypeInputType, NestedAccordionPanel, Text } from '@wings-software/uicore'
 import cx from 'classnames'
 import type { ExecutionElementConfig, ExecutionWrapperConfig, StepElementConfig } from 'services/cd-ng'
 
+import type { TemplateStepNode } from 'services/pipeline-ng'
 import type { PipelineVariablesData } from '../types'
 import { StepCardPanel, StepGroupCardPanel } from './StepCard'
 import VariableAccordionSummary from '../VariableAccordionSummary'
@@ -17,8 +25,8 @@ export interface AddStepsParams {
 }
 
 export interface StepRenderData {
-  step: StepElementConfig
-  originalStep: StepElementConfig
+  step: StepElementConfig | TemplateStepNode
+  originalStep: StepElementConfig | TemplateStepNode
   path: string
   type: 'StepRenderData'
 }
@@ -42,10 +50,20 @@ export interface ExecutionCardProps {
   onUpdateExecution(data: ExecutionElementConfig): void
   readonly?: boolean
   path?: string
+  allowableTypes: MultiTypeInputType[]
 }
 
 export function ExecutionCard(props: ExecutionCardProps): React.ReactElement {
-  const { execution, originalExecution, metadataMap, stageIdentifier, onUpdateExecution, readonly, path } = props
+  const {
+    execution,
+    originalExecution,
+    metadataMap,
+    stageIdentifier,
+    onUpdateExecution,
+    readonly,
+    path,
+    allowableTypes
+  } = props
 
   const allSteps = React.useMemo(() => {
     function addToCards({
@@ -121,6 +139,7 @@ export function ExecutionCard(props: ExecutionCardProps): React.ReactElement {
               stageIdentifier={stageIdentifier}
               stepPath={pathStep}
               readonly={readonly}
+              allowableTypes={allowableTypes}
               onUpdateStep={(data: StepElementConfig, stepPath: string) => {
                 onUpdateExecution(
                   produce(originalExecution, draft => {
@@ -140,6 +159,7 @@ export function ExecutionCard(props: ExecutionCardProps): React.ReactElement {
               steps={row.steps}
               stepGroupIdentifier={row.identifier}
               stepGroupName={row.name}
+              allowableTypes={allowableTypes}
               stepGroupOriginalName={row.originalName}
               metadataMap={metadataMap}
               readonly={readonly}

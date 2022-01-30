@@ -1,5 +1,13 @@
-import { omit } from 'lodash-es'
-import type { SelectOption } from '@wings-software/uicore'
+/*
+ * Copyright 2022 Harness Inc. All rights reserved.
+ * Use of this source code is governed by the PolyForm Shield 1.0.0 license
+ * that can be found in the licenses directory at the root of this repository, also available at
+ * https://polyformproject.org/wp-content/uploads/2020/06/PolyForm-Shield-1.0.0.txt.
+ */
+
+import { omit, isEqual } from 'lodash-es'
+import type { TabId } from '@blueprintjs/core'
+import { Color, SelectOption, Utils } from '@wings-software/uicore'
 import type { FormikProps } from 'formik'
 import type { UseStringsReturn, StringKeys } from 'framework/strings'
 import type {
@@ -179,6 +187,30 @@ export const isFormDataValid = (formikProps: FormikProps<SLOForm>, selectedTabId
   return true
 }
 
+export const handleTabChange = (
+  nextTabId: TabId,
+  formik: FormikProps<SLOForm>,
+  setSelectedTabId: (tabId: CreateSLOTabs) => void
+): void => {
+  switch (nextTabId) {
+    case CreateSLOTabs.SLI: {
+      isFormDataValid(formik, CreateSLOTabs.NAME) && setSelectedTabId(CreateSLOTabs.SLI)
+      break
+    }
+    case CreateSLOTabs.SLO_TARGET_BUDGET_POLICY: {
+      if (isFormDataValid(formik, CreateSLOTabs.NAME) && isFormDataValid(formik, CreateSLOTabs.SLI)) {
+        setSelectedTabId(CreateSLOTabs.SLO_TARGET_BUDGET_POLICY)
+      } else if (isFormDataValid(formik, CreateSLOTabs.NAME)) {
+        setSelectedTabId(CreateSLOTabs.SLI)
+      }
+      break
+    }
+    default: {
+      setSelectedTabId(CreateSLOTabs.NAME)
+    }
+  }
+}
+
 // SLO Name
 
 export const getUserJourneyOptions = (userJourneyResponse?: UserJourneyResponse[]): SelectOption[] => {
@@ -313,6 +345,37 @@ export const getErrorBudget = (values: SLOForm): number => {
   return Math.round(((100 - SLOTargetPercentage) / 100) * totalMinutes)
 }
 
+export const getCustomOptionsForSLOTargetChart = (values: SLOForm): Highcharts.Options => {
+  const labelColor = Utils.getRealCSSColor(Color.PRIMARY_7)
+
+  return {
+    chart: { height: 200 },
+    yAxis: {
+      min: 0,
+      max: 100,
+      tickInterval: 25,
+      plotLines: [
+        {
+          value: Number((Number(values.SLOTargetPercentage) || 0).toFixed(2)),
+          color: Utils.getRealCSSColor(Color.PRIMARY_7),
+          width: 2,
+          zIndex: 4,
+          label: {
+            useHTML: true,
+            formatter: function () {
+              return `
+                <div style="background-color:${labelColor};padding:4px 6px;border-radius:4px" >
+                  <span style="color:white" >${Number((Number(values.SLOTargetPercentage) || 0).toFixed(2))}%</span>
+                </div>
+              `
+            }
+          }
+        }
+      ]
+    }
+  }
+}
+
 //
 
 export const convertSLOFormDataToServiceLevelIndicatorDTO = (values: SLOForm): ServiceLevelIndicatorDTO => {
@@ -333,4 +396,37 @@ export const convertSLOFormDataToServiceLevelIndicatorDTO = (values: SLOForm): S
       } as ThresholdSLIMetricSpec & RatioSLIMetricSpec
     }
   }
+}
+
+const getVerifyData = (data: ServiceLevelObjectiveDTO): any => {
+  const { monitoredServiceRef, healthSourceRef, serviceLevelIndicators, target } = data
+
+  const { type: sliType, spec } = serviceLevelIndicators[0]
+
+  return {
+    monitoredServiceRef,
+    healthSourceRef,
+    sliType,
+    specType: spec.type,
+    metric1: spec.spec?.metric1,
+    metric2: spec.spec?.metric2,
+    eventType: spec.spec?.eventType,
+    thresholdValue: spec.spec?.thresholdValue,
+    thresholdType: spec.spec?.thresholdType,
+    targetType: target.type,
+    targetMonthly: target.spec?.type,
+    dayOfMonth: target.spec.spec?.dayOfMonth,
+    dayOfWeek: target.spec.spec?.dayOfWeek,
+    sloTargetPercentage: target.sloTargetPercentage,
+    periodLength: target.spec.periodLength
+  }
+}
+
+export const getIsUserUpdatedSLOData = (
+  existingData: ServiceLevelObjectiveDTO,
+  formData: ServiceLevelObjectiveDTO
+): boolean => {
+  const existingDataToVerify = getVerifyData(existingData)
+  const formDataToVerify = getVerifyData(formData)
+  return isEqual(existingDataToVerify, formDataToVerify)
 }

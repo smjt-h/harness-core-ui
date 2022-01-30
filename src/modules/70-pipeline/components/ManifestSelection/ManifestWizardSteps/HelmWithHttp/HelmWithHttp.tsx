@@ -1,3 +1,10 @@
+/*
+ * Copyright 2022 Harness Inc. All rights reserved.
+ * Use of this source code is governed by the PolyForm Shield 1.0.0 license
+ * that can be found in the licenses directory at the root of this repository, also available at
+ * https://polyformproject.org/wp-content/uploads/2020/06/PolyForm-Shield-1.0.0.txt.
+ */
+
 import React, { useState } from 'react'
 import {
   Accordion,
@@ -25,37 +32,32 @@ import type { HelmWithHTTPDataType } from '../../ManifestInterface'
 import HelmAdvancedStepSection from '../HelmAdvancedStepSection'
 
 import { helmVersions, ManifestDataType, ManifestIdentifierValidation } from '../../Manifesthelper'
-import { handleCommandFlagsSubmitData } from '../HelmWithGcs/HelmWithGcs'
+import { handleCommandFlagsSubmitData } from '../ManifestUtils'
 import css from '../ManifestWizardSteps.module.scss'
 import helmcss from '../HelmWithGIT/HelmWithGIT.module.scss'
 
 interface HelmWithHttpPropType {
   stepName: string
   expressions: string[]
+  allowableTypes: MultiTypeInputType[]
   initialValues: ManifestConfig
   handleSubmit: (data: ManifestConfigWrapper) => void
   manifestIdsList: Array<string>
   isReadonly?: boolean
+  deploymentType?: string
 }
-
-const commandFlagOptionsV2 = [
-  { label: 'Fetch', value: 'Fetch' },
-  { label: 'Template ', value: 'Template' }
-]
-const commandFlagOptionsV3 = [
-  { label: 'Pull', value: 'Pull' },
-  { label: 'Template ', value: 'Template' }
-]
 
 const HelmWithHttp: React.FC<StepProps<ConnectorConfigDTO> & HelmWithHttpPropType> = ({
   stepName,
   prevStepData,
   expressions,
+  allowableTypes,
   initialValues,
   handleSubmit,
   previousStep,
   manifestIdsList,
-  isReadonly = false
+  isReadonly = false,
+  deploymentType
 }) => {
   const { getString } = useStrings()
   const isActiveAdvancedStep: boolean = initialValues?.spec?.skipResourceVersioning || initialValues?.spec?.commandFlags
@@ -66,7 +68,7 @@ const HelmWithHttp: React.FC<StepProps<ConnectorConfigDTO> & HelmWithHttpPropTyp
     const specValues = get(initialValues, 'spec.store.spec', null)
 
     if (specValues) {
-      const values = {
+      return {
         ...specValues,
         identifier: initialValues.identifier,
         helmVersion: initialValues.spec?.helmVersion,
@@ -74,12 +76,11 @@ const HelmWithHttp: React.FC<StepProps<ConnectorConfigDTO> & HelmWithHttpPropTyp
         chartVersion: initialValues.spec?.chartVersion,
         skipResourceVersioning: initialValues?.spec?.skipResourceVersioning,
         commandFlags: initialValues.spec?.commandFlags?.map((commandFlag: { commandType: string; flag: string }) => ({
-          commandType: { label: commandFlag.commandType, value: commandFlag.commandType },
+          commandType: commandFlag.commandType,
           flag: commandFlag.flag
           // id: uuid(commandFlag, nameSpace())
         })) || [{ commandType: undefined, flag: undefined, id: uuid('', nameSpace()) }]
       }
-      return values
     }
     return {
       identifier: '',
@@ -172,7 +173,7 @@ const HelmWithHttp: React.FC<StepProps<ConnectorConfigDTO> & HelmWithHttpPropTyp
                 >
                   <FormInput.MultiTextInput
                     name="chartName"
-                    multiTextInputProps={{ expressions }}
+                    multiTextInputProps={{ expressions, allowableTypes }}
                     label={getString('pipeline.manifestType.http.chartName')}
                     placeholder={getString('pipeline.manifestType.http.chartNamePlaceHolder')}
                   />
@@ -201,7 +202,7 @@ const HelmWithHttp: React.FC<StepProps<ConnectorConfigDTO> & HelmWithHttpPropTyp
                 >
                   <FormInput.MultiTextInput
                     name="chartVersion"
-                    multiTextInputProps={{ expressions }}
+                    multiTextInputProps={{ expressions, allowableTypes }}
                     label={getString('pipeline.manifestType.http.chartVersion')}
                     placeholder={getString('pipeline.manifestType.http.chartVersionPlaceHolder')}
                     isOptional={true}
@@ -252,9 +253,10 @@ const HelmWithHttp: React.FC<StepProps<ConnectorConfigDTO> & HelmWithHttpPropTyp
                     <HelmAdvancedStepSection
                       formik={formik}
                       expressions={expressions}
-                      commandFlagOptions={
-                        formik.values?.helmVersion === 'V2' ? commandFlagOptionsV2 : commandFlagOptionsV3
-                      }
+                      allowableTypes={allowableTypes}
+                      helmVersion={formik.values?.helmVersion}
+                      deploymentType={deploymentType as string}
+                      helmStore={prevStepData?.store ?? ''}
                     />
                   }
                 />

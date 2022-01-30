@@ -1,3 +1,10 @@
+/*
+ * Copyright 2022 Harness Inc. All rights reserved.
+ * Use of this source code is governed by the PolyForm Shield 1.0.0 license
+ * that can be found in the licenses directory at the root of this repository, also available at
+ * https://polyformproject.org/wp-content/uploads/2020/06/PolyForm-Shield-1.0.0.txt.
+ */
+
 import React, { useState, useMemo, useEffect } from 'react'
 import {
   Text,
@@ -207,45 +214,33 @@ export const RenderColumnConnector: Renderer<CellProps<ConnectorResponse>> = ({ 
             {data.connector?.name}
           </div>
           {tags && Object.keys(tags).length ? <TagsPopover tags={tags} /> : null}
+          {data.entityValidityDetails?.valid === false ? (
+            <Tooltip
+              position="bottom"
+              content={
+                <Layout.Horizontal flex={{ alignItems: 'baseline' }}>
+                  <Icon name="warning-sign" color={Color.RED_600} size={12} margin={{ right: 'small' }} />
+                  <Layout.Vertical>
+                    <Text color={Color.WHITE} font={{ variation: FontVariation.SMALL }}>
+                      {getString('common.gitSync.outOfSync', { entityType: 'Connector', name: data.connector?.name })}
+                    </Text>
+                    <Text color={Color.WHITE} font={{ variation: FontVariation.SMALL }}>
+                      {getString('common.gitSync.fixAllErrors')}
+                    </Text>
+                  </Layout.Vertical>
+                </Layout.Horizontal>
+              }
+            >
+              <Icon name="warning-sign" color={Color.RED_600} size={16} padding={{ left: 'xsmall' }} />
+            </Tooltip>
+          ) : (
+            <></>
+          )}
         </Layout.Horizontal>
         <div className={css.identifier} title={data.connector?.identifier}>
           {`${getString('common.ID')}: ${data.connector?.identifier}`}
         </div>
       </div>
-      {data.entityValidityDetails?.valid === false ? (
-        <Layout.Vertical flex={{ justifyContent: 'center' }} margin={{ right: 'small' }}>
-          <Tooltip
-            position="bottom"
-            content={
-              <Layout.Horizontal flex={{ alignItems: 'baseline' }}>
-                <Icon name="warning-sign" color={Color.RED_600} size={12} margin={{ right: 'small' }} />
-                <Layout.Vertical>
-                  <Text color={Color.WHITE} font={{ variation: FontVariation.SMALL }}>
-                    {getString('common.gitSync.outOfSync', { entityType: 'Connector', name: data.connector?.name })}
-                  </Text>
-                  <Text color={Color.WHITE} font={{ variation: FontVariation.SMALL }}>
-                    {getString('common.gitSync.fixAllErrors')}
-                  </Text>
-                </Layout.Vertical>
-              </Layout.Horizontal>
-            }
-          >
-            <Layout.Horizontal
-              width="70px"
-              height="20px"
-              flex={{ justifyContent: 'center', alignItems: 'center' }}
-              className={css.invalidConnector}
-            >
-              <Icon name="warning-sign" color={Color.RED_600} size={10} padding={{ right: 'xsmall' }} />
-              <Text color={Color.RED_600} font={{ variation: FontVariation.SMALL_BOLD }}>
-                {getString('invalidText').toLocaleUpperCase()}
-              </Text>
-            </Layout.Horizontal>
-          </Tooltip>
-        </Layout.Vertical>
-      ) : (
-        <></>
-      )}
     </Layout.Horizontal>
   )
 }
@@ -289,9 +284,9 @@ export const RenderGitDetails: Renderer<CellProps<ConnectorResponse>> = ({ row }
               margin={{ left: 'xsmall', top: 'xsmall' }}
               color={Color.GREY_700}
             ></Icon>
-            <div className={css.name} color={Color.BLACK} title={data.gitDetails?.branch}>
+            <Text lineClamp={1} className={classNames(css.name, css.listingGitBranch)} color={Color.BLACK}>
               {data.gitDetails?.branch}
-            </div>
+            </Text>
           </Layout.Horizontal>
         )}
       </Layout.Horizontal>

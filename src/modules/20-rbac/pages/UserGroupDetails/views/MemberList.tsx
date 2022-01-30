@@ -1,3 +1,10 @@
+/*
+ * Copyright 2021 Harness Inc. All rights reserved.
+ * Use of this source code is governed by the PolyForm Shield 1.0.0 license
+ * that can be found in the licenses directory at the root of this repository, also available at
+ * https://polyformproject.org/wp-content/uploads/2020/06/PolyForm-Shield-1.0.0.txt.
+ */
+
 import React, { useMemo, useState } from 'react'
 import { useParams } from 'react-router-dom'
 import type { CellProps, Column, Renderer } from 'react-table'
@@ -11,9 +18,10 @@ import {
   NoDataCard,
   TableV2,
   Intent,
-  useConfirmationDialog
+  useConfirmationDialog,
+  FontVariation
 } from '@wings-software/uicore'
-import { Classes, Menu, Position } from '@blueprintjs/core'
+import { Classes, Menu, Position, PopoverInteractionKind, MenuItem } from '@blueprintjs/core'
 import type { ProjectPathProps, UserGroupPathProps } from '@common/interfaces/RouteInterfaces'
 import { useGetUsersInUserGroup, useRemoveMember, UserInfo } from 'services/cd-ng'
 import { useToaster } from '@common/components'
@@ -120,23 +128,47 @@ const RenderColumnMenu: Renderer<CellProps<UserInfo>> = ({ row, column }) => {
           }}
         />
         <Menu>
-          <RbacMenuItem
-            icon="trash"
-            text={getString('common.remove')}
-            onClick={handleDelete}
-            permission={{
-              resourceScope: {
-                accountIdentifier: accountId,
-                orgIdentifier,
-                projectIdentifier
-              },
-              resource: {
-                resourceType: ResourceType.USERGROUP,
-                resourceIdentifier: (column as any).userGroupIdentifier
-              },
-              permission: PermissionIdentifier.MANAGE_USERGROUP
-            }}
-          />
+          {data.externallyManaged ? (
+            <Popover
+              position={Position.TOP}
+              fill
+              usePortal
+              inheritDarkTheme={false}
+              interactionKind={PopoverInteractionKind.HOVER}
+              hoverCloseDelay={50}
+              content={
+                <div className={css.popover}>
+                  <Text font={{ variation: FontVariation.SMALL }}>{getString('rbac.unableToEditSCIMMembership')}</Text>
+                </div>
+              }
+            >
+              <div
+                onClick={(event: React.MouseEvent<HTMLElement, MouseEvent>) => {
+                  event.stopPropagation()
+                }}
+              >
+                <MenuItem icon="trash" text={getString('common.remove')} onClick={handleDelete} disabled />
+              </div>
+            </Popover>
+          ) : (
+            <RbacMenuItem
+              icon="trash"
+              text={getString('common.remove')}
+              onClick={handleDelete}
+              permission={{
+                resourceScope: {
+                  accountIdentifier: accountId,
+                  orgIdentifier,
+                  projectIdentifier
+                },
+                resource: {
+                  resourceType: ResourceType.USERGROUP,
+                  resourceIdentifier: (column as any).userGroupIdentifier
+                },
+                permission: PermissionIdentifier.MANAGE_USERGROUP
+              }}
+            />
+          )}
         </Menu>
       </Popover>
     </Layout.Horizontal>

@@ -1,3 +1,10 @@
+/*
+ * Copyright 2022 Harness Inc. All rights reserved.
+ * Use of this source code is governed by the PolyForm Shield 1.0.0 license
+ * that can be found in the licenses directory at the root of this repository, also available at
+ * https://polyformproject.org/wp-content/uploads/2020/06/PolyForm-Shield-1.0.0.txt.
+ */
+
 import React from 'react'
 import {
   act,
@@ -89,7 +96,7 @@ describe('UserGroupDetails Test', () => {
     )
     container = renderObj.container
     getAllByText = renderObj.getAllByText
-    await waitFor(() => getAllByText('accessControl'))
+    await waitFor(() => getAllByText('accessControl: common.userGroups'))
   })
   test('render data', () => {
     expect(container).toMatchSnapshot()
@@ -146,7 +153,7 @@ describe('UserGroupDetails Test', () => {
         <UserGroupDetails />
       </TestWrapper>
     )
-    await waitFor(() => getAllByTextLinked('accessControl'))
+    await waitFor(() => getAllByTextLinked('accessControl: common.userGroups'))
     const unLinkSSOButton = getAllByTextLinked('rbac.userDetails.linkToSSOProviderModal.delinkLabel')[0]
     fireEvent.click(unLinkSSOButton)
     await act(async () => {

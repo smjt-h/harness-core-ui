@@ -1,3 +1,10 @@
+/*
+ * Copyright 2022 Harness Inc. All rights reserved.
+ * Use of this source code is governed by the PolyForm Shield 1.0.0 license
+ * that can be found in the licenses directory at the root of this repository, also available at
+ * https://polyformproject.org/wp-content/uploads/2020/06/PolyForm-Shield-1.0.0.txt.
+ */
+
 import { Button, Layout, Text } from '@wings-software/uicore'
 import React, { useState } from 'react'
 import cx from 'classnames'
@@ -11,6 +18,7 @@ import ios from './icons/ios.svg'
 import java from './icons/java.svg'
 import javascript from './icons/javascript.svg'
 import nodejs from './icons/nodejs.svg'
+import python from './icons/python.svg'
 import css from './LanguageSelection.module.scss'
 
 export enum PlatformEntryType {
@@ -42,8 +50,7 @@ export const SupportPlatforms = [
     name: 'NodeJS',
     icon: nodejs,
     type: PlatformEntryType.SERVER,
-    readmeStringId: 'cf.onboarding.readme.javascript',
-    disabled: true
+    readmeStringId: 'cf.onboarding.readme.nodejs'
   },
   {
     name: 'Java',
@@ -61,8 +68,13 @@ export const SupportPlatforms = [
     name: '.NET',
     icon: dotnet,
     type: PlatformEntryType.SERVER,
-    readmeStringId: 'cf.onboarding.readme.dotnet',
-    disabled: true
+    readmeStringId: 'cf.onboarding.readme.dotnet'
+  },
+  {
+    name: 'Python',
+    icon: python,
+    type: PlatformEntryType.SERVER,
+    readmeStringId: 'cf.onboarding.readme.python'
   },
   {
     name: 'JavaScript',

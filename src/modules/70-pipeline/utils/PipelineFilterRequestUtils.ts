@@ -1,3 +1,10 @@
+/*
+ * Copyright 2021 Harness Inc. All rights reserved.
+ * Use of this source code is governed by the PolyForm Shield 1.0.0 license
+ * that can be found in the licenses directory at the root of this repository, also available at
+ * https://polyformproject.org/wp-content/uploads/2020/06/PolyForm-Shield-1.0.0.txt.
+ */
+
 import type { MultiSelectOption, SelectOption } from '@wings-software/uicore'
 import { omit } from 'lodash-es'
 import type { PipelineFilterProperties, FilterDTO, NGTag } from 'services/pipeline-ng'
@@ -47,7 +54,7 @@ export const getValidFilterArguments = (formData: Record<string, any>): Pipeline
         tag
       }),
       cd: {
-        deploymentTypes: deploymentType?.map((deployment: MultiSelectOption) => deployment?.value),
+        deploymentTypes: deploymentType,
         infrastructureTypes: infrastructureType ? [infrastructureType] : undefined,
         serviceNames: services?.map((service: MultiSelectOption) => service?.value),
         environmentNames: environments?.map((env: MultiSelectOption) => env?.value)

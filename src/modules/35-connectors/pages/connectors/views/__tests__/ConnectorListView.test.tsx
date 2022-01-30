@@ -1,3 +1,10 @@
+/*
+ * Copyright 2021 Harness Inc. All rights reserved.
+ * Use of this source code is governed by the PolyForm Shield 1.0.0 license
+ * that can be found in the licenses directory at the root of this repository, also available at
+ * https://polyformproject.org/wp-content/uploads/2020/06/PolyForm-Shield-1.0.0.txt.
+ */
+
 import React from 'react'
 import { render, waitFor, queryByText, act, fireEvent } from '@testing-library/react'
 
@@ -176,9 +183,11 @@ describe('Connectors List Test', () => {
     expect(container).toMatchSnapshot()
   })
 
-  // eslint-disable-next-line jest/no-disabled-tests
-  test.skip('Context menu should be present on each connector row', async () => {
-    const { container } = setup()
+  test('Context menu should be present on each connector row', async () => {
+    ;(useGetTestConnectionResult as any).mockImplementation(() => {
+      return { mutate: reloadTestConnection }
+    })
+    const { container } = setupWithGit()
     const tableRows = Array.from(container.querySelectorAll('div[role="row"]'))
     tableRows.shift() // remove header row
 
@@ -207,15 +216,16 @@ describe('Connectors List Test', () => {
         fireEvent.mouseDown(document)
       })
     }
-    for (const tableRow of tableRows) {
-      await testRow(tableRow)
-    }
+    // Checking context menu only for 1st in list, as it will be hidden for unsynced connectors and Harness SM
+    await testRow(tableRows[0])
   })
 
-  // eslint-disable-next-line jest/no-disabled-tests
-  test.skip('Edit and delete methods should be called with correct data', async () => {
+  test('Edit and delete methods should be called with correct data', async () => {
+    ;(useGetTestConnectionResult as any).mockImplementation(() => {
+      return { mutate: reloadTestConnection }
+    })
     const openConnectorModal = jest.fn()
-    const { container } = setup({ openConnectorModal })
+    const { container } = setupWithGit({ openConnectorModal })
     const currentConnector = connectorsData.data.content[0].connector
     const gitDetails = connectorsData.data.content[0]?.gitDetails
     const deleteText = `connectors.confirmDelete `

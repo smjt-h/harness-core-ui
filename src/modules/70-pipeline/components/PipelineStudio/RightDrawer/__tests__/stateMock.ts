@@ -1,4 +1,13 @@
+/*
+ * Copyright 2021 Harness Inc. All rights reserved.
+ * Use of this source code is governed by the PolyForm Shield 1.0.0 license
+ * that can be found in the licenses directory at the root of this repository, also available at
+ * https://polyformproject.org/wp-content/uploads/2020/06/PolyForm-Shield-1.0.0.txt.
+ */
+
+import { MultiTypeInputType } from '@wings-software/uicore'
 import { TemplateDrawerTypes } from '@pipeline/components/PipelineStudio/PipelineContext/PipelineActions'
+import { Scope } from '@common/interfaces/SecretsInterface'
 import type { PipelineContextInterface } from '../../PipelineContext/PipelineContext'
 
 const stateMock = {
@@ -185,6 +194,7 @@ const stateMock = {
 const pipelineContextMock: PipelineContextInterface = {
   state: stateMock as any,
   contextType: 'Pipeline',
+  allowableTypes: [MultiTypeInputType.FIXED, MultiTypeInputType.RUNTIME, MultiTypeInputType.EXPRESSION],
   stepsFactory: {
     getStep: (type: string) => {
       switch (type) {
@@ -217,6 +227,7 @@ const pipelineContextMock: PipelineContextInterface = {
   setSchemaErrorView: () => undefined,
   isReadonly: false,
   view: 'VISUAL',
+  scope: Scope.PROJECT,
   updateGitDetails: () => new Promise<void>(() => undefined),
   updateEntityValidityDetails: () => new Promise<void>(() => undefined),
   setView: () => void 0,

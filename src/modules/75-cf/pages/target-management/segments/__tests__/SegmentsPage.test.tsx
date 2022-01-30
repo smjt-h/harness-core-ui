@@ -1,3 +1,10 @@
+/*
+ * Copyright 2021 Harness Inc. All rights reserved.
+ * Use of this source code is governed by the PolyForm Shield 1.0.0 license
+ * that can be found in the licenses directory at the root of this repository, also available at
+ * https://polyformproject.org/wp-content/uploads/2020/06/PolyForm-Shield-1.0.0.txt.
+ */
+
 import React from 'react'
 import { fireEvent, getAllByText, getByText, render, waitFor } from '@testing-library/react'
 import { TestWrapper } from '@common/utils/testUtils'
@@ -210,38 +217,6 @@ describe('SegmentsPage', () => {
     mockImport('@cf/hooks/useEnvironmentSelectV2', {
       useEnvironmentSelectV2: () => ({
         environments: mockEnvironments,
-        loading: false,
-        refetch: jest.fn(),
-        EnvironmentSelect: function EnvironmentSelect() {
-          return <div />
-        }
-      })
-    })
-
-    const { container } = render(
-      <TestWrapper
-        path="/account/:accountId/cf/orgs/:orgIdentifier/projects/:projectIdentifier/feature-flags"
-        pathParams={{ accountId: 'dummy', orgIdentifier: 'dummy', projectIdentifier: 'dummy' }}
-      >
-        <SegmentsPage />
-      </TestWrapper>
-    )
-
-    expect(container).toMatchSnapshot()
-  })
-
-  test('No environment view should be rendered', async () => {
-    mockImport('services/cf', {
-      useGetAllSegments: () => ({
-        data: { segments: [] },
-        loading: false,
-        refetch: jest.fn()
-      })
-    })
-
-    mockImport('@cf/hooks/useEnvironmentSelectV2', {
-      useEnvironmentSelectV2: () => ({
-        environments: [],
         loading: false,
         refetch: jest.fn(),
         EnvironmentSelect: function EnvironmentSelect() {

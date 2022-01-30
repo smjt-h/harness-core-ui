@@ -1,3 +1,10 @@
+/*
+ * Copyright 2022 Harness Inc. All rights reserved.
+ * Use of this source code is governed by the PolyForm Shield 1.0.0 license
+ * that can be found in the licenses directory at the root of this repository, also available at
+ * https://polyformproject.org/wp-content/uploads/2020/06/PolyForm-Shield-1.0.0.txt.
+ */
+
 import React from 'react'
 import { matchPath, useParams, useHistory } from 'react-router-dom'
 import { parse } from 'yaml'
@@ -78,8 +85,8 @@ export function TemplateStudio(): React.ReactElement {
 
   const { openDialog: openConfirmBEUpdateError } = useConfirmationDialog({
     cancelButtonText: getString('cancel'),
-    contentText: getString('pipelines-studio.pipelineUpdatedError'),
-    titleText: getString('pipelines-studio.pipelineUpdated'),
+    contentText: getString('templatesLibrary.templateUpdatedError'),
+    titleText: getString('common.template.updateTemplate.templateUpdated'),
     confirmButtonText: getString('update'),
     onCloseDialog: isConfirmed => {
       if (isConfirmed) {
@@ -128,9 +135,11 @@ export function TemplateStudio(): React.ReactElement {
   )
 
   const isValidYaml = function (): boolean {
+    // istanbul ignore else
     if (yamlHandler) {
       try {
         const parsedYaml = parse(yamlHandler.getLatestYaml())
+        // istanbul ignore else
         if (!parsedYaml || yamlHandler.getYAMLValidationErrorMap()?.size > 0) {
           showInvalidYamlError(getString('invalidYamlText'))
           return false
@@ -141,6 +150,7 @@ export function TemplateStudio(): React.ReactElement {
         return false
       }
     }
+    // istanbul ignore next - This is required just to match the return type and nothing more
     return true
   }
 
@@ -148,10 +158,9 @@ export function TemplateStudio(): React.ReactElement {
     if (newView === view) {
       return false
     }
-    if (newView === SelectedView.VISUAL && yamlHandler && isYamlEditable) {
-      if (!isValidYaml()) {
-        return false
-      }
+    // istanbul ignore else
+    if (newView === SelectedView.VISUAL && yamlHandler && isYamlEditable && !isValidYaml()) {
+      return false
     }
     setView(newView)
     updateTemplateView({
@@ -169,9 +178,11 @@ export function TemplateStudio(): React.ReactElement {
   }
 
   React.useEffect(() => {
+    // istanbul ignore else
     if (isBETemplateUpdated && !discardBEUpdateDialog) {
       openConfirmBEUpdateError()
     }
+    // istanbul ignore else
     if (blockNavigation) {
       openUnsavedChangesDialog()
     }
@@ -242,7 +253,7 @@ export function TemplateStudio(): React.ReactElement {
   return (
     <>
       <NavigationCheck
-        when={template.identifier !== ''}
+        when={template?.identifier !== ''}
         shouldBlockNavigation={nextLocation => {
           const matchDefault = matchPath(nextLocation.pathname, {
             path: routes.toTemplateStudio(getPathParams()),
@@ -285,6 +296,7 @@ export function TemplateStudio(): React.ReactElement {
               />
               <Container className={css.canvasContainer}>
                 {view === SelectedView.VISUAL ? (
+                  /* istanbul ignore next */
                   templateFactory.getTemplate(templateType)?.renderTemplateCanvas({ formikRef: templateFormikRef })
                 ) : (
                   <TemplateYamlView />

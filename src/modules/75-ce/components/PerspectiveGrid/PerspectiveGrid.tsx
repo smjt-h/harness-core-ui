@@ -1,5 +1,12 @@
+/*
+ * Copyright 2021 Harness Inc. All rights reserved.
+ * Use of this source code is governed by the PolyForm Shield 1.0.0 license
+ * that can be found in the licenses directory at the root of this repository, also available at
+ * https://polyformproject.org/wp-content/uploads/2020/06/PolyForm-Shield-1.0.0.txt.
+ */
+
 import React, { useMemo, useEffect, useState } from 'react'
-import { Text, Container, Icon } from '@wings-software/uicore'
+import { Container, Icon } from '@wings-software/uicore'
 import type { Column, Row } from 'react-table'
 import { isEqual } from 'lodash-es'
 import type { QlceViewFieldInputInput, QlceViewEntityStatsDataPoint, Maybe } from 'services/ce/services'
@@ -77,16 +84,9 @@ const PerspectiveGrid: React.FC<PerspectiveGridProps> = props => {
     )
   }
 
-  if (!gridData.length) {
-    return (
-      <Container className={css.gridLoadingContainer}>
-        <Text>« no data »</Text>
-      </Container>
-    )
-  }
+  const { fieldName } = groupBy
 
   const onRowClick = (row: Row<GridData>) => {
-    const { fieldName } = groupBy
     if (fieldName === 'Workload Id' && isClusterOnly) {
       const { clusterName, namespace, workloadName } = row.original
       goToWorkloadDetails &&
@@ -100,6 +100,8 @@ const PerspectiveGrid: React.FC<PerspectiveGridProps> = props => {
       goToNodeDetails && clusterName && nodeId && goToNodeDetails(clusterName, nodeId)
     }
   }
+
+  const isRowClickable = fieldName === 'Workload Id' || fieldName === 'Node'
 
   return (
     <Container background="white">
@@ -125,6 +127,7 @@ const PerspectiveGrid: React.FC<PerspectiveGridProps> = props => {
         gridPageIndex={gridPageIndex}
         pageSize={pageSize}
         fetchData={fetchData}
+        isRowClickable={isRowClickable}
       />
     </Container>
   )

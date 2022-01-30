@@ -1,3 +1,10 @@
+/*
+ * Copyright 2021 Harness Inc. All rights reserved.
+ * Use of this source code is governed by the PolyForm Shield 1.0.0 license
+ * that can be found in the licenses directory at the root of this repository, also available at
+ * https://polyformproject.org/wp-content/uploads/2020/06/PolyForm-Shield-1.0.0.txt.
+ */
+
 import React from 'react'
 import cx from 'classnames'
 import { Card, Icon, Layout, Text, Color, Checkbox } from '@wings-software/uicore'
@@ -28,47 +35,38 @@ const PermissionCard: React.FC<PermissionCardProps> = ({
   isPermissionEnabled
 }) => {
   const { getString } = useStrings()
-  const isView = (value: string): boolean => {
-    if (value === 'view') return true
-    return false
-  }
-  const isDashboardResource = (value: string): boolean => {
-    if (value === 'DASHBOARDS') return true
-    return false
-  }
+
   const getPermissionList = (resource: ResourceType): JSX.Element | undefined => {
     const handler = RbacFactory.getResourceTypeHandler(resource)
     if (handler && handler.permissionLabels) {
       const permissions = Object.keys(handler.permissionLabels)
       const permissionArray = permissionMap.get(resource)
-      const sortedList = permissions
-        .map(permission => {
-          const item = permissionArray?.find(_permission => _permission['identifier'] === permission)
-          if (item) return item
-        })
-        .filter(item => item)
+      const sortedList: Permission[] = permissions.reduce((acc: Permission[], value) => {
+        const item = permissionArray?.find(_permission => _permission['identifier'] === value)
+        if (item) {
+          acc.push(item)
+        }
+        return acc
+      }, [])
 
       return (
         <div className={css.permissionList}>
           {sortedList.map(permission => {
-            if (permission)
-              return (
-                <Checkbox
-                  labelElement={
-                    handler.permissionLabels?.[permission.identifier as PermissionIdentifier] || permission.action
-                  }
-                  data-testid={`checkBox-${resource}-${permission.action}`}
-                  key={permission.name}
-                  disabled={
-                    disableEdit || (isView(permission.action) && !isDashboardResource(permission?.resourceType))
-                  }
-                  defaultChecked={isPermissionEnabled(permission.identifier)}
-                  onChange={(event: React.FormEvent<HTMLInputElement>) => {
-                    onChangePermission(permission.identifier, event.currentTarget.checked)
-                  }}
-                  className={css.checkbox}
-                />
-              )
+            return (
+              <Checkbox
+                labelElement={
+                  handler.permissionLabels?.[permission.identifier as PermissionIdentifier] || permission.action
+                }
+                data-testid={`checkBox-${resource}-${permission.action}`}
+                key={permission.name}
+                disabled={disableEdit}
+                defaultChecked={isPermissionEnabled(permission.identifier)}
+                onChange={(event: React.FormEvent<HTMLInputElement>) => {
+                  onChangePermission(permission.identifier, event.currentTarget.checked)
+                }}
+                className={css.checkbox}
+              />
+            )
           })}
         </div>
       )

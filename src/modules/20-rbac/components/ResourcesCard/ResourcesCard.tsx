@@ -1,3 +1,10 @@
+/*
+ * Copyright 2021 Harness Inc. All rights reserved.
+ * Use of this source code is governed by the PolyForm Shield 1.0.0 license
+ * that can be found in the licenses directory at the root of this repository, also available at
+ * https://polyformproject.org/wp-content/uploads/2020/06/PolyForm-Shield-1.0.0.txt.
+ */
+
 import React from 'react'
 import { Layout, Text, Card, Color, Button, Radio, Container, ButtonVariation } from '@wings-software/uicore'
 import { useParams } from 'react-router-dom'
@@ -14,13 +21,15 @@ interface ResourcesCardProps {
   resourceValues: string | string[]
   onResourceSelectionChange: (resourceType: ResourceType, isAdd: boolean, identifiers?: string[] | undefined) => void
   disableAddingResources?: boolean
+  disableSelection?: boolean
 }
 
 const ResourcesCard: React.FC<ResourcesCardProps> = ({
   resourceType,
   resourceValues,
   onResourceSelectionChange,
-  disableAddingResources
+  disableAddingResources,
+  disableSelection
 }) => {
   const { accountId, orgIdentifier, projectIdentifier } = useParams<ProjectPathProps>()
   const { getString } = useStrings()
@@ -47,35 +56,37 @@ const ResourcesCard: React.FC<ResourcesCardProps> = ({
               {getString(label)}
             </Text>
           </Container>
-          <Layout.Horizontal flex>
-            <Radio
-              label={getString('rbac.resourceGroup.all')}
-              data-testid={`dynamic-${resourceType}`}
-              checked={isDynamicResourceSelector(resourceValues)}
-              onChange={e => onResourceSelectionChange(resourceType, e.currentTarget.checked)}
-            />
-            {addResourceModalBody && (
-              <Layout.Horizontal spacing="small" flex padding={{ left: 'huge' }} className={css.radioBtn}>
-                <Radio
-                  label={getString('common.specified')}
-                  data-testid={`static-${resourceType}`}
-                  checked={!isDynamicResourceSelector(resourceValues)}
-                  onChange={e => onResourceSelectionChange(resourceType, e.currentTarget.checked, [])}
-                />
-                <Button
-                  variation={ButtonVariation.LINK}
-                  data-testid={`addResources-${resourceType}`}
-                  disabled={disableAddingResources || isDynamicResourceSelector(resourceValues)}
-                  className={css.addResourceBtn}
-                  onClick={() => {
-                    openAddResourceModal(resourceType, Array.isArray(resourceValues) ? resourceValues : [])
-                  }}
-                >
-                  {getString('rbac.resourceGroup.add')}
-                </Button>
-              </Layout.Horizontal>
-            )}
-          </Layout.Horizontal>
+          {!disableSelection && (
+            <Layout.Horizontal flex>
+              <Radio
+                label={getString('rbac.resourceGroup.all')}
+                data-testid={`dynamic-${resourceType}`}
+                checked={isDynamicResourceSelector(resourceValues)}
+                onChange={e => onResourceSelectionChange(resourceType, e.currentTarget.checked)}
+              />
+              {addResourceModalBody && (
+                <Layout.Horizontal spacing="small" flex padding={{ left: 'huge' }} className={css.radioBtn}>
+                  <Radio
+                    label={getString('common.specified')}
+                    data-testid={`static-${resourceType}`}
+                    checked={!isDynamicResourceSelector(resourceValues)}
+                    onChange={e => onResourceSelectionChange(resourceType, e.currentTarget.checked, [])}
+                  />
+                  <Button
+                    variation={ButtonVariation.LINK}
+                    data-testid={`addResources-${resourceType}`}
+                    disabled={disableAddingResources || isDynamicResourceSelector(resourceValues)}
+                    className={css.addResourceBtn}
+                    onClick={() => {
+                      openAddResourceModal(resourceType, Array.isArray(resourceValues) ? resourceValues : [])
+                    }}
+                  >
+                    {getString('rbac.resourceGroup.add')}
+                  </Button>
+                </Layout.Horizontal>
+              )}
+            </Layout.Horizontal>
+          )}
         </Layout.Horizontal>
 
         {Array.isArray(resourceValues) && resourceValues.length > 0 && (

@@ -1,3 +1,10 @@
+/*
+ * Copyright 2021 Harness Inc. All rights reserved.
+ * Use of this source code is governed by the PolyForm Shield 1.0.0 license
+ * that can be found in the licenses directory at the root of this repository, also available at
+ * https://polyformproject.org/wp-content/uploads/2020/06/PolyForm-Shield-1.0.0.txt.
+ */
+
 import React, { useState, useEffect } from 'react'
 import { FormInput, SelectOption } from '@wings-software/uicore'
 import type { CustomRenderProps } from '@wings-software/uicore/dist/components/FormikForm/FormikForm'
@@ -20,6 +27,11 @@ import {
   EnvironmentSelectOrCreate,
   EnvironmentSelectOrCreateProps
 } from './components/EnvironmentSelectOrCreate/EnvironmentSelectOrCreate'
+
+import {
+  EnvironmentMultiSelectOrCreate,
+  EnvironmentMultiSelectOrCreateProps
+} from './components/EnvironmentMultiSelectAndEnv/EnvironmentMultiSelectAndEnv'
 import css from './HarnessServiceAndEnvironment.module.scss'
 
 export function useGetHarnessServices() {
@@ -131,23 +143,38 @@ export function HarnessServiceAsFormField(props: {
 
 export function HarnessEnvironmentAsFormField(props: {
   customRenderProps: Omit<CustomRenderProps, 'render'>
-  environmentProps: EnvironmentSelectOrCreateProps
+  environmentProps: EnvironmentSelectOrCreateProps | EnvironmentMultiSelectOrCreateProps
+  isMultiSelectField?: boolean
 }): JSX.Element {
-  const { customRenderProps, environmentProps } = props
+  const { customRenderProps, environmentProps, isMultiSelectField } = props
 
   return (
     <FormInput.CustomRender
       {...customRenderProps}
-      key={`${environmentProps.item?.value as string}`}
-      render={formikProps => (
-        <EnvironmentSelectOrCreate
-          {...environmentProps}
-          onSelect={selectedOption => {
-            formikProps.setFieldValue(customRenderProps.name, selectedOption)
-            environmentProps.onSelect?.(selectedOption)
-          }}
-        />
-      )}
+      key={`${
+        Array.isArray(environmentProps.item)
+          ? (environmentProps.item?.[0]?.value as string)
+          : (environmentProps.item?.value as string)
+      }`}
+      render={formikProps =>
+        isMultiSelectField ? (
+          <EnvironmentMultiSelectOrCreate
+            {...(environmentProps as EnvironmentMultiSelectOrCreateProps)}
+            onSelect={selectedOption => {
+              formikProps.setFieldValue(customRenderProps.name, selectedOption)
+              ;(environmentProps as EnvironmentMultiSelectOrCreateProps).onSelect?.(selectedOption)
+            }}
+          />
+        ) : (
+          <EnvironmentSelectOrCreate
+            {...(environmentProps as EnvironmentSelectOrCreateProps)}
+            onSelect={selectedOption => {
+              formikProps.setFieldValue(customRenderProps.name, selectedOption)
+              ;(environmentProps as EnvironmentSelectOrCreateProps).onSelect?.(selectedOption)
+            }}
+          />
+        )
+      }
     />
   )
 }

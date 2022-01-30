@@ -1,3 +1,10 @@
+/*
+ * Copyright 2021 Harness Inc. All rights reserved.
+ * Use of this source code is governed by the PolyForm Shield 1.0.0 license
+ * that can be found in the licenses directory at the root of this repository, also available at
+ * https://polyformproject.org/wp-content/uploads/2020/06/PolyForm-Shield-1.0.0.txt.
+ */
+
 import React from 'react'
 import { fireEvent, render, waitFor } from '@testing-library/react'
 import { TestWrapper } from '@common/utils/testUtils'
@@ -119,7 +126,7 @@ describe('CDHomePage snapshot test', () => {
     expect(container).toMatchSnapshot()
   })
 
-  test('should render Trial Home page when return success with NO data', () => {
+  test('should render Trial Home page when return success with NO data', async () => {
     useGetModuleLicenseInfoMock.mockImplementation(() => {
       return {
         data: {
@@ -144,11 +151,15 @@ describe('CDHomePage snapshot test', () => {
       }
     })
     const { container, getByText } = render(
-      <TestWrapper defaultAppStoreValues={{ currentUserInfo: currentUser }}>
+      <TestWrapper
+        path="/account/:accountId"
+        pathParams={{ accountId: '123' }}
+        defaultAppStoreValues={{ currentUserInfo: currentUser }}
+      >
         <CDHomePage />
       </TestWrapper>
     )
-    expect(getByText('cd.cdTrialHomePage.startTrial.description')).toBeDefined()
+    expect(getByText('/account/123/cd/home/trial')).toBeInTheDocument()
     expect(container).toMatchSnapshot()
   })
 
@@ -183,7 +194,12 @@ describe('CDHomePage snapshot test', () => {
       }
     })
     const { container, getByText } = render(
-      <TestWrapper queryParams={{ experience: 'TRIAL' }} defaultAppStoreValues={{ currentUserInfo: currentUser }}>
+      <TestWrapper
+        path="/account/:accountId"
+        pathParams={{ accountId: '123' }}
+        queryParams={{ experience: 'TRIAL' }}
+        defaultAppStoreValues={{ currentUserInfo: currentUser }}
+      >
         <CDHomePage />
       </TestWrapper>
     )

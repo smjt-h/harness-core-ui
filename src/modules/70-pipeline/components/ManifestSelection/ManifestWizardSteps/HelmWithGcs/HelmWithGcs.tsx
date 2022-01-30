@@ -1,3 +1,10 @@
+/*
+ * Copyright 2022 Harness Inc. All rights reserved.
+ * Use of this source code is governed by the PolyForm Shield 1.0.0 license
+ * that can be found in the licenses directory at the root of this repository, also available at
+ * https://polyformproject.org/wp-content/uploads/2020/06/PolyForm-Shield-1.0.0.txt.
+ */
+
 import React, { useState } from 'react'
 import {
   Accordion,
@@ -9,7 +16,6 @@ import {
   getMultiTypeFromValue,
   MultiTypeInputType,
   Text,
-  SelectOption,
   ButtonVariation,
   getErrorInfoFromErrorObject,
   FontVariation
@@ -27,71 +33,36 @@ import { ConfigureOptions } from '@common/components/ConfigureOptions/ConfigureO
 import type { AccountPathProps, ProjectPathProps } from '@common/interfaces/RouteInterfaces'
 import { useToaster } from '@common/components'
 
-import type {
-  CommandFlags,
-  HelmWithGcsDataType,
-  HelmWithGITDataType,
-  HelmWithHTTPDataType,
-  HelmWithS3DataType
-} from '../../ManifestInterface'
+import type { HelmWithGcsDataType } from '../../ManifestInterface'
 import HelmAdvancedStepSection from '../HelmAdvancedStepSection'
 
 import { helmVersions, ManifestDataType, ManifestIdentifierValidation } from '../../Manifesthelper'
+import { handleCommandFlagsSubmitData } from '../ManifestUtils'
 import css from '../ManifestWizardSteps.module.scss'
 import helmcss from '../HelmWithGIT/HelmWithGIT.module.scss'
 
 interface HelmWithGcsPropType {
   stepName: string
   expressions: string[]
+  allowableTypes: MultiTypeInputType[]
   initialValues: ManifestConfig
   handleSubmit: (data: ManifestConfigWrapper) => void
   manifestIdsList: Array<string>
   isReadonly?: boolean
-}
-
-const commandFlagOptionsV2 = [
-  { label: 'Fetch', value: 'Fetch' },
-  { label: 'Template ', value: 'Template' }
-]
-const commandFlagOptionsV3 = [
-  { label: 'Pull', value: 'Pull' },
-  { label: 'Template ', value: 'Template' }
-]
-
-export const handleCommandFlagsSubmitData = (
-  manifestObj: ManifestConfigWrapper,
-  formData: (HelmWithGcsDataType | HelmWithHTTPDataType | HelmWithS3DataType | HelmWithGITDataType) & {
-    store?: string
-    connectorRef?: string
-  }
-): void => {
-  if (formData?.commandFlags.length && formData?.commandFlags[0].commandType) {
-    ;(manifestObj?.manifest?.spec as any).commandFlags = formData?.commandFlags.map((commandFlag: CommandFlags) =>
-      commandFlag.commandType && commandFlag.flag
-        ? {
-            commandType: (commandFlag.commandType as SelectOption)?.value as string,
-            flag: commandFlag.flag
-          }
-        : {}
-    )
-    const filteredCommandFlags = manifestObj?.manifest?.spec?.commandFlags.filter(
-      (currFlag: CommandFlags) => !isEmpty(currFlag)
-    )
-    if (filteredCommandFlags.length === 0) {
-      delete (manifestObj?.manifest?.spec as any).commandFlags
-    }
-  }
+  deploymentType?: string
 }
 
 const HelmWithGcs: React.FC<StepProps<ConnectorConfigDTO> & HelmWithGcsPropType> = ({
   stepName,
   prevStepData,
   expressions,
+  allowableTypes,
   initialValues,
   handleSubmit,
   previousStep,
   manifestIdsList,
-  isReadonly = false
+  isReadonly = false,
+  deploymentType
 }) => {
   const { getString } = useStrings()
   const { showError } = useToaster()
@@ -132,7 +103,7 @@ const HelmWithGcs: React.FC<StepProps<ConnectorConfigDTO> & HelmWithGcsPropType>
     const specValues = get(initialValues, 'spec.store.spec', null)
 
     if (specValues) {
-      const values = {
+      return {
         ...specValues,
         identifier: initialValues.identifier,
         helmVersion: initialValues.spec?.helmVersion,
@@ -140,12 +111,11 @@ const HelmWithGcs: React.FC<StepProps<ConnectorConfigDTO> & HelmWithGcsPropType>
         chartName: initialValues.spec?.chartName,
         skipResourceVersioning: initialValues?.spec?.skipResourceVersioning,
         commandFlags: initialValues.spec?.commandFlags?.map((commandFlag: { commandType: string; flag: string }) => ({
-          commandType: { label: commandFlag.commandType, value: commandFlag.commandType },
+          commandType: commandFlag.commandType,
           flag: commandFlag.flag
           // id: uuid(commandFlag, nameSpace())
         })) || [{ commandType: undefined, flag: undefined, id: uuid('', nameSpace()) }]
       }
-      return values
     }
     return {
       identifier: '',
@@ -246,7 +216,7 @@ const HelmWithGcs: React.FC<StepProps<ConnectorConfigDTO> & HelmWithGcsPropType>
                       label={getString('pipeline.manifestType.bucketName')}
                       placeholder={getString('pipeline.manifestType.bucketNamePlaceholder')}
                       name="bucketName"
-                      multiTextInputProps={{ expressions }}
+                      multiTextInputProps={{ expressions, allowableTypes }}
                     />
                     {getMultiTypeFromValue(formik.values?.bucketName) === MultiTypeInputType.RUNTIME && (
                       <ConfigureOptions
@@ -309,7 +279,7 @@ const HelmWithGcs: React.FC<StepProps<ConnectorConfigDTO> & HelmWithGcsPropType>
                 >
                   <FormInput.MultiTextInput
                     label={getString('chartPath')}
-                    multiTextInputProps={{ expressions }}
+                    multiTextInputProps={{ expressions, allowableTypes }}
                     placeholder={getString('pipeline.manifestType.chartPathPlaceholder')}
                     name="folderPath"
                     isOptional={true}
@@ -337,7 +307,7 @@ const HelmWithGcs: React.FC<StepProps<ConnectorConfigDTO> & HelmWithGcsPropType>
                 >
                   <FormInput.MultiTextInput
                     name="chartName"
-                    multiTextInputProps={{ expressions }}
+                    multiTextInputProps={{ expressions, allowableTypes }}
                     label={getString('pipeline.manifestType.http.chartName')}
                     placeholder={getString('pipeline.manifestType.http.chartNamePlaceHolder')}
                   />
@@ -365,7 +335,7 @@ const HelmWithGcs: React.FC<StepProps<ConnectorConfigDTO> & HelmWithGcsPropType>
                 >
                   <FormInput.MultiTextInput
                     name="chartVersion"
-                    multiTextInputProps={{ expressions }}
+                    multiTextInputProps={{ expressions, allowableTypes }}
                     label={getString('pipeline.manifestType.http.chartVersion')}
                     placeholder={getString('pipeline.manifestType.http.chartVersionPlaceHolder')}
                     isOptional={true}
@@ -416,10 +386,11 @@ const HelmWithGcs: React.FC<StepProps<ConnectorConfigDTO> & HelmWithGcsPropType>
                     <HelmAdvancedStepSection
                       formik={formik}
                       expressions={expressions}
-                      commandFlagOptions={
-                        formik.values?.helmVersion === 'V2' ? commandFlagOptionsV2 : commandFlagOptionsV3
-                      }
+                      allowableTypes={allowableTypes}
+                      helmVersion={formik.values?.helmVersion}
                       isReadonly={isReadonly}
+                      deploymentType={deploymentType as string}
+                      helmStore={prevStepData?.store ?? ''}
                     />
                   }
                 />

@@ -1,17 +1,29 @@
+/*
+ * Copyright 2022 Harness Inc. All rights reserved.
+ * Use of this source code is governed by the PolyForm Shield 1.0.0 license
+ * that can be found in the licenses directory at the root of this repository, also available at
+ * https://polyformproject.org/wp-content/uploads/2020/06/PolyForm-Shield-1.0.0.txt.
+ */
+
 // import { ProgressBar } from '@blueprintjs/core'
 import React from 'react'
 import { useParams } from 'react-router-dom'
+import { isEmpty as _isEmpty, defaultTo as _defaultTo } from 'lodash-es'
 import { Color, Container, HarnessDocTooltip, Heading, Icon, Layout, Text } from '@wings-software/uicore'
 import Highcharts from 'highcharts'
 import HighchartsReact from 'highcharts-react-official'
 import { useStrings } from 'framework/strings'
 import { useCumulativeServiceSavings } from 'services/lw'
+import EmptyView from '@ce/images/empty-state.svg'
 import { geGaugeChartOptionsWithoutLabel, getDay } from './Utils'
 import css from './COGatewayCumulativeAnalytics.module.scss'
 
 interface COGatewayCumulativeAnalyticsProps {
   activeServicesCount: number
 }
+
+const toFixedDecimalNumber = (num: number, decimalPlaces = 2) => Number(num.toFixed(decimalPlaces))
+
 function getStackedAreaChartOptions(
   title: string,
   categories: string[],
@@ -24,6 +36,14 @@ function getStackedAreaChartOptions(
     categories = categories.map(x => getDay(x, 'YYYY-MM-DDTHH:mm:ssZ'))
     step = Math.ceil(categories.length * 0.25)
   }
+  savingsData = _defaultTo(
+    savingsData.map(n => toFixedDecimalNumber(n)),
+    []
+  )
+  spendData = _defaultTo(
+    spendData.map(n => toFixedDecimalNumber(n)),
+    []
+  )
   return {
     chart: {
       type: 'spline',
@@ -56,7 +76,7 @@ function getStackedAreaChartOptions(
       enabled: false
     },
     tooltip: {
-      pointFormat: '{series.name}: {point.y}<br/>'
+      pointFormat: '{series.name}: ${point.y}<br/>'
     },
     plotOptions: {
       area: {
@@ -200,27 +220,37 @@ const COGatewayCumulativeAnalytics: React.FC<COGatewayCumulativeAnalyticsProps> 
             <Layout.Vertical spacing="medium" padding="small">
               <Container padding="small" style={{ borderRadius: '4px', backgroundColor: 'rgba(71, 213, 223,0.05)' }}>
                 <Layout.Vertical spacing="small">
-                  <Text className={css.analyticsColHeader} style={{ color: '#05AAB6' }}>
+                  <Text className={css.analyticsColHeader} color={Color.TEAL_800}>
                     TOTAL SAVINGS TILL DATE
                   </Text>
                   {graphLoading ? (
                     <Icon name="spinner" size={24} color="blue500" />
                   ) : (
-                    <Heading level={1} style={{ color: '#05AAB6' }}>
-                      ${(Math.round(graphData?.response?.total_savings as number) * 100) / 100}
-                    </Heading>
+                    <>
+                      {_isEmpty(graphData?.response) && (
+                        <div>
+                          <img src={EmptyView} />
+                          <Text>{getString('ce.noSavingsDataMessage')}</Text>
+                        </div>
+                      )}
+                      {!_isEmpty(graphData?.response) && (
+                        <Heading level={1} color={Color.TEAL_800}>
+                          ${(Math.round(graphData?.response?.total_savings as number) * 100) / 100}
+                        </Heading>
+                      )}
+                    </>
                   )}
                 </Layout.Vertical>
               </Container>
               <Container padding="small" style={{ borderRadius: '4px', backgroundColor: 'rgba(124, 77, 211,0.05)' }}>
                 <Layout.Vertical spacing="small">
-                  <Text className={css.analyticsColHeader} style={{ color: '#592BAA' }}>
+                  <Text className={css.analyticsColHeader} color={Color.PURPLE_700}>
                     TOTAL SPEND TILL DATE
                   </Text>
                   {graphLoading ? (
                     <Icon name="spinner" size={24} color="blue500" />
                   ) : (
-                    <Heading level={1} style={{ color: '#592BAA' }}>
+                    <Heading level={1} color={Color.PURPLE_700}>
                       ${(Math.round(graphData?.response?.total_cost as number) * 100) / 100}
                     </Heading>
                   )}

@@ -1,8 +1,16 @@
+/*
+ * Copyright 2022 Harness Inc. All rights reserved.
+ * Use of this source code is governed by the PolyForm Shield 1.0.0 license
+ * that can be found in the licenses directory at the root of this repository, also available at
+ * https://polyformproject.org/wp-content/uploads/2020/06/PolyForm-Shield-1.0.0.txt.
+ */
+
 import React from 'react'
 import { noop } from 'lodash-es'
 import { fireEvent, render, act, getByText, waitFor } from '@testing-library/react'
 
 import routes from '@common/RouteDefinitions'
+import { useMutateAsGet } from '@common/hooks'
 import { accountPathProps, pipelineModuleParams, pipelinePathProps } from '@common/utils/routeUtils'
 import gitSyncListResponse from '@common/utils/__tests__/mocks/gitSyncRepoListMock.json'
 import { GitSyncTestWrapper } from '@common/utils/gitSyncTestUtils'
@@ -13,12 +21,18 @@ import { PipelineCanvas } from '../PipelineCanvas'
 import { PipelineContext } from '../../PipelineContext/PipelineContext'
 import pipelineContextMock, { putPipelinePromiseArg, createPipelinePromiseArg } from './PipelineCanvasGitSyncTestHelper'
 import { DefaultNewPipelineId } from '../../PipelineContext/PipelineActions'
+import { mockPipelineTemplateYaml } from './PipelineCanvasTestHelper'
 
 jest.mock('@common/utils/YamlUtils', () => ({
   validateJSONWithSchema: jest.fn(() => Promise.resolve(new Map())),
   useValidationError: () => ({ errorMap: new Map() })
 }))
 jest.mock('@common/components/YAMLBuilder/YamlBuilder')
+
+jest.mock('@common/hooks', () => ({
+  ...(jest.requireActual('@common/hooks') as any),
+  useMutateAsGet: jest.fn()
+}))
 
 jest.mock('services/pipeline-ng', () => ({
   putPipelinePromise: jest.fn().mockImplementation(() => Promise.resolve({ status: 'SUCCESS' })),
@@ -105,6 +119,13 @@ const PipelineCanvasTestWrapper: React.FC<{ modifiedPipelineContextMock: any; pi
 describe('PipelineCanvas tests', () => {
   describe('When Git Sync is enabled', () => {
     describe('Edit Pipeline', () => {
+      beforeEach(() => {
+        // eslint-disable-next-line
+        // @ts-ignore
+        useMutateAsGet.mockImplementation(() => {
+          return mockPipelineTemplateYaml
+        })
+      })
       test('should render pipeline canvas in edit mode', async () => {
         const { getByText: getElementByText, getByTestId } = render(
           <PipelineCanvasTestWrapper
@@ -119,8 +140,13 @@ describe('PipelineCanvas tests', () => {
         act(() => {
           fireEvent.mouseEnter(gitPopoverIcon)
         })
-        await waitFor(() => expect(getElementByText('rootFolderTest/.harness/test_pipeline.yaml')).toBeInTheDocument())
-
+        await waitFor(() =>
+          expect(
+            getElementByText(
+              'https://www.github.com/testRepo.git/blob/feature/rootFolderTest/.harness/test_pipeline.yaml'
+            )
+          ).toBeInTheDocument()
+        )
         const branchSelector = document.querySelector('input[name="branch"]') as HTMLInputElement
         expect(branchSelector.value).toBe('feature')
 
@@ -168,7 +194,7 @@ describe('PipelineCanvas tests', () => {
 
             const folderInput = document.querySelector('input[name="rootFolder"]')
             expect(folderInput).toBeDisabled()
-            expect(folderInput?.getAttribute('value')).toBe('rootFolderTest/.harness/')
+            expect(folderInput?.getAttribute('value')).toBe('/rootFolderTest/.harness/')
 
             const filePathInput = document.querySelector('input[name="filePath"]')
             expect(filePathInput).toBeDisabled()
@@ -197,6 +223,12 @@ describe('PipelineCanvas tests', () => {
       beforeEach(() => {
         delete pipelineContextMock.state.gitDetails.filePath
         delete pipelineContextMock.state.gitDetails.objectId
+
+        // eslint-disable-next-line
+        // @ts-ignore
+        useMutateAsGet.mockImplementation(() => {
+          return mockPipelineTemplateYaml
+        })
       })
 
       test('should render pipeline canvas in create mode', async () => {
@@ -259,7 +291,7 @@ describe('PipelineCanvas tests', () => {
 
             const folderInput = document.querySelector('input[name="rootFolder"]')
             expect(folderInput).not.toBeDisabled()
-            expect(folderInput?.getAttribute('value')).toBe('rootFolderTest/.harness/')
+            expect(folderInput?.getAttribute('value')).toBe('/rootFolderTest/.harness/')
 
             const filePathInput = document.querySelector('input[name="filePath"]')
             expect(filePathInput).not.toBeDisabled()

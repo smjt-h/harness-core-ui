@@ -1,3 +1,10 @@
+/*
+ * Copyright 2021 Harness Inc. All rights reserved.
+ * Use of this source code is governed by the PolyForm Shield 1.0.0 license
+ * that can be found in the licenses directory at the root of this repository, also available at
+ * https://polyformproject.org/wp-content/uploads/2020/06/PolyForm-Shield-1.0.0.txt.
+ */
+
 import React from 'react'
 import { Heading, Layout, Text, Container, Button, Color } from '@wings-software/uicore'
 import { useParams, useHistory, Link } from 'react-router-dom'
@@ -58,6 +65,7 @@ const StartTrialComponent: React.FC<StartTrialProps> = startTrialProps => {
   const { FREE_PLAN_ENABLED, PLANS_ENABLED } = useFeatureFlags()
   const clickEvent = FREE_PLAN_ENABLED ? PlanActions.StartFreeClick : TrialActions.StartTrialClick
   const experience = FREE_PLAN_ENABLED ? ModuleLicenseType.FREE : ModuleLicenseType.TRIAL
+  const modal = FREE_PLAN_ENABLED ? ModuleLicenseType.FREE : ModuleLicenseType.TRIAL
 
   async function handleStartTrial(): Promise<void> {
     trackEvent(clickEvent, {
@@ -72,7 +80,7 @@ const StartTrialComponent: React.FC<StartTrialProps> = startTrialProps => {
 
       history.push({
         pathname: routes.toModuleHome({ accountId, module }),
-        search: `?experience=${experience}`
+        search: `?modal=${modal}&&experience=${experience}`
       })
     } catch (error) {
       showError(error.data?.message)

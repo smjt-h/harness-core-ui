@@ -1,3 +1,10 @@
+/*
+ * Copyright 2022 Harness Inc. All rights reserved.
+ * Use of this source code is governed by the PolyForm Shield 1.0.0 license
+ * that can be found in the licenses directory at the root of this repository, also available at
+ * https://polyformproject.org/wp-content/uploads/2020/06/PolyForm-Shield-1.0.0.txt.
+ */
+
 import { clone } from 'lodash-es'
 import type { IDrawerProps } from '@blueprintjs/core'
 import type { YamlSnippetMetaData, PipelineInfoConfig } from 'services/cd-ng'
@@ -7,7 +14,6 @@ import type { EntityGitDetails, EntityValidityDetails } from 'services/pipeline-
 import type { DependencyElement } from 'services/ci'
 import type { TemplateType } from '@common/interfaces/RouteInterfaces'
 import type { TemplateSummaryResponse } from 'services/template-ng'
-import type { TemplateConfig } from '@pipeline/utils/tempates'
 import type { StepState } from '../ExecutionGraph/ExecutionGraphUtil'
 import type { AdvancedPanels, StepOrStepGroupOrTemplateStepData } from '../StepCommands/StepCommandTypes'
 
@@ -95,16 +101,18 @@ export interface DrawerData extends Omit<IDrawerProps, 'isOpen'> {
   }
 }
 
+export interface SelectorData {
+  templateType: TemplateType
+  selectedChildType?: string
+  allChildTypes?: string[]
+  selectedTemplateRef?: string
+  onUseTemplate?: (template: TemplateSummaryResponse, isCopied?: boolean) => void
+}
+
 export interface TemplateDrawerData extends Omit<IDrawerProps, 'isOpen'> {
   type: TemplateDrawerTypes
   data?: {
-    selectorData?: {
-      templateType: TemplateType
-      childTypes?: string[]
-      onCopyTemplate?: (template: TemplateSummaryResponse) => void
-      onUseTemplate?: (templateConfig: TemplateConfig) => void
-      selectedTemplateRef?: string
-    }
+    selectorData?: SelectorData
   }
 }
 
@@ -152,7 +160,8 @@ export interface PipelineReducerState {
 
 export const DefaultPipeline: PipelineInfoConfig = {
   name: '',
-  identifier: DefaultNewPipelineId
+  identifier: DefaultNewPipelineId,
+  allowStageExecutions: false
 }
 
 export interface ActionResponse {

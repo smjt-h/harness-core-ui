@@ -1,5 +1,22 @@
+/*
+ * Copyright 2022 Harness Inc. All rights reserved.
+ * Use of this source code is governed by the PolyForm Shield 1.0.0 license
+ * that can be found in the licenses directory at the root of this repository, also available at
+ * https://polyformproject.org/wp-content/uploads/2020/06/PolyForm-Shield-1.0.0.txt.
+ */
+
 import React from 'react'
-import { Label, FormInput, MultiTypeInputType, Icon, Layout, Text, getMultiTypeFromValue } from '@wings-software/uicore'
+import {
+  Label,
+  FormInput,
+  MultiTypeInputType,
+  Icon,
+  Layout,
+  Text,
+  getMultiTypeFromValue,
+  FontVariation,
+  Container
+} from '@wings-software/uicore'
 import { connect } from 'formik'
 import { get, set, isEmpty, pickBy, identity, isNil } from 'lodash-es'
 import cx from 'classnames'
@@ -20,7 +37,11 @@ import { MultiTypeTextField } from '@common/components/MultiTypeText/MultiTypeTe
 import MultiTypeListInputSet from '@common/components/MultiTypeListInputSet/MultiTypeListInputSet'
 import MultiTypeDelegateSelector from '@common/components/MultiTypeDelegateSelector/MultiTypeDelegateSelector'
 import type { ProjectPathProps } from '@common/interfaces/RouteInterfaces'
-import type { TemplateStepData } from '@pipeline/utils/tempates'
+import type { TemplateStepNode } from 'services/pipeline-ng'
+import { TEMPLATE_INPUT_PATH } from '@pipeline/utils/templateUtils'
+import { useGitScope } from '@pipeline/utils/CIUtils'
+import { ConnectorRefWidth } from '@pipeline/utils/constants'
+import { FormMultiTypeConnectorField } from '@connectors/components/ConnectorReferenceField/FormMultiTypeConnectorField'
 import factory from '../PipelineSteps/PipelineStepFactory'
 import { StepType } from '../PipelineSteps/PipelineStepInterface'
 
@@ -39,7 +60,8 @@ function ServiceDependencyForm({
   onUpdate,
   readonly,
   viewType,
-  path
+  path,
+  allowableTypes
 }: {
   template?: any
   allValues?: any
@@ -48,6 +70,7 @@ function ServiceDependencyForm({
   readonly?: boolean
   viewType?: StepViewType
   path: string
+  allowableTypes: MultiTypeInputType[]
 }): JSX.Element {
   const { getString } = useStrings()
   return (
@@ -64,7 +87,7 @@ function ServiceDependencyForm({
           factory={factory}
           readonly={readonly}
           path={path}
-          allowableTypes={[MultiTypeInputType.FIXED, MultiTypeInputType.EXPRESSION]}
+          allowableTypes={allowableTypes}
           template={template}
           initialValues={values || {}}
           allValues={allValues || {}}
@@ -77,14 +100,15 @@ function ServiceDependencyForm({
   )
 }
 
-function StepForm({
+function StepFormInternal({
   template,
   allValues,
   values,
   onUpdate,
   readonly,
   viewType,
-  path
+  path,
+  allowableTypes
 }: {
   template?: ExecutionWrapperConfig
   allValues?: ExecutionWrapperConfig
@@ -93,53 +117,106 @@ function StepForm({
   readonly?: boolean
   viewType?: StepViewType
   path: string
+  allowableTypes: MultiTypeInputType[]
 }): JSX.Element {
   const { getString } = useStrings()
   const { projectIdentifier, orgIdentifier } = useParams<ProjectPathProps>()
   const { expressions } = useVariablesExpression()
-  const isTemplateStep = !!(allValues?.step as TemplateStepData)?.template
+  return (
+    <div>
+      <StepWidget<Partial<StepElementConfig>>
+        factory={factory}
+        readonly={readonly}
+        path={path}
+        allowableTypes={allowableTypes}
+        template={template?.step}
+        initialValues={values?.step || {}}
+        allValues={allValues?.step || {}}
+        type={(allValues?.step as StepElementConfig)?.type as StepType}
+        onUpdate={onUpdate}
+        stepViewType={viewType}
+      />
+      {getMultiTypeFromValue((template?.step as StepElementConfig)?.spec?.delegateSelectors) ===
+        MultiTypeInputType.RUNTIME && (
+        <div className={cx(stepCss.formGroup, stepCss.sm)}>
+          <MultiTypeDelegateSelector
+            expressions={expressions}
+            inputProps={{ projectIdentifier, orgIdentifier }}
+            allowableTypes={allowableTypes}
+            label={getString('delegate.DelegateSelector')}
+            name={`${path}.spec.delegateSelectors`}
+            disabled={readonly}
+          />
+        </div>
+      )}
+    </div>
+  )
+}
+
+export function StepForm({
+  template,
+  allValues,
+  values,
+  onUpdate,
+  readonly,
+  viewType,
+  path,
+  allowableTypes,
+  hideTitle = false
+}: {
+  template?: ExecutionWrapperConfig
+  allValues?: ExecutionWrapperConfig
+  values?: ExecutionWrapperConfig
+  onUpdate: (data: any) => void
+  readonly?: boolean
+  viewType?: StepViewType
+  path: string
+  allowableTypes: MultiTypeInputType[]
+  hideTitle?: boolean
+}): JSX.Element {
+  const { getString } = useStrings()
+  const isTemplateStep = (template?.step as unknown as TemplateStepNode)?.template
   const type = isTemplateStep
-    ? (allValues?.step as TemplateStepData)?.template.templateInputs?.type
-    : allValues?.step?.type
+    ? ((template?.step as unknown as TemplateStepNode)?.template.templateInputs as StepElementConfig)?.type
+    : ((template?.step as StepElementConfig)?.type as StepType)
+  const iconColor = factory.getStepIconColor(type)
 
   return (
     <Layout.Vertical spacing="medium" padding={{ top: 'medium' }}>
-      <Label>
-        <Icon
-          padding={{ right: 'small' }}
-          {...(factory.getStepIconColor(type || '') ? { color: factory.getStepIconColor(type || '') } : {})}
-          style={{ color: factory.getStepIconColor(type || '') }}
-          name={factory.getStepIcon(type || /* istanbul ignore next */ '')}
-        />
-        {getString('pipeline.execution.stepTitlePrefix')}
-        {getString('pipeline.stepLabel', allValues?.step)}
-      </Label>
-      <div>
-        <StepWidget<Partial<StepElementConfig>>
-          factory={factory}
-          readonly={readonly}
-          path={path}
-          allowableTypes={[MultiTypeInputType.FIXED, MultiTypeInputType.EXPRESSION]}
-          template={template?.step}
-          initialValues={values?.step || {}}
-          allValues={allValues?.step || {}}
-          type={isTemplateStep ? StepType.Template : (allValues?.step?.type as StepType) || ''}
-          onUpdate={onUpdate}
-          stepViewType={viewType}
-        />
-        {getMultiTypeFromValue(template?.step?.spec?.delegateSelectors) === MultiTypeInputType.RUNTIME && (
-          <div className={cx(stepCss.formGroup, stepCss.sm)}>
-            <MultiTypeDelegateSelector
-              expressions={expressions}
-              inputProps={{ projectIdentifier, orgIdentifier }}
-              allowableTypes={[MultiTypeInputType.FIXED, MultiTypeInputType.EXPRESSION]}
-              label={getString('delegate.DelegateSelector')}
-              name={`${path}.spec.delegateSelectors`}
-              disabled={readonly}
-            />
-          </div>
-        )}
-      </div>
+      {!hideTitle && (
+        <Label>
+          <Icon
+            padding={{ right: 'small' }}
+            {...(iconColor ? { color: iconColor } : {})}
+            style={{ color: iconColor }}
+            name={factory.getStepIcon(type)}
+          />
+          {getString('pipeline.execution.stepTitlePrefix')}
+          {getString('pipeline.stepLabel', allValues?.step)}
+        </Label>
+      )}
+      <StepFormInternal
+        template={
+          isTemplateStep
+            ? { step: (template?.step as unknown as TemplateStepNode)?.template?.templateInputs as StepElementConfig }
+            : template
+        }
+        allValues={
+          (allValues?.step as unknown as TemplateStepNode)?.template
+            ? { step: (allValues?.step as unknown as TemplateStepNode)?.template?.templateInputs as StepElementConfig }
+            : allValues
+        }
+        values={
+          isTemplateStep
+            ? { step: (values?.step as unknown as TemplateStepNode)?.template?.templateInputs as StepElementConfig }
+            : values
+        }
+        path={isTemplateStep ? `${path}.${TEMPLATE_INPUT_PATH}` : path}
+        readonly={readonly}
+        viewType={viewType}
+        allowableTypes={allowableTypes}
+        onUpdate={onUpdate}
+      />
     </Layout.Vertical>
   )
 }
@@ -152,6 +229,7 @@ export interface StageInputSetFormProps {
   readonly?: boolean
   viewType: StepViewType
   stageIdentifier?: string
+  allowableTypes: MultiTypeInputType[]
 }
 
 function ExecutionWrapperInputSetForm(props: {
@@ -162,8 +240,9 @@ function ExecutionWrapperInputSetForm(props: {
   values?: ExecutionWrapperConfig[]
   readonly?: boolean
   viewType: StepViewType
+  allowableTypes: MultiTypeInputType[]
 }): JSX.Element {
-  const { stepsTemplate, allValues, values, path, formik, readonly, viewType } = props
+  const { stepsTemplate, allValues, values, path, formik, readonly, viewType, allowableTypes } = props
   return (
     <>
       {stepsTemplate?.map((item, index) => {
@@ -179,6 +258,7 @@ function ExecutionWrapperInputSetForm(props: {
               path={`${path}[${index}].step`}
               readonly={readonly}
               viewType={viewType}
+              allowableTypes={allowableTypes}
               onUpdate={data => {
                 /* istanbul ignore next */
                 if (initialValues) {
@@ -186,7 +266,7 @@ function ExecutionWrapperInputSetForm(props: {
                     initialValues.step = {
                       identifier: originalStep.step?.identifier || '',
                       name: originalStep.step?.name || '',
-                      type: originalStep.step?.type || ''
+                      type: (originalStep.step as StepElementConfig)?.type || ''
                     }
                   }
 
@@ -201,7 +281,7 @@ function ExecutionWrapperInputSetForm(props: {
                     ...execObj,
                     identifier: originalStep.step?.identifier || '',
                     name: originalStep.step?.name || '',
-                    type: originalStep.step?.type || ''
+                    type: (originalStep.step as StepElementConfig)?.type || ''
                   }
 
                   formik?.setValues(set(formik?.values, `${path}[${index}].step`, initialValues.step))
@@ -223,13 +303,14 @@ function ExecutionWrapperInputSetForm(props: {
                   readonly={readonly}
                   viewType={viewType}
                   path={`${path}[${index}].parallel[${indexp}].step`}
+                  allowableTypes={allowableTypes}
                   onUpdate={data => {
                     if (initialValues) {
                       if (!initialValues.step) {
                         initialValues.step = {
                           identifier: originalStep.step?.identifier || '',
                           name: originalStep.step?.name || '',
-                          type: originalStep.step?.type || '',
+                          type: (originalStep.step as StepElementConfig)?.type || '',
                           timeout: '10m'
                         }
                       }
@@ -237,7 +318,7 @@ function ExecutionWrapperInputSetForm(props: {
                         ...data,
                         identifier: originalStep.step?.identifier || '',
                         name: originalStep.step?.name || '',
-                        type: originalStep.step?.type || '',
+                        type: (originalStep.step as StepElementConfig)?.type || '',
                         timeout: '10m'
                       }
                       formik?.setValues(
@@ -265,10 +346,13 @@ function ExecutionWrapperInputSetForm(props: {
                       allValues={stepGroup?.stepGroup?.steps}
                       values={initialValues?.stepGroup?.steps}
                       viewType={viewType}
+                      allowableTypes={allowableTypes}
                     />
                   </CollapseForm>
                 </>
               )
+            } else {
+              return null
             }
           })
         } else if (item.stepGroup) {
@@ -289,10 +373,13 @@ function ExecutionWrapperInputSetForm(props: {
                   allValues={stepGroup?.stepGroup?.steps}
                   values={initialValues?.stepGroup?.steps}
                   viewType={viewType}
+                  allowableTypes={allowableTypes}
                 />
               </CollapseForm>
             </>
           )
+        } else {
+          return null
         }
       })}
     </>
@@ -306,12 +393,20 @@ export const StageInputSetFormInternal: React.FC<StageInputSetFormProps> = ({
   formik,
   readonly,
   viewType,
-  stageIdentifier
+  stageIdentifier,
+  allowableTypes
 }) => {
   const deploymentStageInputSet = get(formik?.values, path, {})
   const { getString } = useStrings()
   const { expressions } = useVariablesExpression()
   const isPropagating = deploymentStage?.serviceConfig?.useFromStage
+  const gitScope = useGitScope()
+
+  const { accountId, projectIdentifier, orgIdentifier } = useParams<{
+    projectIdentifier: string
+    orgIdentifier: string
+    accountId: string
+  }>()
 
   return (
     <>
@@ -327,7 +422,7 @@ export const StageInputSetFormInternal: React.FC<StageInputSetFormProps> = ({
                 type={StepType.DeployService}
                 stepViewType={viewType}
                 path={`${path}.serviceConfig`}
-                allowableTypes={[MultiTypeInputType.FIXED, MultiTypeInputType.EXPRESSION]}
+                allowableTypes={allowableTypes}
                 readonly={readonly}
                 customStepProps={{ stageIdentifier }}
               />
@@ -340,7 +435,7 @@ export const StageInputSetFormInternal: React.FC<StageInputSetFormProps> = ({
                     ? (deploymentStageInputSet?.serviceConfig?.stageOverrides as StageOverridesConfig)
                     : deploymentStageInputSet?.serviceConfig?.serviceDefinition?.spec || {}
                 }
-                allowableTypes={[MultiTypeInputType.FIXED, MultiTypeInputType.EXPRESSION]}
+                allowableTypes={allowableTypes}
                 template={
                   isPropagating && deploymentStageTemplate
                     ? deploymentStageTemplate?.serviceConfig?.stageOverrides
@@ -384,58 +479,113 @@ export const StageInputSetFormInternal: React.FC<StageInputSetFormProps> = ({
           <div className={css.inputheader}>{getString('infrastructureText')}</div>
 
           <div className={css.nestedAccordions} style={{ width: '50%' }}>
-            {(deploymentStageTemplate.infrastructure as any).spec?.namespace && (
-              <FormInput.MultiTextInput
-                label={
-                  <Text flex font="small" margin={{ bottom: 'xsmall' }} tooltipProps={{ dataTooltipId: 'namespace' }}>
-                    {getString('pipelineSteps.build.infraSpecifications.namespace')}
-                  </Text>
-                }
-                name={`${isEmpty(path) ? '' : `${path}.`}infrastructure.spec.namespace`}
-                multiTextInputProps={{
-                  expressions,
-                  allowableTypes: [MultiTypeInputType.EXPRESSION, MultiTypeInputType.FIXED]
-                }}
-                disabled={readonly}
-              />
-            )}
+            {(deploymentStageTemplate.infrastructure as any).type === 'KubernetesDirect' ? (
+              <>
+                {(deploymentStageTemplate.infrastructure as any).spec?.connectorRef && (
+                  <Container className={stepCss.bottomMargin3}>
+                    <FormMultiTypeConnectorField
+                      width={ConnectorRefWidth.DefaultView}
+                      name={`${isEmpty(path) ? '' : `${path}.`}infrastructure.spec.connectorRef`}
+                      label={
+                        <Text font={{ variation: FontVariation.FORM_LABEL }}>
+                          {getString('connectors.title.k8sCluster')}
+                        </Text>
+                      }
+                      placeholder={getString('pipelineSteps.build.infraSpecifications.kubernetesClusterPlaceholder')}
+                      accountIdentifier={accountId}
+                      projectIdentifier={projectIdentifier}
+                      orgIdentifier={orgIdentifier}
+                      gitScope={gitScope}
+                      multiTypeProps={{ expressions, disabled: readonly, allowableTypes }}
+                      setRefValue
+                    />
+                  </Container>
+                )}
+                {(deploymentStageTemplate.infrastructure as any).spec?.namespace && (
+                  <FormInput.MultiTextInput
+                    label={
+                      <Text
+                        font={{ variation: FontVariation.FORM_LABEL }}
+                        tooltipProps={{ dataTooltipId: 'namespace' }}
+                      >
+                        {getString('pipelineSteps.build.infraSpecifications.namespace')}
+                      </Text>
+                    }
+                    name={`${isEmpty(path) ? '' : `${path}.`}infrastructure.spec.namespace`}
+                    multiTextInputProps={{
+                      expressions,
+                      allowableTypes: allowableTypes
+                    }}
+                    disabled={readonly}
+                  />
+                )}
+              </>
+            ) : (deploymentStageTemplate.infrastructure as any).type === 'VM' ? (
+              (deploymentStageTemplate.infrastructure as any).spec?.spec?.identifier && (
+                <MultiTypeTextField
+                  label={
+                    <Text
+                      tooltipProps={{ dataTooltipId: 'poolId' }}
+                      font={{ variation: FontVariation.FORM_LABEL }}
+                      margin={{ bottom: 'xsmall' }}
+                    >
+                      {getString('pipeline.buildInfra.poolId')}
+                    </Text>
+                  }
+                  name={`${isEmpty(path) ? '' : `${path}.`}infrastructure.spec.spec.identifier`}
+                  multiTextInputProps={{
+                    multiTextInputProps: { expressions, allowableTypes },
+                    disabled: readonly
+                  }}
+                />
+              )
+            ) : null}
             {(deploymentStageTemplate.infrastructure as any).spec?.serviceAccountName && (
               <FormInput.MultiTextInput
-                label={getString('pipeline.infraSpecifications.serviceAccountName')}
+                label={
+                  <Text font={{ variation: FontVariation.FORM_LABEL }}>
+                    {getString('pipeline.infraSpecifications.serviceAccountName')}
+                  </Text>
+                }
                 name={`${isEmpty(path) ? '' : `${path}.`}infrastructure.spec.serviceAccountName`}
                 multiTextInputProps={{
                   expressions,
-                  allowableTypes: [MultiTypeInputType.EXPRESSION, MultiTypeInputType.FIXED]
+                  allowableTypes: allowableTypes
                 }}
                 disabled={readonly}
               />
             )}
             {(deploymentStageTemplate.infrastructure as any).spec?.runAsUser && (
-              <MultiTypeTextField
-                label={<Text margin={{ bottom: 'xsmall' }}>{getString('pipeline.stepCommonFields.runAsUser')}</Text>}
-                name={`${isEmpty(path) ? '' : `${path}.`}infrastructure.spec.runAsUser`}
-                style={{ marginBottom: 'var(--spacing-xsmall)' }}
-                multiTextInputProps={{
-                  multiTextInputProps: {
-                    expressions,
-                    allowableTypes: [MultiTypeInputType.EXPRESSION, MultiTypeInputType.FIXED]
-                  },
-                  disabled: readonly,
-                  placeholder: '1000'
-                }}
-              />
+              <Container className={stepCss.bottomMargin5}>
+                <MultiTypeTextField
+                  label={
+                    <Text font={{ variation: FontVariation.FORM_LABEL }} margin={{ bottom: 'xsmall' }}>
+                      {getString('pipeline.stepCommonFields.runAsUser')}
+                    </Text>
+                  }
+                  name={`${isEmpty(path) ? '' : `${path}.`}infrastructure.spec.runAsUser`}
+                  multiTextInputProps={{
+                    multiTextInputProps: {
+                      expressions,
+                      allowableTypes: allowableTypes
+                    },
+                    disabled: readonly,
+                    placeholder: '1000'
+                  }}
+                />
+              </Container>
             )}
             {(deploymentStageTemplate.infrastructure as any).spec?.initTimeout && (
               <FormMultiTypeDurationField
                 label={
-                  <Text flex={{ justifyContent: 'start' }} font="small" tooltipProps={{ dataTooltipId: 'timeout' }}>
+                  <Text font={{ variation: FontVariation.FORM_LABEL }} tooltipProps={{ dataTooltipId: 'timeout' }}>
                     {getString('pipeline.infraSpecifications.initTimeout')}
                   </Text>
                 }
                 name={`${isEmpty(path) ? '' : `${path}.`}infrastructure.spec.initTimeout`}
                 multiTypeDurationProps={{
                   expressions,
-                  allowableTypes: [MultiTypeInputType.EXPRESSION, MultiTypeInputType.FIXED]
+                  allowableTypes: allowableTypes
                 }}
                 disabled={readonly}
               />
@@ -449,7 +599,7 @@ export const StageInputSetFormInternal: React.FC<StageInputSetFormProps> = ({
                 template={deploymentStageTemplate?.infrastructure || {}}
                 type={StepType.DeployEnvironment}
                 stepViewType={viewType}
-                allowableTypes={[MultiTypeInputType.FIXED, MultiTypeInputType.EXPRESSION]}
+                allowableTypes={allowableTypes}
                 path={`${path}.infrastructure`}
                 readonly={readonly}
               />
@@ -459,7 +609,7 @@ export const StageInputSetFormInternal: React.FC<StageInputSetFormProps> = ({
                 factory={factory}
                 template={deploymentStageTemplate.infrastructure.infrastructureDefinition.spec}
                 initialValues={deploymentStageInputSet?.infrastructure?.infrastructureDefinition?.spec || {}}
-                allowableTypes={[MultiTypeInputType.FIXED, MultiTypeInputType.EXPRESSION]}
+                allowableTypes={allowableTypes}
                 allValues={
                   deploymentStage?.infrastructure?.infrastructureDefinition?.spec || /* istanbul ignore next */ {}
                 }
@@ -500,6 +650,7 @@ export const StageInputSetFormInternal: React.FC<StageInputSetFormProps> = ({
                 formik={formik}
                 readonly={readonly}
                 viewType={viewType}
+                allowableTypes={allowableTypes}
               />
             )}
             {deploymentStageTemplate.infrastructure.infrastructureDefinition?.provisioner?.rollbackSteps && (
@@ -513,6 +664,7 @@ export const StageInputSetFormInternal: React.FC<StageInputSetFormProps> = ({
                 formik={formik}
                 readonly={readonly}
                 viewType={viewType}
+                allowableTypes={allowableTypes}
               />
             )}
           </div>
@@ -527,7 +679,7 @@ export const StageInputSetFormInternal: React.FC<StageInputSetFormProps> = ({
             <MultiTypeListInputSet
               name={`${isEmpty(path) ? '' : `${path}.`}sharedPaths`}
               multiTextInputProps={{
-                allowableTypes: [MultiTypeInputType.EXPRESSION, MultiTypeInputType.FIXED],
+                allowableTypes: allowableTypes,
                 expressions
               }}
               multiTypeFieldSelectorProps={{
@@ -564,6 +716,7 @@ export const StageInputSetFormInternal: React.FC<StageInputSetFormProps> = ({
                   values={deploymentStageInputSet?.serviceDependencies?.[index]}
                   readonly={readonly}
                   viewType={viewType}
+                  allowableTypes={allowableTypes}
                   key={identifier}
                   onUpdate={data => {
                     const originalServiceDependency = (deploymentStage as any)?.serviceDependencies?.[index]
@@ -607,6 +760,7 @@ export const StageInputSetFormInternal: React.FC<StageInputSetFormProps> = ({
                 formik={formik}
                 readonly={readonly}
                 viewType={viewType}
+                allowableTypes={allowableTypes}
               />
             )}
             {deploymentStageTemplate.execution?.rollbackSteps && (
@@ -618,6 +772,7 @@ export const StageInputSetFormInternal: React.FC<StageInputSetFormProps> = ({
                 formik={formik}
                 readonly={readonly}
                 viewType={viewType}
+                allowableTypes={allowableTypes}
               />
             )}
           </div>

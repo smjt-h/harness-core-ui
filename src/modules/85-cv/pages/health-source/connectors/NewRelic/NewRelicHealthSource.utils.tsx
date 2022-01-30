@@ -1,3 +1,10 @@
+/*
+ * Copyright 2021 Harness Inc. All rights reserved.
+ * Use of this source code is governed by the PolyForm Shield 1.0.0 license
+ * that can be found in the licenses directory at the root of this repository, also available at
+ * https://polyformproject.org/wp-content/uploads/2020/06/PolyForm-Shield-1.0.0.txt.
+ */
+
 import { cloneDeep } from 'lodash-es'
 import type { FormikProps } from 'formik'
 import type { SelectOption } from '@wings-software/uicore'
@@ -10,7 +17,6 @@ import type {
   SelectedAndMappedMetrics
 } from './NewRelicHealthSource.types'
 import { NewRelicHealthSourceFieldNames } from './NewRelicHealthSource.constants'
-import { QueryType } from '../../common/HealthSourceQueryType/HealthSourceQueryType.types'
 
 export const validateMapping = (
   values: any,
@@ -20,23 +26,23 @@ export const validateMapping = (
 ): ((key: string | boolean | string[]) => string) => {
   let errors = {} as any
 
-  if (values?.showCustomMetric) {
-    // if custom metrics are present then validate custom metrics form
-    errors = validateCustomMetricFields(values, createdMetrics, selectedMetricIndex, errors, getString)
-  } else {
-    // otherwise validate default metrics
-    const metricValueList = Object.values(values?.metricData).filter(val => val)
-    if (!metricValueList.length) {
-      errors['metricData'] = getString('cv.monitoringSources.appD.validations.selectMetricPack')
-    }
-
-    if (
-      values?.newRelicApplication &&
-      (!values?.newRelicApplication.value || values?.newRelicApplication.value === 'loading')
-    ) {
-      errors['newRelicApplication'] = getString('cv.healthSource.connectors.NewRelic.validations.application')
-    }
+  const metricValueList = Object.values(values?.metricData).filter(val => val)
+  if (!metricValueList.length) {
+    errors['metricData'] = getString('cv.monitoringSources.appD.validations.selectMetricPack')
   }
+
+  if (
+    values?.newRelicApplication &&
+    (!values.newRelicApplication.value || values.newRelicApplication.value === 'loading')
+  ) {
+    errors['newRelicApplication'] = getString('cv.healthSource.connectors.NewRelic.validations.application')
+  }
+
+  // if custom metrics are present then validate custom metrics form
+  if (values?.showCustomMetric) {
+    errors = validateCustomMetricFields(values, createdMetrics, selectedMetricIndex, errors, getString)
+  }
+
   return errors
 }
 
@@ -69,22 +75,6 @@ const validateCustomMetricFields = (
 
   if (!values.query) {
     completErrors['query'] = getString('cv.healthSource.connectors.NewRelic.validations.nrql')
-  }
-
-  if (!values.queryType) {
-    completErrors['queryType'] = getString('cv.healthSource.connectors.NewRelic.validations.queryType')
-  }
-
-  if (values.queryType === QueryType.HOST_BASED && !values.serviceInstanceIdentifier) {
-    completErrors['serviceInstanceIdentifier'] = getString(
-      'cv.healthSource.connectors.NewRelic.validations.serviceInstanceIdentifier'
-    )
-  }
-
-  if (values.queryType === QueryType.HOST_BASED && !values.continuousVerification) {
-    completErrors['continuousVerification'] = getString(
-      'cv.healthSource.connectors.NewRelic.validations.continuousVerification'
-    )
   }
 
   if (!values.metricValue) {
@@ -140,7 +130,6 @@ export function initializeSelectedMetricsMap(
           {
             metricName: defaultSelectedMetricName,
             groupName: { label: '', value: '' },
-            queryType: '',
             query: '',
             metricValue: '',
             timestamp: '',
@@ -227,12 +216,10 @@ export const createNewRelicPayloadBeforeSubmission = (
     [NewRelicHealthSourceFieldNames.GROUP_NAME]: true,
 
     [NewRelicHealthSourceFieldNames.NEWRELIC_QUERY]: true,
-    [NewRelicHealthSourceFieldNames.NEWRELIC_QUERY_TYPE]: true,
 
     [NewRelicHealthSourceFieldNames.METRIC_VALUE]: true,
     [NewRelicHealthSourceFieldNames.TIMESTAMP_LOCATOR]: true,
     [NewRelicHealthSourceFieldNames.TIMESTAMP_FORMAT]: true,
-    [NewRelicHealthSourceFieldNames.SERVICE_INSTANCE]: true,
 
     [NewRelicHealthSourceFieldNames.SLI]: true,
     [NewRelicHealthSourceFieldNames.CONTINUOUS_VERIFICATION]: true,

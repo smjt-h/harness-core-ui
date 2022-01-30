@@ -1,3 +1,10 @@
+/*
+ * Copyright 2022 Harness Inc. All rights reserved.
+ * Use of this source code is governed by the PolyForm Shield 1.0.0 license
+ * that can be found in the licenses directory at the root of this repository, also available at
+ * https://polyformproject.org/wp-content/uploads/2020/06/PolyForm-Shield-1.0.0.txt.
+ */
+
 import { pick, isString } from 'lodash-es'
 import type { IconName, StepProps } from '@wings-software/uicore'
 import { Connectors, EntityTypes } from '@connectors/constants'
@@ -25,6 +32,7 @@ import { ValueType } from '@secrets/components/TextReference/TextReference'
 import { useStrings } from 'framework/strings'
 import { setSecretField } from '@secrets/utils/SecretField'
 import { ConnectivityModeType } from '@common/components/ConnectivityMode/ConnectivityMode'
+import { transformStepHeadersAndParamsForPayload } from '@connectors/components/CreateConnector/CustomHealthConnector/components/CustomHealthHeadersAndParams/CustomHealthHeadersAndParams.utils'
 import { AuthTypes, GitAuthTypes, GitAPIAuthTypes } from './ConnectorHelper'
 
 export interface DelegateCardInterface {
@@ -32,6 +40,7 @@ export interface DelegateCardInterface {
   info: string
   disabled?: boolean
 }
+
 export interface CredentialType {
   [key: string]: AwsCredential['type']
 }
@@ -1209,6 +1218,27 @@ export const buildNewRelicPayload = (formData: FormData) => ({
   }
 })
 
+export const buildCustomHealthPayload = (formData: FormData) => {
+  return {
+    connector: {
+      name: formData.name,
+      identifier: formData.identifier,
+      projectIdentifier: formData.projectIdentifier,
+      orgIdentifier: formData.orgIdentifier,
+      accountId: formData.accountId,
+      type: Connectors.CUSTOM,
+      spec: {
+        ...transformStepHeadersAndParamsForPayload(formData.headers, formData.params),
+        delegateSelectors: formData.delegateSelectors,
+        baseURL: formData.baseURL,
+        validationPath: formData.validationPath,
+        validationBody: formData.requestBody,
+        method: formData.requestMethod
+      }
+    }
+  }
+}
+
 export const buildPrometheusPayload = (formData: FormData) => {
   return {
     connector: {
@@ -1230,6 +1260,14 @@ export interface DatadogInitialValue {
   apiKeyRef?: SecretReferenceInterface | void
   applicationKeyRef?: SecretReferenceInterface | void
   accountId?: string | undefined
+  projectIdentifier?: string
+  orgIdentifier?: string
+  loading?: boolean
+}
+
+export interface ErrorTrackingInitialValue {
+  apiKeyRef?: SecretReferenceInterface | void
+  accountId?: string
   projectIdentifier?: string
   orgIdentifier?: string
   loading?: boolean
@@ -1297,6 +1335,38 @@ export const buildDatadogPayload = (formData: FormData) => {
         url,
         apiKeyRef: apiReferenceKey,
         applicationKeyRef: appReferenceKey,
+        delegateSelectors: delegateSelectors || {}
+      }
+    }
+  }
+}
+
+export const buildErrorTrackingPayload = (formData: FormData) => {
+  const {
+    name,
+    identifier,
+    projectIdentifier,
+    orgIdentifier,
+    delegateSelectors,
+    url,
+    sid,
+    apiKeyRef: { referenceString: apiReferenceKey },
+    description,
+    tags
+  } = formData
+  return {
+    connector: {
+      name,
+      identifier,
+      type: Connectors.ERROR_TRACKING,
+      projectIdentifier,
+      orgIdentifier,
+      description,
+      tags,
+      spec: {
+        url,
+        sid,
+        apiKeyRef: apiReferenceKey,
         delegateSelectors: delegateSelectors || {}
       }
     }
@@ -1541,12 +1611,12 @@ export const getIconByType = (type: ConnectorInfoDTO['type'] | undefined): IconN
       return 'service-gcp'
     case Connectors.PAGER_DUTY:
       return 'service-pagerduty'
-    case Connectors.ARGO_CONNECTOR:
-      return 'argo'
     case Connectors.GCP_KMS:
       return 'gcp-kms'
     case Connectors.SERVICE_NOW:
       return 'service-servicenow'
+    case Connectors.CUSTOM_HEALTH:
+      return 'service-custom-connector'
     default:
       return 'cog'
   }

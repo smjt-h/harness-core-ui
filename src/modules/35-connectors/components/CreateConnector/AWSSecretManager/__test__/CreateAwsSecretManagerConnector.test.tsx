@@ -1,3 +1,10 @@
+/*
+ * Copyright 2021 Harness Inc. All rights reserved.
+ * Use of this source code is governed by the PolyForm Free Trial 1.0.0 license
+ * that can be found in the licenses directory at the root of this repository, also available at
+ * https://polyformproject.org/wp-content/uploads/2020/05/PolyForm-Free-Trial-1.0.0.txt.
+ */
+
 import React from 'react'
 import { noop } from 'lodash-es'
 import { render, queryByText } from '@testing-library/react'
@@ -36,8 +43,8 @@ jest.mock('services/portal', () => ({
   useListAwsRegions: jest.fn().mockImplementation(() => {
     return { data: mockRegions, refetch: jest.fn(), error: null, loading: false }
   }),
-  useGetDelegateSelectors: jest.fn().mockImplementation(() => ({ mutate: jest.fn() })),
-  useGetDelegatesStatusV2: jest.fn().mockImplementation(() => ({ mutate: jest.fn() }))
+  useGetDelegateSelectorsUpTheHierarchy: jest.fn().mockImplementation(() => ({ mutate: jest.fn() })),
+  useGetDelegatesUpTheHierarchy: jest.fn().mockImplementation(() => ({ mutate: jest.fn() }))
 }))
 
 describe('Create Secret Manager Wizard', () => {

@@ -1,3 +1,10 @@
+/*
+ * Copyright 2022 Harness Inc. All rights reserved.
+ * Use of this source code is governed by the PolyForm Shield 1.0.0 license
+ * that can be found in the licenses directory at the root of this repository, also available at
+ * https://polyformproject.org/wp-content/uploads/2020/06/PolyForm-Shield-1.0.0.txt.
+ */
+
 import React from 'react'
 import type { CellProps, Column, Renderer } from 'react-table'
 import { Color, Container, Layout, TableV2, Text } from '@wings-software/uicore'
@@ -84,7 +91,7 @@ const RenderColumnTemplate: Renderer<CellProps<TemplateSummaryResponse>> = ({ ro
               >
                 <Text color={Color.GREY_800}>{getString('nameLabel', { name: data.name })}</Text>
                 <br />
-                <Text>{getString('descriptionLabel', { description: data.description || '-' })}</Text>
+                <Text lineClamp={1}>{getString('descriptionLabel', { description: data.description || '-' })}</Text>
               </Layout.Vertical>
             }
           >
@@ -100,7 +107,7 @@ const RenderColumnTemplate: Renderer<CellProps<TemplateSummaryResponse>> = ({ ro
         <Container>
           <Badge
             text={'common.invalid'}
-            iconName="warning-sign"
+            iconName="error-outline"
             showTooltip={true}
             entityName={data.name}
             entityType={'Template'}
@@ -200,6 +207,7 @@ export const TemplatesListView: React.FC<TemplatesViewProps> = (props): JSX.Elem
       data={data?.content || []}
       onRowClick={item => onSelect(item)}
       pagination={{
+        className: css.pagination,
         itemCount: data?.totalElements || 0,
         pageSize: data?.size || 10,
         pageCount: data?.totalPages || -1,

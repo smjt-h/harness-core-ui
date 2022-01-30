@@ -1,5 +1,13 @@
+/*
+ * Copyright 2022 Harness Inc. All rights reserved.
+ * Use of this source code is governed by the PolyForm Shield 1.0.0 license
+ * that can be found in the licenses directory at the root of this repository, also available at
+ * https://polyformproject.org/wp-content/uploads/2020/06/PolyForm-Shield-1.0.0.txt.
+ */
+
 import React, { useContext } from 'react'
 import {
+  ButtonSize,
   ButtonVariation,
   Color,
   Container,
@@ -24,14 +32,13 @@ import {
   TemplateListType
 } from '@templates-library/pages/TemplatesPage/TemplatesPageUtils'
 import { useMutateAsGet } from '@common/hooks'
-import { useGetTemplateList, TemplateSummaryResponse } from 'services/template-ng'
+import { TemplateSummaryResponse, useGetTemplateList } from 'services/template-ng'
 import RbacButton from '@rbac/components/Button/Button'
 import { ResourceType } from '@rbac/interfaces/ResourceType'
 import { PermissionIdentifier } from '@rbac/interfaces/PermissionIdentifier'
 import { useAppStore } from 'framework/AppStore/AppStoreContext'
 import GitPopover from '@pipeline/components/GitPopover/GitPopover'
 import type { ModulePathParams, ProjectPathProps } from '@common/interfaces/RouteInterfaces'
-import { DefaultNewVersionLabel } from 'framework/Templates/templates'
 import { TemplateContext } from '../TemplateStudio/TemplateContext/TemplateContext'
 import { TemplateInputs } from '../TemplateInputs/TemplateInputs'
 import { TemplateYaml } from '../TemplateYaml/TemplateYaml'
@@ -54,6 +61,8 @@ export enum ParentTemplateTabs {
   BASIC = 'BASIC',
   ACTVITYLOG = 'ACTVITYLOG'
 }
+
+const DefaultStableVersionValue = '-1'
 
 export const TemplateDetails: React.FC<TemplateDetailsProps> = props => {
   const { template, allowStableSelection = false, setTemplate } = props
@@ -93,9 +102,13 @@ export const TemplateDetails: React.FC<TemplateDetailsProps> = props => {
   const onChange = React.useCallback(
     (option: SelectOption): void => {
       const version = defaultTo(option.value?.toString(), '')
-      setSelectedTemplate(templates.find(item => item.versionLabel === version) || {})
+      if (version === DefaultStableVersionValue) {
+        setSelectedTemplate(templates.find(item => !item.versionLabel))
+      } else {
+        setSelectedTemplate(templates.find(item => item.versionLabel === version))
+      }
     },
-    [templateData?.data?.content]
+    [templates]
   )
 
   React.useEffect(() => {
@@ -107,13 +120,12 @@ export const TemplateDetails: React.FC<TemplateDetailsProps> = props => {
   React.useEffect(() => {
     const newVersionOptions: SelectOption[] = templates.map(item => {
       return {
-        label:
-          item.versionLabel === DefaultNewVersionLabel
-            ? getString('templatesLibrary.alwaysUseStableVersion')
-            : item.stableTemplate
-            ? getString('templatesLibrary.stableVersion', { entity: item.versionLabel })
-            : item.versionLabel,
-        value: item.versionLabel
+        label: isEmpty(item.versionLabel)
+          ? getString('templatesLibrary.alwaysUseStableVersion')
+          : item.stableTemplate
+          ? getString('templatesLibrary.stableVersion', { entity: item.versionLabel })
+          : item.versionLabel,
+        value: defaultTo(item.versionLabel, DefaultStableVersionValue)
       } as SelectOption
     })
     setVersionOptions(newVersionOptions)
@@ -124,17 +136,13 @@ export const TemplateDetails: React.FC<TemplateDetailsProps> = props => {
     if (allowStableSelection) {
       const stableVersion = { ...allVersions.find(item => item.stableTemplate) }
       if (stableVersion) {
-        stableVersion.versionLabel = DefaultNewVersionLabel
+        delete stableVersion.versionLabel
         allVersions.unshift(stableVersion)
       }
     }
     setTemplates(allVersions)
     setSelectedTemplate(allVersions.find(item => item.versionLabel === template.versionLabel))
   }, [templateData?.data?.content])
-
-  React.useEffect(() => {
-    reloadTemplates()
-  }, [template.identifier])
 
   const goToTemplateStudio = () => {
     if (selectedTemplate) {
@@ -198,6 +206,7 @@ export const TemplateDetails: React.FC<TemplateDetailsProps> = props => {
                 <RbacButton
                   text={getString('templatesLibrary.openInTemplateStudio')}
                   variation={ButtonVariation.SECONDARY}
+                  size={ButtonSize.SMALL}
                   className={css.openInStudio}
                   onClick={goToTemplateStudio}
                   permission={{
@@ -214,7 +223,7 @@ export const TemplateDetails: React.FC<TemplateDetailsProps> = props => {
                     id={ParentTemplateTabs.BASIC}
                     title={getString('details')}
                     panel={
-                      <Layout.Vertical height={'100%'}>
+                      <Layout.Vertical>
                         <Container>
                           <Layout.Vertical
                             className={css.topContainer}
@@ -269,7 +278,7 @@ export const TemplateDetails: React.FC<TemplateDetailsProps> = props => {
                                 <DropDown
                                   filterable={false}
                                   items={versionOptions}
-                                  value={selectedTemplate.versionLabel}
+                                  value={defaultTo(selectedTemplate.versionLabel, DefaultStableVersionValue)}
                                   onChange={onChange}
                                   disabled={isReadonly}
                                   width={300}
@@ -279,7 +288,7 @@ export const TemplateDetails: React.FC<TemplateDetailsProps> = props => {
                             </Container>
                           </Layout.Vertical>
                         </Container>
-                        <Container border={{ top: true }} className={css.tabsContainer}>
+                        <Container className={css.innerTabsContainer}>
                           <Tabs id="template-details" selectedTabId={selectedTab} onChange={handleTabChange}>
                             <Tab
                               id={TemplateTabs.INPUTS}

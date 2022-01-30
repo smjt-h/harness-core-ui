@@ -1,3 +1,10 @@
+/*
+ * Copyright 2021 Harness Inc. All rights reserved.
+ * Use of this source code is governed by the PolyForm Shield 1.0.0 license
+ * that can be found in the licenses directory at the root of this repository, also available at
+ * https://polyformproject.org/wp-content/uploads/2020/06/PolyForm-Shield-1.0.0.txt.
+ */
+
 import React, { useEffect, useMemo, useState } from 'react'
 import { useParams } from 'react-router-dom'
 import { defaultTo } from 'lodash-es'
@@ -5,14 +12,11 @@ import { ButtonVariation, Color, Container, HarnessDocTooltip, Layout, Text } fr
 import { IOptionProps, Radio } from '@blueprintjs/core'
 import { useStrings } from 'framework/strings'
 import { DelegateSelectors, useToaster } from '@common/components'
-import { useFeatureFlags } from '@common/hooks/useFeatureFlag'
 import type { AccountPathProps, ProjectPathProps } from '@common/interfaces/RouteInterfaces'
 import useCreateDelegateModal from '@delegates/modals/DelegateModal/useCreateDelegateModal'
 import {
   DelegateGroupDetails,
   useGetDelegatesUpTheHierarchy,
-  useGetDelegatesStatusV2,
-  RestResponseDelegateStatus,
   RestResponseDelegateGroupListing,
   DelegateInner
 } from 'services/portal'
@@ -120,27 +124,21 @@ export const DelegateSelector: React.FC<DelegateSelectorProps> = props => {
   const { getString } = useStrings()
   const { accountId } = useParams<AccountPathProps>()
   const { orgIdentifier, projectIdentifier } = props
-  const { CDNG_ENABLED, NG_CG_TASK_ASSIGNMENT_ISOLATION } = useFeatureFlags()
 
   const scope = { projectIdentifier, orgIdentifier }
 
-  const getDelegates = NG_CG_TASK_ASSIGNMENT_ISOLATION ? useGetDelegatesUpTheHierarchy : useGetDelegatesStatusV2
-  const queryParams = NG_CG_TASK_ASSIGNMENT_ISOLATION
-    ? {
-        accountId,
-        orgId: orgIdentifier,
-        projectId: projectIdentifier
-      }
-    : {
-        accountId
-      }
+  const queryParams = {
+    accountId,
+    orgId: orgIdentifier,
+    projectId: projectIdentifier
+  }
 
   const {
     data: apiData,
     loading,
     error,
     refetch
-  } = getDelegates({
+  } = useGetDelegatesUpTheHierarchy({
     queryParams
   })
 
@@ -151,25 +149,15 @@ export const DelegateSelector: React.FC<DelegateSelectorProps> = props => {
   const { showError } = useToaster()
 
   const getParsedData = (): (DelegateInnerCustom | DelegateGroupDetailsCustom)[] => {
-    if (NG_CG_TASK_ASSIGNMENT_ISOLATION) {
-      return ((data as RestResponseDelegateGroupListing)?.resource?.delegateGroupDetails || []).map(
-        delegateGroupDetails => ({
-          ...delegateGroupDetails,
-          checked: shouldDelegateBeChecked(delegateSelectors, [
-            ...Object.keys(defaultTo(delegateGroupDetails.groupImplicitSelectors, {})),
-            ...defaultTo(delegateGroupDetails.groupCustomSelectors, [])
-          ])
-        })
-      )
-    } else {
-      return ((data as RestResponseDelegateStatus)?.resource?.delegates || []).map(delegate => ({
-        ...delegate,
+    return ((data as RestResponseDelegateGroupListing)?.resource?.delegateGroupDetails || []).map(
+      delegateGroupDetails => ({
+        ...delegateGroupDetails,
         checked: shouldDelegateBeChecked(delegateSelectors, [
-          ...(delegate.tags || []),
-          ...Object.keys(delegate?.implicitSelectors || {})
+          ...Object.keys(defaultTo(delegateGroupDetails.groupImplicitSelectors, {})),
+          ...defaultTo(delegateGroupDetails.groupCustomSelectors, [])
         ])
-      }))
-    }
+      })
+    )
   }
 
   // used to set data only if no error occurs
@@ -331,22 +319,18 @@ export const DelegateSelector: React.FC<DelegateSelectorProps> = props => {
         <Text font={{ size: 'medium', weight: 'semi-bold' }} color={Color.BLACK}>
           {getString('connectors.delegate.testDelegateConnectivity')}
         </Text>
-        {CDNG_ENABLED && NG_CG_TASK_ASSIGNMENT_ISOLATION ? (
-          <RbacButton
-            icon="plus"
-            variation={ButtonVariation.SECONDARY}
-            withoutBoxShadow
-            font={{ weight: 'semi-bold' }}
-            iconProps={{ margin: { right: 'xsmall' } }}
-            permission={permissionRequestNewDelegate}
-            onClick={() => openDelegateModal()}
-            data-name="installNewDelegateButton"
-          >
-            {getString('connectors.testConnectionStep.installNewDelegate')}
-          </RbacButton>
-        ) : (
-          <></>
-        )}
+        <RbacButton
+          icon="plus"
+          variation={ButtonVariation.SECONDARY}
+          withoutBoxShadow
+          font={{ weight: 'semi-bold' }}
+          iconProps={{ margin: { right: 'xsmall' } }}
+          permission={permissionRequestNewDelegate}
+          onClick={() => openDelegateModal()}
+          data-name="installNewDelegateButton"
+        >
+          {getString('connectors.testConnectionStep.installNewDelegate')}
+        </RbacButton>
       </Layout.Horizontal>
       <DelegateSelectorTable {...delegateSelectorTableProps} />
     </Layout.Vertical>

@@ -1,3 +1,10 @@
+/*
+ * Copyright 2021 Harness Inc. All rights reserved.
+ * Use of this source code is governed by the PolyForm Shield 1.0.0 license
+ * that can be found in the licenses directory at the root of this repository, also available at
+ * https://polyformproject.org/wp-content/uploads/2020/06/PolyForm-Shield-1.0.0.txt.
+ */
+
 import React from 'react'
 import { fireEvent, render, waitFor } from '@testing-library/react'
 import { Container } from '@wings-software/uicore'
@@ -50,7 +57,10 @@ jest.mock(
           className="selectMetricContainer"
           onClick={() => props.onWidgetMetricSelected(mockWidgetSelectedData)}
         />
-        <Container className="timeseriesDataContainer" onClick={() => props.onFetchTimeseriesData()} />
+        <Container
+          className="timeseriesDataContainer"
+          onClick={() => props.onFetchTimeseriesData(mockWidgetSelectedData.query)}
+        />
         <Container>{props.selectedMetricInfo?.query}</Container>
         <Container>{props.timeseriesDataError}</Container>
       </>

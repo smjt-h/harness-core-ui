@@ -1,10 +1,17 @@
+/*
+ * Copyright 2021 Harness Inc. All rights reserved.
+ * Use of this source code is governed by the PolyForm Shield 1.0.0 license
+ * that can be found in the licenses directory at the root of this repository, also available at
+ * https://polyformproject.org/wp-content/uploads/2020/06/PolyForm-Shield-1.0.0.txt.
+ */
+
 import React, { useMemo, useState } from 'react'
 import { Layout, Text, Color, Container, Pagination, PageError, NoDataCard } from '@wings-software/uicore'
 import { isEqual } from 'lodash-es'
 import { useParams } from 'react-router-dom'
 import { useGetMonitoredServiceList } from 'services/cv'
 import { PageSpinner } from '@common/components'
-import SaveAndDiscardButton from '@common/components/SaveAndDiscardButton/SaveAndDiscardButton'
+import SaveAndDiscardButton from '@cv/components/SaveAndDiscardButton/SaveAndDiscardButton'
 import type { ProjectPathProps } from '@common/interfaces/RouteInterfaces'
 import { useStrings } from 'framework/strings'
 import { getErrorMessage } from '@cv/utils/CommonUtils'

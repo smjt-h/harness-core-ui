@@ -3,6 +3,11 @@ home: Home
 welcome: Welcome
 dashboards: Dashboards
 setup: Setup
+agent: Agent
+application: Application
+certificate: Certificate
+gpgkey: 'GPG Key'
+sync: Sync
 accountSetup: Account Setup
 projectSetup: Project Setup
 orgSetup: Org Setup
@@ -10,8 +15,8 @@ delegateForTask: '{{delegate}} for {{taskName}}'
 noDelegateForTask: 'No delegate found for {{taskName}}'
 connectThroughPlatform: 'Connect through Harness Platform'
 connectThroughDelegate: 'Connect through a Harness Delegate'
-connectThroughPlatformInfo: 'This option is meant for a SaaS Git provider.  Communication with the Git provider will be done through the Harness Platform.'
-connectThroughDelegateInfo: 'This option is meant for a Git Provider that is behind your corporate firewall. Communication wth the Git provider will be done through a Harness Delegate. You will need to install a Harness Delegate with this option. This option provides enhanced security but may result in slower response times.'
+connectThroughPlatformInfo: 'Use this option to connect to a SaaS Git provider. Secure communication with the Git provider is done through the Harness Platform. All credentials are encrypted and stored in the Secret Manager configured in Harness.'
+connectThroughDelegateInfo: 'Use this option to connect to a Git Provider behind your corporate firewall. Secure communication with the Git provider is through a Harness Delegate you install in your environment. The Delegate securely connects to the Harness Platform and performs tasks using your repositories.'
 pipeline: Pipeline
 duplicateId: 'Duplicate Identifier'
 createPipeline: Create a Pipeline
@@ -37,6 +42,7 @@ updating: 'Updating {{entity}} {{name}}'
 creating: 'Creating {{entity}} {{name}}'
 successfullCreate: '{{entity}} {{name}} created successfully'
 successfullUpdate: '{{entity}} {{name}} updated successfully'
+entityType: Entity Type
 approve: Approve
 reject: Reject
 disable: Disable
@@ -50,7 +56,8 @@ viewText: View
 PermissibleActions: Permissible Actions
 My: My
 ok: OK
-ID: ID
+ID: Id
+org: Org
 instanceValidation:
   required: Instance is an required field
   minimumCountInstance: Instances must be greater than or equal to 0
@@ -61,6 +68,7 @@ performAction: Perform Action
 jexlExpression: JEXL Expression
 bash: Bash
 shell: Shell
+powershell: Powershell
 input: Input
 refresh: Refresh
 goBack: Go Back
@@ -107,6 +115,8 @@ datePickerShortcuts:
   Last2Months: Last 2 Months
 validation:
   namePatternIsNotValid: 'Name can only contain alphanumerics, _ and -'
+  provisionerIdentifierPatternIsNotValid: 'Provisioner Identifier should not contain special characters and spaces'
+  provisionerIdentifierIsRequired: 'Provisioner Identifier is required'
   harnessFolderNamePatternIsNotValid: 'Harness Folder name can only contain alphanumerics, underscore, hyphen or a whitespace'
   nameIsRequired: '{{$.validation.nameRequired}}'
   valueIsRequired: '{{$.validation.valueRequired}}'
@@ -120,7 +130,9 @@ validation:
   fieldCannotbeLongerThanN: '{{ name }} cannot be longer than {{ n }} characters'
   fieldMustBeAlphanumeric: '{{ name }} can only contain alphanumerics, _ and $'
   groupAttributeIsRequired: Group Attribute is required
-  entityIdIsRequired: Entity ID is required
+  clientIdIsRequired: Client Id is required
+  clientSecretRequired: Client Secret required
+  entityIdIsRequired: Entity Id is required
   valueMustBeGreaterThanOrEqualToN: Value must be greater than or equal to {{ n }}
   valueMustBeLessThanOrEqualToN: Value must be less than or equal to {{ n }}
   valueMustBeANumber: Value must be number
@@ -185,6 +197,7 @@ purpose:
     subtitle: Deploy in peace - verify activities that take place in your system. Identify risk early.
     description: 'Measure overall service health with always-on change impact analysis.'
     continuous: '{{ $.common.changeIntelligence }}'
+    moduleSelectionSubHeading: Take your software build verification  process to the next level usng our Change Intelligence
 
   ci:
     integration: Integration
@@ -208,6 +221,7 @@ purpose:
     descriptionOnly: 'Gain cloud cost visibility and optimize costs across projects, environments, deployments, and more.'
     description: 'Gain Cloud cost visibilty and optimize costs across projects, environments, clusters, deployments, etc
       <br><br>You can access this module via your free trial. Benefits include: Your software delivery pipeline can now include build stages, Test intelligence - faster and more reliable build processes'
+    moduleSelectionSubHeading: Take your cloud cost management the next level using our Harness Cloud Cost Management
   cf:
     features: Features
     feature: Feature
@@ -216,6 +230,7 @@ purpose:
     description: '{{$.common.purpose.cf.subtitle}}'
     descriptionOnly: 'Automate progressive delivery and feature release pipelines to ship more features with less risk.'
     continuous: Feature Flags
+    moduleSelectionSubHeading: Take your feature rollout processes to the next level using our Harness Feature Flags
 trialInProgress: Trial in progress
 trialInProgressDescription: A Project contains your pipelines, resources, and team members. Get started by creating your first Project.
 letsGetYouStarted: Let’s get you started
@@ -241,20 +256,20 @@ gitSync:
   selectBranchLabel: Select a Branch
   updateResource: 'Update {{type}} {{name}}'
   createResource: 'Create {{type}} {{name}}'
-  sync: Sync
+  sync: '{{$.common.sync}}'
   syncStartSuccess: 'Sync started for branch {{branch}}'
   syncing:
     header: Sync in progress
     message: Sync is happening in the background. You can check on the status in the branch dropdown. This might take a few minutes to complete.
   unSynced:
     header: Sync the branch
-    message1: 'Branch {{branch}} is currently not Synced.'
+    message1: 'Branch {{{branch}}} is currently not Synced.'
     message2: 'Syncing the branch may take a while. Do you want to continue?'
   savingInProgress: Saving in progress
-  pushingChangestoBranch: 'Pushing changes to branch {{branch}}'
-  creatingPR: 'Creating a Pull Request from {{fromBranch}} to branch {{toBranch}}'
+  pushingChangestoBranch: 'Pushing changes to branch {{{branch}}}'
+  creatingPR: 'Creating a Pull Request from {{{fromBranch}}} to branch {{{toBranch}}}'
   unableToCreatePR: Unable to create PR
-  settingUpNewBranch: 'Setting up new branch {{branch}}'
+  settingUpNewBranch: 'Setting up new branch {{{branch}}}'
   branchSyncNotAllowed: Syncing a branch is not allowed from here. Please go to {{entityType}} list page.
   outOfSync: '{{entityType}} {{name}} is out of sync with Git.'
   fixAllErrors: Fix all the errors indicated in the YAML Editor to resolve the issue.
@@ -283,8 +298,8 @@ git:
   testRepositoryDescription: Please provide a Repository name to test the credentials. The Connector will still be created at the Account level.
   APIAuthentication: 'API Authentication'
   gitHubApp: 'GitHub App'
-  installationId: 'GitHub Installation ID'
-  applicationId: 'GitHub Application ID'
+  installationId: 'GitHub Installation Id'
+  applicationId: 'GitHub Application Id'
   privateKey: 'GitHub Private Key'
   currentUserLabel: 'Using the Git credentials of {{user}}'
   noUserLabel: 'We don’t have your git credentials for the selected folder. Please update the credentials in user profile.'
@@ -326,6 +341,7 @@ enableGitSyncPipeline:
 saveAndClose: Save and Close
 pendingInvitation: Pending Invitation
 capsAll: ALL
+config: Config
 blank: ''
 totalLines: 'Total lines'
 newLines: 'New lines'
@@ -445,7 +461,7 @@ selectVersion: Select version
 confirmText: Are you sure?
 paste: Paste
 artifactTag: tag
-clientId: Client ID
+clientId: Client Id
 filters:
   saveNewFilter: Save New Filter
   unsavedFilter: Unsaved Filter
@@ -462,7 +478,7 @@ noteAccountSwitch: 'Note: Switching Account might require re-authentication base
 accountOverview: Account Overview
 accountDetails: Account Details
 addAccountName: Add Account Name
-accountId: Account ID
+accountId: Account Id
 harnessClusterHostingAccount: Harness Cluster Hosting Account
 defaultExperience: Default Experience
 selectDefaultExperience: Select the default experience to launch after Sign-in
@@ -570,11 +586,16 @@ videoNotSupportedError: Your browser doesn't support HTML5 video.
 sidecarArtifactsText: '{{$.sidecarArtifactText}}s'
 serviceCreated: Service created successfully
 serviceUpdated: Service updated successfully
+deleteService: Delete Service?
+deleteServiceMessage: Service deleted
+deleteServiceFailure: Unable to delete Service
+deleteServiceConfirmation: 'Are you sure you want to delete service {{name}}?'
+viewReferences: View references
 environmentCreated: Environment created successfully
 environmentUpdated: Environment updated successfully
 discard: Discard
 default: Default
-searchPlaceholder: Search by name or ID
+searchPlaceholder: Search by name or Id
 monthly: Monthly
 perMonth: /month
 hourly: Hourly
@@ -590,6 +611,7 @@ plans:
   subscription: Subsription
   manageSubscription: Manage Subscription
 useTemplate: Use template
+saveAsTemplate: Save as Template
 comingSoon: Coming Soon
 comingSoon2: Coming Soon!
 recommended: 'Recommended'
@@ -601,6 +623,9 @@ module:
   cf: FF
   ce: CCM
   cv: CV
+  core: CORE
+  pms: PMS
+  templateService: TEMPLATESERVICE
 customPricing: for Custom Pricing
 specified: Specified
 file: File
@@ -618,6 +643,11 @@ feature:
     description: 'Requires upgrade to setup '
     requiredPlans: Please upgrade to {{requiredPlans}}
     pleaseUpgrade: Please upgrade
+  overuse:
+    title: Overuse
+  keepGettingShipDone:
+    title: Keep Getting Ship Done!
+    requestUpgrade: Request Upgrade
 repositoryName: Repository Name
 mostActiveServices: Most active services
 allErrors: All Errors
@@ -632,7 +662,7 @@ refreshPage: refresh your page.
 files: Files
 template:
   label: 'Template'
-  saveAsNewTemplateHeading: Save as New Template
+  saveAsNewTemplateHeading: Save as new Template
   saveTemplate:
     publishTemplate: Template published successfully
     errorWhileSaving: Error occurred saving Template
@@ -662,4 +692,44 @@ duration:
 exploreSaaSPlans: Explore SaaS plans
 onPremSaaSPlansMsg: Did you know, Harness also offers a range of exciting SaaS plans?
 manageSubscription: Manage subscription
+smtp:
+  conifg: SMTP Configuration
+  modalSubHeading: Setup your smtp server by providing the below details
+  smtpConnectivity: SMTP Connectivity Test
+  port: Port
+  enableSSL: Enable SSL
+  startTSL: Start TSL
+  fromAddress: From Address
+  testConnection: Test Connection
+  portRequired: Port is required
+  portPositive: Port should be a positive number
+  configured: Configured
+  preConfiguredSubject: This is test mail
+  preConfiguredBody: This is test email
+  emailSent: Email Successfully sent
+  emailSentFail: Email failed to send
+  labelTo: To
+  labelSubject: Subject
+  labelBody: Body
+  validationTo: Recipient email is required
+  validationSubject: Subject is required
+  validationBody: Body is required
+  deleteInProgress: Deleting SMTP Configuration
+  savingSMTP: Saving SMTP Configuration
+  updatingSMTP: Updating SMTP Configuration
 invalid: INVALID
+auditTrail: Audit Trail
+userLabel: User
+resourceLabel: Resource
+resourceTypeLabel: Resource Type
+moduleLabel: 'Module'
+timePstLabel: Time (PST)
+resourceGroupLabel: Resource Group
+roleAssignmentLabel: Role Assignment
+triggerLabel: Trigger
+delegateTokenLabel: Delegate Token
+clientSecret: Client Secret
+copy: Copy
+levelUp: LEVEL UP
+overuse: OVERUSE
+scope: '{{ $.delegate.Scope }}'

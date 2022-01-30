@@ -4,8 +4,10 @@ trialCta: 'Start 14 day CCM trial'
 common:
   newBudget: 'New Budget'
   budget: 'Budget'
+  spendTillDate: 'Spend Till Date'
 allRegions: 'All Regions'
 allClusters: 'All Clusters'
+noSavingsDataMessage: 'Savings data not computed yet'
 pageErrorMsg:
   recommendationNoData: 'There are no recommendations yet. Recommendations typically take 24 hours to show up. Please check back later.'
   perspectiveNoData: 'There is not data available for the filters applied.'
@@ -31,6 +33,7 @@ co:
     rules: 'AutoStopping Rules'
   noData: 'No data available. Please check after sometime'
   autoStoppingRule:
+    limitWarningMessage: You have used {{count}} / {{limit}} free Autostopping rules included in your current plan. Consider upgrading for unlimited Autostopping rules.
     helpText:
       step1:
         title: 'Idle Time'
@@ -155,6 +158,15 @@ co:
       selectLbHelpText: 'The rule requires a Load balancer to direct traffic/shut down appropriate instances. Multiple instances and rules can use a single Load balancer. It identifies instances based on hostnames and directs the HTTP traffic appropriately.'
       chooseLbText: '- Choose from existing Load balancers -'
       erroredAccessPointSelectionText: 'Access point in error state can not be selected'
+      kubernetesDesc:
+        resourceDefinition: The following is the resource definition YAML of the Kubernetes AutoStopping Rule that will be applied to the cluster. The specification here is the same as a Kubernetes Ingress with additional metadata.
+        params:
+          description: Update the following parameters with the correct HTTP/HTTPS service details. These are the configurations to the Ingress that the AutoStopping Rule will create for your Service.
+          host: '(Optional) host: Enter the domain name. If a host is provided (for example, qa.harness.com), the rule applies to that host. If you do not specify the domain name, the ingress created will match requests to all the domains.'
+          name: 'name: Enter the name of your Kubernetes service. For example, test.'
+          port: 'port: Enter the port number. For example, 80.'
+          learnMore: 'Learn More (The Ingress resource https://kubernetes.io/docs/concepts/services-networking/ingress/#the-ingress-resource)'
+        validate: 'Once you have updated the YAML file with all the details, validate it to proceed.'
       helpText:
         dns:
           info: 'Select DNS Link if the underlying application running on the resources managed by this AutoStopping Rule is currently accessed by an HTTP or HTTPS URL.'
@@ -266,7 +278,7 @@ co:
   sshSetup: 'AutoStopping has first class support for accessing the resources managed by this Rule via SSH or RDP. Doing so will require downloading the Harness CLI. Choose your operating system and download the respective Harness CLI. '
   gatewayAccess:
     subtitle: 'Now that you have configured the Rule, choose how you would like to access the resources managed by this rule.'
-    accessDescription: 'Choose how you would like to access the underlying application running on the resources managed by this Rule.'
+    accessDescription: 'Choose how you would like to access the underlying application running on the resources managed by this Rule. {{optionalText}}'
     dnsLink: 'DNS Link'
     dnsLinkHeader: 'Setup access via DNS Link (HTTP or HTTPS URL) to the underlying application running on the resources managed by this AutoStopping Rule.'
     sshRdp: 'SSH / RDP'
@@ -274,7 +286,7 @@ co:
     rdp: 'RDP'
     backgroundTasks: 'Background Tasks'
   instanceSelector:
-    name: 'Name and ID'
+    name: 'Name and Id'
     ipAddress: '{{$.ce.co.gatewayAccess.ip}}'
     launchTime: 'Launch Time'
   gatewayReview:
@@ -319,7 +331,7 @@ co:
     advancedConfigDescription: 'Set up advanced configurations for this AutoStopping Rule'
 
   rulesTableHeaders:
-    name: '${{$.name}}'
+    name: '{{$.name}}'
     idleTime: 'IDLE TIME'
     fulfilment: 'COMPUTE TYPE'
     mangedResources: 'RESOURCES MANAGED BY THE RULE'
@@ -380,7 +392,7 @@ connector:
       externalID: '{{$.connectors.aws.externalId}}'
       validation:
         arnRequired: '{{$.connectors.aws.validation.crossAccountRoleArn}}'
-        extIDRequired: External ID is required
+        extIDRequired: External Id is required
       submitText: Save & Continue
       templateLaunchText: Launch Template in AWS Console
     testConnection:
@@ -418,7 +430,6 @@ recommendation:
       minCost: Monthly cost greater than
       clusterName: Cluster Name
       name: '{{ $.name }}'
-      resourceType: Resource Type
       namespace: '{{ $.common.namespace }}'
       enterCost: Enter Cost
     listTableHeaders:
@@ -467,7 +478,18 @@ recommendation:
 savedYamlSuccess: YAML validated successfully
 uploadCertiHeader: Upload a new certificate for the Application Load Balancer
 perspectives:
+  newPerspective: New Perspective
+  featureWarningSubInfoText: 'You have used {{usagePercentage}}% of your cloud spend subscription limit.'
+  newPerspectiveLimitWarning: You have used {{count}} / {{limit}} free perspectives incuded in your current plan. Consider upgrading for unlimited perspectives.
+  allPerspectiveTxt: 'All ({{ count }})'
+  recentPerspectiveTxt: 'Recent ({{ count }})'
   sideNavText: 'Perspectives'
+  perspectiveCount: 'Total: {{ count }}'
+  confirmDeletePerspectiveTitle: Delete Perspective
+  confirmDeletePerspectiveMsg: 'Are you sure you want to delete the Perspective {{ name }}?'
+  perspectiveDeletedTxt: 'Perspective {{ name }} deleted'
+  perspectiveReportsTxt: 'Reports {{ reportInfo }}'
+  perspectiveReportsMoreTxt: ' +{{ count }} more'
   workloadDetails:
     aggregation:
       text: 'Aggregation:'
@@ -522,6 +544,9 @@ perspectives:
     daily: '{{$.common.daily}}'
     monthly: '{{$.common.monthly}}'
     hourly: '{{$.common.hourly}}'
+  timeRangeLimitWarning:
+    currentPlanOffer: Free plan provides data for the last one month.
+    upgradeOffer: now for data retention upto 5 years.
   createPerspective:
     title: 'Perspective Builder'
     nameLabel: 'Enter a name for the view*'
@@ -533,6 +558,7 @@ perspectives:
     nextButton: '{{$.next}}'
     prevButton: '{{$.previous}}'
     validationErrors:
+      nameLengthError: The name must be between 1 and 32 characters.
       nameError: '{{$.validation.nameRequired}}'
       ruleError: 'values length should be greater than 1'
     filters:
@@ -554,10 +580,11 @@ perspectives:
       opNull: 'NULL'
       opNotNull: 'NOT NULL'
   reports:
-    title: Report Schedules
+    title: 'Report Schedules({{ count }})'
     desc: Reports can send a cost report to specified users at the specified frequency.
     msg: You have not created any yet.
     createNew: '+ create new Report schedule'
+    addReportSchedule: 'add Report schedule'
     reportName: '{{ $.common.reportName }}'
     frequency: '{{ $.common.frequency }}'
     recipients: Recipients
@@ -565,18 +592,23 @@ perspectives:
     emailPlaceholder: Enter emails separated by comma
     recipientLabel: Send report to
     searchTimezonePlaceholder: Search Timezone
+    reportDeletedTxt: 'Report {{ name }} deleted'
   recommendations:
     viewText: '{{ $.common.viewText }}'
     recommendationCountTxt: '{{ count }} recommendations saving upto'
     perMonth: per month
   budgets:
+    budgetText: '{{ index }}. Budget Amount: {{ amount }}'
+    budgetTextWithGrowthRate: '{{ index }}. Budget Amount: {{ amount }} with {{ growth }}% growth rate'
     addBudget: Add a budget to this perspective
+    perspectiveCreateBudgetTitle: '{{ $.ce.common.budget}}({{ count }})'
     title: '{{ $.ce.common.budget}}'
     thisMonth: this month
+    viewText: '{{ $.common.viewText }}'
     spendExceededBy: Spend exceeded budget by
     monthToDateSpend: Spend Till Date spend is
     budgetSmallTxt: budget
-    budgetMonthlyTxt: Budget - Monthly
+    budgetMonthlyTxt: 'Budget - {{ period }}'
     desc: Budget can help you recieve alerts when the spend exceeds or is about to exceed a specified threshold so that it can be prevented.
     createNew: + create new Budget
     wizardTitle: '{{ $.ce.common.newBudget }}'
@@ -610,6 +642,7 @@ perspectives:
       subTitle: Send an alert to Harness User Groups when the actual or forecasted cost exceeds a percentage of your Budget amount created in the previous step.
       budgetAmount: Budget Amount
       actual: Actual
+      sendAlertTo: Send Alert To
       forecasted: Forecasted
       basedOn: Based on
       exceeds: exceeds
@@ -680,6 +713,7 @@ budgets:
   confirmDeleteBudgetTitle: Delete Budget
   confirmDeleteBudgetMsg: 'Are you sure you want to delete the Budget {{ name }}?'
   budgetDeletedTxt: 'Budget {{ name }} deleted'
+  addNewBudget: add new Budget
   listPage:
     title: All Budgets
     newBudget: '{{ $.ce.common.newBudget }}'
@@ -700,15 +734,16 @@ budgets:
       actualCost: Actual cost
       budgetedCost: '{{ $.ce.common.budget}}'
       forecastCost: Forecased cost
-      currentMonthCost: Spend Till Date cost
+      currentMonthCost: '{{ $.ce.common.spendTillDate }}'
     tableHeaders:
+      budgetPeriod: BUDGET PERIOD
       month: MONTH
       actualCost: ACTUAL COST
       budgetCost: BUDGETED COST
       budgetVariance: BUDGET VARIANCE ($)
       budgetVariancePercentage: BUDGET VARIANCE (%)
-    budgetStatus: 'Budget Status - {{ timeScope }}'
+    budgetStatus: 'Budget Period - {{ timeScope }}'
     timeLeft: '{{ timeLeft }} {{ timeUnit }} left'
-    monthToDateCost: Spend Till Date Cost
+    monthToDateCost: '{{ $.ce.common.spendTillDate }}'
     budgetAmount: Budget amount
     alertsAt: Alerts at

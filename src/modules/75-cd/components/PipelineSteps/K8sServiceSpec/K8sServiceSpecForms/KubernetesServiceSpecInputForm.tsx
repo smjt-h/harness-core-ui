@@ -1,6 +1,13 @@
+/*
+ * Copyright 2021 Harness Inc. All rights reserved.
+ * Use of this source code is governed by the PolyForm Shield 1.0.0 license
+ * that can be found in the licenses directory at the root of this repository, also available at
+ * https://polyformproject.org/wp-content/uploads/2020/06/PolyForm-Shield-1.0.0.txt.
+ */
+
 import React from 'react'
 
-import { Layout, MultiTypeInputType } from '@wings-software/uicore'
+import { Layout } from '@wings-software/uicore'
 
 import cx from 'classnames'
 import { connect } from 'formik'
@@ -32,7 +39,8 @@ const KubernetesServiceSpecInputFormikForm: React.FC<KubernetesServiceInputFormP
   onUpdate,
   readonly = false,
   stageIdentifier,
-  formik
+  formik,
+  allowableTypes
 }) => {
   const { getString } = useStrings()
 
@@ -73,7 +81,7 @@ const KubernetesServiceSpecInputFormikForm: React.FC<KubernetesServiceInputFormP
               }}
               type={StepType.CustomVariable}
               stepViewType={StepViewType.InputSet}
-              allowableTypes={[MultiTypeInputType.FIXED, MultiTypeInputType.EXPRESSION]}
+              allowableTypes={allowableTypes}
               onUpdate={({ variables }: CustomVariablesData) => {
                 onUpdate?.({
                   variables: variables as any

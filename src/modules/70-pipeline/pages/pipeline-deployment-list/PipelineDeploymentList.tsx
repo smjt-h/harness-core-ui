@@ -1,3 +1,10 @@
+/*
+ * Copyright 2022 Harness Inc. All rights reserved.
+ * Use of this source code is governed by the PolyForm Shield 1.0.0 license
+ * that can be found in the licenses directory at the root of this repository, also available at
+ * https://polyformproject.org/wp-content/uploads/2020/06/PolyForm-Shield-1.0.0.txt.
+ */
+
 import React, { useCallback } from 'react'
 import { useParams, useHistory } from 'react-router-dom'
 import { Text, Icon, OverlaySpinner, Container, Layout, Color } from '@wings-software/uicore'
@@ -25,6 +32,7 @@ import RbacButton from '@rbac/components/Button/Button'
 import PipelineSummaryCards from '@pipeline/components/Dashboards/PipelineSummaryCards/PipelineSummaryCards'
 import PipelineBuildExecutionsChart from '@pipeline/components/Dashboards/BuildExecutionsChart/PipelineBuildExecutionsChart'
 import useTabVisible from '@common/hooks/useTabVisible'
+import { isCDCommunity, useLicenseStore } from 'framework/LicenseStore/LicenseStoreContext'
 import ExecutionsList from './ExecutionsList/ExecutionsList'
 import ExecutionsPagination from './ExecutionsPagination/ExecutionsPagination'
 import { PipelineDeploymentListHeader } from './PipelineDeploymentListHeader/PipelineDeploymentListHeader'
@@ -65,12 +73,14 @@ const getHasFilters = ({
   queryParams,
   filterIdentifier,
   searchTerm,
-  myDeployments
+  myDeployments,
+  status
 }: {
   queryParams: QueryParams
   filterIdentifier?: string
   searchTerm?: string
   myDeployments?: boolean
+  status: GetListOfExecutionsQueryParams['status']
 }): boolean => {
   return (
     [queryParams.pipelineIdentifier, queryParams.filters, filterIdentifier, searchTerm].some(
@@ -222,7 +232,8 @@ export default function PipelineDeploymentList(props: PipelineDeploymentListProp
     queryParams,
     filterIdentifier,
     searchTerm,
-    myDeployments
+    myDeployments,
+    status
   })
 
   const isCIModule = module === 'ci'
@@ -245,6 +256,9 @@ export default function PipelineDeploymentList(props: PipelineDeploymentListProp
     cancel()
     setData(await (await reloadPipelines({ filterType: 'PipelineSetup' }))?.data?.totalElements)
   }, [cancel])
+
+  const { licenseInformation } = useLicenseStore()
+  const isCommunityAndCDModule = module === 'cd' && isCDCommunity(licenseInformation)
 
   const {
     data,
@@ -349,26 +363,26 @@ export default function PipelineDeploymentList(props: PipelineDeploymentListProp
 
   return (
     <GitSyncStoreProvider>
-      <Page.Body
-        className={css.main}
-        key={pipelineIdentifier}
-        error={(error?.data as Error)?.message || error?.message}
-        retryOnError={() => fetchExecutions()}
+      <FilterContextProvider
+        savedFilters={filters}
+        isFetchingFilters={isFetchingFilters}
+        refetchFilters={refetchFilters}
+        queryParams={queryParams}
       >
-        {props.showHealthAndExecution && (
-          <Container className={css.healthAndExecutions}>
-            <PipelineSummaryCards />
-            <PipelineBuildExecutionsChart />
-          </Container>
-        )}
-
-        <FilterContextProvider
-          savedFilters={filters}
-          isFetchingFilters={isFetchingFilters}
-          refetchFilters={refetchFilters}
-          queryParams={queryParams}
+        {renderDeploymentListHeader({ pipelineExecutionSummary, hasFilters, onRunPipeline: props.onRunPipeline })}
+        <Page.Body
+          className={css.main}
+          key={pipelineIdentifier}
+          error={(error?.data as Error)?.message || error?.message}
+          retryOnError={() => fetchExecutions()}
         >
-          {renderDeploymentListHeader({ pipelineExecutionSummary, hasFilters, onRunPipeline: props.onRunPipeline })}
+          {props.showHealthAndExecution && !isCommunityAndCDModule && (
+            <Container className={css.healthAndExecutions}>
+              <PipelineSummaryCards />
+              <PipelineBuildExecutionsChart />
+            </Container>
+          )}
+
           {spinner ? (
             spinner
           ) : !pipelineExecutionSummary?.content?.length ? (
@@ -400,8 +414,8 @@ export default function PipelineDeploymentList(props: PipelineDeploymentListProp
               <ExecutionsPagination pipelineExecutionSummary={pipelineExecutionSummary} />
             </React.Fragment>
           )}
-        </FilterContextProvider>
-      </Page.Body>
+        </Page.Body>
+      </FilterContextProvider>
     </GitSyncStoreProvider>
   )
 }

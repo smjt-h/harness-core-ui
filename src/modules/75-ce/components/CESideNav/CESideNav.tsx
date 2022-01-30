@@ -1,3 +1,10 @@
+/*
+ * Copyright 2021 Harness Inc. All rights reserved.
+ * Use of this source code is governed by the PolyForm Shield 1.0.0 license
+ * that can be found in the licenses directory at the root of this repository, also available at
+ * https://polyformproject.org/wp-content/uploads/2020/06/PolyForm-Shield-1.0.0.txt.
+ */
+
 import React, { useEffect, useState } from 'react'
 import { useParams } from 'react-router-dom'
 import { Button, Checkbox, Color, Layout, Popover, Text } from '@wings-software/uicore'
@@ -11,6 +18,7 @@ import { useStrings } from 'framework/strings'
 import { returnLaunchUrl } from '@common/utils/routeUtils'
 import NavExpandable from '@common/navigation/NavExpandable/NavExpandable'
 import { LaunchButton } from '@common/components/LaunchButton/LaunchButton'
+import { USER_JOURNEY_EVENTS } from '@ce/TrackingEventsConstants'
 import css from './CESideNav.module.scss'
 
 const feedbackOptions = [
@@ -121,18 +129,34 @@ export const ProjectLevelFeedback = (props: ProjectLevelFeedbackProps) => {
 const SideNavItems = () => {
   const { accountId } = useParams<PipelinePathProps>()
   const { getString } = useStrings()
+  const { trackEvent } = useTelemetry()
   return (
     <Layout.Vertical spacing="small">
       <React.Fragment>
         <SidebarLink label={getString('overview')} to={routes.toCEOverview({ accountId })} />
-        <SidebarLink label={getString('ce.perspectives.sideNavText')} to={routes.toCEPerspectives({ accountId })} />
+        <SidebarLink
+          onClick={() => {
+            trackEvent(USER_JOURNEY_EVENTS.PERSPECTIVE_NAV_CLICK, {})
+          }}
+          label={getString('ce.perspectives.sideNavText')}
+          to={routes.toCEPerspectives({ accountId })}
+        />
         <SidebarLink label={getString('ce.budgets.sideNavText')} to={routes.toCEBudgets({ accountId })} />
 
         <SidebarLink
+          onClick={() => {
+            trackEvent(USER_JOURNEY_EVENTS.RECOMMENDATIONS_NAV_CLICK, {})
+          }}
           label={getString('ce.recommendation.sideNavText')}
           to={routes.toCERecommendations({ accountId })}
         />
-        <SidebarLink label={getString('ce.co.breadCrumb.rules')} to={routes.toCECORules({ accountId })} />
+        <SidebarLink
+          onClick={() => {
+            trackEvent(USER_JOURNEY_EVENTS.AS_NAV_CLICK, {})
+          }}
+          label={getString('ce.co.breadCrumb.rules')}
+          to={routes.toCECORules({ accountId })}
+        />
         <NavExpandable title={getString('common.setup')} route={routes.toCECOAccessPoints({ accountId })}>
           <Layout.Vertical spacing="small">
             <SidebarLink

@@ -1,5 +1,13 @@
+/*
+ * Copyright 2021 Harness Inc. All rights reserved.
+ * Use of this source code is governed by the PolyForm Shield 1.0.0 license
+ * that can be found in the licenses directory at the root of this repository, also available at
+ * https://polyformproject.org/wp-content/uploads/2020/06/PolyForm-Shield-1.0.0.txt.
+ */
+
 import { Types as TransformValuesTypes } from '@pipeline/components/PipelineSteps/Steps/StepsTransformValuesUtils'
 import { Types as ValidationFieldTypes } from '@pipeline/components/PipelineSteps/Steps/StepsValidateUtils'
+import type { K8sDirectInfraYaml } from 'services/ci'
 
 export const transformValuesFieldsConfig = [
   {
@@ -71,6 +79,10 @@ export const transformValuesFieldsConfig = [
     type: TransformValuesTypes.ImagePullPolicy
   },
   {
+    name: 'spec.shell',
+    type: TransformValuesTypes.Shell
+  },
+  {
     name: 'spec.runAsUser',
     type: TransformValuesTypes.Text
   },
@@ -88,7 +100,7 @@ export const transformValuesFieldsConfig = [
   }
 ]
 
-export const editViewValidateFieldsConfig = [
+export const getEditViewValidateFieldsConfig = (buildInfrastructureType: K8sDirectInfraYaml['type']) => [
   {
     name: 'identifier',
     type: ValidationFieldTypes.Identifier,
@@ -105,12 +117,24 @@ export const editViewValidateFieldsConfig = [
     name: 'spec.connectorRef',
     type: ValidationFieldTypes.Text,
     label: 'pipelineSteps.connectorLabel',
-    isRequired: true
+    isRequired: buildInfrastructureType !== 'VM'
   },
   {
     name: 'spec.image',
     type: ValidationFieldTypes.Text,
     label: 'imageLabel',
+    isRequired: buildInfrastructureType !== 'VM'
+  },
+  {
+    name: 'spec.language',
+    type: ValidationFieldTypes.Text,
+    label: 'languageLabel',
+    isRequired: true
+  },
+  {
+    name: 'spec.buildTool',
+    type: ValidationFieldTypes.Text,
+    label: 'buildToolLabel',
     isRequired: true
   },
   {

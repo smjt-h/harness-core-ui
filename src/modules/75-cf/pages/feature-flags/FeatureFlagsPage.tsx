@@ -1,3 +1,10 @@
+/*
+ * Copyright 2022 Harness Inc. All rights reserved.
+ * Use of this source code is governed by the PolyForm Shield 1.0.0 license
+ * that can be found in the licenses directory at the root of this repository, also available at
+ * https://polyformproject.org/wp-content/uploads/2020/06/PolyForm-Shield-1.0.0.txt.
+ */
+
 import React, { useEffect, useMemo, useRef, useState, useCallback } from 'react'
 import { useHistory, useParams } from 'react-router-dom'
 import {
@@ -5,13 +12,11 @@ import {
   Color,
   Container,
   ExpandingSearchInput,
-  FlexExpander,
   Heading,
   Layout,
   Pagination,
   Text,
   Utils,
-  HarnessDocTooltip,
   TableV2
 } from '@wings-software/uicore'
 import { noop } from 'lodash-es'
@@ -20,7 +25,6 @@ import type { Cell, CellProps, Column, Renderer } from 'react-table'
 import type { MutateMethod } from 'restful-react'
 import routes from '@common/RouteDefinitions'
 import { useToaster } from '@common/exports'
-import { useConfirmAction } from '@common/hooks'
 import {
   DeleteFeatureFlagQueryParams,
   Feature,
@@ -38,7 +42,7 @@ import { usePermission } from '@rbac/hooks/usePermission'
 import { UseToggleFeatureFlag, useToggleFeatureFlag } from '@cf/hooks/useToggleFeatureFlag'
 import { VariationTypeIcon } from '@cf/components/VariationTypeIcon/VariationTypeIcon'
 import { VariationWithIcon } from '@cf/components/VariationWithIcon/VariationWithIcon'
-import { ListingPageTemplate, ListingPageTitle } from '@cf/components/ListingPageTemplate/ListingPageTemplate'
+import ListingPageTemplate from '@cf/components/ListingPageTemplate/ListingPageTemplate'
 import { NoData } from '@cf/components/NoData/NoData'
 import { useEnvironmentSelectV2 } from '@cf/hooks/useEnvironmentSelectV2'
 import type { EnvironmentResponseDTO } from 'services/cd-ng'
@@ -51,19 +55,19 @@ import {
   getErrorMessage,
   isFeatureFlagOn,
   rewriteCurrentLocationWithActiveEnvironment,
-  showToaster,
   useFeatureFlagTypeToStringMapping
 } from '@cf/utils/CFUtils'
 import { FlagTypeVariations } from '@cf/components/CreateFlagDialog/FlagDialogUtils'
-// import FlagDrawerFilter from '../../components/FlagFilterDrawer/FlagFilterDrawer'
 import FlagDialog from '@cf/components/CreateFlagDialog/FlagDialog'
-import RbacOptionsMenuButton from '@rbac/components/RbacOptionsMenuButton/RbacOptionsMenuButton'
 
 import SaveFlagToGitModal from '@cf/components/SaveFlagToGitModal/SaveFlagToGitModal'
 import { AUTO_COMMIT_MESSAGES } from '@cf/constants/GitSyncConstants'
 import GitSyncActions from '@cf/components/GitSyncActions/GitSyncActions'
 import { GitDetails, GitSyncFormValues, GIT_SYNC_ERROR_CODE, useGitSync, UseGitSync } from '@cf/hooks/useGitSync'
-import imageURL from './Feature_Flags_LP.svg'
+import UsageLimitBanner from '@cf/components/UsageLimitBanner/UsageLimitBanner'
+import usePlanEnforcement from '@cf/hooks/usePlanEnforcement'
+import FlagOptionsMenuButton from '@cf/components/FlagOptionsMenuButton/FlagOptionsMenuButton'
+import imageURL from './Feature_Flags_Teepee.svg'
 import { FeatureFlagStatus, FlagStatus } from './FlagStatus'
 import { FlagResult } from './FlagResult'
 import css from './FeatureFlagsPage.module.scss'
@@ -85,7 +89,6 @@ const RenderColumnFlag: React.FC<RenderColumnFlagProps> = ({
 
   const [status, setStatus] = useState(isFeatureFlagOn(data))
   const { getString } = useStrings()
-
   const { showError } = useToaster()
   const [flagNameTextSize, setFlagNameTextSize] = useState(300)
   const ref = useRef<HTMLDivElement>(null)
@@ -175,8 +178,7 @@ const RenderColumnFlag: React.FC<RenderColumnFlagProps> = ({
             text={getString('confirm')}
             className={Classes.POPOVER_DISMISS}
             disabled={toggleFeatureFlag.loading}
-            onClick={event => {
-              event.preventDefault()
+            onClick={() => {
               if (gitSync.isGitSyncEnabled && !gitSync.isAutoCommitEnabled) {
                 setIsSaveToggleModalOpen(true)
               } else {
@@ -208,7 +210,7 @@ const RenderColumnFlag: React.FC<RenderColumnFlagProps> = ({
 
   return (
     <Container flex>
-      <Container onMouseDown={Utils.stopEvent} onClick={Utils.stopEvent}>
+      <Container onClick={Utils.stopEvent}>
         <Button
           noStyling
           tooltip={
@@ -340,13 +342,7 @@ interface ColumnMenuProps {
 
 const RenderColumnEdit: React.FC<ColumnMenuProps> = ({ gitSync, deleteFlag, cell: { row, column }, environment }) => {
   const data = row.original
-  const { showError, clear } = useToaster()
   const { projectIdentifier, orgIdentifier, accountId } = useParams<Record<string, string>>()
-  const history = useHistory()
-  const { withActiveEnvironment } = useActiveEnvironment()
-  const [isDeleteModalOpen, setIsDeleteModalOpen] = useState(false)
-
-  const { getString } = useStrings()
   const queryParams = {
     project: projectIdentifier as string,
     account: accountId,
@@ -356,107 +352,15 @@ const RenderColumnEdit: React.FC<ColumnMenuProps> = ({ gitSync, deleteFlag, cell
 
   const refetch = (column as unknown as { refetch: () => void }).refetch
 
-  const handleDeleteFlag = async (gitSyncFormValues?: GitSyncFormValues): Promise<void> => {
-    let commitMsg = ''
-
-    if (gitSync.isGitSyncEnabled) {
-      const { gitSyncInitialValues } = gitSync.getGitSyncFormMeta(AUTO_COMMIT_MESSAGES.DELETED_FLAG)
-
-      if (gitSync.isAutoCommitEnabled) {
-        commitMsg = gitSyncInitialValues.gitDetails.commitMsg
-      } else {
-        commitMsg = gitSyncFormValues?.gitDetails.commitMsg || ''
-      }
-    }
-
-    try {
-      clear()
-
-      await deleteFlag(data.identifier, { queryParams: { ...queryParams, commitMsg } })
-
-      if (gitSync.isGitSyncEnabled && gitSyncFormValues?.autoCommit) {
-        await gitSync.handleAutoCommit(gitSyncFormValues?.autoCommit)
-      }
-
-      showToaster(getString('cf.messages.flagDeleted'))
-      refetch?.()
-    } catch (error: any) {
-      if (error.status === GIT_SYNC_ERROR_CODE) {
-        gitSync.handleError(error.data as GitSyncErrorResponse)
-      } else {
-        showError(getErrorMessage(error), 0, 'cf.toggle.ff.status.error')
-      }
-    }
-  }
-
-  const confirmDeleteFlag = useConfirmAction({
-    title: getString('cf.featureFlags.deleteFlag'),
-    confirmText: getString('delete'),
-    message: (
-      <Text>
-        <span
-          dangerouslySetInnerHTML={{ __html: getString('cf.featureFlags.deleteFlagMessage', { name: data.name }) }}
-        />
-      </Text>
-    ),
-    action: async () => {
-      if (gitSync?.isGitSyncEnabled && !gitSync?.isAutoCommitEnabled) {
-        setIsDeleteModalOpen(true)
-      } else {
-        handleDeleteFlag()
-      }
-    }
-  })
-
-  const gotoDetailPage = (): void => {
-    history.push(
-      withActiveEnvironment(
-        routes.toCFFeatureFlagsDetail({
-          orgIdentifier: orgIdentifier as string,
-          projectIdentifier: projectIdentifier as string,
-          featureFlagIdentifier: data.identifier,
-          accountId
-        }),
-        environment
-      )
-    )
-  }
-
   return (
     <Container style={{ textAlign: 'right' }} onClick={Utils.stopEvent}>
-      <Container onClick={event => event.stopPropagation()}>
-        {isDeleteModalOpen && (
-          <SaveFlagToGitModal
-            flagName={data.name}
-            flagIdentifier={data.identifier}
-            onSubmit={handleDeleteFlag}
-            onClose={() => {
-              setIsDeleteModalOpen(false)
-            }}
-          />
-        )}
-      </Container>
-      <RbacOptionsMenuButton
-        items={[
-          {
-            icon: 'edit',
-            text: getString('edit'),
-            onClick: gotoDetailPage,
-            permission: {
-              resource: { resourceType: ResourceType.ENVIRONMENT, resourceIdentifier: environment },
-              permission: PermissionIdentifier.EDIT_FF_FEATUREFLAG
-            }
-          },
-          {
-            icon: 'trash',
-            text: getString('delete'),
-            onClick: confirmDeleteFlag,
-            permission: {
-              resource: { resourceType: ResourceType.FEATUREFLAG },
-              permission: PermissionIdentifier.DELETE_FF_FEATUREFLAG
-            }
-          }
-        ]}
+      <FlagOptionsMenuButton
+        environment={environment}
+        flagData={data}
+        queryParams={queryParams}
+        deleteFlag={deleteFlag}
+        gitSync={gitSync}
+        refetchFlags={refetch}
       />
     </Container>
   )
@@ -536,6 +440,8 @@ const FeatureFlagsPage: React.FC = () => {
 
   const gitSync = useGitSync()
 
+  const { isPlanEnforcementEnabled } = usePlanEnforcement()
+
   const error = flagsError || envsError || deleteFlag.error || toggleFeatureFlag.error
 
   const columns: Column<Feature>[] = useMemo(
@@ -552,24 +458,16 @@ const FeatureFlagsPage: React.FC = () => {
               toggleFeatureFlag={toggleFeatureFlag}
               cell={cell}
               update={status => {
-                // Update last updated column to reflect latest change without having to refetch the whole list
-                // The setTimeout makes sure there's enough time for animation in the switch component before re-rendering
-                // takes place and destroy it
-
-                // CB - It appears this isn't used, and needs to be refactored/taken out.
-                //      However taking it out prevents the row from rerendering for some reason
-                setTimeout(() => {
-                  const feature = features?.features?.find(f => f.identifier === cell.row.original.identifier)
-                  if (feature) {
-                    if (feature.envProperties) {
-                      feature.envProperties.state = (
-                        status ? FeatureFlagActivationStatus.ON : FeatureFlagActivationStatus.OFF
-                      ) as FeatureState
-                    }
-                    feature.modifiedAt = Date.now()
-                    setFeatures({ ...features } as Features)
+                const feature = features?.features?.find(f => f.identifier === cell.row.original.identifier)
+                if (feature) {
+                  if (feature.envProperties) {
+                    feature.envProperties.state = (
+                      status ? FeatureFlagActivationStatus.ON : FeatureFlagActivationStatus.OFF
+                    ) as FeatureState
                   }
-                }, 0)
+                  feature.modifiedAt = Date.now()
+                  setFeatures({ ...features } as Features)
+                }
               }}
             />
           )
@@ -620,7 +518,7 @@ const FeatureFlagsPage: React.FC = () => {
         refetch
       }
     ],
-    [refetch, features, getString, activeEnvironment, gitSync]
+    [gitSync.isAutoCommitEnabled, gitSync.isGitSyncEnabled, activeEnvironment]
   )
   const onSearchInputChanged = useCallback(
     name => {
@@ -633,77 +531,39 @@ const FeatureFlagsPage: React.FC = () => {
   const hasFeatureFlags = features?.features && features?.features?.length > 0
   const emptyFeatureFlags = !loading && features?.features?.length === 0
   const title = getString('featureFlagsText')
-  const header = (
-    <Layout.Horizontal flex={{ align: 'center-center' }} style={{ flexGrow: 1 }} padding={{ right: 'xlarge' }}>
-      <ListingPageTitle style={{ borderBottom: 'none' }}>
-        <span data-tooltip-id="ff_ffListing_heading">
-          {title}
-          <HarnessDocTooltip tooltipId="ff_ffListing_heading" useStandAlone />
-        </span>
-      </ListingPageTitle>
-      <FlexExpander />
-      {!!environments?.length && <CFEnvironmentSelect component={<EnvironmentSelect />} />}
-    </Layout.Horizontal>
-  )
+
+  const displayToolbar = hasFeatureFlags || searchTerm
 
   return (
     <ListingPageTemplate
-      pageTitle={title}
-      header={header}
-      headerStyle={{ display: 'flex' }}
+      title={title}
+      titleTooltipId="ff_ffListing_heading"
+      headerContent={!!environments?.length && <CFEnvironmentSelect component={<EnvironmentSelect />} />}
       toolbar={
-        <Layout.Horizontal flex={{ alignItems: 'center' }}>
-          <Container margin={{ right: 'small' }}>
-            <FlagDialog environment={activeEnvironment} />
-          </Container>
-          {gitSync?.isGitSyncActionsEnabled && (
-            <GitSyncActions
-              isLoading={gitSync.gitSyncLoading || gitSyncing}
-              branch={gitSync.gitRepoDetails?.branch || ''}
-              repository={gitSync.gitRepoDetails?.repoIdentifier || ''}
-              isAutoCommitEnabled={gitSync.isAutoCommitEnabled}
-              isGitSyncPaused={gitSync.isGitSyncPaused}
-              handleToggleAutoCommit={gitSync.handleAutoCommit}
-              handleGitPause={gitSync.handleGitPause}
-            />
-          )}
-          <FlexExpander />
-          <ExpandingSearchInput name="findFlag" placeholder={getString('search')} onChange={onSearchInputChanged} />
-        </Layout.Horizontal>
-      }
-      content={
-        <>
-          {hasFeatureFlags && (
-            <Container padding={{ top: 'medium', right: 'xxlarge', left: 'xxlarge' }}>
-              <Container className={css.list}>
-                <TableV2<Feature>
-                  columns={columns}
-                  data={features?.features || []}
-                  onRowClick={feature => {
-                    history.push(
-                      withActiveEnvironment(
-                        routes.toCFFeatureFlagsDetail({
-                          orgIdentifier: orgIdentifier as string,
-                          projectIdentifier: projectIdentifier as string,
-                          featureFlagIdentifier: feature.identifier,
-                          accountId
-                        })
-                      )
-                    )
-                  }}
+        displayToolbar && (
+          <>
+            <div className={css.leftToolbar}>
+              <FlagDialog environment={activeEnvironment} />
+              {gitSync?.isGitSyncActionsEnabled && (
+                <GitSyncActions
+                  isLoading={gitSync.gitSyncLoading || gitSyncing}
+                  branch={gitSync.gitRepoDetails?.branch || ''}
+                  repository={gitSync.gitRepoDetails?.repoIdentifier || ''}
+                  isAutoCommitEnabled={gitSync.isAutoCommitEnabled}
+                  isGitSyncPaused={gitSync.isGitSyncPaused}
+                  handleToggleAutoCommit={gitSync.handleAutoCommit}
+                  handleGitPause={gitSync.handleGitPause}
                 />
-              </Container>
-            </Container>
-          )}
-
-          {!loading && emptyFeatureFlags && (
-            <Container width="100%" height="100%" flex={{ align: 'center-center' }}>
-              <NoData imageURL={imageURL} message={getString(searchTerm ? 'cf.noResultMatch' : 'cf.noFlag')}>
-                <FlagDialog environment={activeEnvironment} />
-              </NoData>
-            </Container>
-          )}
-        </>
+              )}
+            </div>
+            <ExpandingSearchInput
+              alwaysExpanded
+              name="findFlag"
+              placeholder={getString('search')}
+              onChange={onSearchInputChanged}
+            />
+          </>
+        )
       }
       pagination={
         !!features?.features?.length && (
@@ -725,7 +585,37 @@ const FeatureFlagsPage: React.FC = () => {
         setPageNumber(0)
         refetchEnvironments()
       }}
-    />
+    >
+      {isPlanEnforcementEnabled && <UsageLimitBanner />}
+      {hasFeatureFlags && (
+        <Container padding={{ top: 'medium', right: 'xlarge', left: 'xlarge' }}>
+          <TableV2<Feature>
+            columns={columns}
+            data={features?.features || []}
+            onRowClick={feature => {
+              history.push(
+                withActiveEnvironment(
+                  routes.toCFFeatureFlagsDetail({
+                    orgIdentifier: orgIdentifier as string,
+                    projectIdentifier: projectIdentifier as string,
+                    featureFlagIdentifier: feature.identifier,
+                    accountId
+                  })
+                )
+              )
+            }}
+          />
+        </Container>
+      )}
+
+      {!loading && emptyFeatureFlags && (
+        <Container width="100%" height="100%" flex={{ align: 'center-center' }}>
+          <NoData imageURL={imageURL} message={getString(searchTerm ? 'cf.noResultMatch' : 'cf.noFlag')}>
+            <FlagDialog environment={activeEnvironment} />
+          </NoData>
+        </Container>
+      )}
+    </ListingPageTemplate>
   )
 }
 

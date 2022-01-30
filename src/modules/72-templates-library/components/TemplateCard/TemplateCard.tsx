@@ -1,3 +1,10 @@
+/*
+ * Copyright 2022 Harness Inc. All rights reserved.
+ * Use of this source code is governed by the PolyForm Shield 1.0.0 license
+ * that can be found in the licenses directory at the root of this repository, also available at
+ * https://polyformproject.org/wp-content/uploads/2020/06/PolyForm-Shield-1.0.0.txt.
+ */
+
 import React from 'react'
 import { defaultTo, isEmpty, noop } from 'lodash-es'
 import { Card, Text, Color, Container, Tag, Layout, Icon } from '@wings-software/uicore'
@@ -63,14 +70,15 @@ export function TemplateCard(props: TemplateCardProps): JSX.Element {
         )}
         <Container margin={{ right: 'small' }}>
           <Layout.Horizontal spacing={'small'} margin={{ bottom: 'small' }} flex>
-            <Icon name={getIconForTemplate(template, getString)} size={18} />
+            <Icon name={getIconForTemplate(template, getString)} size={24} />
             {(template as TemplateSummaryResponse).entityValidityDetails?.valid === false && (
               <Badge
                 text={'common.invalid'}
-                iconName="warning-sign"
+                iconName="error-outline"
                 showTooltip={true}
                 entityName={template.name}
                 entityType={'Template'}
+                showInvalidText={true}
               />
             )}
           </Layout.Horizontal>

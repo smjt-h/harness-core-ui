@@ -1,3 +1,10 @@
+/*
+ * Copyright 2022 Harness Inc. All rights reserved.
+ * Use of this source code is governed by the PolyForm Shield 1.0.0 license
+ * that can be found in the licenses directory at the root of this repository, also available at
+ * https://polyformproject.org/wp-content/uploads/2020/06/PolyForm-Shield-1.0.0.txt.
+ */
+
 import React from 'react'
 import { Route, useParams, Redirect } from 'react-router-dom'
 import { useQueryParams } from '@common/hooks'
@@ -35,6 +42,16 @@ import type {
 } from '@common/interfaces/RouteInterfaces'
 import routes from '@common/RouteDefinitions'
 
+import { BannerType } from '@common/layouts/Constants'
+import {
+  FEATURE_USAGE_WARNING_LIMIT,
+  isFeatureLimitBreached,
+  isFeatureWarningActive
+} from '@common/layouts/FeatureBanner'
+
+import { String as LocaleString } from 'framework/strings'
+import featureFactory from 'framework/featureStore/FeaturesFactory'
+import { FeatureIdentifier } from 'framework/featureStore/FeatureIdentifier'
 import CDSideNav from '@cd/components/CDSideNav/CDSideNav'
 import CDHomePage from '@cd/pages/home/CDHomePage'
 import CDDashboardPage from '@cd/pages/dashboard/CDDashboardPage'
@@ -50,6 +67,7 @@ import DelegateListing from '@delegates/pages/delegates/DelegateListing'
 import DelegateConfigurations from '@delegates/pages/delegates/DelegateConfigurations'
 import DelegateDetails from '@delegates/pages/delegates/DelegateDetails'
 import DelegateProfileDetails from '@delegates/pages/delegates/DelegateConfigurationDetailPage'
+import DelegateTokens from '@delegates/components/DelegateTokens/DelegateTokens'
 import { RedirectToSecretDetailHome } from '@secrets/RouteDestinations'
 import SecretReferences from '@secrets/pages/secretReferences/SecretReferences'
 import SecretDetailsHomePage from '@secrets/pages/secretDetailsHomePage/SecretDetailsHomePage'
@@ -62,8 +80,6 @@ import ExecutionArtifactsView from '@pipeline/pages/execution/ExecutionArtifacts
 import ExecutionInputsView from '@pipeline/pages/execution/ExecutionInputsView/ExecutionInputsView'
 import PipelineDetails from '@pipeline/pages/pipeline-details/PipelineDetails'
 import TriggerDetails from '@pipeline/pages/trigger-details/TriggerDetails'
-import CDTemplateLibraryPage from '@cd/pages/admin/template-library/CDTemplateLibraryPage'
-import CDGeneralSettingsPage from '@cd/pages/admin/general-settings/CDGeneralSettingsPage'
 import CDPipelineDeploymentList from '@cd/pages/pipeline-deployment-list/CDPipelineDeploymentList'
 import { useAppStore } from 'framework/AppStore/AppStoreContext'
 import { ModuleName } from 'framework/types/ModuleName'
@@ -73,6 +89,7 @@ import CreateConnectorFromYamlPage from '@connectors/pages/createConnectorFromYa
 import CreateSecretFromYamlPage from '@secrets/pages/createSecretFromYaml/CreateSecretFromYamlPage'
 import ServiceDetailPage from '@cd/pages/ServiceDetailPage/ServiceDetailPage'
 import ServiceDetails from '@cd/components/ServiceDetails/ServiceDetails'
+// eslint-disable-next-line no-restricted-imports
 import ChildAppMounter from 'microfrontends/ChildAppMounter'
 
 import './components/PipelineSteps'
@@ -87,7 +104,7 @@ import UserGroups from '@rbac/pages/UserGroups/UserGroups'
 import GitSyncPage from '@gitsync/pages/GitSyncPage'
 import GitSyncRepoTab from '@gitsync/pages/repos/GitSyncRepoTab'
 import GitSyncEntityTab from '@gitsync/pages/entities/GitSyncEntityTab'
-import { GitSyncErrorsWithRedirect } from '@gitsync/pages/errors/GitSyncErrors'
+import GitSyncErrors from '@gitsync/pages/errors/GitSyncErrors'
 import BuildTests from '@pipeline/pages/execution/ExecutionTestView/BuildTests'
 import UserDetails from '@rbac/pages/UserDetails/UserDetails'
 import UserGroupDetails from '@rbac/pages/UserGroupDetails/UserGroupDetails'
@@ -95,15 +112,23 @@ import ServiceAccountsPage from '@rbac/pages/ServiceAccounts/ServiceAccounts'
 import ServiceAccountDetails from '@rbac/pages/ServiceAccountDetails/ServiceAccountDetails'
 import executionFactory from '@pipeline/factories/ExecutionFactory'
 import { StageType } from '@pipeline/utils/stageHelpers'
-
+import RbacFactory from '@rbac/factories/RbacFactory'
 import { TriggerFormType } from '@pipeline/factories/ArtifactTriggerInputFactory/types'
 import TriggerFactory from '@pipeline/factories/ArtifactTriggerInputFactory/index'
 import ExecutionPolicyEvaluationsView from '@pipeline/pages/execution/ExecutionPolicyEvaluationsView/ExecutionPolicyEvaluationsView'
-
-import { LicenseRedirectProps, LICENSE_STATE_NAMES } from 'framework/LicenseStore/LicenseStoreContext'
+import ExecutionSecurityView from '@pipeline/pages/execution/ExecutionSecurityView/ExecutionSecurityView'
+import { ResourceCategory, ResourceType } from '@rbac/interfaces/ResourceType'
+import { PermissionIdentifier } from '@rbac/interfaces/PermissionIdentifier'
+import {
+  isCDCommunity,
+  LicenseRedirectProps,
+  LICENSE_STATE_NAMES,
+  useLicenseStore
+} from 'framework/LicenseStore/LicenseStoreContext'
 import { TemplateStudioWrapper } from '@templates-library/components/TemplateStudio/TemplateStudioWrapper'
 import TemplatesPage from '@templates-library/pages/TemplatesPage/TemplatesPage'
 import { GovernanceRouteDestinations } from '@governance/RouteDestinations'
+import GitSyncConfigTab from '@gitsync/pages/config/GitSyncConfigTab'
 import CDTrialHomePage from './pages/home/CDTrialHomePage'
 
 import { CDExecutionCardSummary } from './components/CDExecutionCardSummary/CDExecutionCardSummary'
@@ -118,6 +143,79 @@ import GitOpsModalContainer from './pages/gitops/NativeArgo/GitOpsProvidersList'
 // eslint-disable-next-line import/no-unresolved
 const GitOpsServersList = React.lazy(() => import('gitopsui/MicroFrontendApp'))
 
+RbacFactory.registerResourceCategory(ResourceCategory.GITOPS, {
+  icon: 'gitops-agent',
+  label: 'cd.gitOps'
+})
+
+RbacFactory.registerResourceTypeHandler(ResourceType.GITOPS_AGENT, {
+  icon: 'gitops-agent',
+  label: 'common.agent',
+  category: ResourceCategory.GITOPS,
+  permissionLabels: {
+    [PermissionIdentifier.VIEW_GITOPS_AGENT]: <LocaleString stringID="rbac.permissionLabels.view" />,
+    [PermissionIdentifier.EDIT_GITOPS_AGENT]: <LocaleString stringID="rbac.permissionLabels.createEdit" />,
+    [PermissionIdentifier.DELETE_GITOPS_AGENT]: <LocaleString stringID="delete" />
+  }
+})
+
+RbacFactory.registerResourceTypeHandler(ResourceType.GITOPS_APP, {
+  icon: 'gitops-agent',
+  label: 'common.application',
+  category: ResourceCategory.GITOPS,
+  permissionLabels: {
+    [PermissionIdentifier.VIEW_GITOPS_APPLICATION]: <LocaleString stringID="rbac.permissionLabels.view" />,
+    [PermissionIdentifier.EDIT_GITOPS_APPLICATION]: <LocaleString stringID="rbac.permissionLabels.createEdit" />,
+    [PermissionIdentifier.DELETE_GITOPS_APPLICATION]: <LocaleString stringID="delete" />,
+    [PermissionIdentifier.SYNC_GITOPS_APPLICATION]: <LocaleString stringID="common.sync" />,
+    [PermissionIdentifier.OVERRIDE_GITOPS_APPLICATION]: <LocaleString stringID="override" />
+  }
+})
+
+RbacFactory.registerResourceTypeHandler(ResourceType.GITOPS_CERT, {
+  icon: 'gitops-agent',
+  label: 'common.certificate',
+  category: ResourceCategory.GITOPS,
+  permissionLabels: {
+    [PermissionIdentifier.VIEW_GITOPS_CERT]: <LocaleString stringID="rbac.permissionLabels.view" />,
+    [PermissionIdentifier.EDIT_GITOPS_CERT]: <LocaleString stringID="rbac.permissionLabels.createEdit" />,
+    [PermissionIdentifier.DELETE_GITOPS_CERT]: <LocaleString stringID="delete" />
+  }
+})
+
+RbacFactory.registerResourceTypeHandler(ResourceType.GITOPS_CLUSTER, {
+  icon: 'gitops-agent',
+  label: 'common.cluster',
+  category: ResourceCategory.GITOPS,
+  permissionLabels: {
+    [PermissionIdentifier.VIEW_GITOPS_CLUSTER]: <LocaleString stringID="rbac.permissionLabels.view" />,
+    [PermissionIdentifier.EDIT_GITOPS_CLUSTER]: <LocaleString stringID="rbac.permissionLabels.createEdit" />,
+    [PermissionIdentifier.DELETE_GITOPS_CLUSTER]: <LocaleString stringID="delete" />
+  }
+})
+
+RbacFactory.registerResourceTypeHandler(ResourceType.GITOPS_GPGKEY, {
+  icon: 'gitops-agent',
+  label: 'common.gpgkey',
+  category: ResourceCategory.GITOPS,
+  permissionLabels: {
+    [PermissionIdentifier.VIEW_GITOPS_GPGKEY]: <LocaleString stringID="rbac.permissionLabels.view" />,
+    [PermissionIdentifier.EDIT_GITOPS_GPGKEY]: <LocaleString stringID="rbac.permissionLabels.createEdit" />,
+    [PermissionIdentifier.DELETE_GITOPS_GPGKEY]: <LocaleString stringID="delete" />
+  }
+})
+
+RbacFactory.registerResourceTypeHandler(ResourceType.GITOPS_REPOSITORY, {
+  icon: 'gitops-agent',
+  label: 'repository',
+  category: ResourceCategory.GITOPS,
+  permissionLabels: {
+    [PermissionIdentifier.VIEW_GITOPS_REPOSITORY]: <LocaleString stringID="rbac.permissionLabels.view" />,
+    [PermissionIdentifier.EDIT_GITOPS_REPOSITORY]: <LocaleString stringID="rbac.permissionLabels.createEdit" />,
+    [PermissionIdentifier.DELETE_GITOPS_REPOSITORY]: <LocaleString stringID="delete" />
+  }
+})
+
 executionFactory.registerCardInfo(StageType.DEPLOY, {
   icon: 'cd-main',
   component: CDExecutionCardSummary
@@ -129,6 +227,69 @@ executionFactory.registerSummary(StageType.DEPLOY, {
 
 executionFactory.registerStageDetails(StageType.DEPLOY, {
   component: CDStageDetails
+})
+
+featureFactory.registerFeaturesByModule('cd', {
+  features: [FeatureIdentifier.DEPLOYMENTS_PER_MONTH, FeatureIdentifier.SERVICES],
+  renderMessage: (props, getString) => {
+    const featuresMap = props.features
+    const serviceFeatureDetail = featuresMap.get(FeatureIdentifier.SERVICES)
+    const dpmFeatureDetail = featuresMap.get(FeatureIdentifier.DEPLOYMENTS_PER_MONTH)
+
+    // Check for limit breach
+    const isServiceLimitBreached = isFeatureLimitBreached(serviceFeatureDetail)
+    const isDpmLimitBreached = isFeatureLimitBreached(dpmFeatureDetail)
+    let limitBreachMessageString = ''
+    if (isServiceLimitBreached && isDpmLimitBreached) {
+      limitBreachMessageString = getString('cd.featureRestriction.banners.serviceAndDeploymentsLevelUp', {
+        deploymentsLimit: dpmFeatureDetail?.featureDetail?.limit,
+        serviceLimit: serviceFeatureDetail?.featureDetail?.limit
+      })
+    } else if (isServiceLimitBreached) {
+      limitBreachMessageString = getString('cd.featureRestriction.banners.serviceLevelUp', {
+        serviceLimit: serviceFeatureDetail?.featureDetail?.limit
+      })
+    } else if (isDpmLimitBreached) {
+      limitBreachMessageString = getString('cd.featureRestriction.banners.deploymentsPerMonthLevelUp', {
+        deploymentsLimit: dpmFeatureDetail?.featureDetail?.limit
+      })
+    }
+
+    if (limitBreachMessageString) {
+      return {
+        message: () => limitBreachMessageString,
+        bannerType: BannerType.LEVEL_UP
+      }
+    }
+
+    // Checking for limit usage warning
+    let warningMessageString = ''
+    const isServiceWarningActive = isFeatureWarningActive(serviceFeatureDetail)
+    const isDpmWarningActive = isFeatureWarningActive(dpmFeatureDetail)
+    if (isServiceWarningActive) {
+      warningMessageString = getString('cd.featureRestriction.banners.serviceWarningActive', {
+        warningLimit: FEATURE_USAGE_WARNING_LIMIT
+      })
+    } else if (isDpmWarningActive) {
+      warningMessageString = getString('cd.featureRestriction.banners.dpmWarningActive', {
+        warningLimit: FEATURE_USAGE_WARNING_LIMIT
+      })
+    }
+
+    if (warningMessageString) {
+      return {
+        message: () => warningMessageString,
+        bannerType: BannerType.INFO
+      }
+    }
+
+    // If neither limit breach or warning needs to be shown, return with an empty string.
+    // This will ensure no banner is shown
+    return {
+      message: () => '',
+      bannerType: BannerType.LEVEL_UP
+    }
+  }
 })
 
 const RedirectToAccessControlHome = (): React.ReactElement => {
@@ -166,6 +327,21 @@ const RedirectToCDProject = (): React.ReactElement => {
     )
   } else {
     return <Redirect to={routes.toCDHome({ accountId })} />
+  }
+}
+
+const CDDashboardPageOrRedirect = (): React.ReactElement => {
+  const params = useParams<ProjectPathProps>()
+  const { selectedProject } = useAppStore()
+  const { licenseInformation } = useLicenseStore()
+  const isCommunity = isCDCommunity(licenseInformation)
+
+  if (!isCommunity) {
+    return <CDDashboardPage />
+  } else if (selectedProject?.modules?.includes(ModuleName.CD)) {
+    return <Redirect to={routes.toDeployments({ ...params, module: 'cd' })} />
+  } else {
+    return <Redirect to={routes.toCDHome(params)} />
   }
 }
 
@@ -287,7 +463,7 @@ export default (
       path={routes.toProjectOverview({ ...accountPathProps, ...projectPathProps, ...pipelineModuleParams })}
       exact
     >
-      <CDDashboardPage />
+      <CDDashboardPageOrRedirect />
     </RouteWithLayout>
     <RouteWithLayout
       licenseRedirectData={licenseRedirectData}
@@ -522,6 +698,22 @@ export default (
     </RouteWithLayout>
 
     <RouteWithLayout
+      exact
+      licenseRedirectData={licenseRedirectData}
+      sidebarProps={CDSideNavProps}
+      path={[
+        routes.toDelegateTokens({
+          ...accountPathProps,
+          ...projectPathProps,
+          ...pipelineModuleParams
+        })
+      ]}
+    >
+      <DelegatesPage>
+        <DelegateTokens />
+      </DelegatesPage>
+    </RouteWithLayout>
+    <RouteWithLayout
       licenseRedirectData={licenseRedirectData}
       sidebarProps={CDSideNavProps}
       path={routes.toCreateSecretFromYaml({
@@ -619,6 +811,21 @@ export default (
       licenseRedirectData={licenseRedirectData}
       sidebarProps={CDSideNavProps}
       layout={MinimalLayout}
+      path={routes.toExecutionSecurityView({
+        ...accountPathProps,
+        ...executionPathProps,
+        ...pipelineModuleParams
+      })}
+    >
+      <ExecutionLandingPage>
+        <ExecutionSecurityView />
+      </ExecutionLandingPage>
+    </RouteWithLayout>
+    <RouteWithLayout
+      exact
+      licenseRedirectData={licenseRedirectData}
+      sidebarProps={CDSideNavProps}
+      layout={MinimalLayout}
       path={routes.toExecutionInputsView({ ...accountPathProps, ...executionPathProps, ...pipelineModuleParams })}
     >
       <ExecutionLandingPage>
@@ -658,22 +865,6 @@ export default (
       path={routes.toPipelineDetail({ ...accountPathProps, ...pipelinePathProps, ...pipelineModuleParams })}
     >
       <RedirectToPipelineDetailHome />
-    </RouteWithLayout>
-    <RouteWithLayout
-      exact
-      licenseRedirectData={licenseRedirectData}
-      sidebarProps={CDSideNavProps}
-      path={routes.toCDTemplateLibrary({ ...accountPathProps, ...projectPathProps })}
-    >
-      <CDTemplateLibraryPage />
-    </RouteWithLayout>
-    <RouteWithLayout
-      exact
-      licenseRedirectData={licenseRedirectData}
-      sidebarProps={CDSideNavProps}
-      path={routes.toCDGeneralSettings({ ...accountPathProps, ...projectPathProps })}
-    >
-      <CDGeneralSettingsPage />
     </RouteWithLayout>
     <RouteWithLayout
       licenseRedirectData={licenseRedirectData}
@@ -809,7 +1000,17 @@ export default (
       exact
     >
       <GitSyncPage>
-        <GitSyncErrorsWithRedirect />
+        <GitSyncErrors />
+      </GitSyncPage>
+    </RouteWithLayout>
+    <RouteWithLayout
+      licenseRedirectData={licenseRedirectData}
+      sidebarProps={CDSideNavProps}
+      path={routes.toGitSyncConfig({ ...accountPathProps, ...pipelineModuleParams, ...projectPathProps })}
+      exact
+    >
+      <GitSyncPage>
+        <GitSyncConfigTab />
       </GitSyncPage>
     </RouteWithLayout>
     <RouteWithLayout

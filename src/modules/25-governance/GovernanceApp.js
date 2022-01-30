@@ -1,3 +1,10 @@
+/*
+ * Copyright 2022 Harness Inc. All rights reserved.
+ * Use of this source code is governed by the PolyForm Shield 1.0.0 license
+ * that can be found in the licenses directory at the root of this repository, also available at
+ * https://polyformproject.org/wp-content/uploads/2020/06/PolyForm-Shield-1.0.0.txt.
+ */
+
 import React, { Suspense, lazy } from 'react'
 import { useHistory, useRouteMatch } from 'react-router-dom'
 import { Container } from '@wings-software/uicore'
@@ -8,6 +15,9 @@ import AppErrorBoundary from 'framework/utils/AppErrorBoundary/AppErrorBoundary'
 import { useStrings } from 'framework/strings'
 import AppStorage from 'framework/utils/AppStorage'
 import { getLoginPageURL } from 'framework/utils/SessionUtils'
+import RbacButton from '@rbac/components/Button/Button'
+import RbacOptionsMenuButton from '@rbac/components/RbacOptionsMenuButton/RbacOptionsMenuButton'
+import { usePermission } from '@rbac/hooks/usePermission'
 
 // Due to some typing complexity, governance/App is lazily imported
 // from a .js file for now
@@ -37,8 +47,13 @@ export const GovernanceRemoteComponentMounter = props => {
               search: returnUrlParams(getLoginPageURL({ returnUrl: window.location.href }))
             })
           }}
+          hooks={{
+            usePermission
+          }}
           components={{
-            NGBreadcrumbs
+            NGBreadcrumbs,
+            RbacButton,
+            RbacOptionsMenuButton
           }}
         >
           {component}

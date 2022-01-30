@@ -1,3 +1,10 @@
+/*
+ * Copyright 2021 Harness Inc. All rights reserved.
+ * Use of this source code is governed by the PolyForm Shield 1.0.0 license
+ * that can be found in the licenses directory at the root of this repository, also available at
+ * https://polyformproject.org/wp-content/uploads/2020/06/PolyForm-Shield-1.0.0.txt.
+ */
+
 import React, { useState, useEffect } from 'react'
 import {
   ExpandingSearchInput,
@@ -12,7 +19,7 @@ import {
   Card
 } from '@wings-software/uicore'
 import { cloneDeep, noop, uniqBy } from 'lodash-es'
-import { Drawer, IDrawerProps, Position } from '@blueprintjs/core'
+import { Drawer, IDrawerProps, Popover, PopoverInteractionKind, Position } from '@blueprintjs/core'
 import cx from 'classnames'
 import { FeatureWarningWithTooltip } from '@common/components/FeatureWarning/FeatureWarningWithTooltip'
 import { useStrings } from 'framework/strings'
@@ -92,6 +99,8 @@ export interface CategoryInterface {
   items?: ItemInterface[]
   categories?: CategoryInterface[]
   iconName?: IconName
+  // enforcement framework: show restriction limit warning.
+  warningTooltipRenderer?: (item: ItemInterface) => React.ReactNode
 }
 
 export interface AddDrawerMapInterface {
@@ -115,6 +124,7 @@ export default function AddDrawer(props: AddDrawerProps): JSX.Element {
   const [originalData, setOriginalCategories] = useState<CategoryInterface[]>([])
   const [selectedCategory, setSelectedCategory] = useState(primaryTypes.SHOW_ALL)
   const { getString } = useStrings()
+
   useEffect(() => {
     if (addDrawerMap.categories) {
       const stepsCategories = addDrawerMap.categories
@@ -225,17 +235,32 @@ export default function AddDrawer(props: AddDrawerProps): JSX.Element {
                         className={css.step}
                         key={item.itemLabel}
                         onClick={
-                          featureEnabledTemp
+                          !item.disabled && featureEnabledTemp
                             ? () => onSelect({ ...Object.assign(item, { categoryValue: category.categoryValue }) })
                             : noop
                         }
                       >
-                        <Card interactive={false} elevation={0} selected={false} disabled={!featureEnabledTemp}>
+                        <Card
+                          interactive={false}
+                          elevation={0}
+                          selected={false}
+                          disabled={item.disabled || !featureEnabledTemp}
+                        >
                           <Icon size={defaultDrawerValues[drawerContext]?.iconSize} name={item.iconName} />
                         </Card>
                         <section className={cx(css.stepName, !featureEnabledTemp ? css.disabledHover : undefined)}>
                           {item.itemLabel}
                         </section>
+                        {item.disabled && typeof category.warningTooltipRenderer === 'function' && (
+                          <Popover
+                            className={css.limitWarning}
+                            position={Position.BOTTOM}
+                            interactionKind={PopoverInteractionKind.HOVER}
+                            content={<div>{category.warningTooltipRenderer(item)}</div>}
+                          >
+                            <Icon size={20} color={Color.ORANGE_700} name={'execution-warning'} />
+                          </Popover>
+                        )}
                       </section>
                     )
                   })

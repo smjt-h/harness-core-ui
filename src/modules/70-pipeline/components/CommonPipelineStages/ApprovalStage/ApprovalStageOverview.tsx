@@ -1,3 +1,10 @@
+/*
+ * Copyright 2021 Harness Inc. All rights reserved.
+ * Use of this source code is governed by the PolyForm Shield 1.0.0 license
+ * that can be found in the licenses directory at the root of this repository, also available at
+ * https://polyformproject.org/wp-content/uploads/2020/06/PolyForm-Shield-1.0.0.txt.
+ */
+
 import React, { useCallback, useRef } from 'react'
 import cx from 'classnames'
 import * as Yup from 'yup'
@@ -11,13 +18,14 @@ import {
   FormikForm,
   HarnessDocTooltip,
   Layout,
-  MultiTypeInputType,
   Text
 } from '@wings-software/uicore'
-import { IdentifierSchema, NameSchema } from '@common/utils/Validation'
 import { NameIdDescriptionTags } from '@common/components/NameIdDescriptionTags/NameIdDescriptionTags'
 import { useStrings } from 'framework/strings'
-import { usePipelineContext } from '@pipeline/components/PipelineStudio/PipelineContext/PipelineContext'
+import {
+  PipelineContextType,
+  usePipelineContext
+} from '@pipeline/components/PipelineStudio/PipelineContext/PipelineContext'
 import { isDuplicateStageId } from '@pipeline/components/PipelineStudio/StageBuilder/StageBuilderUtil'
 import { StepWidget } from '@pipeline/components/AbstractSteps/StepWidget'
 import type { CustomVariablesData } from '@pipeline/components/PipelineSteps/Steps/CustomVariables/CustomVariableEditable'
@@ -27,6 +35,7 @@ import { StepType } from '@pipeline/components/PipelineSteps/PipelineStepInterfa
 import { usePipelineVariables } from '@pipeline/components/PipelineVariablesContext/PipelineVariablesContext'
 import type { AllNGVariables } from '@pipeline/utils/types'
 import type { ApprovalStageElementConfig } from '@pipeline/utils/pipelineTypes'
+import { getNameAndIdentifierSchema } from '@pipeline/utils/tempates'
 import type { ApprovalStageOverviewProps } from './types'
 import css from './ApprovalStageOverview.module.scss'
 
@@ -36,6 +45,8 @@ export const ApprovalStageOverview: React.FC<ApprovalStageOverviewProps> = props
       pipeline: { stages = [] },
       selectionState: { selectedStageId }
     },
+    contextType,
+    allowableTypes,
     stepsFactory,
     isReadonly,
     updateStage,
@@ -70,10 +81,7 @@ export const ApprovalStageOverview: React.FC<ApprovalStageOverviewProps> = props
               description: cloneOriginalData?.stage?.description,
               tags: cloneOriginalData?.stage?.tags || {}
             }}
-            validationSchema={Yup.object().shape({
-              name: NameSchema({ requiredErrorMsg: getString('pipelineSteps.build.create.stageNameRequiredError') }),
-              identifier: IdentifierSchema()
-            })}
+            validationSchema={Yup.object().shape(getNameAndIdentifierSchema(getString, contextType))}
             validate={values => {
               const errors: { name?: string } = {}
               if (isDuplicateStageId(values.identifier || '', stages, true)) {
@@ -93,21 +101,23 @@ export const ApprovalStageOverview: React.FC<ApprovalStageOverviewProps> = props
           >
             {formikProps => (
               <FormikForm>
-                <Card className={cx(css.sectionCard)}>
-                  <NameIdDescriptionTags
-                    formikProps={formikProps}
-                    descriptionProps={{
-                      disabled: isReadonly
-                    }}
-                    identifierProps={{
-                      isIdentifierEditable: false,
-                      inputGroupProps: { disabled: isReadonly }
-                    }}
-                    tagsProps={{
-                      disabled: isReadonly
-                    }}
-                  />
-                </Card>
+                {contextType === PipelineContextType.Pipeline && (
+                  <Card className={cx(css.sectionCard)}>
+                    <NameIdDescriptionTags
+                      formikProps={formikProps}
+                      descriptionProps={{
+                        disabled: isReadonly
+                      }}
+                      identifierProps={{
+                        isIdentifierEditable: false,
+                        inputGroupProps: { disabled: isReadonly }
+                      }}
+                      tagsProps={{
+                        disabled: isReadonly
+                      }}
+                    />
+                  </Card>
+                )}
               </FormikForm>
             )}
           </Formik>
@@ -137,11 +147,7 @@ export const ApprovalStageOverview: React.FC<ApprovalStageOverviewProps> = props
                         []) as AllNGVariables[],
                       canAddVariable: true
                     }}
-                    allowableTypes={[
-                      MultiTypeInputType.FIXED,
-                      MultiTypeInputType.RUNTIME,
-                      MultiTypeInputType.EXPRESSION
-                    ]}
+                    allowableTypes={allowableTypes}
                     type={StepType.CustomVariable}
                     stepViewType={StepViewType.StageVariable}
                     onUpdate={({ variables }: CustomVariablesData) => {

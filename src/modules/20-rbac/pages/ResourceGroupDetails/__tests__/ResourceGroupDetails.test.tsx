@@ -1,3 +1,10 @@
+/*
+ * Copyright 2021 Harness Inc. All rights reserved.
+ * Use of this source code is governed by the PolyForm Shield 1.0.0 license
+ * that can be found in the licenses directory at the root of this repository, also available at
+ * https://polyformproject.org/wp-content/uploads/2020/06/PolyForm-Shield-1.0.0.txt.
+ */
+
 import React from 'react'
 import { render, act, fireEvent, RenderResult, queryByAttribute, getByText } from '@testing-library/react'
 import { findDialogContainer, TestWrapper } from '@common/utils/testUtils'
@@ -33,7 +40,8 @@ jest.mock('@rbac/factories/RbacFactory', () => ({
   getResourceTypeHandler: jest.fn().mockImplementation(resource => getResourceTypeHandlerMock(resource)),
   getResourceCategoryHandler: jest.fn().mockImplementation(resource => getResourceGroupTypeHandlerMock(resource)),
   getResourceCategoryList: jest.fn().mockImplementation(() => getResourceCategoryListMock()),
-  getResourceTypeLabelKey: jest.fn()
+  getResourceTypeLabelKey: jest.fn(),
+  isRegisteredResourceType: jest.fn().mockImplementation(() => true)
 }))
 
 describe('Resource Groups Page', () => {
@@ -57,7 +65,7 @@ describe('Resource Groups Page', () => {
   })
   test('test projects selection and save', async () => {
     const { getAllByText, container } = renderObj
-    const project = queryByAttribute('data-testid', container, 'CHECK-BOX-PROJECT')
+    const project = queryByAttribute('data-testid', container, 'CHECK-BOX-CONNECTOR')
     expect(project).toBeTruthy()
     act(() => {
       fireEvent.click(project!)
@@ -73,8 +81,8 @@ describe('Resource Groups Page', () => {
       identifier: 'ewrewew',
       name: 'nameewrewew',
       resourceSelectors: [
-        { type: 'DynamicResourceSelector', resourceType: 'ORGANIZATION' },
-        { type: 'DynamicResourceSelector', resourceType: 'PROJECT' }
+        { type: 'DynamicResourceSelector', resourceType: 'SECRET', includeChildScopes: false },
+        { type: 'DynamicResourceSelector', resourceType: 'CONNECTOR', includeChildScopes: false }
       ],
       tags: {},
       description: '',
@@ -83,11 +91,11 @@ describe('Resource Groups Page', () => {
   })
   test('test orgs selection and save', async () => {
     const { container, getByTestId } = renderObj
-    const specifiedResource = getByTestId('static-ORGANIZATION')
+    const specifiedResource = getByTestId('static-SECRET')
     act(() => {
       fireEvent.click(specifiedResource)
     })
-    const addResources = getByTestId('addResources-ORGANIZATION')
+    const addResources = getByTestId('addResources-SECRET')
     expect(addResources).toBeTruthy()
     act(() => {
       fireEvent.click(addResources)
@@ -111,8 +119,8 @@ describe('Resource Groups Page', () => {
       identifier: 'ewrewew',
       name: 'nameewrewew',
       resourceSelectors: [
-        { type: 'DynamicResourceSelector', resourceType: 'ORGANIZATION' },
-        { type: 'DynamicResourceSelector', resourceType: 'PROJECT' }
+        { type: 'DynamicResourceSelector', resourceType: 'SECRET', includeChildScopes: false },
+        { type: 'DynamicResourceSelector', resourceType: 'CONNECTOR', includeChildScopes: false }
       ],
       tags: {},
       description: '',

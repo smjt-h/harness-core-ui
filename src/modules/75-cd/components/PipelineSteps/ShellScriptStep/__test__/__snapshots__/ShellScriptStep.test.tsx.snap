@@ -689,7 +689,7 @@ exports[`Test Shell Script Step renders runtime inputs 1`] = `
       </div>
     </div>
     <div
-      class="formGroup alignStart"
+      class="formGroup"
     >
       <div
         class="bp3-form-group"
@@ -796,13 +796,13 @@ exports[`Test Shell Script Step renders runtime inputs 1`] = `
           data-testid="optional-config-summary"
         >
           <div
-            class="Accordion--chevron"
-          />
-          <div
             class="Accordion--label"
           >
             common.optionalConfig
           </div>
+          <div
+            class="Accordion--chevron"
+          />
         </div>
         <div
           class="bp3-collapse Accordion--collapse"
@@ -1077,7 +1077,7 @@ exports[`Test Shell Script Step should render edit view 1`] = `
       </div>
     </div>
     <div
-      class="formGroup alignStart"
+      class="formGroup"
     >
       <div
         class="bp3-form-group"
@@ -1186,13 +1186,13 @@ exports[`Test Shell Script Step should render edit view 1`] = `
           data-testid="optional-config-summary"
         >
           <div
-            class="Accordion--chevron"
-          />
-          <div
             class="Accordion--label"
           >
             common.optionalConfig
           </div>
+          <div
+            class="Accordion--chevron"
+          />
         </div>
         <div
           class="bp3-collapse Accordion--collapse"
@@ -1467,7 +1467,7 @@ exports[`Test Shell Script Step should render edit view 2`] = `
       </div>
     </div>
     <div
-      class="formGroup alignStart"
+      class="formGroup"
     >
       <div
         class="bp3-form-group"
@@ -1576,13 +1576,13 @@ exports[`Test Shell Script Step should render edit view 2`] = `
           data-testid="optional-config-summary"
         >
           <div
-            class="Accordion--chevron"
-          />
-          <div
             class="Accordion--label"
           >
             common.optionalConfig
           </div>
+          <div
+            class="Accordion--chevron"
+          />
         </div>
         <div
           class="bp3-collapse Accordion--collapse"
@@ -1857,7 +1857,7 @@ exports[`Test Shell Script Step should render edit view as edit step 1`] = `
       </div>
     </div>
     <div
-      class="formGroup alignStart"
+      class="formGroup"
     >
       <div
         class="bp3-form-group"
@@ -1964,13 +1964,13 @@ exports[`Test Shell Script Step should render edit view as edit step 1`] = `
           data-testid="optional-config-summary"
         >
           <div
-            class="Accordion--chevron"
-          />
-          <div
             class="Accordion--label"
           >
             common.optionalConfig
           </div>
+          <div
+            class="Accordion--chevron"
+          />
         </div>
         <div
           class="bp3-collapse Accordion--collapse"
@@ -2243,7 +2243,7 @@ exports[`Test Shell Script Step should render edit view as new step 1`] = `
       </div>
     </div>
     <div
-      class="formGroup alignStart"
+      class="formGroup"
     >
       <div
         class="bp3-form-group"
@@ -2350,13 +2350,13 @@ exports[`Test Shell Script Step should render edit view as new step 1`] = `
           data-testid="optional-config-summary"
         >
           <div
-            class="Accordion--chevron"
-          />
-          <div
             class="Accordion--label"
           >
             common.optionalConfig
           </div>
+          <div
+            class="Accordion--chevron"
+          />
         </div>
         <div
           class="bp3-collapse Accordion--collapse"

@@ -1,6 +1,14 @@
+/*
+ * Copyright 2021 Harness Inc. All rights reserved.
+ * Use of this source code is governed by the PolyForm Shield 1.0.0 license
+ * that can be found in the licenses directory at the root of this repository, also available at
+ * https://polyformproject.org/wp-content/uploads/2020/06/PolyForm-Shield-1.0.0.txt.
+ */
+
 import React, { useEffect, useState } from 'react'
 import { useHistory, useParams } from 'react-router-dom'
 import { Button, Color, Container, Text, Layout, Heading } from '@wings-software/uicore'
+import { useUpdateLSDefaultExperience } from '@common/hooks/useUpdateLSDefaultExperience'
 import { useTelemetry } from '@common/hooks/useTelemetry'
 import routes from '@common/RouteDefinitions'
 import type { Module } from '@common/interfaces/RouteInterfaces'
@@ -32,13 +40,16 @@ const ModuleInfo: React.FC<ModuleProps> = ({ module = 'cd' }) => {
   const { mutate: updateDefaultExperience, loading: updatingDefaultExperience } = useUpdateAccountDefaultExperienceNG({
     accountIdentifier: accountId
   })
+  const updatedDefaultExperience = !selectedInfoCard || selectedInfoCard?.isNgRoute ? Experiences.NG : Experiences.CG
+  const { updateLSDefaultExperience } = useUpdateLSDefaultExperience()
 
   const getModuleLink = (moduleLinkArg: Module): React.ReactElement => {
     async function handleUpdateDefaultExperience(): Promise<void> {
       try {
         await updateDefaultExperience({
-          defaultExperience: !selectedInfoCard || selectedInfoCard?.isNgRoute ? Experiences.NG : Experiences.CG
+          defaultExperience: updatedDefaultExperience
         })
+        updateLSDefaultExperience(updatedDefaultExperience)
       } catch (error) {
         showError(error.data?.message || getString('somethingWentWrong'))
       }
@@ -51,9 +62,9 @@ const ModuleInfo: React.FC<ModuleProps> = ({ module = 'cd' }) => {
           intent="primary"
           className={css.continueButton}
           onClick={() => {
-            handleUpdateDefaultExperience().then(() =>
+            handleUpdateDefaultExperience().then(() => {
               history.push(routes.toModuleHome({ accountId, module: moduleLinkArg, source: 'purpose' }))
-            )
+            })
           }}
           data-testid="continueNg"
         >
@@ -68,13 +79,8 @@ const ModuleInfo: React.FC<ModuleProps> = ({ module = 'cd' }) => {
         intent="primary"
         onClick={async () => {
           trackEvent(PurposeActions.CDCGModuleSelected, { category: Category.SIGNUP, module: ModuleName.CD })
-
-          await updateDefaultExperience({
-            defaultExperience: !selectedInfoCard || selectedInfoCard?.isNgRoute ? Experiences.NG : Experiences.CG
-          })
-
+          await handleUpdateDefaultExperience()
           const route = selectedInfoCard.route?.()
-
           if (route) {
             window.location.href = route
           }

@@ -1,3 +1,10 @@
+/*
+ * Copyright 2022 Harness Inc. All rights reserved.
+ * Use of this source code is governed by the PolyForm Shield 1.0.0 license
+ * that can be found in the licenses directory at the root of this repository, also available at
+ * https://polyformproject.org/wp-content/uploads/2020/06/PolyForm-Shield-1.0.0.txt.
+ */
+
 import React from 'react'
 import { render } from '@testing-library/react'
 import { Provider } from 'urql'
@@ -18,6 +25,23 @@ import ChartResponseData from './ChartDataResponse.json'
 import SummaryResponseData from './SummaryResponse.json'
 import ViewFieldResponseData from './ViewFieldResponse.json'
 import PerspectiveResponseData from './PerspectiveData.json'
+import ReportResponseData from './ReportResponseData.json'
+
+jest.mock('services/cd-ng', () => ({
+  ...(jest.requireActual('services/cd-ng') as any),
+  useGetLicensesAndSummary: jest.fn().mockImplementation(() => ({
+    data: {
+      edition: 'FREE',
+      licenseType: 'TRIAL',
+      moduleType: 'CE',
+      maxExpiryTime: 1642680031232,
+      totalSpendLimit: 2500
+    },
+    refetch: jest.fn(),
+    error: null,
+    loading: false
+  }))
+}))
 
 jest.mock('services/ce', () => ({
   ...(jest.requireActual('services/ce') as any),
@@ -35,6 +59,23 @@ jest.mock('services/ce', () => ({
   })),
   useGetPerspective: jest.fn().mockImplementation(() => {
     return { data: PerspectiveResponseData, refetch: jest.fn(), error: null, loading: false }
+  }),
+  useGetReportSetting: jest.fn().mockImplementation(() => {
+    return { data: ReportResponseData, refetch: jest.fn(), error: null, loading: false }
+  }),
+  useGetCCMLicenseUsage: jest.fn().mockImplementation(() => {
+    return {
+      data: {
+        className: '.CELicenseUsageDTO',
+        accountIdentifier: 'ACCOUNT_ID',
+        module: 'CE',
+        timestamp: 1641370431232,
+        activeSpend: { count: 22, displayName: '' }
+      },
+      refetch: jest.fn(),
+      error: null,
+      loading: false
+    }
   })
 }))
 

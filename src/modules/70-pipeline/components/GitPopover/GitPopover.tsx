@@ -1,3 +1,10 @@
+/*
+ * Copyright 2021 Harness Inc. All rights reserved.
+ * Use of this source code is governed by the PolyForm Shield 1.0.0 license
+ * that can be found in the licenses directory at the root of this repository, also available at
+ * https://polyformproject.org/wp-content/uploads/2020/06/PolyForm-Shield-1.0.0.txt.
+ */
+
 import React from 'react'
 import { IPopoverProps, PopoverInteractionKind } from '@blueprintjs/core'
 import { Color, Icon, Layout, Popover, Text } from '@wings-software/uicore'
@@ -7,6 +14,9 @@ import { getRepoDetailsByIndentifier } from '@common/utils/gitSyncUtils'
 import type { EntityGitDetails } from 'services/pipeline-ng'
 import { useStrings } from 'framework/strings'
 import { useGitSyncStore } from 'framework/GitRepoStore/GitSyncStoreContext'
+import { getEntityUrl, getRepoEntityObject } from '@gitsync/common/gitSyncUtils'
+import type { GitSyncEntityDTO } from 'services/cd-ng'
+import GitPopoverInfo, { GitPopoverInfoProps } from './GitPopoverInfo'
 
 export interface GitPopoverProps {
   data: EntityGitDetails
@@ -15,11 +25,36 @@ export interface GitPopoverProps {
   customUI?: JSX.Element
 }
 
+const breakWord = 'break-word'
+
 export function RenderGitPopover(props: GitPopoverProps): React.ReactElement | null {
   const { getString } = useStrings()
   const { data, iconProps, popoverProps, customUI } = props
   const { gitSyncRepos, loadingRepos } = useGitSyncStore()
+  const repo = getRepoDetailsByIndentifier(data?.repoIdentifier, gitSyncRepos)
+  const repoEntity: GitSyncEntityDTO = getRepoEntityObject(repo, data)
+  const popoverContent: GitPopoverInfoProps[] = [
+    {
+      heading: getString('repository'),
+      content: (!loadingRepos && getRepoDetailsByIndentifier(data?.repoIdentifier, gitSyncRepos)?.name) || '',
+      iconName: 'repository'
+    },
 
+    {
+      heading: getString('common.git.filePath'),
+      content: getEntityUrl(repoEntity),
+      iconName: 'repository',
+      contentTextProps: {
+        style: { wordWrap: breakWord, maxWidth: '200px' },
+        lineClamp: 1
+      }
+    },
+    {
+      heading: getString('pipelineSteps.deploy.inputSet.branch'),
+      content: data.branch || '',
+      iconName: 'git-new-branch'
+    }
+  ]
   const gitPopover = React.useCallback(() => {
     return (
       <Popover interactionKind={PopoverInteractionKind.HOVER} {...popoverProps}>
@@ -36,28 +71,10 @@ export function RenderGitPopover(props: GitPopoverProps): React.ReactElement | n
           </Text>
           {customUI ?? (
             <>
-              <Layout.Vertical spacing="large">
-                <Text font={{ size: 'small' }} color={Color.GREY_400}>
-                  {getString('repository')}
-                </Text>
-                <Layout.Horizontal spacing="small" style={{ alignItems: 'center' }}>
-                  <Icon name="repository" size={16} color={Color.GREY_700} />
-                  <Text font={{ size: 'small' }} color={Color.GREY_800}>
-                    {(!loadingRepos && getRepoDetailsByIndentifier(data?.repoIdentifier, gitSyncRepos)?.name) || ''}
-                  </Text>
-                </Layout.Horizontal>
-              </Layout.Vertical>
-              <Layout.Vertical spacing="large">
-                <Text font={{ size: 'small' }} color={Color.GREY_400}>
-                  {getString('pipelineSteps.deploy.inputSet.branch')}
-                </Text>
-                <Layout.Horizontal spacing="small" style={{ alignItems: 'center' }}>
-                  <Icon name="git-new-branch" size={14} color={Color.GREY_700} />
-                  <Text font={{ size: 'small' }} color={Color.GREY_800}>
-                    {data.branch}
-                  </Text>
-                </Layout.Horizontal>
-              </Layout.Vertical>
+              {popoverContent.map((item: GitPopoverInfoProps) => {
+                const key = `${item.content}-${item.heading}`
+                return <GitPopoverInfo key={key} {...item} />
+              })}
             </>
           )}
         </Layout.Vertical>

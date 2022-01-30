@@ -1,3 +1,10 @@
+/*
+ * Copyright 2021 Harness Inc. All rights reserved.
+ * Use of this source code is governed by the PolyForm Free Trial 1.0.0 license
+ * that can be found in the licenses directory at the root of this repository, also available at
+ * https://polyformproject.org/wp-content/uploads/2020/05/PolyForm-Free-Trial-1.0.0.txt.
+ */
+
 import { getMultiTypeFromValue, MultiSelectOption, MultiTypeInputType, SelectOption } from '@wings-software/uicore'
 import type { JiraCreateFieldType, JiraFieldNGWithValue } from '../JiraCreate/types'
 import type { JiraUpdateData } from './types'
@@ -45,7 +52,8 @@ export const processFormData = (values: JiraUpdateData): JiraUpdateData => {
                   : values.spec.transitionTo.status
             }
           : undefined,
-      fields: processFieldsForSubmit(values)
+      fields: processFieldsForSubmit(values),
+      delegateSelectors: values.spec.delegateSelectors
     }
   }
 }
@@ -54,6 +62,7 @@ export const processInitialValues = (values: JiraUpdateData): JiraUpdateData => 
   return {
     ...values,
     spec: {
+      delegateSelectors: values.spec.delegateSelectors,
       connectorRef: values.spec.connectorRef,
       issueKey: values.spec.issueKey,
       transitionTo: values.spec.transitionTo

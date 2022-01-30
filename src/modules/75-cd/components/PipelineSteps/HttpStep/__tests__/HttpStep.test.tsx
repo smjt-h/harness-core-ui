@@ -1,3 +1,10 @@
+/*
+ * Copyright 2022 Harness Inc. All rights reserved.
+ * Use of this source code is governed by the PolyForm Shield 1.0.0 license
+ * that can be found in the licenses directory at the root of this repository, also available at
+ * https://polyformproject.org/wp-content/uploads/2020/06/PolyForm-Shield-1.0.0.txt.
+ */
+
 import React from 'react'
 import { render, queryByAttribute, fireEvent, act } from '@testing-library/react'
 import { RUNTIME_INPUT_VALUE } from '@wings-software/uicore'
@@ -30,9 +37,20 @@ describe('Http Step', () => {
         url: RUNTIME_INPUT_VALUE,
         requestBody: RUNTIME_INPUT_VALUE,
         timeout: RUNTIME_INPUT_VALUE,
-        assertion: RUNTIME_INPUT_VALUE
-        // headers: RUNTIME_INPUT_VALUE
-        // outputVariables: RUNTIME_INPUT_VALUE
+        assertion: RUNTIME_INPUT_VALUE,
+        headers: [
+          {
+            key: 'Header',
+            value: RUNTIME_INPUT_VALUE
+          }
+        ],
+        outputVariables: [
+          {
+            name: 'Output',
+            type: 'String',
+            value: RUNTIME_INPUT_VALUE
+          }
+        ]
       }
     }
     const { container } = render(
@@ -56,6 +74,10 @@ describe('Http Step', () => {
           {
             key: 'Content-Type',
             value: 'application/json'
+          },
+          {
+            key: 'Header',
+            value: RUNTIME_INPUT_VALUE
           }
         ],
         outputVariables: [
@@ -63,6 +85,11 @@ describe('Http Step', () => {
             name: 'myVar',
             type: 'String',
             value: 'response.message'
+          },
+          {
+            name: 'myVar1',
+            type: 'String',
+            value: RUNTIME_INPUT_VALUE
           }
         ]
       }

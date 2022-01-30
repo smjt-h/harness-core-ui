@@ -1,3 +1,10 @@
+/*
+ * Copyright 2022 Harness Inc. All rights reserved.
+ * Use of this source code is governed by the PolyForm Shield 1.0.0 license
+ * that can be found in the licenses directory at the root of this repository, also available at
+ * https://polyformproject.org/wp-content/uploads/2020/06/PolyForm-Shield-1.0.0.txt.
+ */
+
 import React from 'react'
 import cx from 'classnames'
 import { useParams } from 'react-router-dom'
@@ -6,6 +13,7 @@ import { useChangePassword } from '@user-profile/modals/useChangePassword/useCha
 import { useUserProfile } from '@user-profile/modals/UserProfile/useUserProfile'
 import { useStrings } from 'framework/strings'
 import { useAppStore } from 'framework/AppStore/AppStoreContext'
+import { useCommunity } from 'framework/LicenseStore/useCommunity'
 import { useGetAuthenticationSettings } from 'services/cd-ng'
 import type { UsernamePasswordSettings } from 'services/cd-ng'
 import { Page } from '@common/components'
@@ -23,6 +31,7 @@ const UserProfilePage: React.FC = () => {
   const { openSwitchAccountModal } = useSwitchAccountModal({})
   const { openUserProfile } = useUserProfile({})
   const { currentUserInfo: user } = useAppStore()
+  const isCommunity = useCommunity()
 
   const {
     data: loginSettingsData,
@@ -100,11 +109,17 @@ const UserProfilePage: React.FC = () => {
                 {getString('userProfile.changePassword')}
               </Button>
             </Text>
-            <Text icon="people">
-              <Button variation={ButtonVariation.LINK} onClick={openSwitchAccountModal} font={{ weight: 'semi-bold' }}>
-                {getString('common.switchAccount')}
-              </Button>
-            </Text>
+            {!isCommunity && (
+              <Text icon="people">
+                <Button
+                  variation={ButtonVariation.LINK}
+                  onClick={openSwitchAccountModal}
+                  font={{ weight: 'semi-bold' }}
+                >
+                  {getString('common.switchAccount')}
+                </Button>
+              </Text>
+            )}
           </Layout.Vertical>
           <Layout.Horizontal spacing="huge" padding="large" className={css.authentication} flex>
             <TwoFactorAuthentication

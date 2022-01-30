@@ -1,3 +1,10 @@
+/*
+ * Copyright 2022 Harness Inc. All rights reserved.
+ * Use of this source code is governed by the PolyForm Shield 1.0.0 license
+ * that can be found in the licenses directory at the root of this repository, also available at
+ * https://polyformproject.org/wp-content/uploads/2020/06/PolyForm-Shield-1.0.0.txt.
+ */
+
 import React, { useState, useEffect } from 'react'
 import { useParams } from 'react-router-dom'
 import { parse } from 'yaml'
@@ -11,7 +18,8 @@ import {
   VisualYamlSelectedView as SelectedView,
   VisualYamlToggle,
   useConfirmationDialog,
-  useToaster
+  useToaster,
+  getErrorInfoFromErrorObject
 } from '@wings-software/uicore'
 
 import {
@@ -157,7 +165,7 @@ const YAMLSecretDetails: React.FC<YAMLSecretDetailsProps> = ({ refetch, secretDa
         setEdit(false)
         refetch?.()
       } catch (err) {
-        showError(defaultTo(err.data?.message, err.message))
+        showError(getErrorInfoFromErrorObject(err, true))
       }
     }
   }

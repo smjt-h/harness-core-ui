@@ -1,3 +1,10 @@
+/*
+ * Copyright 2022 Harness Inc. All rights reserved.
+ * Use of this source code is governed by the PolyForm Shield 1.0.0 license
+ * that can be found in the licenses directory at the root of this repository, also available at
+ * https://polyformproject.org/wp-content/uploads/2020/06/PolyForm-Shield-1.0.0.txt.
+ */
+
 import React, { useState } from 'react'
 import * as Yup from 'yup'
 import {
@@ -16,6 +23,7 @@ import {
 import { Popover, Spinner } from '@blueprintjs/core'
 import { useParams } from 'react-router-dom'
 import cx from 'classnames'
+import { isEmpty } from 'lodash-es'
 import { EmailSchema } from '@common/utils/Validation'
 import { useToaster } from '@common/components'
 import UserGroupsInput from '@common/components/UserGroupsInput/UserGroupsInput'
@@ -60,8 +68,8 @@ export const TestEmailConfig: React.FC<TestEmailConfigProps> = props => {
         formName="configureTestEmailNotifications"
         validationSchema={Yup.object().shape({
           to: EmailSchema(),
-          subject: Yup.string().trim().required(getString('notifications.validationSubject')),
-          body: Yup.string().trim().required(getString('notifications.validationBody'))
+          subject: Yup.string().trim().required(getString('common.smtp.validationSubject')),
+          body: Yup.string().trim().required(getString('common.smtp.validationBody'))
         })}
         initialValues={{
           to: '',
@@ -72,9 +80,9 @@ export const TestEmailConfig: React.FC<TestEmailConfigProps> = props => {
         {formik => {
           return (
             <FormikForm>
-              <FormInput.Text name={'to'} label={getString('notifications.labelTo')} />
-              <FormInput.Text name={'subject'} label={getString('notifications.labelSubject')} />
-              <FormInput.Text name={'body'} label={getString('notifications.labelBody')} />
+              <FormInput.Text name={'to'} label={getString('common.smtp.labelTo')} />
+              <FormInput.Text name={'subject'} label={getString('common.smtp.labelSubject')} />
+              <FormInput.Text name={'body'} label={getString('common.smtp.labelBody')} />
               <Button
                 text={getString('notifications.buttonSend')}
                 onClick={event => {
@@ -176,7 +184,10 @@ const ConfigureEmailNotifications: React.FC<ConfigureEmailNotificationsProps> = 
         <Formik
           onSubmit={handleSubmit}
           validationSchema={Yup.object().shape({
-            emailIds: EmailSchema({ allowMultiple: true, emailSeparator: ',' })
+            emailIds: Yup.string().when('userGroups', {
+              is: val => isEmpty(val),
+              then: EmailSchema({ allowMultiple: true, emailSeparator: ',' })
+            })
           })}
           initialValues={{
             emailIds: props.config?.emailIds.toString() || '',
@@ -189,7 +200,7 @@ const ConfigureEmailNotifications: React.FC<ConfigureEmailNotificationsProps> = 
             return (
               <FormikForm>
                 <FormInput.TextArea name={'emailIds'} label={getString('notifications.emailRecipients')} />
-                <UserGroupsInput name="userGroups" label={getString('notifications.labelSlackUserGroups')} />
+                <UserGroupsInput name="userGroups" label={getString('notifications.labelEmailUserGroups')} />
                 <Layout.Horizontal style={{ alignItems: 'center' }}>
                   <TestEmailNotifications />
                 </Layout.Horizontal>

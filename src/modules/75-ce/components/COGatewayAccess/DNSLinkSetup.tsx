@@ -1,3 +1,10 @@
+/*
+ * Copyright 2021 Harness Inc. All rights reserved.
+ * Use of this source code is governed by the PolyForm Shield 1.0.0 license
+ * that can be found in the licenses directory at the root of this repository, also available at
+ * https://polyformproject.org/wp-content/uploads/2020/06/PolyForm-Shield-1.0.0.txt.
+ */
+
 import React, { useEffect, useState } from 'react'
 import {
   Heading,
@@ -102,24 +109,29 @@ const DNSLinkSetup: React.FC<DNSLinkSetupProps> = props => {
     lazy: !isEditFlow
   })
 
-  // const debouncedFetchHostedZones = React.useCallback(_debounce(loadHostedZones, 500), [])
-
-  const debouncedCustomDomainTextChange = React.useCallback(
-    _debounce((value: string, shouldLoadHostedZones: boolean) => {
-      const updatedGatewayDetails = { ...props.gatewayDetails }
-      if (!updatedGatewayDetails.routing.custom_domain_providers) {
-        updatedGatewayDetails.routing = {
-          ...props.gatewayDetails.routing,
-          custom_domain_providers: { others: {} } // eslint-disable-line
-        }
+  const updateCustomDomains = (value: string, shouldLoadHostedZones: boolean, details?: GatewayDetails) => {
+    const updatedGatewayDetails = _defaultTo(details, { ...props.gatewayDetails })
+    if (!updatedGatewayDetails.routing.custom_domain_providers) {
+      updatedGatewayDetails.routing = {
+        ...props.gatewayDetails.routing,
+        custom_domain_providers: { others: {} } // eslint-disable-line
       }
-      updatedGatewayDetails.customDomains = value.split(',')
-      props.setGatewayDetails(updatedGatewayDetails)
-      props.setHelpTextSections(['usingCustomDomain'])
-      shouldLoadHostedZones && loadHostedZones()
-    }, 500),
-    [props.gatewayDetails]
-  )
+    }
+    updatedGatewayDetails.customDomains = value.split(',')
+    props.setGatewayDetails(updatedGatewayDetails)
+    props.setHelpTextSections(['usingCustomDomain'])
+    shouldLoadHostedZones &&
+      loadHostedZones({
+        queryParams: {
+          cloud_account_id: props.gatewayDetails.cloudAccount.id, // eslint-disable-line
+          region: 'us-east-1',
+          domain: updatedGatewayDetails.customDomains[0],
+          accountIdentifier: accountId
+        }
+      })
+  }
+
+  const debouncedCustomDomainTextChange = React.useCallback(_debounce(updateCustomDomains, 800), [props.gatewayDetails])
 
   const initialAccessPointDetails: AccessPoint = {
     cloud_account_id: props.gatewayDetails.cloudAccount.id, // eslint-disable-line
@@ -159,6 +171,9 @@ const DNSLinkSetup: React.FC<DNSLinkSetupProps> = props => {
   const [selectedApCore, setSelectedApCore] = useState<SelectOption>()
   const [routingRecords, setRoutingRecords] = useState<PortConfig[]>(props.gatewayDetails.routing.ports)
   const [healthCheckPattern, setHealthCheckPattern] = useState<HealthCheck | null>(props.gatewayDetails.healthCheck)
+  const [shouldShowRoutingTable, setShouldShowRoutingTable] = useState<boolean>(
+    !_isEmpty(props.gatewayDetails.routing.ports)
+  )
 
   const getAccessPointFetchQueryParams = (): ListAccessPointsQueryParams => {
     const params: ListAccessPointsQueryParams = {
@@ -220,6 +235,10 @@ const DNSLinkSetup: React.FC<DNSLinkSetupProps> = props => {
       accountIdentifier: accountId
     }
   })
+
+  const getServerNames = () => {
+    return routingRecords.map(record => record.server_name).filter(v => !_isEmpty(v))
+  }
 
   useEffect(() => {
     if (accessPoints?.response?.length == 0) {
@@ -302,11 +321,18 @@ const DNSLinkSetup: React.FC<DNSLinkSetupProps> = props => {
   }, [])
 
   useEffect(() => {
+    const serverNames = getServerNames()
+    const hasServerNames = !_isEmpty(serverNames)
     const updatedGatewayDetails = {
       ...props.gatewayDetails,
-      routing: { ...props.gatewayDetails.routing, ports: routingRecords }
+      routing: { ...props.gatewayDetails.routing, ports: routingRecords },
+      ...(hasServerNames && { customDomains: serverNames as string[] })
     }
-    props.setGatewayDetails(updatedGatewayDetails)
+    if (hasServerNames) {
+      updateCustomDomains(serverNames.join(','), true, updatedGatewayDetails)
+    } else {
+      props.setGatewayDetails(updatedGatewayDetails)
+    }
   }, [routingRecords])
 
   const [, hideModal] = useModalHook(() => (
@@ -320,21 +346,6 @@ const DNSLinkSetup: React.FC<DNSLinkSetupProps> = props => {
       />
     </Dialog>
   ))
-
-  const addPort = () => {
-    routingRecords.push({
-      protocol: 'http',
-      port: 80,
-      action: 'forward',
-      target_protocol: 'http', // eslint-disable-line
-      target_port: 80, // eslint-disable-line
-      redirect_url: '', // eslint-disable-line
-      server_name: '', // eslint-disable-line
-      routing_rules: [] // eslint-disable-line
-    })
-    const routes = [...routingRecords]
-    setRoutingRecords(routes)
-  }
 
   const addAllPorts = () => {
     const emptyRecords: PortConfig[] = []
@@ -397,8 +408,10 @@ const DNSLinkSetup: React.FC<DNSLinkSetupProps> = props => {
             })
           })
         })
+        setShouldShowRoutingTable(true)
       }
     } catch (e) {
+      setShouldShowRoutingTable(true)
       showError(e.data?.message || e.message, undefined, 'ce.creaetap.result.error')
     }
   }
@@ -720,28 +733,20 @@ const DNSLinkSetup: React.FC<DNSLinkSetupProps> = props => {
                                 {getString('ce.co.gatewayConfig.routingDescription')}
                               </Text>
                               <Layout.Vertical spacing="large">
-                                {loadingSecurityGroups ? (
+                                {loadingSecurityGroups && !shouldShowRoutingTable && (
                                   <Icon
                                     name="spinner"
                                     size={24}
                                     color="blue500"
                                     style={{ alignSelf: 'center', marginTop: '10px' }}
                                   />
-                                ) : (
+                                )}
+                                {shouldShowRoutingTable && (
                                   <CORoutingTable
                                     routingRecords={routingRecords}
                                     setRoutingRecords={setRoutingRecords}
                                   />
                                 )}
-                                <Container className={css.rowItem}>
-                                  <Text
-                                    onClick={() => {
-                                      addPort()
-                                    }}
-                                  >
-                                    {getString('ce.co.gatewayConfig.addPortLabel')}
-                                  </Text>
-                                </Container>
                               </Layout.Vertical>
                             </>
                           )}
@@ -784,6 +789,7 @@ const DNSLinkSetup: React.FC<DNSLinkSetupProps> = props => {
                 <Layout.Horizontal>
                   <Radio
                     value="no"
+                    disabled={!_isEmpty(getServerNames())}
                     onChange={e => {
                       formik.setFieldValue('usingCustomDomain', e.currentTarget.value)
                       if (e.currentTarget.value == 'no') props.setHelpTextSections([])

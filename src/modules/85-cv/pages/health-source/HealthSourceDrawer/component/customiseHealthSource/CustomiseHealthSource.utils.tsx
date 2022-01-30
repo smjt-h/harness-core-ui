@@ -1,3 +1,10 @@
+/*
+ * Copyright 2021 Harness Inc. All rights reserved.
+ * Use of this source code is governed by the PolyForm Shield 1.0.0 license
+ * that can be found in the licenses directory at the root of this repository, also available at
+ * https://polyformproject.org/wp-content/uploads/2020/06/PolyForm-Shield-1.0.0.txt.
+ */
+
 import React from 'react'
 import { isEmpty } from 'lodash-es'
 import GCOLogsMonitoringSource from '@cv/pages/health-source/connectors/GCOLogsMonitoringSource/GCOLogsMonitoringSource'
@@ -11,7 +18,9 @@ import { GCOProduct } from '@cv/pages/health-source/connectors/GCOMetricsHealthS
 import { HealthSourceTypes } from '@cv/pages/health-source/types'
 import DatadogMetricsHealthSource from '@cv/pages/health-source/connectors/DatadogMetricsHealthSource/DatadogMetricsHealthSource'
 import { DatadogProduct } from '@cv/pages/health-source/connectors/DatadogMetricsHealthSource/DatadogMetricsHealthSource.utils'
+import { CustomHealthSource } from '@cv/pages/health-source/connectors/CustomHealthSource/CustomHealthSource'
 import { DatadogLogsHealthSource } from '@cv/pages/health-source/connectors/DatadogLogsHealthSource/DatadogLogsHealthSource'
+import ErrorTrackingHealthSource from '@cv/pages/health-source/connectors/ErrorTrackingHealthSource/ErrorTrackingHealthSource'
 import type { UpdatedHealthSource } from '../../HealthSourceDrawerContent.types'
 
 export const LoadSourceByType = ({
@@ -52,6 +61,10 @@ export const LoadSourceByType = ({
       return <NewrelicMonitoredSourceContainer data={data} onSubmit={onSubmit} />
     case Connectors.SPLUNK:
       return <SplunkHealthSource data={data} onSubmit={onSubmit} />
+    case Connectors.CUSTOM_HEALTH:
+      return <CustomHealthSource data={data} onSubmit={onSubmit} />
+    case Connectors.ERROR_TRACKING:
+      return <ErrorTrackingHealthSource data={data} onSubmit={onSubmit} />
     default:
       return <></>
   }

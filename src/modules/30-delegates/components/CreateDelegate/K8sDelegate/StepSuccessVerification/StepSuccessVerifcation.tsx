@@ -1,3 +1,10 @@
+/*
+ * Copyright 2021 Harness Inc. All rights reserved.
+ * Use of this source code is governed by the PolyForm Shield 1.0.0 license
+ * that can be found in the licenses directory at the root of this repository, also available at
+ * https://polyformproject.org/wp-content/uploads/2020/06/PolyForm-Shield-1.0.0.txt.
+ */
+
 import React from 'react'
 
 import { Button, Layout, StepProps, Heading, Text, Container } from '@wings-software/uicore'
@@ -32,12 +39,12 @@ const StepSuccessVerification: React.FC<StepProps<K8sDelegateWizardData> & StepS
             </Heading>
           </Layout.Horizontal>
           <Layout.Horizontal className={css.descriptionVerificationWrapper}>
-            <Text lineClamp={2} font="normal" width={408}>
+            <Text font="normal" width={408}>
               {getString('delegate.successVerification.description1')}
             </Text>
           </Layout.Horizontal>
           <Layout.Horizontal>
-            <Text lineClamp={2} font={{ weight: 'bold', size: 'normal' }} width={408}>
+            <Text font={{ weight: 'bold', size: 'normal' }} width={408}>
               {getString('delegate.successVerification.description2')}
             </Text>
           </Layout.Horizontal>

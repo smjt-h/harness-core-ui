@@ -135,8 +135,7 @@ exports[`FlagActivation it should render correctly 1`] = `
                       </label>
                     </p>
                     <p
-                      class="StyledProps--font StyledProps--main StyledProps--padding-left-small"
-                      style="font-size: 12px; color: rgb(107, 109, 133);"
+                      class="StyledProps--font StyledProps--main StyledProps--font-variation-form-input-text StyledProps--padding-left-small"
                     >
                       cf.featureFlags.flagOn
                     </p>
@@ -716,6 +715,7 @@ exports[`FlagActivation it should render form correctly 1`] = `
     </button>
     <button
       class="bp3-button Button--button StyledProps--font StyledProps--main Button--with-current-color Button--variation Button--variation-tertiary"
+      data-testid="save-flag-to-git-modal-cancel-button"
       type="button"
     >
       <span

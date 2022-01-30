@@ -1,3 +1,10 @@
+/*
+ * Copyright 2021 Harness Inc. All rights reserved.
+ * Use of this source code is governed by the PolyForm Shield 1.0.0 license
+ * that can be found in the licenses directory at the root of this repository, also available at
+ * https://polyformproject.org/wp-content/uploads/2020/06/PolyForm-Shield-1.0.0.txt.
+ */
+
 import React, { useState, useMemo } from 'react'
 import {
   Text,
@@ -10,10 +17,12 @@ import {
   FontVariation,
   TableV2,
   useConfirmationDialog,
-  useToaster
+  useToaster,
+  useModalHook,
+  Dialog
 } from '@wings-software/uicore'
 import type { CellProps, Renderer, Column } from 'react-table'
-import { Classes, Position, Menu, Intent, PopoverInteractionKind } from '@blueprintjs/core'
+import { Classes, Position, Menu, Intent, PopoverInteractionKind, IconName, MenuItem } from '@blueprintjs/core'
 import { useHistory, useParams } from 'react-router-dom'
 import { noop } from 'lodash-es'
 import {
@@ -35,6 +44,7 @@ import ManagePrincipalButton from '@rbac/components/ManagePrincipalButton/Manage
 import RbacMenuItem from '@rbac/components/MenuItem/MenuItem'
 import RbacAvatarGroup from '@rbac/components/RbacAvatarGroup/RbacAvatarGroup'
 import { isCDCommunity, useLicenseStore } from 'framework/LicenseStore/LicenseStoreContext'
+import CopyGroupForm from '../CopyGroupMenuItem/CopyGroupForm'
 import css from './UserGroupsListView.module.scss'
 
 interface UserGroupsListViewProps {
@@ -222,6 +232,19 @@ const RenderColumnMenu: Renderer<CellProps<UserGroupAggregateDTO>> = ({ row, col
     }
   })
 
+  const [openCopyGroupModal, closeCopyGroupModal] = useModalHook(() => {
+    return (
+      <Dialog
+        isOpen={true}
+        enforceFocus={false}
+        title={getString('rbac.copyGroup.title', { name: data.name })}
+        onClose={closeCopyGroupModal}
+      >
+        <CopyGroupForm closeModal={closeCopyGroupModal} identifier={identifier} />
+      </Dialog>
+    )
+  }, [])
+
   const handleDelete = (e: React.MouseEvent<HTMLElement, MouseEvent>): void => {
     e.stopPropagation()
     setMenuOpen(false)
@@ -232,6 +255,46 @@ const RenderColumnMenu: Renderer<CellProps<UserGroupAggregateDTO>> = ({ row, col
     e.stopPropagation()
     setMenuOpen(false)
     ;(column as any).openUserGroupModal(data)
+  }
+
+  const handleCopyUserGroup = (e: React.MouseEvent<HTMLElement, MouseEvent>) => {
+    e.stopPropagation()
+    setMenuOpen(false)
+    openCopyGroupModal()
+  }
+
+  const renderMenuItem = (
+    icon: IconName,
+    text: string,
+    clickHandler: (e: React.MouseEvent<HTMLElement, MouseEvent>) => void,
+    tooltipText: string
+  ): React.ReactElement => {
+    if (data.externallyManaged) {
+      return (
+        <Popover
+          position={Position.TOP}
+          fill
+          usePortal
+          inheritDarkTheme={false}
+          interactionKind={PopoverInteractionKind.HOVER}
+          hoverCloseDelay={50}
+          content={
+            <div className={css.popover}>
+              <Text font={{ variation: FontVariation.SMALL }}>{tooltipText}</Text>
+            </div>
+          }
+        >
+          <div
+            onClick={(event: React.MouseEvent<HTMLElement, MouseEvent>) => {
+              event.stopPropagation()
+            }}
+          >
+            <MenuItem icon={icon} text={text} onClick={clickHandler} disabled />
+          </div>
+        </Popover>
+      )
+    }
+    return <RbacMenuItem icon={icon} text={text} onClick={clickHandler} permission={permissionRequest} />
   }
 
   return (
@@ -254,8 +317,27 @@ const RenderColumnMenu: Renderer<CellProps<UserGroupAggregateDTO>> = ({ row, col
           }}
         />
         <Menu>
-          <RbacMenuItem icon="edit" text={getString('edit')} onClick={handleEdit} permission={permissionRequest} />
-          <RbacMenuItem icon="trash" text={getString('delete')} onClick={handleDelete} permission={permissionRequest} />
+          {renderMenuItem(
+            'edit',
+            getString('edit'),
+            handleEdit,
+            getString('rbac.manageSCIMText', {
+              action: getString('edit').toLowerCase(),
+              target: getString('rbac.group').toLowerCase()
+            })
+          )}
+          {renderMenuItem(
+            'trash',
+            getString('delete'),
+            handleDelete,
+            getString('rbac.manageSCIMText', {
+              action: getString('delete').toLowerCase(),
+              target: getString('rbac.group').toLowerCase()
+            })
+          )}
+          {data.externallyManaged ? (
+            <MenuItem icon="duplicate" text={getString('common.copy')} onClick={handleCopyUserGroup} />
+          ) : undefined}
         </Menu>
       </Popover>
     </Layout.Horizontal>

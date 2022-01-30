@@ -1,0 +1,88 @@
+{
+  "status":"SUCCESS",
+  "data":{
+    "totalPages":1,
+    "totalItems":15,
+    "pageItemCount":15,
+    "pageSize":50,
+    "content":[
+      {
+        "userGroupDTO":{
+          "accountIdentifier":"px7xd_BFRCi-pfWPYXVjvw",
+          "identifier":"PrateekTest001",
+          "name":"PrateekTest001",
+          "users":[
+
+          ],
+          "notificationConfigs":[
+
+          ],
+          "externallyManaged":false,
+          "description":"",
+          "tags":{
+
+          },
+          "ssoLinked":false
+        },
+        "users":[
+
+        ],
+        "roleAssignmentsMetadataDTO":null,
+        "lastModifiedAt":1643114873516
+      },
+      {
+        "userGroupDTO":{
+          "accountIdentifier":"px7xd_BFRCi-pfWPYXVjvw",
+          "identifier":"VenkatUG",
+          "name":"VenkatUG",
+          "users":[
+            "KosDjkd1SoalrHauRgtBXQ",
+            "A4u4UL57Td6Ghqj-sWFmAg",
+            "DIzykli0SnuaYnpa5RVvFg"
+          ],
+          "notificationConfigs":[
+
+          ],
+          "externallyManaged":false,
+          "description":"",
+          "tags":{
+
+          },
+          "ssoLinked":false
+        },
+        "users":[
+          {
+            "name":"ramya.maripuri@harness.io",
+            "email":"ramya.maripuri@harness.io",
+            "uuid":"DIzykli0SnuaYnpa5RVvFg",
+            "locked":false,
+            "disabled":false,
+            "externallyManaged":false
+          },
+          {
+            "name":"Mounik V V S S",
+            "email":"mounik.velavalivenkata@harness.io",
+            "uuid":"A4u4UL57Td6Ghqj-sWFmAg",
+            "locked":false,
+            "disabled":false,
+            "externallyManaged":false
+          },
+          {
+            "name":"venkata.reddy@harness.io",
+            "email":"venkata.reddy@harness.io",
+            "uuid":"KosDjkd1SoalrHauRgtBXQ",
+            "locked":false,
+            "disabled":false,
+            "externallyManaged":false
+          }
+        ],
+        "roleAssignmentsMetadataDTO":null,
+        "lastModifiedAt":1643024248459
+      }
+    ],
+    "pageIndex":0,
+    "empty":false
+  },
+  "metaData":null,
+  "correlationId":"5323222b-70fc-49cd-96e8-55c7d1073cd1"
+}

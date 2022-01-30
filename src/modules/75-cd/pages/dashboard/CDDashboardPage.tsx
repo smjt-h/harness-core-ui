@@ -1,7 +1,15 @@
+/*
+ * Copyright 2021 Harness Inc. All rights reserved.
+ * Use of this source code is governed by the PolyForm Shield 1.0.0 license
+ * that can be found in the licenses directory at the root of this repository, also available at
+ * https://polyformproject.org/wp-content/uploads/2020/06/PolyForm-Shield-1.0.0.txt.
+ */
+
 import React, { useState } from 'react'
 import { Container, PageHeader } from '@wings-software/uicore'
 import { useHistory, useParams } from 'react-router-dom'
 import { camelCase, defaultTo, get } from 'lodash-es'
+import moment from 'moment'
 import routes from '@common/RouteDefinitions'
 import { Page } from '@common/exports'
 import { useStrings } from 'framework/strings'
@@ -15,7 +23,11 @@ import { NGBreadcrumbs } from '@common/components/NGBreadcrumbs/NGBreadcrumbs'
 import { useDocumentTitle } from '@common/hooks/useDocumentTitle'
 import ExecutionCard from '@pipeline/components/ExecutionCard/ExecutionCard'
 import { CardVariant } from '@pipeline/utils/constants'
-import { TimeRangeSelector, TimeRangeSelectorProps } from '@common/components/TimeRangeSelector/TimeRangeSelector'
+import {
+  startOfDay,
+  TimeRangeSelector,
+  TimeRangeSelectorProps
+} from '@common/components/TimeRangeSelector/TimeRangeSelector'
 import { DeploymentsTimeRangeContext } from '@cd/components/Services/common'
 
 import DeploymentsHealthCards from './DeploymentsHealthCards'
@@ -68,12 +80,12 @@ export function executionStatusInfoToExecutionSummary(info: ExecutionStatusInfo)
 
 export const CDDashboardPage: React.FC = () => {
   const { projectIdentifier, orgIdentifier, accountId } = useParams<ProjectPathProps>()
+  const { getString } = useStrings()
   const [timeRange, setTimeRange] = useState<TimeRangeSelectorProps>({
-    range: [new Date(Date.now() - 30 * 24 * 60 * 60000), new Date(Date.now())],
-    label: ''
+    range: [startOfDay(moment().subtract(1, 'month').add(1, 'day')), startOfDay(moment())],
+    label: getString('common.duration.month')
   })
   const history = useHistory()
-  const { getString } = useStrings()
 
   useDocumentTitle([getString('deploymentsText'), getString('overview')])
 

@@ -1,4 +1,11 @@
-import React from 'react'
+/*
+ * Copyright 2022 Harness Inc. All rights reserved.
+ * Use of this source code is governed by the PolyForm Shield 1.0.0 license
+ * that can be found in the licenses directory at the root of this repository, also available at
+ * https://polyformproject.org/wp-content/uploads/2020/06/PolyForm-Shield-1.0.0.txt.
+ */
+
+import React, { useCallback } from 'react'
 import cx from 'classnames'
 
 import { connect } from 'formik'
@@ -123,6 +130,14 @@ const ManifestInputSetForm: React.FC<KubernetesServiceInputFormProps> = ({
   }))
 
   const isSelectedStage = stageIdentifier === formik?.values?.stageId
+
+  const shouldDisplayRepositoryName = useCallback(item => {
+    return (
+      item?.record?.spec?.connectionType === GitRepoName.Repo ||
+      item?.record?.spec?.type === GitRepoName.Repo ||
+      item?.connector?.spec?.type === GitRepoName.Repo
+    )
+  }, [])
 
   const fromPipelineInputTriggerTab = () => {
     return (
@@ -263,10 +278,7 @@ const ManifestInputSetForm: React.FC<KubernetesServiceInputFormProps> = ({
                         onChange={(selected, _itemType, multiType) => {
                           const item = selected as unknown as { record?: GitConfigDTO; scope: Scope }
                           if (multiType === MultiTypeInputType.FIXED) {
-                            if (
-                              item?.record?.spec?.connectionType === GitRepoName.Repo ||
-                              item?.record?.spec?.type === GitRepoName.Repo
-                            ) {
+                            if (shouldDisplayRepositoryName(item)) {
                               setShowRepoName(false)
                             } else {
                               setShowRepoName(true)

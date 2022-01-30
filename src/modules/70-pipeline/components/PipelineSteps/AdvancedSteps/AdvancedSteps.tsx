@@ -1,3 +1,10 @@
+/*
+ * Copyright 2022 Harness Inc. All rights reserved.
+ * Use of this source code is governed by the PolyForm Shield 1.0.0 license
+ * that can be found in the licenses directory at the root of this repository, also available at
+ * https://polyformproject.org/wp-content/uploads/2020/06/PolyForm-Shield-1.0.0.txt.
+ */
+
 import React from 'react'
 import type { FormikProps } from 'formik'
 import { Formik, FormikForm, Accordion, AccordionHandle } from '@wings-software/uicore'
@@ -14,7 +21,7 @@ import {
 import { StepFormikFowardRef, setFormikRef } from '@pipeline/components/AbstractSteps/Step'
 import { StepMode as Modes } from '@pipeline/utils/stepUtils'
 import type { StepElementConfig, StepGroupElementConfig } from 'services/cd-ng'
-import type { TemplateStepData } from '@pipeline/utils/tempates'
+import type { TemplateStepNode } from 'services/pipeline-ng'
 import DelegateSelectorPanel from './DelegateSelectorPanel/DelegateSelectorPanel'
 import FailureStrategyPanel, { AllFailureStrategyConfig } from './FailureStrategyPanel/FailureStrategyPanel'
 import { getFailureStrategiesValidationSchema } from './FailureStrategyPanel/validation'
@@ -26,7 +33,7 @@ export type FormValues = Pick<Values, 'delegateSelectors' | 'when'> & {
   failureStrategies: AllFailureStrategyConfig[]
 }
 
-export interface AdvancedStepsProps extends StepCommandsProps {
+export interface AdvancedStepsProps extends Omit<StepCommandsProps, 'onUseTemplate' | 'onRemoveTemplate'> {
   stepType?: StepType
 }
 
@@ -42,15 +49,15 @@ export default function AdvancedSteps(props: AdvancedStepsProps, formikRef: Step
   )
 
   const failureStrategies =
-    (step as TemplateStepData)?.template?.templateInputs?.failureStrategies ||
+    ((step as TemplateStepNode)?.template?.templateInputs as StepElementConfig)?.failureStrategies ||
     (step as StepElementConfig | StepGroupElementConfig)?.failureStrategies
 
   const delegateSelectors =
-    (step as TemplateStepData)?.template?.templateInputs?.spec?.delegateSelectors ||
+    ((step as TemplateStepNode)?.template?.templateInputs as StepElementConfig)?.spec?.delegateSelectors ||
     (step as StepElementConfig)?.spec?.delegateSelectors
 
   const when =
-    (step as TemplateStepData)?.template?.templateInputs?.when ||
+    ((step as TemplateStepNode)?.template?.templateInputs as StepElementConfig)?.when ||
     (step as StepElementConfig | StepGroupElementConfig)?.when
 
   return (

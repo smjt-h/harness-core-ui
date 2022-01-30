@@ -1,3 +1,10 @@
+/*
+ * Copyright 2022 Harness Inc. All rights reserved.
+ * Use of this source code is governed by the PolyForm Shield 1.0.0 license
+ * that can be found in the licenses directory at the root of this repository, also available at
+ * https://polyformproject.org/wp-content/uploads/2020/06/PolyForm-Shield-1.0.0.txt.
+ */
+
 import type { MultiTypeInputType } from '@wings-software/uicore'
 import type { AbstractStepFactory } from '@pipeline/components/AbstractSteps/AbstractStepFactory'
 import type {
@@ -8,7 +15,7 @@ import type {
 } from 'services/cd-ng'
 import type { StageType } from '@pipeline/utils/stageHelpers'
 import type { StepViewType } from '@pipeline/components/AbstractSteps/Step'
-import type { TemplateStepData } from '@pipeline/utils/tempates'
+import type { TemplateStepNode, TemplateLinkConfig } from 'services/pipeline-ng'
 
 export enum AdvancedPanels {
   PreRequisites = 'preRequisites',
@@ -26,9 +33,8 @@ export interface StepCommandsProps {
   step: StepOrStepGroupOrTemplateStepData
   onChange?: (step: Partial<Values>) => void
   onUpdate: (step: Partial<Values>) => void
-  onUseTemplate?: (step: StepOrStepGroupOrTemplateStepData) => void
-  onSaveAsTemplate?: (step: StepOrStepGroupOrTemplateStepData) => void
-  onRemoveTemplate?: () => void
+  onUseTemplate?: () => void
+  onRemoveTemplate?: () => Promise<void>
   stepsFactory: AbstractStepFactory
   isStepGroup: boolean
   isReadonly: boolean
@@ -48,7 +54,7 @@ export enum TabTypes {
   Advanced = 'ADVANCED'
 }
 
-export type StepOrStepGroupOrTemplateStepData = StepElementConfig | StepGroupElementConfig | TemplateStepData
+export type StepOrStepGroupOrTemplateStepData = StepElementConfig | StepGroupElementConfig | TemplateStepNode
 
 export type Values = StepOrStepGroupOrTemplateStepData & {
   tab?: TabTypes
@@ -56,9 +62,5 @@ export type Values = StepOrStepGroupOrTemplateStepData & {
   delegateSelectors?: string[]
   when?: StepWhenCondition
   failureStrategies?: FailureStrategyConfig[]
-  template?: {
-    templateRef: string
-    versionLabel: string
-    templateInputs: Omit<StepElementConfig, 'name' | 'identifier'>
-  }
+  template?: TemplateLinkConfig
 }

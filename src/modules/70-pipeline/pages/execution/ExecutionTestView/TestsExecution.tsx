@@ -1,3 +1,10 @@
+/*
+ * Copyright 2021 Harness Inc. All rights reserved.
+ * Use of this source code is governed by the PolyForm Shield 1.0.0 license
+ * that can be found in the licenses directory at the root of this repository, also available at
+ * https://polyformproject.org/wp-content/uploads/2020/06/PolyForm-Shield-1.0.0.txt.
+ */
+
 import React, { useState, useEffect, useMemo, useCallback } from 'react'
 import { useParams } from 'react-router-dom'
 import { Dialog } from '@blueprintjs/core'
@@ -16,7 +23,8 @@ import {
   useModalHook,
   FlexExpander,
   TextInput,
-  PageError
+  PageError,
+  HarnessDocTooltip
 } from '@wings-software/uicore'
 import { get, noop, omit, debounce } from 'lodash-es'
 import cx from 'classnames'
@@ -303,6 +311,7 @@ export const TestsExecution: React.FC<TestsExecutionProps> = ({ stageId, stepId,
           color={Color.GREY_600}
         >
           {getString('pipeline.testsReports.testExecutions')}
+          <HarnessDocTooltip tooltipId="testExecutions" useStandAlone={true} />
         </Heading>
         {loading && <Icon name="steps-spinner" size={16} color="blue500" margin={{ left: 'xsmall' }} />}
       </Container>
@@ -460,6 +469,7 @@ export const TestsExecution: React.FC<TestsExecutionProps> = ({ stageId, stepId,
             <Layout.Horizontal className={css.callgraphHeader}>
               <Text color={Color.GREY_800} style={{ fontWeight: 500, fontSize: '14px', lineHeight: '32px' }}>
                 {getString('pipeline.testsReports.callgraphTitle')}
+                <HarnessDocTooltip tooltipId="callGraphTitle" useStandAlone={true} />
               </Text>
               <FlexExpander />
               <Button

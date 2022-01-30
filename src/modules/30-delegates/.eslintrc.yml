@@ -3,8 +3,9 @@ rules:
     - error
     - patterns:
         - lodash.*
-        - modules/30-auth-settings/*
+        - microfrontends/*
         - modules/30-secrets/*
+        - modules/33-auth-settings/*
         - modules/35-connectors/*
         - modules/35-user-profile/*
         - modules/40-gitsync/*
@@ -17,8 +18,8 @@ rules:
         - modules/75-cf/*
         - modules/75-ci/*
         - modules/85-cv/*
-        - '@auth-settings/*'
         - '@secrets/*'
+        - '@auth-settings/*'
         - '@connectors/*'
         - '@user-profile/*'
         - '@gitsync/*'
@@ -40,3 +41,5 @@ rules:
             of this
         - name: react-router
           message: import from "react-router-dom" instead
+        - name: microfrontends
+          message: Import from 'microfrontends' is only allowed in child apps

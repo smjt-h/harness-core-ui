@@ -1,3 +1,10 @@
+/*
+ * Copyright 2021 Harness Inc. All rights reserved.
+ * Use of this source code is governed by the PolyForm Shield 1.0.0 license
+ * that can be found in the licenses directory at the root of this repository, also available at
+ * https://polyformproject.org/wp-content/uploads/2020/06/PolyForm-Shield-1.0.0.txt.
+ */
+
 import React from 'react'
 import { fireEvent, render, waitFor } from '@testing-library/react'
 import { noop } from 'lodash-es'
@@ -7,6 +14,7 @@ import { defaultAppStoreValues } from '@common/utils/DefaultAppStoreData'
 import { accountPathProps, pipelineModuleParams, pipelinePathProps } from '@common/utils/routeUtils'
 import { branchStatusMock, gitConfigs, sourceCodeManagers } from '@connectors/mocks/mock'
 import filters from '@pipeline/pages/pipeline-deployment-list/__tests__/filters.json'
+import deploymentTypes from '@pipeline/pages/pipelines/__tests__/mocks/deploymentTypes.json'
 import services from '@pipeline/pages/pipelines/__tests__/mocks/services.json'
 import environments from '@pipeline/pages/pipelines/__tests__/mocks/environments.json'
 import { PipelineResponse as PipelineDetailsMockResponse } from '@pipeline/pages/pipeline-details/__tests__/PipelineDetailsMocks'
@@ -74,6 +82,9 @@ const getListOfBranchesWithStatus = jest.fn(() => Promise.resolve(branchStatusMo
 const getListGitSync = jest.fn(() => Promise.resolve(gitConfigs))
 
 jest.mock('services/cd-ng', () => ({
+  useGetServiceDefinitionTypes: jest
+    .fn()
+    .mockImplementation(() => ({ loading: false, data: deploymentTypes, refetch: jest.fn() })),
   useGetServiceListForProject: jest
     .fn()
     .mockImplementation(() => ({ loading: false, data: services, refetch: jest.fn() })),

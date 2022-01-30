@@ -1,3 +1,10 @@
+/*
+ * Copyright 2021 Harness Inc. All rights reserved.
+ * Use of this source code is governed by the PolyForm Shield 1.0.0 license
+ * that can be found in the licenses directory at the root of this repository, also available at
+ * https://polyformproject.org/wp-content/uploads/2020/06/PolyForm-Shield-1.0.0.txt.
+ */
+
 import type { SelectOption } from '@wings-software/uicore'
 import { v4 as nameSpace, v5 as uuid } from 'uuid'
 import { get, set, isEmpty, isObjectLike, isPlainObject, isBoolean } from 'lodash-es'
@@ -135,7 +142,7 @@ export function getInitialValuesInCorrectFormat<T, U>(
     if (type === Types.BuildTool) {
       const buildTool =
         getMultiTypeFromValue(value) === MultiTypeInputType.FIXED
-          ? buildToolOptions?.find((option: SelectOption) => option.value === value) || buildToolOptions[0]
+          ? buildToolOptions?.find((option: SelectOption) => option.value === value)
           : value
 
       set(values, name, buildTool)
@@ -162,7 +169,7 @@ export function getInitialValuesInCorrectFormat<T, U>(
     if (type === Types.Language) {
       const language =
         getMultiTypeFromValue(value) === MultiTypeInputType.FIXED
-          ? languageOptions?.find((option: SelectOption) => option.value === value) || languageOptions[0]
+          ? languageOptions?.find((option: SelectOption) => option.value === value)
           : value
 
       set(values, name, language)

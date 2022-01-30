@@ -1,5 +1,12 @@
+/*
+ * Copyright 2022 Harness Inc. All rights reserved.
+ * Use of this source code is governed by the PolyForm Shield 1.0.0 license
+ * that can be found in the licenses directory at the root of this repository, also available at
+ * https://polyformproject.org/wp-content/uploads/2020/06/PolyForm-Shield-1.0.0.txt.
+ */
+
 import React from 'react'
-import { render, act } from '@testing-library/react'
+import { render, act, waitFor, fireEvent } from '@testing-library/react'
 import { RUNTIME_INPUT_VALUE } from '@wings-software/uicore'
 import { StepViewType, StepFormikRef } from '@pipeline/components/AbstractSteps/Step'
 import { StepType } from '@pipeline/components/PipelineSteps/PipelineStepInterface'
@@ -51,12 +58,34 @@ describe('RunTests Step', () => {
   })
 
   describe('Edit View', () => {
-    test('should render properly', () => {
-      const { container } = render(
+    test('should render properly', async () => {
+      const { container, getByText } = render(
         <TestStepWidget initialValues={{}} type={StepType.RunTests} stepViewType={StepViewType.Edit} />
       )
 
       expect(container).toMatchSnapshot()
+
+      act(() => {
+        fireEvent.click(getByText('common.optionalConfig'))
+      })
+
+      const dropdownSelects = container.querySelectorAll('[icon="chevron-down"]')
+      expect(dropdownSelects.length).toEqual(4)
+
+      await waitFor(() => {
+        fireEvent.click(dropdownSelects[1])
+        const menuItemLabels = container.querySelectorAll('[class*="menuItemLabel"]')
+        expect(menuItemLabels.length).toEqual(1)
+        // Only Java option should be visible
+        expect(menuItemLabels[0].innerHTML).toEqual('Java')
+      })
+
+      try {
+        // Shell dropdown should not be visible for non AWS VMs Build Infra
+        getByText('common.shell')
+      } catch (err) {
+        expect(err).toBeTruthy()
+      }
     })
 
     test('renders runtime inputs', async () => {

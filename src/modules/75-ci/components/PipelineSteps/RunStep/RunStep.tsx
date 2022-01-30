@@ -1,3 +1,10 @@
+/*
+ * Copyright 2021 Harness Inc. All rights reserved.
+ * Use of this source code is governed by the PolyForm Shield 1.0.0 license
+ * that can be found in the licenses directory at the root of this repository, also available at
+ * https://polyformproject.org/wp-content/uploads/2020/06/PolyForm-Shield-1.0.0.txt.
+ */
+
 import React from 'react'
 import type { IconName, MultiTypeInputType } from '@wings-software/uicore'
 import { parse } from 'yaml'
@@ -39,7 +46,7 @@ export interface RunStepSpec {
   connectorRef: string
   image: string
   command: string
-  privileged: boolean
+  privileged?: boolean
   reports?: {
     type: 'JUnit'
     spec: {
@@ -90,6 +97,7 @@ export interface RunStepProps {
   onUpdate?: (data: RunStepData) => void
   onChange?: (data: RunStepData) => void
   allowableTypes: MultiTypeInputType[]
+  formik?: any
 }
 
 export class RunStep extends PipelineStep<RunStepData> {
@@ -119,8 +127,7 @@ export class RunStep extends PipelineStep<RunStepData> {
     spec: {
       connectorRef: '',
       image: '',
-      command: '',
-      privileged: false
+      command: ''
     }
   }
 

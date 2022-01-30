@@ -1,9 +1,16 @@
-import React, { useState } from 'react'
+/*
+ * Copyright 2022 Harness Inc. All rights reserved.
+ * Use of this source code is governed by the PolyForm Shield 1.0.0 license
+ * that can be found in the licenses directory at the root of this repository, also available at
+ * https://polyformproject.org/wp-content/uploads/2020/06/PolyForm-Shield-1.0.0.txt.
+ */
+
+import React, { useCallback, useEffect, useState } from 'react'
 import { useParams } from 'react-router-dom'
-import { Form } from 'formik'
+import { Form, FormikValues } from 'formik'
 import * as Yup from 'yup'
 import cx from 'classnames'
-import { get, isEmpty, memoize } from 'lodash-es'
+import { defaultTo, get, isEmpty, memoize, merge } from 'lodash-es'
 import { v4 as nameSpace, v5 as uuid } from 'uuid'
 import {
   Text,
@@ -22,45 +29,46 @@ import {
 
 import { Menu } from '@blueprintjs/core'
 import { useStrings } from 'framework/strings'
-import { ConnectorConfigDTO, ManifestConfig, ManifestConfigWrapper, useGetBucketListForS3 } from 'services/cd-ng'
+import {
+  ConnectorConfigDTO,
+  ManifestConfig,
+  ManifestConfigWrapper,
+  StoreConfig,
+  useGetBucketListForS3
+} from 'services/cd-ng'
 import { ConfigureOptions } from '@common/components/ConfigureOptions/ConfigureOptions'
 import { useListAwsRegions } from 'services/portal'
 import type { AccountPathProps, ProjectPathProps } from '@common/interfaces/RouteInterfaces'
-import type { HelmWithS3DataType } from '../../ManifestInterface'
+import type { HelmWithGcsDataType } from '../../ManifestInterface'
 import HelmAdvancedStepSection from '../HelmAdvancedStepSection'
 
 import { helmVersions, ManifestDataType, ManifestIdentifierValidation } from '../../Manifesthelper'
-import { handleCommandFlagsSubmitData } from '../HelmWithGcs/HelmWithGcs'
+import { handleCommandFlagsSubmitData } from '../ManifestUtils'
 import css from '../ManifestWizardSteps.module.scss'
 import helmcss from '../HelmWithGIT/HelmWithGIT.module.scss'
 
 interface HelmWithHttpPropType {
   stepName: string
   expressions: string[]
+  allowableTypes: MultiTypeInputType[]
   initialValues: ManifestConfig
   handleSubmit: (data: ManifestConfigWrapper) => void
   manifestIdsList: Array<string>
   isReadonly?: boolean
+  deploymentType?: string
 }
-
-const commandFlagOptionsV2 = [
-  { label: 'Fetch', value: 'Fetch' },
-  { label: 'Template ', value: 'Template' }
-]
-const commandFlagOptionsV3 = [
-  { label: 'Pull', value: 'Pull' },
-  { label: 'Template ', value: 'Template' }
-]
 
 const HelmWithS3: React.FC<StepProps<ConnectorConfigDTO> & HelmWithHttpPropType> = ({
   stepName,
   prevStepData,
   expressions,
+  allowableTypes,
   initialValues,
   handleSubmit,
   previousStep,
   manifestIdsList,
-  isReadonly = false
+  isReadonly = false,
+  deploymentType
 }) => {
   const { getString } = useStrings()
   const [regions, setRegions] = useState<SelectOption[]>([])
@@ -74,8 +82,8 @@ const HelmWithS3: React.FC<StepProps<ConnectorConfigDTO> & HelmWithHttpPropType>
     }
   })
 
-  React.useEffect(() => {
-    const regionValues = (regionData?.resource || []).map(region => ({
+  useEffect(() => {
+    const regionValues = defaultTo(regionData?.resource, []).map(region => ({
       value: region.value,
       label: region.name
     }))
@@ -107,14 +115,19 @@ const HelmWithS3: React.FC<StepProps<ConnectorConfigDTO> & HelmWithHttpPropType>
     debounce: 300
   })
 
-  const getSelectItems = React.useCallback(() => {
-    return Object.keys(bucketData?.data || []).map(bucket => ({
+  const getSelectItems = useCallback(() => {
+    return Object.keys(defaultTo(bucketData?.data, [])).map(bucket => ({
       value: bucket,
       label: bucket
     }))
   }, [bucketData?.data])
 
-  const buckets = loading ? [{ label: 'Loading Buckets...', value: 'Loading Buckets...' }] : getSelectItems()
+  const getBuckets = (): { label: string; value: string }[] => {
+    if (loading) {
+      return [{ label: 'Loading Buckets...', value: 'Loading Buckets...' }]
+    }
+    return getSelectItems()
+  }
   const itemRenderer = memoize((item: { label: string }, { handleClick }) => (
     <div key={item.label.toString()}>
       <Menu.Item
@@ -131,10 +144,27 @@ const HelmWithS3: React.FC<StepProps<ConnectorConfigDTO> & HelmWithHttpPropType>
 
   /* Code related to bucketName */
 
-  const isActiveAdvancedStep: boolean = initialValues?.spec?.skipResourceVersioning || initialValues?.spec?.commandFlags
-  const [selectedHelmVersion, setHelmVersion] = React.useState(initialValues?.spec?.helmVersion ?? 'V2')
+  const isActiveAdvancedStep: boolean = defaultTo(
+    initialValues?.spec?.skipResourceVersioning,
+    initialValues?.spec?.commandFlags
+  )
+  const [selectedHelmVersion, setHelmVersion] = useState(defaultTo(initialValues?.spec?.helmVersion, 'V2'))
 
-  const getInitialValues = (): HelmWithS3DataType => {
+  const setBucketNameInitialValue = (
+    values: HelmWithGcsDataType & { region: SelectOption | string },
+    specValues: StoreConfig
+  ): void => {
+    if (
+      getMultiTypeFromValue(specValues?.bucketName) === MultiTypeInputType.FIXED &&
+      getMultiTypeFromValue(prevStepData?.connectorRef) === MultiTypeInputType.FIXED &&
+      getMultiTypeFromValue(specValues?.region) === MultiTypeInputType.FIXED
+    ) {
+      merge(values, { bucketName: { label: specValues?.bucketName, value: specValues?.bucketName } })
+    } else {
+      merge(values, specValues?.bucketName)
+    }
+  }
+  const getInitialValues = (): HelmWithGcsDataType & { region: SelectOption | string } => {
     const specValues = get(initialValues, 'spec.store.spec', null)
 
     if (specValues) {
@@ -147,22 +177,16 @@ const HelmWithS3: React.FC<StepProps<ConnectorConfigDTO> & HelmWithHttpPropType>
         chartName: initialValues.spec?.chartName,
         chartVersion: initialValues.spec?.chartVersion,
         skipResourceVersioning: initialValues?.spec?.skipResourceVersioning,
-        commandFlags: initialValues.spec?.commandFlags?.map((commandFlag: { commandType: string; flag: string }) => ({
-          commandType: { label: commandFlag.commandType, value: commandFlag.commandType },
-          flag: commandFlag.flag
-          // id: uuid(commandFlag, nameSpace())
-        })) || [{ commandType: undefined, flag: undefined, id: uuid('', nameSpace()) }]
+        commandFlags: defaultTo(
+          initialValues.spec?.commandFlags?.map((commandFlag: { commandType: string; flag: string }) => ({
+            commandType: commandFlag.commandType,
+            flag: commandFlag.flag
+            // id: uuid(commandFlag, nameSpace())
+          })),
+          [{ commandType: undefined, flag: undefined, id: uuid('', nameSpace()) }]
+        )
       }
-
-      if (
-        getMultiTypeFromValue(specValues?.bucketName) === MultiTypeInputType.FIXED &&
-        getMultiTypeFromValue(prevStepData?.connectorRef) === MultiTypeInputType.FIXED &&
-        getMultiTypeFromValue(specValues?.region) === MultiTypeInputType.FIXED
-      ) {
-        values.bucketName = { label: specValues?.bucketName, value: specValues?.bucketName }
-      } else {
-        values.bucketName = specValues?.bucketName
-      }
+      setBucketNameInitialValue(values, specValues)
       return values
     }
     return {
@@ -178,7 +202,9 @@ const HelmWithS3: React.FC<StepProps<ConnectorConfigDTO> & HelmWithHttpPropType>
     }
   }
 
-  const submitFormData = (formData: HelmWithS3DataType & { store?: string; connectorRef?: string }): void => {
+  const submitFormData = (
+    formData: HelmWithGcsDataType & { region: SelectOption | string; store?: string; connectorRef?: string }
+  ): void => {
     const manifestObj: ManifestConfigWrapper = {
       manifest: {
         identifier: formData.identifier,
@@ -188,9 +214,9 @@ const HelmWithS3: React.FC<StepProps<ConnectorConfigDTO> & HelmWithHttpPropType>
             type: formData?.store,
             spec: {
               connectorRef: formData?.connectorRef,
-              bucketName: (formData?.bucketName as SelectOption)?.value ?? formData?.bucketName,
+              bucketName: defaultTo((formData?.bucketName as SelectOption)?.value, formData?.bucketName),
               folderPath: formData?.folderPath,
-              region: (formData?.region as SelectOption)?.value ?? formData?.region
+              region: defaultTo((formData?.region as SelectOption)?.value, formData?.region)
             }
           },
           chartName: formData?.chartName,
@@ -203,6 +229,85 @@ const HelmWithS3: React.FC<StepProps<ConnectorConfigDTO> & HelmWithHttpPropType>
 
     handleCommandFlagsSubmitData(manifestObj, formData)
     handleSubmit(manifestObj)
+  }
+
+  const renderS3Bucket = (formik: FormikValues): JSX.Element => {
+    if (
+      getMultiTypeFromValue(formik.values?.region) !== MultiTypeInputType.FIXED ||
+      getMultiTypeFromValue(prevStepData?.connectorRef) !== MultiTypeInputType.FIXED
+    ) {
+      return (
+        <div
+          className={cx(helmcss.halfWidth, {
+            [helmcss.runtimeInput]: getMultiTypeFromValue(formik.values?.bucketName) === MultiTypeInputType.RUNTIME
+          })}
+        >
+          <FormInput.MultiTextInput
+            label={getString('pipeline.manifestType.bucketName')}
+            placeholder={getString('pipeline.manifestType.bucketNamePlaceholder')}
+            name="bucketName"
+            multiTextInputProps={{ expressions, allowableTypes }}
+          />
+          {getMultiTypeFromValue(formik.values?.bucketName) === MultiTypeInputType.RUNTIME && (
+            <ConfigureOptions
+              style={{ alignSelf: 'center', marginBottom: 3 }}
+              value={formik.values?.bucketName as string}
+              type="String"
+              variableName="bucketName"
+              showRequiredField={false}
+              showDefaultField={false}
+              showAdvanced={true}
+              onChange={value => formik.setFieldValue('bucketName', value)}
+              isReadonly={isReadonly}
+            />
+          )}
+        </div>
+      )
+    }
+    return (
+      <div
+        className={cx(helmcss.halfWidth, {
+          [helmcss.runtimeInput]: getMultiTypeFromValue(formik.values?.bucketName) === MultiTypeInputType.RUNTIME
+        })}
+      >
+        <FormInput.MultiTypeInput
+          selectItems={getBuckets()}
+          label={getString('pipeline.manifestType.bucketName')}
+          placeholder={getString('pipeline.manifestType.bucketPlaceHolder')}
+          name="bucketName"
+          multiTypeInputProps={{
+            expressions,
+            allowableTypes,
+            selectProps: {
+              noResults: (
+                <Text lineClamp={1}>{get(error, 'data.message', null) || getString('pipeline.noBuckets')}</Text>
+              ),
+              itemRenderer: itemRenderer,
+              items: getBuckets(),
+              allowCreatingNewItems: true
+            },
+            onFocus: () => {
+              if (!bucketData?.data && (formik.values?.region || formik.values?.region?.value)) {
+                fetchBucket(defaultTo(formik.values?.region.value, formik.values?.region))
+              }
+            }
+          }}
+        />
+        {getMultiTypeFromValue(formik.values?.bucketName) === MultiTypeInputType.RUNTIME && (
+          <ConfigureOptions
+            style={{ alignSelf: 'center', marginBottom: 3 }}
+            value={formik.values?.bucketName as string}
+            type="String"
+            variableName="bucketName"
+            showRequiredField={false}
+            showDefaultField={false}
+            showAdvanced={true}
+            onChange={value => formik.setFieldValue('bucketName', value)}
+            isReadonly={isReadonly}
+          />
+        )}
+      </div>
+    )
   }
 
   return (
@@ -247,7 +352,7 @@ const HelmWithS3: React.FC<StepProps<ConnectorConfigDTO> & HelmWithHttpPropType>
           })
         }}
       >
-        {(formik: { setFieldValue: (a: string, b: string) => void; values: HelmWithS3DataType }) => (
+        {(formik: FormikValues) => (
           <Form>
             <div className={helmcss.helmGitForm}>
               <Layout.Horizontal flex spacing="huge">
@@ -273,6 +378,7 @@ const HelmWithS3: React.FC<StepProps<ConnectorConfigDTO> & HelmWithHttpPropType>
                     placeholder={getString('pipeline.regionPlaceholder')}
                     multiTypeInputProps={{
                       expressions,
+                      allowableTypes,
                       onChange: () => {
                         if (getMultiTypeFromValue(formik.values.bucketName) === MultiTypeInputType.FIXED) {
                           formik.setFieldValue('bucketName', '')
@@ -298,81 +404,7 @@ const HelmWithS3: React.FC<StepProps<ConnectorConfigDTO> & HelmWithHttpPropType>
                     />
                   )}
                 </div>
-
-                {getMultiTypeFromValue(formik.values?.region) !== MultiTypeInputType.FIXED ||
-                getMultiTypeFromValue(prevStepData?.connectorRef) !== MultiTypeInputType.FIXED ? (
-                  <div
-                    className={cx(helmcss.halfWidth, {
-                      [helmcss.runtimeInput]:
-                        getMultiTypeFromValue(formik.values?.bucketName) === MultiTypeInputType.RUNTIME
-                    })}
-                  >
-                    <FormInput.MultiTextInput
-                      label={getString('pipeline.manifestType.bucketName')}
-                      placeholder={getString('pipeline.manifestType.bucketNamePlaceholder')}
-                      name="bucketName"
-                      multiTextInputProps={{ expressions }}
-                    />
-                    {getMultiTypeFromValue(formik.values?.bucketName) === MultiTypeInputType.RUNTIME && (
-                      <ConfigureOptions
-                        style={{ alignSelf: 'center', marginBottom: 3 }}
-                        value={formik.values?.bucketName as string}
-                        type="String"
-                        variableName="bucketName"
-                        showRequiredField={false}
-                        showDefaultField={false}
-                        showAdvanced={true}
-                        onChange={value => formik.setFieldValue('bucketName', value)}
-                        isReadonly={isReadonly}
-                      />
-                    )}
-                  </div>
-                ) : (
-                  <div
-                    className={cx(helmcss.halfWidth, {
-                      [helmcss.runtimeInput]:
-                        getMultiTypeFromValue(formik.values?.bucketName) === MultiTypeInputType.RUNTIME
-                    })}
-                  >
-                    <FormInput.MultiTypeInput
-                      selectItems={buckets}
-                      label={getString('pipeline.manifestType.bucketName')}
-                      placeholder={getString('pipeline.manifestType.bucketPlaceHolder')}
-                      name="bucketName"
-                      multiTypeInputProps={{
-                        expressions,
-                        selectProps: {
-                          noResults: (
-                            <Text lineClamp={1}>
-                              {get(error, 'data.message', null) || getString('pipeline.noBuckets')}
-                            </Text>
-                          ),
-                          itemRenderer: itemRenderer,
-                          items: buckets,
-                          allowCreatingNewItems: true
-                        },
-                        onFocus: () => {
-                          if (!bucketData?.data && (formik.values?.region || (formik.values?.region as any)?.value)) {
-                            fetchBucket((formik.values?.region as any).value ?? formik.values?.region)
-                          }
-                        }
-                      }}
-                    />
-                    {getMultiTypeFromValue(formik.values?.bucketName) === MultiTypeInputType.RUNTIME && (
-                      <ConfigureOptions
-                        style={{ alignSelf: 'center', marginBottom: 3 }}
-                        value={formik.values?.bucketName as string}
-                        type="String"
-                        variableName="bucketName"
-                        showRequiredField={false}
-                        showDefaultField={false}
-                        showAdvanced={true}
-                        onChange={value => formik.setFieldValue('bucketName', value)}
-                        isReadonly={isReadonly}
-                      />
-                    )}
-                  </div>
-                )}
+                {renderS3Bucket(formik)}
               </Layout.Horizontal>
 
               <Layout.Horizontal flex spacing="huge">
@@ -386,7 +418,7 @@ const HelmWithS3: React.FC<StepProps<ConnectorConfigDTO> & HelmWithHttpPropType>
                     label={getString('chartPath')}
                     placeholder={getString('pipeline.manifestType.chartPathPlaceholder')}
                     name="folderPath"
-                    multiTextInputProps={{ expressions }}
+                    multiTextInputProps={{ expressions, allowableTypes }}
                   />
                   {getMultiTypeFromValue(formik.values?.folderPath) === MultiTypeInputType.RUNTIME && (
                     <ConfigureOptions
@@ -411,7 +443,7 @@ const HelmWithS3: React.FC<StepProps<ConnectorConfigDTO> & HelmWithHttpPropType>
                 >
                   <FormInput.MultiTextInput
                     name="chartName"
-                    multiTextInputProps={{ expressions }}
+                    multiTextInputProps={{ expressions, allowableTypes }}
                     label={getString('pipeline.manifestType.http.chartName')}
                     placeholder={getString('pipeline.manifestType.http.chartNamePlaceHolder')}
                   />
@@ -440,7 +472,7 @@ const HelmWithS3: React.FC<StepProps<ConnectorConfigDTO> & HelmWithHttpPropType>
                 >
                   <FormInput.MultiTextInput
                     name="chartVersion"
-                    multiTextInputProps={{ expressions }}
+                    multiTextInputProps={{ expressions, allowableTypes }}
                     label={getString('pipeline.manifestType.http.chartVersion')}
                     placeholder={getString('pipeline.manifestType.http.chartVersionPlaceHolder')}
                     isOptional
@@ -491,9 +523,10 @@ const HelmWithS3: React.FC<StepProps<ConnectorConfigDTO> & HelmWithHttpPropType>
                     <HelmAdvancedStepSection
                       formik={formik}
                       expressions={expressions}
-                      commandFlagOptions={
-                        formik.values?.helmVersion === 'V2' ? commandFlagOptionsV2 : commandFlagOptionsV3
-                      }
+                      allowableTypes={allowableTypes}
+                      helmVersion={formik.values?.helmVersion}
+                      deploymentType={deploymentType as string}
+                      helmStore={defaultTo(prevStepData?.store, '')}
                     />
                   }
                 />

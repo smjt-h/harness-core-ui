@@ -1,3 +1,10 @@
+/*
+ * Copyright 2022 Harness Inc. All rights reserved.
+ * Use of this source code is governed by the PolyForm Shield 1.0.0 license
+ * that can be found in the licenses directory at the root of this repository, also available at
+ * https://polyformproject.org/wp-content/uploads/2020/06/PolyForm-Shield-1.0.0.txt.
+ */
+
 import type React from 'react'
 import type { FormikProps } from 'formik'
 import { DatadogProduct } from '@cv/pages/health-source/connectors/DatadogMetricsHealthSource/DatadogMetricsHealthSource.utils'
@@ -31,9 +38,12 @@ export const MockDatadogMetricsHealthSource = {
   product: { label: DatadogProduct.CLOUD_METRICS, value: DatadogProduct.CLOUD_METRICS }
 }
 
-export const MOCK_QUERY_OUTPUT = 'avg:system.cpu.user{*}.rollup(avg,60)'
+export const MOCK_QUERY_OUTPUT = 'avg:system.cpu.user{version}.rollup(avg, 60)'
+export const MOCK_GROUPING_QUERY_OUTPUT = 'avg:system.cpu.user{*} by {host}.rollup(avg, 60)'
+
 export const MOCK_ACTIVE_METRIC = 'system.cpu.user'
 export const MOCK_AGGREGATION = 'avg'
+export const MOCK_SERVICE_INSTANCE = 'host'
 export const MOCK_ACTIVE_METRICS = [MOCK_ACTIVE_METRIC, 'test.metric.1', 'test.metric.2']
 
 export const MOCK_METRIC_TAGS_WITH_DUPLICATES = ['tag_1', 'tag_2', 'tag_1', 'tag_3', 'tag_3']
@@ -45,7 +55,10 @@ export const EXPECTED_METRIC_SELECT_OPTIONS = [
 ]
 
 export const MockDatadogMetricInfo: DatadogMetricInfo = {
+  dashboardId: 'mock_dashboard_id',
+  identifier: 'mockMetricName',
   metricName: 'mockMetricName',
+  metricPath: 'mock_metric_path',
   groupName: { value: 'mockGroupName', label: 'mockGroupName' },
   query: MOCK_QUERY_OUTPUT,
   metric: MOCK_ACTIVE_METRIC,
@@ -54,6 +67,7 @@ export const MockDatadogMetricInfo: DatadogMetricInfo = {
   }),
   serviceInstanceIdentifierTag: 'host',
   aggregator: MOCK_AGGREGATION,
-  isManualQuery: false,
+  sli: false,
+  isCustomCreatedMetric: false,
   continuousVerification: true
 }

@@ -1,3 +1,10 @@
+/*
+ * Copyright 2022 Harness Inc. All rights reserved.
+ * Use of this source code is governed by the PolyForm Shield 1.0.0 license
+ * that can be found in the licenses directory at the root of this repository, also available at
+ * https://polyformproject.org/wp-content/uploads/2020/06/PolyForm-Shield-1.0.0.txt.
+ */
+
 import React from 'react'
 import type { CellProps, Column, Renderer } from 'react-table'
 import {
@@ -26,7 +33,6 @@ import { PermissionIdentifier } from '@rbac/interfaces/PermissionIdentifier'
 import { ResourceType } from '@rbac/interfaces/ResourceType'
 import RbacButton from '@rbac/components/Button/Button'
 import { useAppStore } from 'framework/AppStore/AppStoreContext'
-import { FeatureIdentifier } from 'framework/featureStore/FeatureIdentifier'
 import { formatCount } from '@common/utils/utils'
 import { useRunPipelineModal } from '@pipeline/components/RunPipelineModal/useRunPipelineModal'
 import { Badge } from '@pipeline/pages/utils/Badge/Badge'
@@ -61,11 +67,10 @@ const RenderColumnMenu: Renderer<CellProps<PipelineDTO>> = ({ row, column }) => 
   const data = row.original
   const [menuOpen, setMenuOpen] = React.useState(false)
   const { getString } = useStrings()
-  const { projectIdentifier, orgIdentifier, accountId, module } = useParams<{
+  const { projectIdentifier, orgIdentifier, accountId } = useParams<{
     projectIdentifier: string
     orgIdentifier: string
     accountId: string
-    module: string
   }>()
 
   const { confirmDelete } = useDeleteConfirmationDialog(data, 'pipeline', (column as any).onDeletePipeline)
@@ -123,11 +128,7 @@ const RenderColumnMenu: Renderer<CellProps<PipelineDTO>> = ({ row, column }) => 
               e.stopPropagation()
               runPipeline()
             }}
-            featuresProps={{
-              featuresRequest: {
-                featureNames: [module === 'cd' ? FeatureIdentifier.DEPLOYMENTS_PER_MONTH : FeatureIdentifier.BUILDS]
-              }
-            }}
+            featuresProps={getFeaturePropsForRunPipelineButton(data.modules)}
           />
 
           <Menu.Item
@@ -203,7 +204,7 @@ const RenderColumnPipeline: Renderer<CellProps<PipelineDTO>> = ({ row }) => {
               </Text>
               {data.tags && Object.keys(data.tags || {}).length ? <TagsPopover tags={data.tags} /> : null}
             </Layout.Horizontal>
-            <Text tooltipProps={{ position: Position.BOTTOM }} color={Color.GREY_400}>
+            <Text tooltipProps={{ position: Position.BOTTOM }} color={Color.GREY_600} font="small">
               {getString('idLabel', { id: data.identifier })}
             </Text>
           </Layout.Vertical>
@@ -211,7 +212,7 @@ const RenderColumnPipeline: Renderer<CellProps<PipelineDTO>> = ({ row }) => {
             <Container padding={{ left: 'large' }}>
               <Badge
                 text={'common.invalid'}
-                iconName="warning-sign"
+                iconName="error-outline"
                 showTooltip={true}
                 entityName={data.name}
                 entityType={'Pipeline'}
@@ -233,11 +234,11 @@ const RenderActivity: Renderer<CellProps<PipelineDTO>> = ({ row, column }) => {
   return (
     <Layout.Horizontal spacing="medium" style={{ alignItems: 'center' }}>
       <div>
-        <Text color={Color.GREY_400} className={`${deployments ? css.clickable : ''}`} font="small" lineClamp={2}>
+        <Text color={Color.GREY_600} className={`${deployments ? css.clickable : ''}`} lineClamp={2}>
           {getString('executionsText')}
         </Text>
         <Text
-          color={deployments ? Color.PRIMARY_7 : Color.GREY_400}
+          color={deployments ? Color.PRIMARY_7 : Color.GREY_600}
           className={`${deployments ? css.clickable : ''}`}
           onClick={event => {
             event.stopPropagation()
@@ -251,7 +252,7 @@ const RenderActivity: Renderer<CellProps<PipelineDTO>> = ({ row, column }) => {
         </Text>
       </div>
 
-      <Text color={Color.GREY_400} font="medium" iconProps={{ size: 18 }}>
+      <Text color={Color.GREY_600} font="medium" iconProps={{ size: 18 }}>
         {formatCount(deployments)}
       </Text>
 

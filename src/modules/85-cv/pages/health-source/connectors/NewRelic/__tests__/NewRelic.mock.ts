@@ -1,3 +1,10 @@
+/*
+ * Copyright 2021 Harness Inc. All rights reserved.
+ * Use of this source code is governed by the PolyForm Shield 1.0.0 license
+ * that can be found in the licenses directory at the root of this repository, also available at
+ * https://polyformproject.org/wp-content/uploads/2020/06/PolyForm-Shield-1.0.0.txt.
+ */
+
 export const metricPack = {
   metaData: {},
   resource: [
@@ -430,4 +437,84 @@ export const mockedFormDataCreate = {
   },
   showCustomMetric: false,
   type: 'NewRelic'
+}
+
+export const mockedNewRelicFormikValues = {
+  name: 'New relic health source',
+  identifier: 'New_relic_health_source',
+  connectorRef: 'account.new_relic',
+  isEdit: true,
+  product: {
+    label: 'apm',
+    value: 'apm'
+  },
+  type: 'NewRelic',
+  mappedServicesAndEnvs: {},
+  newRelicApplication: {
+    label: 'My Application',
+    value: '107019083'
+  },
+  metricPacks: [
+    {
+      identifier: 'Performance'
+    }
+  ],
+  metricData: {
+    Performance: true
+  },
+  metricName: 'New Relic Metric',
+  metricIdentifier: 'NewRelicMetric',
+  groupName: {
+    label: 'group-1',
+    value: 'group-1'
+  },
+  query: "SELECT average(`apm.service.transaction.duration`) FROM Metric WHERE appName = 'My Application' TIMESERIES",
+  metricValue: '$.timeSeries.[*].inspectedCount',
+  timestampFormat: null,
+  timestamp: '$.timeSeries.[*].beginTimeSeconds',
+  sli: false,
+  continuousVerification: false,
+  healthScore: true,
+  riskCategory: 'Errors/ERROR',
+  lowerBaselineDeviation: false,
+  higherBaselineDeviation: true,
+  showCustomMetric: true
+}
+
+export const mappedValue = {
+  metricName: 'New Relic Metric',
+  metricIdentifier: 'NewRelicMetric',
+  groupName: {
+    label: 'group-1',
+    value: 'group-1'
+  },
+  query: "SELECT average(`apm.service.transaction.duration`) FROM Metric WHERE appName = 'My Application' TIMESERIES",
+  metricValue: '$.timeSeries.[*].inspectedCount',
+  timestampFormat: null,
+  timestamp: '$.timeSeries.[*].beginTimeSeconds',
+  sli: false,
+  continuousVerification: false,
+  healthScore: true,
+  riskCategory: 'Errors/ERROR',
+  lowerBaselineDeviation: false,
+  higherBaselineDeviation: true
+}
+
+export const expectedMappedValue = {
+  continuousVerification: false,
+  groupName: {
+    label: 'group-1',
+    value: 'group-1'
+  },
+  healthScore: true,
+  higherBaselineDeviation: true,
+  lowerBaselineDeviation: false,
+  metricIdentifier: 'NewRelicMetric',
+  metricName: 'New Relic Metric',
+  metricValue: '$.timeSeries.[*].inspectedCount',
+  query: "SELECT average(`apm.service.transaction.duration`) FROM Metric WHERE appName = 'My Application' TIMESERIES",
+  riskCategory: 'Errors/ERROR',
+  sli: false,
+  timestamp: '$.timeSeries.[*].beginTimeSeconds',
+  timestampFormat: null
 }

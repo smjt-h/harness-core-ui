@@ -1,17 +1,15 @@
+/*
+ * Copyright 2021 Harness Inc. All rights reserved.
+ * Use of this source code is governed by the PolyForm Shield 1.0.0 license
+ * that can be found in the licenses directory at the root of this repository, also available at
+ * https://polyformproject.org/wp-content/uploads/2020/06/PolyForm-Shield-1.0.0.txt.
+ */
+
 import React, { useEffect } from 'react'
 import * as yup from 'yup'
-import {
-  Formik,
-  FormikForm,
-  Switch,
-  Text,
-  Card,
-  Accordion,
-  HarnessDocTooltip,
-  MultiTypeInputType
-} from '@wings-software/uicore'
+import { Accordion, Card, Formik, FormikForm, HarnessDocTooltip, Switch, Text } from '@wings-software/uicore'
 import { v4 as nameSpace, v5 as uuid } from 'uuid'
-import { isEqual, debounce, cloneDeep, defaultTo, uniqBy } from 'lodash-es'
+import { cloneDeep, debounce, defaultTo, isEqual, uniqBy } from 'lodash-es'
 import cx from 'classnames'
 import { produce } from 'immer'
 import type { FormikProps } from 'formik'
@@ -63,6 +61,7 @@ export default function BuildStageSpecifications({ children }: React.PropsWithCh
     updateStage,
     stepsFactory,
     contextType,
+    allowableTypes,
     isReadonly
   } = usePipelineContext()
 
@@ -259,7 +258,7 @@ export default function BuildStageSpecifications({ children }: React.PropsWithCh
                   <FormikForm className={cx(css.fields, css.contentCard)}>
                     <MultiTypeList
                       name="sharedPaths"
-                      multiTextInputProps={{ expressions }}
+                      multiTextInputProps={{ expressions, allowableTypes }}
                       multiTypeFieldSelectorProps={{
                         label: (
                           <Text tooltipProps={{ dataTooltipId: 'stageSpecificationsSharedPaths' }}>
@@ -272,7 +271,7 @@ export default function BuildStageSpecifications({ children }: React.PropsWithCh
                   </FormikForm>
                 </Card>
 
-                <Accordion className={css.accordionTitle} activeId="advanced">
+                <Accordion className={css.accordionTitle} activeId="">
                   <Accordion.Panel
                     id="advanced"
                     addDomId={true}
@@ -304,11 +303,7 @@ export default function BuildStageSpecifications({ children }: React.PropsWithCh
                                 variables: ((stage?.stage as StageElementConfig)?.variables || []) as AllNGVariables[],
                                 canAddVariable: true
                               }}
-                              allowableTypes={[
-                                MultiTypeInputType.FIXED,
-                                MultiTypeInputType.RUNTIME,
-                                MultiTypeInputType.EXPRESSION
-                              ]}
+                              allowableTypes={allowableTypes}
                               type={StepType.CustomVariable}
                               stepViewType={StepViewType.StageVariable}
                               onUpdate={({ variables }: CustomVariablesData) => {

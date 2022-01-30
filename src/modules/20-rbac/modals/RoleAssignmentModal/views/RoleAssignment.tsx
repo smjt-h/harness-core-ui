@@ -1,3 +1,10 @@
+/*
+ * Copyright 2021 Harness Inc. All rights reserved.
+ * Use of this source code is governed by the PolyForm Free Trial 1.0.0 license
+ * that can be found in the licenses directory at the root of this repository, also available at
+ * https://polyformproject.org/wp-content/uploads/2020/05/PolyForm-Free-Trial-1.0.0.txt.
+ */
+
 import React, { useState } from 'react'
 import {
   Button,
@@ -17,7 +24,7 @@ import { usePostRoleAssignments, RoleAssignment as RBACRoleAssignment } from 'se
 import { useStrings } from 'framework/strings'
 import type { RoleAssignmentMetadataDTO, ServiceAccountDTO, UserGroupDTO } from 'services/cd-ng'
 import type { ProjectPathProps } from '@common/interfaces/RouteInterfaces'
-import { getAssignments, getRBACErrorMessage, PrincipalType } from '@rbac/utils/utils'
+import { getAssignments, getRBACErrorMessage, isNewRoleAssignment, PrincipalType } from '@rbac/utils/utils'
 import { isCDCommunity, useLicenseStore } from 'framework/LicenseStore/LicenseStoreContext'
 import RoleAssignmentForm from './RoleAssignmentForm'
 import type { Assignment } from './UserRoleAssigment'
@@ -57,13 +64,15 @@ const RoleAssignment: React.FC<RoleAssignmentData> = ({
   })
 
   const handleRoleAssignment = async (values: RoleAssignmentValues): Promise<void> => {
-    const dataToSubmit: RBACRoleAssignment[] = values.assignments.map(value => {
-      return {
-        resourceGroupIdentifier: value.resourceGroup.value.toString(),
-        roleIdentifier: value.role.value.toString(),
-        principal: { identifier: principalInfo.identifier, type }
-      }
-    })
+    const dataToSubmit: RBACRoleAssignment[] = values.assignments
+      .filter(value => isNewRoleAssignment(value))
+      .map(value => {
+        return {
+          resourceGroupIdentifier: value.resourceGroup.value.toString(),
+          roleIdentifier: value.role.value.toString(),
+          principal: { identifier: principalInfo.identifier, type }
+        }
+      })
 
     try {
       await createRoleAssignment({ roleAssignments: dataToSubmit })

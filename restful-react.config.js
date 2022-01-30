@@ -1,3 +1,10 @@
+/*
+ * Copyright 2021 Harness Inc. All rights reserved.
+ * Use of this source code is governed by the PolyForm Shield 1.0.0 license
+ * that can be found in the licenses directory at the root of this repository, also available at
+ * https://polyformproject.org/wp-content/uploads/2020/06/PolyForm-Shield-1.0.0.txt.
+ */
+
 /**
  * Please match the config key to the directory under services.
  * This is required for the transform to work
@@ -142,10 +149,11 @@ module.exports = {
     output: 'src/services/cf/index.tsx',
     url: 'http://127.0.0.1:8085/docs/release/admin-v1.yaml',
     transformer: 'scripts/swagger-transform.js',
-    customImport: `import { getConfig } from "../config";`,
+    customImport: `import { getConfig, getUsingFetch, mutateUsingFetch, GetUsingFetchProps, MutateUsingFetchProps } from "../config";`,
     customProps: {
       base: `{getConfig("cf")}`
-    }
+    },
+    customGenerator: arg => customGenerator(arg, "getConfig('cf')")
   },
   lw: {
     output: 'src/services/lw/index.tsx',

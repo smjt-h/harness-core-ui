@@ -1,3 +1,10 @@
+/*
+ * Copyright 2021 Harness Inc. All rights reserved.
+ * Use of this source code is governed by the PolyForm Shield 1.0.0 license
+ * that can be found in the licenses directory at the root of this repository, also available at
+ * https://polyformproject.org/wp-content/uploads/2020/06/PolyForm-Shield-1.0.0.txt.
+ */
+
 import React, { useCallback, useState } from 'react'
 import {
   Layout,
@@ -57,6 +64,9 @@ import GcpAuthentication from '@connectors/components/CreateConnector/GcpConnect
 
 import type { GitQueryParams, ProjectPathProps } from '@common/interfaces/RouteInterfaces'
 import { useQueryParams } from '@common/hooks'
+import { useTelemetry } from '@common/hooks/useTelemetry'
+import { ManifestActions } from '@common/constants/TrackingConstants'
+
 import { ManifestWizard } from './ManifestWizard/ManifestWizard'
 import { getStatus, getConnectorNameFromValue } from '../PipelineStudio/StageBuilder/StageBuilderUtil'
 import {
@@ -100,13 +110,15 @@ const ManifestListView = ({
   refetchConnectors,
   listOfManifests,
   deploymentType,
-  isReadonly
+  isReadonly,
+  allowableTypes
 }: ManifestListViewProps): JSX.Element => {
   const [selectedManifest, setSelectedManifest] = useState<ManifestTypes | null>(null)
   const [connectorView, setConnectorView] = useState(false)
   const [manifestStore, setManifestStore] = useState('')
   const [isEditMode, setIsEditMode] = useState(false)
   const [manifestIndex, setEditIndex] = useState(0)
+  const { trackEvent } = useTelemetry()
 
   const DIALOG_PROPS: IDialogProps = {
     isOpen: true,
@@ -185,6 +197,7 @@ const ManifestListView = ({
   }
 
   const handleSubmit = (manifestObj: ManifestConfigWrapper): void => {
+    const isNewManifest = manifestIndex === listOfManifests.length
     if (isPropagating) {
       if (listOfManifests?.length > 0) {
         listOfManifests.splice(manifestIndex, 1, manifestObj)
@@ -211,6 +224,13 @@ const ManifestListView = ({
       ? 'stage.spec.serviceConfig.stageOverrides.manifests'
       : 'stage.spec.serviceConfig.serviceDefinition.spec.manifests'
 
+    trackEvent(
+      isNewManifest ? ManifestActions.SaveManifestOnPipelinePage : ManifestActions.UpdateManifestOnPipelinePage,
+      {
+        manifest: manifestObj?.manifest?.type || selectedManifest || '',
+        storeType: manifestObj?.manifest?.spec?.store?.type || ''
+      }
+    )
     if (stage) {
       updateStage(
         produce(stage, draft => {
@@ -237,10 +257,11 @@ const ManifestListView = ({
   }
 
   const lastStepProps = useCallback((): ManifestLastStepProps => {
-    return {
+    const manifestDetailsProps: ManifestLastStepProps = {
       key: getString('pipeline.manifestType.manifestDetails'),
       name: getString('pipeline.manifestType.manifestDetails'),
       expressions,
+      allowableTypes,
       stepName: getString('pipeline.manifestType.manifestDetails'),
       initialValues: getLastStepInitialData(),
       handleSubmit: handleSubmit,
@@ -248,6 +269,10 @@ const ManifestListView = ({
       manifestIdsList: listOfManifests.map((item: ManifestConfigWrapper) => item.manifest?.identifier as string),
       isReadonly: isReadonly
     }
+    if (selectedManifest === ManifestDataType.HelmChart) {
+      manifestDetailsProps.deploymentType = deploymentType
+    }
+    return manifestDetailsProps
   }, [selectedManifest, manifestStore, getLastStepInitialData])
 
   const getLabels = (): ConnectorRefLabelType => {
@@ -582,6 +607,7 @@ const ManifestListView = ({
             selectedManifest={selectedManifest}
             newConnectorView={connectorView}
             expressions={expressions}
+            allowableTypes={allowableTypes}
             changeManifestType={changeManifestType}
             handleConnectorViewChange={handleConnectorViewChange}
             handleStoreChange={handleStoreChange}
@@ -595,7 +621,16 @@ const ManifestListView = ({
         <Button minimal icon="cross" onClick={onClose} className={css.crossIcon} />
       </Dialog>
     )
-  }, [selectedManifest, connectorView, manifestIndex, manifestStore, expressions.length, expressions, isEditMode])
+  }, [
+    selectedManifest,
+    connectorView,
+    manifestIndex,
+    manifestStore,
+    expressions.length,
+    expressions,
+    allowableTypes,
+    isEditMode
+  ])
 
   return (
     <Layout.Vertical style={{ width: '100%' }}>
@@ -724,6 +759,7 @@ const ManifestListView = ({
         {!overrideSetIdentifier?.length && !isReadonly && (
           <Button
             className={css.addManifest}
+            id="add-manifest"
             size={ButtonSize.SMALL}
             variation={ButtonVariation.LINK}
             data-test-id="addManifest"

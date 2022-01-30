@@ -1,0 +1,104 @@
+{
+  "state": {
+    "template": {
+      "name": "CI Stage Template 2",
+      "identifier": "CI_Stage_Template",
+      "versionLabel": "Version1",
+      "type": "Stage",
+      "projectIdentifier": "Kapil",
+      "orgIdentifier": "default",
+      "tags": {},
+      "spec": {
+        "type": "CI",
+        "spec": {
+          "cloneCodebase": "<+input>",
+          "infrastructure": {
+            "type": "KubernetesDirect",
+            "spec": {
+              "connectorRef": "test1111",
+              "namespace": "test"
+            }
+          },
+          "execution": {
+            "steps": [
+              {
+                "step": {
+                  "type": "Run",
+                  "name": "test",
+                  "identifier": "test",
+                  "spec": {
+                    "connectorRef": "harnessImage",
+                    "image": "node:14",
+                    "command": "echo 1"
+                  }
+                }
+              }
+            ]
+          }
+        }
+      }
+    },
+    "originalTemplate": {
+      "name": "CI Stage Template 2",
+      "identifier": "CI_Stage_Template",
+      "versionLabel": "Version1",
+      "type": "Stage",
+      "projectIdentifier": "Kapil",
+      "orgIdentifier": "default",
+      "tags": {},
+      "spec": {
+        "type": "CI",
+        "spec": {
+          "cloneCodebase": "<+input>",
+          "infrastructure": {
+            "type": "KubernetesDirect",
+            "spec": {
+              "connectorRef": "test1111",
+              "namespace": "test"
+            }
+          },
+          "execution": {
+            "steps": [
+              {
+                "step": {
+                  "type": "Run",
+                  "name": "test",
+                  "identifier": "test",
+                  "spec": {
+                    "connectorRef": "harnessImage",
+                    "image": "node:14",
+                    "command": "echo 1"
+                  }
+                }
+              }
+            ]
+          }
+        }
+      }
+    },
+    "stableVersion": "Version1",
+    "versions": ["Version1"],
+    "templateIdentifier": "CI_Stage_Template",
+    "templateView": {
+      "isDrawerOpened": false,
+      "isYamlEditable": true,
+      "drawerData": {
+        "type": "AddCommand"
+      }
+    },
+    "isLoading": false,
+    "isBETemplateUpdated": true,
+    "isDBInitialized": true,
+    "isUpdated": false,
+    "isInitialized": true,
+    "gitDetails": {},
+    "entityValidityDetails": {
+      "valid": false,
+      "invalidYaml": null
+    },
+    "templateYaml": "template:\n    name: CI Stage Template 2\n    identifier: CI_Stage_Template\n    versionLabel: Version1\n    type: Stage\n    projectIdentifier: Kapil\n    orgIdentifier: default\n    tags: {}\n    spec:\n        type: CI\n        spec:\n            cloneCodebase: <+input>\n            infrastructure:\n                type: KubernetesDirect\n                spec:\n                    connectorRef: test1111\n                    namespace: test\n            execution:\n                steps:\n                    - step:\n                          type: Run\n                          name: test\n                          identifier: test\n                          spec:\n                              connectorRef: harnessImage\n                              image: node:14\n                              command: echo 1\n",
+    "error": "",
+    "yamlHandler": false
+  },
+  "isReadonly": false
+}

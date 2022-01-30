@@ -1,3 +1,10 @@
+/*
+ * Copyright 2022 Harness Inc. All rights reserved.
+ * Use of this source code is governed by the PolyForm Shield 1.0.0 license
+ * that can be found in the licenses directory at the root of this repository, also available at
+ * https://polyformproject.org/wp-content/uploads/2020/06/PolyForm-Shield-1.0.0.txt.
+ */
+
 import React, { useCallback, useEffect, useRef, useState } from 'react'
 import {
   Color,
@@ -14,11 +21,12 @@ import {
   ButtonVariation,
   DropDown,
   shouldShowError,
-  PageSpinner
+  PageSpinner,
+  ExpandingSearchInputHandle
 } from '@wings-software/uicore'
 import { useHistory, useParams } from 'react-router-dom'
 import type { FormikProps } from 'formik'
-import { defaultTo, pick } from 'lodash-es'
+import { defaultTo, isEmpty, pick } from 'lodash-es'
 import { Page, StringUtils, useToaster } from '@common/exports'
 import routes from '@common/RouteDefinitions'
 import {
@@ -36,13 +44,15 @@ import {
   useSoftDeletePipeline,
   useUpdateFilter
 } from 'services/pipeline-ng'
-import { useGetServiceListForProject, useGetEnvironmentListForProject } from 'services/cd-ng'
+import {
+  useGetServiceListForProject,
+  useGetEnvironmentListForProject,
+  useGetServiceDefinitionTypes
+} from 'services/cd-ng'
 import { useDocumentTitle } from '@common/hooks/useDocumentTitle'
 import type { UseGetMockData } from '@common/utils/testUtils'
 import { String, useStrings } from 'framework/strings'
 import { useAppStore } from 'framework/AppStore/AppStoreContext'
-import { FeatureIdentifier } from 'framework/featureStore/FeatureIdentifier'
-import { PipelineFeatureLimitBreachedBanner } from '@pipeline/factories/PipelineFeatureRestrictionFactory/PipelineFeatureRestrictionFactory'
 import type { PipelineType } from '@common/interfaces/RouteInterfaces'
 import { Filter, FilterRef } from '@common/components/Filter/Filter'
 import type { FilterDataInterface, FilterInterface } from '@common/components/Filter/Constants'
@@ -69,6 +79,7 @@ import { NavigatedToPage } from '@common/constants/TrackingConstants'
 import { useTelemetry } from '@common/hooks/useTelemetry'
 import { GitSyncStoreProvider } from 'framework/GitRepoStore/GitSyncStoreContext'
 import { NGBreadcrumbs } from '@common/components/NGBreadcrumbs/NGBreadcrumbs'
+import { useFeatureFlags } from '@common/hooks/useFeatureFlag'
 import { PipelineGridView } from './views/PipelineGridView'
 import { PipelineListView } from './views/PipelineListView'
 import PipelineFilterForm from '../pipeline-deployment-list/PipelineFilterForm/PipelineFilterForm'
@@ -136,6 +147,7 @@ const PipelinesPage: React.FC<CDPipelinesPageProps> = ({ mockData }) => {
   const { showSuccess, showError } = useToaster()
   const { selectedProject, isGitSyncEnabled } = useAppStore()
   const [isLoading, setIsLoading] = useState<boolean>(false)
+  const [isReseting, setIsReseting] = useState<boolean>(false)
   const [isDeleting, setIsDeleting] = useState<boolean>(false)
   const [pipelineToDelete, setPipelineToDelete] = useState<PMSPipelineSummaryResponse>()
 
@@ -150,6 +162,8 @@ const PipelinesPage: React.FC<CDPipelinesPageProps> = ({ mockData }) => {
   const isCDEnabled = (selectedProject?.modules && selectedProject.modules?.indexOf('CD') > -1) || false
   const isCIEnabled = (selectedProject?.modules && selectedProject.modules?.indexOf('CI') > -1) || false
   const isCIModule = module === 'ci'
+  const searchRef = useRef<ExpandingSearchInputHandle>({} as ExpandingSearchInputHandle)
+  const { NG_NATIVE_HELM } = useFeatureFlags()
 
   const goToPipelineDetail = useCallback(
     (/* istanbul ignore next */ pipeline?: PMSPipelineSummaryResponse) => {
@@ -237,6 +251,7 @@ const PipelinesPage: React.FC<CDPipelinesPageProps> = ({ mockData }) => {
         }
       }
       setIsLoading(false)
+      setIsReseting(false)
     },
     [reloadPipelines, showError, cancel, appliedFilter]
   )
@@ -244,10 +259,12 @@ const PipelinesPage: React.FC<CDPipelinesPageProps> = ({ mockData }) => {
   useDocumentTitle([getString('pipelines')])
 
   const reset = (): void => {
+    searchRef.current.clear()
     setAppliedFilter(null)
     setGitFilter(null)
     setError(null)
     setSearchParam('')
+    setIsReseting(true)
   }
 
   /* #region FIlter CRUD operations */
@@ -334,6 +351,20 @@ const PipelinesPage: React.FC<CDPipelinesPageProps> = ({ mockData }) => {
     identifier: StringUtils.getIdentifierFromName(UNSAVED_FILTER)
   }
 
+  const { data: deploymentTypeResponse, loading: isFetchingDeploymentTypes } = useGetServiceDefinitionTypes({})
+  const [deploymentTypeSelectOptions, setDeploymentTypeSelectOptions] = React.useState<SelectOption[]>([])
+
+  React.useEffect(() => {
+    if (!isEmpty(deploymentTypeResponse?.data) && deploymentTypeResponse?.data) {
+      const options: SelectOption[] = deploymentTypeResponse.data.map(type => ({
+        label: type === 'NativeHelm' ? getString('pipeline.nativeHelm') : getString('kubernetesText'),
+        value: type as string
+      }))
+      setDeploymentTypeSelectOptions(options)
+    }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [deploymentTypeResponse?.data])
+
   const {
     data: servicesResponse,
     loading: isFetchingServices,
@@ -358,8 +389,8 @@ const PipelinesPage: React.FC<CDPipelinesPageProps> = ({ mockData }) => {
   }, [projectIdentifier])
 
   useEffect(() => {
-    setIsFetchingMetaData(isFetchingServices && isFetchingEnvironments)
-  }, [isFetchingServices, isFetchingEnvironments])
+    setIsFetchingMetaData(isFetchingDeploymentTypes && isFetchingServices && isFetchingEnvironments)
+  }, [isFetchingDeploymentTypes, isFetchingServices, isFetchingEnvironments])
 
   const [openFilterDrawer, hideFilterDrawer] = useModalHook(() => {
     const onApply = (inputFormData: FormikProps<PipelineFormType>['values']) => {
@@ -408,7 +439,9 @@ const PipelinesPage: React.FC<CDPipelinesPageProps> = ({ mockData }) => {
             initialValues={{
               environments: getMultiSelectFormOptions(environmentsResponse?.data?.content),
               services: getMultiSelectFormOptions(servicesResponse?.data?.content),
-              deploymentType: [{ label: getString('kubernetesText'), value: 'Kubernetes' }]
+              deploymentType: NG_NATIVE_HELM
+                ? deploymentTypeSelectOptions
+                : deploymentTypeSelectOptions.filter(deploymentType => deploymentType.value !== 'NativeHelm')
             }}
             type="PipelineSetup"
           />
@@ -424,7 +457,7 @@ const PipelinesPage: React.FC<CDPipelinesPageProps> = ({ mockData }) => {
             targetBranch,
             buildType,
             repositoryName: repoName ? repoName[0] : undefined,
-            deploymentType: getMultiSelectFormOptions(deploymentTypes),
+            deploymentType: deploymentTypes,
             infrastructureType: infrastructureTypes ? infrastructureTypes[0] : undefined,
             services: getMultiSelectFormOptions(serviceNames),
             environments: getMultiSelectFormOptions(environmentNames)
@@ -589,10 +622,7 @@ const PipelinesPage: React.FC<CDPipelinesPageProps> = ({ mockData }) => {
         }
         breadcrumbs={<NGBreadcrumbs links={[]} />}
       ></Page.Header>
-      <PipelineFeatureLimitBreachedBanner featureIdentifier={FeatureIdentifier.SERVICES} module={module} />
-      <PipelineFeatureLimitBreachedBanner featureIdentifier={FeatureIdentifier.DEPLOYMENTS_PER_MONTH} module={module} />
-      <PipelineFeatureLimitBreachedBanner featureIdentifier={FeatureIdentifier.INITIAL_DEPLOYMENTS} module={module} />
-      {(!!pipelineList?.content?.length || appliedFilter || isGitSyncEnabled || searchParam) && (
+      {(isReseting || !!pipelineList?.content?.length || appliedFilter || isGitSyncEnabled || searchParam) && (
         <Page.SubHeader>
           <Layout.Horizontal>
             <RbacButton
@@ -631,8 +661,10 @@ const PipelinesPage: React.FC<CDPipelinesPageProps> = ({ mockData }) => {
                 width={200}
                 placeholder={getString('search')}
                 onChange={(text: string) => {
+                  setIsReseting(true)
                   setSearchParam(text)
                 }}
+                ref={searchRef}
                 className={css.expandSearch}
               />
               {shouldRenderFilterSelector() && (

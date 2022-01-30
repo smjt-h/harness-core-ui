@@ -1,3 +1,10 @@
+/*
+ * Copyright 2021 Harness Inc. All rights reserved.
+ * Use of this source code is governed by the PolyForm Shield 1.0.0 license
+ * that can be found in the licenses directory at the root of this repository, also available at
+ * https://polyformproject.org/wp-content/uploads/2020/06/PolyForm-Shield-1.0.0.txt.
+ */
+
 import type { RestResponseTransactionMetricInfoSummaryPageDTO } from 'services/cv'
 
 export const transactionMetricInfoSummary: RestResponseTransactionMetricInfoSummaryPageDTO = {
@@ -222,6 +229,7 @@ export const transactionMetricInfoSummary: RestResponseTransactionMetricInfoSumm
 
 export const transformMetricsExpectedResult = [
   {
+    connectorName: 'new relic',
     controlData: [
       [
         { x: 1635868860000, y: 30.666666666666668 },
@@ -233,6 +241,8 @@ export const transformMetricsExpectedResult = [
     ],
     healthSourceType: 'NEW_RELIC',
     metricName: 'Calls per Minute',
+    nodeRiskCount: undefined,
+    risk: 'NO_ANALYSIS',
     testData: [
       {
         name: 'dummypipeline-nr-deployment-canary-fdf55df6-z27gv',
@@ -249,6 +259,7 @@ export const transformMetricsExpectedResult = [
     transactionName: 'WebTransaction/WebServletPath/RequestLogin'
   },
   {
+    connectorName: 'new relic',
     controlData: [
       [
         { x: 1635868860000, y: 48.666666666666664 },
@@ -260,6 +271,8 @@ export const transformMetricsExpectedResult = [
     ],
     healthSourceType: 'NEW_RELIC',
     metricName: 'Calls per Minute',
+    nodeRiskCount: undefined,
+    risk: 'NO_ANALYSIS',
     testData: [
       {
         name: 'dummypipeline-nr-deployment-canary-fdf55df6-z27gv',
@@ -276,6 +289,7 @@ export const transformMetricsExpectedResult = [
     transactionName: 'WebTransaction/Servlet/RequestException'
   },
   {
+    connectorName: 'new relic',
     controlData: [
       [
         { x: 1635868860000, y: 48.333333333333336 },
@@ -287,6 +301,8 @@ export const transformMetricsExpectedResult = [
     ],
     healthSourceType: 'NEW_RELIC',
     metricName: 'Calls per Minute',
+    nodeRiskCount: undefined,
+    risk: 'NO_ANALYSIS',
     testData: [
       {
         name: 'dummypipeline-nr-deployment-canary-fdf55df6-z27gv',
@@ -303,6 +319,7 @@ export const transformMetricsExpectedResult = [
     transactionName: 'WebTransaction/Servlet/default'
   },
   {
+    connectorName: 'new relic',
     controlData: [
       [
         { x: 1635868860000, y: 54.666666666666664 },
@@ -314,6 +331,8 @@ export const transformMetricsExpectedResult = [
     ],
     healthSourceType: 'NEW_RELIC',
     metricName: 'Calls per Minute',
+    nodeRiskCount: undefined,
+    risk: 'NO_ANALYSIS',
     testData: [
       {
         name: 'dummypipeline-nr-deployment-canary-fdf55df6-z27gv',
@@ -330,6 +349,7 @@ export const transformMetricsExpectedResult = [
     transactionName: 'WebTransaction/JSP/inside/display.jsp'
   },
   {
+    connectorName: 'new relic',
     controlData: [
       [
         { x: 1635868860000, y: 54.666666666666664 },
@@ -341,6 +361,8 @@ export const transformMetricsExpectedResult = [
     ],
     healthSourceType: 'NEW_RELIC',
     metricName: 'Calls per Minute',
+    nodeRiskCount: undefined,
+    risk: 'NO_ANALYSIS',
     testData: [
       {
         name: 'dummypipeline-nr-deployment-canary-fdf55df6-z27gv',
@@ -357,6 +379,7 @@ export const transformMetricsExpectedResult = [
     transactionName: 'WebTransaction/Servlet/Display'
   },
   {
+    connectorName: 'new relic',
     controlData: [
       [
         { x: 1635868860000, y: 0.06666666666666667 },
@@ -368,6 +391,8 @@ export const transformMetricsExpectedResult = [
     ],
     healthSourceType: 'NEW_RELIC',
     metricName: 'Apdex',
+    nodeRiskCount: undefined,
+    risk: 'HEALTHY',
     testData: [
       {
         name: 'dummypipeline-nr-deployment-canary-fdf55df6-z27gv',
@@ -384,6 +409,7 @@ export const transformMetricsExpectedResult = [
     transactionName: 'WebTransaction/Servlet/RequestException'
   },
   {
+    connectorName: 'new relic',
     controlData: [
       [
         { x: 1635868860000, y: 0.3333333333333333 },
@@ -395,6 +421,8 @@ export const transformMetricsExpectedResult = [
     ],
     healthSourceType: 'NEW_RELIC',
     metricName: 'Apdex',
+    nodeRiskCount: undefined,
+    risk: 'NO_ANALYSIS',
     testData: [
       {
         name: 'harness-pr-cv-nextgen-prod-deployment-5b5f48c558-s94wf',
@@ -411,6 +439,7 @@ export const transformMetricsExpectedResult = [
     transactionName: 'WebTransaction/JSP/index.jsp'
   },
   {
+    connectorName: 'new relic',
     controlData: [
       [
         { x: 1635868860000, y: 1 },
@@ -422,6 +451,8 @@ export const transformMetricsExpectedResult = [
     ],
     healthSourceType: 'NEW_RELIC',
     metricName: 'Apdex',
+    nodeRiskCount: undefined,
+    risk: 'HEALTHY',
     testData: [
       {
         name: 'dummypipeline-nr-deployment-canary-fdf55df6-z27gv',
@@ -438,9 +469,12 @@ export const transformMetricsExpectedResult = [
     transactionName: 'WebTransaction/JSP/inside/display.jsp'
   },
   {
+    connectorName: 'new relic',
     controlData: [[]],
     healthSourceType: 'NEW_RELIC',
     metricName: 'Apdex',
+    nodeRiskCount: undefined,
+    risk: 'NO_DATA',
     testData: [
       {
         name: 'dummypipeline-nr-deployment-canary-fdf55df6-z27gv',
@@ -457,6 +491,7 @@ export const transformMetricsExpectedResult = [
     transactionName: 'WebTransaction/Custom/load test/107'
   },
   {
+    connectorName: 'new relic',
     controlData: [
       [
         { x: 1635868860000, y: 0.6666666666666666 },
@@ -468,6 +503,8 @@ export const transformMetricsExpectedResult = [
     ],
     healthSourceType: 'NEW_RELIC',
     metricName: 'Apdex',
+    nodeRiskCount: undefined,
+    risk: 'HEALTHY',
     testData: [
       {
         name: 'dummypipeline-nr-deployment-canary-fdf55df6-z27gv',
@@ -484,3 +521,11 @@ export const transformMetricsExpectedResult = [
     transactionName: 'WebTransaction/Servlet/default'
   }
 ]
+
+export const transactionNameMock = {
+  resource: ['A', 'B']
+}
+
+export const verifyStepNodeNameMock = {
+  resource: ['V', 'W']
+}

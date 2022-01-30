@@ -1,11 +1,15 @@
+/*
+ * Copyright 2021 Harness Inc. All rights reserved.
+ * Use of this source code is governed by the PolyForm Shield 1.0.0 license
+ * that can be found in the licenses directory at the root of this repository, also available at
+ * https://polyformproject.org/wp-content/uploads/2020/06/PolyForm-Shield-1.0.0.txt.
+ */
+
 import React from 'react'
-import { FontVariation, Text, Container } from '@wings-software/uicore'
-import { useStrings } from 'framework/strings'
 import BasePathDropdown from './Components/BasePathDropdown/BasePathDropdown'
 import type { BasePathInterface } from './BasePath.types'
 import { onBasePathChange } from './BasePath.utils'
 import { MetricPathInitValue } from '../MetricPath/MetricPath.constants'
-import css from './BasePath.module.scss'
 
 export default function BasePath({
   connectorIdentifier,
@@ -13,24 +17,8 @@ export default function BasePath({
   basePathValue,
   onChange
 }: BasePathInterface): JSX.Element {
-  const { getString } = useStrings()
-
-  const lastItem = Object.keys(basePathValue)[Object.keys(basePathValue).length - 1]
-
   return (
     <div>
-      <Text padding={{ bottom: 'medium' }} font={{ variation: FontVariation.H6 }}>
-        {getString('cv.monitoringSources.appD.appdPathTitle')}
-      </Text>
-      <Text padding={{ bottom: 'medium' }}>{getString('cv.monitoringSources.appD.appdPathDetail')}</Text>
-      <Container className={css.basePathContainer}>
-        <Text font={{ variation: FontVariation.TINY_SEMI }} className={css.basePathLabel}>
-          {getString('common.path')}
-        </Text>
-        <Text className={css.basePathValue} font={{ variation: FontVariation.TINY_SEMI }}>
-          {basePathValue[lastItem]?.path}
-        </Text>
-      </Container>
       {Object.entries(basePathValue).map((item, index) => {
         const data = {
           key: item[0],

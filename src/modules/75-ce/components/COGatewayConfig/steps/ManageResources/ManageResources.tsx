@@ -1,3 +1,10 @@
+/*
+ * Copyright 2022 Harness Inc. All rights reserved.
+ * Use of this source code is governed by the PolyForm Shield 1.0.0 license
+ * that can be found in the licenses directory at the root of this repository, also available at
+ * https://polyformproject.org/wp-content/uploads/2020/06/PolyForm-Shield-1.0.0.txt.
+ */
+
 import React, { useEffect, useState } from 'react'
 import { useParams } from 'react-router-dom'
 import { isEmpty as _isEmpty, omit as _omit } from 'lodash-es'
@@ -19,6 +26,8 @@ import COAsgSelector from '@ce/components/COAsgSelector'
 import { Connectors } from '@connectors/constants'
 import { Utils } from '@ce/common/Utils'
 import CORdsSelector from '@ce/components/CORdsSelector/CORdsSelector'
+import { useTelemetry } from '@common/hooks/useTelemetry'
+import { USER_JOURNEY_EVENTS } from '@ce/TrackingEventsConstants'
 import COGatewayConfigStep from '../../COGatewayConfigStep'
 import { fromResourceToInstanceDetails, isFFEnabledForResource } from '../../helper'
 import ResourceSelectionModal from '../../ResourceSelectionModal'
@@ -57,6 +66,7 @@ const ManageResources: React.FC<ManageResourcesProps> = props => {
   const { getString } = useStrings()
   const { accountId } = useParams<ProjectPathProps>()
   const { showError } = useToaster()
+  const { trackEvent } = useTelemetry()
 
   const [allConnectors, setAllConnectors] = useState<ConnectorResponse[]>([])
   const [connectorsToShow, setConnectorsToShow] = useState<ConnectorResponse[]>([])
@@ -155,6 +165,7 @@ const ManageResources: React.FC<ManageResourcesProps> = props => {
     if (!_isEmpty(props.gatewayDetails.routing.container_svc)) {
       const updatedGatewayDetails: GatewayDetails = {
         ...props.gatewayDetails,
+        resourceMeta: undefined,
         routing: { ...props.gatewayDetails.routing, container_svc: undefined }
       }
       props.setGatewayDetails(updatedGatewayDetails)
@@ -168,6 +179,12 @@ const ManageResources: React.FC<ManageResourcesProps> = props => {
         routing: { ...props.gatewayDetails.routing, database: undefined }
       }
       props.setGatewayDetails(updatedGatewayDetails)
+    }
+  }
+
+  const handleErrorDisplay = (e: any, fallbackMsgKey?: string) => {
+    if (!Utils.isUserAbortedRequest(e)) {
+      showError(e.data?.message || e.message, undefined, fallbackMsgKey)
     }
   }
 
@@ -254,7 +271,7 @@ const ManageResources: React.FC<ManageResourcesProps> = props => {
       setAllInstances(instances)
       setFilteredInstances(instances)
     } catch (e) {
-      showError(e.data?.message || e.message, undefined, 'ce.refetch.instance.error')
+      handleErrorDisplay(e, 'ce.refetch.instance.error')
     }
   }
 
@@ -267,7 +284,7 @@ const ManageResources: React.FC<ManageResourcesProps> = props => {
         setAsgToShow(filteredAsgs)
       }
     } catch (err) {
-      showError(err.data?.message || err.message, undefined, 'ce.fetchAndSetAsgItems.error')
+      handleErrorDisplay(err, 'ce.fetchAndSetAsgItems.error')
     }
   }
 
@@ -287,7 +304,7 @@ const ManageResources: React.FC<ManageResourcesProps> = props => {
         prevSelectedConnector && setSelectedConnector(prevSelectedConnector)
       }
     } catch (e) {
-      showError(e.data?.message || e.message)
+      handleErrorDisplay(e)
     }
   }
 
@@ -499,6 +516,7 @@ const ManageResources: React.FC<ManageResourcesProps> = props => {
         <RadioGroup
           selectedValue={props.selectedResource?.valueOf()}
           onChange={e => {
+            trackEvent(USER_JOURNEY_EVENTS.SELECT_MANAGED_RESOURCES, { type: e.currentTarget.value })
             props.setSelectedResource(e.currentTarget.value as RESOURCES)
           }}
           className={css.radioGroup}

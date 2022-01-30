@@ -1,3 +1,10 @@
+/*
+ * Copyright 2022 Harness Inc. All rights reserved.
+ * Use of this source code is governed by the PolyForm Shield 1.0.0 license
+ * that can be found in the licenses directory at the root of this repository, also available at
+ * https://polyformproject.org/wp-content/uploads/2020/06/PolyForm-Shield-1.0.0.txt.
+ */
+
 import isUndefined from 'lodash/isUndefined'
 import type { GitSyncEntityDTO } from 'services/cd-ng'
 
@@ -25,7 +32,12 @@ export const illegalIdentifiers = [
   'false',
   'new',
   'var',
-  'return'
+  'return',
+  'step',
+  'parallel',
+  'stepGroup',
+  'org',
+  'account'
 ]
 
 export const DEFAULT_DATE_FORMAT = 'MM/DD/YYYY hh:mm a'
@@ -41,13 +53,16 @@ export const regexName = /^[A-Za-z0-9_-][A-Za-z0-9 _-]*$/
 
 export const regexIdentifier = /^[a-zA-Z_.][0-9a-zA-Z_$]*$/
 
+export const k8sLabelRegex = /[a-z0-9]([-a-z0-9]*[a-z0-9])?(\.[a-z0-9]([-a-z0-9]*[a-z0-9])?)*/
+
+// https://kubernetes.io/docs/concepts/overview/working-with-objects/annotations/#syntax-and-character-set
+export const k8sAnnotationRegex = /^[a-z0-9A-Z]([a-z0-9A-Z-_./])*[a-z0-9A-Z]$/
+
 export const regexVersionLabel = /^[0-9a-zA-Z][\S]*$/
 
 export const HarnessFolderName = /^[A-Za-z0-9_\-/][A-Za-z0-9 _\-/]*$/
 
 export const GitSuffixRegex = /.git(\/)*$/g
-
-export const HarnessFolderNameSanityRegex = /(\/+)([A-Za-z0-9_-])*/g
 
 export const UNIQUE_ID_MAX_LENGTH = 64
 export function toVariableStr(str: string): string {

@@ -1,3 +1,10 @@
+/*
+ * Copyright 2022 Harness Inc. All rights reserved.
+ * Use of this source code is governed by the PolyForm Free Trial 1.0.0 license
+ * that can be found in the licenses directory at the root of this repository, also available at
+ * https://polyformproject.org/wp-content/uploads/2020/05/PolyForm-Free-Trial-1.0.0.txt.
+ */
+
 import React, { useState, useEffect } from 'react'
 import * as Yup from 'yup'
 import {
@@ -61,6 +68,7 @@ const SetupEngine: React.FC<StepProps<StepDetailsProps> & ConnectorDetailsProps>
   const { showSuccess, showError } = useToaster()
   const [initialValues, setInitialValues] = useState(defaultInitialFormData)
   const [loadingFormData, setLoadingFormData] = useState(isEditMode)
+  const [savingDataInProgress, setSavingDataInProgress] = useState<boolean>(false)
   const [secretEngineOptions, setSecretEngineOptions] = useState<SelectOption[]>([])
   const [modalErrorHandler, setModalErrorHandler] = useState<ModalErrorHandlerBinding | undefined>()
 
@@ -172,6 +180,7 @@ const SetupEngine: React.FC<StepProps<StepDetailsProps> & ConnectorDetailsProps>
       const data: ConnectorRequestBody = buildVaultPayload({ ...prevStepData, ...formData })
 
       try {
+        setSavingDataInProgress(true)
         if (isEditMode) {
           const response = await updateConnector(data)
           nextStep?.({ ...prevStepData, ...formData })
@@ -186,12 +195,14 @@ const SetupEngine: React.FC<StepProps<StepDetailsProps> & ConnectorDetailsProps>
       } catch (err) {
         /* istanbul ignore next */
         modalErrorHandler?.showDanger(err?.data?.message)
+      } finally {
+        setSavingDataInProgress(false)
       }
     }
   }
 
-  return loadingFormData ? (
-    <PageSpinner />
+  return loadingFormData || savingDataInProgress ? (
+    <PageSpinner message={savingDataInProgress ? getString('connectors.hashiCorpVault.saveInProgress') : undefined} />
   ) : (
     <Container padding={{ top: 'medium' }} width="64%">
       <Text font={{ variation: FontVariation.H3 }} padding={{ bottom: 'xlarge' }} color={Color.BLACK}>

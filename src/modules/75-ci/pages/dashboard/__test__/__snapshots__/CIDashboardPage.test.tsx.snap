@@ -3,7 +3,7 @@
 exports[`CIDashboardPage snapshot test should render properly 1`] = `
 <div>
   <div
-    class="Layout--horizontal StyledProps--main PageHeader--container PageHeader--standard StyledProps--flex StyledProps--padding-left-xlarge StyledProps--padding-right-xlarge"
+    class="Layout--horizontal StyledProps--main PageHeader--container PageHeader--standard StyledProps--flex StyledProps--padding-left-xlarge StyledProps--padding-right-xlarge StyledProps--background-white"
   >
     <div
       class="Layout--vertical StyledProps--main"
@@ -86,7 +86,7 @@ exports[`CIDashboardPage snapshot test should render properly 1`] = `
           <span
             class="bp3-button-text"
           >
-            23 March 2021 - 22 April 2021
+            common.duration.month
           </span>
           <span
             class="bp3-icon bp3-icon-caret-down StyledProps--main"

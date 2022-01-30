@@ -1,3 +1,10 @@
+/*
+ * Copyright 2021 Harness Inc. All rights reserved.
+ * Use of this source code is governed by the PolyForm Shield 1.0.0 license
+ * that can be found in the licenses directory at the root of this repository, also available at
+ * https://polyformproject.org/wp-content/uploads/2020/06/PolyForm-Shield-1.0.0.txt.
+ */
+
 import React from 'react'
 import {
   Button,
@@ -195,6 +202,7 @@ interface DeployEnvironmentProps {
     path?: string
     readonly?: boolean
   }
+  allowableTypes: MultiTypeInputType[]
 }
 
 interface DeployEnvironmentState {
@@ -216,7 +224,8 @@ function isEditEnvironment(data: DeployEnvData): boolean {
 const DeployEnvironmentWidget: React.FC<DeployEnvironmentProps> = ({
   initialValues,
   onUpdate,
-  readonly
+  readonly,
+  allowableTypes
 }): JSX.Element => {
   const { getString } = useStrings()
   const { accountId, projectIdentifier, orgIdentifier } = useParams<
@@ -300,7 +309,16 @@ const DeployEnvironmentWidget: React.FC<DeployEnvironmentProps> = ({
       if (getMultiTypeFromValue(initialValues.environmentRef) === MultiTypeInputType.FIXED) {
         const doesExist = selectOptions.filter(env => env.value === initialValues.environmentRef).length > 0
         if (!doesExist) {
-          formikRef.current?.setFieldValue('environmentRef', '')
+          if (!readonly) {
+            formikRef.current?.setFieldValue('environmentRef', '')
+          } else {
+            const options = [...selectOptions]
+            options.push({
+              label: initialValues.environmentRef,
+              value: initialValues.environmentRef
+            })
+            setSelectOptions(options)
+          }
         }
       }
     }
@@ -442,7 +460,8 @@ const DeployEnvironmentWidget: React.FC<DeployEnvironmentProps> = ({
                       addClearBtn: !readonly,
                       items: selectOptions || []
                     },
-                    expressions
+                    expressions,
+                    allowableTypes
                   }}
                   selectItems={selectOptions || []}
                 />
@@ -483,6 +502,7 @@ const DeployEnvironmentWidget: React.FC<DeployEnvironmentProps> = ({
                         ? getString('editEnvironment')
                         : getString('cd.pipelineSteps.environmentTab.plusNewEnvironment')
                     }
+                    id={isEditEnvironment(values) ? 'edit-environment' : 'add-new-environment'}
                   />
                 )}
               </Layout.Horizontal>
@@ -497,7 +517,8 @@ const DeployEnvironmentWidget: React.FC<DeployEnvironmentProps> = ({
 const DeployEnvironmentInputStep: React.FC<DeployEnvironmentProps & { formik?: any }> = ({
   inputSetData,
   initialValues,
-  formik
+  formik,
+  allowableTypes
 }) => {
   const { getString } = useStrings()
   const { accountId, projectIdentifier, orgIdentifier } = useParams<
@@ -609,7 +630,7 @@ const DeployEnvironmentInputStep: React.FC<DeployEnvironmentProps & { formik?: a
             selectItems={environments}
             useValue
             multiTypeInputProps={{
-              allowableTypes: [MultiTypeInputType.FIXED, MultiTypeInputType.EXPRESSION],
+              allowableTypes,
               selectProps: {
                 addClearBtn: !inputSetData?.readonly,
                 items: environments
@@ -705,7 +726,7 @@ export class DeployEnvironmentStep extends Step<DeployEnvData> {
     })
   }
   renderStep(props: StepProps<DeployEnvData>): JSX.Element {
-    const { initialValues, onUpdate, stepViewType, inputSetData, readonly = false } = props
+    const { initialValues, onUpdate, stepViewType, inputSetData, readonly = false, allowableTypes } = props
     if (stepViewType === StepViewType.InputSet || stepViewType === StepViewType.DeploymentForm) {
       return (
         <DeployEnvironmentInputStepFormik
@@ -714,6 +735,7 @@ export class DeployEnvironmentStep extends Step<DeployEnvData> {
           onUpdate={onUpdate}
           stepViewType={stepViewType}
           inputSetData={inputSetData}
+          allowableTypes={allowableTypes}
         />
       )
     }
@@ -723,6 +745,7 @@ export class DeployEnvironmentStep extends Step<DeployEnvData> {
         initialValues={initialValues}
         onUpdate={onUpdate}
         stepViewType={stepViewType}
+        allowableTypes={allowableTypes}
       />
     )
   }

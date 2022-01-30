@@ -1,6 +1,14 @@
+/*
+ * Copyright 2021 Harness Inc. All rights reserved.
+ * Use of this source code is governed by the PolyForm Shield 1.0.0 license
+ * that can be found in the licenses directory at the root of this repository, also available at
+ * https://polyformproject.org/wp-content/uploads/2020/06/PolyForm-Shield-1.0.0.txt.
+ */
+
 import React, { useEffect } from 'react'
 import { useParams } from 'react-router-dom'
 import { Container } from '@wings-software/uicore'
+import type { GetDataError } from 'restful-react'
 import type { ProjectPathProps } from '@common/interfaces/RouteInterfaces'
 import { useGetAppdynamicsMetricDataByPath } from 'services/cv'
 import MetricLineChart from '@cv/pages/health-source/common/MetricLineChart/MetricLineChart'
@@ -44,7 +52,7 @@ export default function MetricChart({
 
   return (
     <Container>
-      <MetricLineChart options={options} loading={loading} error={error} />
+      <MetricLineChart options={options} loading={loading} error={error as GetDataError<Error>} />
     </Container>
   )
 }

@@ -1,3 +1,10 @@
+/*
+ * Copyright 2021 Harness Inc. All rights reserved.
+ * Use of this source code is governed by the PolyForm Shield 1.0.0 license
+ * that can be found in the licenses directory at the root of this repository, also available at
+ * https://polyformproject.org/wp-content/uploads/2020/06/PolyForm-Shield-1.0.0.txt.
+ */
+
 import React from 'react'
 import { Container } from '@wings-software/uicore'
 import TagsRenderer, { ListTagsProps } from '@common/components/TagsRenderer/TagsRenderer'
@@ -9,15 +16,15 @@ export const TemplateTags: React.FC<ListTagsProps> = (props): JSX.Element => {
   const ref = React.useRef<HTMLDivElement | null>(null)
 
   React.useLayoutEffect(() => {
+    setLength(Object.keys(tags).length)
+  }, [JSON.stringify(tags)])
+
+  React.useLayoutEffect(() => {
     const currentHeight = ref?.current?.clientHeight
     if (currentHeight && currentHeight > 20) {
       setLength(length - 1)
     }
   }, [length])
-
-  React.useLayoutEffect(() => {
-    setLength(Object.keys(tags).length)
-  }, [JSON.stringify(tags)])
 
   return (
     <Container className={css.container}>

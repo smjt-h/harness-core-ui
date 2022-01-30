@@ -1,3 +1,10 @@
+/*
+ * Copyright 2022 Harness Inc. All rights reserved.
+ * Use of this source code is governed by the PolyForm Shield 1.0.0 license
+ * that can be found in the licenses directory at the root of this repository, also available at
+ * https://polyformproject.org/wp-content/uploads/2020/06/PolyForm-Shield-1.0.0.txt.
+ */
+
 import React, { useCallback, useEffect, useMemo, useState } from 'react'
 import { useParams, useHistory } from 'react-router-dom'
 import moment from 'moment'
@@ -8,14 +15,13 @@ import {
   Color,
   Container,
   ExpandingSearchInput,
-  FlexExpander,
   Layout,
   Pagination,
   TableV2,
   Text
 } from '@wings-software/uicore'
 import type { Cell, Column } from 'react-table'
-import { ListingPageTemplate } from '@cf/components/ListingPageTemplate/ListingPageTemplate'
+import ListingPageTemplate from '@cf/components/ListingPageTemplate/ListingPageTemplate'
 import {
   CF_DEFAULT_PAGE_SIZE,
   getErrorMessage,
@@ -40,6 +46,9 @@ import useActiveEnvironment from '@cf/hooks/useActiveEnvironment'
 import RbacOptionsMenuButton from '@rbac/components/RbacOptionsMenuButton/RbacOptionsMenuButton'
 import { ResourceType } from '@rbac/interfaces/ResourceType'
 import { PermissionIdentifier } from '@rbac/interfaces/PermissionIdentifier'
+import usePlanEnforcement from '@cf/hooks/usePlanEnforcement'
+import UsageLimitBanner from '@cf/components/UsageLimitBanner/UsageLimitBanner'
+import { FeatureIdentifier } from 'framework/featureStore/FeatureIdentifier'
 import { NoTargetsView } from './NoTargetsView'
 import { NewTargets } from './NewTarget'
 
@@ -95,27 +104,45 @@ export const TargetsPage: React.FC = () => {
   const error = errEnvironments || errTargets
   const noTargetExists = targetsData?.targets?.length === 0
   const noEnvironmentExists = !loadingEnvironments && environments?.length === 0
-  const title = getString('cf.shared.targets')
+  const title = `${getString('cf.shared.targetManagement')}: ${getString('cf.shared.targets')}`
+
+  const { isPlanEnforcementEnabled } = usePlanEnforcement()
+  const planEnforcementProps = isPlanEnforcementEnabled
+    ? {
+        featuresProps: {
+          featuresRequest: {
+            featureNames: [FeatureIdentifier.MAUS]
+          }
+        }
+      }
+    : undefined
 
   const toolbar = (
-    <Layout.Horizontal spacing="medium">
-      <NewTargets
-        accountId={accountId}
-        orgIdentifier={orgIdentifier}
-        projectIdentifier={projectIdentifier}
-        onCreated={() => {
-          setPageNumber(0)
-          refetchTargets({ queryParams: { ...queryParams, pageNumber: 0 } })
-          showToaster(getString('cf.messages.targetCreated'))
-        }}
+    <>
+      <Layout.Horizontal spacing="medium">
+        <NewTargets
+          accountId={accountId}
+          orgIdentifier={orgIdentifier}
+          projectIdentifier={projectIdentifier}
+          onCreated={() => {
+            setPageNumber(0)
+            refetchTargets({ queryParams: { ...queryParams, pageNumber: 0 } })
+            showToaster(getString('cf.messages.targetCreated'))
+          }}
+        />
+        <Text font={{ size: 'small' }} color={Color.GREY_400} style={{ alignSelf: 'center' }}>
+          {getString('cf.targets.pageDescription')}
+        </Text>
+      </Layout.Horizontal>
+      <ExpandingSearchInput
+        alwaysExpanded
+        name="findFlag"
+        placeholder={getString('search')}
+        onChange={onSearchInputChanged}
       />
-      <Text font={{ size: 'small' }} color={Color.GREY_400} style={{ alignSelf: 'center' }}>
-        {getString('cf.targets.pageDescription')}
-      </Text>
-      <FlexExpander />
-      <ExpandingSearchInput name="findFlag" placeholder={getString('search')} onChange={onSearchInputChanged} />
-    </Layout.Horizontal>
+    </>
   )
+
   const gotoTargetDetailPage = useCallback(
     (identifier: string): void => {
       history.push(
@@ -265,6 +292,7 @@ export const TargetsPage: React.FC = () => {
                 }}
               >
                 <RbacOptionsMenuButton
+                  data-testid="rbac-options-menu-btn"
                   items={[
                     {
                       icon: 'edit',
@@ -275,7 +303,8 @@ export const TargetsPage: React.FC = () => {
                       permission: {
                         resource: { resourceType: ResourceType.ENVIRONMENT, resourceIdentifier: activeEnvironment },
                         permission: PermissionIdentifier.EDIT_FF_TARGETGROUP
-                      }
+                      },
+                      ...planEnforcementProps
                     },
                     {
                       icon: 'trash',
@@ -284,7 +313,8 @@ export const TargetsPage: React.FC = () => {
                       permission: {
                         resource: { resourceType: ResourceType.ENVIRONMENT, resourceIdentifier: activeEnvironment },
                         permission: PermissionIdentifier.DELETE_FF_TARGETGROUP
-                      }
+                      },
+                      ...planEnforcementProps
                     }
                   ]}
                 />
@@ -294,7 +324,7 @@ export const TargetsPage: React.FC = () => {
         }
       }
     ],
-    [getString, clear, deleteTarget, gotoTargetDetailPage, refetchTargets, showError]
+    [activeEnvironment]
   )
 
   useEffect(() => {
@@ -323,26 +353,29 @@ export const TargetsPage: React.FC = () => {
       hasEnvironment={!!environments?.length}
     />
   ) : (
-    <Container padding={{ top: 'medium', right: 'xxlarge', left: 'xxlarge' }}>
-      <TableV2<Target>
-        columns={columns}
-        data={targetsData?.targets || []}
-        onRowClick={target => {
-          gotoTargetDetailPage(target.identifier as string)
-        }}
-      />
-    </Container>
+    <>
+      {isPlanEnforcementEnabled && <UsageLimitBanner />}
+      <Container padding={{ top: 'medium', right: 'xlarge', left: 'xlarge' }}>
+        <TableV2<Target>
+          columns={columns}
+          data={targetsData?.targets || []}
+          onRowClick={target => {
+            gotoTargetDetailPage(target.identifier as string)
+          }}
+        />
+      </Container>
+    </>
   )
+
+  const displayToolbar = !noEnvironmentExists && (!noTargetExists || searchTerm)
 
   return (
     <ListingPageTemplate
-      pageTitle={title}
-      header={
+      title={title}
+      headerContent={
         <TargetManagementHeader environmentSelect={<EnvironmentSelect />} hasEnvironments={!!environments?.length} />
       }
-      headerStyle={{ display: 'flex' }}
-      toolbar={!noEnvironmentExists && toolbar}
-      content={((!error || noEnvironmentExists) && content) || null}
+      toolbar={displayToolbar && toolbar}
       pagination={
         !noEnvironmentExists &&
         !!targetsData?.targets?.length && (
@@ -364,6 +397,8 @@ export const TargetsPage: React.FC = () => {
         refetchEnvs()
         refetchTargets()
       }}
-    />
+    >
+      {content}
+    </ListingPageTemplate>
   )
 }

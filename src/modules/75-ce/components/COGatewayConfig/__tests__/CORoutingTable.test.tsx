@@ -1,3 +1,10 @@
+/*
+ * Copyright 2021 Harness Inc. All rights reserved.
+ * Use of this source code is governed by the PolyForm Shield 1.0.0 license
+ * that can be found in the licenses directory at the root of this repository, also available at
+ * https://polyformproject.org/wp-content/uploads/2020/06/PolyForm-Shield-1.0.0.txt.
+ */
+
 import React from 'react'
 import { act } from 'react-dom/test-utils'
 import { findByText, fireEvent, render, waitFor } from '@testing-library/react'
@@ -71,7 +78,7 @@ describe('Routing Table Tests', () => {
   })
 
   test('render additional columns for redirection rule', async () => {
-    const { container } = render(<CORoutingTable routingRecords={records} setRoutingRecords={jest.fn()} />)
+    const { container, getByTestId } = render(<CORoutingTable routingRecords={records} setRoutingRecords={jest.fn()} />)
 
     const actionCaret = container
       .querySelector(`input[value="Forward"] + [class*="bp3-input-action"]`)
@@ -96,8 +103,8 @@ describe('Routing Table Tests', () => {
     })
     expect(serverNameInput.value).toBe('updated_server_name')
 
-    const routingRulesInput = container.querySelector(`input[value="routing_rules"]`) as HTMLInputElement
-    await waitFor(() => {
+    const routingRulesInput = getByTestId('routingRules') as HTMLInputElement
+    await act(() => {
       fireEvent.change(routingRulesInput!, { target: { value: 'updated_routing_rules' } })
     })
     expect(routingRulesInput.value).toBe('updated_routing_rules')

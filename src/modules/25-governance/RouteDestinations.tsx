@@ -1,3 +1,10 @@
+/*
+ * Copyright 2022 Harness Inc. All rights reserved.
+ * Use of this source code is governed by the PolyForm Shield 1.0.0 license
+ * that can be found in the licenses directory at the root of this repository, also available at
+ * https://polyformproject.org/wp-content/uploads/2020/06/PolyForm-Shield-1.0.0.txt.
+ */
+
 import React, { useEffect } from 'react'
 import { Route, useHistory, useParams } from 'react-router-dom'
 import { Container } from '@wings-software/uicore'
@@ -7,7 +14,11 @@ import { RouteWithLayout } from '@common/router'
 import type { SidebarContext } from '@common/navigation/SidebarProvider'
 import AccountSideNav from '@common/components/AccountSideNav/AccountSideNav'
 import type { GovernancePathProps } from '@common/interfaces/RouteInterfaces'
+import { String } from 'framework/strings'
 import { ContainerSpinner } from '@common/components/ContainerSpinner/ContainerSpinner'
+import RbacFactory from '@rbac/factories/RbacFactory'
+import { ResourceCategory, ResourceType } from '@rbac/interfaces/ResourceType'
+import { PermissionIdentifier } from '@rbac/interfaces/PermissionIdentifier'
 import { GovernanceRemoteComponentMounter } from './GovernanceApp'
 
 export const AccountSideNavProps: SidebarContext = {
@@ -15,6 +26,21 @@ export const AccountSideNavProps: SidebarContext = {
   icon: 'nav-settings',
   title: 'Account Settings'
 }
+
+RbacFactory.registerResourceTypeHandler(ResourceType.GOVERNANCE, {
+  icon: 'nav-settings',
+  label: 'common.governance',
+  category: ResourceCategory.ADMINSTRATIVE_FUNCTIONS,
+  permissionLabels: {
+    [PermissionIdentifier.GOV_VIEW_POLICY]: <String stringID="rbac.permissionLabels.access" />,
+    [PermissionIdentifier.GOV_EDIT_POLICY]: <String stringID="rbac.permissionLabels.createEdit" />,
+    [PermissionIdentifier.GOV_DELETE_POLICY]: <String stringID="rbac.permissionLabels.delete" />,
+    [PermissionIdentifier.GOV_VIEW_POLICYSET]: <String stringID="rbac.permissionLabels.access" />,
+    [PermissionIdentifier.GOV_EDIT_POLICYSET]: <String stringID="rbac.permissionLabels.createEdit" />,
+    [PermissionIdentifier.GOV_DELETE_POLICYSET]: <String stringID="rbac.permissionLabels.delete" />,
+    [PermissionIdentifier.GOV_EVALUATE_POLICYSET]: <String stringID="rbac.permissionLabels.evaluate" />
+  }
+})
 
 const RedirectToDefaultGovernanceRoute: React.FC = () => {
   const { accountId, orgIdentifier, projectIdentifier, module } = useParams<GovernancePathProps>()

@@ -1,9 +1,16 @@
+/*
+ * Copyright 2022 Harness Inc. All rights reserved.
+ * Use of this source code is governed by the PolyForm Shield 1.0.0 license
+ * that can be found in the licenses directory at the root of this repository, also available at
+ * https://polyformproject.org/wp-content/uploads/2020/06/PolyForm-Shield-1.0.0.txt.
+ */
+
 import React from 'react'
-import { Button, ButtonSize, ButtonVariation, Color, Container, Tab, Tabs } from '@wings-software/uicore'
+import { Container, Tab, Tabs, Layout } from '@wings-software/uicore'
 import { Expander } from '@blueprintjs/core'
 import cx from 'classnames'
 import type { FormikProps } from 'formik'
-import { isEmpty, noop } from 'lodash-es'
+import { isEmpty, noop, omit } from 'lodash-es'
 import { useStrings } from 'framework/strings'
 import { useFeatureFlag } from '@common/hooks/useFeatureFlag'
 import { FeatureFlag } from '@common/featureFlags'
@@ -13,14 +20,13 @@ import type { PipelineStep } from '@pipeline/components/PipelineSteps/PipelineSt
 import { StepType } from '@pipeline/components/PipelineSteps/PipelineStepInterface'
 import { StageType } from '@pipeline/utils/stageHelpers'
 import type { StepElementConfig } from 'services/cd-ng'
-import type { TemplateStepData } from '@pipeline/utils/tempates'
-import RbacButton from '@rbac/components/Button/Button'
-import { PermissionIdentifier } from '@rbac/interfaces/PermissionIdentifier'
-import { ResourceType } from '@rbac/interfaces/ResourceType'
-import { TemplateBar } from '@pipeline/components/PipelineStudio/StepCommands/TemplateBar/TemplateBar'
 import useCurrentModule from '@common/hooks/useCurrentModule'
 import { ModuleName } from 'framework/types/ModuleName'
-import { StepCommandsProps, StepCommandsViews } from './StepCommandTypes'
+import { SaveTemplateButton } from '@pipeline/components/PipelineStudio/SaveTemplateButton/SaveTemplateButton'
+import type { TemplateStepNode } from 'services/pipeline-ng'
+import { TemplateBar } from '@pipeline/components/PipelineStudio/TemplateBar/TemplateBar'
+import { getStepDataFromValues } from '@pipeline/utils/stepUtils'
+import { StepCommandsProps, StepCommandsViews, TabTypes, Values } from './StepCommandTypes'
 import css from './StepCommands.module.scss'
 
 export type StepFormikRef<T = unknown> = {
@@ -51,7 +57,6 @@ export function StepCommands(
     onChange,
     onUpdate,
     onUseTemplate,
-    onSaveAsTemplate,
     onRemoveTemplate,
     isStepGroup,
     isReadonly,
@@ -72,7 +77,7 @@ export function StepCommands(
   const [activeTab, setActiveTab] = React.useState(StepCommandTabs.StepConfiguration)
   const stepRef = React.useRef<FormikProps<unknown> | null>(null)
   const advancedConfRef = React.useRef<FormikProps<unknown> | null>(null)
-  const isTemplateStep = !!(step as TemplateStepData)?.template
+  const isTemplateStep = !!(step as TemplateStepNode)?.template
 
   const { isModule } = useCurrentModule()
 
@@ -181,13 +186,45 @@ export function StepCommands(
     return <div className={cx(css.stepCommand, css.withoutTabs)}>{getStepWidgetWithFormikRef()}</div>
   }
 
+  const getStepDataForTemplate = async (): Promise<StepElementConfig> => {
+    const stepObj = stepsFactory.getStep((step as StepElementConfig).type) as PipelineStep<any>
+    if (activeTab === StepCommandTabs.StepConfiguration && stepRef.current) {
+      await stepRef.current.validateForm()
+      const errors = omit(stepRef.current.errors, 'name')
+      if (isEmpty(errors)) {
+        return getStepDataFromValues(stepObj.processFormData(stepRef.current.values), step)
+      } else {
+        await stepRef.current.submitForm()
+        throw errors
+      }
+    } else if (activeTab === StepCommandTabs.Advanced && advancedConfRef.current) {
+      await advancedConfRef.current.validateForm()
+      const errors = omit(advancedConfRef.current.errors, 'name')
+      if (isEmpty(errors)) {
+        return getStepDataFromValues(
+          { ...(advancedConfRef.current.values as Partial<Values>), tab: TabTypes.Advanced },
+          step
+        )
+      } else {
+        await advancedConfRef.current.submitForm()
+        throw errors
+      }
+    } else {
+      return step as StepElementConfig
+    }
+  }
+
   return (
     <div className={cx(css.stepCommand, className)}>
-      {stepType === StepType.Template ? (
-        <>
-          <TemplateBar step={step} onChangeTemplate={onUseTemplate} onRemoveTemplate={onRemoveTemplate} />
-          <Container padding={'large'}>{getStepWidgetWithFormikRef()}</Container>
-        </>
+      {stepType === StepType.Template && onUseTemplate && onRemoveTemplate ? (
+        <Layout.Vertical margin={'xlarge'} spacing={'xxlarge'}>
+          <TemplateBar
+            templateLinkConfig={(step as TemplateStepNode).template}
+            onOpenTemplateSelector={onUseTemplate}
+            onRemoveTemplate={onRemoveTemplate}
+          />
+          <Container>{getStepWidgetWithFormikRef()}</Container>
+        </Layout.Vertical>
       ) : (
         <div className={cx(css.stepTabs, { stepTabsAdvanced: activeTab === StepCommandTabs.Advanced })}>
           <Tabs id="step-commands" selectedTabId={activeTab} onChange={handleTabChange}>
@@ -222,34 +259,7 @@ export function StepCommands(
             {templatesEnabled && !isStepGroup && viewType === StepCommandsViews.Pipeline ? (
               <>
                 <Expander />
-                <div>
-                  <Button
-                    text={getString('common.useTemplate')}
-                    variation={ButtonVariation.SECONDARY}
-                    size={ButtonSize.SMALL}
-                    icon="template-library"
-                    iconProps={{ size: 12 }}
-                    onClick={() => {
-                      onUseTemplate?.(step)
-                    }}
-                    margin={{ right: 'small' }}
-                  />
-                  <RbacButton
-                    withoutCurrentColor
-                    variation={ButtonVariation.ICON}
-                    icon="upload-box"
-                    iconProps={{ color: Color.PRIMARY_7 }}
-                    size={ButtonSize.SMALL}
-                    onClick={() => onSaveAsTemplate?.(step)}
-                    className={css.saveButton}
-                    permission={{
-                      permission: PermissionIdentifier.EDIT_TEMPLATE,
-                      resource: {
-                        resourceType: ResourceType.TEMPLATE
-                      }
-                    }}
-                  />
-                </div>
+                <SaveTemplateButton data={getStepDataForTemplate} type={'Step'} />
               </>
             ) : null}
           </Tabs>

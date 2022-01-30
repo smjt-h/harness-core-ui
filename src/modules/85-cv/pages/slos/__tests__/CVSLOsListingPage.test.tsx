@@ -1,95 +1,333 @@
+/*
+ * Copyright 2022 Harness Inc. All rights reserved.
+ * Use of this source code is governed by the PolyForm Shield 1.0.0 license
+ * that can be found in the licenses directory at the root of this repository, also available at
+ * https://polyformproject.org/wp-content/uploads/2020/06/PolyForm-Shield-1.0.0.txt.
+ */
+
 import React from 'react'
-import { act, fireEvent, render, waitFor } from '@testing-library/react'
-import { TestWrapper, TestWrapperProps } from '@common/utils/testUtils'
+import userEvent from '@testing-library/user-event'
+import { render, waitFor, screen } from '@testing-library/react'
 import routes from '@common/RouteDefinitions'
-import { accountPathProps, projectPathProps } from '@common/utils/routeUtils'
-import { useGetServiceLevelObjectives } from 'services/cv'
+import { TestWrapper } from '@common/utils/testUtils'
+import * as cvServices from 'services/cv'
 import CVSLOsListingPage from '../CVSLOsListingPage'
-import { mockedSLOsData } from './CVSLOsListingPage.mock'
-import { mockedUserJourneysData } from '../components/CVCreateSLO/components/CreateSLOForm/components/SLOName/__tests__/SLOName.mock'
+import type { CVSLOsListingPageProps, SLOCardHeaderProps } from '../CVSLOsListingPage.types'
+import {
+  testWrapperProps,
+  pathParams,
+  errorMessage,
+  dashboardWidgetsResponse,
+  dashboardWidgetsContent,
+  userJourneyResponse
+} from './CVSLOsListingPage.mock'
 
-const testWrapperProps: TestWrapperProps = {
-  path: routes.toCVSLOs({ ...accountPathProps, ...projectPathProps }),
-  pathParams: {
-    accountId: '1234_accountId',
-    projectIdentifier: '1234_project',
-    orgIdentifier: '1234_org'
+jest.mock('@cv/pages/slos/SLOCard/SLOCardHeader.tsx', () => ({
+  __esModule: true,
+  default: function SLOCardHeader({ onDelete }: SLOCardHeaderProps) {
+    return (
+      <span data-testid="slo-card-header">
+        <button onClick={() => onDelete(dashboardWidgetsContent.sloIdentifier, dashboardWidgetsContent.title)}>
+          Delete
+        </button>
+      </span>
+    )
   }
-}
-
-jest.mock('services/cv', () => ({
-  useGetServiceLevelObjectives: jest
-    .fn()
-    .mockImplementation(() => ({ loading: false, data: mockedSLOsData, error: null, refetch: jest.fn() })),
-  useDeleteSLOData: jest.fn().mockImplementation(() => ({ loading: false, data: {}, error: null })),
-  useGetAllJourneys: jest.fn().mockImplementation(() => ({ loading: false, data: mockedUserJourneysData, error: null }))
 }))
 
-describe('Test CVSLOsListingPage component', () => {
-  afterEach(() => {
-    jest.clearAllMocks()
-  })
+jest.mock('@cv/pages/slos/SLOCard/SLOCardContent.tsx', () => ({
+  __esModule: true,
+  default: function SLOCardContent() {
+    return <span data-testid="slo-card-content" />
+  }
+}))
 
-  test('should render CVSLOsListingPage page and display create New SLO Button', async () => {
-    const { container, getByText } = render(
-      <TestWrapper {...testWrapperProps}>
-        <CVSLOsListingPage />
-      </TestWrapper>
-    )
-    expect(getByText('cv.slos.newSLO')).toBeInTheDocument()
-    expect(container).toMatchSnapshot()
-  })
+const ComponentWrapper: React.FC<CVSLOsListingPageProps> = ({ monitoredService }) => {
+  return (
+    <TestWrapper {...testWrapperProps}>
+      <CVSLOsListingPage monitoredService={monitoredService} />
+    </TestWrapper>
+  )
+}
 
-  test('Verify if correct number of SLOs cards are rendered', async () => {
-    const { getAllByTestId } = render(
-      <TestWrapper {...testWrapperProps}>
-        <CVSLOsListingPage />
-      </TestWrapper>
-    )
+describe('CVSLOsListingPage', () => {
+  let useGetAllJourneys: jest.SpyInstance
+  let useGetSLODashboardWidgets: jest.SpyInstance
+  let useDeleteSLOData: jest.SpyInstance
+  let refetchUserJourneys: jest.Mock
+  let refetchDashboardWidgets: jest.Mock
 
-    await waitFor(() => {
-      expect(getAllByTestId('sloCard')).toHaveLength(3)
-    })
-  })
-
-  test('Verify if correct number of SLOs cards are rendered for a particular monitored service', async () => {
-    ;(useGetServiceLevelObjectives as jest.Mock).mockImplementation(() => ({
+  beforeEach(() => {
+    refetchUserJourneys = jest.fn()
+    refetchDashboardWidgets = jest.fn()
+    useGetAllJourneys = jest.spyOn(cvServices, 'useGetAllJourneys').mockReturnValue({
+      data: {},
       loading: false,
-      data: mockedSLOsData,
-      error: false
-    }))
-
-    const { getAllByTestId } = render(
-      <TestWrapper {...testWrapperProps}>
-        <CVSLOsListingPage monitoredServiceIdentifier={'monitored-service'} />
-      </TestWrapper>
-    )
-
-    await waitFor(() => {
-      expect(getAllByTestId('sloCard')).toHaveLength(3)
-    })
-  })
-
-  test('Verify if User journey filtering works', async () => {
-    ;(useGetServiceLevelObjectives as jest.Mock).mockImplementation(() => ({
-      loading: false,
-      data: mockedSLOsData,
-      error: false,
+      error: null,
       refetch: jest.fn()
-    }))
+    } as any)
 
-    const { getAllByTestId, getByText } = render(
-      <TestWrapper {...testWrapperProps}>
-        <CVSLOsListingPage />
-      </TestWrapper>
+    useGetSLODashboardWidgets = jest.spyOn(cvServices, 'useGetSLODashboardWidgets').mockReturnValue({
+      data: {},
+      loading: false,
+      error: null,
+      refetch: refetchDashboardWidgets
+    } as any)
+
+    jest.spyOn(cvServices, 'useGetAllMonitoredServicesWithTimeSeriesHealthSources').mockReturnValue({
+      data: [],
+      loading: false,
+      error: null,
+      refetch: jest.fn()
+    } as any)
+
+    jest.spyOn(cvServices, 'useGetServiceLevelObjectivesRiskCount').mockReturnValue({
+      data: {
+        data: {
+          riskCounts: [
+            {
+              displayName: 'Healthy',
+              identifier: 'HEALTHY',
+              count: 2
+            }
+          ],
+          totalCount: 3
+        }
+      },
+      loading: false,
+      error: null,
+      refetch: jest.fn()
+    } as any)
+
+    useDeleteSLOData = jest
+      .spyOn(cvServices, 'useDeleteSLOData')
+      .mockReturnValue({ mutate: jest.fn(), loading: false, error: null } as any)
+  })
+
+  test('Without monitoredServiceIdentifier it should render with the page header and +New SLO button', () => {
+    render(<ComponentWrapper />)
+
+    expect(screen.getByText('cv.slos.title')).toBeInTheDocument()
+    expect(screen.getByText('cv.slos.newSLO')).toBeInTheDocument()
+  })
+
+  test('With monitoredServiceIdentifier it should not render with the page header and render +New SLO button', () => {
+    render(
+      <ComponentWrapper
+        monitoredService={{ identifier: 'monitored_service_identifier', name: 'monitored_service_identifier' }}
+      />
     )
 
-    act(() => {
-      fireEvent.click(getByText('journey-3'))
+    expect(screen.queryByText('cv.slos.title')).not.toBeInTheDocument()
+    expect(screen.queryByText('cv.slos.newSLO')).toBeInTheDocument()
+  })
+
+  test('add new SLO should go to create page', async () => {
+    render(<ComponentWrapper />)
+
+    userEvent.click(screen.getByText('cv.slos.newSLO'))
+
+    expect(screen.getByText(routes.toCVCreateSLOs({ ...pathParams, module: 'cv' }))).toBeInTheDocument()
+  })
+
+  test('it should show the loader while fetching the user journeys', () => {
+    useGetAllJourneys.mockReturnValue({ data: {}, loading: true, error: null, refetch: jest.fn() })
+
+    render(<ComponentWrapper />)
+
+    expect(screen.getByText('Loading, please wait...')).toBeInTheDocument()
+    expect(screen.queryByText('First Journey')).not.toBeInTheDocument()
+  })
+
+  test('it should show the loader while fetching the dashboard widgets', () => {
+    useGetSLODashboardWidgets.mockReturnValue({ data: {}, loading: true, error: null, refetch: jest.fn() })
+
+    render(<ComponentWrapper />)
+
+    expect(screen.getByText('Loading, please wait...')).toBeInTheDocument()
+    expect(screen.queryByTestId('slo-card-container')).not.toBeInTheDocument()
+  })
+
+  test('it should show the loader while deleting a widget', () => {
+    useGetAllJourneys.mockReturnValue({ data: userJourneyResponse, loading: false, error: null, refetch: jest.fn() })
+    useDeleteSLOData.mockReturnValue({ mutate: jest.fn(), loading: true, error: null })
+    useGetSLODashboardWidgets.mockReturnValue({
+      data: dashboardWidgetsResponse,
+      loading: false,
+      error: null,
+      refetch: jest.fn()
     })
 
-    await waitFor(() => {
-      expect(getAllByTestId('sloCard')).toHaveLength(3)
+    render(<ComponentWrapper />)
+
+    expect(screen.getByText('Loading, please wait...')).toBeInTheDocument()
+    expect(screen.getAllByTestId('slo-card-container')).toHaveLength(1)
+  })
+
+  test('page retry should trigger both dashboard widget and user journey APIs when both returned error response', () => {
+    useGetAllJourneys.mockReturnValue({
+      data: {},
+      loading: false,
+      error: { message: errorMessage },
+      refetch: refetchUserJourneys
+    })
+    useGetSLODashboardWidgets.mockReturnValue({
+      data: {},
+      loading: false,
+      error: { message: errorMessage },
+      refetch: refetchDashboardWidgets
+    })
+
+    render(<ComponentWrapper />)
+
+    const onRetryButton = screen.getByRole('button', { name: 'Retry' })
+
+    expect(onRetryButton).toBeInTheDocument()
+    expect(refetchUserJourneys).not.toHaveBeenCalled()
+    expect(refetchDashboardWidgets).not.toHaveBeenCalled()
+
+    userEvent.click(onRetryButton)
+
+    expect(refetchUserJourneys).toHaveBeenCalled()
+    expect(refetchDashboardWidgets).toHaveBeenCalled()
+  })
+
+  test('page retry should only trigger the user journey API when dashboard widget API returned success response', () => {
+    useGetAllJourneys.mockReturnValue({
+      data: {},
+      loading: false,
+      error: { message: errorMessage },
+      refetch: refetchUserJourneys
+    })
+
+    render(<ComponentWrapper />)
+
+    const onRetryButton = screen.getByRole('button', { name: 'Retry' })
+
+    expect(onRetryButton).toBeInTheDocument()
+    expect(refetchUserJourneys).not.toHaveBeenCalled()
+
+    userEvent.click(onRetryButton)
+
+    expect(refetchUserJourneys).toHaveBeenCalled()
+    expect(refetchDashboardWidgets).not.toHaveBeenCalled()
+  })
+
+  test('page retry should only trigger the dashboard widget API when userJourney API returned success response', () => {
+    useGetSLODashboardWidgets.mockReturnValue({
+      data: {},
+      loading: false,
+      error: { message: errorMessage },
+      refetch: refetchDashboardWidgets
+    })
+
+    render(<ComponentWrapper />)
+
+    const onRetryButton = screen.getByRole('button', { name: 'Retry' })
+
+    expect(onRetryButton).toBeInTheDocument()
+    expect(refetchDashboardWidgets).not.toHaveBeenCalled()
+
+    userEvent.click(onRetryButton)
+
+    expect(refetchUserJourneys).not.toHaveBeenCalled()
+    expect(refetchDashboardWidgets).toHaveBeenCalled()
+  })
+
+  test('it should render page body no data state only if dashboard widgets and selected user journey are empty', () => {
+    render(<ComponentWrapper />)
+
+    expect(screen.getByText('cv.slos.noData')).toBeInTheDocument()
+    expect(screen.queryByText('First Journey')).not.toBeInTheDocument()
+    expect(screen.queryByTestId('slo-card-container')).not.toBeInTheDocument()
+  })
+
+  test('it should only render dashboard widgets when user journeys are empty', () => {
+    useGetSLODashboardWidgets.mockReturnValue({
+      data: dashboardWidgetsResponse,
+      loading: false,
+      error: null,
+      refetch: jest.fn()
+    })
+
+    render(<ComponentWrapper />)
+
+    expect(screen.queryByText('First Journey')).not.toBeInTheDocument()
+    expect(screen.getByTestId('slo-card-container')).toBeInTheDocument()
+  })
+
+  test('Risk filter select and deselect', async () => {
+    useGetAllJourneys.mockReturnValue({ data: userJourneyResponse, loading: false, error: null, refetch: jest.fn() })
+    useGetSLODashboardWidgets.mockReturnValue({
+      data: dashboardWidgetsResponse,
+      loading: false,
+      error: null,
+      refetch: jest.fn()
+    })
+
+    const { container } = render(<ComponentWrapper />)
+
+    expect(container).toMatchSnapshot()
+
+    expect(screen.getAllByTestId('slo-card-container')).toHaveLength(1)
+    expect(screen.getAllByTestId('slo-card-header')).toHaveLength(1)
+    expect(screen.getAllByTestId('slo-card-content')).toHaveLength(1)
+
+    expect(screen.getByText('Healthy').parentElement).not.toHaveClass('Card--selected')
+
+    userEvent.click(screen.getByText('Healthy'))
+
+    expect(screen.getByText('Healthy').parentElement).toHaveClass('Card--selected')
+
+    userEvent.click(screen.getByText('Healthy'))
+
+    expect(screen.getByText('Healthy').parentElement).not.toHaveClass('Card--selected')
+  })
+
+  test('deleting a widget', async () => {
+    const deleteMutate = jest.fn()
+    const refetch = jest.fn()
+
+    useGetAllJourneys.mockReturnValue({ data: userJourneyResponse, loading: false, error: null, refetch: jest.fn() })
+    useDeleteSLOData.mockReturnValue({ mutate: deleteMutate, loading: false, error: null })
+    useGetSLODashboardWidgets.mockReturnValue({
+      data: dashboardWidgetsResponse,
+      loading: false,
+      error: null,
+      refetch: refetch
+    })
+
+    render(<ComponentWrapper />)
+
+    expect(screen.getByTestId('slo-card-container')).toBeInTheDocument()
+
+    userEvent.click(screen.getByText('Delete'))
+
+    expect(deleteMutate).toHaveBeenCalledWith(dashboardWidgetsContent.sloIdentifier)
+
+    await waitFor(() => expect(refetch).toHaveBeenCalled())
+    await waitFor(() => expect(screen.getByText('cv.slos.sloDeleted')).toBeInTheDocument())
+  })
+
+  describe('Filters', () => {
+    test('should check whether all the filters are present', () => {
+      useGetSLODashboardWidgets.mockReturnValue({
+        data: dashboardWidgetsResponse,
+        loading: false,
+        error: null,
+        refetch: jest.fn()
+      })
+      render(<ComponentWrapper />)
+
+      const userJourneyFilter = screen.getByTestId('userJourney-filter')
+      const monitoredServicesFilter = screen.getByTestId('monitoredServices-filter')
+      const sloTargetAndBudgetFilter = screen.getByTestId('sloTargetAndBudget-filter')
+      const sliTypeFilter = screen.getByTestId('sliType-filter')
+
+      expect(userJourneyFilter).toBeInTheDocument()
+      expect(monitoredServicesFilter).toBeInTheDocument()
+      expect(sloTargetAndBudgetFilter).toBeInTheDocument()
+      expect(sliTypeFilter).toBeInTheDocument()
     })
   })
 })

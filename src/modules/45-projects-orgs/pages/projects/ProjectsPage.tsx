@@ -1,3 +1,10 @@
+/*
+ * Copyright 2021 Harness Inc. All rights reserved.
+ * Use of this source code is governed by the PolyForm Shield 1.0.0 license
+ * that can be found in the licenses directory at the root of this repository, also available at
+ * https://polyformproject.org/wp-content/uploads/2020/06/PolyForm-Shield-1.0.0.txt.
+ */
+
 import React, { useState, useMemo, useEffect } from 'react'
 import { useHistory, useParams } from 'react-router-dom'
 import {
@@ -9,7 +16,8 @@ import {
   Views,
   ButtonVariation,
   DropDown,
-  Page
+  Page,
+  ButtonSize
 } from '@wings-software/uicore'
 
 import { useQueryParams } from '@common/hooks'
@@ -100,7 +108,6 @@ const ProjectsListPage: React.FC = () => {
     },
     debounce: 300
   })
-
   const projectCreateSuccessHandler = (): void => {
     refetch()
   }
@@ -180,8 +187,19 @@ const ProjectsListPage: React.FC = () => {
                 imageClassName: css.imageClassName,
                 messageTitle: getString('projectsOrgs.youHaveNoProjects'),
                 message: getString('projectDescription'),
-                buttonText: getString('projectsOrgs.createAProject'),
-                onClick: () => openProjectModal?.()
+                button: (
+                  <RbacButton
+                    featuresProps={{
+                      featuresRequest: {
+                        featureNames: [FeatureIdentifier.MULTIPLE_PROJECTS]
+                      }
+                    }}
+                    size={ButtonSize.LARGE}
+                    variation={ButtonVariation.PRIMARY}
+                    text={getString('projectsOrgs.createAProject')}
+                    onClick={() => openProjectModal?.()}
+                  />
+                )
               }
             : {
                 when: () => !data?.data?.content?.length,

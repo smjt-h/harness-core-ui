@@ -1,14 +1,21 @@
+/*
+ * Copyright 2021 Harness Inc. All rights reserved.
+ * Use of this source code is governed by the PolyForm Shield 1.0.0 license
+ * that can be found in the licenses directory at the root of this repository, also available at
+ * https://polyformproject.org/wp-content/uploads/2020/06/PolyForm-Shield-1.0.0.txt.
+ */
+
 import React from 'react'
 import { useParams } from 'react-router-dom'
 import { ButtonVariation, Checkbox, Color, ExpandingSearchInput } from '@wings-software/uicore'
 
 import cx from 'classnames'
 import { String, useStrings } from 'framework/strings'
-import { FeatureIdentifier } from 'framework/featureStore/FeatureIdentifier'
 import type { PipelinePathProps, PipelineType } from '@common/interfaces/RouteInterfaces'
 
 import StatusSelect from '@pipeline/components/StatusSelect/StatusSelect'
 import NewPipelineSelect from '@pipeline/components/NewPipelineSelect/NewPipelineSelect'
+import { getFeaturePropsForRunPipelineButton } from '@pipeline/utils/runPipelineUtils'
 import { useUpdateQueryParams } from '@common/hooks'
 import { Page } from '@common/exports'
 import type { ExecutionStatus } from '@pipeline/utils/statusHelpers'
@@ -38,7 +45,6 @@ export function PipelineDeploymentListHeader(props: PipelineDeploymentListHeader
   const { queryParams } = useFiltersContext()
   const { updateQueryParams } = useUpdateQueryParams<Partial<GetListOfExecutionsQueryParams>>()
   const { getString } = useStrings()
-  const isCIModule = module === 'ci'
   function handleQueryChange(query: string): void {
     if (query) {
       updateQueryParams({ searchTerm: query })
@@ -91,11 +97,7 @@ export function PipelineDeploymentListHeader(props: PipelineDeploymentListHeader
               skipCondition: ({ resourceIdentifier }) => !resourceIdentifier
             }
           }}
-          featuresProps={{
-            featuresRequest: {
-              featureNames: [isCIModule ? FeatureIdentifier.BUILDS : FeatureIdentifier.DEPLOYMENTS_PER_MONTH]
-            }
-          }}
+          featuresProps={getFeaturePropsForRunPipelineButton(['cd', 'ci'])}
         >
           <String stringID="runPipelineText" />
         </RbacButton>

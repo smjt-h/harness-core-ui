@@ -1,7 +1,16 @@
+/*
+ * Copyright 2021 Harness Inc. All rights reserved.
+ * Use of this source code is governed by the PolyForm Shield 1.0.0 license
+ * that can be found in the licenses directory at the root of this repository, also available at
+ * https://polyformproject.org/wp-content/uploads/2020/06/PolyForm-Shield-1.0.0.txt.
+ */
+
 import React from 'react'
-import { fireEvent, render, act, waitFor } from '@testing-library/react'
+import { act, fireEvent, render, waitFor } from '@testing-library/react'
+import { MultiTypeInputType } from '@wings-software/uicore'
 import { TestWrapper } from '@common/utils/testUtils'
 import { factory } from '@pipeline/components/PipelineSteps/Steps/__tests__/StepTestUtil'
+import { Scope } from '@common/interfaces/SecretsInterface'
 import { RightBar } from '../RightBar'
 import { PipelineContext, PipelineContextInterface } from '../../PipelineContext/PipelineContext'
 
@@ -116,11 +125,13 @@ const pipelineContext: PipelineContextInterface = {
   updatePipeline: jest.fn(),
   state: stateMock as any,
   contextType: 'Pipeline',
+  allowableTypes: [MultiTypeInputType.FIXED, MultiTypeInputType.RUNTIME, MultiTypeInputType.EXPRESSION],
   stepsFactory: factory,
   stagesMap: {},
   isReadonly: false,
   setSchemaErrorView: jest.fn(),
   view: 'ui',
+  scope: Scope.PROJECT,
   renderPipelineStage: jest.fn(),
   setView: jest.fn(),
   updateGitDetails: jest.fn(),

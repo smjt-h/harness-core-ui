@@ -1,3 +1,10 @@
+/*
+ * Copyright 2021 Harness Inc. All rights reserved.
+ * Use of this source code is governed by the PolyForm Free Trial 1.0.0 license
+ * that can be found in the licenses directory at the root of this repository, also available at
+ * https://polyformproject.org/wp-content/uploads/2020/05/PolyForm-Free-Trial-1.0.0.txt.
+ */
+
 import React, { useEffect, useState } from 'react'
 import { isEmpty } from 'lodash-es'
 import { useParams } from 'react-router-dom'
@@ -163,6 +170,8 @@ const FormContent = ({
         }
       })
       formik.setFieldValue('spec.selectedFields', formikSelectedFields)
+      const toBeUpdatedKVFields = getKVFieldsToBeAddedInForm(formik.values.spec.fields, [], formikSelectedFields)
+      formik.setFieldValue('spec.fields', toBeUpdatedKVFields)
     } else if (issueTypeFixedValue !== undefined) {
       // Undefined check is needed so that form is not set to dirty as soon as we open
       // This means we've cleared the value or marked runtime/expression
@@ -579,7 +588,6 @@ function JiraCreateStepMode(props: JiraCreateStepModeProps, formikRef: StepFormi
       }}
       formName="jiraCreate"
       initialValues={props.initialValues}
-      enableReinitialize={true}
       validate={data => {
         onChange?.(processFormData(data))
       }}

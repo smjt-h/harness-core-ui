@@ -207,7 +207,7 @@ exports[`Test delegate buttons click on filter 1`] = `
     >
       <button
         class="bp3-button Button--button StyledProps--font StyledProps--main StyledProps--intent-primary Button--with-current-color Button--withLeftIcon"
-        data-test="newDelegateButton"
+        data-testid="newDelegateButton"
         id="newDelegateBtn"
         type="button"
       >
@@ -403,17 +403,17 @@ exports[`Test delegate buttons click on filter 1`] = `
               style="width: 80px;"
             />
             <div
-              style="width: 30%;"
+              style="width: 25%;"
             >
               delegate.DelegateName
             </div>
             <div
-              style="width: 25%;"
+              style="width: 20%;"
             >
               tagsLabel
             </div>
             <div
-              style="width: 10%;"
+              style="width: 20%;"
             >
               instanceFieldOptions.instances
             </div>
@@ -496,7 +496,7 @@ exports[`Test delegate buttons click on filter 1`] = `
               <div
                 class="Layout--horizontal StyledProps--main"
                 data-testid="groupHostName1"
-                style="width: 30%;"
+                style="width: 25%;"
               >
                 <div
                   class="Layout--vertical StyledProps--main"
@@ -520,17 +520,36 @@ exports[`Test delegate buttons click on filter 1`] = `
               </div>
               <div
                 class="StyledProps--font StyledProps--main connectivity"
-                style="width: 25%;"
+                style="width: 20%;"
               >
                 <div
                   class="StyledProps--font StyledProps--main"
                   style="display: inline-flex; flex-wrap: wrap;"
-                />
+                >
+                  <p
+                    class="StyledProps--font StyledProps--main"
+                    style="display: inline-block; border-radius: 4px; font-size: 10px;"
+                  >
+                    implicitSelector1
+                  </p>
+                  <p
+                    class="StyledProps--font StyledProps--main"
+                    style="display: inline-block; border-radius: 4px; font-size: 10px;"
+                  >
+                    customtag1
+                  </p>
+                  <p
+                    class="StyledProps--font StyledProps--main"
+                    style="display: inline-block; border-radius: 4px; font-size: 10px;"
+                  >
+                    customtag2
+                  </p>
+                </div>
                 <span />
               </div>
               <div
                 class="Layout--horizontal StyledProps--main instancesColumn"
-                style="width: 10%;"
+                style="width: 20%;"
               >
                 0
               </div>
@@ -631,7 +650,7 @@ exports[`Test delegate buttons click on new delegate 1`] = `
     >
       <button
         class="bp3-button bp3-disabled bp3-loading Button--button StyledProps--font StyledProps--main StyledProps--intent-primary Button--with-current-color Button--withLeftIcon"
-        data-test="newDelegateButton"
+        data-testid="newDelegateButton"
         disabled=""
         id="newDelegateBtn"
         tabindex="-1"
@@ -827,17 +846,17 @@ exports[`Test delegate buttons click on new delegate 1`] = `
               style="width: 80px;"
             />
             <div
-              style="width: 30%;"
+              style="width: 25%;"
             >
               delegate.DelegateName
             </div>
             <div
-              style="width: 25%;"
+              style="width: 20%;"
             >
               tagsLabel
             </div>
             <div
-              style="width: 10%;"
+              style="width: 20%;"
             >
               instanceFieldOptions.instances
             </div>
@@ -920,7 +939,7 @@ exports[`Test delegate buttons click on new delegate 1`] = `
               <div
                 class="Layout--horizontal StyledProps--main"
                 data-testid="groupHostName1"
-                style="width: 30%;"
+                style="width: 25%;"
               >
                 <div
                   class="Layout--vertical StyledProps--main"
@@ -944,17 +963,36 @@ exports[`Test delegate buttons click on new delegate 1`] = `
               </div>
               <div
                 class="StyledProps--font StyledProps--main connectivity"
-                style="width: 25%;"
+                style="width: 20%;"
               >
                 <div
                   class="StyledProps--font StyledProps--main"
                   style="display: inline-flex; flex-wrap: wrap;"
-                />
+                >
+                  <p
+                    class="StyledProps--font StyledProps--main"
+                    style="display: inline-block; border-radius: 4px; font-size: 10px;"
+                  >
+                    implicitSelector1
+                  </p>
+                  <p
+                    class="StyledProps--font StyledProps--main"
+                    style="display: inline-block; border-radius: 4px; font-size: 10px;"
+                  >
+                    customtag1
+                  </p>
+                  <p
+                    class="StyledProps--font StyledProps--main"
+                    style="display: inline-block; border-radius: 4px; font-size: 10px;"
+                  >
+                    customtag2
+                  </p>
+                </div>
                 <span />
               </div>
               <div
                 class="Layout--horizontal StyledProps--main instancesColumn"
-                style="width: 10%;"
+                style="width: 20%;"
               >
                 0
               </div>

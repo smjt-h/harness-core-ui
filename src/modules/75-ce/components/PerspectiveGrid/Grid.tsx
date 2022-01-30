@@ -1,3 +1,10 @@
+/*
+ * Copyright 2021 Harness Inc. All rights reserved.
+ * Use of this source code is governed by the PolyForm Shield 1.0.0 license
+ * that can be found in the licenses directory at the root of this repository, also available at
+ * https://polyformproject.org/wp-content/uploads/2020/06/PolyForm-Shield-1.0.0.txt.
+ */
+
 import React from 'react'
 import cx from 'classnames'
 import { useTable, usePagination, Column, useBlockLayout, Row } from 'react-table'
@@ -16,6 +23,7 @@ interface GridProps<T extends Record<string, unknown>> {
   gridPageIndex?: number
   pageSize?: number
   fetchData?: (pageIndex: number, pageSize: number) => void
+  isRowClickable?: boolean
 }
 
 const Grid = <T extends Record<string, unknown>>(props: GridProps<T>): JSX.Element => {
@@ -27,7 +35,8 @@ const Grid = <T extends Record<string, unknown>>(props: GridProps<T>): JSX.Eleme
     fetchData,
     totalItemCount = 0,
     pageSize: PAGE_SIZE = 10,
-    gridPageIndex = 0
+    gridPageIndex = 0,
+    isRowClickable
   } = props
 
   const defaultColumn = React.useMemo(
@@ -73,7 +82,7 @@ const Grid = <T extends Record<string, unknown>>(props: GridProps<T>): JSX.Eleme
             return (
               <div
                 {...row.getRowProps()}
-                className={css.tr}
+                className={cx(css.tr, { [css.pointer]: isRowClickable })}
                 key={idx}
                 onClick={() => {
                   onRowClick && onRowClick(row)

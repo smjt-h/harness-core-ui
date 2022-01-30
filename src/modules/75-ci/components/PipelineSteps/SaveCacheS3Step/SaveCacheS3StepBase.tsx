@@ -1,6 +1,15 @@
+/*
+ * Copyright 2021 Harness Inc. All rights reserved.
+ * Use of this source code is governed by the PolyForm Shield 1.0.0 license
+ * that can be found in the licenses directory at the root of this repository, also available at
+ * https://polyformproject.org/wp-content/uploads/2020/06/PolyForm-Shield-1.0.0.txt.
+ */
+
 import React from 'react'
-import { Text, Formik, FormikForm, Accordion, Color } from '@wings-software/uicore'
+import { Text, Formik, FormikForm, Accordion, Color, Container } from '@wings-software/uicore'
 import type { FormikProps } from 'formik'
+import get from 'lodash/get'
+import type { K8sDirectInfraYaml } from 'services/ci'
 import { Connectors } from '@connectors/constants'
 import type { StepFormikFowardRef } from '@pipeline/components/AbstractSteps/Step'
 import { setFormikRef } from '@pipeline/components/AbstractSteps/Step'
@@ -13,12 +22,12 @@ import {
   getFormValuesInCorrectFormat
 } from '@pipeline/components/PipelineSteps/Steps/StepsTransformValuesUtils'
 import { validate } from '@pipeline/components/PipelineSteps/Steps/StepsValidateUtils'
-import type { BuildStageElementConfig } from '@pipeline/utils/pipelineTypes'
 import { transformValuesFieldsConfig, editViewValidateFieldsConfig } from './SaveCacheS3StepFunctionConfigs'
 import type { SaveCacheS3StepProps, SaveCacheS3StepData, SaveCacheS3StepDataUI } from './SaveCacheS3Step'
 import { CIStep } from '../CIStep/CIStep'
 import { CIStepOptionalConfig } from '../CIStep/CIStepOptionalConfig'
 import { ArchiveFormatOptions } from '../../../constants/Constants'
+import { useGetPropagatedStageById } from '../CIStep/StepUtils'
 import css from '@pipeline/components/PipelineSteps/Steps/Steps.module.scss'
 
 export const SaveCacheS3StepBase = (
@@ -28,13 +37,14 @@ export const SaveCacheS3StepBase = (
   const {
     state: {
       selectionState: { selectedStageId }
-    },
-    getStageFromPipeline
+    }
   } = usePipelineContext()
 
   const { getString } = useStrings()
 
-  const { stage: currentStage } = getStageFromPipeline<BuildStageElementConfig>(selectedStageId || '')
+  const currentStage = useGetPropagatedStageById(selectedStageId || '')
+
+  const buildInfrastructureType = get(currentStage, 'stage.spec.infrastructure.type') as K8sDirectInfraYaml['type']
 
   return (
     <Formik
@@ -109,7 +119,7 @@ export const SaveCacheS3StepBase = (
                 id="optional-config"
                 summary={getString('common.optionalConfig')}
                 details={
-                  <>
+                  <Container margin={{ top: 'medium' }}>
                     <CIStepOptionalConfig
                       stepViewType={stepViewType}
                       enableFields={{
@@ -121,8 +131,12 @@ export const SaveCacheS3StepBase = (
                       readonly={readonly}
                       allowableTypes={allowableTypes}
                     />
-                    <StepCommonFields disabled={readonly} allowableTypes={allowableTypes} />
-                  </>
+                    <StepCommonFields
+                      disabled={readonly}
+                      allowableTypes={allowableTypes}
+                      buildInfrastructureType={buildInfrastructureType}
+                    />
+                  </Container>
                 }
               />
             </Accordion>

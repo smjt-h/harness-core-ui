@@ -1,3 +1,10 @@
+/*
+ * Copyright 2022 Harness Inc. All rights reserved.
+ * Use of this source code is governed by the PolyForm Shield 1.0.0 license
+ * that can be found in the licenses directory at the root of this repository, also available at
+ * https://polyformproject.org/wp-content/uploads/2020/06/PolyForm-Shield-1.0.0.txt.
+ */
+
 import React, { useEffect, useState } from 'react'
 import {
   Color,
@@ -27,6 +34,9 @@ import routes from '@common/RouteDefinitions'
 import { useAppStore } from 'framework/AppStore/AppStoreContext'
 import NoResultsView from '@templates-library/pages/TemplatesPage/views/NoResultsView/NoResultsView'
 import { usePipelineContext } from '@pipeline/components/PipelineStudio/PipelineContext/PipelineContext'
+import { TemplateType } from '@templates-library/utils/templatesUtils'
+import { StageType } from '@pipeline/utils/stageHelpers'
+import factory from '@pipeline/components/PipelineSteps/PipelineStepFactory'
 import css from './TemplateSelectorLeftView.module.scss'
 
 export interface TemplateSelectorLeftViewProps {
@@ -41,7 +51,7 @@ export const TemplateSelectorLeftView: React.FC<TemplateSelectorLeftViewProps> =
       }
     }
   } = usePipelineContext()
-  const { templateType, childTypes, selectedTemplateRef } = data?.selectorData || {}
+  const { templateType, selectedChildType, allChildTypes, selectedTemplateRef } = data?.selectorData || {}
   const [selectedTemplate, setSelectedTemplate] = useState<TemplateSummaryResponse | undefined>()
   const { getString } = useStrings()
   const [page, setPage] = useState(0)
@@ -50,24 +60,33 @@ export const TemplateSelectorLeftView: React.FC<TemplateSelectorLeftViewProps> =
   const { projectIdentifier, orgIdentifier, accountId, module } = useParams<ProjectPathProps & ModulePathParams>()
   const { repoIdentifier, branch } = useQueryParams<GitQueryParams>()
   const { isGitSyncEnabled } = useAppStore()
-  const scopeOptions: SelectOption[] = [
-    {
-      value: Scope.PROJECT,
-      label: getString('projectLabel')
-    },
-    {
-      value: Scope.ORG,
-      label: getString('orgLabel')
-    },
-    {
-      value: Scope.ACCOUNT,
-      label: getString('account')
-    }
-  ]
+  const [childType, setChildType] = React.useState<string | undefined>(selectedChildType)
+  const scopeOptions: SelectOption[] = React.useMemo(
+    () => [
+      {
+        value: 'all',
+        label: getString('all')
+      },
+      {
+        value: Scope.PROJECT,
+        label: getString('projectLabel')
+      },
+      {
+        value: Scope.ORG,
+        label: getString('orgLabel')
+      },
+      {
+        value: Scope.ACCOUNT,
+        label: getString('account')
+      }
+    ],
+    []
+  )
   const [selectedScope, setSelectedScope] = useState<SelectOption>(scopeOptions[0])
   const searchRef = React.useRef<ExpandingSearchInputHandle>({} as ExpandingSearchInputHandle)
   const { orgId, projectId } = React.useMemo(() => {
     switch (selectedScope.value) {
+      case 'all':
       case Scope.PROJECT:
         return { orgId: orgIdentifier, projectId: projectIdentifier }
       case Scope.ORG:
@@ -76,6 +95,15 @@ export const TemplateSelectorLeftView: React.FC<TemplateSelectorLeftViewProps> =
         return {}
     }
   }, [selectedScope, orgIdentifier])
+
+  const body = React.useMemo(() => {
+    return {
+      filterType: 'Template',
+      templateEntityTypes: [templateType],
+      childTypes: childType ? [childType] : allChildTypes
+    }
+  }, [templateType, childType, allChildTypes])
+
   const queryParams = React.useMemo(() => {
     return {
       accountIdentifier: accountId,
@@ -85,6 +113,7 @@ export const TemplateSelectorLeftView: React.FC<TemplateSelectorLeftViewProps> =
       searchTerm: searchParam,
       page,
       size: 20,
+      includeAllTemplatesAvailableAtScope: selectedScope.value === 'all',
       ...(isGitSyncEnabled &&
         selectedScope.value === Scope.PROJECT && {
           repoIdentifier: repoIdentifier,
@@ -95,8 +124,45 @@ export const TemplateSelectorLeftView: React.FC<TemplateSelectorLeftViewProps> =
   }, [accountId, orgId, projectId, searchParam, page, repoIdentifier, branch, selectedScope, isGitSyncEnabled])
 
   const reset = React.useCallback((): void => {
-    searchRef.current.clear()
-  }, [searchRef])
+    if (searchParam) {
+      searchRef.current.clear()
+    }
+    setChildType(undefined)
+  }, [searchParam, searchRef.current])
+
+  const getDropDownItems = React.useCallback((): SelectOption[] => {
+    switch (templateType) {
+      case TemplateType.Stage:
+        return [
+          { label: getString('approvalStage.title'), value: StageType.APPROVAL },
+          { label: getString('buildText'), value: StageType.BUILD },
+          { label: getString('pipelineSteps.deploy.create.deployStageName'), value: StageType.DEPLOY }
+        ]
+      case TemplateType.Step:
+        if (childType) {
+          return [
+            {
+              label: defaultTo(factory.getStepName(childType), childType),
+              value: childType
+            }
+          ]
+        } else {
+          return defaultTo(
+            allChildTypes
+              ?.map(item => {
+                return {
+                  label: defaultTo(factory.getStepName(item), item),
+                  value: item
+                }
+              })
+              .sort((a, b) => a.label.localeCompare(b.label)),
+            []
+          )
+        }
+      default:
+        return []
+    }
+  }, [templateType])
 
   const {
     data: templateData,
@@ -104,11 +170,7 @@ export const TemplateSelectorLeftView: React.FC<TemplateSelectorLeftViewProps> =
     loading,
     error
   } = useMutateAsGet(useGetTemplateList, {
-    body: {
-      filterType: 'Template',
-      templateEntityTypes: [templateType],
-      childTypes: childTypes
-    },
+    body,
     queryParams,
     queryParamStringifyOptions: { arrayFormat: 'comma' }
   })
@@ -122,9 +184,10 @@ export const TemplateSelectorLeftView: React.FC<TemplateSelectorLeftViewProps> =
   }, [selectedTemplateRef, templateData?.data?.content])
 
   useEffect(() => {
-    setSelectedTemplate(undefined)
-    reloadTemplates()
-  }, [page, accountId, projectIdentifier, orgIdentifier, module, searchParam, selectedScope])
+    if (loading) {
+      setSelectedTemplate(undefined)
+    }
+  }, [loading])
 
   return (
     <Container width={762} background={Color.FORM_BG} className={css.container}>
@@ -168,30 +231,53 @@ export const TemplateSelectorLeftView: React.FC<TemplateSelectorLeftViewProps> =
           style={{ overflow: 'auto', position: 'relative' }}
           padding={{ left: 'xxlarge', right: 'xxlarge' }}
         >
-          {loading && <PageSpinner />}
-          {!loading && error && (
-            <PageError message={defaultTo((error.data as Error)?.message, error.message)} onClick={reloadTemplates} />
-          )}
-          {!templateData?.data?.content?.length && (
-            <NoResultsView
-              hasSearchParam={!!searchParam}
-              onReset={reset}
-              text={getString('templatesLibrary.templatesPage.noTemplates', {
-                scope: selectedScope.label.toLowerCase()
-              })}
-              minimal={true}
-            />
-          )}
-          {!!templateData?.data?.content?.length && (
-            <Layout.Vertical height={'100%'}>
-              <Container>
-                <Layout.Horizontal flex={{ alignItems: 'center', justifyContent: 'space-between' }}>
-                  <Text font={{ size: 'xsmall', weight: 'bold' }} color={Color.GREY_800}>
-                    {getString('common.templates').toUpperCase()} ({templateData?.data?.totalElements})
-                  </Text>
-                  <GridListToggle initialSelectedView={Views.GRID} onViewToggle={setView} />
-                </Layout.Horizontal>
-              </Container>
+          <Layout.Vertical height={'100%'}>
+            <Container>
+              <Layout.Horizontal flex={{ alignItems: 'center', justifyContent: 'space-between' }}>
+                <Text font={{ size: 'xsmall', weight: 'bold' }} color={Color.GREY_800}>
+                  {getString('common.templates').toUpperCase()} ({templateData?.data?.totalElements})
+                </Text>
+                <Container>
+                  <Layout.Horizontal flex={{ alignItems: 'center' }} spacing={'medium'}>
+                    {getDropDownItems().length > 0 && (
+                      <DropDown
+                        onChange={item => {
+                          setChildType(item.value.toString())
+                        }}
+                        items={getDropDownItems()}
+                        addClearBtn={true}
+                        disabled={!!selectedChildType}
+                        filterable={false}
+                        placeholder={`${getString('typeLabel')}: ${getString('all')}`}
+                        value={childType}
+                      />
+                    )}
+                    <Container>
+                      <GridListToggle initialSelectedView={Views.GRID} onViewToggle={setView} />
+                    </Container>
+                  </Layout.Horizontal>
+                </Container>
+              </Layout.Horizontal>
+            </Container>
+            {loading && <PageSpinner />}
+            {!loading && error && (
+              <PageError message={defaultTo((error.data as Error)?.message, error.message)} onClick={reloadTemplates} />
+            )}
+            {!loading && !error && !templateData?.data?.content?.length && (
+              <NoResultsView
+                hasSearchParam={!!searchParam || !!childType}
+                onReset={reset}
+                text={
+                  selectedScope.value === 'all'
+                    ? `There are no templates`
+                    : getString('templatesLibrary.templatesPage.noTemplates', {
+                        scope: selectedScope.label.toLowerCase()
+                      })
+                }
+                minimal={true}
+              />
+            )}
+            {!loading && !error && !!templateData?.data?.content?.length && (
               <Container style={{ flexGrow: 1 }}>
                 <TemplatesView
                   data={templateData?.data}
@@ -201,8 +287,8 @@ export const TemplateSelectorLeftView: React.FC<TemplateSelectorLeftViewProps> =
                   view={view}
                 />
               </Container>
-            </Layout.Vertical>
-          )}
+            )}
+          </Layout.Vertical>
         </Container>
       </Layout.Vertical>
     </Container>

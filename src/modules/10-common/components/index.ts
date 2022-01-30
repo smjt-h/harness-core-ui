@@ -1,4 +1,11 @@
-import { useToaster, PageSpinner, Page, TagsPopover } from '@wings-software/uicore'
+/*
+ * Copyright 2021 Harness Inc. All rights reserved.
+ * Use of this source code is governed by the PolyForm Shield 1.0.0 license
+ * that can be found in the licenses directory at the root of this repository, also available at
+ * https://polyformproject.org/wp-content/uploads/2020/06/PolyForm-Shield-1.0.0.txt.
+ */
+
+import { useToaster, PageSpinner, Page, TagsPopover, TableV2 as Table } from '@harness/uicore'
 import { AdminSelector } from '../navigation/AdminSelector/AdminSelector'
 import AddDrawer from './AddDrawer/AddDrawer'
 import ConnectorStats from './ConnectorStats/ConnectorStats'
@@ -11,7 +18,6 @@ import { NavigationCheck } from './NavigationCheck/NavigationCheck'
 import { NameIdDescriptionTags, Description } from './NameIdDescriptionTags/NameIdDescriptionTags'
 import { ReferenceSelect } from './ReferenceSelect/ReferenceSelect'
 import SnippetSection from './SnippetSection/SnippetSection'
-import Table from './Table/Table'
 import Toothpick from './Toothpick/Toothpick'
 import TimeSelect from './TimeSelect/TimeSelect'
 import { TimeAgo } from './TimeAgo/TimeAgo'

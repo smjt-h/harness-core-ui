@@ -149,13 +149,13 @@ exports[`test splunkHealthsource check snapshot 1`] = `
                           data-testid="metricToService-summary"
                         >
                           <div
-                            class="Accordion--chevron"
-                          />
-                          <div
                             class="Accordion--label"
                           >
                             cv.monitoringSources.mapQueriesToServices
                           </div>
+                          <div
+                            class="Accordion--chevron"
+                          />
                         </div>
                         <div
                           class="bp3-collapse Accordion--collapse"

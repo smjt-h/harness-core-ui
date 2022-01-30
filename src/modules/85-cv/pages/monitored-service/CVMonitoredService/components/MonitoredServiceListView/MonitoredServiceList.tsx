@@ -1,3 +1,10 @@
+/*
+ * Copyright 2021 Harness Inc. All rights reserved.
+ * Use of this source code is governed by the PolyForm Shield 1.0.0 license
+ * that can be found in the licenses directory at the root of this repository, also available at
+ * https://polyformproject.org/wp-content/uploads/2020/06/PolyForm-Shield-1.0.0.txt.
+ */
+
 import React from 'react'
 import { useHistory, useParams } from 'react-router-dom'
 import { defaultTo } from 'lodash-es'
@@ -88,13 +95,14 @@ const MonitoredServiceList: React.FC<MonitoredServiceListProps> = ({
 
       const { pageIndex = 0, pageItemCount } = defaultTo(monitoredServiceListData?.data, {})
 
-      await Promise.all([refetchServiceCountData(), refetchMonitoredServiceList()])
+      if (pageIndex && pageItemCount === 1) {
+        setPage(page - 1)
+        await refetchServiceCountData()
+      } else {
+        await Promise.all([refetchServiceCountData(), refetchMonitoredServiceList()])
+      }
 
       showSuccess(getString('cv.monitoredServices.monitoredServiceDeleted'))
-
-      if (pageIndex > 0 && pageItemCount === 1) {
-        setPage(page - 1)
-      }
     } catch (e) {
       showError(getErrorMessage(e))
     }
@@ -139,6 +147,7 @@ const MonitoredServiceList: React.FC<MonitoredServiceListProps> = ({
     >
       <MonitoredServiceListView
         serviceCountData={serviceCountData}
+        refetchServiceCountData={refetchServiceCountData}
         monitoredServiceListData={monitoredServiceListData?.data}
         selectedFilter={selectedFilter}
         onFilter={onFilter}

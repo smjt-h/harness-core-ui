@@ -1,5 +1,14 @@
+/*
+ * Copyright 2021 Harness Inc. All rights reserved.
+ * Use of this source code is governed by the PolyForm Shield 1.0.0 license
+ * that can be found in the licenses directory at the root of this repository, also available at
+ * https://polyformproject.org/wp-content/uploads/2020/06/PolyForm-Shield-1.0.0.txt.
+ */
+
 import React from 'react'
-import { Text, Formik, FormikForm, Accordion, Color } from '@wings-software/uicore'
+import { Text, Formik, FormikForm, Accordion, Color, Container } from '@wings-software/uicore'
+import get from 'lodash/get'
+import type { K8sDirectInfraYaml } from 'services/ci'
 import { Connectors } from '@connectors/constants'
 import { useVariablesExpression } from '@pipeline/components/PipelineStudio/PiplineHooks/useVariablesExpression'
 import { usePipelineContext } from '@pipeline/components/PipelineStudio/PipelineContext/PipelineContext'
@@ -13,11 +22,11 @@ import {
 } from '@pipeline/components/PipelineSteps/Steps/StepsTransformValuesUtils'
 import { validate } from '@pipeline/components/PipelineSteps/Steps/StepsValidateUtils'
 import { StepType } from '@pipeline/components/PipelineSteps/PipelineStepInterface'
-import type { BuildStageElementConfig } from '@pipeline/utils/pipelineTypes'
 import { transformValuesFieldsConfig, editViewValidateFieldsConfig } from './DependencyFunctionConfigs'
 import type { DependencyProps, DependencyData, DependencyDataUI } from './Dependency'
 import { CIStep } from '../CIStep/CIStep'
 import { CIStepOptionalConfig } from '../CIStep/CIStepOptionalConfig'
+import { useGetPropagatedStageById } from '../CIStep/StepUtils'
 import css from '@pipeline/components/PipelineSteps/Steps/Steps.module.scss'
 
 export const DependencyBase = (
@@ -27,14 +36,15 @@ export const DependencyBase = (
   const {
     state: {
       selectionState: { selectedStageId }
-    },
-    getStageFromPipeline
+    }
   } = usePipelineContext()
 
   const { getString } = useStrings()
   const { expressions } = useVariablesExpression()
 
-  const { stage: currentStage } = getStageFromPipeline<BuildStageElementConfig>(selectedStageId || '')
+  const currentStage = useGetPropagatedStageById(selectedStageId || '')
+
+  const buildInfrastructureType = get(currentStage, 'stage.spec.infrastructure.type') as K8sDirectInfraYaml['type']
 
   return (
     <Formik<DependencyDataUI>
@@ -125,7 +135,7 @@ export const DependencyBase = (
                   id="optional-config"
                   summary={getString('common.optionalConfig')}
                   details={
-                    <>
+                    <Container margin={{ top: 'medium' }}>
                       <CIStepOptionalConfig
                         stepViewType={stepViewType}
                         readonly={readonly}
@@ -142,8 +152,9 @@ export const DependencyBase = (
                         withoutTimeout
                         disabled={readonly}
                         allowableTypes={allowableTypes}
+                        buildInfrastructureType={buildInfrastructureType}
                       />
-                    </>
+                    </Container>
                   }
                 />
               </Accordion>

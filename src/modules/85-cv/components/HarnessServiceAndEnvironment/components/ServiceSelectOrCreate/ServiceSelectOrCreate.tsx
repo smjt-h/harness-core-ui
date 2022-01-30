@@ -1,3 +1,10 @@
+/*
+ * Copyright 2021 Harness Inc. All rights reserved.
+ * Use of this source code is governed by the PolyForm Shield 1.0.0 license
+ * that can be found in the licenses directory at the root of this repository, also available at
+ * https://polyformproject.org/wp-content/uploads/2020/06/PolyForm-Shield-1.0.0.txt.
+ */
+
 import React, { useMemo } from 'react'
 import { noop } from 'lodash-es'
 import { Container, Select, SelectOption } from '@wings-software/uicore'
@@ -6,6 +13,7 @@ import { useHarnessServicetModal } from '@common/modals/HarnessServiceModal/Harn
 import type { ProjectPathProps } from '@common/interfaces/RouteInterfaces'
 import type { ServiceResponseDTO, ServiceRequestDTO } from 'services/cd-ng'
 import { useStrings } from 'framework/strings'
+import { ADD_NEW_VALUE } from '@cv/constants'
 
 export interface ServiceSelectOrCreateProps {
   item?: SelectOption
@@ -21,8 +29,6 @@ export interface ServiceSelectOrCreateProps {
   name?: string
   customLoading?: boolean
 }
-
-const ADD_NEW_VALUE = '@@add_new'
 
 export function generateOptions(response?: ServiceResponseDTO[]): SelectOption[] {
   return response

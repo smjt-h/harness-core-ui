@@ -1,3 +1,10 @@
+/*
+ * Copyright 2022 Harness Inc. All rights reserved.
+ * Use of this source code is governed by the PolyForm Shield 1.0.0 license
+ * that can be found in the licenses directory at the root of this repository, also available at
+ * https://polyformproject.org/wp-content/uploads/2020/06/PolyForm-Shield-1.0.0.txt.
+ */
+
 import React from 'react'
 import { render, waitFor, queryByText, fireEvent, queryAllByText } from '@testing-library/react'
 import { renderHook } from '@testing-library/react-hooks'
@@ -52,9 +59,7 @@ describe('TriggersPage Triggers tests', () => {
   describe('Renders/snapshots', () => {
     test('Initial Render - Shows Trigger List', async () => {
       render(<WrapperComponent />)
-      await waitFor(() =>
-        expect(result.current.getString('pipeline.triggers.triggerLabel').toUpperCase()).not.toBeNull()
-      )
+      await waitFor(() => expect(result.current.getString('common.triggerLabel').toUpperCase()).not.toBeNull())
       // eslint-disable-next-line no-document-body-snapshot
       expect(document.body).toMatchSnapshot()
     })
@@ -63,9 +68,7 @@ describe('TriggersPage Triggers tests', () => {
     test('Delete a trigger', async () => {
       const { container } = render(<WrapperComponent />)
       jest.spyOn(usePermission, 'usePermission').mockImplementation(() => [true])
-      await waitFor(() =>
-        expect(result.current.getString('pipeline.triggers.triggerLabel').toUpperCase()).not.toBeNull()
-      )
+      await waitFor(() => expect(result.current.getString('common.triggerLabel').toUpperCase()).not.toBeNull())
       const firstActionButton = container.querySelectorAll('[class*="actionButton"]')?.[0]
       if (!firstActionButton) {
         throw Error('No action button')
@@ -92,9 +95,7 @@ describe('TriggersPage Triggers tests', () => {
       jest.spyOn(usePermission, 'usePermission').mockImplementation(() => [true])
 
       const { container, getByTestId } = render(<WrapperComponent />)
-      await waitFor(() =>
-        expect(result.current.getString('pipeline.triggers.triggerLabel').toUpperCase()).not.toBeNull()
-      )
+      await waitFor(() => expect(result.current.getString('common.triggerLabel').toUpperCase()).not.toBeNull())
       const firstActionButton = container.querySelectorAll('[class*="actionButton"]')?.[0]
       if (!firstActionButton) {
         throw Error('No action button')
@@ -123,9 +124,7 @@ describe('TriggersPage Triggers tests', () => {
           <TriggersPage />
         </TestWrapper>
       )
-      await waitFor(() =>
-        expect(result.current.getString('pipeline.triggers.triggerLabel').toUpperCase()).not.toBeNull()
-      )
+      await waitFor(() => expect(result.current.getString('common.triggerLabel').toUpperCase()).not.toBeNull())
       const addTriggerButton = queryByText(container, result.current.getString('pipeline.triggers.newTrigger'))
       if (!addTriggerButton) {
         throw Error('No action button')
@@ -137,9 +136,7 @@ describe('TriggersPage Triggers tests', () => {
 
     test('Search for a trigger shows filtered results', async () => {
       const { container } = render(<WrapperComponent />)
-      await waitFor(() =>
-        expect(result.current.getString('pipeline.triggers.triggerLabel').toUpperCase()).not.toBeNull()
-      )
+      await waitFor(() => expect(result.current.getString('common.triggerLabel').toUpperCase()).not.toBeNull())
       const searchInput = container.querySelector('[data-name="search"]')
       if (!searchInput) {
         throw Error('No search input')

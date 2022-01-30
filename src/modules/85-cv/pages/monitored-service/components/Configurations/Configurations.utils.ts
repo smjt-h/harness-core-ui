@@ -1,3 +1,10 @@
+/*
+ * Copyright 2021 Harness Inc. All rights reserved.
+ * Use of this source code is governed by the PolyForm Shield 1.0.0 license
+ * that can be found in the licenses directory at the root of this repository, also available at
+ * https://polyformproject.org/wp-content/uploads/2020/06/PolyForm-Shield-1.0.0.txt.
+ */
+
 import type { TabId } from '@blueprintjs/core'
 import type { FormikProps } from 'formik'
 import { isEqual } from 'lodash-es'
@@ -94,6 +101,10 @@ export const onTabChange = async ({
   }
 }
 
+export interface ExtendedMonitoredServiceDTO extends MonitoredServiceDTO {
+  environmentRefList?: string[]
+}
+
 export const onSubmit = async ({
   formikValues,
   identifier,
@@ -112,13 +123,13 @@ export const onSubmit = async ({
   cachedInitialValues: MonitoredServiceForm | null
   updateMonitoredService: MutateMethod<
     RestResponseMonitoredServiceResponse,
-    MonitoredServiceDTO,
+    ExtendedMonitoredServiceDTO,
     UpdateMonitoredServiceQueryParams,
     UpdateMonitoredServicePathParams
   >
   saveMonitoredService: MutateMethod<
     RestResponseMonitoredServiceResponse,
-    MonitoredServiceDTO,
+    ExtendedMonitoredServiceDTO,
     SaveMonitoredServiceQueryParams,
     void
   >
@@ -136,18 +147,23 @@ export const onSubmit = async ({
     dependencies = [],
     type
   } = formikValues
-  const payload: MonitoredServiceDTO = {
+
+  const payload: ExtendedMonitoredServiceDTO = {
     orgIdentifier,
     projectIdentifier,
     serviceRef,
-    environmentRef,
     identifier: monitoredServiceId,
     name,
     description,
     tags,
+    environmentRef,
     sources,
     dependencies: cachedInitialValues?.dependencies || dependencies,
     type
+  }
+  if (Array.isArray(environmentRef)) {
+    payload.environmentRef = environmentRef?.[0]
+    payload.environmentRefList = environmentRef
   }
   if (identifier) {
     await updateMonitoredService(payload)

@@ -31,11 +31,13 @@ pagerDutyConnectorDetails: 'PagerDuty Connector Details'
 sumoLogicConnectorDetails: 'SumoLogic Connector Details'
 newRelicConnectorDetails: New Relic Connector Details
 prometheusConnectorDetails: Prometheus Connector Details
+customConnectorDetails: Custom Health Connector Details
 prometheusLabel: Prometheus
 dynatraceLabel: Dynatrace
 appdLabel: AppDynamics
 newRelicLabel: New Relic
 splunkLabel: Splunk
+customLabel: Custom Health
 stackdriverMetricsLabel: Google Cloud Operations (Metrics)
 stackdriverLogsLabel: Google Cloud Operations (Logs)
 click: 'Click'
@@ -46,8 +48,8 @@ unableToCreateConnector: Unable to create Connector
 unableToUpdateConnector: Unable to update Connector
 encryptedAPIKeyLabel: Encrypted API Key
 encryptedAPIKeyValidation: Encrypted API Key is required.
-tenantId: Tenant ID
-tenantIdRequired: Tenant ID is required
+tenantId: Tenant Id
+tenantIdRequired: Tenant Id is required
 reportNameRequired: '{{ $.common.reportNameRequired }}'
 connectorAlreadyExist: Connector already exists for the cloud account
 loginToMasterAccount: and login to your master account
@@ -56,6 +58,7 @@ ifReq: if required.
 selectConnector: Select Connector
 showInstructions: Show instructions
 apiKey: '{{$.common.apikey}}'
+apiKeyOrPassword: Password/Api Key
 costVisibility: Cost Visibility
 chooseMethodForK8sConnection: Choose the method for Harness to use when connecting to the cluster.
 chooseMethodForGCPConnection: Choose the method for Harness to use when connecting to GCP.
@@ -64,6 +67,12 @@ createConnector: 'Create a Connector'
 connectorEmptyState: 'There are no connectors in your project'
 readMore: 'Read more'
 connectorsTitle: 'Resources: Connectors'
+parameters: Parameters
+validationPath: Validation Path
+addHeader: Add Header
+addParameter: Add Parameter
+baseURL: Base URL
+requestMethod: Request Method
 connectivityMode:
   validation: 'Please select connectivity mode'
   connectToProvider: 'Connect to the provider'
@@ -95,6 +104,7 @@ title:
   sumologic: 'SumoLogic'
   ceAws: 'AWS Connector '
   gcpKms: GCP Key Management Service
+  errorTracking: 'Error Tracking'
 name_labels:
   Kubernetes: 'Kubernetes Connector Name'
   HttpHelmRepo: 'Helm Http Connector Name'
@@ -155,6 +165,7 @@ testConnectionStep:
     serviceNow: Validating ServiceNow authentication and permissions
     sumologic: Validating Sumologic authentication and permissions
     gcpKms: Validating GCP Key Management Service authentication and permissions
+    testingURLReachability: Testing reachability to the URL
 validation:
   serviceNowUrl: 'ServiceNow URL is required.'
 httpHelm:
@@ -173,7 +184,7 @@ k8:
   OIDCIssuerUrl: OIDC Issuer URL
   OIDCUsername: 'OIDC Username'
   OIDCPassword: 'OIDC Password'
-  OIDCClientId: 'OIDC Client ID'
+  OIDCClientId: 'OIDC Client Id'
   OIDCSecret: 'OIDC Secret'
   clientSecretOptional: 'Client Secret (optional)'
   OIDCScopes: 'OIDC Scopes (optional)'
@@ -192,9 +203,9 @@ k8:
     clientKeyAlgo: Client Key Algorithm is required
 hashiCorpVault:
   appRole: App Role
-  appRoleId: 'App Role ID'
+  appRoleId: 'App Role Id'
   baseSecretPath: 'Base Secret Path (optional)'
-  secretId: 'Secret ID'
+  secretId: 'Secret Id'
   stepTwoName: 'HashiCorp Vault Details'
   vaultUrl: 'Vault URL'
   secretEngine: Secret Engine
@@ -207,14 +218,17 @@ hashiCorpVault:
   defaultVault: 'Use as Default Secrets Manager'
   fetchEngines: Fetch Engines
   setupEngine: Setup Engine
+  saveInProgress: Saving Connector Details
   manuallyConfigureEngine: Manually Configure Engine
   vaultAgent: Vault Agent
   root: '/(Root)'
   sinkPath: Sink Path
   sinkPathIsRequired: Sink Path is required
 nexus:
+  nexusLabel: Nexus
   nexusServerUrl: 'Nexus Repository URL'
 artifactory:
+  artifactoryLabel: Artifactory
   artifactoryServerUrl: 'Artifactory Repository URL'
 GCP:
   delegateOutClusterInfo: 'Specify credentials here'
@@ -261,8 +275,7 @@ awsCodeCommit:
 appD:
   connectionDetailsHeader: AppDynamics Connection Details
   apiClient: API Client
-  clientId: Client Id
-  clientSecret: Client Secret
+  clientId: '{{ $.common.clientId }}'
   controllerURL: Controller URL
   accountName: '{{ $.common.accountName }}'
   validation:
@@ -272,10 +285,10 @@ appD:
 newRelic:
   subTitle: To add New Relic Connector, you will need access to New Relic Insights API. Verification analysis is limited to APM only.
   urlFieldLabel: New Relic URL
-  accountIdFieldLabel: New Relic Account ID
+  accountIdFieldLabel: New Relic Account Id
   urlValidation: New Relic URL is required.
-  accountIdValidation: New Relic Account ID is required.
-  accountIdTooltip: For steps to get New Relic Account ID
+  accountIdValidation: New Relic Account Id is required.
+  accountIdTooltip: For steps to get New Relic Account Id
   products:
     fullStackObservability: 'Full Stack Observability: APM'
 prometheus:
@@ -284,17 +297,28 @@ datadog:
   encryptedAPPKeyLabel: Encrypted APP Key
   urlValidation: Datadog URL is required.
   encryptedAPPKeyValidation: Encrypted APP Key is required.
+errorTracking:
+  urlValidation: Error Tracking URL is required.
+  sidValidation: Error Tracking SID is required.
+  sidLabel: SID
 dynatrace:
   apiToken: API Token
   apiTokenValidation: API Token is required.
   urlValidation: Dynatrace URL is required.
 sumologic:
   urlLabel: Sumo Logic API Server URL
-  encryptedAccessIdLabel: Encrypted Access ID
+  encryptedAccessIdLabel: Encrypted Access Id
   encryptedAccessKeyLabel: Encrypted Access Key
   urlValidation: SumoLogic URL is required.
-  encryptedAccessIdValidation: SumoLogic Access ID is required.
+  encryptedAccessIdValidation: SumoLogic Access Id is required.
   encryptedAccessKeyValidation: SumoLogic Access Key is required.
+customHealth:
+  baseURL: Base URL is required.
+  requestBody: Request Body is required for POST requests.
+  requestMethod: Request Method is required.
+  validationPath: Validation Path is required.
+  valueRequired: Value is required.
+  keyRequired: Key is required.
 cdng:
   jobName: Job Name
   continousVerificationType: Continous Verification Type
@@ -364,7 +388,7 @@ gcpKms:
   keyNameRequired: Key Name is required
   credentialsFileRequired: Credentials file is required
 awsKms:
-  accessKeyLabel: 'AWS - Access Key ID'
+  accessKeyLabel: 'AWS - Access Key Id'
   secretKeyLabel: 'AWS - Secret Access Key'
   arnLabel: 'AWS ARN'
   roleArnLabel: 'Role ARN'
@@ -376,8 +400,8 @@ awsKms:
     selectAWSArn: 'AWS ARN is required'
     durationNumber: 'Duration must be between 900 and 43200 seconds'
     durationError: 'Duration must be a number'
-    externalIdRegexError: 'External ID can have upper and lower case alphanumeric characters with no spaces. You can also include underscores or any of the following characters: =,.@:/-'
-    externalIdLengthError: 'External ID must have between 2 and 1224 characters'
+    externalIdRegexError: 'External Id can have upper and lower case alphanumeric characters with no spaces. You can also include underscores or any of the following characters: =,.@:/-'
+    externalIdLengthError: 'External Id must have between 2 and 1224 characters'
   awsSTS: 'Assume Role using STS on Delegate'
 delegate:
   configure: Configure what Delegates are allowed to connect to this Connector
@@ -433,6 +457,7 @@ ceK8:
     downloadComplete: 'Download Complete'
     applyDelegateText: 'Copy the downloaded YAML to a machine where you have kubectl installed and have access to your Kubernetes cluster. Run the following command to apply the Harness delegate to your Kubernetes Cluster'
     successfulCommandExec: 'Command executed successfully'
+  featureWarning: You have used {{count}} / {{limit}} free clusters incuded in your current plan. Consider upgrading for unlimited clusters.
 azureKeyVault:
   labels:
     tenantId: '{{ $.connectors.tenantId }}'
@@ -441,7 +466,6 @@ azureKeyVault:
     fetchVault: Fetch Vault
     setupVault: Setup Vault
   validation:
-    clientId: Client ID is required
     tenantId: '{{ $.connectors.tenantIdRequired }}'
     subscription: Subscription is required
     vaultName: Vault Name is required
@@ -454,16 +478,16 @@ ceAws:
     test: '{{ $.common.labelTestConnection }}'
   overview:
     heading: '{{ $.overview }}'
-    awsAccountId: 'Specify the AWS account ID'
+    awsAccountId: 'Specify the AWS account Id'
     alreadyExist: ' {{ $.connectors.connectorAlreadyExist }} '
     alreadyExistInfo: 'The cloud account {{awsAccountID}} already has a Connector “{{existingConnectorName}}” linked to it. The Connector has permission for {{featureText}}'
     trySuggestion: '{{ $.common.errorHandler.tryTheseSuggestions }}'
     editConnector: '{{ $.connectors.editConnector }}'
     ifReq: '{{ $.connectors.ifReq }}'
     validation:
-      numeric: 'AWS Account ID must be numeric'
-      positive: 'AWS Account ID must be a positive number'
-      required: 'AWS Account ID is required'
+      numeric: 'AWS Account Id must be numeric'
+      positive: 'AWS Account Id must be a positive number'
+      required: 'AWS Account Id is required'
   cur:
     heading: '{{ $.connectors.ceAws.steps.cur }}'
     subheading: 'Cost and Usage Report provides detailed billing data across AWS accounts to help you analyze your spend.'
@@ -477,8 +501,8 @@ ceAws:
       reportRequired: '{{ $.common.reportNameRequired }}'
       bucketRequired: 'Bucket name is required'
   curExising:
-    subHeading: 'The following Cost and Usage Reports exist in your Harness account. If the AWS Account ID you entered is covered by any of the below, then click “Continue” to proceed. If not, click on "Create new Cost and Usage Report.'
-    accountID: 'Account ID '
+    subHeading: 'The following Cost and Usage Reports exist in your Harness account. If the AWS Account Id you entered is covered by any of the below, then click “Continue” to proceed. If not, click on "Create new Cost and Usage Report.'
+    accountID: 'Account Id '
   curExtention:
     heading: 'How to Create Cost and Usage Report?'
     subtext: 'Once logged into the AWS console'
@@ -552,7 +576,7 @@ ceAws:
     launchTemplate: 'Launch Template In AWS console'
     followInstructions: 'and follow the instuctions given on the right'
     roleArn: '{{ $.connectors.awsKms.roleArnLabel }}'
-    extId: 'External ID'
+    extId: 'External Id'
     dontHaveAccess: 'Don’t have access to add an AWS account?'
     validation:
       roleArnPattern: 'Role ARN does not match the pattern'
@@ -576,7 +600,7 @@ ceAws:
       p3: 'tab and copy '
       p4: 'CrossAccountRoleArn'
     step4: 'Provide that IAM ARN in Harness UI.'
-    step5: 'External ID is a random unique value to provide additional secure authentication.'
+    step5: 'External Id is a random unique value to provide additional secure authentication.'
   testConnection:
     heading: '{{ $.common.labelTestConnection }}'
     step1: 'Validating AWS Cloud Provider authentication'
@@ -593,8 +617,8 @@ ceAzure:
     testConnection: '{{ $.common.labelTestConnection }}'
   overview:
     heading: '{{ $.overview }}'
-    tenantId: Specify Azure Tenant ID
-    subscriptionId: Specify Azure Subscription ID
+    tenantId: Specify Azure Tenant Id
+    subscriptionId: Specify Azure Subscription Id
     alreadyExist: '{{ $.connectors.connectorAlreadyExist }}'
     existingConnectorInfo: The cloud account {{accountId}} already has a Connector “{{name}}” linked to it. The Connector has permissions for {{featureText}}.
     trySuggestion: '{{ $.common.errorHandler.tryTheseSuggestions }}'
@@ -603,14 +627,14 @@ ceAzure:
   billing:
     heading: '{{ $.connectors.ceAzure.steps.billingExports }}'
     subHeading: Billing export is used to get insights into your cloud infrastructure and Azure services such as Storage account, Virtual machines, Containers etc.
-    instruction: Please follow the instructions to provide access to the Billing export for the specified tenant ID
+    instruction: Please follow the instructions to provide access to the Billing export for the specified Tenant Id
     login: 'and login to your Azure account'
     launchAzureConsole: Launch Azure Billing Exports
     tooltipInstruction: Provided in the delivery options when the template is opened in the Azure console
     tooltipBtn: '{{ $.connectors.showInstructions }}'
     storageAccountName: Storage Account Name
     storageAccountNameRegexError: It must be 3 to 24 characters long, and can contain only lowercase letters and numbers.
-    subscriptionId: Storage Account Subscription ID
+    subscriptionId: Storage Account Subscription Id
     containerName: Storage Container
     directoryName: Storage Directory
     reportName: '{{ $.common.reportName }}'
@@ -640,9 +664,9 @@ ceAzure:
       createExport: Creating a Billing Export
       soon: coming soon
   existingExports:
-    instruction: 'The following Billing Exports exist in your Harness account. If the Azure Subscription ID you entered is covered by any of the below, then click "Continue" to proceed. If not, click on "Create new Billing Export.'
+    instruction: 'The following Billing Exports exist in your Harness account. If the Azure Subscription Id you entered is covered by any of the below, then click "Continue" to proceed. If not, click on "Create new Billing Export.'
     createNewExportBtn: '+ Create new Billing Export'
-    subscriptionId: Subscription ID
+    subscriptionId: Subscription Id
     tenantId: '{{ $.connectors.tenantId }}'
   chooseRequirements:
     heading: Choose Required Permissions
@@ -678,21 +702,23 @@ ceAzure:
     directoryName: Directory name is required
     containerName: Container name is required
     reportName: '{{ $.common.reportNameRequired }}'
-    subscriptionId: Subscription ID is required
+    subscriptionId: Subscription Id is required
     tenantId: '{{ $.connectors.tenantIdRequired }}'
 ceGcp:
   overview:
     heading: '{{ $.overview }}'
-    projectIdLabel: 'Specify Project ID'
+    projectIdLabel: 'Specify Project Id'
   billingExport:
     heading: 'Setup Billing Export'
     description: 'Cloud Billing export to BigQuery enables you to export detailed Google Cloud billing data (such as usage and cost estimate data) automatically throughout the day to a BigQuery dataset that you specify.'
-    followInstruction: 'Please follow the instructions to provide create a Billing export for the specified Project ID'
+    followInstruction: 'Please follow the instructions to provide create a Billing export for the specified Project Id'
     launchTemplate: 'Launch GCP console'
-    datasetIdLabel: 'Dataset ID'
-    tooltipDescription: GCP DataSet ID where billing export is available
+    datasetIdLabel: 'Dataset Id'
+    tableIdLabel: 'Table Id'
+    tooltipDescription: GCP DataSet Id where billing table is available
+    tableIdTooltipDesc: GCP Table Id where billing export is available
   billingExtention:
-    heading: 'How to create GCP Billing Export and find DataSet ID?'
+    heading: 'How to create GCP Billing Export and find DataSet Id?'
     prerequisite: 'Pre-Requisite:A project where the Cloud Billing data will be stored with billing enabled on the project.'
     step1: 'Create a BigQuery dataset in which to store the data(Recommended) / Or use Existing DataSet (Harness Docs)'
     step2: '{{ $.connectors.ceGcp.grantPermission.step1}}'

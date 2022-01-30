@@ -1,5 +1,13 @@
+/*
+ * Copyright 2022 Harness Inc. All rights reserved.
+ * Use of this source code is governed by the PolyForm Shield 1.0.0 license
+ * that can be found in the licenses directory at the root of this repository, also available at
+ * https://polyformproject.org/wp-content/uploads/2020/06/PolyForm-Shield-1.0.0.txt.
+ */
+
 import { StepType } from '@pipeline/components/PipelineSteps/PipelineStepInterface'
 import type { PipelineInfoConfig } from 'services/cd-ng'
+import { getStepType } from '@pipeline/utils/templateUtils'
 
 export const ActivitySourceSetupRoutePaths = {
   KUBERNETES: 'kubernetes',
@@ -39,6 +47,12 @@ export const editParams = {
 
 export const isVerifyStepPresent = (pipeline: PipelineInfoConfig): boolean => {
   return !!pipeline?.stages?.some(el =>
-    el?.stage?.spec?.execution?.steps?.some(step => step?.step?.type === StepType.Verify)
+    el?.stage?.spec?.execution?.steps?.some(step => {
+      if (step?.step) {
+        return getStepType(step?.step) === StepType.Verify
+      } else {
+        return false
+      }
+    })
   )
 }

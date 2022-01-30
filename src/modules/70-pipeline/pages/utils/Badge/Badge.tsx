@@ -1,5 +1,12 @@
+/*
+ * Copyright 2022 Harness Inc. All rights reserved.
+ * Use of this source code is governed by the PolyForm Shield 1.0.0 license
+ * that can be found in the licenses directory at the root of this repository, also available at
+ * https://polyformproject.org/wp-content/uploads/2020/06/PolyForm-Shield-1.0.0.txt.
+ */
+
 import React from 'react'
-import { Classes, PopoverInteractionKind, Position } from '@blueprintjs/core'
+import { Classes, Intent, PopoverInteractionKind, Position } from '@blueprintjs/core'
 import { Color, Container, Icon, Text, IconName, Popover, Layout } from '@wings-software/uicore'
 import type { InputSetErrorResponse } from 'services/pipeline-ng'
 import { useStrings } from 'framework/strings'
@@ -16,6 +23,7 @@ export interface BadgeProps {
   entityType: string
   uuidToErrorResponseMap?: { [key: string]: InputSetErrorResponse }
   overlaySetErrorDetails?: { [key: string]: string }
+  showInvalidText?: boolean
 }
 
 interface BadgeTooltipContentInterface {
@@ -56,7 +64,7 @@ const TooltipContent: React.FC<BadgeTooltipContentInterface> = (props: BadgeTool
         // Show git errors
         <Layout.Horizontal>
           <div className={css.tooltipIcon}>
-            <Icon name={iconName} size={14} color={Color.RED_600} />
+            <Icon name={iconName} size={18} intent={Intent.DANGER} />
           </div>
           <Layout.Vertical width={292} padding={{ left: 'small' }}>
             <Text width={244} color={Color.GREY_0} margin={{ bottom: 'small' }} className={css.tooltipContentText}>
@@ -80,21 +88,30 @@ export const Badge: React.FC<BadgeProps> = (props: BadgeProps): JSX.Element => {
     entityName = '',
     entityType,
     uuidToErrorResponseMap,
-    overlaySetErrorDetails
+    overlaySetErrorDetails,
+    showInvalidText = false
   } = props
   const { getString } = useStrings()
 
-  const badgeUI = (
-    <Container className={css.badge}>
-      <Icon name={iconName} size={10} color={Color.RED_600} className={css.badgeIcon} />
-      <Text color={Color.RED_900} font={{ weight: 'bold' }} className={css.badgeText}>
-        {getString(text)}
-      </Text>
-    </Container>
-  )
+  const badgeUI = React.useCallback(() => {
+    if (showInvalidText) {
+      return (
+        <Container className={css.badge}>
+          <Icon name={iconName} size={14} className={css.badgeIcon} intent={Intent.DANGER} />
+          <Text color={Color.RED_900} font={{ weight: 'bold' }} className={css.badgeText}>
+            {getString(text)}
+          </Text>
+        </Container>
+      )
+    }
+    return (
+      <Icon name={iconName} size={20} className={css.badgeIcon} data-testid="invalid-icon" intent={Intent.DANGER} />
+    )
+  }, [iconName, showInvalidText, text, getString])
+
   return showTooltip ? (
     <Popover interactionKind={PopoverInteractionKind.HOVER} position={Position.BOTTOM} className={Classes.DARK}>
-      {badgeUI}
+      {badgeUI()}
       <TooltipContent
         iconName={iconName}
         entityName={entityName}
@@ -104,6 +121,6 @@ export const Badge: React.FC<BadgeProps> = (props: BadgeProps): JSX.Element => {
       />
     </Popover>
   ) : (
-    badgeUI
+    badgeUI()
   )
 }

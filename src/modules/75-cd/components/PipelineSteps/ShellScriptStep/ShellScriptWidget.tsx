@@ -1,3 +1,10 @@
+/*
+ * Copyright 2022 Harness Inc. All rights reserved.
+ * Use of this source code is governed by the PolyForm Shield 1.0.0 license
+ * that can be found in the licenses directory at the root of this repository, also available at
+ * https://polyformproject.org/wp-content/uploads/2020/06/PolyForm-Shield-1.0.0.txt.
+ */
+
 import React from 'react'
 import { Accordion, Formik, MultiTypeInputType } from '@wings-software/uicore'
 import * as Yup from 'yup'
@@ -8,7 +15,7 @@ import { setFormikRef, StepFormikFowardRef, StepViewType } from '@pipeline/compo
 import { useStrings } from 'framework/strings'
 
 import { getNameAndIdentifierSchema } from '@pipeline/components/PipelineSteps/Steps/StepsValidateUtils'
-import type { ShellScriptFormData } from './shellScriptTypes'
+import { ShellScriptFormData, variableSchema } from './shellScriptTypes'
 import BaseShellScript from './BaseShellScript'
 import OptionalConfiguration from './OptionalConfiguration'
 
@@ -52,20 +59,8 @@ export function ShellScriptWidget(
           script: Yup.string().trim().required(getString('cd.scriptRequired'))
         })
       }),
-      environmentVariables: Yup.array().of(
-        Yup.object({
-          name: Yup.string().required(getString('common.validation.nameIsRequired')),
-          value: Yup.string().required(getString('common.validation.valueIsRequired')),
-          type: Yup.string().trim().required(getString('common.validation.typeIsRequired'))
-        })
-      ),
-      outputVariables: Yup.array().of(
-        Yup.object({
-          name: Yup.string().required(getString('common.validation.nameIsRequired')),
-          value: Yup.string().required(getString('common.validation.valueIsRequired')),
-          type: Yup.string().trim().required(getString('common.validation.typeIsRequired'))
-        })
-      )
+      environmentVariables: variableSchema(getString),
+      outputVariables: variableSchema(getString)
     }),
     ...getNameAndIdentifierSchema(getString, stepViewType)
   })

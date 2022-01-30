@@ -1,3 +1,10 @@
+/*
+ * Copyright 2021 Harness Inc. All rights reserved.
+ * Use of this source code is governed by the PolyForm Shield 1.0.0 license
+ * that can be found in the licenses directory at the root of this repository, also available at
+ * https://polyformproject.org/wp-content/uploads/2020/06/PolyForm-Shield-1.0.0.txt.
+ */
+
 import React, { useCallback } from 'react'
 import {
   Text,
@@ -44,6 +51,7 @@ interface KustomizePathPropTypes {
   name?: string
   stepName: string
   expressions: string[]
+  allowableTypes: MultiTypeInputType[]
   initialValues: ManifestConfig
   handleSubmit: (data: ManifestConfigWrapper) => void
   manifestIdsList: Array<string>
@@ -87,7 +95,14 @@ const submitKustomizePatchData = (
   return manifestObj
 }
 
-const renderBranch = (formik: any, isReadonly: boolean, label: string, placeholder: string, expressions?: any) => {
+const renderBranch = (
+  formik: any,
+  isReadonly: boolean,
+  label: string,
+  placeholder: string,
+  expressions?: any,
+  allowableTypes?: MultiTypeInputType[]
+) => {
   return (
     <div
       className={cx(helmcss.halfWidth, {
@@ -97,7 +112,7 @@ const renderBranch = (formik: any, isReadonly: boolean, label: string, placehold
       <FormInput.MultiTextInput
         label={label}
         placeholder={placeholder}
-        multiTextInputProps={{ expressions }}
+        multiTextInputProps={{ expressions, allowableTypes }}
         name="branch"
       />
       {getMultiTypeFromValue(formik.values?.branch) === MultiTypeInputType.RUNTIME && (
@@ -117,7 +132,14 @@ const renderBranch = (formik: any, isReadonly: boolean, label: string, placehold
   )
 }
 
-const renderCommitId = (formik: any, isReadonly: boolean, label: string, placeholder: string, expressions?: any) => {
+const renderCommitId = (
+  formik: any,
+  isReadonly: boolean,
+  label: string,
+  placeholder: string,
+  expressions?: any,
+  allowableTypes?: MultiTypeInputType[]
+) => {
   return (
     <div
       className={cx(helmcss.halfWidth, {
@@ -127,7 +149,7 @@ const renderCommitId = (formik: any, isReadonly: boolean, label: string, placeho
       <FormInput.MultiTextInput
         label={label}
         placeholder={placeholder}
-        multiTextInputProps={{ expressions }}
+        multiTextInputProps={{ expressions, allowableTypes }}
         name="commitId"
       />
       {getMultiTypeFromValue(formik.values?.commitId) === MultiTypeInputType.RUNTIME && (
@@ -152,13 +174,15 @@ const renderPathArr = ({
   selectedManifest,
   manifestPathPlaceholder,
   pathPlaceholder,
-  expressions
+  expressions,
+  allowableTypes
 }: {
   index: number
   selectedManifest: string | null
   manifestPathPlaceholder: string
   pathPlaceholder: string
   expressions: any
+  allowableTypes: MultiTypeInputType[]
 }) => {
   return (
     <>
@@ -171,7 +195,7 @@ const renderPathArr = ({
         style={{ width: 275 }}
         multiTextInputProps={{
           expressions,
-          allowableTypes: [MultiTypeInputType.FIXED, MultiTypeInputType.EXPRESSION]
+          allowableTypes: allowableTypes.filter(allowedType => allowedType !== MultiTypeInputType.RUNTIME)
         }}
       />
     </>
@@ -181,6 +205,7 @@ const renderPathArr = ({
 const KustomizePatchDetails: React.FC<StepProps<ConnectorConfigDTO> & KustomizePathPropTypes> = ({
   stepName,
   expressions,
+  allowableTypes,
   initialValues,
   selectedManifest,
   prevStepData,
@@ -348,6 +373,7 @@ const KustomizePatchDetails: React.FC<StepProps<ConnectorConfigDTO> & KustomizeP
                 <GitRepositoryName
                   accountUrl={accountUrl}
                   expressions={expressions}
+                  allowableTypes={allowableTypes}
                   fieldValue={formik.values?.repoName}
                   changeFieldValue={(value: string) => formik.setFieldValue('repoName', value)}
                   isReadonly={isReadonly}
@@ -367,7 +393,8 @@ const KustomizePatchDetails: React.FC<StepProps<ConnectorConfigDTO> & KustomizeP
                     isReadonly,
                     getString('pipelineSteps.deploy.inputSet.branch'),
                     getString('pipeline.manifestType.branchPlaceholder'),
-                    expressions
+                    expressions,
+                    allowableTypes
                   )}
 
                 {formik.values?.gitFetchType === GitFetchTypes.Commit &&
@@ -376,7 +403,8 @@ const KustomizePatchDetails: React.FC<StepProps<ConnectorConfigDTO> & KustomizeP
                     isReadonly,
                     getString('pipeline.manifestType.commitId'),
                     getString('pipeline.manifestType.commitPlaceholder'),
-                    expressions
+                    expressions,
+                    allowableTypes
                   )}
               </Layout.Horizontal>
               <div className={css.halfWidth}>
@@ -418,7 +446,8 @@ const KustomizePatchDetails: React.FC<StepProps<ConnectorConfigDTO> & KustomizeP
                                 selectedManifest,
                                 manifestPathPlaceholder: getString('pipeline.manifestType.manifestPathPlaceholder'),
                                 pathPlaceholder: getString('pipeline.manifestType.pathPlaceholder'),
-                                expressions
+                                expressions,
+                                allowableTypes
                               })}
                             </Layout.Horizontal>
                             {formik.values?.paths?.length > 1 && (

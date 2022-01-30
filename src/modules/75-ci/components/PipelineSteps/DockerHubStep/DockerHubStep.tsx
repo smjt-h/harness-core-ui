@@ -1,3 +1,10 @@
+/*
+ * Copyright 2021 Harness Inc. All rights reserved.
+ * Use of this source code is governed by the PolyForm Shield 1.0.0 license
+ * that can be found in the licenses directory at the root of this repository, also available at
+ * https://polyformproject.org/wp-content/uploads/2020/06/PolyForm-Shield-1.0.0.txt.
+ */
+
 import React from 'react'
 import type { IconName, MultiTypeInputType } from '@wings-software/uicore'
 import { parse } from 'yaml'
@@ -37,7 +44,7 @@ export interface DockerHubStepSpec {
   context?: string
   labels?: MultiTypeMapType
   buildArgs?: MultiTypeMapType
-  optimize: boolean
+  optimize?: boolean
   target?: string
   remoteCacheRepo?: string
   // TODO: Right now we do not support Image Pull Policy but will do in the future
@@ -82,6 +89,7 @@ export interface DockerHubStepProps {
   onUpdate?: (data: DockerHubStepData) => void
   onChange?: (data: DockerHubStepData) => void
   allowableTypes: MultiTypeInputType[]
+  formik?: any
 }
 
 export class DockerHubStep extends PipelineStep<DockerHubStepData> {
@@ -94,7 +102,7 @@ export class DockerHubStep extends PipelineStep<DockerHubStepData> {
 
   protected type = StepType.DockerHub
   protected stepName = 'Build and Push an image to Docker Registry'
-  protected stepIcon: IconName = 'docker-hub-step'
+  protected stepIcon: IconName = 'docker-step'
   protected stepDescription: keyof StringsMap = 'pipeline.stepDescription.DockerHub'
   protected stepPaletteVisible = false
 
@@ -105,7 +113,6 @@ export class DockerHubStep extends PipelineStep<DockerHubStepData> {
       connectorRef: '',
       repo: '',
       tags: [],
-      optimize: true,
       remoteCacheRepo: ''
     }
   }

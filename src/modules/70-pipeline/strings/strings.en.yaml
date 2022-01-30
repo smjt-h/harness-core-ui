@@ -4,7 +4,7 @@ progressPercentage: 'Progress percentage:'
 discard: '{{ $.common.discard }}'
 serviceDependencyText: Service Dependency
 serviceDependenciesText: Service Dependencies
-stepLabel: '{{name}} (ID: {{identifier}})'
+stepLabel: '{{name}} (Id: {{identifier}})'
 enableVerificationOptions: Enable verification options
 closeStepConfig: Step Config
 stepConfigHasChanges: Form has some unsaved changed, Do you want to apply the changes?
@@ -14,23 +14,33 @@ stageVariables: Stage Variables
 scriptInputVariables: Script Input Variables
 scriptOutputVariables: Script Output Variables
 executionTarget: Execution Target
+removeTemplate: The applied template will be removed from your stage.
+changeTemplate: 'Applying {{name}} to your {{entity}} might reset some fields.'
+copyTemplate: Template configurations will be copied to your pipeline and made editable.
 collapseIsDisabledWhileStageIsRunning: Collapse is disable while stage is running
+changeTemplateLabel: Change Template
+removeTemplateLabel: Remove Template
 onlyPositiveInteger: Only positive integer values
 depth: Depth
 advancedOptions: Advanced Options
 pipelineTimeoutSettings: Pipeline Timeout Settings
 pipelineTimeoutHelpText: Enter a timeout for the entire Pipeline. You can change this setting at any time.
+stageExecutionSettings: Stage Execution Settings
+stageExecutionsHelperText: Allow selective stage(s) executions?
 sslVerify: SSL Verify
 noPipelineText: There are no pipelines in your project
 noDeploymentText: There are no deployments in your project
 runModalNoPipelineText: There are no pipelines in your project. Please create a new pipeline
 noBuildsText: There are no builds in your project
+noBuildsLabel: No builds
 runAPipeline: Run a Pipeline
 regionPlaceholder: Select Region
 repositoryUrlPlaceholder: Enter Repository URL
 lastSevenDays: In Last 7 days
 neverRan: This pipeline never ran
 startedOn: Started On
+nodes: nodes
+nodesLabel: Nodes
 poweredByHarness: powered by Harness
 outOf: Out Of
 clickToExpandErrorDetails: Click to expand error details
@@ -99,6 +109,7 @@ jiraApprovalStep:
     criteriaMsg: Approval/Rejection Criteria Listed Below
     wasApproved: 'Approval Criteria was met for Jira Ticket:'
     wasRejected: 'Rejection Criteria was met for Jira Ticket:'
+    wasExpired: 'Jira approval expired for Ticket:'
     jiraTicket: 'JIRA Ticket Pending Approval:'
     allConditionsMsg: 'If all of the following conditions are met:'
     anyConditionsMsg: 'If any of the following conditions is met:'
@@ -151,6 +162,34 @@ approvalCriteria:
   validations:
     approvalCriteriaCondition: At least one condition is required
     expression: Expression value is required
+serviceNowApprovalStep:
+  connectToServiceNow: Connect to ServiceNow
+  connectorRef: ServiceNow Connector
+  serviceNowConnectorPlaceholder: Select ServiceNow Connector
+  project: ServcieNow Project
+  ticketType: Ticket Type
+  issueTypePlaceholder: Select Ticket Type
+  issueNumber: Ticket Number
+  issueNumberPlaceholder: Enter Ticket Number
+  fetchingTicketTypesPlaceholder: Fetching Ticket Types...
+  fetchTicketTypesError: Failed to fetch ticket types
+  jexlExpressionPlaceholder: |
+    Example: <+ticket.state.value> == "Done"
+  serviceNowField: Service Now Field
+  execution:
+    wasApproved: 'Approval Criteria was met for ServiceNow Ticket:'
+    wasRejected: 'Rejection Criteria was met for ServiceNow Ticket:'
+    wasExpired: 'ServiceNow approval expired for Ticket:'
+    serviceNowTicket: 'ServiceNow Ticket Pending Approval:'
+    conditions:
+      equals: '{{ key }} equals'
+      not_equals: '{{ key }} does not equals'
+      in: '{{ key }} is in'
+      not_in: '{{ key }} is not in'
+  validations:
+    connectorRef: ServiceNow Connector is required
+    ticketType: Ticket Type is required
+    issueNumber: Ticket Number is required
 manifestType:
   manifestTyperequired: Manifest Type is required
   gitConnectorLabel: 'Git'
@@ -191,9 +230,9 @@ manifestType:
   chartPathPlaceholder: Enter Chart Path
   bucketName: Bucket Name
   gitFetchTypeLabel: Git Fetch Type
-  commitId: Commit Id
+  commitId: Commit Id / Git Tag
   branchPlaceholder: Enter Branch Name
-  commitPlaceholder: Enter Commit Id
+  commitPlaceholder: Enter Commit Id / Git Tag
   filePathPlaceholder: Enter File or Folder Path
   kustomizeFolderPath: Kustomize Folder Path
   kustomizeFolderPathPlaceholder: Enter Kustomize Folder Path
@@ -407,7 +446,6 @@ triggers:
   deleteTrigger: 'Delete Trigger'
   confirmDelete: 'Are you sure you want to delete trigger' # followed by name
   pageNotFound: 'Page not found'
-  triggerLabel: 'Trigger'
   lastActivationLabel: 'LAST ACTIVATION'
   activityActivation: '{{numActivations}} Activations in'
   activityDays: 'Last {{numDays}} days'
@@ -566,7 +604,6 @@ testsReports:
   directCall: Direct call
   indirectCall: Indirect call
   sourceMethod: Source Class
-  resource: Resource
   callgraphField:
     package: Package
     class: Class
@@ -632,6 +669,7 @@ testsReports:
     requiresEnterprisePlan: Requires Enterprise Plan to access Test Intelligence
 uniqueIdentifier: Identifier must be unique
 inputSets:
+  inputSetNameLabel: Input Set Name
   applyInputSet: Apply Input Set
   applyInputSets: Apply Input Sets
   applyingInputSets: Applying Input Sets
@@ -641,13 +679,17 @@ inputSets:
   inputSetPlaceholder: Enter Input Sets
   selectPlaceholder: Select Input Set(s)
   aboutInputSets: Harness Input Sets are collections of variables/values that can be provided to one or more Pipelines before execution.
+  overlayISHelperText: Selected inputs will be applied in the order listed. Drag to reorder the input sets.
+
 provisionerSteps: Provisioner Steps
 addStage:
   title: Select stage type
   description: Hover over stage type for more info.
 pipelineSteps:
+  templateStage: Template Stage
   customStage: Custom Stage
   chainedPipeline: Chained Pipeline
+  templateStageDescription: Use stage template.
   customStageDescription: A blank canvas for custom processes.
   chainedPipelineDescription: Run a Pipeline as a stage in another Pipeline.
   deployStageDescription: Deploy services, Serverless functions, or other workloads.
@@ -665,6 +707,8 @@ infraSpecifications:
     requiredExistingStage: Existing stage is a required field
 imagePathLabel: Image Path
 artifactsSelection:
+  repositoryPort: Repository port
+  repositoryPortPlaceholder: Enter Repository Port
   artifactDetails: Artifact Details
   artifactTyperequired: Artifact Type is required
   existingDocker:
@@ -678,6 +722,7 @@ artifactsSelection:
     tag: Tag is required
     tagRegex: Tag Regex is required
     sidecarId: Sidecar Identifier is required
+    repositoryPort: Repository Port is required
 overrideSets:
   createOverrideSet: Create Override Set
   overrideSetPlaceholder: Enter Override Set Name
@@ -703,13 +748,26 @@ verification:
   anomalousMetrics: Anomalous Metrics
   anomalousLogClusters: Anomalous Log Clusters
   healthSourcePlaceholder: Filter by Health Source
+  healthSourceLabel: Health Source
   refreshViewForNewData: Latest incoming data available.
   toGetLatest: to get latest
-  noMetrics: No Metrics or Transactions
   waitForAnalysis: Please wait a few moments for analysis to begin...
+  nodeCountDisplay: nodes with anomalous metric
+  loadMore: Load more
+  tableHeaders:
+    metricName: METRIC NAME
+    group: GROUP
+    nodes: NODES
   analysisTab:
     metrics: 'Metrics'
     logs: 'Logs'
+  controlHostName: Control Hostname
+  anomalousMetricsFilterLabel: Display only anomalous metrics and affected nodes
+  testHostName: Test Hostname
+  expandAll: Expand All
+  collapseAll: Collapse All
+  predicted: Predicted
+
   logs:
     logCluster: Log cluster
     filterByClusterType: Filter by cluster type
@@ -734,6 +792,8 @@ stepCommonFields:
   ifNotPresent: 'If Not Present'
   validation:
     mustBeANumber: '{{label}} must be a number'
+    invalidLimitMemory: Invalid Limit Memory. To learn more, hover over the Set Container Resources tooltip.
+    invalidLimitCPU: Invalid Limit CPU. To learn more, hover over the Set Container Resources tooltip.
 ciCodebase:
   prCloneStrategy: Pull Request Clone Strategy
   buildType: CI Codebase Build Type
@@ -781,6 +841,9 @@ stepDescription:
   TerraformApply: Apply a Terraform plan or script.
   ResourceConstraint: Queue the number of resources Harness requests during a deployment by placing capacity limits on the requests.
   FlagConfiguration: Create a Boolean or Multivariate Feature Flag.
+  HelmDeploy: Performs native Helm deployments. Requires Helm and Tiller and supports basic deployments. Helm charts are also supported in Harness Kubernetes deployments without requiring Helm or Tiller and using all deployment strategies.
+  HelmRollback: Rolls back all the deployed objects to the previous version.
+  ServiceNowApproval: Use ServiceNow issues to approve steps and stages.
 executionStrategy:
   executionStrategies: Execution Strategies
   useStrategy: Use Strategy
@@ -844,7 +907,8 @@ runAllParallelstages: Run all parallel stages
 runFailedStages: Run only failed stages
 runPipelineForm:
   notifyOnlyMe: Notify only me about execution status
-singleStageExecution: 'SINGLE STAGE EXECUTION:'
+  disallowStageExecution: Not allowed for Individual Stage executions
+singleStageExecution: 'SELECTIVE STAGE EXECUTION:'
 multiStageExecution: 'MULTIPLE STAGES EXECUTION'
 allStages: All Stages
 retryHistory: Retry History
@@ -878,8 +942,32 @@ runstageError: '{{count}} Error(s): Unable to run stages.'
 stageDependencyError: 'Stage {{stageId}} has a ‘useFromStage’ dependency on Stage {{dependentStage}}. Please select Stage {{dependentStage}} to run Stage {{stageId}}.'
 noApprovalInstanceCreated: Approval instance not created, no details to display
 approvalTypeRequired: Approval type is required
+executionList:
+  servicesDeployedText: 'Services deployed ({{size}})'
+  EnvironmentsText: 'Environments ({{size}})'
 commentModal:
   heading: 'Save {{ name }} ({{ version }})'
   info: 'By saving, all pipelines referencing the stable version will receive your changes.'
 replacedExpressions: Replaced Expressions
 expressionRequired: Expression value is required.
+nativeHelm: Native Helm
+dashboardDeploymentsWidget:
+  pendingManualIntervention:
+    singular: Pending Manual Intervention
+    plural: Pending Manual Interventions
+  pendingApproval:
+    singular: Pending Approval
+    plural: Pending Approvals
+  failed24Hrs:
+    singular: Pipeline failed in past 24 hours
+    plural: Pipelines failed in past 24 hours
+  runningPipeline:
+    singular: Currently running pipeline
+    plural: Currently running pipelines
+runtimeInputNotSupported: '{{field}} values cannot be run-time input'
+security:
+  title: Security
+runPipeline:
+  ciCodebaseConfig: CI Codebase Configuration is missing. Codebase is required when the pipeline contains a CI stage that is set to clone codebase.
+buildInfra:
+  poolId: Pool Id

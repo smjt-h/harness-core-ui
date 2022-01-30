@@ -1,14 +1,23 @@
+/*
+ * Copyright 2022 Harness Inc. All rights reserved.
+ * Use of this source code is governed by the PolyForm Shield 1.0.0 license
+ * that can be found in the licenses directory at the root of this repository, also available at
+ * https://polyformproject.org/wp-content/uploads/2020/06/PolyForm-Shield-1.0.0.txt.
+ */
+
 import React from 'react'
 import { fireEvent, render, waitFor, act } from '@testing-library/react'
 import { useGetPreflightCheckResponse, startPreflightCheckPromise } from 'services/pipeline-ng'
 import type { GitQueryParams, PipelinePathProps, PipelineType } from '@common/interfaces/RouteInterfaces'
 import { useMutateAsGet, useQueryParams } from '@common/hooks'
 import { TestWrapper } from '@common/utils/testUtils'
+import { GetInputSetsResponse } from '@pipeline/pages/inputSet-list/__tests__/InputSetListMocks'
 import { RunPipelineForm } from '../RunPipelineForm'
 
 import {
   mockCreateInputSetResponse,
   mockGetPipeline,
+  mockGetResolvedPipeline,
   mockInputSetsList,
   mockMergeInputSetResponse,
   mockPipelineTemplateYaml,
@@ -71,7 +80,8 @@ jest.mock('services/pipeline-ng', () => ({
   useCreateVariables: () => mockPipelineVariablesResponse,
   useRunStagesWithRuntimeInputYaml: () => mockPostPipelineExecuteYaml,
   useGetPreflightCheckResponse: jest.fn(),
-  startPreflightCheckPromise: jest.fn()
+  startPreflightCheckPromise: jest.fn(),
+  getInputSetForPipelinePromise: jest.fn().mockImplementation(() => Promise.resolve(GetInputSetsResponse.data))
 }))
 
 jest.mock('@common/hooks', () => ({
@@ -88,8 +98,12 @@ describe('STUDIO MODE', () => {
     // eslint-disable-next-line
     // @ts-ignore
 
-    useMutateAsGet.mockImplementation(() => {
-      return mockPipelineTemplateYaml
+    useMutateAsGet.mockImplementation(props => {
+      if (props?.name === 'useGetYamlWithTemplateRefsResolved') {
+        return mockGetResolvedPipeline
+      } else {
+        return mockPipelineTemplateYaml
+      }
     })
   })
 
@@ -135,6 +149,28 @@ describe('STUDIO MODE', () => {
     const runButton = container.querySelector('button[type="submit"]')
     act(() => {
       fireEvent.click(runButton!)
+    })
+
+    // Verify the ErrorStrip is present and submit is disabled
+    await waitFor(() => expect(queryByText('common.errorCount')).toBeTruthy())
+    await waitFor(() => expect(queryByText('common.seeDetails')).toBeTruthy())
+    const buttonShouldBeDisabled = container.querySelector('.bp3-disabled')
+    expect(buttonShouldBeDisabled).toBeTruthy()
+  })
+
+  test('should not allow submit if form is incomplete and enter key pressed', async () => {
+    const { container, getByText, queryByText, getByTestId } = render(
+      <TestWrapper>
+        <RunPipelineForm {...commonProps} />
+      </TestWrapper>
+    )
+    // Navigate to 'Provide Values'
+    fireEvent.click(getByText('pipeline.triggers.pipelineInputPanel.provide'))
+    await waitFor(() => expect(queryByText('customVariables.pipelineVariablesTitle')).toBeTruthy())
+
+    // Submit the incomplete form by pressing enter
+    act(() => {
+      fireEvent.keyDown(getByTestId('runPipelineVisualView'), { key: 'Enter', code: 'Enter', charCode: 13 })
     })
 
     // Verify the ErrorStrip is present and submit is disabled
@@ -198,7 +234,7 @@ describe('STUDIO MODE', () => {
     })
 
     // Check on input set form
-    await waitFor(() => expect(queryByText('inputSets.inputSetName')).toBeTruthy())
+    await waitFor(() => expect(queryByText('name')).toBeTruthy())
 
     // Enter input set name
     const inputSetNameDiv = document.body.querySelector('input[name="name"]')
@@ -227,7 +263,7 @@ describe('STUDIO MODE', () => {
   })
 
   test('should accept values from input sets and submit the form', async () => {
-    const { container, getByText, queryByText, queryAllByText } = render(
+    const { container, getByText, queryByText, queryAllByTestId } = render(
       <TestWrapper>
         <RunPipelineForm {...commonProps} />
       </TestWrapper>
@@ -245,7 +281,7 @@ describe('STUDIO MODE', () => {
     await waitFor(() => expect(queryByText('is1')).toBeTruthy())
 
     // input set is invalid should be flagged
-    const allinvalidflags = queryAllByText('common.invalid')
+    const allinvalidflags = queryAllByTestId('invalid-icon')
 
     // one for invalid input set and one forinvalid overlay set as per the mocked data
     expect(allinvalidflags.length).toBe(2)
@@ -263,12 +299,12 @@ describe('STUDIO MODE', () => {
     // when you hover over the invalid flag show the tooltip content
     await waitFor(() => expect(queryByText('common.errorCount')).toBeTruthy())
 
-    // Select the input sets - is1 and then is2
-    act(() => {
-      fireEvent.click(getByText('is1'))
-    })
+    // Select the input sets - is2 and then is3
     act(() => {
       fireEvent.click(getByText('is2'))
+    })
+    act(() => {
+      fireEvent.click(getByText('is3'))
     })
 
     // Apply the input sets
@@ -282,6 +318,65 @@ describe('STUDIO MODE', () => {
     // Save the snapshot - value is present from merge input set API
     expect(container).toMatchSnapshot('after applying input sets')
   })
+
+  test('invalid input sets should not be applied', async () => {
+    const { container, getByText, queryByText, queryAllByTestId } = render(
+      <TestWrapper>
+        <RunPipelineForm {...commonProps} />
+      </TestWrapper>
+    )
+
+    await waitFor(() =>
+      expect(queryByText('pipeline.triggers.pipelineInputPanel.selectedExisitingOrProvide')).toBeTruthy()
+    )
+
+    // Click on the Add input sets button
+    act(() => {
+      fireEvent.click(getByText('pipeline.inputSets.selectPlaceholder'))
+    })
+
+    await waitFor(() => expect(queryByText('is1')).toBeTruthy())
+
+    // input set is invalid should be flagged
+    const allinvalidflags = queryAllByTestId('invalid-icon')
+
+    // one for invalid input set and one forinvalid overlay set as per the mocked data
+    expect(allinvalidflags.length).toBe(2)
+
+    act(() => {
+      fireEvent.mouseOver(allinvalidflags[0])
+    })
+    // when you hover over the invalid flag show the tooltip content
+    await waitFor(() => expect(queryByText('common.errorCount')).toBeTruthy())
+
+    // hover over the invalid flagt for overlay
+    act(() => {
+      fireEvent.mouseOver(allinvalidflags[1])
+    })
+    // when you hover over the invalid flag show the tooltip content
+    await waitFor(() => expect(queryByText('common.errorCount')).toBeTruthy())
+
+    // Select the input set is1
+    // This(is1) should not be selected as it is invalid
+    act(() => {
+      fireEvent.click(getByText('is1'))
+    })
+    // unselect is3
+    act(() => {
+      fireEvent.click(getByText('is3'))
+    })
+
+    // Apply the input set - As only one(is2) is selected because the other(is1) being invalid
+    act(() => {
+      fireEvent.click(getByText('pipeline.inputSets.applyInputSet'))
+    })
+
+    // Expect the merge APi not to be called
+    await waitFor(() => expect(mockMergeInputSetResponse.mutate).toBeCalled())
+
+    // Save the snapshot - value is present from merge input set API
+    expect(container).toMatchSnapshot()
+  })
 })
 
 describe('STUDIO MODE - template API error', () => {
@@ -292,8 +387,12 @@ describe('STUDIO MODE - template API error', () => {
     // eslint-disable-next-line
     // @ts-ignore
 
-    useMutateAsGet.mockImplementation(() => {
-      return mockPipelineTemplateYamlErrorResponse
+    useMutateAsGet.mockImplementation(props => {
+      if (props?.name === 'useGetYamlWithTemplateRefsResolved') {
+        return mockGetResolvedPipeline
+      } else {
+        return mockPipelineTemplateYamlErrorResponse
+      }
     })
   })
 
@@ -321,8 +420,12 @@ describe('RERUN MODE', () => {
     startPreflightCheckPromise.mockResolvedValue({})
     // eslint-disable-next-line
     // @ts-ignore
-    useMutateAsGet.mockImplementation(() => {
-      return mockPipelineTemplateYamlForRerun
+    useMutateAsGet.mockImplementation(props => {
+      if (props?.name === 'useGetYamlWithTemplateRefsResolved') {
+        return mockGetResolvedPipeline
+      } else {
+        return mockPipelineTemplateYamlForRerun
+      }
     })
   })
 
@@ -357,8 +460,12 @@ describe('EXECUTION VIEW', () => {
     useQueryParams.mockImplementation(() => ({ executionId: '/testExecutionId' }))
     // eslint-disable-next-line
     // @ts-ignore
-    useMutateAsGet.mockImplementation(() => {
-      return mockPipelineTemplateYamlForRerun
+    useMutateAsGet.mockImplementation(props => {
+      if (props?.name === 'useGetYamlWithTemplateRefsResolved') {
+        return mockGetResolvedPipeline
+      } else {
+        return mockPipelineTemplateYamlForRerun
+      }
     })
   })
   test('should should have the values prefilled and fields as disabled', async () => {

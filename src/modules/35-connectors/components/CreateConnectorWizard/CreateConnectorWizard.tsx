@@ -1,9 +1,17 @@
+/*
+ * Copyright 2021 Harness Inc. All rights reserved.
+ * Use of this source code is governed by the PolyForm Shield 1.0.0 license
+ * that can be found in the licenses directory at the root of this repository, also available at
+ * https://polyformproject.org/wp-content/uploads/2020/06/PolyForm-Shield-1.0.0.txt.
+ */
+
 import React from 'react'
 import { pick } from 'lodash-es'
 import { Connectors } from '@connectors/constants'
 import type { ConnectorRequestBody, ConnectorInfoDTO } from 'services/cd-ng'
 import type { IGitContextFormProps } from '@common/components/GitContextForm/GitContextForm'
 import type { ConnectivityModeType } from '@common/components/ConnectivityMode/ConnectivityMode'
+import { useFeatureFlags } from '@common/hooks/useFeatureFlag'
 import CreateGitConnector from '../CreateConnector/GitConnector/CreateGitConnector'
 import CreateGithubConnector from '../CreateConnector/GithubConnector/CreateGithubConnector'
 import CreateGitlabConnector from '../CreateConnector/GitlabConnector/CreateGitlabConnector'
@@ -35,6 +43,8 @@ import CreateDynatraceConnector from '../CreateConnector/DynatraceConnector/Crea
 import CreateSumoLogicConnector from '../CreateConnector/SumoLogicConnector/CreateSumoLogicConnector'
 import CENGAwsConnector from '../CreateConnector/CENGAwsConnector/CreateCeAwsConnector'
 import CreateCeGcpConnector from '../CreateConnector/CEGcpConnector/CreateCeGcpConnector'
+import CreateCustomHealthConnector from '../CreateConnector/CustomHealthConnector/CreateCustomHealthConnector'
+import CreateErrorTrackingConnector from '../CreateConnector/ErrorTrackingConnector/CreateErrorTrackingConnector'
 import css from './CreateConnectorWizard.module.scss'
 
 interface CreateConnectorWizardProps {
@@ -67,7 +77,10 @@ export const ConnectorWizard: React.FC<CreateConnectorWizardProps> = props => {
     'connectivityMode',
     'setConnectivityMode'
   ])
+  const { ERROR_TRACKING_ENABLED } = useFeatureFlags()
   switch (type) {
+    case Connectors.CUSTOM:
+      return <CreateCustomHealthConnector {...commonProps} />
     case Connectors.KUBERNETES_CLUSTER:
       return <CreateK8sConnector {...commonProps} />
     case Connectors.GIT:
@@ -130,6 +143,8 @@ export const ConnectorWizard: React.FC<CreateConnectorWizardProps> = props => {
       return <CreatePagerDutyConnector {...commonProps} />
     case Connectors.SERVICE_NOW:
       return <ServiceNowConnector {...commonProps} />
+    case Connectors.ERROR_TRACKING:
+      return ERROR_TRACKING_ENABLED ? <CreateErrorTrackingConnector {...commonProps} /> : null
     default:
       return null
   }

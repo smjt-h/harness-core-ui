@@ -1,13 +1,35 @@
-import { omit } from 'lodash-es'
+/*
+ * Copyright 2022 Harness Inc. All rights reserved.
+ * Use of this source code is governed by the PolyForm Shield 1.0.0 license
+ * that can be found in the licenses directory at the root of this repository, also available at
+ * https://polyformproject.org/wp-content/uploads/2020/06/PolyForm-Shield-1.0.0.txt.
+ */
+
+import { groupBy, omit } from 'lodash-es'
 import type { SelectOption } from '@pipeline/components/PipelineSteps/Steps/StepsTypes'
+import type { GroupedMetric } from '@cv/components/MultiItemsSideNav/components/SelectedAppsSideNav/components/GroupedSideNav.types'
 import type { UseStringsReturn } from 'framework/strings'
 import type { BasePathData } from '../BasePath/BasePath.types'
 import type { MetricPathData } from '../MetricPath/MetricPath.types'
 import { BasePathInitValue } from '../BasePath/BasePath.constants'
 import { MetricPathInitValue } from '../MetricPath/MetricPath.constants'
+import type { MapAppDynamicsMetric } from '../../AppDHealthSource.types'
+import type { GroupedCreatedMetrics } from './AppDMappedMetric.types'
 
-export function updateSelectedMetricsMap({ updatedMetric, oldMetric, mappedMetrics, formikValues }: any): any {
+export function updateSelectedMetricsMap({
+  updatedMetric,
+  oldMetric,
+  mappedMetrics,
+  formikValues,
+  getString
+}: any): any {
   const updatedMap = new Map(mappedMetrics)
+
+  const duplicateName =
+    Array.from(mappedMetrics.keys()).indexOf(formikValues.metricName) > -1 && oldMetric !== formikValues?.metricName
+  if (duplicateName) {
+    return { selectedMetric: oldMetric, mappedMetrics: updatedMap }
+  }
 
   // in the case where user updates metric name, update the key for current value
   if (oldMetric !== formikValues?.metricName) {
@@ -23,7 +45,10 @@ export function updateSelectedMetricsMap({ updatedMetric, oldMetric, mappedMetri
         continuousVerification: false,
         serviceInstanceMetricPath: '',
         basePath: BasePathInitValue,
-        metricPath: MetricPathInitValue
+        metricPath: MetricPathInitValue,
+        metricName: updatedMetric,
+        groupName: defaultGroupedMetric(getString),
+        metricIdentifier: updatedMetric.split(' ').join('_')
       }
     })
   }
@@ -58,4 +83,29 @@ export const getBasePathValue = (basePath: BasePathData): string => {
 
 export const getMetricPathValue = (basePath: MetricPathData): string => {
   return basePath ? Object.values(basePath)[Object.values(basePath).length - 1]?.path : ''
+}
+
+export const getGroupAndMetric = (
+  mappedMetrics: Map<string, MapAppDynamicsMetric>,
+  getString: UseStringsReturn['getString']
+): GroupedMetric[] => {
+  return Array.from(mappedMetrics?.values()).map(item => {
+    return {
+      groupName: item.groupName || defaultGroupedMetric(getString),
+      metricName: item.metricName
+    }
+  })
+}
+
+export const initGroupedCreatedMetrics = (
+  mappedMetrics: Map<string, MapAppDynamicsMetric>,
+  getString: UseStringsReturn['getString']
+): GroupedCreatedMetrics =>
+  groupBy(getGroupAndMetric(mappedMetrics, getString), function (item) {
+    return item?.groupName?.label
+  })
+
+export const defaultGroupedMetric = (getString: UseStringsReturn['getString']): SelectOption => {
+  const createdMetricLabel = getString('cv.addGroupName')
+  return { label: createdMetricLabel, value: createdMetricLabel }
 }

@@ -1,3 +1,10 @@
+/*
+ * Copyright 2021 Harness Inc. All rights reserved.
+ * Use of this source code is governed by the PolyForm Shield 1.0.0 license
+ * that can be found in the licenses directory at the root of this repository, also available at
+ * https://polyformproject.org/wp-content/uploads/2020/06/PolyForm-Shield-1.0.0.txt.
+ */
+
 import { MultiTypeInputType, RUNTIME_INPUT_VALUE } from '@wings-software/uicore'
 import type { UseGetMockData } from '@common/utils/testUtils'
 import { StepType } from '@pipeline/components/PipelineSteps/PipelineStepInterface'
@@ -20,6 +27,28 @@ export const getHarnessApprovalEditModeProps = () => ({
     }
   },
   onUpdate: jest.fn()
+})
+
+export const getHarnessApprovalEditModePropsAsExpressions = (): HarnessApprovalStepModeProps => ({
+  initialValues: {
+    timeout: '10s',
+    type: 'HarnessApproval',
+    name: 'harness approval step',
+    identifier: 'hhaass',
+    spec: {
+      approvalMessage: '<+somemessage>',
+      includePipelineExecutionHistory: '',
+      approverInputs: '',
+      approvers: {
+        userGroups: '<+abc>',
+        minimumCount: '<+minCount>',
+        disallowPipelineExecutor: ''
+      }
+    }
+  },
+  onUpdate: jest.fn(),
+  allowableTypes: [MultiTypeInputType.FIXED, MultiTypeInputType.RUNTIME, MultiTypeInputType.EXPRESSION],
+  stepViewType: StepViewType.Edit
 })
 
 export const getHarnessApprovalEditModePropsWithValues = (): HarnessApprovalStepModeProps => ({

@@ -1,3 +1,10 @@
+/*
+ * Copyright 2021 Harness Inc. All rights reserved.
+ * Use of this source code is governed by the PolyForm Shield 1.0.0 license
+ * that can be found in the licenses directory at the root of this repository, also available at
+ * https://polyformproject.org/wp-content/uploads/2020/06/PolyForm-Shield-1.0.0.txt.
+ */
+
 import React from 'react'
 import { defaultTo, isEmpty, isEqual, isEqualWith, isNil } from 'lodash-es'
 import { parse } from 'yaml'
@@ -31,7 +38,9 @@ const TemplateYamlView: React.FC = () => {
     state: {
       template,
       templateView: { isDrawerOpened, isYamlEditable },
-      templateView
+      templateView,
+      templateYaml,
+      entityValidityDetails: { valid }
     },
     updateTemplateView,
     isReadonly,
@@ -87,6 +96,7 @@ const TemplateYamlView: React.FC = () => {
             entityType="Template"
             isReadOnlyMode={isReadonly || !isYamlEditable}
             existingJSON={{ template }}
+            existingYaml={!valid ? templateYaml : undefined}
             bind={setYamlHandler}
             showSnippetSection={false}
             yamlSanityConfig={{ removeEmptyString: false, removeEmptyObject: false, removeEmptyArray: false }}
@@ -104,7 +114,6 @@ const TemplateYamlView: React.FC = () => {
         <div className={css.buttonsWrapper}>
           <Tag>{getString('common.readOnly')}</Tag>
           <RbacButton
-            disabled={true}
             permission={{
               resourceScope: {
                 accountIdentifier: accountId,
@@ -112,10 +121,10 @@ const TemplateYamlView: React.FC = () => {
                 projectIdentifier
               },
               resource: {
-                resourceType: ResourceType.PIPELINE,
+                resourceType: ResourceType.TEMPLATE,
                 resourceIdentifier: template.identifier
               },
-              permission: PermissionIdentifier.EDIT_PIPELINE
+              permission: PermissionIdentifier.EDIT_TEMPLATE
             }}
             variation={ButtonVariation.SECONDARY}
             text={getString('common.editYaml')}

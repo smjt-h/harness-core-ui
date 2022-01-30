@@ -1,3 +1,10 @@
+/*
+ * Copyright 2022 Harness Inc. All rights reserved.
+ * Use of this source code is governed by the PolyForm Shield 1.0.0 license
+ * that can be found in the licenses directory at the root of this repository, also available at
+ * https://polyformproject.org/wp-content/uploads/2020/06/PolyForm-Shield-1.0.0.txt.
+ */
+
 import React from 'react'
 import { Formik, FormikProps } from 'formik'
 import { noop } from 'lodash-es'
@@ -7,6 +14,7 @@ import cx from 'classnames'
 import { useStrings } from 'framework/strings'
 import { StageErrorContext } from '@pipeline/context/StageErrorContext'
 import { DeployTabs } from '@cd/components/PipelineStudio/DeployStageSetupShell/DeployStageSetupShellUtils'
+import { useFeatureFlags } from '@common/hooks/useFeatureFlag'
 import type { DeploymentTypeItem } from './DeploymentInterface'
 import stageCss from '../DeployStageSetupShell/DeployStage.module.scss'
 
@@ -21,6 +29,7 @@ export default function SelectDeploymentType(props: SelectServiceDeploymentTypeP
   const { getString } = useStrings()
   const formikRef = React.useRef<FormikProps<unknown> | null>(null)
   const { subscribeForm, unSubscribeForm } = React.useContext(StageErrorContext)
+  const { NG_NATIVE_HELM } = useFeatureFlags()
 
   const supportedDeploymentTypes: DeploymentTypeItem[] = [
     {
@@ -29,10 +38,10 @@ export default function SelectDeploymentType(props: SelectServiceDeploymentTypeP
       value: 'Kubernetes'
     },
     {
-      label: getString('cd.nativeHelm'),
+      label: getString('pipeline.nativeHelm'),
       icon: 'service-helm',
       value: 'NativeHelm',
-      disabled: !localStorage.getItem('nativeHelm')
+      disabled: !NG_NATIVE_HELM
     },
     {
       label: getString('serviceDeploymentTypes.amazonEcs'),

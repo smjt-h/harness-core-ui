@@ -1,3 +1,10 @@
+/*
+ * Copyright 2022 Harness Inc. All rights reserved.
+ * Use of this source code is governed by the PolyForm Shield 1.0.0 license
+ * that can be found in the licenses directory at the root of this repository, also available at
+ * https://polyformproject.org/wp-content/uploads/2020/06/PolyForm-Shield-1.0.0.txt.
+ */
+
 import React, { useState } from 'react'
 import { Classes, Dialog, IDialogProps, Intent } from '@blueprintjs/core'
 import cx from 'classnames'
@@ -18,7 +25,8 @@ import {
 } from '@wings-software/uicore'
 import { useHistory, useParams, matchPath } from 'react-router-dom'
 import { parse } from 'yaml'
-import { get, isEmpty, isEqual, merge, omit } from 'lodash-es'
+import { get, isEmpty, isEqual, merge, omit, set } from 'lodash-es'
+import produce from 'immer'
 import type { PipelineInfoConfig } from 'services/cd-ng'
 import { useStrings } from 'framework/strings'
 import { AppStoreContext } from 'framework/AppStore/AppStoreContext'
@@ -39,22 +47,30 @@ import { PermissionIdentifier } from '@rbac/interfaces/PermissionIdentifier'
 import { UseSaveSuccessResponse, useSaveToGitDialog } from '@common/modals/SaveToGitDialog/useSaveToGitDialog'
 import type { SaveToGitFormInterface } from '@common/components/SaveToGitForm/SaveToGitForm'
 import routes from '@common/RouteDefinitions'
-import type { EntityGitDetails, GovernanceMetadata } from 'services/pipeline-ng'
-import { useQueryParams, useUpdateQueryParams } from '@common/hooks'
+import {
+  EntityGitDetails,
+  GovernanceMetadata,
+  useGetTemplateFromPipeline,
+  InputSetSummaryResponse,
+  useGetInputsetYaml
+} from 'services/pipeline-ng'
+import { useGlobalEventListener, useMutateAsGet, useQueryParams, useUpdateQueryParams } from '@common/hooks'
 import type { GitFilterScope } from '@common/components/GitFilters/GitFilters'
 import { TagsPopover } from '@common/components'
 import type { IGitContextFormProps } from '@common/components/GitContextForm/GitContextForm'
 import { validateJSONWithSchema } from '@common/utils/YamlUtils'
 import { useDocumentTitle } from '@common/hooks/useDocumentTitle'
 import { PipelineVariablesContextProvider } from '@pipeline/components/PipelineVariablesContext/PipelineVariablesContext'
-import { FeatureIdentifier } from 'framework/featureStore/FeatureIdentifier'
 import { useTelemetry } from '@common/hooks/useTelemetry'
 import { PipelineActions } from '@common/constants/TrackingConstants'
 import { useFeatureFlags } from '@common/hooks/useFeatureFlag'
+import { getFeaturePropsForRunPipelineButton } from '@pipeline/utils/runPipelineUtils'
 import { RunPipelineForm } from '@pipeline/components/RunPipelineModal/RunPipelineForm'
-import { PipelineFeatureLimitBreachedBanner } from '@pipeline/factories/PipelineFeatureRestrictionFactory/PipelineFeatureRestrictionFactory'
 import { EvaluationModal } from '@governance/EvaluationModal'
-import { InputSetSummaryResponse, useGetInputsetYaml } from 'services/pipeline-ng'
+import { createTemplate } from '@pipeline/utils/templateUtils'
+import { getStepFromStage, validateCICodebaseConfiguration } from '@pipeline/components/PipelineStudio/StepUtil'
+import { updateStepWithinStage } from '@pipeline/components/PipelineStudio/RightDrawer/RightDrawer'
+import type { TemplateSummaryResponse } from 'services/template-ng'
 import { savePipeline, usePipelineContext } from '../PipelineContext/PipelineContext'
 import CreatePipelines from '../CreateModal/PipelineCreate'
 import { DefaultNewPipelineId, DrawerTypes } from '../PipelineContext/PipelineActions'
@@ -116,6 +132,11 @@ export const PipelineCanvas: React.FC<PipelineCanvasProps> = ({
   const { isGitSyncEnabled } = React.useContext(AppStoreContext)
   const {
     state,
+    state: {
+      selectionState: { selectedStageId },
+      templateTypes,
+      pipelineView: { drawerData }
+    },
     updatePipeline,
     updateGitDetails,
     deletePipelineCache,
@@ -124,9 +145,12 @@ export const PipelineCanvas: React.FC<PipelineCanvasProps> = ({
     setSchemaErrorView,
     setView,
     isReadonly,
+    updateStage,
     updatePipelineView,
     setSelectedStageId,
-    setSelectedSectionId
+    setSelectedSectionId,
+    getStageFromPipeline,
+    setTemplateTypes
   } = usePipelineContext()
   const {
     repoIdentifier,
@@ -168,7 +192,19 @@ export const PipelineCanvas: React.FC<PipelineCanvasProps> = ({
     }> &
       GitQueryParams
   >()
-  const isCIModule = module === 'ci'
+
+  const { data: template } = useMutateAsGet(useGetTemplateFromPipeline, {
+    queryParams: {
+      accountIdentifier: accountId,
+      orgIdentifier,
+      pipelineIdentifier,
+      projectIdentifier,
+      repoIdentifier,
+      branch
+    },
+    body: {}
+  })
+
   const { showSuccess, showError, clear } = useToaster()
 
   useDocumentTitle([parse(pipeline?.name || getString('pipelines'))])
@@ -194,6 +230,7 @@ export const PipelineCanvas: React.FC<PipelineCanvasProps> = ({
   const [isYamlError, setYamlError] = React.useState(false)
   const [blockNavigation, setBlockNavigation] = React.useState(false)
   const [selectedBranch, setSelectedBranch] = React.useState(branch || '')
+  const [savedTemplate, setSavedTemplate] = React.useState<TemplateSummaryResponse>()
   const [disableVisualView, setDisableVisualView] = React.useState(entityValidityDetails.valid === false)
   const { OPA_PIPELINE_GOVERNANCE } = useFeatureFlags()
   const [governanceMetadata, setGovernanceMetadata] = useState<GovernanceMetadata>()
@@ -269,12 +306,76 @@ export const PipelineCanvas: React.FC<PipelineCanvasProps> = ({
     )
   }
 
+  useGlobalEventListener('TEMPLATE_SAVED', event => {
+    const { detail: newTemplate } = event
+    if (newTemplate) {
+      setSavedTemplate(newTemplate)
+      window.requestAnimationFrame(() => {
+        openUseTemplateDialog()
+      })
+    }
+  })
+
+  const { openDialog: openUseTemplateDialog } = useConfirmationDialog({
+    intent: Intent.WARNING,
+    cancelButtonText: getString('no'),
+    contentText: getString('pipeline.changeTemplate', {
+      name: savedTemplate?.name,
+      entity: savedTemplate?.templateEntityType?.toLowerCase()
+    }),
+    titleText: `Use Template ${savedTemplate?.name}?`,
+    confirmButtonText: getString('yes'),
+    onCloseDialog: async isConfirmed => {
+      if (isConfirmed) {
+        onUseTemplateConfirm()
+      }
+    }
+  })
+
+  const onUseTemplateConfirm = async () => {
+    if (selectedStageId) {
+      const { stage: selectedStage } = getStageFromPipeline(selectedStageId)
+      if (savedTemplate?.templateEntityType === 'Stage') {
+        if (selectedStage?.stage) {
+          const processNode = createTemplate(selectedStage.stage, savedTemplate)
+          await updateStage(processNode)
+        }
+      } else if (savedTemplate?.templateEntityType === 'Step') {
+        const selectedStepId = drawerData.data?.stepConfig?.node.identifier
+        if (selectedStepId) {
+          const selectedStep = getStepFromStage(selectedStepId, selectedStage?.stage?.spec?.execution?.steps)
+          if (selectedStep?.step) {
+            const processNode = createTemplate(selectedStep?.step, savedTemplate)
+            const newPipelineView = produce(pipelineView, draft => {
+              set(draft, 'drawerData.data.stepConfig.node', processNode)
+            })
+            updatePipelineView(newPipelineView)
+            const stageData = produce(selectedStage, draft => {
+              if (draft?.stage?.spec?.execution) {
+                updateStepWithinStage(draft.stage.spec.execution, selectedStepId, processNode as any)
+              }
+            })
+            if (stageData?.stage) {
+              await updateStage(stageData.stage)
+            }
+            drawerData.data?.stepConfig?.onUpdate?.(processNode)
+          }
+        }
+      }
+      if (savedTemplate?.identifier && savedTemplate?.childType) {
+        templateTypes[savedTemplate.identifier] = savedTemplate.childType
+        setTemplateTypes(templateTypes)
+      }
+    }
+  }
+
   const saveAndPublishPipeline = async (
     latestPipeline: PipelineInfoConfig,
     updatedGitDetails?: SaveToGitFormInterface,
     lastObject?: { lastObjectId?: string }
   ): Promise<UseSaveSuccessResponse> => {
     setSchemaErrorView(false)
+    const isEdit = pipelineIdentifier !== DefaultNewPipelineId
     const response = await savePipeline(
       {
         accountIdentifier: accountId,
@@ -285,7 +386,7 @@ export const PipelineCanvas: React.FC<PipelineCanvasProps> = ({
         ...(updatedGitDetails && updatedGitDetails.isNewBranch ? { baseBranch: branch } : {})
       },
       omit(latestPipeline, 'repo', 'branch'),
-      pipelineIdentifier !== DefaultNewPipelineId,
+      isEdit,
       !!OPA_PIPELINE_GOVERNANCE
     )
     const newPipelineId = latestPipeline?.identifier
@@ -307,8 +408,11 @@ export const PipelineCanvas: React.FC<PipelineCanvasProps> = ({
         navigateToLocation(newPipelineId, updatedGitDetails)
         location.reload()
       }
-      trackEvent(isYaml ? PipelineActions.PipelineCreatedViaYAML : PipelineActions.PipelineCreatedViaVisual, {})
-      trackEvent(PipelineActions.PipelineCreated, {})
+      if (isEdit) {
+        trackEvent(isYaml ? PipelineActions.PipelineUpdatedViaYAML : PipelineActions.PipelineUpdatedViaVisual, {})
+      } else {
+        trackEvent(isYaml ? PipelineActions.PipelineCreatedViaYAML : PipelineActions.PipelineCreatedViaVisual, {})
+      }
     } else {
       clear()
       setSchemaErrorView(true)
@@ -357,6 +461,8 @@ export const PipelineCanvas: React.FC<PipelineCanvasProps> = ({
   })
 
   const saveAndPublish = React.useCallback(async () => {
+    window.dispatchEvent(new CustomEvent('SAVE_PIPELINE_CLICKED'))
+
     let latestPipeline: PipelineInfoConfig = pipeline
 
     if (isYaml && yamlHandler) {
@@ -370,6 +476,13 @@ export const PipelineCanvas: React.FC<PipelineCanvasProps> = ({
       } /* istanbul ignore next */ catch (err) {
         showError(err.message || err, undefined, 'pipeline.save.pipeline.error')
       }
+    }
+
+    const ciCodeBaseConfigurationError = validateCICodebaseConfiguration({ pipeline: latestPipeline, getString })
+    if (ciCodeBaseConfigurationError) {
+      clear()
+      showError(ciCodeBaseConfigurationError)
+      return
     }
 
     // if Git sync enabled then display modal
@@ -897,11 +1010,7 @@ export const PipelineCanvas: React.FC<PipelineCanvasProps> = ({
                       e.stopPropagation()
                       openRunPipelineModal()
                     }}
-                    featuresProps={{
-                      featuresRequest: {
-                        featureNames: [isCIModule ? FeatureIdentifier.BUILDS : FeatureIdentifier.DEPLOYMENTS_PER_MONTH]
-                      }
-                    }}
+                    featuresProps={getFeaturePropsForRunPipelineButton(template?.data?.modules)}
                     permission={{
                       resourceScope: {
                         accountIdentifier: accountId,
@@ -919,15 +1028,6 @@ export const PipelineCanvas: React.FC<PipelineCanvasProps> = ({
               </div>
             </div>
           </div>
-          <PipelineFeatureLimitBreachedBanner featureIdentifier={FeatureIdentifier.SERVICES} module={module} />
-          <PipelineFeatureLimitBreachedBanner
-            featureIdentifier={FeatureIdentifier.DEPLOYMENTS_PER_MONTH}
-            module={module}
-          />
-          <PipelineFeatureLimitBreachedBanner
-            featureIdentifier={FeatureIdentifier.INITIAL_DEPLOYMENTS}
-            module={module}
-          />
         </div>
         {isYaml ? <PipelineYamlView /> : <StageBuilder />}
         {shouldShowGovernanceEvaluation && (

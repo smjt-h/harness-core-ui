@@ -1,3 +1,10 @@
+/*
+ * Copyright 2022 Harness Inc. All rights reserved.
+ * Use of this source code is governed by the PolyForm Shield 1.0.0 license
+ * that can be found in the licenses directory at the root of this repository, also available at
+ * https://polyformproject.org/wp-content/uploads/2020/06/PolyForm-Shield-1.0.0.txt.
+ */
+
 import React, { useMemo } from 'react'
 import { Container, Text, Color } from '@wings-software/uicore'
 
@@ -126,7 +133,7 @@ export default function DeploymentExecutionsChart(props: any) {
                   formatter: function (this) {
                     let time = new Date().toLocaleDateString('en-US', { day: 'numeric', month: 'short' })
                     if (data?.data?.executionDeploymentList?.length) {
-                      const val = data?.data?.executionDeploymentList[this.pos].time
+                      const val = data?.data?.executionDeploymentList?.[this.pos]?.time
                       time = val ? new Date(val).toLocaleDateString('en-US', { day: 'numeric', month: 'short' }) : time
                     }
                     return time

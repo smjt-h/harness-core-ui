@@ -1,3 +1,10 @@
+/*
+ * Copyright 2021 Harness Inc. All rights reserved.
+ * Use of this source code is governed by the PolyForm Shield 1.0.0 license
+ * that can be found in the licenses directory at the root of this repository, also available at
+ * https://polyformproject.org/wp-content/uploads/2020/06/PolyForm-Shield-1.0.0.txt.
+ */
+
 import React from 'react'
 import classnames from 'classnames'
 import { Container } from '@wings-software/uicore'
@@ -18,21 +25,23 @@ function visit(json: Record<string, any>, rows: Array<any>, path: Array<string> 
     // for backward references - it expects "config" json.
     throw new Error('max nesting level was reached.')
   }
-  for (const entry of Object.entries(json)) {
-    if (typeof entry[1] === 'object') {
-      rows.push({
-        key: entry[0],
-        path
-      })
-      visit(entry[1], rows, [...path, entry[0]])
-      // TODO - When exactly we need to have empty rows?
-      // rows.push(null);
-    } else {
-      rows.push({
-        key: entry[0],
-        value: entry[1],
-        path
-      })
+  if (json) {
+    for (const entry of Object.entries(json)) {
+      if (typeof entry[1] === 'object' && entry[1] !== null) {
+        rows.push({
+          key: entry[0],
+          path
+        })
+        visit(entry[1], rows, [...path, entry[0]])
+        // TODO - When exactly we need to have empty rows?
+        // rows.push(null);
+      } else {
+        rows.push({
+          key: entry[0],
+          value: entry[1],
+          path
+        })
+      }
     }
   }
 }

@@ -32,6 +32,7 @@ unknown: Unknown
 unexpected: Unexpected
 copyURL: Copy URL
 urlCopied: URL Copied
+unit: Unit
 anomalousMetrics: Anomalous metrics
 proceedToEdit: Proceed to Edit
 filter: Filter
@@ -57,7 +58,7 @@ addNew: + Add New
 turnService: Turn service
 showYAMLChange: Show YAML Change
 seeYAML: See full event YAML
-baseUrl: Base URL
+addGroupName: Please Select Group Name
 serviceDashboardPage:
   fiveMinutes: 5 Minutes
   fifteenMinutes: 15 Minutes
@@ -304,12 +305,15 @@ monitoringSources:
       mappedMetrics: '{{metricCount}} metric(s) mapped to {{serviceCount}} service(s)'
       gcoMetrics: Google Cloud Operation metrics
   datadog:
+    noMetricsWidgets: 'No metrics'
     manualInputQueryModal:
       modalTitle: 'Add your Datadog query'
     selectDashboardsPage:
       noDataText: 'No Datadog dashboards found.'
       dashboardColumnName: 'Datadog Dashboards'
     newDatadogGroupName: 'Add new Datadog group name'
+    validation:
+      queryContains: 'Query must contain '
   datadogLogs:
     submitQueryToSeeRecords: Submit query to see records from Dataodog Logs
     datadogLogsQuery: Datadog Logs Query
@@ -358,6 +362,7 @@ monitoringSources:
       serviceInstanceIdentifier: Service Instance Identifier is required.
       deviation: Deviation Compared to Baseline is required.
       metricNameUnique: Metric name must be unique.
+      metricIdentifierUnique: Metric identifier must be unique.
       groupName: Group Name is required.
       uniqueName: '{{existingName}} already exists. Provide a unique name.'
       recordCount: Current query yields too many records. Please change query to yield one record.
@@ -452,6 +457,7 @@ monitoredServices:
   showingAllServices: Showing all Services ({{ serviceCount }})
   showingServiceAtRisk: Showing Services at Risk ({{ serviceCount }})
   noAvailableData: No available data.
+  noMatchingData: No matching data.
   dependencyHealth: Dependency Health
   dependenciesHealth: Dependencies Health
   healthScoreDataNotAvailable: Health score data not available.
@@ -461,6 +467,7 @@ monitoredServices:
   failedToFetchSummaryData: Failed to fetch summary data
   changeMonitoredServiceType: Change Monitored Service Type
   changeMonitoredServiceTypeMessage: Changing monitored service type will reset change sources
+  sloErrorBudget: SLO Error Budget
   serviceHealth:
     last4Hrs: Last 4 hours
     last24Hrs: Last 24 hours
@@ -479,6 +486,7 @@ monitoredServices:
         needsAttention: Needs attention
         observe: Observe
         healthy: Healthy
+        exhausted: Exhausted
   monitoredServiceTabs:
     serviceHealth: Service Health
     configurations: Configurations
@@ -524,7 +532,7 @@ changeSource:
     selectHarnessAppId: Select Application Id
     selectHarnessService: Select Harness Service
     selectHarnessEnv: Select Harness Environment
-    applicationId: Application
+    applicationId: '{{$.common.application}}'
   changeSourceCard:
     information: Information
     triggred: Triggered
@@ -577,27 +585,18 @@ healthSource:
       validations:
         application: Please select application
         nrql: NRQL Query is required
-        queryType: Query type is required
-        serviceInstanceIdentifier: Service Instance Identifier Json Path is required
         continuousVerification: Service selection is required
-        metricValue: Metric Value Json Path is required
-        timestamp: Timestamp Field/Locator Json Path is required
+        metricValue: Metric Value JSON Path is required
+        timestamp: Timestamp Field/Locator JSON Path is required
       metricFields:
         metricValueJsonPath:
-          label: Metric Value Json Path
+          label: Metric Value JSON Path
           noRecordModalHeader: New Metric Value
-          noRecordInputLabel: Add Metric Value
           recordsModalHeader: Select path for Metric value
         timestampJsonPath:
-          label: Timestamp Field/Locator Json Path
+          label: Timestamp Field/Locator JSON Path
           noRecordModalHeader: New Timestamp Locator
-          noRecordInputLabel: Add Timestamp Locator
           recordsModalHeader: Select path for timestamp field
-        serviceIdentifierJsonPath:
-          label: Service Instance Identifier Json Path
-          noRecordModalHeader: New Service Instance Identifier
-          noRecordInputLabel: Add Service Instance Identifier
-          recordsModalHeader: Select path for service instance identifier field
         timestampFormat: Timestamp Format
     AppDynamics:
       applicationsAndTiers: Applications & Tiers
@@ -612,11 +611,16 @@ healthSource:
         basePath: Please select base path
         metricPath: Please select metric path
         metricPathWithoutLeafNode: Please select metric in metric path
+        fullPath: Please provide full metric path
+      metricPathType:
+        text: Specify a complete metric path
+        dropdown: Select the path from the AppD metric
+      selectedPathLabel: Selected path
     gco:
       selectDashboardTab: 'Select Dashboards'
 slos:
   title: SLOs
-  editSLO: Edit SLO
+  editSLO: 'Edit SLO: {{name}}'
   deleteSLO: Delete SLO
   newSLO: New SLO
   createSLO: Create SLO
@@ -624,12 +628,13 @@ slos:
   sloCreated: SLO created successfully
   sloUpdated: SLO updated successfully
   noData: No SLOs Present.
-  confirmDeleteSLO: 'Are you sure you want to delete SLO: {{ name }}'
+  confirmDeleteSLO: 'Are you sure you want to delete SLO: {{ name }}?'
   sloDeleted: '{{ name }} successfully deleted'
   sli: SLI
   sloTargetAndBudgetPolicy: SLO Target & Error Budget Policy
   sloName: SLO Name
   userJourney: User Journey
+  totalServices: Total SLOs
   userJourneyPlaceholder: Select or create user journey
   userJourneyCreated: User journey created successfully
   selectMonitoredService: Select Monitored Service
@@ -637,8 +642,13 @@ slos:
   selectHealthsource: Select Health Source
   healthSourceForSLI: Health Source for SLI
   sliType: SLI Type
+  sliTypeChooseMetric: SLI Type - Choose a metric
   latencySLI: Latency SLI measures the proportion of requests that were faster than some threshold.
   pickMetricsSLI: Pick metrics powering the SLI
+  configureSLIQueries: Configure SLI queries
+  sloDefinition: Define SLO identifcation
+  reviewChanges: Review changes
+  sloEditWarningMessage: It may take a few minutes to recalculate the error budget. Are you sure you want to proceed?
   validations:
     nameValidation: SLO name is required
     userJourneyRequired: User journey is required
@@ -648,7 +658,8 @@ slos:
     periodTypeOptions:
       rolling: Rolling
       calendar: Calendar
-    setSLOTarget: Set SLO Target
+    setSLOTarget: Set the SLO time window and target
+    complianceTimePeriodTitle: Compliance time period for evaluating SLO
   slis:
     type:
       availability: Availability
@@ -659,9 +670,43 @@ slos:
     ratioMetricType:
       eventType: Event type
       goodRequestsMetrics: Metric for good requests
+      badRequestsMetrics: Metric for bad requests
       validRequestsMetrics: Metric for valid requests
       selectMetric1: Select metric 1
       selectMetric2: Select metric 2
+  contextualHelp:
+    sli:
+      intro: To evaluate the performance of the monitored service, a collection of performance metrics such as duration, error rate, and so on will be applied.
+      healthSource: A Health Source is a combination of a Harness Service and associated Environment that monitors changes in health trends of the service using logs or metrics collected from an Application Performance Management or logging tool.
+      whatIsSli: What is an SLI?
+      sliDefinition: An SLI (service level indicator), which measures the performance of the service. Also, an SLI measures compliance with an SLO (service level objective).
+      sliDefinition2: So, if your SLA (Service Level Agreement) specifies that your systems will be available 99.95% of the time, your SLO is likely 99.95% uptime and your SLI is the actual measurement of your uptime.
+      availabilityDescription: Measures how available your service was to users or valid requests served successfully.
+      latencyDescription: Measures how fast your service responded to users or how many valid request served faster than a defined thresholds.
+      thresholdDescription: The number of valid requests is compared to the length of time.
+      ratioBasedDescription: Percentage of good requests that are acceptable.
+
+    target:
+      compliance: Compliance
+      complianceDefinition: Compliance measures the current performance of the system and is measured against your SLO. There are two types of compliance periods for SLOs
+      complianceDefinition2: Rolling periods (from n days ago to now, where n ranges from 1 to 30 days)
+      complianceDefinition3: Calendar-based periods (from date to date)
+      rollingWindowBased: Rolling window-based
+      rollingWindowDefinition: Measures compliance over a rolling period, so that you are always evaluating, for example, the last 30 days. With a rolling period, the oldest data in the previous calculation drops out of the current calculation and new data replaces it.
+      rollingWindowDefinition2: Rolling windows are more closely aligned with user experience
+      calendarBased: Calendar-based
+      calendarBasedDefinition: Compliance periods can be set to calendar periods like a weekly, monthly or quarterly. At the end of a calendar period, you are given a performance score. The performance score, which is calculated against the performance threshold, tells you whether your service was compliant or not. Even though you may view the performance throughout the period when you use a calendar period, you only get a compliance rating for every compliance period.
+      calendarBasedDefinition2: Calendar windows are more closely aligned with business planning and project work.
+
+SLO: SLO
+SLOPerformanceTrend: SLO Performance Trend
+sloRecalculationInProgress: SLO recalculation in progress
+errorBudgetRecalculationInProgress: Error Budget recalculation in progress
+errorBudgetRemaining: Error Budget Remaining (mins)
+errorBudgetBurnDown: Error Budget Burndown
+SLITriggered: SLI Triggered
+burnRatePerDay: Burn Rate/Day
+timeRemaining: Time Remaining
 SLOTarget: SLO Target
 SLIMetricRatio: SLI - Latency (Metric1 / Metric2 X 100)
 SLIRequestRatio: SLI = (Good requests/ Valid requests) X 100
@@ -669,10 +714,10 @@ objectiveValue: Objective Value
 SLIValueIsGoodIf: SLI value is good if
 thanObjectiveValue: than objective value
 toObjectiveValue: to objective value
-SLIMissingDataType: SLI Missing Data Type
+considerMissingMetricDataAs: Consider missing metric data as
 sliMissingDataTypeIsRequired: SLI Missing data type is required
 metricIsRequired: Metric is required
-metricForGoodAndValidRequestsShouldBeDifferent: Metric for good and valid requests should be different
+metricForGoodAndValidRequestsShouldBeDifferent: Metric for good/bad and valid requests should be different
 required: Required
 periodLength: Period Length
 periodLengthDays: Period Length (Days)
@@ -695,7 +740,11 @@ errorBudget: Error Budget
 mins: mins
 minValueN: 'Min value {{n}}'
 maxValue: 'Max value {{n}}'
-pleaseFillTheRequiredDataToSeeTheSLIData: Please fill the required data to see the SLI data
+pleaseFillTheRequiredFieldsToSeeTheSLIData: Please fill the required fields to see the SLI data
+day: day
+oneDay: 1 day
+days: days
+nDays: '{{ n }} days'
 cvChanges:
   changeTypeFilterDefault: 'Change Types'
   sourceFilterDefault: 'Sources'
@@ -705,4 +754,26 @@ componentValidations:
   requestMethod: Request Method is required
   queryType: Query Type is required
   queryTypeLabel: Query Type
-  httpRequestMethodLabel: Request Method
+customHealthSource:
+  fetchRecordsButton: Click on Fetch Records to pull records from provided URL
+  addGroupNameTitle: Add New Custom Health Group Name
+  Querymapping:
+    title: Query specifications and mapping
+    label: Customize the query to get our desired output and map to Harness Service
+    startAndEndTimeTitle: Start and End Time Placeholders
+    startTimeLabel: Start time placeholder
+    endTimeLabel: End time placeholder
+    validation:
+      body: Body is required.
+      path: Please select path.
+      pathWithoutPlaceholder: Start and end time placeholders must be included in either Path or Body.
+      startAndEndTime: Start and end time placeholders must differ.
+      startTime:
+        placeholder: Please select start time placeholder
+        timestamp: Please select start time timestamp Format
+      endTime:
+        placeholder: Please select end time placeholder
+        timestamp: Please select end time timestamp Format
+  ServiceInstance:
+    pathLabel: Provide Service Instance to map to Harness Service Instance
+    pathModalHeader: Select path for Service Instance

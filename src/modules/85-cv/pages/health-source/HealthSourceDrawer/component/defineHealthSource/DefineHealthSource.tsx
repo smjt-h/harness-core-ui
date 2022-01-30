@@ -1,3 +1,10 @@
+/*
+ * Copyright 2022 Harness Inc. All rights reserved.
+ * Use of this source code is governed by the PolyForm Shield 1.0.0 license
+ * that can be found in the licenses directory at the root of this repository, also available at
+ * https://polyformproject.org/wp-content/uploads/2020/06/PolyForm-Shield-1.0.0.txt.
+ */
+
 import React, { useCallback, useContext, useMemo } from 'react'
 import {
   Color,
@@ -16,6 +23,8 @@ import cx from 'classnames'
 import { FormConnectorReferenceField } from '@connectors/components/ConnectorReferenceField/FormConnectorReferenceField'
 import { useStrings } from 'framework/strings'
 import type { ProjectPathProps } from '@common/interfaces/RouteInterfaces'
+import { useFeatureFlag } from '@common/hooks/useFeatureFlag'
+import { FeatureFlag } from '@common/featureFlags'
 import { BGColorWrapper } from '@cv/pages/health-source/common/StyledComponents'
 import CardWithOuterTitle from '@cv/pages/health-source/common/CardWithOuterTitle/CardWithOuterTitle'
 import DrawerFooter from '@cv/pages/health-source/common/DrawerFooter/DrawerFooter'
@@ -36,6 +45,7 @@ function DefineHealthSource(props: DefineHealthSourceProps): JSX.Element {
   const { onNext, sourceData } = useContext(SetupSourceTabsContext)
   const { orgIdentifier, projectIdentifier, accountId } = useParams<ProjectPathProps & { identifier: string }>()
   const { isEdit } = sourceData
+  const isErrorTrackingEnabled = useFeatureFlag(FeatureFlag.ERROR_TRACKING_ENABLED)
 
   const initialValues = useMemo(() => {
     return getInitialValues(sourceData)
@@ -51,6 +61,8 @@ function DefineHealthSource(props: DefineHealthSourceProps): JSX.Element {
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [])
+
+  const isCustomEnabled = useFeatureFlag(FeatureFlag.CHI_CUSTOM_HEALTH)
 
   return (
     <BGColorWrapper>
@@ -86,9 +98,14 @@ function DefineHealthSource(props: DefineHealthSourceProps): JSX.Element {
                           height={120}
                           margin={{ left: 'xxxlarge', right: 'xxxlarge' }}
                         >
-                          {HEALTHSOURCE_LIST.map(({ name, icon }) => {
+                          {HEALTHSOURCE_LIST.filter(({ name }) =>
+                            name === HealthSourceTypes.ErrorTracking ? isErrorTrackingEnabled : true
+                          ).map(({ name, icon }) => {
                             const connectorTypeName =
                               name === HealthSourceTypes.GoogleCloudOperations ? Connectors.GCP : name
+                            if (isCustomEnabled === false && name === HealthSourceTypes.CustomHealth) {
+                              return null
+                            }
                             return (
                               <div key={name} className={cx(css.squareCardContainer, isEdit && css.disabled)}>
                                 <Card
@@ -168,23 +185,25 @@ function DefineHealthSource(props: DefineHealthSourceProps): JSX.Element {
                       />
                     </div>
                   </Container>
-                  <Container margin={{ bottom: 'large' }} width={'400px'}>
-                    <Text color={Color.BLACK} font={'small'} margin={{ bottom: 'small' }}>
-                      {getFeatureOption(formik?.values?.sourceType, getString).length === 1
-                        ? getString('common.purpose.cf.feature')
-                        : getString('cv.healthSource.featureLabel')}
-                    </Text>
-                    <FormInput.Select
-                      items={getFeatureOption(formik?.values?.sourceType, getString)}
-                      placeholder={getString('cv.healthSource.featurePlaceholder', {
-                        sourceType: formik?.values?.sourceType
-                      })}
-                      value={formik?.values?.product}
-                      name="product"
-                      disabled={isEdit || getFeatureOption(formik?.values?.sourceType, getString).length === 1}
-                      onChange={product => formik.setFieldValue('product', product)}
-                    />
-                  </Container>
+                  {formik?.values?.sourceType !== HealthSourceTypes.CustomHealth && (
+                    <Container margin={{ bottom: 'large' }} width={'400px'}>
+                      <Text color={Color.BLACK} font={'small'} margin={{ bottom: 'small' }}>
+                        {getFeatureOption(formik?.values?.sourceType, getString).length === 1
+                          ? getString('common.purpose.cf.feature')
+                          : getString('cv.healthSource.featureLabel')}
+                      </Text>
+                      <FormInput.Select
+                        items={getFeatureOption(formik?.values?.sourceType, getString)}
+                        placeholder={getString('cv.healthSource.featurePlaceholder', {
+                          sourceType: formik?.values?.sourceType
+                        })}
+                        value={formik?.values?.product}
+                        name="product"
+                        disabled={isEdit || getFeatureOption(formik?.values?.sourceType, getString).length === 1}
+                        onChange={product => formik.setFieldValue('product', product)}
+                      />
+                    </Container>
+                  )}
                 </>
               </CardWithOuterTitle>
               <DrawerFooter onNext={() => formik.submitForm()} />

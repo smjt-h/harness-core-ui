@@ -1,3 +1,10 @@
+/*
+ * Copyright 2021 Harness Inc. All rights reserved.
+ * Use of this source code is governed by the PolyForm Shield 1.0.0 license
+ * that can be found in the licenses directory at the root of this repository, also available at
+ * https://polyformproject.org/wp-content/uploads/2020/06/PolyForm-Shield-1.0.0.txt.
+ */
+
 import React, { useState } from 'react'
 import ReactTimeago from 'react-timeago'
 import { set } from 'lodash-es'
@@ -24,6 +31,7 @@ import RbacMenuItem from '@rbac/components/MenuItem/MenuItem'
 import { PermissionIdentifier } from '@rbac/interfaces/PermissionIdentifier'
 import { ResourceType } from '@rbac/interfaces/ResourceType'
 import { usePermission } from '@rbac/hooks/usePermission'
+import { DelegateTypes } from '@delegates/constants'
 
 import css from './DelegatesPage.module.scss'
 
@@ -34,9 +42,9 @@ type delTroubleshoterProps = {
 
 const columnWidths = {
   icon: '80px',
-  name: '30%',
-  tags: '25%',
-  instances: '10%',
+  name: '25%',
+  tags: '20%',
+  instances: '20%',
   heartbeat: 'calc(15% - 40px)',
   status: 'calc(15% - 40px)',
   actions: '5%'
@@ -94,7 +102,7 @@ const RenderColumnMenu = ({ delegate, setOpenTroubleshoter }: delTroubleshoterPr
             }
           }
         } catch (error) {
-          showError(error.data.responseMessages[0].message || error.message)
+          showError(error.data?.responseMessages?.[0].message || error.message)
         }
       }
     }
@@ -217,7 +225,7 @@ export const DelegateListingItem = ({ delegate, setOpenTroubleshoter }: delTroub
   const isConnected = delegate.activelyConnected
   const text = isConnected ? getString('connected') : getString('delegate.notConnected')
   const color: Color = isConnected ? Color.GREEN_600 : Color.GREY_400
-  const allSelectors = Object.keys(delegate.groupImplicitSelectors || {})
+  const allSelectors = Object.keys(delegate.groupImplicitSelectors || {}).concat(delegate.groupCustomSelectors || [])
 
   return (
     <Card elevation={2} interactive={true} onClick={onDelegateClick} className={css.delegateItemContainer}>
@@ -314,7 +322,9 @@ export const DelegateListingItem = ({ delegate, setOpenTroubleshoter }: delTroub
                 </Layout.Horizontal>
                 <Container className={css.connectivity} width={columnWidths.tags} />
                 <Container width={columnWidths.instances} className={css.instancesColumn}>
-                  {instanceDetails.hostName}
+                  {instanceDetails.delegateType === DelegateTypes.DOCKER
+                    ? `${delegate.groupHostName}-${instanceDetails.hostName}`
+                    : instanceDetails.hostName}
                 </Container>
                 <Layout.Horizontal width={columnWidths.heartbeat}>
                   {instanceDetails.lastHeartBeat ? (
@@ -324,11 +334,7 @@ export const DelegateListingItem = ({ delegate, setOpenTroubleshoter }: delTroub
                   )}
                 </Layout.Horizontal>
                 <Layout.Vertical width={columnWidths.status}>
-                  <Text
-                    icon="full-circle"
-                    iconProps={{ size: 6, color: podStatusColor, padding: 'small' }}
-                    color={podStatusColor}
-                  >
+                  <Text icon="full-circle" iconProps={{ size: 6, color: podStatusColor, padding: 'small' }}>
                     {statusText}
                   </Text>
                 </Layout.Vertical>

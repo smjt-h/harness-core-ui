@@ -1,3 +1,10 @@
+/*
+ * Copyright 2021 Harness Inc. All rights reserved.
+ * Use of this source code is governed by the PolyForm Shield 1.0.0 license
+ * that can be found in the licenses directory at the root of this repository, also available at
+ * https://polyformproject.org/wp-content/uploads/2020/06/PolyForm-Shield-1.0.0.txt.
+ */
+
 import { clone } from 'lodash-es'
 import type { IDrawerProps } from '@blueprintjs/core'
 import type { EntityGitDetails, EntityValidityDetails, NGTemplateInfoConfig } from 'services/template-ng'
@@ -40,6 +47,7 @@ export interface TemplateReducerState {
   isUpdated: boolean
   gitDetails: EntityGitDetails
   entityValidityDetails: EntityValidityDetails
+  templateYaml: string
 }
 
 export const initialState: TemplateReducerState = {
@@ -61,7 +69,8 @@ export const initialState: TemplateReducerState = {
   isUpdated: false,
   isInitialized: false,
   gitDetails: {},
-  entityValidityDetails: {}
+  entityValidityDetails: {},
+  templateYaml: ''
 }
 
 export const TemplateReducer = (state: TemplateReducerState, data: ActionReturnType): TemplateReducerState => {

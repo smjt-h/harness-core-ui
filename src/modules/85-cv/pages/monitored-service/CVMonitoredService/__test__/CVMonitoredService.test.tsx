@@ -1,3 +1,10 @@
+/*
+ * Copyright 2021 Harness Inc. All rights reserved.
+ * Use of this source code is governed by the PolyForm Shield 1.0.0 license
+ * that can be found in the licenses directory at the root of this repository, also available at
+ * https://polyformproject.org/wp-content/uploads/2020/06/PolyForm-Shield-1.0.0.txt.
+ */
+
 import React from 'react'
 import { render, waitFor, screen } from '@testing-library/react'
 import userEvent from '@testing-library/user-event'
@@ -102,13 +109,12 @@ describe('Monitored Service list', () => {
         <CVMonitoredService />
       </TestWrapper>
     )
-
     expect(getByText('ServiceName 1')).toBeDefined()
-    expect(getByText('EnvironmentName 1')).toBeDefined()
+    expect(getByText('new_env_test')).toBeDefined()
     expect(getByText('ServiceName 2')).toBeDefined()
-    expect(getByText('EnvironmentName 2')).toBeDefined()
+    expect(getByText('AppDTestEnv1')).toBeDefined()
     expect(getByText('ServiceName 3')).toBeDefined()
-    expect(getByText('EnvironmentName 3')).toBeDefined()
+    expect(getByText('AppDTestEnv2')).toBeDefined()
   })
 
   test('delete flow works correctly', async () => {

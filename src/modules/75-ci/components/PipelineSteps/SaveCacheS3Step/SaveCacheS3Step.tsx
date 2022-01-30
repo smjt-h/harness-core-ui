@@ -1,3 +1,10 @@
+/*
+ * Copyright 2021 Harness Inc. All rights reserved.
+ * Use of this source code is governed by the PolyForm Shield 1.0.0 license
+ * that can be found in the licenses directory at the root of this repository, also available at
+ * https://polyformproject.org/wp-content/uploads/2020/06/PolyForm-Shield-1.0.0.txt.
+ */
+
 import React from 'react'
 import type { IconName, MultiTypeInputType } from '@wings-software/uicore'
 import type { FormikErrors } from 'formik'
@@ -77,7 +84,7 @@ export class SaveCacheS3Step extends PipelineStep<SaveCacheS3StepData> {
 
   protected type = StepType.SaveCacheS3
   protected stepName = 'Save Cache to S3'
-  protected stepIcon: IconName = 'save-cache-s3'
+  protected stepIcon: IconName = 'save-cache-s3-step'
   protected stepDescription: keyof StringsMap = 'pipeline.stepDescription.SaveCacheS3'
   protected stepPaletteVisible = false
 

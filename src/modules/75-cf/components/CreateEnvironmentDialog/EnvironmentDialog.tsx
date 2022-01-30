@@ -1,3 +1,10 @@
+/*
+ * Copyright 2021 Harness Inc. All rights reserved.
+ * Use of this source code is governed by the PolyForm Shield 1.0.0 license
+ * that can be found in the licenses directory at the root of this repository, also available at
+ * https://polyformproject.org/wp-content/uploads/2020/06/PolyForm-Shield-1.0.0.txt.
+ */
+
 import React from 'react'
 import { useParams } from 'react-router-dom'
 import { Dialog, Spinner } from '@blueprintjs/core'
@@ -23,6 +30,8 @@ import { EnvironmentType } from '@common/constants/EnvironmentType'
 import RbacButton from '@rbac/components/Button/Button'
 import { ResourceType } from '@rbac/interfaces/ResourceType'
 import { PermissionIdentifier } from '@rbac/interfaces/PermissionIdentifier'
+import usePlanEnforcement from '@cf/hooks/usePlanEnforcement'
+import { FeatureIdentifier } from 'framework/featureStore/FeatureIdentifier'
 import css from './EnvironmentDialog.module.scss'
 
 const collapseProps = {
@@ -97,6 +106,18 @@ const EnvironmentDialog: React.FC<EnvironmentDialogProps> = ({ disabled, onCreat
         showError(getErrorMessage(error), 0, 'cf.create.env.error')
       })
   }
+
+  const { isPlanEnforcementEnabled } = usePlanEnforcement()
+
+  const planEnforcementProps = isPlanEnforcementEnabled
+    ? {
+        featuresProps: {
+          featuresRequest: {
+            featureNames: [FeatureIdentifier.MAUS]
+          }
+        }
+      }
+    : undefined
 
   const [openModal, hideModal] = useModalHook(() => {
     return (
@@ -222,6 +243,7 @@ const EnvironmentDialog: React.FC<EnvironmentDialogProps> = ({ disabled, onCreat
         permission: PermissionIdentifier.EDIT_ENVIRONMENT
       }}
       {...buttonProps}
+      {...planEnforcementProps}
     />
   )
 }

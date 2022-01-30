@@ -1,3 +1,10 @@
+/*
+ * Copyright 2021 Harness Inc. All rights reserved.
+ * Use of this source code is governed by the PolyForm Shield 1.0.0 license
+ * that can be found in the licenses directory at the root of this repository, also available at
+ * https://polyformproject.org/wp-content/uploads/2020/06/PolyForm-Shield-1.0.0.txt.
+ */
+
 import React, { useCallback } from 'react'
 import {
   Button,
@@ -9,7 +16,8 @@ import {
   Layout,
   MultiTypeInputType,
   StepProps,
-  FontVariation
+  FontVariation,
+  ButtonSize
 } from '@wings-software/uicore'
 import * as Yup from 'yup'
 import { useParams } from 'react-router-dom'
@@ -35,16 +43,26 @@ interface ArtifactConnectorProps {
   isReadonly: boolean
   initialValues: InitialArtifactDataType
   selectedArtifact: ArtifactType | null
+  allowableTypes: MultiTypeInputType[]
 }
 
 export const ArtifactConnector: React.FC<StepProps<ConnectorConfigDTO> & ArtifactConnectorProps> = props => {
-  const { previousStep, prevStepData, nextStep, initialValues, stepName, expressions, selectedArtifact, isReadonly } =
-    props
+  const {
+    previousStep,
+    prevStepData,
+    nextStep,
+    initialValues,
+    stepName,
+    expressions,
+    selectedArtifact,
+    isReadonly,
+    handleViewChange,
+    allowableTypes
+  } = props
 
   const { accountId, projectIdentifier, orgIdentifier } = useParams<ProjectPathProps>()
   const { repoIdentifier, branch } = useQueryParams<GitQueryParams>()
   const { getString } = useStrings()
-
   const connectorType = ArtifactToConnectorMap[selectedArtifact as ArtifactType]
   const selectedConnectorLabel = ArtifactConnectorLabelMap[selectedArtifact as ArtifactType]
 
@@ -102,7 +120,7 @@ export const ArtifactConnector: React.FC<StepProps<ConnectorConfigDTO> & Artifac
                   projectIdentifier={projectIdentifier}
                   orgIdentifier={orgIdentifier}
                   width={400}
-                  multiTypeProps={{ expressions }}
+                  multiTypeProps={{ expressions, allowableTypes }}
                   isNewConnectorLabelVisible={
                     !(
                       getMultiTypeFromValue(formik.values.connectorId) === MultiTypeInputType.RUNTIME &&
@@ -129,7 +147,22 @@ export const ArtifactConnector: React.FC<StepProps<ConnectorConfigDTO> & Artifac
                     }}
                     isReadonly={isReadonly}
                   />
-                ) : null}
+                ) : (
+                  <Button
+                    variation={ButtonVariation.LINK}
+                    size={ButtonSize.SMALL}
+                    id="new-artifact-connector"
+                    text={newConnectorLabel}
+                    icon="plus"
+                    iconProps={{ size: 12 }}
+                    disabled={isReadonly || !canCreate}
+                    onClick={() => {
+                      handleViewChange()
+                      nextStep?.()
+                    }}
+                    className={css.addNewArtifact}
+                  />
+                )}
               </Layout.Horizontal>
             </div>
             <Layout.Horizontal spacing="medium">

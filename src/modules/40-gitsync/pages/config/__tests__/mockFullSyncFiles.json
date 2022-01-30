@@ -1,0 +1,79 @@
+{
+  "status": "SUCCESS",
+  "data": {
+    "totalPages": 1,
+    "totalItems": 4,
+    "pageItemCount": 4,
+    "pageSize": 10,
+    "content": [
+      {
+        "accountIdentifier": "dummy",
+        "orgIdentifier": "default",
+        "projectIdentifier": "dummyProject",
+        "filePath": "connectors/n3.yaml",
+        "entityType": "Connectors",
+        "syncStatus": "SUCCESS",
+        "name": "entity one",
+        "identifier": "e1",
+        "branch": "gitSync-patch",
+        "repoName": "repo1",
+        "repoUrl": "https://github.com/wings-software/sunnykesh-gitSync",
+        "rootFolder": "/s1/s2/.harness/",
+        "retryCount": 0,
+        "errorMessages": [null]
+      },
+      {
+        "accountIdentifier": "dummy",
+        "orgIdentifier": "default",
+        "projectIdentifier": "dummyProject",
+        "filePath": "connectors/dummyOne.yaml",
+        "entityType": "Connectors",
+        "syncStatus": "SUCCESS",
+        "name": "dummyOne",
+        "identifier": "dummyOne",
+        "branch": "gitSync-patch",
+        "repoName": "repo1",
+        "repoUrl": "https://github.com/wings-software/sunnykesh-gitSync",
+        "rootFolder": "/s1/s2/.harness/",
+        "retryCount": 0,
+        "errorMessages": [null]
+      },
+      {
+        "accountIdentifier": "dummy",
+        "orgIdentifier": "default",
+        "projectIdentifier": "dummyProject",
+        "filePath": "connectors/d2.yaml",
+        "entityType": "Connectors",
+        "syncStatus": "QUEUED",
+        "name": "d2",
+        "identifier": "d2",
+        "branch": "gitSync-patch",
+        "repoName": "repo1",
+        "repoUrl": "https://github.com/wings-software/sunnykesh-gitSync",
+        "rootFolder": "/s1/s2/.harness/",
+        "retryCount": 0,
+        "errorMessages": null
+      },
+      {
+        "accountIdentifier": "dummy",
+        "orgIdentifier": "default",
+        "projectIdentifier": "dummyProject",
+        "filePath": "connectors/d2.yaml",
+        "entityType": "Connectors",
+        "syncStatus": "QUEUED",
+        "name": "d2",
+        "identifier": "d2",
+        "branch": "gitSync-patch",
+        "repoName": "repo1",
+        "repoUrl": "https://github.com/wings-software/sunnykesh-gitSync",
+        "rootFolder": "/s1/s2/.harness/",
+        "retryCount": 0,
+        "errorMessages": null
+      }
+    ],
+    "pageIndex": 0,
+    "empty": false
+  },
+  "metaData": null,
+  "correlationId": "76d79b71-92b0-4a2a-86b6-f972d961930b"
+}

@@ -1,9 +1,20 @@
+/*
+ * Copyright 2021 Harness Inc. All rights reserved.
+ * Use of this source code is governed by the PolyForm Shield 1.0.0 license
+ * that can be found in the licenses directory at the root of this repository, also available at
+ * https://polyformproject.org/wp-content/uploads/2020/06/PolyForm-Shield-1.0.0.txt.
+ */
+
 import React from 'react'
 import { render } from '@testing-library/react'
 import { TestWrapper } from '@common/utils/testUtils'
 import DelegatesPage from '../DelegatesPage'
 import DelegateListing from '../DelegateListing'
 import ProfileMock from './ProfilesMock'
+
+const featureFlags = {
+  NG_SHOW_DEL_TOKENS: true
+}
 
 const mockGetCallFunction = jest.fn()
 jest.mock('services/portal', () => ({
@@ -49,7 +60,11 @@ jest.mock('@common/components/YAMLBuilder/YamlBuilder')
 describe('Delegates Page', () => {
   test('render data', () => {
     const { container } = render(
-      <TestWrapper path="/account/:accountId/resources/delegates" pathParams={{ accountId: 'dummy' }}>
+      <TestWrapper
+        path="/account/:accountId/resources/delegates"
+        pathParams={{ accountId: 'dummy' }}
+        defaultAppStoreValues={{ featureFlags }}
+      >
         <DelegatesPage>
           <DelegateListing />
         </DelegatesPage>

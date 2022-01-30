@@ -1,3 +1,10 @@
+/*
+ * Copyright 2021 Harness Inc. All rights reserved.
+ * Use of this source code is governed by the PolyForm Free Trial 1.0.0 license
+ * that can be found in the licenses directory at the root of this repository, also available at
+ * https://polyformproject.org/wp-content/uploads/2020/05/PolyForm-Free-Trial-1.0.0.txt.
+ */
+
 import { getMultiTypeFromValue, MultiSelectOption, MultiTypeInputType, SelectOption } from '@wings-software/uicore'
 import type { FormikProps } from 'formik'
 import { isEmpty } from 'lodash-es'
@@ -270,12 +277,11 @@ export const handleOperatorChange = (
   i: number
 ) => {
   if (selectedOperator?.value === 'in' || selectedOperator?.value === 'not in') {
-    // When we swiatch from sigle select to mmultiselect, populate the seelcted value in multiselect
-    const conditions = values.spec.conditions
-    if (typeof conditions?.[i].value === 'object' && conditions?.[i].value) {
-      const tobeUpdatedConditions = [...conditions]
+    // When we swiatch from sigle select to mmultiselect, flush the already selected value
+    if (values.spec.conditions) {
+      const tobeUpdatedConditions = [...values.spec.conditions]
       tobeUpdatedConditions[i].operator = selectedOperator.value
-      tobeUpdatedConditions[i].value = [conditions?.[i].value as MultiSelectOption]
+      tobeUpdatedConditions[i].value = []
       onChange({ ...values, spec: { ...values.spec, conditions: tobeUpdatedConditions } })
     }
   }

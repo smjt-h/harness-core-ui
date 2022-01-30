@@ -1,3 +1,10 @@
+/*
+ * Copyright 2021 Harness Inc. All rights reserved.
+ * Use of this source code is governed by the PolyForm Shield 1.0.0 license
+ * that can be found in the licenses directory at the root of this repository, also available at
+ * https://polyformproject.org/wp-content/uploads/2020/06/PolyForm-Shield-1.0.0.txt.
+ */
+
 import React from 'react'
 import { render, act, fireEvent, queryByAttribute, waitFor } from '@testing-library/react'
 import { StepType } from '@pipeline/components/PipelineSteps/PipelineStepInterface'
@@ -9,7 +16,8 @@ import {
   getHarnessApprovalInputVariableModeProps,
   mockUserGroupsResponse,
   getHarnessApprovalEditModeProps,
-  getHarnessApprovalEditModePropsWithValues
+  getHarnessApprovalEditModePropsWithValues,
+  getHarnessApprovalEditModePropsAsExpressions
 } from './HarnessApprovalTestHelper'
 
 jest.mock('@common/components/YAMLBuilder/YamlBuilder')
@@ -148,6 +156,40 @@ describe('Harness Approval tests', () => {
     )
 
     expect(container).toMatchSnapshot('edit stage readonly')
+  })
+
+  test('Edit stage - submit field values as expressions', async () => {
+    const ref = React.createRef<StepFormikRef<unknown>>()
+    const props = getHarnessApprovalEditModePropsAsExpressions()
+    const { container } = render(
+      <TestStepWidget
+        initialValues={props.initialValues}
+        type={StepType.HarnessApproval}
+        stepViewType={StepViewType.Edit}
+        ref={ref}
+        onUpdate={props.onUpdate}
+      />
+    )
+
+    expect(container).toMatchSnapshot('edit stage readonly with expressions')
+
+    await act(() => ref.current?.submitForm())
+    expect(props.onUpdate).toBeCalledWith({
+      identifier: 'hhaass',
+      timeout: '10s',
+      type: 'HarnessApproval',
+      spec: {
+        approvalMessage: '<+somemessage>',
+        includePipelineExecutionHistory: '',
+        approverInputs: '',
+        approvers: {
+          userGroups: '<+abc>',
+          minimumCount: '<+minCount>',
+          disallowPipelineExecutor: ''
+        }
+      },
+      name: 'harness approval step'
+    })
   })
 
   test('On submit call', async () => {

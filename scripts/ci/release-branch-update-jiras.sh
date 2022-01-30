@@ -1,8 +1,13 @@
+# Copyright 2022 Harness Inc. All rights reserved.
+# Use of this source code is governed by the PolyForm Shield 1.0.0 license
+# that can be found in the licenses directory at the root of this repository, also available at
+# https://polyformproject.org/wp-content/uploads/2020/06/PolyForm-Shield-1.0.0.txt.
+
 # ------ from Commit List => extract JIRA Tickets
 # [(CCM|CD|CE|DOC|ER|HAR|LE|PL|SEC|SWAT|UI|DX)-[0-9]+]
 VERSION=$(cat package.json | grep version | cut -d: -f2 | cut -d\" -f2)
 echo $VERSION
-KEYS=`git log --pretty=oneline --abbrev-commit | awk "1;/Branching to release\//{exit}" | grep -o -iE '(BT|CCE|CCM|CDC|CDNG|CDP|CE|CI|CV|CVNG|DEL|DOC|DX|ER|FFM|OPS|PIE|PL|SEC|SWAT|GTM|ONP)-[0-9]+' | sort | uniq`
+KEYS=`git log --pretty=oneline --abbrev-commit | awk "1;/Branching to release\//{exit}" | grep -o -iE '(BT|CCE|CCM|CDC|CDNG|CDP|CE|CI|COMP|CV|CVNG|DEL|DOC|DX|ER|FFM|OPS|OPA|PIE|PL|SEC|SWAT|GTM|ONP)-[0-9]+' | sort | uniq`
 echo --- List of JIRA ---
 echo $KEYS
 echo --- End
@@ -48,5 +53,5 @@ do
                 -H "Content-Type: application/json" \
                 https://harness.atlassian.net/rest/api/2/issue/${KEY}/transitions \
                 --user $JIRA_USERNAME:$JIRA_PASSWORD
-    fi   
+    fi
 done

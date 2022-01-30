@@ -1,3 +1,10 @@
+/*
+ * Copyright 2022 Harness Inc. All rights reserved.
+ * Use of this source code is governed by the PolyForm Shield 1.0.0 license
+ * that can be found in the licenses directory at the root of this repository, also available at
+ * https://polyformproject.org/wp-content/uploads/2020/06/PolyForm-Shield-1.0.0.txt.
+ */
+
 import React from 'react'
 import { Container, Text, Button, Icon, FlexExpander } from '@wings-software/uicore'
 import cx from 'classnames'
@@ -111,6 +118,7 @@ interface PersepectiveExplorerFiltersProps {
   setFilters: React.Dispatch<React.SetStateAction<QlceViewFilterInput[]>>
   filters: QlceViewFilterInput[]
   showHourlyAggr?: boolean
+  featureEnabled?: boolean
 }
 
 const PersepectiveExplorerFilters: React.FC<PersepectiveExplorerFiltersProps> = ({
@@ -120,16 +128,23 @@ const PersepectiveExplorerFilters: React.FC<PersepectiveExplorerFiltersProps> = 
   setFilters,
   timeRange,
   filters,
-  showHourlyAggr
+  showHourlyAggr,
+  featureEnabled
 }) => {
   const last7DaysRange = DATE_RANGE_SHORTCUTS['LAST_7_DAYS']
   return (
-    <Container background="white" padding="small">
+    <Container
+      background="white"
+      padding="small"
+      border={{
+        bottom: true
+      }}
+    >
       <Container className={css.mainContainer}>
         <Icon name="ng-filter" size={20} />
         <ExplorerFilters timeRange={timeRange} filters={filters} setFilters={setFilters} />
         <FlexExpander />
-        <PerspectiveTimeRangePicker timeRange={timeRange} setTimeRange={setTimeRange} />
+        <PerspectiveTimeRangePicker timeRange={timeRange} setTimeRange={setTimeRange} featureEnabled={featureEnabled} />
         <Text color="primary7">|</Text>
         <TimeGranularityDropDown
           aggregation={aggregation}

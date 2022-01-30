@@ -1,0 +1,96 @@
+// Jest Snapshot v1, https://goo.gl/fbAQLP
+
+exports[`GitSyncErrorMessageItem Fix commit and error reason should be rendered 1`] = `
+<div>
+  <div
+    class="Layout--horizontal StyledProps--main section StyledProps--flex StyledProps--flex-justifyContent-space-between"
+    data-testid="gitSyncErrorMessageItem"
+  >
+    <div
+      class="Layout--vertical StyledProps--main"
+    >
+      <p
+        class="StyledProps--font Text--lineclamp StyledProps--main errorItemTitle StyledProps--font-size-small StyledProps--font-weight-semi-bold"
+        data-testid="gitSyncErrorMessageItemTitle"
+        style="--text-line-clamp: 2;"
+      >
+        src/.harness/filepath.yaml
+      </p>
+      <div
+        class="Layout--horizontal StyledProps--main"
+      >
+        <p
+          class="StyledProps--font StyledProps--main StyledProps--font-size-small StyledProps--color StyledProps--color-red600 StyledProps--margin-right-large"
+        >
+          failed
+        </p>
+        <p
+          class="StyledProps--font Text--lineclamp StyledProps--main StyledProps--font-size-small StyledProps--color StyledProps--color-grey900"
+          data-testid="gitSyncErrorMessageItemReason"
+          style="--text-line-clamp: 2;"
+        >
+          errorReason
+        </p>
+      </div>
+    </div>
+    <div
+      class="Layout--horizontal StyledProps--main errorItemErrorFixed StyledProps--background-grey100 StyledProps--padding-left-small StyledProps--padding-right-small StyledProps--padding-top-small StyledProps--padding-bottom-small"
+    >
+      <div
+        class="Layout--horizontal StyledProps--main StyledProps--margin-right-medium"
+      >
+        <span
+          class="bp3-icon StyledProps--main StyledProps--color StyledProps--color-green500 StyledProps--margin-right-small"
+          data-icon="command-artifact-check"
+        >
+          <svg
+            height="14"
+            viewBox="0 0 14 14"
+            width="14"
+            xmlns="http://www.w3.org/2000/svg"
+          >
+            <path
+              d="M7 14c-3.9 0-7-3.1-7-7s3.1-7 7-7 7 3.1 7 7-3.1 7-7 7zm3.3-10c-.2 0-.3.1-.4.2L5.7 8.4 4.1 6.9c-.1-.2-.2-.2-.4-.2-.4 0-.7.3-.7.6 0 .2.1.4.2.5l2 2c.1.1.3.2.5.2s.3-.1.4-.2l4.7-4.7c.1-.1.2-.2.2-.4 0-.4-.3-.7-.7-.7z"
+              fill="#4d5969"
+            />
+          </svg>
+        </span>
+        <p
+          class="StyledProps--font StyledProps--main StyledProps--font-size-small StyledProps--font-weight-semi-bold StyledProps--color StyledProps--color-black"
+        >
+          gitsync.errorFixed
+        </p>
+      </div>
+      <div
+        class="Layout--horizontal StyledProps--main"
+      >
+        <span
+          class="bp3-icon bp3-icon-git-commit StyledProps--main StyledProps--color StyledProps--color-primary7 StyledProps--margin-right-small"
+          icon="git-commit"
+        >
+          <svg
+            data-icon="git-commit"
+            height="16"
+            viewBox="0 0 16 16"
+            width="16"
+          >
+            <desc>
+              git-commit
+            </desc>
+            <path
+              d="M15 7h-3.14c-.45-1.72-2-3-3.86-3S4.59 5.28 4.14 7H1c-.55 0-1 .45-1 1s.45 1 1 1h3.14c.45 1.72 2 3 3.86 3s3.41-1.28 3.86-3H15c.55 0 1-.45 1-1s-.45-1-1-1zm-7 3c-1.1 0-2-.9-2-2s.9-2 2-2 2 .9 2 2-.9 2-2 2z"
+              fill-rule="evenodd"
+            />
+          </svg>
+        </span>
+        <p
+          class="StyledProps--font StyledProps--main StyledProps--font-size-small StyledProps--font-weight-semi-bold StyledProps--color StyledProps--color-primary7"
+          data-testid="gitSyncErrorMessageItemFixCommit"
+        >
+          fixComm
+        </p>
+      </div>
+    </div>
+  </div>
+</div>
+`;

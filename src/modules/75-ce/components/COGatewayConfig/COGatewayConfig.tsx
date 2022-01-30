@@ -1,3 +1,10 @@
+/*
+ * Copyright 2022 Harness Inc. All rights reserved.
+ * Use of this source code is governed by the PolyForm Shield 1.0.0 license
+ * that can be found in the licenses directory at the root of this repository, also available at
+ * https://polyformproject.org/wp-content/uploads/2020/06/PolyForm-Shield-1.0.0.txt.
+ */
+
 import React, { useState, useEffect, useRef, useLayoutEffect } from 'react'
 import { debounce as _debounce, isEmpty as _isEmpty, defaultTo as _defaultTo } from 'lodash-es'
 import { Drawer } from '@blueprintjs/core'
@@ -6,6 +13,8 @@ import type { GatewayDetails } from '@ce/components/COCreateGateway/models'
 import COHelpSidebar from '@ce/components/COHelpSidebar/COHelpSidebar'
 import type { Service } from 'services/lw'
 import { CONFIG_IDLE_TIME_CONSTRAINTS, CONFIG_STEP_IDS, CONFIG_TOTAL_STEP_COUNTS, RESOURCES } from '@ce/constants'
+import { useTelemetry } from '@common/hooks/useTelemetry'
+import { USER_JOURNEY_EVENTS } from '@ce/TrackingEventsConstants'
 import DefineRule from './steps/DefineRule'
 import ManageResources from './steps/ManageResources/ManageResources'
 import ResourceFulfilment from './steps/ResourceFulfilment'
@@ -23,6 +32,7 @@ interface COGatewayConfigProps {
 }
 
 const COGatewayConfig: React.FC<COGatewayConfigProps> = props => {
+  const { trackEvent } = useTelemetry()
   const [drawerOpen, setDrawerOpen] = useState<boolean>(false)
   const [totalStepsCount, setTotalStepsCount] = useState<number>(CONFIG_TOTAL_STEP_COUNTS.DEFAULT)
   const [selectedResource, setSelectedResource] = useState<RESOURCES | null>(
@@ -46,6 +56,10 @@ const COGatewayConfig: React.FC<COGatewayConfigProps> = props => {
     })
     setActiveDrawerIds(newActiveIds)
   }, 500)
+
+  useEffect(() => {
+    trackEvent(USER_JOURNEY_EVENTS.RULE_CREATION_STEP_1, {})
+  }, [])
 
   useLayoutEffect(() => {
     {
@@ -71,7 +85,7 @@ const COGatewayConfig: React.FC<COGatewayConfigProps> = props => {
       props.gatewayDetails.idleTimeMins <= CONFIG_IDLE_TIME_CONSTRAINTS.MAX &&
       (selectedResource === RESOURCES.INSTANCES ? props.gatewayDetails.fullfilment !== '' : true) &&
       (!_isEmpty(props.gatewayDetails.deps)
-        ? props.gatewayDetails.deps.every(_dep => !isNaN(_dep.dep_id) && !isNaN(_dep.delay_secs))
+        ? props.gatewayDetails.deps.every(_dep => !isNaN(_dep.dep_id as number) && !isNaN(_dep.delay_secs as number))
         : true) &&
       (props.gatewayDetails.routing.instance.scale_group
         ? (props.gatewayDetails.routing.instance.scale_group?.on_demand as number) > 0 &&

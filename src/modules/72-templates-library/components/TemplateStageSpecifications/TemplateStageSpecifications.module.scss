@@ -1,0 +1,59 @@
+/*
+ * Copyright 2022 Harness Inc. All rights reserved.
+ * Use of this source code is governed by the PolyForm Shield 1.0.0 license
+ * that can be found in the licenses directory at the root of this repository, also available at
+ * https://polyformproject.org/wp-content/uploads/2020/06/PolyForm-Shield-1.0.0.txt.
+ */
+
+.serviceOverrides {
+  .content-section {
+    padding: var(--spacing-xxlarge) var(--spacing-huge) var(--spacing-13) var(--spacing-huge) !important;
+    > .tabHeading {
+      font-size: 16px;
+      color: var(--black);
+      margin-top: var(--spacing-7);
+      font-weight: 600;
+      line-height: 24px;
+      &:first-child {
+        margin-top: 0;
+      }
+    }
+    .tabSubHeading {
+      font-size: var(--font-size-normal);
+      color: var(--grey-700);
+      margin-bottom: var(--spacing-5);
+      font-weight: 600;
+    }
+    .section-card {
+      width: 1024px;
+      display: block;
+      padding: var(--spacing-7);
+      border-top-left-radius: 0px;
+      border-top-right-radius: 0px;
+      :global(.InputWithIdentifier--txtNameContainer) {
+        max-width: 400px;
+        margin-bottom: 0px;
+      }
+    }
+    .templateBar {
+      margin-right: 0px !important;
+      margin-left: 0px !important;
+      width: 1024px;
+    }
+    .inputs-container {
+      position: relative;
+      min-height: 300px;
+      width: 1024px;
+      .error {
+        min-height: 200px;
+      }
+      .stageCard {
+        margin: 0px 0px var(--spacing-xxlarge) 0px;
+        padding: var(--spacing-5) 0px;
+        background: var(--white);
+        border: 1px solid transparent;
+        box-shadow: var(--elevation-2) !important;
+      }
+    }
+  }
+}

@@ -1,3 +1,10 @@
+/*
+ * Copyright 2022 Harness Inc. All rights reserved.
+ * Use of this source code is governed by the PolyForm Shield 1.0.0 license
+ * that can be found in the licenses directory at the root of this repository, also available at
+ * https://polyformproject.org/wp-content/uploads/2020/06/PolyForm-Shield-1.0.0.txt.
+ */
+
 import qs from 'qs'
 import { getScopeBasedRoute, withAccountId } from '@common/utils/routeUtils'
 import type {
@@ -198,6 +205,7 @@ const routes = {
     }
   ),
   toAccountResources: withAccountId(() => 'settings/resources'),
+  toAccountSMTP: withAccountId(() => 'settings/resources/smtp'),
   toConnectors: withAccountId(
     ({ orgIdentifier, projectIdentifier, module }: Partial<ProjectPathProps & ModulePathParams>) => {
       const path = `resources/connectors`
@@ -336,6 +344,19 @@ const routes = {
       })
     }
   ),
+  toDelegateTokens: withAccountId(
+    ({ orgIdentifier, projectIdentifier, module }: Partial<ProjectPathProps & ModulePathParams>) => {
+      const path = 'resources/delegates/tokens'
+      return getScopeBasedRoute({
+        scope: {
+          orgIdentifier,
+          projectIdentifier,
+          module
+        },
+        path
+      })
+    }
+  ),
   toEditDelegateConfigsDetails: withAccountId(
     ({
       orgIdentifier,
@@ -357,6 +378,19 @@ const routes = {
   toAccessControl: withAccountId(
     ({ orgIdentifier, projectIdentifier, module }: Partial<ProjectPathProps & ModulePathParams>) => {
       const path = `access-control`
+      return getScopeBasedRoute({
+        scope: {
+          orgIdentifier,
+          projectIdentifier,
+          module
+        },
+        path
+      })
+    }
+  ),
+  toAuditTrail: withAccountId(
+    ({ orgIdentifier, projectIdentifier, module }: Partial<ProjectPathProps & ModulePathParams>) => {
+      const path = `audit-trail`
       return getScopeBasedRoute({
         scope: {
           orgIdentifier,
@@ -828,13 +862,15 @@ const routes = {
     }: PipelineType<ExecutionPathProps>) =>
       `/${module}/orgs/${orgIdentifier}/projects/${projectIdentifier}/pipelines/${pipelineIdentifier}/executions/${executionIdentifier}/policy-evaluations`
   ),
-  toCDTemplateLibrary: withAccountId(
-    ({ orgIdentifier, projectIdentifier }: ProjectPathProps) =>
-      `/cd/orgs/${orgIdentifier}/projects/${projectIdentifier}/setup/template-library`
-  ),
-  toCDGeneralSettings: withAccountId(
-    ({ orgIdentifier, projectIdentifier }: ProjectPathProps) =>
-      `/cd/orgs/${orgIdentifier}/projects/${projectIdentifier}/`
+  toExecutionSecurityView: withAccountId(
+    ({
+      orgIdentifier,
+      projectIdentifier,
+      pipelineIdentifier,
+      executionIdentifier,
+      module
+    }: PipelineType<ExecutionPathProps>) =>
+      `/${module}/orgs/${orgIdentifier}/projects/${projectIdentifier}/pipelines/${pipelineIdentifier}/executions/${executionIdentifier}/security`
   ),
   /********************************************************************************************************************/
   toTemplates: withAccountId(
@@ -977,6 +1013,19 @@ const routes = {
   toGitSyncErrors: withAccountId(
     ({ orgIdentifier, projectIdentifier, module }: Partial<ProjectPathProps & ModulePathParams>) => {
       const path = `git-sync/errors`
+      return getScopeBasedRoute({
+        scope: {
+          orgIdentifier,
+          projectIdentifier,
+          module
+        },
+        path
+      })
+    }
+  ),
+  toGitSyncConfig: withAccountId(
+    ({ orgIdentifier, projectIdentifier, module }: Partial<ProjectPathProps & ModulePathParams>) => {
+      const path = `git-sync/config`
       return getScopeBasedRoute({
         scope: {
           orgIdentifier,

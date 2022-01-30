@@ -1,9 +1,16 @@
+/*
+ * Copyright 2022 Harness Inc. All rights reserved.
+ * Use of this source code is governed by the PolyForm Shield 1.0.0 license
+ * that can be found in the licenses directory at the root of this repository, also available at
+ * https://polyformproject.org/wp-content/uploads/2020/06/PolyForm-Shield-1.0.0.txt.
+ */
+
 import React, { useMemo, useState } from 'react'
 import { useHistory, useParams } from 'react-router-dom'
 import type { Column } from 'react-table'
 import { get } from 'lodash-es'
 import { Position } from '@blueprintjs/core'
-import { Container, Layout, Pagination, Text, HarnessDocTooltip, TableV2 } from '@wings-software/uicore'
+import { Container, Layout, Pagination, Text, TableV2 } from '@wings-software/uicore'
 import { EnvironmentResponseDTO, useDeleteEnvironmentV2, useGetEnvironmentListForProject } from 'services/cd-ng'
 import { useToaster } from '@common/exports'
 import { IdentifierText } from '@cf/components/IdentifierText/IdentifierText'
@@ -11,7 +18,7 @@ import { CF_DEFAULT_PAGE_SIZE } from '@cf/utils/CFUtils'
 import { EnvironmentType } from '@common/constants/EnvironmentType'
 import { useConfirmAction } from '@common/hooks/useConfirmAction'
 import { useEnvStrings } from '@cf/hooks/environment'
-import { ListingPageTemplate, ListingPageTitle } from '@cf/components/ListingPageTemplate/ListingPageTemplate'
+import ListingPageTemplate from '@cf/components/ListingPageTemplate/ListingPageTemplate'
 import EnvironmentDialog from '@cf/components/CreateEnvironmentDialog/EnvironmentDialog'
 import routes from '@common/RouteDefinitions'
 import { NoEnvironment } from '@cf/components/NoEnvironment/NoEnvironment'
@@ -19,6 +26,8 @@ import { withTableData } from '@cf/utils/table-utils'
 import RbacOptionsMenuButton from '@rbac/components/RbacOptionsMenuButton/RbacOptionsMenuButton'
 import { ResourceType } from '@rbac/interfaces/ResourceType'
 import { PermissionIdentifier } from '@rbac/interfaces/PermissionIdentifier'
+import UsageLimitBanner from '@cf/components/UsageLimitBanner/UsageLimitBanner'
+import usePlanEnforcement from '@cf/hooks/usePlanEnforcement'
 import css from './EnvironmentsPage.module.scss'
 
 type EnvData = { environment: EnvironmentResponseDTO }
@@ -177,6 +186,8 @@ const EnvironmentsPage: React.FC = () => {
   const hasEnvs = Boolean(!loading && envData?.data?.content?.length)
   const emptyEnvs = Boolean(!loading && envData?.data?.content?.length === 0)
 
+  const { isPlanEnforcementEnabled } = usePlanEnforcement()
+
   const handleEdit = (id: string) => {
     history.push(
       routes.toCFEnvironmentDetails({
@@ -226,20 +237,11 @@ const EnvironmentsPage: React.FC = () => {
     ],
     [getString, handleDeleteEnv]
   )
-  const title = getString('environments')
 
   return (
     <ListingPageTemplate
-      pageTitle={title}
-      header={
-        <ListingPageTitle style={{ borderBottom: 'none' }}>
-          <span data-tooltip-id="ff_env_heading">
-            {title}
-            <HarnessDocTooltip tooltipId="ff_env_heading" useStandAlone />
-          </span>
-        </ListingPageTitle>
-      }
-      headerStyle={{ display: 'flex' }}
+      title={getString('environments')}
+      titleTooltipId="ff_env_heading"
       toolbar={
         hasEnvs && (
           <Layout.Horizontal>
@@ -261,37 +263,6 @@ const EnvironmentsPage: React.FC = () => {
           </Layout.Horizontal>
         )
       }
-      content={
-        <>
-          {hasEnvs && (
-            <Container padding={{ top: 'medium', right: 'xxlarge', left: 'xxlarge' }}>
-              <TableV2<EnvironmentResponseDTO>
-                columns={columns}
-                data={(environments as EnvironmentResponseDTO[]) || []}
-                onRowClick={({ identifier }) => handleEdit(identifier as string)}
-              />
-            </Container>
-          )}
-          {emptyEnvs && (
-            <Container flex={{ align: 'center-center' }} height="100%">
-              <NoEnvironment
-                onCreated={response =>
-                  setTimeout(() => {
-                    history.push(
-                      routes.toCFEnvironmentDetails({
-                        environmentIdentifier: response?.data?.identifier as string,
-                        projectIdentifier,
-                        orgIdentifier,
-                        accountId
-                      })
-                    )
-                  }, 1000)
-                }
-              />
-            </Container>
-          )}
-        </>
-      }
       pagination={
         <Pagination
           itemCount={envData?.data?.totalItems || 0}
@@ -305,11 +276,38 @@ const EnvironmentsPage: React.FC = () => {
         />
       }
       error={error}
-      retryOnError={() => {
-        refetch()
-      }}
+      retryOnError={refetch}
       loading={loading}
-    />
+    >
+      {isPlanEnforcementEnabled && <UsageLimitBanner />}
+      {hasEnvs && (
+        <Container padding={{ top: 'medium', right: 'xlarge', left: 'xlarge' }}>
+          <TableV2<EnvironmentResponseDTO>
+            columns={columns}
+            data={(environments as EnvironmentResponseDTO[]) || []}
+            onRowClick={({ identifier }) => handleEdit(identifier as string)}
+          />
+        </Container>
+      )}
+      {emptyEnvs && (
+        <Container flex={{ align: 'center-center' }} height="100%">
+          <NoEnvironment
+            onCreated={response =>
+              setTimeout(() => {
+                history.push(
+                  routes.toCFEnvironmentDetails({
+                    environmentIdentifier: response?.data?.identifier as string,
+                    projectIdentifier,
+                    orgIdentifier,
+                    accountId
+                  })
+                )
+              }, 1000)
+            }
+          />
+        </Container>
+      )}
+    </ListingPageTemplate>
   )
 }
 

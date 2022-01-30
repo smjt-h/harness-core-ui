@@ -1,3 +1,10 @@
+/*
+ * Copyright 2022 Harness Inc. All rights reserved.
+ * Use of this source code is governed by the PolyForm Shield 1.0.0 license
+ * that can be found in the licenses directory at the root of this repository, also available at
+ * https://polyformproject.org/wp-content/uploads/2020/06/PolyForm-Shield-1.0.0.txt.
+ */
+
 import React from 'react'
 import { FormikProps, FieldArray } from 'formik'
 import {
@@ -8,7 +15,6 @@ import {
   getMultiTypeFromValue,
   Layout,
   MultiTypeInputType,
-  SelectOption,
   Text
 } from '@wings-software/uicore'
 import { v4 as uuid } from 'uuid'
@@ -21,15 +27,16 @@ import MultiTypeFieldSelector from '@common/components/MultiTypeFieldSelector/Mu
 import { ConfigureOptions } from '@common/components/ConfigureOptions/ConfigureOptions'
 import MultiTypeSecretInput from '@secrets/components/MutiTypeSecretInput/MultiTypeSecretInput'
 
-import type { ShellScriptFormData, ShellScriptOutputStepVariable, ShellScriptStepVariable } from './shellScriptTypes'
+import {
+  scriptInputType,
+  scriptOutputType,
+  ShellScriptFormData,
+  ShellScriptOutputStepVariable,
+  ShellScriptStepVariable
+} from './shellScriptTypes'
 
 import stepCss from '@pipeline/components/PipelineSteps/Steps/Steps.module.scss'
 import css from './ShellScript.module.scss'
-
-export const scriptInputType: SelectOption[] = [
-  { label: 'String', value: 'String' },
-  { label: 'Number', value: 'Number' }
-]
 
 export const targetTypeOptions: IOptionProps[] = [
   {
@@ -41,8 +48,6 @@ export const targetTypeOptions: IOptionProps[] = [
     value: 'delegate'
   }
 ]
-
-export const scriptOutputType: SelectOption[] = [{ label: 'String', value: 'String' }]
 
 export default function OptionalConfiguration(props: {
   formik: FormikProps<ShellScriptFormData>
@@ -89,7 +94,7 @@ export default function OptionalConfiguration(props: {
                           <FormInput.MultiTextInput
                             name={`spec.environmentVariables[${i}].value`}
                             multiTextInputProps={{
-                              allowableTypes: allowableTypes.filter(item => item !== MultiTypeInputType.RUNTIME),
+                              allowableTypes,
                               expressions,
                               disabled: readonly
                             }}
@@ -155,7 +160,7 @@ export default function OptionalConfiguration(props: {
                           <FormInput.MultiTextInput
                             name={`spec.outputVariables[${i}].value`}
                             multiTextInputProps={{
-                              allowableTypes: allowableTypes.filter(item => item !== MultiTypeInputType.RUNTIME),
+                              allowableTypes,
                               expressions,
                               disabled: readonly
                             }}

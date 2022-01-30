@@ -1,3 +1,10 @@
+/*
+ * Copyright 2022 Harness Inc. All rights reserved.
+ * Use of this source code is governed by the PolyForm Shield 1.0.0 license
+ * that can be found in the licenses directory at the root of this repository, also available at
+ * https://polyformproject.org/wp-content/uploads/2020/06/PolyForm-Shield-1.0.0.txt.
+ */
+
 import React from 'react'
 import { Route, useParams, Redirect } from 'react-router-dom'
 import { RouteWithLayout } from '@common/router'
@@ -44,6 +51,7 @@ import SecretDetails from '@secrets/pages/secretDetails/SecretDetails'
 import DelegatesPage from '@delegates/pages/delegates/DelegatesPage'
 import DelegateDetails from '@delegates/pages/delegates/DelegateDetails'
 import DelegateProfileDetails from '@delegates/pages/delegates/DelegateConfigurationDetailPage'
+import DelegateTokens from '@delegates/components/DelegateTokens/DelegateTokens'
 import { RedirectToSecretDetailHome } from '@secrets/RouteDestinations'
 import SecretReferences from '@secrets/pages/secretReferences/SecretReferences'
 import SecretDetailsHomePage from '@secrets/pages/secretDetailsHomePage/SecretDetailsHomePage'
@@ -72,7 +80,7 @@ import './components/PipelineStudio/BuildStage'
 import GitSyncPage from '@gitsync/pages/GitSyncPage'
 import GitSyncRepoTab from '@gitsync/pages/repos/GitSyncRepoTab'
 import GitSyncEntityTab from '@gitsync/pages/entities/GitSyncEntityTab'
-import { GitSyncErrorsWithRedirect } from '@gitsync/pages/errors/GitSyncErrors'
+import GitSyncErrors from '@gitsync/pages/errors/GitSyncErrors'
 import AccessControlPage from '@rbac/pages/AccessControl/AccessControlPage'
 import UsersPage from '@rbac/pages/Users/UsersPage'
 import ResourceGroups from '@rbac/pages/ResourceGroups/ResourceGroups'
@@ -92,6 +100,8 @@ import { GovernanceRouteDestinations } from '@governance/RouteDestinations'
 import TemplatesPage from '@templates-library/pages/TemplatesPage/TemplatesPage'
 import { TemplateStudioWrapper } from '@templates-library/components/TemplateStudio/TemplateStudioWrapper'
 import ExecutionPolicyEvaluationsView from '@pipeline/pages/execution/ExecutionPolicyEvaluationsView/ExecutionPolicyEvaluationsView'
+import GitSyncConfigTab from '@gitsync/pages/config/GitSyncConfigTab'
+import ExecutionSecurityView from '@pipeline/pages/execution/ExecutionSecurityView/ExecutionSecurityView'
 import CIHomePage from './pages/home/CIHomePage'
 import CIDashboardPage from './pages/dashboard/CIDashboardPage'
 import CIPipelineStudio from './pages/pipeline-studio/CIPipelineStudio'
@@ -347,7 +357,17 @@ export default (
       path={routes.toGitSyncErrors({ ...accountPathProps, ...pipelineModuleParams, ...projectPathProps })}
     >
       <GitSyncPage>
-        <GitSyncErrorsWithRedirect />
+        <GitSyncErrors />
+      </GitSyncPage>
+    </RouteWithLayout>
+    <RouteWithLayout
+      exact
+      licenseRedirectData={licenseRedirectData}
+      sidebarProps={CISideNavProps}
+      path={routes.toGitSyncConfig({ ...accountPathProps, ...pipelineModuleParams, ...projectPathProps })}
+    >
+      <GitSyncPage>
+        <GitSyncConfigTab />
       </GitSyncPage>
     </RouteWithLayout>
     <RouteWithLayout
@@ -505,6 +525,22 @@ export default (
       exact
       licenseRedirectData={licenseRedirectData}
       sidebarProps={CISideNavProps}
+      path={[
+        routes.toDelegateTokens({
+          ...accountPathProps,
+          ...projectPathProps,
+          ...pipelineModuleParams
+        })
+      ]}
+    >
+      <DelegatesPage>
+        <DelegateTokens />
+      </DelegatesPage>
+    </RouteWithLayout>
+    <RouteWithLayout
+      exact
+      licenseRedirectData={licenseRedirectData}
+      sidebarProps={CISideNavProps}
       path={routes.toPipelineStudio({ ...accountPathProps, ...pipelinePathProps, ...pipelineModuleParams })}
     >
       <PipelineDetails>
@@ -603,6 +639,21 @@ export default (
     >
       <ExecutionLandingPage>
         <ExecutionPolicyEvaluationsView />
+      </ExecutionLandingPage>
+    </RouteWithLayout>
+    <RouteWithLayout
+      exact
+      licenseRedirectData={licenseRedirectData}
+      sidebarProps={CISideNavProps}
+      layout={MinimalLayout}
+      path={routes.toExecutionSecurityView({
+        ...accountPathProps,
+        ...executionPathProps,
+        ...pipelineModuleParams
+      })}
+    >
+      <ExecutionLandingPage>
+        <ExecutionSecurityView />
       </ExecutionLandingPage>
     </RouteWithLayout>
     <RouteWithLayout

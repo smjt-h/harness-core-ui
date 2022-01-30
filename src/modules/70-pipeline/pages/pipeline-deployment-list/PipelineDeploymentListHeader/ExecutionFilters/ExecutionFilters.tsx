@@ -1,3 +1,10 @@
+/*
+ * Copyright 2022 Harness Inc. All rights reserved.
+ * Use of this source code is governed by the PolyForm Shield 1.0.0 license
+ * that can be found in the licenses directory at the root of this repository, also available at
+ * https://polyformproject.org/wp-content/uploads/2020/06/PolyForm-Shield-1.0.0.txt.
+ */
+
 /* eslint-disable @typescript-eslint/no-explicit-any */
 import React from 'react'
 import { useParams } from 'react-router-dom'
@@ -10,7 +17,11 @@ import { useStrings } from 'framework/strings'
 import { useAppStore } from 'framework/AppStore/AppStoreContext'
 import type { FilterDTO, PipelineExecutionFilterProperties } from 'services/pipeline-ng'
 import { usePostFilter, useUpdateFilter, useDeleteFilter } from 'services/pipeline-ng'
-import { useGetEnvironmentListForProject, useGetServiceListForProject } from 'services/cd-ng'
+import {
+  useGetEnvironmentListForProject,
+  useGetServiceDefinitionTypes,
+  useGetServiceListForProject
+} from 'services/cd-ng'
 import { Filter, FilterRef } from '@common/components/Filter/Filter'
 import FilterSelector from '@common/components/Filter/FilterSelector/FilterSelector'
 import type { FilterInterface, FilterDataInterface } from '@common/components/Filter/Constants'
@@ -34,6 +45,7 @@ import {
   removeNullAndEmpty,
   flattenObject
 } from '@common/components/Filter/utils/FilterUtils'
+import { useFeatureFlags } from '@common/hooks/useFeatureFlag'
 import { useFiltersContext } from '../../FiltersContext/FiltersContext'
 import PipelineFilterForm from '../../PipelineFilterForm/PipelineFilterForm'
 import type { StringQueryParams } from '../../types'
@@ -55,9 +67,14 @@ export function ExecutionFilters(): React.ReactElement {
   const isCIEnabled = (selectedProject?.modules && selectedProject.modules?.indexOf('CI') > -1) || false
   const filterRef = React.useRef<FilterRef<FilterDTO> | null>(null)
   const { savedFilters: filters, isFetchingFilters, refetchFilters, queryParams } = useFiltersContext()
+  const { NG_NATIVE_HELM } = useFeatureFlags()
 
   const { data: servicesResponse, loading: isFetchingServices } = useGetServiceListForProject({
     queryParams: { accountId, orgIdentifier, projectIdentifier },
+    lazy: isFiltersDrawerOpen
+  })
+
+  const { data: deploymentTypeResponse, loading: isFetchingDeploymentTypes } = useGetServiceDefinitionTypes({
     lazy: isFiltersDrawerOpen
   })
 
@@ -65,6 +82,8 @@ export function ExecutionFilters(): React.ReactElement {
     queryParams: { accountId, orgIdentifier, projectIdentifier },
     lazy: isFiltersDrawerOpen
   })
+
+  const [deploymentTypeSelectOptions, setDeploymentTypeSelectOptions] = React.useState<SelectOption[]>([])
 
   const { mutate: createFilter } = usePostFilter({
     queryParams: { accountIdentifier: accountId }
@@ -83,7 +102,18 @@ export function ExecutionFilters(): React.ReactElement {
     }
   })
 
-  const isFetchingMetaData = isFetchingEnvironments || isFetchingServices
+  React.useEffect(() => {
+    if (!isFetchingDeploymentTypes && !isEmpty(deploymentTypeResponse?.data) && deploymentTypeResponse?.data) {
+      const options: SelectOption[] = deploymentTypeResponse.data.map(type => ({
+        label: type === 'NativeHelm' ? getString('pipeline.nativeHelm') : getString('kubernetesText'),
+        value: type as string
+      }))
+      setDeploymentTypeSelectOptions(options)
+    }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [deploymentTypeResponse?.data, isFetchingDeploymentTypes])
+
+  const isFetchingMetaData = isFetchingDeploymentTypes || isFetchingEnvironments || isFetchingServices
 
   const appliedFilter =
     queryParams.filterIdentifier && queryParams.filterIdentifier !== UNSAVED_FILTER_IDENTIFIER
@@ -235,7 +265,9 @@ export function ExecutionFilters(): React.ReactElement {
             initialValues={{
               environments: getMultiSelectFormOptions(environmentsResponse?.data?.content),
               services: getMultiSelectFormOptions(servicesResponse?.data?.content),
-              deploymentType: [{ label: getString('kubernetesText'), value: 'Kubernetes' }]
+              deploymentType: NG_NATIVE_HELM
+                ? deploymentTypeSelectOptions
+                : deploymentTypeSelectOptions.filter(deploymentType => deploymentType.value !== 'NativeHelm')
             }}
             type="PipelineExecution"
           />
@@ -250,7 +282,7 @@ export function ExecutionFilters(): React.ReactElement {
             sourceBranch,
             targetBranch,
             buildType,
-            deploymentType: getMultiSelectFormOptions(serviceDefinitionTypes),
+            deploymentType: serviceDefinitionTypes,
             infrastructureType,
             services: getMultiSelectFormOptions(serviceIdentifiers),
             environments: getMultiSelectFormOptions(envIdentifiers)

@@ -1,6 +1,8 @@
+This repo contains code used in the [Harness CD Community Edition](https://github.com/harness/harness-cd-community) which is licensed under the [PolyForm Shield License 1.0.0](./licenses/PolyForm-Shield-1.0.0.txt). This repo also contains code belonging to Harness CD Enterprise Plan which is licensed under the [PolyForm Free Trial License 1.0.0](./licenses/PolyForm-Free-Trial-1.0.0.txt). You may obtain a copy of these licenses in the [licenses](./licenses/) directory at the root of this repository.
+
 # Harness Next Gen UI
 
-Grouped Code Coverage report for master branch: [Coverage Report](https://github.com/wings-software/nextgenui/wiki/Coverage)
+Grouped Code Coverage report for master branch: [Coverage Report](https://github.com/harness/harness-core-ui/wiki/Coverage)
 
 ## Important Links
 
@@ -63,8 +65,6 @@ $ yarn dev
 
 </details>
 
-[NextGen Setup and Onboarding Slides (With Troubleshoot section)](https://docs.google.com/presentation/d/1xGl8JJPzEVDz1yew6cz7ADOZ7J-geI0dXk159EgAauA/edit?usp=sharing)
-
 ### Publishing
 
 ```
@@ -96,7 +96,7 @@ proxy: {
 
 ### Auto-generating services
 
-See [src/services/README.md](https://github.com/wings-software/nextgenui/blob/master/src/services/README.md)
+See [src/services/README.md](https://github.com/harness/harness-core-ui/blob/master/src/services/README.md)
 
 ### Local development against remote environments
 

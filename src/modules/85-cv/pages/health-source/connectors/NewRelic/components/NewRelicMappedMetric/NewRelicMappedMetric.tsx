@@ -1,21 +1,35 @@
-import React, { useState, useMemo, useCallback } from 'react'
+/*
+ * Copyright 2022 Harness Inc. All rights reserved.
+ * Use of this source code is governed by the PolyForm Shield 1.0.0 license
+ * that can be found in the licenses directory at the root of this repository, also available at
+ * https://polyformproject.org/wp-content/uploads/2020/06/PolyForm-Shield-1.0.0.txt.
+ */
+
+import React, { useState, useMemo, useCallback, useContext } from 'react'
 import { useParams } from 'react-router-dom'
-import { Container, Accordion, FormInput, SelectOption, Utils, Button } from '@wings-software/uicore'
+import { Container, Accordion, SelectOption, Utils, Button } from '@wings-software/uicore'
+import type { GetDataError } from 'restful-react'
 import { useStrings } from 'framework/strings'
-import { useGetMetricPacks, useGetLabelNames, useGetSampleDataForNRQL, useGetParsedTimeseries } from 'services/cv'
+import {
+  useGetMetricPacks,
+  useGetSampleDataForNRQL,
+  useFetchParsedSampleData,
+  NewRelicMetricDefinition,
+  TimeSeriesSampleDTO
+} from 'services/cv'
 import type { ProjectPathProps } from '@common/interfaces/RouteInterfaces'
+import { NameId } from '@common/components/NameIdDescriptionTags/NameIdDescriptionTags'
 import { SetupSourceCardHeader } from '@cv/components/CVSetupSourcesView/SetupSourceCardHeader/SetupSourceCardHeader'
 import { SetupSourceLayout } from '@cv/components/CVSetupSourcesView/SetupSourceLayout/SetupSourceLayout'
 import { MultiItemsSideNav } from '@cv/components/MultiItemsSideNav/MultiItemsSideNav'
 import SelectHealthSourceServices from '@cv/pages/health-source/common/SelectHealthSourceServices/SelectHealthSourceServices'
-import { HealthSourceQueryType } from '@cv/pages/health-source/common/HealthSourceQueryType/HealthSourceQueryType'
 import { QueryViewer } from '@cv/components/QueryViewer/QueryViewer'
+import { SetupSourceTabsContext } from '@cv/components/CVSetupSourcesView/SetupSourceTabs/SetupSourceTabs'
 import { InputWithDynamicModalForJson } from '@cv/components/InputWithDynamicModalForJson/InputWithDynamicModalForJson'
-import { QueryType } from '@cv/pages/health-source/common/HealthSourceQueryType/HealthSourceQueryType.types'
 import GroupName from '@cv/components/GroupName/GroupName'
 import MetricLineChart from '@cv/pages/health-source/common/MetricLineChart/MetricLineChart'
 import { updateSelectedMetricsMap, initializeGroupNames } from '../../NewRelicHealthSourceContainer.util'
-import { NewRelicHealthSourceFieldNames } from '../../NewRelicHealthSource.constants'
+import { newRelicDefaultMetricName, NewRelicHealthSourceFieldNames } from '../../NewRelicHealthSource.constants'
 import { getOptionsForChart } from './NewRelicMappedMetric.utils'
 import css from '../../NewrelicMonitoredSource.module.scss'
 
@@ -41,14 +55,10 @@ export default function NewRelicMappedMetric({
   setCreatedMetrics: React.Dispatch<any>
 }): JSX.Element {
   const { getString } = useStrings()
-  const labelNameTracingId = useMemo(() => Utils.randomId(), [])
   const { accountId, orgIdentifier, projectIdentifier } = useParams<ProjectPathProps>()
 
   const metricPackResponse = useGetMetricPacks({
     queryParams: { projectIdentifier, orgIdentifier, accountId, dataSourceType: 'NEW_RELIC' }
-  })
-  const labelNamesResponse = useGetLabelNames({
-    queryParams: { projectIdentifier, orgIdentifier, accountId, connectorIdentifier, tracingId: labelNameTracingId }
   })
 
   const [newRelicGroupName, setNewRelicGroupName] = useState<SelectOption[]>(
@@ -56,7 +66,7 @@ export default function NewRelicMappedMetric({
   )
 
   const [isQueryExecuted, setIsQueryExecuted] = useState(false)
-  const query = useMemo(() => (formikValues?.query?.length ? formikValues.query : ''), [formikValues])
+  const query = useMemo(() => (formikValues?.query?.length ? formikValues.query.trim() : ''), [formikValues])
 
   const queryParamsForNRQL = useMemo(
     () => ({
@@ -71,7 +81,6 @@ export default function NewRelicMappedMetric({
     [accountId, projectIdentifier, orgIdentifier, connectorIdentifier, query]
   )
   const {
-    // Note - this will be uncommented once the api is fixed
     data: nrqlResponse,
     refetch: fetchRecords,
     loading,
@@ -87,34 +96,20 @@ export default function NewRelicMappedMetric({
     () => ({
       accountId,
       orgIdentifier,
-      projectIdentifier,
-      jsonResponse: JSON.stringify(sampleRecord),
-      groupName: formikValues?.groupName?.value,
-      metricValueJsonPath: formikValues?.metricValue,
-      timestampJsonPath: formikValues?.timestamp,
-      timestampFormat: formikValues?.timestampFormat
+      projectIdentifier
     }),
 
-    [
-      accountId,
-      orgIdentifier,
-      projectIdentifier,
-      sampleRecord,
-      formikValues?.groupName?.value,
-      formikValues?.metricValue,
-      formikValues?.timestamp,
-      formikValues?.timestampFormat
-    ]
+    [accountId, orgIdentifier, projectIdentifier]
   )
 
+  const [newRelicTimeSeriesData, setNewRelicTimeSeriesData] = useState<TimeSeriesSampleDTO[] | undefined>()
+
   const {
-    data: newRelicTimeSeriesData,
-    refetch: fetchNewRelicTimeSeriesData,
+    mutate: fetchNewRelicTimeSeriesData,
     loading: timeSeriesDataLoading,
     error: timeseriesDataError
-  } = useGetParsedTimeseries({
-    queryParams: queryParamsForTimeSeriesData,
-    lazy: true
+  } = useFetchParsedSampleData({
+    queryParams: queryParamsForTimeSeriesData
   })
 
   const fetchNewRelicResponse = useCallback(async () => {
@@ -124,25 +119,38 @@ export default function NewRelicMappedMetric({
   }, [queryParamsForNRQL])
 
   const handleBuildChart = useCallback(() => {
-    fetchNewRelicTimeSeriesData({ queryParams: queryParamsForTimeSeriesData })
+    fetchNewRelicTimeSeriesData({
+      groupName: formikValues?.groupName?.value,
+      jsonResponse: JSON.stringify(sampleRecord),
+      metricValueJSONPath: formikValues?.metricValue,
+      timestampJSONPath: formikValues?.timestamp
+    }).then(data => {
+      setNewRelicTimeSeriesData(data.data)
+    })
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [queryParamsForTimeSeriesData])
 
   const options = useMemo(() => {
-    // Note this will be useful if we have to mock the response.
-    // return mockedOptions
-    return getOptionsForChart(newRelicTimeSeriesData)
-
+    return newRelicTimeSeriesData ? getOptionsForChart(newRelicTimeSeriesData) : []
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [newRelicTimeSeriesData])
 
   const isSelectingJsonPathDisabled = !isQueryExecuted || loading || !sampleRecord
 
+  const {
+    sourceData: { existingMetricDetails }
+  } = useContext(SetupSourceTabsContext)
+  const metricDefinitions = existingMetricDetails?.spec?.newRelicMetricDefinitions
+  const currentSelectedMetricDetail = metricDefinitions?.find(
+    (metricDefinition: NewRelicMetricDefinition) =>
+      metricDefinition.metricName === mappedMetrics.get(selectedMetric || '')?.metricName
+  )
+
   return (
     <SetupSourceLayout
       leftPanelContent={
         <MultiItemsSideNav
-          defaultMetricName={'New Relic Metric'}
+          defaultMetricName={newRelicDefaultMetricName}
           tooptipMessage={getString('cv.monitoringSources.gcoLogs.addQueryTooltip')}
           addFieldLabel={getString('cv.monitoringSources.addMetric')}
           createdMetrics={createdMetrics}
@@ -196,7 +204,14 @@ export default function NewRelicMappedMetric({
                 summary={getString('cv.monitoringSources.mapMetricsToServices')}
                 details={
                   <>
-                    <FormInput.Text label={getString('cv.monitoringSources.metricNameLabel')} name={'metricName'} />
+                    <NameId
+                      nameLabel={getString('cv.monitoringSources.metricNameLabel')}
+                      identifierProps={{
+                        inputName: NewRelicHealthSourceFieldNames.METRIC_NAME,
+                        idName: NewRelicHealthSourceFieldNames.METRIC_IDENTIFIER,
+                        isIdentifierEditable: Boolean(!currentSelectedMetricDetail?.identifier)
+                      }}
+                    />
                     <GroupName
                       groupNames={newRelicGroupName}
                       onChange={formikSetField}
@@ -214,7 +229,6 @@ export default function NewRelicMappedMetric({
                 summary={getString('cv.healthSource.connectors.NewRelic.queryMapping')}
                 details={
                   <>
-                    <HealthSourceQueryType />
                     <QueryViewer
                       recordsClassName={css.recordsClassName}
                       queryLabel={getString('cv.healthSource.connectors.NewRelic.nrqlQuery')}
@@ -245,12 +259,6 @@ export default function NewRelicMappedMetric({
                       inputLabel={getString(
                         'cv.healthSource.connectors.NewRelic.metricFields.metricValueJsonPath.label'
                       )}
-                      noRecordModalHeader={getString(
-                        'cv.healthSource.connectors.NewRelic.metricFields.metricValueJsonPath.noRecordModalHeader'
-                      )}
-                      noRecordInputLabel={getString(
-                        'cv.healthSource.connectors.NewRelic.metricFields.metricValueJsonPath.noRecordInputLabel'
-                      )}
                       recordsModalHeader={getString(
                         'cv.healthSource.connectors.NewRelic.metricFields.metricValueJsonPath.recordsModalHeader'
                       )}
@@ -263,42 +271,11 @@ export default function NewRelicMappedMetric({
                       isDisabled={isSelectingJsonPathDisabled}
                       sampleRecord={sampleRecord}
                       inputName={NewRelicHealthSourceFieldNames.TIMESTAMP_LOCATOR}
-                      inputLabel={'Timestamp Field/Locator Json Path'}
-                      noRecordModalHeader={getString(
-                        'cv.healthSource.connectors.NewRelic.metricFields.timestampJsonPath.noRecordModalHeader'
-                      )}
-                      noRecordInputLabel={getString(
-                        'cv.healthSource.connectors.NewRelic.metricFields.timestampJsonPath.noRecordInputLabel'
-                      )}
+                      inputLabel={getString('cv.healthSource.connectors.NewRelic.metricFields.timestampJsonPath.label')}
                       recordsModalHeader={getString(
                         'cv.healthSource.connectors.NewRelic.metricFields.timestampJsonPath.recordsModalHeader'
                       )}
                       showExactJsonPath={true}
-                    />
-                    {formikValues?.queryType === QueryType.HOST_BASED ? (
-                      <InputWithDynamicModalForJson
-                        onChange={formikSetField}
-                        fieldValue={formikValues?.serviceInstanceIdentifier}
-                        isQueryExecuted={isQueryExecuted}
-                        isDisabled={isSelectingJsonPathDisabled}
-                        sampleRecord={sampleRecord}
-                        inputName={NewRelicHealthSourceFieldNames.SERVICE_INSTANCE}
-                        inputLabel={'Service Instance Identifier Json Path'}
-                        noRecordModalHeader={getString(
-                          'cv.healthSource.connectors.NewRelic.metricFields.serviceIdentifierJsonPath.noRecordModalHeader'
-                        )}
-                        noRecordInputLabel={getString(
-                          'cv.healthSource.connectors.NewRelic.metricFields.serviceIdentifierJsonPath.noRecordInputLabel'
-                        )}
-                        recordsModalHeader={getString(
-                          'cv.healthSource.connectors.NewRelic.metricFields.serviceIdentifierJsonPath.recordsModalHeader'
-                        )}
-                        showExactJsonPath={true}
-                      />
-                    ) : null}
-                    <FormInput.Text
-                      label={getString('cv.healthSource.connectors.NewRelic.metricFields.timestampFormat')}
-                      name={NewRelicHealthSourceFieldNames.TIMESTAMP_FORMAT}
                     />
                     <Button
                       intent="primary"
@@ -306,7 +283,11 @@ export default function NewRelicMappedMetric({
                       onClick={handleBuildChart}
                     />
                     <Container padding={{ top: 'small' }}>
-                      <MetricLineChart loading={timeSeriesDataLoading} error={timeseriesDataError} options={options} />
+                      <MetricLineChart
+                        loading={timeSeriesDataLoading}
+                        error={timeseriesDataError as GetDataError<Error>}
+                        options={options}
+                      />
                     </Container>
                   </>
                 }
@@ -323,10 +304,7 @@ export default function NewRelicMappedMetric({
                         continuousVerification: !!formikValues?.continuousVerification
                       }}
                       metricPackResponse={metricPackResponse}
-                      labelNamesResponse={labelNamesResponse}
                       hideServiceIdentifier={true}
-                      hideCV={formikValues?.queryType === QueryType.SERVICE_BASED}
-                      hideSLIAndHealthScore={formikValues?.queryType === QueryType.HOST_BASED}
                     />
                   </>
                 }

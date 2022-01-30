@@ -1,3 +1,10 @@
+/*
+ * Copyright 2021 Harness Inc. All rights reserved.
+ * Use of this source code is governed by the PolyForm Shield 1.0.0 license
+ * that can be found in the licenses directory at the root of this repository, also available at
+ * https://polyformproject.org/wp-content/uploads/2020/06/PolyForm-Shield-1.0.0.txt.
+ */
+
 import React, { Dispatch, SetStateAction } from 'react'
 import { useParams, useLocation } from 'react-router-dom'
 import { get, isEmpty, pickBy } from 'lodash-es'
@@ -16,7 +23,6 @@ import type { ExecutionPageQueryParams } from '@pipeline/utils/types'
 import type { ExecutionPathProps, PipelineType } from '@common/interfaces/RouteInterfaces'
 
 import { logsCache } from '@pipeline/components/LogsContent/LogsState/utils'
-import { PipelineFeatureLimitBreachedBanner } from '@pipeline/factories/PipelineFeatureRestrictionFactory/PipelineFeatureRestrictionFactory'
 import { EvaluationModal } from '@governance/EvaluationModal'
 import { FeatureRestrictionBanners } from '@pipeline/factories/FeatureRestrictionBannersFactory/FeatureRestrictionBannersFactory'
 import ExecutionContext, { GraphCanvasState } from '@pipeline/context/ExecutionContext'
@@ -219,15 +225,6 @@ export default function ExecutionLandingPage(props: React.PropsWithChildren<unkn
               <ExecutionHeader />
               <ExecutionMetadata />
             </header>
-            <PipelineFeatureLimitBreachedBanner featureIdentifier={FeatureIdentifier.SERVICES} module={module} />
-            <PipelineFeatureLimitBreachedBanner
-              featureIdentifier={FeatureIdentifier.DEPLOYMENTS_PER_MONTH}
-              module={module}
-            />
-            <PipelineFeatureLimitBreachedBanner
-              featureIdentifier={FeatureIdentifier.INITIAL_DEPLOYMENTS}
-              module={module}
-            />
             <ExecutionTabs />
             {module === 'ci' && (
               <FeatureRestrictionBanners

@@ -1,3 +1,10 @@
+/*
+ * Copyright 2022 Harness Inc. All rights reserved.
+ * Use of this source code is governed by the PolyForm Shield 1.0.0 license
+ * that can be found in the licenses directory at the root of this repository, also available at
+ * https://polyformproject.org/wp-content/uploads/2020/06/PolyForm-Shield-1.0.0.txt.
+ */
+
 .isPopoverParent {
   :global {
     .bp3-popover-target {
@@ -100,8 +107,8 @@
 }
 
 .popover-container {
-  width: 360px !important;
-  max-height: 350px;
+  width: 530px !important;
+  max-height: 450px;
 }
 
 .search {
@@ -152,17 +159,19 @@
 }
 
 .list {
-  margin: var(--spacing-small) 0;
   height: 275px;
   overflow-x: auto;
+  padding: 0px !important;
 
   &.multiple {
     height: 200px;
 
     .item {
-      display: block;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
       padding: var(--spacing-small) var(--spacing-large);
-      height: 45px;
+      height: var(--spacing-11);
       :global(.bp3-checkbox) {
         display: flex !important;
         align-items: center !important;
@@ -178,38 +187,43 @@
 
       > div {
         height: 32px;
+        width: 380px;
       }
 
       .order {
         display: flex;
         align-items: center;
+        margin-left: var(--spacing-large);
 
         .order-text {
+          display: flex;
+          align-items: center;
+          width: 28px;
+          height: 22px;
+          font-size: var(--font-size-xsmall);
+          line-height: 14px;
+          color: var(--grey-900);
           background-color: var(--grey-200);
-          padding: 1px var(--spacing-xsmall);
-          line-height: 1;
+          text-align: center;
+          padding-left: 10px;
           margin-right: var(--spacing-xsmall);
-          font-size: var(--font-size-small);
         }
       }
     }
   }
 
   .item {
-    height: 32px;
+    height: var(--spacing-11);
     display: flex;
     align-items: center;
     cursor: pointer;
     font-size: var(--font-size-small);
+    .nameIdContainer {
+      margin-left: 12px !important;
+    }
 
     &:hover {
-      background: var(--primary-6);
-      .labelText {
-        color: var(--white) !important;
-      }
-      g {
-        fill: var(--white) !important;
-      }
+      background: var(--primary-1);
     }
   }
 }
@@ -227,4 +241,22 @@
   flex-wrap: wrap;
   width: 800px;
   align-items: center;
+}
+
+.drag {
+  cursor: move;
+}
+
+.overlayISHelperTextContainer {
+  margin-top: var(--spacing-medium) !important;
+  padding-left: var(--spacing-medium) !important;
+  padding-right: var(--spacing-medium) !important;
+  padding-bottom: var(--spacing-medium) !important;
+  .overlayIsHelperText {
+    margin-top: var(--spacing-small) !important;
+    line-height: 18px !important;
+    font-size: 12px !important;
+    font-weight: normal;
+    color: var(--grey-600) !important;
+  }
 }

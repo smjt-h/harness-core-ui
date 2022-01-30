@@ -1,12 +1,22 @@
+/*
+ * Copyright 2021 Harness Inc. All rights reserved.
+ * Use of this source code is governed by the PolyForm Shield 1.0.0 license
+ * that can be found in the licenses directory at the root of this repository, also available at
+ * https://polyformproject.org/wp-content/uploads/2020/06/PolyForm-Shield-1.0.0.txt.
+ */
+
 import React from 'react'
-import { Card, Layout, Text, Color, Checkbox } from '@wings-software/uicore'
+import { Card, Layout, Text, Color, Checkbox, FontVariation, Radio } from '@wings-software/uicore'
 import RbacFactory from '@rbac/factories/RbacFactory'
 import type { ResourceType, ResourceCategory } from '@rbac/interfaces/ResourceType'
 import { useStrings } from 'framework/strings'
+import { SelectionType } from '@rbac/utils/utils'
 import css from './ResourceTypeList.module.scss'
 
 interface ResourceTypeListProps {
+  selectionType: SelectionType
   resourceCategoryMap?: Map<ResourceType | ResourceCategory, ResourceType[] | undefined>
+  onSelectionTypeChange: (type: SelectionType) => void
   onResourceSelectionChange: (resource: ResourceType, isAdd: boolean) => void
   onResourceCategorySelect: (types: ResourceType[], isAdd: boolean) => void
   preSelectedResourceList: ResourceType[]
@@ -14,7 +24,9 @@ interface ResourceTypeListProps {
 }
 const ResourceTypeList: React.FC<ResourceTypeListProps> = props => {
   const {
+    selectionType,
     resourceCategoryMap,
+    onSelectionTypeChange,
     onResourceSelectionChange,
     onResourceCategorySelect,
     preSelectedResourceList,
@@ -35,7 +47,33 @@ const ResourceTypeList: React.FC<ResourceTypeListProps> = props => {
     Array.from(resourceTypes).some(value => preSelectedResourceList.includes(value))
 
   return (
-    <Layout.Vertical flex spacing="small">
+    <Layout.Vertical flex spacing="small" className={css.resourceTypeList}>
+      <Layout.Horizontal flex className={css.resourcePicker} padding={{ bottom: 'small' }}>
+        <Text font={{ variation: FontVariation.H6 }} color={Color.GREY_800}>
+          {getString('resources')}
+        </Text>
+
+        <Layout.Horizontal flex spacing="huge">
+          <Radio
+            label={getString('rbac.resourceGroup.all')}
+            inline={true}
+            value={SelectionType.ALL}
+            checked={selectionType === SelectionType.ALL}
+            onChange={e => {
+              onSelectionTypeChange(e.currentTarget.value as SelectionType)
+            }}
+          />
+          <Radio
+            label={getString('common.specified')}
+            inline={true}
+            value={SelectionType.SPECIFIED}
+            checked={selectionType === SelectionType.SPECIFIED}
+            onChange={e => {
+              onSelectionTypeChange(e.currentTarget.value as SelectionType)
+            }}
+          />
+        </Layout.Horizontal>
+      </Layout.Horizontal>
       {resourceCategoryMap?.keys() &&
         Array.from(resourceCategoryMap.keys()).map(resourceCategory => {
           const resourceCategoryHandler =

@@ -1,3 +1,10 @@
+/*
+ * Copyright 2021 Harness Inc. All rights reserved.
+ * Use of this source code is governed by the PolyForm Shield 1.0.0 license
+ * that can be found in the licenses directory at the root of this repository, also available at
+ * https://polyformproject.org/wp-content/uploads/2020/06/PolyForm-Shield-1.0.0.txt.
+ */
+
 import React from 'react'
 import { useParams, useHistory } from 'react-router-dom'
 import { getCIPipelineStages } from '@ci/components/PipelineStudio/CIPipelineStagesUtils'
@@ -20,6 +27,7 @@ import type { PipelineInfoConfig } from 'services/cd-ng'
 import { useQueryParams } from '@common/hooks'
 import { useLicenseStore } from 'framework/LicenseStore/LicenseStoreContext'
 import { LICENSE_STATE_VALUES } from 'framework/LicenseStore/licenseStoreUtil'
+import { TrialType } from '@pipeline/components/TrialModalTemplate/trialModalUtils'
 import { FeatureFlag } from '@common/featureFlags'
 import type { ModuleLicenseType } from '@common/constants/SubscriptionTypes'
 import { TemplateDrawer } from '@templates-library/components/TemplateDrawer/TemplateDrawer'
@@ -34,7 +42,12 @@ const CIPipelineStudio: React.FC = (): JSX.Element => {
   const getTrialPipelineCreateForm = (
     onSubmit: (values: PipelineInfoConfig) => void,
     onClose: () => void
-  ): React.ReactElement => getCITrialDialog({ onSubmit, onClose, isSelect: false })
+  ): React.ReactElement =>
+    getCITrialDialog({
+      actionProps: { onSuccess: onSubmit },
+      trialType: TrialType.SET_UP_PIPELINE,
+      onCloseModal: onClose
+    })
 
   const { modal, branch, repoIdentifier } = useQueryParams<{ modal?: ModuleLicenseType } & GitQueryParams>()
 

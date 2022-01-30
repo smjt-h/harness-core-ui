@@ -1,3 +1,10 @@
+/*
+ * Copyright 2022 Harness Inc. All rights reserved.
+ * Use of this source code is governed by the PolyForm Shield 1.0.0 license
+ * that can be found in the licenses directory at the root of this repository, also available at
+ * https://polyformproject.org/wp-content/uploads/2020/06/PolyForm-Shield-1.0.0.txt.
+ */
+
 import React from 'react'
 import {
   Layout,
@@ -21,8 +28,6 @@ import { ConfigureOptions } from '@common/components/ConfigureOptions/ConfigureO
 import { useStrings } from 'framework/strings'
 
 import type { ConnectorConfigDTO, ManifestConfig, ManifestConfigWrapper } from 'services/cd-ng'
-import { getScopeFromValue } from '@common/components/EntityReference/EntityReference'
-import { Scope } from '@common/interfaces/SecretsInterface'
 
 import type { OpenShiftParamDataType } from '../../ManifestInterface'
 import {
@@ -36,6 +41,7 @@ import {
 import GitRepositoryName from '../GitRepositoryName/GitRepositoryName'
 import DragnDropPaths from '../../DragnDropPaths'
 
+import { getRepositoryName } from '../ManifestUtils'
 import templateCss from './OpenShiftParam.module.scss'
 import css from '../ManifestWizardSteps.module.scss'
 import stepCss from '@pipeline/components/PipelineSteps/Steps/Steps.module.scss'
@@ -43,6 +49,7 @@ import stepCss from '@pipeline/components/PipelineSteps/Steps/Steps.module.scss'
 interface OpenshiftTemplateWithGITPropType {
   stepName: string
   expressions: string[]
+  allowableTypes: MultiTypeInputType[]
   initialValues: ManifestConfig
   handleSubmit: (data: ManifestConfigWrapper) => void
   manifestIdsList: Array<string>
@@ -54,6 +61,7 @@ const OpenShiftParamWithGit: React.FC<StepProps<ConnectorConfigDTO> & OpenshiftT
   initialValues,
   handleSubmit,
   expressions,
+  allowableTypes,
   prevStepData,
   previousStep,
   manifestIdsList,
@@ -74,32 +82,6 @@ const OpenShiftParamWithGit: React.FC<StepProps<ConnectorConfigDTO> & OpenshiftT
         : prevStepData?.url
       : null
 
-  const getRepoName = (): string => {
-    let repoName = ''
-    if (getMultiTypeFromValue(prevStepData?.connectorRef) !== MultiTypeInputType.FIXED) {
-      repoName = prevStepData?.connectorRef
-    } else if (prevStepData?.connectorRef) {
-      const connectorScope = getScopeFromValue(initialValues?.spec?.store?.spec?.connectorRef)
-      if (connectorScope === Scope.ACCOUNT) {
-        if (
-          initialValues?.spec?.store?.spec?.connectorRef ===
-          `account.${prevStepData?.connectorRef?.connector?.identifier}`
-        ) {
-          repoName = initialValues?.spec?.store?.spec?.repoName
-        } else {
-          repoName = ''
-        }
-      } else {
-        repoName =
-          prevStepData?.connectorRef?.connector?.identifier === initialValues?.spec?.store?.spec?.connectorRef
-            ? initialValues?.spec?.store?.spec?.repoName
-            : ''
-      }
-      return repoName
-    }
-    return repoName
-  }
-
   const getInitialValues = React.useCallback((): OpenShiftParamDataType => {
     const specValues = get(initialValues, 'spec.store.spec', null)
 
@@ -111,7 +93,7 @@ const OpenShiftParamWithGit: React.FC<StepProps<ConnectorConfigDTO> & OpenshiftT
           typeof specValues.paths === 'string'
             ? specValues.paths
             : specValues.paths?.map((path: string) => ({ path, uuid: uuid(path, nameSpace()) })),
-        repoName: getRepoName()
+        repoName: getRepositoryName(prevStepData, initialValues)
       }
       return values
     }
@@ -121,7 +103,7 @@ const OpenShiftParamWithGit: React.FC<StepProps<ConnectorConfigDTO> & OpenshiftT
       commitId: undefined,
       gitFetchType: 'Branch',
       paths: [{ path: '', uuid: uuid('', nameSpace()) }],
-      repoName: getRepoName()
+      repoName: getRepositoryName(prevStepData, initialValues)
     }
   }, [])
 
@@ -220,6 +202,7 @@ const OpenShiftParamWithGit: React.FC<StepProps<ConnectorConfigDTO> & OpenshiftT
                 <GitRepositoryName
                   accountUrl={accountUrl}
                   expressions={expressions}
+                  allowableTypes={allowableTypes}
                   fieldValue={formik.values?.repoName}
                   changeFieldValue={(value: string) => formik.setFieldValue('repoName', value)}
                   isReadonly={isReadonly}
@@ -245,7 +228,7 @@ const OpenShiftParamWithGit: React.FC<StepProps<ConnectorConfigDTO> & OpenshiftT
                     <FormInput.MultiTextInput
                       label={getString('pipelineSteps.deploy.inputSet.branch')}
                       placeholder={getString('pipeline.manifestType.branchPlaceholder')}
-                      multiTextInputProps={{ expressions }}
+                      multiTextInputProps={{ expressions, allowableTypes }}
                       name="branch"
                     />
                     {getMultiTypeFromValue(formik.values?.branch) === MultiTypeInputType.RUNTIME && (
@@ -274,7 +257,7 @@ const OpenShiftParamWithGit: React.FC<StepProps<ConnectorConfigDTO> & OpenshiftT
                     <FormInput.MultiTextInput
                       label={getString('pipeline.manifestType.commitId')}
                       placeholder={getString('pipeline.manifestType.commitPlaceholder')}
-                      multiTextInputProps={{ expressions }}
+                      multiTextInputProps={{ expressions, allowableTypes }}
                       name="commitId"
                     />
                     {getMultiTypeFromValue(formik.values?.commitId) === MultiTypeInputType.RUNTIME && (
@@ -302,6 +285,7 @@ const OpenShiftParamWithGit: React.FC<StepProps<ConnectorConfigDTO> & OpenshiftT
                 <DragnDropPaths
                   formik={formik}
                   expressions={expressions}
+                  allowableTypes={allowableTypes}
                   pathLabel={getString('pipelineSteps.paths')}
                 />
 

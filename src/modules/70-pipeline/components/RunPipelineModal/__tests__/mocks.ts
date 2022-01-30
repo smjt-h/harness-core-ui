@@ -1,3 +1,10 @@
+/*
+ * Copyright 2022 Harness Inc. All rights reserved.
+ * Use of this source code is governed by the PolyForm Shield 1.0.0 license
+ * that can be found in the licenses directory at the root of this repository, also available at
+ * https://polyformproject.org/wp-content/uploads/2020/06/PolyForm-Shield-1.0.0.txt.
+ */
+
 import type { UseGetMockDataWithMutateAndRefetch } from '@common/utils/testUtils'
 import type {
   ResponseInputSetResponse,
@@ -10,6 +17,7 @@ import type {
   ResponsePreFlightDTO,
   ResponseVariableMergeServiceResponse
 } from 'services/pipeline-ng'
+import type { ResponseTemplateMergeResponse } from 'services/template-ng'
 
 export const mockCreateInputSetResponse: UseGetMockDataWithMutateAndRefetch<ResponseInputSetResponse> = {
   loading: false,
@@ -101,6 +109,21 @@ export const mockGetPipeline: UseGetMockDataWithMutateAndRefetch<ResponsePMSPipe
   }
 }
 
+export const mockGetResolvedPipeline: UseGetMockDataWithMutateAndRefetch<ResponseTemplateMergeResponse> = {
+  loading: false,
+  refetch: jest.fn(),
+  mutate: jest.fn(),
+  data: {
+    correlationId: '',
+    status: 'SUCCESS',
+    metaData: null as unknown as undefined,
+    data: {
+      mergedPipelineYaml:
+        'name: TestPipeline\nidentifier: First\ntags: {}\nstages:\n  - stage:\n      name: Stage1\n      identifier: Stage1\n      description: ""\n      type: Approval\n      spec:\n        execution:\n          steps:\n            - step:\n                name: Approval\n                identifier: approval\n                type: HarnessApproval\n                timeout: 1d\n                spec:\n                  includePipelineExecutionHistory: true\n                  approvers:\n                    disallowPipelineExecutor: false\n                    minimumCount: 2\n                    userGroups:\n                      - Chirag\n                  approverInputs: []\n                  approvalMessage: ABC\n      tags: {}\n      variables: []\nprojectIdentifier: Chirag\norgIdentifier: harness\nvariables:\n  - name: checkVariable1\n    type: String\n    value: <+input>'
+    }
+  }
+}
+
 export const mockPostPipelineExecuteYaml: UseGetMockDataWithMutateAndRefetch<ResponsePlanExecutionResponseDto> = {
   loading: false,
   refetch: jest.fn(),
@@ -152,6 +175,12 @@ export const mockInputSetsList: UseGetMockDataWithMutateAndRefetch<ResponsePageI
           identifier: 'inputset2',
           inputSetType: 'INPUT_SET',
           name: 'is2',
+          pipelineIdentifier: 'PipelineId'
+        },
+        {
+          identifier: 'inputset3',
+          inputSetType: 'INPUT_SET',
+          name: 'is3',
           pipelineIdentifier: 'PipelineId'
         },
         {

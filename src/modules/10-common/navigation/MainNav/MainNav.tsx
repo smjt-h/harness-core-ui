@@ -1,3 +1,10 @@
+/*
+ * Copyright 2021 Harness Inc. All rights reserved.
+ * Use of this source code is governed by the PolyForm Shield 1.0.0 license
+ * that can be found in the licenses directory at the root of this repository, also available at
+ * https://polyformproject.org/wp-content/uploads/2020/06/PolyForm-Shield-1.0.0.txt.
+ */
+
 import React from 'react'
 import cx from 'classnames'
 import { NavLink as Link, useParams } from 'react-router-dom'
@@ -138,7 +145,7 @@ export default function L1Nav(): React.ReactElement {
             >
               <Layout.Vertical flex spacing="xsmall">
                 <Icon name="dashboard" size={20} />
-                <Text font={{ size: 'xsmall', align: 'center' }} color={Color.WHITE} className={css.hiddenText}>
+                <Text font={{ size: 'xsmall', align: 'center' }} color={Color.WHITE} className={css.hoverText}>
                   <String stringID="common.dashboards" />
                 </Text>
               </Layout.Vertical>
@@ -154,7 +161,7 @@ export default function L1Nav(): React.ReactElement {
           >
             <Layout.Vertical flex spacing="xsmall">
               <Icon name="nav-settings" size={20} />
-              <Text font={{ size: 'xsmall', align: 'center' }} color={Color.WHITE} className={css.hiddenText}>
+              <Text font={{ size: 'xsmall', align: 'center' }} color={Color.WHITE} className={css.hoverText}>
                 <String stringID="common.accountSettings" />
               </Text>
             </Layout.Vertical>
@@ -166,8 +173,8 @@ export default function L1Nav(): React.ReactElement {
             activeClassName={css.active}
             to={paths.toUser(params)}
           >
-            <Layout.Vertical flex spacing="small">
-              <Avatar name={user.name || user.email} email={user.email} size="xsmall" hoverCard={false} />
+            <Layout.Vertical flex spacing="xsmall">
+              <Avatar name={user.name || user.email} email={user.email} size="small" hoverCard={false} />
               <Text font={{ size: 'xsmall', align: 'center' }} color={Color.WHITE} className={css.hiddenText}>
                 <String stringID="common.myProfile" />
               </Text>

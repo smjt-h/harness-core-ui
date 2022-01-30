@@ -1,6 +1,13 @@
+/*
+ * Copyright 2022 Harness Inc. All rights reserved.
+ * Use of this source code is governed by the PolyForm Shield 1.0.0 license
+ * that can be found in the licenses directory at the root of this repository, also available at
+ * https://polyformproject.org/wp-content/uploads/2020/06/PolyForm-Shield-1.0.0.txt.
+ */
+
 import React, { ReactElement } from 'react'
 import { isEmpty } from 'lodash-es'
-import { ButtonSize, Color, FontVariation, Layout, Text, Popover } from '@wings-software/uicore'
+import { ButtonSize, Color, FontVariation, Layout, Text, Popover } from '@harness/uicore'
 import { PopoverInteractionKind } from '@blueprintjs/core'
 import { useStrings } from 'framework/strings'
 import { FeatureDescriptor, CustomFeatureDescriptor } from 'framework/featureStore/FeatureDescriptor'
@@ -12,6 +19,8 @@ import css from './FeatureWarning.module.scss'
 
 interface FeatureWarningTooltipProps {
   featureName: FeatureIdentifier
+  warningMessage?: string
+  isDarkMode?: boolean
 }
 
 export interface FeatureWarningProps {
@@ -32,7 +41,7 @@ interface WarningTextProps {
 export const WarningText = ({ tooltip }: WarningTextProps): ReactElement => {
   const { getString } = useStrings()
   return (
-    <Popover interactionKind={PopoverInteractionKind.HOVER} content={tooltip} isDark position={'bottom'}>
+    <Popover interactionKind={PopoverInteractionKind.HOVER} content={tooltip} position={'bottom'}>
       <Text
         className={css.warning}
         icon="flash"
@@ -46,7 +55,11 @@ export const WarningText = ({ tooltip }: WarningTextProps): ReactElement => {
   )
 }
 
-export const FeatureWarningTooltip = ({ featureName }: FeatureWarningTooltipProps): ReactElement => {
+export const FeatureWarningTooltip = ({
+  featureName,
+  warningMessage,
+  isDarkMode = false
+}: FeatureWarningTooltipProps): ReactElement => {
   const { getString } = useStrings()
   const featureDescription = FeatureDescriptor[featureName] ? FeatureDescriptor[featureName] : featureName
   const customFeatureDescription = CustomFeatureDescriptor[featureName]
@@ -61,22 +74,28 @@ export const FeatureWarningTooltip = ({ featureName }: FeatureWarningTooltipProp
 
   return (
     <Layout.Vertical padding="medium" className={css.tooltip}>
-      <Text font={{ size: 'medium', weight: 'semi-bold' }} color={Color.GREY_800} padding={{ bottom: 'small' }}>
+      <Text
+        font={{ size: 'medium', weight: 'semi-bold' }}
+        color={isDarkMode ? Color.GREY_100 : Color.GREY_800}
+        padding={{ bottom: 'small' }}
+      >
         {getString('common.feature.upgradeRequired.title')}
       </Text>
       <Layout.Vertical spacing="small">
-        <Text font={{ size: 'small' }} color={Color.GREY_700}>
-          {!customFeatureDescription && getString('common.feature.upgradeRequired.description')}
-          {customFeatureDescription || featureDescription}
+        <Text font={{ size: 'small' }} color={isDarkMode ? Color.GREY_200 : Color.GREY_800}>
+          {!warningMessage && !customFeatureDescription && getString('common.feature.upgradeRequired.description')}
+          {warningMessage || customFeatureDescription || featureDescription}
         </Text>
-        {!customFeatureDescription && getDescription()}
+        <Text font={{ size: 'small' }} color={isDarkMode ? Color.GREY_200 : Color.GREY_800}>
+          {!warningMessage && !customFeatureDescription && getDescription()}
+        </Text>
         <ExplorePlansBtn featureName={featureName} />
       </Layout.Vertical>
     </Layout.Vertical>
   )
 }
 
-export const FeatureWarningWithTooltip = ({ featureName }: FeatureWarningProps): ReactElement => {
-  const tooltip = <FeatureWarningTooltip featureName={featureName} />
+export const FeatureWarningWithTooltip = ({ featureName, warningMessage }: FeatureWarningProps): ReactElement => {
+  const tooltip = <FeatureWarningTooltip featureName={featureName} warningMessage={warningMessage} />
   return <WarningText tooltip={tooltip} />
 }

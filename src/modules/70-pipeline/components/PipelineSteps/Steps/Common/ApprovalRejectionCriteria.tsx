@@ -1,6 +1,13 @@
+/*
+ * Copyright 2022 Harness Inc. All rights reserved.
+ * Use of this source code is governed by the PolyForm Free Trial 1.0.0 license
+ * that can be found in the licenses directory at the root of this repository, also available at
+ * https://polyformproject.org/wp-content/uploads/2020/05/PolyForm-Free-Trial-1.0.0.txt.
+ */
+
 import React, { useEffect, useState } from 'react'
 import { FieldArray } from 'formik'
-import { isEmpty } from 'lodash-es'
+import { get, isEmpty } from 'lodash-es'
 import {
   Button,
   FormInput,
@@ -22,6 +29,7 @@ import {
   ApprovalRejectionCriteriaType
 } from '@pipeline/components/PipelineSteps/Steps/Common/types'
 import { StepType } from '@pipeline/components/PipelineSteps/PipelineStepInterface'
+import { errorCheck } from '@common/utils/formikHelpers'
 import { isApprovalStepFieldDisabled } from './ApprovalCommons'
 import {
   filterOutMultiOperators,
@@ -87,13 +95,14 @@ export const Conditions = ({
   isFetchingFields,
   allowedValuesForFields,
   allowedFieldKeys,
-  formikErrors,
+  formik,
   fieldList,
   readonly,
   stepType
 }: ConditionsInterface) => {
   const { getString } = useStrings()
   const { expressions } = useVariablesExpression()
+  const name = `spec.${mode}.spec.conditions`
   if (isFetchingFields) {
     return <div className={css.fetching}>{getString('pipeline.approvalCriteria.fetchingFields')}</div>
   }
@@ -119,7 +128,7 @@ export const Conditions = ({
 
       <div className={stepCss.formGroup}>
         <FieldArray
-          name={`spec.${mode}.spec.conditions`}
+          name={name}
           render={({ push, remove }) => {
             return (
               <div className={css.criteriaRow}>
@@ -203,10 +212,9 @@ export const Conditions = ({
           }}
         />
       </div>
-
-      {formikErrors?.conditions ? (
+      {errorCheck(name, formik) ? (
         <Text className={css.formikError} intent="danger">
-          {formikErrors.conditions}
+          {get(formik?.errors, name)}
         </Text>
       ) : null}
     </div>
@@ -222,7 +230,7 @@ export const Jexl = (props: ApprovalRejectionCriteriaProps) => {
         name={`spec.${props.mode}.spec.expression`}
         disabled={isApprovalStepFieldDisabled(props.readonly)}
         label={
-          props.mode === 'approvelCriteria'
+          props.mode === 'approvalCriteria'
             ? getString('pipeline.approvalCriteria.jexlExpressionLabelApproval')
             : getString('pipeline.approvalCriteria.jexlExpressionLabelRejection')
         }

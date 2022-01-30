@@ -1,3 +1,10 @@
+/*
+ * Copyright 2022 Harness Inc. All rights reserved.
+ * Use of this source code is governed by the PolyForm Shield 1.0.0 license
+ * that can be found in the licenses directory at the root of this repository, also available at
+ * https://polyformproject.org/wp-content/uploads/2020/06/PolyForm-Shield-1.0.0.txt.
+ */
+
 import React, { useState, useEffect, useCallback } from 'react'
 import YAML from 'yaml'
 import { Classes, Switch } from '@blueprintjs/core'
@@ -94,9 +101,7 @@ const ExecutionStrategyRef = (
     return get(selectedStage, 'stage.spec.serviceConfig.serviceDefinition.type', null)
   }, [getStageFromPipeline, selectedStage])
 
-  const [selectedStrategy, setSelectedStrategy] = useState<StrategyType>(
-    serviceDefinitionType() === 'Kubernetes' ? 'Rolling' : 'Basic'
-  )
+  const [selectedStrategy, setSelectedStrategy] = useState<StrategyType>('Rolling')
 
   const infoByType: { [key: string]: string } = {
     BlueGreen: getString('pipeline.executionStrategy.strategies.blueGreen.description'),

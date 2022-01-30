@@ -1,3 +1,10 @@
+/*
+ * Copyright 2021 Harness Inc. All rights reserved.
+ * Use of this source code is governed by the PolyForm Shield 1.0.0 license
+ * that can be found in the licenses directory at the root of this repository, also available at
+ * https://polyformproject.org/wp-content/uploads/2020/06/PolyForm-Shield-1.0.0.txt.
+ */
+
 .rowItem {
   padding: var(--spacing-large) !important;
   background: white !important;
@@ -67,23 +74,23 @@
   }
 }
 .healthCheckTable {
-  align-items: center;
-  width: 479px;
-  th {
-    font-size: 11px;
-    font-weight: 500;
-    line-height: 150%;
+  button[type='button'][data-id='btn-add'] {
+    display: none;
   }
-  tbody {
-    font-size: 13px;
-    font-weight: normal;
-    line-height: 14px;
-    background-color: #ffffff;
-    td {
-      padding: 11px 11px 0 !important;
+  table tbody td > div[class*='TextInput'] {
+    margin-bottom: 0 !important;
+  }
+}
+
+.portConfigTable {
+  table tbody td {
+    padding: 10px !important;
+    > div[class*='TextInput'] {
+      margin-bottom: 0 !important;
     }
   }
 }
+
 .page {
   overflow: scroll;
   height: calc(100vh - 86px);

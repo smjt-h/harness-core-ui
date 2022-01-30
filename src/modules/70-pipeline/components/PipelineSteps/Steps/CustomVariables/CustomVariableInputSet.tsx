@@ -1,3 +1,10 @@
+/*
+ * Copyright 2021 Harness Inc. All rights reserved.
+ * Use of this source code is governed by the PolyForm Shield 1.0.0 license
+ * that can be found in the licenses directory at the root of this repository, also available at
+ * https://polyformproject.org/wp-content/uploads/2020/06/PolyForm-Shield-1.0.0.txt.
+ */
+
 import React from 'react'
 import { useParams } from 'react-router-dom'
 import {
@@ -39,6 +46,7 @@ export interface CustomVariableInputSetProps extends CustomVariableInputSetExtra
   stepViewType?: StepViewType
   inputSetData?: InputSetData<CustomVariablesData>
   formik?: any
+  allowableTypes: MultiTypeInputType[]
 }
 function CustomVariableInputSetBasic(props: CustomVariableInputSetProps): React.ReactElement {
   const {
@@ -50,7 +58,8 @@ function CustomVariableInputSetBasic(props: CustomVariableInputSetProps): React.
     domId,
     inputSetData,
     formik,
-    allValues
+    allValues,
+    allowableTypes
   } = props
   const basePath = path?.length ? `${path}.` : ''
   const { expressions } = useVariablesExpression()
@@ -68,11 +77,11 @@ function CustomVariableInputSetBasic(props: CustomVariableInputSetProps): React.
         template?.variables?.map((templateVariable: AllNGVariables, index: number) => {
           const pipelineVariable = allValues?.variables?.find(
             (variable: AllNGVariables) => variable.name === templateVariable.name
-          ) as AllNGVariables
+          )
 
           return {
-            name: pipelineVariable.name,
-            type: pipelineVariable.type,
+            name: pipelineVariable?.name,
+            type: pipelineVariable?.type,
             value: VariablesFromFormik?.[index]?.value || pipelineVariable?.default || ''
           }
         }) || []
@@ -114,7 +123,7 @@ function CustomVariableInputSetBasic(props: CustomVariableInputSetProps): React.
               {variable.type === VariableType.Secret ? (
                 <MultiTypeSecretInput
                   expressions={expressions}
-                  allowableTypes={[MultiTypeInputType.FIXED, MultiTypeInputType.EXPRESSION]}
+                  allowableTypes={allowableTypes}
                   name={`${basePath}variables[${index}].value`}
                   disabled={inputSetData?.readonly}
                   label=""
@@ -129,7 +138,7 @@ function CustomVariableInputSetBasic(props: CustomVariableInputSetProps): React.
                       useValue
                       selectItems={items}
                       multiTypeInputProps={{
-                        allowableTypes: [MultiTypeInputType.FIXED, MultiTypeInputType.EXPRESSION],
+                        allowableTypes,
                         expressions,
                         selectProps: { disabled: inputSetData?.readonly, items: items }
                       }}
@@ -141,7 +150,7 @@ function CustomVariableInputSetBasic(props: CustomVariableInputSetProps): React.
                       name={`${basePath}variables[${index}].value`}
                       multiTextInputProps={{
                         textProps: { type: variable.type === 'Number' ? 'number' : 'text' },
-                        allowableTypes: [MultiTypeInputType.FIXED, MultiTypeInputType.EXPRESSION],
+                        allowableTypes,
                         expressions
                       }}
                       label=""

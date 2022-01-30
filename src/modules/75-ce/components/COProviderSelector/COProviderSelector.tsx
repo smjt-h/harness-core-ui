@@ -1,3 +1,10 @@
+/*
+ * Copyright 2021 Harness Inc. All rights reserved.
+ * Use of this source code is governed by the PolyForm Shield 1.0.0 license
+ * that can be found in the licenses directory at the root of this repository, also available at
+ * https://polyformproject.org/wp-content/uploads/2020/06/PolyForm-Shield-1.0.0.txt.
+ */
+
 import React, { useEffect, useState } from 'react'
 import { useParams } from 'react-router-dom'
 import {
@@ -19,6 +26,7 @@ import { useTelemetry } from '@common/hooks/useTelemetry'
 import { Breadcrumbs } from '@common/components/Breadcrumbs/Breadcrumbs'
 import type { ProjectPathProps } from '@common/interfaces/RouteInterfaces'
 import { useFeatureFlags } from '@common/hooks/useFeatureFlag'
+import { USER_JOURNEY_EVENTS } from '@ce/TrackingEventsConstants'
 import { Utils } from '@ce/common/Utils'
 import COGatewayBasics from '../COGatewayBasics/COGatewayBasics'
 import COFixedDrawer from '../COGatewayAccess/COFixedDrawer'
@@ -68,9 +76,12 @@ const COProviderSelector: React.FC<COProviderSelectorProps> = props => {
   )
   const [cloudAccountID, setCloudAccountID] = useState<string>(props.gatewayDetails.cloudAccount.id)
   const { accountId } = useParams<ProjectPathProps>()
+
   useEffect(() => {
-    if (selectedCard) trackEvent('SelectedCloudCard', { cloudProvider: selectedCard.name })
-  }, [selectedCard, trackEvent])
+    if (selectedCard) {
+      trackEvent(USER_JOURNEY_EVENTS.SELECT_CLOUD_PROVIDER, { cloudProvider: selectedCard.name })
+    }
+  }, [selectedCard])
 
   const clearCloudAccountDetails = (_gatewayDetails: GatewayDetails): void => {
     if (_gatewayDetails.cloudAccount.id) {
@@ -161,7 +172,6 @@ const COProviderSelector: React.FC<COProviderSelectorProps> = props => {
           text="Next"
           icon="chevron-right"
           onClick={() => {
-            trackEvent('VisitedConfigPage', {})
             props.nextTab()
           }}
           disabled={!(selectedCard && cloudAccountID)}

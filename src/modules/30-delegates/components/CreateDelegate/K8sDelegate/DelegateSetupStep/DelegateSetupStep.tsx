@@ -1,4 +1,11 @@
-import React from 'react'
+/*
+ * Copyright 2022 Harness Inc. All rights reserved.
+ * Use of this source code is governed by the PolyForm Shield 1.0.0 license
+ * that can be found in the licenses directory at the root of this repository, also available at
+ * https://polyformproject.org/wp-content/uploads/2020/06/PolyForm-Shield-1.0.0.txt.
+ */
+
+import React, { useMemo } from 'react'
 import { useParams } from 'react-router-dom'
 import set from 'lodash-es/set'
 import {
@@ -15,24 +22,27 @@ import {
   Tag
 } from '@wings-software/uicore'
 import * as Yup from 'yup'
-import type { FormikProps } from 'formik'
+import type { FormikProps, FormikActions } from 'formik'
 import {
   DelegateSizeDetails,
   useGetDelegateSizes,
   useValidateKubernetesYaml,
-  DelegateSetupDetails
+  DelegateSetupDetails,
+  useGetDelegateTokens,
+  DelegateTokenDetails
 } from 'services/portal'
 
 import { useListDelegateProfilesNg } from 'services/cd-ng'
 import { useStrings } from 'framework/strings'
 
 import type { DelegateProfile } from '@delegates/DelegateInterface'
-import { useToaster } from '@common/exports'
 
+import { useFeatureFlags } from '@common/hooks/useFeatureFlag'
 import type { ProjectPathProps } from '@common/interfaces/RouteInterfaces'
 import { AddDescriptionAndKVTagsWithIdentifier } from '@common/components/AddDescriptionAndTags/AddDescriptionAndTags'
 
 import { DelegateSize } from '@delegates/constants'
+import { useCreateTokenModal } from '@delegates/components/DelegateTokens/modals/useCreateTokenModal'
 import DelegateSizes from '../../components/DelegateSizes/DelegateSizes'
 
 import css from './DelegateSetupStep.module.scss'
@@ -42,6 +52,7 @@ interface DelegateSetupStepProps {
 }
 
 export interface K8sDelegateWizardData {
+  generatedYaml?: string
   delegateYaml?: DelegateSetupDetails
   name: string
   replicas?: number
@@ -63,8 +74,18 @@ const formatProfileList = (data: any): Array<SelectOption> => {
     ? profiles.map((item: DelegateProfile) => {
         return { label: item.name || '', value: item.uuid || '' }
       })
-    : [{ label: '', value: '' }]
+    : []
   return options
+}
+
+const formatTokenOptions = (data: any): Array<SelectOption> => {
+  const profiles: Array<DelegateTokenDetails> = data?.resource
+
+  return profiles
+    ? profiles.map((item: DelegateTokenDetails) => {
+        return { label: item.name || '', value: item.name || '' }
+      })
+    : []
 }
 
 const getDefaultDelegateConfiguration = (data: any) => {
@@ -79,6 +100,7 @@ const getProfile = (data: any, configId: any) => {
 }
 
 const DelegateSetup: React.FC<StepProps<K8sDelegateWizardData> & DelegateSetupStepProps> = props => {
+  const { NG_SHOW_DEL_TOKENS } = useFeatureFlags()
   let initialValues
   if (props?.prevStepData?.delegateYaml) {
     const tags = {}
@@ -99,6 +121,9 @@ const DelegateSetup: React.FC<StepProps<K8sDelegateWizardData> & DelegateSetupSt
         namespace: ''
       }
     }
+    if (NG_SHOW_DEL_TOKENS) {
+      set(initialValues, 'tokenName', '')
+    }
   }
 
   const { accountId, orgIdentifier, projectIdentifier } = useParams<ProjectPathProps>()
@@ -118,24 +143,43 @@ const DelegateSetup: React.FC<StepProps<K8sDelegateWizardData> & DelegateSetupSt
   const defaultProfile = getDefaultDelegateConfiguration(data)
   const profileOptions: SelectOption[] = formatProfileList(data)
 
+  const { data: tokensResponse, refetch: getTokens } = useGetDelegateTokens({
+    queryParams: {
+      accountId,
+      projectIdentifier,
+      orgIdentifier,
+      status: 'ACTIVE'
+    }
+  })
+
+  const defaultToken = tokensResponse?.resource?.[0]
+
+  const { openCreateTokenModal } = useCreateTokenModal({ onSuccess: getTokens })
+
   React.useEffect(() => {
     if (defaultProfile) {
-      formData['delegateConfigurationId'] = defaultProfile?.uuid
+      formData.delegateConfigurationId = defaultProfile?.uuid
       setInitValues({ ...formData })
     }
   }, [defaultProfile])
 
-  const delegateSizeMappings: DelegateSizeDetails[] | undefined = delegateSizes?.resource
+  React.useEffect(() => {
+    if (NG_SHOW_DEL_TOKENS && defaultToken) {
+      formData.tokenName = defaultToken?.name
+      setInitValues({ ...formData })
+    }
+  }, [defaultToken])
 
-  const { showError } = useToaster()
+  const delegateSizeMappings: DelegateSizeDetails[] | undefined = delegateSizes?.resource
 
   const [formData, setInitValues] = React.useState<DelegateSetupDetails>(initialValues as DelegateSetupDetails)
 
   const [selectedPermission, setSelectedPermission] = React.useState<k8sPermissionType>(
     k8sPermissionType[initialValues?.k8sConfigDetails?.k8sPermissionType || k8sPermissionType.CLUSTER_ADMIN]
   )
-  const onSubmit = async (values: DelegateSetupDetails) => {
-    const createParams = values
+
+  const onSubmit = async (values: DelegateSetupDetails, formikActions: FormikActions<DelegateSetupDetails>) => {
+    const createParams = { ...values }
     if (createParams.tags) {
       const tagsArray = Object.keys(values.tags || {})
       set(createParams, 'tags', tagsArray)
@@ -147,42 +191,48 @@ const DelegateSetup: React.FC<StepProps<K8sDelegateWizardData> & DelegateSetupSt
       set(createParams, 'orgIdentifier', orgIdentifier)
     }
     set(createParams, 'delegateType', 'KUBERNETES')
-    const response = await createKubernetesYaml({
-      ...createParams,
-      k8sConfigDetails: {
-        k8sPermissionType: selectedPermission,
-        namespace: selectedPermission === k8sPermissionType.NAMESPACE_ADMIN ? values?.k8sConfigDetails?.namespace : ''
-      }
-    })
-    if ((response as any)?.responseMessages.length) {
-      const err = (response as any)?.responseMessages?.[0]?.message
-      showError(err)
-    } else {
-      const delegateYaml = response.resource
-      if (delegateSizeMappings) {
-        const delegateSize: DelegateSizeDetails =
-          delegateSizeMappings.find((item: DelegateSizeDetails) => item.size === values.size) || delegateSizeMappings[0]
-        if (delegateSize) {
-          const stepPrevData = {
-            delegateYaml,
-            name: values.name,
-            replicas: delegateSize?.replicas
+    try {
+      const response = await createKubernetesYaml({
+        ...createParams,
+        k8sConfigDetails: {
+          k8sPermissionType: selectedPermission,
+          namespace: selectedPermission === k8sPermissionType.NAMESPACE_ADMIN ? values?.k8sConfigDetails?.namespace : ''
+        }
+      })
+      if ((response as any)?.responseMessages.length) {
+        const err = (response as any)?.responseMessages?.[0]?.message
+        formikActions.setFieldError('name', err)
+      } else {
+        const delegateYaml = response.resource
+        if (delegateSizeMappings) {
+          const delegateSize: DelegateSizeDetails =
+            delegateSizeMappings.find((item: DelegateSizeDetails) => item.size === values.size) ||
+            delegateSizeMappings[0]
+          if (delegateSize) {
+            const stepPrevData = {
+              delegateYaml,
+              name: values.name,
+              replicas: delegateSize?.replicas
+            }
+            props?.nextStep?.(stepPrevData)
           }
-          props?.nextStep?.(stepPrevData)
         }
       }
+    } catch (e) {
+      formikActions.setFieldError('name', getString('delegates.delegateNameNotUnique'))
     }
   }
+
+  const delegateTokenOptions = useMemo(() => formatTokenOptions(tokensResponse), [tokensResponse])
 
   return (
     <Layout.Vertical padding="xxlarge">
       <Container padding="small">
         <Formik
           initialValues={formData}
-          onSubmit={values => {
+          onSubmit={(values, formikActions) => {
             setInitValues(values)
-            onSubmit(values)
-            /** to do here */
+            onSubmit(values, formikActions)
           }}
           formName="delegateSetupStepForm"
           validationSchema={Yup.object().shape({
@@ -198,7 +248,8 @@ const DelegateSetup: React.FC<StepProps<K8sDelegateWizardData> & DelegateSetupSt
                 selectedPermission === k8sPermissionType.NAMESPACE_ADMIN
                   ? Yup.string().trim().required(getString('delegates.delegateNamespaceRequired'))
                   : Yup.string().trim()
-            })
+            }),
+            tokenName: NG_SHOW_DEL_TOKENS ? Yup.string().trim().required() : Yup.string()
           })}
         >
           {(formikProps: FormikProps<DelegateSetupDetails>) => {
@@ -222,7 +273,7 @@ const DelegateSetup: React.FC<StepProps<K8sDelegateWizardData> & DelegateSetupSt
                           }}
                         />
                       )}
-                      {profileOptions && profileOptions.length && (
+                      {profileOptions?.length > 0 && (
                         <div className={`${css.formGroup} ${css.profileSelect}`}>
                           <FormInput.Select
                             items={profileOptions}
@@ -241,6 +292,24 @@ const DelegateSetup: React.FC<StepProps<K8sDelegateWizardData> & DelegateSetupSt
                             ))}
                           </div>
                         </Container>
+                      )}
+                      {NG_SHOW_DEL_TOKENS && (
+                        <Layout.Horizontal className={css.tokensSelectContainer} spacing="small">
+                          <FormInput.Select
+                            items={delegateTokenOptions}
+                            label={getString('delegates.tokens.delegateTokens')}
+                            name="tokenName"
+                          />
+                          <Button
+                            minimal
+                            icon="plus"
+                            onClick={e => {
+                              e.preventDefault()
+                              openCreateTokenModal()
+                            }}
+                            text={getString('add')}
+                          />
+                        </Layout.Horizontal>
                       )}
                     </Layout.Vertical>
                     <Layout.Vertical className={css.rightPanel}>

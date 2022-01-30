@@ -1,5 +1,13 @@
-import React from 'react'
+/*
+ * Copyright 2021 Harness Inc. All rights reserved.
+ * Use of this source code is governed by the PolyForm Shield 1.0.0 license
+ * that can be found in the licenses directory at the root of this repository, also available at
+ * https://polyformproject.org/wp-content/uploads/2020/06/PolyForm-Shield-1.0.0.txt.
+ */
+
+import React, { useEffect, useState } from 'react'
 import * as Yup from 'yup'
+import { parse } from 'yaml'
 import cx from 'classnames'
 import {
   Accordion,
@@ -18,7 +26,7 @@ import {
   VisualYamlSelectedView as SelectedView
 } from '@wings-software/uicore'
 import { useParams } from 'react-router-dom'
-import { isEmpty, get, set } from 'lodash-es'
+import { isEmpty, get, set, unset } from 'lodash-es'
 import { Classes, Dialog } from '@blueprintjs/core'
 import flatten from 'lodash-es/flatten'
 import produce from 'immer'
@@ -33,6 +41,7 @@ import {
   PipelineInfoConfig,
   useGetConnector
 } from 'services/cd-ng'
+import { useGetYamlWithTemplateRefsResolved } from 'services/template-ng'
 import {
   ConnectorReferenceField,
   ConnectorReferenceFieldProps
@@ -47,12 +56,13 @@ import type { PipelineType, GitQueryParams } from '@common/interfaces/RouteInter
 import { Scope } from '@common/interfaces/SecretsInterface'
 import { useFeatureFlag } from '@common/hooks/useFeatureFlag'
 import { FeatureFlag } from '@common/featureFlags'
+import { yamlStringify } from '@common/utils/YamlHelperMethods'
 import {
   generateSchemaForLimitCPU,
   generateSchemaForLimitMemory
 } from '@pipeline/components/PipelineSteps/Steps/StepsValidateUtils'
-import { useQueryParams } from '@common/hooks'
 import { StageType } from '@pipeline/utils/stageHelpers'
+import { useMutateAsGet, useQueryParams } from '@common/hooks'
 import { usePipelineContext } from '../PipelineContext/PipelineContext'
 import { DrawerTypes } from '../PipelineContext/PipelineActions'
 import { RightDrawer } from '../RightDrawer/RightDrawer'
@@ -64,8 +74,8 @@ interface CodebaseValues {
   depth?: string
   sslVerify?: number
   prCloneStrategy?: MultiTypeSelectOption
-  memoryLimit?: any
-  cpuLimit?: any
+  memoryLimit?: string
+  cpuLimit?: string
 }
 
 enum CodebaseStatuses {
@@ -115,11 +125,13 @@ export const RightBar = (): JSX.Element => {
     updatePipeline,
     updatePipelineView
   } = usePipelineContext()
-  const codebase = (pipeline as PipelineInfoConfig)?.properties?.ci?.codebase
+  const codebase = pipeline?.properties?.ci?.codebase
   const [codebaseStatus, setCodebaseStatus] = React.useState<CodebaseStatuses>(CodebaseStatuses.ZeroState)
   const enableGovernanceSidebar = useFeatureFlag(FeatureFlag.OPA_PIPELINE_GOVERNANCE)
+  const [enableCodebase, setEnableCodebase] = useState<boolean>()
+  const [isCloneCodebaseEnabled, setIsCloneCodebaseEnabled] = useState<boolean>()
 
-  const { accountId, projectIdentifier, orgIdentifier } = useParams<
+  const { accountId, projectIdentifier, orgIdentifier, pipelineIdentifier } = useParams<
     PipelineType<{
       orgIdentifier: string
       projectIdentifier: string
@@ -203,26 +215,61 @@ export const RightBar = (): JSX.Element => {
 
   const { selectedProject } = useAppStore()
 
-  const pipelineStages = flatten(pipeline?.stages?.map(s => s?.parallel || s))
-
-  const ciStageExists = pipelineStages?.some?.(stage => {
-    if (stage?.stage?.type) {
-      return stage?.stage?.type === StageType.BUILD
-    } else {
-      return false
-    }
+  const {
+    data: pipelineYamlWithTemplateRefsResolved,
+    loading: loadingPipelineYamlWithTemplateRefsResolved,
+    refetch: getPipelineYamlWithTemplateRefsResolved
+  } = useMutateAsGet(useGetYamlWithTemplateRefsResolved, {
+    queryParams: {
+      accountIdentifier: accountId,
+      orgIdentifier,
+      pipelineIdentifier,
+      projectIdentifier
+    },
+    body: {
+      originalEntityYaml: yamlStringify(pipeline)
+    },
+    lazy: true
   })
 
-  const isCodebaseEnabled =
-    typeof codebaseStatus !== 'undefined' &&
-    selectedProject?.modules &&
-    selectedProject.modules.indexOf?.('CI') > -1 &&
-    ciStageExists
+  useEffect(() => {
+    getPipelineYamlWithTemplateRefsResolved()
+  }, [pipeline?.properties?.ci?.codebase])
 
-  const atLeastOneCloneCodebaseEnabled = pipelineStages?.some?.(stage => (stage?.stage?.spec as any)?.cloneCodebase)
+  useEffect(() => {
+    if (
+      !loadingPipelineYamlWithTemplateRefsResolved &&
+      pipelineYamlWithTemplateRefsResolved?.data?.mergedPipelineYaml
+    ) {
+      try {
+        const resolvedPipeline = parse(
+          pipelineYamlWithTemplateRefsResolved?.data?.mergedPipelineYaml
+        ) as PipelineInfoConfig
+        const pipelineStages = flatten(resolvedPipeline?.stages?.map(s => s?.parallel || s))
+
+        const ciStageExists = pipelineStages?.some?.(stage => {
+          if (stage?.stage?.type) {
+            return stage?.stage?.type === StageType.BUILD
+          } else {
+            return false
+          }
+        })
+
+        setEnableCodebase(
+          typeof codebaseStatus !== 'undefined' &&
+            selectedProject?.modules &&
+            selectedProject.modules.indexOf?.('CI') > -1 &&
+            ciStageExists
+        )
+        setIsCloneCodebaseEnabled(pipelineStages?.some?.(stage => (stage?.stage?.spec as any)?.cloneCodebase))
+      } catch (e) {
+        //Ignore error
+      }
+    }
+  }, [pipelineYamlWithTemplateRefsResolved])
 
   React.useEffect(() => {
-    if (atLeastOneCloneCodebaseEnabled) {
+    if (isCloneCodebaseEnabled) {
       if (!codebase?.connectorRef) {
         setCodebaseStatus(CodebaseStatuses.NotConfigured)
       } else {
@@ -294,7 +341,7 @@ export const RightBar = (): JSX.Element => {
     } else {
       setCodebaseStatus(CodebaseStatuses.ZeroState)
     }
-  }, [codebase?.connectorRef, codebase?.repoName, atLeastOneCloneCodebaseEnabled])
+  }, [codebase?.connectorRef, codebase?.repoName, isCloneCodebaseEnabled])
 
   const openCodebaseDialog = React.useCallback(() => {
     setIsCodebaseDialogOpen(true)
@@ -409,7 +456,7 @@ export const RightBar = (): JSX.Element => {
         />
       )}
 
-      {isCodebaseEnabled && !isYaml && (
+      {enableCodebase && !isYaml && (
         <Button
           className={css.iconButton}
           text={getString('codebase')}
@@ -511,7 +558,7 @@ export const RightBar = (): JSX.Element => {
 
                 // Repo level connectors should not have repoName
                 if (connectionType === 'Repo' && (draft as PipelineInfoConfig)?.properties?.ci?.codebase?.repoName) {
-                  delete (draft as PipelineInfoConfig)?.properties?.ci?.codebase?.repoName
+                  unset(draft, 'properties.ci.codebase.repoName')
                 }
 
                 if (get(draft, 'properties.ci.codebase.depth') !== values.depth) {
@@ -672,7 +719,6 @@ export const RightBar = (): JSX.Element => {
                                     {getString('pipelineSteps.limitMemoryLabel')}
                                   </Text>
                                 }
-                                placeholder={getString('pipelineSteps.limitMemoryPlaceholder')}
                                 style={{ flex: 1 }}
                                 disabled={isReadonly}
                               />
@@ -681,7 +727,6 @@ export const RightBar = (): JSX.Element => {
                                 label={
                                   <Text margin={{ bottom: 'xsmall' }}>{getString('pipelineSteps.limitCPULabel')}</Text>
                                 }
-                                placeholder={getString('pipelineSteps.limitCPUPlaceholder')}
                                 style={{ flex: 1 }}
                                 disabled={isReadonly}
                               />

@@ -1,10 +1,21 @@
+/*
+ * Copyright 2022 Harness Inc. All rights reserved.
+ * Use of this source code is governed by the PolyForm Shield 1.0.0 license
+ * that can be found in the licenses directory at the root of this repository, also available at
+ * https://polyformproject.org/wp-content/uploads/2020/06/PolyForm-Shield-1.0.0.txt.
+ */
+
 import React, { useMemo, useState } from 'react'
-import { Layout, Text, Button, Container } from '@wings-software/uicore'
+import { Link, useParams } from 'react-router-dom'
+import { noop } from 'lodash-es'
+import { Layout, Text, Button, Container, Icon, Color } from '@wings-software/uicore'
 import { DateRangePicker } from '@blueprintjs/datetime'
 import moment from 'moment'
 import cx from 'classnames'
 import { Popover, Position, Classes } from '@blueprintjs/core'
 import { useStrings, UseStringsReturn } from 'framework/strings'
+import routes from '@common/RouteDefinitions'
+import type { AccountPathProps } from '@common/interfaces/RouteInterfaces'
 import {
   DATE_RANGE_SHORTCUTS,
   DATE_RANGE_SHORTCUTS_NAME,
@@ -12,6 +23,10 @@ import {
   getStartDateTime,
   getEndDateTime
 } from '@ce/utils/momentUtils'
+import { useLicenseStore } from 'framework/LicenseStore/LicenseStoreContext'
+import { ModuleLicenseType } from '@common/constants/SubscriptionTypes'
+import { useFeatureFlag } from '@common/hooks/useFeatureFlag'
+import { FeatureFlag } from '@common/featureFlags'
 import css from './PerspectiveTimeRangePicker.module.scss'
 
 const getDateLabelToDisplayText: (getString: UseStringsReturn['getString']) => Record<string, string> = getString => {
@@ -56,40 +71,75 @@ const RELATIVE_DATES = [
   }
 ]
 
+const CURRENT_MONTH = {
+  label: DATE_RANGE_SHORTCUTS_NAME.CURRENT_MONTH,
+  dateRange: DATE_RANGE_SHORTCUTS.CURRENT_MONTH,
+  dateFormat: ['MMM YYYY']
+}
+
+const THIS_QUARTER = {
+  label: DATE_RANGE_SHORTCUTS_NAME.THIS_QUARTER,
+  dateRange: DATE_RANGE_SHORTCUTS.THIS_QUARTER,
+  dateFormat: ['MMM', 'MMM YYYY']
+}
+
+const THIS_YEAR = {
+  label: DATE_RANGE_SHORTCUTS_NAME.THIS_YEAR,
+  dateRange: DATE_RANGE_SHORTCUTS.THIS_YEAR,
+  dateFormat: ['YYYY']
+}
+const LAST_MONTH = {
+  label: DATE_RANGE_SHORTCUTS_NAME.LAST_MONTH,
+  dateRange: DATE_RANGE_SHORTCUTS.LAST_MONTH,
+  dateFormat: ['MMM YYYY']
+}
+const LAST_YEAR = {
+  label: DATE_RANGE_SHORTCUTS_NAME.LAST_YEAR,
+  dateRange: DATE_RANGE_SHORTCUTS.LAST_YEAR,
+  dateFormat: ['YYYY']
+}
+const LAST_QUARTER = {
+  label: DATE_RANGE_SHORTCUTS_NAME.LAST_QUARTER,
+  dateRange: DATE_RANGE_SHORTCUTS.LAST_QUARTER,
+  dateFormat: ['MMM', 'MMM YYYY']
+}
+const LAST_3_MONTHS = {
+  label: DATE_RANGE_SHORTCUTS_NAME.LAST_3_MONTHS,
+  dateRange: DATE_RANGE_SHORTCUTS.LAST_3_MONTHS,
+  dateFormat: ['MMM YYYY', 'MMM YYYY']
+}
+const LAST_6_MONTHS = {
+  label: DATE_RANGE_SHORTCUTS_NAME.LAST_6_MONTHS,
+  dateRange: DATE_RANGE_SHORTCUTS.LAST_6_MONTHS,
+  dateFormat: ['MMM YYYY', 'MMM YYYY']
+}
+
+const LAST_12_MONTHS = {
+  label: DATE_RANGE_SHORTCUTS_NAME.LAST_12_MONTHS,
+  dateRange: DATE_RANGE_SHORTCUTS.LAST_12_MONTHS,
+  dateFormat: ['MMM YYYY', 'MMM YYYY']
+}
+
 const CALENDAR_MONTH_DATES = [
-  {
-    label: DATE_RANGE_SHORTCUTS_NAME.CURRENT_MONTH,
-    dateRange: DATE_RANGE_SHORTCUTS.CURRENT_MONTH,
-    dateFormat: ['MMM YYYY']
-  },
-  {
-    label: DATE_RANGE_SHORTCUTS_NAME.THIS_QUARTER,
-    dateRange: DATE_RANGE_SHORTCUTS.THIS_QUARTER,
-    dateFormat: ['MMM', 'MMM YYYY']
-  },
-  { label: DATE_RANGE_SHORTCUTS_NAME.THIS_YEAR, dateRange: DATE_RANGE_SHORTCUTS.THIS_YEAR, dateFormat: ['YYYY'] },
-  { label: DATE_RANGE_SHORTCUTS_NAME.LAST_MONTH, dateRange: DATE_RANGE_SHORTCUTS.LAST_MONTH, dateFormat: ['MMM YYYY'] },
-  {
-    label: DATE_RANGE_SHORTCUTS_NAME.LAST_QUARTER,
-    dateRange: DATE_RANGE_SHORTCUTS.LAST_QUARTER,
-    dateFormat: ['MMM', 'MMM YYYY']
-  },
-  { label: DATE_RANGE_SHORTCUTS_NAME.LAST_YEAR, dateRange: DATE_RANGE_SHORTCUTS.LAST_YEAR, dateFormat: ['YYYY'] },
-  {
-    label: DATE_RANGE_SHORTCUTS_NAME.LAST_3_MONTHS,
-    dateRange: DATE_RANGE_SHORTCUTS.LAST_3_MONTHS,
-    dateFormat: ['MMM YYYY', 'MMM YYYY']
-  },
-  {
-    label: DATE_RANGE_SHORTCUTS_NAME.LAST_6_MONTHS,
-    dateRange: DATE_RANGE_SHORTCUTS.LAST_6_MONTHS,
-    dateFormat: ['MMM YYYY', 'MMM YYYY']
-  },
-  {
-    label: DATE_RANGE_SHORTCUTS_NAME.LAST_12_MONTHS,
-    dateRange: DATE_RANGE_SHORTCUTS.LAST_12_MONTHS,
-    dateFormat: ['MMM YYYY', 'MMM YYYY']
-  }
+  CURRENT_MONTH,
+  THIS_QUARTER,
+  THIS_YEAR,
+  LAST_MONTH,
+  LAST_QUARTER,
+  LAST_YEAR,
+  LAST_3_MONTHS,
+  LAST_6_MONTHS,
+  LAST_12_MONTHS
+]
+
+const RESTRICTED_CALENDAR_MONTH_DATES = [
+  THIS_QUARTER,
+  THIS_YEAR,
+  LAST_QUARTER,
+  LAST_YEAR,
+  LAST_3_MONTHS,
+  LAST_6_MONTHS,
+  LAST_12_MONTHS
 ]
 
 interface DateLabelRendererProps {
@@ -97,26 +147,28 @@ interface DateLabelRendererProps {
   dateRange: moment.Moment[]
   dateFormat: string[]
   onClick: () => void
+  disable?: boolean
 }
 
-const DateLabelRenderer: React.FC<DateLabelRendererProps> = ({ text, dateRange, dateFormat, onClick }) => {
+const DateLabelRenderer: React.FC<DateLabelRendererProps> = ({ text, dateRange, dateFormat, onClick, disable }) => {
   const { getString } = useStrings()
 
   const labelToTextMapping = getDateLabelToDisplayText(getString)
+
   return (
-    <Container onClick={onClick} className={cx(css.dateLabelContainer, Classes.POPOVER_DISMISS)}>
+    <Container onClick={disable ? noop : onClick} className={cx(css.dateLabelContainer, Classes.POPOVER_DISMISS)}>
       <Layout.Horizontal
         style={{
           justifyContent: 'space-between'
         }}
         spacing="large"
       >
-        <Text className={css.pointerText} color="grey600">
+        <Text className={css.pointerText} color={disable ? Color.GREY_200 : Color.GREY_600}>
           {labelToTextMapping[text]}
         </Text>
-        <Text className={css.pointerText} color="grey300">{`${dateRange[0].format(dateFormat[0])} ${
-          dateFormat[1] ? '- ' + dateRange[1].format(dateFormat[1]) : ''
-        }`}</Text>
+        <Text className={css.pointerText} color={disable ? Color.GREY_200 : Color.GREY_300}>{`${dateRange[0].format(
+          dateFormat[0]
+        )} ${dateFormat[1] ? '- ' + dateRange[1].format(dateFormat[1]) : ''}`}</Text>
       </Layout.Horizontal>
     </Container>
   )
@@ -133,10 +185,18 @@ interface PerspectiveTimeRangePickerProps {
     to: string
     from: string
   }
+  featureEnabled?: boolean
 }
 
 const PerspectiveTimeRangePicker: React.FC<PerspectiveTimeRangePickerProps> = ({ timeRange, setTimeRange }) => {
   const { getString } = useStrings()
+
+  const { licenseInformation } = useLicenseStore()
+  const isFreeEdition = licenseInformation['CE']?.edition === ModuleLicenseType.FREE
+
+  const isFeatureEnforcementEnabled = useFeatureFlag(FeatureFlag.FEATURE_ENFORCEMENT_ENABLED)
+
+  const featureEnforced = isFreeEdition && isFeatureEnforcementEnabled
 
   const [isPopoverOpen, setIsPopoverOpen] = useState<boolean | undefined>()
 
@@ -190,6 +250,7 @@ const PerspectiveTimeRangePicker: React.FC<PerspectiveTimeRangePickerProps> = ({
             bottom: 'small'
           }}
         >
+          {featureEnforced && <SubscriptionLimitWarning />}
           <Layout.Vertical
             margin={{
               bottom: 'medium'
@@ -232,6 +293,7 @@ const PerspectiveTimeRangePicker: React.FC<PerspectiveTimeRangePickerProps> = ({
                 preventOverflow: { enabled: true }
               }}
               isOpen={isPopoverOpen}
+              disabled={featureEnforced}
               content={
                 <DateRangePicker
                   defaultValue={[fromDate, toDate]}
@@ -260,7 +322,7 @@ const PerspectiveTimeRangePicker: React.FC<PerspectiveTimeRangePickerProps> = ({
                   left: 'large',
                   right: 'large'
                 }}
-                color="primary7"
+                color={featureEnforced ? 'grey200' : 'primary7'}
                 className={css.pointerText}
               >
                 {getString('ce.perspectives.timeRange.selectCustomRange')}
@@ -319,6 +381,7 @@ const PerspectiveTimeRangePicker: React.FC<PerspectiveTimeRangePickerProps> = ({
             {CALENDAR_MONTH_DATES.map(item => {
               return (
                 <DateLabelRenderer
+                  disable={featureEnforced && RESTRICTED_CALENDAR_MONTH_DATES.includes(item)}
                   key={`recommended-${item.label}`}
                   dateFormat={item.dateFormat}
                   dateRange={item.dateRange}
@@ -349,6 +412,38 @@ const PerspectiveTimeRangePicker: React.FC<PerspectiveTimeRangePickerProps> = ({
         rightIcon="caret-down"
       />
     </Popover>
+  )
+}
+
+const SubscriptionLimitWarning = () => {
+  const { getString } = useStrings()
+  return (
+    <Container className={css.subscriptionLimitCtn}>
+      <Layout.Horizontal spacing="medium" style={{ alignItems: 'center' }}>
+        <Icon name="info-message" size={24} style={{ color: Color.BLUE_700 }} />
+        <Container>
+          <Text inline color={Color.GREY_800}>
+            {getString('ce.perspectives.timeRangeLimitWarning.currentPlanOffer')}
+          </Text>
+          <Upgrade />
+          <Text inline color={Color.GREY_800}>
+            {getString('ce.perspectives.timeRangeLimitWarning.upgradeOffer')}
+          </Text>
+        </Container>
+      </Layout.Horizontal>
+    </Container>
+  )
+}
+
+const Upgrade = () => {
+  const { getString } = useStrings()
+  const { accountId } = useParams<AccountPathProps>()
+  return (
+    <Link to={routes.toSubscriptions({ accountId, moduleCard: 'ce', tab: 'PLANS' })}>
+      <Text inline margin={{ top: 'small' }} color={Color.PRIMARY_7} style={{ padding: '0px 5px' }}>
+        {getString('common.upgrade')}
+      </Text>
+    </Link>
   )
 }
 

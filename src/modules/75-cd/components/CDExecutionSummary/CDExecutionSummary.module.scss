@@ -1,3 +1,10 @@
+/*
+ * Copyright 2021 Harness Inc. All rights reserved.
+ * Use of this source code is governed by the PolyForm Shield 1.0.0 license
+ * that can be found in the licenses directory at the root of this repository, also available at
+ * https://polyformproject.org/wp-content/uploads/2020/06/PolyForm-Shield-1.0.0.txt.
+ */
+
 .main {
   display: flex;
   align-items: center;
@@ -30,6 +37,7 @@
 
   .count {
     text-decoration: underline;
+    color: var(--primary-9);
   }
 
   .environments {
@@ -38,7 +46,6 @@
     font-size: var(--font-size-small);
     color: var(--grey-800);
     margin-left: var(--spacing-7);
-    cursor: pointer;
 
     .envIcon {
       margin-right: var(--spacing-3) !important;

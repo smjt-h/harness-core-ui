@@ -1,13 +1,28 @@
+/*
+ * Copyright 2021 Harness Inc. All rights reserved.
+ * Use of this source code is governed by the PolyForm Shield 1.0.0 license
+ * that can be found in the licenses directory at the root of this repository, also available at
+ * https://polyformproject.org/wp-content/uploads/2020/06/PolyForm-Shield-1.0.0.txt.
+ */
+
 import React, { useEffect, useRef } from 'react'
+import { unset } from 'lodash-es'
 import YAML from 'yaml'
 import produce from 'immer'
 import { Button, Color, Icon, Layout, Tab, Tabs } from '@wings-software/uicore'
-import { usePipelineContext } from '@pipeline/components/PipelineStudio/PipelineContext/PipelineContext'
+import { Expander } from '@blueprintjs/core'
+import {
+  PipelineContextType,
+  usePipelineContext
+} from '@pipeline/components/PipelineStudio/PipelineContext/PipelineContext'
 import { PageSpinner } from '@common/components'
 import { useStrings } from 'framework/strings'
 import { GetInitialStageYamlSnippetQueryParams, useGetInitialStageYamlSnippet } from 'services/pipeline-ng'
 import type { ApprovalStageConfig, StageElementConfig, StageElementWrapperConfig } from 'services/cd-ng'
 import { StepType } from '@pipeline/components/PipelineSteps/PipelineStepInterface'
+import { SaveTemplateButton } from '@pipeline/components/PipelineStudio/SaveTemplateButton/SaveTemplateButton'
+import { useFeatureFlag } from '@common/hooks/useFeatureFlag'
+import { FeatureFlag } from '@common/featureFlags'
 import { ApprovalStageOverview } from './ApprovalStageOverview'
 import { ApprovalStageExecution } from './ApprovalStageExecution'
 import ApprovalAdvancedSpecifications from './ApprovalStageAdvanced'
@@ -20,18 +35,20 @@ interface ApprovalStageElementConfig extends StageElementConfig {
 export const ApprovalStageSetupShellMode: React.FC = () => {
   const { getString } = useStrings()
   const tabHeadings = [getString('overview'), getString('executionText'), getString('advancedTitle')]
-
+  const isTemplatesEnabled = useFeatureFlag(FeatureFlag.NG_TEMPLATES)
   const layoutRef = useRef<HTMLDivElement>(null)
   const [selectedTabId, setSelectedTabId] = React.useState<string>(tabHeadings[1])
+  const pipelineContext = usePipelineContext()
   const {
     state: {
       pipeline,
       selectionState: { selectedStageId = '', selectedStepId }
     },
+    contextType,
     getStageFromPipeline,
     updatePipeline,
     updateStage
-  } = usePipelineContext()
+  } = pipelineContext
 
   const [loadGraph, setLoadGraph] = React.useState(false)
   const { stage: selectedStage } = getStageFromPipeline<ApprovalStageElementConfig>(selectedStageId)
@@ -86,7 +103,7 @@ export const ApprovalStageSetupShellMode: React.FC = () => {
                 (jsonFromYaml.spec as ApprovalStageConfig)?.execution || {}
               // approvalType is just used in the UI, to populate the default steps for different approval types
               // For BE, the stage type is always 'Approval' and approval type is defined inside the step
-              delete (draft.stage as any)?.approvalType
+              unset(draft.stage as ApprovalStageElementConfig, 'approvalType')
             }
           }).stage as ApprovalStageElementConfig
         ).then(() => {
@@ -171,6 +188,12 @@ export const ApprovalStageSetupShellMode: React.FC = () => {
           panel={<ApprovalAdvancedSpecifications />}
           data-testid={tabHeadings[2]}
         />
+        {contextType === PipelineContextType.Pipeline && isTemplatesEnabled && selectedStage?.stage && (
+          <>
+            <Expander />
+            <SaveTemplateButton data={selectedStage?.stage} type={'Stage'} />
+          </>
+        )}
       </Tabs>
     </section>
   )

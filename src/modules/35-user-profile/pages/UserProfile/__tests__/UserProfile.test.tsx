@@ -1,3 +1,10 @@
+/*
+ * Copyright 2022 Harness Inc. All rights reserved.
+ * Use of this source code is governed by the PolyForm Shield 1.0.0 license
+ * that can be found in the licenses directory at the root of this repository, also available at
+ * https://polyformproject.org/wp-content/uploads/2020/06/PolyForm-Shield-1.0.0.txt.
+ */
+
 import React from 'react'
 import {
   RenderResult,
@@ -9,6 +16,7 @@ import {
   queryByAttribute,
   getAllByText
 } from '@testing-library/react'
+import { noop } from 'lodash-es'
 import UserProfilePage from '@user-profile/pages/UserProfile/UserProfilePage'
 import { TestWrapper, findDialogContainer } from '@common/utils/testUtils'
 import { defaultAppStoreValues } from '@common/utils/DefaultAppStoreData'
@@ -16,6 +24,8 @@ import { InputTypes, setFieldValue, clickSubmit } from '@common/utils/JestFormHe
 import * as cdngServices from 'services/cd-ng'
 import type { ResponseBoolean } from 'services/cd-ng'
 import { ChangePasswordResponse } from '@user-profile/modals/useChangePassword/views/ChangePasswordForm'
+import * as LicenseStoreContext from 'framework/LicenseStore/LicenseStoreContext'
+import { LICENSE_STATE_VALUES } from 'framework/LicenseStore/licenseStoreUtil'
 import {
   connectorMockData,
   enabledTwoFactorAuth,
@@ -350,4 +360,21 @@ describe('User Profile Page', () => {
       testSetup()
       expect(queryByText(document.body, 'noProjects')).toBeTruthy()
     })
+  test('Hide SwitchAccount button for community edition', async () => {
+    jest.spyOn(LicenseStoreContext, 'useLicenseStore').mockReturnValue({
+      licenseInformation: {
+        CD: {
+          edition: 'COMMUNITY'
+        }
+      },
+      CD_LICENSE_STATE: LICENSE_STATE_VALUES.ACTIVE,
+      CI_LICENSE_STATE: LICENSE_STATE_VALUES.ACTIVE,
+      FF_LICENSE_STATE: LICENSE_STATE_VALUES.ACTIVE,
+      CCM_LICENSE_STATE: LICENSE_STATE_VALUES.ACTIVE,
+      updateLicenseStore: noop,
+      versionMap: {}
+    })
+    testSetup()
+    expect(queryByText(document.body, 'common.switchAccount')).toBeNull()
+  })
 })

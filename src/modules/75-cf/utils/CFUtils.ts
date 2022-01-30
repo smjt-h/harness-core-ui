@@ -1,3 +1,10 @@
+/*
+ * Copyright 2021 Harness Inc. All rights reserved.
+ * Use of this source code is governed by the PolyForm Shield 1.0.0 license
+ * that can be found in the licenses directory at the root of this repository, also available at
+ * https://polyformproject.org/wp-content/uploads/2020/06/PolyForm-Shield-1.0.0.txt.
+ */
+
 import { useCallback, useMemo, useState } from 'react'
 import { Intent, IToaster, IToasterProps, Position, Toaster } from '@blueprintjs/core'
 import { get } from 'lodash-es'
@@ -33,6 +40,16 @@ export function formatDate(timestamp: number, dateStyle = 'medium'): string {
     // @ts-ignore: TS built-in type for DateTimeFormat is not correct
     dateStyle
   }).format(new Date(timestamp))
+}
+
+export const formatToCompactNumber = (longNumber: number): string => {
+  if (longNumber > 999 && longNumber < 1000000) {
+    return (longNumber / 1000).toFixed(0) + 'K'
+  } else if (longNumber >= 1000000) {
+    return (longNumber / 1000000).toFixed(0) + 'M'
+  } else {
+    return longNumber.toString()
+  }
 }
 
 export enum FFDetailPageTab {

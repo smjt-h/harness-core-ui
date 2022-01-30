@@ -386,9 +386,6 @@ exports[`Approval Stage readonly view if readonly view works: readonly view appr
                   data-testid="variables-summary"
                 >
                   <div
-                    class="Accordion--chevron"
-                  />
-                  <div
                     class=""
                   >
                     <p
@@ -397,6 +394,9 @@ exports[`Approval Stage readonly view if readonly view works: readonly view appr
                       advancedTitle
                     </p>
                   </div>
+                  <div
+                    class="Accordion--chevron"
+                  />
                 </div>
                 <div
                   class="bp3-collapse Accordion--collapse"
