@@ -1003,7 +1003,8 @@
 <a name='L944'></a><a href='#L944'>944</a>
 <a name='L945'></a><a href='#L945'>945</a>
 <a name='L946'></a><a href='#L946'>946</a>
-<a name='L947'></a><a href='#L947'>947</a></td><td class="line-coverage quiet"><span class="cline-any cline-neutral">&nbsp;</span>
+<a name='L947'></a><a href='#L947'>947</a>
+<a name='L948'></a><a href='#L948'>948</a></td><td class="line-coverage quiet"><span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
@@ -1144,6 +1145,7 @@
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-yes">67x</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
@@ -2097,7 +2099,8 @@ const ArtifactInputSetForm: React.FC&lt;KubernetesServiceInputFormProps&gt; = ({
   readonly = <span class="branch-0 cbranch-no" title="branch not covered" >false,</span>
   stageIdentifier,
   formik,
-  fromTrigger
+  fromTrigger,
+  allowableTypes
 }) =&gt; {
   const { getString } = useStrings()
   const { showError, clear } = useToaster()
@@ -2472,7 +2475,7 @@ const ArtifactInputSetForm: React.FC&lt;KubernetesServiceInputFormProps&gt; = ({
                     setRefValue
                     disabled={disablePrimaryFields(`artifacts.primary.spec.connectorRef`)}
                     multiTypeProps={{
-                      allowableTypes: [MultiTypeInputType.EXPRESSION, MultiTypeInputType.FIXED],
+                      allowableTypes,
                       expressions
                     }}
                     onChange={<span class="fstat-no" title="function not covered" >() =</span>&gt; <span class="cstat-no" title="statement not covered" >resetTags(`${path}.artifacts.primary.spec.tag`)}</span>
@@ -2492,7 +2495,7 @@ const ArtifactInputSetForm: React.FC&lt;KubernetesServiceInputFormProps&gt; = ({
                         items: regions
                       },
                       expressions,
-                      allowableTypes: [MultiTypeInputType.FIXED, MultiTypeInputType.EXPRESSION]
+                      allowableTypes
                     }}
                     useValue
                     disabled={disablePrimaryFields(`artifacts.primary.spec.region`)}
@@ -2508,7 +2511,7 @@ const ArtifactInputSetForm: React.FC&lt;KubernetesServiceInputFormProps&gt; = ({
                     disabled={disablePrimaryFields(`artifacts.primary.spec.imagePath`)}
                     multiTextInputProps={{
                       expressions,
-                      allowableTypes: [MultiTypeInputType.FIXED, MultiTypeInputType.EXPRESSION]
+                      allowableTypes
                     }}
                     name={`${path}.artifacts.primary.spec.imagePath`}
                     onChange={<span class="fstat-no" title="function not covered" >() =</span>&gt; <span class="cstat-no" title="statement not covered" >resetTags(`${path}.artifacts.primary.spec.tag`)}</span>
@@ -2525,7 +2528,7 @@ const ArtifactInputSetForm: React.FC&lt;KubernetesServiceInputFormProps&gt; = ({
                     multiTypeInputProps={{
                       onChange: <span class="fstat-no" title="function not covered" >() =</span>&gt; <span class="cstat-no" title="statement not covered" >resetTags(`${path}.artifacts.primary.spec.tag`),</span>
                       expressions,
-                      allowableTypes: [MultiTypeInputType.FIXED, MultiTypeInputType.EXPRESSION],
+                      allowableTypes,
                       selectProps: { allowCreatingNewItems: true, addClearBtn: true, items: gcrUrlList }
                     }}
                     label={getString('connectors.GCR.registryHostname')}
@@ -2540,7 +2543,7 @@ const ArtifactInputSetForm: React.FC&lt;KubernetesServiceInputFormProps&gt; = ({
                       multiTextInputProps={{
                         expressions,
                         value: TriggerDefaultFieldList.build,
-                        allowableTypes: [MultiTypeInputType.FIXED, MultiTypeInputType.EXPRESSION]
+                        allowableTypes
                       }}
                       disabled={true}
                       name={`${path}.artifacts.primary.spec.tag`}
@@ -2613,7 +2616,7 @@ const ArtifactInputSetForm: React.FC&lt;KubernetesServiceInputFormProps&gt; = ({
                           popoverClassName: css.selectPopover
                         },
                         expressions,
-                        allowableTypes: [MultiTypeInputType.FIXED, MultiTypeInputType.EXPRESSION]
+                        allowableTypes
                       }}
                       label={getString('tagLabel')}
                       name={`${path}.artifacts.primary.spec.tag`}
@@ -2624,7 +2627,7 @@ const ArtifactInputSetForm: React.FC&lt;KubernetesServiceInputFormProps&gt; = ({
                     disabled={disablePrimaryFields('artifacts.primary.spec.tagRegex')}
                     multiTextInputProps={{
                       expressions,
-                      allowableTypes: [MultiTypeInputType.FIXED, MultiTypeInputType.EXPRESSION]
+                      allowableTypes
                     }}
                     label={getString('tagRegex')}
                     name={`${path}.artifacts.primary.spec.tagRegex`}
@@ -2707,7 +2710,7 @@ const ArtifactInputSetForm: React.FC&lt;KubernetesServiceInputFormProps&gt; = ({
                         disabled={disableField(`sidecars[${index}].sidecar.spec.connectorRef`)}
                         // disabled={readonly}
                         multiTypeProps={{
-                          allowableTypes: [MultiTypeInputType.EXPRESSION, MultiTypeInputType.FIXED],
+                          allowableTypes,
                           expressions
                         }}
                         accountIdentifier={accountId}
@@ -2730,7 +2733,7 @@ const ArtifactInputSetForm: React.FC&lt;KubernetesServiceInputFormProps&gt; = ({
                         multiTypeInputProps={{
                           onChange: <span class="fstat-no" title="function not covered" >() =</span>&gt; <span class="cstat-no" title="statement not covered" >resetTags(`${path}.artifacts.sidecars.[${index}].sidecar.spec.tag`),</span>
                           expressions,
-                          allowableTypes: [MultiTypeInputType.FIXED, MultiTypeInputType.EXPRESSION],
+                          allowableTypes,
                           selectProps: {
                             items: regions,
                             usePortal: true,
@@ -2749,7 +2752,7 @@ const ArtifactInputSetForm: React.FC&lt;KubernetesServiceInputFormProps&gt; = ({
                         label={getString('pipeline.imagePathLabel')}
                         multiTextInputProps={{
                           expressions,
-                          allowableTypes: [MultiTypeInputType.FIXED, MultiTypeInputType.EXPRESSION]
+                          allowableTypes
                         }}
                         disabled={disableField(`sidecars[${index}].sidecar.spec.imagePath`)}
                         name={`${path}.artifacts.sidecars[${index}].sidecar.spec.imagePath`}
@@ -2765,7 +2768,7 @@ const ArtifactInputSetForm: React.FC&lt;KubernetesServiceInputFormProps&gt; = ({
                         multiTypeInputProps={{
                           onChange: <span class="fstat-no" title="function not covered" >() =</span>&gt; <span class="cstat-no" title="statement not covered" >resetTags(`${path}.artifacts.sidecars.[${index}].sidecar.spec.tag`),</span>
                           expressions,
-                          allowableTypes: [MultiTypeInputType.FIXED, MultiTypeInputType.EXPRESSION],
+                          allowableTypes,
                           selectProps: { allowCreatingNewItems: true, addClearBtn: true, items: gcrUrlList }
                         }}
                         label={getString('connectors.GCR.registryHostname')}
@@ -2781,7 +2784,7 @@ const ArtifactInputSetForm: React.FC&lt;KubernetesServiceInputFormProps&gt; = ({
                           multiTextInputProps={{
                             expressions,
                             value: TriggerDefaultFieldList.build,
-                            allowableTypes: [MultiTypeInputType.FIXED, MultiTypeInputType.EXPRESSION]
+                            allowableTypes
                           }}
                           disabled={true}
                           name={`${path}.artifacts.sidecars[${index}].sidecar.spec.tag`}
@@ -2847,7 +2850,7 @@ const ArtifactInputSetForm: React.FC&lt;KubernetesServiceInputFormProps&gt; = ({
                                   region: regionCurrent
                                 })
                             },
-                            allowableTypes: [MultiTypeInputType.EXPRESSION, MultiTypeInputType.FIXED],
+                            allowableTypes,
                             value: TriggerDefaultFieldList.build,
                             expressions,
                             selectProps: {
@@ -2876,7 +2879,7 @@ const ArtifactInputSetForm: React.FC&lt;KubernetesServiceInputFormProps&gt; = ({
 <span class="branch-1 cbranch-no" title="branch not covered" >                      &lt;FormInput.MultiTextInput</span>
                         multiTextInputProps={{
                           expressions,
-                          allowableTypes: [MultiTypeInputType.FIXED, MultiTypeInputType.EXPRESSION]
+                          allowableTypes
                         }}
                         disabled={disableField(`sidecars[${index}].sidecar.spec.tagRegex`)}
                         label={getString('tagRegex')}
@@ -2902,7 +2905,7 @@ export const ArtifactInputForm = connect(ArtifactInputSetForm)
             <div class='footer quiet pad2 space-top1 center small'>
                 Code coverage generated by
                 <a href="https://istanbul.js.org/" target="_blank">istanbul</a>
-                at Mon Jan 31 2022 05:05:19 GMT+0000 (Greenwich Mean Time)
+                at Mon Jan 31 2022 07:01:18 GMT+0000 (Greenwich Mean Time)
             </div>
         </div>
         <script src="../../../../prettify.js"></script>

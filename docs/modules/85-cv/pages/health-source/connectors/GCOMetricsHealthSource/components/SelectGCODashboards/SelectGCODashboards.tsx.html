@@ -23,30 +23,30 @@
         <div class='clearfix'>
             
             <div class='fl pad1y space-right2'>
-                <span class="strong">50% </span>
+                <span class="strong">100% </span>
                 <span class="quiet">Statements</span>
-                <span class='fraction'>6/12</span>
+                <span class='fraction'>12/12</span>
             </div>
         
             
             <div class='fl pad1y space-right2'>
-                <span class="strong">0% </span>
+                <span class="strong">75% </span>
                 <span class="quiet">Branches</span>
-                <span class='fraction'>0/4</span>
+                <span class='fraction'>3/4</span>
             </div>
         
             
             <div class='fl pad1y space-right2'>
-                <span class="strong">0% </span>
+                <span class="strong">100% </span>
                 <span class="quiet">Functions</span>
-                <span class='fraction'>0/3</span>
+                <span class='fraction'>3/3</span>
             </div>
         
             
             <div class='fl pad1y space-right2'>
-                <span class="strong">50% </span>
+                <span class="strong">100% </span>
                 <span class="quiet">Lines</span>
-                <span class='fraction'>6/12</span>
+                <span class='fraction'>12/12</span>
             </div>
         
             
@@ -55,7 +55,7 @@
             Press <em>n</em> or <em>j</em> to go to the next uncovered block, <em>b</em>, <em>p</em> or <em>k</em> for the previous block.
         </p>
     </div>
-    <div class='status-line medium'></div>
+    <div class='status-line high'></div>
     <pre><table class="coverage">
 <tr><td class="line-count quiet"><a name='L1'></a><a href='#L1'>1</a>
 <a name='L2'></a><a href='#L2'>2</a>
@@ -105,30 +105,30 @@
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-yes">15x</span>
-<span class="cline-any cline-yes">15x</span>
+<span class="cline-any cline-yes">16x</span>
+<span class="cline-any cline-yes">16x</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-yes">15x</span>
-<span class="cline-any cline-yes">15x</span>
+<span class="cline-any cline-yes">16x</span>
+<span class="cline-any cline-yes">16x</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-yes">15x</span>
+<span class="cline-any cline-yes">16x</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-yes">15x</span>
-<span class="cline-any cline-no">&nbsp;</span>
-<span class="cline-any cline-no">&nbsp;</span>
-<span class="cline-any cline-no">&nbsp;</span>
-<span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-no">&nbsp;</span>
-<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-yes">16x</span>
+<span class="cline-any cline-yes">7x</span>
+<span class="cline-any cline-yes">6x</span>
+<span class="cline-any cline-yes">16x</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">6x</span>
+<span class="cline-any cline-yes">3x</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">6x</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
@@ -154,28 +154,28 @@ import MetricsDashboardList from '@cv/components/MetricsDashboardList/MetricsDas
 import type { TableDashboardItem } from '@cv/components/MetricsDashboardList/MetricsDashboardList.type'
 import { transformGCOMetricHealthSourceToGCOMetricSetupSource } from '../../GCOMetricsHealthSource.utils'
 &nbsp;
-export function <span class="fstat-no" title="function not covered" >SelectGCODashboards(</span>): JSX.Element {
-  const { sourceData } = <span class="cstat-no" title="statement not covered" >useContext(SetupSourceTabsContext)</span>
-  const dashboardItemMapper: (dashboard: StackdriverDashboardDTO) =&gt; TableDashboardItem = <span class="cstat-no" title="statement not covered" >useCallback(<span class="fstat-no" title="function not covered" >dashboard </span>=&gt; {</span>
-<span class="cstat-no" title="statement not covered" >    return {</span>
+export function SelectGCODashboards(): JSX.Element {
+  const { sourceData } = useContext(SetupSourceTabsContext)
+  const dashboardItemMapper: (dashboard: StackdriverDashboardDTO) =&gt; TableDashboardItem = useCallback(dashboard =&gt; {
+    return {
       name: dashboard.name,
       id: dashboard.path
     }
   }, [])
 &nbsp;
-  const selectedDashboards = <span class="cstat-no" title="statement not covered" >useMemo(<span class="fstat-no" title="function not covered" >() =</span>&gt; {</span>
-<span class="cstat-no" title="statement not covered" >    return (</span>
+  const selectedDashboards = useMemo(() =&gt; {
+    return (
       sourceData.selectedDashboards ||
       transformGCOMetricHealthSourceToGCOMetricSetupSource(sourceData).selectedDashboards
     )
   }, [sourceData])
-<span class="cstat-no" title="statement not covered" >  return (</span>
+  return (
     &lt;MetricsDashboardList&lt;StackdriverDashboardDTO&gt;
-      manualQueryInputTitle={'cv.monitoringSources.datadog.manualInputQueryModal.modalTitle'}
+      manualQueryInputTitle={'cv.monitoringSources.gco.manualInputQueryModal.modalTitle'}
       dashboardsRequest={useGetStackdriverDashboards({ lazy: true })}
-      defaultItemIcon={'service-datadog'}
-      tableTitle={'cv.monitoringSources.datadog.selectDashboardsPage.dashboardColumnName'}
-      selectedDashboardList={selectedDashboards || []}
+      defaultItemIcon={'service-stackdriver'}
+      tableTitle={'cv.monitoringSources.gco.selectDashboardsPage.dashboardColumnName'}
+      selectedDashboardList={selectedDashboards || <span class="branch-1 cbranch-no" title="branch not covered" >[]}</span>
       tableItemMapper={dashboardItemMapper}
     /&gt;
   )
@@ -187,7 +187,7 @@ export function <span class="fstat-no" title="function not covered" >SelectGCODa
             <div class='footer quiet pad2 space-top1 center small'>
                 Code coverage generated by
                 <a href="https://istanbul.js.org/" target="_blank">istanbul</a>
-                at Mon Jan 31 2022 05:05:19 GMT+0000 (Greenwich Mean Time)
+                at Mon Jan 31 2022 07:01:18 GMT+0000 (Greenwich Mean Time)
             </div>
         </div>
         <script src="../../../../../../../../prettify.js"></script>
