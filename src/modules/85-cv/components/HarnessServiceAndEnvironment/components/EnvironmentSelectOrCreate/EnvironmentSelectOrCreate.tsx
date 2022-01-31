@@ -5,21 +5,19 @@
  * https://polyformproject.org/wp-content/uploads/2020/06/PolyForm-Shield-1.0.0.txt.
  */
 
-import React from 'react'
-
+import React, { useMemo } from 'react'
 import { Container, Select, SelectOption } from '@wings-software/uicore'
-
+import { noop } from 'lodash-es'
 import type { EnvironmentResponseDTO } from 'services/cd-ng'
 import { useStrings } from 'framework/strings'
-import { ADD_NEW_VALUE } from '@cv/constants'
-import { useEnvironmentSelectOrCreate } from '../UseEnvironmentSelectOrCreate/EnvironmentSelectOrCreateHook'
+import { useHarnessEnvironmentModal } from '@common/modals/HarnessEnvironmentModal/HarnessEnvironmentModal'
 
 export interface EnvironmentSelectOrCreateProps {
+  item?: SelectOption
+  options: Array<SelectOption>
+  onSelect(value: SelectOption): void
   disabled?: boolean
   className?: string
-  options: Array<SelectOption>
-  item?: SelectOption
-  onSelect(value: SelectOption): void
   onNewCreated(value: EnvironmentResponseDTO): void
 }
 
@@ -33,6 +31,8 @@ export const EnvironmentTypes = [
     value: 'PreProduction'
   }
 ]
+
+const ADD_NEW_VALUE = '@@add_new'
 export function generateOptions(response?: EnvironmentResponseDTO[]): SelectOption[] {
   return response
     ? (response
@@ -50,7 +50,34 @@ export function EnvironmentSelectOrCreate({
   className
 }: EnvironmentSelectOrCreateProps): JSX.Element {
   const { getString } = useStrings()
-  const { environmentOptions, openHarnessEnvironmentModal } = useEnvironmentSelectOrCreate({ options, onNewCreated })
+  const selectOptions = useMemo(
+    () => [
+      {
+        label: '+ Add New',
+        value: ADD_NEW_VALUE
+      },
+      ...options
+    ],
+    [options]
+  )
+
+  const onSubmit = async (values: any): Promise<void> => {
+    onNewCreated(values)
+  }
+
+  const { openHarnessEnvironmentModal } = useHarnessEnvironmentModal({
+    data: {
+      name: '',
+      description: '',
+      identifier: '',
+      tags: {}
+    },
+    isEnvironment: true,
+    isEdit: false,
+    onClose: noop,
+    modalTitle: getString('newEnvironment'),
+    onCreateOrUpdate: onSubmit
+  })
 
   const onSelectChange = (val: SelectOption): void => {
     if (val.value === ADD_NEW_VALUE) {
@@ -67,7 +94,7 @@ export function EnvironmentSelectOrCreate({
         value={item}
         className={className}
         disabled={disabled}
-        items={environmentOptions}
+        items={selectOptions}
         inputProps={{ placeholder: getString('cv.selectOrCreateEnv') }}
         onChange={onSelectChange}
       />

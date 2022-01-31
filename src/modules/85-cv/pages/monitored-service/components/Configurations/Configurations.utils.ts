@@ -123,13 +123,13 @@ export const onSubmit = async ({
   cachedInitialValues: MonitoredServiceForm | null
   updateMonitoredService: MutateMethod<
     RestResponseMonitoredServiceResponse,
-    ExtendedMonitoredServiceDTO,
+    MonitoredServiceDTO,
     UpdateMonitoredServiceQueryParams,
     UpdateMonitoredServicePathParams
   >
   saveMonitoredService: MutateMethod<
     RestResponseMonitoredServiceResponse,
-    ExtendedMonitoredServiceDTO,
+    MonitoredServiceDTO,
     SaveMonitoredServiceQueryParams,
     void
   >
@@ -148,22 +148,18 @@ export const onSubmit = async ({
     type
   } = formikValues
 
-  const payload: ExtendedMonitoredServiceDTO = {
+  const payload: MonitoredServiceDTO = {
     orgIdentifier,
     projectIdentifier,
     serviceRef,
+    environmentRef,
     identifier: monitoredServiceId,
     name,
     description,
     tags,
-    environmentRef,
     sources,
     dependencies: cachedInitialValues?.dependencies || dependencies,
     type
-  }
-  if (Array.isArray(environmentRef)) {
-    payload.environmentRef = environmentRef?.[0]
-    payload.environmentRefList = environmentRef
   }
   if (identifier) {
     await updateMonitoredService(payload)

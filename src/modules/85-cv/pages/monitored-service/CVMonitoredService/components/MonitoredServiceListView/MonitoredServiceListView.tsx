@@ -20,8 +20,6 @@ import noServiceAvailableImage from '@cv/assets/noServiceAvailable.png'
 import FilterCard from '@cv/components/FilterCard/FilterCard'
 import ContextMenuActions from '@cv/components/ContextMenuActions/ContextMenuActions'
 import type { MonitoredServiceListItemDTO } from 'services/cv'
-import type { ExtendedMonitoredServiceDTO } from '@cv/pages/monitored-service/components/Configurations/Configurations.utils'
-import { EnvironmentToolTipDisplay } from '@cv/components/HarnessServiceAndEnvironment/components/EnvironmentToolTipDisplay'
 import IconGrid from '../IconGrid/IconGrid'
 import {
   calculateChangePercentage,
@@ -43,8 +41,6 @@ const CategoryProps: Renderer<CellProps<MonitoredServiceListItemDTO>> = ({ row }
 const RenderServiceName: Renderer<CellProps<MonitoredServiceListItemDTO>> = ({ row }) => {
   const { accountId, orgIdentifier, projectIdentifier } = useParams<ProjectPathProps>()
   const monitoredService = row.original
-
-  const envRefList = (monitoredService as ExtendedMonitoredServiceDTO)?.environmentRefList
 
   return (
     <Layout.Vertical>
@@ -70,13 +66,9 @@ const RenderServiceName: Renderer<CellProps<MonitoredServiceListItemDTO>> = ({ r
           module: 'cv'
         })}
       >
-        <EnvironmentToolTipDisplay
-          type={monitoredService?.type}
-          color={Color.PRIMARY_7}
-          font={{ align: 'left', size: 'xsmall' }}
-          envRefList={envRefList}
-          environmentRef={monitoredService?.environmentRef}
-        />
+        <Text color={Color.PRIMARY_7} font={{ align: 'left', size: 'xsmall' }}>
+          {monitoredService.environmentName}
+        </Text>
       </Link>
     </Layout.Vertical>
   )
