@@ -19,9 +19,9 @@ import {
   FormInput,
   Heading,
   Layout,
-  Text,
-  useModalHook
+  Text
 } from '@wings-software/uicore'
+import { useModalHook } from '@harness/use-modal'
 import { FieldArray } from 'formik'
 import cx from 'classnames'
 import { Divider, IconName, Dialog } from '@blueprintjs/core'

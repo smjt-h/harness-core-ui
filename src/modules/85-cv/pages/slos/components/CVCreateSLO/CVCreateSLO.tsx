@@ -16,11 +16,11 @@ import {
   Button,
   Heading,
   FontVariation,
-  useModalHook,
   Dialog,
   Text,
   Color
 } from '@wings-software/uicore'
+import { useModalHook } from '@harness/use-modal'
 import { NGBreadcrumbs } from '@common/components/NGBreadcrumbs/NGBreadcrumbs'
 import routes from '@common/RouteDefinitions'
 import type { ProjectPathProps } from '@common/interfaces/RouteInterfaces'

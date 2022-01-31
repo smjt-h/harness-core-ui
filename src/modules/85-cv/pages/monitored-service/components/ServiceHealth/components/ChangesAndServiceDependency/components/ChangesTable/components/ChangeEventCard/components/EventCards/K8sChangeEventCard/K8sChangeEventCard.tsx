@@ -6,7 +6,8 @@
  */
 
 import React, { useMemo } from 'react'
-import { Button, Card, Container, useModalHook, Text } from '@wings-software/uicore'
+import { Button, Card, Container, Text } from '@wings-software/uicore'
+import { useModalHook } from '@harness/use-modal'
 import { Divider, Dialog } from '@blueprintjs/core'
 import { MonacoDiffEditor } from 'react-monaco-editor'
 import type { ChangeEventDTO } from 'services/cv'

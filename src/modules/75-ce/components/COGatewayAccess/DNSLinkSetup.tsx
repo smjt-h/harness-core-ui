@@ -14,7 +14,6 @@ import {
   FormInput,
   Color,
   Text,
-  useModalHook,
   SelectOption,
   Container,
   Select,
@@ -24,6 +23,7 @@ import {
   Icon,
   Switch
 } from '@wings-software/uicore'
+import { useModalHook } from '@harness/use-modal'
 import * as Yup from 'yup'
 import { debounce as _debounce, isEmpty as _isEmpty, values as _values, defaultTo as _defaultTo } from 'lodash-es'
 import { Dialog, IDialogProps, Radio, Tab } from '@blueprintjs/core'

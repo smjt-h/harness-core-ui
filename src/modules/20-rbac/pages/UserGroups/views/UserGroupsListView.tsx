@@ -18,9 +18,9 @@ import {
   TableV2,
   useConfirmationDialog,
   useToaster,
-  useModalHook,
   Dialog
 } from '@wings-software/uicore'
+import { useModalHook } from '@harness/use-modal'
 import type { CellProps, Renderer, Column } from 'react-table'
 import { Classes, Position, Menu, Intent, PopoverInteractionKind, IconName, MenuItem } from '@blueprintjs/core'
 import { useHistory, useParams } from 'react-router-dom'

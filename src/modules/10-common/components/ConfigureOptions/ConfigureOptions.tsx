@@ -9,7 +9,6 @@ import React, { CSSProperties } from 'react'
 import { defaultTo } from 'lodash-es'
 import {
   Button,
-  useModalHook,
   Formik,
   Text,
   FormInput,
@@ -26,6 +25,7 @@ import { Dialog, Classes, FormGroup, Position, PopoverInteractionKind } from '@b
 import * as Yup from 'yup'
 import cx from 'classnames'
 import isEmpty from 'lodash/isEmpty'
+import { useModalHook } from '@harness/use-modal'
 import { useStrings, String } from 'framework/strings'
 import css from './ConfigureOptions.module.scss'
 

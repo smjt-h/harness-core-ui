@@ -16,7 +16,6 @@ import {
   ExpandingSearchInput,
   Page,
   PageSpinner,
-  // useModalHook,
   Icon,
   TableV2
 } from '@wings-software/uicore'

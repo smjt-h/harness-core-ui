@@ -7,7 +7,8 @@
 
 import React from 'react'
 import { render, waitFor, fireEvent, queryByText } from '@testing-library/react'
-import { ModalProvider, useModalHook, Container } from '@wings-software/uicore'
+import { ModalProvider, useModalHook } from '@harness/use-modal'
+import { Container } from '@wings-software/uicore'
 import { TestWrapper } from '@common/utils/testUtils'
 import { getTriggerListDefaultProps } from './mockConstants'
 import AddDrawer from '../AddDrawer'

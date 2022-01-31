@@ -6,16 +6,8 @@
  */
 
 import React, { useCallback, useState } from 'react'
-import {
-  useModalHook,
-  Dialog,
-  Button,
-  Layout,
-  Text,
-  ButtonVariation,
-  FontVariation,
-  Heading
-} from '@wings-software/uicore'
+import { Dialog, Button, Layout, Text, ButtonVariation, FontVariation, Heading } from '@wings-software/uicore'
+import { useModalHook } from '@harness/use-modal'
 import type { IDialogProps } from '@blueprintjs/core'
 import { useStrings } from 'framework/strings'
 import TokenDelegatesList from './TokenDelegatesList'

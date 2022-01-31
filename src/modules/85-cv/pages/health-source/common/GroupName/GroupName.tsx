@@ -6,7 +6,8 @@
  */
 
 import React from 'react'
-import { FormInput, Formik, useModalHook, FormikForm, Text, Container, Layout, Button } from '@wings-software/uicore'
+import { FormInput, Formik, FormikForm, Text, Container, Layout, Button } from '@wings-software/uicore'
+import { useModalHook } from '@harness/use-modal'
 import { Dialog } from '@blueprintjs/core'
 import { useStrings } from 'framework/strings'
 import type { GroupNameProps, CreateGroupName } from './GroupName.types'

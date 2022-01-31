@@ -7,7 +7,6 @@
 
 import React, { useCallback } from 'react'
 import {
-  useModalHook,
   Dialog,
   Button,
   Layout,
@@ -20,6 +19,7 @@ import {
   PageSpinner,
   ButtonVariation
 } from '@wings-software/uicore'
+import { useModalHook } from '@harness/use-modal'
 import { useParams } from 'react-router-dom'
 import type { FormikActions } from 'formik'
 import * as Yup from 'yup'

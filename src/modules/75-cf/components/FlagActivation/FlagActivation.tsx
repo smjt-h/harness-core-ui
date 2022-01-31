@@ -18,11 +18,11 @@ import {
   Tab,
   Button,
   FlexExpander,
-  useModalHook,
   Formik,
   FormikForm,
   PageError
 } from '@wings-software/uicore'
+import { useModalHook } from '@harness/use-modal'
 import { Dialog } from '@blueprintjs/core'
 import cx from 'classnames'
 import * as yup from 'yup'

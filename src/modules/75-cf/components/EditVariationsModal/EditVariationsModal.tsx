@@ -11,7 +11,6 @@ import * as yup from 'yup'
 import { isEqual, zip, orderBy, clone } from 'lodash-es'
 import {
   Button,
-  useModalHook,
   Text,
   ButtonProps,
   Container,
@@ -26,6 +25,7 @@ import {
   Heading,
   Icon
 } from '@wings-software/uicore'
+import { useModalHook } from '@harness/use-modal'
 import { getErrorMessage, useValidateVariationValues } from '@cf/utils/CFUtils'
 import { useStrings } from 'framework/strings'
 import { useToaster } from '@common/exports'

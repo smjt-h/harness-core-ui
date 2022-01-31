@@ -10,7 +10,6 @@ import { useParams } from 'react-router-dom'
 import {
   Layout,
   Text,
-  useModalHook,
   ExpandingSearchInput,
   ButtonVariation,
   Button,
@@ -18,6 +17,7 @@ import {
   Page,
   shouldShowError
 } from '@wings-software/uicore'
+import { useModalHook } from '@harness/use-modal'
 import { Dialog } from '@blueprintjs/core'
 import { useDocumentTitle } from '@common/hooks/useDocumentTitle'
 

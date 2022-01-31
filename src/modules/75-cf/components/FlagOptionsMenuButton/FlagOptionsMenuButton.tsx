@@ -7,7 +7,8 @@
 
 import React, { ReactElement } from 'react'
 import { useHistory, useParams } from 'react-router-dom'
-import { useModalHook, useToaster, Text } from '@wings-software/uicore'
+import { useToaster, Text } from '@wings-software/uicore'
+import { useModalHook } from '@harness/use-modal'
 import type { MutateRequestOptions } from 'restful-react/dist/Mutate'
 import useActiveEnvironment from '@cf/hooks/useActiveEnvironment'
 import usePlanEnforcement from '@cf/hooks/usePlanEnforcement'

@@ -8,7 +8,9 @@
 import React from 'react'
 import { Classes, Dialog } from '@blueprintjs/core'
 import cx from 'classnames'
-import { Layout, Card, Icon, Text, IconName, Button, useModalHook, ButtonVariation } from '@wings-software/uicore'
+import { Layout, Card, Icon, Text, IconName, Button, ButtonVariation } from '@wings-software/uicore'
+import { useModalHook } from '@harness/use-modal'
+
 import { merge } from 'lodash-es'
 import { useStrings } from 'framework/strings'
 

@@ -6,17 +6,8 @@
  */
 
 import React from 'react'
-import {
-  Container,
-  Formik,
-  FormikForm,
-  FormInput,
-  Layout,
-  useModalHook,
-  Text,
-  Button,
-  Label
-} from '@wings-software/uicore'
+import { Container, Formik, FormikForm, FormInput, Layout, Text, Button, Label } from '@wings-software/uicore'
+import { useModalHook } from '@harness/use-modal'
 import { Dialog } from '@blueprintjs/core'
 import { useStrings } from 'framework/strings'
 import JsonSelector from '@cv/components/JsonSelector/JsonSelector'

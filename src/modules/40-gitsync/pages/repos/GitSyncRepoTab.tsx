@@ -17,13 +17,13 @@ import {
   FormikForm,
   FormInput,
   Popover,
-  useModalHook,
   ModalErrorHandlerBinding,
   ModalErrorHandler,
   Tag,
   useToaster,
   TableV2
 } from '@wings-software/uicore'
+import { useModalHook } from '@harness/use-modal'
 import cx from 'classnames'
 import type { CellProps, Renderer, Column } from 'react-table'
 import * as Yup from 'yup'

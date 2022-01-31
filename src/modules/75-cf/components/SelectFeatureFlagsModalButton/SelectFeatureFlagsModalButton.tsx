@@ -10,7 +10,6 @@ import { Dialog, Intent } from '@blueprintjs/core'
 import * as yup from 'yup'
 import {
   Button,
-  useModalHook,
   Text,
   ButtonProps,
   Container,
@@ -25,6 +24,7 @@ import {
   Heading,
   FontVariation
 } from '@wings-software/uicore'
+import { useModalHook } from '@harness/use-modal'
 import { CF_DEFAULT_PAGE_SIZE, getErrorMessage, SegmentsSortByField, SortOrder } from '@cf/utils/CFUtils'
 import { useStrings } from 'framework/strings'
 import { Feature, useGetAllFeatures } from 'services/cf'

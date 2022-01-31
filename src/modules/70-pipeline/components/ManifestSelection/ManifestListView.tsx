@@ -11,7 +11,6 @@ import {
   Text,
   Icon,
   Color,
-  useModalHook,
   StepWizard,
   StepProps,
   Button,
@@ -22,6 +21,7 @@ import {
   Container,
   FontVariation
 } from '@wings-software/uicore'
+import { useModalHook } from '@harness/use-modal'
 
 import { useParams } from 'react-router-dom'
 import cx from 'classnames'

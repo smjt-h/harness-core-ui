@@ -15,7 +15,6 @@ import {
   Layout,
   Text,
   NestedAccordionProvider,
-  useModalHook,
   Heading,
   Color,
   ButtonVariation,
@@ -27,6 +26,7 @@ import {
   VisualYamlToggle,
   getErrorInfoFromErrorObject
 } from '@wings-software/uicore'
+import { useModalHook } from '@harness/use-modal'
 import cx from 'classnames'
 import { useHistory } from 'react-router-dom'
 import { parse } from 'yaml'

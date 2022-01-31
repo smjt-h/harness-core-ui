@@ -6,7 +6,9 @@
  */
 
 import React, { useCallback, useState } from 'react'
-import { useModalHook, Dialog } from '@wings-software/uicore'
+import { Dialog } from '@wings-software/uicore'
+import { useModalHook } from '@harness/use-modal'
+
 import type { ServiceAccountDTO } from 'services/cd-ng'
 import { useStrings } from 'framework/strings'
 import ServiceAccountForm from './views/ServiceAccountForm'

@@ -6,7 +6,7 @@
  */
 
 import React, { useState } from 'react'
-import { useModalHook } from '@wings-software/uicore'
+import { useModalHook } from '@harness/use-modal'
 import { Dialog } from '@blueprintjs/core'
 import type { UserGroupDTO } from 'services/cd-ng'
 import type { Scope } from '@common/interfaces/SecretsInterface'

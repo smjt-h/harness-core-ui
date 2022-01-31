@@ -8,7 +8,6 @@
 import React, { useState, useEffect, useCallback } from 'react'
 import {
   Layout,
-  useModalHook,
   SelectOption,
   FormInput,
   MultiSelectOption,
@@ -18,6 +17,7 @@ import {
   PageError,
   shouldShowError
 } from '@wings-software/uicore'
+import { useModalHook } from '@harness/use-modal'
 import { useParams, useHistory } from 'react-router-dom'
 import type { GetDataError } from 'restful-react'
 import { debounce, pick } from 'lodash-es'

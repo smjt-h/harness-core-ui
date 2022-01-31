@@ -9,7 +9,6 @@ import React, { useState } from 'react'
 import { Classes, Dialog, IDialogProps, Intent } from '@blueprintjs/core'
 import cx from 'classnames'
 import {
-  useModalHook,
   Text,
   Icon,
   Layout,
@@ -23,6 +22,7 @@ import {
   VisualYamlToggle,
   useConfirmationDialog
 } from '@wings-software/uicore'
+import { useModalHook } from '@harness/use-modal'
 import { useHistory, useParams, matchPath } from 'react-router-dom'
 import { parse } from 'yaml'
 import { get, isEmpty, isEqual, merge, omit, set } from 'lodash-es'

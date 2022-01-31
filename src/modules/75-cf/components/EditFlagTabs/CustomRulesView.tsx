@@ -18,11 +18,11 @@ import {
   MultiSelectOption,
   TextInput,
   Icon,
-  useModalHook,
   Button,
   SimpleTagInput,
   Container
 } from '@wings-software/uicore'
+import { useModalHook } from '@harness/use-modal'
 import { Dialog, Menu, Spinner } from '@blueprintjs/core'
 import { assoc, compose, prop } from 'lodash/fp'
 import { uniq } from 'lodash-es'

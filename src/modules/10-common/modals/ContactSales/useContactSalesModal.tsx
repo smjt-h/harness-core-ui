@@ -8,7 +8,6 @@
 import React from 'react'
 import {
   Text,
-  useModalHook,
   Button,
   Formik,
   FormikForm as Form,
@@ -17,6 +16,7 @@ import {
   FormInput,
   SelectOption
 } from '@wings-software/uicore'
+import { useModalHook } from '@harness/use-modal'
 import { Dialog, Classes } from '@blueprintjs/core'
 import * as Yup from 'yup'
 import cx from 'classnames'

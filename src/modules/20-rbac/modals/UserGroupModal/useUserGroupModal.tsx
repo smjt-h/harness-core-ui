@@ -6,7 +6,8 @@
  */
 
 import React, { useCallback, useState } from 'react'
-import { useModalHook, Dialog } from '@wings-software/uicore'
+import { Dialog } from '@wings-software/uicore'
+import { useModalHook } from '@harness/use-modal'
 
 import type { UserGroupDTO } from 'services/cd-ng'
 import UserGroupForm from '@rbac/modals/UserGroupModal/views/UserGroupForm'

@@ -6,7 +6,7 @@
  */
 
 import React from 'react'
-import { useModalHook } from '@wings-software/uicore'
+import { useModalHook } from '@harness/use-modal'
 import EditTargetGroupCriteriaDialog, {
   EditTargetGroupCriteriaDialogProps
 } from '../components/EditTargetGroupCriteria/EditTargetGroupCriteriaDialog'

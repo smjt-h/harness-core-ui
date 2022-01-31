@@ -7,7 +7,8 @@
 
 import React from 'react'
 import { useParams } from 'react-router-dom'
-import { HarnessDocTooltip, useModalHook } from '@wings-software/uicore'
+import { HarnessDocTooltip } from '@wings-software/uicore'
+import { useModalHook } from '@harness/use-modal'
 import { Dialog, IDialogProps } from '@blueprintjs/core'
 
 import { useStrings } from 'framework/strings'

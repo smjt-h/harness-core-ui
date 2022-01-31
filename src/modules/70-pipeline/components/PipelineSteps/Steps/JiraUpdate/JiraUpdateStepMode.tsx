@@ -21,9 +21,9 @@ import {
   getMultiTypeFromValue,
   MultiTypeInputType,
   SelectOption,
-  Text,
-  useModalHook
+  Text
 } from '@wings-software/uicore'
+import { useModalHook } from '@harness/use-modal'
 import { setFormikRef, StepFormikFowardRef, StepViewType } from '@pipeline/components/AbstractSteps/Step'
 import { String, useStrings } from 'framework/strings'
 import {

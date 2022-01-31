@@ -6,7 +6,8 @@
  */
 
 import React from 'react'
-import { useModalHook, Container, Layout, Button } from '@wings-software/uicore'
+import { Container, Layout, Button } from '@wings-software/uicore'
+import { useModalHook } from '@harness/use-modal'
 import { Dialog, Classes } from '@blueprintjs/core'
 import cx from 'classnames'
 import { FeedBackForm, ExtendTrialForm } from './ExtendTrialOrFeedbackForm'

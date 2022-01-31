@@ -6,17 +6,8 @@
  */
 
 import React, { Dispatch, SetStateAction } from 'react'
-import {
-  FormInput,
-  SelectOption,
-  Formik,
-  useModalHook,
-  FormikForm,
-  Text,
-  Container,
-  Layout,
-  Button
-} from '@wings-software/uicore'
+import { FormInput, SelectOption, Formik, FormikForm, Text, Container, Layout, Button } from '@wings-software/uicore'
+import { useModalHook } from '@harness/use-modal'
 import { Dialog, IDialogProps } from '@blueprintjs/core'
 import { StringKeys, useStrings, UseStringsReturn } from 'framework/strings'
 

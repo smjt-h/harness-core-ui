@@ -16,7 +16,6 @@ import {
   Button,
   Heading,
   Icon,
-  useModalHook,
   CardBody,
   FontVariation,
   FormInput,
@@ -27,6 +26,7 @@ import {
   ExpandingSearchInput,
   TableV2
 } from '@wings-software/uicore'
+import { useModalHook } from '@harness/use-modal'
 
 import { Select } from '@blueprintjs/select'
 

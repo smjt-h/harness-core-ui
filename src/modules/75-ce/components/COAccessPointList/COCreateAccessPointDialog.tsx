@@ -7,7 +7,9 @@
 
 import React from 'react'
 import { Dialog, IDialogProps } from '@blueprintjs/core'
-import { Button, useModalHook } from '@wings-software/uicore'
+import { Button } from '@wings-software/uicore'
+import { useModalHook } from '@harness/use-modal'
+
 import type { AccessPoint } from 'services/lw'
 import CreateAccessPointDialogScreens from './CreateAccessPointDialogSteps'
 

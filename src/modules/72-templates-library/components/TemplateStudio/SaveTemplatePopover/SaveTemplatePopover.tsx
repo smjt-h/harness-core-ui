@@ -7,7 +7,8 @@
 
 import React from 'react'
 import { Dialog } from '@blueprintjs/core'
-import { Button, ButtonVariation, useModalHook } from '@wings-software/uicore'
+import { Button, ButtonVariation } from '@wings-software/uicore'
+import { useModalHook } from '@harness/use-modal'
 import { defaultTo, get, isEmpty, merge, noop } from 'lodash-es'
 import { useParams } from 'react-router-dom'
 import type { FormikErrors } from 'formik'

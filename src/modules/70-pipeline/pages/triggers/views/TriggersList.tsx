@@ -6,7 +6,8 @@
  */
 
 import React, { useState } from 'react'
-import { Button, ButtonVariation, Color, TextInput, useModalHook } from '@wings-software/uicore'
+import { Button, ButtonVariation, Color, TextInput } from '@wings-software/uicore'
+import { useModalHook } from '@harness/use-modal'
 import { useParams, useHistory } from 'react-router-dom'
 import { useStrings } from 'framework/strings'
 import { Page } from '@common/exports'

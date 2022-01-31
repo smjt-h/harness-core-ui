@@ -15,7 +15,6 @@ import {
   OverlaySpinner,
   SelectOption,
   Text,
-  useModalHook,
   GridListToggle,
   Views,
   ButtonVariation,
@@ -24,6 +23,7 @@ import {
   PageSpinner,
   ExpandingSearchInputHandle
 } from '@wings-software/uicore'
+import { useModalHook } from '@harness/use-modal'
 import { useHistory, useParams } from 'react-router-dom'
 import type { FormikProps } from 'formik'
 import { defaultTo, isEmpty, pick } from 'lodash-es'

@@ -7,7 +7,7 @@
 
 import React from 'react'
 import cx from 'classnames'
-import { useModalHook } from '@wings-software/uicore'
+import { useModalHook } from '@harness/use-modal'
 import { Dialog, Classes } from '@blueprintjs/core'
 import RestrictEmailDomainsForm from './views/RestrictEmailDomainsForm'
 import css from './useRestrictEmailDomains.module.scss'

@@ -6,7 +6,8 @@
  */
 
 import React, { useCallback, useState } from 'react'
-import { useModalHook, Dialog } from '@wings-software/uicore'
+import { Dialog } from '@wings-software/uicore'
+import { useModalHook } from '@harness/use-modal'
 import type { DialogProps } from '@wings-software/uicore/dist/components/Dialog/Dialog'
 import EnableTwoFactorAuthView from '@user-profile/modals/EnableTwoFactorAuth/views/EnableTwoFactorView'
 import { useStrings } from 'framework/strings'

@@ -6,9 +6,10 @@
  */
 
 import React from 'react'
-import { Button, Popover, ButtonProps, useModalHook } from '@wings-software/uicore'
+import { Button, Popover, ButtonProps } from '@wings-software/uicore'
 import { Dialog, IDialogProps, Menu, MenuItem } from '@blueprintjs/core'
 import { Link } from 'react-router-dom'
+import { useModalHook } from '@harness/use-modal'
 
 import { useHandleInterrupt, useHandleStageInterrupt } from 'services/pipeline-ng'
 import routes from '@common/RouteDefinitions'

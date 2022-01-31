@@ -17,11 +17,11 @@ import {
   Layout,
   SelectOption,
   Checkbox,
-  useModalHook,
   PageSpinner,
   VisualYamlSelectedView as SelectedView,
   VisualYamlToggle
 } from '@wings-software/uicore'
+import { useModalHook } from '@harness/use-modal'
 import { useHistory, useParams } from 'react-router-dom'
 import cx from 'classnames'
 import { parse } from 'yaml'

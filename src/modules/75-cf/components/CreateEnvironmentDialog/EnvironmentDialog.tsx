@@ -19,9 +19,9 @@ import {
   FormInput,
   IconName,
   Layout,
-  Text,
-  useModalHook
+  Text
 } from '@wings-software/uicore'
+import { useModalHook } from '@harness/use-modal'
 import { ResponseEnvironmentResponseDTO, useCreateEnvironment } from 'services/cd-ng'
 import { useToaster } from '@common/exports'
 import { useEnvStrings } from '@cf/hooks/environment'

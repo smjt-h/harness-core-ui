@@ -14,7 +14,6 @@ import {
   Pagination,
   PaginationProps,
   PageError,
-  useModalHook,
   Button,
   PillToggle,
   PillToggleProps,
@@ -23,6 +22,7 @@ import {
   FontVariation,
   Color
 } from '@wings-software/uicore'
+import { useModalHook } from '@harness/use-modal'
 import {
   GitErrorExperienceSubTab,
   GitErrorExperienceTab,

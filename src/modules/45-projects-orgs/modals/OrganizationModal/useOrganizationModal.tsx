@@ -6,7 +6,8 @@
  */
 
 import { Classes, Dialog } from '@blueprintjs/core'
-import { Button, StepWizard, useModalHook } from '@wings-software/uicore'
+import { Button, StepWizard } from '@wings-software/uicore'
+import { useModalHook } from '@harness/use-modal'
 import React, { useState, useCallback } from 'react'
 import cx from 'classnames'
 import type { Organization } from 'services/cd-ng'

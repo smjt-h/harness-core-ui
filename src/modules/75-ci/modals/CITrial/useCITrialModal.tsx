@@ -6,7 +6,8 @@
  */
 
 import React from 'react'
-import { useModalHook, Dialog } from '@wings-software/uicore'
+import { Dialog } from '@wings-software/uicore'
+import { useModalHook } from '@harness/use-modal'
 import cx from 'classnames'
 import { useTelemetry } from '@common/hooks/useTelemetry'
 import { Category, TrialActions, PageNames } from '@common/constants/TrackingConstants'

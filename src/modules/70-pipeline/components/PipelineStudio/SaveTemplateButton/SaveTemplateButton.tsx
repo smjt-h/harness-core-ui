@@ -6,7 +6,8 @@
  */
 
 import React from 'react'
-import { Color, ButtonVariation, ButtonSize, useModalHook, ButtonProps } from '@wings-software/uicore'
+import { Color, ButtonVariation, ButtonSize, ButtonProps } from '@wings-software/uicore'
+import { useModalHook } from '@harness/use-modal'
 import produce from 'immer'
 import { defaultTo, merge, omit } from 'lodash-es'
 import { Dialog } from '@blueprintjs/core'

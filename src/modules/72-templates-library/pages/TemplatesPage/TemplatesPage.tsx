@@ -14,9 +14,9 @@ import {
   GridListToggle,
   HarnessDocTooltip,
   Layout,
-  useModalHook,
   Views
 } from '@wings-software/uicore'
+import { useModalHook } from '@harness/use-modal'
 import { useHistory, useParams } from 'react-router-dom'
 import { Dialog } from '@blueprintjs/core'
 import { TemplateSettingsModal } from '@templates-library/components/TemplateSettingsModal/TemplateSettingsModal'

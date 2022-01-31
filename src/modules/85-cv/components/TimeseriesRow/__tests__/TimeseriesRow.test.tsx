@@ -76,7 +76,7 @@ describe('TimeseriesRow', () => {
         }
       ]
     })
-    expect(r.type.name).toEqual('Dialog')
+    expect(r).toEqual(undefined)
   })
 
   test('extractTimeRange finds min/max dates', () => {

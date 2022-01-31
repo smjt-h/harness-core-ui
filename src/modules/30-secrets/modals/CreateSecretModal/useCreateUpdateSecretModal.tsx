@@ -6,7 +6,8 @@
  */
 
 import React, { useState } from 'react'
-import { useModalHook, Button, Text, Color } from '@wings-software/uicore'
+import { Button, Text, Color } from '@wings-software/uicore'
+import { useModalHook } from '@harness/use-modal'
 import { Dialog } from '@blueprintjs/core'
 
 import type { SecretDTOV2, ConnectorInfoDTO } from 'services/cd-ng'
