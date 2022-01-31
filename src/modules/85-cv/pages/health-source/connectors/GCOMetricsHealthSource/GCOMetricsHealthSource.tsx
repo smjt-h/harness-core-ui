@@ -422,7 +422,7 @@ export function GCOMetricsHealthSource(props: GCOMetricsHealthSourceProps): JSX.
                 dashboards={isDashdoardEmpty ? [] : dashboard}
                 dashboardWidgetMapper={mapstackdriverDashboardDetailToMetricWidget}
                 dashboardDetailsRequest={stackDriverDashBoardRequest}
-                addManualQueryTitle={'cv.monitoringSources.datadog.manualInputQueryModal.modalTitle'}
+                addManualQueryTitle={'cv.monitoringSources.gco.manualInputQueryModal.modalTitle'}
                 connectorIdentifier={data.connectorRef as string}
                 manuallyInputQueries={getManuallyCreatedQueries(updatedData)}
                 showSpinnerOnLoad={!selectedMetric}
