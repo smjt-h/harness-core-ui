@@ -11,7 +11,6 @@ import { Text, getMultiTypeFromValue, MultiTypeInputType, FormikForm } from '@wi
 import { isEmpty } from 'lodash-es'
 import { useParams } from 'react-router-dom'
 import { useStrings } from 'framework/strings'
-import MultiTypeListInputSet from '@common/components/MultiTypeListInputSet/MultiTypeListInputSet'
 import { MultiTypeTextField } from '@common/components/MultiTypeText/MultiTypeText'
 import { useVariablesExpression } from '@pipeline/components/PipelineStudio/PiplineHooks/useVariablesExpression'
 import { FormMultiTypeConnectorField } from '@connectors/components/ConnectorReferenceField/FormMultiTypeConnectorField'
@@ -19,7 +18,6 @@ import StepCommonFieldsInputSet from '@pipeline/components/StepCommonFields/Step
 import { StepViewType } from '@pipeline/components/AbstractSteps/Step'
 import type { GitQueryParams } from '@common/interfaces/RouteInterfaces'
 import type { ECRStepProps } from './ECRStep'
-import { shouldRenderRunTimeInputView } from '../CIStep/StepUtils'
 import { ArtifactoryInputSetCommonField } from '../CIStep/ArtifactoryInputSetCommonField'
 import css from '@pipeline/components/PipelineSteps/Steps/Steps.module.scss'
 
@@ -131,26 +129,14 @@ export const ECRStepInputSetBasic: React.FC<ECRStepProps> = ({
           style={{ marginBottom: 'var(--spacing-small)' }}
         />
       )}
-      {shouldRenderRunTimeInputView(template?.spec?.tags) && (
-        <MultiTypeListInputSet
-          name={`${isEmpty(path) ? '' : `${path}.`}spec.tags`}
-          multiTextInputProps={{
-            allowableTypes: [MultiTypeInputType.EXPRESSION, MultiTypeInputType.FIXED],
-            expressions
-          }}
-          multiTypeFieldSelectorProps={{
-            label: (
-              <Text style={{ display: 'flex', alignItems: 'center' }} tooltipProps={{ dataTooltipId: 'tags' }}>
-                {getString('tagsLabel')}
-              </Text>
-            ),
-            allowedTypes: [MultiTypeInputType.FIXED]
-          }}
-          disabled={readonly}
-          style={{ marginBottom: 'var(--spacing-small)' }}
-        />
-      )}
-      <ArtifactoryInputSetCommonField template={template} path={path} readonly={readonly} formik={formik} />
+      <ArtifactoryInputSetCommonField
+        template={template}
+        path={path}
+        readonly={readonly}
+        formik={formik}
+        allowableTypes={allowableTypes}
+        stepViewType={stepViewType}
+      />
       {getMultiTypeFromValue(template?.spec?.remoteCacheImage) === MultiTypeInputType.RUNTIME && (
         <MultiTypeTextField
           className={css.removeBpLabelMargin}

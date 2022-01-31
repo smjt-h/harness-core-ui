@@ -11,9 +11,12 @@ import { isEmpty } from 'lodash-es'
 import cx from 'classnames'
 import { useStrings } from 'framework/strings'
 import MultiTypeMapInputSet from '@common/components/MultiTypeMapInputSet/MultiTypeMapInputSet'
+import MultiTypeListInputSet from '@common/components/MultiTypeListInputSet/MultiTypeListInputSet'
+import { MultiTypeList } from '@common/components/MultiTypeList/MultiTypeList'
 import { FormMultiTypeCheckboxField } from '@common/components/MultiTypeCheckbox/MultiTypeCheckbox'
 import { MultiTypeTextField } from '@common/components/MultiTypeText/MultiTypeText'
 import { useVariablesExpression } from '@pipeline/components/PipelineStudio/PiplineHooks/useVariablesExpression'
+import { StepViewType } from '@pipeline/components/AbstractSteps/Step'
 import { shouldRenderRunTimeInputView } from './StepUtils'
 import css from '@pipeline/components/PipelineSteps/Steps/Steps.module.scss'
 
@@ -22,20 +25,47 @@ interface ArtifactoryInputSetProps {
   path?: string
   readonly?: boolean
   formik?: any
+  stepViewType: StepViewType
+  allowableTypes: MultiTypeInputType[]
 }
 
 export const ArtifactoryInputSetCommonField: React.FC<ArtifactoryInputSetProps> = ({
   template,
   path,
   readonly,
-  formik
+  formik,
+  stepViewType,
+  allowableTypes
 }) => {
   const { getString } = useStrings()
 
   const { expressions } = useVariablesExpression()
 
+  const tagsRenderProps = {
+    name: `${isEmpty(path) ? '' : `${path}.`}spec.tags`,
+    multiTextInputProps: {
+      allowableTypes,
+      expressions
+    },
+    multiTypeFieldSelectorProps: {
+      label: (
+        <Text style={{ display: 'flex', alignItems: 'center' }} tooltipProps={{ dataTooltipId: 'tags' }}>
+          {getString('tagsLabel')}
+        </Text>
+      )
+    },
+    disabled: readonly,
+    style: { marginBottom: 'var(--spacing-small)' }
+  }
+
   return (
     <>
+      {shouldRenderRunTimeInputView(template?.spec?.tags) &&
+        (stepViewType === StepViewType.InputSet ? (
+          <MultiTypeList {...tagsRenderProps} />
+        ) : (
+          <MultiTypeListInputSet {...tagsRenderProps} />
+        ))}
       {getMultiTypeFromValue(template?.spec?.optimize) === MultiTypeInputType.RUNTIME && (
         <div className={cx(css.formGroup, css.sm)}>
           <FormMultiTypeCheckboxField
