@@ -47,7 +47,10 @@ const GitConnection: React.FC<StepProps<GitConnectionStepProps> & GitConnectionP
   })
 
   const { mutate: isSaasGit, loading: checkingIsSaasGit } = useIsSaasGit({
-    queryParams: {}
+    queryParams: {},
+    requestOptions: {
+      headers: { 'content-type': 'application/json' }
+    }
   })
 
   const { mutate: registerAgent } = usePostGitSyncSetting({

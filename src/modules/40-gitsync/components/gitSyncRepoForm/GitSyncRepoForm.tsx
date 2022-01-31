@@ -384,7 +384,7 @@ const GitSyncRepoForm: React.FC<ModalConfigureProps & GitSyncRepoFormProps> = pr
                           label={getString('common.repositoryName')}
                           disabled={formValues.gitConnector?.connector?.spec?.type === GitUrlType.REPO}
                           onChange={e => {
-                            formValues.gitConnector?.connector.identifier &&
+                            formValues.gitConnector?.connector?.identifier &&
                               debounceFetchBranches(
                                 getConnectorIdentifierWithScope(
                                   getScopeFromDTO(formValues?.gitConnector?.connector as ScopedObjectDTO),
