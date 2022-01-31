@@ -82,7 +82,7 @@ function MockComponentThatHitPrevious(): JSX.Element {
   )
 }
 
-describe('Unit tests for SetupSourceTabs', () => {
+describe('Unit tests for SetupSourceTabs ', () => {
   test('Ensure typeToSetupSourceType returns correct value', async () => {
     expect(typeToSetupSourceType('HARNESS_CD10')).toEqual(OnboardingEntites.CHANGE_SOURCE)
     expect(typeToSetupSourceType('KUBERNETES')).toEqual(OnboardingEntites.CHANGE_SOURCE)

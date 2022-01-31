@@ -30,10 +30,10 @@ export function SelectGCODashboards(): JSX.Element {
   }, [sourceData])
   return (
     <MetricsDashboardList<StackdriverDashboardDTO>
-      manualQueryInputTitle={'cv.monitoringSources.datadog.manualInputQueryModal.modalTitle'}
+      manualQueryInputTitle={'cv.monitoringSources.gco.manualInputQueryModal.modalTitle'}
       dashboardsRequest={useGetStackdriverDashboards({ lazy: true })}
-      defaultItemIcon={'service-datadog'}
-      tableTitle={'cv.monitoringSources.datadog.selectDashboardsPage.dashboardColumnName'}
+      defaultItemIcon={'service-stackdriver'}
+      tableTitle={'cv.monitoringSources.gco.selectDashboardsPage.dashboardColumnName'}
       selectedDashboardList={selectedDashboards || []}
       tableItemMapper={dashboardItemMapper}
     />
