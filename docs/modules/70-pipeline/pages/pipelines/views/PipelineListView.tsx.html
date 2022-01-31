@@ -23,16 +23,16 @@
         <div class='clearfix'>
             
             <div class='fl pad1y space-right2'>
-                <span class="strong">89.02% </span>
+                <span class="strong">89.29% </span>
                 <span class="quiet">Statements</span>
-                <span class='fraction'>73/82</span>
+                <span class='fraction'>75/84</span>
             </div>
         
             
             <div class='fl pad1y space-right2'>
-                <span class="strong">66.1% </span>
+                <span class="strong">67.21% </span>
                 <span class="quiet">Branches</span>
-                <span class='fraction'>78/118</span>
+                <span class='fraction'>82/122</span>
             </div>
         
             
@@ -44,9 +44,9 @@
         
             
             <div class='fl pad1y space-right2'>
-                <span class="strong">88.75% </span>
+                <span class="strong">89.02% </span>
                 <span class="quiet">Lines</span>
-                <span class='fraction'>71/80</span>
+                <span class='fraction'>73/82</span>
             </div>
         
             
@@ -471,7 +471,22 @@
 <a name='L412'></a><a href='#L412'>412</a>
 <a name='L413'></a><a href='#L413'>413</a>
 <a name='L414'></a><a href='#L414'>414</a>
-<a name='L415'></a><a href='#L415'>415</a></td><td class="line-coverage quiet"><span class="cline-any cline-neutral">&nbsp;</span>
+<a name='L415'></a><a href='#L415'>415</a>
+<a name='L416'></a><a href='#L416'>416</a>
+<a name='L417'></a><a href='#L417'>417</a>
+<a name='L418'></a><a href='#L418'>418</a>
+<a name='L419'></a><a href='#L419'>419</a>
+<a name='L420'></a><a href='#L420'>420</a>
+<a name='L421'></a><a href='#L421'>421</a>
+<a name='L422'></a><a href='#L422'>422</a>
+<a name='L423'></a><a href='#L423'>423</a>
+<a name='L424'></a><a href='#L424'>424</a>
+<a name='L425'></a><a href='#L425'>425</a>
+<a name='L426'></a><a href='#L426'>426</a>
+<a name='L427'></a><a href='#L427'>427</a>
+<a name='L428'></a><a href='#L428'>428</a>
+<a name='L429'></a><a href='#L429'>429</a>
+<a name='L430'></a><a href='#L430'>430</a></td><td class="line-coverage quiet"><span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
@@ -481,6 +496,9 @@
 <span class="cline-any cline-yes">2x</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-yes">2x</span>
+<span class="cline-any cline-yes">2x</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
@@ -655,7 +673,13 @@
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-yes">32x</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
@@ -768,6 +792,8 @@
 <span class="cline-any cline-yes">24x</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-yes">24x</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">24x</span>
 <span class="cline-any cline-no">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
@@ -778,6 +804,10 @@
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-yes">24x</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
@@ -894,6 +924,7 @@
 &nbsp;
 import React from 'react'
 import type { CellProps, Column, Renderer } from 'react-table'
+import cx from 'classnames'
 import {
   Button,
   Color,
@@ -905,7 +936,9 @@ import {
   ButtonVariation,
   TagsPopover,
   TableV2,
-  Container
+  Container,
+  ButtonSize,
+  FontVariation
 } from '@wings-software/uicore'
 import { Classes, Menu, Position } from '@blueprintjs/core'
 import { useParams } from 'react-router-dom'
@@ -1067,16 +1100,22 @@ const RenderColumnPipeline: Renderer&lt;CellProps&lt;PipelineDTO&gt;&gt; = ({ ro
   const { getString } = useStrings()
   return (
     &lt;Layout.Horizontal spacing="large"&gt;
-      &lt;span&gt;
+      &lt;span
+        className={cx(
+          css.pipelineIcons,
+          getIconsForPipeline(data) &amp;&amp; getIconsForPipeline(data).length &gt; 1 ? css.spaceBetween : css.center
+        )}
+      &gt;
         {getIconsForPipeline(data).map(iconObj =&gt; (
           &lt;Icon key={iconObj.icon} name={iconObj.icon} size={iconObj.size} padding={{ left: 'xsmall' }} /&gt;
         ))}
       &lt;/span&gt;
-      &lt;div&gt;
+      &lt;div className={css.pipelineInfo}&gt;
         &lt;Layout.Horizontal flex={{ alignItems: 'center' }}&gt;
           &lt;Layout.Vertical spacing="xsmall" data-testid={data.identifier}&gt;
             &lt;Layout.Horizontal spacing="medium"&gt;
               &lt;Text
+                font={{ variation: FontVariation.BODY2 }}
                 color={Color.GREY_800}
                 tooltipProps={{ position: Position.BOTTOM }}
                 tooltip={
@@ -1181,6 +1220,8 @@ const RenderLastRun: Renderer&lt;CellProps&lt;PipelineDTO&gt;&gt; = ({ row }) =&
 const RenderRunPipeline: Renderer&lt;CellProps&lt;PipelineDTO&gt;&gt; = ({ row }): JSX.Element =&gt; {
   const rowdata = row.original
 &nbsp;
+  const { getString } = useStrings()
+&nbsp;
   const runPipeline = <span class="fstat-no" title="function not covered" >(): void =</span>&gt; {
 <span class="cstat-no" title="statement not covered" >    openRunPipelineModal()</span>
   }
@@ -1193,10 +1234,14 @@ const RenderRunPipeline: Renderer&lt;CellProps&lt;PipelineDTO&gt;&gt; = ({ row }
 &nbsp;
   return (
     &lt;RbacButton
-      variation={ButtonVariation.PRIMARY}
+      withoutCurrentColor
+      icon="command-start"
+      variation={ButtonVariation.SECONDARY}
+      size={ButtonSize.SMALL}
       intent="success"
-      icon="run-pipeline"
+      iconProps={{ size: 9, color: Color.SUCCESS }}
       className={css.runPipelineListBtn}
+      text={getString('runPipelineText')}
       permission={{
         resource: {
           resourceType: ResourceType.PIPELINE,
@@ -1306,7 +1351,7 @@ export const PipelineListView: React.FC&lt;PipelineListViewProps&gt; = ({
             <div class='footer quiet pad2 space-top1 center small'>
                 Code coverage generated by
                 <a href="https://istanbul.js.org/" target="_blank">istanbul</a>
-                at Mon Jan 31 2022 07:01:18 GMT+0000 (Greenwich Mean Time)
+                at Mon Jan 31 2022 10:43:05 GMT+0000 (Greenwich Mean Time)
             </div>
         </div>
         <script src="../../../../../prettify.js"></script>

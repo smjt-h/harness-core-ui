@@ -981,10 +981,7 @@
 <a name='L922'></a><a href='#L922'>922</a>
 <a name='L923'></a><a href='#L923'>923</a>
 <a name='L924'></a><a href='#L924'>924</a>
-<a name='L925'></a><a href='#L925'>925</a>
-<a name='L926'></a><a href='#L926'>926</a>
-<a name='L927'></a><a href='#L927'>927</a>
-<a name='L928'></a><a href='#L928'>928</a></td><td class="line-coverage quiet"><span class="cline-any cline-neutral">&nbsp;</span>
+<a name='L925'></a><a href='#L925'>925</a></td><td class="line-coverage quiet"><span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
@@ -1031,6 +1028,7 @@
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-yes">10x</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
@@ -1673,26 +1671,6 @@
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-yes">9x</span>
-<span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-yes">9x</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
@@ -1713,6 +1691,22 @@
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-yes">9x</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">9x</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
@@ -1959,6 +1953,7 @@ export const addLegendColorToRow = (data: QlceViewEntityStatsDataPoint[]): GridD
 &nbsp;
     return {
       name,
+      id,
       legendColor: colors.get(key),
       ...(clusterData as ClusterData),
       ...(storageDetails as StorageDetails),
@@ -2589,7 +2584,6 @@ export const NAMESPACE_COLS = [
   COLUMNS.COST_TREND,
   COLUMNS.NAMESPACE,
   COLUMNS.IDLE_COST,
-  COLUMNS.UNALLOCATED_COST,
   COLUMNS.STORAGE_COST,
   COLUMNS.STORAGE_ACTUAL_IDLE_COST,
   COLUMNS.STORAGE_UNALLOCATED_COST,
@@ -2608,7 +2602,6 @@ export const NAMESPACE_ID_COLS = [
   COLUMNS.NAMESPACE,
   COLUMNS.CLUSTER_NAME,
   COLUMNS.IDLE_COST,
-  COLUMNS.UNALLOCATED_COST,
   COLUMNS.STORAGE_COST,
   COLUMNS.STORAGE_ACTUAL_IDLE_COST,
   COLUMNS.STORAGE_UNALLOCATED_COST,
@@ -2626,7 +2619,6 @@ export const WORKLOAD_COLS = [
   COLUMNS.COST_TREND,
   COLUMNS.WORKLOAD,
   COLUMNS.IDLE_COST,
-  COLUMNS.UNALLOCATED_COST,
   COLUMNS.STORAGE_COST,
   COLUMNS.STORAGE_ACTUAL_IDLE_COST,
   COLUMNS.STORAGE_UNALLOCATED_COST,
@@ -2647,7 +2639,6 @@ export const WORKLOAD_ID_COLS = [
   COLUMNS.NAMESPACE,
   COLUMNS.CLUSTER_NAME,
   COLUMNS.IDLE_COST,
-  COLUMNS.UNALLOCATED_COST,
   COLUMNS.STORAGE_COST,
   COLUMNS.STORAGE_ACTUAL_IDLE_COST,
   COLUMNS.STORAGE_UNALLOCATED_COST,
@@ -2845,7 +2836,7 @@ export const getGridColumnsByGroupBy = (groupBy: QlceViewFieldInputInput, isClus
             <div class='footer quiet pad2 space-top1 center small'>
                 Code coverage generated by
                 <a href="https://istanbul.js.org/" target="_blank">istanbul</a>
-                at Mon Jan 31 2022 07:01:18 GMT+0000 (Greenwich Mean Time)
+                at Mon Jan 31 2022 10:43:05 GMT+0000 (Greenwich Mean Time)
             </div>
         </div>
         <script src="../../../../prettify.js"></script>

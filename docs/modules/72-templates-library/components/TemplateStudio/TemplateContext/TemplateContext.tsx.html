@@ -23,16 +23,16 @@
         <div class='clearfix'>
             
             <div class='fl pad1y space-right2'>
-                <span class="strong">19.77% </span>
+                <span class="strong">19.55% </span>
                 <span class="quiet">Statements</span>
-                <span class='fraction'>35/177</span>
+                <span class='fraction'>35/179</span>
             </div>
         
             
             <div class='fl pad1y space-right2'>
                 <span class="strong">0% </span>
                 <span class="quiet">Branches</span>
-                <span class='fraction'>0/226</span>
+                <span class='fraction'>0/250</span>
             </div>
         
             
@@ -44,9 +44,9 @@
         
             
             <div class='fl pad1y space-right2'>
-                <span class="strong">20.71% </span>
+                <span class="strong">20.47% </span>
                 <span class="quiet">Lines</span>
-                <span class='fraction'>35/169</span>
+                <span class='fraction'>35/171</span>
             </div>
         
             
@@ -734,7 +734,18 @@
 <a name='L675'></a><a href='#L675'>675</a>
 <a name='L676'></a><a href='#L676'>676</a>
 <a name='L677'></a><a href='#L677'>677</a>
-<a name='L678'></a><a href='#L678'>678</a></td><td class="line-coverage quiet"><span class="cline-any cline-neutral">&nbsp;</span>
+<a name='L678'></a><a href='#L678'>678</a>
+<a name='L679'></a><a href='#L679'>679</a>
+<a name='L680'></a><a href='#L680'>680</a>
+<a name='L681'></a><a href='#L681'>681</a>
+<a name='L682'></a><a href='#L682'>682</a>
+<a name='L683'></a><a href='#L683'>683</a>
+<a name='L684'></a><a href='#L684'>684</a>
+<a name='L685'></a><a href='#L685'>685</a>
+<a name='L686'></a><a href='#L686'>686</a>
+<a name='L687'></a><a href='#L687'>687</a>
+<a name='L688'></a><a href='#L688'>688</a>
+<a name='L689'></a><a href='#L689'>689</a></td><td class="line-coverage quiet"><span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
@@ -969,10 +980,21 @@
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-no">&nbsp;</span>
 <span class="cline-any cline-no">&nbsp;</span>
 <span class="cline-any cline-no">&nbsp;</span>
 <span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-no">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-no">&nbsp;</span>
@@ -1624,7 +1646,7 @@ const dispatchTemplateSuccess = <span class="fstat-no" title="function not cover
 const _fetchTemplate = <span class="fstat-no" title="function not covered" >async </span>(props: FetchTemplateBoundProps, params: FetchTemplateUnboundProps): Promise&lt;void&gt; =&gt; {
   const { dispatch, queryParams, templateIdentifier, versionLabel = <span class="branch-0 cbranch-no" title="branch not covered" >'',</span> gitDetails, templateType } = <span class="cstat-no" title="statement not covered" >props</span>
   const { forceFetch = <span class="branch-0 cbranch-no" title="branch not covered" >false,</span> forceUpdate = <span class="branch-0 cbranch-no" title="branch not covered" >false,</span> signal, repoIdentifier, branch } = <span class="cstat-no" title="statement not covered" >params</span>
-  const id = <span class="cstat-no" title="statement not covered" >getId(</span>
+  let id = <span class="cstat-no" title="statement not covered" >getId(</span>
     queryParams.accountIdentifier,
     defaultTo(queryParams.orgIdentifier, ''),
     defaultTo(queryParams.projectIdentifier, ''),
@@ -1635,7 +1657,7 @@ const _fetchTemplate = <span class="fstat-no" title="function not covered" >asyn
   )
 <span class="cstat-no" title="statement not covered" >  if (IdbTemplate) {</span>
 <span class="cstat-no" title="statement not covered" >    dispatch(TemplateContextActions.fetching())</span>
-    const data: TemplatePayload = <span class="cstat-no" title="statement not covered" >await IdbTemplate.get(IdbTemplateStoreName, id)</span>
+    let data: TemplatePayload = <span class="cstat-no" title="statement not covered" >await IdbTemplate.get(IdbTemplateStoreName, id)</span>
 <span class="cstat-no" title="statement not covered" >    if ((!data || forceFetch) &amp;&amp; templateIdentifier !== DefaultNewTemplateId) {</span>
       const templatesList: TemplateSummaryResponse[] = <span class="cstat-no" title="statement not covered" >await getTemplatesByIdentifier(</span>
         {
@@ -1646,11 +1668,22 @@ const _fetchTemplate = <span class="fstat-no" title="function not covered" >asyn
         templateIdentifier,
         signal
       )
+&nbsp;
       const versions: string[] = <span class="cstat-no" title="statement not covered" >templatesList.map(<span class="fstat-no" title="function not covered" >item </span>=&gt; <span class="cstat-no" title="statement not covered" >defaultTo(item.versionLabel, ''))</span></span>
       const defaultVersion = <span class="cstat-no" title="statement not covered" >defaultTo(templatesList.find(<span class="fstat-no" title="function not covered" >item </span>=&gt; <span class="cstat-no" title="statement not covered" >item.stableTemplate)</span>?.versionLabel, '')</span>
       const selectedVersion = <span class="cstat-no" title="statement not covered" >versions.includes(versionLabel) ? versionLabel : defaultVersion</span>
       const stableVersion = <span class="cstat-no" title="statement not covered" >templatesList.find(<span class="fstat-no" title="function not covered" >item </span>=&gt; <span class="cstat-no" title="statement not covered" >item.stableTemplate)</span>?.versionLabel</span>
       const templateWithGitDetails = <span class="cstat-no" title="statement not covered" >templatesList.find(<span class="fstat-no" title="function not covered" >item </span>=&gt; <span class="cstat-no" title="statement not covered" >item.versionLabel === selectedVersion)</span></span>
+<span class="cstat-no" title="statement not covered" >      id = getId(</span>
+        queryParams.accountIdentifier,
+        defaultTo(queryParams.orgIdentifier, ''),
+        defaultTo(queryParams.projectIdentifier, ''),
+        templateIdentifier,
+        versionLabel,
+        defaultTo(gitDetails.repoIdentifier, templateWithGitDetails?.gitDetails?.repoIdentifier ?? ''),
+        defaultTo(gitDetails.branch, templateWithGitDetails?.gitDetails?.branch ?? '')
+      )
+<span class="cstat-no" title="statement not covered" >      data = await IdbTemplate.get(IdbTemplateStoreName, id)</span>
       let template: NGTemplateInfoConfig
       const templateYamlStr = <span class="cstat-no" title="statement not covered" >defaultTo(templateWithGitDetails?.yaml, '')</span>
 <span class="cstat-no" title="statement not covered" >      try {</span>
@@ -2095,7 +2128,7 @@ export const TemplateProvider: React.FC&lt;{
             <div class='footer quiet pad2 space-top1 center small'>
                 Code coverage generated by
                 <a href="https://istanbul.js.org/" target="_blank">istanbul</a>
-                at Mon Jan 31 2022 07:01:18 GMT+0000 (Greenwich Mean Time)
+                at Mon Jan 31 2022 10:43:05 GMT+0000 (Greenwich Mean Time)
             </div>
         </div>
         <script src="../../../../../prettify.js"></script>
