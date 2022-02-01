@@ -136,7 +136,7 @@ async function run() {
       args: ['--no-sandbox', `--remote-debugging-port=${PORT}`]
     })
     let page = await browser.newPage()
-    await page.setDefaultNavigationTimeout(300000) // 5 minutes timeout
+    await page.setDefaultNavigationTimeout(0) // 5 minutes timeout
     await page.goto(passedUrl)
     await page.waitForXPath("//div[contains(text(),'Sign in')]")
     const emailInput = await page.$('#email')
