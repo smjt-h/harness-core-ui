@@ -7,7 +7,7 @@
 
 import React, { useState } from 'react'
 import { useHistory, useParams } from 'react-router-dom'
-import { Container, Popover, Text, Layout, Icon } from '@wings-software/uicore'
+import { Container, Popover, Text, Layout, Icon, Color } from '@wings-software/uicore'
 import { PopoverInteractionKind, Position } from '@blueprintjs/core'
 import { useStrings } from 'framework/strings'
 import { useRecommendationFiltersQuery } from 'services/ce/services'
@@ -184,7 +184,22 @@ const RecommendationFilters: React.FC<RecommendationFiltersProps> = ({
     <Icon name="spinner" size={24} color="blue500" style={{ alignSelf: 'center' }} />
   ) : (
     <>
-      <Layout.Horizontal spacing="medium">
+      <Layout.Horizontal
+        spacing="small"
+        padding={{ right: 'large' }}
+        style={{ borderRightWidth: 0.5, borderRightStyle: 'solid', borderRightColor: '#B0B1C4' }}
+      >
+        {/* <DropDown placeholder="Savings > 10$" disabled />
+        <DropDown
+          placeholder="Recommendation type: All"
+          items={[
+            { label: getString('ce.nodeRecommendation.nodepool'), value: 'nodepool' },
+            { label: getString('pipelineSteps.workload'), value: 'workload' }
+          ]}
+          // onChange={item => setCurrentFilters(val => ({ ...val, [item]: !val[item] }))}
+        /> */}
+      </Layout.Horizontal>
+      <Layout.Horizontal spacing="small">
         {renderPerspectiveFilterPill()}
         {Object.keys(filters).map(filter => {
           return filters[filter] ? (
@@ -240,10 +255,9 @@ const RecommendationFilters: React.FC<RecommendationFiltersProps> = ({
           )
         }
       >
-        <Container border padding="xsmall" width="220px">
-          <Text icon="ng-filter">{getString('ce.recommendation.listPage.filterHereText')}</Text>
-        </Container>
+        <Icon name="ng-filter" padding={{ left: 'small', right: 'medium' }} color={Color.PRIMARY_7} size={28} />
       </Popover>
+      {/* <DropDown placeholder="No filters saved" disabled /> */}
     </>
   )
 }
