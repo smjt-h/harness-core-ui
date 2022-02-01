@@ -1,4 +1,4 @@
-continuous: '{{$.common.changeIntelligence}}'
+continuous: '{{$.common.purpose.cv.serviceReliability}}'
 methodLabel: Method Label
 request: Request
 response: Response
@@ -428,7 +428,7 @@ activitySources:
       applicationValidation: At least one application must be selected.
       serviceValidation: At least one service mapping must be selected.
       environmentValidation: At least one environment mapping must be selected.
-learnMore: Learn more about Change Intelligence
+learnMore: Learn more about Service Reliability Management
 cvTrialHomePage:
   startTrial:
     description: Take your software build processes to the next level using our Harness Continuous Verification.

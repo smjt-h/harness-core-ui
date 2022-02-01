@@ -41,12 +41,12 @@ export const AccountSideNavProps: SidebarContext = {
 }
 
 RbacFactory.registerResourceCategory(ResourceCategory.CHANGEINTELLIGENCE_FUNCTION, {
-  icon: 'nav-cv',
-  label: 'common.changeIntelligence'
+  icon: 'cv-main',
+  label: 'common.purpose.cv.serviceReliability'
 })
 
 RbacFactory.registerResourceTypeHandler(ResourceType.MONITOREDSERVICE, {
-  icon: 'nav-cv',
+  icon: 'cv-main',
   label: 'cv.monitoredServices.title',
   category: ResourceCategory.CHANGEINTELLIGENCE_FUNCTION,
   permissionLabels: {
@@ -58,7 +58,7 @@ RbacFactory.registerResourceTypeHandler(ResourceType.MONITOREDSERVICE, {
 })
 
 RbacFactory.registerResourceTypeHandler(ResourceType.SLO, {
-  icon: 'nav-cv',
+  icon: 'cv-main',
   label: 'cv.SLO',
   category: ResourceCategory.CHANGEINTELLIGENCE_FUNCTION,
   permissionLabels: {

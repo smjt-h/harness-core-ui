@@ -174,6 +174,7 @@ purpose:
   compare: Compare both versions
   continuous: CONTINUOUS
   change: CHANGE
+  service: SERVICE
   moduleSuccess: Module Added Successfully
   startATrial: Start A Trial
   setup: 15 min setup
@@ -194,9 +195,10 @@ purpose:
   cv:
     verification: Verification
     intelligence: Intelligence
+    serviceReliability: Service Reliability
     subtitle: Deploy in peace - verify activities that take place in your system. Identify risk early.
     description: 'Measure overall service health with always-on change impact analysis.'
-    continuous: '{{ $.common.changeIntelligence }}'
+    continuous: '{{ $.common.serviceReliabilityManagement }}'
     moduleSelectionSubHeading: Take your software build verification  process to the next level usng our Change Intelligence
 
   ci:
@@ -576,6 +578,7 @@ accountResourcesPage:
   line1: 'Account Resources are shared and available for use within any organization or projects within your account.'
   line2: 'For better isolation of resources, it is recommended that you create resources at the organization or project levels respectively.'
 changeIntelligence: Change Intelligence
+serviceReliabilityManagement: Service Reliability Management
 channel: Channel
 webhookURL: Webhook URL
 selectAChannel: Select a Channel

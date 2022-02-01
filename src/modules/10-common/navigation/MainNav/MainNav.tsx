@@ -127,7 +127,7 @@ export default function L1Nav(): React.ReactElement {
                   color={Color.WHITE}
                   className={css.text}
                 >
-                  <String stringID="common.changeIntelligence" />
+                  <String stringID="common.purpose.cv.serviceReliability" />
                 </Text>
               </Layout.Vertical>
             </Link>

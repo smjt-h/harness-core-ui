@@ -38,7 +38,7 @@ const CVHomePage: React.FC = () => {
 
   return (
     <HomePageTemplate
-      title={getString('common.changeIntelligence')}
+      title={getString('common.serviceReliabilityManagement')}
       bgImageUrl={bgImageURL}
       projectCreateSuccessHandler={projectCreateSuccessHandler}
       subTitle={getString('cv.dashboard.subHeading')}

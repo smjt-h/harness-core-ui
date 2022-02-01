@@ -13,6 +13,7 @@ declare const styles: {
   readonly changeSelection: string
   readonly container: string
   readonly continueButton: string
+  readonly cvIconText: string
   readonly icon: string
   readonly iconContainer: string
   readonly iconDescription: string

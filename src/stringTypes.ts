@@ -464,11 +464,13 @@ export interface StringsMap {
   'common.purpose.cv.description': string
   'common.purpose.cv.intelligence': string
   'common.purpose.cv.moduleSelectionSubHeading': string
+  'common.purpose.cv.serviceReliability': string
   'common.purpose.cv.subtitle': string
   'common.purpose.cv.verification': string
   'common.purpose.howToProceed': string
   'common.purpose.moduleSuccess': string
   'common.purpose.selectAModule': string
+  'common.purpose.service': string
   'common.purpose.setup': string
   'common.purpose.startATrial': string
   'common.purpose.welcome': string
@@ -517,6 +519,7 @@ export interface StringsMap {
   'common.selectVersion': string
   'common.selected': string
   'common.serviceCreated': string
+  'common.serviceReliabilityManagement': string
   'common.serviceType': string
   'common.serviceUpdated': string
   'common.setAsDefault': string
@@ -2134,6 +2137,7 @@ export interface StringsMap {
   'projectsOrgs.purposeList.moduleSuccess': string
   'projectsOrgs.purposeList.name': string
   'projectsOrgs.purposeList.selectAModule': string
+  'projectsOrgs.purposeList.service': string
   'projectsOrgs.purposeList.time': string
   'projectsOrgs.purposeList.verification': string
   'projectsOrgs.recentActivities': string

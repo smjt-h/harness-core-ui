@@ -43,8 +43,8 @@ const MODULE_PROPS: {
   },
   CV: {
     icon: 'cv-main',
-    title1: 'common.purpose.change',
-    title2: 'common.purpose.cv.intelligence'
+    title1: 'common.purpose.service',
+    title2: 'common.purpose.cv.serviceReliability'
   },
   CF: {
     icon: 'cf-main',

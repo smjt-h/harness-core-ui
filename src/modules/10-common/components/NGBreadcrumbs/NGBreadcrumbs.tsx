@@ -81,7 +81,7 @@ export const NGBreadcrumbs: React.FC<Partial<NGBreadcrumbsProps>> = ({
         break
       case ModuleName.CV:
         url = paths.toCV(params)
-        label = getString('common.changeIntelligence')
+        label = getString('common.serviceReliabilityManagement')
         break
       case ModuleName.CI:
         url = paths.toCI(params)

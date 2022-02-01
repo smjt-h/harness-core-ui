@@ -290,7 +290,7 @@ exports[`Welcome Page Select Module Page Rendering 1`] = `
                 class="StyledProps--font StyledProps--main iconContainer"
               >
                 <span
-                  class="bp3-icon StyledProps--main titleIcon"
+                  class="bp3-icon StyledProps--main titleIcon cvIconText"
                   data-icon="cv-with-text"
                 >
                   <svg
@@ -933,7 +933,7 @@ exports[`Welcome Page Should go to module home page when select non cd module an
                 class="StyledProps--font StyledProps--main iconContainer"
               >
                 <span
-                  class="bp3-icon StyledProps--main titleIcon"
+                  class="bp3-icon StyledProps--main titleIcon cvIconText"
                   data-icon="cv-with-text"
                 >
                   <svg
@@ -1576,7 +1576,7 @@ exports[`Welcome Page Should render ModuleInfo page when select cd module and co
                 class="StyledProps--font StyledProps--main iconContainer"
               >
                 <span
-                  class="bp3-icon StyledProps--main titleIcon"
+                  class="bp3-icon StyledProps--main titleIcon cvIconText"
                   data-icon="cv-with-text"
                 >
                   <svg

@@ -25,7 +25,7 @@ interface ScopedDTO {
 export const getModuleTitle = (module: ModuleName): keyof StringsMap => {
   switch (module) {
     case ModuleName.CV:
-      return 'projectsOrgs.purposeList.change'
+      return 'common.purpose.cv.serviceReliability'
     case ModuleName.CE:
       return 'common.purpose.ce.cloudCost'
     case ModuleName.CF:
@@ -42,7 +42,7 @@ export const getModulePurpose = (module: ModuleName): keyof StringsMap | undefin
     case ModuleName.CD:
       return 'common.purpose.cd.delivery'
     case ModuleName.CV:
-      return 'common.purpose.cv.intelligence'
+      return 'common.purpose.ce.management'
     case ModuleName.CI:
       return 'common.purpose.ci.integration'
     case ModuleName.CE:

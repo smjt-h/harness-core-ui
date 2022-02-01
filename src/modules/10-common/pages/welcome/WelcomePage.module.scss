@@ -121,3 +121,11 @@
   justify-content: center !important;
   align-items: center;
 }
+
+.cvIconText {
+  svg {
+    width: 200px;
+    padding-top: 15px;
+    transform: scale(0.75);
+  }
+}

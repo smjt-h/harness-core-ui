@@ -136,8 +136,8 @@ export const cvModuleParams: ModulePathParams = {
 
 const CVSideNavProps: SidebarContext = {
   navComponent: SideNav,
-  subtitle: 'CHANGE',
-  title: 'Intelligence',
+  subtitle: 'Service',
+  title: 'Reliability',
   icon: 'cv-main'
 }
 

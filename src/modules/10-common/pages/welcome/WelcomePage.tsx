@@ -29,6 +29,7 @@ interface ModuleProps {
   bodyIcon: IconName
   module: Module
   description: string
+  className?: string
 }
 
 const WelcomePage: React.FC = () => {
@@ -49,7 +50,8 @@ const WelcomePage: React.FC = () => {
     titleIcon: 'cv-with-text',
     bodyIcon: 'cv-sketch',
     module: 'cv',
-    description: getString('common.purpose.cv.description')
+    description: getString('common.purpose.cv.description'),
+    className: css.cvIconText
   }
 
   const CING_OPTIONS: ModuleProps = {

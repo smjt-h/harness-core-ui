@@ -17,6 +17,7 @@ interface ModuleProps {
   bodyIcon: IconName
   module: Module
   description: string
+  className?: string
 }
 
 interface ModuleCardProps {
@@ -51,7 +52,7 @@ const ModuleCard: React.FC<ModuleCardProps> = ({
         cornerSelected={cornerSelected}
       >
         <Container className={css.iconContainer}>
-          <Icon name={option.titleIcon} size={120} className={css.titleIcon} />
+          <Icon name={option.titleIcon} size={120} className={cx(css.titleIcon, option.className)} />
           <Icon name={option.bodyIcon} size={80} className={css.bodyIcon} />
           <Text font={{ align: 'center' }} className={css.iconDescription}>
             {option.description}
