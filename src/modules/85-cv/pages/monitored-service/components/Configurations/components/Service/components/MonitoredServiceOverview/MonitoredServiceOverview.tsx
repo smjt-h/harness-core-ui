@@ -5,7 +5,7 @@
  * https://polyformproject.org/wp-content/uploads/2020/06/PolyForm-Shield-1.0.0.txt.
  */
 
-import React, { useCallback, useMemo, useState } from 'react'
+import React, { useMemo, useState } from 'react'
 import { Layout, FormInput, Utils, Intent, useConfirmationDialog } from '@wings-software/uicore'
 import { NameIdDescriptionTags } from '@common/components'
 import { useStrings } from 'framework/strings'
@@ -17,9 +17,6 @@ import {
   HarnessServiceAsFormField,
   HarnessEnvironmentAsFormField
 } from '@cv/components/HarnessServiceAndEnvironment/HarnessServiceAndEnvironment'
-import { ChangeSourceCategoryName } from '@cv/pages/ChangeSource/ChangeSourceDrawer/ChangeSourceDrawer.constants'
-import type { EnvironmentSelectOrCreateProps } from '@cv/components/HarnessServiceAndEnvironment/components/EnvironmentSelectOrCreate/EnvironmentSelectOrCreate'
-import type { EnvironmentMultiSelectOrCreateProps } from '@cv/components/HarnessServiceAndEnvironment/components/EnvironmentMultiSelectAndEnv/EnvironmentMultiSelectAndEnv'
 import { MonitoredServiceTypeOptions } from './MonitoredServiceOverview.constants'
 import {
   updateMonitoredServiceNameForService,
@@ -36,6 +33,7 @@ export default function MonitoredServiceOverview(props: MonitoredServiceOverview
   const { environmentOptions, setEnvironmentOptions } = useGetHarnessEnvironments()
   const values = formikProps.values || {}
   const keys = useMemo(() => [Utils.randomId(), Utils.randomId()], [values.serviceRef, values.environmentRef])
+
   const { openDialog } = useConfirmationDialog({
     contentText: getString('cv.monitoredServices.changeMonitoredServiceTypeMessage'),
     titleText: getString('cv.monitoredServices.changeMonitoredServiceType'),
@@ -48,11 +46,6 @@ export default function MonitoredServiceOverview(props: MonitoredServiceOverview
       }
     }
   })
-
-  const onSelect = useCallback(
-    environment => updatedMonitoredServiceNameForEnv(formikProps, environment, formikProps.values?.type),
-    [formikProps.values]
-  )
 
   return (
     <CardWithOuterTitle title={getString('overview')} className={css.monitoredService}>
@@ -103,27 +96,20 @@ export default function MonitoredServiceOverview(props: MonitoredServiceOverview
                 name: 'environmentRef',
                 label: getString('cv.healthSource.environmentLabel')
               }}
-              isMultiSelectField={formikProps.values?.type === ChangeSourceCategoryName.INFRASTRUCTURE}
-              environmentProps={
-                {
-                  className: css.dropdown,
-                  disabled: isEdit,
-                  popOverClassName: css.popOverClassName,
-                  item:
-                    formikProps.values?.type === ChangeSourceCategoryName.INFRASTRUCTURE
-                      ? environmentOptions.filter(it => values.environmentRef?.includes(it.value as string))
-                      : environmentOptions.find(item => item?.value === values.environmentRef),
-                  onSelect,
-                  options: environmentOptions,
-                  onNewCreated: newOption => {
-                    if (newOption?.identifier && newOption.name) {
-                      const newEnvOption = { label: newOption.name, value: newOption.identifier }
-                      setEnvironmentOptions([newEnvOption, ...environmentOptions])
-                      updatedMonitoredServiceNameForEnv(formikProps, newEnvOption, formikProps.values?.type)
-                    }
+              environmentProps={{
+                className: css.dropdown,
+                disabled: isEdit,
+                item: environmentOptions.find(item => item?.value === values.environmentRef),
+                options: environmentOptions,
+                onSelect: environment => updatedMonitoredServiceNameForEnv(formikProps, environment),
+                onNewCreated: newOption => {
+                  if (newOption?.identifier && newOption.name) {
+                    const newEnvOption = { label: newOption.name, value: newOption.identifier }
+                    setEnvironmentOptions([newEnvOption, ...environmentOptions])
+                    updatedMonitoredServiceNameForEnv(formikProps, newEnvOption)
                   }
-                } as EnvironmentMultiSelectOrCreateProps | EnvironmentSelectOrCreateProps
-              }
+                }
+              }}
             />
           </Layout.Horizontal>
           <hr className={css.divider} />

@@ -6,7 +6,7 @@
  */
 
 import type { FormikProps } from 'formik'
-import type { MultiSelectOption, SelectOption } from '@wings-software/uicore'
+import type { SelectOption } from '@wings-software/uicore'
 
 export function generateMonitoredServiceName(serviceIdentifier?: string, envIdentifier?: string): string {
   let name = ''
@@ -20,19 +20,12 @@ export function generateMonitoredServiceName(serviceIdentifier?: string, envIden
   return name
 }
 
-export function updatedMonitoredServiceNameForEnv(
-  formik: FormikProps<any>,
-  environment?: SelectOption | MultiSelectOption[],
-  monitoredServiceType?: string
-): void {
+export function updatedMonitoredServiceNameForEnv(formik: FormikProps<any>, environment?: SelectOption): void {
   const { values } = formik || {}
-  const monitoredServiceName = generateMonitoredServiceName(
-    values.serviceRef,
-    monitoredServiceType === 'Infrastructure' ? undefined : ((environment as SelectOption)?.value as string)
-  )
+  const monitoredServiceName = generateMonitoredServiceName(values.serviceRef, environment?.value as string)
   formik.setValues({
     ...values,
-    environmentRef: Array.isArray(environment) ? environment.map(env => env.value) : environment?.value,
+    environmentRef: environment?.value,
     name: monitoredServiceName,
     identifier: monitoredServiceName
   })
@@ -40,10 +33,7 @@ export function updatedMonitoredServiceNameForEnv(
 
 export function updateMonitoredServiceNameForService(formik: FormikProps<any>, service?: SelectOption): void {
   const { values } = formik || {}
-  const monitoredServiceName = generateMonitoredServiceName(
-    service?.value as string,
-    values?.type === 'Infrastructure' ? undefined : ((values.environmentRef as SelectOption)?.value as string)
-  )
+  const monitoredServiceName = generateMonitoredServiceName(service?.value as string, values.environmentRef)
   formik.setValues({
     ...values,
     serviceRef: service?.value,

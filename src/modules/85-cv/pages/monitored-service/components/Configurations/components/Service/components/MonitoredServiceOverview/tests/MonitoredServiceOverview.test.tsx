@@ -137,7 +137,7 @@ describe('Unit tests for MonitoredServiceOverview', () => {
 
   test('Ensure that clicking on new env/service createes new entity', async () => {
     const onSubmitMock = jest.fn()
-    const { container, getByText, getAllByText } = render(
+    const { container, getByText } = render(
       <WrapperComponent
         onSubmit={onSubmitMock}
         initialValues={{ type: MonitoredServiceType.APPLICATION, serviceRef: 'service1' }}
@@ -152,7 +152,7 @@ describe('Unit tests for MonitoredServiceOverview', () => {
 
     // create new service
     fireEvent.click(container.querySelector('.newService')!)
-    await waitFor(() => getAllByText('newService'))
+    await waitFor(() => getByText('newService'))
   })
 
   test('Ensure that switching monitored service type works', async () => {

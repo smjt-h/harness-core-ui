@@ -12,6 +12,5 @@ declare const styles: {
   readonly dropdown: string
   readonly monitoredService: string
   readonly nameTagsDescription: string
-  readonly popOverClassName: string
 }
 export default styles

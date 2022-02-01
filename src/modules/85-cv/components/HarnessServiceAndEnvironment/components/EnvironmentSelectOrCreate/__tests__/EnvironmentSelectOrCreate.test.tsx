@@ -10,38 +10,39 @@ import { render, waitFor } from '@testing-library/react'
 import { fillAtForm, InputTypes } from '@common/utils/JestFormHelper'
 import { TestWrapper } from '@common/utils/testUtils'
 import { useCreateService } from 'services/cd-ng'
-import { EnvironmentSelectOrCreate, EnvironmentSelectOrCreateProps } from '../EnvironmentSelectOrCreate'
+import { EnvironmentSelectOrCreate } from '../EnvironmentSelectOrCreate'
 
 jest.mock('services/cd-ng')
 const useCreateServiceMock = useCreateService as jest.MockedFunction<any>
-useCreateServiceMock.mockImplementation(() => {
-  return {
-    loading: false,
-    mutate: jest.fn().mockImplementation(() => {
-      return {
-        status: 'SUCCESS',
-        data: {}
-      }
-    })
-  }
-})
 
+const onSelect = jest.fn()
 const onNewCreated = jest.fn()
-
-const Wrapper = (props: EnvironmentSelectOrCreateProps): JSX.Element => {
-  return (
-    <TestWrapper>
-      <EnvironmentSelectOrCreate {...props} />
-    </TestWrapper>
-  )
-}
 
 describe('EnvironmentSelectOrCreate', () => {
   test('Match Snapshot', async () => {
+    useCreateServiceMock.mockImplementation(() => {
+      return {
+        loading: false,
+        mutate: jest.fn().mockImplementation(() => {
+          return {
+            status: 'SUCCESS',
+            data: {}
+          }
+        })
+      }
+    })
     const { container, getByText } = render(
-      <Wrapper options={[{ value: 'env101', label: 'env101' }]} onSelect={jest.fn()} onNewCreated={onNewCreated} />
+      <TestWrapper>
+        <EnvironmentSelectOrCreate
+          options={[{ value: 'env101', label: 'env101' }]}
+          onSelect={onSelect}
+          onNewCreated={onNewCreated}
+        />
+      </TestWrapper>
     )
+
     await waitFor(() => expect(container.querySelector('.bp3-popover-target')).toBeTruthy())
+
     await fillAtForm([
       {
         container,

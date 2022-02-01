@@ -109,12 +109,13 @@ describe('Monitored Service list', () => {
         <CVMonitoredService />
       </TestWrapper>
     )
+
     expect(getByText('ServiceName 1')).toBeDefined()
-    expect(getByText('new_env_test')).toBeDefined()
+    expect(getByText('EnvironmentName 1')).toBeDefined()
     expect(getByText('ServiceName 2')).toBeDefined()
-    expect(getByText('AppDTestEnv1')).toBeDefined()
+    expect(getByText('EnvironmentName 2')).toBeDefined()
     expect(getByText('ServiceName 3')).toBeDefined()
-    expect(getByText('AppDTestEnv2')).toBeDefined()
+    expect(getByText('EnvironmentName 3')).toBeDefined()
   })
 
   test('delete flow works correctly', async () => {
