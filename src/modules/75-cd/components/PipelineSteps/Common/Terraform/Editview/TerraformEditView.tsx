@@ -58,6 +58,7 @@ import StepGitAuthentication from '@connectors/components/CreateConnector/GitCon
 import StepGitlabAuthentication from '@connectors/components/CreateConnector/GitlabConnector/StepAuth/StepGitlabAuthentication'
 import StepGithubAuthentication from '@connectors/components/CreateConnector/GithubConnector/StepAuth/StepGithubAuthentication'
 import StepBitbucketAuthentication from '@connectors/components/CreateConnector/BitbucketConnector/StepAuth/StepBitbucketAuthentication'
+import StepArtifactoryAuthentication from '@connectors/components/CreateConnector/ArtifactoryConnector/StepAuth/StepArtifactoryAuthentication'
 import DelegateSelectorStep from '@connectors/components/CreateConnector/commonSteps/DelegateSelectorStep/DelegateSelectorStep'
 
 import { Connectors, CONNECTOR_CREDENTIALS_STEP_IDENTIFIER } from '@connectors/constants'
@@ -158,18 +159,22 @@ export default function TerraformEditView(
     const buildPayload = getBuildPayload(ConnectorMap[selectedConnector])
     return (
       <StepWizard title={getString('connectors.createNewConnector')}>
-        <ConnectorDetailsStep
-          type={connectorType}
-          name={getString('overview')}
-          isEditMode={isEditMode}
-          gitDetails={{ repoIdentifier, branch, getDefaultFromOtherRepo: true }}
-        />
-        <GitDetailsStep
-          type={connectorType}
-          name={getString('details')}
-          isEditMode={isEditMode}
-          connectorInfo={undefined}
-        />
+        {connectorType !== Connectors.ARTIFACTORY ? (
+          <ConnectorDetailsStep
+            type={connectorType}
+            name={getString('overview')}
+            isEditMode={isEditMode}
+            gitDetails={{ repoIdentifier, branch, getDefaultFromOtherRepo: true }}
+          />
+        ) : null}
+        {connectorType !== Connectors.ARTIFACTORY ? (
+          <GitDetailsStep
+            type={connectorType}
+            name={getString('details')}
+            isEditMode={isEditMode}
+            connectorInfo={undefined}
+          />
+        ) : null}
         {connectorType === Connectors.GIT ? (
           <StepGitAuthentication
             name={getString('credentials')}
@@ -219,6 +224,18 @@ export default function TerraformEditView(
             onConnectorCreated={() => {
               // Handle on success
             }}
+            isEditMode={isEditMode}
+            setIsEditMode={setIsEditMode}
+            connectorInfo={undefined}
+            accountId={accountId}
+            orgIdentifier={orgIdentifier}
+            projectIdentifier={projectIdentifier}
+          />
+        ) : null}
+        {connectorType === Connectors.ARTIFACTORY ? (
+          <StepArtifactoryAuthentication
+            name={getString('details')}
+            identifier={CONNECTOR_CREDENTIALS_STEP_IDENTIFIER}
             isEditMode={isEditMode}
             setIsEditMode={setIsEditMode}
             connectorInfo={undefined}

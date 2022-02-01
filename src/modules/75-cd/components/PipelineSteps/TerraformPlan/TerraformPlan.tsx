@@ -109,6 +109,7 @@ function TerraformPlanWidget(
   formikRef: StepFormikFowardRef<TFPlanFormData>
 ): React.ReactElement {
   const { initialValues, onUpdate, onChange, allowableTypes, isNewStep, readonly = false, stepViewType } = props
+  window.console.log('initialValues: ', initialValues)
   const { getString } = useStrings()
   const { expressions } = useVariablesExpression()
   const [connectorView, setConnectorView] = useState(false)
@@ -143,6 +144,7 @@ function TerraformPlanWidget(
   }
 
   const onCloseOfRemoteWizard = () => {
+    setConnectorView(false)
     setShowRemoteWizard(false)
     setIsEditMode(false)
   }
@@ -152,18 +154,22 @@ function TerraformPlanWidget(
     const buildPayload = getBuildPayload(connectorType)
     return (
       <StepWizard title={getString('connectors.createNewConnector')}>
-        {connectorType !== Connectors.ARTIFACTORY ? <ConnectorDetailsStep
-          type={connectorType}
-          name={getString('overview')}
-          isEditMode={isEditMode}
-          gitDetails={{ repoIdentifier, branch, getDefaultFromOtherRepo: true }}
-        />: null}
-        {connectorType !== Connectors.ARTIFACTORY ? <GitDetailsStep
-          type={connectorType}
-          name={getString('details')}
-          isEditMode={isEditMode}
-          connectorInfo={undefined}
-        />: null}
+        {connectorType !== Connectors.ARTIFACTORY ? (
+          <ConnectorDetailsStep
+            type={connectorType}
+            name={getString('overview')}
+            isEditMode={isEditMode}
+            gitDetails={{ repoIdentifier, branch, getDefaultFromOtherRepo: true }}
+          />
+        ) : null}
+        {connectorType !== Connectors.ARTIFACTORY ? (
+          <GitDetailsStep
+            type={connectorType}
+            name={getString('details')}
+            isEditMode={isEditMode}
+            connectorInfo={undefined}
+          />
+        ) : null}
         {connectorType === Connectors.GIT ? (
           <StepGitAuthentication
             name={getString('credentials')}
@@ -232,26 +238,7 @@ function TerraformPlanWidget(
             orgIdentifier={orgIdentifier}
             projectIdentifier={projectIdentifier}
           />
-        ) : // <ArtifactoryConnectorStep
-        //   name={getString('credentials')}
-        //   // identifier={CONNECTOR_CREDENTIALS_STEP_IDENTIFIER}
-        //   // onConnectorCreated={() => {
-        //   //   // Handle on success
-        //   // }}
-        //   isEditMode={isEditMode}
-        //   setIsEditMode={setIsEditMode}
-        //   connectorInfo={undefined}
-        //   accountId={accountId}
-        //   orgIdentifier={orgIdentifier}
-        //   projectIdentifier={projectIdentifier}
-        //   onClose={() => {
-        //     // Handle on close
-        //   }}
-        //   onSuccess={() => {
-        //     // Handle on close
-        //   }}
-        // />
-        null}
+        ) : null}
         <DelegateSelectorStep
           name={getString('delegate.DelegateselectionLabel')}
           isEditMode={isEditMode}
