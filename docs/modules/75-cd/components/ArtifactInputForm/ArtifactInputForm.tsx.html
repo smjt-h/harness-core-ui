@@ -23,16 +23,16 @@
         <div class='clearfix'>
             
             <div class='fl pad1y space-right2'>
-                <span class="strong">63.83% </span>
+                <span class="strong">64.21% </span>
                 <span class="quiet">Statements</span>
-                <span class='fraction'>120/188</span>
+                <span class='fraction'>122/190</span>
             </div>
         
             
             <div class='fl pad1y space-right2'>
-                <span class="strong">43.51% </span>
+                <span class="strong">43.57% </span>
                 <span class="quiet">Branches</span>
-                <span class='fraction'>818/1880</span>
+                <span class='fraction'>820/1882</span>
             </div>
         
             
@@ -44,9 +44,9 @@
         
             
             <div class='fl pad1y space-right2'>
-                <span class="strong">64.67% </span>
+                <span class="strong">65.05% </span>
                 <span class="quiet">Lines</span>
-                <span class='fraction'>119/184</span>
+                <span class='fraction'>121/186</span>
             </div>
         
             
@@ -1004,7 +1004,10 @@
 <a name='L945'></a><a href='#L945'>945</a>
 <a name='L946'></a><a href='#L946'>946</a>
 <a name='L947'></a><a href='#L947'>947</a>
-<a name='L948'></a><a href='#L948'>948</a></td><td class="line-coverage quiet"><span class="cline-any cline-neutral">&nbsp;</span>
+<a name='L948'></a><a href='#L948'>948</a>
+<a name='L949'></a><a href='#L949'>949</a>
+<a name='L950'></a><a href='#L950'>950</a>
+<a name='L951'></a><a href='#L951'>951</a></td><td class="line-coverage quiet"><span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
@@ -1395,7 +1398,7 @@
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-yes">44x</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-yes">63x</span>
+<span class="cline-any cline-yes">60x</span>
 <span class="cline-any cline-yes">13x</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
@@ -1414,29 +1417,29 @@
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-yes">50x</span>
+<span class="cline-any cline-yes">47x</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-yes">50x</span>
+<span class="cline-any cline-yes">47x</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-yes">50x</span>
+<span class="cline-any cline-yes">47x</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-yes">50x</span>
+<span class="cline-any cline-yes">47x</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-yes">63x</span>
+<span class="cline-any cline-yes">60x</span>
 <span class="cline-any cline-yes">5x</span>
-<span class="cline-any cline-yes">58x</span>
+<span class="cline-any cline-yes">55x</span>
 <span class="cline-any cline-yes">5x</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-yes">53x</span>
+<span class="cline-any cline-yes">50x</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-yes">44x</span>
@@ -1480,6 +1483,9 @@
 <span class="cline-any cline-no">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-yes">82x</span>
+<span class="cline-any cline-yes">12x</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">70x</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-yes">44x</span>
@@ -2426,6 +2432,9 @@ const ArtifactInputSetForm: React.FC&lt;KubernetesServiceInputFormProps&gt; = ({
     } else <span class="missing-if-branch" title="if path not taken" >I</span>if (isPipelineInputTab &amp;&amp; <span class="branch-1 cbranch-no" title="branch not covered" >isSelectedPrimaryManifest </span>&amp;&amp; <span class="branch-2 cbranch-no" title="branch not covered" >isSelectedStage)</span> {
 <span class="cstat-no" title="statement not covered" >      return true</span>
     }
+    if (readonly) {
+      return true
+    }
     return isTag ? isTagSelectionDisabled(artifacts<span class="branch-0 cbranch-no" title="branch not covered" >?.p</span>rimary?.type || '') : readonly
   }
 &nbsp;
@@ -2905,7 +2914,7 @@ export const ArtifactInputForm = connect(ArtifactInputSetForm)
             <div class='footer quiet pad2 space-top1 center small'>
                 Code coverage generated by
                 <a href="https://istanbul.js.org/" target="_blank">istanbul</a>
-                at Tue Feb 01 2022 05:40:54 GMT+0000 (Greenwich Mean Time)
+                at Tue Feb 01 2022 07:19:39 GMT+0000 (Greenwich Mean Time)
             </div>
         </div>
         <script src="../../../../prettify.js"></script>
