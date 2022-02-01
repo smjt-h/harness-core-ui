@@ -485,7 +485,8 @@ gitSync:
   goToGit: Go to Git to fix issue
   invalidYaml: 'We are unable to render your {{{ flagsYamlFilename }}} file because it is invalid. Fix the following issues on Git and try again.'
 planEnforcement:
-  upgradeRequired: 'Total Monthly Active Users (MAU) has reached the free plan limit. Upgrade to manage unlimited MAUs.'
+  upgradeRequiredDev: Total Developers managing feature flags has exceeded the Subscribed developer count.
+  upgradeRequiredMau: 'Total Monthly Active Users (MAU) has reached the free plan limit. Upgrade to manage unlimited MAUs.'
   freePlan:
     approachingLimit: 'You have used {{ clientMauUsagePercentage }}% of Monthly Active Users (MAU) included in the free plan. After {{ clientMauPlanLimitFormatted }} MAUs, flag management will be restricted.'
     upgradeRequired: 'You have used {{ clientMauPlanLimitFormatted }} / {{ clientMauPlanLimitFormatted }}  free Monthly Active Users (MAU) this month. Consider upgrading to manage more MAUs.'

@@ -42,7 +42,7 @@ const NewUserRoleDropdown = (props: NewUserRoleDropdownProps): ReactElement => {
               text={item.label}
               featuresProps={{
                 featuresRequest: {
-                  featureNames: [FeatureIdentifier.MAUS]
+                  featureNames: [FeatureIdentifier.DEVELOPERS]
                 }
               }}
             />

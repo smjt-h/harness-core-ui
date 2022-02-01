@@ -4147,7 +4147,8 @@ export interface StringsMap {
   'cf.planEnforcement.freePlan.upgradeRequired': string
   'cf.planEnforcement.teamEnterprisePlan.approachingLimit': string
   'cf.planEnforcement.teamEnterprisePlan.upgradeRequired': string
-  'cf.planEnforcement.upgradeRequired': string
+  'cf.planEnforcement.upgradeRequiredDev': string
+  'cf.planEnforcement.upgradeRequiredMau': string
   'cf.rbac.category': string
   'cf.rbac.featureflag.delete': string
   'cf.rbac.featureflag.edit': string

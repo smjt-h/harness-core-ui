@@ -39,6 +39,6 @@ describe('CreateFlagButton', () => {
 
     fireEvent.mouseOver(screen.getByText('cf.featureFlags.newFlag'))
 
-    await waitFor(() => expect(screen.getByText('cf.planEnforcement.upgradeRequired')).toBeInTheDocument())
+    await waitFor(() => expect(screen.getByText('cf.planEnforcement.upgradeRequiredMau')).toBeInTheDocument())
   })
 })

@@ -60,6 +60,6 @@ describe('AddToFlagButton', () => {
     expect(screen.getByText('+ Add to Flag')).toBeInTheDocument()
     fireEvent.mouseOver(screen.getByText('+ Add to Flag'))
 
-    await waitFor(() => expect(screen.getByText('cf.planEnforcement.upgradeRequired')).toBeInTheDocument())
+    await waitFor(() => expect(screen.getByText('cf.planEnforcement.upgradeRequiredMau')).toBeInTheDocument())
   })
 })

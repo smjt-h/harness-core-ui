@@ -62,6 +62,6 @@ describe('SegmentDetailsPageOptionsMenu', () => {
 
     fireEvent.mouseOver(document.querySelector('[data-icon="cross"]') as HTMLButtonElement)
 
-    await waitFor(() => expect(screen.getByText('cf.planEnforcement.upgradeRequired')).toBeInTheDocument())
+    await waitFor(() => expect(screen.getByText('cf.planEnforcement.upgradeRequiredMau')).toBeInTheDocument())
   })
 })

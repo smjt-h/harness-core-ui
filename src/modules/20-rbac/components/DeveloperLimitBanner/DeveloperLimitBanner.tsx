@@ -52,7 +52,9 @@ const DeveloperLimitBanner = (): ReactElement => {
           {showInfoBanner && (
             <FeatureWarningSubscriptionInfoBanner
               featureName={FeatureIdentifier.DEVELOPERS}
-              message={getString('rbac.planEnforcement.ff.teamEnterprisePlan.approachingLimit')}
+              message={getString('rbac.planEnforcement.ff.teamEnterprisePlan.approachingLimit', {
+                developerUsagePercentage
+              })}
             />
           )}
           {showWarningBanner && (

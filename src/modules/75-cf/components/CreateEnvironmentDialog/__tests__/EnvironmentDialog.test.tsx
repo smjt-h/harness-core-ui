@@ -41,7 +41,7 @@ describe('CreateEnvironmentButton', () => {
     fireEvent.mouseOver(createEnvironmentButton)
 
     await waitFor(() => {
-      expect(screen.getByText('cf.planEnforcement.upgradeRequired')).toBeInTheDocument()
+      expect(screen.getByText('cf.planEnforcement.upgradeRequiredMau')).toBeInTheDocument()
       expect(createEnvironmentButton).toHaveClass('bp3-disabled')
     })
   })
@@ -58,7 +58,7 @@ describe('CreateEnvironmentButton', () => {
     fireEvent.mouseOver(createEnvironmentButton)
 
     await waitFor(() => {
-      expect(screen.queryByText('cf.planEnforcement.upgradeRequired')).not.toBeInTheDocument()
+      expect(screen.queryByText('cf.planEnforcement.upgradeRequiredMau')).not.toBeInTheDocument()
       expect(createEnvironmentButton).not.toBeDisabled()
     })
   })

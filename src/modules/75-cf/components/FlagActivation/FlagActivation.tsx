@@ -518,11 +518,7 @@ const FlagActivation: React.FC<FlagActivationProps> = props => {
                 <FlexExpander />
                 <CFEnvironmentSelect component={<EnvironmentSelect />} />
               </Layout.Horizontal>
-              {isPlanEnforcementEnabled && (
-                <Container margin={{ left: 'xlarge' }}>
-                  <UsageLimitBanner />
-                </Container>
-              )}
+              {isPlanEnforcementEnabled && <UsageLimitBanner />}
 
               <Container
                 className={cx(css.tabContainer, (!editing || activeTabId !== FFDetailPageTab.TARGETING) && css.noEdit)}

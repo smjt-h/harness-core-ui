@@ -204,7 +204,7 @@ accessControlTitle:
 planEnforcement:
   ff:
     teamEnterprisePlan:
-      approachingLimit: 'You have used {{ clientMauUsagePercentage }}% of your developer subscription limit'
+      approachingLimit: 'You have used {{ developerUsagePercentage }}% of your developer subscription limit'
       upgradeRequired: 'You have exceeded your developer subscription limit'
 
 customRoles: new Roles

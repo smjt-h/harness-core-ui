@@ -26,5 +26,6 @@ export const FeatureDescriptor: { [key: string]: React.ReactElement } = {
 export const CustomFeatureDescriptor: { [key: string]: React.ReactElement } = {
   TEST_INTELLIGENCE: <String stringID="pipeline.testsReports.tiCallToAction.requiresEnterprisePlan" />,
   BUILDS: <String stringID="pipeline.featureRestriction.maxBuildsPerMonth100PercentLimit" />,
-  MONTHLY_ACTIVE_USERS: <String stringID="cf.planEnforcement.upgradeRequired" />
+  MONTHLY_ACTIVE_USERS: <String stringID="cf.planEnforcement.upgradeRequiredMau" />,
+  DEVELOPERS: <String stringID="cf.planEnforcement.upgradeRequiredDev" />
 }

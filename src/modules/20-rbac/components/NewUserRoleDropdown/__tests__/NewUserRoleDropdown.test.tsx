@@ -80,7 +80,7 @@ describe('NewUserRoleDropdown', () => {
   test('it should show plan enforcement popover for "Feature Flags Manage Role" when plan enforcement enabled', async () => {
     jest
       .spyOn(useFeaturesMock, 'useGetFirstDisabledFeature')
-      .mockReturnValue({ featureEnabled: false, disabledFeatureName: FeatureIdentifier.MAUS })
+      .mockReturnValue({ featureEnabled: false, disabledFeatureName: FeatureIdentifier.DEVELOPERS })
     jest.spyOn(useFeatureFlagMock, 'useFeatureFlag').mockReturnValue(true)
 
     renderComponent()
@@ -91,7 +91,7 @@ describe('NewUserRoleDropdown', () => {
 
     fireEvent.mouseOver(screen.getByText('Feature Flag Manage Role'))
 
-    await waitFor(() => expect(screen.getByText('cf.planEnforcement.upgradeRequired')).toBeInTheDocument())
+    await waitFor(() => expect(screen.getByText('cf.planEnforcement.upgradeRequiredDev')).toBeInTheDocument())
 
     expect(screen.getByText('Feature Flag Manage Role').closest('a')).toHaveClass('bp3-disabled')
     expect(screen.getByText('Pipeline Executor').closest('a')).not.toHaveClass('bp3-disabled')
@@ -101,7 +101,7 @@ describe('NewUserRoleDropdown', () => {
   test('it should show plan enforcement popover for FF management when plan enforcement enabled and limits reached', async () => {
     jest
       .spyOn(useFeaturesMock, 'useGetFirstDisabledFeature')
-      .mockReturnValue({ featureEnabled: false, disabledFeatureName: FeatureIdentifier.MAUS })
+      .mockReturnValue({ featureEnabled: false, disabledFeatureName: FeatureIdentifier.DEVELOPERS })
     jest.spyOn(useFeatureFlagMock, 'useFeatureFlag').mockReturnValue(true)
 
     const handleChangeMock = jest.fn()
@@ -113,7 +113,7 @@ describe('NewUserRoleDropdown', () => {
 
     fireEvent.mouseOver(screen.getByText('Feature Flag Manage Role'))
 
-    await waitFor(() => expect(screen.getByText('cf.planEnforcement.upgradeRequired')).toBeInTheDocument())
+    await waitFor(() => expect(screen.getByText('cf.planEnforcement.upgradeRequiredDev')).toBeInTheDocument())
 
     userEvent.click(screen.getByText('Feature Flag Manage Role'))
 
@@ -127,7 +127,7 @@ describe('NewUserRoleDropdown', () => {
   test('it should show not plan enforcement popover for FF management when plan enforcement disabled and limits reached', async () => {
     jest
       .spyOn(useFeaturesMock, 'useGetFirstDisabledFeature')
-      .mockReturnValue({ featureEnabled: false, disabledFeatureName: FeatureIdentifier.MAUS })
+      .mockReturnValue({ featureEnabled: false, disabledFeatureName: FeatureIdentifier.DEVELOPERS })
     jest.spyOn(useFeatureFlagMock, 'useFeatureFlag').mockReturnValue(false)
 
     renderComponent()
@@ -138,7 +138,7 @@ describe('NewUserRoleDropdown', () => {
 
     fireEvent.mouseOver(screen.getByText('Feature Flag Manage Role'))
 
-    await waitFor(() => expect(screen.queryByText('cf.planEnforcement.upgradeRequired')).not.toBeInTheDocument())
+    await waitFor(() => expect(screen.queryByText('cf.planEnforcement.upgradeRequiredDev')).not.toBeInTheDocument())
 
     expect(screen.getByText('Feature Flag Manage Role').closest('a')).not.toHaveClass('bp3-disabled')
     expect(screen.getByText('Pipeline Executor').closest('a')).not.toHaveClass('bp3-disabled')
@@ -148,7 +148,7 @@ describe('NewUserRoleDropdown', () => {
   test('it should call callback correctly when menu item clicked', async () => {
     jest
       .spyOn(useFeaturesMock, 'useGetFirstDisabledFeature')
-      .mockReturnValue({ featureEnabled: false, disabledFeatureName: FeatureIdentifier.MAUS })
+      .mockReturnValue({ featureEnabled: false, disabledFeatureName: FeatureIdentifier.DEVELOPERS })
     jest.spyOn(useFeatureFlagMock, 'useFeatureFlag').mockReturnValue(false)
 
     const handleChangeMock = jest.fn()
