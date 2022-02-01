@@ -1,0 +1,49 @@
+{
+  "status": "SUCCESS",
+  "data": {
+    "createdAt": 1641552686531,
+    "lastModifiedAt": 1642054520322,
+    "monitoredService": {
+      "orgIdentifier": "default",
+      "projectIdentifier": "shaswat",
+      "identifier": "appd_prod",
+      "name": "appd_prod",
+      "type": "Application",
+      "description": "",
+      "serviceRef": "appd",
+      "environmentRef": "prod",
+      "environmentRefList": null,
+      "tags": {},
+      "sources": {
+        "healthSources": [
+          {
+            "name": "appd-test",
+            "identifier": "appdtest",
+            "type": "AppDynamics",
+            "spec": {
+              "connectorRef": "appdtest",
+              "feature": "Application Monitoring",
+              "applicationName": "cv-app",
+              "tierName": "1415279",
+              "metricPacks": [{ "identifier": "Performance" }, { "identifier": "Errors" }],
+              "metricDefinitions": []
+            }
+          }
+        ],
+        "changeSources": [
+          {
+            "name": "Harness CD Next Gen",
+            "identifier": "harness_cd_next_gen",
+            "type": "HarnessCDNextGen",
+            "enabled": true,
+            "spec": {},
+            "category": "Deployment"
+          }
+        ]
+      },
+      "dependencies": []
+    }
+  },
+  "metaData": null,
+  "correlationId": "d986946a-3521-4648-a787-53150e21aed7"
+}

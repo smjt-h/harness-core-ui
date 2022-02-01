@@ -129,6 +129,7 @@ const renderPopover = ({
               variation={ButtonVariation.PRIMARY}
               icon="Edit"
               text={labels.addStep}
+              data-testid="addStepPipeline"
               onClick={() => onPopoverSelection?.(false, isParallelNodeClicked, event)}
             />
           )}

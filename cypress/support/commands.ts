@@ -43,6 +43,7 @@ declare global {
       fillName(name: string): void
       clickSubmit(): void
       fillField(fieldName: string, value: string): void
+      visitVerifyStepInPipeline(): void
     }
   }
 }
@@ -68,10 +69,23 @@ Cypress.Commands.add('visitCreatePipeline', () => {
   cy.contains('p', 'Delivery').click()
   cy.contains('p', 'Pipelines').click()
   cy.contains('span', 'Create a Pipeline').click()
+  cy.get('[icon="plus"]').click()
+  cy.findByTestId('stage-Deployment').click()
+
+  cy.fillName('testStage_Cypress')
+  cy.clickSubmit()
 })
 
 Cypress.Commands.add('fillName', (value: string) => {
   cy.fillField('name', value)
+})
+
+Cypress.Commands.add('visitVerifyStepInPipeline', () => {
+  cy.contains('p', 'Projects').click()
+  cy.contains('p', 'Project 1').click()
+  cy.contains('p', 'Delivery').click()
+  cy.contains('p', 'Pipelines').click()
+  cy.contains('span', 'Create a Pipeline').click()
 })
 
 // Change Intelligence commands

@@ -1,0 +1,152 @@
+{
+  "status": "SUCCESS",
+  "data": {
+    "yaml": "---\npipeline:\n  name: \"QD-O9bOOTxCA1tCubQVIsg\"\n  identifier: \"test\"\n  allowStageExecutions: \"gmgncbQWQvCOB59gKNMo6Q\"\n  projectIdentifier: \"6DtK9VLtTKC8I3HbKDf5bg\"\n  orgIdentifier: \"l5dHYO8ATXWPaKIAeXZ4pw\"\n  description: \"-smrfsApS76-T_Uf20Cz5Q\"\n  tags:\n    __uuid: \"RvNxg6aPSlurnrPaYmZlcw\"\n  stages:\n  - stage:\n      name: \"qUVGkf-AQDO0pb54N49-YQ\"\n      identifier: \"test\"\n      description: \"_w8oSo1_RrGDw1ab3BvF4A\"\n      type: \"Deployment\"\n      spec:\n        serviceConfig:\n          serviceRef: \"jU_iPouYQtihDGU9NZnemA\"\n          serviceDefinition:\n            type: \"Kubernetes\"\n            spec:\n              variables: []\n              __uuid: \"duH0CiCeS2K0agKNckHMMg\"\n            __uuid: \"whx8aJNfTv6QsQkJ5Kiwvw\"\n          __uuid: \"cRHg7ICaQYeYyUenmkcGdw\"\n        infrastructure:\n          environmentRef: \"PSjwtL1ZRFe06yoZr4e9Lg\"\n          infrastructureDefinition:\n            type: \"KubernetesDirect\"\n            spec:\n              connectorRef: \"cSNpzdsmQL66K3LL9xbR9w\"\n              namespace: \"us5Y37hsT_CnebXHPExXvA\"\n              releaseName: \"dYDur8niRNW7wXUyEp_KLg\"\n              __uuid: \"1LO9UT96TzK-yEyiMWkfbw\"\n            __uuid: \"JDYfqWeeSRC7oKl3Y0CnCg\"\n          allowSimultaneousDeployments: \"t1LxtKezTgCuwkjtfcUO6Q\"\n          __uuid: \"ai7MskaHTWKyXOGlLN247w\"\n        execution:\n          steps:\n          - step:\n              name: \"jhgr9houTbu2oOx6NcbSxw\"\n              identifier: \"rolloutDeployment\"\n              type: \"K8sRollingDeploy\"\n              timeout: \"J8t52DNfRvCcnCrnFz5UWA\"\n              spec:\n                skipDryRun: \"Mpe3HJMLQJS-bqT8ytSr5Q\"\n                __uuid: \"rKacjO13Q8mlcLJrxjQ1QA\"\n              __uuid: \"CjTQ6dlJSJWm0QHuWOluUA\"\n            __uuid: \"j-dyWI56Tkacj1SARqj12A\"\n          rollbackSteps:\n          - step:\n              name: \"STvwngImQNOafwS6F1nqZw\"\n              identifier: \"rollbackRolloutDeployment\"\n              type: \"K8sRollingRollback\"\n              timeout: \"oD59jLqoRWC_f6c0lKRFXg\"\n              spec:\n                __uuid: \"0ZPf1tYYRNOoRkaIhW1pEg\"\n              __uuid: \"-4cWiZ_IQtyHUIGVLPt4wA\"\n            __uuid: \"JXaxLWqURw-Msvipn8U8qw\"\n          __uuid: \"vvFXGaXVS4-GFzjR4zrsKw\"\n        __uuid: \"ZwQh3TLdRXibueQqAkArsQ\"\n      tags:\n        __uuid: \"eUzwG9s4Qyqe0FbMlNw3qQ\"\n      failureStrategies:\n      - onFailure:\n          errors: \"aWYEkfbTTYSCXUzTgy4U2w\"\n          action:\n            type: \"StageRollback\"\n            __uuid: \"AAteRF8QQ1Oa8RQY4g7qTA\"\n          __uuid: \"ut9OTLxtR_ufIpcRlz2tOA\"\n        __uuid: \"Y9ybqG4vSnWJjAvk1KCRAA\"\n      __uuid: \"PYtbeLFtR2aW9b-O6SQqeQ\"\n    __uuid: \"deuz3SIqQte1mkqElrBFLQ\"\n  __uuid: \"4t4T4sawRN24asPjjeHQxw\"\n__uuid: \"ofFbrXa-T-eGW1FnF4Plcw\"\n",
+    "metadataMap": {
+      "-smrfsApS76-T_Uf20Cz5Q": {
+        "yamlProperties": {
+          "fqn": "pipeline.description",
+          "localName": "pipeline.description"
+        },
+        "yamlOutputProperties": null
+      },
+      "4t4T4sawRN24asPjjeHQxw": {
+        "yamlProperties": {
+          "fqn": "pipeline",
+          "localName": "pipeline"
+        },
+        "yamlOutputProperties": null
+      },
+      "QD-O9bOOTxCA1tCubQVIsg": {
+        "yamlProperties": {
+          "fqn": "pipeline.name",
+          "localName": "pipeline.name"
+        },
+        "yamlOutputProperties": null
+      },
+      "cRHg7ICaQYeYyUenmkcGdw": {
+        "yamlProperties": {
+          "fqn": "serviceConfig",
+          "localName": ""
+        },
+        "yamlOutputProperties": null
+      },
+      "oD59jLqoRWC_f6c0lKRFXg": {
+        "yamlProperties": {
+          "fqn": "pipeline.stages.test.spec.execution.rollbackSteps.rollbackRolloutDeployment.timeout",
+          "localName": "execution.rollbackSteps.rollbackRolloutDeployment.timeout"
+        },
+        "yamlOutputProperties": null
+      },
+      "dYDur8niRNW7wXUyEp_KLg": {
+        "yamlProperties": {
+          "fqn": "pipeline.stages.test.spec.infrastructure.infrastructureDefinition.spec.releaseName",
+          "localName": "infrastructure.infrastructureDefinition.spec.releaseName"
+        },
+        "yamlOutputProperties": null
+      },
+      "ai7MskaHTWKyXOGlLN247w": {
+        "yamlProperties": {
+          "fqn": "infrastructure",
+          "localName": ""
+        },
+        "yamlOutputProperties": null
+      },
+      "CjTQ6dlJSJWm0QHuWOluUA": {
+        "yamlProperties": {
+          "fqn": "pipeline.stages.test.spec.execution.steps.rolloutDeployment",
+          "localName": "step"
+        },
+        "yamlOutputProperties": null
+      },
+      "us5Y37hsT_CnebXHPExXvA": {
+        "yamlProperties": {
+          "fqn": "pipeline.stages.test.spec.infrastructure.infrastructureDefinition.spec.namespace",
+          "localName": "infrastructure.infrastructureDefinition.spec.namespace"
+        },
+        "yamlOutputProperties": null
+      },
+      "PSjwtL1ZRFe06yoZr4e9Lg": {
+        "yamlProperties": {
+          "fqn": "pipeline.stages.test.spec.infrastructure.environmentRef",
+          "localName": "infrastructure.environmentRef"
+        },
+        "yamlOutputProperties": null
+      },
+      "cSNpzdsmQL66K3LL9xbR9w": {
+        "yamlProperties": {
+          "fqn": "pipeline.stages.test.spec.infrastructure.infrastructureDefinition.spec.connectorRef",
+          "localName": "infrastructure.infrastructureDefinition.spec.connectorRef"
+        },
+        "yamlOutputProperties": null
+      },
+      "J8t52DNfRvCcnCrnFz5UWA": {
+        "yamlProperties": {
+          "fqn": "pipeline.stages.test.spec.execution.steps.rolloutDeployment.timeout",
+          "localName": "execution.steps.rolloutDeployment.timeout"
+        },
+        "yamlOutputProperties": null
+      },
+      "Mpe3HJMLQJS-bqT8ytSr5Q": {
+        "yamlProperties": {
+          "fqn": "pipeline.stages.test.spec.execution.steps.rolloutDeployment.spec.skipDryRun",
+          "localName": "execution.steps.rolloutDeployment.spec.skipDryRun"
+        },
+        "yamlOutputProperties": null
+      },
+      "jhgr9houTbu2oOx6NcbSxw": {
+        "yamlProperties": {
+          "fqn": "pipeline.stages.test.spec.execution.steps.rolloutDeployment.name",
+          "localName": "execution.steps.rolloutDeployment.name"
+        },
+        "yamlOutputProperties": null
+      },
+      "PYtbeLFtR2aW9b-O6SQqeQ": {
+        "yamlProperties": {
+          "fqn": "pipeline.stages.test",
+          "localName": "stage"
+        },
+        "yamlOutputProperties": null
+      },
+      "jU_iPouYQtihDGU9NZnemA": {
+        "yamlProperties": {
+          "fqn": "pipeline.stages.test.spec.serviceConfig.serviceRef",
+          "localName": "serviceConfig.serviceRef"
+        },
+        "yamlOutputProperties": null
+      },
+      "STvwngImQNOafwS6F1nqZw": {
+        "yamlProperties": {
+          "fqn": "pipeline.stages.test.spec.execution.rollbackSteps.rollbackRolloutDeployment.name",
+          "localName": "execution.rollbackSteps.rollbackRolloutDeployment.name"
+        },
+        "yamlOutputProperties": null
+      },
+      "_w8oSo1_RrGDw1ab3BvF4A": {
+        "yamlProperties": {
+          "fqn": "pipeline.stages.test.description",
+          "localName": "stage.description"
+        },
+        "yamlOutputProperties": null
+      },
+      "qUVGkf-AQDO0pb54N49-YQ": {
+        "yamlProperties": {
+          "fqn": "pipeline.stages.test.name",
+          "localName": "stage.name"
+        },
+        "yamlOutputProperties": null
+      },
+      "-4cWiZ_IQtyHUIGVLPt4wA": {
+        "yamlProperties": {
+          "fqn": "pipeline.stages.test.spec.execution.rollbackSteps.rollbackRolloutDeployment",
+          "localName": "step"
+        },
+        "yamlOutputProperties": null
+      }
+    },
+    "errorResponses": null,
+    "serviceExpressionPropertiesList": []
+  },
+  "metaData": null,
+  "correlationId": "8c68cf98-5db3-40ab-951f-5d2903fd012f"
+}
