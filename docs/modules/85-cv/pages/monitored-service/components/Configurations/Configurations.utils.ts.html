@@ -23,16 +23,16 @@
         <div class='clearfix'>
             
             <div class='fl pad1y space-right2'>
-                <span class="strong">62.79% </span>
+                <span class="strong">65% </span>
                 <span class="quiet">Statements</span>
-                <span class='fraction'>27/43</span>
+                <span class='fraction'>26/40</span>
             </div>
         
             
             <div class='fl pad1y space-right2'>
-                <span class="strong">18.42% </span>
+                <span class="strong">18.57% </span>
                 <span class="quiet">Branches</span>
-                <span class='fraction'>14/76</span>
+                <span class='fraction'>13/70</span>
             </div>
         
             
@@ -44,9 +44,9 @@
         
             
             <div class='fl pad1y space-right2'>
-                <span class="strong">58.97% </span>
+                <span class="strong">61.11% </span>
                 <span class="quiet">Lines</span>
-                <span class='fraction'>23/39</span>
+                <span class='fraction'>22/36</span>
             </div>
         
             
@@ -223,16 +223,7 @@
 <a name='L164'></a><a href='#L164'>164</a>
 <a name='L165'></a><a href='#L165'>165</a>
 <a name='L166'></a><a href='#L166'>166</a>
-<a name='L167'></a><a href='#L167'>167</a>
-<a name='L168'></a><a href='#L168'>168</a>
-<a name='L169'></a><a href='#L169'>169</a>
-<a name='L170'></a><a href='#L170'>170</a>
-<a name='L171'></a><a href='#L171'>171</a>
-<a name='L172'></a><a href='#L172'>172</a>
-<a name='L173'></a><a href='#L173'>173</a>
-<a name='L174'></a><a href='#L174'>174</a>
-<a name='L175'></a><a href='#L175'>175</a>
-<a name='L176'></a><a href='#L176'>176</a></td><td class="line-coverage quiet"><span class="cline-any cline-neutral">&nbsp;</span>
+<a name='L167'></a><a href='#L167'>167</a></td><td class="line-coverage quiet"><span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
@@ -335,10 +326,6 @@
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-yes">11x</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
@@ -381,7 +368,6 @@
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-yes">2x</span>
-<span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-yes">2x</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
@@ -394,10 +380,6 @@
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-yes">2x</span>
-<span class="cline-any cline-no">&nbsp;</span>
-<span class="cline-any cline-no">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-yes">2x</span>
 <span class="cline-any cline-yes">1x</span>
@@ -510,10 +492,6 @@ export const onTabChange = <span class="fstat-no" title="function not covered" >
   }
 }
 &nbsp;
-export interface ExtendedMonitoredServiceDTO extends MonitoredServiceDTO {
-  environmentRefList?: string[]
-}
-&nbsp;
 export const onSubmit = async ({
   formikValues,
   identifier,
@@ -532,13 +510,13 @@ export const onSubmit = async ({
   cachedInitialValues: MonitoredServiceForm | null
   updateMonitoredService: MutateMethod&lt;
     RestResponseMonitoredServiceResponse,
-    ExtendedMonitoredServiceDTO,
+    MonitoredServiceDTO,
     UpdateMonitoredServiceQueryParams,
     UpdateMonitoredServicePathParams
   &gt;
   saveMonitoredService: MutateMethod&lt;
     RestResponseMonitoredServiceResponse,
-    ExtendedMonitoredServiceDTO,
+    MonitoredServiceDTO,
     SaveMonitoredServiceQueryParams,
     void
   &gt;
@@ -556,23 +534,18 @@ export const onSubmit = async ({
     dependencies = <span class="branch-0 cbranch-no" title="branch not covered" >[],</span>
     type
   } = formikValues
-&nbsp;
-  const payload: ExtendedMonitoredServiceDTO = {
+  const payload: MonitoredServiceDTO = {
     orgIdentifier,
     projectIdentifier,
     serviceRef,
+    environmentRef,
     identifier: monitoredServiceId,
     name,
     description,
     tags,
-    environmentRef,
     sources,
     dependencies: cachedInitialValues<span class="branch-0 cbranch-no" title="branch not covered" >?.d</span>ependencies || <span class="branch-1 cbranch-no" title="branch not covered" >dependencies,</span>
     type
-  }
-  <span class="missing-if-branch" title="if path not taken" >I</span>if (Array.isArray(environmentRef)) {
-<span class="cstat-no" title="statement not covered" >    payload.environmentRef = environmentRef?.[0]</span>
-<span class="cstat-no" title="statement not covered" >    payload.environmentRefList = environmentRef</span>
   }
   if (identifier) {
     await updateMonitoredService(payload)
@@ -589,7 +562,7 @@ export const onSubmit = async ({
             <div class='footer quiet pad2 space-top1 center small'>
                 Code coverage generated by
                 <a href="https://istanbul.js.org/" target="_blank">istanbul</a>
-                at Mon Jan 31 2022 11:49:31 GMT+0000 (Greenwich Mean Time)
+                at Tue Feb 01 2022 05:40:54 GMT+0000 (Greenwich Mean Time)
             </div>
         </div>
         <script src="../../../../../../prettify.js"></script>

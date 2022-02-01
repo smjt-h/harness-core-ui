@@ -23,30 +23,30 @@
         <div class='clearfix'>
             
             <div class='fl pad1y space-right2'>
-                <span class="strong">81.82% </span>
+                <span class="strong">90.91% </span>
                 <span class="quiet">Statements</span>
-                <span class='fraction'>27/33</span>
+                <span class='fraction'>30/33</span>
             </div>
         
             
             <div class='fl pad1y space-right2'>
-                <span class="strong">31.43% </span>
+                <span class="strong">58.57% </span>
                 <span class="quiet">Branches</span>
-                <span class='fraction'>22/70</span>
+                <span class='fraction'>41/70</span>
             </div>
         
             
             <div class='fl pad1y space-right2'>
-                <span class="strong">63.64% </span>
+                <span class="strong">72.73% </span>
                 <span class="quiet">Functions</span>
-                <span class='fraction'>7/11</span>
+                <span class='fraction'>8/11</span>
             </div>
         
             
             <div class='fl pad1y space-right2'>
-                <span class="strong">80.65% </span>
+                <span class="strong">90.32% </span>
                 <span class="quiet">Lines</span>
-                <span class='fraction'>25/31</span>
+                <span class='fraction'>28/31</span>
             </div>
         
             
@@ -361,14 +361,14 @@
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-yes">4x</span>
-<span class="cline-any cline-yes">4x</span>
+<span class="cline-any cline-yes">3x</span>
+<span class="cline-any cline-yes">3x</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-yes">4x</span>
-<span class="cline-any cline-yes">16x</span>
+<span class="cline-any cline-yes">3x</span>
+<span class="cline-any cline-yes">12x</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-yes">4x</span>
+<span class="cline-any cline-yes">3x</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
@@ -402,7 +402,7 @@
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-yes">16x</span>
+<span class="cline-any cline-yes">12x</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
@@ -541,7 +541,7 @@
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-yes">2x</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
@@ -561,9 +561,9 @@
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-yes">2x</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-yes">2x</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
@@ -804,13 +804,13 @@ interface OperandSelectorProps {
   setProviderAndIdentifier: (providerData: ProviderType, serviceData: ProviderType) =&gt; void
 }
 &nbsp;
-const OperandSelector: React.FC&lt;OperandSelectorProps&gt; = <span class="fstat-no" title="function not covered" >({</span>
+const OperandSelector: React.FC&lt;OperandSelectorProps&gt; = ({
   service,
   provider,
   fieldValuesList,
   setProviderAndIdentifier
 }) =&gt; {
-  const [labelResult] = <span class="cstat-no" title="statement not covered" >useFetchPerspectiveFiltersValueQuery({</span>
+  const [labelResult] = useFetchPerspectiveFiltersValueQuery({
     variables: {
       filters: [
         {
@@ -830,9 +830,9 @@ const OperandSelector: React.FC&lt;OperandSelectorProps&gt; = <span class="fstat
     }
   })
 &nbsp;
-  const { data: labelResData, fetching: labelFetching } = <span class="cstat-no" title="statement not covered" >labelResult</span>
+  const { data: labelResData, fetching: labelFetching } = labelResult
 &nbsp;
-<span class="cstat-no" title="statement not covered" >  return (</span>
+  return (
     &lt;Popover
       className={css.operandContainer}
       interactionKind={PopoverInteractionKind.CLICK}
@@ -848,7 +848,7 @@ const OperandSelector: React.FC&lt;OperandSelectorProps&gt; = <span class="fstat
       usePortal={true}
       content={
         &lt;OperandSelectorPopOverContent
-          labelData={labelResData?.perspectiveFilters?.values || []}
+          labelData={<span class="branch-1 cbranch-no" title="branch not covered" >labelResData?.perspectiveFilters<span class="branch-1 cbranch-no" title="branch not covered" >?</span>.values </span>|| []}
           labelFetching={labelFetching}
           fieldValuesList={fieldValuesList}
           setProviderAndIdentifier={setProviderAndIdentifier}
@@ -856,7 +856,7 @@ const OperandSelector: React.FC&lt;OperandSelectorProps&gt; = <span class="fstat
       }
     &gt;
       &lt;div className={css.operandSelectorContainer}&gt;
-        {provider?.id &amp;&amp; service?.id ? `${provider.name || provider.id} &gt; ${service.name}` : 'Choose Operand'}
+        {provider<span class="branch-0 cbranch-no" title="branch not covered" >?.i</span>d &amp;&amp; service<span class="branch-0 cbranch-no" title="branch not covered" >?.i</span>d ? `${provider.name || provider.id} &gt; ${service.name}` : <span class="branch-1 cbranch-no" title="branch not covered" >'Choose Operand'}</span>
         &lt;Icon name="caret-down" /&gt;
       &lt;/div&gt;
     &lt;/Popover&gt;
@@ -871,7 +871,7 @@ export default OperandSelector
             <div class='footer quiet pad2 space-top1 center small'>
                 Code coverage generated by
                 <a href="https://istanbul.js.org/" target="_blank">istanbul</a>
-                at Mon Jan 31 2022 11:49:31 GMT+0000 (Greenwich Mean Time)
+                at Tue Feb 01 2022 05:40:54 GMT+0000 (Greenwich Mean Time)
             </div>
         </div>
         <script src="../../../../../prettify.js"></script>

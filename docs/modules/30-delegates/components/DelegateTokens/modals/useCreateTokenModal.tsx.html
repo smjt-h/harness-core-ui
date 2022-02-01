@@ -225,7 +225,9 @@
 <a name='L166'></a><a href='#L166'>166</a>
 <a name='L167'></a><a href='#L167'>167</a>
 <a name='L168'></a><a href='#L168'>168</a>
-<a name='L169'></a><a href='#L169'>169</a></td><td class="line-coverage quiet"><span class="cline-any cline-neutral">&nbsp;</span>
+<a name='L169'></a><a href='#L169'>169</a>
+<a name='L170'></a><a href='#L170'>170</a>
+<a name='L171'></a><a href='#L171'>171</a></td><td class="line-coverage quiet"><span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
@@ -274,9 +276,9 @@
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-yes">12x</span>
-<span class="cline-any cline-yes">18x</span>
-<span class="cline-any cline-yes">18x</span>
-<span class="cline-any cline-yes">18x</span>
+<span class="cline-any cline-yes">22x</span>
+<span class="cline-any cline-yes">22x</span>
+<span class="cline-any cline-yes">22x</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
@@ -286,7 +288,7 @@
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-yes">18x</span>
+<span class="cline-any cline-yes">22x</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
@@ -295,9 +297,9 @@
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-yes">18x</span>
+<span class="cline-any cline-yes">22x</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-yes">18x</span>
+<span class="cline-any cline-yes">22x</span>
 <span class="cline-any cline-no">&nbsp;</span>
 <span class="cline-any cline-no">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
@@ -315,7 +317,7 @@
 <span class="cline-any cline-no">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-yes">18x</span>
+<span class="cline-any cline-yes">22x</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-yes">2x</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
@@ -364,6 +366,8 @@
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-no">&nbsp;</span>
 <span class="cline-any cline-no">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
@@ -384,11 +388,11 @@
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-yes">18x</span>
+<span class="cline-any cline-yes">22x</span>
 <span class="cline-any cline-yes">2x</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-yes">18x</span>
+<span class="cline-any cline-yes">22x</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
@@ -422,7 +426,7 @@ import type { IDialogProps } from '@blueprintjs/core'
 import { NameSchema } from '@common/utils/Validation'
 import CopyToClipboard from '@common/components/CopyToClipBoard/CopyToClipBoard'
 import { useStrings } from 'framework/strings'
-import { useCreateDelegateToken } from 'services/portal'
+import { useCreateDelegateToken, CreateDelegateTokenQueryParams } from 'services/portal'
 &nbsp;
 import css from '../DelegateTokens.module.scss'
 &nbsp;
@@ -460,7 +464,7 @@ export const useCreateTokenModal = ({ onSuccess }: CreateTokenModalProps): Creat
       orgIdentifier,
       projectIdentifier,
       tokenName: ''
-    }
+    } as CreateDelegateTokenQueryParams
   })
 &nbsp;
   const generatedValuePlaceholder = getString('delegates.tokens.generatedValuePlaceholder')
@@ -473,7 +477,7 @@ export const useCreateTokenModal = ({ onSuccess }: CreateTokenModalProps): Creat
           orgIdentifier,
           projectIdentifier,
           tokenName: values.name
-        }
+        } as CreateDelegateTokenQueryParams
       })
 <span class="cstat-no" title="statement not covered" >      formikActions.setFieldValue('tokenValue', createTokenResponse?.resource?.value || '')</span>
 <span class="cstat-no" title="statement not covered" >      onSuccess?.()</span>
@@ -515,10 +519,12 @@ export const useCreateTokenModal = ({ onSuccess }: CreateTokenModalProps): Creat
                         flex
                         className={css.tokenField}
                       &gt;
-                        &lt;Text margin={{ right: 'xxlarge' }} font="small" color={Color.BLACK}&gt;
+                        &lt;Text margin={{ right: 'large' }} font="small" color={Color.BLACK} className={css.tokenValue}&gt;
                           {form.values.tokenValue}
                         &lt;/Text&gt;
-                        &lt;CopyToClipboard content={form.values.tokenValue} /&gt;
+                        &lt;span className={css.copyContainer}&gt;
+                          &lt;CopyToClipboard content={form.values.tokenValue} /&gt;
+                        &lt;/span&gt;
                       &lt;/Container&gt;
                     &lt;/Layout.Vertical&gt;
                     &lt;Layout.Horizontal spacing="small" className={css.addTokenModalActionContainer}&gt;
@@ -568,7 +574,7 @@ export const useCreateTokenModal = ({ onSuccess }: CreateTokenModalProps): Creat
             <div class='footer quiet pad2 space-top1 center small'>
                 Code coverage generated by
                 <a href="https://istanbul.js.org/" target="_blank">istanbul</a>
-                at Mon Jan 31 2022 11:49:31 GMT+0000 (Greenwich Mean Time)
+                at Tue Feb 01 2022 05:40:54 GMT+0000 (Greenwich Mean Time)
             </div>
         </div>
         <script src="../../../../../prettify.js"></script>
