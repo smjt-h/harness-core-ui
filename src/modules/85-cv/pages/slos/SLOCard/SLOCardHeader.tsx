@@ -20,6 +20,7 @@ import {
   useConfirmationDialog
 } from '@wings-software/uicore'
 import { Position, Menu, Intent } from '@blueprintjs/core'
+import type { SLOErrorBudgetResetDTO } from 'services/cv'
 import { useStrings } from 'framework/strings'
 import TagsRenderer from '@common/components/TagsRenderer/TagsRenderer'
 import type { ProjectPathProps } from '@common/interfaces/RouteInterfaces'
@@ -27,15 +28,19 @@ import routes from '@common/RouteDefinitions'
 import { ResourceType } from '@rbac/interfaces/ResourceType'
 import { PermissionIdentifier } from '@rbac/interfaces/PermissionIdentifier'
 import RbacMenuItem from '@rbac/components/MenuItem/MenuItem'
+import ReviewChangeSVG from '@cv/assets/sloReviewChange.svg'
+import { useErrorBudgetRestHook } from '@cv/hooks/useErrorBudgetRestHook/useErrorBudgetRestHook'
+import { PeriodTypes } from '../components/CVCreateSLO/CVCreateSLO.types'
 import type { SLOCardHeaderProps } from '../CVSLOsListingPage.types'
 import css from '../CVSLOsListingPage.module.scss'
 
-const SLOCardHeader: React.FC<SLOCardHeaderProps> = ({ serviceLevelObjective, onDelete }) => {
+const SLOCardHeader: React.FC<SLOCardHeaderProps> = ({ serviceLevelObjective, onDelete, onResetErrorBudget }) => {
   const history = useHistory()
   const { getString } = useStrings()
   const { accountId, orgIdentifier, projectIdentifier } = useParams<ProjectPathProps>()
 
   const [menuOpen, setMenuOpen] = useState(false)
+  const [errorBudgetResetData, setErrorBudgetResetData] = useState<SLOErrorBudgetResetDTO | null>()
 
   const monitoredServicePathname = routes.toCVAddMonitoringServicesEdit({
     accountId,
@@ -73,6 +78,34 @@ const SLOCardHeader: React.FC<SLOCardHeaderProps> = ({ serviceLevelObjective, on
     }
   })
 
+  const { openDialog: confirmReviewChanges } = useConfirmationDialog({
+    intent: Intent.WARNING,
+    titleText: getString('cv.slos.reviewChanges'),
+    contentText: (
+      <Layout.Horizontal padding={{ right: 'xxlarge' }}>
+        <Text color={Color.GREY_800}>{getString('cv.slos.sloEditWarningMessage')}</Text>
+        <div>
+          <img src={ReviewChangeSVG} width="145px" height="200px" alt="" />
+        </div>
+      </Layout.Horizontal>
+    ),
+    confirmButtonText: getString('common.ok'),
+    cancelButtonText: getString('cancel'),
+    onCloseDialog: isConfirmed => {
+      if (isConfirmed && errorBudgetResetData) {
+        onResetErrorBudget(serviceLevelObjective.sloIdentifier, errorBudgetResetData)
+      }
+      setErrorBudgetResetData(null)
+    }
+  })
+
+  const { openErrorBudgetReset } = useErrorBudgetRestHook({
+    onSuccess: values => {
+      setErrorBudgetResetData(values)
+      confirmReviewChanges()
+    }
+  })
+
   return (
     <>
       <Container flex margin={{ bottom: 'medium' }}>
@@ -97,6 +130,20 @@ const SLOCardHeader: React.FC<SLOCardHeaderProps> = ({ serviceLevelObjective, on
                   }
                 }}
               />
+              {serviceLevelObjective.sloTargetType === PeriodTypes.CALENDAR && (
+                <RbacMenuItem
+                  icon="reset"
+                  text={getString('cv.resetErrorBudget')}
+                  onClick={() => openErrorBudgetReset(serviceLevelObjective)}
+                  permission={{
+                    permission: PermissionIdentifier.EDIT_SLO_SERVICE,
+                    resource: {
+                      resourceType: ResourceType.SLO,
+                      resourceIdentifier: projectIdentifier
+                    }
+                  }}
+                />
+              )}
               <RbacMenuItem
                 icon="trash"
                 text={getString('delete')}

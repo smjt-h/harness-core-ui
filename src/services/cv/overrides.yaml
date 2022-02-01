@@ -117,6 +117,8 @@ allowpaths:
   - /slo
   - /slo/create
   - /slo/{identifier}
+  - /slo/{identifier}/resetErrorBudget
+  - /slo/{identifier}/errorBudgetResetHistory
   - /slo-dashboard/widgets
   - /monitored-service/all/time-series-health-sources
   - /monitored-service/{monitoredServiceIdentifier}/health-source/{healthSourceIdentifier}/slo-metrics

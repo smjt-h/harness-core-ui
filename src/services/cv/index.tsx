@@ -3492,6 +3492,14 @@ export interface RestResponseListProgressLog {
   responseMessages?: ResponseMessage[]
 }
 
+export interface RestResponseListSLOErrorBudgetResetDTO {
+  metaData?: {
+    [key: string]: { [key: string]: any }
+  }
+  resource?: SLOErrorBudgetResetDTO[]
+  responseMessages?: ResponseMessage[]
+}
+
 export interface RestResponseListSplunkSavedSearch {
   metaData?: {
     [key: string]: { [key: string]: any }
@@ -3653,6 +3661,14 @@ export interface RestResponseSLIOnboardingGraphs {
     [key: string]: { [key: string]: any }
   }
   resource?: SLIOnboardingGraphs
+  responseMessages?: ResponseMessage[]
+}
+
+export interface RestResponseSLOErrorBudgetResetDTO {
+  metaData?: {
+    [key: string]: { [key: string]: any }
+  }
+  resource?: SLOErrorBudgetResetDTO
   responseMessages?: ResponseMessage[]
 }
 
@@ -3836,6 +3852,16 @@ export interface SLODashboardWidget {
   title: string
   totalErrorBudget: number
   type: 'Availability' | 'Latency'
+}
+
+export interface SLOErrorBudgetResetDTO {
+  createdAt?: number
+  errorBudgetAtReset?: number
+  errorBudgetIncrementPercentage?: number
+  reason?: string
+  remainingErrorBudgetAtReset?: number
+  serviceLevelObjectiveIdentifier?: string
+  validTill?: number
 }
 
 export interface SLORiskCountResponse {
@@ -9787,6 +9813,183 @@ export const updateSLODataPromise = (
     ServiceLevelObjectiveDTORequestBody,
     UpdateSLODataPathParams
   >('PUT', getConfig('cv/api'), `/slo/${identifier}`, props, signal)
+
+export interface GetErrorBudgetResetHistoryQueryParams {
+  accountId: string
+  orgIdentifier: string
+  projectIdentifier: string
+}
+
+export interface GetErrorBudgetResetHistoryPathParams {
+  identifier: string
+}
+
+export type GetErrorBudgetResetHistoryProps = Omit<
+  GetProps<
+    RestResponseListSLOErrorBudgetResetDTO,
+    unknown,
+    GetErrorBudgetResetHistoryQueryParams,
+    GetErrorBudgetResetHistoryPathParams
+  >,
+  'path'
+> &
+  GetErrorBudgetResetHistoryPathParams
+
+/**
+ * get error budget reset History
+ */
+export const GetErrorBudgetResetHistory = ({ identifier, ...props }: GetErrorBudgetResetHistoryProps) => (
+  <Get<
+    RestResponseListSLOErrorBudgetResetDTO,
+    unknown,
+    GetErrorBudgetResetHistoryQueryParams,
+    GetErrorBudgetResetHistoryPathParams
+  >
+    path={`/slo/${identifier}/errorBudgetResetHistory`}
+    base={getConfig('cv/api')}
+    {...props}
+  />
+)
+
+export type UseGetErrorBudgetResetHistoryProps = Omit<
+  UseGetProps<
+    RestResponseListSLOErrorBudgetResetDTO,
+    unknown,
+    GetErrorBudgetResetHistoryQueryParams,
+    GetErrorBudgetResetHistoryPathParams
+  >,
+  'path'
+> &
+  GetErrorBudgetResetHistoryPathParams
+
+/**
+ * get error budget reset History
+ */
+export const useGetErrorBudgetResetHistory = ({ identifier, ...props }: UseGetErrorBudgetResetHistoryProps) =>
+  useGet<
+    RestResponseListSLOErrorBudgetResetDTO,
+    unknown,
+    GetErrorBudgetResetHistoryQueryParams,
+    GetErrorBudgetResetHistoryPathParams
+  >((paramsInPath: GetErrorBudgetResetHistoryPathParams) => `/slo/${paramsInPath.identifier}/errorBudgetResetHistory`, {
+    base: getConfig('cv/api'),
+    pathParams: { identifier },
+    ...props
+  })
+
+/**
+ * get error budget reset History
+ */
+export const getErrorBudgetResetHistoryPromise = (
+  {
+    identifier,
+    ...props
+  }: GetUsingFetchProps<
+    RestResponseListSLOErrorBudgetResetDTO,
+    unknown,
+    GetErrorBudgetResetHistoryQueryParams,
+    GetErrorBudgetResetHistoryPathParams
+  > & { identifier: string },
+  signal?: RequestInit['signal']
+) =>
+  getUsingFetch<
+    RestResponseListSLOErrorBudgetResetDTO,
+    unknown,
+    GetErrorBudgetResetHistoryQueryParams,
+    GetErrorBudgetResetHistoryPathParams
+  >(getConfig('cv/api'), `/slo/${identifier}/errorBudgetResetHistory`, props, signal)
+
+export interface ResetErrorBudgetQueryParams {
+  accountId: string
+  orgIdentifier: string
+  projectIdentifier: string
+}
+
+export interface ResetErrorBudgetPathParams {
+  identifier: string
+}
+
+export type ResetErrorBudgetProps = Omit<
+  MutateProps<
+    RestResponseSLOErrorBudgetResetDTO,
+    unknown,
+    ResetErrorBudgetQueryParams,
+    SLOErrorBudgetResetDTO,
+    ResetErrorBudgetPathParams
+  >,
+  'path' | 'verb'
+> &
+  ResetErrorBudgetPathParams
+
+/**
+ * reset Error budget history
+ */
+export const ResetErrorBudget = ({ identifier, ...props }: ResetErrorBudgetProps) => (
+  <Mutate<
+    RestResponseSLOErrorBudgetResetDTO,
+    unknown,
+    ResetErrorBudgetQueryParams,
+    SLOErrorBudgetResetDTO,
+    ResetErrorBudgetPathParams
+  >
+    verb="POST"
+    path={`/slo/${identifier}/resetErrorBudget`}
+    base={getConfig('cv/api')}
+    {...props}
+  />
+)
+
+export type UseResetErrorBudgetProps = Omit<
+  UseMutateProps<
+    RestResponseSLOErrorBudgetResetDTO,
+    unknown,
+    ResetErrorBudgetQueryParams,
+    SLOErrorBudgetResetDTO,
+    ResetErrorBudgetPathParams
+  >,
+  'path' | 'verb'
+> &
+  ResetErrorBudgetPathParams
+
+/**
+ * reset Error budget history
+ */
+export const useResetErrorBudget = ({ identifier, ...props }: UseResetErrorBudgetProps) =>
+  useMutate<
+    RestResponseSLOErrorBudgetResetDTO,
+    unknown,
+    ResetErrorBudgetQueryParams,
+    SLOErrorBudgetResetDTO,
+    ResetErrorBudgetPathParams
+  >('POST', (paramsInPath: ResetErrorBudgetPathParams) => `/slo/${paramsInPath.identifier}/resetErrorBudget`, {
+    base: getConfig('cv/api'),
+    pathParams: { identifier },
+    ...props
+  })
+
+/**
+ * reset Error budget history
+ */
+export const resetErrorBudgetPromise = (
+  {
+    identifier,
+    ...props
+  }: MutateUsingFetchProps<
+    RestResponseSLOErrorBudgetResetDTO,
+    unknown,
+    ResetErrorBudgetQueryParams,
+    SLOErrorBudgetResetDTO,
+    ResetErrorBudgetPathParams
+  > & { identifier: string },
+  signal?: RequestInit['signal']
+) =>
+  mutateUsingFetch<
+    RestResponseSLOErrorBudgetResetDTO,
+    unknown,
+    ResetErrorBudgetQueryParams,
+    SLOErrorBudgetResetDTO,
+    ResetErrorBudgetPathParams
+  >('POST', getConfig('cv/api'), `/slo/${identifier}/resetErrorBudget`, props, signal)
 
 export interface GetSplunkSampleDataQueryParams {
   accountId: string

@@ -745,6 +745,22 @@ day: day
 oneDay: 1 day
 days: days
 nDays: '{{ n }} days'
+resetErrorBudget: Reset Error Budget
+yourExistingErrorBudgetIs: Your existing error budget is
+andYouHave: and you have
+left: left
+adjustTheErrorBudgetToContinueWithDeployments: Adjust the error budget to continue with deployments.
+previousErrorBudgetResetHistory: Previous error budget reset history
+increaseErrorBudgetBy: Increase error budget by
+increaseErrorBudgetByIsRequired: Increase error budget by is required
+reasonIsRequired: Reason is required
+updatedErrorBudget: Updated Error Budget
+remainingErrorBudget: Remaining Error Budget
+minutes: minutes
+noPreviousErrorBudgetResetHistoryAvailable: No previous error budget reset history available
+dateAndTime: Date/Time
+increaseWithPercentSign: 'Increase %'
+errorBudgetIsSuccessfullyReset: Error budget is successfully reset
 cvChanges:
   changeTypeFilterDefault: 'Change Types'
   sourceFilterDefault: 'Sources'

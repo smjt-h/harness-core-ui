@@ -102,6 +102,8 @@ describe('CVSLOsListingPage', () => {
     useDeleteSLOData = jest
       .spyOn(cvServices, 'useDeleteSLOData')
       .mockReturnValue({ mutate: jest.fn(), loading: false, error: null } as any)
+
+    jest.spyOn(cvServices, 'useResetErrorBudget').mockReturnValue({ mutate: jest.fn(), loading: false } as any)
   })
 
   test('Without monitoredServiceIdentifier it should render with the page header and +New SLO button', () => {

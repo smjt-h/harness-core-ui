@@ -6,7 +6,7 @@
  */
 
 import type { SelectOption } from '@wings-software/uicore'
-import type { MonitoredServiceDTO, RiskCount, SLODashboardWidget } from 'services/cv'
+import type { MonitoredServiceDTO, RiskCount, SLODashboardWidget, SLOErrorBudgetResetDTO } from 'services/cv'
 import type { SLOActionTypes } from './CVSLOsListingPage.constants'
 
 export interface CVSLOsListingPageProps {
@@ -18,6 +18,7 @@ export interface CVSLOsListingPageProps {
 export interface SLOCardHeaderProps {
   serviceLevelObjective: SLODashboardWidget
   onDelete: (identifier: string, name: string) => void
+  onResetErrorBudget: (sloIdentifier: string, formDate: SLOErrorBudgetResetDTO) => void
   monitoredServiceIdentifier?: string
 }
 

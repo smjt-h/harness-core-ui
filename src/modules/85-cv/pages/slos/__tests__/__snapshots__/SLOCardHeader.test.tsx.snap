@@ -189,3 +189,293 @@ exports[`SLOCardHeader Render sample card 1`] = `
   </div>
 </div>
 `;
+
+exports[`SLOCardHeader it should successfully reset the error budget 1`] = `
+<div
+  class="bp3-dialog Dialog--dialog"
+  style="min-width: max-content;"
+>
+  <div
+    class="bp3-dialog-header"
+  >
+    <h4
+      class="bp3-heading"
+    >
+      cv.resetErrorBudget
+    </h4>
+  </div>
+  <span
+    class="bp3-icon StyledProps--main Dialog--close"
+    data-icon="Stroke"
+  >
+    <svg
+      fill="none"
+      height="15"
+      width="15"
+      xmlns="http://www.w3.org/2000/svg"
+    >
+      <path
+        d="M1 .8l6 6 6-6-12 12 6-6 6 6"
+        stroke="#8F90A6"
+        stroke-linecap="round"
+        stroke-linejoin="round"
+      />
+    </svg>
+  </span>
+  <div
+    class="StyledProps--font StyledProps--main Dialog--children StyledProps--padding-none"
+  >
+    <div
+      class="StyledProps--font StyledProps--main"
+      style="width: 650px;"
+    >
+      <p
+        class="StyledProps--font StyledProps--main StyledProps--font-variation-body StyledProps--color StyledProps--color-black"
+      >
+        cv.yourExistingErrorBudgetIs
+         
+        <span
+          class="StyledProps--font StyledProps--main StyledProps--font-variation-body2"
+        >
+          100
+           
+          cv.minutes
+        </span>
+        , 
+        cv.andYouHave
+         
+        <span
+          class="StyledProps--font StyledProps--main StyledProps--font-variation-body2 StyledProps--color StyledProps--color-green500"
+        >
+          60
+           
+          cv.minutes
+        </span>
+         
+        cv.left
+        .
+      </p>
+      <p
+        class="StyledProps--font StyledProps--main StyledProps--font-variation-body StyledProps--color StyledProps--color-black"
+      >
+        cv.adjustTheErrorBudgetToContinueWithDeployments
+      </p>
+      <div
+        class="Accordion--accordion"
+      >
+        <div
+          class="Accordion--panel"
+          data-open="false"
+          data-testid="error-budget-reset-history-panel"
+        >
+          <div
+            class="Accordion--summary"
+            data-testid="error-budget-reset-history-summary"
+          >
+            <div
+              class=""
+            >
+              <p
+                class="StyledProps--font StyledProps--main StyledProps--font-variation-body StyledProps--color StyledProps--color-primary7"
+              >
+                cv.previousErrorBudgetResetHistory
+              </p>
+            </div>
+            <div
+              class="Accordion--chevron"
+            />
+          </div>
+          <div
+            class="bp3-collapse Accordion--collapse"
+          >
+            <div
+              aria-hidden="false"
+              class="bp3-collapse-body"
+              style="transform: translateY(-undefinedpx);"
+            />
+          </div>
+        </div>
+      </div>
+      <div
+        class="OverlaySpinner--overlaySpinner"
+      >
+        <form
+          class="FormikForm--main"
+        >
+          <div>
+            <div
+              class="Layout--horizontal StyledProps--main"
+            >
+              <div
+                class="StyledProps--font StyledProps--main StyledProps--padding-right-xxxlarge StyledProps--border StyledProps--border-right"
+                style="width: 300px;"
+              >
+                <div
+                  class="bp3-form-group"
+                  data-id="errorBudgetIncrementPercentage-0"
+                >
+                  <label
+                    class="bp3-label"
+                    for="errorBudgetIncrementPercentage"
+                  >
+                    <span
+                      class="Tooltip--acenter"
+                      data-tooltip-id="errorBudgetReset_errorBudgetIncrementPercentage"
+                    >
+                      cv.increaseErrorBudgetBy
+                    </span>
+                     
+                    <span
+                      class="bp3-text-muted"
+                    />
+                  </label>
+                  <div
+                    class="bp3-form-content"
+                  >
+                    <div
+                      class="bp3-input-group"
+                    >
+                      <input
+                        autocomplete="off"
+                        class="bp3-input"
+                        max="100"
+                        min="1"
+                        name="errorBudgetIncrementPercentage"
+                        style="padding-right: 0px;"
+                        type="number"
+                        value="100"
+                      />
+                      <span
+                        class="bp3-input-action"
+                      >
+                        <span
+                          class="bp3-icon bp3-icon-percentage StyledProps--main StyledProps--padding-small"
+                          icon="percentage"
+                        >
+                          <svg
+                            data-icon="percentage"
+                            height="16"
+                            viewBox="0 0 16 16"
+                            width="16"
+                          >
+                            <desc>
+                              percentage
+                            </desc>
+                            <path
+                              d="M6 6V4c0-1.1-.9-2-2-2H3c-1.1 0-2 .9-2 2v2c0 1.1.9 2 2 2h1c1.1 0 2-.9 2-2zM3.5 6c-.28 0-.5-.22-.5-.5v-1c0-.28.22-.5.5-.5s.5.22.5.5v1c0 .28-.22.5-.5.5zM13 8h-1c-1.1 0-2 .9-2 2v2c0 1.1.9 2 2 2h1c1.1 0 2-.9 2-2v-2c0-1.1-.9-2-2-2zm0 3.5c0 .28-.22.5-.5.5s-.5-.22-.5-.5v-1c0-.28.22-.5.5-.5s.5.22.5.5v1zM12 3a1.003 1.003 0 00-1.87-.5l-5.99 9.98c-.09.15-.14.33-.14.52a1.003 1.003 0 001.87.5l5.99-9.98c.09-.15.14-.33.14-.52z"
+                              fill-rule="evenodd"
+                            />
+                          </svg>
+                        </span>
+                      </span>
+                    </div>
+                  </div>
+                </div>
+                <div
+                  class="bp3-form-group"
+                  data-id="reason-1"
+                >
+                  <label
+                    class="bp3-label"
+                    for="reason"
+                  >
+                    <span
+                      class="Tooltip--acenter"
+                      data-tooltip-id="errorBudgetReset_reason"
+                    >
+                      reason
+                    </span>
+                     
+                    <span
+                      class="bp3-text-muted"
+                    />
+                  </label>
+                  <div
+                    class="bp3-form-content"
+                  >
+                    <textarea
+                      autocomplete="off"
+                      class="bp3-input bp3-fill"
+                      maxlength="1024"
+                      name="reason"
+                    >
+                      REASON
+                    </textarea>
+                  </div>
+                </div>
+              </div>
+              <div
+                class="Layout--vertical Layout--layout-spacing-xxxlarge StyledProps--main"
+              >
+                <div>
+                  <p
+                    class="StyledProps--font StyledProps--main StyledProps--font-variation-form-label"
+                  >
+                    cv.updatedErrorBudget
+                  </p>
+                  <h2
+                    class="StyledProps--font StyledProps--font-h2 StyledProps--main StyledProps--inline StyledProps--color StyledProps--color-grey800 StyledProps--font-variation-h4"
+                    level="2"
+                  >
+                    200
+                  </h2>
+                  <span
+                    class="StyledProps--font StyledProps--main StyledProps--inline StyledProps--font-variation-form-help"
+                  >
+                     
+                    cv.mins
+                  </span>
+                </div>
+                <div>
+                  <p
+                    class="StyledProps--font StyledProps--main StyledProps--font-variation-form-label"
+                  >
+                    cv.remainingErrorBudget
+                  </p>
+                  <h2
+                    class="StyledProps--font StyledProps--font-h2 StyledProps--main StyledProps--inline StyledProps--color StyledProps--color-grey800 StyledProps--font-variation-h4"
+                    level="2"
+                  >
+                    160
+                  </h2>
+                  <span
+                    class="StyledProps--font StyledProps--main StyledProps--inline StyledProps--font-variation-form-help"
+                  >
+                     
+                    cv.mins
+                  </span>
+                </div>
+              </div>
+            </div>
+            <div
+              class="Layout--horizontal Layout--layout-spacing-small StyledProps--main StyledProps--margin-top-xxxlarge"
+            >
+              <button
+                class="bp3-button Button--button StyledProps--font StyledProps--main Button--with-current-color Button--variation Button--variation-primary"
+                type="submit"
+              >
+                <span
+                  class="bp3-button-text"
+                >
+                  save
+                </span>
+              </button>
+              <button
+                class="bp3-button Button--button StyledProps--font StyledProps--main Button--with-current-color Button--variation Button--variation-tertiary"
+                type="button"
+              >
+                <span
+                  class="bp3-button-text"
+                >
+                  cancel
+                </span>
+              </button>
+            </div>
+          </div>
+        </form>
+      </div>
+    </div>
+  </div>
+  <footer />
+</div>
+`;
