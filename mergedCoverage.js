@@ -27,5 +27,5 @@ fs.emptyDirSync(FINAL_OUTPUT_FOLDER)
 run([
   // "nyc merge" will create a "coverage.json" file on the root, we move it to .nyc_output
   `nyc merge ${REPORTS_FOLDER} && mv coverage.json .nyc_output/out.json`,
-  `nyc report --reporter html --report-dir ${FINAL_OUTPUT_FOLDER}`
+  `nyc report --reporter html --reporter json-summary --report-dir ${FINAL_OUTPUT_FOLDER}`
 ])
