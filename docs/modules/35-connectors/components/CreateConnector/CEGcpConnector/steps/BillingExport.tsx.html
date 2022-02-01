@@ -23,9 +23,9 @@
         <div class='clearfix'>
             
             <div class='fl pad1y space-right2'>
-                <span class="strong">90% </span>
+                <span class="strong">89.66% </span>
                 <span class="quiet">Statements</span>
-                <span class='fraction'>27/30</span>
+                <span class='fraction'>26/29</span>
             </div>
         
             
@@ -44,9 +44,9 @@
         
             
             <div class='fl pad1y space-right2'>
-                <span class="strong">89.66% </span>
+                <span class="strong">89.29% </span>
                 <span class="quiet">Lines</span>
-                <span class='fraction'>26/29</span>
+                <span class='fraction'>25/28</span>
             </div>
         
             
@@ -192,14 +192,7 @@
 <a name='L133'></a><a href='#L133'>133</a>
 <a name='L134'></a><a href='#L134'>134</a>
 <a name='L135'></a><a href='#L135'>135</a>
-<a name='L136'></a><a href='#L136'>136</a>
-<a name='L137'></a><a href='#L137'>137</a>
-<a name='L138'></a><a href='#L138'>138</a>
-<a name='L139'></a><a href='#L139'>139</a>
-<a name='L140'></a><a href='#L140'>140</a>
-<a name='L141'></a><a href='#L141'>141</a>
-<a name='L142'></a><a href='#L142'>142</a>
-<a name='L143'></a><a href='#L143'>143</a></td><td class="line-coverage quiet"><span class="cline-any cline-neutral">&nbsp;</span>
+<a name='L136'></a><a href='#L136'>136</a></td><td class="line-coverage quiet"><span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
@@ -218,7 +211,6 @@
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-yes">167x</span>
 <span class="cline-any cline-yes">167x</span>
 <span class="cline-any cline-yes">167x</span>
 <span class="cline-any cline-yes">167x</span>
@@ -334,12 +326,6 @@
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-yes">167x</span>
 <span class="cline-any cline-neutral">&nbsp;</span></td><td class="text"><pre class="prettyprint lang-js">/*
  * Copyright 2022 Harness Inc. All rights reserved.
@@ -363,7 +349,6 @@ import {
 import { get } from 'lodash-es'
 import { useStrings } from 'framework/strings'
 import { DialogExtensionContext } from '@connectors/common/ConnectorExtention/DialogExtention'
-import LabelWithTooltip from '@connectors/common/LabelWithTooltip/LabelWithTooltip'
 import type { GcpBillingExportSpec, GcpCloudCostConnector } from 'services/cd-ng'
 import type { CEGcpConnectorDTO } from './OverviewStep'
 import BillingExportExtention from './BillingExportExtention'
@@ -447,25 +432,19 @@ const BillingExport: React.FC&lt;StepProps&lt;CEGcpConnectorDTO&gt;&gt; = props 
               &lt;div&gt;
                 &lt;FormInput.Text
                   name={'datasetId'}
-                  label={
-                    &lt;LabelWithTooltip
-                      label={getString('connectors.ceGcp.billingExport.datasetIdLabel')}
-                      extentionComponent={BillingExportExtention}
-                      toolTipContent={getString('connectors.ceGcp.billingExport.tooltipDescription')}
-                    /&gt;
-                  }
+                  tooltipProps={{
+                    dataTooltipId: 'gcp-dataset-name'
+                  }}
+                  label={getString('connectors.ceGcp.billingExport.datasetIdLabel')}
                   className={css.dataFields}
                 /&gt;
 &nbsp;
                 &lt;FormInput.Text
                   name={'tableId'}
-                  label={
-                    &lt;LabelWithTooltip
-                      label={getString('connectors.ceGcp.billingExport.tableIdLabel')}
-                      extentionComponent={BillingExportExtention}
-                      toolTipContent={getString('connectors.ceGcp.billingExport.tableIdTooltipDesc')}
-                    /&gt;
-                  }
+                  tooltipProps={{
+                    dataTooltipId: 'gcp-table-name'
+                  }}
+                  label={getString('connectors.ceGcp.billingExport.tableIdLabel')}
                   className={css.dataFields}
                 /&gt;
               &lt;/div&gt;
@@ -490,7 +469,7 @@ export default BillingExport
             <div class='footer quiet pad2 space-top1 center small'>
                 Code coverage generated by
                 <a href="https://istanbul.js.org/" target="_blank">istanbul</a>
-                at Tue Feb 01 2022 07:19:39 GMT+0000 (Greenwich Mean Time)
+                at Tue Feb 01 2022 10:10:13 GMT+0000 (Greenwich Mean Time)
             </div>
         </div>
         <script src="../../../../../../prettify.js"></script>
