@@ -15,7 +15,7 @@ import {
   SelectOption,
   Text
 } from '@wings-software/uicore'
-import { get, memoize } from 'lodash-es'
+import { get, isNil, memoize } from 'lodash-es'
 import type { GetDataError } from 'restful-react'
 import { ConfigureOptions } from '@common/components/ConfigureOptions/ConfigureOptions'
 import { useStrings } from 'framework/strings'
@@ -61,10 +61,12 @@ const ArtifactImagePathTagView = ({
   const tags = buildDetailsLoading ? [{ label: 'Loading Tags...', value: 'Loading Tags...' }] : getSelectItems()
 
   useEffect(() => {
-    if (getMultiTypeFromValue(formik.values?.tag) !== MultiTypeInputType.FIXED) {
-      formik.setFieldValue('tagRegex', formik.values.tag)
-    } else {
-      formik.setFieldValue && formik.setFieldValue('tagRegex', '')
+    if (!isNil(formik.values?.tag)) {
+      if (getMultiTypeFromValue(formik.values?.tag) !== MultiTypeInputType.FIXED) {
+        formik.setFieldValue('tagRegex', formik.values.tag)
+      } else {
+        formik.setFieldValue('tagRegex', '')
+      }
     }
   }, [formik.values?.tag])
 
