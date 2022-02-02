@@ -31,6 +31,12 @@
 // -- This will overwrite an existing command --
 // Cypress.Commands.overwrite('visit', (originalFn, url, options) => { ... })
 import '@testing-library/cypress/add-commands'
+import {
+  servicesCall,
+  servicesResponse,
+  environmentsCall,
+  environmentResponse
+} from './85-cv/monitoredService/constants'
 
 declare global {
   // eslint-disable-next-line @typescript-eslint/no-namespace
@@ -43,6 +49,7 @@ declare global {
       fillName(name: string): void
       clickSubmit(): void
       fillField(fieldName: string, value: string): void
+      addNewMonitoredServiceWithServiceAndEnv(): void
     }
   }
 }
@@ -79,4 +86,26 @@ Cypress.Commands.add('visitChangeIntelligence', () => {
   cy.contains('span', 'Service Reliability').click()
   cy.contains('p', 'Select a Project').click()
   cy.contains('p', 'Project 1').click()
+})
+
+Cypress.Commands.add('addNewMonitoredServiceWithServiceAndEnv', () => {
+  cy.intercept('GET', servicesCall, servicesResponse).as('ServiceCall')
+  cy.intercept('GET', environmentsCall, environmentResponse).as('EnvCall')
+
+  cy.contains('span', 'New Monitored Service').click()
+  cy.wait('@ServiceCall')
+  cy.wait('@EnvCall')
+  cy.wait(1000)
+
+  cy.get('body').then($body => {
+    if ($body.text().includes('Unsaved changes')) {
+      cy.contains('span', 'Discard').click()
+    }
+  })
+
+  cy.get('input[name="service"]').click()
+  cy.contains('p', 'Service 101').click({ force: true })
+
+  cy.get('input[name="environment"]').click()
+  cy.contains('p', 'QA').click({ force: true })
 })
