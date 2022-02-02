@@ -23,9 +23,9 @@
         <div class='clearfix'>
             
             <div class='fl pad1y space-right2'>
-                <span class="strong">36.99% </span>
+                <span class="strong">40% </span>
                 <span class="quiet">Statements</span>
-                <span class='fraction'>27/73</span>
+                <span class='fraction'>32/80</span>
             </div>
         
             
@@ -44,9 +44,9 @@
         
             
             <div class='fl pad1y space-right2'>
-                <span class="strong">36.62% </span>
+                <span class="strong">39.74% </span>
                 <span class="quiet">Lines</span>
-                <span class='fraction'>26/71</span>
+                <span class='fraction'>31/78</span>
             </div>
         
             
@@ -337,7 +337,21 @@
 <a name='L278'></a><a href='#L278'>278</a>
 <a name='L279'></a><a href='#L279'>279</a>
 <a name='L280'></a><a href='#L280'>280</a>
-<a name='L281'></a><a href='#L281'>281</a></td><td class="line-coverage quiet"><span class="cline-any cline-neutral">&nbsp;</span>
+<a name='L281'></a><a href='#L281'>281</a>
+<a name='L282'></a><a href='#L282'>282</a>
+<a name='L283'></a><a href='#L283'>283</a>
+<a name='L284'></a><a href='#L284'>284</a>
+<a name='L285'></a><a href='#L285'>285</a>
+<a name='L286'></a><a href='#L286'>286</a>
+<a name='L287'></a><a href='#L287'>287</a>
+<a name='L288'></a><a href='#L288'>288</a>
+<a name='L289'></a><a href='#L289'>289</a>
+<a name='L290'></a><a href='#L290'>290</a>
+<a name='L291'></a><a href='#L291'>291</a>
+<a name='L292'></a><a href='#L292'>292</a>
+<a name='L293'></a><a href='#L293'>293</a>
+<a name='L294'></a><a href='#L294'>294</a>
+<a name='L295'></a><a href='#L295'>295</a></td><td class="line-coverage quiet"><span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
@@ -355,6 +369,9 @@
 <span class="cline-any cline-yes">3x</span>
 <span class="cline-any cline-yes">3x</span>
 <span class="cline-any cline-yes">3x</span>
+<span class="cline-any cline-yes">3x</span>
+<span class="cline-any cline-yes">3x</span>
+<span class="cline-any cline-yes">3x</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
@@ -424,6 +441,7 @@
 <span class="cline-any cline-yes">3x</span>
 <span class="cline-any cline-yes">3x</span>
 <span class="cline-any cline-yes">3x</span>
+<span class="cline-any cline-yes">3x</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-no">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
@@ -447,6 +465,10 @@
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-no">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
@@ -536,6 +558,7 @@
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-yes">3x</span>
 <span class="cline-any cline-yes">2x</span>
+<span class="cline-any cline-yes">2x</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-yes">2x</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
@@ -564,6 +587,11 @@
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-no">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
@@ -631,6 +659,9 @@ import { useModalHook } from '@harness/use-modal'
 import useCreateConnectorModal from '@connectors/modals/ConnectorModal/useCreateConnectorModal'
 import { Connectors } from '@connectors/constants'
 import type { ConnectorInfoDTO } from 'services/cd-ng'
+import { useTelemetry } from '@common/hooks/useTelemetry'
+import { PAGE_NAMES } from '@ce/TrackingEventsConstants'
+import { CE_CONNECTOR_CLICK } from '@connectors/trackingConstants'
 import AutoStoppingImage from './images/autoStopping.svg'
 import BudgetsImage from './images/budgets-anomalies.svg'
 import PerspectiveImage from './images/Perspectives.svg'
@@ -703,6 +734,7 @@ const CloudProviderList: React.FC&lt;CloudProviderListProps&gt; = <span class="f
 &nbsp;
 export const useCreateConnectorMinimal = (props: UseCreateConnectorProps) =&gt; {
   const { portalClassName, onSuccess } = props
+  const { trackEvent } = useTelemetry()
   const { openConnectorModal } = useCreateConnectorModal({
     onSuccess: <span class="fstat-no" title="function not covered" >() =</span>&gt; {
 <span class="cstat-no" title="statement not covered" >      onSuccess?.()</span>
@@ -727,6 +759,10 @@ export const useCreateConnectorMinimal = (props: UseCreateConnectorProps) =&gt; 
     }
 &nbsp;
 <span class="cstat-no" title="statement not covered" >    if (connectorType) {</span>
+<span class="cstat-no" title="statement not covered" >      trackEvent(CE_CONNECTOR_CLICK, {</span>
+        connectorType: connectorType,
+        page: PAGE_NAMES.NO_CONNECTOR_MODAL
+      })
 <span class="cstat-no" title="statement not covered" >      openConnectorModal(false, connectorType, {</span>
         connectorInfo: { orgIdentifier: '', projectIdentifier: '' } as unknown as ConnectorInfoDTO
       })
@@ -816,6 +852,7 @@ const FeaturesCarousel = <span class="fstat-no" title="function not covered" >()
 &nbsp;
 const useCreateConnector = (props: UseCreateConnectorProps) =&gt; {
   const [selectedProvider, setSelectedProvider] = useState&lt;string&gt;()
+  const { trackEvent } = useTelemetry()
 &nbsp;
   const { openConnectorModal } = useCreateConnectorModal({
     onSuccess: <span class="fstat-no" title="function not covered" >() =</span>&gt; {
@@ -844,6 +881,11 @@ const useCreateConnector = (props: UseCreateConnectorProps) =&gt; {
     }
 &nbsp;
 <span class="cstat-no" title="statement not covered" >    if (connectorType) {</span>
+<span class="cstat-no" title="statement not covered" >      trackEvent(CE_CONNECTOR_CLICK, {</span>
+        connectorType: connectorType,
+        page: PAGE_NAMES.START_TRIAL_MODAL
+      })
+&nbsp;
 <span class="cstat-no" title="statement not covered" >      openConnectorModal(false, connectorType, {</span>
         connectorInfo: { orgIdentifier: '', projectIdentifier: '' } as unknown as ConnectorInfoDTO
       })
@@ -904,7 +946,7 @@ export default useCreateConnector
             <div class='footer quiet pad2 space-top1 center small'>
                 Code coverage generated by
                 <a href="https://istanbul.js.org/" target="_blank">istanbul</a>
-                at Wed Feb 02 2022 05:41:27 GMT+0000 (Greenwich Mean Time)
+                at Wed Feb 02 2022 06:43:35 GMT+0000 (Greenwich Mean Time)
             </div>
         </div>
         <script src="../../../../prettify.js"></script>

@@ -23,9 +23,9 @@
         <div class='clearfix'>
             
             <div class='fl pad1y space-right2'>
-                <span class="strong">100% </span>
+                <span class="strong">90.91% </span>
                 <span class="quiet">Statements</span>
-                <span class='fraction'>17/17</span>
+                <span class='fraction'>20/22</span>
             </div>
         
             
@@ -37,16 +37,16 @@
         
             
             <div class='fl pad1y space-right2'>
-                <span class="strong">100% </span>
+                <span class="strong">50% </span>
                 <span class="quiet">Functions</span>
-                <span class='fraction'>1/1</span>
+                <span class='fraction'>1/2</span>
             </div>
         
             
             <div class='fl pad1y space-right2'>
-                <span class="strong">100% </span>
+                <span class="strong">90.91% </span>
                 <span class="quiet">Lines</span>
-                <span class='fraction'>17/17</span>
+                <span class='fraction'>20/22</span>
             </div>
         
             
@@ -115,13 +115,21 @@
 <a name='L56'></a><a href='#L56'>56</a>
 <a name='L57'></a><a href='#L57'>57</a>
 <a name='L58'></a><a href='#L58'>58</a>
-<a name='L59'></a><a href='#L59'>59</a></td><td class="line-coverage quiet"><span class="cline-any cline-neutral">&nbsp;</span>
+<a name='L59'></a><a href='#L59'>59</a>
+<a name='L60'></a><a href='#L60'>60</a>
+<a name='L61'></a><a href='#L61'>61</a>
+<a name='L62'></a><a href='#L62'>62</a>
+<a name='L63'></a><a href='#L63'>63</a>
+<a name='L64'></a><a href='#L64'>64</a>
+<a name='L65'></a><a href='#L65'>65</a></td><td class="line-coverage quiet"><span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">171x</span>
+<span class="cline-any cline-yes">171x</span>
 <span class="cline-any cline-yes">171x</span>
 <span class="cline-any cline-yes">171x</span>
 <span class="cline-any cline-yes">171x</span>
@@ -139,6 +147,7 @@
 <span class="cline-any cline-yes">4x</span>
 <span class="cline-any cline-yes">3x</span>
 <span class="cline-any cline-yes">3x</span>
+<span class="cline-any cline-yes">3x</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
@@ -161,6 +170,9 @@
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
@@ -187,6 +199,8 @@ import { getConnectorIconByType } from '@connectors/pages/connectors/utils/Conne
 import { Connectors, CreateConnectorModalProps } from '@connectors/constants'
 import VerifyOutOfClusterDelegate from '@connectors/common/VerifyOutOfClusterDelegate/VerifyOutOfClusterDelegate'
 import DialogExtention from '@connectors/common/ConnectorExtention/DialogExtention'
+import { CE_K8S_CONNECTOR_CREATION_EVENTS } from '@connectors/trackingConstants'
+import { useTelemetry } from '@common/hooks/useTelemetry'
 import OverviewStep from './OverviewStep'
 import ProvidePermissions from './ProvidePermissions'
 import FeatureSelectionStep from './FeatureSelectionStep'
@@ -195,6 +209,7 @@ import css from './CEK8sConnector.module.scss'
 &nbsp;
 const CreateCEK8sConnector: React.FC&lt;CreateConnectorModalProps&gt; = props =&gt; {
   const { getString } = useStrings()
+  const { trackEvent } = useTelemetry()
   const [isOptimizationSelected, setIsOptimizationSelected] = useState&lt;boolean&gt;(false)
   return (
     &lt;DialogExtention dialogStyles={{ width: 1159 }}&gt;
@@ -219,7 +234,10 @@ const CreateCEK8sConnector: React.FC&lt;CreateConnectorModalProps&gt; = props =&
         &lt;ProvidePermissions {...props} name={'Provide permissions'} /&gt;
         &lt;VerifyOutOfClusterDelegate
           name={getString('connectors.verifyConnection')}
-          onClose={props.onClose}
+          onClose={<span class="fstat-no" title="function not covered" >() =</span>&gt; {
+<span class="cstat-no" title="statement not covered" >            trackEvent(CE_K8S_CONNECTOR_CREATION_EVENTS.CONNECTION_FINISH_CLICK, {})</span>
+<span class="cstat-no" title="statement not covered" >            props.onClose()</span>
+          }}
           isStep
           isLastStep
           type={Connectors.CE_KUBERNETES}
@@ -238,7 +256,7 @@ export default CreateCEK8sConnector
             <div class='footer quiet pad2 space-top1 center small'>
                 Code coverage generated by
                 <a href="https://istanbul.js.org/" target="_blank">istanbul</a>
-                at Wed Feb 02 2022 05:41:27 GMT+0000 (Greenwich Mean Time)
+                at Wed Feb 02 2022 06:43:35 GMT+0000 (Greenwich Mean Time)
             </div>
         </div>
         <script src="../../../../../prettify.js"></script>
