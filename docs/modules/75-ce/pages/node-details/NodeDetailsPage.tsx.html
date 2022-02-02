@@ -23,9 +23,9 @@
         <div class='clearfix'>
             
             <div class='fl pad1y space-right2'>
-                <span class="strong">93.75% </span>
+                <span class="strong">94% </span>
                 <span class="quiet">Statements</span>
-                <span class='fraction'>45/48</span>
+                <span class='fraction'>47/50</span>
             </div>
         
             
@@ -37,16 +37,16 @@
         
             
             <div class='fl pad1y space-right2'>
-                <span class="strong">60% </span>
+                <span class="strong">66.67% </span>
                 <span class="quiet">Functions</span>
-                <span class='fraction'>3/5</span>
+                <span class='fraction'>4/6</span>
             </div>
         
             
             <div class='fl pad1y space-right2'>
-                <span class="strong">93.75% </span>
+                <span class="strong">94% </span>
                 <span class="quiet">Lines</span>
-                <span class='fraction'>45/48</span>
+                <span class='fraction'>47/50</span>
             </div>
         
             
@@ -362,13 +362,7 @@
 <a name='L303'></a><a href='#L303'>303</a>
 <a name='L304'></a><a href='#L304'>304</a>
 <a name='L305'></a><a href='#L305'>305</a>
-<a name='L306'></a><a href='#L306'>306</a>
-<a name='L307'></a><a href='#L307'>307</a>
-<a name='L308'></a><a href='#L308'>308</a>
-<a name='L309'></a><a href='#L309'>309</a>
-<a name='L310'></a><a href='#L310'>310</a>
-<a name='L311'></a><a href='#L311'>311</a>
-<a name='L312'></a><a href='#L312'>312</a></td><td class="line-coverage quiet"><span class="cline-any cline-neutral">&nbsp;</span>
+<a name='L306'></a><a href='#L306'>306</a></td><td class="line-coverage quiet"><span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
@@ -398,12 +392,12 @@
 <span class="cline-any cline-yes">1x</span>
 <span class="cline-any cline-yes">1x</span>
 <span class="cline-any cline-yes">1x</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-yes">1x</span>
-<span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-yes">1x</span>
 <span class="cline-any cline-yes">1x</span>
 <span class="cline-any cline-yes">1x</span>
@@ -562,6 +556,7 @@
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-yes">1x</span>
+<span class="cline-any cline-yes">1x</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
@@ -574,14 +569,7 @@
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">1x</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
@@ -702,7 +690,6 @@ import {
   InstanceDetails
 } from 'services/ce/services'
 import { useStrings } from 'framework/strings'
-import { Breadcrumbs } from '@common/components/Breadcrumbs/Breadcrumbs'
 import routes from '@common/RouteDefinitions'
 import { getViewFilterForId, getTimeFilters, GROUP_BY_POD, getTimeRangeFilter } from '@ce/utils/perspectiveUtils'
 import CloudCostInsightChart from '@ce/components/CloudCostInsightChart/CloudCostInsightChart'
@@ -720,6 +707,7 @@ import PerspectiveGrid from '@ce/components/PerspectiveGrid/PerspectiveGrid'
 import { Page } from '@common/exports'
 import WorkloadSummary from '@ce/components/WorkloadSummary/WorkloadSummary'
 import EmptyView from '@ce/images/empty-state.svg'
+import { NGBreadcrumbs } from '@common/components/NGBreadcrumbs/NGBreadcrumbs'
 import { Aggregation, AggregationFunctionMapping } from './constants'
 import css from './NodeDetailsPage.module.scss'
 &nbsp;
@@ -872,29 +860,23 @@ const NodeDetailsPage: () =&gt; JSX.Element = () =&gt; {
     ? (summaryData.perspectiveGrid.data[0]<span class="branch-0 cbranch-no" title="branch not covered" >?.i</span>nstanceDetails as InstanceDetails)
     : (<span class="branch-1 cbranch-no" title="branch not covered" >{} as InstanceDetails)</span>
 &nbsp;
+  const breadcrumbsLinks = useMemo(
+    () =&gt; [
+      {
+        url: routes.toCEPerspectives({ accountId }),
+        label: getString('ce.perspectives.sideNavText')
+      },
+      {
+        url: routes.toPerspectiveDetails({ accountId, perspectiveId, perspectiveName }),
+        label: perspectiveName
+      }
+    ],
+    []
+  )
+&nbsp;
   return (
     &lt;&gt;
-      &lt;Page.Header
-        title={infoData.name || <span class="branch-1 cbranch-no" title="branch not covered" >nodeId}</span>
-        breadcrumbs={
-          &lt;Breadcrumbs
-            links={[
-              {
-                url: routes.toCEPerspectives({ accountId }),
-                label: getString('ce.perspectives.sideNavText')
-              },
-              {
-                url: routes.toPerspectiveDetails({ accountId, perspectiveId, perspectiveName }),
-                label: perspectiveName
-              },
-              {
-                label: '',
-                url: '#'
-              }
-            ]}
-          /&gt;
-        }
-      /&gt;
+      &lt;Page.Header title={infoData.name || <span class="branch-1 cbranch-no" title="branch not covered" >nodeId}</span> breadcrumbs={&lt;NGBreadcrumbs links={breadcrumbsLinks} /&gt;} /&gt;
       &lt;Page.Body&gt;
         &lt;Container flex background="white" padding="small"&gt;
           &lt;FlexExpander /&gt;
@@ -997,7 +979,7 @@ export default NodeDetailsPage
             <div class='footer quiet pad2 space-top1 center small'>
                 Code coverage generated by
                 <a href="https://istanbul.js.org/" target="_blank">istanbul</a>
-                at Wed Feb 02 2022 06:50:12 GMT+0000 (Greenwich Mean Time)
+                at Wed Feb 02 2022 09:51:07 GMT+0000 (Greenwich Mean Time)
             </div>
         </div>
         <script src="../../../../prettify.js"></script>

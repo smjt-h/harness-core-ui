@@ -878,7 +878,9 @@
 <a name='L819'></a><a href='#L819'>819</a>
 <a name='L820'></a><a href='#L820'>820</a>
 <a name='L821'></a><a href='#L821'>821</a>
-<a name='L822'></a><a href='#L822'>822</a></td><td class="line-coverage quiet"><span class="cline-any cline-neutral">&nbsp;</span>
+<a name='L822'></a><a href='#L822'>822</a>
+<a name='L823'></a><a href='#L823'>823</a>
+<a name='L824'></a><a href='#L824'>824</a></td><td class="line-coverage quiet"><span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
@@ -904,6 +906,7 @@
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-yes">1x</span>
 <span class="cline-any cline-yes">1x</span>
 <span class="cline-any cline-yes">1x</span>
@@ -932,8 +935,8 @@
 <span class="cline-any cline-yes">1x</span>
 <span class="cline-any cline-yes">1x</span>
 <span class="cline-any cline-yes">1x</span>
-<span class="cline-any cline-yes">1x</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">1x</span>
 <span class="cline-any cline-yes">1x</span>
 <span class="cline-any cline-yes">1x</span>
 <span class="cline-any cline-yes">1x</span>
@@ -1271,7 +1274,6 @@
 <span class="cline-any cline-no">&nbsp;</span>
 <span class="cline-any cline-no">&nbsp;</span>
 <span class="cline-any cline-no">&nbsp;</span>
-<span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
@@ -1630,6 +1632,8 @@
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-no">&nbsp;</span>
 <span class="cline-any cline-no">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
@@ -1723,7 +1727,8 @@ import {
   Page,
   TableV2,
   ExpandingSearchInput,
-  FontVariation
+  FontVariation,
+  PageHeader
 } from '@harness/uicore'
 import { isEmpty as _isEmpty, defaultTo as _defaultTo } from 'lodash-es'
 import HighchartsReact from 'highcharts-react-official'
@@ -1746,7 +1751,6 @@ import {
   ServiceError,
   useCumulativeServiceSavings
 } from 'services/lw'
-import { Breadcrumbs } from '@common/components/Breadcrumbs/Breadcrumbs'
 import { String, useStrings } from 'framework/strings'
 import useDeleteServiceHook from '@ce/common/useDeleteService'
 import { useTelemetry } from '@common/hooks/useTelemetry'
@@ -1755,6 +1759,7 @@ import { useFeature } from '@common/hooks/useFeatures'
 import RbacButton from '@rbac/components/Button/Button'
 import { FeatureIdentifier } from 'framework/featureStore/FeatureIdentifier'
 import type { FeatureDetail } from 'framework/featureStore/featureStoreUtil'
+import { NGBreadcrumbs } from '@common/components/NGBreadcrumbs/NGBreadcrumbs'
 import COGatewayAnalytics from './COGatewayAnalytics'
 import COGatewayCumulativeAnalytics from './COGatewayCumulativeAnalytics'
 import odIcon from './images/ondemandIcon.svg'
@@ -2093,8 +2098,7 @@ const EmptyListPage: React.FC&lt;EmptyListPageProps&gt; = <span class="fstat-no"
   const { trackEvent } = <span class="cstat-no" title="statement not covered" >useTelemetry()</span>
 <span class="cstat-no" title="statement not covered" >  return (</span>
     &lt;Container background={Color.WHITE} height="100vh"&gt;
-      &lt;Breadcrumbs
-        className={css.breadCrumb}
+      &lt;NGBreadcrumbs
         links={[
           {
             url: routes.toCECORules({ accountId }),
@@ -2432,16 +2436,18 @@ const COGatewayList: React.FC = () =&gt; {
   // with search - data is available or unavailable
   return (
     &lt;Container background={Color.WHITE} height="100vh"&gt;
-      &lt;Layout.Horizontal
-        flex={{ justifyContent: 'flex-start' }}
-        className={css.header}
-        padding={{ left: 'xlarge', right: 'xlarge' }}
-      &gt;
-        &lt;Heading data-tooltip-id="autostoppingRule" level={2} color={Color.GREY_800} font={{ weight: 'bold' }}&gt;
-          {getString('ce.co.breadCrumb.rules')}
-        &lt;/Heading&gt;
-        &lt;HarnessDocTooltip tooltipId="autostoppingRule" useStandAlone={true} /&gt;
-      &lt;/Layout.Horizontal&gt;
+      &lt;PageHeader
+        title={
+          &lt;Layout.Horizontal flex={{ alignItems: 'center' }}&gt;
+            &lt;Heading data-tooltip-id="autostoppingRule" level={2} color={Color.GREY_800} font={{ weight: 'bold' }}&gt;
+              {getString('ce.co.breadCrumb.rules')}
+            &lt;/Heading&gt;
+            &lt;HarnessDocTooltip tooltipId="autostoppingRule" useStandAlone={true} /&gt;
+          &lt;/Layout.Horizontal&gt;
+        }
+        breadcrumbs={&lt;NGBreadcrumbs /&gt;}
+      /&gt;
+&nbsp;
       &lt;Drawer
         autoFocus={true}
         enforceFocus={true}
@@ -2527,7 +2533,7 @@ export default COGatewayList
             <div class='footer quiet pad2 space-top1 center small'>
                 Code coverage generated by
                 <a href="https://istanbul.js.org/" target="_blank">istanbul</a>
-                at Wed Feb 02 2022 06:50:12 GMT+0000 (Greenwich Mean Time)
+                at Wed Feb 02 2022 09:51:07 GMT+0000 (Greenwich Mean Time)
             </div>
         </div>
         <script src="../../../../prettify.js"></script>
