@@ -31,7 +31,7 @@ import { ArtifactConfig, ConnectorConfigDTO, DockerBuildDetailsDTO, useGetBuildD
 import { getConnectorIdValue } from '@pipeline/components/ArtifactsSelection/ArtifactUtils'
 import { ArtifactType, ImagePathProps, ImagePathTypes, TagTypes } from '../../../ArtifactInterface'
 import { ArtifactIdentifierValidation } from '../../../ArtifactHelper'
-import ArtifactImagePathTagView from '../ArtifactImagePathTagView'
+import ArtifactImagePathTagView from '../ArtifactImagePathTagView/ArtifactImagePathTagView'
 import css from '../../ArtifactConnector.module.scss'
 
 export const DockerRegistryArtifact: React.FC<StepProps<ConnectorConfigDTO> & ImagePathProps> = ({

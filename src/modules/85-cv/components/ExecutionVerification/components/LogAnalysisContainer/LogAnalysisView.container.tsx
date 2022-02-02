@@ -24,7 +24,11 @@ import { getClusterTypes } from './LogAnalysis.utils'
 
 type ClusterTypes = GetDeploymentLogAnalysisResultQueryParams['clusterTypes']
 
-export default function LogAnalysisContainer({ step, hostName }: LogAnalysisContainerProps): React.ReactElement {
+export default function LogAnalysisContainer({
+  step,
+  hostName,
+  isErrorTracking
+}: LogAnalysisContainerProps): React.ReactElement {
   const { accountId } = useParams<AccountPathProps>()
   const { showError } = useToaster()
   const { getString } = useStrings()
@@ -194,6 +198,7 @@ export default function LogAnalysisContainer({ step, hostName }: LogAnalysisCont
         setSelectedClusterType={setSelectedClusterType}
         onChangeHealthSource={setSelectedHealthSource}
         activityId={activityId}
+        isErrorTracking={isErrorTracking}
       />
     </Container>
   )

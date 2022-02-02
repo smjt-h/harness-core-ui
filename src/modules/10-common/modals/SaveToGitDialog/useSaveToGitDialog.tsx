@@ -6,10 +6,11 @@
  */
 
 import React, { useState } from 'react'
-import { useModalHook, Button, getErrorInfoFromErrorObject } from '@wings-software/uicore'
+import { Button, getErrorInfoFromErrorObject } from '@wings-software/uicore'
 import { Classes, Dialog, IDialogProps } from '@blueprintjs/core'
 import { useParams } from 'react-router-dom'
 import { noop } from 'lodash-es'
+import { useModalHook } from '@harness/use-modal'
 import { Entities } from '@common/interfaces/GitSyncInterface'
 import SaveToGitForm, {
   GitResourceInterface,

@@ -7,9 +7,11 @@
 
 import React from 'react'
 import userEvent from '@testing-library/user-event'
-import { render, screen, getByText } from '@testing-library/react'
+import { render, screen, getByText, waitFor, queryByText } from '@testing-library/react'
 import routes from '@common/RouteDefinitions'
+import { InputTypes, setFieldValue } from '@common/utils/JestFormHelper'
 import { findDialogContainer, findPopoverContainer, TestWrapper } from '@common/utils/testUtils'
+import { PeriodTypes } from '../components/CVCreateSLO/CVCreateSLO.types'
 import SLOCardHeader from '../SLOCard/SLOCardHeader'
 import type { SLOCardHeaderProps } from '../CVSLOsListingPage.types'
 import { testWrapperProps, pathParams, dashboardWidgetsContent } from './CVSLOsListingPage.mock'
@@ -17,11 +19,17 @@ import { testWrapperProps, pathParams, dashboardWidgetsContent } from './CVSLOsL
 const ComponentWrapper: React.FC<Optional<SLOCardHeaderProps>> = ({
   serviceLevelObjective = dashboardWidgetsContent,
   onDelete = jest.fn(),
+  onResetErrorBudget = jest.fn(),
   ...rest
 }) => {
   return (
     <TestWrapper {...testWrapperProps}>
-      <SLOCardHeader serviceLevelObjective={serviceLevelObjective} onDelete={onDelete} {...rest} />
+      <SLOCardHeader
+        serviceLevelObjective={serviceLevelObjective}
+        onDelete={onDelete}
+        onResetErrorBudget={onResetErrorBudget}
+        {...rest}
+      />
     </TestWrapper>
   )
 }
@@ -94,5 +102,113 @@ describe('SLOCardHeader', () => {
         })
       )
     ).toBeInTheDocument()
+  })
+
+  test('it should not render Reset Error Budget menu item for Rolling type', () => {
+    const { container } = render(<ComponentWrapper />)
+
+    userEvent.click(container.querySelector('[data-icon="Options"]')!)
+
+    const popover = findPopoverContainer()
+
+    expect(queryByText(popover!, 'cv.resetErrorBudget')).not.toBeInTheDocument()
+  })
+
+  test('it should successfully reset the error budget', async () => {
+    const onResetErrorBudget = jest.fn()
+
+    const { container } = render(
+      <ComponentWrapper
+        serviceLevelObjective={{ ...dashboardWidgetsContent, sloTargetType: PeriodTypes.CALENDAR }}
+        onResetErrorBudget={onResetErrorBudget}
+      />
+    )
+
+    userEvent.click(container.querySelector('[data-icon="Options"]')!)
+
+    const popover = findPopoverContainer()
+
+    expect(getByText(popover!, 'cv.resetErrorBudget')).toBeInTheDocument()
+
+    userEvent.click(getByText(popover!, 'cv.resetErrorBudget'))
+
+    const dialogContainer = findDialogContainer()
+
+    expect(getByText(dialogContainer!, 'cv.resetErrorBudget')).toBeInTheDocument()
+
+    userEvent.click(getByText(dialogContainer!, 'save'))
+
+    await waitFor(() => {
+      expect(screen.getByText('cv.increaseErrorBudgetByIsRequired')).toBeInTheDocument()
+      expect(screen.getByText('cv.reasonIsRequired')).toBeInTheDocument()
+    })
+
+    setFieldValue({
+      container: dialogContainer!,
+      type: InputTypes.TEXTFIELD,
+      fieldId: 'errorBudgetIncrementPercentage',
+      value: '0'
+    })
+
+    await waitFor(() => {
+      expect(screen.queryByText('cv.increaseErrorBudgetByIsRequired')).not.toBeInTheDocument()
+      expect(screen.getByText('common.validation.valueMustBeGreaterThanOrEqualToN')).toBeInTheDocument()
+    })
+
+    setFieldValue({
+      container: dialogContainer!,
+      type: InputTypes.TEXTFIELD,
+      fieldId: 'errorBudgetIncrementPercentage',
+      value: '101'
+    })
+
+    await waitFor(() => {
+      expect(screen.queryByText('common.validation.valueMustBeGreaterThanOrEqualToN')).not.toBeInTheDocument()
+      expect(screen.getByText('common.validation.valueMustBeLessThanOrEqualToN')).toBeInTheDocument()
+    })
+
+    setFieldValue({
+      container: dialogContainer!,
+      type: InputTypes.TEXTFIELD,
+      fieldId: 'errorBudgetIncrementPercentage',
+      value: '100'
+    })
+
+    setFieldValue({
+      container: dialogContainer!,
+      type: InputTypes.TEXTAREA,
+      fieldId: 'reason',
+      value: 'REASON'
+    })
+
+    await waitFor(() => {
+      expect(screen.queryByText('common.validation.valueMustBeLessThanOrEqualToN')).not.toBeInTheDocument()
+      expect(screen.queryByText('cv.reasonIsRequired')).not.toBeInTheDocument()
+    })
+
+    expect(dialogContainer).toMatchSnapshot()
+
+    userEvent.click(getByText(dialogContainer!, 'save'))
+
+    await waitFor(() => {
+      expect(queryByText(dialogContainer!, 'cv.resetErrorBudget')).not.toBeInTheDocument()
+    })
+
+    const confirmationDialogContainer = findDialogContainer()
+
+    await waitFor(() => {
+      expect(getByText(confirmationDialogContainer!, 'cv.slos.reviewChanges')).toBeInTheDocument()
+    })
+
+    userEvent.click(getByText(confirmationDialogContainer!, 'common.ok'))
+
+    await waitFor(() => {
+      expect(onResetErrorBudget).toBeCalledWith(dashboardWidgetsContent.sloIdentifier, {
+        errorBudgetAtReset: 200,
+        errorBudgetIncrementPercentage: 100,
+        reason: 'REASON',
+        remainingErrorBudgetAtReset: 160
+      })
+    })
   })
 })

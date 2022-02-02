@@ -32,7 +32,9 @@ import {
   useGetAllMonitoredServicesWithTimeSeriesHealthSources,
   useGetSLODashboardWidgets,
   useGetServiceLevelObjectivesRiskCount,
-  RiskCount
+  RiskCount,
+  useResetErrorBudget,
+  SLOErrorBudgetResetDTO
 } from 'services/cv'
 import RbacButton from '@rbac/components/Button/Button'
 import { getErrorMessage } from '@cv/utils/CommonUtils'
@@ -149,6 +151,22 @@ const CVSLOsListingPage: React.FC<CVSLOsListingPageProps> = ({ monitoredService 
     }
   }
 
+  const { mutate: resetErrorBudget, loading: resetErrorBudgetLoading } = useResetErrorBudget({
+    identifier: '',
+    queryParams: pathParams
+  })
+
+  const onResetErrorBudget = async (identifier: string, formData: SLOErrorBudgetResetDTO): Promise<void> => {
+    try {
+      await resetErrorBudget(formData, { pathParams: { identifier } })
+      await Promise.all([refetchDashboardWidgets(), refetchRiskCount()])
+
+      showSuccess(getString('cv.errorBudgetIsSuccessfullyReset'))
+    } catch (e) {
+      showError(getErrorMessage(e))
+    }
+  }
+
   const getAddSLOButton = (): JSX.Element => (
     <RbacButton
       icon="plus"
@@ -198,7 +216,8 @@ const CVSLOsListingPage: React.FC<CVSLOsListingPageProps> = ({ monitoredService 
           dashboardWidgetsLoading,
           deleteSLOLoading,
           monitoredServicesLoading,
-          riskCountLoading
+          riskCountLoading,
+          resetErrorBudgetLoading
         )}
         error={getErrorMessage(
           getErrorObject(dashboardWidgetsError, userJourneysError, dashboardRiskCountError, monitoredServicesDataError)
@@ -262,6 +281,7 @@ const CVSLOsListingPage: React.FC<CVSLOsListingPageProps> = ({ monitoredService 
                   <Card key={serviceLevelObjective.sloIdentifier} className={css.sloCard}>
                     <SLOCardHeader
                       onDelete={onDelete}
+                      onResetErrorBudget={onResetErrorBudget}
                       serviceLevelObjective={serviceLevelObjective}
                       monitoredServiceIdentifier={monitoredService?.identifier}
                     />

@@ -7,12 +7,11 @@
 
 import React from 'react'
 import { useParams } from 'react-router-dom'
-import { HarnessDocTooltip, useModalHook } from '@wings-software/uicore'
+import { HarnessDocTooltip } from '@wings-software/uicore'
+import { useModalHook } from '@harness/use-modal'
 import { Dialog, IDialogProps } from '@blueprintjs/core'
 
 import { useStrings } from 'framework/strings'
-import { FeatureIdentifier } from 'framework/featureStore/FeatureIdentifier'
-import { PipelineFeatureLimitBreachedBanner } from '@pipeline/factories/PipelineFeatureRestrictionFactory/PipelineFeatureRestrictionFactory'
 import PipelineDeploymentList from '@pipeline/pages/pipeline-deployment-list/PipelineDeploymentList'
 import PipelineModalListView from '@pipeline/components/PipelineModalListView/PipelineModalListView'
 import type { PipelineType, ProjectPathProps } from '@common/interfaces/RouteInterfaces'
@@ -54,11 +53,6 @@ export default function DeploymentsList(): React.ReactElement {
         }
         breadcrumbs={<NGBreadcrumbs links={[]} />}
       ></Page.Header>
-      {/* Should move to or use FeaturesRestrictionBanners in PipelineDeploymentList as UX requirement  */}
-
-      <PipelineFeatureLimitBreachedBanner featureIdentifier={FeatureIdentifier.SERVICES} module={module} />
-      <PipelineFeatureLimitBreachedBanner featureIdentifier={FeatureIdentifier.DEPLOYMENTS_PER_MONTH} module={module} />
-      <PipelineFeatureLimitBreachedBanner featureIdentifier={FeatureIdentifier.INITIAL_DEPLOYMENTS} module={module} />
       <div>
         <PipelineDeploymentList onRunPipeline={openModal} />
       </div>

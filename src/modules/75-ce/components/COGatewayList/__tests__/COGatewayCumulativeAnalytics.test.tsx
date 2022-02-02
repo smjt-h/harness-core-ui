@@ -76,7 +76,7 @@ describe('Cumulative Analytics tests', () => {
   test('render component', () => {
     const { container } = render(
       <TestWrapper pathParams={testParams}>
-        <COGatewayCumulativeAnalytics activeServicesCount={5} />
+        <COGatewayCumulativeAnalytics data={mockedResponse} loadingData={false} />
       </TestWrapper>
     )
     expect(container).toMatchSnapshot()

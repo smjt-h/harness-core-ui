@@ -29,6 +29,7 @@ import {
   useValidateKubernetesYaml,
   DelegateSetupDetails,
   useGetDelegateTokens,
+  GetDelegateTokensQueryParams,
   DelegateTokenDetails
 } from 'services/portal'
 
@@ -149,7 +150,7 @@ const DelegateSetup: React.FC<StepProps<K8sDelegateWizardData> & DelegateSetupSt
       projectIdentifier,
       orgIdentifier,
       status: 'ACTIVE'
-    }
+    } as GetDelegateTokensQueryParams
   })
 
   const defaultToken = tokensResponse?.resource?.[0]
@@ -249,7 +250,7 @@ const DelegateSetup: React.FC<StepProps<K8sDelegateWizardData> & DelegateSetupSt
                   ? Yup.string().trim().required(getString('delegates.delegateNamespaceRequired'))
                   : Yup.string().trim()
             }),
-            tokenName: NG_SHOW_DEL_TOKENS ? Yup.string().trim().required() : Yup.string()
+            tokenName: NG_SHOW_DEL_TOKENS ? Yup.string().trim().required() : Yup.string().nullable()
           })}
         >
           {(formikProps: FormikProps<DelegateSetupDetails>) => {

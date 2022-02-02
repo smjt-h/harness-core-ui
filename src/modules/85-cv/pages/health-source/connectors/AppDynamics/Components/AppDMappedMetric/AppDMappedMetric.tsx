@@ -56,7 +56,8 @@ export default function AppDMappedMetric({
   mappedMetrics,
   createdMetrics,
   isValidInput,
-  setCreatedMetrics
+  setCreatedMetrics,
+  updateGroupedCreatedMetrics
 }: AppDMappedMetricInterface): JSX.Element {
   const { getString } = useStrings()
   const { accountId, orgIdentifier, projectIdentifier } = useParams<ProjectPathProps>()
@@ -123,6 +124,8 @@ export default function AppDMappedMetric({
         getString
       })
     })
+
+    updateGroupedCreatedMetrics(groupedCreatedMetrics)
   }, [formikValues?.groupName, formikValues?.metricName])
 
   useEffect(() => {
@@ -187,8 +190,9 @@ export default function AppDMappedMetric({
             })
           }}
           onSelectMetric={(newMetric, updatedList, smIndex) => {
-            setCreatedMetrics({ selectedMetricIndex: smIndex, createdMetrics: updatedList })
             setMappedMetrics(oldState => {
+              setCreatedMetrics({ selectedMetricIndex: smIndex, createdMetrics: updatedList })
+
               return updateSelectedMetricsMap({
                 updatedMetric: newMetric,
                 oldMetric: oldState.selectedMetric,

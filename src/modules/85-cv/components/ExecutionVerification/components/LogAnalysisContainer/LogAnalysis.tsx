@@ -28,7 +28,8 @@ export default function LogAnalysis(props: LogAnalysisProps): JSX.Element {
     clusterChartLoading,
     setSelectedClusterType,
     onChangeHealthSource,
-    activityId
+    activityId,
+    isErrorTracking
   } = props
   const { getString } = useStrings()
   const { accountId } = useParams<ProjectPathProps>()
@@ -69,7 +70,9 @@ export default function LogAnalysis(props: LogAnalysisProps): JSX.Element {
         </Container>
       )
     } else {
-      return <LogAnalysisRow className={styles.logAnalysisRow} data={logAnalysisData} />
+      return (
+        <LogAnalysisRow className={styles.logAnalysisRow} data={logAnalysisData} isErrorTracking={isErrorTracking} />
+      )
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [logsLoading, logAnalysisData.length])

@@ -6,7 +6,8 @@
  */
 
 import React from 'react'
-import { useModalHook, Button } from '@wings-software/uicore'
+import { Button } from '@wings-software/uicore'
+import { useModalHook } from '@harness/use-modal'
 import { Dialog, IDialogProps } from '@blueprintjs/core'
 import { CreateDelegateConfigWizard } from '@delegates/components/CreateDelegateConfigWizard/CreateDelegateConfigWizard'
 import css from './useCreateDelegateModal.module.scss'

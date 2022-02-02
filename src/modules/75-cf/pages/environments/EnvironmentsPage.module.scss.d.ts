@@ -7,9 +7,6 @@
  **/
 // this is an auto-generated file, do not update this manually
 declare const styles: {
-  readonly envListContainer: string
-  readonly envPageBtnsHeader: string
-  readonly heightOverride: string
   readonly tagsPopover: string
 }
 export default styles

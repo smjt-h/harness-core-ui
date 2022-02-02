@@ -6,7 +6,7 @@
  */
 
 import React from 'react'
-import { useModalHook } from '@wings-software/uicore'
+import { useModalHook } from '@harness/use-modal'
 import { Dialog } from '@blueprintjs/core'
 import ModuleInfo from './ModuleInfo'
 import css from './useVersionSelectionModal.module.scss'

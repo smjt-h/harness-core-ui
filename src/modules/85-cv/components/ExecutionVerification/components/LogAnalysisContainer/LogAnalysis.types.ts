@@ -26,6 +26,7 @@ export type LogAnalysisRowData = {
 export interface LogAnalysisContainerProps {
   step: ExecutionNode
   hostName?: string
+  isErrorTracking?: boolean
 }
 
 export interface LogAnalysisProps {
@@ -37,4 +38,5 @@ export interface LogAnalysisProps {
   setSelectedClusterType: (clusterType: SelectOption) => void
   onChangeHealthSource: (selectedHealthSource: string) => void
   activityId?: string
+  isErrorTracking?: boolean
 }

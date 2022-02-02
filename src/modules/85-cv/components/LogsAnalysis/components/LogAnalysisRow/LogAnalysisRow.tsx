@@ -20,7 +20,7 @@ import type {
   CompareLogEventsInfo,
   LogAnalysisRowData
 } from './LogAnalysisRow.types'
-import { getEventTypeFromClusterType } from './LogAnalysisRow.utils'
+import { getEventTypeFromClusterType, onClickErrorTrackingRow } from './LogAnalysisRow.utils'
 import css from './LogAnalysisRow.module.scss'
 
 function ColumnHeaderRow(): JSX.Element {
@@ -48,7 +48,7 @@ function ColumnHeaderRow(): JSX.Element {
 
 function DataRow(props: LogAnalysisDataRowProps): JSX.Element {
   const { getString } = useStrings()
-  const { rowData } = props
+  const { rowData, isErrorTracking } = props
   const { riskScore, riskStatus } = rowData
   const color = getRiskColorValue(riskStatus)
   const chartOptions = useMemo(
@@ -58,7 +58,14 @@ function DataRow(props: LogAnalysisDataRowProps): JSX.Element {
   const [displayRiskEditModal, setDisplayRiskEditModal] = useState(false)
   const [feedbackGiven, setFeedbackGiven] = useState<{ risk: string; message: string } | undefined>(undefined)
   const logTextRef = useRef<HTMLParagraphElement>(null)
-  const onShowRiskEditModalCallback = useCallback(() => setDisplayRiskEditModal(true), [])
+  const onShowRiskEditModalCallback = useCallback(() => {
+    if (isErrorTracking) {
+      onClickErrorTrackingRow(rowData.message)
+    } else {
+      setDisplayRiskEditModal(true)
+    }
+  }, [isErrorTracking, rowData.message])
+
   const onHideRiskEditModalCallback = useCallback((data?) => {
     if (data?.risk || data?.message) setFeedbackGiven(data)
     setDisplayRiskEditModal(false)
@@ -95,7 +102,7 @@ function DataRow(props: LogAnalysisDataRowProps): JSX.Element {
         onClick={onShowRiskEditModalCallback}
       >
         <p className={css.logRowText} ref={logTextRef}>
-          {rowData.message}
+          {isErrorTracking ? rowData.message.split('|').slice(0, 4).join('|') : rowData.message}
         </p>
       </Container>
       <Container
@@ -123,7 +130,7 @@ function DataRow(props: LogAnalysisDataRowProps): JSX.Element {
 }
 
 export function LogAnalysisRow(props: LogAnalysisRowProps): JSX.Element {
-  const { data = [] } = props
+  const { data = [], isErrorTracking } = props
   const [dataToCompare, setDataToCompare] = useState<CompareLogEventsInfo[]>([])
 
   const onCompareSelectCallback = useCallback(
@@ -155,6 +162,7 @@ export function LogAnalysisRow(props: LogAnalysisRowProps): JSX.Element {
               index={index}
               onSelect={onCompareSelectCallback}
               isSelected={selectedIndices.has(index)}
+              isErrorTracking={isErrorTracking}
             />
           )
         })}

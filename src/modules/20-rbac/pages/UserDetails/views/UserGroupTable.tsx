@@ -18,14 +18,32 @@ import {
   TableV2,
   Intent,
   useConfirmationDialog,
-  FontVariation
+  FontVariation,
+  ButtonVariation,
+  getErrorInfoFromErrorObject,
+  Card
 } from '@wings-software/uicore'
 import { Classes, Menu, Popover, Position, PopoverInteractionKind } from '@blueprintjs/core'
+import { defaultTo } from 'lodash-es'
 import { useToaster } from '@common/components'
 import { useMutateAsGet } from '@common/hooks'
 import type { PipelineType, ProjectPathProps, UserPathProps } from '@common/interfaces/RouteInterfaces'
 import { useStrings } from 'framework/strings'
-import { useGetBatchUserGroupList, useRemoveMember, UserGroupDTO } from 'services/cd-ng'
+import {
+  AddUsers,
+  ResponseListUserGroupDTO,
+  useAddUsers,
+  useGetBatchUserGroupList,
+  UserAggregate,
+  useRemoveMember,
+  UserGroupDTO
+} from 'services/cd-ng'
+import ManagePrincipalButton from '@rbac/components/ManagePrincipalButton/ManagePrincipalButton'
+import { ResourceType } from '@rbac/interfaces/ResourceType'
+import useSelectUserGroupsModal from '@common/modals/SelectUserGroups/useSelectUserGroupsModal'
+import { getScopeFromDTO } from '@common/components/EntityReference/EntityReference'
+import { ContainerSpinner } from '@common/components/ContainerSpinner/ContainerSpinner'
+import type { ScopeAndIdentifier } from '@common/components/MultiSelectEntityReference/MultiSelectEntityReference'
 import css from '@rbac/pages/UserDetails/UserDetails.module.scss'
 
 const RenderColumnDetails: Renderer<CellProps<UserGroupDTO>> = ({ row }) => {
@@ -135,10 +153,15 @@ const ResourceGroupColumnMenu: Renderer<CellProps<UserGroupDTO>> = ({ row, colum
   )
 }
 
-const UserGroupTable: React.FC = () => {
+interface UserGroupTableProps {
+  user: UserAggregate
+}
+
+const UserGroupTable: React.FC<UserGroupTableProps> = ({ user }) => {
   const { accountId, orgIdentifier, projectIdentifier, userIdentifier } =
     useParams<PipelineType<ProjectPathProps & UserPathProps>>()
   const { getString } = useStrings()
+  const { showSuccess, showError } = useToaster()
   const {
     data: userGroupData,
     loading,
@@ -151,6 +174,55 @@ const UserGroupTable: React.FC = () => {
       projectIdentifier,
       userIdentifierFilter: [userIdentifier]
     }
+  })
+
+  const { mutate: addUserToGroups, loading: sending } = useAddUsers({
+    queryParams: {
+      accountIdentifier: accountId,
+      orgIdentifier: orgIdentifier,
+      projectIdentifier: projectIdentifier
+    }
+  })
+
+  const getUserGroupScopeAndID = (groups: ResponseListUserGroupDTO | null): ScopeAndIdentifier[] | undefined => {
+    return groups?.data?.map(value => ({
+      identifier: value.identifier,
+      scope: getScopeFromDTO(value)
+    }))
+  }
+
+  const addUserToUserGroups = async (userGroups: string[]): Promise<void> => {
+    const dataToSubmit: AddUsers = {
+      emails: [user.user.email],
+      roleBindings: user.roleAssignmentMetadata,
+      userGroups: userGroups.concat(
+        defaultTo(
+          userGroupData?.data?.map(value => value.identifier),
+          []
+        )
+      )
+    }
+    try {
+      await addUserToGroups(dataToSubmit)
+      showSuccess(
+        getString('rbac.userDetails.userGroup.addSuccessMessage', {
+          Groups: userGroupData?.data?.map(value => value.name).join(', ')
+        })
+      )
+      refetch()
+    } catch (e) {
+      showError(getErrorInfoFromErrorObject(e))
+      openSelectUserGroupsModal(getUserGroupScopeAndID(userGroupData))
+    }
+  }
+
+  const { openSelectUserGroupsModal } = useSelectUserGroupsModal({
+    onSuccess: data => {
+      const userGroups = data.map(value => value.identifier)
+      addUserToUserGroups(userGroups)
+    },
+    onlyCurrentScope: true,
+    disablePreSelectedItems: true
   })
   const columns: Column<UserGroupDTO>[] = useMemo(
     () => [
@@ -181,19 +253,39 @@ const UserGroupTable: React.FC = () => {
       <Text color={Color.BLACK} font={{ size: 'medium', weight: 'semi-bold' }} padding={{ bottom: 'medium' }}>
         {getString('common.userGroups')}
       </Text>
-      {loading ? (
-        <Text color={Color.GREY_600}>{getString('common.loading')}</Text>
-      ) : userGroupData?.data?.length ? (
-        <TableV2<UserGroupDTO> hideHeaders={true} data={userGroupData.data} columns={columns} />
-      ) : userGroupData?.data ? (
-        <Text color={Color.GREY_600}>{getString('rbac.userGroupPage.noUserGroups')}</Text>
-      ) : (
-        <PageError message={(error?.data as Error)?.message || error?.message} onClick={() => refetch()} />
-      )}
-      {/* ENABLE WHEN READY */}
-      {/* <Layout.Horizontal>
-        <Button minimal text={getString('rbac.userDetails.userGroup.addToGroup')} intent="primary" />
-      </Layout.Horizontal> */}
+
+      <Layout.Vertical padding={{ bottom: 'medium' }}>
+        {error ? (
+          <PageError message={(error?.data as Error)?.message || error?.message} onClick={() => refetch()} />
+        ) : loading ? (
+          <ContainerSpinner />
+        ) : userGroupData?.data?.length ? (
+          <TableV2<UserGroupDTO>
+            hideHeaders={true}
+            data={userGroupData.data}
+            columns={columns}
+            className={css.userGroupTable}
+          />
+        ) : (
+          <Card>{getString('rbac.userGroupPage.noUserGroups')}</Card>
+        )}
+      </Layout.Vertical>
+
+      <ManagePrincipalButton
+        data-testid={'add-UserGroup'}
+        text={
+          sending
+            ? getString('rbac.userDetails.userGroup.addingToGroups')
+            : getString('common.plusNumber', { number: getString('rbac.userDetails.userGroup.addToGroup') })
+        }
+        disabled={sending}
+        variation={ButtonVariation.LINK}
+        onClick={() => {
+          openSelectUserGroupsModal(getUserGroupScopeAndID(userGroupData))
+        }}
+        resourceIdentifier={userIdentifier}
+        resourceType={ResourceType.USER}
+      />
     </Container>
   )
 }

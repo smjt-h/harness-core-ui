@@ -26,6 +26,7 @@ import { useStrings } from 'framework/strings'
 import { useToaster } from '@common/exports'
 import useDeleteServiceHook from '@ce/common/useDeleteService'
 import { Utils } from '@ce/common/Utils'
+import type { AccountPathProps } from '@common/interfaces/RouteInterfaces'
 import COGatewayLogs from './COGatewayLogs'
 import COGatewayUsageTime from './COGatewayUsageTime'
 import odIcon from './images/ondemandIcon.svg'
@@ -145,11 +146,7 @@ const CopyURL = (props: { textToCopy: string }) => {
 }
 
 const COGatewayAnalytics: React.FC<COGatewayAnalyticsProps> = props => {
-  const { accountId, orgIdentifier, projectIdentifier } = useParams<{
-    accountId: string
-    orgIdentifier: string
-    projectIdentifier: string
-  }>()
+  const { accountId } = useParams<AccountPathProps>()
   const { getString } = useStrings()
   const { showError } = useToaster()
   const [categories, setCategories] = useState<string[]>([])
@@ -193,8 +190,6 @@ const COGatewayAnalytics: React.FC<COGatewayAnalyticsProps> = props => {
   })
 
   const { triggerToggle } = useToggleRuleState({
-    orgIdentifier,
-    projectIdentifier,
     accountId,
     serviceData: props.service?.data as Service,
     onSuccess: (updatedServiceData: Service) =>
@@ -202,8 +197,6 @@ const COGatewayAnalytics: React.FC<COGatewayAnalyticsProps> = props => {
     onFailure: error => props.handleServiceToggle('FAILURE', error)
   })
   const { triggerDelete } = useDeleteServiceHook({
-    orgIdentifier,
-    projectIdentifier,
     accountId,
     serviceData: props.service?.data as Service,
     onSuccess: (_data: Service) => props.handleServiceDeletion('SUCCESS', _data),

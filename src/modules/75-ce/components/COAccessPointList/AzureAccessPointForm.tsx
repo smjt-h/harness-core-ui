@@ -20,9 +20,9 @@ import {
   Icon,
   Layout,
   SelectOption,
-  Text,
-  useModalHook
+  Text
 } from '@wings-software/uicore'
+import { useModalHook } from '@harness/use-modal'
 import { Dialog } from '@blueprintjs/core'
 import { useToaster } from '@common/exports'
 import {

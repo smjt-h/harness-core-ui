@@ -117,7 +117,8 @@ export const validateMapping = (
   values: any,
   createdMetrics: string[],
   selectedMetricIndex: number,
-  getString: (key: StringKeys) => string
+  getString: (key: StringKeys) => string,
+  mappedMetrics?: Map<string, MapAppDynamicsMetric>
 ): ((key: string | boolean | string[]) => string) => {
   let errors = {} as any
   const metricValueList = values?.metricData ? Object.values(values?.metricData).filter(val => val) : []
@@ -143,7 +144,7 @@ export const validateMapping = (
   }
 
   if (values?.showCustomMetric) {
-    errors = validateCustomMetricFields(values, createdMetrics, selectedMetricIndex, errors, getString)
+    errors = validateCustomMetricFields(values, createdMetrics, selectedMetricIndex, errors, getString, mappedMetrics)
   }
 
   return errors
@@ -154,40 +155,13 @@ const validateCustomMetricFields = (
   createdMetrics: string[],
   selectedMetricIndex: number,
   errors: any,
-  getString: (key: StringKeys) => string
+  getString: (key: StringKeys) => string,
+  mappedMetrics?: Map<string, MapAppDynamicsMetric>
 ): ((key: string | boolean | string[]) => string) => {
   let _error = cloneDeep(errors)
 
   if (values.pathType === PATHTYPE.DropdownPath) {
-    const isBasePathValid = values?.basePath
-      ? Object.values(values?.basePath as BasePathData).some(path => path?.value)
-      : false
-
-    const isMetricPathValid = values?.metricPath
-      ? Object.values(values?.metricPath as MetricPathData).some(path => path?.value)
-      : false
-
-    const metricHasLeafNodeSelected = values?.metricPath
-      ? Object.values(values?.metricPath as MetricPathData).some(item => item.isMetric)
-      : false
-
-    if (!isBasePathValid) {
-      _error[AppDynamicsMonitoringSourceFieldNames.BASE_PATH] = getString(
-        'cv.healthSource.connectors.AppDynamics.validation.basePath'
-      )
-    }
-
-    if (!isMetricPathValid) {
-      _error[AppDynamicsMonitoringSourceFieldNames.METRIC_PATH] = getString(
-        'cv.healthSource.connectors.AppDynamics.validation.metricPath'
-      )
-    } else {
-      if (!metricHasLeafNodeSelected) {
-        _error[AppDynamicsMonitoringSourceFieldNames.METRIC_PATH] = getString(
-          'cv.healthSource.connectors.AppDynamics.validation.metricPathWithoutLeafNode'
-        )
-      }
-    }
+    _error = validateMetricBasePath(values, _error, getString)
   }
 
   if (values.pathType === PATHTYPE.FullPath) {
@@ -201,12 +175,17 @@ const validateCustomMetricFields = (
   const isAssignComponentValid = [values.sli, values.continuousVerification, values.healthScore].find(i => i)
   const isRiskCategoryValid = !!values?.riskCategory
 
+  const selectedMetricIndexNew =
+    createdMetrics.indexOf(values.metricName) > -1 ? selectedMetricIndex : createdMetrics.indexOf(values.metricName)
+
   const duplicateNames = createdMetrics?.filter((metricName, index) => {
-    if (index === selectedMetricIndex) {
+    if (index === selectedMetricIndexNew) {
       return false
     }
     return metricName === values.metricName
   })
+
+  _error = validateIdentifier(values, createdMetrics, selectedMetricIndex, _error, getString, mappedMetrics)
 
   if (!values.groupName) {
     _error[AppDynamicsMonitoringSourceFieldNames.GROUP_NAME] = getString(
@@ -225,6 +204,66 @@ const validateCustomMetricFields = (
   }
 
   _error = validateAssignComponent(isAssignComponentValid, _error, getString, values, isRiskCategoryValid)
+  return _error
+}
+
+const validateMetricBasePath = (values: any, errors: any, getString: (key: StringKeys) => string) => {
+  const _error = cloneDeep(errors)
+  const isBasePathValid = values?.basePath
+    ? Object.values(values?.basePath as BasePathData).some(path => path?.value)
+    : false
+
+  const isMetricPathValid = values?.metricPath
+    ? Object.values(values?.metricPath as MetricPathData).some(path => path?.value)
+    : false
+
+  const metricHasLeafNodeSelected = values?.metricPath
+    ? Object.values(values?.metricPath as MetricPathData).some(item => item.isMetric)
+    : false
+
+  if (!isBasePathValid) {
+    _error[AppDynamicsMonitoringSourceFieldNames.BASE_PATH] = getString(
+      'cv.healthSource.connectors.AppDynamics.validation.basePath'
+    )
+  }
+
+  if (!isMetricPathValid) {
+    _error[AppDynamicsMonitoringSourceFieldNames.METRIC_PATH] = getString(
+      'cv.healthSource.connectors.AppDynamics.validation.metricPath'
+    )
+  } else {
+    if (!metricHasLeafNodeSelected) {
+      _error[AppDynamicsMonitoringSourceFieldNames.METRIC_PATH] = getString(
+        'cv.healthSource.connectors.AppDynamics.validation.metricPathWithoutLeafNode'
+      )
+    }
+  }
+  return _error
+}
+
+const validateIdentifier = (
+  values: any,
+  createdMetrics: string[],
+  selectedMetricIndex: number,
+  errors: any,
+  getString: (key: StringKeys) => string,
+  mappedMetrics?: Map<string, MapAppDynamicsMetric>
+): ((key: string | boolean | string[]) => string) => {
+  const _error = cloneDeep(errors)
+  const identifiers = createdMetrics.map(metricName => mappedMetrics?.get(metricName)?.metricIdentifier)
+
+  const duplicateIdentifier = identifiers?.filter((identifier, index) => {
+    if (index === selectedMetricIndex) {
+      return false
+    }
+    return identifier === values.metricIdentifier
+  })
+
+  if (values.identifier && duplicateIdentifier.length) {
+    _error[AppDynamicsMonitoringSourceFieldNames.METRIC_IDENTIFIER] = getString(
+      'cv.monitoringSources.prometheus.validation.metricIdentifierUnique'
+    )
+  }
   return _error
 }
 

@@ -32,7 +32,7 @@ import { useStrings } from 'framework/strings'
 import { ConfigureOptions } from '@common/components/ConfigureOptions/ConfigureOptions'
 import { ShellScriptMonacoField } from '@common/components/ShellScriptMonaco/ShellScriptMonaco'
 import { MultiTypeTextField } from '@common/components/MultiTypeText/MultiTypeText'
-import { FormMultiTypeTextAreaField, Separator } from '@common/components'
+import { FormMultiTypeTextAreaField } from '@common/components'
 import StepCommonFields, {
   GetImagePullPolicyOptions,
   GetShellOptions
@@ -210,12 +210,7 @@ export const RunStepBase = (
                 multiTypeTextArea={{ expressions, allowableTypes, disabled: readonly }}
               />
             </Container>
-            {buildInfrastructureType !== 'VM' ? (
-              <>
-                <Separator topSeparation={8} />
-                {renderConnectorRefAndImage(false)}
-              </>
-            ) : null}
+            {buildInfrastructureType !== 'VM' ? <>{renderConnectorRefAndImage(false)}</> : null}
             <div className={cx(css.fieldsGroup, css.withoutSpacing, css.topPadding3, css.bottomPadding3)}>
               <MultiTypeFieldSelector
                 name="spec.command"

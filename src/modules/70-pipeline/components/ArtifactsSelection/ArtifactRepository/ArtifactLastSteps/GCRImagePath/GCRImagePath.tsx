@@ -34,7 +34,7 @@ import { useQueryParams } from '@common/hooks'
 import { getConnectorIdValue, RegistryHostNames, resetTag } from '@pipeline/components/ArtifactsSelection/ArtifactUtils'
 import { ArtifactType, ImagePathProps, ImagePathTypes, TagTypes } from '../../../ArtifactInterface'
 import { ArtifactIdentifierValidation } from '../../../ArtifactHelper'
-import ArtifactImagePathTagView from '../ArtifactImagePathTagView'
+import ArtifactImagePathTagView from '../ArtifactImagePathTagView/ArtifactImagePathTagView'
 import css from '../../ArtifactConnector.module.scss'
 
 export const gcrUrlList: SelectOption[] = Object.values(RegistryHostNames).map(item => ({ label: item, value: item }))

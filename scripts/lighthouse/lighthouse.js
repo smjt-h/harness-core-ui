@@ -10,8 +10,13 @@ const lighthouse = require('lighthouse')
 const reportGenerator = require('lighthouse/lighthouse-core/report/report-generator')
 const QA_URL = 'https://qa.harness.io/ng/'
 const PROD_URL = 'https://app.harness.io/ng/'
-const fs = require('fs')
-const PROD_PAGES = ['/home/projects', '/home/get-started']
+const dbConnection = require('./connection')
+const { DATA_POINTS, getFilterResults, percentageChangeInTwoParams } = require('./utils')
+const pagesToBeTested = [
+  { name: 'home', url: '/home/projects' },
+  { name: 'getstarted', url: '/home/get-started' }
+]
+console.log('process.env.OVER_WRITE_BENCHMARK_RESULT', process.env.OVER_WRITE_BENCHMARK_RESULT)
 const lighthouseRunTimes = 3
 const acceptableChange = process.env.LIGHT_HOUSE_ACCEPTANCE_CHANGE
   ? parseInt(process.env.LIGHT_HOUSE_ACCEPTANCE_CHANGE)
@@ -19,7 +24,6 @@ const acceptableChange = process.env.LIGHT_HOUSE_ACCEPTANCE_CHANGE
 console.log('acceptableChange', acceptableChange)
 const PORT = 8041
 let url = PROD_URL
-let baseUrl = PROD_URL
 let isQA = false
 let passWord = ''
 let emailId = 'ui_perf_test_prod@mailinator.com'
@@ -34,23 +38,23 @@ async function run() {
   if (!url) {
     throw 'Please provide URL as a first argument'
   }
+  const env = isQA ? 'QA' : 'Production'
 
   const createMap = url => {
     const scores = {
-      Performance: 0,
-      Accessibility: 0,
-      'Best Practices': 0,
-      SEO: 0,
-      'Time To Interactive': 0,
-      'First ContentFul Paint': 0,
-      'First Meaningful Paint': 0
+      [DATA_POINTS.PERFORMANCE]: 0,
+      [DATA_POINTS.ACCESSIBILITY]: 0,
+      [DATA_POINTS.BEST_PRACTICES]: 0,
+      [DATA_POINTS.SEO]: 0,
+      [DATA_POINTS.TIME_TO_INTERACTIVE]: 0,
+      [DATA_POINTS.FIRST_CONTENTFUL_PAINT]: 0,
+      [DATA_POINTS.FIRST_MEANINGFUL_PAINT]: 0
     }
     const map = new Map()
-    if (!isQA) {
-      PROD_PAGES.map(value => {
-        map.set(`${url}${value}`, scores)
-      })
-    }
+    pagesToBeTested.map(value => {
+      map.set(value.name, { url: `${url}${value.url}`, ...scores })
+    })
+
     return map
   }
 
@@ -58,21 +62,41 @@ async function run() {
     let json = reportGenerator.generateReport(resultSupplied.lhr, 'json')
     json = JSON.parse(json)
     let scores = {
-      Performance: 0,
-      Accessibility: 0,
-      'Best Practices': 0,
-      SEO: 0,
-      'Time To Interactive': 0,
-      'First ContentFul Paint': 0,
-      'First Meaningful Paint': 0
+      [DATA_POINTS.PERFORMANCE]: 0,
+      [DATA_POINTS.ACCESSIBILITY]: 0,
+      [DATA_POINTS.BEST_PRACTICES]: 0,
+      [DATA_POINTS.SEO]: 0,
+      [DATA_POINTS.TIME_TO_INTERACTIVE]: 0,
+      [DATA_POINTS.FIRST_CONTENTFUL_PAINT]: 0,
+      [DATA_POINTS.FIRST_MEANINGFUL_PAINT]: 0
     }
-    scores.Performance = parseFloat(json.categories.performance.score) * 100
-    scores.Accessibility = parseFloat(json.categories.accessibility.score) * 100
-    scores['Best Practices'] = parseFloat(json['categories']['best-practices']['score']) * 100
-    scores.SEO = parseFloat(json.categories.seo.score) * 100
-    scores['Time To Interactive'] = json.audits.interactive.displayValue
-    scores['First Meaningful Paint'] = json.audits['first-meaningful-paint'].displayValue
-    scores['First ContentFul Paint'] = json.audits['first-contentful-paint'].displayValue
+    //score to be benchamarked against
+    scores[DATA_POINTS.PERFORMANCE] = parseFloat(json.categories.performance.score) * 100
+    scores[DATA_POINTS.ACCESSIBILITY] = parseFloat(json.categories.accessibility.score) * 100
+    scores[DATA_POINTS.BEST_PRACTICES] = parseFloat(json['categories']['best-practices']['score']) * 100
+    scores[DATA_POINTS.TIME_TO_INTERACTIVE] = json.audits.interactive.numericValue
+    scores[DATA_POINTS.FIRST_MEANINGFUL_PAINT] = json.audits['first-meaningful-paint'].numericValue
+    scores[DATA_POINTS.FIRST_CONTENTFUL_PAINT] = json.audits['first-contentful-paint'].numericValue
+    ////   ******  */
+    scores[DATA_POINTS.SEO] = parseFloat(json.categories.seo.score) * 100
+    // new values
+
+    scores[DATA_POINTS.TIME_TO_INTERACTIVE_SCORE] = json.audits.interactive.score
+    scores[DATA_POINTS.FIRST_MEANINGFUL_PAINT_SCORE] = json.audits['first-meaningful-paint'].score
+    scores[DATA_POINTS.FIRST_CONTENTFUL_PAINT_SCORE] = json.audits['first-contentful-paint'].score
+    scores[DATA_POINTS.LARGEST_CONTENTFUL_PAINT] = json.audits['largest-contentful-paint'].numericValue
+    scores[DATA_POINTS.LARGEST_CONTENTFUL_PAINT_SCORE] = json.audits['largest-contentful-paint'].score
+    scores[DATA_POINTS.ESTIMATED_INPUT_LATENCY] = json.audits['estimated-input-latency'].numericValue
+    scores[DATA_POINTS.ESTIMATED_INPUT_LATENCY_SCORE] = json.audits['estimated-input-latency'].score
+    scores[DATA_POINTS.TOTAL_BLOCKING_TIME] = json.audits['total-blocking-time'].numericValue
+    scores[DATA_POINTS.TOTAL_BLOCKING_TIME_SCORE] = json.audits['total-blocking-time'].score
+    scores[DATA_POINTS.FIRST_CPU_IDLE] = json.audits['first-cpu-idle'].numericValue
+    scores[DATA_POINTS.FIRST_CPU_IDLE_SCORE] = json.audits['first-cpu-idle'].score
+    scores[DATA_POINTS.NETWORK_RTT] = json.audits['network-rtt'].numericValue
+    scores[DATA_POINTS.NETWORK_RTT_SCORE] = json.audits['network-rtt'].score
+    scores[DATA_POINTS.NETWORK_SERVER_LATENCY] = json.audits['network-server-latency'].numericValue
+    scores[DATA_POINTS.NETWORK_SERVER_LATENCY_SCORE] = json.audits['network-server-latency'].score
+
     console.log(scores)
     return scores
   }
@@ -91,35 +115,12 @@ async function run() {
     }
     return localResults
   }
-  const getAverageResult = (listOfResults, attributeName) => {
-    let listLength = listOfResults.length
-    let returnAvg = 0
-    if (listLength) {
-      const sum = listOfResults.reduce((tempSum, ele) => {
-        tempSum = tempSum + parseFloat(ele[attributeName])
-        return tempSum
-      }, returnAvg)
-      return sum / listLength
-    }
-    return returnAvg
-  }
-  const getFilterResults = resultsToBeFilterd => {
-    return {
-      Performance: getAverageResult(resultsToBeFilterd, 'Performance').toFixed(2),
-      Accessibility: getAverageResult(resultsToBeFilterd, 'Accessibility').toFixed(2),
-      'Best Practices': getAverageResult(resultsToBeFilterd, 'Best Practices').toFixed(2),
-      SEO: getAverageResult(resultsToBeFilterd, 'SEO').toFixed(2),
-      'Time To Interactive': `${getAverageResult(resultsToBeFilterd, 'Time To Interactive').toFixed(2)} s`,
-      'First Meaningful Paint': `${getAverageResult(resultsToBeFilterd, 'First Meaningful Paint').toFixed(2)} s`,
-      'First ContentFul Paint': `${getAverageResult(resultsToBeFilterd, 'First ContentFul Paint').toFixed(2)} s`
-    }
-  }
 
   const runLightHouseOnPages = async (numberOfTimes, map) => {
     for (let key of map.keys()) {
       try {
-        const result = await runLightHouseNtimes(numberOfTimes, key)
-        map.set(key, getFilterResults(result))
+        const result = await runLightHouseNtimes(numberOfTimes, map.get(key).url)
+        map.set(key, { ...map.get(key), ...getFilterResults(result) })
       } catch (e) {
         console.log(e)
         process.exit(1)
@@ -145,133 +146,132 @@ async function run() {
     await page.$eval('input[type="submit"]', form => form.click())
     await page.waitForNavigation()
     await page.waitForXPath("//span[text()='Main Dashboard']")
-    if (!isQA) {
-      baseUrl = baseUrl.concat(`#${page.url().split('#')[1].split('/dashboard')[0]}`)
-      const map = createMap(baseUrl, isQA)
-      const results = await runLightHouseOnPages(numberOfTimes, map)
-      await browser.close()
-      return results
-    } else {
-      let results = await runLightHouseNtimes(numberOfTimes, passedUrl)
-      await browser.close()
-      return getFilterResults(results)
-    }
+
+    let baseUrl = url.concat(`#${page.url().split('#')[1].split('/dashboard')[0]}`)
+    const map = createMap(baseUrl)
+    const results = await runLightHouseOnPages(numberOfTimes, map)
+    await browser.close()
+    return results
   }
 
-  const percentageChangeInTwoParams = (dataToBeCompared, benchMarkData, parameter) => {
-    const percentageChange = parseFloat(
-      ((parseFloat(dataToBeCompared) - parseFloat(benchMarkData)) / parseFloat(benchMarkData)) * 100
-    ).toFixed(2)
-    console.log(
-      `Comparing ${parameter} Benchmark Value:${benchMarkData}, Data to be compared Value: ${dataToBeCompared} precentage change: ${percentageChange}`
-    )
-    return percentageChange
-  }
+  const compareWithBenchMarkResults = async (finalResultsInMap, envLocal) => {
+    console.log(`Comparing benchmark results`, { finalResultsInMap })
+    let hasError = false
 
-  if (!isQA) {
-    let finalResults = await runLightHouseNtimesAndGetResults(lighthouseRunTimes, url)
-    let finalReport = `| Source | Performance | Accessibility | Best Practices | SEO | Time To Interactive | First ContentFul Paint | First Meaningful Paint |
-|--------|-------------|---------------|----------------|-----|---------------------|------------------------|------------------------|
-`
+    for (let [key, value] of finalResultsInMap) {
+      let finalResults = value
+      try {
+        await dbConnection.createDatabaseAndTable()
+        let benchMark = await dbConnection.getDataPastData(envLocal, key)
+        console.log(`benchmark results for ${key}`, benchMark)
 
-    for (let key of finalResults.keys()) {
-      const scores = finalResults.get(key)
-      finalReport = `${finalReport}| ${key} | ${scores['Performance']} | ${scores['Accessibility']} | ${scores['Best Practices']} | ${scores['SEO']} | ${scores['Time To Interactive']} | ${scores['First Meaningful Paint']} | ${scores['First ContentFul Paint']} | \n`
-    }
-
-    fs.writeFile('lighthouse.md', finalReport, function (err) {
-      if (err) {
-        console.log(err)
+        let percentChange = percentageChangeInTwoParams(
+          finalResults[DATA_POINTS.PERFORMANCE],
+          benchMark[DATA_POINTS.PERFORMANCE],
+          DATA_POINTS.PERFORMANCE
+        )
+        if (percentChange < -acceptableChange) {
+          console.error(
+            `${DATA_POINTS.PERFORMANCE} value of ${
+              finalResults[DATA_POINTS.PERFORMANCE]
+            } is  ${percentChange} %  less than expected ${benchMark[DATA_POINTS.PERFORMANCE]}`
+          )
+          hasError = true
+        }
+        percentChange = percentageChangeInTwoParams(
+          finalResults[DATA_POINTS.ACCESSIBILITY],
+          benchMark[DATA_POINTS.ACCESSIBILITY],
+          DATA_POINTS.ACCESSIBILITY
+        )
+        if (percentChange < -acceptableChange) {
+          console.error(
+            `${DATA_POINTS.ACCESSIBILITY} value ${
+              finalResults[DATA_POINTS.ACCESSIBILITY]
+            } is  ${percentChange} %  less than expected ${benchMark[DATA_POINTS.ACCESSIBILITY]}`
+          )
+          hasError = true
+        }
+        percentChange = percentageChangeInTwoParams(
+          finalResults[DATA_POINTS.BEST_PRACTICES],
+          benchMark[DATA_POINTS.BEST_PRACTICES],
+          DATA_POINTS.BEST_PRACTICES
+        )
+        if (percentChange < -acceptableChange) {
+          console.error(
+            `${DATA_POINTS.BEST_PRACTICES} value ${
+              finalResults[DATA_POINTS.BEST_PRACTICES]
+            } is  ${percentChange} %  less than expected ${benchMark[DATA_POINTS.BEST_PRACTICES]}`
+          )
+          hasError = true
+        }
+        percentChange = percentageChangeInTwoParams(
+          finalResults[DATA_POINTS.FIRST_CONTENTFUL_PAINT],
+          benchMark[DATA_POINTS.FIRST_CONTENTFUL_PAINT],
+          DATA_POINTS.FIRST_CONTENTFUL_PAINT
+        )
+        if (percentChange > acceptableChange) {
+          console.error(
+            `${DATA_POINTS.FIRST_CONTENTFUL_PAINT} value ${
+              finalResults[DATA_POINTS.FIRST_CONTENTFUL_PAINT]
+            } is  ${percentChange} %  more than expected ${benchMark[DATA_POINTS.FIRST_CONTENTFUL_PAINT]}`
+          )
+          hasError = true
+        }
+        percentChange = percentageChangeInTwoParams(
+          finalResults[DATA_POINTS.FIRST_MEANINGFUL_PAINT],
+          benchMark[DATA_POINTS.FIRST_MEANINGFUL_PAINT],
+          DATA_POINTS.FIRST_MEANINGFUL_PAINT
+        )
+        if (percentChange > acceptableChange) {
+          console.error(
+            `${DATA_POINTS.FIRST_CONTENTFUL_PAINT} value ${
+              finalResults[DATA_POINTS.FIRST_MEANINGFUL_PAINT]
+            } is ${percentChange} %  more than expected ${benchMark[DATA_POINTS.FIRST_MEANINGFUL_PAINT]}`
+          )
+          hasError = true
+        }
+        percentChange = percentageChangeInTwoParams(
+          finalResults[DATA_POINTS.TIME_TO_INTERACTIVE],
+          benchMark[DATA_POINTS.TIME_TO_INTERACTIVE],
+          DATA_POINTS.TIME_TO_INTERACTIVE
+        )
+        if (percentChange > acceptableChange) {
+          console.error(
+            `${DATA_POINTS.TIME_TO_INTERACTIVE} value ${
+              finalResults[DATA_POINTS.TIME_TO_INTERACTIVE]
+            } is ${percentChange} %  more than expected ${benchMark[DATA_POINTS.TIME_TO_INTERACTIVE]}`
+          )
+          hasError = true
+        }
+      } catch (error) {
+        console.error(error)
+        console.log('failed in getting the benchmark data')
         process.exit(1)
       }
-    })
-  } else {
-    let finalResults = await runLightHouseNtimesAndGetResults(lighthouseRunTimes, url)
-
-    console.log(`Scores for the ${url} \n`, finalResults)
-    const finalReport = `Lighthouse ran ${lighthouseRunTimes} times on (${url}) and following are the results
-  Name | Value
------------- | -------------
-Performance | ${finalResults.Performance}/100
-SEO | ${finalResults.SEO}/100
-Accessibility | ${finalResults.Accessibility}/100
-Best Practices | ${finalResults['Best Practices']}/100
-First ContentFul Paint | ${finalResults['First ContentFul Paint']}
-First Meaningful Paint | ${finalResults['First Meaningful Paint']}
-Time To Interactive | ${finalResults['Time To Interactive']}`
-    console.log('Final Report:', finalReport)
-
-    console.log(`Starting benchmark results collection using  ${PROD_URL}`)
-    let benchMark = await runLightHouseNtimesAndGetResults(lighthouseRunTimes, PROD_URL)
-    console.log(`benchmark results`, benchMark)
-    let hasError = false
-    let percentChange = percentageChangeInTwoParams(finalResults.Performance, benchMark.Performance, 'Performance')
-    if (percentChange < -acceptableChange) {
-      console.error(
-        `Performance value of ${finalResults.Performance} is  ${percentChange} %  less than expected ${benchMark.Performance}`
+    }
+    try {
+      await dbConnection.insertDataintoDB(
+        finalResultsInMap,
+        env,
+        process.env.OVER_WRITE_BENCHMARK_RESULT == 'true' || !hasError
       )
-      hasError = true
-    }
-    percentChange = percentageChangeInTwoParams(finalResults.SEO, benchMark.SEO, 'SEO')
-    if (percentChange < -acceptableChange) {
-      console.error(`SEO value ${finalResults.SEO} is  ${percentChange} %  less than expected ${benchMark.SEO}`)
-      hasError = true
-    }
-    percentChange = percentageChangeInTwoParams(finalResults.Accessibility, benchMark.Accessibility, 'Accessibility')
-    if (percentChange < -acceptableChange) {
-      console.error(
-        `Accessibility value ${finalResults.Accessibility} is  ${percentChange} %  less than expected ${benchMark.Accessibility}`
-      )
-      hasError = true
-    }
-    percentChange = percentageChangeInTwoParams(
-      finalResults['Best Practices'],
-      benchMark['Best Practices'],
-      'Best Practices'
-    )
-    if (percentChange < -acceptableChange) {
-      console.error(
-        `Best Practices value ${finalResults['Best Practices']} is  ${percentChange} %  less than expected ${benchMark['Best Practices']}`
-      )
-      hasError = true
-    }
-    percentChange = percentageChangeInTwoParams(
-      finalResults['First ContentFul Paint'],
-      benchMark['First ContentFul Paint'],
-      'First ContentFul Paint'
-    )
-    if (percentChange > acceptableChange) {
-      console.error(
-        `First ContentFul Paint value ${finalResults['First ContentFul Paint']} is  ${percentChange} %  more than expected ${benchMark['First ContentFul Paint']}`
-      )
-      hasError = true
-    }
-    percentChange = percentageChangeInTwoParams(
-      finalResults['First Meaningful Paint'],
-      benchMark['First Meaningful Paint'],
-      'First Meaningful Paint'
-    )
-    if (percentChange > acceptableChange) {
-      console.error(
-        `First Meaningful Paint value ${finalResults['First Meaningful Paint']} is ${percentChange} %  more than expected ${benchMark['First Meaningful Paint']}`
-      )
-      hasError = true
-    }
-    percentChange = percentageChangeInTwoParams(
-      finalResults['Time To Interactive'],
-      benchMark['Time To Interactive'],
-      'Time To Interactive'
-    )
-    if (percentChange > acceptableChange) {
-      console.error(
-        `Time To Interactive value ${finalResults['Time To Interactive']} is ${percentChange} %  more than expected ${benchMark['Time To Interactive']}`
-      )
-      hasError = true
-    }
-    if (hasError) {
-      console.log('Failed in benchmark comparison')
+      console.log('database inserting done')
+    } catch (error) {
+      console.error(error)
+      console.log('failed in inserting the data into database')
       process.exit(1)
     }
+    if (hasError) {
+      console.error('Failed in benchmark comparison')
+      process.exit(1)
+    } else {
+      process.exit(0)
+    }
   }
+
+  let finalResults = await runLightHouseNtimesAndGetResults(lighthouseRunTimes, url)
+
+  console.log(finalResults)
+  compareWithBenchMarkResults(finalResults, env)
 }
 run()

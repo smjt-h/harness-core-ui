@@ -20,9 +20,9 @@ import {
   TagsPopover,
   Text,
   useConfirmationDialog,
-  useModalHook,
   useToaster
 } from '@wings-software/uicore'
+import { useModalHook } from '@harness/use-modal'
 import { Classes, Menu, Position } from '@blueprintjs/core'
 import { defaultTo, pick } from 'lodash-es'
 import type { TableProps } from '@harness/uicore'

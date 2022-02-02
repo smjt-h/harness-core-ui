@@ -26,6 +26,7 @@ import { Scope } from '@common/interfaces/SecretsInterface'
 import { useStrings } from 'framework/strings'
 import type { StringKeys } from 'framework/strings'
 import type { EntityReferenceResponse } from '../EntityReference/EntityReference'
+import { disableItems } from './utils'
 import css from './MultiSelectEntityReference.module.scss'
 
 export interface Identifier {
@@ -91,6 +92,7 @@ export interface MultiSelectEntityReferenceProps<T> {
   selectedItemsUuidAndScope?: ScopeAndIdentifier[]
   onMultiSelect: (payLoad: ScopeAndIdentifier[]) => void
   onlyCurrentScope?: boolean
+  disablePreSelectedItems?: boolean
 }
 
 export function getDefaultScope(orgIdentifier?: string, projectIdentifier?: string): Scope {
@@ -124,6 +126,7 @@ export function MultiSelectEntityReference<T extends Identifier>(
     noRecordsText = getString('entityReference.noRecordFound'),
     searchInlineComponent,
     selectedItemsUuidAndScope,
+    disablePreSelectedItems = false,
     onMultiSelect,
     onlyCurrentScope
   } = props
@@ -290,6 +293,8 @@ export function MultiSelectEntityReference<T extends Identifier>(
               >
                 <Checkbox
                   onChange={e => onCheckboxChange((e.target as any).checked, item.record)}
+                  data-testid={`Checkbox-${item.identifier}`}
+                  disabled={disableItems(item.record['identifier'], disablePreSelectedItems, selectedItemsUuidAndScope)}
                   className={css.checkbox}
                   checked={checked}
                   large

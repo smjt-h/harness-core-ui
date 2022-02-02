@@ -6,7 +6,8 @@
  */
 
 import React, { useState } from 'react'
-import { useModalHook, Button, StepWizard } from '@wings-software/uicore'
+import { Button, StepWizard } from '@wings-software/uicore'
+import { useModalHook } from '@harness/use-modal'
 import { Dialog, IDialogProps } from '@blueprintjs/core'
 import { useParams } from 'react-router-dom'
 import type { GitSyncConfig } from 'services/cd-ng'

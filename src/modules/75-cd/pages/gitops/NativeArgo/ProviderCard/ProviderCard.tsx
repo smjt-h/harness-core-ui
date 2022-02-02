@@ -8,7 +8,6 @@
 import React, { useState } from 'react'
 import { defaultTo, isEmpty } from 'lodash-es'
 import {
-  useModalHook,
   Button,
   Card,
   Layout,
@@ -19,6 +18,7 @@ import {
   Container,
   useConfirmationDialog
 } from '@wings-software/uicore'
+import { useModalHook } from '@harness/use-modal'
 import { Menu, Classes, Position, Dialog, Intent } from '@blueprintjs/core'
 import type { ConnectedArgoGitOpsInfoDTO, GitopsProviderResponse } from 'services/cd-ng'
 import { useStrings } from 'framework/strings'

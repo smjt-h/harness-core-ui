@@ -21,7 +21,7 @@ const SectionToggle = (): ReactElement => {
   const Item = ({ link, text, tooltipId }: { link: string; text: StringKeys; tooltipId: string }): ReactElement => (
     <li className={css.item}>
       <NavLink to={`${link}?activeEnvironment=${activeEnvironment}`} className={css.link} activeClassName={css.active}>
-        <StringWithTooltip stringId={text} tooltipId={tooltipId} />
+        <StringWithTooltip stringId={text} tooltipId={tooltipId} onClick={e => e.stopPropagation()} />
       </NavLink>
     </li>
   )

@@ -7,7 +7,6 @@
 
 import React, { useCallback } from 'react'
 import {
-  useModalHook,
   Dialog,
   Button,
   Layout,
@@ -20,6 +19,7 @@ import {
   PageSpinner,
   ButtonVariation
 } from '@wings-software/uicore'
+import { useModalHook } from '@harness/use-modal'
 import { useParams } from 'react-router-dom'
 import type { FormikActions } from 'formik'
 import * as Yup from 'yup'
@@ -27,7 +27,7 @@ import type { IDialogProps } from '@blueprintjs/core'
 import { NameSchema } from '@common/utils/Validation'
 import CopyToClipboard from '@common/components/CopyToClipBoard/CopyToClipBoard'
 import { useStrings } from 'framework/strings'
-import { useCreateDelegateToken } from 'services/portal'
+import { useCreateDelegateToken, CreateDelegateTokenQueryParams } from 'services/portal'
 
 import css from '../DelegateTokens.module.scss'
 
@@ -65,7 +65,7 @@ export const useCreateTokenModal = ({ onSuccess }: CreateTokenModalProps): Creat
       orgIdentifier,
       projectIdentifier,
       tokenName: ''
-    }
+    } as CreateDelegateTokenQueryParams
   })
 
   const generatedValuePlaceholder = getString('delegates.tokens.generatedValuePlaceholder')
@@ -78,7 +78,7 @@ export const useCreateTokenModal = ({ onSuccess }: CreateTokenModalProps): Creat
           orgIdentifier,
           projectIdentifier,
           tokenName: values.name
-        }
+        } as CreateDelegateTokenQueryParams
       })
       formikActions.setFieldValue('tokenValue', createTokenResponse?.resource?.value || '')
       onSuccess?.()
@@ -120,10 +120,12 @@ export const useCreateTokenModal = ({ onSuccess }: CreateTokenModalProps): Creat
                         flex
                         className={css.tokenField}
                       >
-                        <Text margin={{ right: 'xxlarge' }} font="small" color={Color.BLACK}>
+                        <Text margin={{ right: 'large' }} font="small" color={Color.BLACK} className={css.tokenValue}>
                           {form.values.tokenValue}
                         </Text>
-                        <CopyToClipboard content={form.values.tokenValue} />
+                        <span className={css.copyContainer}>
+                          <CopyToClipboard content={form.values.tokenValue} />
+                        </span>
                       </Container>
                     </Layout.Vertical>
                     <Layout.Horizontal spacing="small" className={css.addTokenModalActionContainer}>

@@ -17,11 +17,11 @@ import {
   Layout,
   SelectOption,
   Checkbox,
-  useModalHook,
   PageSpinner,
   VisualYamlSelectedView as SelectedView,
   VisualYamlToggle
 } from '@wings-software/uicore'
+import { useModalHook } from '@harness/use-modal'
 import { useHistory, useParams } from 'react-router-dom'
 import cx from 'classnames'
 import { parse } from 'yaml'
@@ -37,7 +37,6 @@ import {
   getInputSetForPipelinePromise,
   InputSetSummaryResponse,
   RetryGroup,
-  useCreateInputSetForPipeline,
   useGetInputSetsListForPipeline,
   useGetInputsetYamlV2,
   useGetMergeInputSetFromPipelineTemplateWithListInput,
@@ -224,17 +223,6 @@ const RetryPipeline = ({
     }
   })
 
-  const { mutate: createInputSet, loading: createInputSetLoading } = useCreateInputSetForPipeline({
-    queryParams: {
-      accountIdentifier: accountId,
-      orgIdentifier,
-      pipelineIdentifier: pipelineId,
-      projectIdentifier,
-      pipelineRepoID: repoIdentifier,
-      pipelineBranch: branch
-    },
-    requestOptions: { headers: { 'content-type': 'application/yaml' } }
-  })
   const {
     refetch: getInputSetsList,
     data: inputSetResponse,
@@ -821,8 +809,6 @@ const RetryPipeline = ({
                 accountId={accountId}
                 projectIdentifier={projectIdentifier}
                 orgIdentifier={orgIdentifier}
-                createInputSet={createInputSet}
-                createInputSetLoading={createInputSetLoading}
                 repoIdentifier={repoIdentifier}
                 branch={branch}
                 isGitSyncEnabled={isGitSyncEnabled}

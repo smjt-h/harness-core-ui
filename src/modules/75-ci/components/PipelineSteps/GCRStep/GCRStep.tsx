@@ -83,6 +83,7 @@ export interface GCRStepProps {
   onUpdate?: (data: GCRStepData) => void
   onChange?: (data: GCRStepData) => void
   allowableTypes: MultiTypeInputType[]
+  formik?: any
 }
 
 export class GCRStep extends PipelineStep<GCRStepData> {

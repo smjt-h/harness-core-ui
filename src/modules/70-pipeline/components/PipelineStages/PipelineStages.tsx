@@ -7,7 +7,6 @@
 
 import React from 'react'
 import { defaultTo } from 'lodash-es'
-import { useDeepCompareEffect } from '@common/hooks'
 import type { PipelineInfoConfig } from 'services/cd-ng'
 import type { TemplateSummaryResponse } from 'services/template-ng'
 import type { SelectorData } from '@pipeline/components/PipelineStudio/PipelineContext/PipelineActions'
@@ -82,13 +81,6 @@ export function PipelineStages<T = Record<string, unknown>>({
     }
   }, [showSelectMenu])
   const selected = stages.get(type || '')
-
-  // We are using this to deep compare the selected var and run forceUpdate from popper js to recompute the position of the popover.
-  // This stops an expanding popover from overflowing
-
-  useDeepCompareEffect(() => {
-    window.dispatchEvent(new CustomEvent('UPDATE_POPOVER_POSITION'))
-  }, [selected])
 
   const onUseTemplate = React.useCallback(
     (templateSummary: TemplateSummaryResponse, isCopied = false) => {

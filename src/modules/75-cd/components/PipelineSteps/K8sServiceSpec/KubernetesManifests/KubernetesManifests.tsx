@@ -10,6 +10,7 @@ import { get } from 'lodash-es'
 import { useParams } from 'react-router-dom'
 import cx from 'classnames'
 
+import { MultiTypeInputType } from '@harness/uicore'
 import { useStrings } from 'framework/strings'
 import type { ManifestConfigWrapper, ServiceSpec } from 'services/cd-ng'
 import manifestSourceBaseFactory from '@cd/factory/ManifestSourceFactory/ManifestSourceBaseFactory'
@@ -39,7 +40,7 @@ export function KubernetesManifests(props: KubernetesManifestsProps): React.Reac
     PipelineType<InputSetPathProps> & { accountId: string }
   >()
   const { repoIdentifier, branch } = useQueryParams<GitQueryParams>()
-
+  const allowableTypes = [MultiTypeInputType.FIXED, MultiTypeInputType.EXPRESSION]
   const runtimeMode = props.stepViewType === StepViewType.InputSet || props.stepViewType === StepViewType.DeploymentForm
   const isManifestsRuntime = runtimeMode && !!get(props.template, 'manifests', false)
   return (
@@ -55,7 +56,7 @@ export function KubernetesManifests(props: KubernetesManifestsProps): React.Reac
         ?.map?.(manifestData => {
           const manifestSource = manifestSourceBaseFactory.getManifestSource(manifestData.manifest?.type as string)
 
-          manifestSource ? (
+          return manifestSource ? (
             <>
               {manifestSource.renderContent({
                 ...props,
@@ -66,7 +67,8 @@ export function KubernetesManifests(props: KubernetesManifestsProps): React.Reac
                 accountId,
                 pipelineIdentifier,
                 repoIdentifier,
-                branch
+                branch,
+                allowableTypes
               })}
             </>
           ) : null

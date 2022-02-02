@@ -63,7 +63,7 @@ exports[`Cumulative Analytics tests render component 1`] = `
               class="StyledProps--font StyledProps--font-h1 StyledProps--main"
               level="1"
             >
-              5
+              0
             </h1>
             <p
               class="StyledProps--font StyledProps--main"

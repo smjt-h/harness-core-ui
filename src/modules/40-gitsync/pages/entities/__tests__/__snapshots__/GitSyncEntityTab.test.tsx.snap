@@ -519,16 +519,28 @@ exports[`Git Sync - entity tab rendering summary view of a gitSyncRepo  1`] = `
                 >
                   <span
                     class="bp3-icon StyledProps--main StyledProps--inline"
-                    data-icon="resources-icon"
+                    data-icon="connectors-icon"
                   >
                     <svg
+                      fill="none"
                       height="16"
+                      viewBox="0 0 53 70"
                       width="16"
                       xmlns="http://www.w3.org/2000/svg"
                     >
                       <path
-                        d="M10.003 0a9.893 9.893 0 00-4.348.992.5.5 0 00.436.9A8.912 8.912 0 0110.003 1 8.996 8.996 0 112.17 5.564a.5.5 0 10-.872-.492A10 10 0 1010.003 0zM2.587 3.152a1 1 0 102 0 1 1 0 00-2 0zM12.927 5.2a.496.496 0 00-.228-.668 6.1 6.1 0 10-2.692 11.572 6.104 6.104 0 006.024-7.052.5.5 0 00-.988.148 5.092 5.092 0 11-2.8-3.784.496.496 0 00.684-.216zm1.396 2.48a1 1 0 10.22-1.988 1 1 0 00-.22 1.988zM9.003 10a1 1 0 102 0 1 1 0 00-2 0z"
-                        fill="#25A6F7"
+                        d="M9 56.5c-3 .5-7.5-2-7-2m7 2c15 0 12-25.5 12-40l5 4-6.5-19-9 19 6-4s-.628 37-7.5 40z"
+                        stroke="#445EE9"
+                        stroke-linecap="round"
+                        stroke-linejoin="round"
+                        stroke-width="2"
+                      />
+                      <path
+                        d="M47 58.996c-6.5-9.5-18-11.5-33.5-3 20-6.605 30.717 4.66 30.717 4.66h-8L52 68.496l-.783-16-4.217 6.5z"
+                        stroke="#445EE9"
+                        stroke-linecap="round"
+                        stroke-linejoin="round"
+                        stroke-width="2"
                       />
                     </svg>
                   </span>
@@ -585,16 +597,28 @@ exports[`Git Sync - entity tab rendering summary view of a gitSyncRepo  1`] = `
                 >
                   <span
                     class="bp3-icon StyledProps--main StyledProps--inline"
-                    data-icon="resources-icon"
+                    data-icon="connectors-icon"
                   >
                     <svg
+                      fill="none"
                       height="16"
+                      viewBox="0 0 53 70"
                       width="16"
                       xmlns="http://www.w3.org/2000/svg"
                     >
                       <path
-                        d="M10.003 0a9.893 9.893 0 00-4.348.992.5.5 0 00.436.9A8.912 8.912 0 0110.003 1 8.996 8.996 0 112.17 5.564a.5.5 0 10-.872-.492A10 10 0 1010.003 0zM2.587 3.152a1 1 0 102 0 1 1 0 00-2 0zM12.927 5.2a.496.496 0 00-.228-.668 6.1 6.1 0 10-2.692 11.572 6.104 6.104 0 006.024-7.052.5.5 0 00-.988.148 5.092 5.092 0 11-2.8-3.784.496.496 0 00.684-.216zm1.396 2.48a1 1 0 10.22-1.988 1 1 0 00-.22 1.988zM9.003 10a1 1 0 102 0 1 1 0 00-2 0z"
-                        fill="#25A6F7"
+                        d="M9 56.5c-3 .5-7.5-2-7-2m7 2c15 0 12-25.5 12-40l5 4-6.5-19-9 19 6-4s-.628 37-7.5 40z"
+                        stroke="#445EE9"
+                        stroke-linecap="round"
+                        stroke-linejoin="round"
+                        stroke-width="2"
+                      />
+                      <path
+                        d="M47 58.996c-6.5-9.5-18-11.5-33.5-3 20-6.605 30.717 4.66 30.717 4.66h-8L52 68.496l-.783-16-4.217 6.5z"
+                        stroke="#445EE9"
+                        stroke-linecap="round"
+                        stroke-linejoin="round"
+                        stroke-width="2"
                       />
                     </svg>
                   </span>

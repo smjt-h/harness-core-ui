@@ -13,5 +13,6 @@ declare const styles: {
   readonly lockIcon: string
   readonly name: string
   readonly popover: string
+  readonly userGroupTable: string
 }
 export default styles

@@ -7,7 +7,8 @@
 
 import React, { useState } from 'react'
 import cx from 'classnames'
-import { useModalHook, Button } from '@wings-software/uicore'
+import { Button } from '@wings-software/uicore'
+import { useModalHook } from '@harness/use-modal'
 import { Classes, Dialog } from '@blueprintjs/core'
 import type { ResourceType } from '@rbac/interfaces/ResourceType'
 import AddResourceModal from './views/AddResourceModal'

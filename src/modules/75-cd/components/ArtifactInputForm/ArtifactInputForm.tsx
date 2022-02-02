@@ -146,7 +146,8 @@ const ArtifactInputSetForm: React.FC<KubernetesServiceInputFormProps> = ({
   readonly = false,
   stageIdentifier,
   formik,
-  fromTrigger
+  fromTrigger,
+  allowableTypes
 }) => {
   const { getString } = useStrings()
   const { showError, clear } = useToaster()
@@ -521,7 +522,7 @@ const ArtifactInputSetForm: React.FC<KubernetesServiceInputFormProps> = ({
                     setRefValue
                     disabled={disablePrimaryFields(`artifacts.primary.spec.connectorRef`)}
                     multiTypeProps={{
-                      allowableTypes: [MultiTypeInputType.EXPRESSION, MultiTypeInputType.FIXED],
+                      allowableTypes,
                       expressions
                     }}
                     onChange={() => resetTags(`${path}.artifacts.primary.spec.tag`)}
@@ -541,7 +542,7 @@ const ArtifactInputSetForm: React.FC<KubernetesServiceInputFormProps> = ({
                         items: regions
                       },
                       expressions,
-                      allowableTypes: [MultiTypeInputType.FIXED, MultiTypeInputType.EXPRESSION]
+                      allowableTypes
                     }}
                     useValue
                     disabled={disablePrimaryFields(`artifacts.primary.spec.region`)}
@@ -557,7 +558,7 @@ const ArtifactInputSetForm: React.FC<KubernetesServiceInputFormProps> = ({
                     disabled={disablePrimaryFields(`artifacts.primary.spec.imagePath`)}
                     multiTextInputProps={{
                       expressions,
-                      allowableTypes: [MultiTypeInputType.FIXED, MultiTypeInputType.EXPRESSION]
+                      allowableTypes
                     }}
                     name={`${path}.artifacts.primary.spec.imagePath`}
                     onChange={() => resetTags(`${path}.artifacts.primary.spec.tag`)}
@@ -574,7 +575,7 @@ const ArtifactInputSetForm: React.FC<KubernetesServiceInputFormProps> = ({
                     multiTypeInputProps={{
                       onChange: () => resetTags(`${path}.artifacts.primary.spec.tag`),
                       expressions,
-                      allowableTypes: [MultiTypeInputType.FIXED, MultiTypeInputType.EXPRESSION],
+                      allowableTypes,
                       selectProps: { allowCreatingNewItems: true, addClearBtn: true, items: gcrUrlList }
                     }}
                     label={getString('connectors.GCR.registryHostname')}
@@ -589,7 +590,7 @@ const ArtifactInputSetForm: React.FC<KubernetesServiceInputFormProps> = ({
                       multiTextInputProps={{
                         expressions,
                         value: TriggerDefaultFieldList.build,
-                        allowableTypes: [MultiTypeInputType.FIXED, MultiTypeInputType.EXPRESSION]
+                        allowableTypes
                       }}
                       disabled={true}
                       name={`${path}.artifacts.primary.spec.tag`}
@@ -662,7 +663,7 @@ const ArtifactInputSetForm: React.FC<KubernetesServiceInputFormProps> = ({
                           popoverClassName: css.selectPopover
                         },
                         expressions,
-                        allowableTypes: [MultiTypeInputType.FIXED, MultiTypeInputType.EXPRESSION]
+                        allowableTypes
                       }}
                       label={getString('tagLabel')}
                       name={`${path}.artifacts.primary.spec.tag`}
@@ -673,7 +674,7 @@ const ArtifactInputSetForm: React.FC<KubernetesServiceInputFormProps> = ({
                     disabled={disablePrimaryFields('artifacts.primary.spec.tagRegex')}
                     multiTextInputProps={{
                       expressions,
-                      allowableTypes: [MultiTypeInputType.FIXED, MultiTypeInputType.EXPRESSION]
+                      allowableTypes
                     }}
                     label={getString('tagRegex')}
                     name={`${path}.artifacts.primary.spec.tagRegex`}
@@ -756,7 +757,7 @@ const ArtifactInputSetForm: React.FC<KubernetesServiceInputFormProps> = ({
                         disabled={disableField(`sidecars[${index}].sidecar.spec.connectorRef`)}
                         // disabled={readonly}
                         multiTypeProps={{
-                          allowableTypes: [MultiTypeInputType.EXPRESSION, MultiTypeInputType.FIXED],
+                          allowableTypes,
                           expressions
                         }}
                         accountIdentifier={accountId}
@@ -779,7 +780,7 @@ const ArtifactInputSetForm: React.FC<KubernetesServiceInputFormProps> = ({
                         multiTypeInputProps={{
                           onChange: () => resetTags(`${path}.artifacts.sidecars.[${index}].sidecar.spec.tag`),
                           expressions,
-                          allowableTypes: [MultiTypeInputType.FIXED, MultiTypeInputType.EXPRESSION],
+                          allowableTypes,
                           selectProps: {
                             items: regions,
                             usePortal: true,
@@ -798,7 +799,7 @@ const ArtifactInputSetForm: React.FC<KubernetesServiceInputFormProps> = ({
                         label={getString('pipeline.imagePathLabel')}
                         multiTextInputProps={{
                           expressions,
-                          allowableTypes: [MultiTypeInputType.FIXED, MultiTypeInputType.EXPRESSION]
+                          allowableTypes
                         }}
                         disabled={disableField(`sidecars[${index}].sidecar.spec.imagePath`)}
                         name={`${path}.artifacts.sidecars[${index}].sidecar.spec.imagePath`}
@@ -814,7 +815,7 @@ const ArtifactInputSetForm: React.FC<KubernetesServiceInputFormProps> = ({
                         multiTypeInputProps={{
                           onChange: () => resetTags(`${path}.artifacts.sidecars.[${index}].sidecar.spec.tag`),
                           expressions,
-                          allowableTypes: [MultiTypeInputType.FIXED, MultiTypeInputType.EXPRESSION],
+                          allowableTypes,
                           selectProps: { allowCreatingNewItems: true, addClearBtn: true, items: gcrUrlList }
                         }}
                         label={getString('connectors.GCR.registryHostname')}
@@ -830,7 +831,7 @@ const ArtifactInputSetForm: React.FC<KubernetesServiceInputFormProps> = ({
                           multiTextInputProps={{
                             expressions,
                             value: TriggerDefaultFieldList.build,
-                            allowableTypes: [MultiTypeInputType.FIXED, MultiTypeInputType.EXPRESSION]
+                            allowableTypes
                           }}
                           disabled={true}
                           name={`${path}.artifacts.sidecars[${index}].sidecar.spec.tag`}
@@ -896,7 +897,7 @@ const ArtifactInputSetForm: React.FC<KubernetesServiceInputFormProps> = ({
                                   region: regionCurrent
                                 })
                             },
-                            allowableTypes: [MultiTypeInputType.EXPRESSION, MultiTypeInputType.FIXED],
+                            allowableTypes,
                             value: TriggerDefaultFieldList.build,
                             expressions,
                             selectProps: {
@@ -925,7 +926,7 @@ const ArtifactInputSetForm: React.FC<KubernetesServiceInputFormProps> = ({
                       <FormInput.MultiTextInput
                         multiTextInputProps={{
                           expressions,
-                          allowableTypes: [MultiTypeInputType.FIXED, MultiTypeInputType.EXPRESSION]
+                          allowableTypes
                         }}
                         disabled={disableField(`sidecars[${index}].sidecar.spec.tagRegex`)}
                         label={getString('tagRegex')}

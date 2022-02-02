@@ -39,6 +39,8 @@ repositoryUrlPlaceholder: Enter Repository URL
 lastSevenDays: In Last 7 days
 neverRan: This pipeline never ran
 startedOn: Started On
+nodes: nodes
+nodesLabel: Nodes
 poweredByHarness: powered by Harness
 outOf: Out Of
 clickToExpandErrorDetails: Click to expand error details
@@ -348,6 +350,9 @@ execution:
     right: Align to right
     float: Floating window
     minimize: Minimize window
+  dialogMessages:
+    abortExecution: Are you sure you want to abort the execution?
+    abortTitle: Abort Execution?
 resourceConstraints:
   title: Resource Constraint
   infoText: 'You have {{executioncount}} executions in queue that have to complete before your execution begins. Only one execution on a K8s namespace is allowed at a time.'
@@ -742,17 +747,31 @@ verification:
   baselineTest: Baseline test
   metricsInViolation: Metrics in violation
   logClustersInViolation: Log Clusters in violation
+  errorClustersInViolation: Error Clusters in violation
   metricViewPlaceholder: Filter for a metric or transaction
   anomalousMetrics: Anomalous Metrics
   anomalousLogClusters: Anomalous Log Clusters
   healthSourcePlaceholder: Filter by Health Source
+  healthSourceLabel: Health Source
   refreshViewForNewData: Latest incoming data available.
   toGetLatest: to get latest
-  noMetrics: No Metrics or Transactions
   waitForAnalysis: Please wait a few moments for analysis to begin...
+  nodeCountDisplay: nodes with anomalous metric
+  loadMore: Load more
+  tableHeaders:
+    metricName: METRIC NAME
+    group: GROUP
+    nodes: NODES
   analysisTab:
     metrics: 'Metrics'
     logs: 'Logs'
+  controlHostName: Control Hostname
+  anomalousMetricsFilterLabel: Display only anomalous metrics and affected nodes
+  testHostName: Test Hostname
+  expandAll: Expand All
+  collapseAll: Collapse All
+  predicted: Predicted
+
   logs:
     logCluster: Log cluster
     filterByClusterType: Filter by cluster type
@@ -949,6 +968,7 @@ dashboardDeploymentsWidget:
   runningPipeline:
     singular: Currently running pipeline
     plural: Currently running pipelines
+runtimeInputNotSupported: '{{field}} values cannot be run-time input'
 security:
   title: Security
 runPipeline:

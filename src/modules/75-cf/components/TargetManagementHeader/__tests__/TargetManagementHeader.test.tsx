@@ -23,10 +23,9 @@ const renderComponent = (hasEnvironments = true) =>
   )
 
 describe('TargetManagementHeader', () => {
-  test('it should render the title, section toggle and environment switcher', async () => {
+  test('it should render the section toggle and environment switcher', async () => {
     renderComponent()
 
-    expect(screen.getByText('cf.shared.targetManagement')).toBeInTheDocument()
     expect(screen.getByTestId('CFSectionToggle')).toBeInTheDocument()
     expect(screen.getByTestId(envSelectId)).toBeInTheDocument()
   })

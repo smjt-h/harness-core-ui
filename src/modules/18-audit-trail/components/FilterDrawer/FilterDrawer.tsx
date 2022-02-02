@@ -9,7 +9,7 @@ import React, { useState } from 'react'
 import { useParams } from 'react-router-dom'
 import type { MultiSelectOption } from '@wings-software/uicore'
 import { Filter, FilterRef } from '@common/components/Filter/Filter'
-import { FilterDTO, useDeleteFilter, usePostFilter, useUpdateFilter } from 'services/audit'
+import { FilterDTO, usePostAuditFilter, useUpdateAuditFilter, useDeleteAuditFilter } from 'services/audit'
 import type { FilterDataInterface } from '@common/components/Filter/Constants'
 import type { ProjectPathProps } from '@common/interfaces/RouteInterfaces'
 import type { CrudOperation } from '@common/components/Filter/FilterCRUD/FilterCRUD'
@@ -63,24 +63,23 @@ const FilterDrawer: React.FC<FilterDrawerProps> = ({
     })
   }
 
-  const { mutate: createFilter } = usePostFilter({
+  const { mutate: createFilter } = usePostAuditFilter({
     queryParams: {
       accountIdentifier: accountId
     }
   })
 
-  const { mutate: updateFilter } = useUpdateFilter({
+  const { mutate: updateFilter } = useUpdateAuditFilter({
     queryParams: {
       accountIdentifier: accountId
     }
   })
 
-  const { mutate: deleteFilter } = useDeleteFilter({
+  const { mutate: deleteFilter } = useDeleteAuditFilter({
     queryParams: {
       accountIdentifier: accountId,
       projectIdentifier,
-      orgIdentifier,
-      type: 'Audit'
+      orgIdentifier
     }
   })
 

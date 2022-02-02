@@ -3362,11 +3362,9 @@ exports[`DockerHub Step InputSet View should render all fields 1`] = `
               <div
                 class="group withoutAligning"
               >
-                <div
-                  style="flex-grow: 1;"
-                >
+                <div>
                   <p
-                    class="StyledProps--font StyledProps--main StyledProps--margin-bottom-xsmall"
+                    class="StyledProps--font StyledProps--main StyledProps--margin-bottom-xsmall StyledProps--font-variation-form-label"
                   >
                     keyLabel
                   </p>
@@ -3386,11 +3384,9 @@ exports[`DockerHub Step InputSet View should render all fields 1`] = `
                     </div>
                   </div>
                 </div>
-                <div
-                  style="flex-grow: 1;"
-                >
+                <div>
                   <p
-                    class="StyledProps--font StyledProps--main StyledProps--margin-bottom-xsmall"
+                    class="StyledProps--font StyledProps--main StyledProps--margin-bottom-xsmall StyledProps--font-variation-form-label"
                   >
                     valueLabel
                   </p>
@@ -3444,7 +3440,6 @@ exports[`DockerHub Step InputSet View should render all fields 1`] = `
                     <button
                       class="bp3-button bp3-minimal Button--button StyledProps--font StyledProps--main Button--with-current-color Button--iconOnly Button--without-shadow Button--withLeftIcon"
                       data-testid="remove-spec.labels-[0]"
-                      style="margin-top: 4px;"
                       type="button"
                     >
                       <span
@@ -3567,11 +3562,9 @@ exports[`DockerHub Step InputSet View should render all fields 1`] = `
               <div
                 class="group withoutAligning"
               >
-                <div
-                  style="flex-grow: 1;"
-                >
+                <div>
                   <p
-                    class="StyledProps--font StyledProps--main StyledProps--margin-bottom-xsmall"
+                    class="StyledProps--font StyledProps--main StyledProps--margin-bottom-xsmall StyledProps--font-variation-form-label"
                   >
                     keyLabel
                   </p>
@@ -3591,11 +3584,9 @@ exports[`DockerHub Step InputSet View should render all fields 1`] = `
                     </div>
                   </div>
                 </div>
-                <div
-                  style="flex-grow: 1;"
-                >
+                <div>
                   <p
-                    class="StyledProps--font StyledProps--main StyledProps--margin-bottom-xsmall"
+                    class="StyledProps--font StyledProps--main StyledProps--margin-bottom-xsmall StyledProps--font-variation-form-label"
                   >
                     valueLabel
                   </p>
@@ -3649,7 +3640,6 @@ exports[`DockerHub Step InputSet View should render all fields 1`] = `
                     <button
                       class="bp3-button bp3-minimal Button--button StyledProps--font StyledProps--main Button--with-current-color Button--iconOnly Button--without-shadow Button--withLeftIcon"
                       data-testid="remove-spec.buildArgs-[0]"
-                      style="margin-top: 4px;"
                       type="button"
                     >
                       <span

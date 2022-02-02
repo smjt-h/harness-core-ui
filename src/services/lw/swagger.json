@@ -34,6 +34,14 @@
         }
       ],
       "get": {
+        "parameters": [
+          {
+            "name": "value",
+            "in": "query",
+            "required": false,
+            "type": "string"
+          }
+        ],
         "tags": ["services"],
         "summary": "Gets all AutoStopping Gateways",
         "description": "Multiple status values can be provided with comma separated strings",
@@ -3293,6 +3301,10 @@
         "savings_percent": {
           "type": "number",
           "format": "float",
+          "required": true
+        },
+        "total_active_services": {
+          "type": "number",
           "required": true
         }
       }

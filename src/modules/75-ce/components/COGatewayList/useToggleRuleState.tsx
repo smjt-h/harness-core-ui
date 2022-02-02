@@ -12,8 +12,6 @@ import { useStrings } from 'framework/strings'
 import { useToggleAutostoppingRule, Service } from 'services/lw'
 
 interface UseToggleAutostoppingRuleProps {
-  orgIdentifier: string
-  projectIdentifier: string
   accountId: string
   serviceData: Service
   onSuccess?: (updatedServiceData: Service) => void

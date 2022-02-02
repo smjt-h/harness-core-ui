@@ -246,10 +246,16 @@ export function getIsSLODashboardAPIsLoading(
   dashboardWidgetsLoading: boolean,
   deleteSLOLoading: boolean,
   monitoredServicesLoading: boolean,
-  riskCountLoading: boolean
+  riskCountLoading: boolean,
+  resetErrorBudgetLoading: boolean
 ): boolean {
   return (
-    userJourneysLoading || dashboardWidgetsLoading || deleteSLOLoading || monitoredServicesLoading || riskCountLoading
+    userJourneysLoading ||
+    dashboardWidgetsLoading ||
+    deleteSLOLoading ||
+    monitoredServicesLoading ||
+    riskCountLoading ||
+    resetErrorBudgetLoading
   )
 }
 

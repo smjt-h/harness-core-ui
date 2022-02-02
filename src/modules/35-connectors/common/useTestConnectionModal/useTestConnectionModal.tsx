@@ -6,7 +6,8 @@
  */
 
 import React, { useState } from 'react'
-import { useModalHook, Button, Container } from '@wings-software/uicore'
+import { Button, Container } from '@wings-software/uicore'
+import { useModalHook } from '@harness/use-modal'
 import { Dialog, IDialogProps } from '@blueprintjs/core'
 
 import type { ConnectorInfoDTO, EntityGitDetails } from 'services/cd-ng'

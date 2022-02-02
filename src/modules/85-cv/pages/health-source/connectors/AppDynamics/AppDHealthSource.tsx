@@ -6,7 +6,7 @@
  */
 
 import React, { useEffect, useMemo, useState } from 'react'
-import { noop } from 'lodash-es'
+import { flatten, noop } from 'lodash-es'
 import { useParams } from 'react-router-dom'
 import {
   Color,
@@ -61,6 +61,7 @@ import type {
   SelectedAndMappedMetrics
 } from './AppDHealthSource.types'
 import MetricPackCustom from '../MetricPackCustom'
+import type { GroupedCreatedMetrics } from './Components/AppDMappedMetric/AppDMappedMetric.types'
 import css from './AppDHealthSource.module.scss'
 
 export default function AppDMonitoredSource({
@@ -213,6 +214,8 @@ export default function AppDMonitoredSource({
     )
   )
 
+  const [groupedCreatedMetrics, setGroupedCreatedMetrics] = useState<string[]>([])
+
   const [nonCustomFeilds, setNonCustomFeilds] = useState(initializeNonCustomFields(appDynamicsData))
 
   const initPayload = useMemo(
@@ -225,10 +228,12 @@ export default function AppDMonitoredSource({
       enableReinitialize
       formName={'appDHealthSourceform'}
       isInitialValid={(args: any) =>
-        Object.keys(validateMapping(args.initialValues, createdMetrics, selectedMetricIndex, getString)).length === 0
+        Object.keys(
+          validateMapping(args.initialValues, groupedCreatedMetrics, selectedMetricIndex, getString, mappedMetrics)
+        ).length === 0
       }
       validate={values => {
-        return validateMapping(values, createdMetrics, selectedMetricIndex, getString)
+        return validateMapping(values, groupedCreatedMetrics, selectedMetricIndex, getString, mappedMetrics)
       }}
       initialValues={initPayload}
       onSubmit={noop}
@@ -365,6 +370,12 @@ export default function AppDMonitoredSource({
                 mappedMetrics={mappedMetrics}
                 createdMetrics={createdMetrics}
                 setCreatedMetrics={setCreatedMetrics}
+                updateGroupedCreatedMetrics={(data: GroupedCreatedMetrics) => {
+                  const vv = flatten(Object.values(data))
+                    .map(item => item.metricName)
+                    .filter(item => Boolean(item))
+                  setGroupedCreatedMetrics(vv as string[])
+                }}
               />
             ) : (
               <CardWithOuterTitle title={getString('cv.healthSource.connectors.customMetrics')}>

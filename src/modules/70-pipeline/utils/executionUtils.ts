@@ -141,6 +141,7 @@ export interface ExecutionQueryParams {
   stage?: string
   step?: string
   view?: 'log' | 'graph'
+  filterAnomalous?: string
 }
 
 export function getPipelineStagesMap(

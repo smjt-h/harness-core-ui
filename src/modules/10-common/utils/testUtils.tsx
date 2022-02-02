@@ -11,7 +11,7 @@ import { queryByAttribute } from '@testing-library/react'
 import { compile } from 'path-to-regexp'
 import { createMemoryHistory } from 'history'
 import { Router, Route, Switch, useLocation, useHistory } from 'react-router-dom'
-import { ModalProvider } from '@wings-software/uicore'
+import { ModalProvider } from '@harness/use-modal'
 import qs from 'qs'
 
 import { enableMapSet } from 'immer'

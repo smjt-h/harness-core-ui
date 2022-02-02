@@ -25,6 +25,12 @@ export function updateSelectedMetricsMap({
 }: any): any {
   const updatedMap = new Map(mappedMetrics)
 
+  const duplicateName =
+    Array.from(mappedMetrics.keys()).indexOf(formikValues.metricName) > -1 && oldMetric !== formikValues?.metricName
+  if (duplicateName) {
+    return { selectedMetric: oldMetric, mappedMetrics: updatedMap }
+  }
+
   // in the case where user updates metric name, update the key for current value
   if (oldMetric !== formikValues?.metricName) {
     updatedMap.delete(oldMetric)

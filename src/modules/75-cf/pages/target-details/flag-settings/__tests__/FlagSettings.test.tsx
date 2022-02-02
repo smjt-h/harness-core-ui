@@ -60,7 +60,7 @@ describe('FlagSettings', () => {
 
     fireEvent.mouseOver(screen.getByPlaceholderText('- Select -'))
 
-    await waitFor(() => expect(screen.getByText('cf.planEnforcement.upgradeRequired')).toBeInTheDocument())
+    await waitFor(() => expect(screen.getByText('cf.planEnforcement.upgradeRequiredMau')).toBeInTheDocument())
   })
 
   test('it should not render plan enforcement popover when limits reached for non-free plans', async () => {
@@ -71,7 +71,7 @@ describe('FlagSettings', () => {
 
     fireEvent.mouseOver(screen.getByPlaceholderText('- Select -'))
 
-    await waitFor(() => expect(screen.queryByText('cf.planEnforcement.upgradeRequired')).not.toBeInTheDocument())
+    await waitFor(() => expect(screen.queryByText('cf.planEnforcement.upgradeRequiredMau')).not.toBeInTheDocument())
   })
 
   test('it should disable variation drop downs when the flag is disabled', async () => {

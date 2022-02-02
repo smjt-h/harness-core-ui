@@ -42,7 +42,16 @@ import type {
 } from '@common/interfaces/RouteInterfaces'
 import routes from '@common/RouteDefinitions'
 
+import { BannerType } from '@common/layouts/Constants'
+import {
+  FEATURE_USAGE_WARNING_LIMIT,
+  isFeatureLimitBreached,
+  isFeatureWarningActive
+} from '@common/layouts/FeatureBanner'
+
 import { String as LocaleString } from 'framework/strings'
+import featureFactory from 'framework/featureStore/FeaturesFactory'
+import { FeatureIdentifier } from 'framework/featureStore/FeatureIdentifier'
 import CDSideNav from '@cd/components/CDSideNav/CDSideNav'
 import CDHomePage from '@cd/pages/home/CDHomePage'
 import CDDashboardPage from '@cd/pages/dashboard/CDDashboardPage'
@@ -119,6 +128,7 @@ import {
 import { TemplateStudioWrapper } from '@templates-library/components/TemplateStudio/TemplateStudioWrapper'
 import TemplatesPage from '@templates-library/pages/TemplatesPage/TemplatesPage'
 import { GovernanceRouteDestinations } from '@governance/RouteDestinations'
+import GitSyncConfigTab from '@gitsync/pages/config/GitSyncConfigTab'
 import CDTrialHomePage from './pages/home/CDTrialHomePage'
 
 import { CDExecutionCardSummary } from './components/CDExecutionCardSummary/CDExecutionCardSummary'
@@ -217,6 +227,69 @@ executionFactory.registerSummary(StageType.DEPLOY, {
 
 executionFactory.registerStageDetails(StageType.DEPLOY, {
   component: CDStageDetails
+})
+
+featureFactory.registerFeaturesByModule('cd', {
+  features: [FeatureIdentifier.DEPLOYMENTS_PER_MONTH, FeatureIdentifier.SERVICES],
+  renderMessage: (props, getString) => {
+    const featuresMap = props.features
+    const serviceFeatureDetail = featuresMap.get(FeatureIdentifier.SERVICES)
+    const dpmFeatureDetail = featuresMap.get(FeatureIdentifier.DEPLOYMENTS_PER_MONTH)
+
+    // Check for limit breach
+    const isServiceLimitBreached = isFeatureLimitBreached(serviceFeatureDetail)
+    const isDpmLimitBreached = isFeatureLimitBreached(dpmFeatureDetail)
+    let limitBreachMessageString = ''
+    if (isServiceLimitBreached && isDpmLimitBreached) {
+      limitBreachMessageString = getString('cd.featureRestriction.banners.serviceAndDeploymentsLevelUp', {
+        deploymentsLimit: dpmFeatureDetail?.featureDetail?.limit,
+        serviceLimit: serviceFeatureDetail?.featureDetail?.limit
+      })
+    } else if (isServiceLimitBreached) {
+      limitBreachMessageString = getString('cd.featureRestriction.banners.serviceLevelUp', {
+        serviceLimit: serviceFeatureDetail?.featureDetail?.limit
+      })
+    } else if (isDpmLimitBreached) {
+      limitBreachMessageString = getString('cd.featureRestriction.banners.deploymentsPerMonthLevelUp', {
+        deploymentsLimit: dpmFeatureDetail?.featureDetail?.limit
+      })
+    }
+
+    if (limitBreachMessageString) {
+      return {
+        message: () => limitBreachMessageString,
+        bannerType: BannerType.LEVEL_UP
+      }
+    }
+
+    // Checking for limit usage warning
+    let warningMessageString = ''
+    const isServiceWarningActive = isFeatureWarningActive(serviceFeatureDetail)
+    const isDpmWarningActive = isFeatureWarningActive(dpmFeatureDetail)
+    if (isServiceWarningActive) {
+      warningMessageString = getString('cd.featureRestriction.banners.serviceWarningActive', {
+        warningLimit: FEATURE_USAGE_WARNING_LIMIT
+      })
+    } else if (isDpmWarningActive) {
+      warningMessageString = getString('cd.featureRestriction.banners.dpmWarningActive', {
+        warningLimit: FEATURE_USAGE_WARNING_LIMIT
+      })
+    }
+
+    if (warningMessageString) {
+      return {
+        message: () => warningMessageString,
+        bannerType: BannerType.INFO
+      }
+    }
+
+    // If neither limit breach or warning needs to be shown, return with an empty string.
+    // This will ensure no banner is shown
+    return {
+      message: () => '',
+      bannerType: BannerType.LEVEL_UP
+    }
+  }
 })
 
 const RedirectToAccessControlHome = (): React.ReactElement => {
@@ -928,6 +1001,16 @@ export default (
     >
       <GitSyncPage>
         <GitSyncErrors />
+      </GitSyncPage>
+    </RouteWithLayout>
+    <RouteWithLayout
+      licenseRedirectData={licenseRedirectData}
+      sidebarProps={CDSideNavProps}
+      path={routes.toGitSyncConfig({ ...accountPathProps, ...pipelineModuleParams, ...projectPathProps })}
+      exact
+    >
+      <GitSyncPage>
+        <GitSyncConfigTab />
       </GitSyncPage>
     </RouteWithLayout>
     <RouteWithLayout

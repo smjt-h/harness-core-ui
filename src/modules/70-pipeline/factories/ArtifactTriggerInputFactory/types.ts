@@ -5,6 +5,7 @@
  * https://polyformproject.org/wp-content/uploads/2020/06/PolyForm-Shield-1.0.0.txt.
  */
 
+import type { MultiTypeInputType } from '@harness/uicore'
 import type { AbstractStepFactory } from '@pipeline/components/AbstractSteps/AbstractStepFactory'
 import type { StepViewType } from '@pipeline/components/AbstractSteps/Step'
 import type { ServiceSpec } from 'services/cd-ng'
@@ -28,6 +29,7 @@ export interface KubernetesServiceInputFormProps {
   stageIdentifier: string
   formik?: any
   fromTrigger?: boolean
+  allowableTypes: MultiTypeInputType[]
 }
 
 export enum TriggerType {

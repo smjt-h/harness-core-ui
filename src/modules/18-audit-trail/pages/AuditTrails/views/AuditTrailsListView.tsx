@@ -5,16 +5,19 @@
  * https://polyformproject.org/wp-content/uploads/2020/06/PolyForm-Shield-1.0.0.txt.
  */
 
-import React from 'react'
-import { TableV2, Text, Layout, Avatar, Icon, Container, Color } from '@wings-software/uicore'
+import React, { ReactElement } from 'react'
+import { TableV2, Text, Layout, Avatar, Icon, Container, Color, Popover } from '@wings-software/uicore'
 import type { Column, Renderer, CellProps } from 'react-table'
 import { Link, useParams } from 'react-router-dom'
+import { PopoverInteractionKind, Position, Classes } from '@blueprintjs/core'
+import type { IconProps } from '@harness/uicore/dist/icons/Icon'
 import { actionToLabelMap, resourceTypeToLabelMapping } from '@audit-trail/utils/RequestUtil'
 import type { AuditEventDTO, PageAuditEventDTO } from 'services/audit'
 import { useStrings } from 'framework/strings'
 import { getReadableDateTime } from '@common/utils/dateUtils'
 import AuditTrailFactory, { getModuleNameFromAuditModule } from '@audit-trail/factories/AuditTrailFactory'
 import type { OrgPathProps } from '@common/interfaces/RouteInterfaces'
+
 import css from './AuditTrailsListView.module.scss'
 
 const DEFAULT_CELL_PLACEHOLDER = 'N/A'
@@ -60,23 +63,6 @@ const renderColumnProject: Renderer<CellProps<AuditEventDTO>> = ({ row }) => {
   )
 }
 
-const renderColumnModule: Renderer<CellProps<AuditEventDTO>> = ({ row }) => {
-  const { moduleIcon } = AuditTrailFactory.getResourceHandler(row.original.resource.type) || {}
-  // Changing the color
-  const navSettingsIcon = moduleIcon?.name === 'nav-settings'
-  return moduleIcon?.name ? (
-    <Container flex={{ justifyContent: 'center' }}>
-      <Icon
-        className={navSettingsIcon ? css.navSettingIcon : undefined}
-        name={moduleIcon.name}
-        size={moduleIcon.size || 30}
-      />
-    </Container>
-  ) : (
-    ''
-  )
-}
-
 const AuditTrailsListView: React.FC<AuditTrailsListViewProps> = ({ data, setPage }) => {
   const { orgIdentifier } = useParams<OrgPathProps>()
   const { getString } = useStrings()
@@ -109,6 +95,37 @@ const AuditTrailsListView: React.FC<AuditTrailsListViewProps> = ({ data, setPage
           resourceTypeToLabelMapping[row.original.resource.type]
         )}`}</Text>
       </Layout.Vertical>
+    )
+  }
+
+  const renderModuleIcon = (icon: IconProps): ReactElement => {
+    const navSettingsIcon = icon?.name === 'nav-settings'
+    return <Icon className={navSettingsIcon ? css.navSettingIcon : undefined} name={icon.name} size={icon.size || 30} />
+  }
+
+  const renderColumnModule: Renderer<CellProps<AuditEventDTO>> = ({ row }) => {
+    const { moduleIcon, moduleIconLabel } = AuditTrailFactory.getResourceHandler(row.original.resource.type) || {}
+    return moduleIcon?.name ? (
+      <Container flex={{ justifyContent: 'center' }}>
+        {moduleIconLabel ? (
+          <Popover
+            position={Position.TOP}
+            interactionKind={PopoverInteractionKind.HOVER}
+            className={Classes.DARK}
+            content={
+              <Text color={Color.WHITE} padding="small">
+                {getString(moduleIconLabel)}
+              </Text>
+            }
+          >
+            {renderModuleIcon(moduleIcon)}
+          </Popover>
+        ) : (
+          renderModuleIcon(moduleIcon)
+        )}
+      </Container>
+    ) : (
+      ''
     )
   }
 

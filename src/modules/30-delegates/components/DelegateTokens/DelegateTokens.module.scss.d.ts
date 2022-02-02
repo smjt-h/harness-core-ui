@@ -10,6 +10,7 @@ declare const styles: {
   readonly addTokenModalActionContainer: string
   readonly addTokenModalContainer: string
   readonly addTokenModalForm: string
+  readonly copyContainer: string
   readonly delegateItemContainer: string
   readonly delegateListContainer: string
   readonly header: string
@@ -24,6 +25,7 @@ declare const styles: {
   readonly tokenItemColumn: string
   readonly tokenListDelegateContainer: string
   readonly tokenNameColumn: string
+  readonly tokenValue: string
   readonly troubleshootLink: string
 }
 export default styles

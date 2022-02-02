@@ -80,7 +80,7 @@ describe('FlagDetailsOptionsMenuButton', () => {
 
       fireEvent.mouseOver(document.querySelector('[data-icon="trash"]') as HTMLButtonElement)
 
-      await waitFor(() => expect(screen.getByText('cf.planEnforcement.upgradeRequired')).toBeInTheDocument())
+      await waitFor(() => expect(screen.getByText('cf.planEnforcement.upgradeRequiredMau')).toBeInTheDocument())
     })
 
     test('it should call callback when confirm delete button clicked', async () => {

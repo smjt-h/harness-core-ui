@@ -14,15 +14,15 @@ import routes from '@common/RouteDefinitions'
 
 import featuresFactory from 'framework/featureStore/FeaturesFactory'
 import type { FeatureProps } from 'framework/featureStore/FeaturesFactory'
+import type { CheckFeatureReturn } from 'framework/featureStore/featureStoreUtil'
 import type { Module } from 'framework/types/ModuleName'
 import { useFeatures } from '@common/hooks/useFeatures'
 import { useLocalStorage } from '@common/hooks/useLocalStorage'
 import { useModuleInfo } from '@common/hooks/useModuleInfo'
-
-import type { AccountPathProps } from '@common/interfaces/RouteInterfaces'
-import { useStrings } from 'framework/strings'
 import { useFeatureFlag } from '@common/hooks/useFeatureFlag'
 import { FeatureFlag } from '@common/featureFlags'
+import type { AccountPathProps } from '@common/interfaces/RouteInterfaces'
+import { useStrings } from 'framework/strings'
 import { BannerType } from './Constants'
 import css from './layouts.module.scss'
 
@@ -147,14 +147,14 @@ function getBannerBodyByType(type: BannerType, message: React.ReactNode, module:
   switch (type) {
     case BannerType.INFO:
       return (
-        <Layout.Horizontal width="95%" padding={{ left: 'huge' }} spacing="large">
+        <Layout.Horizontal width="95%" padding={{ left: 'large' }}>
           <InfoText message={message} />
           <ManageSubscriptionBtn module={module} />
         </Layout.Horizontal>
       )
     case BannerType.LEVEL_UP:
       return (
-        <Layout.Horizontal width="95%" padding={{ left: 'huge' }} spacing="large">
+        <Layout.Horizontal width="95%" padding={{ left: 'large' }}>
           <LevelUpText message={message} />
           <ViewUsageLink module={module} />
           <ExplorePlansBtn module={module} />
@@ -162,7 +162,7 @@ function getBannerBodyByType(type: BannerType, message: React.ReactNode, module:
       )
     case BannerType.OVERUSE:
       return (
-        <Layout.Horizontal width="95%" padding={{ left: 'huge' }} spacing="large">
+        <Layout.Horizontal width="95%" padding={{ left: 'large' }}>
           <OverUseInfoText message={message} />
           <ManageSubscriptionBtn module={module} />
         </Layout.Horizontal>
@@ -185,8 +185,28 @@ function getBannerClassNameByType(type: BannerType): string {
   }
 }
 
+export const isFeatureLimitBreached = (feature?: CheckFeatureReturn) => {
+  const featureEnabled = feature?.enabled
+  const featureDetail = feature?.featureDetail
+  return featureEnabled && featureDetail?.limit && featureDetail.count && featureDetail.count > featureDetail.limit
+}
+
+export const FEATURE_USAGE_WARNING_LIMIT = 90
+
+export const isFeatureWarningActive = (feature?: CheckFeatureReturn) => {
+  const featureEnabled = feature?.enabled
+  const featureDetail = feature?.featureDetail
+  return (
+    featureEnabled &&
+    featureDetail?.limit &&
+    featureDetail.count &&
+    featureDetail.count >= (featureDetail.limit * FEATURE_USAGE_WARNING_LIMIT) / 100
+  )
+}
+
 export default function FeatureBanner(): React.ReactElement | null {
   const { module } = useModuleInfo()
+  const { getString } = useStrings()
   const isFeatureEnforceEnabled = useFeatureFlag(FeatureFlag.FEATURE_ENFORCEMENT_ENABLED)
   const [activeModuleFeatures, setActiveModuleFeatures] = React.useState<FeatureProps | null>(null)
   const [isBannerDismissed, setIsBannerDismissed] = useLocalStorage<Partial<Record<Module, boolean>>>(
@@ -203,7 +223,9 @@ export default function FeatureBanner(): React.ReactElement | null {
     }
   }, [module])
 
-  const { message, bannerType } = activeModuleFeatures?.renderMessage(features) || {}
+  const { message: messageFn, bannerType } = activeModuleFeatures?.renderMessage(features, getString) || {}
+
+  const message = messageFn?.()
 
   if (!isFeatureEnforceEnabled || !message || !bannerType || !module || isBannerDismissed[module]) {
     return null

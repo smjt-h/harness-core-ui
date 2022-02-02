@@ -20,6 +20,7 @@ export type LogAnalysisRowData = {
 export interface LogAnalysisRowProps {
   data: LogAnalysisRowData[]
   className?: string
+  isErrorTracking?: boolean
 }
 
 export interface LogAnalysisDataRowProps {
@@ -32,6 +33,7 @@ export interface LogAnalysisDataRowProps {
   ) => void
   index: number
   isSelected: boolean
+  isErrorTracking?: boolean
 }
 
 export type CompareLogEventsInfo = {

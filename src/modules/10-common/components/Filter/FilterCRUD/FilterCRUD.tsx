@@ -19,11 +19,11 @@ import {
   FormikForm,
   Label,
   Popover,
-  useModalHook,
   OverlaySpinner,
   ButtonVariation,
   useToaster
 } from '@wings-software/uicore'
+import { useModalHook } from '@harness/use-modal'
 import type { FormikProps, FormikErrors } from 'formik'
 import { Menu, Classes, Position, PopoverInteractionKind, Dialog, IDialogProps } from '@blueprintjs/core'
 import { useStrings } from 'framework/strings'

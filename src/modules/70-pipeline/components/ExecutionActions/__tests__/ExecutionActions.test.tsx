@@ -13,7 +13,7 @@ import * as useFeaturesLib from '@common/hooks/useFeatures'
 import routes from '@common/RouteDefinitions'
 import { FeatureIdentifier } from 'framework/featureStore/FeatureIdentifier'
 import type { ExecutionStatus } from '@pipeline/utils/statusHelpers'
-import { HandleInterruptQueryParams, useHandleInterrupt } from 'services/pipeline-ng'
+import { HandleInterruptQueryParams, useHandleInterrupt, useHandleStageInterrupt } from 'services/pipeline-ng'
 import { accountPathProps, executionPathProps, pipelineModuleParams } from '@common/utils/routeUtils'
 
 import ExecutionActions from '../ExecutionActions'
@@ -29,6 +29,15 @@ jest.mock('services/pipeline-ng', () => ({
 }))
 
 jest.mock('@common/components/YAMLBuilder/YamlBuilder')
+jest.mock('@common/exports', () => ({
+  useToaster: () => ({
+    showSuccess: jest.fn(),
+    showError: jest.fn()
+  }),
+  useConfirmationDialog: jest.fn().mockImplementation(async ({ onCloseDialog }) => {
+    await onCloseDialog(true)
+  })
+}))
 jest.mock('@common/utils/YamlUtils', () => ({}))
 
 const TEST_PATH = routes.toExecutionPipelineView({
@@ -111,6 +120,15 @@ describe('<ExecutionActions /> tests', () => {
     })
 
     await waitFor(() => {
+      if (interruptType === 'AbortAll') {
+        const dialog = document.body.querySelector('.bp3-dialog')
+
+        expect(dialog).toBeDefined()
+        const confirmButton = dialog?.querySelector('.bp3-button')
+
+        fireEvent.click(confirmButton!)
+      }
+
       expect(mutate).toHaveBeenCalledWith(
         {},
         {
@@ -124,6 +142,66 @@ describe('<ExecutionActions /> tests', () => {
       )
     })
   })
+
+  test.each<[ExecutionStatus, string, string, HandleInterruptQueryParams['interruptType']]>([
+    ['Paused', 'play', 'selectedStageId', 'Resume'],
+    ['Running', 'pause', 'selectedStageId', 'Pause'],
+    ['Running', 'stop', 'selectedStageId', 'AbortAll']
+  ])(
+    'Interrupt "%s" status  with action "%s" for stage "%s"',
+    async (executionStatus, icon, stageId, interruptType) => {
+      jest.clearAllMocks()
+      const mutate = jest.fn()
+      ;(useHandleStageInterrupt as jest.Mock).mockImplementation(() => ({
+        mutate,
+        loading: true,
+        data: null
+      }))
+
+      let result: RenderResult
+
+      act(() => {
+        result = render(
+          <TestWrapper path={TEST_PATH} pathParams={pathParams} queryParams={{ stageId: stageId }}>
+            <ExecutionActions
+              params={pathParams as any}
+              executionStatus={executionStatus}
+              refetch={jest.fn()}
+              stageId={stageId}
+            />
+          </TestWrapper>
+        )
+      })
+
+      act(() => {
+        const btn = result!.container.querySelector(`[data-icon="${icon}"]`)?.closest('button')
+        fireEvent.click(btn!)
+      })
+
+      await waitFor(() => {
+        if (interruptType === 'AbortAll') {
+          const dialog = document.body.querySelector('.bp3-dialog')
+
+          expect(dialog).toBeDefined()
+          const confirmButton = dialog?.querySelector('.bp3-button')
+
+          fireEvent.click(confirmButton!)
+        }
+
+        expect(mutate).toHaveBeenCalledWith(
+          {},
+          {
+            queryParams: {
+              accountIdentifier: pathParams.accountId,
+              orgIdentifier: pathParams.orgIdentifier,
+              projectIdentifier: pathParams.projectIdentifier,
+              interruptType
+            }
+          }
+        )
+      })
+    }
+  )
 
   test('if feature restriction is applied on rerun button', () => {
     jest.spyOn(useFeaturesLib, 'useGetFirstDisabledFeature').mockReturnValue({

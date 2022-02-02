@@ -132,7 +132,7 @@ exports[`PipelineSummaryCards shows data correctly 1`] = `
             <p
               class="StyledProps--font StyledProps--main contentMainText"
             >
-              81.25
+              81.25%
             </p>
             <div
               class="StyledProps--font StyledProps--main subContent"

@@ -23,7 +23,6 @@ import type { ExecutionPageQueryParams } from '@pipeline/utils/types'
 import type { ExecutionPathProps, PipelineType } from '@common/interfaces/RouteInterfaces'
 
 import { logsCache } from '@pipeline/components/LogsContent/LogsState/utils'
-import { PipelineFeatureLimitBreachedBanner } from '@pipeline/factories/PipelineFeatureRestrictionFactory/PipelineFeatureRestrictionFactory'
 import { EvaluationModal } from '@governance/EvaluationModal'
 import { FeatureRestrictionBanners } from '@pipeline/factories/FeatureRestrictionBannersFactory/FeatureRestrictionBannersFactory'
 import ExecutionContext, { GraphCanvasState } from '@pipeline/context/ExecutionContext'
@@ -226,15 +225,6 @@ export default function ExecutionLandingPage(props: React.PropsWithChildren<unkn
               <ExecutionHeader />
               <ExecutionMetadata />
             </header>
-            <PipelineFeatureLimitBreachedBanner featureIdentifier={FeatureIdentifier.SERVICES} module={module} />
-            <PipelineFeatureLimitBreachedBanner
-              featureIdentifier={FeatureIdentifier.DEPLOYMENTS_PER_MONTH}
-              module={module}
-            />
-            <PipelineFeatureLimitBreachedBanner
-              featureIdentifier={FeatureIdentifier.INITIAL_DEPLOYMENTS}
-              module={module}
-            />
             <ExecutionTabs />
             {module === 'ci' && (
               <FeatureRestrictionBanners

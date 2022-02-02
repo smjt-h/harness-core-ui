@@ -123,7 +123,7 @@ const RenderColumnInputSet: Renderer<CellProps<InputSetLocal>> = ({ row }) => {
 const RenderColumnDescription: Renderer<CellProps<InputSetLocal>> = ({ row }) => {
   const data = row.original
   return (
-    <Text padding={{ right: 'medium' }} lineClamp={2} color={Color.GREY_400}>
+    <Text padding={{ right: 'medium' }} lineClamp={2} color={Color.BLACK}>
       {data.description}
     </Text>
   )

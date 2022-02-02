@@ -6,17 +6,8 @@
  */
 
 import React, { useEffect, useState } from 'react'
-import {
-  SelectOption,
-  Layout,
-  Icon,
-  Select,
-  useModalHook,
-  Button,
-  Text,
-  Container,
-  Color
-} from '@wings-software/uicore'
+import { SelectOption, Layout, Icon, Select, Button, Text, Container, Color } from '@wings-software/uicore'
+import { useModalHook } from '@harness/use-modal'
 import { useParams } from 'react-router-dom'
 import { isEmpty } from 'lodash-es'
 

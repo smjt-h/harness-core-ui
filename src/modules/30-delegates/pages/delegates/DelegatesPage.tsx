@@ -6,7 +6,7 @@
  */
 
 import React, { useEffect, useState } from 'react'
-import { useParams } from 'react-router-dom'
+import { useParams, useLocation } from 'react-router-dom'
 import { TabNavigation } from '@wings-software/uicore'
 import { NGBreadcrumbs } from '@common/components/NGBreadcrumbs/NGBreadcrumbs'
 import { Page } from '@common/exports'
@@ -26,7 +26,12 @@ const DelegatesPage: React.FC = ({ children }) => {
   const { NG_SHOW_DEL_TOKENS } = useFeatureFlags()
   const { accountId, orgIdentifier, projectIdentifier, module } = params
   const { getString } = useStrings()
+  const { pathname } = useLocation()
   const [profiles, setProfiles] = useState<DelegateProfileDetailsNg[]>([])
+  const isDelTokensPage =
+    pathname.indexOf(
+      routes.toDelegateTokens({ accountId: params.accountId, orgIdentifier, projectIdentifier, module })
+    ) !== -1
 
   const { mutate: getDelegateProfiles } = useListDelegateConfigsNgV2WithFilter({
     accountId,
@@ -84,9 +89,15 @@ const DelegatesPage: React.FC = ({ children }) => {
         title={
           <ScopedTitle
             title={{
-              [Scope.PROJECT]: getString('delegate.delegates'),
-              [Scope.ORG]: getString('delegates.delegatesTitle'),
-              [Scope.ACCOUNT]: getString('delegates.delegatesTitle')
+              [Scope.PROJECT]: isDelTokensPage
+                ? getString('delegates.tokens.delegateTokens')
+                : getString('delegate.delegates'),
+              [Scope.ORG]: isDelTokensPage
+                ? getString('delegates.tokens.delegateTokensTitle')
+                : getString('delegates.delegatesTitle'),
+              [Scope.ACCOUNT]: isDelTokensPage
+                ? getString('delegates.tokens.delegateTokensTitle')
+                : getString('delegates.delegatesTitle')
             }}
           />
         }

@@ -55,8 +55,7 @@ export const delegateGroupsMock: DelegateGroupDetails[] = [
       label: 'cpu1',
       ram: 16,
       replicas: 2,
-      size: 'EXTRA_SMALL',
-      taskLimit: 2
+      size: 'EXTRA_SMALL'
     }
   },
   {
@@ -78,8 +77,7 @@ export const delegateGroupsMock: DelegateGroupDetails[] = [
       label: 'cpu1',
       ram: 16,
       replicas: 2,
-      size: 'EXTRA_SMALL',
-      taskLimit: 2
+      size: 'EXTRA_SMALL'
     }
   }
 ]

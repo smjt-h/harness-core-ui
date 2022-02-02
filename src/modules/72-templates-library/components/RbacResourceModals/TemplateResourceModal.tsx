@@ -135,7 +135,7 @@ const TemplateResourceModal: React.FC<RbacResourceModalProps> = ({
             disableSortBy: true
           },
           {
-            Header: getString('templatesLibrary.entityType'),
+            Header: getString('common.entityType'),
             id: 'templateEntityType',
             accessor: 'templateEntityType',
             Cell: RenderTemplateEntityType,

@@ -5,101 +5,6 @@
  * https://polyformproject.org/wp-content/uploads/2020/06/PolyForm-Shield-1.0.0.txt.
  */
 
-.emptyContainer {
-  height: 100%;
-  justify-content: center;
-  align-items: center;
-  .ffImage {
-    transform: rotate(-25deg);
-  }
-}
-
-.ff-page-btns-header {
-  padding: var(--spacing-medium) var(--spacing-xxlarge) !important;
-  border: 0.5px solid #d9dae6;
-  border-left: none;
-  border-right: none;
-  align-items: center;
-  background-color: var(--white) !important;
-  position: sticky;
-  top: 0;
-  z-index: 1;
-
-  .ff-page-btns-search {
-    margin-right: var(--spacing-small) !important;
-    & > span {
-      color: var(--primary-7);
-    }
-    & > input {
-      border: 0 !important;
-      height: 32px !important;
-    }
-    & > input:focus {
-      width: 350px !important;
-      border: 1px solid var(--grey-350) !important;
-    }
-  }
-}
-
-.ff-page-btns-select {
-  width: 200px !important;
-}
-
-.drawer-container {
-  :global(.bp3-drawer-header) {
-    padding: var(--spacing-medium);
-  }
-}
-
-.content {
-  height: calc(100% - 80px);
-  overflow: hidden;
-  background: var(--grey-100) !important;
-}
-
-.table {
-  padding: 0 !important;
-  height: calc(100vh - 144px);
-
-  .list {
-    padding: var(--spacing-medium) var(--spacing-xxlarge) 0 !important;
-    height: calc(100% - 50px);
-    overflow: auto;
-  }
-
-  .pagination {
-    height: 50px;
-    padding: 0 var(--spacing-xxlarge) !important;
-
-    > div {
-      border-top: none !important;
-    }
-  }
-}
-
-.tags-popover {
-  :global(.bp3-popover-content) {
-    padding: var(--spacing-small) var(--spacing-medium);
-    border-radius: var(--spacing-small);
-    min-width: 130px;
-  }
-  :global(.bp3-popover-content) > p:not(:first-child) {
-    background-color: var(--blue-300);
-    color: var(--blue-700);
-    font-weight: bold;
-    border-radius: var(--spacing-xsmall);
-    text-align: center;
-    margin-bottom: var(--spacing-xsmall);
-    padding: 0 var(--spacing-xsmall);
-    width: max-content;
-  }
-  :global(.bp3-popover-content) > p:first-child {
-    color: var(--black);
-    font-weight: bold;
-    margin-bottom: var(--spacing-medium);
-  }
-}
-
 .generalInfo {
   flex-grow: 1;
   align-items: baseline !important;
@@ -132,26 +37,6 @@
   }
 }
 
-.status {
-  font-weight: 600 !important;
-  font-size: 10px !important;
-  line-height: 20px !important;
-  display: flex !important;
-  align-items: center !important;
-  text-align: center !important;
-  letter-spacing: -0.00928571px;
-  background: #edf8ff !important;
-  border-radius: 6px !important;
-  color: #8eb0f4 !important;
-  display: inline-block !important;
-  padding: 0 8px !important;
-
-  &.archived {
-    color: #9293ab !important;
-    background: #f3f3fa !important;
-  }
-}
-
 .tooltipTable {
   width: 100%;
 
@@ -171,4 +56,10 @@
   tr:first-of-type td {
     padding-top: 12px;
   }
+}
+
+.leftToolbar {
+  display: flex;
+  gap: var(--spacing-medium);
+  align-items: center;
 }

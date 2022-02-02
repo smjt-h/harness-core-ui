@@ -6,16 +6,8 @@
  */
 
 import React, { useCallback, useState } from 'react'
-import {
-  useModalHook,
-  Dialog,
-  Button,
-  Layout,
-  Text,
-  ButtonVariation,
-  FontVariation,
-  Heading
-} from '@wings-software/uicore'
+import { Dialog, Button, Layout, Text, ButtonVariation, FontVariation, Heading } from '@wings-software/uicore'
+import { useModalHook } from '@harness/use-modal'
 import type { IDialogProps } from '@blueprintjs/core'
 import { useStrings } from 'framework/strings'
 import TokenDelegatesList from './TokenDelegatesList'
@@ -59,7 +51,7 @@ export const useMoreTokenInfoModalModal = ({ onSuccess }: MoreTokenInfoModalProp
         <Layout.Vertical className={css.addTokenModalContainer}>
           <TokenDelegatesList tokenName={token} />
           <Layout.Horizontal className={css.moreInfoActionsContainer}>
-            <Button variation={ButtonVariation.TERTIARY} onClick={hideModal} intent="primary">
+            <Button variation={ButtonVariation.PRIMARY} onClick={hideModal} intent="primary">
               {getString('close')}
             </Button>
           </Layout.Horizontal>

@@ -2718,18 +2718,15 @@ exports[`Dependency InputSet View should render all fields 1`] = `
                 <div
                   class="group withoutAligning"
                 >
-                  <div
-                    style="flex-grow: 1;"
-                  >
+                  <div>
                     <p
-                      class="StyledProps--font StyledProps--main StyledProps--margin-bottom-xsmall"
+                      class="StyledProps--font StyledProps--main StyledProps--font-variation-form-label StyledProps--margin-bottom-xsmall"
                     >
                       keyLabel
                     </p>
                     <div
                       class="bp3-form-group"
                       data-id="spec.envVariables[0].key-4"
-                      style="margin: 0px;"
                     >
                       <div
                         class="bp3-form-content"
@@ -2748,11 +2745,9 @@ exports[`Dependency InputSet View should render all fields 1`] = `
                       </div>
                     </div>
                   </div>
-                  <div
-                    style="flex-grow: 1;"
-                  >
+                  <div>
                     <p
-                      class="StyledProps--font StyledProps--main StyledProps--margin-bottom-xsmall"
+                      class="StyledProps--font StyledProps--main StyledProps--font-variation-form-label StyledProps--margin-bottom-xsmall"
                     >
                       valueLabel
                     </p>
@@ -2762,7 +2757,6 @@ exports[`Dependency InputSet View should render all fields 1`] = `
                       <div
                         class="bp3-form-group"
                         data-id="spec.envVariables[0].value-5"
-                        style="flex-grow: 1;"
                       >
                         
                         <div

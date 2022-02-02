@@ -127,9 +127,7 @@ exports[`STUDIO MODE invalid input sets should not be applied 1`] = `
           >
             runPipeline
           </h2>
-          <div
-            class="noDisplay"
-          >
+          <div>
             <div
               class="bp3-popover-wrapper MultiSelectDropDown--main"
             >
@@ -627,9 +625,7 @@ exports[`STUDIO MODE should accept values from input sets and submit the form: a
           >
             runPipeline
           </h2>
-          <div
-            class="noDisplay"
-          >
+          <div>
             <div
               class="bp3-popover-wrapper MultiSelectDropDown--main"
             >

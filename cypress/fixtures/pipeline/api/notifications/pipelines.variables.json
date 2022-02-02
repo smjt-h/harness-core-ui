@@ -1,0 +1,35 @@
+{
+  "status":"SUCCESS",
+  "data":{
+    "yaml":"---\npipeline:\n  name: \"uFXrIYA7TwyPav9UkH2s2w\"\n  identifier: \"dsdsdsdds\"\n  allowStageExecutions: \"Q3fcpx5uQ3m_O9uth9Duag\"\n  projectIdentifier: \"hbxEVUBsSFyhIZSEnnjY0A\"\n  orgIdentifier: \"8LtV96CPRNeCofaHP7E68g\"\n  description: \"-Cn3II-ZSCGAYCWRQXABVA\"\n  tags:\n    __uuid: \"FFJQu_mFRI6km499KZCIZQ\"\n  notificationRules:\n  - name: \"cypress notification\"\n    pipelineEvents:\n    - type: \"AllEvents\"\n      __uuid: \"5DOqyid2QOuoj8uGGIADww\"\n    notificationMethod:\n      type: \"Email\"\n      spec:\n        userGroups: \"j2NFvGtYQxSpGCjGEGWj4A\"\n        recipients: \"SIw-mWZiQ6Of05ZIuK6xeg\"\n        __uuid: \"yBgqziHHR_6lN-T-cqjdEw\"\n      __uuid: \"ZM5wRiI0S2qb9dFYN-I1wA\"\n    enabled: \"nGtTfC8OSsSP4ttXqzaBTA\"\n    __uuid: \"W3X8eTHsTcK9J41kg7wntg\"\n  __uuid: \"wmmzYXBKS3OUY2nzaQ5qSA\"\n__uuid: \"Cx5h5oHZSMmUBOFFqH74aw\"\n",
+    "metadataMap":{
+      "uFXrIYA7TwyPav9UkH2s2w":{
+        "yamlProperties":{
+          "fqn":"pipeline.name",
+          "localName":"pipeline.name"
+        },
+        "yamlOutputProperties":null
+      },
+      "wmmzYXBKS3OUY2nzaQ5qSA":{
+        "yamlProperties":{
+          "fqn":"pipeline",
+          "localName":"pipeline"
+        },
+        "yamlOutputProperties":null
+      },
+      "-Cn3II-ZSCGAYCWRQXABVA":{
+        "yamlProperties":{
+          "fqn":"pipeline.description",
+          "localName":"pipeline.description"
+        },
+        "yamlOutputProperties":null
+      }
+    },
+    "errorResponses":null,
+    "serviceExpressionPropertiesList":[
+
+    ]
+  },
+  "metaData":null,
+  "correlationId":"d9d703af-2464-4975-b2c5-10ab8acb0919"
+}

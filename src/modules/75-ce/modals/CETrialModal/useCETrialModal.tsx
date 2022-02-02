@@ -6,7 +6,8 @@
  */
 
 import React from 'react'
-import { useModalHook, Button, Layout, Text, Color } from '@wings-software/uicore'
+import { Button, Layout, Text, Color } from '@wings-software/uicore'
+import { useModalHook } from '@harness/use-modal'
 import { Dialog } from '@blueprintjs/core'
 import cx from 'classnames'
 import moment from 'moment'

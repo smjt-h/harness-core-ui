@@ -330,7 +330,7 @@ const _fetchPipeline = async (props: FetchPipelineBoundProps, params: FetchPipel
   const { dispatch, queryParams, pipelineIdentifier: identifier, gitDetails } = props
   const { forceFetch = false, forceUpdate = false, newPipelineId, signal, repoIdentifier, branch } = params
   const pipelineId = newPipelineId || identifier
-  const id = getId(
+  let id = getId(
     queryParams.accountIdentifier,
     defaultTo(queryParams.orgIdentifier, ''),
     defaultTo(queryParams.projectIdentifier, ''),
@@ -339,13 +339,23 @@ const _fetchPipeline = async (props: FetchPipelineBoundProps, params: FetchPipel
     defaultTo(gitDetails.branch, '')
   )
   dispatch(PipelineContextActions.fetching())
-  const data: PipelinePayload = await IdbPipeline?.get(IdbPipelineStoreName, id)
+  let data: PipelinePayload = await IdbPipeline?.get(IdbPipelineStoreName, id)
   if ((!data || forceFetch) && pipelineId !== DefaultNewPipelineId) {
     const pipelineWithGitDetails: PipelineInfoConfigWithGitDetails = await getPipelineByIdentifier(
       { ...queryParams, ...(repoIdentifier && branch ? { repoIdentifier, branch } : {}) },
       pipelineId,
       signal
     )
+
+    id = getId(
+      queryParams.accountIdentifier,
+      defaultTo(queryParams.orgIdentifier, ''),
+      defaultTo(queryParams.projectIdentifier, ''),
+      pipelineId,
+      defaultTo(gitDetails.repoIdentifier, pipelineWithGitDetails?.gitDetails?.repoIdentifier ?? ''),
+      defaultTo(gitDetails.branch, pipelineWithGitDetails?.gitDetails?.branch ?? '')
+    )
+    data = await IdbPipeline?.get(IdbPipelineStoreName, id)
     const pipeline: PipelineInfoConfig = omit(
       pipelineWithGitDetails,
       'gitDetails',

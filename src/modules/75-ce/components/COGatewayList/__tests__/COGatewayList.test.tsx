@@ -6,8 +6,9 @@
  */
 
 import React from 'react'
-import { fireEvent, render, waitFor } from '@testing-library/react'
+import { fireEvent, render } from '@testing-library/react'
 import { act } from 'react-dom/test-utils'
+import * as lwServices from 'services/lw'
 import { TestWrapper } from '@common/utils/testUtils'
 import COGatewayList from '../COGatewayList'
 
@@ -102,6 +103,18 @@ const listData = {
   ]
 }
 
+const mockedCumulativeSavingsData = {
+  actual_cost: [],
+  days: [],
+  potential_cost: [],
+  savings: [],
+  savings_percent: 0,
+  total_active_services: 1,
+  total_cost: 0,
+  total_potential: 0,
+  total_savings: 0
+}
+
 jest.mock('services/lw', () => ({
   useAllServiceResources: jest.fn().mockImplementation(() => ({
     data: null,
@@ -112,7 +125,12 @@ jest.mock('services/lw', () => ({
     data: listData,
     loading: false,
     error: null,
-    refetch: jest.fn()
+    refetch: jest.fn().mockImplementation(() =>
+      Promise.resolve({
+        data: listData,
+        loading: false
+      })
+    )
   })),
   useHealthOfService: jest.fn().mockImplementation(() => ({
     data: null,
@@ -130,7 +148,8 @@ jest.mock('services/lw', () => ({
     data: null
   })),
   useCumulativeServiceSavings: jest.fn().mockImplementation(() => ({
-    data: null
+    data: { response: mockedCumulativeSavingsData },
+    loading: false
   })),
   useToggleAutostoppingRule: jest.fn().mockImplementation(() => ({
     mutate: jest.fn()
@@ -179,17 +198,37 @@ describe('Test COGatewayList', () => {
   })
 
   test('clicking on refresh button refetch all rules', async () => {
-    const { container } = render(
+    const { container, getByTestId } = render(
       <TestWrapper path={testpath} pathParams={testparams}>
         <COGatewayList></COGatewayList>
       </TestWrapper>
     )
 
-    const refreshIcon = container.querySelector('.refreshIconContainer')
+    const refreshIcon = getByTestId('refreshIconContainer')
     expect(refreshIcon).toBeDefined()
-    await waitFor(() => {
+    act(() => {
       fireEvent.click(refreshIcon!)
     })
     expect(container).toMatchSnapshot()
+  })
+
+  describe('render based on the content', () => {
+    test('render page loader on initial loading', () => {
+      jest.spyOn(lwServices, 'useGetServices').mockImplementation(
+        () =>
+          ({
+            data: null,
+            loading: false,
+            error: null,
+            refetch: jest.fn()
+          } as any)
+      )
+      const { container } = render(
+        <TestWrapper>
+          <COGatewayList />
+        </TestWrapper>
+      )
+      expect(container).toMatchSnapshot()
+    })
   })
 })

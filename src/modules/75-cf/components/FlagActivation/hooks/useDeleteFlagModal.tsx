@@ -1,6 +1,7 @@
 import React from 'react'
 import { useHistory, useParams } from 'react-router-dom'
-import { useModalHook, useToaster, Text, Intent } from '@wings-software/uicore'
+import { useToaster, Text, Intent } from '@wings-software/uicore'
+import { useModalHook } from '@harness/use-modal'
 import type { MutateRequestOptions } from 'restful-react/dist/Mutate'
 import { useStrings } from 'framework/strings'
 import routes from '@common/RouteDefinitions'

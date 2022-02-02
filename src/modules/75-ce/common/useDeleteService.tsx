@@ -11,8 +11,6 @@ import { useStrings } from 'framework/strings'
 import { Service, useDeleteService } from 'services/lw'
 
 interface UseDeleteServiceHookProps {
-  orgIdentifier: string
-  projectIdentifier: string
   serviceData: Service
   accountId: string
   onSuccess?: (data: Service) => void

@@ -8,7 +8,7 @@
 import * as yup from 'yup'
 import type { StringSchema, Lazy, ArraySchema, Schema } from 'yup'
 import type { FormikErrors } from 'formik'
-import { getMultiTypeFromValue, MultiTypeInputType } from '@wings-software/uicore'
+import { getMultiTypeFromValue, MultiTypeInputType, RUNTIME_INPUT_VALUE } from '@wings-software/uicore'
 import { get, set, uniq, uniqBy, isEmpty, isUndefined } from 'lodash-es'
 import type { UseStringsReturn, StringKeys } from 'framework/strings'
 import { getDurationValidationSchema } from '@common/components/MultiTypeDuration/MultiTypeDuration'
@@ -127,8 +127,10 @@ function generateSchemaForList(
       if (Array.isArray(value)) {
         let schema = yup.array().test('valuesShouldBeUnique', getString('validation.uniqueValues'), list => {
           if (!list) return true
-
-          return uniqBy(list, 'value').length === list.length
+          const listWithoutRuntimeInput = (list as Array<{ id: string; value: string }>).filter(
+            item => item?.value !== 'undefined' && item?.value !== RUNTIME_INPUT_VALUE
+          )
+          return uniqBy(listWithoutRuntimeInput, 'value').length === listWithoutRuntimeInput.length
         })
 
         if (Array.isArray(value) && isRequired && label) {
@@ -136,6 +138,13 @@ function generateSchemaForList(
             .ensure()
             .compact((val: any) => !val?.value)
             .min(1, getString('fieldRequired', { field: getString(label as StringKeys) }))
+            .test(
+              'runtimeInputNotSupported',
+              getString('pipeline.runtimeInputNotSupported', { field: getString(label as StringKeys) }),
+              list =>
+                (list as Array<{ id: string; value: string }>).filter(item => item?.value === RUNTIME_INPUT_VALUE)
+                  ?.length === 0
+            )
         }
 
         return schema

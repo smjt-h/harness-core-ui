@@ -16,7 +16,6 @@ interface UsePlanEnforcement {
 const usePlanEnforcement = (): UsePlanEnforcement => {
   const { FFM_1859, FEATURE_ENFORCEMENT_ENABLED } = useFeatureFlags()
   const license = useLicenseStore()
-
   const isFreePlan = license.licenseInformation.CF?.edition === 'FREE'
 
   return {

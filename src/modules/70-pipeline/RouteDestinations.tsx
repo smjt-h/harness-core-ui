@@ -104,10 +104,12 @@ LandingDashboardFactory.registerModuleDashboardHandler(ModuleName.CD, {
 /**
  * Register for Audit Trail
  * */
+const cdLabel = 'common.purpose.cd.continuous'
 AuditTrailFactory.registerResourceHandler(ResourceType.PIPELINE, {
   moduleIcon: {
     name: 'cd-main'
   },
+  moduleIconLabel: cdLabel,
   resourceUrl: (_: ResourceDTO, resourceScope: ResourceScope, module?: Module) => {
     const { accountIdentifier, orgIdentifier, projectIdentifier } = resourceScope
     if (module && orgIdentifier && projectIdentifier) {
@@ -126,6 +128,7 @@ AuditTrailFactory.registerResourceHandler(ResourceType.SERVICE, {
   moduleIcon: {
     name: 'cd-main'
   },
+  moduleIconLabel: cdLabel,
   resourceUrl: (_: ResourceDTO, resourceScope: ResourceScope, module?: Module) => {
     const { accountIdentifier, orgIdentifier, projectIdentifier } = resourceScope
     if (module && orgIdentifier && projectIdentifier) {
@@ -143,5 +146,6 @@ AuditTrailFactory.registerResourceHandler(ResourceType.SERVICE, {
 AuditTrailFactory.registerResourceHandler(ResourceType.ENVIRONMENT, {
   moduleIcon: {
     name: 'cd-main'
-  }
+  },
+  moduleIconLabel: cdLabel
 })

@@ -22,9 +22,9 @@ import {
   SelectOption,
   SimpleTagInput,
   Text,
-  TextInput,
-  useModalHook
+  TextInput
 } from '@wings-software/uicore'
+import { useModalHook } from '@harness/use-modal'
 import { isEqual, omit } from 'lodash-es'
 import { Dialog, Divider, Spinner } from '@blueprintjs/core'
 import { useToaster } from '@common/exports'

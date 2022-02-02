@@ -152,7 +152,7 @@ describe('CreateTargetModal', () => {
     await waitFor(() => {
       const createTargetModal = screen.getByText('cf.targets.addTargetsLabel')
       expect(createTargetModal).toBeInTheDocument()
-      expect(screen.queryByText('cf.planEnforcement.upgradeRequired')).not.toBeInTheDocument()
+      expect(screen.queryByText('cf.planEnforcement.upgradeRequiredMau')).not.toBeInTheDocument()
     })
   })
 
@@ -167,7 +167,7 @@ describe('CreateTargetModal', () => {
     const createTargetButton = screen.getByRole('button', { name: 'cf.targets.create' })
     fireEvent.mouseOver(createTargetButton)
     await waitFor(() => {
-      expect(screen.getByText('cf.planEnforcement.upgradeRequired')).toBeInTheDocument()
+      expect(screen.getByText('cf.planEnforcement.upgradeRequiredMau')).toBeInTheDocument()
       expect(createTargetButton).toHaveClass('bp3-disabled')
     })
   })

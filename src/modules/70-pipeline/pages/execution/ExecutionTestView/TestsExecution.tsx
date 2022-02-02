@@ -20,12 +20,12 @@ import {
   Icon,
   Color,
   Button,
-  useModalHook,
   FlexExpander,
   TextInput,
   PageError,
   HarnessDocTooltip
 } from '@wings-software/uicore'
+import { useModalHook } from '@harness/use-modal'
 import { get, noop, omit, debounce } from 'lodash-es'
 import cx from 'classnames'
 import { useStrings } from 'framework/strings'

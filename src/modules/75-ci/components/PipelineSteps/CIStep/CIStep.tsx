@@ -121,15 +121,17 @@ export const CIStep: React.FC<CIStepProps> = props => {
       ) : null}
       <Container className={cx(css.formGroup, stepCss)}>
         {Object.prototype.hasOwnProperty.call(enableFields, 'description') ? (
-          <FormMultiTypeTextAreaField
-            name={`${prefix}description`}
-            label={
-              <Text color={Color.GREY_600} font={{ size: 'small', weight: 'semi-bold' }}>
-                {getString('description')}
-              </Text>
-            }
-            multiTypeTextArea={{ expressions, allowableTypes, disabled: readonly }}
-          />
+          <>
+            <FormMultiTypeTextAreaField
+              name={`${prefix}description`}
+              label={
+                <Text color={Color.GREY_600} font={{ size: 'small', weight: 'semi-bold' }}>
+                  {getString('description')}
+                </Text>
+              }
+              multiTypeTextArea={{ expressions, allowableTypes, disabled: readonly }}
+            />
+          </>
         ) : null}
       </Container>
       {!enableFields['spec.connectorRef']?.shouldHide &&

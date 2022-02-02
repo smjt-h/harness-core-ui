@@ -6,7 +6,7 @@
  */
 
 import React from 'react'
-import { useModalHook } from '@wings-software/uicore'
+import { useModalHook } from '@harness/use-modal'
 import type { FixedScheduleClient } from '@ce/components/COCreateGateway/models'
 import FixedScheduleDialog from './FixedScheduleDialog'
 import FixedScheduleForm from './FixedScheduleForm'

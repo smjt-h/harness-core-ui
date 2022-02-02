@@ -36,10 +36,12 @@ RbacFactory.registerResourceTypeHandler(ResourceType.CONNECTOR, {
   addResourceModalBody: props => <ConnectorResourceModalBody {...props} />
 })
 
+const platformLabel = 'auditTrail.Platform'
 AuditTrailFactory.registerResourceHandler('CONNECTOR', {
   moduleIcon: {
     name: 'nav-settings'
   },
+  moduleIconLabel: platformLabel,
   resourceUrl: (resource: ResourceDTO, resourceScope: ResourceScope) => {
     const { accountIdentifier, orgIdentifier, projectIdentifier } = resourceScope
 

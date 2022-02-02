@@ -7,7 +7,8 @@
 
 import React, { useCallback, useState } from 'react'
 import { isNil } from 'lodash-es'
-import { useModalHook, StepWizard, Button, MultiSelectOption } from '@wings-software/uicore'
+import { StepWizard, Button, MultiSelectOption } from '@wings-software/uicore'
+import { useModalHook } from '@harness/use-modal'
 import { Dialog, Classes } from '@blueprintjs/core'
 import cx from 'classnames'
 import type { NotificationRules } from 'services/pipeline-ng'

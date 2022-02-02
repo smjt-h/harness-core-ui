@@ -9,7 +9,7 @@ import React from 'react'
 import { Route as RouterRoute } from 'react-router-dom'
 import type { RouteProps as RouterRouteprops } from 'react-router-dom'
 
-import { ModalProvider } from '@wings-software/uicore'
+import { ModalProvider } from '@harness/use-modal'
 import { DefaultLayout } from '@common/layouts'
 import SidebarProvider, { SidebarContext } from '@common/navigation/SidebarProvider'
 import { useLicenseStore } from 'framework/LicenseStore/LicenseStoreContext'

@@ -646,13 +646,7 @@ export interface Alert {
   type?:
     | 'ApprovalNeeded'
     | 'ManualInterventionNeeded'
-    | 'NoActiveDelegates'
-    | 'NoInstalledDelegates'
     | 'DelegatesDown'
-    | 'DelegatesScalingGroupDownAlert'
-    | 'DelegateProfileError'
-    | 'NoEligibleDelegates'
-    | 'PerpetualTaskAlert'
     | 'InvalidKMS'
     | 'GitSyncError'
     | 'GitConnectionError'
@@ -681,13 +675,7 @@ export interface AlertFilter {
   alertType?:
     | 'ApprovalNeeded'
     | 'ManualInterventionNeeded'
-    | 'NoActiveDelegates'
-    | 'NoInstalledDelegates'
     | 'DelegatesDown'
-    | 'DelegatesScalingGroupDownAlert'
-    | 'DelegateProfileError'
-    | 'NoEligibleDelegates'
-    | 'PerpetualTaskAlert'
     | 'InvalidKMS'
     | 'GitSyncError'
     | 'GitConnectionError'
@@ -745,13 +733,7 @@ export interface AlertType {
   alertType?:
     | 'ApprovalNeeded'
     | 'ManualInterventionNeeded'
-    | 'NoActiveDelegates'
-    | 'NoInstalledDelegates'
     | 'DelegatesDown'
-    | 'DelegatesScalingGroupDownAlert'
-    | 'DelegateProfileError'
-    | 'NoEligibleDelegates'
-    | 'PerpetualTaskAlert'
     | 'InvalidKMS'
     | 'GitSyncError'
     | 'GitConnectionError'
@@ -845,6 +827,10 @@ export interface AppEnvRestriction {
   envFilter?: EnvFilter
 }
 
+export type AppFilter = Filter & {
+  filterType?: string
+}
+
 export interface AppPermission {
   actions?: (
     | 'ALL'
@@ -858,7 +844,7 @@ export interface AppPermission {
     | 'EXECUTE_WORKFLOW_ROLLBACK'
     | 'DEFAULT'
   )[]
-  appFilter?: GenericEntityFilter
+  appFilter?: AppFilter
   entityFilter?: Filter
   permissionType?:
     | 'ACCOUNT'
@@ -1237,6 +1223,7 @@ export interface ApplicationManifest {
   createdAt?: number
   createdBy?: EmbeddedUser
   customSourceConfig?: CustomSourceConfig
+  enableCollection?: boolean
   envId?: string
   failedAttempts?: number
   gitFileConfig?: GitFileConfig
@@ -1662,26 +1649,16 @@ export interface AuditHeaderYamlResponse {
   oldYamlPath?: string
 }
 
-export interface AuditPreference {
+export type AuditPreference = Preference & {
   accountAuditFilter?: AccountAuditFilter
-  accountId?: string
-  appId: string
   applicationAuditFilter?: ApplicationAuditFilter
-  createdAt?: number
-  createdBy?: EmbeddedUser
   createdByUserIds?: string[]
   endTime?: string
   includeAccountLevelResources?: boolean
   includeAppLevelResources?: boolean
   lastNDays?: number
-  lastUpdatedAt: number
-  lastUpdatedBy?: EmbeddedUser
-  name?: string
   operationTypes?: string[]
-  preferenceType?: string
   startTime?: string
-  userId?: string
-  uuid: string
 }
 
 export interface AuditPreferenceResponse {
@@ -1689,6 +1666,14 @@ export interface AuditPreferenceResponse {
   resourceLookupMap?: {
     [key: string]: ResourceLookup
   }
+}
+
+export interface AuthenticationInfo {
+  accountId?: string
+  authenticationMechanism?: 'USER_PASSWORD' | 'SAML' | 'LDAP' | 'OAUTH'
+  oauthEnabled?: boolean
+  oauthProviders?: ('AZURE' | 'BITBUCKET' | 'GITHUB' | 'GITLAB' | 'GOOGLE' | 'LINKEDIN')[]
+  samlRedirectUrl?: string
 }
 
 export type AwsAmiInfrastructure = InfraMappingInfrastructureProvider & {
@@ -2279,6 +2264,7 @@ export interface Budget {
   lastMonthCost?: number
   lastUpdatedAt?: number
   name?: string
+  ngBudget?: boolean
   notifyOnSlack?: boolean
   period?: 'DAILY' | 'WEEKLY' | 'MONTHLY' | 'QUARTERLY' | 'YEARLY'
   scope?: BudgetScope
@@ -3606,6 +3592,7 @@ export interface ConfigFile {
     | 'AZURE_VAULT'
     | 'KUBERNETES_CLUSTER_NG'
     | 'GIT_NG'
+    | 'SSO_SAML'
     | 'GCP_SECRETS_MANAGER'
     | 'TRIGGER'
   size?: number
@@ -3675,6 +3662,7 @@ export interface ConnectorInfoDTO {
     | 'PagerDuty'
     | 'CustomHealth'
     | 'ServiceNow'
+    | 'ErrorTracking'
 }
 
 export interface ConnectorValidationResult {
@@ -4705,6 +4693,7 @@ export interface DelegateFile {
     | 'TERRAFORM_STATE'
     | 'PROFILE_RESULTS'
     | 'TERRAFORM_PLAN'
+    | 'TERRAFORM_PLAN_JSON'
     | 'EXPORT_EXECUTIONS'
   checksum?: string
   checksumType?: 'MD5' | 'SHA1' | 'SHA256'
@@ -4981,6 +4970,7 @@ export interface DelegateScope {
     | 'AZURE_VMSS'
     | 'AZURE_APP_SERVICE'
     | 'AZURE_ARM'
+    | 'AZURE_RESOURCE'
     | 'ELK'
     | 'LOGZ'
     | 'SUMO'
@@ -5162,6 +5152,14 @@ export interface DelegateTokenDetails {
   status?: 'ACTIVE' | 'REVOKED'
   uuid?: string
   value?: string
+}
+
+export interface DelegateUnregisterRequest {
+  delegateId?: string
+  delegateType?: string
+  hostName?: string
+  ipAddress?: string
+  ng?: boolean
 }
 
 export interface DeploymentFreezeInfo {
@@ -5831,6 +5829,7 @@ export interface EncryptableSetting {
     | 'AZURE_VAULT'
     | 'KUBERNETES_CLUSTER_NG'
     | 'GIT_NG'
+    | 'SSO_SAML'
     | 'GCP_SECRETS_MANAGER'
     | 'TRIGGER'
 }
@@ -5972,6 +5971,7 @@ export interface EncryptedData {
     | 'AZURE_VAULT'
     | 'KUBERNETES_CLUSTER_NG'
     | 'GIT_NG'
+    | 'SSO_SAML'
     | 'GCP_SECRETS_MANAGER'
     | 'TRIGGER'
   usageRestrictions?: UsageRestrictions
@@ -6065,6 +6065,7 @@ export interface EncryptedDataParent {
     | 'AZURE_VAULT'
     | 'KUBERNETES_CLUSTER_NG'
     | 'GIT_NG'
+    | 'SSO_SAML'
     | 'GCP_SECRETS_MANAGER'
     | 'TRIGGER'
 }
@@ -6487,6 +6488,13 @@ export interface ErrorDetail {
   code?: number
   message?: string
   reason?: string
+}
+
+export type ErrorTrackingConnectorDTO = ConnectorConfigDTO & {
+  apiKeyRef: string
+  delegateSelectors?: string[]
+  sid: string
+  url: string
 }
 
 export interface ExecutionArgs {
@@ -7127,6 +7135,7 @@ export interface GcpBillingAccount {
 
 export interface GcpBillingExportSpec {
   datasetId: string
+  tableId: string
 }
 
 export type GcpCloudCostConnector = ConnectorConfigDTO & {
@@ -8469,6 +8478,7 @@ export interface InfrastructureMapping {
     | 'AZURE_VAULT'
     | 'KUBERNETES_CLUSTER_NG'
     | 'GIT_NG'
+    | 'SSO_SAML'
     | 'GCP_SECRETS_MANAGER'
     | 'TRIGGER'
   uuid: string
@@ -9094,6 +9104,7 @@ export interface InstanceExecutionHistory {
     | 'TIMESCALE_NOT_AVAILABLE'
     | 'MIGRATION_EXCEPTION'
     | 'REQUEST_PROCESSING_INTERRUPTED'
+    | 'SECRET_MANAGER_ID_NOT_FOUND'
     | 'GCP_SECRET_MANAGER_OPERATION_ERROR'
     | 'GCP_SECRET_OPERATION_ERROR'
     | 'GIT_OPERATION_ERROR'
@@ -9124,10 +9135,11 @@ export interface InstanceExecutionHistory {
     | 'ENGINE_FUNCTOR_ERROR'
     | 'JIRA_CLIENT_ERROR'
     | 'SCM_NOT_MODIFIED'
-    | 'JIRA_STEP_ERROR'
+    | 'APPROVAL_STEP_NG_ERROR'
     | 'BUCKET_SERVER_ERROR'
     | 'GIT_SYNC_ERROR'
     | 'TEMPLATE_EXCEPTION'
+    | 'ENTITY_REFERENCE_EXCEPTION'
   executionInterruptType?:
     | 'ABORT'
     | 'ABORT_ALL'
@@ -9402,6 +9414,7 @@ export interface JiraConfig {
     | 'AZURE_VAULT'
     | 'KUBERNETES_CLUSTER_NG'
     | 'GIT_NG'
+    | 'SSO_SAML'
     | 'GCP_SECRETS_MANAGER'
     | 'TRIGGER'
   type?: string
@@ -11543,13 +11556,6 @@ export interface Pair {
   value?: { [key: string]: any }
 }
 
-export interface PairBooleanString {
-  key?: boolean
-  left?: boolean
-  right?: string
-  value?: string
-}
-
 export interface PairDelegateInsightsTypeLong {
   key?: 'SUCCESSFUL' | 'FAILED' | 'IN_PROGRESS' | 'PERPETUAL_TASK_ASSIGNED'
   left?: 'SUCCESSFUL' | 'FAILED' | 'IN_PROGRESS' | 'PERPETUAL_TASK_ASSIGNED'
@@ -12786,6 +12792,7 @@ export interface ResponseMessage {
     | 'TIMESCALE_NOT_AVAILABLE'
     | 'MIGRATION_EXCEPTION'
     | 'REQUEST_PROCESSING_INTERRUPTED'
+    | 'SECRET_MANAGER_ID_NOT_FOUND'
     | 'GCP_SECRET_MANAGER_OPERATION_ERROR'
     | 'GCP_SECRET_OPERATION_ERROR'
     | 'GIT_OPERATION_ERROR'
@@ -12816,10 +12823,11 @@ export interface ResponseMessage {
     | 'ENGINE_FUNCTOR_ERROR'
     | 'JIRA_CLIENT_ERROR'
     | 'SCM_NOT_MODIFIED'
-    | 'JIRA_STEP_ERROR'
+    | 'APPROVAL_STEP_NG_ERROR'
     | 'BUCKET_SERVER_ERROR'
     | 'GIT_SYNC_ERROR'
     | 'TEMPLATE_EXCEPTION'
+    | 'ENTITY_REFERENCE_EXCEPTION'
   exception?: Throwable
   failureTypes?: (
     | 'EXPIRED'
@@ -13014,6 +13022,14 @@ export interface RestResponseAuditPreferenceResponse {
     [key: string]: { [key: string]: any }
   }
   resource?: AuditPreferenceResponse
+  responseMessages?: ResponseMessage[]
+}
+
+export interface RestResponseAuthenticationInfo {
+  metaData?: {
+    [key: string]: { [key: string]: any }
+  }
+  resource?: AuthenticationInfo
   responseMessages?: ResponseMessage[]
 }
 
@@ -13524,6 +13540,14 @@ export interface RestResponseHarnessUserGroup {
     [key: string]: { [key: string]: any }
   }
   resource?: HarnessUserGroup
+  responseMessages?: ResponseMessage[]
+}
+
+export interface RestResponseHelmChart {
+  metaData?: {
+    [key: string]: { [key: string]: any }
+  }
+  resource?: HelmChart
   responseMessages?: ResponseMessage[]
 }
 
@@ -14266,6 +14290,14 @@ export interface RestResponseListHeatMap {
   responseMessages?: ResponseMessage[]
 }
 
+export interface RestResponseListHelmChart {
+  metaData?: {
+    [key: string]: { [key: string]: any }
+  }
+  resource?: HelmChart[]
+  responseMessages?: ResponseMessage[]
+}
+
 export interface RestResponseListHostValidationResponse {
   metaData?: {
     [key: string]: { [key: string]: any }
@@ -14756,6 +14788,7 @@ export interface RestResponseMapDeploymentTypeListSettingVariableTypes {
       | 'AZURE_VAULT'
       | 'KUBERNETES_CLUSTER_NG'
       | 'GIT_NG'
+      | 'SSO_SAML'
       | 'GCP_SECRETS_MANAGER'
       | 'TRIGGER'
     )[]
@@ -15483,14 +15516,6 @@ export interface RestResponsePageResponseWorkflowExecution {
   responseMessages?: ResponseMessage[]
 }
 
-export interface RestResponsePairBooleanString {
-  metaData?: {
-    [key: string]: { [key: string]: any }
-  }
-  resource?: PairBooleanString
-  responseMessages?: ResponseMessage[]
-}
-
 export interface RestResponsePcfServiceSpecification {
   metaData?: {
     [key: string]: { [key: string]: any }
@@ -15924,6 +15949,14 @@ export interface RestResponseTwoFactorAuthenticationSettings {
     [key: string]: { [key: string]: any }
   }
   resource?: TwoFactorAuthenticationSettings
+  responseMessages?: ResponseMessage[]
+}
+
+export interface RestResponseUpgradeCheckResult {
+  metaData?: {
+    [key: string]: { [key: string]: any }
+  }
+  resource?: UpgradeCheckResult
   responseMessages?: ResponseMessage[]
 }
 
@@ -16371,6 +16404,7 @@ export type ScheduledTriggerCondition = TriggerCondition & {
 export interface ScimGroup {
   displayName?: string
   externalId?: string
+  harnessScopes?: string
   id?: string
   members?: Member[]
   meta?: JsonNode
@@ -16652,6 +16686,7 @@ export interface SecretSetupUsage {
     | 'AZURE_VAULT'
     | 'KUBERNETES_CLUSTER_NG'
     | 'GIT_NG'
+    | 'SSO_SAML'
     | 'GCP_SECRETS_MANAGER'
     | 'TRIGGER'
 }
@@ -17312,6 +17347,7 @@ export interface ServiceVariable {
     | 'AZURE_VAULT'
     | 'KUBERNETES_CLUSTER_NG'
     | 'GIT_NG'
+    | 'SSO_SAML'
     | 'GCP_SECRETS_MANAGER'
     | 'TRIGGER'
   templateId?: string
@@ -17429,6 +17465,7 @@ export interface SettingValue {
     | 'AZURE_VAULT'
     | 'KUBERNETES_CLUSTER_NG'
     | 'GIT_NG'
+    | 'SSO_SAML'
     | 'GCP_SECRETS_MANAGER'
     | 'TRIGGER'
   type?: string
@@ -18606,6 +18643,7 @@ export interface TaskSelectorMap {
     | 'AZURE_VMSS'
     | 'AZURE_APP_SERVICE'
     | 'AZURE_ARM'
+    | 'AZURE_RESOURCE'
     | 'ELK'
     | 'LOGZ'
     | 'SUMO'
@@ -19206,6 +19244,11 @@ export interface TwoFactorAuthenticationSettings {
 
 export interface UpdatePasswordRequest {
   password?: string
+}
+
+export interface UpgradeCheckResult {
+  imageTag?: string
+  shouldUpgrade?: boolean
 }
 
 export interface Usage {
@@ -20242,6 +20285,7 @@ export interface YamlGitConfig {
     | 'AZURE_VAULT'
     | 'KUBERNETES_CLUSTER_NG'
     | 'GIT_NG'
+    | 'SSO_SAML'
     | 'GCP_SECRETS_MANAGER'
     | 'TRIGGER'
   sshSettingId?: string
@@ -20561,13 +20605,13 @@ export type YamlPayloadRequestBody = YamlPayload
 
 export type GcpSignUpRequestBody = void
 
+export type GetDelegatePropertiesBodyRequestBody = string[]
+
 export type ImportAccountDataRequestBody = void
 
-export type SaveApiCallLogsBodyRequestBody = string[]
-
-export type SaveGcpSecretsManagerConfigRequestBody = void
-
 export type SaveGcpSecretsManagerConfig1RequestBody = void
+
+export type SaveGlobalKmsConfigRequestBody = void
 
 export interface SaveMessageComparisonListBodyRequestBody {
   [key: string]: string
@@ -20577,11 +20621,11 @@ export interface UpdateAccountPreferenceBodyRequestBody {
   [key: string]: any
 }
 
+export type UpdatePlatformRequestBody = void
+
 export type UpdateWhitelistedDomainsBodyRequestBody = string[]
 
-export type Update29RequestBody = void
-
-export type UploadPlatformRequestBody = void
+export type Update30RequestBody = void
 
 export type UploadSamlMetaDataRequestBody = void
 
@@ -21228,6 +21272,137 @@ export const save6Promise = (
     signal
   )
 
+export interface GetDelegateTokensQueryParams {
+  accountId: string
+  orgIdentifier?: string
+  projectIdentifier?: string
+  status?: 'ACTIVE' | 'REVOKED'
+}
+
+export type GetDelegateTokensProps = Omit<
+  GetProps<RestResponseListDelegateTokenDetails, unknown, GetDelegateTokensQueryParams, void>,
+  'path'
+>
+
+export const GetDelegateTokens = (props: GetDelegateTokensProps) => (
+  <Get<RestResponseListDelegateTokenDetails, unknown, GetDelegateTokensQueryParams, void>
+    path={`/ng/delegate-token`}
+    base={getConfig('api')}
+    {...props}
+  />
+)
+
+export type UseGetDelegateTokensProps = Omit<
+  UseGetProps<RestResponseListDelegateTokenDetails, unknown, GetDelegateTokensQueryParams, void>,
+  'path'
+>
+
+export const useGetDelegateTokens = (props: UseGetDelegateTokensProps) =>
+  useGet<RestResponseListDelegateTokenDetails, unknown, GetDelegateTokensQueryParams, void>(`/ng/delegate-token`, {
+    base: getConfig('api'),
+    ...props
+  })
+
+export const getDelegateTokensPromise = (
+  props: GetUsingFetchProps<RestResponseListDelegateTokenDetails, unknown, GetDelegateTokensQueryParams, void>,
+  signal?: RequestInit['signal']
+) =>
+  getUsingFetch<RestResponseListDelegateTokenDetails, unknown, GetDelegateTokensQueryParams, void>(
+    getConfig('api'),
+    `/ng/delegate-token`,
+    props,
+    signal
+  )
+
+export interface CreateDelegateTokenQueryParams {
+  accountId: string
+  orgIdentifier?: string
+  projectIdentifier?: string
+  tokenName: string
+}
+
+export type CreateDelegateTokenProps = Omit<
+  MutateProps<RestResponseDelegateTokenDetails, unknown, CreateDelegateTokenQueryParams, void, void>,
+  'path' | 'verb'
+>
+
+export const CreateDelegateToken = (props: CreateDelegateTokenProps) => (
+  <Mutate<RestResponseDelegateTokenDetails, unknown, CreateDelegateTokenQueryParams, void, void>
+    verb="POST"
+    path={`/ng/delegate-token`}
+    base={getConfig('api')}
+    {...props}
+  />
+)
+
+export type UseCreateDelegateTokenProps = Omit<
+  UseMutateProps<RestResponseDelegateTokenDetails, unknown, CreateDelegateTokenQueryParams, void, void>,
+  'path' | 'verb'
+>
+
+export const useCreateDelegateToken = (props: UseCreateDelegateTokenProps) =>
+  useMutate<RestResponseDelegateTokenDetails, unknown, CreateDelegateTokenQueryParams, void, void>(
+    'POST',
+    `/ng/delegate-token`,
+    { base: getConfig('api'), ...props }
+  )
+
+export const createDelegateTokenPromise = (
+  props: MutateUsingFetchProps<RestResponseDelegateTokenDetails, unknown, CreateDelegateTokenQueryParams, void, void>,
+  signal?: RequestInit['signal']
+) =>
+  mutateUsingFetch<RestResponseDelegateTokenDetails, unknown, CreateDelegateTokenQueryParams, void, void>(
+    'POST',
+    getConfig('api'),
+    `/ng/delegate-token`,
+    props,
+    signal
+  )
+
+export interface RevokeDelegateTokenQueryParams {
+  accountId: string
+  orgIdentifier?: string
+  projectIdentifier?: string
+  tokenName: string
+}
+
+export type RevokeDelegateTokenProps = Omit<
+  MutateProps<RestResponseVoid, unknown, RevokeDelegateTokenQueryParams, void, void>,
+  'path' | 'verb'
+>
+
+export const RevokeDelegateToken = (props: RevokeDelegateTokenProps) => (
+  <Mutate<RestResponseVoid, unknown, RevokeDelegateTokenQueryParams, void, void>
+    verb="PUT"
+    path={`/ng/delegate-token`}
+    base={getConfig('api')}
+    {...props}
+  />
+)
+
+export type UseRevokeDelegateTokenProps = Omit<
+  UseMutateProps<RestResponseVoid, unknown, RevokeDelegateTokenQueryParams, void, void>,
+  'path' | 'verb'
+>
+
+export const useRevokeDelegateToken = (props: UseRevokeDelegateTokenProps) =>
+  useMutate<RestResponseVoid, unknown, RevokeDelegateTokenQueryParams, void, void>('PUT', `/ng/delegate-token`, {
+    base: getConfig('api'),
+    ...props
+  })
+
+export const revokeDelegateTokenPromise = (
+  props: MutateUsingFetchProps<RestResponseVoid, unknown, RevokeDelegateTokenQueryParams, void, void>,
+  signal?: RequestInit['signal']
+) =>
+  mutateUsingFetch<RestResponseVoid, unknown, RevokeDelegateTokenQueryParams, void, void>(
+    'PUT',
+    getConfig('api'),
+    `/ng/delegate-token`,
+    props,
+    signal
+  )
+
 export interface GetSelectionLogsV2QueryParams {
   accountId?: string
   taskId?: string
@@ -21315,17 +21490,17 @@ export const getListServicesPromise = (
     signal
   )
 
-export interface Save15QueryParams {
+export interface Save16QueryParams {
   appId?: string
 }
 
-export type Save15Props = Omit<
-  MutateProps<RestResponseService, unknown, Save15QueryParams, ServiceRequestBody, void>,
+export type Save16Props = Omit<
+  MutateProps<RestResponseService, unknown, Save16QueryParams, ServiceRequestBody, void>,
   'path' | 'verb'
 >
 
-export const Save15 = (props: Save15Props) => (
-  <Mutate<RestResponseService, unknown, Save15QueryParams, ServiceRequestBody, void>
+export const Save16 = (props: Save16Props) => (
+  <Mutate<RestResponseService, unknown, Save16QueryParams, ServiceRequestBody, void>
     verb="POST"
     path={`/services`}
     base={getConfig('api')}
@@ -21333,22 +21508,22 @@ export const Save15 = (props: Save15Props) => (
   />
 )
 
-export type UseSave15Props = Omit<
-  UseMutateProps<RestResponseService, unknown, Save15QueryParams, ServiceRequestBody, void>,
+export type UseSave16Props = Omit<
+  UseMutateProps<RestResponseService, unknown, Save16QueryParams, ServiceRequestBody, void>,
   'path' | 'verb'
 >
 
-export const useSave15 = (props: UseSave15Props) =>
-  useMutate<RestResponseService, unknown, Save15QueryParams, ServiceRequestBody, void>('POST', `/services`, {
+export const useSave16 = (props: UseSave16Props) =>
+  useMutate<RestResponseService, unknown, Save16QueryParams, ServiceRequestBody, void>('POST', `/services`, {
     base: getConfig('api'),
     ...props
   })
 
-export const save15Promise = (
-  props: MutateUsingFetchProps<RestResponseService, unknown, Save15QueryParams, ServiceRequestBody, void>,
+export const save16Promise = (
+  props: MutateUsingFetchProps<RestResponseService, unknown, Save16QueryParams, ServiceRequestBody, void>,
   signal?: RequestInit['signal']
 ) =>
-  mutateUsingFetch<RestResponseService, unknown, Save15QueryParams, ServiceRequestBody, void>(
+  mutateUsingFetch<RestResponseService, unknown, Save16QueryParams, ServiceRequestBody, void>(
     'POST',
     getConfig('api'),
     `/services`,
@@ -21594,6 +21769,50 @@ export const getDelegatesDownloadUrlPromise = (
   getUsingFetch<RestResponseMapStringString, unknown, GetDelegatesDownloadUrlQueryParams, void>(
     getConfig('api'),
     `/setup/delegates/downloadUrl`,
+    props,
+    signal
+  )
+
+export interface GenerateKubernetesYamlQueryParams {
+  accountId?: string
+  orgId?: string
+  projectId?: string
+}
+
+export type GenerateKubernetesYamlProps = Omit<
+  MutateProps<void, void, GenerateKubernetesYamlQueryParams, DelegateSetupDetailsRequestBody, void>,
+  'path' | 'verb'
+>
+
+export const GenerateKubernetesYaml = (props: GenerateKubernetesYamlProps) => (
+  <Mutate<void, void, GenerateKubernetesYamlQueryParams, DelegateSetupDetailsRequestBody, void>
+    verb="POST"
+    path={`/setup/delegates/generate-kubernetes-yaml`}
+    base={getConfig('api')}
+    {...props}
+  />
+)
+
+export type UseGenerateKubernetesYamlProps = Omit<
+  UseMutateProps<void, void, GenerateKubernetesYamlQueryParams, DelegateSetupDetailsRequestBody, void>,
+  'path' | 'verb'
+>
+
+export const useGenerateKubernetesYaml = (props: UseGenerateKubernetesYamlProps) =>
+  useMutate<void, void, GenerateKubernetesYamlQueryParams, DelegateSetupDetailsRequestBody, void>(
+    'POST',
+    `/setup/delegates/generate-kubernetes-yaml`,
+    { base: getConfig('api'), ...props }
+  )
+
+export const generateKubernetesYamlPromise = (
+  props: MutateUsingFetchProps<void, void, GenerateKubernetesYamlQueryParams, DelegateSetupDetailsRequestBody, void>,
+  signal?: RequestInit['signal']
+) =>
+  mutateUsingFetch<void, void, GenerateKubernetesYamlQueryParams, DelegateSetupDetailsRequestBody, void>(
+    'POST',
+    getConfig('api'),
+    `/setup/delegates/generate-kubernetes-yaml`,
     props,
     signal
   )
@@ -22110,19 +22329,19 @@ export const getDelegateGroupFromIdV2Promise = (
     GetDelegateGroupFromIdV2PathParams
   >(getConfig('api'), `/setup/delegates/v2/${delegateGroupId}`, props, signal)
 
-export interface GenerateKubernetesYamlQueryParams {
+export interface GenerateKubernetesYamlV3QueryParams {
   accountId?: string
   orgId?: string
   projectId?: string
 }
 
-export type GenerateKubernetesYamlProps = Omit<
-  MutateProps<void, void, GenerateKubernetesYamlQueryParams, DelegateSetupDetailsRequestBody, void>,
+export type GenerateKubernetesYamlV3Props = Omit<
+  MutateProps<void, void, GenerateKubernetesYamlV3QueryParams, DelegateSetupDetailsRequestBody, void>,
   'path' | 'verb'
 >
 
-export const GenerateKubernetesYaml = (props: GenerateKubernetesYamlProps) => (
-  <Mutate<void, void, GenerateKubernetesYamlQueryParams, DelegateSetupDetailsRequestBody, void>
+export const GenerateKubernetesYamlV3 = (props: GenerateKubernetesYamlV3Props) => (
+  <Mutate<void, void, GenerateKubernetesYamlV3QueryParams, DelegateSetupDetailsRequestBody, void>
     verb="POST"
     path={`/setup/delegates/v3/generate-kubernetes-yaml`}
     base={getConfig('api')}
@@ -22130,23 +22349,23 @@ export const GenerateKubernetesYaml = (props: GenerateKubernetesYamlProps) => (
   />
 )
 
-export type UseGenerateKubernetesYamlProps = Omit<
-  UseMutateProps<void, void, GenerateKubernetesYamlQueryParams, DelegateSetupDetailsRequestBody, void>,
+export type UseGenerateKubernetesYamlV3Props = Omit<
+  UseMutateProps<void, void, GenerateKubernetesYamlV3QueryParams, DelegateSetupDetailsRequestBody, void>,
   'path' | 'verb'
 >
 
-export const useGenerateKubernetesYaml = (props: UseGenerateKubernetesYamlProps) =>
-  useMutate<void, void, GenerateKubernetesYamlQueryParams, DelegateSetupDetailsRequestBody, void>(
+export const useGenerateKubernetesYamlV3 = (props: UseGenerateKubernetesYamlV3Props) =>
+  useMutate<void, void, GenerateKubernetesYamlV3QueryParams, DelegateSetupDetailsRequestBody, void>(
     'POST',
     `/setup/delegates/v3/generate-kubernetes-yaml`,
     { base: getConfig('api'), ...props }
   )
 
-export const generateKubernetesYamlPromise = (
-  props: MutateUsingFetchProps<void, void, GenerateKubernetesYamlQueryParams, DelegateSetupDetailsRequestBody, void>,
+export const generateKubernetesYamlV3Promise = (
+  props: MutateUsingFetchProps<void, void, GenerateKubernetesYamlV3QueryParams, DelegateSetupDetailsRequestBody, void>,
   signal?: RequestInit['signal']
 ) =>
-  mutateUsingFetch<void, void, GenerateKubernetesYamlQueryParams, DelegateSetupDetailsRequestBody, void>(
+  mutateUsingFetch<void, void, GenerateKubernetesYamlV3QueryParams, DelegateSetupDetailsRequestBody, void>(
     'POST',
     getConfig('api'),
     `/setup/delegates/v3/generate-kubernetes-yaml`,
@@ -22198,48 +22417,6 @@ export const deleteDelegateGroupByIdentifierPromise = (
     signal
   )
 
-export interface GetDelegatesV3QueryParams {
-  accountIdentifier?: string
-  orgIdentifier?: string
-  projectIdentifier?: string
-  delegateTokenName?: string
-}
-
-export type GetDelegatesV3Props = Omit<
-  GetProps<RestResponseDelegateGroupListing, unknown, GetDelegatesV3QueryParams, void>,
-  'path'
->
-
-export const GetDelegatesV3 = (props: GetDelegatesV3Props) => (
-  <Get<RestResponseDelegateGroupListing, unknown, GetDelegatesV3QueryParams, void>
-    path={`/setup/delegates/v3/ng`}
-    base={getConfig('api')}
-    {...props}
-  />
-)
-
-export type UseGetDelegatesV3Props = Omit<
-  UseGetProps<RestResponseDelegateGroupListing, unknown, GetDelegatesV3QueryParams, void>,
-  'path'
->
-
-export const useGetDelegatesV3 = (props: UseGetDelegatesV3Props) =>
-  useGet<RestResponseDelegateGroupListing, unknown, GetDelegatesV3QueryParams, void>(`/setup/delegates/v3/ng`, {
-    base: getConfig('api'),
-    ...props
-  })
-
-export const getDelegatesV3Promise = (
-  props: GetUsingFetchProps<RestResponseDelegateGroupListing, unknown, GetDelegatesV3QueryParams, void>,
-  signal?: RequestInit['signal']
-) =>
-  getUsingFetch<RestResponseDelegateGroupListing, unknown, GetDelegatesV3QueryParams, void>(
-    getConfig('api'),
-    `/setup/delegates/v3/ng`,
-    props,
-    signal
-  )
-
 export interface CreateDelegateGroupQueryParams {
   accountId?: string
 }
@@ -22278,6 +22455,48 @@ export const createDelegateGroupPromise = (
     'POST',
     getConfig('api'),
     `/setup/delegates/v3/ng/delegate-group`,
+    props,
+    signal
+  )
+
+export interface GetDelegatesByTokenQueryParams {
+  accountIdentifier?: string
+  orgIdentifier?: string
+  projectIdentifier?: string
+  delegateTokenName?: string
+}
+
+export type GetDelegatesByTokenProps = Omit<
+  GetProps<RestResponseDelegateGroupListing, unknown, GetDelegatesByTokenQueryParams, void>,
+  'path'
+>
+
+export const GetDelegatesByToken = (props: GetDelegatesByTokenProps) => (
+  <Get<RestResponseDelegateGroupListing, unknown, GetDelegatesByTokenQueryParams, void>
+    path={`/setup/delegates/v3/ng/delegate-token`}
+    base={getConfig('api')}
+    {...props}
+  />
+)
+
+export type UseGetDelegatesByTokenProps = Omit<
+  UseGetProps<RestResponseDelegateGroupListing, unknown, GetDelegatesByTokenQueryParams, void>,
+  'path'
+>
+
+export const useGetDelegatesByToken = (props: UseGetDelegatesByTokenProps) =>
+  useGet<RestResponseDelegateGroupListing, unknown, GetDelegatesByTokenQueryParams, void>(
+    `/setup/delegates/v3/ng/delegate-token`,
+    { base: getConfig('api'), ...props }
+  )
+
+export const getDelegatesByTokenPromise = (
+  props: GetUsingFetchProps<RestResponseDelegateGroupListing, unknown, GetDelegatesByTokenQueryParams, void>,
+  signal?: RequestInit['signal']
+) =>
+  getUsingFetch<RestResponseDelegateGroupListing, unknown, GetDelegatesByTokenQueryParams, void>(
+    getConfig('api'),
+    `/setup/delegates/v3/ng/delegate-token`,
     props,
     signal
   )
@@ -22330,60 +22549,8 @@ export const generateDockerDelegateYAMLPromise = (
     signal
   )
 
-export interface GenerateKubernetesYamlUsingNgTokenQueryParams {
-  accountId?: string
-  orgIdentifier?: string
-  projectIdentifier?: string
-}
-
-export type GenerateKubernetesYamlUsingNgTokenProps = Omit<
-  MutateProps<void, void, GenerateKubernetesYamlUsingNgTokenQueryParams, DelegateSetupDetailsRequestBody, void>,
-  'path' | 'verb'
->
-
-export const GenerateKubernetesYamlUsingNgToken = (props: GenerateKubernetesYamlUsingNgTokenProps) => (
-  <Mutate<void, void, GenerateKubernetesYamlUsingNgTokenQueryParams, DelegateSetupDetailsRequestBody, void>
-    verb="POST"
-    path={`/setup/delegates/v3/ng/generate-kubernetes-yaml`}
-    base={getConfig('api')}
-    {...props}
-  />
-)
-
-export type UseGenerateKubernetesYamlUsingNgTokenProps = Omit<
-  UseMutateProps<void, void, GenerateKubernetesYamlUsingNgTokenQueryParams, DelegateSetupDetailsRequestBody, void>,
-  'path' | 'verb'
->
-
-export const useGenerateKubernetesYamlUsingNgToken = (props: UseGenerateKubernetesYamlUsingNgTokenProps) =>
-  useMutate<void, void, GenerateKubernetesYamlUsingNgTokenQueryParams, DelegateSetupDetailsRequestBody, void>(
-    'POST',
-    `/setup/delegates/v3/ng/generate-kubernetes-yaml`,
-    { base: getConfig('api'), ...props }
-  )
-
-export const generateKubernetesYamlUsingNgTokenPromise = (
-  props: MutateUsingFetchProps<
-    void,
-    void,
-    GenerateKubernetesYamlUsingNgTokenQueryParams,
-    DelegateSetupDetailsRequestBody,
-    void
-  >,
-  signal?: RequestInit['signal']
-) =>
-  mutateUsingFetch<void, void, GenerateKubernetesYamlUsingNgTokenQueryParams, DelegateSetupDetailsRequestBody, void>(
-    'POST',
-    getConfig('api'),
-    `/setup/delegates/v3/ng/generate-kubernetes-yaml`,
-    props,
-    signal
-  )
-
 export interface ValidateDockerDelegateQueryParams {
   accountId?: string
-  orgIdentifier?: string
-  projectIdentifier?: string
   delegateName?: string
   tokenName?: string
 }
@@ -22926,137 +23093,6 @@ export const logout1Promise = (
     'POST',
     getConfig('api'),
     `/users/${userId}/logout`,
-    props,
-    signal
-  )
-
-export interface GetDelegateTokensQueryParams {
-  accountId: string
-  orgIdentifier?: string
-  projectIdentifier?: string
-  status?: 'ACTIVE' | 'REVOKED'
-}
-
-export type GetDelegateTokensProps = Omit<
-  GetProps<RestResponseListDelegateTokenDetails, unknown, GetDelegateTokensQueryParams, void>,
-  'path'
->
-
-export const GetDelegateTokens = (props: GetDelegateTokensProps) => (
-  <Get<RestResponseListDelegateTokenDetails, unknown, GetDelegateTokensQueryParams, void>
-    path={`/v2/delegate-token`}
-    base={getConfig('api')}
-    {...props}
-  />
-)
-
-export type UseGetDelegateTokensProps = Omit<
-  UseGetProps<RestResponseListDelegateTokenDetails, unknown, GetDelegateTokensQueryParams, void>,
-  'path'
->
-
-export const useGetDelegateTokens = (props: UseGetDelegateTokensProps) =>
-  useGet<RestResponseListDelegateTokenDetails, unknown, GetDelegateTokensQueryParams, void>(`/v2/delegate-token`, {
-    base: getConfig('api'),
-    ...props
-  })
-
-export const getDelegateTokensPromise = (
-  props: GetUsingFetchProps<RestResponseListDelegateTokenDetails, unknown, GetDelegateTokensQueryParams, void>,
-  signal?: RequestInit['signal']
-) =>
-  getUsingFetch<RestResponseListDelegateTokenDetails, unknown, GetDelegateTokensQueryParams, void>(
-    getConfig('api'),
-    `/v2/delegate-token`,
-    props,
-    signal
-  )
-
-export interface CreateDelegateTokenQueryParams {
-  accountId: string
-  orgIdentifier?: string
-  projectIdentifier?: string
-  tokenName: string
-}
-
-export type CreateDelegateTokenProps = Omit<
-  MutateProps<RestResponseDelegateTokenDetails, unknown, CreateDelegateTokenQueryParams, void, void>,
-  'path' | 'verb'
->
-
-export const CreateDelegateToken = (props: CreateDelegateTokenProps) => (
-  <Mutate<RestResponseDelegateTokenDetails, unknown, CreateDelegateTokenQueryParams, void, void>
-    verb="POST"
-    path={`/v2/delegate-token`}
-    base={getConfig('api')}
-    {...props}
-  />
-)
-
-export type UseCreateDelegateTokenProps = Omit<
-  UseMutateProps<RestResponseDelegateTokenDetails, unknown, CreateDelegateTokenQueryParams, void, void>,
-  'path' | 'verb'
->
-
-export const useCreateDelegateToken = (props: UseCreateDelegateTokenProps) =>
-  useMutate<RestResponseDelegateTokenDetails, unknown, CreateDelegateTokenQueryParams, void, void>(
-    'POST',
-    `/v2/delegate-token`,
-    { base: getConfig('api'), ...props }
-  )
-
-export const createDelegateTokenPromise = (
-  props: MutateUsingFetchProps<RestResponseDelegateTokenDetails, unknown, CreateDelegateTokenQueryParams, void, void>,
-  signal?: RequestInit['signal']
-) =>
-  mutateUsingFetch<RestResponseDelegateTokenDetails, unknown, CreateDelegateTokenQueryParams, void, void>(
-    'POST',
-    getConfig('api'),
-    `/v2/delegate-token`,
-    props,
-    signal
-  )
-
-export interface RevokeDelegateTokenQueryParams {
-  accountId: string
-  orgIdentifier?: string
-  projectIdentifier?: string
-  tokenName: string
-}
-
-export type RevokeDelegateTokenProps = Omit<
-  MutateProps<RestResponseVoid, unknown, RevokeDelegateTokenQueryParams, void, void>,
-  'path' | 'verb'
->
-
-export const RevokeDelegateToken = (props: RevokeDelegateTokenProps) => (
-  <Mutate<RestResponseVoid, unknown, RevokeDelegateTokenQueryParams, void, void>
-    verb="PUT"
-    path={`/v2/delegate-token`}
-    base={getConfig('api')}
-    {...props}
-  />
-)
-
-export type UseRevokeDelegateTokenProps = Omit<
-  UseMutateProps<RestResponseVoid, unknown, RevokeDelegateTokenQueryParams, void, void>,
-  'path' | 'verb'
->
-
-export const useRevokeDelegateToken = (props: UseRevokeDelegateTokenProps) =>
-  useMutate<RestResponseVoid, unknown, RevokeDelegateTokenQueryParams, void, void>('PUT', `/v2/delegate-token`, {
-    base: getConfig('api'),
-    ...props
-  })
-
-export const revokeDelegateTokenPromise = (
-  props: MutateUsingFetchProps<RestResponseVoid, unknown, RevokeDelegateTokenQueryParams, void, void>,
-  signal?: RequestInit['signal']
-) =>
-  mutateUsingFetch<RestResponseVoid, unknown, RevokeDelegateTokenQueryParams, void, void>(
-    'PUT',
-    getConfig('api'),
-    `/v2/delegate-token`,
     props,
     signal
   )

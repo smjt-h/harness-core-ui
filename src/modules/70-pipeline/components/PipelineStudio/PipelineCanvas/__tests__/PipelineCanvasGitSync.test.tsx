@@ -143,7 +143,7 @@ describe('PipelineCanvas tests', () => {
         await waitFor(() =>
           expect(
             getElementByText(
-              'https://www.github.com/testRepo.git/blob/feature//rootFolderTest/.harness/test_pipeline.yaml'
+              'https://www.github.com/testRepo.git/blob/feature/rootFolderTest/.harness/test_pipeline.yaml'
             )
           ).toBeInTheDocument()
         )

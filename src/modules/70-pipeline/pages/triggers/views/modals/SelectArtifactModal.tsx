@@ -6,8 +6,8 @@
  */
 
 import React, { useState } from 'react'
-import { Layout, Button, ButtonVariation } from '@wings-software/uicore'
-import { merge, isEmpty } from 'lodash-es'
+import { Button, ButtonVariation, Layout, MultiTypeInputType } from '@wings-software/uicore'
+import { isEmpty, merge } from 'lodash-es'
 import cx from 'classnames'
 import { Dialog } from '@blueprintjs/core'
 import { useStrings } from 'framework/strings'
@@ -267,6 +267,7 @@ const SelectArtifactModal: React.FC<SelectArtifactModalPropsInterface> = ({
               path={getPathString(runtimeData, selectedStageId)}
               allValues={templateObject}
               initialValues={runtimeData}
+              allowableTypes={[MultiTypeInputType.FIXED, MultiTypeInputType.EXPRESSION]}
               readonly={false}
               stageIdentifier={selectedStageId}
               formik={formikProps}

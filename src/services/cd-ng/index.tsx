@@ -11,7 +11,7 @@ import React from 'react'
 import { Get, GetProps, useGet, UseGetProps, Mutate, MutateProps, useMutate, UseMutateProps } from 'restful-react'
 
 import { getConfig, getUsingFetch, mutateUsingFetch, GetUsingFetchProps, MutateUsingFetchProps } from '../config'
-export const SPEC_VERSION = '1.0'
+export const SPEC_VERSION = '2.0'
 export interface ACLAggregateFilter {
   resourceGroupIdentifiers?: string[]
   roleIdentifiers?: string[]
@@ -3290,12 +3290,55 @@ export interface GitFullSyncEntityInfoDTO {
     | 'ServiceNowApproval'
   errorMessages?: string[]
   filePath?: string
+  identifier?: string
   name?: string
   orgIdentifier?: string
   projectIdentifier?: string
-  repo?: string
+  repoName?: string
+  repoUrl?: string
   retryCount?: number
-  syncStatus?: 'QUEUED' | 'PUSHED' | 'FAILED'
+  rootFolder?: string
+  syncStatus?: 'QUEUED' | 'SUCCESS' | 'FAILED' | 'OVERRIDDEN'
+}
+
+export interface GitFullSyncEntityInfoFilterKeys {
+  entityTypes?: (
+    | 'Projects'
+    | 'Pipelines'
+    | 'PipelineSteps'
+    | 'Http'
+    | 'JiraCreate'
+    | 'JiraUpdate'
+    | 'JiraApproval'
+    | 'HarnessApproval'
+    | 'Barrier'
+    | 'ShellScript'
+    | 'K8sCanaryDeploy'
+    | 'Connectors'
+    | 'Secrets'
+    | 'Service'
+    | 'Environment'
+    | 'InputSets'
+    | 'CvConfig'
+    | 'Verify'
+    | 'Delegates'
+    | 'DelegateConfigurations'
+    | 'CvVerificationJob'
+    | 'IntegrationStage'
+    | 'IntegrationSteps'
+    | 'CvKubernetesActivitySource'
+    | 'DeploymentSteps'
+    | 'DeploymentStage'
+    | 'ApprovalStage'
+    | 'FeatureFlagStage'
+    | 'Template'
+    | 'Triggers'
+    | 'MonitoredService'
+    | 'GitRepositories'
+    | 'FeatureFlags'
+    | 'ServiceNowApproval'
+  )[]
+  syncStatus?: 'QUEUED' | 'SUCCESS' | 'FAILED' | 'OVERRIDDEN'
 }
 
 export type GitHTTPAuthenticationDTO = GitAuthenticationDTO & {
@@ -4659,9 +4702,10 @@ export type NumberNGVariable = NGVariable & {
   value: number
 }
 
-export type OAuthSettings = NGAuthSettings & {
+export interface OAuthSettings {
   allowedProviders?: ('AZURE' | 'BITBUCKET' | 'GITHUB' | 'GITLAB' | 'GOOGLE' | 'LINKEDIN')[]
   filter?: string
+  settingsType?: 'USER_PASSWORD' | 'SAML' | 'LDAP' | 'OAUTH'
 }
 
 export interface OAuthSignupDTO {
@@ -6057,13 +6101,6 @@ export interface ResponseListUserGroupAggregateDTO {
 export interface ResponseListUserGroupDTO {
   correlationId?: string
   data?: UserGroupDTO[]
-  metaData?: { [key: string]: any }
-  status?: 'SUCCESS' | 'FAILURE' | 'ERROR'
-}
-
-export interface ResponseLong {
-  correlationId?: string
-  data?: number
   metaData?: { [key: string]: any }
   status?: 'SUCCESS' | 'FAILURE' | 'ERROR'
 }
@@ -16784,7 +16821,7 @@ export const triggerFullSyncPromise = (
   )
 
 export interface DeleteGitFullSyncConfigQueryParams {
-  accountIdentifier?: string
+  accountIdentifier: string
   orgIdentifier?: string
   projectIdentifier?: string
 }
@@ -16837,7 +16874,7 @@ export const deleteGitFullSyncConfigPromise = (
   )
 
 export interface GetGitFullSyncConfigQueryParams {
-  accountIdentifier?: string
+  accountIdentifier: string
   orgIdentifier?: string
   projectIdentifier?: string
 }
@@ -16966,7 +17003,7 @@ export const createGitFullSyncConfigPromise = (
   >('POST', getConfig('ng/api'), `/full-sync/config`, props, signal)
 
 export interface UpdateGitFullSyncConfigQueryParams {
-  accountIdentifier?: string
+  accountIdentifier: string
   orgIdentifier?: string
   projectIdentifier?: string
 }
@@ -17048,58 +17085,35 @@ export interface ListFullSyncFilesQueryParams {
   pageIndex?: number
   pageSize?: number
   sortOrders?: string[]
-  accountIdentifier?: string
+  accountIdentifier: string
   orgIdentifier?: string
   projectIdentifier?: string
   searchTerm?: string
-  entityType?:
-    | 'Projects'
-    | 'Pipelines'
-    | 'PipelineSteps'
-    | 'Http'
-    | 'JiraCreate'
-    | 'JiraUpdate'
-    | 'JiraApproval'
-    | 'HarnessApproval'
-    | 'Barrier'
-    | 'ShellScript'
-    | 'K8sCanaryDeploy'
-    | 'Connectors'
-    | 'Secrets'
-    | 'Service'
-    | 'Environment'
-    | 'InputSets'
-    | 'CvConfig'
-    | 'Verify'
-    | 'Delegates'
-    | 'DelegateConfigurations'
-    | 'CvVerificationJob'
-    | 'IntegrationStage'
-    | 'IntegrationSteps'
-    | 'CvKubernetesActivitySource'
-    | 'DeploymentSteps'
-    | 'DeploymentStage'
-    | 'ApprovalStage'
-    | 'FeatureFlagStage'
-    | 'Template'
-    | 'Triggers'
-    | 'MonitoredService'
-    | 'GitRepositories'
-    | 'FeatureFlags'
-    | 'ServiceNowApproval'
-  syncStatus?: 'QUEUED' | 'PUSHED' | 'FAILED'
 }
 
 export type ListFullSyncFilesProps = Omit<
-  GetProps<ResponsePageGitFullSyncEntityInfoDTO, Failure | Error, ListFullSyncFilesQueryParams, void>,
-  'path'
+  MutateProps<
+    ResponsePageGitFullSyncEntityInfoDTO,
+    Failure | Error,
+    ListFullSyncFilesQueryParams,
+    GitFullSyncEntityInfoFilterKeys,
+    void
+  >,
+  'path' | 'verb'
 >
 
 /**
  * List files in full sync along with their status
  */
 export const ListFullSyncFiles = (props: ListFullSyncFilesProps) => (
-  <Get<ResponsePageGitFullSyncEntityInfoDTO, Failure | Error, ListFullSyncFilesQueryParams, void>
+  <Mutate<
+    ResponsePageGitFullSyncEntityInfoDTO,
+    Failure | Error,
+    ListFullSyncFilesQueryParams,
+    GitFullSyncEntityInfoFilterKeys,
+    void
+  >
+    verb="POST"
     path={`/full-sync/files`}
     base={getConfig('ng/api')}
     {...props}
@@ -17107,118 +17121,48 @@ export const ListFullSyncFiles = (props: ListFullSyncFilesProps) => (
 )
 
 export type UseListFullSyncFilesProps = Omit<
-  UseGetProps<ResponsePageGitFullSyncEntityInfoDTO, Failure | Error, ListFullSyncFilesQueryParams, void>,
-  'path'
+  UseMutateProps<
+    ResponsePageGitFullSyncEntityInfoDTO,
+    Failure | Error,
+    ListFullSyncFilesQueryParams,
+    GitFullSyncEntityInfoFilterKeys,
+    void
+  >,
+  'path' | 'verb'
 >
 
 /**
  * List files in full sync along with their status
  */
 export const useListFullSyncFiles = (props: UseListFullSyncFilesProps) =>
-  useGet<ResponsePageGitFullSyncEntityInfoDTO, Failure | Error, ListFullSyncFilesQueryParams, void>(
-    `/full-sync/files`,
-    { base: getConfig('ng/api'), ...props }
-  )
+  useMutate<
+    ResponsePageGitFullSyncEntityInfoDTO,
+    Failure | Error,
+    ListFullSyncFilesQueryParams,
+    GitFullSyncEntityInfoFilterKeys,
+    void
+  >('POST', `/full-sync/files`, { base: getConfig('ng/api'), ...props })
 
 /**
  * List files in full sync along with their status
  */
 export const listFullSyncFilesPromise = (
-  props: GetUsingFetchProps<ResponsePageGitFullSyncEntityInfoDTO, Failure | Error, ListFullSyncFilesQueryParams, void>,
+  props: MutateUsingFetchProps<
+    ResponsePageGitFullSyncEntityInfoDTO,
+    Failure | Error,
+    ListFullSyncFilesQueryParams,
+    GitFullSyncEntityInfoFilterKeys,
+    void
+  >,
   signal?: RequestInit['signal']
 ) =>
-  getUsingFetch<ResponsePageGitFullSyncEntityInfoDTO, Failure | Error, ListFullSyncFilesQueryParams, void>(
-    getConfig('ng/api'),
-    `/full-sync/files`,
-    props,
-    signal
-  )
-
-export interface CountFullSyncFilesWithFilterQueryParams {
-  accountIdentifier?: string
-  orgIdentifier?: string
-  projectIdentifier?: string
-  entityType?:
-    | 'Projects'
-    | 'Pipelines'
-    | 'PipelineSteps'
-    | 'Http'
-    | 'JiraCreate'
-    | 'JiraUpdate'
-    | 'JiraApproval'
-    | 'HarnessApproval'
-    | 'Barrier'
-    | 'ShellScript'
-    | 'K8sCanaryDeploy'
-    | 'Connectors'
-    | 'Secrets'
-    | 'Service'
-    | 'Environment'
-    | 'InputSets'
-    | 'CvConfig'
-    | 'Verify'
-    | 'Delegates'
-    | 'DelegateConfigurations'
-    | 'CvVerificationJob'
-    | 'IntegrationStage'
-    | 'IntegrationSteps'
-    | 'CvKubernetesActivitySource'
-    | 'DeploymentSteps'
-    | 'DeploymentStage'
-    | 'ApprovalStage'
-    | 'FeatureFlagStage'
-    | 'Template'
-    | 'Triggers'
-    | 'MonitoredService'
-    | 'GitRepositories'
-    | 'FeatureFlags'
-    | 'ServiceNowApproval'
-  syncStatus?: 'QUEUED' | 'PUSHED' | 'FAILED'
-}
-
-export type CountFullSyncFilesWithFilterProps = Omit<
-  GetProps<ResponseLong, Failure | Error, CountFullSyncFilesWithFilterQueryParams, void>,
-  'path'
->
-
-/**
- * Count files in full sync for the filter applied
- */
-export const CountFullSyncFilesWithFilter = (props: CountFullSyncFilesWithFilterProps) => (
-  <Get<ResponseLong, Failure | Error, CountFullSyncFilesWithFilterQueryParams, void>
-    path={`/full-sync/files/count`}
-    base={getConfig('ng/api')}
-    {...props}
-  />
-)
-
-export type UseCountFullSyncFilesWithFilterProps = Omit<
-  UseGetProps<ResponseLong, Failure | Error, CountFullSyncFilesWithFilterQueryParams, void>,
-  'path'
->
-
-/**
- * Count files in full sync for the filter applied
- */
-export const useCountFullSyncFilesWithFilter = (props: UseCountFullSyncFilesWithFilterProps) =>
-  useGet<ResponseLong, Failure | Error, CountFullSyncFilesWithFilterQueryParams, void>(`/full-sync/files/count`, {
-    base: getConfig('ng/api'),
-    ...props
-  })
-
-/**
- * Count files in full sync for the filter applied
- */
-export const countFullSyncFilesWithFilterPromise = (
-  props: GetUsingFetchProps<ResponseLong, Failure | Error, CountFullSyncFilesWithFilterQueryParams, void>,
-  signal?: RequestInit['signal']
-) =>
-  getUsingFetch<ResponseLong, Failure | Error, CountFullSyncFilesWithFilterQueryParams, void>(
-    getConfig('ng/api'),
-    `/full-sync/files/count`,
-    props,
-    signal
-  )
+  mutateUsingFetch<
+    ResponsePageGitFullSyncEntityInfoDTO,
+    Failure | Error,
+    ListFullSyncFilesQueryParams,
+    GitFullSyncEntityInfoFilterKeys,
+    void
+  >('POST', getConfig('ng/api'), `/full-sync/files`, props, signal)
 
 export interface GetClusterNamesForGcpQueryParams {
   connectorRef: string

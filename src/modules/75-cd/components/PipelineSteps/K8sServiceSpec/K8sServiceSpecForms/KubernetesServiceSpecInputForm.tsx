@@ -55,6 +55,7 @@ const KubernetesServiceSpecInputFormikForm: React.FC<KubernetesServiceInputFormP
           readonly={readonly}
           stageIdentifier={stageIdentifier}
           formik={formik}
+          allowableTypes={allowableTypes}
         />
       )}
       {!!template?.manifests?.length && (
@@ -66,6 +67,7 @@ const KubernetesServiceSpecInputFormikForm: React.FC<KubernetesServiceInputFormP
           readonly={readonly}
           stageIdentifier={stageIdentifier}
           formik={formik}
+          allowableTypes={allowableTypes}
         />
       )}
       {!!template?.variables?.length && (

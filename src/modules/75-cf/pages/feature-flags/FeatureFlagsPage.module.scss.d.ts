@@ -7,20 +7,8 @@
  **/
 // this is an auto-generated file, do not update this manually
 declare const styles: {
-  readonly archived: string
-  readonly content: string
-  readonly drawerContainer: string
-  readonly emptyContainer: string
-  readonly ffImage: string
-  readonly ffPageBtnsHeader: string
-  readonly ffPageBtnsSearch: string
-  readonly ffPageBtnsSelect: string
   readonly generalInfo: string
-  readonly list: string
-  readonly pagination: string
-  readonly status: string
-  readonly table: string
-  readonly tagsPopover: string
+  readonly leftToolbar: string
   readonly toggleFlagButton: string
   readonly tooltipTable: string
 }

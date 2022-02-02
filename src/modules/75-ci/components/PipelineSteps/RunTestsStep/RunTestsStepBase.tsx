@@ -31,10 +31,8 @@ import { StepFormikFowardRef, StepViewType, setFormikRef } from '@pipeline/compo
 import MultiTypeFieldSelector from '@common/components/MultiTypeFieldSelector/MultiTypeFieldSelector'
 import { ConfigureOptions } from '@common/components/ConfigureOptions/ConfigureOptions'
 import { ShellScriptMonacoField } from '@common/components/ShellScriptMonaco/ShellScriptMonaco'
-import MultiTypeMap from '@common/components/MultiTypeMap/MultiTypeMap'
 import { MultiTypeSelectField } from '@common/components/MultiTypeSelect/MultiTypeSelect'
-import { FormMultiTypeCheckboxField, FormMultiTypeTextAreaField, Separator } from '@common/components'
-import MultiTypeList from '@common/components/MultiTypeList/MultiTypeList'
+import { FormMultiTypeCheckboxField, FormMultiTypeTextAreaField } from '@common/components'
 import { usePipelineContext } from '@pipeline/components/PipelineStudio/PipelineContext/PipelineContext'
 import { useVariablesExpression } from '@pipeline/components/PipelineStudio/PiplineHooks/useVariablesExpression'
 import { useGitScope } from '@pipeline/utils/CIUtils'
@@ -53,7 +51,7 @@ import {
 } from '@pipeline/components/PipelineSteps/Steps/StepsTransformValuesUtils'
 import type { RunTestsStepProps, RunTestsStepData, RunTestsStepDataUI } from './RunTestsStep'
 import { transformValuesFieldsConfig, getEditViewValidateFieldsConfig } from './RunTestsStepFunctionConfigs'
-import { getOptionalSubLabel } from '../CIStep/CIStepOptionalConfig'
+import { CIStepOptionalConfig, getOptionalSubLabel } from '../CIStep/CIStepOptionalConfig'
 import { useGetPropagatedStageById, validateConnectorRefAndImageDepdendency } from '../CIStep/StepUtils'
 import css from '@pipeline/components/PipelineSteps/Steps/Steps.module.scss'
 
@@ -170,33 +168,6 @@ export const RunTestsStepBase = (
     },
     []
   )
-
-  const renderMultiTypeList = React.useCallback(({ name, fieldLabelKey, tooltipId }: FieldRenderProps) => {
-    return (
-      <MultiTypeList
-        name={name}
-        multiTypeFieldSelectorProps={{
-          label: (
-            <Layout.Horizontal flex={{ justifyContent: 'flex-start', alignItems: 'baseline' }}>
-              <Text
-                className={css.inpLabel}
-                color={Color.GREY_800}
-                font={{ size: 'small', weight: 'semi-bold' }}
-                style={{ display: 'flex', alignItems: 'center' }}
-              >
-                {getString(fieldLabelKey)}
-              </Text>
-              &nbsp;
-              {getOptionalSubLabel(tooltipId, getString)}
-            </Layout.Horizontal>
-          ),
-          allowedTypes: allowableTypes.filter(type => type !== MultiTypeInputType.RUNTIME)
-        }}
-        multiTextInputProps={{ expressions }}
-        disabled={readonly}
-      />
-    )
-  }, [])
 
   const renderMultiTypeSelectField = React.useCallback(
     ({ name, fieldLabelKey, tooltipId, selectFieldOptions = [], onSelectChange }: FieldRenderProps) => {
@@ -400,12 +371,7 @@ export const RunTestsStepBase = (
                 multiTypeTextArea={{ expressions, allowableTypes, disabled: readonly }}
               />
             </Container>
-            {buildInfrastructureType !== 'VM' ? (
-              <>
-                <Separator topSeparation={8} />
-                {renderConnectorRefAndImage(false)}
-              </>
-            ) : null}
+            {buildInfrastructureType !== 'VM' ? <>{renderConnectorRefAndImage(false)}</> : null}
             <Container className={cx(css.formGroup, css.lg, css.bottomMargin5)}>
               {renderMultiTypeSelectField({
                 name: 'spec.language',
@@ -581,44 +547,16 @@ gradle.projectsEvaluated {
                         )}
                       </div>
                     </Container>
-                    <Container className={cx(css.formGroup, css.lg, css.bottomMargin5)}>
-                      {renderMultiTypeList({
-                        name: 'spec.reportPaths',
-                        fieldLabelKey: 'pipelineSteps.reportPathsLabel',
-                        tooltipId: 'reportPaths'
-                      })}
-                    </Container>
-                    <Container className={cx(css.formGroup, css.bottomMargin5)}>
-                      <MultiTypeMap
-                        name="spec.envVariables"
-                        multiTypeFieldSelectorProps={{
-                          label: (
-                            <Layout.Horizontal flex={{ justifyContent: 'flex-start', alignItems: 'baseline' }}>
-                              <Text
-                                className={css.inpLabel}
-                                color={Color.GREY_800}
-                                font={{ size: 'small', weight: 'semi-bold' }}
-                                style={{ display: 'flex', alignItems: 'center' }}
-                              >
-                                {getString('environmentVariables')}
-                              </Text>
-                              &nbsp;
-                              {getOptionalSubLabel('environmentVariables', getString)}
-                            </Layout.Horizontal>
-                          )
-                        }}
-                        valueMultiTextInputProps={{ expressions }}
-                        style={{ marginBottom: 'var(--spacing-small)' }}
-                        disabled={readonly}
-                      />
-                    </Container>
-                    <Container className={cx(css.formGroup, css.lg, css.bottomMargin5)}>
-                      {renderMultiTypeList({
-                        name: 'spec.outputVariables',
-                        fieldLabelKey: 'pipelineSteps.outputVariablesLabel',
-                        tooltipId: 'outputVariables'
-                      })}
-                    </Container>
+                    <CIStepOptionalConfig
+                      stepViewType={stepViewType}
+                      readonly={readonly}
+                      enableFields={{
+                        'spec.reportPaths': {},
+                        'spec.envVariables': { tooltipId: 'environmentVariables' },
+                        'spec.outputVariables': {}
+                      }}
+                      allowableTypes={allowableTypes}
+                    />
                     <StepCommonFields
                       enableFields={[
                         ...(buildInfrastructureType === 'VM' ? ['spec.shell'] : []),

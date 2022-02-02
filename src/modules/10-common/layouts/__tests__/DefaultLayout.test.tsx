@@ -31,9 +31,9 @@ const BANNER_TEXT = 'This is a feature banner'
 const DISMISS_TEST_ID = 'feature-banner-dismiss'
 const TEST_PATH = '/account/my_account/:module'
 
-function renderMessage(): { message: React.ReactNode; bannerType: BannerType } {
+function renderMessage(): { message: () => React.ReactNode; bannerType: BannerType } {
   return {
-    message: BANNER_TEXT,
+    message: () => BANNER_TEXT,
     bannerType: BannerType.INFO
   }
 }

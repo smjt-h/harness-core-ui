@@ -6,7 +6,8 @@
  */
 
 import React, { useCallback, useState } from 'react'
-import { useModalHook, Dialog } from '@wings-software/uicore'
+import { Dialog } from '@wings-software/uicore'
+import { useModalHook } from '@harness/use-modal'
 import { String } from 'framework/strings'
 import type { Role } from 'services/rbac'
 import RoleForm from './views/RoleForm'

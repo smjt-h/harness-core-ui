@@ -211,7 +211,7 @@ const dispatchTemplateSuccess = async (args: DispatchTemplateSuccessArgs): Promi
 const _fetchTemplate = async (props: FetchTemplateBoundProps, params: FetchTemplateUnboundProps): Promise<void> => {
   const { dispatch, queryParams, templateIdentifier, versionLabel = '', gitDetails, templateType } = props
   const { forceFetch = false, forceUpdate = false, signal, repoIdentifier, branch } = params
-  const id = getId(
+  let id = getId(
     queryParams.accountIdentifier,
     defaultTo(queryParams.orgIdentifier, ''),
     defaultTo(queryParams.projectIdentifier, ''),
@@ -222,7 +222,7 @@ const _fetchTemplate = async (props: FetchTemplateBoundProps, params: FetchTempl
   )
   if (IdbTemplate) {
     dispatch(TemplateContextActions.fetching())
-    const data: TemplatePayload = await IdbTemplate.get(IdbTemplateStoreName, id)
+    let data: TemplatePayload = await IdbTemplate.get(IdbTemplateStoreName, id)
     if ((!data || forceFetch) && templateIdentifier !== DefaultNewTemplateId) {
       const templatesList: TemplateSummaryResponse[] = await getTemplatesByIdentifier(
         {
@@ -233,11 +233,22 @@ const _fetchTemplate = async (props: FetchTemplateBoundProps, params: FetchTempl
         templateIdentifier,
         signal
       )
+
       const versions: string[] = templatesList.map(item => defaultTo(item.versionLabel, ''))
       const defaultVersion = defaultTo(templatesList.find(item => item.stableTemplate)?.versionLabel, '')
       const selectedVersion = versions.includes(versionLabel) ? versionLabel : defaultVersion
       const stableVersion = templatesList.find(item => item.stableTemplate)?.versionLabel
       const templateWithGitDetails = templatesList.find(item => item.versionLabel === selectedVersion)
+      id = getId(
+        queryParams.accountIdentifier,
+        defaultTo(queryParams.orgIdentifier, ''),
+        defaultTo(queryParams.projectIdentifier, ''),
+        templateIdentifier,
+        versionLabel,
+        defaultTo(gitDetails.repoIdentifier, templateWithGitDetails?.gitDetails?.repoIdentifier ?? ''),
+        defaultTo(gitDetails.branch, templateWithGitDetails?.gitDetails?.branch ?? '')
+      )
+      data = await IdbTemplate.get(IdbTemplateStoreName, id)
       let template: NGTemplateInfoConfig
       const templateYamlStr = defaultTo(templateWithGitDetails?.yaml, '')
       try {

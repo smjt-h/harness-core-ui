@@ -50,7 +50,8 @@ const ManifestInputSetForm: React.FC<KubernetesServiceInputFormProps> = ({
   readonly = false,
   stageIdentifier,
   formik,
-  fromTrigger
+  fromTrigger,
+  allowableTypes
 }) => {
   const { getString } = useStrings()
   const { expressions } = useVariablesExpression()
@@ -267,7 +268,7 @@ const ManifestInputSetForm: React.FC<KubernetesServiceInputFormProps> = ({
                         placeholder={''}
                         setRefValue
                         multiTypeProps={{
-                          allowableTypes: [MultiTypeInputType.EXPRESSION, MultiTypeInputType.FIXED],
+                          allowableTypes,
                           expressions
                         }}
                         width={370}
@@ -295,7 +296,7 @@ const ManifestInputSetForm: React.FC<KubernetesServiceInputFormProps> = ({
                         disabled={disableField('spec.store.spec.repoName')}
                         multiTextInputProps={{
                           expressions,
-                          allowableTypes: [MultiTypeInputType.FIXED, MultiTypeInputType.EXPRESSION]
+                          allowableTypes
                         }}
                         label={getString('common.repositoryName')}
                         name={`${path}.manifests[${index}].manifest.spec.store.spec.repoName`}
@@ -308,7 +309,7 @@ const ManifestInputSetForm: React.FC<KubernetesServiceInputFormProps> = ({
                         disabled={disableField('spec.store.spec.branch')}
                         multiTextInputProps={{
                           expressions,
-                          allowableTypes: [MultiTypeInputType.FIXED, MultiTypeInputType.EXPRESSION]
+                          allowableTypes
                         }}
                         label={getString('pipelineSteps.deploy.inputSet.branch')}
                         name={`${path}.manifests[${index}].manifest.spec.store.spec.branch`}
@@ -322,7 +323,7 @@ const ManifestInputSetForm: React.FC<KubernetesServiceInputFormProps> = ({
                         disabled={disableField('spec.store.spec.commitId')}
                         multiTextInputProps={{
                           expressions,
-                          allowableTypes: [MultiTypeInputType.FIXED, MultiTypeInputType.EXPRESSION]
+                          allowableTypes
                         }}
                         label={getString('pipelineSteps.commitIdValue')}
                         name={`${path}.manifests[${index}].manifest.spec.store.spec.commitId`}
@@ -341,7 +342,7 @@ const ManifestInputSetForm: React.FC<KubernetesServiceInputFormProps> = ({
                             items: regions
                           },
                           expressions,
-                          allowableTypes: [MultiTypeInputType.FIXED, MultiTypeInputType.EXPRESSION]
+                          allowableTypes
                         }}
                         useValue
                         disabled={disableField('spec.store.spec.region')}
@@ -387,7 +388,7 @@ const ManifestInputSetForm: React.FC<KubernetesServiceInputFormProps> = ({
                                 allowCreatingNewItems: true
                               },
                               expressions,
-                              allowableTypes: [MultiTypeInputType.FIXED, MultiTypeInputType.EXPRESSION]
+                              allowableTypes
                             }}
                             useValue
                             disabled={disableField('spec.store.spec.bucketName')}
@@ -402,7 +403,7 @@ const ManifestInputSetForm: React.FC<KubernetesServiceInputFormProps> = ({
                           <FormInput.MultiTextInput
                             multiTextInputProps={{
                               expressions,
-                              allowableTypes: [MultiTypeInputType.FIXED, MultiTypeInputType.EXPRESSION]
+                              allowableTypes
                             }}
                             disabled={disableField('spec.store.spec.bucketName')}
                             placeholder={getString('pipeline.manifestType.bucketNamePlaceholder')}
@@ -437,7 +438,7 @@ const ManifestInputSetForm: React.FC<KubernetesServiceInputFormProps> = ({
                                 allowCreatingNewItems: true
                               },
                               expressions,
-                              allowableTypes: [MultiTypeInputType.FIXED, MultiTypeInputType.EXPRESSION]
+                              allowableTypes
                             }}
                             useValue
                             disabled={disableField('spec.store.spec.bucketName')}
@@ -452,7 +453,7 @@ const ManifestInputSetForm: React.FC<KubernetesServiceInputFormProps> = ({
                           <FormInput.MultiTextInput
                             multiTextInputProps={{
                               expressions,
-                              allowableTypes: [MultiTypeInputType.FIXED, MultiTypeInputType.EXPRESSION]
+                              allowableTypes
                             }}
                             disabled={disableField('spec.store.spec.bucketName')}
                             label={getString('pipeline.manifestType.bucketName')}
@@ -468,7 +469,7 @@ const ManifestInputSetForm: React.FC<KubernetesServiceInputFormProps> = ({
                       <FormInput.MultiTextInput
                         multiTextInputProps={{
                           expressions,
-                          allowableTypes: [MultiTypeInputType.FIXED, MultiTypeInputType.EXPRESSION]
+                          allowableTypes
                         }}
                         disabled={disableField('spec.store.spec.folderPath')}
                         label={
@@ -486,7 +487,7 @@ const ManifestInputSetForm: React.FC<KubernetesServiceInputFormProps> = ({
                       <FormInput.MultiTextInput
                         multiTextInputProps={{
                           expressions,
-                          allowableTypes: [MultiTypeInputType.FIXED, MultiTypeInputType.EXPRESSION]
+                          allowableTypes
                         }}
                         disabled={disableField('spec.store.spec.pluginPath')}
                         label={getString('pluginPath')}
@@ -500,7 +501,7 @@ const ManifestInputSetForm: React.FC<KubernetesServiceInputFormProps> = ({
                       <FormInput.MultiTextInput
                         multiTextInputProps={{
                           expressions,
-                          allowableTypes: [MultiTypeInputType.FIXED, MultiTypeInputType.EXPRESSION]
+                          allowableTypes
                         }}
                         disabled={disableField('spec.chartName')}
                         label={getString('pipeline.manifestType.http.chartName')}
@@ -514,7 +515,7 @@ const ManifestInputSetForm: React.FC<KubernetesServiceInputFormProps> = ({
                         multiTextInputProps={{
                           expressions,
                           ...(fromTrigger && { value: TriggerDefaultFieldList.chartVersion }),
-                          allowableTypes: [MultiTypeInputType.FIXED, MultiTypeInputType.EXPRESSION]
+                          allowableTypes
                         }}
                         disabled={disableField(fromTrigger ? 'chartVersion' : 'spec.chartVersion')}
                         label={getString('pipeline.manifestType.http.chartVersion')}
@@ -549,7 +550,7 @@ const ManifestInputSetForm: React.FC<KubernetesServiceInputFormProps> = ({
                         <FormInput.MultiTextInput
                           multiTextInputProps={{
                             expressions,
-                            allowableTypes: [MultiTypeInputType.FIXED, MultiTypeInputType.EXPRESSION]
+                            allowableTypes
                           }}
                           label={getString('pipeline.manifestType.osTemplatePath')}
                           placeholder={getString('pipeline.manifestType.osTemplatePathPlaceHolder')}
@@ -563,7 +564,7 @@ const ManifestInputSetForm: React.FC<KubernetesServiceInputFormProps> = ({
                       <FormMultiTypeCheckboxField
                         multiTypeTextbox={{
                           expressions,
-                          allowableTypes: [MultiTypeInputType.FIXED, MultiTypeInputType.EXPRESSION]
+                          allowableTypes
                         }}
                         name={`${path}.manifests[${index}].manifest.spec.skipResourceVersioning`}
                         label={getString('skipResourceVersion')}

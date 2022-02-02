@@ -7,6 +7,11 @@
  **/
 // this is an auto-generated file, do not update this manually
 declare const styles: {
-  readonly pagination: string
+  readonly content: string
+  readonly footer: string
+  readonly header: string
+  readonly layout: string
+  readonly loading: string
+  readonly toolbar: string
 }
 export default styles

@@ -15,13 +15,14 @@ import {
   Layout,
   FlexExpander,
   ExpandingSearchInput,
-  useModalHook,
   SelectOption,
   FormInput,
   MultiSelectOption,
   PageError,
   shouldShowError
 } from '@wings-software/uicore'
+import { useModalHook } from '@harness/use-modal'
+
 import { Dialog } from '@blueprintjs/core'
 import { PageSpinner } from '@common/components'
 import type { UseGetMockData } from '@common/utils/testUtils'

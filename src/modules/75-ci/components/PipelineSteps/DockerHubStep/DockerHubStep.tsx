@@ -89,6 +89,7 @@ export interface DockerHubStepProps {
   onUpdate?: (data: DockerHubStepData) => void
   onChange?: (data: DockerHubStepData) => void
   allowableTypes: MultiTypeInputType[]
+  formik?: any
 }
 
 export class DockerHubStep extends PipelineStep<DockerHubStepData> {

@@ -39,7 +39,7 @@ jest.mock('services/portal', () => ({
     },
     refetch: jest.fn()
   })),
-  useGetDelegatesV3: jest.fn().mockImplementation(() => ({})),
+  useGetDelegatesByToken: jest.fn().mockImplementation(() => ({})),
   revokeDelegateTokenPromise: jest.fn().mockImplementation(() => undefined)
 }))
 

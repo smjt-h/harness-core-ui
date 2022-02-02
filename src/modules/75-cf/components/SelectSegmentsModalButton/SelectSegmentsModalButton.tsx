@@ -9,7 +9,6 @@ import React, { useCallback, useEffect, useMemo, useState } from 'react'
 import { Dialog, Intent } from '@blueprintjs/core'
 import {
   Button,
-  useModalHook,
   Text,
   ButtonProps,
   Container,
@@ -20,6 +19,7 @@ import {
   Pagination,
   PageError
 } from '@wings-software/uicore'
+import { useModalHook } from '@harness/use-modal'
 import { CF_DEFAULT_PAGE_SIZE, getErrorMessage, SegmentsSortByField, SortOrder } from '@cf/utils/CFUtils'
 import { useStrings } from 'framework/strings'
 import { Segment, useGetTargetAvailableSegments } from 'services/cf'

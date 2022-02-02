@@ -56,7 +56,7 @@ export default function PipelineSummaryCards() {
               {getString('pipeline.dashboards.successRate')}
             </Text>
           }
-          text={roundNumber(data?.data?.executions?.success?.percent)}
+          text={roundNumber(data?.data?.executions?.success?.percent) + '%'}
           rate={data?.data?.executions?.success?.rate}
           isLoading={loading}
         />

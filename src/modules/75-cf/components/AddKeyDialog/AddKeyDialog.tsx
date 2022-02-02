@@ -17,9 +17,9 @@ import {
   FormInput,
   Label,
   Layout,
-  Text,
-  useModalHook
+  Text
 } from '@wings-software/uicore'
+import { useModalHook } from '@harness/use-modal'
 import { AddAPIKeyQueryParams, ApiKey, useAddAPIKey } from 'services/cf/index'
 import { useEnvStrings } from '@cf/hooks/environment'
 import { useToaster } from '@common/exports'

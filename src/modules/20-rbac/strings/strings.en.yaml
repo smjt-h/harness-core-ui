@@ -132,7 +132,9 @@ userDetails:
     deleteTitle: Remove from User Group
     deleteSuccessMessage: User is removed from the User Group '{{name}}'
     confirmDeleteText: Are you sure you want to remove this user from the User Group '{{name}}'
-    addToGroup: + Add to Group
+    addToGroup: Add to Group
+    addingToGroups: Adding Groups
+    addSuccessMessage: User is successfully added to the UserGroups '{{Groups}}'.
   linkToSSOProviderModal:
     linkLabel: Link to SSO Provider Group
     delinkLabel: Delink Group
@@ -199,6 +201,12 @@ accessControlTitle:
   serviceAccounts: 'Access Control: Service Acccounts'
   resourceGroups: 'Access Control: Resource Groups'
   roles: 'Access Control: Roles'
+planEnforcement:
+  ff:
+    teamEnterprisePlan:
+      approachingLimit: 'You have used {{ developerUsagePercentage }}% of your developer subscription limit'
+      upgradeRequired: 'You have exceeded your developer subscription limit'
+
 customRoles: new Roles
 customResourceGroups: new Resource Groups
 communityErrorMessages:

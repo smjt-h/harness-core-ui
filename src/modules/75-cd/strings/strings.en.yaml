@@ -154,3 +154,10 @@ whatIsHarnessManagedGitOpsServer: 'What is a Harness Managed GitOps Server?'
 aboutHarnessManagedGitOpsServer: 'The Harness GitOps Server is a worker process that runs in your environment and performs GitOps tasks.'
 componentsInstalled: '<ul> <li> GitOps agent </li> <li> Repo server </li><li> Redis cache </li> <li> Application controller  </li> </ul>'
 requiredPermissions: '<ul> <li> Permission to create Deployment, Service, Statefulset, Network Policy, Service Account, Role, ClusterRole, RoleBinding, ClusterRoleBinding, ConfigMap, Secret (For the Harness GitOps Server) </li> <li> Permission to apply CustomResourceDefinition For the Harness GitOps Server) </li> </ul>'
+featureRestriction:
+  banners:
+    serviceLevelUp: 'You have used {{ limit }} services included in the free plan. Consider upgrading to unlock more services.'
+    deploymentsPerMonthLevelUp: 'You have used {{ limit }} / {{ limit }} free deployments this month. Consider upgrading for unlimited builds.'
+    serviceAndDeploymentsLevelUp: 'You have used {{ deploymentsLimit }} free deployments this month and {{ serviceLimit }} free services. Consider upgrading for higher limits.'
+    serviceWarningActive: You have used {{ warningLimit }}% of your service subscription limit.
+    dpmWarningActive: You have used {{ warningLimit }}% of deployments included in the free plan. After 1,000 deployments, the free plan will be restricted to 100 deployments per month.

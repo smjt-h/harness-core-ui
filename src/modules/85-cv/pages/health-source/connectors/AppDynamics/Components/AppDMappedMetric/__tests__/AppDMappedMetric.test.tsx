@@ -55,6 +55,7 @@ describe('AppDMappedMetric component', () => {
           createdMetrics={['appdMetric', 'appdMetric new']}
           isValidInput={true}
           setCreatedMetrics={jest.fn()}
+          updateGroupedCreatedMetrics={jest.fn()}
         />
       </TestWrapper>
     )

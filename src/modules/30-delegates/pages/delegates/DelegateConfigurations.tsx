@@ -21,7 +21,6 @@ import {
   Color,
   Heading,
   Utils,
-  useModalHook,
   FormInput,
   SelectOption,
   MultiSelectOption,
@@ -31,6 +30,7 @@ import {
   useToaster,
   Page
 } from '@wings-software/uicore'
+import { useModalHook } from '@harness/use-modal'
 import { PageSpinner } from '@common/components'
 import type { UseGetMockData } from '@common/utils/testUtils'
 import { StringUtils } from '@common/exports'

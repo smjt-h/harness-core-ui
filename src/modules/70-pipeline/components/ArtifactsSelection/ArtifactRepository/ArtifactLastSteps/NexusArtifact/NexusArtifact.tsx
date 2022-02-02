@@ -32,7 +32,7 @@ import { getConnectorIdValue } from '@pipeline/components/ArtifactsSelection/Art
 import { ConfigureOptions } from '@common/components/ConfigureOptions/ConfigureOptions'
 import { ArtifactType, ImagePathProps, ImagePathTypes, TagTypes } from '../../../ArtifactInterface'
 import { ArtifactIdentifierValidation } from '../../../ArtifactHelper'
-import ArtifactImagePathTagView from '../ArtifactImagePathTagView'
+import ArtifactImagePathTagView from '../ArtifactImagePathTagView/ArtifactImagePathTagView'
 import css from '../../ArtifactConnector.module.scss'
 
 export const NexusArtifact: React.FC<StepProps<ConnectorConfigDTO> & ImagePathProps> = ({

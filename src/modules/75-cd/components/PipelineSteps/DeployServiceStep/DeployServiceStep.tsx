@@ -18,9 +18,9 @@ import {
   Dialog,
   Layout,
   MultiTypeInputType,
-  SelectOption,
-  useModalHook
+  SelectOption
 } from '@wings-software/uicore'
+import { useModalHook } from '@harness/use-modal'
 import * as Yup from 'yup'
 import { defaultTo, get, isEmpty, isNil, noop, omit } from 'lodash-es'
 import { useParams } from 'react-router-dom'

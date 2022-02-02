@@ -8,7 +8,7 @@
 /* eslint-disable jest-no-mock */
 import { renderHook } from '@testing-library/react-hooks'
 import React, { FC } from 'react'
-import { ModalProvider } from '@wings-software/uicore'
+import { ModalProvider } from '@harness/use-modal'
 import * as cfServiceMock from 'services/cf'
 import * as useFeatureFlagMock from '@common/hooks/useFeatureFlag'
 import type { GitRepo } from 'services/cf'

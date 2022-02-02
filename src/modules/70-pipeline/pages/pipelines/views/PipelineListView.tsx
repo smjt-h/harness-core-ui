@@ -7,6 +7,7 @@
 
 import React from 'react'
 import type { CellProps, Column, Renderer } from 'react-table'
+import cx from 'classnames'
 import {
   Button,
   Color,
@@ -18,7 +19,9 @@ import {
   ButtonVariation,
   TagsPopover,
   TableV2,
-  Container
+  Container,
+  ButtonSize,
+  FontVariation
 } from '@wings-software/uicore'
 import { Classes, Menu, Position } from '@blueprintjs/core'
 import { useParams } from 'react-router-dom'
@@ -180,16 +183,22 @@ const RenderColumnPipeline: Renderer<CellProps<PipelineDTO>> = ({ row }) => {
   const { getString } = useStrings()
   return (
     <Layout.Horizontal spacing="large">
-      <span>
+      <span
+        className={cx(
+          css.pipelineIcons,
+          getIconsForPipeline(data) && getIconsForPipeline(data).length > 1 ? css.spaceBetween : css.center
+        )}
+      >
         {getIconsForPipeline(data).map(iconObj => (
           <Icon key={iconObj.icon} name={iconObj.icon} size={iconObj.size} padding={{ left: 'xsmall' }} />
         ))}
       </span>
-      <div>
+      <div className={css.pipelineInfo}>
         <Layout.Horizontal flex={{ alignItems: 'center' }}>
           <Layout.Vertical spacing="xsmall" data-testid={data.identifier}>
             <Layout.Horizontal spacing="medium">
               <Text
+                font={{ variation: FontVariation.BODY2 }}
                 color={Color.GREY_800}
                 tooltipProps={{ position: Position.BOTTOM }}
                 tooltip={
@@ -294,6 +303,8 @@ const RenderLastRun: Renderer<CellProps<PipelineDTO>> = ({ row }) => {
 const RenderRunPipeline: Renderer<CellProps<PipelineDTO>> = ({ row }): JSX.Element => {
   const rowdata = row.original
 
+  const { getString } = useStrings()
+
   const runPipeline = (): void => {
     openRunPipelineModal()
   }
@@ -306,10 +317,14 @@ const RenderRunPipeline: Renderer<CellProps<PipelineDTO>> = ({ row }): JSX.Eleme
 
   return (
     <RbacButton
-      variation={ButtonVariation.PRIMARY}
+      withoutCurrentColor
+      icon="command-start"
+      variation={ButtonVariation.SECONDARY}
+      size={ButtonSize.SMALL}
       intent="success"
-      icon="run-pipeline"
+      iconProps={{ size: 9, color: Color.SUCCESS }}
       className={css.runPipelineListBtn}
+      text={getString('runPipelineText')}
       permission={{
         resource: {
           resourceType: ResourceType.PIPELINE,

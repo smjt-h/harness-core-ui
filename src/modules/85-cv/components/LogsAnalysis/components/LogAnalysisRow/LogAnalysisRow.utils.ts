@@ -19,3 +19,29 @@ export const getEventTypeFromClusterType = (tag: LogData['tag']): string => {
       return ''
   }
 }
+
+export const onClickErrorTrackingRow = (message: string): void => {
+  const rowMessageSplit = message.split('|')
+  const timestamp = rowMessageSplit[rowMessageSplit.length - 1].trim()
+  const requestId = rowMessageSplit[rowMessageSplit.length - 2].trim()
+  const sid = rowMessageSplit[rowMessageSplit.length - 3].trim()
+
+  // Make duration window 1 hour from timestamp
+  const fromTimestamp = parseInt(timestamp) - 3600
+
+  const arcJson = `{
+          "service_id": "${sid}",
+          "viewport_strings":{
+            "from_timestamp":"${fromTimestamp}",
+            "to_timestamp":"${timestamp}",
+            "until_now":false,
+            "machine_hashes":[],
+            "agent_hashes":[],
+            "deployment_hashes":[],
+            "request_ids":[${requestId}]
+          }
+          ,"timestamp":"${timestamp}"
+        }`
+
+  window.open(`${localStorage.ERROR_TRACKING_URL}arc?event=${btoa(arcJson)}`)
+}

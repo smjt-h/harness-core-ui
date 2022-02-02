@@ -72,6 +72,7 @@ import ServiceAccountDetails from '@rbac/pages/ServiceAccountDetails/ServiceAcco
 import ServiceAccountsPage from '@rbac/pages/ServiceAccounts/ServiceAccounts'
 import { GovernanceRouteDestinations } from '@governance/RouteDestinations'
 import type { ResourceDTO } from 'services/audit'
+import GitSyncConfigTab from '@gitsync/pages/config/GitSyncConfigTab'
 import LandingDashboardPage from './pages/LandingDashboardPage/LandingDashboardPage'
 
 const ProjectDetailsSideNavProps: SidebarContext = {
@@ -108,10 +109,12 @@ RbacFactory.registerResourceTypeHandler(ResourceType.ORGANIZATION, {
   addResourceModalBody: props => <OrgResourceModalBody {...props} />
 })
 
+const platformLabel = 'auditTrail.Platform'
 AuditTrailFactory.registerResourceHandler('ORGANIZATION', {
   moduleIcon: {
     name: 'nav-settings'
   },
+  moduleIconLabel: platformLabel,
   resourceUrl: (_resource: ResourceDTO, resourceScope: ResourceScope) => {
     const { orgIdentifier, accountIdentifier } = resourceScope
     return orgIdentifier ? routes.toOrganizationDetails({ orgIdentifier, accountId: accountIdentifier }) : undefined
@@ -122,6 +125,7 @@ AuditTrailFactory.registerResourceHandler('PROJECT', {
   moduleIcon: {
     name: 'nav-settings'
   },
+  moduleIconLabel: platformLabel,
   resourceUrl: (_resource: ResourceDTO, resourceScope: ResourceScope) => {
     const { orgIdentifier, accountIdentifier, projectIdentifier } = resourceScope
     if (orgIdentifier && projectIdentifier) {
@@ -617,7 +621,15 @@ export default (
         <GitSyncErrors />
       </GitSyncPage>
     </RouteWithLayout>
-
+    <RouteWithLayout
+      sidebarProps={ProjectDetailsSideNavProps}
+      path={routes.toGitSyncConfig({ ...accountPathProps, ...projectPathProps })}
+      exact
+    >
+      <GitSyncPage>
+        <GitSyncConfigTab />
+      </GitSyncPage>
+    </RouteWithLayout>
     {GovernanceRouteDestinations({
       sidebarProps: AccountSideNavProps,
       pathProps: { ...accountPathProps, ...orgPathProps }

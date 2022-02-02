@@ -10,6 +10,8 @@ import { Color, Container, Text } from '@wings-software/uicore'
 import { useStrings } from 'framework/strings'
 import { useUpdateQueryParams } from '@common/hooks'
 import type { ExecutionQueryParams } from '@pipeline/utils/executionUtils'
+import { FeatureFlag } from '@common/featureFlags'
+import { useFeatureFlag } from '@common/hooks/useFeatureFlag'
 import css from './SummaryOfDeployedNodes.module.scss'
 
 interface SummaryOfDeployedNodesProps {
@@ -47,7 +49,7 @@ function SummaryText(props: SummaryTextProps): JSX.Element {
       </Text>
       <Text
         intent="primary"
-        onClick={() => updateQueryParams({ view: 'log', type: tabId })}
+        onClick={() => updateQueryParams({ view: 'log', type: tabId, filterAnomalous: 'true' })}
         rightIcon="arrow-right"
         className={css.viewDetails}
       >
@@ -60,6 +62,8 @@ function SummaryText(props: SummaryTextProps): JSX.Element {
 export function SummaryOfDeployedNodes(props: SummaryOfDeployedNodesProps): JSX.Element {
   const { metricsInViolation, totalMetrics, logClustersInViolation, totalLogClusters } = props
   const { getString } = useStrings()
+  const isErrorTrackingEnabled = useFeatureFlag(FeatureFlag.ERROR_TRACKING_ENABLED)
+
   return (
     <Container className={css.main}>
       <Text>{getString('summary').toLocaleUpperCase()}</Text>
@@ -77,6 +81,14 @@ export function SummaryOfDeployedNodes(props: SummaryOfDeployedNodesProps): JSX.
           titleText={getString('pipeline.verification.logClustersInViolation')}
           tabId={getString('pipeline.verification.analysisTab.logs')}
         />
+        {isErrorTrackingEnabled && (
+          <SummaryText
+            numerator={logClustersInViolation}
+            denominator={totalLogClusters}
+            titleText={getString('pipeline.verification.errorClustersInViolation')}
+            tabId={getString('errors')}
+          />
+        )}
       </Container>
     </Container>
   )

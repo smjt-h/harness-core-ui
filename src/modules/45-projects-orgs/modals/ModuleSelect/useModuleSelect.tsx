@@ -6,17 +6,8 @@
  */
 
 import React, { useCallback } from 'react'
-import {
-  Button,
-  Card,
-  Container,
-  Icon,
-  Layout,
-  useModalHook,
-  Text,
-  FontVariation,
-  ButtonVariation
-} from '@wings-software/uicore'
+import { Button, Card, Container, Icon, Layout, Text, FontVariation, ButtonVariation } from '@wings-software/uicore'
+import { useModalHook } from '@harness/use-modal'
 import { Dialog, IDialogProps } from '@blueprintjs/core'
 import { useHistory, useParams } from 'react-router-dom'
 import { useStrings } from 'framework/strings'

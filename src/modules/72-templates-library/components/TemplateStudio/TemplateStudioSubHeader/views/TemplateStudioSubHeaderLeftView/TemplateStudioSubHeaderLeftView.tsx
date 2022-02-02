@@ -17,10 +17,10 @@ import {
   Layout,
   SelectOption,
   Text,
-  useModalHook,
   VisualYamlSelectedView as SelectedView,
   useConfirmationDialog
 } from '@wings-software/uicore'
+import { useModalHook } from '@harness/use-modal'
 import { useParams, useHistory } from 'react-router-dom'
 import { defaultTo, isEmpty, isNil, merge } from 'lodash-es'
 import { Dialog } from '@blueprintjs/core'

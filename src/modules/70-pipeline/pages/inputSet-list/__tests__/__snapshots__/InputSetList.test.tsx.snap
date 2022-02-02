@@ -262,7 +262,7 @@ exports[`Input Set List tests render Input Set List view 1`] = `
             style="width: 35%;"
           >
             <p
-              class="StyledProps--font Text--lineclamp StyledProps--main StyledProps--padding-right-medium StyledProps--color StyledProps--color-grey400"
+              class="StyledProps--font Text--lineclamp StyledProps--main StyledProps--padding-right-medium StyledProps--color StyledProps--color-black"
               style="--text-line-clamp: 2;"
             >
               OverLayInput
@@ -463,7 +463,7 @@ exports[`Input Set List tests render Input Set List view 1`] = `
             style="width: 35%;"
           >
             <p
-              class="StyledProps--font Text--lineclamp StyledProps--main StyledProps--padding-right-medium StyledProps--color StyledProps--color-grey400"
+              class="StyledProps--font Text--lineclamp StyledProps--main StyledProps--padding-right-medium StyledProps--color StyledProps--color-black"
               style="--text-line-clamp: 2;"
             >
               asd

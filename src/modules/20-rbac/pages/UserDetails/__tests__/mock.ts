@@ -5,7 +5,7 @@
  * https://polyformproject.org/wp-content/uploads/2020/06/PolyForm-Shield-1.0.0.txt.
  */
 
-import type { ResponseBoolean, ResponseUserAggregate } from 'services/cd-ng'
+import type { ResponseBoolean, ResponsePageUserGroupAggregateDTO, ResponseUserAggregate } from 'services/cd-ng'
 
 export const userInfo: ResponseUserAggregate = {
   status: 'SUCCESS',
@@ -84,4 +84,69 @@ export const userGroupInfo = {
   ],
   metaData: '',
   correlationId: ''
+}
+
+export const userGroupsAggregate: ResponsePageUserGroupAggregateDTO = {
+  status: 'SUCCESS',
+  data: {
+    totalPages: 1,
+    totalItems: 1,
+    pageItemCount: 1,
+    pageSize: 10,
+    content: [
+      {
+        userGroupDTO: {
+          accountIdentifier: 'accountId',
+          identifier: 'abc',
+          name: 'abc_name',
+          users: ['xyz1', 'xyz2'],
+          notificationConfigs: [],
+          description: '',
+          tags: {},
+          ssoLinked: false
+        },
+        users: [
+          {
+            name: 'xyz1',
+            email: 'xyz1@test.io',
+            uuid: 'xyz1',
+            locked: false
+          },
+          {
+            name: 'xyz2',
+            email: 'xyz2@test.io',
+            uuid: 'xyz2',
+            locked: false
+          }
+        ],
+        roleAssignmentsMetadataDTO: [],
+        lastModifiedAt: 1627886721254
+      },
+      {
+        userGroupDTO: {
+          accountIdentifier: 'kmpySmUISimoRrJL6NL73w',
+          identifier: 'test',
+          name: 'testGroup',
+          users: ['u1'],
+          notificationConfigs: [],
+          description: '',
+          tags: {}
+        },
+        users: [
+          {
+            name: 'dummy',
+            email: 'dummy@harness.io',
+            uuid: 'dummy',
+            locked: false
+          }
+        ],
+        roleAssignmentsMetadataDTO: [],
+        lastModifiedAt: 1627886721254
+      }
+    ],
+    pageIndex: 0,
+    empty: false
+  },
+  metaData: undefined,
+  correlationId: '0f832df3-d742-4689-950b-f30573d1db5a'
 }

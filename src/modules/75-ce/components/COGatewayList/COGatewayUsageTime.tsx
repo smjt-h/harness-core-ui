@@ -106,7 +106,6 @@ const COGatewayUsageTime: React.FC<COGatewayUsageTimeProps> = props => {
       {sessionReportRows.length ? (
         <TableV2<SessionReportRow>
           data={sessionReportRows}
-          className={css.table}
           columns={[
             {
               accessor: 'start',

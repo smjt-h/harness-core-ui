@@ -53,14 +53,14 @@ const getErrors = (barriers: Barrier[], getString: UseStringsReturn['getString']
 const getValidBarriers = (barriers: Barrier[]): Barrier[] =>
   barriers.filter(barrier => barrier.identifier.length > 0 && barrier.name.length > 0)
 
-interface Barrier {
+export interface Barrier {
   identifier: string
   name: string
   id?: string
   mode?: 'ADD' | 'EDIT' | null
   stages?: StageDetail[]
 }
-interface BarrierListProps {
+export interface BarrierListProps {
   list: Array<Barrier>
   pipeline: PipelineInfoConfig
   createItem: (push: (data: Barrier) => void) => void
@@ -179,7 +179,7 @@ export const FlowControl: React.FC = (): JSX.Element => {
   )
 }
 
-const BarrierList: React.FC<BarrierListProps> = ({
+export const BarrierList: React.FC<BarrierListProps> = ({
   list,
   createItem,
   deleteItem,
@@ -258,6 +258,7 @@ const BarrierList: React.FC<BarrierListProps> = ({
                             }
                           >
                             <RbacButton
+                              data-testid="remove-barrier-button"
                               permission={{
                                 permission: PermissionIdentifier.EDIT_PIPELINE,
                                 resource: {

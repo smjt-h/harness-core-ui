@@ -11,7 +11,7 @@ import { HarnessDocTooltip } from '@wings-software/uicore'
 import { StringKeys, useStrings } from 'framework/strings'
 import css from './StringWithTooltip.module.scss'
 
-export interface StringWithTooltipProps {
+export interface StringWithTooltipProps extends React.HTMLAttributes<HTMLSpanElement> {
   stringId: StringKeys
   tooltipId: string
   className?: string

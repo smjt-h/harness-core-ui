@@ -20,7 +20,12 @@ import {
   FormInput
 } from '@wings-software/uicore'
 import * as Yup from 'yup'
-import { validateDockerDelegatePromise, useGetDelegateTokens } from 'services/portal'
+import {
+  validateDockerDelegatePromise,
+  useGetDelegateTokens,
+  GetDelegateTokensQueryParams,
+  ValidateDockerDelegateQueryParams
+} from 'services/portal'
 import type { DelegateTokenDetails } from 'services/portal'
 
 import { useStrings } from 'framework/strings'
@@ -89,7 +94,7 @@ const Step1Setup: React.FC<StepProps<DockerDelegateWizardData> & DelegateSetupSt
         orgIdentifier,
         delegateName: values.name,
         tokenName: NG_SHOW_DEL_TOKENS ? values.tokenName : undefined
-      }
+      } as ValidateDockerDelegateQueryParams
     })) as any
     const isNameUnique = !response?.responseMessages[0]
 
@@ -114,7 +119,7 @@ const Step1Setup: React.FC<StepProps<DockerDelegateWizardData> & DelegateSetupSt
       projectIdentifier,
       orgIdentifier,
       status: 'ACTIVE'
-    }
+    } as GetDelegateTokensQueryParams
   })
   const defaultToken = tokensResponse?.resource?.[0]
 
@@ -148,7 +153,7 @@ const Step1Setup: React.FC<StepProps<DockerDelegateWizardData> & DelegateSetupSt
               .matches(delegateNameRegex, getString('delegates.delegateNameRegexIssue')),
             tokenName: NG_SHOW_DEL_TOKENS
               ? Yup.string().required(getString('delegates.tokens.tokenRequired'))
-              : Yup.string()
+              : Yup.string().nullable()
           })}
         >
           {() => {

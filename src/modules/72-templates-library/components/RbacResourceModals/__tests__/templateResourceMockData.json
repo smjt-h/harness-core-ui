@@ -1,0 +1,208 @@
+{
+  "status": "SUCCESS",
+  "data": {
+    "content": [
+      {
+        "accountId": "px7xd_BFRCi-pfWPYXVjvw",
+        "orgIdentifier": "default",
+        "projectIdentifier": "Kapil",
+        "identifier": "CI_Stage_Template",
+        "name": "CI Stage Template 2",
+        "description": "",
+        "tags": {},
+        "yaml": "template:\n    name: CI Stage Template 2\n    identifier: CI_Stage_Template\n    versionLabel: Version1\n    type: Stage\n    projectIdentifier: Kapil\n    orgIdentifier: default\n    tags: {}\n    spec:\n        type: CI\n        spec:\n            cloneCodebase: <+input>\n            infrastructure:\n                type: KubernetesDirect\n                spec:\n                    connectorRef: test1111\n                    namespace: test\n            execution:\n                steps:\n                    - step:\n                          type: Run\n                          name: test\n                          identifier: test\n                          spec:\n                              connectorRef: harnessImage\n                              image: node:14\n                              command: echo 1\n",
+        "versionLabel": "Version1",
+        "templateEntityType": "Stage",
+        "childType": "CI",
+        "templateScope": "project",
+        "version": 2,
+        "gitDetails": {
+          "objectId": null,
+          "branch": null,
+          "repoIdentifier": null,
+          "rootFolder": null,
+          "filePath": null,
+          "repoName": null
+        },
+        "entityValidityDetails": {
+          "valid": true,
+          "invalidYaml": null
+        },
+        "lastUpdatedAt": 1642570505728,
+        "stableTemplate": true
+      },
+      {
+        "accountId": "px7xd_BFRCi-pfWPYXVjvw",
+        "orgIdentifier": "default",
+        "projectIdentifier": "Kapil",
+        "identifier": "new_step_name",
+        "name": "New Step Name",
+        "description": "",
+        "tags": {},
+        "yaml": "template:\n    name: New Step Name\n    identifier: new_step_name\n    versionLabel: Version1\n    type: Step\n    projectIdentifier: Kapil\n    orgIdentifier: default\n    tags: {}\n    spec:\n        type: K8sCanaryDelete\n",
+        "versionLabel": "Version1",
+        "templateEntityType": "Step",
+        "childType": "K8sCanaryDelete",
+        "templateScope": "project",
+        "version": 0,
+        "gitDetails": {
+          "objectId": null,
+          "branch": null,
+          "repoIdentifier": null,
+          "rootFolder": null,
+          "filePath": null,
+          "repoName": null
+        },
+        "entityValidityDetails": {
+          "valid": true,
+          "invalidYaml": null
+        },
+        "lastUpdatedAt": 1640240970274,
+        "stableTemplate": true
+      },
+      {
+        "accountId": "px7xd_BFRCi-pfWPYXVjvw",
+        "orgIdentifier": "default",
+        "projectIdentifier": "Kapil",
+        "identifier": "CI_Stage",
+        "name": "CI Stage",
+        "description": "",
+        "tags": {},
+        "yaml": "template:\n    name: CI Stage\n    identifier: CI_Stage\n    versionLabel: Version1\n    type: Stage\n    projectIdentifier: Kapil\n    orgIdentifier: default\n    description: null\n    tags: {}\n    spec:\n        type: CI\n        spec:\n            cloneCodebase: true\n            infrastructure:\n                type: KubernetesDirect\n                spec:\n                    connectorRef: Test222\n                    namespace: asd\n                    serviceAccountName: null\n                    runAsUser: null\n                    initTimeout: null\n                    labels: null\n            execution:\n                steps:\n                    - step:\n                          type: BuildAndPushDockerRegistry\n                          name: test\n                          identifier: test\n                          spec:\n                              connectorRef: harnessImage\n                              repo: asd\n                              tags:\n                                  - test\n                              optimize: true\n",
+        "versionLabel": "Version1",
+        "templateEntityType": "Stage",
+        "childType": "CI",
+        "templateScope": "project",
+        "version": 0,
+        "gitDetails": {
+          "objectId": null,
+          "branch": null,
+          "repoIdentifier": null,
+          "rootFolder": null,
+          "filePath": null,
+          "repoName": null
+        },
+        "entityValidityDetails": {
+          "valid": true,
+          "invalidYaml": null
+        },
+        "lastUpdatedAt": 1638887101261,
+        "stableTemplate": true
+      },
+      {
+        "accountId": "px7xd_BFRCi-pfWPYXVjvw",
+        "orgIdentifier": "default",
+        "projectIdentifier": "Kapil",
+        "identifier": "CD_Stage",
+        "name": "CD Stage",
+        "description": "",
+        "tags": {},
+        "yaml": "template:\n    name: CD Stage\n    identifier: CD_Stage\n    versionLabel: Version1\n    type: Stage\n    projectIdentifier: Kapil\n    orgIdentifier: default\n    description: null\n    tags: {}\n    spec:\n        type: Deployment\n        spec:\n            serviceConfig:\n                serviceRef: test\n                serviceDefinition:\n                    type: Kubernetes\n                    spec:\n                        variables: []\n            infrastructure:\n                environmentRef: prod_environment\n                infrastructureDefinition:\n                    type: KubernetesDirect\n                    spec:\n                        connectorRef: Test222\n                        namespace: asd\n                        releaseName: release-<+INFRA_KEY>\n                allowSimultaneousDeployments: false\n            execution:\n                steps:\n                    - step:\n                          type: ShellScript\n                          name: step11\n                          identifier: step11\n                          spec:\n                              shell: Bash\n                              onDelegate: true\n                              source:\n                                  type: Inline\n                                  spec:\n                                      script: echo 1\n                              environmentVariables: []\n                              outputVariables: []\n                              executionTarget:\n                                  connectorRef: null\n                          timeout: 10m\n                rollbackSteps: []\n        failureStrategies:\n            - onFailure:\n                  errors:\n                      - AllErrors\n                  action:\n                      type: StageRollback\n",
+        "versionLabel": "Version1",
+        "templateEntityType": "Stage",
+        "childType": "Deployment",
+        "templateScope": "project",
+        "version": 0,
+        "gitDetails": {
+          "objectId": null,
+          "branch": null,
+          "repoIdentifier": null,
+          "rootFolder": null,
+          "filePath": null,
+          "repoName": null
+        },
+        "entityValidityDetails": {
+          "valid": true,
+          "invalidYaml": null
+        },
+        "lastUpdatedAt": 1638887037603,
+        "stableTemplate": true
+      },
+      {
+        "accountId": "px7xd_BFRCi-pfWPYXVjvw",
+        "orgIdentifier": "default",
+        "projectIdentifier": "Kapil",
+        "identifier": "templatetest2",
+        "name": "template-test2",
+        "description": "",
+        "tags": {},
+        "yaml": "template:\n    name: template-test2\n    identifier: templatetest2\n    versionLabel: v2\n    type: Step\n    projectIdentifier: Kapil\n    orgIdentifier: default\n    description: null\n    tags: {}\n    spec:\n        type: Http\n        timeout: 10s\n        spec:\n            url: https://www.google.com\n            method: GET\n            headers: []\n            outputVariables: []\n",
+        "versionLabel": "v2",
+        "templateEntityType": "Step",
+        "childType": "Http",
+        "templateScope": "project",
+        "version": 0,
+        "gitDetails": {
+          "objectId": null,
+          "branch": null,
+          "repoIdentifier": null,
+          "rootFolder": null,
+          "filePath": null,
+          "repoName": null
+        },
+        "entityValidityDetails": {
+          "valid": true,
+          "invalidYaml": null
+        },
+        "lastUpdatedAt": 1637237571833,
+        "stableTemplate": true
+      },
+      {
+        "accountId": "px7xd_BFRCi-pfWPYXVjvw",
+        "orgIdentifier": "default",
+        "projectIdentifier": "Kapil",
+        "identifier": "Echo_Template",
+        "name": "Echo Template",
+        "description": "",
+        "tags": {},
+        "yaml": "template:\n    name: Echo Template\n    identifier: Echo_Template\n    versionLabel: V1\n    type: Step\n    projectIdentifier: Kapil\n    orgIdentifier: default\n    description: null\n    tags: {}\n    spec:\n        type: ShellScript\n        timeout: 11m\n        spec:\n            shell: Bash\n            onDelegate: true\n            source:\n                type: Inline\n                spec:\n                    script: <+input>\n            environmentVariables: []\n            outputVariables: []\n            executionTarget: {}\n",
+        "versionLabel": "V1",
+        "templateEntityType": "Step",
+        "childType": "ShellScript",
+        "templateScope": "project",
+        "version": 6,
+        "gitDetails": {
+          "objectId": null,
+          "branch": null,
+          "repoIdentifier": null,
+          "rootFolder": null,
+          "filePath": null,
+          "repoName": null
+        },
+        "entityValidityDetails": {
+          "valid": true,
+          "invalidYaml": null
+        },
+        "lastUpdatedAt": 1637237225594,
+        "stableTemplate": true
+      }
+    ],
+    "pageable": {
+      "sort": {
+        "sorted": true,
+        "unsorted": false,
+        "empty": false
+      },
+      "pageSize": 10,
+      "pageNumber": 0,
+      "offset": 0,
+      "paged": true,
+      "unpaged": false
+    },
+    "last": true,
+    "totalPages": 1,
+    "totalElements": 6,
+    "sort": {
+      "sorted": true,
+      "unsorted": false,
+      "empty": false
+    },
+    "first": true,
+    "numberOfElements": 6,
+    "size": 10,
+    "number": 0,
+    "empty": false
+  },
+  "metaData": null,
+  "correlationId": "fa14a74e-1172-4c9d-b51c-d57d3abc55f9"
+}

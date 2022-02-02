@@ -35,6 +35,7 @@ export interface UserGroupsReferenceProps {
   scope?: Scope
   mock?: UserGroupDTO[]
   onlyCurrentScope?: boolean
+  disablePreSelectedItems?: boolean
 }
 
 const fetchRecords = (
@@ -96,6 +97,7 @@ const UserGroupsReference: React.FC<UserGroupsReferenceProps> = props => {
     onSelect,
     userGroupsScopeAndUuid,
     onlyCurrentScope,
+    disablePreSelectedItems,
     scope = onlyCurrentScope ? getScopeFromDTO({ accountIdentifier, projectIdentifier, orgIdentifier }) : Scope.ACCOUNT
   } = props
   const { getString } = useStrings()
@@ -108,6 +110,7 @@ const UserGroupsReference: React.FC<UserGroupsReferenceProps> = props => {
         onSelect(selectedData)
       }}
       onlyCurrentScope={onlyCurrentScope}
+      disablePreSelectedItems={disablePreSelectedItems}
       defaultScope={scope}
       fetchRecords={(fetchScope, search = '', done) => {
         fetchRecords(fetchScope, search, done, accountIdentifier, showError, projectIdentifier, orgIdentifier)

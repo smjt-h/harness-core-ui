@@ -15,9 +15,10 @@ allowpaths:
   - '/setup/delegates/v3/ng/validate-docker-delegate-details.get'
   - '/setup/delegates/v3/ng/docker.post'
   - '/setup/delegates/v3/ng/delegate-group.post'
-  - '/v2/delegate-token.post'
-  - '/v2/delegate-token.get'
-  - '/v2/delegate-token.put'
+  - '/ng/delegate-token.post'
+  - '/ng/delegate-token.get'
+  - '/ng/delegate-token.put'
+  - '/setup/delegates/v3/ng/delegate-token.get'
   - '/delegate-profiles.get'
   - '/delegate-profiles/v2.get'
   - '/delegate-profiles/{delegateProfileId}.get'
@@ -45,6 +46,7 @@ allowpaths:
   - '/setup/delegates/delegate-sizes.get'
   - '/setup/delegates/validate-kubernetes-yaml.post'
   - '/setup/delegates/v3/validate-kubernetes-yaml.post'
+  - '/setup/delegates/generate-kubernetes-yaml.post'
   - '/setup/delegates/v3/generate-kubernetes-yaml.post'
   - '/setup/delegates/v3/ng/generate-kubernetes-yaml'
   - '/delegates-verification/heartbeat'
@@ -68,9 +70,10 @@ operationIdOverrides:
   /setup/delegates/v3/ng/validate-docker-delegate-details.get: validateDockerDelegate
   /setup/delegates/v3/ng/docker.post: generateDockerDelegateYAML
   /setup/delegates/v3/ng/delegate-group.post: createDelegateGroup
-  /v2/delegate-token.post: createDelegateToken
-  /v2/delegate-token.get: getDelegateTokens
-  /v2/delegate-token.put: revokeDelegateToken
+  /ng/delegate-token.post: createDelegateToken
+  /ng/delegate-token.get: getDelegateTokens
+  /ng/delegate-token.put: revokeDelegateToken
+  /setup/delegates/v3/ng/delegate-token.get: getDelegatesByToken
   /delegate-profiles/v2/{delegateProfileId}: updateDelegateConfiguration
   /delegate-profiles.get: getDelegateProfiles
   /delegate-profiles/v2.get: getDelegateProfilesV2
@@ -92,7 +95,8 @@ operationIdOverrides:
   /delegate-profiles/{delegateProfileId}.get: getDelegateConfigFromId
   /setup/delegates/validate-kubernetes-yaml.post: validateKubernetesYaml
   /setup/delegates/v3/validate-kubernetes-yaml.post: validateKubernetesYamlV3
-  /setup/delegates/v3/generate-kubernetes-yaml.post: generateKubernetesYaml
+  /setup/delegates/generate-kubernetes-yaml.post: generateKubernetesYaml
+  /setup/delegates/v3/generate-kubernetes-yaml.post: generateKubernetesYamlV3
   /setup/delegates/v3/ng/generate-kubernetes-yaml: generateKubernetesYamlUsingNgToken
   /delegates-verification/heartbeat: verifyDelegateHeartBeat
   /delegates-verification/heartbeatV2: verifyDelegateHeartBeatV2

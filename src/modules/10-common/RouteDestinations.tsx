@@ -8,7 +8,7 @@
 import React from 'react'
 import { Route, Redirect, useParams } from 'react-router-dom'
 
-import { ModalProvider } from '@wings-software/uicore'
+import { ModalProvider } from '@harness/use-modal'
 import { RouteWithLayout } from '@common/router'
 import routes from '@common/RouteDefinitions'
 import { accountPathProps, withAccountId } from '@common/utils/routeUtils'

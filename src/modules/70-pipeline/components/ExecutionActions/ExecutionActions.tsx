@@ -6,11 +6,13 @@
  */
 
 import React from 'react'
-import { Button, Popover, ButtonProps, useModalHook } from '@wings-software/uicore'
-import { Dialog, IDialogProps, Menu, MenuItem } from '@blueprintjs/core'
+import { Button, Popover, ButtonProps, useConfirmationDialog } from '@harness/uicore'
+import { useModalHook } from '@harness/use-modal'
+import { Dialog, IDialogProps, Intent, Menu, MenuItem } from '@blueprintjs/core'
 import { Link } from 'react-router-dom'
+import { defaultTo } from 'lodash-es'
 
-import { useHandleInterrupt, useHandleStageInterrupt } from 'services/pipeline-ng'
+import { HandleInterruptQueryParams, useHandleInterrupt, useHandleStageInterrupt } from 'services/pipeline-ng'
 import routes from '@common/RouteDefinitions'
 import { useToaster } from '@common/exports'
 import RbacButton from '@rbac/components/Button/Button'
@@ -63,6 +65,64 @@ export interface ExecutionActionsProps {
   showEditButton?: boolean
 }
 
+function getValidExecutionActions(canExecute: boolean, executionStatus?: ExecutionStatus) {
+  return {
+    canAbort: isExecutionActive(executionStatus) && canExecute,
+    canPause:
+      isExecutionActive(executionStatus) &&
+      !isExecutionPaused(executionStatus) &&
+      !isExecutionPausing(executionStatus) &&
+      canExecute,
+    canRerun: isExecutionComplete(executionStatus) && canExecute,
+    canResume: isExecutionPaused(executionStatus) && canExecute
+  }
+}
+
+function getActionTexts(stageId?: string): {
+  abortText: StringKeys
+  pauseText: StringKeys
+  rerunText: StringKeys
+  resumeText: StringKeys
+} {
+  return {
+    abortText: stageId ? 'pipeline.execution.actions.abortStage' : 'pipeline.execution.actions.abortPipeline',
+    pauseText: stageId ? 'pipeline.execution.actions.pauseStage' : 'pipeline.execution.actions.pausePipeline',
+    rerunText: stageId ? 'pipeline.execution.actions.rerunStage' : 'pipeline.execution.actions.rerunPipeline',
+    resumeText: stageId ? 'pipeline.execution.actions.resumeStage' : 'pipeline.execution.actions.resumePipeline'
+  }
+}
+
+function getSuccessMessage(
+  getString: (key: StringKeys, vars?: Record<string, any>) => string,
+  interruptType: HandleInterruptQueryParams['interruptType'],
+  stageId?: string,
+  stageName?: string
+): string {
+  if (stageId) {
+    return interruptType === 'AbortAll'
+      ? getString('pipeline.execution.stageActionMessages.abortedMessage', {
+          stageName
+        })
+      : interruptType === 'Pause'
+      ? getString('pipeline.execution.stageActionMessages.pausedMessage', {
+          stageName
+        })
+      : interruptType === 'Resume'
+      ? getString('pipeline.execution.stageActionMessages.resumedMessage', {
+          stageName
+        })
+      : ''
+  } else {
+    return interruptType === 'AbortAll'
+      ? getString('pipeline.execution.pipelineActionMessages.abortedMessage')
+      : interruptType === 'Pause'
+      ? getString('pipeline.execution.pipelineActionMessages.pausedMessage')
+      : interruptType === 'Resume'
+      ? getString('pipeline.execution.pipelineActionMessages.resumedMessage')
+      : ''
+  }
+}
+
 export default function ExecutionActions(props: ExecutionActionsProps): React.ReactElement {
   const {
     executionStatus,
@@ -87,105 +147,63 @@ export default function ExecutionActions(props: ExecutionActionsProps): React.Re
     repoIdentifier,
     stagesExecuted
   } = params
-  const { mutate: interrupt } = useHandleInterrupt({ planExecutionId: executionIdentifier })
+  const { mutate: interrupt } = useHandleInterrupt({
+    planExecutionId: executionIdentifier
+  })
   const { mutate: stageInterrupt } = useHandleStageInterrupt({
     planExecutionId: executionIdentifier,
-    nodeExecutionId: stageId || ''
+    nodeExecutionId: defaultTo(stageId, '')
   })
+
   const { showSuccess } = useToaster()
   const { getString } = useStrings()
 
-  const canAbort = isExecutionActive(executionStatus) && canExecute
-  const canPause =
-    isExecutionActive(executionStatus) &&
-    !isExecutionPaused(executionStatus) &&
-    !isExecutionPausing(executionStatus) &&
-    canExecute
-  const canRerun = isExecutionComplete(executionStatus) && canExecute
-  const canResume = isExecutionPaused(executionStatus) && canExecute
-
-  async function abortPipeline(): Promise<void> {
-    try {
-      if (stageId) {
-        await stageInterrupt({} as never, {
-          queryParams: {
-            orgIdentifier,
-            accountIdentifier: accountId,
-            projectIdentifier,
-            interruptType: 'AbortAll'
-          }
-        })
-        showSuccess(getString('pipeline.execution.stageActionMessages.abortedMessage', { stageName }))
-      } else {
-        await interrupt({} as never, {
-          queryParams: {
-            orgIdentifier,
-            accountIdentifier: accountId,
-            projectIdentifier,
-            interruptType: 'AbortAll'
-          }
-        })
-        showSuccess(getString('pipeline.execution.pipelineActionMessages.abortedMessage'))
+  const { openDialog: openAbortDialog } = useConfirmationDialog({
+    cancelButtonText: getString('cancel'),
+    contentText: getString('pipeline.execution.dialogMessages.abortExecution'),
+    titleText: getString('pipeline.execution.dialogMessages.abortTitle'),
+    confirmButtonText: getString('confirm'),
+    intent: Intent.WARNING,
+    onCloseDialog: async isConfirmed => {
+      // istanbul ignore else
+      if (isConfirmed) {
+        abortPipeline()
       }
+    }
+  })
+
+  const { canAbort, canPause, canRerun, canResume } = getValidExecutionActions(canExecute, executionStatus)
+  const { abortText, pauseText, rerunText, resumeText } = getActionTexts(stageId)
+
+  const interruptMethod = stageId ? stageInterrupt : interrupt
+
+  async function executeAction(interruptType: HandleInterruptQueryParams['interruptType']): Promise<void> {
+    try {
+      const successMessage = getSuccessMessage(getString, interruptType, stageId, stageName)
+      await interruptMethod({} as never, {
+        queryParams: {
+          orgIdentifier,
+          accountIdentifier: accountId,
+          projectIdentifier,
+          interruptType
+        }
+      })
+      showSuccess(successMessage)
     } catch (_) {
       //
     }
+  }
+
+  async function abortPipeline(): Promise<void> {
+    await executeAction('AbortAll')
   }
 
   async function pausePipeline(): Promise<void> {
-    try {
-      if (stageId) {
-        await stageInterrupt({} as never, {
-          queryParams: {
-            orgIdentifier,
-            accountIdentifier: accountId,
-            projectIdentifier,
-            interruptType: 'Pause'
-          }
-        })
-        showSuccess(getString('pipeline.execution.stageActionMessages.pausedMessage', { stageName }))
-      } else {
-        await interrupt({} as never, {
-          queryParams: {
-            orgIdentifier,
-            accountIdentifier: accountId,
-            projectIdentifier,
-            interruptType: 'Pause'
-          }
-        })
-        showSuccess(getString('pipeline.execution.pipelineActionMessages.pausedMessage'))
-      }
-    } catch (_) {
-      //
-    }
+    await executeAction('Pause')
   }
 
   async function resumePipeline(): Promise<void> {
-    try {
-      if (stageId) {
-        await stageInterrupt({} as never, {
-          queryParams: {
-            orgIdentifier,
-            accountIdentifier: accountId,
-            projectIdentifier,
-            interruptType: 'Resume'
-          }
-        })
-        showSuccess(getString('pipeline.execution.stageActionMessages.resumedMessage', { stageName }))
-      } else {
-        await interrupt({} as never, {
-          queryParams: {
-            orgIdentifier,
-            accountIdentifier: accountId,
-            projectIdentifier,
-            interruptType: 'Resume'
-          }
-        })
-        showSuccess(getString('pipeline.execution.pipelineActionMessages.resumedMessage'))
-      }
-    } catch (_) {
-      //
-    }
+    await executeAction('Resume')
   }
 
   /*--------------------------------------Retry Pipeline---------------------------------------------*/
@@ -249,19 +267,6 @@ export default function ExecutionActions(props: ExecutionActionsProps): React.Re
     e.stopPropagation()
   }
 
-  const resumeText: StringKeys = stageId
-    ? 'pipeline.execution.actions.resumeStage'
-    : 'pipeline.execution.actions.resumePipeline'
-  const rerunText: StringKeys = stageId
-    ? 'pipeline.execution.actions.rerunStage'
-    : 'pipeline.execution.actions.rerunPipeline'
-  const pauseText: StringKeys = stageId
-    ? 'pipeline.execution.actions.pauseStage'
-    : 'pipeline.execution.actions.pausePipeline'
-  const abortText: StringKeys = stageId
-    ? 'pipeline.execution.actions.abortStage'
-    : 'pipeline.execution.actions.abortPipeline'
-
   return (
     <div className={css.main} onClick={killEvent}>
       {canResume ? (
@@ -296,7 +301,7 @@ export default function ExecutionActions(props: ExecutionActionsProps): React.Re
         <Button
           icon="stop"
           tooltip={getString(abortText)}
-          onClick={abortPipeline}
+          onClick={openAbortDialog}
           {...commonButtonProps}
           disabled={!canExecute}
         />
@@ -331,7 +336,7 @@ export default function ExecutionActions(props: ExecutionActionsProps): React.Re
               />
             )}
             <MenuItem text={getString(pauseText)} onClick={pausePipeline} disabled={!canPause} />
-            <MenuItem text={getString(abortText)} onClick={abortPipeline} disabled={!canAbort} />
+            <MenuItem text={getString(abortText)} onClick={openAbortDialog} disabled={!canAbort} />
             <MenuItem text={getString(resumeText)} onClick={resumePipeline} disabled={!canResume} />
             {showRetryPipeline() && <MenuItem text={getString('pipeline.retryPipeline')} onClick={retryPipeline} />}
             {stageId ? null : <MenuItem text={getString('pipeline.execution.actions.downloadLogs')} disabled />}

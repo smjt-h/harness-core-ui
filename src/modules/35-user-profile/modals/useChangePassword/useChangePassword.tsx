@@ -7,7 +7,7 @@
 
 import React from 'react'
 import cx from 'classnames'
-import { useModalHook } from '@wings-software/uicore'
+import { useModalHook } from '@harness/use-modal'
 import { Dialog, Classes } from '@blueprintjs/core'
 import type { PasswordStrengthPolicy } from 'services/cd-ng'
 import ChangePasswordForm from './views/ChangePasswordForm'

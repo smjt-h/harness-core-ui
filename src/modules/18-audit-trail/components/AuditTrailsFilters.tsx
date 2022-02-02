@@ -6,7 +6,8 @@
  */
 
 import React, { useState } from 'react'
-import { SelectOption, useModalHook } from '@wings-software/uicore'
+import type { SelectOption } from '@wings-software/uicore'
+import { useModalHook } from '@harness/use-modal'
 import { useParams } from 'react-router-dom'
 import FilterSelector from '@common/components/Filter/FilterSelector/FilterSelector'
 import { AuditFilterProperties, FilterDTO, useGetFilterList } from 'services/audit'

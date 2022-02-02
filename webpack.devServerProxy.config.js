@@ -40,8 +40,8 @@ module.exports = {
     target: targetLocalHost ? 'https://localhost:9090' : baseUrl
   },
   '/template/api': {
-    pathRewrite: { '^/template/api': '/api' },
-    target: targetLocalHost ? 'http://localhost:15001' : baseUrl
+    pathRewrite: { '^/template/api': '' },
+    target: targetLocalHost ? 'http://localhost:15001/api' : `${baseUrl}/template/api`
   },
   '/cv/api': {
     target: targetLocalHost ? 'https://localhost:6060' : `${baseUrl}`
@@ -76,9 +76,6 @@ module.exports = {
   },
   '/ccm/recommendations/api': {
     target: targetLocalHost ? 'http://localhost:5000' : baseUrl
-  },
-  '/template/api': {
-    target: targetLocalHost ? 'http://localhost:15001' : baseUrl
   },
   '/pm/api': {
     pathRewrite: { '^/pm': '' },

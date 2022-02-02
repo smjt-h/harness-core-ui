@@ -269,38 +269,6 @@ describe('SegmentsPage', () => {
     expect(container).toMatchSnapshot()
   })
 
-  test('No environment view should be rendered', async () => {
-    mockImport('services/cf', {
-      useGetAllSegments: () => ({
-        data: { segments: [] },
-        loading: false,
-        refetch: jest.fn()
-      })
-    })
-
-    mockImport('@cf/hooks/useEnvironmentSelectV2', {
-      useEnvironmentSelectV2: () => ({
-        environments: [],
-        loading: false,
-        refetch: jest.fn(),
-        EnvironmentSelect: function EnvironmentSelect() {
-          return <div />
-        }
-      })
-    })
-
-    const { container } = render(
-      <TestWrapper
-        path="/account/:accountId/cf/orgs/:orgIdentifier/projects/:projectIdentifier/feature-flags"
-        pathParams={{ accountId: 'dummy', orgIdentifier: 'dummy', projectIdentifier: 'dummy' }}
-      >
-        <SegmentsPage />
-      </TestWrapper>
-    )
-
-    expect(container).toMatchSnapshot()
-  })
-
   test('Should go to edit page by clicking a row', async () => {
     mockImport('services/cf', {
       useGetAllSegments: () => ({

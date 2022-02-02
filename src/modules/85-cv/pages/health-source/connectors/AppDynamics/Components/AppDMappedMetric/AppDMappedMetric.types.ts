@@ -22,6 +22,7 @@ export interface AppDMappedMetricInterface {
   createdMetrics: string[]
   isValidInput: boolean
   setCreatedMetrics: React.Dispatch<React.SetStateAction<CreatedMetricsWithSelectedIndex>>
+  updateGroupedCreatedMetrics: (data: GroupedCreatedMetrics) => void
 }
 
 export interface GroupedCreatedMetrics {

@@ -7,19 +7,19 @@
 
 // import { ProgressBar } from '@blueprintjs/core'
 import React from 'react'
-import { useParams } from 'react-router-dom'
 import { isEmpty as _isEmpty, defaultTo as _defaultTo } from 'lodash-es'
 import { Color, Container, HarnessDocTooltip, Heading, Icon, Layout, Text } from '@wings-software/uicore'
 import Highcharts from 'highcharts'
 import HighchartsReact from 'highcharts-react-official'
 import { useStrings } from 'framework/strings'
-import { useCumulativeServiceSavings } from 'services/lw'
+import type { CumulativeSavings } from 'services/lw'
 import EmptyView from '@ce/images/empty-state.svg'
 import { geGaugeChartOptionsWithoutLabel, getDay } from './Utils'
 import css from './COGatewayCumulativeAnalytics.module.scss'
 
 interface COGatewayCumulativeAnalyticsProps {
-  activeServicesCount: number
+  data: CumulativeSavings | undefined
+  loadingData: boolean
 }
 
 const toFixedDecimalNumber = (num: number, decimalPlaces = 2) => Number(num.toFixed(decimalPlaces))
@@ -132,19 +132,10 @@ function getSavingsPercentage(totalSavings: number, totalPotentialCost: number):
   }
   return Math.round((totalSavings / totalPotentialCost) * 100)
 }
-const COGatewayCumulativeAnalytics: React.FC<COGatewayCumulativeAnalyticsProps> = props => {
-  const { accountId } = useParams<{
-    orgIdentifier: string
-    projectIdentifier: string
-    accountId: string
-  }>()
+const COGatewayCumulativeAnalytics: React.FC<COGatewayCumulativeAnalyticsProps> = ({ data, loadingData }) => {
   const { getString } = useStrings()
-  const { data: graphData, loading: graphLoading } = useCumulativeServiceSavings({
-    account_id: accountId,
-    queryParams: {
-      accountIdentifier: accountId
-    }
-  })
+  const hasData = !_isEmpty(data)
+
   return (
     <Container padding="small">
       <div>
@@ -163,18 +154,18 @@ const COGatewayCumulativeAnalytics: React.FC<COGatewayCumulativeAnalyticsProps> 
             style={{ textAlign: 'center', flex: 3, marginRight: 'var(--spacing-xxlarge)' }}
           >
             <Text className={css.analyticsColHeader}>TOTAL SPEND VS SAVINGS</Text>
-            {graphData && graphData.response?.days && graphData.response?.days.length ? (
+            {data?.days && data?.days.length ? (
               <HighchartsReact
                 highchart={Highcharts}
                 options={getStackedAreaChartOptions(
                   '',
-                  graphData?.response?.days as string[],
+                  data?.days as string[],
                   '',
-                  graphData?.response?.savings as number[],
-                  graphData?.response?.actual_cost as number[]
+                  data?.savings as number[],
+                  data?.actual_cost as number[]
                 )}
               />
-            ) : graphLoading ? (
+            ) : loadingData ? (
               <Icon name="spinner" size={24} color="blue500" style={{ alignSelf: 'center' }} />
             ) : (
               <Text style={{ marginTop: 'var(--spacing-xxlarge)', fontSize: 'var(--font-size-medium)' }}>
@@ -186,24 +177,15 @@ const COGatewayCumulativeAnalytics: React.FC<COGatewayCumulativeAnalyticsProps> 
             <Layout.Vertical spacing="xsmall">
               <Text className={css.analyticsColHeader}>SAVINGS PERCENTAGE</Text>
               <Heading level={1}>
-                {graphData?.response != null
-                  ? getSavingsPercentage(
-                      graphData?.response?.total_savings as number,
-                      graphData?.response?.total_potential as number
-                    )
-                  : 0}
-                %
+                {hasData ? getSavingsPercentage(data?.total_savings as number, data?.total_potential as number) : 0}%
               </Heading>
               <Layout.Horizontal>
                 <HighchartsReact
                   highchart={Highcharts}
                   options={
-                    graphData?.response != null
+                    hasData
                       ? geGaugeChartOptionsWithoutLabel(
-                          getSavingsPercentage(
-                            graphData?.response?.total_savings as number,
-                            graphData?.response?.total_potential as number
-                          )
+                          getSavingsPercentage(data?.total_savings as number, data?.total_potential as number)
                         )
                       : geGaugeChartOptionsWithoutLabel(0)
                   }
@@ -212,7 +194,7 @@ const COGatewayCumulativeAnalytics: React.FC<COGatewayCumulativeAnalyticsProps> 
             </Layout.Vertical>
             <Text className={css.analyticsColHeader}>ACTIVE RULES</Text>
             <Layout.Horizontal spacing="small">
-              <Heading level={1}>{props.activeServicesCount}</Heading>
+              <Heading level={1}>{_defaultTo(data?.total_active_services, 0)}</Heading>
               <Text style={{ alignSelf: 'center' }}>Rules</Text>
             </Layout.Horizontal>
           </Layout.Vertical>
@@ -223,20 +205,19 @@ const COGatewayCumulativeAnalytics: React.FC<COGatewayCumulativeAnalyticsProps> 
                   <Text className={css.analyticsColHeader} color={Color.TEAL_800}>
                     TOTAL SAVINGS TILL DATE
                   </Text>
-                  {graphLoading ? (
+                  {loadingData ? (
                     <Icon name="spinner" size={24} color="blue500" />
                   ) : (
                     <>
-                      {_isEmpty(graphData?.response) && (
+                      {hasData ? (
+                        <Heading level={1} color={Color.TEAL_800}>
+                          ${(Math.round(data?.total_savings as number) * 100) / 100}
+                        </Heading>
+                      ) : (
                         <div>
                           <img src={EmptyView} />
                           <Text>{getString('ce.noSavingsDataMessage')}</Text>
                         </div>
-                      )}
-                      {!_isEmpty(graphData?.response) && (
-                        <Heading level={1} color={Color.TEAL_800}>
-                          ${(Math.round(graphData?.response?.total_savings as number) * 100) / 100}
-                        </Heading>
                       )}
                     </>
                   )}
@@ -247,11 +228,11 @@ const COGatewayCumulativeAnalytics: React.FC<COGatewayCumulativeAnalyticsProps> 
                   <Text className={css.analyticsColHeader} color={Color.PURPLE_700}>
                     TOTAL SPEND TILL DATE
                   </Text>
-                  {graphLoading ? (
+                  {loadingData ? (
                     <Icon name="spinner" size={24} color="blue500" />
                   ) : (
                     <Heading level={1} color={Color.PURPLE_700}>
-                      ${(Math.round(graphData?.response?.total_cost as number) * 100) / 100}
+                      ${(Math.round(data?.total_cost as number) * 100) / 100}
                     </Heading>
                   )}
                 </Layout.Vertical>

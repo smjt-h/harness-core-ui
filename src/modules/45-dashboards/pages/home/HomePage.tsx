@@ -18,7 +18,6 @@ import {
   CardBody,
   Heading,
   Icon,
-  useModalHook,
   FontVariation,
   FormInput,
   Formik,
@@ -28,6 +27,7 @@ import {
   SelectOption,
   TableV2
 } from '@wings-software/uicore'
+import { useModalHook } from '@harness/use-modal'
 
 import { Select } from '@blueprintjs/select'
 

@@ -10,18 +10,9 @@ import { useParams, useHistory } from 'react-router-dom'
 import moment from 'moment'
 import ReactTimeago from 'react-timeago'
 import { Intent } from '@blueprintjs/core'
-import {
-  Color,
-  Container,
-  ExpandingSearchInput,
-  FlexExpander,
-  Layout,
-  Pagination,
-  TableV2,
-  Text
-} from '@wings-software/uicore'
+import { Color, Container, ExpandingSearchInput, Layout, Pagination, TableV2, Text } from '@wings-software/uicore'
 import type { Cell, Column } from 'react-table'
-import { ListingPageTemplate } from '@cf/components/ListingPageTemplate/ListingPageTemplate'
+import ListingPageTemplate from '@cf/components/ListingPageTemplate/ListingPageTemplate'
 import {
   CF_DEFAULT_PAGE_SIZE,
   getErrorMessage,
@@ -102,7 +93,7 @@ export const SegmentsPage: React.FC = () => {
   const error = errEnvironments || errSegments
   const noSegmentExists = segmentsData?.segments?.length === 0
   const noEnvironmentExists = !loadingEnvironments && environments?.length === 0
-  const title = getString('cf.shared.segments')
+  const title = `${getString('cf.shared.targetManagement')}: ${getString('cf.shared.segments')}`
 
   const { isPlanEnforcementEnabled } = usePlanEnforcement()
 
@@ -122,27 +113,28 @@ export const SegmentsPage: React.FC = () => {
     [history, accountId, orgIdentifier, projectIdentifier, withActiveEnvironment]
   )
   const toolbar = (
-    <Layout.Horizontal spacing="medium">
-      <NewSegmentButton
-        accountId={accountId}
-        orgIdentifier={orgIdentifier}
-        projectIdentifier={projectIdentifier}
-        onCreated={segmentIdentifier => {
-          gotoSegmentDetailPage(segmentIdentifier)
-          showToaster(getString('cf.messages.segmentCreated'))
-        }}
-      />
-      <Text font={{ size: 'small' }} color={Color.GREY_400} style={{ alignSelf: 'center' }}>
-        {getString('cf.segments.pageDescription')}
-      </Text>
-      <FlexExpander />
+    <>
+      <Layout.Horizontal spacing="medium">
+        <NewSegmentButton
+          accountId={accountId}
+          orgIdentifier={orgIdentifier}
+          projectIdentifier={projectIdentifier}
+          onCreated={segmentIdentifier => {
+            gotoSegmentDetailPage(segmentIdentifier)
+            showToaster(getString('cf.messages.segmentCreated'))
+          }}
+        />
+        <Text font={{ size: 'small' }} color={Color.GREY_400} style={{ alignSelf: 'center' }}>
+          {getString('cf.segments.pageDescription')}
+        </Text>
+      </Layout.Horizontal>
       <ExpandingSearchInput
         alwaysExpanded
         name="findFlag"
         placeholder={getString('search')}
         onChange={onSearchInputChanged}
       />
-    </Layout.Horizontal>
+    </>
   )
 
   const { showError, clear } = useToaster()
@@ -272,7 +264,7 @@ export const SegmentsPage: React.FC = () => {
         }
       }
     ],
-    [getString, clear, deleteSegment, gotoSegmentDetailPage, showError, refetchSegments]
+    [getString, activeEnvironment, clear, deleteSegment, refetchSegments, showError, gotoSegmentDetailPage]
   )
 
   useEffect(() => {
@@ -302,7 +294,7 @@ export const SegmentsPage: React.FC = () => {
   ) : (
     <>
       {isPlanEnforcementEnabled && <UsageLimitBanner />}
-      <Container padding={{ top: 'medium', right: 'xxlarge', left: 'xxlarge' }}>
+      <Container padding={{ top: 'medium', right: 'xlarge', left: 'xlarge' }}>
         <TableV2<Segment>
           columns={columns}
           data={segmentsData?.segments || []}
@@ -318,13 +310,11 @@ export const SegmentsPage: React.FC = () => {
 
   return (
     <ListingPageTemplate
-      pageTitle={title}
-      header={
+      title={title}
+      headerContent={
         <TargetManagementHeader environmentSelect={<EnvironmentSelect />} hasEnvironments={!!environments?.length} />
       }
-      headerStyle={{ display: 'flex' }}
       toolbar={displayToolbar && toolbar}
-      content={((!error || noEnvironmentExists) && content) || null}
       pagination={
         !noEnvironmentExists &&
         !!segmentsData?.segments?.length && (
@@ -345,6 +335,8 @@ export const SegmentsPage: React.FC = () => {
         refetchEnvs()
         refetchSegments()
       }}
-    />
+    >
+      {content}
+    </ListingPageTemplate>
   )
 }

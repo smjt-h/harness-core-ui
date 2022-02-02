@@ -6,10 +6,12 @@
  */
 
 import React, { useMemo, useState } from 'react'
-import { Container, Tabs, Tab, NoDataCard } from '@wings-software/uicore'
+import { Container, Tabs, Tab, NoDataCard, Layout } from '@wings-software/uicore'
 import { useStrings } from 'framework/strings'
 import { useQueryParams } from '@common/hooks'
 import type { ExecutionNode } from 'services/pipeline-ng'
+import { FeatureFlag } from '@common/featureFlags'
+import { useFeatureFlag } from '@common/hooks/useFeatureFlag'
 import { DeploymentMetrics } from './components/DeploymentMetrics/DeploymentMetrics'
 import { ExecutionVerificationSummary } from './components/ExecutionVerificationSummary/ExecutionVerificationSummary'
 import type { DeploymentNodeAnalysisResult } from './components/DeploymentProgressAndNodes/components/DeploymentNodes/DeploymentNodes.constants'
@@ -28,14 +30,25 @@ export function ExecutionVerificationView(props: ExecutionVerificationViewProps)
   const activityId = useMemo(() => getActivityId(step), [step])
   const { type } = useQueryParams<{ type?: string }>()
   const defaultTabId = useMemo(() => getDefaultTabId(getString, type), [type])
+  const isErrorTrackingEnabled = useFeatureFlag(FeatureFlag.ERROR_TRACKING_ENABLED)
 
   const content = activityId ? (
     <Tabs id="AnalysisTypeTabs" defaultSelectedTabId={defaultTabId}>
       <Tab
         id={getString('pipeline.verification.analysisTab.metrics')}
         title={getString('pipeline.verification.analysisTab.metrics')}
+        panelClassName={css.mainTabPanel}
         panel={
-          <DeploymentMetrics step={step} selectedNode={selectedNode} activityId={activityId as unknown as string} />
+          <Layout.Horizontal style={{ height: '100%' }}>
+            <ExecutionVerificationSummary
+              displayAnalysisCount={false}
+              step={step}
+              className={css.executionSummary}
+              onSelectNode={setSelectedNode}
+              isConsoleView
+            />
+            <DeploymentMetrics step={step} selectedNode={selectedNode} activityId={activityId} />
+          </Layout.Horizontal>
         }
       />
       <Tab
@@ -43,21 +56,20 @@ export function ExecutionVerificationView(props: ExecutionVerificationViewProps)
         title={getString('pipeline.verification.analysisTab.logs')}
         panel={<LogAnalysisContainer step={step} hostName={selectedNode?.hostName} />}
       />
+      {isErrorTrackingEnabled && (
+        <Tab
+          id={getString('errors')}
+          title={getString('errors')}
+          panel={
+            <LogAnalysisContainer step={step} hostName={'errortracking'} isErrorTracking={isErrorTrackingEnabled} />
+          }
+        />
+      )}
     </Tabs>
   ) : (
     <Container className={css.noAnalysis}>
       <NoDataCard message={getString('pipeline.verification.logs.noAnalysis')} icon="warning-sign" />
     </Container>
   )
-  return (
-    <Container className={css.main}>
-      <ExecutionVerificationSummary
-        displayAnalysisCount={false}
-        step={step}
-        className={css.executionSummary}
-        onSelectNode={setSelectedNode}
-      />
-      {content}
-    </Container>
-  )
+  return <Container className={css.main}>{content}</Container>
 }

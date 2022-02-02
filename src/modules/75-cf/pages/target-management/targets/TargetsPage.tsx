@@ -15,14 +15,13 @@ import {
   Color,
   Container,
   ExpandingSearchInput,
-  FlexExpander,
   Layout,
   Pagination,
   TableV2,
   Text
 } from '@wings-software/uicore'
 import type { Cell, Column } from 'react-table'
-import { ListingPageTemplate } from '@cf/components/ListingPageTemplate/ListingPageTemplate'
+import ListingPageTemplate from '@cf/components/ListingPageTemplate/ListingPageTemplate'
 import {
   CF_DEFAULT_PAGE_SIZE,
   getErrorMessage,
@@ -105,7 +104,7 @@ export const TargetsPage: React.FC = () => {
   const error = errEnvironments || errTargets
   const noTargetExists = targetsData?.targets?.length === 0
   const noEnvironmentExists = !loadingEnvironments && environments?.length === 0
-  const title = getString('cf.shared.targets')
+  const title = `${getString('cf.shared.targetManagement')}: ${getString('cf.shared.targets')}`
 
   const { isPlanEnforcementEnabled } = usePlanEnforcement()
   const planEnforcementProps = isPlanEnforcementEnabled
@@ -119,28 +118,29 @@ export const TargetsPage: React.FC = () => {
     : undefined
 
   const toolbar = (
-    <Layout.Horizontal spacing="medium">
-      <NewTargets
-        accountId={accountId}
-        orgIdentifier={orgIdentifier}
-        projectIdentifier={projectIdentifier}
-        onCreated={() => {
-          setPageNumber(0)
-          refetchTargets({ queryParams: { ...queryParams, pageNumber: 0 } })
-          showToaster(getString('cf.messages.targetCreated'))
-        }}
-      />
-      <Text font={{ size: 'small' }} color={Color.GREY_400} style={{ alignSelf: 'center' }}>
-        {getString('cf.targets.pageDescription')}
-      </Text>
-      <FlexExpander />
+    <>
+      <Layout.Horizontal spacing="medium">
+        <NewTargets
+          accountId={accountId}
+          orgIdentifier={orgIdentifier}
+          projectIdentifier={projectIdentifier}
+          onCreated={() => {
+            setPageNumber(0)
+            refetchTargets({ queryParams: { ...queryParams, pageNumber: 0 } })
+            showToaster(getString('cf.messages.targetCreated'))
+          }}
+        />
+        <Text font={{ size: 'small' }} color={Color.GREY_400} style={{ alignSelf: 'center' }}>
+          {getString('cf.targets.pageDescription')}
+        </Text>
+      </Layout.Horizontal>
       <ExpandingSearchInput
         alwaysExpanded
         name="findFlag"
         placeholder={getString('search')}
         onChange={onSearchInputChanged}
       />
-    </Layout.Horizontal>
+    </>
   )
 
   const gotoTargetDetailPage = useCallback(
@@ -324,7 +324,7 @@ export const TargetsPage: React.FC = () => {
         }
       }
     ],
-    [getString, clear, deleteTarget, gotoTargetDetailPage, refetchTargets, showError, planEnforcementProps]
+    [activeEnvironment]
   )
 
   useEffect(() => {
@@ -355,7 +355,7 @@ export const TargetsPage: React.FC = () => {
   ) : (
     <>
       {isPlanEnforcementEnabled && <UsageLimitBanner />}
-      <Container padding={{ top: 'medium', right: 'xxlarge', left: 'xxlarge' }}>
+      <Container padding={{ top: 'medium', right: 'xlarge', left: 'xlarge' }}>
         <TableV2<Target>
           columns={columns}
           data={targetsData?.targets || []}
@@ -371,13 +371,11 @@ export const TargetsPage: React.FC = () => {
 
   return (
     <ListingPageTemplate
-      pageTitle={title}
-      header={
+      title={title}
+      headerContent={
         <TargetManagementHeader environmentSelect={<EnvironmentSelect />} hasEnvironments={!!environments?.length} />
       }
-      headerStyle={{ display: 'flex' }}
       toolbar={displayToolbar && toolbar}
-      content={((!error || noEnvironmentExists) && content) || null}
       pagination={
         !noEnvironmentExists &&
         !!targetsData?.targets?.length && (
@@ -399,6 +397,8 @@ export const TargetsPage: React.FC = () => {
         refetchEnvs()
         refetchTargets()
       }}
-    />
+    >
+      {content}
+    </ListingPageTemplate>
   )
 }

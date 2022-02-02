@@ -6,24 +6,21 @@
       "label": "Extra Small",
       "ram": 500,
       "replicas": 1,
-      "size": "EXTRA_SMALL",
-      "taskLimit": 50
+      "size": "EXTRA_SMALL"
     },
     {
       "cpu": 0.5,
       "label": "Small",
       "ram": 500,
       "replicas": 1,
-      "size": "SMALL",
-      "taskLimit": 50
+      "size": "SMALL"
     },
     {
       "cpu": 0.5,
       "label": "Large",
       "ram": 500,
       "replicas": 1,
-      "size": "LARGE",
-      "taskLimit": 50
+      "size": "LARGE"
     }
   ]
 }

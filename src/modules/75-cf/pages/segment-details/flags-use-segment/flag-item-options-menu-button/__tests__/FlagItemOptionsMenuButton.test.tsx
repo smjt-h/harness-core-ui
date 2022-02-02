@@ -58,6 +58,6 @@ describe('FlagItemOptionsMenuButtonProps', () => {
 
     fireEvent.mouseOver(screen.getByText('cf.segmentDetail.removeFomFlag'))
 
-    await waitFor(() => expect(screen.getByText('cf.planEnforcement.upgradeRequired')).toBeInTheDocument())
+    await waitFor(() => expect(screen.getByText('cf.planEnforcement.upgradeRequiredMau')).toBeInTheDocument())
   })
 })

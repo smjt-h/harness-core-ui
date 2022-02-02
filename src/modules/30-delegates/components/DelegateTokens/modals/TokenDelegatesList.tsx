@@ -9,7 +9,7 @@ import React, { useState, useMemo, FC } from 'react'
 import { useParams } from 'react-router-dom'
 import { Layout, Text, Color, Dialog, ExpandingSearchInput, Button } from '@wings-software/uicore'
 import { useStrings } from 'framework/strings'
-import { DelegateGroupDetails, GetDelegatesV3QueryParams, useGetDelegatesV3 } from 'services/portal'
+import { DelegateGroupDetails, useGetDelegatesByToken, GetDelegatesByTokenQueryParams } from 'services/portal'
 
 import { delegateTypeToIcon } from '@common/utils/delegateUtils'
 import { PageSpinner } from '@common/components'
@@ -75,14 +75,13 @@ const DelegateTokensList: FC<DelegateTokensListParams> = ({ tokenName }) => {
   const { accountId, projectIdentifier, orgIdentifier } = useParams<Record<string, string>>()
   const [searchTerm, setSearchTerm] = useState('')
 
-  const { data, loading } = useGetDelegatesV3({
+  const { data, loading } = useGetDelegatesByToken({
     queryParams: {
-      accountId: accountId,
-      accountIdentifier: accountId,
+      accountId,
       projectIdentifier,
       orgIdentifier,
       delegateTokenName: tokenName
-    } as GetDelegatesV3QueryParams
+    } as GetDelegatesByTokenQueryParams
   })
 
   const delegates = data?.resource?.delegateGroupDetails || []

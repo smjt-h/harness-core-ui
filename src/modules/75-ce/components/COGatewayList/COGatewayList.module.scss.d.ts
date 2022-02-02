@@ -30,7 +30,6 @@ declare const styles: {
   readonly search: string
   readonly serviceAccordionContainer: string
   readonly serviceDetailsItemContainer: string
-  readonly table: string
   readonly upTag: string
 }
 export default styles

@@ -9,15 +9,9 @@ import React, { useState } from 'react'
 import { useParams } from 'react-router-dom'
 import { omit } from 'lodash-es'
 import { parse } from 'yaml'
-import {
-  useModalHook,
-  Button,
-  Layout,
-  Icon,
-  Text,
-  ModalErrorHandlerBinding,
-  ModalErrorHandler
-} from '@wings-software/uicore'
+import { Button, Layout, Icon, Text, ModalErrorHandlerBinding, ModalErrorHandler } from '@wings-software/uicore'
+import { useModalHook } from '@harness/use-modal'
+
 import { Dialog, IDialogProps } from '@blueprintjs/core'
 import { useStrings } from 'framework/strings'
 import { PageSpinner } from '@common/components'

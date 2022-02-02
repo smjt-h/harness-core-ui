@@ -7,7 +7,8 @@
 
 import React, { useCallback, useState } from 'react'
 import { Dialog } from '@blueprintjs/core'
-import { Button, useModalHook } from '@wings-software/uicore'
+import { Button } from '@wings-software/uicore'
+import { useModalHook } from '@harness/use-modal'
 import type { NgSmtpDTO } from 'services/cd-ng'
 import CreateSmtpWizard from './CreateSmtpWizard'
 import css from './useCreateSmtpModal.module.scss'

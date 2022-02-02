@@ -270,6 +270,7 @@ export interface CumulativeSavings {
   potential_cost?: number[]
   savings?: number[]
   savings_percent?: number
+  total_active_services?: number
   total_cost?: number
   total_potential?: number
   total_savings?: number
@@ -1269,6 +1270,7 @@ export const useAccessPointRules = ({ account_id, lb_id, ...props }: UseAccessPo
 
 export interface GetServicesQueryParams {
   accountIdentifier: string
+  value?: string
 }
 
 export interface GetServicesPathParams {

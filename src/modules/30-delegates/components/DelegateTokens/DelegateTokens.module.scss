@@ -49,6 +49,7 @@
 .tokenField {
   border: 1px solid var(--grey-200) !important;
   border-radius: 4px !important;
+  position: relative;
 }
 
 .delegateItemContainer {
@@ -103,4 +104,13 @@
 
 .tokenItemColumn {
   width: calc(50% - 30px);
+}
+
+.copyContainer {
+  position: absolute;
+  right: 0;
+}
+
+.tokenValue {
+  overflow-x: scroll;
 }

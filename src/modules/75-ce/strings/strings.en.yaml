@@ -25,6 +25,8 @@ co:
   getStarted: Let's get you started
   autoStopping: '{{ $.common.ce.autostopping }}'
   newAutoStoppingRule: 'New AutoStopping Rule'
+  searchResultsText: 'Showing {{count}} search results for "{{text}}"'
+  emptyResultText: 'No rules found for {{string}}'
   landingPageText:
     '<b>AutoStopping Rules</b> dynamically make sure that your <i>non-production workloads</i> are <b>running (and costing you)
     only when you’re using them</b>, and never when they are idle. Additionally, run your workloads on fully
@@ -278,7 +280,7 @@ co:
   sshSetup: 'AutoStopping has first class support for accessing the resources managed by this Rule via SSH or RDP. Doing so will require downloading the Harness CLI. Choose your operating system and download the respective Harness CLI. '
   gatewayAccess:
     subtitle: 'Now that you have configured the Rule, choose how you would like to access the resources managed by this rule.'
-    accessDescription: 'Choose how you would like to access the underlying application running on the resources managed by this Rule.'
+    accessDescription: 'Choose how you would like to access the underlying application running on the resources managed by this Rule. {{optionalText}}'
     dnsLink: 'DNS Link'
     dnsLinkHeader: 'Setup access via DNS Link (HTTP or HTTPS URL) to the underlying application running on the resources managed by this AutoStopping Rule.'
     sshRdp: 'SSH / RDP'

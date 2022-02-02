@@ -6,6 +6,7 @@
  */
 
 import React from 'react'
+import { connect } from 'formik'
 import { Text, getMultiTypeFromValue, MultiTypeInputType, FormikForm, Color, Container } from '@wings-software/uicore'
 import { isEmpty } from 'lodash-es'
 import cx from 'classnames'
@@ -21,9 +22,17 @@ import { StepViewType } from '@pipeline/components/AbstractSteps/Step'
 import { Connectors } from '@connectors/constants'
 import type { RunStepProps } from './RunStep'
 import { CIStep } from '../CIStep/CIStep'
+import { shouldRenderRunTimeInputView } from '../CIStep/StepUtils'
 import css from '@pipeline/components/PipelineSteps/Steps/Steps.module.scss'
 
-export const RunStepInputSet: React.FC<RunStepProps> = ({ template, path, readonly, stepViewType, allowableTypes }) => {
+export const RunStepInputSetBasic: React.FC<RunStepProps> = ({
+  template,
+  path,
+  readonly,
+  stepViewType,
+  allowableTypes,
+  formik
+}) => {
   const { getString } = useStrings()
   const prefix = isEmpty(path) ? '' : `${path}.`
 
@@ -128,36 +137,38 @@ export const RunStepInputSet: React.FC<RunStepProps> = ({ template, path, readon
           />
         </div>
       )}
-      {getMultiTypeFromValue(template?.spec?.reports?.spec?.paths as string) === MultiTypeInputType.RUNTIME && (
-        <Container className={cx(css.formGroup, stepCss)}>
-          <MultiTypeListInputSet
-            name={`${prefix}spec.reports.spec.paths`}
-            multiTextInputProps={{
-              allowableTypes,
-              expressions
-            }}
-            multiTypeFieldSelectorProps={{
-              label: (
-                <Text
-                  style={{ display: 'flex', alignItems: 'center' }}
-                  className={css.inpLabel}
-                  color={Color.GREY_800}
-                  font={{ size: 'small', weight: 'semi-bold' }}
-                  tooltipProps={{ dataTooltipId: 'reportPaths' }}
-                >
-                  {getString('pipelineSteps.reportPathsLabel')}
-                </Text>
-              ),
-              allowedTypes: allowableTypes.filter(
-                type => type !== MultiTypeInputType.EXPRESSION && type !== MultiTypeInputType.RUNTIME
-              )
-            }}
-            placeholder={getString('pipelineSteps.reportPathsPlaceholder')}
-            disabled={readonly}
-          />
-        </Container>
+      {shouldRenderRunTimeInputView(template?.spec?.reports?.spec?.paths) && (
+        <>
+          <Container className={cx(css.formGroup, stepCss)}>
+            <MultiTypeListInputSet
+              name={`${prefix}spec.reports.spec.paths`}
+              multiTextInputProps={{
+                allowableTypes,
+                expressions
+              }}
+              multiTypeFieldSelectorProps={{
+                label: (
+                  <Text
+                    style={{ display: 'flex', alignItems: 'center' }}
+                    className={css.inpLabel}
+                    color={Color.GREY_800}
+                    font={{ size: 'small', weight: 'semi-bold' }}
+                    tooltipProps={{ dataTooltipId: 'reportPaths' }}
+                  >
+                    {getString('pipelineSteps.reportPathsLabel')}
+                  </Text>
+                ),
+                allowedTypes: allowableTypes.filter(
+                  type => type !== MultiTypeInputType.EXPRESSION && type !== MultiTypeInputType.RUNTIME
+                )
+              }}
+              placeholder={getString('pipelineSteps.reportPathsPlaceholder')}
+              disabled={readonly}
+            />
+          </Container>
+        </>
       )}
-      {getMultiTypeFromValue(template?.spec?.envVariables as string) === MultiTypeInputType.RUNTIME && (
+      {shouldRenderRunTimeInputView(template?.spec?.envVariables as string) && (
         <Container className={cx(css.formGroup, stepCss)}>
           <MultiTypeMapInputSet
             name={`${prefix}spec.envVariables`}
@@ -172,6 +183,7 @@ export const RunStepInputSet: React.FC<RunStepProps> = ({ template, path, readon
                   className={css.inpLabel}
                   color={Color.GREY_800}
                   font={{ size: 'small', weight: 'semi-bold' }}
+                  tooltipProps={{ dataTooltipId: 'environmentVariables' }}
                 >
                   {getString('environmentVariables')}
                 </Text>
@@ -179,10 +191,11 @@ export const RunStepInputSet: React.FC<RunStepProps> = ({ template, path, readon
               allowedTypes: allowableTypes.filter(type => type !== MultiTypeInputType.EXPRESSION)
             }}
             disabled={readonly}
+            formik={formik}
           />
         </Container>
       )}
-      {getMultiTypeFromValue(template?.spec?.outputVariables as string) === MultiTypeInputType.RUNTIME && (
+      {shouldRenderRunTimeInputView(template?.spec?.outputVariables) && (
         <Container className={cx(css.formGroup, stepCss)}>
           <MultiTypeListInputSet
             name={`${prefix}spec.outputVariables`}
@@ -221,3 +234,6 @@ export const RunStepInputSet: React.FC<RunStepProps> = ({ template, path, readon
     </FormikForm>
   )
 }
+
+const RunStepInputSet = connect(RunStepInputSetBasic)
+export { RunStepInputSet }

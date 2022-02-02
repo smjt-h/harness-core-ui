@@ -6,14 +6,19 @@
  */
 
 import type { BannerType } from '@common/layouts/Constants'
+import type { StringsMap } from 'stringTypes'
 import type { FeatureIdentifier } from './FeatureIdentifier'
 import type { CheckFeaturesReturn } from './featureStoreUtil'
 
 import type { Module } from '../types/ModuleName'
+
 export interface FeatureProps {
   features: FeatureIdentifier[]
-  renderMessage(props: CheckFeaturesReturn): {
-    message: React.ReactNode
+  renderMessage(
+    props: CheckFeaturesReturn,
+    getString: (key: keyof StringsMap, vars?: Record<string, any> | undefined) => string
+  ): {
+    message: () => React.ReactNode
     bannerType: BannerType
   }
 }

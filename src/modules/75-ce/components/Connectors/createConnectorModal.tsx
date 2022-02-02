@@ -6,7 +6,8 @@
  */
 
 import React, { useState } from 'react'
-import { useModalHook, Button } from '@wings-software/uicore'
+import { Button } from '@wings-software/uicore'
+import { useModalHook } from '@harness/use-modal'
 import type { IDialogProps } from '@blueprintjs/core'
 import { useParams } from 'react-router-dom'
 import { Connectors } from '@connectors/constants'

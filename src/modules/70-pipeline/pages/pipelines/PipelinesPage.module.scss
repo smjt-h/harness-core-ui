@@ -101,10 +101,17 @@ $header-height: 80px;
   padding-left: 8px !important;
   padding-right: 8px !important;
 }
-.runPipelineListBtn {
-  background-color: var(--green-500) !important;
-  border: var(--green-500) !important;
-  padding-right: 8px !important;
+
+button.runPipelineListBtn {
+  width: 62px;
+  &:global {
+    &.Button--button[class*='bp3-button'] {
+      &.Button--withLeftIcon {
+        border: solid 1px var(--success) !important;
+        color: var(--success) !important;
+      }
+    }
+  }
 }
 
 .topHeaderFields {
@@ -223,4 +230,20 @@ $header-height: 80px;
   overflow: hidden;
   text-overflow: ellipsis;
   white-space: nowrap;
+}
+
+.pipelineIcons {
+  display: flex;
+  flex-direction: column;
+  min-width: var(--spacing-6);
+  &.center {
+    justify-content: center;
+  }
+  &.spaceBetween {
+    justify-content: space-between;
+  }
+}
+
+.pipelineInfo {
+  display: flex;
 }

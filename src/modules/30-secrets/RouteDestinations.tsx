@@ -43,10 +43,12 @@ RbacFactory.registerResourceTypeHandler(ResourceType.SECRET, {
   staticResourceRenderer: props => <SecretResourceRenderer {...props} />
 })
 
+const platformLabel = 'auditTrail.Platform'
 AuditTrailFactory.registerResourceHandler('SECRET', {
   moduleIcon: {
     name: 'nav-settings'
   },
+  moduleIconLabel: platformLabel,
   resourceUrl: (resource: ResourceDTO, resourceScope: ResourceScope) => {
     const { orgIdentifier, accountIdentifier, projectIdentifier } = resourceScope
 

@@ -6,7 +6,8 @@
  */
 
 import React, { useCallback, useState } from 'react'
-import { useModalHook, Button, ButtonVariation } from '@wings-software/uicore'
+import { Button, ButtonVariation } from '@wings-software/uicore'
+import { useModalHook } from '@harness/use-modal'
 import { Dialog, Classes } from '@blueprintjs/core'
 import cx from 'classnames'
 import type { UserInfo } from 'services/cd-ng'

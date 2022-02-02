@@ -13,7 +13,7 @@ import TokenDelegatesList from '../modals/TokenDelegatesList'
 import { delegateGroupsMock } from '../../../pages/delegates/__tests__/DelegateGroupsMock'
 
 jest.mock('services/portal', () => ({
-  useGetDelegatesV3: jest.fn().mockImplementation(() => ({
+  useGetDelegatesByToken: jest.fn().mockImplementation(() => ({
     data: {
       resource: {
         delegateGroupDetails: delegateGroupsMock

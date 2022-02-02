@@ -8,6 +8,7 @@
 import type { IconProps } from '@wings-software/uicore/dist/icons/Icon'
 import type { Module } from '@common/interfaces/RouteInterfaces'
 import type { AuditEventDTO, ResourceDTO, ResourceScopeDTO } from 'services/audit'
+import type { StringKeys } from 'framework/strings'
 
 export type ResourceType = ResourceDTO['type']
 
@@ -33,6 +34,7 @@ export const getModuleNameFromAuditModule = (auditModule: AuditEventDTO['module'
 
 interface ResourceHandler {
   moduleIcon: IconProps
+  moduleIconLabel?: StringKeys
   resourceUrl?: (resource: ResourceDTO, resourceScope: ResourceScope, module?: Module) => string | undefined
 }
 

@@ -13,7 +13,6 @@ import {
   Container,
   Button,
   Layout,
-  useModalHook,
   Formik,
   FormikForm,
   Color,
@@ -26,6 +25,7 @@ import {
   useConfirmationDialog,
   useToaster
 } from '@wings-software/uicore'
+import { useModalHook } from '@harness/use-modal'
 import { parse } from 'yaml'
 import { useHistory, useParams } from 'react-router-dom'
 

@@ -7,7 +7,7 @@
 
 import React from 'react'
 import cx from 'classnames'
-import { useModalHook } from '@wings-software/uicore'
+import { useModalHook } from '@harness/use-modal'
 import { Dialog, Classes } from '@blueprintjs/core'
 import type { LoginSettings } from 'services/cd-ng'
 import PasswordExpirationForm from './views/PasswordExpirationForm'

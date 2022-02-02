@@ -1023,6 +1023,19 @@ const routes = {
       })
     }
   ),
+  toGitSyncConfig: withAccountId(
+    ({ orgIdentifier, projectIdentifier, module }: Partial<ProjectPathProps & ModulePathParams>) => {
+      const path = `git-sync/config`
+      return getScopeBasedRoute({
+        scope: {
+          orgIdentifier,
+          projectIdentifier,
+          module
+        },
+        path
+      })
+    }
+  ),
   /********************************************************************************************************************/
   toCF: (params: Partial<ProjectPathProps>) =>
     params.orgIdentifier && params.projectIdentifier

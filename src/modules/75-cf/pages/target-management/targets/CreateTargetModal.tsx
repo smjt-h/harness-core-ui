@@ -6,17 +6,8 @@
  */
 
 import React, { useState } from 'react'
-import {
-  Button,
-  Color,
-  Container,
-  FlexExpander,
-  Layout,
-  SimpleTagInput,
-  Text,
-  TextInput,
-  useModalHook
-} from '@wings-software/uicore'
+import { Button, Color, Container, FlexExpander, Layout, SimpleTagInput, Text, TextInput } from '@wings-software/uicore'
+import { useModalHook } from '@harness/use-modal'
 import { Dialog, Radio, RadioGroup, Spinner } from '@blueprintjs/core'
 import type { StringKeys } from 'framework/strings'
 import { useStrings } from 'framework/strings'
