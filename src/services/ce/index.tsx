@@ -26,6 +26,7 @@ export interface AnomalyData {
   actualAmount?: number
   anomalyRelativeTime?: string
   anomalyScore?: number
+  cloudProvider?: string
   comment?: string
   details?: string
   entity?: EntityInfo
@@ -38,6 +39,10 @@ export interface AnomalyData {
   time?: number
   trend?: number
   userFeedback?: 'TRUE_ANOMALY' | 'FALSE_ANOMALY' | 'NOT_RESPONDED'
+}
+
+export interface AnomalyFeedbackDTO {
+  feedback?: 'TRUE_ANOMALY' | 'FALSE_ANOMALY' | 'NOT_RESPONDED'
 }
 
 export interface AnomalyQueryDTO {
@@ -2430,7 +2435,7 @@ export interface ReportAnomalyFeedbackQueryParams {
 }
 
 export type ReportAnomalyFeedbackProps = Omit<
-  MutateProps<ResponseBoolean, unknown, ReportAnomalyFeedbackQueryParams, string, void>,
+  MutateProps<ResponseBoolean, unknown, ReportAnomalyFeedbackQueryParams, AnomalyFeedbackDTO, void>,
   'path' | 'verb'
 >
 
@@ -2438,7 +2443,7 @@ export type ReportAnomalyFeedbackProps = Omit<
  * Report Anomaly Feedback
  */
 export const ReportAnomalyFeedback = (props: ReportAnomalyFeedbackProps) => (
-  <Mutate<ResponseBoolean, unknown, ReportAnomalyFeedbackQueryParams, string, void>
+  <Mutate<ResponseBoolean, unknown, ReportAnomalyFeedbackQueryParams, AnomalyFeedbackDTO, void>
     verb="PUT"
     path={`/anomaly/feedback`}
     base={getConfig('ccm/api')}
@@ -2447,7 +2452,7 @@ export const ReportAnomalyFeedback = (props: ReportAnomalyFeedbackProps) => (
 )
 
 export type UseReportAnomalyFeedbackProps = Omit<
-  UseMutateProps<ResponseBoolean, unknown, ReportAnomalyFeedbackQueryParams, string, void>,
+  UseMutateProps<ResponseBoolean, unknown, ReportAnomalyFeedbackQueryParams, AnomalyFeedbackDTO, void>,
   'path' | 'verb'
 >
 
@@ -2455,10 +2460,11 @@ export type UseReportAnomalyFeedbackProps = Omit<
  * Report Anomaly Feedback
  */
 export const useReportAnomalyFeedback = (props: UseReportAnomalyFeedbackProps) =>
-  useMutate<ResponseBoolean, unknown, ReportAnomalyFeedbackQueryParams, string, void>('PUT', `/anomaly/feedback`, {
-    base: getConfig('ccm/api'),
-    ...props
-  })
+  useMutate<ResponseBoolean, unknown, ReportAnomalyFeedbackQueryParams, AnomalyFeedbackDTO, void>(
+    'PUT',
+    `/anomaly/feedback`,
+    { base: getConfig('ccm/api'), ...props }
+  )
 
 export interface ListPerspectiveAnomaliesQueryParams {
   accountIdentifier: string
@@ -3173,12 +3179,12 @@ export interface Execute1QueryParams {
 }
 
 export type Execute1Props = Omit<
-  MutateProps<Execute1Response, unknown, Execute1QueryParams, void, void>,
+  MutateProps<Execute1Response, unknown, Execute1QueryParams, GraphQLQuery, void>,
   'path' | 'verb'
 >
 
 export const Execute1 = (props: Execute1Props) => (
-  <Mutate<Execute1Response, unknown, Execute1QueryParams, void, void>
+  <Mutate<Execute1Response, unknown, Execute1QueryParams, GraphQLQuery, void>
     verb="POST"
     path={`/graphql`}
     base={getConfig('ccm/api')}
@@ -3187,12 +3193,12 @@ export const Execute1 = (props: Execute1Props) => (
 )
 
 export type UseExecute1Props = Omit<
-  UseMutateProps<Execute1Response, unknown, Execute1QueryParams, void, void>,
+  UseMutateProps<Execute1Response, unknown, Execute1QueryParams, GraphQLQuery, void>,
   'path' | 'verb'
 >
 
 export const useExecute1 = (props: UseExecute1Props) =>
-  useMutate<Execute1Response, unknown, Execute1QueryParams, void, void>('POST', `/graphql`, {
+  useMutate<Execute1Response, unknown, Execute1QueryParams, GraphQLQuery, void>('POST', `/graphql`, {
     base: getConfig('ccm/api'),
     ...props
   })

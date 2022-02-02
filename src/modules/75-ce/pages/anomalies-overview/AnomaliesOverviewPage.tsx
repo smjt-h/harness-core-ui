@@ -27,7 +27,7 @@ import {
   DATE_RANGE_SHORTCUTS,
   getTimePeriodString
 } from '@ce/utils/momentUtils'
-import { AnomalyData, useListAnomalies } from 'services/ce'
+import { AnomalyData, useListAnomalies, useReportAnomalyFeedback } from 'services/ce'
 import formatCost from '@ce/utils/formatCost'
 import css from './AnomaliesOverviewPage.module.scss'
 
@@ -183,9 +183,31 @@ interface listProps {
   listData: AnomalyData[]
 }
 
-const AnomaliesMenu = () => {
+interface anomaliesManu {
+  anomalyId: string
+}
+
+const AnomaliesMenu: React.FC<anomaliesManu> = ({ anomalyId }) => {
   const { getString } = useStrings()
   const [isOpen, setIsOpen] = useState(false)
+  const { accountId } = useParams<anomalyParams>()
+  const { mutate: updateAnomalyFeedback } = useReportAnomalyFeedback({
+    queryParams: {
+      accountIdentifier: accountId,
+      anomalyId: anomalyId
+    }
+  })
+
+  const anomalyFeedback = async () => {
+    try {
+      const response = await updateAnomalyFeedback({
+        feedback: 'FALSE_ANOMALY'
+      })
+      console.log('Anomaly feedback submitted successfully', response)
+    } catch (error) {
+      console.log('Anomaly feedback error', error)
+    }
+  }
 
   return (
     <Popover
@@ -217,6 +239,7 @@ const AnomaliesMenu = () => {
           onClick={(e: any) => {
             e.stopPropagation()
             setIsOpen(false)
+            anomalyFeedback()
           }}
         />
       </Menu>
@@ -290,8 +313,8 @@ const AnomaliesListGridView: React.FC<listProps> = ({ listData }) => {
     )
   }
 
-  const MenuCell: Renderer<CellProps<AnomalyData>> = () => {
-    return <AnomaliesMenu />
+  const MenuCell: Renderer<CellProps<AnomalyData>> = ({ row }) => {
+    return <AnomaliesMenu anomalyId={row.original.id || ''} />
   }
 
   if (!listData.length) {
