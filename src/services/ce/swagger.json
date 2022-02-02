@@ -51,6 +51,46 @@
   ],
   "schemes": ["https", "http"],
   "paths": {
+    "/anomaly/perspective/{perspectiveId}": {
+      "post": {
+        "tags": ["anomaly"],
+        "summary": "List Anomalies for Perspective",
+        "description": "",
+        "operationId": "listPerspectiveAnomalies",
+        "consumes": ["application/json"],
+        "produces": ["application/json"],
+        "parameters": [
+          {
+            "name": "accountIdentifier",
+            "in": "query",
+            "required": true,
+            "type": "string"
+          },
+          {
+            "name": "perspectiveId",
+            "in": "path",
+            "required": true,
+            "type": "string"
+          },
+          {
+            "in": "body",
+            "name": "body",
+            "required": false,
+            "schema": {
+              "$ref": "#/definitions/PerspectiveQueryDTO"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "successful operation",
+            "schema": {
+              "$ref": "#/definitions/ResponseListPerspectiveAnomalyData"
+            }
+          }
+        }
+      }
+    },
     "/anomaly": {
       "post": {
         "tags": ["anomaly"],
@@ -111,7 +151,7 @@
             "name": "body",
             "required": false,
             "schema": {
-              "type": "string"
+              "$ref": "#/definitions/AnomalyFeedbackDTO"
             }
           }
         ],
@@ -125,12 +165,12 @@
         }
       }
     },
-    "/anomaly/perspective/{perspectiveId}": {
-      "post": {
-        "tags": ["anomaly"],
-        "summary": "List Anomalies for Perspective",
+    "/budgets/lastMonthCost": {
+      "get": {
+        "tags": ["budgets"],
+        "summary": "Deprecated use /perspective/lastMonthCost instead, Get last month cost for Perspective.",
         "description": "",
-        "operationId": "listPerspectiveAnomalies",
+        "operationId": "getLastMonthCost",
         "consumes": ["application/json"],
         "produces": ["application/json"],
         "parameters": [
@@ -142,24 +182,49 @@
           },
           {
             "name": "perspectiveId",
-            "in": "path",
-            "required": true,
-            "type": "string"
-          },
-          {
-            "in": "body",
-            "name": "body",
+            "in": "query",
             "required": false,
-            "schema": {
-              "$ref": "#/definitions/PerspectiveQueryDTO"
-            }
+            "type": "string"
           }
         ],
         "responses": {
           "200": {
             "description": "successful operation",
             "schema": {
-              "$ref": "#/definitions/ResponseListPerspectiveAnomalyData"
+              "$ref": "#/definitions/ResponseDouble"
+            }
+          }
+        },
+        "deprecated": true
+      }
+    },
+    "/budgets/{id}/costDetails": {
+      "get": {
+        "tags": ["budgets"],
+        "summary": "Get cost details for budget",
+        "description": "",
+        "operationId": "getCostDetails",
+        "consumes": ["application/json"],
+        "produces": ["application/json"],
+        "parameters": [
+          {
+            "name": "accountIdentifier",
+            "in": "query",
+            "required": true,
+            "type": "string"
+          },
+          {
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "type": "string"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "successful operation",
+            "schema": {
+              "$ref": "#/definitions/ResponseBudgetData"
             }
           }
         }
@@ -301,38 +366,6 @@
         }
       }
     },
-    "/budgets/perspectiveBudgets": {
-      "get": {
-        "tags": ["budgets"],
-        "summary": "List Budgets for Perspective",
-        "description": "",
-        "operationId": "listBudgetsForPerspective",
-        "consumes": ["application/json"],
-        "produces": ["application/json"],
-        "parameters": [
-          {
-            "name": "accountIdentifier",
-            "in": "query",
-            "required": true,
-            "type": "string"
-          },
-          {
-            "name": "perspectiveId",
-            "in": "query",
-            "required": false,
-            "type": "string"
-          }
-        ],
-        "responses": {
-          "200": {
-            "description": "successful operation",
-            "schema": {
-              "$ref": "#/definitions/ResponseListBudget"
-            }
-          }
-        }
-      }
-    },
     "/budgets": {
       "get": {
         "tags": ["budgets"],
@@ -391,12 +424,12 @@
         }
       }
     },
-    "/budgets/lastMonthCost": {
+    "/budgets/perspectiveBudgets": {
       "get": {
         "tags": ["budgets"],
-        "summary": "Deprecated use /perspective/lastMonthCost instead, Get last month cost for Perspective.",
+        "summary": "List Budgets for Perspective",
         "description": "",
-        "operationId": "getLastMonthCost",
+        "operationId": "listBudgetsForPerspective",
         "consumes": ["application/json"],
         "produces": ["application/json"],
         "parameters": [
@@ -417,40 +450,7 @@
           "200": {
             "description": "successful operation",
             "schema": {
-              "$ref": "#/definitions/ResponseDouble"
-            }
-          }
-        },
-        "deprecated": true
-      }
-    },
-    "/budgets/{id}/costDetails": {
-      "get": {
-        "tags": ["budgets"],
-        "summary": "Get cost details for budget",
-        "description": "",
-        "operationId": "getCostDetails",
-        "consumes": ["application/json"],
-        "produces": ["application/json"],
-        "parameters": [
-          {
-            "name": "accountIdentifier",
-            "in": "query",
-            "required": true,
-            "type": "string"
-          },
-          {
-            "name": "id",
-            "in": "path",
-            "required": true,
-            "type": "string"
-          }
-        ],
-        "responses": {
-          "200": {
-            "description": "successful operation",
-            "schema": {
-              "$ref": "#/definitions/ResponseBudgetData"
+              "$ref": "#/definitions/ResponseListBudget"
             }
           }
         }
@@ -636,6 +636,31 @@
         }
       }
     },
+    "/testconnection/firstConnector": {
+      "get": {
+        "tags": ["testconnection"],
+        "summary": "Get connector details",
+        "description": "",
+        "operationId": "get connector details",
+        "produces": ["application/json"],
+        "parameters": [
+          {
+            "name": "accountIdentifier",
+            "in": "query",
+            "required": false,
+            "type": "string"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "successful operation",
+            "schema": {
+              "$ref": "#/definitions/ResponseCCMConnectorDetails"
+            }
+          }
+        }
+      }
+    },
     "/testconnection": {
       "post": {
         "tags": ["testconnection"],
@@ -664,31 +689,6 @@
             "description": "successful operation",
             "schema": {
               "$ref": "#/definitions/ResponseConnectorValidationResult"
-            }
-          }
-        }
-      }
-    },
-    "/testconnection/firstConnector": {
-      "get": {
-        "tags": ["testconnection"],
-        "summary": "Get connector details",
-        "description": "",
-        "operationId": "get connector details",
-        "produces": ["application/json"],
-        "parameters": [
-          {
-            "name": "accountIdentifier",
-            "in": "query",
-            "required": false,
-            "type": "string"
-          }
-        ],
-        "responses": {
-          "200": {
-            "description": "successful operation",
-            "schema": {
-              "$ref": "#/definitions/ResponseCCMConnectorDetails"
             }
           }
         }
@@ -901,24 +901,6 @@
         }
       }
     },
-    "/connector/azureappclientid": {
-      "get": {
-        "tags": ["connector"],
-        "summary": "Get Azure application client Id",
-        "description": "",
-        "operationId": "azureappclientid",
-        "produces": ["application/json"],
-        "parameters": [],
-        "responses": {
-          "200": {
-            "description": "successful operation",
-            "schema": {
-              "$ref": "#/definitions/ResponseString"
-            }
-          }
-        }
-      }
-    },
     "/connector/awsaccountconnectiondetail": {
       "get": {
         "tags": ["connector"],
@@ -969,11 +951,29 @@
         }
       }
     },
+    "/connector/azureappclientid": {
+      "get": {
+        "tags": ["connector"],
+        "summary": "Get Azure application client Id",
+        "description": "",
+        "operationId": "azureappclientid",
+        "produces": ["application/json"],
+        "parameters": [],
+        "responses": {
+          "200": {
+            "description": "successful operation",
+            "schema": {
+              "$ref": "#/definitions/ResponseString"
+            }
+          }
+        }
+      }
+    },
     "/graphql": {
       "post": {
         "tags": ["graphql"],
         "operationId": "execute_1",
-        "consumes": ["text/plain"],
+        "consumes": ["application/json"],
         "produces": ["application/json", "text/plain"],
         "parameters": [
           {
@@ -999,7 +999,7 @@
             "name": "body",
             "required": false,
             "schema": {
-              "type": "string"
+              "$ref": "#/definitions/GraphQLQuery"
             }
           }
         ],
@@ -1376,6 +1376,84 @@
         }
       }
     },
+    "/perspective/lastMonthCost": {
+      "get": {
+        "tags": ["perspective"],
+        "summary": "Get last month cost for perspective",
+        "description": "",
+        "operationId": "getLastMonthCostV2",
+        "consumes": ["application/json"],
+        "produces": ["application/json"],
+        "parameters": [
+          {
+            "name": "accountIdentifier",
+            "in": "query",
+            "required": true,
+            "type": "string"
+          },
+          {
+            "name": "perspectiveId",
+            "in": "query",
+            "required": true,
+            "type": "string"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "successful operation",
+            "schema": {
+              "$ref": "#/definitions/ResponseDouble"
+            }
+          }
+        }
+      }
+    },
+    "/perspective/forecastCostForPeriod": {
+      "get": {
+        "tags": ["perspective"],
+        "summary": "Get forecast cost for perspective for given period",
+        "description": "",
+        "operationId": "getForecastCostForPeriod",
+        "consumes": ["application/json"],
+        "produces": ["application/json"],
+        "parameters": [
+          {
+            "name": "accountIdentifier",
+            "in": "query",
+            "required": true,
+            "type": "string"
+          },
+          {
+            "name": "perspectiveId",
+            "in": "query",
+            "required": true,
+            "type": "string"
+          },
+          {
+            "name": "startTime",
+            "in": "query",
+            "required": true,
+            "type": "integer",
+            "format": "int64"
+          },
+          {
+            "name": "period",
+            "in": "query",
+            "required": true,
+            "type": "string",
+            "enum": ["DAILY", "WEEKLY", "MONTHLY", "QUARTERLY", "YEARLY"]
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "successful operation",
+            "schema": {
+              "$ref": "#/definitions/ResponseDouble"
+            }
+          }
+        }
+      }
+    },
     "/perspective": {
       "get": {
         "tags": ["perspective"],
@@ -1503,84 +1581,6 @@
             "description": "successful operation",
             "schema": {
               "$ref": "#/definitions/ResponseString"
-            }
-          }
-        }
-      }
-    },
-    "/perspective/lastMonthCost": {
-      "get": {
-        "tags": ["perspective"],
-        "summary": "Get last month cost for perspective",
-        "description": "",
-        "operationId": "getLastMonthCostV2",
-        "consumes": ["application/json"],
-        "produces": ["application/json"],
-        "parameters": [
-          {
-            "name": "accountIdentifier",
-            "in": "query",
-            "required": true,
-            "type": "string"
-          },
-          {
-            "name": "perspectiveId",
-            "in": "query",
-            "required": true,
-            "type": "string"
-          }
-        ],
-        "responses": {
-          "200": {
-            "description": "successful operation",
-            "schema": {
-              "$ref": "#/definitions/ResponseDouble"
-            }
-          }
-        }
-      }
-    },
-    "/perspective/forecastCostForPeriod": {
-      "get": {
-        "tags": ["perspective"],
-        "summary": "Get forecast cost for perspective for given period",
-        "description": "",
-        "operationId": "getForecastCostForPeriod",
-        "consumes": ["application/json"],
-        "produces": ["application/json"],
-        "parameters": [
-          {
-            "name": "accountIdentifier",
-            "in": "query",
-            "required": true,
-            "type": "string"
-          },
-          {
-            "name": "perspectiveId",
-            "in": "query",
-            "required": true,
-            "type": "string"
-          },
-          {
-            "name": "startTime",
-            "in": "query",
-            "required": true,
-            "type": "integer",
-            "format": "int64"
-          },
-          {
-            "name": "period",
-            "in": "query",
-            "required": true,
-            "type": "string",
-            "enum": ["DAILY", "WEEKLY", "MONTHLY", "QUARTERLY", "YEARLY"]
-          }
-        ],
-        "responses": {
-          "200": {
-            "description": "successful operation",
-            "schema": {
-              "$ref": "#/definitions/ResponseDouble"
             }
           }
         }
@@ -1723,6 +1723,208 @@
     }
   },
   "definitions": {
+    "PerspectiveAnomalyData": {
+      "type": "object",
+      "properties": {
+        "timestamp": {
+          "type": "integer",
+          "format": "int64"
+        },
+        "anomalyCount": {
+          "type": "integer",
+          "format": "int32"
+        },
+        "actualCost": {
+          "type": "number",
+          "format": "double"
+        },
+        "differenceFromExpectedCost": {
+          "type": "number",
+          "format": "double"
+        },
+        "associatedResources": {
+          "type": "array",
+          "items": {
+            "type": "string"
+          }
+        },
+        "resourceType": {
+          "type": "string"
+        }
+      }
+    },
+    "Response": {
+      "type": "object",
+      "properties": {
+        "status": {
+          "type": "string",
+          "enum": ["SUCCESS", "FAILURE", "ERROR"]
+        },
+        "data": {
+          "type": "object"
+        },
+        "metaData": {
+          "type": "object"
+        },
+        "correlationId": {
+          "type": "string"
+        }
+      }
+    },
+    "ResponseListPerspectiveAnomalyData": {
+      "type": "object",
+      "properties": {
+        "status": {
+          "type": "string",
+          "enum": ["SUCCESS", "FAILURE", "ERROR"]
+        },
+        "data": {
+          "type": "array",
+          "items": {
+            "$ref": "#/definitions/PerspectiveAnomalyData"
+          }
+        },
+        "metaData": {
+          "type": "object"
+        },
+        "correlationId": {
+          "type": "string"
+        }
+      }
+    },
+    "Number": {
+      "type": "object"
+    },
+    "PerspectiveQueryDTO": {
+      "type": "object",
+      "properties": {
+        "filters": {
+          "type": "array",
+          "items": {
+            "$ref": "#/definitions/QLCEViewFilterWrapper"
+          }
+        },
+        "groupBy": {
+          "type": "array",
+          "items": {
+            "$ref": "#/definitions/QLCEViewGroupBy"
+          }
+        }
+      }
+    },
+    "QLCEViewFieldInput": {
+      "type": "object",
+      "properties": {
+        "fieldId": {
+          "type": "string"
+        },
+        "fieldName": {
+          "type": "string"
+        },
+        "identifier": {
+          "type": "string",
+          "enum": ["CLUSTER", "AWS", "GCP", "AZURE", "COMMON", "CUSTOM", "BUSINESS_MAPPING", "LABEL"]
+        },
+        "identifierName": {
+          "type": "string"
+        }
+      }
+    },
+    "QLCEViewFilter": {
+      "type": "object",
+      "properties": {
+        "field": {
+          "$ref": "#/definitions/QLCEViewFieldInput"
+        },
+        "operator": {
+          "type": "string",
+          "enum": ["NOT_IN", "IN", "EQUALS", "NOT_NULL", "NULL", "LIKE"]
+        },
+        "values": {
+          "type": "array",
+          "items": {
+            "type": "string"
+          }
+        }
+      }
+    },
+    "QLCEViewFilterWrapper": {
+      "type": "object",
+      "properties": {
+        "idFilter": {
+          "$ref": "#/definitions/QLCEViewFilter"
+        },
+        "timeFilter": {
+          "$ref": "#/definitions/QLCEViewTimeFilter"
+        },
+        "viewMetadataFilter": {
+          "$ref": "#/definitions/QLCEViewMetadataFilter"
+        },
+        "ruleFilter": {
+          "$ref": "#/definitions/QLCEViewRule"
+        }
+      }
+    },
+    "QLCEViewGroupBy": {
+      "type": "object",
+      "properties": {
+        "entityGroupBy": {
+          "$ref": "#/definitions/QLCEViewFieldInput"
+        },
+        "timeTruncGroupBy": {
+          "$ref": "#/definitions/QLCEViewTimeTruncGroupBy"
+        }
+      }
+    },
+    "QLCEViewMetadataFilter": {
+      "type": "object",
+      "properties": {
+        "viewId": {
+          "type": "string"
+        },
+        "isPreview": {
+          "type": "boolean"
+        },
+        "preview": {
+          "type": "boolean"
+        }
+      }
+    },
+    "QLCEViewRule": {
+      "type": "object",
+      "properties": {
+        "conditions": {
+          "type": "array",
+          "items": {
+            "$ref": "#/definitions/QLCEViewFilter"
+          }
+        }
+      }
+    },
+    "QLCEViewTimeFilter": {
+      "type": "object",
+      "properties": {
+        "field": {
+          "$ref": "#/definitions/QLCEViewFieldInput"
+        },
+        "operator": {
+          "type": "string",
+          "enum": ["AFTER", "BEFORE"]
+        },
+        "value": {
+          "$ref": "#/definitions/Number"
+        }
+      }
+    },
+    "QLCEViewTimeTruncGroupBy": {
+      "type": "object",
+      "properties": {
+        "resolution": {
+          "type": "string",
+          "enum": ["HOUR", "DAY", "MONTH", "WEEK", "QUARTER", "YEAR"]
+        }
+      }
+    },
     "AnomalyData": {
       "type": "object",
       "properties": {
@@ -1769,6 +1971,9 @@
         "comment": {
           "type": "string"
         },
+        "cloudProvider": {
+          "type": "string"
+        },
         "anomalyScore": {
           "type": "number",
           "format": "double"
@@ -1813,24 +2018,6 @@
           "type": "string"
         },
         "awsService": {
-          "type": "string"
-        }
-      }
-    },
-    "Response": {
-      "type": "object",
-      "properties": {
-        "status": {
-          "type": "string",
-          "enum": ["SUCCESS", "FAILURE", "ERROR"]
-        },
-        "data": {
-          "type": "object"
-        },
-        "metaData": {
-          "type": "object"
-        },
-        "correlationId": {
           "type": "string"
         }
       }
@@ -2044,9 +2231,6 @@
         }
       }
     },
-    "Number": {
-      "type": "object"
-    },
     "ResponseBoolean": {
       "type": "object",
       "properties": {
@@ -2065,37 +2249,16 @@
         }
       }
     },
-    "PerspectiveAnomalyData": {
+    "AnomalyFeedbackDTO": {
       "type": "object",
       "properties": {
-        "timestamp": {
-          "type": "integer",
-          "format": "int64"
-        },
-        "anomalyCount": {
-          "type": "integer",
-          "format": "int32"
-        },
-        "actualCost": {
-          "type": "number",
-          "format": "double"
-        },
-        "differenceFromExpectedCost": {
-          "type": "number",
-          "format": "double"
-        },
-        "associatedResources": {
-          "type": "array",
-          "items": {
-            "type": "string"
-          }
-        },
-        "resourceType": {
-          "type": "string"
+        "feedback": {
+          "type": "string",
+          "enum": ["TRUE_ANOMALY", "FALSE_ANOMALY", "NOT_RESPONDED"]
         }
       }
     },
-    "ResponseListPerspectiveAnomalyData": {
+    "ResponseDouble": {
       "type": "object",
       "properties": {
         "status": {
@@ -2103,10 +2266,8 @@
           "enum": ["SUCCESS", "FAILURE", "ERROR"]
         },
         "data": {
-          "type": "array",
-          "items": {
-            "$ref": "#/definitions/PerspectiveAnomalyData"
-          }
+          "type": "number",
+          "format": "double"
         },
         "metaData": {
           "type": "object"
@@ -2116,133 +2277,65 @@
         }
       }
     },
-    "PerspectiveQueryDTO": {
+    "BudgetCostData": {
       "type": "object",
       "properties": {
-        "filters": {
+        "time": {
+          "type": "integer",
+          "format": "int64"
+        },
+        "endTime": {
+          "type": "integer",
+          "format": "int64"
+        },
+        "actualCost": {
+          "type": "number",
+          "format": "double"
+        },
+        "budgeted": {
+          "type": "number",
+          "format": "double"
+        },
+        "budgetVariance": {
+          "type": "number",
+          "format": "double"
+        },
+        "budgetVariancePercentage": {
+          "type": "number",
+          "format": "double"
+        }
+      }
+    },
+    "BudgetData": {
+      "type": "object",
+      "properties": {
+        "costData": {
           "type": "array",
           "items": {
-            "$ref": "#/definitions/QLCEViewFilterWrapper"
+            "$ref": "#/definitions/BudgetCostData"
           }
         },
-        "groupBy": {
-          "type": "array",
-          "items": {
-            "$ref": "#/definitions/QLCEViewGroupBy"
-          }
+        "forecastCost": {
+          "type": "number",
+          "format": "double"
         }
       }
     },
-    "QLCEViewFieldInput": {
+    "ResponseBudgetData": {
       "type": "object",
       "properties": {
-        "fieldId": {
-          "type": "string"
-        },
-        "fieldName": {
-          "type": "string"
-        },
-        "identifier": {
+        "status": {
           "type": "string",
-          "enum": ["CLUSTER", "AWS", "GCP", "AZURE", "COMMON", "CUSTOM", "BUSINESS_MAPPING", "LABEL"]
+          "enum": ["SUCCESS", "FAILURE", "ERROR"]
         },
-        "identifierName": {
+        "data": {
+          "$ref": "#/definitions/BudgetData"
+        },
+        "metaData": {
+          "type": "object"
+        },
+        "correlationId": {
           "type": "string"
-        }
-      }
-    },
-    "QLCEViewFilter": {
-      "type": "object",
-      "properties": {
-        "field": {
-          "$ref": "#/definitions/QLCEViewFieldInput"
-        },
-        "operator": {
-          "type": "string",
-          "enum": ["NOT_IN", "IN", "EQUALS", "NOT_NULL", "NULL", "LIKE"]
-        },
-        "values": {
-          "type": "array",
-          "items": {
-            "type": "string"
-          }
-        }
-      }
-    },
-    "QLCEViewFilterWrapper": {
-      "type": "object",
-      "properties": {
-        "idFilter": {
-          "$ref": "#/definitions/QLCEViewFilter"
-        },
-        "timeFilter": {
-          "$ref": "#/definitions/QLCEViewTimeFilter"
-        },
-        "viewMetadataFilter": {
-          "$ref": "#/definitions/QLCEViewMetadataFilter"
-        },
-        "ruleFilter": {
-          "$ref": "#/definitions/QLCEViewRule"
-        }
-      }
-    },
-    "QLCEViewGroupBy": {
-      "type": "object",
-      "properties": {
-        "entityGroupBy": {
-          "$ref": "#/definitions/QLCEViewFieldInput"
-        },
-        "timeTruncGroupBy": {
-          "$ref": "#/definitions/QLCEViewTimeTruncGroupBy"
-        }
-      }
-    },
-    "QLCEViewMetadataFilter": {
-      "type": "object",
-      "properties": {
-        "viewId": {
-          "type": "string"
-        },
-        "isPreview": {
-          "type": "boolean"
-        },
-        "preview": {
-          "type": "boolean"
-        }
-      }
-    },
-    "QLCEViewRule": {
-      "type": "object",
-      "properties": {
-        "conditions": {
-          "type": "array",
-          "items": {
-            "$ref": "#/definitions/QLCEViewFilter"
-          }
-        }
-      }
-    },
-    "QLCEViewTimeFilter": {
-      "type": "object",
-      "properties": {
-        "field": {
-          "$ref": "#/definitions/QLCEViewFieldInput"
-        },
-        "operator": {
-          "type": "string",
-          "enum": ["AFTER", "BEFORE"]
-        },
-        "value": {
-          "$ref": "#/definitions/Number"
-        }
-      }
-    },
-    "QLCEViewTimeTruncGroupBy": {
-      "type": "object",
-      "properties": {
-        "resolution": {
-          "type": "string",
-          "enum": ["HOUR", "DAY", "MONTH", "WEEK", "QUARTER", "YEAR"]
         }
       }
     },
@@ -2497,87 +2590,6 @@
           "items": {
             "$ref": "#/definitions/Budget"
           }
-        },
-        "metaData": {
-          "type": "object"
-        },
-        "correlationId": {
-          "type": "string"
-        }
-      }
-    },
-    "ResponseDouble": {
-      "type": "object",
-      "properties": {
-        "status": {
-          "type": "string",
-          "enum": ["SUCCESS", "FAILURE", "ERROR"]
-        },
-        "data": {
-          "type": "number",
-          "format": "double"
-        },
-        "metaData": {
-          "type": "object"
-        },
-        "correlationId": {
-          "type": "string"
-        }
-      }
-    },
-    "BudgetCostData": {
-      "type": "object",
-      "properties": {
-        "time": {
-          "type": "integer",
-          "format": "int64"
-        },
-        "endTime": {
-          "type": "integer",
-          "format": "int64"
-        },
-        "actualCost": {
-          "type": "number",
-          "format": "double"
-        },
-        "budgeted": {
-          "type": "number",
-          "format": "double"
-        },
-        "budgetVariance": {
-          "type": "number",
-          "format": "double"
-        },
-        "budgetVariancePercentage": {
-          "type": "number",
-          "format": "double"
-        }
-      }
-    },
-    "BudgetData": {
-      "type": "object",
-      "properties": {
-        "costData": {
-          "type": "array",
-          "items": {
-            "$ref": "#/definitions/BudgetCostData"
-          }
-        },
-        "forecastCost": {
-          "type": "number",
-          "format": "double"
-        }
-      }
-    },
-    "ResponseBudgetData": {
-      "type": "object",
-      "properties": {
-        "status": {
-          "type": "string",
-          "enum": ["SUCCESS", "FAILURE", "ERROR"]
-        },
-        "data": {
-          "$ref": "#/definitions/BudgetData"
         },
         "metaData": {
           "type": "object"
@@ -3237,6 +3249,21 @@
         }
       }
     },
+    "CCMConnectorDetails": {
+      "type": "object",
+      "properties": {
+        "name": {
+          "type": "string"
+        },
+        "createdAt": {
+          "type": "integer",
+          "format": "int64"
+        },
+        "connectorValidationResult": {
+          "$ref": "#/definitions/ConnectorValidationResult"
+        }
+      }
+    },
     "ConnectorValidationResult": {
       "type": "object",
       "properties": {
@@ -3274,6 +3301,24 @@
         "code": {
           "type": "integer",
           "format": "int32"
+        }
+      }
+    },
+    "ResponseCCMConnectorDetails": {
+      "type": "object",
+      "properties": {
+        "status": {
+          "type": "string",
+          "enum": ["SUCCESS", "FAILURE", "ERROR"]
+        },
+        "data": {
+          "$ref": "#/definitions/CCMConnectorDetails"
+        },
+        "metaData": {
+          "type": "object"
+        },
+        "correlationId": {
+          "type": "string"
         }
       }
     },
@@ -5693,39 +5738,6 @@
           }
         }
       ]
-    },
-    "CCMConnectorDetails": {
-      "type": "object",
-      "properties": {
-        "name": {
-          "type": "string"
-        },
-        "createdAt": {
-          "type": "integer",
-          "format": "int64"
-        },
-        "connectorValidationResult": {
-          "$ref": "#/definitions/ConnectorValidationResult"
-        }
-      }
-    },
-    "ResponseCCMConnectorDetails": {
-      "type": "object",
-      "properties": {
-        "status": {
-          "type": "string",
-          "enum": ["SUCCESS", "FAILURE", "ERROR"]
-        },
-        "data": {
-          "$ref": "#/definitions/CCMConnectorDetails"
-        },
-        "metaData": {
-          "type": "object"
-        },
-        "correlationId": {
-          "type": "string"
-        }
-      }
     },
     "CELicenseUsageDTO": {
       "type": "object",
