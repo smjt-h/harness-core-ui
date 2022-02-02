@@ -1,5 +1,5 @@
 export const applicationCall =
-  '/cv/api/appdynamics/applications?routingId=accountId&accountId=accountId&connectorIdentifier=appdtest&orgIdentifier=default&projectIdentifier=project1&offset=0&pageSize=10000&filter='
+  '/cv/api/appdynamics/applications?routingId=accountId&accountId=accountId&connectorIdentifier=appdtest&orgIdentifier=default&projectIdentifier=project1&offset=0&pageSize=10000*'
 export const applicationsResponse = {
   status: 'SUCCESS',
   data: {
@@ -177,7 +177,7 @@ export const metricPackResponse = {
 }
 
 export const tiersCall =
-  '/cv/api/appdynamics/tiers?routingId=accountId&appName=cv-app&accountId=accountId&connectorIdentifier=appdtest&orgIdentifier=default&projectIdentifier=project1&offset=0&pageSize=10000'
+  '/cv/api/appdynamics/tiers?routingId=accountId&appName=cv-app&accountId=accountId&connectorIdentifier=appdtest&orgIdentifier=default&projectIdentifier=project1&offset=0&pageSize=10000*'
 export const tiersResponse = {
   status: 'SUCCESS',
   data: {
@@ -195,4 +195,47 @@ export const tiersResponse = {
   },
   metaData: null,
   correlationId: 'c32f423f-f163-49d7-a812-94bfcf7f71a8'
+}
+
+export const basePathCall =
+  ' /cv/api/appdynamics/base-folders?routingId=accountId&accountId=accountId&connectorIdentifier=appdtest&orgIdentifier=default&projectIdentifier=project1&appName=cv-app&*'
+export const basePathResponse = {
+  status: 'SUCCESS',
+  data: [
+    'Overall Application Performance',
+    'Business Transaction Performance',
+    'Information Points',
+    'Application Infrastructure Performance',
+    'Errors',
+    'End User Experience',
+    'Mobile',
+    'Backends',
+    'Service Endpoints'
+  ],
+  metaData: null,
+  correlationId: 'b02015d8-8a45-4d3a-914f-ce2938adfbb9'
+}
+
+export const metricStructureCall =
+  'cv/api/appdynamics/metric-structure?routingId=accountId&accountId=accountId&orgIdentifier=default&projectIdentifier=project1&connectorIdentifier=appdtest&appName=cv-app&baseFolder=Overall%20Application%20Performance&tier=docker-tier&*'
+export const metricStructureResponse = {
+  status: 'SUCCESS',
+  data: [
+    { name: 'Exceptions per Minute', type: 'leaf' },
+    { name: 'Calls per Minute', type: 'leaf' },
+    { name: 'Stall Count', type: 'leaf' },
+    { name: 'Number of Very Slow Calls', type: 'leaf' },
+    { name: 'Error Page Redirects per Minute', type: 'leaf' },
+    { name: 'Average Response Time (ms)', type: 'leaf' },
+    { name: 'Thread Tasks', type: 'folder' },
+    { name: 'Number of Slow Calls', type: 'leaf' },
+    { name: 'External Calls', type: 'folder' },
+    { name: 'Average Async Processing Time (ms)', type: 'leaf' },
+    { name: 'Infrastructure Errors per Minute', type: 'leaf' },
+    { name: 'HTTP Error Codes per Minute', type: 'leaf' },
+    { name: 'Errors per Minute', type: 'leaf' },
+    { name: 'Individual Nodes', type: 'folder' }
+  ],
+  metaData: null,
+  correlationId: '7d5498f7-29f6-40c5-af4b-0c4c6dc7a69f'
 }

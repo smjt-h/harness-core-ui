@@ -97,15 +97,34 @@ Cypress.Commands.add('addNewMonitoredServiceWithServiceAndEnv', () => {
   cy.wait('@EnvCall')
   cy.wait(1000)
 
+  // clear any cached values
   cy.get('body').then($body => {
     if ($body.text().includes('Unsaved changes')) {
       cy.contains('span', 'Discard').click()
     }
   })
 
+  cy.contains('div', 'Unsaved changes').should('not.exist')
+  cy.get('button').contains('span', 'Discard').parent().should('be.disabled')
+
+  cy.get('button').contains('span', 'Save').click()
+
+  // Check valiadtions
+  cy.contains('span', 'Service is required').should('be.visible')
+  cy.contains('span', 'Environment is required').should('be.visible')
+  cy.contains('span', 'Monitored Service Name is required').should('be.visible')
+
   cy.get('input[name="service"]').click()
   cy.contains('p', 'Service 101').click({ force: true })
 
+  cy.contains('span', 'Service is required').should('not.exist')
+
   cy.get('input[name="environment"]').click()
   cy.contains('p', 'QA').click({ force: true })
+
+  cy.contains('span', 'Environment is required').should('not.exist')
+  cy.contains('span', 'Monitored Service Name is required').should('not.exist')
+
+  cy.contains('div', 'Unsaved changes').scrollIntoView().should('be.visible')
+  cy.get('button').contains('span', 'Discard').parent().should('be.enabled')
 })
