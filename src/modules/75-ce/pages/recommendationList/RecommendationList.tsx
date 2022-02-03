@@ -17,7 +17,8 @@ import {
   ButtonVariation,
   TableV2,
   ExpandingSearchInput,
-  FontVariation
+  FontVariation,
+  IconName
 } from '@wings-software/uicore'
 import { useHistory, useParams } from 'react-router-dom'
 import type { CellProps, Renderer } from 'react-table'
@@ -46,6 +47,7 @@ import { useTelemetry } from '@common/hooks/useTelemetry'
 import RecommendationSavingsCard from '../../components/RecommendationSavingsCard/RecommendationSavingsCard'
 import RecommendationFilters from '../../components/RecommendationFilters'
 import css from './RecommendationList.module.scss'
+import { get } from 'lodash'
 
 type RouteFn = (
   params: {
@@ -124,9 +126,19 @@ const RecommendationsList: React.FC<RecommendationListProps> = ({
   const NameCell: Renderer<CellProps<RecommendationItemDto>> = cell => {
     const originalRowData = cell.row.original
     const { clusterName, namespace, resourceType } = originalRowData
+    const provider = get(originalRowData, 'recommendationDetails.recommended.provider', '')
+
+    const iconMapping: Record<string, IconName> = {
+      google: 'gcp',
+      azure: 'service-azure',
+      amazon: 'service-aws'
+    }
+
+    const iconName = provider ? iconMapping[provider] : 'app-kubernetes'
+
     return (
       <Layout.Horizontal style={{ alignItems: 'center' }} padding={{ right: 'medium' }}>
-        {/* <Icon name="app-kubernetes" size={28} padding={{ right: 'medium' }} /> */}
+        <Icon name={iconName} size={28} padding={{ right: 'medium' }} />
         <Container>
           <Layout.Horizontal margin={{ top: 'xxxsmall' }} style={{ alignItems: 'baseline' }} spacing="xsmall">
             <Text color={Color.GREY_500} font={{ variation: FontVariation.SMALL }}>{`${getString(
@@ -427,7 +439,6 @@ const RecommendationList: React.FC = () => {
               <RecommendationSavingsCard
                 title={getString('ce.recommendation.listPage.monthlyPotentialCostText')}
                 amount={isEmptyView ? '$-' : formatCost(totalMonthlyCost)}
-                amountSubTitle={getString('ce.recommendation.listPage.pontentialCostAmountSubText')}
                 subTitle={getString('ce.recommendation.listPage.potentialCostSubText')}
               />
             </Layout.Horizontal>
