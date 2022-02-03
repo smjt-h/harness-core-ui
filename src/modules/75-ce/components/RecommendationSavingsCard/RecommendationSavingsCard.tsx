@@ -5,35 +5,49 @@
  * https://polyformproject.org/wp-content/uploads/2020/06/PolyForm-Shield-1.0.0.txt.
  */
 
-import { Card, Layout, Text, IconName } from '@wings-software/uicore'
+import { Card, Layout, Text, IconName, FontVariation, Color } from '@wings-software/uicore'
 import React from 'react'
+import cx from 'classnames'
 import css from './RecommendationSavingsCard.module.scss'
 
 interface RecommendationSavingsCardProps {
   title: string
   amount: string
+  amountSubTitle?: string
   subTitle?: string
   iconName?: IconName
 }
 
 const RecommendationSavingsCard: React.FC<RecommendationSavingsCardProps> = props => {
-  const { title, amount, subTitle, iconName } = props
+  const { title, amount, amountSubTitle, subTitle, iconName } = props
 
   return (
-    <Card className={css.savingsCard} elevation={1}>
+    <Card className={cx(css.savingsCard, { [css.potentialSpendCard]: !iconName })} elevation={1}>
       <Layout.Vertical spacing="small">
-        <Text font="normal" color="grey400">
+        <Text font={{ variation: FontVariation.H6 }} color={Color.GREY_500}>
           {title}
         </Text>
-        <Text
-          className={css.amount}
-          color={iconName ? 'green500' : 'grey800'}
-          icon={iconName ? iconName : undefined}
-          iconProps={{ size: 28 }}
-        >
-          {amount}
-        </Text>
-        {subTitle ? <Text font="small">{subTitle}</Text> : null}
+        <Layout.Horizontal style={{ alignItems: 'baseline' }} spacing="xsmall">
+          <Text
+            className={css.amount}
+            color={iconName ? Color.GREEN_700 : Color.GREY_800}
+            icon={iconName ? iconName : undefined}
+            font={{ variation: FontVariation.H3 }}
+            iconProps={{ size: 28 }}
+          >
+            {amount}
+          </Text>
+          {amountSubTitle ? (
+            <Text color={Color.GREY_400} font={{ variation: FontVariation.TINY }}>
+              {amountSubTitle}
+            </Text>
+          ) : null}
+        </Layout.Horizontal>
+        {subTitle ? (
+          <Text color={Color.GREY_600} font={{ variation: FontVariation.TINY }}>
+            {subTitle}
+          </Text>
+        ) : null}
       </Layout.Vertical>
     </Card>
   )

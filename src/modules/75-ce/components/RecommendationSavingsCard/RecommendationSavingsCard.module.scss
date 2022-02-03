@@ -6,11 +6,15 @@
  */
 
 .savingsCard {
-  padding: 24px 30px;
+  padding: 24px 24px;
   width: 260px;
 
   .amount {
     font-size: 24px !important;
     color: #22272d;
   }
+}
+
+.potentialSpendCard {
+  width: 320px;
 }

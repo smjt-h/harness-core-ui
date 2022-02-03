@@ -23,6 +23,7 @@ import {
 import { useHistory, useParams } from 'react-router-dom'
 import type { CellProps, Renderer } from 'react-table'
 
+import { get } from 'lodash-es'
 import { useStrings } from 'framework/strings'
 import {
   RecommendationItemDto,
@@ -47,7 +48,6 @@ import { useTelemetry } from '@common/hooks/useTelemetry'
 import RecommendationSavingsCard from '../../components/RecommendationSavingsCard/RecommendationSavingsCard'
 import RecommendationFilters from '../../components/RecommendationFilters'
 import css from './RecommendationList.module.scss'
-import { get } from 'lodash'
 
 type RouteFn = (
   params: {
@@ -439,6 +439,7 @@ const RecommendationList: React.FC = () => {
               <RecommendationSavingsCard
                 title={getString('ce.recommendation.listPage.monthlyPotentialCostText')}
                 amount={isEmptyView ? '$-' : formatCost(totalMonthlyCost)}
+                amountSubTitle={getString('ce.recommendation.listPage.pontentialCostAmountSubText')}
                 subTitle={getString('ce.recommendation.listPage.potentialCostSubText')}
               />
             </Layout.Horizontal>
