@@ -326,7 +326,7 @@ describe('Unit tests for Deployment metrics ', () => {
   })
 
   test('Ensure api is called with non anomalous filter', async () => {
-    const useGetHealthSourcesSpy = jest.spyOn(cvService, 'useGetHealthSources').mockReturnValue({
+    const useGetHealthSourcesSpy = jest.spyOn(cvService, 'useGetVerifyStepHealthSources').mockReturnValue({
       data: HealthSourcesResponse,
       refetch: jest.fn() as unknown
     } as any)
@@ -424,7 +424,7 @@ describe('Unit tests for Deployment metrics ', () => {
   })
 
   test('Ensure api is called with filter and selected page', async () => {
-    jest.spyOn(cvService, 'useGetHealthSources').mockReturnValue({
+    jest.spyOn(cvService, 'useGetVerifyStepHealthSources').mockReturnValue({
       data: HealthSourcesResponse,
       refetch: jest.fn() as unknown
     } as any)
@@ -508,7 +508,7 @@ describe('Unit tests for Deployment metrics ', () => {
   })
 
   test('Ensure loading state is rendered', async () => {
-    jest.spyOn(cvService, 'useGetHealthSources').mockReturnValue({
+    jest.spyOn(cvService, 'useGetVerifyStepHealthSources').mockReturnValue({
       data: HealthSourcesResponse,
       refetch: jest.fn() as unknown
     } as any)
@@ -541,7 +541,7 @@ describe('Unit tests for Deployment metrics ', () => {
   })
 
   test('Ensure error state is rendred', async () => {
-    jest.spyOn(cvService, 'useGetHealthSources').mockReturnValue({
+    jest.spyOn(cvService, 'useGetVerifyStepHealthSources').mockReturnValue({
       data: HealthSourcesResponse,
       refetch: jest.fn() as unknown
     } as any)
@@ -579,7 +579,7 @@ describe('Unit tests for Deployment metrics ', () => {
   })
 
   test('Ensure no data state is rendered', async () => {
-    jest.spyOn(cvService, 'useGetHealthSources').mockReturnValue({
+    jest.spyOn(cvService, 'useGetVerifyStepHealthSources').mockReturnValue({
       data: HealthSourcesResponse,
       refetch: jest.fn() as unknown
     } as any)
@@ -614,7 +614,7 @@ describe('Unit tests for Deployment metrics ', () => {
   })
 
   test('Ensure that when new activityId is passed as prop view is reset', async () => {
-    jest.spyOn(cvService, 'useGetHealthSources').mockReturnValue({
+    jest.spyOn(cvService, 'useGetVerifyStepHealthSources').mockReturnValue({
       data: HealthSourcesResponse,
       refetch: jest.fn() as unknown
     } as any)
@@ -710,7 +710,7 @@ describe('Unit tests for Deployment metrics ', () => {
   })
 
   test('Ensure polling works correctly', async () => {
-    jest.spyOn(cvService, 'useGetHealthSources').mockReturnValue({
+    jest.spyOn(cvService, 'useGetVerifyStepHealthSources').mockReturnValue({
       data: HealthSourcesResponse,
       refetch: jest.fn() as unknown
     } as any)
@@ -776,7 +776,7 @@ describe('Unit tests for Deployment metrics ', () => {
   })
 
   test('should render accordion to display metrics', () => {
-    jest.spyOn(cvService, 'useGetHealthSources').mockReturnValue({
+    jest.spyOn(cvService, 'useGetVerifyStepHealthSources').mockReturnValue({
       data: HealthSourcesResponse,
       refetch: jest.fn() as unknown
     } as any)
@@ -813,7 +813,7 @@ describe('Unit tests for Deployment metrics ', () => {
     // @ts-ignore
     useQueryParams.mockImplementation(() => ({ filterAnomalous: 'true' }))
 
-    jest.spyOn(cvService, 'useGetHealthSources').mockReturnValue({
+    jest.spyOn(cvService, 'useGetVerifyStepHealthSources').mockReturnValue({
       data: HealthSourcesResponse,
       refetch: jest.fn() as unknown
     } as any)

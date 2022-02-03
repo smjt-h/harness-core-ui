@@ -9,7 +9,7 @@ import React, { useEffect, useMemo, useState } from 'react'
 import { Container, Icon, Color, Text, PageError } from '@wings-software/uicore'
 import { useParams } from 'react-router-dom'
 import cx from 'classnames'
-import { useGetDeploymentActivitySummary } from 'services/cv'
+import { useGetVerifyStepDeploymentActivitySummary } from 'services/cv'
 import type { ProjectPathProps } from '@common/interfaces/RouteInterfaces'
 import { isExecutionWaitingForIntervention } from '@pipeline/utils/statusHelpers'
 import { ManualInterventionTab } from '@pipeline/components/execution/StepDetails/tabs/ManualInterventionTab/ManualInterventionTab'
@@ -32,9 +32,9 @@ export function ExecutionVerificationSummary(props: VerifyExecutionProps): JSX.E
   const [pollingIntervalId, setPollingIntervalId] = useState(-1)
   const [showSpinner, setShowSpinner] = useState(true)
   const activityId = useMemo(() => getActivityId(step), [step])
-  const { data, error, refetch } = useGetDeploymentActivitySummary({
+  const { data, error, refetch } = useGetVerifyStepDeploymentActivitySummary({
     queryParams: { accountId },
-    activityId,
+    verifyStepExecutionId: activityId,
     lazy: true
   })
   const { deploymentVerificationJobInstanceSummary = {} } = data?.resource || {}
