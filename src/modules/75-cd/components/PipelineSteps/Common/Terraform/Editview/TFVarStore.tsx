@@ -170,7 +170,7 @@ export const TFVarStore: React.FC<StepProps<any> & TFVarStoreProps> = ({
                         if (handleConnectorViewChange) {
                           handleConnectorViewChange(selectedType as ConnectorTypes)
                         }
-                        nextStep?.({ ...prevStepData, store: selectedType })
+                        nextStep?.({ ...prevStepData, selectedType })
                       }}
                     />
                   </Layout.Horizontal>
@@ -190,9 +190,10 @@ export const TFVarStore: React.FC<StepProps<any> & TFVarStoreProps> = ({
                   }}
                   disabled={
                     /* istanbul ignore next */
-                    !selectedType ||
+                    !connector ||
                     (getMultiTypeFromValue(connector) === MultiTypeInputType.FIXED &&
-                      !(connector as ConnectorSelectedValue)?.connector)
+                      !(connector as ConnectorSelectedValue)?.connector &&
+                      connector?.connector?.type !== selectedType)
                   }
                 />
               </Layout.Horizontal>

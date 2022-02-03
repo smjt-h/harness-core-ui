@@ -31,7 +31,16 @@ import { useVariablesExpression } from '@pipeline/components/PipelineStudio/Pipl
 import { useStrings } from 'framework/strings'
 import { FormMultiTypeConnectorField } from '@connectors/components/ConnectorReferenceField/FormMultiTypeConnectorField'
 import { ConfigureOptions } from '@common/components/ConfigureOptions/ConfigureOptions'
-import { AllowedTypes, tfVarIcons, ConnectorMap, ConnectorLabelMap, ConnectorTypes } from './TerraformConfigFormHelper'
+import type { ConnectorSelectedValue } from '@connectors/components/ConnectorReferenceField/ConnectorReferenceField'
+import {
+  AllowedTypes,
+  tfVarIcons,
+  ConnectorMap,
+  ConnectorLabelMap,
+  ConnectorTypes,
+  formInputNames,
+  formikOnChangeNames
+} from './TerraformConfigFormHelper'
 
 import type { Connector } from '../TerraformInterfaces'
 
@@ -79,17 +88,20 @@ export const TerraformConfigStepOne: React.FC<StepProps<any> & TerraformConfigSt
     !!selectedConnector && getString(ConnectorLabelMap[selectedConnector as ConnectorTypes])
   } ${getString('connector')}`
   const connectorError = getString('pipelineSteps.build.create.connectorRequiredError')
+  const configSchema = {
+    configFiles: Yup.object().shape({
+      store: Yup.object().shape({
+        spec: Yup.object().shape({
+          connectorRef: Yup.string().required(connectorError)
+        })
+      })
+    })
+  }
   const validationSchema = isTerraformPlan
     ? Yup.object().shape({
         spec: Yup.object().shape({
           configuration: Yup.object().shape({
-            configFiles: Yup.object().shape({
-              store: Yup.object().shape({
-                spec: Yup.object().shape({
-                  connectorRef: Yup.string().required(connectorError)
-                })
-              })
-            })
+            ...configSchema
           })
         })
       })
@@ -97,13 +109,7 @@ export const TerraformConfigStepOne: React.FC<StepProps<any> & TerraformConfigSt
         spec: Yup.object().shape({
           configuration: Yup.object().shape({
             spec: Yup.object().shape({
-              configFiles: Yup.object().shape({
-                store: Yup.object().shape({
-                  spec: Yup.object().shape({
-                    connectorRef: Yup.string().required(connectorError)
-                  })
-                })
-              })
+              ...configSchema
             })
           })
         })
@@ -143,9 +149,15 @@ export const TerraformConfigStepOne: React.FC<StepProps<any> & TerraformConfigSt
         validationSchema={validationSchema}
       >
         {formik => {
-          const disabled = isTerraformPlan
-            ? formik?.values?.spec?.configuration?.configFiles?.store?.spec?.connectorRef
-            : formik?.values?.spec?.configuration?.spec?.configFiles?.store?.spec?.connectorRef
+          const config = formik?.values?.spec?.configuration
+          const connectorRef = isTerraformPlan
+            ? config.configFiles?.store?.spec?.connectorRef
+            : config.spec?.configFiles?.store?.spec?.connectorRef
+          const disabled =
+            !connectorRef ||
+            (getMultiTypeFromValue(connectorRef) === MultiTypeInputType.FIXED &&
+              !(connectorRef as ConnectorSelectedValue)?.connector &&
+              connectorRef?.connector?.type !== selectedConnector)
           return (
             <Form className={css.formComponent}>
               <div className={css.formContainerStepOne}>
@@ -184,7 +196,6 @@ export const TerraformConfigStepOne: React.FC<StepProps<any> & TerraformConfigSt
                   </Layout.Horizontal>
                 )}
               </div>
-
               <Layout.Horizontal spacing="xxlarge">
                 <Button
                   variation={ButtonVariation.PRIMARY}
@@ -192,7 +203,7 @@ export const TerraformConfigStepOne: React.FC<StepProps<any> & TerraformConfigSt
                   text={getString('continue')}
                   rightIcon="chevron-right"
                   onClick={() => nextStep?.({ ...formik.values, selectedType: selectedConnector })}
-                  disabled={!disabled}
+                  disabled={disabled}
                 />
               </Layout.Horizontal>
             </Form>
@@ -261,38 +272,6 @@ export const TerraformConfigStepTwo: React.FC<StepProps<any> & TerraformConfigSt
         })
       })
 
-  const formInputNames = {
-    repoName: isTerraformPlan
-      ? 'spec.configuration.configFiles.store.spec.repoName'
-      : 'spec.configuration.spec.configFiles.store.spec.repoName',
-    gitFetchType: isTerraformPlan
-      ? 'spec.configuration.configFiles.store.spec.gitFetchType'
-      : 'spec.configuration.spec.configFiles.store.spec.gitFetchType',
-    branch: isTerraformPlan
-      ? 'spec.configuration.configFiles.store.spec.branch'
-      : 'spec.configuration.spec.configFiles.store.spec.branch',
-    commitId: isTerraformPlan
-      ? 'spec.configuration.configFiles.store.spec.commitId'
-      : 'spec.configuration.spec.configFiles.store.spec.commitId',
-    folderPath: isTerraformPlan
-      ? 'spec.configuration.configFiles.store.spec.folderPath'
-      : 'spec.configuration.spec.configFiles.store.spec.folderPath'
-  }
-
-  const formikOnChangeNames = {
-    repoName: isTerraformPlan
-      ? 'configuration.configFiles.store.spec.repoName'
-      : 'configuration.spec.configFiles.store.spec.repoName',
-    branch: isTerraformPlan
-      ? 'configuration.configFiles.store.spec.branch'
-      : 'configuration.spec.configFiles.store.spec.branch',
-    commitId: isTerraformPlan
-      ? 'spec.configuration.configFiles.spec.store.spec.commitId'
-      : 'spec.configuration.spec.configFiles.spec.store.spec.commitId',
-    folderPath: isTerraformPlan
-      ? 'formik.values.spec?.configuration?.configFiles?.store.spec?.folderPath'
-      : 'formik.values.spec?.configuration?.spec?.store.spec?.folderPath'
-  }
   return (
     <Layout.Vertical padding="small" className={css.tfConfigForm}>
       <Heading level={2} style={{ color: Color.BLACK, fontSize: 24, fontWeight: 'bold' }} margin={{ bottom: 'xlarge' }}>
@@ -321,7 +300,7 @@ export const TerraformConfigStepTwo: React.FC<StepProps<any> & TerraformConfigSt
                   <div className={cx(stepCss.formGroup, stepCss.md)}>
                     <FormInput.MultiTextInput
                       label={getString('pipelineSteps.repoName')}
-                      name={formInputNames.repoName}
+                      name={formInputNames(isTerraformPlan).repoName}
                       placeholder={getString('pipelineSteps.repoName')}
                       multiTextInputProps={{ expressions, allowableTypes: allowableTypes }}
                     />
@@ -334,7 +313,7 @@ export const TerraformConfigStepTwo: React.FC<StepProps<any> & TerraformConfigSt
                         showRequiredField={false}
                         showDefaultField={false}
                         showAdvanced={true}
-                        onChange={value => formik.setFieldValue(formikOnChangeNames.repoName, value)}
+                        onChange={value => formik.setFieldValue(formikOnChangeNames(isTerraformPlan).repoName, value)}
                         isReadonly={isReadonly}
                       />
                     )}
@@ -343,7 +322,7 @@ export const TerraformConfigStepTwo: React.FC<StepProps<any> & TerraformConfigSt
                 <div className={cx(stepCss.formGroup, stepCss.md)}>
                   <FormInput.Select
                     items={gitFetchTypes}
-                    name={formInputNames.gitFetchType}
+                    name={formInputNames(isTerraformPlan).gitFetchType}
                     label={getString('pipeline.manifestType.gitFetchTypeLabel')}
                     placeholder={getString('pipeline.manifestType.gitFetchTypeLabel')}
                   />
@@ -353,7 +332,7 @@ export const TerraformConfigStepTwo: React.FC<StepProps<any> & TerraformConfigSt
                     <FormInput.MultiTextInput
                       label={getString('pipelineSteps.deploy.inputSet.branch')}
                       placeholder={getString('pipeline.manifestType.branchPlaceholder')}
-                      name={formInputNames.branch}
+                      name={formInputNames(isTerraformPlan).branch}
                       multiTextInputProps={{ expressions, allowableTypes }}
                     />
                     {getMultiTypeFromValue(store?.branch) === MultiTypeInputType.RUNTIME && (
@@ -365,7 +344,7 @@ export const TerraformConfigStepTwo: React.FC<StepProps<any> & TerraformConfigSt
                         showRequiredField={false}
                         showDefaultField={false}
                         showAdvanced={true}
-                        onChange={value => formik.setFieldValue(formikOnChangeNames.branch, value)}
+                        onChange={value => formik.setFieldValue(formikOnChangeNames(isTerraformPlan).branch, value)}
                         isReadonly={isReadonly}
                       />
                     )}
@@ -377,7 +356,7 @@ export const TerraformConfigStepTwo: React.FC<StepProps<any> & TerraformConfigSt
                     <FormInput.MultiTextInput
                       label={getString('pipeline.manifestType.commitId')}
                       placeholder={getString('pipeline.manifestType.commitPlaceholder')}
-                      name={formInputNames.commitId}
+                      name={formInputNames(isTerraformPlan).commitId}
                       multiTextInputProps={{ expressions, allowableTypes }}
                     />
                     {getMultiTypeFromValue(store?.commitId) === MultiTypeInputType.RUNTIME && (
@@ -385,11 +364,11 @@ export const TerraformConfigStepTwo: React.FC<StepProps<any> & TerraformConfigSt
                         style={{ alignSelf: 'center', marginTop: 1 }}
                         value={store?.commitId as string}
                         type="String"
-                        variableName={formInputNames.commitId}
+                        variableName={formInputNames(isTerraformPlan).commitId}
                         showRequiredField={false}
                         showDefaultField={false}
                         showAdvanced={true}
-                        onChange={value => formik.setFieldValue(formikOnChangeNames.commitId, value)}
+                        onChange={value => formik.setFieldValue(formikOnChangeNames(isTerraformPlan).commitId, value)}
                         isReadonly={isReadonly}
                       />
                     )}
@@ -400,7 +379,7 @@ export const TerraformConfigStepTwo: React.FC<StepProps<any> & TerraformConfigSt
                   <FormInput.MultiTextInput
                     label={getString('cd.folderPath')}
                     placeholder={getString('pipeline.manifestType.pathPlaceholder')}
-                    name={formInputNames.folderPath}
+                    name={formInputNames(isTerraformPlan).folderPath}
                     multiTextInputProps={{ expressions, allowableTypes }}
                   />
                   {getMultiTypeFromValue(store?.folderPath) === MultiTypeInputType.RUNTIME && (
@@ -412,7 +391,7 @@ export const TerraformConfigStepTwo: React.FC<StepProps<any> & TerraformConfigSt
                       showRequiredField={false}
                       showDefaultField={false}
                       showAdvanced={true}
-                      onChange={value => formik.setFieldValue(formikOnChangeNames.folderPath, value)}
+                      onChange={value => formik.setFieldValue(formikOnChangeNames(isTerraformPlan).folderPath, value)}
                       isReadonly={isReadonly}
                     />
                   )}
