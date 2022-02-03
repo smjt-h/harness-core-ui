@@ -1,3 +1,10 @@
+/*
+ * Copyright 2022 Harness Inc. All rights reserved.
+ * Use of this source code is governed by the PolyForm Shield 1.0.0 license
+ * that can be found in the licenses directory at the root of this repository, also available at
+ * https://polyformproject.org/wp-content/uploads/2020/06/PolyForm-Shield-1.0.0.txt.
+ */
+
 import React, { useEffect, useState } from 'react'
 import {
   Button,
@@ -19,6 +26,7 @@ import { Link, useParams } from 'react-router-dom'
 import type { CellProps, Renderer } from 'react-table'
 import { Classes, Menu, MenuItem, Popover, Position } from '@blueprintjs/core'
 import { useStrings } from 'framework/strings'
+import { useToaster } from '@common/components'
 
 import PerspectiveTimeRangePicker from '@ce/components/PerspectiveTimeRangePicker/PerspectiveTimeRangePicker'
 import {
@@ -35,7 +43,7 @@ export interface TimeRange {
   to: string
   from: string
 }
-interface anomalyParams {
+interface AnomalyParams {
   accountId: string
 }
 
@@ -179,33 +187,35 @@ const AnomaliesOverview: React.FC = () => {
   )
 }
 
-interface listProps {
+interface ListProps {
   listData: AnomalyData[]
 }
 
-interface anomaliesManu {
+interface AnomaliesMenu {
   anomalyId: string
 }
 
-const AnomaliesMenu: React.FC<anomaliesManu> = ({ anomalyId }) => {
+const AnomaliesMenu: React.FC<AnomaliesMenu> = ({ anomalyId }) => {
   const { getString } = useStrings()
   const [isOpen, setIsOpen] = useState(false)
-  const { accountId } = useParams<anomalyParams>()
+  const { accountId } = useParams<AnomalyParams>()
   const { mutate: updateAnomalyFeedback } = useReportAnomalyFeedback({
     queryParams: {
       accountIdentifier: accountId,
       anomalyId: anomalyId
     }
   })
+  const { showError, showSuccess } = useToaster()
 
   const anomalyFeedback = async () => {
     try {
       const response = await updateAnomalyFeedback({
         feedback: 'FALSE_ANOMALY'
       })
-      console.log('Anomaly feedback submitted successfully', response)
+      response && showSuccess('Thanks for your feedback!')
     } catch (error) {
-      console.log('Anomaly feedback error', error)
+      const errMessage = error.data.message
+      showError(errMessage)
     }
   }
 
@@ -247,7 +257,7 @@ const AnomaliesMenu: React.FC<anomaliesManu> = ({ anomalyId }) => {
   )
 }
 
-const AnomaliesListGridView: React.FC<listProps> = ({ listData }) => {
+const AnomaliesListGridView: React.FC<ListProps> = ({ listData }) => {
   const { getString } = useStrings()
 
   const DateCell: Renderer<CellProps<AnomalyData>> = ({ row }) => {
@@ -375,7 +385,7 @@ const AnomaliesListGridView: React.FC<listProps> = ({ listData }) => {
 const AnomaliesOverviewPage: React.FC = () => {
   const { getString } = useStrings()
   const [searchText, setSearchText] = React.useState('')
-  const { accountId } = useParams<anomalyParams>()
+  const { accountId } = useParams<AnomalyParams>()
   const [listData, setListData] = useState<AnomalyData[]>([])
 
   const { mutate: getAnomaliesList } = useListAnomalies({
@@ -409,7 +419,7 @@ const AnomaliesOverviewPage: React.FC = () => {
         })
         setListData(response?.data as AnomalyData[])
       } catch (error) {
-        console.log('AnomaliesOverviewPage: Error in fetching the anomalies list', error)
+        // console.log('AnomaliesOverviewPage: Error in fetching the anomalies list', error)
       }
     }
     getList()
