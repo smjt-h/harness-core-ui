@@ -5,9 +5,9 @@
  * https://polyformproject.org/wp-content/uploads/2020/06/PolyForm-Shield-1.0.0.txt.
  */
 
-import React, { useState } from 'react'
+import React, { useMemo, useState } from 'react'
 import { useHistory, useParams } from 'react-router-dom'
-import { Container, Popover, Text, Layout, Icon, Color } from '@wings-software/uicore'
+import { Container, Popover, Text, Layout, Icon, Color, DropDown, SelectOption } from '@wings-software/uicore'
 import { PopoverInteractionKind, Position } from '@blueprintjs/core'
 import { useStrings } from 'framework/strings'
 import { useRecommendationFiltersQuery } from 'services/ce/services'
@@ -108,6 +108,7 @@ const RecommendationFilters: React.FC<RecommendationFiltersProps> = ({
   const [selectedType, setSelectedType] = useState<string>()
   const [currentFilters, setCurrentFilters] = useState<Record<string, boolean>>({})
   const [currentCost, setCurrentCost] = useState<number>(0)
+  const [resourceTypeFilter, setResourceTypeFilter] = useState<string>('ALL')
 
   const history = useHistory()
   const { accountId } = useParams<{ accountId: string }>()
@@ -120,7 +121,6 @@ const RecommendationFilters: React.FC<RecommendationFiltersProps> = ({
 
   const completeFilterSelection: () => void = () => {
     const getFilterArray = Object.keys(currentFilters).filter(val => currentFilters[val])
-
     if (selectedType && COST_FILTER_KEYS.includes(selectedType)) {
       setCostFilters(currentVal => ({
         ...currentVal,
@@ -180,6 +180,15 @@ const RecommendationFilters: React.FC<RecommendationFiltersProps> = ({
     return <FilterPill keyName="Perspective" value={perspectiveName} onClear={onClear} />
   }
 
+  const recommendationTypeOptions: SelectOption[] = useMemo(
+    () => [
+      { label: 'Recommendation Type: All', value: 'ALL' },
+      { label: getString('ce.nodeRecommendation.nodepool'), value: 'NODE_POOL' },
+      { label: getString('pipelineSteps.workload'), value: 'WORKLOAD' }
+    ],
+    []
+  )
+
   return fetching ? (
     <Icon name="spinner" size={24} color="blue500" style={{ alignSelf: 'center' }} />
   ) : (
@@ -189,20 +198,24 @@ const RecommendationFilters: React.FC<RecommendationFiltersProps> = ({
         padding={{ right: 'large' }}
         style={{ borderRightWidth: 0.5, borderRightStyle: 'solid', borderRightColor: '#B0B1C4' }}
       >
-        {/* <DropDown placeholder="Savings > 10$" disabled />
+        {/* <DropDown placeholder="Savings > 10$" disabled /> */}
         <DropDown
-          placeholder="Recommendation type: All"
-          items={[
-            { label: getString('ce.nodeRecommendation.nodepool'), value: 'nodepool' },
-            { label: getString('pipelineSteps.workload'), value: 'workload' }
-          ]}
-          // onChange={item => setCurrentFilters(val => ({ ...val, [item]: !val[item] }))}
-        /> */}
+          items={recommendationTypeOptions}
+          value={resourceTypeFilter}
+          filterable={false}
+          onChange={item => {
+            setResourceTypeFilter(item.value.toString())
+            setFilters(currentVal => ({
+              ...currentVal,
+              resourceTypes: item.value === 'ALL' ? [] : [item.value.toString()]
+            }))
+          }}
+        />
       </Layout.Horizontal>
       <Layout.Horizontal spacing="small">
         {renderPerspectiveFilterPill()}
         {Object.keys(filters).map(filter => {
-          return filters[filter] ? (
+          return filters[filter].length > 0 ? (
             <FilterPill
               key={filter}
               keyName={keyToLabelMapping[filter]}

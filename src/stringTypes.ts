@@ -3766,15 +3766,16 @@ export interface StringsMap {
   'ce.recommendation.listPage.filters.minSaving': string
   'ce.recommendation.listPage.filters.name': string
   'ce.recommendation.listPage.filters.namespace': string
-  'ce.recommendation.listPage.forecatedCostSubText': string
   'ce.recommendation.listPage.listTableHeaders.details': string
   'ce.recommendation.listPage.listTableHeaders.monthlyCost': string
   'ce.recommendation.listPage.listTableHeaders.monthlySavings': string
   'ce.recommendation.listPage.listTableHeaders.recommendationType': string
   'ce.recommendation.listPage.listTableHeaders.resourceName': string
   'ce.recommendation.listPage.listTableHeaders.resourceType': string
-  'ce.recommendation.listPage.monthlyForcastedCostText': string
+  'ce.recommendation.listPage.monthlyPotentialCostText': string
   'ce.recommendation.listPage.monthlySavingsText': string
+  'ce.recommendation.listPage.pontentialCostAmountSubText': string
+  'ce.recommendation.listPage.potentialCostSubText': string
   'ce.recommendation.listPage.recommendationDetails.resize': string
   'ce.recommendation.listPage.recommendationTypes.resizing': string
   'ce.recommendation.listPage.recommendationTypes.rightSizing': string

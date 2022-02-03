@@ -125,37 +125,40 @@ const RecommendationsList: React.FC<RecommendationListProps> = ({
     const originalRowData = cell.row.original
     const { clusterName, namespace, resourceType } = originalRowData
     return (
-      <Layout.Vertical margin={{ right: 'medium' }}>
-        <Layout.Horizontal margin={{ top: 'xxxsmall' }} style={{ alignItems: 'baseline' }} spacing="xsmall">
-          <Text color={Color.GREY_500} font={{ variation: FontVariation.SMALL }}>{`${getString(
-            'common.cluster'
-          )}:`}</Text>
-          <Text color={Color.PRIMARY_7} font={{ variation: FontVariation.BODY2 }}>
-            {clusterName}
-          </Text>
-        </Layout.Horizontal>
-        {namespace && (
+      <Layout.Horizontal style={{ alignItems: 'center' }} padding={{ right: 'medium' }}>
+        {/* <Icon name="app-kubernetes" size={28} padding={{ right: 'medium' }} /> */}
+        <Container>
           <Layout.Horizontal margin={{ top: 'xxxsmall' }} style={{ alignItems: 'baseline' }} spacing="xsmall">
             <Text color={Color.GREY_500} font={{ variation: FontVariation.SMALL }}>{`${getString(
-              'ce.recommendation.listPage.filters.namespace'
+              'common.cluster'
             )}:`}</Text>
             <Text color={Color.PRIMARY_7} font={{ variation: FontVariation.BODY2 }}>
               {clusterName}
             </Text>
           </Layout.Horizontal>
-        )}
-        <Layout.Horizontal margin={{ top: 'xxxsmall' }} style={{ alignItems: 'baseline' }} spacing="xsmall">
-          <Text color={Color.GREY_500} font={{ variation: FontVariation.SMALL_BOLD }}>
-            {resourceType === 'WORKLOAD'
-              ? getString('pipelineSteps.workload')
-              : getString('ce.nodeRecommendation.nodepool')}
-            :
-          </Text>
-          <Text color={Color.PRIMARY_7} font={{ variation: FontVariation.BODY2 }}>
-            {cell.value}
-          </Text>
-        </Layout.Horizontal>
-      </Layout.Vertical>
+          {namespace && (
+            <Layout.Horizontal margin={{ top: 'xxxsmall' }} style={{ alignItems: 'baseline' }} spacing="xsmall">
+              <Text color={Color.GREY_500} font={{ variation: FontVariation.SMALL }}>{`${getString(
+                'ce.recommendation.listPage.filters.namespace'
+              )}:`}</Text>
+              <Text color={Color.PRIMARY_7} font={{ variation: FontVariation.BODY2 }}>
+                {clusterName}
+              </Text>
+            </Layout.Horizontal>
+          )}
+          <Layout.Horizontal margin={{ top: 'xxxsmall' }} style={{ alignItems: 'baseline' }} spacing="xsmall">
+            <Text color={Color.GREY_500} font={{ variation: FontVariation.SMALL_BOLD }}>
+              {resourceType === 'WORKLOAD'
+                ? getString('pipelineSteps.workload')
+                : getString('ce.nodeRecommendation.nodepool')}
+              :
+            </Text>
+            <Text color={Color.PRIMARY_7} font={{ variation: FontVariation.BODY2 }}>
+              {cell.value}
+            </Text>
+          </Layout.Horizontal>
+        </Container>
+      </Layout.Horizontal>
     )
   }
 
@@ -193,11 +196,29 @@ const RecommendationsList: React.FC<RecommendationListProps> = ({
     ) : null
   }
 
+  const calculateSavingsPercentage = (monthlyCost: Maybe<number>, monthlySavings: number): number => {
+    if (monthlyCost && monthlySavings) {
+      return Math.floor((monthlySavings / monthlyCost) * 100)
+    } else {
+      return 0
+    }
+  }
+
   const SavingCell: Renderer<CellProps<RecommendationItemDto>> = cell => {
+    const originalRowData = cell.row.original
+    const { monthlyCost } = originalRowData
+
+    const savingsPercentage = calculateSavingsPercentage(monthlyCost, cell.value)
+
     return !isNaN(cell.value) ? (
-      <Text color={Color.GREEN_700} font={{ variation: FontVariation.H5 }}>
-        {formatCost(cell.value)}
-      </Text>
+      <Layout.Horizontal spacing="small" style={{ alignItems: 'baseline' }}>
+        <Text color={Color.GREEN_700} font={{ variation: FontVariation.H5 }}>
+          {formatCost(cell.value)}
+        </Text>
+        <Text color={Color.GREEN_700} font={{ variation: FontVariation.BODY2 }}>
+          {`(${savingsPercentage}%)`}
+        </Text>
+      </Layout.Horizontal>
     ) : null
   }
 
@@ -334,6 +355,12 @@ const RecommendationList: React.FC = () => {
     )
   }
 
+  const isEmptyView = !fetching && !recommendationItems?.length
+
+  const filteredRecommendationData = useMemo(() => {
+    return recommendationItems.filter(rec => rec?.resourceName?.toLowerCase().includes(searchParam.toLowerCase()))
+  }, [searchParam, recommendationItems])
+
   const pagination = {
     itemCount: summaryData?.recommendationStatsV2?.count || 0,
     pageSize: 10,
@@ -344,12 +371,6 @@ const RecommendationList: React.FC = () => {
     gotoPage: gotoPage
   }
 
-  const isEmptyView = !fetching && !recommendationItems?.length
-
-  const filteredRecommendationData = useMemo(() => {
-    return recommendationItems.filter(rec => rec?.resourceName?.toLowerCase().includes(searchParam.toLowerCase()))
-  }, [searchParam, recommendationItems])
-
   return (
     <>
       <Page.Header
@@ -359,7 +380,7 @@ const RecommendationList: React.FC = () => {
             style={{ fontSize: 20, fontWeight: 'bold' }}
             tooltipProps={{ dataTooltipId: 'ccmRecommendations' }}
           >
-            Recommendations
+            {getString('ce.recommendation.sideNavText')}
           </Text>
         }
         toolbar={
@@ -406,7 +427,7 @@ const RecommendationList: React.FC = () => {
               <RecommendationSavingsCard
                 title={getString('ce.recommendation.listPage.monthlyPotentialCostText')}
                 amount={isEmptyView ? '$-' : formatCost(totalMonthlyCost)}
-                amountSubTitle={getString('ce.recommendation.listPage.pontentialCostAmountText')}
+                amountSubTitle={getString('ce.recommendation.listPage.pontentialCostAmountSubText')}
                 subTitle={getString('ce.recommendation.listPage.potentialCostSubText')}
               />
             </Layout.Horizontal>
