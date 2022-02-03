@@ -64,7 +64,7 @@ describe('Verify step', () => {
   })
 
   it('should test verify step features', () => {
-    cy.wait(1000)
+    cy.wait('@pipelineList')
 
     cy.findByText('appd-test').click()
 
@@ -161,7 +161,6 @@ describe('Verify step', () => {
       statusCode: 500
     }).as('deploymentTimeseriesData')
 
-    // cy.contains('p', 'Pipelines').click()
     cy.wait(1000)
 
     cy.findByText('appd-test').click()
