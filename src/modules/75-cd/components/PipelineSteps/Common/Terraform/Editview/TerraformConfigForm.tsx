@@ -151,8 +151,8 @@ export const TerraformConfigStepOne: React.FC<StepProps<any> & TerraformConfigSt
         {formik => {
           const config = formik?.values?.spec?.configuration
           const connectorRef = isTerraformPlan
-            ? config.configFiles?.store?.spec?.connectorRef
-            : config.spec?.configFiles?.store?.spec?.connectorRef
+            ? config?.configFiles?.store?.spec?.connectorRef
+            : config?.spec?.configFiles?.store?.spec?.connectorRef
           const disabled =
             !connectorRef ||
             (getMultiTypeFromValue(connectorRef) === MultiTypeInputType.FIXED &&
