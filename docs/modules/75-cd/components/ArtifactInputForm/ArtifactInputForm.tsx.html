@@ -25,14 +25,14 @@
             <div class='fl pad1y space-right2'>
                 <span class="strong">60.27% </span>
                 <span class="quiet">Statements</span>
-                <span class='fraction'>132/219</span>
+                <span class='fraction'>135/224</span>
             </div>
         
             
             <div class='fl pad1y space-right2'>
-                <span class="strong">44.08% </span>
+                <span class="strong">43.36% </span>
                 <span class="quiet">Branches</span>
-                <span class='fraction'>886/2010</span>
+                <span class='fraction'>943/2175</span>
             </div>
         
             
@@ -44,9 +44,9 @@
         
             
             <div class='fl pad1y space-right2'>
-                <span class="strong">61.5% </span>
+                <span class="strong">61.47% </span>
                 <span class="quiet">Lines</span>
-                <span class='fraction'>131/213</span>
+                <span class='fraction'>134/218</span>
             </div>
         
             
@@ -1180,7 +1180,27 @@
 <a name='L1121'></a><a href='#L1121'>1121</a>
 <a name='L1122'></a><a href='#L1122'>1122</a>
 <a name='L1123'></a><a href='#L1123'>1123</a>
-<a name='L1124'></a><a href='#L1124'>1124</a></td><td class="line-coverage quiet"><span class="cline-any cline-neutral">&nbsp;</span>
+<a name='L1124'></a><a href='#L1124'>1124</a>
+<a name='L1125'></a><a href='#L1125'>1125</a>
+<a name='L1126'></a><a href='#L1126'>1126</a>
+<a name='L1127'></a><a href='#L1127'>1127</a>
+<a name='L1128'></a><a href='#L1128'>1128</a>
+<a name='L1129'></a><a href='#L1129'>1129</a>
+<a name='L1130'></a><a href='#L1130'>1130</a>
+<a name='L1131'></a><a href='#L1131'>1131</a>
+<a name='L1132'></a><a href='#L1132'>1132</a>
+<a name='L1133'></a><a href='#L1133'>1133</a>
+<a name='L1134'></a><a href='#L1134'>1134</a>
+<a name='L1135'></a><a href='#L1135'>1135</a>
+<a name='L1136'></a><a href='#L1136'>1136</a>
+<a name='L1137'></a><a href='#L1137'>1137</a>
+<a name='L1138'></a><a href='#L1138'>1138</a>
+<a name='L1139'></a><a href='#L1139'>1139</a>
+<a name='L1140'></a><a href='#L1140'>1140</a>
+<a name='L1141'></a><a href='#L1141'>1141</a>
+<a name='L1142'></a><a href='#L1142'>1142</a>
+<a name='L1143'></a><a href='#L1143'>1143</a>
+<a name='L1144'></a><a href='#L1144'>1144</a></td><td class="line-coverage quiet"><span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
@@ -1685,6 +1705,14 @@
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">13x</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">47x</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-yes">47x</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
@@ -1707,6 +1735,11 @@
 <span class="cline-any cline-yes">5x</span>
 <span class="cline-any cline-yes">55x</span>
 <span class="cline-any cline-yes">5x</span>
+<span class="cline-any cline-yes">50x</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-yes">50x</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
@@ -2243,8 +2276,15 @@
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-no">&nbsp;</span>
 <span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
@@ -2789,7 +2829,7 @@ const ArtifactInputSetForm: React.FC&lt;KubernetesServiceInputFormProps&gt; = ({
   ))
 &nbsp;
   const isTagSelectionDisabled = (connectorType: string, index = -1): boolean =&gt; {
-    let imagePath, connectorRef, registryHostname, region
+    let imagePath, connectorRef, registryHostname, region, repository
     if (index &gt; -1) {
       imagePath =
         getMultiTypeFromValue(artifacts<span class="branch-0 cbranch-no" title="branch not covered" >?.s</span>idecars<span class="branch-1 cbranch-no" title="branch not covered" >?.[index]<span class="branch-1 cbranch-no" title="branch not covered" >?</span>.sidecar<span class="branch-1 cbranch-no" title="branch not covered" >?</span>.spec<span class="branch-1 cbranch-no" title="branch not covered" >?</span>.imagePath)</span> !== MultiTypeInputType.RUNTIME
@@ -2808,6 +2848,10 @@ const ArtifactInputSetForm: React.FC&lt;KubernetesServiceInputFormProps&gt; = ({
         getMultiTypeFromValue(artifacts<span class="branch-0 cbranch-no" title="branch not covered" >?.s</span>idecars<span class="branch-1 cbranch-no" title="branch not covered" >?.[index]<span class="branch-1 cbranch-no" title="branch not covered" >?</span>.sidecar<span class="branch-1 cbranch-no" title="branch not covered" >?</span>.spec<span class="branch-1 cbranch-no" title="branch not covered" >?</span>.region)</span> !== MultiTypeInputType.RUNTIME
           ? artifacts<span class="branch-0 cbranch-no" title="branch not covered" >?.s</span>idecars<span class="branch-1 cbranch-no" title="branch not covered" >?.[index]<span class="branch-1 cbranch-no" title="branch not covered" >?</span>.sidecar<span class="branch-1 cbranch-no" title="branch not covered" >?</span>.spec<span class="branch-1 cbranch-no" title="branch not covered" >?</span>.region</span>
           : <span class="branch-1 cbranch-no" title="branch not covered" >initialValues.artifacts?.sidecars?.[index]?.sidecar?.spec?.region</span>
+      repository =
+        getMultiTypeFromValue(artifacts<span class="branch-0 cbranch-no" title="branch not covered" >?.s</span>idecars<span class="branch-1 cbranch-no" title="branch not covered" >?.[index]<span class="branch-1 cbranch-no" title="branch not covered" >?</span>.sidecar<span class="branch-1 cbranch-no" title="branch not covered" >?</span>.spec<span class="branch-1 cbranch-no" title="branch not covered" >?</span>.repository)</span> !== MultiTypeInputType.RUNTIME
+          ? artifacts<span class="branch-0 cbranch-no" title="branch not covered" >?.s</span>idecars<span class="branch-1 cbranch-no" title="branch not covered" >?.[index]<span class="branch-1 cbranch-no" title="branch not covered" >?</span>.sidecar<span class="branch-1 cbranch-no" title="branch not covered" >?</span>.spec<span class="branch-1 cbranch-no" title="branch not covered" >?</span>.repository</span>
+          : <span class="branch-1 cbranch-no" title="branch not covered" >initialValues.artifacts?.sidecars?.[index]?.sidecar?.spec?.repository</span>
     } else {
       imagePath =
         getMultiTypeFromValue(artifacts<span class="branch-0 cbranch-no" title="branch not covered" >?.p</span>rimary?.spec?.imagePath) !== MultiTypeInputType.RUNTIME
@@ -2825,11 +2869,20 @@ const ArtifactInputSetForm: React.FC&lt;KubernetesServiceInputFormProps&gt; = ({
         getMultiTypeFromValue(artifacts<span class="branch-0 cbranch-no" title="branch not covered" >?.p</span>rimary?.spec?.region) !== MultiTypeInputType.RUNTIME
           ? artifacts<span class="branch-0 cbranch-no" title="branch not covered" >?.p</span>rimary?.spec?.region
           : <span class="branch-1 cbranch-no" title="branch not covered" >initialValues.artifacts?.primary?.spec?.region</span>
+      repository =
+        getMultiTypeFromValue(artifacts<span class="branch-0 cbranch-no" title="branch not covered" >?.p</span>rimary?.spec?.repository) !== MultiTypeInputType.RUNTIME
+          ? artifacts<span class="branch-0 cbranch-no" title="branch not covered" >?.p</span>rimary?.spec?.repository
+          : <span class="branch-1 cbranch-no" title="branch not covered" >initialValues.artifacts?.primary?.spec?.repository</span>
     }
     if (connectorType === ENABLED_ARTIFACT_TYPES.DockerRegistry) {
       return !imagePath<span class="branch-0 cbranch-no" title="branch not covered" >?.l</span>ength || !connectorRef<span class="branch-0 cbranch-no" title="branch not covered" >?.l</span>ength
     } else if (connectorType === ENABLED_ARTIFACT_TYPES.Ecr) {
       return !imagePath<span class="branch-0 cbranch-no" title="branch not covered" >?.l</span>ength || !connectorRef<span class="branch-0 cbranch-no" title="branch not covered" >?.l</span>ength || !region<span class="branch-0 cbranch-no" title="branch not covered" >?.l</span>ength
+    } else <span class="missing-if-branch" title="if path not taken" >I</span>if (
+      connectorType === ENABLED_ARTIFACT_TYPES.NexusRegistry ||
+      connectorType === ENABLED_ARTIFACT_TYPES.ArtifactoryRegistry
+    ) {
+<span class="cstat-no" title="statement not covered" >      return !imagePath?.length || !connectorRef?.length || !repository?.length</span>
     } else {
       return !imagePath?.length || !connectorRef<span class="branch-0 cbranch-no" title="branch not covered" >?.l</span>ength || !registryHostname<span class="branch-0 cbranch-no" title="branch not covered" >?.l</span>ength
     }
@@ -3366,6 +3419,12 @@ const ArtifactInputSetForm: React.FC&lt;KubernetesServiceInputFormProps&gt; = ({
                                 ) !== MultiTypeInputType.RUNTIME
                                   ? artifacts?.sidecars?.[sidecarIndex]?.sidecar?.spec?.registryHostname
                                   : currentSidecarSpec?.registryHostname
+                              const repositoryNameCurrent =
+<span class="cstat-no" title="statement not covered" >                                getMultiTypeFromValue(</span>
+                                  artifacts?.sidecars?.[sidecarIndex]?.sidecar?.spec?.repository
+                                ) !== MultiTypeInputType.RUNTIME
+                                  ? artifacts?.sidecars?.[sidecarIndex]?.sidecar?.spec?.repository
+                                  : currentSidecarSpec?.repository
                               const tagsPath = <span class="cstat-no" title="statement not covered" >`sidecars[${sidecarIndex}]`</span>
 <span class="cstat-no" title="statement not covered" >                              !isTagSelectionDisabled(</span>
                                 artifacts?.sidecars?.[sidecarIndex]?.sidecar?.type || '',
@@ -3377,7 +3436,8 @@ const ArtifactInputSetForm: React.FC&lt;KubernetesServiceInputFormProps&gt; = ({
                                   connectorRef: connectorRefCurrent,
                                   connectorType: artifacts?.sidecars?.[index]?.sidecar?.type,
                                   registryHostname: registryHostnameCurrent,
-                                  region: regionCurrent
+                                  region: regionCurrent,
+                                  repository: repositoryNameCurrent
                                 })
                             },
                             allowableTypes,
@@ -3433,7 +3493,7 @@ export const ArtifactInputForm = connect(ArtifactInputSetForm)
             <div class='footer quiet pad2 space-top1 center small'>
                 Code coverage generated by
                 <a href="https://istanbul.js.org/" target="_blank">istanbul</a>
-                at Thu Feb 03 2022 08:51:40 GMT+0000 (Greenwich Mean Time)
+                at Thu Feb 03 2022 09:43:24 GMT+0000 (Greenwich Mean Time)
             </div>
         </div>
         <script src="../../../../prettify.js"></script>
