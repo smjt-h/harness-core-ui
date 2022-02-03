@@ -23,9 +23,9 @@
         <div class='clearfix'>
             
             <div class='fl pad1y space-right2'>
-                <span class="strong">83.48% </span>
+                <span class="strong">83.62% </span>
                 <span class="quiet">Statements</span>
-                <span class='fraction'>96/115</span>
+                <span class='fraction'>97/116</span>
             </div>
         
             
@@ -44,9 +44,9 @@
         
             
             <div class='fl pad1y space-right2'>
-                <span class="strong">83.48% </span>
+                <span class="strong">83.62% </span>
                 <span class="quiet">Lines</span>
-                <span class='fraction'>96/115</span>
+                <span class='fraction'>97/116</span>
             </div>
         
             
@@ -624,7 +624,19 @@
 <a name='L565'></a><a href='#L565'>565</a>
 <a name='L566'></a><a href='#L566'>566</a>
 <a name='L567'></a><a href='#L567'>567</a>
-<a name='L568'></a><a href='#L568'>568</a></td><td class="line-coverage quiet"><span class="cline-any cline-neutral">&nbsp;</span>
+<a name='L568'></a><a href='#L568'>568</a>
+<a name='L569'></a><a href='#L569'>569</a>
+<a name='L570'></a><a href='#L570'>570</a>
+<a name='L571'></a><a href='#L571'>571</a>
+<a name='L572'></a><a href='#L572'>572</a>
+<a name='L573'></a><a href='#L573'>573</a>
+<a name='L574'></a><a href='#L574'>574</a>
+<a name='L575'></a><a href='#L575'>575</a>
+<a name='L576'></a><a href='#L576'>576</a>
+<a name='L577'></a><a href='#L577'>577</a>
+<a name='L578'></a><a href='#L578'>578</a>
+<a name='L579'></a><a href='#L579'>579</a>
+<a name='L580'></a><a href='#L580'>580</a></td><td class="line-coverage quiet"><span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
@@ -633,6 +645,7 @@
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-yes">2x</span>
 <span class="cline-any cline-yes">2x</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
@@ -777,6 +790,16 @@
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-yes">5x</span>
 <span class="cline-any cline-yes">10x</span>
+<span class="cline-any cline-yes">10x</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
@@ -1120,6 +1143,7 @@
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-yes">1x</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
@@ -1214,7 +1238,8 @@ import {
   ModalErrorHandler,
   Tag,
   useToaster,
-  TableV2
+  TableV2,
+  Utils
 } from '@wings-software/uicore'
 import { useModalHook } from '@harness/use-modal'
 import cx from 'classnames'
@@ -1343,11 +1368,21 @@ const GitSyncRepoTab: React.FC = () =&gt; {
   }
 &nbsp;
   const RenderColumnRepo: Renderer&lt;CellProps&lt;GitSyncConfig&gt;&gt; = ({ row }) =&gt; {
+    const repoPath = row.original.repo
     return (
       &lt;div className={css.wrapper}&gt;
-        &lt;Text className={css.name} color={Color.BLACK}&gt;
-          {getRepoPath(row.original)}
-        &lt;/Text&gt;
+        &lt;Utils.WrapOptionalTooltip
+          tooltip={repoPath}
+          tooltipProps={{
+            isDark: true,
+            fill: true,
+            position: 'bottom'
+          }}
+        &gt;
+          &lt;Text className={cx(css.name, css.repoPath, css.pathFont)} color={Color.BLACK}&gt;
+            {repoPath}
+          &lt;/Text&gt;
+        &lt;/Utils.WrapOptionalTooltip&gt;
       &lt;/div&gt;
     )
   }
@@ -1356,7 +1391,7 @@ const GitSyncRepoTab: React.FC = () =&gt; {
     const data = row.original
     return (
       &lt;div className={css.wrapper}&gt;
-        &lt;Text className={css.name} color={Color.BLACK}&gt;
+        &lt;Text className={cx(css.name, css.pathFont)} color={Color.BLACK}&gt;
           {data.branch}
         &lt;/Text&gt;
       &lt;/div&gt;
@@ -1636,6 +1671,7 @@ const GitSyncRepoTab: React.FC = () =&gt; {
                           }}
                           title={folderWithPrefix}
                           color={Color.BLACK}
+                          className={css.pathFont}
                         &gt;
                           {folderWithPrefix}
                         &lt;/Text&gt;
@@ -1647,7 +1683,7 @@ const GitSyncRepoTab: React.FC = () =&gt; {
                         width={rootFolderData.isDefault ? '60%' : '75%'}
                       &gt;
                         &lt;a href={linkToProvider} target="_blank" rel="noopener noreferrer" className={css.noShadow}&gt;
-                          &lt;Text title={linkToProvider} className={css.link}&gt;
+                          &lt;Text title={linkToProvider} className={cx(css.link, css.pathFont)}&gt;
                             {linkToProvider}
                           &lt;/Text&gt;
                         &lt;/a&gt;
@@ -1711,14 +1747,14 @@ const GitSyncRepoTab: React.FC = () =&gt; {
         Header: getString('common.path').toUpperCase(),
         accessor: 'repo',
         id: 'repo',
-        width: '20%',
+        width: '25%',
         Cell: RenderColumnRepo
       },
       {
         Header: getString('gitsync.defaultBranch').toUpperCase(),
         accessor: 'branch',
         id: 'branch',
-        width: '15%',
+        width: '10%',
         Cell: RenderColumnBranch
       },
       {
@@ -1765,7 +1801,7 @@ export default GitSyncRepoTab
             <div class='footer quiet pad2 space-top1 center small'>
                 Code coverage generated by
                 <a href="https://istanbul.js.org/" target="_blank">istanbul</a>
-                at Wed Feb 02 2022 19:55:13 GMT+0000 (Greenwich Mean Time)
+                at Thu Feb 03 2022 08:51:40 GMT+0000 (Greenwich Mean Time)
             </div>
         </div>
         <script src="../../../../prettify.js"></script>
