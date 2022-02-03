@@ -919,7 +919,7 @@
     "isUpdated": false,
     "isInitialized": true,
     "selectionState": {
-      "selectedStageId": "Stage_1",
+      "selectedStageId": "New Stage",
       "selectedSectionId": "SERVICE"
     },
     "error": ""

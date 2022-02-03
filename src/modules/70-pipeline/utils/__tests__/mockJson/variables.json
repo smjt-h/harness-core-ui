@@ -1,0 +1,68 @@
+{
+  "status": "SUCCESS",
+  "data": {
+    "yaml": "---\npipeline:\n  name: \"J4bmMcrXTlyjaPjDCVV8uw\"\n  identifier: \"test_ash\"\n  allowStageExecutions: \"I7XMf_x2RZ668Lteag-CnQ\"\n  projectIdentifier: \"6DPeatsySt-pUgKx3D47wA\"\n  orgIdentifier: \"WLDuSyZeRSKHs53ojapsnA\"\n  description: \"AYBqiOEOQKWRncMmlq5Kog\"\n  tags:\n    __uuid: \"R0VrcdX7QpS1fyzvARAuKQ\"\n  stages:\n  - stage:\n      name: \"86kcOTeQRIiWOqXDzPTjGw\"\n      identifier: \"New_Stage\"\n      description: \"Bw5VCkgjTiyPNvSROTIqdg\"\n      type: \"Deployment\"\n      spec:\n        serviceConfig:\n          serviceRef: \"uiF0GXKRQ_-2ZPFgQs7amg\"\n          serviceDefinition:\n            type: \"Kubernetes\"\n            spec:\n              variables: []\n              __uuid: \"glvNPbdAQbCwL_NdNgXMeA\"\n            __uuid: \"7L8fC3muSueJlbFXGrlwgg\"\n          __uuid: \"shjpaFBEQqi7732l9gdscQ\"\n        infrastructure:\n          __uuid: \"gTFUTO24Tli1H9Q5qtFXng\"\n        __uuid: \"tfOrBcU7SfG9dHLCZURlHA\"\n      tags:\n        __uuid: \"GnivAqieRC-5pggXhq4dqA\"\n      __uuid: \"KeZIgb-dSP2a0Hp5ip6whQ\"\n    __uuid: \"X_CK5txMQuOtBIMNBVWOLg\"\n  __uuid: \"_cMVo1d1Q7ODhHmr6-AAPg\"\n__uuid: \"Kt2LBFMYR66J0Xd-3PcU9A\"\n",
+    "metadataMap": {
+      "_cMVo1d1Q7ODhHmr6-AAPg": {
+        "yamlProperties": {
+          "fqn": "pipeline",
+          "localName": "pipeline"
+        },
+        "yamlOutputProperties": null
+      },
+      "AYBqiOEOQKWRncMmlq5Kog": {
+        "yamlProperties": {
+          "fqn": "pipeline.description",
+          "localName": "pipeline.description"
+        },
+        "yamlOutputProperties": null
+      },
+      "J4bmMcrXTlyjaPjDCVV8uw": {
+        "yamlProperties": {
+          "fqn": "pipeline.name",
+          "localName": "pipeline.name"
+        },
+        "yamlOutputProperties": null
+      },
+      "shjpaFBEQqi7732l9gdscQ": {
+        "yamlProperties": {
+          "fqn": "serviceConfig",
+          "localName": ""
+        },
+        "yamlOutputProperties": null
+      },
+      "86kcOTeQRIiWOqXDzPTjGw": {
+        "yamlProperties": {
+          "fqn": "pipeline.stages.New_Stage.name",
+          "localName": "stage.name"
+        },
+        "yamlOutputProperties": null
+      },
+      "KeZIgb-dSP2a0Hp5ip6whQ": {
+        "yamlProperties": {
+          "fqn": "pipeline.stages.New_Stage",
+          "localName": "stage"
+        },
+        "yamlOutputProperties": null
+      },
+      "uiF0GXKRQ_-2ZPFgQs7amg": {
+        "yamlProperties": {
+          "fqn": "pipeline.stages.New_Stage.spec.serviceConfig.serviceRef",
+          "localName": "serviceConfig.serviceRef"
+        },
+        "yamlOutputProperties": null
+      },
+      "Bw5VCkgjTiyPNvSROTIqdg": {
+        "yamlProperties": {
+          "fqn": "pipeline.stages.New_Stage.description",
+          "localName": "stage.description"
+        },
+        "yamlOutputProperties": null
+      }
+    },
+    "errorResponses": null,
+    "serviceExpressionPropertiesList": []
+  },
+  "metaData": null,
+  "correlationId": "a1cb9719-6b42-416d-90a5-da86d526bde7"
+}
