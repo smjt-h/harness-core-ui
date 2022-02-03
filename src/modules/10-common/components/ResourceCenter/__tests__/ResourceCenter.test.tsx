@@ -5,10 +5,10 @@
  * https://polyformproject.org/wp-content/uploads/2020/06/PolyForm-Shield-1.0.0.txt.
  */
 
-import { render } from '@testing-library/react'
+import { render, fireEvent, waitFor } from '@testing-library/react'
 import React from 'react'
 import { TestWrapper } from '@common/utils/testUtils'
-import { ResourceCenter } from '@resource-center/components/ResourceCenter/ResourceCenter'
+import { ResourceCenter } from '../ResourceCenter'
 describe('ResourceCenter', () => {
   test('Should render resource center properly', () => {
     const { container } = render(
@@ -17,5 +17,17 @@ describe('ResourceCenter', () => {
       </TestWrapper>
     )
     expect(container).toMatchSnapshot()
+  })
+
+  test('should render modal when click on icon', async () => {
+    const { getByTestId, getByText } = render(
+      <TestWrapper>
+        <ResourceCenter />
+      </TestWrapper>
+    )
+    fireEvent.click(getByTestId('question'))
+    await waitFor(() => {
+      expect(getByText('common.resourceCenter.title')).toBeInTheDocument()
+    })
   })
 })

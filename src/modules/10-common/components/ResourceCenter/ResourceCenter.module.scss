@@ -8,6 +8,9 @@
 .resourceCenter {
   background: var(--primary-9-dark) !important;
   border-radius: var(--spacing-3);
+  box-shadow: rgb(40 41 61 / 4%) 0px 2px 8px, rgb(96 97 112 / 16%) 0px 16px 24px;
+  width: 440px !important;
+  height: 600px !important;
 }
 
 .middleregion {
@@ -32,5 +35,24 @@
   &:hover {
     text-decoration: none;
     background: rgba(255, 255, 255, 0) !important;
+  }
+}
+
+.title {
+  width: 100% !important;
+}
+
+.question {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  width: 88px !important;
+  height: 80px !important;
+  position: relative;
+  opacity: 0.6;
+  &:hover {
+    cursor: pointer;
+    opacity: 1;
+    background: var(--theme-light-nav-panel-bg) !important;
   }
 }

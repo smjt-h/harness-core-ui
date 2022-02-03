@@ -10,6 +10,8 @@ declare const styles: {
   readonly bottombutton: string
   readonly middleregion: string
   readonly myticket: string
+  readonly question: string
   readonly resourceCenter: string
+  readonly title: string
 }
 export default styles
