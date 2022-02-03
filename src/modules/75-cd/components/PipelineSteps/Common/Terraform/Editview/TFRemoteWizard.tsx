@@ -225,7 +225,7 @@ export const TFRemoteWizard: React.FC<StepProps<any> & TFRemoteProps> = ({
           const connectionType =
             connectorValue?.connector?.spec?.connectionType === 'Account' ||
             connectorValue?.connector?.spec?.type === 'Account' ||
-            prevStepData.urlType === 'Account'
+            prevStepData?.urlType === 'Account'
           return (
             <Form>
               <div className={css.tfRemoteForm}>
