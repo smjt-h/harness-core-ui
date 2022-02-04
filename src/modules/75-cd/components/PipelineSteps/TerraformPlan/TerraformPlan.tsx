@@ -61,7 +61,7 @@ import MultiTypeFieldSelector from '@common/components/MultiTypeFieldSelector/Mu
 
 import { useQueryParams } from '@common/hooks'
 import type { GitQueryParams } from '@common/interfaces/RouteInterfaces'
-import type { StringNGVariable, ConnectorInfoDTO } from 'services/cd-ng'
+import type { StringNGVariable } from 'services/cd-ng'
 
 import type { StringsMap } from 'stringTypes'
 import { getNameAndIdentifierSchema } from '@pipeline/components/PipelineSteps/Steps/StepsValidateUtils'
@@ -75,12 +75,6 @@ import StepGithubAuthentication from '@connectors/components/CreateConnector/Git
 import StepBitbucketAuthentication from '@connectors/components/CreateConnector/BitbucketConnector/StepAuth/StepBitbucketAuthentication'
 import DelegateSelectorStep from '@connectors/components/CreateConnector/commonSteps/DelegateSelectorStep/DelegateSelectorStep'
 import { Connectors, CONNECTOR_CREDENTIALS_STEP_IDENTIFIER } from '@connectors/constants'
-import {
-  buildBitbucketPayload,
-  buildGithubPayload,
-  buildGitlabPayload,
-  buildGitPayload
-} from '@connectors/pages/connectors/utils/ConnectorUtils'
 
 import {
   CommandTypes,
@@ -94,7 +88,7 @@ import TfVarFileList from './TfPlanVarFileList'
 import TerraformInputStep from './TfPlanInputStep'
 import { TerraformVariableStep } from './TfPlanVariableView'
 import { TerraformConfigStepOne, TerraformConfigStepTwo } from '../Common/Terraform/Editview/TerraformConfigForm'
-import { ConnectorMap, ConnectorTypes } from '../Common/Terraform/Editview/TerraformConfigFormHelper'
+import { ConnectorMap, ConnectorTypes, getBuildPayload } from '../Common/Terraform/Editview/TerraformConfigFormHelper'
 
 import { TFMonaco } from '../Common/Terraform/Editview/TFMonacoEditor'
 import stepCss from '@pipeline/components/PipelineSteps/Steps/Steps.module.scss'
@@ -150,22 +144,6 @@ function TerraformPlanWidget(
   const onCloseOfRemoteWizard = () => {
     setShowRemoteWizard(false)
     setIsEditMode(false)
-  }
-
-  const getBuildPayload = (type: ConnectorInfoDTO['type']) => {
-    if (type === Connectors.GIT) {
-      return buildGitPayload
-    }
-    if (type === Connectors.GITHUB) {
-      return buildGithubPayload
-    }
-    if (type === Connectors.BITBUCKET) {
-      return buildBitbucketPayload
-    }
-    if (type === Connectors.GITLAB) {
-      return buildGitlabPayload
-    }
-    return () => ({})
   }
 
   const getNewConnectorSteps = () => {

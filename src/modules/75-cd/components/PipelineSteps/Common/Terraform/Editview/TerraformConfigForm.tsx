@@ -296,7 +296,8 @@ export const TerraformConfigStepTwo: React.FC<StepProps<any> & TerraformConfigSt
             <Form className={css.formComponent}>
               <div className={css.tfRemoteForm}>
                 {(connectorValue?.connector?.spec?.connectionType === 'Account' ||
-                  connectorValue?.connector?.spec?.type === 'Account') && (
+                  connectorValue?.connector?.spec?.type === 'Account' ||
+                  prevStepData?.urlType === 'Account') && (
                   <div className={cx(stepCss.formGroup, stepCss.md)}>
                     <FormInput.MultiTextInput
                       label={getString('pipelineSteps.repoName')}
