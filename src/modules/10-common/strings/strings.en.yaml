@@ -69,6 +69,7 @@ jexlExpression: JEXL Expression
 bash: Bash
 shell: Shell
 powershell: Powershell
+pwsh: Pwsh
 input: Input
 refresh: Refresh
 goBack: Go Back

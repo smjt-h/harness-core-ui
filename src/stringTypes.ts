@@ -474,6 +474,7 @@ export interface StringsMap {
   'common.purpose.setup': string
   'common.purpose.startATrial': string
   'common.purpose.welcome': string
+  'common.pwsh': string
   'common.readOnly': string
   'common.readonlyPermissions': string
   'common.recommended': string
