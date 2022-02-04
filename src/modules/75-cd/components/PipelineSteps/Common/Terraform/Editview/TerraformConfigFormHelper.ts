@@ -12,7 +12,8 @@ import {
   buildBitbucketPayload,
   buildGithubPayload,
   buildGitlabPayload,
-  buildGitPayload
+  buildGitPayload,
+  buildArtifactoryPayload
 } from '@connectors/pages/connectors/utils/ConnectorUtils'
 
 export const AllowedTypes = ['Git', 'Github', 'GitLab', 'Bitbucket', 'Artifactory']
@@ -90,6 +91,9 @@ export const getBuildPayload = (type: ConnectorInfoDTO['type']) => {
   }
   if (type === Connectors.GITLAB) {
     return buildGitlabPayload
+  }
+  if (type === Connectors.ARTIFACTORY) {
+    return buildArtifactoryPayload
   }
   return () => ({})
 }

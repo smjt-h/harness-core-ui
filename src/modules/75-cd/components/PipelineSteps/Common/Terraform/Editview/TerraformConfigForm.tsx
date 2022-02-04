@@ -300,7 +300,6 @@ export const TerraformConfigStepTwo: React.FC<StepProps<any> & TerraformConfigSt
   }
 
   useEffect(() => {
-    window.console.log(selectedRepo, filePath)
     if (selectedRepo && filePath) {
       GetArtifacts()
     }
