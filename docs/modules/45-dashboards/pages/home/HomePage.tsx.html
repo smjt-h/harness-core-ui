@@ -25,28 +25,28 @@
             <div class='fl pad1y space-right2'>
                 <span class="strong">0% </span>
                 <span class="quiet">Statements</span>
-                <span class='fraction'>0/180</span>
+                <span class='fraction'>0/179</span>
             </div>
         
             
             <div class='fl pad1y space-right2'>
                 <span class="strong">0% </span>
                 <span class="quiet">Branches</span>
-                <span class='fraction'>0/285</span>
+                <span class='fraction'>0/281</span>
             </div>
         
             
             <div class='fl pad1y space-right2'>
                 <span class="strong">0% </span>
                 <span class="quiet">Functions</span>
-                <span class='fraction'>0/55</span>
+                <span class='fraction'>0/54</span>
             </div>
         
             
             <div class='fl pad1y space-right2'>
                 <span class="strong">0% </span>
                 <span class="quiet">Lines</span>
-                <span class='fraction'>0/178</span>
+                <span class='fraction'>0/177</span>
             </div>
         
             
@@ -931,18 +931,7 @@
 <a name='L872'></a><a href='#L872'>872</a>
 <a name='L873'></a><a href='#L873'>873</a>
 <a name='L874'></a><a href='#L874'>874</a>
-<a name='L875'></a><a href='#L875'>875</a>
-<a name='L876'></a><a href='#L876'>876</a>
-<a name='L877'></a><a href='#L877'>877</a>
-<a name='L878'></a><a href='#L878'>878</a>
-<a name='L879'></a><a href='#L879'>879</a>
-<a name='L880'></a><a href='#L880'>880</a>
-<a name='L881'></a><a href='#L881'>881</a>
-<a name='L882'></a><a href='#L882'>882</a>
-<a name='L883'></a><a href='#L883'>883</a>
-<a name='L884'></a><a href='#L884'>884</a>
-<a name='L885'></a><a href='#L885'>885</a>
-<a name='L886'></a><a href='#L886'>886</a></td><td class="line-coverage quiet"><span class="cline-any cline-neutral">&nbsp;</span>
+<a name='L875'></a><a href='#L875'>875</a></td><td class="line-coverage quiet"><span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
@@ -1578,18 +1567,7 @@
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-no">&nbsp;</span>
-<span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-no">&nbsp;</span>
-<span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
@@ -2412,7 +2390,7 @@ const HomePage: React.FC = <span class="cstat-no" title="statement not covered" 
   }
 &nbsp;
 <span class="cstat-no" title="statement not covered" >  return (</span>
-    &lt;Container className={css.pageContainer}&gt;
+    &lt;Container className={css.customDashboards}&gt;
       &lt;Page.Header
         title={folderId !== 'shared' ? title : getString('common.dashboards')}
         breadcrumbs={&lt;Breadcrumbs links={links} /&gt;}
@@ -2460,25 +2438,14 @@ const HomePage: React.FC = <span class="cstat-no" title="statement not covered" 
               style={{ justifyContent: 'space-between', alignItems: 'center', width: '100%' }}
             &gt;
               &lt;section style={{ display: 'flex' }}&gt;
-                {folderId === 'shared' &amp;&amp; (
-                  &lt;Button
-                    intent="primary"
-                    text={getString('dashboardLabel')}
-                    onClick={<span class="fstat-no" title="function not covered" >() =</span>&gt; <span class="cstat-no" title="statement not covered" >showModal()}</span>
-                    icon="plus"
-                    style={{ minWidth: '110px', marginRight: 'var(--spacing-11)' }}
-                  /&gt;
-                )}
-                {folderId !== 'shared' &amp;&amp; (
-                  &lt;RbacButton
-                    intent="primary"
-                    text={getString('dashboardLabel')}
-                    onClick={<span class="fstat-no" title="function not covered" >() =</span>&gt; <span class="cstat-no" title="statement not covered" >showModal()}</span>
-                    icon="plus"
-                    style={{ minWidth: '110px', marginRight: 'var(--spacing-11)' }}
-                    permission={permissionObj}
-                  /&gt;
-                )}
+                &lt;RbacButton
+                  intent="primary"
+                  text={getString('dashboardLabel')}
+                  onClick={<span class="fstat-no" title="function not covered" >() =</span>&gt; <span class="cstat-no" title="statement not covered" >showModal()}</span>
+                  icon="plus"
+                  className={css.createButton}
+                  permission={permissionObj}
+                /&gt;
 &nbsp;
                 &lt;Layout.Horizontal className={css.predefinedTags + ' ' + css.mainNavTag}&gt;
                   &lt;ModuleTagsFilter selectedFilter={selectedFilter} setPredefinedFilter={setPredefinedFilter} /&gt;
@@ -2719,7 +2686,7 @@ const HomePage: React.FC = <span class="cstat-no" title="statement not covered" 
             <div class='footer quiet pad2 space-top1 center small'>
                 Code coverage generated by
                 <a href="https://istanbul.js.org/" target="_blank">istanbul</a>
-                at Thu Feb 03 2022 09:43:24 GMT+0000 (Greenwich Mean Time)
+                at Fri Feb 04 2022 04:54:57 GMT+0000 (Greenwich Mean Time)
             </div>
         </div>
         <script src="../../../../prettify.js"></script>

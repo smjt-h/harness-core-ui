@@ -30,9 +30,9 @@
         
             
             <div class='fl pad1y space-right2'>
-                <span class="strong">78.14% </span>
+                <span class="strong">78.37% </span>
                 <span class="quiet">Branches</span>
-                <span class='fraction'>379/485</span>
+                <span class='fraction'>384/490</span>
             </div>
         
             
@@ -619,7 +619,13 @@
 <a name='L560'></a><a href='#L560'>560</a>
 <a name='L561'></a><a href='#L561'>561</a>
 <a name='L562'></a><a href='#L562'>562</a>
-<a name='L563'></a><a href='#L563'>563</a></td><td class="line-coverage quiet"><span class="cline-any cline-neutral">&nbsp;</span>
+<a name='L563'></a><a href='#L563'>563</a>
+<a name='L564'></a><a href='#L564'>564</a>
+<a name='L565'></a><a href='#L565'>565</a>
+<a name='L566'></a><a href='#L566'>566</a>
+<a name='L567'></a><a href='#L567'>567</a>
+<a name='L568'></a><a href='#L568'>568</a>
+<a name='L569'></a><a href='#L569'>569</a></td><td class="line-coverage quiet"><span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
@@ -799,9 +805,12 @@
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-yes">11x</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-yes">11x</span>
-<span class="cline-any cline-yes">13x</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-yes">8x</span>
+<span class="cline-any cline-yes">3x</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-yes">5x</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
@@ -873,9 +882,12 @@
 <span class="cline-any cline-yes">11x</span>
 <span class="cline-any cline-yes">13x</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-yes">11x</span>
-<span class="cline-any cline-yes">13x</span>
-<span class="cline-any cline-yes">9x</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">8x</span>
+<span class="cline-any cline-yes">4x</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-yes">4x</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
@@ -1361,12 +1373,15 @@ const validateCustomMetricFields = (
   const selectedMetricIndexNew =
     createdMetrics.indexOf(values.metricName) &gt; -1 ? selectedMetricIndex : createdMetrics.indexOf(values.metricName)
 &nbsp;
-  const duplicateNames = createdMetrics<span class="branch-0 cbranch-no" title="branch not covered" >?.f</span>ilter((metricName, index) =&gt; {
-    if (index === selectedMetricIndexNew) {
-      return false
-    }
-    return metricName === values.metricName
-  })
+  const duplicateNames =
+    createdMetrics.length &lt; 2
+      ? []
+      : createdMetrics<span class="branch-0 cbranch-no" title="branch not covered" >?.f</span>ilter((metricName, index) =&gt; {
+          if (index === selectedMetricIndexNew) {
+            return false
+          }
+          return metricName === values.metricName
+        })
 &nbsp;
   _error = validateIdentifier(values, createdMetrics, selectedMetricIndex, _error, getString, mappedMetrics)
 &nbsp;
@@ -1435,12 +1450,15 @@ const validateIdentifier = (
   const _error = cloneDeep(errors)
   const identifiers = createdMetrics.map(metricName =&gt; mappedMetrics?.get(metricName)?.metricIdentifier)
 &nbsp;
-  const duplicateIdentifier = identifiers<span class="branch-0 cbranch-no" title="branch not covered" >?.f</span>ilter((identifier, index) =&gt; {
-    if (index === selectedMetricIndex) {
-      return false
-    }
-    return identifier === values.metricIdentifier
-  })
+  const duplicateIdentifier =
+    identifiers.length &lt; 2
+      ? []
+      : identifiers<span class="branch-0 cbranch-no" title="branch not covered" >?.f</span>ilter((identifier, index) =&gt; {
+          if (index === selectedMetricIndex) {
+            return false
+          }
+          return identifier === values.metricIdentifier
+        })
 &nbsp;
   if (values.identifier &amp;&amp; duplicateIdentifier.length) {
     _error[AppDynamicsMonitoringSourceFieldNames.METRIC_IDENTIFIER] = getString(
@@ -1701,7 +1719,7 @@ export const createAppDFormData = (
   const lastItemBasePath = Object.keys(basePath)[Object.keys(basePath).length - 1]
   const lastItemMetricPath = Object.keys(metricPath)[Object.keys(metricPath).length - 1]
   const fullPath =
-    basePath[lastItemBasePath]?.path &amp;&amp; metricPath[lastItemMetricPath]<span class="branch-0 cbranch-no" title="branch not covered" >?.p</span>ath
+    basePath[lastItemBasePath]?.path &amp;&amp; metricPath[lastItemMetricPath]<span class="branch-0 cbranch-no" title="branch not covered" >?.p</span>ath &amp;&amp; appDynamicsData.tierName
       ? `${basePath[lastItemBasePath]<span class="branch-0 cbranch-no" title="branch not covered" >?.p</span>ath}|${appDynamicsData.tierName}|${metricPath[lastItemMetricPath]<span class="branch-0 cbranch-no" title="branch not covered" >?.p</span>ath}`
       : ''
   return {
@@ -1750,7 +1768,7 @@ export const setAppDynamicsTier = (tierLoading: boolean, appDTier: string, tierO
             <div class='footer quiet pad2 space-top1 center small'>
                 Code coverage generated by
                 <a href="https://istanbul.js.org/" target="_blank">istanbul</a>
-                at Thu Feb 03 2022 09:43:24 GMT+0000 (Greenwich Mean Time)
+                at Fri Feb 04 2022 04:54:57 GMT+0000 (Greenwich Mean Time)
             </div>
         </div>
         <script src="../../../../../../prettify.js"></script>

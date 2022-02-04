@@ -25,7 +25,7 @@
             <div class='fl pad1y space-right2'>
                 <span class="strong">0% </span>
                 <span class="quiet">Statements</span>
-                <span class='fraction'>0/115</span>
+                <span class='fraction'>0/116</span>
             </div>
         
             
@@ -46,7 +46,7 @@
             <div class='fl pad1y space-right2'>
                 <span class="strong">0% </span>
                 <span class="quiet">Lines</span>
-                <span class='fraction'>0/113</span>
+                <span class='fraction'>0/114</span>
             </div>
         
             
@@ -665,7 +665,14 @@
 <a name='L606'></a><a href='#L606'>606</a>
 <a name='L607'></a><a href='#L607'>607</a>
 <a name='L608'></a><a href='#L608'>608</a>
-<a name='L609'></a><a href='#L609'>609</a></td><td class="line-coverage quiet"><span class="cline-any cline-neutral">&nbsp;</span>
+<a name='L609'></a><a href='#L609'>609</a>
+<a name='L610'></a><a href='#L610'>610</a>
+<a name='L611'></a><a href='#L611'>611</a>
+<a name='L612'></a><a href='#L612'>612</a>
+<a name='L613'></a><a href='#L613'>613</a>
+<a name='L614'></a><a href='#L614'>614</a>
+<a name='L615'></a><a href='#L615'>615</a>
+<a name='L616'></a><a href='#L616'>616</a></td><td class="line-coverage quiet"><span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
@@ -708,6 +715,7 @@
 <span class="cline-any cline-no">&nbsp;</span>
 <span class="cline-any cline-no">&nbsp;</span>
 <span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-no">&nbsp;</span>
@@ -1171,6 +1179,12 @@
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-no">&nbsp;</span>
 <span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
@@ -1305,12 +1319,13 @@
 &nbsp;
 <span class="cstat-no" title="statement not covered" >import { Select } from '@blueprintjs/select'</span>
 &nbsp;
-<span class="cstat-no" title="statement not covered" >import { Classes, Dialog, Menu, MenuItem } from '@blueprintjs/core'</span>
+<span class="cstat-no" title="statement not covered" >import { Classes, Dialog, Menu } from '@blueprintjs/core'</span>
 <span class="cstat-no" title="statement not covered" >import * as Yup from 'yup'</span>
 <span class="cstat-no" title="statement not covered" >import { NavLink, useParams, useHistory } from 'react-router-dom'</span>
 <span class="cstat-no" title="statement not covered" >import { useGet, useMutate } from 'restful-react'</span>
 import type { CellProps, Renderer, Column } from 'react-table'
 <span class="cstat-no" title="statement not covered" >import RbacButton from '@rbac/components/Button/Button'</span>
+<span class="cstat-no" title="statement not covered" >import RbacMenuItem from '@rbac/components/MenuItem/MenuItem'</span>
 <span class="cstat-no" title="statement not covered" >import { Page } from '@common/exports'</span>
 <span class="cstat-no" title="statement not covered" >import { Breadcrumbs } from '@common/components/Breadcrumbs/Breadcrumbs'</span>
 <span class="cstat-no" title="statement not covered" >import { PermissionIdentifier } from '@rbac/interfaces/PermissionIdentifier'</span>
@@ -1595,7 +1610,7 @@ const FoldersPage: React.FC = <span class="cstat-no" title="statement not covere
   const { openDialog } = <span class="cstat-no" title="statement not covered" >useDeleteFolder(deleteContext, onDeleted)</span>
 &nbsp;
 <span class="cstat-no" title="statement not covered" >  return (</span>
-    &lt;Container className={css.pageContainer}&gt;
+    &lt;Container className={css.customDashboards}&gt;
       &lt;Page.Header
         title={getString(strRefFolders)}
         breadcrumbs={
@@ -1661,11 +1676,11 @@ const FoldersPage: React.FC = <span class="cstat-no" title="statement not covere
                   text={getString(strRefFolders)}
                   onClick={<span class="fstat-no" title="function not covered" >() =</span>&gt; <span class="cstat-no" title="statement not covered" >showModal()}</span>
                   icon="plus"
-                  style={{ minWidth: '110px', marginRight: 'var(--spacing-11)' }}
+                  className={css.createButton}
                   permission={{
-                    permission: PermissionIdentifier.EDIT_ACCOUNT,
+                    permission: PermissionIdentifier.EDIT_DASHBOARD,
                     resource: {
-                      resourceType: ResourceType.ACCOUNT
+                      resourceType: ResourceType.DASHBOARDS
                     }
                   }}
                 /&gt;
@@ -1774,11 +1789,17 @@ const FoldersPage: React.FC = <span class="cstat-no" title="statement not covere
                           &lt;CardBody.Menu
                             menuContent={
                               &lt;Menu&gt;
-                                &lt;MenuItem
+                                &lt;RbacMenuItem
                                   text="Delete"
                                   onClick={<span class="fstat-no" title="function not covered" >() =</span>&gt; {
 <span class="cstat-no" title="statement not covered" >                                    setDeleteContext(folder)</span>
 <span class="cstat-no" title="statement not covered" >                                    openDialog()</span>
+                                  }}
+                                  permission={{
+                                    permission: PermissionIdentifier.EDIT_DASHBOARD,
+                                    resource: {
+                                      resourceType: ResourceType.DASHBOARDS
+                                    }
                                   }}
                                 /&gt;
                               &lt;/Menu&gt;
@@ -1888,7 +1909,7 @@ const FoldersPage: React.FC = <span class="cstat-no" title="statement not covere
             <div class='footer quiet pad2 space-top1 center small'>
                 Code coverage generated by
                 <a href="https://istanbul.js.org/" target="_blank">istanbul</a>
-                at Thu Feb 03 2022 09:43:24 GMT+0000 (Greenwich Mean Time)
+                at Fri Feb 04 2022 04:54:57 GMT+0000 (Greenwich Mean Time)
             </div>
         </div>
         <script src="../../../../prettify.js"></script>

@@ -23,16 +23,16 @@
         <div class='clearfix'>
             
             <div class='fl pad1y space-right2'>
-                <span class="strong">87.5% </span>
+                <span class="strong">87.8% </span>
                 <span class="quiet">Statements</span>
-                <span class='fraction'>70/80</span>
+                <span class='fraction'>72/82</span>
             </div>
         
             
             <div class='fl pad1y space-right2'>
-                <span class="strong">88.99% </span>
+                <span class="strong">88.98% </span>
                 <span class="quiet">Branches</span>
-                <span class='fraction'>97/109</span>
+                <span class='fraction'>105/118</span>
             </div>
         
             
@@ -44,9 +44,9 @@
         
             
             <div class='fl pad1y space-right2'>
-                <span class="strong">88.61% </span>
+                <span class="strong">88.89% </span>
                 <span class="quiet">Lines</span>
-                <span class='fraction'>70/79</span>
+                <span class='fraction'>72/81</span>
             </div>
         
             
@@ -372,7 +372,8 @@
 <a name='L313'></a><a href='#L313'>313</a>
 <a name='L314'></a><a href='#L314'>314</a>
 <a name='L315'></a><a href='#L315'>315</a>
-<a name='L316'></a><a href='#L316'>316</a></td><td class="line-coverage quiet"><span class="cline-any cline-neutral">&nbsp;</span>
+<a name='L316'></a><a href='#L316'>316</a>
+<a name='L317'></a><a href='#L317'>317</a></td><td class="line-coverage quiet"><span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
@@ -393,6 +394,8 @@
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">8x</span>
+<span class="cline-any cline-yes">8x</span>
 <span class="cline-any cline-yes">8x</span>
 <span class="cline-any cline-yes">8x</span>
 <span class="cline-any cline-yes">8x</span>
@@ -542,7 +545,7 @@
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-yes">19x</span>
-<span class="cline-any cline-yes">19x</span>
+<span class="cline-any cline-yes">38x</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
@@ -644,9 +647,8 @@
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-yes">32x</span>
-<span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
@@ -708,6 +710,8 @@ import {
   FlexExpander,
   Container
 } from '@wings-software/uicore'
+import noData from '@cv/assets/noData.svg'
+import slosEmptyState from '@cv/assets/slosEmptyState.svg'
 import { Page } from '@common/exports'
 import routes from '@common/RouteDefinitions'
 import { useStrings } from 'framework/strings'
@@ -859,7 +863,7 @@ const CVSLOsListingPage: React.FC&lt;CVSLOsListingPageProps&gt; = ({ monitoredSe
   const getAddSLOButton = (): JSX.Element =&gt; (
     &lt;RbacButton
       icon="plus"
-      text={getString('cv.slos.newSLO')}
+      text={getString('cv.slos.createSLO')}
       variation={ButtonVariation.PRIMARY}
       onClick={() =&gt; {
         history.push({
@@ -895,7 +899,7 @@ const CVSLOsListingPage: React.FC&lt;CVSLOsListingPageProps&gt; = ({ monitoredSe
 &nbsp;
   return (
     &lt;&gt;
-      {!monitoredService?.identifier &amp;&amp; (
+      {!monitoredService?.identifier &amp;&amp; !getIsDataEmpty(content?.length, riskCountResponse<span class="branch-0 cbranch-no" title="branch not covered" >?.d</span>ata<span class="branch-0 cbranch-no" title="branch not covered" >?.r</span>iskCounts) &amp;&amp; (
         &lt;&gt;
           &lt;Page.Header breadcrumbs={&lt;NGBreadcrumbs /&gt;} title={getString('cv.slos.title')} /&gt;
           &lt;Page.Header title={getAddSLOButton()} /&gt;
@@ -930,9 +934,11 @@ const CVSLOsListingPage: React.FC&lt;CVSLOsListingPageProps&gt; = ({ monitoredSe
           }
         }}
         noData={{
-          when: () =&gt; getIsDataEmpty(content?.length, riskCountResponse<span class="branch-0 cbranch-no" title="branch not covered" >?.d</span>ata<span class="branch-0 cbranch-no" title="branch not covered" >?.r</span>iskCounts<span class="branch-0 cbranch-no" title="branch not covered" >?.l</span>ength),
-          message: getString('cv.slos.noData'),
-          icon: 'join-table'
+          when: () =&gt; getIsDataEmpty(content?.length, riskCountResponse<span class="branch-0 cbranch-no" title="branch not covered" >?.d</span>ata<span class="branch-0 cbranch-no" title="branch not covered" >?.r</span>iskCounts),
+          messageTitle: getString('cv.slos.noData'),
+          message: getString('cv.slos.noSLOsStateMessage'),
+          button: getAddSLOButton(),
+          image: slosEmptyState
         }}
         className={css.pageBody}
       &gt;
@@ -950,7 +956,6 @@ const CVSLOsListingPage: React.FC&lt;CVSLOsListingPageProps&gt; = ({ monitoredSe
               /&gt;
             &lt;/Container&gt;
           &lt;/Layout.Horizontal&gt;
-&nbsp;
           &lt;CardSelect&lt;SLORiskFilter&gt;
             type={CardSelectType.CardView}
             data={getSLORiskTypeFilter(
@@ -963,9 +968,7 @@ const CVSLOsListingPage: React.FC&lt;CVSLOsListingPageProps&gt; = ({ monitoredSe
             selected={filterState.sloRiskFilter as SLORiskFilter}
             onChange={onFilter}
           /&gt;
-&nbsp;
           &lt;hr /&gt;
-&nbsp;
           {!!content?.length &amp;&amp; (
             &lt;&gt;
               &lt;div className={css.sloCardContainer} data-testid="slo-card-container"&gt;
@@ -993,7 +996,7 @@ const CVSLOsListingPage: React.FC&lt;CVSLOsListingPageProps&gt; = ({ monitoredSe
           )}
 &nbsp;
           {getIsWidgetDataEmpty(content?.length, dashboardWidgetsLoading) &amp;&amp; (
-            &lt;NoDataCard icon="join-table" message={getString('cv.slos.noData')} /&gt;
+            &lt;NoDataCard image={noData} message={getString('cv.slos.noMatchingData')} /&gt;
           )}
         &lt;/Layout.Vertical&gt;
       &lt;/Page.Body&gt;
@@ -1009,7 +1012,7 @@ export default CVSLOsListingPage
             <div class='footer quiet pad2 space-top1 center small'>
                 Code coverage generated by
                 <a href="https://istanbul.js.org/" target="_blank">istanbul</a>
-                at Thu Feb 03 2022 09:43:24 GMT+0000 (Greenwich Mean Time)
+                at Fri Feb 04 2022 04:54:57 GMT+0000 (Greenwich Mean Time)
             </div>
         </div>
         <script src="../../../../prettify.js"></script>

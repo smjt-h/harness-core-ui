@@ -23,30 +23,30 @@
         <div class='clearfix'>
             
             <div class='fl pad1y space-right2'>
-                <span class="strong">92.25% </span>
+                <span class="strong">92.41% </span>
                 <span class="quiet">Statements</span>
-                <span class='fraction'>131/142</span>
+                <span class='fraction'>134/145</span>
             </div>
         
             
             <div class='fl pad1y space-right2'>
-                <span class="strong">70.33% </span>
+                <span class="strong">70.53% </span>
                 <span class="quiet">Branches</span>
-                <span class='fraction'>64/91</span>
+                <span class='fraction'>67/95</span>
             </div>
         
             
             <div class='fl pad1y space-right2'>
-                <span class="strong">88.64% </span>
+                <span class="strong">89.13% </span>
                 <span class="quiet">Functions</span>
-                <span class='fraction'>39/44</span>
+                <span class='fraction'>41/46</span>
             </div>
         
             
             <div class='fl pad1y space-right2'>
-                <span class="strong">90.83% </span>
+                <span class="strong">90.99% </span>
                 <span class="quiet">Lines</span>
-                <span class='fraction'>99/109</span>
+                <span class='fraction'>101/111</span>
             </div>
         
             
@@ -576,7 +576,11 @@
 <a name='L517'></a><a href='#L517'>517</a>
 <a name='L518'></a><a href='#L518'>518</a>
 <a name='L519'></a><a href='#L519'>519</a>
-<a name='L520'></a><a href='#L520'>520</a></td><td class="line-coverage quiet"><span class="cline-any cline-neutral">&nbsp;</span>
+<a name='L520'></a><a href='#L520'>520</a>
+<a name='L521'></a><a href='#L521'>521</a>
+<a name='L522'></a><a href='#L522'>522</a>
+<a name='L523'></a><a href='#L523'>523</a>
+<a name='L524'></a><a href='#L524'>524</a></td><td class="line-coverage quiet"><span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
@@ -849,7 +853,7 @@
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-yes">11x</span>
-<span class="cline-any cline-yes">29x</span>
+<span class="cline-any cline-yes">46x</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-yes">11x</span>
@@ -858,6 +862,10 @@
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-yes">11x</span>
 <span class="cline-any cline-yes">1x</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">11x</span>
+<span class="cline-any cline-yes">40x</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-yes">11x</span>
@@ -1093,7 +1101,7 @@
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-yes">11x</span>
-<span class="cline-any cline-yes">38x</span>
+<span class="cline-any cline-yes">57x</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span></td><td class="text"><pre class="prettyprint lang-js">/*
  * Copyright 2022 Harness Inc. All rights reserved.
@@ -1367,8 +1375,8 @@ export const getErrorObject = (
   return dashboardWidgetsError || userJourneysError || dashboardRiskCountError || monitoredServicesDataError
 }
 &nbsp;
-export const getIsDataEmpty = (contentLength?: number, riskCountLength?: number): boolean =&gt; {
-  return !contentLength &amp;&amp; !riskCountLength
+export const getIsDataEmpty = (contentLength?: number, riskCounts?: RiskCount[]): boolean =&gt; {
+  return !contentLength &amp;&amp; isRiskCountEmptyForEveryCategory(riskCounts)
 }
 &nbsp;
 export const getIsWidgetDataEmpty = (contentLength?: number, dashboardWidgetsLoading?: boolean): boolean =&gt; {
@@ -1377,6 +1385,10 @@ export const getIsWidgetDataEmpty = (contentLength?: number, dashboardWidgetsLoa
 &nbsp;
 export const getIsSetPreviousPage = (pageIndex: number, pageItemCount: number): boolean =&gt; {
   return Boolean(pageIndex) &amp;&amp; <span class="branch-1 cbranch-no" title="branch not covered" >pageItemCount === 1</span>
+}
+&nbsp;
+export function isRiskCountEmptyForEveryCategory(riskCounts?: RiskCount[]): boolean {
+  return !!riskCounts<span class="branch-0 cbranch-no" title="branch not covered" >?.e</span>very((el: RiskCount) =&gt; el.count === 0)
 }
 &nbsp;
 export function <span class="fstat-no" title="function not covered" >setFilterValue&lt;</span>T&gt;(callback: Dispatch&lt;SetStateAction&lt;T&gt;&gt;, value: T): void {
@@ -1621,7 +1633,7 @@ export const getClassNameForMonitoredServicePage = (className: string, isMonitor
             <div class='footer quiet pad2 space-top1 center small'>
                 Code coverage generated by
                 <a href="https://istanbul.js.org/" target="_blank">istanbul</a>
-                at Thu Feb 03 2022 09:43:24 GMT+0000 (Greenwich Mean Time)
+                at Fri Feb 04 2022 04:54:57 GMT+0000 (Greenwich Mean Time)
             </div>
         </div>
         <script src="../../../../prettify.js"></script>
