@@ -48,6 +48,7 @@ import RecommendationSavingsCard from '../../components/RecommendationSavingsCar
 import RecommendationFilters from '../../components/RecommendationFilters'
 import css from './RecommendationList.module.scss'
 import { get } from 'lodash'
+import RecommendationsFilters from '@ce/components/RecommendationsFiltersV2/RecommendationsFiltersV2'
 
 type RouteFn = (
   params: {
@@ -417,6 +418,7 @@ const RecommendationList: React.FC = () => {
               setFilters={setFilters}
               filters={filters}
             />
+            <RecommendationsFilters setFilters={setFilters} recommendationFilters={filters} />
           </Layout.Horizontal>
         </Card>
         <Container padding={{ left: 'xxxlarge', right: 'xxxlarge', top: 'medium' }} height="100%">
