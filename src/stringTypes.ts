@@ -142,6 +142,7 @@ export interface StringsMap {
   'common.createPipeline': string
   'common.creating': string
   'common.current': string
+  'common.currentlyAvailable': string
   'common.customPricing': string
   'common.daily': string
   'common.dashboards': string
@@ -602,6 +603,7 @@ export interface StringsMap {
   'common.successfullCreate': string
   'common.successfullUpdate': string
   'common.suggestionsLabel': string
+  'common.supportedInFirstGeneration': string
   'common.supportedModals': string
   'common.switchAccount': string
   'common.switchAccountError': string

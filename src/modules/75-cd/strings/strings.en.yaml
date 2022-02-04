@@ -30,7 +30,7 @@ cdTrialHomePage:
   startTrial:
     description: Take your software build processes to the next level using our Harness Continuous Delivery.
     startBtn:
-      description: Start 14 day CD Enterprise trial
+      description: Start CD Free Plan
 chooseProvisionerText: What type of provisioner do you want to use?
 setUpProvisionerBtnText: Set Up Provisioner
 

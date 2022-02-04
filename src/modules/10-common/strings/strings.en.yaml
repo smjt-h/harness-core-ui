@@ -185,7 +185,7 @@ purpose:
     delivery: Delivery
     subtitle: Deploy your services with blazingly fast pipelines.
     continuous: Continuous Delivery
-    description: 'Create Pipelines that improve deployment times and manage all release steps in one place.'
+    description: 'Define Pipelines that enable you to improve your deployment times, manage all in one place.'
     supportedStack: Supported Stack
     1stGen:
       title: CD First Generation
@@ -743,3 +743,5 @@ copy: Copy
 levelUp: LEVEL UP
 overuse: OVERUSE
 scope: '{{ $.delegate.Scope }}'
+currentlyAvailable: Currently Available
+supportedInFirstGeneration: Currently supported on Harness Continuous Delivery First Generation

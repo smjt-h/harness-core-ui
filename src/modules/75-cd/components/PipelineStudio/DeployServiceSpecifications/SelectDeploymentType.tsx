@@ -8,15 +8,19 @@
 import React from 'react'
 import { Formik, FormikProps } from 'formik'
 import { noop } from 'lodash-es'
+import { Classes, PopoverInteractionKind } from '@blueprintjs/core'
 import * as Yup from 'yup'
-import { Card, HarnessDocTooltip, ThumbnailSelect } from '@wings-software/uicore'
+import { Card, Color, HarnessDocTooltip, Icon, Layout, Popover, ThumbnailSelect } from '@wings-software/uicore'
 import cx from 'classnames'
 import { useStrings } from 'framework/strings'
+import { useLicenseStore } from 'framework/LicenseStore/LicenseStoreContext'
+import { ModuleName } from 'framework/types/ModuleName'
 import { StageErrorContext } from '@pipeline/context/StageErrorContext'
 import { DeployTabs } from '@cd/components/PipelineStudio/DeployStageSetupShell/DeployStageSetupShellUtils'
 import { useFeatureFlags } from '@common/hooks/useFeatureFlag'
 import type { DeploymentTypeItem } from './DeploymentInterface'
 import stageCss from '../DeployStageSetupShell/DeployStage.module.scss'
+import deployServiceCsss from './DeployServiceSpecifications.module.scss'
 
 interface SelectServiceDeploymentTypeProps {
   selectedDeploymentType: string
@@ -29,68 +33,159 @@ export default function SelectDeploymentType(props: SelectServiceDeploymentTypeP
   const { getString } = useStrings()
   const formikRef = React.useRef<FormikProps<unknown> | null>(null)
   const { subscribeForm, unSubscribeForm } = React.useContext(StageErrorContext)
+  const { licenseInformation } = useLicenseStore()
   const { NG_NATIVE_HELM } = useFeatureFlags()
 
-  const supportedDeploymentTypes: DeploymentTypeItem[] = [
-    {
-      label: getString('serviceDeploymentTypes.kubernetes'),
-      icon: 'service-kubernetes',
-      value: 'Kubernetes'
-    },
-    {
-      label: getString('pipeline.nativeHelm'),
-      icon: 'service-helm',
-      value: 'NativeHelm',
-      disabled: !NG_NATIVE_HELM
-    },
-    {
-      label: getString('serviceDeploymentTypes.amazonEcs'),
-      icon: 'service-ecs',
-      value: 'amazonEcs',
-      disabled: true
-    },
-    {
-      label: getString('serviceDeploymentTypes.amazonAmi'),
-      icon: 'main-service-ami',
-      value: 'amazonAmi',
-      disabled: true
-    },
-    {
-      label: getString('serviceDeploymentTypes.awsCodeDeploy'),
-      icon: 'app-aws-code-deploy',
-      value: 'awsCodeDeploy',
-      disabled: true
-    },
-    {
-      label: getString('serviceDeploymentTypes.winrm'),
-      icon: 'command-winrm',
-      value: 'winrm',
-      disabled: true
-    },
-    {
-      label: getString('serviceDeploymentTypes.awsLambda'),
-      icon: 'app-aws-lambda',
-      value: 'awsLambda',
-      disabled: true
-    },
-    {
-      label: getString('serviceDeploymentTypes.pcf'),
-      icon: 'service-pivotal',
-      value: 'pcf',
-      disabled: true
-    },
-    {
-      label: getString('serviceDeploymentTypes.ssh'),
-      icon: 'secret-ssh',
-      value: 'ssh',
-      disabled: true
+  // Supported in NG
+  const ngSupportedDeploymentTypes: DeploymentTypeItem[] = React.useMemo(
+    () => [
+      {
+        label: getString('serviceDeploymentTypes.kubernetes'),
+        icon: 'service-kubernetes',
+        value: 'Kubernetes'
+      }
+    ],
+    [getString]
+  )
+
+  // Suppported in CG
+  const cgSupportedDeploymentTypes: DeploymentTypeItem[] = React.useMemo(
+    () => [
+      {
+        label: getString('pipeline.nativeHelm'),
+        icon: 'service-helm',
+        value: 'NativeHelm'
+      },
+      {
+        label: getString('serviceDeploymentTypes.amazonEcs'),
+        icon: 'service-ecs',
+        value: 'amazonEcs'
+      },
+      {
+        label: getString('serviceDeploymentTypes.amazonAmi'),
+        icon: 'main-service-ami',
+        value: 'amazonAmi'
+      },
+      {
+        label: getString('serviceDeploymentTypes.awsCodeDeploy'),
+        icon: 'app-aws-code-deploy',
+        value: 'awsCodeDeploy'
+      },
+      {
+        label: getString('serviceDeploymentTypes.winrm'),
+        icon: 'command-winrm',
+        value: 'winrm'
+      },
+      {
+        label: getString('serviceDeploymentTypes.awsLambda'),
+        icon: 'app-aws-lambda',
+        value: 'awsLambda'
+      },
+      {
+        label: getString('serviceDeploymentTypes.pcf'),
+        icon: 'service-pivotal',
+        value: 'pcf'
+      },
+      {
+        label: getString('serviceDeploymentTypes.ssh'),
+        icon: 'secret-ssh',
+        value: 'ssh'
+      }
+    ],
+    [getString]
+  )
+
+  const [cgDeploymentTypes, setCgDeploymentTypes] = React.useState(cgSupportedDeploymentTypes)
+
+  React.useEffect(() => {
+    if (licenseInformation[ModuleName.CD]?.licenseType !== 'TRIAL') {
+      cgSupportedDeploymentTypes.forEach(deploymentType => {
+        deploymentType['disabled'] = true
+        if (deploymentType.value === 'NativeHelm') {
+          deploymentType['disabled'] = !NG_NATIVE_HELM
+        }
+      })
+    } else {
+      cgSupportedDeploymentTypes.forEach(deploymentType => {
+        deploymentType['disabled'] = false
+        deploymentType['tooltip'] = 'Use in Continuous Delivery First Generation' as any
+        deploymentType['tooltipProps'] = { isDark: true }
+      })
     }
-  ]
+    setCgDeploymentTypes(cgSupportedDeploymentTypes)
+  }, [licenseInformation, NG_NATIVE_HELM])
 
   React.useEffect(() => {
     subscribeForm({ tab: DeployTabs.SERVICE, form: formikRef })
     return () => unSubscribeForm({ tab: DeployTabs.SERVICE, form: formikRef })
   }, [formikRef])
+
+  const renderDeploymentTypes = React.useCallback((): JSX.Element => {
+    if (licenseInformation[ModuleName.CD]?.licenseType === 'TRIAL') {
+      return (
+        <Layout.Horizontal margin={{ top: 'medium' }}>
+          <Layout.Vertical border={{ right: true }} margin={{ right: 'huge' }} padding={{ right: 'huge' }}>
+            <div className={cx(stageCss.tabSubHeading, 'ng-tooltip-native')}>
+              {getString('common.currentlyAvailable')}
+            </div>
+            <ThumbnailSelect
+              className={stageCss.thumbnailSelect}
+              name={'deploymentType'}
+              items={ngSupportedDeploymentTypes}
+              isReadonly={isReadonly}
+              onChange={props.handleDeploymentTypeChange}
+            />
+          </Layout.Vertical>
+
+          <Layout.Vertical>
+            <Layout.Horizontal>
+              <div className={deployServiceCsss.comingSoonBanner}>{getString('common.comingSoon')}</div>
+              <div
+                className={cx(stageCss.tabSubHeading, 'ng-tooltip-native')}
+                data-tooltip-id="supportedInFirstGeneration"
+              >
+                {getString('common.supportedInFirstGeneration')}
+                <HarnessDocTooltip tooltipId="supportedInFirstGeneration" useStandAlone={true} />
+              </div>
+              <Popover
+                position="auto"
+                interactionKind={PopoverInteractionKind.HOVER}
+                content={'Hi, Hello, How are you ?'}
+                className={Classes.DARK}
+              >
+                <span className={deployServiceCsss.tooltipIcon}>
+                  <Icon size={12} name="tooltip-icon" color={Color.PRIMARY_7} />
+                </span>
+              </Popover>
+            </Layout.Horizontal>
+            <ThumbnailSelect
+              className={stageCss.thumbnailSelect}
+              name={'deploymentType'}
+              items={cgDeploymentTypes}
+              isReadonly={isReadonly}
+              onChange={props.handleDeploymentTypeChange}
+            />
+          </Layout.Vertical>
+        </Layout.Horizontal>
+      )
+    }
+    return (
+      <ThumbnailSelect
+        className={stageCss.thumbnailSelect}
+        name={'deploymentType'}
+        items={[...ngSupportedDeploymentTypes, ...cgDeploymentTypes]}
+        isReadonly={isReadonly}
+        onChange={props.handleDeploymentTypeChange}
+      />
+    )
+  }, [
+    cgDeploymentTypes,
+    ngSupportedDeploymentTypes,
+    getString,
+    isReadonly,
+    licenseInformation,
+    props.handleDeploymentTypeChange
+  ])
 
   return (
     <Formik<{ deploymentType: string }>
@@ -113,13 +208,7 @@ export default function SelectDeploymentType(props: SelectServiceDeploymentTypeP
               {getString('deploymentTypeText')}
               <HarnessDocTooltip tooltipId="stageOverviewDeploymentType" useStandAlone={true} />
             </div>
-            <ThumbnailSelect
-              className={stageCss.thumbnailSelect}
-              name={'deploymentType'}
-              items={supportedDeploymentTypes}
-              isReadonly={isReadonly}
-              onChange={props.handleDeploymentTypeChange}
-            />
+            {renderDeploymentTypes()}
           </Card>
         )
       }}
