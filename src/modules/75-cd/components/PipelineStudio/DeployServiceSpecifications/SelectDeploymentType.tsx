@@ -108,7 +108,7 @@ export default function SelectDeploymentType(props: SelectServiceDeploymentTypeP
     } else {
       cgSupportedDeploymentTypes.forEach(deploymentType => {
         deploymentType['disabled'] = false
-        deploymentType['tooltip'] = 'Use in Continuous Delivery First Generation' as any
+        deploymentType['tooltip'] = 'Use in Continuous Delivery First Generation'
         deploymentType['tooltipProps'] = { isDark: true }
       })
     }
