@@ -16,9 +16,17 @@ import runPrettier from '../utils/runPrettier.cjs'
 const packageJsonData = await fs.promises.readFile(path.resolve(process.cwd(), 'package.json'), 'utf8')
 const packageJson = JSON.parse(packageJsonData)
 const { commonChunkLimit, extensionToLanguageMap } = packageJson.i18nSettings
+const copyright = `/*
+ * Copyright 2022 Harness Inc. All rights reserved.
+ * Use of this source code is governed by the PolyForm Shield 1.0.0 license
+ * that can be found in the licenses directory at the root of this repository, also available at
+ * https://polyformproject.org/wp-content/uploads/2020/06/PolyForm-Shield-1.0.0.txt.
+ */`
 
 async function makeLangLoaderFile(modules, extensionEntries) {
-  let content = `/* eslint-disable */
+  let content = `${copyright}
+
+/* eslint-disable */
 /**
  * This file is auto-generated. Please do not modify this file manually.
  * Use the command \`yarn strings\` to regenerate this file.
