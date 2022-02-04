@@ -850,7 +850,6 @@ describe('Test TerraformPlan', () => {
             }
           }
         }}
-        // values?.spec?.configuration?.configFiles?.store?.spec?.folderPath
         type={StepType.TerraformPlan}
         stepViewType={StepViewType.Edit}
       />
@@ -890,7 +889,6 @@ describe('Test TerraformPlan', () => {
             }
           }
         }}
-        // values?.spec?.configuration?.configFiles?.store?.spec?.folderPath
         type={StepType.TerraformPlan}
         stepViewType={StepViewType.Edit}
       />
