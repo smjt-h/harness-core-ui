@@ -26,6 +26,21 @@ export const allProviders: Provider[] = [
   // }
 ]
 
+export const allCloudProvidersList = [
+  {
+    label: 'AWS',
+    value: 'aws'
+  },
+  {
+    label: 'Azure',
+    value: 'azure'
+  },
+  {
+    label: 'GCP',
+    value: 'gcp'
+  }
+]
+
 export enum PAGE_NAME {
   PERSPECTIVE_EXPLORER,
   CREATE_PERSPECTIVE

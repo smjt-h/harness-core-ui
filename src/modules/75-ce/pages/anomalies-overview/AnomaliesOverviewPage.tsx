@@ -27,8 +27,10 @@ import type { CellProps, Renderer } from 'react-table'
 import { Classes, Menu, MenuItem, Popover, Position } from '@blueprintjs/core'
 import { useStrings } from 'framework/strings'
 import { useToaster } from '@common/components'
+import { NGBreadcrumbs } from '@common/components/NGBreadcrumbs/NGBreadcrumbs'
 
 import PerspectiveTimeRangePicker from '@ce/components/PerspectiveTimeRangePicker/PerspectiveTimeRangePicker'
+import { QlceView, useFetchPerspectiveListQuery } from 'services/ce/services'
 import {
   ANOMALIES_LIST_FORMAT,
   CE_DATE_FORMAT_INTERNAL,
@@ -37,6 +39,7 @@ import {
 } from '@ce/utils/momentUtils'
 import { AnomalyData, useListAnomalies, useReportAnomalyFeedback } from 'services/ce'
 import formatCost from '@ce/utils/formatCost'
+import { allCloudProvidersList } from '@ce/constants'
 import css from './AnomaliesOverviewPage.module.scss'
 
 export interface TimeRange {
@@ -52,6 +55,14 @@ const AnomalyFilters: React.FC = () => {
     to: DATE_RANGE_SHORTCUTS.LAST_30_DAYS[1].format(CE_DATE_FORMAT_INTERNAL),
     from: DATE_RANGE_SHORTCUTS.LAST_30_DAYS[0].format(CE_DATE_FORMAT_INTERNAL)
   })
+
+  // Fetch all the perspective data
+  const [{ data: perspectiveData }] = useFetchPerspectiveListQuery()
+  const perspectiveList = (perspectiveData?.perspectives?.customerViews || []) as QlceView[]
+  const items = perspectiveList.map(pName => ({
+    label: pName.name as string,
+    value: pName.id as string
+  }))
 
   return (
     <Layout.Horizontal spacing="large" className={css.header}>
@@ -83,12 +94,7 @@ const AnomalyFilters: React.FC = () => {
         onChange={option => {
           alert(option.value)
         }}
-        items={[
-          {
-            label: 'All Perspectives',
-            value: 'all'
-          }
-        ]}
+        items={items}
       />
       <DropDown
         placeholder={'All Cloud Providers'}
@@ -96,12 +102,7 @@ const AnomalyFilters: React.FC = () => {
         onChange={option => {
           alert(option.value)
         }}
-        items={[
-          {
-            label: 'All Cloud Providers',
-            value: 'all'
-          }
-        ]}
+        items={allCloudProvidersList}
       />
       <Icon name="ng-filter" size={24} color="primary7" />
       <Text border={{ right: true, color: 'grey300' }} />
@@ -394,6 +395,14 @@ const AnomaliesOverviewPage: React.FC = () => {
     }
   })
 
+  // Fetch the default workload ID's for redirections
+  // const [ccmMetaResult] = useFetchCcmMetaDataQuery()
+  // const { data: ccmData } = ccmMetaResult
+
+  // TODO: redirect the resourses from table view based on cloud providers default id
+  // console.log('ccmData', ccmData)
+  // const { cloudDataPresent, clusterDataPresent } = (ccmData?.ccmMetaData || {}) as CcmMetaData
+
   useEffect(() => {
     const getList = async () => {
       try {
@@ -427,7 +436,18 @@ const AnomaliesOverviewPage: React.FC = () => {
 
   return (
     <>
-      <PageHeader title={getString('ce.anomalyDetection.sideNavText')} />
+      <PageHeader
+        title={
+          <Text
+            color="grey800"
+            style={{ fontSize: 20, fontWeight: 'bold' }}
+            tooltipProps={{ dataTooltipId: 'ccmAnomalies' }}
+          >
+            {getString('ce.anomalyDetection.sideNavText')}
+          </Text>
+        }
+        breadcrumbs={<NGBreadcrumbs />}
+      />
       <AnomalyFilters />
       <PageBody>
         {/* TODO: Add page spinner */}
