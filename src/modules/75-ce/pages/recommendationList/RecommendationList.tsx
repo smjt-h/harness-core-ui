@@ -23,6 +23,7 @@ import {
 import { useHistory, useParams } from 'react-router-dom'
 import type { CellProps, Renderer } from 'react-table'
 
+import { get } from 'lodash-es'
 import { useStrings } from 'framework/strings'
 import {
   RecommendationItemDto,
@@ -44,11 +45,10 @@ import EmptyView from '@ce/images/empty-state.svg'
 import OverviewAddCluster from '@ce/components/OverviewPage/OverviewAddCluster'
 import { PAGE_EVENTS, USER_JOURNEY_EVENTS } from '@ce/TrackingEventsConstants'
 import { useTelemetry } from '@common/hooks/useTelemetry'
-import RecommendationSavingsCard from '../../components/RecommendationSavingsCard/RecommendationSavingsCard'
-import RecommendationFilters from '../../components/RecommendationFilters'
-import css from './RecommendationList.module.scss'
-import { get } from 'lodash'
 import RecommendationsFilters from '@ce/components/RecommendationsFiltersV2/RecommendationsFiltersV2'
+import RecommendationSavingsCard from '../../components/RecommendationSavingsCard/RecommendationSavingsCard'
+// import RecommendationFilters from '../../components/RecommendationFilters'
+import css from './RecommendationList.module.scss'
 
 type RouteFn = (
   params: {
@@ -412,12 +412,12 @@ const RecommendationList: React.FC = () => {
       <Page.Body loading={fetching || fetchingCCMMetaData}>
         <Card style={{ width: '100%' }}>
           <Layout.Horizontal flex={{ justifyContent: 'flex-end' }}>
-            <RecommendationFilters
+            {/* <RecommendationFilters
               costFilters={costFilters}
               setCostFilters={setCostFilters}
               setFilters={setFilters}
               filters={filters}
-            />
+            /> */}
             <RecommendationsFilters setFilters={setFilters} recommendationFilters={filters} />
           </Layout.Horizontal>
         </Card>

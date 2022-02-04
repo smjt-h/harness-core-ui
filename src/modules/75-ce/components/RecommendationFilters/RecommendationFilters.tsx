@@ -212,7 +212,7 @@ const RecommendationFilters: React.FC<RecommendationFiltersProps> = ({
           }}
         />
       </Layout.Horizontal>
-      {/* <Layout.Horizontal spacing="small">
+      <Layout.Horizontal spacing="small">
         {renderPerspectiveFilterPill()}
         {Object.keys(filters).map(filter => {
           return filters[filter].length > 0 ? (
@@ -269,7 +269,7 @@ const RecommendationFilters: React.FC<RecommendationFiltersProps> = ({
         }
       >
         <Icon name="ng-filter" padding={{ left: 'small', right: 'medium' }} color={Color.PRIMARY_7} size={28} />
-      </Popover> */}
+      </Popover>
       {/* <DropDown placeholder="No filters saved" disabled /> */}
     </>
   )

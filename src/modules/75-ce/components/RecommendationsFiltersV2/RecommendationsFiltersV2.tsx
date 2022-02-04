@@ -1,6 +1,7 @@
-import React, { useState } from 'react'
-import { FormInput } from '@harness/uicore'
+import React, { useState, useMemo } from 'react'
+import { FormInput, SelectOption, DropDown, Layout } from '@harness/uicore'
 import { Filter } from '@common/components/Filter/Filter'
+import { useStrings } from 'framework/strings'
 import FilterSelector from '@common/components/Filter/FilterSelector/FilterSelector'
 import { useBooleanStatus } from '@common/hooks'
 import { useRecommendationFiltersQuery } from 'services/ce/services'
@@ -37,7 +38,11 @@ const RecommendationsFilters = ({ setFilters, recommendationFilters }) => {
   const filters = []
   const [appliedFilters, setAppliedFilters] = useState({})
   const appliedFilter = {}
+  const [resourceTypeFilter, setResourceTypeFilter] = useState<string>('ALL')
+
   //   const filterRef = React.useRef(null)
+
+  const { getString } = useStrings()
 
   const [result] = useRecommendationFiltersQuery({})
 
@@ -61,6 +66,7 @@ const RecommendationsFilters = ({ setFilters, recommendationFilters }) => {
 
   const onFiltersApply = inputFormData => {
     const filtersToApply = {}
+    console.log('Filters Form Data', inputFormData)
     Object.keys(inputFormData).forEach(key => {
       if (['clusterNames', 'names', 'namespaces', 'resourceTypes'].includes(key)) {
         filtersToApply[key] = inputFormData[key].map(val => val.value)
@@ -84,8 +90,36 @@ const RecommendationsFilters = ({ setFilters, recommendationFilters }) => {
 
   console.log(transformFilters(recommendationFilters))
 
+  const recommendationTypeOptions: SelectOption[] = useMemo(
+    () => [
+      { label: 'Recommendation Type: All', value: 'ALL' },
+      { label: getString('ce.nodeRecommendation.nodepool'), value: 'NODE_POOL' },
+      { label: getString('pipelineSteps.workload'), value: 'WORKLOAD' }
+    ],
+    []
+  )
+
   return (
     <React.Fragment>
+      <Layout.Horizontal
+        spacing="small"
+        padding={{ right: 'large' }}
+        style={{ borderRightWidth: 0.5, borderRightStyle: 'solid', borderRightColor: '#B0B1C4' }}
+      >
+        {/* <DropDown placeholder="Savings > 10$" disabled /> */}
+        <DropDown
+          items={recommendationTypeOptions}
+          value={resourceTypeFilter}
+          filterable={false}
+          onChange={item => {
+            setResourceTypeFilter(item.value.toString())
+            setFilters(currentVal => ({
+              ...currentVal,
+              resourceTypes: item.value === 'ALL' ? [] : [item.value.toString()]
+            }))
+          }}
+        />
+      </Layout.Horizontal>
       <FilterSelector
         filters={filters}
         onFilterBtnClick={openFilterDrawer}
@@ -97,7 +131,7 @@ const RecommendationsFilters = ({ setFilters, recommendationFilters }) => {
         isOpen={isFiltersDrawerOpen}
         formFields={<RecommendationFiltersForm filterData={filterData} />}
         initialFilter={{
-          formValues: { transformFilters(recommendationFilters) },
+          formValues: { ...transformFilters(recommendationFilters) },
           metadata: { name, filterVisibility, identifier, filterProperties: {} }
         }}
         filters={filters}
