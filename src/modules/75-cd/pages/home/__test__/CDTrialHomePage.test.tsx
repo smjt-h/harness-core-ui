@@ -19,14 +19,4 @@ describe('CDTrialHomePage snapshot test', () => {
     )
     expect(container).toMatchSnapshot()
   })
-
-  test('should pop up start trial modal if there is queryparam source value signup', () => {
-    const { container, getByText } = render(
-      <TestWrapper queryParams={{ source: 'signup' }}>
-        <CDTrialHomePage />
-      </TestWrapper>
-    )
-    expect(getByText('common.purpose.welcome')).toBeDefined()
-    expect(container).toMatchSnapshot()
-  })
 })
