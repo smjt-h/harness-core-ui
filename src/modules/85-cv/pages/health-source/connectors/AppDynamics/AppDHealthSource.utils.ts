@@ -100,8 +100,10 @@ export const createAppDynamicsData = (sourceData: any): AppDynamicsData => {
             ? `${metricDefinition?.analysis?.riskProfile?.category}/${metricDefinition?.analysis?.riskProfile?.metricType}`
             : '',
         serviceInstance: metricDefinition?.analysis?.deploymentVerification?.serviceInstanceFieldName,
-        lowerBaselineDeviation: metricDefinition?.riskProfile?.thresholdTypes?.includes('ACT_WHEN_LOWER') || false,
-        higherBaselineDeviation: metricDefinition?.riskProfile?.thresholdTypes?.includes('ACT_WHEN_HIGHER') || false,
+        lowerBaselineDeviation:
+          metricDefinition?.analysis?.riskProfile?.thresholdTypes?.includes('ACT_WHEN_LOWER') || false,
+        higherBaselineDeviation:
+          metricDefinition?.analysis?.riskProfile?.thresholdTypes?.includes('ACT_WHEN_HIGHER') || false,
         groupName: { label: metricDefinition.groupName || '', value: metricDefinition.groupName || '' },
         continuousVerification: metricDefinition?.analysis?.deploymentVerification?.enabled,
         healthScore: metricDefinition?.analysis?.liveMonitoring?.enabled,
@@ -188,7 +190,7 @@ const validateCustomMetricFields = (
           return metricName === values.metricName
         })
 
-  _error = validateIdentifier(values, createdMetrics, selectedMetricIndex, _error, getString, mappedMetrics)
+  _error = validateIdentifier(values, createdMetrics, selectedMetricIndexNew, _error, getString, mappedMetrics)
 
   if (!values.groupName) {
     _error[AppDynamicsMonitoringSourceFieldNames.GROUP_NAME] = getString(

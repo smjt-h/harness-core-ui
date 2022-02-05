@@ -62,6 +62,7 @@ import type {
 } from './AppDHealthSource.types'
 import MetricPackCustom from '../MetricPackCustom'
 import type { GroupedCreatedMetrics } from './Components/AppDMappedMetric/AppDMappedMetric.types'
+import { initGroupedCreatedMetrics } from './Components/AppDMappedMetric/AppDMappedMetric.utils'
 import css from './AppDHealthSource.module.scss'
 
 export default function AppDMonitoredSource({
@@ -206,7 +207,7 @@ export default function AppDMonitoredSource({
     )
   )
 
-  const [{ createdMetrics, selectedMetricIndex }, setCreatedMetrics] = useState<CreatedMetricsWithSelectedIndex>(
+  const [{ createdMetrics }, setCreatedMetrics] = useState<CreatedMetricsWithSelectedIndex>(
     initializeCreatedMetrics(
       getString('cv.monitoringSources.appD.defaultAppDMetricName'),
       selectedMetric,
@@ -214,7 +215,18 @@ export default function AppDMonitoredSource({
     )
   )
 
-  const [groupedCreatedMetrics, setGroupedCreatedMetrics] = useState<string[]>([])
+  const [groupedCreatedMetrics, setGroupedCreatedMetrics] = useState<GroupedCreatedMetrics>(
+    initGroupedCreatedMetrics(mappedMetrics, getString)
+  )
+
+  const groupedCreatedMetricsList = flatten(Object.values(groupedCreatedMetrics))
+    .map(item => item.metricName)
+    .filter(item => Boolean(item)) as string[]
+
+  // const groupedCreatedMetricsListIndex =
+  //   groupedCreatedMetricsList.indexOf(selectedMetric) == -1
+  //     ? selectedMetricIndex
+  //     : groupedCreatedMetricsList.indexOf(selectedMetric)
 
   const [nonCustomFeilds, setNonCustomFeilds] = useState(initializeNonCustomFields(appDynamicsData))
 
@@ -223,17 +235,31 @@ export default function AppDMonitoredSource({
     [appDynamicsData, mappedMetrics, selectedMetric, nonCustomFeilds, showCustomMetric]
   )
 
+  // console.log('Indexes', groupedCreatedMetricsListIndex, selectedMetricIndex)
+
   return (
     <Formik<AppDynamicsFomikFormInterface>
       enableReinitialize
       formName={'appDHealthSourceform'}
       isInitialValid={(args: any) =>
         Object.keys(
-          validateMapping(args.initialValues, groupedCreatedMetrics, selectedMetricIndex, getString, mappedMetrics)
+          validateMapping(
+            args.initialValues,
+            groupedCreatedMetricsList,
+            groupedCreatedMetricsList.indexOf(selectedMetric),
+            getString,
+            mappedMetrics
+          )
         ).length === 0
       }
       validate={values => {
-        return validateMapping(values, groupedCreatedMetrics, selectedMetricIndex, getString, mappedMetrics)
+        return validateMapping(
+          values,
+          groupedCreatedMetricsList,
+          groupedCreatedMetricsList.indexOf(selectedMetric),
+          getString,
+          mappedMetrics
+        )
       }}
       initialValues={initPayload}
       onSubmit={noop}
@@ -369,13 +395,9 @@ export default function AppDMonitoredSource({
                 connectorIdentifier={connectorIdentifier}
                 mappedMetrics={mappedMetrics}
                 createdMetrics={createdMetrics}
+                groupedCreatedMetrics={groupedCreatedMetrics}
                 setCreatedMetrics={setCreatedMetrics}
-                updateGroupedCreatedMetrics={(data: GroupedCreatedMetrics) => {
-                  const vv = flatten(Object.values(data))
-                    .map(item => item.metricName)
-                    .filter(item => Boolean(item))
-                  setGroupedCreatedMetrics(vv as string[])
-                }}
+                setGroupedCreatedMetrics={setGroupedCreatedMetrics}
               />
             ) : (
               <CardWithOuterTitle title={getString('cv.healthSource.connectors.customMetrics')}>
@@ -398,8 +420,8 @@ export default function AppDMonitoredSource({
                   formik,
                   mappedMetrics,
                   selectedMetric,
-                  selectedMetricIndex,
-                  createdMetrics,
+                  groupedCreatedMetricsList.indexOf(selectedMetric),
+                  groupedCreatedMetricsList,
                   getString,
                   onSubmit
                 )

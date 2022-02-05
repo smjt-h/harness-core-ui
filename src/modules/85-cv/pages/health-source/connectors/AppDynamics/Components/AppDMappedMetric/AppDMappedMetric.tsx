@@ -34,13 +34,12 @@ import {
   getBasePathValue,
   getMetricPathValue,
   initializeGroupNames,
-  initGroupedCreatedMetrics,
   defaultGroupedMetric
 } from './AppDMappedMetric.utils'
 import BasePath from '../BasePath/BasePath'
 import MetricChart from '../MetricChart/MetricChart'
 import MetricPath from '../MetricPath/MetricPath'
-import type { AppDMappedMetricInterface, GroupedCreatedMetrics } from './AppDMappedMetric.types'
+import type { AppDMappedMetricInterface } from './AppDMappedMetric.types'
 import { BasePathInitValue } from '../BasePath/BasePath.constants'
 import { AppDynamicsMonitoringSourceFieldNames } from '../../AppDHealthSource.constants'
 import { PATHTYPE } from './AppDMappedMetric.constant'
@@ -55,9 +54,10 @@ export default function AppDMappedMetric({
   connectorIdentifier,
   mappedMetrics,
   createdMetrics,
+  groupedCreatedMetrics,
   isValidInput,
   setCreatedMetrics,
-  updateGroupedCreatedMetrics
+  setGroupedCreatedMetrics
 }: AppDMappedMetricInterface): JSX.Element {
   const { getString } = useStrings()
   const { accountId, orgIdentifier, projectIdentifier } = useParams<ProjectPathProps>()
@@ -110,12 +110,15 @@ export default function AppDMappedMetric({
       metricDefinition.metricName === mappedMetrics.get(selectedMetric || '')?.metricName
   )
 
-  const [groupedCreatedMetrics, setGroupedCreatedMetrics] = useState<GroupedCreatedMetrics>(
-    initGroupedCreatedMetrics(mappedMetrics, getString)
-  )
-
   useEffect(() => {
     setMappedMetrics(oldState => {
+      const duplicateName =
+        Array.from(mappedMetrics.keys()).indexOf(formikValues.metricName) > -1 &&
+        oldState.selectedMetric !== formikValues?.metricName
+      if (duplicateName) {
+        return { selectedMetric: oldState.selectedMetric, mappedMetrics: mappedMetrics }
+      }
+
       return updateSelectedMetricsMap({
         updatedMetric: formikValues.metricName,
         oldMetric: oldState.selectedMetric,
@@ -124,8 +127,6 @@ export default function AppDMappedMetric({
         getString
       })
     })
-
-    updateGroupedCreatedMetrics(groupedCreatedMetrics)
   }, [formikValues?.groupName, formikValues?.metricName])
 
   useEffect(() => {
@@ -140,13 +141,13 @@ export default function AppDMappedMetric({
       return item?.groupName?.label
     })
     setGroupedCreatedMetrics(updatedGroupedCreatedMetrics)
-  }, [formikValues?.groupName, mappedMetrics])
+  }, [formikValues?.groupName, mappedMetrics, selectedMetric])
 
   useEffect(() => {
     if (formikValues.pathType === PATHTYPE.DropdownPath) {
       formikSetField(PATHTYPE.FullPath, '')
     }
-  }, [formikValues.pathType])
+  }, [formikValues.pathType, selectedMetric])
 
   const completeMetricPath = useMemo(
     () => `${basePathValue}|${formikValues.appDTier}|${metricPathValue}`.split('|').join(' / '),
