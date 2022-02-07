@@ -20,7 +20,8 @@ import {
   Text,
   Icon,
   TableV2,
-  Color
+  Color,
+  PageSpinner
 } from '@wings-software/uicore'
 import { Link, useParams } from 'react-router-dom'
 import type { CellProps, Renderer } from 'react-table'
@@ -388,7 +389,7 @@ const AnomaliesOverviewPage: React.FC = () => {
   const { accountId } = useParams<AnomalyParams>()
   const [listData, setListData] = useState<AnomalyData[]>([])
 
-  const { mutate: getAnomaliesList } = useListAnomalies({
+  const { mutate: getAnomaliesList, loading: isListFetching } = useListAnomalies({
     queryParams: {
       accountIdentifier: accountId
     }
@@ -430,7 +431,7 @@ const AnomaliesOverviewPage: React.FC = () => {
       <PageHeader title={getString('ce.anomalyDetection.sideNavText')} />
       <AnomalyFilters />
       <PageBody>
-        {/* TODO: Add page spinner */}
+        {isListFetching ? <PageSpinner /> : null}
         <Container
           padding={{
             right: 'xxxlarge',
