@@ -499,6 +499,7 @@ const FlagActivation: React.FC<FlagActivationProps> = props => {
       validationSchema={yup.object().shape({
         gitDetails: gitSyncValidationSchema
       })}
+      // @ts-ignore - todo manualy test this
       onSubmit={onSaveChanges}
     >
       {(formikProps: any) => {

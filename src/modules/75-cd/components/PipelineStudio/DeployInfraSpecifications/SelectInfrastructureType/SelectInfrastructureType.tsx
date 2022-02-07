@@ -77,7 +77,7 @@ export default function SelectDeploymentType(props: SelectDeploymentTypeProps): 
         deploymentType: Yup.string().required(getString('cd.pipelineSteps.infraTab.deploymentType'))
       })}
     >
-      {formik => {
+      {(formik: any) => {
         window.dispatchEvent(new CustomEvent('UPDATE_ERRORS_STRIP', { detail: DeployTabs.INFRASTRUCTURE }))
         formikRef.current = formik
         return (

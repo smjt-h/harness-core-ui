@@ -286,7 +286,7 @@ export default function TerraformEditView(
                             </div>
                           )}
                           <div className={css.divider} />
-                          <TfVarFileList formik={formik} isReadonly={readonly} allowableTypes={allowableTypes} />
+                          <TfVarFileList formik={formik as any} isReadonly={readonly} allowableTypes={allowableTypes} />
                           <div className={css.divider} />
                           <div
                             className={cx(stepCss.formGroup, stepCss.alignStart, css.addMarginTop, css.addMarginBottom)}
@@ -306,7 +306,7 @@ export default function TerraformEditView(
                                 return (
                                   <TFMonaco
                                     name="spec.configuration.spec.backendConfig.spec.content"
-                                    formik={formik}
+                                    formik={formik as any}
                                     expressions={expressions}
                                     title={getString('cd.backEndConfig')}
                                   />
@@ -315,7 +315,7 @@ export default function TerraformEditView(
                             >
                               <TFMonaco
                                 name="spec.configuration.spec.backendConfig.spec.content"
-                                formik={formik}
+                                formik={formik as any}
                                 expressions={expressions}
                                 title={getString('cd.backEndConfig')}
                               />

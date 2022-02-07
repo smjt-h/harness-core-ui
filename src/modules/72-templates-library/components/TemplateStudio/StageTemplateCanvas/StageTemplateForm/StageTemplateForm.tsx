@@ -37,6 +37,7 @@ const StageTemplateForm = (_props: unknown, formikRef: TemplateFormRef) => {
     resetForm() {
       setKey(uuid())
     },
+    // @ts-ignore
     submitForm() {
       return noop
     },

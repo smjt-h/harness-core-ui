@@ -125,6 +125,7 @@ export function StepCommands(
         return advancedConfRef.current.dirty
       }
     },
+    // @ts-ignore
     submitForm() {
       if (activeTab === StepCommandTabs.StepConfiguration && stepRef.current) {
         return stepRef.current.submitForm()

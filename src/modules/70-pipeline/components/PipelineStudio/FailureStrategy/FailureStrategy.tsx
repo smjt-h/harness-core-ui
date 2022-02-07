@@ -56,6 +56,7 @@ export function FailureStrategy(props: FailureStrategyProps, ref: StepCommandsRe
         return formikRef.current.dirty
       }
     },
+    // @ts-ignore todo check
     submitForm() {
       if (formikRef.current) {
         return formikRef.current.submitForm()

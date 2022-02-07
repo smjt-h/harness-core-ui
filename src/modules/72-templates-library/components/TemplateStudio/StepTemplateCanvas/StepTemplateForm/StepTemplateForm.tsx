@@ -35,6 +35,7 @@ const StepTemplateForm = (_props: unknown, formikRef: TemplateFormRef): JSX.Elem
     resetForm() {
       return stepFormikRef.current?.resetForm()
     },
+    // @ts-ignore
     submitForm() {
       return stepFormikRef.current?.submitForm()
     },
