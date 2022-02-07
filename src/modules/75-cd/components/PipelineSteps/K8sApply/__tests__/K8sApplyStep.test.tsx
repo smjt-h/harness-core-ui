@@ -209,7 +209,7 @@ describe('Test K8sApplyStep', () => {
         stepViewType={StepViewType.Edit}
       />
     )
-    await act(() => ref.current?.submitForm())
+    await act((() => ref.current?.submitForm()) as () => void)
     expect(onUpdate).toHaveBeenCalledWith({
       identifier: 'Test_A',
       name: 'Test A',

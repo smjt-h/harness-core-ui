@@ -125,7 +125,7 @@ describe('Jira Approval tests', () => {
     )
 
     // Submit with empty form
-    await act(() => ref.current?.submitForm())
+    await act((() => ref.current?.submitForm()) as () => void)
     expect(queryByText('pipelineSteps.stepNameRequired')).toBeTruthy()
 
     const queryByNameAttribute = (name: string): HTMLElement | null => queryByAttribute('name', container, name)
@@ -137,10 +137,10 @@ describe('Jira Approval tests', () => {
     })
     fireEvent.change(queryByNameAttribute('timeout')!, { target: { value: '' } })
 
-    await act(() => ref.current?.submitForm())
+    await act((() => ref.current?.submitForm()) as () => void)
     expect(queryByText('validation.timeout10SecMinimum')).toBeTruthy()
 
-    await act(() => ref.current?.submitForm())
+    await act((() => ref.current?.submitForm()) as () => void)
 
     await waitFor(() => {
       expect(queryByText('pipeline.jiraApprovalStep.validations.issueKey')).toBeTruthy()
@@ -198,7 +198,7 @@ describe('Jira Approval tests', () => {
     fireEvent.click(getByText('common.optionalConfig'))
     expect(queryByDisplayValue("<+status> == 'Blocked'")).toBeTruthy()
 
-    await act(() => ref.current?.submitForm())
+    await act((() => ref.current?.submitForm()) as () => void)
     expect(props.onUpdate).toBeCalledWith({
       identifier: 'jira_approval_step',
       timeout: '10m',

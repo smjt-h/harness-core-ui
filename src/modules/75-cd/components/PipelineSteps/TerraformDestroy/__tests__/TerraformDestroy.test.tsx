@@ -226,7 +226,7 @@ describe('Test TerraformDestroy', () => {
         onUpdate={onUpdate}
       />
     )
-    await act(() => ref.current?.submitForm())
+    await act((() => ref.current?.submitForm()) as () => void)
     expect(onUpdate).toHaveBeenCalled()
     expect(container).toMatchSnapshot()
   })

@@ -85,7 +85,7 @@ describe('Test TerraformApply', () => {
         onUpdate={onUpdate}
       />
     )
-    await act(() => ref.current?.submitForm())
+    await act((() => ref.current?.submitForm()) as () => void)
     expect(onUpdate).toHaveBeenCalled()
     expect(container).toMatchSnapshot()
   })
@@ -218,7 +218,7 @@ describe('Test TerraformApply', () => {
         onUpdate={onUpdate}
       />
     )
-    await act(() => ref.current?.submitForm())
+    await act((() => ref.current?.submitForm()) as () => void)
     expect(onUpdate).toHaveBeenCalled()
     expect(container).toMatchSnapshot()
   })

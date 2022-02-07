@@ -129,7 +129,7 @@ describe('Run Step', () => {
 
       expect(container).toMatchSnapshot()
 
-      await act(() => ref.current?.submitForm())
+      await act((() => ref.current?.submitForm()) as () => void)
 
       expect(onUpdate).toHaveBeenCalledWith(initialValues)
     })
@@ -182,7 +182,7 @@ describe('Run Step', () => {
 
       expect(container).toMatchSnapshot()
 
-      await act(() => ref.current?.submitForm())
+      await act((() => ref.current?.submitForm()) as () => void)
 
       expect(onUpdate).toHaveBeenCalledWith(initialValues)
     })

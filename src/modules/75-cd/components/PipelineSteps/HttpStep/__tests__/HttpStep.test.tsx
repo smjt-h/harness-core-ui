@@ -134,7 +134,7 @@ describe('Http Step', () => {
     fireEvent.change(queryByNameAttribute('spec.outputVariables[0].name')!, { target: { value: 'myVar' } })
     fireEvent.change(queryByNameAttribute('spec.outputVariables[0].value')!, { target: { value: 'response.message' } })
 
-    await act(() => ref.current?.submitForm())
+    await act((() => ref.current?.submitForm()) as () => void)
 
     expect(onUpdate).toHaveBeenCalledWith({
       identifier: 'My_Http_Step',
