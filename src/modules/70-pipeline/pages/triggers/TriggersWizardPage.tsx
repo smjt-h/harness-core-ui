@@ -98,7 +98,7 @@ import {
   TriggerConfigDTO,
   eventTypes,
   FlatValidFormikValuesInterface,
-  // displayPipelineIntegrityResponse,
+  displayPipelineIntegrityResponse,
   getOrderedPipelineVariableValues
 } from './utils/TriggersWizardPageUtils'
 import {
@@ -1185,12 +1185,11 @@ const TriggersWizardPage: React.FC = (): JSX.Element => {
       try {
         const { status, data } = await updateTrigger(yamlStringify({ trigger: clearNullUndefined(triggerYaml) }) as any)
 
-        // if (data?.errors && !isEmpty(data?.errors)) {
-        //   const displayErrors = displayPipelineIntegrityResponse(data.errors)
-        //   setFormErrors(displayErrors)
-        //   return
-        // } else
-        if (status === ResponseStatus.SUCCESS) {
+        if (data?.errors && !isEmpty(data?.errors)) {
+          const displayErrors = displayPipelineIntegrityResponse(data.errors)
+          setFormErrors(displayErrors)
+          return
+        } else if (status === ResponseStatus.SUCCESS) {
           showSuccess(
             getString('pipeline.triggers.toast.successfulUpdate', {
               name: data?.name
@@ -1214,12 +1213,11 @@ const TriggersWizardPage: React.FC = (): JSX.Element => {
       try {
         const { status, data } = await createTrigger(yamlStringify({ trigger: clearNullUndefined(triggerYaml) }) as any)
 
-        // if (data?.errors && !isEmpty(data?.errors)) {
-        //   const displayErrors = displayPipelineIntegrityResponse(data.errors)
-        //   setFormErrors(displayErrors)
-        //   return
-        // } else
-        if (status === ResponseStatus.SUCCESS) {
+        if (data?.errors && !isEmpty(data?.errors)) {
+          const displayErrors = displayPipelineIntegrityResponse(data.errors)
+          setFormErrors(displayErrors)
+          return
+        } else if (status === ResponseStatus.SUCCESS) {
           showSuccess(
             getString('pipeline.triggers.toast.successfulCreate', {
               name: data?.name

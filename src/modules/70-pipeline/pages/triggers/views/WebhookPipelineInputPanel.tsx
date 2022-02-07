@@ -150,7 +150,12 @@ const WebhookPipelineInputPanelForm: React.FC<WebhookPipelineInputPanelPropsInte
   let hasEverRendered = typeof ciCodebaseBuildValue === 'object' && !isEmpty(ciCodebaseBuildValue)
 
   useEffect(() => {
-    if (!hasEverRendered) {
+    const shouldInjectCloneCodebase =
+      !isEmpty(formikProps.values.originalPipeline?.properties?.ci?.codebase) &&
+      (formikProps.values.originalPipeline?.stages.some((stage: any) => stage?.spec?.cloneCodebase) ||
+        formikProps.values.originalPipeline?.parallel?.some((stage: any) => stage?.spec?.cloneCodebase))
+
+    if (!hasEverRendered && shouldInjectCloneCodebase) {
       const formikValues = cloneDeep(formikProps.values)
 
       if (formikValues.event === eventTypes.PULL_REQUEST) {
@@ -298,8 +303,8 @@ const WebhookPipelineInputPanelForm: React.FC<WebhookPipelineInputPanelPropsInte
         <Layout.Vertical style={{ padding: '0 var(--spacing-small)' }} margin="large" spacing="large">
           <Text className={css.formContentTitle} inline={true} data-tooltip-id="pipelineInputLabel">
             {getString('pipeline.triggers.pipelineInputLabel')}
+            <HarnessDocTooltip tooltipId="pipelineInputLabel" useStandAlone={true} />
           </Text>
-          <HarnessDocTooltip tooltipId="pipelineInputLabel" useStandAlone={true} />
           <Layout.Vertical className={css.formContent}>
             <Text>{getString('pipeline.triggers.pipelineInputPanel.noRuntimeInputs')}</Text>
           </Layout.Vertical>
