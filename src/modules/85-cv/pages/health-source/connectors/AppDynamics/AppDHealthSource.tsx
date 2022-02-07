@@ -238,7 +238,7 @@ export default function AppDMonitoredSource({
       initialValues={initPayload}
       onSubmit={noop}
     >
-      {formik => {
+      {(formik: any) => {
         return (
           <FormikForm className={css.formFullheight}>
             <CardWithOuterTitle title={getString('cv.healthSource.connectors.AppDynamics.applicationsAndTiers')}>

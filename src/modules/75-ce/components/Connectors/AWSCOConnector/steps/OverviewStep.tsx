@@ -142,7 +142,7 @@ const OverviewStep: React.FC<StepProps<ConnectorConfigDTO> & OverviewStepProps> 
           })
         })}
       >
-        {formikProps => {
+        {(formikProps: any) => {
           return (
             <FormikForm className={css.fullHeight}>
               <ModalErrorHandler bind={setModalErrorHandler} />

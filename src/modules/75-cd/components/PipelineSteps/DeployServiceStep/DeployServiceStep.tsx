@@ -407,7 +407,7 @@ const DeployServiceWidget: React.FC<DeployServiceProps> = ({
           serviceRef: Yup.string().trim().required(getString('cd.pipelineSteps.serviceTab.serviceIsRequired'))
         })}
       >
-        {formik => {
+        {(formik: any) => {
           window.dispatchEvent(new CustomEvent('UPDATE_ERRORS_STRIP', { detail: DeployTabs.SERVICE }))
           formikRef.current = formik
           const { values, setFieldValue } = formik

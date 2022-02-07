@@ -105,7 +105,7 @@ export function CustomVariablesEditableStage(props: CustomVariableEditableProps)
       validate={debouncedUpdate}
       validationSchema={enableValidation ? getValidationSchema(getString) : undefined}
     >
-      {formik => {
+      {(formik: any) => {
         const { values, setFieldValue } = formik
         window.dispatchEvent(new CustomEvent('UPDATE_ERRORS_STRIP', { detail: tabName }))
         formikRef.current = formik
@@ -144,7 +144,7 @@ export function CustomVariablesEditableStage(props: CustomVariableEditableProps)
                       <Text font={{ variation: FontVariation.TABLE_HEADERS }}>{getString('valueLabel')}</Text>
                     </div>
                   ) : null}
-                  {values.variables.map?.((variable, index) => {
+                  {values.variables.map?.((variable: any, index: number) => {
                     // generated uuid if they are not present
                     if (!uids.current[index]) {
                       uids.current[index] = uuid()

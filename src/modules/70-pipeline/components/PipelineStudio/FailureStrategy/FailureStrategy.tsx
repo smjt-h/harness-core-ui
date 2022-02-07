@@ -109,7 +109,7 @@ export function FailureStrategy(props: FailureStrategyProps, ref: StepCommandsRe
       onSubmit={onUpdate}
       validate={debouncedUpdate}
     >
-      {formik => {
+      {(formik: any) => {
         !!tabName && window.dispatchEvent(new CustomEvent('UPDATE_ERRORS_STRIP', { detail: tabName }))
         formikRef.current = formik
         return (

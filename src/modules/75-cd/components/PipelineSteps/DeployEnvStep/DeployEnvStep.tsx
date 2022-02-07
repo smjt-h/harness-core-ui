@@ -424,7 +424,7 @@ const DeployEnvironmentWidget: React.FC<DeployEnvironmentProps> = ({
             .required(getString('cd.pipelineSteps.environmentTab.environmentIsRequired'))
         })}
       >
-        {formik => {
+        {(formik: any) => {
           window.dispatchEvent(new CustomEvent('UPDATE_ERRORS_STRIP', { detail: DeployTabs.INFRASTRUCTURE }))
           formikRef.current = formik
           const { values, setFieldValue } = formik

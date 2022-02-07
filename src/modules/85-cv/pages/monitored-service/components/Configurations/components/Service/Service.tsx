@@ -113,7 +113,7 @@ function Service({
   return (
     <Formik<MonitoredServiceForm>
       initialValues={cachedInitialValues || initialValues}
-      onSubmit={() => noop}
+      onSubmit={noop}
       validationSchema={Yup.object().shape({
         name: Yup.string().nullable().required(getString('cv.monitoredServices.nameValidation')),
         type: Yup.string().nullable().required(getString('common.validation.typeIsRequired')),

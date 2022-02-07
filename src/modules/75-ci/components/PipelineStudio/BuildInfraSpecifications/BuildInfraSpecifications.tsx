@@ -722,7 +722,7 @@ export default function BuildInfraSpecifications({ children }: React.PropsWithCh
           formName="ciBuildInfra"
           onSubmit={values => logger.info(JSON.stringify(values))}
         >
-          {formik => {
+          {(formik: any) => {
             const { setFieldValue } = formik
             window.dispatchEvent(new CustomEvent('UPDATE_ERRORS_STRIP', { detail: BuildTabs.INFRASTRUCTURE }))
             formikRef.current = formik

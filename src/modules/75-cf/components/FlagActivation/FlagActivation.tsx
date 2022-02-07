@@ -501,7 +501,7 @@ const FlagActivation: React.FC<FlagActivationProps> = props => {
       })}
       onSubmit={onSaveChanges}
     >
-      {formikProps => {
+      {(formikProps: any) => {
         return (
           <FormikForm {...formikProps}>
             <Container className={css.formContainer}>
