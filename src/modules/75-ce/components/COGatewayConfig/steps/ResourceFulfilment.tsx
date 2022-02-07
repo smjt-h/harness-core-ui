@@ -9,7 +9,7 @@ import React, { useCallback, useState } from 'react'
 import { get as _get, defaultTo as _defaultTo, debounce as _debounce, isEmpty as _isEmpty } from 'lodash-es'
 import * as Yup from 'yup'
 import { CardSelect, Container, Formik, FormikForm, FormInput, Layout, Text } from '@wings-software/uicore'
-import type { FormikContext } from 'formik'
+import type { FormikContextType } from 'formik'
 import type { GatewayDetails } from '@ce/components/COCreateGateway/models'
 import { CONFIG_STEP_IDS, RESOURCES } from '@ce/constants'
 import { useTelemetry } from '@common/hooks/useTelemetry'
@@ -65,7 +65,7 @@ const ResourceFulfilment: React.FC<ResourceFulfilmentProps> = props => {
     )
   )
 
-  const handleODChange = (formik: FormikContext<any>, val: string) => {
+  const handleODChange = (formik: FormikContextType<any>, val: string) => {
     if (Utils.isNumber(val)) {
       const numericVal = Number(val)
       formik.setFieldValue('odInstance', numericVal)
@@ -92,7 +92,7 @@ const ResourceFulfilment: React.FC<ResourceFulfilmentProps> = props => {
     }
   }
 
-  const handleSpotChange = (formik: FormikContext<any>, val: string) => {
+  const handleSpotChange = (formik: FormikContextType<any>, val: string) => {
     if (Utils.isNumber(val)) {
       const numericVal = Number(val)
       formik.setFieldValue('spotInstance', numericVal)
@@ -112,7 +112,7 @@ const ResourceFulfilment: React.FC<ResourceFulfilmentProps> = props => {
     }
   }
 
-  const handleAsgInstancesChange = (formik: FormikContext<any>, val: string, instanceType: 'OD' | 'SPOT') => {
+  const handleAsgInstancesChange = (formik: FormikContextType<any>, val: string, instanceType: 'OD' | 'SPOT') => {
     const instanceTypeHandlerMap: Record<string, () => void> = {
       OD: () => {
         handleODChange(formik, val)

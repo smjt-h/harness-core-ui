@@ -8,13 +8,13 @@
 import React from 'react'
 import { FormInput } from '@wings-software/uicore'
 import type { IOptionProps } from '@blueprintjs/core'
-import type { FormikContext } from 'formik'
+import type { FormikContextType } from 'formik'
 import { useStrings } from 'framework/strings'
 import SecretInput from '@secrets/components/SecretInput/SecretInput'
 import { VaultConfigFormData, HashiCorpVaultAccessTypes } from '@connectors/interfaces/ConnectorInterface'
 
 interface VaultConnectorFormFieldsProps {
-  formik: FormikContext<VaultConfigFormData>
+  formik: FormikContextType<VaultConfigFormData>
 }
 
 const VaultConnectorFormFields: React.FC<VaultConnectorFormFieldsProps> = ({ formik }) => {

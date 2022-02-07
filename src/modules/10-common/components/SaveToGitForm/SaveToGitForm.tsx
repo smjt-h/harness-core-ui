@@ -26,7 +26,7 @@ import {
 } from '@wings-software/uicore'
 import * as Yup from 'yup'
 import { debounce, isEmpty, pick } from 'lodash-es'
-import type { FormikContext } from 'formik'
+import type { FormikContextType } from 'formik'
 import { Link } from 'react-router-dom'
 import {
   GitSyncConfig,
@@ -91,7 +91,7 @@ const SaveToGitForm: React.FC<ModalConfigureProps & SaveToGitFormProps> = props 
   const [currentUserInfo, setCurrentUserInfo] = React.useState('')
   const [branches, setBranches] = React.useState<SelectOption[]>()
   const [modalErrorHandler, setModalErrorHandler] = React.useState<ModalErrorHandlerBinding>()
-  const formikRef = useRef<FormikContext<SaveToGitFormInterface>>()
+  const formikRef = useRef<FormikContextType<SaveToGitFormInterface>>()
   const [disableCreatePR, setDisableCreatePR] = useState<boolean>()
   const [disableBranchSelection, setDisableBranchSelection] = useState<boolean>(true)
 
@@ -119,7 +119,7 @@ const SaveToGitForm: React.FC<ModalConfigureProps & SaveToGitFormProps> = props 
     )
   }, [codeManagers])
 
-  const handleBranchTypeChange = (isNew: boolean, formik: FormikContext<SaveToGitFormInterface>): void => {
+  const handleBranchTypeChange = (isNew: boolean, formik: FormikContextType<SaveToGitFormInterface>): void => {
     if (isNewBranch !== isNew) {
       setIsNewBranch(isNew)
       formik.setFieldValue('branch', `${resource.gitDetails?.branch}-patch`)

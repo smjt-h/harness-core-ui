@@ -18,7 +18,7 @@ import {
   FontVariation,
   Icon
 } from '@wings-software/uicore'
-import { connect, FormikContext } from 'formik'
+import { connect, FormikContextType } from 'formik'
 import { useStrings } from 'framework/strings'
 import { getIdentifierFromValue, getScopeFromValue } from '@common/components/EntityReference/EntityReference'
 import { Scope } from '@common/interfaces/SecretsInterface'
@@ -28,7 +28,7 @@ import { ConnectorInfoDTO, PipelineInfoConfig, useGetConnector } from 'services/
 export interface CICodebaseInputSetFormProps {
   path: string
   readonly?: boolean
-  formik?: FormikContext<any>
+  formik?: FormikContextType<any>
   originalPipeline: PipelineInfoConfig
 }
 

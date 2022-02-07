@@ -8,7 +8,7 @@
 import React, { useCallback, useState } from 'react'
 import { FormGroup, Intent } from '@blueprintjs/core'
 import { get } from 'lodash-es'
-import type { FormikContext } from 'formik'
+import type { FormikContextType } from 'formik'
 import {
   DataTooltipInterface,
   ExpressionAndRuntimeType,
@@ -26,7 +26,7 @@ export interface FormMultiTypeUserGroupInputProps
   extends Omit<ExpressionAndRuntimeTypeProps, 'fixedTypeComponent' | 'fixedTypeComponentProps'> {
   label: string
   tooltipProps?: DataTooltipInterface
-  formik?: FormikContext<any>
+  formik?: FormikContextType<any>
   expressions?: string[]
 }
 
