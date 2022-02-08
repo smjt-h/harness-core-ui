@@ -10,6 +10,7 @@ import { Formik, FormikProps } from 'formik'
 import { noop } from 'lodash-es'
 import { Classes, PopoverInteractionKind } from '@blueprintjs/core'
 import * as Yup from 'yup'
+import { useParams } from 'react-router-dom'
 import { Card, Color, HarnessDocTooltip, Icon, Layout, Popover, ThumbnailSelect } from '@wings-software/uicore'
 import cx from 'classnames'
 import { useStrings } from 'framework/strings'
@@ -35,6 +36,9 @@ export default function SelectDeploymentType(props: SelectServiceDeploymentTypeP
   const { subscribeForm, unSubscribeForm } = React.useContext(StageErrorContext)
   const { licenseInformation } = useLicenseStore()
   const { NG_NATIVE_HELM } = useFeatureFlags()
+  const { accountId } = useParams<{
+    accountId: string
+  }>()
 
   // Supported in NG
   const ngSupportedDeploymentTypes: DeploymentTypeItem[] = React.useMemo(
@@ -106,9 +110,16 @@ export default function SelectDeploymentType(props: SelectServiceDeploymentTypeP
         }
       })
     } else {
+      const onClick = () => {
+        window.location.href = `${window.location.href.split('/ng/')[0]}/#/account/${accountId}/onboarding`
+      }
       cgSupportedDeploymentTypes.forEach(deploymentType => {
         deploymentType['disabled'] = false
-        deploymentType['tooltip'] = 'Use in Continuous Delivery First Generation'
+        deploymentType['tooltip'] = (
+          <div className={deployServiceCsss.tooltipContainer} onClick={onClick}>
+            Use in Continuous Delivery First Generation
+          </div>
+        )
         deploymentType['tooltipProps'] = { isDark: true }
       })
     }
