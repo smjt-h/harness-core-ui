@@ -33,6 +33,7 @@ declare const styles: {
   readonly noDataImg: string
   readonly noDataText: string
   readonly nodata: string
+  readonly radialChartTable: string
   readonly recommendation: string
   readonly recommendations: string
   readonly resourceType: string

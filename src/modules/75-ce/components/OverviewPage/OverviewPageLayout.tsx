@@ -30,6 +30,7 @@ export interface Stats {
   label: string
   value: number
   trend: number
+  count?: number
   legendColor: string
   linkId?: string | null
 }
@@ -48,6 +49,9 @@ interface VerticalLayoutProps extends LayoutProps {
 
 interface HorizontalLayoutProps extends LayoutProps {
   sideBar?: React.ReactNode
+  showGist?: boolean
+  chartSize?: number
+  headingSize?: any
 }
 
 interface CardProps {
@@ -84,6 +88,7 @@ interface ListProps {
   data: Stats[]
   type?: ListType
   classNames?: string
+  showCost?: boolean
 }
 
 interface ChartTypeProps {
@@ -125,14 +130,24 @@ export const VerticalLayout = (props: VerticalLayoutProps) => {
 }
 
 export const HorizontalLayout = (props: HorizontalLayoutProps) => {
-  const { title, chartData, totalCost, sideBar, showTrendInChart, seeAll } = props
+  const {
+    title,
+    chartData,
+    totalCost,
+    sideBar,
+    showTrendInChart,
+    seeAll,
+    showGist = true,
+    chartSize = 200,
+    headingSize = 'medium'
+  } = props
   const len = getNumberOfDigits(+(totalCost.value || 0).toFixed(2))
   const totalCostFontSize = len >= 7 ? '15px' : '18px'
 
   return (
     <div className={css.horizontalLayout}>
       <Layout.Horizontal style={{ justifyContent: 'space-between', alignItems: 'center' }}>
-        <Text color="grey800" font={{ weight: 'semi-bold', size: 'medium' }}>
+        <Text color="grey800" font={{ weight: 'semi-bold', size: headingSize }}>
           {title}
         </Text>
         {seeAll}
@@ -140,8 +155,12 @@ export const HorizontalLayout = (props: HorizontalLayoutProps) => {
       <div className={css.cols}>
         <CostDistributionRadialChart
           data={chartData}
-          chartSize={{ height: 200, width: 200 }}
-          gist={<Gist totalCostFontSize={totalCostFontSize} totalCost={totalCost} showTrend={showTrendInChart} />}
+          chartSize={{ height: chartSize, width: chartSize }}
+          gist={
+            showGist ? (
+              <Gist totalCostFontSize={totalCostFontSize} totalCost={totalCost} showTrend={showTrendInChart} />
+            ) : null
+          }
         />
         {sideBar}
       </div>
@@ -260,7 +279,7 @@ export const FlexList = (props: ListProps) => {
 
 export const TableList = (props: ListProps) => {
   const { accountId } = useParams<{ accountId: string }>()
-  const { data = [], type = ListType.KEY_ONLY, classNames } = props
+  const { data = [], type = ListType.KEY_ONLY, classNames, showCost = true } = props
 
   const renderLegend = (item: Stats) => {
     return (
@@ -294,10 +313,15 @@ export const TableList = (props: ListProps) => {
       return (
         <tr key={idx}>
           <td>{renderLegend(item)}</td>
-          <td>
+          <td className={css.radialChartTable}>
             <Text color="grey600" font="small" lineClamp={1} style={{ maxWidth: 90 }}>
-              {formatCost(item.value)}
+              {showCost ? formatCost(item.value) : item.count}
             </Text>
+            {item.count && showCost ? (
+              <Text color="grey600" font="small" lineClamp={1} style={{ maxWidth: 90 }}>
+                {`(${item.count})`}
+              </Text>
+            ) : null}
           </td>
         </tr>
       )

@@ -10,6 +10,7 @@ declare const styles: {
   readonly cols: string
   readonly groupbyFilter: string
   readonly header: string
+  readonly rowGap8: string
   readonly searchInput: string
   readonly summaryCharts: string
   readonly tableView: string

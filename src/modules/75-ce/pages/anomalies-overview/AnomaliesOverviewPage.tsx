@@ -30,16 +30,17 @@ import { useToaster } from '@common/components'
 import { NGBreadcrumbs } from '@common/components/NGBreadcrumbs/NGBreadcrumbs'
 
 import PerspectiveTimeRangePicker from '@ce/components/PerspectiveTimeRangePicker/PerspectiveTimeRangePicker'
-import { QlceView, useFetchPerspectiveListQuery } from 'services/ce/services'
+import { CcmMetaData, QlceView, useFetchCcmMetaDataQuery, useFetchPerspectiveListQuery } from 'services/ce/services'
 import {
   ANOMALIES_LIST_FORMAT,
   CE_DATE_FORMAT_INTERNAL,
   DATE_RANGE_SHORTCUTS,
   getTimePeriodString
 } from '@ce/utils/momentUtils'
-import { AnomalyData, useListAnomalies, useReportAnomalyFeedback } from 'services/ce'
+import { AnomalyData, useGetAnomalyWidgetsData, useListAnomalies, useReportAnomalyFeedback } from 'services/ce'
 import formatCost from '@ce/utils/formatCost'
 import { allCloudProvidersList } from '@ce/constants'
+import AnomaliesSummary from '@ce/components/AnomaliesDetection/AnomaliesSummary'
 import css from './AnomaliesOverviewPage.module.scss'
 
 export interface TimeRange {
@@ -136,54 +137,6 @@ const AnomaliesSearch: React.FC<SearchProps> = ({ searchText, onChange }) => {
         variation={ButtonVariation.SECONDARY}
         size={ButtonSize.MEDIUM}
       />
-    </Layout.Horizontal>
-  )
-}
-
-const AnomaliesOverview: React.FC = () => {
-  const { getString } = useStrings()
-
-  return (
-    <Layout.Horizontal spacing="medium">
-      <Layout.Vertical spacing="small">
-        <Container padding="medium" background={Color.GREY_100} border={{ color: Color.GREY_100, radius: 4 }}>
-          <Text color={Color.GREY_600} font={{ weight: 'semi-bold', size: 'small' }}>
-            {getString('ce.anomalyDetection.summary.totalCountText')}
-          </Text>
-          <Text font={{ size: 'medium', weight: 'bold' }} intent="danger">
-            102
-          </Text>
-        </Container>
-        <Container
-          padding="medium"
-          background={Color.RED_100}
-          border={{ color: Color.RED_100, radius: 4 }}
-          intent="danger"
-        >
-          <Text color={Color.RED_500} font={{ weight: 'semi-bold', size: 'small' }}>
-            {getString('ce.anomalyDetection.summary.costImpacted')}
-          </Text>
-          <Text font={{ size: 'medium', weight: 'bold' }} intent="danger">
-            $17586.99
-          </Text>
-          <p></p>
-        </Container>
-      </Layout.Vertical>
-      <div className={css.summaryCharts}>
-        <Text color={Color.GREY_500} font={{ weight: 'semi-bold', size: 'small' }}>
-          {getString('ce.anomalyDetection.summary.perspectiveWise').toUpperCase()}
-        </Text>
-      </div>
-      <div className={css.summaryCharts}>
-        <Text color={Color.GREY_500} font={{ weight: 'semi-bold', size: 'small' }}>
-          {getString('ce.anomalyDetection.summary.cloudProvidersWise')}
-        </Text>
-      </div>
-      <div className={css.summaryCharts}>
-        <Text color={Color.GREY_500} font={{ weight: 'semi-bold', size: 'small' }}>
-          {getString('ce.anomalyDetection.summary.statusWise')}
-        </Text>
-      </div>
     </Layout.Horizontal>
   )
 }
@@ -299,7 +252,11 @@ const AnomaliesListGridView: React.FC<ListProps> = ({ listData }) => {
       <Layout.Horizontal style={{ alignItems: 'center' }}>
         <Icon name="app-kubernetes" size={24} />
         <Layout.Vertical spacing="small">
-          <Link to={''}>{resourceName || 'squidward/spongebob/1233445...'}</Link>
+          <Link to={''}>
+            <Text font={{ size: 'small' }} inline color="primary7" lineClamp={1} style={{ maxWidth: 200 }}>
+              {resourceName || 'squidward/spongebob/1233445...'}
+            </Text>
+          </Link>
           <Text font={{ size: 'small' }} color={Color.GREY_600}>
             {resourceInfo || 'cluster/workload'}
           </Text>
@@ -388,6 +345,10 @@ const AnomaliesOverviewPage: React.FC = () => {
   const [searchText, setSearchText] = React.useState('')
   const { accountId } = useParams<AnomalyParams>()
   const [listData, setListData] = useState<AnomalyData[]>([])
+  const [costData, setCostData] = useState([])
+  const [perspectiveAnomaliesData, setPerspectiveANomaliesData] = useState([])
+  const [cloudProvidersWiseData, setCloudProvidersWiseData] = useState([])
+  const [statusWiseData, setStatusWiseData] = useState([])
 
   const { mutate: getAnomaliesList } = useListAnomalies({
     queryParams: {
@@ -395,13 +356,15 @@ const AnomaliesOverviewPage: React.FC = () => {
     }
   })
 
-  // Fetch the default workload ID's for redirections
-  // const [ccmMetaResult] = useFetchCcmMetaDataQuery()
-  // const { data: ccmData } = ccmMetaResult
+  const { mutate: getAnomalySummary } = useGetAnomalyWidgetsData({
+    queryParams: {
+      accountIdentifier: accountId
+    }
+  })
 
-  // TODO: redirect the resourses from table view based on cloud providers default id
-  // console.log('ccmData', ccmData)
-  // const { cloudDataPresent, clusterDataPresent } = (ccmData?.ccmMetaData || {}) as CcmMetaData
+  // Fetch the default workload ID's for redirections
+  const [ccmMetaResult] = useFetchCcmMetaDataQuery()
+  const { data: ccmData } = ccmMetaResult
 
   useEffect(() => {
     const getList = async () => {
@@ -431,8 +394,51 @@ const AnomaliesOverviewPage: React.FC = () => {
         // console.log('AnomaliesOverviewPage: Error in fetching the anomalies list', error)
       }
     }
+
+    const getSummary = async () => {
+      try {
+        const response = await getAnomalySummary({
+          filter: {
+            stringFilters: [
+              {
+                field: 'NAMESPACE',
+                operator: 'IN',
+                values: ['ecom-test02-live', 'nnamespace-2']
+              }
+            ]
+          }
+        })
+        const { data } = response
+        parseSummaryData(data)
+      } catch (error) {
+        // console.log('AnomaliesOverviewPage: Error in fetching summary data', error)
+      }
+    }
     getList()
-  }, [getAnomaliesList])
+    getSummary()
+  }, [getAnomaliesList, getAnomalySummary])
+
+  const parseSummaryData = (summaryData: any) => {
+    summaryData.forEach((item: any) => {
+      switch (item.widgetDescription) {
+        case 'TOP_N_ANOMALIES':
+          setPerspectiveANomaliesData(item.widgetData)
+          break
+
+        case 'TOTAL_COST_IMPACT':
+          setCostData(item.widgetData?.[0])
+          break
+
+        case 'ANOMALIES_BY_CLOUD_PROVIDERS':
+          setCloudProvidersWiseData(item.widgetData)
+          break
+
+        case 'ANOMALIES_BY_STATUS':
+          setStatusWiseData(item.widgetData)
+          break
+      }
+    })
+  }
 
   return (
     <>
@@ -460,7 +466,13 @@ const AnomaliesOverviewPage: React.FC = () => {
           }}
         >
           <AnomaliesSearch searchText={searchText} onChange={setSearchText} />
-          <AnomaliesOverview />
+          <AnomaliesSummary
+            costData={costData}
+            perspectiveAnomaliesData={perspectiveAnomaliesData}
+            cloudProvidersWiseData={cloudProvidersWiseData}
+            statusWiseData={statusWiseData}
+            allDefaultProviders={(ccmData?.ccmMetaData || {}) as CcmMetaData}
+          />
           <AnomaliesListGridView listData={listData} />
         </Container>
       </PageBody>

@@ -46,11 +46,26 @@ export interface AnomalyFeedbackDTO {
 }
 
 export interface AnomalyQueryDTO {
+  aggregations?: CCMAggregation[]
   filter?: CCMFilter
   groupBy?: CCMGroupBy[]
   limit?: number
   offset?: number
   orderBy?: CCMSort[]
+}
+
+export interface AnomalySummary {
+  actualCost?: number
+  costImpact?: number
+  count?: number
+  description?: string
+  expectedCost?: number
+  name?: string
+}
+
+export interface AnomalyWidgetData {
+  widgetData?: AnomalySummary[]
+  widgetDescription?: 'TOP_N_ANOMALIES' | 'TOTAL_COST_IMPACT' | 'ANOMALIES_BY_CLOUD_PROVIDERS' | 'ANOMALIES_BY_STATUS'
 }
 
 export type AppDynamicsConnectorDTO = ConnectorConfigDTO & {
@@ -345,6 +360,30 @@ export interface BusinessMapping {
   uuid?: string
 }
 
+export interface CCMAggregation {
+  field?:
+    | 'PERSPECTIVE_ID'
+    | 'WORKLOAD'
+    | 'WORKLOAD_TYPE'
+    | 'CLUSTER_ID'
+    | 'CLUSTER_NAME'
+    | 'NAMESPACE'
+    | 'GCP_PRODUCT'
+    | 'GCP_PROJECT'
+    | 'GCP_SKU_ID'
+    | 'GCP_SKU_DESCRIPTION'
+    | 'AWS_ACCOUNT'
+    | 'AWS_SERVICE'
+    | 'CLOUD_PROVIDER'
+    | 'STATUS'
+    | 'ANOMALY_DATE'
+    | 'ACTUAL_COST'
+    | 'EXPECTED_COST'
+    | 'COST_IMPACT'
+    | 'ALL'
+  operationType?: 'SUM' | 'MAX' | 'MIN' | 'AVG' | 'COUNT'
+}
+
 export interface CCMConnectorDetails {
   connectorValidationResult?: ConnectorValidationResult
   createdAt?: number
@@ -370,8 +409,13 @@ export interface CCMGroupBy {
     | 'GCP_SKU_DESCRIPTION'
     | 'AWS_ACCOUNT'
     | 'AWS_SERVICE'
+    | 'CLOUD_PROVIDER'
+    | 'STATUS'
     | 'ANOMALY_DATE'
     | 'ACTUAL_COST'
+    | 'EXPECTED_COST'
+    | 'COST_IMPACT'
+    | 'ALL'
 }
 
 export interface CCMNumberFilter {
@@ -388,8 +432,13 @@ export interface CCMNumberFilter {
     | 'GCP_SKU_DESCRIPTION'
     | 'AWS_ACCOUNT'
     | 'AWS_SERVICE'
+    | 'CLOUD_PROVIDER'
+    | 'STATUS'
     | 'ANOMALY_DATE'
     | 'ACTUAL_COST'
+    | 'EXPECTED_COST'
+    | 'COST_IMPACT'
+    | 'ALL'
   operator?:
     | 'NOT_IN'
     | 'IN'
@@ -420,8 +469,13 @@ export interface CCMSort {
     | 'GCP_SKU_DESCRIPTION'
     | 'AWS_ACCOUNT'
     | 'AWS_SERVICE'
+    | 'CLOUD_PROVIDER'
+    | 'STATUS'
     | 'ANOMALY_DATE'
     | 'ACTUAL_COST'
+    | 'EXPECTED_COST'
+    | 'COST_IMPACT'
+    | 'ALL'
   order?: 'ASCENDING' | 'DESCENDING'
 }
 
@@ -439,8 +493,13 @@ export interface CCMStringFilter {
     | 'GCP_SKU_DESCRIPTION'
     | 'AWS_ACCOUNT'
     | 'AWS_SERVICE'
+    | 'CLOUD_PROVIDER'
+    | 'STATUS'
     | 'ANOMALY_DATE'
     | 'ACTUAL_COST'
+    | 'EXPECTED_COST'
+    | 'COST_IMPACT'
+    | 'ALL'
   operator?:
     | 'NOT_IN'
     | 'IN'
@@ -1831,6 +1890,20 @@ export interface ResponseListAnomalyData {
   status?: 'SUCCESS' | 'FAILURE' | 'ERROR'
 }
 
+export interface ResponseListAnomalySummary {
+  correlationId?: string
+  data?: AnomalySummary[]
+  metaData?: { [key: string]: any }
+  status?: 'SUCCESS' | 'FAILURE' | 'ERROR'
+}
+
+export interface ResponseListAnomalyWidgetData {
+  correlationId?: string
+  data?: AnomalyWidgetData[]
+  metaData?: { [key: string]: any }
+  status?: 'SUCCESS' | 'FAILURE' | 'ERROR'
+}
+
 export interface ResponseListBudget {
   correlationId?: string
   data?: Budget[]
@@ -2382,6 +2455,8 @@ export interface ViewVisualization {
   groupBy?: ViewField
 }
 
+export type AnomalyQueryDTORequestBody = AnomalyQueryDTO
+
 export type BudgetRequestBody = Budget
 
 export type BusinessMappingRequestBody = BusinessMapping
@@ -2399,7 +2474,7 @@ export interface ListAnomaliesQueryParams {
 }
 
 export type ListAnomaliesProps = Omit<
-  MutateProps<ResponseListAnomalyData, unknown, ListAnomaliesQueryParams, AnomalyQueryDTO, void>,
+  MutateProps<ResponseListAnomalyData, unknown, ListAnomaliesQueryParams, AnomalyQueryDTORequestBody, void>,
   'path' | 'verb'
 >
 
@@ -2407,7 +2482,7 @@ export type ListAnomaliesProps = Omit<
  * List Anomalies
  */
 export const ListAnomalies = (props: ListAnomaliesProps) => (
-  <Mutate<ResponseListAnomalyData, unknown, ListAnomaliesQueryParams, AnomalyQueryDTO, void>
+  <Mutate<ResponseListAnomalyData, unknown, ListAnomaliesQueryParams, AnomalyQueryDTORequestBody, void>
     verb="POST"
     path={`/anomaly`}
     base={getConfig('ccm/api')}
@@ -2416,7 +2491,7 @@ export const ListAnomalies = (props: ListAnomaliesProps) => (
 )
 
 export type UseListAnomaliesProps = Omit<
-  UseMutateProps<ResponseListAnomalyData, unknown, ListAnomaliesQueryParams, AnomalyQueryDTO, void>,
+  UseMutateProps<ResponseListAnomalyData, unknown, ListAnomaliesQueryParams, AnomalyQueryDTORequestBody, void>,
   'path' | 'verb'
 >
 
@@ -2424,10 +2499,11 @@ export type UseListAnomaliesProps = Omit<
  * List Anomalies
  */
 export const useListAnomalies = (props: UseListAnomaliesProps) =>
-  useMutate<ResponseListAnomalyData, unknown, ListAnomaliesQueryParams, AnomalyQueryDTO, void>('POST', `/anomaly`, {
-    base: getConfig('ccm/api'),
-    ...props
-  })
+  useMutate<ResponseListAnomalyData, unknown, ListAnomaliesQueryParams, AnomalyQueryDTORequestBody, void>(
+    'POST',
+    `/anomaly`,
+    { base: getConfig('ccm/api'), ...props }
+  )
 
 export interface ReportAnomalyFeedbackQueryParams {
   accountIdentifier: string
@@ -2530,6 +2606,90 @@ export const useListPerspectiveAnomalies = ({ perspectiveId, ...props }: UseList
     'POST',
     (paramsInPath: ListPerspectiveAnomaliesPathParams) => `/anomaly/perspective/${paramsInPath.perspectiveId}`,
     { base: getConfig('ccm/api'), pathParams: { perspectiveId }, ...props }
+  )
+
+export interface GetAnomaliesSummaryQueryParams {
+  accountIdentifier: string
+}
+
+export type GetAnomaliesSummaryProps = Omit<
+  MutateProps<ResponseListAnomalySummary, unknown, GetAnomaliesSummaryQueryParams, AnomalyQueryDTORequestBody, void>,
+  'path' | 'verb'
+>
+
+/**
+ * Get Anomalies Summary
+ */
+export const GetAnomaliesSummary = (props: GetAnomaliesSummaryProps) => (
+  <Mutate<ResponseListAnomalySummary, unknown, GetAnomaliesSummaryQueryParams, AnomalyQueryDTORequestBody, void>
+    verb="POST"
+    path={`/anomaly/summary`}
+    base={getConfig('ccm/api')}
+    {...props}
+  />
+)
+
+export type UseGetAnomaliesSummaryProps = Omit<
+  UseMutateProps<ResponseListAnomalySummary, unknown, GetAnomaliesSummaryQueryParams, AnomalyQueryDTORequestBody, void>,
+  'path' | 'verb'
+>
+
+/**
+ * Get Anomalies Summary
+ */
+export const useGetAnomaliesSummary = (props: UseGetAnomaliesSummaryProps) =>
+  useMutate<ResponseListAnomalySummary, unknown, GetAnomaliesSummaryQueryParams, AnomalyQueryDTORequestBody, void>(
+    'POST',
+    `/anomaly/summary`,
+    { base: getConfig('ccm/api'), ...props }
+  )
+
+export interface GetAnomalyWidgetsDataQueryParams {
+  accountIdentifier: string
+}
+
+export type GetAnomalyWidgetsDataProps = Omit<
+  MutateProps<
+    ResponseListAnomalyWidgetData,
+    unknown,
+    GetAnomalyWidgetsDataQueryParams,
+    AnomalyQueryDTORequestBody,
+    void
+  >,
+  'path' | 'verb'
+>
+
+/**
+ * Get Anomaly Widgets
+ */
+export const GetAnomalyWidgetsData = (props: GetAnomalyWidgetsDataProps) => (
+  <Mutate<ResponseListAnomalyWidgetData, unknown, GetAnomalyWidgetsDataQueryParams, AnomalyQueryDTORequestBody, void>
+    verb="POST"
+    path={`/anomaly/widgets`}
+    base={getConfig('ccm/api')}
+    {...props}
+  />
+)
+
+export type UseGetAnomalyWidgetsDataProps = Omit<
+  UseMutateProps<
+    ResponseListAnomalyWidgetData,
+    unknown,
+    GetAnomalyWidgetsDataQueryParams,
+    AnomalyQueryDTORequestBody,
+    void
+  >,
+  'path' | 'verb'
+>
+
+/**
+ * Get Anomaly Widgets
+ */
+export const useGetAnomalyWidgetsData = (props: UseGetAnomalyWidgetsDataProps) =>
+  useMutate<ResponseListAnomalyWidgetData, unknown, GetAnomalyWidgetsDataQueryParams, AnomalyQueryDTORequestBody, void>(
+    'POST',
+    `/anomaly/widgets`,
+    { base: getConfig('ccm/api'), ...props }
   )
 
 export interface ListBudgetsForAccountQueryParams {
@@ -3688,8 +3848,6 @@ export const useGetForecastCostForPeriod = (props: UseGetForecastCostForPeriodPr
 export interface GetLastMonthCostV2QueryParams {
   accountIdentifier: string
   perspectiveId: string
-  startTime: number
-  period: 'DAILY' | 'WEEKLY' | 'MONTHLY' | 'QUARTERLY' | 'YEARLY'
 }
 
 export type GetLastMonthCostV2Props = Omit<
