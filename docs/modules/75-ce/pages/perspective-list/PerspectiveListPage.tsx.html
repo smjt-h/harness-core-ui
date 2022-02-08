@@ -23,16 +23,16 @@
         <div class='clearfix'>
             
             <div class='fl pad1y space-right2'>
-                <span class="strong">65% </span>
+                <span class="strong">64.56% </span>
                 <span class="quiet">Statements</span>
-                <span class='fraction'>104/160</span>
+                <span class='fraction'>102/158</span>
             </div>
         
             
             <div class='fl pad1y space-right2'>
-                <span class="strong">53.59% </span>
+                <span class="strong">56.14% </span>
                 <span class="quiet">Branches</span>
-                <span class='fraction'>97/181</span>
+                <span class='fraction'>96/171</span>
             </div>
         
             
@@ -44,9 +44,9 @@
         
             
             <div class='fl pad1y space-right2'>
-                <span class="strong">65.41% </span>
+                <span class="strong">64.97% </span>
                 <span class="quiet">Lines</span>
-                <span class='fraction'>104/159</span>
+                <span class='fraction'>102/157</span>
             </div>
         
             
@@ -671,21 +671,7 @@
 <a name='L612'></a><a href='#L612'>612</a>
 <a name='L613'></a><a href='#L613'>613</a>
 <a name='L614'></a><a href='#L614'>614</a>
-<a name='L615'></a><a href='#L615'>615</a>
-<a name='L616'></a><a href='#L616'>616</a>
-<a name='L617'></a><a href='#L617'>617</a>
-<a name='L618'></a><a href='#L618'>618</a>
-<a name='L619'></a><a href='#L619'>619</a>
-<a name='L620'></a><a href='#L620'>620</a>
-<a name='L621'></a><a href='#L621'>621</a>
-<a name='L622'></a><a href='#L622'>622</a>
-<a name='L623'></a><a href='#L623'>623</a>
-<a name='L624'></a><a href='#L624'>624</a>
-<a name='L625'></a><a href='#L625'>625</a>
-<a name='L626'></a><a href='#L626'>626</a>
-<a name='L627'></a><a href='#L627'>627</a>
-<a name='L628'></a><a href='#L628'>628</a>
-<a name='L629'></a><a href='#L629'>629</a></td><td class="line-coverage quiet"><span class="cline-any cline-neutral">&nbsp;</span>
+<a name='L615'></a><a href='#L615'>615</a></td><td class="line-coverage quiet"><span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
@@ -708,7 +694,6 @@
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-yes">1x</span>
 <span class="cline-any cline-yes">1x</span>
 <span class="cline-any cline-yes">1x</span>
 <span class="cline-any cline-yes">1x</span>
@@ -1169,12 +1154,6 @@
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-yes">3x</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-yes">3x</span>
-<span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-yes">3x</span>
 <span class="cline-any cline-yes">2x</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
@@ -1231,19 +1210,12 @@
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-no">&nbsp;</span>
 <span class="cline-any cline-no">&nbsp;</span>
-<span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
@@ -1340,7 +1312,6 @@ import { pick, sortBy } from 'lodash-es'
 import { useStrings } from 'framework/strings'
 import routes from '@common/RouteDefinitions'
 import { PageSpinner, useToaster } from '@common/components'
-import { useFeature } from '@common/hooks/useFeatures'
 import { useTelemetry } from '@common/hooks/useTelemetry'
 import { FeatureIdentifier } from 'framework/featureStore/FeatureIdentifier'
 import { useCreatePerspective, useDeletePerspective, CEView } from 'services/ce'
@@ -1356,12 +1327,12 @@ import {
 import { generateId, CREATE_CALL_OBJECT } from '@ce/utils/perspectiveUtils'
 import NoData from '@ce/components/OverviewPage/OverviewNoData'
 import PerspectiveListView from '@ce/components/PerspectiveViews/PerspectiveListView'
-import { FeatureWarningWithTooltip } from '@common/components/FeatureWarning/FeatureWarningWithTooltip'
 import PerspectiveGridView from '@ce/components/PerspectiveViews/PerspectiveGridView'
 import { useCreateConnectorMinimal } from '@ce/components/CreateConnector/CreateConnector'
 import { Utils } from '@ce/common/Utils'
 import { PAGE_NAMES, USER_JOURNEY_EVENTS } from '@ce/TrackingEventsConstants'
 import { NGBreadcrumbs } from '@common/components/NGBreadcrumbs/NGBreadcrumbs'
+import RbacButton from '@rbac/components/Button/Button'
 import bgImage from './images/perspectiveBg.png'
 import css from './PerspectiveListPage.module.scss'
 &nbsp;
@@ -1795,12 +1766,6 @@ const PerspectiveListPage: React.FC = () =&gt; {
     }
   }
 &nbsp;
-  const { enabled: featureEnabled, featureDetail } = useFeature({
-    featureRequest: {
-      featureName: FeatureIdentifier.PERSPECTIVES
-    }
-  })
-&nbsp;
   const pespectiveList = (data<span class="branch-0 cbranch-no" title="branch not covered" >?.p</span>erspectives<span class="branch-0 cbranch-no" title="branch not covered" >?.c</span>ustomerViews || <span class="branch-1 cbranch-no" title="branch not covered" >[])</span> as QlceView[]
 &nbsp;
   useEffect(() =&gt; {
@@ -1853,27 +1818,20 @@ const PerspectiveListPage: React.FC = () =&gt; {
       /&gt;
       &lt;Layout.Horizontal spacing="large" className={css.header}&gt;
         &lt;Layout.Horizontal spacing="large" style={{ alignItems: 'center' }}&gt;
-          &lt;Button
+          &lt;RbacButton
             intent="primary"
             text={getString('ce.perspectives.newPerspective')}
             icon="plus"
-            disabled={!featureEnabled}
+            featuresProps={{
+              featuresRequest: {
+                featureNames: [FeatureIdentifier.PERSPECTIVES]
+              }
+            }}
             onClick={<span class="fstat-no" title="function not covered" >async </span>() =&gt; {
 <span class="cstat-no" title="statement not covered" >              trackEvent(USER_JOURNEY_EVENTS.CREATE_NEW_PERSPECTIVE, {})</span>
 <span class="cstat-no" title="statement not covered" >              await createNewPerspective({}, false)</span>
             }}
           /&gt;
-          {!featureEnabled &amp;&amp; (
-<span class="branch-1 cbranch-no" title="branch not covered" >            &lt;section className={css.limitWarningTooltipCtn}&gt;</span>
-              &lt;FeatureWarningWithTooltip
-                featureName={FeatureIdentifier.PERSPECTIVES}
-                warningMessage={getString('ce.perspectives.newPerspectiveLimitWarning', {
-                  count: featureDetail?.count,
-                  limit: featureDetail?.limit
-                })}
-              /&gt;
-            &lt;/section&gt;
-          )}
         &lt;/Layout.Horizontal&gt;
         &lt;FlexExpander /&gt;
 &nbsp;
@@ -1948,7 +1906,7 @@ export default PerspectiveListPage
             <div class='footer quiet pad2 space-top1 center small'>
                 Code coverage generated by
                 <a href="https://istanbul.js.org/" target="_blank">istanbul</a>
-                at Tue Feb 08 2022 14:26:31 GMT+0000 (Greenwich Mean Time)
+                at Tue Feb 08 2022 16:32:47 GMT+0000 (Greenwich Mean Time)
             </div>
         </div>
         <script src="../../../../prettify.js"></script>

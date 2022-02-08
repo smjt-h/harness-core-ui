@@ -23,16 +23,16 @@
         <div class='clearfix'>
             
             <div class='fl pad1y space-right2'>
-                <span class="strong">65.35% </span>
+                <span class="strong">66.67% </span>
                 <span class="quiet">Statements</span>
-                <span class='fraction'>66/101</span>
+                <span class='fraction'>70/105</span>
             </div>
         
             
             <div class='fl pad1y space-right2'>
-                <span class="strong">33.72% </span>
+                <span class="strong">35.23% </span>
                 <span class="quiet">Branches</span>
-                <span class='fraction'>29/86</span>
+                <span class='fraction'>31/88</span>
             </div>
         
             
@@ -44,9 +44,9 @@
         
             
             <div class='fl pad1y space-right2'>
-                <span class="strong">65.22% </span>
+                <span class="strong">66.67% </span>
                 <span class="quiet">Lines</span>
-                <span class='fraction'>60/92</span>
+                <span class='fraction'>64/96</span>
             </div>
         
             
@@ -330,8 +330,7 @@
 <a name='L271'></a><a href='#L271'>271</a>
 <a name='L272'></a><a href='#L272'>272</a>
 <a name='L273'></a><a href='#L273'>273</a>
-<a name='L274'></a><a href='#L274'>274</a>
-<a name='L275'></a><a href='#L275'>275</a></td><td class="line-coverage quiet"><span class="cline-any cline-neutral">&nbsp;</span>
+<a name='L274'></a><a href='#L274'>274</a></td><td class="line-coverage quiet"><span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
@@ -348,19 +347,15 @@
 <span class="cline-any cline-yes">10x</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-yes">10x</span>
-<span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">10x</span>
 <span class="cline-any cline-yes">10x</span>
 <span class="cline-any cline-yes">10x</span>
 <span class="cline-any cline-yes">10x</span>
 <span class="cline-any cline-yes">10x</span>
 <span class="cline-any cline-yes">10x</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">10x</span>
 <span class="cline-any cline-yes">10x</span>
 <span class="cline-any cline-yes">10x</span>
 <span class="cline-any cline-yes">10x</span>
@@ -552,6 +547,18 @@
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-yes">10x</span>
+<span class="cline-any cline-yes">17x</span>
+<span class="cline-any cline-yes">17x</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">17x</span>
+<span class="cline-any cline-yes">17x</span>
+<span class="cline-any cline-yes">17x</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">17x</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-yes">17x</span>
 <span class="cline-any cline-yes">17x</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
@@ -566,15 +573,6 @@
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-yes">17x</span>
-<span class="cline-any cline-yes">17x</span>
-<span class="cline-any cline-yes">17x</span>
-<span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-yes">17x</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-yes">17x</span>
 <span class="cline-any cline-yes">10x</span>
@@ -622,13 +620,8 @@ import routes from '@common/RouteDefinitions'
 import featuresFactory from 'framework/featureStore/FeaturesFactory'
 import type { FeatureProps } from 'framework/featureStore/FeaturesFactory'
 import type { CheckFeatureReturn } from 'framework/featureStore/featureStoreUtil'
-import type { Module } from 'framework/types/ModuleName'
-import {
-  isCDEnterprisePlan,
-  isCDFreePlan,
-  isCDTeamPlan,
-  useLicenseStore
-} from 'framework/LicenseStore/LicenseStoreContext'
+import { isEnterprisePlan, isFreePlan, isTeamPlan, useLicenseStore } from 'framework/LicenseStore/LicenseStoreContext'
+import { Module, ModuleName, moduleToModuleNameMapping } from 'framework/types/ModuleName'
 import { useFeatures } from '@common/hooks/useFeatures'
 import { useLocalStorage } from '@common/hooks/useLocalStorage'
 import { useModuleInfo } from '@common/hooks/useModuleInfo'
@@ -636,6 +629,7 @@ import { useFeatureFlag } from '@common/hooks/useFeatureFlag'
 import { FeatureFlag } from '@common/featureFlags'
 import type { AccountPathProps } from '@common/interfaces/RouteInterfaces'
 import { useStrings } from 'framework/strings'
+import { useGetUsageAndLimit } from '@common/hooks/useGetUsageAndLimit'
 import { BannerType } from './Constants'
 import css from './layouts.module.scss'
 &nbsp;
@@ -829,18 +823,6 @@ export default function FeatureBanner(): React.ReactElement | null {
   const { module } = useModuleInfo()
   const { getString } = useStrings()
 &nbsp;
-  const { licenseInformation } = useLicenseStore()
-  const isCDFree = isCDFreePlan(licenseInformation)
-  const isCDTeam = isCDTeamPlan(licenseInformation)
-  const isCDEnterprise = isCDEnterprisePlan(licenseInformation)
-  const additionalLicenseProps = useMemo(() =&gt; {
-    return {
-      isCDFree,
-      isCDTeam,
-      isCDEnterprise
-    }
-  }, [isCDFree, isCDTeam, isCDEnterprise])
-&nbsp;
   const isFeatureEnforceEnabled = useFeatureFlag(FeatureFlag.FEATURE_ENFORCEMENT_ENABLED)
   const [activeModuleFeatures, setActiveModuleFeatures] = React.useState&lt;FeatureProps | null&gt;(null)
   const [isBannerDismissed, setIsBannerDismissed] = useLocalStorage&lt;Partial&lt;Record&lt;Module, boolean&gt;&gt;&gt;(
@@ -850,6 +832,21 @@ export default function FeatureBanner(): React.ReactElement | null {
   )
   const features = useFeatures({ featuresRequest: { featureNames: defaultTo(activeModuleFeatures?.features, []) } })
 &nbsp;
+  const moduleName: ModuleName = module ? moduleToModuleNameMapping[module] : ModuleName.COMMON
+  const usageAndLimitInfo = useGetUsageAndLimit(moduleName)
+&nbsp;
+  const { licenseInformation } = useLicenseStore()
+  const isFreeEdition = isFreePlan(licenseInformation, moduleName)
+  const isTeamEdition = isTeamPlan(licenseInformation, moduleName)
+  const isEnterpriseEdition = isEnterprisePlan(licenseInformation, moduleName)
+  const additionalLicenseProps = useMemo(() =&gt; {
+    return {
+      isFreeEdition,
+      isTeamEdition,
+      isEnterpriseEdition
+    }
+  }, [isFreeEdition, isTeamEdition, isEnterpriseEdition])
+&nbsp;
   React.useEffect(() =&gt; {
     if (module) {
       const moduleFeatures = featuresFactory.getFeaturesByModule(module)
@@ -858,7 +855,7 @@ export default function FeatureBanner(): React.ReactElement | null {
   }, [module])
 &nbsp;
   const { message: messageFn, bannerType } =
-    activeModuleFeatures?.renderMessage(features, getString, additionalLicenseProps) || {}
+    activeModuleFeatures?.renderMessage(features, getString, additionalLicenseProps, usageAndLimitInfo) || {}
 &nbsp;
   const message = messageFn?.()
 &nbsp;
@@ -886,7 +883,7 @@ export default function FeatureBanner(): React.ReactElement | null {
             <div class='footer quiet pad2 space-top1 center small'>
                 Code coverage generated by
                 <a href="https://istanbul.js.org/" target="_blank">istanbul</a>
-                at Tue Feb 08 2022 14:26:31 GMT+0000 (Greenwich Mean Time)
+                at Tue Feb 08 2022 16:32:47 GMT+0000 (Greenwich Mean Time)
             </div>
         </div>
         <script src="../../../prettify.js"></script>
