@@ -545,6 +545,7 @@ function TerraformPlanWidget(
                 isOpen={true}
                 isCloseButtonShown
                 onClose={() => {
+                  setConnectorView(false)
                   setShowRemoteWizard(false)
                 }}
                 className={cx(css.modal, Classes.DIALOG)}

@@ -39,7 +39,8 @@ import {
   ConnectorLabelMap,
   ConnectorTypes,
   formInputNames,
-  formikOnChangeNames
+  formikOnChangeNames,
+  stepTwoValidationSchema
 } from './TerraformConfigFormHelper'
 
 import type { Connector } from '../TerraformInterfaces'
@@ -235,42 +236,7 @@ export const TerraformConfigStepTwo: React.FC<StepProps<any> & TerraformConfigSt
     { label: getString('gitFetchTypes.fromBranch'), value: getString('pipelineSteps.deploy.inputSet.branch') },
     { label: getString('gitFetchTypes.fromCommit'), value: getString('pipelineSteps.commitIdValue') }
   ]
-  const configSetup = {
-    configFiles: Yup.object().shape({
-      store: Yup.object().shape({
-        spec: Yup.object().shape({
-          gitFetchType: Yup.string().required(getString('cd.gitFetchTypeRequired')),
-          branch: Yup.string().when('gitFetchType', {
-            is: 'Branch',
-            then: Yup.string().trim().required(getString('validation.branchName'))
-          }),
-          commitId: Yup.string().when('gitFetchType', {
-            is: 'CommitId',
-            then: Yup.string().trim().required(getString('validation.commitId'))
-          }),
-          folderPath: Yup.string().required(getString('pipeline.manifestType.folderPathRequired'))
-        })
-      })
-    })
-  }
-
-  const validationSchema = isTerraformPlan
-    ? Yup.object().shape({
-        spec: Yup.object().shape({
-          configuration: Yup.object().shape({
-            ...configSetup
-          })
-        })
-      })
-    : Yup.object().shape({
-        spec: Yup.object().shape({
-          configuration: Yup.object().shape({
-            spec: Yup.object().shape({
-              ...configSetup
-            })
-          })
-        })
-      })
+  const validationSchema = stepTwoValidationSchema(isTerraformPlan, getString)
 
   return (
     <Layout.Vertical padding="small" className={css.tfConfigForm}>

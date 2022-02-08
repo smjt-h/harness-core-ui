@@ -532,6 +532,7 @@ export default function TerraformEditView(
                       {...DIALOG_PROPS}
                       isCloseButtonShown
                       onClose={() => {
+                        setConnectorView(false)
                         setShowModal(false)
                       }}
                       className={cx(css.modal, Classes.DIALOG)}

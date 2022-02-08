@@ -4,7 +4,7 @@
  * that can be found in the licenses directory at the root of this repository, also available at
  * https://polyformproject.org/wp-content/uploads/2020/06/PolyForm-Shield-1.0.0.txt.
  */
-
+import * as Yup from 'yup'
 import { Connectors } from '@connectors/constants'
 import type { ConnectorInfoDTO } from 'services/cd-ng'
 import type { StringKeys } from 'framework/strings'
@@ -86,4 +86,43 @@ export const getBuildPayload = (type: ConnectorInfoDTO['type']) => {
     return buildGitlabPayload
   }
   return () => ({})
+}
+
+export const stepTwoValidationSchema = (isTerraformPlan: boolean, getString: any) => {
+  const configSetup = {
+    configFiles: Yup.object().shape({
+      store: Yup.object().shape({
+        spec: Yup.object().shape({
+          gitFetchType: Yup.string().required(getString('cd.gitFetchTypeRequired')),
+          branch: Yup.string().when('gitFetchType', {
+            is: 'Branch',
+            then: Yup.string().trim().required(getString('validation.branchName'))
+          }),
+          commitId: Yup.string().when('gitFetchType', {
+            is: 'CommitId',
+            then: Yup.string().trim().required(getString('validation.commitId'))
+          }),
+          folderPath: Yup.string().required(getString('pipeline.manifestType.folderPathRequired'))
+        })
+      })
+    })
+  }
+
+  return isTerraformPlan
+    ? Yup.object().shape({
+        spec: Yup.object().shape({
+          configuration: Yup.object().shape({
+            ...configSetup
+          })
+        })
+      })
+    : Yup.object().shape({
+        spec: Yup.object().shape({
+          configuration: Yup.object().shape({
+            spec: Yup.object().shape({
+              ...configSetup
+            })
+          })
+        })
+      })
 }
