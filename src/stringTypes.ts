@@ -3199,6 +3199,11 @@ export interface StringsMap {
   'cd.workloadRequired': string
   'ce.allClusters': string
   'ce.allRegions': string
+  'ce.anomalyDetection.filters.groupByCloudProvidersPlaceholder': string
+  'ce.anomalyDetection.filters.groupByNoneLabel': string
+  'ce.anomalyDetection.filters.groupByNonePlaceholder': string
+  'ce.anomalyDetection.filters.groupByNoneValue': string
+  'ce.anomalyDetection.filters.groupByPerspectivePlaceholder': string
   'ce.anomalyDetection.settingsBtn': string
   'ce.anomalyDetection.sideNavText': string
   'ce.anomalyDetection.summary.cloudProvidersWise': string

@@ -20,7 +20,8 @@ import {
   Text,
   Icon,
   TableV2,
-  Color
+  Color,
+  PageSpinner
 } from '@wings-software/uicore'
 import { Link, useParams } from 'react-router-dom'
 import type { CellProps, Renderer } from 'react-table'
@@ -52,6 +53,7 @@ interface AnomalyParams {
 }
 
 const AnomalyFilters: React.FC = () => {
+  const { getString } = useStrings()
   const [timeRange, setTimeRange] = useState<TimeRange>({
     to: DATE_RANGE_SHORTCUTS.LAST_30_DAYS[1].format(CE_DATE_FORMAT_INTERNAL),
     from: DATE_RANGE_SHORTCUTS.LAST_30_DAYS[0].format(CE_DATE_FORMAT_INTERNAL)
@@ -69,20 +71,16 @@ const AnomalyFilters: React.FC = () => {
     <Layout.Horizontal spacing="large" className={css.header}>
       <Layout.Horizontal spacing="large" style={{ alignItems: 'center' }}>
         <DropDown
-          placeholder={'GroupBy: Perspectives'}
+          placeholder={getString('ce.anomalyDetection.filters.groupByNonePlaceholder')}
           filterable={false}
-          onChange={option => {
-            alert(option.value)
+          onChange={() => {
+            // alert(option.value)
           }}
           className={css.groupbyFilter}
           items={[
             {
-              label: 'GroupBy: Perspectives',
-              value: 'perspectives'
-            },
-            {
-              label: 'GroupBy: None (Show all anomalies)',
-              value: 'none'
+              label: getString('ce.anomalyDetection.filters.groupByNoneLabel'),
+              value: getString('ce.anomalyDetection.filters.groupByNoneValue')
             }
           ]}
         />
@@ -90,18 +88,18 @@ const AnomalyFilters: React.FC = () => {
       <FlexExpander />
       {/* TODO: Mutiselect DropDown */}
       <DropDown
-        placeholder={'All Perspectives'}
+        placeholder={getString('ce.anomalyDetection.filters.groupByPerspectivePlaceholder')}
         filterable={false}
-        onChange={option => {
-          alert(option.value)
+        onChange={() => {
+          // alert(option.value)
         }}
         items={items}
       />
       <DropDown
-        placeholder={'All Cloud Providers'}
+        placeholder={getString('ce.anomalyDetection.filters.groupByCloudProvidersPlaceholder')}
         filterable={false}
-        onChange={option => {
-          alert(option.value)
+        onChange={() => {
+          // alert(option.value)
         }}
         items={allCloudProvidersList}
       />
@@ -258,7 +256,7 @@ const AnomaliesListGridView: React.FC<ListProps> = ({ listData }) => {
             </Text>
           </Link>
           <Text font={{ size: 'small' }} color={Color.GREY_600}>
-            {resourceInfo || 'cluster/workload'}
+            {resourceInfo}
           </Text>
         </Layout.Vertical>
       </Layout.Horizontal>
@@ -272,10 +270,10 @@ const AnomaliesListGridView: React.FC<ListProps> = ({ listData }) => {
     return (
       <Layout.Vertical spacing="small">
         <Text font={{ size: 'normal' }} color={Color.ORANGE_700}>
-          {status || 'Open'}
+          {status}
         </Text>
         <Text font={{ size: 'small' }} color={Color.GREY_600}>
-          {stausRelativeTime || '6 minutes ago'}
+          {stausRelativeTime}
         </Text>
       </Layout.Vertical>
     )
@@ -350,7 +348,7 @@ const AnomaliesOverviewPage: React.FC = () => {
   const [cloudProvidersWiseData, setCloudProvidersWiseData] = useState([])
   const [statusWiseData, setStatusWiseData] = useState([])
 
-  const { mutate: getAnomaliesList } = useListAnomalies({
+  const { mutate: getAnomaliesList, loading: isListFetching } = useListAnomalies({
     queryParams: {
       accountIdentifier: accountId
     }
@@ -456,7 +454,7 @@ const AnomaliesOverviewPage: React.FC = () => {
       />
       <AnomalyFilters />
       <PageBody>
-        {/* TODO: Add page spinner */}
+        {isListFetching ? <PageSpinner /> : null}
         <Container
           padding={{
             right: 'xxxlarge',

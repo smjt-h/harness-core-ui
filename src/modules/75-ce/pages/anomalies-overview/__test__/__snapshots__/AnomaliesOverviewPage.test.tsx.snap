@@ -86,7 +86,7 @@ exports[`test case for anomalies detection overview page should be able to rende
       style="align-items: center;"
     >
       <div
-        class="bp3-popover-wrapper DropDown--main groupbyFilter"
+        class="bp3-popover-wrapper DropDown--main DropDown--disabled groupbyFilter"
       >
         <div
           class="bp3-popover-target"
@@ -139,7 +139,7 @@ exports[`test case for anomalies detection overview page should be able to rende
       style="flex-grow: 1;"
     />
     <div
-      class="bp3-popover-wrapper DropDown--main"
+      class="bp3-popover-wrapper DropDown--main DropDown--disabled"
     >
       <div
         class="bp3-popover-target"
@@ -188,7 +188,7 @@ exports[`test case for anomalies detection overview page should be able to rende
       </div>
     </div>
     <div
-      class="bp3-popover-wrapper DropDown--main"
+      class="bp3-popover-wrapper DropDown--main DropDown--disabled"
     >
       <div
         class="bp3-popover-target"

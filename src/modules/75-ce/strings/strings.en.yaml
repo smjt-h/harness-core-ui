@@ -751,6 +751,12 @@ budgets:
 anomalyDetection:
   sideNavText: Anomalies
   settingsBtn: settings
+  filters:
+    groupByNoneLabel: 'GroupBy: None (Show all anomalies)'
+    groupByNonePlaceholder: 'GroupBy: None'
+    groupByNoneValue: none
+    groupByPerspectivePlaceholder: All Perspectives
+    groupByCloudProvidersPlaceholder: All Cloud Providers
   summary:
     totalCountText: ANOMALIES DETECTED
     costImpacted: TOTAL COST IMPACT
