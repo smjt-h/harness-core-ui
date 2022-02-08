@@ -152,8 +152,10 @@ const WebhookPipelineInputPanelForm: React.FC<WebhookPipelineInputPanelPropsInte
   useEffect(() => {
     const shouldInjectCloneCodebase =
       !isEmpty(formikProps.values.originalPipeline?.properties?.ci?.codebase) &&
-      (formikProps.values.originalPipeline?.stages.some((stage: any) => stage?.spec?.cloneCodebase) ||
-        formikProps.values.originalPipeline?.parallel?.some((stage: any) => stage?.spec?.cloneCodebase))
+      (formikProps.values.originalPipeline?.stages.some((stage: any) => stage?.stage?.spec?.cloneCodebase) ||
+        formikProps.values.originalPipeline?.stages?.[0]?.parallel?.some(
+          (stage: any) => stage?.stage?.spec?.cloneCodebase
+        ))
 
     if (!hasEverRendered && shouldInjectCloneCodebase) {
       const formikValues = cloneDeep(formikProps.values)
