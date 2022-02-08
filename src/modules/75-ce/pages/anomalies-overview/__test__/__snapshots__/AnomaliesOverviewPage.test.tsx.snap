@@ -45,7 +45,7 @@ exports[`test case for anomalies detection overview page should be able to rende
                   data-testid="dropdown-value"
                   style="--text-line-clamp: 1;"
                 >
-                  GroupBy: Perspectives
+                  ce.anomalyDetection.filters.groupByNonePlaceholder
                 </p>
               </div>
               <div
@@ -98,7 +98,7 @@ exports[`test case for anomalies detection overview page should be able to rende
                 data-testid="dropdown-value"
                 style="--text-line-clamp: 1;"
               >
-                All Perspectives
+                ce.anomalyDetection.filters.groupByPerspectivePlaceholder
               </p>
             </div>
             <div
@@ -147,7 +147,7 @@ exports[`test case for anomalies detection overview page should be able to rende
                 data-testid="dropdown-value"
                 style="--text-line-clamp: 1;"
               >
-                All Cloud Providers
+                ce.anomalyDetection.filters.groupByCloudProvidersPlaceholder
               </p>
             </div>
             <div
