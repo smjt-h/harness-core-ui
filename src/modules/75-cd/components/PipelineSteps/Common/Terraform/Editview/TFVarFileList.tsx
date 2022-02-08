@@ -290,6 +290,7 @@ export default function TfVarFileList(props: TfVarFileProps): React.ReactElement
                         <TFRemoteWizard
                           name={getString('cd.varFileDetails')}
                           onSubmitCallBack={(values: RemoteVar) => {
+                            window.console.log('values: ', values)
                             if (isEditMode) {
                               arrayHelpers.replace(selectedVarIndex, values)
                             } else {

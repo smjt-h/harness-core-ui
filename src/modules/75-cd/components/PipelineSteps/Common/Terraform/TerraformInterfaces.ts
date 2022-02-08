@@ -124,6 +124,7 @@ export const CommandTypes = {
   Destroy: 'Destroy'
 }
 export interface PathInterface {
+  [x: string]: any
   path: string
 }
 
@@ -182,6 +183,8 @@ export interface Connector {
   live: boolean
   connector: {
     type: string
+    identifier: string
+    name: string
     spec: { val: string; url: string; connectionType?: string; type?: string }
   }
 }

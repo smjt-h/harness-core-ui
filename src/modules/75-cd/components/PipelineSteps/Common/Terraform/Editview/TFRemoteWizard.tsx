@@ -17,10 +17,12 @@ import {
   MultiTypeInputType,
   SelectOption,
   StepProps,
-  Text
+  Text,
+  useToaster
 } from '@wings-software/uicore'
-import React from 'react'
-import { unset } from 'lodash-es'
+import React, { useEffect, useState } from 'react'
+import { useParams } from 'react-router-dom'
+import { unset, map } from 'lodash-es'
 import cx from 'classnames'
 import * as Yup from 'yup'
 import { v4 as uuid } from 'uuid'
@@ -30,6 +32,7 @@ import { useStrings } from 'framework/strings'
 import { useVariablesExpression } from '@pipeline/components/PipelineStudio/PiplineHooks/useVariablesExpression'
 import { ConfigureOptions } from '@common/components/ConfigureOptions/ConfigureOptions'
 import MultiTypeFieldSelector from '@common/components/MultiTypeFieldSelector/MultiTypeFieldSelector'
+import { useGetBuildsDetailsForArtifactory, useGetRepositoriesDetailsForArtifactory } from 'services/cd-ng'
 
 import { Connector, PathInterface, RemoteVar, TerraformStoreTypes } from '../TerraformInterfaces'
 import stepCss from '@pipeline/components/PipelineSteps/Steps/Steps.module.scss'
@@ -50,7 +53,18 @@ export const TFRemoteWizard: React.FC<StepProps<any> & TFRemoteProps> = ({
   isReadonly = false,
   allowableTypes
 }) => {
+  const [selectedRepo, setSelectedRepo] = useState('')
+  const [connectorRepos, setConnectorRepos] = useState<SelectOption[]>()
+  const [filePathIndex, setFilePathIndex] = useState<{ index: number; path: string }>()
+  const [artifacts, setArtifacts] = useState<any>()
+  const { accountId, projectIdentifier, orgIdentifier } = useParams<{
+    projectIdentifier: string
+    orgIdentifier: string
+    accountId: string
+  }>()
+
   const { getString } = useStrings()
+  const { showError } = useToaster()
   const initialValues = isEditMode
     ? {
         varFile: {
@@ -91,6 +105,80 @@ export const TFRemoteWizard: React.FC<StepProps<any> & TFRemoteProps> = ({
           }
         }
       }
+  const connectorValue = prevStepData?.varFile?.spec?.store?.spec?.connectorRef as Connector
+  const connectionType =
+    connectorValue?.connector?.spec?.connectionType === 'Account' ||
+    connectorValue?.connector?.spec?.type === 'Account' ||
+    prevStepData?.urlType === 'Account'
+  const isArtifactory = prevStepData.selectedType === 'Artifactory'
+  const {
+    data: ArtifactRepoData,
+    loading: ArtifactRepoLoading,
+    refetch: getArtifactRepos,
+    error: ArtifactRepoError
+  } = useGetRepositoriesDetailsForArtifactory({
+    queryParams: {
+      connectorRef: connectorValue.connector?.identifier,
+      accountIdentifier: accountId,
+      orgIdentifier,
+      projectIdentifier
+    },
+    lazy: true
+  })
+  const {
+    data: Artifacts,
+    loading: ArtifactsLoading,
+    refetch: GetArtifacts,
+    error: ArtifactsError
+  } = useGetBuildsDetailsForArtifactory({
+    queryParams: {
+      connectorRef: connectorValue.connector?.identifier,
+      accountIdentifier: accountId,
+      orgIdentifier,
+      projectIdentifier,
+      repositoryName: selectedRepo,
+      maxVersions: 50,
+      filePath: filePathIndex?.path
+    },
+    debounce: 500,
+    lazy: true
+  })
+
+  if (ArtifactRepoError) {
+    showError(ArtifactRepoError.message)
+  }
+
+  if (ArtifactsError) {
+    showError(ArtifactsError.message)
+  }
+
+  useEffect(() => {
+    if (selectedRepo && filePathIndex?.path) {
+      GetArtifacts()
+    }
+  }, [filePathIndex, selectedRepo])
+
+  useEffect(() => {
+    if (Artifacts && !ArtifactsLoading) {
+      setArtifacts({
+        ...artifacts,
+        [`${filePathIndex?.path}-${filePathIndex?.index}`]: map(Artifacts.data, artifact => ({
+          label: artifact.artifactName as string,
+          value: artifact.artifactPath as string
+        }))
+      })
+    }
+  }, [Artifacts])
+
+  useEffect(() => {
+    if (isArtifactory && !ArtifactRepoData) {
+      getArtifactRepos()
+    }
+
+    if (ArtifactRepoData) {
+      setConnectorRepos(map(ArtifactRepoData.data?.repositories, repo => ({ label: repo, value: repo })))
+    }
+  }, [ArtifactRepoData])
 
   const { expressions } = useVariablesExpression()
 
@@ -149,8 +237,9 @@ export const TFRemoteWizard: React.FC<StepProps<any> & TFRemoteProps> = ({
       </Text>
       <Formik
         formName="tfRemoteWizardForm"
-        initialValues={initialValues}
+        initialValues={{ ...initialValues, isArtifactory: isArtifactory }}
         onSubmit={values => {
+          window.console.log('values: ', values)
           /* istanbul ignore next */
           const payload = {
             ...values,
@@ -186,6 +275,14 @@ export const TFRemoteWizard: React.FC<StepProps<any> & TFRemoteProps> = ({
           /* istanbul ignore else */
           if (
             getMultiTypeFromValue(payload.varFile.spec?.store?.spec?.paths) === MultiTypeInputType.FIXED &&
+            payload.varFile.spec?.store?.spec?.paths?.length &&
+            isArtifactory
+          ) {
+            data.varFile.spec.store.spec['paths'] = payload.varFile.spec?.store?.spec?.paths?.map(
+              (item: PathInterface) => ({ path: item.path, artifactName: item.fileName })
+            )
+          } else if (
+            getMultiTypeFromValue(payload.varFile.spec?.store?.spec?.paths) === MultiTypeInputType.FIXED &&
             payload.varFile.spec?.store?.spec?.paths?.length
           ) {
             data.varFile.spec.store.spec['paths'] = payload.varFile.spec?.store?.spec?.paths?.map(
@@ -198,14 +295,18 @@ export const TFRemoteWizard: React.FC<StepProps<any> & TFRemoteProps> = ({
           onSubmitCallBack(data)
         }}
         validationSchema={Yup.object().shape({
+          isArtifactory: Yup.boolean(),
           varFile: Yup.object().shape({
             identifier: Yup.string().required(getString('common.validation.identifierIsRequired')),
             spec: Yup.object().shape({
               store: Yup.object().shape({
                 spec: Yup.object().shape({
-                  gitFetchType: Yup.string().required(getString('cd.gitFetchTypeRequired')),
+                  gitFetchType: Yup.string().when('isArtifactory', {
+                    is: false,
+                    then: Yup.string().required(getString('cd.gitFetchTypeRequired'))
+                  }),
                   branch: Yup.string().when('gitFetchType', {
-                    is: 'Branch',
+                    is: !isArtifactory && 'Branch',
                     then: Yup.string().trim().required(getString('validation.branchName'))
                   }),
                   commitId: Yup.string().when('gitFetchType', {
@@ -226,21 +327,27 @@ export const TFRemoteWizard: React.FC<StepProps<any> & TFRemoteProps> = ({
         })}
       >
         {formik => {
-          const connectorValue = prevStepData?.varFile?.spec?.store?.spec?.connectorRef as Connector
-          const connectionType =
-            connectorValue?.connector?.spec?.connectionType === 'Account' ||
-            connectorValue?.connector?.spec?.type === 'Account' ||
-            prevStepData?.urlType === 'Account'
           const store = formik.values?.varFile?.spec?.store?.spec
-          const isArtifactory = prevStepData.selectedType === 'Artifactory'
           return (
             <Form>
               <div className={css.tfRemoteForm}>
                 <div className={cx(stepCss.formGroup, stepCss.md)}>
                   <FormInput.Text name="varFile.identifier" label={getString('identifier')} />
                 </div>
+                {isArtifactory && (
+                  <div className={cx(stepCss.formGroup, stepCss.md)}>
+                    <FormInput.Select
+                      items={connectorRepos ? connectorRepos : []}
+                      name="varFile.spec.store.spec.repoName"
+                      label={getString('pipelineSteps.repoName')}
+                      placeholder={ArtifactRepoLoading ? 'Loading...' : 'Select a Repository'}
+                      disabled={ArtifactRepoLoading}
+                      onChange={value => setSelectedRepo(value.value as string)}
+                    />
+                  </div>
+                )}
 
-                {connectionType && (
+                {connectionType && !isArtifactory && (
                   <div className={cx(stepCss.formGroup, stepCss.md)}>
                     <FormInput.MultiTextInput
                       label={getString('pipelineSteps.repoName')}
@@ -299,7 +406,7 @@ export const TFRemoteWizard: React.FC<StepProps<any> & TFRemoteProps> = ({
                   </div>
                 )}
 
-                {store?.gitFetchType === gitFetchTypes[1].value && (
+                {store?.gitFetchType === gitFetchTypes[1].value && !isArtifactory && (
                   <div className={cx(stepCss.formGroup, stepCss.md)}>
                     <FormInput.MultiTextInput
                       label={getString('pipeline.manifestType.commitId')}
@@ -332,10 +439,10 @@ export const TFRemoteWizard: React.FC<StepProps<any> & TFRemoteProps> = ({
                     {isArtifactory && (
                       <Layout.Horizontal className={css.artifactHeader} flex={{ justifyContent: 'space-between' }}>
                         <Text font="normal" color={Color.GREY_600}>
-                          Artifact Name
+                          File Path
                         </Text>
                         <Text font="normal" color={Color.GREY_600}>
-                          File Path
+                          Artifact Name
                         </Text>
                       </Layout.Horizontal>
                     )}
@@ -344,57 +451,74 @@ export const TFRemoteWizard: React.FC<StepProps<any> & TFRemoteProps> = ({
                       render={arrayHelpers => {
                         return (
                           <>
-                            {(store?.paths || []).map((path: PathInterface, index: number) => (
-                              <Layout.Horizontal
-                                key={`${path}-${index}`}
-                                flex={{ distribution: 'space-between' }}
-                                style={{ alignItems: 'end' }}
-                              >
+                            {(store?.paths || []).map((path: PathInterface, index: number) => {
+                              const key = `${filePathIndex?.path}-${filePathIndex?.index}`
+                              const rowArtifacts = artifacts && artifacts[key] ? artifacts[key] : []
+                              return (
                                 <Layout.Horizontal
-                                  spacing="medium"
-                                  style={{ alignItems: 'baseline' }}
-                                  className={css.tfContainer}
                                   key={`${path}-${index}`}
-                                  draggable={true}
-                                  onDragEnd={onDragEnd}
-                                  onDragOver={onDragOver}
-                                  onDragLeave={onDragLeave}
-                                  /* istanbul ignore next */
-                                  onDragStart={event => {
-                                    /* istanbul ignore next */
-                                    onDragStart(event, index)
-                                  }}
-                                  /* istanbul ignore next */
-                                  onDrop={event => onDrop(event, arrayHelpers, index)}
+                                  flex={{ distribution: 'space-between' }}
+                                  style={{ alignItems: 'end' }}
                                 >
-                                  <Icon name="drag-handle-vertical" className={css.drag} />
-                                  <Text width={12}>{`${index + 1}.`}</Text>
-                                  <FormInput.MultiTextInput
-                                    name={`varFile.spec.store.spec.paths[${index}].path`}
-                                    label=""
-                                    multiTextInputProps={{
-                                      expressions,
-                                      allowableTypes: allowableTypes.filter(item => item !== MultiTypeInputType.RUNTIME)
+                                  <Layout.Horizontal
+                                    spacing="medium"
+                                    style={{ alignItems: 'baseline' }}
+                                    className={css.tfContainer}
+                                    key={`${path}-${index}`}
+                                    draggable={isArtifactory ? false : true}
+                                    onDragEnd={onDragEnd}
+                                    onDragOver={onDragOver}
+                                    onDragLeave={onDragLeave}
+                                    /* istanbul ignore next */
+                                    onDragStart={event => {
+                                      /* istanbul ignore next */
+                                      onDragStart(event, index)
                                     }}
-                                    style={{ width: isArtifactory ? 240 : 300 }}
-                                  />
-                                  {isArtifactory && (
-                                    <FormInput.Select
-                                      name={`varFile.spec.store.spec.paths[${index}].fileName`}
+                                    /* istanbul ignore next */
+                                    onDrop={event => onDrop(event, arrayHelpers, index)}
+                                  >
+                                    <Icon name="drag-handle-vertical" className={css.drag} />
+                                    <Text width={12}>{`${index + 1}.`}</Text>
+                                    <FormInput.MultiTextInput
+                                      onChange={val => {
+                                        setFilePathIndex({ index, path: val as string })
+                                      }}
+                                      name={`varFile.spec.store.spec.paths[${index}].path`}
                                       label=""
-                                      items={[]}
-                                      style={{ width: 240 }}
+                                      multiTextInputProps={{
+                                        expressions,
+                                        allowableTypes: allowableTypes.filter(
+                                          item => item !== MultiTypeInputType.RUNTIME
+                                        )
+                                      }}
+                                      style={{ width: isArtifactory ? 240 : 300 }}
                                     />
-                                  )}
-                                  <Button
-                                    minimal
-                                    icon="main-trash"
-                                    data-testid={`remove-header-${index}`}
-                                    onClick={() => arrayHelpers.remove(index)}
-                                  />
+                                    {isArtifactory && (
+                                      <FormInput.Select
+                                        name={`varFile.spec.store.spec.paths[${index}].fileName`}
+                                        label=""
+                                        items={rowArtifacts}
+                                        style={{ width: isArtifactory ? 240 : 300 }}
+                                        disabled={ArtifactsLoading}
+                                        placeholder={ArtifactsLoading ? 'Loading...' : 'Select a Artifact'}
+                                        onChange={val =>
+                                          formik?.setFieldValue(
+                                            `varFile.spec.store.spec.paths[${index}].fileName`,
+                                            val.label
+                                          )
+                                        }
+                                      />
+                                    )}
+                                    <Button
+                                      minimal
+                                      icon="main-trash"
+                                      data-testid={`remove-header-${index}`}
+                                      onClick={() => arrayHelpers.remove(index)}
+                                    />
+                                  </Layout.Horizontal>
                                 </Layout.Horizontal>
-                              </Layout.Horizontal>
-                            ))}
+                              )
+                            })}
                             <Button
                               icon="plus"
                               variation={ButtonVariation.LINK}

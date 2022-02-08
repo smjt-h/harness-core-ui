@@ -109,7 +109,6 @@ function TerraformPlanWidget(
   formikRef: StepFormikFowardRef<TFPlanFormData>
 ): React.ReactElement {
   const { initialValues, onUpdate, onChange, allowableTypes, isNewStep, readonly = false, stepViewType } = props
-  window.console.log('initialValues: ', initialValues)
   const { getString } = useStrings()
   const { expressions } = useVariablesExpression()
   const [connectorView, setConnectorView] = useState(false)
