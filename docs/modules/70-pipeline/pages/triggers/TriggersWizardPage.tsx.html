@@ -23,16 +23,16 @@
         <div class='clearfix'>
             
             <div class='fl pad1y space-right2'>
-                <span class="strong">75.41% </span>
+                <span class="strong">74.4% </span>
                 <span class="quiet">Statements</span>
-                <span class='fraction'>371/492</span>
+                <span class='fraction'>372/500</span>
             </div>
         
             
             <div class='fl pad1y space-right2'>
-                <span class="strong">57.97% </span>
+                <span class="strong">57.38% </span>
                 <span class="quiet">Branches</span>
-                <span class='fraction'>858/1480</span>
+                <span class='fraction'>863/1504</span>
             </div>
         
             
@@ -44,9 +44,9 @@
         
             
             <div class='fl pad1y space-right2'>
-                <span class="strong">75.88% </span>
+                <span class="strong">74.85% </span>
                 <span class="quiet">Lines</span>
-                <span class='fraction'>368/485</span>
+                <span class='fraction'>369/493</span>
             </div>
         
             
@@ -1897,9 +1897,7 @@
 <a name='L1838'></a><a href='#L1838'>1838</a>
 <a name='L1839'></a><a href='#L1839'>1839</a>
 <a name='L1840'></a><a href='#L1840'>1840</a>
-<a name='L1841'></a><a href='#L1841'>1841</a>
-<a name='L1842'></a><a href='#L1842'>1842</a>
-<a name='L1843'></a><a href='#L1843'>1843</a></td><td class="line-coverage quiet"><span class="cline-any cline-neutral">&nbsp;</span>
+<a name='L1841'></a><a href='#L1841'>1841</a></td><td class="line-coverage quiet"><span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
@@ -3086,11 +3084,10 @@
 <span class="cline-any cline-yes">6x</span>
 <span class="cline-any cline-yes">6x</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">6x</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
 <span class="cline-any cline-yes">6x</span>
 <span class="cline-any cline-no">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
@@ -3115,11 +3112,10 @@
 <span class="cline-any cline-no">&nbsp;</span>
 <span class="cline-any cline-no">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
 <span class="cline-any cline-no">&nbsp;</span>
 <span class="cline-any cline-no">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
@@ -3528,7 +3524,7 @@
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-yes">88x</span>
+<span class="cline-any cline-yes">81x</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-yes">7x</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
@@ -3841,7 +3837,7 @@ import {
   TriggerConfigDTO,
   eventTypes,
   FlatValidFormikValuesInterface,
-  // displayPipelineIntegrityResponse,
+  displayPipelineIntegrityResponse,
   getOrderedPipelineVariableValues
 } from './utils/TriggersWizardPageUtils'
 import {
@@ -4928,12 +4924,11 @@ const TriggersWizardPage: React.FC = (): JSX.Element =&gt; {
       try {
         const { status, data } = await updateTrigger(yamlStringify({ trigger: clearNullUndefined(triggerYaml) }) as any)
 &nbsp;
-        // if (data?.errors &amp;&amp; !isEmpty(data?.errors)) {
-        //   const displayErrors = displayPipelineIntegrityResponse(data.errors)
-        //   setFormErrors(displayErrors)
-        //   return
-        // } else
-        <span class="missing-if-branch" title="if path not taken" >I</span>if (status === ResponseStatus.SUCCESS) {
+        <span class="missing-if-branch" title="if path not taken" >I</span>if (data<span class="branch-0 cbranch-no" title="branch not covered" >?.e</span>rrors &amp;&amp; <span class="branch-1 cbranch-no" title="branch not covered" >!isEmpty(data?.errors))</span> {
+          const displayErrors = <span class="cstat-no" title="statement not covered" >displayPipelineIntegrityResponse(data.errors)</span>
+<span class="cstat-no" title="statement not covered" >          setFormErrors(displayErrors)</span>
+<span class="cstat-no" title="statement not covered" >          return</span>
+        } else <span class="missing-if-branch" title="if path not taken" >I</span>if (status === ResponseStatus.SUCCESS) {
 <span class="cstat-no" title="statement not covered" >          showSuccess(</span>
             getString('pipeline.triggers.toast.successfulUpdate', {
               name: data?.name
@@ -4957,12 +4952,11 @@ const TriggersWizardPage: React.FC = (): JSX.Element =&gt; {
 <span class="cstat-no" title="statement not covered" >      try {</span>
         const { status, data } = <span class="cstat-no" title="statement not covered" >await createTrigger(yamlStringify({ trigger: clearNullUndefined(triggerYaml) }) as any)</span>
 &nbsp;
-        // if (data?.errors &amp;&amp; !isEmpty(data?.errors)) {
-        //   const displayErrors = displayPipelineIntegrityResponse(data.errors)
-        //   setFormErrors(displayErrors)
-        //   return
-        // } else
-<span class="cstat-no" title="statement not covered" >        if (status === ResponseStatus.SUCCESS) {</span>
+<span class="cstat-no" title="statement not covered" >        if (data?.errors &amp;&amp; !isEmpty(data?.errors)) {</span>
+          const displayErrors = <span class="cstat-no" title="statement not covered" >displayPipelineIntegrityResponse(data.errors)</span>
+<span class="cstat-no" title="statement not covered" >          setFormErrors(displayErrors)</span>
+<span class="cstat-no" title="statement not covered" >          return</span>
+        } else <span class="cstat-no" title="statement not covered" >if (status === ResponseStatus.SUCCESS) {</span>
 <span class="cstat-no" title="statement not covered" >          showSuccess(</span>
             getString('pipeline.triggers.toast.successfulCreate', {
               name: data?.name
@@ -5590,7 +5584,7 @@ export default TriggersWizardPage
             <div class='footer quiet pad2 space-top1 center small'>
                 Code coverage generated by
                 <a href="https://istanbul.js.org/" target="_blank">istanbul</a>
-                at Mon Feb 07 2022 18:31:47 GMT+0000 (Greenwich Mean Time)
+                at Tue Feb 08 2022 00:32:00 GMT+0000 (Greenwich Mean Time)
             </div>
         </div>
         <script src="../../../../prettify.js"></script>
