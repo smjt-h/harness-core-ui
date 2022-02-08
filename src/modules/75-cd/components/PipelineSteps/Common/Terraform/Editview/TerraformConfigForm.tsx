@@ -165,7 +165,7 @@ export const TerraformConfigStepOne: React.FC<StepProps<any> & TerraformConfigSt
                           <Button
                             icon="question"
                             minimal
-                            tooltip={getString('connectors.title.gitConnector')}
+                            tooltip={`${ConnectorMap[selectedConnector]} ${getString('connector')}`}
                             iconProps={{ size: 14 }}
                           />
                         </Text>

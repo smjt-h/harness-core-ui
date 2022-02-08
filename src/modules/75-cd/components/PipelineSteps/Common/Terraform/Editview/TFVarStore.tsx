@@ -140,7 +140,7 @@ export const TFVarStore: React.FC<StepProps<any> & TFVarStoreProps> = ({
                           <Button
                             icon="question"
                             minimal
-                            tooltip={getString('connectors.title.gitConnector')}
+                            tooltip={`${selectedType} ${getString('connector')}`}
                             iconProps={{ size: 14 }}
                           />
                         </Text>
