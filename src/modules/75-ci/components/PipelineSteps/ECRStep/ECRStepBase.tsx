@@ -26,11 +26,11 @@ import { transformValuesFieldsConfig, editViewValidateFieldsConfig } from './ECR
 import type { ECRStepProps, ECRStepData, ECRStepDataUI } from './ECRStep'
 import { CIStep } from '../CIStep/CIStep'
 import { CIStepOptionalConfig } from '../CIStep/CIStepOptionalConfig'
-import { useGetPropagatedStageById } from '../CIStep/StepUtils'
+import { useGetPropagatedStageById, AllMultiTypeInputTypes } from '../CIStep/StepUtils'
 import css from '@pipeline/components/PipelineSteps/Steps/Steps.module.scss'
 
 export const ECRStepBase = (
-  { initialValues, onUpdate, isNewStep = true, readonly, stepViewType, allowableTypes, onChange }: ECRStepProps,
+  { initialValues, onUpdate, isNewStep = true, readonly, stepViewType, onChange }: ECRStepProps,
   formikRef: StepFormikFowardRef<ECRStepData>
 ): JSX.Element => {
   const {
@@ -96,7 +96,6 @@ export const ECRStepBase = (
               isNewStep={isNewStep}
               readonly={readonly}
               stepViewType={stepViewType}
-              allowableTypes={allowableTypes}
               enableFields={{
                 name: {},
                 'spec.imageName': {},
@@ -112,11 +111,18 @@ export const ECRStepBase = (
                       {getString('pipelineSteps.awsConnectorLabel')}
                     </Text>
                   ),
-                  type: Connectors.AWS
+                  type: Connectors.AWS,
+                  allowableTypes: AllMultiTypeInputTypes
                 },
-                'spec.region': {},
-                'spec.account': {},
-                'spec.tags': {}
+                'spec.region': {
+                  allowableTypes: AllMultiTypeInputTypes
+                },
+                'spec.account': {
+                  allowableTypes: AllMultiTypeInputTypes
+                },
+                'spec.tags': {
+                  allowableTypes: AllMultiTypeInputTypes
+                }
               }}
               formik={formik}
             />
@@ -130,21 +136,33 @@ export const ECRStepBase = (
                       stepViewType={stepViewType}
                       readonly={readonly}
                       enableFields={{
-                        'spec.optimize': { shouldHide: buildInfrastructureType === 'VM' },
-                        'spec.dockerfile': {},
-                        'spec.context': {},
-                        'spec.labels': {},
-                        'spec.buildArgs': {},
-                        'spec.target': { tooltipId: 'target' },
-                        'spec.remoteCacheImage': { shouldHide: buildInfrastructureType === 'VM' }
+                        'spec.optimize': {
+                          shouldHide: buildInfrastructureType === 'VM',
+                          allowableTypes: AllMultiTypeInputTypes
+                        },
+                        'spec.dockerfile': {
+                          allowableTypes: AllMultiTypeInputTypes
+                        },
+                        'spec.context': {
+                          allowableTypes: AllMultiTypeInputTypes
+                        },
+                        'spec.labels': {
+                          allowableTypes: AllMultiTypeInputTypes
+                        },
+                        'spec.buildArgs': {
+                          allowableTypes: AllMultiTypeInputTypes
+                        },
+                        'spec.target': {
+                          tooltipId: 'target',
+                          allowableTypes: AllMultiTypeInputTypes
+                        },
+                        'spec.remoteCacheImage': {
+                          shouldHide: buildInfrastructureType === 'VM',
+                          allowableTypes: AllMultiTypeInputTypes
+                        }
                       }}
-                      allowableTypes={allowableTypes}
                     />
-                    <StepCommonFields
-                      disabled={readonly}
-                      allowableTypes={allowableTypes}
-                      buildInfrastructureType={buildInfrastructureType}
-                    />
+                    <StepCommonFields disabled={readonly} buildInfrastructureType={buildInfrastructureType} />
                   </Container>
                 }
               />

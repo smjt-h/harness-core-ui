@@ -57,7 +57,6 @@ interface StepCommonFieldsProps {
   withoutTimeout?: boolean
   disabled?: boolean
   enableFields?: string[]
-  allowableTypes: MultiTypeInputType[]
   buildInfrastructureType: K8sDirectInfraYaml['type']
 }
 
@@ -65,7 +64,6 @@ const StepCommonFields = ({
   withoutTimeout,
   disabled,
   enableFields = [],
-  allowableTypes,
   buildInfrastructureType
 }: StepCommonFieldsProps): JSX.Element => {
   const { getString } = useStrings()
@@ -209,7 +207,7 @@ const StepCommonFields = ({
               multiTextInputProps={{
                 multiTextInputProps: {
                   expressions,
-                  allowableTypes: allowableTypes.filter(type => type !== MultiTypeInputType.RUNTIME)
+                  allowableTypes: [MultiTypeInputType.FIXED, MultiTypeInputType.EXPRESSION]
                 },
                 disabled
               }}
@@ -250,7 +248,10 @@ const StepCommonFields = ({
           <FormMultiTypeDurationField
             className={css.removeBpLabelMargin}
             name="timeout"
-            multiTypeDurationProps={{ expressions, allowableTypes }}
+            multiTypeDurationProps={{
+              expressions,
+              allowableTypes: [MultiTypeInputType.FIXED, MultiTypeInputType.EXPRESSION, MultiTypeInputType.RUNTIME]
+            }}
             label={
               <Layout.Horizontal style={{ display: 'flex', alignItems: 'baseline' }}>
                 <Text className={css.inpLabel} color={Color.GREY_600} font={{ size: 'small', weight: 'semi-bold' }}>

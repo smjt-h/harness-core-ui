@@ -7,7 +7,7 @@
 
 import isEmpty from 'lodash/isEmpty'
 import type { FormikErrors } from 'formik'
-import { RUNTIME_INPUT_VALUE } from '@wings-software/uicore'
+import { RUNTIME_INPUT_VALUE, MultiTypeInputType } from '@wings-software/uicore'
 import type { UseFromStageInfraYaml } from 'services/ci'
 import { usePipelineContext } from '@pipeline/components/PipelineStudio/PipelineContext/PipelineContext'
 import type { StringsMap } from 'stringTypes'
@@ -57,3 +57,9 @@ export const shouldRenderRunTimeInputView = (value: any): boolean => {
   }
   return false
 }
+
+export const AllMultiTypeInputTypes = [
+  MultiTypeInputType.FIXED,
+  MultiTypeInputType.RUNTIME,
+  MultiTypeInputType.EXPRESSION
+]
