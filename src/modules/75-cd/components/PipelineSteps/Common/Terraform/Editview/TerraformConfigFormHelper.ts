@@ -59,17 +59,17 @@ export const formInputNames = (isTerraformPlan: boolean) => ({
 
 export const formikOnChangeNames = (isTerraformPlan: boolean) => ({
   repoName: isTerraformPlan
-    ? 'configuration.configFiles.store.spec.repoName'
-    : 'configuration.spec.configFiles.store.spec.repoName',
+    ? 'spec.configuration.configFiles.store.spec.repoName'
+    : 'spec.configuration.spec.configFiles.store.spec.repoName',
   branch: isTerraformPlan
-    ? 'configuration.configFiles.store.spec.branch'
-    : 'configuration.spec.configFiles.store.spec.branch',
+    ? 'spec.configuration.configFiles.store.spec.branch'
+    : 'spec.configuration.spec.configFiles.store.spec.branch',
   commitId: isTerraformPlan
-    ? 'spec.configuration.configFiles.spec.store.spec.commitId'
+    ? 'spec.configuration.configFiles.store.spec.commitId'
     : 'spec.configuration.spec.configFiles.spec.store.spec.commitId',
   folderPath: isTerraformPlan
-    ? 'formik.values.spec?.configuration?.configFiles?.store.spec?.folderPath'
-    : 'formik.values.spec?.configuration?.spec?.store.spec?.folderPath'
+    ? 'formik.values.spec.configuration.configFiles.store.spec.folderPath'
+    : 'formik.values.spec.configuration.spec.store.spec.folderPath'
 })
 
 export const getBuildPayload = (type: ConnectorInfoDTO['type']) => {
@@ -99,7 +99,7 @@ export const stepTwoValidationSchema = (isTerraformPlan: boolean, getString: any
             then: Yup.string().trim().required(getString('validation.branchName'))
           }),
           commitId: Yup.string().when('gitFetchType', {
-            is: 'CommitId',
+            is: 'Commit',
             then: Yup.string().trim().required(getString('validation.commitId'))
           }),
           folderPath: Yup.string().required(getString('pipeline.manifestType.folderPathRequired'))

@@ -31,7 +31,6 @@ import { useVariablesExpression } from '@pipeline/components/PipelineStudio/Pipl
 import { useStrings } from 'framework/strings'
 import { FormMultiTypeConnectorField } from '@connectors/components/ConnectorReferenceField/FormMultiTypeConnectorField'
 import { ConfigureOptions } from '@common/components/ConfigureOptions/ConfigureOptions'
-import type { ConnectorSelectedValue } from '@connectors/components/ConnectorReferenceField/ConnectorReferenceField'
 import {
   AllowedTypes,
   tfVarIcons,
@@ -64,7 +63,6 @@ export const TerraformConfigStepOne: React.FC<StepProps<any> & TerraformConfigSt
   isReadonly,
   allowableTypes,
   nextStep,
-  isEditMode,
   setConnectorView,
   selectedConnector,
   setSelectedConnector,
@@ -83,7 +81,7 @@ export const TerraformConfigStepOne: React.FC<StepProps<any> & TerraformConfigSt
       ? data?.spec?.configuration?.configFiles?.store?.type
       : data?.spec?.configuration?.spec?.configFiles?.store?.type
     setSelectedConnector(selectedStore)
-  }, [isEditMode])
+  }, [])
 
   const newConnectorLabel = `${getString('newLabel')} ${
     !!selectedConnector && getString(ConnectorLabelMap[selectedConnector as ConnectorTypes])
@@ -154,18 +152,24 @@ export const TerraformConfigStepOne: React.FC<StepProps<any> & TerraformConfigSt
           const connectorRef = isTerraformPlan
             ? config?.configFiles?.store?.spec?.connectorRef
             : config?.spec?.configFiles?.store?.spec?.connectorRef
-          const disabled =
-            !connectorRef ||
-            (getMultiTypeFromValue(connectorRef) === MultiTypeInputType.FIXED &&
-              !(connectorRef as ConnectorSelectedValue)?.connector &&
-              connectorRef?.connector?.type !== selectedConnector)
+          const disabled = !connectorRef || connectorRef?.connector?.type !== selectedConnector
           return (
             <Form className={css.formComponent}>
               <div className={css.formContainerStepOne}>
                 {selectedConnector && (
                   <Layout.Horizontal className={css.horizontalFlex} spacing={'medium'}>
                     <FormMultiTypeConnectorField
-                      label={`${selectedConnector} ${getString('connector')}`}
+                      label={
+                        <Text style={{ display: 'flex', alignItems: 'center' }}>
+                          {ConnectorMap[selectedConnector]} {getString('connector')}
+                          <Button
+                            icon="question"
+                            minimal
+                            tooltip={getString('connectors.title.gitConnector')}
+                            iconProps={{ size: 14 }}
+                          />
+                        </Text>
+                      }
                       type={ConnectorMap[selectedConnector]}
                       width={400}
                       name={
@@ -354,7 +358,7 @@ export const TerraformConfigStepTwo: React.FC<StepProps<any> & TerraformConfigSt
                       style={{ alignSelf: 'center', marginTop: 1 }}
                       value={store?.folderPath as string}
                       type="String"
-                      variableName="formik.values.spec?.configuration?.configFiles?.store.spec?.folderPath"
+                      variableName={formInputNames(isTerraformPlan).folderPath}
                       showRequiredField={false}
                       showDefaultField={false}
                       showAdvanced={true}

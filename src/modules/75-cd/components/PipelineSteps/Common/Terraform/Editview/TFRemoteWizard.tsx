@@ -213,7 +213,16 @@ export const TFRemoteWizard: React.FC<StepProps<any> & TFRemoteProps> = ({
                     is: 'Commit',
                     then: Yup.string().trim().required(getString('validation.commitId'))
                   }),
-                  paths: Yup.string().required(getString('cd.pathCannotBeEmpty'))
+                  paths: Yup.lazy(value => {
+                    switch (typeof value) {
+                      case 'object':
+                        return Yup.array().of(
+                          Yup.object().shape({ path: Yup.string().required(getString('cd.pathCannotBeEmpty')) })
+                        )
+                      default:
+                        return Yup.mixed()
+                    }
+                  })
                 })
               })
             })

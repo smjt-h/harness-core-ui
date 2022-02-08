@@ -15,7 +15,6 @@ import {
   Card,
   Color,
   Formik,
-  getMultiTypeFromValue,
   Heading,
   Icon,
   Layout,
@@ -28,7 +27,6 @@ import {
 import { Form } from 'formik'
 import { useStrings } from 'framework/strings'
 import { FormMultiTypeConnectorField } from '@connectors/components/ConnectorReferenceField/FormMultiTypeConnectorField'
-import type { ConnectorSelectedValue } from '@connectors/components/ConnectorReferenceField/ConnectorReferenceField'
 
 import { useVariablesExpression } from '@pipeline/components/PipelineStudio/PiplineHooks/useVariablesExpression'
 import { ConnectorTypes, AllowedTypes, tfVarIcons, ConnectorMap, ConnectorLabelMap } from './TerraformConfigFormHelper'
@@ -190,10 +188,7 @@ export const TFVarStore: React.FC<StepProps<any> & TFVarStoreProps> = ({
                   }}
                   disabled={
                     /* istanbul ignore next */
-                    !connector ||
-                    (getMultiTypeFromValue(connector) === MultiTypeInputType.FIXED &&
-                      !(connector as ConnectorSelectedValue)?.connector &&
-                      connector?.connector?.type !== selectedType)
+                    !connector || connector?.connector?.type !== selectedType
                   }
                 />
               </Layout.Horizontal>
