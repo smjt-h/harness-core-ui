@@ -25,7 +25,7 @@
             <div class='fl pad1y space-right2'>
                 <span class="strong">100% </span>
                 <span class="quiet">Statements</span>
-                <span class='fraction'>26/26</span>
+                <span class='fraction'>29/29</span>
             </div>
         
             
@@ -39,14 +39,14 @@
             <div class='fl pad1y space-right2'>
                 <span class="strong">100% </span>
                 <span class="quiet">Functions</span>
-                <span class='fraction'>4/4</span>
+                <span class='fraction'>5/5</span>
             </div>
         
             
             <div class='fl pad1y space-right2'>
                 <span class="strong">100% </span>
                 <span class="quiet">Lines</span>
-                <span class='fraction'>25/25</span>
+                <span class='fraction'>28/28</span>
             </div>
         
             
@@ -185,7 +185,16 @@
 <a name='L126'></a><a href='#L126'>126</a>
 <a name='L127'></a><a href='#L127'>127</a>
 <a name='L128'></a><a href='#L128'>128</a>
-<a name='L129'></a><a href='#L129'>129</a></td><td class="line-coverage quiet"><span class="cline-any cline-neutral">&nbsp;</span>
+<a name='L129'></a><a href='#L129'>129</a>
+<a name='L130'></a><a href='#L130'>130</a>
+<a name='L131'></a><a href='#L131'>131</a>
+<a name='L132'></a><a href='#L132'>132</a>
+<a name='L133'></a><a href='#L133'>133</a>
+<a name='L134'></a><a href='#L134'>134</a>
+<a name='L135'></a><a href='#L135'>135</a>
+<a name='L136'></a><a href='#L136'>136</a>
+<a name='L137'></a><a href='#L137'>137</a>
+<a name='L138'></a><a href='#L138'>138</a></td><td class="line-coverage quiet"><span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
@@ -202,8 +211,17 @@
 <span class="cline-any cline-yes">4x</span>
 <span class="cline-any cline-yes">4x</span>
 <span class="cline-any cline-yes">4x</span>
+<span class="cline-any cline-yes">4x</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-yes">4x</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">4x</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">26x</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
@@ -326,12 +344,21 @@ import { noop } from 'lodash-es'
 import * as Yup from 'yup'
 import { Card, HarnessDocTooltip, ThumbnailSelect } from '@wings-software/uicore'
 import cx from 'classnames'
-import { useStrings } from 'framework/strings'
+import { useStrings, UseStringsReturn } from 'framework/strings'
 import { StageErrorContext } from '@pipeline/context/StageErrorContext'
 import { DeployTabs } from '@cd/components/PipelineStudio/DeployStageSetupShell/DeployStageSetupShellUtils'
 import { useFeatureFlags } from '@common/hooks/useFeatureFlag'
+import { ServiceDeploymentType } from '@cd/components/PipelineSteps/PipelineStepsUtil'
 import type { DeploymentTypeItem } from './DeploymentInterface'
 import stageCss from '../DeployStageSetupShell/DeployStage.module.scss'
+&nbsp;
+export function getServiceDeploymentTypeSchema(
+  getString: UseStringsReturn['getString']
+): Yup.StringSchema&lt;string | undefined&gt; {
+  return Yup.string()
+    .oneOf(Object.values(ServiceDeploymentType))
+    .required(getString('cd.pipelineSteps.serviceTab.deploymentTypeRequired'))
+}
 &nbsp;
 interface SelectServiceDeploymentTypeProps {
   selectedDeploymentType: string
@@ -350,54 +377,54 @@ export default function SelectDeploymentType(props: SelectServiceDeploymentTypeP
     {
       label: getString('serviceDeploymentTypes.kubernetes'),
       icon: 'service-kubernetes',
-      value: 'Kubernetes'
+      value: ServiceDeploymentType.Kubernetes
     },
     {
       label: getString('pipeline.nativeHelm'),
       icon: 'service-helm',
-      value: 'NativeHelm',
+      value: ServiceDeploymentType.NativeHelm,
       disabled: !NG_NATIVE_HELM
     },
     {
       label: getString('serviceDeploymentTypes.amazonEcs'),
       icon: 'service-ecs',
-      value: 'amazonEcs',
+      value: ServiceDeploymentType.amazonEcs,
       disabled: true
     },
     {
       label: getString('serviceDeploymentTypes.amazonAmi'),
       icon: 'main-service-ami',
-      value: 'amazonAmi',
+      value: ServiceDeploymentType.amazonAmi,
       disabled: true
     },
     {
       label: getString('serviceDeploymentTypes.awsCodeDeploy'),
       icon: 'app-aws-code-deploy',
-      value: 'awsCodeDeploy',
+      value: ServiceDeploymentType.awsCodeDeploy,
       disabled: true
     },
     {
       label: getString('serviceDeploymentTypes.winrm'),
       icon: 'command-winrm',
-      value: 'winrm',
+      value: ServiceDeploymentType.winrm,
       disabled: true
     },
     {
       label: getString('serviceDeploymentTypes.awsLambda'),
       icon: 'app-aws-lambda',
-      value: 'awsLambda',
+      value: ServiceDeploymentType.awsLambda,
       disabled: true
     },
     {
       label: getString('serviceDeploymentTypes.pcf'),
       icon: 'service-pivotal',
-      value: 'pcf',
+      value: ServiceDeploymentType.pcf,
       disabled: true
     },
     {
       label: getString('serviceDeploymentTypes.ssh'),
       icon: 'secret-ssh',
-      value: 'ssh',
+      value: ServiceDeploymentType.ssh,
       disabled: true
     }
   ]
@@ -413,7 +440,7 @@ export default function SelectDeploymentType(props: SelectServiceDeploymentTypeP
       enableReinitialize={true}
       initialValues={{ deploymentType: selectedDeploymentType }}
       validationSchema={Yup.object().shape({
-        deploymentType: Yup.string().required(getString('cd.pipelineSteps.serviceTab.deploymentTypeRequired'))
+        deploymentType: getServiceDeploymentTypeSchema(getString)
       })}
     &gt;
       {formik =&gt; {
@@ -448,7 +475,7 @@ export default function SelectDeploymentType(props: SelectServiceDeploymentTypeP
             <div class='footer quiet pad2 space-top1 center small'>
                 Code coverage generated by
                 <a href="https://istanbul.js.org/" target="_blank">istanbul</a>
-                at Tue Feb 08 2022 00:32:00 GMT+0000 (Greenwich Mean Time)
+                at Tue Feb 08 2022 06:31:05 GMT+0000 (Greenwich Mean Time)
             </div>
         </div>
         <script src="../../../../../prettify.js"></script>
