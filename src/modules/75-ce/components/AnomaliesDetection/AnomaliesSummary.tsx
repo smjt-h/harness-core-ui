@@ -8,7 +8,6 @@
 import React, { useMemo } from 'react'
 import { Container, Layout, Text, Color } from '@wings-software/uicore'
 import { useStrings } from 'framework/strings'
-
 import {
   HorizontalLayout,
   LEGEND_LIMIT,
