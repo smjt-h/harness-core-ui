@@ -3543,6 +3543,7 @@ export interface StringsMap {
   'ce.co.rulesTableHeaders.savings': string
   'ce.co.rulesTableHeaders.status': string
   'ce.co.searchResultsText': string
+  'ce.co.selectResourceGroupPlaceholder': string
   'ce.co.setupCloudProvider': string
   'ce.co.sshSetup': string
   'ce.common.budget': string

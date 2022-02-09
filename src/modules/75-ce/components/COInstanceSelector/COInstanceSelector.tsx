@@ -6,8 +6,9 @@
  */
 
 import React, { useState, useEffect } from 'react'
+import { useParams } from 'react-router-dom'
 import type { CellProps } from 'react-table'
-import { isEmpty as _isEmpty } from 'lodash-es'
+import { isEmpty as _isEmpty, defaultTo as _defaultTo } from 'lodash-es'
 import {
   Text,
   Color,
@@ -17,23 +18,27 @@ import {
   Checkbox,
   Button,
   Icon,
-  TableV2
+  TableV2,
+  Select,
+  SelectOption
 } from '@wings-software/uicore'
 import type { GatewayDetails, InstanceDetails } from '@ce/components/COCreateGateway/models'
 import { useTelemetry } from '@common/hooks/useTelemetry'
+import { ResourceGroup, useAllResourceGroups } from 'services/lw'
+import type { AccountPathProps } from '@common/interfaces/RouteInterfaces'
 import { useStrings } from 'framework/strings'
+import { Utils } from '@ce/common/Utils'
 import css from './COInstanceSelector.module.scss'
 
 interface COInstanceSelectorprops {
   instances: InstanceDetails[]
   selectedInstances: InstanceDetails[]
   setSelectedInstances: (selectedInstances: InstanceDetails[]) => void
-  search: (t: string) => void
   setGatewayDetails: (gatewayDetails: GatewayDetails) => void
   gatewayDetails: GatewayDetails
   onInstancesAddSuccess?: () => void
   loading?: boolean
-  refresh?: () => void
+  refresh?: (tomlString?: string) => void
 }
 
 function TableCell(tableProps: CellProps<InstanceDetails>): JSX.Element {
@@ -54,11 +59,48 @@ function NameCell(tableProps: CellProps<InstanceDetails>): JSX.Element {
 const TOTAL_ITEMS_PER_PAGE = 8
 
 const COInstanceSelector: React.FC<COInstanceSelectorprops> = props => {
-  const [selectedInstances, setSelectedInstances] = useState<InstanceDetails[]>(props.selectedInstances || [])
+  const { accountId } = useParams<AccountPathProps>()
   const { trackEvent } = useTelemetry()
-  const [pageIndex, setPageIndex] = useState<number>(0)
-  const instances: InstanceDetails[] = props.instances
   const { getString } = useStrings()
+  const [filteredInstances, setFilteredInstances] = useState<InstanceDetails[]>([])
+  const [selectedInstances, setSelectedInstances] = useState<InstanceDetails[]>(props.selectedInstances || [])
+  const [pageIndex, setPageIndex] = useState<number>(0)
+  const [resourceGroupData, setResourceGroupData] = useState<SelectOption[]>([])
+  const [selectedResourceGroup, setSelectedResourceGroup] = useState<SelectOption>()
+
+  const isAzureProvider = Utils.isProviderAzure(props.gatewayDetails.provider)
+
+  const { data: resourceGroups, loading: resourceGroupsLoading } = useAllResourceGroups({
+    account_id: accountId, // eslint-disable-line
+    queryParams: {
+      cloud_account_id: props.gatewayDetails.cloudAccount.id, // eslint-disable-line
+      accountIdentifier: accountId
+    }
+  })
+
+  useEffect(() => {
+    setFilteredInstances(props.instances)
+  }, [props.instances])
+
+  useEffect(() => {
+    setResourceGroupDataFromResponse(resourceGroups?.response)
+  }, [resourceGroups?.response])
+
+  useEffect(() => {
+    if (selectedResourceGroup) {
+      const groupText = _defaultTo(selectedResourceGroup.value, '') as string
+      props.refresh?.(`resource_groups=['${groupText}']`)
+    }
+  }, [selectedResourceGroup])
+
+  const setResourceGroupDataFromResponse = (response: ResourceGroup[] = []) => {
+    const loaded = response.map(r => ({
+      label: r.name as string,
+      value: r.name as string
+    }))
+    setResourceGroupData(loaded)
+  }
+
   function TableCheck(tableProps: CellProps<InstanceDetails>): JSX.Element {
     return (
       <Checkbox
@@ -84,12 +126,21 @@ const COInstanceSelector: React.FC<COInstanceSelectorprops> = props => {
     props.setSelectedInstances(newInstances)
     props.gatewayDetails.selectedInstances = newInstances
     props.setGatewayDetails(props.gatewayDetails)
+    handleSearch('')
     props.onInstancesAddSuccess?.()
   }
 
-  const handleSearch = (text: string) => {
+  const handleSearch = (text: string): void => {
     pageIndex !== 0 && setPageIndex(0)
-    props.search(text)
+    if (!text) {
+      setFilteredInstances(props.instances)
+      return
+    }
+    text = text.toLowerCase()
+    const instances = props.instances.filter(
+      t => t.name.toLowerCase().indexOf(text) >= 0 || t.id.toLowerCase().indexOf(text) >= 0
+    )
+    setFilteredInstances(instances)
   }
 
   useEffect(() => {
@@ -114,33 +165,52 @@ const COInstanceSelector: React.FC<COInstanceSelectorprops> = props => {
             {getString('ce.co.autoStoppingRule.configuration.instanceModal.description')}
           </Text>
         </Container>
-        <Layout.Horizontal
+        <Layout.Vertical
           style={{
             paddingBottom: 20,
             paddingTop: 20,
-            borderBottom: '1px solid #CDD3DD',
-            justifyContent: 'space-between'
+            borderBottom: '1px solid #CDD3DD'
           }}
         >
-          <Layout.Horizontal flex={{ alignItems: 'center' }}>
-            <Button
-              onClick={addInstances}
-              disabled={_isEmpty(selectedInstances)}
-              style={{
-                backgroundColor: selectedInstances.length ? '#0278D5' : 'inherit',
-                color: selectedInstances.length ? '#F3F3FA' : 'inherit',
-                marginRight: 20
-              }}
-            >
-              {`Add selected ${selectedInstances.length ? '(' + selectedInstances.length + ')' : ''}`}
-            </Button>
-            <div onClick={handleRefresh}>
-              <Icon name="refresh" color="primary7" size={14} />
-              <span style={{ color: 'var(--primary-7)', margin: '0 5px', cursor: 'pointer' }}>Refresh</span>
-            </div>
+          <Layout.Horizontal
+            style={{
+              justifyContent: 'space-between'
+            }}
+          >
+            <Layout.Horizontal flex={{ alignItems: 'center' }}>
+              <Button
+                onClick={addInstances}
+                disabled={_isEmpty(selectedInstances)}
+                style={{
+                  backgroundColor: selectedInstances.length ? '#0278D5' : 'inherit',
+                  color: selectedInstances.length ? '#F3F3FA' : 'inherit',
+                  marginRight: 20
+                }}
+              >
+                {`Add selected ${selectedInstances.length ? '(' + selectedInstances.length + ')' : ''}`}
+              </Button>
+              <div onClick={handleRefresh}>
+                <Icon name="refresh" color="primary7" size={14} />
+                <span style={{ color: 'var(--primary-7)', margin: '0 5px', cursor: 'pointer' }}>Refresh</span>
+              </div>
+            </Layout.Horizontal>
+            <ExpandingSearchInput className={css.search} onChange={handleSearch} />
           </Layout.Horizontal>
-          <ExpandingSearchInput className={css.search} onChange={handleSearch} />
-        </Layout.Horizontal>
+          {isAzureProvider ? (
+            <Layout.Horizontal flex={{ justifyContent: 'flex-start' }} spacing={'large'} style={{ maxWidth: '40%' }}>
+              <Select
+                disabled={resourceGroupsLoading}
+                items={resourceGroupData}
+                onChange={setSelectedResourceGroup}
+                value={selectedResourceGroup}
+                inputProps={{
+                  placeholder: getString('ce.co.selectResourceGroupPlaceholder')
+                }}
+                data-testid="resourceGroupSelector"
+              />
+            </Layout.Horizontal>
+          ) : null}
+        </Layout.Vertical>
         <Container>
           {props.loading && (
             <Layout.Horizontal flex={{ justifyContent: 'center' }}>
@@ -150,14 +220,14 @@ const COInstanceSelector: React.FC<COInstanceSelectorprops> = props => {
           {!props.loading && (
             <TableV2
               className={css.instancesTable}
-              data={(instances || []).slice(
+              data={filteredInstances.slice(
                 pageIndex * TOTAL_ITEMS_PER_PAGE,
                 pageIndex * TOTAL_ITEMS_PER_PAGE + TOTAL_ITEMS_PER_PAGE
               )}
               pagination={{
                 pageSize: TOTAL_ITEMS_PER_PAGE,
                 pageIndex: pageIndex,
-                pageCount: Math.ceil((props.instances || []).length / TOTAL_ITEMS_PER_PAGE) ?? 1,
+                pageCount: Math.ceil(filteredInstances.length / TOTAL_ITEMS_PER_PAGE) ?? 1,
                 itemCount: (props.instances || []).length,
                 gotoPage: newPageIndex => setPageIndex(newPageIndex)
               }}

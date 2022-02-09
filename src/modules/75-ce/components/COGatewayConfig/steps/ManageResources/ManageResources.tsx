@@ -76,7 +76,6 @@ const ManageResources: React.FC<ManageResourcesProps> = props => {
   const [selectedAsg, setSelectedAsg] = useState<ASGMinimal | undefined>(
     props.gatewayDetails.routing?.instance?.scale_group
   )
-  const [filteredInstances, setFilteredInstances] = useState<InstanceDetails[]>([])
   const [allInstances, setAllInstances] = useState<InstanceDetails[]>([])
   const [selectedInstances, setSelectedInstances] = useState<InstanceDetails[]>(props.gatewayDetails.selectedInstances)
   const [selectedConnector, setSelectedConnector] = useState<ConnectorResponse | undefined>()
@@ -116,7 +115,7 @@ const ManageResources: React.FC<ManageResourcesProps> = props => {
       return
     }
     const resourcesFetchMap: Record<string, () => void> = {
-      [RESOURCES.INSTANCES]: refreshInstances,
+      [RESOURCES.INSTANCES]: Utils.getConditionalResult(!isAzureProvider, refreshInstances, undefined),
       [RESOURCES.ASG]: fetchAndSetAsgItems,
       [RESOURCES.KUBERNETES]: fetchAndSetConnectors
     }
@@ -253,10 +252,10 @@ const ManageResources: React.FC<ManageResourcesProps> = props => {
     }
   }
 
-  const refreshInstances = async (): Promise<void> => {
+  const refreshInstances = async (textTomlString: string = ''): Promise<void> => {
     try {
       const result = await getInstances(
-        { Text: '' },
+        { Text: textTomlString },
         {
           queryParams: {
             cloud_account_id: props.gatewayDetails.cloudAccount.id, // eslint-disable-line
@@ -270,7 +269,6 @@ const ManageResources: React.FC<ManageResourcesProps> = props => {
           ?.filter(x => x.status !== 'terminated')
           .map(item => fromResourceToInstanceDetails(item, isAzureProvider)) || []
       setAllInstances(instances)
-      setFilteredInstances(instances)
     } catch (e) {
       handleErrorDisplay(e, 'ce.refetch.instance.error')
     }
@@ -371,7 +369,6 @@ const ManageResources: React.FC<ManageResourcesProps> = props => {
       <ResourceSelectionModal
         closeBtnTestId={'close-instance-modal'}
         onClose={() => {
-          handleSearch('')
           closeInstancesModal()
         }}
       >
@@ -379,11 +376,9 @@ const ManageResources: React.FC<ManageResourcesProps> = props => {
           selectedInstances={selectedInstances}
           setSelectedInstances={setSelectedInstances}
           setGatewayDetails={props.setGatewayDetails}
-          instances={filteredInstances}
+          instances={allInstances}
           gatewayDetails={props.gatewayDetails}
-          search={handleSearch}
           onInstancesAddSuccess={() => {
-            handleSearch('')
             closeInstancesModal()
           }}
           loading={loadingInstances}
@@ -391,7 +386,7 @@ const ManageResources: React.FC<ManageResourcesProps> = props => {
         />
       </ResourceSelectionModal>
     )
-  }, [filteredInstances, selectedInstances, loadingInstances, props.gatewayDetails])
+  }, [allInstances, selectedInstances, loadingInstances, props.gatewayDetails])
 
   const [openEcsModal, closeEcsModal] = useModalHook(
     () => (
@@ -473,21 +468,6 @@ const ManageResources: React.FC<ManageResourcesProps> = props => {
     if (resource) {
       modalCbMap[resource]?.()
     }
-  }
-
-  const handleSearch = (text: string): void => {
-    if (!text) {
-      setFilteredInstances(allInstances)
-      return
-    }
-    text = text.toLowerCase()
-    const instances: InstanceDetails[] = []
-    allInstances.forEach(t => {
-      if (t.name.toLowerCase().indexOf(text) >= 0 || t.id.toLowerCase().indexOf(text) >= 0) {
-        instances.push(t)
-      }
-    })
-    setFilteredInstances(instances)
   }
 
   const handleDeletion = (rowIndex: number) => {
