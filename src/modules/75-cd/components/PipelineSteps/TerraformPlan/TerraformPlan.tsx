@@ -569,9 +569,13 @@ function TerraformPlanWidget(
                       isTerraformPlan
                       isReadonly={readonly}
                       allowableTypes={allowableTypes}
-                      onSubmitCallBack={(data: any) => {
+                      onSubmitCallBack={(data: any, prevStepData: any) => {
                         const configObject = {
                           ...data.spec?.configuration?.configFiles
+                        }
+
+                        if (prevStepData.identifier && prevStepData.identifier !== data?.identifier) {
+                          configObject.store.spec.connectorRef = prevStepData?.identifier
                         }
 
                         if (configObject?.store.spec.gitFetchType === 'Branch') {
@@ -581,11 +585,10 @@ function TerraformPlanWidget(
                         }
 
                         const valObj = cloneDeep(formik.values)
-                        configObject.store.type = configObject?.store?.spec?.connectorRef?.connector?.type || 'Git'
+                        configObject.store.type = prevStepData?.selectedType
                         set(valObj, 'spec.configuration.configFiles', { ...configObject })
-
                         formik.setValues(valObj)
-
+                        setConnectorView(false)
                         setShowRemoteWizard(false)
                       }}
                     />

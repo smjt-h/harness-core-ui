@@ -40,6 +40,9 @@ export const ConnectorLabelMap: Record<ConnectorTypes, StringKeys> = {
 }
 
 export const formInputNames = (isTerraformPlan: boolean) => ({
+  connectorRef: isTerraformPlan
+    ? 'spec.configuration.configFiles.store.spec.connectorRef'
+    : 'spec.configuration.spec.configFiles.store.spec.connectorRef',
   repoName: isTerraformPlan
     ? 'spec.configuration.configFiles.store.spec.repoName'
     : 'spec.configuration.spec.configFiles.store.spec.repoName',

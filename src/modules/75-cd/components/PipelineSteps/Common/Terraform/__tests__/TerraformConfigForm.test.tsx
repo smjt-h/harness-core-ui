@@ -114,7 +114,30 @@ const renderStepTwoComponent = (data?: any): void => {
 
 describe('TerraformConfigForm StepTwo tests', () => {
   test(`renders without crashing with no initial data`, async () => {
-    renderStepTwoComponent()
+    const prevStepData = {
+      formValues: {
+        spec: {
+          configuration: {
+            configFiles: {
+              store: {
+                spec: {
+                  repoName: '',
+                  gitFetchType: '',
+                  commitId: '',
+                  folderPath: '',
+                  connectorRef: {
+                    connector: {
+                      spec: {}
+                    }
+                  }
+                }
+              }
+            }
+          }
+        }
+      }
+    }
+    renderStepTwoComponent(prevStepData)
     // all inputs are displayed
     const fetchType = await screen.findByPlaceholderText('- pipeline.manifestType.gitFetchTypeLabel -')
     expect(fetchType).toBeInTheDocument()
@@ -125,19 +148,21 @@ describe('TerraformConfigForm StepTwo tests', () => {
 
   test(`loads data in edit mode`, async () => {
     const prevStepData = {
-      spec: {
-        configuration: {
-          configFiles: {
-            store: {
-              spec: {
-                repoName: 'git name',
-                gitFetchType: 'pipelineSteps.commitIdValue',
-                commitId: 'test-commit',
-                folderPath: 'test-folder',
-                connectorRef: {
-                  connector: {
-                    spec: {
-                      connectionType: 'Account'
+      formValues: {
+        spec: {
+          configuration: {
+            configFiles: {
+              store: {
+                spec: {
+                  repoName: 'git name',
+                  gitFetchType: 'pipelineSteps.commitIdValue',
+                  commitId: 'test-commit',
+                  folderPath: 'test-folder',
+                  connectorRef: {
+                    connector: {
+                      spec: {
+                        connectionType: 'Account'
+                      }
                     }
                   }
                 }

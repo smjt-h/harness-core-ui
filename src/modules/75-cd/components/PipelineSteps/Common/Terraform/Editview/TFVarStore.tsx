@@ -124,7 +124,9 @@ export const TFVarStore: React.FC<StepProps<any> & TFVarStoreProps> = ({
         })}
       >
         {formik => {
-          const connector = formik.values.varFile?.spec?.store?.spec?.connectorRef
+          const connectorRef = formik.values.varFile?.spec?.store?.spec?.connectorRef
+          const disabled =
+            !connectorRef || (connectorRef?.connector?.type && connectorRef?.connector?.type !== selectedType)
           return (
             <Form className={css.formComponent}>
               <div className={css.formContainerStepOne}>
@@ -186,10 +188,7 @@ export const TFVarStore: React.FC<StepProps<any> & TFVarStoreProps> = ({
                     /* istanbul ignore next */
                     nextStep?.({ ...formik.values, selectedType })
                   }}
-                  disabled={
-                    /* istanbul ignore next */
-                    !connector || connector?.connector?.type !== selectedType
-                  }
+                  disabled={disabled}
                 />
               </Layout.Horizontal>
             </Form>

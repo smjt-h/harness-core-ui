@@ -334,7 +334,7 @@ export const TFRemoteWizard: React.FC<StepProps<any> & TFRemoteProps> = ({
                       render={arrayHelpers => {
                         return (
                           <div>
-                            {(formik.values?.varFile?.spec?.store?.spec?.paths || []).map(
+                            {(formik.values?.varFile?.spec?.store?.spec?.paths || [{ path: '' }]).map(
                               (path: PathInterface, index: number) => (
                                 <Layout.Horizontal
                                   key={`${path}-${index}`}

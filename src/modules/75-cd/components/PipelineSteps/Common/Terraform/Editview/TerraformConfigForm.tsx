@@ -152,7 +152,8 @@ export const TerraformConfigStepOne: React.FC<StepProps<any> & TerraformConfigSt
           const connectorRef = isTerraformPlan
             ? config?.configFiles?.store?.spec?.connectorRef
             : config?.spec?.configFiles?.store?.spec?.connectorRef
-          const disabled = !connectorRef || connectorRef?.connector?.type !== selectedConnector
+          const disabled =
+            !connectorRef || (connectorRef?.connector?.type && connectorRef?.connector?.type !== selectedConnector)
           return (
             <Form className={css.formComponent}>
               <div className={css.formContainerStepOne}>
@@ -195,7 +196,7 @@ export const TerraformConfigStepOne: React.FC<StepProps<any> & TerraformConfigSt
                       iconProps={{ size: 12 }}
                       onClick={() => {
                         setConnectorView(true)
-                        nextStep?.({ ...data, selectedType: selectedConnector })
+                        nextStep?.({ formValues: data, selectedType: selectedConnector })
                       }}
                     />
                   </Layout.Horizontal>
@@ -207,7 +208,9 @@ export const TerraformConfigStepOne: React.FC<StepProps<any> & TerraformConfigSt
                   type="submit"
                   text={getString('continue')}
                   rightIcon="chevron-right"
-                  onClick={() => nextStep?.({ ...formik.values, selectedType: selectedConnector })}
+                  onClick={() => {
+                    nextStep?.({ formValues: formik.values, selectedType: selectedConnector })
+                  }}
                   disabled={disabled}
                 />
               </Layout.Horizontal>
@@ -249,8 +252,8 @@ export const TerraformConfigStepTwo: React.FC<StepProps<any> & TerraformConfigSt
       </Heading>
       <Formik
         formName="tfRemoteWizardForm"
-        initialValues={prevStepData}
-        onSubmit={onSubmitCallBack}
+        initialValues={prevStepData.formValues}
+        onSubmit={data => onSubmitCallBack(data, prevStepData)}
         validationSchema={validationSchema}
       >
         {formik => {

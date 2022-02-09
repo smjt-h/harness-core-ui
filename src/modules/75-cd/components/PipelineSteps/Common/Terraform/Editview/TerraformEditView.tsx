@@ -554,9 +554,13 @@ export default function TerraformEditView(
                             name={getString('cd.configFileDetails')}
                             isReadonly={readonly}
                             allowableTypes={allowableTypes}
-                            onSubmitCallBack={(data: any) => {
+                            onSubmitCallBack={(data: any, prevStepData: any) => {
                               const configObject = {
                                 ...data.spec?.configuration?.spec?.configFiles
+                              }
+
+                              if (prevStepData.identifier && prevStepData.identifier !== data?.identifier) {
+                                configObject.store.spec.connectorRef = prevStepData?.identifier
                               }
 
                               if (configObject?.store.spec.gitFetchType === 'Branch') {
@@ -565,8 +569,8 @@ export default function TerraformEditView(
                                 delete configObject.store.spec.branch
                               }
                               const valObj = cloneDeep(formik.values)
+                              configObject.store.type = prevStepData?.selectedType
                               set(valObj, 'spec.configuration.spec.configFiles', { ...configObject })
-
                               formik.setValues(valObj)
                               setShowModal(false)
                             }}
