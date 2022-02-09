@@ -72,6 +72,9 @@ export const formikOnChangeNames = (isTerraformPlan: boolean) => ({
   repoName: isTerraformPlan
     ? 'spec.configuration.configFiles.store.spec.repoName'
     : 'spec.configuration.spec.configFiles.store.spec.repoName',
+  repositoryName: isTerraformPlan
+    ? 'spec.configuration.configFiles.store.spec.repositoryName'
+    : 'spec.configuration.spec.configFiles.store.spec.repositoryName',
   branch: isTerraformPlan
     ? 'spec.configuration.configFiles.store.spec.branch'
     : 'spec.configuration.spec.configFiles.store.spec.branch',

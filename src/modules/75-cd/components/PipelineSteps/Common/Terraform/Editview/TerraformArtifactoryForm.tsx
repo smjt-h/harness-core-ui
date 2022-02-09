@@ -212,16 +212,18 @@ export const TFArtifactoryForm: React.FC<StepProps<any> & TFRemoteProps> = ({
           onSubmitCallBack(data)
         }}
         validationSchema={Yup.object().shape({
-          isArtifactory: Yup.boolean(),
           varFile: Yup.object().shape({
             identifier: Yup.string().required(getString('common.validation.identifierIsRequired')),
+            repositoryName: Yup.string().required(getString('common.validation.identifierIsRequired')),
             spec: Yup.object().shape({
               store: Yup.object().shape({
                 spec: Yup.object().shape({
                   artifacts: Yup.array().of(
                     Yup.object().shape({
-                      artifactPathExpression: Yup.string().required(getString('cd.pathCannotBeEmpty')),
-                      name: Yup.string().required(getString('cd.pathCannotBeEmpty'))
+                      artifactFile: Yup.object().shape({
+                        artifactPathExpression: Yup.string().required(getString('cd.pathCannotBeEmpty')),
+                        name: Yup.string().required(getString('cd.pathCannotBeEmpty'))
+                      })
                     })
                   )
                 })

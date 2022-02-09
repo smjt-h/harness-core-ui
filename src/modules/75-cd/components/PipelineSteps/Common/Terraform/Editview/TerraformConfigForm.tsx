@@ -117,6 +117,11 @@ export const TerraformConfigStepOne: React.FC<StepProps<any> & TerraformConfigSt
         })
       })
 
+  const filteredTypes =
+    selectedConnector === 'Artifactory'
+      ? allowableTypes.filter(type => type === MultiTypeInputType.FIXED)
+      : allowableTypes
+
   return (
     <Layout.Vertical padding="small" className={css.tfConfigForm}>
       <Heading level={2} style={{ color: Color.BLACK, fontSize: 24, fontWeight: 'bold' }} margin={{ bottom: 'xlarge' }}>
