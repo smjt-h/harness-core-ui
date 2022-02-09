@@ -119,7 +119,6 @@ export const TerraformConfigStepOne: React.FC<StepProps<any> & TerraformConfigSt
       <Heading level={2} style={{ color: Color.BLACK, fontSize: 24, fontWeight: 'bold' }} margin={{ bottom: 'xlarge' }}>
         {getString('cd.configFileStore')}
       </Heading>
-
       <Layout.Horizontal className={css.horizontalFlex} margin={{ top: 'xlarge', bottom: 'xlarge' }}>
         {AllowedTypes.map(item => (
           <div key={item} className={css.squareCardContainer}>
