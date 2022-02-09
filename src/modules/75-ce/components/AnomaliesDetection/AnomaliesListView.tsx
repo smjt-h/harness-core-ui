@@ -6,7 +6,7 @@
  */
 
 import React, { useState } from 'react'
-import type { CellProps, Renderer } from 'react-table'
+import type { CellProps, Column, Renderer } from 'react-table'
 import { Text, Icon, TableV2, Color, Layout, Button, getErrorInfoFromErrorObject } from '@wings-software/uicore'
 import { Link, useParams } from 'react-router-dom'
 import { Classes, Menu, MenuItem, Popover, Position } from '@blueprintjs/core'
@@ -170,6 +170,46 @@ const AnomaliesListGridView: React.FC<ListProps> = ({ listData }) => {
     return <AnomaliesMenu anomalyId={row.original.id || ''} />
   }
 
+  const columns: Column<AnomalyData>[] = React.useMemo(
+    () => [
+      {
+        Header: getString('ce.anomalyDetection.tableHeaders.date'),
+        accessor: 'time',
+        Cell: DateCell,
+        width: '25%'
+      },
+      {
+        Header: getString('ce.anomalyDetection.tableHeaders.anomalousSpend'),
+        accessor: 'actualAmount',
+        Cell: CostCell,
+        width: '25%'
+      },
+      {
+        Header: getString('ce.anomalyDetection.tableHeaders.resource'),
+        accessor: 'resourceName',
+        Cell: ResourceCell,
+        width: '25%'
+      },
+      {
+        Header: getString('ce.anomalyDetection.tableHeaders.details'),
+        accessor: 'details',
+        width: '25%'
+      },
+      {
+        Header: getString('ce.anomalyDetection.tableHeaders.status'),
+        accessor: 'status',
+        Cell: StatusCell,
+        width: '25%'
+      },
+      {
+        Header: ' ',
+        width: '5%',
+        Cell: MenuCell
+      }
+    ],
+    []
+  )
+
   if (!listData.length) {
     return null
   }
@@ -177,50 +217,14 @@ const AnomaliesListGridView: React.FC<ListProps> = ({ listData }) => {
   return (
     <TableV2
       className={css.tableView}
-      columns={[
-        {
-          Header: getString('ce.anomalyDetection.tableHeaders.date'),
-          accessor: 'time',
-          Cell: DateCell,
-          width: '25%'
-        },
-        {
-          Header: getString('ce.anomalyDetection.tableHeaders.anomalousSpend'),
-          accessor: 'actualAmount',
-          Cell: CostCell,
-          width: '25%'
-        },
-        {
-          Header: getString('ce.anomalyDetection.tableHeaders.resource'),
-          accessor: 'resourceName',
-          Cell: ResourceCell,
-          width: '25%'
-        },
-        {
-          Header: getString('ce.anomalyDetection.tableHeaders.details'),
-          accessor: 'details',
-          width: '25%'
-        },
-        {
-          Header: getString('ce.anomalyDetection.tableHeaders.status'),
-          accessor: 'status',
-          Cell: StatusCell,
-          width: '25%'
-        },
-        {
-          Header: ' ',
-          width: '5%',
-          Cell: MenuCell
-        }
-      ]}
+      columns={columns}
       data={listData}
       pagination={{
-        itemCount: 100,
+        itemCount: listData.length,
         pageCount: 10,
         pageIndex: 0,
         pageSize: 10
       }}
-      sortable
     />
   )
 }
