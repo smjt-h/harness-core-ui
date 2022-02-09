@@ -19,7 +19,7 @@ export interface NodeData {
   unSelectedIconColour: string
 }
 
-export abstract class AbstractNodeFactory {
+export abstract class AbstractDiagramFactory {
   /**
    * Couples the factory with the nodes it generates
    */
@@ -40,7 +40,7 @@ export abstract class AbstractNodeFactory {
     return this.type
   }
 
-  registerStep<T>(node: Node<T>): void {
+  registerNode<T>(node: Node<T>): void {
     this.nodeBank.set(node.getType(), node as Node<unknown>)
 
     this.nodeDataMap.set(node.getType(), {
@@ -57,17 +57,17 @@ export abstract class AbstractNodeFactory {
     }
   }
 
-  deregisterStep(type: string): void {
-    const deletedStep = this.nodeBank.get(type)
-    if (deletedStep) {
+  deregisterNode(type: string): void {
+    const deletedNode = this.nodeBank.get(type)
+    if (deletedNode) {
       this.nodeBank.delete(type)
       this.nodeDataMap.delete(type)
-      if (deletedStep.getInvocationMap()) {
+      if (deletedNode.getInvocationMap()) {
         this.invocationMap = new Map()
         this.nodeBank.forEach(node => {
-          const stepMap = node.getInvocationMap()
-          if (stepMap) {
-            this.invocationMap = new Map([...this.invocationMap, ...stepMap])
+          const nodeMap = node.getInvocationMap()
+          if (nodeMap) {
+            this.invocationMap = new Map([...this.invocationMap, ...nodeMap])
           }
         })
       }
