@@ -251,7 +251,10 @@ function RunPipelineFormBasic({
         accountIdentifier: accountId,
         orgIdentifier,
         pipelineIdentifier,
-        projectIdentifier
+        projectIdentifier,
+        repoIdentifier,
+        branch,
+        getDefaultFromOtherRepo: true
       },
       body: {
         originalEntityYaml: yamlStringify(parse(defaultTo(pipelineResponse?.data?.yamlPipeline, ''))?.pipeline)
