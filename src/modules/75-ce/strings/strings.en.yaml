@@ -781,3 +781,4 @@ anomalyDetection:
   tableMenu:
     whitelistResource: Whitelist resource
     falseAnomaly: This is false anomaly
+  userFeedbackSuccessMsg: 'Thanks for your feedback!'

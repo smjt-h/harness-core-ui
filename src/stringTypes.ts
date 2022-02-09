@@ -3232,6 +3232,7 @@ export interface StringsMap {
   'ce.anomalyDetection.tableHeaders.status': string
   'ce.anomalyDetection.tableMenu.falseAnomaly': string
   'ce.anomalyDetection.tableMenu.whitelistResource': string
+  'ce.anomalyDetection.userFeedbackSuccessMsg': string
   'ce.budgets.addNewBudget': string
   'ce.budgets.budgetDeletedTxt': string
   'ce.budgets.confirmDeleteBudgetMsg': string

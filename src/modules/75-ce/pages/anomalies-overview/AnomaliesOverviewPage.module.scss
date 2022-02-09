@@ -7,7 +7,7 @@
 
 .searchInput {
   flex-grow: 1;
-  margin-right: 16px;
+  margin-right: var(--spacing-medium);
 }
 
 .header {
@@ -18,6 +18,10 @@
 
 .groupbyFilter {
   color: var(--primary-7);
+}
+
+.searchFilterWrapper {
+  margin-bottom: var(--spacing-medium) !important;
 }
 
 .summaryCharts {
