@@ -33,7 +33,6 @@ import { useVariablesExpression } from '@pipeline/components/PipelineStudio/Pipl
 import { useStrings } from 'framework/strings'
 import { FormMultiTypeConnectorField } from '@connectors/components/ConnectorReferenceField/FormMultiTypeConnectorField'
 import { ConfigureOptions } from '@common/components/ConfigureOptions/ConfigureOptions'
-import type { ConnectorSelectedValue } from '@connectors/components/ConnectorReferenceField/ConnectorReferenceField'
 import { useGetBuildsDetailsForArtifactory, useGetRepositoriesDetailsForArtifactory } from 'services/cd-ng'
 import {
   AllowedTypes,
@@ -317,7 +316,7 @@ export const TerraformConfigStepTwo: React.FC<StepProps<any> & TerraformConfigSt
   }, [Artifacts])
 
   useEffect(() => {
-    if (isArtifactory && !ArtifactRepoData) {
+    if (isArtifactory && getMultiTypeFromValue(connectorValue) === MultiTypeInputType.FIXED && !ArtifactRepoData) {
       getArtifactRepos()
     }
 
@@ -349,7 +348,7 @@ export const TerraformConfigStepTwo: React.FC<StepProps<any> & TerraformConfigSt
           return (
             <Form className={css.formComponent}>
               <div className={css.tfRemoteForm}>
-                {isArtifactory && (
+                {isArtifactory && getMultiTypeFromValue(connectorValue) === MultiTypeInputType.FIXED && (
                   <div className={cx(stepCss.formGroup, stepCss.md)}>
                     <FormInput.Select
                       items={connectorRepos ? connectorRepos : []}
@@ -361,9 +360,9 @@ export const TerraformConfigStepTwo: React.FC<StepProps<any> & TerraformConfigSt
                     />
                   </div>
                 )}
-                {(connectorValue?.connector?.spec?.connectionType === 'Account' ||
-                  connectorValue?.connector?.spec?.type === 'Account') &&
-                  !isArtifactory && (
+                {connectorValue?.connector?.spec?.connectionType === 'Account' ||
+                  connectorValue?.connector?.spec?.type === 'Account' ||
+                  (isArtifactory && getMultiTypeFromValue(connectorValue) !== MultiTypeInputType.FIXED && (
                     <div className={cx(stepCss.formGroup, stepCss.md)}>
                       <FormInput.MultiTextInput
                         label={getString('pipelineSteps.repoName')}
@@ -385,7 +384,7 @@ export const TerraformConfigStepTwo: React.FC<StepProps<any> & TerraformConfigSt
                         />
                       )}
                     </div>
-                  )}
+                  ))}
                 {!isArtifactory && (
                   <div className={cx(stepCss.formGroup, stepCss.md)}>
                     <FormInput.Select
@@ -465,7 +464,7 @@ export const TerraformConfigStepTwo: React.FC<StepProps<any> & TerraformConfigSt
                       isReadonly={isReadonly}
                     />
                   )}
-                  {isArtifactory && (
+                  {getMultiTypeFromValue(connectorValue) === MultiTypeInputType.FIXED && isArtifactory && (
                     <FormInput.Select
                       name="formik.values.spec?.configuration?.configFiles?.store.spec?.artifactName"
                       label=""
