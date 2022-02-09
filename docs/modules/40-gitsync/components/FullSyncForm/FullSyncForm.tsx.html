@@ -23,9 +23,9 @@
         <div class='clearfix'>
             
             <div class='fl pad1y space-right2'>
-                <span class="strong">73.27% </span>
+                <span class="strong">74.04% </span>
                 <span class="quiet">Statements</span>
-                <span class='fraction'>74/101</span>
+                <span class='fraction'>77/104</span>
             </div>
         
             
@@ -37,16 +37,16 @@
         
             
             <div class='fl pad1y space-right2'>
-                <span class="strong">58.33% </span>
+                <span class="strong">60% </span>
                 <span class="quiet">Functions</span>
-                <span class='fraction'>14/24</span>
+                <span class='fraction'>15/25</span>
             </div>
         
             
             <div class='fl pad1y space-right2'>
-                <span class="strong">73.74% </span>
+                <span class="strong">74.51% </span>
                 <span class="quiet">Lines</span>
-                <span class='fraction'>73/99</span>
+                <span class='fraction'>76/102</span>
             </div>
         
             
@@ -454,7 +454,10 @@
 <a name='L395'></a><a href='#L395'>395</a>
 <a name='L396'></a><a href='#L396'>396</a>
 <a name='L397'></a><a href='#L397'>397</a>
-<a name='L398'></a><a href='#L398'>398</a></td><td class="line-coverage quiet"><span class="cline-any cline-neutral">&nbsp;</span>
+<a name='L398'></a><a href='#L398'>398</a>
+<a name='L399'></a><a href='#L399'>399</a>
+<a name='L400'></a><a href='#L400'>400</a>
+<a name='L401'></a><a href='#L401'>401</a></td><td class="line-coverage quiet"><span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
@@ -496,6 +499,7 @@
 <span class="cline-any cline-yes">7x</span>
 <span class="cline-any cline-yes">7x</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">7x</span>
 <span class="cline-any cline-yes">7x</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
@@ -528,7 +532,7 @@
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-yes">10x</span>
 <span class="cline-any cline-yes">10x</span>
-<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">10x</span>
 <span class="cline-any cline-yes">10x</span>
 <span class="cline-any cline-yes">10x</span>
 <span class="cline-any cline-yes">10x</span>
@@ -722,6 +726,8 @@
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">3x</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
@@ -893,6 +899,7 @@ import {
 import { useStrings } from 'framework/strings'
 import { useGitSyncStore } from 'framework/GitRepoStore/GitSyncStoreContext'
 import type { ProjectPathProps } from '@common/interfaces/RouteInterfaces'
+import SCMCheck from '@common/components/SCMCheck/SCMCheck'
 import {
   branchFetchHandler,
   defaultInitialFormData,
@@ -925,7 +932,7 @@ const FullSyncForm: React.FC&lt;ModalConfigureProps &amp; FullSyncFormProps&gt; 
 &nbsp;
   const [modalErrorHandler, setModalErrorHandler] = React.useState&lt;ModalErrorHandlerBinding&gt;()
   const formikRef = useRef&lt;FormikContext&lt;GitFullSyncConfigRequestDTO&gt;&gt;()
-&nbsp;
+  const [hasSCM, setHasSCM] = React.useState&lt;boolean&gt;(false)
   const [rootFolderSelectOptions, setRootFolderSelectOptions] = React.useState&lt;SelectOption[]&gt;([])
   const [repoSelectOptions, setRepoSelectOptions] = React.useState&lt;SelectOption[]&gt;([])
   const [isNewBranch, setIsNewBranch] = React.useState(false)
@@ -1116,9 +1123,11 @@ const FullSyncForm: React.FC&lt;ModalConfigureProps &amp; FullSyncFormProps&gt; 
       {showSpinner(isNewUser, loadingConfig, loadingRepos) ? <span class="branch-0 cbranch-no" title="branch not covered" >&lt;PageSpinner className={css.spinner} /&gt; </span>: &lt;&gt;&lt;/&gt;}
 &nbsp;
       &lt;Container className={cx(css.modalContainer, { [css.isModalStep]: isNewUser })}&gt;
-        &lt;Text font={{ variation: FontVariation.H3 }} padding={{ bottom: 'xlarge' }}&gt;
-          {getString('gitsync.fullSyncTitle')}
-        &lt;/Text&gt;
+        &lt;SCMCheck
+          profileLinkClickHandler={onClose}
+          title={getString('gitsync.fullSyncTitle')}
+          validateSCM={isValid =&gt; setHasSCM(isValid)}
+        /&gt;
         &lt;ModalErrorHandler bind={setModalErrorHandler} /&gt;
         &lt;Container className={css.modalBody}&gt;
           &lt;Formik&lt;GitFullSyncConfigRequestDTO&gt;
@@ -1234,7 +1243,7 @@ const FullSyncForm: React.FC&lt;ModalConfigureProps &amp; FullSyncFormProps&gt; 
                   &lt;/Container&gt;
 &nbsp;
                   &lt;Layout.Horizontal spacing="medium"&gt;
-                    &lt;Button type="submit" intent="primary" text={getString('save')} /&gt;
+                    &lt;Button type="submit" intent="primary" text={getString('save')} disabled={!hasSCM} /&gt;
                     &lt;Button text={getString('cancel')} margin={{ left: 'medium' }} onClick={onClose} /&gt;
                   &lt;/Layout.Horizontal&gt;
                 &lt;/FormikForm&gt;
@@ -1255,7 +1264,7 @@ export default FullSyncForm
             <div class='footer quiet pad2 space-top1 center small'>
                 Code coverage generated by
                 <a href="https://istanbul.js.org/" target="_blank">istanbul</a>
-                at Tue Feb 08 2022 18:04:02 GMT+0000 (Greenwich Mean Time)
+                at Wed Feb 09 2022 09:12:23 GMT+0000 (Greenwich Mean Time)
             </div>
         </div>
         <script src="../../../../prettify.js"></script>
