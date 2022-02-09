@@ -30,7 +30,7 @@ import { v4 as uuid } from 'uuid'
 import { useParams } from 'react-router-dom'
 import cx from 'classnames'
 
-import { cloneDeep, isEmpty, set } from 'lodash-es'
+import { isEmpty, cloneDeep, set } from 'lodash-es'
 import { FormikErrors, FormikProps, yupToFormErrors } from 'formik'
 import { PipelineStep, StepProps } from '@pipeline/components/PipelineSteps/PipelineStep'
 import { StepType } from '@pipeline/components/PipelineSteps/PipelineStepInterface'
@@ -295,6 +295,7 @@ function TerraformPlanWidget(
     >
       {(formik: FormikProps<TFPlanFormData>) => {
         const { values, setFieldValue } = formik
+        const configFile = values?.spec?.configuration?.configFiles
         setFormikRef(formikRef, formik)
         return (
           <>
@@ -399,22 +400,20 @@ function TerraformPlanWidget(
                 </Label>
                 <div className={cx(css.configFile, css.addMarginBottom)}>
                   <div className={css.configField}>
-                    {!formik.values?.spec?.configuration?.configFiles?.store?.spec?.folderPath && (
+                    {!configFile?.store?.spec?.folderPath && !configFile?.store?.spec?.artifacts && (
                       <a className={css.configPlaceHolder} onClick={() => setShowRemoteWizard(true)}>
                         {getString('cd.configFilePlaceHolder')}
                       </a>
                     )}
-                    {formik.values?.spec?.configuration?.configFiles?.store?.spec?.folderPath && (
-                      <Text
-                        font="normal"
-                        lineClamp={1}
-                        width={200}
-                        data-testid={formik.values?.spec?.configuration?.configFiles?.store?.spec?.folderPath}
-                      >
-                        /{formik.values?.spec?.configuration?.configFiles?.store?.spec?.folderPath}
+                    {(configFile?.store?.spec?.folderPath || configFile?.store?.spec?.artifacts) && (
+                      <Text font="normal" lineClamp={1} width={200} data-testid={configFile?.store?.spec?.folderPath}>
+                        /
+                        {configFile?.store?.spec?.folderPath
+                          ? configFile?.store?.spec?.folderPath
+                          : configFile?.store.spec.artifacts[0].artifactFile.name}
                       </Text>
                     )}
-                    {formik.values?.spec?.configuration?.configFiles?.store?.spec?.folderPath ? (
+                    {configFile?.store?.spec?.folderPath || configFile?.store?.spec?.artifacts ? (
                       <Button
                         minimal
                         icon="Edit"
@@ -467,6 +466,7 @@ function TerraformPlanWidget(
                         isReadonly={readonly}
                         allowableTypes={allowableTypes}
                         setSelectedConnector={setSelectedConnector}
+                        selectedConnector={selectedConnector}
                         getNewConnectorSteps={getNewConnectorSteps}
                       />
                       <div className={css.divider} />

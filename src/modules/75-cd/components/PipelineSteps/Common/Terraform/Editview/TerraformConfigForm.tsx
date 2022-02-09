@@ -337,7 +337,7 @@ export const TerraformConfigStepTwo: React.FC<StepProps<any> & TerraformConfigSt
       </Heading>
       <Formik
         formName="tfRemoteWizardForm"
-        initialValues={prevStepData.formValues}
+        initialValues={{ ...prevStepData.formValues, isArtifactory: isArtifactory }}
         onSubmit={data => onSubmitCallBack(data, prevStepData)}
         validationSchema={validationSchema}
       >
@@ -352,11 +352,14 @@ export const TerraformConfigStepTwo: React.FC<StepProps<any> & TerraformConfigSt
                   <div className={cx(stepCss.formGroup, stepCss.md)}>
                     <FormInput.Select
                       items={connectorRepos ? connectorRepos : []}
-                      name={formInputNames(isTerraformPlan).repoName}
+                      name={formInputNames(isTerraformPlan).repositoryName}
                       label={getString('pipelineSteps.repoName')}
                       placeholder={ArtifactRepoLoading ? 'Loading...' : 'Select a Repository'}
                       disabled={ArtifactRepoLoading}
-                      onChange={value => setSelectedRepo(value.value as string)}
+                      onChange={value => {
+                        setSelectedRepo(value.value as string)
+                        formik.setFieldValue(formikOnChangeNames(isTerraformPlan).repositoryName, value.value)
+                      }}
                     />
                   </div>
                 )}
@@ -449,7 +452,10 @@ export const TerraformConfigStepTwo: React.FC<StepProps<any> & TerraformConfigSt
                     placeholder={getString('pipeline.manifestType.pathPlaceholder')}
                     name={formInputNames(isTerraformPlan).folderPath}
                     multiTextInputProps={{ expressions, allowableTypes }}
-                    onChange={value => setFilePath(value as string)}
+                    onChange={value => {
+                      formik?.setFieldValue(formikOnChangeNames(isTerraformPlan).artifactPathExpression, value)
+                      setFilePath(value as string)
+                    }}
                   />
                   {getMultiTypeFromValue(store?.folderPath) === MultiTypeInputType.RUNTIME && !isArtifactory && (
                     <ConfigureOptions
@@ -466,12 +472,16 @@ export const TerraformConfigStepTwo: React.FC<StepProps<any> & TerraformConfigSt
                   )}
                   {getMultiTypeFromValue(connectorValue) === MultiTypeInputType.FIXED && isArtifactory && (
                     <FormInput.Select
-                      name="formik.values.spec?.configuration?.configFiles?.store.spec?.artifactName"
+                      name={formikOnChangeNames(isTerraformPlan).artifactName}
                       label=""
                       items={artifacts ? artifacts : []}
                       style={{ width: isArtifactory ? 240 : 300 }}
                       disabled={ArtifactsLoading}
                       placeholder={ArtifactsLoading ? 'Loading...' : 'Select a Artifact'}
+                      onChange={val => {
+                        formik?.setFieldValue(formikOnChangeNames(isTerraformPlan).artifactPath, val.value)
+                        formik?.setFieldValue(formikOnChangeNames(isTerraformPlan).artifactName, val.label)
+                      }}
                     />
                   )}
                 </div>

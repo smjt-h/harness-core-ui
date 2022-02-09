@@ -37,9 +37,10 @@ interface TFVarStoreProps {
   initialValues: any
   isEditMode: boolean
   allowableTypes: MultiTypeInputType[]
-  handleConnectorViewChange?: (val: ConnectorTypes) => void
+  handleConnectorViewChange?: () => void
   isReadonly?: boolean
   setConnectorView?: (val: boolean) => void
+  setSelectedConnector: (val: string) => void
 }
 
 export const TFVarStore: React.FC<StepProps<any> & TFVarStoreProps> = ({
@@ -50,7 +51,8 @@ export const TFVarStore: React.FC<StepProps<any> & TFVarStoreProps> = ({
   allowableTypes,
   handleConnectorViewChange,
   isReadonly,
-  setConnectorView
+  setConnectorView,
+  setSelectedConnector
 }) => {
   const [selectedType, setSelectedType] = React.useState('')
   const { getString } = useStrings()
@@ -72,6 +74,7 @@ export const TFVarStore: React.FC<StepProps<any> & TFVarStoreProps> = ({
   React.useEffect(() => {
     /* istanbul ignore next */
     setSelectedType(initialValues?.varFile?.spec?.store?.type)
+    setSelectedConnector(initialValues?.varFile?.spec?.store?.type)
     if (setConnectorView) {
       setConnectorView(false)
     }
@@ -95,6 +98,7 @@ export const TFVarStore: React.FC<StepProps<any> & TFVarStoreProps> = ({
               selected={item === selectedType}
               data-testid={`varStore-${item}`}
               onClick={() => {
+                setSelectedConnector(item)
                 setSelectedType(item)
               }}
             >
@@ -168,7 +172,7 @@ export const TFVarStore: React.FC<StepProps<any> & TFVarStoreProps> = ({
                       iconProps={{ size: 12 }}
                       onClick={() => {
                         if (handleConnectorViewChange) {
-                          handleConnectorViewChange(selectedType as ConnectorTypes)
+                          handleConnectorViewChange()
                         }
                         nextStep?.({ ...prevStepData, selectedType })
                       }}

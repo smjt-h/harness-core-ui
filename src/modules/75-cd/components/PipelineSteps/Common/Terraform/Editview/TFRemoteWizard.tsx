@@ -17,12 +17,10 @@ import {
   MultiTypeInputType,
   SelectOption,
   StepProps,
-  Text,
-  useToaster
+  Text
 } from '@wings-software/uicore'
-import React, { useEffect, useState } from 'react'
-import { useParams } from 'react-router-dom'
-import { unset, map } from 'lodash-es'
+import React from 'react'
+import { unset } from 'lodash-es'
 import cx from 'classnames'
 import * as Yup from 'yup'
 import { v4 as uuid } from 'uuid'
@@ -32,7 +30,6 @@ import { useStrings } from 'framework/strings'
 import { useVariablesExpression } from '@pipeline/components/PipelineStudio/PiplineHooks/useVariablesExpression'
 import { ConfigureOptions } from '@common/components/ConfigureOptions/ConfigureOptions'
 import MultiTypeFieldSelector from '@common/components/MultiTypeFieldSelector/MultiTypeFieldSelector'
-import { useGetBuildsDetailsForArtifactory, useGetRepositoriesDetailsForArtifactory } from 'services/cd-ng'
 
 import { Connector, PathInterface, RemoteVar, TerraformStoreTypes } from '../TerraformInterfaces'
 import stepCss from '@pipeline/components/PipelineSteps/Steps/Steps.module.scss'
@@ -53,18 +50,7 @@ export const TFRemoteWizard: React.FC<StepProps<any> & TFRemoteProps> = ({
   isReadonly = false,
   allowableTypes
 }) => {
-  const [selectedRepo, setSelectedRepo] = useState('')
-  const [connectorRepos, setConnectorRepos] = useState<SelectOption[]>()
-  const [filePathIndex, setFilePathIndex] = useState<{ index: number; path: string }>()
-  const [artifacts, setArtifacts] = useState<any>()
-  const { accountId, projectIdentifier, orgIdentifier } = useParams<{
-    projectIdentifier: string
-    orgIdentifier: string
-    accountId: string
-  }>()
-
   const { getString } = useStrings()
-  const { showError } = useToaster()
   const initialValues = isEditMode
     ? {
         varFile: {
@@ -105,80 +91,6 @@ export const TFRemoteWizard: React.FC<StepProps<any> & TFRemoteProps> = ({
           }
         }
       }
-  const connectorValue = prevStepData?.varFile?.spec?.store?.spec?.connectorRef as Connector
-  const connectionType =
-    connectorValue?.connector?.spec?.connectionType === 'Account' ||
-    connectorValue?.connector?.spec?.type === 'Account' ||
-    prevStepData?.urlType === 'Account'
-  const isArtifactory = prevStepData.selectedType === 'Artifactory'
-  const {
-    data: ArtifactRepoData,
-    loading: ArtifactRepoLoading,
-    refetch: getArtifactRepos,
-    error: ArtifactRepoError
-  } = useGetRepositoriesDetailsForArtifactory({
-    queryParams: {
-      connectorRef: connectorValue.connector?.identifier,
-      accountIdentifier: accountId,
-      orgIdentifier,
-      projectIdentifier
-    },
-    lazy: true
-  })
-  const {
-    data: Artifacts,
-    loading: ArtifactsLoading,
-    refetch: GetArtifacts,
-    error: ArtifactsError
-  } = useGetBuildsDetailsForArtifactory({
-    queryParams: {
-      connectorRef: connectorValue.connector?.identifier,
-      accountIdentifier: accountId,
-      orgIdentifier,
-      projectIdentifier,
-      repositoryName: selectedRepo,
-      maxVersions: 50,
-      filePath: filePathIndex?.path
-    },
-    debounce: 500,
-    lazy: true
-  })
-
-  if (ArtifactRepoError) {
-    showError(ArtifactRepoError.message)
-  }
-
-  if (ArtifactsError) {
-    showError(ArtifactsError.message)
-  }
-
-  useEffect(() => {
-    if (selectedRepo && filePathIndex?.path) {
-      GetArtifacts()
-    }
-  }, [filePathIndex, selectedRepo])
-
-  useEffect(() => {
-    if (Artifacts && !ArtifactsLoading) {
-      setArtifacts({
-        ...artifacts,
-        [`${filePathIndex?.path}-${filePathIndex?.index}`]: map(Artifacts.data, artifact => ({
-          label: artifact.artifactName as string,
-          value: artifact.artifactPath as string
-        }))
-      })
-    }
-  }, [Artifacts])
-
-  useEffect(() => {
-    if (isArtifactory && !ArtifactRepoData) {
-      getArtifactRepos()
-    }
-
-    if (ArtifactRepoData) {
-      setConnectorRepos(map(ArtifactRepoData.data?.repositories, repo => ({ label: repo, value: repo })))
-    }
-  }, [ArtifactRepoData])
 
   const { expressions } = useVariablesExpression()
 
@@ -230,6 +142,7 @@ export const TFRemoteWizard: React.FC<StepProps<any> & TFRemoteProps> = ({
     },
     []
   )
+
   return (
     <Layout.Vertical spacing="xxlarge" padding="small" className={css.tfVarStore}>
       <Text font="large" color={Color.GREY_800}>
@@ -237,7 +150,7 @@ export const TFRemoteWizard: React.FC<StepProps<any> & TFRemoteProps> = ({
       </Text>
       <Formik
         formName="tfRemoteWizardForm"
-        initialValues={{ ...initialValues, isArtifactory: isArtifactory }}
+        initialValues={initialValues}
         onSubmit={values => {
           /* istanbul ignore next */
           const payload = {
@@ -282,33 +195,18 @@ export const TFRemoteWizard: React.FC<StepProps<any> & TFRemoteProps> = ({
           } else if (getMultiTypeFromValue(payload.varFile.spec?.store?.spec?.paths) === MultiTypeInputType.RUNTIME) {
             data.varFile.spec.store.spec['paths'] = payload.varFile.spec?.store?.spec?.paths
           }
-
-          // if (
-          //   getMultiTypeFromValue(payload.varFile.spec?.store?.spec?.paths) === MultiTypeInputType.FIXED &&
-          //   payload.varFile.spec?.store?.spec?.paths?.length &&
-          //   isArtifactory
-          // ) {
-          //   data.varFile.spec.store.spec['paths'] = payload.varFile.spec?.store?.spec?.paths?.map(
-          //     (item: PathInterface) => ({ path: item.path, artifactName: item.fileName })
-          //   )
-          // }
-          window.console.log('data', data)
           /* istanbul ignore else */
           onSubmitCallBack(data)
         }}
         validationSchema={Yup.object().shape({
-          isArtifactory: Yup.boolean(),
           varFile: Yup.object().shape({
             identifier: Yup.string().required(getString('common.validation.identifierIsRequired')),
             spec: Yup.object().shape({
               store: Yup.object().shape({
                 spec: Yup.object().shape({
-                  gitFetchType: Yup.string().when('isArtifactory', {
-                    is: false,
-                    then: Yup.string().required(getString('cd.gitFetchTypeRequired'))
-                  }),
+                  gitFetchType: Yup.string().required(getString('cd.gitFetchTypeRequired')),
                   branch: Yup.string().when('gitFetchType', {
-                    is: !isArtifactory && 'Branch',
+                    is: 'Branch',
                     then: Yup.string().trim().required(getString('validation.branchName'))
                   }),
                   commitId: Yup.string().when('gitFetchType', {
@@ -329,27 +227,19 @@ export const TFRemoteWizard: React.FC<StepProps<any> & TFRemoteProps> = ({
         })}
       >
         {formik => {
-          const store = formik.values?.varFile?.spec?.store?.spec
+          const connectorValue = prevStepData?.varFile?.spec?.store?.spec?.connectorRef as Connector
+          const connectionType =
+            connectorValue?.connector?.spec?.connectionType === 'Account' ||
+            connectorValue?.connector?.spec?.type === 'Account' ||
+            prevStepData?.urlType === 'Account'
           return (
             <Form>
               <div className={css.tfRemoteForm}>
                 <div className={cx(stepCss.formGroup, stepCss.md)}>
                   <FormInput.Text name="varFile.identifier" label={getString('identifier')} />
                 </div>
-                {isArtifactory && (
-                  <div className={cx(stepCss.formGroup, stepCss.md)}>
-                    <FormInput.Select
-                      items={connectorRepos ? connectorRepos : []}
-                      name="varFile.spec.store.spec.repositoryName"
-                      label={getString('pipelineSteps.repoName')}
-                      placeholder={ArtifactRepoLoading ? 'Loading...' : 'Select a Repository'}
-                      disabled={ArtifactRepoLoading}
-                      onChange={value => setSelectedRepo(value.value as string)}
-                    />
-                  </div>
-                )}
 
-                {connectionType && !isArtifactory && (
+                {connectionType && (
                   <div className={cx(stepCss.formGroup, stepCss.md)}>
                     <FormInput.MultiTextInput
                       label={getString('pipelineSteps.repoName')}
@@ -357,10 +247,11 @@ export const TFRemoteWizard: React.FC<StepProps<any> & TFRemoteProps> = ({
                       placeholder={getString('pipelineSteps.repoName')}
                       multiTextInputProps={{ expressions, allowableTypes }}
                     />
-                    {getMultiTypeFromValue(store?.repoName) === MultiTypeInputType.RUNTIME && (
+                    {getMultiTypeFromValue(formik.values?.varFile?.spec?.store?.spec?.repoName) ===
+                      MultiTypeInputType.RUNTIME && (
                       <ConfigureOptions
                         style={{ alignSelf: 'center' }}
-                        value={store?.repoName as string}
+                        value={formik.values?.varFile?.spec?.store?.spec?.repoName as string}
                         type="String"
                         variableName="varFile.spec.store.spec.repoName"
                         showRequiredField={false}
@@ -374,17 +265,15 @@ export const TFRemoteWizard: React.FC<StepProps<any> & TFRemoteProps> = ({
                     )}
                   </div>
                 )}
-                {!isArtifactory && (
-                  <div className={cx(stepCss.formGroup, stepCss.md)}>
-                    <FormInput.Select
-                      items={gitFetchTypes}
-                      name="varFile.spec.store.spec.gitFetchType"
-                      label={getString('pipeline.manifestType.gitFetchTypeLabel')}
-                      placeholder={getString('pipeline.manifestType.gitFetchTypeLabel')}
-                    />
-                  </div>
-                )}
-                {!isArtifactory && (
+                <div className={cx(stepCss.formGroup, stepCss.md)}>
+                  <FormInput.Select
+                    items={gitFetchTypes}
+                    name="varFile.spec.store.spec.gitFetchType"
+                    label={getString('pipeline.manifestType.gitFetchTypeLabel')}
+                    placeholder={getString('pipeline.manifestType.gitFetchTypeLabel')}
+                  />
+                </div>
+                {formik.values?.varFile?.spec?.store?.spec?.gitFetchType === gitFetchTypes[0].value && (
                   <div className={cx(stepCss.formGroup, stepCss.md)}>
                     <FormInput.MultiTextInput
                       label={getString('pipelineSteps.deploy.inputSet.branch')}
@@ -392,10 +281,11 @@ export const TFRemoteWizard: React.FC<StepProps<any> & TFRemoteProps> = ({
                       name="varFile.spec.store.spec.branch"
                       multiTextInputProps={{ expressions, allowableTypes }}
                     />
-                    {getMultiTypeFromValue(store?.branch) === MultiTypeInputType.RUNTIME && (
+                    {getMultiTypeFromValue(formik.values?.varFile?.spec?.store?.spec?.branch) ===
+                      MultiTypeInputType.RUNTIME && (
                       <ConfigureOptions
                         style={{ alignSelf: 'center' }}
-                        value={store?.branch as string}
+                        value={formik.values?.varFile?.spec?.store?.spec?.branch as string}
                         type="String"
                         variableName="varFile.spec.store.spec.branch"
                         showRequiredField={false}
@@ -408,7 +298,7 @@ export const TFRemoteWizard: React.FC<StepProps<any> & TFRemoteProps> = ({
                   </div>
                 )}
 
-                {store?.gitFetchType === gitFetchTypes[1].value && !isArtifactory && (
+                {formik.values?.varFile?.spec?.store?.spec?.gitFetchType === gitFetchTypes[1].value && (
                   <div className={cx(stepCss.formGroup, stepCss.md)}>
                     <FormInput.MultiTextInput
                       label={getString('pipeline.manifestType.commitId')}
@@ -416,10 +306,11 @@ export const TFRemoteWizard: React.FC<StepProps<any> & TFRemoteProps> = ({
                       name="varFile.spec.store.spec.commitId"
                       multiTextInputProps={{ expressions, allowableTypes }}
                     />
-                    {getMultiTypeFromValue(store?.commitId) === MultiTypeInputType.RUNTIME && (
+                    {getMultiTypeFromValue(formik.values?.varFile?.spec?.store?.spec?.commitId) ===
+                      MultiTypeInputType.RUNTIME && (
                       <ConfigureOptions
                         style={{ alignSelf: 'center' }}
-                        value={store?.commitId as string}
+                        value={formik.values?.varFile?.spec?.store?.spec?.commitId as string}
                         type="String"
                         variableName="varFile.spec.store.spec.commitId"
                         showRequiredField={false}
@@ -438,25 +329,13 @@ export const TFRemoteWizard: React.FC<StepProps<any> & TFRemoteProps> = ({
                     style={{ width: 370 }}
                     allowedTypes={allowableTypes.filter(item => item !== MultiTypeInputType.EXPRESSION)}
                   >
-                    {isArtifactory && (
-                      <Layout.Horizontal className={css.artifactHeader} flex={{ justifyContent: 'space-between' }}>
-                        <Text font="normal" color={Color.GREY_600}>
-                          File Path
-                        </Text>
-                        <Text font="normal" color={Color.GREY_600}>
-                          Artifact Name
-                        </Text>
-                      </Layout.Horizontal>
-                    )}
                     <FieldArray
-                      name={isArtifactory ? 'varFile.spec.store.spec.artifacts' : 'varFile.spec.store.spec.paths'}
+                      name="varFile.spec.store.spec.paths"
                       render={arrayHelpers => {
                         return (
-                          <>
-                            {(store?.paths || []).map((path: PathInterface, index: number) => {
-                              const key = `${filePathIndex?.path}-${filePathIndex?.index}`
-                              const rowArtifacts = artifacts && artifacts[key] ? artifacts[key] : []
-                              return (
+                          <div>
+                            {(formik.values?.varFile?.spec?.store?.spec?.paths || []).map(
+                              (path: PathInterface, index: number) => (
                                 <Layout.Horizontal
                                   key={`${path}-${index}`}
                                   flex={{ distribution: 'space-between' }}
@@ -467,7 +346,7 @@ export const TFRemoteWizard: React.FC<StepProps<any> & TFRemoteProps> = ({
                                     style={{ alignItems: 'baseline' }}
                                     className={css.tfContainer}
                                     key={`${path}-${index}`}
-                                    draggable={isArtifactory ? false : true}
+                                    draggable={true}
                                     onDragEnd={onDragEnd}
                                     onDragOver={onDragOver}
                                     onDragLeave={onDragLeave}
@@ -482,14 +361,7 @@ export const TFRemoteWizard: React.FC<StepProps<any> & TFRemoteProps> = ({
                                     <Icon name="drag-handle-vertical" className={css.drag} />
                                     <Text width={12}>{`${index + 1}.`}</Text>
                                     <FormInput.MultiTextInput
-                                      onChange={val => {
-                                        setFilePathIndex({ index, path: val as string })
-                                      }}
-                                      name={
-                                        isArtifactory
-                                          ? `varFile.spec.store.spec.artifacts[${index}].artifactPathExpression`
-                                          : `varFile.spec.store.spec.paths[${index}].path`
-                                      }
+                                      name={`varFile.spec.store.spec.paths[${index}].path`}
                                       label=""
                                       multiTextInputProps={{
                                         expressions,
@@ -497,24 +369,8 @@ export const TFRemoteWizard: React.FC<StepProps<any> & TFRemoteProps> = ({
                                           item => item !== MultiTypeInputType.RUNTIME
                                         )
                                       }}
-                                      style={{ width: isArtifactory ? 240 : 300 }}
+                                      style={{ width: 320 }}
                                     />
-                                    {isArtifactory && (
-                                      <FormInput.Select
-                                        name={`varFile.spec.store.spec.artifacts[${index}].artifactFile.name`}
-                                        label=""
-                                        items={rowArtifacts}
-                                        style={{ width: isArtifactory ? 240 : 300 }}
-                                        disabled={ArtifactsLoading}
-                                        placeholder={ArtifactsLoading ? 'Loading...' : 'Select a Artifact'}
-                                        onChange={val => {
-                                          formik?.setFieldValue(
-                                            `varFile.spec.store.spec.artifacts[${index}].artifactFile.path`,
-                                            val.value
-                                          )
-                                        }}
-                                      />
-                                    )}
                                     <Button
                                       minimal
                                       icon="main-trash"
@@ -524,7 +380,7 @@ export const TFRemoteWizard: React.FC<StepProps<any> & TFRemoteProps> = ({
                                   </Layout.Horizontal>
                                 </Layout.Horizontal>
                               )
-                            })}
+                            )}
                             <Button
                               icon="plus"
                               variation={ButtonVariation.LINK}
@@ -533,7 +389,7 @@ export const TFRemoteWizard: React.FC<StepProps<any> & TFRemoteProps> = ({
                             >
                               {getString('cd.addTFVarFileLabel')}
                             </Button>
-                          </>
+                          </div>
                         )
                       }}
                     />

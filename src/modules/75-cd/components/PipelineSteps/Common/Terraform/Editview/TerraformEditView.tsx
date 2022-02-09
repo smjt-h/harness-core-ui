@@ -450,6 +450,7 @@ export default function TerraformEditView(
                             isReadonly={readonly}
                             allowableTypes={allowableTypes}
                             setSelectedConnector={setSelectedConnector}
+                            selectedConnector={selectedConnector}
                             getNewConnectorSteps={getNewConnectorSteps}
                           />
                           <div className={css.divider} />
