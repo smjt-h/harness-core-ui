@@ -159,7 +159,7 @@ const AnomaliesOverview: React.FC = () => {
       </Layout.Vertical>
       <div className={css.summaryCharts}>
         <Text color={Color.GREY_500} font={{ variation: FontVariation.SMALL_SEMI }}>
-          {getString('ce.anomalyDetection.summary.perspectiveWise').toUpperCase()}
+          {getString('ce.anomalyDetection.summary.perspectiveWise')}
         </Text>
       </div>
       <div className={css.summaryCharts}>
@@ -324,30 +324,50 @@ const AnomaliesListGridView: React.FC<ListProps> = ({ listData }) => {
       className={css.tableView}
       columns={[
         {
-          Header: getString('ce.anomalyDetection.tableHeaders.date'),
+          Header: (
+            <Text font={{ variation: FontVariation.TABLE_HEADERS }}>
+              {getString('ce.anomalyDetection.tableHeaders.date')}
+            </Text>
+          ),
           accessor: 'time',
           Cell: DateCell,
           width: '25%'
         },
         {
-          Header: getString('ce.anomalyDetection.tableHeaders.anomalousSpend'),
+          Header: (
+            <Text font={{ variation: FontVariation.TABLE_HEADERS }}>
+              {getString('ce.anomalyDetection.tableHeaders.anomalousSpend')}
+            </Text>
+          ),
           accessor: 'actualAmount',
           Cell: CostCell,
           width: '25%'
         },
         {
-          Header: getString('ce.anomalyDetection.tableHeaders.resource'),
+          Header: (
+            <Text font={{ variation: FontVariation.TABLE_HEADERS }}>
+              {getString('ce.anomalyDetection.tableHeaders.resource')}
+            </Text>
+          ),
           accessor: 'resourceName',
           Cell: ResourceCell,
           width: '25%'
         },
         {
-          Header: getString('ce.anomalyDetection.tableHeaders.details'),
+          Header: (
+            <Text font={{ variation: FontVariation.TABLE_HEADERS }}>
+              {getString('ce.anomalyDetection.tableHeaders.details')}
+            </Text>
+          ),
           accessor: 'details',
           width: '25%'
         },
         {
-          Header: getString('ce.anomalyDetection.tableHeaders.status'),
+          Header: (
+            <Text font={{ variation: FontVariation.TABLE_HEADERS }}>
+              {getString('ce.anomalyDetection.tableHeaders.status')}
+            </Text>
+          ),
           accessor: 'status',
           Cell: StatusCell,
           width: '25%'

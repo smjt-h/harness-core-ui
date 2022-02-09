@@ -767,17 +767,17 @@ anomalyDetection:
     groupByPerspectivePlaceholder: All Perspectives
     groupByCloudProvidersPlaceholder: All Cloud Providers
   summary:
-    totalCountText: ANOMALIES DETECTED
-    costImpacted: TOTAL COST IMPACT
+    totalCountText: Anomalies Detected
+    costImpacted: Total Cost Impact
     perspectiveWise: Top 3 perspectives by anomalies
-    cloudProvidersWise: ANOMALIES BY ClOUD PROVIDERS
-    statusWise: ANOMALIES BY STATUS
+    cloudProvidersWise: Anomalies by Cloud Providers
+    statusWise: Anomalies by Status
   tableHeaders:
-    date: DATE
-    anomalousSpend: ANOMALOUS SPEND
-    resource: RESOURCE
-    details: DETAILS
-    status: STATUS
+    date: date
+    anomalousSpend: anomalous spend
+    resource: resource
+    details: details
+    status: '{{ $.ce.co.accessPoint.status }}'
   tableMenu:
     whitelistResource: Whitelist resource
     falseAnomaly: This is false anomaly

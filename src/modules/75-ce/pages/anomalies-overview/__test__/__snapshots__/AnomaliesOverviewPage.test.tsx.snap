@@ -372,7 +372,7 @@ exports[`test case for anomalies detection overview page should be able to rende
           <p
             class="StyledProps--font StyledProps--main StyledProps--color StyledProps--color-grey500 StyledProps--font-variation-small-semi"
           >
-            CE.ANOMALYDETECTION.SUMMARY.PERSPECTIVEWISE
+            ce.anomalyDetection.summary.perspectiveWise
           </p>
         </div>
         <div
