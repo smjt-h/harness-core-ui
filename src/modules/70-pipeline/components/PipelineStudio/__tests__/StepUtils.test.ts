@@ -7,9 +7,10 @@
 
 import isMatch from 'lodash-es/isMatch'
 import has from 'lodash-es/has'
+import mergeWith from 'lodash-es/mergeWith'
 import { StepViewType } from '@pipeline/components/AbstractSteps/Step'
 import type { PipelineInfoConfig } from 'services/cd-ng'
-import { validateCICodebase, getErrorsList, validatePipeline } from '../StepUtil'
+import { validateCICodebase, getErrorsList, validatePipeline, mergeWithPipelineCustomizer } from '../StepUtil'
 import {
   pipelineTemplateWithRuntimeInput,
   pipelineWithNoBuildInfo,
@@ -113,5 +114,144 @@ describe('Test StepUtils', () => {
     const { errorStrings, errorCount } = getErrorsList(errors)
     expect(errorStrings.length).toBe(3)
     expect(errorCount).toBe(3)
+  })
+
+  describe('mergeWithPipelineCustomizer tests', () => {
+    test('merges new variables', () => {
+      const result = mergeWith(
+        {
+          pipeline: {
+            variables: [
+              { name: 'var1', type: 'String', value: '<+input>' },
+              { name: 'var2', type: 'String', value: '<+input>' },
+              { name: 'var3', type: 'String', value: '<+input>' }
+            ]
+          }
+        },
+        {
+          pipeline: {
+            variables: [
+              { name: 'var1', type: 'String', value: '1' },
+              { name: 'var2', type: 'String', value: '2' },
+              { name: 'var3', type: 'String', value: '3' },
+              { name: 'var4', type: 'String', value: '4' }
+            ]
+          }
+        },
+        mergeWithPipelineCustomizer
+      )
+
+      expect(result).toEqual({
+        pipeline: {
+          variables: [
+            { name: 'var1', type: 'String', value: '1' },
+            { name: 'var2', type: 'String', value: '2' },
+            { name: 'var3', type: 'String', value: '3' },
+            { name: 'var4', type: 'String', value: '4' }
+          ]
+        }
+      })
+    })
+
+    test('merges deleted variables', () => {
+      const result = mergeWith(
+        {
+          pipeline: {
+            variables: [
+              { name: 'var1', type: 'String', value: '<+input>' },
+              { name: 'var2', type: 'String', value: '<+input>' },
+              { name: 'var3', type: 'String', value: '<+input>' }
+            ]
+          }
+        },
+        {
+          pipeline: {
+            variables: [
+              { name: 'var1', type: 'String', value: '1' },
+              { name: 'var3', type: 'String', value: '3' }
+            ]
+          }
+        },
+        mergeWithPipelineCustomizer
+      )
+
+      expect(result).toEqual({
+        pipeline: {
+          variables: [
+            { name: 'var1', type: 'String', value: '1' },
+            { name: 'var2', type: 'String', value: '<+input>' },
+            { name: 'var3', type: 'String', value: '3' }
+          ]
+        }
+      })
+    })
+
+    test('maintains order of first object', () => {
+      const result = mergeWith(
+        {
+          pipeline: {
+            variables: [
+              { name: 'var1', type: 'String', value: '<+input>' },
+              { name: 'var3', type: 'String', value: '<+input>' },
+              { name: 'var2', type: 'String', value: '<+input>' }
+            ]
+          }
+        },
+        {
+          pipeline: {
+            variables: [
+              { name: 'var1', type: 'String', value: '1' },
+              { name: 'var2', type: 'String', value: '2' },
+              { name: 'var3', type: 'String', value: '3' }
+            ]
+          }
+        },
+        mergeWithPipelineCustomizer
+      )
+
+      expect(result).toEqual({
+        pipeline: {
+          variables: [
+            { name: 'var1', type: 'String', value: '1' },
+            { name: 'var3', type: 'String', value: '3' },
+            { name: 'var2', type: 'String', value: '2' }
+          ]
+        }
+      })
+    })
+
+    test('handles type change of variables', () => {
+      const result = mergeWith(
+        {
+          pipeline: {
+            variables: [
+              { name: 'var1', type: 'String', value: '<+input>' },
+              { name: 'var2', type: 'Number', value: '<+input>' },
+              { name: 'var3', type: 'String', value: '<+input>' }
+            ]
+          }
+        },
+        {
+          pipeline: {
+            variables: [
+              { name: 'var1', type: 'String', value: '1' },
+              { name: 'var2', type: 'String', value: '2' },
+              { name: 'var3', type: 'String', value: '3' }
+            ]
+          }
+        },
+        mergeWithPipelineCustomizer
+      )
+
+      expect(result).toEqual({
+        pipeline: {
+          variables: [
+            { name: 'var1', type: 'String', value: '1' },
+            { name: 'var2', type: 'Number', value: '<+input>' },
+            { name: 'var3', type: 'String', value: '3' }
+          ]
+        }
+      })
+    })
   })
 })

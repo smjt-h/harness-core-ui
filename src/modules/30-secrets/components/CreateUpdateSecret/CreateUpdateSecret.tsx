@@ -305,7 +305,11 @@ const CreateUpdateSecret: React.FC<CreateUpdateSecretProps> = props => {
           orgIdentifier,
           projectIdentifier,
           ...pick(secret, ['name', 'identifier', 'description', 'tags']),
-          ...pick(secret?.spec, ['valueType', 'secretManagerIdentifier'])
+          ...pick(secret?.spec, ['valueType', 'secretManagerIdentifier']),
+          ...(editing &&
+            secret &&
+            (secret?.spec as SecretTextSpecDTO)?.valueType === 'Reference' &&
+            pick(secret?.spec, ['value']))
         }}
         formName="createUpdateSecretForm"
         enableReinitialize={true}

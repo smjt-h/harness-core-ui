@@ -41,6 +41,42 @@ export const clearRuntimeInput = (template: PipelineInfoConfig): PipelineInfoCon
     JSON.stringify(template || {}).replace(/"<\+input>.?(?:allowedValues\((.*?)\)|regex\((.*?)\))?"/g, '""')
   )
 }
+
+export function mergeWithPipelineCustomizer(original: unknown, updated: unknown, key: string): any {
+  // customize updating for variables
+  if (key === 'variables' && Array.isArray(original) && Array.isArray(updated)) {
+    // create a map of incoming (new) values for easier lookup
+    // we use "name" of the varibale as the key
+    const updateValuesMap = updated.reduce((acc, curr) => ({ ...acc, [curr.name]: curr }), {})
+
+    // loop over existing variables and update their values from new values
+    const updatedArray = original.map(variable => {
+      const { name, type } = variable
+
+      // if a variable with same name exists in new values
+      if (name in updateValuesMap) {
+        // copy the variable data
+        const newVar = { ...updateValuesMap[name] }
+
+        // remove the variable from new values
+        delete updateValuesMap[name]
+
+        return {
+          ...variable,
+          // use new value if the type of varibale is same else use the current value
+          value: newVar.type === type ? newVar.value : variable.value
+        }
+      }
+
+      // else return original varibale
+      return variable
+    })
+
+    // append the remaining new variables to existing variables
+    return updatedArray.concat(...Object.values(updateValuesMap))
+  }
+}
+
 export function getStepFromStage(stepId: string, steps?: ExecutionWrapperConfig[]): ExecutionWrapperConfig | undefined {
   let responseStep: ExecutionWrapperConfig | undefined = undefined
   steps?.forEach(item => {

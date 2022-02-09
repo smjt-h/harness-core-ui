@@ -5,11 +5,43 @@ exports[`Test GitFullSyncForm Should render GitFullSyncForm 1`] = `
   <div
     class="StyledProps--font StyledProps--main modalContainer isModalStep"
   >
-    <p
-      class="StyledProps--font StyledProps--main StyledProps--font-variation-h3 StyledProps--padding-bottom-xlarge"
+    <div
+      class="StyledProps--font StyledProps--main StyledProps--margin-bottom-large"
     >
-      gitsync.fullSyncTitle
-    </p>
+      <div
+        class="Layout--horizontal StyledProps--main userInfo StyledProps--flex StyledProps--flex-alignItems-center"
+      >
+        <div
+          class="Avatar--Avatar Avatar--contentStyle"
+        >
+          <span
+            class="bp3-popover-wrapper Avatar--avatarPopOver"
+          >
+            <span
+              class="bp3-popover-target"
+            >
+              <div
+                class="Avatar--AvatarInner"
+                style="border-radius: 100%; line-height: 18px; width: 24px; height: 24px; font-size: 10px;"
+                tabindex="0"
+              >
+                N
+              </div>
+            </span>
+          </span>
+        </div>
+        <p
+          class="StyledProps--font StyledProps--main StyledProps--color StyledProps--color-grey700"
+        >
+          common.git.currentUserLabel
+        </p>
+      </div>
+      <p
+        class="StyledProps--font StyledProps--main StyledProps--font-variation-h3 StyledProps--margin-bottom-large StyledProps--margin-top-small"
+      >
+        gitsync.fullSyncTitle
+      </p>
+    </div>
     <div
       class="StyledProps--font StyledProps--main modalBody"
     >

@@ -30,7 +30,7 @@ import { useModalHook } from '@harness/use-modal'
 import cx from 'classnames'
 import { useHistory } from 'react-router-dom'
 import { parse } from 'yaml'
-import { pick, merge, isEmpty, isEqual, defaultTo, keyBy } from 'lodash-es'
+import { pick, mergeWith, isEmpty, isEqual, defaultTo, keyBy } from 'lodash-es'
 import type { FormikErrors } from 'formik'
 import type { PipelineInfoConfig, ResponseJsonNode } from 'services/cd-ng'
 import {
@@ -81,7 +81,12 @@ import { useTelemetry } from '@common/hooks/useTelemetry'
 import { useGetYamlWithTemplateRefsResolved } from 'services/template-ng'
 import type { InputSetDTO } from '../InputSetForm/InputSetForm'
 import { InputSetSelector, InputSetSelectorProps } from '../InputSetSelector/InputSetSelector'
-import { clearRuntimeInput, validatePipeline, getErrorsList } from '../PipelineStudio/StepUtil'
+import {
+  clearRuntimeInput,
+  validatePipeline,
+  getErrorsList,
+  mergeWithPipelineCustomizer
+} from '../PipelineStudio/StepUtil'
 import { PreFlightCheckModal } from '../PreFlightCheckModal/PreFlightCheckModal'
 import { YamlBuilderMemo } from '../PipelineStudio/PipelineYamlView/PipelineYamlView'
 import type { Values } from '../PipelineStudio/StepCommands/StepCommandTypes'
@@ -400,9 +405,10 @@ function RunPipelineFormBasic({
 
   useEffect(() => {
     const parsedPipelineYaml = parse(defaultTo(template?.data?.inputSetTemplateYaml, '')) || {}
-    const toBeUpdated = merge(parsedPipelineYaml, currentPipeline || {}) as {
+    const toBeUpdated = mergeWith(parsedPipelineYaml, currentPipeline || {}, mergeWithPipelineCustomizer) as {
       pipeline: PipelineInfoConfig
     }
+
     setCurrentPipeline(toBeUpdated)
   }, [template?.data?.inputSetTemplateYaml])
 
@@ -892,7 +898,7 @@ function RunPipelineFormBasic({
     return {}
   }
 
-  const runModalHeader = () => {
+  const runModalHeader = (): React.ReactElement => {
     return (
       <div className={css.runModalHeader}>
         <Heading
@@ -968,19 +974,19 @@ function RunPipelineFormBasic({
     )
   }
 
-  const showInputSetSelector = () => {
-    return pipeline && currentPipeline && template?.data?.inputSetTemplateYaml && existingProvide === 'existing'
+  const showInputSetSelector = (): boolean => {
+    return !!(pipeline && currentPipeline && template?.data?.inputSetTemplateYaml && existingProvide === 'existing')
   }
 
-  const showPipelineInputSetForm = () => {
-    return existingProvide === 'provide' || selectedInputSets?.length || executionView
+  const showPipelineInputSetForm = (): boolean => {
+    return !!(existingProvide === 'provide' || selectedInputSets?.length || executionView)
   }
 
-  const showVoidPipelineInputSetForm = () => {
-    return existingProvide === 'existing' && selectedInputSets?.length
+  const showVoidPipelineInputSetForm = (): boolean => {
+    return !!(existingProvide === 'existing' && selectedInputSets?.length)
   }
 
-  const visualView = (submitForm: () => void) => {
+  const visualView = (submitForm: () => void): React.ReactElement => {
     const noRuntimeInputs = checkIfRuntimeInputsNotPresent()
     return (
       <div

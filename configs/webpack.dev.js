@@ -1,3 +1,10 @@
+/*
+ * Copyright 2022 Harness Inc. All rights reserved.
+ * Use of this source code is governed by the PolyForm Shield 1.0.0 license
+ * that can be found in the licenses directory at the root of this repository, also available at
+ * https://polyformproject.org/wp-content/uploads/2020/06/PolyForm-Shield-1.0.0.txt.
+ */
+
 const path = require('path')
 const fs = require('fs')
 
@@ -26,10 +33,10 @@ const config = {
   cache: { type: 'filesystem' },
   output: {
     path: path.resolve(CONTEXT, 'dist'),
-    publicPath: '/',
-    filename: 'static/[name].js',
-    chunkFilename: 'static/[name].[id].js',
-    pathinfo: false
+    filename: '[name].js',
+    chunkFilename: '[name].[id].js',
+    pathinfo: false,
+    assetModuleFilename: 'images/[hash:6][ext][query]'
   },
   devServer: {
     historyApiFallback: true,
@@ -76,12 +83,13 @@ const config = {
       filename: 'index.html',
       minify: false,
       templateParameters: {
-        __DEV__: true
+        __DEV__: true,
+        __NON_CDN_BASE_PATH__: '/'
       }
     }),
     new MiniCssExtractPlugin({
-      filename: 'static/[name].css',
-      chunkFilename: 'static/[name].[id].css'
+      filename: '[name].css',
+      chunkFilename: '[name].[id].css'
     }),
     new webpack.WatchIgnorePlugin({
       paths: [/node_modules(?!\/@harness)/, /\.(d|test)\.tsx?$/, /stringTypes\.ts/, /\.snap$/]
