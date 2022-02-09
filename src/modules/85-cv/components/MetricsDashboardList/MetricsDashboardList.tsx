@@ -52,6 +52,7 @@ export default function MetricsDashboardList<T>(props: MetricsDashboardListProps
   )
 
   const { error, loading, data: dashboardList, refetch: refetchData } = dashboardsRequest
+  const { pageIndex = -1, pageItemCount = 0, totalPages = 0, pageSize = 0 } = dashboardList?.data || {}
 
   const dashboardItems: TableDashboardItem[] = useMemo(() => {
     if (!dashboardList?.data?.content) {
@@ -96,7 +97,28 @@ export default function MetricsDashboardList<T>(props: MetricsDashboardListProps
     }
   }, [selectedDashboards, dashboardItems, loading])
 
-  const { pageIndex = -1, pageItemCount = 0, totalPages = 0, pageSize = 0 } = dashboardList?.data || {}
+  if (!loading && (error?.data || error)) {
+    return (
+      <PageError
+        className={css.loadingErrorNoData}
+        message={getErrorMessage(error)}
+        onClick={() => refetchData({ queryParams })}
+      />
+    )
+  }
+
+  if (!loading && !(error?.data || error) && !dashboardItems?.length) {
+    return (
+      <NoDataCard
+        icon="warning-sign"
+        className={css.loadingErrorNoData}
+        message={getString('cv.monitoringSources.gco.selectDashboardsPage.noDataText')}
+        buttonText={getString('cv.monitoringSources.gco.addManualInputQuery')}
+        onClick={() => setIsModalOpen(true)}
+      />
+    )
+  }
+
   return (
     <SetupSourceLayout
       content={
@@ -182,22 +204,6 @@ export default function MetricsDashboardList<T>(props: MetricsDashboardListProps
               }
             ]}
           />
-          {!loading && error?.data && (
-            <PageError
-              className={css.loadingErrorNoData}
-              message={getErrorMessage(error)}
-              onClick={() => refetchData({ queryParams: queryParams })}
-            />
-          )}
-          {!loading && !error?.data && !dashboardItems?.length && (
-            <NoDataCard
-              icon="warning-sign"
-              className={css.loadingErrorNoData}
-              message={getString('cv.monitoringSources.gco.selectDashboardsPage.noDataText')}
-              buttonText={getString('cv.monitoringSources.gco.addManualInputQuery')}
-              onClick={() => setIsModalOpen(true)}
-            />
-          )}
           {isModalOpen && (
             <ManualInputQueryModal
               title={manualQueryInputTitle}
