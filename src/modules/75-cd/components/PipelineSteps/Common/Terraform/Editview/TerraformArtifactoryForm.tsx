@@ -30,7 +30,7 @@ import { FieldArray, Form } from 'formik'
 import { useStrings } from 'framework/strings'
 import { useVariablesExpression } from '@pipeline/components/PipelineStudio/PiplineHooks/useVariablesExpression'
 import MultiTypeFieldSelector from '@common/components/MultiTypeFieldSelector/MultiTypeFieldSelector'
-import { useGetBuildsDetailsForArtifactory, useGetRepositoriesDetailsForArtifactory } from 'services/cd-ng'
+import { useGetArtifactsBuildsDetailsForArtifactory, useGetRepositoriesDetailsForArtifactory } from 'services/cd-ng'
 
 import { Connector, PathInterface, RemoteVar, TerraformStoreTypes } from '../TerraformInterfaces'
 import stepCss from '@pipeline/components/PipelineSteps/Steps/Steps.module.scss'
@@ -111,7 +111,7 @@ export const TFArtifactoryForm: React.FC<StepProps<any> & TFRemoteProps> = ({
     loading: ArtifactsLoading,
     refetch: GetArtifacts,
     error: ArtifactsError
-  } = useGetBuildsDetailsForArtifactory({
+  } = useGetArtifactsBuildsDetailsForArtifactory({
     queryParams: {
       connectorRef: connectorValue.connector?.identifier,
       accountIdentifier: accountId,
@@ -125,13 +125,17 @@ export const TFArtifactoryForm: React.FC<StepProps<any> & TFRemoteProps> = ({
     lazy: true
   })
 
-  if (ArtifactRepoError) {
-    showError(ArtifactRepoError.message)
-  }
+  useEffect(() => {
+    if (ArtifactRepoError) {
+      showError(ArtifactRepoError.message)
+    }
+  }, [ArtifactRepoError])
 
-  if (ArtifactsError) {
-    showError(ArtifactsError.message)
-  }
+  useEffect(() => {
+    if (ArtifactsError) {
+      showError(ArtifactsError.message)
+    }
+  }, [ArtifactsError])
 
   useEffect(() => {
     if (prevStepData?.varFile?.spec?.store?.spec?.repositoryName) {
@@ -204,8 +208,6 @@ export const TFArtifactoryForm: React.FC<StepProps<any> & TFRemoteProps> = ({
               }
             }
           }
-
-          window.console.log('data', data)
           /* istanbul ignore else */
           onSubmitCallBack(data)
         }}
@@ -216,7 +218,12 @@ export const TFArtifactoryForm: React.FC<StepProps<any> & TFRemoteProps> = ({
             spec: Yup.object().shape({
               store: Yup.object().shape({
                 spec: Yup.object().shape({
-                  artifacts: Yup.array()
+                  artifacts: Yup.array().of(
+                    Yup.object().shape({
+                      artifactPathExpression: Yup.string().required(getString('cd.pathCannotBeEmpty')),
+                      name: Yup.string().required(getString('cd.pathCannotBeEmpty'))
+                    })
+                  )
                 })
               })
             })
@@ -224,6 +231,7 @@ export const TFArtifactoryForm: React.FC<StepProps<any> & TFRemoteProps> = ({
         })}
       >
         {formik => {
+          const filteredTypes = allowableTypes.filter(type => type === MultiTypeInputType.FIXED)
           return (
             <Form>
               <div className={css.tfRemoteForm}>
@@ -236,7 +244,7 @@ export const TFArtifactoryForm: React.FC<StepProps<any> & TFRemoteProps> = ({
                     items={connectorRepos ? connectorRepos : []}
                     name="varFile.spec.store.spec.repositoryName"
                     label={getString('pipelineSteps.repoName')}
-                    placeholder={ArtifactRepoLoading ? 'Loading...' : 'Select a Repository'}
+                    placeholder={getString(ArtifactRepoLoading ? 'common.loading' : 'cd.selectRepository')}
                     disabled={ArtifactRepoLoading}
                     onChange={value => setSelectedRepo(value.value as string)}
                   />
@@ -246,14 +254,14 @@ export const TFArtifactoryForm: React.FC<StepProps<any> & TFRemoteProps> = ({
                     name={'varFile.spec.store.spec.artifacts'}
                     label={getString('filePaths')}
                     style={{ width: 370 }}
-                    allowedTypes={allowableTypes.filter(item => item !== MultiTypeInputType.EXPRESSION)}
+                    allowedTypes={filteredTypes}
                   >
-                    <Layout.Horizontal className={css.artifactHeader} flex={{ justifyContent: 'space-between' }}>
-                      <Text font="normal" color={Color.GREY_600}>
-                        File Path
+                    <Layout.Horizontal flex={{ justifyContent: 'space-between' }}>
+                      <Text font="normal" color={Color.GREY_600} style={{ width: 240 }}>
+                        {getString('common.git.filePath')}
                       </Text>
-                      <Text font="normal" color={Color.GREY_600}>
-                        Artifact Name
+                      <Text font="normal" color={Color.GREY_600} style={{ width: 240 }}>
+                        {getString('cd.artifactName')}
                       </Text>
                     </Layout.Horizontal>
                     <FieldArray
@@ -288,9 +296,7 @@ export const TFArtifactoryForm: React.FC<StepProps<any> & TFRemoteProps> = ({
                                       label=""
                                       multiTextInputProps={{
                                         expressions,
-                                        allowableTypes: allowableTypes.filter(
-                                          item => item !== MultiTypeInputType.RUNTIME
-                                        )
+                                        allowableTypes: filteredTypes
                                       }}
                                       style={{ width: 240 }}
                                     />
@@ -300,7 +306,7 @@ export const TFArtifactoryForm: React.FC<StepProps<any> & TFRemoteProps> = ({
                                       items={rowArtifacts}
                                       style={{ width: 240 }}
                                       disabled={ArtifactsLoading}
-                                      placeholder={ArtifactsLoading ? 'Loading...' : 'Select a Artifact'}
+                                      placeholder={getString(ArtifactsLoading ? 'common.loading' : 'cd.selectArtifact')}
                                       onChange={val => {
                                         formik?.setFieldValue(
                                           `varFile.spec.store.spec.artifacts[${index}].artifactFile.path`,

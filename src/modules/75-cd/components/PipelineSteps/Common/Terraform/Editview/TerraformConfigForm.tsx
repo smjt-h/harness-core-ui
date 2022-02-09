@@ -33,7 +33,7 @@ import { useVariablesExpression } from '@pipeline/components/PipelineStudio/Pipl
 import { useStrings } from 'framework/strings'
 import { FormMultiTypeConnectorField } from '@connectors/components/ConnectorReferenceField/FormMultiTypeConnectorField'
 import { ConfigureOptions } from '@common/components/ConfigureOptions/ConfigureOptions'
-import { useGetBuildsDetailsForArtifactory, useGetRepositoriesDetailsForArtifactory } from 'services/cd-ng'
+import { useGetArtifactsBuildsDetailsForArtifactory, useGetRepositoriesDetailsForArtifactory } from 'services/cd-ng'
 import {
   AllowedTypes,
   tfVarIcons,
@@ -185,7 +185,7 @@ export const TerraformConfigStepOne: React.FC<StepProps<any> & TerraformConfigSt
                       projectIdentifier={projectIdentifier}
                       orgIdentifier={orgIdentifier}
                       style={{ marginBottom: 10 }}
-                      multiTypeProps={{ expressions, allowableTypes }}
+                      multiTypeProps={{ expressions, allowableTypes: filteredTypes }}
                     />
                     <Button
                       className={css.newConnectorButton}
@@ -276,7 +276,7 @@ export const TerraformConfigStepTwo: React.FC<StepProps<any> & TerraformConfigSt
     loading: ArtifactsLoading,
     refetch: GetArtifacts,
     error: ArtifactsError
-  } = useGetBuildsDetailsForArtifactory({
+  } = useGetArtifactsBuildsDetailsForArtifactory({
     queryParams: {
       connectorRef: connectorValue.connector?.identifier,
       accountIdentifier: accountId,
@@ -290,13 +290,17 @@ export const TerraformConfigStepTwo: React.FC<StepProps<any> & TerraformConfigSt
     lazy: true
   })
 
-  if (ArtifactRepoError) {
-    showError(ArtifactRepoError.message)
-  }
+  useEffect(() => {
+    if (ArtifactRepoError) {
+      showError(ArtifactRepoError.message)
+    }
+  }, [ArtifactRepoError])
 
-  if (ArtifactsError) {
-    showError(ArtifactsError.message)
-  }
+  useEffect(() => {
+    if (ArtifactsError) {
+      showError(ArtifactsError.message)
+    }
+  }, [ArtifactsError])
 
   useEffect(() => {
     if (selectedRepo && filePath) {
@@ -324,12 +328,23 @@ export const TerraformConfigStepTwo: React.FC<StepProps<any> & TerraformConfigSt
       setConnectorRepos(map(ArtifactRepoData.data?.repositories, repo => ({ label: repo, value: repo })))
     }
   }, [ArtifactRepoData])
+
+  useEffect(() => {
+    const existingDetails = isTerraformPlan ? prevStepData.spec?.configuration : prevStepData.spec?.configuration?.spec
+    if (isArtifactory && existingDetails?.configFiles?.store?.spec?.artifacts) {
+      setFilePath(existingDetails?.configFiles?.store?.spec?.artifacts[0]?.artifactPathExpression)
+    }
+  }, [prevStepData])
+
   const gitFetchTypes: SelectOption[] = [
     { label: getString('gitFetchTypes.fromBranch'), value: getString('pipelineSteps.deploy.inputSet.branch') },
     { label: getString('gitFetchTypes.fromCommit'), value: getString('pipelineSteps.commitIdValue') }
   ]
   const validationSchema = stepTwoValidationSchema(isTerraformPlan, getString)
 
+  const filteredTypes = isArtifactory
+    ? allowableTypes.filter(type => type === MultiTypeInputType.FIXED)
+    : allowableTypes
   return (
     <Layout.Vertical padding="small" className={css.tfConfigForm}>
       <Heading level={2} style={{ color: Color.BLACK, fontSize: 24, fontWeight: 'bold' }} margin={{ bottom: 'xlarge' }}>
@@ -354,7 +369,7 @@ export const TerraformConfigStepTwo: React.FC<StepProps<any> & TerraformConfigSt
                       items={connectorRepos ? connectorRepos : []}
                       name={formInputNames(isTerraformPlan).repositoryName}
                       label={getString('pipelineSteps.repoName')}
-                      placeholder={ArtifactRepoLoading ? 'Loading...' : 'Select a Repository'}
+                      placeholder={getString(ArtifactRepoLoading ? 'common.loading' : 'cd.selectRepository')}
                       disabled={ArtifactRepoLoading}
                       onChange={value => {
                         setSelectedRepo(value.value as string)
@@ -371,7 +386,7 @@ export const TerraformConfigStepTwo: React.FC<StepProps<any> & TerraformConfigSt
                         label={getString('pipelineSteps.repoName')}
                         name={formInputNames(isTerraformPlan).repoName}
                         placeholder={getString('pipelineSteps.repoName')}
-                        multiTextInputProps={{ expressions, allowableTypes: allowableTypes }}
+                        multiTextInputProps={{ expressions, allowableTypes: filteredTypes }}
                       />
                       {getMultiTypeFromValue(store?.repoName) === MultiTypeInputType.RUNTIME && (
                         <ConfigureOptions
@@ -451,7 +466,7 @@ export const TerraformConfigStepTwo: React.FC<StepProps<any> & TerraformConfigSt
                     label={getString('cd.folderPath')}
                     placeholder={getString('pipeline.manifestType.pathPlaceholder')}
                     name={formInputNames(isTerraformPlan).folderPath}
-                    multiTextInputProps={{ expressions, allowableTypes }}
+                    multiTextInputProps={{ expressions, allowableTypes: filteredTypes }}
                     onChange={value => {
                       formik?.setFieldValue(formikOnChangeNames(isTerraformPlan).artifactPathExpression, value)
                       setFilePath(value as string)
@@ -470,14 +485,15 @@ export const TerraformConfigStepTwo: React.FC<StepProps<any> & TerraformConfigSt
                       isReadonly={isReadonly}
                     />
                   )}
+                </div>
+                <div className={cx(stepCss.formGroup, stepCss.md)}>
                   {getMultiTypeFromValue(connectorValue) === MultiTypeInputType.FIXED && isArtifactory && (
                     <FormInput.Select
                       name={formikOnChangeNames(isTerraformPlan).artifactName}
-                      label=""
+                      label="Artifact Name"
                       items={artifacts ? artifacts : []}
-                      style={{ width: isArtifactory ? 240 : 300 }}
                       disabled={ArtifactsLoading}
-                      placeholder={ArtifactsLoading ? 'Loading...' : 'Select a Artifact'}
+                      placeholder={getString(ArtifactsLoading ? 'common.loading' : 'cd.selectArtifact')}
                       onChange={val => {
                         formik?.setFieldValue(formikOnChangeNames(isTerraformPlan).artifactPath, val.value)
                         formik?.setFieldValue(formikOnChangeNames(isTerraformPlan).artifactName, val.label)

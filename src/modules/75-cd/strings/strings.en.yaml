@@ -169,3 +169,6 @@ configFileDetails: 'Config File Details'
 configFileStore: 'Specify Terraform Config File Store'
 configFileStepOne: 'Terraform Config Store'
 configFileStoreTitle: 'Config File'
+selectRepository: Select a repository
+selectArtifact: Select an artifact
+artifactName: Artifact Name
