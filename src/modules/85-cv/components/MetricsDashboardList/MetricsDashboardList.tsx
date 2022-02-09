@@ -22,7 +22,9 @@ import { TableFilter } from '@cv/components/TableFilter/TableFilter'
 import { Table } from '@common/components'
 import {
   initializeSelectedDashboards,
-  initializeTableData
+  initializeTableData,
+  isError,
+  isNoData
 } from '@cv/components/MetricsDashboardList/MetricsDashboardList.utils'
 import { ManualInputQueryModal } from '@cv/pages/health-source/connectors/GCOMetricsHealthSource/components/ManualInputQueryModal/ManualInputQueryModal'
 import { getManuallyCreatedQueries } from '@cv/pages/health-source/connectors/GCOMetricsHealthSource/GCOMetricsHealthSource.utils'
@@ -95,9 +97,10 @@ export default function MetricsDashboardList<T>(props: MetricsDashboardListProps
     } else {
       setTableData(initializeTableData(selectedDashboards, dashboardItems))
     }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [selectedDashboards, dashboardItems, loading])
 
-  if (!loading && (error?.data || error)) {
+  if (isError(loading, error)) {
     return (
       <PageError
         className={css.loadingErrorNoData}
@@ -107,7 +110,7 @@ export default function MetricsDashboardList<T>(props: MetricsDashboardListProps
     )
   }
 
-  if (!loading && !(error?.data || error) && !dashboardItems?.length) {
+  if (isNoData(loading, error, dashboardItems)) {
     return (
       <NoDataCard
         icon="warning-sign"
