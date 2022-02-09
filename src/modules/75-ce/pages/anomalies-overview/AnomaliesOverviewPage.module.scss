@@ -7,7 +7,7 @@
 
 .searchInput {
   flex-grow: 1;
-  margin-right: 16px;
+  margin-right: var(--spacing-medium);
 }
 
 .header {
@@ -21,10 +21,8 @@
 }
 
 .summaryCharts {
-  background-color: var(--grey-0);
   width: 100%;
   padding: var(--spacing-medium);
-  border-radius: 4px;
 
   .cols {
     display: grid;
@@ -43,4 +41,12 @@
 
 .rowGap8 {
   row-gap: 8px;
+}
+
+.countCard {
+  background-color: var(--grey-100);
+}
+
+.costCard {
+  background-color: var(--red-100);
 }

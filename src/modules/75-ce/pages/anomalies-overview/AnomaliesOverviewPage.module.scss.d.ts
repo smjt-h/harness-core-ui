@@ -8,6 +8,8 @@
 // this is an auto-generated file, do not update this manually
 declare const styles: {
   readonly cols: string
+  readonly costCard: string
+  readonly countCard: string
   readonly groupbyFilter: string
   readonly header: string
   readonly rowGap8: string

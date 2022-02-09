@@ -6,7 +6,7 @@
  */
 
 import React, { useMemo } from 'react'
-import { Container, Layout, Text, Color } from '@wings-software/uicore'
+import { Container, Layout, Text, Color, Card } from '@wings-software/uicore'
 import { useStrings } from 'framework/strings'
 import {
   HorizontalLayout,
@@ -84,28 +84,22 @@ const AnomaliesSummary: React.FC<AnomaliesOverviewProps> = ({
   return (
     <Layout.Horizontal spacing="medium">
       <Layout.Vertical spacing="small">
-        <Container padding="medium" background={Color.GREY_100} border={{ color: Color.GREY_100, radius: 4 }}>
+        <Card className={css.countCard}>
           <Text color={Color.GREY_600} font={{ weight: 'semi-bold', size: 'small' }}>
             {getString('ce.anomalyDetection.summary.totalCountText')}
           </Text>
           <Text font={{ size: 'medium', weight: 'bold' }} intent="danger">
             {costData?.count}
           </Text>
-        </Container>
-        <Container
-          padding="medium"
-          background={Color.RED_100}
-          border={{ color: Color.RED_100, radius: 4 }}
-          intent="danger"
-        >
+        </Card>
+        <Card className={css.costCard}>
           <Text color={Color.RED_500} font={{ weight: 'semi-bold', size: 'small' }}>
             {getString('ce.anomalyDetection.summary.costImpacted')}
           </Text>
           <Text font={{ size: 'medium', weight: 'bold' }} intent="danger">
             {formatCost(costData?.actualCost)}
           </Text>
-          <p></p>
-        </Container>
+        </Card>
       </Layout.Vertical>
       <Container className={css.summaryCharts}>
         <HorizontalLayout

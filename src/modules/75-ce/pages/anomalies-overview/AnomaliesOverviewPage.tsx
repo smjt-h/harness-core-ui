@@ -6,18 +6,7 @@
  */
 
 import React, { useEffect, useState } from 'react'
-import {
-  Button,
-  ButtonSize,
-  ButtonVariation,
-  Container,
-  Layout,
-  PageBody,
-  PageHeader,
-  TextInput,
-  Text,
-  PageSpinner
-} from '@wings-software/uicore'
+import { Container, PageBody, PageHeader, Text, PageSpinner } from '@wings-software/uicore'
 import { useParams } from 'react-router-dom'
 import { useStrings } from 'framework/strings'
 import { NGBreadcrumbs } from '@common/components/NGBreadcrumbs/NGBreadcrumbs'
@@ -26,38 +15,8 @@ import { AnomalyData, CCMStringFilter, useGetAnomalyWidgetsData, useListAnomalie
 import AnomaliesSummary from '@ce/components/AnomaliesDetection/AnomaliesSummary'
 import AnomalyFilters from '@ce/components/AnomaliesDetection/AnomaliesFilter'
 import AnomaliesListGridView from '@ce/components/AnomaliesDetection/AnomaliesListView'
-import css from './AnomaliesOverviewPage.module.scss'
-interface AnomalyParams {
-  accountId: string
-}
-interface SearchProps {
-  searchText: string
-  onChange: React.Dispatch<React.SetStateAction<string>>
-}
-
-const AnomaliesSearch: React.FC<SearchProps> = ({ searchText, onChange }) => {
-  const { getString } = useStrings()
-
-  return (
-    <Layout.Horizontal>
-      {/* TODO: Need to add search icon in searchBox */}
-      <TextInput
-        value={searchText}
-        onChange={(e: any) => {
-          onChange(e.target.value)
-        }}
-        wrapperClassName={css.searchInput}
-        placeholder={getString('search')}
-      />
-      <Button
-        text={getString('ce.anomalyDetection.settingsBtn')}
-        icon="nav-settings"
-        variation={ButtonVariation.SECONDARY}
-        size={ButtonSize.MEDIUM}
-      />
-    </Layout.Horizontal>
-  )
-}
+import AnomaliesSearch from '@ce/components/AnomaliesDetection/AnomaliesSearch'
+import type { AccountPathProps } from '@common/interfaces/RouteInterfaces'
 
 const getFilters = (filters: Record<string, Record<string, string>>) => {
   const updatedFilters = Object.values(filters).map(item => {
@@ -75,7 +34,7 @@ const getFilters = (filters: Record<string, Record<string, string>>) => {
 const AnomaliesOverviewPage: React.FC = () => {
   const { getString } = useStrings()
   const [searchText, setSearchText] = React.useState('')
-  const { accountId } = useParams<AnomalyParams>()
+  const { accountId } = useParams<AccountPathProps>()
   const [listData, setListData] = useState<AnomalyData[]>([])
   const [costData, setCostData] = useState([])
   const [perspectiveAnomaliesData, setPerspectiveANomaliesData] = useState([])

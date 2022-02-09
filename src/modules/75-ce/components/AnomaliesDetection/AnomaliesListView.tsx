@@ -7,7 +7,7 @@
 
 import React, { useState } from 'react'
 import type { CellProps, Renderer } from 'react-table'
-import { Text, Icon, TableV2, Color, Layout, Button } from '@wings-software/uicore'
+import { Text, Icon, TableV2, Color, Layout, Button, getErrorInfoFromErrorObject } from '@wings-software/uicore'
 import { Link, useParams } from 'react-router-dom'
 import { Classes, Menu, MenuItem, Popover, Position } from '@blueprintjs/core'
 import { useStrings } from 'framework/strings'
@@ -46,10 +46,9 @@ const AnomaliesMenu: React.FC<AnomaliesMenu> = ({ anomalyId }) => {
       const response = await updateAnomalyFeedback({
         feedback: 'FALSE_ANOMALY'
       })
-      response && showSuccess('Thanks for your feedback!')
+      response && showSuccess(getString('ce.anomalyDetection.userFeedbackSuccessMsg'))
     } catch (error) {
-      const errMessage = error.data.message
-      showError(errMessage)
+      showError(getErrorInfoFromErrorObject(error))
     }
   }
 
@@ -119,7 +118,13 @@ const AnomaliesListGridView: React.FC<ListProps> = ({ listData }) => {
         <Text font={{ weight: 'semi-bold', size: 'normal' }} color={Color.BLACK}>
           {formatCost(actualAmount)}
         </Text>
-        {trend ? <Text font={{ size: 'xsmall' }} color={Color.RED_600}>{`+${trend}%`}</Text> : null}
+        {trend ? (
+          <Text font={{ size: 'xsmall' }} color={Color.RED_600}>
+            {getString('ce.anomalyDetection.trend', {
+              trend: trend
+            })}
+          </Text>
+        ) : null}
       </Layout.Horizontal>
     )
   }
@@ -134,7 +139,7 @@ const AnomaliesListGridView: React.FC<ListProps> = ({ listData }) => {
         <Layout.Vertical spacing="small">
           <Link to={''}>
             <Text font={{ size: 'small' }} inline color="primary7" lineClamp={1} style={{ maxWidth: 200 }}>
-              {resourceName || 'squidward/spongebob/1233445...'}
+              {resourceName}
             </Text>
           </Link>
           <Text font={{ size: 'small' }} color={Color.GREY_600}>
