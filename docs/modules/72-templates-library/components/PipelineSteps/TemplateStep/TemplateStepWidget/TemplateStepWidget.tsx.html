@@ -23,9 +23,9 @@
         <div class='clearfix'>
             
             <div class='fl pad1y space-right2'>
-                <span class="strong">83.93% </span>
+                <span class="strong">84.48% </span>
                 <span class="quiet">Statements</span>
-                <span class='fraction'>47/56</span>
+                <span class='fraction'>49/58</span>
             </div>
         
             
@@ -44,9 +44,9 @@
         
             
             <div class='fl pad1y space-right2'>
-                <span class="strong">83.93% </span>
+                <span class="strong">84.48% </span>
                 <span class="quiet">Lines</span>
-                <span class='fraction'>47/56</span>
+                <span class='fraction'>49/58</span>
             </div>
         
             
@@ -275,7 +275,15 @@
 <a name='L216'></a><a href='#L216'>216</a>
 <a name='L217'></a><a href='#L217'>217</a>
 <a name='L218'></a><a href='#L218'>218</a>
-<a name='L219'></a><a href='#L219'>219</a></td><td class="line-coverage quiet"><span class="cline-any cline-neutral">&nbsp;</span>
+<a name='L219'></a><a href='#L219'>219</a>
+<a name='L220'></a><a href='#L220'>220</a>
+<a name='L221'></a><a href='#L221'>221</a>
+<a name='L222'></a><a href='#L222'>222</a>
+<a name='L223'></a><a href='#L223'>223</a>
+<a name='L224'></a><a href='#L224'>224</a>
+<a name='L225'></a><a href='#L225'>225</a>
+<a name='L226'></a><a href='#L226'>226</a>
+<a name='L227'></a><a href='#L227'>227</a></td><td class="line-coverage quiet"><span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
@@ -318,6 +326,7 @@
 <span class="cline-any cline-yes">2x</span>
 <span class="cline-any cline-yes">2x</span>
 <span class="cline-any cline-yes">2x</span>
+<span class="cline-any cline-yes">2x</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
@@ -346,6 +355,7 @@
 <span class="cline-any cline-yes">2x</span>
 <span class="cline-any cline-yes">2x</span>
 <span class="cline-any cline-yes">2x</span>
+<span class="cline-any cline-yes">2x</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
@@ -365,7 +375,13 @@
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-yes">2x</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
@@ -524,7 +540,7 @@ import { setFormikRef, StepViewType, StepFormikFowardRef } from '@pipeline/compo
 import { useStrings } from 'framework/strings'
 import type { AbstractStepFactory } from '@pipeline/components/AbstractSteps/AbstractStepFactory'
 import type { Error, StepElementConfig } from 'services/cd-ng'
-import type { ProjectPathProps } from '@common/interfaces/RouteInterfaces'
+import type { ProjectPathProps, GitQueryParams } from '@common/interfaces/RouteInterfaces'
 import { useGetTemplate, useGetTemplateInputSetYaml } from 'services/template-ng'
 import { useToaster } from '@common/exports'
 import { PageSpinner } from '@common/components'
@@ -534,6 +550,7 @@ import { validateStep } from '@pipeline/components/PipelineStudio/StepUtil'
 import { StepForm } from '@pipeline/components/PipelineInputSetForm/StageInputSetForm'
 import { setTemplateInputs, TEMPLATE_INPUT_PATH } from '@pipeline/utils/templateUtils'
 import { getScopeBasedQueryParams } from '@templates-library/utils/templatesUtils'
+import { useQueryParams } from '@common/hooks'
 import stepCss from '@pipeline/components/PipelineSteps/Steps/Steps.module.scss'
 import css from './TemplateStepWidget.module.scss'
 &nbsp;
@@ -561,6 +578,7 @@ function TemplateStepWidget(
   const [formValues, setFormValues] = React.useState&lt;TemplateStepValues&gt;(initialValues)
   const { getString } = useStrings()
   const queryParams = useParams&lt;ProjectPathProps&gt;()
+  const { branch, repoIdentifier } = useQueryParams&lt;GitQueryParams&gt;()
   const { showError } = useToaster()
   const stepTemplateRef = getIdentifierFromValue(initialValues.template.templateRef)
   const scope = getScopeFromValue(initialValues.template.templateRef)
@@ -574,7 +592,10 @@ function TemplateStepWidget(
     templateIdentifier: stepTemplateRef,
     queryParams: {
       ...getScopeBasedQueryParams(queryParams, scope),
-      versionLabel: defaultTo(initialValues.template.versionLabel, '')
+      versionLabel: defaultTo(initialValues.template.versionLabel, ''),
+      repoIdentifier,
+      branch,
+      getDefaultFromOtherRepo: true
     }
   })
 &nbsp;
@@ -587,7 +608,10 @@ function TemplateStepWidget(
     templateIdentifier: stepTemplateRef,
     queryParams: {
       ...getScopeBasedQueryParams(queryParams, scope),
-      versionLabel: defaultTo(initialValues.template.versionLabel, '')
+      versionLabel: defaultTo(initialValues.template.versionLabel, ''),
+      repoIdentifier,
+      branch,
+      getDefaultFromOtherRepo: true
     }
   })
 &nbsp;
@@ -718,7 +742,7 @@ export const TemplateStepWidgetWithRef = React.forwardRef(TemplateStepWidget)
             <div class='footer quiet pad2 space-top1 center small'>
                 Code coverage generated by
                 <a href="https://istanbul.js.org/" target="_blank">istanbul</a>
-                at Wed Feb 09 2022 11:35:51 GMT+0000 (Greenwich Mean Time)
+                at Wed Feb 09 2022 14:50:44 GMT+0000 (Greenwich Mean Time)
             </div>
         </div>
         <script src="../../../../../../prettify.js"></script>

@@ -385,8 +385,7 @@
 <a name='L326'></a><a href='#L326'>326</a>
 <a name='L327'></a><a href='#L327'>327</a>
 <a name='L328'></a><a href='#L328'>328</a>
-<a name='L329'></a><a href='#L329'>329</a>
-<a name='L330'></a><a href='#L330'>330</a></td><td class="line-coverage quiet"><span class="cline-any cline-neutral">&nbsp;</span>
+<a name='L329'></a><a href='#L329'>329</a></td><td class="line-coverage quiet"><span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
@@ -651,7 +650,6 @@
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-yes">79x</span>
 <span class="cline-any cline-yes">79x</span>
 <span class="cline-any cline-yes">67x</span>
@@ -686,7 +684,6 @@
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-no">&nbsp;</span>
-<span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
@@ -705,6 +702,7 @@
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-yes">18x</span>
 <span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
@@ -917,109 +915,107 @@ const PipelineInputSetFormInternal: React.FC&lt;PipelineInputSetFormProps&gt; = 
   }
 &nbsp;
   return (
-    &lt;PipelineVariablesContextProvider pipeline={originalPipeline}&gt;
-      &lt;Layout.Vertical spacing="medium" className={cx(css.container, maybeContainerClass)}&gt;
-        {getMultiTypeFromValue(template<span class="branch-0 cbranch-no" title="branch not covered" >?.t</span>imeout) === MultiTypeInputType.RUNTIME ? (
-<span class="branch-0 cbranch-no" title="branch not covered" >          &lt;div className={cx(stepCss.formGroup, stepCss.sm)}&gt;</span>
-            &lt;FormMultiTypeDurationField
-              multiTypeDurationProps={{
-                enableConfigureOptions: false,
-                allowableTypes,
-                expressions,
-                disabled: readonly
-              }}
-              className={stepCss.checkbox}
-              label={getString('pipelineSteps.timeoutLabel')}
-              name="timeout"
-              disabled={readonly}
-            /&gt;
-          &lt;/div&gt;
-        ) : null}
-        {template<span class="branch-0 cbranch-no" title="branch not covered" >?.v</span>ariables &amp;&amp; template<span class="branch-0 cbranch-no" title="branch not covered" >?.v</span>ariables<span class="branch-0 cbranch-no" title="branch not covered" >?.l</span>ength &gt; 0 &amp;&amp; (
+    &lt;Layout.Vertical spacing="medium" className={cx(css.container, maybeContainerClass)}&gt;
+      {getMultiTypeFromValue(template<span class="branch-0 cbranch-no" title="branch not covered" >?.t</span>imeout) === MultiTypeInputType.RUNTIME ? (
+<span class="branch-0 cbranch-no" title="branch not covered" >        &lt;div className={cx(stepCss.formGroup, stepCss.sm)}&gt;</span>
+          &lt;FormMultiTypeDurationField
+            multiTypeDurationProps={{
+              enableConfigureOptions: false,
+              allowableTypes,
+              expressions,
+              disabled: readonly
+            }}
+            className={stepCss.checkbox}
+            label={getString('pipelineSteps.timeoutLabel')}
+            name="timeout"
+            disabled={readonly}
+          /&gt;
+        &lt;/div&gt;
+      ) : null}
+      {template<span class="branch-0 cbranch-no" title="branch not covered" >?.v</span>ariables &amp;&amp; template<span class="branch-0 cbranch-no" title="branch not covered" >?.v</span>ariables<span class="branch-0 cbranch-no" title="branch not covered" >?.l</span>ength &gt; 0 &amp;&amp; (
+        &lt;&gt;
+          &lt;div className={css.subheading}&gt;{getString('customVariables.pipelineVariablesTitle')}&lt;/div&gt;
+          &lt;StepWidget&lt;CustomVariablesData, CustomVariableInputSetExtraProps&gt;
+            factory={factory as unknown as AbstractStepFactory}
+            initialValues={{
+              variables: (originalPipeline.variables || <span class="branch-1 cbranch-no" title="branch not covered" >[])</span> as AllNGVariables[],
+              canAddVariable: true
+            }}
+            allowableTypes={allowableTypes}
+            readonly={readonly}
+            type={StepType.CustomVariable}
+            stepViewType={viewType}
+            customStepProps={{
+              template: { variables: (template<span class="branch-0 cbranch-no" title="branch not covered" >?.v</span>ariables || <span class="branch-1 cbranch-no" title="branch not covered" >[])</span> as AllNGVariables[] },
+              path,
+              allValues: { variables: (originalPipeline<span class="branch-0 cbranch-no" title="branch not covered" >?.v</span>ariables || <span class="branch-1 cbranch-no" title="branch not covered" >[])</span> as AllNGVariables[] }
+            }}
+          /&gt;
+        &lt;/&gt;
+      )}
+      {isCloneCodebaseEnabledAtLeastAtOneStage &amp;&amp;
+        getMultiTypeFromValue(template<span class="branch-0 cbranch-no" title="branch not covered" >?.p</span>roperties<span class="branch-0 cbranch-no" title="branch not covered" >?.c</span>i<span class="branch-0 cbranch-no" title="branch not covered" >?.c</span>odebase<span class="branch-0 cbranch-no" title="branch not covered" >?.b</span>uild as unknown as string) ===
+          MultiTypeInputType.RUNTIME &amp;&amp; (
           &lt;&gt;
-            &lt;div className={css.subheading}&gt;{getString('customVariables.pipelineVariablesTitle')}&lt;/div&gt;
-            &lt;StepWidget&lt;CustomVariablesData, CustomVariableInputSetExtraProps&gt;
-              factory={factory as unknown as AbstractStepFactory}
-              initialValues={{
-                variables: (originalPipeline.variables || <span class="branch-1 cbranch-no" title="branch not covered" >[])</span> as AllNGVariables[],
-                canAddVariable: true
-              }}
-              allowableTypes={allowableTypes}
-              readonly={readonly}
-              type={StepType.CustomVariable}
-              stepViewType={viewType}
-              customStepProps={{
-                template: { variables: (template<span class="branch-0 cbranch-no" title="branch not covered" >?.v</span>ariables || <span class="branch-1 cbranch-no" title="branch not covered" >[])</span> as AllNGVariables[] },
-                path,
-                allValues: { variables: (originalPipeline<span class="branch-0 cbranch-no" title="branch not covered" >?.v</span>ariables || <span class="branch-1 cbranch-no" title="branch not covered" >[])</span> as AllNGVariables[] }
-              }}
-            /&gt;
-          &lt;/&gt;
-        )}
-        {isCloneCodebaseEnabledAtLeastAtOneStage &amp;&amp;
-          getMultiTypeFromValue(template<span class="branch-0 cbranch-no" title="branch not covered" >?.p</span>roperties<span class="branch-0 cbranch-no" title="branch not covered" >?.c</span>i<span class="branch-0 cbranch-no" title="branch not covered" >?.c</span>odebase<span class="branch-0 cbranch-no" title="branch not covered" >?.b</span>uild as unknown as string) ===
-            MultiTypeInputType.RUNTIME &amp;&amp; (
-            &lt;&gt;
-              &lt;Layout.Horizontal spacing="small" padding={{ top: 'medium', left: 'large', right: 0, bottom: 0 }}&gt;
-                &lt;Text
-                  data-name="ci-codebase-title"
-                  color={Color.BLACK_100}
-                  font={{ weight: 'semi-bold' }}
-                  tooltipProps={{ dataTooltipId: 'ciCodebase' }}
-                &gt;
-                  {getString('ciCodebase')}
-                &lt;/Text&gt;
-              &lt;/Layout.Horizontal&gt;
-              &lt;div className={css.topAccordion}&gt;
-                &lt;div className={css.accordionSummary}&gt;
-                  &lt;div className={css.nestedAccordions} style={{ width: '50%' }}&gt;
-                    &lt;CICodebaseInputSetForm path={path} readonly={readonly} originalPipeline={props.originalPipeline} /&gt;
-                  &lt;/div&gt;
+            &lt;Layout.Horizontal spacing="small" padding={{ top: 'medium', left: 'large', right: 0, bottom: 0 }}&gt;
+              &lt;Text
+                data-name="ci-codebase-title"
+                color={Color.BLACK_100}
+                font={{ weight: 'semi-bold' }}
+                tooltipProps={{ dataTooltipId: 'ciCodebase' }}
+              &gt;
+                {getString('ciCodebase')}
+              &lt;/Text&gt;
+            &lt;/Layout.Horizontal&gt;
+            &lt;div className={css.topAccordion}&gt;
+              &lt;div className={css.accordionSummary}&gt;
+                &lt;div className={css.nestedAccordions} style={{ width: '50%' }}&gt;
+                  &lt;CICodebaseInputSetForm path={path} readonly={readonly} originalPipeline={props.originalPipeline} /&gt;
                 &lt;/div&gt;
               &lt;/div&gt;
-            &lt;/&gt;
-          )}
-        &lt;&gt;
-          {template<span class="branch-0 cbranch-no" title="branch not covered" >?.s</span>tages?.map((stageObj, index) =&gt; {
-            const pathPrefix = !isEmpty(path) ? `${path}.` : <span class="branch-1 cbranch-no" title="branch not covered" >''</span>
-            if (stageObj.stage) {
-              const allValues = getStageFromPipeline(stageObj<span class="branch-0 cbranch-no" title="branch not covered" >?.s</span>tage<span class="branch-0 cbranch-no" title="branch not covered" >?.i</span>dentifier || <span class="branch-1 cbranch-no" title="branch not covered" >'',</span> originalPipeline)
+            &lt;/div&gt;
+          &lt;/&gt;
+        )}
+      &lt;&gt;
+        {template<span class="branch-0 cbranch-no" title="branch not covered" >?.s</span>tages?.map((stageObj, index) =&gt; {
+          const pathPrefix = !isEmpty(path) ? `${path}.` : <span class="branch-1 cbranch-no" title="branch not covered" >''</span>
+          if (stageObj.stage) {
+            const allValues = getStageFromPipeline(stageObj<span class="branch-0 cbranch-no" title="branch not covered" >?.s</span>tage<span class="branch-0 cbranch-no" title="branch not covered" >?.i</span>dentifier || <span class="branch-1 cbranch-no" title="branch not covered" >'',</span> originalPipeline)
 &nbsp;
+            return (
+              &lt;Layout.Vertical key={stageObj<span class="branch-0 cbranch-no" title="branch not covered" >?.s</span>tage<span class="branch-0 cbranch-no" title="branch not covered" >?.i</span>dentifier || <span class="branch-1 cbranch-no" title="branch not covered" >index}</span>&gt;
+                &lt;StageForm
+                  template={stageObj}
+                  allValues={allValues}
+                  path={`${pathPrefix}stages[${index}].stage`}
+                  readonly={isInputStageDisabled(stageObj<span class="branch-0 cbranch-no" title="branch not covered" >?.s</span>tage<span class="branch-0 cbranch-no" title="branch not covered" >?.i</span>dentifier)}
+                  viewType={viewType}
+                  allowableTypes={allowableTypes}
+                /&gt;
+              &lt;/Layout.Vertical&gt;
+            )
+          } else <span class="missing-if-branch" title="else path not taken" >E</span>if (stageObj.parallel) {
+            return stageObj.parallel.map((stageP, indexp) =&gt; {
+              const allValues = getStageFromPipeline(stageP<span class="branch-0 cbranch-no" title="branch not covered" >?.s</span>tage<span class="branch-0 cbranch-no" title="branch not covered" >?.i</span>dentifier || <span class="branch-1 cbranch-no" title="branch not covered" >'',</span> originalPipeline)
               return (
-                &lt;Layout.Vertical key={stageObj<span class="branch-0 cbranch-no" title="branch not covered" >?.s</span>tage<span class="branch-0 cbranch-no" title="branch not covered" >?.i</span>dentifier || <span class="branch-1 cbranch-no" title="branch not covered" >index}</span>&gt;
+                &lt;Layout.Vertical key={`${stageObj<span class="branch-0 cbranch-no" title="branch not covered" >?.s</span>tage<span class="branch-1 cbranch-no" title="branch not covered" >?.identifier}</span>-${stageP.stage<span class="branch-0 cbranch-no" title="branch not covered" >?.i</span>dentifier}-${indexp}`}&gt;
                   &lt;StageForm
-                    template={stageObj}
+                    template={stageP}
                     allValues={allValues}
-                    path={`${pathPrefix}stages[${index}].stage`}
-                    readonly={isInputStageDisabled(stageObj<span class="branch-0 cbranch-no" title="branch not covered" >?.s</span>tage<span class="branch-0 cbranch-no" title="branch not covered" >?.i</span>dentifier)}
+                    path={`${pathPrefix}stages[${index}].parallel[${indexp}].stage`}
+                    readonly={isInputStageDisabled(stageP<span class="branch-0 cbranch-no" title="branch not covered" >?.s</span>tage<span class="branch-0 cbranch-no" title="branch not covered" >?.i</span>dentifier as string)}
                     viewType={viewType}
                     allowableTypes={allowableTypes}
                   /&gt;
                 &lt;/Layout.Vertical&gt;
               )
-            } else <span class="missing-if-branch" title="else path not taken" >E</span>if (stageObj.parallel) {
-              return stageObj.parallel.map((stageP, indexp) =&gt; {
-                const allValues = getStageFromPipeline(stageP<span class="branch-0 cbranch-no" title="branch not covered" >?.s</span>tage<span class="branch-0 cbranch-no" title="branch not covered" >?.i</span>dentifier || <span class="branch-1 cbranch-no" title="branch not covered" >'',</span> originalPipeline)
-                return (
-                  &lt;Layout.Vertical key={`${stageObj<span class="branch-0 cbranch-no" title="branch not covered" >?.s</span>tage<span class="branch-1 cbranch-no" title="branch not covered" >?.identifier}</span>-${stageP.stage<span class="branch-0 cbranch-no" title="branch not covered" >?.i</span>dentifier}-${indexp}`}&gt;
-                    &lt;StageForm
-                      template={stageP}
-                      allValues={allValues}
-                      path={`${pathPrefix}stages[${index}].parallel[${indexp}].stage`}
-                      readonly={isInputStageDisabled(stageP<span class="branch-0 cbranch-no" title="branch not covered" >?.s</span>tage<span class="branch-0 cbranch-no" title="branch not covered" >?.i</span>dentifier as string)}
-                      viewType={viewType}
-                      allowableTypes={allowableTypes}
-                    /&gt;
-                  &lt;/Layout.Vertical&gt;
-                )
-              })
-            } else {
-<span class="cstat-no" title="statement not covered" >              return null</span>
-            }
-          })}
-        &lt;/&gt;
-      &lt;/Layout.Vertical&gt;
-    &lt;/PipelineVariablesContextProvider&gt;
+            })
+          } else {
+<span class="cstat-no" title="statement not covered" >            return null</span>
+          }
+        })}
+      &lt;/&gt;
+    &lt;/Layout.Vertical&gt;
   )
 }
 export const PipelineInputSetForm: React.FC&lt;PipelineInputSetFormProps&gt; = props =&gt; {
@@ -1038,6 +1034,7 @@ export const PipelineInputSetForm: React.FC&lt;PipelineInputSetFormProps&gt; = p
       })
     }
   }, [props<span class="branch-0 cbranch-no" title="branch not covered" >?.t</span>emplate])
+&nbsp;
   return (
     &lt;PipelineVariablesContextProvider pipeline={props.originalPipeline}&gt;
       &lt;PipelineInputSetFormInternal {...props} template={template} /&gt;
@@ -1051,7 +1048,7 @@ export const PipelineInputSetForm: React.FC&lt;PipelineInputSetFormProps&gt; = p
             <div class='footer quiet pad2 space-top1 center small'>
                 Code coverage generated by
                 <a href="https://istanbul.js.org/" target="_blank">istanbul</a>
-                at Wed Feb 09 2022 11:35:51 GMT+0000 (Greenwich Mean Time)
+                at Wed Feb 09 2022 14:50:44 GMT+0000 (Greenwich Mean Time)
             </div>
         </div>
         <script src="../../../../prettify.js"></script>
