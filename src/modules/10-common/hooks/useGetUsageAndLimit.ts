@@ -24,7 +24,7 @@ import { ModuleName } from 'framework/types/ModuleName'
 import { useGetCCMLicenseUsage } from 'services/ce'
 import { useLicenseStore } from 'framework/LicenseStore/LicenseStoreContext'
 
-interface UsageAndLimitReturn {
+export interface UsageAndLimitReturn {
   limitData: LimitReturn
   usageData: UsageReturn
 }

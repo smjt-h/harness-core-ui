@@ -49,7 +49,9 @@ const FixedSchedules: React.FC<FixedSchedulesProps> = props => {
 
   const { openEditor } = useFixedScheduleEditor({
     schedule: selectedSchedule,
-    addSchedule: handleScheduleAddition
+    scheduleIndex: editParams.index,
+    addSchedule: handleScheduleAddition,
+    allCreatedSchedules: props.schedules
   })
 
   const addFixedSchedule = () => {

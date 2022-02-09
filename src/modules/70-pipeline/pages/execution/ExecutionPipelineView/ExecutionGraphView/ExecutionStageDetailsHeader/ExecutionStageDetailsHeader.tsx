@@ -90,19 +90,21 @@ export function ExecutionStageDetailsHeader(): React.ReactElement {
           <div className={css.stageTop}>
             <div className={css.stageName}>
               {stage?.name}
-              <RbacButton
-                icon="repeat"
-                tooltip={getString('pipeline.execution.actions.rerunStage')}
-                onClick={runPipeline}
-                variation={ButtonVariation.ICON}
-                disabled={!canExecute}
-                minimal
-                withoutBoxShadow
-                small
-                tooltipProps={{
-                  isDark: true
-                }}
-              />
+              {!!pipelineExecutionDetail?.pipelineExecutionSummary?.allowStageExecutions && (
+                <RbacButton
+                  icon="repeat"
+                  tooltip={getString('pipeline.execution.actions.rerunStage')}
+                  onClick={runPipeline}
+                  variation={ButtonVariation.ICON}
+                  disabled={!canExecute}
+                  minimal
+                  withoutBoxShadow
+                  small
+                  tooltipProps={{
+                    isDark: true
+                  }}
+                />
+              )}
             </div>
             <ExecutionActions
               executionStatus={stageNode?.status as ExecutionStatus}

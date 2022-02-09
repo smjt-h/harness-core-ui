@@ -11,5 +11,6 @@ export interface HealthSourcesProps {
   healthSources?: HealthSource[]
   isRunTimeInput?: boolean
   editHealthSource: (row: HealthSource) => void
+  deleteHealthSource?: (row: HealthSource) => void
   addHealthSource?: () => void
 }

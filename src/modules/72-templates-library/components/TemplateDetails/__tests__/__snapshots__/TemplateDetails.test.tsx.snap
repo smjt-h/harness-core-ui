@@ -418,7 +418,7 @@ exports[`<TemplateDetails /> tests snapshot test 1`] = `
     versionLabel: v4
     type: Step
     projectIdentifier: Templateproject
-    orgIdentifier: default
+    orgIdentifier: defaults
     description: Flink is a versatile framework, supporting many different deployment scenarios in a mix and match fashion.
     tags:
         QAR: ""

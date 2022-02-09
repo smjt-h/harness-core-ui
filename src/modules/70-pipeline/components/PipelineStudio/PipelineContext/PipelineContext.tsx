@@ -143,7 +143,7 @@ export const getPipelineByIdentifier = (
   ).then(response => {
     let obj = {} as ResponsePMSPipelineResponseDTO
     if ((typeof response as unknown) === 'string') {
-      obj = parse(response as string).data?.yamlPipeline || {}
+      obj = defaultTo(parse(response as string)?.data?.yamlPipeline, {})
     } else if (response.data?.yamlPipeline) {
       obj = response
     }

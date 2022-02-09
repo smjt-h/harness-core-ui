@@ -87,14 +87,31 @@ const FilterRef = <T, U extends FilterInterface>(props: FilterProps<T, U>, filte
     }
   })
 
+  const [drawerOpen, setDrawerOpen] = React.useState(typeof isOpen === 'undefined' ? true : isOpen)
+
   const defaultPageDrawerProps: IDrawerProps = {
     autoFocus: true,
     canEscapeKeyClose: true,
     canOutsideClickClose: true,
     enforceFocus: true,
-    isOpen: typeof isOpen === 'undefined' ? true : isOpen,
+    isOpen: drawerOpen,
     size: 700,
     position: 'right'
+  }
+
+  React.useEffect(() => {
+    if (defaultPageDrawerProps.isOpen !== drawerOpen) {
+      defaultPageDrawerProps.isOpen = drawerOpen
+    }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [drawerOpen])
+
+  React.useEffect(() => {
+    setDrawerOpen(typeof isOpen === 'undefined' ? true : isOpen)
+  }, [isOpen])
+
+  const closeDrawer = (): void => {
+    setDrawerOpen(false)
   }
 
   const getDrawerTitle = (isUpdate: boolean, filterName?: string): JSX.Element => {
@@ -115,7 +132,7 @@ const FilterRef = <T, U extends FilterInterface>(props: FilterProps<T, U>, filte
   const isUpdate = (name !== '' && filterVisibility !== undefined) as boolean
 
   return (
-    <Drawer {...defaultPageDrawerProps} onClose={onClose}>
+    <Drawer {...defaultPageDrawerProps} onClosed={onClose}>
       <Formik<T>
         onSubmit={onApply}
         initialValues={initialFilter.formValues}
@@ -187,7 +204,7 @@ const FilterRef = <T, U extends FilterInterface>(props: FilterProps<T, U>, filte
                     }}
                     isLeftFilterDirty={formik.dirty}
                     initialValues={{ name, filterVisibility, identifier } as U}
-                    onClose={onClose}
+                    onClose={closeDrawer}
                     onDelete={onDelete}
                     onFilterSelect={onFilterSelect}
                     ref={filterCRUDRef}

@@ -12,12 +12,21 @@ import { useParams, useHistory } from 'react-router-dom'
 import cx from 'classnames'
 import { useStrings } from 'framework/strings'
 import routes from '@common/RouteDefinitions'
-import { getViewFilterForId } from '@ce/utils/perspectiveUtils'
 import formatCost from '@ce/utils/formatCost'
-import { K8sRecommendationFilterDtoInput, useRecommendationsSummaryQuery } from 'services/ce/services'
+import {
+  K8sRecommendationFilterDtoInput,
+  usePerspectiveRecommendationsQuery,
+  RecommendationItemDto
+} from 'services/ce/services'
+import { CCM_PAGE_TYPE } from '@ce/types'
 import css from './PerspectiveSummary.module.scss'
 
-const RecommendationSummaryCard: () => JSX.Element = () => {
+interface RecommendationSummaryCardProps {
+  filters: K8sRecommendationFilterDtoInput
+  pageType?: CCM_PAGE_TYPE
+}
+
+const RecommendationSummaryCard: (props: RecommendationSummaryCardProps) => JSX.Element = ({ filters, pageType }) => {
   const { perspectiveId, accountId, perspectiveName } = useParams<{
     perspectiveId: string
     accountId: string
@@ -28,26 +37,16 @@ const RecommendationSummaryCard: () => JSX.Element = () => {
 
   const history = useHistory()
 
-  const [{ data, fetching: recommendationFetching }] = useRecommendationsSummaryQuery({
+  const [{ data, fetching: recommendationFetching }] = usePerspectiveRecommendationsQuery({
     variables: {
       filter: {
-        perspectiveFilters: getViewFilterForId(perspectiveId),
-        minSaving: 0
+        ...filters,
+        minSaving: 0,
+        offset: 0,
+        limit: 10
       } as unknown as K8sRecommendationFilterDtoInput
     }
   })
-
-  const nagvigateToRecommendations: () => void = () => {
-    history.push({
-      pathname: routes.toCERecommendations({
-        accountId
-      }),
-      search: qs.stringify({
-        perspectiveId,
-        perspectiveName
-      })
-    })
-  }
 
   if (recommendationFetching) {
     return (
@@ -60,6 +59,39 @@ const RecommendationSummaryCard: () => JSX.Element = () => {
   }
 
   const recommendationData = data?.recommendationStatsV2
+
+  const nagvigateToRecommendations: () => void = () => {
+    const recommendationsDetails = (data?.recommendationsV2?.items || []) as RecommendationItemDto[]
+
+    const queryString: Record<string, any> = {
+      perspectiveId,
+      perspectiveName
+    }
+    if (pageType === CCM_PAGE_TYPE.Workload) {
+      queryString['filters'] = filters
+      queryString['origin'] = pageType
+    }
+    if (recommendationsDetails.length === 1 && recommendationData?.count === 1) {
+      const recommendationId = recommendationsDetails[0].id
+      const recommendationName = recommendationsDetails[0].resourceName || recommendationId
+
+      recommendationId &&
+        history.push({
+          pathname: routes.toCERecommendationDetails({
+            accountId,
+            recommendation: recommendationId,
+            recommendationName: recommendationName
+          })
+        })
+    } else {
+      history.push({
+        pathname: routes.toCERecommendations({
+          accountId
+        }),
+        search: qs.stringify(queryString)
+      })
+    }
+  }
 
   if (!recommendationData || !recommendationData?.count) {
     return (

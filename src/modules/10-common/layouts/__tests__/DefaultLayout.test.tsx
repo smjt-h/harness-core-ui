@@ -20,6 +20,22 @@ jest.mock('@common/hooks/useFeatures', () => ({
   useFeatures: jest.fn(() => ({}))
 }))
 
+jest.mock('@common/hooks/useGetUsageAndLimit', () => {
+  return {
+    useGetUsageAndLimit: () => {
+      return useGetUsageAndLimitReturnMock
+    }
+  }
+})
+const useGetUsageAndLimitReturnMock = {
+  limitData: {
+    limit: {}
+  },
+  usageData: {
+    usage: {}
+  }
+}
+
 jest.mock('@common/hooks/useFeatureFlag', () => ({
   useFeatureFlag: jest.fn(() => true),
   useFeatureFlags: jest.fn(() => {

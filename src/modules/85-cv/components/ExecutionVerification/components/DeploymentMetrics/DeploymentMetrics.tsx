@@ -355,6 +355,7 @@ export function DeploymentMetrics(props: DeploymentMetricsProps): JSX.Element {
           onChange={updatedAnomalousMetricsFilter}
           checked={anomalousMetricsFilterChecked}
           label={getString('pipeline.verification.anomalousMetricsFilterLabel')}
+          data-testid="anomalousFilterCheckbox"
         />
       </Container>
       <Layout.Horizontal className={css.filterSecondRow} border={{ bottom: true }} margin={{ bottom: 'large' }}>

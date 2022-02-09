@@ -141,6 +141,7 @@ const SLOCardContent: React.FC<SLOCardContentProps> = ({ serviceLevelObjective }
               <ErrorBudgetGauge customChartOptions={getErrorBudgetGaugeOptions(serviceLevelObjective)} />
               <Text font={{ variation: FontVariation.SMALL }} className={css.errorBudgetRemaining} width={175}>
                 {serviceLevelObjective.errorBudgetRemaining}
+                <span style={{ display: 'block' }}>{getString('cv.minutesRemaining')}</span>
               </Text>
             </Container>
             <Container className={css.flexGrowOne}>

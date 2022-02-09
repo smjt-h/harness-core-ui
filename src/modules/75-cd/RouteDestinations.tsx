@@ -10,7 +10,7 @@ import { Route, useParams, Redirect } from 'react-router-dom'
 import { useQueryParams } from '@common/hooks'
 import { useFeatureFlags } from '@common/hooks/useFeatureFlag'
 import { RouteWithLayout } from '@common/router'
-import { MinimalLayout } from '@common/layouts'
+import { EmptyLayout, MinimalLayout } from '@common/layouts'
 import type { SidebarContext } from '@common/navigation/SidebarProvider'
 import {
   accountPathProps,
@@ -44,8 +44,9 @@ import routes from '@common/RouteDefinitions'
 
 import { BannerType } from '@common/layouts/Constants'
 import {
-  FEATURE_USAGE_WARNING_LIMIT,
+  getActiveUsageNumber,
   isFeatureLimitBreached,
+  isFeatureOveruseActive,
   isFeatureWarningActive
 } from '@common/layouts/FeatureBanner'
 
@@ -129,6 +130,7 @@ import { TemplateStudioWrapper } from '@templates-library/components/TemplateStu
 import TemplatesPage from '@templates-library/pages/TemplatesPage/TemplatesPage'
 import { GovernanceRouteDestinations } from '@governance/RouteDestinations'
 import GitSyncConfigTab from '@gitsync/pages/config/GitSyncConfigTab'
+import FullPageLogView from '@pipeline/pages/full-page-log-view/FullPageLogView'
 import CDTrialHomePage from './pages/home/CDTrialHomePage'
 
 import { CDExecutionCardSummary } from './components/CDExecutionCardSummary/CDExecutionCardSummary'
@@ -230,11 +232,17 @@ executionFactory.registerStageDetails(StageType.DEPLOY, {
 })
 
 featureFactory.registerFeaturesByModule('cd', {
-  features: [FeatureIdentifier.DEPLOYMENTS_PER_MONTH, FeatureIdentifier.SERVICES],
-  renderMessage: (props, getString) => {
+  features: [
+    FeatureIdentifier.DEPLOYMENTS_PER_MONTH,
+    FeatureIdentifier.SERVICES,
+    FeatureIdentifier.INITIAL_DEPLOYMENTS
+  ],
+  renderMessage: (props, getString, additionalLicenseProps = {}) => {
+    const { isFreeEdition: isCDFree, isTeamEdition: isCDTeam } = additionalLicenseProps
     const featuresMap = props.features
     const serviceFeatureDetail = featuresMap.get(FeatureIdentifier.SERVICES)
     const dpmFeatureDetail = featuresMap.get(FeatureIdentifier.DEPLOYMENTS_PER_MONTH)
+    const initialDeploymentsFeatureDetail = featuresMap.get(FeatureIdentifier.INITIAL_DEPLOYMENTS)
 
     // Check for limit breach
     const isServiceLimitBreached = isFeatureLimitBreached(serviceFeatureDetail)
@@ -245,12 +253,17 @@ featureFactory.registerFeaturesByModule('cd', {
         deploymentsLimit: dpmFeatureDetail?.featureDetail?.limit,
         serviceLimit: serviceFeatureDetail?.featureDetail?.limit
       })
-    } else if (isServiceLimitBreached) {
+    } else if (isServiceLimitBreached && isCDFree) {
       limitBreachMessageString = getString('cd.featureRestriction.banners.serviceLevelUp', {
+        serviceLimit: serviceFeatureDetail?.featureDetail?.limit
+      })
+    } else if (isServiceLimitBreached && isCDTeam) {
+      limitBreachMessageString = getString('cd.featureRestriction.banners.serviceLevelUpTeamEnterprise', {
         serviceLimit: serviceFeatureDetail?.featureDetail?.limit
       })
     } else if (isDpmLimitBreached) {
       limitBreachMessageString = getString('cd.featureRestriction.banners.deploymentsPerMonthLevelUp', {
+        count: dpmFeatureDetail?.featureDetail?.count,
         deploymentsLimit: dpmFeatureDetail?.featureDetail?.limit
       })
     }
@@ -266,13 +279,19 @@ featureFactory.registerFeaturesByModule('cd', {
     let warningMessageString = ''
     const isServiceWarningActive = isFeatureWarningActive(serviceFeatureDetail)
     const isDpmWarningActive = isFeatureWarningActive(dpmFeatureDetail)
-    if (isServiceWarningActive) {
+    const isInitialDeplWarningActive = isFeatureWarningActive(initialDeploymentsFeatureDetail)
+    if (isInitialDeplWarningActive) {
+      warningMessageString = getString('cd.featureRestriction.banners.initialDeploymentsWarningActive', {
+        warningLimit: getActiveUsageNumber(initialDeploymentsFeatureDetail)
+      })
+    } else if (isServiceWarningActive) {
       warningMessageString = getString('cd.featureRestriction.banners.serviceWarningActive', {
-        warningLimit: FEATURE_USAGE_WARNING_LIMIT
+        warningLimit: getActiveUsageNumber(serviceFeatureDetail)
       })
     } else if (isDpmWarningActive) {
       warningMessageString = getString('cd.featureRestriction.banners.dpmWarningActive', {
-        warningLimit: FEATURE_USAGE_WARNING_LIMIT
+        count: dpmFeatureDetail?.featureDetail?.count,
+        warningLimit: dpmFeatureDetail?.featureDetail?.limit
       })
     }
 
@@ -283,7 +302,19 @@ featureFactory.registerFeaturesByModule('cd', {
       }
     }
 
-    // If neither limit breach or warning needs to be shown, return with an empty string.
+    let overuseMessageString = ''
+    const isServiceOveruseActive = isFeatureOveruseActive(serviceFeatureDetail)
+    if (isServiceOveruseActive && isCDTeam) {
+      overuseMessageString = getString('cd.featureRestriction.banners.serviceOveruseTeamEnterprise')
+    }
+    if (overuseMessageString) {
+      return {
+        message: () => overuseMessageString,
+        bannerType: BannerType.OVERUSE
+      }
+    }
+
+    // If neither of limit breach/ warning/ overuse needs to be shown, return with an empty string.
     // This will ensure no banner is shown
     return {
       message: () => '',
@@ -511,6 +542,21 @@ export default (
       <PipelineDetails>
         <CDPipelineStudio />
       </PipelineDetails>
+    </RouteWithLayout>
+    <RouteWithLayout
+      exact
+      layout={EmptyLayout}
+      licenseRedirectData={licenseRedirectData}
+      sidebarProps={CDSideNavProps}
+      path={routes.toPipelineLogs({
+        ...accountPathProps,
+        ...executionPathProps,
+        ...pipelineModuleParams,
+        stageIdentifier: ':stageIdentifier',
+        stepIndentifier: ':stepIndentifier'
+      })}
+    >
+      <FullPageLogView />
     </RouteWithLayout>
     <RouteWithLayout
       licenseRedirectData={licenseRedirectData}

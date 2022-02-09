@@ -1618,7 +1618,7 @@ exports[`TriggersWizardPage Triggers tests Renders/snapshots OnEdit Render - Git
                                   </span>
                                   <input
                                     class="bp3-input-ghost"
-                                    data-mentions="kv-tag-input-tags}"
+                                    data-mentions="kv-tag-input-tags"
                                     value=""
                                   />
                                 </div>
@@ -3619,7 +3619,7 @@ exports[`TriggersWizardPage Triggers tests Renders/snapshots OnEdit Render - Sch
                                   </span>
                                   <input
                                     class="bp3-input-ghost"
-                                    data-mentions="kv-tag-input-tags}"
+                                    data-mentions="kv-tag-input-tags"
                                     value=""
                                   />
                                 </div>

@@ -21,7 +21,8 @@ import {
   ModalErrorHandler,
   Tag,
   useToaster,
-  TableV2
+  TableV2,
+  Utils
 } from '@wings-software/uicore'
 import { useModalHook } from '@harness/use-modal'
 import cx from 'classnames'
@@ -150,11 +151,21 @@ const GitSyncRepoTab: React.FC = () => {
   }
 
   const RenderColumnRepo: Renderer<CellProps<GitSyncConfig>> = ({ row }) => {
+    const repoPath = row.original.repo
     return (
       <div className={css.wrapper}>
-        <Text className={css.name} color={Color.BLACK}>
-          {getRepoPath(row.original)}
-        </Text>
+        <Utils.WrapOptionalTooltip
+          tooltip={repoPath}
+          tooltipProps={{
+            isDark: true,
+            fill: true,
+            position: 'bottom'
+          }}
+        >
+          <Text className={cx(css.name, css.repoPath, css.pathFont)} color={Color.BLACK}>
+            {repoPath}
+          </Text>
+        </Utils.WrapOptionalTooltip>
       </div>
     )
   }
@@ -163,7 +174,7 @@ const GitSyncRepoTab: React.FC = () => {
     const data = row.original
     return (
       <div className={css.wrapper}>
-        <Text className={css.name} color={Color.BLACK}>
+        <Text className={cx(css.name, css.pathFont)} color={Color.BLACK}>
           {data.branch}
         </Text>
       </div>
@@ -443,6 +454,7 @@ const GitSyncRepoTab: React.FC = () => {
                           }}
                           title={folderWithPrefix}
                           color={Color.BLACK}
+                          className={css.pathFont}
                         >
                           {folderWithPrefix}
                         </Text>
@@ -454,7 +466,7 @@ const GitSyncRepoTab: React.FC = () => {
                         width={rootFolderData.isDefault ? '60%' : '75%'}
                       >
                         <a href={linkToProvider} target="_blank" rel="noopener noreferrer" className={css.noShadow}>
-                          <Text title={linkToProvider} className={css.link}>
+                          <Text title={linkToProvider} className={cx(css.link, css.pathFont)}>
                             {linkToProvider}
                           </Text>
                         </a>
@@ -518,14 +530,14 @@ const GitSyncRepoTab: React.FC = () => {
         Header: getString('common.path').toUpperCase(),
         accessor: 'repo',
         id: 'repo',
-        width: '20%',
+        width: '25%',
         Cell: RenderColumnRepo
       },
       {
         Header: getString('gitsync.defaultBranch').toUpperCase(),
         accessor: 'branch',
         id: 'branch',
-        width: '15%',
+        width: '10%',
         Cell: RenderColumnBranch
       },
       {

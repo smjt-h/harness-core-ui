@@ -527,7 +527,7 @@ export const PipelineCard: React.FC<PipelineCardProps> = ({
                 },
                 permission: PermissionIdentifier.EXECUTE_PIPELINE
               }}
-              featuresProps={getFeaturePropsForRunPipelineButton(pipeline.modules)}
+              featuresProps={getFeaturePropsForRunPipelineButton({ modules: pipeline.modules, getString })}
               onClick={e => {
                 e.stopPropagation()
                 runPipeline()

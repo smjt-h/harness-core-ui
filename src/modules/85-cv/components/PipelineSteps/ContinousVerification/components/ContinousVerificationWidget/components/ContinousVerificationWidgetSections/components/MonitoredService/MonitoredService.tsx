@@ -13,6 +13,7 @@ import type { ProjectPathProps, AccountPathProps } from '@common/interfaces/Rout
 import { usePipelineContext } from '@pipeline/components/PipelineStudio/PipelineContext/PipelineContext'
 import {
   ChangeSourceDTO,
+  MonitoredServiceDTO,
   MonitoredServiceResponse,
   useCreateDefaultMonitoredService,
   useGetMonitoredServiceFromServiceAndEnvironment
@@ -189,6 +190,7 @@ export default function MonitoredService({
             serviceIdentifier={serviceIdentifier}
             envIdentifier={environmentIdentifier}
             healthSourcesList={healthSourcesList}
+            monitoredServiceData={monitoredServiceData as MonitoredServiceDTO}
             monitoredServiceRef={monitoredService}
             onSuccess={onSuccess}
             isRunTimeInput={false}

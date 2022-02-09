@@ -34,7 +34,7 @@ export class JiraCreate extends PipelineStep<JiraCreateData> {
   protected isHarnessSpecific = true
   protected type = StepType.JiraCreate
   protected stepName = 'Jira Create'
-  protected stepIcon: IconName = 'service-jira'
+  protected stepIcon: IconName = 'jira-create'
   protected stepDescription: keyof StringsMap = 'pipeline.stepDescription.JiraCreate'
   // initialValues on mount
   protected defaultValues: JiraCreateData = {
@@ -59,7 +59,7 @@ export class JiraCreate extends PipelineStep<JiraCreateData> {
     viewType
   }: ValidateInputSetProps<JiraCreateData>): FormikErrors<JiraCreateData> {
     const errors: FormikErrors<JiraCreateData> = {}
-    const isRequired = viewType === StepViewType.DeploymentForm
+    const isRequired = viewType === StepViewType.DeploymentForm || viewType === StepViewType.TriggerForm
     const isSummaryRuntime =
       getMultiTypeFromValue(template?.spec?.fields?.find(field => field.name === 'Summary')?.value as string) ===
       MultiTypeInputType.RUNTIME

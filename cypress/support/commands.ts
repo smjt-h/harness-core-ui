@@ -31,6 +31,12 @@
 // -- This will overwrite an existing command --
 // Cypress.Commands.overwrite('visit', (originalFn, url, options) => { ... })
 import '@testing-library/cypress/add-commands'
+import {
+  servicesCall,
+  servicesResponse,
+  environmentsCall,
+  environmentResponse
+} from './85-cv/monitoredService/constants'
 
 declare global {
   // eslint-disable-next-line @typescript-eslint/no-namespace
@@ -44,6 +50,7 @@ declare global {
       fillName(name: string): void
       clickSubmit(): void
       fillField(fieldName: string, value: string): void
+      addNewMonitoredServiceWithServiceAndEnv(): void
     }
   }
 }
@@ -84,4 +91,45 @@ Cypress.Commands.add('visitChangeIntelligence', () => {
   cy.contains('span', 'Service Reliability').click()
   cy.contains('p', 'Select a Project').click()
   cy.contains('p', 'Project 1').click()
+})
+
+Cypress.Commands.add('addNewMonitoredServiceWithServiceAndEnv', () => {
+  cy.intercept('GET', servicesCall, servicesResponse).as('ServiceCall')
+  cy.intercept('GET', environmentsCall, environmentResponse).as('EnvCall')
+
+  cy.contains('span', 'New Monitored Service').click()
+  cy.wait('@ServiceCall')
+  cy.wait('@EnvCall')
+  cy.wait(1000)
+
+  // clear any cached values
+  cy.get('body').then($body => {
+    if ($body.text().includes('Unsaved changes')) {
+      cy.contains('span', 'Discard').click()
+    }
+  })
+
+  cy.contains('div', 'Unsaved changes').should('not.exist')
+  cy.get('button').contains('span', 'Discard').parent().should('be.disabled')
+
+  cy.get('button').contains('span', 'Save').click()
+
+  // Check valiadtions
+  cy.contains('span', 'Service is required').should('be.visible')
+  cy.contains('span', 'Environment is required').should('be.visible')
+  cy.contains('span', 'Monitored Service Name is required').should('be.visible')
+
+  cy.get('input[name="service"]').click()
+  cy.contains('p', 'Service 101').click({ force: true })
+
+  cy.contains('span', 'Service is required').should('not.exist')
+
+  cy.get('input[name="environment"]').click()
+  cy.contains('p', 'QA').click({ force: true })
+
+  cy.contains('span', 'Environment is required').should('not.exist')
+  cy.contains('span', 'Monitored Service Name is required').should('not.exist')
+
+  cy.contains('div', 'Unsaved changes').scrollIntoView().should('be.visible')
+  cy.get('button').contains('span', 'Discard').parent().should('be.enabled')
 })

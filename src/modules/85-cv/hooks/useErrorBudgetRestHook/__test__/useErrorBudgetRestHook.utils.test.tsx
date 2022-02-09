@@ -12,16 +12,19 @@ import {
 
 describe('useErrorBudgetRestHook utils', () => {
   test('calculateErrorBudgetByIncrement', () => {
-    expect(calculateErrorBudgetByIncrement(100)).toStrictEqual(0)
-    expect(calculateErrorBudgetByIncrement(100, undefined)).toStrictEqual(0)
-    expect(calculateErrorBudgetByIncrement(100, NaN)).toStrictEqual(0)
-    expect(calculateErrorBudgetByIncrement(100, 100)).toStrictEqual(200)
-    expect(calculateErrorBudgetByIncrement(-100, 100)).toStrictEqual(-200)
-    expect(calculateErrorBudgetByIncrement(100, -100)).toStrictEqual(0)
-    expect(calculateErrorBudgetByIncrement(-100, -100)).toStrictEqual(0)
+    expect(calculateErrorBudgetByIncrement(100)).toStrictEqual('--')
+    expect(calculateErrorBudgetByIncrement(100, undefined)).toStrictEqual('--')
+    expect(calculateErrorBudgetByIncrement(100, NaN)).toStrictEqual('--')
+    expect(calculateErrorBudgetByIncrement(100, 100)).toStrictEqual('200')
+    expect(calculateErrorBudgetByIncrement(-100, 100)).toStrictEqual('-200')
+    expect(calculateErrorBudgetByIncrement(100, -100)).toStrictEqual('0')
+    expect(calculateErrorBudgetByIncrement(-100, -100)).toStrictEqual('0')
+    expect(calculateErrorBudgetByIncrement(100000, 100)).toStrictEqual('200,000')
   })
 
   test('calculateRemainingErrorBudgetByIncrement', () => {
-    expect(calculateRemainingErrorBudgetByIncrement(100, 50, 100)).toStrictEqual(150)
+    expect(calculateRemainingErrorBudgetByIncrement(100, 50, 100)).toStrictEqual('150')
+    expect(calculateRemainingErrorBudgetByIncrement(100000, 50000, 100)).toStrictEqual('150,000')
+    expect(calculateRemainingErrorBudgetByIncrement(100, 50, 100, true)).toStrictEqual('75.00')
   })
 })

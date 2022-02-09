@@ -10,6 +10,7 @@ declare const styles: {
   readonly alignHorizontal: string
   readonly divider: string
   readonly outerCard: string
+  readonly removeEditButton: string
   readonly selectChangeSource: string
 }
 export default styles

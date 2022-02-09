@@ -18,4 +18,12 @@ export enum ModuleName {
   TEMPLATES = 'TEMPLATES'
 }
 
+export const moduleToModuleNameMapping: Record<Module, ModuleName> = {
+  ci: ModuleName.CI,
+  cd: ModuleName.CD,
+  ce: ModuleName.CE,
+  cf: ModuleName.CF,
+  cv: ModuleName.CV
+}
+
 export type Module = 'ci' | 'cd' | 'cf' | 'cv' | 'ce'

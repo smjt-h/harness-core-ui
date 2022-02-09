@@ -242,7 +242,7 @@ exports[`Test DeployEnvironment Step should render edit Environment view (enviro
                         </span>
                         <input
                           class="bp3-input-ghost"
-                          data-mentions="kv-tag-input-tags}"
+                          data-mentions="kv-tag-input-tags"
                           value=""
                         />
                       </div>

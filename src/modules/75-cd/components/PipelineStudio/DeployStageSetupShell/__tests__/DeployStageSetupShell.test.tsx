@@ -170,28 +170,24 @@ describe('DeployStageSetupShell tests', () => {
     const serviceTab = await findByTestId('service')
     const servicesIcon = serviceTab.querySelector('[data-icon="services"]')
     await waitFor(() => expect(servicesIcon).toBeInTheDocument())
-    await waitFor(() => expect(servicesIcon?.classList.contains('hover')).toBeTruthy())
 
     const infrastructureTab = await findByTestId('infrastructure')
     const infrastructureIcon = infrastructureTab.querySelector('[data-icon="infrastructure"]')
 
     await waitFor(() => expect(infrastructureIcon).toBeInTheDocument())
-    await waitFor(() => expect(infrastructureIcon?.classList.contains('hover')).toBeTruthy())
 
     const executionTab = await findByTestId('execution')
     const executionIcon = await executionTab.querySelector('[data-icon="execution"]')
-    await waitFor(() => expect(executionIcon?.classList.contains('hover')).toBeTruthy())
 
     await waitFor(() => expect(executionIcon).toBeInTheDocument)
 
     const advancedTab = await findByTestId('advanced')
-    const advancedIcon = await advancedTab.querySelector('[data-icon="advanced"]')
+    const advancedIcon = await advancedTab.querySelector('[data-icon="tick"]')
     await waitFor(() => expect(advancedIcon).toBeInTheDocument())
-    await waitFor(() => expect(advancedIcon?.classList.contains('hover')).toBeTruthy())
   })
 
   test('Should selectedTab be Execution', async () => {
-    ;(ExecutionGraph as any).render.mockImplementationOnce(({ updateStage, onEditStep }: any) => (
+    ;(ExecutionGraph as any).render.mockImplementation(({ updateStage, onEditStep }: any) => (
       <div>
         <button
           data-testid="execution-graph-mock-update"

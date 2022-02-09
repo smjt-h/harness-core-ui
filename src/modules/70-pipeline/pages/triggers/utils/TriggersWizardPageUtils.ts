@@ -7,7 +7,13 @@
 
 import { isNull, isUndefined, omitBy, isEmpty, get, set, flatten } from 'lodash-es'
 import { string, array, object, ObjectSchema } from 'yup'
-import type { PipelineInfoConfig, ConnectorInfoDTO, ConnectorResponse, ManifestConfigWrapper } from 'services/cd-ng'
+import type {
+  PipelineInfoConfig,
+  ConnectorInfoDTO,
+  ConnectorResponse,
+  ManifestConfigWrapper,
+  NGVariable
+} from 'services/cd-ng'
 import { IdentifierSchema, NameSchema } from '@common/utils/Validation'
 import { Scope } from '@common/interfaces/SecretsInterface'
 import type { GetActionsListQueryParams, NGTriggerConfigV2, NGTriggerSourceV2 } from 'services/pipeline-ng'
@@ -179,7 +185,13 @@ export interface FlatValidArtifactFormikValuesInterface {
   triggerType: NGTriggerSourceV2['type']
   selectedArtifact: any
   stageId: string
+  pipeline: PipelineInfoConfig
 }
+
+export type FlatValidFormikValuesInterface =
+  | FlatValidArtifactFormikValuesInterface
+  | FlatValidWebhookFormikValuesInterface
+  | FlatValidScheduleFormikValuesInterface
 
 export const TriggerTypes = {
   WEBHOOK: 'Webhook',
@@ -328,7 +340,12 @@ export const isRowFilled = (payloadCondition: AddConditionInterface): boolean =>
 const isIdentifierIllegal = (identifier: string): boolean =>
   regexIdentifier.test(identifier) && illegalIdentifiers.includes(identifier)
 
-const checkValidTriggerConfiguration = (formikValues: FlatValidWebhookFormikValuesInterface): boolean => {
+const checkValidTriggerConfiguration = ({
+  formikValues
+}: {
+  formikValues: { [key: string]: any }
+  formikErrors: { [key: string]: any }
+}): boolean => {
   const sourceRepo = formikValues['sourceRepo']
   const identifier = formikValues['identifier']
   const connectorURLType = formikValues.connectorRef?.connector?.spec?.type
@@ -347,7 +364,7 @@ const checkValidTriggerConfiguration = (formikValues: FlatValidWebhookFormikValu
   return true
 }
 
-const checkValidPayloadConditions = (formikValues: FlatValidWebhookFormikValuesInterface): boolean => {
+const checkValidPayloadConditions = ({ formikValues }: { formikValues: { [key: string]: any } }): boolean => {
   const payloadConditions = formikValues['payloadConditions']
   const headerConditions = formikValues['headerConditions']
   if (
@@ -372,12 +389,17 @@ const checkValidPayloadConditions = (formikValues: FlatValidWebhookFormikValuesI
   return true
 }
 
-const checkValidEventConditionsForNewArtifact = (formikValues: {
-  eventConditions?: AddConditionInterface[]
-  versionOperator?: string
-  versionValue?: string
-  buildOperator?: string
-  buildValue?: string
+const checkValidPipelineInput = ({ formikErrors }: { formikErrors: { [key: string]: any } }): boolean => {
+  if (!isEmpty(formikErrors?.pipeline) || !isEmpty(formikErrors?.stages)) {
+    return false
+  }
+  return true
+}
+
+const checkValidEventConditionsForNewArtifact = ({
+  formikValues
+}: {
+  formikValues: { [key: string]: any }
 }): boolean => {
   const eventConditions = formikValues['eventConditions']
   if (
@@ -393,18 +415,18 @@ const checkValidEventConditionsForNewArtifact = (formikValues: {
   return true
 }
 
-const checkValidOverview = (formikValues: FlatValidScheduleFormikValuesInterface): boolean =>
+const checkValidOverview = ({ formikValues }: { formikValues: { [key: string]: any } }): boolean =>
   isIdentifierIllegal(formikValues?.identifier) ? false : true
 
-const checkValidSelectedArtifact = (formikValues: FlatValidArtifactFormikValuesInterface): boolean => {
+const checkValidSelectedArtifact = ({ formikValues }: { formikValues: { [key: string]: any } }): boolean => {
   return !isEmpty(formikValues?.selectedArtifact)
 }
 
-const checkValidArtifactTrigger = (formikValues: FlatValidArtifactFormikValuesInterface): boolean => {
-  return isIdentifierIllegal(formikValues?.identifier) ? false : true && checkValidSelectedArtifact(formikValues)
+const checkValidArtifactTrigger = ({ formikValues }: { formikValues: { [key: string]: any } }): boolean => {
+  return isIdentifierIllegal(formikValues?.identifier) ? false : true && checkValidSelectedArtifact({ formikValues })
 }
 
-const checkValidCronExpression = (formikValues: FlatValidScheduleFormikValuesInterface): boolean =>
+const checkValidCronExpression = ({ formikValues }: { formikValues: { [key: string]: any } }): boolean =>
   isCronValid(formikValues?.expression || '')
 
 const getPanels = ({
@@ -429,7 +451,8 @@ const getPanels = ({
       },
       {
         id: 'Pipeline Input',
-        tabTitle: getString('pipeline.triggers.pipelineInputLabel')
+        tabTitle: getString('pipeline.triggers.pipelineInputLabel'),
+        checkValidPanel: checkValidPipelineInput
         // require all fields for input set and have preflight check handled on backend
       }
     ]
@@ -449,8 +472,8 @@ const getPanels = ({
       },
       {
         id: 'Pipeline Input',
-        tabTitle: getString('pipeline.triggers.pipelineInputLabel')
-        // require all fields for input set and have preflight check handled on backend
+        tabTitle: getString('pipeline.triggers.pipelineInputLabel'),
+        checkValidPanel: checkValidPipelineInput
       }
     ]
   } else if (isArtifactOrManifestTrigger(triggerType)) {
@@ -468,8 +491,8 @@ const getPanels = ({
       },
       {
         id: 'Pipeline Input',
-        tabTitle: getString('pipeline.triggers.pipelineInputLabel')
-        // require all fields for input set and have preflight check handled on backend
+        tabTitle: getString('pipeline.triggers.pipelineInputLabel'),
+        checkValidPanel: checkValidPipelineInput
       }
     ]
   }
@@ -1894,4 +1917,39 @@ export function updatePipelineArtifact({
     }
   }
   return newPipelineObj
+}
+
+const getPipelineIntegrityMessage = (errorObject: { [key: string]: string }): string =>
+  `${errorObject.fieldName}: ${errorObject.message}`
+
+export const displayPipelineIntegrityResponse = (errors: {
+  [key: string]: { [key: string]: string }
+}): { [key: string]: string } => {
+  // display backend error for validating pipeline with current pipeline
+  const errs = {}
+  const errorsEntries = Object.entries(errors)
+  errorsEntries.forEach(entry => set(errs, entry[0], getPipelineIntegrityMessage(entry[1])))
+  return errs
+}
+
+export const getOrderedPipelineVariableValues = ({
+  originalPipelineVariables,
+  currentPipelineVariables
+}: {
+  originalPipelineVariables?: NGVariable[]
+  currentPipelineVariables: NGVariable[]
+}): NGVariable[] => {
+  if (
+    originalPipelineVariables &&
+    currentPipelineVariables.some(
+      (variable: NGVariable, index: number) => variable.name !== originalPipelineVariables[index].name
+    )
+  ) {
+    return originalPipelineVariables.map(
+      variable =>
+        currentPipelineVariables.find(currentVariable => currentVariable.name === variable.name) ||
+        Object.assign(variable, { value: '' })
+    )
+  }
+  return currentPipelineVariables
 }

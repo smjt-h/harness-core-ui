@@ -9,8 +9,10 @@
 declare const styles: {
   readonly bgColorOrange: string
   readonly bgColorWhite: string
+  readonly btn: string
   readonly expanded: string
   readonly explorePlans: string
+  readonly flag: string
   readonly infoIcon: string
   readonly tooltip: string
   readonly warning: string

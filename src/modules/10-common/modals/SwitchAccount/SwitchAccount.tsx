@@ -91,7 +91,7 @@ const SwitchAccount: React.FC<SwitchAccountProps> = ({ searchString = '', mock }
           const returnUrl = `${baseUrl}#${routes.toHome({ accountId: account.uuid })}`
           history.push({
             pathname: routes.toRedirect(),
-            search: `?returnUrl=${getLoginPageURL({ returnUrl })}`
+            search: `?returnUrl=${encodeURIComponent(getLoginPageURL({ returnUrl }))}`
           })
         } else if (response.resource) {
           AppStorage.set('acctId', account.uuid)

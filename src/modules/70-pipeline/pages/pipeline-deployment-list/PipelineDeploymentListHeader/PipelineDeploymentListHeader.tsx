@@ -15,7 +15,7 @@ import type { PipelinePathProps, PipelineType } from '@common/interfaces/RouteIn
 
 import StatusSelect from '@pipeline/components/StatusSelect/StatusSelect'
 import NewPipelineSelect from '@pipeline/components/NewPipelineSelect/NewPipelineSelect'
-import { getFeaturePropsForRunPipelineButton } from '@pipeline/utils/runPipelineUtils'
+import { getFeaturePropsForRunPipelineButton, getRbacButtonModules } from '@pipeline/utils/runPipelineUtils'
 import { useUpdateQueryParams } from '@common/hooks'
 import { Page } from '@common/exports'
 import type { ExecutionStatus } from '@pipeline/utils/statusHelpers'
@@ -44,6 +44,7 @@ export function PipelineDeploymentListHeader(props: PipelineDeploymentListHeader
   const { module, pipelineIdentifier } = useParams<Partial<PipelineType<PipelinePathProps>>>()
   const { queryParams } = useFiltersContext()
   const { updateQueryParams } = useUpdateQueryParams<Partial<GetListOfExecutionsQueryParams>>()
+  const rbacButtonModules = getRbacButtonModules(module)
   const { getString } = useStrings()
   function handleQueryChange(query: string): void {
     if (query) {
@@ -97,7 +98,7 @@ export function PipelineDeploymentListHeader(props: PipelineDeploymentListHeader
               skipCondition: ({ resourceIdentifier }) => !resourceIdentifier
             }
           }}
-          featuresProps={getFeaturePropsForRunPipelineButton(['cd', 'ci'])}
+          featuresProps={getFeaturePropsForRunPipelineButton({ modules: rbacButtonModules, getString })}
         >
           <String stringID="runPipelineText" />
         </RbacButton>

@@ -75,7 +75,9 @@ export const getQualifiedEnforcedBanner = ({
       typeof uiDisplayBanner?.limit !== 'undefined'
         ? featureDetail.count >= uiDisplayBanner.limit
         : uiDisplayBanner.limitPercent
-        ? (featureDetail.count / featureDetail.limit) * 100 >= uiDisplayBanner.limitPercent
+        ? featureDetail.featureName === FeatureIdentifier.ACTIVE_COMMITTERS
+          ? (featureDetail.count / featureDetail.limit) * 100 > uiDisplayBanner.limitPercent
+          : (featureDetail.count / featureDetail.limit) * 100 >= uiDisplayBanner.limitPercent
         : false
 
     if (_isLimitBreached) {

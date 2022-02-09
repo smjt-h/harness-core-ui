@@ -371,3 +371,24 @@ export const isCDCommunity = (
 ): boolean => {
   return license?.CD?.edition === Editions.COMMUNITY
 }
+
+export const isFreePlan = (
+  license: { [p: string]: ModuleLicenseDTO } | undefined | Record<string, undefined>,
+  moduleName: ModuleName
+): boolean => {
+  return license?.[moduleName]?.edition === Editions.FREE
+}
+
+export const isEnterprisePlan = (
+  license: { [p: string]: ModuleLicenseDTO } | undefined | Record<string, undefined>,
+  moduleName: ModuleName
+): boolean => {
+  return license?.[moduleName]?.edition === Editions.ENTERPRISE
+}
+
+export const isTeamPlan = (
+  license: { [p: string]: ModuleLicenseDTO } | undefined | Record<string, undefined>,
+  moduleName: ModuleName
+): boolean => {
+  return license?.[moduleName]?.edition === Editions.TEAM
+}

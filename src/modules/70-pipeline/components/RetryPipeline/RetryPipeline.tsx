@@ -62,7 +62,7 @@ import { yamlStringify } from '@common/utils/YamlHelperMethods'
 import { useToaster } from '@common/exports'
 import routes from '@common/RouteDefinitions'
 import { useMutateAsGet, useQueryParams } from '@common/hooks'
-import { mergeTemplateWithInputSetData } from '@pipeline/utils/runPipelineUtils'
+import { getFeaturePropsForRunPipelineButton, mergeTemplateWithInputSetData } from '@pipeline/utils/runPipelineUtils'
 import { useGetYamlWithTemplateRefsResolved } from 'services/template-ng'
 import { ErrorsStrip } from '../ErrorsStrip/ErrorsStrip'
 import GitPopover from '../GitPopover/GitPopover'
@@ -89,12 +89,14 @@ export interface ParallelStageOption extends SelectOption {
 interface RetryPipelineProps {
   executionIdentifier: string
   pipelineIdentifier: string
+  modules?: string[]
   onClose: () => void
 }
 
 const RetryPipeline = ({
   executionIdentifier: executionId,
   pipelineIdentifier: pipelineIdf,
+  modules,
   onClose
 }: RetryPipelineProps): React.ReactElement => {
   const { isGitSyncEnabled } = useAppStore()
@@ -776,6 +778,7 @@ const RetryPipeline = ({
                       submitForm()
                     }
                   }}
+                  featuresProps={getFeaturePropsForRunPipelineButton({ modules, getString })}
                   permission={{
                     resource: {
                       resourceIdentifier: pipeline?.identifier as string,

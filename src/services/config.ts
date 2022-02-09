@@ -53,6 +53,10 @@ export const getUsingFetch = <
     ...(props.requestOptions || {}),
     headers: getHeaders(props.requestOptions?.headers)
   }).then(res => {
+    // custom event to allow the app framework to handle api responses
+    const responseEvent = new CustomEvent('PROMISE_API_RESPONSE', { detail: { response: res } })
+    window.dispatchEvent(responseEvent) // this will be captured in App.tsx to handle 401 and token refresh
+
     const contentType = res.headers.get('content-type') || ''
     if (contentType.toLowerCase().indexOf('application/json') > -1) {
       return res.json()
@@ -132,6 +136,10 @@ export const mutateUsingFetch = <
     ...(props.requestOptions || {}),
     headers: getHeaders(props.requestOptions?.headers)
   }).then(res => {
+    // custom event to allow the app framework to handle api responses
+    const responseEvent = new CustomEvent('PROMISE_API_RESPONSE', { detail: { response: res } })
+    window.dispatchEvent(responseEvent) // this will be captured in App.tsx to handle 401 and token refresh
+
     const contentType = res.headers.get('content-type') || ''
     if (contentType.toLowerCase().indexOf('application/json') > -1) {
       return res.json()

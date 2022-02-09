@@ -62,6 +62,10 @@ declare interface Window {
   deploymentType: 'SAAS' | 'ON_PREM' | 'COMMUNITY'
 }
 
+declare interface WindowEventMap {
+  PROMISE_API_RESPONSE: CustomEvent
+}
+
 declare interface Document {
   msHidden: string
   webkitHidden: string

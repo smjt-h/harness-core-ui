@@ -386,7 +386,7 @@ const StatusCell = ({ row }: CellProps<Service>) => {
   )
 }
 
-const EmptyListPage: React.FC<EmptyListPageProps> = ({ featureDetail }) => {
+const EmptyListPage: React.FC<EmptyListPageProps> = () => {
   const { accountId } = useParams<AccountPathProps>()
   const { getString } = useStrings()
   const history = useHistory()
@@ -420,11 +420,7 @@ const EmptyListPage: React.FC<EmptyListPageProps> = ({ featureDetail }) => {
           featuresProps={{
             featuresRequest: {
               featureNames: [FeatureIdentifier.RESTRICTED_AUTOSTOPPING_RULE_CREATION]
-            },
-            warningMessage: getString('ce.co.autoStoppingRule.limitWarningMessage', {
-              limit: featureDetail?.limit,
-              count: featureDetail?.count
-            })
+            }
           }}
           onClick={() => {
             history.push(
@@ -779,11 +775,7 @@ const COGatewayList: React.FC = () => {
               featuresProps={{
                 featuresRequest: {
                   featureNames: [FeatureIdentifier.RESTRICTED_AUTOSTOPPING_RULE_CREATION]
-                },
-                warningMessage: getString('ce.co.autoStoppingRule.limitWarningMessage', {
-                  limit: featureDetail?.limit,
-                  count: featureDetail?.count
-                })
+                }
               }}
               onClick={() => {
                 history.push(

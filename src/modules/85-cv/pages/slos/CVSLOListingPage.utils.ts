@@ -109,14 +109,14 @@ const getDateUnitAndInterval = (serviceLevelObjective: SLODashboardWidget): { un
   const timeline = serviceLevelObjective.currentPeriodLengthDays - serviceLevelObjective.timeRemainingDays
 
   if (timeline <= 1) {
-    return { unit: 'MMM D hh:m A', interval: (MILLISECONDS_PER_SIX_HOURS * 4) / 3 }
+    return { unit: 'Do MMM hh:mm A', interval: (MILLISECONDS_PER_SIX_HOURS * 4) / 3 }
   }
 
   if (timeline <= 3) {
-    return { unit: 'MMM D hh:m A', interval: MILLISECONDS_PER_SIX_HOURS * timeline * 2 }
+    return { unit: 'Do MMM hh:mm A', interval: MILLISECONDS_PER_SIX_HOURS * timeline * 2 }
   }
 
-  return { unit: 'MMM D', interval: MILLISECONDS_PER_SIX_HOURS * timeline }
+  return { unit: 'Do MMM', interval: MILLISECONDS_PER_SIX_HOURS * timeline }
 }
 
 export const getSLOAndErrorBudgetGraphOptions = ({
@@ -156,8 +156,28 @@ export const getSLOAndErrorBudgetGraphOptions = ({
       tickInterval: interval,
       labels: {
         formatter: function () {
-          return moment(this.value).format(unit)
+          return moment(new Date(this.value)).format(unit)
         }
+      },
+      crosshair: {
+        zIndex: 7
+      }
+    },
+    tooltip: {
+      enabled: true,
+      useHTML: true,
+      padding: 0,
+      borderWidth: 0,
+      backgroundColor: 'white',
+      formatter: function () {
+        return `
+          <div style="padding: 8px; background-color: white">
+            <p style="color: var(--grey-400); font-weight: 500; font-size: 10px">
+              ${moment(new Date(this.x)).format('dddd, lll')}
+            </p>
+            <p style="font-size: 10px" >${this.y.toFixed(2)}%</p>
+          </div>
+        `
       }
     },
     yAxis: {
@@ -165,8 +185,18 @@ export const getSLOAndErrorBudgetGraphOptions = ({
       max: maxXLimit,
       plotLines: type === SLOCardToggleViews.SLO ? plotLines : undefined
     },
-    plotOptions:
-      type === SLOCardToggleViews.ERROR_BUDGET ? { area: { color: Utils.getRealCSSColor(Color.RED_400) } } : undefined
+    plotOptions: {
+      area: {
+        color: type === SLOCardToggleViews.ERROR_BUDGET ? Utils.getRealCSSColor(Color.RED_400) : undefined,
+        marker: {
+          states: {
+            hover: {
+              enabled: true
+            }
+          }
+        }
+      }
+    }
   }
 }
 
@@ -270,8 +300,8 @@ export const getErrorObject = (
   return dashboardWidgetsError || userJourneysError || dashboardRiskCountError || monitoredServicesDataError
 }
 
-export const getIsDataEmpty = (contentLength?: number, riskCountLength?: number): boolean => {
-  return !contentLength && !riskCountLength
+export const getIsDataEmpty = (contentLength?: number, riskCounts?: RiskCount[]): boolean => {
+  return !contentLength && isRiskCountEmptyForEveryCategory(riskCounts)
 }
 
 export const getIsWidgetDataEmpty = (contentLength?: number, dashboardWidgetsLoading?: boolean): boolean => {
@@ -280,6 +310,10 @@ export const getIsWidgetDataEmpty = (contentLength?: number, dashboardWidgetsLoa
 
 export const getIsSetPreviousPage = (pageIndex: number, pageItemCount: number): boolean => {
   return Boolean(pageIndex) && pageItemCount === 1
+}
+
+export function isRiskCountEmptyForEveryCategory(riskCounts?: RiskCount[]): boolean {
+  return !!riskCounts?.every((el: RiskCount) => el.count === 0)
 }
 
 export function setFilterValue<T>(callback: Dispatch<SetStateAction<T>>, value: T): void {

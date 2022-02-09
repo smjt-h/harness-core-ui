@@ -2057,7 +2057,7 @@ exports[`Connectors Page Test Render and check filter panel: New Filter 1`] = `
                           >
                             <input
                               class="bp3-input-ghost"
-                              data-mentions="kv-tag-input-tags}"
+                              data-mentions="kv-tag-input-tags"
                               placeholder="Type and press enter to create a tag"
                               value=""
                             />

@@ -45,6 +45,7 @@ const useCreateGitSyncModal = (props: UseCreateGitSyncModalProps): UseCreateGitS
     enforceFocus: false,
     style: {
       width: 1200,
+      minHeight: 720,
       borderLeft: 0,
       paddingBottom: 0,
       position: 'relative',
@@ -93,8 +94,6 @@ const useCreateGitSyncModal = (props: UseCreateGitSyncModalProps): UseCreateGitS
           {NG_GIT_FULL_SYNC ? (
             <GitFullSyncStep
               name={getString('gitsync.branchToSync')}
-              orgIdentifier={orgIdentifier}
-              projectIdentifier={projectIdentifier}
               onClose={closeHandler}
               onSuccess={(data?: GitSyncConfig) => {
                 handleSuccess(data)

@@ -5,7 +5,7 @@
  * https://polyformproject.org/wp-content/uploads/2020/06/PolyForm-Shield-1.0.0.txt.
  */
 
-import React, { useState } from 'react'
+import React, { useMemo, useState } from 'react'
 import {
   Container,
   ExpandingSearchInput,
@@ -43,12 +43,9 @@ const MetricsAnalysisContent: React.FC<MetricsAnalysisContentProps> = ({
 }) => {
   const { getString } = useStrings()
   const { orgIdentifier, projectIdentifier, accountId } = useParams<ProjectPathProps>()
-
-  const [page, setPage] = useState(0)
-
-  const { data, refetch, loading, error } = useGetTimeSeriesMetricData({
-    queryParams: {
-      page,
+  const queryParams = useMemo(() => {
+    return {
+      page: 0,
       size: PAGE_SIZE,
       accountId,
       orgIdentifier,
@@ -60,7 +57,22 @@ const MetricsAnalysisContent: React.FC<MetricsAnalysisContentProps> = ({
       healthSources: healthSource ? [healthSource] : undefined,
       filter: filterString,
       anomalous: isAnomalous
-    },
+    }
+  }, [
+    accountId,
+    endTime,
+    environmentIdentifier,
+    filterString,
+    healthSource,
+    isAnomalous,
+    orgIdentifier,
+    projectIdentifier,
+    serviceIdentifier,
+    startTime
+  ])
+
+  const { data, refetch, loading, error } = useGetTimeSeriesMetricData({
+    queryParams,
     queryParamStringifyOptions: {
       arrayFormat: 'repeat'
     }
@@ -113,7 +125,7 @@ const MetricsAnalysisContent: React.FC<MetricsAnalysisContentProps> = ({
         pageCount={totalPages}
         itemCount={totalItems}
         pageIndex={pageIndex}
-        gotoPage={setPage}
+        gotoPage={index => refetch({ queryParams: { ...queryParams, page: index } })}
       />
     </div>
   )

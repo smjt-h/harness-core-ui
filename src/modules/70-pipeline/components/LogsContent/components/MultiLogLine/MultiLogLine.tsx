@@ -111,12 +111,12 @@ export interface MultiLogLineProps extends LogLineData {
    */
   lineNumber: number
   limit: number
-  searchText: string
-  currentSearchIndex: number
+  searchText?: string
+  currentSearchIndex?: number
 }
 
 export function MultiLogLine(props: MultiLogLineProps): React.ReactElement {
-  const { text = {}, lineNumber, limit, searchText, currentSearchIndex, searchIndices } = props
+  const { text = {}, lineNumber, limit, searchText = '', currentSearchIndex = 0, searchIndices } = props
 
   return (
     <div className={css.logLine} style={{ '--char-size': `${limit.toString().length}ch` } as any}>

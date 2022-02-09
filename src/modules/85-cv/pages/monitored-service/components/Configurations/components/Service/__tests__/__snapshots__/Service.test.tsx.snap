@@ -252,7 +252,7 @@ exports[`Verify Service Monitored service is poplulated in Edit mode 1`] = `
                     </span>
                     <input
                       class="bp3-input-ghost"
-                      data-mentions="kv-tag-input-tags}"
+                      data-mentions="kv-tag-input-tags"
                       value=""
                     />
                   </div>

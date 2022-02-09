@@ -8,15 +8,17 @@
 import type { StringKeys } from 'framework/strings'
 import {
   getIsClearFilterDisabled,
+  getIsDataEmpty,
   getIsMonitoresServicePageClearFilterDisabled,
   getServiceLevelObjectivesRiskCountParams,
   getSLODashboardWidgetsParams,
   getUserJourneyParams,
   initialState,
+  isRiskCountEmptyForEveryCategory,
   SLODashboardFilterActions,
   sloFilterReducer
 } from '../CVSLOListingPage.utils'
-import { initialStateForDisableTest, pathParams } from './CVSLOsListingPage.mock'
+import { initialStateForDisableTest, mockedSLORiskCountsData, pathParams } from './CVSLOsListingPage.mock'
 
 function getString(key: StringKeys): StringKeys {
   return key
@@ -189,5 +191,25 @@ describe('CVSLOListingPage.utils', () => {
         getString
       )
     ).toBeFalsy()
+  })
+
+  test('isRiskCountEmptyForEveryCategory should return true if risk count of all categories is 0', () => {
+    expect(isRiskCountEmptyForEveryCategory(mockedSLORiskCountsData)).toBeTruthy()
+  })
+
+  test('isRiskCountEmptyForEveryCategory should return false if risk count of all categories is not 0', () => {
+    const updatedRiskCounts = [
+      ...mockedSLORiskCountsData,
+      { count: 2, displayName: 'Exhausted', identifier: 'EXHAUSTED' }
+    ]
+    expect(isRiskCountEmptyForEveryCategory(updatedRiskCounts)).toBeFalsy()
+  })
+
+  test('getIsDataEmpty should return true if slo content data is empty and riskCounts data is empty', () => {
+    expect(getIsDataEmpty(0, mockedSLORiskCountsData)).toBeTruthy()
+  })
+
+  test('getIsDataEmpty should return false if slo content data is not empty and riskCounts data is empty', () => {
+    expect(getIsDataEmpty(2, mockedSLORiskCountsData)).toBeFalsy()
   })
 })

@@ -7,6 +7,12 @@ common:
   spendTillDate: 'Spend Till Date'
 allRegions: 'All Regions'
 allClusters: 'All Clusters'
+enforcementMessage:
+  exceededSpendLimit: You have exceeded your cloud spend subscription limit.
+  exceededSpendLimitFreePlan: 'You have used {{ usage }} / {{ limit }} free cloud spend incuded in your current plan. Consider upgrading to manage higher cloud spend.'
+  usageInfo: 'You have used {{ percentage }}% of your cloud spend subscription limit.'
+  autoStoppingRules: "You've used {{ limits }} free AutoStopping rules under the free plan."
+  perspectivesLimitMsg: "You've used {{ limits }} free Perspectives under the free plan."
 noSavingsDataMessage: 'Savings data not computed yet'
 pageErrorMsg:
   recommendationNoData: 'There are no recommendations yet. Recommendations typically take 24 hours to show up. Please check back later.'
@@ -115,6 +121,8 @@ co:
             allDay: 'All Day'
             schedule: 'schedule'
             timezone: 'Time Zone'
+            toText: 'to'
+            fromText: 'from'
             successfulSaveMessage: 'Static Schedule {{name}} saved successfully'
             deleteScheduleTitle: 'Delete Static schedule'
             successfullyDeletedSchedule: 'Schedule {{name}} deleted successfully'
@@ -326,6 +334,8 @@ co:
     healthCheck: 'Health check'
     name: '{{$.ce.co.gatewayReview.nameYourGateway}}'
     addSchedule: '+ add schedule'
+    setSchedulePeriodHeader: 'Set schedule period'
+    setScheduleTimeHeader: 'Uptime/Downtime in the selected period'
     scheduleDescription: 'Set an automated schedule for uptime or downtime of all the resources that match your filter criteria.'
     routingDescription: 'This is the load balancer routing configuration for the underlying application that is running on the cloud resources managed by this AutoStopping Rule.'
     k8sroutingDescription: 'This is the resource definition YAML of the Kubernetes AutoStopping Rule that will be applied to the cluster. The specification here is the same as a Kubernetes ingress, with additional Harness metadata. Edit the below template with the right HTTP/HTTPS service details. Validate the YAML to proceed.'
@@ -480,7 +490,6 @@ savedYamlSuccess: YAML validated successfully
 uploadCertiHeader: Upload a new certificate for the Application Load Balancer
 perspectives:
   newPerspective: New Perspective
-  featureWarningSubInfoText: 'You have used {{usagePercentage}}% of your cloud spend subscription limit.'
   newPerspectiveLimitWarning: You have used {{count}} / {{limit}} free perspectives incuded in your current plan. Consider upgrading for unlimited perspectives.
   allPerspectiveTxt: 'All ({{ count }})'
   recentPerspectiveTxt: 'Recent ({{ count }})'
@@ -527,7 +536,7 @@ perspectives:
   searchPerspectives: Search perspectives
   timeRangeConstants:
     last7Days: 'Last 7 Days'
-    thisMonth: 'This Month'
+    thisMonth: '{{ $.common.feature.levelUp.limitMessage.thisMonth }}'
     thisQuarter: 'This Quarter'
     thisYear: 'This Year'
     lastMonth: '{{$.common.datePickerShortcuts.LastMonth}}'
@@ -596,7 +605,7 @@ perspectives:
     reportDeletedTxt: 'Report {{ name }} deleted'
   recommendations:
     viewText: '{{ $.common.viewText }}'
-    recommendationCountTxt: '{{ count }} recommendations saving upto'
+    recommendationCountTxt: '{{ count }} recommendation(s) saving upto'
     perMonth: per month
   budgets:
     budgetText: '{{ index }}. Budget Amount: {{ amount }}'

@@ -3,8 +3,7 @@
 exports[`Test GitFullSyncForm Should render GitFullSyncForm 1`] = `
 <div>
   <div
-    class="StyledProps--font StyledProps--main modalContainer"
-    style="height: inherit;"
+    class="StyledProps--font StyledProps--main modalContainer isModalStep"
   >
     <p
       class="StyledProps--font StyledProps--main StyledProps--font-variation-h3 StyledProps--padding-bottom-xlarge"
@@ -24,13 +23,8 @@ exports[`Test GitFullSyncForm Should render GitFullSyncForm 1`] = `
             <div
               class="StyledProps--font StyledProps--main formBody"
             >
-              <p
-                class="StyledProps--font StyledProps--main StyledProps--margin-bottom-small StyledProps--font-size-medium StyledProps--color StyledProps--color-grey700"
-              >
-                common.gitSync.harnessFolderLabel
-              </p>
               <div
-                class="bp3-form-group bp3-disabled"
+                class="bp3-form-group bp3-disabled repoRootfolderSelect"
                 data-id="repoIdentifier-0"
               >
                 <label
@@ -68,7 +62,7 @@ exports[`Test GitFullSyncForm Should render GitFullSyncForm 1`] = `
                           placeholder="- Select -"
                           style="padding-right: 0px;"
                           type="text"
-                          value="gitSyncRepoTest"
+                          value=""
                         />
                         <span
                           class="bp3-input-action"
@@ -99,7 +93,7 @@ exports[`Test GitFullSyncForm Should render GitFullSyncForm 1`] = `
                 </div>
               </div>
               <div
-                class="bp3-form-group bp3-disabled"
+                class="bp3-form-group bp3-disabled repoRootfolderSelect"
                 data-id="rootFolder-1"
               >
                 <label
@@ -137,7 +131,7 @@ exports[`Test GitFullSyncForm Should render GitFullSyncForm 1`] = `
                           placeholder="- Select -"
                           style="padding-right: 0px;"
                           type="text"
-                          value="/src1/.harness/"
+                          value=""
                         />
                         <span
                           class="bp3-input-action"
@@ -168,7 +162,7 @@ exports[`Test GitFullSyncForm Should render GitFullSyncForm 1`] = `
                 </div>
               </div>
               <p
-                class="StyledProps--font StyledProps--main StyledProps--font-variation-form-sub-section StyledProps--margin-top-large"
+                class="StyledProps--font StyledProps--main StyledProps--font-variation-form-sub-section StyledProps--margin-top-xlarge"
               >
                 gitsync.syncBranchTitle
               </p>
@@ -176,7 +170,7 @@ exports[`Test GitFullSyncForm Should render GitFullSyncForm 1`] = `
                 class="Layout--vertical Layout--layout-spacing-medium StyledProps--main StyledProps--margin-bottom-medium"
               >
                 <div
-                  class="StyledProps--font StyledProps--main branchSection StyledProps--padding-top-small"
+                  class="StyledProps--font StyledProps--main branchSection"
                 >
                   <div
                     class="Layout--horizontal StyledProps--main StyledProps--flex StyledProps--flex-alignItems-baseline StyledProps--flex-justifyContent-flex-start"
@@ -356,7 +350,7 @@ exports[`Test GitFullSyncForm Should render GitFullSyncForm 1`] = `
                   </div>
                 </div>
                 <div
-                  class="StyledProps--font StyledProps--main branchSection StyledProps--padding-bottom-small"
+                  class="StyledProps--font StyledProps--main branchSection"
                 >
                   <label
                     class="bp3-control bp3-radio bp3-large StyledProps--font Radio--radio StyledProps--main"
@@ -394,7 +388,7 @@ exports[`Test GitFullSyncForm Should render GitFullSyncForm 1`] = `
               </div>
             </div>
             <div
-              class="Layout--horizontal Layout--layout-spacing-medium StyledProps--main StyledProps--padding-top-medium"
+              class="Layout--horizontal Layout--layout-spacing-medium StyledProps--main"
             >
               <button
                 class="bp3-button Button--button StyledProps--font StyledProps--main StyledProps--intent-primary Button--with-current-color"

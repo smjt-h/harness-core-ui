@@ -5,22 +5,30 @@
  * https://polyformproject.org/wp-content/uploads/2020/06/PolyForm-Shield-1.0.0.txt.
  */
 
-export const calculateErrorBudgetByIncrement = (currentErrorBudget: number, increment = NaN): number => {
+export const calculateErrorBudgetByIncrement = (currentErrorBudget: number, increment = NaN): string => {
   if (Number.isNaN(increment)) {
-    return 0
+    return '--'
   }
 
-  return Math.floor(currentErrorBudget + currentErrorBudget * (increment / 100))
+  return Math.floor(currentErrorBudget + currentErrorBudget * (increment / 100)).toLocaleString()
 }
 
 export const calculateRemainingErrorBudgetByIncrement = (
   currentErrorBudget: number,
   remainingErrorBudget: number,
-  increment = NaN
-): number => {
+  increment = NaN,
+  returnInPercentage = false
+): string => {
   if (Number.isNaN(increment)) {
-    return 0
+    return '--'
   }
 
-  return Math.floor(remainingErrorBudget + currentErrorBudget * (increment / 100))
+  const updatedErrorBudget = Math.floor(currentErrorBudget + currentErrorBudget * (increment / 100))
+  const updatedRemainingErrorBudget = Math.floor(remainingErrorBudget + currentErrorBudget * (increment / 100))
+
+  if (returnInPercentage) {
+    return ((updatedRemainingErrorBudget / updatedErrorBudget) * 100).toFixed(2)
+  }
+
+  return updatedRemainingErrorBudget.toLocaleString()
 }

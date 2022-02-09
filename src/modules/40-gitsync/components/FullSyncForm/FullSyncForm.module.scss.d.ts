@@ -13,9 +13,12 @@ declare const styles: {
   readonly formBody: string
   readonly formRow: string
   readonly gitBranchSelectorPopover: string
+  readonly isModalStep: string
   readonly modalBody: string
   readonly modalContainer: string
   readonly prTitle: string
+  readonly repoRootfolderSelect: string
+  readonly spinner: string
   readonly tooltip: string
 }
 export default styles

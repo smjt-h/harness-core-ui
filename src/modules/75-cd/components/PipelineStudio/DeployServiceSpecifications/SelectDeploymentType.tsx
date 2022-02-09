@@ -11,12 +11,21 @@ import { noop } from 'lodash-es'
 import * as Yup from 'yup'
 import { Card, HarnessDocTooltip, ThumbnailSelect } from '@wings-software/uicore'
 import cx from 'classnames'
-import { useStrings } from 'framework/strings'
+import { useStrings, UseStringsReturn } from 'framework/strings'
 import { StageErrorContext } from '@pipeline/context/StageErrorContext'
 import { DeployTabs } from '@cd/components/PipelineStudio/DeployStageSetupShell/DeployStageSetupShellUtils'
 import { useFeatureFlags } from '@common/hooks/useFeatureFlag'
+import { ServiceDeploymentType } from '@cd/components/PipelineSteps/PipelineStepsUtil'
 import type { DeploymentTypeItem } from './DeploymentInterface'
 import stageCss from '../DeployStageSetupShell/DeployStage.module.scss'
+
+export function getServiceDeploymentTypeSchema(
+  getString: UseStringsReturn['getString']
+): Yup.StringSchema<string | undefined> {
+  return Yup.string()
+    .oneOf(Object.values(ServiceDeploymentType))
+    .required(getString('cd.pipelineSteps.serviceTab.deploymentTypeRequired'))
+}
 
 interface SelectServiceDeploymentTypeProps {
   selectedDeploymentType: string
@@ -35,54 +44,54 @@ export default function SelectDeploymentType(props: SelectServiceDeploymentTypeP
     {
       label: getString('serviceDeploymentTypes.kubernetes'),
       icon: 'service-kubernetes',
-      value: 'Kubernetes'
+      value: ServiceDeploymentType.Kubernetes
     },
     {
       label: getString('pipeline.nativeHelm'),
       icon: 'service-helm',
-      value: 'NativeHelm',
+      value: ServiceDeploymentType.NativeHelm,
       disabled: !NG_NATIVE_HELM
     },
     {
       label: getString('serviceDeploymentTypes.amazonEcs'),
       icon: 'service-ecs',
-      value: 'amazonEcs',
+      value: ServiceDeploymentType.amazonEcs,
       disabled: true
     },
     {
       label: getString('serviceDeploymentTypes.amazonAmi'),
       icon: 'main-service-ami',
-      value: 'amazonAmi',
+      value: ServiceDeploymentType.amazonAmi,
       disabled: true
     },
     {
       label: getString('serviceDeploymentTypes.awsCodeDeploy'),
       icon: 'app-aws-code-deploy',
-      value: 'awsCodeDeploy',
+      value: ServiceDeploymentType.awsCodeDeploy,
       disabled: true
     },
     {
       label: getString('serviceDeploymentTypes.winrm'),
       icon: 'command-winrm',
-      value: 'winrm',
+      value: ServiceDeploymentType.winrm,
       disabled: true
     },
     {
       label: getString('serviceDeploymentTypes.awsLambda'),
       icon: 'app-aws-lambda',
-      value: 'awsLambda',
+      value: ServiceDeploymentType.awsLambda,
       disabled: true
     },
     {
       label: getString('serviceDeploymentTypes.pcf'),
       icon: 'service-pivotal',
-      value: 'pcf',
+      value: ServiceDeploymentType.pcf,
       disabled: true
     },
     {
       label: getString('serviceDeploymentTypes.ssh'),
       icon: 'secret-ssh',
-      value: 'ssh',
+      value: ServiceDeploymentType.ssh,
       disabled: true
     }
   ]
@@ -98,7 +107,7 @@ export default function SelectDeploymentType(props: SelectServiceDeploymentTypeP
       enableReinitialize={true}
       initialValues={{ deploymentType: selectedDeploymentType }}
       validationSchema={Yup.object().shape({
-        deploymentType: Yup.string().required(getString('cd.pipelineSteps.serviceTab.deploymentTypeRequired'))
+        deploymentType: getServiceDeploymentTypeSchema(getString)
       })}
     >
       {formik => {

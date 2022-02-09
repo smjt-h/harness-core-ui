@@ -1143,7 +1143,10 @@ function RunPipelineFormBasic({
                           submitForm()
                         }
                       }}
-                      featuresProps={getFeaturePropsForRunPipelineButton(template?.data?.modules)}
+                      featuresProps={getFeaturePropsForRunPipelineButton({
+                        modules: template?.data?.modules,
+                        getString
+                      })}
                       permission={{
                         resource: {
                           resourceIdentifier: pipeline?.identifier as string,

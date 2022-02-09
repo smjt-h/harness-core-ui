@@ -23,7 +23,7 @@ import css from './HealthSources.module.scss'
 
 export default function HealthSources(props: HealthSourcesProps): React.ReactElement {
   const { getString } = useStrings()
-  const { healthSources, isRunTimeInput, addHealthSource, editHealthSource } = props
+  const { healthSources, isRunTimeInput, addHealthSource, editHealthSource, deleteHealthSource } = props
 
   const { projectIdentifier } = useParams<ProjectPathProps>()
 
@@ -40,18 +40,30 @@ export default function HealthSources(props: HealthSourcesProps): React.ReactEle
     )
   }
 
-  const EditTableCell = (tableProps: CellProps<HealthSource>): JSX.Element => {
+  const HealthSourceActions = (tableProps: CellProps<HealthSource>): JSX.Element => {
     return (
       <Container className={css.header}>
         <>{tableProps.value}</>
-        <Icon
-          name="edit"
-          size={14}
-          onClick={() => {
-            editHealthSource(tableProps?.row?.original)
-          }}
-          className={css.link}
-        />
+        <Container>
+          <Icon
+            name="edit"
+            size={14}
+            onClick={() => {
+              editHealthSource(tableProps?.row?.original)
+            }}
+            className={css.link}
+            padding={'small'}
+          />
+          <Icon
+            name="trash"
+            size={14}
+            onClick={() => {
+              deleteHealthSource?.(tableProps?.row?.original)
+            }}
+            className={css.link}
+            padding={'small'}
+          />
+        </Container>
       </Container>
     )
   }
@@ -98,7 +110,7 @@ export default function HealthSources(props: HealthSourcesProps): React.ReactEle
                 Header: 'Type',
                 accessor: 'type',
                 width: '40%',
-                Cell: EditTableCell
+                Cell: HealthSourceActions
               }
             ]}
             data={healthSources as HealthSource[]}

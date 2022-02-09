@@ -178,12 +178,15 @@ const validateCustomMetricFields = (
   const selectedMetricIndexNew =
     createdMetrics.indexOf(values.metricName) > -1 ? selectedMetricIndex : createdMetrics.indexOf(values.metricName)
 
-  const duplicateNames = createdMetrics?.filter((metricName, index) => {
-    if (index === selectedMetricIndexNew) {
-      return false
-    }
-    return metricName === values.metricName
-  })
+  const duplicateNames =
+    createdMetrics.length < 2
+      ? []
+      : createdMetrics?.filter((metricName, index) => {
+          if (index === selectedMetricIndexNew) {
+            return false
+          }
+          return metricName === values.metricName
+        })
 
   _error = validateIdentifier(values, createdMetrics, selectedMetricIndex, _error, getString, mappedMetrics)
 
@@ -252,12 +255,15 @@ const validateIdentifier = (
   const _error = cloneDeep(errors)
   const identifiers = createdMetrics.map(metricName => mappedMetrics?.get(metricName)?.metricIdentifier)
 
-  const duplicateIdentifier = identifiers?.filter((identifier, index) => {
-    if (index === selectedMetricIndex) {
-      return false
-    }
-    return identifier === values.metricIdentifier
-  })
+  const duplicateIdentifier =
+    identifiers.length < 2
+      ? []
+      : identifiers?.filter((identifier, index) => {
+          if (index === selectedMetricIndex) {
+            return false
+          }
+          return identifier === values.metricIdentifier
+        })
 
   if (values.identifier && duplicateIdentifier.length) {
     _error[AppDynamicsMonitoringSourceFieldNames.METRIC_IDENTIFIER] = getString(
@@ -518,7 +524,7 @@ export const createAppDFormData = (
   const lastItemBasePath = Object.keys(basePath)[Object.keys(basePath).length - 1]
   const lastItemMetricPath = Object.keys(metricPath)[Object.keys(metricPath).length - 1]
   const fullPath =
-    basePath[lastItemBasePath]?.path && metricPath[lastItemMetricPath]?.path
+    basePath[lastItemBasePath]?.path && metricPath[lastItemMetricPath]?.path && appDynamicsData.tierName
       ? `${basePath[lastItemBasePath]?.path}|${appDynamicsData.tierName}|${metricPath[lastItemMetricPath]?.path}`
       : ''
   return {

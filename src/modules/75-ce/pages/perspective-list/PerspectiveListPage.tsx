@@ -25,7 +25,6 @@ import { pick, sortBy } from 'lodash-es'
 import { useStrings } from 'framework/strings'
 import routes from '@common/RouteDefinitions'
 import { PageSpinner, useToaster } from '@common/components'
-import { useFeature } from '@common/hooks/useFeatures'
 import { useTelemetry } from '@common/hooks/useTelemetry'
 import { FeatureIdentifier } from 'framework/featureStore/FeatureIdentifier'
 import { useCreatePerspective, useDeletePerspective, CEView } from 'services/ce'
@@ -41,12 +40,12 @@ import {
 import { generateId, CREATE_CALL_OBJECT } from '@ce/utils/perspectiveUtils'
 import NoData from '@ce/components/OverviewPage/OverviewNoData'
 import PerspectiveListView from '@ce/components/PerspectiveViews/PerspectiveListView'
-import { FeatureWarningWithTooltip } from '@common/components/FeatureWarning/FeatureWarningWithTooltip'
 import PerspectiveGridView from '@ce/components/PerspectiveViews/PerspectiveGridView'
 import { useCreateConnectorMinimal } from '@ce/components/CreateConnector/CreateConnector'
 import { Utils } from '@ce/common/Utils'
 import { PAGE_NAMES, USER_JOURNEY_EVENTS } from '@ce/TrackingEventsConstants'
 import { NGBreadcrumbs } from '@common/components/NGBreadcrumbs/NGBreadcrumbs'
+import RbacButton from '@rbac/components/Button/Button'
 import bgImage from './images/perspectiveBg.png'
 import css from './PerspectiveListPage.module.scss'
 
@@ -480,12 +479,6 @@ const PerspectiveListPage: React.FC = () => {
     }
   }
 
-  const { enabled: featureEnabled, featureDetail } = useFeature({
-    featureRequest: {
-      featureName: FeatureIdentifier.PERSPECTIVES
-    }
-  })
-
   const pespectiveList = (data?.perspectives?.customerViews || []) as QlceView[]
 
   useEffect(() => {
@@ -538,27 +531,20 @@ const PerspectiveListPage: React.FC = () => {
       />
       <Layout.Horizontal spacing="large" className={css.header}>
         <Layout.Horizontal spacing="large" style={{ alignItems: 'center' }}>
-          <Button
+          <RbacButton
             intent="primary"
             text={getString('ce.perspectives.newPerspective')}
             icon="plus"
-            disabled={!featureEnabled}
+            featuresProps={{
+              featuresRequest: {
+                featureNames: [FeatureIdentifier.PERSPECTIVES]
+              }
+            }}
             onClick={async () => {
               trackEvent(USER_JOURNEY_EVENTS.CREATE_NEW_PERSPECTIVE, {})
               await createNewPerspective({}, false)
             }}
           />
-          {!featureEnabled && (
-            <section className={css.limitWarningTooltipCtn}>
-              <FeatureWarningWithTooltip
-                featureName={FeatureIdentifier.PERSPECTIVES}
-                warningMessage={getString('ce.perspectives.newPerspectiveLimitWarning', {
-                  count: featureDetail?.count,
-                  limit: featureDetail?.limit
-                })}
-              />
-            </section>
-          )}
         </Layout.Horizontal>
         <FlexExpander />
 

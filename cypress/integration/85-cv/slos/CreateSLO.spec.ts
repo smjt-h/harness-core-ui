@@ -24,7 +24,14 @@ import {
   getSLORiskCountResponse,
   getServiceLevelObjectiveResponse,
   getSLODashboardWidgetsAfterEdit,
-  updateSLO
+  updateSLO,
+  listRiskCountDataEmptyResponse,
+  getMonitoredService,
+  getMonitoredServiceResponse,
+  listSLOsCallWithCVNGProd,
+  getSLORiskCountWithCVNGProd,
+  getTwoSLODashboardWidgets,
+  getTwoSLOsRiskCountResponse
 } from '../../../support/85-cv/slos/constants'
 
 describe('Create SLO', () => {
@@ -44,12 +51,13 @@ describe('Create SLO', () => {
     cy.intercept('GET', getUserJourneysCall, listUserJourneysCallResponse)
     cy.intercept('GET', listMonitoredServices, listMonitoredServicesCallResponse)
     cy.intercept('GET', getSLOMetrics, listSLOMetricsCallResponse)
+    cy.intercept('GET', getSLORiskCount, listRiskCountDataEmptyResponse)
 
     // Verifying NO SLOs state.
     cy.contains('p', 'SLOs').click()
-    cy.contains('p', 'No SLOs Present.').should('be.visible')
+    cy.contains('h2', 'You don’t have any SLO created yet').should('be.visible')
 
-    cy.contains('span', 'New SLO').click()
+    cy.contains('span', 'Create SLO').click()
 
     // Filling details Under Name tab for SLO creation
     cy.fillName('SLO-1')
@@ -173,7 +181,7 @@ describe('Create SLO', () => {
     cy.contains('span', 'SLO updated successfully').should('be.visible')
 
     cy.wait('@getSLODashboardWidgetsAfterEdit')
-    cy.contains('p', 'SLO recalculation in progress', { timeout: 6000 }).should('be.visible')
+    cy.contains('p', 'SLO recalculation in progress').should('be.visible')
   })
 
   it('should validate all form field errors and default values', () => {
@@ -183,7 +191,7 @@ describe('Create SLO', () => {
     cy.intercept('POST', getSliGraph, errorResponse)
 
     cy.contains('p', 'SLOs').click()
-    cy.contains('span', 'New SLO').click()
+    cy.contains('span', 'Create SLO').click()
 
     cy.contains('h2', 'Create SLO').should('be.visible')
 
@@ -373,7 +381,7 @@ describe('Create SLO', () => {
 
     cy.contains('h2', 'SLO-1').should('be.visible')
 
-    cy.contains('span', 'New SLO').click()
+    cy.contains('span', 'Create SLO').click()
 
     cy.fillName('SLO-1')
     cy.get('input[name="User Journey"]').click()
@@ -413,5 +421,110 @@ describe('Create SLO', () => {
 
     cy.wait('@saveSLO')
     cy.contains('span', 'SLO with identifier SLO1 is already exist.').should('be.visible')
+  })
+
+  it('should be able to edit the SLO in monitored service details page', () => {
+    cy.intercept('GET', listSLOsCall, updatedListSLOsCallResponse)
+    cy.intercept('GET', getUserJourneysCall, listUserJourneysCallResponse)
+    cy.intercept('GET', getSLORiskCount, getSLORiskCountResponse)
+    cy.intercept('GET', listMonitoredServices, listMonitoredServicesCallResponse)
+
+    cy.intercept('GET', getMonitoredService, getMonitoredServiceResponse).as('getMonitoredService')
+    cy.intercept('GET', listSLOsCallWithCVNGProd, updatedListSLOsCallResponse)
+    cy.intercept('GET', getSLORiskCountWithCVNGProd, getSLORiskCountResponse)
+    cy.intercept('GET', getServiceLevelObjective, getServiceLevelObjectiveResponse)
+    cy.intercept('GET', getSLOMetrics, listSLOMetricsCallResponse)
+
+    cy.contains('p', 'SLOs').click()
+    cy.contains('p', 'prod').click()
+
+    cy.wait('@getMonitoredService')
+    cy.get('div[data-tab-id="SLOs"]').click()
+
+    cy.get('[data-icon="Options"]').click()
+    cy.get('[icon="edit"]').click()
+
+    cy.get('input[name="User Journey"]').should('have.value', 'new-one')
+
+    cy.findByRole('button', { name: /Continue/i }).click()
+    cy.contains('h2', 'Configure SLI queries').should('be.visible')
+
+    cy.findByRole('button', { name: /Continue/i }).click()
+    cy.contains('h2', 'Set the SLO time window and target').should('be.visible')
+
+    cy.intercept('PUT', updateSLO, { statusCode: 200 }).as('updateSLO')
+    cy.intercept('GET', listSLOsCallWithCVNGProd, getSLODashboardWidgetsAfterEdit).as('getSLODashboardWidgetsAfterEdit')
+
+    cy.findByRole('button', { name: /Save/i }).click()
+
+    cy.wait('@updateSLO')
+    cy.contains('span', 'SLO updated successfully').should('be.visible')
+
+    cy.wait('@getMonitoredService')
+    cy.wait('@getSLODashboardWidgetsAfterEdit')
+    cy.contains('p', 'SLO recalculation in progress').should('be.visible')
+  })
+
+  it('should be able to create new SLO in monitored service details page', () => {
+    cy.intercept('GET', listSLOsCall, updatedListSLOsCallResponse)
+    cy.intercept('GET', getUserJourneysCall, listUserJourneysCallResponse)
+    cy.intercept('GET', getSLORiskCount, getSLORiskCountResponse)
+    cy.intercept('GET', listMonitoredServices, listMonitoredServicesCallResponse)
+
+    cy.intercept('GET', getMonitoredService, getMonitoredServiceResponse).as('getMonitoredService')
+    cy.intercept('GET', listSLOsCallWithCVNGProd, updatedListSLOsCallResponse)
+    cy.intercept('GET', getSLORiskCountWithCVNGProd, getSLORiskCountResponse)
+    cy.intercept('GET', getServiceLevelObjective, getServiceLevelObjectiveResponse)
+    cy.intercept('GET', getSLOMetrics, listSLOMetricsCallResponse)
+
+    cy.contains('p', 'SLOs').click()
+    cy.contains('p', 'prod').click()
+
+    cy.wait('@getMonitoredService')
+    cy.get('div[data-tab-id="SLOs"]').click()
+
+    cy.findByRole('button', { name: /Create SLO/i }).click()
+
+    cy.fillName('SLO-2')
+    cy.get('input[name="User Journey"]').click()
+    cy.contains('p', 'new-one').click({ force: true })
+
+    cy.findByRole('button', { name: /Continue/i }).click()
+
+    cy.get('input[name="monitoredServiceRef"]').click()
+    cy.contains('p', 'cvng_prod').click({ force: true })
+
+    cy.get('input[name="healthSourceRef"]').click()
+    cy.contains('p', 'appd_cvng_prod').click({ force: true })
+
+    cy.get('input[name="eventType"]').click()
+    cy.contains('p', 'Bad').click({ force: true })
+
+    cy.get('input[name="goodRequestMetric"]').click()
+    cy.contains('p', 'number_of_slow_calls').click({ force: true })
+
+    cy.wait(1000)
+
+    cy.get('input[name="validRequestMetric"]').click()
+    cy.contains('p', 'https_errors_per_min').click({ force: true })
+
+    cy.get('input[name="objectiveValue"]').type('2')
+
+    cy.get('input[name="objectiveComparator"]').click({ force: true })
+    cy.contains('p', '<').click({ force: true })
+
+    cy.findByRole('button', { name: /Continue/i }).click()
+
+    cy.get('input[name="periodLength"]').click()
+    cy.contains('p', '7').click({ force: true })
+
+    cy.intercept('POST', saveSLO, { statusCode: 200 }).as('saveSLO')
+    cy.intercept('GET', getSLORiskCountWithCVNGProd, getTwoSLOsRiskCountResponse)
+    cy.intercept('GET', listSLOsCallWithCVNGProd, getTwoSLODashboardWidgets)
+
+    cy.findByRole('button', { name: /Save/i }).click()
+    cy.wait('@saveSLO')
+
+    cy.contains('span', 'SLO created successfully').should('be.visible')
   })
 })

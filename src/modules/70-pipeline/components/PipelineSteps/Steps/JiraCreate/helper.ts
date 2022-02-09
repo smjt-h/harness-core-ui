@@ -146,12 +146,14 @@ export const getSelectedFieldsToBeAddedInForm = (
   existingFields: JiraFieldNGWithValue[] = [],
   existingKVFields: JiraCreateFieldType[]
 ): JiraFieldNGWithValue[] => {
-  const toReturn: JiraFieldNGWithValue[] = [...existingFields]
+  const toReturn: JiraFieldNGWithValue[] = []
   newFields.forEach(field => {
     const alreadyPresent = existingFields.find(existing => existing.name === field.name)
     const alreadyPresentKVField = existingKVFields.find(kv => kv.name === field.name)
     if (!alreadyPresent && !alreadyPresentKVField) {
       toReturn.push({ ...field, value: !isEmpty(field.allowedValues) ? [] : '' })
+    } else {
+      toReturn.push({ ...field, value: alreadyPresent !== undefined ? alreadyPresent?.value : '' })
     }
   })
   return toReturn
@@ -171,4 +173,14 @@ export const getKVFieldsToBeAddedInForm = (
     }
   })
   return toReturn
+}
+
+export const updateMap = (alreadySelectedFields: JiraFieldNG[]): Record<string, boolean> => {
+  const map: Record<string, boolean> = {}
+  if (!isEmpty(alreadySelectedFields)) {
+    alreadySelectedFields.forEach(field => {
+      map[field.name] = true
+    })
+  }
+  return map
 }

@@ -54,7 +54,7 @@ describe('Git Sync - repo tab', () => {
     const { container, getByText } = setup()
 
     await waitFor(() => {
-      expect(getByText('wings-software/triggerNgDemo')).toBeTruthy()
+      expect(getByText('https://github.com/wings-software/triggerNgDemo')).toBeInTheDocument()
     })
 
     expect(container).toMatchSnapshot()

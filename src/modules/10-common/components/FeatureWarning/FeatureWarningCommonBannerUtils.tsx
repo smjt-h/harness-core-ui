@@ -130,7 +130,7 @@ export const getHeadline = ({
 
   switch (theme) {
     case FeatureWarningTheme.UPGRADE_REQUIRED:
-      return getString('common.feature.upgradeRequired.title').toUpperCase()
+      return getString('common.levelUp').toUpperCase()
     case FeatureWarningTheme.OVERUSE:
       return getString('common.feature.overuse.title').toUpperCase()
 

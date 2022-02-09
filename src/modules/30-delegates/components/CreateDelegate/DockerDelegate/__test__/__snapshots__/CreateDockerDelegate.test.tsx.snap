@@ -275,7 +275,7 @@ exports[`Create Docker Delegate render data 1`] = `
                                   >
                                     <input
                                       class="bp3-input-ghost"
-                                      data-mentions="kv-tag-input-tags}"
+                                      data-mentions="kv-tag-input-tags"
                                       placeholder="Type and press enter to create a tag"
                                       value=""
                                     />
