@@ -6,37 +6,29 @@
  */
 
 import { isEmpty } from 'lodash-es'
-import React, { useEffect, useState } from 'react'
+import React, { useState } from 'react'
 import { Button, Checkbox } from '@wings-software/uicore'
 import { useStrings } from 'framework/strings'
 import type { JiraFieldNG } from 'services/cd-ng'
 import type { JiraFieldSelectorProps } from './types'
+import { updateMap } from './helper'
 import css from './JiraFieldSelector.module.scss'
 
 export const JiraFieldSelector = (props: JiraFieldSelectorProps) => {
   const { getString } = useStrings()
   const [selectedFields, setSelectedFields] = useState<JiraFieldNG[]>(props.selectedFields)
-  const [selectedFieldsMap, setSelectedFieldsMap] = useState<Record<string, boolean>>({})
-
-  useEffect(() => {
-    const map: Record<string, boolean> = {}
-    if (!isEmpty(selectedFields)) {
-      selectedFields.forEach(field => {
-        map[field.name] = true
-      })
-    }
-    setSelectedFieldsMap(map)
-  }, [selectedFields])
+  const [selectedFieldsMap, setSelectedFieldsMap] = useState<Record<string, boolean>>(updateMap(selectedFields))
 
   const onSelect = (field: JiraFieldNG, checked: boolean) => {
     const alreadySelectedFields: JiraFieldNG[] = [...selectedFields]
     if (checked) {
       alreadySelectedFields.push(field)
       setSelectedFields(alreadySelectedFields)
+      setSelectedFieldsMap(updateMap(alreadySelectedFields))
     } else {
-      const index = alreadySelectedFields.indexOf(field)
-      alreadySelectedFields.splice(index, 1)
-      setSelectedFields(alreadySelectedFields)
+      const newSelected = alreadySelectedFields.filter(item => item.name !== field.name)
+      setSelectedFieldsMap(updateMap(newSelected))
+      setSelectedFields(newSelected)
     }
   }
 

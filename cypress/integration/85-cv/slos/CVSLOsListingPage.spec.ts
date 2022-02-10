@@ -124,7 +124,7 @@ describe('CVSLOsListingPage', () => {
 
     cy.findByTestId('userJourney-filter').click()
     cy.contains('p', 'Second Journey').click({ force: true })
-    cy.contains('p', 'No SLOs Present.').should('be.visible')
+    cy.contains('p', 'No matching data').should('be.visible')
     cy.findByTestId('userJourney-filter').click()
     cy.contains('p', 'new-one').click({ force: true })
     cy.contains('h2', 'SLO-1').should('be.visible')
@@ -134,7 +134,7 @@ describe('CVSLOsListingPage', () => {
 
     cy.findAllByTestId('monitoredServices-filter').click()
     cy.contains('p', 'cvng_dev').click({ force: true })
-    cy.contains('p', 'No SLOs Present.').should('be.visible')
+    cy.contains('p', 'No matching data').should('be.visible')
     cy.findAllByTestId('monitoredServices-filter').click()
     cy.contains('p', 'cvng_prod').click({ force: true })
     cy.contains('h2', 'SLO-1').should('be.visible')
@@ -144,7 +144,7 @@ describe('CVSLOsListingPage', () => {
 
     cy.findAllByTestId('sloTargetAndBudget-filter').click()
     cy.contains('p', 'Calender').click({ force: true })
-    cy.contains('p', 'No SLOs Present.').should('be.visible')
+    cy.contains('p', 'No matching data').should('be.visible')
     cy.findAllByTestId('sloTargetAndBudget-filter').click()
     cy.contains('p', 'Rolling').click({ force: true })
     cy.contains('h2', 'SLO-1').should('be.visible')
@@ -154,7 +154,7 @@ describe('CVSLOsListingPage', () => {
 
     cy.findAllByTestId('sliType-filter').click()
     cy.contains('p', 'Availability').click({ force: true })
-    cy.contains('p', 'No SLOs Present.').should('be.visible')
+    cy.contains('p', 'No matching data').should('be.visible')
     cy.findAllByTestId('sliType-filter').click()
     cy.contains('p', 'Latency').click({ force: true })
     cy.contains('h2', 'SLO-1').should('be.visible')
@@ -163,7 +163,7 @@ describe('CVSLOsListingPage', () => {
     cy.contains('span', 'Clear Filters').should('not.exist')
 
     cy.contains('p', 'Unhealthy').click()
-    cy.contains('p', 'No SLOs Present.').should('be.visible')
+    cy.contains('p', 'No matching data').should('be.visible')
     cy.contains('p', 'Healthy').click()
     cy.contains('h2', 'SLO-1').should('be.visible')
   })
@@ -201,7 +201,7 @@ describe('CVSLOsListingPage', () => {
 
     cy.contains('span', 'Save').click()
 
-    cy.contains('span', 'Increase error budget by is required').should('be.visible')
+    cy.contains('span', '"Increase error budget by" is required').should('be.visible')
     cy.contains('span', 'Reason is required').should('be.visible')
 
     cy.fillField('errorBudgetIncrementPercentage', '100')
@@ -209,6 +209,7 @@ describe('CVSLOsListingPage', () => {
 
     cy.findByTestId('updated-error-budget').should('have.text', '208')
     cy.findByTestId('updated-remaining-error-budget').should('have.text', '208')
+    cy.findByTestId('updated-remaining-error-budget-percentage').should('have.text', '100.00')
 
     cy.intercept('POST', resetErrorBudget, { statusCode: 200 })
 

@@ -6,13 +6,12 @@
  */
 
 import React from 'react'
-import { pick } from 'lodash-es'
 import { AvatarGroup, AvatarGroupProps } from '@wings-software/uicore'
 import { usePermission, PermissionsRequest } from '@rbac/hooks/usePermission'
 import { useFeature } from '@common/hooks/useFeatures'
 import type { FeatureProps } from 'framework/featureStore/featureStoreUtil'
 import type { PermissionIdentifier } from '@rbac/interfaces/PermissionIdentifier'
-import { getTooltip } from '@rbac/utils/utils'
+import { getPermissionRequestFromProps, getTooltip } from '@rbac/utils/utils'
 
 interface RbacAvatarGroupProps extends AvatarGroupProps {
   permission?: Omit<PermissionsRequest, 'permissions'> & { permission: PermissionIdentifier }
@@ -25,13 +24,7 @@ const RbacAvatarGroup: React.FC<RbacAvatarGroupProps> = ({
   featureProps,
   ...restProps
 }) => {
-  const [canDoAction] = usePermission(
-    {
-      ...pick(permissionRequest, ['resourceScope', 'resource', 'options']),
-      permissions: [permissionRequest?.permission || '']
-    } as PermissionsRequest,
-    [permissionRequest]
-  )
+  const [canDoAction] = usePermission(getPermissionRequestFromProps(permissionRequest), [permissionRequest])
 
   const { enabled: featureEnabled } = useFeature({
     featureRequest: featureProps?.featureRequest

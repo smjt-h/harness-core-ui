@@ -18,7 +18,8 @@ import {
   ViewFieldIdentifier,
   QlceViewFilterWrapperInput,
   QlceViewTimeGroupType,
-  ClusterData
+  ClusterData,
+  K8sRecommendationFilterDtoInput
 } from 'services/ce/services'
 import { useStrings } from 'framework/strings'
 import routes from '@common/RouteDefinitions'
@@ -159,6 +160,16 @@ const WorkloadDetailsPage: () => JSX.Element = () => {
     }
   })
 
+  const recommendationsFilters = useMemo(
+    () =>
+      ({
+        clusterNames: [clusterName],
+        names: [workloadName],
+        namespaces: [namespace]
+      } as K8sRecommendationFilterDtoInput),
+    [clusterName, workloadName, namespace]
+  )
+
   const { data: gridData, fetching: gridFetching } = gridResult
   const { data: chartData, fetching: chartFetching } = chartResult
   const { data: summaryData, fetching: summaryFetching } = summaryResult
@@ -216,6 +227,8 @@ const WorkloadDetailsPage: () => JSX.Element = () => {
             summaryData={summaryData?.perspectiveTrendStats as any}
             fetching={summaryFetching}
             infoData={infoData}
+            showRecommendations={!recommendation}
+            recommendationFilters={recommendationsFilters}
           />
         </Container>
         {!isChartGridEmpty && (

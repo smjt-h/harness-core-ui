@@ -554,13 +554,12 @@ exports[`Test COGatewayList clicking on a row should open info drawer 1`] = `
                         </div>
                       </div>
                       <div
-                        class="Layout--horizontal Layout--layout-spacing-small StyledProps--main"
+                        class="Layout--horizontal StyledProps--main StyledProps--flex StyledProps--flex-justifyContent-center"
                       >
                         <p
                           class="StyledProps--font StyledProps--main"
-                          style="flex: 1; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; color: rgb(2, 120, 213); text-decoration: underline; cursor: inherit;"
                         >
-                          grateful-liger-c40gjtnsbqnjmr91f8n0.gateway.lightwing.io
+                          -
                         </p>
                       </div>
                     </div>
@@ -1318,13 +1317,12 @@ exports[`Test COGatewayList clicking on refresh button refetch all rules 1`] = `
                         </div>
                       </div>
                       <div
-                        class="Layout--horizontal Layout--layout-spacing-small StyledProps--main"
+                        class="Layout--horizontal StyledProps--main StyledProps--flex StyledProps--flex-justifyContent-center"
                       >
                         <p
                           class="StyledProps--font StyledProps--main"
-                          style="flex: 1; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; color: rgb(2, 120, 213); text-decoration: underline; cursor: inherit;"
                         >
-                          grateful-liger-c40gjtnsbqnjmr91f8n0.gateway.lightwing.io
+                          -
                         </p>
                       </div>
                     </div>
@@ -2166,13 +2164,12 @@ exports[`Test COGatewayList renders without crashing 1`] = `
                         </div>
                       </div>
                       <div
-                        class="Layout--horizontal Layout--layout-spacing-small StyledProps--main"
+                        class="Layout--horizontal StyledProps--main StyledProps--flex StyledProps--flex-justifyContent-center"
                       >
                         <p
                           class="StyledProps--font StyledProps--main"
-                          style="flex: 1; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; color: rgb(2, 120, 213); text-decoration: underline; cursor: inherit;"
                         >
-                          grateful-liger-c40gjtnsbqnjmr91f8n0.gateway.lightwing.io
+                          -
                         </p>
                       </div>
                     </div>

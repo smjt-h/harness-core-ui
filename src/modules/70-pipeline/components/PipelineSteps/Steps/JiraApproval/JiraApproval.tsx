@@ -34,7 +34,7 @@ export class JiraApproval extends PipelineStep<JiraApprovalData> {
   protected isHarnessSpecific = true
   protected type = StepType.JiraApproval
   protected stepName = 'Jira Approval'
-  protected stepIcon: IconName = 'service-jira'
+  protected stepIcon: IconName = 'jira-approve'
   protected stepDescription: keyof StringsMap = 'pipeline.stepDescription.JiraApproval'
   // initialValues on mount
   protected defaultValues: JiraApprovalData = {

@@ -1,8 +1,9 @@
 FROM nginx:alpine
 
 COPY dist /opt/nextgenui
-COPY scripts/nginx.conf /etc/nginx/
-
+COPY docker/entrypoint.sh /opt/
+COPY docker/nginx.conf /etc/nginx/
+COPY docker/nginx-ipv4-only.conf /etc/nginx/
 WORKDIR /opt/nextgenui
 
 # for on-prem
@@ -15,13 +16,4 @@ USER 101
 
 
 EXPOSE 8080
-
-CMD sed -i "s|<\!-- apiurl -->|<script>window.apiUrl = '$API_URL'</script>|" index.html && \
-sed -i "s|HARNESS_ENABLE_NG_AUTH_UI_PLACEHOLDER|$HARNESS_ENABLE_NG_AUTH_UI_PLACEHOLDER|" index.html && \
-sed -i "s|HARNESS_ENABLE_FULL_STORY_PLACEHOLDER|$HARNESS_ENABLE_FULL_STORY_PLACEHOLDER|" index.html && \
-sed -i "s|HARNESS_ENABLE_APPDY_EUM_PLACEHOLDER|$HARNESS_ENABLE_APPDY_EUM_PLACEHOLDER|" index.html && \
-sed -i "s|<\!-- segmentToken -->|<script>window.segmentToken = '$SEGMENT_TOKEN'</script>|" index.html && \
-sed -i "s|<\!-- bugsnagToken -->|<script>window.bugsnagToken = '$BUGSNAG_TOKEN'</script>|" index.html && \
-sed -i "s|<\!-- appDyEUMToken -->|<script>window.appDyEUMToken = '$APPDY_EUM_TOKEN'</script>|" index.html && \
-sed -i "s|<\!-- deploymentType -->|<script>window.deploymentType = '$DEPLOYMENT_TYPE'</script>|" index.html && \
-nginx -c /etc/nginx/nginx.conf -g 'daemon off;'
+ENTRYPOINT ["sh", "/opt/entrypoint.sh"]

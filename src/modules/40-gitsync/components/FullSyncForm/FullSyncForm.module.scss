@@ -5,16 +5,18 @@
  * https://polyformproject.org/wp-content/uploads/2020/06/PolyForm-Shield-1.0.0.txt.
  */
 
+.spinner {
+  min-height: 720px;
+}
 .modalContainer {
-  padding: var(--spacing-xxlarge) !important;
-
   .modalBody {
     :global {
       .bp3-label {
         color: var(--grey-600) !important;
       }
 
-      .bp3-input-group input {
+      .bp3-input-group input,
+      .bp3-menu {
         width: 400px;
       }
 
@@ -24,7 +26,11 @@
     }
 
     .formBody {
-      min-height: 480px;
+      min-height: 532px;
+
+      .repoRootfolderSelect {
+        width: 400px;
+      }
 
       .formRow {
         display: flex;
@@ -54,6 +60,11 @@
       }
     }
   }
+}
+
+.isModalStep {
+  padding: var(--spacing-xxlarge) !important;
+  min-height: 720px;
 }
 
 .branchSelector {

@@ -41,7 +41,8 @@ import type {
   ServicePathProps,
   TemplateStudioPathProps,
   TemplateStudioQueryParams,
-  GovernancePathProps
+  GovernancePathProps,
+  PipelineLogsPathProps
 } from '@common/interfaces/RouteInterfaces'
 
 const CV_HOME = `/cv/home`
@@ -674,6 +675,18 @@ const routes = {
   toPipelineDetail: withAccountId(
     ({ orgIdentifier, projectIdentifier, pipelineIdentifier, module }: PipelineType<PipelinePathProps>) =>
       `/${module}/orgs/${orgIdentifier}/projects/${projectIdentifier}/pipelines/${pipelineIdentifier}`
+  ),
+  toPipelineLogs: withAccountId(
+    ({
+      orgIdentifier,
+      projectIdentifier,
+      pipelineIdentifier,
+      module,
+      executionIdentifier,
+      stageIdentifier,
+      stepIndentifier: stepIndenitifer
+    }: PipelineType<PipelineLogsPathProps>) =>
+      `/${module}/orgs/${orgIdentifier}/projects/${projectIdentifier}/pipelines/${pipelineIdentifier}/execution/${executionIdentifier}/logs/${stageIdentifier}/${stepIndenitifer}`
   ),
   toInputSetList: withAccountId(
     ({

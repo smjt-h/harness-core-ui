@@ -1,0 +1,71 @@
+{
+  "status": "SUCCESS",
+  "data": {
+    "executionGraph": {
+      "nodeMap": {
+        "4Hwky8Z5QEWUPOg0Av2_Yg": {
+          "uuid": "4Hwky8Z5QEWUPOg0Av2_Yg",
+          "setupId": "ZTa-zZg5QlaF19dfl91dgw",
+          "name": "scale-up-event-gen",
+          "identifier": "scaleupeventgen",
+          "baseFqn": "pipeline.stages.Eventgensmoke.spec.execution.steps.scaleupeventgen",
+          "outcomes": { "deploymentInfoOutcome": { "serverInstanceInfoList": [] } },
+          "startTs": 1643316659335,
+          "endTs": 1643316662720,
+          "stepType": "K8sScale",
+          "status": "Success",
+          "failureInfo": { "message": "", "failureTypeList": [], "responseMessages": [] },
+          "skipInfo": null,
+          "executableResponses": [
+            {
+              "task": {
+                "taskId": "G--pomF-Q1CLBp-Yt3SHUQ",
+                "taskCategory": "DELEGATE_TASK_V2",
+                "logKeys": [
+                  "accountId:vpCkHKsDSxK9_KYfjCTMKA/orgId:default/projectId:overopsci/pipelineId:overopsbackend/runSequence:73/level0:pipeline/level1:stages/level2:Eventgensmoke/level3:spec/level4:execution/level5:steps/level6:scaleupeventgen-commandUnit:Initialize",
+                  "accountId:vpCkHKsDSxK9_KYfjCTMKA/orgId:default/projectId:overopsci/pipelineId:overopsbackend/runSequence:73/level0:pipeline/level1:stages/level2:Eventgensmoke/level3:spec/level4:execution/level5:steps/level6:scaleupeventgen-commandUnit:Scale",
+                  "accountId:vpCkHKsDSxK9_KYfjCTMKA/orgId:default/projectId:overopsci/pipelineId:overopsbackend/runSequence:73/level0:pipeline/level1:stages/level2:Eventgensmoke/level3:spec/level4:execution/level5:steps/level6:scaleupeventgen-commandUnit:Wrap Up"
+                ],
+                "units": ["Initialize", "Scale", "Wrap Up"],
+                "taskName": "K8s Task : Scale"
+              }
+            }
+          ],
+          "unitProgresses": [
+            {
+              "unitName": "Initialize",
+              "status": "SUCCESS",
+              "startTime": "1643316660079",
+              "endTime": "1643316660325"
+            },
+            {
+              "unitName": "Scale",
+              "status": "SUCCESS",
+              "startTime": "1643316660687",
+              "endTime": "1643316661158"
+            },
+            {
+              "unitName": "Wrap Up",
+              "status": "SUCCESS",
+              "startTime": "1643316661505",
+              "endTime": "1643316661537"
+            }
+          ],
+          "progressData": {
+            "unitProgresses": [
+              {
+                "unitName": "Initialize",
+                "status": "SUCCESS",
+                "startTime": "1643316660079",
+                "endTime": "1643316660325"
+              },
+              { "unitName": "Scale", "status": "RUNNING", "startTime": "1643316660687" }
+            ]
+          },
+          "interruptHistories": []
+        }
+      },
+      "representationStrategy": "camelCase"
+    }
+  }
+}

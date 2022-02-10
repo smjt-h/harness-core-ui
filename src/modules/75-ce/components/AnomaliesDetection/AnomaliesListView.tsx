@@ -7,14 +7,26 @@
 
 import React, { useState } from 'react'
 import type { CellProps, Column, Renderer } from 'react-table'
-import { Text, Icon, TableV2, Color, Layout, Button, getErrorInfoFromErrorObject } from '@wings-software/uicore'
+import {
+  Text,
+  Icon,
+  TableV2,
+  Color,
+  Layout,
+  Button,
+  getErrorInfoFromErrorObject,
+  FontVariation
+} from '@wings-software/uicore'
 import { Link, useParams } from 'react-router-dom'
-import { Classes, Menu, MenuItem, Popover, Position } from '@blueprintjs/core'
+import { Classes, IconName, Menu, MenuItem, Popover, Position } from '@blueprintjs/core'
 import { useStrings } from 'framework/strings'
 import { AnomalyData, useReportAnomalyFeedback } from 'services/ce'
 import { ANOMALIES_LIST_FORMAT, getTimePeriodString } from '@ce/utils/momentUtils'
 import formatCost from '@ce/utils/formatCost'
 import { useToaster } from '@common/components'
+import type { AccountPathProps } from '@common/interfaces/RouteInterfaces'
+import routes from '@common/RouteDefinitions'
+import { CcmMetaData, useFetchCcmMetaDataQuery } from 'services/ce/services'
 import css from '../../pages/anomalies-overview/AnomaliesOverviewPage.module.scss'
 
 interface ListProps {
@@ -25,14 +37,10 @@ interface AnomaliesMenu {
   anomalyId: string
 }
 
-interface AnomalyParams {
-  accountId: string
-}
-
 const AnomaliesMenu: React.FC<AnomaliesMenu> = ({ anomalyId }) => {
   const { getString } = useStrings()
   const [isOpen, setIsOpen] = useState(false)
-  const { accountId } = useParams<AnomalyParams>()
+  const { accountId } = useParams<AccountPathProps>()
   const { mutate: updateAnomalyFeedback } = useReportAnomalyFeedback({
     queryParams: {
       accountIdentifier: accountId,
@@ -92,6 +100,7 @@ const AnomaliesMenu: React.FC<AnomaliesMenu> = ({ anomalyId }) => {
 
 const AnomaliesListGridView: React.FC<ListProps> = ({ listData }) => {
   const { getString } = useStrings()
+  const { accountId } = useParams<AccountPathProps>()
 
   const DateCell: Renderer<CellProps<AnomalyData>> = ({ row }) => {
     const timestamp = row.original.time as number
@@ -99,10 +108,10 @@ const AnomaliesListGridView: React.FC<ListProps> = ({ listData }) => {
 
     return (
       <Layout.Vertical spacing="small">
-        <Text color={Color.BLACK} font={{ weight: 'semi-bold', size: 'normal' }}>
+        <Text color={Color.BLACK} font={{ variation: FontVariation.BODY2 }}>
           {getTimePeriodString(timestamp, ANOMALIES_LIST_FORMAT)}
         </Text>
-        <Text color={Color.GREY_600} font={{ size: 'small' }}>
+        <Text color={Color.GREY_600} font={{ variation: FontVariation.SMALL }}>
           {relativeTime}
         </Text>
       </Layout.Vertical>
@@ -115,11 +124,11 @@ const AnomaliesListGridView: React.FC<ListProps> = ({ listData }) => {
 
     return (
       <Layout.Horizontal style={{ alignItems: 'baseline' }} spacing="small">
-        <Text font={{ weight: 'semi-bold', size: 'normal' }} color={Color.BLACK}>
+        <Text font={{ variation: FontVariation.BODY2 }} color={Color.BLACK}>
           {formatCost(actualAmount)}
         </Text>
         {trend ? (
-          <Text font={{ size: 'xsmall' }} color={Color.RED_600}>
+          <Text font={{ variation: FontVariation.TINY }} color={Color.RED_600}>
             {getString('ce.anomalyDetection.trend', {
               trend: trend
             })}
@@ -129,20 +138,64 @@ const AnomaliesListGridView: React.FC<ListProps> = ({ listData }) => {
     )
   }
 
+  const getResourceIcon = (cloudProvider: string) => {
+    switch (cloudProvider) {
+      case 'CLUSTER':
+        return 'service-kubernetes'
+
+      case 'AWS':
+        return 'service-aws'
+
+      case 'AZURE':
+        return 'service-azure'
+
+      case 'GCP':
+        return 'gcp'
+
+      default:
+        return 'harness'
+    }
+  }
+
+  const map: Record<string, string> = {
+    AZURE: 'defaultAzurePerspectiveId',
+    AWS: 'defaultAwsPerspectiveId',
+    GCP: 'defaultGcpPerspectiveId',
+    CLUSTER: 'defaultClusterPerspectiveId'
+  }
+
   const ResourceCell: Renderer<CellProps<AnomalyData>> = ({ row }) => {
     const resourceName = row.original.resourceName
     const resourceInfo = row.original.resourceInfo
+    const cloudProvider = row.original.cloudProvider || ''
+
+    const [ccmMetaResult] = useFetchCcmMetaDataQuery()
+    const { data: ccmData } = ccmMetaResult
+    const ccmMetaData = (ccmData?.ccmMetaData || {}) as CcmMetaData
+    const mapping = map[cloudProvider]
 
     return (
       <Layout.Horizontal style={{ alignItems: 'center' }}>
-        <Icon name="app-kubernetes" size={24} />
+        <Icon name={getResourceIcon(cloudProvider) as IconName} size={24} />
         <Layout.Vertical spacing="small">
-          <Link to={''}>
-            <Text font={{ size: 'small' }} inline color="primary7" lineClamp={1} style={{ maxWidth: 200 }}>
+          <Link
+            to={routes.toPerspectiveDetails({
+              accountId: accountId,
+              perspectiveId: (ccmMetaData[mapping as keyof CcmMetaData] as string) || '',
+              perspectiveName: (ccmMetaData[mapping as keyof CcmMetaData] as string) || ''
+            })}
+          >
+            <Text
+              font={{ variation: FontVariation.SMALL }}
+              inline
+              color={Color.PRIMARY_7}
+              lineClamp={1}
+              style={{ maxWidth: 200 }}
+            >
               {resourceName}
             </Text>
           </Link>
-          <Text font={{ size: 'small' }} color={Color.GREY_600}>
+          <Text font={{ variation: FontVariation.SMALL }} color={Color.GREY_600}>
             {resourceInfo}
           </Text>
         </Layout.Vertical>
@@ -156,10 +209,10 @@ const AnomaliesListGridView: React.FC<ListProps> = ({ listData }) => {
 
     return (
       <Layout.Vertical spacing="small">
-        <Text font={{ size: 'normal' }} color={Color.ORANGE_700}>
+        <Text font={{ variation: FontVariation.BODY }} color={Color.ORANGE_700}>
           {status}
         </Text>
-        <Text font={{ size: 'small' }} color={Color.GREY_600}>
+        <Text font={{ variation: FontVariation.SMALL }} color={Color.GREY_600}>
           {stausRelativeTime}
         </Text>
       </Layout.Vertical>
@@ -173,30 +226,50 @@ const AnomaliesListGridView: React.FC<ListProps> = ({ listData }) => {
   const columns: Column<AnomalyData>[] = React.useMemo(
     () => [
       {
-        Header: getString('ce.anomalyDetection.tableHeaders.date'),
+        Header: (
+          <Text font={{ variation: FontVariation.TABLE_HEADERS }}>
+            {getString('ce.anomalyDetection.tableHeaders.date')}
+          </Text>
+        ),
         accessor: 'time',
         Cell: DateCell,
         width: '25%'
       },
       {
-        Header: getString('ce.anomalyDetection.tableHeaders.anomalousSpend'),
+        Header: (
+          <Text font={{ variation: FontVariation.TABLE_HEADERS }}>
+            {getString('ce.anomalyDetection.tableHeaders.anomalousSpend')}
+          </Text>
+        ),
         accessor: 'actualAmount',
         Cell: CostCell,
         width: '25%'
       },
       {
-        Header: getString('ce.anomalyDetection.tableHeaders.resource'),
+        Header: (
+          <Text font={{ variation: FontVariation.TABLE_HEADERS }}>
+            {getString('ce.anomalyDetection.tableHeaders.resource')}
+          </Text>
+        ),
         accessor: 'resourceName',
         Cell: ResourceCell,
         width: '25%'
       },
       {
-        Header: getString('ce.anomalyDetection.tableHeaders.details'),
+        Header: (
+          <Text font={{ variation: FontVariation.TABLE_HEADERS }}>
+            {getString('ce.anomalyDetection.tableHeaders.details')}
+          </Text>
+        ),
         accessor: 'details',
         width: '25%'
       },
       {
-        Header: getString('ce.anomalyDetection.tableHeaders.status'),
+        Header: (
+          <Text font={{ variation: FontVariation.TABLE_HEADERS }}>
+            {getString('ce.anomalyDetection.tableHeaders.status')}
+          </Text>
+        ),
         accessor: 'status',
         Cell: StatusCell,
         width: '25%'

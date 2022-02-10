@@ -9,6 +9,7 @@ import React, { useCallback, useMemo } from 'react'
 import { Text, Formik, FormInput, Container, Color, ThumbnailSelect } from '@wings-software/uicore'
 import type { FormikProps } from 'formik'
 import { useParams } from 'react-router-dom'
+import cx from 'classnames'
 import { FormConnectorReferenceField } from '@connectors/components/ConnectorReferenceField/FormConnectorReferenceField'
 import type { ProjectPathProps } from '@common/interfaces/RouteInterfaces'
 import { useStrings } from 'framework/strings'
@@ -117,7 +118,13 @@ export function ChangeSourceDrawer({
           <>
             <CardWithOuterTitle title={getString('cv.changeSource.defineChangeSource')} className={style.outerCard}>
               <Text className={style.selectChangeSource}>{getString('cv.changeSource.selectChangeSource')}</Text>
-              <Container margin={{ bottom: 'large' }} width="300px">
+              <Container
+                margin={{ bottom: 'large' }}
+                className={cx({
+                  [style.removeEditButton]: createCardOptions(formik.values?.category, getString).length === 1
+                })}
+                width="300px"
+              >
                 <div className={style.alignHorizontal}>
                   <Text color={Color.BLACK} font={'small'} margin={{ bottom: 'small' }}>
                     {getString('connectors.docker.dockerProvideType')}

@@ -38,7 +38,7 @@ import type {
 } from '@common/interfaces/RouteInterfaces'
 import { useFeatureFlags } from '@common/hooks/useFeatureFlag'
 import DeploymentsList from '@pipeline/pages/deployments-list/DeploymentsList'
-import { MinimalLayout } from '@common/layouts'
+import { EmptyLayout, MinimalLayout } from '@common/layouts'
 
 import PipelinesPage from '@pipeline/pages/pipelines/PipelinesPage'
 import type { SidebarContext } from '@common/navigation/SidebarProvider'
@@ -102,6 +102,7 @@ import { TemplateStudioWrapper } from '@templates-library/components/TemplateStu
 import ExecutionPolicyEvaluationsView from '@pipeline/pages/execution/ExecutionPolicyEvaluationsView/ExecutionPolicyEvaluationsView'
 import GitSyncConfigTab from '@gitsync/pages/config/GitSyncConfigTab'
 import ExecutionSecurityView from '@pipeline/pages/execution/ExecutionSecurityView/ExecutionSecurityView'
+import FullPageLogView from '@pipeline/pages/full-page-log-view/FullPageLogView'
 import CIHomePage from './pages/home/CIHomePage'
 import CIDashboardPage from './pages/dashboard/CIDashboardPage'
 import CIPipelineStudio from './pages/pipeline-studio/CIPipelineStudio'
@@ -546,6 +547,21 @@ export default (
       <PipelineDetails>
         <CIPipelineStudio />
       </PipelineDetails>
+    </RouteWithLayout>
+    <RouteWithLayout
+      exact
+      layout={EmptyLayout}
+      licenseRedirectData={licenseRedirectData}
+      sidebarProps={CISideNavProps}
+      path={routes.toPipelineLogs({
+        ...accountPathProps,
+        ...executionPathProps,
+        ...pipelineModuleParams,
+        stageIdentifier: ':stageIdentifier',
+        stepIndentifier: ':stepIndentifier'
+      })}
+    >
+      <FullPageLogView />
     </RouteWithLayout>
     <RouteWithLayout
       exact

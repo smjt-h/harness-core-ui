@@ -101,6 +101,6 @@ export function usePermission(permissionsRequest?: PermissionsRequest, deps: Arr
       return checkPermission(permissionCheckDto)
     })
   }
-
-  return []
+  // hook will return true if there are no parameters passed to it.
+  return [true]
 }

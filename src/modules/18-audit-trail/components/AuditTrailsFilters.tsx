@@ -10,7 +10,7 @@ import type { SelectOption } from '@wings-software/uicore'
 import { useModalHook } from '@harness/use-modal'
 import { useParams } from 'react-router-dom'
 import FilterSelector from '@common/components/Filter/FilterSelector/FilterSelector'
-import { AuditFilterProperties, FilterDTO, useGetFilterList } from 'services/audit'
+import { AuditFilterProperties, FilterDTO, useGetAuditFilterList } from 'services/audit'
 import type { ProjectPathProps } from '@common/interfaces/RouteInterfaces'
 import { removeNullAndEmpty } from '@common/components/Filter/utils/FilterUtils'
 import { useStrings } from 'framework/strings'
@@ -34,12 +34,11 @@ const AuditTrailsFilters: React.FC<AuditFiltersProps> = ({ applyFilters }) => {
   fieldToLabelMapping.set('resourceType', getString('common.resourceTypeLabel'))
   fieldToLabelMapping.set('actions', getString('action'))
 
-  const { data: filterResponse, refetch: refetchFilterList } = useGetFilterList({
+  const { data: filterResponse, refetch: refetchFilterList } = useGetAuditFilterList({
     queryParams: {
       accountIdentifier: accountId,
       orgIdentifier,
-      projectIdentifier,
-      type: 'Audit'
+      projectIdentifier
     }
   })
 

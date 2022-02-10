@@ -29,9 +29,11 @@
 }
 
 .tooltip {
+  background-color: var(--primary-9-dark) !important;
   min-width: 200px !important;
   max-width: 250px !important;
   text-align: left;
+  border-radius: 4px;
 }
 
 .bgColorOrange {
@@ -44,4 +46,12 @@
 
 .infoIcon {
   color: var(--primary-6) !important;
+}
+
+.btn {
+  width: fit-content;
+}
+
+.flag {
+  display: inline !important;
 }

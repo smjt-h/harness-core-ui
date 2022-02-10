@@ -11,7 +11,7 @@ import React from 'react'
 import { Get, GetProps, useGet, UseGetProps, Mutate, MutateProps, useMutate, UseMutateProps } from 'restful-react'
 
 import { getConfig, getUsingFetch, mutateUsingFetch, GetUsingFetchProps, MutateUsingFetchProps } from '../config'
-export const SPEC_VERSION = '1.0'
+export const SPEC_VERSION = '2.0'
 export type AbortFailureActionConfig = FailureStrategyActionConfig & {
   type: 'Abort'
 }
@@ -1040,6 +1040,7 @@ export interface ExecutionMetadata {
   gitSyncBranchContext?: ByteString
   initializationErrorString?: string
   initialized?: boolean
+  isNotificationConfigured?: boolean
   moduleType?: string
   moduleTypeBytes?: ByteString
   parserForType?: ParserExecutionMetadata
@@ -1894,6 +1895,11 @@ export interface GraphLayoutNode {
     | 'APPROVAL_WAITING'
     | 'APPROVAL_REJECTED'
     | 'WAITING'
+  stepDetails?: {
+    [key: string]: {
+      [key: string]: { [key: string]: any }
+    }
+  }
 }
 
 export interface HarnessApprovalActivity {
@@ -2364,6 +2370,12 @@ export interface NGTriggerResponse {
   accountIdentifier?: string
   description?: string
   enabled?: boolean
+  errorResponse?: boolean
+  errors?: {
+    [key: string]: {
+      [key: string]: string
+    }
+  }
   identifier?: string
   name?: string
   orgIdentifier?: string
@@ -2891,6 +2903,7 @@ export interface PipelineExecutionInfo {
 }
 
 export interface PipelineExecutionSummary {
+  allowStageExecutions?: boolean
   canRetry?: boolean
   createdAt?: number
   endTs?: number
@@ -3012,7 +3025,6 @@ export interface PlanExecution {
   lastUpdatedAt?: number
   metadata?: ExecutionMetadata
   nextIteration?: number
-  nodeId?: string
   nodeType?: 'PLAN' | 'PLAN_NODE' | 'IDENTITY_PLAN_NODE'
   planId?: string
   setupAbstractions?: {
@@ -10749,7 +10761,7 @@ export type GetTriggerDetailsProps = Omit<
   GetTriggerDetailsPathParams
 
 /**
- * Gets Triggers list for target
+ * Fetches Trigger details for a specific pipeline and trigger identifier,
  */
 export const GetTriggerDetails = ({ triggerIdentifier, ...props }: GetTriggerDetailsProps) => (
   <Get<ResponseNGTriggerDetailsResponse, Failure | Error, GetTriggerDetailsQueryParams, GetTriggerDetailsPathParams>
@@ -10771,7 +10783,7 @@ export type UseGetTriggerDetailsProps = Omit<
   GetTriggerDetailsPathParams
 
 /**
- * Gets Triggers list for target
+ * Fetches Trigger details for a specific pipeline and trigger identifier,
  */
 export const useGetTriggerDetails = ({ triggerIdentifier, ...props }: UseGetTriggerDetailsProps) =>
   useGet<ResponseNGTriggerDetailsResponse, Failure | Error, GetTriggerDetailsQueryParams, GetTriggerDetailsPathParams>(
@@ -10780,7 +10792,7 @@ export const useGetTriggerDetails = ({ triggerIdentifier, ...props }: UseGetTrig
   )
 
 /**
- * Gets Triggers list for target
+ * Fetches Trigger details for a specific pipeline and trigger identifier,
  */
 export const getTriggerDetailsPromise = (
   {
@@ -11553,6 +11565,7 @@ export interface GetSchemaYamlQueryParams {
     | 'Environment'
     | 'InputSets'
     | 'CvConfig'
+    | 'Verify'
     | 'Delegates'
     | 'DelegateConfigurations'
     | 'CvVerificationJob'
@@ -11569,6 +11582,7 @@ export interface GetSchemaYamlQueryParams {
     | 'GitRepositories'
     | 'FeatureFlags'
     | 'ServiceNowApproval'
+    | 'GovernancePolicies'
   projectIdentifier?: string
   orgIdentifier?: string
   scope?: 'account' | 'org' | 'project' | 'unknown'
@@ -11643,6 +11657,7 @@ export interface GetStepYamlSchemaQueryParams {
     | 'Environment'
     | 'InputSets'
     | 'CvConfig'
+    | 'Verify'
     | 'Delegates'
     | 'DelegateConfigurations'
     | 'CvVerificationJob'
@@ -11659,6 +11674,7 @@ export interface GetStepYamlSchemaQueryParams {
     | 'GitRepositories'
     | 'FeatureFlags'
     | 'ServiceNowApproval'
+    | 'GovernancePolicies'
   scope?: 'account' | 'org' | 'project' | 'unknown'
 }
 

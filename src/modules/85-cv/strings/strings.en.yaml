@@ -621,12 +621,12 @@ slos:
   title: SLOs
   editSLO: 'Edit SLO: {{name}}'
   deleteSLO: Delete SLO
-  newSLO: New SLO
   createSLO: Create SLO
   healthSource: Health source
   sloCreated: SLO created successfully
   sloUpdated: SLO updated successfully
-  noData: No SLOs Present.
+  noData: You don’t have any SLO created yet
+  noMatchingData: No matching data
   confirmDeleteSLO: 'Are you sure you want to delete SLO: {{ name }}?'
   sloDeleted: '{{ name }} successfully deleted'
   sli: SLI
@@ -648,6 +648,7 @@ slos:
   sloDefinition: Define SLO identifcation
   reviewChanges: Review changes
   sloEditWarningMessage: It may take a few minutes to recalculate the error budget. Are you sure you want to proceed?
+  noSLOsStateMessage: A service level objective (SLO) is the sum of a collection of performance metrics (Service Level Indicator or SLI) such as uptime, response time, and error rate that are used to measure the services performance. At least one SLO is required to monitor a service
   validations:
     nameValidation: SLO name is required
     userJourneyRequired: User journey is required
@@ -702,6 +703,7 @@ SLOPerformanceTrend: SLO Performance Trend
 sloRecalculationInProgress: SLO recalculation in progress
 errorBudgetRecalculationInProgress: Error Budget recalculation in progress
 errorBudgetRemaining: Error Budget Remaining (mins)
+minutesRemaining: minutes remaining
 errorBudgetBurnDown: Error Budget Burndown
 SLITriggered: SLI Triggered
 burnRatePerDay: Burn Rate/Day
@@ -751,10 +753,11 @@ left: left
 adjustTheErrorBudgetToContinueWithDeployments: Adjust the error budget to continue with deployments.
 previousErrorBudgetResetHistory: Previous error budget reset history
 increaseErrorBudgetBy: Increase error budget by
-increaseErrorBudgetByIsRequired: Increase error budget by is required
+increaseErrorBudgetByIsRequired: '"Increase error budget by" is required'
 reasonIsRequired: Reason is required
 updatedErrorBudget: Updated Error Budget
 remainingErrorBudget: Remaining Error Budget
+updatedRemainingErrorBudget: Updated remaining Error Budget
 minutes: minutes
 noPreviousErrorBudgetResetHistoryAvailable: No previous error budget reset history available
 dateAndTime: Date/Time

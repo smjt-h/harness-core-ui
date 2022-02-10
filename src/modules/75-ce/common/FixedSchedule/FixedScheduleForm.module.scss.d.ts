@@ -9,8 +9,13 @@
 declare const styles: {
   readonly allDayCheckbox: string
   readonly ctaContainer: string
+  readonly disabledDateInput: string
   readonly errorDisplayContainer: string
   readonly fixedScheduleFormContainer: string
+  readonly fromTime: string
+  readonly heading: string
+  readonly inputRow: string
+  readonly toTime: string
   readonly typeToggle: string
 }
 export default styles

@@ -5,7 +5,7 @@
  * https://polyformproject.org/wp-content/uploads/2020/06/PolyForm-Shield-1.0.0.txt.
  */
 
-import React from 'react'
+import React, { useMemo } from 'react'
 import { useHistory, useParams } from 'react-router-dom'
 import { Button, ButtonVariation, Layout, ButtonSize, Text, Color, FontVariation } from '@harness/uicore'
 import { defaultTo, capitalize } from 'lodash-es'
@@ -15,7 +15,8 @@ import routes from '@common/RouteDefinitions'
 import featuresFactory from 'framework/featureStore/FeaturesFactory'
 import type { FeatureProps } from 'framework/featureStore/FeaturesFactory'
 import type { CheckFeatureReturn } from 'framework/featureStore/featureStoreUtil'
-import type { Module } from 'framework/types/ModuleName'
+import { isEnterprisePlan, isFreePlan, isTeamPlan, useLicenseStore } from 'framework/LicenseStore/LicenseStoreContext'
+import { Module, ModuleName, moduleToModuleNameMapping } from 'framework/types/ModuleName'
 import { useFeatures } from '@common/hooks/useFeatures'
 import { useLocalStorage } from '@common/hooks/useLocalStorage'
 import { useModuleInfo } from '@common/hooks/useModuleInfo'
@@ -23,6 +24,7 @@ import { useFeatureFlag } from '@common/hooks/useFeatureFlag'
 import { FeatureFlag } from '@common/featureFlags'
 import type { AccountPathProps } from '@common/interfaces/RouteInterfaces'
 import { useStrings } from 'framework/strings'
+import { useGetUsageAndLimit } from '@common/hooks/useGetUsageAndLimit'
 import { BannerType } from './Constants'
 import css from './layouts.module.scss'
 
@@ -147,7 +149,7 @@ function getBannerBodyByType(type: BannerType, message: React.ReactNode, module:
   switch (type) {
     case BannerType.INFO:
       return (
-        <Layout.Horizontal width="95%" padding={{ left: 'large' }}>
+        <Layout.Horizontal width="95%" padding={{ left: 'large' }} spacing="medium">
           <InfoText message={message} />
           <ManageSubscriptionBtn module={module} />
         </Layout.Horizontal>
@@ -162,7 +164,7 @@ function getBannerBodyByType(type: BannerType, message: React.ReactNode, module:
       )
     case BannerType.OVERUSE:
       return (
-        <Layout.Horizontal width="95%" padding={{ left: 'large' }}>
+        <Layout.Horizontal width="95%" padding={{ left: 'large' }} spacing="medium">
           <OverUseInfoText message={message} />
           <ManageSubscriptionBtn module={module} />
         </Layout.Horizontal>
@@ -186,27 +188,36 @@ function getBannerClassNameByType(type: BannerType): string {
 }
 
 export const isFeatureLimitBreached = (feature?: CheckFeatureReturn) => {
-  const featureEnabled = feature?.enabled
   const featureDetail = feature?.featureDetail
-  return featureEnabled && featureDetail?.limit && featureDetail.count && featureDetail.count > featureDetail.limit
+  return featureDetail?.limit && featureDetail.count && featureDetail.count === featureDetail.limit
 }
 
 export const FEATURE_USAGE_WARNING_LIMIT = 90
 
 export const isFeatureWarningActive = (feature?: CheckFeatureReturn) => {
-  const featureEnabled = feature?.enabled
   const featureDetail = feature?.featureDetail
   return (
-    featureEnabled &&
     featureDetail?.limit &&
     featureDetail.count &&
-    featureDetail.count >= (featureDetail.limit * FEATURE_USAGE_WARNING_LIMIT) / 100
+    featureDetail.count > (featureDetail.limit * FEATURE_USAGE_WARNING_LIMIT) / 100 &&
+    featureDetail.count < featureDetail.limit
   )
+}
+
+export const isFeatureOveruseActive = (feature?: CheckFeatureReturn) => {
+  const featureDetail = feature?.featureDetail
+  return featureDetail?.limit && featureDetail.count && featureDetail.count > featureDetail.limit
+}
+
+export const getActiveUsageNumber = (feature?: CheckFeatureReturn) => {
+  const featureDetail = feature?.featureDetail
+  return featureDetail?.limit && featureDetail.count && Math.floor((featureDetail.count * 100) / featureDetail.limit)
 }
 
 export default function FeatureBanner(): React.ReactElement | null {
   const { module } = useModuleInfo()
   const { getString } = useStrings()
+
   const isFeatureEnforceEnabled = useFeatureFlag(FeatureFlag.FEATURE_ENFORCEMENT_ENABLED)
   const [activeModuleFeatures, setActiveModuleFeatures] = React.useState<FeatureProps | null>(null)
   const [isBannerDismissed, setIsBannerDismissed] = useLocalStorage<Partial<Record<Module, boolean>>>(
@@ -216,6 +227,21 @@ export default function FeatureBanner(): React.ReactElement | null {
   )
   const features = useFeatures({ featuresRequest: { featureNames: defaultTo(activeModuleFeatures?.features, []) } })
 
+  const moduleName: ModuleName = module ? moduleToModuleNameMapping[module] : ModuleName.COMMON
+  const usageAndLimitInfo = useGetUsageAndLimit(moduleName)
+
+  const { licenseInformation } = useLicenseStore()
+  const isFreeEdition = isFreePlan(licenseInformation, moduleName)
+  const isTeamEdition = isTeamPlan(licenseInformation, moduleName)
+  const isEnterpriseEdition = isEnterprisePlan(licenseInformation, moduleName)
+  const additionalLicenseProps = useMemo(() => {
+    return {
+      isFreeEdition,
+      isTeamEdition,
+      isEnterpriseEdition
+    }
+  }, [isFreeEdition, isTeamEdition, isEnterpriseEdition])
+
   React.useEffect(() => {
     if (module) {
       const moduleFeatures = featuresFactory.getFeaturesByModule(module)
@@ -223,7 +249,8 @@ export default function FeatureBanner(): React.ReactElement | null {
     }
   }, [module])
 
-  const { message: messageFn, bannerType } = activeModuleFeatures?.renderMessage(features, getString) || {}
+  const { message: messageFn, bannerType } =
+    activeModuleFeatures?.renderMessage(features, getString, additionalLicenseProps, usageAndLimitInfo) || {}
 
   const message = messageFn?.()
 

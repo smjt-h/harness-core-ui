@@ -99,17 +99,17 @@ describe('RunPipelineHelper', () => {
 
 describe('getFeaturePropsForRunPipelineButton tests', () => {
   test('if no modules supplied, returns undefined', () => {
-    const result = getFeaturePropsForRunPipelineButton()
+    const result = getFeaturePropsForRunPipelineButton({ getString: () => 'abc' })
     expect(result).toBeUndefined()
   })
 
   test('if empty modules supplied, returns undefined', () => {
-    const result = getFeaturePropsForRunPipelineButton([])
+    const result = getFeaturePropsForRunPipelineButton({ modules: [], getString: () => 'abc' })
     expect(result).toBeUndefined()
   })
 
   test('if only cd module supplied', () => {
-    const result = getFeaturePropsForRunPipelineButton(['cd'])
+    const result = getFeaturePropsForRunPipelineButton({ modules: ['cd'], getString: () => 'abc' })
     expect(result).toStrictEqual({
       featuresRequest: {
         featureNames: [FeatureIdentifier.DEPLOYMENTS_PER_MONTH]
@@ -118,25 +118,27 @@ describe('getFeaturePropsForRunPipelineButton tests', () => {
   })
 
   test('if only ci module supplied', () => {
-    const result = getFeaturePropsForRunPipelineButton(['ci'])
+    const result = getFeaturePropsForRunPipelineButton({ modules: ['ci'], getString: () => 'abc' })
     expect(result).toStrictEqual({
       featuresRequest: {
         featureNames: [FeatureIdentifier.BUILDS]
-      }
+      },
+      warningMessage: 'abc'
     })
   })
 
   test('if cd and ci modules supplied', () => {
-    const result = getFeaturePropsForRunPipelineButton(['cd', 'ci'])
+    const result = getFeaturePropsForRunPipelineButton({ modules: ['cd', 'ci'], getString: () => 'abc' })
     expect(result).toStrictEqual({
       featuresRequest: {
         featureNames: [FeatureIdentifier.DEPLOYMENTS_PER_MONTH, FeatureIdentifier.BUILDS]
-      }
+      },
+      warningMessage: 'abc'
     })
   })
 
   test('if a random module supplied', () => {
-    const result = getFeaturePropsForRunPipelineButton(['random'])
+    const result = getFeaturePropsForRunPipelineButton({ modules: ['random'], getString: () => 'abc' })
     expect(result).toStrictEqual({
       featuresRequest: {
         featureNames: []

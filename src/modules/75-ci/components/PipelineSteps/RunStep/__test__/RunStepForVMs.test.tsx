@@ -68,11 +68,12 @@ describe('Run Step view', () => {
       await waitFor(() => {
         fireEvent.click(shellOptionsDropdownSelect)
         const menuItemLabels = container.querySelectorAll('[class*="menuItemLabel"]')
-        expect(menuItemLabels.length).toEqual(3)
+        expect(menuItemLabels.length).toEqual(4)
         expect(menuItemLabels[0].innerHTML).toEqual('common.bash')
         expect(menuItemLabels[1].innerHTML).toEqual('common.shell')
         // Powershell option should only be visible for AWS VMs Build Infra
         expect(menuItemLabels[2].innerHTML).toEqual('common.powershell')
+        expect(menuItemLabels[3].innerHTML).toEqual('common.pwsh')
       })
     })
   })

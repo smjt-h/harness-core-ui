@@ -6,28 +6,23 @@
  */
 
 import React from 'react'
-import { Button, ButtonSize, ButtonVariation, Layout, TextInput } from '@wings-software/uicore'
+import { Button, ButtonSize, ButtonVariation, Layout, ExpandingSearchInput } from '@wings-software/uicore'
 import { useStrings } from 'framework/strings'
-
 import css from '../../pages/anomalies-overview/AnomaliesOverviewPage.module.scss'
 
 interface SearchProps {
-  searchText: string
   onChange: React.Dispatch<React.SetStateAction<string>>
 }
 
-const AnomaliesSearch: React.FC<SearchProps> = ({ searchText, onChange }) => {
+const AnomaliesSearch: React.FC<SearchProps> = ({ onChange }) => {
   const { getString } = useStrings()
 
   return (
-    <Layout.Horizontal>
-      {/* TODO: Need to add search icon in searchBox */}
-      <TextInput
-        value={searchText}
-        onChange={(e: React.ChangeEvent<HTMLInputElement>) => {
-          onChange(e.target.value)
-        }}
-        wrapperClassName={css.searchInput}
+    <Layout.Horizontal className={css.searchFilterWrapper}>
+      <ExpandingSearchInput
+        className={css.searchInput}
+        onChange={text => onChange(text.trim())}
+        alwaysExpanded={true}
         placeholder={getString('search')}
       />
       <Button

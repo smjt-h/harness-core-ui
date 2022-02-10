@@ -34,9 +34,14 @@ const mockInitialValues = {
   }
 }
 
-jest.mock('@pipeline/components/AbstractSteps/Step', () => ({
-  setFormikRef: jest.fn()
-}))
+jest.mock('@pipeline/components/AbstractSteps/Step', () => {
+  const stepModule = jest.requireActual('@pipeline/components/AbstractSteps/Step')
+
+  return {
+    ...stepModule,
+    setFormikRef: jest.fn()
+  }
+})
 
 const renderComponent = (props: Partial<FlagConfigurationStepWidgetProps> = {}): RenderResult =>
   render(

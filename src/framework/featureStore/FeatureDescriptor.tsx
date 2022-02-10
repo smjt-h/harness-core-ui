@@ -7,6 +7,8 @@
 
 import React from 'react'
 import { String } from 'framework/strings'
+import type { UseStringsReturn } from 'framework/strings'
+import type { StringsMap } from 'stringTypes'
 
 export const FeatureDescriptor: { [key: string]: React.ReactElement } = {
   MULTIPLE_ORGANIZATIONS: <String stringID="projectsOrgs.multipleOrganizations" />,
@@ -22,10 +24,19 @@ export const FeatureDescriptor: { [key: string]: React.ReactElement } = {
   INTEGRATED_APPROVALS_WITH_JIRA: <String stringID="pipeline.featureRestriction.integratedApprovalsJira" />
 }
 
-// Overrides FeatureDescriptor and provides only custom with no additions
-export const CustomFeatureDescriptor: { [key: string]: React.ReactElement } = {
-  TEST_INTELLIGENCE: <String stringID="pipeline.testsReports.tiCallToAction.requiresEnterprisePlan" />,
-  BUILDS: <String stringID="pipeline.featureRestriction.maxBuildsPerMonth100PercentLimit" />,
-  MONTHLY_ACTIVE_USERS: <String stringID="cf.planEnforcement.upgradeRequiredMau" />,
-  DEVELOPERS: <String stringID="cf.planEnforcement.upgradeRequiredDev" />
+const CustomFeatureDescriptorMap: Record<string, keyof StringsMap> = {
+  TEST_INTELLIGENCE: 'pipeline.testsReports.tiCallToAction.requiresEnterprisePlan',
+  BUILDS: 'pipeline.featureRestriction.maxBuildsPerMonth100PercentLimit',
+  MONTHLY_ACTIVE_USERS: 'cf.planEnforcement.upgradeRequiredMau',
+  DEVELOPERS: 'cf.planEnforcement.upgradeRequiredDev',
+  CCM_AUTOSTOPPING_RULES: 'ce.enforcementMessage.autoStoppingRules',
+  PERSPECTIVES: 'ce.enforcementMessage.perspectivesLimitMsg'
+}
+
+export const customFeatureDescriptor: (
+  key: string,
+  getString: UseStringsReturn['getString'],
+  args?: Record<string, any>
+) => string = (key, getString, args) => {
+  return CustomFeatureDescriptorMap[key] ? getString(CustomFeatureDescriptorMap[key], args) : ''
 }

@@ -30,15 +30,15 @@ import { useStrings } from 'framework/strings'
 import type { AbstractStepFactory } from '@pipeline/components/AbstractSteps/AbstractStepFactory'
 import type { Error, StepElementConfig } from 'services/cd-ng'
 import type { ProjectPathProps } from '@common/interfaces/RouteInterfaces'
-import { useGetTemplateInputSetYaml } from 'services/template-ng'
+import { useGetTemplate, useGetTemplateInputSetYaml } from 'services/template-ng'
 import { useToaster } from '@common/exports'
 import { PageSpinner } from '@common/components'
-import { Scope } from '@common/interfaces/SecretsInterface'
 import { getIdentifierFromValue, getScopeFromValue } from '@common/components/EntityReference/EntityReference'
 import type { TemplateStepNode } from 'services/pipeline-ng'
 import { validateStep } from '@pipeline/components/PipelineStudio/StepUtil'
 import { StepForm } from '@pipeline/components/PipelineInputSetForm/StageInputSetForm'
 import { setTemplateInputs, TEMPLATE_INPUT_PATH } from '@pipeline/utils/templateUtils'
+import { getScopeBasedQueryParams } from '@templates-library/utils/templatesUtils'
 import stepCss from '@pipeline/components/PipelineSteps/Steps/Steps.module.scss'
 import css from './TemplateStepWidget.module.scss'
 
@@ -54,47 +54,58 @@ export interface TemplateStepWidgetProps {
 }
 
 export interface TemplateStepValues extends TemplateStepNode {
-  inputSetTemplate?: StepElementConfig
+  inputsTemplate?: StepElementConfig
+  allValues?: StepElementConfig
 }
 
-export function TemplateStepWidget(
+function TemplateStepWidget(
   props: TemplateStepWidgetProps,
   formikRef: StepFormikFowardRef<TemplateStepNode>
 ): React.ReactElement {
   const { initialValues, onUpdate, isNewStep, readonly, allowableTypes } = props
   const [formValues, setFormValues] = React.useState<TemplateStepValues>(initialValues)
   const { getString } = useStrings()
-  const { accountId, orgIdentifier, projectIdentifier } = useParams<ProjectPathProps>()
+  const queryParams = useParams<ProjectPathProps>()
   const { showError } = useToaster()
-  const templateRef = getIdentifierFromValue(initialValues.template.templateRef)
+  const stepTemplateRef = getIdentifierFromValue(initialValues.template.templateRef)
   const scope = getScopeFromValue(initialValues.template.templateRef)
 
   const {
-    data: templateInputYaml,
-    error: inputSetError,
-    refetch,
-    loading
-  } = useGetTemplateInputSetYaml({
-    templateIdentifier: templateRef,
+    data: stepTemplateResponse,
+    error: stepTemplateError,
+    refetch: refetchStepTemplate,
+    loading: stepTemplateLoading
+  } = useGetTemplate({
+    templateIdentifier: stepTemplateRef,
     queryParams: {
-      accountIdentifier: accountId,
-      projectIdentifier: scope === Scope.PROJECT ? projectIdentifier : undefined,
-      orgIdentifier: scope === Scope.PROJECT || scope === Scope.ORG ? orgIdentifier : undefined,
-      versionLabel: initialValues.template.versionLabel || ''
+      ...getScopeBasedQueryParams(queryParams, scope),
+      versionLabel: defaultTo(initialValues.template.versionLabel, '')
+    }
+  })
+
+  const {
+    data: stepTemplateInputSetYaml,
+    error: stepTemplateInputSetError,
+    refetch: refetchStepTemplateInputSet,
+    loading: stepTemplateInputSetLoading
+  } = useGetTemplateInputSetYaml({
+    templateIdentifier: stepTemplateRef,
+    queryParams: {
+      ...getScopeBasedQueryParams(queryParams, scope),
+      versionLabel: defaultTo(initialValues.template.versionLabel, '')
     }
   })
 
   React.useEffect(() => {
-    if (!loading) {
+    if (!stepTemplateLoading && !stepTemplateInputSetLoading && stepTemplateResponse?.data?.yaml) {
       try {
-        const templateInputs = parse(defaultTo(templateInputYaml?.data, ''))
+        const templateInputs = parse(defaultTo(stepTemplateInputSetYaml?.data, ''))
         const mergedTemplateInputs = merge({}, templateInputs, initialValues.template?.templateInputs)
         setFormValues(
           produce(initialValues as TemplateStepValues, draft => {
             setTemplateInputs(draft, mergedTemplateInputs)
-            if (templateInputs) {
-              draft.inputSetTemplate = templateInputs
-            }
+            draft.inputsTemplate = templateInputs
+            draft.allValues = parse(defaultTo(stepTemplateResponse?.data?.yaml, '')).template.spec
           })
         )
         setTemplateInputs(initialValues, mergedTemplateInputs)
@@ -103,12 +114,12 @@ export function TemplateStepWidget(
         showError(error.message, undefined, 'template.parse.inputSet.error')
       }
     }
-  }, [templateInputYaml?.data, loading])
+  }, [stepTemplateLoading, stepTemplateResponse?.data && stepTemplateInputSetLoading && stepTemplateInputSetYaml?.data])
 
   const validateForm = (values: TemplateStepValues) => {
     const errorsResponse = validateStep({
       step: values.template?.templateInputs as StepElementConfig,
-      template: values.inputSetTemplate,
+      template: values.inputsTemplate,
       originalStep: { step: formValues?.template?.templateInputs as StepElementConfig },
       getString,
       viewType: StepViewType.DeploymentForm
@@ -118,6 +129,11 @@ export function TemplateStepWidget(
     } else {
       return errorsResponse
     }
+  }
+
+  const refetch = () => {
+    refetchStepTemplate()
+    refetchStepTemplateInputSet()
   }
 
   return (
@@ -146,34 +162,50 @@ export function TemplateStepWidget(
                 />
               </div>
               <Container className={css.inputsContainer}>
-                {loading && <PageSpinner />}
-                {!loading && inputSetError && (
-                  <Container height={300}>
-                    <PageError
-                      message={defaultTo((inputSetError.data as Error)?.message, inputSetError.message)}
-                      onClick={() => refetch()}
-                    />
-                  </Container>
-                )}
-                {!loading && !inputSetError && formik.values.inputSetTemplate && (
-                  <Layout.Vertical padding={{ top: 'large', bottom: 'large' }} spacing={'large'}>
-                    <Heading level={5} color={Color.BLACK}>
-                      {getString('templatesLibrary.templateInputs')}
-                    </Heading>
-                    <StepForm
-                      key={`${formik.values.template.templateRef}-${formik.values.template.versionLabel || ''}`}
-                      template={{ step: formik.values.inputSetTemplate }}
-                      values={{ step: formik.values.template?.templateInputs as StepElementConfig }}
-                      allValues={{ step: formik.values.template?.templateInputs as StepElementConfig }}
-                      readonly={readonly}
-                      viewType={StepViewType.InputSet}
-                      path={TEMPLATE_INPUT_PATH}
-                      allowableTypes={allowableTypes}
-                      onUpdate={noop}
-                      hideTitle={true}
-                    />
-                  </Layout.Vertical>
-                )}
+                {(stepTemplateLoading || stepTemplateInputSetLoading) && <PageSpinner />}
+                {!stepTemplateLoading &&
+                  !stepTemplateInputSetLoading &&
+                  (stepTemplateError || stepTemplateInputSetError) && (
+                    <Container height={300}>
+                      <PageError
+                        message={
+                          defaultTo((stepTemplateError?.data as Error)?.message, stepTemplateError?.message) ||
+                          defaultTo(
+                            (stepTemplateInputSetError?.data as Error)?.message,
+                            stepTemplateInputSetError?.message
+                          )
+                        }
+                        onClick={() => refetch()}
+                      />
+                    </Container>
+                  )}
+                {!stepTemplateLoading &&
+                  !stepTemplateInputSetLoading &&
+                  !stepTemplateError &&
+                  !stepTemplateInputSetError &&
+                  formik.values.inputsTemplate &&
+                  formik.values.allValues && (
+                    <Layout.Vertical padding={{ top: 'large', bottom: 'large' }} spacing={'large'}>
+                      <Heading level={5} color={Color.BLACK}>
+                        {getString('templatesLibrary.templateInputs')}
+                      </Heading>
+                      <StepForm
+                        key={`${formik.values.template.templateRef}-${defaultTo(
+                          formik.values.template.versionLabel,
+                          ''
+                        )}`}
+                        template={{ step: formik.values.inputsTemplate }}
+                        values={{ step: formik.values.template?.templateInputs as StepElementConfig }}
+                        allValues={{ step: formik.values.allValues }}
+                        readonly={readonly}
+                        viewType={StepViewType.InputSet}
+                        path={TEMPLATE_INPUT_PATH}
+                        allowableTypes={allowableTypes}
+                        onUpdate={noop}
+                        hideTitle={true}
+                      />
+                    </Layout.Vertical>
+                  )}
               </Container>
             </FormikForm>
           )

@@ -12,6 +12,8 @@ import { TestWrapper } from '@common/utils/testUtils'
 import GitSyncRepoForm from '../GitSyncRepoForm'
 import { gitHubMock } from './mockData'
 
+const branches = { data: ['master', 'devBranch'], status: 'SUCCESS' }
+const fetchBranches = jest.fn(() => Promise.resolve(branches))
 const createGitSynRepo = jest.fn()
 const getGitConnector = jest.fn(() => Promise.resolve({}))
 
@@ -19,9 +21,7 @@ jest.mock('services/cd-ng', () => ({
   usePostGitSync: jest.fn().mockImplementation(() => ({ mutate: createGitSynRepo })),
   useGetConnector: jest.fn().mockImplementation(() => ({ data: gitHubMock, refetch: getGitConnector })),
   getConnectorListPromise: jest.fn().mockImplementation(() => Promise.resolve(gitHubMock)),
-  getListOfBranchesByConnectorPromise: jest
-    .fn()
-    .mockResolvedValue({ data: ['master', 'devBranch'], status: 'SUCCESS' }),
+  useGetListOfBranchesByConnector: jest.fn().mockImplementation(() => ({ data: branches, refetch: fetchBranches })),
   useGetTestGitRepoConnectionResult: jest.fn().mockImplementation(() => ({ mutate: jest.fn }))
 }))
 
@@ -137,6 +137,7 @@ describe('Git Sync - repo tab', () => {
       fireEvent.change(nameInput!, { target: { value: 'repoName' } })
     })
 
+    expect(fetchBranches).toBeCalledTimes(1)
     const rootfolderInput = queryByAttribute('name', container, 'rootfolder')
     expect(rootfolderInput).toBeDefined()
 

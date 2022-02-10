@@ -18,7 +18,7 @@ import AnomaliesListGridView from '@ce/components/AnomaliesDetection/AnomaliesLi
 import AnomaliesSearch from '@ce/components/AnomaliesDetection/AnomaliesSearch'
 import type { AccountPathProps } from '@common/interfaces/RouteInterfaces'
 
-const getFilters = (filters: Record<string, Record<string, string>>) => {
+const getFilters = (filters: Record<string, Record<string, string>>, searchText: string) => {
   const updatedFilters = Object.values(filters).map(item => {
     return {
       field: item.field,
@@ -27,7 +27,14 @@ const getFilters = (filters: Record<string, Record<string, string>>) => {
     }
   })
 
-  // console.log('updatedFilters', updatedFilters)
+  if (searchText) {
+    updatedFilters.push({
+      field: 'ALL',
+      operator: 'LIKE',
+      values: [searchText]
+    })
+  }
+
   return updatedFilters
 }
 
@@ -56,7 +63,7 @@ const AnomaliesOverviewPage: React.FC = () => {
 
   // Fetch the default workload ID's for redirections
   const [ccmMetaResult] = useFetchCcmMetaDataQuery()
-  const { data: ccmData } = ccmMetaResult
+  const { data: ccmData, fetching: isFetchingCcmMetaData } = ccmMetaResult
 
   const setAnomaliesFilters = (fieldName: string, operator: string, value: string) => {
     if (value) {
@@ -84,7 +91,7 @@ const AnomaliesOverviewPage: React.FC = () => {
       try {
         const response = await getAnomaliesList({
           filter: {
-            stringFilters: getFilters(filters) as CCMStringFilter[]
+            stringFilters: getFilters(filters, searchText) as CCMStringFilter[]
           },
           groupBy: [],
           orderBy: [
@@ -106,7 +113,7 @@ const AnomaliesOverviewPage: React.FC = () => {
       try {
         const response = await getAnomalySummary({
           filter: {
-            stringFilters: getFilters(filters) as CCMStringFilter[]
+            stringFilters: getFilters(filters, searchText) as CCMStringFilter[]
           }
         })
         const { data } = response
@@ -117,7 +124,7 @@ const AnomaliesOverviewPage: React.FC = () => {
     }
     getList()
     getSummary()
-  }, [filters, getAnomaliesList, getAnomalySummary])
+  }, [filters, getAnomaliesList, getAnomalySummary, searchText])
 
   const parseSummaryData = (summaryData: any) => {
     summaryData.forEach((item: any) => {
@@ -157,7 +164,7 @@ const AnomaliesOverviewPage: React.FC = () => {
       />
       <AnomalyFilters filters={filters} setFilters={setAnomaliesFilters} />
       <PageBody>
-        {isListFetching ? <PageSpinner /> : null}
+        {isListFetching || isFetchingCcmMetaData ? <PageSpinner /> : null}
         <Container
           padding={{
             right: 'xxxlarge',
@@ -166,7 +173,7 @@ const AnomaliesOverviewPage: React.FC = () => {
             top: 'medium'
           }}
         >
-          <AnomaliesSearch searchText={searchText} onChange={setSearchText} />
+          <AnomaliesSearch onChange={setSearchText} />
           <AnomaliesSummary
             costData={costData}
             perspectiveAnomaliesData={perspectiveAnomaliesData}

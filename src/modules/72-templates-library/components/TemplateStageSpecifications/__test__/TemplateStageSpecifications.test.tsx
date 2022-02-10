@@ -19,7 +19,8 @@ import {
   DefaultNewStageName
 } from '@templates-library/components/TemplateStudio/StageTemplateCanvas/StageTemplateForm/StageTemplateForm'
 import { TemplateStageSpecifications } from '@templates-library/components/TemplateStageSpecifications/TemplateStageSpecifications'
-import { stageMockTemplatesInputYaml } from '@templates-library/TemplatesTestHelper'
+import { stageMockTemplatesInputYaml, stageTemplate } from '@templates-library/TemplatesTestHelper'
+import type { TemplateBarProps } from '@pipeline/components/PipelineStudio/TemplateBar/TemplateBar'
 
 window.IntersectionObserver = jest.fn().mockImplementation(() => ({
   observe: () => null,
@@ -33,21 +34,22 @@ jest.mock('framework/strings', () => ({
   })
 }))
 
+jest.mock('@pipeline/components/PipelineStudio/TemplateBar/TemplateBar', () => ({
+  ...(jest.requireActual('@pipeline/components/PipelineStudio/TemplateBar/TemplateBar') as any),
+  // eslint-disable-next-line react/display-name
+  TemplateBar: (_props: TemplateBarProps) => {
+    return <div className="template-bar"></div>
+  }
+}))
+
 jest.mock('services/template-ng', () => ({
   ...(jest.requireActual('services/template-ng') as any),
   useGetTemplateInputSetYaml: jest
     .fn()
     .mockImplementation(() => ({ data: stageMockTemplatesInputYaml, refetch: jest.fn(), error: null, loading: false })),
-  useGetTemplate: jest.fn().mockImplementation(() => ({
-    status: 'SUCCESS',
-    data: {
-      data: {
-        name: 'New Stage Name',
-        identifier: 'new_stage_name',
-        versionLabel: 'v1'
-      }
-    }
-  }))
+  useGetTemplate: jest
+    .fn()
+    .mockImplementation(() => ({ data: stageTemplate, refetch: jest.fn(), error: null, loading: false }))
 }))
 
 jest.mock('services/cd-ng', () => ({

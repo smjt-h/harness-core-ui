@@ -27,7 +27,7 @@ import {
   modulePathProps,
   serviceAccountProps
 } from '@common/utils/routeUtils'
-import type { AccountPathProps, ModulePathParams, ProjectPathProps } from '@common/interfaces/RouteInterfaces'
+import type { ModulePathParams, ProjectPathProps } from '@common/interfaces/RouteInterfaces'
 import { MinimalLayout } from '@common/layouts'
 
 import './components/PipelineSteps'
@@ -105,12 +105,6 @@ const RedirectToDelegatesHome = (): React.ReactElement => {
   return <Redirect to={routes.toDelegateList({ accountId, projectIdentifier, orgIdentifier, module: 'cv' })} />
 }
 
-const RedirectToCVHome = (): React.ReactElement => {
-  const params = useParams<AccountPathProps>()
-
-  return <Redirect to={routes.toCVHome(params)} />
-}
-
 const RedirectToCVProject = (): React.ReactElement => {
   const params = useParams<ProjectPathProps>()
   const { selectedProject } = useAppStore()
@@ -143,8 +137,11 @@ const CVSideNavProps: SidebarContext = {
 
 export default (
   <>
-    <Route path={routes.toCV({ ...accountPathProps })} exact>
-      <RedirectToCVHome />
+    <Route
+      path={[routes.toCV({ ...accountPathProps }), routes.toCVProject({ ...accountPathProps, ...projectPathProps })]}
+      exact
+    >
+      <RedirectToCVProject />
     </Route>
     <RouteWithLayout exact sidebarProps={CVSideNavProps} path={routes.toCVHome({ ...accountPathProps })}>
       <CVHomePage />
@@ -158,9 +155,6 @@ export default (
       <CVTrialHomePage />
     </RouteWithLayout>
 
-    <Route path={routes.toCVProject({ ...accountPathProps, ...projectPathProps })} exact>
-      <RedirectToCVProject />
-    </Route>
     <RouteWithLayout
       exact
       sidebarProps={CVSideNavProps}

@@ -23,6 +23,7 @@ import { mockInputsetYamlV2, mockPostRetryPipeline, mockRetryStages } from './mo
 const commonProps = {
   pipelineIdentifier: 'pid',
   executionIdentifier: 'executionId',
+  modules: ['cd'],
   onClose: jest.fn()
 }
 

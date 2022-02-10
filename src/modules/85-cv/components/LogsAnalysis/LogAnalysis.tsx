@@ -5,7 +5,7 @@
  * https://polyformproject.org/wp-content/uploads/2020/06/PolyForm-Shield-1.0.0.txt.
  */
 
-import React, { useState } from 'react'
+import React, { useMemo, useState } from 'react'
 import { useParams } from 'react-router-dom'
 import {
   Color,
@@ -100,11 +100,9 @@ const LogAnalysisContent: React.FC<LogAnalysisContentProps> = ({
   const { getString } = useStrings()
   const { orgIdentifier, projectIdentifier, accountId } = useParams<ProjectPathProps>()
 
-  const [page, setPage] = useState(0)
-
-  const { data, refetch, loading, error } = useGetAllLogsData({
-    queryParams: {
-      page,
+  const queryParams = useMemo(() => {
+    return {
+      page: 0,
       size: PAGE_SIZE,
       accountId,
       orgIdentifier,
@@ -115,7 +113,21 @@ const LogAnalysisContent: React.FC<LogAnalysisContentProps> = ({
       endTime,
       ...(logEvent ? { clusterTypes: [logEvent] } : {}),
       healthSources: healthSource ? [healthSource] : undefined
-    },
+    }
+  }, [
+    accountId,
+    endTime,
+    environmentIdentifier,
+    healthSource,
+    logEvent,
+    orgIdentifier,
+    projectIdentifier,
+    serviceIdentifier,
+    startTime
+  ])
+
+  const { data, refetch, loading, error } = useGetAllLogsData({
+    queryParams,
     queryParamStringifyOptions: {
       arrayFormat: 'repeat'
     }
@@ -153,7 +165,7 @@ const LogAnalysisContent: React.FC<LogAnalysisContentProps> = ({
         pageCount={totalPages}
         itemCount={totalItems}
         pageIndex={pageIndex}
-        gotoPage={setPage}
+        gotoPage={index => refetch({ queryParams: { ...queryParams, page: index } })}
       />
     </>
   )

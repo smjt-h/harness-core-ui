@@ -201,7 +201,7 @@ describe('Wizard tests', () => {
       }
       fireEvent.click(submitButton)
       expect(queryByText(document.body, result.current.getString('addressErrorFields'))).not.toBeNull()
-      expect(document.body.querySelectorAll('[icon="warning-sign"]')?.length).toEqual(2)
+      expect(document.body.querySelectorAll('[icon="warning-sign"]')?.length).toEqual(1)
       fireEvent.click(tab2)
       await waitFor(() => expect(document.querySelector('[name="numberOnly"]')).toBeTruthy())
       const numberOnly2 = container.querySelector('[name="numberOnly"]')
@@ -212,7 +212,6 @@ describe('Wizard tests', () => {
       fireEvent.change(numberOnly2, { target: { value: '2000' } })
 
       const numOfWarningSigns = document.body.querySelectorAll('[icon="warning-sign"]')?.length
-
       await waitFor(() => expect(numOfWarningSigns).toEqual(1))
     })
 

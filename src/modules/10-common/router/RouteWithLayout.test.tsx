@@ -16,6 +16,22 @@ import { LicenseRedirectProps, LICENSE_STATE_NAMES } from 'framework/LicenseStor
 import { LICENSE_STATE_VALUES } from 'framework/LicenseStore/licenseStoreUtil'
 import { RouteWithLayout } from './RouteWithLayout'
 
+jest.mock('@common/hooks/useGetUsageAndLimit', () => {
+  return {
+    useGetUsageAndLimit: () => {
+      return useGetUsageAndLimitReturnMock
+    }
+  }
+})
+const useGetUsageAndLimitReturnMock = {
+  limitData: {
+    limit: {}
+  },
+  usageData: {
+    usage: {}
+  }
+}
+
 describe('RouteWithLayout', () => {
   test('empty', () => {
     const { container, getByText } = render(

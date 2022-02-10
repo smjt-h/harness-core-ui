@@ -119,8 +119,7 @@ export const mockPostRetryPipeline: UseGetMockDataWithMutateAndRefetch<ResponseP
         lastUpdatedAt: 1642671599437,
         version: 0,
 
-        nodeType: 'PLAN',
-        nodeId: 'Jxslh-ffQEGkvqB_lrrjhQ'
+        nodeType: 'PLAN'
       }
     },
     metaData: null as unknown as undefined,

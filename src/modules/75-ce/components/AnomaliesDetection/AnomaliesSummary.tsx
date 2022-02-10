@@ -6,7 +6,7 @@
  */
 
 import React, { useMemo } from 'react'
-import { Container, Layout, Text, Color, Card } from '@wings-software/uicore'
+import { Container, Layout, Text, Color, Card, FontVariation } from '@wings-software/uicore'
 import { useStrings } from 'framework/strings'
 import {
   HorizontalLayout,
@@ -67,7 +67,6 @@ const AnomaliesSummary: React.FC<AnomaliesOverviewProps> = ({
   allDefaultProviders
 }) => {
   const { getString } = useStrings()
-  // const availableProviders = Object.keys(allDefaultProviders).filter(ap => allDefaultProviders[ap])
 
   const cloudProviderChartData = useMemo(
     () => transformCloudCost(cloudProvidersWiseData, allDefaultProviders),
@@ -85,25 +84,25 @@ const AnomaliesSummary: React.FC<AnomaliesOverviewProps> = ({
     <Layout.Horizontal spacing="medium">
       <Layout.Vertical spacing="small">
         <Card className={css.countCard}>
-          <Text color={Color.GREY_600} font={{ weight: 'semi-bold', size: 'small' }}>
+          <Text color={Color.GREY_600} font={{ variation: FontVariation.SMALL_SEMI }}>
             {getString('ce.anomalyDetection.summary.totalCountText')}
           </Text>
-          <Text font={{ size: 'medium', weight: 'bold' }} intent="danger">
+          <Text color={Color.RED_600} font={{ variation: FontVariation.H4 }}>
             {costData?.count}
           </Text>
         </Card>
         <Card className={css.costCard}>
-          <Text color={Color.RED_500} font={{ weight: 'semi-bold', size: 'small' }}>
+          <Text color={Color.GREY_600} font={{ variation: FontVariation.SMALL_SEMI }}>
             {getString('ce.anomalyDetection.summary.costImpacted')}
           </Text>
-          <Text font={{ size: 'medium', weight: 'bold' }} intent="danger">
+          <Text color={Color.RED_500} font={{ variation: FontVariation.H4 }}>
             {formatCost(costData?.actualCost)}
           </Text>
         </Card>
       </Layout.Vertical>
       <Container className={css.summaryCharts}>
         <HorizontalLayout
-          title={getString('ce.anomalyDetection.summary.perspectiveWise').toUpperCase()}
+          title={getString('ce.anomalyDetection.summary.perspectiveWise')}
           chartData={perspectiveWiseChartData}
           showTrendInChart={false}
           totalCost={{ label: '', value: 0, trend: 0, legendColor: '' }}

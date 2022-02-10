@@ -142,3 +142,11 @@ export const errorBudgetResetHistoryResponse: RestResponseListSLOErrorBudgetRese
     }
   ]
 }
+
+export const mockedSLORiskCountsData = [
+  { count: 0, displayName: 'Exhausted', identifier: 'EXHAUSTED' },
+  { count: 0, displayName: 'Unhealthy', identifier: 'UNHEALTHY' },
+  { count: 0, displayName: 'Need Attention', identifier: 'NEED_ATTENTION' },
+  { count: 0, displayName: 'Observe', identifier: 'OBSERVE' },
+  { count: 0, displayName: 'Healthy', identifier: 'HEALTHY' }
+]

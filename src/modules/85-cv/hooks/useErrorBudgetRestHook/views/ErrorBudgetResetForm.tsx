@@ -39,17 +39,17 @@ const ErrorBudgetResetForm: React.FC<ErrorBudgetResetFormProps> = ({ serviceLeve
     <Container width={650}>
       <Text font={{ variation: FontVariation.BODY }} color={Color.BLACK}>
         {getString('cv.yourExistingErrorBudgetIs')}{' '}
-        <Text tag="span" font={{ variation: FontVariation.BODY2 }} data-testid="existing-error-budget">
-          {serviceLevelObjective.totalErrorBudget} {getString('cv.minutes')}
+        <Text tag="span" font={{ variation: FontVariation.BODY, weight: 'bold' }} data-testid="existing-error-budget">
+          {serviceLevelObjective.totalErrorBudget.toLocaleString()} {getString('cv.minutes')}
         </Text>
         , {getString('cv.andYouHave')}{' '}
         <Text
           tag="span"
-          font={{ variation: FontVariation.BODY2 }}
+          font={{ variation: FontVariation.BODY, weight: 'bold' }}
           color={getRiskColorValue(serviceLevelObjective.errorBudgetRisk, false)}
           data-testid="remaining-error-budget"
         >
-          {serviceLevelObjective.errorBudgetRemaining} {getString('cv.minutes')}
+          {serviceLevelObjective.errorBudgetRemaining.toLocaleString()} {getString('cv.minutes')}
         </Text>{' '}
         {getString('cv.left')}.
       </Text>
@@ -77,7 +77,6 @@ const ErrorBudgetResetForm: React.FC<ErrorBudgetResetFormProps> = ({ serviceLeve
             .number()
             .typeError(getString('cv.increaseErrorBudgetByIsRequired'))
             .min(1, getString('common.validation.valueMustBeGreaterThanOrEqualToN', { n: 1 }))
-            .max(100, getString('common.validation.valueMustBeLessThanOrEqualToN', { n: 100 }))
             .required(getString('cv.increaseErrorBudgetByIsRequired')),
           reason: yup.string().trim().required(getString('cv.reasonIsRequired'))
         })}
@@ -92,14 +91,13 @@ const ErrorBudgetResetForm: React.FC<ErrorBudgetResetFormProps> = ({ serviceLeve
         {formik => (
           <FormikForm>
             <Layout.Horizontal>
-              <Container width={300} padding={{ right: 'xxxlarge' }} border={{ right: true }}>
+              <Container width={325} padding={{ right: 'xxxlarge' }} border={{ right: true }}>
                 <FormInput.Text
                   name="errorBudgetIncrementPercentage"
                   label={getString('cv.increaseErrorBudgetBy')}
                   inputGroup={{
                     type: 'number',
                     min: 1,
-                    max: 100,
                     rightElement: <Icon name="percentage" padding="small" />
                   }}
                 />
@@ -126,7 +124,9 @@ const ErrorBudgetResetForm: React.FC<ErrorBudgetResetFormProps> = ({ serviceLeve
                   </Text>
                 </div>
                 <div>
-                  <Text font={{ variation: FontVariation.FORM_LABEL }}>{getString('cv.remainingErrorBudget')}</Text>
+                  <Text font={{ variation: FontVariation.FORM_LABEL }}>
+                    {getString('cv.updatedRemainingErrorBudget')}
+                  </Text>
                   <Heading
                     inline
                     level={2}
@@ -140,9 +140,28 @@ const ErrorBudgetResetForm: React.FC<ErrorBudgetResetFormProps> = ({ serviceLeve
                       formik.values.errorBudgetIncrementPercentage
                     )}
                   </Heading>
-                  <Text inline font={{ variation: FontVariation.FORM_HELP }}>
+                  <Text inline font={{ variation: FontVariation.FORM_HELP }} padding={{ right: 'small' }}>
                     {' '}
                     {getString('cv.mins')}
+                  </Text>
+                  <Heading
+                    inline
+                    level={2}
+                    color={Color.GREY_800}
+                    font={{ variation: FontVariation.H4 }}
+                    data-testid="updated-remaining-error-budget-percentage"
+                    border={{ left: true }}
+                    padding={{ left: 'small' }}
+                  >
+                    {calculateRemainingErrorBudgetByIncrement(
+                      serviceLevelObjective.totalErrorBudget,
+                      serviceLevelObjective.errorBudgetRemaining,
+                      formik.values.errorBudgetIncrementPercentage,
+                      true
+                    )}
+                  </Heading>
+                  <Text inline font={{ variation: FontVariation.FORM_HELP }}>
+                    &nbsp;%
                   </Text>
                 </div>
               </Layout.Vertical>

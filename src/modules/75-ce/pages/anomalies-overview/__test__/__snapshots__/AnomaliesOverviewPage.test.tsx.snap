@@ -107,7 +107,7 @@ exports[`test case for anomalies detection overview page should be able to rende
                   data-testid="dropdown-value"
                   style="--text-line-clamp: 1;"
                 >
-                  GroupBy: Perspectives
+                  ce.anomalyDetection.filters.groupByNonePlaceholder
                 </p>
               </div>
               <div
@@ -160,7 +160,7 @@ exports[`test case for anomalies detection overview page should be able to rende
                 data-testid="dropdown-value"
                 style="--text-line-clamp: 1;"
               >
-                All Perspectives
+                ce.anomalyDetection.filters.groupByPerspectivePlaceholder
               </p>
             </div>
             <div
@@ -209,7 +209,7 @@ exports[`test case for anomalies detection overview page should be able to rende
                 data-testid="dropdown-value"
                 style="--text-line-clamp: 1;"
               >
-                All Cloud Providers
+                ce.anomalyDetection.filters.groupByCloudProvidersPlaceholder
               </p>
             </div>
             <div
@@ -322,21 +322,39 @@ exports[`test case for anomalies detection overview page should be able to rende
       class="StyledProps--font StyledProps--main StyledProps--padding-right-xxxlarge StyledProps--padding-left-xxxlarge StyledProps--padding-bottom-medium StyledProps--padding-top-medium"
     >
       <div
-        class="Layout--horizontal StyledProps--main"
+        class="Layout--horizontal StyledProps--main searchFilterWrapper"
       >
         <div
-          class="TextInput--main searchInput"
+          class="bp3-input-group ui-search-box ExpandingSearchInput--main searchInput  ExpandingSearchInput--alwaysExpanded ExpandingSearchInput--light"
+          data-name=""
         >
-          <div
-            class="bp3-input-group"
+          <span
+            class="bp3-icon StyledProps--main ExpandingSearchInput--icon StyledProps--color StyledProps--color-grey700"
+            data-icon="thinner-search"
           >
-            <input
-              class="bp3-input"
-              placeholder="search"
-              type="text"
-              value=""
-            />
-          </div>
+            <svg
+              fill="none"
+              height="14"
+              viewBox="0 0 16 16"
+              width="14"
+              xmlns="http://www.w3.org/2000/svg"
+            >
+              <path
+                d="M7.125 13.25c1.617 0 3.32-.695 4.375-1.75L15 15l-3.5-3.5c1.021-1.005 1.75-2.894 1.75-4.375a6.125 6.125 0 10-6.125 6.125z"
+                stroke="currentColor"
+                stroke-linecap="round"
+                stroke-linejoin="round"
+              />
+            </svg>
+          </span>
+          <input
+            class="bp3-input  ExpandingSearchInput--filter"
+            dir="auto"
+            placeholder="search"
+            style="padding-right: 38px;"
+            type="search"
+            value=""
+          />
         </div>
         <button
           class="bp3-button Button--button StyledProps--font StyledProps--main Button--with-current-color Button--withLeftIcon Button--variation Button--variation-secondary Button--size"
@@ -381,29 +399,29 @@ exports[`test case for anomalies detection overview page should be able to rende
           class="Layout--vertical Layout--layout-spacing-small StyledProps--main"
         >
           <div
-            class="StyledProps--font StyledProps--main StyledProps--padding-medium StyledProps--background-grey100 StyledProps--border StyledProps--border-color-grey100"
+            class="bp3-card bp3-elevation-0 Card--card"
           >
             <p
-              class="StyledProps--font StyledProps--main StyledProps--color StyledProps--color-grey600 StyledProps--font-weight-semi-bold StyledProps--font-size-small"
+              class="StyledProps--font StyledProps--main StyledProps--color StyledProps--color-grey600 StyledProps--font-variation-small-semi"
             >
               ce.anomalyDetection.summary.totalCountText
             </p>
             <p
-              class="StyledProps--font StyledProps--main StyledProps--font-size-medium StyledProps--font-weight-bold StyledProps--intent-danger"
+              class="StyledProps--font StyledProps--main StyledProps--font-variation-h4 StyledProps--intent-danger"
             >
               102
             </p>
           </div>
           <div
-            class="StyledProps--font StyledProps--main StyledProps--padding-medium StyledProps--background-red100 StyledProps--border StyledProps--border-color-red100 StyledProps--intent-danger"
+            class="bp3-card bp3-elevation-0 Card--card"
           >
             <p
-              class="StyledProps--font StyledProps--main StyledProps--color StyledProps--color-red500 StyledProps--font-weight-semi-bold StyledProps--font-size-small"
+              class="StyledProps--font StyledProps--main StyledProps--font-variation-small-semi StyledProps--color StyledProps--color-red500"
             >
               ce.anomalyDetection.summary.costImpacted
             </p>
             <p
-              class="StyledProps--font StyledProps--main StyledProps--font-size-medium StyledProps--font-weight-bold StyledProps--intent-danger"
+              class="StyledProps--font StyledProps--main StyledProps--font-variation-h4 StyledProps--intent-danger"
             >
               $17586.99
             </p>
@@ -414,16 +432,16 @@ exports[`test case for anomalies detection overview page should be able to rende
           class="summaryCharts"
         >
           <p
-            class="StyledProps--font StyledProps--main StyledProps--color StyledProps--color-grey500 StyledProps--font-weight-semi-bold StyledProps--font-size-small"
+            class="StyledProps--font StyledProps--main StyledProps--color StyledProps--color-grey500 StyledProps--font-variation-small-semi"
           >
-            CE.ANOMALYDETECTION.SUMMARY.PERSPECTIVEWISE
+            ce.anomalyDetection.summary.perspectiveWise
           </p>
         </div>
         <div
           class="summaryCharts"
         >
           <p
-            class="StyledProps--font StyledProps--main StyledProps--color StyledProps--color-grey500 StyledProps--font-weight-semi-bold StyledProps--font-size-small"
+            class="StyledProps--font StyledProps--main StyledProps--color StyledProps--color-grey500 StyledProps--font-variation-small-semi"
           >
             ce.anomalyDetection.summary.cloudProvidersWise
           </p>
@@ -432,7 +450,7 @@ exports[`test case for anomalies detection overview page should be able to rende
           class="summaryCharts"
         >
           <p
-            class="StyledProps--font StyledProps--main StyledProps--color StyledProps--color-grey500 StyledProps--font-weight-semi-bold StyledProps--font-size-small"
+            class="StyledProps--font StyledProps--main StyledProps--color StyledProps--color-grey500 StyledProps--font-variation-small-semi"
           >
             ce.anomalyDetection.summary.statusWise
           </p>

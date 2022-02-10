@@ -1,63 +1,106 @@
 {
-  "status":"SUCCESS",
-  "data":{
-    "totalPages":1,
-    "totalItems":4,
-    "pageItemCount":4,
-    "pageSize":100,
-    "content":[
+  "status": "SUCCESS",
+  "data": {
+    "totalPages": 1,
+    "totalItems": 4,
+    "pageItemCount": 4,
+    "pageSize": 100,
+    "content": [
       {
-        "connector":{
-          "name":"test1111",
-          "identifier":"test1111",
-          "description":"",
-          "orgIdentifier":"default",
-          "projectIdentifier":"Kapil",
-          "tags":{
-
-          },
-          "type":"K8sCluster",
-          "spec":{
-            "credential":{
-              "type":"InheritFromDelegate",
-              "spec":null
+        "connector": {
+          "name": "test1111",
+          "identifier": "test1111",
+          "description": "",
+          "orgIdentifier": "default",
+          "projectIdentifier": "Kapil",
+          "tags": {},
+          "type": "K8sCluster",
+          "spec": {
+            "credential": {
+              "type": "InheritFromDelegate",
+              "spec": null
             },
-            "delegateSelectors":[
-              "harness-dev-account"
-            ]
+            "delegateSelectors": ["harness-dev-account"]
           }
         },
-        "createdAt":1641035275853,
-        "lastModifiedAt":1641035275847,
-        "status":{
-          "status":"SUCCESS",
-          "errorSummary":null,
-          "errors":null,
-          "testedAt":1642923646468,
-          "lastTestedAt":0,
-          "lastConnectedAt":1642923646468
+        "createdAt": 1641035275853,
+        "lastModifiedAt": 1641035275847,
+        "status": {
+          "status": "SUCCESS",
+          "errorSummary": null,
+          "errors": null,
+          "testedAt": 1642923646468,
+          "lastTestedAt": 0,
+          "lastConnectedAt": 1642923646468
         },
-        "activityDetails":{
-          "lastActivityTime":1641035275869
+        "activityDetails": {
+          "lastActivityTime": 1641035275869
         },
-        "harnessManaged":false,
-        "gitDetails":{
-          "objectId":null,
-          "branch":null,
-          "repoIdentifier":null,
-          "rootFolder":null,
-          "filePath":null,
-          "repoName":null
+        "harnessManaged": false,
+        "gitDetails": {
+          "objectId": null,
+          "branch": null,
+          "repoIdentifier": null,
+          "rootFolder": null,
+          "filePath": null,
+          "repoName": null
         },
-        "entityValidityDetails":{
-          "valid":true,
-          "invalidYaml":null
+        "entityValidityDetails": {
+          "valid": true,
+          "invalidYaml": null
+        }
+      },
+      {
+        "connector": {
+          "name": "appdtest",
+          "identifier": "appdtest",
+          "description": "",
+          "orgIdentifier": null,
+          "projectIdentifier": null,
+          "tags": {},
+          "type": "AppDynamics",
+          "spec": {
+            "username": "uitest@harness.io",
+            "accountname": "harness-test",
+            "controllerUrl": "https://harness-test.saas.appdynamics.com/controller/",
+            "delegateSelectors": [],
+            "passwordRef": "appdtest1",
+            "clientSecretRef": null,
+            "clientId": null,
+            "authType": "UsernamePassword"
+          }
+        },
+        "createdAt": 1625044700423,
+        "lastModifiedAt": 1625044862819,
+        "status": {
+          "status": "SUCCESS",
+          "errorSummary": null,
+          "errors": null,
+          "testedAt": 1643784541375,
+          "lastTestedAt": 0,
+          "lastConnectedAt": 1643784541375
+        },
+        "activityDetails": {
+          "lastActivityTime": 1625044862835
+        },
+        "harnessManaged": false,
+        "gitDetails": {
+          "objectId": null,
+          "branch": null,
+          "repoIdentifier": null,
+          "rootFolder": null,
+          "filePath": null,
+          "repoName": null
+        },
+        "entityValidityDetails": {
+          "valid": true,
+          "invalidYaml": null
         }
       }
     ],
-    "pageIndex":0,
-    "empty":false
+    "pageIndex": 0,
+    "empty": false
   },
-  "metaData":null,
-  "correlationId":"223cb69a-19c7-457f-bcd1-a373c85f50c1"
+  "metaData": null,
+  "correlationId": "223cb69a-19c7-457f-bcd1-a373c85f50c1"
 }

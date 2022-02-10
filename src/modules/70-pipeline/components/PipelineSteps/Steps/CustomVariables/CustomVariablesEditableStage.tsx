@@ -32,6 +32,7 @@ import type { NGVariable } from 'services/cd-ng'
 
 import { StageErrorContext } from '@pipeline/context/StageErrorContext'
 import type { AllNGVariables } from '@pipeline/utils/types'
+import { getVariablesValidationField } from '@pipeline/components/PipelineSteps/AdvancedSteps/FailureStrategyPanel/validation'
 import type { CustomVariableEditableProps, CustomVariablesData } from './CustomVariableEditable'
 import { VariableType, labelStringMap } from './CustomVariableUtils'
 import AddEditCustomVariable, { VariableState } from './AddEditCustomVariable'
@@ -39,19 +40,7 @@ import css from './CustomVariables.module.scss'
 
 const getValidationSchema = (getString: UseStringsReturn['getString']): Yup.Schema<unknown> =>
   Yup.object().shape({
-    variables: Yup.array().of(
-      Yup.object().shape({
-        name: Yup.string().trim().required(getString('common.validation.nameIsRequired')),
-        value: Yup.lazy((value): Yup.Schema<unknown> => {
-          if (typeof value === 'string') {
-            return Yup.string().trim().required(getString('common.validation.valueIsRequired'))
-          } else if (typeof value === 'number') {
-            return Yup.number().required(getString('common.validation.valueIsRequired'))
-          }
-          return Yup.mixed().required(getString('common.validation.valueIsRequired'))
-        })
-      })
-    )
+    ...getVariablesValidationField(getString)
   })
 
 export function CustomVariablesEditableStage(props: CustomVariableEditableProps): React.ReactElement {

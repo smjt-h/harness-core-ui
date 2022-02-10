@@ -138,6 +138,12 @@
   }
 }
 
+.newTab {
+  & > :global(.bp3-icon) {
+    --intent-color: var(--grey-200);
+  }
+}
+
 .logViewer {
   border: 1px solid var(--black-color-3);
   height: 100%;

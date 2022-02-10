@@ -10,6 +10,8 @@ import { Layout, Tabs, Tab, Button, Icon, ButtonVariation } from '@wings-softwar
 import cx from 'classnames'
 import type { HarnessIconName } from '@wings-software/uicore/dist/icons/HarnessIcons'
 import { Expander, IconName } from '@blueprintjs/core'
+import { get, isEmpty, set } from 'lodash-es'
+import type { ValidationError } from 'yup'
 import ExecutionGraph, {
   ExecutionGraphAddStepEvent,
   ExecutionGraphEditStepEvent,
@@ -22,7 +24,6 @@ import {
 } from '@pipeline/components/PipelineStudio/PipelineContext/PipelineContext'
 import { AdvancedPanels } from '@pipeline/components/PipelineStudio/StepCommands/StepCommandTypes'
 import { useStrings } from 'framework/strings'
-import { useValidationErrors } from '@pipeline/components/PipelineStudio/PiplineHooks/useValidationErrors'
 import { StageErrorContext } from '@pipeline/context/StageErrorContext'
 import { DeployTabs } from '@cd/components/PipelineStudio/DeployStageSetupShell/DeployStageSetupShellUtils'
 import { useQueryParams } from '@common/hooks'
@@ -31,6 +32,7 @@ import { FeatureFlag } from '@common/featureFlags'
 import { SaveTemplateButton } from '@pipeline/components/PipelineStudio/SaveTemplateButton/SaveTemplateButton'
 import { useAddStepTemplate } from '@pipeline/hooks/useAddStepTemplate'
 import { StageType } from '@pipeline/utils/stageHelpers'
+import { getCDStageValidationSchema } from '@cd/components/PipelineSteps/PipelineStepsUtil'
 import DeployInfraSpecifications from '../DeployInfraSpecifications/DeployInfraSpecifications'
 import DeployServiceSpecifications from '../DeployServiceSpecifications/DeployServiceSpecifications'
 import DeployStageSpecifications from '../DeployStageSpecifications/DeployStageSpecifications'
@@ -53,13 +55,12 @@ const TabsOrder = [
   DeployTabs.ADVANCED
 ]
 
-const iconNames = { warningSign: 'warning-sign' as IconName }
+const iconNames = { tick: 'tick' as IconName }
 
 export default function DeployStageSetupShell(): JSX.Element {
   const { getString } = useStrings()
   const isTemplatesEnabled = useFeatureFlag(FeatureFlag.NG_TEMPLATES)
   const layoutRef = React.useRef<HTMLDivElement>(null)
-  const { errorMap } = useValidationErrors()
   const pipelineContext = usePipelineContext()
   const {
     state: {
@@ -79,6 +80,7 @@ export default function DeployStageSetupShell(): JSX.Element {
     getStagePathFromPipeline,
     setSelectedSectionId
   } = pipelineContext
+  const [incompleteTabs, setIncompleteTabs] = React.useState<{ [key in DeployTabs]?: boolean }>({})
   const [selectedTabId, setSelectedTabId] = React.useState<DeployTabs>(
     selectedStepId ? DeployTabs.EXECUTION : DeployTabs.SERVICE
   )
@@ -116,6 +118,41 @@ export default function DeployStageSetupShell(): JSX.Element {
 
   const { stage: data } = getStageFromPipeline(selectedStageId || '')
 
+  const validate = React.useCallback(() => {
+    try {
+      getCDStageValidationSchema(getString, contextType).validateSync(data?.stage, {
+        abortEarly: false,
+        context: data?.stage
+      })
+      setIncompleteTabs({})
+    } catch (error) {
+      if (error.name !== 'ValidationError') {
+        return
+      }
+      const response = error.inner.reduce((errors: ValidationError, currentError: ValidationError) => {
+        errors = set(errors, currentError.path, currentError.message)
+        return errors
+      }, {})
+      const newIncompleteTabs: { [key in DeployTabs]?: boolean } = {}
+      if (!isEmpty(response.name) || !isEmpty(response.identifier) || !isEmpty(response.variables)) {
+        newIncompleteTabs[DeployTabs.OVERVIEW] = true
+      }
+      if (!isEmpty(get(response.spec, 'serviceConfig'))) {
+        newIncompleteTabs[DeployTabs.SERVICE] = true
+      }
+      if (!isEmpty(get(response.spec, 'infrastructure'))) {
+        newIncompleteTabs[DeployTabs.INFRASTRUCTURE] = true
+      }
+      if (!isEmpty(get(response.spec, 'execution'))) {
+        newIncompleteTabs[DeployTabs.EXECUTION] = true
+      }
+      if (!isEmpty(response.failureStrategies)) {
+        newIncompleteTabs[DeployTabs.ADVANCED] = true
+      }
+      setIncompleteTabs(newIncompleteTabs)
+    }
+  }, [setIncompleteTabs, data?.stage])
+
   React.useEffect(() => {
     if (selectedTabId === DeployTabs.EXECUTION) {
       /* istanbul ignore else */
@@ -152,6 +189,10 @@ export default function DeployStageSetupShell(): JSX.Element {
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [data, selectedTabId, selectedStageId])
 
+  React.useEffect(() => {
+    validate()
+  }, [JSON.stringify(data)])
+
   const selectedStage = selectedStageId ? getStageFromPipeline(selectedStageId).stage : undefined
   const originalStage = selectedStageId ? getStageFromPipeline(selectedStageId, originalPipeline).stage : undefined
   const stagePath = getStagePathFromPipeline(selectedStageId || '', 'pipeline.stages')
@@ -187,11 +228,6 @@ export default function DeployStageSetupShell(): JSX.Element {
       )}
     </Layout.Horizontal>
   )
-  const errorKeys = [...errorMap.keys()]
-  const servicesHasWarning = errorKeys.some(key => stagePath && key.startsWith(`${stagePath}.stage.spec.serviceConfig`))
-  const infraHasWarning = errorKeys.some(key => stagePath && key.startsWith(`${stagePath}.stage.spec.infrastructure`))
-  const executionHasWarning = errorKeys.some(key => stagePath && key.startsWith(`${stagePath}.stage.spec.execution`))
-  const failureHasWarning = errorKeys.some(key => stagePath && key.startsWith(`${stagePath}.stage.failureStrategies`))
 
   return (
     <section ref={layoutRef} key={selectedStageId} className={cx(css.setupShell)}>
@@ -200,8 +236,8 @@ export default function DeployStageSetupShell(): JSX.Element {
           id={DeployTabs.OVERVIEW}
           panel={<DeployStageSpecifications>{navBtns}</DeployStageSpecifications>}
           title={
-            <span className={css.title}>
-              <Icon name="cd-main" size={16} className="hover" />
+            <span className={css.title} data-completed={!incompleteTabs[DeployTabs.OVERVIEW]}>
+              <Icon name={incompleteTabs[DeployTabs.OVERVIEW] ? 'cd-main' : iconNames.tick} size={16} />
               {getString('overview')}
             </span>
           }
@@ -210,12 +246,8 @@ export default function DeployStageSetupShell(): JSX.Element {
         <Tab
           id={DeployTabs.SERVICE}
           title={
-            <span className={css.title} data-warning={servicesHasWarning}>
-              <Icon
-                name={servicesHasWarning ? /* istanbul ignore next */ iconNames.warningSign : 'services'}
-                size={16}
-                className={servicesHasWarning ? /* istanbul ignore next */ '' : 'hover'}
-              />
+            <span className={css.title} data-completed={!incompleteTabs[DeployTabs.SERVICE]}>
+              <Icon name={incompleteTabs[DeployTabs.SERVICE] ? 'services' : iconNames.tick} size={16} />
               {getString('service')}
             </span>
           }
@@ -225,12 +257,8 @@ export default function DeployStageSetupShell(): JSX.Element {
         <Tab
           id={DeployTabs.INFRASTRUCTURE}
           title={
-            <span className={css.title} data-warning={infraHasWarning}>
-              <Icon
-                name={infraHasWarning ? /* istanbul ignore next */ iconNames.warningSign : 'infrastructure'}
-                size={16}
-                className={infraHasWarning ? /* istanbul ignore next */ '' : 'hover'}
-              />
+            <span className={css.title} data-completed={!incompleteTabs[DeployTabs.INFRASTRUCTURE]}>
+              <Icon name={incompleteTabs[DeployTabs.INFRASTRUCTURE] ? 'infrastructure' : iconNames.tick} size={16} />
               {getString('infrastructureText')}
             </span>
           }
@@ -240,12 +268,8 @@ export default function DeployStageSetupShell(): JSX.Element {
         <Tab
           id={DeployTabs.EXECUTION}
           title={
-            <span className={css.title} data-warning={executionHasWarning}>
-              <Icon
-                name={executionHasWarning ? /* istanbul ignore next */ iconNames.warningSign : 'execution'}
-                size={16}
-                className={executionHasWarning ? /* istanbul ignore next */ '' : 'hover'}
-              />
+            <span className={css.title} data-completed={!incompleteTabs[DeployTabs.EXECUTION]}>
+              <Icon name={incompleteTabs[DeployTabs.EXECUTION] ? 'execution' : iconNames.tick} size={16} />
               {getString('executionText')}
             </span>
           }
@@ -321,12 +345,8 @@ export default function DeployStageSetupShell(): JSX.Element {
         <Tab
           id={DeployTabs.ADVANCED}
           title={
-            <span className={css.title} data-warning={failureHasWarning}>
-              <Icon
-                name={failureHasWarning ? /* istanbul ignore next */ iconNames.warningSign : 'advanced'}
-                size={16}
-                className={failureHasWarning ? /* istanbul ignore next */ '' : 'hover'}
-              />
+            <span className={css.title} data-completed={!incompleteTabs[DeployTabs.ADVANCED]}>
+              <Icon name={incompleteTabs[DeployTabs.ADVANCED] ? 'advanced' : iconNames.tick} size={16} />
               Advanced
             </span>
           }

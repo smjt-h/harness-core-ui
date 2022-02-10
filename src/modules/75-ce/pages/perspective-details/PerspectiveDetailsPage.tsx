@@ -54,14 +54,8 @@ import {
 import { useLicenseStore } from 'framework/LicenseStore/LicenseStoreContext'
 import { ModuleLicenseType } from '@common/constants/SubscriptionTypes'
 import EmptyView from '@ce/images/empty-state.svg'
-import { CCM_CHART_TYPES, ENFORCEMENT_USAGE_THRESHOLD } from '@ce/constants'
+import { CCM_CHART_TYPES } from '@ce/constants'
 import { DAYS_FOR_TICK_INTERVAL } from '@ce/components/CloudCostInsightChart/Chart'
-import { ModuleName } from 'framework/types/ModuleName'
-import { useGetUsageAndLimit } from '@common/hooks/useGetUsageAndLimit'
-import { FeatureIdentifier } from 'framework/featureStore/FeatureIdentifier'
-import FeatureWarningSubscriptionInfoBanner from '@common/components/FeatureWarning/FeatureWarningSubscriptionInfoBanner'
-import { useFeatureFlag } from '@common/hooks/useFeatureFlag'
-import { FeatureFlag } from '@common/featureFlags'
 import { useTelemetry } from '@common/hooks/useTelemetry'
 import { PAGE_NAMES } from '@ce/TrackingEventsConstants'
 import { NGBreadcrumbs } from '@common/components/NGBreadcrumbs/NGBreadcrumbs'
@@ -174,8 +168,6 @@ const PerspectiveDetailsPage: React.FC = () => {
   const { getString } = useStrings()
 
   const { trackPage } = useTelemetry()
-
-  const { limitData, usageData } = useGetUsageAndLimit(ModuleName.CE)
 
   const { data: perspectiveRes, loading } = useGetPerspective({
     queryParams: {
@@ -348,15 +340,8 @@ const PerspectiveDetailsPage: React.FC = () => {
     !chartFetching &&
     !gridFetching
 
-  const featureEnforced = useFeatureFlag(FeatureFlag.FEATURE_ENFORCEMENT_ENABLED)
-
   const { licenseInformation } = useLicenseStore()
   const isFreeEdition = licenseInformation['CE']?.edition === ModuleLicenseType.FREE
-
-  const totalSpend = limitData.limit?.ccm?.totalSpendLimit || 1
-  const activeSpend = usageData.usage?.ccm?.activeSpend?.count || 0
-
-  const usagePercentage = Math.ceil((activeSpend / totalSpend) * 100)
 
   return (
     <>
@@ -374,12 +359,6 @@ const PerspectiveDetailsPage: React.FC = () => {
           timeRange={timeRange}
           showHourlyAggr={isClusterOnly}
         />
-        {featureEnforced && usagePercentage > ENFORCEMENT_USAGE_THRESHOLD ? (
-          <FeatureWarningSubscriptionInfoBanner
-            featureName={FeatureIdentifier.PERSPECTIVES}
-            message={getString('ce.perspectives.featureWarningSubInfoText', { usagePercentage: usagePercentage })}
-          />
-        ) : null}
         <PerspectiveSummary
           data={summaryData?.perspectiveTrendStats as any}
           fetching={summaryFetching}

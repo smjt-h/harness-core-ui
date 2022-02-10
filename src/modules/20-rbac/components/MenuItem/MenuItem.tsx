@@ -6,14 +6,13 @@
  */
 
 import React from 'react'
-import { pick } from 'lodash-es'
 import { IMenuItemProps, Menu, MenuItem, PopoverInteractionKind } from '@blueprintjs/core'
 import { Popover } from '@wings-software/uicore'
 import { usePermission, PermissionsRequest } from '@rbac/hooks/usePermission'
 import { useGetFirstDisabledFeature } from '@common/hooks/useFeatures'
 import type { FeaturesProps } from 'framework/featureStore/featureStoreUtil'
 import type { PermissionIdentifier } from '@rbac/interfaces/PermissionIdentifier'
-import { getTooltip } from '@rbac/utils/utils'
+import { getPermissionRequestFromProps, getTooltip } from '@rbac/utils/utils'
 import css from './MenuItem.module.scss'
 
 export interface RbacMenuItemProps extends IMenuItemProps {
@@ -22,13 +21,7 @@ export interface RbacMenuItemProps extends IMenuItemProps {
 }
 
 const RbacMenuItem: React.FC<RbacMenuItemProps> = ({ permission: permissionRequest, featuresProps, ...restProps }) => {
-  const [canDoAction] = usePermission(
-    {
-      ...pick(permissionRequest, ['resourceScope', 'resource', 'options']),
-      permissions: [permissionRequest?.permission || '']
-    } as PermissionsRequest,
-    [permissionRequest]
-  )
+  const [canDoAction] = usePermission(getPermissionRequestFromProps(permissionRequest), [permissionRequest])
 
   const { featureEnabled, disabledFeatureName } = useGetFirstDisabledFeature(featuresProps?.featuresRequest)
 

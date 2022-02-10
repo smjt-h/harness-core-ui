@@ -2394,7 +2394,7 @@ exports[`Create k8 connector Wizard should form for edit authtype username 1`] =
                               </span>
                               <input
                                 class="bp3-input-ghost"
-                                data-mentions="kv-tag-input-tags}"
+                                data-mentions="kv-tag-input-tags"
                                 value=""
                               />
                             </div>

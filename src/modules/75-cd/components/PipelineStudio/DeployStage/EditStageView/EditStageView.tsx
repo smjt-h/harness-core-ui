@@ -180,6 +180,11 @@ export const EditStageView: React.FC<EditStageViewProps> = ({
         if (!data.stage.spec?.infrastructure) {
           set(data, 'stage.spec.infrastructure', {})
         }
+        if (!data.stage.spec?.execution) {
+          set(data, 'stage.spec.execution', {
+            steps: []
+          })
+        }
         onSubmit?.(data, values.identifier)
       }
     }

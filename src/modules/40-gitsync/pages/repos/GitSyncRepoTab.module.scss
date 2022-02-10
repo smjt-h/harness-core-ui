@@ -29,6 +29,12 @@
       text-overflow: ellipsis;
     }
 
+    .repoPath {
+      width: calc(100% - 10px);
+      direction: rtl;
+      text-align: left;
+    }
+
     p {
       white-space: nowrap !important;
     }
@@ -80,6 +86,10 @@
   color: var(--primary) !important;
   text-overflow: ellipsis;
   overflow: hidden;
+}
+
+.pathFont {
+  font-family: var(--font-family-mono) !important;
 }
 
 .noShadow {

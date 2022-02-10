@@ -97,8 +97,10 @@ const AuditTrailFilterForm: React.FC<AuditTrailFormProps> = props => {
         multiSelectProps={{
           allowCreatingNewItems: true,
           onQueryChange: setUserQuery,
-          tagRenderer: (item: MultiSelectOption) => <UserTagRenderer item={item} />,
-          itemRender: (item, { handleClick }) => <UserItemRenderer item={item} handleClick={handleClick} />
+          tagRenderer: (item: MultiSelectOption) => <UserTagRenderer key={item.value.toString()} item={item} />,
+          itemRender: (item, { handleClick }) => (
+            <UserItemRenderer key={item.value.toString()} item={item} handleClick={handleClick} />
+          )
         }}
       />
       {!orgIdentifier && (

@@ -11,11 +11,10 @@ exports[`<ExecutionActions /> tests if feature restriction is applied on rerun b
       <span
         class="bp3-popover-target"
       >
-        <a
-          class="bp3-button bp3-disabled bp3-minimal bp3-small Button--button StyledProps--font StyledProps--main Button--with-current-color Button--iconOnly Button--without-shadow Button--withLeftIcon"
-          disabled=""
-          role="button"
-          tabindex="-1"
+        <button
+          class="bp3-button bp3-minimal bp3-small Button--button StyledProps--font StyledProps--main Button--with-current-color Button--iconOnly Button--without-shadow Button--withLeftIcon"
+          tabindex="0"
+          type="button"
         >
           <span
             class="bp3-icon bp3-icon-repeat StyledProps--main"
@@ -36,7 +35,7 @@ exports[`<ExecutionActions /> tests if feature restriction is applied on rerun b
               />
             </svg>
           </span>
-        </a>
+        </button>
       </span>
     </span>
     <span
@@ -137,20 +136,6 @@ exports[`<ExecutionActions /> tests snapshot tests "Aborted" status: Menu 1`] = 
         class="bp3-text-overflow-ellipsis bp3-fill"
       >
         pipeline.execution.actions.resumePipeline
-      </div>
-    </a>
-  </li>
-  <li
-    class=""
-  >
-    <a
-      class="bp3-menu-item bp3-disabled"
-      tabindex="-1"
-    >
-      <div
-        class="bp3-text-overflow-ellipsis bp3-fill"
-      >
-        pipeline.execution.actions.downloadLogs
       </div>
     </a>
   </li>
@@ -296,20 +281,6 @@ exports[`<ExecutionActions /> tests snapshot tests "Expired" status: Menu 1`] = 
       </div>
     </a>
   </li>
-  <li
-    class=""
-  >
-    <a
-      class="bp3-menu-item bp3-disabled"
-      tabindex="-1"
-    >
-      <div
-        class="bp3-text-overflow-ellipsis bp3-fill"
-      >
-        pipeline.execution.actions.downloadLogs
-      </div>
-    </a>
-  </li>
 </ul>
 `;
 
@@ -452,20 +423,6 @@ exports[`<ExecutionActions /> tests snapshot tests "Failed" status: Menu 1`] = `
       </div>
     </a>
   </li>
-  <li
-    class=""
-  >
-    <a
-      class="bp3-menu-item bp3-disabled"
-      tabindex="-1"
-    >
-      <div
-        class="bp3-text-overflow-ellipsis bp3-fill"
-      >
-        pipeline.execution.actions.downloadLogs
-      </div>
-    </a>
-  </li>
 </ul>
 `;
 
@@ -604,20 +561,6 @@ exports[`<ExecutionActions /> tests snapshot tests "NotStarted" status: Menu 1`]
         class="bp3-text-overflow-ellipsis bp3-fill"
       >
         pipeline.execution.actions.resumePipeline
-      </div>
-    </a>
-  </li>
-  <li
-    class=""
-  >
-    <a
-      class="bp3-menu-item bp3-disabled"
-      tabindex="-1"
-    >
-      <div
-        class="bp3-text-overflow-ellipsis bp3-fill"
-      >
-        pipeline.execution.actions.downloadLogs
       </div>
     </a>
   </li>
@@ -795,20 +738,6 @@ exports[`<ExecutionActions /> tests snapshot tests "Paused" status: Menu 1`] = `
       </div>
     </a>
   </li>
-  <li
-    class=""
-  >
-    <a
-      class="bp3-menu-item bp3-disabled"
-      tabindex="-1"
-    >
-      <div
-        class="bp3-text-overflow-ellipsis bp3-fill"
-      >
-        pipeline.execution.actions.downloadLogs
-      </div>
-    </a>
-  </li>
 </ul>
 `;
 
@@ -980,20 +909,6 @@ exports[`<ExecutionActions /> tests snapshot tests "Queued" status: Menu 1`] = `
         class="bp3-text-overflow-ellipsis bp3-fill"
       >
         pipeline.execution.actions.resumePipeline
-      </div>
-    </a>
-  </li>
-  <li
-    class=""
-  >
-    <a
-      class="bp3-menu-item bp3-disabled"
-      tabindex="-1"
-    >
-      <div
-        class="bp3-text-overflow-ellipsis bp3-fill"
-      >
-        pipeline.execution.actions.downloadLogs
       </div>
     </a>
   </li>
@@ -1171,20 +1086,6 @@ exports[`<ExecutionActions /> tests snapshot tests "ResourceWaiting" status: Men
       </div>
     </a>
   </li>
-  <li
-    class=""
-  >
-    <a
-      class="bp3-menu-item bp3-disabled"
-      tabindex="-1"
-    >
-      <div
-        class="bp3-text-overflow-ellipsis bp3-fill"
-      >
-        pipeline.execution.actions.downloadLogs
-      </div>
-    </a>
-  </li>
 </ul>
 `;
 
@@ -1356,20 +1257,6 @@ exports[`<ExecutionActions /> tests snapshot tests "Running" status: Menu 1`] = 
         class="bp3-text-overflow-ellipsis bp3-fill"
       >
         pipeline.execution.actions.resumePipeline
-      </div>
-    </a>
-  </li>
-  <li
-    class=""
-  >
-    <a
-      class="bp3-menu-item bp3-disabled"
-      tabindex="-1"
-    >
-      <div
-        class="bp3-text-overflow-ellipsis bp3-fill"
-      >
-        pipeline.execution.actions.downloadLogs
       </div>
     </a>
   </li>
@@ -1548,20 +1435,6 @@ exports[`<ExecutionActions /> tests snapshot tests "Success" status: Menu 1`] = 
       </div>
     </a>
   </li>
-  <li
-    class=""
-  >
-    <a
-      class="bp3-menu-item bp3-disabled"
-      tabindex="-1"
-    >
-      <div
-        class="bp3-text-overflow-ellipsis bp3-fill"
-      >
-        pipeline.execution.actions.downloadLogs
-      </div>
-    </a>
-  </li>
 </ul>
 `;
 
@@ -1701,20 +1574,6 @@ exports[`<ExecutionActions /> tests snapshot tests "Suspended" status: Menu 1`] 
         class="bp3-text-overflow-ellipsis bp3-fill"
       >
         pipeline.execution.actions.resumePipeline
-      </div>
-    </a>
-  </li>
-  <li
-    class=""
-  >
-    <a
-      class="bp3-menu-item bp3-disabled"
-      tabindex="-1"
-    >
-      <div
-        class="bp3-text-overflow-ellipsis bp3-fill"
-      >
-        pipeline.execution.actions.downloadLogs
       </div>
     </a>
   </li>

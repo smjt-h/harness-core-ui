@@ -571,13 +571,10 @@ exports[`Git Sync - repo tab Filling gitSync repo form: gitSync repo form 1`] = 
     class="StyledProps--font StyledProps--main modalContainer StyledProps--margin-large"
     style="height: inherit;"
   >
-    <div
-      class="StyledProps--font StyledProps--main StyledProps--padding-top-small"
-    />
     <p
-      class="StyledProps--font StyledProps--main StyledProps--font-size-large StyledProps--font-weight-semi-bold StyledProps--color StyledProps--color-black"
+      class="StyledProps--font StyledProps--main StyledProps--font-variation-h3 StyledProps--color StyledProps--color-black"
     >
-      enableGitExperience
+      gitsync.configureHarnessFolder
     </p>
     <div
       class="Layout--horizontal StyledProps--main"
@@ -1263,13 +1260,10 @@ exports[`Git Sync - repo tab Repo type card should be enabled only for Github 1`
     class="StyledProps--font StyledProps--main modalContainer StyledProps--margin-large"
     style="height: inherit;"
   >
-    <div
-      class="StyledProps--font StyledProps--main StyledProps--padding-top-small"
-    />
     <p
-      class="StyledProps--font StyledProps--main StyledProps--font-size-large StyledProps--font-weight-semi-bold StyledProps--color StyledProps--color-black"
+      class="StyledProps--font StyledProps--main StyledProps--font-variation-h3 StyledProps--color StyledProps--color-black"
     >
-      gitsync.configureHarnessFolder
+      enableGitExperience
     </p>
     <div
       class="Layout--horizontal StyledProps--main"
@@ -1877,13 +1871,10 @@ exports[`Git Sync - repo tab rendering form to create gitSync repo 1`] = `
     class="StyledProps--font StyledProps--main modalContainer StyledProps--margin-large"
     style="height: inherit;"
   >
-    <div
-      class="StyledProps--font StyledProps--main StyledProps--padding-top-small"
-    />
     <p
-      class="StyledProps--font StyledProps--main StyledProps--font-size-large StyledProps--font-weight-semi-bold StyledProps--color StyledProps--color-black"
+      class="StyledProps--font StyledProps--main StyledProps--font-variation-h3 StyledProps--color StyledProps--color-black"
     >
-      gitsync.configureHarnessFolder
+      enableGitExperience
     </p>
     <div
       class="Layout--horizontal StyledProps--main"
@@ -2491,13 +2482,10 @@ exports[`Git Sync - repo tab rendering form to create gitSync repo 2`] = `
     class="StyledProps--font StyledProps--main modalContainer StyledProps--margin-large"
     style="height: inherit;"
   >
-    <div
-      class="StyledProps--font StyledProps--main StyledProps--padding-top-small"
-    />
     <p
-      class="StyledProps--font StyledProps--main StyledProps--font-size-large StyledProps--font-weight-semi-bold StyledProps--color StyledProps--color-black"
+      class="StyledProps--font StyledProps--main StyledProps--font-variation-h3 StyledProps--color StyledProps--color-black"
     >
-      gitsync.configureHarnessFolder
+      enableGitExperience
     </p>
     <div
       class="Layout--horizontal StyledProps--main"

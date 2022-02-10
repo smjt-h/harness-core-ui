@@ -16,7 +16,9 @@ declare const styles: {
   readonly noOverflow: string
   readonly noShadow: string
   readonly noSpacing: string
+  readonly pathFont: string
   readonly placeholder: string
+  readonly repoPath: string
   readonly rootFolderRelativePath: string
   readonly rootFoldersContainer: string
   readonly rootFoldersData: string

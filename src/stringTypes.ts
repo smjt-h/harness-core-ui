@@ -200,6 +200,10 @@ export interface StringsMap {
   'common.failureRate': string
   'common.feature.keepGettingShipDone.requestUpgrade': string
   'common.feature.keepGettingShipDone.title': string
+  'common.feature.levelUp.description': string
+  'common.feature.levelUp.limitMessage.description': string
+  'common.feature.levelUp.limitMessage.thisMonth': string
+  'common.feature.levelUp.planMessage': string
   'common.feature.overuse.title': string
   'common.feature.upgradeRequired.description': string
   'common.feature.upgradeRequired.pleaseUpgrade': string
@@ -474,6 +478,7 @@ export interface StringsMap {
   'common.purpose.setup': string
   'common.purpose.startATrial': string
   'common.purpose.welcome': string
+  'common.pwsh': string
   'common.readOnly': string
   'common.readonlyPermissions': string
   'common.recommended': string
@@ -1956,6 +1961,7 @@ export interface StringsMap {
   'gitsync.addNewHarnessFolderLabel': string
   'gitsync.baseBranch': string
   'gitsync.branchToSync': string
+  'gitsync.configSaveToaster': string
   'gitsync.configureHarnessFolder': string
   'gitsync.connectThroughDelegate': string
   'gitsync.connectThroughDelegateLabel': string
@@ -1967,6 +1973,7 @@ export interface StringsMap {
   'gitsync.deafaultSyncTitle': string
   'gitsync.defaultBranch': string
   'gitsync.defaultFolder': string
+  'gitsync.editConfigButtonText': string
   'gitsync.enterBranchToSync': string
   'gitsync.entitiesByRepositories': string
   'gitsync.errorFixed': string
@@ -2439,6 +2446,7 @@ export interface StringsMap {
   'pipeline.featureRestriction.serviceUsageWarning': string
   'pipeline.featureRestriction.subscription90PercentLimit': string
   'pipeline.featureRestriction.subscriptionExceededLimit': string
+  'pipeline.featureRestriction.unlimitedBuildsRequiredPlan': string
   'pipeline.filters.builtTypePlaceholder': string
   'pipeline.filters.deploymentTypePlaceholder': string
   'pipeline.filters.environmentPlaceholder': string
@@ -2840,7 +2848,9 @@ export interface StringsMap {
   'pipeline.triggers.artifactTriggerConfigPanel.selectAManifest': string
   'pipeline.triggers.artifactTriggerConfigPanel.selectAnArtifact': string
   'pipeline.triggers.cannotParseInputValues': string
+  'pipeline.triggers.cannotParseInputYaml': string
   'pipeline.triggers.cannotParseTriggersData': string
+  'pipeline.triggers.cannotParseTriggersYaml': string
   'pipeline.triggers.conditionsPanel.artifactBuild': string
   'pipeline.triggers.conditionsPanel.attribute': string
   'pipeline.triggers.conditionsPanel.branchName': string
@@ -3096,8 +3106,11 @@ export interface StringsMap {
   'cd.environmentUpdated': string
   'cd.featureRestriction.banners.deploymentsPerMonthLevelUp': string
   'cd.featureRestriction.banners.dpmWarningActive': string
+  'cd.featureRestriction.banners.initialDeploymentsWarningActive': string
   'cd.featureRestriction.banners.serviceAndDeploymentsLevelUp': string
   'cd.featureRestriction.banners.serviceLevelUp': string
+  'cd.featureRestriction.banners.serviceLevelUpTeamEnterprise': string
+  'cd.featureRestriction.banners.serviceOveruseTeamEnterprise': string
   'cd.featureRestriction.banners.serviceWarningActive': string
   'cd.filePathPlaceholder': string
   'cd.filePathRequired': string
@@ -3123,6 +3136,7 @@ export interface StringsMap {
   'cd.pipelineSteps.environmentTab.plusNewEnvironment': string
   'cd.pipelineSteps.environmentTab.selectEnvironment': string
   'cd.pipelineSteps.environmentTab.specifyYourEnvironment': string
+  'cd.pipelineSteps.executionTab.stepsCount': string
   'cd.pipelineSteps.infraTab.clusterError': string
   'cd.pipelineSteps.infraTab.deploymentType': string
   'cd.pipelineSteps.serviceTab.aboutYourService': string
@@ -3350,6 +3364,7 @@ export interface StringsMap {
   'ce.co.autoStoppingRule.configuration.step4.tabs.schedules.downtime': string
   'ce.co.autoStoppingRule.configuration.step4.tabs.schedules.endsOn': string
   'ce.co.autoStoppingRule.configuration.step4.tabs.schedules.everyday': string
+  'ce.co.autoStoppingRule.configuration.step4.tabs.schedules.fromText': string
   'ce.co.autoStoppingRule.configuration.step4.tabs.schedules.neverEnds': string
   'ce.co.autoStoppingRule.configuration.step4.tabs.schedules.newScheduleTitle': string
   'ce.co.autoStoppingRule.configuration.step4.tabs.schedules.repeats': string
@@ -3358,6 +3373,7 @@ export interface StringsMap {
   'ce.co.autoStoppingRule.configuration.step4.tabs.schedules.successfullyDeletedSchedule': string
   'ce.co.autoStoppingRule.configuration.step4.tabs.schedules.timezone': string
   'ce.co.autoStoppingRule.configuration.step4.tabs.schedules.title': string
+  'ce.co.autoStoppingRule.configuration.step4.tabs.schedules.toText': string
   'ce.co.autoStoppingRule.configuration.step4.tabs.schedules.unsuccessfulDeletionMessage': string
   'ce.co.autoStoppingRule.configuration.step4.tabs.schedules.uptime': string
   'ce.co.autoStoppingRule.confirm.deleteDialogText': string
@@ -3469,6 +3485,8 @@ export interface StringsMap {
   'ce.co.gatewayConfig.name': string
   'ce.co.gatewayConfig.routingDescription': string
   'ce.co.gatewayConfig.scheduleDescription': string
+  'ce.co.gatewayConfig.setSchedulePeriodHeader': string
+  'ce.co.gatewayConfig.setScheduleTimeHeader': string
   'ce.co.gatewayConfig.usePrivateIP': string
   'ce.co.gatewayReview.configurationDetails': string
   'ce.co.gatewayReview.gatewayDetails': string
@@ -3546,6 +3564,11 @@ export interface StringsMap {
   'ce.continuous': string
   'ce.dashboardPage.description': string
   'ce.dashboardPage.welcome': string
+  'ce.enforcementMessage.autoStoppingRules': string
+  'ce.enforcementMessage.exceededSpendLimit': string
+  'ce.enforcementMessage.exceededSpendLimitFreePlan': string
+  'ce.enforcementMessage.perspectivesLimitMsg': string
+  'ce.enforcementMessage.usageInfo': string
   'ce.gridColumnSelector': string
   'ce.homepage.slogan': string
   'ce.learnMore': string
@@ -3684,7 +3707,6 @@ export interface StringsMap {
   'ce.perspectives.createPerspective.validationErrors.nameError': string
   'ce.perspectives.createPerspective.validationErrors.nameLengthError': string
   'ce.perspectives.createPerspective.validationErrors.ruleError': string
-  'ce.perspectives.featureWarningSubInfoText': string
   'ce.perspectives.newPerspective': string
   'ce.perspectives.newPerspectiveLimitWarning': string
   'ce.perspectives.nodeDetails.aggregation.average': string
@@ -4607,6 +4629,7 @@ export interface StringsMap {
   'cv.minValueN': string
   'cv.mins': string
   'cv.minutes': string
+  'cv.minutesRemaining': string
   'cv.monday': string
   'cv.monitoredServices.addNewMonitoredServices': string
   'cv.monitoredServices.assignLabel': string
@@ -5004,8 +5027,9 @@ export interface StringsMap {
   'cv.slos.healthSource': string
   'cv.slos.healthSourceForSLI': string
   'cv.slos.latencySLI': string
-  'cv.slos.newSLO': string
   'cv.slos.noData': string
+  'cv.slos.noMatchingData': string
+  'cv.slos.noSLOsStateMessage': string
   'cv.slos.pickMetricsSLI': string
   'cv.slos.reviewChanges': string
   'cv.slos.selectHealthsource': string
@@ -5064,6 +5088,7 @@ export interface StringsMap {
   'cv.unit': string
   'cv.unknown': string
   'cv.updatedErrorBudget': string
+  'cv.updatedRemainingErrorBudget': string
   'cv.urlCopied': string
   'cv.verificationErrored': string
   'cv.verificationStatus': string

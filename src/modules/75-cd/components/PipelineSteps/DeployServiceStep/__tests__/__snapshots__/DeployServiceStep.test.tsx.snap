@@ -239,7 +239,7 @@ exports[`Test DeployService Step Should be able save even if there is 63 charact
                       </span>
                       <input
                         class="bp3-input-ghost"
-                        data-mentions="kv-tag-input-tags}"
+                        data-mentions="kv-tag-input-tags"
                         value=""
                       />
                     </div>
@@ -520,7 +520,7 @@ exports[`Test DeployService Step should render edit service view (service), then
                       </span>
                       <input
                         class="bp3-input-ghost"
-                        data-mentions="kv-tag-input-tags}"
+                        data-mentions="kv-tag-input-tags"
                         value=""
                       />
                     </div>

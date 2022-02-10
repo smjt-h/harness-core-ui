@@ -1,0 +1,42 @@
+{
+  "status": "SUCCESS",
+  "data": {
+    "executionGraph": {
+      "nodeMap": {
+        "ASRaWM6CQbOA6Gk3dpnSxw": {
+          "uuid": "ASRaWM6CQbOA6Gk3dpnSxw",
+          "setupId": "R_0eJeMjRz2dxhquKbG3DQ",
+          "name": "Webpack",
+          "identifier": "Webpack",
+          "baseFqn": "pipeline.stages.Build.spec.execution.steps.Webpack",
+          "outcomes": { "output": { "outputVariables": {} } },
+          "startTs": 1644228042433,
+          "endTs": 1644228317238,
+          "stepType": "Run",
+          "status": "Success",
+          "failureInfo": { "message": "", "failureTypeList": [], "responseMessages": [] },
+          "skipInfo": null,
+          "executableResponses": [
+            {
+              "async": {
+                "callbackIds": ["aR1XHhg5SA-15LTBmSeZRA", "kFoXyGRXR0WCpp_BFCwUHA"],
+                "logKeys": [
+                  "accountId:vpCkHKsDSxK9_KYfjCTMKA/orgId:default/projectId:NextGenUI/pipelineId:Build/runSequence:12130/level0:pipeline/level1:stages/level2:Build/level3:spec/level4:execution/level5:steps/level6:Webpack"
+                ],
+                "units": []
+              }
+            }
+          ],
+          "unitProgresses": [],
+          "progressData": null,
+          "delegateInfoList": [],
+          "interruptHistories": [],
+          "stepDetails": null
+        }
+      },
+      "representationStrategy": "camelCase"
+    }
+  },
+  "metaData": null,
+  "correlationId": "caa1b2f6-2e78-46ca-b3fa-a3c11271786b"
+}

@@ -11,6 +11,7 @@ import { act } from 'react-dom/test-utils'
 import { noop } from 'lodash-es'
 import { GitSyncTestWrapper } from '@common/utils/gitSyncTestUtils'
 import FullSyncForm from '../FullSyncForm'
+import mockFullSyncConfig from './mockData/mockConfig.json'
 
 const pathParams = { accountId: 'dummy', orgIdentifier: 'default', projectIdentifier: 'dummyProject' }
 
@@ -19,7 +20,10 @@ const fetchBranches = jest.fn(() => Promise.resolve([]))
 jest.mock('services/cd-ng', () => ({
   createGitFullSyncConfigPromise: jest.fn().mockImplementation(() => noop()),
   triggerFullSyncPromise: jest.fn().mockImplementation(() => noop()),
-  getListOfBranchesWithStatusPromise: jest.fn().mockImplementation(() => fetchBranches())
+  getListOfBranchesWithStatusPromise: jest.fn().mockImplementation(() => fetchBranches()),
+  useGetGitFullSyncConfig: jest.fn().mockImplementation(() => {
+    return { loading: false, data: mockFullSyncConfig, refetch: jest.fn() }
+  })
 }))
 
 describe('Test GitFullSyncForm', () => {
@@ -29,13 +33,7 @@ describe('Test GitFullSyncForm', () => {
         path="/account/:accountId/ci/orgs/:orgIdentifier/projects/:projectIdentifier/admin/git-sync/repos"
         pathParams={pathParams}
       >
-        <FullSyncForm
-          isNewUser={true}
-          onClose={noop}
-          onSuccess={noop}
-          orgIdentifier={'default'}
-          projectIdentifier={'dummyProject'}
-        />
+        <FullSyncForm isNewUser={true} onClose={noop} onSuccess={noop} />
       </GitSyncTestWrapper>
     )
     expect(container).toMatchSnapshot()
@@ -46,13 +44,7 @@ describe('Test GitFullSyncForm', () => {
         path="/account/:accountId/ci/orgs/:orgIdentifier/projects/:projectIdentifier/admin/git-sync/repos"
         pathParams={pathParams}
       >
-        <FullSyncForm
-          isNewUser={true}
-          onClose={noop}
-          onSuccess={noop}
-          orgIdentifier={'default'}
-          projectIdentifier={'dummyProject'}
-        />
+        <FullSyncForm isNewUser={true} onClose={noop} onSuccess={noop} />
       </GitSyncTestWrapper>
     )
     await waitFor(() => {
@@ -76,13 +68,7 @@ describe('Test GitFullSyncForm', () => {
         path="/account/:accountId/ci/orgs/:orgIdentifier/projects/:projectIdentifier/admin/git-sync/repos"
         pathParams={pathParams}
       >
-        <FullSyncForm
-          isNewUser={true}
-          onClose={noop}
-          onSuccess={noop}
-          orgIdentifier={'default'}
-          projectIdentifier={'dummyProject'}
-        />
+        <FullSyncForm isNewUser={true} onClose={noop} onSuccess={noop} />
       </GitSyncTestWrapper>
     )
 

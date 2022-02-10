@@ -59,6 +59,7 @@ import { ResourceType } from '@rbac/interfaces/ResourceType'
 import { PermissionIdentifier } from '@rbac/interfaces/PermissionIdentifier'
 import { StageErrorContext } from '@pipeline/context/StageErrorContext'
 import { DeployTabs } from '@cd/components/PipelineStudio/DeployStageSetupShell/DeployStageSetupShellUtils'
+import { getEnvironmentRefSchema } from '@cd/components/PipelineSteps/PipelineStepsUtil'
 import css from './DeployEnvStep.module.scss'
 
 const logger = loggerFor(ModuleName.CD)
@@ -419,9 +420,7 @@ const DeployEnvironmentWidget: React.FC<DeployEnvironmentProps> = ({
           ...{ environmentRef }
         }}
         validationSchema={Yup.object().shape({
-          environmentRef: Yup.string()
-            .trim()
-            .required(getString('cd.pipelineSteps.environmentTab.environmentIsRequired'))
+          environmentRef: getEnvironmentRefSchema(getString)
         })}
       >
         {formik => {
@@ -756,7 +755,7 @@ export class DeployEnvironmentStep extends Step<DeployEnvData> {
     viewType
   }: ValidateInputSetProps<DeployEnvData>): FormikErrors<DeployEnvData> {
     const errors: FormikErrors<DeployEnvData> = {}
-    const isRequired = viewType === StepViewType.DeploymentForm
+    const isRequired = viewType === StepViewType.DeploymentForm || viewType === StepViewType.TriggerForm
     if (
       isEmpty(data?.environmentRef) &&
       isRequired &&

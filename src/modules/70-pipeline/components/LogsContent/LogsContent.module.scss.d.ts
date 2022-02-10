@@ -17,6 +17,7 @@ declare const styles: {
   readonly isWarning: string
   readonly logViewer: string
   readonly main: string
+  readonly newTab: string
   readonly noLogs: string
   readonly rhs: string
   readonly search: string

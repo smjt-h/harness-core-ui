@@ -19,6 +19,7 @@ import {
   EXCEEDED_VALUE_MAX_TOTAL_BUILDS,
   SOME_VALUE_ACTIVE_COMMITERS,
   MET_VALUE_ACTIVE_COMMITERS,
+  EXCEDED_VALUE_ACTIVE_COMMITERS,
   NOT_ENABLED_ACTIVE_COMMITTERS,
   NOT_ENABLED_MAX_TOTAL_BUILDS,
   NOT_ENABLED_MAX_BUILDS_PER_MONTH
@@ -176,11 +177,32 @@ describe('CI: Render feature restriction banner', () => {
       expect(queryByText('pipeline.featureRestriction.subscription90PercentLimit')).toBeInTheDocument()
     })
 
-    test('Show warning banner when 100% usage of monthly subscription', () => {
+    test('Do not show warning banner when 100% usage of monthly subscription met', () => {
       const featuresMap = new Map()
       featuresMap.set('MAX_BUILDS_PER_MONTH', NOT_ENABLED_MAX_BUILDS_PER_MONTH)
       featuresMap.set('MAX_TOTAL_BUILDS', NOT_ENABLED_MAX_TOTAL_BUILDS)
       featuresMap.set('ACTIVE_COMMITTERS', MET_VALUE_ACTIVE_COMMITERS)
+
+      jest.spyOn(useFeatures, 'useFeatures').mockReturnValue({ features: featuresMap } as any)
+
+      const { queryByText } = render(
+        <FeatureRestrictionBanners
+          featureNames={[
+            FeatureIdentifier.ACTIVE_COMMITTERS,
+            FeatureIdentifier.MAX_BUILDS_PER_MONTH,
+            FeatureIdentifier.MAX_TOTAL_BUILDS
+          ]}
+          module="ci"
+        />
+      )
+      expect(queryByText('pipeline.featureRestriction.subscriptionExceededLimit')).not.toBeInTheDocument()
+    })
+
+    test('Show warning banner when over 100% usage of monthly subscription exceeded', () => {
+      const featuresMap = new Map()
+      featuresMap.set('MAX_BUILDS_PER_MONTH', NOT_ENABLED_MAX_BUILDS_PER_MONTH)
+      featuresMap.set('MAX_TOTAL_BUILDS', NOT_ENABLED_MAX_TOTAL_BUILDS)
+      featuresMap.set('ACTIVE_COMMITTERS', EXCEDED_VALUE_ACTIVE_COMMITERS)
 
       jest.spyOn(useFeatures, 'useFeatures').mockReturnValue({ features: featuresMap } as any)
 

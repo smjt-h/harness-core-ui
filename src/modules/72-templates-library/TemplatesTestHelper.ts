@@ -5,8 +5,84 @@
  * https://polyformproject.org/wp-content/uploads/2020/06/PolyForm-Shield-1.0.0.txt.
  */
 
-import type { ResponseString, ResponsePageTemplateSummaryResponse } from 'services/template-ng'
+import type {
+  ResponseString,
+  ResponsePageTemplateSummaryResponse,
+  ResponseTemplateResponse
+} from 'services/template-ng'
 import type { UseGetMockDataWithMutateAndRefetch } from '@common/utils/testUtils'
+
+export const stageTemplate: ResponseTemplateResponse = {
+  status: 'SUCCESS',
+  data: {
+    accountId: 'px7xd_BFRCi-pfWPYXVjvw',
+    childType: 'Deployment',
+    description: '',
+    identifier: 'Test_Stage_Template',
+    lastUpdatedAt: 1643962532126,
+    name: 'Test Stage Template',
+    orgIdentifier: 'default',
+    projectIdentifier: 'Yogesh_Test',
+    stableTemplate: true,
+    tags: {},
+    templateEntityType: 'Stage',
+    templateScope: 'project',
+    version: 0,
+    versionLabel: 'Version1',
+    yaml:
+      'template:' +
+      '\n    name: Test Stage Template' +
+      '\n    identifier: Test_Stage_Template' +
+      '\n    versionLabel: Version1' +
+      '\n    type: Stage' +
+      '\n    projectIdentifier: Yogesh_Test' +
+      '\n    orgIdentifier: default' +
+      '\n    tags: {}' +
+      '\n    spec:' +
+      '\n        type: Deployment' +
+      '\n        spec:' +
+      '\n            serviceConfig:' +
+      '\n                serviceRef: <+input>' +
+      '\n                serviceDefinition:' +
+      '\n                    type: Kubernetes' +
+      '\n                    spec:' +
+      '\n                        variables: []' +
+      '\n            infrastructure:' +
+      '\n                environmentRef: Some_Environment' +
+      '\n                infrastructureDefinition:' +
+      '\n                    type: KubernetesDirect' +
+      '\n                    spec:' +
+      '\n                        connectorRef: account.test_k8' +
+      '\n                        namespace: <+input>' +
+      '\n                        releaseName: release-<+INFRA_KEY>' +
+      '\n                allowSimultaneousDeployments: false' +
+      '\n            execution:' +
+      '\n                steps:' +
+      '\n                    - step:' +
+      '\n                          type: ShellScript' +
+      '\n                          name: Step 1' +
+      '\n                          identifier: Step_1' +
+      '\n                          spec:' +
+      '\n                              shell: Bash' +
+      '\n                              onDelegate: true' +
+      '\n                              source:' +
+      '\n                                  type: Inline' +
+      '\n                                  spec:' +
+      '\n                                      script: <+input>' +
+      '\n                              environmentVariables: []' +
+      '\n                              outputVariables: []' +
+      '\n                              executionTarget: {}' +
+      '\n                          timeout: 10m' +
+      '\n                rollbackSteps: []' +
+      '\n        failureStrategies:' +
+      '\n            - onFailure:' +
+      '\n                  errors:' +
+      '\n                      - AllErrors' +
+      '\n                  action:' +
+      '\n                      type: StageRollback' +
+      '\n'
+  }
+}
 
 export const stageMockTemplatesInputYaml: ResponseString = {
   status: 'SUCCESS',
@@ -31,6 +107,51 @@ export const stageMockTemplatesInputYaml: ResponseString = {
     '\n            spec:' +
     '\n              script: "<+input>"' +
     '\n'
+}
+
+export const stepTemplate: ResponseTemplateResponse = {
+  status: 'SUCCESS',
+  data: {
+    accountId: 'px7xd_BFRCi-pfWPYXVjvw',
+    childType: 'Http',
+    description: '',
+    identifier: 'Test_Http_Template',
+    lastUpdatedAt: 1637668359934,
+    name: 'Test Http Template',
+    orgIdentifier: 'default',
+    projectIdentifier: 'Yogesh_Test',
+    stableTemplate: true,
+    tags: {},
+    templateEntityType: 'Step',
+    templateScope: 'project',
+    version: 3,
+    versionLabel: 'v1',
+    yaml:
+      'template:' +
+      '\n    name: Test Http Template' +
+      '\n    identifier: Test_Http_Template' +
+      '\n    versionLabel: v1' +
+      '\n    type: Step' +
+      '\n    projectIdentifier: Yogesh_Test' +
+      '\n    orgIdentifier: default' +
+      '\n    description: null' +
+      '\n    tags: {}' +
+      '\n    spec:' +
+      '\n        type: Http' +
+      '\n        timeout: 1m 40s' +
+      '\n        spec:' +
+      '\n            url: <+input>' +
+      '\n            method: GET' +
+      '\n            headers: []' +
+      '\n            outputVariables: []' +
+      '\n            requestBody: <+input>' +
+      '\n'
+  }
+}
+
+export const stepMockTemplatesInputYaml: ResponseString = {
+  status: 'SUCCESS',
+  data: 'type: "Http"' + '\nspec:' + '\n  url: "<+input>"' + '\n  requestBody: "<+input>"' + '\n'
 }
 
 export const mockTemplatesInputYaml: ResponseString = {
@@ -60,7 +181,7 @@ export const mockTemplates: ResponsePageTemplateSummaryResponse = {
           '\n    versionLabel: v4' +
           '\n    type: Step' +
           '\n    projectIdentifier: Templateproject' +
-          '\n    orgIdentifier: default' +
+          '\n    orgIdentifier: defaults' +
           '\n    description: Flink is a versatile framework, supporting many different deployment scenarios in a mix and match fashion.' +
           '\n    tags:' +
           '\n        QAR: ""' +
