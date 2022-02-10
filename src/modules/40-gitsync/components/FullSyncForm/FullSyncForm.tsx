@@ -133,14 +133,14 @@ const FullSyncForm: React.FC<ModalConfigureProps & FullSyncFormProps> = props =>
     // Setting up default form fields
     // formikRef used for repo change, config used for default while edit, gitSyncRepos[0] is default for new config
     const repoIdentifier =
-      formikRef?.current?.values?.repoIdentifier || config?.repoIdentifier || gitSyncRepos[0].identifier || ''
+      formikRef?.current?.values?.repoIdentifier || config?.repoIdentifier || defaultTo(gitSyncRepos[0].identifier, '')
     const selectedRepo = gitSyncRepos.find((repo: GitSyncConfig) => repo.identifier === repoIdentifier)
     const baseBranch = selectedRepo?.branch
 
     const defaultRootFolder = selectedRepo?.gitSyncFolderConfigDTOs?.find(
       (folder: GitSyncFolderConfigDTO) => folder.isDefault
     )
-    const rootFolder = config?.rootFolder || defaultRootFolder?.rootFolder || ''
+    const rootFolder = config?.rootFolder || defaultTo(defaultRootFolder?.rootFolder, '')
     const branch = defaultTo(config?.branch, '')
     const createPullRequest = defaultTo(config?.createPullRequest, false)
     const prTitle = defaultTo(config?.prTitle, defaultInitialFormData?.prTitle)
@@ -166,8 +166,8 @@ const FullSyncForm: React.FC<ModalConfigureProps & FullSyncFormProps> = props =>
     setRepoSelectOptions(
       gitSyncRepos?.map((gitRepo: GitSyncConfig) => {
         return {
-          label: gitRepo.name || '',
-          value: gitRepo.identifier || ''
+          label: defaultTo(gitRepo.name, ''),
+          value: defaultTo(gitRepo.identifier, '')
         }
       })
     )
@@ -175,11 +175,7 @@ const FullSyncForm: React.FC<ModalConfigureProps & FullSyncFormProps> = props =>
 
   useEffect(() => {
     if (readyToFetchConfig(projectIdentifier, gitSyncRepos)) {
-      if (isNewUser) {
-        initiliazeConfigForm()
-      } else {
-        refetch() // Fetching config once context repos are available
-      }
+      isNewUser ? initiliazeConfigForm() : refetch() // Fetching config once context repos are available
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [gitSyncRepos, projectIdentifier])

@@ -49,14 +49,13 @@ export interface BranchAndCreatePRProps {
 
 const getDefaultBranchForPR = (isNew: boolean, defaultBranch?: string): string => (isNew ? defaultBranch || '' : '')
 
-const getPreselectedTargetBranch = (
+const getPreselectedBranch = (
+  branch: string | undefined,
   repoIdentifier: string,
   isNewBranch: boolean,
   config?: GitFullSyncConfigDTO
 ): string => {
-  return config?.targetBranch && repoIdentifier === config?.repoIdentifier && isNewBranch === config?.newBranch
-    ? config?.targetBranch
-    : ''
+  return branch && repoIdentifier === config?.repoIdentifier && isNewBranch === config?.newBranch ? branch : ''
 }
 
 const CreatePR: React.FC<CreatePRProps> = props => {
@@ -81,7 +80,12 @@ const CreatePR: React.FC<CreatePRProps> = props => {
         <GitRepoBranchSelect
           name="targetBranch"
           repoIdentifier={formik.values?.repoIdentifier}
-          preSelectedBranch={getPreselectedTargetBranch(formik?.values?.repoIdentifier, isNewBranch, config)}
+          preSelectedBranch={getPreselectedBranch(
+            config?.targetBranch,
+            formik?.values?.repoIdentifier,
+            isNewBranch,
+            config
+          )}
           formik={formik}
           disabled={!createPR}
           modalErrorHandler={modalErrorHandler}
@@ -156,7 +160,12 @@ const BranchAndCreatePR: React.FC<BranchAndCreatePRProps> = props => {
             <GitRepoBranchSelect
               name="branch"
               repoIdentifier={formik.values?.repoIdentifier}
-              preSelectedBranch={formik.values.repoIdentifier === config?.repoIdentifier ? config?.branch : ''}
+              preSelectedBranch={getPreselectedBranch(
+                config?.branch,
+                formik?.values?.repoIdentifier,
+                isNewBranch,
+                config
+              )}
               formik={formik}
               disabled={isNewBranch}
               modalErrorHandler={modalErrorHandler}

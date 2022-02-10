@@ -7,7 +7,7 @@
 
 import React, { useEffect } from 'react'
 import { FormInput, getErrorInfoFromErrorObject, ModalErrorHandlerBinding, SelectOption } from '@harness/uicore'
-import { defaultTo, isEmpty } from 'lodash-es'
+import { defaultTo, isEmpty, noop } from 'lodash-es'
 import cx from 'classnames'
 import { useParams } from 'react-router-dom'
 import type { FormikContext } from 'formik'
@@ -111,7 +111,7 @@ const GitRepoBranchSelect: React.FC<GitRepBranchSelectProps<any>> = props => {
       }
 
       setBranches(branchOptions)
-      !searchTerm && formik?.setFieldValue(inputName, preSelectedBranch)
+      searchTerm ? noop() : formik?.setFieldValue(inputName, preSelectedBranch)
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [loading])
