@@ -277,9 +277,9 @@ const RenderLastDeploymentStatus: Renderer<CellProps<ServiceListItem>> = ({ row 
     return <></>
   }
   const [statusBackgroundColor, statusText] =
-    status.toLocaleLowerCase() === DeploymentStatus.SUCCESS
+    status?.toLocaleLowerCase() === DeploymentStatus.SUCCESS
       ? [Color.GREEN_600, getString('success')]
-      : status.toLocaleLowerCase() === DeploymentStatus.FAILED
+      : status?.toLocaleLowerCase() === DeploymentStatus.FAILED
       ? [Color.RED_600, getString('failed')]
       : [Color.YELLOW_600, status]
   return (
@@ -290,7 +290,7 @@ const RenderLastDeploymentStatus: Renderer<CellProps<ServiceListItem>> = ({ row 
         font={{ weight: 'semi-bold', size: 'xsmall' }}
         className={css.statusText}
       >
-        {statusText.toLocaleUpperCase()}
+        {statusText?.toLocaleUpperCase()}
       </Text>
     </Layout.Horizontal>
   )

@@ -3099,8 +3099,10 @@ export interface StringsMap {
   'cd.aboutProvider': string
   'cd.adapterDelete': string
   'cd.adapterDetails': string
+  'cd.addEnvironment': string
   'cd.addInline': string
   'cd.addRemote': string
+  'cd.addService': string
   'cd.addTFVarFileLabel': string
   'cd.allowSimultaneousDeployments': string
   'cd.argoAdapterURL': string
@@ -3165,6 +3167,8 @@ export interface StringsMap {
   'cd.newAdapter': string
   'cd.newGitOpsServer': string
   'cd.noAdapterText': string
+  'cd.noEnvironment.message': string
+  'cd.noEnvironment.title': string
   'cd.noGitOpsServerText': string
   'cd.notReachable': string
   'cd.pathCannotBeEmpty': string

@@ -7,11 +7,8 @@
  **/
 // this is an auto-generated file, do not update this manually
 declare const styles: {
-  readonly editorEnv: string
-  readonly formRow: string
-  readonly grid: string
-  readonly inputWidth: string
-  readonly label: string
-  readonly thumbnailSelect: string
+  readonly masonry: string
+  readonly pagination: string
+  readonly table: string
 }
 export default styles
