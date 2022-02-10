@@ -67,44 +67,6 @@
   min-height: 720px;
 }
 
-.branchSelector {
-  padding-top: var(--spacing-xsmall);
-  padding-left: var(--spacing-small);
-  padding-bottom: var(--spacing-xsmall);
-
-  :global {
-    input[type='text'] {
-      width: 300px !important;
-      background: var(--primary-2);
-    }
-  }
-}
-
-.gitBranchSelectorPopover {
-  :global {
-    width: 300px !important;
-
-    .bp3-menu {
-      padding: 0;
-      li {
-        height: 32px;
-        cursor: pointer;
-        padding: var(--spacing-xsmall) var(--spacing-small);
-
-        &:hover {
-          background-color: var(--primary-2) !important;
-          color: var(--grey-900) !important;
-        }
-      }
-    }
-
-    .Select--active {
-      background-color: var(--primary-2) !important;
-      color: var(--grey-900) !important;
-    }
-  }
-}
-
 .prTitle {
   margin-left: 45px;
 }

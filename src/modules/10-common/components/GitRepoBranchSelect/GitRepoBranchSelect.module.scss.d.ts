@@ -7,16 +7,7 @@
  **/
 // this is an auto-generated file, do not update this manually
 declare const styles: {
-  readonly branchInput: string
-  readonly branchSection: string
-  readonly formBody: string
-  readonly formRow: string
-  readonly isModalStep: string
-  readonly modalBody: string
-  readonly modalContainer: string
-  readonly prTitle: string
-  readonly repoRootfolderSelect: string
-  readonly spinner: string
-  readonly tooltip: string
+  readonly branchSelector: string
+  readonly gitBranchSelectorPopover: string
 }
 export default styles

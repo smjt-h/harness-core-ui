@@ -6,28 +6,22 @@
  */
 
 import React, { useEffect, useRef, useState } from 'react'
-import { Popover, Position } from '@blueprintjs/core'
 import {
   Container,
-  Text,
-  Color,
   Layout,
   Formik,
   FormikForm,
   FormInput,
   Button,
   SelectOption,
-  Radio,
-  Icon,
   ModalErrorHandler,
   ModalErrorHandlerBinding,
   PageSpinner,
-  FontVariation,
   useToaster
 } from '@harness/uicore'
 import * as Yup from 'yup'
 import cx from 'classnames'
-import { debounce, defaultTo } from 'lodash-es'
+import { defaultTo } from 'lodash-es'
 import type { FormikContext } from 'formik'
 import { useParams } from 'react-router-dom'
 import {
@@ -35,34 +29,58 @@ import {
   GitFullSyncConfigRequestDTO,
   useGetGitFullSyncConfig,
   Failure,
-  GitSyncFolderConfigDTO
+  GitSyncFolderConfigDTO,
+  updateGitFullSyncConfigPromise,
+  createGitFullSyncConfigPromise,
+  triggerFullSyncPromise
 } from 'services/cd-ng'
 import { useStrings } from 'framework/strings'
 import { useGitSyncStore } from 'framework/GitRepoStore/GitSyncStoreContext'
 import type { ProjectPathProps } from '@common/interfaces/RouteInterfaces'
 import SCMCheck from '@common/components/SCMCheck/SCMCheck'
-import {
-  branchFetchHandler,
-  defaultInitialFormData,
-  FullSyncFormProps,
-  handleConfigResponse,
-  initiliazeConfigForm,
-  ModalConfigureProps,
-  saveAndTriggerFullSync,
-  getRootFolderSelectOptions
-} from './FullSyncFormHelper'
+import BranchAndCreatePR from './BranchAndCreatePR'
 import css from './FullSyncForm.module.scss'
+
+const defaultInitialFormData: GitFullSyncConfigRequestDTO = {
+  baseBranch: '',
+  branch: '',
+  createPullRequest: false,
+  newBranch: false,
+  prTitle: '',
+  repoIdentifier: '',
+  rootFolder: '',
+  targetBranch: ''
+}
+
+interface FullSyncFormProps {
+  isNewUser: boolean
+  classname?: string
+}
+
+interface ModalConfigureProps {
+  onClose?: () => void
+  onSuccess?: () => void
+}
+
+const getRootFolderSelectOptions = (folders: GitSyncFolderConfigDTO[] | undefined): SelectOption[] => {
+  return folders?.length
+    ? folders.map((folder: GitSyncFolderConfigDTO) => {
+        return {
+          label: folder.rootFolder || '',
+          value: folder.rootFolder || ''
+        }
+      })
+    : []
+}
 
 const showSpinner = (isNewUser: boolean, loadingConfig: boolean, loadingRepos: boolean): boolean =>
   (!isNewUser && loadingConfig) || loadingRepos
 
-const hasToFetchConfig = (projectIdentifier: string, repos: GitSyncConfig[]): boolean =>
+const readyToFetchConfig = (projectIdentifier: string, repos: GitSyncConfig[]): boolean =>
   !!(projectIdentifier && repos?.length)
 
 const hasToProcessConfig = (loadingConfig: boolean, repos: GitSyncConfig[]): boolean =>
   !loadingConfig && !!repos?.length
-
-const getDefaultBranchForPR = (isNew: boolean, defaultBranch?: string): string => (isNew ? defaultBranch || '' : '')
 
 const FullSyncForm: React.FC<ModalConfigureProps & FullSyncFormProps> = props => {
   const { isNewUser = true, onClose, onSuccess } = props
@@ -77,10 +95,12 @@ const FullSyncForm: React.FC<ModalConfigureProps & FullSyncFormProps> = props =>
   const [rootFolderSelectOptions, setRootFolderSelectOptions] = React.useState<SelectOption[]>([])
   const [repoSelectOptions, setRepoSelectOptions] = React.useState<SelectOption[]>([])
   const [isNewBranch, setIsNewBranch] = React.useState(false)
-  const [branches, setBranches] = React.useState<SelectOption[]>()
-  const [createPR, setCreatePR] = useState<boolean>(false) //used for rendering PR title
-  const [disableCreatePR, setDisableCreatePR] = useState<boolean>(false)
-  const [disableBranchSelection, setDisableBranchSelection] = useState<boolean>(true)
+
+  const handleBranchTypeChange = (isNew: boolean): void => {
+    if (isNewBranch !== isNew) {
+      setIsNewBranch(isNew)
+    }
+  }
 
   const [defaultFormData, setDefaultFormData] = useState<GitFullSyncConfigRequestDTO>({
     ...defaultInitialFormData,
@@ -97,16 +117,66 @@ const FullSyncForm: React.FC<ModalConfigureProps & FullSyncFormProps> = props =>
     lazy: true
   })
 
+  const handleConfigResponse = (): void => {
+    if ('SUCCESS' === configResponse?.status || 'RESOURCE_NOT_FOUND' === (configError as Failure)?.code) {
+      initiliazeConfigForm()
+    } else {
+      //Closing edit config modal with error toaster if fetch config API has failed
+      showError(configError?.message)
+      onClose?.()
+    }
+  }
+
+  const initiliazeConfigForm = (): void => {
+    const config = configResponse?.data
+
+    // Setting up default form fields
+    // formikRef used for repo change, config used for default while edit, gitSyncRepos[0] is default for new config
+    const repoIdentifier =
+      formikRef?.current?.values?.repoIdentifier || config?.repoIdentifier || gitSyncRepos[0].identifier || ''
+    const selectedRepo = gitSyncRepos.find((repo: GitSyncConfig) => repo.identifier === repoIdentifier)
+    const baseBranch = selectedRepo?.branch
+
+    const defaultRootFolder = selectedRepo?.gitSyncFolderConfigDTOs?.find(
+      (folder: GitSyncFolderConfigDTO) => folder.isDefault
+    )
+    const rootFolder = config?.rootFolder || defaultRootFolder?.rootFolder || ''
+    const branch = defaultTo(config?.branch, '')
+    const createPullRequest = defaultTo(config?.createPullRequest, false)
+    const prTitle = defaultTo(config?.prTitle, defaultInitialFormData?.prTitle)
+
+    formikRef?.current?.setFieldValue('repoIdentifier', repoIdentifier)
+    formikRef?.current?.setFieldValue('branch', branch)
+    formikRef?.current?.setFieldValue('createPullRequest', createPullRequest)
+    formikRef?.current?.setFieldValue('rootFolder', rootFolder)
+    formikRef?.current?.setFieldValue('prTitle', prTitle)
+
+    setIsNewBranch(defaultTo(config?.newBranch, false))
+    setDefaultFormData({
+      ...defaultInitialFormData,
+      repoIdentifier,
+      baseBranch,
+      branch,
+      rootFolder,
+      prTitle
+    })
+
+    // Setting up default repo and rootFolder dropdown options
+    setRootFolderSelectOptions(getRootFolderSelectOptions(selectedRepo?.gitSyncFolderConfigDTOs))
+    setRepoSelectOptions(
+      gitSyncRepos?.map((gitRepo: GitSyncConfig) => {
+        return {
+          label: gitRepo.name || '',
+          value: gitRepo.identifier || ''
+        }
+      })
+    )
+  }
+
   useEffect(() => {
-    if (hasToFetchConfig(projectIdentifier, gitSyncRepos)) {
+    if (readyToFetchConfig(projectIdentifier, gitSyncRepos)) {
       if (isNewUser) {
-        initiliazeConfigForm(undefined, gitSyncRepos, formikRef, {
-          setRootFolderSelectOptions,
-          setRepoSelectOptions,
-          setDefaultFormData,
-          fetchBranches,
-          showError
-        })
+        initiliazeConfigForm()
       } else {
         refetch() // Fetching config once context repos are available
       }
@@ -116,142 +186,56 @@ const FullSyncForm: React.FC<ModalConfigureProps & FullSyncFormProps> = props =>
 
   useEffect(() => {
     if (hasToProcessConfig(loadingConfig, gitSyncRepos)) {
-      handleConfigResponse(configResponse, configError?.data as Failure, gitSyncRepos, formikRef, {
-        setRootFolderSelectOptions,
-        setRepoSelectOptions,
-        setDefaultFormData,
-        fetchBranches,
-        showError,
-        onClose
-      })
+      handleConfigResponse()
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [loadingConfig])
-
-  const resetCreatePRFields = (formik: FormikContext<GitFullSyncConfigRequestDTO>): void => {
-    formik.setFieldValue('targetBranch', '')
-    formik.setFieldTouched('targetBranch', false)
-    formik.setFieldValue('createPullRequest', false)
-    formik.setFieldTouched('createPullRequest', false)
-    formikRef.current?.setFieldValue('createPullRequest', false)
-    setDisableCreatePR(false)
-    setCreatePR(false)
-    setDisableBranchSelection(true)
-  }
 
   const handleRepoChange = (repoIdentifier: string, formik: FormikContext<GitFullSyncConfigRequestDTO>): void => {
     const changedRepo = gitSyncRepos.find((repo: GitSyncConfig) => repo.identifier === repoIdentifier)
     const defaultRootFolder = changedRepo?.gitSyncFolderConfigDTOs?.find(
       (folder: GitSyncFolderConfigDTO) => folder.isDefault
     )?.rootFolder
-    setBranches([{ label: '', value: '' }])
     formik.setFieldValue('branch', '')
     formikRef?.current?.setFieldValue('branch', '')
     formik.setFieldTouched('branch', false)
-    debounceFetchBranches(defaultTo(changedRepo?.identifier, ''))
     setRootFolderSelectOptions(getRootFolderSelectOptions(changedRepo?.gitSyncFolderConfigDTOs))
     formik.setFieldValue('rootFolder', defaultTo(defaultRootFolder, ''))
-    resetCreatePRFields(formik)
   }
 
-  const handleBranchTypeChange = (isNew: boolean, formik: FormikContext<GitFullSyncConfigRequestDTO>): void => {
-    const defaultBranch = gitSyncRepos.find(
-      (repo: GitSyncConfig) => repo.identifier === formikRef.current?.values.repoIdentifier
-    )?.branch
-    if (isNewBranch !== isNew) {
-      setIsNewBranch(isNew)
-
-      formik.setFieldValue('branch', `${defaultBranch}-patch`)
-      formik.setFieldTouched('branch', false)
+  const saveAndTriggerFullSync = async (fullSyncData: GitFullSyncConfigRequestDTO): Promise<void> => {
+    const queryParams = {
+      accountIdentifier: accountId,
+      orgIdentifier,
+      projectIdentifier
     }
-    formik.setFieldValue('targetBranch', getDefaultBranchForPR(isNew, defaultBranch))
-    resetCreatePRFields(formik)
-  }
 
-  const fetchBranches = (repoIdentifier: string, query?: string): void => {
-    branchFetchHandler(
-      {
-        accountIdentifier: accountId,
-        orgIdentifier,
-        projectIdentifier,
-        yamlGitConfigIdentifier: repoIdentifier,
-        page: 0,
-        size: 10,
-        searchTerm: query
-      },
-      isNewBranch,
-      configResponse?.data?.branch,
-      createPR,
-      { setDisableCreatePR, setDisableBranchSelection, setBranches, getString },
-      modalErrorHandler,
-      query
-    )
-  }
-
-  const debounceFetchBranches = debounce((repoIdentifier: string, query?: string): void => {
     try {
-      fetchBranches(repoIdentifier, query)
-    } catch (e) {
-      modalErrorHandler?.showDanger(e.data?.message || e.message)
-    }
-  }, 1000)
+      const reqObj = {
+        queryParams,
+        body: { ...fullSyncData, newBranch: isNewBranch }
+      }
+      modalErrorHandler?.hide()
+      // Need to 1st edit config then triger fullSync
+      const fullSyncConfigData = configResponse?.data
+        ? await updateGitFullSyncConfigPromise(reqObj)
+        : await createGitFullSyncConfigPromise(reqObj)
 
-  const CreatePR = React.useMemo(() => {
-    return (
-      <>
-        <Layout.Horizontal flex={{ alignItems: 'baseline', justifyContent: 'flex-start' }} padding={{ top: 'small' }}>
-          <FormInput.CheckBox
-            disabled={disableCreatePR}
-            name="createPullRequest"
-            label={getString('common.git.startPRLabel')}
-            onChange={e => {
-              const creatingPR = e.currentTarget.checked
-              formikRef.current?.setFieldValue('createPullRequest', creatingPR)
-              formikRef.current?.setFieldTouched('targetBranch', false)
-              setCreatePR(creatingPR)
-              setDisableBranchSelection(!creatingPR)
-            }}
-          />
-          {disableCreatePR ? (
-            <Popover
-              position={Position.TOP}
-              content={
-                <Text padding="medium" color={Color.RED_400}>
-                  {getString('common.git.onlyDefaultBranchFound')}
-                </Text>
-              }
-              isOpen={disableCreatePR}
-              popoverClassName={css.tooltip}
-            >
-              <Container margin={{ bottom: 'xlarge' }}></Container>
-            </Popover>
-          ) : null}
-          <FormInput.Select
-            name="targetBranch"
-            items={defaultTo(branches, [])}
-            disabled={defaultTo(disableBranchSelection, disableCreatePR)}
-            data-id="create-pr-branch-select"
-            onQueryChange={(query: string) =>
-              debounceFetchBranches(defaultTo(formikRef.current?.values.repoIdentifier, ''), query)
-            }
-            selectProps={{ usePortal: true, popoverClassName: css.gitBranchSelectorPopover }}
-            className={css.branchSelector}
-          />
-        </Layout.Horizontal>
-        {createPR ? (
-          <FormInput.Text name="prTitle" className={css.prTitle} label={getString('gitsync.PRTitle')} />
-        ) : null}
-      </>
-    )
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [
-    disableCreatePR,
-    disableBranchSelection,
-    branches,
-    isNewBranch,
-    formikRef.current?.values,
-    formikRef.current?.values.createPullRequest
-  ])
+      if (fullSyncConfigData.status !== 'SUCCESS') {
+        throw fullSyncConfigData
+      } else {
+        showSuccess(getString('gitsync.configSaveToaster'))
+      }
+      const triggerFullSync = await triggerFullSyncPromise({ queryParams, body: {} as unknown as void })
+      if (triggerFullSync.status !== 'SUCCESS') {
+        throw triggerFullSync
+      }
+      showSuccess(getString('gitsync.syncSucessToaster'))
+      onSuccess?.()
+    } catch (err) {
+      modalErrorHandler?.showDanger(err.message)
+    }
+  }
 
   // For new user form is used in GItSync StepWizard, where using PageSpinner as overlay with step
   // For edit, form is used in modal where showing PageSpinner till data is available
@@ -295,18 +279,7 @@ const FullSyncForm: React.FC<ModalConfigureProps & FullSyncFormProps> = props =>
               prTitle: Yup.string().trim().min(1).required(getString('common.git.validation.PRTitleRequired'))
             })}
             onSubmit={formData => {
-              saveAndTriggerFullSync(
-                {
-                  accountIdentifier: accountId,
-                  orgIdentifier,
-                  projectIdentifier
-                },
-                formData,
-                isNewBranch,
-                configResponse,
-                { showSuccess, onSuccess, getString },
-                modalErrorHandler
-              )
+              saveAndTriggerFullSync(formData)
             }}
           >
             {formik => {
@@ -332,55 +305,13 @@ const FullSyncForm: React.FC<ModalConfigureProps & FullSyncFormProps> = props =>
                       disabled={isNewUser}
                     />
 
-                    <Text font={{ variation: FontVariation.FORM_SUB_SECTION }} margin={{ top: 'xlarge' }}>
-                      {getString('gitsync.syncBranchTitle')}
-                    </Text>
-                    <Layout.Vertical spacing="medium" margin={{ bottom: 'medium' }}>
-                      <Container className={css.branchSection}>
-                        <Layout.Horizontal flex={{ alignItems: 'baseline', justifyContent: 'flex-start' }}>
-                          <Radio large onChange={() => handleBranchTypeChange(false, formik)} checked={!isNewBranch}>
-                            <Icon name="git-branch-existing"></Icon>
-                            <Text margin={{ left: 'small' }} inline>
-                              {getString('gitsync.selectBranchTitle')}
-                            </Text>
-                          </Radio>
-                          <FormInput.Select
-                            name="branch"
-                            items={defaultTo(branches, [])}
-                            disabled={isNewBranch}
-                            onQueryChange={(query: string) =>
-                              debounceFetchBranches(formik.values.repoIdentifier, query)
-                            }
-                            selectProps={{ usePortal: true, popoverClassName: css.gitBranchSelectorPopover }}
-                            className={css.branchSelector}
-                          />
-                        </Layout.Horizontal>
-                        {!isNewBranch && CreatePR}
-                      </Container>
-                      <Container className={css.branchSection}>
-                        <Radio
-                          data-test="newBranchRadioBtn"
-                          large
-                          onChange={() => handleBranchTypeChange(true, formik)}
-                          checked={isNewBranch}
-                        >
-                          <Icon name="git-new-branch" color={Color.GREY_700}></Icon>
-                          <Text inline margin={{ left: 'small' }}>
-                            {getString('gitsync.createBranchTitle')}
-                          </Text>
-                        </Radio>
-                        {isNewBranch && (
-                          <Container padding={{ top: 'small' }}>
-                            <FormInput.Text
-                              className={css.branchInput}
-                              name="branch"
-                              label={getString('common.git.branchName')}
-                            />
-                            {CreatePR}
-                          </Container>
-                        )}
-                      </Container>
-                    </Layout.Vertical>
+                    <BranchAndCreatePR
+                      currentConfig={configResponse}
+                      formik={formik}
+                      formikRef={formikRef}
+                      branchTypeChangeHandler={handleBranchTypeChange}
+                      modalErrorHandler={modalErrorHandler}
+                    />
                   </Container>
 
                   <Layout.Horizontal spacing="medium">
