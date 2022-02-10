@@ -18,7 +18,8 @@ import {
   Dialog,
   Layout,
   MultiTypeInputType,
-  SelectOption
+  SelectOption,
+  Container
 } from '@wings-software/uicore'
 import { useModalHook } from '@harness/use-modal'
 import * as Yup from 'yup'
@@ -39,15 +40,21 @@ import {
 } from 'services/cd-ng'
 import { useStrings } from 'framework/strings'
 import { loggerFor } from 'framework/logging/logging'
+import YAMLBuilder from '@common/components/YAMLBuilder/YamlBuilder'
+import type {
+  YamlBuilderHandlerBinding,
+  YamlBuilderProps,
+  CompletionItemInterface
+} from '@common/interfaces/YAMLBuilderProps'
 import { ModuleName } from 'framework/types/ModuleName'
+import { getScopeFromDTO } from '@common/components/EntityReference/EntityReference'
+import { useGetSchemaYaml } from 'services/pipeline-ng'
 import { IdentifierSchema, NameSchema } from '@common/utils/Validation'
 import { Step, StepProps, StepViewType, ValidateInputSetProps } from '@pipeline/components/AbstractSteps/Step'
 import type { PipelineType } from '@common/interfaces/RouteInterfaces'
 import { useToaster } from '@common/exports'
 import { useVariablesExpression } from '@pipeline/components/PipelineStudio/PiplineHooks/useVariablesExpression'
 import { StepType } from '@pipeline/components/PipelineSteps/PipelineStepInterface'
-import type { CompletionItemInterface } from '@common/interfaces/YAMLBuilderProps'
-
 import { NameIdDescriptionTags, PageSpinner } from '@common/components'
 import { usePermission } from '@rbac/hooks/usePermission'
 import { ResourceType } from '@rbac/interfaces/ResourceType'
@@ -63,6 +70,7 @@ export interface DeployServiceData extends Omit<ServiceConfig, 'serviceRef'> {
 }
 
 interface NewEditServiceModalProps {
+  type?: 'newEditService' | 'yamlService'
   isEdit: boolean
   isService: boolean
   data: ServiceResponseDTO
@@ -71,7 +79,20 @@ interface NewEditServiceModalProps {
   closeModal?: () => void
 }
 
+const yamlBuilderReadOnlyModeProps: YamlBuilderProps = {
+  fileName: `add-service.yaml`,
+  entityType: 'Service',
+  width: 580,
+  height: 227,
+  showSnippetSection: false,
+  yamlSanityConfig: {
+    removeEmptyString: false,
+    removeEmptyObject: false,
+    removeEmptyArray: false
+  }
+}
 export const NewEditServiceModal: React.FC<NewEditServiceModalProps> = ({
+  type = 'newEditService',
   isEdit,
   data,
   isService,
@@ -85,7 +106,7 @@ export const NewEditServiceModal: React.FC<NewEditServiceModalProps> = ({
     projectIdentifier: string
     accountId: string
   }>()
-
+  const [yamlHandler, setYamlHandler] = React.useState<YamlBuilderHandlerBinding | undefined>()
   const { loading: updateLoading, mutate: updateService } = useUpsertServiceV2({
     queryParams: {
       accountIdentifier: accountId
@@ -130,6 +151,15 @@ export const NewEditServiceModal: React.FC<NewEditServiceModalProps> = ({
     // eslint-disable-next-line react-hooks/exhaustive-deps
     [onCreateOrUpdate, orgIdentifier, projectIdentifier, isEdit, isService]
   )
+  const { loading, data: ServiceSchema } = useGetSchemaYaml({
+    queryParams: {
+      entityType: 'Service',
+      projectIdentifier,
+      orgIdentifier,
+      accountIdentifier: accountId,
+      scope: getScopeFromDTO({ accountIdentifier: accountId, orgIdentifier, projectIdentifier })
+    }
+  })
 
   if (updateLoading) {
     return <PageSpinner />
@@ -148,31 +178,71 @@ export const NewEditServiceModal: React.FC<NewEditServiceModalProps> = ({
         identifier: IdentifierSchema()
       })}
     >
-      {formikProps => (
-        <FormikForm>
-          <NameIdDescriptionTags
-            formikProps={formikProps}
-            identifierProps={{
-              inputLabel: getString('name'),
-              inputGroupProps: {
-                inputGroup: {
-                  inputRef: ref => (inputRef.current = ref)
-                }
-              },
-              isIdentifierEditable: !isEdit
-            }}
-          />
-          <Layout.Horizontal spacing="small" padding={{ top: 'xlarge' }}>
-            <Button
-              variation={ButtonVariation.PRIMARY}
-              type={'submit'}
-              text={getString('save')}
-              data-id="service-save"
+      {formikProps =>
+        type === 'newEditService' ? (
+          <FormikForm>
+            <NameIdDescriptionTags
+              formikProps={formikProps}
+              identifierProps={{
+                inputLabel: getString('name'),
+                inputGroupProps: {
+                  inputGroup: {
+                    inputRef: ref => (inputRef.current = ref)
+                  }
+                },
+                isIdentifierEditable: !isEdit
+              }}
             />
-            <Button variation={ButtonVariation.TERTIARY} text={getString('cancel')} onClick={closeModal} />
-          </Layout.Horizontal>
-        </FormikForm>
-      )}
+            <Layout.Horizontal className={css.editServiceSaveCancel}>
+              <Button
+                variation={ButtonVariation.PRIMARY}
+                type={'submit'}
+                text={getString('save')}
+                data-id="service-save"
+              />
+              <Button variation={ButtonVariation.TERTIARY} text={getString('cancel')} onClick={closeModal} />
+            </Layout.Horizontal>
+          </FormikForm>
+        ) : (
+          <div className={css.editor}>
+            {loading ? (
+              <PageSpinner />
+            ) : (
+              <Container>
+                <YAMLBuilder
+                  {...yamlBuilderReadOnlyModeProps}
+                  existingJSON={{
+                    serviceInputSet: {
+                      ...omit(formikProps?.values),
+                      description: '',
+                      tags: {}
+                    }
+                  }}
+                  bind={setYamlHandler}
+                  schema={ServiceSchema?.data}
+                  isReadOnlyMode={isEdit}
+                  showSnippetSection={false}
+                  isEditModeSupported={!isEdit}
+                />
+              </Container>
+            )}
+            <Layout.Horizontal padding={{ top: 'large' }}>
+              <Button
+                variation={ButtonVariation.PRIMARY}
+                type="submit"
+                text={getString('save')}
+                onClick={() => {
+                  const latestYaml = yamlHandler?.getLatestYaml() || /* istanbul ignore next */ ''
+                  onSubmit(parse(latestYaml)?.serviceInputSet)
+                }}
+                disabled={isEdit}
+              />
+              &nbsp; &nbsp;
+              <Button variation={ButtonVariation.TERTIARY} onClick={closeModal} text={getString('cancel')} />
+            </Layout.Horizontal>
+          </div>
+        )
+      }
     </Formik>
   )
 }

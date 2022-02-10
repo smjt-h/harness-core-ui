@@ -7,11 +7,10 @@
  **/
 // this is an auto-generated file, do not update this manually
 declare const styles: {
+  readonly dialogStylesEnv: string
+  readonly editEnvModal: string
   readonly editorEnv: string
-  readonly formRow: string
-  readonly grid: string
-  readonly inputWidth: string
-  readonly label: string
-  readonly thumbnailSelect: string
+  readonly horizontalTabs: string
+  readonly yamlToggleEnv: string
 }
 export default styles

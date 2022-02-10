@@ -7,11 +7,14 @@
  **/
 // this is an auto-generated file, do not update this manually
 declare const styles: {
-  readonly editorEnv: string
-  readonly formRow: string
-  readonly grid: string
-  readonly inputWidth: string
-  readonly label: string
-  readonly thumbnailSelect: string
+  readonly card: string
+  readonly container: string
+  readonly dialogStyles: string
+  readonly editServiceModal: string
+  readonly editor: string
+  readonly header: string
+  readonly pageBody: string
+  readonly separator: string
+  readonly yamlToggle: string
 }
 export default styles
