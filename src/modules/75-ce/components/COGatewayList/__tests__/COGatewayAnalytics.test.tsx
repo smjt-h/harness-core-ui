@@ -9,6 +9,7 @@ import React from 'react'
 import { act } from 'react-dom/test-utils'
 import { fireEvent, render } from '@testing-library/react'
 import { TestWrapper } from '@common/utils/testUtils'
+import { GatewayKindType } from '@ce/constants'
 import COGatewayAnalytics from '../COGatewayAnalytics'
 
 const mockServiceData = {
@@ -25,6 +26,7 @@ const mockServiceData = {
   disabled: false,
   custom_domains: ['custom.doamin.in']
 }
+const mockedK8sServiceData = { ...mockServiceData, kind: GatewayKindType.KUBERNETES }
 
 const savingsData = {
   service_id: 22,
@@ -84,5 +86,19 @@ describe('Autostopping rule analytics drawer', () => {
     act(() => {
       fireEvent.click(deleteIcon!)
     })
+  })
+
+  test('render k8s rule analytics drawer', () => {
+    const { container } = render(
+      <TestWrapper>
+        <COGatewayAnalytics
+          service={{ index: 0, data: mockedK8sServiceData }}
+          handleServiceToggle={jest.fn()}
+          handleServiceDeletion={jest.fn()}
+          handleServiceEdit={jest.fn()}
+        />
+      </TestWrapper>
+    )
+    expect(container).toMatchSnapshot()
   })
 })

@@ -131,7 +131,7 @@ const RenderColumnMenu: Renderer<CellProps<PipelineDTO>> = ({ row, column }) => 
               e.stopPropagation()
               runPipeline()
             }}
-            featuresProps={getFeaturePropsForRunPipelineButton(data.modules)}
+            featuresProps={getFeaturePropsForRunPipelineButton({ modules: data.modules, getString })}
           />
 
           <Menu.Item
@@ -332,7 +332,7 @@ const RenderRunPipeline: Renderer<CellProps<PipelineDTO>> = ({ row }): JSX.Eleme
         },
         permission: PermissionIdentifier.EXECUTE_PIPELINE
       }}
-      featuresProps={getFeaturePropsForRunPipelineButton(row.original.modules)}
+      featuresProps={getFeaturePropsForRunPipelineButton({ modules: row.original.modules, getString })}
       onClick={e => {
         e.stopPropagation()
         runPipeline()

@@ -54,6 +54,7 @@ import { ResourceType } from '@rbac/interfaces/ResourceType'
 import { PermissionIdentifier } from '@rbac/interfaces/PermissionIdentifier'
 import { StageErrorContext } from '@pipeline/context/StageErrorContext'
 import { DeployTabs } from '@cd/components/PipelineStudio/DeployStageSetupShell/DeployStageSetupShellUtils'
+import { getServiceRefSchema } from '@cd/components/PipelineSteps/PipelineStepsUtil'
 import css from './DeployServiceStep.module.scss'
 
 const logger = loggerFor(ModuleName.CD)
@@ -404,7 +405,7 @@ const DeployServiceWidget: React.FC<DeployServiceProps> = ({
           ...{ serviceRef }
         }}
         validationSchema={Yup.object().shape({
-          serviceRef: Yup.string().trim().required(getString('cd.pipelineSteps.serviceTab.serviceIsRequired'))
+          serviceRef: getServiceRefSchema(getString)
         })}
       >
         {formik => {
@@ -732,7 +733,7 @@ export class DeployServiceStep extends Step<DeployServiceData> {
     viewType
   }: ValidateInputSetProps<DeployServiceData>): FormikErrors<DeployServiceData> {
     const errors = {} as any
-    const isRequired = viewType === StepViewType.DeploymentForm
+    const isRequired = viewType === StepViewType.DeploymentForm || viewType === StepViewType.TriggerForm
     if (
       isEmpty(data?.serviceRef) &&
       isRequired &&

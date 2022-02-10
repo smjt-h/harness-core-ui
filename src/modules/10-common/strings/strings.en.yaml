@@ -69,6 +69,7 @@ jexlExpression: JEXL Expression
 bash: Bash
 shell: Shell
 powershell: Powershell
+pwsh: Pwsh
 input: Input
 refresh: Refresh
 goBack: Go Back
@@ -303,7 +304,7 @@ git:
   installationId: 'GitHub Installation Id'
   applicationId: 'GitHub Application Id'
   privateKey: 'GitHub Private Key'
-  currentUserLabel: 'Using the Git credentials of {{user}}'
+  currentUserLabel: 'Using the Git credentials of {{{user}}}'
   noUserLabel: 'We don’t have your git credentials for the selected folder. Please update the credentials in user profile.'
   addUserCredentialLabel: Update in user profile
   saveResourceLabel: 'Save {{resource}} to Git'
@@ -651,6 +652,12 @@ feature:
   keepGettingShipDone:
     title: Keep Getting Ship Done!
     requestUpgrade: Request Upgrade
+  levelUp:
+    description: Nice work! You’ve reached our plan limits.
+    limitMessage:
+      description: You've used {{limits}}
+      thisMonth: This Month
+    planMessage: is supported in {{plan}} plan(s).
 repositoryName: Repository Name
 mostActiveServices: Most active services
 allErrors: All Errors

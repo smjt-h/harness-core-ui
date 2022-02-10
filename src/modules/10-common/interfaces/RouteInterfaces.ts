@@ -48,6 +48,11 @@ export interface PipelinePathProps extends ProjectPathProps {
   pipelineIdentifier: string
 }
 
+export interface PipelineLogsPathProps extends ExecutionPathProps {
+  stageIdentifier: string
+  stepIndentifier: string
+}
+
 export type TemplateType =
   | 'Step'
   | 'Stage'

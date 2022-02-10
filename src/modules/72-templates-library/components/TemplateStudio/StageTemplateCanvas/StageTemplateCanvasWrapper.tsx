@@ -19,8 +19,9 @@ import type { PipelineInfoConfig } from 'services/cd-ng'
 import { TemplateContext } from '@templates-library/components/TemplateStudio/TemplateContext/TemplateContext'
 import type { TemplateFormRef } from '@templates-library/components/TemplateStudio/TemplateStudio'
 import { DefaultPipeline } from '@pipeline/components/PipelineStudio/PipelineContext/PipelineActions'
-import type { ProjectPathProps } from '@common/interfaces/RouteInterfaces'
+import type { ProjectPathProps, GitQueryParams } from '@common/interfaces/RouteInterfaces'
 import { sanitize } from '@common/utils/JSONUtils'
+import { useQueryParams } from '@common/hooks'
 
 const StageTemplateCanvasWrapper = (_props: unknown, formikRef: TemplateFormRef) => {
   const {
@@ -29,6 +30,7 @@ const StageTemplateCanvasWrapper = (_props: unknown, formikRef: TemplateFormRef)
     isReadonly
   } = React.useContext(TemplateContext)
   const { accountId, projectIdentifier, orgIdentifier } = useParams<ProjectPathProps>()
+  const { branch, repoIdentifier } = useQueryParams<GitQueryParams>()
 
   const createPipelineFromTemplate = React.useCallback(
     () =>
@@ -59,7 +61,7 @@ const StageTemplateCanvasWrapper = (_props: unknown, formikRef: TemplateFormRef)
   if (pipeline) {
     return (
       <TemplatePipelineProvider
-        queryParams={{ accountIdentifier: accountId, orgIdentifier, projectIdentifier }}
+        queryParams={{ accountIdentifier: accountId, orgIdentifier, projectIdentifier, repoIdentifier, branch }}
         initialValue={pipeline as PipelineInfoConfig}
         onUpdatePipeline={onUpdatePipeline}
         isReadOnly={isReadonly}

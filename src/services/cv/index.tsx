@@ -11183,6 +11183,95 @@ export const getVerifyStepTransactionNamesPromise = (
     GetVerifyStepTransactionNamesPathParams
   >(getConfig('cv/api'), `/verify-step/${verifyStepExecutionId}/all-transaction-names`, props, signal)
 
+export interface GetVerifyStepDeploymentActivitySummaryQueryParams {
+  accountId: string
+}
+
+export interface GetVerifyStepDeploymentActivitySummaryPathParams {
+  verifyStepExecutionId: string
+}
+
+export type GetVerifyStepDeploymentActivitySummaryProps = Omit<
+  GetProps<
+    RestResponseDeploymentActivitySummaryDTO,
+    unknown,
+    GetVerifyStepDeploymentActivitySummaryQueryParams,
+    GetVerifyStepDeploymentActivitySummaryPathParams
+  >,
+  'path'
+> &
+  GetVerifyStepDeploymentActivitySummaryPathParams
+
+/**
+ * get summary of deployment activity
+ */
+export const GetVerifyStepDeploymentActivitySummary = ({
+  verifyStepExecutionId,
+  ...props
+}: GetVerifyStepDeploymentActivitySummaryProps) => (
+  <Get<
+    RestResponseDeploymentActivitySummaryDTO,
+    unknown,
+    GetVerifyStepDeploymentActivitySummaryQueryParams,
+    GetVerifyStepDeploymentActivitySummaryPathParams
+  >
+    path={`/verify-step/${verifyStepExecutionId}/deployment-activity-summary`}
+    base={getConfig('cv/api')}
+    {...props}
+  />
+)
+
+export type UseGetVerifyStepDeploymentActivitySummaryProps = Omit<
+  UseGetProps<
+    RestResponseDeploymentActivitySummaryDTO,
+    unknown,
+    GetVerifyStepDeploymentActivitySummaryQueryParams,
+    GetVerifyStepDeploymentActivitySummaryPathParams
+  >,
+  'path'
+> &
+  GetVerifyStepDeploymentActivitySummaryPathParams
+
+/**
+ * get summary of deployment activity
+ */
+export const useGetVerifyStepDeploymentActivitySummary = ({
+  verifyStepExecutionId,
+  ...props
+}: UseGetVerifyStepDeploymentActivitySummaryProps) =>
+  useGet<
+    RestResponseDeploymentActivitySummaryDTO,
+    unknown,
+    GetVerifyStepDeploymentActivitySummaryQueryParams,
+    GetVerifyStepDeploymentActivitySummaryPathParams
+  >(
+    (paramsInPath: GetVerifyStepDeploymentActivitySummaryPathParams) =>
+      `/verify-step/${paramsInPath.verifyStepExecutionId}/deployment-activity-summary`,
+    { base: getConfig('cv/api'), pathParams: { verifyStepExecutionId }, ...props }
+  )
+
+/**
+ * get summary of deployment activity
+ */
+export const getVerifyStepDeploymentActivitySummaryPromise = (
+  {
+    verifyStepExecutionId,
+    ...props
+  }: GetUsingFetchProps<
+    RestResponseDeploymentActivitySummaryDTO,
+    unknown,
+    GetVerifyStepDeploymentActivitySummaryQueryParams,
+    GetVerifyStepDeploymentActivitySummaryPathParams
+  > & { verifyStepExecutionId: string },
+  signal?: RequestInit['signal']
+) =>
+  getUsingFetch<
+    RestResponseDeploymentActivitySummaryDTO,
+    unknown,
+    GetVerifyStepDeploymentActivitySummaryQueryParams,
+    GetVerifyStepDeploymentActivitySummaryPathParams
+  >(getConfig('cv/api'), `/verify-step/${verifyStepExecutionId}/deployment-activity-summary`, props, signal)
+
 export interface GetVerifyStepDeploymentMetricsQueryParams {
   accountId: string
   filter?: string
@@ -11280,3 +11369,89 @@ export const getVerifyStepDeploymentMetricsPromise = (
     GetVerifyStepDeploymentMetricsQueryParams,
     GetVerifyStepDeploymentMetricsPathParams
   >(getConfig('cv/api'), `/verify-step/${verifyStepExecutionId}/deployment-timeseries-data`, props, signal)
+
+export interface GetVerifyStepHealthSourcesQueryParams {
+  accountId: string
+}
+
+export interface GetVerifyStepHealthSourcesPathParams {
+  verifyStepExecutionId: string
+}
+
+export type GetVerifyStepHealthSourcesProps = Omit<
+  GetProps<
+    RestResponseSetHealthSourceDTO,
+    unknown,
+    GetVerifyStepHealthSourcesQueryParams,
+    GetVerifyStepHealthSourcesPathParams
+  >,
+  'path'
+> &
+  GetVerifyStepHealthSourcesPathParams
+
+/**
+ * get health sources  for an activity
+ */
+export const GetVerifyStepHealthSources = ({ verifyStepExecutionId, ...props }: GetVerifyStepHealthSourcesProps) => (
+  <Get<
+    RestResponseSetHealthSourceDTO,
+    unknown,
+    GetVerifyStepHealthSourcesQueryParams,
+    GetVerifyStepHealthSourcesPathParams
+  >
+    path={`/verify-step/${verifyStepExecutionId}/healthSources`}
+    base={getConfig('cv/api')}
+    {...props}
+  />
+)
+
+export type UseGetVerifyStepHealthSourcesProps = Omit<
+  UseGetProps<
+    RestResponseSetHealthSourceDTO,
+    unknown,
+    GetVerifyStepHealthSourcesQueryParams,
+    GetVerifyStepHealthSourcesPathParams
+  >,
+  'path'
+> &
+  GetVerifyStepHealthSourcesPathParams
+
+/**
+ * get health sources  for an activity
+ */
+export const useGetVerifyStepHealthSources = ({
+  verifyStepExecutionId,
+  ...props
+}: UseGetVerifyStepHealthSourcesProps) =>
+  useGet<
+    RestResponseSetHealthSourceDTO,
+    unknown,
+    GetVerifyStepHealthSourcesQueryParams,
+    GetVerifyStepHealthSourcesPathParams
+  >(
+    (paramsInPath: GetVerifyStepHealthSourcesPathParams) =>
+      `/verify-step/${paramsInPath.verifyStepExecutionId}/healthSources`,
+    { base: getConfig('cv/api'), pathParams: { verifyStepExecutionId }, ...props }
+  )
+
+/**
+ * get health sources  for an activity
+ */
+export const getVerifyStepHealthSourcesPromise = (
+  {
+    verifyStepExecutionId,
+    ...props
+  }: GetUsingFetchProps<
+    RestResponseSetHealthSourceDTO,
+    unknown,
+    GetVerifyStepHealthSourcesQueryParams,
+    GetVerifyStepHealthSourcesPathParams
+  > & { verifyStepExecutionId: string },
+  signal?: RequestInit['signal']
+) =>
+  getUsingFetch<
+    RestResponseSetHealthSourceDTO,
+    unknown,
+    GetVerifyStepHealthSourcesQueryParams,
+    GetVerifyStepHealthSourcesPathParams
+  >(getConfig('cv/api'), `/verify-step/${verifyStepExecutionId}/healthSources`, props, signal)

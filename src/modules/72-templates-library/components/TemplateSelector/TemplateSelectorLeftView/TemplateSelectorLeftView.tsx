@@ -115,7 +115,7 @@ export const TemplateSelectorLeftView: React.FC<TemplateSelectorLeftViewProps> =
       size: 20,
       includeAllTemplatesAvailableAtScope: selectedScope.value === 'all',
       ...(isGitSyncEnabled &&
-        selectedScope.value === Scope.PROJECT && {
+        (selectedScope.value === Scope.PROJECT || selectedScope.value === 'all') && {
           repoIdentifier: repoIdentifier,
           branch: branch,
           getDefaultFromOtherRepo: true

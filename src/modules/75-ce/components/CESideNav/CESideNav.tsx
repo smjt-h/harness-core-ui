@@ -19,6 +19,8 @@ import { returnLaunchUrl } from '@common/utils/routeUtils'
 import NavExpandable from '@common/navigation/NavExpandable/NavExpandable'
 import { LaunchButton } from '@common/components/LaunchButton/LaunchButton'
 import { USER_JOURNEY_EVENTS } from '@ce/TrackingEventsConstants'
+import { useFeatureFlag } from '@common/hooks/useFeatureFlag'
+import { FeatureFlag } from '@common/featureFlags'
 import css from './CESideNav.module.scss'
 
 const feedbackOptions = [
@@ -130,7 +132,7 @@ const SideNavItems = () => {
   const { accountId } = useParams<PipelinePathProps>()
   const { getString } = useStrings()
   const { trackEvent } = useTelemetry()
-  const showAnomalies = localStorage.getItem('showAnomalies')
+  const isAnomaliesEnabled = useFeatureFlag(FeatureFlag.CCM_ANOMALY_DETECTION_NG)
 
   return (
     <Layout.Vertical spacing="small">
@@ -145,7 +147,7 @@ const SideNavItems = () => {
         />
         <SidebarLink label={getString('ce.budgets.sideNavText')} to={routes.toCEBudgets({ accountId })} />
 
-        {showAnomalies && (
+        {isAnomaliesEnabled && (
           <SidebarLink
             label={getString('ce.anomalyDetection.sideNavText')}
             to={routes.toCEAnomalyDetection({ accountId })}

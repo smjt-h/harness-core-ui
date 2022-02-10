@@ -1,0 +1,153 @@
+// Jest Snapshot v1, https://goo.gl/fbAQLP
+
+exports[`Test SCMCheck SCMCheck should render currentUserLabel if SCM is present 1`] = `
+<div>
+  <div
+    class="StyledProps--font StyledProps--main StyledProps--margin-bottom-large"
+  >
+    <div
+      class="Layout--horizontal StyledProps--main userInfo StyledProps--flex StyledProps--flex-alignItems-center"
+    >
+      <div
+        class="Avatar--Avatar Avatar--contentStyle"
+      >
+        <span
+          class="bp3-popover-wrapper Avatar--avatarPopOver"
+        >
+          <span
+            class="bp3-popover-target"
+          >
+            <div
+              class="Avatar--AvatarInner"
+              style="border-radius: 100%; line-height: 18px; width: 24px; height: 24px; font-size: 10px;"
+              tabindex="0"
+            >
+              D
+            </div>
+          </span>
+        </span>
+      </div>
+      <p
+        class="StyledProps--font StyledProps--main StyledProps--color StyledProps--color-grey700"
+      >
+        common.git.currentUserLabel
+      </p>
+    </div>
+    <p
+      class="StyledProps--font StyledProps--main StyledProps--font-variation-h3 StyledProps--margin-bottom-large StyledProps--margin-top-small"
+    >
+      Save to git
+    </p>
+  </div>
+</div>
+`;
+
+exports[`Test SCMCheck SCMCheck should render currentUserLabel using email if name is not present 1`] = `
+<div>
+  <div
+    class="StyledProps--font StyledProps--main StyledProps--margin-bottom-large"
+  >
+    <div
+      class="Layout--horizontal StyledProps--main userInfo StyledProps--flex StyledProps--flex-alignItems-center"
+    >
+      <div
+        class="Avatar--Avatar Avatar--contentStyle"
+      >
+        <span
+          class="bp3-popover-wrapper Avatar--avatarPopOver"
+        >
+          <span
+            class="bp3-popover-target"
+          >
+            <div
+              class="Avatar--AvatarInner"
+              style="border-radius: 100%; line-height: 18px; width: 24px; height: 24px; font-size: 10px;"
+              tabindex="0"
+            >
+              M
+            </div>
+          </span>
+        </span>
+      </div>
+      <p
+        class="StyledProps--font StyledProps--main StyledProps--color StyledProps--color-grey700"
+      >
+        common.git.currentUserLabel
+      </p>
+    </div>
+    <p
+      class="StyledProps--font StyledProps--main StyledProps--font-variation-h3 StyledProps--margin-bottom-large StyledProps--margin-top-small"
+    >
+      Save to git
+    </p>
+  </div>
+</div>
+`;
+
+exports[`Test SCMCheck SCMCheck should render warning for missing SCM with link to addUserCredentialLabel 1`] = `
+<div>
+  <div
+    class="StyledProps--font StyledProps--main StyledProps--margin-bottom-large"
+  >
+    <p
+      class="StyledProps--font StyledProps--main StyledProps--font-variation-h3 StyledProps--margin-bottom-large StyledProps--margin-top-small"
+    >
+      Save to git
+    </p>
+    <div
+      class="Layout--horizontal Layout--layout-spacing-small StyledProps--main addUserContainer"
+    >
+      <span
+        class="bp3-icon bp3-icon-warning-sign StyledProps--main StyledProps--color StyledProps--color-orange700"
+        icon="warning-sign"
+      >
+        <svg
+          data-icon="warning-sign"
+          height="16"
+          viewBox="0 0 16 16"
+          width="16"
+        >
+          <desc>
+            warning-sign
+          </desc>
+          <path
+            d="M15.84 13.5l.01-.01-7-12-.01.01c-.17-.3-.48-.5-.85-.5s-.67.2-.85.5l-.01-.01-7 12 .01.01c-.09.15-.15.31-.15.5 0 .55.45 1 1 1h14c.55 0 1-.45 1-1 0-.19-.06-.35-.15-.5zm-6.85-.51h-2v-2h2v2zm0-3h-2v-5h2v5z"
+            fill-rule="evenodd"
+          />
+        </svg>
+      </span>
+      <div>
+        <p
+          class="StyledProps--font StyledProps--main StyledProps--font-variation-small StyledProps--color StyledProps--color-black"
+        >
+          common.git.noUserLabel
+        </p>
+        <a
+          href="/account/dummy/user/profile"
+          target="_blank"
+        >
+          <span
+            class="StyledProps--font StyledProps--main StyledProps--inline StyledProps--font-variation-small-bold StyledProps--color StyledProps--color-primary7"
+          >
+            common.git.addUserCredentialLabel
+          </span>
+        </a>
+      </div>
+    </div>
+  </div>
+</div>
+`;
+
+exports[`Test SCMCheck SCMCheck while loading should render none of user info or missing SCM warning 1`] = `
+<div>
+  <div
+    class="StyledProps--font StyledProps--main StyledProps--margin-bottom-large"
+  >
+    <p
+      class="StyledProps--font StyledProps--main StyledProps--font-variation-h3 StyledProps--margin-bottom-large StyledProps--margin-top-small"
+    >
+      Save to git
+    </p>
+  </div>
+</div>
+`;

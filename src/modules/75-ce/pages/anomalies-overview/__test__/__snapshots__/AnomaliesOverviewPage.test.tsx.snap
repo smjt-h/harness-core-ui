@@ -24,7 +24,7 @@ exports[`test case for anomalies detection overview page should be able to rende
       style="align-items: center;"
     >
       <div
-        class="bp3-popover-wrapper DropDown--main groupbyFilter"
+        class="bp3-popover-wrapper DropDown--main DropDown--disabled groupbyFilter"
       >
         <div
           class="bp3-popover-target"
@@ -45,7 +45,7 @@ exports[`test case for anomalies detection overview page should be able to rende
                   data-testid="dropdown-value"
                   style="--text-line-clamp: 1;"
                 >
-                  GroupBy: Perspectives
+                  ce.anomalyDetection.filters.groupByNonePlaceholder
                 </p>
               </div>
               <div
@@ -77,7 +77,7 @@ exports[`test case for anomalies detection overview page should be able to rende
       style="flex-grow: 1;"
     />
     <div
-      class="bp3-popover-wrapper DropDown--main"
+      class="bp3-popover-wrapper DropDown--main DropDown--disabled"
     >
       <div
         class="bp3-popover-target"
@@ -98,7 +98,7 @@ exports[`test case for anomalies detection overview page should be able to rende
                 data-testid="dropdown-value"
                 style="--text-line-clamp: 1;"
               >
-                All Perspectives
+                ce.anomalyDetection.filters.groupByPerspectivePlaceholder
               </p>
             </div>
             <div
@@ -126,7 +126,7 @@ exports[`test case for anomalies detection overview page should be able to rende
       </div>
     </div>
     <div
-      class="bp3-popover-wrapper DropDown--main"
+      class="bp3-popover-wrapper DropDown--main DropDown--disabled"
     >
       <div
         class="bp3-popover-target"
@@ -147,7 +147,7 @@ exports[`test case for anomalies detection overview page should be able to rende
                 data-testid="dropdown-value"
                 style="--text-line-clamp: 1;"
               >
-                All Cloud Providers
+                ce.anomalyDetection.filters.groupByCloudProvidersPlaceholder
               </p>
             </div>
             <div
@@ -260,21 +260,39 @@ exports[`test case for anomalies detection overview page should be able to rende
       class="StyledProps--font StyledProps--main StyledProps--padding-right-xxxlarge StyledProps--padding-left-xxxlarge StyledProps--padding-bottom-medium StyledProps--padding-top-medium"
     >
       <div
-        class="Layout--horizontal StyledProps--main"
+        class="Layout--horizontal StyledProps--main searchFilterWrapper"
       >
         <div
-          class="TextInput--main searchInput"
+          class="bp3-input-group ui-search-box ExpandingSearchInput--main searchInput  ExpandingSearchInput--alwaysExpanded ExpandingSearchInput--light"
+          data-name=""
         >
-          <div
-            class="bp3-input-group"
+          <span
+            class="bp3-icon StyledProps--main ExpandingSearchInput--icon StyledProps--color StyledProps--color-grey700"
+            data-icon="thinner-search"
           >
-            <input
-              class="bp3-input"
-              placeholder="search"
-              type="text"
-              value=""
-            />
-          </div>
+            <svg
+              fill="none"
+              height="14"
+              viewBox="0 0 16 16"
+              width="14"
+              xmlns="http://www.w3.org/2000/svg"
+            >
+              <path
+                d="M7.125 13.25c1.617 0 3.32-.695 4.375-1.75L15 15l-3.5-3.5c1.021-1.005 1.75-2.894 1.75-4.375a6.125 6.125 0 10-6.125 6.125z"
+                stroke="currentColor"
+                stroke-linecap="round"
+                stroke-linejoin="round"
+              />
+            </svg>
+          </span>
+          <input
+            class="bp3-input  ExpandingSearchInput--filter"
+            dir="auto"
+            placeholder="search"
+            style="padding-right: 38px;"
+            type="search"
+            value=""
+          />
         </div>
         <button
           class="bp3-button Button--button StyledProps--font StyledProps--main Button--with-current-color Button--withLeftIcon Button--variation Button--variation-secondary Button--size"
@@ -319,29 +337,29 @@ exports[`test case for anomalies detection overview page should be able to rende
           class="Layout--vertical Layout--layout-spacing-small StyledProps--main"
         >
           <div
-            class="StyledProps--font StyledProps--main StyledProps--padding-medium StyledProps--background-grey100 StyledProps--border StyledProps--border-color-grey100"
+            class="bp3-card bp3-elevation-0 Card--card"
           >
             <p
-              class="StyledProps--font StyledProps--main StyledProps--color StyledProps--color-grey600 StyledProps--font-weight-semi-bold StyledProps--font-size-small"
+              class="StyledProps--font StyledProps--main StyledProps--color StyledProps--color-grey600 StyledProps--font-variation-small-semi"
             >
               ce.anomalyDetection.summary.totalCountText
             </p>
             <p
-              class="StyledProps--font StyledProps--main StyledProps--font-size-medium StyledProps--font-weight-bold StyledProps--intent-danger"
+              class="StyledProps--font StyledProps--main StyledProps--font-variation-h4 StyledProps--intent-danger"
             >
               102
             </p>
           </div>
           <div
-            class="StyledProps--font StyledProps--main StyledProps--padding-medium StyledProps--background-red100 StyledProps--border StyledProps--border-color-red100 StyledProps--intent-danger"
+            class="bp3-card bp3-elevation-0 Card--card"
           >
             <p
-              class="StyledProps--font StyledProps--main StyledProps--color StyledProps--color-red500 StyledProps--font-weight-semi-bold StyledProps--font-size-small"
+              class="StyledProps--font StyledProps--main StyledProps--font-variation-small-semi StyledProps--color StyledProps--color-red500"
             >
               ce.anomalyDetection.summary.costImpacted
             </p>
             <p
-              class="StyledProps--font StyledProps--main StyledProps--font-size-medium StyledProps--font-weight-bold StyledProps--intent-danger"
+              class="StyledProps--font StyledProps--main StyledProps--font-variation-h4 StyledProps--intent-danger"
             >
               $17586.99
             </p>
@@ -352,16 +370,16 @@ exports[`test case for anomalies detection overview page should be able to rende
           class="summaryCharts"
         >
           <p
-            class="StyledProps--font StyledProps--main StyledProps--color StyledProps--color-grey500 StyledProps--font-weight-semi-bold StyledProps--font-size-small"
+            class="StyledProps--font StyledProps--main StyledProps--color StyledProps--color-grey500 StyledProps--font-variation-small-semi"
           >
-            CE.ANOMALYDETECTION.SUMMARY.PERSPECTIVEWISE
+            ce.anomalyDetection.summary.perspectiveWise
           </p>
         </div>
         <div
           class="summaryCharts"
         >
           <p
-            class="StyledProps--font StyledProps--main StyledProps--color StyledProps--color-grey500 StyledProps--font-weight-semi-bold StyledProps--font-size-small"
+            class="StyledProps--font StyledProps--main StyledProps--color StyledProps--color-grey500 StyledProps--font-variation-small-semi"
           >
             ce.anomalyDetection.summary.cloudProvidersWise
           </p>
@@ -370,359 +388,10 @@ exports[`test case for anomalies detection overview page should be able to rende
           class="summaryCharts"
         >
           <p
-            class="StyledProps--font StyledProps--main StyledProps--color StyledProps--color-grey500 StyledProps--font-weight-semi-bold StyledProps--font-size-small"
+            class="StyledProps--font StyledProps--main StyledProps--color StyledProps--color-grey500 StyledProps--font-variation-small-semi"
           >
             ce.anomalyDetection.summary.statusWise
           </p>
-        </div>
-      </div>
-      <div
-        class="TableV2--table tableView"
-      >
-        <div
-          class="TableV2--header"
-          role="row"
-        >
-          <div
-            class="TableV2--cell TableV2--sortable"
-            colspan="1"
-            role="columnheader"
-            style="width: 25%;"
-            title="Toggle SortBy"
-          >
-            <p
-              class="StyledProps--font StyledProps--main StyledProps--font-variation-table-headers"
-            >
-              PERSPECTIVE
-            </p>
-            <span
-              class="bp3-icon bp3-icon-double-caret-vertical StyledProps--main StyledProps--padding-left-small"
-              icon="double-caret-vertical"
-            >
-              <svg
-                data-icon="double-caret-vertical"
-                height="15"
-                viewBox="0 0 16 16"
-                width="15"
-              >
-                <desc>
-                  double-caret-vertical
-                </desc>
-                <path
-                  d="M5 7h6a1.003 1.003 0 00.71-1.71l-3-3C8.53 2.11 8.28 2 8 2s-.53.11-.71.29l-3 3A1.003 1.003 0 005 7zm6 2H5a1.003 1.003 0 00-.71 1.71l3 3c.18.18.43.29.71.29s.53-.11.71-.29l3-3A1.003 1.003 0 0011 9z"
-                  fill-rule="evenodd"
-                />
-              </svg>
-            </span>
-          </div>
-          <div
-            class="TableV2--cell TableV2--sortable"
-            colspan="1"
-            role="columnheader"
-            style="width: 25%;"
-            title="Toggle SortBy"
-          >
-            <p
-              class="StyledProps--font StyledProps--main StyledProps--font-variation-table-headers"
-            >
-              ANOMALOUS SPEND
-            </p>
-            <span
-              class="bp3-icon bp3-icon-double-caret-vertical StyledProps--main StyledProps--padding-left-small"
-              icon="double-caret-vertical"
-            >
-              <svg
-                data-icon="double-caret-vertical"
-                height="15"
-                viewBox="0 0 16 16"
-                width="15"
-              >
-                <desc>
-                  double-caret-vertical
-                </desc>
-                <path
-                  d="M5 7h6a1.003 1.003 0 00.71-1.71l-3-3C8.53 2.11 8.28 2 8 2s-.53.11-.71.29l-3 3A1.003 1.003 0 005 7zm6 2H5a1.003 1.003 0 00-.71 1.71l3 3c.18.18.43.29.71.29s.53-.11.71-.29l3-3A1.003 1.003 0 0011 9z"
-                  fill-rule="evenodd"
-                />
-              </svg>
-            </span>
-          </div>
-          <div
-            class="TableV2--cell TableV2--sortable"
-            colspan="1"
-            role="columnheader"
-            style="width: 25%;"
-            title="Toggle SortBy"
-          >
-            <p
-              class="StyledProps--font StyledProps--main StyledProps--font-variation-table-headers"
-            >
-              TOP ANOMALY BY SPEND
-            </p>
-            <span
-              class="bp3-icon bp3-icon-double-caret-vertical StyledProps--main StyledProps--padding-left-small"
-              icon="double-caret-vertical"
-            >
-              <svg
-                data-icon="double-caret-vertical"
-                height="15"
-                viewBox="0 0 16 16"
-                width="15"
-              >
-                <desc>
-                  double-caret-vertical
-                </desc>
-                <path
-                  d="M5 7h6a1.003 1.003 0 00.71-1.71l-3-3C8.53 2.11 8.28 2 8 2s-.53.11-.71.29l-3 3A1.003 1.003 0 005 7zm6 2H5a1.003 1.003 0 00-.71 1.71l3 3c.18.18.43.29.71.29s.53-.11.71-.29l3-3A1.003 1.003 0 0011 9z"
-                  fill-rule="evenodd"
-                />
-              </svg>
-            </span>
-          </div>
-          <div
-            class="TableV2--cell TableV2--sortable"
-            colspan="1"
-            role="columnheader"
-            style="width: 25%;"
-            title="Toggle SortBy"
-          >
-            <p
-              class="StyledProps--font StyledProps--main StyledProps--font-variation-table-headers"
-            >
-              ALERTS GO TO
-            </p>
-            <span
-              class="bp3-icon bp3-icon-double-caret-vertical StyledProps--main StyledProps--padding-left-small"
-              icon="double-caret-vertical"
-            >
-              <svg
-                data-icon="double-caret-vertical"
-                height="15"
-                viewBox="0 0 16 16"
-                width="15"
-              >
-                <desc>
-                  double-caret-vertical
-                </desc>
-                <path
-                  d="M5 7h6a1.003 1.003 0 00.71-1.71l-3-3C8.53 2.11 8.28 2 8 2s-.53.11-.71.29l-3 3A1.003 1.003 0 005 7zm6 2H5a1.003 1.003 0 00-.71 1.71l3 3c.18.18.43.29.71.29s.53-.11.71-.29l3-3A1.003 1.003 0 0011 9z"
-                  fill-rule="evenodd"
-                />
-              </svg>
-            </span>
-          </div>
-        </div>
-        <div
-          class="TableV2--body"
-        >
-          <div
-            class="TableV2--row TableV2--card"
-            role="row"
-          >
-            <div
-              class="TableV2--cell"
-              role="cell"
-              style="width: 25%;"
-            >
-              User 1
-            </div>
-            <div
-              class="TableV2--cell"
-              role="cell"
-              style="width: 25%;"
-            >
-              20
-            </div>
-            <div
-              class="TableV2--cell"
-              role="cell"
-              style="width: 25%;"
-            >
-              aws
-            </div>
-            <div
-              class="TableV2--cell"
-              role="cell"
-              style="width: 25%;"
-            >
-              jyoti.arora1@harness.io
-            </div>
-          </div>
-          <div
-            class="TableV2--row TableV2--card"
-            role="row"
-          >
-            <div
-              class="TableV2--cell"
-              role="cell"
-              style="width: 25%;"
-            >
-              User 2
-            </div>
-            <div
-              class="TableV2--cell"
-              role="cell"
-              style="width: 25%;"
-            >
-              25
-            </div>
-            <div
-              class="TableV2--cell"
-              role="cell"
-              style="width: 25%;"
-            >
-              aws
-            </div>
-            <div
-              class="TableV2--cell"
-              role="cell"
-              style="width: 25%;"
-            >
-              jyoti.arora2@harness.io
-            </div>
-          </div>
-          <div
-            class="TableV2--row TableV2--card"
-            role="row"
-          >
-            <div
-              class="TableV2--cell"
-              role="cell"
-              style="width: 25%;"
-            >
-              User 3
-            </div>
-            <div
-              class="TableV2--cell"
-              role="cell"
-              style="width: 25%;"
-            >
-              25
-            </div>
-            <div
-              class="TableV2--cell"
-              role="cell"
-              style="width: 25%;"
-            >
-              aws
-            </div>
-            <div
-              class="TableV2--cell"
-              role="cell"
-              style="width: 25%;"
-            >
-              jyoti.arora3@harness.io
-            </div>
-          </div>
-          <div
-            class="TableV2--row TableV2--card"
-            role="row"
-          >
-            <div
-              class="TableV2--cell"
-              role="cell"
-              style="width: 25%;"
-            >
-              User 4
-            </div>
-            <div
-              class="TableV2--cell"
-              role="cell"
-              style="width: 25%;"
-            >
-              25
-            </div>
-            <div
-              class="TableV2--cell"
-              role="cell"
-              style="width: 25%;"
-            >
-              aws
-            </div>
-            <div
-              class="TableV2--cell"
-              role="cell"
-              style="width: 25%;"
-            >
-              jyoti.arora4@harness.io
-            </div>
-          </div>
-        </div>
-        <div
-          class="Layout--horizontal StyledProps--main TableV2--pagination Pagination--container StyledProps--padding-top-medium StyledProps--padding-bottom-medium StyledProps--flex StyledProps--flex-align-center-center StyledProps--flex-distribution-space-between"
-        >
-          <span
-            class="StyledProps--font StyledProps--main StyledProps--inline StyledProps--font-variation-small-semi"
-          >
-            (1 - 10) of 100
-          </span>
-          <div
-            class="Layout--horizontal StyledProps--main"
-          >
-            <button
-              class="bp3-button bp3-disabled Button--button StyledProps--font StyledProps--main Pagination--roundedButton Pagination--buttonLeft Button--with-current-color Button--withLeftIcon Button--size Button--small"
-              disabled=""
-              tabindex="-1"
-              type="button"
-            >
-              <span
-                class="bp3-icon bp3-icon-arrow-left StyledProps--main StyledProps--padding-right-xsmall"
-                icon="arrow-left"
-              >
-                <svg
-                  data-icon="arrow-left"
-                  height="12"
-                  viewBox="0 0 16 16"
-                  width="12"
-                >
-                  <desc>
-                    arrow-left
-                  </desc>
-                  <path
-                    d="M13.99 6.99H4.41L7.7 3.7a1.003 1.003 0 00-1.42-1.42l-5 5a1.014 1.014 0 000 1.42l5 5a1.003 1.003 0 001.42-1.42L4.41 8.99H14c.55 0 1-.45 1-1s-.46-1-1.01-1z"
-                    fill-rule="evenodd"
-                  />
-                </svg>
-              </span>
-              <span
-                class="bp3-button-text"
-              >
-                Prev
-              </span>
-            </button>
-            <button
-              class="bp3-button Button--button StyledProps--font StyledProps--main Pagination--roundedButton Pagination--buttonRight Button--with-current-color Button--withRightIcon Button--size Button--small"
-              type="button"
-            >
-              <span
-                class="bp3-button-text"
-              >
-                Next
-              </span>
-              <span
-                class="bp3-icon bp3-icon-arrow-right StyledProps--main"
-                icon="arrow-right"
-              >
-                <svg
-                  data-icon="arrow-right"
-                  height="12"
-                  viewBox="0 0 16 16"
-                  width="12"
-                >
-                  <desc>
-                    arrow-right
-                  </desc>
-                  <path
-                    d="M14.7 7.29l-5-5a.965.965 0 00-.71-.3 1.003 1.003 0 00-.71 1.71l3.29 3.29H1.99c-.55 0-1 .45-1 1s.45 1 1 1h9.59l-3.29 3.29a1.003 1.003 0 001.42 1.42l5-5c.18-.18.29-.43.29-.71s-.12-.52-.3-.7z"
-                    fill-rule="evenodd"
-                  />
-                </svg>
-              </span>
-            </button>
-          </div>
-          <span>
-            Showing 10 per page
-          </span>
         </div>
       </div>
     </div>

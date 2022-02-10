@@ -5,7 +5,7 @@
  * https://polyformproject.org/wp-content/uploads/2020/06/PolyForm-Shield-1.0.0.txt.
  */
 
-.pageContainer {
+.customDashboards {
   height: 100%;
   width: 100%;
 
@@ -84,6 +84,10 @@
     top: 146px;
     overflow: scroll;
     height: calc(100vh - 294px);
+  }
+
+  .createButton {
+    margin-right: var(--spacing-11) !important;
   }
 
   .predefinedTags {

@@ -181,14 +181,6 @@ describe('SLOCardHeader', () => {
 
     await waitFor(() => {
       expect(screen.queryByText('common.validation.valueMustBeGreaterThanOrEqualToN')).not.toBeInTheDocument()
-      expect(screen.getByText('common.validation.valueMustBeLessThanOrEqualToN')).toBeInTheDocument()
-    })
-
-    setFieldValue({
-      container: dialogContainer!,
-      type: InputTypes.TEXTFIELD,
-      fieldId: 'errorBudgetIncrementPercentage',
-      value: '100'
     })
 
     setFieldValue({
@@ -222,7 +214,7 @@ describe('SLOCardHeader', () => {
     await waitFor(() => {
       expect(onResetErrorBudget).toBeCalledWith(dashboardWidgetsContent.sloIdentifier, {
         errorBudgetAtReset: 100,
-        errorBudgetIncrementPercentage: 100,
+        errorBudgetIncrementPercentage: 101,
         reason: 'REASON',
         remainingErrorBudgetAtReset: 60
       })

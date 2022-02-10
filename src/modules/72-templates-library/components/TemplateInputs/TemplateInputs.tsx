@@ -58,7 +58,10 @@ export const TemplateInputs: React.FC<TemplateInputsProps> = props => {
       accountIdentifier: defaultTo(template.accountId, ''),
       orgIdentifier: template.orgIdentifier,
       projectIdentifier: template.projectIdentifier,
-      versionLabel: defaultTo(template.versionLabel, '')
+      versionLabel: defaultTo(template.versionLabel, ''),
+      repoIdentifier: template.gitDetails?.repoIdentifier,
+      branch: template.gitDetails?.branch,
+      getDefaultFromOtherRepo: true
     }
   })
 

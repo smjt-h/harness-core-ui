@@ -20,20 +20,13 @@ import {
   FormInput,
   IconName,
   Card,
-  SelectOption,
-  shouldShowError
+  FontVariation
 } from '@wings-software/uicore'
 import cx from 'classnames'
 import * as Yup from 'yup'
-import { noop, pick, debounce, isEmpty, defaultTo } from 'lodash-es'
+import { noop, pick, defaultTo } from 'lodash-es'
 import { useToaster, StringUtils } from '@common/exports'
-import {
-  usePostGitSync,
-  GitSyncConfig,
-  getListOfBranchesByConnectorPromise,
-  useGetTestGitRepoConnectionResult,
-  ResponseConnectorValidationResult
-} from 'services/cd-ng'
+import { usePostGitSync, GitSyncConfig } from 'services/cd-ng'
 
 import { useStrings } from 'framework/strings'
 import { Connectors } from '@connectors/constants'
@@ -51,9 +44,14 @@ import {
   getRepoUrl
 } from '@gitsync/common/gitSyncUtils'
 import { NameId } from '@common/components/NameIdDescriptionTags/NameIdDescriptionTags'
-import { TestConnectionWidget, TestStatus } from '@common/components/TestConnectionWidget/TestConnectionWidget'
+import { TestStatus } from '@common/components/TestConnectionWidget/TestConnectionWidget'
 import { HARNESS_FOLDER_NAME_PLACEHOLDER, HARNESS_FOLDER_SUFFIX } from '@gitsync/common/Constants'
 import { getScopeFromDTO, ScopedObjectDTO } from '@common/components/EntityReference/EntityReference'
+import SCMCheck from '@common/components/SCMCheck/SCMCheck'
+import { useFeatureFlags } from '@common/hooks/useFeatureFlag'
+import { GitSyncStoreProvider } from 'framework/GitRepoStore/GitSyncStoreContext'
+import RepoBranchSelect from './RepoBranchSelect'
+import RepoTestConnection from './RepoTestConnection'
 import css from './GitSyncRepoForm.module.scss'
 
 export interface GitSyncRepoFormProps {
@@ -88,27 +86,30 @@ const getRepoUrlForConnectorType = (formValues: GitSyncFormInterface, repoNamePa
   return getRepoUrl(formValues.gitConnector?.connector?.spec?.url, repoName)
 }
 
+const getConnectorIdentifierWithScope = (scope: Scope, identifier: string): string => {
+  return scope === Scope.ORG || scope === Scope.ACCOUNT ? `${scope}.${identifier}` : identifier
+}
+
+const getConnectorTypeIcon = (isSelected: boolean, icon: ConnectorCardInterface['icon']): IconName =>
+  isSelected ? icon?.selected : icon?.default
+
+// Need SCM only with FF for 1st repo
+const needToAddSCM = (isNewUser: boolean, fullSync = false): boolean => isNewUser && fullSync
+
 const GitSyncRepoForm: React.FC<ModalConfigureProps & GitSyncRepoFormProps> = props => {
-  const { accountId, projectIdentifier, orgIdentifier, isNewUser } = props
+  const { accountId, projectIdentifier, orgIdentifier, isNewUser, onClose } = props
+  const { NG_GIT_FULL_SYNC } = useFeatureFlags()
+  const [needSCM, setNeedSCM] = React.useState<boolean>(needToAddSCM(isNewUser, NG_GIT_FULL_SYNC))
   const [modalErrorHandler, setModalErrorHandler] = useState<ModalErrorHandlerBinding | undefined>()
-  const [branchSelectOptions, setBranchSelectOptions] = React.useState<SelectOption[]>([])
-  const [loadingBranchList, setLoadingBranchList] = React.useState<boolean>(false)
+  const [connectorIdentifierRef, setConnectorIdentifierRef] = useState<string>('')
+  const [repositoryURL, setRepositoryURL] = useState<string | undefined>()
   const { getString } = useStrings()
   const { showSuccess } = useToaster()
   const [testStatus, setTestStatus] = useState<TestStatus>(TestStatus.NOT_INITIATED)
+  const modalTitle = isNewUser ? getString('enableGitExperience') : getString('gitsync.configureHarnessFolder')
 
   const { mutate: createGitSyncRepo, loading: creatingGitSync } = usePostGitSync({
     queryParams: { accountIdentifier: accountId }
-  })
-
-  const { mutate: testRepo, loading: testing } = useGetTestGitRepoConnectionResult({
-    identifier: '',
-    pathParams: {
-      identifier: ''
-    },
-    queryParams: {
-      repoURL: ''
-    }
   })
 
   const defaultInitialFormData: GitSyncFormInterface = {
@@ -122,10 +123,6 @@ const GitSyncRepoForm: React.FC<ModalConfigureProps & GitSyncRepoFormProps> = pr
   }
 
   const [connectorType, setConnectorType] = useState(defaultInitialFormData.gitConnectorType)
-
-  const getConnectorIdentifierWithScope = (scope: Scope, identifier: string): string => {
-    return scope === Scope.ORG || scope === Scope.ACCOUNT ? `${scope}.${identifier}` : identifier
-  }
 
   const handleCreate = async (data: GitSyncConfig): Promise<void> => {
     try {
@@ -142,92 +139,19 @@ const GitSyncRepoForm: React.FC<ModalConfigureProps & GitSyncRepoFormProps> = pr
     }
   }
 
-  const debounceFetchBranches = debounce((connectorIdentifierRef: string, repoURL: string) => {
-    setLoadingBranchList(true)
-    getListOfBranchesByConnectorPromise({
-      queryParams: {
-        connectorIdentifierRef,
-        accountIdentifier: accountId,
-        orgIdentifier,
-        projectIdentifier,
-        repoURL
-      }
-    })
-      .then(response => {
-        setLoadingBranchList(false)
-        modalErrorHandler?.hide()
-        if (response.status !== 'SUCCESS') {
-          throw response
-        } else {
-          if (!isEmpty(response.data)) {
-            setBranchSelectOptions(
-              response.data?.length
-                ? response.data.map((branch: string) => {
-                    return {
-                      label: defaultTo(branch, ''),
-                      value: defaultTo(branch, '')
-                    }
-                  })
-                : []
-            )
-          } else {
-            modalErrorHandler?.showDanger(getString('common.git.noBranchesFound'))
-          }
-        }
-      })
-      .catch(e => {
-        modalErrorHandler?.hide()
-        modalErrorHandler?.showDanger(defaultTo(e.data?.message, e.message))
-      })
-  }, 1000) // Fetching branches after user input of repoUrl
-
-  const testConnection = async ({
-    identifier,
-    _orgIdentifier,
-    _projectIdentifier,
-    repoURL
-  }: {
-    identifier: string
-    _orgIdentifier?: string
-    _projectIdentifier?: string
-    repoURL: string
-  }): Promise<void> => {
-    modalErrorHandler?.hide()
-    setTestStatus(TestStatus.IN_PROGRESS)
-    testRepo(undefined, {
-      pathParams: {
-        identifier
-      },
-      queryParams: {
-        accountIdentifier: accountId,
-        orgIdentifier: _orgIdentifier,
-        projectIdentifier: _projectIdentifier,
-        repoURL
-      }
-    })
-      .then((response: ResponseConnectorValidationResult) => {
-        if (response?.data?.status !== 'SUCCESS') {
-          setTestStatus(TestStatus.FAILED)
-        } else {
-          setTestStatus(TestStatus.SUCCESS)
-        }
-      })
-      .catch(e => {
-        setTestStatus(TestStatus.FAILED)
-        if (shouldShowError(e)) {
-          modalErrorHandler?.showDanger(defaultTo(e.data?.message, e.message))
-        }
-      })
-  }
-
   return (
     <Container height={'inherit'} className={css.modalContainer} margin="large">
-      <Container padding={{ top: 'small' }}>
-        <ModalErrorHandler bind={setModalErrorHandler} style={{ marginBottom: 'var(--spacing-medium)' }} />
-      </Container>
-      <Text font={{ size: 'large', weight: 'semi-bold' }} color={Color.BLACK}>
-        {isNewUser ? getString('gitsync.configureHarnessFolder') : getString('enableGitExperience')}
-      </Text>
+      {needToAddSCM(isNewUser, NG_GIT_FULL_SYNC) ? (
+        <GitSyncStoreProvider>
+          <SCMCheck profileLinkClickHandler={onClose} title={modalTitle} validateSCM={hasSCM => setNeedSCM(!hasSCM)} />
+        </GitSyncStoreProvider>
+      ) : (
+        <Text font={{ variation: FontVariation.H3 }} color={Color.BLACK}>
+          {modalTitle}
+        </Text>
+      )}
+      <ModalErrorHandler bind={setModalErrorHandler} />
+
       <Layout.Horizontal>
         <Container width={'60%'}>
           <Formik<GitSyncFormInterface>
@@ -267,9 +191,7 @@ const GitSyncRepoForm: React.FC<ModalConfigureProps & GitSyncRepoFormProps> = pr
                 orgIdentifier: orgIdentifier
               }
               // handleUpdate(data, formData) Edit of gitSync is not supported now
-              if (!props.isEditMode) {
-                handleCreate(gitSyncRepoData)
-              }
+              handleCreate(gitSyncRepoData)
             }}
           >
             {({ values: formValues, setFieldValue }) => (
@@ -312,7 +234,7 @@ const GitSyncRepoForm: React.FC<ModalConfigureProps & GitSyncRepoFormProps> = pr
                               margin="large"
                               className={css.connectorTypeIcon}
                               inline={false}
-                              name={(isSelected ? cardData.icon?.selected : cardData.icon?.default) as IconName}
+                              name={getConnectorTypeIcon(isSelected, cardData.icon)}
                               size={40}
                             />
                           </Card>
@@ -365,10 +287,10 @@ const GitSyncRepoForm: React.FC<ModalConfigureProps & GitSyncRepoFormProps> = pr
                         let repoValue = ''
                         if (value?.spec?.type === GitUrlType.REPO) {
                           repoValue = value?.spec?.url
-                          debounceFetchBranches(
-                            getConnectorIdentifierWithScope(getScopeFromDTO(value), value.identifier),
-                            value?.spec?.url
+                          setConnectorIdentifierRef(
+                            getConnectorIdentifierWithScope(getScopeFromDTO(value), value.identifier)
                           )
+                          setRepositoryURL(value?.spec?.url)
                         }
                         setFieldValue('repo', repoValue)
                         setTestStatus(TestStatus.NOT_INITIATED)
@@ -384,14 +306,17 @@ const GitSyncRepoForm: React.FC<ModalConfigureProps & GitSyncRepoFormProps> = pr
                           label={getString('common.repositoryName')}
                           disabled={formValues.gitConnector?.connector?.spec?.type === GitUrlType.REPO}
                           onChange={e => {
-                            formValues.gitConnector?.connector.identifier &&
-                              debounceFetchBranches(
-                                getConnectorIdentifierWithScope(
-                                  getScopeFromDTO(formValues?.gitConnector?.connector as ScopedObjectDTO),
-                                  formValues?.gitConnector?.connector?.identifier
-                                ),
-                                getRepoUrlForConnectorType(formValues, (e.target as HTMLInputElement)?.value)
-                              )
+                            const connectorId = formValues.gitConnector?.connector?.identifier
+                            const connectorScope = getScopeFromDTO(
+                              formValues?.gitConnector?.connector as ScopedObjectDTO
+                            )
+                            setConnectorIdentifierRef(
+                              getConnectorIdentifierWithScope(connectorScope, defaultTo(connectorId, ''))
+                            )
+                            setRepositoryURL(
+                              getRepoUrlForConnectorType(formValues, (e.target as HTMLInputElement)?.value)
+                            )
+
                             setTestStatus(TestStatus.NOT_INITIATED)
                           }}
                         />
@@ -410,21 +335,12 @@ const GitSyncRepoForm: React.FC<ModalConfigureProps & GitSyncRepoFormProps> = pr
                           </Text>
                         ) : null}
                       </Layout.Vertical>
-                      {formValues.gitConnector?.connector?.identifier ? (
-                        <Container flex className={css.testConnection}>
-                          <TestConnectionWidget
-                            testStatus={testStatus}
-                            onTest={() => {
-                              return testConnection({
-                                identifier: defaultTo(formValues.gitConnector?.connector.identifier, ''),
-                                _orgIdentifier: formValues.gitConnector?.connector?.orgIdentifier,
-                                _projectIdentifier: formValues.gitConnector?.connector?.projectIdentifier,
-                                repoURL: getRepoUrlForConnectorType(formValues)
-                              })
-                            }}
-                          />
-                        </Container>
-                      ) : null}
+                      <RepoTestConnection
+                        gitConnector={formValues.gitConnector}
+                        repoURL={getRepoUrlForConnectorType(formValues)}
+                        onTestStatusChange={status => setTestStatus(status)}
+                        modalErrorHandler={modalErrorHandler}
+                      />
                     </Layout.Horizontal>
                     <FormInput.Text
                       className={cx(css.placeholder, { [css.noSpacing]: formValues.rootfolder })}
@@ -452,21 +368,11 @@ const GitSyncRepoForm: React.FC<ModalConfigureProps & GitSyncRepoFormProps> = pr
                         HARNESS_FOLDER_SUFFIX
                       )}
                     </Text>
-                    <Layout.Horizontal>
-                      <FormInput.Select
-                        name="branch"
-                        disabled={loadingBranchList}
-                        items={branchSelectOptions}
-                        label={getString('gitsync.selectDefaultBranch')}
-                        selectProps={{ usePortal: true, popoverClassName: css.gitBranchSelectorPopover }}
-                      />
-                      {loadingBranchList ? (
-                        <Layout.Horizontal spacing="small" flex padding={{ top: 'xsmall', left: 'xsmall' }}>
-                          <Icon name="steps-spinner" size={18} color={Color.PRIMARY_7} />
-                          <Text>{getString('gitsync.fetchingBranches').concat('...')}</Text>
-                        </Layout.Horizontal>
-                      ) : null}
-                    </Layout.Horizontal>
+                    <RepoBranchSelect
+                      connectorIdentifierRef={connectorIdentifierRef}
+                      repoURL={repositoryURL}
+                      modalErrorHandler={modalErrorHandler}
+                    />
                   </Layout.Vertical>
                 </Container>
 
@@ -476,13 +382,18 @@ const GitSyncRepoForm: React.FC<ModalConfigureProps & GitSyncRepoFormProps> = pr
                     type="submit"
                     intent="primary"
                     text={isNewUser ? getString('continue') : getString('save')}
-                    disabled={creatingGitSync || testing || testStatus === TestStatus.FAILED}
+                    disabled={
+                      needSCM ||
+                      creatingGitSync ||
+                      testStatus === TestStatus.IN_PROGRESS ||
+                      testStatus === TestStatus.FAILED
+                    }
                   />
                   <Button
                     className={css.formButton}
                     text={getString('cancel')}
                     margin={{ left: 'medium' }}
-                    onClick={props.onClose}
+                    onClick={onClose}
                   />
                 </Layout.Horizontal>
               </FormikForm>

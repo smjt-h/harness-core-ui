@@ -269,22 +269,28 @@ function ResourcesCell(tableProps: CellProps<Service>): JSX.Element {
             </>
           )}
         </Layout.Horizontal>
-        <Layout.Horizontal spacing="small">
-          <Text
-            style={{
-              flex: 1,
-              whiteSpace: 'nowrap',
-              overflow: 'hidden',
-              textOverflow: 'ellipsis',
-              color: tableProps.row.original.disabled ? textColor.disable : '#0278D5',
-              textDecoration: 'underline',
-              cursor: isSubmittedRule ? 'not-allowed' : 'inherit'
-            }}
-            onClick={handleDomainClick}
-          >
-            {hasCustomDomains ? tableProps.row.original.custom_domains?.join(',') : tableProps.row.original.host_name}
-          </Text>
-        </Layout.Horizontal>
+        {!isK8sRule ? (
+          <Layout.Horizontal spacing="small">
+            <Text
+              style={{
+                flex: 1,
+                whiteSpace: 'nowrap',
+                overflow: 'hidden',
+                textOverflow: 'ellipsis',
+                color: tableProps.row.original.disabled ? textColor.disable : '#0278D5',
+                textDecoration: 'underline',
+                cursor: isSubmittedRule ? 'not-allowed' : 'inherit'
+              }}
+              onClick={handleDomainClick}
+            >
+              {hasCustomDomains ? tableProps.row.original.custom_domains?.join(',') : tableProps.row.original.host_name}
+            </Text>
+          </Layout.Horizontal>
+        ) : (
+          <Layout.Horizontal flex={{ justifyContent: 'center' }}>
+            <Text>{'-'}</Text>
+          </Layout.Horizontal>
+        )}
       </Layout.Vertical>
       {/* <Icon name={tableProps.row.original.provider.icon as IconName}></Icon> */}
       {tableProps.value}
@@ -386,7 +392,7 @@ const StatusCell = ({ row }: CellProps<Service>) => {
   )
 }
 
-const EmptyListPage: React.FC<EmptyListPageProps> = ({ featureDetail }) => {
+const EmptyListPage: React.FC<EmptyListPageProps> = () => {
   const { accountId } = useParams<AccountPathProps>()
   const { getString } = useStrings()
   const history = useHistory()
@@ -420,11 +426,7 @@ const EmptyListPage: React.FC<EmptyListPageProps> = ({ featureDetail }) => {
           featuresProps={{
             featuresRequest: {
               featureNames: [FeatureIdentifier.RESTRICTED_AUTOSTOPPING_RULE_CREATION]
-            },
-            warningMessage: getString('ce.co.autoStoppingRule.limitWarningMessage', {
-              limit: featureDetail?.limit,
-              count: featureDetail?.count
-            })
+            }
           }}
           onClick={() => {
             history.push(
@@ -779,11 +781,7 @@ const COGatewayList: React.FC = () => {
               featuresProps={{
                 featuresRequest: {
                   featureNames: [FeatureIdentifier.RESTRICTED_AUTOSTOPPING_RULE_CREATION]
-                },
-                warningMessage: getString('ce.co.autoStoppingRule.limitWarningMessage', {
-                  limit: featureDetail?.limit,
-                  count: featureDetail?.count
-                })
+                }
               }}
               onClick={() => {
                 history.push(

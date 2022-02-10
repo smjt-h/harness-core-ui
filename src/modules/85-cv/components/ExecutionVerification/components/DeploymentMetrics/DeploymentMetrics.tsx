@@ -32,8 +32,8 @@ import type { ProjectPathProps } from '@common/interfaces/RouteInterfaces'
 import type { ExecutionNode } from 'services/pipeline-ng'
 import {
   GetVerifyStepDeploymentMetricsQueryParams,
-  useGetHealthSources,
   useGetVerifyStepDeploymentMetrics,
+  useGetVerifyStepHealthSources,
   useGetVerifyStepNodeNames,
   useGetVerifyStepTransactionNames
 } from 'services/cv'
@@ -155,9 +155,9 @@ export function DeploymentMetrics(props: DeploymentMetricsProps): JSX.Element {
     error: healthSourcesError,
     loading: healthSourcesLoading,
     refetch: fetchHealthSources
-  } = useGetHealthSources({
+  } = useGetVerifyStepHealthSources({
     queryParams: { accountId },
-    activityId: activityId as string,
+    verifyStepExecutionId: activityId as string,
     lazy: true
   })
 
@@ -169,7 +169,6 @@ export function DeploymentMetrics(props: DeploymentMetricsProps): JSX.Element {
     setUpdateViewInfo({ currentViewData: [], hasNewData: false, shouldUpdateView: true, showSpinner: true })
     setQueryParams(oldParams => ({
       ...oldParams,
-      hostName: undefined,
       hostNames: undefined,
       pageNumber: 0
     }))
@@ -356,6 +355,7 @@ export function DeploymentMetrics(props: DeploymentMetricsProps): JSX.Element {
           onChange={updatedAnomalousMetricsFilter}
           checked={anomalousMetricsFilterChecked}
           label={getString('pipeline.verification.anomalousMetricsFilterLabel')}
+          data-testid="anomalousFilterCheckbox"
         />
       </Container>
       <Layout.Horizontal className={css.filterSecondRow} border={{ bottom: true }} margin={{ bottom: 'large' }}>

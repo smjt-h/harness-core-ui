@@ -7,7 +7,7 @@
 
 import React, { ReactNode } from 'react'
 import { IconName, ModalErrorHandlerBinding, getErrorInfoFromErrorObject, SelectOption } from '@wings-software/uicore'
-import { defaultTo } from 'lodash-es'
+import { defaultTo, pick } from 'lodash-es'
 import type { StringsMap } from 'stringTypes'
 import type {
   AccessControlCheckError,
@@ -30,6 +30,7 @@ import type { PermissionsRequest } from '@rbac/hooks/usePermission'
 import { FeatureWarningTooltip } from '@common/components/FeatureWarning/FeatureWarningWithTooltip'
 import type { UseStringsReturn } from 'framework/strings'
 import type { ProjectSelectOption } from '@audit-trail/components/FilterDrawer/FilterDrawer'
+import type { RbacMenuItemProps } from '@rbac/components/MenuItem/MenuItem'
 import css from './utils.module.scss'
 
 export enum PrincipalType {
@@ -100,6 +101,17 @@ export const handleInvitationResponse = ({
       return showSuccess(getString('rbac.usersPage.userAlreadyInvited'))
     default:
       return modalErrorHandler?.showDanger(getString('rbac.usersPage.invitationError'))
+  }
+}
+
+export const getPermissionRequestFromProps = (
+  permission?: RbacMenuItemProps['permission']
+): PermissionsRequest | undefined => {
+  if (permission) {
+    return {
+      ...pick(permission, ['resourceScope', 'resource', 'options']),
+      permissions: [permission.permission]
+    } as PermissionsRequest
   }
 }
 

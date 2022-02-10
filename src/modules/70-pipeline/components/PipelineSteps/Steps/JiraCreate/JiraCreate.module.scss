@@ -96,6 +96,7 @@
 }
 
 .fetching {
+  transform: scale(0.6);
   display: flex;
   justify-content: center;
   padding: var(--spacing-medium) 0;

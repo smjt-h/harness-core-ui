@@ -128,24 +128,43 @@ export const getMergedVariables = (
   return finalVariables as AllNGVariables[]
 }
 
+export const getRbacButtonModules = (module?: string): string[] => {
+  const rbacButtonModules = []
+  if (module?.includes('cd')) {
+    rbacButtonModules.push('cd')
+  }
+  if (module?.includes('ci')) {
+    rbacButtonModules.push('ci')
+  }
+  return rbacButtonModules
+}
 /*
-  Get features restriction to pass to 'run' pipeline button based on the modules the pipeline supports
+  Get features restriction to pass to 'run/ retry' pipeline button based on the modules the pipeline supports
 */
-export const getFeaturePropsForRunPipelineButton = (modules?: string[]): FeaturesProps | undefined => {
+export const getFeaturePropsForRunPipelineButton = ({
+  modules,
+  getString
+}: {
+  modules?: string[]
+  getString: UseStringsReturn['getString']
+}): FeaturesProps | undefined => {
   if (!modules || !modules?.length) {
     return undefined
   }
   const featureIdentifiers: FeatureIdentifier[] = []
+  const additionalFeaturesProps: { warningMessage?: string } = {}
   if (modules.includes('cd')) {
     featureIdentifiers.push(FeatureIdentifier.DEPLOYMENTS_PER_MONTH)
   }
   if (modules.includes('ci')) {
     featureIdentifiers.push(FeatureIdentifier.BUILDS)
+    additionalFeaturesProps.warningMessage = getString('pipeline.featureRestriction.unlimitedBuildsRequiredPlan')
   }
   return {
     featuresRequest: {
       featureNames: featureIdentifiers
-    }
+    },
+    ...additionalFeaturesProps
   }
 }
 

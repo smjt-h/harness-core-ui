@@ -79,10 +79,10 @@
     align-items: center;
     justify-content: center;
 
-    &[data-warning='true'] {
+    &[data-completed='true'] {
       :global {
         .bp3-icon path {
-          fill: var(--orange-500);
+          fill: var(--primary-7);
         }
       }
     }

@@ -30,12 +30,13 @@ import { useModalHook } from '@harness/use-modal'
 
 import { Select } from '@blueprintjs/select'
 
-import { Classes, Dialog, Menu, MenuItem } from '@blueprintjs/core'
+import { Classes, Dialog, Menu } from '@blueprintjs/core'
 import * as Yup from 'yup'
 import { NavLink, useParams, useHistory } from 'react-router-dom'
 import { useGet, useMutate } from 'restful-react'
 import type { CellProps, Renderer, Column } from 'react-table'
 import RbacButton from '@rbac/components/Button/Button'
+import RbacMenuItem from '@rbac/components/MenuItem/MenuItem'
 import { Page } from '@common/exports'
 import { Breadcrumbs } from '@common/components/Breadcrumbs/Breadcrumbs'
 import { PermissionIdentifier } from '@rbac/interfaces/PermissionIdentifier'
@@ -320,7 +321,7 @@ const FoldersPage: React.FC = () => {
   const { openDialog } = useDeleteFolder(deleteContext, onDeleted)
 
   return (
-    <Container className={css.pageContainer}>
+    <Container className={css.customDashboards}>
       <Page.Header
         title={getString(strRefFolders)}
         breadcrumbs={
@@ -386,11 +387,11 @@ const FoldersPage: React.FC = () => {
                   text={getString(strRefFolders)}
                   onClick={() => showModal()}
                   icon="plus"
-                  style={{ minWidth: '110px', marginRight: 'var(--spacing-11)' }}
+                  className={css.createButton}
                   permission={{
-                    permission: PermissionIdentifier.EDIT_ACCOUNT,
+                    permission: PermissionIdentifier.EDIT_DASHBOARD,
                     resource: {
-                      resourceType: ResourceType.ACCOUNT
+                      resourceType: ResourceType.DASHBOARDS
                     }
                   }}
                 />
@@ -499,11 +500,17 @@ const FoldersPage: React.FC = () => {
                           <CardBody.Menu
                             menuContent={
                               <Menu>
-                                <MenuItem
+                                <RbacMenuItem
                                   text="Delete"
                                   onClick={() => {
                                     setDeleteContext(folder)
                                     openDialog()
+                                  }}
+                                  permission={{
+                                    permission: PermissionIdentifier.EDIT_DASHBOARD,
+                                    resource: {
+                                      resourceType: ResourceType.DASHBOARDS
+                                    }
                                   }}
                                 />
                               </Menu>

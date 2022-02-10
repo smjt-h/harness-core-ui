@@ -46,7 +46,7 @@ export const JFrogArtifactoryStepInputSet: React.FC<JFrogArtifactoryStepProps> =
                   {getString('pipelineSteps.connectorLabel')}
                 </Text>
               ),
-              type: Connectors.Artifactory
+              type: Connectors.ARTIFACTORY
             }
           }),
           ...(getMultiTypeFromValue(template?.spec?.target) === MultiTypeInputType.RUNTIME && {

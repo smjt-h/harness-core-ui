@@ -239,7 +239,7 @@ exports[`ConfigureNotifications Microsoft Teams - edit case 1`] = `
                     </span>
                     <input
                       class="bp3-input-ghost"
-                      data-mentions="kv-tag-input-msTeamKeys}"
+                      data-mentions="kv-tag-input-msTeamKeys"
                       value=""
                     />
                   </div>
@@ -420,7 +420,7 @@ exports[`ConfigureNotifications Microsoft Teams - edit case 2`] = `
                     </span>
                     <input
                       class="bp3-input-ghost"
-                      data-mentions="kv-tag-input-msTeamKeys}"
+                      data-mentions="kv-tag-input-msTeamKeys"
                       value=""
                     />
                   </div>
@@ -586,7 +586,7 @@ exports[`ConfigureNotifications Microsoft Teams 1`] = `
                   >
                     <input
                       class="bp3-input-ghost"
-                      data-mentions="kv-tag-input-msTeamKeys}"
+                      data-mentions="kv-tag-input-msTeamKeys"
                       placeholder="notifications.placeholderMSKeys"
                       value="test"
                     />

@@ -23,6 +23,9 @@ export const getDefaultChartOptions = (): Highcharts.Options => ({
       formatter: function () {
         return moment(this.value).format('h:mm A')
       }
+    },
+    crosshair: {
+      zIndex: 7
     }
   },
   yAxis: {
@@ -32,17 +35,28 @@ export const getDefaultChartOptions = (): Highcharts.Options => ({
       }
     }
   },
-  tooltip: { enabled: false },
+  tooltip: {
+    enabled: true,
+    useHTML: true,
+    padding: 0,
+    borderWidth: 0,
+    backgroundColor: 'white',
+    formatter: function () {
+      return `
+        <div style="padding: 8px; background-color: white">
+          <p style="color: var(--grey-400); font-weight: 500; font-size: 10px">
+            ${moment(new Date(this.x)).format('dddd, lll')}
+          </p>
+          <p style="font-size: 10px" >${this.y.toFixed(2)}%</p>
+        </div>
+      `
+    }
+  },
   plotOptions: {
     area: {
       color: Utils.getRealCSSColor(Color.PRIMARY_3),
       marker: {
-        enabled: false,
-        states: {
-          hover: {
-            enabled: false
-          }
-        }
+        enabled: false
       }
     }
   }

@@ -75,6 +75,8 @@ pipelineSteps:
   infraTab:
     deploymentType: Infrastructure type selection is required
     clusterError: No cluster found with given Connector
+  executionTab:
+    stepsCount: At least one step is required
 cdLaunchText: Launch CD First Generation
 serviceDashboard:
   activeServiceInstancesLabel: '{{$.common.subscriptions.usage.srvcInst}}'
@@ -110,7 +112,6 @@ serviceDashboard:
   helmChartName: Helm Chart Name
   helmRopoUrl: Repo URL
 gitOps: GitOps
-enterpriseGitOps: Enterprise GitOps
 newAdapter: New Adapter
 newGitOpsServer: New GitOps Server
 adapterDetails: Adapter Details
@@ -156,8 +157,11 @@ componentsInstalled: '<ul> <li> GitOps agent </li> <li> Repo server </li><li> Re
 requiredPermissions: '<ul> <li> Permission to create Deployment, Service, Statefulset, Network Policy, Service Account, Role, ClusterRole, RoleBinding, ClusterRoleBinding, ConfigMap, Secret (For the Harness GitOps Server) </li> <li> Permission to apply CustomResourceDefinition For the Harness GitOps Server) </li> </ul>'
 featureRestriction:
   banners:
-    serviceLevelUp: 'You have used {{ limit }} services included in the free plan. Consider upgrading to unlock more services.'
-    deploymentsPerMonthLevelUp: 'You have used {{ limit }} / {{ limit }} free deployments this month. Consider upgrading for unlimited builds.'
+    serviceLevelUp: 'You have used {{ serviceLimit }} services included in the free plan. Consider upgrading to unlock more services.'
+    serviceLevelUpTeamEnterprise: 'You have used {{ serviceLimit }} services included in the team plan. Consider upgrading to unlock more services.'
+    deploymentsPerMonthLevelUp: 'You have used {{ count }} / {{ deploymentsLimit }} free deployments this month. Consider upgrading for unlimited deployments.'
     serviceAndDeploymentsLevelUp: 'You have used {{ deploymentsLimit }} free deployments this month and {{ serviceLimit }} free services. Consider upgrading for higher limits.'
     serviceWarningActive: You have used {{ warningLimit }}% of your service subscription limit.
-    dpmWarningActive: You have used {{ warningLimit }}% of deployments included in the free plan. After 1,000 deployments, the free plan will be restricted to 100 deployments per month.
+    dpmWarningActive: You have used {{ count }} / {{ warningLimit }} free deployments this month.
+    initialDeploymentsWarningActive: You have used {{ warningLimit }}% of deployments included in the free plan. After 1,000 deployments, the free plan will be restricted to 100 deployments per month.
+    serviceOveruseTeamEnterprise: You have exceeded your service subscription limit. Consider increasing your limits to keep shipping.

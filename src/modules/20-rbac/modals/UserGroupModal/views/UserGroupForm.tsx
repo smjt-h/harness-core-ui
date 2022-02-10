@@ -160,8 +160,12 @@ const UserGroupForm: React.FC<UserGroupModalData> = props => {
                     onQueryChange: (query: string) => {
                       setSearch(query)
                     },
-                    tagRenderer: (item: MultiSelectOption) => <UserTagRenderer item={item} />,
-                    itemRender: (item, { handleClick }) => <UserItemRenderer item={item} handleClick={handleClick} />
+                    tagRenderer: (item: MultiSelectOption) => (
+                      <UserTagRenderer key={item.value.toString()} item={item} />
+                    ),
+                    itemRender: (item, { handleClick }) => (
+                      <UserItemRenderer key={item.value.toString()} item={item} handleClick={handleClick} />
+                    )
                   }}
                 />
               )}

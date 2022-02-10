@@ -34,6 +34,7 @@ import routes from '@common/RouteDefinitions'
 import { returnUrlParams } from '@common/utils/routeUtils'
 import { PermissionsProvider } from 'framework/rbac/PermissionsContext'
 import { FeaturesProvider } from 'framework/featureStore/FeaturesContext'
+import { useGlobalEventListener } from '@common/hooks'
 import { identifyFullStoryUser } from '../../3rd-party/FullStory'
 
 FocusStyleManager.onlyShowFocusOnTabs()
@@ -116,24 +117,32 @@ export function AppWithAuthentication(props: AppProps): React.ReactElement {
   Harness.openNgTooltipEditor = () => setShowTooltipEditor(true)
   Harness.openTooltipEditor = () => setShowTooltipEditor(true)
 
+  const globalResponseHandler = (response: Response): void => {
+    if (!response.ok && response.status === 401) {
+      AppStorage.clear()
+      history.push({
+        pathname: routes.toRedirect(),
+        search: returnUrlParams(getLoginPageURL({ returnUrl: window.location.href }))
+      })
+      return
+    }
+
+    checkAndRefreshToken()
+  }
+
+  useGlobalEventListener('PROMISE_API_RESPONSE', ({ detail }) => {
+    if (detail && detail.response) {
+      globalResponseHandler(detail.response)
+    }
+  })
+
   return (
     <RestfulProvider
       base="/"
       requestOptions={getRequestOptions}
       queryParams={getQueryParams()}
       queryParamStringifyOptions={{ skipNulls: true }}
-      onResponse={response => {
-        if (!response.ok && response.status === 401) {
-          AppStorage.clear()
-          history.push({
-            pathname: routes.toRedirect(),
-            search: returnUrlParams(getLoginPageURL({ returnUrl: window.location.href }))
-          })
-          return
-        }
-
-        checkAndRefreshToken()
-      }}
+      onResponse={globalResponseHandler}
     >
       <StringsContextProvider initialStrings={props.strings}>
         <TooltipContextProvider initialTooltipDictionary={tooltipDictionary}>

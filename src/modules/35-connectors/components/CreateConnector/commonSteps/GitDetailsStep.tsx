@@ -227,9 +227,11 @@ const GitDetailsStep: React.FC<StepProps<ConnectorConfigDTO> & ConnectorDetailsS
         validationSchema={Yup.object().shape({
           url: Yup.string().test('isValidUrl', getString('validation.urlIsNotValid'), function (_url) {
             if (!_url) return false
-
+            const trimmedUrl = _url?.trim() || ''
+            if (trimmedUrl.includes(' ')) {
+              return false
+            }
             if (this.parent.connectionType === GitConnectionType.SSH) {
-              const trimmedUrl = _url?.trim() || ''
               return trimmedUrl.startsWith('git@') || trimmedUrl.startsWith('ssh://') ? true : false
             }
             try {

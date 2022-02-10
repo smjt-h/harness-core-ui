@@ -44,6 +44,7 @@ const SelectFieldList = (props: JiraDynamicFieldsSelectorContentInterface) => {
     projectMetaResponse,
     fetchingProjectMetadata,
     showProjectDisclaimer,
+    jiraType,
     selectedProjectKey: selectedProjectKeyInit,
     selectedIssueTypeKey: selectedIssueTypeKeyInit
   } = props
@@ -60,11 +61,13 @@ const SelectFieldList = (props: JiraDynamicFieldsSelectorContentInterface) => {
     value: selectedProjectKeyInit,
     label: selectedProjectKeyInit
   })
+
   const [issueTypeValue, setIssueTypeValue] = useState<JiraProjectSelectOption>({
     key: selectedIssueTypeKeyInit,
     value: selectedIssueTypeKeyInit,
     label: selectedIssueTypeKeyInit
   })
+
   const [projectMetadata, setProjectMetadata] = useState<JiraProjectNG>()
   const [fieldList, setFieldList] = useState<JiraFieldNG[]>([])
 
@@ -90,8 +93,13 @@ const SelectFieldList = (props: JiraDynamicFieldsSelectorContentInterface) => {
       const fieldListToSet: JiraFieldNG[] = []
       const fieldKeys = Object.keys(issueTypeData?.fields || {})
       fieldKeys.sort().forEach(keyy => {
-        if (issueTypeData?.fields[keyy] && keyy !== 'Summary' && keyy !== 'Description') {
-          fieldListToSet.push(issueTypeData?.fields[keyy])
+        if (issueTypeData?.fields[keyy]) {
+          if (
+            (jiraType === 'createMode' && keyy !== 'Summary' && keyy !== 'Description') ||
+            jiraType === 'updateMode'
+          ) {
+            fieldListToSet.push(issueTypeData?.fields[keyy])
+          }
         }
       })
       setFieldList(fieldListToSet)
@@ -166,7 +174,7 @@ const SelectFieldList = (props: JiraDynamicFieldsSelectorContentInterface) => {
           ) : null}
           <JiraFieldSelector
             fields={fieldList}
-            selectedFields={[]}
+            selectedFields={props?.selectedFields || []}
             onCancel={props.onCancel}
             addSelectedFields={fields => props.addSelectedFields(fields, selectedProjectKey, selectedIssueTypeKey)}
           />

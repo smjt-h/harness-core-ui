@@ -455,6 +455,8 @@ triggers:
   copyAsUrl: 'Copy as Webhook URL'
   copyAsCurl: 'Copy as cURL Command'
   cannotParseTriggersData: 'Cannot parse trigger data'
+  cannotParseTriggersYaml: 'Cannot parse trigger YAML'
+  cannotParseInputYaml: 'Cannot parse inputYaml in trigger YAML'
   cannotParseInputValues: 'Cannot parse pipeline input values'
   validation:
     triggerName: 'Trigger Name is required.'
@@ -936,6 +938,7 @@ featureRestriction:
   numMonthlyBuilds: You have used {{count}} / {{limit}} free builds this month.
   subscription90PercentLimit: You have used {{usagePercent}}% of your developer subscription limit.
   subscriptionExceededLimit: You have exceeded your developer subscription limit.
+  unlimitedBuildsRequiredPlan: Monthly builds limit met. For Unlimited builds, consider upgrading to Team or Enterprise plan.
 policyEvaluations:
   title: Policy Evaluations
   failedToSavePipeline: Pipeline can not be saved due to the policy evaluation failures.

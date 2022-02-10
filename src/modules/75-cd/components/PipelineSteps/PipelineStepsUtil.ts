@@ -8,10 +8,33 @@
 import { getMultiTypeFromValue, MultiTypeInputType } from '@wings-software/uicore'
 import * as Yup from 'yup'
 import isEmpty from 'lodash/isEmpty'
+import { get } from 'lodash-es'
 import type { UseStringsReturn } from 'framework/strings'
+import { getNameAndIdentifierSchema } from '@pipeline/utils/tempates'
+import {
+  getFailureStrategiesValidationSchema,
+  getVariablesValidationField
+} from '@pipeline/components/PipelineSteps/AdvancedSteps/FailureStrategyPanel/validation'
 
 const namespaceRegex = /^[a-z0-9]([-a-z0-9]*[a-z0-9])?$/
 const releaseNameRegex = /^[a-z0-9]([-a-z0-9]*[a-z0-9])?(\.[a-z0-9]([-a-z0-9]*[a-z0-9])?)*$/
+
+export enum ServiceDeploymentType {
+  Kubernetes = 'Kubernetes',
+  NativeHelm = 'NativeHelm',
+  amazonEcs = 'amazonEcs',
+  amazonAmi = 'amazonAmi',
+  awsCodeDeploy = 'awsCodeDeploy',
+  winrm = 'winrm',
+  awsLambda = 'awsLambda',
+  pcf = 'pcf',
+  ssh = 'ssh'
+}
+
+export enum InfraDeploymentType {
+  KubernetesDirect = 'KubernetesDirect',
+  KubernetesGcp = 'KubernetesGcp'
+}
 
 export function getNameSpaceSchema(
   getString: UseStringsReturn['getString'],
@@ -42,4 +65,84 @@ export function getReleaseNameSchema(
     return releaseNameSchema.required(getString('fieldRequired', { field: getString('common.releaseName') }))
   }
   return releaseNameSchema
+}
+
+export function getConnectorSchema(getString: UseStringsReturn['getString']): Yup.StringSchema<string | undefined> {
+  return Yup.string().required(getString('fieldRequired', { field: getString('connector') }))
+}
+
+export function getServiceRefSchema(getString: UseStringsReturn['getString']): Yup.StringSchema<string | undefined> {
+  return Yup.string().trim().required(getString('cd.pipelineSteps.serviceTab.serviceIsRequired'))
+}
+
+export function getEnvironmentRefSchema(
+  getString: UseStringsReturn['getString']
+): Yup.StringSchema<string | undefined> {
+  return Yup.string().trim().required(getString('cd.pipelineSteps.environmentTab.environmentIsRequired'))
+}
+
+export function getServiceDeploymentTypeSchema(
+  getString: UseStringsReturn['getString']
+): Yup.StringSchema<string | undefined> {
+  return Yup.string()
+    .oneOf(Object.values(ServiceDeploymentType))
+    .required(getString('cd.pipelineSteps.serviceTab.deploymentTypeRequired'))
+}
+
+export function getInfraDeploymentTypeSchema(
+  getString: UseStringsReturn['getString']
+): Yup.StringSchema<string | undefined> {
+  return Yup.string()
+    .oneOf(Object.values(InfraDeploymentType))
+    .required(getString('cd.pipelineSteps.infraTab.deploymentType'))
+}
+
+export function getCDStageValidationSchema(
+  getString: UseStringsReturn['getString'],
+  contextType?: string
+): Yup.Schema<unknown> {
+  return Yup.object().shape({
+    ...getNameAndIdentifierSchema(getString, contextType),
+    spec: Yup.object().shape({
+      serviceConfig: Yup.object().shape({
+        serviceRef: getServiceRefSchema(getString),
+        serviceDefinition: Yup.object().shape({
+          type: getServiceDeploymentTypeSchema(getString),
+          spec: Yup.object().shape(getVariablesValidationField(getString))
+        })
+      }),
+      infrastructure: Yup.object().shape({
+        environmentRef: getEnvironmentRefSchema(getString),
+        infrastructureDefinition: Yup.object().shape({
+          type: getInfraDeploymentTypeSchema(getString),
+          spec: Yup.object().shape({
+            connectorRef: getConnectorSchema(getString),
+            namespace: getNameSpaceSchema(getString),
+            releaseName: getReleaseNameSchema(getString),
+            cluster: Yup.mixed().test({
+              test(val): boolean | Yup.ValidationError {
+                const infraDeploymentType = get(
+                  this.options.context,
+                  'spec.infrastructure.infrastructureDefinition.type'
+                )
+                if (infraDeploymentType === InfraDeploymentType.KubernetesGcp) {
+                  if (isEmpty(val) || (typeof val === 'object' && isEmpty(val.value))) {
+                    return this.createError({
+                      message: getString('fieldRequired', { field: getString('common.cluster') })
+                    })
+                  }
+                }
+                return true
+              }
+            })
+          })
+        })
+      }),
+      execution: Yup.object().shape({
+        steps: Yup.array().min(1, getString('cd.pipelineSteps.executionTab.stepsCount'))
+      })
+    }),
+    failureStrategies: getFailureStrategiesValidationSchema(getString),
+    ...getVariablesValidationField(getString)
+  })
 }

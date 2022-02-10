@@ -10,10 +10,19 @@ import { Formik, FormikProps } from 'formik'
 import { noop } from 'lodash-es'
 import * as Yup from 'yup'
 import { IconName, GroupedThumbnailSelect } from '@wings-software/uicore'
-import { useStrings } from 'framework/strings'
+import { useStrings, UseStringsReturn } from 'framework/strings'
 import { StageErrorContext } from '@pipeline/context/StageErrorContext'
 import { DeployTabs } from '@cd/components/PipelineStudio/DeployStageSetupShell/DeployStageSetupShellUtils'
+import { InfraDeploymentType } from '@cd/components/PipelineSteps/PipelineStepsUtil'
 import css from './SelectInfrastructureType.module.scss'
+
+export function getInfraDeploymentTypeSchema(
+  getString: UseStringsReturn['getString']
+): Yup.StringSchema<string | undefined> {
+  return Yup.string()
+    .oneOf(Object.values(InfraDeploymentType))
+    .required(getString('cd.pipelineSteps.infraTab.deploymentType'))
+}
 
 interface InfrastructureItem {
   label: string
@@ -43,7 +52,7 @@ export default function SelectDeploymentType(props: SelectDeploymentTypeProps): 
         {
           label: getString('pipelineSteps.deploymentTypes.kubernetes'),
           icon: 'service-kubernetes',
-          value: 'KubernetesDirect'
+          value: InfraDeploymentType.KubernetesDirect
         }
       ]
     },
@@ -53,7 +62,7 @@ export default function SelectDeploymentType(props: SelectDeploymentTypeProps): 
         {
           label: getString('pipelineSteps.deploymentTypes.gk8engine'),
           icon: 'google-kubernetes-engine',
-          value: 'KubernetesGcp'
+          value: InfraDeploymentType.KubernetesGcp
         }
       ]
     }
@@ -74,7 +83,7 @@ export default function SelectDeploymentType(props: SelectDeploymentTypeProps): 
       initialValues={{ deploymentType: selectedInfrastructureType }}
       enableReinitialize
       validationSchema={Yup.object().shape({
-        deploymentType: Yup.string().required(getString('cd.pipelineSteps.infraTab.deploymentType'))
+        deploymentType: getInfraDeploymentTypeSchema(getString)
       })}
     >
       {formik => {

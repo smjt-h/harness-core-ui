@@ -20,11 +20,13 @@ import {
   SelectOption,
   MultiSelectOption,
   FontVariation,
-  Color
+  Color,
+  Dialog
 } from '@wings-software/uicore'
 import { useParams } from 'react-router-dom'
 import { defaultTo } from 'lodash-es'
 import debounce from 'p-debounce'
+import { useModalHook } from '@harness/use-modal'
 import type { ProjectPathProps } from '@common/interfaces/RouteInterfaces'
 import {
   GitFullSyncEntityInfoFilterKeys,
@@ -36,6 +38,8 @@ import {
 import { useStrings } from 'framework/strings'
 import { setPageNumber } from '@common/utils/utils'
 import { Entities } from '@common/interfaces/GitSyncInterface'
+import FullSyncForm from '@gitsync/components/FullSyncForm/FullSyncForm'
+import { GitSyncStoreProvider } from 'framework/GitRepoStore/GitSyncStoreContext'
 import GitFullSyncEntityList from './GitFullSyncEntityList'
 import css from './GitSyncConfigTab.module.scss'
 
@@ -86,6 +90,17 @@ const GitSyncConfigTab: React.FC = () => {
       searchTerm
     }
   })
+
+  const [showModal, hideModal] = useModalHook(
+    () => (
+      <Dialog isOpen={true} enforceFocus={false} onClose={hideModal} className={css.dialog}>
+        <GitSyncStoreProvider>
+          <FullSyncForm isNewUser={false} onClose={hideModal} onSuccess={hideModal} />
+        </GitSyncStoreProvider>
+      </Dialog>
+    ),
+    []
+  )
 
   const fetchFullSyncFiles = (): Promise<ResponsePageGitFullSyncEntityInfoDTO> => {
     return getFullSyncFiles({
@@ -177,7 +192,13 @@ const GitSyncConfigTab: React.FC = () => {
               text={getString('gitsync.resyncButtonText')}
               disabled={loading}
               onClick={handleReSync}
-            ></Button>
+            />
+            <Button
+              variation={ButtonVariation.SECONDARY}
+              text={getString('gitsync.editConfigButtonText')}
+              disabled={loading}
+              onClick={() => showModal()}
+            />
           </Layout.Horizontal>
         </Layout.Horizontal>
       </Page.SubHeader>

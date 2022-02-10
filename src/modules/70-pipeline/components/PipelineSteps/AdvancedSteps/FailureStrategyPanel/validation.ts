@@ -203,3 +203,24 @@ export function getFailureStrategiesValidationSchema(
       .required()
   )
 }
+
+export function getVariablesValidationField(
+  getString: UseStringsReturn['getString']
+): Record<string, Yup.Schema<unknown>> {
+  const requiredValueLabel = getString('common.validation.valueIsRequired')
+  return {
+    variables: Yup.array().of(
+      Yup.object().shape({
+        name: Yup.string().trim().required(getString('common.validation.nameIsRequired')),
+        value: Yup.lazy((value): Yup.Schema<unknown> => {
+          if (typeof value === 'string') {
+            return Yup.string().trim().required(requiredValueLabel)
+          } else if (typeof value === 'number') {
+            return Yup.number().required(requiredValueLabel)
+          }
+          return Yup.mixed().required(requiredValueLabel)
+        })
+      })
+    )
+  }
+}

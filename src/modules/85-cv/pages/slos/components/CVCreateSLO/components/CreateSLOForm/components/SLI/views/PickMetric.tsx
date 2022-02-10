@@ -133,7 +133,7 @@ const PickMetric: React.FC<Omit<SLIProps, 'children'>> = ({ formikProps, ...rest
   return (
     <>
       <Card className={css.cardPickMetric}>
-        <Heading level={2} font={{ variation: FontVariation.FORM_TITLE }} margin={{ top: 'xlarge', bottom: 'large' }}>
+        <Heading level={2} font={{ variation: FontVariation.FORM_TITLE }} margin={{ bottom: 'large' }}>
           {getString('cv.slos.pickMetricsSLI')}
         </Heading>
         <Layout.Horizontal spacing="xxlarge">
@@ -182,6 +182,7 @@ const PickMetric: React.FC<Omit<SLIProps, 'children'>> = ({ formikProps, ...rest
                 type: 'number',
                 min: 0,
                 max: SLIMetricType === SLIMetricTypes.RATIO ? 100 : undefined,
+                step: 'any',
                 rightElement:
                   SLIMetricType === SLIMetricTypes.RATIO ? <Icon name="percentage" padding="small" /> : undefined
               }}
@@ -230,7 +231,7 @@ const PickMetric: React.FC<Omit<SLIProps, 'children'>> = ({ formikProps, ...rest
                 </Text>
               }
               customChartOptions={{
-                chart: { height: isRatioBasedMetric ? 280 : 220 },
+                chart: { height: isRatioBasedMetric ? 420 : 350 },
                 yAxis: { min: 0, max: 100, tickInterval: 25 }
               }}
             />

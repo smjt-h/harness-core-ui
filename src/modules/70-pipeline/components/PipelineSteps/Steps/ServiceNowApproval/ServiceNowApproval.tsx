@@ -55,7 +55,7 @@ export class ServiceNowApproval extends PipelineStep<ServiceNowApprovalData> {
   protected isHarnessSpecific = true
   protected type = StepType.ServiceNowApproval
   protected stepName = 'ServiceNow Approval'
-  protected stepIcon: IconName = 'service-servicenow'
+  protected stepIcon: IconName = 'servicenow-approve'
   protected stepDescription: keyof StringsMap = 'pipeline.stepDescription.ServiceNowApproval'
   // initialValues on mount
   protected defaultValues: ServiceNowApprovalData = {

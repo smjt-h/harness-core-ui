@@ -36,7 +36,11 @@ export const GetShellOptions = (buildInfrastructureType?: K8sDirectInfraYaml['ty
     { label: getString('common.shell'), value: 'Sh' }
   ]
   return buildInfrastructureType === 'VM'
-    ? [...fixedOptions, { label: getString('common.powershell'), value: 'Powershell' }]
+    ? [
+        ...fixedOptions,
+        { label: getString('common.powershell'), value: 'Powershell' },
+        { label: getString('common.pwsh'), value: 'Pwsh' }
+      ]
     : fixedOptions
 }
 

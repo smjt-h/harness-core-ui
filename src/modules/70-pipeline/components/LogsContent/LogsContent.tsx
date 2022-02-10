@@ -4,9 +4,8 @@
  * that can be found in the licenses directory at the root of this repository, also available at
  * https://polyformproject.org/wp-content/uploads/2020/06/PolyForm-Shield-1.0.0.txt.
  */
-
 import React from 'react'
-import { Link } from 'react-router-dom'
+import { Link, useParams } from 'react-router-dom'
 import cx from 'classnames'
 import {
   Button,
@@ -19,15 +18,86 @@ import {
 } from '@wings-software/uicore'
 import type { GroupedVirtuosoHandle, VirtuosoHandle } from 'react-virtuoso'
 
+import routes from '@common/RouteDefinitions'
 import { String as StrTemplate, useStrings } from 'framework/strings'
 import { useExecutionContext } from '@pipeline/context/ExecutionContext'
 import { useGlobalEventListener } from '@common/hooks'
 import type { ConsoleViewStepDetailProps } from '@pipeline/factories/ExecutionFactory/types'
-
+import type { ExecutionPageQueryParams } from '@pipeline/utils/types'
+import type { ModulePathParams, ExecutionPathProps } from '@common/interfaces/RouteInterfaces'
+import { isExecutionComplete } from '@pipeline/utils/statusHelpers'
 import { useLogsContent } from './useLogsContent'
 import { GroupedLogsWithRef as GroupedLogs } from './components/GroupedLogs'
 import { SingleSectionLogsWithRef as SingleSectionLogs } from './components/SingleSectionLogs'
+import type { UseActionCreatorReturn } from './LogsState/actions'
 import css from './LogsContent.module.scss'
+
+function resolveCurrentStep(selectedStepId: string, queryParams: ExecutionPageQueryParams): string {
+  return queryParams.retryStep ? queryParams.retryStep : selectedStepId
+}
+
+function isStepSelected(selectedStageId?: string, selectedStepId?: string): boolean {
+  return !!(selectedStageId && selectedStepId)
+}
+
+function isPositiveNumber(index: unknown): index is number {
+  return typeof index === 'number' && index >= 0
+}
+
+function handleKeyDown(actions: UseActionCreatorReturn) {
+  return (e: React.KeyboardEvent<HTMLElement>): void => {
+    /* istanbul ignore else */
+    if (e.key === 'ArrowUp') {
+      e.preventDefault()
+      actions.goToPrevSearchResult()
+    } else if (e.key === 'ArrowDown') {
+      e.preventDefault()
+      actions.goToNextSearchResult()
+    }
+  }
+}
+
+function getKeyDownListener(searchRef: React.MutableRefObject<ExpandingSearchInputHandle | undefined>) {
+  return (e: KeyboardEvent) => {
+    const isMetaKey = navigator.userAgent.includes('Mac') ? e.metaKey : e.ctrlKey
+
+    if (e.key === 'f' && isMetaKey && searchRef.current) {
+      e.preventDefault()
+      searchRef.current.focus()
+    }
+  }
+}
+
+function handleSearchChange(actions: UseActionCreatorReturn) {
+  return (term: string): void => {
+    if (term) {
+      actions.search(term)
+    } else {
+      actions.resetSearch()
+    }
+  }
+}
+
+function handleFullScreen(rootRef: React.MutableRefObject<HTMLDivElement | null>, isFullScreen: boolean) {
+  return async (): Promise<void> => {
+    if (!rootRef.current) {
+      return
+    }
+
+    try {
+      if (isFullScreen) {
+        await document.exitFullscreen()
+      } else {
+        await rootRef.current.requestFullscreen()
+      }
+    } catch (_e) {
+      // catch any errors and do nothing
+    }
+  }
+}
+
+const isDocumentFullScreen = (elem: HTMLDivElement | null): boolean =>
+  !!(document.fullscreenElement && document.fullscreenElement === elem)
 
 export interface LogsContentProps {
   mode: 'step-details' | 'console-view'
@@ -38,6 +108,7 @@ export interface LogsContentProps {
 
 export function LogsContent(props: LogsContentProps): React.ReactElement {
   const { mode, toConsoleView = '', errorMessage, isWarning } = props
+  const pathParams = useParams<ExecutionPathProps & ModulePathParams>()
   const { pipelineStagesMap, selectedStageId, allNodeMap, selectedStepId, pipelineExecutionDetail, queryParams } =
     useExecutionContext()
   const { state, actions } = useLogsContent()
@@ -57,8 +128,8 @@ export function LogsContent(props: LogsContentProps): React.ReactElement {
   }
 
   React.useEffect(() => {
-    const currentStepId = queryParams.retryStep ? queryParams.retryStep : selectedStepId
-    const selectedStep = allNodeMap[currentStepId]
+    const currentStepId1 = resolveCurrentStep(selectedStepId, queryParams)
+    const selectedStep = allNodeMap[currentStepId1]
 
     actions.createSections({
       node: selectedStep,
@@ -83,47 +154,20 @@ export function LogsContent(props: LogsContentProps): React.ReactElement {
     const index = linesWithResults[currentIndex]
 
     /* istanbul ignore next */
-    if (virtuosoRef.current && typeof index === 'number' && index >= 0) {
+    if (virtuosoRef.current && isPositiveNumber(index)) {
       virtuosoRef.current.scrollToIndex(index)
     }
   }, [currentIndex, linesWithResults])
 
-  function handleKeyDown(e: React.KeyboardEvent<HTMLElement>): void {
-    /* istanbul ignore else */
-    if (e.key === 'ArrowUp') {
-      e.preventDefault()
-      actions.goToPrevSearchResult()
-    } else if (e.key === 'ArrowDown') {
-      e.preventDefault()
-      actions.goToNextSearchResult()
-    }
-  }
-
   /* istanbul ignore next */
-  useGlobalEventListener('keydown', e => {
-    const isMetaKey = navigator.userAgent.includes('Mac') ? e.metaKey : e.ctrlKey
-
-    if (e.key === 'f' && isMetaKey && searchRef.current) {
-      e.preventDefault()
-      searchRef.current.focus()
-    }
-  })
-
-  function handleSearchChange(term: string): void {
-    if (term) {
-      actions.search(term)
-    } else {
-      actions.resetSearch()
-    }
-  }
+  useGlobalEventListener('keydown', getKeyDownListener(searchRef))
 
   // we need to update `isFullScreen` flag based on event,
   // as it can be changed via keyboard too
   React.useEffect(() => {
     const elem = rootRef.current
     const callback = (): void => {
-      const isFullScreenCurrent = !!(document.fullscreenElement && document.fullscreenElement === elem)
-      setIsFullScreen(isFullScreenCurrent)
+      setIsFullScreen(isDocumentFullScreen(elem))
     }
 
     const errCallback = (): void => {
@@ -139,21 +183,8 @@ export function LogsContent(props: LogsContentProps): React.ReactElement {
     }
   }, [])
 
-  async function handleFullScreen(): Promise<void> {
-    if (!rootRef.current) {
-      return
-    }
-
-    try {
-      if (isFullScreen) {
-        await document.exitFullscreen()
-      } else {
-        await rootRef.current.requestFullscreen()
-      }
-    } catch (_e) {
-      // catch any errors and do nothing
-    }
-  }
+  const currentStepId = resolveCurrentStep(selectedStepId, queryParams)
+  const currentStep = allNodeMap[currentStepId]
 
   return (
     <div ref={rootRef} className={cx(css.main, { [css.hasErrorMessage]: !!errorMessage })} data-mode={mode}>
@@ -162,9 +193,9 @@ export function LogsContent(props: LogsContentProps): React.ReactElement {
           tagName="div"
           stringID={mode === 'console-view' ? 'execution.consoleLogs' : 'execution.stepLogs'}
         />
-        <div className={css.rhs} onKeyDown={handleKeyDown}>
+        <div className={css.rhs} onKeyDown={handleKeyDown(actions)}>
           <ExpandingSearchInput
-            onChange={handleSearchChange}
+            onChange={handleSearchChange(actions)}
             ref={searchRef}
             showPrevNextButtons
             flip
@@ -181,8 +212,22 @@ export function LogsContent(props: LogsContentProps): React.ReactElement {
             className={css.fullScreen}
             variation={ButtonVariation.ICON}
             withoutCurrentColor
-            onClick={handleFullScreen}
+            onClick={handleFullScreen(rootRef, isFullScreen)}
           />
+          {isStepSelected(selectedStageId, currentStepId) && isExecutionComplete(currentStep?.status) ? (
+            <Link
+              className={css.newTab}
+              to={routes.toPipelineLogs({
+                stepIndentifier: currentStepId,
+                stageIdentifier: selectedStageId,
+                ...pathParams
+              })}
+              target="_blank"
+              rel="noopener noreferer"
+            >
+              <Icon name="launch" size={16} />
+            </Link>
+          ) : null}
           {mode === 'step-details' ? (
             <Link className={css.toConsoleView} to={toConsoleView}>
               <StrTemplate stringID="consoleView" />

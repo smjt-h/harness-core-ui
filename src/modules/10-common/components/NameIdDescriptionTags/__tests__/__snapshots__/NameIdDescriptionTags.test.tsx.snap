@@ -394,7 +394,7 @@ exports[`NameIdDescriptionTags  tests Renders/snapshots On Edit Render - Name, I
                     </span>
                     <input
                       class="bp3-input-ghost"
-                      data-mentions="kv-tag-input-tags}"
+                      data-mentions="kv-tag-input-tags"
                       value=""
                     />
                   </div>

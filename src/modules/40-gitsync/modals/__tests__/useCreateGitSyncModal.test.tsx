@@ -14,7 +14,8 @@ import useCreateGitSyncModal from '@gitsync/modals/useCreateGitSyncModal'
 import { gitHubMock } from '@gitsync/components/gitSyncRepoForm/__tests__/mockData'
 
 const pathParams = { accountId: 'dummy', orgIdentifier: 'default', projectIdentifier: 'dummyProject' }
-
+const branches = { data: ['master', 'devBranch'], status: 'SUCCESS' }
+const fetchBranches = jest.fn(() => Promise.resolve(branches))
 const createGitSynRepo = jest.fn()
 const getGitConnector = jest.fn(() => Promise.resolve({}))
 const isSaas = jest.fn(() =>
@@ -27,9 +28,7 @@ jest.mock('services/cd-ng', () => ({
   usePostGitSync: jest.fn().mockImplementation(() => ({ mutate: createGitSynRepo })),
   useGetConnector: jest.fn().mockImplementation(() => ({ data: gitHubMock, refetch: getGitConnector })),
   getConnectorListPromise: jest.fn().mockImplementation(() => Promise.resolve(gitHubMock)),
-  getListOfBranchesByConnectorPromise: jest
-    .fn()
-    .mockResolvedValue({ data: ['master', 'devBranch'], status: 'SUCCESS' }),
+  useGetListOfBranchesByConnector: jest.fn().mockImplementation(() => ({ data: branches, refetch: fetchBranches })),
   useGetTestGitRepoConnectionResult: jest.fn().mockImplementation(() => ({ mutate: jest.fn })),
   useIsSaasGit: jest.fn().mockImplementation(() => ({ mutate: isSaas })),
   usePostGitSyncSetting: jest.fn().mockImplementation(() => {
@@ -103,6 +102,7 @@ describe('Test useCreateGitSyncModal', () => {
     await act(async () => {
       fireEvent.change(nameInput!, { target: { value: 'repoName' } })
     })
+    expect(fetchBranches).toBeCalledTimes(1)
 
     const rootfolderInput = queryByAttribute('name', dialog, 'rootfolder')
     expect(rootfolderInput).toBeDefined()

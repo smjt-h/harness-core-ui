@@ -184,7 +184,7 @@ export function ExecutionHeader(): React.ReactElement {
             }, {} as { [key: string]: string })}
           />
         ) : null}
-        {pipelineExecutionSummary.gitDetails?.objectId ? (
+        {pipelineExecutionSummary.gitDetails ? (
           <GitSyncStoreProvider>
             <GitPopover
               data={pipelineExecutionSummary.gitDetails}

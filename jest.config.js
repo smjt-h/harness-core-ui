@@ -76,10 +76,10 @@ module.exports = {
   },
   coverageThreshold: {
     global: {
-      statements: 60,
-      branches: 40,
-      functions: 40,
-      lines: 60
+      statements: 65,
+      branches: 50,
+      functions: 50,
+      lines: 65
     }
   },
   transformIgnorePatterns: ['node_modules/(?!(date-fns|lodash-es|p-debounce)/)'],

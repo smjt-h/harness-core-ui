@@ -5,7 +5,7 @@
  * https://polyformproject.org/wp-content/uploads/2020/06/PolyForm-Shield-1.0.0.txt.
  */
 
-import React, { useState } from 'react'
+import React, { useMemo, useState } from 'react'
 import {
   Layout,
   Card,
@@ -24,13 +24,20 @@ import {
 import cx from 'classnames'
 import { useHistory, useParams } from 'react-router-dom'
 import { useStrings } from 'framework/strings'
-import { PerspectiveTrendStats, Maybe, useFetchPerspectiveBudgetQuery, BudgetSummary } from 'services/ce/services'
+import {
+  PerspectiveTrendStats,
+  Maybe,
+  useFetchPerspectiveBudgetQuery,
+  BudgetSummary,
+  K8sRecommendationFilterDtoInput
+} from 'services/ce/services'
 import useBudgetModal from '@ce/components/PerspectiveReportsAndBudget/PerspectiveCreateBudget'
 import formatCost from '@ce/utils/formatCost'
 import { useGetLastMonthCost, useGetForecastCost } from 'services/ce'
 
 import type { AccountPathProps } from '@common/interfaces/RouteInterfaces'
 import routes from '@common/RouteDefinitions'
+import { getViewFilterForId } from '@ce/utils/perspectiveUtils'
 import RecommendationSummaryCard from './RecommendationSummaryCard'
 import css from './PerspectiveSummary.module.scss'
 
@@ -373,10 +380,22 @@ const PerspectiveSummary: React.FC<PerspectiveSummaryProps> = ({
   isDefaultPerspective,
   hasClusterAsSource
 }) => {
+  const { perspectiveId } = useParams<{
+    perspectiveId: string
+  }>()
+
   let showForecastedCostCard = true
   if (!fetching && !forecastedCostData?.cost?.statsValue) {
     showForecastedCostCard = false
   }
+
+  const recommendationFilters = useMemo(
+    () =>
+      ({
+        perspectiveFilters: [getViewFilterForId(perspectiveId)]
+      } as K8sRecommendationFilterDtoInput),
+    [perspectiveId]
+  )
 
   return (
     <Layout.Horizontal margin="xlarge" spacing="large">
@@ -400,7 +419,7 @@ const PerspectiveSummary: React.FC<PerspectiveSummaryProps> = ({
           showTrend={false}
         />
       )}
-      {hasClusterAsSource && <RecommendationSummaryCard />}
+      {hasClusterAsSource && <RecommendationSummaryCard filters={recommendationFilters} />}
     </Layout.Horizontal>
   )
 }

@@ -14,7 +14,7 @@ import * as auditServices from 'services/audit'
 import AuditTrailsPage from '../AuditTrailsPage'
 import { filters } from '../../../components/__tests__/mockData'
 
-jest.spyOn(auditServices, 'useGetFilterList').mockImplementation(() => ({ data: filters, loading: false } as any))
+jest.spyOn(auditServices, 'useGetAuditFilterList').mockImplementation(() => ({ data: filters, loading: false } as any))
 
 describe('Audit trail Page', () => {
   test('render', () => {

@@ -159,7 +159,9 @@ export const TemplateSettingsModal = (props: TemplateSettingsModalProps) => {
       orgIdentifier,
       projectIdentifier,
       module,
-      templateListType: TemplateListType.All
+      templateListType: TemplateListType.All,
+      repoIdentifier,
+      branch
     },
     queryParamStringifyOptions: { arrayFormat: 'comma' }
   })

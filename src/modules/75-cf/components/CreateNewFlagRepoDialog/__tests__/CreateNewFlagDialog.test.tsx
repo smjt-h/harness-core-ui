@@ -21,6 +21,6 @@ describe('CreateNewFlagDialog', () => {
       </TestWrapper>
     )
 
-    expect(screen.getByText('enableGitExperience')).toBeInTheDocument()
+    expect(screen.getByText('gitsync.configureHarnessFolder')).toBeInTheDocument()
   })
 })

@@ -6,7 +6,7 @@
  */
 
 import React, { useEffect, useState } from 'react'
-import { isEmpty as _isEmpty } from 'lodash-es'
+import { isEmpty as _isEmpty, defaultTo as _defaultTo } from 'lodash-es'
 import { Switch, Tab } from '@blueprintjs/core'
 import copy from 'copy-to-clipboard'
 import { Layout, Container, Text, Icon, Link, Tabs, Heading } from '@wings-software/uicore'
@@ -154,6 +154,8 @@ const COGatewayAnalytics: React.FC<COGatewayAnalyticsProps> = props => {
   const [spendSeries, setSpendSeries] = useState<number[]>([])
   const [idleHourSeries, setIdleHourSeries] = useState<number[]>([])
   const [actualHoursSeries, setActualHoursSeries] = useState<number[]>([])
+  const isK8sRule = Utils.isK8sRule(props.service?.data as Service)
+
   const { data, loading } = useSavingsOfService({
     account_id: accountId,
     rule_id: props.service?.data.id as number,
@@ -186,7 +188,8 @@ const COGatewayAnalytics: React.FC<COGatewayAnalyticsProps> = props => {
   } = useAllServiceResources({
     account_id: accountId,
     rule_id: props.service?.data.id as number, // eslint-disable-line
-    debounce: 300
+    debounce: 300,
+    lazy: isK8sRule
   })
 
   const { triggerToggle } = useToggleRuleState({
@@ -215,7 +218,7 @@ const COGatewayAnalytics: React.FC<COGatewayAnalyticsProps> = props => {
     const newSpends: number[] = []
     const newIdleHours: number[] = []
     const newActualHours: number[] = []
-    const savingsEntries: ServiceSavings[] = graphData?.response ? (graphData.response as ServiceSavings[]) : []
+    const savingsEntries: ServiceSavings[] = _defaultTo(graphData?.response as ServiceSavings[], [])
     savingsEntries.forEach(element => {
       newCategroies.push(getDay(element.usage_date as string, DATE_FORMAT))
       newSavings.push(roundToPrecision(element.actual_savings as number))
@@ -231,8 +234,6 @@ const COGatewayAnalytics: React.FC<COGatewayAnalyticsProps> = props => {
     setIdleHourSeries(newIdleHours)
     setActualHoursSeries(newActualHours)
   }, [graphData])
-
-  const isK8sRule = Utils.isK8sRule(props.service?.data as Service)
 
   return (
     <Container>
@@ -283,39 +284,46 @@ const COGatewayAnalytics: React.FC<COGatewayAnalyticsProps> = props => {
               <Text className={css.detailItemHeader}>Idle time</Text>
               <Text className={css.detailItemValue}>{`${props.service?.data.idle_time_mins} min`}</Text>
             </Container>
-            <Container className={css.serviceDetailsItemContainer}>
-              <Text className={css.detailItemHeader}>Resources managed</Text>
-              <Layout.Horizontal spacing="medium" className={css.detailItemValue}>
-                {!resourcesLoading && resources && props.service?.data ? (
-                  <Link
-                    href={getInstancesLink(props.service?.data as Service, resources as AllResourcesOfAccountResponse)}
-                    target="_blank"
-                    style={{ textOverflow: 'ellipsis', whiteSpace: 'nowrap' }}
-                  >
-                    {resources?.response?.length} Instances
-                  </Link>
-                ) : (
-                  <Icon name="spinner" size={12} color="blue500" />
-                )}
-                {healthData?.response?.['state'] != null ? (
-                  getStateTag(healthData?.response?.['state'])
-                ) : !healthDataLoading ? (
-                  getStateTag('down')
-                ) : (
-                  <Icon name="spinner" size={12} color="blue500" />
-                )}
-              </Layout.Horizontal>
-            </Container>
+            {!isK8sRule && (
+              <Container className={css.serviceDetailsItemContainer}>
+                <Text className={css.detailItemHeader}>Resources managed</Text>
+                <Layout.Horizontal spacing="medium" className={css.detailItemValue}>
+                  {!resourcesLoading && resources && props.service?.data ? (
+                    <Link
+                      href={getInstancesLink(
+                        props.service?.data as Service,
+                        resources as AllResourcesOfAccountResponse
+                      )}
+                      target="_blank"
+                      style={{ textOverflow: 'ellipsis', whiteSpace: 'nowrap' }}
+                    >
+                      {resources?.response?.length} Instances
+                    </Link>
+                  ) : (
+                    <Icon name="spinner" size={12} color="blue500" />
+                  )}
+                  {healthDataLoading ? (
+                    <Icon name="spinner" size={12} color="blue500" />
+                  ) : healthData?.response?.['state'] != null ? (
+                    getStateTag(healthData?.response?.['state'])
+                  ) : null}
+                </Layout.Horizontal>
+              </Container>
+            )}
             <Container className={css.serviceDetailsItemContainer}>
               <Text className={css.detailItemHeader}>Host name</Text>
               <Layout.Horizontal spacing="small" className={css.detailItemValue}>
-                <Link
-                  href={`http://${props.service?.data.host_name}`}
-                  target="_blank"
-                  style={{ maxWidth: 350, textAlign: 'left' }}
-                >
-                  {props.service?.data.host_name}
-                </Link>
+                {isK8sRule ? (
+                  <Text style={{ maxWidth: 350, textAlign: 'left' }}>{props.service?.data.host_name}</Text>
+                ) : (
+                  <Link
+                    href={`http://${props.service?.data.host_name}`}
+                    target="_blank"
+                    style={{ maxWidth: 350, textAlign: 'left' }}
+                  >
+                    {props.service?.data.host_name}
+                  </Link>
+                )}
                 <CopyURL textToCopy={`http://${props.service?.data.host_name}`} />
               </Layout.Horizontal>
             </Container>
@@ -326,9 +334,13 @@ const COGatewayAnalytics: React.FC<COGatewayAnalyticsProps> = props => {
                   {props.service?.data.custom_domains?.map((d, i) => {
                     return (
                       <Layout.Horizontal spacing="small" key={`custom_domain${i}`}>
-                        <Link key={`custom_domain${i}`} href={`http://${d}`} target="_blank">
-                          {d}
-                        </Link>
+                        {isK8sRule ? (
+                          <Text>{d}</Text>
+                        ) : (
+                          <Link key={`custom_domain${i}`} href={`http://${d}`} target="_blank">
+                            {d}
+                          </Link>
+                        )}
                         <CopyURL textToCopy={d} />
                       </Layout.Horizontal>
                     )
@@ -339,8 +351,9 @@ const COGatewayAnalytics: React.FC<COGatewayAnalyticsProps> = props => {
             <Container className={css.serviceDetailsItemContainer}>
               <Text className={css.detailItemHeader}>Compute type</Text>
               <Layout.Horizontal spacing="xsmall" className={css.detailItemValue}>
-                {isK8sRule && <Icon name="app-kubernetes" size={18} />}
-                {!isK8sRule && (
+                {isK8sRule ? (
+                  <Icon name="app-kubernetes" size={18} />
+                ) : (
                   <img src={props.service?.data.fulfilment === 'spot' ? spotIcon : odIcon} alt="" aria-hidden />
                 )}
                 <Text>{props.service?.data.fulfilment}</Text>

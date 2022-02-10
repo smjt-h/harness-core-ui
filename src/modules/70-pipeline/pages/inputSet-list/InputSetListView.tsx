@@ -245,7 +245,10 @@ const RenderColumnActions: Renderer<CellProps<InputSetLocal>> = ({ row, column }
         e.stopPropagation()
         runPipeline()
       }}
-      featuresProps={getFeaturePropsForRunPipelineButton((column as any).template?.data?.modules)}
+      featuresProps={getFeaturePropsForRunPipelineButton({
+        modules: (column as any).template?.data?.modules,
+        getString
+      })}
       permission={{
         resource: {
           resourceType: ResourceType.PIPELINE,

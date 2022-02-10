@@ -235,7 +235,7 @@ exports[`SLOCardHeader it should successfully reset the error budget 1`] = `
         cv.yourExistingErrorBudgetIs
          
         <span
-          class="StyledProps--font StyledProps--main StyledProps--font-variation-body2"
+          class="StyledProps--font StyledProps--main StyledProps--font-variation-body StyledProps--font-weight-bold"
           data-testid="existing-error-budget"
         >
           100
@@ -246,7 +246,7 @@ exports[`SLOCardHeader it should successfully reset the error budget 1`] = `
         cv.andYouHave
          
         <span
-          class="StyledProps--font StyledProps--main StyledProps--font-variation-body2 StyledProps--color StyledProps--color-green500"
+          class="StyledProps--font StyledProps--main StyledProps--font-variation-body StyledProps--font-weight-bold StyledProps--color StyledProps--color-green500"
           data-testid="remaining-error-budget"
         >
           60
@@ -310,7 +310,7 @@ exports[`SLOCardHeader it should successfully reset the error budget 1`] = `
             >
               <div
                 class="StyledProps--font StyledProps--main StyledProps--padding-right-xxxlarge StyledProps--border StyledProps--border-right"
-                style="width: 300px;"
+                style="width: 325px;"
               >
                 <div
                   class="bp3-form-group"
@@ -340,12 +340,11 @@ exports[`SLOCardHeader it should successfully reset the error budget 1`] = `
                       <input
                         autocomplete="off"
                         class="bp3-input"
-                        max="100"
                         min="1"
                         name="errorBudgetIncrementPercentage"
                         style="padding-right: 0px;"
                         type="number"
-                        value="100"
+                        value="101"
                       />
                       <span
                         class="bp3-input-action"
@@ -420,7 +419,7 @@ exports[`SLOCardHeader it should successfully reset the error budget 1`] = `
                     data-testid="updated-error-budget"
                     level="2"
                   >
-                    200
+                    201
                   </h2>
                   <span
                     class="StyledProps--font StyledProps--main StyledProps--inline StyledProps--font-variation-form-help"
@@ -433,20 +432,32 @@ exports[`SLOCardHeader it should successfully reset the error budget 1`] = `
                   <p
                     class="StyledProps--font StyledProps--main StyledProps--font-variation-form-label"
                   >
-                    cv.remainingErrorBudget
+                    cv.updatedRemainingErrorBudget
                   </p>
                   <h2
                     class="StyledProps--font StyledProps--font-h2 StyledProps--main StyledProps--inline StyledProps--color StyledProps--color-grey800 StyledProps--font-variation-h4"
                     data-testid="updated-remaining-error-budget"
                     level="2"
                   >
-                    160
+                    161
+                  </h2>
+                  <span
+                    class="StyledProps--font StyledProps--main StyledProps--inline StyledProps--font-variation-form-help StyledProps--padding-right-small"
+                  >
+                     
+                    cv.mins
+                  </span>
+                  <h2
+                    class="StyledProps--font StyledProps--font-h2 StyledProps--main StyledProps--inline StyledProps--color StyledProps--color-grey800 StyledProps--font-variation-h4 StyledProps--border StyledProps--border-left StyledProps--padding-left-small"
+                    data-testid="updated-remaining-error-budget-percentage"
+                    level="2"
+                  >
+                    80.10
                   </h2>
                   <span
                     class="StyledProps--font StyledProps--main StyledProps--inline StyledProps--font-variation-form-help"
                   >
-                     
-                    cv.mins
+                     %
                   </span>
                 </div>
               </div>

@@ -34,7 +34,7 @@ export class JiraUpdate extends PipelineStep<JiraUpdateData> {
   protected isHarnessSpecific = true
   protected type = StepType.JiraUpdate
   protected stepName = 'Jira Update'
-  protected stepIcon: IconName = 'service-jira'
+  protected stepIcon: IconName = 'jira-update'
   protected stepDescription: keyof StringsMap = 'pipeline.stepDescription.JiraUpdate'
   // initialValues on mount
   protected defaultValues: JiraUpdateData = {
@@ -60,7 +60,7 @@ export class JiraUpdate extends PipelineStep<JiraUpdateData> {
     viewType
   }: ValidateInputSetProps<JiraUpdateData>): FormikErrors<JiraUpdateData> {
     const errors: FormikErrors<JiraUpdateData> = {}
-    const isRequired = viewType === StepViewType.DeploymentForm
+    const isRequired = viewType === StepViewType.DeploymentForm || viewType === StepViewType.TriggerForm
     if (
       typeof template?.spec?.connectorRef === 'string' &&
       isRequired &&

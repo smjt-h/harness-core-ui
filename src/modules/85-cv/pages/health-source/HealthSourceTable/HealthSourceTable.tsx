@@ -27,6 +27,7 @@ import css from './HealthSourceTable.module.scss'
 export default function HealthSourceTable({
   value,
   onEdit,
+  onDeleteHealthSourceVerifyStep,
   onSuccess,
   onAddNewHealthSource,
   shouldRenderAtVerifyStep,
@@ -34,10 +35,11 @@ export default function HealthSourceTable({
 }: {
   value: any
   onSuccess: (data: HealthSourceDTO[]) => void
+  onDeleteHealthSourceVerifyStep?: (selectedRow: HealthSource) => void
   onEdit: (data: HealthSource) => void
   onAddNewHealthSource: () => void
-  shouldRenderAtVerifyStep?: any
-  isRunTimeInput?: any
+  shouldRenderAtVerifyStep?: boolean
+  isRunTimeInput?: boolean
 }): JSX.Element {
   const tableData = cloneDeep(value)
   const { showError } = useToaster()
@@ -46,12 +48,13 @@ export default function HealthSourceTable({
   const { projectIdentifier } = useParams<ProjectPathProps>()
 
   const onDeleteHealthSource = useCallback(
-    async (selectedRow: HealthSourceDTO): Promise<void> => {
-      const updatedChangeSources = tableData?.filter(
-        (healthSource: HealthSourceDTO) => healthSource.identifier !== selectedRow.identifier
+    async (selectedRow: HealthSource): Promise<void> => {
+      const updatedHealthSources = tableData?.filter(
+        (healthSource: HealthSource) => healthSource.identifier !== selectedRow.identifier
       )
-      onSuccess(updatedChangeSources)
+      onSuccess(updatedHealthSources)
     },
+    // eslint-disable-next-line react-hooks/exhaustive-deps
     [tableData]
   )
 
@@ -63,7 +66,7 @@ export default function HealthSourceTable({
         <ContextMenuActions
           titleText={getString('cv.healthSource.deleteHealthSource')}
           contentText={getString('cv.healthSource.deleteHealthSourceWarning') + `: ${rowdata.identifier}`}
-          onDelete={() => onDeleteHealthSource(rowdata as HealthSourceDTO)}
+          onDelete={() => onDeleteHealthSource(rowdata)}
           onEdit={() => {
             const rowFilteredData =
               tableData?.find((healthSource: RowData) => healthSource.identifier === rowdata.identifier) || null
@@ -103,43 +106,6 @@ export default function HealthSourceTable({
     showError(getString('cv.healthSource.noDataPresentHealthSource'))
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [])
-
-  const renderHealthSourceTable = useCallback(
-    (renderAtVerifyStep: boolean, healthSourceTableData: RowData[]) => {
-      if (renderAtVerifyStep) {
-        return (
-          <HealthSources
-            healthSources={healthSourceTableData}
-            editHealthSource={editRow}
-            isRunTimeInput={isRunTimeInput}
-            addHealthSource={onAddNewHealthSource}
-          />
-        )
-      }
-      return (
-        <CardWithOuterTitle>
-          <Text className={css.tableTitle}>{getString('connectors.cdng.healthSources.label')}</Text>
-          {renderHealthSourceTableInCV(healthSourceTableData)}
-          <RbacButton
-            icon="plus"
-            text={getString('cv.healthSource.addHealthSource')}
-            variation={ButtonVariation.LINK}
-            onClick={onAddNewHealthSource}
-            data-testid="addHealthSource-button"
-            margin={{ top: 'small' }}
-            permission={{
-              permission: PermissionIdentifier.EDIT_MONITORED_SERVICE,
-              resource: {
-                resourceType: ResourceType.MONITOREDSERVICE,
-                resourceIdentifier: projectIdentifier
-              }
-            }}
-          />
-        </CardWithOuterTitle>
-      )
-    },
-    [isRunTimeInput, value, onAddNewHealthSource, editRow, onEdit]
-  )
 
   const renderHealthSourceTableInCV = useCallback(
     (healthSourceTableData: RowData[]) => {
@@ -185,6 +151,45 @@ export default function HealthSourceTable({
       )
     },
     [value, onAddNewHealthSource, editRow, onEdit]
+  )
+
+  const renderHealthSourceTable = useCallback(
+    (renderAtVerifyStep: boolean, healthSourceTableData: RowData[]) => {
+      if (renderAtVerifyStep) {
+        return (
+          <HealthSources
+            healthSources={healthSourceTableData}
+            editHealthSource={editRow}
+            deleteHealthSource={onDeleteHealthSourceVerifyStep}
+            isRunTimeInput={isRunTimeInput}
+            addHealthSource={onAddNewHealthSource}
+          />
+        )
+      }
+      return (
+        <CardWithOuterTitle>
+          <Text className={css.tableTitle}>{getString('connectors.cdng.healthSources.label')}</Text>
+          {renderHealthSourceTableInCV(healthSourceTableData)}
+          <RbacButton
+            icon="plus"
+            text={getString('cv.healthSource.addHealthSource')}
+            variation={ButtonVariation.LINK}
+            onClick={onAddNewHealthSource}
+            data-testid="addHealthSource-button"
+            margin={{ top: 'small' }}
+            permission={{
+              permission: PermissionIdentifier.EDIT_MONITORED_SERVICE,
+              resource: {
+                resourceType: ResourceType.MONITOREDSERVICE,
+                resourceIdentifier: projectIdentifier
+              }
+            }}
+          />
+        </CardWithOuterTitle>
+      )
+    },
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+    [isRunTimeInput, value, onAddNewHealthSource, editRow, onEdit]
   )
 
   return renderHealthSourceTable(!!shouldRenderAtVerifyStep, tableData)

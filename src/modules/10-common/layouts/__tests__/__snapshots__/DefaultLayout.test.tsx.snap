@@ -142,7 +142,7 @@ exports[`<DefaultLayout /> tests feature banner tests features banner is rendere
         class="featuresBanner info"
       >
         <div
-          class="Layout--horizontal StyledProps--main StyledProps--padding-left-large"
+          class="Layout--horizontal Layout--layout-spacing-medium StyledProps--main StyledProps--padding-left-large"
           style="width: 95%;"
         >
           <p

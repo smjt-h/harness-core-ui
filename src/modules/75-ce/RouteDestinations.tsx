@@ -9,6 +9,7 @@ import React from 'react'
 import { Route, useParams, Redirect, Switch } from 'react-router-dom'
 import { createClient, Provider, dedupExchange, cacheExchange, fetchExchange } from 'urql'
 import { requestPolicyExchange } from '@urql/exchange-request-policy'
+import { get } from 'lodash-es'
 import routes from '@common/RouteDefinitions'
 import type { SidebarContext } from '@common/navigation/SidebarProvider'
 import { accountPathProps, projectPathProps } from '@common/utils/routeUtils'
@@ -22,6 +23,10 @@ import CESideNav from '@ce/components/CESideNav/CESideNav'
 import { ModuleName } from 'framework/types/ModuleName'
 import { getConfig } from 'services/config'
 import { LicenseRedirectProps, LICENSE_STATE_NAMES } from 'framework/LicenseStore/LicenseStoreContext'
+import featureFactory from 'framework/featureStore/FeaturesFactory'
+import { FeatureIdentifier } from 'framework/featureStore/FeatureIdentifier'
+import { BannerType } from '@common/layouts/Constants'
+import { FEATURE_USAGE_WARNING_LIMIT } from '@common/layouts/FeatureBanner'
 import CEHomePage from './pages/home/CEHomePage'
 import CECODashboardPage from './pages/co-dashboard/CECODashboardPage'
 import CECOCreateGatewayPage from './pages/co-create-gateway/CECOCreateGatewayPage'
@@ -41,6 +46,52 @@ import NodeRecommendationDetailsPage from './pages/node-recommendation-details/N
 import BudgetDetails from './pages/budget-details/BudgetDetails'
 import NodeDetailsPage from './pages/node-details/NodeDetailsPage'
 import AnomaliesOverviewPage from './pages/anomalies-overview/AnomaliesOverviewPage'
+import formatCost from './utils/formatCost'
+
+featureFactory.registerFeaturesByModule('ce', {
+  features: [FeatureIdentifier.PERSPECTIVES],
+  renderMessage: (_, getString, additionalLicenseProps, usageAndLimitInfo) => {
+    const { isFreeEdition } = additionalLicenseProps || {}
+    const { limitData, usageData } = usageAndLimitInfo || {}
+
+    const usageCost = get(usageData, 'usage.ccm.activeSpend.count', 0)
+    const limitCost = get(limitData, 'limit.ccm.totalSpendLimit', 1)
+
+    const usagePercentage = (usageCost / limitCost) * 100
+
+    if (usageCost >= limitCost) {
+      const message = isFreeEdition
+        ? getString('ce.enforcementMessage.exceededSpendLimitFreePlan', {
+            usage: formatCost(Number(usageCost), {
+              shortFormat: true
+            }),
+            limit: formatCost(Number(limitCost), {
+              shortFormat: true
+            })
+          })
+        : getString('ce.enforcementMessage.exceededSpendLimit')
+      return {
+        message: () => message,
+        bannerType: BannerType.LEVEL_UP
+      }
+    }
+
+    if (usagePercentage > FEATURE_USAGE_WARNING_LIMIT) {
+      return {
+        message: () =>
+          getString('ce.enforcementMessage.usageInfo', {
+            percentage: Math.ceil(usagePercentage)
+          }),
+        bannerType: BannerType.INFO
+      }
+    }
+
+    return {
+      message: () => '',
+      bannerType: BannerType.LEVEL_UP
+    }
+  }
+})
 
 const CESideNavProps: SidebarContext = {
   navComponent: CESideNav,

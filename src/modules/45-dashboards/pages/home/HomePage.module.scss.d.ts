@@ -10,7 +10,9 @@ declare const styles: {
   readonly activeTag: string
   readonly button: string
   readonly create: string
+  readonly createButton: string
   readonly crossIcon: string
+  readonly customDashboards: string
   readonly customSelect: string
   readonly customTag: string
   readonly dashboardCard: string
@@ -23,7 +25,6 @@ declare const styles: {
   readonly formContainer: string
   readonly mainNavTag: string
   readonly masonry: string
-  readonly pageContainer: string
   readonly predefinedTags: string
   readonly search: string
   readonly stepWizard: string

@@ -91,6 +91,17 @@ export const MET_VALUE_ACTIVE_COMMITERS = {
     moduleType: 'CI'
   }
 }
+export const EXCEDED_VALUE_ACTIVE_COMMITERS = {
+  enabled: true,
+  featureDetail: {
+    featureName: 'ACTIVE_COMMITTERS',
+    enabled: true,
+    limit: 200,
+    count: 201,
+    apiFail: false,
+    moduleType: 'CI'
+  }
+}
 
 export const NOT_ENABLED_ACTIVE_COMMITTERS = {
   enabled: true,

@@ -49,7 +49,7 @@ describe('MetricDashboardList unit tests', () => {
     } as UseGetReturn<any, any, any>
   })
   test('When api returns nothing, ensure no data state is rendered', async () => {
-    const { container, getAllByText } = render(
+    const { container } = render(
       WrapperComponent(
         <MetricsDashboardList
           manualQueryInputTitle={'cv.monitoringSources.datadog.manualInputQueryModal.modalTitle'}
@@ -62,9 +62,6 @@ describe('MetricDashboardList unit tests', () => {
       )
     )
     await waitFor(() => expect(container.querySelector('[class*="loadingErrorNoData"]')).not.toBeNull())
-
-    fireEvent.click(getAllByText('cv.monitoringSources.gco.addManualInputQuery')[1])
-    await waitFor(() => expect(document.body.querySelector('input[name="metricName"]')).not.toBeNull())
   })
 
   test('When api returns and error, ensure error state is rendered', async () => {
@@ -87,7 +84,7 @@ describe('MetricDashboardList unit tests', () => {
       throw Error('Could not find dashboards to render')
     }
     fireEvent.click(retryButton)
-    await waitFor(() => expect(refetchMock).toHaveBeenCalledTimes(2))
+    await waitFor(() => expect(refetchMock).toHaveBeenCalledTimes(1))
   })
 
   test('When api returns data, ensure data is rendered correctly', async () => {

@@ -22,7 +22,9 @@ import { TableFilter } from '@cv/components/TableFilter/TableFilter'
 import { Table } from '@common/components'
 import {
   initializeSelectedDashboards,
-  initializeTableData
+  initializeTableData,
+  isError,
+  isNoData
 } from '@cv/components/MetricsDashboardList/MetricsDashboardList.utils'
 import { ManualInputQueryModal } from '@cv/pages/health-source/connectors/GCOMetricsHealthSource/components/ManualInputQueryModal/ManualInputQueryModal'
 import { getManuallyCreatedQueries } from '@cv/pages/health-source/connectors/GCOMetricsHealthSource/GCOMetricsHealthSource.utils'
@@ -52,6 +54,7 @@ export default function MetricsDashboardList<T>(props: MetricsDashboardListProps
   )
 
   const { error, loading, data: dashboardList, refetch: refetchData } = dashboardsRequest
+  const { pageIndex = -1, pageItemCount = 0, totalPages = 0, pageSize = 0 } = dashboardList?.data || {}
 
   const dashboardItems: TableDashboardItem[] = useMemo(() => {
     if (!dashboardList?.data?.content) {
@@ -94,9 +97,31 @@ export default function MetricsDashboardList<T>(props: MetricsDashboardListProps
     } else {
       setTableData(initializeTableData(selectedDashboards, dashboardItems))
     }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [selectedDashboards, dashboardItems, loading])
 
-  const { pageIndex = -1, pageItemCount = 0, totalPages = 0, pageSize = 0 } = dashboardList?.data || {}
+  if (isError(loading, error)) {
+    return (
+      <PageError
+        className={css.loadingErrorNoData}
+        message={getErrorMessage(error)}
+        onClick={() => refetchData({ queryParams })}
+      />
+    )
+  }
+
+  if (isNoData(loading, error, dashboardItems)) {
+    return (
+      <NoDataCard
+        icon="warning-sign"
+        className={css.loadingErrorNoData}
+        message={getString('cv.monitoringSources.gco.selectDashboardsPage.noDataText')}
+        buttonText={getString('cv.monitoringSources.gco.addManualInputQuery')}
+        onClick={() => setIsModalOpen(true)}
+      />
+    )
+  }
+
   return (
     <SetupSourceLayout
       content={
@@ -182,22 +207,6 @@ export default function MetricsDashboardList<T>(props: MetricsDashboardListProps
               }
             ]}
           />
-          {!loading && error?.data && (
-            <PageError
-              className={css.loadingErrorNoData}
-              message={getErrorMessage(error)}
-              onClick={() => refetchData({ queryParams: queryParams })}
-            />
-          )}
-          {!loading && !error?.data && !dashboardItems?.length && (
-            <NoDataCard
-              icon="warning-sign"
-              className={css.loadingErrorNoData}
-              message={getString('cv.monitoringSources.gco.selectDashboardsPage.noDataText')}
-              buttonText={getString('cv.monitoringSources.gco.addManualInputQuery')}
-              onClick={() => setIsModalOpen(true)}
-            />
-          )}
           {isModalOpen && (
             <ManualInputQueryModal
               title={manualQueryInputTitle}
