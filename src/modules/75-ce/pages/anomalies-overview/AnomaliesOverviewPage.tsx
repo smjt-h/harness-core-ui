@@ -10,13 +10,19 @@ import { Container, PageBody, PageHeader, Text, PageSpinner } from '@wings-softw
 import { useParams } from 'react-router-dom'
 import { useStrings } from 'framework/strings'
 import { NGBreadcrumbs } from '@common/components/NGBreadcrumbs/NGBreadcrumbs'
-import { CcmMetaData, useFetchCcmMetaDataQuery } from 'services/ce/services'
+import { CcmMetaData, QlceViewTimeFilterOperator, useFetchCcmMetaDataQuery } from 'services/ce/services'
 import { AnomalyData, CCMStringFilter, useGetAnomalyWidgetsData, useListAnomalies } from 'services/ce'
 import AnomaliesSummary from '@ce/components/AnomaliesDetection/AnomaliesSummary'
 import AnomalyFilters from '@ce/components/AnomaliesDetection/AnomaliesFilter'
 import AnomaliesListGridView from '@ce/components/AnomaliesDetection/AnomaliesListView'
 import AnomaliesSearch from '@ce/components/AnomaliesDetection/AnomaliesSearch'
 import type { AccountPathProps } from '@common/interfaces/RouteInterfaces'
+import {
+  CE_DATE_FORMAT_INTERNAL,
+  DATE_RANGE_SHORTCUTS,
+  getGMTEndDateTime,
+  getGMTStartDateTime
+} from '@ce/utils/momentUtils'
 
 const getFilters = (filters: Record<string, Record<string, string>>, searchText: string) => {
   const updatedFilters = Object.values(filters).map(item => {
@@ -38,6 +44,24 @@ const getFilters = (filters: Record<string, Record<string, string>>, searchText:
   return updatedFilters
 }
 
+const getTimeFilters = (from: number, to: number) => {
+  return [
+    {
+      operator: QlceViewTimeFilterOperator.After,
+      timestamp: from
+    },
+    {
+      operator: QlceViewTimeFilterOperator.Before,
+      timestamp: to
+    }
+  ]
+}
+
+interface TimeRange {
+  to: string
+  from: string
+}
+
 const AnomaliesOverviewPage: React.FC = () => {
   const { getString } = useStrings()
   const [searchText, setSearchText] = React.useState('')
@@ -48,6 +72,10 @@ const AnomaliesOverviewPage: React.FC = () => {
   const [cloudProvidersWiseData, setCloudProvidersWiseData] = useState([])
   const [statusWiseData, setStatusWiseData] = useState([])
   const [filters, setFilters] = useState({})
+  const [timeRange, setTimeRange] = useState<TimeRange>({
+    to: DATE_RANGE_SHORTCUTS.LAST_7_DAYS[1].format(CE_DATE_FORMAT_INTERNAL),
+    from: DATE_RANGE_SHORTCUTS.LAST_7_DAYS[0].format(CE_DATE_FORMAT_INTERNAL)
+  })
 
   const { mutate: getAnomaliesList, loading: isListFetching } = useListAnomalies({
     queryParams: {
@@ -91,7 +119,8 @@ const AnomaliesOverviewPage: React.FC = () => {
       try {
         const response = await getAnomaliesList({
           filter: {
-            stringFilters: getFilters(filters, searchText) as CCMStringFilter[]
+            stringFilters: getFilters(filters, searchText) as CCMStringFilter[],
+            timeFilters: getTimeFilters(getGMTStartDateTime(timeRange.from), getGMTEndDateTime(timeRange.to))
           },
           groupBy: [],
           orderBy: [
@@ -113,7 +142,8 @@ const AnomaliesOverviewPage: React.FC = () => {
       try {
         const response = await getAnomalySummary({
           filter: {
-            stringFilters: getFilters(filters, searchText) as CCMStringFilter[]
+            stringFilters: getFilters(filters, searchText) as CCMStringFilter[],
+            timeFilters: getTimeFilters(getGMTStartDateTime(timeRange.from), getGMTEndDateTime(timeRange.to))
           }
         })
         const { data } = response
@@ -124,7 +154,7 @@ const AnomaliesOverviewPage: React.FC = () => {
     }
     getList()
     getSummary()
-  }, [filters, getAnomaliesList, getAnomalySummary, searchText])
+  }, [filters, getAnomaliesList, getAnomalySummary, searchText, timeRange.from, timeRange.to])
 
   const parseSummaryData = (summaryData: any) => {
     summaryData.forEach((item: any) => {
@@ -162,7 +192,12 @@ const AnomaliesOverviewPage: React.FC = () => {
         }
         breadcrumbs={<NGBreadcrumbs />}
       />
-      <AnomalyFilters filters={filters} setFilters={setAnomaliesFilters} />
+      <AnomalyFilters
+        filters={filters}
+        setFilters={setAnomaliesFilters}
+        timeRange={timeRange}
+        setTimeRange={setTimeRange}
+      />
       <PageBody>
         {isListFetching || isFetchingCcmMetaData ? <PageSpinner /> : null}
         <Container

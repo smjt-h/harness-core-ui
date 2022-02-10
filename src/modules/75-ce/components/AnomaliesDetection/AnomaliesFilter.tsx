@@ -5,10 +5,9 @@
  * https://polyformproject.org/wp-content/uploads/2020/06/PolyForm-Shield-1.0.0.txt.
  */
 
-import React, { useState } from 'react'
+import React from 'react'
 import { DropDown, FlexExpander, Layout, Text, Icon } from '@wings-software/uicore'
 import { useStrings } from 'framework/strings'
-import { CE_DATE_FORMAT_INTERNAL, DATE_RANGE_SHORTCUTS } from '@ce/utils/momentUtils'
 import { QlceView, useFetchPerspectiveListQuery } from 'services/ce/services'
 import { allCloudProvidersList } from '@ce/constants'
 import PerspectiveTimeRangePicker from '@ce/components/PerspectiveTimeRangePicker/PerspectiveTimeRangePicker'
@@ -17,19 +16,20 @@ import css from '../../pages/anomalies-overview/AnomaliesOverviewPage.module.scs
 interface AnomalyFiltersProps {
   filters: Record<string, Record<string, string>>
   setFilters: any
+  timeRange: {
+    to: string
+    from: string
+  }
+  setTimeRange: React.Dispatch<
+    React.SetStateAction<{
+      to: string
+      from: string
+    }>
+  >
 }
 
-interface TimeRange {
-  to: string
-  from: string
-}
-
-const AnomalyFilters: React.FC<AnomalyFiltersProps> = ({ filters, setFilters }) => {
+const AnomalyFilters: React.FC<AnomalyFiltersProps> = ({ filters, setFilters, timeRange, setTimeRange }) => {
   const { getString } = useStrings()
-  const [timeRange, setTimeRange] = useState<TimeRange>({
-    to: DATE_RANGE_SHORTCUTS.LAST_30_DAYS[1].format(CE_DATE_FORMAT_INTERNAL),
-    from: DATE_RANGE_SHORTCUTS.LAST_30_DAYS[0].format(CE_DATE_FORMAT_INTERNAL)
-  })
 
   // Fetch all the perspective data
   const [{ data: perspectiveData }] = useFetchPerspectiveListQuery()

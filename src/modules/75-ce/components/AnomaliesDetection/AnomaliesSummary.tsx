@@ -33,7 +33,7 @@ const map: Record<string, string> = {
   GCP: 'defaultGcpPerspectiveId'
 }
 
-const transformCloudCost = (data: Record<string, any>[] = [], providers: Record<string, any>): Stats[] => {
+const transformCloudCost = (data: Record<string, any>[], providers: Record<string, any>): Stats[] => {
   return data.map((d, idx) => {
     return {
       label: d.name as string,
