@@ -211,84 +211,101 @@ const COInstanceSelector: React.FC<COInstanceSelectorprops> = props => {
             </Layout.Horizontal>
           ) : null}
         </Layout.Vertical>
-        <Container>
-          {props.loading && (
+        <Container style={{ minHeight: 250 }}>
+          {props.loading ? (
             <Layout.Horizontal flex={{ justifyContent: 'center' }}>
               <Icon name="spinner" size={24} color="blue500" />
             </Layout.Horizontal>
-          )}
-          {!props.loading && (
-            <TableV2
-              className={css.instancesTable}
-              data={filteredInstances.slice(
-                pageIndex * TOTAL_ITEMS_PER_PAGE,
-                pageIndex * TOTAL_ITEMS_PER_PAGE + TOTAL_ITEMS_PER_PAGE
+          ) : (
+            <>
+              {_isEmpty(selectedResourceGroup) ? (
+                <Layout.Horizontal flex={{ justifyContent: 'center' }}>
+                  <Text icon={'execution-warning'} font={{ size: 'medium' }} iconProps={{ size: 20 }}>
+                    {getString('ce.co.autoStoppingRule.configuration.instanceModal.emptyDescription')}
+                  </Text>
+                </Layout.Horizontal>
+              ) : _isEmpty(filteredInstances) ? (
+                <Layout.Horizontal flex={{ justifyContent: 'center' }}>
+                  <Text font={{ size: 'medium' }} iconProps={{ size: 20 }}>
+                    {getString('ce.co.autoStoppingRule.configuration.instanceModal.emptyInstancesDescription', {
+                      region: selectedResourceGroup?.label
+                    })}
+                  </Text>
+                </Layout.Horizontal>
+              ) : (
+                <TableV2
+                  className={css.instancesTable}
+                  data={filteredInstances.slice(
+                    pageIndex * TOTAL_ITEMS_PER_PAGE,
+                    pageIndex * TOTAL_ITEMS_PER_PAGE + TOTAL_ITEMS_PER_PAGE
+                  )}
+                  pagination={{
+                    pageSize: TOTAL_ITEMS_PER_PAGE,
+                    pageIndex: pageIndex,
+                    pageCount: Math.ceil(filteredInstances.length / TOTAL_ITEMS_PER_PAGE) ?? 1,
+                    itemCount: (props.instances || []).length,
+                    gotoPage: newPageIndex => setPageIndex(newPageIndex)
+                  }}
+                  columns={[
+                    {
+                      Header: '',
+                      id: 'selected',
+                      Cell: TableCheck,
+                      width: '5%'
+                    },
+                    {
+                      accessor: 'name',
+                      Header: getString('ce.co.instanceSelector.name'),
+                      width: '35%',
+                      Cell: NameCell,
+                      disableSortBy: true
+                    },
+                    {
+                      accessor: 'ipv4',
+                      Header: getString('ce.co.instanceSelector.ipAddress'),
+                      width: '15%',
+                      Cell: TableCell,
+                      disableSortBy: true
+                    },
+                    {
+                      accessor: 'region',
+                      Header: getString('regionLabel'),
+                      width: '15%',
+                      Cell: TableCell,
+                      disableSortBy: true
+                    },
+                    {
+                      accessor: 'type',
+                      Header: getString('typeLabel'),
+                      width: '15%',
+                      Cell: TableCell,
+                      disableSortBy: true
+                    },
+                    // {
+                    //   accessor: 'tags',
+                    //   Header: getString('tagsLabel'),
+                    //   width: '10%',
+                    //   Cell: TableCell,
+                    //   disableSortBy: true
+                    // },
+                    // {
+                    //   accessor: 'launch_time',
+                    //   Header: getString('ce.co.instanceSelector.launchTime'),
+                    //   width: '15%',
+                    //   Cell: TableCell,
+                    //   disableSortBy: true
+                    // },
+                    {
+                      accessor: 'status',
+                      Header: getString('status'),
+                      width: '10%',
+                      Cell: TableCell,
+                      disableSortBy: true
+                    }
+                  ]}
+                />
               )}
-              pagination={{
-                pageSize: TOTAL_ITEMS_PER_PAGE,
-                pageIndex: pageIndex,
-                pageCount: Math.ceil(filteredInstances.length / TOTAL_ITEMS_PER_PAGE) ?? 1,
-                itemCount: (props.instances || []).length,
-                gotoPage: newPageIndex => setPageIndex(newPageIndex)
-              }}
-              columns={[
-                {
-                  Header: '',
-                  id: 'selected',
-                  Cell: TableCheck,
-                  width: '5%'
-                },
-                {
-                  accessor: 'name',
-                  Header: getString('ce.co.instanceSelector.name'),
-                  width: '35%',
-                  Cell: NameCell,
-                  disableSortBy: true
-                },
-                {
-                  accessor: 'ipv4',
-                  Header: getString('ce.co.instanceSelector.ipAddress'),
-                  width: '15%',
-                  Cell: TableCell,
-                  disableSortBy: true
-                },
-                {
-                  accessor: 'region',
-                  Header: getString('regionLabel'),
-                  width: '15%',
-                  Cell: TableCell,
-                  disableSortBy: true
-                },
-                {
-                  accessor: 'type',
-                  Header: getString('typeLabel'),
-                  width: '15%',
-                  Cell: TableCell,
-                  disableSortBy: true
-                },
-                // {
-                //   accessor: 'tags',
-                //   Header: getString('tagsLabel'),
-                //   width: '10%',
-                //   Cell: TableCell,
-                //   disableSortBy: true
-                // },
-                // {
-                //   accessor: 'launch_time',
-                //   Header: getString('ce.co.instanceSelector.launchTime'),
-                //   width: '15%',
-                //   Cell: TableCell,
-                //   disableSortBy: true
-                // },
-                {
-                  accessor: 'status',
-                  Header: getString('status'),
-                  width: '10%',
-                  Cell: TableCell,
-                  disableSortBy: true
-                }
-              ]}
-            />
+            </>
           )}
         </Container>
       </Layout.Vertical>

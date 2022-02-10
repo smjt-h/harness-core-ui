@@ -81,7 +81,6 @@ describe('Instance Selector Modal', () => {
           setGatewayDetails={jest.fn()}
           instances={[]}
           gatewayDetails={initialGatewayDetails}
-          search={jest.fn()}
           onInstancesAddSuccess={jest.fn()}
           loading={true}
         />
@@ -100,7 +99,6 @@ describe('Instance Selector Modal', () => {
           setGatewayDetails={jest.fn()}
           instances={[mockedInstance]}
           gatewayDetails={initialGatewayDetails}
-          search={jest.fn()}
           onInstancesAddSuccess={jest.fn()}
           loading={false}
         />
@@ -121,7 +119,6 @@ describe('Instance Selector Modal', () => {
           setGatewayDetails={jest.fn()}
           instances={[mockedInstance]}
           gatewayDetails={initialGatewayDetails}
-          search={jest.fn()}
           onInstancesAddSuccess={jest.fn()}
           loading={false}
         />

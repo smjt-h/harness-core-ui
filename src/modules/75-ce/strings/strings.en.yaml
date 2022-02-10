@@ -130,6 +130,8 @@ co:
             unsuccessfulDeletionMessage: 'There was an error while saving the Fixed Schedule associated with this AutoStopping Rule. {{error}}'
       instanceModal:
         description: 'AutoStopping Rules can manage multiple VMs as long as they are all within the same cloud provider region.'
+        emptyDescription: 'Select a resource group to see all the instances.'
+        emptyInstancesDescription: 'No instances found for {{region}} resource group'
       ecsModal:
         title: 'Select ECS Service'
         emptyDescription: 'Select a Region and a Cluster to see all the services.'

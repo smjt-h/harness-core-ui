@@ -3348,6 +3348,8 @@ export interface StringsMap {
   'ce.co.autoStoppingRule.configuration.ecsModal.emptyDescription': string
   'ce.co.autoStoppingRule.configuration.ecsModal.title': string
   'ce.co.autoStoppingRule.configuration.instanceModal.description': string
+  'ce.co.autoStoppingRule.configuration.instanceModal.emptyDescription': string
+  'ce.co.autoStoppingRule.configuration.instanceModal.emptyInstancesDescription': string
   'ce.co.autoStoppingRule.configuration.rdsModal.emptyDescription': string
   'ce.co.autoStoppingRule.configuration.rdsModal.title': string
   'ce.co.autoStoppingRule.configuration.step1.form.idleTime.label': string

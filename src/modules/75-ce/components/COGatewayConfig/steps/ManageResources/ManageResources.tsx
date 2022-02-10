@@ -364,23 +364,23 @@ const ManageResources: React.FC<ManageResourcesProps> = props => {
     )
   }, [allAsg, asgToShow, selectedAsg, loadingFetchASGs, props.gatewayDetails])
 
+  const onInstanceModalClose = () => {
+    if (isAzureProvider) {
+      setAllInstances([])
+    }
+    closeInstancesModal()
+  }
+
   const [openInstancesModal, closeInstancesModal] = useModalHook(() => {
     return (
-      <ResourceSelectionModal
-        closeBtnTestId={'close-instance-modal'}
-        onClose={() => {
-          closeInstancesModal()
-        }}
-      >
+      <ResourceSelectionModal closeBtnTestId={'close-instance-modal'} onClose={onInstanceModalClose}>
         <COInstanceSelector
           selectedInstances={selectedInstances}
           setSelectedInstances={setSelectedInstances}
           setGatewayDetails={props.setGatewayDetails}
           instances={allInstances}
           gatewayDetails={props.gatewayDetails}
-          onInstancesAddSuccess={() => {
-            closeInstancesModal()
-          }}
+          onInstancesAddSuccess={onInstanceModalClose}
           loading={loadingInstances}
           refresh={refreshInstances}
         />
