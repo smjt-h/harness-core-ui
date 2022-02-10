@@ -157,7 +157,7 @@ describe('Unit tests for VerifyExection', () => {
 
     await waitFor(() => expect(container.querySelector('[class*="manualInterventionTab"]')).not.toBeNull())
 
-    // In case of manual Intervention we should see the deployment summary
+    // In case of manual Intervention we should see the deployment summary as well.
     await waitFor(() => expect(getByText('pipeline.verification.metricsInViolation')).not.toBeNull())
     await waitFor(() => expect(getByText('pipeline.verification.logClustersInViolation')).not.toBeNull())
   })
