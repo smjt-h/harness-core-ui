@@ -23,9 +23,9 @@
         <div class='clearfix'>
             
             <div class='fl pad1y space-right2'>
-                <span class="strong">75% </span>
+                <span class="strong">76.92% </span>
                 <span class="quiet">Statements</span>
-                <span class='fraction'>9/12</span>
+                <span class='fraction'>10/13</span>
             </div>
         
             
@@ -44,9 +44,9 @@
         
             
             <div class='fl pad1y space-right2'>
-                <span class="strong">72.73% </span>
+                <span class="strong">75% </span>
                 <span class="quiet">Lines</span>
-                <span class='fraction'>8/11</span>
+                <span class='fraction'>9/12</span>
             </div>
         
             
@@ -103,24 +103,7 @@
 <a name='L44'></a><a href='#L44'>44</a>
 <a name='L45'></a><a href='#L45'>45</a>
 <a name='L46'></a><a href='#L46'>46</a>
-<a name='L47'></a><a href='#L47'>47</a>
-<a name='L48'></a><a href='#L48'>48</a>
-<a name='L49'></a><a href='#L49'>49</a>
-<a name='L50'></a><a href='#L50'>50</a>
-<a name='L51'></a><a href='#L51'>51</a>
-<a name='L52'></a><a href='#L52'>52</a>
-<a name='L53'></a><a href='#L53'>53</a>
-<a name='L54'></a><a href='#L54'>54</a>
-<a name='L55'></a><a href='#L55'>55</a>
-<a name='L56'></a><a href='#L56'>56</a>
-<a name='L57'></a><a href='#L57'>57</a>
-<a name='L58'></a><a href='#L58'>58</a>
-<a name='L59'></a><a href='#L59'>59</a>
-<a name='L60'></a><a href='#L60'>60</a>
-<a name='L61'></a><a href='#L61'>61</a>
-<a name='L62'></a><a href='#L62'>62</a>
-<a name='L63'></a><a href='#L63'>63</a>
-<a name='L64'></a><a href='#L64'>64</a></td><td class="line-coverage quiet"><span class="cline-any cline-neutral">&nbsp;</span>
+<a name='L47'></a><a href='#L47'>47</a></td><td class="line-coverage quiet"><span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
@@ -131,7 +114,7 @@
 <span class="cline-any cline-yes">8x</span>
 <span class="cline-any cline-yes">8x</span>
 <span class="cline-any cline-yes">8x</span>
-<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">8x</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
@@ -142,23 +125,6 @@
 <span class="cline-any cline-yes">84x</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-yes">84x</span>
-<span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
@@ -191,10 +157,10 @@
  */
 &nbsp;
 import React from 'react'
-import { Button, Color, Icon, Text, TextProps, Utils } from '@wings-software/uicore'
+import { Button, Color, Container, FontVariation, Icon, Text, TextProps, Utils } from '@wings-software/uicore'
 import { useStrings } from 'framework/strings'
 import { useToaster } from '@common/exports'
-&nbsp;
+import css from './IdentifierText.module.scss'
 export interface IdentifierTextProps extends TextProps {
   identifier?: string
   allowCopy?: boolean
@@ -205,34 +171,17 @@ export const IdentifierText: React.FC&lt;IdentifierTextProps&gt; = ({ identifier
   const { showSuccess, clear } = useToaster()
 &nbsp;
   return (
-    &lt;Text
-      inline
-      style={{
-        backgroundColor: '#EFFBFF',
-        marginBottom: 'var(--spacing-small)',
-        padding: '4px 8px',
-        borderRadius: '4px',
-        fontSize: '12px',
-        lineHeight: '15px',
-        color: '#22222A',
-        border: '1px solid #D9DAE6',
-        ...style
-      }}
-      {...props}
-    &gt;
-      {getString('idLabel')}
-      {identifier}
+    &lt;Container className={css.identifierContainer}&gt;
+      &lt;Text inline font={{ variation: FontVariation.SMALL }} margin={{ right: 'xsmall' }}&gt;
+        {getString('idLabel')}
+      &lt;/Text&gt;
+      &lt;Text inline {...props} font={{ variation: FontVariation.SMALL }}&gt;
+        {identifier}
+      &lt;/Text&gt;
       {allowCopy &amp;&amp; (
         &lt;Button
           noStyling
-          style={{
-            border: 'none',
-            background: 'none',
-            padding: 0,
-            margin: '0 0 0 var(--spacing-small)',
-            transform: 'translateY(-2px)',
-            cursor: 'pointer'
-          }}
+          className={css.copyButton}
           title={getString('clickToCopy')}
           onClick={<span class="fstat-no" title="function not covered" >() =</span>&gt; {
 <span class="cstat-no" title="statement not covered" >            Utils.copy(identifier as string)</span>
@@ -243,7 +192,7 @@ export const IdentifierText: React.FC&lt;IdentifierTextProps&gt; = ({ identifier
           &lt;Icon name="duplicate" size={12} color={Color.GREY_350} /&gt;
         &lt;/Button&gt;
       )}
-    &lt;/Text&gt;
+    &lt;/Container&gt;
   )
 }
 &nbsp;</pre></td></tr></table></pre>
@@ -253,7 +202,7 @@ export const IdentifierText: React.FC&lt;IdentifierTextProps&gt; = ({ identifier
             <div class='footer quiet pad2 space-top1 center small'>
                 Code coverage generated by
                 <a href="https://istanbul.js.org/" target="_blank">istanbul</a>
-                at Thu Feb 10 2022 12:49:40 GMT+0000 (Greenwich Mean Time)
+                at Thu Feb 10 2022 14:36:47 GMT+0000 (Greenwich Mean Time)
             </div>
         </div>
         <script src="../../../../prettify.js"></script>
