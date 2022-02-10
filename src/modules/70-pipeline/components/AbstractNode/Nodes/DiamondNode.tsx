@@ -7,10 +7,11 @@
 
 import type { IconName } from '@wings-software/uicore'
 import { Node, NodeType } from '../Node'
-export class EmptyNode extends Node {
-  protected type = NodeType.EmptyNode
+
+export class DiamondNode extends Node {
+  protected type = NodeType.DiamondNode
   protected identifier = '123'
-  protected name = 'EmptyNode'
+  protected name = 'DiamondNode'
   protected defaultIcon: IconName = 'pipeline'
   protected secondaryIcon: IconName = 'pipeline'
   protected selectedColour = 'black'

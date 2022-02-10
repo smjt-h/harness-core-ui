@@ -6,9 +6,10 @@
  */
 
 import type { IconName } from '@wings-software/uicore'
-import { isEmpty } from 'lodash-es'
-import type { CompletionItemInterface } from '@common/interfaces/YAMLBuilderProps'
 import type { Node } from './Node'
+import { DefaultNode } from './Nodes/DefaultNode'
+import { DiamondNode } from './Nodes/DiamondNode'
+import { EmptyNode } from './Nodes/EmptyNode'
 
 export interface NodeData {
   name: string
@@ -19,104 +20,89 @@ export interface NodeData {
   unSelectedIconColour: string
 }
 
-export abstract class AbstractDiagramFactory {
+export class DiagramFactory {
   /**
    * Couples the factory with the nodes it generates
    */
-  protected abstract type: string
+  type: string = ''
+  canCreate: boolean = false
+  canDelete: boolean = false
 
-  protected nodeBank: Map<string, Node<unknown>>
-  protected nodeDataMap: Map<string, NodeData>
-  protected invocationMap: Map<
-    RegExp,
-    (path: string, yaml: string, params: Record<string, unknown>) => Promise<CompletionItemInterface[]>
-  > = new Map()
-  constructor() {
+  nodeBank: Map<string, Node>
+
+  constructor(diagramType: string) {
     this.nodeBank = new Map()
-    this.nodeDataMap = new Map()
+    this.type = diagramType
   }
 
   getType(): string {
     return this.type
   }
 
-  registerNode<T>(node: Node<T>): void {
-    this.nodeBank.set(node.getType(), node as Node<unknown>)
-
-    this.nodeDataMap.set(node.getType(), {
-      name: node.getName(),
-      icon: node.getDefaultIconName(),
-      selectedColour: node.getSelectedColour(),
-      unSelectedColour: node.getUnSelectedColour(),
-      selectedIconColour: node.getSelectedIconColour(),
-      unSelectedIconColour: node.getUnSelectedIconColour()
-    })
-    const nodeMap = node.getInvocationMap()
-    if (nodeMap) {
-      this.invocationMap = new Map([...this.invocationMap, ...nodeMap])
-    }
+  registerNode(node: Node): void {
+    this.nodeBank.set(node.getType(), node as Node)
   }
 
   deregisterNode(type: string): void {
     const deletedNode = this.nodeBank.get(type)
     if (deletedNode) {
       this.nodeBank.delete(type)
-      this.nodeDataMap.delete(type)
-      if (deletedNode.getInvocationMap()) {
-        this.invocationMap = new Map()
-        this.nodeBank.forEach(node => {
-          const nodeMap = node.getInvocationMap()
-          if (nodeMap) {
-            this.invocationMap = new Map([...this.invocationMap, ...nodeMap])
-          }
-        })
-      }
     }
   }
 
-  getNode<T>(type?: string): Node<T> | undefined {
-    if (type && !isEmpty(type)) {
-      return this.nodeBank.get(type) as Node<T>
-    }
-    return
+  render(): JSX.Element | null {
+    return null
   }
 
-  getNodeIdentifier(type: string): string | undefined {
-    return this.nodeBank.get(type)?.getIdentifier()
-  }
+  // getNode<T>(type?: string): Node<T> | undefined {
+  //   if (type && !isEmpty(type)) {
+  //     return this.nodeBank.get(type) as Node<T>
+  //   }
+  //   return
+  // }
 
-  getNodeName(type: string): string | undefined {
-    return this.nodeBank.get(type)?.getName()
-  }
+  // getNodeIdentifier(type: string): string | undefined {
+  //   return this.nodeBank.get(type)?.getIdentifier()
+  // }
 
-  getNodeDefaultIcon(type: string): IconName {
-    return this.nodeBank.get(type)?.getDefaultIconName() || 'disable'
-  }
+  // getNodeName(type: string): string | undefined {
+  //   return this.nodeBank.get(type)?.getName()
+  // }
 
-  getNodeSelectedColour(type: string): string | undefined {
-    return this.nodeBank.get(type)?.getDefaultIconName()
-  }
+  // getNodeDefaultIcon(type: string): IconName {
+  //   return this.nodeBank.get(type)?.getDefaultIconName() || 'disable'
+  // }
 
-  getNodeUnselectedColour(type: string): string | undefined {
-    return this.nodeBank.get(type)?.getUnSelectedColour()
-  }
+  // getNodeSelectedColour(type: string): string | undefined {
+  //   return this.nodeBank.get(type)?.getDefaultIconName()
+  // }
 
-  getNodeSelectedIconColour(type: string): string | undefined {
-    return this.nodeBank.get(type)?.getSelectedIconColour()
-  }
+  // getNodeUnselectedColour(type: string): string | undefined {
+  //   return this.nodeBank.get(type)?.getUnSelectedColour()
+  // }
 
-  getNodeUnSelectedIconColour(type: string): string | undefined {
-    return this.nodeBank.get(type)?.getUnSelectedIconColour()
-  }
+  // getNodeSelectedIconColour(type: string): string | undefined {
+  //   return this.nodeBank.get(type)?.getSelectedIconColour()
+  // }
 
-  getIsParallelNodeAllowed(type: string): boolean | undefined {
-    return this.nodeBank.get(type)?.getIsParallelNodeAllowed()
-  }
+  // getNodeUnSelectedIconColour(type: string): string | undefined {
+  //   return this.nodeBank.get(type)?.getUnSelectedIconColour()
+  // }
 
-  getInvocationMap(): Map<
-    RegExp,
-    (path: string, yaml: string, params: Record<string, unknown>) => Promise<CompletionItemInterface[]>
-  > {
-    return this.invocationMap
-  }
+  // getIsParallelNodeAllowed(type: string): boolean | undefined {
+  //   return this.nodeBank.get(type)?.getIsParallelNodeAllowed()
+  // }
+
+  // getInvocationMap(): Map<
+  //   RegExp,
+  //   (path: string, yaml: string, params: Record<string, unknown>) => Promise<CompletionItemInterface[]>
+  // > {
+  //   return this.invocationMap
+  // }
 }
+
+const diagram = new DiagramFactory('graph')
+
+diagram.registerNode(new DefaultNode())
+diagram.registerNode(new DiamondNode())
+diagram.registerNode(new EmptyNode())

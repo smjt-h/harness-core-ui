@@ -6,8 +6,6 @@
  */
 
 import type { IconName } from '@wings-software/uicore'
-import type { CompletionItemInterface } from '@common/interfaces/YAMLBuilderProps'
-import type { PipelineNodeType } from './PipelineNode'
 
 export enum NodeStatus {
   Loading = 'Loading',
@@ -15,15 +13,15 @@ export enum NodeStatus {
   Failure = 'Failure'
 }
 
-// enum DiagramType {
-//   Default = 'default',
-//   EmptyNode = 'empty-node',
-//   CreateNew = 'create-new',
-//   DiamondNode = 'default-diamond',
-//   StartNode = 'node-start',
-//   GroupNode = 'group-node',
-//   IconNode = 'icon-node'
-// }
+export enum NodeType {
+  Default = 'default',
+  EmptyNode = 'empty-node',
+  CreateNew = 'create-new',
+  DiamondNode = 'default-diamond',
+  StartNode = 'node-start',
+  GroupNode = 'group-node',
+  IconNode = 'icon-node'
+}
 
 export interface NodeProps<T> {
   width: number
@@ -32,9 +30,9 @@ export interface NodeProps<T> {
   onChange?: (data: T) => void
 }
 
-export abstract class Node<T> {
+export abstract class Node {
   protected abstract identifier: string
-  //   protected abstract type: DiagramType
+  protected abstract type: NodeType
   protected abstract name: string
   protected abstract defaultIcon: IconName
   protected abstract secondaryIcon?: IconName
@@ -42,14 +40,10 @@ export abstract class Node<T> {
   protected abstract unSelectedColour: string
   protected abstract selectedIconColour: string
   protected abstract unSelectedIconColour: string
-  protected abstract renderNode(props: NodeProps<T>): JSX.Element
-  protected invocationMap?: Map<
-    RegExp,
-    (path: string, yaml: string, params: Record<string, unknown>) => Promise<CompletionItemInterface[]>
-  >
 
-  abstract getType(): PipelineNodeType
-  abstract getIsParallelNodeAllowed(): boolean
+  getType(): string {
+    return this.type
+  }
 
   getIdentifier(): string {
     return this.identifier
@@ -81,11 +75,5 @@ export abstract class Node<T> {
 
   getUnSelectedIconColour(): string {
     return this.unSelectedIconColour
-  }
-
-  getInvocationMap():
-    | Map<RegExp, (path: string, yaml: string, params: Record<string, unknown>) => Promise<CompletionItemInterface[]>>
-    | undefined {
-    return this.invocationMap
   }
 }
