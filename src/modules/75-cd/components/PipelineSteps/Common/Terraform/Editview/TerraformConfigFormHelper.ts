@@ -5,7 +5,6 @@
  * https://polyformproject.org/wp-content/uploads/2020/06/PolyForm-Shield-1.0.0.txt.
  */
 import * as Yup from 'yup'
-import { cloneDeep, set } from 'lodash-es'
 import { Connectors } from '@connectors/constants'
 import type { ConnectorInfoDTO } from 'services/cd-ng'
 import type { StringKeys } from 'framework/strings'
@@ -154,33 +153,4 @@ export const stepTwoValidationSchema = (isTerraformPlan: boolean, getString: any
           })
         })
       })
-}
-export const formatSubmitData = (formik: any, data: any, isTerraformPlan: boolean) => {
-  const configObject = isTerraformPlan
-    ? { ...data.spec?.configuration?.configFiles }
-    : { ...data.spec?.configuration?.spec?.configFiles }
-
-  if (configObject?.store.spec.gitFetchType === 'Branch') {
-    delete configObject.store.spec.commitId
-  } else if (configObject?.store.spec.gitFetchType === 'Commit') {
-    delete configObject.store.spec.branch
-  }
-
-  if (data?.selectedType === 'Artifactory') {
-    delete configObject.store.spec.commitId
-    delete configObject.store.spec.branch
-    delete configObject.store.spec.gitFetchType
-    delete configObject.store.spec.repoName
-    delete configObject.store.spec.folderPath
-    const artifacts = isTerraformPlan
-      ? data.formik.values.spec?.configuration?.configFiles?.store?.spec?.artifacts
-      : data.formik.values.spec.configuration.spec.store.spec.artifacts
-    configObject.store.spec.repositoryName = isTerraformPlan
-      ? data.spec.configuration.configFiles.store.spec.repositoryName
-      : data.spec?.configuration.spec.configFiles.store.spec.repositoryName
-    configObject.store.spec.artifacts = [artifacts]
-  }
-  const valObj = cloneDeep(formik.values)
-  set(valObj, 'spec.configuration.spec.configFiles', { ...configObject })
-  return valObj
 }

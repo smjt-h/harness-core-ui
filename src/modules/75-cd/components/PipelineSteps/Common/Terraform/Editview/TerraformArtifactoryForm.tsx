@@ -28,7 +28,6 @@ import { useStrings } from 'framework/strings'
 import { useVariablesExpression } from '@pipeline/components/PipelineStudio/PiplineHooks/useVariablesExpression'
 import MultiTypeFieldSelector from '@common/components/MultiTypeFieldSelector/MultiTypeFieldSelector'
 import { useGetArtifactsBuildsDetailsForArtifactory, useGetRepositoriesDetailsForArtifactory } from 'services/cd-ng'
-import examples from './examples.json'
 import {
   formatInitialValues,
   terraformArtifactorySchema,
@@ -122,20 +121,12 @@ export const TFArtifactoryForm: React.FC<StepProps<any> & TFRemoteProps> = ({
   useEffect(() => {
     if (ArtifactRepoError) {
       showError(ArtifactRepoError.message)
-      setConnectorRepos(map(examples.repositories, repo => ({ label: repo, value: repo })))
     }
   }, [ArtifactRepoError])
 
   useEffect(() => {
     if (ArtifactsError) {
       showError(ArtifactsError.message)
-      setArtifacts({
-        ...artifacts,
-        [`${filePathIndex?.path}-${filePathIndex?.index}`]: map(examples.artifacts, artifact => ({
-          label: artifact.artifactName as string,
-          value: artifact.artifactPath as string
-        }))
-      })
     }
   }, [ArtifactsError])
 
