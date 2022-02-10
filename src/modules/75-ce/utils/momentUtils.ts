@@ -18,6 +18,7 @@ export const GET_DATE_RANGE = {
     todayInUTC().subtract(1, 'days').format()
   ]
 }
+export const ANOMALIES_LIST_FORMAT = 'DD/MM/YYYY'
 export const CE_DATE_FORMAT_INTERNAL = 'YYYY-MM-DD'
 export const CE_DATE_FORMAT_INTERNAL_MOMENT = `${CE_DATE_FORMAT_INTERNAL}THH:mm:ssZ`
 export const FORMAT_12_HOUR = 'hh:mm A'

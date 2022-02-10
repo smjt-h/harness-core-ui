@@ -6,7 +6,7 @@
  */
 
 import React, { useState } from 'react'
-import { Button, StepWizard } from '@wings-software/uicore'
+import { Button, ButtonVariation, StepWizard } from '@wings-software/uicore'
 import { useModalHook } from '@harness/use-modal'
 import { Dialog, IDialogProps } from '@blueprintjs/core'
 import { useParams } from 'react-router-dom'
@@ -101,7 +101,14 @@ const useCreateGitSyncModal = (props: UseCreateGitSyncModalProps): UseCreateGitS
             />
           ) : null}
         </StepWizard>
-        <Button minimal icon="cross" iconProps={{ size: 18 }} className={css.crossIcon} onClick={closeHandler} />
+        <Button
+          minimal
+          variation={ButtonVariation.ICON}
+          icon="cross"
+          iconProps={{ size: 18 }}
+          className={css.crossIcon}
+          onClick={closeHandler}
+        />
       </Dialog>
     ) : (
       <Dialog {...modalProps}>
@@ -118,7 +125,14 @@ const useCreateGitSyncModal = (props: UseCreateGitSyncModalProps): UseCreateGitS
           }}
           onClose={closeHandler}
         />
-        <Button minimal icon="cross" iconProps={{ size: 18 }} className={css.crossIcon} onClick={closeHandler} />
+        <Button
+          minimal
+          variation={ButtonVariation.ICON}
+          icon="cross"
+          iconProps={{ size: 18 }}
+          className={css.crossIcon}
+          onClick={closeHandler}
+        />
       </Dialog>
     )
   }, [isEditMode, syncRepo, isNewUser])

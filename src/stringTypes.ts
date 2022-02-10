@@ -3213,6 +3213,26 @@ export interface StringsMap {
   'cd.workloadRequired': string
   'ce.allClusters': string
   'ce.allRegions': string
+  'ce.anomalyDetection.filters.groupByCloudProvidersPlaceholder': string
+  'ce.anomalyDetection.filters.groupByNoneLabel': string
+  'ce.anomalyDetection.filters.groupByNonePlaceholder': string
+  'ce.anomalyDetection.filters.groupByNoneValue': string
+  'ce.anomalyDetection.filters.groupByPerspectivePlaceholder': string
+  'ce.anomalyDetection.settingsBtn': string
+  'ce.anomalyDetection.sideNavText': string
+  'ce.anomalyDetection.summary.cloudProvidersWise': string
+  'ce.anomalyDetection.summary.costImpacted': string
+  'ce.anomalyDetection.summary.perspectiveWise': string
+  'ce.anomalyDetection.summary.statusWise': string
+  'ce.anomalyDetection.summary.totalCountText': string
+  'ce.anomalyDetection.tableHeaders.anomalousSpend': string
+  'ce.anomalyDetection.tableHeaders.date': string
+  'ce.anomalyDetection.tableHeaders.details': string
+  'ce.anomalyDetection.tableHeaders.resource': string
+  'ce.anomalyDetection.tableHeaders.status': string
+  'ce.anomalyDetection.tableMenu.falseAnomaly': string
+  'ce.anomalyDetection.tableMenu.whitelistResource': string
+  'ce.anomalyDetection.userFeedbackSuccessMsg': string
   'ce.budgets.addNewBudget': string
   'ce.budgets.budgetDeletedTxt': string
   'ce.budgets.confirmDeleteBudgetMsg': string
@@ -3790,7 +3810,6 @@ export interface StringsMap {
   'ce.recommendation.listPage.filters.name': string
   'ce.recommendation.listPage.filters.namespace': string
   'ce.recommendation.listPage.forecatedCostSubText': string
-  'ce.recommendation.listPage.listTableHeaders.details': string
   'ce.recommendation.listPage.listTableHeaders.monthlyCost': string
   'ce.recommendation.listPage.listTableHeaders.monthlySavings': string
   'ce.recommendation.listPage.listTableHeaders.recommendationType': string
@@ -4492,6 +4511,7 @@ export interface StringsMap {
   'cv.customHealthSource.Querymapping.validation.endTime.timestamp': string
   'cv.customHealthSource.Querymapping.validation.path': string
   'cv.customHealthSource.Querymapping.validation.pathWithoutPlaceholder': string
+  'cv.customHealthSource.Querymapping.validation.queryType': string
   'cv.customHealthSource.Querymapping.validation.startAndEndTime': string
   'cv.customHealthSource.Querymapping.validation.startTime.placeholder': string
   'cv.customHealthSource.Querymapping.validation.startTime.timestamp': string
@@ -4712,7 +4732,6 @@ export interface StringsMap {
   'cv.monitoringSources.appD.searchPlaceholderApplications': string
   'cv.monitoringSources.appD.searchTiersPlaceHolder': string
   'cv.monitoringSources.appD.selectProduct': string
-  'cv.monitoringSources.appD.status': string
   'cv.monitoringSources.appD.tiersMappedToServices': string
   'cv.monitoringSources.appD.validation': string
   'cv.monitoringSources.appD.validationMsg': string

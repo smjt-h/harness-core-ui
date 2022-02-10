@@ -8,6 +8,8 @@
 import React from 'react'
 import { render } from '@testing-library/react'
 import { merge } from 'lodash-es'
+import { Form } from 'formik'
+import { Formik } from '@wings-software/uicore'
 import { TestWrapper } from '@common/utils/testUtils'
 import { StepViewType } from '@pipeline/components/AbstractSteps/Step'
 import { StageInputSetForm } from '../StageInputSetForm'
@@ -32,7 +34,13 @@ const props = {
       spec: {
         namespace: 'test',
         serviceAccountName: 'name1',
-        initTimeout: '1w'
+        initTimeout: '1w',
+        annotations: {
+          annotation1: '<+input>'
+        },
+        labels: {
+          label1: '<+input>'
+        }
       },
       type: 'KubernetesDirect'
     },
@@ -97,7 +105,11 @@ describe('stageinputset tests', () => {
     test('initial render', () => {
       const { container } = render(
         <TestWrapper>
-          <StageInputSetForm {...props} viewType={StepViewType.InputSet} />
+          <Formik formName="test-form" initialValues={{}} onSubmit={jest.fn()}>
+            <Form>
+              <StageInputSetForm {...props} viewType={StepViewType.InputSet} />
+            </Form>
+          </Formik>
         </TestWrapper>
       )
       expect(container).toMatchSnapshot()
@@ -108,7 +120,11 @@ describe('stageinputset tests', () => {
       formProps.deploymentStageTemplate.infrastructure.spec = null
       const { container } = render(
         <TestWrapper>
-          <StageInputSetForm {...merge({}, props)} viewType={StepViewType.InputSet} />
+          <Formik formName="test-form" initialValues={{}} onSubmit={jest.fn()}>
+            <Form>
+              <StageInputSetForm {...merge({}, props)} viewType={StepViewType.InputSet} />
+            </Form>
+          </Formik>
         </TestWrapper>
       )
       expect(container).toMatchSnapshot()
@@ -118,7 +134,11 @@ describe('stageinputset tests', () => {
     test('initial render', () => {
       const { container } = render(
         <TestWrapper>
-          <StageInputSetForm {...props} viewType={StepViewType.DeploymentForm} />
+          <Formik formName="test-form" initialValues={{}} onSubmit={jest.fn()}>
+            <Form>
+              <StageInputSetForm {...props} viewType={StepViewType.DeploymentForm} />
+            </Form>
+          </Formik>
         </TestWrapper>
       )
       expect(container).toMatchSnapshot()
@@ -129,7 +149,11 @@ describe('stageinputset tests', () => {
       formProps.deploymentStageTemplate.infrastructure.spec = null
       const { container } = render(
         <TestWrapper>
-          <StageInputSetForm {...merge({}, props)} viewType={StepViewType.DeploymentForm} />
+          <Formik formName="test-form" initialValues={{}} onSubmit={jest.fn()}>
+            <Form>
+              <StageInputSetForm {...merge({}, props)} viewType={StepViewType.DeploymentForm} />
+            </Form>
+          </Formik>
         </TestWrapper>
       )
       expect(container).toMatchSnapshot()

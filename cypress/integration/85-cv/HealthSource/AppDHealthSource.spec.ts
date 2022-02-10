@@ -277,20 +277,28 @@ describe('Create empty monitored service', () => {
       .scrollIntoView()
       .should('be.visible')
     cy.contains('span', 'Submit').click({ force: true })
+    cy.get('span[data-icon="Options"]').click()
+    cy.contains('div', 'Delete').click()
+    cy.get('.useConfirmationDialog--dialog button[type="button"]').first().click()
   })
 
   it('should populate AppDynamics healthsource edit mode', () => {
+    cy.intercept('GET', '/cv/api/monitored-service/service1_env1?*', dataforMS).as('monitoredServiceCall')
     cy.intercept('GET', applicationCall, applicationsResponse).as('ApplicationCall')
     cy.intercept('GET', metricPackCall, metricPackResponse).as('MetricPackCall')
     cy.intercept('GET', tiersCall, tiersResponse).as('TierCall')
     cy.intercept('GET', basePathCall, basePathResponse).as('basePathCall')
     cy.intercept('GET', metricStructureCall, metricStructureResponse).as('metricStructureCall')
-    cy.intercept('GET', '/cv/api/monitored-service/service1_env1?*', dataforMS)
-    cy.wait(1000)
+
+    cy.wait(2000)
 
     cy.get('span[data-icon="Options"]').click()
     cy.contains('div', 'Edit service').click()
-    cy.contains('div', 'AppD').click({ force: true })
+
+    // cy.contains('span', 'Discard').click()
+    cy.wait('@monitoredServiceCall')
+
+    cy.contains('div', 'AppD Edit Mode').click({ force: true })
     cy.contains('span', 'Next').click()
 
     cy.wait('@ApplicationCall')
@@ -316,5 +324,48 @@ describe('Create empty monitored service', () => {
     cy.contains('p', 'Overall Application Performance / docker-tier / Calls per Minute')
       .scrollIntoView()
       .should('be.visible')
+
+    // Update values and verify
+    cy.get('input[name="metricName"]').scrollIntoView().type(' updated')
+    cy.get('input[name="metricPathDropdown"]').click()
+    cy.contains('p', 'Exceptions per Minute').click({ force: true })
+
+    cy.contains('span', 'Submit').click({ force: true })
+
+    cy.contains('div', 'AppD').click({ force: true })
+    cy.contains('span', 'Next').click()
+
+    cy.wait('@ApplicationCall')
+    cy.wait('@MetricPackCall')
+    cy.wait(1000)
+
+    cy.contains('p', 'appdMetric 10 updated').click()
+    cy.get('input[name="metricName"]').should('have.value', 'appdMetric 10 updated')
+    cy.get('input[name="metricPathDropdown"]').should('have.value', 'Exceptions per Minute')
+    cy.contains('p', 'Overall Application Performance / docker-tier / Exceptions per Minute')
+      .scrollIntoView()
+      .should('be.visible')
+
+    cy.contains('span', 'Add Metric').click({ force: true })
+
+    // delete metric and verify
+    cy.get('input[name="metricName"]').scrollIntoView().clear().type('delete me')
+    cy.get('span[data-icon="main-delete"]').first().click()
+    cy.contains('p', 'delete me').should('not.exist')
+    cy.contains('span', 'Add Metric').click({ force: true })
+    cy.get('input[name="metricName"]').scrollIntoView().clear().type('delete me')
+    cy.contains('p', 'appdMetric 10 updated').click()
+    cy.get('span[data-icon="main-delete"]').first().click()
+    cy.contains('p', 'delete me').should('not.exist')
+
+    // Dupllicate check
+    cy.contains('span', 'Add Metric').click({ force: true })
+    cy.get('input[name="metricName"]').clear().type('appdMetric 101')
+    cy.get('input[name="groupName"]').click()
+    cy.contains('span', 'Metric name must be unique').should('be.visible')
+    cy.contains('p', 'appdMetric 101').click()
+    cy.get('input[name="groupName"]').should('have.value', 'Group 1')
+    cy.contains('p', 'appdMetric 10').click()
+    cy.get('input[name="metricName"]').should('have.value', 'appdMetric 10')
   })
 })

@@ -254,7 +254,10 @@ export const InputSetForm: React.FC<InputSetFormProps> = (props): JSX.Element =>
         accountIdentifier: accountId,
         orgIdentifier,
         pipelineIdentifier,
-        projectIdentifier
+        projectIdentifier,
+        repoIdentifier,
+        branch,
+        getDefaultFromOtherRepo: true
       },
       body: {
         originalEntityYaml: yamlStringify(parse(pipeline?.data?.yamlPipeline || '')?.pipeline)

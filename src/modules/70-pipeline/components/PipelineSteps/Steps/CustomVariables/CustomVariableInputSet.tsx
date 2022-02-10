@@ -16,7 +16,7 @@ import {
   FontVariation
 } from '@wings-software/uicore'
 import cx from 'classnames'
-import { get, isUndefined } from 'lodash-es'
+import { defaultTo, get, isUndefined } from 'lodash-es'
 import { connect } from 'formik'
 import { useStrings } from 'framework/strings'
 import type { AllNGVariables } from '@pipeline/utils/types'
@@ -74,20 +74,27 @@ function CustomVariableInputSetBasic(props: CustomVariableInputSetProps): React.
     ) {
       const VariablesFromFormik = get(formik?.values, `${basePath}variables`, [])
       const updatedVariables =
-        template?.variables?.map((templateVariable: AllNGVariables, index: number) => {
-          const pipelineVariable = allValues?.variables?.find(
+        template?.variables?.map((templateVariable: AllNGVariables) => {
+          const index = defaultTo(
+            allValues?.variables?.findIndex((variable: AllNGVariables) => variable.name === templateVariable.name),
+            -1
+          )
+          const pipelineVariable = allValues?.variables?.[index]
+          const formikValue = VariablesFromFormik.find(
             (variable: AllNGVariables) => variable.name === templateVariable.name
           )
 
           return {
             name: pipelineVariable?.name,
             type: pipelineVariable?.type,
-            value: VariablesFromFormik?.[index]?.value || pipelineVariable?.default || ''
+            value: formikValue?.value || pipelineVariable?.default || ''
           }
         }) || []
       formik.setFieldValue(`${basePath}variables`, updatedVariables)
     }
   }, [])
+
+  const formikVariables = get(formik?.values, `${basePath}variables`, [])
 
   return (
     <div className={cx(css.customVariablesInputSets, 'customVariables')} id={domId}>
@@ -98,8 +105,10 @@ function CustomVariableInputSetBasic(props: CustomVariableInputSetProps): React.
           <Text font={{ variation: FontVariation.TABLE_HEADERS }}>{getString('valueLabel')}</Text>
         </section>
       )}
-      {template?.variables?.map?.((variable, index) => {
-        const value = template?.variables?.[index]?.value || ''
+      {template?.variables?.map?.(variable => {
+        // find Index from values, not from template variables
+        const index = formikVariables.findIndex((fVar: AllNGVariables) => variable.name === fVar.name)
+        const value = defaultTo(variable.value, '')
         if (getMultiTypeFromValue(value as string) !== MultiTypeInputType.RUNTIME) {
           return
         }

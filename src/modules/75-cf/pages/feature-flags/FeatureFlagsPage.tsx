@@ -141,7 +141,7 @@ const RenderColumnFlag: React.FC<RenderColumnFlagProps> = ({
   }
 
   const switchTooltip = (
-    <Container width={'350px'} padding="xxxlarge">
+    <Container width={'350px'} padding="xxxlarge" className={css.switchTooltip}>
       <Heading level={2} style={{ fontWeight: 600, fontSize: '24px', lineHeight: '32px', color: '#22222A' }}>
         {getString(status ? 'cf.featureFlags.turnOffHeading' : 'cf.featureFlags.turnOnHeading')}
       </Heading>

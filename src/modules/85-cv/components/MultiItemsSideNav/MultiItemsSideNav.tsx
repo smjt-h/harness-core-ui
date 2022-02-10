@@ -8,9 +8,9 @@
 import React, { useEffect, useMemo, useState } from 'react'
 import { Button, Container, Utils } from '@wings-software/uicore'
 import { PopoverInteractionKind } from '@blueprintjs/core'
-import type { GroupedCreatedMetrics } from '@cv/pages/health-source/connectors/AppDynamics/Components/AppDMappedMetric/AppDMappedMetric.types'
 import { SelectedAppsSideNav } from './components/SelectedAppsSideNav/SelectedAppsSideNav'
 import { getCreatedMetricLength } from './MultiItemsSideNav.utils'
+import type { GroupedCreatedMetrics } from './components/SelectedAppsSideNav/components/GroupedSideNav/GroupedSideNav.types'
 import css from './MultiItemsSideNav.module.scss'
 
 export interface MultiItemsSideNavProps {

@@ -15,19 +15,19 @@ describe('RUN PIPELINE MODAL', () => {
   const pipelineDetailsCall =
     '/pipeline/api/pipelines/testPipeline_Cypress?routingId=accountId&accountIdentifier=accountId&orgIdentifier=default&projectIdentifier=project1'
   const resolvedPipelineDetailsCall =
-      '/template/api/templates/applyTemplates?routingId=accountId&accountIdentifier=accountId&orgIdentifier=default&pipelineIdentifier=testPipeline_Cypress&projectIdentifier=project1'
+    '/template/api/templates/applyTemplates?routingId=accountId&accountIdentifier=accountId&orgIdentifier=default&pipelineIdentifier=testPipeline_Cypress&projectIdentifier=project1&getDefaultFromOtherRepo=true'
   const inputSetsGetCall =
     '/pipeline/api/inputSets?routingId=accountId&accountIdentifier=accountId&orgIdentifier=default&projectIdentifier=project1&pipelineIdentifier=testPipeline_Cypress'
   const pipelineVariablesCall =
-      '/pipeline/api/pipelines/variables?routingId=accountId&accountIdentifier=accountId&orgIdentifier=default&projectIdentifier=project1'
+    '/pipeline/api/pipelines/variables?routingId=accountId&accountIdentifier=accountId&orgIdentifier=default&projectIdentifier=project1'
   const servicesCall =
-      '/ng/api/servicesV2?routingId=accountId&accountIdentifier=accountId&orgIdentifier=default&projectIdentifier=project1'
+    '/ng/api/servicesV2?routingId=accountId&accountIdentifier=accountId&orgIdentifier=default&projectIdentifier=project1'
   const environmentsCall =
-      '/ng/api/environmentsV2?routingId=accountId&accountIdentifier=accountId&orgIdentifier=default&projectIdentifier=project1'
+    '/ng/api/environmentsV2?routingId=accountId&accountIdentifier=accountId&orgIdentifier=default&projectIdentifier=project1'
   const connectorsCall =
-      '/ng/api/connectors?accountIdentifier=accountId&type=K8sCluster&searchTerm=&projectIdentifier=project1&orgIdentifier=default'
+    '/ng/api/connectors?accountIdentifier=accountId&type=K8sCluster&searchTerm=&projectIdentifier=project1&orgIdentifier=default'
   const stagesExecutionListCall =
-      '/pipeline/api/pipeline/execute/stagesExecutionList?routingId=px7xd_BFRCi-pfWPYXVjvw&accountIdentifier=px7xd_BFRCi-pfWPYXVjvw&orgIdentifier=default&projectIdentifier=Kapil&pipelineIdentifier=My_test_pipeline'
+    '/pipeline/api/pipeline/execute/stagesExecutionList?routingId=px7xd_BFRCi-pfWPYXVjvw&accountIdentifier=px7xd_BFRCi-pfWPYXVjvw&orgIdentifier=default&projectIdentifier=Kapil&pipelineIdentifier=My_test_pipeline'
   beforeEach(() => {
     cy.on('uncaught:exception', () => {
       // returning false here prevents Cypress from
@@ -55,7 +55,6 @@ describe('RUN PIPELINE MODAL', () => {
   })
 
   describe('For deploy stage', () => {
-
     beforeEach(() => {
       cy.get('[icon="plus"]').click()
       cy.findByTestId('stage-Deployment').click()
@@ -91,9 +90,11 @@ describe('RUN PIPELINE MODAL', () => {
 
       cy.contains('span', 'Service is required').should('be.visible').should('have.class', 'FormError--error')
       cy.contains('span', 'ConnectorRef is a required field')
-          .should('be.visible')
-          .should('have.class', 'FormError--error')
-      cy.contains('span', 'Image Path is a required field').should('be.visible').should('have.class', 'FormError--error')
+        .should('be.visible')
+        .should('have.class', 'FormError--error')
+      cy.contains('span', 'Image Path is a required field')
+        .should('be.visible')
+        .should('have.class', 'FormError--error')
       cy.contains('span', 'Tag is a required field').should('be.visible').should('have.class', 'FormError--error')
     })
 
@@ -118,7 +119,7 @@ describe('RUN PIPELINE MODAL', () => {
         cy.contains('p', 'testEnv').click({ force: true })
         cy.wait(1000)
 
-        cy.contains('p', /^Kubernetes$/).click();
+        cy.contains('p', /^Kubernetes$/).click()
         cy.wait(1000)
 
         cy.contains('span', 'Select Connector').click({ force: true })
@@ -130,7 +131,6 @@ describe('RUN PIPELINE MODAL', () => {
       })
 
       it('visual to YAML conversion for stage configuration', () => {
-
         // Toggle to YAML view
 
         cy.get('[data-name="toggle-option-two"]').click({ force: true })

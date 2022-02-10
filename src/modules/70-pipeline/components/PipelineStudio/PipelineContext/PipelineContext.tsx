@@ -77,7 +77,10 @@ interface PipelineInfoConfigWithGitDetails extends PipelineInfoConfig {
 
 const logger = loggerFor(ModuleName.CD)
 
-export const getTemplateTypesByRef = (params: GetTemplateListQueryParams, templateRefs: string[]) => {
+export const getTemplateTypesByRef = (
+  params: GetTemplateListQueryParams,
+  templateRefs: string[]
+): Promise<{ [key: string]: string }> => {
   const scopedTemplates = templateRefs.reduce((a: { [key: string]: string[] }, b) => {
     const identifier = getIdentifierFromValue(b)
     const scope = getScopeFromValue(b)
@@ -99,7 +102,10 @@ export const getTemplateTypesByRef = (params: GetTemplateListQueryParams, templa
         queryParams: {
           ...params,
           projectIdentifier: scope === Scope.PROJECT ? params.projectIdentifier : undefined,
-          orgIdentifier: scope === Scope.PROJECT || scope === Scope.ORG ? params.orgIdentifier : undefined
+          orgIdentifier: scope === Scope.PROJECT || scope === Scope.ORG ? params.orgIdentifier : undefined,
+          repoIdentifier: params.repoIdentifier,
+          branch: params.branch,
+          getDefaultFromOtherRepo: true
         }
       })
     )
@@ -313,14 +319,17 @@ export const findAllByKey = (keyToFind: string, obj?: PipelineInfoConfig): strin
     : []
 }
 
-const getTemplateType = async (pipeline: PipelineInfoConfig, queryParams: GetPipelineQueryParams) => {
+const getTemplateType = (pipeline: PipelineInfoConfig, queryParams: GetPipelineQueryParams) => {
   const templateRefs = findAllByKey('templateRef', pipeline)
-  return await getTemplateTypesByRef(
+  return getTemplateTypesByRef(
     {
       accountIdentifier: queryParams.accountIdentifier,
       orgIdentifier: queryParams.orgIdentifier,
       projectIdentifier: queryParams.projectIdentifier,
-      templateListType: 'Stable'
+      templateListType: 'Stable',
+      repoIdentifier: queryParams.repoIdentifier,
+      branch: queryParams.branch,
+      getDefaultFromOtherRepo: true
     },
     templateRefs
   )
@@ -329,7 +338,7 @@ const getTemplateType = async (pipeline: PipelineInfoConfig, queryParams: GetPip
 const _fetchPipeline = async (props: FetchPipelineBoundProps, params: FetchPipelineUnboundProps): Promise<void> => {
   const { dispatch, queryParams, pipelineIdentifier: identifier, gitDetails } = props
   const { forceFetch = false, forceUpdate = false, newPipelineId, signal, repoIdentifier, branch } = params
-  const pipelineId = newPipelineId || identifier
+  const pipelineId = defaultTo(newPipelineId, identifier)
   let id = getId(
     queryParams.accountIdentifier,
     defaultTo(queryParams.orgIdentifier, ''),
@@ -352,8 +361,8 @@ const _fetchPipeline = async (props: FetchPipelineBoundProps, params: FetchPipel
       defaultTo(queryParams.orgIdentifier, ''),
       defaultTo(queryParams.projectIdentifier, ''),
       pipelineId,
-      defaultTo(gitDetails.repoIdentifier, pipelineWithGitDetails?.gitDetails?.repoIdentifier ?? ''),
-      defaultTo(gitDetails.branch, pipelineWithGitDetails?.gitDetails?.branch ?? '')
+      defaultTo(gitDetails.repoIdentifier, defaultTo(pipelineWithGitDetails?.gitDetails?.repoIdentifier, '')),
+      defaultTo(gitDetails.branch, defaultTo(pipelineWithGitDetails?.gitDetails?.branch, ''))
     )
     data = await IdbPipeline?.get(IdbPipelineStoreName, id)
     const pipeline: PipelineInfoConfig = omit(
@@ -376,8 +385,16 @@ const _fetchPipeline = async (props: FetchPipelineBoundProps, params: FetchPipel
         defaultTo(data?.entityValidityDetails, {})
       )
     }
+    const templateQueryParams = {
+      ...queryParams,
+      repoIdentifier: defaultTo(
+        gitDetails.repoIdentifier,
+        defaultTo(pipelineWithGitDetails?.gitDetails?.repoIdentifier, '')
+      ),
+      branch: defaultTo(gitDetails.branch, defaultTo(pipelineWithGitDetails?.gitDetails?.branch, ''))
+    }
     if (data && !forceUpdate) {
-      const templateTypes = data.pipeline ? await getTemplateType(data.pipeline, queryParams) : {}
+      const templateTypes = data.pipeline ? await getTemplateType(data.pipeline, templateQueryParams) : {}
       dispatch(
         PipelineContextActions.success({
           error: '',
@@ -397,7 +414,7 @@ const _fetchPipeline = async (props: FetchPipelineBoundProps, params: FetchPipel
       )
     } else if (IdbPipeline) {
       await IdbPipeline.put(IdbPipelineStoreName, payload)
-      const templateTypes = await getTemplateType(pipeline, queryParams)
+      const templateTypes = await getTemplateType(pipeline, templateQueryParams)
       dispatch(
         PipelineContextActions.success({
           error: '',
@@ -411,7 +428,7 @@ const _fetchPipeline = async (props: FetchPipelineBoundProps, params: FetchPipel
         })
       )
     } else {
-      const templateTypes = await getTemplateType(pipeline, queryParams)
+      const templateTypes = await getTemplateType(pipeline, templateQueryParams)
       dispatch(
         PipelineContextActions.success({
           error: '',

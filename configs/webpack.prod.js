@@ -1,3 +1,10 @@
+/*
+ * Copyright 2022 Harness Inc. All rights reserved.
+ * Use of this source code is governed by the PolyForm Shield 1.0.0 license
+ * that can be found in the licenses directory at the root of this repository, also available at
+ * https://polyformproject.org/wp-content/uploads/2020/06/PolyForm-Shield-1.0.0.txt.
+ */
+
 const path = require('path')
 const fs = require('fs')
 
@@ -21,11 +28,11 @@ const config = {
   mode: 'production',
   devtool: 'hidden-source-map',
   output: {
-    path: path.resolve(CONTEXT, 'dist'),
-    publicPath: '',
-    filename: 'static/[name].[contenthash:6].js',
-    chunkFilename: 'static/[name].[id].[contenthash:6].js',
-    pathinfo: false
+    path: path.resolve(CONTEXT, 'dist/static'),
+    filename: '[name].[contenthash:6].js',
+    chunkFilename: '[name].[id].[contenthash:6].js',
+    pathinfo: false,
+    assetModuleFilename: 'images/[hash:6][ext][query]'
   },
   plugins: [
     new webpack.DefinePlugin({
@@ -34,15 +41,16 @@ const config = {
     }),
     new HTMLWebpackPlugin({
       template: 'src/index.html',
-      filename: 'index.html',
+      filename: '../index.html',
       minify: false,
       templateParameters: {
-        __DEV__: false
+        __DEV__: false,
+        __NON_CDN_BASE_PATH__: 'static/'
       }
     }),
     new MiniCssExtractPlugin({
-      filename: 'static/[name].[contenthash:6].css',
-      chunkFilename: 'static/[name].[id].[contenthash:6].css'
+      filename: '[name].[contenthash:6].css',
+      chunkFilename: '[name].[id].[contenthash:6].css'
     }),
     new JSONGeneratorPlugin({
       content: {
@@ -50,7 +58,7 @@ const config = {
         gitCommit: process.env.GIT_COMMIT,
         gitBranch: process.env.GIT_BRANCH
       },
-      filename: 'static/version.json'
+      filename: 'version.json'
     }),
     new CircularDependencyPlugin({
       exclude: /node_modules/,
@@ -58,7 +66,7 @@ const config = {
     }),
     new HTMLWebpackPlugin({
       template: 'src/versions.html',
-      filename: 'static/versions.html',
+      filename: 'versions.html',
       minify: false,
       inject: false
     })

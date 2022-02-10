@@ -40,6 +40,7 @@ import {
 import { useStrings } from 'framework/strings'
 import { useGitSyncStore } from 'framework/GitRepoStore/GitSyncStoreContext'
 import type { ProjectPathProps } from '@common/interfaces/RouteInterfaces'
+import SCMCheck from '@common/components/SCMCheck/SCMCheck'
 import {
   branchFetchHandler,
   defaultInitialFormData,
@@ -72,7 +73,7 @@ const FullSyncForm: React.FC<ModalConfigureProps & FullSyncFormProps> = props =>
 
   const [modalErrorHandler, setModalErrorHandler] = React.useState<ModalErrorHandlerBinding>()
   const formikRef = useRef<FormikContext<GitFullSyncConfigRequestDTO>>()
-
+  const [hasSCM, setHasSCM] = React.useState<boolean>(false)
   const [rootFolderSelectOptions, setRootFolderSelectOptions] = React.useState<SelectOption[]>([])
   const [repoSelectOptions, setRepoSelectOptions] = React.useState<SelectOption[]>([])
   const [isNewBranch, setIsNewBranch] = React.useState(false)
@@ -263,9 +264,11 @@ const FullSyncForm: React.FC<ModalConfigureProps & FullSyncFormProps> = props =>
       {showSpinner(isNewUser, loadingConfig, loadingRepos) ? <PageSpinner className={css.spinner} /> : <></>}
 
       <Container className={cx(css.modalContainer, { [css.isModalStep]: isNewUser })}>
-        <Text font={{ variation: FontVariation.H3 }} padding={{ bottom: 'xlarge' }}>
-          {getString('gitsync.fullSyncTitle')}
-        </Text>
+        <SCMCheck
+          profileLinkClickHandler={onClose}
+          title={getString('gitsync.fullSyncTitle')}
+          validateSCM={isValid => setHasSCM(isValid)}
+        />
         <ModalErrorHandler bind={setModalErrorHandler} />
         <Container className={css.modalBody}>
           <Formik<GitFullSyncConfigRequestDTO>
@@ -381,7 +384,7 @@ const FullSyncForm: React.FC<ModalConfigureProps & FullSyncFormProps> = props =>
                   </Container>
 
                   <Layout.Horizontal spacing="medium">
-                    <Button type="submit" intent="primary" text={getString('save')} />
+                    <Button type="submit" intent="primary" text={getString('save')} disabled={!hasSCM} />
                     <Button text={getString('cancel')} margin={{ left: 'medium' }} onClick={onClose} />
                   </Layout.Horizontal>
                 </FormikForm>

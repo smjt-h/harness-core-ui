@@ -22,12 +22,15 @@ import GitSyncRepoTab from '../GitSyncRepoTab'
 
 const createGitSynRepo = jest.fn()
 const updateGitSynRepo = jest.fn()
+const branches = { data: ['master', 'devBranch'], status: 'SUCCESS' }
+const fetchBranches = jest.fn(() => Promise.resolve(branches))
 
 jest.mock('services/cd-ng', () => ({
   usePostGitSync: jest.fn().mockImplementation(() => ({ mutate: createGitSynRepo })),
   usePutGitSync: jest.fn().mockImplementation(() => ({ mutate: updateGitSynRepo })),
   useGetConnector: jest.fn().mockImplementation(() => Promise.resolve([])),
-  useGetTestGitRepoConnectionResult: jest.fn().mockImplementation(() => ({ mutate: jest.fn }))
+  useGetTestGitRepoConnectionResult: jest.fn().mockImplementation(() => ({ mutate: jest.fn })),
+  useGetListOfBranchesByConnector: jest.fn().mockImplementation(() => ({ data: branches, refetch: fetchBranches }))
 }))
 
 const getMenuIcon = (row: Element) => {

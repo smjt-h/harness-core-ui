@@ -450,7 +450,6 @@ recommendation:
       resourceType: 'RESOURCE TYPE'
       monthlyCost: 'MONTHLY COST'
       recommendationType: 'RECOMMENDATION TYPE'
-      details: 'DETAILS'
     recommendationTypes:
       resizing: 'Resizing'
       rightSizing: 'Rightsizing'
@@ -758,3 +757,28 @@ budgets:
     monthToDateCost: '{{ $.ce.common.spendTillDate }}'
     budgetAmount: Budget amount
     alertsAt: Alerts at
+anomalyDetection:
+  sideNavText: Anomalies
+  settingsBtn: settings
+  filters:
+    groupByNoneLabel: 'GroupBy: None (Show all anomalies)'
+    groupByNonePlaceholder: 'GroupBy: None'
+    groupByNoneValue: none
+    groupByPerspectivePlaceholder: All Perspectives
+    groupByCloudProvidersPlaceholder: All Cloud Providers
+  summary:
+    totalCountText: Anomalies Detected
+    costImpacted: Total Cost Impact
+    perspectiveWise: Top 3 perspectives by anomalies
+    cloudProvidersWise: Anomalies by Cloud Providers
+    statusWise: Anomalies by Status
+  tableHeaders:
+    date: date
+    anomalousSpend: anomalous spend
+    resource: resource
+    details: details
+    status: '{{ $.ce.co.accessPoint.status }}'
+  tableMenu:
+    whitelistResource: Whitelist resource
+    falseAnomaly: This is false anomaly
+  userFeedbackSuccessMsg: 'Thanks for your feedback!'

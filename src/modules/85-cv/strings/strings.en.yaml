@@ -231,7 +231,6 @@ monitoringSources:
     mappedToHarnessService: MAPPED TO HARNESS SERVICE
     mappedToHarnessEnvironment: MAPPED TO HARNESS ENVIRONMENT
     harnessServices: HARNESS SERVICES
-    status: STATUS
     validation: VALIDATION
     tiersMappedToServices: tiers mapped to services
     errorsFound: errors found
@@ -786,6 +785,7 @@ customHealthSource:
       body: Body is required.
       path: Please select path.
       pathWithoutPlaceholder: Start and end time placeholders must be included in either Path or Body.
+      queryType: Query Type is required.
       startAndEndTime: Start and end time placeholders must differ.
       startTime:
         placeholder: Please select start time placeholder

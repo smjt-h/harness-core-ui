@@ -147,7 +147,10 @@ export const TemplatePipelineProvider: React.FC<{
               accountIdentifier: queryParams.accountIdentifier,
               orgIdentifier: queryParams.orgIdentifier,
               projectIdentifier: queryParams.projectIdentifier,
-              templateListType: 'Stable'
+              templateListType: 'Stable',
+              repoIdentifier: queryParams.repoIdentifier,
+              branch: queryParams.branch,
+              getDefaultFromOtherRepo: true
             },
             templateRefs
           )

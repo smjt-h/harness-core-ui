@@ -5,6 +5,9 @@
  * https://polyformproject.org/wp-content/uploads/2020/06/PolyForm-Shield-1.0.0.txt.
  */
 
+import { BasePathInitValue } from './Components/BasePath/BasePath.constants'
+import { MetricPathInitValue } from './Components/MetricPath/MetricPath.constants'
+
 export const AppDynamicsMonitoringSourceFieldNames = {
   METRIC_NAME: 'metricName',
   METRIC_IDENTIFIER: 'metricIdentifier',
@@ -23,4 +26,13 @@ export const AppDynamicsMonitoringSourceFieldNames = {
   METRIC_PATH: 'metricPath',
   SERVICE_INSTANCE_METRIC_PATH: 'serviceInstanceMetricPath',
   PATH_TYPE: 'pathType'
+}
+
+export const initCustomForm = {
+  sli: false,
+  healthScore: false,
+  continuousVerification: false,
+  serviceInstanceMetricPath: '',
+  basePath: BasePathInitValue,
+  metricPath: MetricPathInitValue
 }

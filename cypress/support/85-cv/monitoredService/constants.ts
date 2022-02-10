@@ -469,7 +469,7 @@ export const dataforMS = {
       sources: {
         healthSources: [
           {
-            name: 'AppD',
+            name: 'AppD Edit Mode',
             identifier: 'dadadass',
             type: 'AppDynamics',
             spec: {

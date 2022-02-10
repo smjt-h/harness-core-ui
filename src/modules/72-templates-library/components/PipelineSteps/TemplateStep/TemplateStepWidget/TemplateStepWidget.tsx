@@ -29,7 +29,7 @@ import { setFormikRef, StepViewType, StepFormikFowardRef } from '@pipeline/compo
 import { useStrings } from 'framework/strings'
 import type { AbstractStepFactory } from '@pipeline/components/AbstractSteps/AbstractStepFactory'
 import type { Error, StepElementConfig } from 'services/cd-ng'
-import type { ProjectPathProps } from '@common/interfaces/RouteInterfaces'
+import type { ProjectPathProps, GitQueryParams } from '@common/interfaces/RouteInterfaces'
 import { useGetTemplate, useGetTemplateInputSetYaml } from 'services/template-ng'
 import { useToaster } from '@common/exports'
 import { PageSpinner } from '@common/components'
@@ -39,6 +39,7 @@ import { validateStep } from '@pipeline/components/PipelineStudio/StepUtil'
 import { StepForm } from '@pipeline/components/PipelineInputSetForm/StageInputSetForm'
 import { setTemplateInputs, TEMPLATE_INPUT_PATH } from '@pipeline/utils/templateUtils'
 import { getScopeBasedQueryParams } from '@templates-library/utils/templatesUtils'
+import { useQueryParams } from '@common/hooks'
 import stepCss from '@pipeline/components/PipelineSteps/Steps/Steps.module.scss'
 import css from './TemplateStepWidget.module.scss'
 
@@ -66,6 +67,7 @@ function TemplateStepWidget(
   const [formValues, setFormValues] = React.useState<TemplateStepValues>(initialValues)
   const { getString } = useStrings()
   const queryParams = useParams<ProjectPathProps>()
+  const { branch, repoIdentifier } = useQueryParams<GitQueryParams>()
   const { showError } = useToaster()
   const stepTemplateRef = getIdentifierFromValue(initialValues.template.templateRef)
   const scope = getScopeFromValue(initialValues.template.templateRef)
@@ -79,7 +81,10 @@ function TemplateStepWidget(
     templateIdentifier: stepTemplateRef,
     queryParams: {
       ...getScopeBasedQueryParams(queryParams, scope),
-      versionLabel: defaultTo(initialValues.template.versionLabel, '')
+      versionLabel: defaultTo(initialValues.template.versionLabel, ''),
+      repoIdentifier,
+      branch,
+      getDefaultFromOtherRepo: true
     }
   })
 
@@ -92,7 +97,10 @@ function TemplateStepWidget(
     templateIdentifier: stepTemplateRef,
     queryParams: {
       ...getScopeBasedQueryParams(queryParams, scope),
-      versionLabel: defaultTo(initialValues.template.versionLabel, '')
+      versionLabel: defaultTo(initialValues.template.versionLabel, ''),
+      repoIdentifier,
+      branch,
+      getDefaultFromOtherRepo: true
     }
   })
 

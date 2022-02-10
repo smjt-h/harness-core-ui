@@ -9,7 +9,7 @@ import React from 'react'
 import { Container, Icon, Text, CollapseList, CollapseListPanel, Color } from '@wings-software/uicore'
 import cx from 'classnames'
 import type { GroupedMetric } from './GroupedSideNav.types'
-import css from '../SelectedAppsSideNav.module.scss'
+import css from '../../SelectedAppsSideNav.module.scss'
 
 interface GroupedSideNavInterface {
   onSelect?: (selectedMetric: string, index: number) => void
@@ -56,9 +56,7 @@ export default function GroupedSideNav({
                     key={selectedApp.metricName}
                     className={css.seletedAppContainer}
                     onClick={() => {
-                      if (selectedApp.metricName) {
-                        onSelect?.(selectedApp.metricName, index + groupIndex)
-                      }
+                      onSelect?.(selectedApp?.metricName || '', index + groupIndex)
                     }}
                   >
                     <Text

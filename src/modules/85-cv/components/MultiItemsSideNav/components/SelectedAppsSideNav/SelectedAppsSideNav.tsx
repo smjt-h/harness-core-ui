@@ -10,8 +10,8 @@ import { Container, Icon, Text, PageError, PageErrorProps } from '@wings-softwar
 import { Classes } from '@blueprintjs/core'
 import cx from 'classnames'
 import { TableFilter, TableFilterProps } from '@cv/components/TableFilter/TableFilter'
-import type { GroupedCreatedMetrics } from '@cv/pages/health-source/connectors/AppDynamics/Components/AppDMappedMetric/AppDMappedMetric.types'
-import GroupedSideNav from './components/GroupedSideNav'
+import GroupedSideNav from './components/GroupedSideNav/GroupedSideNav'
+import type { GroupedCreatedMetrics } from './components/GroupedSideNav/GroupedSideNav.types'
 import css from './SelectedAppsSideNav.module.scss'
 
 const LoadingCells = [1, 2, 3, 4, 5]

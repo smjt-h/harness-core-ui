@@ -1385,6 +1385,7 @@ const routes = {
   ),
   toCEOverview: withAccountId(() => '/ce/overview'),
   toCEPerspectiveDashboard: withAccountId(() => `/ce/perspective`),
+  toCEAnomalyDetection: withAccountId(() => `/ce/anomaly-detection`),
   /********************************************************************************************************************/
   toCustomDashboard: withAccountId(() => '/dashboards'),
   toCustomDashboardHome: withAccountId(
