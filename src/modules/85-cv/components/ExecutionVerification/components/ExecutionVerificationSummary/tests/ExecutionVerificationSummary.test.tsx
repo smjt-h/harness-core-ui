@@ -149,12 +149,16 @@ describe('Unit tests for VerifyExection', () => {
     jest.spyOn(cvService, 'useGetVerifyStepDeploymentActivitySummary').mockReturnValue({
       refetch: refetchFn as unknown
     } as any)
-    const { container } = render(
+    const { container, getByText } = render(
       <TestWrapper>
         <ExecutionVerificationSummary step={{ status: ExecutionStatusEnum.InterventionWaiting }} />
       </TestWrapper>
     )
 
     await waitFor(() => expect(container.querySelector('[class*="manualInterventionTab"]')).not.toBeNull())
+
+    // In case of manual Intervention we should see the deployment summary
+    await waitFor(() => expect(getByText('pipeline.verification.metricsInViolation')).not.toBeNull())
+    await waitFor(() => expect(getByText('pipeline.verification.logClustersInViolation')).not.toBeNull())
   })
 })

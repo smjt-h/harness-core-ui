@@ -98,10 +98,6 @@ export function ExecutionVerificationSummary(props: VerifyExecutionProps): JSX.E
     )
   }
 
-  if (isManualInterruption) {
-    return <ManualInterventionTab step={step} allowedStrategies={failureStrategies} />
-  }
-
   return (
     <Container
       className={cx(css.main, className, {
@@ -133,6 +129,9 @@ export function ExecutionVerificationSummary(props: VerifyExecutionProps): JSX.E
           }
           totalLogClusters={deploymentVerificationJobInstanceSummary?.logsAnalysisSummary?.totalClusterCount || 0}
         />
+      )}
+      {!isConsoleView && isManualInterruption && (
+        <ManualInterventionTab step={step} allowedStrategies={failureStrategies} />
       )}
     </Container>
   )
