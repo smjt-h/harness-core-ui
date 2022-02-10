@@ -23,9 +23,9 @@
         <div class='clearfix'>
             
             <div class='fl pad1y space-right2'>
-                <span class="strong">57.34% </span>
+                <span class="strong">57.04% </span>
                 <span class="quiet">Statements</span>
-                <span class='fraction'>82/143</span>
+                <span class='fraction'>81/142</span>
             </div>
         
             
@@ -44,9 +44,9 @@
         
             
             <div class='fl pad1y space-right2'>
-                <span class="strong">59.56% </span>
+                <span class="strong">59.26% </span>
                 <span class="quiet">Lines</span>
-                <span class='fraction'>81/136</span>
+                <span class='fraction'>80/135</span>
             </div>
         
             
@@ -575,7 +575,8 @@
 <a name='L516'></a><a href='#L516'>516</a>
 <a name='L517'></a><a href='#L517'>517</a>
 <a name='L518'></a><a href='#L518'>518</a>
-<a name='L519'></a><a href='#L519'>519</a></td><td class="line-coverage quiet"><span class="cline-any cline-neutral">&nbsp;</span>
+<a name='L519'></a><a href='#L519'>519</a>
+<a name='L520'></a><a href='#L520'>520</a></td><td class="line-coverage quiet"><span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
@@ -601,6 +602,10 @@
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-yes">71x</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-yes">71x</span>
 <span class="cline-any cline-yes">71x</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
@@ -610,7 +615,7 @@
 <span class="cline-any cline-yes">71x</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-yes">71x</span>
-<span class="cline-any cline-yes">71x</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-yes">71x</span>
 <span class="cline-any cline-yes">71x</span>
@@ -1076,9 +1081,6 @@
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-yes">28x</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
@@ -1117,7 +1119,11 @@ import {
   getBuildDetailsForGcrPromise,
   getBuildDetailsForEcrPromise
 } from 'services/cd-ng'
-import { ArtifactToConnectorMap, ENABLED_ARTIFACT_TYPES } from '@pipeline/components/ArtifactsSelection/ArtifactHelper'
+import {
+  allowedArtifactTypes,
+  ArtifactToConnectorMap,
+  ENABLED_ARTIFACT_TYPES
+} from '@pipeline/components/ArtifactsSelection/ArtifactHelper'
 &nbsp;
 import { loggerFor } from 'framework/logging/logging'
 import { ModuleName } from 'framework/types/ModuleName'
@@ -1127,8 +1133,8 @@ import { getConnectorName, getConnectorValue } from '@pipeline/pages/triggers/ut
 import { K8sServiceSpecVariablesForm, K8sServiceSpecVariablesFormProps } from './K8sServiceSpecVariablesForm'
 import { KubernetesServiceSpecInputForm } from './K8sServiceSpecForms/KubernetesServiceSpecInputForm'
 import type { K8SDirectServiceStep } from './K8sServiceSpecInterface'
-import { ArtifactConnectorTypes } from './K8sServiceSpecHelper'
 import KubernetesServiceSpecEditable from './K8sServiceSpecForms/KubernetesServiceSpecEditable'
+// import { KubernetesServiceSpecInputSetMode } from './KubernetesServiceSpecInputSetMode'
 &nbsp;
 const logger = loggerFor(ModuleName.CD)
 const tagExists = (value: unknown): boolean =&gt; typeof value === 'number' || !isEmpty(value)
@@ -1225,7 +1231,7 @@ export class KubernetesServiceSpec extends Step&lt;ServiceSpec&gt; {
     }
 <span class="cstat-no" title="statement not covered" >    if (pipelineObj) {</span>
       const obj = <span class="cstat-no" title="statement not covered" >get(pipelineObj, path.replace('.spec.connectorRef', ''))</span>
-<span class="cstat-no" title="statement not covered" >      if (ArtifactConnectorTypes.includes(obj.type)) {</span>
+<span class="cstat-no" title="statement not covered" >      if (allowedArtifactTypes.includes(obj.type)) {</span>
 <span class="cstat-no" title="statement not covered" >        return getConnectorListV2Promise({</span>
           queryParams: {
             accountIdentifier: accountId,
@@ -1272,7 +1278,7 @@ export class KubernetesServiceSpec extends Step&lt;ServiceSpec&gt; {
     }
 <span class="cstat-no" title="statement not covered" >    if (pipelineObj) {</span>
       const obj = <span class="cstat-no" title="statement not covered" >get(pipelineObj, path.replace('.spec.connectorRef', ''))</span>
-<span class="cstat-no" title="statement not covered" >      if (ArtifactConnectorTypes.includes(obj.type)) {</span>
+<span class="cstat-no" title="statement not covered" >      if (allowedArtifactTypes.includes(obj.type)) {</span>
 <span class="cstat-no" title="statement not covered" >        return getConnectorListV2Promise({</span>
           queryParams: {
             accountIdentifier: accountId,
@@ -1320,7 +1326,7 @@ export class KubernetesServiceSpec extends Step&lt;ServiceSpec&gt; {
     }
 <span class="cstat-no" title="statement not covered" >    if (pipelineObj) {</span>
       const obj = <span class="cstat-no" title="statement not covered" >get(pipelineObj, path.replace('.spec.tag', ''))</span>
-<span class="cstat-no" title="statement not covered" >      if (ArtifactConnectorTypes.includes(obj.type)) {</span>
+<span class="cstat-no" title="statement not covered" >      if (allowedArtifactTypes.includes(obj.type)) {</span>
 <span class="cstat-no" title="statement not covered" >        switch (obj.type) {</span>
           case ENABLED_ARTIFACT_TYPES.DockerRegistry: {
 <span class="cstat-no" title="statement not covered" >            return getBuildDetailsForDockerPromise({</span>
@@ -1578,10 +1584,7 @@ export class KubernetesServiceSpec extends Step&lt;ServiceSpec&gt; {
     }
 &nbsp;
     // To be used when we pick up the K8 refactoring
-    // if (
-    //   (stepViewType === StepViewType.InputSet || stepViewType === StepViewType.DeploymentForm) &amp;&amp;
-    //   localStorage.getItem('k8refactor')
-    // ) {
+    // if (stepViewType === StepViewType.InputSet || stepViewType === StepViewType.DeploymentForm) {
     //   return (
     //     &lt;KubernetesServiceSpecInputSetMode
     //       {...(customStepProps as K8sServiceSpecVariablesFormProps)}
@@ -1618,7 +1621,7 @@ export class KubernetesServiceSpec extends Step&lt;ServiceSpec&gt; {
             <div class='footer quiet pad2 space-top1 center small'>
                 Code coverage generated by
                 <a href="https://istanbul.js.org/" target="_blank">istanbul</a>
-                at Thu Feb 10 2022 06:20:44 GMT+0000 (Greenwich Mean Time)
+                at Thu Feb 10 2022 12:49:40 GMT+0000 (Greenwich Mean Time)
             </div>
         </div>
         <script src="../../../../../prettify.js"></script>
