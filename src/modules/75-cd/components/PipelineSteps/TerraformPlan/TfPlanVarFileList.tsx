@@ -305,6 +305,8 @@ export default function TfVarFileList(props: TfVarFileProps): React.ReactElement
                         {connectorView ? getNewConnectorSteps() : null}
                         {selectedConnector === 'Artifactory' ? (
                           <TFArtifactoryForm
+                            isConfig={false}
+                            isTerraformPlan
                             name={getString('cd.varFileDetails')}
                             isEditMode={isEditMode}
                             allowableTypes={allowableTypes}

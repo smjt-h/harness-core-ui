@@ -73,13 +73,12 @@ export const TFVarStore: React.FC<StepProps<any> & TFVarStoreProps> = ({
   }
   React.useEffect(() => {
     /* istanbul ignore next */
-    window.console.log(initialValues, initialValues?.varFile?.spec?.store?.type)
     setSelectedType(initialValues?.varFile?.spec?.store?.type)
     setSelectedConnector(initialValues?.varFile?.spec?.store?.type)
     if (setConnectorView) {
       setConnectorView(false)
     }
-  }, [initialValues])
+  }, [])
 
   const newConnectorLabel = `${getString('newLabel')} ${
     !!selectedType && getString(ConnectorLabelMap[selectedType as ConnectorTypes])

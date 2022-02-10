@@ -76,7 +76,6 @@ import StepBitbucketAuthentication from '@connectors/components/CreateConnector/
 import DelegateSelectorStep from '@connectors/components/CreateConnector/commonSteps/DelegateSelectorStep/DelegateSelectorStep'
 import StepArtifactoryAuthentication from '@connectors/components/CreateConnector/ArtifactoryConnector/StepAuth/StepArtifactoryAuthentication'
 import { Connectors, CONNECTOR_CREDENTIALS_STEP_IDENTIFIER } from '@connectors/constants'
-
 import {
   CommandTypes,
   onSubmitTFPlanData,
@@ -90,6 +89,7 @@ import TerraformInputStep from './TfPlanInputStep'
 import { TerraformVariableStep } from './TfPlanVariableView'
 import { TerraformConfigStepOne, TerraformConfigStepTwo } from '../Common/Terraform/Editview/TerraformConfigForm'
 import { ConnectorMap, ConnectorTypes, getBuildPayload } from '../Common/Terraform/Editview/TerraformConfigFormHelper'
+import { TFArtifactoryForm } from '../Common/Terraform/Editview/TerraformArtifactoryForm'
 
 import { TFMonaco } from '../Common/Terraform/Editview/TFMonacoEditor'
 import stepCss from '@pipeline/components/PipelineSteps/Steps/Steps.module.scss'
@@ -153,14 +153,12 @@ function TerraformPlanWidget(
     const buildPayload = getBuildPayload(connectorType)
     return (
       <StepWizard title={getString('connectors.createNewConnector')}>
-        {connectorType !== Connectors.ARTIFACTORY ? (
-          <ConnectorDetailsStep
-            type={connectorType}
-            name={getString('overview')}
-            isEditMode={isEditMode}
-            gitDetails={{ repoIdentifier, branch, getDefaultFromOtherRepo: true }}
-          />
-        ) : null}
+        <ConnectorDetailsStep
+          type={connectorType}
+          name={getString('overview')}
+          isEditMode={isEditMode}
+          gitDetails={{ repoIdentifier, branch, getDefaultFromOtherRepo: true }}
+        />
         {connectorType !== Connectors.ARTIFACTORY ? (
           <GitDetailsStep
             type={connectorType}
@@ -583,34 +581,76 @@ function TerraformPlanWidget(
                       setSelectedConnector={setSelectedConnector}
                     />
                     {connectorView ? getNewConnectorSteps() : null}
-                    <TerraformConfigStepTwo
-                      name={getString('cd.configFileDetails')}
-                      isTerraformPlan
-                      isReadonly={readonly}
-                      allowableTypes={allowableTypes}
-                      onSubmitCallBack={(data: any, prevStepData: any) => {
-                        const configObject = {
-                          ...data.spec?.configuration?.configFiles
-                        }
+                    {selectedConnector === 'Artifactory' ? (
+                      <TFArtifactoryForm
+                        isConfig
+                        isTerraformPlan
+                        name={getString('cd.configFileDetails')}
+                        isEditMode={isEditMode}
+                        allowableTypes={allowableTypes}
+                        onSubmitCallBack={(data: any, prevStepData: any) => {
+                          const configObject = {
+                            ...prevStepData?.formValues?.spec?.configuration?.configFiles
+                          }
 
-                        if (prevStepData.identifier && prevStepData.identifier !== data?.identifier) {
-                          configObject.store.spec.connectorRef = prevStepData?.identifier
-                        }
+                          if (prevStepData.identifier && prevStepData.identifier !== data?.identifier) {
+                            configObject.store.spec.connectorRef = prevStepData?.identifier
+                          }
 
-                        if (configObject?.store.spec.gitFetchType === 'Branch') {
-                          delete configObject.store.spec.commitId
-                        } else if (configObject?.store.spec.gitFetchType === 'Commit') {
-                          delete configObject.store.spec.branch
-                        }
+                          if (configObject?.store?.spec?.gitFetchType) {
+                            delete configObject?.store?.spec?.commitId
+                            delete configObject?.store?.spec?.gitFetchType
+                            delete configObject?.store?.spec?.branch
+                            delete configObject?.store?.spec?.folderPath
+                          }
 
-                        const valObj = cloneDeep(formik.values)
-                        configObject.store.type = prevStepData?.selectedType
-                        set(valObj, 'spec.configuration.configFiles', { ...configObject })
-                        formik.setValues(valObj)
-                        setConnectorView(false)
-                        setShowRemoteWizard(false)
-                      }}
-                    />
+                          const configFiles = data?.spec?.configuration?.configFiles?.store?.spec
+                          configObject.store.spec.artifacts = configFiles.artifacts
+                          configObject.store.spec.repositoryName = configFiles.repositoryName
+
+                          const valObj = cloneDeep(formik.values)
+                          configObject.store.type = prevStepData?.selectedType
+                          set(valObj, 'spec.configuration.configFiles', { ...configObject })
+                          formik.setValues(valObj)
+                          setConnectorView(false)
+                          setShowRemoteWizard(false)
+                        }}
+                      />
+                    ) : (
+                      <TerraformConfigStepTwo
+                        name={getString('cd.configFileDetails')}
+                        isTerraformPlan
+                        isReadonly={readonly}
+                        allowableTypes={allowableTypes}
+                        onSubmitCallBack={(data: any, prevStepData: any) => {
+                          const configObject = {
+                            ...data.spec?.configuration?.configFiles
+                          }
+
+                          if (prevStepData.identifier && prevStepData.identifier !== data?.identifier) {
+                            configObject.store.spec.connectorRef = prevStepData?.identifier
+                          }
+
+                          if (configObject?.store.spec.gitFetchType === 'Branch') {
+                            delete configObject.store.spec.commitId
+                          } else if (configObject?.store.spec.gitFetchType === 'Commit') {
+                            delete configObject.store.spec.branch
+                          }
+
+                          if (configObject?.store?.spec?.artifacts) {
+                            delete configObject?.store?.spec?.artifacts
+                            delete configObject?.store?.spec?.repositoryName
+                          }
+
+                          const valObj = cloneDeep(formik.values)
+                          configObject.store.type = prevStepData?.selectedType
+                          set(valObj, 'spec.configuration.configFiles', { ...configObject })
+                          formik.setValues(valObj)
+                          setConnectorView(false)
+                          setShowRemoteWizard(false)
+                        }}
+                      />
+                    )}
                   </StepWizard>
                 </div>
                 <Button

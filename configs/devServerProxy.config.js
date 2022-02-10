@@ -7,7 +7,7 @@
 
 require('dotenv').config()
 
-const baseUrl = process.env.BASE_URL ?? 'https://pr.harness.io/yunus-will-v5'
+const baseUrl = process.env.BASE_URL ?? 'https://pr.harness.io/yunus-will-v6'
 const targetLocalHost = (process.env.TARGET_LOCALHOST && JSON.parse(process.env.TARGET_LOCALHOST)) ?? false // set to false to target baseUrl environment instead of localhost
 console.table({ baseUrl, targetLocalHost })
 

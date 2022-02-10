@@ -5,7 +5,7 @@
  * https://polyformproject.org/wp-content/uploads/2020/06/PolyForm-Shield-1.0.0.txt.
  */
 
-import React, { useEffect, useState } from 'react'
+import React, { useEffect } from 'react'
 import {
   Button,
   Color,
@@ -21,19 +21,16 @@ import {
   SelectOption,
   getMultiTypeFromValue,
   MultiTypeInputType,
-  StepProps,
-  useToaster
+  StepProps
 } from '@wings-software/uicore'
 import cx from 'classnames'
 import * as Yup from 'yup'
 import { useParams } from 'react-router-dom'
-import { map } from 'lodash-es'
 import { Form } from 'formik'
 import { useVariablesExpression } from '@pipeline/components/PipelineStudio/PiplineHooks/useVariablesExpression'
 import { useStrings } from 'framework/strings'
 import { FormMultiTypeConnectorField } from '@connectors/components/ConnectorReferenceField/FormMultiTypeConnectorField'
 import { ConfigureOptions } from '@common/components/ConfigureOptions/ConfigureOptions'
-import { useGetArtifactsBuildsDetailsForArtifactory, useGetRepositoriesDetailsForArtifactory } from 'services/cd-ng'
 import {
   AllowedTypes,
   tfVarIcons,
@@ -117,16 +114,12 @@ export const TerraformConfigStepOne: React.FC<StepProps<any> & TerraformConfigSt
         })
       })
 
-  const filteredTypes =
-    selectedConnector === 'Artifactory'
-      ? allowableTypes.filter(type => type === MultiTypeInputType.FIXED)
-      : allowableTypes
-
   return (
     <Layout.Vertical padding="small" className={css.tfConfigForm}>
       <Heading level={2} style={{ color: Color.BLACK, fontSize: 24, fontWeight: 'bold' }} margin={{ bottom: 'xlarge' }}>
         {getString('cd.configFileStore')}
       </Heading>
+
       <Layout.Horizontal className={css.horizontalFlex} margin={{ top: 'xlarge', bottom: 'xlarge' }}>
         {AllowedTypes.map(item => (
           <div key={item} className={css.squareCardContainer}>
@@ -190,7 +183,7 @@ export const TerraformConfigStepOne: React.FC<StepProps<any> & TerraformConfigSt
                       projectIdentifier={projectIdentifier}
                       orgIdentifier={orgIdentifier}
                       style={{ marginBottom: 10 }}
-                      multiTypeProps={{ expressions, allowableTypes: filteredTypes }}
+                      multiTypeProps={{ expressions, allowableTypes }}
                     />
                     <Button
                       className={css.newConnectorButton}
@@ -245,111 +238,13 @@ export const TerraformConfigStepTwo: React.FC<StepProps<any> & TerraformConfigSt
   isTerraformPlan = false
 }) => {
   const { getString } = useStrings()
-  const { showError } = useToaster()
   const { expressions } = useVariablesExpression()
-  const [filePath, setFilePath] = useState<string>()
-  const [selectedRepo, setSelectedRepo] = useState('')
-  const [artifacts, setArtifacts] = useState<SelectOption[]>()
-  const [connectorRepos, setConnectorRepos] = useState<SelectOption[]>()
-  const { accountId, projectIdentifier, orgIdentifier } = useParams<{
-    projectIdentifier: string
-    orgIdentifier: string
-    accountId: string
-  }>()
-  const isArtifactory = prevStepData.selectedType === 'Artifactory'
-  const connectorValue = (
-    isTerraformPlan
-      ? prevStepData.spec?.configuration?.configFiles?.store?.spec?.connectorRef
-      : prevStepData.spec?.configuration?.spec?.configFiles?.store?.spec?.connectorRef
-  ) as Connector
-  const {
-    data: ArtifactRepoData,
-    loading: ArtifactRepoLoading,
-    refetch: getArtifactRepos,
-    error: ArtifactRepoError
-  } = useGetRepositoriesDetailsForArtifactory({
-    queryParams: {
-      connectorRef: connectorValue.connector?.identifier,
-      accountIdentifier: accountId,
-      orgIdentifier,
-      projectIdentifier
-    },
-    lazy: true
-  })
-  const {
-    data: Artifacts,
-    loading: ArtifactsLoading,
-    refetch: GetArtifacts,
-    error: ArtifactsError
-  } = useGetArtifactsBuildsDetailsForArtifactory({
-    queryParams: {
-      connectorRef: connectorValue.connector?.identifier,
-      accountIdentifier: accountId,
-      orgIdentifier,
-      projectIdentifier,
-      repositoryName: selectedRepo,
-      maxVersions: 50,
-      filePath: filePath
-    },
-    debounce: 500,
-    lazy: true
-  })
-
-  useEffect(() => {
-    if (ArtifactRepoError) {
-      showError(ArtifactRepoError.message)
-    }
-  }, [ArtifactRepoError])
-
-  useEffect(() => {
-    if (ArtifactsError) {
-      showError(ArtifactsError.message)
-    }
-  }, [ArtifactsError])
-
-  useEffect(() => {
-    if (selectedRepo && filePath) {
-      GetArtifacts()
-    }
-  }, [filePath])
-
-  useEffect(() => {
-    if (Artifacts && !ArtifactsLoading) {
-      setArtifacts(
-        map(Artifacts.data, artifact => ({
-          label: artifact.artifactName as string,
-          value: artifact.artifactPath as string
-        }))
-      )
-    }
-  }, [Artifacts])
-
-  useEffect(() => {
-    if (isArtifactory && getMultiTypeFromValue(connectorValue) === MultiTypeInputType.FIXED && !ArtifactRepoData) {
-      getArtifactRepos()
-    }
-
-    if (ArtifactRepoData) {
-      setConnectorRepos(map(ArtifactRepoData.data?.repositories, repo => ({ label: repo, value: repo })))
-    }
-  }, [ArtifactRepoData])
-
-  useEffect(() => {
-    const existingDetails = isTerraformPlan ? prevStepData.spec?.configuration : prevStepData.spec?.configuration?.spec
-    if (isArtifactory && existingDetails?.configFiles?.store?.spec?.artifacts) {
-      setFilePath(existingDetails?.configFiles?.store?.spec?.artifacts[0]?.artifactPathExpression)
-    }
-  }, [prevStepData])
-
   const gitFetchTypes: SelectOption[] = [
     { label: getString('gitFetchTypes.fromBranch'), value: getString('pipelineSteps.deploy.inputSet.branch') },
     { label: getString('gitFetchTypes.fromCommit'), value: getString('pipelineSteps.commitIdValue') }
   ]
   const validationSchema = stepTwoValidationSchema(isTerraformPlan, getString)
 
-  const filteredTypes = isArtifactory
-    ? allowableTypes.filter(type => type === MultiTypeInputType.FIXED)
-    : allowableTypes
   return (
     <Layout.Vertical padding="small" className={css.tfConfigForm}>
       <Heading level={2} style={{ color: Color.BLACK, fontSize: 24, fontWeight: 'bold' }} margin={{ bottom: 'xlarge' }}>
@@ -357,68 +252,56 @@ export const TerraformConfigStepTwo: React.FC<StepProps<any> & TerraformConfigSt
       </Heading>
       <Formik
         formName="tfRemoteWizardForm"
-        initialValues={{ ...prevStepData.formValues, isArtifactory: isArtifactory }}
+        initialValues={prevStepData.formValues}
         onSubmit={data => onSubmitCallBack(data, prevStepData)}
         validationSchema={validationSchema}
       >
         {formik => {
+          const connectorValue = (
+            isTerraformPlan
+              ? formik.values.spec?.configuration?.configFiles?.store?.spec?.connectorRef
+              : formik.values.spec?.configuration?.spec?.configFiles?.store?.spec?.connectorRef
+          ) as Connector
           const store = isTerraformPlan
             ? formik.values?.spec?.configuration?.configFiles?.store?.spec
             : formik.values?.spec?.configuration?.spec?.configFiles?.store?.spec
           return (
             <Form className={css.formComponent}>
               <div className={css.tfRemoteForm}>
-                {isArtifactory && getMultiTypeFromValue(connectorValue) === MultiTypeInputType.FIXED && (
-                  <div className={cx(stepCss.formGroup, stepCss.md)}>
-                    <FormInput.Select
-                      items={connectorRepos ? connectorRepos : []}
-                      name={formInputNames(isTerraformPlan).repositoryName}
-                      label={getString('pipelineSteps.repoName')}
-                      placeholder={getString(ArtifactRepoLoading ? 'common.loading' : 'cd.selectRepository')}
-                      disabled={ArtifactRepoLoading}
-                      onChange={value => {
-                        setSelectedRepo(value.value as string)
-                        formik.setFieldValue(formikOnChangeNames(isTerraformPlan).repositoryName, value.value)
-                      }}
-                    />
-                  </div>
-                )}
-                {connectorValue?.connector?.spec?.connectionType === 'Account' ||
+                {(connectorValue?.connector?.spec?.connectionType === 'Account' ||
                   connectorValue?.connector?.spec?.type === 'Account' ||
-                  (isArtifactory && getMultiTypeFromValue(connectorValue) !== MultiTypeInputType.FIXED && (
-                    <div className={cx(stepCss.formGroup, stepCss.md)}>
-                      <FormInput.MultiTextInput
-                        label={getString('pipelineSteps.repoName')}
-                        name={formInputNames(isTerraformPlan).repoName}
-                        placeholder={getString('pipelineSteps.repoName')}
-                        multiTextInputProps={{ expressions, allowableTypes: filteredTypes }}
-                      />
-                      {getMultiTypeFromValue(store?.repoName) === MultiTypeInputType.RUNTIME && (
-                        <ConfigureOptions
-                          style={{ alignSelf: 'center', marginTop: 1 }}
-                          value={store?.repoName as string}
-                          type="String"
-                          variableName="configuration.configFiles.store.spec.repoName"
-                          showRequiredField={false}
-                          showDefaultField={false}
-                          showAdvanced={true}
-                          onChange={value => formik.setFieldValue(formikOnChangeNames(isTerraformPlan).repoName, value)}
-                          isReadonly={isReadonly}
-                        />
-                      )}
-                    </div>
-                  ))}
-                {!isArtifactory && (
+                  prevStepData?.urlType === 'Account') && (
                   <div className={cx(stepCss.formGroup, stepCss.md)}>
-                    <FormInput.Select
-                      items={gitFetchTypes}
-                      name={formInputNames(isTerraformPlan).gitFetchType}
-                      label={getString('pipeline.manifestType.gitFetchTypeLabel')}
-                      placeholder={getString('pipeline.manifestType.gitFetchTypeLabel')}
+                    <FormInput.MultiTextInput
+                      label={getString('pipelineSteps.repoName')}
+                      name={formInputNames(isTerraformPlan).repoName}
+                      placeholder={getString('pipelineSteps.repoName')}
+                      multiTextInputProps={{ expressions, allowableTypes: allowableTypes }}
                     />
+                    {getMultiTypeFromValue(store?.repoName) === MultiTypeInputType.RUNTIME && (
+                      <ConfigureOptions
+                        style={{ alignSelf: 'center', marginTop: 1 }}
+                        value={store?.repoName as string}
+                        type="String"
+                        variableName="configuration.configFiles.store.spec.repoName"
+                        showRequiredField={false}
+                        showDefaultField={false}
+                        showAdvanced={true}
+                        onChange={value => formik.setFieldValue(formikOnChangeNames(isTerraformPlan).repoName, value)}
+                        isReadonly={isReadonly}
+                      />
+                    )}
                   </div>
                 )}
-                {store?.gitFetchType === gitFetchTypes[0].value && !isArtifactory && (
+                <div className={cx(stepCss.formGroup, stepCss.md)}>
+                  <FormInput.Select
+                    items={gitFetchTypes}
+                    name={formInputNames(isTerraformPlan).gitFetchType}
+                    label={getString('pipeline.manifestType.gitFetchTypeLabel')}
+                    placeholder={getString('pipeline.manifestType.gitFetchTypeLabel')}
+                  />
+                </div>
+                {store?.gitFetchType === gitFetchTypes[0].value && (
                   <div className={cx(stepCss.formGroup, stepCss.md)}>
                     <FormInput.MultiTextInput
                       label={getString('pipelineSteps.deploy.inputSet.branch')}
@@ -442,7 +325,7 @@ export const TerraformConfigStepTwo: React.FC<StepProps<any> & TerraformConfigSt
                   </div>
                 )}
 
-                {store?.gitFetchType === gitFetchTypes[1].value && !isArtifactory && (
+                {store?.gitFetchType === gitFetchTypes[1].value && (
                   <div className={cx(stepCss.formGroup, stepCss.md)}>
                     <FormInput.MultiTextInput
                       label={getString('pipeline.manifestType.commitId')}
@@ -471,13 +354,9 @@ export const TerraformConfigStepTwo: React.FC<StepProps<any> & TerraformConfigSt
                     label={getString('cd.folderPath')}
                     placeholder={getString('pipeline.manifestType.pathPlaceholder')}
                     name={formInputNames(isTerraformPlan).folderPath}
-                    multiTextInputProps={{ expressions, allowableTypes: filteredTypes }}
-                    onChange={value => {
-                      formik?.setFieldValue(formikOnChangeNames(isTerraformPlan).artifactPathExpression, value)
-                      setFilePath(value as string)
-                    }}
+                    multiTextInputProps={{ expressions, allowableTypes }}
                   />
-                  {getMultiTypeFromValue(store?.folderPath) === MultiTypeInputType.RUNTIME && !isArtifactory && (
+                  {getMultiTypeFromValue(store?.folderPath) === MultiTypeInputType.RUNTIME && (
                     <ConfigureOptions
                       style={{ alignSelf: 'center', marginTop: 1 }}
                       value={store?.folderPath as string}
@@ -488,21 +367,6 @@ export const TerraformConfigStepTwo: React.FC<StepProps<any> & TerraformConfigSt
                       showAdvanced={true}
                       onChange={value => formik.setFieldValue(formikOnChangeNames(isTerraformPlan).folderPath, value)}
                       isReadonly={isReadonly}
-                    />
-                  )}
-                </div>
-                <div className={cx(stepCss.formGroup, stepCss.md)}>
-                  {getMultiTypeFromValue(connectorValue) === MultiTypeInputType.FIXED && isArtifactory && (
-                    <FormInput.Select
-                      name={formikOnChangeNames(isTerraformPlan).artifactName}
-                      label="Artifact Name"
-                      items={artifacts ? artifacts : []}
-                      disabled={ArtifactsLoading}
-                      placeholder={getString(ArtifactsLoading ? 'common.loading' : 'cd.selectArtifact')}
-                      onChange={val => {
-                        formik?.setFieldValue(formikOnChangeNames(isTerraformPlan).artifactPath, val.value)
-                        formik?.setFieldValue(formikOnChangeNames(isTerraformPlan).artifactName, val.label)
-                      }}
                     />
                   )}
                 </div>
