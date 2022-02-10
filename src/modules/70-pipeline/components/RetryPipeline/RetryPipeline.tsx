@@ -179,7 +179,10 @@ const RetryPipeline = ({
         accountIdentifier: accountId,
         orgIdentifier,
         pipelineIdentifier,
-        projectIdentifier
+        projectIdentifier,
+        repoIdentifier,
+        branch,
+        getDefaultFromOtherRepo: true
       },
       body: {
         originalEntityYaml: yamlStringify(parse(pipelineResponse?.data?.yamlPipeline || '')?.pipeline)

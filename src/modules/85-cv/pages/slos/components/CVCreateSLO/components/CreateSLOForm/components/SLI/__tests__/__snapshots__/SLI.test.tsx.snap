@@ -267,7 +267,7 @@ exports[`Test SLI component should render SLI component 1`] = `
         class="bp3-card bp3-elevation-0 Card--card cardPickMetric"
       >
         <h2
-          class="StyledProps--font StyledProps--font-h2 StyledProps--main StyledProps--font-variation-form-title StyledProps--margin-top-xlarge StyledProps--margin-bottom-large"
+          class="StyledProps--font StyledProps--font-h2 StyledProps--main StyledProps--font-variation-form-title StyledProps--margin-bottom-large"
           level="2"
         >
           cv.slos.pickMetricsSLI

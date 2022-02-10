@@ -63,3 +63,9 @@
   gap: var(--spacing-medium);
   align-items: center;
 }
+
+.switchTooltip {
+  span {
+    overflow-wrap: break-word;
+  }
+}

@@ -3848,6 +3848,8 @@ export const useGetForecastCostForPeriod = (props: UseGetForecastCostForPeriodPr
 export interface GetLastMonthCostV2QueryParams {
   accountIdentifier: string
   perspectiveId: string
+  startTime: number
+  period: 'DAILY' | 'WEEKLY' | 'MONTHLY' | 'QUARTERLY' | 'YEARLY'
 }
 
 export type GetLastMonthCostV2Props = Omit<

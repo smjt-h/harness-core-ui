@@ -224,7 +224,10 @@ export const RightBar = (): JSX.Element => {
       accountIdentifier: accountId,
       orgIdentifier,
       pipelineIdentifier,
-      projectIdentifier
+      projectIdentifier,
+      repoIdentifier,
+      branch,
+      getDefaultFromOtherRepo: true
     },
     body: {
       originalEntityYaml: yamlStringify(pipeline)

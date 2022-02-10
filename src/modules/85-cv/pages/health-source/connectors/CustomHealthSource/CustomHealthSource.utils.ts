@@ -177,6 +177,14 @@ const validateCustomMetricFields = (
     )
   }
 
+  if (!formValues.queryType) {
+    completErrors['queryType'] = getString('cv.customHealthSource.Querymapping.validation.queryType')
+  }
+
+  if (!formValues.requestMethod) {
+    completErrors['requestMethod'] = getString('connectors.customHealth.requestMethod')
+  }
+
   if (!formValues.startTime?.placeholder) {
     completErrors['startTime.placeholder'] = getString(
       'cv.customHealthSource.Querymapping.validation.startTime.placeholder'
@@ -459,6 +467,7 @@ export const onSubmitCustomHealthSource = ({
       [CustomHealthSourceFieldNames.TIMESTAMP_LOCATOR]: true,
       [CustomHealthSourceFieldNames.PATH]: true,
       [CustomHealthSourceFieldNames.QUERY_TYPE]: true,
+      [CustomHealthSourceFieldNames.REQUEST_METHOD]: true,
       startTime: { placeholder: true, timestampFormat: true },
       endTime: { placeholder: true, timestampFormat: true }
     })

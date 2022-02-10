@@ -19,7 +19,7 @@ import { useStrings } from 'framework/strings'
 import { IdentifierSchema, NameSchema } from '@common/utils/Validation'
 import { PageSpinner } from '@common/components'
 import { getIdentifierFromValue, getScopeFromValue } from '@common/components/EntityReference/EntityReference'
-import type { ProjectPathProps } from '@common/interfaces/RouteInterfaces'
+import type { ProjectPathProps, GitQueryParams } from '@common/interfaces/RouteInterfaces'
 import { NameId } from '@common/components/NameIdDescriptionTags/NameIdDescriptionTags'
 import { useToaster } from '@common/exports'
 import { useGetTemplate, useGetTemplateInputSetYaml } from 'services/template-ng'
@@ -28,7 +28,7 @@ import { StageForm } from '@pipeline/components/PipelineInputSetForm/PipelineInp
 import { StageErrorContext } from '@pipeline/context/StageErrorContext'
 import { TemplateTabs } from '@templates-library/components/TemplateStageSetupShell/TemplateStageSetupShellUtils'
 import { validateStage } from '@pipeline/components/PipelineStudio/StepUtil'
-import { useGlobalEventListener } from '@common/hooks'
+import { useGlobalEventListener, useQueryParams } from '@common/hooks'
 import ErrorsStripBinded from '@pipeline/components/ErrorsStrip/ErrorsStripBinded'
 import { useStageTemplateActions } from '@pipeline/utils/useStageTemplateActions'
 import { TemplateBar } from '@pipeline/components/PipelineStudio/TemplateBar/TemplateBar'
@@ -59,6 +59,7 @@ export const TemplateStageSpecifications = (): JSX.Element => {
   } = usePipelineContext()
   const { stage } = getStageFromPipeline(selectedStageId)
   const queryParams = useParams<ProjectPathProps>()
+  const { branch, repoIdentifier } = useQueryParams<GitQueryParams>()
   const [formValues, setFormValues] = React.useState<TemplateStageValues>(stage?.stage as TemplateStageValues)
   const templateRef = getIdentifierFromValue(defaultTo(stage?.stage?.template?.templateRef, ''))
   const scope = getScopeFromValue(defaultTo(stage?.stage?.template?.templateRef, ''))
@@ -84,7 +85,10 @@ export const TemplateStageSpecifications = (): JSX.Element => {
     templateIdentifier: templateRef,
     queryParams: {
       ...getScopeBasedQueryParams(queryParams, scope),
-      versionLabel: defaultTo(stage?.stage?.template?.versionLabel, '')
+      versionLabel: defaultTo(stage?.stage?.template?.versionLabel, ''),
+      repoIdentifier,
+      branch,
+      getDefaultFromOtherRepo: true
     }
   })
 
@@ -97,7 +101,10 @@ export const TemplateStageSpecifications = (): JSX.Element => {
     templateIdentifier: templateRef,
     queryParams: {
       ...getScopeBasedQueryParams(queryParams, scope),
-      versionLabel: defaultTo(stage?.stage?.template?.versionLabel, '')
+      versionLabel: defaultTo(stage?.stage?.template?.versionLabel, ''),
+      repoIdentifier,
+      branch,
+      getDefaultFromOtherRepo: true
     }
   })
 

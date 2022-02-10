@@ -30,7 +30,11 @@ export const sourceData = {
             analysis: {
               liveMonitoring: { enabled: true },
               deploymentVerification: { enabled: true, serviceInstanceFieldName: null, serviceInstanceMetricPath: '' },
-              riskProfile: { category: 'Errors', metricType: 'ERROR', thresholdTypes: [] }
+              riskProfile: {
+                category: 'Errors',
+                metricType: 'ERROR',
+                thresholdTypes: ['ACT_WHEN_LOWER', 'ACT_WHEN_HIGHER']
+              }
             },
             sli: { enabled: true },
             groupName: 'Group 1',
@@ -450,7 +454,11 @@ export const onPreviousPayload = {
             analysis: {
               deploymentVerification: { enabled: true, serviceInstanceFieldName: null, serviceInstanceMetricPath: '' },
               liveMonitoring: { enabled: true },
-              riskProfile: { category: 'Errors', metricType: 'ERROR', thresholdTypes: [] }
+              riskProfile: {
+                category: 'Errors',
+                metricType: 'ERROR',
+                thresholdTypes: ['ACT_WHEN_LOWER', 'ACT_WHEN_HIGHER']
+              }
             },
             appDApplication: 'PR-git-experiment',
             appDTier: 'cvng',

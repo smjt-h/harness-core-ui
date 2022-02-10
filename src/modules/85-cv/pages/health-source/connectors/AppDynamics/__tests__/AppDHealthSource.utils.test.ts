@@ -7,17 +7,20 @@
 
 import * as uuid from 'uuid'
 import {
+  initializeCreatedMetrics,
+  initializeSelectedMetricsMap
+} from '@cv/pages/health-source/common/CustomMetric/CustomMetric.utils'
+import {
   validateMapping,
   createAppDFormData,
   getBaseAndMetricPath,
   createAppDynamicsPayload,
-  initializeCreatedMetrics,
   initializeNonCustomFields,
-  initializeSelectedMetricsMap,
   convertMetricPackToMetricData,
   convertStringMetricPathToObject,
   convertStringBasePathToObject,
-  convertFullPathToBaseAndMetric
+  convertFullPathToBaseAndMetric,
+  initAppDCustomFormValue
 } from '../AppDHealthSource.utils'
 import {
   appDMetricValue,
@@ -35,12 +38,22 @@ jest.mock('uuid')
 describe('Test Util funcitons', () => {
   test('should validate validateMapping No Error', () => {
     expect(
-      validateMapping(validateMappingNoError, ['appdMetric Two', 'appdMetric One Updated'], 0, val => val)
+      validateMapping({
+        values: validateMappingNoError,
+        createdMetrics: ['appdMetric Two', 'appdMetric One Updated'],
+        selectedMetricIndex: 0,
+        getString: val => val
+      })
     ).toEqual({})
   })
   test('should validate validateMapping All Errors', () => {
     expect(
-      validateMapping(validateMappingWithErrors, ['appdMetric Two', 'appdMetric One Updated'], 0, val => val)
+      validateMapping({
+        values: validateMappingWithErrors,
+        createdMetrics: ['appdMetric Two', 'appdMetric One Updated'],
+        selectedMetricIndex: 0,
+        getString: val => val
+      })
     ).toEqual({
       appDTier: 'cv.healthSource.connectors.AppDynamics.validation.tier',
       appdApplication: 'cv.healthSource.connectors.AppDynamics.validation.application',
@@ -52,7 +65,12 @@ describe('Test Util funcitons', () => {
       metricIdentifier: 'cv.monitoringSources.prometheus.validation.metricIdentifierUnique'
     })
     expect(
-      validateMapping(validateMappingWithMetricPathError, ['appdMetric Two', 'appdMetric One Updated'], 0, val => val)
+      validateMapping({
+        values: validateMappingWithMetricPathError,
+        createdMetrics: ['appdMetric Two', 'appdMetric One Updated'],
+        selectedMetricIndex: 0,
+        getString: val => val
+      })
     ).toEqual({ metricPath: 'cv.healthSource.connectors.AppDynamics.validation.metricPathWithoutLeafNode' })
   })
 
@@ -92,7 +110,12 @@ describe('Test Util funcitons', () => {
     validateMappingNoError.continuousVerification = false
     validateMappingNoError.healthScore = false
     expect(
-      validateMapping(validateMappingNoError, ['appdMetric Two', 'appdMetric One Updated'], 0, val => val)
+      validateMapping({
+        values: validateMappingNoError,
+        createdMetrics: ['appdMetric Two', 'appdMetric One Updated'],
+        selectedMetricIndex: 0,
+        getString: val => val
+      })
     ).toEqual({})
   })
 
@@ -103,6 +126,7 @@ describe('Test Util funcitons', () => {
   test('should validate createAppDFormData', () => {
     const { selectedMetric, mappedMetrics } = initializeSelectedMetricsMap(
       'defaultAppDMetricName',
+      initAppDCustomFormValue((val: any) => val),
       expectedAppDynamicData?.mappedServicesAndEnvs
     )
     const mappedServicesAndEnvs = new Map()
@@ -168,7 +192,7 @@ describe('Test Util funcitons', () => {
 
   test('should validate convertFullPathToBaseAndMetric', () => {
     expect(
-      convertFullPathToBaseAndMetric('Overall Application Performance / manager / Exceptions per Minute', 'manager')
+      convertFullPathToBaseAndMetric('Overall Application Performance | manager | Exceptions per Minute', 'manager')
     ).toEqual({ derivedBasePath: 'Overall Application Performance', derivedMetricPath: 'Exceptions per Minute' })
   })
 
@@ -185,7 +209,7 @@ describe('Test Util funcitons', () => {
       getBaseAndMetricPath(
         basePath,
         metricPath,
-        'Overall Application Performance / manager / Exceptions per Minute',
+        'Overall Application Performance | manager | Exceptions per Minute',
         'manager'
       )
     ).toEqual({ derivedBasePath: 'Overall Application Performance', derivedMetricPath: 'Exceptions per Minute' })

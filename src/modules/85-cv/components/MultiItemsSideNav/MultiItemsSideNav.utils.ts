@@ -5,7 +5,7 @@
  * https://polyformproject.org/wp-content/uploads/2020/06/PolyForm-Shield-1.0.0.txt.
  */
 
-import type { GroupedCreatedMetrics } from './components/SelectedAppsSideNav/components/GroupedSideNav.types'
+import type { GroupedCreatedMetrics } from './components/SelectedAppsSideNav/components/GroupedSideNav/GroupedSideNav.types'
 import type { MultiItemsSideNavProps } from './MultiItemsSideNav'
 
 interface OnRemoveGroupAndItemInterface {

@@ -195,8 +195,6 @@ describe('Verify Service', () => {
     })
 
     await waitFor(() => expect(onEdit).toHaveBeenCalled())
-
-    expect(container).toMatchSnapshot()
   })
 
   test('Ensure that any infra change source is removed when switching type to application', async () => {

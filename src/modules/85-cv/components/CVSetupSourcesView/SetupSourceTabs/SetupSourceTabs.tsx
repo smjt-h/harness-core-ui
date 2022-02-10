@@ -26,6 +26,7 @@ export interface SetupSourceTabsProps<T> {
   children: JSX.Element[] | JSX.Element
   tabTitles: string[]
   determineMaxTab?: (data: T) => number
+  disableCache?: boolean
 }
 
 export interface SetupSourceTabsProviderProps<T> {
@@ -171,7 +172,11 @@ export function buildObjectToStore(
   return objectToStore
 }
 
-export function useSetupSourceTabsHook<T>(data: T, tabsInformation: TabInfo[]): UseSetupSourceTabsHookReturnValues {
+export function useSetupSourceTabsHook<T>(
+  data: T,
+  tabsInformation: TabInfo[],
+  disableCache = false
+): UseSetupSourceTabsHookReturnValues {
   const [{ activeTabIndex, sourceData, tabsInfo }, setTabsState] = useState({
     activeTabIndex: 0,
     sourceData: data,
@@ -247,7 +252,7 @@ export function useSetupSourceTabsHook<T>(data: T, tabsInformation: TabInfo[]): 
   }
 
   useEffect(() => {
-    if (!isInitializingDB && dbInstance) {
+    if (!isInitializingDB && dbInstance && !disableCache) {
       dbInstance.get(CVObjectStoreNames.ONBOARDING_SOURCES, indexedDBEntryKey)?.then(cachedData => {
         if (cachedData) {
           setTabsState({
@@ -282,10 +287,14 @@ export function SetupSourceTabsProvider<T>(props: SetupSourceTabsProviderProps<T
 }
 
 export function SetupSourceTabs<T>(props: SetupSourceTabsProps<T>): JSX.Element {
-  const { data, tabTitles, children, determineMaxTab } = props
+  const { data, tabTitles, children, determineMaxTab, disableCache } = props
   const [tabsLength, setTabsLength] = useState<number>(0)
   const tabInfo = useMemo(() => initializeTabsInfo(tabTitles), [tabTitles])
-  const { sourceData, activeTabIndex, onSwitchTab, onNext, onPrevious } = useSetupSourceTabsHook(data, tabInfo)
+  const { sourceData, activeTabIndex, onSwitchTab, onNext, onPrevious } = useSetupSourceTabsHook(
+    data,
+    tabInfo,
+    disableCache
+  )
   const maxEnabledTab = determineMaxTab?.(sourceData)
   const updatedChildren = useMemo(() => (Array.isArray(children) ? children : [children]), [children])
 

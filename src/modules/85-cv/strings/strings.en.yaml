@@ -785,6 +785,7 @@ customHealthSource:
       body: Body is required.
       path: Please select path.
       pathWithoutPlaceholder: Start and end time placeholders must be included in either Path or Body.
+      queryType: Query Type is required.
       startAndEndTime: Start and end time placeholders must differ.
       startTime:
         placeholder: Please select start time placeholder

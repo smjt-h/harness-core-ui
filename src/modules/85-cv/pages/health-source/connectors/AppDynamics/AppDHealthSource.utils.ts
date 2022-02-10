@@ -14,15 +14,15 @@ import type { UpdatedHealthSource } from '../../HealthSourceDrawer/HealthSourceD
 import { HealthSourceTypes } from '../../types'
 import type {
   AppDynamicsData,
-  CreatedMetricsWithSelectedIndex,
   AppDynamicsFomikFormInterface,
   MapAppDynamicsMetric,
-  SelectedAndMappedMetrics
+  ValidateMappingInterface
 } from './AppDHealthSource.types'
 import type { BasePathData } from './Components/BasePath/BasePath.types'
 import type { MetricPathData } from './Components/MetricPath/MetricPath.types'
-import { AppDynamicsMonitoringSourceFieldNames } from './AppDHealthSource.constants'
-import { PATHTYPE } from './Components/AppDMappedMetric/AppDMappedMetric.constant'
+import { AppDynamicsMonitoringSourceFieldNames, initCustomForm } from './AppDHealthSource.constants'
+import { PATHTYPE } from './Components/AppDCustomMetricForm/AppDCustomMetricForm.constants'
+import type { CustomMappedMetric } from '../../common/CustomMetric/CustomMetric.types'
 
 export const convertStringBasePathToObject = (baseFolder: string | BasePathData): BasePathData => {
   let basePathObj = {} as any
@@ -100,8 +100,10 @@ export const createAppDynamicsData = (sourceData: any): AppDynamicsData => {
             ? `${metricDefinition?.analysis?.riskProfile?.category}/${metricDefinition?.analysis?.riskProfile?.metricType}`
             : '',
         serviceInstance: metricDefinition?.analysis?.deploymentVerification?.serviceInstanceFieldName,
-        lowerBaselineDeviation: metricDefinition?.riskProfile?.thresholdTypes?.includes('ACT_WHEN_LOWER') || false,
-        higherBaselineDeviation: metricDefinition?.riskProfile?.thresholdTypes?.includes('ACT_WHEN_HIGHER') || false,
+        lowerBaselineDeviation:
+          metricDefinition?.analysis?.riskProfile?.thresholdTypes?.includes('ACT_WHEN_LOWER') || false,
+        higherBaselineDeviation:
+          metricDefinition?.analysis?.riskProfile?.thresholdTypes?.includes('ACT_WHEN_HIGHER') || false,
         groupName: { label: metricDefinition.groupName || '', value: metricDefinition.groupName || '' },
         continuousVerification: metricDefinition?.analysis?.deploymentVerification?.enabled,
         healthScore: metricDefinition?.analysis?.liveMonitoring?.enabled,
@@ -113,13 +115,13 @@ export const createAppDynamicsData = (sourceData: any): AppDynamicsData => {
   return appdData
 }
 
-export const validateMapping = (
-  values: any,
-  createdMetrics: string[],
-  selectedMetricIndex: number,
-  getString: (key: StringKeys) => string,
-  mappedMetrics?: Map<string, MapAppDynamicsMetric>
-): ((key: string | boolean | string[]) => string) => {
+export const validateMapping = ({
+  values,
+  createdMetrics,
+  selectedMetricIndex,
+  getString,
+  mappedMetrics
+}: ValidateMappingInterface): ((key: string | boolean | string[]) => string) => {
   let errors = {} as any
   const metricValueList = values?.metricData ? Object.values(values?.metricData).filter(val => val) : []
 
@@ -144,7 +146,14 @@ export const validateMapping = (
   }
 
   if (values?.showCustomMetric) {
-    errors = validateCustomMetricFields(values, createdMetrics, selectedMetricIndex, errors, getString, mappedMetrics)
+    errors = validateCustomMetricFields(
+      values,
+      createdMetrics,
+      selectedMetricIndex,
+      errors,
+      getString,
+      mappedMetrics as Map<string, MapAppDynamicsMetric>
+    )
   }
 
   return errors
@@ -188,7 +197,7 @@ const validateCustomMetricFields = (
           return metricName === values.metricName
         })
 
-  _error = validateIdentifier(values, createdMetrics, selectedMetricIndex, _error, getString, mappedMetrics)
+  _error = validateIdentifier(values, createdMetrics, selectedMetricIndexNew, _error, getString, mappedMetrics)
 
   if (!values.groupName) {
     _error[AppDynamicsMonitoringSourceFieldNames.GROUP_NAME] = getString(
@@ -302,45 +311,6 @@ const validateAssignComponent = (
   return _error
 }
 
-export function initializeSelectedMetricsMap(
-  defaultSelectedMetricName: string,
-  mappedServicesAndEnvs?: Map<string, MapAppDynamicsMetric>
-): SelectedAndMappedMetrics {
-  return {
-    selectedMetric: (Array.from(mappedServicesAndEnvs?.keys() || [])?.[0] as string) || defaultSelectedMetricName,
-    mappedMetrics:
-      mappedServicesAndEnvs ||
-      new Map([
-        [
-          defaultSelectedMetricName,
-          {
-            sli: false,
-            healthScore: false,
-            continuousVerification: false,
-            metricName: defaultSelectedMetricName,
-            basePath: {},
-            metricPath: {},
-            appdApplication: '',
-            appDTier: '',
-            metricData: {},
-            metricIdentifier: defaultSelectedMetricName.split(' ').join('_')
-          }
-        ]
-      ])
-  }
-}
-
-export function initializeCreatedMetrics(
-  defaultSelectedMetricName: string,
-  selectedMetric: string,
-  mappedMetrics: SelectedAndMappedMetrics['mappedMetrics']
-): CreatedMetricsWithSelectedIndex {
-  return {
-    createdMetrics: Array.from(mappedMetrics.keys()) || [defaultSelectedMetricName],
-    selectedMetricIndex: Array.from(mappedMetrics.keys()).findIndex(metric => metric === selectedMetric)
-  }
-}
-
 export const getBaseAndMetricPath = (
   basePath: BasePathData,
   metricPath: MetricPathData,
@@ -366,7 +336,7 @@ export const convertFullPathToBaseAndMetric = (
   fullPath: string,
   appDTier: string
 ): { derivedBasePath: string; derivedMetricPath: string } => {
-  const fullPathArray = fullPath.split('/').map((item: string) => item.trim())
+  const fullPathArray = fullPath.split('|').map((item: string) => item.trim())
   const indexOfManager = fullPathArray.indexOf(appDTier)
   const derivedBasePath = fullPathArray.slice(0, indexOfManager).join('|')
   const derivedMetricPath = fullPathArray.slice(indexOfManager + 1, fullPathArray.length).join('|')
@@ -462,8 +432,8 @@ export const createAppDynamicsPayload = (formData: any): UpdatedHealthSource | n
 }
 
 export const submitData = (
-  formik: FormikProps<MapAppDynamicsMetric>,
-  mappedMetrics: Map<string, MapAppDynamicsMetric>,
+  formik: FormikProps<AppDynamicsFomikFormInterface>,
+  mappedMetrics: Map<string, CustomMappedMetric>,
   selectedMetric: string,
   selectedMetricIndex: number,
   createdMetrics: string[],
@@ -484,7 +454,7 @@ export const submitData = (
     [AppDynamicsMonitoringSourceFieldNames.METRIC_DATA]: { Errors: true, Performance: true },
     [PATHTYPE.FullPath]: true
   })
-  const errors = validateMapping(formik.values, createdMetrics, selectedMetricIndex, getString)
+  const errors = validateMapping({ values: formik.values, createdMetrics, selectedMetricIndex, getString })
   if (Object.keys(errors || {})?.length > 0) {
     formik.validateForm()
     return
@@ -506,7 +476,7 @@ export const convertMetricPackToMetricData = (value?: MetricPackDTO[]) => {
 
 export const createAppDFormData = (
   appDynamicsData: AppDynamicsData,
-  mappedMetrics: Map<string, MapAppDynamicsMetric>,
+  mappedMetrics: Map<string, CustomMappedMetric>,
   selectedMetric: string,
   nonCustomFeilds: {
     appdApplication: string
@@ -518,7 +488,7 @@ export const createAppDFormData = (
   },
   showCustomMetric: boolean
 ): AppDynamicsFomikFormInterface => {
-  const mappedMetricsData = mappedMetrics.get(selectedMetric)
+  const mappedMetricsData = mappedMetrics.get(selectedMetric) as MapAppDynamicsMetric
   const metricIdentifier = mappedMetricsData?.metricIdentifier || selectedMetric.split(' ').join('_')
   const { basePath = {}, metricPath = {} } = mappedMetricsData || {}
   const lastItemBasePath = Object.keys(basePath)[Object.keys(basePath).length - 1]
@@ -534,12 +504,12 @@ export const createAppDFormData = (
     isEdit: appDynamicsData.isEdit,
     product: appDynamicsData.product,
     type: appDynamicsData.type,
+    pathType: PATHTYPE.DropdownPath,
+    fullPath,
     mappedServicesAndEnvs: appDynamicsData.mappedServicesAndEnvs,
     ...nonCustomFeilds,
     ...(mappedMetrics.get(selectedMetric) as MapAppDynamicsMetric),
     metricName: selectedMetric,
-    fullPath,
-    pathType: PATHTYPE.DropdownPath,
     showCustomMetric,
     metricIdentifier
   }
@@ -566,3 +536,10 @@ export const setAppDynamicsTier = (tierLoading: boolean, appDTier: string, tierO
   tierLoading || !appDTier
     ? { label: '', value: '' }
     : tierOptions.find((item: SelectOption) => item.label === appDTier)
+
+export const initAppDCustomFormValue = (getString: (key: StringKeys) => string) => {
+  return {
+    ...initCustomForm,
+    groupName: { label: getString('cv.addGroupName'), value: getString('cv.addGroupName') }
+  }
+}

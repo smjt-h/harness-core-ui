@@ -102,6 +102,7 @@ function HealthSourceDrawerContent({
         data={sourceData}
         determineMaxTab={isEdit ? determineMaxTabBySourceType : undefined}
         tabTitles={tabTitles}
+        disableCache={true}
       >
         {tabs}
       </SetupSourceTabs>

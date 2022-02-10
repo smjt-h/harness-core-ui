@@ -15,11 +15,12 @@ import { useStrings } from 'framework/strings'
 import { getTemplateNameWithLabel } from '@pipeline/utils/templateUtils'
 import { useFeature } from '@common/hooks/useFeatures'
 import { FeatureIdentifier } from 'framework/featureStore/FeatureIdentifier'
-import type { ProjectPathProps } from '@common/interfaces/RouteInterfaces'
+import type { ProjectPathProps, GitQueryParams } from '@common/interfaces/RouteInterfaces'
 import { useGetTemplate } from 'services/template-ng'
 import { getIdentifierFromValue, getScopeFromValue } from '@common/components/EntityReference/EntityReference'
 import { Scope } from '@common/interfaces/SecretsInterface'
 import type { TemplateLinkConfig } from 'services/pipeline-ng'
+import { useQueryParams } from '@common/hooks'
 import css from './TemplateBar.module.scss'
 
 interface TemplateMenuItem {
@@ -41,6 +42,7 @@ export const TemplateBar = (props: TemplateBarProps): JSX.Element => {
   const [menuOpen, setMenuOpen] = React.useState(false)
   const { getString } = useStrings()
   const { accountId, orgIdentifier, projectIdentifier } = useParams<ProjectPathProps>()
+  const { branch, repoIdentifier } = useQueryParams<GitQueryParams>()
   const scope = getScopeFromValue(templateLinkConfig.templateRef)
   const { enabled: templatesEnabled } = useFeature({
     featureRequest: {
@@ -54,7 +56,10 @@ export const TemplateBar = (props: TemplateBarProps): JSX.Element => {
       accountIdentifier: accountId,
       projectIdentifier: scope === Scope.PROJECT ? projectIdentifier : undefined,
       orgIdentifier: scope === Scope.PROJECT || scope === Scope.ORG ? orgIdentifier : undefined,
-      versionLabel: defaultTo(templateLinkConfig.versionLabel, '')
+      versionLabel: defaultTo(templateLinkConfig.versionLabel, ''),
+      repoIdentifier,
+      branch,
+      getDefaultFromOtherRepo: true
     }
   })
 
