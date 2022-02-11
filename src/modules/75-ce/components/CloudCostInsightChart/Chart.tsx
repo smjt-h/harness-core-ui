@@ -132,7 +132,7 @@ const GetChart: React.FC<GetChartProps> = ({
           accountId: accountId
         })
       )
-    } else return
+    }
   }
 
   const labelsText = (item: Record<string, any>) => {
