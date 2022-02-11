@@ -83,7 +83,7 @@ const AnomaliesOverviewPage: React.FC = () => {
     }
   })
 
-  const { mutate: getAnomalySummary } = useGetAnomalyWidgetsData({
+  const { mutate: getAnomalySummary, loading: isSummaryDataFetching } = useGetAnomalyWidgetsData({
     queryParams: {
       accountIdentifier: accountId
     }
@@ -199,7 +199,7 @@ const AnomaliesOverviewPage: React.FC = () => {
         setTimeRange={setTimeRange}
       />
       <PageBody>
-        {isListFetching || isFetchingCcmMetaData ? <PageSpinner /> : null}
+        {isListFetching || isFetchingCcmMetaData || isSummaryDataFetching ? <PageSpinner /> : null}
         <Container
           padding={{
             right: 'xxxlarge',

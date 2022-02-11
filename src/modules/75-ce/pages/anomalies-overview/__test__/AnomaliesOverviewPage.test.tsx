@@ -7,9 +7,13 @@
 
 import React from 'react'
 import { render } from '@testing-library/react'
+import { Provider } from 'urql'
+import { fromValue } from 'wonka'
+import type { DocumentNode } from 'graphql'
 import { TestWrapper } from '@common/utils/testUtils'
-
+import { FetchCcmMetaDataDocument } from 'services/ce/services'
 import AnomaliesOverviewPage from '../AnomaliesOverviewPage'
+import CCMMetaDataResponse from './CCMMetaDataResponse.json'
 
 jest.mock('services/ce', () => ({
   useListAnomalies: jest.fn().mockImplementation(() => ({
@@ -21,6 +25,14 @@ jest.mock('services/ce', () => ({
     }
   })),
   useReportAnomalyFeedback: jest.fn().mockImplementation(() => ({
+    mutate: async () => {
+      return {
+        status: 'SUCCESS',
+        data: {}
+      }
+    }
+  })),
+  useGetAnomalyWidgetsData: jest.fn().mockImplementation(() => ({
     mutate: async () => {
       return {
         status: 'SUCCESS',
@@ -42,9 +54,19 @@ describe('test case for anomalies detection overview page', () => {
     const useStateMock: any = (useState: any) => [useState, setMockState]
     jest.spyOn(React, 'useState').mockImplementation(useStateMock)
 
+    const responseState = {
+      executeQuery: ({ query }: { query: DocumentNode }) => {
+        if (query === FetchCcmMetaDataDocument) {
+          return fromValue(CCMMetaDataResponse)
+        }
+      }
+    }
+
     const { container } = render(
       <TestWrapper pathParams={params}>
-        <AnomaliesOverviewPage />
+        <Provider value={responseState as any}>
+          <AnomaliesOverviewPage />
+        </Provider>
       </TestWrapper>
     )
 
