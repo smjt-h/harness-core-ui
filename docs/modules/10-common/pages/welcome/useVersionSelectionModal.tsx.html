@@ -23,9 +23,9 @@
         <div class='clearfix'>
             
             <div class='fl pad1y space-right2'>
-                <span class="strong">100% </span>
+                <span class="strong">0% </span>
                 <span class="quiet">Statements</span>
-                <span class='fraction'>10/10</span>
+                <span class='fraction'>0/10</span>
             </div>
         
             
@@ -37,16 +37,16 @@
         
             
             <div class='fl pad1y space-right2'>
-                <span class="strong">100% </span>
+                <span class="strong">0% </span>
                 <span class="quiet">Functions</span>
-                <span class='fraction'>2/2</span>
+                <span class='fraction'>0/2</span>
             </div>
         
             
             <div class='fl pad1y space-right2'>
-                <span class="strong">100% </span>
+                <span class="strong">0% </span>
                 <span class="quiet">Lines</span>
-                <span class='fraction'>9/9</span>
+                <span class='fraction'>0/9</span>
             </div>
         
             
@@ -55,7 +55,7 @@
             Press <em>n</em> or <em>j</em> to go to the next uncovered block, <em>b</em>, <em>p</em> or <em>k</em> for the previous block.
         </p>
     </div>
-    <div class='status-line high'></div>
+    <div class='status-line low'></div>
     <pre><table class="coverage">
 <tr><td class="line-count quiet"><a name='L1'></a><a href='#L1'>1</a>
 <a name='L2'></a><a href='#L2'>2</a>
@@ -97,28 +97,28 @@
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-yes">7x</span>
-<span class="cline-any cline-yes">7x</span>
-<span class="cline-any cline-yes">7x</span>
-<span class="cline-any cline-yes">7x</span>
-<span class="cline-any cline-yes">7x</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-yes">7x</span>
-<span class="cline-any cline-yes">4x</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-yes">1x</span>
-<span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-yes">4x</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
@@ -130,28 +130,28 @@
  * https://polyformproject.org/wp-content/uploads/2020/06/PolyForm-Shield-1.0.0.txt.
  */
 &nbsp;
-import React from 'react'
-import { useModalHook } from '@harness/use-modal'
-import { Dialog } from '@blueprintjs/core'
-import ModuleInfo from './ModuleInfo'
-import css from './useVersionSelectionModal.module.scss'
+<span class="cstat-no" title="statement not covered" >import React from 'react'</span>
+<span class="cstat-no" title="statement not covered" >import { useModalHook } from '@harness/use-modal'</span>
+<span class="cstat-no" title="statement not covered" >import { Dialog } from '@blueprintjs/core'</span>
+<span class="cstat-no" title="statement not covered" >import ModuleInfo from './ModuleInfo'</span>
+<span class="cstat-no" title="statement not covered" >import css from './useVersionSelectionModal.module.scss'</span>
 &nbsp;
 interface ModalReturn {
   openVersionSelectionModal: () =&gt; void
   closeVersionSelectionModal: () =&gt; void
 }
 &nbsp;
-export const useVersionSelectionModal = (): ModalReturn =&gt; {
-  const [showModal, hideModal] = useModalHook(
-    () =&gt; (
-      &lt;Dialog enforceFocus={false} isOpen title="" onClose={hideModal} className={css.dialog}&gt;
+export const <span class="cstat-no" title="statement not covered" >useVersionSelectionModal = <span class="cstat-no" title="statement not covered" ><span class="fstat-no" title="function not covered" >(</span>): ModalReturn =</span>&gt; {</span>
+  const [showModal, hideModal] = <span class="cstat-no" title="statement not covered" >useModalHook(</span>
+<span class="fstat-no" title="function not covered" >    () =</span>&gt; (
+<span class="cstat-no" title="statement not covered" >      &lt;Dialog enforceFocus={false} isOpen title="" onClose={hideModal} className={css.dialog}&gt;</span>
         &lt;ModuleInfo /&gt;
       &lt;/Dialog&gt;
     ),
     []
   )
 &nbsp;
-  return {
+<span class="cstat-no" title="statement not covered" >  return {</span>
     openVersionSelectionModal: showModal,
     closeVersionSelectionModal: hideModal
   }
@@ -163,7 +163,7 @@ export const useVersionSelectionModal = (): ModalReturn =&gt; {
             <div class='footer quiet pad2 space-top1 center small'>
                 Code coverage generated by
                 <a href="https://istanbul.js.org/" target="_blank">istanbul</a>
-                at Fri Feb 11 2022 05:53:55 GMT+0000 (Greenwich Mean Time)
+                at Fri Feb 11 2022 10:58:27 GMT+0000 (Greenwich Mean Time)
             </div>
         </div>
         <script src="../../../../prettify.js"></script>
