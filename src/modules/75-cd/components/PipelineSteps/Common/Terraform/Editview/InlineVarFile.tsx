@@ -90,7 +90,7 @@ const InlineVarFile = (props: InlineVarFileProps) => {
             })
           })}
         >
-          {formikProps => {
+          {(formikProps: any) => {
             return (
               <FormikForm>
                 <div className={stepCss.formGroup}>

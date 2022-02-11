@@ -13,7 +13,9 @@ exports[`Nexus Artifact tests form renders correctly in Edit Case 1`] = `
     <div
       class="OverlaySpinner--overlaySpinner"
     >
-      <form>
+      <form
+        action="#"
+      >
         <div
           class="connectorForm"
         >
@@ -507,7 +509,9 @@ exports[`Nexus Artifact tests renders without crashing 1`] = `
     <div
       class="OverlaySpinner--overlaySpinner"
     >
-      <form>
+      <form
+        action="#"
+      >
         <div
           class="connectorForm"
         >

@@ -2487,7 +2487,9 @@ exports[`Test TerraformApply should be able to edit inline config 1`] = `
       <div
         class="Layout--vertical StyledProps--main"
       >
-        <form>
+        <form
+          action="#"
+        >
           <div
             class="formGroup md"
           >
@@ -2819,6 +2821,7 @@ exports[`Test TerraformApply should render edit view 1`] = `
     class="OverlaySpinner--overlaySpinner"
   >
     <form
+      action="#"
       class="FormikForm--main"
     >
       <div>

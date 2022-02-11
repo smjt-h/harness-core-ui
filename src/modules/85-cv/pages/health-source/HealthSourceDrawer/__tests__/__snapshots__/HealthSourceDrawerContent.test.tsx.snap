@@ -74,6 +74,7 @@ exports[`HealthSource table Should Render all the componetns in edit mode for cl
             class="OverlaySpinner--overlaySpinner"
           >
             <form
+              action="#"
               class="FormikForm--main formFullheight"
             >
               <div>
@@ -701,6 +702,7 @@ exports[`HealthSource table Should Render all the componetns in edit mode for lo
             class="OverlaySpinner--overlaySpinner"
           >
             <form
+              action="#"
               class="FormikForm--main formFullheight"
             >
               <div>
@@ -1327,6 +1329,7 @@ exports[`HealthSource table should matchsnapshot 1`] = `
             class="OverlaySpinner--overlaySpinner"
           >
             <form
+              action="#"
               class="FormikForm--main formFullheight"
             >
               <div>

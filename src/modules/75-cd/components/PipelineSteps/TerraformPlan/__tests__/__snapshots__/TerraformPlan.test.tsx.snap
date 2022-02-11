@@ -1256,6 +1256,7 @@ exports[`Test TerraformPlan should render edit view 1`] = `
     class="OverlaySpinner--overlaySpinner"
   >
     <form
+      action="#"
       class="FormikForm--main"
     >
       <div>
@@ -3353,6 +3354,7 @@ exports[`Test TerraformPlan should render input set view 1`] = `
     class="OverlaySpinner--overlaySpinner"
   >
     <form
+      action="#"
       class="FormikForm--main"
     >
       <div>

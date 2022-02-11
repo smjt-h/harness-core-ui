@@ -10,7 +10,7 @@ import cx from 'classnames'
 import { v4 as nameSpace, v5 as uuid } from 'uuid'
 import { Text, TextInput, Card, Button, Intent, MultiTypeInputType, MultiTextInput } from '@wings-software/uicore'
 import { get, isEmpty } from 'lodash-es'
-import { connect, FormikContext } from 'formik'
+import { connect, FormikContextType } from 'formik'
 import { useStrings } from 'framework/strings'
 import css from './List.module.scss'
 
@@ -23,7 +23,7 @@ export interface ListProps {
   placeholder?: string
   disabled?: boolean
   style?: React.CSSProperties
-  formik?: FormikContext<any>
+  formik?: FormikContextType<any>
   expressions?: string[]
   enableExpressions?: boolean
   isNameOfArrayType?: boolean

@@ -2232,7 +2232,7 @@ exports[`TriggersWizardPage Triggers tests Renders/snapshots OnEdit Render - Git
               style="font-size: 20px;"
             >
               Trigger: test-github-repo
-               
+
             </p>
             <label
               class="bp3-control bp3-switch StyledProps--font Switch--switch StyledProps--main"
@@ -2468,7 +2468,7 @@ exports[`TriggersWizardPage Triggers tests Renders/snapshots OnEdit Render - Git
                       data-tooltip-id="triggerConfigurationLabel"
                     >
                       pipeline.triggers.triggerConfigurationLabel
-                      
+
                     </span>
                     <div
                       class="formContent"
@@ -2530,7 +2530,7 @@ exports[`TriggersWizardPage Triggers tests Renders/snapshots OnEdit Render - Git
                               >
                                 name
                               </span>
-                               
+
                               <span
                                 class="bp3-text-muted"
                               />
@@ -2655,7 +2655,7 @@ exports[`TriggersWizardPage Triggers tests Renders/snapshots OnEdit Render - Git
                             >
                               pipeline.triggers.triggerConfigurationPanel.payloadType
                             </span>
-                             
+
                             <span
                               class="bp3-text-muted"
                             />
@@ -2726,7 +2726,7 @@ exports[`TriggersWizardPage Triggers tests Renders/snapshots OnEdit Render - Git
                               >
                                 connector
                               </span>
-                               
+
                               <span
                                 class="bp3-text-muted"
                               />
@@ -2865,7 +2865,7 @@ exports[`TriggersWizardPage Triggers tests Renders/snapshots OnEdit Render - Git
                             >
                               pipeline.triggers.triggerConfigurationPanel.event
                             </span>
-                             
+
                             <span
                               class="bp3-text-muted"
                             />
@@ -3213,7 +3213,7 @@ exports[`TriggersWizardPage Triggers tests Renders/snapshots OnEdit Render - Sch
               style="font-size: 20px;"
             >
               Trigger: test-cron
-               
+
             </p>
             <label
               class="bp3-control bp3-switch StyledProps--font Switch--switch StyledProps--main"
@@ -3509,7 +3509,7 @@ exports[`TriggersWizardPage Triggers tests Renders/snapshots OnEdit Render - Sch
                               >
                                 name
                               </span>
-                               
+
                               <span
                                 class="bp3-text-muted"
                               />

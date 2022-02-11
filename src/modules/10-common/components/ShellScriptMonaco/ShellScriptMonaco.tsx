@@ -136,4 +136,4 @@ export function ShellScriptMonaco(props: ConnectedShellScriptMonacoProps): React
   )
 }
 
-export const ShellScriptMonacoField = connect<ShellScriptMonacoProps>(ShellScriptMonaco)
+export const ShellScriptMonacoField = connect<ShellScriptMonacoProps>(ShellScriptMonaco as any)

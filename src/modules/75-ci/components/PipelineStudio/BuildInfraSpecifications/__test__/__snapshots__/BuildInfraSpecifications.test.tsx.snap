@@ -346,6 +346,7 @@ exports[`BuildInfraSpecifications snapshot tests for AWS Build Infra initializes
             pipelineSteps.build.infraSpecifications.whereToRun
           </p>
           <form
+            action="#"
             class="FormikForm--main"
           >
             <div>
@@ -572,6 +573,7 @@ exports[`BuildInfraSpecifications snapshot tests for K8s Build Infra Renders wit
             pipelineSteps.build.infraSpecifications.whereToRun
           </p>
           <form
+            action="#"
             class="FormikForm--main"
           >
             <div>
@@ -1333,6 +1335,7 @@ exports[`BuildInfraSpecifications snapshot tests for K8s Build Infra initializes
             pipelineSteps.build.infraSpecifications.whereToRun
           </p>
           <form
+            action="#"
             class="FormikForm--main"
           >
             <div>

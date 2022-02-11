@@ -50,7 +50,7 @@ exports[`EXECUTION VIEW should should have the values prefilled and fields as di
                         class="bp3-form-group bp3-disabled variableInput"
                         data-id="variables[0].value-0"
                       >
-                        
+
                         <div
                           class="bp3-form-content"
                         >
@@ -200,6 +200,7 @@ exports[`STUDIO MODE invalid input sets should not be applied 1`] = `
           data-testid="runPipelineVisualView"
         >
           <form
+            action="#"
             class="FormikForm--main"
           >
             <div>
@@ -698,6 +699,7 @@ exports[`STUDIO MODE should accept values from input sets and submit the form: a
           data-testid="runPipelineVisualView"
         >
           <form
+            action="#"
             class="FormikForm--main"
           >
             <div>

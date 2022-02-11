@@ -15,7 +15,7 @@ import {
   CollapsableSelectType,
   CollapsableSelectOptions
 } from '@wings-software/uicore'
-import type { FormikContext } from 'formik'
+import type { FormikContextType } from 'formik'
 
 import DelegatesGit from '@common/icons/DelegatesGit.svg'
 import PlatformGit from '@common/icons/PlatformGit.svg'
@@ -33,7 +33,7 @@ export interface ConnectivityCardItem extends CollapsableSelectOptions {
 }
 
 interface ConnectivityModeProps {
-  formik: FormikContext<Record<string, unknown>>
+  formik: FormikContextType<Record<string, unknown>>
   className?: string
   onChange: (val: ConnectivityCardItem) => void
 }

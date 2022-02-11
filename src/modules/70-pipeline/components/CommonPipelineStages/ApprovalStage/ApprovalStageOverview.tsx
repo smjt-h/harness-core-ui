@@ -97,7 +97,7 @@ export const ApprovalStageOverview: React.FC<ApprovalStageOverviewProps> = props
               }
               return errors
             }}
-            onSubmit={() => noop}
+            onSubmit={noop}
           >
             {formikProps => (
               <FormikForm>

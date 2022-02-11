@@ -203,7 +203,9 @@ exports[`Terraform Var Store tests initial render 1`] = `
     <div
       class="OverlaySpinner--overlaySpinner"
     >
-      <form>
+      <form
+        action="#"
+      >
         <div
           class="formContainerStepOne"
         />
@@ -451,7 +453,9 @@ exports[`Terraform Var Store tests on edit mode for tf var store  1`] = `
     <div
       class="OverlaySpinner--overlaySpinner"
     >
-      <form>
+      <form
+        action="#"
+      >
         <div
           class="formContainerStepOne"
         >
@@ -833,7 +837,9 @@ exports[`Terraform Var Store tests select one of the types 1`] = `
     <div
       class="OverlaySpinner--overlaySpinner"
     >
-      <form>
+      <form
+        action="#"
+      >
         <div
           class="formContainerStepOne"
         >

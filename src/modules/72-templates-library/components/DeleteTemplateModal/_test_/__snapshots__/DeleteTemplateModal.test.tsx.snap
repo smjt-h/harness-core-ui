@@ -6,6 +6,7 @@ exports[`<DeleteTemplateModal /> tests snapshot test 1`] = `
     class="Layout--vertical StyledProps--main"
   >
     <form
+      action="#"
       class="FormikForm--main"
     >
       <div>

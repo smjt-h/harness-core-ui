@@ -11,7 +11,9 @@ exports[`TF Config Form tests edit view loads correctly -with commitId 1`] = `
       <div
         class="Layout--vertical StyledProps--main"
       >
-        <form>
+        <form
+          action="#"
+        >
           <div
             class="connectorLabel"
             style="margin-bottom: 10px;"
@@ -416,7 +418,9 @@ exports[`TF Config Form tests edit view loads correctly 1`] = `
       <div
         class="Layout--vertical StyledProps--main"
       >
-        <form>
+        <form
+          action="#"
+        >
           <div
             class="connectorLabel"
             style="margin-bottom: 10px;"
@@ -821,7 +825,9 @@ exports[`TF Config Form tests initial render 1`] = `
       <div
         class="Layout--vertical StyledProps--main"
       >
-        <form>
+        <form
+          action="#"
+        >
           <div
             class="connectorLabel"
             style="margin-bottom: 10px;"

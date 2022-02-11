@@ -37,6 +37,8 @@ const StageTemplateForm = (_props: unknown, formikRef: TemplateFormRef) => {
     resetForm() {
       setKey(uuid())
     },
+    // eslint-disable-next-line @typescript-eslint/ban-ts-comment
+    // @ts-ignore
     submitForm() {
       return noop
     },

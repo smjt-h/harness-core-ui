@@ -20,7 +20,7 @@ import {
   FontVariation,
   RUNTIME_INPUT_VALUE
 } from '@wings-software/uicore'
-import { connect, FormikContext } from 'formik'
+import { connect, FormikContextType } from 'formik'
 import { get, isEmpty } from 'lodash-es'
 import { ConfigureOptions, ConfigureOptionsProps } from '@common/components/ConfigureOptions/ConfigureOptions'
 import { useStrings } from 'framework/strings'
@@ -46,7 +46,7 @@ export interface MultiTypeMapProps {
   valueMultiTextInputProps?: Omit<MultiTextInputProps, 'name'>
   enableConfigureOptions?: boolean
   configureOptionsProps?: MultiTypeMapConfigureOptionsProps
-  formik?: FormikContext<any>
+  formik?: FormikContextType<any>
   style?: React.CSSProperties
   cardStyle?: React.CSSProperties
   disabled?: boolean

@@ -129,6 +129,7 @@ exports[`Create k8 connector Wizard should form for authtype username 1`] = `
             class="OverlaySpinner--overlaySpinner"
           >
             <form
+              action="#"
               class="FormikForm--main"
             >
               <div>
@@ -2222,6 +2223,7 @@ exports[`Create k8 connector Wizard should form for edit authtype username 1`] =
             class="OverlaySpinner--overlaySpinner"
           >
             <form
+              action="#"
               class="FormikForm--main"
             >
               <div>
@@ -4151,6 +4153,7 @@ exports[`should render form for edit authtype clientKey 2`] = `
           class="OverlaySpinner--overlaySpinner"
         >
           <form
+            action="#"
             class="FormikForm--main"
           >
             <div>

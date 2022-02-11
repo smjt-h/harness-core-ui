@@ -591,6 +591,7 @@ exports[`Jira Approval tests Edit stage - readonly: edit stage view readonly 1`]
     class="OverlaySpinner--overlaySpinner"
   >
     <form
+      action="#"
       class="FormikForm--main"
     >
       <div>

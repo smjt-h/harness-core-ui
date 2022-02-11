@@ -4632,6 +4632,7 @@ exports[`Manifest Trigger Tests throws validation error when select artifact/man
           class="OverlaySpinner--overlaySpinner"
         >
           <form
+            action="#"
             class="FormikForm--main"
           >
             <div>
