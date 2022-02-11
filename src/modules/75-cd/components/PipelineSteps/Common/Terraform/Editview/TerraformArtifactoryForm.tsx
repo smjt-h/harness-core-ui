@@ -66,8 +66,6 @@ export const TFArtifactoryForm: React.FC<StepProps<any> & TFRemoteProps> = ({
   const { getString } = useStrings()
   const { showError } = useToaster()
   const initialValues = formatInitialValues(isConfig, prevStepData, isTerraformPlan)
-  window.console.log('initialValues: ', initialValues)
-
   const connectorValue = getConnectorRef(isConfig, isTerraformPlan, prevStepData) as Connector
   const connectorRef = connectorValue?.connector?.identifier
     ? connectorValue.connector.identifier
@@ -134,10 +132,10 @@ export const TFArtifactoryForm: React.FC<StepProps<any> & TFRemoteProps> = ({
   }, [ArtifactsError])
 
   useEffect(() => {
-    if (selectedRepo && filePathIndex?.path && !ArtifactsLoading) {
+    if (selectedRepo && filePathIndex?.path) {
       GetArtifacts()
     }
-  }, [filePathIndex, selectedRepo, ArtifactRepoData, ArtifactsLoading])
+  }, [filePathIndex, selectedRepo])
 
   useEffect(() => {
     if (Artifacts && !ArtifactsLoading) {
@@ -202,7 +200,13 @@ export const TFArtifactoryForm: React.FC<StepProps<any> & TFRemoteProps> = ({
                 </div>
                 <div className={cx(stepCss.formGroup)}>
                   <Layout.Horizontal>
-                    <Text font="normal" color={Color.GREY_600} width={255}>
+                    <Text
+                      font="normal"
+                      color={Color.GREY_600}
+                      width={255}
+                      rightIcon="question"
+                      tooltip={getString('cd.artifactFormErrors.artifactFilePath')}
+                    >
                       {getString('common.git.filePath')}
                     </Text>
                     <Text font="normal" color={Color.GREY_600}>

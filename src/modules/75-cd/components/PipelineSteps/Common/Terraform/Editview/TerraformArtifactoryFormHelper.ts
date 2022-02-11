@@ -74,15 +74,17 @@ export const getConnectorRef = (isConfig: boolean, isTerraformPlan: boolean, pre
 
 export const terraformArtifactorySchema = (isConfig: boolean, getString: any) => {
   const artifacts = {
-    repositoryName: Yup.string().required(getString('common.validation.identifierIsRequired')),
-    artifacts: Yup.array().of(
-      Yup.object().shape({
-        artifactFile: Yup.object().shape({
-          artifactPathExpression: Yup.string().required(getString('cd.pathCannotBeEmpty')),
-          name: Yup.string().required(getString('cd.pathCannotBeEmpty'))
+    repositoryName: Yup.string().required(getString('cd.artifactFormErrors.repositoryName')),
+    artifacts: Yup.array()
+      .of(
+        Yup.object().shape({
+          artifactFile: Yup.object().shape({
+            artifactPathExpression: Yup.string().required(getString('cd.pathCannotBeEmpty')),
+            name: Yup.string().required(getString('cd.artifactFormErrors.artifactName'))
+          })
         })
-      })
-    )
+      )
+      .required()
   }
 
   const configSetup = {
@@ -105,7 +107,7 @@ export const terraformArtifactorySchema = (isConfig: boolean, getString: any) =>
     })
   }
 
-  return {
+  return Yup.object().shape({
     varFile: Yup.object().shape({
       identifier: Yup.string().required(getString('common.validation.identifierIsRequired')),
       spec: Yup.object().shape({
@@ -116,7 +118,7 @@ export const terraformArtifactorySchema = (isConfig: boolean, getString: any) =>
         })
       })
     })
-  }
+  })
 }
 
 export const tfArtifactoryFormInputNames = (isConfig: boolean) => {

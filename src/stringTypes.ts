@@ -3073,6 +3073,9 @@ export interface StringsMap {
   'cd.addTFVarFileLabel': string
   'cd.allowSimultaneousDeployments': string
   'cd.argoAdapterURL': string
+  'cd.artifactFormErrors.artifactFilePath': string
+  'cd.artifactFormErrors.artifactName': string
+  'cd.artifactFormErrors.repositoryName': string
   'cd.artifactName': string
   'cd.backEndConfig': string
   'cd.cdLaunchText': string
