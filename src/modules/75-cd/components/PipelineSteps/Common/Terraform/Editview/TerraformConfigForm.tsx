@@ -5,7 +5,7 @@
  * https://polyformproject.org/wp-content/uploads/2020/06/PolyForm-Shield-1.0.0.txt.
  */
 
-import React, { useEffect } from 'react'
+import React, { useEffect, useState } from 'react'
 import {
   Button,
   Color,
@@ -24,6 +24,7 @@ import {
   StepProps
 } from '@wings-software/uicore'
 import cx from 'classnames'
+import { isUndefined } from 'lodash-es'
 import * as Yup from 'yup'
 import { useParams } from 'react-router-dom'
 import { Form } from 'formik'
@@ -31,6 +32,7 @@ import { useVariablesExpression } from '@pipeline/components/PipelineStudio/Pipl
 import { useStrings } from 'framework/strings'
 import { FormMultiTypeConnectorField } from '@connectors/components/ConnectorReferenceField/FormMultiTypeConnectorField'
 import { ConfigureOptions } from '@common/components/ConfigureOptions/ConfigureOptions'
+import { Connectors } from '@connectors/constants'
 import {
   AllowedTypes,
   tfVarIcons,
@@ -75,6 +77,7 @@ export const TerraformConfigStepOne: React.FC<StepProps<any> & TerraformConfigSt
     orgIdentifier: string
     accountId: string
   }>()
+  const [multitypeInputValue, setMultiTypeValue] = useState<MultiTypeInputType | undefined>(undefined)
 
   useEffect(() => {
     const selectedStore = isTerraformPlan
@@ -82,6 +85,14 @@ export const TerraformConfigStepOne: React.FC<StepProps<any> & TerraformConfigSt
       : data?.spec?.configuration?.spec?.configFiles?.store?.type
     setSelectedConnector(selectedStore)
   }, [])
+
+  const handleOptionSelection = (storeSelected: ConnectorTypes): void => {
+    if (storeSelected === Connectors.ARTIFACTORY) {
+      setMultiTypeValue(MultiTypeInputType.FIXED)
+    } else if (multitypeInputValue !== undefined) {
+      setMultiTypeValue(undefined)
+    }
+  }
 
   const newConnectorLabel = `${getString('newLabel')} ${
     !!selectedConnector && getString(ConnectorLabelMap[selectedConnector as ConnectorTypes])
@@ -128,6 +139,7 @@ export const TerraformConfigStepOne: React.FC<StepProps<any> & TerraformConfigSt
               selected={item === selectedConnector}
               data-testid={`varStore-${item}`}
               onClick={() => {
+                handleOptionSelection(item as ConnectorTypes)
                 setSelectedConnector(item as ConnectorTypes)
               }}
             >
@@ -154,6 +166,12 @@ export const TerraformConfigStepOne: React.FC<StepProps<any> & TerraformConfigSt
             : config?.spec?.configFiles?.store?.spec?.connectorRef
           const disabled =
             !connectorRef || (connectorRef?.connector?.type && connectorRef?.connector?.type !== selectedConnector)
+          const disableArtifactory =
+            isUndefined(connectorRef?.connector?.type) && selectedConnector === Connectors.ARTIFACTORY
+          const filteredTypes =
+            selectedConnector === Connectors.ARTIFACTORY
+              ? allowableTypes.filter(type => type === MultiTypeInputType.FIXED)
+              : allowableTypes
           return (
             <Form className={css.formComponent}>
               <div className={css.formContainerStepOne}>
@@ -183,7 +201,8 @@ export const TerraformConfigStepOne: React.FC<StepProps<any> & TerraformConfigSt
                       projectIdentifier={projectIdentifier}
                       orgIdentifier={orgIdentifier}
                       style={{ marginBottom: 10 }}
-                      multiTypeProps={{ expressions, allowableTypes }}
+                      multiTypeProps={{ expressions, allowableTypes: filteredTypes }}
+                      multitypeInputValue={multitypeInputValue}
                     />
                     <Button
                       className={css.newConnectorButton}
@@ -211,7 +230,7 @@ export const TerraformConfigStepOne: React.FC<StepProps<any> & TerraformConfigSt
                   onClick={() => {
                     nextStep?.({ formValues: formik.values, selectedType: selectedConnector })
                   }}
-                  disabled={disabled}
+                  disabled={disabled || disableArtifactory}
                 />
               </Layout.Horizontal>
             </Form>

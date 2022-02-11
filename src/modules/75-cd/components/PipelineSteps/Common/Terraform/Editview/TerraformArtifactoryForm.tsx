@@ -25,13 +25,11 @@ import cx from 'classnames'
 import { FieldArray, Form } from 'formik'
 
 import { useStrings } from 'framework/strings'
-import { useVariablesExpression } from '@pipeline/components/PipelineStudio/PiplineHooks/useVariablesExpression'
-import MultiTypeFieldSelector from '@common/components/MultiTypeFieldSelector/MultiTypeFieldSelector'
 import { useGetArtifactsBuildsDetailsForArtifactory, useGetRepositoriesDetailsForArtifactory } from 'services/cd-ng'
 import {
   formatInitialValues,
   terraformArtifactorySchema,
-  tfArtifactoryFormINputNames,
+  tfArtifactoryFormInputNames,
   getConnectorRef,
   formatOnSubmitData
 } from './TerraformArtifactoryFormHelper'
@@ -52,7 +50,6 @@ export const TFArtifactoryForm: React.FC<StepProps<any> & TFRemoteProps> = ({
   previousStep,
   prevStepData,
   onSubmitCallBack,
-  allowableTypes,
   isConfig,
   isTerraformPlan
 }) => {
@@ -69,6 +66,8 @@ export const TFArtifactoryForm: React.FC<StepProps<any> & TFRemoteProps> = ({
   const { getString } = useStrings()
   const { showError } = useToaster()
   const initialValues = formatInitialValues(isConfig, prevStepData, isTerraformPlan)
+  window.console.log('initialValues: ', initialValues)
+
   const connectorValue = getConnectorRef(isConfig, isTerraformPlan, prevStepData) as Connector
   const connectorRef = connectorValue?.connector?.identifier
     ? connectorValue.connector.identifier
@@ -116,6 +115,10 @@ export const TFArtifactoryForm: React.FC<StepProps<any> & TFRemoteProps> = ({
     if (repoName) {
       setSelectedRepo(repoName)
     }
+    const prevArtifacts = prevStepData.formValues?.spec?.configuration?.configFiles?.store?.spec?.artifacts
+    if (isConfig && prevArtifacts) {
+      setFilePathIndex({ index: 0, path: prevArtifacts[0].artifactFile.artifactPathExpression })
+    }
   }, [prevStepData])
 
   useEffect(() => {
@@ -131,10 +134,10 @@ export const TFArtifactoryForm: React.FC<StepProps<any> & TFRemoteProps> = ({
   }, [ArtifactsError])
 
   useEffect(() => {
-    if (selectedRepo && filePathIndex?.path) {
+    if (selectedRepo && filePathIndex?.path && !ArtifactsLoading) {
       GetArtifacts()
     }
-  }, [filePathIndex, selectedRepo])
+  }, [filePathIndex, selectedRepo, ArtifactRepoData, ArtifactsLoading])
 
   useEffect(() => {
     if (Artifacts && !ArtifactsLoading) {
@@ -158,8 +161,6 @@ export const TFArtifactoryForm: React.FC<StepProps<any> & TFRemoteProps> = ({
     }
   }, [ArtifactRepoData])
 
-  const { expressions } = useVariablesExpression()
-
   return (
     <Layout.Vertical spacing="xxlarge" padding="small" className={css.tfVarStore}>
       <Text font="large" color={Color.GREY_800}>
@@ -180,7 +181,6 @@ export const TFArtifactoryForm: React.FC<StepProps<any> & TFRemoteProps> = ({
         }}
       >
         {formik => {
-          const filteredTypes = allowableTypes.filter(type => type === MultiTypeInputType.FIXED)
           return (
             <Form>
               <div className={css.tfRemoteForm}>
@@ -193,7 +193,7 @@ export const TFArtifactoryForm: React.FC<StepProps<any> & TFRemoteProps> = ({
                 <div className={cx(stepCss.formGroup, stepCss.md)}>
                   <FormInput.Select
                     items={connectorRepos ? connectorRepos : []}
-                    name={tfArtifactoryFormINputNames(isConfig).repositoryName}
+                    name={tfArtifactoryFormInputNames(isConfig).repositoryName}
                     label={getString('pipelineSteps.repoName')}
                     placeholder={getString(ArtifactRepoLoading ? 'common.loading' : 'cd.selectRepository')}
                     disabled={ArtifactRepoLoading}
@@ -201,105 +201,108 @@ export const TFArtifactoryForm: React.FC<StepProps<any> & TFRemoteProps> = ({
                   />
                 </div>
                 <div className={cx(stepCss.formGroup)}>
-                  <MultiTypeFieldSelector
-                    name={tfArtifactoryFormINputNames(isConfig).artifacts}
-                    label={getString('filePaths')}
-                    style={{ width: 370 }}
-                    allowedTypes={filteredTypes}
-                  >
-                    <Layout.Horizontal flex={{ justifyContent: 'space-between' }}>
-                      <Text font="normal" color={Color.GREY_600}>
-                        {getString('common.git.filePath')}
-                      </Text>
-                      <Text font="normal" color={Color.GREY_600} padding={{ right: '20px' }}>
-                        {getString('cd.artifactName')}
-                      </Text>
-                    </Layout.Horizontal>
-                    <FieldArray
-                      name={tfArtifactoryFormINputNames(isConfig).artifacts}
-                      render={arrayHelpers => {
-                        let selectedArtifacts = []
-                        if (isConfig) {
-                          selectedArtifacts = formik?.values?.spec?.configuration?.configFiles?.store?.spec?.artifacts
-                        } else {
-                          selectedArtifacts = formik.values?.varFile?.spec?.store?.spec?.artifacts
-                        }
-                        return (
-                          <>
-                            {map(
-                              selectedArtifacts.length > 0
-                                ? selectedArtifacts
-                                : [{ artifactFile: { artifactPathExpression: '', name: '', path: '' } }],
-                              (path: PathInterface, index: number) => {
-                                const key = `${filePathIndex?.path}-${filePathIndex?.index}`
-                                const rowArtifacts = artifacts && artifacts[key] ? artifacts[key] : []
-                                return (
+                  <Layout.Horizontal>
+                    <Text font="normal" color={Color.GREY_600} width={255}>
+                      {getString('common.git.filePath')}
+                    </Text>
+                    <Text font="normal" color={Color.GREY_600}>
+                      {getString('cd.artifactName')}
+                    </Text>
+                  </Layout.Horizontal>
+                </div>
+                <div className={cx(stepCss.md)}>
+                  <FieldArray
+                    name={tfArtifactoryFormInputNames(isConfig).artifacts}
+                    render={arrayHelpers => {
+                      let selectedArtifacts = []
+                      if (isConfig) {
+                        selectedArtifacts = formik?.values?.spec?.configuration?.configFiles?.store?.spec?.artifacts
+                      } else {
+                        selectedArtifacts = formik.values?.varFile?.spec?.store?.spec?.artifacts
+                      }
+                      return (
+                        <>
+                          {map(
+                            selectedArtifacts.length > 0
+                              ? selectedArtifacts
+                              : [
+                                  {
+                                    artifactFile: {
+                                      artifactPathExpression: undefined,
+                                      name: undefined,
+                                      path: undefined
+                                    }
+                                  }
+                                ],
+                            (artifact: PathInterface, index: number) => {
+                              const key = `${filePathIndex?.path}-${filePathIndex?.index}`
+                              const rowArtifacts = artifacts && artifacts[key] ? artifacts[key] : []
+                              const value = { label: artifact.artifactFile.name, value: artifact.artifactFile.path }
+                              return (
+                                <Layout.Horizontal
+                                  key={`${artifact}-${index}`}
+                                  flex={{ distribution: 'space-between' }}
+                                  style={{ alignItems: 'end' }}
+                                >
                                   <Layout.Horizontal
-                                    key={`${path}-${index}`}
-                                    flex={{ distribution: 'space-between' }}
-                                    style={{ alignItems: 'end' }}
+                                    spacing="medium"
+                                    style={{ alignItems: 'baseline' }}
+                                    className={css.tfContainer}
+                                    key={`${artifact}-${index}`}
+                                    draggable={false}
                                   >
-                                    <Layout.Horizontal
-                                      spacing="medium"
-                                      style={{ alignItems: 'baseline' }}
-                                      className={css.tfContainer}
-                                      key={`${path}-${index}`}
-                                      draggable={false}
-                                    >
-                                      <FormInput.MultiTextInput
-                                        onChange={val => {
-                                          setFilePathIndex({ index, path: val as string })
-                                        }}
-                                        name={`${
-                                          tfArtifactoryFormINputNames(isConfig).artifacts
-                                        }[${index}].artifactFile.artifactPathExpression`}
-                                        label=""
-                                        multiTextInputProps={{
-                                          expressions,
-                                          allowableTypes: filteredTypes
-                                        }}
-                                        style={{ width: 240 }}
-                                      />
-                                      <FormInput.Select
-                                        name={`${
-                                          tfArtifactoryFormINputNames(isConfig).artifacts
-                                        }[${index}].artifactFile.name`}
-                                        label=""
-                                        items={rowArtifacts}
-                                        style={{ width: 240 }}
-                                        disabled={ArtifactsLoading}
-                                        placeholder={getString(
-                                          ArtifactsLoading ? 'common.loading' : 'cd.selectArtifact'
-                                        )}
-                                        onChange={val => {
-                                          formik?.setFieldValue(
-                                            `${
-                                              tfArtifactoryFormINputNames(isConfig).artifacts
-                                            }[${index}].artifactFile.path`,
-                                            val.value
-                                          )
-                                          formik?.setFieldValue(
-                                            `${
-                                              tfArtifactoryFormINputNames(isConfig).artifacts
-                                            }[${index}].artifactFile.name`,
-                                            val.label
-                                          )
-                                        }}
-                                      />
-                                      {!isConfig && (
-                                        <Button
-                                          minimal
-                                          icon="main-trash"
-                                          data-testid={`remove-header-${index}`}
-                                          onClick={() => arrayHelpers.remove(index)}
-                                        />
+                                    <FormInput.Text
+                                      onChange={(val: React.ChangeEvent<HTMLInputElement>) => {
+                                        setFilePathIndex({ index, path: val.target?.value })
+                                      }}
+                                      name={`${
+                                        tfArtifactoryFormInputNames(isConfig).artifacts
+                                      }[${index}].artifactFile.artifactPathExpression`}
+                                      label=""
+                                      style={{ width: 240 }}
+                                    />
+                                    <FormInput.Select
+                                      name={`${
+                                        tfArtifactoryFormInputNames(isConfig).artifacts
+                                      }[${index}].artifactFile.name`}
+                                      label=""
+                                      items={rowArtifacts}
+                                      value={value}
+                                      style={{ width: 240 }}
+                                      disabled={ArtifactsLoading}
+                                      placeholder={getString(
+                                        ArtifactsLoading || ArtifactRepoLoading ? 'common.loading' : 'cd.selectArtifact'
                                       )}
-                                    </Layout.Horizontal>
+                                      onChange={val => {
+                                        formik?.setFieldValue(
+                                          `${
+                                            tfArtifactoryFormInputNames(isConfig).artifacts
+                                          }[${index}].artifactFile.path`,
+                                          val.value
+                                        )
+                                        formik?.setFieldValue(
+                                          `${
+                                            tfArtifactoryFormInputNames(isConfig).artifacts
+                                          }[${index}].artifactFile.name`,
+                                          val.label
+                                        )
+                                      }}
+                                    />
+                                    {!isConfig && (
+                                      <Button
+                                        minimal
+                                        icon="main-trash"
+                                        data-testid={`remove-header-${index}`}
+                                        onClick={() => arrayHelpers.remove(index)}
+                                      />
+                                    )}
                                   </Layout.Horizontal>
-                                )
-                              }
-                            )}
-                            {!isConfig && (
+                                </Layout.Horizontal>
+                              )
+                            }
+                          )}
+                          {!isConfig && (
+                            <Layout.Horizontal>
                               <Button
                                 icon="plus"
                                 variation={ButtonVariation.LINK}
@@ -308,12 +311,12 @@ export const TFArtifactoryForm: React.FC<StepProps<any> & TFRemoteProps> = ({
                               >
                                 {getString('cd.addTFVarFileLabel')}
                               </Button>
-                            )}
-                          </>
-                        )
-                      }}
-                    />
-                  </MultiTypeFieldSelector>
+                            </Layout.Horizontal>
+                          )}
+                        </>
+                      )
+                    }}
+                  />
                 </div>
               </div>
 

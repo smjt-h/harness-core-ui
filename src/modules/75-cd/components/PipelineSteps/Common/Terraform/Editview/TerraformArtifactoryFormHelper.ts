@@ -16,7 +16,7 @@ export const formatInitialValues = (isConfig: boolean, prevStepData: any, isTerr
             store: {
               spec: {
                 repositoryName:
-                  prevStepData.formValues?.spec?.configuration?.configFiles?.store.spec?.repositoryName || null,
+                  prevStepData.formValues?.spec?.configuration?.configFiles?.store.spec?.repositoryName || '',
                 artifacts: prevStepData.formValues?.spec?.configuration?.configFiles?.store.spec?.artifacts || []
               }
             }
@@ -34,7 +34,7 @@ export const formatInitialValues = (isConfig: boolean, prevStepData: any, isTerr
             store: {
               spec: {
                 repositoryName:
-                  prevStepData.formValues?.spec?.configuration?.spec?.configFiles?.store.spec?.repositoryName || null,
+                  prevStepData.formValues?.spec?.configuration?.spec?.configFiles?.store.spec?.repositoryName || '',
                 artifacts: prevStepData.formValues?.spec?.configuration?.spec?.configFiles?.store.spec?.artifacts || []
               }
             }
@@ -46,12 +46,12 @@ export const formatInitialValues = (isConfig: boolean, prevStepData: any, isTerr
 
   return {
     varFile: {
-      identifier: prevStepData?.varFile?.identifier || null,
+      identifier: prevStepData?.varFile?.identifier || '',
       type: TerraformStoreTypes.Remote,
       spec: {
         store: {
           spec: {
-            repositoryName: prevStepData?.varFile?.spec?.store?.spec?.repositoryName || null,
+            repositoryName: prevStepData?.varFile?.spec?.store?.spec?.repositoryName || '',
             artifacts: prevStepData?.varFile?.spec?.store?.spec?.artifacts || []
           }
         }
@@ -119,7 +119,7 @@ export const terraformArtifactorySchema = (isConfig: boolean, getString: any) =>
   }
 }
 
-export const tfArtifactoryFormINputNames = (isConfig: boolean) => {
+export const tfArtifactoryFormInputNames = (isConfig: boolean) => {
   if (isConfig) {
     return {
       repositoryName: 'spec.configuration.configFiles.store.spec.repositoryName',

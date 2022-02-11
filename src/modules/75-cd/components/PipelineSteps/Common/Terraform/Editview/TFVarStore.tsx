@@ -23,11 +23,11 @@ import {
   Text,
   ButtonSize
 } from '@wings-software/uicore'
-
+import { isUndefined } from 'lodash-es'
 import { Form } from 'formik'
 import { useStrings } from 'framework/strings'
+import { Connectors } from '@connectors/constants'
 import { FormMultiTypeConnectorField } from '@connectors/components/ConnectorReferenceField/FormMultiTypeConnectorField'
-
 import { useVariablesExpression } from '@pipeline/components/PipelineStudio/PiplineHooks/useVariablesExpression'
 import { ConnectorTypes, AllowedTypes, tfVarIcons, ConnectorMap, ConnectorLabelMap } from './TerraformConfigFormHelper'
 
@@ -71,6 +71,14 @@ export const TFVarStore: React.FC<StepProps<any> & TFVarStoreProps> = ({
       }
     }
   }
+  const [multitypeInputValue, setMultiTypeValue] = React.useState<MultiTypeInputType | undefined>(undefined)
+  const handleOptionSelection = (storeSelected: ConnectorTypes): void => {
+    if (storeSelected === Connectors.ARTIFACTORY) {
+      setMultiTypeValue(MultiTypeInputType.FIXED)
+    } else if (multitypeInputValue !== undefined) {
+      setMultiTypeValue(undefined)
+    }
+  }
   React.useEffect(() => {
     /* istanbul ignore next */
     setSelectedType(initialValues?.varFile?.spec?.store?.type)
@@ -98,6 +106,7 @@ export const TFVarStore: React.FC<StepProps<any> & TFVarStoreProps> = ({
               selected={item === selectedType}
               data-testid={`varStore-${item}`}
               onClick={() => {
+                handleOptionSelection(item as ConnectorTypes)
                 setSelectedConnector(item)
                 setSelectedType(item)
               }}
@@ -131,6 +140,8 @@ export const TFVarStore: React.FC<StepProps<any> & TFVarStoreProps> = ({
           const connectorRef = formik.values.varFile?.spec?.store?.spec?.connectorRef
           const disabled =
             !connectorRef || (connectorRef?.connector?.type && connectorRef?.connector?.type !== selectedType)
+          const disableArtifactory =
+            isUndefined(connectorRef?.connector?.type) && selectedType === Connectors.ARTIFACTORY
           return (
             <Form className={css.formComponent}>
               <div className={css.formContainerStepOne}>
@@ -160,6 +171,7 @@ export const TFVarStore: React.FC<StepProps<any> & TFVarStoreProps> = ({
                       orgIdentifier={orgIdentifier}
                       style={{ marginBottom: 10 }}
                       multiTypeProps={{ expressions, allowableTypes }}
+                      multitypeInputValue={multitypeInputValue}
                     />
                     <Button
                       variation={ButtonVariation.LINK}
@@ -192,7 +204,7 @@ export const TFVarStore: React.FC<StepProps<any> & TFVarStoreProps> = ({
                     /* istanbul ignore next */
                     nextStep?.({ ...formik.values, selectedType })
                   }}
-                  disabled={disabled}
+                  disabled={disabled || disableArtifactory}
                 />
               </Layout.Horizontal>
             </Form>
