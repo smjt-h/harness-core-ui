@@ -9,9 +9,9 @@ import React, { useRef, useState } from 'react'
 import { noop } from 'lodash-es'
 import { Views, EnvironmentStoreContext } from './common'
 
-import { EnvironmentList } from './EnvironmentList/EnvironmentList'
+import { EnvironmentList } from './EnvironmentList/EnvironmentsList'
 
-export const Environment: React.FC = () => {
+export const Environments: React.FC = () => {
   const [view, setView] = useState(Views.INSIGHT)
   const fetchDeploymentList = useRef<() => void>(noop)
   return (

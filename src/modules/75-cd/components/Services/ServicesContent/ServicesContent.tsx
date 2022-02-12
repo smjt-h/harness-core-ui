@@ -83,10 +83,7 @@ export const ServicesContent: React.FC = () => {
 
   return (
     <Page.Body className={css.pageBody}>
-      <Layout.Vertical
-        margin={{ left: 'xlarge', right: 'xlarge', top: view === Views.INSIGHT ? 'large' : 0, bottom: 'large' }}
-        className={css.container}
-      >
+      <Layout.Vertical className={css.container}>
         <DeploymentsTimeRangeContext.Provider value={{ timeRange, setTimeRange }}>
           {view === Views.INSIGHT && (
             <Layout.Horizontal margin={{ bottom: 'large' }}>

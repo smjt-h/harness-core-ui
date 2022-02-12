@@ -22,21 +22,21 @@ import { useParams } from 'react-router-dom'
 import type { Column } from 'react-table'
 import { useModalHook } from '@harness/use-modal'
 import { Dialog } from '@blueprintjs/core'
-import { useEnvironmentStore } from '@cd/components/Environment/common'
+import { useEnvironmentStore } from '@cd/components/Environments/common'
 import { NewEditEnvironmentModal } from '@cd/components/PipelineSteps/DeployEnvStep/DeployEnvStep'
 import { EnvironmentResponseDTO, useDeleteEnvironmentV2, useGetEnvironmentListForProject } from 'services/cd-ng'
 import { useToaster } from '@common/exports'
 import RbacButton from '@rbac/components/Button/Button'
 import { PermissionIdentifier } from '@rbac/interfaces/PermissionIdentifier'
 import { ResourceType } from '@rbac/interfaces/ResourceType'
-import type { ParamsType } from '@cd/components/Environment/common'
+import type { ParamsType } from '@cd/components/Environments/common'
 // eslint-disable-next-line no-restricted-imports
 import ListingPageTemplate from '@cf/components/ListingPageTemplate/ListingPageTemplate'
 // eslint-disable-next-line no-restricted-imports
 import { ModifiedByCell, TypeCell, NameCell } from '@cf/pages/environments/EnvironmentsPage'
 import { useStrings } from 'framework/strings'
 import EmptyContent from './EmptyContent.svg'
-import css from '@cd/components/Environment/EnvironmentList/EnvironmentList.module.scss'
+import css from './EnvironmentsList.module.scss'
 
 export const EnvironmentList: React.FC = () => {
   const { getString } = useStrings()

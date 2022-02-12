@@ -36,6 +36,7 @@ import css from './ServicesListPage.module.scss'
 export const ServicesListPage: React.FC = () => {
   const { orgIdentifier, projectIdentifier, accountId } = useParams<ParamsType>()
   const [view, setView] = useState(Views.LIST)
+  const [page, setPage] = useState(0)
   const { getString } = useStrings()
   const { fetchDeploymentList } = useServiceStore()
   const [mode, setMode] = useState<SelectedView>(SelectedView.VISUAL)
@@ -88,7 +89,7 @@ export const ServicesListPage: React.FC = () => {
     orgIdentifier,
     projectIdentifier,
     size: 10,
-    page: 0
+    page: page
   }
 
   const {
@@ -133,9 +134,19 @@ export const ServicesListPage: React.FC = () => {
           className={css.container}
         >
           {view === Views.GRID ? (
-            <ServicesGridView data={serviceList} loading={loading} onRefresh={() => refetch()} />
+            <ServicesGridView
+              data={serviceList}
+              loading={loading}
+              onRefresh={() => refetch()}
+              gotoPage={(pageNumber: number) => setPage(pageNumber)}
+            />
           ) : (
-            <ServicesListView data={serviceList} loading={loading} onRefresh={() => refetch()} />
+            <ServicesListView
+              data={serviceList}
+              loading={loading}
+              onRefresh={() => refetch()}
+              gotoPage={(pageNumber: number) => setPage(pageNumber)}
+            />
           )}
         </Layout.Vertical>
       </>
