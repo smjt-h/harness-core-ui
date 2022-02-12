@@ -197,6 +197,14 @@ const mockedConnector = {
   }
 }
 
+const mockedResourceGroup = {
+  id: '/subscriptions/20d6a917-99fa-4b1b-9b2e-a3d624e9dcf0/resourceGroups/lightwing-test',
+  name: 'lightwing-test',
+  type: 'Microsoft.Resources/resourceGroups'
+}
+
+const mockedResourceGroupResponse = [mockedResourceGroup]
+
 jest.mock('@common/components/YAMLBuilder/YamlBuilder')
 
 jest.mock('services/lw', () => ({
@@ -213,6 +221,10 @@ jest.mock('services/lw', () => ({
     .mockImplementation(() => ({ mutate: jest.fn(() => Promise.resolve({ response: [mockedAsg] })), loading: false })),
   useSecurityGroupsOfInstances: jest.fn().mockImplementation(() => ({
     mutate: jest.fn(() => Promise.resolve({ response: mockedSecurityGroupResponse })),
+    loading: false
+  })),
+  useAllResourceGroups: jest.fn().mockImplementation(() => ({
+    data: { response: mockedResourceGroupResponse },
     loading: false
   }))
 }))
