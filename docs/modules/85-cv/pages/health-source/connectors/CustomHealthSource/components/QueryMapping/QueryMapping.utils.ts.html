@@ -23,30 +23,30 @@
         <div class='clearfix'>
             
             <div class='fl pad1y space-right2'>
-                <span class="strong">91.3% </span>
+                <span class="strong">65.22% </span>
                 <span class="quiet">Statements</span>
-                <span class='fraction'>21/23</span>
+                <span class='fraction'>15/23</span>
             </div>
         
             
             <div class='fl pad1y space-right2'>
-                <span class="strong">57.58% </span>
+                <span class="strong">12.12% </span>
                 <span class="quiet">Branches</span>
-                <span class='fraction'>19/33</span>
+                <span class='fraction'>4/33</span>
             </div>
         
             
             <div class='fl pad1y space-right2'>
-                <span class="strong">100% </span>
+                <span class="strong">50% </span>
                 <span class="quiet">Functions</span>
-                <span class='fraction'>2/2</span>
+                <span class='fraction'>1/2</span>
             </div>
         
             
             <div class='fl pad1y space-right2'>
-                <span class="strong">90.48% </span>
+                <span class="strong">61.9% </span>
                 <span class="quiet">Lines</span>
-                <span class='fraction'>19/21</span>
+                <span class='fraction'>13/21</span>
             </div>
         
             
@@ -160,22 +160,22 @@
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-yes">1x</span>
+<span class="cline-any cline-no">&nbsp;</span>
 <span class="cline-any cline-no">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-yes">1x</span>
+<span class="cline-any cline-no">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-yes">1x</span>
-<span class="cline-any cline-yes">1x</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-yes">1x</span>
-<span class="cline-any cline-yes">1x</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
 <span class="cline-any cline-no">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
@@ -188,21 +188,21 @@
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-yes">5x</span>
+<span class="cline-any cline-yes">6x</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-yes">5x</span>
-<span class="cline-any cline-yes">5x</span>
-<span class="cline-any cline-yes">5x</span>
-<span class="cline-any cline-yes">3x</span>
-<span class="cline-any cline-yes">3x</span>
-<span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-yes">5x</span>
+<span class="cline-any cline-yes">6x</span>
+<span class="cline-any cline-yes">6x</span>
+<span class="cline-any cline-yes">6x</span>
+<span class="cline-any cline-yes">4x</span>
 <span class="cline-any cline-yes">4x</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">6x</span>
 <span class="cline-any cline-yes">5x</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">6x</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
@@ -226,7 +226,7 @@ import type {
 } from 'services/cv'
 import { Scope } from '@common/interfaces/SecretsInterface'
 &nbsp;
-export const onFetchRecords = async (
+export const onFetchRecords = <span class="fstat-no" title="function not covered" >async </span>(
   urlPath?: string,
   endTime?: TimestampInfo,
   startTime?: TimestampInfo,
@@ -235,22 +235,22 @@ export const onFetchRecords = async (
   getSampleData?: MutateMethod&lt;ResponseObject, CustomHealthSampleDataRequest, FetchSampleDataQueryParams, void&gt;,
   onFetchRecordsSuccess?: (data: { [key: string]: { [key: string]: any } }) =&gt; void
 ): Promise&lt;void&gt; =&gt; {
-  <span class="missing-if-branch" title="if path not taken" >I</span>if (!urlPath || !endTime || !startTime) {
+<span class="cstat-no" title="statement not covered" >  if (!urlPath || !endTime || !startTime) {</span>
 <span class="cstat-no" title="statement not covered" >    return</span>
   }
 &nbsp;
-  const payload: CustomHealthSampleDataRequest = {
-    method: requestMethod || <span class="branch-1 cbranch-no" title="branch not covered" >'GET',</span>
+  const payload: CustomHealthSampleDataRequest = <span class="cstat-no" title="statement not covered" >{</span>
+    method: requestMethod || 'GET',
     urlPath,
     endTime,
     startTime
   }
 &nbsp;
-  <span class="missing-if-branch" title="else path not taken" >E</span>if (query &amp;&amp; requestMethod === 'POST') {
-    payload['body'] = query
+<span class="cstat-no" title="statement not covered" >  if (query &amp;&amp; requestMethod === 'POST') {</span>
+<span class="cstat-no" title="statement not covered" >    payload['body'] = query</span>
   }
-  const recordsvalue = await getSampleData<span class="branch-0 cbranch-no" title="branch not covered" >?.(p</span>ayload)
-  <span class="missing-if-branch" title="if path not taken" >I</span>if (<span class="branch-1 cbranch-no" title="branch not covered" >recordsvalue?.data)</span> {
+  const recordsvalue = <span class="cstat-no" title="statement not covered" >await getSampleData?.(payload)</span>
+<span class="cstat-no" title="statement not covered" >  if (recordsvalue?.data) {</span>
 <span class="cstat-no" title="statement not covered" >    onFetchRecordsSuccess?.(recordsvalue?.data)</span>
   }
 }
@@ -289,7 +289,7 @@ export const connectorParams = (
             <div class='footer quiet pad2 space-top1 center small'>
                 Code coverage generated by
                 <a href="https://istanbul.js.org/" target="_blank">istanbul</a>
-                at Fri Feb 11 2022 17:13:14 GMT+0000 (Greenwich Mean Time)
+                at Sat Feb 12 2022 00:50:17 GMT+0000 (Greenwich Mean Time)
             </div>
         </div>
         <script src="../../../../../../../../prettify.js"></script>
