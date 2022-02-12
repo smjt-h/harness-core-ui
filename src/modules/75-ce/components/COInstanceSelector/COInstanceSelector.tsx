@@ -75,7 +75,8 @@ const COInstanceSelector: React.FC<COInstanceSelectorprops> = props => {
     queryParams: {
       cloud_account_id: props.gatewayDetails.cloudAccount.id, // eslint-disable-line
       accountIdentifier: accountId
-    }
+    },
+    lazy: !isAzureProvider
   })
 
   useEffect(() => {
@@ -109,23 +110,15 @@ const COInstanceSelector: React.FC<COInstanceSelectorprops> = props => {
     setResourceGroupData(loaded)
   }
 
-  const TableCheck = (tableProps: CellProps<InstanceDetails>): JSX.Element => {
-    const checked = isSelectedInstance(tableProps.row.original)
-    return <Checkbox checked={checked} onChange={e => onCheckboxChange(e, checked, tableProps.row.original)} />
-  }
-
-  const onCheckboxChange = (e: React.FormEvent<HTMLInputElement>, checked: boolean, data: InstanceDetails) => {
-    if (e.currentTarget.checked && !checked) {
+  const onCheckboxChange = (e: React.FormEvent<HTMLInputElement>, alreadyChecked: boolean, data: InstanceDetails) => {
+    console.log('checked', e.currentTarget.checked)
+    if (e.currentTarget.checked && !alreadyChecked) {
       setSelectedInstances([...selectedInstances, data])
-    } else if (!e.currentTarget.checked && checked) {
+    } else if (!e.currentTarget.checked && alreadyChecked) {
       const updatedInstances = [...selectedInstances]
       updatedInstances.splice(selectedInstances.indexOf(data), 1)
       setSelectedInstances(updatedInstances)
     }
-  }
-
-  const isSelectedInstance = (item: InstanceDetails): boolean => {
-    return selectedInstances.findIndex(s => s.id == item.id) >= 0
   }
 
   const addInstances = () => {
@@ -138,6 +131,7 @@ const COInstanceSelector: React.FC<COInstanceSelectorprops> = props => {
   }
 
   const handleSearch = (text: string): void => {
+    console.log({ text })
     pageIndex !== 0 && setPageIndex(0)
     if (!text) {
       setFilteredInstances(props.instances)
@@ -198,7 +192,7 @@ const COInstanceSelector: React.FC<COInstanceSelectorprops> = props => {
               >
                 {`Add selected ${Utils.getConditionalResult(
                   hasSelectedInstances,
-                  '(' + selectedInstances.length + ')',
+                  `(${selectedInstances.length})`,
                   ''
                 )}`}
               </Button>
@@ -219,109 +213,144 @@ const COInstanceSelector: React.FC<COInstanceSelectorprops> = props => {
                 inputProps={{
                   placeholder: getString('ce.co.selectResourceGroupPlaceholder')
                 }}
-                data-testid="resourceGroupSelector"
+                name="resourceGroupSelector"
               />
             </Layout.Horizontal>
           ) : null}
         </Layout.Vertical>
-        <Container style={{ minHeight: 250 }}>
-          {props.loading || resourceGroupsLoading ? (
+        <InstanceSelectorBody
+          isLoading={props.loading || resourceGroupsLoading}
+          selectedResourceGroup={selectedResourceGroup}
+          instances={filteredInstances}
+          pageProps={{
+            index: pageIndex,
+            setIndex: setPageIndex,
+            totalCount: _defaultTo(props.instances.length, 0)
+          }}
+          onCheckboxChange={onCheckboxChange}
+          selectedInstances={selectedInstances}
+          isAzureSelection={isAzureProvider}
+        />
+      </Layout.Vertical>
+    </Container>
+  )
+}
+
+interface InstanceSelectorBodyProps {
+  isLoading: boolean
+  selectedResourceGroup: SelectOption | undefined
+  instances: InstanceDetails[]
+  pageProps: { index: number; setIndex: (page: number) => void; totalCount: number }
+  onCheckboxChange: (e: React.FormEvent<HTMLInputElement>, alreadyChecked: boolean, data: InstanceDetails) => void
+  selectedInstances: InstanceDetails[]
+  isAzureSelection: boolean
+}
+
+const InstanceSelectorBody: React.FC<InstanceSelectorBodyProps> = ({
+  isLoading,
+  selectedResourceGroup,
+  instances,
+  pageProps,
+  onCheckboxChange,
+  selectedInstances,
+  isAzureSelection
+}) => {
+  const { getString } = useStrings()
+
+  const isSelectedInstance = (item: InstanceDetails): boolean => {
+    return selectedInstances.findIndex(s => s.id === item.id) >= 0
+  }
+
+  const TableCheck = (tableProps: CellProps<InstanceDetails>): JSX.Element => {
+    const alreadyChecked = isSelectedInstance(tableProps.row.original)
+    return (
+      <Checkbox checked={alreadyChecked} onChange={e => onCheckboxChange(e, alreadyChecked, tableProps.row.original)} />
+    )
+  }
+
+  return (
+    <Container style={{ minHeight: 250 }}>
+      {isLoading ? (
+        <Layout.Horizontal flex={{ justifyContent: 'center' }}>
+          <Icon name="spinner" size={24} color="blue500" />
+        </Layout.Horizontal>
+      ) : (
+        <>
+          {isAzureSelection && _isEmpty(selectedResourceGroup) ? (
             <Layout.Horizontal flex={{ justifyContent: 'center' }}>
-              <Icon name="spinner" size={24} color="blue500" />
+              <Text icon={'execution-warning'} font={{ size: 'medium' }} iconProps={{ size: 20 }}>
+                {getString('ce.co.autoStoppingRule.configuration.instanceModal.emptyDescription')}
+              </Text>
+            </Layout.Horizontal>
+          ) : isAzureSelection && _isEmpty(instances) ? (
+            <Layout.Horizontal flex={{ justifyContent: 'center' }}>
+              <Text font={{ size: 'medium' }} iconProps={{ size: 20 }}>
+                {getString('ce.co.autoStoppingRule.configuration.instanceModal.emptyInstancesDescription', {
+                  region: selectedResourceGroup?.label
+                })}
+              </Text>
             </Layout.Horizontal>
           ) : (
-            <>
-              {_isEmpty(selectedResourceGroup) ? (
-                <Layout.Horizontal flex={{ justifyContent: 'center' }}>
-                  <Text icon={'execution-warning'} font={{ size: 'medium' }} iconProps={{ size: 20 }}>
-                    {getString('ce.co.autoStoppingRule.configuration.instanceModal.emptyDescription')}
-                  </Text>
-                </Layout.Horizontal>
-              ) : _isEmpty(filteredInstances) ? (
-                <Layout.Horizontal flex={{ justifyContent: 'center' }}>
-                  <Text font={{ size: 'medium' }} iconProps={{ size: 20 }}>
-                    {getString('ce.co.autoStoppingRule.configuration.instanceModal.emptyInstancesDescription', {
-                      region: selectedResourceGroup?.label
-                    })}
-                  </Text>
-                </Layout.Horizontal>
-              ) : (
-                <TableV2
-                  className={css.instancesTable}
-                  data={filteredInstances.slice(
-                    pageIndex * TOTAL_ITEMS_PER_PAGE,
-                    pageIndex * TOTAL_ITEMS_PER_PAGE + TOTAL_ITEMS_PER_PAGE
-                  )}
-                  pagination={{
-                    pageSize: TOTAL_ITEMS_PER_PAGE,
-                    pageIndex: pageIndex,
-                    pageCount: Math.ceil(filteredInstances.length / TOTAL_ITEMS_PER_PAGE),
-                    itemCount: _defaultTo(props.instances.length, 0),
-                    gotoPage: newPageIndex => setPageIndex(newPageIndex)
-                  }}
-                  columns={[
-                    {
-                      Header: '',
-                      id: 'selected',
-                      Cell: TableCheck,
-                      width: '5%'
-                    },
-                    {
-                      accessor: 'name',
-                      Header: getString('ce.co.instanceSelector.name'),
-                      width: '35%',
-                      Cell: NameCell,
-                      disableSortBy: true
-                    },
-                    {
-                      accessor: 'ipv4',
-                      Header: getString('ce.co.instanceSelector.ipAddress'),
-                      width: '15%',
-                      Cell: TableCell,
-                      disableSortBy: true
-                    },
-                    {
-                      accessor: 'region',
-                      Header: getString('regionLabel'),
-                      width: '15%',
-                      Cell: TableCell,
-                      disableSortBy: true
-                    },
-                    {
-                      accessor: 'type',
-                      Header: getString('typeLabel'),
-                      width: '15%',
-                      Cell: TableCell,
-                      disableSortBy: true
-                    },
-                    // {
-                    //   accessor: 'tags',
-                    //   Header: getString('tagsLabel'),
-                    //   width: '10%',
-                    //   Cell: TableCell,
-                    //   disableSortBy: true
-                    // },
-                    // {
-                    //   accessor: 'launch_time',
-                    //   Header: getString('ce.co.instanceSelector.launchTime'),
-                    //   width: '15%',
-                    //   Cell: TableCell,
-                    //   disableSortBy: true
-                    // },
-                    {
-                      accessor: 'status',
-                      Header: getString('status'),
-                      width: '10%',
-                      Cell: TableCell,
-                      disableSortBy: true
-                    }
-                  ]}
-                />
+            <TableV2
+              className={css.instancesTable}
+              data={instances.slice(
+                pageProps.index * TOTAL_ITEMS_PER_PAGE,
+                pageProps.index * TOTAL_ITEMS_PER_PAGE + TOTAL_ITEMS_PER_PAGE
               )}
-            </>
+              pagination={{
+                pageSize: TOTAL_ITEMS_PER_PAGE,
+                pageIndex: pageProps.index,
+                pageCount: Math.ceil(instances.length / TOTAL_ITEMS_PER_PAGE),
+                itemCount: pageProps.totalCount,
+                gotoPage: newPageIndex => pageProps.setIndex(newPageIndex)
+              }}
+              columns={[
+                {
+                  Header: '',
+                  id: 'selected',
+                  Cell: TableCheck,
+                  width: '5%'
+                },
+                {
+                  accessor: 'name',
+                  Header: getString('ce.co.instanceSelector.name'),
+                  width: '35%',
+                  Cell: NameCell,
+                  disableSortBy: true
+                },
+                {
+                  accessor: 'ipv4',
+                  Header: getString('ce.co.instanceSelector.ipAddress'),
+                  width: '15%',
+                  Cell: TableCell,
+                  disableSortBy: true
+                },
+                {
+                  accessor: 'region',
+                  Header: getString('regionLabel'),
+                  width: '15%',
+                  Cell: TableCell,
+                  disableSortBy: true
+                },
+                {
+                  accessor: 'type',
+                  Header: getString('typeLabel'),
+                  width: '15%',
+                  Cell: TableCell,
+                  disableSortBy: true
+                },
+                {
+                  accessor: 'status',
+                  Header: getString('status'),
+                  width: '10%',
+                  Cell: TableCell,
+                  disableSortBy: true
+                }
+              ]}
+            />
           )}
-        </Container>
-      </Layout.Vertical>
+        </>
+      )}
     </Container>
   )
 }
