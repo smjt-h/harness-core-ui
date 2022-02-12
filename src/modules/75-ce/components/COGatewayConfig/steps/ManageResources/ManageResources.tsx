@@ -252,7 +252,7 @@ const ManageResources: React.FC<ManageResourcesProps> = props => {
     }
   }
 
-  const refreshInstances = async (textTomlString: string = ''): Promise<void> => {
+  const refreshInstances = async (textTomlString = ''): Promise<void> => {
     try {
       const result = await getInstances(
         { Text: textTomlString },

@@ -63,7 +63,7 @@ const COInstanceSelector: React.FC<COInstanceSelectorprops> = props => {
   const { trackEvent } = useTelemetry()
   const { getString } = useStrings()
   const [filteredInstances, setFilteredInstances] = useState<InstanceDetails[]>([])
-  const [selectedInstances, setSelectedInstances] = useState<InstanceDetails[]>(props.selectedInstances || [])
+  const [selectedInstances, setSelectedInstances] = useState<InstanceDetails[]>(_defaultTo(props.selectedInstances, []))
   const [pageIndex, setPageIndex] = useState<number>(0)
   const [resourceGroupData, setResourceGroupData] = useState<SelectOption[]>([])
   const [selectedResourceGroup, setSelectedResourceGroup] = useState<SelectOption>()
@@ -87,6 +87,14 @@ const COInstanceSelector: React.FC<COInstanceSelectorprops> = props => {
   }, [resourceGroups?.response])
 
   useEffect(() => {
+    if (!selectedResourceGroup && !_isEmpty(selectedInstances)) {
+      const groupName = selectedInstances?.[0]?.metadata?.resourceGroup?.toLowerCase()
+      const groupToSelect = resourceGroupData.find(d => d.label.toLowerCase() === groupName)
+      setSelectedResourceGroup(groupToSelect)
+    }
+  }, [resourceGroupData])
+
+  useEffect(() => {
     if (selectedResourceGroup) {
       const groupText = _defaultTo(selectedResourceGroup.value, '') as string
       props.refresh?.(`resource_groups=['${groupText}']`)
@@ -101,24 +109,23 @@ const COInstanceSelector: React.FC<COInstanceSelectorprops> = props => {
     setResourceGroupData(loaded)
   }
 
-  function TableCheck(tableProps: CellProps<InstanceDetails>): JSX.Element {
-    return (
-      <Checkbox
-        checked={isSelectedInstance(tableProps.row.original)}
-        onChange={e => {
-          if (e.currentTarget.checked && !isSelectedInstance(tableProps.row.original)) {
-            setSelectedInstances([...selectedInstances, tableProps.row.original])
-          } else if (!e.currentTarget.checked && isSelectedInstance(tableProps.row.original)) {
-            const updatedInstances = [...selectedInstances]
-            updatedInstances.splice(selectedInstances.indexOf(tableProps.row.original), 1)
-            setSelectedInstances(updatedInstances)
-          }
-        }}
-      />
-    )
+  const TableCheck = (tableProps: CellProps<InstanceDetails>): JSX.Element => {
+    const checked = isSelectedInstance(tableProps.row.original)
+    return <Checkbox checked={checked} onChange={e => onCheckboxChange(e, checked, tableProps.row.original)} />
   }
-  function isSelectedInstance(item: InstanceDetails): boolean {
-    return selectedInstances.findIndex(s => s.id == item.id) >= 0 ? true : false
+
+  const onCheckboxChange = (e: React.FormEvent<HTMLInputElement>, checked: boolean, data: InstanceDetails) => {
+    if (e.currentTarget.checked && !checked) {
+      setSelectedInstances([...selectedInstances, data])
+    } else if (!e.currentTarget.checked && checked) {
+      const updatedInstances = [...selectedInstances]
+      updatedInstances.splice(selectedInstances.indexOf(data), 1)
+      setSelectedInstances(updatedInstances)
+    }
+  }
+
+  const isSelectedInstance = (item: InstanceDetails): boolean => {
+    return selectedInstances.findIndex(s => s.id == item.id) >= 0
   }
 
   const addInstances = () => {
@@ -156,6 +163,8 @@ const COInstanceSelector: React.FC<COInstanceSelectorprops> = props => {
     props.refresh?.()
   }
 
+  const hasSelectedInstances = !_isEmpty(selectedInstances)
+
   return (
     <Container>
       <Layout.Vertical spacing="large">
@@ -180,14 +189,18 @@ const COInstanceSelector: React.FC<COInstanceSelectorprops> = props => {
             <Layout.Horizontal flex={{ alignItems: 'center' }}>
               <Button
                 onClick={addInstances}
-                disabled={_isEmpty(selectedInstances)}
+                disabled={!hasSelectedInstances}
                 style={{
-                  backgroundColor: selectedInstances.length ? '#0278D5' : 'inherit',
-                  color: selectedInstances.length ? '#F3F3FA' : 'inherit',
+                  backgroundColor: Utils.getConditionalResult(hasSelectedInstances, Color.PRIMARY_7, 'inherit'),
+                  color: Utils.getConditionalResult(hasSelectedInstances, Color.GREY_100, 'inherit'),
                   marginRight: 20
                 }}
               >
-                {`Add selected ${selectedInstances.length ? '(' + selectedInstances.length + ')' : ''}`}
+                {`Add selected ${Utils.getConditionalResult(
+                  hasSelectedInstances,
+                  '(' + selectedInstances.length + ')',
+                  ''
+                )}`}
               </Button>
               <div onClick={handleRefresh}>
                 <Icon name="refresh" color="primary7" size={14} />
@@ -212,7 +225,7 @@ const COInstanceSelector: React.FC<COInstanceSelectorprops> = props => {
           ) : null}
         </Layout.Vertical>
         <Container style={{ minHeight: 250 }}>
-          {props.loading ? (
+          {props.loading || resourceGroupsLoading ? (
             <Layout.Horizontal flex={{ justifyContent: 'center' }}>
               <Icon name="spinner" size={24} color="blue500" />
             </Layout.Horizontal>
@@ -242,8 +255,8 @@ const COInstanceSelector: React.FC<COInstanceSelectorprops> = props => {
                   pagination={{
                     pageSize: TOTAL_ITEMS_PER_PAGE,
                     pageIndex: pageIndex,
-                    pageCount: Math.ceil(filteredInstances.length / TOTAL_ITEMS_PER_PAGE) ?? 1,
-                    itemCount: (props.instances || []).length,
+                    pageCount: Math.ceil(filteredInstances.length / TOTAL_ITEMS_PER_PAGE),
+                    itemCount: _defaultTo(props.instances.length, 0),
                     gotoPage: newPageIndex => setPageIndex(newPageIndex)
                   }}
                   columns={[
