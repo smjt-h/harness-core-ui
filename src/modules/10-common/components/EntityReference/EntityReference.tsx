@@ -102,6 +102,7 @@ export function EntityReference<T>(props: EntityReferenceProps<T>): JSX.Element 
   const {
     defaultScope,
     projectIdentifier,
+
     orgIdentifier,
     fetchRecords,
     className = '',
