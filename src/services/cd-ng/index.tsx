@@ -710,6 +710,12 @@ export interface ArtifactConfig {
   [key: string]: any
 }
 
+export interface ArtifactFile {
+  artifactPathExpression: string
+  name: string
+  path: string
+}
+
 export interface ArtifactListConfig {
   metadata?: string
   primary?: PrimaryArtifact
@@ -728,6 +734,11 @@ export interface ArtifactOverrideSets {
 export interface ArtifactSummary {
   displayName?: string
   type?: string
+}
+
+export interface ArtifactoryArtifactBuildDetailsDTO {
+  artifactName?: string
+  artifactPath?: string
 }
 
 export interface ArtifactoryAuthCredentials {
@@ -757,6 +768,16 @@ export type ArtifactoryConnector = ConnectorConfigDTO & {
   delegateSelectors?: string[]
 }
 
+export interface ArtifactoryFromYaml {
+  artifactFile: ArtifactFile
+}
+
+export interface ArtifactoryRepoDetailsDTO {
+  repositories?: {
+    [key: string]: string
+  }
+}
+
 export interface ArtifactoryRequestDTO {
   tag?: string
   tagRegex?: string
@@ -765,6 +786,13 @@ export interface ArtifactoryRequestDTO {
 
 export interface ArtifactoryResponseDTO {
   buildDetailsList?: ArtifactoryBuildDetailsDTO[]
+}
+
+export type ArtifactoryStoreConfig = StoreConfig & {
+  artifacts: ArtifactoryFromYaml[]
+  connectorRef: string
+  metadata?: string
+  repositoryName: string
 }
 
 export type ArtifactoryUsernamePasswordAuth = ArtifactoryAuthCredentials & {
@@ -5802,6 +5830,13 @@ export interface ResponseArtifactoryBuildDetailsDTO {
   status?: 'SUCCESS' | 'FAILURE' | 'ERROR'
 }
 
+export interface ResponseArtifactoryRepoDetailsDTO {
+  correlationId?: string
+  data?: ArtifactoryRepoDetailsDTO
+  metaData?: { [key: string]: any }
+  status?: 'SUCCESS' | 'FAILURE' | 'ERROR'
+}
+
 export interface ResponseArtifactoryResponseDTO {
   correlationId?: string
   data?: ArtifactoryResponseDTO
@@ -6141,6 +6176,13 @@ export interface ResponseListAccountSettings {
 export interface ResponseListApiKeyDTO {
   correlationId?: string
   data?: ApiKeyDTO[]
+  metaData?: { [key: string]: any }
+  status?: 'SUCCESS' | 'FAILURE' | 'ERROR'
+}
+
+export interface ResponseListArtifactoryArtifactBuildDetailsDTO {
+  correlationId?: string
+  data?: ArtifactoryArtifactBuildDetailsDTO[]
   metaData?: { [key: string]: any }
   status?: 'SUCCESS' | 'FAILURE' | 'ERROR'
 }
@@ -8356,7 +8398,7 @@ export interface StoreConfig {
 export interface StoreConfigWrapper {
   metadata?: string
   spec: StoreConfig
-  type: 'Git' | 'Github' | 'Bitbucket' | 'GitLab' | 'Http' | 'S3' | 'Gcs'
+  type: 'Git' | 'Github' | 'Bitbucket' | 'GitLab' | 'Http' | 'S3' | 'Gcs' | 'Artifactory'
 }
 
 export type StringNGVariable = NGVariable & {
@@ -9030,9 +9072,9 @@ export type ScimUserRequestBody = ScimUser
 
 export type ScopingRuleDetailsNgArrayRequestBody = ScopingRuleDetailsNg[]
 
-export type SecretRequestWrapperRequestBody = SecretRequestWrapper
+export type SecretRequestWrapperRequestBody = void
 
-export type SecretRequestWrapper2RequestBody = void
+export type SecretRequestWrapper2RequestBody = SecretRequestWrapper
 
 export type ServiceAccountDTORequestBody = ServiceAccountDTO
 
@@ -9059,6 +9101,8 @@ export type GetBuildDetailsForArtifactoryArtifactWithYamlBodyRequestBody = strin
 export type GetBuildDetailsForEcrWithYamlBodyRequestBody = string
 
 export type SubscribeBodyRequestBody = string[]
+
+export type ProcessPollingResultNgBodyRequestBody = string[]
 
 export type UpdateWhitelistedDomainsBodyRequestBody = string[]
 
@@ -10779,6 +10823,82 @@ export const updateApiKeyPromise = (
     signal
   )
 
+export interface GetArtifactsBuildsDetailsForArtifactoryQueryParams {
+  connectorRef: string
+  repositoryName: string
+  filePath?: string
+  maxVersions: number
+  accountIdentifier: string
+  orgIdentifier: string
+  projectIdentifier: string
+}
+
+export type GetArtifactsBuildsDetailsForArtifactoryProps = Omit<
+  GetProps<
+    ResponseListArtifactoryArtifactBuildDetailsDTO,
+    Failure | Error,
+    GetArtifactsBuildsDetailsForArtifactoryQueryParams,
+    void
+  >,
+  'path'
+>
+
+/**
+ * Gets artifacts builds details
+ */
+export const GetArtifactsBuildsDetailsForArtifactory = (props: GetArtifactsBuildsDetailsForArtifactoryProps) => (
+  <Get<
+    ResponseListArtifactoryArtifactBuildDetailsDTO,
+    Failure | Error,
+    GetArtifactsBuildsDetailsForArtifactoryQueryParams,
+    void
+  >
+    path={`/artifacts/artifactory/getArtifactBuildsDetails`}
+    base={getConfig('ng/api')}
+    {...props}
+  />
+)
+
+export type UseGetArtifactsBuildsDetailsForArtifactoryProps = Omit<
+  UseGetProps<
+    ResponseListArtifactoryArtifactBuildDetailsDTO,
+    Failure | Error,
+    GetArtifactsBuildsDetailsForArtifactoryQueryParams,
+    void
+  >,
+  'path'
+>
+
+/**
+ * Gets artifacts builds details
+ */
+export const useGetArtifactsBuildsDetailsForArtifactory = (props: UseGetArtifactsBuildsDetailsForArtifactoryProps) =>
+  useGet<
+    ResponseListArtifactoryArtifactBuildDetailsDTO,
+    Failure | Error,
+    GetArtifactsBuildsDetailsForArtifactoryQueryParams,
+    void
+  >(`/artifacts/artifactory/getArtifactBuildsDetails`, { base: getConfig('ng/api'), ...props })
+
+/**
+ * Gets artifacts builds details
+ */
+export const getArtifactsBuildsDetailsForArtifactoryPromise = (
+  props: GetUsingFetchProps<
+    ResponseListArtifactoryArtifactBuildDetailsDTO,
+    Failure | Error,
+    GetArtifactsBuildsDetailsForArtifactoryQueryParams,
+    void
+  >,
+  signal?: RequestInit['signal']
+) =>
+  getUsingFetch<
+    ResponseListArtifactoryArtifactBuildDetailsDTO,
+    Failure | Error,
+    GetArtifactsBuildsDetailsForArtifactoryQueryParams,
+    void
+  >(getConfig('ng/api'), `/artifacts/artifactory/getArtifactBuildsDetails`, props, signal)
+
 export interface GetBuildDetailsForArtifactoryArtifactQueryParams {
   repository?: string
   imagePath?: string
@@ -11022,6 +11142,68 @@ export const getLastSuccessfulBuildForArtifactoryArtifactPromise = (
     ArtifactoryRequestDTO,
     void
   >('POST', getConfig('ng/api'), `/artifacts/artifactory/getLastSuccessfulBuild`, props, signal)
+
+export interface GetRepositoriesDetailsForArtifactoryQueryParams {
+  connectorRef: string
+  repositoryType?: string
+  accountIdentifier: string
+  orgIdentifier: string
+  projectIdentifier: string
+}
+
+export type GetRepositoriesDetailsForArtifactoryProps = Omit<
+  GetProps<ResponseArtifactoryRepoDetailsDTO, Failure | Error, GetRepositoriesDetailsForArtifactoryQueryParams, void>,
+  'path'
+>
+
+/**
+ * Gets repository details
+ */
+export const GetRepositoriesDetailsForArtifactory = (props: GetRepositoriesDetailsForArtifactoryProps) => (
+  <Get<ResponseArtifactoryRepoDetailsDTO, Failure | Error, GetRepositoriesDetailsForArtifactoryQueryParams, void>
+    path={`/artifacts/artifactory/getRepositoriesDetails`}
+    base={getConfig('ng/api')}
+    {...props}
+  />
+)
+
+export type UseGetRepositoriesDetailsForArtifactoryProps = Omit<
+  UseGetProps<
+    ResponseArtifactoryRepoDetailsDTO,
+    Failure | Error,
+    GetRepositoriesDetailsForArtifactoryQueryParams,
+    void
+  >,
+  'path'
+>
+
+/**
+ * Gets repository details
+ */
+export const useGetRepositoriesDetailsForArtifactory = (props: UseGetRepositoriesDetailsForArtifactoryProps) =>
+  useGet<ResponseArtifactoryRepoDetailsDTO, Failure | Error, GetRepositoriesDetailsForArtifactoryQueryParams, void>(
+    `/artifacts/artifactory/getRepositoriesDetails`,
+    { base: getConfig('ng/api'), ...props }
+  )
+
+/**
+ * Gets repository details
+ */
+export const getRepositoriesDetailsForArtifactoryPromise = (
+  props: GetUsingFetchProps<
+    ResponseArtifactoryRepoDetailsDTO,
+    Failure | Error,
+    GetRepositoriesDetailsForArtifactoryQueryParams,
+    void
+  >,
+  signal?: RequestInit['signal']
+) =>
+  getUsingFetch<
+    ResponseArtifactoryRepoDetailsDTO,
+    Failure | Error,
+    GetRepositoriesDetailsForArtifactoryQueryParams,
+    void
+  >(getConfig('ng/api'), `/artifacts/artifactory/getRepositoriesDetails`, props, signal)
 
 export interface ValidateArtifactServerForArtifactoryQueryParams {
   connectorRef?: string
@@ -30136,7 +30318,7 @@ export type PostSecretProps = Omit<
     ResponseSecretResponseWrapper,
     Failure | Error,
     PostSecretQueryParams,
-    SecretRequestWrapperRequestBody,
+    SecretRequestWrapper2RequestBody,
     void
   >,
   'path' | 'verb'
@@ -30146,7 +30328,7 @@ export type PostSecretProps = Omit<
  * Create a secret
  */
 export const PostSecret = (props: PostSecretProps) => (
-  <Mutate<ResponseSecretResponseWrapper, Failure | Error, PostSecretQueryParams, SecretRequestWrapperRequestBody, void>
+  <Mutate<ResponseSecretResponseWrapper, Failure | Error, PostSecretQueryParams, SecretRequestWrapper2RequestBody, void>
     verb="POST"
     path={`/v2/secrets`}
     base={getConfig('ng/api')}
@@ -30159,7 +30341,7 @@ export type UsePostSecretProps = Omit<
     ResponseSecretResponseWrapper,
     Failure | Error,
     PostSecretQueryParams,
-    SecretRequestWrapperRequestBody,
+    SecretRequestWrapper2RequestBody,
     void
   >,
   'path' | 'verb'
@@ -30173,7 +30355,7 @@ export const usePostSecret = (props: UsePostSecretProps) =>
     ResponseSecretResponseWrapper,
     Failure | Error,
     PostSecretQueryParams,
-    SecretRequestWrapperRequestBody,
+    SecretRequestWrapper2RequestBody,
     void
   >('POST', `/v2/secrets`, { base: getConfig('ng/api'), ...props })
 
@@ -30185,7 +30367,7 @@ export const postSecretPromise = (
     ResponseSecretResponseWrapper,
     Failure | Error,
     PostSecretQueryParams,
-    SecretRequestWrapperRequestBody,
+    SecretRequestWrapper2RequestBody,
     void
   >,
   signal?: RequestInit['signal']
@@ -30194,7 +30376,7 @@ export const postSecretPromise = (
     ResponseSecretResponseWrapper,
     Failure | Error,
     PostSecretQueryParams,
-    SecretRequestWrapperRequestBody,
+    SecretRequestWrapper2RequestBody,
     void
   >('POST', getConfig('ng/api'), `/v2/secrets`, props, signal)
 
@@ -30587,7 +30769,7 @@ export type PostSecretViaYamlProps = Omit<
     ResponseSecretResponseWrapper,
     Failure | Error,
     PostSecretViaYamlQueryParams,
-    SecretRequestWrapper2RequestBody,
+    SecretRequestWrapperRequestBody,
     void
   >,
   'path' | 'verb'
@@ -30601,7 +30783,7 @@ export const PostSecretViaYaml = (props: PostSecretViaYamlProps) => (
     ResponseSecretResponseWrapper,
     Failure | Error,
     PostSecretViaYamlQueryParams,
-    SecretRequestWrapper2RequestBody,
+    SecretRequestWrapperRequestBody,
     void
   >
     verb="POST"
@@ -30616,7 +30798,7 @@ export type UsePostSecretViaYamlProps = Omit<
     ResponseSecretResponseWrapper,
     Failure | Error,
     PostSecretViaYamlQueryParams,
-    SecretRequestWrapper2RequestBody,
+    SecretRequestWrapperRequestBody,
     void
   >,
   'path' | 'verb'
@@ -30630,7 +30812,7 @@ export const usePostSecretViaYaml = (props: UsePostSecretViaYamlProps) =>
     ResponseSecretResponseWrapper,
     Failure | Error,
     PostSecretViaYamlQueryParams,
-    SecretRequestWrapper2RequestBody,
+    SecretRequestWrapperRequestBody,
     void
   >('POST', `/v2/secrets/yaml`, { base: getConfig('ng/api'), ...props })
 
@@ -30642,7 +30824,7 @@ export const postSecretViaYamlPromise = (
     ResponseSecretResponseWrapper,
     Failure | Error,
     PostSecretViaYamlQueryParams,
-    SecretRequestWrapper2RequestBody,
+    SecretRequestWrapperRequestBody,
     void
   >,
   signal?: RequestInit['signal']
@@ -30651,7 +30833,7 @@ export const postSecretViaYamlPromise = (
     ResponseSecretResponseWrapper,
     Failure | Error,
     PostSecretViaYamlQueryParams,
-    SecretRequestWrapper2RequestBody,
+    SecretRequestWrapperRequestBody,
     void
   >('POST', getConfig('ng/api'), `/v2/secrets/yaml`, props, signal)
 
@@ -30786,7 +30968,7 @@ export type PutSecretProps = Omit<
     ResponseSecretResponseWrapper,
     Failure | Error,
     PutSecretQueryParams,
-    SecretRequestWrapperRequestBody,
+    SecretRequestWrapper2RequestBody,
     PutSecretPathParams
   >,
   'path' | 'verb'
@@ -30801,7 +30983,7 @@ export const PutSecret = ({ identifier, ...props }: PutSecretProps) => (
     ResponseSecretResponseWrapper,
     Failure | Error,
     PutSecretQueryParams,
-    SecretRequestWrapperRequestBody,
+    SecretRequestWrapper2RequestBody,
     PutSecretPathParams
   >
     verb="PUT"
@@ -30816,7 +30998,7 @@ export type UsePutSecretProps = Omit<
     ResponseSecretResponseWrapper,
     Failure | Error,
     PutSecretQueryParams,
-    SecretRequestWrapperRequestBody,
+    SecretRequestWrapper2RequestBody,
     PutSecretPathParams
   >,
   'path' | 'verb'
@@ -30831,7 +31013,7 @@ export const usePutSecret = ({ identifier, ...props }: UsePutSecretProps) =>
     ResponseSecretResponseWrapper,
     Failure | Error,
     PutSecretQueryParams,
-    SecretRequestWrapperRequestBody,
+    SecretRequestWrapper2RequestBody,
     PutSecretPathParams
   >('PUT', (paramsInPath: PutSecretPathParams) => `/v2/secrets/${paramsInPath.identifier}`, {
     base: getConfig('ng/api'),
@@ -30850,7 +31032,7 @@ export const putSecretPromise = (
     ResponseSecretResponseWrapper,
     Failure | Error,
     PutSecretQueryParams,
-    SecretRequestWrapperRequestBody,
+    SecretRequestWrapper2RequestBody,
     PutSecretPathParams
   > & { identifier: string },
   signal?: RequestInit['signal']
@@ -30859,7 +31041,7 @@ export const putSecretPromise = (
     ResponseSecretResponseWrapper,
     Failure | Error,
     PutSecretQueryParams,
-    SecretRequestWrapperRequestBody,
+    SecretRequestWrapper2RequestBody,
     PutSecretPathParams
   >('PUT', getConfig('ng/api'), `/v2/secrets/${identifier}`, props, signal)
 
@@ -30878,7 +31060,7 @@ export type PutSecretViaYamlProps = Omit<
     ResponseSecretResponseWrapper,
     Failure | Error,
     PutSecretViaYamlQueryParams,
-    SecretRequestWrapper2RequestBody,
+    SecretRequestWrapperRequestBody,
     PutSecretViaYamlPathParams
   >,
   'path' | 'verb'
@@ -30893,7 +31075,7 @@ export const PutSecretViaYaml = ({ identifier, ...props }: PutSecretViaYamlProps
     ResponseSecretResponseWrapper,
     Failure | Error,
     PutSecretViaYamlQueryParams,
-    SecretRequestWrapper2RequestBody,
+    SecretRequestWrapperRequestBody,
     PutSecretViaYamlPathParams
   >
     verb="PUT"
@@ -30908,7 +31090,7 @@ export type UsePutSecretViaYamlProps = Omit<
     ResponseSecretResponseWrapper,
     Failure | Error,
     PutSecretViaYamlQueryParams,
-    SecretRequestWrapper2RequestBody,
+    SecretRequestWrapperRequestBody,
     PutSecretViaYamlPathParams
   >,
   'path' | 'verb'
@@ -30923,7 +31105,7 @@ export const usePutSecretViaYaml = ({ identifier, ...props }: UsePutSecretViaYam
     ResponseSecretResponseWrapper,
     Failure | Error,
     PutSecretViaYamlQueryParams,
-    SecretRequestWrapper2RequestBody,
+    SecretRequestWrapperRequestBody,
     PutSecretViaYamlPathParams
   >('PUT', (paramsInPath: PutSecretViaYamlPathParams) => `/v2/secrets/${paramsInPath.identifier}/yaml`, {
     base: getConfig('ng/api'),
@@ -30942,7 +31124,7 @@ export const putSecretViaYamlPromise = (
     ResponseSecretResponseWrapper,
     Failure | Error,
     PutSecretViaYamlQueryParams,
-    SecretRequestWrapper2RequestBody,
+    SecretRequestWrapperRequestBody,
     PutSecretViaYamlPathParams
   > & { identifier: string },
   signal?: RequestInit['signal']
@@ -30951,7 +31133,7 @@ export const putSecretViaYamlPromise = (
     ResponseSecretResponseWrapper,
     Failure | Error,
     PutSecretViaYamlQueryParams,
-    SecretRequestWrapper2RequestBody,
+    SecretRequestWrapperRequestBody,
     PutSecretViaYamlPathParams
   >('PUT', getConfig('ng/api'), `/v2/secrets/${identifier}/yaml`, props, signal)
 

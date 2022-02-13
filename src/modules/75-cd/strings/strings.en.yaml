@@ -177,3 +177,10 @@ configFileDetails: 'Config File Details'
 configFileStore: 'Specify Terraform Config File Store'
 configFileStepOne: 'Terraform Config Store'
 configFileStoreTitle: 'Config File'
+selectRepository: Select a repository
+selectArtifact: Select an artifact
+artifactName: Artifact Name
+artifactFormErrors: 
+  artifactFilePath: Enter the artifact path. You can use wildcards such as `todo/*/*`
+  repositoryName: Repository name is required
+  artifactName: '{{$.validation.nameRequired}}' 

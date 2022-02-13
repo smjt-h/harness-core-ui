@@ -21,7 +21,9 @@ const props = {
     }
   },
   isEditMode: false,
-  allowableTypes: [MultiTypeInputType.FIXED, MultiTypeInputType.EXPRESSION, MultiTypeInputType.RUNTIME]
+  allowableTypes: [MultiTypeInputType.FIXED, MultiTypeInputType.EXPRESSION, MultiTypeInputType.RUNTIME],
+  handleConnectorViewChange: jest.fn(),
+  setSelectedConnector: jest.fn()
 }
 describe('Terraform Var Store tests', () => {
   test('initial render', async () => {
@@ -62,7 +64,9 @@ describe('Terraform Var Store tests', () => {
         }
       },
       isEditMode: true,
-      allowableTypes: [MultiTypeInputType.FIXED, MultiTypeInputType.EXPRESSION, MultiTypeInputType.RUNTIME]
+      allowableTypes: [MultiTypeInputType.FIXED, MultiTypeInputType.EXPRESSION, MultiTypeInputType.RUNTIME],
+      handleConnectorViewChange: jest.fn(),
+      setSelectedConnector: jest.fn()
     }
     const { container } = render(
       <TestWrapper>
@@ -92,7 +96,9 @@ describe('Terraform Var Store tests', () => {
         }
       },
       isEditMode: true,
-      allowableTypes: [MultiTypeInputType.FIXED, MultiTypeInputType.EXPRESSION, MultiTypeInputType.RUNTIME]
+      allowableTypes: [MultiTypeInputType.FIXED, MultiTypeInputType.EXPRESSION, MultiTypeInputType.RUNTIME],
+      handleConnectorViewChange: jest.fn(),
+      setSelectedConnector: jest.fn()
     }
     const { container } = render(
       <TestWrapper>
@@ -124,7 +130,8 @@ describe('Terraform Var Store tests', () => {
       isEditMode: true,
       isReadOnly: false,
       allowableTypes: [MultiTypeInputType.FIXED, MultiTypeInputType.EXPRESSION, MultiTypeInputType.RUNTIME],
-      handleConnectorViewChange: jest.fn()
+      handleConnectorViewChange: jest.fn(),
+      setSelectedConnector: jest.fn()
     }
     render(
       <TestWrapper>

@@ -12,31 +12,35 @@ import {
   buildBitbucketPayload,
   buildGithubPayload,
   buildGitlabPayload,
-  buildGitPayload
+  buildGitPayload,
+  buildArtifactoryPayload
 } from '@connectors/pages/connectors/utils/ConnectorUtils'
 
-export const AllowedTypes = ['Git', 'Github', 'GitLab', 'Bitbucket']
-export type ConnectorTypes = 'Git' | 'Github' | 'GitLab' | 'Bitbucket'
+export const AllowedTypes = ['Git', 'Github', 'GitLab', 'Bitbucket', 'Artifactory']
+export type ConnectorTypes = 'Git' | 'Github' | 'GitLab' | 'Bitbucket' | 'Artifactory'
 
 export const tfVarIcons: any = {
   Git: 'service-github',
   Github: 'github',
   GitLab: 'service-gotlab',
-  Bitbucket: 'bitbucket'
+  Bitbucket: 'bitbucket',
+  Artifactory: 'service-artifactory'
 }
 
 export const ConnectorMap: Record<string, ConnectorInfoDTO['type']> = {
   Git: Connectors.GIT,
   Github: Connectors.GITHUB,
   GitLab: Connectors.GITLAB,
-  Bitbucket: Connectors.BITBUCKET
+  Bitbucket: Connectors.BITBUCKET,
+  Artifactory: Connectors.ARTIFACTORY
 }
 
 export const ConnectorLabelMap: Record<ConnectorTypes, StringKeys> = {
   Git: 'pipeline.manifestType.gitConnectorLabel',
   Github: 'common.repo_provider.githubLabel',
   GitLab: 'common.repo_provider.gitlabLabel',
-  Bitbucket: 'pipeline.manifestType.bitBucketLabel'
+  Bitbucket: 'pipeline.manifestType.bitBucketLabel',
+  Artifactory: 'connectors.artifactory.artifactoryLabel'
 }
 
 export const formInputNames = (isTerraformPlan: boolean) => ({
@@ -87,6 +91,9 @@ export const getBuildPayload = (type: ConnectorInfoDTO['type']) => {
   }
   if (type === Connectors.GITLAB) {
     return buildGitlabPayload
+  }
+  if (type === Connectors.ARTIFACTORY) {
+    return buildArtifactoryPayload
   }
   return () => ({})
 }

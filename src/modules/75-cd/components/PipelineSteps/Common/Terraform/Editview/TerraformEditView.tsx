@@ -58,12 +58,14 @@ import StepGitAuthentication from '@connectors/components/CreateConnector/GitCon
 import StepGitlabAuthentication from '@connectors/components/CreateConnector/GitlabConnector/StepAuth/StepGitlabAuthentication'
 import StepGithubAuthentication from '@connectors/components/CreateConnector/GithubConnector/StepAuth/StepGithubAuthentication'
 import StepBitbucketAuthentication from '@connectors/components/CreateConnector/BitbucketConnector/StepAuth/StepBitbucketAuthentication'
+import StepArtifactoryAuthentication from '@connectors/components/CreateConnector/ArtifactoryConnector/StepAuth/StepArtifactoryAuthentication'
 import DelegateSelectorStep from '@connectors/components/CreateConnector/commonSteps/DelegateSelectorStep/DelegateSelectorStep'
 
 import { Connectors, CONNECTOR_CREDENTIALS_STEP_IDENTIFIER } from '@connectors/constants'
 import { TFMonaco } from './TFMonacoEditor'
 
 import TfVarFileList from './TFVarFileList'
+import { TFArtifactoryForm } from './TerraformArtifactoryForm'
 import { ConfigurationTypes, TerraformProps, TFFormData } from '../TerraformInterfaces'
 import { TerraformConfigStepOne, TerraformConfigStepTwo } from './TerraformConfigForm'
 import { ConnectorTypes, ConnectorMap, getBuildPayload } from './TerraformConfigFormHelper'
@@ -164,12 +166,14 @@ export default function TerraformEditView(
           isEditMode={isEditMode}
           gitDetails={{ repoIdentifier, branch, getDefaultFromOtherRepo: true }}
         />
-        <GitDetailsStep
-          type={connectorType}
-          name={getString('details')}
-          isEditMode={isEditMode}
-          connectorInfo={undefined}
-        />
+        {connectorType !== Connectors.ARTIFACTORY ? (
+          <GitDetailsStep
+            type={connectorType}
+            name={getString('details')}
+            isEditMode={isEditMode}
+            connectorInfo={undefined}
+          />
+        ) : null}
         {connectorType === Connectors.GIT ? (
           <StepGitAuthentication
             name={getString('credentials')}
@@ -219,6 +223,18 @@ export default function TerraformEditView(
             onConnectorCreated={() => {
               // Handle on success
             }}
+            isEditMode={isEditMode}
+            setIsEditMode={setIsEditMode}
+            connectorInfo={undefined}
+            accountId={accountId}
+            orgIdentifier={orgIdentifier}
+            projectIdentifier={projectIdentifier}
+          />
+        ) : null}
+        {connectorType === Connectors.ARTIFACTORY ? (
+          <StepArtifactoryAuthentication
+            name={getString('details')}
+            identifier={CONNECTOR_CREDENTIALS_STEP_IDENTIFIER}
             isEditMode={isEditMode}
             setIsEditMode={setIsEditMode}
             connectorInfo={undefined}
@@ -280,6 +296,7 @@ export default function TerraformEditView(
         {(formik: FormikProps<TFFormData>) => {
           const { values, setFieldValue } = formik
           setFormikRef(formikRef, formik)
+          const configFile = formik.values?.spec?.configuration?.spec?.configFiles
           return (
             <>
               <div className={cx(stepCss.formGroup, stepCss.md)}>
@@ -364,7 +381,7 @@ export default function TerraformEditView(
                     </Label>
                     <div className={cx(css.configFile, css.addMarginBottom)}>
                       <div className={css.configField}>
-                        {!formik.values?.spec?.configuration?.spec?.configFiles?.store?.spec?.folderPath && (
+                        {!configFile?.store?.spec?.folderPath && !configFile?.store?.spec?.artifacts && (
                           <a
                             data-testid="editConfigButton"
                             className={css.configPlaceHolder}
@@ -374,12 +391,15 @@ export default function TerraformEditView(
                             {getString('cd.configFilePlaceHolder')}
                           </a>
                         )}
-                        {formik.values?.spec?.configuration?.spec?.configFiles?.store?.spec?.folderPath && (
+                        {(configFile?.store?.spec?.folderPath || configFile?.store?.spec?.artifacts) && (
                           <Text font="normal" lineClamp={1} width={200}>
-                            /{formik.values?.spec?.configuration?.spec?.configFiles?.store?.spec?.folderPath}
+                            /
+                            {configFile?.store?.spec?.folderPath
+                              ? configFile?.store?.spec?.folderPath
+                              : configFile?.store.spec.artifacts[0].artifactFile.name}
                           </Text>
                         )}
-                        {formik.values?.spec?.configuration?.spec?.configFiles?.store?.spec?.folderPath ? (
+                        {configFile?.store?.spec?.folderPath || configFile?.store?.spec?.artifacts ? (
                           <Button
                             minimal
                             icon="Edit"
@@ -434,6 +454,7 @@ export default function TerraformEditView(
                             allowableTypes={allowableTypes}
                             setSelectedConnector={setSelectedConnector}
                             getNewConnectorSteps={getNewConnectorSteps}
+                            selectedConnector={selectedConnector}
                           />
                           <div className={css.divider} />
                           <div
@@ -550,32 +571,63 @@ export default function TerraformEditView(
                             setSelectedConnector={setSelectedConnector}
                           />
                           {connectorView ? getNewConnectorSteps() : null}
-                          <TerraformConfigStepTwo
-                            name={getString('cd.configFileDetails')}
-                            isReadonly={readonly}
-                            allowableTypes={allowableTypes}
-                            onSubmitCallBack={(data: any, prevStepData: any) => {
-                              const configObject = {
-                                ...data.spec?.configuration?.spec?.configFiles
-                              }
-
-                              if (prevStepData.identifier && prevStepData.identifier !== data?.identifier) {
-                                configObject.store.spec.connectorRef = prevStepData?.identifier
-                              }
-
-                              if (configObject?.store.spec.gitFetchType === 'Branch') {
-                                delete configObject.store.spec.commitId
-                              } else if (configObject?.store.spec.gitFetchType === 'Commit') {
-                                delete configObject.store.spec.branch
-                              }
-                              const valObj = cloneDeep(formik.values)
-                              configObject.store.type = prevStepData?.selectedType
-                              set(valObj, 'spec.configuration.spec.configFiles', { ...configObject })
-                              formik.setValues(valObj)
-                              setConnectorView(false)
-                              setShowModal(false)
-                            }}
-                          />
+                          {selectedConnector === 'Artifactory' ? (
+                            <TFArtifactoryForm
+                              isConfig
+                              isTerraformPlan={false}
+                              name={getString('cd.configFileDetails')}
+                              onSubmitCallBack={(data: any, prevStepData: any) => {
+                                const configObject = {
+                                  ...prevStepData.formValues.spec.configuration.spec.configFiles
+                                }
+                                if (prevStepData.identifier && prevStepData.identifier !== data?.identifier) {
+                                  configObject.store.spec.connectorRef = prevStepData?.identifier
+                                }
+                                if (configObject?.store?.spec?.gitFetchType) {
+                                  delete configObject?.store?.spec?.commitId
+                                  delete configObject?.store?.spec?.gitFetchType
+                                  delete configObject?.store?.spec?.branch
+                                  delete configObject?.store?.spec?.folderPath
+                                }
+                                const configFiles = data?.spec?.configuration?.configFiles?.store?.spec
+                                configObject.store.spec.artifacts = configFiles.artifacts
+                                configObject.store.spec.repositoryName = configFiles.repositoryName
+                                const valObj = cloneDeep(formik.values)
+                                configObject.store.type = prevStepData?.selectedType
+                                set(valObj, 'spec.configuration.spec.configFiles', { ...configObject })
+                                formik.setValues(valObj)
+                                setShowModal(false)
+                              }}
+                            />
+                          ) : (
+                            <TerraformConfigStepTwo
+                              name={getString('cd.configFileDetails')}
+                              isReadonly={readonly}
+                              allowableTypes={allowableTypes}
+                              onSubmitCallBack={(data: any, prevStepData: any) => {
+                                const configObject = {
+                                  ...data.spec?.configuration?.spec?.configFiles
+                                }
+                                if (prevStepData.identifier && prevStepData.identifier !== data?.identifier) {
+                                  configObject.store.spec.connectorRef = prevStepData?.identifier
+                                }
+                                if (configObject?.store.spec.gitFetchType === 'Branch') {
+                                  delete configObject.store.spec.commitId
+                                } else if (configObject?.store.spec.gitFetchType === 'Commit') {
+                                  delete configObject.store.spec.branch
+                                }
+                                if (configObject?.store?.spec?.artifacts) {
+                                  delete configObject?.store?.spec?.artifacts
+                                  delete configObject?.store?.spec?.repositoryName
+                                }
+                                const valObj = cloneDeep(formik.values)
+                                configObject.store.type = prevStepData?.selectedType
+                                set(valObj, 'spec.configuration.spec.configFiles', { ...configObject })
+                                formik.setValues(valObj)
+                                setShowModal(false)
+                              }}
+                            />
+                          )}
                         </StepWizard>
                       </div>
                       <Button

@@ -32,6 +32,7 @@ import { TFRemoteWizard } from '../Common/Terraform/Editview/TFRemoteWizard'
 import { TFVarStore } from '../Common/Terraform/Editview/TFVarStore'
 
 import InlineVarFile from '../Common/Terraform/Editview/InlineVarFile'
+import { TFArtifactoryForm } from '../Common/Terraform/Editview/TerraformArtifactoryForm'
 
 import css from '../Common/Terraform/Editview/TerraformVarfile.module.scss'
 import stepCss from '@pipeline/components/PipelineSteps/Steps/Steps.module.scss'
@@ -44,10 +45,18 @@ interface TfVarFileProps {
   allowableTypes: MultiTypeInputType[]
   getNewConnectorSteps?: any
   setSelectedConnector?: any
+  selectedConnector?: string
 }
 
 export default function TfVarFileList(props: TfVarFileProps): React.ReactElement {
-  const { formik, isReadonly = false, allowableTypes, getNewConnectorSteps, setSelectedConnector } = props
+  const {
+    formik,
+    isReadonly = false,
+    allowableTypes,
+    getNewConnectorSteps,
+    setSelectedConnector,
+    selectedConnector
+  } = props
   const inlineInitValues: TerraformVarFileWrapper = {
     varFile: {
       identifier: '',
@@ -287,28 +296,44 @@ export default function TfVarFileList(props: TfVarFileProps): React.ReactElement
                           initialValues={isEditMode ? selectedVar : remoteInitialValues}
                           isEditMode={isEditMode}
                           allowableTypes={allowableTypes}
-                          handleConnectorViewChange={connector => {
-                            setSelectedConnector(connector)
+                          setSelectedConnector={setSelectedConnector}
+                          handleConnectorViewChange={() => {
                             setConnectorView(true)
                           }}
                           setConnectorView={setConnectorView}
                         />
                         {connectorView ? getNewConnectorSteps() : null}
-                        <TFRemoteWizard
-                          name={getString('cd.varFileDetails')}
-                          onSubmitCallBack={(values: RemoteVar) => {
-                            if (isEditMode) {
-                              arrayHelpers.replace(selectedVarIndex, values)
-                            } else {
-                              arrayHelpers.push(values)
-                            }
-                            onCloseOfRemoteWizard()
-                          }}
-                          isEditMode={isEditMode}
-                          // initialValues={remoteInitialValues}
-                          isReadonly={isReadonly}
-                          allowableTypes={allowableTypes}
-                        />
+                        {selectedConnector === 'Artifactory' ? (
+                          <TFArtifactoryForm
+                            isConfig={false}
+                            isTerraformPlan
+                            name={getString('cd.varFileDetails')}
+                            onSubmitCallBack={(values: RemoteVar) => {
+                              if (isEditMode) {
+                                arrayHelpers.replace(selectedVarIndex, values)
+                              } else {
+                                arrayHelpers.push(values)
+                              }
+                              onCloseOfRemoteWizard()
+                            }}
+                          />
+                        ) : (
+                          <TFRemoteWizard
+                            name={getString('cd.varFileDetails')}
+                            onSubmitCallBack={(values: RemoteVar) => {
+                              if (isEditMode) {
+                                arrayHelpers.replace(selectedVarIndex, values)
+                              } else {
+                                arrayHelpers.push(values)
+                              }
+                              onCloseOfRemoteWizard()
+                            }}
+                            isEditMode={isEditMode}
+                            // initialValues={remoteInitialValues}
+                            isReadonly={isReadonly}
+                            allowableTypes={allowableTypes}
+                          />
+                        )}
                       </StepWizard>
                     </div>
                     <Button

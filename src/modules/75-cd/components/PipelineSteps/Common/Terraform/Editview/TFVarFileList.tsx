@@ -34,7 +34,7 @@ import { TFRemoteWizard } from './TFRemoteWizard'
 import { TFVarStore } from './TFVarStore'
 
 import InlineVarFile from './InlineVarFile'
-
+import { TFArtifactoryForm } from './TerraformArtifactoryForm'
 import css from './TerraformVarfile.module.scss'
 import stepCss from '@pipeline/components/PipelineSteps/Steps/Steps.module.scss'
 
@@ -44,10 +44,18 @@ interface TfVarFileProps {
   allowableTypes: MultiTypeInputType[]
   getNewConnectorSteps?: any
   setSelectedConnector?: any
+  selectedConnector?: string
 }
 
 export default function TfVarFileList(props: TfVarFileProps): React.ReactElement {
-  const { formik, isReadonly = false, allowableTypes, getNewConnectorSteps, setSelectedConnector } = props
+  const {
+    formik,
+    isReadonly = false,
+    allowableTypes,
+    getNewConnectorSteps,
+    setSelectedConnector,
+    selectedConnector
+  } = props
   const inlineInitValues: TerraformVarFileWrapper = {
     varFile: {
       spec: {},
@@ -279,27 +287,42 @@ export default function TfVarFileList(props: TfVarFileProps): React.ReactElement
                           initialValues={isEditMode ? selectedVar : remoteInitialValues}
                           isEditMode={isEditMode}
                           allowableTypes={allowableTypes}
-                          handleConnectorViewChange={connector => {
-                            setSelectedConnector(connector)
-                            setConnectorView(true)
-                          }}
+                          setSelectedConnector={setSelectedConnector}
+                          handleConnectorViewChange={() => setConnectorView(true)}
                           setConnectorView={setConnectorView}
                         />
                         {connectorView ? getNewConnectorSteps() : null}
-                        <TFRemoteWizard
-                          name={getString('cd.varFileDetails')}
-                          onSubmitCallBack={(values: RemoteVar) => {
-                            if (isEditMode) {
-                              arrayHelpers.replace(selectedVarIndex, values)
-                            } else {
-                              arrayHelpers.push(values)
-                            }
-                            onCloseOfRemoteWizard()
-                          }}
-                          isEditMode={isEditMode}
-                          allowableTypes={allowableTypes}
-                          // initialValues={remoteInitialValues}
-                        />
+                        {selectedConnector === 'Artifactory' ? (
+                          <TFArtifactoryForm
+                            isConfig={false}
+                            isTerraformPlan={false}
+                            name={getString('cd.varFileDetails')}
+                            onSubmitCallBack={(values: RemoteVar) => {
+                              if (isEditMode) {
+                                arrayHelpers.replace(selectedVarIndex, values)
+                              } else {
+                                arrayHelpers.push(values)
+                              }
+                              onCloseOfRemoteWizard()
+                            }}
+                          />
+                        ) : (
+                          <TFRemoteWizard
+                            name={getString('cd.varFileDetails')}
+                            onSubmitCallBack={(values: RemoteVar) => {
+                              if (isEditMode) {
+                                arrayHelpers.replace(selectedVarIndex, values)
+                              } else {
+                                arrayHelpers.push(values)
+                              }
+                              onCloseOfRemoteWizard()
+                            }}
+                            isEditMode={isEditMode}
+                            // initialValues={remoteInitialValues}
+                            isReadonly={isReadonly}
+                            allowableTypes={allowableTypes}
+                          />
+                        )}
                       </StepWizard>
                     </div>
                     <Button
