@@ -23,9 +23,9 @@
         <div class='clearfix'>
             
             <div class='fl pad1y space-right2'>
-                <span class="strong">91.67% </span>
+                <span class="strong">92% </span>
                 <span class="quiet">Statements</span>
-                <span class='fraction'>44/48</span>
+                <span class='fraction'>46/50</span>
             </div>
         
             
@@ -44,9 +44,9 @@
         
             
             <div class='fl pad1y space-right2'>
-                <span class="strong">91.67% </span>
+                <span class="strong">92% </span>
                 <span class="quiet">Lines</span>
-                <span class='fraction'>44/48</span>
+                <span class='fraction'>46/50</span>
             </div>
         
             
@@ -307,7 +307,9 @@
 <a name='L248'></a><a href='#L248'>248</a>
 <a name='L249'></a><a href='#L249'>249</a>
 <a name='L250'></a><a href='#L250'>250</a>
-<a name='L251'></a><a href='#L251'>251</a></td><td class="line-coverage quiet"><span class="cline-any cline-neutral">&nbsp;</span>
+<a name='L251'></a><a href='#L251'>251</a>
+<a name='L252'></a><a href='#L252'>252</a>
+<a name='L253'></a><a href='#L253'>253</a></td><td class="line-coverage quiet"><span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
@@ -330,6 +332,7 @@
 <span class="cline-any cline-yes">10x</span>
 <span class="cline-any cline-yes">10x</span>
 <span class="cline-any cline-yes">10x</span>
+<span class="cline-any cline-yes">10x</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
@@ -343,7 +346,6 @@
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-yes">10x</span>
-<span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
@@ -367,6 +369,7 @@
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-yes">1x</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">1x</span>
 <span class="cline-any cline-yes">1x</span>
 <span class="cline-any cline-yes">1x</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
@@ -503,6 +506,7 @@
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-yes">1x</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
@@ -577,6 +581,7 @@ import { useGetBuildDetailsForGcrWithYaml } from 'services/cd-ng'
 import { ArtifactToConnectorMap, ENABLED_ARTIFACT_TYPES } from '@pipeline/components/ArtifactsSelection/ArtifactHelper'
 import { TriggerDefaultFieldList } from '@pipeline/pages/triggers/utils/TriggersWizardPageUtils'
 import { useStrings } from 'framework/strings'
+import { useVariablesExpression } from '@pipeline/components/PipelineStudio/PiplineHooks/useVariablesExpression'
 import ExperimentalInput from '../../K8sServiceSpecForms/ExperimentalInput'
 import { isFieldRuntime } from '../../K8sServiceSpecHelper'
 import {
@@ -608,7 +613,6 @@ const Content = (props: GCRRenderContent): JSX.Element =&gt; {
     pipelineIdentifier,
     branch,
     stageIdentifier,
-    expressions,
     isTagsSelectionDisabled,
     allowableTypes,
     fromTrigger,
@@ -619,6 +623,7 @@ const Content = (props: GCRRenderContent): JSX.Element =&gt; {
 &nbsp;
   const { getString } = useStrings()
   const isPropagatedStage = <span class="branch-1 cbranch-no" title="branch not covered" >path?.includes('serviceConfig.stageOverrides')</span>
+  const { expressions } = useVariablesExpression()
 &nbsp;
   const {
     data: gcrTagsData,
@@ -757,6 +762,7 @@ const Content = (props: GCRRenderContent): JSX.Element =&gt; {
               buildDetailsList={<span class="branch-1 cbranch-no" title="branch not covered" ><span class="branch-1 cbranch-no" title="branch not covered" >gcrTagsData?.d</span>ata<span class="branch-1 cbranch-no" title="branch not covered" >?</span>.buildDetailsList}</span>
               fetchTagsError={fetchTagsError}
               fetchTags={fetchTags}
+              expressions={expressions}
             /&gt;
           )}
           {isFieldRuntime(`artifacts.${artifactPath}.spec.tagRegex`, template) &amp;&amp; (
@@ -814,7 +820,7 @@ export class GCRArtifactSource extends ArtifactSourceBase&lt;ArtifactSourceRende
             <div class='footer quiet pad2 space-top1 center small'>
                 Code coverage generated by
                 <a href="https://istanbul.js.org/" target="_blank">istanbul</a>
-                at Sat Feb 12 2022 08:59:49 GMT+0000 (Greenwich Mean Time)
+                at Sun Feb 13 2022 11:21:28 GMT+0000 (Greenwich Mean Time)
             </div>
         </div>
         <script src="../../../../../../../prettify.js"></script>
