@@ -12,10 +12,6 @@ import { TestWrapper } from '@common/utils/testUtils'
 
 import { TerraformConfigStepOne, TerraformConfigStepTwo } from '../Editview/TerraformConfigForm'
 
-jest.mock('services/cd-ng', () => ({
-  useGetConnector: jest.fn().mockImplementation(() => ({ data: {} }))
-}))
-
 const allowableTypes = [MultiTypeInputType.FIXED, MultiTypeInputType.RUNTIME, MultiTypeInputType.EXPRESSION]
 let isTerraformPlan = false
 const renderStepOneComponent = (data: any): void => {
@@ -268,41 +264,9 @@ describe('TerraformConfigForm StepTwo tests', () => {
     expect(testFolderPath).toBeInTheDocument()
   })
 
-  test(`loads runtime components`, async () => {
-    const prevStepData = {
-      formValues: {
-        spec: {
-          configuration: {
-            spec: {
-              configFiles: {
-                store: {
-                  spec: {
-                    repoName: 'RUNTIME',
-                    gitFetchType: 'pipelineSteps.commitIdValue',
-                    commitId: 'RUNTIME',
-                    folderPath: 'RUNTIME',
-                    connectorRef: {
-                      connector: {
-                        spec: {
-                          connectionType: 'Account'
-                        }
-                      }
-                    }
-                  }
-                }
-              }
-            }
-          }
-        }
-      }
-    }
-
-    renderStepTwoComponent(prevStepData)
-    expect(screen).toMatchSnapshot()
-  })
-
   test(`should show error message when missing fields`, async () => {
     const prevStepData = {
+      urlType: 'Account',
       formValues: {
         spec: {
           configuration: {
@@ -350,10 +314,10 @@ describe('TerraformConfigForm StepTwo tests', () => {
               configFiles: {
                 store: {
                   spec: {
-                    repoName: 'RUNTIME',
+                    repoName: '<+input>',
                     gitFetchType: 'pipelineSteps.commitIdValue',
-                    commitId: 'RUNTIME',
-                    folderPath: 'RUNTIME',
+                    commitId: '<+input>',
+                    folderPath: '<+input>',
                     connectorRef: {
                       connector: {
                         spec: {
@@ -422,7 +386,7 @@ describe('TerraformConfigForm StepTwo tests', () => {
     expect(screen).toMatchSnapshot()
   })
 
-  test(`can update input fields`, async () => {
+  test(`can update select input field`, async () => {
     const prevStepData = {
       formValues: {
         spec: {
