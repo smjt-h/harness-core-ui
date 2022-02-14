@@ -135,7 +135,7 @@ export const tfArtifactoryFormInputNames = (isConfig: boolean) => {
     artifacts: 'varFile.spec.store.spec.artifacts'
   }
 }
-
+/* istanbul ignore next */
 export const formatOnSubmitData = (values: any, prevStepData: any, connectorValue: any) => {
   const payload = {
     ...values,
@@ -158,7 +158,7 @@ export const formatOnSubmitData = (values: any, prevStepData: any, connectorValu
     }
   }
 }
-
+/* istanbul ignore next */
 export const formatArtifactoryData = (prevStepData: any, data: any, configObject: any, formik: any) => {
   if (prevStepData.identifier && prevStepData.identifier !== data?.identifier) {
     configObject.store.spec.connectorRef = prevStepData?.identifier

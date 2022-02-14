@@ -180,7 +180,7 @@ configFileStoreTitle: 'Config File'
 selectRepository: Select a repository
 selectArtifact: Select an artifact
 artifactName: Artifact Name
-artifactFormErrors: 
+artifactFormErrors:
   artifactFilePath: Enter the artifact path. You can use wildcards such as `todo/*/*`
   repositoryName: Repository name is required
-  artifactName: '{{$.validation.nameRequired}}' 
+  artifactName: '{{$.validation.nameRequired}}'

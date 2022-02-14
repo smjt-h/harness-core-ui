@@ -97,6 +97,65 @@ describe('TerraformConfigForm StepOne tests', () => {
     expect(screen).toMatchSnapshot()
   })
 
+  test(`renders when terraform plan and artifactory`, async () => {
+    isTerraformPlan = true
+    const testPlanData = {
+      spec: {
+        configuration: {
+          configFiles: {
+            store: {
+              type: 'Git',
+              spec: {
+                store: {
+                  type: 'Git',
+                  spec: {
+                    connectorRef: {
+                      connector: {
+                        type: 'Git'
+                      }
+                    }
+                  }
+                }
+              }
+            }
+          }
+        }
+      }
+    }
+    renderStepOneComponent(testPlanData)
+
+    const artifactoryConnector = await screen.findByTestId('varStore-Artifactory')
+    fireEvent.click(artifactoryConnector)
+    expect(screen).toMatchSnapshot()
+  })
+
+  test(`renders when terraform plan and artifactory`, async () => {
+    isTerraformPlan = true
+    const testPlanData = {
+      spec: {
+        configuration: {
+          configFiles: {
+            store: {
+              type: 'Git',
+              spec: {
+                connectorRef: {
+                  connector: {
+                    type: 'Git'
+                  }
+                }
+              }
+            }
+          }
+        }
+      }
+    }
+    renderStepOneComponent(testPlanData)
+
+    const artifactoryConnector = await screen.findByTestId('varStore-Artifactory')
+    fireEvent.click(artifactoryConnector)
+    expect(screen).toMatchSnapshot()
+  })
+
   test(`renders when terraform plan`, () => {
     isTerraformPlan = true
     const testPlanData = {

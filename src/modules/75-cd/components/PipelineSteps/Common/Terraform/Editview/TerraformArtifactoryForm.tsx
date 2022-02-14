@@ -42,6 +42,7 @@ interface TFRemoteProps {
   isConfig: boolean
   isTerraformPlan: boolean
 }
+
 export const TFArtifactoryForm: React.FC<StepProps<any> & TFRemoteProps> = ({
   previousStep,
   prevStepData,
@@ -240,6 +241,7 @@ export const TFArtifactoryForm: React.FC<StepProps<any> & TFRemoteProps> = ({
                               const key = `${filePathIndex?.path}-${filePathIndex?.index}`
                               const rowArtifacts = artifacts && artifacts[key] ? artifacts[key] : []
                               const value = { label: artifact.artifactFile.name, value: artifact.artifactFile.path }
+                              /* istanbul ignore next */
                               return (
                                 <Layout.Horizontal
                                   key={`${artifact}-${index}`}
@@ -296,7 +298,6 @@ export const TFArtifactoryForm: React.FC<StepProps<any> & TFRemoteProps> = ({
                                         icon="main-trash"
                                         data-testid={`remove-artifact-${index}`}
                                         onClick={() => {
-                                          /* istanbul ignore next */
                                           arrayHelpers.remove(index)
                                         }}
                                       />
@@ -312,7 +313,9 @@ export const TFArtifactoryForm: React.FC<StepProps<any> & TFRemoteProps> = ({
                                 icon="plus"
                                 variation={ButtonVariation.LINK}
                                 data-testid="add-header"
-                                onClick={() => arrayHelpers.push({ artifactFile: {} })}
+                                onClick={() => {
+                                  arrayHelpers.push({ artifactFile: {} })
+                                }}
                               >
                                 {getString('cd.addTFVarFileLabel')}
                               </Button>
