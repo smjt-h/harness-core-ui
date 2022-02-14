@@ -23,16 +23,16 @@
         <div class='clearfix'>
             
             <div class='fl pad1y space-right2'>
-                <span class="strong">84.27% </span>
+                <span class="strong">85.55% </span>
                 <span class="quiet">Statements</span>
-                <span class='fraction'>150/178</span>
+                <span class='fraction'>148/173</span>
             </div>
         
             
             <div class='fl pad1y space-right2'>
-                <span class="strong">59.22% </span>
+                <span class="strong">59.35% </span>
                 <span class="quiet">Branches</span>
-                <span class='fraction'>257/434</span>
+                <span class='fraction'>257/433</span>
             </div>
         
             
@@ -44,9 +44,9 @@
         
             
             <div class='fl pad1y space-right2'>
-                <span class="strong">84% </span>
+                <span class="strong">85.29% </span>
                 <span class="quiet">Lines</span>
-                <span class='fraction'>147/175</span>
+                <span class='fraction'>145/170</span>
             </div>
         
             
@@ -842,17 +842,7 @@
 <a name='L783'></a><a href='#L783'>783</a>
 <a name='L784'></a><a href='#L784'>784</a>
 <a name='L785'></a><a href='#L785'>785</a>
-<a name='L786'></a><a href='#L786'>786</a>
-<a name='L787'></a><a href='#L787'>787</a>
-<a name='L788'></a><a href='#L788'>788</a>
-<a name='L789'></a><a href='#L789'>789</a>
-<a name='L790'></a><a href='#L790'>790</a>
-<a name='L791'></a><a href='#L791'>791</a>
-<a name='L792'></a><a href='#L792'>792</a>
-<a name='L793'></a><a href='#L793'>793</a>
-<a name='L794'></a><a href='#L794'>794</a>
-<a name='L795'></a><a href='#L795'>795</a>
-<a name='L796'></a><a href='#L796'>796</a></td><td class="line-coverage quiet"><span class="cline-any cline-neutral">&nbsp;</span>
+<a name='L786'></a><a href='#L786'>786</a></td><td class="line-coverage quiet"><span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
@@ -1273,33 +1263,23 @@
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-yes">3x</span>
-<span class="cline-any cline-yes">3x</span>
-<span class="cline-any cline-yes">1x</span>
-<span class="cline-any cline-yes">1x</span>
-<span class="cline-any cline-yes">1x</span>
-<span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-no">&nbsp;</span>
-<span class="cline-any cline-no">&nbsp;</span>
-<span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-yes">2x</span>
 <span class="cline-any cline-yes">2x</span>
 <span class="cline-any cline-yes">2x</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-no">&nbsp;</span>
-<span class="cline-any cline-no">&nbsp;</span>
-<span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">1x</span>
+<span class="cline-any cline-yes">1x</span>
+<span class="cline-any cline-yes">1x</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-yes">3x</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
@@ -2068,36 +2048,26 @@ export const InputSetForm: React.FC&lt;InputSetFormProps&gt; = (props): JSX.Elem
           }
         })
       }
-      /* istanbul ignore else */
-      if (response) {
-        if (response.data?.errorResponse) {
-          const errors = getFormattedErrors(response.data.inputSetErrorWrapper<span class="branch-0 cbranch-no" title="branch not covered" >?.u</span>uidToErrorResponseMap)
-          <span class="missing-if-branch" title="else path not taken" >E</span>if (Object.keys(errors).length) {
-            setFormErrors(errors)
-            // This is done because when git sync is enabled, errors are displayed in a modal
-          } else <span class="cstat-no" title="statement not covered" >if (!isGitSyncEnabled) {</span>
-<span class="cstat-no" title="statement not covered" >            showError(getString('inputSets.inputSetSavedError'), undefined, 'pipeline.create.inputset')</span>
-          }
-        } else {
-          <span class="missing-if-branch" title="else path not taken" >E</span>if (!isGitSyncEnabled) {
-            showSuccess(getString('inputSets.inputSetSaved'))
-            history.goBack()
-          }
-        }
+      <span class="missing-if-branch" title="else path not taken" >E</span>if (!isGitSyncEnabled) {
+        showSuccess(getString('inputSets.inputSetSaved'))
+        history.goBack()
       }
     } catch (e) {
+      const errors = getFormattedErrors(e<span class="branch-0 cbranch-no" title="branch not covered" >?.d</span>ata<span class="branch-0 cbranch-no" title="branch not covered" >?.m</span>etadata<span class="branch-0 cbranch-no" title="branch not covered" >?.u</span>uidToErrorResponseMap)
+      <span class="missing-if-branch" title="else path not taken" >E</span>if (!isEmpty(errors)) {
+        setFormErrors(errors)
+      }
       // This is done because when git sync is enabled, errors are displayed in a modal
-<span class="cstat-no" title="statement not covered" >      if (!isGitSyncEnabled) {</span>
+      else <span class="cstat-no" title="statement not covered" >if (!isGitSyncEnabled) {</span>
 <span class="cstat-no" title="statement not covered" >        showError(</span>
           e?.data?.message || e?.message || getString('commonError'),
           undefined,
           'pipeline.update.create.inputset'
         )
       }
-<span class="cstat-no" title="statement not covered" >      throw e</span>
     }
     return {
-      status: response<span class="branch-0 cbranch-no" title="branch not covered" >?.s</span>tatus, // nextCallback can be added if required
+      status: response?.status, // nextCallback can be added if required
       nextCallback: <span class="fstat-no" title="function not covered" >() =</span>&gt; <span class="cstat-no" title="statement not covered" >history.goBack()</span>
     }
   }
@@ -2449,7 +2419,7 @@ export const EnhancedInputSetForm: React.FC&lt;InputSetFormProps&gt; = props =&g
             <div class='footer quiet pad2 space-top1 center small'>
                 Code coverage generated by
                 <a href="https://istanbul.js.org/" target="_blank">istanbul</a>
-                at Sun Feb 13 2022 12:37:56 GMT+0000 (Greenwich Mean Time)
+                at Mon Feb 14 2022 10:32:25 GMT+0000 (Greenwich Mean Time)
             </div>
         </div>
         <script src="../../../../prettify.js"></script>

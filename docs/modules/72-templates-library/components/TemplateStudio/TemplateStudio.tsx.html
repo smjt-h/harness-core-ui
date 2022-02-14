@@ -23,9 +23,9 @@
         <div class='clearfix'>
             
             <div class='fl pad1y space-right2'>
-                <span class="strong">67.31% </span>
+                <span class="strong">67.62% </span>
                 <span class="quiet">Statements</span>
-                <span class='fraction'>70/104</span>
+                <span class='fraction'>71/105</span>
             </div>
         
             
@@ -44,9 +44,9 @@
         
             
             <div class='fl pad1y space-right2'>
-                <span class="strong">67.31% </span>
+                <span class="strong">67.62% </span>
                 <span class="quiet">Lines</span>
-                <span class='fraction'>70/104</span>
+                <span class='fraction'>71/105</span>
             </div>
         
             
@@ -369,7 +369,13 @@
 <a name='L310'></a><a href='#L310'>310</a>
 <a name='L311'></a><a href='#L311'>311</a>
 <a name='L312'></a><a href='#L312'>312</a>
-<a name='L313'></a><a href='#L313'>313</a></td><td class="line-coverage quiet"><span class="cline-any cline-neutral">&nbsp;</span>
+<a name='L313'></a><a href='#L313'>313</a>
+<a name='L314'></a><a href='#L314'>314</a>
+<a name='L315'></a><a href='#L315'>315</a>
+<a name='L316'></a><a href='#L316'>316</a>
+<a name='L317'></a><a href='#L317'>317</a>
+<a name='L318'></a><a href='#L318'>318</a>
+<a name='L319'></a><a href='#L319'>319</a></td><td class="line-coverage quiet"><span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
@@ -395,10 +401,10 @@
 <span class="cline-any cline-yes">1x</span>
 <span class="cline-any cline-yes">1x</span>
 <span class="cline-any cline-yes">1x</span>
-<span class="cline-any cline-yes">1x</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-yes">1x</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-yes">1x</span>
 <span class="cline-any cline-yes">1x</span>
 <span class="cline-any cline-yes">1x</span>
@@ -406,6 +412,8 @@
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-yes">1x</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">1x</span>
+<span class="cline-any cline-yes">1x</span>
 <span class="cline-any cline-yes">1x</span>
 <span class="cline-any cline-yes">1x</span>
 <span class="cline-any cline-yes">1x</span>
@@ -648,6 +656,10 @@
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-no">&nbsp;</span>
 <span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
@@ -702,7 +714,6 @@ import {
 import type { FormikProps } from 'formik'
 import { useStrings } from 'framework/strings'
 import { NavigationCheck, Page } from '@common/exports'
-import { RightDrawer } from '@templates-library/components/TemplateStudio/RightDrawer/RightDrawer'
 import { useDocumentTitle } from '@common/hooks/useDocumentTitle'
 import { TemplateStudioSubHeader } from '@templates-library/components/TemplateStudio/TemplateStudioSubHeader/TemplateStudioSubHeader'
 import { PageSpinner } from '@common/components'
@@ -710,7 +721,8 @@ import templateFactory from '@templates-library/components/Templates/TemplatesFa
 import { TemplateStudioHeader } from '@templates-library/components/TemplateStudio/TemplateStudioHeader/TemplateStudioHeader'
 import type { GitQueryParams, ModulePathParams, TemplateStudioPathProps } from '@common/interfaces/RouteInterfaces'
 import type { TemplateType } from '@templates-library/utils/templatesUtils'
-import { DrawerTypes } from '@pipeline/components/PipelineStudio/PipelineContext/PipelineActions'
+import { DrawerTypes } from '@templates-library/components/TemplateStudio/TemplateContext/TemplateActions'
+&nbsp;
 import GenericErrorHandler from '@common/pages/GenericErrorHandler/GenericErrorHandler'
 import TemplateYamlView from '@templates-library/components/TemplateStudio/TemplateYamlView/TemplateYamlView'
 import { accountPathProps, orgPathProps, pipelineModuleParams, projectPathProps } from '@common/utils/routeUtils'
@@ -721,6 +733,8 @@ import type { GitFilterScope } from '@common/components/GitFilters/GitFilters'
 import { useQueryParams } from '@common/hooks'
 import { useAppStore } from 'framework/AppStore/AppStoreContext'
 import NoEntityFound from '@pipeline/pages/utils/NoEntityFound/NoEntityFound'
+import { TemplateVariablesContextProvider } from '@pipeline/components/TemplateVariablesContext/TemplateVariablesContext'
+import { RightBar } from '@templates-library/components/TemplateStudio/RightBar/RightBar'
 import { TemplateContext } from './TemplateContext/TemplateContext'
 import css from './TemplateStudio.module.scss'
 &nbsp;
@@ -934,7 +948,7 @@ export function TemplateStudio(): React.ReactElement {
   }, [projectIdentifier, orgIdentifier])
 &nbsp;
   return (
-    &lt;&gt;
+    &lt;TemplateVariablesContextProvider template={template}&gt;
       &lt;NavigationCheck
         when={template?.identifier !== ''}
         shouldBlockNavigation={<span class="fstat-no" title="function not covered" >nextLocation </span>=&gt; {
@@ -962,8 +976,12 @@ export function TemplateStudio(): React.ReactElement {
 <span class="cstat-no" title="statement not covered" >          history.push(newPath)</span>
         }}
       /&gt;
-      &lt;Page.Header size={'small'} title={&lt;TemplateStudioHeader templateType={templateType as TemplateType} /&gt;} /&gt;
-      &lt;Page.Body&gt;
+      &lt;Page.Header
+        className={css.rightMargin}
+        size={'small'}
+        title={&lt;TemplateStudioHeader templateType={templateType as TemplateType} /&gt;}
+      /&gt;
+      &lt;Page.Body className={css.rightMargin}&gt;
         {isLoading &amp;&amp; <span class="branch-1 cbranch-no" title="branch not covered" >&lt;PageSpinner /&gt;}</span>
         &lt;Layout.Vertical height={'100%'}&gt;
           {!isLoading &amp;&amp; isEmpty(template) &amp;&amp; !isGitSyncEnabled &amp;&amp; <span class="branch-3 cbranch-no" title="branch not covered" >&lt;GenericErrorHandler /&gt;}</span>
@@ -987,10 +1005,10 @@ export function TemplateStudio(): React.ReactElement {
               &lt;/Container&gt;
             &lt;/&gt;
           )}
-          &lt;RightDrawer /&gt;
+          &lt;RightBar /&gt;
         &lt;/Layout.Vertical&gt;
       &lt;/Page.Body&gt;
-    &lt;/&gt;
+    &lt;/TemplateVariablesContextProvider&gt;
   )
 }
 &nbsp;</pre></td></tr></table></pre>
@@ -1000,7 +1018,7 @@ export function TemplateStudio(): React.ReactElement {
             <div class='footer quiet pad2 space-top1 center small'>
                 Code coverage generated by
                 <a href="https://istanbul.js.org/" target="_blank">istanbul</a>
-                at Sun Feb 13 2022 12:37:56 GMT+0000 (Greenwich Mean Time)
+                at Mon Feb 14 2022 10:32:25 GMT+0000 (Greenwich Mean Time)
             </div>
         </div>
         <script src="../../../../prettify.js"></script>
