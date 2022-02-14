@@ -7,7 +7,7 @@
 
 import React from 'react'
 import type { FormikProps } from 'formik'
-import { Formik, FormikForm, Accordion, AccordionHandle } from '@wings-software/uicore'
+import { Formik, FormikForm, Accordion, AccordionHandle, HarnessDocTooltip } from '@wings-software/uicore'
 import * as Yup from 'yup'
 import { debounce, defaultTo, isEmpty } from 'lodash-es'
 
@@ -141,7 +141,16 @@ export function AdvancedTabForm(props: AdvancedTabFormProps): React.ReactElement
             stepsFactory.getStep(stepType)?.hasDelegateSelectionVisible && (
               <Accordion.Panel
                 id={AdvancedPanels.DelegateSelectors}
-                summary={getString('delegate.DelegateSelector')}
+                summary={
+                  <div>
+                    {getString('delegate.DelegateSelector')}
+                    <HarnessDocTooltip
+                      tooltipId={`delegate-selector-tooltip`}
+                      contentFromParent={'Hello'}
+                      useStandAlone={true}
+                    />
+                  </div>
+                }
                 details={<DelegateSelectorPanel isReadonly={isReadonly} formikProps={formikProps} />}
               />
             )}

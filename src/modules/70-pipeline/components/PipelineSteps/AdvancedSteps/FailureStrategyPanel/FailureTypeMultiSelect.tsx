@@ -129,6 +129,7 @@ export function FailureTypeMultiSelect(props: ConnectedFailureTypeMultiSelectPro
     <FormGroup label={label} labelFor={name} helperText={helperText} intent={intent} className={css.failureSelect}>
       <div className={css.selectWrapper}>
         <MultiSelect
+          placeholder={disabled || hasAllErrors ? '' : 'Search...'}
           className={css.errorSelect}
           selectedItems={selectedOptions}
           itemListPredicate={itemListPredicate}
