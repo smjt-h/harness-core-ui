@@ -37,7 +37,7 @@ exports[`Instance Selector Modal modal should retain the selected resource group
           >
             <button
               class="bp3-button Button--button StyledProps--font StyledProps--main Button--with-current-color Button--iconOnly"
-              style="margin-right: 20px;"
+              style="background-color: rgb(2, 120, 213); color: rgb(243, 243, 250); margin-right: 20px;"
               type="button"
             >
               <span
