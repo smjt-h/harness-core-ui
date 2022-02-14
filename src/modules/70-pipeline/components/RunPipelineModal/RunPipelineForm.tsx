@@ -1150,7 +1150,7 @@ function RunPipelineFormBasic({
                       onClick={event => {
                         event.stopPropagation()
                         setRunClicked(true)
-                        setFormikState({ submitCount: 1 })
+                        setFormikState({ submitCount: 1 } as any)
                         if ((!selectedInputSets || selectedInputSets.length === 0) && existingProvide === 'existing') {
                           setExistingProvide('provide')
                         } else {
