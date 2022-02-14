@@ -233,7 +233,7 @@ const AnomaliesListGridView: React.FC<ListProps> = ({ listData }) => {
         ),
         accessor: 'time',
         Cell: DateCell,
-        width: '25%'
+        width: '20%'
       },
       {
         Header: (
@@ -243,7 +243,7 @@ const AnomaliesListGridView: React.FC<ListProps> = ({ listData }) => {
         ),
         accessor: 'actualAmount',
         Cell: CostCell,
-        width: '25%'
+        width: '20%'
       },
       {
         Header: (
@@ -253,16 +253,7 @@ const AnomaliesListGridView: React.FC<ListProps> = ({ listData }) => {
         ),
         accessor: 'resourceName',
         Cell: ResourceCell,
-        width: '25%'
-      },
-      {
-        Header: (
-          <Text font={{ variation: FontVariation.TABLE_HEADERS }}>
-            {getString('ce.anomalyDetection.tableHeaders.details')}
-          </Text>
-        ),
-        accessor: 'details',
-        width: '25%'
+        width: '35%'
       },
       {
         Header: (
@@ -272,7 +263,7 @@ const AnomaliesListGridView: React.FC<ListProps> = ({ listData }) => {
         ),
         accessor: 'status',
         Cell: StatusCell,
-        width: '25%'
+        width: '20%'
       },
       {
         Header: ' ',

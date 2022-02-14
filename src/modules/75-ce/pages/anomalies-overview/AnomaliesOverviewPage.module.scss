@@ -44,7 +44,7 @@
 }
 
 .rowGap8 {
-  row-gap: 8px;
+  row-gap: var(--spacing-small);
 }
 
 .countCard {

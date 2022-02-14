@@ -8,7 +8,7 @@
 import React from 'react'
 import { DropDown, FlexExpander, Layout, Text, Icon } from '@wings-software/uicore'
 import { useStrings } from 'framework/strings'
-import { QlceView, useFetchPerspectiveListQuery } from 'services/ce/services'
+import { QlceView, QlceViewFilterOperator, useFetchPerspectiveListQuery } from 'services/ce/services'
 import { allCloudProvidersList } from '@ce/constants'
 import PerspectiveTimeRangePicker from '@ce/components/PerspectiveTimeRangePicker/PerspectiveTimeRangePicker'
 import css from '../../pages/anomalies-overview/AnomaliesOverviewPage.module.scss'
@@ -58,11 +58,10 @@ const AnomalyFilters: React.FC<AnomalyFiltersProps> = ({ filters, setFilters, ti
         />
       </Layout.Horizontal>
       <FlexExpander />
-      {/* TODO: Mutiselect DropDown */}
       <DropDown
         placeholder={getString('ce.anomalyDetection.filters.groupByPerspectivePlaceholder')}
         onChange={option => {
-          setFilters('PERSPECTIVE_ID', 'IN', option.value)
+          setFilters('PERSPECTIVE_ID', QlceViewFilterOperator.In, option.value)
         }}
         value={filters ? filters['PERSPECTIVE_ID']?.value : null}
         addClearBtn={true}
@@ -72,7 +71,7 @@ const AnomalyFilters: React.FC<AnomalyFiltersProps> = ({ filters, setFilters, ti
         placeholder={getString('ce.anomalyDetection.filters.groupByCloudProvidersPlaceholder')}
         filterable={false}
         onChange={option => {
-          setFilters('CLOUD_PROVIDER', 'IN', option.value)
+          setFilters('CLOUD_PROVIDER', QlceViewFilterOperator.In, option.value)
         }}
         addClearBtn={true}
         value={filters ? filters['CLOUD_PROVIDER']?.value : null}

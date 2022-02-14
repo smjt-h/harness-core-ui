@@ -316,7 +316,9 @@ exports[`test cases for Overview Page should be able to render the overview dash
                               </p>
                             </div>
                           </td>
-                          <td>
+                          <td
+                            class="radialChartTable"
+                          >
                             <p
                               class="StyledProps--font Text--lineclamp StyledProps--main StyledProps--color StyledProps--color-grey600 StyledProps--font-small"
                               style="max-width: 90px; --text-line-clamp: 1;"
@@ -343,7 +345,9 @@ exports[`test cases for Overview Page should be able to render the overview dash
                               </p>
                             </div>
                           </td>
-                          <td>
+                          <td
+                            class="radialChartTable"
+                          >
                             <p
                               class="StyledProps--font Text--lineclamp StyledProps--main StyledProps--color StyledProps--color-grey600 StyledProps--font-small"
                               style="max-width: 90px; --text-line-clamp: 1;"
@@ -370,7 +374,9 @@ exports[`test cases for Overview Page should be able to render the overview dash
                               </p>
                             </div>
                           </td>
-                          <td>
+                          <td
+                            class="radialChartTable"
+                          >
                             <p
                               class="StyledProps--font Text--lineclamp StyledProps--main StyledProps--color StyledProps--color-grey600 StyledProps--font-small"
                               style="max-width: 90px; --text-line-clamp: 1;"
@@ -510,7 +516,9 @@ exports[`test cases for Overview Page should be able to render the overview dash
                           </a>
                         </div>
                       </td>
-                      <td>
+                      <td
+                        class="radialChartTable"
+                      >
                         <p
                           class="StyledProps--font Text--lineclamp StyledProps--main StyledProps--color StyledProps--color-grey600 StyledProps--font-small"
                           style="max-width: 90px; --text-line-clamp: 1;"
@@ -541,7 +549,9 @@ exports[`test cases for Overview Page should be able to render the overview dash
                           </a>
                         </div>
                       </td>
-                      <td>
+                      <td
+                        class="radialChartTable"
+                      >
                         <p
                           class="StyledProps--font Text--lineclamp StyledProps--main StyledProps--color StyledProps--color-grey600 StyledProps--font-small"
                           style="max-width: 90px; --text-line-clamp: 1;"
@@ -572,7 +582,9 @@ exports[`test cases for Overview Page should be able to render the overview dash
                           </a>
                         </div>
                       </td>
-                      <td>
+                      <td
+                        class="radialChartTable"
+                      >
                         <p
                           class="StyledProps--font Text--lineclamp StyledProps--main StyledProps--color StyledProps--color-grey600 StyledProps--font-small"
                           style="max-width: 90px; --text-line-clamp: 1;"

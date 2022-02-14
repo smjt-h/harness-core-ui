@@ -11,9 +11,10 @@ import { Provider } from 'urql'
 import { fromValue } from 'wonka'
 import type { DocumentNode } from 'graphql'
 import { TestWrapper } from '@common/utils/testUtils'
-import { FetchCcmMetaDataDocument } from 'services/ce/services'
+import { FetchCcmMetaDataDocument, FetchPerspectiveListDocument } from 'services/ce/services'
 import AnomaliesOverviewPage from '../AnomaliesOverviewPage'
 import CCMMetaDataResponse from './CCMMetaDataResponse.json'
+import PerspectiveList from './PerspectiveList.json'
 
 jest.mock('services/ce', () => ({
   useListAnomalies: jest.fn().mockImplementation(() => ({
@@ -59,6 +60,10 @@ describe('test case for anomalies detection overview page', () => {
         if (query === FetchCcmMetaDataDocument) {
           return fromValue(CCMMetaDataResponse)
         }
+        if (query === FetchPerspectiveListDocument) {
+          return fromValue(PerspectiveList)
+        }
+        return fromValue({})
       }
     }
 
@@ -69,6 +74,8 @@ describe('test case for anomalies detection overview page', () => {
         </Provider>
       </TestWrapper>
     )
+
+    // expect(getByText('ce.anomalyDetection.summary.totalCountText')).toBeDefined()
 
     expect(container).toMatchSnapshot()
   })

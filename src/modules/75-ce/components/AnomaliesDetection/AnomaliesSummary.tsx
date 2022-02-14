@@ -46,19 +46,6 @@ const transformCloudCost = (data: Record<string, any>[], providers: Record<strin
   })
 }
 
-const perspectiveAnomaliesCost = (data: Record<string, any>[] = []): Stats[] => {
-  return data.map((d, idx) => {
-    return {
-      label: `Perspective ${idx + 1}`,
-      value: d.actualCost,
-      count: d.count,
-      trend: 0,
-      legendColor: CE_COLOR_CONST[idx % CE_COLOR_CONST.length],
-      linkId: d.name
-    }
-  })
-}
-
 const AnomaliesSummary: React.FC<AnomaliesOverviewProps> = ({
   costData,
   perspectiveAnomaliesData,
@@ -74,7 +61,7 @@ const AnomaliesSummary: React.FC<AnomaliesOverviewProps> = ({
   )
 
   const perspectiveWiseChartData = useMemo(
-    () => perspectiveAnomaliesCost(perspectiveAnomaliesData),
+    () => transformCloudCost(perspectiveAnomaliesData, allDefaultProviders),
     [perspectiveAnomaliesData]
   )
 
