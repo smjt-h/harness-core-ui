@@ -5,6 +5,7 @@
  * https://polyformproject.org/wp-content/uploads/2020/06/PolyForm-Shield-1.0.0.txt.
  */
 import * as Yup from 'yup'
+import { cloneDeep, unset } from 'lodash-es'
 import { TerraformStoreTypes } from '../TerraformInterfaces'
 
 export const formatInitialValues = (isConfig: boolean, prevStepData: any, isTerraformPlan: boolean) => {
@@ -157,4 +158,27 @@ export const formatOnSubmitData = (values: any, prevStepData: any, connectorValu
     }
   }
   return data
+}
+
+export const formatArtifactoryData = (prevStepData: any, data: any, configObject: any, formik: any) => {
+  if (prevStepData.identifier && prevStepData.identifier !== data?.identifier) {
+    configObject.store.spec.connectorRef = prevStepData?.identifier
+  }
+
+  if (configObject?.store?.spec?.gitFetchType) {
+    unset(configObject?.store?.spec, 'commitId')
+    unset(configObject?.store?.spec, 'gitFetchType')
+    unset(configObject?.store?.spec, 'branch')
+    unset(configObject?.store?.spec, 'folderPath')
+    unset(configObject?.store?.spec, 'repoName')
+  }
+
+  const configFiles = data?.spec?.configuration?.configFiles?.store?.spec
+  configObject.store.spec.artifacts = configFiles.artifacts
+  configObject.store.spec.repositoryName = configFiles.repositoryName
+
+  const valObj = cloneDeep(formik.values)
+  configObject.store.type = prevStepData?.selectedType
+
+  return valObj
 }

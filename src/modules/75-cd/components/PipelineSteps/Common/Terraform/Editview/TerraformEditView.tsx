@@ -69,6 +69,7 @@ import { TFArtifactoryForm } from './TerraformArtifactoryForm'
 import { ConfigurationTypes, TerraformProps, TFFormData } from '../TerraformInterfaces'
 import { TerraformConfigStepOne, TerraformConfigStepTwo } from './TerraformConfigForm'
 import { ConnectorTypes, ConnectorMap, getBuildPayload } from './TerraformConfigFormHelper'
+import { formatArtifactoryData } from './TerraformArtifactoryFormHelper'
 import stepCss from '@pipeline/components/PipelineSteps/Steps/Steps.module.scss'
 import css from './TerraformVarfile.module.scss'
 
@@ -580,22 +581,10 @@ export default function TerraformEditView(
                                 const configObject = {
                                   ...prevStepData.formValues.spec.configuration.spec.configFiles
                                 }
-                                if (prevStepData.identifier && prevStepData.identifier !== data?.identifier) {
-                                  configObject.store.spec.connectorRef = prevStepData?.identifier
-                                }
-                                if (configObject?.store?.spec?.gitFetchType) {
-                                  delete configObject?.store?.spec?.commitId
-                                  delete configObject?.store?.spec?.gitFetchType
-                                  delete configObject?.store?.spec?.branch
-                                  delete configObject?.store?.spec?.folderPath
-                                }
-                                const configFiles = data?.spec?.configuration?.configFiles?.store?.spec
-                                configObject.store.spec.artifacts = configFiles.artifacts
-                                configObject.store.spec.repositoryName = configFiles.repositoryName
-                                const valObj = cloneDeep(formik.values)
-                                configObject.store.type = prevStepData?.selectedType
+                                const valObj = formatArtifactoryData(prevStepData, data, configObject, formik)
                                 set(valObj, 'spec.configuration.spec.configFiles', { ...configObject })
                                 formik.setValues(valObj)
+                                setConnectorView(false)
                                 setShowModal(false)
                               }}
                             />
