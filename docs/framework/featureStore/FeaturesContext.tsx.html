@@ -23,9 +23,9 @@
         <div class='clearfix'>
             
             <div class='fl pad1y space-right2'>
-                <span class="strong">85.52% </span>
+                <span class="strong">84.93% </span>
                 <span class="quiet">Statements</span>
-                <span class='fraction'>124/145</span>
+                <span class='fraction'>124/146</span>
             </div>
         
             
@@ -37,16 +37,16 @@
         
             
             <div class='fl pad1y space-right2'>
-                <span class="strong">80% </span>
+                <span class="strong">77.42% </span>
                 <span class="quiet">Functions</span>
-                <span class='fraction'>24/30</span>
+                <span class='fraction'>24/31</span>
             </div>
         
             
             <div class='fl pad1y space-right2'>
-                <span class="strong">85.92% </span>
+                <span class="strong">85.31% </span>
                 <span class="quiet">Lines</span>
-                <span class='fraction'>122/142</span>
+                <span class='fraction'>122/143</span>
             </div>
         
             
@@ -486,7 +486,14 @@
 <a name='L427'></a><a href='#L427'>427</a>
 <a name='L428'></a><a href='#L428'>428</a>
 <a name='L429'></a><a href='#L429'>429</a>
-<a name='L430'></a><a href='#L430'>430</a></td><td class="line-coverage quiet"><span class="cline-any cline-neutral">&nbsp;</span>
+<a name='L430'></a><a href='#L430'>430</a>
+<a name='L431'></a><a href='#L431'>431</a>
+<a name='L432'></a><a href='#L432'>432</a>
+<a name='L433'></a><a href='#L433'>433</a>
+<a name='L434'></a><a href='#L434'>434</a>
+<a name='L435'></a><a href='#L435'>435</a>
+<a name='L436'></a><a href='#L436'>436</a>
+<a name='L437'></a><a href='#L437'>437</a></td><td class="line-coverage quiet"><span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
@@ -511,6 +518,7 @@
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-yes">868x</span>
 <span class="cline-any cline-yes">868x</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
@@ -578,9 +586,12 @@
 <span class="cline-any cline-yes">1x</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-yes">868x</span>
-<span class="cline-any cline-yes">3826x</span>
+<span class="cline-any cline-yes">3836x</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-yes">868x</span>
@@ -797,6 +808,8 @@
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-yes">5x</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-yes">5x</span>
@@ -915,6 +928,7 @@
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span></td><td class="text"><pre class="prettyprint lang-js">/*
  * Copyright 2022 Harness Inc. All rights reserved.
  * Use of this source code is governed by the PolyForm Shield 1.0.0 license
@@ -981,6 +995,7 @@ export interface FeaturesContextProps {
   requestLimitFeature: (featureRequest: FeatureRequest) =&gt; void
   checkLimitFeature: (featureName: FeatureIdentifier) =&gt; CheckFeatureReturn
   getRestrictionType: (props: GetRestrictionTypeProps) =&gt; RestrictionType | undefined
+  getHighestEdition: (props: GetHighestEditionProps) =&gt; Editions
 }
 &nbsp;
 const defaultReturn = {
@@ -1005,6 +1020,9 @@ export const FeaturesContext = createContext&lt;FeaturesContextProps&gt;({
   },
   getRestrictionType: () =&gt; {
     return undefined
+  },
+  getHighestEdition: <span class="fstat-no" title="function not covered" >() =</span>&gt; {
+<span class="cstat-no" title="statement not covered" >    return Editions.FREE</span>
   }
 })
 &nbsp;
@@ -1225,6 +1243,8 @@ export function FeaturesProvider(props: React.PropsWithChildren&lt;unknown&gt;):
 <span class="cstat-no" title="statement not covered" >    return Editions.FREE</span>
   }
 &nbsp;
+  // this is to return highest edition from all module licenses: FREE, COMMUNITY &lt; TEAM &lt; ENTERPRISE
+  // if no module licenses, then return FREE as default
   function getHighestEdition({ licenseInformation, licenseState }: GetHighestEditionProps): Editions {
     let edition = Editions.FREE
 &nbsp;
@@ -1255,9 +1275,9 @@ export function FeaturesProvider(props: React.PropsWithChildren&lt;unknown&gt;):
     licenseState,
     isCommunity
   }: GetEditionProps): Editions | undefined {
-    // if no license available, reture undefined for default
+    // if no license available, reture Free for default
     <span class="missing-if-branch" title="if path not taken" >I</span>if (licenseInformation === undefined || isEmpty(licenseInformation)) {
-<span class="cstat-no" title="statement not covered" >      return undefined</span>
+<span class="cstat-no" title="statement not covered" >      return Editions.FREE</span>
     }
 &nbsp;
     <span class="missing-if-branch" title="if path not taken" >I</span>if (isCommunity) {
@@ -1337,7 +1357,8 @@ export function FeaturesProvider(props: React.PropsWithChildren&lt;unknown&gt;):
         requestLimitFeature,
         checkLimitFeature,
         checkFeature,
-        getRestrictionType
+        getRestrictionType,
+        getHighestEdition
       }}
     &gt;
       {props.children}
@@ -1351,7 +1372,7 @@ export function FeaturesProvider(props: React.PropsWithChildren&lt;unknown&gt;):
             <div class='footer quiet pad2 space-top1 center small'>
                 Code coverage generated by
                 <a href="https://istanbul.js.org/" target="_blank">istanbul</a>
-                at Mon Feb 14 2022 13:11:25 GMT+0000 (Greenwich Mean Time)
+                at Mon Feb 14 2022 18:27:43 GMT+0000 (Greenwich Mean Time)
             </div>
         </div>
         <script src="../../prettify.js"></script>
