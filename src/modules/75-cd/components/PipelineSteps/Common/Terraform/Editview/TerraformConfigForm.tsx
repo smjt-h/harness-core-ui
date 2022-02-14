@@ -246,6 +246,7 @@ export const TerraformConfigStepTwo: React.FC<StepProps<any> & TerraformConfigSt
     { label: getString('gitFetchTypes.fromBranch'), value: getString('pipelineSteps.deploy.inputSet.branch') },
     { label: getString('gitFetchTypes.fromCommit'), value: getString('pipelineSteps.commitIdValue') }
   ]
+  /* istanbul ignore next */
   const validationSchema = stepTwoValidationSchema(isTerraformPlan, getString)
 
   return (
@@ -274,42 +275,34 @@ export const TerraformConfigStepTwo: React.FC<StepProps<any> & TerraformConfigSt
           return (
             <Form className={css.formComponent}>
               <div className={css.tfRemoteForm}>
-                {
-                  /* istanbul ignore next */
-                  (connectorValue?.connector?.spec?.connectionType === 'Account' ||
-                    /* istanbul ignore next */
-                    connectorValue?.connector?.spec?.type === 'Account' ||
-                    prevStepData?.urlType === 'Account') && (
-                    <div className={cx(stepCss.formGroup, stepCss.md)}>
-                      <FormInput.MultiTextInput
-                        label={getString('pipelineSteps.repoName')}
-                        name={formInputNames(isTerraformPlan).repoName}
-                        placeholder={getString('pipelineSteps.repoName')}
-                        multiTextInputProps={{ expressions, allowableTypes }}
+                {(connectorValue?.connector?.spec?.connectionType === 'Account' ||
+                  connectorValue?.connector?.spec?.type === 'Account' ||
+                  prevStepData?.urlType === 'Account') && (
+                  <div className={cx(stepCss.formGroup, stepCss.md)}>
+                    <FormInput.MultiTextInput
+                      label={getString('pipelineSteps.repoName')}
+                      name={formInputNames(isTerraformPlan).repoName}
+                      placeholder={getString('pipelineSteps.repoName')}
+                      multiTextInputProps={{ expressions, allowableTypes: allowableTypes }}
+                    />
+                    {getMultiTypeFromValue(store?.repoName) === MultiTypeInputType.RUNTIME && (
+                      <ConfigureOptions
+                        style={{ alignSelf: 'center', marginTop: 1 }}
+                        value={store?.repoName as string}
+                        type="String"
+                        variableName="configuration.configFiles.store.spec.repoName"
+                        showRequiredField={false}
+                        showDefaultField={false}
+                        showAdvanced={true}
+                        onChange={value => {
+                          /* istanbul ignore next */
+                          formik.setFieldValue(formikOnChangeNames(isTerraformPlan).repoName, value)
+                        }}
+                        isReadonly={isReadonly}
                       />
-                      {
-                        /* istanbul ignore next */
-                        getMultiTypeFromValue(store?.repoName) === MultiTypeInputType.RUNTIME && (
-                          <ConfigureOptions
-                            style={{ alignSelf: 'center', marginTop: 1 }}
-                            value={store?.repoName as string}
-                            type="String"
-                            variableName="configuration.configFiles.store.spec.repoName"
-                            showRequiredField={false}
-                            showDefaultField={false}
-                            showAdvanced={true}
-                            onChange={value => {
-                              /* istanbul ignore next */
-                              formik.setFieldValue(formikOnChangeNames(isTerraformPlan).repoName, value)
-                            }}
-                            isReadonly={isReadonly}
-                          />
-                        )
-                      }
-                    </div>
-                  )
-                }
-
+                    )}
+                  </div>
+                )}
                 <div className={cx(stepCss.formGroup, stepCss.md)}>
                   <FormInput.Select
                     items={gitFetchTypes}
@@ -326,25 +319,22 @@ export const TerraformConfigStepTwo: React.FC<StepProps<any> & TerraformConfigSt
                       name={formInputNames(isTerraformPlan).branch}
                       multiTextInputProps={{ expressions, allowableTypes }}
                     />
-                    {
-                      /* istanbul ignore next */
-                      getMultiTypeFromValue(store?.branch) === MultiTypeInputType.RUNTIME && (
-                        <ConfigureOptions
-                          style={{ alignSelf: 'center', marginTop: 1 }}
-                          value={store?.branch as string}
-                          type="String"
-                          variableName="configuration.spec.configFiles.store.spec.branch"
-                          showRequiredField={false}
-                          showDefaultField={false}
-                          showAdvanced={true}
-                          onChange={value => {
-                            /* istanbul ignore next */
-                            formik.setFieldValue(formikOnChangeNames(isTerraformPlan).branch, value)
-                          }}
-                          isReadonly={isReadonly}
-                        />
-                      )
-                    }
+                    {getMultiTypeFromValue(store?.branch) === MultiTypeInputType.RUNTIME && (
+                      <ConfigureOptions
+                        style={{ alignSelf: 'center', marginTop: 1 }}
+                        value={store?.branch as string}
+                        type="String"
+                        variableName="configuration.spec.configFiles.store.spec.branch"
+                        showRequiredField={false}
+                        showDefaultField={false}
+                        showAdvanced={true}
+                        onChange={value => {
+                          /* istanbul ignore next */
+                          formik.setFieldValue(formikOnChangeNames(isTerraformPlan).branch, value)
+                        }}
+                        isReadonly={isReadonly}
+                      />
+                    )}
                   </div>
                 )}
 
@@ -356,25 +346,22 @@ export const TerraformConfigStepTwo: React.FC<StepProps<any> & TerraformConfigSt
                       name={formInputNames(isTerraformPlan).commitId}
                       multiTextInputProps={{ expressions, allowableTypes }}
                     />
-                    {
-                      /* istanbul ignore next */
-                      getMultiTypeFromValue(store?.commitId) === MultiTypeInputType.RUNTIME && (
-                        <ConfigureOptions
-                          style={{ alignSelf: 'center', marginTop: 1 }}
-                          value={store?.commitId as string}
-                          type="String"
-                          variableName={formInputNames(isTerraformPlan).commitId}
-                          showRequiredField={false}
-                          showDefaultField={false}
-                          showAdvanced={true}
-                          onChange={value => {
-                            /* istanbul ignore next */
-                            formik.setFieldValue(formikOnChangeNames(isTerraformPlan).commitId, value)
-                          }}
-                          isReadonly={isReadonly}
-                        />
-                      )
-                    }
+                    {getMultiTypeFromValue(store?.commitId) === MultiTypeInputType.RUNTIME && (
+                      <ConfigureOptions
+                        style={{ alignSelf: 'center', marginTop: 1 }}
+                        value={store?.commitId as string}
+                        type="String"
+                        variableName={formInputNames(isTerraformPlan).commitId}
+                        showRequiredField={false}
+                        showDefaultField={false}
+                        showAdvanced={true}
+                        onChange={value => {
+                          /* istanbul ignore next */
+                          formik.setFieldValue(formikOnChangeNames(isTerraformPlan).commitId, value)
+                        }}
+                        isReadonly={isReadonly}
+                      />
+                    )}
                   </div>
                 )}
 
@@ -385,25 +372,22 @@ export const TerraformConfigStepTwo: React.FC<StepProps<any> & TerraformConfigSt
                     name={formInputNames(isTerraformPlan).folderPath}
                     multiTextInputProps={{ expressions, allowableTypes }}
                   />
-                  {
-                    /* istanbul ignore next */
-                    getMultiTypeFromValue(store?.folderPath) === MultiTypeInputType.RUNTIME && (
-                      <ConfigureOptions
-                        style={{ alignSelf: 'center', marginTop: 1 }}
-                        value={store?.folderPath as string}
-                        type="String"
-                        variableName={formInputNames(isTerraformPlan).folderPath}
-                        showRequiredField={false}
-                        showDefaultField={false}
-                        showAdvanced={true}
-                        onChange={value => {
-                          /* istanbul ignore next */
-                          formik.setFieldValue(formikOnChangeNames(isTerraformPlan).folderPath, value)
-                        }}
-                        isReadonly={isReadonly}
-                      />
-                    )
-                  }
+                  {getMultiTypeFromValue(store?.folderPath) === MultiTypeInputType.RUNTIME && (
+                    <ConfigureOptions
+                      style={{ alignSelf: 'center', marginTop: 1 }}
+                      value={store?.folderPath as string}
+                      type="String"
+                      variableName={formInputNames(isTerraformPlan).folderPath}
+                      showRequiredField={false}
+                      showDefaultField={false}
+                      showAdvanced={true}
+                      onChange={value => {
+                        /* istanbul ignore next */
+                        formik.setFieldValue(formikOnChangeNames(isTerraformPlan).folderPath, value)
+                      }}
+                      isReadonly={isReadonly}
+                    />
+                  )}
                 </div>
               </div>
 
