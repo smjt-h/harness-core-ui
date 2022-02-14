@@ -15,7 +15,6 @@ import {
   Card,
   Color,
   Formik,
-  getMultiTypeFromValue,
   Heading,
   Icon,
   Layout,
@@ -28,18 +27,11 @@ import {
 import { Form } from 'formik'
 import { useStrings } from 'framework/strings'
 import { FormMultiTypeConnectorField } from '@connectors/components/ConnectorReferenceField/FormMultiTypeConnectorField'
-import type { ConnectorSelectedValue } from '@connectors/components/ConnectorReferenceField/ConnectorReferenceField'
 
 import { useVariablesExpression } from '@pipeline/components/PipelineStudio/PiplineHooks/useVariablesExpression'
-import {
-  ConnectorTypes,
-  AllowedTypes,
-  tfVarIcons,
-  ConnectorMap,
-  ConnectorLabelMap
-} from '../../../TerraformPlan/TerraformConfigFormHelper'
-
 import { ConnectorRefSchema } from '@common/utils/Validation'
+import { ConnectorTypes, AllowedTypes, tfVarIcons, ConnectorMap, ConnectorLabelMap } from './TerraformConfigFormHelper'
+
 import css from './TerraformVarfile.module.scss'
 
 interface TFVarStoreProps {
@@ -48,6 +40,7 @@ interface TFVarStoreProps {
   allowableTypes: MultiTypeInputType[]
   handleConnectorViewChange?: (val: ConnectorTypes) => void
   isReadonly?: boolean
+  setConnectorView?: (val: boolean) => void
 }
 
 export const TFVarStore: React.FC<StepProps<any> & TFVarStoreProps> = ({
@@ -57,7 +50,8 @@ export const TFVarStore: React.FC<StepProps<any> & TFVarStoreProps> = ({
   isEditMode,
   allowableTypes,
   handleConnectorViewChange,
-  isReadonly
+  isReadonly,
+  setConnectorView
 }) => {
   const [selectedType, setSelectedType] = React.useState('')
   const { getString } = useStrings()
@@ -79,6 +73,9 @@ export const TFVarStore: React.FC<StepProps<any> & TFVarStoreProps> = ({
   React.useEffect(() => {
     /* istanbul ignore next */
     setSelectedType(initialValues?.varFile?.spec?.store?.type)
+    if (setConnectorView) {
+      setConnectorView(false)
+    }
   }, [isEditMode])
 
   const newConnectorLabel = `${getString('newLabel')} ${
@@ -86,8 +83,8 @@ export const TFVarStore: React.FC<StepProps<any> & TFVarStoreProps> = ({
   } ${getString('connector')}`
 
   return (
-    <Layout.Vertical spacing="xxlarge" padding="small" className={css.tfVarStore}>
-      <Heading level={2} style={{ color: Color.GREY_800, fontSize: 24 }} margin={{ bottom: 'large' }}>
+    <Layout.Vertical padding="small" className={css.tfVarStore}>
+      <Heading level={2} style={{ color: Color.BLACK, fontSize: 24, fontWeight: 'bold' }} margin={{ bottom: 'large' }}>
         {getString('cd.specifyTfVarStore')}
       </Heading>
 
@@ -128,8 +125,11 @@ export const TFVarStore: React.FC<StepProps<any> & TFVarStoreProps> = ({
         })}
       >
         {formik => {
+          const connectorRef = formik.values.varFile?.spec?.store?.spec?.connectorRef
+          const disabled =
+            !connectorRef || (connectorRef?.connector?.type && connectorRef?.connector?.type !== selectedType)
           return (
-            <Form>
+            <Form className={css.formComponent}>
               <div className={css.formContainerStepOne}>
                 {selectedType && (
                   <Layout.Horizontal
@@ -143,7 +143,7 @@ export const TFVarStore: React.FC<StepProps<any> & TFVarStoreProps> = ({
                           <Button
                             icon="question"
                             minimal
-                            tooltip={getString('connectors.title.gitConnector')}
+                            tooltip={`${selectedType} ${getString('connector')}`}
                             iconProps={{ size: 14 }}
                           />
                         </Text>
@@ -171,7 +171,7 @@ export const TFVarStore: React.FC<StepProps<any> & TFVarStoreProps> = ({
                         if (handleConnectorViewChange) {
                           handleConnectorViewChange(selectedType as ConnectorTypes)
                         }
-                        nextStep?.({ ...prevStepData, store: selectedType })
+                        nextStep?.({ ...prevStepData, selectedType })
                       }}
                     />
                   </Layout.Horizontal>
@@ -189,13 +189,7 @@ export const TFVarStore: React.FC<StepProps<any> & TFVarStoreProps> = ({
                     /* istanbul ignore next */
                     nextStep?.({ ...formik.values, selectedType })
                   }}
-                  disabled={
-                    /* istanbul ignore next */
-                    !selectedType ||
-                    (getMultiTypeFromValue(formik.values.varFile?.spec?.store?.spec?.connectorRef) ===
-                      MultiTypeInputType.FIXED &&
-                      !(formik.values.varFile?.spec?.store?.spec?.connectorRef as ConnectorSelectedValue)?.connector)
-                  }
+                  disabled={disabled}
                 />
               </Layout.Horizontal>
             </Form>

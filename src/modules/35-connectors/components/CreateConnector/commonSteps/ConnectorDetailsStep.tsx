@@ -150,7 +150,6 @@ const ConnectorDetailsStep: React.FC<StepProps<ConnectorConfigDTO> & ConnectorDe
           })}
           initialValues={{
             ...(getInitialValues() as DetailsForm),
-            ...prevStepData,
             ...props.formData
           }}
         >

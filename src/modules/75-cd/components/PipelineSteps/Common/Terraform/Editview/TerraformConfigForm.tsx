@@ -5,7 +5,7 @@
  * https://polyformproject.org/wp-content/uploads/2020/06/PolyForm-Shield-1.0.0.txt.
  */
 
-import React, { useState, useEffect } from 'react'
+import React, { useEffect } from 'react'
 import {
   Button,
   Color,
@@ -31,9 +31,18 @@ import { useVariablesExpression } from '@pipeline/components/PipelineStudio/Pipl
 import { useStrings } from 'framework/strings'
 import { FormMultiTypeConnectorField } from '@connectors/components/ConnectorReferenceField/FormMultiTypeConnectorField'
 import { ConfigureOptions } from '@common/components/ConfigureOptions/ConfigureOptions'
-import { AllowedTypes, tfVarIcons, ConnectorMap, ConnectorLabelMap, ConnectorTypes } from './TerraformConfigFormHelper'
+import {
+  AllowedTypes,
+  tfVarIcons,
+  ConnectorMap,
+  ConnectorLabelMap,
+  ConnectorTypes,
+  formInputNames,
+  formikOnChangeNames,
+  stepTwoValidationSchema
+} from './TerraformConfigFormHelper'
 
-import type { Connector } from '../Common/Terraform/TerraformInterfaces'
+import type { Connector } from '../TerraformInterfaces'
 
 import css from './TerraformConfigForm.module.scss'
 import stepCss from '@pipeline/components/PipelineSteps/Steps/Steps.module.scss'
@@ -43,8 +52,10 @@ interface TerraformConfigStepOneProps {
   isReadonly: boolean
   allowableTypes: MultiTypeInputType[]
   isEditMode: boolean
+  selectedConnector: string
   setConnectorView: (val: boolean) => void
   setSelectedConnector: (val: ConnectorTypes) => void
+  isTerraformPlan?: boolean
 }
 
 export const TerraformConfigStepOne: React.FC<StepProps<any> & TerraformConfigStepOneProps> = ({
@@ -52,14 +63,13 @@ export const TerraformConfigStepOne: React.FC<StepProps<any> & TerraformConfigSt
   isReadonly,
   allowableTypes,
   nextStep,
-  isEditMode,
   setConnectorView,
-  setSelectedConnector
+  selectedConnector,
+  setSelectedConnector,
+  isTerraformPlan = false
 }) => {
   const { getString } = useStrings()
   const { expressions } = useVariablesExpression()
-  const [selectedType, setSelectedType] = useState('')
-
   const { accountId, projectIdentifier, orgIdentifier } = useParams<{
     projectIdentifier: string
     orgIdentifier: string
@@ -67,28 +77,57 @@ export const TerraformConfigStepOne: React.FC<StepProps<any> & TerraformConfigSt
   }>()
 
   useEffect(() => {
-    setSelectedType(data?.spec?.configuration?.configFiles?.store?.type)
-  }, [isEditMode])
+    const selectedStore = isTerraformPlan
+      ? data?.spec?.configuration?.configFiles?.store?.type
+      : data?.spec?.configuration?.spec?.configFiles?.store?.type
+    setSelectedConnector(selectedStore)
+  }, [])
 
   const newConnectorLabel = `${getString('newLabel')} ${
-    !!selectedType && getString(ConnectorLabelMap[selectedType as ConnectorTypes])
+    !!selectedConnector && getString(ConnectorLabelMap[selectedConnector as ConnectorTypes])
   } ${getString('connector')}`
+  const connectorError = getString('pipelineSteps.build.create.connectorRequiredError')
+  const configSchema = {
+    configFiles: Yup.object().shape({
+      store: Yup.object().shape({
+        spec: Yup.object().shape({
+          connectorRef: Yup.string().required(connectorError)
+        })
+      })
+    })
+  }
+  const validationSchema = isTerraformPlan
+    ? Yup.object().shape({
+        spec: Yup.object().shape({
+          configuration: Yup.object().shape({
+            ...configSchema
+          })
+        })
+      })
+    : Yup.object().shape({
+        spec: Yup.object().shape({
+          configuration: Yup.object().shape({
+            spec: Yup.object().shape({
+              ...configSchema
+            })
+          })
+        })
+      })
 
   return (
-    <Layout.Vertical spacing="xxlarge" padding="small" className={css.tfConfigForm}>
-      <Heading level={2} style={{ color: Color.GREY_800, fontSize: 24 }} margin={{ bottom: 'large' }}>
-        {getString('pipelineSteps.configFiles')}
+    <Layout.Vertical padding="small" className={css.tfConfigForm}>
+      <Heading level={2} style={{ color: Color.BLACK, fontSize: 24, fontWeight: 'bold' }} margin={{ bottom: 'xlarge' }}>
+        {getString('cd.configFileStore')}
       </Heading>
 
-      <Layout.Horizontal flex={{ justifyContent: 'flex-start', alignItems: 'flex-start' }}>
+      <Layout.Horizontal className={css.horizontalFlex} margin={{ top: 'xlarge', bottom: 'xlarge' }}>
         {AllowedTypes.map(item => (
           <div key={item} className={css.squareCardContainer}>
             <Card
               className={css.connectorIcon}
-              selected={item === selectedType}
+              selected={item === selectedConnector}
               data-testid={`varStore-${item}`}
               onClick={() => {
-                setSelectedType(item)
                 setSelectedConnector(item as ConnectorTypes)
               }}
             >
@@ -104,37 +143,41 @@ export const TerraformConfigStepOne: React.FC<StepProps<any> & TerraformConfigSt
         enableReinitialize={true}
         onSubmit={() => {
           /* istanbul ignore next */
-          setSelectedType('')
         }}
         initialValues={data}
-        validationSchema={Yup.object().shape({
-          spec: Yup.object().shape({
-            configuration: Yup.object().shape({
-              configFiles: Yup.object().shape({
-                store: Yup.object().shape({
-                  spec: Yup.object().shape({
-                    connectorRef: Yup.string().required(getString('pipelineSteps.build.create.connectorRequiredError'))
-                  })
-                })
-              })
-            })
-          })
-        })}
+        validationSchema={validationSchema}
       >
         {formik => {
+          const config = formik?.values?.spec?.configuration
+          const connectorRef = isTerraformPlan
+            ? config?.configFiles?.store?.spec?.connectorRef
+            : config?.spec?.configFiles?.store?.spec?.connectorRef
+          const disabled =
+            !connectorRef || (connectorRef?.connector?.type && connectorRef?.connector?.type !== selectedConnector)
           return (
-            <Form>
+            <Form className={css.formComponent}>
               <div className={css.formContainerStepOne}>
-                {selectedType && (
-                  <Layout.Horizontal
-                    spacing={'medium'}
-                    flex={{ alignItems: 'flex-start', justifyContent: 'flex-start' }}
-                  >
+                {selectedConnector && (
+                  <Layout.Horizontal className={css.horizontalFlex} spacing={'medium'}>
                     <FormMultiTypeConnectorField
-                      label={getString('connector')}
-                      type={ConnectorMap[selectedType]}
-                      width={260}
-                      name="spec.configuration.configFiles.store.spec.connectorRef"
+                      label={
+                        <Text style={{ display: 'flex', alignItems: 'center' }}>
+                          {ConnectorMap[selectedConnector]} {getString('connector')}
+                          <Button
+                            icon="question"
+                            minimal
+                            tooltip={`${ConnectorMap[selectedConnector]} ${getString('connector')}`}
+                            iconProps={{ size: 14 }}
+                          />
+                        </Text>
+                      }
+                      type={ConnectorMap[selectedConnector]}
+                      width={400}
+                      name={
+                        isTerraformPlan
+                          ? 'spec.configuration.configFiles.store.spec.connectorRef'
+                          : 'spec.configuration.spec.configFiles.store.spec.connectorRef'
+                      }
                       placeholder={getString('select')}
                       accountIdentifier={accountId}
                       projectIdentifier={projectIdentifier}
@@ -152,22 +195,26 @@ export const TerraformConfigStepOne: React.FC<StepProps<any> & TerraformConfigSt
                       icon="plus"
                       iconProps={{ size: 12 }}
                       onClick={() => {
+                        /* istanbul ignore next */
                         setConnectorView(true)
-                        nextStep?.({ ...data, selectedType })
+                        /* istanbul ignore next */
+                        nextStep?.({ formValues: data, selectedType: selectedConnector })
                       }}
                     />
                   </Layout.Horizontal>
                 )}
               </div>
-
               <Layout.Horizontal spacing="xxlarge">
                 <Button
                   variation={ButtonVariation.PRIMARY}
                   type="submit"
                   text={getString('continue')}
                   rightIcon="chevron-right"
-                  onClick={() => nextStep?.({ ...formik.values, selectedType })}
-                  disabled={!formik?.values?.spec?.configuration?.configFiles?.store?.spec?.connectorRef}
+                  onClick={() => {
+                    /* istanbul ignore next */
+                    nextStep?.({ formValues: formik.values, selectedType: selectedConnector })
+                  }}
+                  disabled={disabled}
                 />
               </Layout.Horizontal>
             </Form>
@@ -182,6 +229,7 @@ interface TerraformConfigStepTwoProps {
   allowableTypes: MultiTypeInputType[]
   isReadonly: boolean
   onSubmitCallBack: any
+  isTerraformPlan?: boolean
 }
 
 export const TerraformConfigStepTwo: React.FC<StepProps<any> & TerraformConfigStepTwoProps> = ({
@@ -189,73 +237,67 @@ export const TerraformConfigStepTwo: React.FC<StepProps<any> & TerraformConfigSt
   prevStepData,
   onSubmitCallBack,
   isReadonly = false,
-  allowableTypes
+  allowableTypes,
+  isTerraformPlan = false
 }) => {
   const { getString } = useStrings()
   const { expressions } = useVariablesExpression()
-
   const gitFetchTypes: SelectOption[] = [
     { label: getString('gitFetchTypes.fromBranch'), value: getString('pipelineSteps.deploy.inputSet.branch') },
     { label: getString('gitFetchTypes.fromCommit'), value: getString('pipelineSteps.commitIdValue') }
   ]
+  /* istanbul ignore next */
+  const validationSchema = stepTwoValidationSchema(isTerraformPlan, getString)
 
   return (
-    <Layout.Vertical spacing="xxlarge" padding="small" className={css.tfConfigForm}>
-      <Text font="large" color={Color.GREY_800}>
-        {getString('cd.varFileDetails')}
-      </Text>
+    <Layout.Vertical padding="small" className={css.tfConfigForm}>
+      <Heading level={2} style={{ color: Color.BLACK, fontSize: 24, fontWeight: 'bold' }} margin={{ bottom: 'xlarge' }}>
+        {getString('cd.configFileDetails')}
+      </Heading>
       <Formik
         formName="tfRemoteWizardForm"
-        initialValues={prevStepData}
-        onSubmit={onSubmitCallBack}
-        validationSchema={Yup.object().shape({
-          spec: Yup.object().shape({
-            configuration: Yup.object().shape({
-              configFiles: Yup.object().shape({
-                store: Yup.object().shape({
-                  spec: Yup.object().shape({
-                    gitFetchType: Yup.string().required(getString('cd.gitFetchTypeRequired')),
-                    branch: Yup.string().when('gitFetchType', {
-                      is: 'Branch',
-                      then: Yup.string().trim().required(getString('validation.branchName'))
-                    }),
-                    commitId: Yup.string().when('gitFetchType', {
-                      is: 'CommitId',
-                      then: Yup.string().trim().required(getString('validation.commitId'))
-                    }),
-                    folderPath: Yup.string().required(getString('pipeline.manifestType.folderPathRequired'))
-                  })
-                })
-              })
-            })
-          })
-        })}
+        initialValues={prevStepData.formValues}
+        onSubmit={data => {
+          /* istanbul ignore next */
+          onSubmitCallBack(data, prevStepData)
+        }}
+        validationSchema={validationSchema}
       >
         {formik => {
-          const connectorValue = formik.values.spec?.configuration?.configFiles?.store?.spec?.connectorRef as Connector
+          const connectorValue = (
+            isTerraformPlan
+              ? formik.values.spec?.configuration?.configFiles?.store?.spec?.connectorRef
+              : formik.values.spec?.configuration?.spec?.configFiles?.store?.spec?.connectorRef
+          ) as Connector
+          const store = isTerraformPlan
+            ? formik.values?.spec?.configuration?.configFiles?.store?.spec
+            : formik.values?.spec?.configuration?.spec?.configFiles?.store?.spec
           return (
-            <Form>
+            <Form className={css.formComponent}>
               <div className={css.tfRemoteForm}>
                 {(connectorValue?.connector?.spec?.connectionType === 'Account' ||
-                  connectorValue?.connector?.spec?.type === 'Account') && (
+                  connectorValue?.connector?.spec?.type === 'Account' ||
+                  prevStepData?.urlType === 'Account') && (
                   <div className={cx(stepCss.formGroup, stepCss.md)}>
                     <FormInput.MultiTextInput
                       label={getString('pipelineSteps.repoName')}
-                      name="spec.configuration.configFiles.store.spec.repoName"
+                      name={formInputNames(isTerraformPlan).repoName}
                       placeholder={getString('pipelineSteps.repoName')}
                       multiTextInputProps={{ expressions, allowableTypes: allowableTypes }}
                     />
-                    {getMultiTypeFromValue(formik.values?.spec?.configuration?.configFiles?.store?.spec?.repoName) ===
-                      MultiTypeInputType.RUNTIME && (
+                    {getMultiTypeFromValue(store?.repoName) === MultiTypeInputType.RUNTIME && (
                       <ConfigureOptions
                         style={{ alignSelf: 'center', marginTop: 1 }}
-                        value={formik.values?.spec?.configuration?.configFiles?.store?.spec?.repoName as string}
+                        value={store?.repoName as string}
                         type="String"
                         variableName="configuration.configFiles.store.spec.repoName"
                         showRequiredField={false}
                         showDefaultField={false}
                         showAdvanced={true}
-                        onChange={value => formik.setFieldValue('configuration.configFiles.store.spec.repoName', value)}
+                        onChange={value => {
+                          /* istanbul ignore next */
+                          formik.setFieldValue(formikOnChangeNames(isTerraformPlan).repoName, value)
+                        }}
                         isReadonly={isReadonly}
                       />
                     )}
@@ -264,59 +306,59 @@ export const TerraformConfigStepTwo: React.FC<StepProps<any> & TerraformConfigSt
                 <div className={cx(stepCss.formGroup, stepCss.md)}>
                   <FormInput.Select
                     items={gitFetchTypes}
-                    name="spec.configuration.configFiles.store.spec.gitFetchType"
+                    name={formInputNames(isTerraformPlan).gitFetchType}
                     label={getString('pipeline.manifestType.gitFetchTypeLabel')}
                     placeholder={getString('pipeline.manifestType.gitFetchTypeLabel')}
                   />
                 </div>
-                {formik.values?.spec?.configuration?.configFiles?.store?.spec?.gitFetchType ===
-                  gitFetchTypes[0].value && (
+                {store?.gitFetchType === gitFetchTypes[0].value && (
                   <div className={cx(stepCss.formGroup, stepCss.md)}>
                     <FormInput.MultiTextInput
                       label={getString('pipelineSteps.deploy.inputSet.branch')}
                       placeholder={getString('pipeline.manifestType.branchPlaceholder')}
-                      name="spec.configuration.configFiles.store.spec.branch"
+                      name={formInputNames(isTerraformPlan).branch}
                       multiTextInputProps={{ expressions, allowableTypes }}
                     />
-                    {getMultiTypeFromValue(formik.values?.spec?.configuration?.configFiles?.store?.spec?.branch) ===
-                      MultiTypeInputType.RUNTIME && (
+                    {getMultiTypeFromValue(store?.branch) === MultiTypeInputType.RUNTIME && (
                       <ConfigureOptions
                         style={{ alignSelf: 'center', marginTop: 1 }}
-                        value={formik.values?.spec?.configuration?.configFiles?.store?.spec?.branch as string}
+                        value={store?.branch as string}
                         type="String"
                         variableName="configuration.spec.configFiles.store.spec.branch"
                         showRequiredField={false}
                         showDefaultField={false}
                         showAdvanced={true}
-                        onChange={value => formik.setFieldValue('configuration.configFiles.store.spec.branch', value)}
+                        onChange={value => {
+                          /* istanbul ignore next */
+                          formik.setFieldValue(formikOnChangeNames(isTerraformPlan).branch, value)
+                        }}
                         isReadonly={isReadonly}
                       />
                     )}
                   </div>
                 )}
 
-                {formik.values?.spec?.configuration?.configFiles?.store?.spec?.gitFetchType ===
-                  gitFetchTypes[1].value && (
+                {store?.gitFetchType === gitFetchTypes[1].value && (
                   <div className={cx(stepCss.formGroup, stepCss.md)}>
                     <FormInput.MultiTextInput
                       label={getString('pipeline.manifestType.commitId')}
                       placeholder={getString('pipeline.manifestType.commitPlaceholder')}
-                      name="spec.configuration.configFiles.store.spec.commitId"
+                      name={formInputNames(isTerraformPlan).commitId}
                       multiTextInputProps={{ expressions, allowableTypes }}
                     />
-                    {getMultiTypeFromValue(formik.values?.spec?.configuration?.configFiles?.store?.spec?.commitId) ===
-                      MultiTypeInputType.RUNTIME && (
+                    {getMultiTypeFromValue(store?.commitId) === MultiTypeInputType.RUNTIME && (
                       <ConfigureOptions
                         style={{ alignSelf: 'center', marginTop: 1 }}
-                        value={formik.values?.spec?.configuration?.configFiles?.store?.spec?.commitId as string}
+                        value={store?.commitId as string}
                         type="String"
-                        variableName="spec.configuration.configFiles.store.spec.commitId"
+                        variableName={formInputNames(isTerraformPlan).commitId}
                         showRequiredField={false}
                         showDefaultField={false}
                         showAdvanced={true}
-                        onChange={value =>
-                          formik.setFieldValue('spec.configuration.configFiles.spec.store.spec.commitId', value)
-                        }
+                        onChange={value => {
+                          /* istanbul ignore next */
+                          formik.setFieldValue(formikOnChangeNames(isTerraformPlan).commitId, value)
+                        }}
                         isReadonly={isReadonly}
                       />
                     )}
@@ -327,25 +369,22 @@ export const TerraformConfigStepTwo: React.FC<StepProps<any> & TerraformConfigSt
                   <FormInput.MultiTextInput
                     label={getString('cd.folderPath')}
                     placeholder={getString('pipeline.manifestType.pathPlaceholder')}
-                    name="spec.configuration.configFiles.store.spec.folderPath"
+                    name={formInputNames(isTerraformPlan).folderPath}
                     multiTextInputProps={{ expressions, allowableTypes }}
                   />
-                  {getMultiTypeFromValue(formik.values?.spec?.configuration?.configFiles?.store?.spec?.folderPath) ===
-                    MultiTypeInputType.RUNTIME && (
+                  {getMultiTypeFromValue(store?.folderPath) === MultiTypeInputType.RUNTIME && (
                     <ConfigureOptions
                       style={{ alignSelf: 'center', marginTop: 1 }}
-                      value={formik.values?.spec?.configuration?.configFiles?.store?.spec?.folderPath as string}
+                      value={store?.folderPath as string}
                       type="String"
-                      variableName="formik.values.spec?.configuration?.configFiles?.store.spec?.folderPath"
+                      variableName={formInputNames(isTerraformPlan).folderPath}
                       showRequiredField={false}
                       showDefaultField={false}
                       showAdvanced={true}
-                      onChange={value =>
-                        formik.setFieldValue(
-                          'formik.values.spec?.configuration?.configFiles?.store.spec?.folderPath',
-                          value
-                        )
-                      }
+                      onChange={value => {
+                        /* istanbul ignore next */
+                        formik.setFieldValue(formikOnChangeNames(isTerraformPlan).folderPath, value)
+                      }}
                       isReadonly={isReadonly}
                     />
                   )}
@@ -357,7 +396,11 @@ export const TerraformConfigStepTwo: React.FC<StepProps<any> & TerraformConfigSt
                   text={getString('back')}
                   variation={ButtonVariation.SECONDARY}
                   icon="chevron-left"
-                  onClick={() => previousStep?.()}
+                  onClick={() => {
+                    /* istanbul ignore next */
+                    previousStep?.()
+                  }}
+                  data-testid={'previous-button'}
                   data-name="tf-remote-back-btn"
                 />
                 <Button
