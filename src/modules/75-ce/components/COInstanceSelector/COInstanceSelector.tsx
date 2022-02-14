@@ -183,8 +183,8 @@ const COInstanceSelector: React.FC<COInstanceSelectorprops> = props => {
                 onClick={addInstances}
                 disabled={!hasSelectedInstances}
                 style={{
-                  backgroundColor: Utils.getConditionalResult(hasSelectedInstances, Color.PRIMARY_7, 'inherit'),
-                  color: Utils.getConditionalResult(hasSelectedInstances, Color.GREY_100, 'inherit'),
+                  backgroundColor: hasSelectedInstances ? '#0278d5' : 'inherit',
+                  color: hasSelectedInstances ? '#F3F3FA' : 'inherit',
                   marginRight: 20
                 }}
               >
