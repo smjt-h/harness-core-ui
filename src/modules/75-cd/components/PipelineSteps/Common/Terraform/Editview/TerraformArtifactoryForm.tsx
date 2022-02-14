@@ -58,7 +58,6 @@ export const TFArtifactoryForm: React.FC<StepProps<any> & TFRemoteProps> = ({
     orgIdentifier: string
     accountId: string
   }>()
-
   const { getString } = useStrings()
   const { showError } = useToaster()
   const initialValues = formatInitialValues(isConfig, prevStepData, isTerraformPlan)
@@ -295,8 +294,11 @@ export const TFArtifactoryForm: React.FC<StepProps<any> & TFRemoteProps> = ({
                                       <Button
                                         minimal
                                         icon="main-trash"
-                                        data-testid={`remove-header-${index}`}
-                                        onClick={() => arrayHelpers.remove(index)}
+                                        data-testid={`remove-artifact-${index}`}
+                                        onClick={() => {
+                                          /* istanbul ignore next */
+                                          arrayHelpers.remove(index)
+                                        }}
                                       />
                                     )}
                                   </Layout.Horizontal>

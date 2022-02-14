@@ -6,69 +6,469 @@
  */
 
 import React from 'react'
-import { render } from '@testing-library/react'
+import { render, fireEvent } from '@testing-library/react'
 import { TestWrapper } from '@common/utils/testUtils'
 
 import { TFArtifactoryForm } from '../Editview/TerraformArtifactoryForm'
 
 const props = {
   onSubmitCallBack: jest.fn(),
-  prevStepData: {},
   previousStep: jest.fn(),
-  isConfig: false,
-  isTerraformPlan: false
+  isConfig: true,
+  isTerraformPlan: true
 }
 
-const connectorMock = {
-  data: {}
+const repoMock = {
+  data: {
+    repositories: {
+      testRepo: 'generic-local',
+      anotherRepo: 'generic repo'
+    }
+  }
+}
+
+const artifactsMock = {
+  data: [
+    {
+      artifactName: 'config.tf.zip',
+      artifactPath: 'generic-local/terraform/config.tf.zip'
+    },
+    {
+      artifactName: 'localresource.tfvar.zip',
+      artifactPath: 'generic-local/terraform/localresource.tfvar.zip'
+    }
+  ]
 }
 
 jest.mock('services/cd-ng', () => ({
   useGetRepositoriesDetailsForArtifactory: () => ({
     loading: false,
-    data: connectorMock,
+    data: repoMock,
     refetch: jest.fn()
   }),
   useGetArtifactsBuildsDetailsForArtifactory: () => ({
     loading: false,
-    data: connectorMock,
+    data: artifactsMock,
     refetch: jest.fn()
   })
 }))
+
+const renderForm = (prevStepData: any) => {
+  return render(
+    <TestWrapper
+      path="/account/:accountId/cd/orgs/:orgIdentifier/projects/:projectIdentifier"
+      pathParams={{ accountId: 'account', orgIdentifier: 'org', projectIdentifier: 'project' }}
+    >
+      <TFArtifactoryForm {...props} prevStepData={prevStepData} />
+    </TestWrapper>
+  )
+}
+
 describe('Terraform artifactory tests', () => {
   test('initial render', async () => {
-    const { container } = render(
-      <TestWrapper
-        path="/account/:accountId/cd/orgs/:orgIdentifier/projects/:projectIdentifier"
-        pathParams={{ accountId: 'account', orgIdentifier: 'org', projectIdentifier: 'project' }}
-      >
-        <TFArtifactoryForm {...props} />
-      </TestWrapper>
-    )
+    const prevStepData = {
+      identifier: 'test',
+      formValues: {
+        spec: {
+          configuration: {
+            command: 'Apply',
+            configFiles: {
+              store: {
+                spec: {
+                  connectorRef: {},
+                  repositoryName: ''
+                }
+              }
+            }
+          }
+        }
+      }
+    }
+    const { container } = renderForm(prevStepData)
     expect(container).toMatchSnapshot()
   })
 
-  test('loads config data correctly', async () => {
-    const { container } = render(
-      <TestWrapper
-        path="/account/:accountId/cd/orgs/:orgIdentifier/projects/:projectIdentifier"
-        pathParams={{ accountId: 'account', orgIdentifier: 'org', projectIdentifier: 'project' }}
-      >
-        <TFArtifactoryForm {...props} />
-      </TestWrapper>
-    )
+  test('initial render with form data for config in tf plan', async () => {
+    const prevStepData = {
+      formValues: {
+        spec: {
+          configuration: {
+            command: 'Apply',
+            configFiles: {
+              store: {
+                spec: {
+                  connectorRef: {
+                    name: 'test',
+                    identifier: 'test',
+                    description: '',
+                    orgIdentifier: 'default',
+                    projectIdentifier: 'test',
+                    type: 'Artifactory'
+                  },
+                  artifacts: [
+                    {
+                      artifactFile: {
+                        artifactPathExpression: 'terraform/*',
+                        name: 'config.tf.zip',
+                        path: 'generic-local/terraform/config.tf.zip'
+                      }
+                    }
+                  ],
+                  repositoryName: 'generic-local'
+                }
+              }
+            }
+          }
+        }
+      }
+    }
+    const { container } = renderForm(prevStepData)
     expect(container).toMatchSnapshot()
   })
 
-  test('loads terraform config data correctly', async () => {
-    const { container } = render(
-      <TestWrapper
-        path="/account/:accountId/cd/orgs/:orgIdentifier/projects/:projectIdentifier"
-        pathParams={{ accountId: 'account', orgIdentifier: 'org', projectIdentifier: 'project' }}
-      >
-        <TFArtifactoryForm {...props} />
-      </TestWrapper>
-    )
+  test('initial render with no form data for config and tf apply/destroy', async () => {
+    const prevStepData = {
+      formValues: {
+        spec: {
+          configuration: {
+            spec: {
+              command: 'Apply',
+              configFiles: {
+                store: {
+                  spec: {
+                    connectorRef: {},
+                    repositoryName: ''
+                  }
+                }
+              }
+            }
+          }
+        }
+      }
+    }
+    props.isTerraformPlan = false
+    const { container } = renderForm(prevStepData)
+    expect(container).toMatchSnapshot()
+  })
+
+  test('initial render with form data for config and tf apply/destroy', async () => {
+    const prevStepData = {
+      formValues: {
+        spec: {
+          configuration: {
+            spec: {
+              configFiles: {
+                store: {
+                  type: 'Artifactory',
+                  spec: {
+                    connectorRef: {
+                      connector: {
+                        name: 'test',
+                        identifier: 'test',
+                        description: '',
+                        orgIdentifier: 'default',
+                        projectIdentifier: 'test',
+                        type: 'Artifactory'
+                      }
+                    },
+                    artifacts: [
+                      {
+                        artifactFile: {
+                          artifactPathExpression: 'terraform/*',
+                          name: 'config.tf.zip',
+                          path: 'generic-local/terraform/config.tf.zip'
+                        }
+                      }
+                    ],
+                    repositoryName: 'generic-local'
+                  }
+                }
+              }
+            }
+          }
+        }
+      }
+    }
+    props.isTerraformPlan = false
+    const { container } = renderForm(prevStepData)
+    expect(container).toMatchSnapshot()
+  })
+
+  test('initial render with form data for var files ', async () => {
+    const prevStepData = {
+      varFile: {
+        type: 'Remote',
+        identifier: 'var file id',
+        spec: {
+          store: {
+            type: 'Artifactory',
+            spec: {
+              repositoryName: 'generic-local',
+              artifacts: [
+                {
+                  artifactFile: {
+                    artifactPathExpression: 'terraform/*',
+                    name: 'localresource.tfvar.zip',
+                    path: 'generic-local/terraform/localresource.tfvar.zip'
+                  }
+                }
+              ],
+              connectorRef: {
+                label: 'test',
+                value: 'test',
+                scope: 'project',
+                live: true,
+                connector: {
+                  name: 'test',
+                  identifier: 'test',
+                  orgIdentifier: 'default',
+                  projectIdentifier: 'test',
+                  type: 'Artifactory'
+                }
+              }
+            }
+          }
+        }
+      }
+    }
+    props.isTerraformPlan = true
+    props.isConfig = false
+    const { container } = renderForm(prevStepData)
+    expect(container).toMatchSnapshot()
+  })
+
+  test('initial render with form data for var files ', async () => {
+    const prevStepData = {
+      varFile: {
+        type: 'Remote',
+        identifier: 'var file id',
+        spec: {
+          store: {
+            type: 'Artifactory',
+            spec: {
+              repositoryName: 'generic-local',
+              artifacts: [
+                {
+                  artifactFile: {
+                    artifactPathExpression: 'terraform/*',
+                    name: 'localresource.tfvar.zip',
+                    path: 'generic-local/terraform/localresource.tfvar.zip'
+                  }
+                }
+              ],
+              connectorRef: {
+                label: 'test',
+                value: 'test',
+                scope: 'project',
+                live: true,
+                connector: {
+                  name: 'test',
+                  identifier: 'test',
+                  orgIdentifier: 'default',
+                  projectIdentifier: 'test',
+                  type: 'Artifactory'
+                }
+              }
+            }
+          }
+        }
+      }
+    }
+    props.isTerraformPlan = false
+    props.isConfig = false
+    const { container } = renderForm(prevStepData)
+    expect(container).toMatchSnapshot()
+  })
+
+  test('test submitting form', async () => {
+    const prevStepData = {
+      varFile: {
+        type: 'Remote',
+        identifier: 'var file id',
+        spec: {
+          store: {
+            type: 'Artifactory',
+            spec: {
+              repositoryName: 'generic-local',
+              artifacts: [
+                {
+                  artifactFile: {
+                    artifactPathExpression: 'terraform/*',
+                    name: 'localresource.tfvar.zip',
+                    path: 'generic-local/terraform/localresource.tfvar.zip'
+                  }
+                }
+              ],
+              connectorRef: {
+                label: 'test',
+                value: 'test',
+                scope: 'project',
+                live: true,
+                connector: {
+                  name: 'test',
+                  identifier: 'test',
+                  orgIdentifier: 'default',
+                  projectIdentifier: 'test',
+                  type: 'Artifactory'
+                }
+              }
+            }
+          }
+        }
+      }
+    }
+    props.isTerraformPlan = false
+    props.isConfig = false
+    const { container, getByText } = renderForm(prevStepData)
+    const submitButton = getByText('submit')
+    await fireEvent.click(submitButton)
+    expect(container).toMatchSnapshot()
+  })
+
+  test('test click previous button', async () => {
+    const prevStepData = {
+      varFile: {
+        type: 'Remote',
+        identifier: 'var file id',
+        spec: {
+          store: {
+            type: 'Artifactory',
+            spec: {
+              repositoryName: 'generic-local',
+              artifacts: [
+                {
+                  artifactFile: {
+                    artifactPathExpression: 'terraform/*',
+                    name: 'localresource.tfvar.zip',
+                    path: 'generic-local/terraform/localresource.tfvar.zip'
+                  }
+                }
+              ],
+              connectorRef: {
+                label: 'test',
+                value: 'test',
+                scope: 'project',
+                live: true,
+                connector: {
+                  name: 'test',
+                  identifier: 'test',
+                  orgIdentifier: 'default',
+                  projectIdentifier: 'test',
+                  type: 'Artifactory'
+                }
+              }
+            }
+          }
+        }
+      }
+    }
+    props.isTerraformPlan = false
+    props.isConfig = true
+    const { container, getByText } = renderForm(prevStepData)
+    const prevButton = getByText('back')
+    await fireEvent.click(prevButton)
+    expect(container).toMatchSnapshot()
+  })
+
+  test('submit when it is a config form', async () => {
+    const prevStepData = {
+      formValues: {
+        spec: {
+          configuration: {
+            spec: {
+              configFiles: {
+                store: {
+                  type: 'Artifactory',
+                  spec: {
+                    connectorRef: {
+                      connector: {
+                        name: 'test',
+                        identifier: 'test',
+                        description: '',
+                        orgIdentifier: 'default',
+                        projectIdentifier: 'test',
+                        type: 'Artifactory'
+                      }
+                    },
+                    artifacts: [
+                      {
+                        artifactFile: {
+                          artifactPathExpression: 'terraform/*',
+                          name: 'config.tf.zip',
+                          path: 'generic-local/terraform/config.tf.zip'
+                        }
+                      }
+                    ],
+                    repositoryName: 'generic-local'
+                  }
+                }
+              }
+            }
+          }
+        }
+      }
+    }
+    props.isTerraformPlan = false
+    props.isConfig = true
+    const { container, getByText } = renderForm(prevStepData)
+    const submitButton = getByText('submit')
+    await fireEvent.click(submitButton)
+    expect(container).toMatchSnapshot()
+  })
+
+  test('updating form inputs', async () => {
+    const prevStepData = {
+      formValues: {
+        spec: {
+          configuration: {
+            spec: {
+              configFiles: {
+                store: {
+                  type: 'Artifactory',
+                  spec: {
+                    connectorRef: {
+                      connector: {
+                        name: 'test',
+                        identifier: 'test',
+                        description: '',
+                        orgIdentifier: 'default',
+                        projectIdentifier: 'test',
+                        type: 'Artifactory'
+                      }
+                    },
+                    artifacts: [
+                      {
+                        artifactFile: {
+                          artifactPathExpression: 'terraform/*',
+                          name: 'config.tf.zip',
+                          path: 'generic-local/terraform/config.tf.zip'
+                        }
+                      }
+                    ],
+                    repositoryName: 'generic-local'
+                  }
+                }
+              }
+            }
+          }
+        }
+      }
+    }
+    props.isTerraformPlan = false
+    props.isConfig = true
+    const { container, queryByPlaceholderText } = renderForm(prevStepData)
+
+    const pathInput = await container.querySelector(`input[name=
+      "spec.configuration.configFiles.store.spec.artifacts[0].artifactFile.artifactPathExpression"`)
+    fireEvent.change(pathInput!, { target: { value: 'test' } })
+    expect(container).toMatchSnapshot()
+
+    const repoPlaceholder = await queryByPlaceholderText('- cd.selectRepository -')
+    fireEvent.change(repoPlaceholder!, { target: { value: 'generic repo' } })
+    expect(container).toMatchSnapshot()
+
+    const artifactPlaceholder = await queryByPlaceholderText('- cd.selectArtifact -')
+    fireEvent.change(artifactPlaceholder!, { target: { value: 'localresource.tfvar.zip' } })
     expect(container).toMatchSnapshot()
   })
 })
