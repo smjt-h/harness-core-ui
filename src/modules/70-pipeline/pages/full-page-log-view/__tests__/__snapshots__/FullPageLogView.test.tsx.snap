@@ -69,7 +69,7 @@ exports[`<FullPageLogView /> tests multi section data 1`] = `
           <span
             class="time"
           >
-            27/01/2022 20:51:00
+            1/27/2022 8:51:00 PM
           </span>
           <span
             class="logLine"
@@ -102,7 +102,7 @@ exports[`<FullPageLogView /> tests multi section data 1`] = `
           <span
             class="time"
           >
-            27/01/2022 20:51:00
+            1/27/2022 8:51:00 PM
           </span>
           <span
             class="logLine"
@@ -135,7 +135,7 @@ exports[`<FullPageLogView /> tests multi section data 1`] = `
           <span
             class="time"
           >
-            27/01/2022 20:51:00
+            1/27/2022 8:51:00 PM
           </span>
           <span
             class="logLine"
@@ -168,7 +168,7 @@ exports[`<FullPageLogView /> tests multi section data 1`] = `
           <span
             class="time"
           >
-            27/01/2022 20:51:00
+            1/27/2022 8:51:00 PM
           </span>
           <span
             class="logLine"
@@ -201,7 +201,7 @@ exports[`<FullPageLogView /> tests multi section data 1`] = `
           <span
             class="time"
           >
-            27/01/2022 20:51:00
+            1/27/2022 8:51:00 PM
           </span>
           <span
             class="logLine"
@@ -243,7 +243,7 @@ exports[`<FullPageLogView /> tests multi section data 1`] = `
           <span
             class="time"
           >
-            27/01/2022 20:51:00
+            1/27/2022 8:51:00 PM
           </span>
           <span
             class="logLine"
@@ -276,7 +276,7 @@ exports[`<FullPageLogView /> tests multi section data 1`] = `
           <span
             class="time"
           >
-            27/01/2022 20:51:00
+            1/27/2022 8:51:00 PM
           </span>
           <span
             class="logLine"
@@ -309,7 +309,7 @@ exports[`<FullPageLogView /> tests multi section data 1`] = `
           <span
             class="time"
           >
-            27/01/2022 20:51:00
+            1/27/2022 8:51:00 PM
           </span>
           <span
             class="logLine"
@@ -342,7 +342,7 @@ exports[`<FullPageLogView /> tests multi section data 1`] = `
           <span
             class="time"
           >
-            27/01/2022 20:51:00
+            1/27/2022 8:51:00 PM
           </span>
           <span
             class="logLine"
@@ -375,7 +375,7 @@ exports[`<FullPageLogView /> tests multi section data 1`] = `
           <span
             class="time"
           >
-            27/01/2022 20:51:00
+            1/27/2022 8:51:00 PM
           </span>
           <span
             class="logLine"
@@ -417,7 +417,7 @@ exports[`<FullPageLogView /> tests multi section data 1`] = `
           <span
             class="time"
           >
-            27/01/2022 20:51:00
+            1/27/2022 8:51:00 PM
           </span>
           <span
             class="logLine"
@@ -450,7 +450,7 @@ exports[`<FullPageLogView /> tests multi section data 1`] = `
           <span
             class="time"
           >
-            27/01/2022 20:51:00
+            1/27/2022 8:51:00 PM
           </span>
           <span
             class="logLine"
@@ -483,7 +483,7 @@ exports[`<FullPageLogView /> tests multi section data 1`] = `
           <span
             class="time"
           >
-            27/01/2022 20:51:00
+            1/27/2022 8:51:00 PM
           </span>
           <span
             class="logLine"
@@ -516,7 +516,7 @@ exports[`<FullPageLogView /> tests multi section data 1`] = `
           <span
             class="time"
           >
-            27/01/2022 20:51:00
+            1/27/2022 8:51:00 PM
           </span>
           <span
             class="logLine"
@@ -549,7 +549,7 @@ exports[`<FullPageLogView /> tests multi section data 1`] = `
           <span
             class="time"
           >
-            27/01/2022 20:51:00
+            1/27/2022 8:51:00 PM
           </span>
           <span
             class="logLine"
@@ -595,7 +595,7 @@ exports[`<FullPageLogView /> tests retry node 1`] = `
         <span
           class="time"
         >
-          27/01/2022 20:51:00
+          1/27/2022 8:51:00 PM
         </span>
         <span
           class="logLine"
@@ -628,7 +628,7 @@ exports[`<FullPageLogView /> tests retry node 1`] = `
         <span
           class="time"
         >
-          27/01/2022 20:51:00
+          1/27/2022 8:51:00 PM
         </span>
         <span
           class="logLine"
@@ -661,7 +661,7 @@ exports[`<FullPageLogView /> tests retry node 1`] = `
         <span
           class="time"
         >
-          27/01/2022 20:51:00
+          1/27/2022 8:51:00 PM
         </span>
         <span
           class="logLine"
@@ -694,7 +694,7 @@ exports[`<FullPageLogView /> tests retry node 1`] = `
         <span
           class="time"
         >
-          27/01/2022 20:51:00
+          1/27/2022 8:51:00 PM
         </span>
         <span
           class="logLine"
@@ -727,7 +727,7 @@ exports[`<FullPageLogView /> tests retry node 1`] = `
         <span
           class="time"
         >
-          27/01/2022 20:51:00
+          1/27/2022 8:51:00 PM
         </span>
         <span
           class="logLine"
@@ -772,7 +772,7 @@ exports[`<FullPageLogView /> tests single section data 1`] = `
         <span
           class="time"
         >
-          27/01/2022 20:51:00
+          1/27/2022 8:51:00 PM
         </span>
         <span
           class="logLine"
@@ -805,7 +805,7 @@ exports[`<FullPageLogView /> tests single section data 1`] = `
         <span
           class="time"
         >
-          27/01/2022 20:51:00
+          1/27/2022 8:51:00 PM
         </span>
         <span
           class="logLine"
@@ -838,7 +838,7 @@ exports[`<FullPageLogView /> tests single section data 1`] = `
         <span
           class="time"
         >
-          27/01/2022 20:51:00
+          1/27/2022 8:51:00 PM
         </span>
         <span
           class="logLine"
@@ -871,7 +871,7 @@ exports[`<FullPageLogView /> tests single section data 1`] = `
         <span
           class="time"
         >
-          27/01/2022 20:51:00
+          1/27/2022 8:51:00 PM
         </span>
         <span
           class="logLine"
@@ -904,7 +904,7 @@ exports[`<FullPageLogView /> tests single section data 1`] = `
         <span
           class="time"
         >
-          27/01/2022 20:51:00
+          1/27/2022 8:51:00 PM
         </span>
         <span
           class="logLine"
