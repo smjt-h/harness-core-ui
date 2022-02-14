@@ -613,6 +613,7 @@ export default function TerraformEditView(
                                 configObject.store.type = prevStepData?.selectedType
                                 set(valObj, 'spec.configuration.spec.configFiles', { ...configObject })
                                 formik.setValues(valObj)
+                                setConnectorView(false)
                                 setShowModal(false)
                               }}
                             />
