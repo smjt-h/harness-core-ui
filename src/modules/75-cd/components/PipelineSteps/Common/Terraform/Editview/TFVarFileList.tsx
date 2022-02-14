@@ -79,6 +79,15 @@ export default function TfVarFileList(props: TfVarFileProps): React.ReactElement
   const [connectorView, setConnectorView] = React.useState(false)
   const { getString } = useStrings()
 
+  const onSubmit = (values: any, arrayHelpers: any) => {
+    if (isEditMode) {
+      arrayHelpers.replace(selectedVarIndex, values)
+    } else {
+      arrayHelpers.push(values)
+    }
+    onCloseOfRemoteWizard()
+  }
+
   const remoteRender = (varFile: TerraformVarFileWrapper, index: number): React.ReactElement => {
     const remoteVar = varFile?.varFile as any
     return (
@@ -297,26 +306,12 @@ export default function TfVarFileList(props: TfVarFileProps): React.ReactElement
                             isConfig={false}
                             isTerraformPlan={false}
                             name={getString('cd.varFileDetails')}
-                            onSubmitCallBack={(values: RemoteVar) => {
-                              if (isEditMode) {
-                                arrayHelpers.replace(selectedVarIndex, values)
-                              } else {
-                                arrayHelpers.push(values)
-                              }
-                              onCloseOfRemoteWizard()
-                            }}
+                            onSubmitCallBack={(values: RemoteVar) => onSubmit(values, arrayHelpers)}
                           />
                         ) : (
                           <TFRemoteWizard
                             name={getString('cd.varFileDetails')}
-                            onSubmitCallBack={(values: RemoteVar) => {
-                              if (isEditMode) {
-                                arrayHelpers.replace(selectedVarIndex, values)
-                              } else {
-                                arrayHelpers.push(values)
-                              }
-                              onCloseOfRemoteWizard()
-                            }}
+                            onSubmitCallBack={(values: RemoteVar) => onSubmit(values, arrayHelpers)}
                             isEditMode={isEditMode}
                             // initialValues={remoteInitialValues}
                             isReadonly={isReadonly}
