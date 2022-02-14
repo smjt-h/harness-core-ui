@@ -111,7 +111,6 @@ const COInstanceSelector: React.FC<COInstanceSelectorprops> = props => {
   }
 
   const onCheckboxChange = (e: React.FormEvent<HTMLInputElement>, alreadyChecked: boolean, data: InstanceDetails) => {
-    console.log('checked', e.currentTarget.checked)
     if (e.currentTarget.checked && !alreadyChecked) {
       setSelectedInstances([...selectedInstances, data])
     } else if (!e.currentTarget.checked && alreadyChecked) {
@@ -131,7 +130,6 @@ const COInstanceSelector: React.FC<COInstanceSelectorprops> = props => {
   }
 
   const handleSearch = (text: string): void => {
-    console.log({ text })
     pageIndex !== 0 && setPageIndex(0)
     if (!text) {
       setFilteredInstances(props.instances)
