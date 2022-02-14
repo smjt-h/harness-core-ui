@@ -111,7 +111,7 @@ export const TFArtifactoryForm: React.FC<StepProps<any> & TFRemoteProps> = ({
     }
     const prevConfig = prevStepData.formValues?.spec?.configuration
     const prevArtifacts = isTerraformPlan
-      ? prevConfig.configFiles?.store?.spec?.artifacts
+      ? prevConfig?.configFiles?.store?.spec?.artifacts
       : prevConfig?.spec?.configFiles?.store?.spec?.artifacts
     if (isConfig && prevArtifacts) {
       setFilePathIndex({ index: 0, path: prevArtifacts[0].artifactFile.artifactPathExpression })

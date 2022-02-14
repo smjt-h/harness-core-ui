@@ -583,7 +583,7 @@ function TerraformPlanWidget(
                       setSelectedConnector={setSelectedConnector}
                     />
                     {connectorView ? getNewConnectorSteps() : null}
-                    {selectedConnector === 'Artifactory' ? (
+                    {selectedConnector === Connectors.ARTIFACTORY ? (
                       <TFArtifactoryForm
                         isConfig
                         isTerraformPlan
