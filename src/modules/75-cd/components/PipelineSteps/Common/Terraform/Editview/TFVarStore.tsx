@@ -126,8 +126,7 @@ export const TFVarStore: React.FC<StepProps<any> & TFVarStoreProps> = ({
       >
         {formik => {
           const connectorRef = formik.values.varFile?.spec?.store?.spec?.connectorRef
-          const disabled =
-            !connectorRef || (connectorRef?.connector?.type && connectorRef?.connector?.type !== selectedType)
+          const disabled = !connectorRef?.connector?.type || connectorRef?.connector?.type !== selectedType
           return (
             <Form className={css.formComponent}>
               <div className={css.formContainerStepOne}>

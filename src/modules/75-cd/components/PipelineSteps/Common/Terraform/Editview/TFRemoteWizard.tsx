@@ -93,7 +93,11 @@ export const TFRemoteWizard: React.FC<StepProps<any> & TFRemoteProps> = ({
       }
 
   const { expressions } = useVariablesExpression()
-
+  const connectorValue = prevStepData?.varFile?.spec?.store?.spec?.connectorRef as Connector
+  const connectionType =
+    connectorValue?.connector?.spec?.connectionType === 'Account' ||
+    connectorValue?.connector?.spec?.type === 'Account' ||
+    prevStepData?.urlType === 'Account'
   const gitFetchTypes: SelectOption[] = [
     { label: getString('gitFetchTypes.fromBranch'), value: getString('pipelineSteps.deploy.inputSet.branch') },
     { label: getString('gitFetchTypes.fromCommit'), value: getString('pipelineSteps.commitIdValue') }
@@ -213,13 +217,9 @@ export const TFRemoteWizard: React.FC<StepProps<any> & TFRemoteProps> = ({
                     is: 'Commit',
                     then: Yup.string().trim().required(getString('validation.commitId'))
                   }),
-                  paths: Yup.lazy(value => {
-                    if (typeof value === 'object') {
-                      return Yup.array().of(
-                        Yup.object().shape({ path: Yup.string().required(getString('cd.pathCannotBeEmpty')) })
-                      )
-                    } else return Yup.mixed()
-                  })
+                  paths: Yup.array()
+                    .of(Yup.object().shape({ path: Yup.string().required(getString('cd.pathCannotBeEmpty')) }))
+                    .required(getString('cd.pathCannotBeEmpty'))
                 })
               })
             })
@@ -227,11 +227,6 @@ export const TFRemoteWizard: React.FC<StepProps<any> & TFRemoteProps> = ({
         })}
       >
         {formik => {
-          const connectorValue = prevStepData?.varFile?.spec?.store?.spec?.connectorRef as Connector
-          const connectionType =
-            connectorValue?.connector?.spec?.connectionType === 'Account' ||
-            connectorValue?.connector?.spec?.type === 'Account' ||
-            prevStepData?.urlType === 'Account'
           return (
             <Form>
               <div className={css.tfRemoteForm}>

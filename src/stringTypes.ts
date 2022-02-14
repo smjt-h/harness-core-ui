@@ -3181,6 +3181,7 @@ export interface StringsMap {
   'cd.pipelineSteps.serviceTab.specifyYourService': string
   'cd.pipelineSteps.serviceTab.stageOverrides': string
   'cd.releaseNameValidation': string
+  'cd.repoNameRequired': string
   'cd.requiredPermissions': string
   'cd.resourceCannotBeEmpty': string
   'cd.scriptRequired': string
