@@ -3116,7 +3116,7 @@ exports[`Terraform artifactory tests updating form inputs 1`] = `
                             placeholder="- cd.selectArtifact -"
                             style="padding-right: 0px;"
                             type="text"
-                            value="config.tf.zip"
+                            value=""
                           />
                           <span
                             class="bp3-input-action"
@@ -3407,7 +3407,7 @@ exports[`Terraform artifactory tests updating form inputs 2`] = `
                             placeholder="- cd.selectArtifact -"
                             style="padding-right: 0px;"
                             type="text"
-                            value="config.tf.zip"
+                            value=""
                           />
                           <span
                             class="bp3-input-action"
@@ -3698,7 +3698,7 @@ exports[`Terraform artifactory tests updating form inputs 3`] = `
                             placeholder="- cd.selectArtifact -"
                             style="padding-right: 0px;"
                             type="text"
-                            value="config.tf.zip"
+                            value=""
                           />
                           <span
                             class="bp3-input-action"

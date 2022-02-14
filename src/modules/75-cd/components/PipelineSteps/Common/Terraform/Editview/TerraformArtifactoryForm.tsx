@@ -43,6 +43,16 @@ interface TFRemoteProps {
   isTerraformPlan: boolean
 }
 
+const defaultArtifacts = [
+  {
+    artifactFile: {
+      artifactPathExpression: undefined,
+      name: undefined,
+      path: undefined
+    }
+  }
+]
+
 export const TFArtifactoryForm: React.FC<StepProps<any> & TFRemoteProps> = ({
   previousStep,
   prevStepData,
@@ -138,13 +148,14 @@ export const TFArtifactoryForm: React.FC<StepProps<any> & TFRemoteProps> = ({
 
   useEffect(() => {
     if (Artifacts && !ArtifactsLoading) {
-      setArtifacts({
+      const arts = {
         ...artifacts,
-        [`${filePathIndex?.path}-${filePathIndex?.index}`]: map(Artifacts.data, artifact => ({
+        [`artifacts-${filePathIndex?.index}`]: map(Artifacts.data, artifact => ({
           label: artifact.artifactName as string,
           value: artifact.artifactPath as string
         }))
-      })
+      }
+      setArtifacts(arts)
     }
   }, [Artifacts])
 
@@ -178,6 +189,22 @@ export const TFArtifactoryForm: React.FC<StepProps<any> & TFRemoteProps> = ({
         }}
       >
         {formik => {
+          let selectedArtifacts: any = []
+          if (isConfig) {
+            selectedArtifacts = formik?.values?.spec?.configuration?.configFiles?.store?.spec?.artifacts
+          } else {
+            selectedArtifacts = formik.values?.varFile?.spec?.store?.spec?.artifacts
+          }
+          const updateSelectedArtifact = (index: number, path: string, label: string) => {
+            formik?.setFieldValue(
+              `${tfArtifactoryFormInputNames(isConfig).artifacts}[${index}].artifactFile.path`,
+              path
+            )
+            formik?.setFieldValue(
+              `${tfArtifactoryFormInputNames(isConfig).artifacts}[${index}].artifactFile.name`,
+              label
+            )
+          }
           return (
             <Form>
               <div className={css.tfRemoteForm}>
@@ -194,7 +221,10 @@ export const TFArtifactoryForm: React.FC<StepProps<any> & TFRemoteProps> = ({
                     label={getString('pipelineSteps.repoName')}
                     placeholder={getString(ArtifactRepoLoading ? 'common.loading' : 'cd.selectRepository')}
                     disabled={ArtifactRepoLoading}
-                    onChange={value => setSelectedRepo(value.value as string)}
+                    onChange={value => {
+                      setSelectedRepo(value.value as string)
+                      selectedArtifacts.map((_: any, i: any) => updateSelectedArtifact(i, '', ''))
+                    }}
                   />
                 </div>
                 <div className={cx(stepCss.formGroup)}>
@@ -217,28 +247,12 @@ export const TFArtifactoryForm: React.FC<StepProps<any> & TFRemoteProps> = ({
                   <FieldArray
                     name={tfArtifactoryFormInputNames(isConfig).artifacts}
                     render={arrayHelpers => {
-                      let selectedArtifacts = []
-                      if (isConfig) {
-                        selectedArtifacts = formik?.values?.spec?.configuration?.configFiles?.store?.spec?.artifacts
-                      } else {
-                        selectedArtifacts = formik.values?.varFile?.spec?.store?.spec?.artifacts
-                      }
                       return (
                         <>
                           {map(
-                            selectedArtifacts.length > 0
-                              ? selectedArtifacts
-                              : [
-                                  {
-                                    artifactFile: {
-                                      artifactPathExpression: undefined,
-                                      name: undefined,
-                                      path: undefined
-                                    }
-                                  }
-                                ],
+                            selectedArtifacts.length > 0 ? selectedArtifacts : defaultArtifacts,
                             (artifact: PathInterface, index: number) => {
-                              const key = `${filePathIndex?.path}-${filePathIndex?.index}`
+                              const key = `artifacts-${index}`
                               const rowArtifacts = artifacts && artifacts[key] ? artifacts[key] : []
                               const value = { label: artifact.artifactFile.name, value: artifact.artifactFile.path }
                               /* istanbul ignore next */
@@ -258,6 +272,7 @@ export const TFArtifactoryForm: React.FC<StepProps<any> & TFRemoteProps> = ({
                                     <FormInput.Text
                                       onChange={(val: React.ChangeEvent<HTMLInputElement>) => {
                                         setFilePathIndex({ index, path: val.target?.value })
+                                        updateSelectedArtifact(index, '', '')
                                       }}
                                       name={`${
                                         tfArtifactoryFormInputNames(isConfig).artifacts
@@ -277,20 +292,7 @@ export const TFArtifactoryForm: React.FC<StepProps<any> & TFRemoteProps> = ({
                                       placeholder={getString(
                                         ArtifactsLoading || ArtifactRepoLoading ? 'common.loading' : 'cd.selectArtifact'
                                       )}
-                                      onChange={val => {
-                                        formik?.setFieldValue(
-                                          `${
-                                            tfArtifactoryFormInputNames(isConfig).artifacts
-                                          }[${index}].artifactFile.path`,
-                                          val.value
-                                        )
-                                        formik?.setFieldValue(
-                                          `${
-                                            tfArtifactoryFormInputNames(isConfig).artifacts
-                                          }[${index}].artifactFile.name`,
-                                          val.label
-                                        )
-                                      }}
+                                      onChange={val => updateSelectedArtifact(index, val.value as string, val.label)}
                                     />
                                     {!isConfig && (
                                       <Button
