@@ -1,30 +1,37 @@
+/*
+ * Copyright 2022 Harness Inc. All rights reserved.
+ * Use of this source code is governed by the PolyForm Shield 1.0.0 license
+ * that can be found in the licenses directory at the root of this repository, also available at
+ * https://polyformproject.org/wp-content/uploads/2020/06/PolyForm-Shield-1.0.0.txt.
+ */
+
 .anomaliesWrapper {
-  border-left: 16px solid transparent;
-  border-right: 16px solid transparent;
-  border-bottom: 32px solid #cf2318;
+  border-left: var(--spacing-medium) solid transparent;
+  border-right: var(--spacing-medium) solid transparent;
+  border-bottom: var(--spacing-xxlarge) solid #cf2318;
   border-radius: 6px;
   position: relative;
 }
 
 .anomaliesText {
   position: absolute;
-  color: white;
-  top: 20px;
+  color: var(--white);
+  top: var(--spacing-large);
   transform: translate(-50%, -50%);
 }
 
 .anomaliesWrapper .anomaliesTooltip {
   visibility: hidden;
   width: 180px;
-  background-color: black;
-  color: #fff;
+  background-color: var(--black);
+  color: var(--white);
   border-radius: 6px;
-  padding: 16px 12px;
+  padding: var(--spacing-medium) 12px;
 
   /* Position the tooltip */
   position: absolute;
   z-index: 1;
-  left: 20px;
+  left: var(--spacing-large);
 }
 
 .anomaliesWrapper:hover .anomaliesTooltip {
@@ -39,33 +46,33 @@
   margin-top: -5px;
   border-width: 8px;
   border-style: solid;
-  border-color: transparent black transparent transparent;
+  border-color: transparent var(--black) transparent transparent;
 }
 
 .anomaliesCount {
   font-style: normal;
   font-weight: 500;
-  font-size: 10px;
+  font-size: var(--font-size-xsmall);
   line-height: 12px;
-  color: #fafafa;
+  color: var(--grey-50);
 }
 
 .anomaliesCost {
   font-style: normal;
   font-weight: 600;
-  font-size: 16px;
+  font-size: var(--font-size-normal);
   line-height: 24px;
-  margin-bottom: 8px;
+  margin-bottom: var(--spacing-small);
 }
 
 .anomaliesNav {
   font-style: normal;
   font-weight: bold;
-  font-size: 10px;
+  font-size: var(--font-size-xsmall);
   line-height: 15px;
   display: block;
-  color: #00ade4;
-  margin-top: 16px;
+  color: var(--primary-5);
+  margin-top: var(--spacing-medium);
 }
 
 .costWrapper {
@@ -76,17 +83,17 @@
 .differenceCostPos {
   font-style: normal;
   font-weight: normal;
-  font-size: 10px;
+  font-size: var(--font-size-xsmall);
   line-height: 15px;
-  color: #ee5f54;
+  color: var(--red-400);
   margin-left: 12px;
 }
 
 .differenceCostNeg {
   font-style: normal;
   font-weight: normal;
-  font-size: 10px;
+  font-size: var(--font-size-xsmall);
   line-height: 15px;
-  color: #4dc952;
+  color: var(--green-500);
   margin-left: 12px;
 }

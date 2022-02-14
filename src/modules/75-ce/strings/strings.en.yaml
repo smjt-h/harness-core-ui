@@ -782,3 +782,7 @@ anomalyDetection:
     whitelistResource: Whitelist resource
     falseAnomaly: This is false anomaly
   userFeedbackSuccessMsg: 'Thanks for your feedback!'
+  tooltip:
+    countText: '{{ count }} Anomalies'
+    anomaliesRedirectionText: View anomalies
+    filterText: Apply cluster filters

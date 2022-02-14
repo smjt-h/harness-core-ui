@@ -14,6 +14,9 @@ import { QlceViewTimeGroupType } from 'services/ce/services'
 import type { PerspectiveAnomalyData } from 'services/ce'
 import formatCost from '@ce/utils/formatCost'
 import routes from '@common/RouteDefinitions'
+import { useFeatureFlag } from '@common/hooks/useFeatureFlag'
+import { FeatureFlag } from '@common/featureFlags'
+import { useStrings } from 'framework/strings'
 import type { ChartConfigType } from './chartUtils'
 import CEChart from '../CEChart/CEChart'
 import ChartLegend from './ChartLegend'
@@ -47,12 +50,14 @@ const GetChart: React.FC<GetChartProps> = ({
   anomaliesCountData
 }) => {
   const [chartObj, setChartObj] = useState<Highcharts.Chart | null>(null)
+  const isAnomaliesEnabled = useFeatureFlag(FeatureFlag.CCM_ANOMALY_DETECTION_NG)
 
   const [forceCounter, setForceCounter] = useState(0)
   const history = useHistory()
   const { accountId } = useParams<{
     accountId: string
   }>()
+  const { getString } = useStrings()
 
   useEffect(() => {
     // When the chart data changes the legend component is not getting updated due to no deps on data
@@ -140,7 +145,10 @@ const GetChart: React.FC<GetChartProps> = ({
       <div class=${css.anomaliesWrapper}>
         <span class=${css.anomaliesText}>${item.anomalyCount}</span>
         <span class=${css.anomaliesTooltip}>
-          <p class=${css.anomaliesCount}>${item.anomalyCount} Anomolies</p>
+          <p class=${css.anomaliesCount}>${getString('ce.anomalyDetection.tooltip.countText', {
+      count: item.anomalyCount
+    })}
+          </p>
           <div class=${css.costWrapper}>
             <span class=${css.anomaliesCost}>${item.actualCost && formatCost(item.actualCost)}</span>
             <span class=${item.differenceFromExpectedCost < 0 ? css.differenceCostNeg : css.differenceCostPos}>
@@ -148,8 +156,10 @@ const GetChart: React.FC<GetChartProps> = ({
               ${item.differenceFromExpectedCost && formatCost(item.differenceFromExpectedCost)}
             </span>
           </div>
-          <a id="navAnomalies" class=${css.anomaliesNav}>View anomalies</a>
-          <a class=${css.anomaliesNav}>Apply cluster filters</a>
+          <a id="navAnomalies" class=${css.anomaliesNav}>${getString(
+      'ce.anomalyDetection.tooltip.anomaliesRedirectionText'
+    )}</a>
+          <a class=${css.anomaliesNav}>${getString('ce.anomalyDetection.tooltip.filterText')}</a>
         </span>
       <div>
     `
@@ -179,6 +189,7 @@ const GetChart: React.FC<GetChartProps> = ({
             zoomType: 'x',
             height: 300,
             type: chartType,
+            spacingTop: 20,
             events: {
               load() {
                 setChartObj(this)
@@ -206,6 +217,7 @@ const GetChart: React.FC<GetChartProps> = ({
             {
               labels: anomaliesLabels(),
               draggable: '',
+              visible: isAnomaliesEnabled,
               labelOptions: {
                 useHTML: true,
                 backgroundColor: 'white',

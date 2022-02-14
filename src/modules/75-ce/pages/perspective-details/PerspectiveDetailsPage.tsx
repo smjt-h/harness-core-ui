@@ -66,6 +66,8 @@ import { DAYS_FOR_TICK_INTERVAL } from '@ce/components/CloudCostInsightChart/Cha
 import { useTelemetry } from '@common/hooks/useTelemetry'
 import { PAGE_NAMES } from '@ce/TrackingEventsConstants'
 import { NGBreadcrumbs } from '@common/components/NGBreadcrumbs/NGBreadcrumbs'
+import { useFeatureFlag } from '@common/hooks/useFeatureFlag'
+import { FeatureFlag } from '@common/featureFlags'
 import css from './PerspectiveDetailsPage.module.scss'
 
 const PAGE_SIZE = 10
@@ -173,6 +175,7 @@ const PerspectiveDetailsPage: React.FC = () => {
   const history = useHistory()
   const { perspectiveId, accountId, perspectiveName } = useParams<PerspectiveParams>()
   const { getString } = useStrings()
+  const isAnomaliesEnabled = useFeatureFlag(FeatureFlag.CCM_ANOMALY_DETECTION_NG)
 
   const { trackPage } = useTelemetry()
 
@@ -255,8 +258,10 @@ const PerspectiveDetailsPage: React.FC = () => {
         // console.log('error', error)
       }
     }
-    fetchAnomaliesCount()
-  }, [filters, getAnomalies, groupBy, timeRange.from, timeRange.to])
+    if (isAnomaliesEnabled) {
+      fetchAnomaliesCount()
+    }
+  }, [filters, getAnomalies, groupBy, isAnomaliesEnabled, timeRange.from, timeRange.to])
 
   const setFilterUsingChartClick: (value: string) => void = value => {
     setFilters(prevFilter => [
