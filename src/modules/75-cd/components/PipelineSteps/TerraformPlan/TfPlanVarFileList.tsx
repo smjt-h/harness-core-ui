@@ -81,6 +81,15 @@ export default function TfVarFileList(props: TfVarFileProps): React.ReactElement
   const [connectorView, setConnectorView] = React.useState(false)
   const { getString } = useStrings()
 
+  const onSubmit = (values: RemoteVar, arrayHelpers: any) => {
+    if (isEditMode) {
+      arrayHelpers.replace(selectedVarIndex, values)
+    } else {
+      arrayHelpers.push(values)
+    }
+    onCloseOfRemoteWizard()
+  }
+
   const remoteRender = (varFile: TerraformVarFileWrapper, index: number) => {
     const remoteVar = varFile?.varFile as any
     return (
@@ -308,26 +317,12 @@ export default function TfVarFileList(props: TfVarFileProps): React.ReactElement
                             isConfig={false}
                             isTerraformPlan
                             name={getString('cd.varFileDetails')}
-                            onSubmitCallBack={(values: RemoteVar) => {
-                              if (isEditMode) {
-                                arrayHelpers.replace(selectedVarIndex, values)
-                              } else {
-                                arrayHelpers.push(values)
-                              }
-                              onCloseOfRemoteWizard()
-                            }}
+                            onSubmitCallBack={values => onSubmit(values, arrayHelpers)}
                           />
                         ) : (
                           <TFRemoteWizard
                             name={getString('cd.varFileDetails')}
-                            onSubmitCallBack={(values: RemoteVar) => {
-                              if (isEditMode) {
-                                arrayHelpers.replace(selectedVarIndex, values)
-                              } else {
-                                arrayHelpers.push(values)
-                              }
-                              onCloseOfRemoteWizard()
-                            }}
+                            onSubmitCallBack={values => onSubmit(values, arrayHelpers)}
                             isEditMode={isEditMode}
                             // initialValues={remoteInitialValues}
                             isReadonly={isReadonly}

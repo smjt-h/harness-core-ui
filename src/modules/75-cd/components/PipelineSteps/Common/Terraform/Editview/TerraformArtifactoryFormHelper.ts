@@ -142,7 +142,7 @@ export const formatOnSubmitData = (values: any, prevStepData: any, connectorValu
     connectorRef: connectorValue
   }
 
-  const data = {
+  return {
     varFile: {
       type: payload.varFile.type,
       identifier: payload.varFile.identifier,
@@ -157,7 +157,6 @@ export const formatOnSubmitData = (values: any, prevStepData: any, connectorValu
       }
     }
   }
-  return data
 }
 
 export const formatArtifactoryData = (prevStepData: any, data: any, configObject: any, formik: any) => {
