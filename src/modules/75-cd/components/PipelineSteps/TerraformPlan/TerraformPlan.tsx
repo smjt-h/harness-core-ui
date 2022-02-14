@@ -30,7 +30,7 @@ import { v4 as uuid } from 'uuid'
 import { useParams } from 'react-router-dom'
 import cx from 'classnames'
 
-import { cloneDeep, isEmpty, set } from 'lodash-es'
+import { cloneDeep, isEmpty, set, unset } from 'lodash-es'
 import { FormikErrors, FormikProps, yupToFormErrors } from 'formik'
 import { PipelineStep, StepProps } from '@pipeline/components/PipelineSteps/PipelineStep'
 import { StepType } from '@pipeline/components/PipelineSteps/PipelineStepInterface'
@@ -613,13 +613,13 @@ function TerraformPlanWidget(
                             configObject.store.spec.connectorRef = prevStepData?.identifier
                           }
                           if (configObject?.store.spec.gitFetchType === 'Branch') {
-                            delete configObject.store.spec.commitId
+                            unset(configObject.store.spec, 'commitId')
                           } else if (configObject?.store.spec.gitFetchType === 'Commit') {
-                            delete configObject.store.spec.branch
+                            unset(configObject.store.spec, 'branch')
                           }
                           if (configObject?.store?.spec?.artifacts) {
-                            delete configObject?.store?.spec?.artifacts
-                            delete configObject?.store?.spec?.repositoryName
+                            unset(configObject?.store.spec, 'artifacts')
+                            unset(configObject?.store.spec, 'repositoryName')
                           }
                           const valObj = cloneDeep(formik.values)
                           configObject.store.type = prevStepData?.selectedType

@@ -26,7 +26,7 @@ import {
 import { useParams } from 'react-router-dom'
 import * as Yup from 'yup'
 import cx from 'classnames'
-import { cloneDeep, set } from 'lodash-es'
+import { cloneDeep, set, unset } from 'lodash-es'
 
 import type { FormikProps } from 'formik'
 
@@ -601,13 +601,13 @@ export default function TerraformEditView(
                                   configObject.store.spec.connectorRef = prevStepData?.identifier
                                 }
                                 if (configObject?.store.spec.gitFetchType === 'Branch') {
-                                  delete configObject.store.spec.commitId
+                                  unset(configObject.store.spec, 'commitId')
                                 } else if (configObject?.store.spec.gitFetchType === 'Commit') {
-                                  delete configObject.store.spec.branch
+                                  unset(configObject.store.spec, 'branch')
                                 }
                                 if (configObject?.store?.spec?.artifacts) {
-                                  delete configObject?.store?.spec?.artifacts
-                                  delete configObject?.store?.spec?.repositoryName
+                                  unset(configObject?.store?.spec, 'artifacts')
+                                  unset(configObject?.store?.spec, 'repositoryName')
                                 }
                                 const valObj = cloneDeep(formik.values)
                                 configObject.store.type = prevStepData?.selectedType
