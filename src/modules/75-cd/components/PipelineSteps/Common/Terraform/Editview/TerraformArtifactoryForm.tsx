@@ -109,7 +109,10 @@ export const TFArtifactoryForm: React.FC<StepProps<any> & TFRemoteProps> = ({
     if (repoName) {
       setSelectedRepo(repoName)
     }
-    const prevArtifacts = prevStepData.formValues?.spec?.configuration?.configFiles?.store?.spec?.artifacts
+    const prevConfig = prevStepData.formValues?.spec?.configuration
+    const prevArtifacts = isTerraformPlan
+      ? prevConfig.configFiles?.store?.spec?.artifacts
+      : prevConfig?.spec?.configFiles?.store?.spec?.artifacts
     if (isConfig && prevArtifacts) {
       setFilePathIndex({ index: 0, path: prevArtifacts[0].artifactFile.artifactPathExpression })
     }
@@ -131,7 +134,7 @@ export const TFArtifactoryForm: React.FC<StepProps<any> & TFRemoteProps> = ({
     if (selectedRepo && filePathIndex?.path) {
       GetArtifacts()
     }
-  }, [filePathIndex, selectedRepo])
+  }, [filePathIndex, selectedRepo, ArtifactRepoData])
 
   useEffect(() => {
     if (Artifacts && !ArtifactsLoading) {
