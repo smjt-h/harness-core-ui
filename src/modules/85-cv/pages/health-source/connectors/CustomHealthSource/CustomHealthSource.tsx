@@ -29,7 +29,7 @@ import type {
   MapCustomHealthToService,
   SelectedAndMappedMetrics
 } from './CustomHealthSource.types'
-
+import type { FormikProps } from 'formik'
 import { defaultMetricName } from './CustomHealthSource.constants'
 import type { UpdatedHealthSource } from '../../HealthSourceDrawer/HealthSourceDrawerContent.types'
 import SelectHealthSourceServices from '../../common/SelectHealthSourceServices/SelectHealthSourceServices'
@@ -89,7 +89,7 @@ export function CustomHealthSource(props: CustomHealthSourceProps): JSX.Element 
         return validateMappings(getString, createdMetrics, selectedMetricIndex, values)
       }}
     >
-      {formikProps => (
+      {(formikProps: FormikProps<MapCustomHealthToService | undefined>) => (
         <FormikForm className={css.formFullheight}>
           <SetupSourceLayout
             leftPanelContent={
@@ -165,7 +165,7 @@ export function CustomHealthSource(props: CustomHealthSourceProps): JSX.Element 
                       summary={getString('cv.customHealthSource.Querymapping.title')}
                       details={
                         <QueryMapping
-                          formikProps={formikProps}
+                          formikProps={formikProps as FormikProps<MapCustomHealthToService>}
                           connectorIdentifier={connectorIdentifier}
                           onFetchRecordsSuccess={onFetchRecordsSuccess}
                           recordsData={recordsData}
