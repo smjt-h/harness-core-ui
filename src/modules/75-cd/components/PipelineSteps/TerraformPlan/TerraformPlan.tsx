@@ -15,8 +15,8 @@ import {
   FormInput,
   getMultiTypeFromValue,
   HarnessDocTooltip,
-  Icon,
   IconName,
+  Icon,
   Label,
   Layout,
   MultiTypeInputType,
@@ -61,7 +61,7 @@ import MultiTypeFieldSelector from '@common/components/MultiTypeFieldSelector/Mu
 
 import { useQueryParams } from '@common/hooks'
 import type { GitQueryParams } from '@common/interfaces/RouteInterfaces'
-import type { StringNGVariable, ConnectorInfoDTO } from 'services/cd-ng'
+import type { StringNGVariable } from 'services/cd-ng'
 
 import type { StringsMap } from 'stringTypes'
 import { getNameAndIdentifierSchema } from '@pipeline/components/PipelineSteps/Steps/StepsValidateUtils'
@@ -75,12 +75,6 @@ import StepGithubAuthentication from '@connectors/components/CreateConnector/Git
 import StepBitbucketAuthentication from '@connectors/components/CreateConnector/BitbucketConnector/StepAuth/StepBitbucketAuthentication'
 import DelegateSelectorStep from '@connectors/components/CreateConnector/commonSteps/DelegateSelectorStep/DelegateSelectorStep'
 import { Connectors, CONNECTOR_CREDENTIALS_STEP_IDENTIFIER } from '@connectors/constants'
-import {
-  buildBitbucketPayload,
-  buildGithubPayload,
-  buildGitlabPayload,
-  buildGitPayload
-} from '@connectors/pages/connectors/utils/ConnectorUtils'
 
 import {
   CommandTypes,
@@ -93,8 +87,8 @@ import TfVarFileList from './TfPlanVarFileList'
 
 import TerraformInputStep from './TfPlanInputStep'
 import { TerraformVariableStep } from './TfPlanVariableView'
-import { TerraformConfigStepOne, TerraformConfigStepTwo } from './TerraformConfigForm'
-import { ConnectorMap, ConnectorTypes } from './TerraformConfigFormHelper'
+import { TerraformConfigStepOne, TerraformConfigStepTwo } from '../Common/Terraform/Editview/TerraformConfigForm'
+import { ConnectorMap, ConnectorTypes, getBuildPayload } from '../Common/Terraform/Editview/TerraformConfigFormHelper'
 
 import { TFMonaco } from '../Common/Terraform/Editview/TFMonacoEditor'
 import stepCss from '@pipeline/components/PipelineSteps/Steps/Steps.module.scss'
@@ -150,29 +144,6 @@ function TerraformPlanWidget(
   const onCloseOfRemoteWizard = () => {
     setShowRemoteWizard(false)
     setIsEditMode(false)
-  }
-
-  const getTitle = () => (
-    <Layout.Vertical flex style={{ justifyContent: 'center', alignItems: 'center' }}>
-      <Icon name="remotefile" className={css.remoteIcon} size={50} />
-      <Text color={Color.WHITE}>{getString('pipelineSteps.remoteFile')}</Text>
-    </Layout.Vertical>
-  )
-
-  const getBuildPayload = (type: ConnectorInfoDTO['type']) => {
-    if (type === Connectors.GIT) {
-      return buildGitPayload
-    }
-    if (type === Connectors.GITHUB) {
-      return buildGithubPayload
-    }
-    if (type === Connectors.BITBUCKET) {
-      return buildBitbucketPayload
-    }
-    if (type === Connectors.GITLAB) {
-      return buildGitlabPayload
-    }
-    return () => ({})
   }
 
   const getNewConnectorSteps = () => {
@@ -271,6 +242,13 @@ function TerraformPlanWidget(
       setConnectorView(false)
     }
   }
+
+  const getTitle = () => (
+    <Layout.Vertical flex style={{ justifyContent: 'center', alignItems: 'center' }} margin={{ bottom: 'xlarge' }}>
+      <Icon name="service-terraform" className={css.remoteIcon} size={50} padding={{ bottom: 'large' }} />
+      <Text color={Color.WHITE}>{getString('cd.configFileStoreTitle')}</Text>
+    </Layout.Vertical>
+  )
 
   return (
     <Formik<TFPlanFormData>
@@ -408,7 +386,12 @@ function TerraformPlanWidget(
                       </a>
                     )}
                     {formik.values?.spec?.configuration?.configFiles?.store?.spec?.folderPath && (
-                      <Text font="normal" lineClamp={1} width={200}>
+                      <Text
+                        font="normal"
+                        lineClamp={1}
+                        width={200}
+                        data-testid={formik.values?.spec?.configuration?.configFiles?.store?.spec?.folderPath}
+                      >
                         /{formik.values?.spec?.configuration?.configFiles?.store?.spec?.folderPath}
                       </Text>
                     )}
@@ -562,27 +545,37 @@ function TerraformPlanWidget(
                 isOpen={true}
                 isCloseButtonShown
                 onClose={() => {
+                  setConnectorView(false)
                   setShowRemoteWizard(false)
                 }}
                 className={cx(css.modal, Classes.DIALOG)}
               >
                 <div className={css.createTfWizard}>
-                  <StepWizard title={getTitle()} className={css.manifestWizard} onStepChange={onStepChange}>
+                  <StepWizard title={getTitle()} className={css.configWizard} onStepChange={onStepChange}>
                     <TerraformConfigStepOne
+                      name={getString('cd.configFileStepOne')}
                       data={formik.values}
+                      isTerraformPlan
                       isReadonly={readonly}
                       isEditMode={isEditMode}
                       allowableTypes={allowableTypes}
                       setConnectorView={setConnectorView}
+                      selectedConnector={selectedConnector}
                       setSelectedConnector={setSelectedConnector}
                     />
                     {connectorView ? getNewConnectorSteps() : null}
                     <TerraformConfigStepTwo
+                      name={getString('cd.configFileDetails')}
+                      isTerraformPlan
                       isReadonly={readonly}
                       allowableTypes={allowableTypes}
-                      onSubmitCallBack={(data: any) => {
+                      onSubmitCallBack={(data: any, prevStepData: any) => {
                         const configObject = {
                           ...data.spec?.configuration?.configFiles
+                        }
+
+                        if (prevStepData.identifier && prevStepData.identifier !== data?.identifier) {
+                          configObject.store.spec.connectorRef = prevStepData?.identifier
                         }
 
                         if (configObject?.store.spec.gitFetchType === 'Branch') {
@@ -592,11 +585,10 @@ function TerraformPlanWidget(
                         }
 
                         const valObj = cloneDeep(formik.values)
-                        configObject.store.type = configObject?.store?.spec?.connectorRef?.connector?.type || 'Git'
+                        configObject.store.type = prevStepData?.selectedType
                         set(valObj, 'spec.configuration.configFiles', { ...configObject })
-
                         formik.setValues(valObj)
-
+                        setConnectorView(false)
                         setShowRemoteWizard(false)
                       }}
                     />
@@ -607,6 +599,7 @@ function TerraformPlanWidget(
                   icon="cross"
                   iconProps={{ size: 18 }}
                   onClick={onCloseOfRemoteWizard}
+                  data-testid={'close-wizard'}
                   className={css.crossIcon}
                 />
               </Dialog>

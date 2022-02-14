@@ -60,7 +60,7 @@ export const TFRemoteWizard: React.FC<StepProps<any> & TFRemoteProps> = ({
             store: {
               spec: {
                 gitFetchType: prevStepData?.varFile?.spec?.store?.spec?.gitFetchType,
-
+                repoName: prevStepData?.varFile?.spec?.store?.spec?.repoName,
                 branch: prevStepData?.varFile?.spec?.store?.spec?.branch,
                 commitId: prevStepData?.varFile?.spec?.store?.spec?.commitId,
                 paths:
@@ -142,10 +142,6 @@ export const TFRemoteWizard: React.FC<StepProps<any> & TFRemoteProps> = ({
     },
     []
   )
-  const connectorValue = prevStepData?.varFile?.spec?.store?.spec?.connectorRef as Connector
-
-  const connectionType =
-    connectorValue?.connector?.spec?.connectionType === 'Account' || connectorValue?.connector?.spec?.type === 'Account'
 
   return (
     <Layout.Vertical spacing="xxlarge" padding="small" className={css.tfVarStore}>
@@ -176,7 +172,7 @@ export const TFRemoteWizard: React.FC<StepProps<any> & TFRemoteProps> = ({
                       ? getMultiTypeFromValue(payload?.connectorRef) === MultiTypeInputType.RUNTIME
                         ? payload?.connectorRef
                         : payload.connectorRef?.value
-                      : ''
+                      : prevStepData.identifier || ''
                   }
                 }
               }
@@ -217,7 +213,13 @@ export const TFRemoteWizard: React.FC<StepProps<any> & TFRemoteProps> = ({
                     is: 'Commit',
                     then: Yup.string().trim().required(getString('validation.commitId'))
                   }),
-                  paths: Yup.string().required(getString('cd.pathCannotBeEmpty'))
+                  paths: Yup.lazy(value => {
+                    if (typeof value === 'object') {
+                      return Yup.array().of(
+                        Yup.object().shape({ path: Yup.string().required(getString('cd.pathCannotBeEmpty')) })
+                      )
+                    } else return Yup.mixed()
+                  })
                 })
               })
             })
@@ -225,6 +227,11 @@ export const TFRemoteWizard: React.FC<StepProps<any> & TFRemoteProps> = ({
         })}
       >
         {formik => {
+          const connectorValue = prevStepData?.varFile?.spec?.store?.spec?.connectorRef as Connector
+          const connectionType =
+            connectorValue?.connector?.spec?.connectionType === 'Account' ||
+            connectorValue?.connector?.spec?.type === 'Account' ||
+            prevStepData?.urlType === 'Account'
           return (
             <Form>
               <div className={css.tfRemoteForm}>
@@ -327,7 +334,7 @@ export const TFRemoteWizard: React.FC<StepProps<any> & TFRemoteProps> = ({
                       render={arrayHelpers => {
                         return (
                           <div>
-                            {(formik.values?.varFile?.spec?.store?.spec?.paths || []).map(
+                            {(formik.values?.varFile?.spec?.store?.spec?.paths || [{ path: '' }]).map(
                               (path: PathInterface, index: number) => (
                                 <Layout.Horizontal
                                   key={`${path}-${index}`}
