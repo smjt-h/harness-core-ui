@@ -7,6 +7,8 @@ labelPath: '{{$.common.path}}'
 labelSecretsManager: 'Secrets Manager'
 confirmDelete: Are you sure you want to delete the secret '{{name}}'
 confirmDeleteTitle: 'Delete Secret'
+createSuccessMessage : Secret '{{name}}' created successfully
+updateSuccessMessage : Secret '{{name}}' updated successfully
 incompleteSecret: 'Incomplete Secret'
 typeSSH: 'Execution Credential'
 stepTitleVerify: 'Verify Connection'

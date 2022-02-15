@@ -19,7 +19,7 @@ import {
 } from '@wings-software/uicore'
 import * as Yup from 'yup'
 import { useParams } from 'react-router-dom'
-import { pick } from 'lodash-es'
+import { defaultTo, pick } from 'lodash-es'
 import {
   usePutSecret,
   usePutSecretFileV2,
@@ -28,22 +28,29 @@ import {
   useGetConnectorList,
   SecretDTOV2,
   SecretResponseWrapper,
-  SecretRequestWrapper,
   ConnectorInfoDTO,
   ConnectorResponse,
   VaultConnectorDTO,
   useGetConnector,
   useGetSecretV2,
   ResponseSecretResponseWrapper,
-  ListSecretsV2QueryParams
+  SecretTextSpecDTO,
+  SecretFileSpecDTO
 } from 'services/cd-ng'
-import type { SecretTextSpecDTO, SecretFileSpecDTO } from 'services/cd-ng'
 import { useToaster } from '@common/exports'
 import { IdentifierSchema, NameSchema } from '@common/utils/Validation'
 import type { UseGetMockData } from '@common/utils/testUtils'
 import type { ProjectPathProps } from '@common/interfaces/RouteInterfaces'
 import { useStrings } from 'framework/strings'
 import { getRBACErrorMessage } from '@rbac/utils/utils'
+import {
+  createSecretFileData,
+  createSecretTextData,
+  getSecretTypeOptions,
+  getSourceCategory,
+  isVaultSMSelected,
+  SecretValueSchema
+} from '@secrets/utils/CreateUpdateSecretUtils'
 import VaultFormFields from './views/VaultFormFields'
 import LocalFormFields from './views/LocalFormFields'
 
@@ -74,8 +81,11 @@ const CreateUpdateSecret: React.FC<CreateUpdateSecretProps> = props => {
   const { showSuccess } = useToaster()
   const [modalErrorHandler, setModalErrorHandler] = useState<ModalErrorHandlerBinding>()
   const secretTypeFromProps = props.type
-  const [type, setType] = useState<SecretResponseWrapper['secret']['type']>(secretTypeFromProps || 'SecretText')
+  const [type, setType] = useState<SecretResponseWrapper['secret']['type']>(
+    defaultTo(secretTypeFromProps, 'SecretText')
+  )
   const [secret, setSecret] = useState<SecretDTOV2>()
+  const sourceCategory = getSourceCategory(connectorTypeContext)
 
   const {
     loading: loadingSecret,
@@ -83,7 +93,7 @@ const CreateUpdateSecret: React.FC<CreateUpdateSecretProps> = props => {
     refetch,
     error: getSecretError
   } = useGetSecretV2({
-    identifier: propsSecret?.identifier || '',
+    identifier: defaultTo(propsSecret?.identifier, ''),
     queryParams: {
       accountIdentifier,
       projectIdentifier: propsSecret?.projectIdentifier,
@@ -106,18 +116,6 @@ const CreateUpdateSecret: React.FC<CreateUpdateSecretProps> = props => {
     }
   }, [propsSecret?.identifier])
 
-  const secretManagerTypes: ConnectorInfoDTO['type'][] = [
-    'AwsKms',
-    'AzureKeyVault',
-    'Vault',
-    'AwsSecretManager',
-    'GcpKms'
-  ]
-  let sourceCategory: ListSecretsV2QueryParams['source_category'] | undefined
-  if (connectorTypeContext && secretManagerTypes.includes(connectorTypeContext)) {
-    sourceCategory = 'SECRET_MANAGER'
-  }
-
   const {
     data: secretManagersApiResponse,
     loading: loadingSecretsManagers,
@@ -138,9 +136,10 @@ const CreateUpdateSecret: React.FC<CreateUpdateSecretProps> = props => {
     loading: loadingConnectorDetails,
     refetch: getConnectorDetails
   } = useGetConnector({
-    identifier:
-      (secret?.spec as SecretTextSpecDTO)?.secretManagerIdentifier ||
-      (secretResponse?.data?.secret?.spec as SecretTextSpecDTO)?.secretManagerIdentifier,
+    identifier: defaultTo(
+      (secret?.spec as SecretTextSpecDTO)?.secretManagerIdentifier,
+      (secretResponse?.data?.secret?.spec as SecretTextSpecDTO)?.secretManagerIdentifier
+    ),
     lazy: true
   })
   const { mutate: createSecretText, loading: loadingCreateText } = usePostSecret({
@@ -183,61 +182,30 @@ const CreateUpdateSecret: React.FC<CreateUpdateSecretProps> = props => {
     }
   }, [secretResponse])
 
-  const createFormData = (data: SecretFormData, editFlag?: boolean): FormData => {
-    const formData = new FormData()
-    formData.set(
-      'spec',
-      JSON.stringify({
-        secret: {
-          type,
-          ...pick(data, ['name', 'identifier', 'description', 'tags']),
-          orgIdentifier: editFlag ? propsSecret?.orgIdentifier : orgIdentifier,
-          projectIdentifier: editFlag ? propsSecret?.projectIdentifier : projectIdentifier,
-          spec: {
-            ...pick(data, ['secretManagerIdentifier'])
-          } as SecretFileSpecDTO
-        } as SecretDTOV2
-      })
-    )
-    const file = (data as any)?.['file']?.[0]
-    file && formData.set('file', file)
-    return formData
-  }
-
-  const createSecretTextData = (data: SecretFormData, editFlag?: boolean): SecretRequestWrapper => {
-    return {
-      secret: {
-        type,
-        ...pick(data, ['name', 'identifier', 'description', 'tags']),
-        orgIdentifier: editFlag ? propsSecret?.orgIdentifier : orgIdentifier,
-        projectIdentifier: editFlag ? propsSecret?.projectIdentifier : projectIdentifier,
-        spec: {
-          ...pick(data, ['secretManagerIdentifier', 'value', 'valueType'])
-        } as SecretTextSpecDTO
+  const handleEditSecret = async (data: SecretFormData, orgId?: string, projectId?: string): Promise<void> => {
+    try {
+      if (type === 'SecretText') {
+        await updateSecretText(createSecretTextData(data, orgId, projectId))
       }
+      if (type === 'SecretFile') {
+        await updateSecretFile(createSecretFileData(data, orgId, projectId) as any)
+      }
+      showSuccess(getString('secrets.updateSuccessMessage', { name: data.name }))
+      onSuccess?.(data)
+    } catch (error) {
+      modalErrorHandler?.showDanger(getRBACErrorMessage(error))
     }
   }
 
-  const handleSubmit = async (data: SecretFormData): Promise<void> => {
+  const handleCreateSecret = async (data: SecretFormData, orgId?: string, projectId?: string): Promise<void> => {
     try {
-      if (editing) {
-        if (type === 'SecretText') {
-          await updateSecretText(createSecretTextData(data, editing))
-        }
-        if (type === 'SecretFile') {
-          await updateSecretFile(createFormData(data, editing) as any)
-        }
-        showSuccess(`Secret '${data.name}' updated successfully`)
-      } else {
-        if (type === 'SecretText') {
-          await createSecretText(createSecretTextData(data))
-        }
-        if (type === 'SecretFile') {
-          await createSecretFile(createFormData(data) as any)
-        }
-        showSuccess(`Secret '${data.name}' created successfully`)
+      if (type === 'SecretText') {
+        await createSecretText(createSecretTextData(data, orgId, projectId))
       }
-
+      if (type === 'SecretFile') {
+        await createSecretFile(createSecretFileData(data, orgId, projectId) as any)
+      }
+      showSuccess(getString('secrets.createSuccessMessage', { name: data.name }))
       onSuccess?.(data)
     } catch (error) {
       modalErrorHandler?.showDanger(getRBACErrorMessage(error))
@@ -247,24 +215,24 @@ const CreateUpdateSecret: React.FC<CreateUpdateSecretProps> = props => {
   const secretManagersOptions: SelectOption[] = editing
     ? [
         {
-          label: connectorDetails?.data?.connector?.name || '',
-          value: connectorDetails?.data?.connector?.identifier || ''
+          label: defaultTo(connectorDetails?.data?.connector?.name, ''),
+          value: defaultTo(connectorDetails?.data?.connector?.identifier, '')
         }
       ]
-    : secretManagersApiResponse?.data?.content?.map((item: ConnectorResponse) => {
-        return {
-          label: item.connector?.name || '',
-          value: item.connector?.identifier || ''
-        }
-      }) || []
+    : defaultTo(
+        secretManagersApiResponse?.data?.content?.map((item: ConnectorResponse) => {
+          return {
+            label: defaultTo(item.connector?.name, ''),
+            value: defaultTo(item.connector?.identifier, '')
+          }
+        }),
+        []
+      )
 
   const defaultSecretManagerId = secretManagersApiResponse?.data?.content?.filter(
     item => item.connector?.spec?.default
   )[0]?.connector?.identifier
-  const secretTypeOptions = [
-    { label: getString('secrets.secret.labelText'), value: 'SecretText' },
-    { label: getString('secrets.secret.labelFile'), value: 'SecretFile' }
-  ]
+  const secretTypeOptions = getSecretTypeOptions(getString)
 
   const [selectedSecretManager, setSelectedSecretManager] = useState<ConnectorInfoDTO | undefined>()
   const [readOnlySecretManager, setReadOnlySecretManager] = useState<boolean>()
@@ -316,10 +284,7 @@ const CreateUpdateSecret: React.FC<CreateUpdateSecretProps> = props => {
         validationSchema={Yup.object().shape({
           name: NameSchema(),
           identifier: IdentifierSchema(),
-          value:
-            editing || type === 'SecretFile'
-              ? Yup.string().trim()
-              : Yup.string().trim().required(getString('common.validation.valueIsRequired')),
+          value: SecretValueSchema(editing, type),
           secretManagerIdentifier: Yup.string().required(getString('secrets.secret.validationKms'))
         })}
         validate={formData => {
@@ -330,7 +295,9 @@ const CreateUpdateSecret: React.FC<CreateUpdateSecretProps> = props => {
           })
         }}
         onSubmit={data => {
-          handleSubmit(data)
+          editing
+            ? handleEditSecret(data, propsSecret?.orgIdentifier, propsSecret?.projectIdentifier)
+            : handleCreateSecret(data, orgIdentifier, projectIdentifier)
         }}
       >
         {formikProps => {
@@ -373,9 +340,7 @@ const CreateUpdateSecret: React.FC<CreateUpdateSecretProps> = props => {
               {LocalFormFieldsSMList.findIndex(val => val === typeOfSelectedSecretManager) !== -1 ? (
                 <LocalFormFields disableAutocomplete formik={formikProps} type={type} editing={editing} />
               ) : null}
-              {typeOfSelectedSecretManager === 'Vault' ||
-              typeOfSelectedSecretManager === 'AzureKeyVault' ||
-              typeOfSelectedSecretManager === 'AwsSecretManager' ? (
+              {isVaultSMSelected(typeOfSelectedSecretManager) ? (
                 <VaultFormFields formik={formikProps} type={type} editing={editing} readonly={readOnlySecretManager} />
               ) : null}
               <Button

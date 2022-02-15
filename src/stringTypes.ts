@@ -1095,6 +1095,7 @@ export interface StringsMap {
   'secrets.createSSHCredWizard.verifyRetest': string
   'secrets.createSSHCredWizard.verifyStepOne': string
   'secrets.createSSHCredWizard.verifyStepTwo': string
+  'secrets.createSuccessMessage': string
   'secrets.incompleteSecret': string
   'secrets.labelPath': string
   'secrets.labelSecretName': string
@@ -1149,6 +1150,7 @@ export interface StringsMap {
   'secrets.titleCreate': string
   'secrets.titleSelect': string
   'secrets.typeSSH': string
+  'secrets.updateSuccessMessage': string
   'authSettings.SAMLProvider': string
   'authSettings.WhitelistedDomainsUpdated': string
   'authSettings.accountOrOAuthLogin': string
