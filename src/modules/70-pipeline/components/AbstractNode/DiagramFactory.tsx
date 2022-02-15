@@ -8,7 +8,7 @@
 import type { IconName } from '@wings-software/uicore'
 import React from 'react'
 import type { Node } from './Node'
-import { DefaultNode } from './Nodes/DefaultNode'
+import { DefaultNode } from './Nodes/DefaultNode/DefaultNode'
 import { DiamondNode } from './Nodes/DiamondNode'
 import { EmptyNode } from './Nodes/EmptyNode'
 import { EndNode } from './Nodes/EndNode'

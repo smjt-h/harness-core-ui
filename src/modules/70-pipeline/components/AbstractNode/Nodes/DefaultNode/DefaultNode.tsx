@@ -10,8 +10,8 @@ import type { IconName } from '@wings-software/uicore'
 import { Icon, Text, Color } from '@wings-software/uicore'
 import type { ReactElement, JSXElementConstructor } from 'react'
 import cx from 'classnames'
-import { Node, NodeType } from '../Node'
-import css from '../../Diagram/node/DefaultNode.module.scss'
+import { Node, NodeType } from '../../Node'
+import css from './DefaultNode.module.scss'
 
 export const customNodeStyle = {
   background: 'var(--pipeline-selected-node)',
@@ -24,7 +24,7 @@ const iconStyle = {
 }
 export class DefaultNode extends Node {
   protected type = NodeType.Default
-  protected identifier = '123'
+  protected identifier = ''
   protected name = 'DefaultNode'
   protected defaultIcon: IconName = 'pipeline'
   protected secondaryIcon: IconName = 'command-echo'
@@ -34,12 +34,9 @@ export class DefaultNode extends Node {
   protected unSelectedIconColour = 'black'
   public render(props: any): ReactElement<any, string | JSXElementConstructor<any>> {
     return (
-      <div
-        id={props.identifier}
-        className={cx(css.defaultNode, 'default-node')}
-        // style={{ marginLeft: `${2}px` }}
-      >
+      <div className={cx(css.defaultNode, 'default-node')}>
         <div
+          id={props.identifier}
           className={cx(
             css.defaultCard
             // options.nodeClassName
@@ -77,7 +74,6 @@ export class DefaultNode extends Node {
             color={props.defaultSelected ? Color.GREY_900 : Color.GREY_600}
             style={{ cursor: 'pointer', lineHeight: '1.5', overflowWrap: 'normal', wordBreak: 'keep-all', height: 55 }}
             padding={'small'}
-            width={125}
             lineClamp={2}
           >
             {props.name}

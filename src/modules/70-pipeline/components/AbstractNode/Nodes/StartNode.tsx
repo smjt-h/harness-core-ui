@@ -21,8 +21,12 @@ export class StartNode extends Node {
   protected unSelectedIconColour = 'black'
   render?(): React.ReactElement {
     return (
-      <div id={NodeType.StartNode.toString()} className={css.defaultNode}>
-        <div className={css.nodeStart} style={{ backgroundColor: '#f3f3fa', border: '1px solid #b0b1c4' }}>
+      <div className={css.defaultNode}>
+        <div
+          id={NodeType.StartNode.toString()}
+          className={css.nodeStart}
+          style={{ backgroundColor: '#f3f3fa', border: '1px solid #b0b1c4' }}
+        >
           <div>
             <Icon name={this.defaultIcon} style={{ color: this.selectedColour }} className={css.icon} />
             {/* <div>
