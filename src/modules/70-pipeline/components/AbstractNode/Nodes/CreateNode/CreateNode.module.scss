@@ -1,0 +1,24 @@
+.createNode {
+  cursor: pointer;
+  &:hover {
+    box-shadow: 0px 8px 16px 0px #60617029;
+  }
+  display: block;
+
+  .createNew {
+    border: 2px dashed var(--grey-400) !important;
+
+    &.selected {
+      border-color: var(--primary-7) !important;
+    }
+
+    &.disabled {
+      background-color: var(--grey-200);
+      cursor: not-allowed;
+    }
+  }
+
+  [data-name*='node-name'] {
+    word-break: break-word;
+  }
+}
