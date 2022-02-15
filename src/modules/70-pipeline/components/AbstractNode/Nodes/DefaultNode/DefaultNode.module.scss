@@ -26,6 +26,9 @@
 
     &.selected {
       background: linear-gradient(123.92deg, #0092e4 32.53%, #0778fc 112.21%);
+      border-color: var(--diagram-selected);
+      background: var(--pipeline-selected-node);
+      border-width: 2px;
     }
   }
 

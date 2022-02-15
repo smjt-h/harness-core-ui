@@ -8,6 +8,7 @@
 import type { IconName } from '@wings-software/uicore'
 import React from 'react'
 import type { Node } from './Node'
+import { CreateNode } from './Nodes/CreateNode/CreateNode'
 import { DefaultNode } from './Nodes/DefaultNode/DefaultNode'
 import { DiamondNode } from './Nodes/DiamondNode'
 import { EmptyNode } from './Nodes/EmptyNode'
@@ -71,5 +72,6 @@ diagram.registerNode(new DiamondNode())
 diagram.registerNode(new EmptyNode())
 diagram.registerNode(new StartNode())
 diagram.registerNode(new EndNode())
+diagram.registerNode(new CreateNode())
 const CDPipelineStudio = diagram.render()
 export default CDPipelineStudio

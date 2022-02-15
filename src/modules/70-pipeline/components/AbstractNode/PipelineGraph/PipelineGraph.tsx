@@ -16,6 +16,7 @@ export interface PipelineGraphProps {
 const PipelineGraph = ({ pipeline, getNode }: PipelineGraphProps): React.ReactElement => {
   const [svgPath, setSvgPath] = useState<string[]>([])
   const [treeRectangle, setTreeRectangle] = useState<DOMRect | void>()
+  const [selectedNode, setSelectedNode] = useState<string | null>(null)
   const [state, setState] = useState<StageElementWrapperConfig[]>([])
   const [graphScale, setGraphScale] = useState(INITIAL_ZOOM_LEVEL)
   const canvasRef = useRef<HTMLDivElement>(null)
@@ -72,7 +73,8 @@ const PipelineGraph = ({ pipeline, getNode }: PipelineGraphProps): React.ReactEl
         NodeType.StartNode as string,
         pipeline?.stages?.[0].stage?.identifier as string
       ),
-      getFinalSVGArrowPath('tree-container', stageData?.identifier as string, NodeType.EndNode as string)
+      getFinalSVGArrowPath('tree-container', stageData?.identifier as string, NodeType.CreateNode as string),
+      getFinalSVGArrowPath('tree-container', NodeType.CreateNode as string, NodeType.EndNode as string)
     ])
   }
 
@@ -85,7 +87,12 @@ const PipelineGraph = ({ pipeline, getNode }: PipelineGraphProps): React.ReactEl
   return (
     <div id="overlay" className={css.overlay}>
       <div className={css.graphMain} ref={canvasRef}>
-        <PipelineGraphRecursive getNode={getNode} stages={state} />
+        <PipelineGraphRecursive
+          getNode={getNode}
+          stages={state}
+          selectedNode={selectedNode}
+          setSelectedNode={setSelectedNode}
+        />
         <SVGComponent svgPath={svgPath} />
       </div>
       <GraphActions

@@ -13,12 +13,6 @@ import cx from 'classnames'
 import { Node, NodeType } from '../../Node'
 import css from './DefaultNode.module.scss'
 
-export const customNodeStyle = {
-  background: 'var(--pipeline-selected-node)',
-  borderColor: 'var(--diagram-selected)',
-  borderWidth: '2px'
-}
-
 const iconStyle = {
   color: 'var(--white)'
 }
@@ -34,20 +28,21 @@ export class DefaultNode extends Node {
   protected unSelectedIconColour = 'black'
   public render(props: any): ReactElement<any, string | JSXElementConstructor<any>> {
     return (
-      <div className={cx(css.defaultNode, 'default-node')}>
+      <div
+        className={cx(css.defaultNode, 'default-node')}
+        onClick={() => {
+          props?.setSelectedNode(props?.identifier)
+        }}
+      >
         <div
           id={props.identifier}
-          className={cx(
-            css.defaultCard
-            // options.nodeClassName
-          )}
+          className={cx(css.defaultCard, { [css.selected]: props?.isSelected })}
           style={{
             width: props.width || 90,
             height: props.height || 40,
             marginTop: 32 - (props.height || 64) / 2,
             cursor: props.disableClick ? 'not-allowed' : props.draggable ? 'move' : 'pointer',
-            opacity: props.dragging ? 0.4 : 1,
-            ...customNodeStyle
+            opacity: props.dragging ? 0.4 : 1
           }}
         >
           <div className="execution-running-animation" />

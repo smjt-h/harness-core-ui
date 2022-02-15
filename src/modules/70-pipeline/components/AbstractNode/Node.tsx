@@ -16,7 +16,7 @@ export enum NodeStatus {
 export enum NodeType {
   Default = 'default-node',
   EmptyNode = 'empty-node',
-  AddStage = 'add-stage',
+  CreateNode = 'create-node',
   DiamondNode = 'default-diamond',
   StartNode = 'start-node',
   GroupNode = 'group-node',
