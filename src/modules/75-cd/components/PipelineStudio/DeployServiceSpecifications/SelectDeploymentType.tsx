@@ -26,8 +26,7 @@ import {
 import { useModalHook } from '@harness/use-modal'
 import cx from 'classnames'
 import { useStrings, UseStringsReturn } from 'framework/strings'
-import { useLicenseStore } from 'framework/LicenseStore/LicenseStoreContext'
-import { ModuleName } from 'framework/types/ModuleName'
+import { isCDCommunity, useLicenseStore } from 'framework/LicenseStore/LicenseStoreContext'
 import { StageErrorContext } from '@pipeline/context/StageErrorContext'
 import { DeployTabs } from '@cd/components/PipelineStudio/DeployStageSetupShell/DeployStageSetupShellUtils'
 import { useFeatureFlags } from '@common/hooks/useFeatureFlag'
@@ -148,7 +147,7 @@ export default function SelectDeploymentType(props: SelectServiceDeploymentTypeP
   }, [selectedDeploymentType])
 
   React.useEffect(() => {
-    if (licenseInformation[ModuleName.CD]?.licenseType !== 'TRIAL') {
+    if (isCDCommunity(licenseInformation)) {
       cgSupportedDeploymentTypes.forEach(deploymentType => {
         deploymentType['disabled'] = true
         if (deploymentType.value === 'NativeHelm') {
@@ -192,7 +191,7 @@ export default function SelectDeploymentType(props: SelectServiceDeploymentTypeP
   }, [formikRef])
 
   const renderDeploymentTypes = React.useCallback((): JSX.Element => {
-    if (licenseInformation[ModuleName.CD]?.licenseType === 'TRIAL') {
+    if (!isCDCommunity(licenseInformation)) {
       const tooltipContent = (
         <article className={cx(deployServiceCsss.cdGenerationSelectionTooltip, deployServiceCsss.tooltipContainer)}>
           <section className={deployServiceCsss.cdGenerationSwitchContainer}>
