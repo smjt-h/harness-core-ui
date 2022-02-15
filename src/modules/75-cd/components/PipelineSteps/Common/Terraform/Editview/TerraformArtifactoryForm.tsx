@@ -32,7 +32,7 @@ import {
   getConnectorRef,
   formatOnSubmitData
 } from './TerraformArtifactoryFormHelper'
-import type { Connector, PathInterface } from '../TerraformInterfaces'
+import type { PathInterface } from '../TerraformInterfaces'
 import stepCss from '@pipeline/components/PipelineSteps/Steps/Steps.module.scss'
 
 import css from './TerraformVarfile.module.scss'
@@ -72,12 +72,8 @@ export const TFArtifactoryForm: React.FC<StepProps<any> & TFRemoteProps> = ({
   const { getString } = useStrings()
   const { showError } = useToaster()
   const initialValues = formatInitialValues(isConfig, prevStepData, isTerraformPlan)
-  const connectorValue = getConnectorRef(isConfig, isTerraformPlan, prevStepData) as Connector
-  const connectorRef = connectorValue?.connector?.identifier
-    ? connectorValue.connector.identifier
-    : typeof connectorValue === 'string'
-    ? connectorValue
-    : prevStepData?.identifier
+  const connectorRef = getConnectorRef(isConfig, isTerraformPlan, prevStepData)
+
   const {
     data: ArtifactRepoData,
     loading: ArtifactRepoLoading,

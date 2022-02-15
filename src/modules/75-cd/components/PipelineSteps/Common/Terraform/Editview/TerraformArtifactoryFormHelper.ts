@@ -5,7 +5,7 @@
  * https://polyformproject.org/wp-content/uploads/2020/06/PolyForm-Shield-1.0.0.txt.
  */
 import * as Yup from 'yup'
-import { cloneDeep, unset } from 'lodash-es'
+import { cloneDeep, unset, size, isUndefined } from 'lodash-es'
 import { TerraformStoreTypes } from '../TerraformInterfaces'
 
 export const formatInitialValues = (isConfig: boolean, prevStepData: any, isTerraformPlan: boolean) => {
@@ -62,15 +62,22 @@ export const formatInitialValues = (isConfig: boolean, prevStepData: any, isTerr
 }
 
 export const getConnectorRef = (isConfig: boolean, isTerraformPlan: boolean, prevStepData: any) => {
+  let connectorValue
   if (isConfig && isTerraformPlan) {
-    return prevStepData?.formValues.spec?.configuration?.configFiles?.store?.spec?.connectorRef
+    connectorValue = prevStepData?.formValues.spec?.configuration?.configFiles?.store?.spec?.connectorRef
+  } else if (isConfig) {
+    connectorValue = prevStepData?.formValues?.spec?.configuration?.spec?.configFiles?.store?.spec?.connectorRef
+  } else connectorValue = prevStepData?.varFile?.spec?.store?.spec?.connectorRef
+
+  if (size(prevStepData?.identifier) > 5) {
+    return prevStepData?.identifier
   }
 
-  if (isConfig) {
-    return prevStepData?.formValues?.spec?.configuration?.spec?.configFiles?.store?.spec?.connectorRef
+  if (!isUndefined(connectorValue?.connector?.identifier)) {
+    return connectorValue.connector.identifier
   }
 
-  return prevStepData?.varFile?.spec?.store?.spec?.connectorRef
+  return connectorValue
 }
 
 export const terraformArtifactorySchema = (isConfig: boolean, getString: any) => {
