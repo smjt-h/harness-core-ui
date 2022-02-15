@@ -20,7 +20,6 @@ import {
   Layout,
   MultiTypeInputType,
   SelectOption,
-  Container,
   ThumbnailSelect
 } from '@wings-software/uicore'
 import { useModalHook } from '@harness/use-modal'
@@ -46,20 +45,14 @@ import { IdentifierSchema, NameSchema } from '@common/utils/Validation'
 import { NameIdDescriptionTags, PageSpinner } from '@common/components'
 import { useStrings } from 'framework/strings'
 import { loggerFor } from 'framework/logging/logging'
-import YAMLBuilder from '@common/components/YAMLBuilder/YamlBuilder'
-import type {
-  YamlBuilderHandlerBinding,
-  YamlBuilderProps,
-  CompletionItemInterface
-} from '@common/interfaces/YAMLBuilderProps'
 import { ModuleName } from 'framework/types/ModuleName'
-import { getScopeFromDTO } from '@common/components/EntityReference/EntityReference'
-import { useGetSchemaYaml } from 'services/pipeline-ng'
 import { Step, StepProps, StepViewType, ValidateInputSetProps } from '@pipeline/components/AbstractSteps/Step'
 import type { PipelineType } from '@common/interfaces/RouteInterfaces'
 import { useToaster } from '@common/exports'
 import { useVariablesExpression } from '@pipeline/components/PipelineStudio/PiplineHooks/useVariablesExpression'
+
 import { StepType } from '@pipeline/components/PipelineSteps/PipelineStepInterface'
+import type { CompletionItemInterface } from '@common/interfaces/YAMLBuilderProps'
 
 import { usePermission } from '@rbac/hooks/usePermission'
 import { ResourceType } from '@rbac/interfaces/ResourceType'
@@ -75,7 +68,6 @@ export interface DeployEnvData extends Omit<PipelineInfrastructure, 'environment
 }
 
 interface NewEditEnvironmentModalProps {
-  type?: 'newEditEnv' | 'newYamlEnv'
   isEdit: boolean
   isEnvironment: boolean
   data: EnvironmentResponseDTO
@@ -83,21 +75,8 @@ interface NewEditEnvironmentModalProps {
   onCreateOrUpdate(data: EnvironmentRequestDTO): void
   closeModal?: () => void
 }
-const yamlBuilderReadOnlyModeProps: YamlBuilderProps = {
-  fileName: `add-env.yaml`,
-  entityType: 'Environment',
-  width: 599,
-  height: 227,
-  showSnippetSection: false,
-  yamlSanityConfig: {
-    removeEmptyString: false,
-    removeEmptyObject: false,
-    removeEmptyArray: false
-  }
-}
 
 export const NewEditEnvironmentModal: React.FC<NewEditEnvironmentModalProps> = ({
-  type = 'newEditEnv',
   isEdit,
   data,
   isEnvironment,
@@ -111,13 +90,14 @@ export const NewEditEnvironmentModal: React.FC<NewEditEnvironmentModalProps> = (
     projectIdentifier: string
     accountId: string
   }>()
-  const [yamlHandler, setYamlHandler] = React.useState<YamlBuilderHandlerBinding | undefined>()
+
   const { loading: updateLoading, mutate: updateEnvironment } = useUpsertEnvironmentV2({
     queryParams: {
       accountIdentifier: accountId
     }
   })
   const { showSuccess, showError, clear } = useToaster()
+
   const onSubmit = React.useCallback(
     async (values: Required<EnvironmentRequestDTO>) => {
       try {
@@ -160,15 +140,7 @@ export const NewEditEnvironmentModal: React.FC<NewEditEnvironmentModalProps> = (
       value: 'PreProduction'
     }
   ]
-  const { loading, data: EnvironmentSchema } = useGetSchemaYaml({
-    queryParams: {
-      entityType: 'Environment',
-      projectIdentifier,
-      orgIdentifier,
-      accountIdentifier: accountId,
-      scope: getScopeFromDTO({ accountIdentifier: accountId, orgIdentifier, projectIdentifier })
-    }
-  })
+
   if (updateLoading) {
     return <PageSpinner />
   }
@@ -187,76 +159,35 @@ export const NewEditEnvironmentModal: React.FC<NewEditEnvironmentModalProps> = (
           identifier: IdentifierSchema()
         })}
       >
-        {formikProps =>
-          type === 'newEditEnv' ? (
-            <FormikForm>
-              <NameIdDescriptionTags
-                formikProps={formikProps}
-                identifierProps={{
-                  inputLabel: getString('name'),
-                  inputGroupProps: {
-                    inputGroup: {
-                      inputRef: ref => (inputRef.current = ref)
-                    }
-                  },
-                  isIdentifierEditable: !isEdit
-                }}
+        {formikProps => (
+          <FormikForm>
+            <NameIdDescriptionTags
+              formikProps={formikProps}
+              identifierProps={{
+                inputLabel: getString('name'),
+                inputGroupProps: {
+                  inputGroup: {
+                    inputRef: ref => (inputRef.current = ref)
+                  }
+                },
+                isIdentifierEditable: !isEdit
+              }}
+            />
+            <Layout.Vertical spacing={'small'} style={{ marginBottom: 'var(--spacing-medium)' }}>
+              <Label className={cx(Classes.LABEL, css.label)}>{getString('envType')}</Label>
+              <ThumbnailSelect className={css.thumbnailSelect} name={'type'} items={typeList} />
+            </Layout.Vertical>
+            <Layout.Horizontal spacing="small" padding={{ top: 'xlarge' }}>
+              <Button
+                variation={ButtonVariation.PRIMARY}
+                type={'submit'}
+                text={getString('save')}
+                data-id="environment-save"
               />
-              <Layout.Vertical spacing={'small'} style={{ marginBottom: 'var(--spacing-medium)' }}>
-                <Label className={cx(Classes.LABEL, css.label)}>{getString('envType')}</Label>
-                <ThumbnailSelect className={css.thumbnailSelect} name={'type'} items={typeList} />
-              </Layout.Vertical>
-              <Layout.Horizontal spacing="small" padding={{ top: 'xlarge' }}>
-                <Button
-                  variation={ButtonVariation.PRIMARY}
-                  type={'submit'}
-                  text={getString('save')}
-                  data-id="environment-save"
-                />
-                <Button variation={ButtonVariation.TERTIARY} text={getString('cancel')} onClick={closeModal} />
-              </Layout.Horizontal>
-            </FormikForm>
-          ) : (
-            <div className={css.editorEnv}>
-              {loading ? (
-                <PageSpinner />
-              ) : (
-                <Container>
-                  <YAMLBuilder
-                    {...yamlBuilderReadOnlyModeProps}
-                    existingJSON={{
-                      environmentInputSet: {
-                        ...omit(formikProps?.values),
-                        description: '',
-                        tags: {},
-                        type: ''
-                      }
-                    }}
-                    bind={setYamlHandler}
-                    schema={EnvironmentSchema?.data}
-                    isReadOnlyMode={isEdit}
-                    showSnippetSection={false}
-                    isEditModeSupported={!isEdit}
-                  />
-                </Container>
-              )}
-              <Layout.Horizontal padding={{ top: 'large' }}>
-                <Button
-                  variation={ButtonVariation.PRIMARY}
-                  type="submit"
-                  text={getString('save')}
-                  onClick={() => {
-                    const latestYaml = yamlHandler?.getLatestYaml() || /* istanbul ignore next */ ''
-                    onSubmit(parse(latestYaml)?.environmentInputSet)
-                  }}
-                  disabled={isEdit}
-                />
-                &nbsp; &nbsp;
-                <Button variation={ButtonVariation.TERTIARY} onClick={closeModal} text={getString('cancel')} />
-              </Layout.Horizontal>
-            </div>
-          )
-        }
+              <Button variation={ButtonVariation.TERTIARY} text={getString('cancel')} onClick={closeModal} />
+            </Layout.Horizontal>
+          </FormikForm>
+        )}
       </Formik>
     </Layout.Vertical>
   )

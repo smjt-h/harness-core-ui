@@ -14,6 +14,8 @@ declare const styles: {
   readonly content: string
   readonly destination: string
   readonly dialog: string
+  readonly dialogStyles: string
+  readonly editServiceModal: string
   readonly flex: string
   readonly label: string
   readonly name: string

@@ -12,7 +12,6 @@ import {
   Layout,
   Views,
   VisualYamlSelectedView as SelectedView,
-  VisualYamlToggle,
   Container,
   GridListToggle
 } from '@harness/uicore'
@@ -20,13 +19,13 @@ import { useParams } from 'react-router-dom'
 import { useModalHook } from '@harness/use-modal'
 import { ParamsType, useServiceStore } from '@cd/components/Services/common'
 import { useStrings } from 'framework/strings'
-import { NewEditServiceModal } from '@cd/components/PipelineSteps/DeployServiceStep/DeployServiceStep'
 import { PermissionIdentifier } from '@rbac/interfaces/PermissionIdentifier'
 import { ResourceType } from '@rbac/interfaces/ResourceType'
 
 import { Page } from '@common/exports'
 import RbacButton from '@rbac/components/Button/Button'
 import { GetServiceListQueryParams, useGetServiceList } from 'services/cd-ng'
+import { NewEditServiceModalYaml } from './ServiceModal'
 
 import ServicesGridView from '../ServicesGridView/ServicesGridView'
 import ServicesListView from '../ServicesListView/ServicesListView'
@@ -40,7 +39,6 @@ export const ServicesListPage: React.FC = () => {
   const { getString } = useStrings()
   const { fetchDeploymentList } = useServiceStore()
   const [mode, setMode] = useState<SelectedView>(SelectedView.VISUAL)
-
   const [showModal, hideModal] = useModalHook(
     () => (
       <Dialog
@@ -53,31 +51,17 @@ export const ServicesListPage: React.FC = () => {
         isCloseButtonShown
         className={cx('padded-dialog', css.dialogStyles)}
       >
-        <Container>
-          <Container className={css.yamlToggle}>
-            <Layout.Horizontal flex={{ justifyContent: 'flex-start' }} padding-top="8px">
-              <VisualYamlToggle
-                selectedView={mode}
-                onChange={nextMode => {
-                  setMode(nextMode)
-                }}
-              />
-            </Layout.Horizontal>
-          </Container>
-
-          <Container className={css.editServiceModal}>
-            <NewEditServiceModal
-              type={mode === SelectedView.VISUAL ? 'newEditService' : 'yamlService'}
-              data={{ name: '', identifier: '', orgIdentifier, projectIdentifier }}
-              isEdit={false}
-              isService
-              onCreateOrUpdate={() => {
-                ;(fetchDeploymentList.current as () => void)?.()
-                hideModal()
-              }}
-              closeModal={hideModal}
-            />
-          </Container>
+        <Container className={css.editServiceModal}>
+          <NewEditServiceModalYaml
+            data={{ name: '', identifier: '', orgIdentifier, projectIdentifier }}
+            isEdit={false}
+            isService
+            onCreateOrUpdate={() => {
+              ;(fetchDeploymentList.current as () => void)?.()
+              hideModal()
+            }}
+            closeModal={hideModal}
+          />
         </Container>
       </Dialog>
     ),
