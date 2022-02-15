@@ -7,16 +7,12 @@
 
 import React from 'react'
 import { Icon, IconName } from '@wings-software/uicore'
-import { Node, NodeInterface, NodeType } from '../Node'
-
+// import cx from 'classnames'
+import { Node, NodeType } from '../Node'
+import css from '../../Diagram/node/NodeStart/NodeStart.module.scss'
 export class StartNode extends Node {
   protected type = NodeType.StartNode
-  // constructor(options: NodeInterface) {
-  //   super({
-  //     identifier: options.identifier,
-  //     name: options.name
-  //   } as NodeInterface)
-  // }
+
   protected defaultIcon: IconName = 'play'
   protected secondaryIcon: IconName = 'play'
   protected selectedColour = 'var(--diagram-start-node)'
@@ -25,11 +21,20 @@ export class StartNode extends Node {
   protected unSelectedIconColour = 'black'
   render?(): React.ReactElement {
     return (
-      <div
-        id={NodeType.StartNode.toString()}
-        style={{ height: '20px', width: '20px', borderRadius: '50%', background: 'grey' }}
-      >
-        <Icon name={this.defaultIcon} />
+      <div id={NodeType.StartNode.toString()} className={css.defaultNode}>
+        <div className={css.nodeStart} style={{ backgroundColor: '#f3f3fa', border: '1px solid #b0b1c4' }}>
+          <div>
+            <Icon name={this.defaultIcon} style={{ color: this.selectedColour }} className={css.icon} />
+            {/* <div>
+            <div style={{ visibility: props.node.isStart ? 'initial' : 'hidden' }}>
+              {props.node.getOutPorts().map(generatePort)}
+            </div>
+            <div style={{ visibility: props.node.isStart ? 'hidden' : 'initial' }}>
+              {props.node.getInPorts().map(generatePort)}
+            </div>
+          </div> */}
+          </div>
+        </div>
       </div>
     )
   }

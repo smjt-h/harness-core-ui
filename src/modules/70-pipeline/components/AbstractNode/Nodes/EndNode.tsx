@@ -5,10 +5,11 @@
  * https://polyformproject.org/wp-content/uploads/2020/06/PolyForm-Shield-1.0.0.txt.
  */
 
-import { Icon, IconName } from '@wings-software/uicore'
 import React from 'react'
-import { Node, NodeInterface, NodeType } from '../Node'
-
+import { Icon, IconName } from '@wings-software/uicore'
+import cx from 'classnames'
+import { Node, NodeType } from '../Node'
+import css from '../../Diagram/node/NodeStart/NodeStart.module.scss'
 export class EndNode extends Node {
   protected type = NodeType.EndNode
   // constructor(options: NodeInterface) {
@@ -19,17 +20,26 @@ export class EndNode extends Node {
   // }
   protected defaultIcon: IconName = 'stop'
   protected secondaryIcon: IconName = 'pipeline'
-  protected selectedColour = 'black'
+  protected selectedColour = 'var(--diagram-stop-node)'
   protected unSelectedColour = 'black'
   protected selectedIconColour = 'black'
   protected unSelectedIconColour = 'black'
   render?(): React.ReactElement {
     return (
-      <div
-        id={NodeType.EndNode.toString()}
-        style={{ height: '20px', width: '20px', borderRadius: '50%', background: 'grey' }}
-      >
-        <Icon name={this.defaultIcon} />
+      <div id={NodeType.EndNode.toString()} className={css.defaultNode}>
+        <div className={cx(css.nodeStart)} style={{ backgroundColor: '#f3f3fa', border: '1px solid #b0b1c4' }}>
+          <div>
+            <Icon name={this.defaultIcon} style={{ color: this.selectedColour }} className={css.icon} />
+            {/* <div>
+            <div style={{ visibility: props.node.isStart ? 'initial' : 'hidden' }}>
+              {props.node.getOutPorts().map(generatePort)}
+            </div>
+            <div style={{ visibility: props.node.isStart ? 'hidden' : 'initial' }}>
+              {props.node.getInPorts().map(generatePort)}
+            </div>
+          </div> */}
+          </div>
+        </div>
       </div>
     )
   }

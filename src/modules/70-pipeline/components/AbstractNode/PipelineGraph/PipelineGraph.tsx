@@ -1,8 +1,9 @@
 /* eslint-disable no-console */
 import React, { useEffect, useLayoutEffect, useState, useRef } from 'react'
-import { defaultTo } from 'lodash-es'
+import { cloneDeep, defaultTo } from 'lodash-es'
 import classNames from 'classnames'
 import type { PipelineInfoConfig, StageElementWrapperConfig } from 'services/cd-ng'
+import { stageTypeToIconMap } from '@pipeline/components/PipelineInputSetForm/PipelineInputSetForm'
 import { Node, NodeType } from '../Node'
 import { getFinalSVGArrowPath, getSVGLinksFromPipeline, setupDragEventListeners } from './utils'
 import css from './PipelineGraph.module.scss'
@@ -14,6 +15,7 @@ export interface PipelineGraphProps {
 const PipelineGraph = ({ pipeline, getNode }: PipelineGraphProps): React.ReactElement => {
   const [svgPath, setSvgPath] = useState<string[]>([])
   const [treeRectangle, setTreeRectangle] = useState<DOMRect | void>()
+  const [state, setState] = useState<StageElementWrapperConfig[]>([])
   const canvasRef = useRef<HTMLDivElement>(null)
 
   const updateTreeRect = (): void => {
@@ -22,9 +24,40 @@ const PipelineGraph = ({ pipeline, getNode }: PipelineGraphProps): React.ReactEl
     setTreeRectangle(rectBoundary)
   }
 
+  const getNodeType: Record<string, string> = {
+    Deployment: 'default-node',
+    CI: 'default-node',
+    Pipeline: 'default-node',
+    Custom: 'default-node',
+    Approval: 'default-node'
+  }
+
+  const addInfoToStageData = (data: StageElementWrapperConfig[]) => {
+    const clonedData = cloneDeep(data)
+    clonedData?.forEach((stage: StageElementWrapperConfig) => {
+      if (stage.stage) {
+        const stageInstance = stage.stage
+        stage.stage = {
+          ...stageInstance,
+          iconName: stageTypeToIconMap[stageInstance.type || 'Deployment'],
+          nodeType: getNodeType[stageInstance.type || 'Deployment']
+        }
+      } else {
+        stage.parallel = addInfoToStageData(stage.parallel as StageElementWrapperConfig[])
+      }
+    })
+    return clonedData
+  }
+
   useLayoutEffect(() => {
-    pipeline.stages?.length && setSVGLinks()
+    if (pipeline.stages?.length) {
+      setState(addInfoToStageData(pipeline.stages))
+    }
   }, [treeRectangle, pipeline.stages])
+
+  useLayoutEffect(() => {
+    state?.length && setSVGLinks()
+  }, [state])
 
   const setSVGLinks = (): void => {
     const SVGLinks = getSVGLinksFromPipeline(pipeline.stages)
@@ -50,7 +83,7 @@ const PipelineGraph = ({ pipeline, getNode }: PipelineGraphProps): React.ReactEl
   return (
     <div id="overlay" className={css.overlay}>
       <div className={css.graphMain} ref={canvasRef}>
-        <PipelineGraphRecursive getNode={getNode} stages={pipeline.stages} />
+        <PipelineGraphRecursive getNode={getNode} stages={state} />
         <SVGComponent svgPath={svgPath} />
       </div>
     </div>
@@ -115,10 +148,11 @@ const PipelineGraphNode = ({ className, stage, getNode }: PipelineGraphNode): Re
   const stageDetails = defaultTo(firstStage, stage) as StageElementWrapperConfig
   return (
     <div>
-      <div id={stageDetails?.stage?.identifier} className={classNames(css.graphNode, className)}>
-        {stageDetails?.stage?.name}
-      </div>
-
+      {getNode(stageDetails?.stage?.nodeType)?.render?.({
+        ...stageDetails?.stage,
+        className: classNames(css.graphNode, className)
+      })}
+      {/* <div className={classNames(css.graphNode, className)}>{stageDetails?.stage?.name}</div> */}
       <>
         {restStages?.map(currentStage => (
           <PipelineGraphNode

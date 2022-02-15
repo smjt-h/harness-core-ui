@@ -54,7 +54,7 @@ export interface PipelineInputSetFormProps {
   isRetryFormStageSelected?: boolean
 }
 
-const stageTypeToIconMap: Record<string, IconName> = {
+export const stageTypeToIconMap: Record<string, IconName> = {
   Deployment: 'cd-main',
   CI: 'ci-main',
   Pipeline: 'pipeline',

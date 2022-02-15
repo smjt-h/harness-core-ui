@@ -9,6 +9,7 @@
 
 import React from 'react'
 import { Get, GetProps, useGet, UseGetProps, Mutate, MutateProps, useMutate, UseMutateProps } from 'restful-react'
+import type { IconName } from '@harness/uicore'
 
 import { getConfig, getUsingFetch, mutateUsingFetch, GetUsingFetchProps, MutateUsingFetchProps } from '../config'
 export const SPEC_VERSION = '2.0'
@@ -8065,6 +8066,8 @@ export interface StageElementConfig {
   type?: string
   variables?: NGVariable[]
   when?: StageWhenCondition
+  iconName?: IconName
+  nodeType?: string
 }
 
 export interface StageElementWrapperConfig {
