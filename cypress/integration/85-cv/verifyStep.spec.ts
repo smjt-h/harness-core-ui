@@ -1,3 +1,6 @@
+const servicesCall =
+  '/ng/api/servicesV2?routingId=accountId&accountIdentifier=accountId&orgIdentifier=default&projectIdentifier=project1'
+
 describe('Verify step', () => {
   beforeEach(() => {
     cy.on('uncaught:exception', () => {
@@ -13,18 +16,31 @@ describe('Verify step', () => {
   })
 
   it('should open pipelines', () => {
+    cy.intercept(
+      'POST',
+      '/pipeline/api/pipelines?accountIdentifier=accountId&projectIdentifier=project1&orgIdentifier=default',
+      {
+        status: 'SUCCESS',
+        message: null,
+        correlationId: 'd174366f-e2dd-4e9a-8474-df2d47c12bec',
+        detailedMessage: null,
+        responseMessages: []
+      }
+    ).as('pipelineSave')
+    cy.intercept('GET', servicesCall, { fixture: 'ng/api/servicesV2' }).as('service')
+
     cy.get('[icon="plus"]').click()
     cy.findByTestId('stage-Deployment').click()
 
     cy.fillName('testStage_Cypress')
     cy.clickSubmit()
 
-    cy.wait(1000)
+    cy.wait('@service')
 
     // service definition
+    cy.wait(1000)
     cy.get('input[name="serviceRef"]').click({ force: true })
     cy.contains('p', 'testService').click({ force: true })
-    cy.wait(1000)
 
     // Infrastructure definition
     cy.contains('span', 'Infrastructure').click({ force: true })
@@ -70,6 +86,12 @@ describe('Verify step', () => {
 
     cy.findByRole('button', { name: /Apply Changes/i }).click()
 
-    cy.findByRole('button', { name: /Save/i }).click()
+    cy.findByRole('button', { name: /^Save$/i }).click({ force: true })
+
+    cy.wait(500)
+
+    // cy.findByText('Pipeline published successfully').should('be.visible')
+
+    // cy.wait('@pipelineSave').its('request.body').should('include', `type: Verify`)
   })
 })
