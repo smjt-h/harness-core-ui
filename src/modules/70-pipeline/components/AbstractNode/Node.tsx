@@ -53,7 +53,7 @@ export abstract class Node {
   protected abstract unSelectedColour: string
   protected abstract selectedIconColour: string
   protected abstract unSelectedIconColour: string
-  public render?(props: any): React.ReactElement
+  public render?(props?: any): React.ReactElement
 
   constructor(options?: NodeInterface) {
     this.identifier = options?.identifier || ''

@@ -5,21 +5,32 @@
  * https://polyformproject.org/wp-content/uploads/2020/06/PolyForm-Shield-1.0.0.txt.
  */
 
-import type { IconName } from '@wings-software/uicore'
+import { Icon, IconName } from '@wings-software/uicore'
+import React from 'react'
 import { Node, NodeInterface, NodeType } from '../Node'
 
 export class EndNode extends Node {
   protected type = NodeType.EndNode
-  constructor(options: NodeInterface) {
-    super({
-      identifier: options.identifier,
-      name: options.name
-    } as NodeInterface)
-  }
-  protected defaultIcon: IconName = 'pipeline'
+  // constructor(options: NodeInterface) {
+  //   super({
+  //     identifier: options.identifier,
+  //     name: options.name
+  //   } as NodeInterface)
+  // }
+  protected defaultIcon: IconName = 'stop'
   protected secondaryIcon: IconName = 'pipeline'
   protected selectedColour = 'black'
   protected unSelectedColour = 'black'
   protected selectedIconColour = 'black'
   protected unSelectedIconColour = 'black'
+  render?(): React.ReactElement {
+    return (
+      <div
+        id={NodeType.EndNode.toString()}
+        style={{ height: '20px', width: '20px', borderRadius: '50%', background: 'grey' }}
+      >
+        <Icon name={this.defaultIcon} />
+      </div>
+    )
+  }
 }

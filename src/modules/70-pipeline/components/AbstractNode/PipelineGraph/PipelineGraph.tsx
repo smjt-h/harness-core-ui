@@ -3,19 +3,17 @@ import React, { useEffect, useLayoutEffect, useState, useRef } from 'react'
 import { defaultTo } from 'lodash-es'
 import classNames from 'classnames'
 import type { PipelineInfoConfig, StageElementWrapperConfig } from 'services/cd-ng'
-import { getSVGLinksFromPipeline, setupDragEventListeners } from './utils'
+import { Node, NodeType } from '../Node'
+import { getFinalSVGArrowPath, getSVGLinksFromPipeline, setupDragEventListeners } from './utils'
 import css from './PipelineGraph.module.scss'
 
 export interface PipelineGraphProps {
   pipeline: PipelineInfoConfig
-  getNode?: (type?: string | undefined) => Node | undefined
+  getNode: (type?: string | undefined) => Node | undefined
 }
-const PipelineGraph = ({ pipeline }: PipelineGraphProps): React.ReactElement => {
+const PipelineGraph = ({ pipeline, getNode }: PipelineGraphProps): React.ReactElement => {
   const [svgPath, setSvgPath] = useState<string[]>([])
   const [treeRectangle, setTreeRectangle] = useState<DOMRect | void>()
-  // const [translate, setTranslate] = useState("");
-  // const [scale, setScale] = useState(1);
-  console.log(pipeline)
   const canvasRef = useRef<HTMLDivElement>(null)
 
   const updateTreeRect = (): void => {
@@ -25,11 +23,22 @@ const PipelineGraph = ({ pipeline }: PipelineGraphProps): React.ReactElement => 
   }
 
   useLayoutEffect(() => {
-    setSVGLinks()
-  }, [treeRectangle])
+    pipeline.stages?.length && setSVGLinks()
+  }, [treeRectangle, pipeline.stages])
 
   const setSVGLinks = (): void => {
-    return setSvgPath(getSVGLinksFromPipeline(pipeline.stages))
+    const SVGLinks = getSVGLinksFromPipeline(pipeline.stages)
+    const lastNode = pipeline.stages?.[pipeline?.stages?.length - 1]
+    const stageData = lastNode?.parallel ? lastNode.parallel[0].stage : lastNode?.stage
+    return setSvgPath([
+      ...SVGLinks,
+      getFinalSVGArrowPath(
+        'tree-container',
+        NodeType.StartNode as string,
+        pipeline?.stages?.[0].stage?.identifier as string
+      ),
+      getFinalSVGArrowPath('tree-container', stageData?.identifier as string, NodeType.EndNode as string)
+    ])
   }
 
   useEffect(() => {
@@ -41,7 +50,7 @@ const PipelineGraph = ({ pipeline }: PipelineGraphProps): React.ReactElement => 
   return (
     <div id="overlay" className={css.overlay}>
       <div className={css.graphMain} ref={canvasRef}>
-        <PipelineGraphRecursive stages={pipeline.stages} />
+        <PipelineGraphRecursive getNode={getNode} stages={pipeline.stages} />
         <SVGComponent svgPath={svgPath} />
       </div>
     </div>
@@ -60,17 +69,34 @@ const SVGComponent = ({ svgPath }: SVGComponentProps): React.ReactElement => (
   </svg>
 )
 
-const PipelineGraphRecursive = ({ stages }: { stages?: StageElementWrapperConfig[] }): React.ReactElement => {
+const PipelineGraphRecursive = ({
+  stages,
+  getNode
+}: {
+  stages?: StageElementWrapperConfig[]
+  getNode: (type?: string | undefined) => Node | undefined
+}): React.ReactElement => {
   return (
     <div id="tree-container" className={classNames(css.graphTree, css.common)}>
+      <div>
+        <div id={NodeType.StartNode.toString()} className={classNames(css.graphNode)}>
+          {getNode(NodeType.StartNode)?.render?.()}
+        </div>
+      </div>
       {stages?.map((stage, index) => {
         return (
           <PipelineGraphNode
             stage={stage.parallel ? stage.parallel : stage}
             key={stage.stage ? stage.stage?.identifier : index}
+            getNode={getNode}
           />
         )
       })}
+      <div>
+        <div id={NodeType.EndNode.toString()} className={classNames(css.graphNode)}>
+          {getNode(NodeType.EndNode)?.render?.()}
+        </div>
+      </div>
     </div>
   )
 }
@@ -78,8 +104,9 @@ const PipelineGraphRecursive = ({ stages }: { stages?: StageElementWrapperConfig
 interface PipelineGraphNode {
   className?: string
   stage: StageElementWrapperConfig | StageElementWrapperConfig[]
+  getNode: (type?: string | undefined) => Node | undefined
 }
-const PipelineGraphNode = ({ className, stage }: PipelineGraphNode): React.ReactElement => {
+const PipelineGraphNode = ({ className, stage, getNode }: PipelineGraphNode): React.ReactElement => {
   const hasParallelStages = Array.isArray(stage)
   let firstStage, restStages
   if (hasParallelStages) {
@@ -94,7 +121,12 @@ const PipelineGraphNode = ({ className, stage }: PipelineGraphNode): React.React
 
       <>
         {restStages?.map(currentStage => (
-          <PipelineGraphNode key={currentStage.stage?.identifier} className={css.parallel} stage={currentStage} />
+          <PipelineGraphNode
+            getNode={getNode}
+            key={currentStage.stage?.identifier}
+            className={css.parallel}
+            stage={currentStage}
+          />
         ))}
       </>
     </div>

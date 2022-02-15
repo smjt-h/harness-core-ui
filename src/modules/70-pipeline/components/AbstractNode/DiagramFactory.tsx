@@ -11,6 +11,8 @@ import type { Node } from './Node'
 import { DefaultNode } from './Nodes/DefaultNode'
 import { DiamondNode } from './Nodes/DiamondNode'
 import { EmptyNode } from './Nodes/EmptyNode'
+import { EndNode } from './Nodes/EndNode'
+import { StartNode } from './Nodes/StartNode'
 import PipelineGraph from './PipelineGraph/PipelineGraph'
 
 export interface NodeData {
@@ -57,54 +59,17 @@ export class DiagramFactory {
 
   render(): React.FC<any> {
     const PipelineStudioHOC: React.FC<any> = (props: any): React.ReactElement => (
-      <PipelineGraph getNode={this.getNode} {...props} />
+      <PipelineGraph getNode={this.getNode.bind(this)} {...props} />
     )
     return PipelineStudioHOC
   }
-
-  // getNodeIdentifier(type: string): string | undefined {
-  //   return this.nodeBank.get(type)?.getIdentifier()
-  // }
-
-  // getNodeName(type: string): string | undefined {
-  //   return this.nodeBank.get(type)?.getName()
-  // }
-
-  // getNodeDefaultIcon(type: string): IconName {
-  //   return this.nodeBank.get(type)?.getDefaultIconName() || 'disable'
-  // }
-
-  // getNodeSelectedColour(type: string): string | undefined {
-  //   return this.nodeBank.get(type)?.getDefaultIconName()
-  // }
-
-  // getNodeUnselectedColour(type: string): string | undefined {
-  //   return this.nodeBank.get(type)?.getUnSelectedColour()
-  // }
-
-  // getNodeSelectedIconColour(type: string): string | undefined {
-  //   return this.nodeBank.get(type)?.getSelectedIconColour()
-  // }
-
-  // getNodeUnSelectedIconColour(type: string): string | undefined {
-  //   return this.nodeBank.get(type)?.getUnSelectedIconColour()
-  // }
-
-  // getIsParallelNodeAllowed(type: string): boolean | undefined {
-  //   return this.nodeBank.get(type)?.getIsParallelNodeAllowed()
-  // }
-
-  // getInvocationMap(): Map<
-  //   RegExp,
-  //   (path: string, yaml: string, params: Record<string, unknown>) => Promise<CompletionItemInterface[]>
-  // > {
-  //   return this.invocationMap
-  // }
 }
 const diagram = new DiagramFactory('graph')
 
 diagram.registerNode(new DefaultNode())
 diagram.registerNode(new DiamondNode())
 diagram.registerNode(new EmptyNode())
+diagram.registerNode(new StartNode())
+diagram.registerNode(new EndNode())
 const CDPipelineStudio = diagram.render()
 export default CDPipelineStudio
