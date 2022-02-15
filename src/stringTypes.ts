@@ -3093,6 +3093,7 @@ export interface StringsMap {
   'templatesLibrary.updated': string
   'templatesLibrary.useTemplate': string
   'cd.GitOpsServerDelete': string
+  'cd.IdEmptyError': string
   'cd.aboutGitOpsServer': string
   'cd.aboutHarnessAdapter': string
   'cd.aboutHarnessManagedGitOpsServer': string
@@ -3141,6 +3142,7 @@ export interface StringsMap {
   'cd.duplicateGitOpsServerIdError': string
   'cd.duplicateIdError': string
   'cd.dynamicProvisioning': string
+  'cd.editIdError': string
   'cd.environmentCreated': string
   'cd.environmentUpdated': string
   'cd.featureRestriction.banners.deploymentsPerMonthLevelUp': string
@@ -3163,6 +3165,7 @@ export interface StringsMap {
   'cd.learnMore': string
   'cd.learnMoreAboutHarnessAdapter': string
   'cd.manifestPathsCannotBeEmpty': string
+  'cd.nameEmptyError': string
   'cd.namespaceValidation': string
   'cd.newAdapter': string
   'cd.newGitOpsServer': string

@@ -7,23 +7,13 @@
 
 import React, { useMemo, useState } from 'react'
 import cx from 'classnames'
-import {
-  Pagination,
-  Layout,
-  VisualYamlSelectedView as SelectedView,
-  VisualYamlToggle,
-  Text,
-  Container,
-  Heading,
-  TableV2
-} from '@wings-software/uicore'
+import { Pagination, Layout, Text, Container, Heading, TableV2 } from '@wings-software/uicore'
 import { get } from 'lodash-es'
 import { useParams } from 'react-router-dom'
 import type { Column } from 'react-table'
 import { useModalHook } from '@harness/use-modal'
 import { Dialog } from '@blueprintjs/core'
 import { useEnvironmentStore } from '@cd/components/Environments/common'
-import { NewEditEnvironmentModal } from '@cd/components/PipelineSteps/DeployEnvStep/DeployEnvStep'
 import { EnvironmentResponseDTO, useDeleteEnvironmentV2, useGetEnvironmentListForProject } from 'services/cd-ng'
 import { useToaster } from '@common/exports'
 import RbacButton from '@rbac/components/Button/Button'
@@ -36,6 +26,7 @@ import ListingPageTemplate from '@cf/components/ListingPageTemplate/ListingPageT
 import { ModifiedByCell, TypeCell, NameCell } from '@cf/pages/environments/EnvironmentsPage'
 import { useStrings } from 'framework/strings'
 import EmptyContent from './EmptyContent.svg'
+import { NewEditEnvironmentModalYaml } from './EnvironmentsModal'
 import css from './EnvironmentsList.module.scss'
 
 export const EnvironmentList: React.FC = () => {
@@ -44,6 +35,8 @@ export const EnvironmentList: React.FC = () => {
   const { showError, showSuccess } = useToaster()
   const [page, setPage] = useState(0)
   const { fetchDeploymentList } = useEnvironmentStore()
+  const [rowData, setRowData] = React.useState<EnvironmentResponseDTO>()
+  const [editable, setEditable] = React.useState(false)
   const queryParams = useMemo(() => {
     return {
       accountId,
@@ -69,8 +62,6 @@ export const EnvironmentList: React.FC = () => {
       orgIdentifier
     }
   })
-  const [mode, setMode] = useState<SelectedView>(SelectedView.VISUAL)
-
   const [showModal, hideModal] = useModalHook(
     () => (
       <Dialog
@@ -78,47 +69,57 @@ export const EnvironmentList: React.FC = () => {
         enforceFocus={false}
         canEscapeKeyClose
         canOutsideClickClose
-        onClose={hideModal}
+        onClose={() => {
+          hideModal()
+          setEditable(false)
+        }}
         title={getString('cd.addEnvironment')}
         isCloseButtonShown
         className={cx('padded-dialog', css.dialogStylesEnv)}
       >
-        <Container>
-          <Container className={css.yamlToggleEnv}>
-            <Layout.Horizontal flex={{ justifyContent: 'flex-start' }} padding-top="8px">
-              <VisualYamlToggle
-                selectedView={mode}
-                onChange={nextMode => {
-                  setMode(nextMode)
-                }}
-              />
-            </Layout.Horizontal>
-          </Container>
-
-          <Container className={css.editEnvModal}>
-            <NewEditEnvironmentModal
-              type={mode === SelectedView.VISUAL ? 'newEditEnv' : 'newYamlEnv'}
-              data={{ name: '', identifier: '', orgIdentifier, projectIdentifier }}
-              isEdit={false}
-              isEnvironment
-              onCreateOrUpdate={() => {
-                ;(fetchDeploymentList.current as () => void)?.()
-                hideModal()
-                refetch()
-              }}
-              closeModal={hideModal}
-            />
-          </Container>
+        <Container className={css.editEnvModal}>
+          <NewEditEnvironmentModalYaml
+            data={
+              rowData && editable
+                ? {
+                    name: rowData.name,
+                    identifier: rowData.identifier,
+                    orgIdentifier,
+                    projectIdentifier,
+                    description: rowData.description,
+                    tags: rowData.tags,
+                    type: rowData.type
+                  }
+                : { name: '', identifier: '', orgIdentifier, projectIdentifier }
+            }
+            isEdit={editable}
+            isEnvironment
+            onCreateOrUpdate={() => {
+              ;(fetchDeploymentList.current as () => void)?.()
+              hideModal()
+              setEditable(false)
+              refetch()
+            }}
+            closeModal={() => {
+              hideModal()
+              setEditable(false)
+            }}
+          />
         </Container>
       </Dialog>
     ),
-    [fetchDeploymentList, orgIdentifier, projectIdentifier, mode]
+    [fetchDeploymentList, orgIdentifier, projectIdentifier, rowData, editable]
   )
   const environments = envData?.data?.content
   const hasEnvs = Boolean(!loading && envData?.data?.content?.length)
   const emptyEnvs = Boolean(!loading && envData?.data?.content?.length === 0)
 
-  const handleEdit = () => {
+  const handleEdit = (id: string) => {
+    const dataRow = environments?.find(temp => {
+      return temp.identifier === id
+    })
+    setEditable(true)
+    setRowData(dataRow)
     showModal()
   }
 
@@ -183,7 +184,6 @@ export const EnvironmentList: React.FC = () => {
                 }}
                 onClick={() => {
                   showModal()
-                  setMode(SelectedView.VISUAL)
                 }}
               />
             </Layout.Horizontal>

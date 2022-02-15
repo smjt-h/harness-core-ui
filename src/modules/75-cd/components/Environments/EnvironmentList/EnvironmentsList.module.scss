@@ -35,3 +35,14 @@
   padding-bottom: var(--spacing-4) !important;
   width: 320px;
 }
+.label {
+  margin-bottom: var(--spacing-xsmall) !important;
+}
+.thumbnailSelect {
+  &:global(.bp3-form-group) {
+    margin-bottom: 0px;
+  }
+  button {
+    margin-top: var(--spacing-xlarge) !important;
+  }
+}

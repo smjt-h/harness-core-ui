@@ -11,6 +11,7 @@ declare const styles: {
   readonly container: string
   readonly dialogStyles: string
   readonly editServiceModal: string
+  readonly editServiceSaveCancel: string
   readonly editor: string
   readonly header: string
   readonly pageBody: string

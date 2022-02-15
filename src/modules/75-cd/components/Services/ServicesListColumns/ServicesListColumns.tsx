@@ -6,7 +6,17 @@
  */
 
 import React, { useState } from 'react'
-import { Color, Dialog, Button, Layout, TagsPopover, Text, useConfirmationDialog, useToaster } from '@harness/uicore'
+import {
+  Color,
+  Dialog,
+  Button,
+  Layout,
+  TagsPopover,
+  Text,
+  useConfirmationDialog,
+  useToaster,
+  Container
+} from '@harness/uicore'
 import cx from 'classnames'
 import { useHistory, useParams } from 'react-router-dom'
 import { defaultTo, isEmpty, pick } from 'lodash-es'
@@ -20,9 +30,8 @@ import type { ModulePathParams, ProjectPathProps } from '@common/interfaces/Rout
 import { useStrings } from 'framework/strings'
 import { useDeleteServiceV2 } from 'services/cd-ng'
 
-import { NewEditServiceModal } from '@cd/components/PipelineSteps/DeployServiceStep/DeployServiceStep'
-
 import RbacMenuItem from '@rbac/components/MenuItem/MenuItem'
+import { NewEditServiceModalYaml } from '../ServicesListPage/ServiceModal'
 import css from './ServicesListColumns.module.scss'
 
 interface serviceRow {
@@ -68,18 +77,20 @@ const ServiceMenu = (props: ServiceItemProps): React.ReactElement => {
         onClose={hideModal}
         title={getString('editService')}
         isCloseButtonShown
-        className={cx('padded-dialog')}
+        className={cx('padded-dialog', css.dialogStyles)}
       >
-        <NewEditServiceModal
-          data={{ ...pick(service, ['name', 'identifier', 'description', 'tags']) } || { name: '', identifier: '' }}
-          isEdit={true}
-          isService={false}
-          onCreateOrUpdate={() => {
-            hideModal()
-            onRefresh && onRefresh()
-          }}
-          closeModal={hideModal}
-        />
+        <Container className={css.editServiceModal}>
+          <NewEditServiceModalYaml
+            data={{ ...pick(service, ['name', 'identifier', 'description', 'tags']) } || { name: '', identifier: '' }}
+            isEdit={true}
+            isService={false}
+            onCreateOrUpdate={() => {
+              hideModal()
+              onRefresh && onRefresh()
+            }}
+            closeModal={hideModal}
+          />
+        </Container>
       </Dialog>
     ),
     [service, orgIdentifier, projectIdentifier]

@@ -11,6 +11,8 @@ declare const styles: {
   readonly editEnvModal: string
   readonly editorEnv: string
   readonly horizontalTabs: string
+  readonly label: string
+  readonly thumbnailSelect: string
   readonly yamlToggleEnv: string
 }
 export default styles

@@ -83,7 +83,7 @@ export const NameCell = withEnvironment(({ environment }) => {
               <>
                 <Text>{getString('tagsLabel').toUpperCase()}</Text>
                 {tags.map((elem, i) => (
-                  <Text key={`${elem.value}-${i}`}>{elem.value}</Text>
+                  <Text key={`${elem.value}-${i}`}>{elem.name}</Text>
                 ))}
               </>
             ) : undefined
