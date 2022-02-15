@@ -783,3 +783,7 @@ anomalyDetection:
     falseAnomaly: This is false anomaly
   userFeedbackSuccessMsg: 'Thanks for your feedback!'
   trend: '(+{{ trend }}%)'
+  tooltip:
+    countText: '{{ count }} Anomalies'
+    anomaliesRedirectionText: View anomalies
+    filterText: Apply cluster filters

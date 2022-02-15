@@ -9,10 +9,19 @@ import React, { useEffect, useState } from 'react'
 import type { OptionsStackingValue } from 'highcharts'
 import moment from 'moment'
 import { Icon } from '@wings-software/uicore'
+import { useHistory, useParams } from 'react-router-dom'
 import { QlceViewTimeGroupType } from 'services/ce/services'
+import type { PerspectiveAnomalyData } from 'services/ce'
+import formatCost from '@ce/utils/formatCost'
+import routes from '@common/RouteDefinitions'
+import { useFeatureFlag } from '@common/hooks/useFeatureFlag'
+import { FeatureFlag } from '@common/featureFlags'
+import { useStrings } from 'framework/strings'
 import type { ChartConfigType } from './chartUtils'
 import CEChart from '../CEChart/CEChart'
 import ChartLegend from './ChartLegend'
+
+import css from './Chart.module.scss'
 
 export const DAYS_FOR_TICK_INTERVAL = 10
 export const ONE_MONTH = 24 * 3600 * 1000 * 30
@@ -26,6 +35,7 @@ interface GetChartProps {
   xAxisPointCount: number
   setFilterUsingChartClick?: (value: string) => void
   showLegends: boolean
+  anomaliesCountData?: PerspectiveAnomalyData[]
 }
 
 const GetChart: React.FC<GetChartProps> = ({
@@ -36,11 +46,18 @@ const GetChart: React.FC<GetChartProps> = ({
   aggregation,
   xAxisPointCount,
   setFilterUsingChartClick,
-  showLegends
+  showLegends,
+  anomaliesCountData
 }) => {
   const [chartObj, setChartObj] = useState<Highcharts.Chart | null>(null)
+  const isAnomaliesEnabled = useFeatureFlag(FeatureFlag.CCM_ANOMALY_DETECTION_NG)
 
   const [forceCounter, setForceCounter] = useState(0)
+  const history = useHistory()
+  const { accountId } = useParams<{
+    accountId: string
+  }>()
+  const { getString } = useStrings()
 
   useEffect(() => {
     // When the chart data changes the legend component is not getting updated due to no deps on data
@@ -113,8 +130,58 @@ const GetChart: React.FC<GetChartProps> = ({
     xAxisOptions.tickInterval = ONE_MONTH
   }
 
+  const redirection = (event: any) => {
+    if (event.target.id === 'navAnomalies') {
+      history.push(
+        routes.toCEAnomalyDetection({
+          accountId: accountId
+        })
+      )
+    }
+  }
+
+  const labelsText = (item: Record<string, any>) => {
+    return `
+      <div class=${css.anomaliesWrapper}>
+        <span class=${css.anomaliesText}>${item.anomalyCount}</span>
+        <span class=${css.anomaliesTooltip}>
+          <p class=${css.anomaliesCount}>${getString('ce.anomalyDetection.tooltip.countText', {
+      count: item.anomalyCount
+    })}
+          </p>
+          <div class=${css.costWrapper}>
+            <span class=${css.anomaliesCost}>${item.actualCost && formatCost(item.actualCost)}</span>
+            <span class=${item.differenceFromExpectedCost < 0 ? css.differenceCostNeg : css.differenceCostPos}>
+              ${item.differenceFromExpectedCost < 0 ? '-' : '+'}
+              ${item.differenceFromExpectedCost && formatCost(item.differenceFromExpectedCost)}
+            </span>
+          </div>
+          <a id="navAnomalies" class=${css.anomaliesNav}>${getString(
+      'ce.anomalyDetection.tooltip.anomaliesRedirectionText'
+    )}</a>
+          <a class=${css.anomaliesNav}>${getString('ce.anomalyDetection.tooltip.filterText')}</a>
+        </span>
+      <div>
+    `
+  }
+
+  const anomaliesLabels = () => {
+    const labels =
+      anomaliesCountData &&
+      anomaliesCountData.map(item => {
+        return {
+          point: `${item.timestamp}`,
+          useHTML: true,
+          text: labelsText(item),
+          y: -42
+        }
+      })
+
+    return labels || []
+  }
+
   return (
-    <article key={idx}>
+    <article key={idx} onClick={redirection}>
       <CEChart
         options={{
           series: chart as any,
@@ -122,6 +189,7 @@ const GetChart: React.FC<GetChartProps> = ({
             zoomType: 'x',
             height: 300,
             type: chartType,
+            spacingTop: 20,
             events: {
               load() {
                 setChartObj(this)
@@ -144,7 +212,19 @@ const GetChart: React.FC<GetChartProps> = ({
               }
             }
           },
-          xAxis: xAxisOptions
+          xAxis: xAxisOptions,
+          annotations: [
+            {
+              labels: anomaliesLabels(),
+              draggable: '',
+              visible: isAnomaliesEnabled,
+              labelOptions: {
+                useHTML: true,
+                backgroundColor: 'white',
+                borderWidth: 0
+              }
+            }
+          ]
         }}
       />
       {chartObj && showLegends ? (
@@ -164,6 +244,7 @@ interface CCMChartProps {
   xAxisPointCount: number
   setFilterUsingChartClick?: (value: string) => void
   showLegends: boolean
+  anomaliesCountData?: PerspectiveAnomalyData[]
 }
 
 const Chart: React.FC<CCMChartProps> = ({
@@ -173,7 +254,8 @@ const Chart: React.FC<CCMChartProps> = ({
   aggregation,
   xAxisPointCount,
   setFilterUsingChartClick,
-  showLegends
+  showLegends,
+  anomaliesCountData
 }) => {
   return (
     <>
@@ -189,6 +271,7 @@ const Chart: React.FC<CCMChartProps> = ({
             setFilterUsingChartClick={setFilterUsingChartClick}
             onLoad={onLoad}
             showLegends={showLegends}
+            anomaliesCountData={anomaliesCountData}
           />
         ) : null
       })}
