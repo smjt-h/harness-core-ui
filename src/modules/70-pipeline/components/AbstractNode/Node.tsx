@@ -16,11 +16,12 @@ export enum NodeStatus {
 export enum NodeType {
   Default = 'default',
   EmptyNode = 'empty-node',
-  CreateNew = 'create-new',
+  AddStage = 'add-stage',
   DiamondNode = 'default-diamond',
-  StartNode = 'node-start',
+  StartNode = 'start-node',
   GroupNode = 'group-node',
-  IconNode = 'icon-node'
+  IconNode = 'icon-node',
+  EndNode = 'end-node'
 }
 
 export interface NodeProps<T> {
@@ -30,10 +31,22 @@ export interface NodeProps<T> {
   onChange?: (data: T) => void
 }
 
+export interface NodeInterface {
+  identifier: string
+  type: NodeType
+  name: string
+  defaultIcon: IconName
+  secondaryIcon?: IconName
+  selectedColour?: string
+  unSelectedColour?: string
+  selectedIconColour?: string
+  unSelectedIconColour?: string
+}
+
 export abstract class Node {
-  protected abstract identifier: string
+  protected identifier: string
+  protected name: string
   protected abstract type: NodeType
-  protected abstract name: string
   protected abstract defaultIcon: IconName
   protected abstract secondaryIcon?: IconName
   protected abstract selectedColour: string
@@ -41,6 +54,11 @@ export abstract class Node {
   protected abstract selectedIconColour: string
   protected abstract unSelectedIconColour: string
   public render?(props: any): React.ReactElement
+
+  constructor(options?: NodeInterface) {
+    this.identifier = options?.identifier || ''
+    this.name = options?.name || ''
+  }
   getType(): string {
     return this.type
   }

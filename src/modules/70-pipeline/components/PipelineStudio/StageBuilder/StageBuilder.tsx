@@ -909,6 +909,7 @@ const StageBuilder: React.FC<unknown> = (): JSX.Element => {
           onChange={handleStageResize}
           allowResize={openSplitView}
         >
+          {/* {StageCanvas} */}
           {IS_NEW_PIP_STUDIO_ACTIVE ? <PipelineStudioGraph pipeline={pipeline} /> : StageCanvas}
 
           <div
