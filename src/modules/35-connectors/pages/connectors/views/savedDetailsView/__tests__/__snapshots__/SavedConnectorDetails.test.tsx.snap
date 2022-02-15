@@ -1594,6 +1594,222 @@ exports[`Saved Connector Details render for Vault schema 1`] = `
 </div>
 `;
 
+exports[`Saved Connector Details render for VaultWithIamAMS schema 1`] = `
+<div>
+  <div
+    class="Layout--horizontal Layout--layout-spacing-xlarge StyledProps--main detailsSectionContainer"
+  >
+    <div
+      class="bp3-card bp3-elevation-0 Card--card detailsSection"
+    >
+      <p
+        class="StyledProps--font StyledProps--main StyledProps--font-weight-bold StyledProps--font-size-medium StyledProps--color StyledProps--color-grey700"
+      >
+        overview
+      </p>
+      <div
+        class="Layout--vertical Layout--layout-spacing-xsmall StyledProps--main detailsSectionRowWrapper StyledProps--padding-top-medium StyledProps--padding-bottom-medium"
+      >
+        <p
+          class="StyledProps--font StyledProps--main StyledProps--font-size-small"
+        >
+          connectors.name_labels.SecretManager
+        </p>
+        <div
+          class="Layout--horizontal Layout--layout-spacing-small StyledProps--main detailsSectionRow"
+        >
+          <span
+            class="StyledProps--font StyledProps--main detailsValue StyledProps--inline StyledProps--color StyledProps--color-black"
+          >
+            VaultNameWithAMS
+          </span>
+        </div>
+      </div>
+      <div
+        class="Layout--vertical Layout--layout-spacing-xsmall StyledProps--main detailsSectionRowWrapper StyledProps--padding-top-medium StyledProps--padding-bottom-medium"
+      >
+        <p
+          class="StyledProps--font StyledProps--main StyledProps--font-size-small"
+        >
+          description
+        </p>
+        <div
+          class="Layout--horizontal Layout--layout-spacing-small StyledProps--main detailsSectionRow"
+        >
+          <span
+            class="StyledProps--font StyledProps--main detailsValue StyledProps--inline StyledProps--color StyledProps--color-black"
+          >
+            This description is for Vault
+          </span>
+        </div>
+      </div>
+      <div
+        class="Layout--vertical Layout--layout-spacing-xsmall StyledProps--main detailsSectionRowWrapper StyledProps--padding-top-medium StyledProps--padding-bottom-medium"
+      >
+        <p
+          class="StyledProps--font StyledProps--main StyledProps--font-size-small"
+        >
+          identifier
+        </p>
+        <div
+          class="Layout--horizontal Layout--layout-spacing-small StyledProps--main detailsSectionRow"
+        >
+          <span
+            class="StyledProps--font StyledProps--main detailsValue StyledProps--inline StyledProps--color StyledProps--color-black"
+          >
+            VaultId
+          </span>
+        </div>
+      </div>
+      <div
+        class="Layout--vertical Layout--layout-spacing-xsmall StyledProps--main detailsSectionRowWrapper StyledProps--padding-top-medium StyledProps--padding-bottom-medium"
+      >
+        <p
+          class="StyledProps--font StyledProps--main StyledProps--font-size-small"
+        >
+          tagsLabel
+        </p>
+        <div
+          class="Layout--horizontal Layout--layout-spacing-xsmall StyledProps--main"
+        >
+          <span
+            class="Tag--main"
+          >
+            <span
+              class="bp3-tag"
+              style="max-width: 240px;"
+            >
+              <span
+                class="bp3-text-overflow-ellipsis bp3-fill"
+              >
+                tag1
+              </span>
+            </span>
+          </span>
+        </div>
+      </div>
+    </div>
+    <div
+      class="bp3-card bp3-elevation-0 Card--card detailsSection"
+    >
+      <p
+        class="StyledProps--font StyledProps--main StyledProps--font-weight-bold StyledProps--font-size-medium StyledProps--color StyledProps--color-grey700"
+      >
+        credentials
+      </p>
+      <div
+        class="Layout--vertical Layout--layout-spacing-xsmall StyledProps--main detailsSectionRowWrapper StyledProps--padding-top-medium StyledProps--padding-bottom-medium"
+      >
+        <p
+          class="StyledProps--font StyledProps--main StyledProps--font-size-small"
+        >
+          connectors.hashiCorpVault.vaultUrl
+        </p>
+        <div
+          class="Layout--horizontal Layout--layout-spacing-small StyledProps--main detailsSectionRow"
+        >
+          <span
+            class="StyledProps--font StyledProps--main detailsValue StyledProps--inline StyledProps--color StyledProps--color-black"
+          >
+            https://vaultqa.harness.io
+          </span>
+        </div>
+      </div>
+      <div
+        class="Layout--vertical Layout--layout-spacing-xsmall StyledProps--main detailsSectionRowWrapper StyledProps--padding-top-medium StyledProps--padding-bottom-medium"
+      >
+        <p
+          class="StyledProps--font StyledProps--main StyledProps--font-size-small"
+        >
+          connectors.hashiCorpVault.engineName
+        </p>
+        <div
+          class="Layout--horizontal Layout--layout-spacing-small StyledProps--main detailsSectionRow"
+        >
+          <span
+            class="StyledProps--font StyledProps--main detailsValue StyledProps--inline StyledProps--color StyledProps--color-black"
+          >
+            dfdfdf
+          </span>
+        </div>
+      </div>
+      <div
+        class="Layout--vertical Layout--layout-spacing-xsmall StyledProps--main detailsSectionRowWrapper StyledProps--padding-top-medium StyledProps--padding-bottom-medium"
+      >
+        <p
+          class="StyledProps--font StyledProps--main StyledProps--font-size-small"
+        >
+          connectors.hashiCorpVault.engineVersion
+        </p>
+        <div
+          class="Layout--horizontal Layout--layout-spacing-small StyledProps--main detailsSectionRow"
+        >
+          <span
+            class="StyledProps--font StyledProps--main detailsValue StyledProps--inline StyledProps--color StyledProps--color-black"
+          >
+            2
+          </span>
+        </div>
+      </div>
+      <div
+        class="Layout--vertical Layout--layout-spacing-xsmall StyledProps--main detailsSectionRowWrapper StyledProps--padding-top-medium StyledProps--padding-bottom-medium"
+      >
+        <p
+          class="StyledProps--font StyledProps--main StyledProps--font-size-small"
+        >
+          regionLabel
+        </p>
+        <div
+          class="Layout--horizontal Layout--layout-spacing-small StyledProps--main detailsSectionRow"
+        >
+          <span
+            class="StyledProps--font StyledProps--main detailsValue StyledProps--inline StyledProps--color StyledProps--color-black"
+          >
+            us-gov-east-1
+          </span>
+        </div>
+      </div>
+      <div
+        class="Layout--vertical Layout--layout-spacing-xsmall StyledProps--main detailsSectionRowWrapper StyledProps--padding-top-medium StyledProps--padding-bottom-medium"
+      >
+        <p
+          class="StyledProps--font StyledProps--main StyledProps--font-size-small"
+        >
+          common.role
+        </p>
+        <div
+          class="Layout--horizontal Layout--layout-spacing-small StyledProps--main detailsSectionRow"
+        >
+          <span
+            class="StyledProps--font StyledProps--main detailsValue StyledProps--inline StyledProps--color StyledProps--color-black"
+          >
+            test
+          </span>
+        </div>
+      </div>
+      <div
+        class="Layout--vertical Layout--layout-spacing-xsmall StyledProps--main detailsSectionRowWrapper StyledProps--padding-top-medium StyledProps--padding-bottom-medium"
+      >
+        <p
+          class="StyledProps--font StyledProps--main StyledProps--font-size-small"
+        >
+          connectors.hashiCorpVault.default
+        </p>
+        <div
+          class="Layout--horizontal Layout--layout-spacing-small StyledProps--main detailsSectionRow"
+        >
+          <span
+            class="StyledProps--font StyledProps--main detailsValue StyledProps--inline StyledProps--color StyledProps--color-black"
+          >
+            No
+          </span>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+`;
+
 exports[`Saved Connector Details render for connector activity details 1`] = `
 <div>
   <div

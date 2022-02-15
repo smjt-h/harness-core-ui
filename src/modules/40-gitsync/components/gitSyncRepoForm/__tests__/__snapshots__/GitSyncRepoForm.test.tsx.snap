@@ -2711,6 +2711,7 @@ exports[`Git Sync - repo tab rendering form to create gitSync repo 2`] = `
                           >
                             <div
                               class="FormError--errorDiv"
+                              data-name="name"
                             >
                               <span
                                 class="bp3-icon StyledProps--main FormError--errorTextIcon StyledProps--intent-danger"
@@ -2842,6 +2843,7 @@ exports[`Git Sync - repo tab rendering form to create gitSync repo 2`] = `
                           >
                             <div
                               class="FormError--errorDiv"
+                              data-name="repo"
                             >
                               <span
                                 class="bp3-icon StyledProps--main FormError--errorTextIcon StyledProps--intent-danger"
@@ -2995,6 +2997,7 @@ exports[`Git Sync - repo tab rendering form to create gitSync repo 2`] = `
                         >
                           <div
                             class="FormError--errorDiv"
+                            data-name="branch"
                           >
                             <span
                               class="bp3-icon StyledProps--main FormError--errorTextIcon StyledProps--intent-danger"

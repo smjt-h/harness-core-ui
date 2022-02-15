@@ -166,10 +166,18 @@ export const TemplateStageSpecifications = (): JSX.Element => {
 
   const { onRemoveTemplate, onOpenTemplateSelector } = useStageTemplateActions()
 
+  const formRefDom = React.useRef<HTMLElement | undefined>()
+
   return (
     <Container className={css.serviceOverrides} height={'100%'} background={Color.FORM_BG}>
-      <ErrorsStripBinded />
-      <Layout.Vertical spacing={'xlarge'} className={css.contentSection}>
+      <ErrorsStripBinded domRef={formRefDom} />
+      <Layout.Vertical
+        spacing={'xlarge'}
+        className={css.contentSection}
+        ref={ref => {
+          formRefDom.current = ref as HTMLElement
+        }}
+      >
         {stage?.stage?.template && (
           <TemplateBar
             templateLinkConfig={stage?.stage.template}

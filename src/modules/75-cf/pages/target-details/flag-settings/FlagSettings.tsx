@@ -52,10 +52,12 @@ const CellWidth = {
   VARIATION: 180
 }
 
-export const FlagSettings: React.FC<{ target?: Target | undefined | null; gitSync: UseGitSync }> = ({
-  target,
-  gitSync
-}) => {
+export interface FlagSettingsProps {
+  target?: Target | null
+  gitSync: UseGitSync
+}
+
+export const FlagSettings: React.FC<FlagSettingsProps> = ({ target, gitSync }) => {
   const { getString } = useStrings()
   const [sortByField] = useState(FlagsSortByField.NAME)
   const [sortOrder, setSortOrder] = useState(SortOrder.ASCENDING)
@@ -378,11 +380,11 @@ export const VariationSelect: React.FC<VariationSelectProps> = ({
         gitDetails = gitSyncFormValues?.gitDetails
       }
 
-      await _useServeFlagVariationToTargets(feature, variations[index].identifier, [target.identifier], gitDetails)
-
       if (!gitSync?.isAutoCommitEnabled && gitSyncFormValues?.autoCommit) {
         await gitSync.handleAutoCommit(gitSyncFormValues.autoCommit)
       }
+
+      await _useServeFlagVariationToTargets(feature, variations[index].identifier, [target.identifier], gitDetails)
 
       previousSelectedIdentifier.current = index
     } catch (e: any) {
@@ -449,6 +451,7 @@ export const VariationSelect: React.FC<VariationSelectProps> = ({
           onSubmit={saveVariationChange}
           onClose={() => {
             setIsGitSyncModalOpen(false)
+            setIndex(previousSelectedIdentifier.current)
           }}
         />
       )}

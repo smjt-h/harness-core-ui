@@ -30,6 +30,21 @@ jest.mock('services/cv', () => ({
       loading: false,
       cancel: jest.fn()
     }
+  }),
+  useGetMonitoredServiceChangeTimeline: jest.fn().mockReturnValue({
+    data: {
+      resource: {
+        categoryTimeline: {
+          Deployment: [],
+          Infrastructure: [],
+          Alert: []
+        }
+      }
+    },
+    refetch: jest.fn(),
+    error: null,
+    loading: false,
+    cancel: jest.fn()
   })
 }))
 
@@ -72,12 +87,36 @@ describe('Render ChangeTimeline', () => {
           cancel: jest.fn()
         } as any)
     )
+    jest.spyOn(cvServices, 'useGetMonitoredServiceChangeTimeline').mockImplementation(
+      () =>
+        ({
+          data: {},
+          refetch: jest.fn(),
+          error: {
+            data: {
+              message: 'api call failed'
+            }
+          },
+          loading: false,
+          cancel: jest.fn()
+        } as any)
+    )
     const { container } = render(<WrapperComponent {...defaultProps} />)
     await waitFor(() => expect(container.querySelector('[data-testid="timelineError"]')).toBeTruthy())
   })
 
   test('should render with loading state', async () => {
     jest.spyOn(cvServices, 'useChangeEventTimeline').mockImplementation(
+      () =>
+        ({
+          data: {},
+          refetch: jest.fn(),
+          error: null,
+          loading: true,
+          cancel: jest.fn()
+        } as any)
+    )
+    jest.spyOn(cvServices, 'useGetMonitoredServiceChangeTimeline').mockImplementation(
       () =>
         ({
           data: {},

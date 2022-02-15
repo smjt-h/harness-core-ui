@@ -39,7 +39,6 @@
       "@delegates/*": ["modules/30-delegates/*"],
       "@dashboards/*": ["modules/45-dashboards/*"],
       "@gitsync/*": ["modules/40-gitsync/*"],
-      "@resource-center/*": ["modules/22-resource-center/*"],
       "@pipeline/*": ["modules/70-pipeline/*"],
       "@templates-library/*": ["modules/72-templates-library/*"],
       "@cd/*": ["modules/75-cd/*"],

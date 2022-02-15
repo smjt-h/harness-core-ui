@@ -15,6 +15,7 @@ declare const styles: {
   readonly flag: string
   readonly infoIcon: string
   readonly tooltip: string
+  readonly viewUsageLink: string
   readonly warning: string
 }
 export default styles

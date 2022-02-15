@@ -644,6 +644,7 @@ exports[`CreatePipelineForm Rendering should validate inputs 1`] = `
                 >
                   <div
                     class="FormError--errorDiv"
+                    data-name="name"
                   >
                     <span
                       class="bp3-icon StyledProps--main FormError--errorTextIcon StyledProps--intent-danger"

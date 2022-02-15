@@ -17,6 +17,7 @@ import type {
   SelectedAndMappedMetrics
 } from './NewRelicHealthSource.types'
 import { NewRelicHealthSourceFieldNames } from './NewRelicHealthSource.constants'
+import type { CustomMappedMetric } from '../../common/CustomMetric/CustomMetric.types'
 
 export const validateMapping = (
   values: any,
@@ -172,7 +173,7 @@ export const initializeNonCustomFields = (newRelicData: NewRelicData) => {
 
 export const createNewRelicFormData = (
   newRelicData: NewRelicData,
-  mappedMetrics: Map<string, MapNewRelicMetric>,
+  mappedMetrics: Map<string, CustomMappedMetric>,
   selectedMetric: string,
   nonCustomFeilds: {
     newRelicApplication: SelectOption
@@ -199,8 +200,8 @@ export const createNewRelicFormData = (
 }
 
 export const createNewRelicPayloadBeforeSubmission = (
-  formik: FormikProps<MapNewRelicMetric>,
-  mappedMetrics: Map<string, MapNewRelicMetric>,
+  formik: FormikProps<CustomMappedMetric>,
+  mappedMetrics: Map<string, CustomMappedMetric>,
   selectedMetric: string,
   selectedMetricIndex: number,
   createdMetrics: string[],

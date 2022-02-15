@@ -21,7 +21,8 @@ import type {
   UpdateSelectedMetricsMapInterface,
   CreatedMetricsWithSelectedIndex
 } from './CustomMetric.types'
-import type { InitCustomFormInterface } from '../../connectors/AppDynamics/AppDHealthSource.types'
+import type { InitAppDCustomFormInterface } from '../../connectors/AppDynamics/AppDHealthSource.types'
+import type { InitNewRelicCustomFormInterface } from '../../connectors/NewRelic/NewRelicHealthSource.types'
 
 export function updateSelectedMetricsMap({
   updatedMetric,
@@ -108,7 +109,7 @@ export const getMappedMetrics = (
   mappedMetrics: Map<string, CustomMappedMetric>,
   formikValues: CustomMappedMetric,
   oldState: CustomSelectedAndMappedMetrics,
-  initCustomForm: InitCustomFormInterface
+  initCustomForm: InitAppDCustomFormInterface | InitNewRelicCustomFormInterface
 ): {
   selectedMetric: string
   mappedMetrics: Map<string, CustomMappedMetric>
@@ -196,7 +197,7 @@ export function initializeCreatedMetrics(
 
 export function initializeSelectedMetricsMap(
   defaultSelectedMetricName: string,
-  initCustomFormData: InitCustomFormInterface,
+  initCustomFormData: InitAppDCustomFormInterface | InitNewRelicCustomFormInterface,
   mappedServicesAndEnvs?: Map<string, CustomMappedMetric>
 ): CustomSelectedAndMappedMetrics {
   return {

@@ -30,7 +30,14 @@ cdTrialHomePage:
   startTrial:
     description: Take your software build processes to the next level using our Harness Continuous Delivery.
     startBtn:
-      description: Start 14 day CD Enterprise trial
+      description: Start CD Free Plan
+cdSwitchToFirstGen:
+  description1: Harness Continuous Delivery First Generation is our dedicated industry leading Continuous Delivery Platform.
+  description2: Don’t worry, you can switch back to the Next Generation Platform at any time to get access to additional integrated Harness modules and features.
+  description3: Pipelines are not transferable between First and Next Generation platforms
+  description4: You are currently in the new and exciting Continuous Delivery NexGen platform. The platform is rapidly evolving to support all popular deployment types. The deployment types below are availible on our existing First Generation platform.
+  startWith14DayTrial: Start with 14 day Trial
+  learnMoreAboutCD1stGen: Learn more about CD First Generation
 chooseProvisionerText: What type of provisioner do you want to use?
 setUpProvisionerBtnText: Set Up Provisioner
 

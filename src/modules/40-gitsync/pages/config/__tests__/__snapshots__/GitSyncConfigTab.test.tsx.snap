@@ -780,7 +780,7 @@ exports[`Git Sync - Config tab rendering full sync entities 1`] = `
                     class="StyledProps--font Text--lineclamp StyledProps--main StyledProps--color StyledProps--color-grey900 StyledProps--font-weight-semi-bold"
                     style="--text-line-clamp: 1;"
                   >
-                    d2
+                    sync failed
                   </p>
                   <p
                     class="StyledProps--font Text--lineclamp StyledProps--main"
@@ -797,27 +797,31 @@ exports[`Git Sync - Config tab rendering full sync entities 1`] = `
               style="width: 15%;"
             >
               <div
-                class="Layout--horizontal Layout--layout-spacing-small StyledProps--main syncStatus StyledProps--background-grey100 StyledProps--padding-small"
+                class="Layout--horizontal Layout--layout-spacing-small StyledProps--main syncStatus StyledProps--background-red100 StyledProps--padding-small"
               >
                 <span
-                  class="bp3-icon StyledProps--main"
-                  data-icon="queued"
+                  class="bp3-icon bp3-icon-warning-sign StyledProps--main StyledProps--color StyledProps--color-red900"
+                  icon="warning-sign"
                 >
                   <svg
+                    data-icon="warning-sign"
                     height="16"
-                    viewBox="0 0 14 11"
+                    viewBox="0 0 16 16"
                     width="16"
-                    xmlns="http://www.w3.org/2000/svg"
                   >
+                    <desc>
+                      warning-sign
+                    </desc>
                     <path
-                      d="M13.364 0H.636A.636.636 0 000 .636v3.819a.636.636 0 00.636.636h12.728A.636.636 0 0014 4.455V.636A.636.636 0 0013.364 0zm-.637 3.818H1.273V1.273h11.454v2.545zM13.364 6.363H.636a.636.636 0 000 1.273h12.728a.636.636 0 100-1.273zM13.364 8.91H.636a.636.636 0 100 1.273h12.728a.636.636 0 000-1.273z"
+                      d="M15.84 13.5l.01-.01-7-12-.01.01c-.17-.3-.48-.5-.85-.5s-.67.2-.85.5l-.01-.01-7 12 .01.01c-.09.15-.15.31-.15.5 0 .55.45 1 1 1h14c.55 0 1-.45 1-1 0-.19-.06-.35-.15-.5zm-6.85-.51h-2v-2h2v2zm0-3h-2v-5h2v5z"
+                      fill-rule="evenodd"
                     />
                   </svg>
                 </span>
                 <p
-                  class="StyledProps--font StyledProps--main StyledProps--color StyledProps--color-grey900"
+                  class="StyledProps--font StyledProps--main StyledProps--color StyledProps--color-red900"
                 >
-                  QUEUED
+                  FAILED
                 </p>
               </div>
             </div>

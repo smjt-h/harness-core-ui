@@ -4,7 +4,6 @@ rules:
     - patterns:
         - lodash.*
         - microfrontends/*
-        - modules/22-resource-center/*
         - modules/25-governance/*
         - modules/27-sto/*
         - modules/30-delegates/*
@@ -22,7 +21,6 @@ rules:
         - modules/75-cf/*
         - modules/75-ci/*
         - modules/85-cv/*
-        - '@resource-center/*'
         - '@governance/*'
         - '@sto/*'
         - '@delegates/*'

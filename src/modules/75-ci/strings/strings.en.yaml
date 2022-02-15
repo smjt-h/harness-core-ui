@@ -40,7 +40,6 @@ labels: '{{ $.pipelineSteps.labelsLabel }}'
 optimize: Optimize
 remoteCacheImage:
   label: Remote Cache Image
-  placeholder: myImageName-cache
   dockerInfo: The remote cache repository needs to be created in the same account and organization as the build image. The repository must already exist for caching to work
 remoteCacheRepository:
   label: Remote Cache Repository
@@ -94,3 +93,5 @@ buildInfa:
     os: Operating System
     architecture: Achitecture
     isRequiredWhen: '{{field1}} is required in case {{field2}} is provided'
+preCommandLabel: Pre-Command
+postCommandLabel: Post-Command

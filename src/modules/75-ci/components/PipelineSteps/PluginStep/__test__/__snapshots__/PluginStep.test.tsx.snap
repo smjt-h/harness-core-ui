@@ -1718,7 +1718,7 @@ exports[`Plugin Step InputSet View should render all fields 1`] = `
                   <span
                     class="bp3-control-indicator"
                   />
-                  ci.privileged
+                  ci.privileged (Common Optional Label)
                 </label>
                 <span
                   class="bp3-popover-wrapper MultiTypeInput--wrapper"
@@ -2002,14 +2002,25 @@ exports[`Plugin Step InputSet View should render all fields 1`] = `
           >
             <div>
               <div
-                class="Text--withDocsTooltip"
-                data-tooltip-id="limitCPULabel"
+                class="Layout--horizontal StyledProps--main StyledProps--flex StyledProps--flex-justifyContent-flex-start StyledProps--flex-alignItems-baseline"
               >
                 <p
                   class="StyledProps--font StyledProps--main inpLabel StyledProps--color StyledProps--color-grey600 StyledProps--font-size-small StyledProps--font-weight-semi-bold"
                 >
                   pipelineSteps.limitCPULabel
                 </p>
+                 
+                <div
+                  class="Text--withDocsTooltip"
+                  data-tooltip-id="limitCPULabel"
+                >
+                  <p
+                    class="StyledProps--font StyledProps--main inpLabel StyledProps--color StyledProps--color-grey400 StyledProps--font-size-small StyledProps--font-weight-semi-bold"
+                    style="text-transform: capitalize;"
+                  >
+                    common.optionalLabel
+                  </p>
+                </div>
               </div>
               <div
                 style="display: flex; align-items: center;"
@@ -2088,14 +2099,25 @@ exports[`Plugin Step InputSet View should render all fields 1`] = `
                 data-tooltip-id="stepTestUtilForm_timeout"
               >
                 <div
-                  class="Text--withDocsTooltip"
-                  data-tooltip-id="timeout"
+                  class="Layout--horizontal StyledProps--main StyledProps--flex StyledProps--flex-justifyContent-flex-start StyledProps--flex-alignItems-baseline"
                 >
                   <p
                     class="StyledProps--font StyledProps--main inpLabel StyledProps--color StyledProps--color-grey600 StyledProps--font-size-small StyledProps--font-weight-semi-bold"
                   >
                     pipelineSteps.timeoutLabel
                   </p>
+                   
+                  <div
+                    class="Text--withDocsTooltip"
+                    data-tooltip-id="timeout"
+                  >
+                    <p
+                      class="StyledProps--font StyledProps--main inpLabel StyledProps--color StyledProps--color-grey400 StyledProps--font-size-small StyledProps--font-weight-semi-bold"
+                      style="text-transform: capitalize;"
+                    >
+                      common.optionalLabel
+                    </p>
+                  </div>
                 </div>
               </span>
                

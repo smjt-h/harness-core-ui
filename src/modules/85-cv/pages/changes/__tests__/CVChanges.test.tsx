@@ -144,6 +144,23 @@ jest.mock('services/cv', () => ({
       loading: false,
       cancel: jest.fn()
     }
+  }),
+  useGetMonitoredServiceChangeTimeline: jest.fn().mockImplementation(() => {
+    return {
+      data: {
+        resource: {
+          categoryTimeline: {
+            Deployment: [],
+            Infrastructure: [],
+            Alert: []
+          }
+        }
+      },
+      refetch: jest.fn(),
+      error: null,
+      loading: false,
+      cancel: jest.fn()
+    }
   })
 }))
 

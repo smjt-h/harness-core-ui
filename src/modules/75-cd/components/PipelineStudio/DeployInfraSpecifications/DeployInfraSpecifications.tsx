@@ -357,10 +357,9 @@ export default function DeployInfraSpecifications(props: React.PropsWithChildren
     },
     [stage, debounceUpdateStage, stage?.stage?.spec?.infrastructure?.infrastructureDefinition]
   )
-
   return (
     <div className={stageCss.serviceOverrides} key="1">
-      <DeployServiceErrors />
+      <DeployServiceErrors domRef={scrollRef as React.MutableRefObject<HTMLElement | undefined>} />
       <div className={stageCss.contentSection} ref={scrollRef}>
         <div className={stageCss.tabHeading} id="environment">
           {getString('environment')}

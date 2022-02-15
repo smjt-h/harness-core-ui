@@ -23,17 +23,13 @@ import { SetupSourceTabsContext } from '@cv/components/CVSetupSourcesView/SetupS
 import SelectHealthSourceServices from '@cv/pages/health-source/common/SelectHealthSourceServices/SelectHealthSourceServices'
 import { GroupName } from '@cv/pages/health-source/common/GroupName/GroupName'
 import { SetupSourceCardHeader } from '@cv/components/CVSetupSourcesView/SetupSourceCardHeader/SetupSourceCardHeader'
+import { initializeGroupNames } from '@cv/pages/health-source/common/GroupName/GroupName.utils'
 import { NameId } from '@common/components/NameIdDescriptionTags/NameIdDescriptionTags'
 import { useStrings } from 'framework/strings'
 import { useGetMetricPacks, useGetServiceInstanceMetricPath, AppDMetricDefinitions } from 'services/cv'
 import { AppDynamicsMonitoringSourceFieldNames } from '../../AppDHealthSource.constants'
 import { PATHTYPE } from './AppDCustomMetricForm.constants'
-import {
-  getBasePathValue,
-  getMetricPathValue,
-  initializeGroupNames,
-  setServiceIntance
-} from './AppDCustomMetricForm.utils'
+import { getBasePathValue, getMetricPathValue, setServiceIntance } from './AppDCustomMetricForm.utils'
 import BasePath from '../BasePath/BasePath'
 import { BasePathInitValue } from '../BasePath/BasePath.constants'
 import MetricChart from '../MetricChart/MetricChart'

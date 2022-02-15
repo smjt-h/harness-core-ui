@@ -6,30 +6,47 @@
  */
 
 import React from 'react'
-import { render } from '@testing-library/react'
+import { fireEvent, render, waitFor } from '@testing-library/react'
+import { Formik, FormikForm } from '@harness/uicore'
 import { TestWrapper } from '@common/utils/testUtils'
+import { QueryType } from '@cv/pages/health-source/common/HealthSourceQueryType/HealthSourceQueryType.types'
 import * as cvServices from 'services/cv'
 import * as cdServices from 'services/cd-ng'
 import QueryMapping from '../QueryMapping'
 import { mocksampledata } from '../../../__tests__/CustomHealthSource.mock'
-import { formikValue } from './QueryMapping.mock'
+import type { QueryMappingInterface } from '../QueryMapping.types'
+
+const SampleComponent: React.FC<Omit<QueryMappingInterface, 'formikProps'>> = (
+  props: Omit<QueryMappingInterface, 'formikProps'>
+) => {
+  return (
+    <TestWrapper>
+      <Formik formName="test" initialValues={{}} onSubmit={jest.fn()} validationSchema={{}}>
+        {formikProps => (
+          <FormikForm>
+            <QueryMapping {...{ ...props, formikProps: formikProps as any }} />
+            <button type="submit" data-testid={'submitButtonJest'} />
+          </FormikForm>
+        )}
+      </Formik>
+    </TestWrapper>
+  )
+}
 
 const onFetchRecordsSuccess = jest.fn()
 const setLoading = jest.fn()
 describe('Validate MapMetricsToServices conponent', () => {
-  test('should render MapMetricsToServices', () => {
-    const getSampleData = jest.fn()
+  beforeEach(() => {
     jest
       .spyOn(cvServices, 'useFetchSampleData')
-      .mockImplementation(() => ({ loading: false, error: null, mutate: getSampleData } as any))
-    jest
-      .spyOn(cdServices, 'useGetConnector')
-      .mockImplementation(() => ({ loading: false, error: null, data: {} } as any))
+      .mockReturnValue({ loading: false, error: null, mutate: jest.fn() } as any)
+    jest.spyOn(cdServices, 'useGetConnector').mockReturnValue({ loading: false, error: null, data: {} } as any)
+  })
+
+  test('should render MapMetricsToServices', () => {
     const { container } = render(
       <TestWrapper>
-        <QueryMapping
-          formikSetFieldValue={jest.fn()}
-          formikValues={{} as any}
+        <SampleComponent
           connectorIdentifier={'customConn'}
           onFetchRecordsSuccess={onFetchRecordsSuccess}
           isQueryExecuted={true}
@@ -42,18 +59,9 @@ describe('Validate MapMetricsToServices conponent', () => {
   })
 
   test('should render MapMetricsToServices in editMode', () => {
-    const getSampleData = jest.fn()
-    jest
-      .spyOn(cvServices, 'useFetchSampleData')
-      .mockImplementation(() => ({ loading: false, error: null, mutate: getSampleData } as any))
-    jest
-      .spyOn(cdServices, 'useGetConnector')
-      .mockImplementation(() => ({ loading: false, error: null, data: {} } as any))
     const { container } = render(
       <TestWrapper>
-        <QueryMapping
-          formikSetFieldValue={jest.fn()}
-          formikValues={formikValue as any}
+        <SampleComponent
           connectorIdentifier={'customConn'}
           onFetchRecordsSuccess={onFetchRecordsSuccess}
           isQueryExecuted={true}
@@ -63,5 +71,29 @@ describe('Validate MapMetricsToServices conponent', () => {
       </TestWrapper>
     )
     expect(container).toMatchSnapshot()
+  })
+
+  test('ensure behavior is correct whhen changing queryType', async () => {
+    const { container } = render(
+      <TestWrapper>
+        <SampleComponent
+          connectorIdentifier={'customConn'}
+          onFetchRecordsSuccess={onFetchRecordsSuccess}
+          isQueryExecuted={true}
+          recordsData={mocksampledata as any}
+          setLoading={setLoading}
+        />
+      </TestWrapper>
+    )
+
+    await waitFor(() => expect(container.querySelector(`[value="${QueryType.HOST_BASED}"]`)).not.toBeNull())
+    fireEvent.click(container.querySelector(`[value="${QueryType.SERVICE_BASED}"]`)!)
+    await waitFor(() =>
+      expect(container.querySelector(`[value="${QueryType.SERVICE_BASED}"]`)?.getAttribute('checked')).not.toBeNull()
+    )
+    fireEvent.click(container.querySelector(`[value="${QueryType.HOST_BASED}"]`)!)
+    await waitFor(() =>
+      expect(container.querySelector(`[value="${QueryType.HOST_BASED}"]`)?.getAttribute('checked')).not.toBeNull()
+    )
   })
 })

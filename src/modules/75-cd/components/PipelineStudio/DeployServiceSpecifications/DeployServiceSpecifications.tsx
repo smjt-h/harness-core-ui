@@ -313,7 +313,7 @@ export default function DeployServiceSpecifications(props: React.PropsWithChildr
   return (
     <FormikForm>
       <div className={stageCss.serviceOverrides} ref={scrollRef}>
-        <DeployServiceErrors />
+        <DeployServiceErrors domRef={scrollRef as React.MutableRefObject<HTMLElement | undefined>} />
         <div className={stageCss.contentSection}>
           {previousStageList.length > 0 && (
             <Container margin={{ bottom: 'xlarge', left: 'xlarge' }}>

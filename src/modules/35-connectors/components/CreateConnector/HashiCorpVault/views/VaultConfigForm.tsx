@@ -81,7 +81,7 @@ const VaultConfigForm: React.FC<StepProps<StepDetailsProps> & ConnectorDetailsPr
         validationSchema={Yup.object().shape({
           vaultUrl: URLValidationSchema(),
           renewalIntervalMinutes: Yup.mixed().when('accessType', {
-            is: val => val !== HashiCorpVaultAccessTypes.VAULT_AGENT,
+            is: val => val !== HashiCorpVaultAccessTypes.VAULT_AGENT && val !== HashiCorpVaultAccessTypes.AWS_IAM,
             then: Yup.number()
               .positive(getString('validation.renewalNumber'))
               .required(getString('validation.renewalInterval'))
@@ -113,6 +113,30 @@ const VaultConfigForm: React.FC<StepProps<StepDetailsProps> & ConnectorDetailsPr
           sinkPath: Yup.string().when('accessType', {
             is: HashiCorpVaultAccessTypes.VAULT_AGENT,
             then: Yup.string().trim().required(getString('connectors.hashiCorpVault.sinkPathIsRequired'))
+          }),
+          xvaultAwsIamServerId: Yup.object().when('accessType', {
+            is: HashiCorpVaultAccessTypes.AWS_IAM,
+            then: Yup.object().test(
+              'secretId',
+              getString('connectors.hashiCorpVault.serverIdHeaderRequired'),
+              function (value) {
+                if (
+                  (prevStepData?.spec as VaultConnectorDTO)?.accessType === HashiCorpVaultAccessTypes.AWS_IAM ||
+                  value?.name?.length > 0
+                ) {
+                  return true
+                }
+                return false
+              }
+            )
+          }),
+          vaultAwsIamRole: Yup.string().when('accessType', {
+            is: HashiCorpVaultAccessTypes.AWS_IAM,
+            then: Yup.string().trim().required(getString('common.banners.trial.contactSalesForm.roleValidation'))
+          }),
+          awsRegion: Yup.string().when('accessType', {
+            is: HashiCorpVaultAccessTypes.AWS_IAM,
+            then: Yup.string().trim().required(getString('validation.regionRequired'))
           })
         })}
         onSubmit={formData => {

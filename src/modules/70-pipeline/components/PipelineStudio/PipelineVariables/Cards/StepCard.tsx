@@ -8,13 +8,15 @@
 import React from 'react'
 import { Color, FontVariation, MultiTypeInputType, NestedAccordionPanel, Text } from '@wings-software/uicore'
 import cx from 'classnames'
+import { defaultTo } from 'lodash-es'
 import type { StepElementConfig } from 'services/cd-ng'
 import { StepWidget } from '@pipeline/components/AbstractSteps/StepWidget'
-import { usePipelineContext } from '@pipeline/components/PipelineStudio/PipelineContext/PipelineContext'
 import type { StepType } from '@pipeline/components/PipelineSteps/PipelineStepInterface'
 import { StepViewType } from '@pipeline/components/AbstractSteps/Step'
 import { VariablesListTable } from '@pipeline/components/VariablesListTable/VariablesListTable'
 import type { TemplateStepNode } from 'services/pipeline-ng'
+import type { AbstractStepFactory } from '@pipeline/components/AbstractSteps/AbstractStepFactory'
+import { useStrings } from 'framework/strings'
 import type { PipelineVariablesData } from '../types'
 import VariableAccordionSummary from '../VariableAccordionSummary'
 import css from '../PipelineVariables.module.scss'
@@ -29,12 +31,22 @@ export interface StepCardProps {
   readonly?: boolean
   path?: string
   allowableTypes: MultiTypeInputType[]
+  stepsFactory: AbstractStepFactory // REQUIRED (pass to addUpdateGraph)
 }
 
 export function StepCard(props: StepCardProps): React.ReactElement {
-  const { step, originalStep, metadataMap, stageIdentifier, onUpdateStep, stepPath, readonly, path, allowableTypes } =
-    props
-  const { stepsFactory } = usePipelineContext()
+  const {
+    step,
+    originalStep,
+    metadataMap,
+    stageIdentifier,
+    onUpdateStep,
+    stepPath,
+    readonly,
+    path,
+    allowableTypes,
+    stepsFactory
+  } = props
 
   if ((originalStep as TemplateStepNode)?.template) {
     return <></>
@@ -68,6 +80,7 @@ export function StepCard(props: StepCardProps): React.ReactElement {
 }
 
 export function StepCardPanel(props: StepCardProps): React.ReactElement {
+  const { getString } = useStrings()
   return (
     <NestedAccordionPanel
       noAutoScroll
@@ -80,7 +93,7 @@ export function StepCardPanel(props: StepCardProps): React.ReactElement {
       summary={
         <VariableAccordionSummary>
           <Text font={{ variation: FontVariation.SMALL_SEMI }} color={Color.BLACK}>
-            {props.originalStep.name}
+            {defaultTo(props.originalStep.name, getString('step'))}
           </Text>
         </VariableAccordionSummary>
       }
@@ -105,6 +118,7 @@ export interface StepGroupCardProps {
   readonly?: boolean
   path?: string
   allowableTypes: MultiTypeInputType[]
+  stepsFactory: AbstractStepFactory
 }
 
 export function StepGroupCard(props: StepGroupCardProps): React.ReactElement {
@@ -116,7 +130,8 @@ export function StepGroupCard(props: StepGroupCardProps): React.ReactElement {
     stepGroupName,
     stepGroupOriginalName,
     readonly,
-    allowableTypes
+    allowableTypes,
+    stepsFactory
   } = props
 
   return (
@@ -140,6 +155,7 @@ export function StepGroupCard(props: StepGroupCardProps): React.ReactElement {
             allowableTypes={allowableTypes}
             stageIdentifier={stageIdentifier}
             onUpdateStep={onUpdateStep}
+            stepsFactory={stepsFactory}
           />
         )
       })}

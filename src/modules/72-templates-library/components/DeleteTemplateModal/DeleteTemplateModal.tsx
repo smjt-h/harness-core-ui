@@ -199,7 +199,7 @@ export const DeleteTemplateModal = (props: DeleteTemplateProps) => {
                                 )
                               })}
                             </Container>
-                            <FormError errorMessage={get(errors, 'versions')} />
+                            <FormError name="versions" errorMessage={get(errors, 'versions')} />
                             <Container>
                               <Checkbox
                                 label={'Select All'}

@@ -678,6 +678,7 @@ exports[`Jira Create tests Basic snapshot - inputset mode: input set with errors
             >
               <div
                 class="FormError--errorDiv"
+                data-name="spec.connectorRef"
               >
                 <span
                   class="bp3-icon StyledProps--main FormError--errorTextIcon StyledProps--intent-danger"
@@ -809,6 +810,7 @@ exports[`Jira Create tests Basic snapshot - inputset mode: input set with errors
         >
           <div
             class="FormError--errorDiv"
+            data-name="spec.projectKey"
           >
             <span
               class="bp3-icon StyledProps--main FormError--errorTextIcon StyledProps--intent-danger"
@@ -938,6 +940,7 @@ exports[`Jira Create tests Basic snapshot - inputset mode: input set with errors
         >
           <div
             class="FormError--errorDiv"
+            data-name="spec.issueType"
           >
             <span
               class="bp3-icon StyledProps--main FormError--errorTextIcon StyledProps--intent-danger"
@@ -1035,6 +1038,7 @@ exports[`Jira Create tests Basic snapshot - inputset mode: input set with errors
         >
           <div
             class="FormError--errorDiv"
+            data-name="spec.summary"
           >
             <span
               class="bp3-icon StyledProps--main FormError--errorTextIcon StyledProps--intent-danger"

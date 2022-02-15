@@ -593,10 +593,11 @@ const RetryPipeline = ({
     }
   }
 
+  const formRefDom = React.useRef<HTMLElement | undefined>()
+
   if (loadingPipeline || loadingResolvedPipeline || loadingTemplate || inputSetLoading || loadingRetry) {
     return <PageSpinner />
   }
-
   return (
     <Formik
       initialValues={(currentPipeline?.pipeline ? clearRuntimeInput(currentPipeline.pipeline) : {}) as Values}
@@ -666,10 +667,15 @@ const RetryPipeline = ({
                   />
                 </div>
               </div>
-              <ErrorsStrip formErrors={formErrors} />
+              <ErrorsStrip formErrors={formErrors} domRef={formRefDom} />
             </>
             {selectedView === SelectedView.VISUAL ? (
-              <div className={css.runModalFormContent}>
+              <div
+                className={css.runModalFormContent}
+                ref={ref => {
+                  formRefDom.current = ref as HTMLElement
+                }}
+              >
                 <FormikForm>
                   {!retryStageLoading && stageResponse?.data && (
                     <SelectStagetoRetry

@@ -455,21 +455,11 @@ export const getGroupsFromData = <T>(items: Array<ExecutionPipelineNode<T>>): Ma
   return groupState
 }
 
-export const moveStageToFocusDelayed = (
-  engine: DiagramEngine,
-  identifier: string,
-  focusOnVisibility?: boolean,
-  resetZoom?: boolean
-): void => {
-  delay(() => moveStageToFocus(engine, identifier, focusOnVisibility, resetZoom), 1)
+export const moveStageToFocusDelayed = (engine: DiagramEngine, identifier: string, focusOnVisibility = false): void => {
+  delay(() => moveStageToFocus(engine, identifier, focusOnVisibility), 1)
 }
 
-export const moveStageToFocus = (
-  engine: DiagramEngine,
-  identifier: string,
-  focusOnVisibility?: boolean,
-  resetZoom?: boolean
-): void => {
+export const moveStageToFocus = (engine: DiagramEngine, identifier: string, focusOnVisibility = false): void => {
   const model = engine.getModel() as Diagram.DiagramModel
   const layer = model.getGroupLayer(identifier) || model.getNodeFromId(identifier)
   const canvas = engine.getCanvas()
@@ -481,7 +471,6 @@ export const moveStageToFocus = (
     const offsetY = engine.getModel().getOffsetY()
     let newOffsetX = engine.getModel().getOffsetX()
     let newOffsetY = engine.getModel().getOffsetY()
-    const newZoom = resetZoom ? 100 : engine.getModel().getZoomLevel()
 
     const node = (engine.getModel() as Diagram.DiagramModel).getNodeFromId(identifier)
 
@@ -502,10 +491,6 @@ export const moveStageToFocus = (
     let shouldRepaint = false
     if (newOffsetX !== offsetX || newOffsetY !== offsetY) {
       engine.getModel().setOffset(newOffsetX, newOffsetY)
-      shouldRepaint = true
-    }
-    if (newZoom !== zoom) {
-      engine.getModel().setZoomLevel(resetZoom ? 100 : zoom)
       shouldRepaint = true
     }
     if (shouldRepaint) {

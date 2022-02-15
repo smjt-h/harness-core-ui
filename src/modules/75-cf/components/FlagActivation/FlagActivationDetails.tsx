@@ -8,11 +8,10 @@
 import React, { ReactElement } from 'react'
 import { useParams, Link } from 'react-router-dom'
 import moment from 'moment'
-import { Color, Layout, Text, FlexExpander, Container, Heading } from '@wings-software/uicore'
+import { Color, Layout, Text, FlexExpander, Container, Heading, FontVariation } from '@harness/uicore'
 import routes from '@common/RouteDefinitions'
 import { useStrings } from 'framework/strings'
 import type { StringKeys } from 'framework/strings'
-import { TagsViewer } from '@common/components/TagsViewer/TagsViewer'
 import StringWithTooltip from '@common/components/StringWithTooltip/StringWithTooltip'
 import {
   DeleteFeatureFlagQueryParams,
@@ -198,21 +197,10 @@ const FlagActivationDetails: React.FC<FlagActivationDetailsProps> = props => {
       )}
 
       <Container>
-        <Heading
-          style={{
-            fontWeight: 600,
-            fontSize: '16px',
-            lineHeight: '22px',
-            color: '#1C1C28',
-            marginBottom: 'var(--spacing-small)'
-          }}
-        >
-          {featureFlag.name}
-          {featureFlag.archived && (
-            <Text inline color={Color.GREY_400} padding={{ left: 'xsmall' }} font={{ size: 'small' }}>
-              ({getString('cf.shared.archived')})
-            </Text>
-          )}
+        <Heading level={4}>
+          <Text inline lineClamp={1} color={Color.BLACK} font={{ variation: FontVariation.H4 }}>
+            {featureFlag.name}
+          </Text>
         </Heading>
         {featureFlag.description && (
           <Text margin={{ bottom: 'small' }} style={{ fontSize: '13px', lineHeight: '20px', color: '#22222A' }}>
@@ -220,17 +208,7 @@ const FlagActivationDetails: React.FC<FlagActivationDetailsProps> = props => {
           </Text>
         )}
 
-        <IdentifierText identifier={featureFlag.identifier} allowCopy />
-
-        {/* Disable tags for now (backend does not support them) */}
-        {false && !!featureFlag.tags?.length && (
-          <Container className={css.tagsFlagActivationDetails}>
-            <TagsViewer
-              tags={featureFlag.tags?.map(({ value }) => value as string)}
-              style={{ backgroundColor: '#D9DAE6', fontSize: '12px', lineHeight: '16px', color: '#22222A' }}
-            />
-          </Container>
-        )}
+        <IdentifierText identifier={featureFlag.identifier} allowCopy lineClamp={1} />
 
         <Layout.Vertical margin={{ top: 'medium', bottom: 'xlarge' }}>
           {renderTime(featureFlag.createdAt, 'cf.featureFlags.createdDate')}

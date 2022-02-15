@@ -207,7 +207,7 @@ export default function BuildStageSpecifications({ children }: React.PropsWithCh
 
   return (
     <div className={css.wrapper}>
-      <ErrorsStripBinded />
+      <ErrorsStripBinded domRef={scrollRef as React.MutableRefObject<HTMLElement | undefined>} />
       <div className={css.contentSection} ref={scrollRef}>
         <Formik
           initialValues={getInitialValues()}

@@ -123,3 +123,7 @@ export const secretManagerInfo = {
     readOnly: false
   }
 }
+
+export const mockRegions = {
+  resource: [{ name: 'region1', value: 'region1' }]
+}

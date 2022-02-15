@@ -9,6 +9,14 @@
   padding: var(--spacing-small) var(--spacing-large) !important;
   background-color: var(--red-50) !important;
   height: fit-content;
+  :global(.bp3-button) {
+    --button-height: 22px !important;
+    width: 22px !important;
+    border-radius: 50% !important;
+    --background-color-hover: var(--red-200) !important;
+    min-width: 22px !important;
+    --text-color: var(--grey-800) !important;
+  }
 }
 
 .runPipelineErrorDesc {

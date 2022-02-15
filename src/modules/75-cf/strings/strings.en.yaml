@@ -759,14 +759,20 @@ onboarding:
       # Install
 
       ```
-      go get github.com/wings-software/ff-client-sdk-go
+      go get github.com/harness/ff-golang-server-sdk
       ```
 
       # Usage
 
-      First we need to import lib with harness alias `import harness "github.com/wings-software/ff-client-sdk-go/pkg/api"`
+      First we need to import lib with harness alias 
+      ```
+      import harness "github.com/harness/ff-golang-server-sdk/client"
+      ```
 
-      Next we create client instance for interaction with api `client := harness.NewClient(sdkKey)`
+      Next we create client instance for interaction with api 
+      ```
+      client, err := harness.NewCfClient("{{apiKey}}")
+      ```
 
       Target definition can be user, device, app etc.
 
@@ -783,7 +789,12 @@ onboarding:
       Evaluating Feature Flag:
 
       ```
-      showFeature, err := client.BoolVariation(featureFlagKey, target, false)
+      showFeature, err := client.BoolVariation(featureFlagKey, &target, false)
+      ```
+
+      Flush any changes and close the SDK
+      ```
+      client.close()
       ```
     android: |
       # Setup

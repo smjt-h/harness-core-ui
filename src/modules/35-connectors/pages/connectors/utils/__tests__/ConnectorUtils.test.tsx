@@ -925,7 +925,9 @@ describe('Connector Utils', () => {
             authToken: 'account.secretdevxDDUx',
             secretEngineManuallyConfigured: false,
             secretEngineName: 'harness',
-            secretEngineVersion: '2'
+            secretEngineVersion: '2',
+            useAwsIam: false,
+            xvaultAwsIamServerId: undefined
           }
         }
       })

@@ -44,6 +44,7 @@ import {
   useUpdateConnector,
   ConnectorRequestBody,
   ConnectorConfigDTO,
+  VaultAwsIamRoleCredentialDTO,
   VaultAgentCredentialDTO
 } from 'services/cd-ng'
 import { useToaster } from '@common/exports'
@@ -118,6 +119,12 @@ const SetupEngine: React.FC<StepProps<StepDetailsProps> & ConnectorDetailsProps>
                   appRoleId: formData.appRoleId,
                   secretId: formData.secretId?.referenceString
                 } as VaultAppRoleCredentialDTO)
+              : formData.accessType === HashiCorpVaultAccessTypes.AWS_IAM
+              ? ({
+                  awsRegion: formData.awsRegion,
+                  vaultAwsIamRole: formData.vaultAwsIamRole,
+                  xvaultAwsIamServerId: formData.xvaultAwsIamServerId?.referenceString
+                } as VaultAwsIamRoleCredentialDTO)
               : formData.accessType === HashiCorpVaultAccessTypes.TOKEN
               ? ({
                   authToken: formData.authToken?.referenceString

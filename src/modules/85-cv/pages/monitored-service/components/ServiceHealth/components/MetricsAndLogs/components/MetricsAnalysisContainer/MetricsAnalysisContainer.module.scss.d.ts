@@ -11,6 +11,7 @@ declare const styles: {
   readonly content: string
   readonly loadingContainer: string
   readonly maxDropDownWidth: string
+  readonly maxPaginationWidth: string
   readonly timeline: string
 }
 export default styles

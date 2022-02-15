@@ -27,11 +27,10 @@ import {
 } from './InputSetMocks'
 
 const errorResponse = (): Promise<{ status: string }> =>
-  Promise.resolve({
-    status: 'ERROR',
+  Promise.reject({
     data: {
-      errorResponse: true,
-      inputSetErrorWrapper: {
+      status: 'ERROR',
+      metadata: {
         uuidToErrorResponseMap: {
           field1: { errors: [{ fieldName: 'field1', message: 'field1 error message' }] },
           field2: { errors: [{ fieldName: 'field2', message: 'field2 error message' }] }

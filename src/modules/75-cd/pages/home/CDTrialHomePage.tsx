@@ -5,14 +5,13 @@
  * https://polyformproject.org/wp-content/uploads/2020/06/PolyForm-Shield-1.0.0.txt.
  */
 
-import React, { useEffect } from 'react'
+import React from 'react'
 import { useHistory, useParams } from 'react-router-dom'
 import { PageSpinner } from '@wings-software/uicore'
 import { StartTrialTemplate } from '@rbac/components/TrialHomePageTemplate/StartTrialTemplate'
 import { useStrings } from 'framework/strings'
 import routes from '@common/RouteDefinitions'
 import type { ProjectPathProps } from '@common/interfaces/RouteInterfaces'
-import useStartTrialModal from '@common/modals/StartTrial/StartTrialModal'
 import { useQueryParams } from '@common/hooks'
 import { useStartTrialLicense, useStartFreeLicense } from 'services/cd-ng'
 import { useToaster } from '@common/components'
@@ -20,6 +19,8 @@ import { handleUpdateLicenseStore, useLicenseStore } from 'framework/LicenseStor
 import { Editions, ModuleLicenseType } from '@common/constants/SubscriptionTypes'
 import { useFeatureFlag } from '@common/hooks/useFeatureFlag'
 import { FeatureFlag } from '@common/featureFlags'
+import { useCDTrialModal } from '@cd/modals/CDTrial/useCDTrialModal'
+import { TrialType } from '@pipeline/components/TrialModalTemplate/trialModalUtils'
 import bgImageURL from './images/cd.svg'
 
 const CDTrialHomePage: React.FC = () => {
@@ -65,18 +66,22 @@ const CDTrialHomePage: React.FC = () => {
       const data = await startPlan()
       handleUpdateLicenseStore({ ...licenseInformation }, updateLicenseStore, module, data?.data)
 
-      history.push({
-        pathname: routes.toModuleHome({ accountId, module }),
-        search: `?experience=${experienceParam}&&modal=${experienceParam}`
-      })
+      openCreateProjectModal()
     } catch (ex) {
       showError((ex.data as Error)?.message || ex.message)
     }
   }
 
-  const { showModal: openStartTrialModal } = useStartTrialModal({
-    module,
-    handleStartTrial: source === 'signup' ? undefined : startTrialnOpenCDTrialModal
+  const goToProjectCreationPage = (): void => {
+    history.push({
+      pathname: routes.toModuleHome({ accountId, module }),
+      search: `?modal=${experienceParam}&&experience=${experienceParam}`
+    })
+  }
+
+  const { openTrialModal: openCreateProjectModal } = useCDTrialModal({
+    trialType: TrialType.CREATE_OR_SELECT_PROJECT,
+    actionProps: { onCreateProject: goToProjectCreationPage }
   })
 
   const startBtnDescription = isFreeEnabled
@@ -84,22 +89,16 @@ const CDTrialHomePage: React.FC = () => {
     : getString('cd.cdTrialHomePage.startTrial.startBtn.description')
 
   const startTrialProps = {
-    description: getString('cd.cdTrialHomePage.startTrial.description'),
+    description: getString('common.selectAVersion.description'),
     learnMore: {
       description: getString('cd.learnMore'),
       url: 'https://ngdocs.harness.io/category/c9j6jejsws-cd-quickstarts'
     },
     startBtn: {
-      description: source ? startBtnDescription : getString('getStarted'),
-      onClick: source ? undefined : openStartTrialModal
+      description: startBtnDescription,
+      onClick: source ? undefined : startTrialnOpenCDTrialModal
     }
   }
-
-  useEffect(() => {
-    if (source === 'signup') {
-      openStartTrialModal()
-    }
-  }, [openStartTrialModal, source])
 
   const { showError } = useToaster()
 

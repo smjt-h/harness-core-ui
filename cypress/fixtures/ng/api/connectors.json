@@ -96,6 +96,49 @@
           "valid": true,
           "invalidYaml": null
         }
+      },
+      {
+        "connector": {
+          "name": "NewRelicConn",
+          "identifier": "newrelic",
+          "description": null,
+          "orgIdentifier": null,
+          "projectIdentifier": null,
+          "tags": {},
+          "type": "NewRelic",
+          "spec": {
+            "newRelicAccountId": "1805869",
+            "url": "https://insights-api.newrelic.com/",
+            "apiKeyRef": "account.newrelic",
+            "delegateSelectors": []
+          }
+        },
+        "createdAt": 1618373036836,
+        "lastModifiedAt": 1620292957622,
+        "status": {
+          "status": "SUCCESS",
+          "errorSummary": null,
+          "errors": null,
+          "testedAt": 1637143140788,
+          "lastTestedAt": 0,
+          "lastConnectedAt": 1637143140788
+        },
+        "activityDetails": {
+          "lastActivityTime": 1620292957627
+        },
+        "harnessManaged": false,
+        "gitDetails": {
+          "objectId": null,
+          "branch": null,
+          "repoIdentifier": null,
+          "rootFolder": null,
+          "filePath": null,
+          "repoName": null
+        },
+        "entityValidityDetails": {
+          "valid": true,
+          "invalidYaml": null
+        }
       }
     ],
     "pageIndex": 0,

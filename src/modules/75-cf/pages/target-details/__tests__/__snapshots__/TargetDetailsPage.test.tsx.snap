@@ -168,14 +168,21 @@ exports[`TargetDetailPage TargetDetailPage should render data correctly 1`] = `
             >
               t1
             </p>
-            <span
-              class="StyledProps--font StyledProps--main StyledProps--inline"
-              style="background-color: rgb(239, 251, 255); margin-bottom: 0px; padding: 4px 8px; border-radius: 4px; font-size: 12px; line-height: 15px; color: rgb(34, 34, 42); border: 1px solid #d9dae6;"
+            <div
+              class="StyledProps--font StyledProps--main identifierContainer"
             >
-              idLabel
-              t1
+              <span
+                class="StyledProps--font StyledProps--main StyledProps--inline StyledProps--font-variation-small StyledProps--margin-right-xsmall"
+              >
+                idLabel
+              </span>
+              <span
+                class="StyledProps--font StyledProps--main StyledProps--inline StyledProps--font-variation-small"
+              >
+                t1
+              </span>
               <button
-                style="background: none; padding: 0px; transform: translateY(-2px); cursor: pointer;"
+                class="copyButton"
                 title="clickToCopy"
               >
                 <span
@@ -198,7 +205,7 @@ exports[`TargetDetailPage TargetDetailPage should render data correctly 1`] = `
                   </svg>
                 </span>
               </button>
-            </span>
+            </div>
           </div>
           <p
             class="StyledProps--font StyledProps--main StyledProps--color StyledProps--color-grey400 StyledProps--padding-top-xsmall"
@@ -756,14 +763,21 @@ exports[`TargetDetailPage TargetDetailPage should render its segments 1`] = `
             >
               t1
             </p>
-            <span
-              class="StyledProps--font StyledProps--main StyledProps--inline"
-              style="background-color: rgb(239, 251, 255); margin-bottom: 0px; padding: 4px 8px; border-radius: 4px; font-size: 12px; line-height: 15px; color: rgb(34, 34, 42); border: 1px solid #d9dae6;"
+            <div
+              class="StyledProps--font StyledProps--main identifierContainer"
             >
-              idLabel
-              t1
+              <span
+                class="StyledProps--font StyledProps--main StyledProps--inline StyledProps--font-variation-small StyledProps--margin-right-xsmall"
+              >
+                idLabel
+              </span>
+              <span
+                class="StyledProps--font StyledProps--main StyledProps--inline StyledProps--font-variation-small"
+              >
+                t1
+              </span>
               <button
-                style="background: none; padding: 0px; transform: translateY(-2px); cursor: pointer;"
+                class="copyButton"
                 title="clickToCopy"
               >
                 <span
@@ -786,7 +800,7 @@ exports[`TargetDetailPage TargetDetailPage should render its segments 1`] = `
                   </svg>
                 </span>
               </button>
-            </span>
+            </div>
           </div>
           <p
             class="StyledProps--font StyledProps--main StyledProps--color StyledProps--color-grey400 StyledProps--padding-top-xsmall"

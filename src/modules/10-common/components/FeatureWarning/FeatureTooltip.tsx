@@ -6,7 +6,7 @@
  */
 
 import React, { ReactElement } from 'react'
-import { Color, FontVariation, Layout, Text } from '@harness/uicore'
+import { Color, FontVariation, Layout, Text, ButtonVariation } from '@harness/uicore'
 import { capitalize } from 'lodash-es'
 import type { IconName } from '@blueprintjs/core'
 import { useStrings } from 'framework/strings'
@@ -14,8 +14,12 @@ import { FeatureDescriptor, customFeatureDescriptor } from 'framework/featureSto
 import { useFeatureRequiredPlans } from '@common/hooks/useFeatures'
 import type { FeatureIdentifier } from 'framework/featureStore/FeatureIdentifier'
 import type { StringsMap } from 'stringTypes'
+import type { ModuleName, Module } from 'framework/types/ModuleName'
 import type { CheckFeatureReturn, ModuleType } from 'framework/featureStore/featureStoreUtil'
-import { ExplorePlansBtn } from './featureWarningUtil'
+import { isFreePlan, useLicenseStore } from 'framework/LicenseStore/LicenseStoreContext'
+import { ExplorePlansBtn, ManageSubscriptionBtn, ViewUsageLink } from '@common/layouts/FeatureUtils'
+import { useFeaturesContext } from 'framework/featureStore/FeaturesContext'
+import { Editions } from '@common/constants/SubscriptionTypes'
 import css from './FeatureWarning.module.scss'
 
 interface FeatureTooltipProps {
@@ -67,9 +71,65 @@ const FeatureText = ({ feature, module }: { feature: CheckFeatureReturn; module:
   return <></>
 }
 
+const ModuleButtons = ({ module, hasLimit }: { module: Module; hasLimit: boolean }): React.ReactElement => {
+  const { licenseInformation, CD_LICENSE_STATE, CI_LICENSE_STATE, FF_LICENSE_STATE, CCM_LICENSE_STATE } =
+    useLicenseStore()
+  const moduleName = module.toUpperCase() as ModuleName
+  const isModuleFeature = ['CI', 'CD', 'CE', 'CF', 'CV'].includes(moduleName)
+  const isModuleFreeEdition = isModuleFeature && isFreePlan(licenseInformation, moduleName)
+
+  const licenseStatus = {
+    CD_LICENSE_STATE,
+    CI_LICENSE_STATE,
+    FF_LICENSE_STATE,
+    CCM_LICENSE_STATE
+  }
+
+  const { getHighestEdition } = useFeaturesContext()
+
+  if (isModuleFreeEdition) {
+    return (
+      <Layout.Vertical flex={{ alignItems: 'start' }} spacing={'xsmall'}>
+        {hasLimit && <ViewUsageLink module={module} className={css.viewUsageLink} />}
+        <ExplorePlansBtn module={module} variation={ButtonVariation.PRIMARY} />
+      </Layout.Vertical>
+    )
+  }
+
+  // for PL feature
+  if (!isModuleFeature) {
+    const accountPlan = getHighestEdition({ licenseInformation, licenseState: licenseStatus })
+    const accountModule = [...Object.keys(licenseInformation)].find(
+      key => licenseInformation[key]?.edition === accountPlan
+    )
+    const defaultModule = accountModule as Module
+
+    return accountPlan === Editions.FREE ? (
+      <ExplorePlansBtn module={defaultModule} variation={ButtonVariation.PRIMARY} />
+    ) : (
+      <ManageSubscriptionBtn module={defaultModule} variation={ButtonVariation.PRIMARY} />
+    )
+  }
+
+  return <ManageSubscriptionBtn module={module} variation={ButtonVariation.PRIMARY} />
+}
+
+function DefaultButtons({ feature }: { feature?: CheckFeatureReturn }): React.ReactElement | null {
+  const { moduleType = 'CORE' } = feature?.featureDetail || {}
+  const module = moduleType.toLowerCase() as Module
+  const hasLimit = feature?.featureDetail?.limit !== undefined
+
+  if (!feature) {
+    return null
+  }
+
+  return <ModuleButtons module={module} hasLimit={hasLimit} />
+}
+
 const FeatureTooltip = ({ features, warningMessage }: FeatureTooltipProps): ReactElement => {
   const { getString } = useStrings()
-  const firstDisabledFeature = [...features.keys()].find(key => features.get(key)?.enabled === false)
+  const firstDisabledFeatureName = [...features.keys()].find(key => features.get(key)?.enabled === false)
+  const firstDisabledFeature = firstDisabledFeatureName && features.get(firstDisabledFeatureName)
 
   function getGroupDisabledFeatures(): Map<ModuleType, CheckFeatureReturn[]> {
     return [...features.values()].reduce((group, feature) => {
@@ -86,7 +146,7 @@ const FeatureTooltip = ({ features, warningMessage }: FeatureTooltipProps): Reac
     }, new Map<ModuleType, CheckFeatureReturn[]>())
   }
 
-  function getGroupedTooltips(): React.ReactNode {
+  function GroupedTooltips(): React.ReactElement {
     const groupedDisabledFeatures = getGroupDisabledFeatures()
 
     function getHeader(module: ModuleType): React.ReactNode | undefined {
@@ -126,9 +186,10 @@ const FeatureTooltip = ({ features, warningMessage }: FeatureTooltipProps): Reac
       )
     }
 
-    const haslimits = [...groupedDisabledFeatures.values()].find(value =>
-      value.find(feature => feature.featureDetail?.limit !== undefined)
-    )
+    const haslimits =
+      [...groupedDisabledFeatures.values()].find(value =>
+        value.find(feature => feature.featureDetail?.limit !== undefined)
+      ) !== undefined
 
     return (
       <Layout.Vertical spacing="large">
@@ -139,6 +200,9 @@ const FeatureTooltip = ({ features, warningMessage }: FeatureTooltipProps): Reac
         )}
         {[...groupedDisabledFeatures.keys()].map(key => {
           const disabledFeatures = groupedDisabledFeatures.get(key)
+          const hasLimitsByModule =
+            disabledFeatures?.find(feature => feature.featureDetail?.limit !== undefined) !== undefined
+          const module = key?.toLowerCase() as Module
           return (
             <Layout.Vertical key={key} padding={{ bottom: 'large' }}>
               <Layout.Vertical padding={{ bottom: 'small' }}>
@@ -147,7 +211,7 @@ const FeatureTooltip = ({ features, warningMessage }: FeatureTooltipProps): Reac
                   <FeatureText key={feature.featureDetail?.featureName} feature={feature} module={key} />
                 ))}
               </Layout.Vertical>
-              <ExplorePlansBtn featureName={disabledFeatures?.[0].featureDetail?.featureName} className={css.btn} />
+              <ModuleButtons module={module} hasLimit={hasLimitsByModule} />
             </Layout.Vertical>
           )
         })}
@@ -155,7 +219,7 @@ const FeatureTooltip = ({ features, warningMessage }: FeatureTooltipProps): Reac
     )
   }
 
-  function getTooltipBody(): React.ReactNode {
+  function getTooltipBody(): React.ReactElement {
     // return customized warning message
     if (warningMessage) {
       return (
@@ -163,13 +227,13 @@ const FeatureTooltip = ({ features, warningMessage }: FeatureTooltipProps): Reac
           <Text font={{ size: 'small' }} color={Color.WHITE} padding={{ bottom: 'large' }}>
             {warningMessage}
           </Text>
-          <ExplorePlansBtn featureName={firstDisabledFeature} className={css.btn} />
+          <DefaultButtons feature={firstDisabledFeature} />
         </>
       )
     }
 
     // group by module messages if there are any
-    return getGroupedTooltips()
+    return <GroupedTooltips />
   }
 
   return (

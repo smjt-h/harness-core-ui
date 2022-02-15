@@ -6,7 +6,7 @@
  */
 
 import type { StringKeys } from 'framework/strings'
-import { createNewRelicData } from '../NewRelicHealthSourceContainer.util'
+import { createNewRelicData, createNewRelicPayload } from '../NewRelicHealthSourceContainer.util'
 import { initializeSelectedMetricsMap, validateMapping } from '../NewRelicHealthSource.utils'
 import {
   sourceData,
@@ -16,7 +16,9 @@ import {
   validationValidPayload,
   mockedNewRelicFormikValues,
   expectedMappedValue,
-  mappedValue
+  mappedValue,
+  newRelicPayload,
+  newRelicExpectedPayload
 } from './NewRelic.mock'
 
 function getString(key: StringKeys): StringKeys {
@@ -56,5 +58,9 @@ describe('Test Newrelic Utils', () => {
     const createdMetrics = ['New Relic Metric']
     const selectedMetricIndex = 0
     expect(validateMapping(mockedNewRelicFormikValues, createdMetrics, selectedMetricIndex, getString)).toEqual({})
+  })
+
+  test('should validate createNewRelicPayload', () => {
+    expect(createNewRelicPayload(newRelicPayload)).toEqual(newRelicExpectedPayload)
   })
 })

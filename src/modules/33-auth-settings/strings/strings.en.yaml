@@ -119,7 +119,7 @@ twoFactorAuthSupport: Two Factor Auth Support
 cdCommunityPlan:
   planLink: 'https://harness.io/pricing'
   communityPrice: 'Free and Open Software'
-  communityTitle: 'Community'
+  communityTitle: '{{ $.common.community }}'
   enterpriseTitle: 'Enterprise'
   communityTitle2: 'Self-Hosted Only'
   enterpriseTitle2: 'Upgrade to a self hosted Enterprise Plan'

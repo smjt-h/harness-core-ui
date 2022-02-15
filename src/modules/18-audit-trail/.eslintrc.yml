@@ -5,7 +5,6 @@ rules:
         - lodash.*
         - microfrontends/*
         - modules/20-rbac/*
-        - modules/22-resource-center/*
         - modules/25-governance/*
         - modules/27-sto/*
         - modules/30-delegates/*
@@ -24,7 +23,6 @@ rules:
         - modules/75-ci/*
         - modules/85-cv/*
         - '@rbac/*'
-        - '@resource-center/*'
         - '@governance/*'
         - '@sto/*'
         - '@delegates/*'

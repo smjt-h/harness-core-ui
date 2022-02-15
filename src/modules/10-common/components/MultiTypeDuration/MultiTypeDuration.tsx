@@ -147,7 +147,7 @@ export function FormMultiTypeDuration(props: FormMultiTypeDurationProps): React.
 
   const {
     intent = hasError ? Intent.DANGER : Intent.NONE,
-    helperText = hasError ? <FormError errorMessage={get(formik?.errors, name)} /> : null,
+    helperText = hasError ? <FormError name={name} errorMessage={get(formik?.errors, name)} /> : null,
     disabled,
     tooltipProps,
     ...rest
@@ -290,7 +290,7 @@ export function DurationInputForInputSet(props: ConnectedDurationInputForInputSe
 
   const {
     intent = hasError ? Intent.DANGER : Intent.NONE,
-    helperText = hasError ? <FormError errorMessage={get(formik?.errors, name)} /> : null,
+    helperText = hasError ? <FormError name={name} errorMessage={get(formik?.errors, name)} /> : null,
     disabled,
     ...rest
   } = restProps

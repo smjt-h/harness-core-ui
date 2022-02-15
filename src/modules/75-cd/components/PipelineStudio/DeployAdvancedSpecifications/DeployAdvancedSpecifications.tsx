@@ -52,7 +52,7 @@ const DeployAdvancedSpecifications: React.FC<AdvancedSpecifications> = ({ childr
 
   return (
     <div className={stageCss.serviceOverrides}>
-      <DeployServiceErrors />
+      <DeployServiceErrors domRef={scrollRef as React.MutableRefObject<HTMLElement | undefined>} />
       <div className={stageCss.contentSection} ref={scrollRef}>
         <div className={stageCss.tabHeading}>
           <span data-tooltip-id="conditionalExecutionDeployStage">

@@ -19,7 +19,6 @@ import {
 import type { FormikProps } from 'formik'
 import { useStrings } from 'framework/strings'
 import { NavigationCheck, Page } from '@common/exports'
-import { RightDrawer } from '@templates-library/components/TemplateStudio/RightDrawer/RightDrawer'
 import { useDocumentTitle } from '@common/hooks/useDocumentTitle'
 import { TemplateStudioSubHeader } from '@templates-library/components/TemplateStudio/TemplateStudioSubHeader/TemplateStudioSubHeader'
 import { PageSpinner } from '@common/components'
@@ -27,7 +26,8 @@ import templateFactory from '@templates-library/components/Templates/TemplatesFa
 import { TemplateStudioHeader } from '@templates-library/components/TemplateStudio/TemplateStudioHeader/TemplateStudioHeader'
 import type { GitQueryParams, ModulePathParams, TemplateStudioPathProps } from '@common/interfaces/RouteInterfaces'
 import type { TemplateType } from '@templates-library/utils/templatesUtils'
-import { DrawerTypes } from '@pipeline/components/PipelineStudio/PipelineContext/PipelineActions'
+import { DrawerTypes } from '@templates-library/components/TemplateStudio/TemplateContext/TemplateActions'
+
 import GenericErrorHandler from '@common/pages/GenericErrorHandler/GenericErrorHandler'
 import TemplateYamlView from '@templates-library/components/TemplateStudio/TemplateYamlView/TemplateYamlView'
 import { accountPathProps, orgPathProps, pipelineModuleParams, projectPathProps } from '@common/utils/routeUtils'
@@ -38,6 +38,8 @@ import type { GitFilterScope } from '@common/components/GitFilters/GitFilters'
 import { useQueryParams } from '@common/hooks'
 import { useAppStore } from 'framework/AppStore/AppStoreContext'
 import NoEntityFound from '@pipeline/pages/utils/NoEntityFound/NoEntityFound'
+import { TemplateVariablesContextProvider } from '@pipeline/components/TemplateVariablesContext/TemplateVariablesContext'
+import { RightBar } from '@templates-library/components/TemplateStudio/RightBar/RightBar'
 import { TemplateContext } from './TemplateContext/TemplateContext'
 import css from './TemplateStudio.module.scss'
 
@@ -251,7 +253,7 @@ export function TemplateStudio(): React.ReactElement {
   }, [projectIdentifier, orgIdentifier])
 
   return (
-    <>
+    <TemplateVariablesContextProvider template={template}>
       <NavigationCheck
         when={template?.identifier !== ''}
         shouldBlockNavigation={nextLocation => {
@@ -279,8 +281,12 @@ export function TemplateStudio(): React.ReactElement {
           history.push(newPath)
         }}
       />
-      <Page.Header size={'small'} title={<TemplateStudioHeader templateType={templateType as TemplateType} />} />
-      <Page.Body>
+      <Page.Header
+        className={css.rightMargin}
+        size={'small'}
+        title={<TemplateStudioHeader templateType={templateType as TemplateType} />}
+      />
+      <Page.Body className={css.rightMargin}>
         {isLoading && <PageSpinner />}
         <Layout.Vertical height={'100%'}>
           {!isLoading && isEmpty(template) && !isGitSyncEnabled && <GenericErrorHandler />}
@@ -304,9 +310,9 @@ export function TemplateStudio(): React.ReactElement {
               </Container>
             </>
           )}
-          <RightDrawer />
+          <RightBar />
         </Layout.Vertical>
       </Page.Body>
-    </>
+    </TemplateVariablesContextProvider>
   )
 }

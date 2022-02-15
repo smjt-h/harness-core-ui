@@ -17,6 +17,7 @@ import paths from '@common/RouteDefinitions'
 
 import type { ProjectPathProps } from '@common/interfaces/RouteInterfaces'
 import { useFeatureFlags } from '@common/hooks/useFeatureFlag'
+import { ResourceCenter } from '@common/components/ResourceCenter/ResourceCenter'
 import css from './MainNav.module.scss'
 
 const commonLinkProps: Partial<NavLinkProps> = {
@@ -26,7 +27,15 @@ const commonLinkProps: Partial<NavLinkProps> = {
 
 export default function L1Nav(): React.ReactElement {
   const params = useParams<ProjectPathProps>()
-  const { CDNG_ENABLED, CVNG_ENABLED, CING_ENABLED, CENG_ENABLED, CFNG_ENABLED, NG_DASHBOARDS } = useFeatureFlags()
+  const {
+    CDNG_ENABLED,
+    CVNG_ENABLED,
+    CING_ENABLED,
+    CENG_ENABLED,
+    CFNG_ENABLED,
+    NG_DASHBOARDS,
+    RESOURCE_CENTER_ENABLED
+  } = useFeatureFlags()
 
   const { currentUserInfo: user } = useAppStore()
 
@@ -136,6 +145,11 @@ export default function L1Nav(): React.ReactElement {
       </ul>
 
       <ul className={css.navList}>
+        {RESOURCE_CENTER_ENABLED && (
+          <li className={css.navItem}>
+            <ResourceCenter />
+          </li>
+        )}
         {NG_DASHBOARDS && (
           <li className={css.navItem}>
             <Link

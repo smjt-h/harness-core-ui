@@ -85,6 +85,13 @@ jest.mock('services/pipeline-ng', () => ({
 
 const TEST_PATH = routes.toInputSetList({ ...accountPathProps, ...pipelinePathProps, ...pipelineModuleParams })
 
+const intersectionObserverMock = () => ({
+  observe: () => null,
+  unobserve: () => null
+})
+
+window.IntersectionObserver = jest.fn().mockImplementation(intersectionObserverMock)
+
 describe('Input Set List tests', () => {
   test('render Input Set List view', async () => {
     const { getAllByText, container } = render(

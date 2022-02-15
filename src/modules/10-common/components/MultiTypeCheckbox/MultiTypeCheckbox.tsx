@@ -95,7 +95,7 @@ export const FormMultiTypeCheckbox: React.FC<FormMultiTypeTextboxProps> = props 
 
   const {
     intent = hasError ? Intent.DANGER : Intent.NONE,
-    helperText = hasError ? <FormError errorMessage={get(formik?.errors, name)} /> : null,
+    helperText = hasError ? <FormError name={name} errorMessage={get(formik?.errors, name)} /> : null,
     disabled,
     tooltipProps,
     ...rest

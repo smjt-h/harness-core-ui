@@ -6,6 +6,7 @@
  */
 
 import type { TemplateContextInterface } from '@templates-library/components/TemplateStudio/TemplateContext/TemplateContext'
+import type { NGTemplateInfoConfig } from 'services/template-ng'
 
 export const stageTemplateMock = {
   name: 'New Stage Name',
@@ -71,7 +72,7 @@ export const stageTemplateMock = {
     failureStrategies: [{ onFailure: { errors: ['AllErrors'], action: { type: 'StageRollback' } } }],
     when: { pipelineStatus: 'Success' }
   }
-}
+} as NGTemplateInfoConfig
 
 export const stageStateMock = {
   template: stageTemplateMock,
@@ -103,21 +104,20 @@ export const stageTemplateContextMock: TemplateContextInterface = {
   updateGitDetails: () => new Promise<void>(() => undefined)
 }
 
-const stepTemplateMock = {
+export const stepTemplateMock = {
   name: 'Test Http Template',
   identifier: 'Test_Http_Template',
   versionLabel: 'v1',
   type: 'Step',
   projectIdentifier: 'Yogesh_Test',
   orgIdentifier: 'default',
-  description: null,
   tags: {},
   spec: {
     type: 'Http',
     timeout: '1m 40s',
     spec: { url: '<+input>', method: 'GET', headers: [], outputVariables: [], requestBody: '<+input>' }
   }
-}
+} as NGTemplateInfoConfig
 
 const stepStateMock = {
   template: stepTemplateMock,

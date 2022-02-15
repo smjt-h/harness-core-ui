@@ -6,8 +6,14 @@
  */
 
 import type { GroupedMetric } from '@cv/components/MultiItemsSideNav/components/SelectedAppsSideNav/components/GroupedSideNav/GroupedSideNav.types'
-import type { InitCustomFormInterface, MapAppDynamicsMetric } from '../../connectors/AppDynamics/AppDHealthSource.types'
-import type { MapNewRelicMetric } from '../../connectors/NewRelic/NewRelicHealthSource.types'
+import type {
+  InitAppDCustomFormInterface,
+  MapAppDynamicsMetric
+} from '../../connectors/AppDynamics/AppDHealthSource.types'
+import type {
+  InitNewRelicCustomFormInterface,
+  MapNewRelicMetric
+} from '../../connectors/NewRelic/NewRelicHealthSource.types'
 
 export type CustomMappedMetric = MapAppDynamicsMetric | MapNewRelicMetric
 export interface GroupedCreatedMetrics {
@@ -34,7 +40,7 @@ export interface CustomMetricInterface {
   isValidInput: boolean
   formikValues: CustomMappedMetric
   mappedMetrics: Map<string, CustomMappedMetric>
-  initCustomForm: InitCustomFormInterface
+  initCustomForm: InitAppDCustomFormInterface | InitNewRelicCustomFormInterface
   groupedCreatedMetrics?: GroupedCreatedMetrics
   setMappedMetrics: React.Dispatch<React.SetStateAction<CustomSelectedAndMappedMetrics>>
   setCreatedMetrics: React.Dispatch<React.SetStateAction<CreatedMetricsWithSelectedIndex>>
@@ -46,7 +52,7 @@ export interface UpdateSelectedMetricsMapInterface {
   oldMetric: string
   mappedMetrics: Map<string, CustomMappedMetric>
   formikValues: any
-  initCustomForm: InitCustomFormInterface
+  initCustomForm: InitAppDCustomFormInterface | InitNewRelicCustomFormInterface
 }
 
 export interface RemoveMetricInterface {
@@ -66,5 +72,5 @@ export interface SelectMetricInerface {
   setCreatedMetrics: (value: React.SetStateAction<CreatedMetricsWithSelectedIndex>) => void
   setMappedMetrics: React.Dispatch<React.SetStateAction<CustomSelectedAndMappedMetrics>>
   formikValues: any
-  initCustomForm: InitCustomFormInterface
+  initCustomForm: InitAppDCustomFormInterface | InitNewRelicCustomFormInterface
 }

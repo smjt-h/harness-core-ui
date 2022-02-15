@@ -80,3 +80,12 @@
     }
   }
 }
+
+.templateYamlPreviewContainer {
+  overflow-y: scroll;
+  :global {
+    .react-monaco-editor-container {
+      padding-top: var(--spacing-3) !important;
+    }
+  }
+}

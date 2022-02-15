@@ -1543,6 +1543,7 @@ exports[`Create CE K8s Connector Wizard Step One 1`] = `
                             >
                               <div
                                 class="FormError--errorDiv"
+                                data-name="referenceConnector"
                               >
                                 <span
                                   class="bp3-icon StyledProps--main FormError--errorTextIcon StyledProps--intent-danger"
@@ -1713,6 +1714,7 @@ exports[`Create CE K8s Connector Wizard Step One 1`] = `
                               >
                                 <div
                                   class="FormError--errorDiv"
+                                  data-name="name"
                                 >
                                   <span
                                     class="bp3-icon StyledProps--main FormError--errorTextIcon StyledProps--intent-danger"

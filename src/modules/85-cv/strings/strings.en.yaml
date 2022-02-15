@@ -324,6 +324,7 @@ monitoringSources:
     selectedApplications: Selected Applications
     oneMetricMappingValidationSubtext: You need to map an application to a Harness Environment and Service.
     totalMappedApplications: '{{total}} Application(s) mapped'
+    defaultNewRelicMetricName: New Relic Metric
   prometheus:
     prometheusMetrics: Prometheus Metrics
     provideQueryToSeeRecords: Provide query to see records from Prometheus
@@ -555,6 +556,7 @@ healthSource:
   environmentLabel: Create or select an Environment
   serviceLabel: Create or select a Service
   addHealthSource: Add New Health Source
+  newHealthSource: New Health Source
   editHealthSource: Edit Health Source
   backtoMonitoredService: Back to monitored service
   connectHealthSource: Connect Health Source
@@ -645,7 +647,7 @@ slos:
   latencySLI: Latency SLI measures the proportion of requests that were faster than some threshold.
   pickMetricsSLI: Pick metrics powering the SLI
   configureSLIQueries: Configure SLI queries
-  sloDefinition: Define SLO identifcation
+  sloDefinition: Define SLO identification
   reviewChanges: Review changes
   sloEditWarningMessage: It may take a few minutes to recalculate the error budget. Are you sure you want to proceed?
   noSLOsStateMessage: A service level objective (SLO) is the sum of a collection of performance metrics (Service Level Indicator or SLI) such as uptime, response time, and error rate that are used to measure the services performance. At least one SLO is required to monitor a service
@@ -763,6 +765,10 @@ noPreviousErrorBudgetResetHistoryAvailable: No previous error budget reset histo
 dateAndTime: Date/Time
 increaseWithPercentSign: 'Increase %'
 errorBudgetIsSuccessfullyReset: Error budget is successfully reset
+queryTypeService: Service Based  (used for Health Score and SLI)
+queryTypeHost: Host Based (used for CV)
+forConfigurationYouWillNeedAtLeastOneMonitoredServiceWithAHealthSourceAndAMetric: For configuration, you’ll need at least one Monitored Service with a Health Source, and a Metric.
+newMetric: New Metric
 cvChanges:
   changeTypeFilterDefault: 'Change Types'
   sourceFilterDefault: 'Sources'

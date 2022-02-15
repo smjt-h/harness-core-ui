@@ -211,9 +211,6 @@ exports[`<PipelineVariables /> tests snapshot test 1`] = `
             />
           </div>
         </div>
-        <div
-          class="searchActions"
-        />
       </div>
       <div
         class="variableListHeader"

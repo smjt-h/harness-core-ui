@@ -63,7 +63,7 @@ export function MultiTypeFieldSelector(props: ConnectedMultiTypeFieldSelectorPro
   const labelText = !isOptional ? label : `${label} ${optionalLabel}`
   const {
     intent = hasError ? Intent.DANGER : Intent.NONE,
-    helperText = hasError ? <FormError errorMessage={get(formik?.errors, name)} /> : null,
+    helperText = hasError ? <FormError name={name} errorMessage={get(formik?.errors, name)} /> : null,
     disabled,
     ...rest
   } = restProps

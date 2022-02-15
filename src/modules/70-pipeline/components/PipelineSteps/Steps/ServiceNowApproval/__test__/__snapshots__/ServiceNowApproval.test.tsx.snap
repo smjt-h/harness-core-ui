@@ -225,6 +225,7 @@ exports[`ServiceNow Approval tests Basic snapshot - inputset mode: input set wit
             >
               <div
                 class="FormError--errorDiv"
+                data-name="spec.connectorRef"
               >
                 <span
                   class="bp3-icon StyledProps--main FormError--errorTextIcon StyledProps--intent-danger"
@@ -422,6 +423,7 @@ exports[`ServiceNow Approval tests Basic snapshot - inputset mode: input set wit
         >
           <div
             class="FormError--errorDiv"
+            data-name="spec.ticketNumber"
           >
             <span
               class="bp3-icon StyledProps--main FormError--errorTextIcon StyledProps--intent-danger"

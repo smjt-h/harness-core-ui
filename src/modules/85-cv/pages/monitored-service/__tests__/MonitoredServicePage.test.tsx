@@ -203,6 +203,24 @@ describe('Unit tests for createting monitored source', () => {
           cancel: jest.fn()
         } as any)
     )
+    jest.spyOn(cvServices, 'useGetMonitoredServiceChangeTimeline').mockImplementation(
+      () =>
+        ({
+          data: {
+            resource: {
+              categoryTimeline: {
+                Deployment: [],
+                Infrastructure: [],
+                Alert: []
+              }
+            }
+          },
+          refetch: jest.fn(),
+          error: null,
+          loading: false,
+          cancel: jest.fn()
+        } as any)
+    )
     const { container, getByText, getAllByRole } = render(
       <TestWrapper {...testWrapperEditMode}>
         <MonitoredServicePage />

@@ -1,0 +1,115 @@
+/*
+ * Copyright 2021 Harness Inc. All rights reserved.
+ * Use of this source code is governed by the PolyForm Shield 1.0.0 license
+ * that can be found in the licenses directory at the root of this repository, also available at
+ * https://polyformproject.org/wp-content/uploads/2020/06/PolyForm-Shield-1.0.0.txt.
+ */
+
+.coming-soon-banner {
+  left: 0;
+  height: 16px;
+  padding: var(--spacing-1) var(--spacing-3);
+  background-color: var(--blue-100);
+  color: var(--blue-500);
+  font-size: var(--font-size-xsmall);
+  font-weight: bold;
+  line-height: 12px;
+  border-radius: 4px;
+  text-transform: uppercase;
+  margin-right: var(--spacing-small);
+}
+
+.tooltipIcon {
+  margin-left: var(--spacing-xsmall);
+  display: flex;
+  position: relative;
+}
+
+// @copied from uicore -> src/core/Utils.css
+.tooltipContainer {
+  padding: var(--spacing-medium);
+  max-width: 500px;
+  max-height: 500px;
+  overflow: auto;
+  overflow-wrap: break-word;
+  word-wrap: break-word;
+  hyphens: auto;
+}
+
+.cursorPointer {
+  cursor: pointer;
+}
+
+.cdGenerationSelectionTooltip {
+  width: 374px;
+  padding: var(--spacing-xxlarge);
+}
+
+.cdGenerationSwitchContainer {
+  display: flex;
+  justify-content: space-between;
+}
+
+.cdGenerationSwitcher {
+  width: 136px;
+  height: 105px;
+  border: 2px solid var(--grey-400);
+  box-sizing: border-box;
+  border-radius: 4px;
+  font-weight: 700;
+  font-size: var(--font-size-medium);
+  line-height: 28px;
+  padding: 8px 16px;
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+}
+
+.cdGenerationSwitcherSelected {
+  border-color: var(--primary-5);
+  position: relative;
+}
+
+.cdGenerationContent {
+  display: flex;
+  flex-direction: column;
+  margin-top: var(--spacing-medium);
+}
+
+.learnMore {
+  margin-top: var(--spacing-medium);
+  font-weight: 500;
+  font-size: var(--font-size-small);
+}
+
+.paddingNone {
+  padding: 0;
+}
+
+.left {
+  background-size: contain !important;
+  &:after {
+    border-right: 1px solid var(--grey-100);
+    content: '';
+    display: flex;
+    height: 100%;
+  }
+}
+
+.cdFirstGenTrialContent {
+  line-height: 28px;
+  padding-right: var(--spacing-xxxlarge);
+}
+
+.newText {
+  height: 28px;
+  width: 48px;
+  border-radius: 2px;
+  background-color: var(--primary-brand);
+  position: absolute;
+  right: 0;
+  top: -2px;
+  font-weight: 600;
+  font-size: 13px;
+  padding: 4px 8px;
+}

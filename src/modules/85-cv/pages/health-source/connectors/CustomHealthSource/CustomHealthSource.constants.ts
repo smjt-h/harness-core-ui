@@ -32,7 +32,3 @@ export const CustomHealthSourceFieldNames = {
 }
 
 export const defaultMetricName = 'CustomHealth Metric'
-export const QueryType = {
-  SERVICE_BASED: 'SERVICE_BASED',
-  HOST_BASED: 'HOST_BASED'
-}

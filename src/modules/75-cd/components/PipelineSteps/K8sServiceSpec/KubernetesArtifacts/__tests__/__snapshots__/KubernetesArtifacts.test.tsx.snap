@@ -1,0 +1,10 @@
+// Jest Snapshot v1, https://goo.gl/fbAQLP
+
+exports[`<KubernetesArtifacts /> tests snapshot test for kubernetes artifacts 1`] = `
+<div>
+  <div
+    class="nopadLeft accordionSummary"
+    id="Stage.stage-0.Service.Artifacts.Sidecars"
+  />
+</div>
+`;

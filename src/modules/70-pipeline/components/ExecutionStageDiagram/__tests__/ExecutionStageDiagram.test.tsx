@@ -6,21 +6,25 @@
  */
 
 import React from 'react'
-import { render, fireEvent, waitFor } from '@testing-library/react'
-import { TestWrapper } from '@common/utils/testUtils'
-import { ExecutionStatusEnum } from '@pipeline/utils/statusHelpers'
-import { ExecutionPipelineNodeType } from '../ExecutionPipelineModel'
-import ExecutionStageDiagram, { ExecutionStageDiagramProps } from '../ExecutionStageDiagram'
+import { act } from 'react-dom/test-utils'
+import { render, fireEvent, waitForElementToBeRemoved } from '@testing-library/react'
+import { accountPathProps, executionPathProps, pipelineModuleParams } from '@common/utils/routeUtils'
+import { PipelineContextTestWrapper } from '@pipeline/utils/pipelineContextTestUtils'
+import routes from '@common/RouteDefinitions'
+import ExecutionContext from '@pipeline/context/ExecutionContext'
+import ExecutionStageDiagram from '../ExecutionStageDiagram'
 
-interface Data {
-  label: string
-}
+import data from './data.json'
+import executionStageDiagramProps from './__mock__/props.json'
+import executionStepDiagramProps from './__mock__/stepProps.json'
 
 const itemClickHandler = jest.fn()
 const itemMouseEnter = jest.fn()
 const itemMouseLeave = jest.fn()
 const canvasListener = jest.fn()
 const onChangeStageSelection = jest.fn()
+const mouseEnterStepGroupTitle = jest.fn()
+const mouseLeaveStepGroupTitle = jest.fn()
 
 // eslint-disable-next-line @typescript-eslint/explicit-function-return-type
 const getExtraProps = () => ({
@@ -28,148 +32,11 @@ const getExtraProps = () => ({
   itemMouseEnter,
   itemMouseLeave,
   canvasListener,
-  onChangeStageSelection
+  onChangeStageSelection,
+  mouseEnterStepGroupTitle,
+  mouseLeaveStepGroupTitle
 })
 
-const getProps = (): ExecutionStageDiagramProps<Data> => ({
-  data: {
-    items: [
-      {
-        item: {
-          icon: 'pipeline-deploy',
-          identifier: 'qaStage',
-          name: 'qa stage',
-          status: ExecutionStatusEnum.Failed,
-          type: ExecutionPipelineNodeType.NORMAL,
-          data: {
-            label: 'qaStage'
-          }
-        }
-      },
-      {
-        parallel: [
-          {
-            item: {
-              icon: 'pipeline-deploy',
-              identifier: 'parallel1',
-              name: 'Parallel 1',
-              status: ExecutionStatusEnum.Paused,
-              type: ExecutionPipelineNodeType.NORMAL,
-              data: {
-                label: 'Parallel 1'
-              }
-            }
-          },
-          {
-            item: {
-              icon: 'pipeline-deploy',
-              identifier: 'parallel3',
-              name: 'Parallel 2',
-              status: ExecutionStatusEnum.Success,
-              type: ExecutionPipelineNodeType.NORMAL,
-              data: {
-                label: 'Parallel 2'
-              }
-            }
-          }
-        ]
-      },
-      {
-        item: {
-          icon: 'pipeline-deploy',
-          identifier: 'stage2',
-          name: 'stage 2',
-          status: ExecutionStatusEnum.Running,
-          type: ExecutionPipelineNodeType.NORMAL,
-          data: {
-            label: 'stage2'
-          }
-        }
-      },
-      {
-        group: {
-          icon: 'service' as any,
-          identifier: 'Service',
-          name: 'service',
-          isOpen: true,
-          status: ExecutionStatusEnum.ResourceWaiting,
-          data: {
-            label: 'service'
-          },
-          items: [
-            {
-              item: {
-                icon: 'badge' as any,
-                identifier: 'badge',
-                name: 'Badge',
-                status: ExecutionStatusEnum.Aborted,
-                type: ExecutionPipelineNodeType.NORMAL,
-                data: {
-                  label: 'badge'
-                }
-              }
-            },
-            {
-              group: {
-                icon: 'step-group',
-                identifier: 'Step-Group',
-                name: 'Step Group HTTP',
-                isOpen: true,
-                status: ExecutionStatusEnum.Running,
-                data: {
-                  label: 'step-group'
-                },
-                items: [
-                  {
-                    item: {
-                      icon: 'badge' as any,
-                      identifier: 'badge',
-                      name: 'Badge',
-                      status: ExecutionStatusEnum.Aborted,
-                      type: ExecutionPipelineNodeType.NORMAL,
-                      data: {
-                        label: 'badge'
-                      }
-                    }
-                  },
-                  {
-                    item: {
-                      icon: 'barcode' as any,
-                      identifier: 'barcode',
-                      name: 'barcode',
-                      status: ExecutionStatusEnum.NotStarted,
-                      type: ExecutionPipelineNodeType.NORMAL,
-                      data: {
-                        label: 'barcode'
-                      }
-                    }
-                  }
-                ]
-              }
-            },
-            {
-              item: {
-                icon: 'barcode' as any,
-                identifier: 'barcode',
-                name: 'barcode',
-                status: ExecutionStatusEnum.NotStarted,
-                type: ExecutionPipelineNodeType.NORMAL,
-                data: {
-                  label: 'barcode'
-                }
-              }
-            }
-          ]
-        }
-      }
-    ],
-    identifier: 'Test_Pipline',
-    status: ExecutionStatusEnum.Failed,
-    allNodes: []
-  },
-  selectedIdentifier: 'qaStage',
-  gridStyle: { startX: 50, startY: 50 }
-})
 jest.mock('resize-observer-polyfill', () => {
   return class ResizeObserver {
     static default = ResizeObserver
@@ -195,28 +62,66 @@ describe('Test Execution StageDiagram', () => {
   })
   test('should render the default snapshot', () => {
     const { container } = render(
-      <TestWrapper>
-        <ExecutionStageDiagram {...getProps()} />
-      </TestWrapper>
+      <PipelineContextTestWrapper
+        path={routes.toExecutionPipelineView({
+          ...accountPathProps,
+          ...executionPathProps,
+          ...pipelineModuleParams
+        })}
+        pathParams={{
+          accountId: 'px7xd_BFRCi-pfWPYXVjvw',
+          projectIdentifier: 'Kapil',
+          module: 'cd',
+          executionIdentifier: 'dummy',
+          pipelineIdentifier: 'test_ash',
+          orgIdentifier: 'dummy'
+        }}
+        pipelineContextValues={{
+          state: {
+            pipelineIdentifier: 'test_ash'
+          } as any
+        }}
+      >
+        <ExecutionContext.Provider value={data as any}>
+          <ExecutionStageDiagram {...(executionStageDiagramProps as any)} />
+        </ExecutionContext.Provider>
+      </PipelineContextTestWrapper>
     )
     expect(container).toMatchSnapshot()
   })
 })
 
 // eslint-disable-next-line jest/no-disabled-tests
-describe.skip('Test Execution StageDiagram - Action/Events', () => {
+describe('Test Execution StageDiagram - Action/Events for Stage', () => {
+  beforeAll(() => {
+    jest.spyOn(global.Math, 'random').mockReturnValue(0.12345)
+  })
+  afterAll(() => {
+    jest.spyOn(global.Math, 'random').mockReset()
+  })
   test('Test Mouse Events on Nodes and Canvas', () => {
     const { container } = render(
-      <TestWrapper>
-        <ExecutionStageDiagram
-          {...getProps()}
-          {...getExtraProps()}
-          diagramContainerHeight={100}
-          selectedIdentifier="parallel1"
-        />
-      </TestWrapper>
+      <PipelineContextTestWrapper
+        path={routes.toExecutionPipelineView({
+          ...accountPathProps,
+          ...executionPathProps,
+          ...pipelineModuleParams
+        })}
+        pathParams={{
+          accountId: 'px7xd_BFRCi-pfWPYXVjvw',
+          projectIdentifier: 'Kapil',
+          module: 'cd',
+          executionIdentifier: 'P_th0g9eRn-BVTwujdyqPw',
+          pipelineIdentifier: 'test_ash',
+          orgIdentifier: 'default'
+        }}
+      >
+        <ExecutionContext.Provider value={data as any}>
+          <ExecutionStageDiagram {...(executionStageDiagramProps as any)} {...getExtraProps()} />
+        </ExecutionContext.Provider>
+      </PipelineContextTestWrapper>
     )
-    const node = container.querySelector('[data-nodeid="qaStage"] .defaultNode') as HTMLElement
+    const node = container.querySelector('[data-nodeid="LBmn6BqRSc2WO-kxi36t8g"] .defaultNode') as HTMLElement
     fireEvent.mouseEnter(node)
     expect(itemMouseEnter).toBeCalled()
     fireEvent.mouseLeave(node)
@@ -225,34 +130,90 @@ describe.skip('Test Execution StageDiagram - Action/Events', () => {
     expect(itemClickHandler).toBeCalled()
     const canvasButton = container.querySelectorAll('.canvasButtons button')[0]
     fireEvent.click(canvasButton)
+    const canvasWidget = container.querySelectorAll('.main')[0].children[0]
+    fireEvent.mouseDown(canvasWidget)
+    fireEvent.mouseUp(canvasWidget)
     expect(canvasListener).toBeCalledWith(3)
   })
+})
 
-  test('Test click Event on label', async () => {
-    const { container } = render(
-      <TestWrapper>
-        <ExecutionStageDiagram {...getProps()} {...getExtraProps()} />
-      </TestWrapper>
-    )
-    const label = container.querySelector('.groupLabels .label') as HTMLElement
-    fireEvent.click(label)
-    waitFor(() => container.querySelector('.groupLabels .selectedLabel'))
-    expect(label?.classList.contains('selectedLabel')).toBeTruthy()
+describe('Test Execution StageDiagram for Grouped Steps', () => {
+  beforeAll(() => {
+    jest.spyOn(global.Math, 'random').mockReturnValue(0.12345)
+  })
+  afterAll(() => {
+    jest.spyOn(global.Math, 'random').mockReset()
   })
 
-  test('Test Stage Selection', async () => {
-    const { getByText, getByPlaceholderText } = render(
-      <TestWrapper>
-        <ExecutionStageDiagram {...getProps()} {...getExtraProps()} />
-      </TestWrapper>
+  test('snapshot test', () => {
+    const { container } = render(
+      <PipelineContextTestWrapper
+        path={routes.toExecutionPipelineView({
+          ...accountPathProps,
+          ...executionPathProps,
+          ...pipelineModuleParams
+        })}
+        pathParams={{
+          accountId: 'px7xd_BFRCi-pfWPYXVjvw',
+          projectIdentifier: 'Kapil',
+          module: 'cd',
+          executionIdentifier: 'P_th0g9eRn-BVTwujdyqPw',
+          pipelineIdentifier: 'test_ash',
+          orgIdentifier: 'default'
+        }}
+      >
+        <ExecutionContext.Provider value={data as any}>
+          <ExecutionStageDiagram {...(executionStepDiagramProps as any)} {...getExtraProps()} />
+        </ExecutionContext.Provider>
+      </PipelineContextTestWrapper>
     )
-    const qaStage = getByText('QA')
-    fireEvent.click(qaStage)
-    await waitFor(() => getByPlaceholderText('Filter...'))
-    const search = getByPlaceholderText('Filter...')
-    fireEvent.change(search, { target: { value: 'Prod' } })
-    const prodStage = getByText('Prod')
-    fireEvent.click(prodStage)
-    expect(onChangeStageSelection).toBeCalledWith({ label: 'Prod', value: 'prod', icon: { name: 'minus' } })
+    expect(container).toMatchSnapshot()
+  })
+
+  test('Test Mouse Events on Grouped Steps', async () => {
+    const { container } = render(
+      <PipelineContextTestWrapper
+        path={routes.toExecutionPipelineView({
+          ...accountPathProps,
+          ...executionPathProps,
+          ...pipelineModuleParams
+        })}
+        pathParams={{
+          accountId: 'px7xd_BFRCi-pfWPYXVjvw',
+          projectIdentifier: 'Kapil',
+          module: 'cd',
+          executionIdentifier: 'P_th0g9eRn-BVTwujdyqPw',
+          pipelineIdentifier: 'test_ash',
+          orgIdentifier: 'default'
+        }}
+      >
+        <ExecutionContext.Provider value={data as any}>
+          <ExecutionStageDiagram {...(executionStepDiagramProps as any)} {...getExtraProps()} />
+        </ExecutionContext.Provider>
+      </PipelineContextTestWrapper>
+    )
+
+    const node = container.querySelector('[data-nodeid="o7fWy9XJRJa09Qw9k0-5KQ-Start"]') as HTMLElement
+    const main = node?.parentElement
+    expect(main).toBeDefined()
+
+    const stepGroupTitle = main?.getElementsByTagName('p')[0] as HTMLElement
+    expect(stepGroupTitle).toBeDefined()
+
+    await act(async () => {
+      fireEvent.mouseEnter(stepGroupTitle)
+      expect(mouseEnterStepGroupTitle).toHaveBeenCalled()
+
+      fireEvent.mouseLeave(stepGroupTitle)
+      expect(mouseLeaveStepGroupTitle).toHaveBeenCalled()
+    })
+
+    const collapseIcon = main?.querySelector('.collapseIcon') as HTMLElement
+    await act(async () => {
+      fireEvent.click(collapseIcon)
+      waitForElementToBeRemoved(collapseIcon).then(() => {
+        expect(collapseIcon).not.toBeInTheDocument()
+      })
+    })
   })
 })

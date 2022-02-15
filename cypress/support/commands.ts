@@ -31,6 +31,7 @@
 // -- This will overwrite an existing command --
 // Cypress.Commands.overwrite('visit', (originalFn, url, options) => { ... })
 import '@testing-library/cypress/add-commands'
+import { getConnectorIconByType } from '../utils/connctors-utils'
 import {
   servicesCall,
   servicesResponse,
@@ -51,6 +52,7 @@ declare global {
       clickSubmit(): void
       fillField(fieldName: string, value: string): void
       addNewMonitoredServiceWithServiceAndEnv(): void
+      populateDefineHealthSource(connectorType: string, connectorName: string, healthSourceName: string): void
     }
   }
 }
@@ -132,4 +134,13 @@ Cypress.Commands.add('addNewMonitoredServiceWithServiceAndEnv', () => {
 
   cy.contains('div', 'Unsaved changes').scrollIntoView().should('be.visible')
   cy.get('button').contains('span', 'Discard').parent().should('be.enabled')
+})
+
+Cypress.Commands.add('populateDefineHealthSource', (connectorType, connectorName, healthSourceName) => {
+  cy.get(`span[data-icon=${getConnectorIconByType(connectorType)}]`).click()
+  cy.get('input[name="healthSourceName"]').type(healthSourceName)
+  cy.get('button[data-testid="cr-field-connectorRef"]').click()
+  cy.contains('p', connectorName).click()
+  cy.contains('span', 'Apply Selected').click()
+  cy.contains('span', 'Next').click()
 })

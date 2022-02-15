@@ -248,6 +248,7 @@ exports[`Create Git connector Wizard Creating Git step one 1`] = `
                           >
                             <div
                               class="FormError--errorDiv"
+                              data-name="name"
                             >
                               <span
                                 class="bp3-icon StyledProps--main FormError--errorTextIcon StyledProps--intent-danger"
@@ -1258,6 +1259,7 @@ exports[`Create Git connector Wizard Creating Github step one and step two for H
                       >
                         <div
                           class="FormError--errorDiv"
+                          data-name="validationRepo"
                         >
                           <span
                             class="bp3-icon StyledProps--main FormError--errorTextIcon StyledProps--intent-danger"

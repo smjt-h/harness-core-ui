@@ -1,0 +1,296 @@
+// Jest Snapshot v1, https://goo.gl/fbAQLP
+
+exports[`CDFirstGenTrial Test cases it should render the dialog with no deployment type 1`] = `
+<div>
+  <div
+    class="Layout--vertical StyledProps--main"
+    style="height: 100%;"
+  >
+    <div
+      class="Layout--horizontal StyledProps--main"
+      style="height: 100%;"
+    >
+      <div
+        class="StyledProps--font StyledProps--main left"
+        style="background: transparent url(test-file-stub) no-repeat; width: 50%;"
+      />
+      <div
+        class="StyledProps--font StyledProps--main StyledProps--padding-xxxlarge"
+        style="width: 50%;"
+      >
+        <p
+          class="StyledProps--font StyledProps--main StyledProps--margin-top-xxxlarge StyledProps--margin-right-xxxlarge StyledProps--padding-top-large StyledProps--color StyledProps--color-grey800 StyledProps--font-size-large StyledProps--font-weight-bold"
+        >
+          Harness CD First Generation
+        </p>
+        <div
+          class="cdFirstGenTrialContent"
+        >
+          <p
+            class="StyledProps--font StyledProps--main StyledProps--padding-top-large"
+          >
+            cd.cdSwitchToFirstGen.description1
+          </p>
+          <p
+            class="StyledProps--font StyledProps--main StyledProps--padding-top-large"
+          >
+            cd.cdSwitchToFirstGen.description2
+          </p>
+          <p
+            class="StyledProps--font StyledProps--main StyledProps--padding-top-large"
+            style="display: flex; align-items: center;"
+          >
+            <span
+              class="bp3-icon StyledProps--main Text--icon StyledProps--padding-right-small StyledProps--padding-top-small StyledProps--padding-bottom-small StyledProps--color StyledProps--color-grey800"
+              data-icon="tooltip-icon"
+            >
+              <svg
+                height="12"
+                viewBox="0 0 12 12"
+                width="12"
+                xmlns="http://www.w3.org/2000/svg"
+              >
+                <path
+                  clip-rule="evenodd"
+                  d="M6.02 11a5 5 0 100-10 5 5 0 000 10zm0 1a6 6 0 100-12 6 6 0 000 12zM6 5.5a.5.5 0 01.5.5v2.5a.5.5 0 01-1 0V6a.5.5 0 01.5-.5zm0-1.029a.75.75 0 100-1.5.75.75 0 000 1.5z"
+                  fill="currentColor"
+                  fill-rule="evenodd"
+                />
+              </svg>
+            </span>
+            cd.cdSwitchToFirstGen.description3
+          </p>
+          <button
+            class="bp3-button Button--button StyledProps--font StyledProps--main StyledProps--margin-top-xxlarge StyledProps--intent-primary Button--with-current-color"
+            data-testid="continueCg"
+            type="button"
+          >
+            <span
+              class="bp3-button-text"
+            >
+              cd.cdLaunchText
+            </span>
+          </button>
+          <p
+            class="StyledProps--font StyledProps--main StyledProps--padding-top-xxxlarge"
+          >
+            <a
+              href="https://docs.harness.io/article/4o7oqwih6h-harness-key-concepts#cd_abstraction_model"
+              rel="noreferrer"
+              target="_blank"
+            >
+              cd.cdSwitchToFirstGen.learnMoreAboutCD1stGen
+            </a>
+          </p>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+`;
+
+exports[`CDFirstGenTrial Test cases it should render the dialog with valid deployment type 1`] = `
+<div>
+  <div
+    class="Layout--vertical StyledProps--main"
+    style="height: 100%;"
+  >
+    <div
+      class="Layout--horizontal StyledProps--main"
+      style="height: 100%;"
+    >
+      <div
+        class="StyledProps--font StyledProps--main left"
+        style="background: transparent url(test-file-stub) no-repeat; width: 50%;"
+      />
+      <div
+        class="StyledProps--font StyledProps--main StyledProps--padding-xxxlarge"
+        style="width: 50%;"
+      >
+        <p
+          class="StyledProps--font StyledProps--main StyledProps--margin-top-xxxlarge StyledProps--margin-right-xxxlarge StyledProps--padding-top-large StyledProps--color StyledProps--color-grey800 StyledProps--font-size-large StyledProps--font-weight-bold"
+        >
+          serviceDeploymentTypes.awsLambda is available on Harness CD First Generation
+        </p>
+        <div
+          class="cdFirstGenTrialContent"
+        >
+          <p
+            class="StyledProps--font StyledProps--main StyledProps--padding-top-large"
+          >
+            cd.cdSwitchToFirstGen.description1
+          </p>
+          <p
+            class="StyledProps--font StyledProps--main StyledProps--padding-top-large"
+          >
+            cd.cdSwitchToFirstGen.description2
+          </p>
+          <p
+            class="StyledProps--font StyledProps--main StyledProps--padding-top-large"
+            style="display: flex; align-items: center;"
+          >
+            <span
+              class="bp3-icon StyledProps--main Text--icon StyledProps--padding-right-small StyledProps--padding-top-small StyledProps--padding-bottom-small StyledProps--color StyledProps--color-grey800"
+              data-icon="tooltip-icon"
+            >
+              <svg
+                height="12"
+                viewBox="0 0 12 12"
+                width="12"
+                xmlns="http://www.w3.org/2000/svg"
+              >
+                <path
+                  clip-rule="evenodd"
+                  d="M6.02 11a5 5 0 100-10 5 5 0 000 10zm0 1a6 6 0 100-12 6 6 0 000 12zM6 5.5a.5.5 0 01.5.5v2.5a.5.5 0 01-1 0V6a.5.5 0 01.5-.5zm0-1.029a.75.75 0 100-1.5.75.75 0 000 1.5z"
+                  fill="currentColor"
+                  fill-rule="evenodd"
+                />
+              </svg>
+            </span>
+            cd.cdSwitchToFirstGen.description3
+          </p>
+          <button
+            class="bp3-button Button--button StyledProps--font StyledProps--main StyledProps--margin-top-xxlarge StyledProps--intent-primary Button--with-current-color"
+            data-testid="continueCg"
+            type="button"
+          >
+            <span
+              class="bp3-button-text"
+            >
+              cd.cdLaunchText
+            </span>
+          </button>
+          <p
+            class="StyledProps--font StyledProps--main StyledProps--padding-top-xxxlarge"
+          >
+            <a
+              href="https://docs.harness.io/article/4o7oqwih6h-harness-key-concepts#cd_abstraction_model"
+              rel="noreferrer"
+              target="_blank"
+            >
+              cd.cdSwitchToFirstGen.learnMoreAboutCD1stGen
+            </a>
+          </p>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+`;
+
+exports[`CDFirstGenTrial Test cases it should render the dialog with valid deployment type: loading 1`] = `
+<div>
+  <div
+    class="Layout--vertical StyledProps--main"
+    style="height: 100%;"
+  >
+    <div
+      class="Layout--horizontal StyledProps--main"
+      style="height: 100%;"
+    >
+      <div
+        class="StyledProps--font StyledProps--main left"
+        style="background: transparent url(test-file-stub) no-repeat; width: 50%;"
+      />
+      <div
+        class="StyledProps--font StyledProps--main StyledProps--padding-xxxlarge"
+        style="width: 50%;"
+      >
+        <p
+          class="StyledProps--font StyledProps--main StyledProps--margin-top-xxxlarge StyledProps--margin-right-xxxlarge StyledProps--padding-top-large StyledProps--color StyledProps--color-grey800 StyledProps--font-size-large StyledProps--font-weight-bold"
+        >
+          serviceDeploymentTypes.awsLambda is available on Harness CD First Generation
+        </p>
+        <div
+          class="cdFirstGenTrialContent"
+        >
+          <p
+            class="StyledProps--font StyledProps--main StyledProps--padding-top-large"
+          >
+            cd.cdSwitchToFirstGen.description1
+          </p>
+          <p
+            class="StyledProps--font StyledProps--main StyledProps--padding-top-large"
+          >
+            cd.cdSwitchToFirstGen.description2
+          </p>
+          <p
+            class="StyledProps--font StyledProps--main StyledProps--padding-top-large"
+            style="display: flex; align-items: center;"
+          >
+            <span
+              class="bp3-icon StyledProps--main Text--icon StyledProps--padding-right-small StyledProps--padding-top-small StyledProps--padding-bottom-small StyledProps--color StyledProps--color-grey800"
+              data-icon="tooltip-icon"
+            >
+              <svg
+                height="12"
+                viewBox="0 0 12 12"
+                width="12"
+                xmlns="http://www.w3.org/2000/svg"
+              >
+                <path
+                  clip-rule="evenodd"
+                  d="M6.02 11a5 5 0 100-10 5 5 0 000 10zm0 1a6 6 0 100-12 6 6 0 000 12zM6 5.5a.5.5 0 01.5.5v2.5a.5.5 0 01-1 0V6a.5.5 0 01.5-.5zm0-1.029a.75.75 0 100-1.5.75.75 0 000 1.5z"
+                  fill="currentColor"
+                  fill-rule="evenodd"
+                />
+              </svg>
+            </span>
+            cd.cdSwitchToFirstGen.description3
+          </p>
+          <button
+            class="bp3-button bp3-disabled bp3-loading Button--button StyledProps--font StyledProps--main StyledProps--margin-top-xxlarge StyledProps--intent-primary Button--with-current-color"
+            data-testid="continueCg"
+            disabled=""
+            tabindex="-1"
+            type="button"
+          >
+            <div
+              class="bp3-spinner bp3-button-spinner"
+            >
+              <div
+                class="bp3-spinner-animation"
+              >
+                <svg
+                  height="20"
+                  stroke-width="16.00"
+                  viewBox="-3.00 -3.00 106.00 106.00"
+                  width="20"
+                >
+                  <path
+                    class="bp3-spinner-track"
+                    d="M 50,50 m 0,-45 a 45,45 0 1 1 0,90 a 45,45 0 1 1 0,-90"
+                  />
+                  <path
+                    class="bp3-spinner-head"
+                    d="M 50,50 m 0,-45 a 45,45 0 1 1 0,90 a 45,45 0 1 1 0,-90"
+                    pathLength="280"
+                    stroke-dasharray="280 280"
+                    stroke-dashoffset="210"
+                  />
+                </svg>
+              </div>
+            </div>
+            <span
+              class="bp3-button-text"
+            >
+              cd.cdLaunchText
+            </span>
+          </button>
+          <p
+            class="StyledProps--font StyledProps--main StyledProps--padding-top-xxxlarge"
+          >
+            <a
+              href="https://docs.harness.io/article/4o7oqwih6h-harness-key-concepts#cd_abstraction_model"
+              rel="noreferrer"
+              target="_blank"
+            >
+              cd.cdSwitchToFirstGen.learnMoreAboutCD1stGen
+            </a>
+          </p>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+`;

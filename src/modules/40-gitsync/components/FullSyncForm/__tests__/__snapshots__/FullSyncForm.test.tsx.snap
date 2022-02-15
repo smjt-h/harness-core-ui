@@ -25,7 +25,7 @@ exports[`Test GitFullSyncForm Should render GitFullSyncForm 1`] = `
                 style="border-radius: 100%; line-height: 18px; width: 24px; height: 24px; font-size: 10px;"
                 tabindex="0"
               >
-                N
+                D
               </div>
             </span>
           </span>
@@ -94,7 +94,7 @@ exports[`Test GitFullSyncForm Should render GitFullSyncForm 1`] = `
                           placeholder="- Select -"
                           style="padding-right: 0px;"
                           type="text"
-                          value=""
+                          value="gitSyncRepoTest"
                         />
                         <span
                           class="bp3-input-action"
@@ -163,7 +163,7 @@ exports[`Test GitFullSyncForm Should render GitFullSyncForm 1`] = `
                           placeholder="- Select -"
                           style="padding-right: 0px;"
                           type="text"
-                          value=""
+                          value="/src1/.harness/"
                         />
                         <span
                           class="bp3-input-action"

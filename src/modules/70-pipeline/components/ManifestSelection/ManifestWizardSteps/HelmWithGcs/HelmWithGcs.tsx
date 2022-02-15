@@ -5,7 +5,7 @@
  * https://polyformproject.org/wp-content/uploads/2020/06/PolyForm-Shield-1.0.0.txt.
  */
 
-import React, { useState } from 'react'
+import React, { useCallback, useState } from 'react'
 import {
   Accordion,
   Layout,
@@ -80,8 +80,13 @@ const HelmWithGcs: React.FC<StepProps<ConnectorConfigDTO> & HelmWithGcsPropType>
     debounce: 300
   })
 
-  React.useEffect(() => {
-    if (prevStepData?.connectorRef && getMultiTypeFromValue(prevStepData?.connectorRef) === MultiTypeInputType.FIXED) {
+  const bucketOptions = Object.keys(bucketData?.data || {}).map(item => ({
+    label: item,
+    value: item
+  }))
+
+  const onBucketNameFocus = useCallback((): void => {
+    if (!bucketData?.data) {
       refetchBuckets({
         queryParams: {
           accountIdentifier: accountId,
@@ -92,12 +97,7 @@ const HelmWithGcs: React.FC<StepProps<ConnectorConfigDTO> & HelmWithGcsPropType>
       })
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [prevStepData?.connectorRef])
-
-  const bucketOptions = Object.keys(bucketData?.data || {}).map(item => ({
-    label: item,
-    value: item
-  }))
+  }, [bucketData?.data, prevStepData?.connectorRef?.value, refetchBuckets])
 
   const getInitialValues = (): HelmWithGcsDataType => {
     const specValues = get(initialValues, 'spec.store.spec', null)
@@ -170,7 +170,7 @@ const HelmWithGcs: React.FC<StepProps<ConnectorConfigDTO> & HelmWithGcsPropType>
           ),
           chartName: Yup.string().trim().required(getString('pipeline.manifestType.http.chartNameRequired')),
           helmVersion: Yup.string().trim().required(getString('pipeline.manifestType.helmVersionRequired')),
-          bucketName: Yup.string().trim().required(getString('pipeline.manifestType.bucketNameRequired')),
+          bucketName: Yup.mixed().required(getString('pipeline.manifestType.bucketNameRequired')),
           commandFlags: Yup.array().of(
             Yup.object().shape({
               flag: Yup.string().when('commandType', {
@@ -251,7 +251,8 @@ const HelmWithGcs: React.FC<StepProps<ConnectorConfigDTO> & HelmWithGcsPropType>
                         selectProps: {
                           items: bucketOptions,
                           allowCreatingNewItems: true
-                        }
+                        },
+                        onFocus: onBucketNameFocus
                       }}
                     />
                     {getMultiTypeFromValue(formik.values?.bucketName) === MultiTypeInputType.RUNTIME && (

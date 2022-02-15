@@ -9,8 +9,9 @@ import React, { useEffect, useMemo } from 'react'
 import { useParams } from 'react-router-dom'
 import { useStrings } from 'framework/strings'
 import { getErrorMessage } from '@cv/utils/CommonUtils'
+import type { TimePeriodEnum } from '@cv/pages/monitored-service/components/ServiceHealth/ServiceHealth.constants'
 import type { ProjectPathProps } from '@common/interfaces/RouteInterfaces'
-import { useChangeEventTimeline } from 'services/cv'
+import { useChangeEventTimeline, useGetMonitoredServiceChangeTimeline } from 'services/cv'
 import type { ChangeTimelineProps } from './ChangeTimeline.types'
 import { Timeline } from './components/Timeline/Timeline'
 import { ChangeSourceTypes } from './ChangeTimeline.constants'
@@ -35,10 +36,27 @@ export default function ChangeTimeline(props: ChangeTimelineProps): JSX.Element 
     onSliderMoved,
     changeCategories,
     changeSourceTypes,
-    hideTimeline
+    hideTimeline,
+    duration
   } = props
 
-  const { data, refetch, loading, error, cancel } = useChangeEventTimeline({
+  const {
+    data: monitoredServiceChangeTimelineData,
+    refetch: monitoredServiceChangeTimelineRefetch,
+    loading: monitoredServiceChangeTimelineLoading,
+    error: monitoredServiceChangeTimelineError,
+    cancel: monitoredServiceChangeTimelineCancel
+  } = useGetMonitoredServiceChangeTimeline({
+    lazy: true
+  })
+
+  const {
+    data: changeEventTimelineData,
+    refetch: changeEventTimelineRefetch,
+    loading: changeEventTimelineLoading,
+    error: changeEventTimelineError,
+    cancel: changeEventTimelineCancel
+  } = useChangeEventTimeline({
     lazy: true,
     accountIdentifier: accountId,
     projectIdentifier,
@@ -57,8 +75,8 @@ export default function ChangeTimeline(props: ChangeTimelineProps): JSX.Element 
   }, [endTime, selectedTimePeriod?.value, hideTimeline, startTime])
 
   useEffect(() => {
-    cancel()
-    refetch({
+    changeEventTimelineCancel()
+    changeEventTimelineRefetch({
       queryParams: {
         serviceIdentifiers: Array.isArray(serviceIdentifier) ? serviceIdentifier : [serviceIdentifier],
         envIdentifiers: Array.isArray(environmentIdentifier) ? environmentIdentifier : [environmentIdentifier],
@@ -80,6 +98,43 @@ export default function ChangeTimeline(props: ChangeTimelineProps): JSX.Element 
     serviceIdentifier,
     environmentIdentifier
   ])
+
+  useEffect(() => {
+    monitoredServiceChangeTimelineCancel()
+    monitoredServiceChangeTimelineRefetch({
+      queryParams: {
+        accountId,
+        orgIdentifier,
+        projectIdentifier,
+        environmentIdentifier: Array.isArray(environmentIdentifier) ? environmentIdentifier[0] : environmentIdentifier,
+        serviceIdentifier: Array.isArray(serviceIdentifier) ? serviceIdentifier[0] : serviceIdentifier,
+        changeSourceTypes: changeSourceTypes || [],
+        duration: duration?.value as TimePeriodEnum,
+        endTime: Date.now()
+      }
+    })
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [
+    accountId,
+    orgIdentifier,
+    projectIdentifier,
+    serviceIdentifier,
+    environmentIdentifier,
+    changeSourceTypes,
+    duration
+  ])
+
+  const { data, error, loading } = duration
+    ? {
+        data: monitoredServiceChangeTimelineData,
+        error: monitoredServiceChangeTimelineError,
+        loading: monitoredServiceChangeTimelineLoading
+      }
+    : {
+        data: changeEventTimelineData,
+        error: changeEventTimelineError,
+        loading: changeEventTimelineLoading
+      }
 
   const { categoryTimeline } = data?.resource || {}
   const { Deployment, Infrastructure, Alert } = categoryTimeline || {}

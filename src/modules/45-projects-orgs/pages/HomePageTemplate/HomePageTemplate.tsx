@@ -29,9 +29,6 @@ import { useAppStore } from 'framework/AppStore/AppStoreContext'
 import type { Editions } from '@common/constants/SubscriptionTypes'
 import RbacButton from '@rbac/components/Button/Button'
 import { FeatureIdentifier } from 'framework/featureStore/FeatureIdentifier'
-import { ResourceCenter } from '@resource-center/components/ResourceCenter/ResourceCenter'
-import { useFeatureFlag } from '@common/hooks/useFeatureFlag'
-import { FeatureFlag } from '@common/featureFlags'
 import css from './HomePageTemplate.module.scss'
 
 export interface TrialBannerProps {
@@ -86,7 +83,6 @@ export const HomePageTemplate: React.FC<HomePageTemplate> = ({
   const bannerClassName = hasBanner ? css.hasBanner : css.hasNoBanner
   const { showSuccess } = useToaster()
   const { contactSales } = useQueryParams<{ contactSales?: string }>()
-  const rcEnabled = useFeatureFlag(FeatureFlag.RESOURCE_CENTER_ENABLED)
   useEffect(
     () => {
       if (contactSales === 'success') {
@@ -139,7 +135,6 @@ export const HomePageTemplate: React.FC<HomePageTemplate> = ({
           </Layout.Vertical>
         </Container>
       </Page.Body>
-      {rcEnabled && <ResourceCenter />}
     </>
   )
 }

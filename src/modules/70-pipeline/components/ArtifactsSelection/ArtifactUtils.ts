@@ -29,7 +29,6 @@ export enum RegistryHostNames {
 }
 
 export const repositoryFormat = 'docker'
-
 export const resetTag = (formik: FormikValues): void => {
   formik.values.tagType === 'value' &&
     getMultiTypeFromValue(formik.values.tag?.value) === MultiTypeInputType.FIXED &&

@@ -13,7 +13,7 @@ import { get, set, uniq, uniqBy, isEmpty, isUndefined } from 'lodash-es'
 import type { UseStringsReturn, StringKeys } from 'framework/strings'
 import { getDurationValidationSchema } from '@common/components/MultiTypeDuration/MultiTypeDuration'
 import type { ExecutionWrapperConfig, StepElementConfig } from 'services/cd-ng'
-import { regexIdentifier } from '@common/utils/StringUtils'
+import { keyRegexIdentifier, regexIdentifier } from '@common/utils/StringUtils'
 import { StepType } from '@pipeline/components/PipelineSteps/PipelineStepInterface'
 import {
   IdentifierSchema,
@@ -206,7 +206,7 @@ function generateSchemaForMap(
       if (!map || getMultiTypeFromValue(map as string) === MultiTypeInputType.RUNTIME) {
         return true
       }
-      return Object.keys(map).every(key => regexIdentifier.test(key))
+      return Object.keys(map).every(key => keyRegexIdentifier.test(key))
     })
   } else {
     return yup.lazy(value => {
@@ -220,7 +220,7 @@ function generateSchemaForMap(
                   is: val => val?.length,
                   then: yup
                     .string()
-                    .matches(regexIdentifier, getString('validation.validKeyRegex'))
+                    .matches(keyRegexIdentifier, getString('validation.validKeyRegex'))
                     .required(getString('validation.keyRequired'))
                 }),
                 value: yup.string().when('key', {

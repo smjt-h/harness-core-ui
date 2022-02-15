@@ -343,7 +343,19 @@ const getVaultSchema = (connector: ConnectorInfoDTO): Array<ActivityDetailsRowIn
     },
     {
       label: 'connectors.hashiCorpVault.renewal',
-      value: data.accessType !== HashiCorpVaultAccessTypes.VAULT_AGENT ? data.renewalIntervalMinutes : undefined
+      value:
+        data.accessType !== HashiCorpVaultAccessTypes.VAULT_AGENT &&
+        data.accessType !== HashiCorpVaultAccessTypes.AWS_IAM
+          ? data.renewalIntervalMinutes
+          : undefined
+    },
+    {
+      label: 'regionLabel',
+      value: data.awsRegion
+    },
+    {
+      label: 'common.role',
+      value: data.vaultAwsIamRole
     },
     {
       label: 'connectors.hashiCorpVault.readOnly',

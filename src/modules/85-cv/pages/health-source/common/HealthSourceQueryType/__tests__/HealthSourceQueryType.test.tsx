@@ -6,19 +6,21 @@
  */
 
 import React from 'react'
-import { act, fireEvent, render } from '@testing-library/react'
+import { act, fireEvent, render, waitFor } from '@testing-library/react'
 import { Formik, FormikForm } from '@wings-software/uicore'
 import * as Yup from 'yup'
 import { TestWrapper } from '@common/utils/testUtils'
 import { HealthSourceQueryType } from '../HealthSourceQueryType'
 import { queryTypeValidation } from '../HealthSourceQueryType.constants'
+import { HealthSourceQueryTypeProps, QueryType } from '../HealthSourceQueryType.types'
 
 const mockGetString = jest.fn().mockImplementation(() => 'cv.componentValidations.queryType')
 const SampleComponent: React.FC<{
   initialValue?: string
   validationStrnig?: string
   onSubmit: (props: any) => void
-}> = ({ initialValue, onSubmit }) => {
+  onChange?: HealthSourceQueryTypeProps['onChange']
+}> = ({ initialValue, onSubmit, onChange }) => {
   return (
     <TestWrapper>
       <Formik
@@ -30,7 +32,7 @@ const SampleComponent: React.FC<{
         })}
       >
         <FormikForm>
-          <HealthSourceQueryType />
+          <HealthSourceQueryType onChange={onChange} />
           <button type="submit" data-testid={'submitButtonJest'} />
         </FormikForm>
       </Formik>
@@ -68,12 +70,25 @@ describe('RuntimeInput Tests for RadioGroup', () => {
 
   test('should change to host based', async () => {
     const onSubmit = (selectedProps: any) => {
-      expect(selectedProps.queryType).toBe('Host Based')
+      expect(selectedProps.queryType).toBe('cv.queryTypeHost')
     }
     const { getByTestId, getByText } = render(<SampleComponent onSubmit={onSubmit} initialValue={'Service Based'} />)
     await act(async () => {
-      fireEvent.click(getByText('Host Based'))
+      fireEvent.click(getByText('cv.queryTypeHost'))
       fireEvent.click(getByTestId('submitButtonJest'))
     })
+  })
+  test('Ensure on change is called when passed', async () => {
+    const onChangeMock = jest.fn()
+    const { container } = render(
+      <SampleComponent onSubmit={jest.fn()} initialValue={QueryType.HOST_BASED} onChange={onChangeMock} />
+    )
+
+    await waitFor(() =>
+      expect(container.querySelector(`[value="${QueryType.HOST_BASED}"]`)?.getAttribute('checked')).not.toBeNull()
+    )
+
+    fireEvent.click(container.querySelector(`[value="${QueryType.SERVICE_BASED}"]`)!)
+    await waitFor(() => expect(onChangeMock).toHaveBeenCalledWith(QueryType.SERVICE_BASED))
   })
 })

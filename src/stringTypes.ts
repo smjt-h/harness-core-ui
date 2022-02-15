@@ -29,6 +29,9 @@ export interface StringsMap {
   'common.accountResources': string
   'common.accountResourcesPage.line1': string
   'common.accountResourcesPage.line2': string
+  'common.accountSetting.connector.disableBISMHeading': string
+  'common.accountSetting.connector.disableBISMSubHeading': string
+  'common.accountSetting.connector.saveSettingSuccess': string
   'common.accountSettings': string
   'common.accountSetup': string
   'common.addAccountName': string
@@ -112,6 +115,7 @@ export interface StringsMap {
   'common.commentModal.addCommentPlaceholder': string
   'common.commentModal.commentLabel': string
   'common.comments': string
+  'common.community': string
   'common.confictOccured': string
   'common.config': string
   'common.configureOptions.advancedHelp': string
@@ -142,6 +146,8 @@ export interface StringsMap {
   'common.createPipeline': string
   'common.creating': string
   'common.current': string
+  'common.currentlyAvailable': string
+  'common.currentlySupportedOn': string
   'common.customPricing': string
   'common.daily': string
   'common.dashboards': string
@@ -217,6 +223,7 @@ export interface StringsMap {
   'common.filters.saveNewFilter': string
   'common.filters.unsavedFilter': string
   'common.findOutMore': string
+  'common.firstGeneration': string
   'common.frequency': string
   'common.friendlyMessage': string
   'common.genericErrors.inviteExpired': string
@@ -500,6 +507,18 @@ export interface StringsMap {
   'common.reportNameRequired': string
   'common.repositoryName': string
   'common.resolveConflict': string
+  'common.resourceCenter.bottomlayout.apiDocs': string
+  'common.resourceCenter.bottomlayout.changeLog': string
+  'common.resourceCenter.bottomlayout.desc': string
+  'common.resourceCenter.bottomlayout.docs': string
+  'common.resourceCenter.bottomlayout.sitestatus': string
+  'common.resourceCenter.bottomlayout.university': string
+  'common.resourceCenter.communityLevelUp': string
+  'common.resourceCenter.ticketmenu.submit': string
+  'common.resourceCenter.ticketmenu.submitDesc': string
+  'common.resourceCenter.ticketmenu.tickets': string
+  'common.resourceCenter.ticketmenu.ticketsDesc': string
+  'common.resourceCenter.title': string
   'common.resourceGroupLabel': string
   'common.resourceLabel': string
   'common.resourceTypeLabel': string
@@ -602,6 +621,7 @@ export interface StringsMap {
   'common.successfullCreate': string
   'common.successfullUpdate': string
   'common.suggestionsLabel': string
+  'common.supportedInFirstGeneration': string
   'common.supportedModals': string
   'common.switchAccount': string
   'common.switchAccountError': string
@@ -937,15 +957,6 @@ export interface StringsMap {
   'rbac.usersPage.validation.role': string
   'rbac.youAreMissingTheFollowingPermission': string
   'rbac.youAreNotAuthorizedTo': string
-  'resourceCenter.bottomlayout.community.text': string
-  'resourceCenter.bottomlayout.desc': string
-  'resourceCenter.bottomlayout.docs.text': string
-  'resourceCenter.bottomlayout.sitestatus.text': string
-  'resourceCenter.ticketmenu.submit': string
-  'resourceCenter.ticketmenu.submitDesc': string
-  'resourceCenter.ticketmenu.tickets': string
-  'resourceCenter.ticketmenu.ticketsDesc': string
-  'resourceCenter.title': string
   'delegates.GBRam': string
   'delegates.configNameRequired': string
   'delegates.createDelegate': string
@@ -1721,6 +1732,7 @@ export interface StringsMap {
   'connectors.gcrConnectorDetails': string
   'connectors.hashiCorpVault.appRole': string
   'connectors.hashiCorpVault.appRoleId': string
+  'connectors.hashiCorpVault.awsAuth': string
   'connectors.hashiCorpVault.baseSecretPath': string
   'connectors.hashiCorpVault.default': string
   'connectors.hashiCorpVault.defaultVault': string
@@ -1735,6 +1747,8 @@ export interface StringsMap {
   'connectors.hashiCorpVault.saveInProgress': string
   'connectors.hashiCorpVault.secretEngine': string
   'connectors.hashiCorpVault.secretId': string
+  'connectors.hashiCorpVault.serverIdHeader': string
+  'connectors.hashiCorpVault.serverIdHeaderRequired': string
   'connectors.hashiCorpVault.setupEngine': string
   'connectors.hashiCorpVault.sinkPath': string
   'connectors.hashiCorpVault.sinkPathIsRequired': string
@@ -2217,6 +2231,7 @@ export interface StringsMap {
   'pipeline.artifactsSelection.existingDocker.imageNamePlaceholder': string
   'pipeline.artifactsSelection.existingDocker.sidecarId': string
   'pipeline.artifactsSelection.existingDocker.sidecarIdPlaceholder': string
+  'pipeline.artifactsSelection.loadingTags': string
   'pipeline.artifactsSelection.repositoryPlaceholder': string
   'pipeline.artifactsSelection.repositoryPort': string
   'pipeline.artifactsSelection.repositoryPortPlaceholder': string
@@ -2613,6 +2628,7 @@ export interface StringsMap {
   'pipeline.nodes': string
   'pipeline.nodesLabel': string
   'pipeline.onlyPositiveInteger': string
+  'pipeline.openTemplateInNewTabLabel': string
   'pipeline.operatorPlaceholder': string
   'pipeline.outOf': string
   'pipeline.overrideSets.configure': string
@@ -2641,6 +2657,7 @@ export interface StringsMap {
   'pipeline.policyEvaluations.policySetsApplied': string
   'pipeline.policyEvaluations.title': string
   'pipeline.poweredByHarness': string
+  'pipeline.previewTemplateLabel': string
   'pipeline.progressPercentage': string
   'pipeline.provisionerSteps': string
   'pipeline.recentExecutionText': string
@@ -2936,6 +2953,7 @@ export interface StringsMap {
   'pipeline.triggers.schedulePanel.yearlyTabTitle': string
   'pipeline.triggers.scheduledLabel': string
   'pipeline.triggers.showAllTriggers': string
+  'pipeline.triggers.toast.existingTriggerError': string
   'pipeline.triggers.toast.successfulCreate': string
   'pipeline.triggers.toast.successfulUpdate': string
   'pipeline.triggers.toast.toggleEnable': string
@@ -3076,6 +3094,12 @@ export interface StringsMap {
   'cd.argoAdapterURL': string
   'cd.backEndConfig': string
   'cd.cdLaunchText': string
+  'cd.cdSwitchToFirstGen.description1': string
+  'cd.cdSwitchToFirstGen.description2': string
+  'cd.cdSwitchToFirstGen.description3': string
+  'cd.cdSwitchToFirstGen.description4': string
+  'cd.cdSwitchToFirstGen.learnMoreAboutCD1stGen': string
+  'cd.cdSwitchToFirstGen.startWith14DayTrial': string
   'cd.cdTrialHomePage.startTrial.description': string
   'cd.cdTrialHomePage.startTrial.startBtn.description': string
   'cd.chooseProvisionerText': string
@@ -4387,13 +4411,14 @@ export interface StringsMap {
   'ci.next': string
   'ci.noData': string
   'ci.optimize': string
+  'ci.postCommandLabel': string
   'ci.prSymbol': string
   'ci.prTitle': string
+  'ci.preCommandLabel': string
   'ci.previous': string
   'ci.privileged': string
   'ci.remoteCacheImage.dockerInfo': string
   'ci.remoteCacheImage.label': string
-  'ci.remoteCacheImage.placeholder': string
   'ci.remoteCacheRepository.label': string
   'ci.runTestsMavenSetupSample': string
   'ci.runTestsMavenSetupText1': string
@@ -4544,6 +4569,7 @@ export interface StringsMap {
   'cv.evaluationPeriod': string
   'cv.failures': string
   'cv.filter': string
+  'cv.forConfigurationYouWillNeedAtLeastOneMonitoredServiceWithAHealthSourceAndAMetric': string
   'cv.friday': string
   'cv.getRiskAssessment': string
   'cv.good': string
@@ -4602,6 +4628,7 @@ export interface StringsMap {
   'cv.healthSource.featurePlaceholder': string
   'cv.healthSource.nameLabel': string
   'cv.healthSource.namePlaceholder': string
+  'cv.healthSource.newHealthSource': string
   'cv.healthSource.noData': string
   'cv.healthSource.noDataPresentHealthSource': string
   'cv.healthSource.selectHealthSource': string
@@ -4829,6 +4856,7 @@ export interface StringsMap {
   'cv.monitoringSources.metricPackValidation': string
   'cv.monitoringSources.metricValidation': string
   'cv.monitoringSources.nameYourMonitoringSource': string
+  'cv.monitoringSources.newRelic.defaultNewRelicMetricName': string
   'cv.monitoringSources.newRelic.mapNewRelicAppsToServicesAndEnvs': string
   'cv.monitoringSources.newRelic.mappingServiceAndEnvSubheading': string
   'cv.monitoringSources.newRelic.newRelicAppColumn': string
@@ -4896,6 +4924,7 @@ export interface StringsMap {
   'cv.navLinks.activities': string
   'cv.navLinks.adminSideNavLinks.activitySources': string
   'cv.navLinks.adminSideNavLinks.monitoringSources': string
+  'cv.newMetric': string
   'cv.noAnalysis': string
   'cv.noAnomalies': string
   'cv.noPreviousErrorBudgetResetHistoryAvailable': string
@@ -4962,6 +4991,8 @@ export interface StringsMap {
   'cv.quarterly': string
   'cv.queries': string
   'cv.query': string
+  'cv.queryTypeHost': string
+  'cv.queryTypeService': string
   'cv.reasonIsRequired': string
   'cv.remainingErrorBudget': string
   'cv.request': string
@@ -7813,10 +7844,6 @@ export interface StringsMap {
   /**
    * @deprecated migrate this string to module level file
    */
-  postCommandLabel: string
-  /**
-   * @deprecated migrate this string to module level file
-   */
   'pre-flight-check.connectorLocationInPipeline': string
   /**
    * @deprecated migrate this string to module level file
@@ -7878,10 +7905,6 @@ export interface StringsMap {
    * @deprecated migrate this string to module level file
    */
   'pre-flight-check.verifyingPipelineInputs': string
-  /**
-   * @deprecated migrate this string to module level file
-   */
-  preCommandLabel: string
   /**
    * @deprecated migrate this string to module level file
    */

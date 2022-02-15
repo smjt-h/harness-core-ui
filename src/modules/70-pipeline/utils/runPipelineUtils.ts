@@ -111,6 +111,17 @@ export const getFormattedErrors = (apiErrorMap?: { [key: string]: InputSetErrorR
   return toReturn
 }
 
+export const getOverlayErrors = (invalidReferences: Record<string, string>): Record<string, any> => {
+  const toReturn: Record<string, any> = {}
+  if (invalidReferences) {
+    Object.keys(invalidReferences).forEach(invalidReferenceKey => {
+      toReturn[invalidReferenceKey] = `${invalidReferenceKey}: ${invalidReferences[invalidReferenceKey]}`
+    })
+  }
+
+  return toReturn
+}
+
 export const getMergedVariables = (
   variables: AllNGVariables[],
   inputSetVariables: AllNGVariables[]

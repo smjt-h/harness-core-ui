@@ -74,7 +74,7 @@ const StepTemplateForm = (_props: unknown, formikRef: TemplateFormRef): JSX.Elem
           isStepGroup={false}
           stepViewType={StepViewType.Template}
           ref={stepFormikRef}
-          allowableTypes={[MultiTypeInputType.FIXED, MultiTypeInputType.RUNTIME]}
+          allowableTypes={[MultiTypeInputType.FIXED, MultiTypeInputType.RUNTIME, MultiTypeInputType.EXPRESSION]}
         />
       )}
     </Container>

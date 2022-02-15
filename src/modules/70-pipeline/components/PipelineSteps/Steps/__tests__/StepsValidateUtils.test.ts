@@ -23,7 +23,7 @@ const strings = {
   validation: {
     validStepIdRegex: 'Identifier can only contain alphanumerics and _',
     validStepNameRegex: 'Step Name can only contain alphanumerics, spaces, _ and -',
-    validKeyRegex: 'Keys can only contain alphanumerics and _',
+    validKeyRegex: 'Keys can only contain alphanumerics and _ with an optional dot(.) in the middle',
     validOutputVariableRegex: 'Output variables can only contain alphanumerics and _',
     illegalIdentifier:
       'Identifier must not be one of the following values: or, and, eq, ne, lt, gt, le, ge, div, mod, not, null, true, false, new, var, return',

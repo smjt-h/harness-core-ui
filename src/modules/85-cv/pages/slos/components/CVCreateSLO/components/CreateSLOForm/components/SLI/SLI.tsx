@@ -6,7 +6,7 @@
  */
 
 import React, { useEffect, useMemo } from 'react'
-import { useParams } from 'react-router-dom'
+import { useParams, useHistory } from 'react-router-dom'
 import {
   Heading,
   FontVariation,
@@ -15,13 +15,22 @@ import {
   useToaster,
   SelectOption,
   Layout,
-  Container
+  Container,
+  Text,
+  Color,
+  ButtonVariation
 } from '@wings-software/uicore'
 import type { RadioButtonProps } from '@wings-software/uicore/dist/components/RadioButton/RadioButton'
 import { useStrings } from 'framework/strings'
 import { useGetAllMonitoredServicesWithTimeSeriesHealthSources } from 'services/cv'
+import { useQueryParams } from '@common/hooks'
 import type { ProjectPathProps } from '@common/interfaces/RouteInterfaces'
-import { getErrorMessage } from '@cv/utils/CommonUtils'
+import routes from '@common/RouteDefinitions'
+import { PermissionIdentifier } from '@rbac/interfaces/PermissionIdentifier'
+import { ResourceType } from '@rbac/interfaces/ResourceType'
+import RbacButton from '@rbac/components/Button/Button'
+import { getCVMonitoringServicesSearchParam, getErrorMessage } from '@cv/utils/CommonUtils'
+import { MonitoredServiceEnum } from '@cv/pages/monitored-service/MonitoredServicePage.constants'
 import { defaultOption } from '@cv/pages/slos/components/CVCreateSLO/CVCreateSLO.constants'
 import { SLIProps, SLOFormFields, SLITypes } from '@cv/pages/slos/components/CVCreateSLO/CVCreateSLO.types'
 import {
@@ -34,9 +43,14 @@ import PickMetric from './views/PickMetric'
 import css from '@cv/pages/slos/components/CVCreateSLO/CVCreateSLO.module.scss'
 
 const SLI: React.FC<SLIProps> = ({ children, formikProps, ...rest }) => {
+  const FLEX_START = 'flex-start'
   const { getString } = useStrings()
   const { showError } = useToaster()
-  const { accountId, orgIdentifier, projectIdentifier } = useParams<ProjectPathProps>()
+  const history = useHistory()
+  const { accountId, orgIdentifier, projectIdentifier, identifier } = useParams<
+    ProjectPathProps & { identifier: string }
+  >()
+  const { monitoredServiceIdentifier } = useQueryParams<{ monitoredServiceIdentifier?: string }>()
   const { values } = formikProps
 
   const {
@@ -99,41 +113,106 @@ const SLI: React.FC<SLIProps> = ({ children, formikProps, ...rest }) => {
 
   return (
     <>
-      <Heading level={2} font={{ variation: FontVariation.FORM_TITLE }} margin={{ bottom: 'xsmall' }}>
+      <Heading level={2} font={{ variation: FontVariation.FORM_TITLE }}>
         {getString('cv.slos.configureSLIQueries')}
       </Heading>
+      <Text font={{ variation: FontVariation.BODY }} color={Color.GREY_400} margin={{ bottom: 'small' }}>
+        {getString('cv.forConfigurationYouWillNeedAtLeastOneMonitoredServiceWithAHealthSourceAndAMetric')}
+      </Text>
       <Card className={css.cardSli}>
-        <Layout.Horizontal flex={{ justifyContent: 'flex-start', alignItems: 'flex-start' }}>
+        <Layout.Horizontal flex={{ justifyContent: FLEX_START, alignItems: FLEX_START }}>
           <Container width="50%" border={{ right: true }}>
-            <Layout.Vertical width={350}>
-              <FormInput.Select
-                name={SLOFormFields.MONITORED_SERVICE_REF}
-                label={getString('connectors.cdng.monitoredService.label')}
-                placeholder={
-                  monitoredServicesLoading ? getString('loading') : getString('cv.slos.selectMonitoredService')
-                }
-                items={monitoredServicesOptions}
-                className={css.selectPrimary}
-                onChange={() => {
-                  formikProps.setFieldValue(SLOFormFields.HEALTH_SOURCE_REF, undefined)
-                  formikProps.setFieldValue(SLOFormFields.VALID_REQUEST_METRIC, undefined)
-                  formikProps.setFieldValue(SLOFormFields.GOOD_REQUEST_METRIC, undefined)
-                }}
-              />
-              <FormInput.Select
-                name={SLOFormFields.HEALTH_SOURCE_REF}
-                label={getString('cv.slos.healthSourceForSLI')}
-                placeholder={monitoredServicesLoading ? getString('loading') : getString('cv.slos.selectHealthsource')}
-                items={healthSourcesOptions}
-                className={css.selectPrimary}
-                disabled={!values.monitoredServiceRef}
-                value={activeHealthSource}
-                onChange={healthSource => {
-                  formikProps.setFieldValue(SLOFormFields.HEALTH_SOURCE_REF, healthSource.value)
-                  formikProps.setFieldValue(SLOFormFields.VALID_REQUEST_METRIC, undefined)
-                  formikProps.setFieldValue(SLOFormFields.GOOD_REQUEST_METRIC, undefined)
-                }}
-              />
+            <Layout.Vertical width="80%">
+              <Layout.Horizontal flex={{ justifyContent: FLEX_START }}>
+                <FormInput.Select
+                  name={SLOFormFields.MONITORED_SERVICE_REF}
+                  label={getString('connectors.cdng.monitoredService.label')}
+                  placeholder={
+                    monitoredServicesLoading ? getString('loading') : getString('cv.slos.selectMonitoredService')
+                  }
+                  items={monitoredServicesOptions}
+                  className={css.selectPrimary}
+                  onChange={() => {
+                    formikProps.setFieldValue(SLOFormFields.HEALTH_SOURCE_REF, undefined)
+                    formikProps.setFieldValue(SLOFormFields.VALID_REQUEST_METRIC, undefined)
+                    formikProps.setFieldValue(SLOFormFields.GOOD_REQUEST_METRIC, undefined)
+                  }}
+                />
+                <RbacButton
+                  icon="plus"
+                  text={getString('cv.monitoredServices.newMonitoredServices')}
+                  variation={ButtonVariation.LINK}
+                  onClick={() => {
+                    history.push({
+                      pathname: routes.toCVAddMonitoringServicesSetup({
+                        accountId,
+                        orgIdentifier,
+                        projectIdentifier
+                      }),
+                      search: getCVMonitoringServicesSearchParam({
+                        redirectToSLO: true,
+                        sloIdentifier: identifier,
+                        monitoredServiceIdentifier
+                      })
+                    })
+                  }}
+                  permission={{
+                    permission: PermissionIdentifier.EDIT_MONITORED_SERVICE,
+                    resource: {
+                      resourceType: ResourceType.MONITOREDSERVICE,
+                      resourceIdentifier: projectIdentifier
+                    }
+                  }}
+                />
+              </Layout.Horizontal>
+              <Layout.Horizontal flex={{ justifyContent: FLEX_START }}>
+                <FormInput.Select
+                  name={SLOFormFields.HEALTH_SOURCE_REF}
+                  label={getString('cv.slos.healthSourceForSLI')}
+                  placeholder={
+                    monitoredServicesLoading ? getString('loading') : getString('cv.slos.selectHealthsource')
+                  }
+                  items={healthSourcesOptions}
+                  className={css.selectPrimary}
+                  disabled={!values.monitoredServiceRef}
+                  value={activeHealthSource}
+                  onChange={healthSource => {
+                    formikProps.setFieldValue(SLOFormFields.HEALTH_SOURCE_REF, healthSource.value)
+                    formikProps.setFieldValue(SLOFormFields.VALID_REQUEST_METRIC, undefined)
+                    formikProps.setFieldValue(SLOFormFields.GOOD_REQUEST_METRIC, undefined)
+                  }}
+                />
+                <RbacButton
+                  icon="plus"
+                  text={getString('cv.healthSource.newHealthSource')}
+                  variation={ButtonVariation.LINK}
+                  disabled={!values.monitoredServiceRef}
+                  onClick={() => {
+                    history.push({
+                      pathname: routes.toCVAddMonitoringServicesEdit({
+                        accountId,
+                        orgIdentifier,
+                        projectIdentifier,
+                        identifier: values.monitoredServiceRef,
+                        module: 'cv'
+                      }),
+                      search: getCVMonitoringServicesSearchParam({
+                        tab: MonitoredServiceEnum.Configurations,
+                        redirectToSLO: true,
+                        sloIdentifier: identifier,
+                        monitoredServiceIdentifier
+                      })
+                    })
+                  }}
+                  permission={{
+                    permission: PermissionIdentifier.EDIT_MONITORED_SERVICE,
+                    resource: {
+                      resourceType: ResourceType.MONITOREDSERVICE,
+                      resourceIdentifier: projectIdentifier
+                    }
+                  }}
+                />
+              </Layout.Horizontal>
             </Layout.Vertical>
             <Layout.Vertical width="80%">
               <Heading

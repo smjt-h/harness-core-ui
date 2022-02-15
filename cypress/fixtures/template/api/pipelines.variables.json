@@ -1,0 +1,121 @@
+{"status":"SUCCESS","data":{"yaml":"---\npipeline:\n  name: \"f5unh-3KTmS-hAS0BjmFIg\"\n  identifier: \"testing_stuff\"\n  allowStageExecutions: \"vsgSK7MISeS8Ghmft539WQ\"\n  projectIdentifier: \"GNrZSBsvRoul22LTPnAmLg\"\n  orgIdentifier: \"fBYLvNKGTV-hk9amsK7UzQ\"\n  tags:\n    __uuid: \"ca23Q-hUQXaUsD420QpT5Q\"\n  stages:\n  - stage:\n      name: \"5aPS2eyLRQqhV0BZW1vHww\"\n      identifier: \"test\"\n      description: \"tmZQi5gSQa62SUQLq8ktLQ\"\n      type: \"FeatureFlag\"\n      spec:\n        execution:\n          steps:\n          - step:\n              type: \"FlagConfiguration\"\n              name: \"zIeYdihXTVy7C_wgdbUU4A\"\n              identifier: \"test\"\n              spec:\n                feature: \"VBkaH21KTH-T02KpFPYpxg\"\n                environment: \"5EDfhkkuQOyoVO1H_Gr4NQ\"\n                instructions:\n                - identifier: \"SetFeatureFlagStateIdentifier\"\n                  type: \"SetFeatureFlagState\"\n                  spec:\n                    state: \"lFZGouJQSPSo0oBYgM3Beg\"\n                    __uuid: \"5L83X-afRoWKorOqKGc9_A\"\n                  __uuid: \"DsVYirYKRS2Rh1VBtQWfZA\"\n                __uuid: \"U-9AFXhHRrK5smURWhW5sg\"\n              timeout: \"BaMRMoPVSPelRMlKxLo3Lw\"\n              __uuid: \"2fjhmZi8QvOxmbF4TdgGdw\"\n            __uuid: \"sYmHnhTuQdSpuoYiCBSnHw\"\n          __uuid: \"F_FddwdoQC2hsdSTmt119g\"\n        __uuid: \"CdzfJl0-TqiQR_EnNs6vXQ\"\n      __uuid: \"Unt-4bERTWKLqHcjal2OjA\"\n    __uuid: \"4YAibL51TZaWE_qJeqWpQQ\"\n  - stage:\n      name: \"QM6sL64YQU6pOVR8bImB1A\"\n      identifier: \"cypress_stage\"\n      type: \"Deployment\"\n      spec:\n        serviceConfig:\n          serviceRef: \"vicGYFxqSdqL1Fe9H8OrfQ\"\n          serviceDefinition:\n            type: \"Kubernetes\"\n            spec:\n              variables: []\n              manifests:\n              - manifest:\n                  identifier: \"manifest\"\n                  type: \"K8sManifest\"\n                  spec:\n                    store:\n                      type: \"Git\"\n                      spec:\n                        connectorRef: \"zoBPdFtyQtOX40GRaprdQw\"\n                        gitFetchType: \"QH1T2oNGSkaEvd6zOJAaHg\"\n                        paths: \"RSDnvbmnSbmbFk3LYXcCIg\"\n                        repoName: \"VoeTdzfXRlKUWQDX5X0pBw\"\n                        branch: \"zaSYxuZTSwG-VK7cxIfCsQ\"\n                        __uuid: \"JAYWIUF2SP61P5uvb5FlMA\"\n                      __uuid: \"T21QQq_7QpqZfQURSYNbaw\"\n                    skipResourceVersioning: \"dEdHGJSWRsGJlN1hNiMdZQ\"\n                    __uuid: \"JUYHCjeERkaiujsB4Kl8tA\"\n                  __uuid: \"44QGIPuXSBi3bJNNVzmVnQ\"\n                __uuid: \"ktl5kzI-SoGTp2hQ7XO1jg\"\n              __uuid: \"BTOgnm1SSVqbT_Nz09ui2g\"\n            __uuid: \"UevXq1gnRHCQOcmKZ5M-ug\"\n          __uuid: \"btyYp9qeQTCt-Z6SaYex0w\"\n        infrastructure:\n          environmentRef: \"d401C3zJQ3GQVQAUQd_Wtw\"\n          infrastructureDefinition:\n            type: \"KubernetesDirect\"\n            spec:\n              connectorRef: \"PQDQaJDsT6WkRxqcJrDUVw\"\n              namespace: \"47DOHYdzSja5VWt4PmYAkg\"\n              releaseName: \"nvlfs5ubTWuUiXouqhsNGg\"\n              __uuid: \"v-ntDjMOTImdG2jVQQeLBQ\"\n            __uuid: \"DyAwO_KoTtuGruc1-N6sYw\"\n          allowSimultaneousDeployments: \"0sfNfwyMSNuPXBY6bTia5Q\"\n          __uuid: \"jt_sYPc0R8O1IqK8o1ST5A\"\n        execution:\n          steps:\n          - step:\n              identifier: \"Step_1\"\n              type: \"ShellScript\"\n              name: \"rvAc_tctSJuofRPe_8y-LQ\"\n              spec:\n                shell: \"uJqKbtgFSMqPtng-VzJ-Iw\"\n                onDelegate: \"VU_T6vYVTzSNFWrIdzEHlw\"\n                source:\n                  type: \"Inline\"\n                  spec:\n                    script: \"jKD8tMywRQGjosX1gQbP9g\"\n                    __uuid: \"oQAWSqSHRMGxGpGOrt4YKw\"\n                  __uuid: \"lDRfdgbDR76r2UJ5-tTm9w\"\n                environmentVariables: []\n                outputVariables: []\n                executionTarget:\n                  __uuid: \"TwFpDcs0T1yRw8ct3vbmIQ\"\n                __uuid: \"d40RG45vT3q9uSAIDTBcPA\"\n              timeout: \"qiBXdtokRYqlTBaT4Nd94w\"\n              __uuid: \"Esf18PK4QF2FWrjYuqTKPQ\"\n            __uuid: \"eQNAarOhQAycfYM14GtmSA\"\n          - stepGroup:\n              identifier: \"Step_Group_1\"\n              name: \"FNEjwRkvSi29GWAdG2DjGQ\"\n              steps:\n              - step:\n                  identifier: \"Grouped_Step_1\"\n                  type: \"ShellScript\"\n                  name: \"pBbGkatcTDKRcl052m-wnQ\"\n                  spec:\n                    shell: \"L-j4Ie78SYqvrSgv-KgRUg\"\n                    onDelegate: \"mAxDg0RNTJGsK5UT18-xaw\"\n                    source:\n                      type: \"Inline\"\n                      spec:\n                        script: \"qubS0nDPS5a-p3BWFO7MYw\"\n                        __uuid: \"xvN94A8EQj-G9Xi33z72RA\"\n                      __uuid: \"pKbdWxLwTyyjSz5y2x6yfw\"\n                    environmentVariables: []\n                    outputVariables: []\n                    executionTarget:\n                      __uuid: \"-vP_ZO6ITtO4OZTU7JMBGw\"\n                    __uuid: \"zdgdzhM-RFSC9NZTjZqkkw\"\n                  timeout: \"X0B2mwcJTROsUGY5E6Vp7Q\"\n                  __uuid: \"aBFt1VhHTmWsHHStHvrmxA\"\n                __uuid: \"nri2DJFiQySgANZouNyrYQ\"\n              - step:\n                  identifier: \"Grouped_Step_2\"\n                  type: \"ShellScript\"\n                  name: \"j0OKSGWLSGKXg8F1E30SQw\"\n                  spec:\n                    shell: \"hcUw-5qKQjmJy6bdPvwcQw\"\n                    onDelegate: \"8Jag_63aSFCO-GqkG0dafw\"\n                    source:\n                      type: \"Inline\"\n                      spec:\n                        script: \"72hXNPk-R0KMDyi7Y2NNCg\"\n                        __uuid: \"M68cTGsmS7GDdwW3NFYkkg\"\n                      __uuid: \"hGAjS-veS0SioKpDc8Om2w\"\n                    environmentVariables: []\n                    outputVariables: []\n                    executionTarget:\n                      __uuid: \"-JmNcRRUT32dZp3IbcFjKQ\"\n                    __uuid: \"wiBZZzw0QCe2m7Tt9HJV2w\"\n                  timeout: \"QGB4R6eDS6GGLfwUfogKMQ\"\n                  __uuid: \"51-Wf-pASg27j3E-0i_1OA\"\n                __uuid: \"c8ngv_evTQ6oJCMyUPmCwg\"\n              __uuid: \"ZEOpZm0wSda72uRkpJ5oOg\"\n            __uuid: \"x6tzIWZSS7uoRy2axqEYzA\"\n          rollbackSteps:\n          - step:\n              identifier: \"rollbackRolloutDeployment\"\n              type: \"K8sRollingRollback\"\n              name: \"bd4CbjAsSmaQeFYOZFrmmA\"\n              timeout: \"0eq-sJLORnKLFie5r_PaEQ\"\n              spec:\n                __uuid: \"AFzO-_1zS6qSS6iF-RP6VQ\"\n              __uuid: \"HUi8SRSiTc69FrDmaJicEA\"\n            __uuid: \"Tk3lEGfYQ5qMdJ6SIVaDvA\"\n          __uuid: \"KgcYu61iQG60SSJK3BYEGA\"\n        serviceDependencies: []\n        __uuid: \"aEbm0EQMSo-jS783z7KcAQ\"\n      failureStrategies:\n      - onFailure:\n          errors: \"EJJCzh3UTB-iNyRYmtWh0A\"\n          action:\n            type: \"StageRollback\"\n            __uuid: \"iQJYvNODQMuC3pJmS7SLAw\"\n          __uuid: \"wFi6TkK1QruRSwizKhJ_hw\"\n        __uuid: \"AkT9d-H1R0y-wgiPpB8xGg\"\n      __uuid: \"SGeGL23aSxCJ4cQhMxZQJw\"\n    __uuid: \"7TH3jTs9TgidD_nC0kupQQ\"\n  __uuid: \"f_dBPsh9Syymr7RsqqJ0cQ\"\n__uuid: \"OqjpSAozTfGKo_BthfugIA\"\n","metadataMap":{"f5unh-3KTmS-hAS0BjmFIg":{"yamlProperties":{
+  "fqn": "pipeline.name",
+  "localName": "pipeline.name"
+},"yamlOutputProperties":null},"f_dBPsh9Syymr7RsqqJ0cQ":{"yamlProperties":{
+  "fqn": "pipeline",
+  "localName": "pipeline"
+},"yamlOutputProperties":null},"VoeTdzfXRlKUWQDX5X0pBw":{"yamlProperties":{
+  "fqn": "pipeline.stages.cypress_stage.spec.serviceConfig.serviceDefinition.spec.manifests.manifest.spec.store.spec.repoName",
+  "localName": "serviceConfig.serviceDefinition.spec.manifests.manifest.spec.store.spec.repoName"
+},"yamlOutputProperties":null},"d401C3zJQ3GQVQAUQd_Wtw":{"yamlProperties":{
+  "fqn": "pipeline.stages.cypress_stage.spec.infrastructure.environmentRef",
+  "localName": "infrastructure.environmentRef"
+},"yamlOutputProperties":null},"RSDnvbmnSbmbFk3LYXcCIg":{"yamlProperties":{
+  "fqn": "pipeline.stages.cypress_stage.spec.serviceConfig.serviceDefinition.spec.manifests.manifest.spec.store.spec.paths",
+  "localName": "serviceConfig.serviceDefinition.spec.manifests.manifest.spec.store.spec.paths"
+},"yamlOutputProperties":null},"jt_sYPc0R8O1IqK8o1ST5A":{"yamlProperties":{
+  "fqn": "infrastructure",
+  "localName": ""
+},"yamlOutputProperties":null},"HUi8SRSiTc69FrDmaJicEA":{"yamlProperties":{
+  "fqn": "pipeline.stages.cypress_stage.spec.execution.rollbackSteps.rollbackRolloutDeployment",
+  "localName": "step"
+},"yamlOutputProperties":null},"vicGYFxqSdqL1Fe9H8OrfQ":{"yamlProperties":{
+  "fqn": "pipeline.stages.cypress_stage.spec.serviceConfig.serviceRef",
+  "localName": "serviceConfig.serviceRef"
+},"yamlOutputProperties":null},"QM6sL64YQU6pOVR8bImB1A":{"yamlProperties":{
+  "fqn": "pipeline.stages.cypress_stage.name",
+  "localName": "stage.name"
+},"yamlOutputProperties":null},"0eq-sJLORnKLFie5r_PaEQ":{"yamlProperties":{
+  "fqn": "pipeline.stages.cypress_stage.spec.execution.rollbackSteps.rollbackRolloutDeployment.timeout",
+  "localName": "execution.rollbackSteps.rollbackRolloutDeployment.timeout"
+},"yamlOutputProperties":null},"btyYp9qeQTCt-Z6SaYex0w":{"yamlProperties":{
+  "fqn": "serviceConfig",
+  "localName": ""
+},"yamlOutputProperties":null},"QH1T2oNGSkaEvd6zOJAaHg":{"yamlProperties":{
+  "fqn": "pipeline.stages.cypress_stage.spec.serviceConfig.serviceDefinition.spec.manifests.manifest.spec.store.spec.gitFetchType",
+  "localName": "serviceConfig.serviceDefinition.spec.manifests.manifest.spec.store.spec.gitFetchType"
+},"yamlOutputProperties":null},"zaSYxuZTSwG-VK7cxIfCsQ":{"yamlProperties":{
+  "fqn": "pipeline.stages.cypress_stage.spec.serviceConfig.serviceDefinition.spec.manifests.manifest.spec.store.spec.branch",
+  "localName": "serviceConfig.serviceDefinition.spec.manifests.manifest.spec.store.spec.branch"
+},"yamlOutputProperties":null},"zoBPdFtyQtOX40GRaprdQw":{"yamlProperties":{
+  "fqn": "pipeline.stages.cypress_stage.spec.serviceConfig.serviceDefinition.spec.manifests.manifest.spec.store.spec.connectorRef",
+  "localName": "serviceConfig.serviceDefinition.spec.manifests.manifest.spec.store.spec.connectorRef"
+},"yamlOutputProperties":null},"47DOHYdzSja5VWt4PmYAkg":{"yamlProperties":{
+  "fqn": "pipeline.stages.cypress_stage.spec.infrastructure.infrastructureDefinition.spec.namespace",
+  "localName": "infrastructure.infrastructureDefinition.spec.namespace"
+},"yamlOutputProperties":null},"PQDQaJDsT6WkRxqcJrDUVw":{"yamlProperties":{
+  "fqn": "pipeline.stages.cypress_stage.spec.infrastructure.infrastructureDefinition.spec.connectorRef",
+  "localName": "infrastructure.infrastructureDefinition.spec.connectorRef"
+},"yamlOutputProperties":null},"nvlfs5ubTWuUiXouqhsNGg":{"yamlProperties":{
+  "fqn": "pipeline.stages.cypress_stage.spec.infrastructure.infrastructureDefinition.spec.releaseName",
+  "localName": "infrastructure.infrastructureDefinition.spec.releaseName"
+},"yamlOutputProperties":null},"dEdHGJSWRsGJlN1hNiMdZQ":{"yamlProperties":{
+  "fqn": "pipeline.stages.cypress_stage.spec.serviceConfig.serviceDefinition.spec.manifests.manifest.spec.skipResourceVersioning",
+  "localName": "serviceConfig.serviceDefinition.spec.manifests.manifest.spec.skipResourceVersioning"
+},"yamlOutputProperties":null},"SGeGL23aSxCJ4cQhMxZQJw":{"yamlProperties":{
+  "fqn": "pipeline.stages.cypress_stage",
+  "localName": "stage"
+},"yamlOutputProperties":null},"bd4CbjAsSmaQeFYOZFrmmA":{"yamlProperties":{
+  "fqn": "pipeline.stages.cypress_stage.spec.execution.rollbackSteps.rollbackRolloutDeployment.name",
+  "localName": "execution.rollbackSteps.rollbackRolloutDeployment.name"
+},"yamlOutputProperties":null},"aBFt1VhHTmWsHHStHvrmxA":{"yamlProperties":{
+  "fqn": "pipeline.stages.cypress_stage.spec.execution.steps.Step_Group_1.steps.Grouped_Step_1",
+  "localName": "step"
+},"yamlOutputProperties":null},"X0B2mwcJTROsUGY5E6Vp7Q":{"yamlProperties":{
+  "fqn": "pipeline.stages.cypress_stage.spec.execution.steps.Step_Group_1.steps.Grouped_Step_1.timeout",
+  "localName": "execution.steps.Step_Group_1.steps.Grouped_Step_1.timeout"
+},"yamlOutputProperties":null},"j0OKSGWLSGKXg8F1E30SQw":{"yamlProperties":{
+  "fqn": "pipeline.stages.cypress_stage.spec.execution.steps.Step_Group_1.steps.Grouped_Step_2.name",
+  "localName": "execution.steps.Step_Group_1.steps.Grouped_Step_2.name"
+},"yamlOutputProperties":null},"qiBXdtokRYqlTBaT4Nd94w":{"yamlProperties":{
+  "fqn": "pipeline.stages.cypress_stage.spec.execution.steps.Step_1.timeout",
+  "localName": "execution.steps.Step_1.timeout"
+},"yamlOutputProperties":null},"ZEOpZm0wSda72uRkpJ5oOg":{"yamlProperties":{
+  "fqn": "pipeline.stages.cypress_stage.spec.execution.steps.Step_Group_1",
+  "localName": "stepGroup"
+},"yamlOutputProperties":null},"pBbGkatcTDKRcl052m-wnQ":{"yamlProperties":{
+  "fqn": "pipeline.stages.cypress_stage.spec.execution.steps.Step_Group_1.steps.Grouped_Step_1.name",
+  "localName": "execution.steps.Step_Group_1.steps.Grouped_Step_1.name"
+},"yamlOutputProperties":null},"qubS0nDPS5a-p3BWFO7MYw":{"yamlProperties":{
+  "fqn": "pipeline.stages.cypress_stage.spec.execution.steps.Step_Group_1.steps.Grouped_Step_1.spec.source.spec.script",
+  "localName": "execution.steps.Step_Group_1.steps.Grouped_Step_1.spec.source.spec.script"
+},"yamlOutputProperties":null},"mAxDg0RNTJGsK5UT18-xaw":{"yamlProperties":{
+  "fqn": "pipeline.stages.cypress_stage.spec.execution.steps.Step_Group_1.steps.Grouped_Step_1.spec.onDelegate",
+  "localName": "execution.steps.Step_Group_1.steps.Grouped_Step_1.spec.onDelegate"
+},"yamlOutputProperties":null},"QGB4R6eDS6GGLfwUfogKMQ":{"yamlProperties":{
+  "fqn": "pipeline.stages.cypress_stage.spec.execution.steps.Step_Group_1.steps.Grouped_Step_2.timeout",
+  "localName": "execution.steps.Step_Group_1.steps.Grouped_Step_2.timeout"
+},"yamlOutputProperties":null},"8Jag_63aSFCO-GqkG0dafw":{"yamlProperties":{
+  "fqn": "pipeline.stages.cypress_stage.spec.execution.steps.Step_Group_1.steps.Grouped_Step_2.spec.onDelegate",
+  "localName": "execution.steps.Step_Group_1.steps.Grouped_Step_2.spec.onDelegate"
+},"yamlOutputProperties":null},"FNEjwRkvSi29GWAdG2DjGQ":{"yamlProperties":{
+  "fqn": "pipeline.stages.cypress_stage.spec.execution.steps.Step_Group_1.name",
+  "localName": "stepGroup.Step_Group_1.name"
+},"yamlOutputProperties":null},"jKD8tMywRQGjosX1gQbP9g":{"yamlProperties":{
+  "fqn": "pipeline.stages.cypress_stage.spec.execution.steps.Step_1.spec.source.spec.script",
+  "localName": "execution.steps.Step_1.spec.source.spec.script"
+},"yamlOutputProperties":null},"72hXNPk-R0KMDyi7Y2NNCg":{"yamlProperties":{
+  "fqn": "pipeline.stages.cypress_stage.spec.execution.steps.Step_Group_1.steps.Grouped_Step_2.spec.source.spec.script",
+  "localName": "execution.steps.Step_Group_1.steps.Grouped_Step_2.spec.source.spec.script"
+},"yamlOutputProperties":null},"uJqKbtgFSMqPtng-VzJ-Iw":{"yamlProperties":{
+  "fqn": "pipeline.stages.cypress_stage.spec.execution.steps.Step_1.spec.shell",
+  "localName": "execution.steps.Step_1.spec.shell"
+},"yamlOutputProperties":null},"L-j4Ie78SYqvrSgv-KgRUg":{"yamlProperties":{
+  "fqn": "pipeline.stages.cypress_stage.spec.execution.steps.Step_Group_1.steps.Grouped_Step_1.spec.shell",
+  "localName": "execution.steps.Step_Group_1.steps.Grouped_Step_1.spec.shell"
+},"yamlOutputProperties":null},"VU_T6vYVTzSNFWrIdzEHlw":{"yamlProperties":{
+  "fqn": "pipeline.stages.cypress_stage.spec.execution.steps.Step_1.spec.onDelegate",
+  "localName": "execution.steps.Step_1.spec.onDelegate"
+},"yamlOutputProperties":null},"rvAc_tctSJuofRPe_8y-LQ":{"yamlProperties":{
+  "fqn": "pipeline.stages.cypress_stage.spec.execution.steps.Step_1.name",
+  "localName": "execution.steps.Step_1.name"
+},"yamlOutputProperties":null},"hcUw-5qKQjmJy6bdPvwcQw":{"yamlProperties":{
+  "fqn": "pipeline.stages.cypress_stage.spec.execution.steps.Step_Group_1.steps.Grouped_Step_2.spec.shell",
+  "localName": "execution.steps.Step_Group_1.steps.Grouped_Step_2.spec.shell"
+},"yamlOutputProperties":null},"51-Wf-pASg27j3E-0i_1OA":{"yamlProperties":{
+  "fqn": "pipeline.stages.cypress_stage.spec.execution.steps.Step_Group_1.steps.Grouped_Step_2",
+  "localName": "step"
+},"yamlOutputProperties":null},"Esf18PK4QF2FWrjYuqTKPQ":{"yamlProperties":{
+  "fqn": "pipeline.stages.cypress_stage.spec.execution.steps.Step_1",
+  "localName": "step"
+},"yamlOutputProperties":null}},"errorResponses":null,"serviceExpressionPropertiesList":[]},"metaData":null,"correlationId":"499a4303-7ffc-44aa-a2d8-98e1f10e59be"}

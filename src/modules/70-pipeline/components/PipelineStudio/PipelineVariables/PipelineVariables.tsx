@@ -6,55 +6,30 @@
  */
 
 import React from 'react'
-import {
-  Icon,
-  NestedAccordionPanel,
-  NestedAccordionProvider,
-  ExpandingSearchInput,
-  Color,
-  Layout,
-  Text,
-  FontVariation,
-  PageError
-} from '@wings-software/uicore'
+import { NestedAccordionPanel, NestedAccordionProvider, PageError } from '@wings-software/uicore'
 import { get } from 'lodash-es'
 
 import { PageSpinner } from '@common/components'
 import { useStrings } from 'framework/strings'
 import { GitSyncStoreProvider } from 'framework/GitRepoStore/GitSyncStoreContext'
 import { usePipelineVariables } from '@pipeline/components/PipelineVariablesContext/PipelineVariablesContext'
+import { VariablesHeader } from '@pipeline/components/PipelineStudio/PipelineVariables/VariablesHeader/VariablesHeader'
 import { usePipelineContext } from '../PipelineContext/PipelineContext'
 import PipelineCard from './Cards/PipelineCard'
 import StageCard from './Cards/StageCard'
 import VariableAccordionSummary from './VariableAccordionSummary'
-// import { DrawerTypes } from '../PipelineContext/PipelineActions'
 import css from './PipelineVariables.module.scss'
 
 export const PipelineVariables: React.FC = (): JSX.Element => {
   const {
     updatePipeline,
     stepsFactory,
-    state: {
-      pipeline: originalPipeline
-      // pipelineView
-    },
+    state: { pipeline: originalPipeline },
     isReadonly,
-    allowableTypes
-
-    // updatePipelineView,
-    // fetchPipeline
+    allowableTypes,
+    updateStage
   } = usePipelineContext()
-  const {
-    variablesPipeline,
-    metadataMap,
-    error,
-    initLoading,
-    onSearchInputChange,
-    searchIndex = 0,
-    searchResults = [],
-    goToNextSearchResult,
-    goToPrevSearchResult
-  } = usePipelineVariables()
+  const { variablesPipeline, metadataMap, error, initLoading, searchIndex = 0 } = usePipelineVariables()
   const { getString } = useStrings()
 
   const pipelineVariablesRef = React.useRef()
@@ -82,6 +57,8 @@ export const PipelineVariables: React.FC = (): JSX.Element => {
                 metadataMap={metadataMap}
                 path="pipeline"
                 allowableTypes={allowableTypes}
+                stepsFactory={stepsFactory}
+                updateStage={updateStage}
               />
             )
         })
@@ -95,6 +72,8 @@ export const PipelineVariables: React.FC = (): JSX.Element => {
             readonly={isReadonly}
             path="pipeline"
             allowableTypes={allowableTypes}
+            stepsFactory={stepsFactory}
+            updateStage={updateStage}
           />
         )
       }
@@ -109,40 +88,7 @@ export const PipelineVariables: React.FC = (): JSX.Element => {
         <PageError message={(error?.data as Error)?.message || error?.message} />
       ) : (
         <div className={css.content}>
-          <div className={css.variablePanelHeader}>
-            <div className={css.variableTitle}>
-              <Layout.Horizontal>
-                <Icon name="pipeline-variables" size={24} color={Color.PRIMARY_7} />
-                <Text font={{ variation: FontVariation.H4 }} tooltipProps={{ dataTooltipId: 'pipelineVariables' }}>
-                  {getString('variablesText')}
-                </Text>
-              </Layout.Horizontal>
-            </div>
-            <div>
-              {/* WIP Variabes Search */}
-              <ExpandingSearchInput
-                alwaysExpanded
-                width={450}
-                onChange={onSearchInputChange}
-                showPrevNextButtons
-                fixedText={`${Math.min((searchIndex || 0) + 1, searchResults?.length)} / ${searchResults?.length}`}
-                onNext={goToNextSearchResult}
-                onPrev={goToPrevSearchResult}
-                onEnter={goToNextSearchResult}
-                placeholder={getString('search')}
-              />
-            </div>
-
-            <div className={css.searchActions}></div>
-          </div>
-          <div className={css.variableListHeader}>
-            <Text font={{ variation: FontVariation.SMALL_BOLD }} color={Color.GREY_600}>
-              {getString('variableLabel')}{' '}
-            </Text>
-            <Text font={{ variation: FontVariation.SMALL_BOLD }} color={Color.GREY_600}>
-              {getString('common.input')}{' '}
-            </Text>
-          </div>
+          <VariablesHeader />
           <div className={css.variableList} ref={pipelineVariablesRef as any}>
             <GitSyncStoreProvider>
               <NestedAccordionPanel

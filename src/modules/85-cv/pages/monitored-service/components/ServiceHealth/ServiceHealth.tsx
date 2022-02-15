@@ -184,6 +184,7 @@ export default function ServiceHealth({
                 onSliderDragEnd={onSliderDragEnd}
               />
               <ChangeTimeline
+                duration={selectedTimePeriod}
                 serviceIdentifier={serviceIdentifier}
                 environmentIdentifier={environmentIdentifier}
                 startTime={timeRange?.startTime as number}

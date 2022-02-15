@@ -10,7 +10,12 @@
   flex-wrap: wrap;
 }
 
-.item {
+.itemRuntimeSetting {
   min-width: 47%;
   margin: var(--spacing-small) !important;
+  :global {
+    .bp3-menu {
+      position: relative !important;
+    }
+  }
 }

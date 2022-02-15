@@ -64,6 +64,11 @@ const hasToProcessConfig = (loadingConfig: boolean, repos: GitSyncConfig[]): boo
 
 const getDefaultBranchForPR = (isNew: boolean, defaultBranch?: string): string => (isNew ? defaultBranch || '' : '')
 
+const getBaseBranch = (gitSyncRepos: GitSyncConfig[], repoIdentifier: string): string | undefined => {
+  const selectedRepo = gitSyncRepos.find((repo: GitSyncConfig) => repo.identifier === repoIdentifier)
+  return selectedRepo?.branch
+}
+
 const FullSyncForm: React.FC<ModalConfigureProps & FullSyncFormProps> = props => {
   const { isNewUser = true, onClose, onSuccess } = props
   const { gitSyncRepos, loadingRepos } = useGitSyncStore()
@@ -301,7 +306,7 @@ const FullSyncForm: React.FC<ModalConfigureProps & FullSyncFormProps> = props =>
                   orgIdentifier,
                   projectIdentifier
                 },
-                formData,
+                { ...formData, baseBranch: getBaseBranch(gitSyncRepos, formData.repoIdentifier) },
                 isNewBranch,
                 configResponse,
                 { showSuccess, onSuccess, getString },

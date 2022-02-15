@@ -8,9 +8,9 @@
 import { clone } from 'lodash-es'
 import type { IDrawerProps } from '@blueprintjs/core'
 import type { EntityGitDetails, EntityValidityDetails, NGTemplateInfoConfig } from 'services/template-ng'
-import { DrawerTypes } from '@pipeline/components/PipelineStudio/PipelineContext/PipelineActions'
 import {
   ActionReturnType,
+  DrawerTypes,
   TemplateActions
 } from '@templates-library/components/TemplateStudio/TemplateContext/TemplateActions'
 import type { StepElementConfig } from 'services/cd-ng'
@@ -85,6 +85,11 @@ export const TemplateReducer = (state: TemplateReducerState, data: ActionReturnT
       return {
         ...state,
         isDBInitialized: true
+      }
+    case TemplateActions.SetYamlHandler:
+      return {
+        ...state,
+        yamlHandler: data.response?.yamlHandler
       }
     case TemplateActions.Loading: {
       return {

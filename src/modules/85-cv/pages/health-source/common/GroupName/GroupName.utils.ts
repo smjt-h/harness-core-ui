@@ -22,3 +22,16 @@ export function validate(
   }
   return errors
 }
+
+export function initializeGroupNames(
+  mappedMetrics: Map<string, any>,
+  getString: UseStringsReturn['getString']
+): SelectOption[] {
+  const groupNames = Array.from(mappedMetrics?.entries())
+    .map(metric => {
+      const { groupName } = metric?.[1] || {}
+      return groupName || null
+    })
+    .filter(groupItem => groupItem !== null) as SelectOption[]
+  return [{ label: getString('cv.addNew'), value: '' }, ...groupNames]
+}

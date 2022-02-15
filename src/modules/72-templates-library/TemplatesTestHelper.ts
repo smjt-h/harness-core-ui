@@ -154,13 +154,6 @@ export const stepMockTemplatesInputYaml: ResponseString = {
   data: 'type: "Http"' + '\nspec:' + '\n  url: "<+input>"' + '\n  requestBody: "<+input>"' + '\n'
 }
 
-export const mockTemplatesInputYaml: ResponseString = {
-  status: 'SUCCESS',
-  data:
-    'type: "HarnessApproval"\ntimeout: "<+input>"' +
-    '\nspec:\n  approvalMessage: "<+input>"\n  approvers:\n    userGroups: "<+input>"\n    minimumCount: "<+input>"\n'
-}
-
 export const mockTemplates: ResponsePageTemplateSummaryResponse = {
   status: 'SUCCESS',
   data: {

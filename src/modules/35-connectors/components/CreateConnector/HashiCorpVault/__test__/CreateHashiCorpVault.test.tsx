@@ -14,7 +14,7 @@ import { accountPathProps } from '@common/utils/routeUtils'
 import { TestWrapper } from '@common/utils/testUtils'
 import { clickSubmit, fillAtForm, InputTypes } from '@common/utils/JestFormHelper'
 import { HashiCorpVaultAccessTypes } from '@connectors/interfaces/ConnectorInterface'
-import { mockSecretList, mockResponse, connectorMockData, mockSecret, secretManagerInfo } from './mock'
+import { mockSecretList, mockResponse, connectorMockData, mockSecret, secretManagerInfo, mockRegions } from './mock'
 import CreateHashiCorpVault from '../CreateHashiCorpVault'
 
 const commonProps = {
@@ -30,6 +30,9 @@ jest.mock('services/portal', () => ({
   useGetDelegateTags: jest.fn().mockImplementation(() => ({ mutate: jest.fn() })),
   useGetDelegateSelectorsUpTheHierarchy: jest.fn().mockImplementation(() => ({ mutate: jest.fn() })),
   useGetDelegatesUpTheHierarchy: jest.fn().mockImplementation(() => ({ mutate: jest.fn() })),
+  useListAwsRegions: jest.fn().mockImplementation(() => {
+    return { data: mockRegions, refetch: jest.fn(), error: null, loading: false }
+  }),
   useGetDelegateFromId: jest.fn().mockImplementation(() => {
     return { ...mockResponse, refetch: jest.fn(), error: null, loading: false }
   })
@@ -192,12 +195,12 @@ describe('Create Secret Manager Wizard', () => {
       })
 
       // Edit step 2
+      await waitFor(() => expect(getAllByText('authentication')[0]).toBeTruthy())
       expect(container).toMatchSnapshot()
-
       fillAtForm([
         {
           container,
-          type: InputTypes.RADIOS,
+          type: InputTypes.SELECT,
           fieldId: 'accessType',
           value: HashiCorpVaultAccessTypes.TOKEN
         }
@@ -222,19 +225,18 @@ describe('Create Secret Manager Wizard', () => {
       act(() => {
         fireEvent.click(applySelected!)
       })
-
       await act(async () => {
         clickSubmit(container)
       })
 
       // Step 3
-      expect(getAllByText('delegate.DelegateselectionLabel')[1]).toBeTruthy()
+      await waitFor(() => expect(getAllByText('delegate.DelegateselectionLabel')[1]).toBeTruthy())
       await act(async () => {
         clickSubmit(container)
       })
 
       // Edit Step 4
-      expect(getAllByText('connectors.hashiCorpVault.setupEngine')[1]).toBeTruthy()
+      await waitFor(() => expect(getAllByText('connectors.hashiCorpVault.setupEngine')[1]).toBeTruthy())
       fillAtForm([
         {
           container,
@@ -248,6 +250,6 @@ describe('Create Secret Manager Wizard', () => {
         clickSubmit(container)
       })
 
-      expect(getAllByText('connectors.updatedSuccessfully')[0]).toBeTruthy()
+      await waitFor(() => expect(getAllByText('connectors.updatedSuccessfully')[0]).toBeTruthy())
     })
 })

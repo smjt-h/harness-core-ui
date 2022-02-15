@@ -140,19 +140,19 @@ export const getEnvironmentOptions = (
 interface GetCVMonitoringServicesSearchParamProps {
   view?: Views
   tab?: MonitoredServiceEnum
+  redirectToSLO?: boolean
+  sloIdentifier?: string
+  monitoredServiceIdentifier?: string
 }
 
-export const getCVMonitoringServicesSearchParam = ({ view, tab }: GetCVMonitoringServicesSearchParamProps): string => {
-  let searchParam = `?`
-
-  if (view === Views.GRID) {
-    searchParam = searchParam.concat(`view=${view}&`)
-  }
-  if (tab) {
-    searchParam = searchParam.concat(`tab=${tab}`)
-  }
-
-  return searchParam
+export const getCVMonitoringServicesSearchParam = (props: GetCVMonitoringServicesSearchParamProps): string => {
+  return (
+    '?' +
+    Object.entries(props)
+      .filter(param => param[1] !== undefined)
+      .map(param => `${param[0]}=${param[1]}`)
+      .join('&')
+  )
 }
 
 export const prepareFilterInfo = (data?: MultiSelectOption[]): Array<string | number> => {

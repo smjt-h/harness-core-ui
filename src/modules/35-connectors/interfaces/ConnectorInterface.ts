@@ -56,7 +56,8 @@ export enum CredTypeValues {
 export enum HashiCorpVaultAccessTypes {
   APP_ROLE = 'APP_ROLE',
   TOKEN = 'TOKEN',
-  VAULT_AGENT = 'VAULT_AGENT'
+  VAULT_AGENT = 'VAULT_AGENT',
+  AWS_IAM = 'AWS_IAM'
 }
 
 export interface AwsKmsConfigFormData {

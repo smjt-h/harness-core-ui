@@ -214,7 +214,10 @@ const renderSwitch = ({
       try {
         const { status, data } = await updateTrigger(yamlStringify({ trigger: clearNullUndefined(values) }) as any)
         const dataEnabled = data?.enabled ? 'enabled' : 'disabled'
-        if (status === ResponseStatus.SUCCESS) {
+        if (data?.errors && !isEmpty(data?.errors)) {
+          showError(getString('pipeline.triggers.toast.existingTriggerError'))
+          return
+        } else if (status === ResponseStatus.SUCCESS) {
           showSuccess(
             getString('pipeline.triggers.toast.toggleEnable', {
               enabled: dataEnabled,

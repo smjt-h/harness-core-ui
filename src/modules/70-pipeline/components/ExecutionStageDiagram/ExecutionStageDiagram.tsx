@@ -144,9 +144,11 @@ export default function ExecutionStageDiagram<T>(props: ExecutionStageDiagramPro
   const [groupState, setGroupState] = React.useState<Map<string, GroupState<T>>>()
 
   function stopAutoSelection(): void {
+    // istanbul ignore else
     if (queryParams.stage && queryParams.step) {
       return
     }
+    // istanbul ignore else
     if (selectedStageId && selectedStepId) {
       replaceQueryParams({
         ...queryParams,
@@ -271,7 +273,7 @@ export default function ExecutionStageDiagram<T>(props: ExecutionStageDiagramPro
   }, [data.identifier])
 
   React.useEffect(() => {
-    moveStageToFocus(engine, selectedIdentifier, true, true)
+    moveStageToFocus(engine, selectedIdentifier, true)
   }, [selectedIdentifier])
 
   React.useEffect(() => {

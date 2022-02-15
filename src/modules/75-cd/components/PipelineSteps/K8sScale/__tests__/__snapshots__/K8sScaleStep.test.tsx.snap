@@ -1678,6 +1678,7 @@ exports[`Test K8sBlueGreenDeployStep should render inputSet view and test valida
           >
             <div
               class="FormError--errorDiv"
+              data-name="timeout"
             >
               <span
                 class="bp3-icon StyledProps--main FormError--errorTextIcon StyledProps--intent-danger"
@@ -3258,6 +3259,7 @@ exports[`Test K8sBlueGreenDeployStep should throw validation error without insta
             >
               <div
                 class="FormError--errorDiv"
+                data-name="name"
               >
                 <span
                   class="bp3-icon StyledProps--main FormError--errorTextIcon StyledProps--intent-danger"

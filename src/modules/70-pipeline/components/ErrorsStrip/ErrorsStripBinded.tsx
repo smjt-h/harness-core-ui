@@ -18,7 +18,11 @@ declare global {
   }
 }
 
-export default React.memo(function ErrorsStripBinded() {
+export default React.memo(function ErrorsStripBinded({
+  domRef
+}: {
+  domRef?: React.MutableRefObject<HTMLElement | undefined>
+}) {
   const {
     state: { errors, forms }
   } = React.useContext(StageErrorContext)
@@ -49,5 +53,5 @@ export default React.memo(function ErrorsStripBinded() {
       })
     }
   })
-  return <ErrorsStrip formErrors={errorsLocal} />
+  return <ErrorsStrip formErrors={errorsLocal} domRef={domRef} />
 })

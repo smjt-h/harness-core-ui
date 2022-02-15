@@ -139,7 +139,7 @@ export function getCDStageValidationSchema(
         })
       }),
       execution: Yup.object().shape({
-        steps: Yup.array().min(1, getString('cd.pipelineSteps.executionTab.stepsCount'))
+        steps: Yup.array().required().min(1, getString('cd.pipelineSteps.executionTab.stepsCount'))
       })
     }),
     failureStrategies: getFailureStrategiesValidationSchema(getString),

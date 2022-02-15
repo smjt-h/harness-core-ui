@@ -1,0 +1,988 @@
+{
+  "state": {
+    "pipeline": {
+      "name": "ParallStage",
+      "identifier": "ParallStage",
+      "projectIdentifier": "Test",
+      "orgIdentifier": "default",
+      "tags": {},
+      "stages": [
+        {
+          "parallel": [
+            {
+              "stage": {
+                "name": "Stage 1",
+                "identifier": "Stage_1",
+                "description": "",
+                "type": "Deployment",
+                "spec": {
+                  "serviceConfig": {
+                    "serviceRef": "web",
+                    "serviceDefinition": {
+                      "type": "Kubernetes",
+                      "spec": {
+                        "variables": [],
+                        "manifests": []
+                      }
+                    }
+                  },
+                  "infrastructure": {
+                    "environmentRef": "fdsggg",
+                    "infrastructureDefinition": {
+                      "type": "KubernetesDirect",
+                      "spec": {
+                        "connectorRef": "asdddd",
+                        "namespace": "default",
+                        "releaseName": "release-<+INFRA_KEY>"
+                      }
+                    },
+                    "allowSimultaneousDeployments": false
+                  },
+                  "execution": {
+                    "steps": [
+                      {
+                        "step": {
+                          "type": "ShellScript",
+                          "name": "Test",
+                          "identifier": "Test",
+                          "spec": {
+                            "shell": "Bash",
+                            "onDelegate": true,
+                            "source": {
+                              "type": "Inline",
+                              "spec": {
+                                "script": "<+input>"
+                              }
+                            },
+                            "environmentVariables": [],
+                            "outputVariables": [],
+                            "executionTarget": {}
+                          },
+                          "timeout": "10m"
+                        }
+                      }
+                    ],
+                    "rollbackSteps": []
+                  }
+                },
+                "tags": {},
+                "failureStrategies": [
+                  {
+                    "onFailure": {
+                      "errors": ["AllErrors"],
+                      "action": {
+                        "type": "StageRollback"
+                      }
+                    }
+                  }
+                ],
+                "when": {
+                  "pipelineStatus": "Success"
+                }
+              }
+            },
+            {
+              "stage": {
+                "name": "Stage 2",
+                "identifier": "Stage_2",
+                "description": "",
+                "type": "Deployment",
+                "spec": {
+                  "serviceConfig": {
+                    "serviceRef": "test",
+                    "serviceDefinition": {
+                      "type": "Kubernetes",
+                      "spec": {
+                        "variables": []
+                      }
+                    }
+                  },
+                  "infrastructure": {
+                    "environmentRef": "prod_environment",
+                    "infrastructureDefinition": {
+                      "type": "KubernetesDirect",
+                      "spec": {
+                        "connectorRef": "test1111",
+                        "namespace": "deasd",
+                        "releaseName": "release-<+INFRA_KEY>"
+                      }
+                    },
+                    "allowSimultaneousDeployments": false
+                  },
+                  "execution": {
+                    "steps": [
+                      {
+                        "step": {
+                          "type": "ShellScript",
+                          "name": "test",
+                          "identifier": "test",
+                          "spec": {
+                            "shell": "Bash",
+                            "onDelegate": true,
+                            "source": {
+                              "type": "Inline",
+                              "spec": {
+                                "script": "<+input>"
+                              }
+                            },
+                            "environmentVariables": [],
+                            "outputVariables": [],
+                            "executionTarget": {}
+                          },
+                          "timeout": "10m"
+                        }
+                      }
+                    ],
+                    "rollbackSteps": []
+                  }
+                },
+                "tags": {},
+                "failureStrategies": [
+                  {
+                    "onFailure": {
+                      "errors": ["AllErrors"],
+                      "action": {
+                        "type": "StageRollback"
+                      }
+                    }
+                  }
+                ],
+                "when": {
+                  "pipelineStatus": "Success"
+                }
+              }
+            }
+          ]
+        },
+        {
+          "stage": {
+            "name": "Stage 3",
+            "identifier": "Stage_3",
+            "description": "",
+            "type": "Deployment",
+            "spec": {
+              "serviceConfig": {
+                "serviceRef": "Very_Big_Service_Name_Really",
+                "serviceDefinition": {
+                  "type": "Kubernetes",
+                  "spec": {
+                    "variables": []
+                  }
+                }
+              },
+              "infrastructure": {
+                "environmentRef": "asdasd",
+                "infrastructureDefinition": {
+                  "type": "KubernetesDirect",
+                  "spec": {
+                    "connectorRef": "test1111",
+                    "namespace": "default",
+                    "releaseName": "release-<+INFRA_KEY>"
+                  }
+                },
+                "allowSimultaneousDeployments": false
+              },
+              "execution": {
+                "steps": [
+                  {
+                    "step": {
+                      "type": "ShellScript",
+                      "name": "Ssdfsd",
+                      "identifier": "Ssdfsd",
+                      "spec": {
+                        "shell": "Bash",
+                        "onDelegate": true,
+                        "source": {
+                          "type": "Inline",
+                          "spec": {
+                            "script": "<+input>"
+                          }
+                        },
+                        "environmentVariables": [],
+                        "outputVariables": [],
+                        "executionTarget": {}
+                      },
+                      "timeout": "10m"
+                    }
+                  }
+                ],
+                "rollbackSteps": []
+              }
+            },
+            "tags": {},
+            "failureStrategies": [
+              {
+                "onFailure": {
+                  "errors": ["AllErrors"],
+                  "action": {
+                    "type": "StageRollback"
+                  }
+                }
+              }
+            ],
+            "when": {
+              "pipelineStatus": "Success"
+            }
+          }
+        },
+        {
+          "stage": {
+            "name": "Stage 4",
+            "identifier": "Stage_4",
+            "description": "",
+            "type": "Deployment",
+            "spec": {
+              "serviceConfig": {
+                "serviceRef": "gfgfgf",
+                "serviceDefinition": {
+                  "type": "Kubernetes",
+                  "spec": {
+                    "variables": []
+                  }
+                }
+              },
+              "infrastructure": {
+                "environmentRef": "Very_Long_Env_asd_asd_asd_Test",
+                "infrastructureDefinition": {
+                  "type": "KubernetesDirect",
+                  "spec": {
+                    "connectorRef": "test1111",
+                    "namespace": "default",
+                    "releaseName": "release-<+INFRA_KEY>"
+                  }
+                },
+                "allowSimultaneousDeployments": false
+              },
+              "execution": {
+                "steps": [
+                  {
+                    "step": {
+                      "type": "ShellScript",
+                      "name": "Step asd",
+                      "identifier": "Step_asd",
+                      "spec": {
+                        "shell": "Bash",
+                        "onDelegate": true,
+                        "source": {
+                          "type": "Inline",
+                          "spec": {
+                            "script": "echo 1"
+                          }
+                        },
+                        "environmentVariables": [],
+                        "outputVariables": [],
+                        "executionTarget": {}
+                      },
+                      "timeout": "10m"
+                    }
+                  }
+                ],
+                "rollbackSteps": []
+              }
+            },
+            "tags": {},
+            "failureStrategies": [
+              {
+                "onFailure": {
+                  "errors": ["AllErrors"],
+                  "action": {
+                    "type": "StageRollback"
+                  }
+                }
+              }
+            ],
+            "when": {
+              "pipelineStatus": "Success"
+            }
+          }
+        },
+        {
+          "stage": {
+            "name": "Stage 5",
+            "identifier": "Stage_5",
+            "description": "",
+            "type": "Deployment",
+            "spec": {
+              "serviceConfig": {
+                "serviceRef": "Normal_Service",
+                "serviceDefinition": {
+                  "type": "Kubernetes",
+                  "spec": {
+                    "variables": []
+                  }
+                }
+              },
+              "infrastructure": {
+                "environmentRef": "Devsf",
+                "infrastructureDefinition": {
+                  "type": "KubernetesDirect",
+                  "spec": {
+                    "connectorRef": "test1111",
+                    "namespace": "default",
+                    "releaseName": "release-<+INFRA_KEY>"
+                  }
+                },
+                "allowSimultaneousDeployments": false
+              },
+              "execution": {
+                "steps": [
+                  {
+                    "step": {
+                      "type": "ShellScript",
+                      "name": "Stepsa",
+                      "identifier": "Stepsa",
+                      "spec": {
+                        "shell": "Bash",
+                        "onDelegate": true,
+                        "source": {
+                          "type": "Inline",
+                          "spec": {
+                            "script": "echo 1"
+                          }
+                        },
+                        "environmentVariables": [],
+                        "outputVariables": [],
+                        "executionTarget": {}
+                      },
+                      "timeout": "10m"
+                    }
+                  }
+                ],
+                "rollbackSteps": []
+              },
+              "serviceDependencies": []
+            },
+            "tags": {},
+            "failureStrategies": [
+              {
+                "onFailure": {
+                  "errors": ["AllErrors"],
+                  "action": {
+                    "type": "StageRollback"
+                  }
+                }
+              }
+            ],
+            "when": {
+              "pipelineStatus": "Success",
+              "condition": "false"
+            }
+          }
+        },
+        {
+          "stage": {
+            "name": "Stage 6",
+            "identifier": "Stage_6",
+            "description": "",
+            "type": "Deployment",
+            "spec": {
+              "serviceConfig": {
+                "serviceRef": "Newdds",
+                "serviceDefinition": {
+                  "type": "Kubernetes",
+                  "spec": {
+                    "variables": []
+                  }
+                }
+              },
+              "infrastructure": {
+                "environmentRef": "test",
+                "infrastructureDefinition": {
+                  "type": "KubernetesDirect",
+                  "spec": {
+                    "connectorRef": "test1111",
+                    "namespace": "default",
+                    "releaseName": "release-<+INFRA_KEY>"
+                  }
+                },
+                "allowSimultaneousDeployments": false
+              },
+              "execution": {
+                "steps": [
+                  {
+                    "step": {
+                      "type": "ShellScript",
+                      "name": "Step 3",
+                      "identifier": "Step_3",
+                      "spec": {
+                        "shell": "Bash",
+                        "onDelegate": true,
+                        "source": {
+                          "type": "Inline",
+                          "spec": {
+                            "script": "echo 2"
+                          }
+                        },
+                        "environmentVariables": [],
+                        "outputVariables": [],
+                        "executionTarget": {}
+                      },
+                      "timeout": "10m"
+                    }
+                  }
+                ],
+                "rollbackSteps": []
+              }
+            },
+            "tags": {},
+            "failureStrategies": [
+              {
+                "onFailure": {
+                  "errors": ["AllErrors"],
+                  "action": {
+                    "type": "StageRollback"
+                  }
+                }
+              }
+            ],
+            "when": {
+              "pipelineStatus": "Success",
+              "condition": "false"
+            }
+          }
+        }
+      ],
+      "allowStageExecutions": false
+    },
+    "originalPipeline": {
+      "name": "ParallStage",
+      "identifier": "ParallStage",
+      "projectIdentifier": "Test",
+      "orgIdentifier": "default",
+      "tags": {},
+      "stages": [
+        {
+          "parallel": [
+            {
+              "stage": {
+                "name": "Stage 1",
+                "identifier": "Stage_1",
+                "description": "",
+                "type": "Deployment",
+                "spec": {
+                  "serviceConfig": {
+                    "serviceRef": "web",
+                    "serviceDefinition": {
+                      "type": "Kubernetes",
+                      "spec": {
+                        "variables": [],
+                        "manifests": []
+                      }
+                    }
+                  },
+                  "infrastructure": {
+                    "environmentRef": "fdsggg",
+                    "infrastructureDefinition": {
+                      "type": "KubernetesDirect",
+                      "spec": {
+                        "connectorRef": "asdddd",
+                        "namespace": "default",
+                        "releaseName": "release-<+INFRA_KEY>"
+                      }
+                    },
+                    "allowSimultaneousDeployments": false
+                  },
+                  "execution": {
+                    "steps": [
+                      {
+                        "step": {
+                          "type": "ShellScript",
+                          "name": "Test",
+                          "identifier": "Test",
+                          "spec": {
+                            "shell": "Bash",
+                            "onDelegate": true,
+                            "source": {
+                              "type": "Inline",
+                              "spec": {
+                                "script": "<+input>"
+                              }
+                            },
+                            "environmentVariables": [],
+                            "outputVariables": [],
+                            "executionTarget": {}
+                          },
+                          "timeout": "10m"
+                        }
+                      }
+                    ],
+                    "rollbackSteps": []
+                  }
+                },
+                "tags": {},
+                "failureStrategies": [
+                  {
+                    "onFailure": {
+                      "errors": ["AllErrors"],
+                      "action": {
+                        "type": "StageRollback"
+                      }
+                    }
+                  }
+                ],
+                "when": {
+                  "pipelineStatus": "Success"
+                }
+              }
+            },
+            {
+              "stage": {
+                "name": "Stage 2",
+                "identifier": "Stage_2",
+                "description": "",
+                "type": "Deployment",
+                "spec": {
+                  "serviceConfig": {
+                    "serviceRef": "test",
+                    "serviceDefinition": {
+                      "type": "Kubernetes",
+                      "spec": {
+                        "variables": []
+                      }
+                    }
+                  },
+                  "infrastructure": {
+                    "environmentRef": "prod_environment",
+                    "infrastructureDefinition": {
+                      "type": "KubernetesDirect",
+                      "spec": {
+                        "connectorRef": "test1111",
+                        "namespace": "deasd",
+                        "releaseName": "release-<+INFRA_KEY>"
+                      }
+                    },
+                    "allowSimultaneousDeployments": false
+                  },
+                  "execution": {
+                    "steps": [
+                      {
+                        "step": {
+                          "type": "ShellScript",
+                          "name": "test",
+                          "identifier": "test",
+                          "spec": {
+                            "shell": "Bash",
+                            "onDelegate": true,
+                            "source": {
+                              "type": "Inline",
+                              "spec": {
+                                "script": "<+input>"
+                              }
+                            },
+                            "environmentVariables": [],
+                            "outputVariables": [],
+                            "executionTarget": {}
+                          },
+                          "timeout": "10m"
+                        }
+                      }
+                    ],
+                    "rollbackSteps": []
+                  }
+                },
+                "tags": {},
+                "failureStrategies": [
+                  {
+                    "onFailure": {
+                      "errors": ["AllErrors"],
+                      "action": {
+                        "type": "StageRollback"
+                      }
+                    }
+                  }
+                ],
+                "when": {
+                  "pipelineStatus": "Success"
+                }
+              }
+            }
+          ]
+        },
+        {
+          "stage": {
+            "name": "Stage 3",
+            "identifier": "Stage_3",
+            "description": "",
+            "type": "Deployment",
+            "spec": {
+              "serviceConfig": {
+                "serviceRef": "Very_Big_Service_Name_Really",
+                "serviceDefinition": {
+                  "type": "Kubernetes",
+                  "spec": {
+                    "variables": []
+                  }
+                }
+              },
+              "infrastructure": {
+                "environmentRef": "asdasd",
+                "infrastructureDefinition": {
+                  "type": "KubernetesDirect",
+                  "spec": {
+                    "connectorRef": "test1111",
+                    "namespace": "default",
+                    "releaseName": "release-<+INFRA_KEY>"
+                  }
+                },
+                "allowSimultaneousDeployments": false
+              },
+              "execution": {
+                "steps": [
+                  {
+                    "step": {
+                      "type": "ShellScript",
+                      "name": "Ssdfsd",
+                      "identifier": "Ssdfsd",
+                      "spec": {
+                        "shell": "Bash",
+                        "onDelegate": true,
+                        "source": {
+                          "type": "Inline",
+                          "spec": {
+                            "script": "<+input>"
+                          }
+                        },
+                        "environmentVariables": [],
+                        "outputVariables": [],
+                        "executionTarget": {}
+                      },
+                      "timeout": "10m"
+                    }
+                  }
+                ],
+                "rollbackSteps": []
+              }
+            },
+            "tags": {},
+            "failureStrategies": [
+              {
+                "onFailure": {
+                  "errors": ["AllErrors"],
+                  "action": {
+                    "type": "StageRollback"
+                  }
+                }
+              }
+            ],
+            "when": {
+              "pipelineStatus": "Success"
+            }
+          }
+        },
+        {
+          "stage": {
+            "name": "Stage 4",
+            "identifier": "Stage_4",
+            "description": "",
+            "type": "Deployment",
+            "spec": {
+              "serviceConfig": {
+                "serviceRef": "gfgfgf",
+                "serviceDefinition": {
+                  "type": "Kubernetes",
+                  "spec": {
+                    "variables": []
+                  }
+                }
+              },
+              "infrastructure": {
+                "environmentRef": "Very_Long_Env_asd_asd_asd_Test",
+                "infrastructureDefinition": {
+                  "type": "KubernetesDirect",
+                  "spec": {
+                    "connectorRef": "test1111",
+                    "namespace": "default",
+                    "releaseName": "release-<+INFRA_KEY>"
+                  }
+                },
+                "allowSimultaneousDeployments": false
+              },
+              "execution": {
+                "steps": [
+                  {
+                    "step": {
+                      "type": "ShellScript",
+                      "name": "Step asd",
+                      "identifier": "Step_asd",
+                      "spec": {
+                        "shell": "Bash",
+                        "onDelegate": true,
+                        "source": {
+                          "type": "Inline",
+                          "spec": {
+                            "script": "echo 1"
+                          }
+                        },
+                        "environmentVariables": [],
+                        "outputVariables": [],
+                        "executionTarget": {}
+                      },
+                      "timeout": "10m"
+                    }
+                  }
+                ],
+                "rollbackSteps": []
+              }
+            },
+            "tags": {},
+            "failureStrategies": [
+              {
+                "onFailure": {
+                  "errors": ["AllErrors"],
+                  "action": {
+                    "type": "StageRollback"
+                  }
+                }
+              }
+            ],
+            "when": {
+              "pipelineStatus": "Success"
+            }
+          }
+        },
+        {
+          "stage": {
+            "name": "Stage 5",
+            "identifier": "Stage_5",
+            "description": "",
+            "type": "Deployment",
+            "spec": {
+              "serviceConfig": {
+                "serviceRef": "Normal_Service",
+                "serviceDefinition": {
+                  "type": "Kubernetes",
+                  "spec": {
+                    "variables": []
+                  }
+                }
+              },
+              "infrastructure": {
+                "environmentRef": "Devsf",
+                "infrastructureDefinition": {
+                  "type": "KubernetesDirect",
+                  "spec": {
+                    "connectorRef": "test1111",
+                    "namespace": "default",
+                    "releaseName": "release-<+INFRA_KEY>"
+                  }
+                },
+                "allowSimultaneousDeployments": false
+              },
+              "execution": {
+                "steps": [
+                  {
+                    "step": {
+                      "type": "ShellScript",
+                      "name": "Stepsa",
+                      "identifier": "Stepsa",
+                      "spec": {
+                        "shell": "Bash",
+                        "onDelegate": true,
+                        "source": {
+                          "type": "Inline",
+                          "spec": {
+                            "script": "echo 1"
+                          }
+                        },
+                        "environmentVariables": [],
+                        "outputVariables": [],
+                        "executionTarget": {}
+                      },
+                      "timeout": "10m"
+                    }
+                  }
+                ],
+                "rollbackSteps": []
+              },
+              "serviceDependencies": []
+            },
+            "tags": {},
+            "failureStrategies": [
+              {
+                "onFailure": {
+                  "errors": ["AllErrors"],
+                  "action": {
+                    "type": "StageRollback"
+                  }
+                }
+              }
+            ],
+            "when": {
+              "pipelineStatus": "Success",
+              "condition": "false"
+            }
+          }
+        },
+        {
+          "stage": {
+            "name": "Stage 6",
+            "identifier": "Stage_6",
+            "description": "",
+            "type": "Deployment",
+            "spec": {
+              "serviceConfig": {
+                "serviceRef": "Newdds",
+                "serviceDefinition": {
+                  "type": "Kubernetes",
+                  "spec": {
+                    "variables": []
+                  }
+                }
+              },
+              "infrastructure": {
+                "environmentRef": "test",
+                "infrastructureDefinition": {
+                  "type": "KubernetesDirect",
+                  "spec": {
+                    "connectorRef": "test1111",
+                    "namespace": "default",
+                    "releaseName": "release-<+INFRA_KEY>"
+                  }
+                },
+                "allowSimultaneousDeployments": false
+              },
+              "execution": {
+                "steps": [
+                  {
+                    "step": {
+                      "type": "ShellScript",
+                      "name": "Step 3",
+                      "identifier": "Step_3",
+                      "spec": {
+                        "shell": "Bash",
+                        "onDelegate": true,
+                        "source": {
+                          "type": "Inline",
+                          "spec": {
+                            "script": "echo 2"
+                          }
+                        },
+                        "environmentVariables": [],
+                        "outputVariables": [],
+                        "executionTarget": {}
+                      },
+                      "timeout": "10m"
+                    }
+                  }
+                ],
+                "rollbackSteps": []
+              }
+            },
+            "tags": {},
+            "failureStrategies": [
+              {
+                "onFailure": {
+                  "errors": ["AllErrors"],
+                  "action": {
+                    "type": "StageRollback"
+                  }
+                }
+              }
+            ],
+            "when": {
+              "pipelineStatus": "Success",
+              "condition": "false"
+            }
+          }
+        }
+      ],
+      "allowStageExecutions": false
+    },
+    "pipelineIdentifier": "ParallStage",
+    "pipelineView": {
+      "isSplitViewOpen": true,
+      "isDrawerOpened": false,
+      "isYamlEditable": false,
+      "splitViewData": {
+        "type": "StageView"
+      },
+      "drawerData": {
+        "type": "AddCommand"
+      }
+    },
+    "templateView": {
+      "isTemplateDrawerOpened": false,
+      "templateDrawerData": {
+        "type": "UseTemplate"
+      }
+    },
+    "schemaErrors": false,
+    "gitDetails": {},
+    "entityValidityDetails": {
+      "valid": true,
+      "invalidYaml": null
+    },
+    "templateTypes": {},
+    "isLoading": false,
+    "isBEPipelineUpdated": false,
+    "isDBInitialized": false,
+    "isUpdated": false,
+    "isInitialized": true,
+    "selectionState": {
+      "selectedStageId": "New Stage",
+      "selectedSectionId": "SERVICE"
+    },
+    "error": ""
+  },
+  "view": "VISUAL",
+  "contextType": "Pipeline",
+  "allowableTypes": ["FIXED", "RUNTIME", "EXPRESSION"],
+  "stepsFactory": {
+    "invocationMap": {},
+    "stepBank": {},
+    "stepIconMap": {},
+    "type": "pipeline-factory"
+  },
+  "stagesMap": {
+    "Template": {
+      "name": "Template",
+      "type": "Template",
+      "icon": "template-library",
+      "iconColor": "var(--pipeline-custom-stage-color)",
+      "isApproval": false,
+      "openExecutionStrategy": false
+    },
+    "Approval": {
+      "name": "Approval",
+      "type": "Approval",
+      "icon": "approval-stage-icon",
+      "iconColor": "var(--pipeline-approval-stage-color)",
+      "isApproval": true,
+      "openExecutionStrategy": false
+    },
+    "Custom": {
+      "name": "Custom",
+      "type": "Custom",
+      "icon": "pipeline-custom",
+      "iconColor": "var(--pipeline-custom-stage-color)",
+      "isApproval": false,
+      "openExecutionStrategy": false
+    },
+    "Pipeline": {
+      "name": "Pipeline",
+      "type": "Pipeline",
+      "icon": "pipeline",
+      "iconColor": "var(--pipeline-blue-color)",
+      "isApproval": false,
+      "openExecutionStrategy": false
+    },
+    "Deployment": {
+      "name": "Deploy",
+      "type": "Deployment",
+      "icon": "cd-main",
+      "iconColor": "var(--pipeline-deploy-stage-color)",
+      "isApproval": false,
+      "openExecutionStrategy": true
+    },
+    "CI": {
+      "name": "Build",
+      "type": "CI",
+      "icon": "ci-main",
+      "iconColor": "var(--pipeline-build-stage-color)",
+      "isApproval": false,
+      "openExecutionStrategy": false
+    }
+  },
+  "isReadonly": false,
+  "scope": "project"
+}

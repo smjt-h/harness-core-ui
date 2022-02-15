@@ -42,7 +42,9 @@
   width: 100%;
 
   .eventType {
-    width: 100px;
+    input {
+      width: 100px;
+    }
   }
 
   .metricSelect {

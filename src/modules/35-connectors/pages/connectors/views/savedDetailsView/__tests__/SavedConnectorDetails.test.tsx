@@ -12,6 +12,7 @@ import type { ConnectorInfoDTO } from 'services/cd-ng'
 import SavedConnectorDetails, { RenderDetailsSection, getActivityDetails } from '../SavedConnectorDetails'
 import {
   Vault,
+  VaultWithIamAMS,
   Docker,
   GitHttp,
   K8WithInheritFromDelegate,
@@ -125,6 +126,17 @@ describe('Saved Connector Details', () => {
 
     await waitFor(() => queryByText(container, 'VaultId'))
     expect(getByText('VaultName')).toBeDefined()
+    expect(container).toMatchSnapshot()
+  })
+  test('render for VaultWithIamAMS schema', async () => {
+    const { container, getByText } = render(
+      <TestWrapper path="/account/:accountId/resources/connectors" pathParams={{ accountId: 'dummy' }}>
+        <SavedConnectorDetails connector={VaultWithIamAMS.data.content[0].connector as ConnectorInfoDTO} />
+      </TestWrapper>
+    )
+
+    await waitFor(() => queryByText(container, 'VaultId'))
+    expect(getByText('VaultNameWithAMS')).toBeDefined()
     expect(container).toMatchSnapshot()
   })
 

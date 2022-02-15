@@ -259,7 +259,7 @@ export interface PipelineContextInterface {
   ): PipelineStageWrapper<T>
   runPipeline: (identifier: string) => void
   pipelineSaved: (pipeline: PipelineInfoConfig) => void
-  updateStage: (stage: StageElementConfig, existingStage?: StageElementConfig) => Promise<void>
+  updateStage: (stage: StageElementConfig) => Promise<void>
   /** @deprecated use `setSelection` */
   setSelectedStageId: (selectedStageId: string | undefined) => void
   /** @deprecated use `setSelection` */

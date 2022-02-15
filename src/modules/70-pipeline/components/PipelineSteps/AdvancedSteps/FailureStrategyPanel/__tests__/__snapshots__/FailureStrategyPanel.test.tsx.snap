@@ -436,6 +436,7 @@ exports[`<FailureStrategyPanel /> tests adding a new strategy works 1`] = `
           >
             <div
               class="FormError--errorDiv"
+              data-name="failureStrategies[0].onFailure.action.type"
             >
               <span
                 class="bp3-icon StyledProps--main FormError--errorTextIcon StyledProps--intent-danger"

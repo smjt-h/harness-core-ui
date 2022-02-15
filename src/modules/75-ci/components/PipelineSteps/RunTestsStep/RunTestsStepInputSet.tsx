@@ -7,13 +7,21 @@
 
 import React from 'react'
 import { connect } from 'formik'
-import { Text, getMultiTypeFromValue, MultiTypeInputType, FormikForm, Color, Container } from '@wings-software/uicore'
-import { isEmpty } from 'lodash-es'
+import {
+  Text,
+  getMultiTypeFromValue,
+  MultiTypeInputType,
+  FormikForm,
+  Color,
+  Container,
+  Layout
+} from '@wings-software/uicore'
+import { isEmpty, startCase } from 'lodash-es'
 import cx from 'classnames'
 import { useStrings } from 'framework/strings'
+import type { StringsMap } from 'stringTypes'
 import { ShellScriptMonacoField } from '@common/components/ShellScriptMonaco/ShellScriptMonaco'
-import StepCommonFieldsInputSet from '@pipeline/components/StepCommonFields/StepCommonFieldsInputSet'
-import MultiTypeMapInputSet from '@common/components/MultiTypeMapInputSet/MultiTypeMapInputSet'
+import StepCommonFieldsInputSet from '@ci/components/PipelineSteps/StepCommonFields/StepCommonFieldsInputSet'
 import MultiTypeListInputSet from '@common/components/MultiTypeListInputSet/MultiTypeListInputSet'
 import MultiTypeFieldSelector from '@common/components/MultiTypeFieldSelector/MultiTypeFieldSelector'
 import { FormMultiTypeCheckboxField } from '@common/components'
@@ -24,6 +32,7 @@ import { useVariablesExpression } from '@pipeline/components/PipelineStudio/Pipl
 import type { RunTestsStepProps } from './RunTestsStep'
 import { shouldRenderRunTimeInputView } from '../CIStep/StepUtils'
 import { CIStep } from '../CIStep/CIStep'
+import { CIStepOptionalConfig, getOptionalSubLabel } from '../CIStep/CIStepOptionalConfig'
 import css from '@pipeline/components/PipelineSteps/Steps/Steps.module.scss'
 
 export const RunTestsStepInputSetBasic: React.FC<RunTestsStepProps> = ({
@@ -39,6 +48,54 @@ export const RunTestsStepInputSetBasic: React.FC<RunTestsStepProps> = ({
   const { expressions } = useVariablesExpression()
   const prefix = isEmpty(path) ? '' : `${path}.`
   const stepCss = stepViewType === StepViewType.DeploymentForm ? css.sm : css.lg
+
+  const renderCommandEditor = React.useCallback(
+    (fieldName: string, stringKey: keyof StringsMap, tooltipId: string): React.ReactElement => (
+      <Container className={cx(css.bottomMargin5, css.fieldsGroup, css.withoutSpacing)}>
+        <MultiTypeFieldSelector
+          name={fieldName}
+          label={
+            <Layout.Horizontal flex={{ justifyContent: 'flex-start', alignItems: 'baseline' }}>
+              <Text
+                className={css.inpLabel}
+                color={Color.GREY_600}
+                font={{ size: 'small', weight: 'semi-bold' }}
+                style={{ display: 'flex', alignItems: 'center' }}
+              >
+                {getString(stringKey)}
+              </Text>
+              &nbsp;
+              {getOptionalSubLabel(tooltipId, getString)}
+            </Layout.Horizontal>
+          }
+          defaultValueToReset=""
+          allowedTypes={allowableTypes}
+          expressionRender={() => {
+            return (
+              <ShellScriptMonacoField
+                title={stringKey}
+                name={fieldName}
+                scriptType="Bash"
+                expressions={expressions}
+                disabled={readonly}
+              />
+            )
+          }}
+          style={{ flexGrow: 1, marginBottom: 0 }}
+          disableTypeSelection={readonly}
+        >
+          <ShellScriptMonacoField
+            title={getString(stringKey)}
+            name={fieldName}
+            scriptType="Bash"
+            expressions={expressions}
+            disabled={readonly}
+          />
+        </MultiTypeFieldSelector>
+      </Container>
+    ),
+    []
+  )
 
   return (
     <FormikForm className={css.removeBpPopoverWrapperTopMargin}>
@@ -136,7 +193,7 @@ export const RunTestsStepInputSetBasic: React.FC<RunTestsStepProps> = ({
         <Container className={cx(css.formGroup, stepCss, css.bottomMargin5)}>
           <FormMultiTypeCheckboxField
             name={`${prefix}spec.runOnlySelectedTests`}
-            label={getString('runOnlySelectedTestsLabel')}
+            label={getString('runOnlySelectedTestsLabel').concat(` (${startCase(getString('common.optionalLabel'))})`)}
             multiTypeTextbox={{
               expressions,
               disabled: readonly,
@@ -152,14 +209,13 @@ export const RunTestsStepInputSetBasic: React.FC<RunTestsStepProps> = ({
             className={css.removeBpLabelMargin}
             name={`${prefix}spec.testAnnotations`}
             label={
-              <Text
-                className={css.inpLabel}
-                color={Color.GREY_600}
-                font={{ size: 'small', weight: 'semi-bold' }}
-                tooltipProps={{ dataTooltipId: 'runTestsTestAnnotations' }}
-              >
-                {getString('testAnnotationsLabel')}
-              </Text>
+              <Layout.Horizontal flex={{ justifyContent: 'flex-start', alignItems: 'baseline' }}>
+                <Text className={css.inpLabel} color={Color.GREY_600} font={{ size: 'small', weight: 'semi-bold' }}>
+                  {getString('testAnnotationsLabel')}
+                </Text>
+                &nbsp;
+                {getOptionalSubLabel('runTestsTestAnnotations', getString)}
+              </Layout.Horizontal>
             }
             multiTextInputProps={{
               multiTextInputProps: {
@@ -171,92 +227,10 @@ export const RunTestsStepInputSetBasic: React.FC<RunTestsStepProps> = ({
           />
         </Container>
       )}
-      {getMultiTypeFromValue(template?.spec?.preCommand) === MultiTypeInputType.RUNTIME && (
-        <Container className={css.bottomMargin5}>
-          <div className={cx(css.fieldsGroup, css.withoutSpacing)} style={{ marginBottom: 'var(--spacing-small)' }}>
-            <MultiTypeFieldSelector
-              name={`${prefix}spec.preCommand`}
-              label={
-                <Text
-                  className={css.inpLabel}
-                  color={Color.GREY_600}
-                  font={{ size: 'small', weight: 'semi-bold' }}
-                  style={{ display: 'flex', alignItems: 'center' }}
-                  tooltipProps={{ dataTooltipId: 'runTestsPreCommand' }}
-                >
-                  {getString('preCommandLabel')}
-                </Text>
-              }
-              defaultValueToReset=""
-              allowedTypes={allowableTypes}
-              expressionRender={() => {
-                return (
-                  <ShellScriptMonacoField
-                    title={getString('preCommandLabel')}
-                    name={`${prefix}spec.preCommand`}
-                    scriptType="Bash"
-                    expressions={expressions}
-                    disabled={readonly}
-                  />
-                )
-              }}
-              style={{ flexGrow: 1, marginBottom: 0 }}
-              disableTypeSelection={readonly}
-            >
-              <ShellScriptMonacoField
-                title={getString('preCommandLabel')}
-                name={`${prefix}spec.preCommand`}
-                scriptType="Bash"
-                expressions={expressions}
-                disabled={readonly}
-              />
-            </MultiTypeFieldSelector>
-          </div>
-        </Container>
-      )}
-      {getMultiTypeFromValue(template?.spec?.postCommand) === MultiTypeInputType.RUNTIME && (
-        <Container className={css.bottomMargin5}>
-          <div className={cx(css.fieldsGroup, css.withoutSpacing)} style={{ marginBottom: 'var(--spacing-small)' }}>
-            <MultiTypeFieldSelector
-              name={`${prefix}spec.postCommand`}
-              label={
-                <Text
-                  className={css.inpLabel}
-                  color={Color.GREY_600}
-                  font={{ size: 'small', weight: 'semi-bold' }}
-                  style={{ display: 'flex', alignItems: 'center' }}
-                  tooltipProps={{ dataTooltipId: 'runTestsPostCommand' }}
-                >
-                  {getString('postCommandLabel')}
-                </Text>
-              }
-              defaultValueToReset=""
-              allowedTypes={allowableTypes}
-              expressionRender={() => {
-                return (
-                  <ShellScriptMonacoField
-                    title={getString('postCommandLabel')}
-                    name={`${prefix}spec.postCommand`}
-                    scriptType="Bash"
-                    expressions={expressions}
-                    disabled={readonly}
-                  />
-                )
-              }}
-              style={{ flexGrow: 1, marginBottom: 0 }}
-              disableTypeSelection={readonly}
-            >
-              <ShellScriptMonacoField
-                title={getString('postCommandLabel')}
-                name={`${prefix}spec.postCommand`}
-                scriptType="Bash"
-                expressions={expressions}
-                disabled={readonly}
-              />
-            </MultiTypeFieldSelector>
-          </div>
-        </Container>
-      )}
+      {getMultiTypeFromValue(template?.spec?.preCommand) === MultiTypeInputType.RUNTIME &&
+        renderCommandEditor(`${prefix}spec.preCommand`, 'ci.preCommandLabel', 'runTestsPreCommand')}
+      {getMultiTypeFromValue(template?.spec?.preCommand) === MultiTypeInputType.RUNTIME &&
+        renderCommandEditor(`${prefix}spec.postCommand`, 'ci.postCommandLabel', 'runTestsPostCommand')}
       {shouldRenderRunTimeInputView(template?.spec?.reports?.spec?.paths) && (
         <Container className={cx(css.formGroup, stepCss, css.bottomMargin5)}>
           <MultiTypeListInputSet
@@ -267,15 +241,18 @@ export const RunTestsStepInputSetBasic: React.FC<RunTestsStepProps> = ({
             }}
             multiTypeFieldSelectorProps={{
               label: (
-                <Text
-                  className={css.inpLabel}
-                  color={Color.GREY_800}
-                  font={{ size: 'small', weight: 'semi-bold' }}
-                  style={{ display: 'flex', alignItems: 'center' }}
-                  tooltipProps={{ dataTooltipId: 'reportPaths' }}
-                >
-                  {getString('pipelineSteps.reportPathsLabel')}
-                </Text>
+                <Layout.Horizontal flex={{ justifyContent: 'flex-start', alignItems: 'baseline' }}>
+                  <Text
+                    className={css.inpLabel}
+                    color={Color.GREY_800}
+                    font={{ size: 'small', weight: 'semi-bold' }}
+                    style={{ display: 'flex', alignItems: 'center' }}
+                  >
+                    {getString('pipelineSteps.reportPathsLabel')}
+                  </Text>
+                  &nbsp;
+                  {getOptionalSubLabel('reportPaths', getString)}
+                </Layout.Horizontal>
               ),
               allowedTypes: allowableTypes.filter(
                 type => type !== MultiTypeInputType.EXPRESSION && type !== MultiTypeInputType.RUNTIME
@@ -286,63 +263,19 @@ export const RunTestsStepInputSetBasic: React.FC<RunTestsStepProps> = ({
           />
         </Container>
       )}
-      {shouldRenderRunTimeInputView(template?.spec?.envVariables) && (
-        <Container className={cx(css.formGroup, css.bottomMargin5)}>
-          <MultiTypeMapInputSet
-            name={`${prefix}spec.envVariables`}
-            valueMultiTextInputProps={{
-              allowableTypes,
-              expressions
-            }}
-            multiTypeFieldSelectorProps={{
-              label: (
-                <Text
-                  className={css.inpLabel}
-                  color={Color.GREY_800}
-                  font={{ size: 'small', weight: 'semi-bold' }}
-                  style={{ display: 'flex', alignItems: 'center' }}
-                  tooltipProps={{ dataTooltipId: 'environmentVariables' }}
-                >
-                  {getString('environmentVariables')}
-                </Text>
-              ),
-              allowedTypes: allowableTypes.filter(type => type !== MultiTypeInputType.EXPRESSION)
-            }}
-            disabled={readonly}
-            formik={formik}
-          />
-        </Container>
-      )}
-      {shouldRenderRunTimeInputView(template?.spec?.outputVariables) && (
-        <Container className={cx(css.formGroup, stepCss, css.bottomMargin5)}>
-          <MultiTypeListInputSet
-            name={`${prefix}spec.outputVariables`}
-            withObjectStructure
-            keyName="name"
-            multiTextInputProps={{
-              allowableTypes,
-              expressions
-            }}
-            multiTypeFieldSelectorProps={{
-              label: (
-                <Text
-                  className={css.inpLabel}
-                  color={Color.GREY_800}
-                  font={{ size: 'small', weight: 'semi-bold' }}
-                  style={{ display: 'flex', alignItems: 'center' }}
-                  tooltipProps={{ dataTooltipId: 'outputVariables' }}
-                >
-                  {getString('pipelineSteps.outputVariablesLabel')}
-                </Text>
-              ),
-              allowedTypes: allowableTypes.filter(
-                type => type !== MultiTypeInputType.EXPRESSION && type !== MultiTypeInputType.RUNTIME
-              )
-            }}
-            disabled={readonly}
-          />
-        </Container>
-      )}
+      <CIStepOptionalConfig
+        stepViewType={stepViewType}
+        readonly={readonly}
+        enableFields={{
+          ...(shouldRenderRunTimeInputView(template?.spec?.envVariables) && {
+            'spec.envVariables': { tooltipId: 'environmentVariables' }
+          })
+        }}
+        allowableTypes={allowableTypes}
+        path={path || ''}
+        formik={formik}
+        isInputSetView={true}
+      />
       <StepCommonFieldsInputSet
         path={path}
         readonly={readonly}

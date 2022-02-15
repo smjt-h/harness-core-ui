@@ -29,6 +29,7 @@ import { ConfigureOptions } from '@common/components/ConfigureOptions/ConfigureO
 import { useVariablesExpression } from '@pipeline/components/PipelineStudio/PiplineHooks/useVariablesExpression'
 
 import { FormMultiTypeConnectorField } from '@connectors/components/ConnectorReferenceField/FormMultiTypeConnectorField'
+import { ConnectorRefSchema } from '@common/utils/Validation'
 import type { ConfigFileData, Connector } from '../TerraformInterfaces'
 import stepCss from '@pipeline/components/PipelineSteps/Steps/Steps.module.scss'
 
@@ -66,9 +67,7 @@ export default function ConfigForm(props: ConfigFormProps): React.ReactElement {
                 configFiles: Yup.object().shape({
                   store: Yup.object().shape({
                     spec: Yup.object().shape({
-                      connectorRef: Yup.string().required(
-                        getString('pipelineSteps.build.create.connectorRequiredError')
-                      ),
+                      connectorRef: ConnectorRefSchema(),
                       gitFetchType: Yup.string().required(getString('cd.gitFetchTypeRequired')),
                       branch: Yup.string().when('gitFetchType', {
                         is: 'Branch',

@@ -9,5 +9,6 @@
 declare const styles: {
   readonly canvasContainer: string
   readonly canvasWrapper: string
+  readonly rightMargin: string
 }
 export default styles

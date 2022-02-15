@@ -8,7 +8,8 @@
 import React from 'react'
 import { render } from '@testing-library/react'
 import { TemplateInputs } from '@templates-library/components/TemplateInputs/TemplateInputs'
-import { mockTemplates, mockTemplatesInputYaml } from '@templates-library/TemplatesTestHelper'
+import { mockTemplates } from '@templates-library/TemplatesTestHelper'
+import { mockTemplatesInputYaml } from '@pipeline/components/PipelineStudio/PipelineStudioTestHelper'
 import { TestWrapper } from '@common/utils/testUtils'
 
 jest.mock('@common/components/YAMLBuilder/YamlBuilder')

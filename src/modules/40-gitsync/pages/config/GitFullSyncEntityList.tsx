@@ -7,7 +7,7 @@
 
 import React from 'react'
 import type { CellProps, Column, Renderer } from 'react-table'
-import { Color, Icon, Layout, TableV2, Text } from '@harness/uicore'
+import { Color, Icon, Layout, TableV2, Text, Utils } from '@harness/uicore'
 import type { IconProps } from '@harness/uicore/dist/icons/Icon'
 import { useStrings } from 'framework/strings'
 import type { PageGitFullSyncEntityInfoDTO, GitFullSyncEntityInfoDTO } from 'services/cd-ng'
@@ -27,10 +27,33 @@ interface StatusData {
 
 interface RenderEntityStatusProp {
   status: GitFullSyncEntityInfoDTO['syncStatus']
+  errorMessage: GitFullSyncEntityInfoDTO['errorMessage']
+}
+
+interface RenderStatusIconProp extends RenderEntityStatusProp {
+  iconProp: IconProps
+}
+
+const RenderStatusIcon: React.FC<RenderStatusIconProp> = props => {
+  const { status, errorMessage, iconProp } = props
+  return status === 'FAILED' && errorMessage ? (
+    <Utils.WrapOptionalTooltip
+      tooltip={errorMessage}
+      tooltipProps={{
+        isDark: true,
+        fill: true,
+        position: 'bottom'
+      }}
+    >
+      <Icon {...iconProp} />
+    </Utils.WrapOptionalTooltip>
+  ) : (
+    <Icon {...iconProp} />
+  )
 }
 
 const RenderEntityStatus: React.FC<RenderEntityStatusProp> = props => {
-  const status = props.status
+  const { status, errorMessage } = props
   let data: StatusData
 
   switch (status) {
@@ -63,7 +86,7 @@ const RenderEntityStatus: React.FC<RenderEntityStatusProp> = props => {
 
   return (
     <Layout.Horizontal spacing="small" background={statusBackground} padding={'small'} className={css.syncStatus}>
-      {iconProp && <Icon {...iconProp}></Icon>}
+      {iconProp && <RenderStatusIcon iconProp={iconProp} status={status} errorMessage={errorMessage} />}
       <Text color={highlightedColor}>{status}</Text>
     </Layout.Horizontal>
   )
@@ -93,7 +116,7 @@ const RenderEntityDetails: Renderer<CellProps<GitFullSyncEntityInfoDTO>> = ({ ro
 const RenderColumnEntityStatus: Renderer<CellProps<GitFullSyncEntityInfoDTO>> = ({ row }) => {
   const data = row.original
 
-  return data?.syncStatus ? <RenderEntityStatus status={data.syncStatus} /> : <></>
+  return data?.syncStatus ? <RenderEntityStatus status={data.syncStatus} errorMessage={data.errorMessage} /> : <></>
 }
 
 const RenderColumnEntityType: Renderer<CellProps<GitFullSyncEntityInfoDTO>> = ({ row }) => {

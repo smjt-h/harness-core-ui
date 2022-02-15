@@ -1,7 +1,7 @@
 {
   "name": "nextgenui",
   "description": "Harness Inc",
-  "version": "0.286.0",
+  "version": "0.287.0",
   "author": "Harness Inc",
   "license": "Harness Inc",
   "homepage": "http://app.harness.io/",
@@ -48,7 +48,7 @@
     "generate-certificate": "sh scripts/generate-certificate.sh",
     "build-docker": "sh scripts/docker-build.sh",
     "lighthouse": "node scripts/lighthouse/lighthouse.js",
-    "custom-coverage": "npx new-files-coverage-check --e !**/*.test.tsx !**/*.test.ts !**/*.snap !**/*.js !**/*.scss"
+    "custom-coverage": "npx new-files-coverage-check --e !**/*.test.tsx !**/*.test.ts !**/*.snap !**/*.js !**/*.scss !**/*.mock.ts !**/*.spec.ts !**/*.d.ts !**/*.json !**/*.types.ts !**/*.yaml !**cypress/**"
   },
   "dependencies": {
     "@blueprintjs/core": "3.26.1",
@@ -59,7 +59,7 @@
     "@harness/monaco-yaml": "^1.0.0",
     "@harness/ng-tooltip": "^1.30.68",
     "@harness/telemetry": "^1.0.37",
-    "@harness/uicore": "^2.8.0",
+    "@harness/uicore": "^2.14.0",
     "@harness/use-modal": "1.1.0",
     "@popperjs/core": "^2.4.2",
     "@projectstorm/react-diagrams-core": "^6.6.0",

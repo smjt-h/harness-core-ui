@@ -13,6 +13,7 @@ import type { StepElementConfig } from 'services/cd-ng'
 import * as cdng from 'services/cd-ng'
 import * as pipelineng from 'services/pipeline-ng'
 import { TestWrapper } from '@common/utils/testUtils'
+import { MultiTypeMap } from '@common/components/MultiTypeMap/MultiTypeMap'
 import { branchStatusMock, gitConfigs, sourceCodeManagers } from '@connectors/mocks/mock'
 import { PipelineContext } from '@pipeline/components/PipelineStudio/PipelineContext/PipelineContext'
 import { setFormikRef, Step, StepProps, StepViewType, StepFormikRef } from '@pipeline/components/AbstractSteps/Step'
@@ -206,6 +207,10 @@ const renderUI = (props: StepProps<any>): JSX.Element => {
           {
             name: 'description',
             type: TransformValuesTypes.Text
+          },
+          {
+            name: 'spec.envVariables',
+            type: TransformValuesTypes.Map
           }
         ])
         onUpdate?.(schemaValues)
@@ -223,6 +228,13 @@ const renderUI = (props: StepProps<any>): JSX.Element => {
               isIdentifierEditable={isNewStep}
               inputLabel={'Name'}
               inputGroupProps={{ disabled: readonly }}
+            />
+            <MultiTypeMap
+              name={'spec.envVariables'}
+              multiTypeFieldSelectorProps={{
+                label: 'Environment Variables'
+              }}
+              disabled={readonly}
             />
           </FormikForm>
         )
@@ -246,7 +258,11 @@ class StepOne extends Step<any> {
       connectorRef: 'harnessImage',
       image: 'alpine',
       command: "echo 'run'",
-      privileged: false
+      privileged: false,
+      envVariables: {
+        variable1: 'some-value',
+        'variable.path': 'some-value'
+      }
     }
   }
   renderStep(props: StepProps<any>): JSX.Element {
@@ -373,6 +389,23 @@ describe('Right Drawer tests', () => {
       act(() => {
         fireEvent.click(applyBtn)
       })
+      expect(pipelineContextMock.updateStage).toHaveBeenCalled()
+      expect(pipelineContextMock.updateStage).toHaveBeenCalledWith(updateStageFnArg1)
+    })
+
+    test('Step save succeeds with allowed key values in step configuration', async () => {
+      const { container, findByText } = render(
+        <PipelineContext.Provider value={pipelineContextMock}>
+          <TestWrapper defaultAppStoreValues={{ featureFlags: { NG_TEMPLATES: true } }}>
+            <RightDrawer />
+          </TestWrapper>
+        </PipelineContext.Provider>
+      )
+      const applyBtn = await findByText('applyChanges')
+      act(() => {
+        fireEvent.click(applyBtn)
+      })
+      expect(container).toMatchSnapshot()
       expect(pipelineContextMock.updateStage).toHaveBeenCalled()
       expect(pipelineContextMock.updateStage).toHaveBeenCalledWith(updateStageFnArg1)
     })

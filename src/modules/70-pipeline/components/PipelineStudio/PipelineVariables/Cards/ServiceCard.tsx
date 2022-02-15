@@ -8,15 +8,16 @@
 import React from 'react'
 import { Color, FontVariation, MultiTypeInputType, NestedAccordionPanel, Text } from '@wings-software/uicore'
 
-import { isEmpty, lowerCase } from 'lodash-es'
-import type { ServiceConfig, ServiceSpec } from 'services/cd-ng'
+import { isEmpty, lowerCase, set } from 'lodash-es'
+import produce from 'immer'
+import type { ServiceConfig, ServiceSpec, StageElementConfig } from 'services/cd-ng'
 import { StepType } from '@pipeline/components/PipelineSteps/PipelineStepInterface'
 import { StepWidget } from '@pipeline/components/AbstractSteps/StepWidget'
 import { StepViewType } from '@pipeline/components/AbstractSteps/Step'
-import { usePipelineContext } from '@pipeline/components/PipelineStudio/PipelineContext/PipelineContext'
 import { VariablesListTable } from '@pipeline/components/VariablesListTable/VariablesListTable'
 import { useStrings } from 'framework/strings'
 import VariableListTagRow from '@pipeline/components/VariablesListTable/VariableListTagRow'
+import type { AbstractStepFactory } from '@pipeline/components/AbstractSteps/AbstractStepFactory'
 import VariableAccordionSummary from '../VariableAccordionSummary'
 import type { PipelineVariablesData } from '../types'
 import css from '../PipelineVariables.module.scss'
@@ -34,6 +35,12 @@ export interface ServiceCardProps {
   readonly?: boolean
   path?: string
   allowableTypes: MultiTypeInputType[]
+  stepsFactory: AbstractStepFactory
+}
+
+export interface ServiceCardPanelProps extends Omit<ServiceCardProps, 'onUpdateServiceConfig'> {
+  originalStage: StageElementConfig
+  updateStage: (stage: StageElementConfig) => Promise<void>
 }
 
 export function ServiceCard(props: ServiceCardProps): React.ReactElement {
@@ -44,9 +51,9 @@ export function ServiceCard(props: ServiceCardProps): React.ReactElement {
     stageIdentifier,
     onUpdateServiceConfig,
     readonly,
-    allowableTypes
+    allowableTypes,
+    stepsFactory
   } = props
-  const { stepsFactory } = usePipelineContext()
   const { getString } = useStrings()
   return (
     <React.Fragment>
@@ -84,8 +91,28 @@ export function ServiceCard(props: ServiceCardProps): React.ReactElement {
   )
 }
 
-export function ServiceCardPanel(props: ServiceCardProps): React.ReactElement {
+export function ServiceCardPanel(props: ServiceCardPanelProps): React.ReactElement {
   const { getString } = useStrings()
+  const { updateStage, originalStage, ...rest } = props
+
+  const onUpdateServiceConfig = React.useCallback(
+    (serviceSpec: ServiceSpec) => {
+      updateStage(
+        produce(originalStage, draft => {
+          if (serviceSpec.artifacts) {
+            set(draft, 'spec.serviceConfig.serviceDefinition.spec.artifacts', serviceSpec.artifacts)
+          }
+          if (serviceSpec.manifests) {
+            set(draft, 'spec.serviceConfig.serviceDefinition.spec.manifest', serviceSpec.manifests)
+          }
+          if (serviceSpec.variables) {
+            set(draft, 'spec.serviceConfig.serviceDefinition.spec.variables', serviceSpec.variables)
+          }
+        })
+      )
+    },
+    [originalStage, updateStage]
+  )
 
   return (
     <NestedAccordionPanel
@@ -102,7 +129,7 @@ export function ServiceCardPanel(props: ServiceCardProps): React.ReactElement {
       }
       panelClassName={css.panel}
       summaryClassName={css.accordianSummaryL1}
-      details={<ServiceCard {...props} path={`${props.path}.Service`} />}
+      details={<ServiceCard {...rest} onUpdateServiceConfig={onUpdateServiceConfig} path={`${props.path}.Service`} />}
       collapseProps={{
         keepChildrenMounted: true
       }}
