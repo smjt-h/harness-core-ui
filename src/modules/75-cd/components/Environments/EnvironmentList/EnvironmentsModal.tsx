@@ -87,7 +87,7 @@ export const NewEditEnvironmentModalYaml: React.FC<NewEditEnvironmentModalProps>
           showError(getString('common.validation.fieldIsRequired', { name: 'Identifier' }))
         } else if (!values.type) {
           showError(getString('fieldRequired', { field: 'Type' }))
-        } else if (isEdit && id != values.identifier) {
+        } else if (isEdit && id !== values.identifier) {
           showError(getString('cd.editIdError', { id: id }))
         } else if (isEdit && !isEnvironment) {
           const response = await updateEnvironment({
