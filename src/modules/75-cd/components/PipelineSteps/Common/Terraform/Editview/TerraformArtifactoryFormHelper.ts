@@ -9,6 +9,15 @@ import { cloneDeep, unset, size, isUndefined } from 'lodash-es'
 import { TerraformStoreTypes } from '../TerraformInterfaces'
 
 export const formatInitialValues = (isConfig: boolean, prevStepData: any, isTerraformPlan: boolean) => {
+  const defaultArtifacts = [
+    {
+      artifactFile: {
+        artifactPathExpression: undefined,
+        name: undefined,
+        path: undefined
+      }
+    }
+  ]
   if (isConfig && isTerraformPlan) {
     return {
       spec: {
@@ -18,7 +27,8 @@ export const formatInitialValues = (isConfig: boolean, prevStepData: any, isTerr
               spec: {
                 repositoryName:
                   prevStepData.formValues?.spec?.configuration?.configFiles?.store.spec?.repositoryName || '',
-                artifacts: prevStepData.formValues?.spec?.configuration?.configFiles?.store.spec?.artifacts || []
+                artifacts:
+                  prevStepData.formValues?.spec?.configuration?.configFiles?.store.spec?.artifacts || defaultArtifacts
               }
             }
           }
@@ -36,7 +46,9 @@ export const formatInitialValues = (isConfig: boolean, prevStepData: any, isTerr
               spec: {
                 repositoryName:
                   prevStepData.formValues?.spec?.configuration?.spec?.configFiles?.store.spec?.repositoryName || '',
-                artifacts: prevStepData.formValues?.spec?.configuration?.spec?.configFiles?.store.spec?.artifacts || []
+                artifacts:
+                  prevStepData.formValues?.spec?.configuration?.spec?.configFiles?.store.spec?.artifacts ||
+                  defaultArtifacts
               }
             }
           }
@@ -53,7 +65,7 @@ export const formatInitialValues = (isConfig: boolean, prevStepData: any, isTerr
         store: {
           spec: {
             repositoryName: prevStepData?.varFile?.spec?.store?.spec?.repositoryName || '',
-            artifacts: prevStepData?.varFile?.spec?.store?.spec?.artifacts || []
+            artifacts: prevStepData?.varFile?.spec?.store?.spec?.artifacts || defaultArtifacts
           }
         }
       }

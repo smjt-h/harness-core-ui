@@ -43,16 +43,6 @@ interface TFRemoteProps {
   isTerraformPlan: boolean
 }
 
-const defaultArtifacts = [
-  {
-    artifactFile: {
-      artifactPathExpression: undefined,
-      name: undefined,
-      path: undefined
-    }
-  }
-]
-
 export const TFArtifactoryForm: React.FC<StepProps<any> & TFRemoteProps> = ({
   previousStep,
   prevStepData,
@@ -245,66 +235,63 @@ export const TFArtifactoryForm: React.FC<StepProps<any> & TFRemoteProps> = ({
                     render={arrayHelpers => {
                       return (
                         <>
-                          {map(
-                            selectedArtifacts.length > 0 ? selectedArtifacts : defaultArtifacts,
-                            (artifact: PathInterface, index: number) => {
-                              const key = `artifacts-${index}`
-                              const rowArtifacts = artifacts && artifacts[key] ? artifacts[key] : []
-                              const value = { label: artifact.artifactFile.name, value: artifact.artifactFile.path }
-                              /* istanbul ignore next */
-                              return (
+                          {map(selectedArtifacts, (artifact: PathInterface, index: number) => {
+                            const key = `artifacts-${index}`
+                            const rowArtifacts = artifacts && artifacts[key] ? artifacts[key] : []
+                            const value = { label: artifact.artifactFile.name, value: artifact.artifactFile.path }
+                            /* istanbul ignore next */
+                            return (
+                              <Layout.Horizontal
+                                key={`${artifact}-${index}`}
+                                flex={{ distribution: 'space-between' }}
+                                style={{ alignItems: 'end' }}
+                              >
                                 <Layout.Horizontal
+                                  spacing="medium"
+                                  style={{ alignItems: 'baseline' }}
+                                  className={css.tfContainer}
                                   key={`${artifact}-${index}`}
-                                  flex={{ distribution: 'space-between' }}
-                                  style={{ alignItems: 'end' }}
+                                  draggable={false}
                                 >
-                                  <Layout.Horizontal
-                                    spacing="medium"
-                                    style={{ alignItems: 'baseline' }}
-                                    className={css.tfContainer}
-                                    key={`${artifact}-${index}`}
-                                    draggable={false}
-                                  >
-                                    <FormInput.Text
-                                      onChange={(val: React.ChangeEvent<HTMLInputElement>) => {
-                                        setFilePathIndex({ index, path: val.target?.value })
-                                        updateSelectedArtifact(index, '', '')
-                                      }}
-                                      name={`${
-                                        tfArtifactoryFormInputNames(isConfig).artifacts
-                                      }[${index}].artifactFile.artifactPathExpression`}
-                                      label=""
-                                      style={{ width: 240 }}
-                                    />
-                                    <FormInput.Select
-                                      name={`${
-                                        tfArtifactoryFormInputNames(isConfig).artifacts
-                                      }[${index}].artifactFile.name`}
-                                      label=""
-                                      items={rowArtifacts}
-                                      value={value}
-                                      style={{ width: 240 }}
-                                      disabled={ArtifactsLoading}
-                                      placeholder={getString(
-                                        ArtifactsLoading || ArtifactRepoLoading ? 'common.loading' : 'cd.selectArtifact'
-                                      )}
-                                      onChange={val => updateSelectedArtifact(index, val.value as string, val.label)}
-                                    />
-                                    {!isConfig && (
-                                      <Button
-                                        minimal
-                                        icon="main-trash"
-                                        data-testid={`remove-artifact-${index}`}
-                                        onClick={() => {
-                                          arrayHelpers.remove(index)
-                                        }}
-                                      />
+                                  <FormInput.Text
+                                    onChange={(val: React.ChangeEvent<HTMLInputElement>) => {
+                                      setFilePathIndex({ index, path: val.target?.value })
+                                      updateSelectedArtifact(index, '', '')
+                                    }}
+                                    name={`${
+                                      tfArtifactoryFormInputNames(isConfig).artifacts
+                                    }[${index}].artifactFile.artifactPathExpression`}
+                                    label=""
+                                    style={{ width: 240 }}
+                                  />
+                                  <FormInput.Select
+                                    name={`${
+                                      tfArtifactoryFormInputNames(isConfig).artifacts
+                                    }[${index}].artifactFile.name`}
+                                    label=""
+                                    items={rowArtifacts}
+                                    value={value}
+                                    style={{ width: 240 }}
+                                    disabled={ArtifactsLoading}
+                                    placeholder={getString(
+                                      ArtifactsLoading || ArtifactRepoLoading ? 'common.loading' : 'cd.selectArtifact'
                                     )}
-                                  </Layout.Horizontal>
+                                    onChange={val => updateSelectedArtifact(index, val.value as string, val.label)}
+                                  />
+                                  {!isConfig && (
+                                    <Button
+                                      minimal
+                                      icon="main-trash"
+                                      data-testid={`remove-artifact-${index}`}
+                                      onClick={() => {
+                                        arrayHelpers.remove(index)
+                                      }}
+                                    />
+                                  )}
                                 </Layout.Horizontal>
-                              )
-                            }
-                          )}
+                              </Layout.Horizontal>
+                            )
+                          })}
                           {!isConfig && (
                             <Layout.Horizontal>
                               <Button
