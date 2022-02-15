@@ -1,6 +1,7 @@
 import type { RefObject } from 'react'
 import type { StageElementWrapperConfig } from 'services/cd-ng'
-
+const INITIAL_ZOOM_LEVEL = 1
+const ZOOM_INC_DEC_LEVEL = 0.1
 const getFinalSVGArrowPath = (parentId: string, id1 = '', id2 = '', isParallelNode = false): string => {
   if (!parentId) {
     return ''
@@ -146,4 +147,10 @@ const getParallelNodeLinks = (
   })
 }
 
-export { getFinalSVGArrowPath, setupDragEventListeners, getSVGLinksFromPipeline }
+export {
+  getFinalSVGArrowPath,
+  setupDragEventListeners,
+  getSVGLinksFromPipeline,
+  ZOOM_INC_DEC_LEVEL,
+  INITIAL_ZOOM_LEVEL
+}

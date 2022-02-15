@@ -2,7 +2,11 @@
   position: absolute;
   bottom: 25%;
   right: var(--spacing-xxlarge);
+  display: flex;
+  flex-direction: column;
+  gap: var(--spacing-medium);
 }
 .buttongroup {
   display: flex;
+  flex-direction: column;
 }

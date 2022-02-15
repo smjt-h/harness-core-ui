@@ -1,13 +1,12 @@
 import React from 'react'
 import { ButtonVariation, ButtonGroup, Button } from '@harness/uicore'
+import { ZOOM_INC_DEC_LEVEL, INITIAL_ZOOM_LEVEL } from '../constants'
 import css from './GraphActions.module.scss'
 interface GraphActionProps {
   setGraphScale: (data: number) => void
   graphScale: number
   handleScaleToFit: () => void
 }
-const INITIAL_ZOOM_LEVEL = 1
-const ZOOM_INC_DEC_LEVEL = 1
 const GraphActions = ({ setGraphScale, graphScale, handleScaleToFit }: GraphActionProps): React.ReactElement => {
   return (
     <div className={css.vertical}>

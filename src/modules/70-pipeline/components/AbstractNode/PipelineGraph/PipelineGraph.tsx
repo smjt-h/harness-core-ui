@@ -1,13 +1,13 @@
 /* eslint-disable no-console */
 import React, { useEffect, useLayoutEffect, useState, useRef } from 'react'
-import { cloneDeep, defaultTo } from 'lodash-es'
-import classNames from 'classnames'
+import { cloneDeep } from 'lodash-es'
 import type { PipelineInfoConfig, StageElementWrapperConfig } from 'services/cd-ng'
 import { stageTypeToIconMap } from '@pipeline/components/PipelineInputSetForm/PipelineInputSetForm'
 import { Node, NodeType } from '../Node'
-import { getFinalSVGArrowPath, getSVGLinksFromPipeline, setupDragEventListeners } from './utils'
-import css from './PipelineGraph.module.scss'
+import { getFinalSVGArrowPath, getSVGLinksFromPipeline, INITIAL_ZOOM_LEVEL, setupDragEventListeners } from './utils'
 import GraphActions from '../GraphActions/GraphActions'
+import { PipelineGraphRecursive } from './PipelineGraphNode'
+import css from './PipelineGraph.module.scss'
 
 export interface PipelineGraphProps {
   pipeline: PipelineInfoConfig
@@ -17,6 +17,7 @@ const PipelineGraph = ({ pipeline, getNode }: PipelineGraphProps): React.ReactEl
   const [svgPath, setSvgPath] = useState<string[]>([])
   const [treeRectangle, setTreeRectangle] = useState<DOMRect | void>()
   const [state, setState] = useState<StageElementWrapperConfig[]>([])
+  const [graphScale, setGraphScale] = useState(INITIAL_ZOOM_LEVEL)
   const canvasRef = useRef<HTMLDivElement>(null)
 
   const updateTreeRect = (): void => {
@@ -88,10 +89,8 @@ const PipelineGraph = ({ pipeline, getNode }: PipelineGraphProps): React.ReactEl
         <SVGComponent svgPath={svgPath} />
       </div>
       <GraphActions
-        setGraphScale={function (data: number): void {
-          throw new Error('Function not implemented.')
-        }}
-        graphScale={0}
+        setGraphScale={setGraphScale}
+        graphScale={graphScale}
         handleScaleToFit={function (): void {
           throw new Error('Function not implemented.')
         }}
@@ -112,68 +111,4 @@ const SVGComponent = ({ svgPath }: SVGComponentProps): React.ReactElement => (
   </svg>
 )
 
-const PipelineGraphRecursive = ({
-  stages,
-  getNode
-}: {
-  stages?: StageElementWrapperConfig[]
-  getNode: (type?: string | undefined) => Node | undefined
-}): React.ReactElement => {
-  return (
-    <div id="tree-container" className={classNames(css.graphTree, css.common)}>
-      <div>
-        <div id={NodeType.StartNode.toString()} className={classNames(css.graphNode)}>
-          {getNode(NodeType.StartNode)?.render?.()}
-        </div>
-      </div>
-      {stages?.map((stage, index) => {
-        return (
-          <PipelineGraphNode
-            stage={stage.parallel ? stage.parallel : stage}
-            key={stage.stage ? stage.stage?.identifier : index}
-            getNode={getNode}
-          />
-        )
-      })}
-      <div>
-        <div id={NodeType.EndNode.toString()} className={classNames(css.graphNode)}>
-          {getNode(NodeType.EndNode)?.render?.()}
-        </div>
-      </div>
-    </div>
-  )
-}
-
-interface PipelineGraphNode {
-  className?: string
-  stage: StageElementWrapperConfig | StageElementWrapperConfig[]
-  getNode: (type?: string | undefined) => Node | undefined
-}
-const PipelineGraphNode = ({ className, stage, getNode }: PipelineGraphNode): React.ReactElement => {
-  const hasParallelStages = Array.isArray(stage)
-  let firstStage, restStages
-  if (hasParallelStages) {
-    ;[firstStage, ...restStages] = stage
-  }
-  const stageDetails = defaultTo(firstStage, stage) as StageElementWrapperConfig
-  return (
-    <div>
-      {getNode(stageDetails?.stage?.nodeType)?.render?.({
-        ...stageDetails?.stage,
-        className: classNames(css.graphNode, className)
-      })}
-      {/* <div className={classNames(css.graphNode, className)}>{stageDetails?.stage?.name}</div> */}
-      <>
-        {restStages?.map(currentStage => (
-          <PipelineGraphNode
-            getNode={getNode}
-            key={currentStage.stage?.identifier}
-            className={css.parallel}
-            stage={currentStage}
-          />
-        ))}
-      </>
-    </div>
-  )
-}
 export default PipelineGraph
