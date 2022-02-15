@@ -15,21 +15,15 @@
 }
 
 .graph-node {
-  background: #fff;
   width: 90px;
   height: 40px;
   margin-top: 12px;
-  cursor: move;
   opacity: 1;
-  background: #fff;
-  border-color: solid 1px #c8c6c6;
   position: relative;
   border-radius: 8px;
   display: flex;
   justify-content: center;
   align-items: center;
-  box-shadow: 0px 2px 4px 0px #60617029;
-  font-size: 12px;
 }
 
 .common {
