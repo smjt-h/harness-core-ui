@@ -68,7 +68,7 @@ exports[`CDFirstGenTrial Test cases it should render the dialog with no deployme
             <span
               class="bp3-button-text"
             >
-              cd.cdSwitchToFirstGen.startWith14DayTrial
+              cd.cdLaunchText
             </span>
           </button>
           <p
@@ -157,7 +157,7 @@ exports[`CDFirstGenTrial Test cases it should render the dialog with valid deplo
             <span
               class="bp3-button-text"
             >
-              cd.cdSwitchToFirstGen.startWith14DayTrial
+              cd.cdLaunchText
             </span>
           </button>
           <p
@@ -274,7 +274,7 @@ exports[`CDFirstGenTrial Test cases it should render the dialog with valid deplo
             <span
               class="bp3-button-text"
             >
-              cd.cdSwitchToFirstGen.startWith14DayTrial
+              cd.cdLaunchText
             </span>
           </button>
           <p
