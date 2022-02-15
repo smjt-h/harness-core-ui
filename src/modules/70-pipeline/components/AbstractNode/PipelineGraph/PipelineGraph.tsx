@@ -7,6 +7,7 @@ import { stageTypeToIconMap } from '@pipeline/components/PipelineInputSetForm/Pi
 import { Node, NodeType } from '../Node'
 import { getFinalSVGArrowPath, getSVGLinksFromPipeline, setupDragEventListeners } from './utils'
 import css from './PipelineGraph.module.scss'
+import GraphActions from '../GraphActions/GraphActions'
 
 export interface PipelineGraphProps {
   pipeline: PipelineInfoConfig
@@ -86,6 +87,15 @@ const PipelineGraph = ({ pipeline, getNode }: PipelineGraphProps): React.ReactEl
         <PipelineGraphRecursive getNode={getNode} stages={state} />
         <SVGComponent svgPath={svgPath} />
       </div>
+      <GraphActions
+        setGraphScale={function (data: number): void {
+          throw new Error('Function not implemented.')
+        }}
+        graphScale={0}
+        handleScaleToFit={function (): void {
+          throw new Error('Function not implemented.')
+        }}
+      />
     </div>
   )
 }
