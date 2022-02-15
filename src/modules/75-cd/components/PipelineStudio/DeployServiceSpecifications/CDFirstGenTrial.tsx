@@ -9,6 +9,8 @@ import React from 'react'
 import { Button, Color, Container, Layout, Text, useToaster } from '@wings-software/uicore'
 import cdImage from '@cd/modals/images/cd.png'
 import { useUpdateLSDefaultExperience } from '@common/hooks/useUpdateLSDefaultExperience'
+import { useLicenseStore } from 'framework/LicenseStore/LicenseStoreContext'
+import { ModuleName } from 'framework/types/ModuleName'
 import { Experiences } from '@common/constants/Utils'
 import { useUpdateAccountDefaultExperienceNG } from 'services/cd-ng'
 import { useStrings } from 'framework/strings'
@@ -24,6 +26,8 @@ export const CDFirstGenTrial: React.FC<PropsInterface> = ({ selectedDeploymentTy
   const { getString } = useStrings()
   const { showError } = useToaster()
   const { updateLSDefaultExperience } = useUpdateLSDefaultExperience()
+  const { licenseInformation } = useLicenseStore()
+  const isTrialAccount = licenseInformation[ModuleName.CD]?.licenseType === 'TRIAL'
   const title = selectedDeploymentType?.label
     ? `${selectedDeploymentType.label} is available on Harness CD First Generation`
     : 'Harness CD First Generation'
@@ -82,12 +86,16 @@ export const CDFirstGenTrial: React.FC<PropsInterface> = ({ selectedDeploymentTy
               disabled={updatingDefaultExperience}
               intent="primary"
               onClick={async () => {
-                await handleUpdateDefaultExperience()
-                window.location.href = `${window.location.href.split('/ng/')[0]}/#/account/${accountId}/onboarding`
+                if (isTrialAccount) {
+                  await handleUpdateDefaultExperience()
+                  window.location.href = `${window.location.href.split('/ng/')[0]}/#/account/${accountId}/onboarding`
+                } else {
+                  window.location.href = `${window.location.href.split('/ng/')[0]}/#/account/${accountId}/dashboard`
+                }
               }}
               data-testid="continueCg"
             >
-              {getString('cd.cdSwitchToFirstGen.startWith14DayTrial')}
+              {isTrialAccount ? getString('cd.cdSwitchToFirstGen.startWith14DayTrial') : getString('cd.cdLaunchText')}
             </Button>
             <Text padding={{ top: 'xxxlarge' }}>
               {
