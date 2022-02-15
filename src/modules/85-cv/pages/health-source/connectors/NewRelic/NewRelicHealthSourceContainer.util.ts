@@ -5,10 +5,8 @@
  * https://polyformproject.org/wp-content/uploads/2020/06/PolyForm-Shield-1.0.0.txt.
  */
 
-import type { SelectOption } from '@wings-software/uicore'
 import { isEmpty } from 'lodash-es'
 import { v4 as uuid } from 'uuid'
-import type { UseStringsReturn } from 'framework/strings'
 import type { NewRelicHealthSourceSpec, NewRelicMetricDefinition, RiskProfile } from 'services/cv'
 import type { UpdatedHealthSource } from '../../HealthSourceDrawer/HealthSourceDrawerContent.types'
 import { HealthSourceTypes } from '../../types'
@@ -150,43 +148,4 @@ export const createNewRelicData = (sourceData: any): NewRelicData => {
   }
 
   return newRelicData
-}
-
-export function updateSelectedMetricsMap({ updatedMetric, oldMetric, mappedMetrics, formikValues }: any): any {
-  const updatedMap = new Map(mappedMetrics)
-
-  // in the case where user updates metric name, update the key for current value
-  if (oldMetric !== formikValues?.metricName) {
-    updatedMap.delete(oldMetric)
-  }
-
-  // if newly created metric then create the new entry
-  if (!updatedMap.has(updatedMetric)) {
-    updatedMap.set(updatedMetric, {
-      ...{
-        sli: false,
-        healthScore: false,
-        continuousVerification: false
-      }
-    })
-  }
-
-  // update map with current form data
-  if (formikValues?.metricName) {
-    updatedMap.set(formikValues.metricName, { ...formikValues })
-  }
-  return { selectedMetric: updatedMetric, mappedMetrics: updatedMap }
-}
-
-export function initializeGroupNames(
-  mappedMetrics: Map<string, any>,
-  getString: UseStringsReturn['getString']
-): SelectOption[] {
-  const groupNames = Array.from(mappedMetrics?.entries())
-    .map(metric => {
-      const { groupName } = metric?.[1] || {}
-      return groupName || null
-    })
-    .filter(groupItem => groupItem !== null) as SelectOption[]
-  return [{ label: getString('cv.addNew'), value: '' }, ...groupNames]
 }

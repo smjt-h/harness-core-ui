@@ -5,9 +5,11 @@
  * https://polyformproject.org/wp-content/uploads/2020/06/PolyForm-Shield-1.0.0.txt.
  */
 
-import { DockerArtifactSource } from '@cd/components/PipelineSteps/K8sServiceSpec/DockerArtifactSource'
-import { ECRArtifactSource } from '@cd/components/PipelineSteps/K8sServiceSpec/ECRArtifactSource'
-import { GCRArtifactSource } from '@cd/components/PipelineSteps/K8sServiceSpec/GCRArtifactSource'
+import { ArtifactoryArtifactSource } from '@cd/components/PipelineSteps/K8sServiceSpec/ArtifactSource/ArtifactoryArtifactSource/ArtifactoryArtifactSource'
+import { DockerArtifactSource } from '@cd/components/PipelineSteps/K8sServiceSpec/ArtifactSource/DockerArtifactSource/DockerArtifactSource'
+import { ECRArtifactSource } from '@cd/components/PipelineSteps/K8sServiceSpec/ArtifactSource/ECRArtifactSource/ECRArtifactSource'
+import { GCRArtifactSource } from '@cd/components/PipelineSteps/K8sServiceSpec/ArtifactSource/GCRArtifactSource/GCRArtifactSource'
+import { NexusArtifactSource } from '@cd/components/PipelineSteps/K8sServiceSpec/ArtifactSource/NexusArtifactSource/NexusArtifactSource'
 import type { ArtifactSourceBase } from './ArtifactSourceBase'
 
 export class ArtifactSourceBaseFactory {
@@ -36,4 +38,6 @@ const artifactSourceBaseFactory = new ArtifactSourceBaseFactory()
 artifactSourceBaseFactory.registerArtifactSource(new DockerArtifactSource())
 artifactSourceBaseFactory.registerArtifactSource(new GCRArtifactSource())
 artifactSourceBaseFactory.registerArtifactSource(new ECRArtifactSource())
+artifactSourceBaseFactory.registerArtifactSource(new NexusArtifactSource())
+artifactSourceBaseFactory.registerArtifactSource(new ArtifactoryArtifactSource())
 export default artifactSourceBaseFactory

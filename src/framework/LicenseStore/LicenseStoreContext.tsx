@@ -14,7 +14,6 @@ import isEmpty from 'lodash/isEmpty'
 import { PageSpinner } from '@harness/uicore'
 import { useDeepCompareEffect } from '@common/hooks'
 import { useAppStore } from 'framework/AppStore/AppStoreContext'
-import type { Module } from '@common/interfaces/RouteInterfaces'
 
 import {
   getLastModifiedTimeForAllModuleTypesPromise,
@@ -23,6 +22,7 @@ import {
   useGetLastModifiedTimeForAllModuleTypes
 } from 'services/cd-ng'
 import { ModuleName } from 'framework/types/ModuleName'
+import type { Module } from '@common/interfaces/RouteInterfaces'
 import { useFeatureFlags } from '@common/hooks/useFeatureFlag'
 import GenericErrorPage, { GENERIC_ERROR_CODES } from '@common/pages/GenericError/GenericErrorPage'
 import { Editions } from '@common/constants/SubscriptionTypes'

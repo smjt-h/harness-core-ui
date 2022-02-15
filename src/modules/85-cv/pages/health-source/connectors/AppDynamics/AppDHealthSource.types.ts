@@ -83,7 +83,7 @@ export interface AppDynamicsFomikFormInterface {
   pathType?: string
 }
 
-export interface InitCustomFormInterface {
+export interface InitAppDCustomFormInterface {
   sli: boolean
   groupName: {
     label: string

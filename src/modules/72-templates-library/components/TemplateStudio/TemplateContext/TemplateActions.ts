@@ -21,6 +21,16 @@ export enum TemplateActions {
   Error = 'Error'
 }
 
+export enum DrawerTypes {
+  AddStep = 'AddCommand',
+  TemplateVariables = 'TemplateVariables'
+}
+
+export const DrawerSizes: Record<DrawerTypes, React.CSSProperties['width']> = {
+  [DrawerTypes.AddStep]: 700,
+  [DrawerTypes.TemplateVariables]: 876
+}
+
 export interface ActionResponse {
   error?: string
   isUpdated?: boolean

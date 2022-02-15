@@ -337,8 +337,6 @@ permissions: Permissions
 activityLog: Activity Log
 selectAnExistingConnector: Select an existing Connector
 authentication: Authentication
-preCommandLabel: PreCommand
-postCommandLabel: PostCommand
 consoleView: Console View
 commandPlaceholder: |
   npm install
@@ -976,7 +974,7 @@ validation:
   validIdRegex: Identifier must start with an letter or _ and can then be followed by alphanumerics, _, or $
   # Replace if validIdRegex will apply the same rules
   validStepIdRegex: Identifier can only contain alphanumerics and _
-  validKeyRegex: Keys can only contain alphanumerics and _
+  validKeyRegex: Keys can only contain alphanumerics and _ with an optional dot(.) in the middle
   validOutputVariableRegex: Output variables can only contain alphanumerics and _
   validReportPathRegex: Report paths should end with .xml
   validStepNameRegex: Step Name can only contain alphanumerics, spaces, _, and -

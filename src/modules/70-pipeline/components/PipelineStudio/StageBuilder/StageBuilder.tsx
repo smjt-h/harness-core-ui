@@ -356,7 +356,7 @@ const StageBuilder: React.FC<unknown> = (): JSX.Element => {
     updatePipeline({ ...(pipelineTemp || {}), ...pipeline }).then(() => {
       if (openSetupAfterAdd) {
         setSelectionRef.current({ stageId: newStage.stage?.identifier })
-        moveStageToFocusDelayed(engine, newStage.stage?.identifier || '', true, false)
+        moveStageToFocusDelayed(engine, newStage.stage?.identifier || '', true)
       }
     })
   }
@@ -460,7 +460,7 @@ const StageBuilder: React.FC<unknown> = (): JSX.Element => {
                 onClickGroupStage: (stageId: string) => {
                   dynamicPopoverHandler?.hide()
                   setSelectionRef.current({ stageId })
-                  moveStageToFocusDelayed(engine, stageId, true, false)
+                  moveStageToFocusDelayed(engine, stageId, true)
                 },
                 stagesMap,
                 renderPipelineStage,
@@ -503,12 +503,12 @@ const StageBuilder: React.FC<unknown> = (): JSX.Element => {
               setSelectionRef.current({ stageId: undefined, sectionId: undefined })
             } else {
               setSelectionRef.current({ stageId: data?.stage?.identifier, sectionId: undefined })
-              moveStageToFocusDelayed(engine, data?.stage?.identifier, true, false)
+              moveStageToFocusDelayed(engine, data?.stage?.identifier, true)
             }
           } /* istanbul ignore else */ else if (!isSplitViewOpen) {
             if (stageMap.has(data?.stage?.identifier || '')) {
               setSelectionRef.current({ stageId: data?.stage?.identifier })
-              moveStageToFocusDelayed(engine, data?.stage?.identifier || '', true, false)
+              moveStageToFocusDelayed(engine, data?.stage?.identifier || '', true)
             } else {
               // TODO: check if this is unused code
               dynamicPopoverHandler?.show(

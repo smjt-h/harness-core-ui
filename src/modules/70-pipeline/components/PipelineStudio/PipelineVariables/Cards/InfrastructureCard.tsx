@@ -14,10 +14,10 @@ import { useStrings } from 'framework/strings'
 import type { StepType } from '@pipeline/components/PipelineSteps/PipelineStepInterface'
 import { StepWidget } from '@pipeline/components/AbstractSteps/StepWidget'
 import { StepViewType } from '@pipeline/components/AbstractSteps/Step'
-import { usePipelineContext } from '@pipeline/components/PipelineStudio/PipelineContext/PipelineContext'
 import { VariablesListTable } from '@pipeline/components/VariablesListTable/VariablesListTable'
 
 import VariableListTagRow from '@pipeline/components/VariablesListTable/VariableListTagRow'
+import type { AbstractStepFactory } from '@pipeline/components/AbstractSteps/AbstractStepFactory'
 import { ExecutionCardPanel } from './ExecutionCard'
 import type { PipelineVariablesData } from '../types'
 import VariableAccordionSummary from '../VariableAccordionSummary'
@@ -33,6 +33,7 @@ export interface InfrastructureCardProps {
   path?: string
   readonly?: boolean
   allowableTypes: MultiTypeInputType[]
+  stepsFactory: AbstractStepFactory
 }
 
 export function InfrastructureCard(props: InfrastructureCardProps): React.ReactElement {
@@ -45,9 +46,9 @@ export function InfrastructureCard(props: InfrastructureCardProps): React.ReactE
     metadataMap,
     readonly,
     path,
-    allowableTypes
+    allowableTypes,
+    stepsFactory
   } = props
-  const { stepsFactory } = usePipelineContext()
   const { getString } = useStrings()
 
   return (
@@ -95,6 +96,7 @@ export function InfrastructureCard(props: InfrastructureCardProps): React.ReactE
           allowableTypes={allowableTypes}
           onUpdateExecution={onUpdateInfrastructureProvisioner}
           path={`${props.path}.Provisioner`}
+          stepsFactory={stepsFactory}
         />
       ) : /* istanbul ignore next */ null}
     </React.Fragment>

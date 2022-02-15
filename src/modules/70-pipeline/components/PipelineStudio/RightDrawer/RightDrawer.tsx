@@ -189,7 +189,7 @@ const updateWithNodeIdentifier = async (
   drawerType: DrawerTypes,
   processNode: StepElementConfig & TemplateStepNode,
   updatePipelineView: (data: PipelineViewData) => void,
-  updateStage: (stage: StageElementConfig, existingStage?: StageElementConfig | undefined) => Promise<void>,
+  updateStage: (stage: StageElementConfig) => Promise<void>,
   data: any,
   pipelineView: PipelineViewData
 ): Promise<void> => {
@@ -232,7 +232,7 @@ const onSubmitStep = async (
   trackEvent: TrackEvent,
   selectedStage: StageElementWrapper<StageElementConfig> | undefined,
   updatePipelineView: (data: PipelineViewData) => void,
-  updateStage: (stage: StageElementConfig, existingStage?: StageElementConfig | undefined) => Promise<void>,
+  updateStage: (stage: StageElementConfig) => Promise<void>,
   stageType: string | undefined,
   setSelectedStepId: (selectedStepId: string | undefined) => void,
   pipelineView: PipelineViewData

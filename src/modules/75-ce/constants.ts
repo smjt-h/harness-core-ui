@@ -18,12 +18,12 @@ export const allProviders: Provider[] = [
     name: 'Azure',
     value: 'azure',
     icon: 'service-azure'
+  },
+  {
+    name: 'GCP',
+    value: 'gcp',
+    icon: 'gcp'
   }
-  // {
-  //   name: 'Digital Ocean',
-  //   value: 'do',
-  //   icon: 'harness'
-  // }
 ]
 
 export const allCloudProvidersList = [
@@ -49,7 +49,13 @@ export enum PAGE_NAME {
 export enum PROVIDER_TYPES {
   AWS = 'aws',
   AZURE = 'azure',
-  DIGITAL_OCEAN = 'do'
+  GCP = 'gcp'
+}
+
+export const ceConnectorTypes: Record<string, PROVIDER_TYPES> = {
+  GcpCloudCost: PROVIDER_TYPES.GCP,
+  CEAws: PROVIDER_TYPES.AWS,
+  CEAzure: PROVIDER_TYPES.AZURE
 }
 
 type GetGraphQLAPIConfigReturnType = {

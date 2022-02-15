@@ -127,7 +127,7 @@ const UserGroupsInput: React.FC<FormikUserGroupsInput> = props => {
 
   return (
     <FormGroup
-      helperText={errorCheck(name, formik) ? <FormError errorMessage={get(formik?.errors, name)} /> : null}
+      helperText={errorCheck(name, formik) ? <FormError name={name} errorMessage={get(formik?.errors, name)} /> : null}
       intent={errorCheck(name, formik) ? Intent.DANGER : Intent.NONE}
       className={formGroupClass}
     >

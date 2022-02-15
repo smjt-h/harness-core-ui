@@ -14,6 +14,7 @@ import AccountDetails from '@auth-settings/pages/AccountOverview/views/AccountDe
 import type { AccountPathProps } from '@common/interfaces/RouteInterfaces'
 import SubscribedModules from '@auth-settings/pages/AccountOverview/views/SubscribedModules'
 import { useFeatureFlags } from '@common/hooks/useFeatureFlag'
+import AccountSettings from './views/Settings/AccountSettings'
 
 const AccountOverview: React.FC = () => {
   const { getString } = useStrings()
@@ -28,6 +29,7 @@ const AccountOverview: React.FC = () => {
       <Page.Body>
         <AccountDetails />
         {(createdFromNG || NG_LICENSES_ENABLED) && <SubscribedModules />}
+        <AccountSettings />
       </Page.Body>
     </>
   )

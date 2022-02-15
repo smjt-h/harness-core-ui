@@ -544,7 +544,7 @@ export const ConnectorReferenceField: React.FC<ConnectorReferenceFieldProps> = p
     name
   ])
 
-  const helperText = error ? <FormError errorMessage={error} /> : undefined
+  const helperText = error ? <FormError name={name} errorMessage={error} /> : undefined
   const intent = error ? Intent.DANGER : Intent.NONE
   const { getString } = useStrings()
 

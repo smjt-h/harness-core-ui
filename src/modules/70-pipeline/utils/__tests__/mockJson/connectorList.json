@@ -1,0 +1,451 @@
+{
+  "status": "SUCCESS",
+  "data": {
+    "totalPages": 19,
+    "totalItems": 185,
+    "pageItemCount": 10,
+    "pageSize": 10,
+    "content": [
+      {
+        "connector": {
+          "name": "mohit git connector",
+          "identifier": "mohit_git_connector",
+          "description": "",
+          "orgIdentifier": null,
+          "projectIdentifier": null,
+          "tags": {},
+          "type": "Github",
+          "spec": {
+            "url": "https://github.com/wings-software",
+            "validationRepo": "mohit-git-sync-local",
+            "authentication": {
+              "type": "Http",
+              "spec": {
+                "type": "UsernameToken",
+                "spec": { "username": "mohitg0795", "usernameRef": null, "tokenRef": "account.mohitgittoken" }
+              }
+            },
+            "apiAccess": { "type": "Token", "spec": { "tokenRef": "account.mohitgittoken" } },
+            "delegateSelectors": [],
+            "executeOnDelegate": true,
+            "type": "Account"
+          }
+        },
+        "createdAt": 1643634577026,
+        "lastModifiedAt": 1643634577023,
+        "status": {
+          "status": "SUCCESS",
+          "errorSummary": null,
+          "errors": null,
+          "testedAt": 1643863964231,
+          "lastTestedAt": 0,
+          "lastConnectedAt": 1643863964231
+        },
+        "activityDetails": { "lastActivityTime": 1643634577062 },
+        "harnessManaged": false,
+        "gitDetails": {
+          "objectId": null,
+          "branch": null,
+          "repoIdentifier": null,
+          "rootFolder": null,
+          "filePath": null,
+          "repoName": null
+        },
+        "entityValidityDetails": { "valid": true, "invalidYaml": null }
+      },
+      {
+        "connector": {
+          "name": "test k8",
+          "identifier": "test_k8",
+          "description": "details",
+          "orgIdentifier": null,
+          "projectIdentifier": null,
+          "tags": { "key": "value" },
+          "type": "K8sCluster",
+          "spec": {
+            "credential": {
+              "type": "ManualConfig",
+              "spec": {
+                "masterUrl": "/dummy-url",
+                "auth": { "type": "ServiceAccount", "spec": { "serviceAccountTokenRef": "account.qasva" } }
+              }
+            },
+            "delegateSelectors": []
+          }
+        },
+        "createdAt": 1643359036461,
+        "lastModifiedAt": 1643359036459,
+        "status": {
+          "status": "FAILURE",
+          "errorSummary": "Error Encountered (Unexpected error occurred while submitting task. [ http://tkp.to/q-rtQF.9mWg ]     )",
+          "errors": [
+            {
+              "reason": "Unexpected Error",
+              "message": "Unexpected error occurred while submitting task. [ http://tkp.to/q-rtQF.9mWg ]     ",
+              "code": 450
+            }
+          ],
+          "testedAt": 1643809659535,
+          "lastTestedAt": 0,
+          "lastConnectedAt": 0
+        },
+        "activityDetails": { "lastActivityTime": 1643359036486 },
+        "harnessManaged": false,
+        "gitDetails": {
+          "objectId": null,
+          "branch": null,
+          "repoIdentifier": null,
+          "rootFolder": null,
+          "filePath": null,
+          "repoName": null
+        },
+        "entityValidityDetails": { "valid": true, "invalidYaml": null }
+      },
+      {
+        "connector": {
+          "name": "KD GitHub ",
+          "identifier": "KD_GitHub",
+          "description": "test",
+          "orgIdentifier": null,
+          "projectIdentifier": null,
+          "tags": {},
+          "type": "Github",
+          "spec": {
+            "url": "https://github.com/KapilDigani",
+            "validationRepo": "test",
+            "authentication": {
+              "type": "Http",
+              "spec": {
+                "type": "UsernameToken",
+                "spec": { "username": "KapilDigani", "usernameRef": null, "tokenRef": "account.KD_GitHub_Pwd" }
+              }
+            },
+            "apiAccess": { "type": "Token", "spec": { "tokenRef": "account.KD_GitHub_PAT" } },
+            "delegateSelectors": [],
+            "executeOnDelegate": false,
+            "type": "Account"
+          }
+        },
+        "createdAt": 1642076435229,
+        "lastModifiedAt": 1642771348962,
+        "status": {
+          "status": "SUCCESS",
+          "errorSummary": null,
+          "errors": null,
+          "testedAt": 1642771330455,
+          "lastTestedAt": 0,
+          "lastConnectedAt": 1642771330455
+        },
+        "activityDetails": { "lastActivityTime": 1642771348991 },
+        "harnessManaged": false,
+        "gitDetails": {
+          "objectId": null,
+          "branch": null,
+          "repoIdentifier": null,
+          "rootFolder": null,
+          "filePath": null,
+          "repoName": null
+        },
+        "entityValidityDetails": { "valid": true, "invalidYaml": null }
+      },
+      {
+        "connector": {
+          "name": "KDVaultToekn",
+          "identifier": "KDVaultToekn",
+          "description": "",
+          "orgIdentifier": null,
+          "projectIdentifier": null,
+          "tags": {},
+          "type": "Vault",
+          "spec": {
+            "authToken": "account.KDVaultToken",
+            "basePath": "/harness",
+            "vaultUrl": "https://vaultqa.harness.io",
+            "renewalIntervalMinutes": 10,
+            "secretEngineManuallyConfigured": false,
+            "secretEngineName": "secret",
+            "secretId": null,
+            "secretEngineVersion": 2,
+            "delegateSelectors": ["harness-dev-account"],
+            "useVaultAgent": false,
+            "default": false,
+            "accessType": "TOKEN",
+            "readOnly": false
+          }
+        },
+        "createdAt": 1641972960427,
+        "lastModifiedAt": 1641972960418,
+        "status": {
+          "status": "SUCCESS",
+          "errorSummary": null,
+          "errors": null,
+          "testedAt": 1643862817161,
+          "lastTestedAt": 0,
+          "lastConnectedAt": 1643862817161
+        },
+        "activityDetails": { "lastActivityTime": 1641972960453 },
+        "harnessManaged": false,
+        "gitDetails": {
+          "objectId": null,
+          "branch": null,
+          "repoIdentifier": null,
+          "rootFolder": null,
+          "filePath": null,
+          "repoName": null
+        },
+        "entityValidityDetails": { "valid": true, "invalidYaml": null }
+      },
+      {
+        "connector": {
+          "name": "KDVault",
+          "identifier": "KDVault",
+          "description": "",
+          "orgIdentifier": null,
+          "projectIdentifier": null,
+          "tags": {},
+          "type": "Vault",
+          "spec": {
+            "authToken": "account.KDVault_authTokenRef",
+            "basePath": "/harness",
+            "vaultUrl": "https://vaultqa.harness.io",
+            "renewalIntervalMinutes": 10,
+            "secretEngineManuallyConfigured": false,
+            "secretEngineName": "secret",
+            "appRoleId": "570acf09-ef2a-144b-2fb0-14a42e06ffe3",
+            "secretId": "account.KDVaultSecret_AppRole",
+            "secretEngineVersion": 2,
+            "delegateSelectors": ["harness-dev-account"],
+            "useVaultAgent": false,
+            "default": false,
+            "accessType": "APP_ROLE",
+            "readOnly": false
+          }
+        },
+        "createdAt": 1641972466841,
+        "lastModifiedAt": 1641972688943,
+        "status": {
+          "status": "SUCCESS",
+          "errorSummary": null,
+          "errors": null,
+          "testedAt": 1643862817142,
+          "lastTestedAt": 0,
+          "lastConnectedAt": 1643862817142
+        },
+        "activityDetails": { "lastActivityTime": 1641972689144 },
+        "harnessManaged": false,
+        "gitDetails": {
+          "objectId": null,
+          "branch": null,
+          "repoIdentifier": null,
+          "rootFolder": null,
+          "filePath": null,
+          "repoName": null
+        },
+        "entityValidityDetails": { "valid": true, "invalidYaml": null }
+      },
+      {
+        "connector": {
+          "name": "123asd123",
+          "identifier": "testAmNexusAnon1",
+          "description": "Hello",
+          "orgIdentifier": null,
+          "projectIdentifier": null,
+          "tags": {},
+          "type": "Nexus",
+          "spec": {
+            "nexusServerUrl": "https://nexus2.dev.harness.io",
+            "version": "2.x",
+            "auth": { "type": "Anonymous" },
+            "delegateSelectors": []
+          }
+        },
+        "createdAt": 1641556369427,
+        "lastModifiedAt": 1641556369424,
+        "status": {
+          "status": "SUCCESS",
+          "errorSummary": null,
+          "errors": null,
+          "testedAt": 1643863939472,
+          "lastTestedAt": 0,
+          "lastConnectedAt": 1643863939472
+        },
+        "activityDetails": { "lastActivityTime": 1641556369491 },
+        "harnessManaged": false,
+        "gitDetails": {
+          "objectId": null,
+          "branch": null,
+          "repoIdentifier": null,
+          "rootFolder": null,
+          "filePath": null,
+          "repoName": null
+        },
+        "entityValidityDetails": { "valid": true, "invalidYaml": null }
+      },
+      {
+        "connector": {
+          "name": "TestAmNexusAnon",
+          "identifier": "testAmNexusAnon",
+          "description": "Hello",
+          "orgIdentifier": null,
+          "projectIdentifier": null,
+          "tags": {},
+          "type": "Nexus",
+          "spec": {
+            "nexusServerUrl": "https://nexus2.dev.harness.io",
+            "version": "2.x",
+            "auth": { "type": "Anonymous" },
+            "delegateSelectors": []
+          }
+        },
+        "createdAt": 1641555866284,
+        "lastModifiedAt": 1641555866282,
+        "status": {
+          "status": "SUCCESS",
+          "errorSummary": null,
+          "errors": null,
+          "testedAt": 1641555917735,
+          "lastTestedAt": 0,
+          "lastConnectedAt": 1641555917735
+        },
+        "activityDetails": { "lastActivityTime": 1641555866294 },
+        "harnessManaged": false,
+        "gitDetails": {
+          "objectId": null,
+          "branch": null,
+          "repoIdentifier": null,
+          "rootFolder": null,
+          "filePath": null,
+          "repoName": null
+        },
+        "entityValidityDetails": { "valid": true, "invalidYaml": null }
+      },
+      {
+        "connector": {
+          "name": "C4534",
+          "identifier": "string225",
+          "description": "string",
+          "orgIdentifier": "default",
+          "projectIdentifier": null,
+          "tags": { "property2": "string", "property1": "string" },
+          "type": "DockerRegistry",
+          "spec": {
+            "dockerRegistryUrl": "abcd",
+            "providerType": "DockerHub",
+            "auth": { "type": "Anonymous" },
+            "delegateSelectors": ["harness-dev-accout"]
+          }
+        },
+        "createdAt": 1641555612941,
+        "lastModifiedAt": 1641555612939,
+        "status": {
+          "status": "FAILURE",
+          "errorSummary": "Error Encountered (No eligible delegates to execute task [ http://tkp.to/jq.4BAcV ]        )",
+          "errors": [
+            {
+              "reason": "Unexpected Error",
+              "message": "No eligible delegates to execute task [ http://tkp.to/jq.4BAcV ]        ",
+              "code": 450
+            }
+          ],
+          "testedAt": 1641555615023,
+          "lastTestedAt": 0,
+          "lastConnectedAt": 0
+        },
+        "activityDetails": { "lastActivityTime": 1641555612949 },
+        "harnessManaged": false,
+        "gitDetails": {
+          "objectId": null,
+          "branch": null,
+          "repoIdentifier": null,
+          "rootFolder": null,
+          "filePath": null,
+          "repoName": null
+        },
+        "entityValidityDetails": { "valid": true, "invalidYaml": null }
+      },
+      {
+        "connector": {
+          "name": "amNexus",
+          "identifier": "amNexus",
+          "description": "",
+          "orgIdentifier": null,
+          "projectIdentifier": null,
+          "tags": {},
+          "type": "Nexus",
+          "spec": {
+            "nexusServerUrl": "https://nexus2.dev.harness.io",
+            "version": "2.x",
+            "auth": {
+              "type": "UsernamePassword",
+              "spec": { "username": null, "usernameRef": "account.harnessadminuser", "passwordRef": "account.pass4" }
+            },
+            "delegateSelectors": []
+          }
+        },
+        "createdAt": 1641555506465,
+        "lastModifiedAt": 1641555545239,
+        "status": {
+          "status": "SUCCESS",
+          "errorSummary": null,
+          "errors": null,
+          "testedAt": 1643863941946,
+          "lastTestedAt": 0,
+          "lastConnectedAt": 1643863941946
+        },
+        "activityDetails": { "lastActivityTime": 1641555545255 },
+        "harnessManaged": false,
+        "gitDetails": {
+          "objectId": null,
+          "branch": null,
+          "repoIdentifier": null,
+          "rootFolder": null,
+          "filePath": null,
+          "repoName": null
+        },
+        "entityValidityDetails": { "valid": true, "invalidYaml": null }
+      },
+      {
+        "connector": {
+          "name": "Test",
+          "identifier": "testAm",
+          "description": "Hello",
+          "orgIdentifier": null,
+          "projectIdentifier": null,
+          "tags": {},
+          "type": "DockerRegistry",
+          "spec": {
+            "dockerRegistryUrl": "https://ghcr.io",
+            "providerType": "Other",
+            "auth": { "type": "Anonymous" },
+            "delegateSelectors": []
+          }
+        },
+        "createdAt": 1641555317355,
+        "lastModifiedAt": 1641555317353,
+        "status": {
+          "status": "SUCCESS",
+          "errorSummary": null,
+          "errors": null,
+          "testedAt": 1643864009122,
+          "lastTestedAt": 0,
+          "lastConnectedAt": 1643864009122
+        },
+        "activityDetails": { "lastActivityTime": 1641555317360 },
+        "harnessManaged": false,
+        "gitDetails": {
+          "objectId": null,
+          "branch": null,
+          "repoIdentifier": null,
+          "rootFolder": null,
+          "filePath": null,
+          "repoName": null
+        },
+        "entityValidityDetails": { "valid": true, "invalidYaml": null }
+      }
+    ],
+    "pageIndex": 0,
+    "empty": false
+  },
+  "metaData": null,
+  "correlationId": "49005116-c082-4893-9222-683d0ba1795e"
+}

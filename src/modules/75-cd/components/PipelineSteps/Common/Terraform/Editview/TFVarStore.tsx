@@ -33,6 +33,7 @@ import { useVariablesExpression } from '@pipeline/components/PipelineStudio/Pipl
 import type { ConnectorInfoDTO } from 'services/cd-ng'
 import { Connectors } from '@connectors/constants'
 
+import { ConnectorRefSchema } from '@common/utils/Validation'
 import css from './TerraformVarfile.module.scss'
 
 export type TFVarStores = 'Git' | 'Github' | 'GitLab' | 'Bitbucket'
@@ -122,7 +123,7 @@ export const TFVarStore: React.FC<StepProps<any> & TFVarStoreProps> = ({
           varFile: Yup.object().shape({
             store: Yup.object().shape({
               spec: Yup.object().shape({
-                connectorRef: Yup.string().required(getString('pipelineSteps.build.create.connectorRequiredError'))
+                connectorRef: ConnectorRefSchema()
               })
             })
           })

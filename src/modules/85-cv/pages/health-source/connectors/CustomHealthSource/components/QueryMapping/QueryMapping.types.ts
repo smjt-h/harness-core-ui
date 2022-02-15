@@ -5,12 +5,12 @@
  * https://polyformproject.org/wp-content/uploads/2020/06/PolyForm-Shield-1.0.0.txt.
  */
 
+import type { FormikProps } from 'formik'
 import type { TimeSeriesSampleDTO } from 'services/cv'
 import type { MapCustomHealthToService } from '../../CustomHealthSource.types'
 
 export interface QueryMappingInterface {
-  formikSetFieldValue: any
-  formikValues: MapCustomHealthToService | undefined
+  formikProps: FormikProps<MapCustomHealthToService>
   connectorIdentifier: string
   onFetchRecordsSuccess: (data: { [key: string]: { [key: string]: any } }) => void
   isQueryExecuted: boolean

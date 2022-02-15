@@ -10,6 +10,8 @@ import { fireEvent, render, waitFor, queryByText } from '@testing-library/react'
 import { act } from 'react-dom/test-utils'
 import { noop } from 'lodash-es'
 import { GitSyncTestWrapper } from '@common/utils/gitSyncTestUtils'
+import routes from '@common/RouteDefinitions'
+import { projectPathProps } from '@common/utils/routeUtils'
 import FullSyncForm from '../FullSyncForm'
 import mockFullSyncConfig from './mockData/mockConfig.json'
 
@@ -17,16 +19,33 @@ const pathParams = { accountId: 'dummy', orgIdentifier: 'default', projectIdenti
 
 const fetchBranches = jest.fn(() => Promise.resolve([]))
 
+const fetchConfig = jest.fn(() => {
+  Promise.resolve(mockFullSyncConfig)
+})
+
+const updateConfig = jest.fn(config => {
+  Promise.resolve(config)
+})
+
 jest.mock('services/cd-ng', () => ({
-  createGitFullSyncConfigPromise: jest.fn().mockImplementation(() => noop()),
+  createGitFullSyncConfigPromise: jest.fn().mockImplementation(config => updateConfig(config)),
+  updateGitFullSyncConfigPromise: jest.fn().mockImplementation(config => updateConfig(config)),
   triggerFullSyncPromise: jest.fn().mockImplementation(() => noop()),
   getListOfBranchesWithStatusPromise: jest.fn().mockImplementation(() => fetchBranches()),
   useGetGitFullSyncConfig: jest.fn().mockImplementation(() => {
-    return { loading: false, data: mockFullSyncConfig, refetch: jest.fn() }
+    return { loading: false, data: mockFullSyncConfig, refetch: fetchConfig }
   })
 }))
 
 describe('Test GitFullSyncForm', () => {
+  beforeAll(() => {
+    jest.useFakeTimers()
+  })
+
+  afterAll(() => {
+    jest.clearAllMocks()
+  })
+
   test('Should render GitFullSyncForm', async () => {
     const { container } = render(
       <GitSyncTestWrapper
@@ -77,5 +96,40 @@ describe('Test GitFullSyncForm', () => {
     })
 
     expect(container.querySelector('input[name="prTitle"]')).toBeFalsy()
+  })
+
+  test('Should called edit API on save with right payload for old user', async () => {
+    const { getByText } = render(
+      <GitSyncTestWrapper path={routes.toGitSyncConfig(projectPathProps)} pathParams={pathParams}>
+        <FullSyncForm isNewUser={true} onClose={noop} onSuccess={noop} />
+      </GitSyncTestWrapper>
+    )
+
+    await waitFor(() => {
+      expect(getByText('gitsync.fullSyncTitle')).toBeInTheDocument()
+    })
+
+    await act(async () => {
+      const submitBtn = await getByText('save')
+      fireEvent.click(submitBtn)
+    })
+    expect(updateConfig).toBeCalledTimes(1)
+    expect(updateConfig).toHaveBeenLastCalledWith({
+      body: {
+        baseBranch: 'master',
+        branch: 'master',
+        createPullRequest: false,
+        newBranch: false,
+        prTitle: 'gitsync.deafaultSyncTitle',
+        repoIdentifier: 'gitSyncRepoTest',
+        rootFolder: '/src1/.harness/',
+        targetBranch: ''
+      },
+      queryParams: {
+        accountIdentifier: 'dummy',
+        orgIdentifier: 'default',
+        projectIdentifier: 'dummyProject'
+      }
+    })
   })
 })

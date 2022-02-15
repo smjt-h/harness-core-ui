@@ -11,9 +11,9 @@ import { Color, FontVariation, MultiTypeInputType, NestedAccordionPanel, Text } 
 import { get, set } from 'lodash-es'
 import type { DeploymentStageConfig, StageElementConfig } from 'services/cd-ng'
 import { useStrings } from 'framework/strings'
-import { usePipelineContext } from '@pipeline/components/PipelineStudio/PipelineContext/PipelineContext'
 import { VariablesListTable } from '@pipeline/components/VariablesListTable/VariablesListTable'
 import { InfrastructureCardPanel } from '@pipeline/components/PipelineStudio/PipelineVariables/Cards/InfrastructureCard'
+import type { AbstractStepFactory } from '@pipeline/components/AbstractSteps/AbstractStepFactory'
 import VariableAccordionSummary from '../VariableAccordionSummary'
 
 import type { PipelineVariablesData } from '../types'
@@ -26,11 +26,12 @@ export interface EnvironmentCardProps {
   path?: string
   readonly?: boolean
   allowableTypes: MultiTypeInputType[]
+  stepsFactory: AbstractStepFactory
+  updateStage: (stage: StageElementConfig) => Promise<void>
 }
 
 const EnvironmentCard = (props: EnvironmentCardProps) => {
-  const { stage, originalStage, metadataMap, readonly, path, allowableTypes } = props
-  const { updateStage } = usePipelineContext()
+  const { stage, originalStage, metadataMap, readonly, path, allowableTypes, stepsFactory, updateStage } = props
   const stageSpec = stage.spec as DeploymentStageConfig
   const originalSpec = originalStage.spec as DeploymentStageConfig
 
@@ -67,6 +68,7 @@ const EnvironmentCard = (props: EnvironmentCardProps) => {
               })
             )
           }}
+          stepsFactory={stepsFactory}
         />
       ) : /* istanbul ignore next */ null}
     </>

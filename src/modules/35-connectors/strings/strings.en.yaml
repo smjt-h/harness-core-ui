@@ -222,6 +222,9 @@ hashiCorpVault:
   saveInProgress: Saving Connector Details
   manuallyConfigureEngine: Manually Configure Engine
   vaultAgent: Vault Agent
+  awsAuth: AWS Auth
+  serverIdHeader: Server Id Header
+  serverIdHeaderRequired: Server Id Header is required
   root: '/(Root)'
   sinkPath: Sink Path
   sinkPathIsRequired: Sink Path is required

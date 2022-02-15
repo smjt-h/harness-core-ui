@@ -180,11 +180,6 @@ export const EditStageView: React.FC<EditStageViewProps> = ({
         if (!data.stage.spec?.infrastructure) {
           set(data, 'stage.spec.infrastructure', {})
         }
-        if (!data.stage.spec?.execution) {
-          set(data, 'stage.spec.execution', {
-            steps: []
-          })
-        }
         onSubmit?.(data, values.identifier)
       }
     }
@@ -192,7 +187,7 @@ export const EditStageView: React.FC<EditStageViewProps> = ({
 
   return (
     <div className={stageCss.serviceOverrides}>
-      <DeployServiceErrors />
+      <DeployServiceErrors domRef={scrollRef as React.MutableRefObject<HTMLElement | undefined>} />
       <div className={context ? stageCss.contentSection : css.contentSection} ref={scrollRef}>
         {context ? (
           <div className={stageCss.tabHeading} id="stageOverview">

@@ -101,7 +101,7 @@ export const MultiTypeConnectorField = (props: MultiTypeConnectorFieldProps): Re
   const hasError = errorCheck(name, formik)
   const {
     intent = hasError ? Intent.DANGER : Intent.NONE,
-    helperText = hasError ? <FormError errorMessage={get(formik?.errors, name)} /> : null,
+    helperText = hasError ? <FormError name={name} errorMessage={get(formik?.errors, name)} /> : null,
     disabled,
     ...rest
   } = restProps

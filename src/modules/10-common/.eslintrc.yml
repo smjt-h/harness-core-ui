@@ -7,7 +7,6 @@ rules:
         - modules/15-notifications/*
         - modules/18-audit-trail/*
         - modules/20-rbac/*
-        - modules/22-resource-center/*
         - modules/25-governance/*
         - modules/27-sto/*
         - modules/30-delegates/*
@@ -28,7 +27,6 @@ rules:
         - '@notifications/*'
         - '@audit-trail/*'
         - '@rbac/*'
-        - '@resource-center/*'
         - '@governance/*'
         - '@sto/*'
         - '@delegates/*'

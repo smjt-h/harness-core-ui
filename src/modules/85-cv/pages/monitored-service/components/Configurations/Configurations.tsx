@@ -44,7 +44,12 @@ export default function Configurations(): JSX.Element {
   const { orgIdentifier, projectIdentifier, accountId, identifier } = useParams<
     ProjectPathProps & { identifier: string }
   >()
-  const { view } = useQueryParams<{ view?: Views.GRID }>()
+  const { view, redirectToSLO, sloIdentifier, monitoredServiceIdentifier } = useQueryParams<{
+    view?: Views.GRID
+    redirectToSLO?: boolean
+    sloIdentifier?: string
+    monitoredServiceIdentifier?: string
+  }>()
   const [cachedInitialValues, setCachedInitialValue] = useState<MonitoredServiceForm | null>(null)
   const [selectedTabID, setselectedTabID] = useState(getString('service'))
   const serviceTabformRef: React.MutableRefObject<FormikProps<MonitoredServiceForm> | null> = React.useRef(null)
@@ -62,9 +67,9 @@ export default function Configurations(): JSX.Element {
       identifier
     },
     queryParams: {
+      accountId,
       orgIdentifier,
-      projectIdentifier,
-      accountId
+      projectIdentifier
     },
     lazy: true
   })
@@ -92,7 +97,7 @@ export default function Configurations(): JSX.Element {
   })
 
   useEffect(() => {
-    if (overrideBlockNavigation) {
+    if (overrideBlockNavigation && !redirectToSLO) {
       history.push({
         pathname: routes.toCVMonitoringServices({
           orgIdentifier,
@@ -102,7 +107,7 @@ export default function Configurations(): JSX.Element {
         search: getCVMonitoringServicesSearchParam({ view })
       })
     }
-  }, [overrideBlockNavigation])
+  }, [overrideBlockNavigation, redirectToSLO])
 
   useEffect(() => {
     if (yamlMonitoredService && yamlMonitoredService?.resource) {
@@ -209,12 +214,30 @@ export default function Configurations(): JSX.Element {
             identifier ? 'cv.monitoredServices.monitoredServiceUpdated' : 'cv.monitoredServices.monitoredServiceCreated'
           )
         )
+
+        if (redirectToSLO && sloIdentifier) {
+          history.push({
+            pathname: routes.toCVEditSLOs({
+              accountId,
+              orgIdentifier,
+              projectIdentifier,
+              identifier: sloIdentifier,
+              module: 'cv'
+            }),
+            search: monitoredServiceIdentifier ? `?monitoredServiceIdentifier=${monitoredServiceIdentifier}` : ''
+          })
+        } else if (redirectToSLO) {
+          history.push({
+            pathname: routes.toCVCreateSLOs({ accountId, orgIdentifier, projectIdentifier, module: 'cv' }),
+            search: monitoredServiceIdentifier ? `?monitoredServiceIdentifier=${monitoredServiceIdentifier}` : ''
+          })
+        }
       } catch (e) {
         showError(getErrorMessage(e))
         return e
       }
     },
-    [identifier]
+    [identifier, redirectToSLO, sloIdentifier, history, monitoredServiceIdentifier]
   )
 
   const onNavigationChange = useCallback(

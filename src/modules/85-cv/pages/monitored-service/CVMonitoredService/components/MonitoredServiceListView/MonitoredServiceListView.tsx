@@ -176,7 +176,6 @@ const MonitoredServiceListView: React.FC<MonitoredServiceListViewProps> = ({
   const { projectIdentifier } = useParams<ProjectPathProps>()
 
   const { content, pageSize = 0, pageIndex = 0, totalPages = 0, totalItems = 0 } = monitoredServiceListData || {}
-
   const RenderStatusToggle: Renderer<CellProps<MonitoredServiceListItemDTO>> = ({ row }) => {
     const monitoredService = row.original
 
@@ -311,14 +310,14 @@ const MonitoredServiceListView: React.FC<MonitoredServiceListViewProps> = ({
             }}
           />
         </>
-      ) : (
+      ) : content && !content.length ? (
         <NoDataCard
           image={noServiceAvailableImage}
           message={getString('cv.monitoredServices.youHaveNoMonitoredServices')}
           imageClassName={css.noServiceAvailableImage}
           containerClassName={css.noDataContainer}
         />
-      )}
+      ) : null}
     </Container>
   )
 }

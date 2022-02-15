@@ -20,6 +20,7 @@ import {
   getTimeInHrs,
   isChangesInTheRange
 } from '@cv/pages/monitored-service/components/ServiceHealth/ServiceHealth.utils'
+import { TimePeriodEnum } from '@cv/pages/monitored-service/components/ServiceHealth/ServiceHealth.constants'
 import { ChangeSourceTypes } from './ChangeTimeline.constants'
 import type { TimelineData } from './components/TimelineRow/TimelineRow.types'
 import type { ChangesInfoCardData } from './ChangeTimeline.types'
@@ -149,7 +150,8 @@ export const nearestMinutes = (interval: number, someMoment: moment.Moment) => {
 export const getStartAndEndTime = (duration: string) => {
   const now = moment()
   const diff = getTimeInHrs(duration || '') * 60 * 60 * 1000
-  const endTimeRoundedOffToNearest30min = nearestMinutes(30, now).valueOf()
+  const diffInMin = duration === TimePeriodEnum.FOUR_HOURS ? 5 : 30
+  const endTimeRoundedOffToNearest30min = nearestMinutes(diffInMin, now).valueOf()
   const startTimeRoundedOffToNearest30min = endTimeRoundedOffToNearest30min - diff
 
   return { startTimeRoundedOffToNearest30min, endTimeRoundedOffToNearest30min }

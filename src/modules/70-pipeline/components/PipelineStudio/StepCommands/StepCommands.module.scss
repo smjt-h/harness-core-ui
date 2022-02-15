@@ -16,6 +16,41 @@
   position: relative;
   background-color: var(--form-bg);
 
+  :global {
+    .bp3-dialog-container {
+      align-items: flex-start !important;
+    }
+    .bp3-dialog-header {
+      padding: var(--spacing-6);
+      margin: 0 !important;
+
+      .bp3-heading {
+        font-weight: 600 !important;
+      }
+
+      .bp3-dialog-close-button svg {
+        height: var(--spacing-6) !important;
+        width: var(--spacing-6) !important;
+      }
+    }
+    .bp3-dialog {
+      background-color: var(--white) !important;
+      width: 80%;
+      margin-top: 44px;
+      margin-right: 5%;
+      max-height: 500px;
+      padding-bottom: 0 !important;
+      overflow-y: hidden;
+      border-top-left-radius: var(--spacing-3) !important;
+      border-top-right-radius: var(--spacing-3) !important;
+      box-shadow: 0 0 0 1px rgb(16 22 26 / 10%), 0 4px 8px rgb(16 22 26 / 20%), 0 18px 46px 6px rgb(16 22 26 / 20%) !important;
+    }
+
+    .bp3-overlay-backdrop {
+      visibility: hidden !important;
+    }
+  }
+
   &.withoutTabs {
     height: 100%;
   }

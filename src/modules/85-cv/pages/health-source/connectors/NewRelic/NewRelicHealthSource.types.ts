@@ -46,3 +46,17 @@ export interface NewRelicData {
   metricPacks?: MetricPackDTO[]
   mappedServicesAndEnvs: Map<string, MapNewRelicMetric>
 }
+export interface InitNewRelicCustomFormInterface {
+  sli: boolean
+  groupName: {
+    label: string
+    value: string
+  }
+  query: string
+  metricValue: string
+  timestamp: string
+  serviceInstanceIdentifier: string
+  healthScore: boolean
+  continuousVerification: boolean
+  serviceInstanceMetricPath?: string
+}

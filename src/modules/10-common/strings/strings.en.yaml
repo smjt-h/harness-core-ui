@@ -58,6 +58,11 @@ My: My
 ok: OK
 ID: Id
 org: Org
+accountSetting:
+  connector:
+    saveSettingSuccess: 'Connector Settings saved successfully.'
+    disableBISMHeading: 'Disable default Harness Secret Manager'
+    disableBISMSubHeading: 'When this setting is enabled, users cannot use Harness built-in secret manager.'
 instanceValidation:
   required: Instance is an required field
   minimumCountInstance: Instances must be greater than or equal to 0
@@ -185,7 +190,7 @@ purpose:
     delivery: Delivery
     subtitle: Deploy your services with blazingly fast pipelines.
     continuous: Continuous Delivery
-    description: 'Create Pipelines that improve deployment times and manage all release steps in one place.'
+    description: 'Define Pipelines that enable you to improve your deployment times, manage all in one place.'
     supportedStack: Supported Stack
     1stGen:
       title: CD First Generation
@@ -743,3 +748,23 @@ copy: Copy
 levelUp: LEVEL UP
 overuse: OVERUSE
 scope: '{{ $.delegate.Scope }}'
+community: Community
+resourceCenter:
+  title: 'RESOURCE CENTER'
+  ticketmenu:
+    tickets: 'My Tickets'
+    ticketsDesc: 'View and manage your tickets'
+    submit: 'Submit a ticket'
+    submitDesc: 'Get help from our expert system'
+  bottomlayout:
+    desc: Other useful resources
+    docs: Docs
+    sitestatus: Site Status
+    university: University
+    apiDocs: API Docs
+    changeLog: Change log
+  communityLevelUp: Ticket support is availible in Team plan and Enterprise plans.
+currentlyAvailable: Currently Available
+supportedInFirstGeneration: Currently supported on Harness Continuous Delivery First Generation
+currentlySupportedOn: Currently supported on
+firstGeneration: Harness Continuous Delivery First Generation

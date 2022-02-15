@@ -19,6 +19,7 @@ import { ResourceType } from '@rbac/interfaces/ResourceType'
 import { PermissionIdentifier } from '@rbac/interfaces/PermissionIdentifier'
 import { TemplateContext } from '@templates-library/components/TemplateStudio/TemplateContext/TemplateContext'
 import factory from '@pipeline/components/PipelineSteps/PipelineStepFactory'
+import { useVariablesExpression } from '@pipeline/components/PipelineStudio/PiplineHooks/useVariablesExpression'
 import css from './TemplateYamlView.module.scss'
 
 export const POLL_INTERVAL = 1 /* sec */ * 1000 /* ms */
@@ -51,6 +52,9 @@ const TemplateYamlView: React.FC = () => {
   const [yamlHandler, setYamlHandler] = React.useState<YamlBuilderHandlerBinding | undefined>()
   const [yamlFileName, setYamlFileName] = React.useState<string>(defaultFileName)
   const { getString } = useStrings()
+  const { expressions } = useVariablesExpression()
+  const expressionRef = React.useRef<string[]>([])
+  expressionRef.current = expressions
 
   // setup polling
   React.useEffect(() => {
@@ -99,6 +103,11 @@ const TemplateYamlView: React.FC = () => {
             existingYaml={!valid ? templateYaml : undefined}
             bind={setYamlHandler}
             showSnippetSection={false}
+            onExpressionTrigger={() => {
+              return Promise.resolve(
+                expressionRef.current.map(item => ({ label: item, insertText: `${item}>`, kind: 1 }))
+              )
+            }}
             yamlSanityConfig={{ removeEmptyString: false, removeEmptyObject: false, removeEmptyArray: false }}
             height={'calc(100vh - 200px)'}
             width="calc(100vw - 400px)"

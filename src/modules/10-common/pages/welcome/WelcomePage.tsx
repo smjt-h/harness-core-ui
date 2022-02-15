@@ -12,7 +12,6 @@ import { useTelemetry } from '@common/hooks/useTelemetry'
 import { useFeatureFlags } from '@common/hooks/useFeatureFlag'
 import { Category, PageNames } from '@common/constants/TrackingConstants'
 import type { Module } from '@common/interfaces/RouteInterfaces'
-import { useVersionSelectionModal } from './useVersionSelectionModal'
 
 import SelectModuleList from './SelectModuleList'
 import bgImageUrl from './images/background.svg'
@@ -110,8 +109,6 @@ const WelcomePage: React.FC = () => {
 
   useTelemetry({ pageName: PageNames.Purpose, category: Category.SIGNUP })
 
-  const { openVersionSelectionModal } = useVersionSelectionModal()
-
   const body = (
     <Layout.Vertical width={'80vw'}>
       <Heading color={Color.WHITE} font={{ size: 'large', weight: 'bold' }} padding={{ top: 'xxlarge' }}>
@@ -124,7 +121,6 @@ const WelcomePage: React.FC = () => {
         onModuleClick={(_module?: Module) => {
           setRibbonImg(ribbonMap[_module?.toString() || 'default'])
         }}
-        openVersionSelection={openVersionSelectionModal}
         moduleList={getOptions()}
       />
     </Layout.Vertical>

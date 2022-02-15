@@ -1,5 +1,291 @@
 // Jest Snapshot v1, https://goo.gl/fbAQLP
 
+exports[`FeatureTooltip FeatureTooltip with free plan 1`] = `
+<div>
+  <div
+    class="Layout--vertical StyledProps--main tooltip StyledProps--padding-medium"
+  >
+    <p
+      class="StyledProps--font StyledProps--main StyledProps--color StyledProps--color-orange800 StyledProps--font-variation-form-message-warning StyledProps--font-weight-bold StyledProps--padding-bottom-xsmall"
+      style="display: flex; align-items: center;"
+    >
+      <span
+        class="bp3-icon StyledProps--main Text--icon StyledProps--padding-right-xsmall StyledProps--color StyledProps--color-orange800"
+        data-icon="flash"
+      >
+        <svg
+          height="25"
+          viewBox="0 0 33 28"
+          width="25"
+          xmlns="http://www.w3.org/2000/svg"
+        >
+          <path
+            clip-rule="evenodd"
+            d="M3.773 17.341L20.885 1.75l-2.297 8.909h8.184L9.66 26.25l2.297-8.909z"
+            fill="#ff5310"
+            fill-rule="evenodd"
+          />
+        </svg>
+      </span>
+      common.levelUp
+    </p>
+    <div
+      class="Layout--vertical Layout--layout-spacing-large StyledProps--main"
+    >
+      <p
+        class="StyledProps--font StyledProps--main flag StyledProps--color StyledProps--color-white StyledProps--padding-bottom-large"
+        style="display: flex; align-items: center;"
+      >
+        common.feature.levelUp.description
+        <span
+          class="bp3-icon StyledProps--main Text--icon StyledProps--padding-left-xsmall"
+          data-icon="flag"
+        >
+          <svg
+            fill="none"
+            height="16"
+            viewBox="0 0 32 32"
+            width="16"
+            xmlns="http://www.w3.org/2000/svg"
+          >
+            <clippath
+              id="flag_svg__a"
+            >
+              <path
+                d="M0 0h32v32H0z"
+              />
+            </clippath>
+            <g
+              clip-path="url(#flag_svg__a)"
+            >
+              <path
+                d="M4.445 32a1.778 1.778 0 01-1.778-1.778V2.667a1.778 1.778 0 013.556 0v27.555c0 .982-.797 1.778-1.778 1.778z"
+                fill="#8899a6"
+              />
+              <path
+                d="M4.445.889c-.982 0-1.778.795-1.778 1.778v27.555a.445.445 0 00.889 0V3.924c0-.695.563-1.257 1.257-1.257h1.41c0-.983-.796-1.778-1.778-1.778z"
+                fill="#aab8c2"
+              />
+              <path
+                d="M4.445 32a1.778 1.778 0 01-1.778-1.778V2.667a1.778 1.778 0 013.556 0v27.555c0 .982-.797 1.778-1.778 1.778z"
+                fill="#8899a6"
+              />
+              <path
+                d="M4.445.889c-.982 0-1.778.795-1.778 1.778v27.555a.445.445 0 00.889 0V3.924c0-.695.563-1.257 1.257-1.257h1.41c0-.983-.796-1.778-1.778-1.778z"
+                fill="#aab8c2"
+              />
+              <path
+                d="M28.796 2.74c-1.479-.64-3.055-.957-4.796-.985l-1.223.337-4.11.575-.89-.114-.632.133c-1.928.417-3.76.795-5.59.873l-.889.885-5.333-.888v16.888h5.333l.89 1.778h.068c1.994-.085 3.975-.494 5.896-.908l.257-.054.575-.574 4.833-.63.815.365c1.493.029 2.838.298 4.092.84a.888.888 0 001.241-.817V3.556a.888.888 0 00-.537-.816z"
+                fill="#31373d"
+              />
+              <path
+                d="M11.555 3.56c-.212.008-.425.03-.637.03-1.597 0-3.019-.278-4.344-.85a.881.881 0 00-.84.073.886.886 0 00-.401.743v5.333s2.926.889 6.222.889zm6.222 5.329s-3.333.889-6.222.889V16c2.667 0 6.222-.889 6.222-.889zM24 8V1.755c-.086-.002-.166-.012-.252-.012-2.015 0-4.019.393-5.97.81v6.336S19.703 8 24 8zM5.87 21.26c1.333.576 2.747.883 4.284.962h1.401V16c-3.704 0-6.222-.889-6.222-.889v5.333c0 .355.21.676.537.817zm11.908-6.149v6.148c2.056-.444 4.01-.85 5.97-.85.086 0 .166.01.252.012v-6.199c-4 0-6.222.89-6.222.89zM24 14.222c2.378 0 4.284.498 5.333.848V8.807C28.313 8.47 26.461 8 24 8z"
+                fill="#e1e8ed"
+              />
+            </g>
+          </svg>
+        </span>
+      </p>
+      <div
+        class="Layout--vertical StyledProps--main StyledProps--padding-bottom-large"
+      >
+        <div
+          class="Layout--vertical StyledProps--main StyledProps--padding-bottom-small"
+        >
+          <p
+            class="StyledProps--font StyledProps--main StyledProps--color StyledProps--color-white StyledProps--font-weight-semi-bold StyledProps--padding-bottom-small"
+            style="display: flex; align-items: center;"
+          >
+            <span
+              class="bp3-icon StyledProps--main Text--icon StyledProps--padding-right-xsmall StyledProps--color StyledProps--color-white"
+              data-icon="cd-main"
+            >
+              <svg
+                height="16"
+                viewBox="0 0 32 32"
+                width="16"
+                xmlns="http://www.w3.org/2000/svg"
+              >
+                <path
+                  clip-rule="evenodd"
+                  d="M26.427 7.06A5.073 5.073 0 0129 11.52l-.077 8.934a5.073 5.073 0 01-2.537 4.35l-8.002 4.618a5.073 5.073 0 01-5.035.021l-7.776-4.402A5.073 5.073 0 013 20.583l.077-8.935a5.073 5.073 0 012.537-4.35l8.002-4.619a5.073 5.073 0 015.035-.02l7.776 4.402zm-2.83 6.938c-.42 1.586-2.029 2.538-3.601 2.141l-7.489-2.026a4.696 4.696 0 00-3.62.48 4.773 4.773 0 00-2.222 2.925 4.835 4.835 0 00.479 3.664 4.757 4.757 0 002.905 2.251 4.696 4.696 0 003.62-.48 4.773 4.773 0 002.222-2.924l.26-1.047a.25.25 0 00-.177-.302l-1.258-.34a.25.25 0 00-.307.18l-.256 1.025c-.426 1.602-2.064 2.556-3.651 2.127-1.582-.428-2.523-2.073-2.1-3.67.421-1.586 2.03-2.538 3.602-2.142l7.489 2.027a4.696 4.696 0 003.62-.48 4.773 4.773 0 002.222-2.925 4.835 4.835 0 00-.479-3.664 4.757 4.757 0 00-2.905-2.251 4.696 4.696 0 00-3.62.48 4.773 4.773 0 00-2.222 2.924l-.247.828a.25.25 0 00.174.312l1.259.34a.25.25 0 00.304-.169l.248-.827c.426-1.602 2.064-2.557 3.651-2.127 1.582.428 2.523 2.073 2.1 3.67z"
+                  fill="url(#cd-main_svg__a)"
+                  fill-rule="evenodd"
+                />
+                <defs>
+                  <lineargradient
+                    gradientUnits="userSpaceOnUse"
+                    id="cd-main_svg__a"
+                    x1="6.774"
+                    x2="21.5"
+                    y1="2"
+                    y2="30"
+                  >
+                    <stop
+                      stop-color="#62F91F"
+                    />
+                    <stop
+                      offset="1"
+                      stop-color="#45BD35"
+                    />
+                  </lineargradient>
+                </defs>
+              </svg>
+            </span>
+            common.purpose.cd.continuous
+          </p>
+          <p
+            class="StyledProps--font StyledProps--main StyledProps--padding-bottom-small StyledProps--padding-left-large StyledProps--color StyledProps--color-white"
+          >
+            pipeline.featureRestriction.maxBuildsPerMonth100PercentLimit
+          </p>
+        </div>
+        <div
+          class="Layout--vertical Layout--layout-spacing-xsmall StyledProps--main StyledProps--flex StyledProps--flex-alignItems-start"
+        >
+          <button
+            class="bp3-button Button--button StyledProps--font StyledProps--main btn viewUsageLink Button--with-current-color Button--iconOnly Button--variation Button--variation-link Button--size Button--small"
+            data-name="view-usage-link"
+            type="button"
+          >
+            <span
+              class="bp3-button-text"
+            >
+              Common.viewusage
+            </span>
+          </button>
+          <button
+            class="bp3-button Button--button StyledProps--font StyledProps--main btn Button--with-current-color Button--iconOnly Button--variation Button--variation-primary Button--size Button--small"
+            type="button"
+          >
+            <span
+              class="bp3-button-text"
+            >
+              common.explorePlans
+            </span>
+          </button>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+`;
+
+exports[`FeatureTooltip FeatureTooltip with no plan 1`] = `
+<div>
+  <div
+    class="Layout--vertical StyledProps--main tooltip StyledProps--padding-medium"
+  >
+    <p
+      class="StyledProps--font StyledProps--main StyledProps--color StyledProps--color-orange800 StyledProps--font-variation-form-message-warning StyledProps--font-weight-bold StyledProps--padding-bottom-xsmall"
+      style="display: flex; align-items: center;"
+    >
+      <span
+        class="bp3-icon StyledProps--main Text--icon StyledProps--padding-right-xsmall StyledProps--color StyledProps--color-orange800"
+        data-icon="flash"
+      >
+        <svg
+          height="25"
+          viewBox="0 0 33 28"
+          width="25"
+          xmlns="http://www.w3.org/2000/svg"
+        >
+          <path
+            clip-rule="evenodd"
+            d="M3.773 17.341L20.885 1.75l-2.297 8.909h8.184L9.66 26.25l2.297-8.909z"
+            fill="#ff5310"
+            fill-rule="evenodd"
+          />
+        </svg>
+      </span>
+      common.levelUp
+    </p>
+    <div
+      class="Layout--vertical Layout--layout-spacing-large StyledProps--main"
+    >
+      <p
+        class="StyledProps--font StyledProps--main flag StyledProps--color StyledProps--color-white StyledProps--padding-bottom-large"
+        style="display: flex; align-items: center;"
+      >
+        common.feature.levelUp.description
+        <span
+          class="bp3-icon StyledProps--main Text--icon StyledProps--padding-left-xsmall"
+          data-icon="flag"
+        >
+          <svg
+            fill="none"
+            height="16"
+            viewBox="0 0 32 32"
+            width="16"
+            xmlns="http://www.w3.org/2000/svg"
+          >
+            <clippath
+              id="flag_svg__a"
+            >
+              <path
+                d="M0 0h32v32H0z"
+              />
+            </clippath>
+            <g
+              clip-path="url(#flag_svg__a)"
+            >
+              <path
+                d="M4.445 32a1.778 1.778 0 01-1.778-1.778V2.667a1.778 1.778 0 013.556 0v27.555c0 .982-.797 1.778-1.778 1.778z"
+                fill="#8899a6"
+              />
+              <path
+                d="M4.445.889c-.982 0-1.778.795-1.778 1.778v27.555a.445.445 0 00.889 0V3.924c0-.695.563-1.257 1.257-1.257h1.41c0-.983-.796-1.778-1.778-1.778z"
+                fill="#aab8c2"
+              />
+              <path
+                d="M4.445 32a1.778 1.778 0 01-1.778-1.778V2.667a1.778 1.778 0 013.556 0v27.555c0 .982-.797 1.778-1.778 1.778z"
+                fill="#8899a6"
+              />
+              <path
+                d="M4.445.889c-.982 0-1.778.795-1.778 1.778v27.555a.445.445 0 00.889 0V3.924c0-.695.563-1.257 1.257-1.257h1.41c0-.983-.796-1.778-1.778-1.778z"
+                fill="#aab8c2"
+              />
+              <path
+                d="M28.796 2.74c-1.479-.64-3.055-.957-4.796-.985l-1.223.337-4.11.575-.89-.114-.632.133c-1.928.417-3.76.795-5.59.873l-.889.885-5.333-.888v16.888h5.333l.89 1.778h.068c1.994-.085 3.975-.494 5.896-.908l.257-.054.575-.574 4.833-.63.815.365c1.493.029 2.838.298 4.092.84a.888.888 0 001.241-.817V3.556a.888.888 0 00-.537-.816z"
+                fill="#31373d"
+              />
+              <path
+                d="M11.555 3.56c-.212.008-.425.03-.637.03-1.597 0-3.019-.278-4.344-.85a.881.881 0 00-.84.073.886.886 0 00-.401.743v5.333s2.926.889 6.222.889zm6.222 5.329s-3.333.889-6.222.889V16c2.667 0 6.222-.889 6.222-.889zM24 8V1.755c-.086-.002-.166-.012-.252-.012-2.015 0-4.019.393-5.97.81v6.336S19.703 8 24 8zM5.87 21.26c1.333.576 2.747.883 4.284.962h1.401V16c-3.704 0-6.222-.889-6.222-.889v5.333c0 .355.21.676.537.817zm11.908-6.149v6.148c2.056-.444 4.01-.85 5.97-.85.086 0 .166.01.252.012v-6.199c-4 0-6.222.89-6.222.89zM24 14.222c2.378 0 4.284.498 5.333.848V8.807C28.313 8.47 26.461 8 24 8z"
+                fill="#e1e8ed"
+              />
+            </g>
+          </svg>
+        </span>
+      </p>
+      <div
+        class="Layout--vertical StyledProps--main StyledProps--padding-bottom-large"
+      >
+        <div
+          class="Layout--vertical StyledProps--main StyledProps--padding-bottom-small"
+        >
+          <p
+            class="StyledProps--font StyledProps--main StyledProps--padding-bottom-small StyledProps--color StyledProps--color-white"
+          >
+            Builds
+             common.feature.levelUp.planMessage
+          </p>
+        </div>
+        <button
+          class="bp3-button Button--button StyledProps--font StyledProps--main btn Button--with-current-color Button--iconOnly Button--variation Button--variation-primary Button--size Button--small"
+          type="button"
+        >
+          <span
+            class="bp3-button-text"
+          >
+            common.explorePlans
+          </span>
+        </button>
+      </div>
+    </div>
+  </div>
+</div>
+`;
+
 exports[`FeatureTooltip FeatureTooltip with warning message 1`] = `
 <div>
   <div
@@ -43,7 +329,7 @@ exports[`FeatureTooltip FeatureTooltip with warning message 1`] = `
       <span
         class="bp3-button-text"
       >
-        common.explorePlans
+        common.manageSubscription
       </span>
     </button>
   </div>
@@ -197,7 +483,7 @@ exports[`FeatureTooltip FeatureTooltip without warning message 1`] = `
           <span
             class="bp3-button-text"
           >
-            common.explorePlans
+            common.manageSubscription
           </span>
         </button>
       </div>
@@ -264,7 +550,7 @@ exports[`FeatureTooltip FeatureTooltip without warning message 1`] = `
           <span
             class="bp3-button-text"
           >
-            common.explorePlans
+            common.manageSubscription
           </span>
         </button>
       </div>

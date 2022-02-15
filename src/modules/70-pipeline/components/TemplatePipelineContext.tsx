@@ -48,7 +48,7 @@ export const TemplatePipelineProvider: React.FC<{
   isReadOnly: boolean
 }> = ({ queryParams, initialValue, onUpdatePipeline, isReadOnly, children }) => {
   const contextType = PipelineContextType.Template
-  const allowableTypes = [MultiTypeInputType.FIXED, MultiTypeInputType.RUNTIME]
+  const allowableTypes = [MultiTypeInputType.FIXED, MultiTypeInputType.RUNTIME, MultiTypeInputType.EXPRESSION]
   const { CI_LICENSE_STATE, FF_LICENSE_STATE, CD_LICENSE_STATE } = useLicenseStore()
   const isCDEnabled = useFeatureFlag(FeatureFlag.CDNG_ENABLED) && CD_LICENSE_STATE === LICENSE_STATE_VALUES.ACTIVE
   const isCIEnabled = useFeatureFlag(FeatureFlag.CING_ENABLED) && CI_LICENSE_STATE === LICENSE_STATE_VALUES.ACTIVE

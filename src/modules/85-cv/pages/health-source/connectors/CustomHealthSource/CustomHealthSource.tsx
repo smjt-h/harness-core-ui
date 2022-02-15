@@ -30,12 +30,13 @@ import type {
   SelectedAndMappedMetrics
 } from './CustomHealthSource.types'
 
-import { defaultMetricName, QueryType } from './CustomHealthSource.constants'
+import { defaultMetricName } from './CustomHealthSource.constants'
 import type { UpdatedHealthSource } from '../../HealthSourceDrawer/HealthSourceDrawerContent.types'
 import SelectHealthSourceServices from '../../common/SelectHealthSourceServices/SelectHealthSourceServices'
 import MapMetricsToServices from './components/MapMetricsToServices/MapMetricsToServices'
 import QueryMapping from './components/QueryMapping/QueryMapping'
 import MetricChartsValue from './components/MetricChartsValue/MetricChartsValue'
+import { QueryType } from '../../common/HealthSourceQueryType/HealthSourceQueryType.types'
 import css from './CustomHealthSource.module.scss'
 
 export interface CustomHealthSourceProps {
@@ -75,9 +76,9 @@ export function CustomHealthSource(props: CustomHealthSourceProps): JSX.Element 
   const isSelectingJsonPathDisabled = !isQueryExecuted || sampleDataLoading || !recordsData
 
   return (
-    <Formik<MapCustomHealthToService | undefined>
+    <Formik<MapCustomHealthToService>
       formName="mapPrometheus"
-      initialValues={mappedMetrics.get(selectedMetric || '')}
+      initialValues={mappedMetrics.get(selectedMetric || '') as MapCustomHealthToService}
       key={rerenderKey}
       isInitialValid={(args: any) =>
         Object.keys(validateMappings(getString, createdMetrics, selectedMetricIndex, args.initialValues)).length === 0
@@ -164,8 +165,7 @@ export function CustomHealthSource(props: CustomHealthSourceProps): JSX.Element 
                       summary={getString('cv.customHealthSource.Querymapping.title')}
                       details={
                         <QueryMapping
-                          formikSetFieldValue={formikProps.setFieldValue}
-                          formikValues={formikProps.values}
+                          formikProps={formikProps}
                           connectorIdentifier={connectorIdentifier}
                           onFetchRecordsSuccess={onFetchRecordsSuccess}
                           recordsData={recordsData}

@@ -5,6 +5,10 @@
  * https://polyformproject.org/wp-content/uploads/2020/06/PolyForm-Shield-1.0.0.txt.
  */
 
+.right-margin {
+  margin-right: var(--spacing-11) !important;
+}
+
 .canvas-container {
   height: 100%;
   padding: 0 !important;

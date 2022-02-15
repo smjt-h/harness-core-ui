@@ -6,7 +6,7 @@
  */
 
 import React, { useEffect, useMemo } from 'react'
-import { useParams } from 'react-router-dom'
+import { useParams, useHistory } from 'react-router-dom'
 import {
   Card,
   Container,
@@ -18,13 +18,20 @@ import {
   Color,
   useToaster,
   SelectOption,
-  Icon
+  Icon,
+  ButtonVariation
 } from '@wings-software/uicore'
 import type { RadioButtonProps } from '@wings-software/uicore/dist/components/RadioButton/RadioButton'
 import { useGetSloMetrics } from 'services/cv'
 import { useStrings } from 'framework/strings'
+import { useQueryParams } from '@common/hooks'
 import type { ProjectPathProps } from '@common/interfaces/RouteInterfaces'
-import { getErrorMessage } from '@cv/utils/CommonUtils'
+import routes from '@common/RouteDefinitions'
+import { PermissionIdentifier } from '@rbac/interfaces/PermissionIdentifier'
+import { ResourceType } from '@rbac/interfaces/ResourceType'
+import RbacButton from '@rbac/components/Button/Button'
+import { getCVMonitoringServicesSearchParam, getErrorMessage } from '@cv/utils/CommonUtils'
+import { MonitoredServiceEnum } from '@cv/pages/monitored-service/MonitoredServicePage.constants'
 import SLOTargetChartWrapper from '@cv/pages/slos/components/SLOTargetChart/SLOTargetChart'
 import CVRadioLabelTextAndDescription from '@cv/components/CVRadioLabelTextAndDescription'
 import {
@@ -47,9 +54,14 @@ import {
 import css from '@cv/pages/slos/components/CVCreateSLO/CVCreateSLO.module.scss'
 
 const PickMetric: React.FC<Omit<SLIProps, 'children'>> = ({ formikProps, ...rest }) => {
+  const FLEX_START = 'flex-start'
   const { getString } = useStrings()
   const { showError } = useToaster()
-  const { accountId, orgIdentifier, projectIdentifier } = useParams<ProjectPathProps>()
+  const history = useHistory()
+  const { accountId, orgIdentifier, projectIdentifier, identifier } = useParams<
+    ProjectPathProps & { identifier?: string }
+  >()
+  const { monitoredServiceIdentifier } = useQueryParams<{ monitoredServiceIdentifier?: string }>()
   const {
     monitoredServiceRef,
     healthSourceRef,
@@ -125,6 +137,24 @@ const PickMetric: React.FC<Omit<SLIProps, 'children'>> = ({ formikProps, ...rest
     ]
   }, [])
 
+  const addNewMetric = (): void => {
+    history.push({
+      pathname: routes.toCVAddMonitoringServicesEdit({
+        accountId,
+        orgIdentifier,
+        projectIdentifier,
+        identifier: monitoredServiceRef,
+        module: 'cv'
+      }),
+      search: getCVMonitoringServicesSearchParam({
+        tab: MonitoredServiceEnum.Configurations,
+        redirectToSLO: true,
+        sloIdentifier: identifier,
+        monitoredServiceIdentifier
+      })
+    })
+  }
+
   const goodOrBadRequestMetricLabel =
     eventType === SLIEventTypes.BAD
       ? getString('cv.slos.slis.ratioMetricType.badRequestsMetrics')
@@ -146,35 +176,67 @@ const PickMetric: React.FC<Omit<SLIProps, 'children'>> = ({ formikProps, ...rest
               />
             </Layout.Vertical>
             {isRatioBasedMetric && (
-              <Layout.Horizontal spacing="xlarge">
+              <Layout.Horizontal>
                 <FormInput.Select
                   name={SLOFormFields.EVENT_TYPE}
                   label={getString('cv.slos.slis.ratioMetricType.eventType')}
                   items={getEventTypeOptions(getString)}
                   className={css.eventType}
                 />
-                <FormInput.Select
-                  name={SLOFormFields.GOOD_REQUEST_METRIC}
-                  label={goodOrBadRequestMetricLabel}
-                  placeholder={SLOMetricsLoading ? getString('loading') : undefined}
-                  disabled={!healthSourceRef}
-                  items={SLOMetricOptions}
-                  className={css.metricSelect}
-                  value={activeGoodMetric}
-                  onChange={metric => formikProps.setFieldValue(SLOFormFields.GOOD_REQUEST_METRIC, metric.value)}
-                />
+                <Layout.Horizontal padding={{ left: 'xlarge' }} flex={{ justifyContent: FLEX_START }}>
+                  <FormInput.Select
+                    name={SLOFormFields.GOOD_REQUEST_METRIC}
+                    label={goodOrBadRequestMetricLabel}
+                    placeholder={SLOMetricsLoading ? getString('loading') : undefined}
+                    disabled={!healthSourceRef}
+                    items={SLOMetricOptions}
+                    className={css.metricSelect}
+                    value={activeGoodMetric}
+                    onChange={metric => formikProps.setFieldValue(SLOFormFields.GOOD_REQUEST_METRIC, metric.value)}
+                  />
+                  <RbacButton
+                    icon="plus"
+                    text={getString('cv.newMetric')}
+                    variation={ButtonVariation.LINK}
+                    disabled={!monitoredServiceRef}
+                    onClick={addNewMetric}
+                    permission={{
+                      permission: PermissionIdentifier.EDIT_MONITORED_SERVICE,
+                      resource: {
+                        resourceType: ResourceType.MONITOREDSERVICE,
+                        resourceIdentifier: projectIdentifier
+                      }
+                    }}
+                  />
+                </Layout.Horizontal>
               </Layout.Horizontal>
             )}
-            <FormInput.Select
-              name={SLOFormFields.VALID_REQUEST_METRIC}
-              label={getString('cv.slos.slis.ratioMetricType.validRequestsMetrics')}
-              placeholder={SLOMetricsLoading ? getString('loading') : undefined}
-              disabled={!healthSourceRef}
-              items={SLOMetricOptions}
-              className={css.metricSelect}
-              value={activeValidMetric}
-              onChange={metric => formikProps.setFieldValue(SLOFormFields.VALID_REQUEST_METRIC, metric.value)}
-            />
+            <Layout.Horizontal flex={{ justifyContent: FLEX_START }}>
+              <FormInput.Select
+                name={SLOFormFields.VALID_REQUEST_METRIC}
+                label={getString('cv.slos.slis.ratioMetricType.validRequestsMetrics')}
+                placeholder={SLOMetricsLoading ? getString('loading') : undefined}
+                disabled={!healthSourceRef}
+                items={SLOMetricOptions}
+                className={css.metricSelect}
+                value={activeValidMetric}
+                onChange={metric => formikProps.setFieldValue(SLOFormFields.VALID_REQUEST_METRIC, metric.value)}
+              />
+              <RbacButton
+                icon="plus"
+                text={getString('cv.newMetric')}
+                variation={ButtonVariation.LINK}
+                disabled={!monitoredServiceRef}
+                onClick={addNewMetric}
+                permission={{
+                  permission: PermissionIdentifier.EDIT_MONITORED_SERVICE,
+                  resource: {
+                    resourceType: ResourceType.MONITOREDSERVICE,
+                    resourceIdentifier: projectIdentifier
+                  }
+                }}
+              />
+            </Layout.Horizontal>
             <FormInput.Text
               name={SLOFormFields.OBJECTIVE_VALUE}
               label={getString('cv.objectiveValue')}
@@ -189,7 +251,7 @@ const PickMetric: React.FC<Omit<SLIProps, 'children'>> = ({ formikProps, ...rest
               className={css.objectiveValue}
             />
             <Layout.Horizontal
-              flex={{ justifyContent: 'flex-start', alignItems: 'baseline' }}
+              flex={{ justifyContent: FLEX_START, alignItems: 'baseline' }}
               spacing="small"
               width={320}
             >

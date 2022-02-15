@@ -5,14 +5,12 @@
  * https://polyformproject.org/wp-content/uploads/2020/06/PolyForm-Shield-1.0.0.txt.
  */
 
-import type { StringsMap } from 'stringTypes'
-import type { KubernetesArtifactsProps } from '@cd/components/PipelineSteps/K8sServiceSpec/KubernetesArtifacts'
+import type { KubernetesArtifactsProps } from '@cd/components/PipelineSteps/K8sServiceSpec/K8sServiceSpecInterface'
 
 export interface ArtifactSourceRenderProps extends KubernetesArtifactsProps {
   isArtifactsRuntime: boolean
   isPrimaryArtifactsRuntime: boolean
   isSidecarRuntime: boolean
-  getString: (key: keyof StringsMap, vars?: Record<string, any> | undefined) => string
   projectIdentifier: string
   orgIdentifier: string
   accountId: string

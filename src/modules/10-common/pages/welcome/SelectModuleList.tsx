@@ -10,7 +10,6 @@ import { useHistory, useParams } from 'react-router-dom'
 import type { IconName } from '@wings-software/uicore'
 import { useUpdateLSDefaultExperience } from '@common/hooks/useUpdateLSDefaultExperience'
 import { useTelemetry } from '@common/hooks/useTelemetry'
-import { ModuleName } from 'framework/types/ModuleName'
 import routes from '@common/RouteDefinitions'
 import { useUpdateAccountDefaultExperienceNG } from 'services/cd-ng'
 import { useStrings } from 'framework/strings'
@@ -32,10 +31,9 @@ interface ModuleProps {
 interface SelectModuleListProps {
   onModuleClick: (module?: Module) => void
   moduleList: ModuleProps[]
-  openVersionSelection: () => void
 }
 
-const SelectModuleList: React.FC<SelectModuleListProps> = ({ onModuleClick, moduleList, openVersionSelection }) => {
+const SelectModuleList: React.FC<SelectModuleListProps> = ({ onModuleClick, moduleList }) => {
   const [selected, setSelected] = useState<Module>()
 
   const { getString } = useStrings()
@@ -54,18 +52,12 @@ const SelectModuleList: React.FC<SelectModuleListProps> = ({ onModuleClick, modu
     onModuleClick(module)
   }
 
-  const handleCDContinue = (): void => {
-    onModuleClick(selected)
-    openVersionSelection()
-    trackEvent(PurposeActions.CDModuleContinue, { category: Category.SIGNUP, module: ModuleName.CD })
-  }
   const history = useHistory()
   const { updateLSDefaultExperience } = useUpdateLSDefaultExperience()
 
   const getButtonProps = (buttonType: string): { clickHandle?: () => void; disabled?: boolean } => {
     switch (buttonType) {
       case 'cd':
-        return { clickHandle: handleCDContinue }
       case 'ci':
       case 'ce':
       case 'cv':

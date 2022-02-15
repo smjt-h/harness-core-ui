@@ -14,5 +14,6 @@ declare const styles: {
   readonly main: string
   readonly menuItem: string
   readonly popover: string
+  readonly templateYamlPreviewContainer: string
 }
 export default styles

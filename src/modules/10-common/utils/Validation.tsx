@@ -92,3 +92,10 @@ export function URLValidationSchema(): Yup.Schema<string | undefined> {
 export const isEmail = (email: string): boolean => {
   return regexEmail.test(String(email).toLowerCase())
 }
+
+export const ConnectorRefSchema = (config?: { requiredErrorMsg?: string }): Yup.MixedSchema => {
+  const { getString } = useStrings()
+  return Yup.mixed().required(
+    config?.requiredErrorMsg ? config?.requiredErrorMsg : getString('pipelineSteps.build.create.connectorRequiredError')
+  )
+}

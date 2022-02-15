@@ -134,13 +134,9 @@ const ManifestStore: React.FC<StepProps<ConnectorConfigDTO> & ManifestStorePropT
         initialValues={getInitialValues()}
         formName="manifestStore"
         validationSchema={Yup.object().shape({
-          connectorRef: Yup.string()
-            .trim()
-            .required(
-              `${ManifestToConnectorMap[selectedStore]} ${getString(
-                'pipelineSteps.build.create.connectorRequiredError'
-              )}`
-            )
+          connectorRef: Yup.mixed().required(
+            `${ManifestToConnectorMap[selectedStore]} ${getString('pipelineSteps.build.create.connectorRequiredError')}`
+          )
         })}
         onSubmit={formData => {
           submitFirstStep({ ...formData })

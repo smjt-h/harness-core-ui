@@ -477,6 +477,24 @@ export interface AccountResourcesDTO {
   templatesCount?: number
 }
 
+export interface AccountSettingConfig {
+  [key: string]: any
+}
+
+export interface AccountSettingResponse {
+  accountSettings?: AccountSettings
+  createdAt?: number
+  lastModifiedAt?: number
+}
+
+export interface AccountSettings {
+  accountIdentifier?: string
+  config: AccountSettingConfig
+  orgIdentifier?: string
+  projectIdentifier?: string
+  type: 'Connector'
+}
+
 export interface ActiveProjectsCountDTO {
   count?: number
 }
@@ -1385,6 +1403,10 @@ export interface ConnectorResponse {
   status?: ConnectorConnectivityDetails
 }
 
+export type ConnectorSettings = AccountSettingConfig & {
+  builtInSMDisabled?: boolean
+}
+
 export interface ConnectorStatistics {
   statusStats?: ConnectorStatusStatistics[]
   typeStats?: ConnectorTypeStatistics[]
@@ -1488,6 +1510,7 @@ export interface ContextElement {
     | 'AZURE_WEBAPP_SETUP'
     | 'HELM_CHART'
     | 'MANIFEST_VARIABLE'
+    | 'RANCHER_K8S_CLUSTER_CRITERIA'
   name?: string
   uuid?: string
 }
@@ -1536,6 +1559,10 @@ export interface CustomHealthKeyAndValue {
   key: string
   value?: string
   valueEncrypted?: boolean
+}
+
+export type CustomPolicyStepSpec = PolicySpec & {
+  payload?: string
 }
 
 export type CustomRestrictionDTO = RestrictionDTO & { [key: string]: any }
@@ -1966,6 +1993,21 @@ export interface EntityDetail {
     | 'GitRepositories'
     | 'FeatureFlags'
     | 'ServiceNowApproval'
+    | 'GovernancePolicies'
+    | 'POLICY_STEP'
+    | 'Run'
+    | 'RunTests'
+    | 'Plugin'
+    | 'RestoreCacheGCS'
+    | 'RestoreCacheS3'
+    | 'SaveCacheGCS'
+    | 'SaveCacheS3'
+    | 'ArtifactoryUpload'
+    | 'GCSUpload'
+    | 'S3Upload'
+    | 'BuildAndPushGCR'
+    | 'BuildAndPushECR'
+    | 'BuildAndPushDockerRegistry'
 }
 
 export interface EntityGitDetails {
@@ -3195,6 +3237,21 @@ export interface GitEntityBranchFilterSummaryProperties {
     | 'GitRepositories'
     | 'FeatureFlags'
     | 'ServiceNowApproval'
+    | 'GovernancePolicies'
+    | 'POLICY_STEP'
+    | 'Run'
+    | 'RunTests'
+    | 'Plugin'
+    | 'RestoreCacheGCS'
+    | 'RestoreCacheS3'
+    | 'SaveCacheGCS'
+    | 'SaveCacheS3'
+    | 'ArtifactoryUpload'
+    | 'GCSUpload'
+    | 'S3Upload'
+    | 'BuildAndPushGCR'
+    | 'BuildAndPushECR'
+    | 'BuildAndPushDockerRegistry'
   )[]
   moduleType?: 'CD' | 'CI' | 'CV' | 'CF' | 'CE' | 'CORE' | 'PMS' | 'TEMPLATESERVICE'
   searchTerm?: string
@@ -3236,6 +3293,21 @@ export interface GitEntityFilterProperties {
     | 'GitRepositories'
     | 'FeatureFlags'
     | 'ServiceNowApproval'
+    | 'GovernancePolicies'
+    | 'POLICY_STEP'
+    | 'Run'
+    | 'RunTests'
+    | 'Plugin'
+    | 'RestoreCacheGCS'
+    | 'RestoreCacheS3'
+    | 'SaveCacheGCS'
+    | 'SaveCacheS3'
+    | 'ArtifactoryUpload'
+    | 'GCSUpload'
+    | 'S3Upload'
+    | 'BuildAndPushGCR'
+    | 'BuildAndPushECR'
+    | 'BuildAndPushDockerRegistry'
   )[]
   gitSyncConfigIdentifiers?: string[]
   moduleType?: 'CD' | 'CI' | 'CV' | 'CF' | 'CE' | 'CORE' | 'PMS' | 'TEMPLATESERVICE'
@@ -3310,7 +3382,22 @@ export interface GitFullSyncEntityInfoDTO {
     | 'GitRepositories'
     | 'FeatureFlags'
     | 'ServiceNowApproval'
-  errorMessages?: string[]
+    | 'GovernancePolicies'
+    | 'POLICY_STEP'
+    | 'Run'
+    | 'RunTests'
+    | 'Plugin'
+    | 'RestoreCacheGCS'
+    | 'RestoreCacheS3'
+    | 'SaveCacheGCS'
+    | 'SaveCacheS3'
+    | 'ArtifactoryUpload'
+    | 'GCSUpload'
+    | 'S3Upload'
+    | 'BuildAndPushGCR'
+    | 'BuildAndPushECR'
+    | 'BuildAndPushDockerRegistry'
+  errorMessage?: string
   filePath?: string
   identifier?: string
   name?: string
@@ -3359,6 +3446,21 @@ export interface GitFullSyncEntityInfoFilterKeys {
     | 'GitRepositories'
     | 'FeatureFlags'
     | 'ServiceNowApproval'
+    | 'GovernancePolicies'
+    | 'POLICY_STEP'
+    | 'Run'
+    | 'RunTests'
+    | 'Plugin'
+    | 'RestoreCacheGCS'
+    | 'RestoreCacheS3'
+    | 'SaveCacheGCS'
+    | 'SaveCacheS3'
+    | 'ArtifactoryUpload'
+    | 'GCSUpload'
+    | 'S3Upload'
+    | 'BuildAndPushGCR'
+    | 'BuildAndPushECR'
+    | 'BuildAndPushDockerRegistry'
   )[]
   syncStatus?: 'QUEUED' | 'SUCCESS' | 'FAILED' | 'OVERRIDDEN'
 }
@@ -3485,6 +3587,21 @@ export interface GitSyncEntityDTO {
     | 'GitRepositories'
     | 'FeatureFlags'
     | 'ServiceNowApproval'
+    | 'GovernancePolicies'
+    | 'POLICY_STEP'
+    | 'Run'
+    | 'RunTests'
+    | 'Plugin'
+    | 'RestoreCacheGCS'
+    | 'RestoreCacheS3'
+    | 'SaveCacheGCS'
+    | 'SaveCacheS3'
+    | 'ArtifactoryUpload'
+    | 'GCSUpload'
+    | 'S3Upload'
+    | 'BuildAndPushGCR'
+    | 'BuildAndPushECR'
+    | 'BuildAndPushDockerRegistry'
   folderPath?: string
   gitConnectorId?: string
   repoProviderType?: 'github' | 'gitlab' | 'bitbucket' | 'unknown'
@@ -3528,6 +3645,21 @@ export interface GitSyncEntityListDTO {
     | 'GitRepositories'
     | 'FeatureFlags'
     | 'ServiceNowApproval'
+    | 'GovernancePolicies'
+    | 'POLICY_STEP'
+    | 'Run'
+    | 'RunTests'
+    | 'Plugin'
+    | 'RestoreCacheGCS'
+    | 'RestoreCacheS3'
+    | 'SaveCacheGCS'
+    | 'SaveCacheS3'
+    | 'ArtifactoryUpload'
+    | 'GCSUpload'
+    | 'S3Upload'
+    | 'BuildAndPushGCR'
+    | 'BuildAndPushECR'
+    | 'BuildAndPushDockerRegistry'
   gitSyncEntities?: GitSyncEntityDTO[]
 }
 
@@ -3588,6 +3720,21 @@ export interface GitSyncErrorDTO {
     | 'GitRepositories'
     | 'FeatureFlags'
     | 'ServiceNowApproval'
+    | 'GovernancePolicies'
+    | 'POLICY_STEP'
+    | 'Run'
+    | 'RunTests'
+    | 'Plugin'
+    | 'RestoreCacheGCS'
+    | 'RestoreCacheS3'
+    | 'SaveCacheGCS'
+    | 'SaveCacheS3'
+    | 'ArtifactoryUpload'
+    | 'GCSUpload'
+    | 'S3Upload'
+    | 'BuildAndPushGCR'
+    | 'BuildAndPushECR'
+    | 'BuildAndPushDockerRegistry'
   errorType?: 'GIT_TO_HARNESS' | 'CONNECTIVITY_ISSUE' | 'FULL_SYNC'
   failureReason?: string
   repoId?: string
@@ -4747,10 +4894,9 @@ export type NumberNGVariable = NGVariable & {
   value: number
 }
 
-export interface OAuthSettings {
+export type OAuthSettings = NGAuthSettings & {
   allowedProviders?: ('AZURE' | 'BITBUCKET' | 'GITHUB' | 'GITLAB' | 'GOOGLE' | 'LINKEDIN')[]
   filter?: string
-  settingsType?: 'USER_PASSWORD' | 'SAML' | 'LDAP' | 'OAUTH'
 }
 
 export interface OAuthSignupDTO {
@@ -5390,6 +5536,17 @@ export type PmsSlackChannel = PmsNotificationChannel & {
   webhookUrl?: string
 }
 
+export interface PolicySpec {
+  type?: string
+}
+
+export type PolicyStepInfo = StepSpecType & {
+  metadata?: string
+  policySets?: string[]
+  policySpec?: PolicySpec
+  type?: string
+}
+
 export interface PollingResponseDTO {
   pollingResponse?: string[]
 }
@@ -5592,6 +5749,13 @@ export interface ResponseAccountLicenseDTO {
 export interface ResponseAccountResourcesDTO {
   correlationId?: string
   data?: AccountResourcesDTO
+  metaData?: { [key: string]: any }
+  status?: 'SUCCESS' | 'FAILURE' | 'ERROR'
+}
+
+export interface ResponseAccountSettingResponse {
+  correlationId?: string
+  data?: AccountSettingResponse
   metaData?: { [key: string]: any }
   status?: 'SUCCESS' | 'FAILURE' | 'ERROR'
 }
@@ -5963,6 +6127,13 @@ export interface ResponseLicenseUsageDTO {
 export interface ResponseLicensesWithSummaryDTO {
   correlationId?: string
   data?: LicensesWithSummaryDTO
+  metaData?: { [key: string]: any }
+  status?: 'SUCCESS' | 'FAILURE' | 'ERROR'
+}
+
+export interface ResponseListAccountSettings {
+  correlationId?: string
+  data?: AccountSettings[]
   metaData?: { [key: string]: any }
   status?: 'SUCCESS' | 'FAILURE' | 'ERROR'
 }
@@ -7397,6 +7568,7 @@ export type SamlSettings = SSOSettings & {
     | 'GCP'
     | 'AZURE'
     | 'PCF'
+    | 'RANCHER'
     | 'DIRECT'
     | 'KUBERNETES_CLUSTER'
     | 'DOCKER'
@@ -8678,10 +8850,17 @@ export type VaultAuthTokenCredentialDTO = VaultCredentialDTO & {
   authToken?: string
 }
 
+export type VaultAwsIamRoleCredentialDTO = VaultCredentialDTO & {
+  awsRegion?: string
+  vaultAwsIamRole?: string
+  xvaultAwsIamServerId?: SecretRefData
+}
+
 export type VaultConnectorDTO = ConnectorConfigDTO & {
-  accessType?: 'APP_ROLE' | 'TOKEN' | 'VAULT_AGENT'
+  accessType?: 'APP_ROLE' | 'TOKEN' | 'VAULT_AGENT' | 'AWS_IAM'
   appRoleId?: string
   authToken?: string
+  awsRegion?: string
   basePath?: string
   default?: boolean
   delegateSelectors?: string[]
@@ -8693,8 +8872,11 @@ export type VaultConnectorDTO = ConnectorConfigDTO & {
   secretEngineVersion?: number
   secretId?: string
   sinkPath?: string
+  useAwsIam?: boolean
   useVaultAgent?: boolean
+  vaultAwsIamRole?: string
   vaultUrl?: string
+  xvaultAwsIamServerId?: string
 }
 
 export interface VaultCredentialDTO {
@@ -8702,7 +8884,7 @@ export interface VaultCredentialDTO {
 }
 
 export type VaultMetadataRequestSpecDTO = SecretManagerMetadataRequestSpecDTO & {
-  accessType: 'APP_ROLE' | 'TOKEN' | 'VAULT_AGENT'
+  accessType: 'APP_ROLE' | 'TOKEN' | 'VAULT_AGENT' | 'AWS_IAM'
   delegateSelectors?: string[]
   namespace?: string
   spec?: VaultCredentialDTO
@@ -8775,6 +8957,7 @@ export interface YamlSchemaMetadata {
   featureFlags?: string[]
   featureRestrictions?: string[]
   modulesSupported?: ('CD' | 'CI' | 'CV' | 'CF' | 'CE' | 'CORE' | 'PMS' | 'TEMPLATESERVICE')[]
+  namespace?: string
   yamlGroup: YamlGroup
 }
 
@@ -8802,6 +8985,8 @@ export interface YamlSnippets {
 }
 
 export type AccountDTORequestBody = AccountDTO
+
+export type AccountSettingsRequestBody = AccountSettings
 
 export type ApiKeyDTORequestBody = ApiKeyDTO
 
@@ -8873,11 +9058,267 @@ export type GetBuildDetailsForArtifactoryArtifactWithYamlBodyRequestBody = strin
 
 export type GetBuildDetailsForEcrWithYamlBodyRequestBody = string
 
-export type UnsubscribeBodyRequestBody = string[]
+export type SubscribeBodyRequestBody = string[]
 
 export type UpdateWhitelistedDomainsBodyRequestBody = string[]
 
 export type UploadSamlMetaDataRequestBody = void
+
+export interface GetAccountSettingQueryParams {
+  accountIdentifier: string
+  orgIdentifier?: string
+  projectIdentifier?: string
+  type: 'Connector'
+}
+
+export type GetAccountSettingProps = Omit<
+  GetProps<ResponseAccountSettingResponse, Failure | Error, GetAccountSettingQueryParams, void>,
+  'path'
+>
+
+/**
+ * Gets account setting
+ */
+export const GetAccountSetting = (props: GetAccountSettingProps) => (
+  <Get<ResponseAccountSettingResponse, Failure | Error, GetAccountSettingQueryParams, void>
+    path={`/account-setting`}
+    base={getConfig('ng/api')}
+    {...props}
+  />
+)
+
+export type UseGetAccountSettingProps = Omit<
+  UseGetProps<ResponseAccountSettingResponse, Failure | Error, GetAccountSettingQueryParams, void>,
+  'path'
+>
+
+/**
+ * Gets account setting
+ */
+export const useGetAccountSetting = (props: UseGetAccountSettingProps) =>
+  useGet<ResponseAccountSettingResponse, Failure | Error, GetAccountSettingQueryParams, void>(`/account-setting`, {
+    base: getConfig('ng/api'),
+    ...props
+  })
+
+/**
+ * Gets account setting
+ */
+export const getAccountSettingPromise = (
+  props: GetUsingFetchProps<ResponseAccountSettingResponse, Failure | Error, GetAccountSettingQueryParams, void>,
+  signal?: RequestInit['signal']
+) =>
+  getUsingFetch<ResponseAccountSettingResponse, Failure | Error, GetAccountSettingQueryParams, void>(
+    getConfig('ng/api'),
+    `/account-setting`,
+    props,
+    signal
+  )
+
+export interface CreateAccountSettingQueryParams {
+  accountIdentifier: string
+}
+
+export type CreateAccountSettingProps = Omit<
+  MutateProps<
+    ResponseAccountSettingResponse,
+    Failure | Error,
+    CreateAccountSettingQueryParams,
+    AccountSettingsRequestBody,
+    void
+  >,
+  'path' | 'verb'
+>
+
+/**
+ * Create a account setting
+ */
+export const CreateAccountSetting = (props: CreateAccountSettingProps) => (
+  <Mutate<
+    ResponseAccountSettingResponse,
+    Failure | Error,
+    CreateAccountSettingQueryParams,
+    AccountSettingsRequestBody,
+    void
+  >
+    verb="POST"
+    path={`/account-setting`}
+    base={getConfig('ng/api')}
+    {...props}
+  />
+)
+
+export type UseCreateAccountSettingProps = Omit<
+  UseMutateProps<
+    ResponseAccountSettingResponse,
+    Failure | Error,
+    CreateAccountSettingQueryParams,
+    AccountSettingsRequestBody,
+    void
+  >,
+  'path' | 'verb'
+>
+
+/**
+ * Create a account setting
+ */
+export const useCreateAccountSetting = (props: UseCreateAccountSettingProps) =>
+  useMutate<
+    ResponseAccountSettingResponse,
+    Failure | Error,
+    CreateAccountSettingQueryParams,
+    AccountSettingsRequestBody,
+    void
+  >('POST', `/account-setting`, { base: getConfig('ng/api'), ...props })
+
+/**
+ * Create a account setting
+ */
+export const createAccountSettingPromise = (
+  props: MutateUsingFetchProps<
+    ResponseAccountSettingResponse,
+    Failure | Error,
+    CreateAccountSettingQueryParams,
+    AccountSettingsRequestBody,
+    void
+  >,
+  signal?: RequestInit['signal']
+) =>
+  mutateUsingFetch<
+    ResponseAccountSettingResponse,
+    Failure | Error,
+    CreateAccountSettingQueryParams,
+    AccountSettingsRequestBody,
+    void
+  >('POST', getConfig('ng/api'), `/account-setting`, props, signal)
+
+export interface UpdateAccountSettingQueryParams {
+  accountIdentifier: string
+}
+
+export type UpdateAccountSettingProps = Omit<
+  MutateProps<
+    ResponseAccountSettingResponse,
+    Failure | Error,
+    UpdateAccountSettingQueryParams,
+    AccountSettingsRequestBody,
+    void
+  >,
+  'path' | 'verb'
+>
+
+/**
+ * Update a account setting
+ */
+export const UpdateAccountSetting = (props: UpdateAccountSettingProps) => (
+  <Mutate<
+    ResponseAccountSettingResponse,
+    Failure | Error,
+    UpdateAccountSettingQueryParams,
+    AccountSettingsRequestBody,
+    void
+  >
+    verb="PUT"
+    path={`/account-setting`}
+    base={getConfig('ng/api')}
+    {...props}
+  />
+)
+
+export type UseUpdateAccountSettingProps = Omit<
+  UseMutateProps<
+    ResponseAccountSettingResponse,
+    Failure | Error,
+    UpdateAccountSettingQueryParams,
+    AccountSettingsRequestBody,
+    void
+  >,
+  'path' | 'verb'
+>
+
+/**
+ * Update a account setting
+ */
+export const useUpdateAccountSetting = (props: UseUpdateAccountSettingProps) =>
+  useMutate<
+    ResponseAccountSettingResponse,
+    Failure | Error,
+    UpdateAccountSettingQueryParams,
+    AccountSettingsRequestBody,
+    void
+  >('PUT', `/account-setting`, { base: getConfig('ng/api'), ...props })
+
+/**
+ * Update a account setting
+ */
+export const updateAccountSettingPromise = (
+  props: MutateUsingFetchProps<
+    ResponseAccountSettingResponse,
+    Failure | Error,
+    UpdateAccountSettingQueryParams,
+    AccountSettingsRequestBody,
+    void
+  >,
+  signal?: RequestInit['signal']
+) =>
+  mutateUsingFetch<
+    ResponseAccountSettingResponse,
+    Failure | Error,
+    UpdateAccountSettingQueryParams,
+    AccountSettingsRequestBody,
+    void
+  >('PUT', getConfig('ng/api'), `/account-setting`, props, signal)
+
+export interface ListAccountSettingQueryParams {
+  accountIdentifier: string
+  orgIdentifier?: string
+  projectIdentifier?: string
+  type?: 'Connector'
+}
+
+export type ListAccountSettingProps = Omit<
+  GetProps<ResponseListAccountSettings, Failure | Error, ListAccountSettingQueryParams, void>,
+  'path'
+>
+
+/**
+ * List account setting
+ */
+export const ListAccountSetting = (props: ListAccountSettingProps) => (
+  <Get<ResponseListAccountSettings, Failure | Error, ListAccountSettingQueryParams, void>
+    path={`/account-setting/list`}
+    base={getConfig('ng/api')}
+    {...props}
+  />
+)
+
+export type UseListAccountSettingProps = Omit<
+  UseGetProps<ResponseListAccountSettings, Failure | Error, ListAccountSettingQueryParams, void>,
+  'path'
+>
+
+/**
+ * List account setting
+ */
+export const useListAccountSetting = (props: UseListAccountSettingProps) =>
+  useGet<ResponseListAccountSettings, Failure | Error, ListAccountSettingQueryParams, void>(`/account-setting/list`, {
+    base: getConfig('ng/api'),
+    ...props
+  })
+
+/**
+ * List account setting
+ */
+export const listAccountSettingPromise = (
+  props: GetUsingFetchProps<ResponseListAccountSettings, Failure | Error, ListAccountSettingQueryParams, void>,
+  signal?: RequestInit['signal']
+) =>
+  getUsingFetch<ResponseListAccountSettings, Failure | Error, ListAccountSettingQueryParams, void>(
+    getConfig('ng/api'),
+    `/account-setting/list`,
+    props,
+    signal
+  )
 
 export interface GetAccountNGPathParams {
   accountIdentifier: string
@@ -9128,6 +9569,21 @@ export interface ListActivitiesQueryParams {
     | 'GitRepositories'
     | 'FeatureFlags'
     | 'ServiceNowApproval'
+    | 'GovernancePolicies'
+    | 'POLICY_STEP'
+    | 'Run'
+    | 'RunTests'
+    | 'Plugin'
+    | 'RestoreCacheGCS'
+    | 'RestoreCacheS3'
+    | 'SaveCacheGCS'
+    | 'SaveCacheS3'
+    | 'ArtifactoryUpload'
+    | 'GCSUpload'
+    | 'S3Upload'
+    | 'BuildAndPushGCR'
+    | 'BuildAndPushECR'
+    | 'BuildAndPushDockerRegistry'
   referredByEntityType?:
     | 'Projects'
     | 'Pipelines'
@@ -9163,6 +9619,21 @@ export interface ListActivitiesQueryParams {
     | 'GitRepositories'
     | 'FeatureFlags'
     | 'ServiceNowApproval'
+    | 'GovernancePolicies'
+    | 'POLICY_STEP'
+    | 'Run'
+    | 'RunTests'
+    | 'Plugin'
+    | 'RestoreCacheGCS'
+    | 'RestoreCacheS3'
+    | 'SaveCacheGCS'
+    | 'SaveCacheS3'
+    | 'ArtifactoryUpload'
+    | 'GCSUpload'
+    | 'S3Upload'
+    | 'BuildAndPushGCR'
+    | 'BuildAndPushECR'
+    | 'BuildAndPushDockerRegistry'
 }
 
 export type ListActivitiesProps = Omit<GetProps<ResponsePageActivity, unknown, ListActivitiesQueryParams, void>, 'path'>
@@ -9302,6 +9773,21 @@ export interface GetActivitiesSummaryQueryParams {
     | 'GitRepositories'
     | 'FeatureFlags'
     | 'ServiceNowApproval'
+    | 'GovernancePolicies'
+    | 'POLICY_STEP'
+    | 'Run'
+    | 'RunTests'
+    | 'Plugin'
+    | 'RestoreCacheGCS'
+    | 'RestoreCacheS3'
+    | 'SaveCacheGCS'
+    | 'SaveCacheS3'
+    | 'ArtifactoryUpload'
+    | 'GCSUpload'
+    | 'S3Upload'
+    | 'BuildAndPushGCR'
+    | 'BuildAndPushECR'
+    | 'BuildAndPushDockerRegistry'
   referredByEntityType?:
     | 'Projects'
     | 'Pipelines'
@@ -9337,6 +9823,21 @@ export interface GetActivitiesSummaryQueryParams {
     | 'GitRepositories'
     | 'FeatureFlags'
     | 'ServiceNowApproval'
+    | 'GovernancePolicies'
+    | 'POLICY_STEP'
+    | 'Run'
+    | 'RunTests'
+    | 'Plugin'
+    | 'RestoreCacheGCS'
+    | 'RestoreCacheS3'
+    | 'SaveCacheGCS'
+    | 'SaveCacheS3'
+    | 'ArtifactoryUpload'
+    | 'GCSUpload'
+    | 'S3Upload'
+    | 'BuildAndPushGCR'
+    | 'BuildAndPushECR'
+    | 'BuildAndPushDockerRegistry'
 }
 
 export type GetActivitiesSummaryProps = Omit<
@@ -16004,6 +16505,21 @@ export interface ListReferredByEntitiesQueryParams {
     | 'GitRepositories'
     | 'FeatureFlags'
     | 'ServiceNowApproval'
+    | 'GovernancePolicies'
+    | 'POLICY_STEP'
+    | 'Run'
+    | 'RunTests'
+    | 'Plugin'
+    | 'RestoreCacheGCS'
+    | 'RestoreCacheS3'
+    | 'SaveCacheGCS'
+    | 'SaveCacheS3'
+    | 'ArtifactoryUpload'
+    | 'GCSUpload'
+    | 'S3Upload'
+    | 'BuildAndPushGCR'
+    | 'BuildAndPushECR'
+    | 'BuildAndPushDockerRegistry'
   searchTerm?: string
   branch?: string
   repoIdentifier?: string
@@ -18317,6 +18833,21 @@ export interface ListGitSyncEntitiesByTypePathParams {
     | 'GitRepositories'
     | 'FeatureFlags'
     | 'ServiceNowApproval'
+    | 'GovernancePolicies'
+    | 'POLICY_STEP'
+    | 'Run'
+    | 'RunTests'
+    | 'Plugin'
+    | 'RestoreCacheGCS'
+    | 'RestoreCacheS3'
+    | 'SaveCacheGCS'
+    | 'SaveCacheS3'
+    | 'ArtifactoryUpload'
+    | 'GCSUpload'
+    | 'S3Upload'
+    | 'BuildAndPushGCR'
+    | 'BuildAndPushECR'
+    | 'BuildAndPushDockerRegistry'
 }
 
 export type ListGitSyncEntitiesByTypeProps = Omit<
@@ -18420,6 +18951,21 @@ export const listGitSyncEntitiesByTypePromise = (
       | 'GitRepositories'
       | 'FeatureFlags'
       | 'ServiceNowApproval'
+      | 'GovernancePolicies'
+      | 'POLICY_STEP'
+      | 'Run'
+      | 'RunTests'
+      | 'Plugin'
+      | 'RestoreCacheGCS'
+      | 'RestoreCacheS3'
+      | 'SaveCacheGCS'
+      | 'SaveCacheS3'
+      | 'ArtifactoryUpload'
+      | 'GCSUpload'
+      | 'S3Upload'
+      | 'BuildAndPushGCR'
+      | 'BuildAndPushECR'
+      | 'BuildAndPushDockerRegistry'
   },
   signal?: RequestInit['signal']
 ) =>
@@ -21671,6 +22217,21 @@ export interface GetStepYamlSchemaQueryParams {
     | 'GitRepositories'
     | 'FeatureFlags'
     | 'ServiceNowApproval'
+    | 'GovernancePolicies'
+    | 'POLICY_STEP'
+    | 'Run'
+    | 'RunTests'
+    | 'Plugin'
+    | 'RestoreCacheGCS'
+    | 'RestoreCacheS3'
+    | 'SaveCacheGCS'
+    | 'SaveCacheS3'
+    | 'ArtifactoryUpload'
+    | 'GCSUpload'
+    | 'S3Upload'
+    | 'BuildAndPushGCR'
+    | 'BuildAndPushECR'
+    | 'BuildAndPushDockerRegistry'
   yamlGroup?: string
 }
 
@@ -22157,7 +22718,7 @@ export type ProcessPollingResultNgProps = Omit<
     void,
     Failure | Error,
     ProcessPollingResultNgQueryParams,
-    UnsubscribeBodyRequestBody,
+    SubscribeBodyRequestBody,
     ProcessPollingResultNgPathParams
   >,
   'path' | 'verb'
@@ -22169,7 +22730,7 @@ export const ProcessPollingResultNg = ({ perpetualTaskId, ...props }: ProcessPol
     void,
     Failure | Error,
     ProcessPollingResultNgQueryParams,
-    UnsubscribeBodyRequestBody,
+    SubscribeBodyRequestBody,
     ProcessPollingResultNgPathParams
   >
     verb="POST"
@@ -22184,7 +22745,7 @@ export type UseProcessPollingResultNgProps = Omit<
     void,
     Failure | Error,
     ProcessPollingResultNgQueryParams,
-    UnsubscribeBodyRequestBody,
+    SubscribeBodyRequestBody,
     ProcessPollingResultNgPathParams
   >,
   'path' | 'verb'
@@ -22196,7 +22757,7 @@ export const useProcessPollingResultNg = ({ perpetualTaskId, ...props }: UseProc
     void,
     Failure | Error,
     ProcessPollingResultNgQueryParams,
-    UnsubscribeBodyRequestBody,
+    SubscribeBodyRequestBody,
     ProcessPollingResultNgPathParams
   >(
     'POST',
@@ -22212,7 +22773,7 @@ export const processPollingResultNgPromise = (
     void,
     Failure | Error,
     ProcessPollingResultNgQueryParams,
-    UnsubscribeBodyRequestBody,
+    SubscribeBodyRequestBody,
     ProcessPollingResultNgPathParams
   > & { perpetualTaskId: string },
   signal?: RequestInit['signal']
@@ -22221,17 +22782,17 @@ export const processPollingResultNgPromise = (
     void,
     Failure | Error,
     ProcessPollingResultNgQueryParams,
-    UnsubscribeBodyRequestBody,
+    SubscribeBodyRequestBody,
     ProcessPollingResultNgPathParams
   >('POST', getConfig('ng/api'), `/polling/delegate-response/${perpetualTaskId}`, props, signal)
 
 export type SubscribeProps = Omit<
-  MutateProps<ResponsePollingResponseDTO, Failure | Error, void, UnsubscribeBodyRequestBody, void>,
+  MutateProps<ResponsePollingResponseDTO, Failure | Error, void, SubscribeBodyRequestBody, void>,
   'path' | 'verb'
 >
 
 export const Subscribe = (props: SubscribeProps) => (
-  <Mutate<ResponsePollingResponseDTO, Failure | Error, void, UnsubscribeBodyRequestBody, void>
+  <Mutate<ResponsePollingResponseDTO, Failure | Error, void, SubscribeBodyRequestBody, void>
     verb="POST"
     path={`/polling/subscribe`}
     base={getConfig('ng/api')}
@@ -22240,22 +22801,22 @@ export const Subscribe = (props: SubscribeProps) => (
 )
 
 export type UseSubscribeProps = Omit<
-  UseMutateProps<ResponsePollingResponseDTO, Failure | Error, void, UnsubscribeBodyRequestBody, void>,
+  UseMutateProps<ResponsePollingResponseDTO, Failure | Error, void, SubscribeBodyRequestBody, void>,
   'path' | 'verb'
 >
 
 export const useSubscribe = (props: UseSubscribeProps) =>
-  useMutate<ResponsePollingResponseDTO, Failure | Error, void, UnsubscribeBodyRequestBody, void>(
+  useMutate<ResponsePollingResponseDTO, Failure | Error, void, SubscribeBodyRequestBody, void>(
     'POST',
     `/polling/subscribe`,
     { base: getConfig('ng/api'), ...props }
   )
 
 export const subscribePromise = (
-  props: MutateUsingFetchProps<ResponsePollingResponseDTO, Failure | Error, void, UnsubscribeBodyRequestBody, void>,
+  props: MutateUsingFetchProps<ResponsePollingResponseDTO, Failure | Error, void, SubscribeBodyRequestBody, void>,
   signal?: RequestInit['signal']
 ) =>
-  mutateUsingFetch<ResponsePollingResponseDTO, Failure | Error, void, UnsubscribeBodyRequestBody, void>(
+  mutateUsingFetch<ResponsePollingResponseDTO, Failure | Error, void, SubscribeBodyRequestBody, void>(
     'POST',
     getConfig('ng/api'),
     `/polling/subscribe`,
@@ -22264,12 +22825,12 @@ export const subscribePromise = (
   )
 
 export type UnsubscribeProps = Omit<
-  MutateProps<boolean, Failure | Error, void, UnsubscribeBodyRequestBody, void>,
+  MutateProps<boolean, Failure | Error, void, SubscribeBodyRequestBody, void>,
   'path' | 'verb'
 >
 
 export const Unsubscribe = (props: UnsubscribeProps) => (
-  <Mutate<boolean, Failure | Error, void, UnsubscribeBodyRequestBody, void>
+  <Mutate<boolean, Failure | Error, void, SubscribeBodyRequestBody, void>
     verb="POST"
     path={`/polling/unsubscribe`}
     base={getConfig('ng/api')}
@@ -22278,21 +22839,21 @@ export const Unsubscribe = (props: UnsubscribeProps) => (
 )
 
 export type UseUnsubscribeProps = Omit<
-  UseMutateProps<boolean, Failure | Error, void, UnsubscribeBodyRequestBody, void>,
+  UseMutateProps<boolean, Failure | Error, void, SubscribeBodyRequestBody, void>,
   'path' | 'verb'
 >
 
 export const useUnsubscribe = (props: UseUnsubscribeProps) =>
-  useMutate<boolean, Failure | Error, void, UnsubscribeBodyRequestBody, void>('POST', `/polling/unsubscribe`, {
+  useMutate<boolean, Failure | Error, void, SubscribeBodyRequestBody, void>('POST', `/polling/unsubscribe`, {
     base: getConfig('ng/api'),
     ...props
   })
 
 export const unsubscribePromise = (
-  props: MutateUsingFetchProps<boolean, Failure | Error, void, UnsubscribeBodyRequestBody, void>,
+  props: MutateUsingFetchProps<boolean, Failure | Error, void, SubscribeBodyRequestBody, void>,
   signal?: RequestInit['signal']
 ) =>
-  mutateUsingFetch<boolean, Failure | Error, void, UnsubscribeBodyRequestBody, void>(
+  mutateUsingFetch<boolean, Failure | Error, void, SubscribeBodyRequestBody, void>(
     'POST',
     getConfig('ng/api'),
     `/polling/unsubscribe`,
@@ -30480,6 +31041,21 @@ export interface GetYamlSchemaQueryParams {
     | 'GitRepositories'
     | 'FeatureFlags'
     | 'ServiceNowApproval'
+    | 'GovernancePolicies'
+    | 'POLICY_STEP'
+    | 'Run'
+    | 'RunTests'
+    | 'Plugin'
+    | 'RestoreCacheGCS'
+    | 'RestoreCacheS3'
+    | 'SaveCacheGCS'
+    | 'SaveCacheS3'
+    | 'ArtifactoryUpload'
+    | 'GCSUpload'
+    | 'S3Upload'
+    | 'BuildAndPushGCR'
+    | 'BuildAndPushECR'
+    | 'BuildAndPushDockerRegistry'
   subtype?:
     | 'K8sCluster'
     | 'Git'

@@ -29,3 +29,15 @@ export const NewRelicHealthSourceFieldNames = {
 }
 
 export const newRelicDefaultMetricName = 'New Relic Metric'
+
+export const initNewRelicCustomForm = {
+  groupName: { label: '', value: '' },
+  query: '',
+  metricValue: '',
+  timestamp: '',
+  timestampFormat: '',
+  serviceInstanceIdentifier: '',
+  sli: false,
+  healthScore: false,
+  continuousVerification: false
+}

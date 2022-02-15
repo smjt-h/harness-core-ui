@@ -6,10 +6,10 @@
  */
 
 import React from 'react'
-import { Button, Color, Icon, Text, TextProps, Utils } from '@wings-software/uicore'
+import { Button, Color, Container, FontVariation, Icon, Text, TextProps, Utils } from '@wings-software/uicore'
 import { useStrings } from 'framework/strings'
 import { useToaster } from '@common/exports'
-
+import css from './IdentifierText.module.scss'
 export interface IdentifierTextProps extends TextProps {
   identifier?: string
   allowCopy?: boolean
@@ -20,34 +20,17 @@ export const IdentifierText: React.FC<IdentifierTextProps> = ({ identifier, styl
   const { showSuccess, clear } = useToaster()
 
   return (
-    <Text
-      inline
-      style={{
-        backgroundColor: '#EFFBFF',
-        marginBottom: 'var(--spacing-small)',
-        padding: '4px 8px',
-        borderRadius: '4px',
-        fontSize: '12px',
-        lineHeight: '15px',
-        color: '#22222A',
-        border: '1px solid #D9DAE6',
-        ...style
-      }}
-      {...props}
-    >
-      {getString('idLabel')}
-      {identifier}
+    <Container className={css.identifierContainer}>
+      <Text inline font={{ variation: FontVariation.SMALL }} margin={{ right: 'xsmall' }}>
+        {getString('idLabel')}
+      </Text>
+      <Text inline {...props} font={{ variation: FontVariation.SMALL }}>
+        {identifier}
+      </Text>
       {allowCopy && (
         <Button
           noStyling
-          style={{
-            border: 'none',
-            background: 'none',
-            padding: 0,
-            margin: '0 0 0 var(--spacing-small)',
-            transform: 'translateY(-2px)',
-            cursor: 'pointer'
-          }}
+          className={css.copyButton}
           title={getString('clickToCopy')}
           onClick={() => {
             Utils.copy(identifier as string)
@@ -58,6 +41,6 @@ export const IdentifierText: React.FC<IdentifierTextProps> = ({ identifier, styl
           <Icon name="duplicate" size={12} color={Color.GREY_350} />
         </Button>
       )}
-    </Text>
+    </Container>
   )
 }

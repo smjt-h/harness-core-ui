@@ -131,6 +131,7 @@ exports[`Connector details step Test for  create  connector step one required fe
                       >
                         <div
                           class="FormError--errorDiv"
+                          data-name="name"
                         >
                           <span
                             class="bp3-icon StyledProps--main FormError--errorTextIcon StyledProps--intent-danger"

@@ -1,0 +1,66 @@
+{
+  "name": "Test Stage Template",
+  "identifier": "Test_Stage_Template",
+  "versionLabel": "Version1",
+  "type": "Stage",
+  "projectIdentifier": "Yogesh_Test",
+  "orgIdentifier": "default",
+  "tags": {},
+  "spec": {
+    "type": "Deployment",
+    "spec": {
+      "serviceConfig": {
+        "serviceRef": "<+input>",
+        "serviceDefinition": {
+          "type": "Kubernetes",
+          "spec": {
+            "variables": []
+          }
+        }
+      },
+      "infrastructure": {
+        "environmentRef": "Some_Environment",
+        "infrastructureDefinition": {
+          "type": "KubernetesDirect",
+          "spec": {
+            "connectorRef": "account.test_k8",
+            "namespace": "<+input>",
+            "releaseName": "release-<+INFRA_KEY>"
+          }
+        },
+        "allowSimultaneousDeployments": false
+      },
+      "execution": {
+        "steps": [
+          {
+            "step": {
+              "type": "Http",
+              "name": "Step 1",
+              "identifier": "Step_1",
+              "spec": {
+                "url": "<+input>",
+                "method": "GET",
+                "headers": [],
+                "outputVariables": [],
+                "requestBody": "<+input>"
+              },
+              "timeout": "10s"
+            }
+          }
+        ],
+        "rollbackSteps": []
+      },
+      "serviceDependencies": []
+    },
+    "failureStrategies": [
+      {
+        "onFailure": {
+          "errors": ["AllErrors"],
+          "action": {
+            "type": "StageRollback"
+          }
+        }
+      }
+    ]
+  }
+}

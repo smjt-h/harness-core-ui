@@ -14,13 +14,14 @@ import { StageType } from '@pipeline/utils/stageHelpers'
 import type { StepData } from '@pipeline/components/AbstractSteps/AbstractStepFactory'
 import { StepPalette } from '@pipeline/components/PipelineStudio/StepPalette/StepPalette'
 import { TemplateContext } from '@templates-library/components/TemplateStudio/TemplateContext/TemplateContext'
-import { DrawerSizes, DrawerTypes } from '@pipeline/components/PipelineStudio/PipelineContext/PipelineActions'
+import { DrawerSizes, DrawerTypes } from '@templates-library/components/TemplateStudio/TemplateContext/TemplateActions'
 import factory from '@pipeline/components/PipelineSteps/PipelineStepFactory'
 import type { StepElementConfig } from 'services/cd-ng'
 import type { ModulePathParams } from '@common/interfaces/RouteInterfaces'
 import { useFeatureFlags } from '@common/hooks/useFeatureFlag'
 import { getAllStepPaletteModuleInfos, getStepPaletteModuleInfosFromStage } from '@pipeline/utils/stepUtils'
 import type { StepPalleteModuleInfo } from 'services/pipeline-ng'
+import TemplateVariablesWrapper from '@templates-library/components/TemplateStudio/TemplateVariables/TemplateVariables'
 import css from './RightDrawer.module.scss'
 
 export const RightDrawer: React.FC = (): JSX.Element => {
@@ -103,6 +104,7 @@ export const RightDrawer: React.FC = (): JSX.Element => {
           onSelect={onStepSelection}
         />
       )}
+      {type === DrawerTypes.TemplateVariables && <TemplateVariablesWrapper />}
     </Drawer>
   )
 }

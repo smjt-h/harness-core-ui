@@ -173,20 +173,33 @@ exports[`FeatureFlagsDetailPage FeatureFlagsDetailPage should render data correc
       <div
         class="StyledProps--font StyledProps--main"
       >
-        <h1
-          class="StyledProps--font StyledProps--font-h1 StyledProps--main"
-          style="font-weight: 600; font-size: 16px; line-height: 22px; color: rgb(28, 28, 40);"
+        <h4
+          class="StyledProps--font StyledProps--font-h4 StyledProps--main"
+          level="4"
         >
-          hello-world
-        </h1>
-        <span
-          class="StyledProps--font StyledProps--main StyledProps--inline"
-          style="background-color: rgb(239, 251, 255); padding: 4px 8px; border-radius: 4px; font-size: 12px; line-height: 15px; color: rgb(34, 34, 42); border: 1px solid #d9dae6;"
+          <span
+            class="StyledProps--font Text--lineclamp StyledProps--main StyledProps--inline StyledProps--color StyledProps--color-black StyledProps--font-variation-h4"
+            style="--text-line-clamp: 1;"
+          >
+            hello-world
+          </span>
+        </h4>
+        <div
+          class="StyledProps--font StyledProps--main identifierContainer"
         >
-          idLabel
-          hello_world
+          <span
+            class="StyledProps--font StyledProps--main StyledProps--inline StyledProps--font-variation-small StyledProps--margin-right-xsmall"
+          >
+            idLabel
+          </span>
+          <span
+            class="StyledProps--font Text--lineclamp StyledProps--main StyledProps--inline StyledProps--font-variation-small"
+            style="--text-line-clamp: 1;"
+          >
+            hello_world
+          </span>
           <button
-            style="background: none; padding: 0px; transform: translateY(-2px); cursor: pointer;"
+            class="copyButton"
             title="clickToCopy"
           >
             <span
@@ -209,7 +222,7 @@ exports[`FeatureFlagsDetailPage FeatureFlagsDetailPage should render data correc
               </svg>
             </span>
           </button>
-        </span>
+        </div>
         <div
           class="Layout--vertical StyledProps--main StyledProps--margin-top-medium StyledProps--margin-bottom-xlarge"
         >

@@ -720,6 +720,7 @@ exports[`Harness Approval tests Basic snapshot - inputset mode: input set with e
         >
           <div
             class="FormError--errorDiv"
+            data-name="spec.approvalMessage"
           >
             <span
               class="bp3-icon StyledProps--main FormError--errorTextIcon StyledProps--intent-danger"
@@ -801,6 +802,7 @@ exports[`Harness Approval tests Basic snapshot - inputset mode: input set with e
                 >
                   <div
                     class="FormError--errorDiv"
+                    data-name="spec.approvers.userGroups"
                   >
                     <span
                       class="bp3-icon StyledProps--main FormError--errorTextIcon StyledProps--intent-danger"
@@ -929,6 +931,7 @@ exports[`Harness Approval tests Basic snapshot - inputset mode: input set with e
         >
           <div
             class="FormError--errorDiv"
+            data-name="spec.approvers.minimumCount"
           >
             <span
               class="bp3-icon StyledProps--main FormError--errorTextIcon StyledProps--intent-danger"

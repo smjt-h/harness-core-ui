@@ -554,6 +554,7 @@ exports[`Create Docker Connector  Wizard Should render form 2`] = `
                 >
                   <div
                     class="FormError--errorDiv"
+                    data-name="dockerRegistryUrl"
                   >
                     <span
                       class="bp3-icon StyledProps--main FormError--errorTextIcon StyledProps--intent-danger"

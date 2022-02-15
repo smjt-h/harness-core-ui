@@ -454,6 +454,54 @@ export const Vault = {
   metaData: null,
   correlationId: 'correlationId'
 }
+export const VaultWithIamAMS = {
+  status: 'SUCCESS' as const,
+  data: {
+    currentPage: 1,
+    empty: false,
+    content: [
+      {
+        connector: {
+          description: 'This description is for Vault',
+          identifier: 'VaultId',
+          name: 'VaultNameWithAMS',
+          type: 'Vault',
+          tags: { tag1: '' },
+          spec: {
+            accessType: 'AWS_IAM',
+            authToken: null,
+            awsRegion: 'us-gov-east-1',
+            basePath: '/',
+            default: false,
+            delegateSelectors: [],
+            readOnly: false,
+            renewalIntervalMinutes: 10,
+            secretEngineManuallyConfigured: true,
+            secretEngineName: 'dfdfdf',
+            secretEngineVersion: 2,
+            secretId: null,
+            useAwsIam: true,
+            useVaultAgent: false,
+            vaultAwsIamRole: 'test',
+            vaultUrl: 'https://vaultqa.harness.io',
+            xvaultAwsIamServerId: 'account.awiamdockerpwd'
+          }
+        },
+        status: {
+          errorMessage: null,
+          lastConnectedAt: 1601199008081,
+          lastTestedAt: 1601199008081,
+          status: 'SUCCESS'
+        },
+        createdAt: 1601198999531,
+        lastModifiedAt: 1601199008088
+      }
+    ],
+    total: 1
+  },
+  metaData: null,
+  correlationId: 'correlationId'
+}
 
 export const GCP = {
   status: 'SUCCESS' as const,

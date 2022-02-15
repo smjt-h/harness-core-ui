@@ -20,6 +20,7 @@ export interface ChangeTimelineProps {
   onSliderMoved?: React.Dispatch<React.SetStateAction<ChangesInfoCardData[] | null>>
   selectedTimePeriod?: SelectOption
   hideTimeline?: boolean
+  duration?: SelectOption
 }
 
 export interface ChangesInfoCardData {

@@ -2168,6 +2168,7 @@ exports[`Test K8sCanaryDeployStep should throw validation error without instance
             >
               <div
                 class="FormError--errorDiv"
+                data-name="name"
               >
                 <span
                   class="bp3-icon StyledProps--main FormError--errorTextIcon StyledProps--intent-danger"

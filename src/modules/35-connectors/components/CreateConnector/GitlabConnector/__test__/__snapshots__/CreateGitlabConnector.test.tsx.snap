@@ -272,6 +272,7 @@ exports[`Create Gitlab connector Wizard Creating gitlab step one 1`] = `
                           >
                             <div
                               class="FormError--errorDiv"
+                              data-name="name"
                             >
                               <span
                                 class="bp3-icon StyledProps--main FormError--errorTextIcon StyledProps--intent-danger"
@@ -1330,6 +1331,7 @@ exports[`Create Gitlab connector Wizard Creating gitlab step one and step two fo
                       >
                         <div
                           class="FormError--errorDiv"
+                          data-name="validationRepo"
                         >
                           <span
                             class="bp3-icon StyledProps--main FormError--errorTextIcon StyledProps--intent-danger"
@@ -2344,6 +2346,7 @@ exports[`Create Gitlab connector Wizard Creating gitlab step two for SSH key 2`]
                       >
                         <div
                           class="FormError--errorDiv"
+                          data-name="validationRepo"
                         >
                           <span
                             class="bp3-icon StyledProps--main FormError--errorTextIcon StyledProps--intent-danger"

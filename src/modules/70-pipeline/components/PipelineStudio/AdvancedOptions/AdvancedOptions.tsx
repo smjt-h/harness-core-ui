@@ -21,6 +21,7 @@ import {
   Text
 } from '@wings-software/uicore'
 import * as Yup from 'yup'
+import { isEmpty, unset } from 'lodash-es'
 import { Page } from '@common/exports'
 import { useStrings } from 'framework/strings'
 import type { PipelineInfoConfig } from 'services/cd-ng'
@@ -52,6 +53,16 @@ export const AdvancedOptions: React.FC<AdvancedOptionsProps> = ({ onApplyChanges
   const { getString } = useStrings()
   const { expressions } = useVariablesExpression()
 
+  const onSubmit = React.useCallback(
+    (data: PipelineInfoConfig) => {
+      if (isEmpty(data.timeout)) {
+        unset(data, 'timeout')
+      }
+      onApplyChanges(data)
+    },
+    [onApplyChanges]
+  )
+
   return (
     <Formik<PipelineInfoConfig>
       formName="pipelineAdvancedOptions"
@@ -59,7 +70,7 @@ export const AdvancedOptions: React.FC<AdvancedOptionsProps> = ({ onApplyChanges
         timeout: getDurationValidationSchema({ minimum: '10s' })
       })}
       initialValues={pipeline}
-      onSubmit={data => onApplyChanges(data)}
+      onSubmit={onSubmit}
     >
       {formikProps => (
         <>

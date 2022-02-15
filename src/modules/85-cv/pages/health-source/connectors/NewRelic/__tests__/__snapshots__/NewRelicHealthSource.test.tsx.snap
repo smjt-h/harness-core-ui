@@ -537,6 +537,7 @@ exports[`Unit tests for NewRelic health source Validation in create mode 1`] = `
                           >
                             <div
                               class="FormError--errorDiv"
+                              data-name="newRelicApplication"
                             >
                               <span
                                 class="bp3-icon StyledProps--main FormError--errorTextIcon StyledProps--intent-danger"
@@ -636,6 +637,7 @@ exports[`Unit tests for NewRelic health source Validation in create mode 1`] = `
                           >
                             <div
                               class="FormError--errorDiv"
+                              data-name="metricData"
                             >
                               <span
                                 class="bp3-icon StyledProps--main FormError--errorTextIcon StyledProps--intent-danger"

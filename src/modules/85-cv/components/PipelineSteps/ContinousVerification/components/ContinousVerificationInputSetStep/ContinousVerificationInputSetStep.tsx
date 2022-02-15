@@ -86,7 +86,7 @@ export function ContinousVerificationInputSetStep(
 
       <Container className={css.container}>
         {checkIfRunTimeInput(sensitivity) && (
-          <Container className={css.item}>
+          <Container className={css.itemRuntimeSetting}>
             <FormInput.MultiTypeInput
               label={getString('sensitivity')}
               name={`${prefix}spec.spec.sensitivity`}
@@ -102,7 +102,7 @@ export function ContinousVerificationInputSetStep(
         )}
 
         {checkIfRunTimeInput(duration) && (
-          <Container className={css.item}>
+          <Container className={css.itemRuntimeSetting}>
             <FormInput.MultiTypeInput
               label={getString('duration')}
               name={`${prefix}spec.spec.duration`}
@@ -118,7 +118,7 @@ export function ContinousVerificationInputSetStep(
         )}
 
         {checkIfRunTimeInput(baseline) && (
-          <Container className={css.item}>
+          <Container className={css.itemRuntimeSetting}>
             <FormInput.MultiTypeInput
               label={getString('connectors.cdng.baseline')}
               name={`${prefix}spec.spec.baseline`}
@@ -134,7 +134,7 @@ export function ContinousVerificationInputSetStep(
         )}
 
         {checkIfRunTimeInput(trafficsplit) && (
-          <Container className={css.item}>
+          <Container className={css.itemRuntimeSetting}>
             <FormInput.MultiTypeInput
               label={getString('connectors.cdng.trafficsplit')}
               name={`${prefix}spec.spec.trafficsplit`}
@@ -150,7 +150,7 @@ export function ContinousVerificationInputSetStep(
         )}
 
         {checkIfRunTimeInput(deploymentTag) && (
-          <Container className={css.item}>
+          <Container className={css.itemRuntimeSetting}>
             <FormInput.MultiTextInput
               label={getString('connectors.cdng.artifactTag')}
               name={`${prefix}spec.spec.deploymentTag`}
@@ -164,7 +164,7 @@ export function ContinousVerificationInputSetStep(
         )}
 
         {checkIfRunTimeInput(template?.timeout) && (
-          <Container className={css.item}>
+          <Container className={css.itemRuntimeSetting}>
             <FormMultiTypeDurationField
               name={`${prefix}timeout`}
               label={getString('pipelineSteps.timeoutLabel')}

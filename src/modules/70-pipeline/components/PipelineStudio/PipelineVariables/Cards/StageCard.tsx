@@ -19,11 +19,11 @@ import { StepType } from '@pipeline/components/PipelineSteps/PipelineStepInterfa
 import { StepWidget } from '@pipeline/components/AbstractSteps/StepWidget'
 import { StepViewType } from '@pipeline/components/AbstractSteps/Step'
 import { useStrings } from 'framework/strings'
-import { usePipelineContext } from '@pipeline/components/PipelineStudio/PipelineContext/PipelineContext'
 import { VariablesListTable } from '@pipeline/components/VariablesListTable/VariablesListTable'
 import type { AllNGVariables } from '@pipeline/utils/types'
 
 import VariableListTagRow from '@pipeline/components/VariablesListTable/VariableListTagRow'
+import type { AbstractStepFactory } from '@pipeline/components/AbstractSteps/AbstractStepFactory'
 import { ServiceCardPanel } from './ServiceCard'
 import { ExecutionCardPanel } from './ExecutionCard'
 import { EnvironmentCardPanel } from './EnvironmentCard'
@@ -38,11 +38,12 @@ export interface StageCardProps {
   readonly?: boolean
   path?: string
   allowableTypes: MultiTypeInputType[]
+  stepsFactory: AbstractStepFactory
+  updateStage: (stage: StageElementConfig) => Promise<void>
 }
 
 export default function StageCard(props: StageCardProps): React.ReactElement {
-  const { stage, originalStage, metadataMap, readonly, path, allowableTypes } = props
-  const { updateStage, stepsFactory } = usePipelineContext()
+  const { stage, originalStage, metadataMap, readonly, path, allowableTypes, updateStage, stepsFactory } = props
   const { getString } = useStrings()
   const stageSpec = stage.spec as DeploymentStageConfig
   const originalSpec = originalStage.spec as DeploymentStageConfig
@@ -127,21 +128,9 @@ export default function StageCard(props: StageCardProps): React.ReactElement {
                   stageIdentifier={originalStage.identifier}
                   path={`${path}.${originalStage.identifier}`}
                   allowableTypes={allowableTypes}
-                  onUpdateServiceConfig={serviceSpec => {
-                    updateStage(
-                      produce(originalStage, draft => {
-                        if (serviceSpec.artifacts) {
-                          set(draft, 'spec.serviceConfig.serviceDefinition.spec.artifacts', serviceSpec.artifacts)
-                        }
-                        if (serviceSpec.manifests) {
-                          set(draft, 'spec.serviceConfig.serviceDefinition.spec.manifest', serviceSpec.manifests)
-                        }
-                        if (serviceSpec.variables) {
-                          set(draft, 'spec.serviceConfig.serviceDefinition.spec.variables', serviceSpec.variables)
-                        }
-                      })
-                    )
-                  }}
+                  updateStage={updateStage}
+                  stepsFactory={stepsFactory}
+                  originalStage={originalStage}
                 />
               ) : /* istanbul ignore next */ null}
               <EnvironmentCardPanel
@@ -151,6 +140,8 @@ export default function StageCard(props: StageCardProps): React.ReactElement {
                 readonly={readonly}
                 allowableTypes={allowableTypes}
                 path={path}
+                stepsFactory={stepsFactory}
+                updateStage={updateStage}
               />
               {stageSpec.execution && originalSpec.execution ? (
                 <ExecutionCardPanel
@@ -170,6 +161,7 @@ export default function StageCard(props: StageCardProps): React.ReactElement {
                       })
                     )
                   }}
+                  stepsFactory={stepsFactory}
                 />
               ) : /* istanbul ignore next */ null}
             </>
@@ -192,7 +184,7 @@ export default function StageCard(props: StageCardProps): React.ReactElement {
       summary={
         <VariableAccordionSummary>
           <Text font={{ variation: FontVariation.H6 }} color={Color.BLACK}>
-            {`Stage: ${originalStage.name}`}
+            {originalStage.name ? `Stage: ${originalStage.name}` : 'Stage'}
           </Text>
         </VariableAccordionSummary>
       }

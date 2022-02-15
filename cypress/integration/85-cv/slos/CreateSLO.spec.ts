@@ -527,4 +527,42 @@ describe('Create SLO', () => {
 
     cy.contains('span', 'SLO created successfully').should('be.visible')
   })
+
+  it('should be able to add new Health Source while editing a SLO and back button should redirect to the SLOs in MS service page', () => {
+    cy.intercept('GET', listSLOsCall, updatedListSLOsCallResponse)
+    cy.intercept('GET', getUserJourneysCall, listUserJourneysCallResponse)
+    cy.intercept('GET', getSLORiskCount, getSLORiskCountResponse)
+    cy.intercept('GET', listMonitoredServices, listMonitoredServicesCallResponse)
+
+    cy.intercept('GET', getMonitoredService, getMonitoredServiceResponse).as('getMonitoredService')
+    cy.intercept('GET', listSLOsCallWithCVNGProd, updatedListSLOsCallResponse)
+    cy.intercept('GET', getSLORiskCountWithCVNGProd, getSLORiskCountResponse)
+    cy.intercept('GET', getServiceLevelObjective, getServiceLevelObjectiveResponse).as
+    cy.intercept('GET', getSLOMetrics, listSLOMetricsCallResponse)
+
+    cy.contains('p', 'SLOs').click()
+    cy.contains('p', 'prod').click()
+
+    cy.wait('@getMonitoredService')
+    cy.get('div[data-tab-id="SLOs"]').click()
+
+    cy.get('[data-icon="Options"]').click()
+    cy.get('[icon="edit"]').click()
+
+    cy.get('input[name="User Journey"]').should('have.value', 'new-one')
+
+    cy.findByRole('button', { name: /Continue/i }).click()
+    cy.contains('h2', 'Configure SLI queries').should('be.visible')
+
+    cy.findByRole('button', { name: /New Health Source/i }).click()
+
+    cy.wait('@getMonitoredService')
+    cy.findByRole('button', { name: /Save/i }).click()
+
+    cy.contains('span', 'Monitoring Service updated').should('be.visible')
+
+    cy.contains('h2', 'Define SLO identification').should('be.visible')
+
+    cy.findByRole('button', { name: /Back/i }).click({ force: true })
+  })
 })

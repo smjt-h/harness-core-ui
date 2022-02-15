@@ -13,6 +13,7 @@ import cx from 'classnames'
 import type { ExecutionElementConfig, ExecutionWrapperConfig, StepElementConfig } from 'services/cd-ng'
 
 import type { TemplateStepNode } from 'services/pipeline-ng'
+import type { AbstractStepFactory } from '@pipeline/components/AbstractSteps/AbstractStepFactory'
 import type { PipelineVariablesData } from '../types'
 import { StepCardPanel, StepGroupCardPanel } from './StepCard'
 import VariableAccordionSummary from '../VariableAccordionSummary'
@@ -51,6 +52,7 @@ export interface ExecutionCardProps {
   readonly?: boolean
   path?: string
   allowableTypes: MultiTypeInputType[]
+  stepsFactory: AbstractStepFactory
 }
 
 export function ExecutionCard(props: ExecutionCardProps): React.ReactElement {
@@ -62,7 +64,8 @@ export function ExecutionCard(props: ExecutionCardProps): React.ReactElement {
     onUpdateExecution,
     readonly,
     path,
-    allowableTypes
+    allowableTypes,
+    stepsFactory
   } = props
 
   const allSteps = React.useMemo(() => {
@@ -147,6 +150,7 @@ export function ExecutionCard(props: ExecutionCardProps): React.ReactElement {
                   })
                 )
               }}
+              stepsFactory={stepsFactory}
             />
           )
         }
@@ -171,6 +175,7 @@ export function ExecutionCard(props: ExecutionCardProps): React.ReactElement {
                   })
                 )
               }}
+              stepsFactory={stepsFactory}
             />
           )
         }

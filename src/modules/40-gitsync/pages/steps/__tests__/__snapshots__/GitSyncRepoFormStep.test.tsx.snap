@@ -846,6 +846,7 @@ exports[`Test GitSyncRepoFormStep Should not allow saving form if folder name is
                           >
                             <div
                               class="FormError--errorDiv"
+                              data-name="name"
                             >
                               <span
                                 class="bp3-icon StyledProps--main FormError--errorTextIcon StyledProps--intent-danger"
@@ -977,6 +978,7 @@ exports[`Test GitSyncRepoFormStep Should not allow saving form if folder name is
                           >
                             <div
                               class="FormError--errorDiv"
+                              data-name="repo"
                             >
                               <span
                                 class="bp3-icon StyledProps--main FormError--errorTextIcon StyledProps--intent-danger"
@@ -1130,6 +1132,7 @@ exports[`Test GitSyncRepoFormStep Should not allow saving form if folder name is
                         >
                           <div
                             class="FormError--errorDiv"
+                            data-name="branch"
                           >
                             <span
                               class="bp3-icon StyledProps--main FormError--errorTextIcon StyledProps--intent-danger"

@@ -790,6 +790,7 @@ function RunPipelineFormBasic({
     reRunLoading,
     reRunStagesLoading
   ])
+  const formRefDom = React.useRef<HTMLElement | undefined>()
 
   if (shouldShowPageSpinner()) {
     return <PageSpinner />
@@ -1100,13 +1101,17 @@ function RunPipelineFormBasic({
           throw runPipelineFormErrors
         }}
       >
-        {({ submitForm, values }) => {
+        {({ submitForm, values, setFormikState }) => {
           return (
-            <Layout.Vertical>
+            <Layout.Vertical
+              ref={ref => {
+                formRefDom.current = ref as HTMLElement
+              }}
+            >
               {executionView ? null : (
                 <>
                   {runModalHeader()}
-                  {runClicked ? <ErrorsStrip formErrors={formErrors} /> : null}
+                  {runClicked ? <ErrorsStrip domRef={formRefDom} formErrors={formErrors} /> : null}
                 </>
               )}
               {runIndividualStageInfo()}
@@ -1145,7 +1150,7 @@ function RunPipelineFormBasic({
                       onClick={event => {
                         event.stopPropagation()
                         setRunClicked(true)
-
+                        setFormikState({ submitCount: 1 })
                         if ((!selectedInputSets || selectedInputSets.length === 0) && existingProvide === 'existing') {
                           setExistingProvide('provide')
                         } else {

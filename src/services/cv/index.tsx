@@ -640,6 +640,11 @@ export interface DataCollectionRequest {
     | 'NEWRELIC_SAMPLE_FETCH_REQUEST'
     | 'SYNC_DATA_COLLECTION'
     | 'CUSTOM_HEALTH_SAMPLE_DATA'
+    | 'DYNATRACE_SERVICE_LIST_REQUEST'
+    | 'DYNATRACE_SERVICE_DETAILS_REQUEST'
+    | 'DYNATRACE_VALIDATION_REQUEST'
+    | 'DYNATRACE_SAMPLE_DATA_REQUEST'
+    | 'DYNATRACE_METRIC_LIST_REQUEST'
 }
 
 export interface DataCollectionTaskDTO {
@@ -737,6 +742,7 @@ export interface DatasourceTypeDTO {
     | 'DATADOG_METRICS'
     | 'DATADOG_LOG'
     | 'ERROR_TRACKING'
+    | 'DYNATRACE'
     | 'CUSTOM_HEALTH'
   verificationType?: 'TIME_SERIES' | 'LOG'
 }
@@ -826,6 +832,48 @@ export type DynatraceConnectorDTO = ConnectorConfigDTO & {
   apiTokenRef: string
   delegateSelectors?: string[]
   url: string
+}
+
+export type DynatraceHealthSourceSpec = HealthSourceSpec & {
+  feature: string
+  metricDefinitions?: DynatraceMetricDefinition[]
+  metricPacks?: MetricPackDTO[]
+  serviceId?: string
+  serviceMethodIds?: string[]
+  serviceName?: string
+}
+
+export interface DynatraceMetricDTO {
+  displayName?: string
+  metricId?: string
+  unit?: string
+}
+
+export interface DynatraceMetricDefinition {
+  analysis?: AnalysisDTO
+  groupName?: string
+  identifier: string
+  isManualQuery?: boolean
+  metricName: string
+  metricSelector?: string
+  riskProfile?: RiskProfile
+  sli?: Slidto
+}
+
+export interface DynatraceSampleDataRequestDTO {
+  metricSelector?: string
+  serviceId?: string
+}
+
+export interface DynatraceServiceDTO {
+  displayName?: string
+  entityId?: string
+  serviceMethodIds?: string[]
+}
+
+export interface DynatraceValidateDataRequestDTO {
+  metricPacks?: MetricPackDTO[]
+  serviceMethodsIds?: string[]
 }
 
 export interface Edge {
@@ -1745,6 +1793,7 @@ export interface HealthSource {
     | 'Splunk'
     | 'DatadogMetrics'
     | 'DatadogLog'
+    | 'Dynatrace'
     | 'ErrorTracking'
     | 'CustomHealth'
 }
@@ -1763,6 +1812,7 @@ export interface HealthSourceDTO {
     | 'DATADOG_METRICS'
     | 'DATADOG_LOG'
     | 'ERROR_TRACKING'
+    | 'DYNATRACE'
     | 'CUSTOM_HEALTH'
   verificationType?: 'TIME_SERIES' | 'LOG'
 }
@@ -1784,6 +1834,7 @@ export interface HostData {
   anomalous?: boolean
   controlData?: number[]
   hostName?: string
+  nearestControlHost?: string
   risk?: 'NO_DATA' | 'NO_ANALYSIS' | 'HEALTHY' | 'OBSERVE' | 'NEED_ATTENTION' | 'UNHEALTHY'
   score?: number
   testData?: number[]
@@ -2191,6 +2242,7 @@ export interface MetricPack {
     | 'DATADOG_METRICS'
     | 'DATADOG_LOG'
     | 'ERROR_TRACKING'
+    | 'DYNATRACE'
     | 'CUSTOM_HEALTH'
   identifier?: string
   lastUpdatedAt?: number
@@ -2214,6 +2266,7 @@ export interface MetricPackDTO {
     | 'DATADOG_METRICS'
     | 'DATADOG_LOG'
     | 'ERROR_TRACKING'
+    | 'DYNATRACE'
     | 'CUSTOM_HEALTH'
   identifier?: string
   metrics?: MetricDefinitionDTO[]
@@ -2678,7 +2731,7 @@ export interface PrometheusSampleData {
 export type QuarterlyCalenderSpec = CalenderSpec & { [key: string]: any }
 
 export interface QueryDTO {
-  indexes?: string[]
+  indexes: string[]
   name: string
   query: string
   serviceInstanceIdentifier: string
@@ -2709,6 +2762,13 @@ export interface ResponseAppdynamicsMetricDataResponse {
 export interface ResponseBoolean {
   correlationId?: string
   data?: boolean
+  metaData?: { [key: string]: any }
+  status?: 'SUCCESS' | 'FAILURE' | 'ERROR'
+}
+
+export interface ResponseDynatraceServiceDTO {
+  correlationId?: string
+  data?: DynatraceServiceDTO
   metaData?: { [key: string]: any }
   status?: 'SUCCESS' | 'FAILURE' | 'ERROR'
 }
@@ -2760,6 +2820,20 @@ export interface ResponseListAppDynamicsFileDefinition {
 export interface ResponseListDatadogDashboardDetail {
   correlationId?: string
   data?: DatadogDashboardDetail[]
+  metaData?: { [key: string]: any }
+  status?: 'SUCCESS' | 'FAILURE' | 'ERROR'
+}
+
+export interface ResponseListDynatraceMetricDTO {
+  correlationId?: string
+  data?: DynatraceMetricDTO[]
+  metaData?: { [key: string]: any }
+  status?: 'SUCCESS' | 'FAILURE' | 'ERROR'
+}
+
+export interface ResponseListDynatraceServiceDTO {
+  correlationId?: string
+  data?: DynatraceServiceDTO[]
   metaData?: { [key: string]: any }
   status?: 'SUCCESS' | 'FAILURE' | 'ERROR'
 }
@@ -3249,6 +3323,13 @@ export interface ResponseSLORiskCountResponse {
 export interface ResponseSetAppdynamicsValidationResponse {
   correlationId?: string
   data?: AppdynamicsValidationResponse[]
+  metaData?: { [key: string]: any }
+  status?: 'SUCCESS' | 'FAILURE' | 'ERROR'
+}
+
+export interface ResponseSetMetricPackValidationResponse {
+  correlationId?: string
+  data?: MetricPackValidationResponse[]
   metaData?: { [key: string]: any }
   status?: 'SUCCESS' | 'FAILURE' | 'ERROR'
 }
@@ -3833,7 +3914,7 @@ export interface SLODashboardWidget {
   errorBudgetBurndown: Point[]
   errorBudgetRemaining: number
   errorBudgetRemainingPercentage: number
-  errorBudgetRisk: 'HEALTHY' | 'OBSERVE' | 'NEED_ATTENTION' | 'UNHEALTHY' | 'EXHAUSTED'
+  errorBudgetRisk: 'EXHAUSTED' | 'UNHEALTHY' | 'NEED_ATTENTION' | 'OBSERVE' | 'HEALTHY'
   healthSourceIdentifier: string
   healthSourceName: string
   monitoredServiceIdentifier: string
@@ -3861,7 +3942,7 @@ export interface SLOErrorBudgetResetDTO {
   reason?: string
   remainingErrorBudgetAtReset?: number
   serviceLevelObjectiveIdentifier?: string
-  validTill?: number
+  validUntil?: number
 }
 
 export interface SLORiskCountResponse {
@@ -4000,7 +4081,7 @@ export interface ServiceSummaryDetails {
 
 export interface SloHealthIndicatorDTO {
   errorBudgetRemainingPercentage?: number
-  errorBudgetRisk?: 'HEALTHY' | 'OBSERVE' | 'NEED_ATTENTION' | 'UNHEALTHY' | 'EXHAUSTED'
+  errorBudgetRisk?: 'EXHAUSTED' | 'UNHEALTHY' | 'NEED_ATTENTION' | 'OBSERVE' | 'HEALTHY'
   serviceLevelObjectiveIdentifier?: string
 }
 
@@ -4193,6 +4274,7 @@ export interface TimeSeriesMetricDataDTO {
     | 'DATADOG_METRICS'
     | 'DATADOG_LOG'
     | 'ERROR_TRACKING'
+    | 'DYNATRACE'
     | 'CUSTOM_HEALTH'
   environmentIdentifier?: string
   groupName?: string
@@ -4283,6 +4365,7 @@ export interface TimeSeriesThreshold {
     | 'DATADOG_METRICS'
     | 'DATADOG_LOG'
     | 'ERROR_TRACKING'
+    | 'DYNATRACE'
     | 'CUSTOM_HEALTH'
   lastUpdatedAt?: number
   metricGroupName?: string
@@ -4316,6 +4399,7 @@ export interface TimeSeriesThresholdDTO {
     | 'DATADOG_METRICS'
     | 'DATADOG_LOG'
     | 'ERROR_TRACKING'
+    | 'DYNATRACE'
     | 'CUSTOM_HEALTH'
   metricGroupName?: string
   metricName?: string
@@ -4365,6 +4449,7 @@ export interface TransactionMetricInfo {
     | 'DATADOG_METRICS'
     | 'DATADOG_LOG'
     | 'ERROR_TRACKING'
+    | 'DYNATRACE'
     | 'CUSTOM_HEALTH'
   nodeRiskCountDTO?: NodeRiskCountDTO
   nodes?: HostData[]
@@ -4460,6 +4545,7 @@ export interface YamlSchemaMetadata {
   featureFlags?: string[]
   featureRestrictions?: string[]
   modulesSupported?: ('CD' | 'CI' | 'CV' | 'CF' | 'CE' | 'CORE' | 'PMS' | 'TEMPLATESERVICE')[]
+  namespace?: string
   yamlGroup: YamlGroup
 }
 
@@ -5300,10 +5386,12 @@ export const getDeploymentLogAnalysisResultPromise = (
 
 export interface GetDeploymentMetricsQueryParams {
   accountId: string
-  anomalousMetricsOnly?: boolean
-  hostName?: string
   filter?: string
   healthSources?: string[]
+  anomalousMetricsOnly?: boolean
+  hostNames?: string[]
+  transactionNames?: string[]
+  anomalousNodesOnly?: boolean
   pageNumber?: number
   pageSize?: number
 }
@@ -5873,6 +5961,62 @@ export const getAppDynamicsTiersPromise = (
   getUsingFetch<ResponsePageAppDynamicsTier, Failure | Error, GetAppDynamicsTiersQueryParams, void>(
     getConfig('cv/api'),
     `/appdynamics/tiers`,
+    props,
+    signal
+  )
+
+export interface GetMonitoredServiceChangeTimelineQueryParams {
+  accountId: string
+  orgIdentifier: string
+  projectIdentifier: string
+  environmentIdentifier: string
+  serviceIdentifier: string
+  changeSourceTypes?: ('HarnessCDNextGen' | 'PagerDuty' | 'K8sCluster' | 'HarnessCD')[]
+  searchText?: string
+  duration: 'FOUR_HOURS' | 'TWENTY_FOUR_HOURS' | 'THREE_DAYS' | 'SEVEN_DAYS' | 'THIRTY_DAYS'
+  endTime: number
+}
+
+export type GetMonitoredServiceChangeTimelineProps = Omit<
+  GetProps<RestResponseChangeTimeline, unknown, GetMonitoredServiceChangeTimelineQueryParams, void>,
+  'path'
+>
+
+/**
+ * get monitored service timeline with durationDTO
+ */
+export const GetMonitoredServiceChangeTimeline = (props: GetMonitoredServiceChangeTimelineProps) => (
+  <Get<RestResponseChangeTimeline, unknown, GetMonitoredServiceChangeTimelineQueryParams, void>
+    path={`/change-event/monitored-service-timeline`}
+    base={getConfig('cv/api')}
+    {...props}
+  />
+)
+
+export type UseGetMonitoredServiceChangeTimelineProps = Omit<
+  UseGetProps<RestResponseChangeTimeline, unknown, GetMonitoredServiceChangeTimelineQueryParams, void>,
+  'path'
+>
+
+/**
+ * get monitored service timeline with durationDTO
+ */
+export const useGetMonitoredServiceChangeTimeline = (props: UseGetMonitoredServiceChangeTimelineProps) =>
+  useGet<RestResponseChangeTimeline, unknown, GetMonitoredServiceChangeTimelineQueryParams, void>(
+    `/change-event/monitored-service-timeline`,
+    { base: getConfig('cv/api'), ...props }
+  )
+
+/**
+ * get monitored service timeline with durationDTO
+ */
+export const getMonitoredServiceChangeTimelinePromise = (
+  props: GetUsingFetchProps<RestResponseChangeTimeline, unknown, GetMonitoredServiceChangeTimelineQueryParams, void>,
+  signal?: RequestInit['signal']
+) =>
+  getUsingFetch<RestResponseChangeTimeline, unknown, GetMonitoredServiceChangeTimelineQueryParams, void>(
+    getConfig('cv/api'),
+    `/change-event/monitored-service-timeline`,
     props,
     signal
   )
@@ -6498,9 +6642,12 @@ export const getDatadogSampleDataPromise = (
 
 export interface GetDeploymentTimeSeriesQueryParams {
   accountId?: string
-  anomalousMetricsOnly?: boolean
-  hostName?: string
   filter?: string
+  healthSources?: string[]
+  anomalousMetricsOnly?: boolean
+  hostNames?: string[]
+  transactionNames?: string[]
+  anomalousNodesOnly?: boolean
   pageNumber?: number
   pageSize?: number
 }
@@ -7201,6 +7348,7 @@ export interface GetMetricPacksQueryParams {
     | 'DATADOG_METRICS'
     | 'DATADOG_LOG'
     | 'ERROR_TRACKING'
+    | 'DYNATRACE'
     | 'CUSTOM_HEALTH'
 }
 
@@ -7263,6 +7411,7 @@ export interface SaveMetricPacksQueryParams {
     | 'DATADOG_METRICS'
     | 'DATADOG_LOG'
     | 'ERROR_TRACKING'
+    | 'DYNATRACE'
     | 'CUSTOM_HEALTH'
 }
 
@@ -9344,7 +9493,7 @@ export interface GetServiceLevelObjectivesQueryParams {
   identifiers?: string[]
   sliTypes?: ('Availability' | 'Latency')[]
   targetTypes?: ('Rolling' | 'Calender')[]
-  errorBudgetRisks?: ('HEALTHY' | 'OBSERVE' | 'NEED_ATTENTION' | 'UNHEALTHY' | 'EXHAUSTED')[]
+  errorBudgetRisks?: ('EXHAUSTED' | 'UNHEALTHY' | 'NEED_ATTENTION' | 'OBSERVE' | 'HEALTHY')[]
 }
 
 export type GetServiceLevelObjectivesProps = Omit<
@@ -9481,7 +9630,7 @@ export interface GetServiceLevelObjectivesRiskCountQueryParams {
   monitoredServiceIdentifier?: string
   sliTypes?: ('Availability' | 'Latency')[]
   targetTypes?: ('Rolling' | 'Calender')[]
-  errorBudgetRisks?: ('HEALTHY' | 'OBSERVE' | 'NEED_ATTENTION' | 'UNHEALTHY' | 'EXHAUSTED')[]
+  errorBudgetRisks?: ('EXHAUSTED' | 'UNHEALTHY' | 'NEED_ATTENTION' | 'OBSERVE' | 'HEALTHY')[]
 }
 
 export type GetServiceLevelObjectivesRiskCountProps = Omit<
@@ -9536,7 +9685,7 @@ export interface GetSLODashboardWidgetsQueryParams {
   monitoredServiceIdentifier?: string
   sliTypes?: ('Availability' | 'Latency')[]
   targetTypes?: ('Rolling' | 'Calender')[]
-  errorBudgetRisks?: ('HEALTHY' | 'OBSERVE' | 'NEED_ATTENTION' | 'UNHEALTHY' | 'EXHAUSTED')[]
+  errorBudgetRisks?: ('EXHAUSTED' | 'UNHEALTHY' | 'NEED_ATTENTION' | 'OBSERVE' | 'HEALTHY')[]
   pageNumber?: number
   pageSize?: number
 }
@@ -10442,6 +10591,7 @@ export interface GetAnomalousMetricDashboardDataQueryParams {
     | 'DATADOG_METRICS'
     | 'DATADOG_LOG'
     | 'ERROR_TRACKING'
+    | 'DYNATRACE'
     | 'CUSTOM_HEALTH'
 }
 
@@ -10518,6 +10668,7 @@ export interface GetMetricDataQueryParams {
     | 'DATADOG_METRICS'
     | 'DATADOG_LOG'
     | 'ERROR_TRACKING'
+    | 'DYNATRACE'
     | 'CUSTOM_HEALTH'
 }
 
@@ -11277,7 +11428,6 @@ export interface GetVerifyStepDeploymentMetricsQueryParams {
   filter?: string
   healthSources?: string[]
   anomalousMetricsOnly?: boolean
-  hostName?: string
   hostNames?: string[]
   transactionNames?: string[]
   anomalousNodesOnly?: boolean

@@ -125,6 +125,7 @@ const MetricsAnalysisContent: React.FC<MetricsAnalysisContentProps> = ({
         pageCount={totalPages}
         itemCount={totalItems}
         pageIndex={pageIndex}
+        className={css.maxPaginationWidth}
         gotoPage={index => refetch({ queryParams: { ...queryParams, page: index } })}
       />
     </div>

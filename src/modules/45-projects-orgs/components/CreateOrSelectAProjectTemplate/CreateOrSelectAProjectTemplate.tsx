@@ -15,12 +15,14 @@ interface CreateOrSelectAProjectTemplateProps {
   onCreateProject: () => void
   closeModal?: () => void
   moduleDescription: string
+  hideSelectProjectButton?: boolean
 }
 
 export const CreateOrSelectAProjectTemplate: React.FC<CreateOrSelectAProjectTemplateProps> = ({
   onCreateProject,
   moduleDescription,
-  closeModal
+  closeModal,
+  hideSelectProjectButton
 }) => {
   const { getString } = useStrings()
   function toggleSelectProject(): void {
@@ -44,11 +46,13 @@ export const CreateOrSelectAProjectTemplate: React.FC<CreateOrSelectAProjectTemp
         {getString('projectsOrgs.getStarted', { moduleDescription })}
       </Text>
       <Layout.Horizontal spacing="small" padding={{ top: 'large' }}>
-        <Button
-          intent="primary"
-          text={getString('projectsOrgs.selectAnExistingProject')}
-          onClick={toggleSelectProject}
-        />
+        {hideSelectProjectButton ? null : (
+          <Button
+            intent="primary"
+            text={getString('projectsOrgs.selectAnExistingProject')}
+            onClick={toggleSelectProject}
+          />
+        )}
         <Button intent="none" text={getString('projectsOrgs.createANewProject')} onClick={handleCreateProject} />
       </Layout.Horizontal>
     </Layout.Vertical>

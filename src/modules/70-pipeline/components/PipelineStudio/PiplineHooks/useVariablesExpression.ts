@@ -6,8 +6,9 @@
  */
 
 import { useEffect, useState } from 'react'
-import { identity, isEmpty, map, sortBy, sortedUniq } from 'lodash-es'
+import { defaultTo, identity, isEmpty, map, sortBy, sortedUniq } from 'lodash-es'
 import type { VariableMergeServiceResponse } from 'services/pipeline-ng'
+import { useTemplateVariables } from '../../TemplateVariablesContext/TemplateVariablesContext'
 import { usePipelineVariables } from '../../PipelineVariablesContext/PipelineVariablesContext'
 import { usePipelineContext } from '../PipelineContext/PipelineContext'
 /**
@@ -33,6 +34,7 @@ function traverseStageObject(
  */
 export function useVariablesExpression(): { expressions: string[] } {
   const { variablesPipeline, metadataMap, initLoading } = usePipelineVariables()
+  const { metadataMap: templateMetadataMap, initLoading: templateInitLoading } = useTemplateVariables()
   const [expressions, setExpressions] = useState<string[]>([])
   const [localStageKeys, setLocalStageKeys] = useState<string[]>([])
   const {
@@ -51,11 +53,13 @@ export function useVariablesExpression(): { expressions: string[] } {
   }, [variablesPipeline, initLoading, selectedStageId, metadataMap, getStageFromPipeline])
 
   useEffect(() => {
-    if (!initLoading && metadataMap) {
+    if (!initLoading && !isEmpty(metadataMap)) {
       const expression = sortedUniq(
         sortBy(
           map(metadataMap, (item, index) =>
-            localStageKeys.indexOf(index) > -1 ? item.yamlProperties?.localName || '' : item.yamlProperties?.fqn || ''
+            localStageKeys.indexOf(index) > -1
+              ? defaultTo(item.yamlProperties?.localName, '')
+              : defaultTo(item.yamlProperties?.fqn, '')
           ).filter(p => p),
           identity
         )
@@ -64,8 +68,8 @@ export function useVariablesExpression(): { expressions: string[] } {
         sortBy(
           map(metadataMap, (item, index) =>
             localStageKeys.indexOf(index) > -1
-              ? item.yamlOutputProperties?.localName || ''
-              : item.yamlOutputProperties?.fqn || ''
+              ? defaultTo(item.yamlOutputProperties?.localName, '')
+              : defaultTo(item.yamlOutputProperties?.fqn, '')
           ).filter(p => p),
           identity
         )
@@ -73,6 +77,24 @@ export function useVariablesExpression(): { expressions: string[] } {
       setExpressions([...expression, ...outputExpression])
     }
   }, [initLoading, metadataMap, localStageKeys])
+
+  useEffect(() => {
+    if (!templateInitLoading && !isEmpty(templateMetadataMap)) {
+      const expression = sortedUniq(
+        sortBy(
+          map(templateMetadataMap, item => defaultTo(item.yamlProperties?.localName, '')).filter(p => p),
+          identity
+        )
+      )
+      const outputExpression = sortedUniq(
+        sortBy(
+          map(templateMetadataMap, item => defaultTo(item.yamlOutputProperties?.localName, '')).filter(p => p),
+          identity
+        )
+      )
+      setExpressions([...expression, ...outputExpression])
+    }
+  }, [templateInitLoading, templateMetadataMap])
 
   return { expressions }
 }

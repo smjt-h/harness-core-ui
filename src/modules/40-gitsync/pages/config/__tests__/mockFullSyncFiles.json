@@ -20,7 +20,7 @@
         "repoUrl": "https://github.com/wings-software/sunnykesh-gitSync",
         "rootFolder": "/s1/s2/.harness/",
         "retryCount": 0,
-        "errorMessages": [null]
+        "errorMessages": null
       },
       {
         "accountIdentifier": "dummy",
@@ -36,22 +36,6 @@
         "repoUrl": "https://github.com/wings-software/sunnykesh-gitSync",
         "rootFolder": "/s1/s2/.harness/",
         "retryCount": 0,
-        "errorMessages": [null]
-      },
-      {
-        "accountIdentifier": "dummy",
-        "orgIdentifier": "default",
-        "projectIdentifier": "dummyProject",
-        "filePath": "connectors/d2.yaml",
-        "entityType": "Connectors",
-        "syncStatus": "QUEUED",
-        "name": "d2",
-        "identifier": "d2",
-        "branch": "gitSync-patch",
-        "repoName": "repo1",
-        "repoUrl": "https://github.com/wings-software/sunnykesh-gitSync",
-        "rootFolder": "/s1/s2/.harness/",
-        "retryCount": 0,
         "errorMessages": null
       },
       {
@@ -69,6 +53,22 @@
         "rootFolder": "/s1/s2/.harness/",
         "retryCount": 0,
         "errorMessages": null
+      },
+      {
+        "accountIdentifier": "dummy",
+        "orgIdentifier": "default",
+        "projectIdentifier": "dummyProject",
+        "filePath": "connectors/d2.yaml",
+        "entityType": "Connectors",
+        "syncStatus": "FAILED",
+        "name": "sync failed",
+        "identifier": "d2",
+        "branch": "gitSync-patch",
+        "repoName": "repo1",
+        "repoUrl": "https://github.com/wings-software/sunnykesh-gitSync",
+        "rootFolder": "/s1/s2/.harness/",
+        "retryCount": 0,
+        "errorMessages": "Bad credentials."
       }
     ],
     "pageIndex": 0,

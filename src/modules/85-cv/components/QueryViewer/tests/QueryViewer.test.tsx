@@ -26,7 +26,7 @@ function WrapperComponent(props: QueryViewerProps): any {
   )
 }
 
-describe('Unit tests for QueryViewer', () => {
+describe('Unit tests for QueryViewer ', () => {
   test('Verify if fetch records call is made when user submits the query', async () => {
     jest.spyOn(cvService, 'useGetStackdriverLogSampleData').mockReturnValue({} as any)
     const fetchRecordsMock = jest.fn()

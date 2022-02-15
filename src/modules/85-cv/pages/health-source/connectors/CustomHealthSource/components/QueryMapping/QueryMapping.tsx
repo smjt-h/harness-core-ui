@@ -18,6 +18,7 @@ import type { ProjectPathProps } from '@common/interfaces/RouteInterfaces'
 import { HTTPRequestMethodOption } from '@connectors/components/CreateConnector/CustomHealthConnector/components/CustomHealthValidationPath/components/HTTPRequestMethod/HTTPRequestMethod'
 import { useFetchSampleData } from 'services/cv'
 import { useGetConnector } from 'services/cd-ng'
+import { QueryType } from '@cv/pages/health-source/common/HealthSourceQueryType/HealthSourceQueryType.types'
 import type { QueryMappingInterface } from './QueryMapping.types'
 import { CustomHealthSourceFieldNames } from '../../CustomHealthSource.constants'
 import { timeFormatOptions } from './QueryMapping.constants'
@@ -25,8 +26,7 @@ import { connectorParams, onFetchRecords } from './QueryMapping.utils'
 import css from './QueryMapping.module.scss'
 
 export default function QueryMapping({
-  formikValues,
-  formikSetFieldValue,
+  formikProps,
   connectorIdentifier,
   onFetchRecordsSuccess,
   isQueryExecuted,
@@ -35,7 +35,7 @@ export default function QueryMapping({
 }: QueryMappingInterface): JSX.Element {
   const { getString } = useStrings()
   const sampleDataTracingId = useMemo(() => Utils.randomId(), [])
-
+  const { values: formikValues, setFieldValue: formikSetFieldValue, setValues: formikSetValues } = formikProps
   const { projectIdentifier, orgIdentifier, accountId } = useParams<ProjectPathProps & { identifier: string }>()
 
   const connectorPayload = useMemo(
@@ -81,7 +81,25 @@ export default function QueryMapping({
     <Container>
       <Text margin={{ bottom: 'medium' }}>{getString('cv.customHealthSource.Querymapping.label')}</Text>
       <Container margin={{ top: 'medium', bottom: 'medium' }} border={{ bottom: true }}>
-        <HealthSourceQueryType />
+        <HealthSourceQueryType
+          onChange={val => {
+            if (val === QueryType.HOST_BASED) {
+              formikSetValues({
+                ...formikValues,
+                queryType: val,
+                [CustomHealthSourceFieldNames.SLI]: false,
+                [CustomHealthSourceFieldNames.HEALTH_SCORE]: false,
+                [CustomHealthSourceFieldNames.CONTINUOUS_VERIFICATION]: true
+              })
+            } else {
+              formikSetValues({
+                ...formikValues,
+                queryType: val,
+                [CustomHealthSourceFieldNames.CONTINUOUS_VERIFICATION]: false
+              })
+            }
+          }}
+        />
       </Container>
 
       <Container padding={{ top: 'medium', bottom: 'medium' }}>

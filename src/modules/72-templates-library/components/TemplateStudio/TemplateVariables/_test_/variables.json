@@ -1,0 +1,77 @@
+{
+  "stage": {
+    "type": "Deployment",
+    "spec": {
+      "serviceConfig": {
+        "serviceRef": "giD3FFbjSiCTccb2cx1YEg",
+        "serviceDefinition": {
+          "type": "Kubernetes",
+          "spec": {
+            "variables": [],
+            "__uuid": "nF1Gb2XbTTysGjffdS3S1Q"
+          },
+          "__uuid": "fHHP5FviT0u0uCSMg0S6aw"
+        },
+        "__uuid": "U4AsvAQ3RtqwUnmf9vA42Q"
+      },
+      "infrastructure": {
+        "environmentRef": "vbvbIze9QOiMpBUlwj_3qQ",
+        "infrastructureDefinition": {
+          "type": "KubernetesDirect",
+          "spec": {
+            "connectorRef": "Tg1AsI9ORCye6BZTO-o58Q",
+            "namespace": "Ro5D5fHUTW6ZbNOkjyMEMg",
+            "releaseName": "er4p7HLjSWaUARgVeP_61w",
+            "__uuid": "M8VxayzZTy6bYX2PdvU9gA"
+          },
+          "__uuid": "N7euc9azRraioj3X1p0_PA"
+        },
+        "allowSimultaneousDeployments": "zPbSpxPaS1Ou7xsXxu0LIQ",
+        "__uuid": "p046wcN3R2C5MtWQmHKHcA"
+      },
+      "execution": {
+        "steps": [
+          {
+            "step": {
+              "type": "Http",
+              "name": "4xYfPzZFTXCoWMdSB6k98w",
+              "identifier": "Step_1",
+              "spec": {
+                "url": "oQDB6owqTWOpPFnezL7oAA",
+                "method": "1MXDIq3FTBSWeBqhutpgsQ",
+                "headers": [],
+                "outputVariables": [],
+                "requestBody": "5nHzJ752Sp2qqJbK0BD7mw",
+                "__uuid": "i4KFEZGmS1yvG67jv9hMUw"
+              },
+              "timeout": "pz0Vh2qaR3ugNtovSkEa7g",
+              "__uuid": "ze7D68GrS1yrFNuegpvCJQ"
+            },
+            "__uuid": "Mboyb493T6CImoysFYMdbQ"
+          }
+        ],
+        "rollbackSteps": [],
+        "__uuid": "0DmwMq0IRuO2Lk3venPDsw"
+      },
+      "serviceDependencies": [],
+      "__uuid": "E80evXaaT420B1RTySoZrQ"
+    },
+    "failureStrategies": [
+      {
+        "onFailure": {
+          "errors": "zPEuNgUORDWN0v5gzTIySA",
+          "action": {
+            "type": "StageRollback",
+            "__uuid": "u_LklMQTT9CM0KlNgDxQbg"
+          },
+          "__uuid": "zWPu1-l8Q8y1KUcuQpyLrg"
+        },
+        "__uuid": "HMqk3YdzRp25ZAlMppawZA"
+      }
+    ],
+    "identifier": "templateInputs",
+    "name": "9hCRe_F7RFC347uF-zIjIA",
+    "__uuid": "QkbIhnNhRT-VVTnAydi9vw"
+  },
+  "__uuid": "8S9nsl8XRxiNj6gs31gclw"
+}

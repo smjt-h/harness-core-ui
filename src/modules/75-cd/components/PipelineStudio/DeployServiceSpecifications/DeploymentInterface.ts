@@ -5,11 +5,15 @@
  * https://polyformproject.org/wp-content/uploads/2020/06/PolyForm-Shield-1.0.0.txt.
  */
 
+import type { PopoverProps } from '@harness/uicore/dist/components/Popover/Popover'
 import type { IconName } from '@wings-software/uicore'
+import type { ReactElement } from 'react'
 
 export interface DeploymentTypeItem {
   label: string
   icon: IconName
   value: string
   disabled?: boolean
+  tooltip?: ReactElement | string
+  tooltipProps?: PopoverProps
 }

@@ -8,6 +8,7 @@
 import React from 'react'
 import { render } from '@testing-library/react'
 import { TestWrapper } from '@common/utils/testUtils'
+import * as cdServices from 'services/cd-ng'
 import CECOEditGatewayPage from '../CECOEditGatewayPage'
 
 const mockedService = {
@@ -140,6 +141,30 @@ const mockedAsg = {
   mixed_instance: true // eslint-disable-line
 }
 
+const mockedConnectorData = {
+  name: 'harness-qa',
+  identifier: 'harnessqa',
+  description: null,
+  orgIdentifier: null,
+  projectIdentifier: null,
+  tags: {},
+  type: 'CEAws',
+  spec: {
+    featuresEnabled: ['VISIBILITY', 'OPTIMIZATION', 'BILLING'],
+    tenantId: 'b229b2bb-5f33-4d22-bce0-730f6474e906',
+    subscriptionId: '20d6a917-99fa-4b1b-9b2e-a3d624e9dcf0',
+    billingExportSpec: {
+      storageAccountName: 'cesrcbillingstorage',
+      containerName: 'cesrcbillingcontainer',
+      directoryName: 'billingdirectorycommon',
+      reportName: 'cebillingreportharnessqa-lightwing',
+      subscriptionId: '20d6a917-99fa-4b1b-9b2e-a3d624e9dcf0'
+    }
+  }
+}
+
+const mockedConnectorDataResponse = { response: mockedConnectorData }
+
 const mockedStaticSchedulesList = { response: [] }
 
 const mockedRouteDetails = { response: { service: mockedService } }
@@ -184,6 +209,15 @@ jest.mock('services/lw', () => ({
     mutate: jest.fn()
   }))
 }))
+
+jest.spyOn(cdServices, 'useGetConnector').mockImplementation(
+  () =>
+    ({
+      loading: false,
+      refetch: jest.fn(),
+      data: mockedConnectorDataResponse
+    } as any)
+)
 
 describe('Edit rule page', () => {
   test('render edit rule page successfully', () => {

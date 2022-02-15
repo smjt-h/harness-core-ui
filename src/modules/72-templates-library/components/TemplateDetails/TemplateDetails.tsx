@@ -38,10 +38,10 @@ import { ResourceType } from '@rbac/interfaces/ResourceType'
 import { PermissionIdentifier } from '@rbac/interfaces/PermissionIdentifier'
 import { useAppStore } from 'framework/AppStore/AppStoreContext'
 import GitPopover from '@pipeline/components/GitPopover/GitPopover'
+import { TemplateYaml } from '@pipeline/components/PipelineStudio/TemplateYaml/TemplateYaml'
 import type { ModulePathParams, ProjectPathProps } from '@common/interfaces/RouteInterfaces'
 import { TemplateContext } from '../TemplateStudio/TemplateContext/TemplateContext'
 import { TemplateInputs } from '../TemplateInputs/TemplateInputs'
-import { TemplateYaml } from '../TemplateYaml/TemplateYaml'
 import { TemplateActivityLog } from '../TemplateActivityLog/TemplateActivityLog'
 import css from './TemplateDetails.module.scss'
 
@@ -298,7 +298,7 @@ export const TemplateDetails: React.FC<TemplateDetailsProps> = props => {
                             <Tab
                               id={TemplateTabs.YAML}
                               title={getString('yaml')}
-                              panel={<TemplateYaml templateYaml={selectedTemplate.yaml} />}
+                              panel={<TemplateYaml templateYaml={defaultTo(selectedTemplate.yaml, '')} />}
                             />
                             <Tab
                               id={TemplateTabs.REFERENCEDBY}

@@ -6,6 +6,7 @@
  */
 
 .serviceOverrides {
+  position: relative;
   .content-section {
     padding: var(--spacing-xxlarge) var(--spacing-huge) var(--spacing-13) var(--spacing-huge) !important;
     > .tabHeading {
@@ -54,6 +55,26 @@
         border: 1px solid transparent;
         box-shadow: var(--elevation-2) !important;
       }
+    }
+  }
+  :global {
+    .bp3-dialog-container {
+      align-items: flex-start !important;
+    }
+    .bp3-dialog-header {
+      padding: var(--spacing-6);
+    }
+    .bp3-dialog {
+      background-color: var(--white) !important;
+      width: 55%;
+      margin-top: 64px;
+      margin-right: 15%;
+      max-height: 450px;
+      overflow-y: hidden;
+      padding-bottom: 0 !important;
+    }
+    .bp3-overlay-backdrop {
+      visibility: hidden !important;
     }
   }
 }

@@ -27,8 +27,9 @@ import {
   useRouteDetails
 } from 'services/lw'
 import type { ProjectPathProps } from '@common/interfaces/RouteInterfaces'
-import { allProviders, AS_RESOURCE_TYPE, GatewayKindType, PROVIDER_TYPES } from '@ce/constants'
+import { allProviders, AS_RESOURCE_TYPE, ceConnectorTypes, GatewayKindType, PROVIDER_TYPES } from '@ce/constants'
 import { Utils } from '@ce/common/Utils'
+import { useGetConnector } from 'services/cd-ng'
 import { resourceToInstanceObject } from './helper'
 
 export const CECOEditGatewayPage: React.FC = () => {
@@ -63,6 +64,16 @@ export const CECOEditGatewayPage: React.FC = () => {
     lazy: true
   })
 
+  const {
+    data: connectorData,
+    loading: loadingConnectorData,
+    error: connectorDataError,
+    refetch: fetchConnectorData
+  } = useGetConnector({
+    identifier: '',
+    lazy: true
+  })
+
   const [gatewayDetails, setGatewayDetails] = useState<GatewayDetails>()
 
   const checkAndFetchSchedules = (_service: Service) => {
@@ -82,7 +93,7 @@ export const CECOEditGatewayPage: React.FC = () => {
     if (loading) return
     const service = data?.response?.service as Service
     const deps = _defaultTo(data?.response?.deps as ServiceDep[], [])
-    const hasAsg = !_isEmpty(service.routing?.instance?.scale_group)
+    const hasAsg = !_isEmpty(service?.routing?.instance?.scale_group)
     const isK8sRule = service.kind === GatewayKindType.KUBERNETES
 
     checkAndFetchSchedules(service)
@@ -93,26 +104,37 @@ export const CECOEditGatewayPage: React.FC = () => {
       fetchResources()
       return
     }
+
+    if (!connectorData && !connectorDataError && service?.cloud_account_id) {
+      fetchConnectorData({
+        pathParams: { identifier: service?.cloud_account_id },
+        queryParams: { accountIdentifier: accountId }
+      })
+      return
+    }
+
+    const providerType = connectorData?.data?.connector?.type
+      ? ceConnectorTypes[connectorData?.data?.connector?.type]
+      : PROVIDER_TYPES.AWS.valueOf()
+
     const routing: Routing = {
       ...(service.routing as Routing),
       instance: { filterText: service.routing?.instance?.filter_text as string },
       lb: ''
     }
     let selectedInstances: InstanceDetails[] = []
-    let providerType = PROVIDER_TYPES.AWS.valueOf()
     if (hasAsg) {
       routing.instance.scale_group = service.routing?.instance?.scale_group // eslint-disable-line
     } else if (isK8sRule) {
       routing.k8s = {
         RuleJson: service.routing?.k8s?.RuleJson as string,
         ConnectorID: service.metadata?.kubernetes_connector_id as string,
-        Namespace: (service.routing?.k8s?.Namespace as string) || 'default'
+        Namespace: _defaultTo(service.routing?.k8s?.Namespace, 'default')
       }
     } else if (!_isEmpty(service.routing?.database)) {
       routing.database = service.routing?.database
     } else {
-      providerType = resources?.response?.[0]?.provider_type || providerType
-      const selectedResources = resources?.response ? resources?.response : []
+      const selectedResources = _defaultTo(resources?.response, [])
       selectedInstances = selectedResources.map(item => resourceToInstanceObject(providerType, item))
     }
     const gwDetails: GatewayDetails = {
@@ -145,18 +167,18 @@ export const CECOEditGatewayPage: React.FC = () => {
       metadata: service.metadata as ServiceMetadata,
       customDomains: service.custom_domains,
       deps: deps,
-      schedules: staticSchedulesData?.response?.map(s => Utils.convertScheduleToClientSchedule(s))
-    }
-    // for just display purpose
-    if (!_isEmpty(service.routing?.container_svc)) {
-      gwDetails.resourceMeta = {
-        container_svc: service.routing?.container_svc
-      }
+      schedules: staticSchedulesData?.response?.map(s => Utils.convertScheduleToClientSchedule(s)),
+      ...(!_isEmpty(service.routing?.container_svc) && {
+        // for just display purpose
+        resourceMeta: {
+          container_svc: service.routing?.container_svc
+        }
+      })
     }
     setGatewayDetails(gwDetails)
-  }, [data, resources, staticSchedulesData])
+  }, [data, connectorData, staticSchedulesData, resources])
 
-  const isLoading = loading || resourcesLoading || staticSchedulesLoading
+  const isLoading = loading || loadingConnectorData || staticSchedulesLoading || resourcesLoading
 
   return (
     <>

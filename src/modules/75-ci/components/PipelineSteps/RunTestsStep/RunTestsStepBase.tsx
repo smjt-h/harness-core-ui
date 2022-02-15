@@ -43,7 +43,7 @@ import { FormMultiTypeConnectorField } from '@connectors/components/ConnectorRef
 import StepCommonFields, {
   GetImagePullPolicyOptions,
   GetShellOptions /*,{ /*usePullOptions }*/
-} from '@pipeline/components/StepCommonFields/StepCommonFields'
+} from '@ci/components/PipelineSteps/StepCommonFields/StepCommonFields'
 import { validate } from '@pipeline/components/PipelineSteps/Steps/StepsValidateUtils'
 import {
   getInitialValuesInCorrectFormat,
@@ -504,7 +504,7 @@ gradle.projectsEvaluated {
                       >
                         {renderMultiTypeFieldSelector({
                           name: 'spec.preCommand',
-                          fieldLabelKey: 'preCommandLabel',
+                          fieldLabelKey: 'ci.preCommandLabel',
                           tooltipId: 'runTestsPreCommand'
                         })}
                         {getMultiTypeFromValue(formik?.values?.spec?.preCommand) === MultiTypeInputType.RUNTIME && (
@@ -529,7 +529,7 @@ gradle.projectsEvaluated {
                       >
                         {renderMultiTypeFieldSelector({
                           name: 'spec.postCommand',
-                          fieldLabelKey: 'postCommandLabel',
+                          fieldLabelKey: 'ci.postCommandLabel',
                           tooltipId: 'runTestsPostCommand'
                         })}
                         {getMultiTypeFromValue(formik?.values?.spec?.postCommand) === MultiTypeInputType.RUNTIME && (

@@ -20,6 +20,8 @@ copyTemplate: Template configurations will be copied to your pipeline and made e
 collapseIsDisabledWhileStageIsRunning: Collapse is disable while stage is running
 changeTemplateLabel: Change Template
 removeTemplateLabel: Remove Template
+openTemplateInNewTabLabel: Open Template in new tab
+previewTemplateLabel: Preview Template YAML
 onlyPositiveInteger: Only positive integer values
 depth: Depth
 advancedOptions: Advanced Options
@@ -478,6 +480,7 @@ triggers:
     toggleEnable: 'Successfully {{enabled}} {{name}}.'
     webhookUrlCopied: 'Webhook URL is copied to clipboard.'
     webhookCurlCopied: 'Webhook cURL Command is copied to clipboard.'
+    existingTriggerError: 'There are some errors with this existing trigger. Please edit and update for more details.'
   triggerConfigurationPanel:
     title: 'Trigger Configuration: On New Webhook'
     triggerName: 'Trigger Name'
@@ -719,6 +722,7 @@ artifactsSelection:
   repositoryPlaceholder: Enter Repository
   artifactDetails: Artifact Details
   artifactTyperequired: Artifact Type is required
+  loadingTags: Loading Tags...
   existingDocker:
     sidecarId: Sidecar Identifier
     sidecarIdPlaceholder: Enter Artifact Identifier

@@ -194,6 +194,7 @@ export function useGetFormPropsByTrialType({
           }}
           closeModal={onCloseModal}
           moduleDescription={getString(moduleDescription as keyof StringsMap)}
+          hideSelectProjectButton={true}
         />
       )
     }

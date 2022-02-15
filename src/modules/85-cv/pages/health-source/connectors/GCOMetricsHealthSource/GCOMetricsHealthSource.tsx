@@ -290,7 +290,7 @@ export function GCOMetricsHealthSource(props: GCOMetricsHealthSourceProps): JSX.
                       }
                     }}
                   />
-                  <FormError errorMessage={formikProps.errors['metricTags']} />
+                  <FormError name="metricTags" errorMessage={formikProps.errors['metricTags']} />
                   <NameId
                     nameLabel={getString('cv.monitoringSources.metricNameLabel')}
                     identifierProps={{

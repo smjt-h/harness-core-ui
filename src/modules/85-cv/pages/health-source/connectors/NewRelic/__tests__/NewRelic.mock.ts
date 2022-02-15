@@ -518,3 +518,109 @@ export const expectedMappedValue = {
   timestamp: '$.timeSeries.[*].beginTimeSeconds',
   timestampFormat: null
 }
+
+export const mappedServicesAndEnvsPayload = new Map()
+
+const metricData = {
+  name: 'New relic refactor',
+  identifier: 'New_relic_refactor',
+  connectorRef: 'account.new_relic',
+  isEdit: true,
+  product: { label: 'apm', value: 'apm' },
+  type: 'NewRelic',
+  mappedServicesAndEnvs: {},
+  newRelicApplication: { label: 'My Application', value: 107019083 },
+  metricPacks: [{ identifier: 'Performance' }],
+  metricData: { Performance: true },
+  metricName: 'New Relic Metric',
+  metricIdentifier: '9a895e7d-ab48-4eaa-a8e3-69c25872925e',
+  groupName: { label: 'Group 1', value: 'Group 1' },
+  query: "SELECT average(`apm.service.transaction.duration`) FROM Metric WHERE appName = 'My Application' TIMESERIES",
+  metricValue: '$.timeSeries.[*].beginTimeSeconds',
+  timestamp: '$.timeSeries.[*].endTimeSeconds',
+  sli: true,
+  continuousVerification: false,
+  healthScore: false,
+  riskCategory: '',
+  lowerBaselineDeviation: false,
+  higherBaselineDeviation: false,
+  showCustomMetric: true
+}
+
+mappedServicesAndEnvsPayload.set('New Relic Metric', metricData)
+
+export const newRelicPayload = {
+  name: 'New relic refactor',
+  identifier: 'New_relic_refactor',
+  connectorRef: 'account.new_relic',
+  isEdit: true,
+  product: { label: 'apm', value: 'apm' },
+  type: 'NewRelic',
+  mappedServicesAndEnvs: mappedServicesAndEnvsPayload,
+  newRelicApplication: { label: 'My Application', value: 107019083 },
+  metricPacks: [{ identifier: 'Performance' }],
+  metricData: { Performance: true },
+  metricName: 'New Relic Metric',
+  metricIdentifier: '9a895e7d-ab48-4eaa-a8e3-69c25872925e',
+  groupName: { label: 'Group 1', value: 'Group 1' },
+  query: "SELECT average(`apm.service.transaction.duration`) FROM Metric WHERE appName = 'My Application' TIMESERIES",
+  metricValue: '$.timeSeries.[*].beginTimeSeconds',
+  timestamp: '$.timeSeries.[*].endTimeSeconds',
+  sli: true,
+  continuousVerification: false,
+  healthScore: false,
+  riskCategory: '',
+  lowerBaselineDeviation: false,
+  higherBaselineDeviation: false,
+  showCustomMetric: true
+}
+
+export const newRelicExpectedPayload = {
+  identifier: 'New_relic_refactor',
+  name: 'New relic refactor',
+  spec: {
+    applicationId: 107019083,
+    applicationName: 'My Application',
+    connectorRef: 'account.new_relic',
+    feature: 'apm',
+    metricData: {
+      Performance: true
+    },
+    metricPacks: [
+      {
+        identifier: 'Performance'
+      }
+    ],
+    newRelicMetricDefinitions: [
+      {
+        analysis: {
+          deploymentVerification: {
+            enabled: false
+          },
+          liveMonitoring: {
+            enabled: false
+          },
+          riskProfile: {
+            category: '',
+            metricType: undefined,
+            thresholdTypes: []
+          }
+        },
+        groupName: 'Group 1',
+        identifier: '9a895e7d-ab48-4eaa-a8e3-69c25872925e',
+        metricName: 'New Relic Metric',
+        nrql: "SELECT average(`apm.service.transaction.duration`) FROM Metric WHERE appName = 'My Application' TIMESERIES",
+        responseMapping: {
+          metricValueJsonPath: '$.timeSeries.[*].beginTimeSeconds',
+          serviceInstanceJsonPath: undefined,
+          timestampFormat: undefined,
+          timestampJsonPath: '$.timeSeries.[*].endTimeSeconds'
+        },
+        sli: {
+          enabled: true
+        }
+      }
+    ]
+  },
+  type: 'NewRelic'
+}

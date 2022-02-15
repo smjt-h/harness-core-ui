@@ -49,6 +49,25 @@ jest.mock('services/cd-ng', () => {
         mutate: jest.fn(),
         loading: false
       }
+    }),
+    useListAccountSetting: jest.fn().mockImplementation(() => {
+      return {
+        status: 'SUCCESS',
+        data: [
+          {
+            id: 'mockedId',
+            accountIdentifier: 'accountId',
+            orgIdentifier: null,
+            projectIdentifier: null,
+            createdAt: null,
+            lastModifiedAt: null,
+            type: 'Connector',
+            config: { builtInSMDisabled: true }
+          }
+        ],
+        metaData: null,
+        correlationId: 'correlation'
+      }
     })
   }
 })

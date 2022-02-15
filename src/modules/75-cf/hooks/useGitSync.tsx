@@ -168,7 +168,6 @@ export const useGitSync = (): UseGitSync => {
           }
         ]
       }
-
       await patchGitRepo.mutate(instruction)
       await getGitRepo.refetch()
     }

@@ -27,6 +27,7 @@ import type { FeatureDetail, FeatureMetaData } from 'framework/featureStore/feat
 import type { FeatureIdentifier } from 'framework/featureStore/FeatureIdentifier'
 import './testUtils.scss'
 import { PermissionsContext, PermissionsContextProps } from 'framework/rbac/PermissionsContext'
+import { Editions } from '@common/constants/SubscriptionTypes'
 
 export type UseGetMockData<TData, TError = undefined, TQueryParams = undefined, TPathParams = undefined> = Required<
   UseGetProps<TData, TError, TQueryParams, TPathParams>
@@ -189,6 +190,9 @@ export const TestWrapper: React.FC<TestWrapperProps> = props => {
                 },
                 getRestrictionType: () => {
                   return undefined
+                },
+                getHighestEdition: () => {
+                  return Editions.FREE
                 },
                 ...defaultFeaturesValues
               }}

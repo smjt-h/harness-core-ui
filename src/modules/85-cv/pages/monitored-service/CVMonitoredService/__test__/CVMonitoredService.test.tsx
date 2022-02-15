@@ -254,11 +254,10 @@ describe('Monitored Service list', () => {
     )
 
     jest.spyOn(cvServices, 'useListMonitoredService').mockImplementation(() => ({} as any))
-
     userEvent.click(container.querySelector('[data-icon="offline-outline"]')!)
 
     expect(refetchServiceCountData).toBeCalledTimes(2)
     expect(screen.queryByText(`cv.monitoredServices.showingServiceAtRisk`)).not.toBeInTheDocument()
-    expect(screen.queryByText('cv.monitoredServices.youHaveNoMonitoredServices')).toBeInTheDocument()
+    expect(screen.queryByText('cv.monitoredServices.youHaveNoMonitoredServices')).not.toBeInTheDocument()
   })
 })

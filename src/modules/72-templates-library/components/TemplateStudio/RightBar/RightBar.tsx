@@ -1,0 +1,53 @@
+/*
+ * Copyright 2022 Harness Inc. All rights reserved.
+ * Use of this source code is governed by the PolyForm Shield 1.0.0 license
+ * that can be found in the licenses directory at the root of this repository, also available at
+ * https://polyformproject.org/wp-content/uploads/2020/06/PolyForm-Shield-1.0.0.txt.
+ */
+
+import cx from 'classnames'
+import { Button, ButtonVariation } from '@wings-software/uicore'
+import React from 'react'
+import { useStrings } from 'framework/strings'
+import { RightDrawer } from '@templates-library/components/TemplateStudio/RightDrawer/RightDrawer'
+import { TemplateContext } from '@templates-library/components/TemplateStudio/TemplateContext/TemplateContext'
+import { DrawerTypes } from '@templates-library/components/TemplateStudio/TemplateContext/TemplateActions'
+import css from './RightBar.module.scss'
+
+export const RightBar = (): JSX.Element => {
+  const { getString } = useStrings()
+  const {
+    state: {
+      templateView: {
+        drawerData: { type }
+      },
+      templateView
+    },
+    updateTemplateView
+  } = React.useContext(TemplateContext)
+
+  const openVariablesDrawer = React.useCallback(() => {
+    updateTemplateView({
+      ...templateView,
+      isDrawerOpened: true,
+      drawerData: { type: DrawerTypes.TemplateVariables }
+    })
+  }, [templateView, updateTemplateView])
+
+  return (
+    <div className={css.rightBar}>
+      <Button
+        className={cx(css.iconButton, { [css.selected]: type === DrawerTypes.TemplateVariables })}
+        onClick={openVariablesDrawer}
+        variation={ButtonVariation.TERTIARY}
+        font={{ weight: 'semi-bold', size: 'xsmall' }}
+        icon="pipeline-variables"
+        withoutCurrentColor={true}
+        iconProps={{ size: 28 }}
+        text={getString('variablesText')}
+        data-testid="input-variable"
+      />
+      <RightDrawer />
+    </div>
+  )
+}

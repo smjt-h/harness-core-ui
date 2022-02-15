@@ -18,7 +18,7 @@ import { useStrings } from 'framework/strings'
 import { TimeSeriesSampleDTO, useFetchParsedSampleData } from 'services/cv'
 import type { MetricChartsValueInterface } from './MetricChartsValue.types'
 import { CustomHealthSourceFieldNames } from '../../CustomHealthSource.constants'
-import { getOptionsForChart } from '../../../NewRelic/components/NewRelicMappedMetric/NewRelicMappedMetric.utils'
+import { getOptionsForChart } from '../../../NewRelic/components/NewRelicCustomMetricForm/NewRelicCustomMetricForm.utils'
 import css from '../QueryMapping/QueryMapping.module.scss'
 
 export default function MetricChartsValue({
