@@ -5,9 +5,10 @@
  * https://polyformproject.org/wp-content/uploads/2020/06/PolyForm-Shield-1.0.0.txt.
  */
 
+import React from 'react'
 import type { IconName } from '@wings-software/uicore'
+import type { ReactElement, JSXElementConstructor } from 'react'
 import { Node, NodeType } from '../Node'
-
 export class DefaultNode extends Node {
   protected type = NodeType.Default
   protected identifier = '123'
@@ -18,4 +19,7 @@ export class DefaultNode extends Node {
   protected unSelectedColour = 'black'
   protected selectedIconColour = 'black'
   protected unSelectedIconColour = 'black'
+  public render(props: any): ReactElement<any, string | JSXElementConstructor<any>> {
+    return <div>{props.name}</div>
+  }
 }

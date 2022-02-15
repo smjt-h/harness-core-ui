@@ -6,10 +6,12 @@
  */
 
 import type { IconName } from '@wings-software/uicore'
+import React from 'react'
 import type { Node } from './Node'
 import { DefaultNode } from './Nodes/DefaultNode'
 import { DiamondNode } from './Nodes/DiamondNode'
 import { EmptyNode } from './Nodes/EmptyNode'
+import PipelineGraph from './PipelineGraph/PipelineGraph'
 
 export interface NodeData {
   name: string
@@ -24,10 +26,9 @@ export class DiagramFactory {
   /**
    * Couples the factory with the nodes it generates
    */
-  type: string = ''
-  canCreate: boolean = false
-  canDelete: boolean = false
-
+  type = ''
+  canCreate = false
+  canDelete = false
   nodeBank: Map<string, Node>
 
   constructor(diagramType: string) {
@@ -43,6 +44,10 @@ export class DiagramFactory {
     this.nodeBank.set(node.getType(), node as Node)
   }
 
+  getNode(type?: string): Node | undefined {
+    return this.nodeBank.get(type as string)
+  }
+
   deregisterNode(type: string): void {
     const deletedNode = this.nodeBank.get(type)
     if (deletedNode) {
@@ -50,16 +55,12 @@ export class DiagramFactory {
     }
   }
 
-  render(): JSX.Element | null {
-    return null
+  render(): React.FC<any> {
+    const PipelineStudioHOC: React.FC<any> = (props: any): React.ReactElement => (
+      <PipelineGraph getNode={this.getNode} {...props} />
+    )
+    return PipelineStudioHOC
   }
-
-  // getNode<T>(type?: string): Node<T> | undefined {
-  //   if (type && !isEmpty(type)) {
-  //     return this.nodeBank.get(type) as Node<T>
-  //   }
-  //   return
-  // }
 
   // getNodeIdentifier(type: string): string | undefined {
   //   return this.nodeBank.get(type)?.getIdentifier()
@@ -100,9 +101,10 @@ export class DiagramFactory {
   //   return this.invocationMap
   // }
 }
-
 const diagram = new DiagramFactory('graph')
 
 diagram.registerNode(new DefaultNode())
 diagram.registerNode(new DiamondNode())
 diagram.registerNode(new EmptyNode())
+const CDPipelineStudio = diagram.render()
+export default CDPipelineStudio
