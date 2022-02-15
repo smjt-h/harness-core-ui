@@ -86,7 +86,7 @@ export const NewEditServiceModalYaml: React.FC<NewEditServiceModalPropsYaml> = (
           showError(getString('fieldRequired', { field: 'Service' }))
         } else if (!values.identifier) {
           showError(getString('common.validation.fieldIsRequired', { name: 'Identifier' }))
-        } else if (isEdit && id != values.identifier) {
+        } else if (isEdit && id !== values.identifier) {
           showError(getString('cd.editIdError', { id: id }))
         } else if (isEdit && !isService) {
           const response = await updateService({

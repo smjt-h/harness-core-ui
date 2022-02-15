@@ -113,3 +113,21 @@ export const serviceInstances = {
   prodCount: 10,
   nonProdCount: 10
 }
+
+export const serviceCard = {
+  data: {
+    createdAt: 1644648631847,
+    lastModifiedAt: 1644648631847,
+    service: {
+      accountId: 'kmpySmUISimoRrJL6NL73w',
+      deleted: false,
+      description: '',
+      identifier: 'jjn',
+      name: 'hmk',
+      orgIdentifier: 'default',
+      projectIdentifier: 'Test_Yunus',
+      tags: { run: 'jj' },
+      version: 1
+    }
+  }
+}

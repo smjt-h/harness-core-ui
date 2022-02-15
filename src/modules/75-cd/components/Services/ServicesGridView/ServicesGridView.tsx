@@ -9,7 +9,6 @@ import React from 'react'
 import { Container, Layout, /* Layout, */ PageSpinner /* Pagination */, Pagination } from '@harness/uicore'
 import type { ResponsePageServiceResponse, ServiceResponse } from 'services/cd-ng'
 import ServiceCard from '../ServiceCard/ServiceCard'
-// import ServiceCard from '../ServiceCard/ServiceCard'
 import css from './ServicesGridView.module.scss'
 
 interface ServicesGridViewProps {
