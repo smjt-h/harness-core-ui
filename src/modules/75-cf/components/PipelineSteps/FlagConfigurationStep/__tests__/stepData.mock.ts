@@ -88,6 +88,14 @@ export const mockCompleteInstruction: FeatureFlagConfigurationInstruction = {
   }
 }
 
+export const mockNonPercentageRolloutInstruction: FeatureFlagConfigurationInstruction = {
+  identifier: 'SetFeatureFlagStateIdentifier',
+  type: 'SetFeatureFlagState',
+  spec: {
+    state: 'on'
+  }
+}
+
 export const mockInitialValues: FlagConfigurationStepData = {
   type: 'FlagConfiguration',
   name: 'Test',

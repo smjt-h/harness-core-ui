@@ -7,7 +7,13 @@
 
 import { cloneDeep, omit } from 'lodash-es'
 import preProcessFormValues from '../preProcessFormValues'
-import { mockCompleteInstruction, mockFeatures, mockIncompleteInstruction, mockInitialValues } from './stepData.mock'
+import {
+  mockCompleteInstruction,
+  mockFeatures,
+  mockIncompleteInstruction,
+  mockInitialValues,
+  mockNonPercentageRolloutInstruction
+} from './stepData.mock'
 
 describe('preProcessFormValues', () => {
   describe('percentage rollout', () => {
@@ -15,27 +21,34 @@ describe('preProcessFormValues', () => {
       test('it should preform no actions when there are no instructions', async () => {
         const initialValues = omit(mockInitialValues, 'spec.instructions')
 
-        expect(preProcessFormValues(initialValues, mockFeatures)).toEqual(initialValues)
+        expect(preProcessFormValues(cloneDeep(initialValues), mockFeatures)).toEqual(initialValues)
       })
 
       test('it should preform no actions when there are no features', async () => {
-        const initialValues = cloneDeep(mockInitialValues)
+        const initialValues = mockInitialValues
 
-        expect(preProcessFormValues(initialValues, null)).toEqual(initialValues)
+        expect(preProcessFormValues(cloneDeep(initialValues), null)).toEqual(initialValues)
       })
 
       test('it should preform no actions when there is no matching feature', async () => {
-        const initialValues = cloneDeep(mockInitialValues)
+        const initialValues = mockInitialValues
         const features = cloneDeep(mockFeatures)
         features.features?.shift()
 
-        expect(preProcessFormValues(initialValues, features)).toEqual(initialValues)
+        expect(preProcessFormValues(cloneDeep(initialValues), features)).toEqual(initialValues)
       })
 
       test('it should preform no actions when the instruction contains all variations in the correct order', async () => {
-        const initialValues = cloneDeep(mockInitialValues)
+        const initialValues = mockInitialValues
 
-        expect(preProcessFormValues(initialValues, mockFeatures)).toEqual(initialValues)
+        expect(preProcessFormValues(cloneDeep(initialValues), mockFeatures)).toEqual(initialValues)
+      })
+
+      test("it should preform no action when the instruction isn't a percentage rollout instruction", async () => {
+        const initialValues = omit(mockInitialValues, 'spec.instructions')
+        initialValues.spec.instructions = [mockNonPercentageRolloutInstruction]
+
+        expect(preProcessFormValues(cloneDeep(initialValues), mockFeatures)).toEqual(initialValues)
       })
     })
 

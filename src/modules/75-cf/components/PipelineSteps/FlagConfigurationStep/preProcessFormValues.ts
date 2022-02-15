@@ -15,7 +15,7 @@ export default function preProcessFormValues(
   if (Array.isArray(initialValues.spec.instructions) && featuresData?.features) {
     const feature = featuresData.features.find(({ identifier }) => identifier === initialValues.spec.feature)
     const percentageRolloutInstruction = initialValues.spec.instructions.find(
-      instruction => instruction.spec.distribution.clauses[0].op === 'segmentMatch'
+      instruction => instruction.spec?.distribution?.clauses[0]?.op === 'segmentMatch'
     )
 
     if (feature && percentageRolloutInstruction) {
