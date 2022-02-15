@@ -12,6 +12,7 @@ import { useUpdateLSDefaultExperience } from '@common/hooks/useUpdateLSDefaultEx
 import { useLicenseStore } from 'framework/LicenseStore/LicenseStoreContext'
 import { ModuleName } from 'framework/types/ModuleName'
 import { Experiences } from '@common/constants/Utils'
+import { returnLaunchUrl } from '@common/utils/routeUtils'
 import { useUpdateAccountDefaultExperienceNG } from 'services/cd-ng'
 import { useStrings } from 'framework/strings'
 import type { DeploymentTypeItem } from './DeploymentInterface'
@@ -88,9 +89,9 @@ export const CDFirstGenTrial: React.FC<PropsInterface> = ({ selectedDeploymentTy
               onClick={async () => {
                 if (isTrialAccount) {
                   await handleUpdateDefaultExperience()
-                  window.location.href = `${window.location.href.split('/ng/')[0]}/#/account/${accountId}/onboarding`
+                  window.location.href = returnLaunchUrl(`#/account/${accountId}/onboarding`)
                 } else {
-                  window.location.href = `${window.location.href.split('/ng/')[0]}/#/account/${accountId}/dashboard`
+                  window.location.href = returnLaunchUrl(`#/account/${accountId}/dashboard`)
                 }
               }}
               data-testid="continueCg"
