@@ -2953,6 +2953,7 @@ export interface StringsMap {
   'pipeline.triggers.schedulePanel.yearlyTabTitle': string
   'pipeline.triggers.scheduledLabel': string
   'pipeline.triggers.showAllTriggers': string
+  'pipeline.triggers.toast.existingTriggerError': string
   'pipeline.triggers.toast.successfulCreate': string
   'pipeline.triggers.toast.successfulUpdate': string
   'pipeline.triggers.toast.toggleEnable': string

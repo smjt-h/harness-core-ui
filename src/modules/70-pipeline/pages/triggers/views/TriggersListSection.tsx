@@ -494,7 +494,10 @@ const RenderColumnEnable: Renderer<CellProps<NGTriggerDetailsResponse>> = ({
             const { status, data: dataResponse } = await updateTrigger(
               yamlStringify({ trigger: clearNullUndefined(values) }) as any
             )
-            if (status === ResponseStatus.SUCCESS && dataResponse) {
+            if (dataResponse?.errors && !isEmpty(dataResponse?.errors)) {
+              column.showError(column.getString('pipeline.triggers.toast.existingTriggerError'))
+              return
+            } else if (status === ResponseStatus.SUCCESS && dataResponse) {
               column.showSuccess(
                 column.getString('pipeline.triggers.toast.toggleEnable', {
                   enabled: dataResponse.enabled ? 'enabled' : 'disabled',
