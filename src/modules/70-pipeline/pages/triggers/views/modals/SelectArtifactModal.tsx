@@ -101,15 +101,17 @@ const onSubmit = ({
   isManifest,
   selectedStageId,
   selectedArtifactId,
+  runtimeData,
   formikProps
 }: {
   isManifest: boolean
   selectedStageId: string
   selectedArtifactId: string
+  runtimeData: any
   formikProps: any
 }) => {
   const orginalArtifact = filterArtifact({
-    runtimeData: formikProps.values.originalPipeline?.stages,
+    runtimeData,
     stageId: selectedStageId,
     artifactId: getArtifactId(isManifest, selectedArtifactId),
     isManifest
@@ -275,7 +277,7 @@ const SelectArtifactModal: React.FC<SelectArtifactModalPropsInterface> = ({
             />
           </PipelineVariablesContextProvider>
           <Layout.Horizontal spacing="medium" className={css.footer}>
-            {!values?.selectedArtifact?.identifier && (
+            {isEmpty(values?.selectedArtifact) && (
               <Button
                 text={getString('back')}
                 icon="chevron-left"
@@ -294,7 +296,8 @@ const SelectArtifactModal: React.FC<SelectArtifactModalPropsInterface> = ({
                   isManifest,
                   selectedStageId,
                   selectedArtifactId,
-                  formikProps
+                  formikProps,
+                  runtimeData
                 })
                 closeModal()
               }}
