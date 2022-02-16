@@ -147,10 +147,20 @@ const getParallelNodeLinks = (
   })
 }
 
+const getScaleToFitValue = (elm: HTMLElement, paddingFromBottom = 20): number => {
+  return (
+    1 /
+    Math.max(
+      elm.clientWidth / window.innerWidth,
+      elm.clientHeight / (window.innerHeight - elm.offsetTop - paddingFromBottom)
+    )
+  )
+}
 export {
   getFinalSVGArrowPath,
   setupDragEventListeners,
   getSVGLinksFromPipeline,
   ZOOM_INC_DEC_LEVEL,
-  INITIAL_ZOOM_LEVEL
+  INITIAL_ZOOM_LEVEL,
+  getScaleToFitValue
 }

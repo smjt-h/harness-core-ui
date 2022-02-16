@@ -4,7 +4,13 @@ import { cloneDeep } from 'lodash-es'
 import type { PipelineInfoConfig, StageElementWrapperConfig } from 'services/cd-ng'
 import { stageTypeToIconMap } from '@pipeline/components/PipelineInputSetForm/PipelineInputSetForm'
 import { Node, NodeType } from '../Node'
-import { getFinalSVGArrowPath, getSVGLinksFromPipeline, INITIAL_ZOOM_LEVEL, setupDragEventListeners } from './utils'
+import {
+  getFinalSVGArrowPath,
+  getScaleToFitValue,
+  getSVGLinksFromPipeline,
+  INITIAL_ZOOM_LEVEL,
+  setupDragEventListeners
+} from './utils'
 import GraphActions from '../GraphActions/GraphActions'
 import { PipelineGraphRecursive } from './PipelineGraphNode'
 import css from './PipelineGraph.module.scss'
@@ -16,7 +22,7 @@ export interface PipelineGraphProps {
 const PipelineGraph = ({ pipeline, getNode }: PipelineGraphProps): React.ReactElement => {
   const [svgPath, setSvgPath] = useState<string[]>([])
   const [treeRectangle, setTreeRectangle] = useState<DOMRect | void>()
-  const [selectedNode, setSelectedNode] = useState<string | null>(null)
+  const [selectedNode, setSelectedNode] = useState<string>('')
   const [state, setState] = useState<StageElementWrapperConfig[]>([])
   const [graphScale, setGraphScale] = useState(INITIAL_ZOOM_LEVEL)
   const canvasRef = useRef<HTMLDivElement>(null)
@@ -83,25 +89,26 @@ const PipelineGraph = ({ pipeline, getNode }: PipelineGraphProps): React.ReactEl
     const clearDragListeners = setupDragEventListeners(canvasRef)
     return () => clearDragListeners()
   }, [])
-
+  const updateSelectedNode = (nodeId: string): void => {
+    setSelectedNode(nodeId)
+  }
+  function handleScaleToFit(): void {
+    setGraphScale(getScaleToFitValue(canvasRef.current as unknown as HTMLElement))
+  }
   return (
     <div id="overlay" className={css.overlay}>
-      <div className={css.graphMain} ref={canvasRef}>
-        <PipelineGraphRecursive
-          getNode={getNode}
-          stages={state}
-          selectedNode={selectedNode}
-          setSelectedNode={setSelectedNode}
-        />
-        <SVGComponent svgPath={svgPath} />
-      </div>
-      <GraphActions
-        setGraphScale={setGraphScale}
-        graphScale={graphScale}
-        handleScaleToFit={function (): void {
-          throw new Error('Function not implemented.')
-        }}
-      />
+      <>
+        <div className={css.graphMain} ref={canvasRef} style={{ transform: `scale(${graphScale})` }}>
+          <SVGComponent svgPath={svgPath} />
+          <PipelineGraphRecursive
+            getNode={getNode}
+            stages={state}
+            selectedNode={selectedNode}
+            setSelectedNode={updateSelectedNode}
+          />
+        </div>
+        <GraphActions setGraphScale={setGraphScale} graphScale={graphScale} handleScaleToFit={handleScaleToFit} />
+      </>
     </div>
   )
 }

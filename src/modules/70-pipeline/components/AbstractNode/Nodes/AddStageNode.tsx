@@ -9,7 +9,7 @@ import type { IconName } from '@wings-software/uicore'
 import { Node, NodeInterface, NodeType } from '../Node'
 
 export class AddStageNode extends Node {
-  protected type = NodeType.AddStage
+  protected type = NodeType.CreateNode
   constructor(options: NodeInterface) {
     super({
       identifier: options.identifier,

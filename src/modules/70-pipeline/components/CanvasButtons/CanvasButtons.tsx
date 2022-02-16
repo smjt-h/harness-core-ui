@@ -81,7 +81,7 @@ export const CanvasButtons: React.FC<CanvasButtonsProps> = ({
     [engine, callback]
   )
 
-  const renderButtons = () => (
+  const renderButtons = (): React.ReactElement => (
     <>
       <ButtonGroup>
         <Button

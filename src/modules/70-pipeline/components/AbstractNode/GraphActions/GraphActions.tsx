@@ -1,6 +1,7 @@
 import React from 'react'
 import { ButtonVariation, ButtonGroup, Button } from '@harness/uicore'
-import { ZOOM_INC_DEC_LEVEL, INITIAL_ZOOM_LEVEL } from '../constants'
+import { useStrings } from 'framework/strings'
+import { ZOOM_INC_DEC_LEVEL, INITIAL_ZOOM_LEVEL } from './constants'
 import css from './GraphActions.module.scss'
 interface GraphActionProps {
   setGraphScale: (data: number) => void
@@ -8,44 +9,48 @@ interface GraphActionProps {
   handleScaleToFit: () => void
 }
 const GraphActions = ({ setGraphScale, graphScale, handleScaleToFit }: GraphActionProps): React.ReactElement => {
+  const { getString } = useStrings()
   return (
-    <div className={css.vertical}>
-      <div className={css.graphActionButton}>
-        <Button
-          variation={ButtonVariation.TERTIARY}
-          icon="canvas-position"
-          tooltip="Zoom to fit"
-          onClick={handleScaleToFit}
-        />
+    <span className={css.canvasButtons}>
+      <div className={css.vertical}>
+        <ButtonGroup>
+          <Button
+            variation={ButtonVariation.TERTIARY}
+            icon="canvas-position"
+            tooltip={getString('canvasButtons.zoomToFit')}
+            onClick={handleScaleToFit}
+          />
+        </ButtonGroup>
+        <ButtonGroup>
+          <Button
+            variation={ButtonVariation.TERTIARY}
+            icon="canvas-selector"
+            tooltip={getString('reset')}
+            onClick={() => setGraphScale(INITIAL_ZOOM_LEVEL)}
+          />
+        </ButtonGroup>
+        <span className={css.verticalButtons}>
+          <ButtonGroup>
+            <Button
+              variation={ButtonVariation.TERTIARY}
+              icon="zoom-in"
+              tooltip={getString('canvasButtons.zoomIn')}
+              onClick={() => {
+                Number(graphScale.toFixed(1)) < 2 && setGraphScale(graphScale + ZOOM_INC_DEC_LEVEL)
+              }}
+            />
+            <Button
+              variation={ButtonVariation.TERTIARY}
+              icon="zoom-out"
+              tooltip={getString('canvasButtons.zoomOut')}
+              onClick={() => {
+                Number(graphScale.toFixed(1)) > 0.3 && setGraphScale(graphScale - ZOOM_INC_DEC_LEVEL)
+              }}
+            />
+          </ButtonGroup>
+        </span>
       </div>
-      <div className={css.graphActionButton}>
-        <Button
-          variation={ButtonVariation.TERTIARY}
-          icon="reset"
-          tooltip="Reset Zoom"
-          onClick={() => setGraphScale(INITIAL_ZOOM_LEVEL)}
-        />
-      </div>
-
-      <ButtonGroup className={css.buttongroup}>
-        <Button
-          variation={ButtonVariation.TERTIARY}
-          icon="zoom-in"
-          tooltip="Zoom In"
-          onClick={() => {
-            Number(graphScale.toFixed(1)) < 2 && setGraphScale(graphScale + ZOOM_INC_DEC_LEVEL)
-          }}
-        />
-        <Button
-          variation={ButtonVariation.TERTIARY}
-          tooltip="Zoom Out"
-          icon="zoom-out"
-          onClick={() => {
-            Number(graphScale.toFixed(1)) > 0.3 && setGraphScale(graphScale - ZOOM_INC_DEC_LEVEL)
-          }}
-        />
-      </ButtonGroup>
-    </div>
+    </span>
   )
 }
 export default GraphActions

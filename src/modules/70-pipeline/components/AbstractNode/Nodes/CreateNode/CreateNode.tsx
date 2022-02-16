@@ -9,11 +9,11 @@ import React from 'react'
 import type { IconName } from '@wings-software/uicore'
 import { Text } from '@wings-software/uicore'
 import { Icon } from '@blueprintjs/core'
+import cx from 'classnames'
+import { isEmpty } from 'lodash-es'
 import { Node, NodeType } from '../../Node'
 import cssDefault from '../DefaultNode/DefaultNode.module.scss'
 import css from './CreateNode.module.scss'
-import cx from 'classnames'
-import { isEmpty } from 'lodash-es'
 
 export class CreateNode extends Node {
   protected type = NodeType.CreateNode
@@ -25,10 +25,7 @@ export class CreateNode extends Node {
   protected unSelectedIconColour = 'black'
   render?(props?: any): React.ReactElement {
     return (
-      <div
-        className={cx(cssDefault.defaultNode, css.createNode)}
-        // style={{ marginLeft: `${marginAdjustment}px` }}
-      >
+      <div className={cx(cssDefault.defaultNode, css.createNode)}>
         <div
           id={NodeType.CreateNode.toString()}
           className={cx(
@@ -48,15 +45,6 @@ export class CreateNode extends Node {
         >
           <div>
             <Icon icon="plus" iconSize={22} color={'var(--diagram-add-node-color)'} />
-
-            {/* <div>
-              <div style={{ visibility: options.showPorts ? 'visible' : 'hidden' }}>
-                {props.node.getInPorts().map(port => generatePort(port, props))}
-              </div>
-              <div style={{ visibility: options.showPorts ? 'visible' : 'hidden' }}>
-                {props.node.getOutPorts().map(port => generatePort(port, props))}
-              </div>
-            </div> */}
           </div>
         </div>
         {!isEmpty(props.name) && (

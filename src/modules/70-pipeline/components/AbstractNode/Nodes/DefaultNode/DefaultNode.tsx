@@ -50,17 +50,12 @@ export class DefaultNode extends Node {
             <Icon
               size={28}
               name={props.iconName}
-              // inverse={isSelected}
+              inverse={props?.isSelected}
               // {...options.iconProps}
               style={{ pointerEvents: 'none', ...iconStyle }}
             />
           )}
-          {/* <div style={{ visibility: options.showPorts && !options.hideInPort ? 'visible' : 'hidden' }}>
-            {props.node.getInPorts().map(port => generatePort(port, props))}
-          </div>
-          <div style={{ visibility: options.showPorts && !options.hideOutPort ? 'visible' : 'hidden' }}>
-            {props.node.getOutPorts().map(port => generatePort(port, props))}
-          </div> */}
+
           {this.secondaryIcon && <Icon className={css.secondaryIcon} size={8} name={this.secondaryIcon} />}
         </div>
         {props.name && (

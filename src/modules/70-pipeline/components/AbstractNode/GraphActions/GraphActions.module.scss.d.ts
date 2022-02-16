@@ -7,7 +7,8 @@
  **/
 // this is an auto-generated file, do not update this manually
 declare const styles: {
-  readonly buttongroup: string
+  readonly canvasButtons: string
   readonly vertical: string
+  readonly verticalButtons: string
 }
 export default styles
