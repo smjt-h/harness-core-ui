@@ -51,10 +51,6 @@ const params = {
 
 describe('test case for anomalies detection overview page', () => {
   test('should be able to render the overview dashboard', async () => {
-    const setMockState = jest.fn()
-    const useStateMock: any = (useState: any) => [useState, setMockState]
-    jest.spyOn(React, 'useState').mockImplementation(useStateMock)
-
     const responseState = {
       executeQuery: ({ query }: { query: DocumentNode }) => {
         if (query === FetchCcmMetaDataDocument) {
