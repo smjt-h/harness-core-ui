@@ -60,6 +60,8 @@ ID: Id
 org: Org
 accountSetting:
   connector:
+    loading: 'Loading settings...'
+    disabledState: 'To change this setting, make sure you have a Secret Manager other than Harness Built-In Secret Manager setup at the Account level.'
     saveSettingSuccess: 'Connector Settings saved successfully.'
     disableBISMHeading: 'Disable default Harness Secret Manager'
     disableBISMSubHeading: 'When this setting is enabled, users cannot use Harness built-in secret manager.'

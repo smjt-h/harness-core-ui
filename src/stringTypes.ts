@@ -31,6 +31,8 @@ export interface StringsMap {
   'common.accountResourcesPage.line2': string
   'common.accountSetting.connector.disableBISMHeading': string
   'common.accountSetting.connector.disableBISMSubHeading': string
+  'common.accountSetting.connector.disabledState': string
+  'common.accountSetting.connector.loading': string
   'common.accountSetting.connector.saveSettingSuccess': string
   'common.accountSettings': string
   'common.accountSetup': string
