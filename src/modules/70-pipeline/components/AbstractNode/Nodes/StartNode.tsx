@@ -13,7 +13,7 @@ import css from '../../Diagram/node/NodeStart/NodeStart.module.scss'
 const DEFAULT_ICON: IconName = 'play'
 const SELECTED_COLOUR = 'var(--diagram-start-node)'
 
-const StartNode = () => {
+const StartNode = (): React.ReactElement => {
   return (
     <div className={css.defaultNode}>
       <div
@@ -23,14 +23,6 @@ const StartNode = () => {
       >
         <div>
           <Icon name={DEFAULT_ICON} style={{ color: SELECTED_COLOUR }} className={css.icon} />
-          {/* <div>
-      <div style={{ visibility: props.node.isStart ? 'initial' : 'hidden' }}>
-        {props.node.getOutPorts().map(generatePort)}
-      </div>
-      <div style={{ visibility: props.node.isStart ? 'hidden' : 'initial' }}>
-        {props.node.getInPorts().map(generatePort)}
-      </div>
-    </div> */}
         </div>
       </div>
     </div>

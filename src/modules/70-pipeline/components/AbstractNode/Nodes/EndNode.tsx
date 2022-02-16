@@ -14,7 +14,7 @@ import css from '../../Diagram/node/NodeStart/NodeStart.module.scss'
 const DEFAULT_ICON: IconName = 'stop'
 const SELECTED_COLOUR = 'var(--diagram-stop-node)'
 
-const EndNode = () => {
+const EndNode = (): React.ReactElement => {
   return (
     <div className={css.defaultNode}>
       <div
@@ -24,14 +24,6 @@ const EndNode = () => {
       >
         <div>
           <Icon name={DEFAULT_ICON} style={{ color: SELECTED_COLOUR }} className={css.icon} />
-          {/* <div>
-      <div style={{ visibility: props.node.isStart ? 'initial' : 'hidden' }}>
-        {props.node.getOutPorts().map(generatePort)}
-      </div>
-      <div style={{ visibility: props.node.isStart ? 'hidden' : 'initial' }}>
-        {props.node.getInPorts().map(generatePort)}
-      </div>
-    </div> */}
         </div>
       </div>
     </div>
