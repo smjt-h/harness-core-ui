@@ -7,13 +7,11 @@
 
 import type { IconName } from '@wings-software/uicore'
 import React from 'react'
-import type { Node } from './Node'
-import { CreateNode } from './Nodes/CreateNode/CreateNode'
-import { DefaultNode } from './Nodes/DefaultNode/DefaultNode'
-import { DiamondNode } from './Nodes/DiamondNode'
-import { EmptyNode } from './Nodes/EmptyNode'
-import { EndNode } from './Nodes/EndNode'
-import { StartNode } from './Nodes/StartNode'
+import { NodeType } from './Node'
+import CreateNode from './Nodes/CreateNode/CreateNode'
+import DefaultNode from './Nodes/DefaultNode/DefaultNode'
+import EndNode from './Nodes/EndNode'
+import StartNode from './Nodes/StartNode'
 import PipelineGraph from './PipelineGraph/PipelineGraph'
 
 export interface NodeData {
@@ -32,22 +30,26 @@ export class DiagramFactory {
   type = ''
   canCreate = false
   canDelete = false
-  nodeBank: Map<string, Node>
+  nodeBank: Map<string, React.FC<any>>
 
   constructor(diagramType: string) {
     this.nodeBank = new Map()
     this.type = diagramType
+    this.registerNode(NodeType.Default, DefaultNode)
+    this.registerNode(NodeType.StartNode, StartNode)
+    this.registerNode(NodeType.CreateNode, CreateNode)
+    this.registerNode(NodeType.EndNode, EndNode)
   }
 
   getType(): string {
     return this.type
   }
 
-  registerNode(node: Node): void {
-    this.nodeBank.set(node.getType(), node as Node)
+  registerNode(type: string, Component: React.FC<any>): void {
+    this.nodeBank.set(type, Component)
   }
 
-  getNode(type?: string): Node | undefined {
+  getNode(type?: string): React.FC<any> | undefined {
     return this.nodeBank.get(type as string)
   }
 
@@ -65,13 +67,12 @@ export class DiagramFactory {
     return PipelineStudioHOC
   }
 }
-const diagram = new DiagramFactory('graph')
 
-diagram.registerNode(new DefaultNode())
-diagram.registerNode(new DiamondNode())
-diagram.registerNode(new EmptyNode())
-diagram.registerNode(new StartNode())
-diagram.registerNode(new EndNode())
-diagram.registerNode(new CreateNode())
-const CDPipelineStudio = diagram.render()
-export default CDPipelineStudio
+const DiagramNodes = {
+  [NodeType.Default]: DefaultNode,
+  [NodeType.CreateNode]: CreateNode,
+  [NodeType.EndNode]: EndNode,
+  [NodeType.StartNode]: StartNode
+}
+
+export { DiagramNodes, NodeType }

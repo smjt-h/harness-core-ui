@@ -27,7 +27,6 @@ import { useGlobalEventListener } from '@common/hooks'
 import type { DeploymentStageElementConfig, StageElementWrapper } from '@pipeline/utils/pipelineTypes'
 import { StageType } from '@pipeline/utils/stageHelpers'
 import { useTemplateSelector } from '@pipeline/utils/useTemplateSelector'
-import PipelineStudioGraph from '@pipeline/components/AbstractNode/DiagramFactory'
 import {
   CanvasWidget,
   createEngine,
@@ -61,6 +60,7 @@ import { StageList } from './views/StageList'
 import { SplitViewTypes } from '../PipelineContext/PipelineActions'
 import { usePipelineContext } from '../PipelineContext/PipelineContext'
 import css from './StageBuilder.module.scss'
+import { CDPipelineStudioNew } from '@cd/pages/pipeline-studio/CDPipelineStudio'
 const IS_NEW_PIP_STUDIO_ACTIVE = true
 export type StageStateMap = Map<string, StageState>
 
@@ -910,7 +910,7 @@ const StageBuilder: React.FC<unknown> = (): JSX.Element => {
           allowResize={openSplitView}
         >
           {/* {StageCanvas} */}
-          {IS_NEW_PIP_STUDIO_ACTIVE ? <PipelineStudioGraph pipeline={pipeline} /> : StageCanvas}
+          {IS_NEW_PIP_STUDIO_ACTIVE ? <CDPipelineStudioNew pipeline={pipeline} /> : StageCanvas}
 
           <div
             style={{

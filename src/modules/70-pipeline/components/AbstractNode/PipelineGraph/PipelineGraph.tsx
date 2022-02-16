@@ -17,7 +17,7 @@ import css from './PipelineGraph.module.scss'
 
 export interface PipelineGraphProps {
   pipeline: PipelineInfoConfig
-  getNode: (type?: string | undefined) => Node | undefined
+  getNode: (type?: string | undefined) => React.FC<any> | undefined
 }
 const PipelineGraph = ({ pipeline, getNode }: PipelineGraphProps): React.ReactElement => {
   const [svgPath, setSvgPath] = useState<string[]>([])
