@@ -61,7 +61,7 @@ exports[`ServiceCard render 1`] = `
           class="StyledProps--font Text--lineclamp StyledProps--main StyledProps--margin-bottom-xsmall StyledProps--color StyledProps--color-grey500"
           style="font-size: 12px; line-height: 24px; word-break: break-word; --text-line-clamp: 1;"
         >
-          ID: 
+          Id: 
           jjn
         </p>
         <span
@@ -99,51 +99,7 @@ exports[`ServiceCard render 1`] = `
           </span>
         </span>
       </div>
-      <div
-        class="serviceInfo"
-      >
-        <div
-          class="cardInfoRow"
-        >
-          <div
-            class="cardInfoLabel"
-          >
-             Last Deployment 
-          </div>
-          <div
-            class="cardInfoValue"
-          >
-            <p
-              class="StyledProps--font Text--lineclamp StyledProps--main StyledProps--color StyledProps--color-black"
-              style="font-size: 12px; font-weight: 500; --text-line-clamp: 1;"
-            >
-              Test
-            </p>
-          </div>
-        </div>
-        <div
-          class="cardInfoRow"
-        >
-          <div
-            class="cardInfoLabel"
-          >
-             Deployment Status 
-          </div>
-          <div
-            class="cardInfoValue"
-          >
-            <div
-              class="Layout--horizontal StyledProps--main StyledProps--flex StyledProps--flex-justifyContent-flex-end"
-            >
-              <p
-                class="StyledProps--font StyledProps--main statusText StyledProps--background-green600 StyledProps--color StyledProps--color-white StyledProps--font-weight-semi-bold StyledProps--font-size-xsmall"
-              >
-                SUCCESS
-              </p>
-            </div>
-          </div>
-        </div>
-      </div>
+      
     </div>
   </div>
 </div>
