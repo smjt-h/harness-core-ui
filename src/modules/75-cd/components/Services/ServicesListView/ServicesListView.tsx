@@ -7,9 +7,8 @@
 
 import React from 'react'
 import { Container, Pagination, TableV2 } from '@harness/uicore'
-
 import type { ResponsePageServiceResponse } from 'services/cd-ng'
-import { ServiceName, ServiceExectutionHistory, ServiceMenu } from '../ServicesListColumns/ServicesListColumns'
+import { ServiceName, ServiceDescription, ServiceMenu } from '../ServicesListColumns/ServicesListColumns'
 
 import css from './ServicesListView.module.scss'
 interface ServicesListViewProps {
@@ -17,9 +16,11 @@ interface ServicesListViewProps {
   loading?: boolean
   onRefresh?: () => Promise<void>
   gotoPage?: (index: number) => void
+  onServiceSelect: (data: any) => Promise<void>
 }
 const ServicesListView = (props: ServicesListViewProps): React.ReactElement => {
-  const { data, gotoPage } = props
+  const { data, gotoPage, onServiceSelect } = props
+
   return (
     <>
       <Container className={css.masonry} style={{ height: 'calc(100% - 66px)', width: '100%' }}>
@@ -30,20 +31,16 @@ const ServicesListView = (props: ServicesListViewProps): React.ReactElement => {
             {
               Header: 'SERVICE',
               id: 'name',
+              accessor: 'service',
               width: '60%',
               Cell: ServiceName
             },
             {
-              Header: 'LAST EXECUTION',
+              Header: 'DESCRIPTION',
               id: 'destination',
-              width: '20%',
-              Cell: ServiceExectutionHistory
-            },
-            {
-              Header: '',
-              id: 'status',
-              width: '17%',
-              Cell: <></>
+              accessor: 'service',
+              width: '35%',
+              Cell: ServiceDescription
             },
             {
               Header: '',
@@ -56,6 +53,7 @@ const ServicesListView = (props: ServicesListViewProps): React.ReactElement => {
             }
           ]}
           data={data?.data?.content || []}
+          onRowClick={(row: any) => onServiceSelect(row?.service)}
         />
       </Container>
 

@@ -16,10 +16,11 @@ interface ServicesGridViewProps {
   loading?: boolean
   onRefresh?: () => Promise<void>
   gotoPage?: (index: number) => void
+  onServiceSelect: (data: any) => Promise<void>
 }
 
 const ServicesGridView: React.FC<ServicesGridViewProps> = props => {
-  const { loading, data, gotoPage } = props
+  const { loading, data, gotoPage, onServiceSelect } = props
 
   return (
     <>
@@ -34,7 +35,13 @@ const ServicesGridView: React.FC<ServicesGridViewProps> = props => {
               center
               gutter={25}
               items={data?.data?.content || []}
-              renderItem={(service: ServiceResponse) => <ServiceCard data={service} onRefresh={props.onRefresh} />}
+              renderItem={(service: ServiceResponse) => (
+                <ServiceCard
+                  onServiceSelect={(selectedService: any) => onServiceSelect(selectedService)}
+                  data={service}
+                  onRefresh={props.onRefresh}
+                />
+              )}
               keyOf={service => service?.service?.identifier}
             />
           </Container>

@@ -5,7 +5,7 @@
  * https://polyformproject.org/wp-content/uploads/2020/06/PolyForm-Shield-1.0.0.txt.
  */
 
-import React, { useEffect, useState } from 'react'
+import React, { useCallback, useEffect, useState } from 'react'
 import cx from 'classnames'
 import {
   Dialog,
@@ -15,9 +15,9 @@ import {
   Container,
   GridListToggle
 } from '@harness/uicore'
-import { useParams } from 'react-router-dom'
+import { useHistory, useParams } from 'react-router-dom'
 import { useModalHook } from '@harness/use-modal'
-import { ParamsType, useServiceStore } from '@cd/components/Services/common'
+import { useServiceStore } from '@cd/components/Services/common'
 import { useStrings } from 'framework/strings'
 import { PermissionIdentifier } from '@rbac/interfaces/PermissionIdentifier'
 import { ResourceType } from '@rbac/interfaces/ResourceType'
@@ -25,6 +25,8 @@ import { ResourceType } from '@rbac/interfaces/ResourceType'
 import { Page } from '@common/exports'
 import RbacButton from '@rbac/components/Button/Button'
 import { GetServiceListQueryParams, useGetServiceList } from 'services/cd-ng'
+import type { ModulePathParams, ProjectPathProps } from '@common/interfaces/RouteInterfaces'
+import routes from '@common/RouteDefinitions'
 import { NewEditServiceModalYaml } from './ServiceModal'
 
 import ServicesGridView from '../ServicesGridView/ServicesGridView'
@@ -33,12 +35,23 @@ import ServicesListView from '../ServicesListView/ServicesListView'
 import css from './ServicesListPage.module.scss'
 
 export const ServicesListPage: React.FC = () => {
-  const { orgIdentifier, projectIdentifier, accountId } = useParams<ParamsType>()
+  const { accountId, orgIdentifier, projectIdentifier, module } = useParams<ProjectPathProps & ModulePathParams>()
   const [view, setView] = useState(Views.LIST)
   const [page, setPage] = useState(0)
   const { getString } = useStrings()
   const { fetchDeploymentList } = useServiceStore()
   const [mode, setMode] = useState<SelectedView>(SelectedView.VISUAL)
+
+  const history = useHistory()
+
+  const goToServiceDetails = useCallback(
+    ({ identifier: serviceId }): void => {
+      history.push(routes.toServiceDetails({ accountId, orgIdentifier, projectIdentifier, serviceId, module }))
+    },
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+    [accountId, orgIdentifier, projectIdentifier, module]
+  )
+
   const [showModal, hideModal] = useModalHook(
     () => (
       <Dialog
@@ -123,6 +136,7 @@ export const ServicesListPage: React.FC = () => {
               loading={loading}
               onRefresh={() => refetch()}
               gotoPage={(pageNumber: number) => setPage(pageNumber)}
+              onServiceSelect={async service => goToServiceDetails(service)}
             />
           ) : (
             <ServicesListView
@@ -130,6 +144,7 @@ export const ServicesListPage: React.FC = () => {
               loading={loading}
               onRefresh={() => refetch()}
               gotoPage={(pageNumber: number) => setPage(pageNumber)}
+              onServiceSelect={async service => goToServiceDetails(service)}
             />
           )}
         </Layout.Vertical>
