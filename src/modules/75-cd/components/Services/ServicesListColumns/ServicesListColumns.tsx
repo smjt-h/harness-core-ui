@@ -34,7 +34,7 @@ import RbacMenuItem from '@rbac/components/MenuItem/MenuItem'
 import { NewEditServiceModalYaml } from '../ServicesListPage/ServiceModal'
 import css from './ServicesListColumns.module.scss'
 
-interface serviceRow {
+interface ServiceRow {
   row: { original: any }
 }
 interface ServiceItemProps {
@@ -209,7 +209,7 @@ const ServiceMenu = (props: ServiceItemProps): React.ReactElement => {
   )
 }
 
-const ServiceName = ({ row }: serviceRow): React.ReactElement => {
+const ServiceName = ({ row }: ServiceRow): React.ReactElement => {
   const service = row.original
 
   return (
@@ -245,7 +245,7 @@ const ServiceName = ({ row }: serviceRow): React.ReactElement => {
   )
 }
 
-const ServiceExectutionHistory = ({ row }: serviceRow): React.ReactElement => {
+const ServiceExectutionHistory = ({ row }: ServiceRow): React.ReactElement => {
   const service = row.original
   return (
     <Layout.Vertical className={css.sourceDestinationWrapper}>
