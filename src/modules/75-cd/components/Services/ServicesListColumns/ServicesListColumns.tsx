@@ -227,7 +227,7 @@ const ServiceName = ({ row }: ServiceRow): React.ReactElement => {
               wordBreak: 'break-word'
             }}
           >
-            ID: {service?.service?.identifier}
+            Id: {service?.service?.identifier}
           </Text>
 
           {!isEmpty(service?.service?.tags) && (
@@ -245,16 +245,14 @@ const ServiceName = ({ row }: ServiceRow): React.ReactElement => {
   )
 }
 
-const ServiceExectutionHistory = ({ row }: ServiceRow): React.ReactElement => {
+const ServiceDescription = ({ row }: ServiceRow): React.ReactElement => {
   const service = row.original
   return (
     <Layout.Vertical className={css.sourceDestinationWrapper}>
       <div className={css.destination}>
         <Text lineClamp={1} className={css.content}>
-          {service?.service?.lastActivityTime || 'Data missing in the API'}
+          {service?.service?.description}
         </Text>
-
-        <ServiceLastDeploymentStatus data={service} />
       </div>
     </Layout.Vertical>
   )
@@ -288,4 +286,4 @@ const ServiceLastDeploymentStatus = (props: ServiceItemProps): React.ReactElemen
   )
 }
 
-export { ServiceName, ServiceExectutionHistory, ServiceMenu, ServiceLastDeploymentStatus }
+export { ServiceName, ServiceDescription, ServiceMenu, ServiceLastDeploymentStatus }

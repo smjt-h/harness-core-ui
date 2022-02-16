@@ -113,7 +113,7 @@ export const EnvironmentList: React.FC = () => {
   const hasEnvs = Boolean(!loading && envData?.data?.content?.length)
   const emptyEnvs = Boolean(!loading && envData?.data?.content?.length === 0)
 
-  const handleEdit = (id: string) => {
+  const handleEnvEdit = (id: string) => {
     const dataRow = environments?.find(temp => {
       return temp.identifier === id
     })
@@ -122,7 +122,7 @@ export const EnvironmentList: React.FC = () => {
     showModal()
   }
 
-  const handleDeleteEnv = async (id: string) => {
+  const handleEnvDelete = async (id: string) => {
     try {
       await deleteEnvironment(id, { headers: { 'content-type': 'application/json' } })
       showSuccess(`Successfully deleted environment ${id}`)
@@ -133,7 +133,7 @@ export const EnvironmentList: React.FC = () => {
   }
   type CustomColumn<T extends Record<string, any>> = Column<T>
 
-  const columns: CustomColumn<EnvironmentResponseDTO>[] = useMemo(
+  const envColumns: CustomColumn<EnvironmentResponseDTO>[] = useMemo(
     () => [
       {
         Header: getString('environment').toUpperCase(),
@@ -154,12 +154,12 @@ export const EnvironmentList: React.FC = () => {
         width: '10%',
         Cell: ModifiedByCell,
         actions: {
-          onEdit: handleEdit,
-          onDelete: handleDeleteEnv
+          onEdit: handleEnvEdit,
+          onDelete: handleEnvDelete
         }
       }
     ],
-    [getString, handleDeleteEnv]
+    [getString, handleEnvDelete]
   )
   return (
     <>
@@ -207,9 +207,8 @@ export const EnvironmentList: React.FC = () => {
         {hasEnvs && (
           <Container padding={{ top: 'medium', right: 'xlarge', left: 'xlarge' }}>
             <TableV2<EnvironmentResponseDTO>
-              columns={columns}
+              columns={envColumns}
               data={(environments as EnvironmentResponseDTO[]) || []}
-              // onRowClick={({ identifier }) => handleEdit(identifier as string)}
             />
           </Container>
         )}

@@ -9,20 +9,21 @@ import React from 'react'
 import { Card, Text, Color, Container, TagsPopover, Layout } from '@harness/uicore'
 import { defaultTo, isEmpty } from 'lodash-es'
 import type { ServiceResponse } from 'services/cd-ng'
-import { ServiceLastDeploymentStatus, ServiceMenu } from '../ServicesListColumns/ServicesListColumns'
+import { ServiceMenu } from '../ServicesListColumns/ServicesListColumns'
 import css from './ServiceCard.module.scss'
 
 interface ServiceCardProps {
   data: ServiceResponse
   onEdit?: () => Promise<void>
   onRefresh?: () => Promise<void>
+  onServiceSelect?: (data: any) => Promise<void>
 }
 
 const ServiceCard: React.FC<ServiceCardProps> = props => {
-  const { data, onRefresh } = props
+  const { data, onRefresh, onServiceSelect } = props
 
   return (
-    <Card className={css.card}>
+    <Card className={css.card} onClick={() => onServiceSelect && onServiceSelect(data?.service)}>
       <Container className={css.projectInfo}>
         <div className={css.mainTitle}>
           <Text
@@ -51,7 +52,7 @@ const ServiceCard: React.FC<ServiceCardProps> = props => {
               wordBreak: 'break-word'
             }}
           >
-            ID: {data?.service?.identifier}
+            Id: {data?.service?.identifier}
           </Text>
 
           {!isEmpty(data?.service?.tags) && (
@@ -62,30 +63,24 @@ const ServiceCard: React.FC<ServiceCardProps> = props => {
             />
           )}
         </Layout.Horizontal>
-        <div className={css.serviceInfo}>
-          <div className={css.cardInfoRow}>
-            <div className={css.cardInfoLabel}> Last Deployment </div>
-            <div className={css.cardInfoValue}>
-              <Text
-                lineClamp={1}
-                color={Color.BLACK}
-                style={{
-                  fontSize: '12px',
-                  fontWeight: 500
-                }}
-              >
-                Test
-              </Text>
-            </div>
-          </div>
 
-          <div className={css.cardInfoRow}>
-            <div className={css.cardInfoLabel}> Deployment Status </div>
-            <div className={css.cardInfoValue}>
-              <ServiceLastDeploymentStatus data={data} />
+        {data?.service?.description && (
+          <div className={css.serviceInfo}>
+            <div className={css.cardInfoRow}>
+              <div className={css.cardInfoValue}>
+                <Text
+                  lineClamp={3}
+                  color={Color.GREY_500}
+                  style={{
+                    fontSize: '12px'
+                  }}
+                >
+                  Description: {data?.service?.description}
+                </Text>
+              </div>
             </div>
           </div>
-        </div>
+        )}
       </Container>
     </Card>
   )
