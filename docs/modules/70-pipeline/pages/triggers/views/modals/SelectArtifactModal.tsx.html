@@ -23,30 +23,30 @@
         <div class='clearfix'>
             
             <div class='fl pad1y space-right2'>
-                <span class="strong">90.11% </span>
+                <span class="strong">90.63% </span>
                 <span class="quiet">Statements</span>
-                <span class='fraction'>82/91</span>
+                <span class='fraction'>87/96</span>
             </div>
         
             
             <div class='fl pad1y space-right2'>
-                <span class="strong">67.44% </span>
+                <span class="strong">68.22% </span>
                 <span class="quiet">Branches</span>
-                <span class='fraction'>234/347</span>
+                <span class='fraction'>249/365</span>
             </div>
         
             
             <div class='fl pad1y space-right2'>
-                <span class="strong">92.86% </span>
+                <span class="strong">93.33% </span>
                 <span class="quiet">Functions</span>
-                <span class='fraction'>13/14</span>
+                <span class='fraction'>14/15</span>
             </div>
         
             
             <div class='fl pad1y space-right2'>
-                <span class="strong">90% </span>
+                <span class="strong">90.53% </span>
                 <span class="quiet">Lines</span>
-                <span class='fraction'>81/90</span>
+                <span class='fraction'>86/95</span>
             </div>
         
             
@@ -372,7 +372,22 @@
 <a name='L313'></a><a href='#L313'>313</a>
 <a name='L314'></a><a href='#L314'>314</a>
 <a name='L315'></a><a href='#L315'>315</a>
-<a name='L316'></a><a href='#L316'>316</a></td><td class="line-coverage quiet"><span class="cline-any cline-neutral">&nbsp;</span>
+<a name='L316'></a><a href='#L316'>316</a>
+<a name='L317'></a><a href='#L317'>317</a>
+<a name='L318'></a><a href='#L318'>318</a>
+<a name='L319'></a><a href='#L319'>319</a>
+<a name='L320'></a><a href='#L320'>320</a>
+<a name='L321'></a><a href='#L321'>321</a>
+<a name='L322'></a><a href='#L322'>322</a>
+<a name='L323'></a><a href='#L323'>323</a>
+<a name='L324'></a><a href='#L324'>324</a>
+<a name='L325'></a><a href='#L325'>325</a>
+<a name='L326'></a><a href='#L326'>326</a>
+<a name='L327'></a><a href='#L327'>327</a>
+<a name='L328'></a><a href='#L328'>328</a>
+<a name='L329'></a><a href='#L329'>329</a>
+<a name='L330'></a><a href='#L330'>330</a>
+<a name='L331'></a><a href='#L331'>331</a></td><td class="line-coverage quiet"><span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
@@ -389,6 +404,7 @@
 <span class="cline-any cline-yes">7x</span>
 <span class="cline-any cline-yes">7x</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">7x</span>
 <span class="cline-any cline-yes">7x</span>
 <span class="cline-any cline-yes">7x</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
@@ -419,6 +435,11 @@
 <span class="cline-any cline-no">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">7x</span>
+<span class="cline-any cline-yes">17x</span>
+<span class="cline-any cline-yes">17x</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
@@ -595,6 +616,15 @@
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">51x</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
@@ -696,7 +726,7 @@
 &nbsp;
 import React, { useState } from 'react'
 import { Button, ButtonVariation, Layout, MultiTypeInputType } from '@wings-software/uicore'
-import { isEmpty, merge } from 'lodash-es'
+import { defaultTo, isEmpty, merge } from 'lodash-es'
 import cx from 'classnames'
 import { Dialog } from '@blueprintjs/core'
 import { useStrings } from 'framework/strings'
@@ -704,6 +734,7 @@ import { TriggerFormType } from '@pipeline/factories/ArtifactTriggerInputFactory
 import TriggerFactory from '@pipeline/factories/ArtifactTriggerInputFactory'
 import { PipelineVariablesContextProvider } from '@pipeline/components/PipelineVariablesContext/PipelineVariablesContext'
 &nbsp;
+import { StepViewType } from '@pipeline/components/AbstractSteps/Step'
 import ArtifactTableInfo from '../subviews/ArtifactTableInfo'
 import {
   clearRuntimeInputValue,
@@ -734,6 +765,11 @@ const getArtifactId = (isManifest: boolean, selectedArtifactId: string) =&gt; {
 <span class="cstat-no" title="statement not covered" >    return PRIMARY_ARTIFACT</span>
   }
 <span class="cstat-no" title="statement not covered" >  return ''</span>
+}
+&nbsp;
+const getArtifactBasefactory = () =&gt; {
+  const artifactForm = TriggerFactory.getTriggerFormDetails(TriggerFormType.Artifact)
+  return artifactForm.baseFactory
 }
 &nbsp;
 interface SelectArtifactModalPropsInterface {
@@ -901,6 +937,15 @@ const SelectArtifactModal: React.FC&lt;SelectArtifactModalPropsInterface&gt; = (
     ? getString('manifestsText')
     : getString('pipeline.triggers.artifactTriggerConfigPanel.artifact')
 &nbsp;
+  const formComponentProps = isManifest
+    ? { allValues: templateObject }
+    : {
+        artifactSourceBaseFactory: getArtifactBasefactory(),
+        stepViewType: StepViewType.InputSet,
+        type: defaultTo(templateObject<span class="branch-0 cbranch-no" title="branch not covered" >?.a</span>rtifacts<span class="branch-0 cbranch-no" title="branch not covered" >?.p</span>rimary?.type, ''),
+        artifacts: templateObject<span class="branch-0 cbranch-no" title="branch not covered" >?.a</span>rtifacts
+      }
+&nbsp;
   return (
     &lt;Dialog
       className={cx(css.selectArtifactModal, 'padded-dialog', modalState !== ModalState.SELECT &amp;&amp; css.runtimeInputs)}
@@ -954,13 +999,13 @@ const SelectArtifactModal: React.FC&lt;SelectArtifactModalPropsInterface&gt; = (
             &lt;FormComponent
               template={templateObject}
               path={getPathString(runtimeData, selectedStageId)}
-              allValues={templateObject}
               initialValues={runtimeData}
               allowableTypes={[MultiTypeInputType.FIXED, MultiTypeInputType.EXPRESSION]}
               readonly={false}
               stageIdentifier={selectedStageId}
               formik={formikProps}
               fromTrigger={true}
+              {...formComponentProps}
             /&gt;
           &lt;/PipelineVariablesContextProvider&gt;
           &lt;Layout.Horizontal spacing="medium" className={css.footer}&gt;
@@ -1009,7 +1054,7 @@ export default SelectArtifactModal
             <div class='footer quiet pad2 space-top1 center small'>
                 Code coverage generated by
                 <a href="https://istanbul.js.org/" target="_blank">istanbul</a>
-                at Wed Feb 16 2022 11:36:34 GMT+0000 (Greenwich Mean Time)
+                at Wed Feb 16 2022 16:46:58 GMT+0000 (Greenwich Mean Time)
             </div>
         </div>
         <script src="../../../../../../prettify.js"></script>
