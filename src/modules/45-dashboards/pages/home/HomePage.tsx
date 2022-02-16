@@ -32,7 +32,8 @@ import type { Breadcrumb } from '@harness/uicore'
 
 import { Select } from '@blueprintjs/select'
 
-import { Classes, Menu, MenuItem, Dialog } from '@blueprintjs/core'
+import RbacMenuItem from '@rbac/components/MenuItem/MenuItem'
+import { Classes, Menu, Dialog } from '@blueprintjs/core'
 import * as Yup from 'yup'
 import { useParams, useHistory } from 'react-router-dom'
 import { useGet, useMutate } from 'restful-react'
@@ -306,7 +307,16 @@ const RenderMenu: Renderer<CellProps<DashboardInterface>> = ({ row }) => {
     <CardBody.Menu
       menuContent={
         <Menu>
-          <MenuItem text="clone" onClick={() => clone(data.id)} />
+          <RbacMenuItem
+            text="clone"
+            onClick={() => clone(data.id)}
+            permission={{
+              permission: PermissionIdentifier.EDIT_DASHBOARD,
+              resource: {
+                resourceType: ResourceType.DASHBOARDS
+              }
+            }}
+          />
         </Menu>
       }
       menuPopoverProps={{
@@ -677,7 +687,16 @@ const HomePage: React.FC = () => {
                       <CardBody.Menu
                         menuContent={
                           <Menu>
-                            <MenuItem text="clone" onClick={() => clone(dashboard.id)} />
+                            <RbacMenuItem
+                              text="clone"
+                              onClick={() => clone(dashboard.id)}
+                              permission={{
+                                permission: PermissionIdentifier.EDIT_DASHBOARD,
+                                resource: {
+                                  resourceType: ResourceType.DASHBOARDS
+                                }
+                              }}
+                            />
                           </Menu>
                         }
                         menuPopoverProps={{
