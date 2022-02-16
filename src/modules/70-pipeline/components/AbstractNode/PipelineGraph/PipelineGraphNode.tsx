@@ -1,6 +1,7 @@
 import React from 'react'
 import classNames from 'classnames'
 import { defaultTo } from 'lodash-es'
+import { Icon, Color } from '@harness/uicore'
 import type { StageElementWrapperConfig } from 'services/cd-ng'
 import { Node, NodeType } from '../Node'
 import css from './PipelineGraph.module.scss'
@@ -54,13 +55,15 @@ interface PipelineGraphNode {
   getNode: (type?: string | undefined) => Node | undefined
   selectedNode: string
   setSelectedNode: (nodeId: string) => void
+  isParallelNode?: boolean
 }
 export const PipelineGraphNode = ({
   className,
   stage,
   getNode,
   setSelectedNode,
-  selectedNode
+  selectedNode,
+  isParallelNode
 }: PipelineGraphNode): React.ReactElement => {
   const hasParallelStages = Array.isArray(stage)
   let firstStage, restStages
@@ -76,6 +79,11 @@ export const PipelineGraphNode = ({
         setSelectedNode,
         isSelected: selectedNode === stageDetails?.stage?.identifier
       })}
+      {!isParallelNode && (
+        <div className={css.addNodeIcon}>
+          <Icon name="plus" color={Color.WHITE} />
+        </div>
+      )}
       {/* <div className={classNames(css.graphNode, className)}>{stageDetails?.stage?.name}</div> */}
       <>
         {restStages?.map(currentStage => (
@@ -86,6 +94,7 @@ export const PipelineGraphNode = ({
             stage={currentStage}
             selectedNode={selectedNode}
             setSelectedNode={setSelectedNode}
+            isParallelNode={true}
           />
         ))}
       </>

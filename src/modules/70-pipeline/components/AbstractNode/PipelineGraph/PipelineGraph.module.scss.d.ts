@@ -7,6 +7,7 @@
  **/
 // this is an auto-generated file, do not update this manually
 declare const styles: {
+  readonly addNodeIcon: string
   readonly common: string
   readonly graphMain: string
   readonly graphNode: string
