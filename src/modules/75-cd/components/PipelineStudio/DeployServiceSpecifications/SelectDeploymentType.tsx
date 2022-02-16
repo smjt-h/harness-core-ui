@@ -21,7 +21,8 @@ import {
   Layout,
   Popover,
   Text,
-  ThumbnailSelect
+  Thumbnail,
+  Utils
 } from '@wings-software/uicore'
 import { useModalHook } from '@harness/use-modal'
 import cx from 'classnames'
@@ -50,6 +51,43 @@ interface SelectServiceDeploymentTypeProps {
   handleDeploymentTypeChange: (deploymentType: string) => void
 }
 
+interface CardListProps {
+  items: DeploymentTypeItem[]
+  isReadonly: boolean
+  selectedValue: string
+  onChange: (deploymentType: string) => void
+  allowDisabledItemClick?: boolean
+}
+
+const CardList = ({ items, isReadonly, selectedValue, onChange, allowDisabledItemClick }: CardListProps) => {
+  const handleChange = (e: React.ChangeEvent<HTMLInputElement>): void => {
+    const { value } = e.target
+    onChange(value)
+  }
+  return (
+    <Layout.Horizontal spacing={'medium'} className={stageCss.cardListContainer}>
+      {items.map(item => {
+        const itemContent = (
+          <Thumbnail
+            key={item.value}
+            label={item.label}
+            value={item.value}
+            icon={item.icon}
+            disabled={item.disabled || isReadonly}
+            selected={item.value === selectedValue}
+            onClick={handleChange}
+          />
+        )
+        return (
+          <Utils.WrapOptionalTooltip key={item.value} tooltipProps={item.tooltipProps} tooltip={item.tooltip}>
+            {allowDisabledItemClick ? <div onClick={() => onChange(item.value)}>{itemContent}</div> : itemContent}
+          </Utils.WrapOptionalTooltip>
+        )
+      })}
+    </Layout.Horizontal>
+  )
+}
+
 export default function SelectDeploymentType(props: SelectServiceDeploymentTypeProps): JSX.Element {
   const { selectedDeploymentType, isReadonly } = props
   const { getString } = useStrings()
@@ -60,6 +98,7 @@ export default function SelectDeploymentType(props: SelectServiceDeploymentTypeP
   const { accountId } = useParams<{
     accountId: string
   }>()
+  const [selectedDeploymentTypeInCG, setSelectedDeploymentTypeInCG] = React.useState('')
 
   // Supported in NG
   const ngSupportedDeploymentTypes: DeploymentTypeItem[] = React.useMemo(
@@ -139,12 +178,12 @@ export default function SelectDeploymentType(props: SelectServiceDeploymentTypeP
         }}
       >
         <CDFirstGenTrial
-          selectedDeploymentType={cgDeploymentTypes.find(type => type.value === selectedDeploymentType)}
+          selectedDeploymentType={cgDeploymentTypes.find(type => type.value === selectedDeploymentTypeInCG)}
           accountId={accountId}
         />
       </Dialog>
     )
-  }, [selectedDeploymentType])
+  }, [selectedDeploymentTypeInCG])
 
   React.useEffect(() => {
     if (isCDCommunity(licenseInformation)) {
@@ -167,12 +206,12 @@ export default function SelectDeploymentType(props: SelectServiceDeploymentTypeP
         ? cgSupportedDeploymentTypes.filter(deploymentType => deploymentType.value !== 'NativeHelm')
         : cgSupportedDeploymentTypes
       cgTypes.forEach(deploymentType => {
-        deploymentType['disabled'] = false
+        deploymentType['disabled'] = true
         deploymentType['tooltip'] = (
           <div
             className={cx(deployServiceCsss.tooltipContainer, deployServiceCsss.cursorPointer)}
             onClick={() => {
-              props.handleDeploymentTypeChange(deploymentType.value)
+              setSelectedDeploymentTypeInCG(deploymentType.value)
               showCurrentGenSwitcherModal()
             }}
           >
@@ -202,7 +241,10 @@ export default function SelectDeploymentType(props: SelectServiceDeploymentTypeP
             </div>
             <div
               className={cx(deployServiceCsss.cdGenerationSwitcher, deployServiceCsss.cursorPointer)}
-              onClick={showCurrentGenSwitcherModal}
+              onClick={() => {
+                setSelectedDeploymentTypeInCG('')
+                showCurrentGenSwitcherModal()
+              }}
             >
               <Icon className={'infoCard.iconClassName'} name="command-approval" size={24} />
               {getString('common.purpose.cd.1stGen.title')}
@@ -229,13 +271,11 @@ export default function SelectDeploymentType(props: SelectServiceDeploymentTypeP
             <div className={cx(stageCss.tabSubHeading, 'ng-tooltip-native')}>
               {getString('common.currentlyAvailable')}
             </div>
-            <ThumbnailSelect
-              className={stageCss.thumbnailSelect}
-              name={'deploymentType'}
+            <CardList
               items={ngDeploymentTypes}
               isReadonly={isReadonly}
               onChange={props.handleDeploymentTypeChange}
-              expandAllByDefault={true}
+              selectedValue={selectedDeploymentType}
             />
           </Layout.Vertical>
 
@@ -250,7 +290,10 @@ export default function SelectDeploymentType(props: SelectServiceDeploymentTypeP
                 <a
                   target="_blank"
                   rel="noreferrer"
-                  onClick={showCurrentGenSwitcherModal}
+                  onClick={() => {
+                    setSelectedDeploymentTypeInCG('')
+                    showCurrentGenSwitcherModal()
+                  }}
                   style={{ paddingLeft: '4px' }}
                 >
                   {getString('common.firstGeneration')}
@@ -268,28 +311,26 @@ export default function SelectDeploymentType(props: SelectServiceDeploymentTypeP
                 </span>
               </Popover>
             </Layout.Horizontal>
-            <ThumbnailSelect
-              className={stageCss.thumbnailSelect}
-              name={'deploymentType'}
+            <CardList
               items={cgDeploymentTypes}
               isReadonly={isReadonly}
-              onChange={deploymentType => {
-                props.handleDeploymentTypeChange(deploymentType)
+              onChange={(deploymentType: string) => {
+                setSelectedDeploymentTypeInCG(deploymentType)
                 showCurrentGenSwitcherModal()
               }}
-              expandAllByDefault={true}
+              selectedValue={selectedDeploymentType}
+              allowDisabledItemClick={true}
             />
           </Layout.Vertical>
         </Layout.Horizontal>
       )
     }
     return (
-      <ThumbnailSelect
-        className={stageCss.thumbnailSelect}
-        name={'deploymentType'}
+      <CardList
         items={[...ngSupportedDeploymentTypes, ...cgDeploymentTypes]}
         isReadonly={isReadonly}
         onChange={props.handleDeploymentTypeChange}
+        selectedValue={selectedDeploymentType}
       />
     )
   }, [

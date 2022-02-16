@@ -8,6 +8,7 @@
 // this is an auto-generated file, do not update this manually
 declare const styles: {
   readonly accordion: string
+  readonly cardListContainer: string
   readonly contentSection: string
   readonly info: string
   readonly sectionCard: string
