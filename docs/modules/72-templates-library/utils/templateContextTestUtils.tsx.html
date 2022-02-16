@@ -23,30 +23,30 @@
         <div class='clearfix'>
             
             <div class='fl pad1y space-right2'>
-                <span class="strong">92.86% </span>
+                <span class="strong">100% </span>
                 <span class="quiet">Statements</span>
-                <span class='fraction'>13/14</span>
+                <span class='fraction'>14/14</span>
             </div>
         
             
             <div class='fl pad1y space-right2'>
                 <span class="strong">100% </span>
                 <span class="quiet">Branches</span>
-                <span class='fraction'>4/4</span>
+                <span class='fraction'>13/13</span>
             </div>
         
             
             <div class='fl pad1y space-right2'>
-                <span class="strong">66.67% </span>
+                <span class="strong">100% </span>
                 <span class="quiet">Functions</span>
-                <span class='fraction'>2/3</span>
+                <span class='fraction'>3/3</span>
             </div>
         
             
             <div class='fl pad1y space-right2'>
-                <span class="strong">92.31% </span>
+                <span class="strong">100% </span>
                 <span class="quiet">Lines</span>
-                <span class='fraction'>12/13</span>
+                <span class='fraction'>13/13</span>
             </div>
         
             
@@ -125,7 +125,9 @@
 <a name='L66'></a><a href='#L66'>66</a>
 <a name='L67'></a><a href='#L67'>67</a>
 <a name='L68'></a><a href='#L68'>68</a>
-<a name='L69'></a><a href='#L69'>69</a></td><td class="line-coverage quiet"><span class="cline-any cline-neutral">&nbsp;</span>
+<a name='L69'></a><a href='#L69'>69</a>
+<a name='L70'></a><a href='#L70'>70</a>
+<a name='L71'></a><a href='#L71'>71</a></td><td class="line-coverage quiet"><span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
@@ -150,10 +152,11 @@
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-yes">1x</span>
-<span class="cline-any cline-yes">5x</span>
-<span class="cline-any cline-yes">5x</span>
-<span class="cline-any cline-yes">5x</span>
+<span class="cline-any cline-yes">12x</span>
+<span class="cline-any cline-yes">12x</span>
+<span class="cline-any cline-yes">12x</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
@@ -179,8 +182,9 @@
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-yes">2x</span>
-<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-yes">1x</span>
+<span class="cline-any cline-yes">1x</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
@@ -216,10 +220,11 @@ import templateContextProviderProps from './__tests__/mocks/templateContextProvi
 &nbsp;
 export interface TemplateContextWrapperProps extends TestWrapperProps {
   templateContextValues?: Partial&lt;TemplateContextInterface&gt;
+  isGitSyncEnabled?: boolean
 }
 &nbsp;
 export const TemplateContextTestWrapper: React.FC&lt;TemplateContextWrapperProps&gt; = props =&gt; {
-  const { defaultAppStoreValues, templateContextValues } = props
+  const { defaultAppStoreValues, templateContextValues, isGitSyncEnabled = true } = props
   const [view, setView] = React.useState&lt;VisualYamlSelectedView&gt;(VisualYamlSelectedView.VISUAL)
   return (
     &lt;TestWrapper
@@ -231,7 +236,7 @@ export const TemplateContextTestWrapper: React.FC&lt;TemplateContextWrapperProps
           name: 'dummy',
           modules: ['CD']
         },
-        isGitSyncEnabled: true,
+        isGitSyncEnabled: isGitSyncEnabled,
         connectivityMode: 'DELEGATE',
         ...defaultAppStoreValues
       }}
@@ -247,8 +252,9 @@ export const TemplateContextTestWrapper: React.FC&lt;TemplateContextWrapperProps
               ...templateContextProviderProps.state,
               ...templateContextValues?.state,
               yamlHandler: {
-                getLatestYaml: () =&gt; '',
-                getYAMLValidationErrorMap: <span class="fstat-no" title="function not covered" >() =</span>&gt; <span class="cstat-no" title="statement not covered" >new Map()</span>
+                getLatestYaml: () =&gt; 'dummy\n',
+                getYAMLValidationErrorMap: () =&gt; new Map(),
+                ...templateContextValues?.state?.yamlHandler
               }
             }
           } as TemplateContextInterface
@@ -268,7 +274,7 @@ export const TemplateContextTestWrapper: React.FC&lt;TemplateContextWrapperProps
             <div class='footer quiet pad2 space-top1 center small'>
                 Code coverage generated by
                 <a href="https://istanbul.js.org/" target="_blank">istanbul</a>
-                at Tue Feb 15 2022 09:24:48 GMT+0000 (Greenwich Mean Time)
+                at Wed Feb 16 2022 08:46:09 GMT+0000 (Greenwich Mean Time)
             </div>
         </div>
         <script src="../../../prettify.js"></script>

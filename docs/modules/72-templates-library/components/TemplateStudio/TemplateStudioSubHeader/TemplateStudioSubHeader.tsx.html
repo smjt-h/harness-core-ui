@@ -23,16 +23,16 @@
         <div class='clearfix'>
             
             <div class='fl pad1y space-right2'>
-                <span class="strong">91.67% </span>
+                <span class="strong">95.83% </span>
                 <span class="quiet">Statements</span>
-                <span class='fraction'>22/24</span>
+                <span class='fraction'>23/24</span>
             </div>
         
             
             <div class='fl pad1y space-right2'>
-                <span class="strong">66.67% </span>
+                <span class="strong">93.33% </span>
                 <span class="quiet">Branches</span>
-                <span class='fraction'>10/15</span>
+                <span class='fraction'>14/15</span>
             </div>
         
             
@@ -44,9 +44,9 @@
         
             
             <div class='fl pad1y space-right2'>
-                <span class="strong">91.3% </span>
+                <span class="strong">95.65% </span>
                 <span class="quiet">Lines</span>
-                <span class='fraction'>21/23</span>
+                <span class='fraction'>22/23</span>
             </div>
         
             
@@ -218,22 +218,22 @@
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">11x</span>
+<span class="cline-any cline-yes">11x</span>
+<span class="cline-any cline-yes">11x</span>
+<span class="cline-any cline-yes">11x</span>
+<span class="cline-any cline-yes">11x</span>
+<span class="cline-any cline-yes">11x</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">11x</span>
 <span class="cline-any cline-yes">5x</span>
-<span class="cline-any cline-yes">5x</span>
-<span class="cline-any cline-yes">5x</span>
-<span class="cline-any cline-yes">5x</span>
-<span class="cline-any cline-yes">5x</span>
-<span class="cline-any cline-yes">5x</span>
+<span class="cline-any cline-yes">4x</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-yes">5x</span>
-<span class="cline-any cline-yes">2x</span>
-<span class="cline-any cline-yes">2x</span>
-<span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-yes">1x</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-yes">5x</span>
+<span class="cline-any cline-yes">11x</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
@@ -248,7 +248,7 @@
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-yes">2x</span>
+<span class="cline-any cline-yes">4x</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
@@ -344,10 +344,10 @@ export const TemplateStudioSubHeader: (props: TemplateStudioSubHeaderProps) =&gt
   const isYaml = view === SelectedView.YAML
 &nbsp;
   React.useEffect(() =&gt; {
-    <span class="missing-if-branch" title="else path not taken" >E</span>if (entityValidityDetails.valid === false) {
+    if (entityValidityDetails.valid === false) {
       setDisableVisualView(true)
     } else {
-<span class="cstat-no" title="statement not covered" >      setDisableVisualView(false)</span>
+      setDisableVisualView(false)
     }
   }, [entityValidityDetails.valid])
 &nbsp;
@@ -364,7 +364,7 @@ export const TemplateStudioSubHeader: (props: TemplateStudioSubHeaderProps) =&gt
         &lt;Container&gt;
           &lt;VisualYamlToggle
             className={css.visualYamlToggle}
-            selectedView={isYaml || disableVisualView ? SelectedView.YAML : <span class="branch-1 cbranch-no" title="branch not covered" >SelectedView.VISUAL}</span>
+            selectedView={isYaml || disableVisualView ? SelectedView.YAML : SelectedView.VISUAL}
             onChange={nextMode =&gt; {
               onViewChange(nextMode)
             }}
@@ -383,8 +383,8 @@ export const TemplateStudioSubHeader: (props: TemplateStudioSubHeaderProps) =&gt
                 &lt;/Layout.Horizontal&gt;
               &lt;/Container&gt;
             )}
-            {isUpdated &amp;&amp; <span class="branch-1 cbranch-no" title="branch not covered" >!isReadonly </span>&amp;&amp; (
-<span class="branch-2 cbranch-no" title="branch not covered" >              &lt;Text color={Color.ORANGE_600} font={{ size: 'small' }} className={css.tagRender}&gt;</span>
+            {isUpdated &amp;&amp; !isReadonly &amp;&amp; (
+              &lt;Text color={Color.ORANGE_600} font={{ size: 'small' }} className={css.tagRender}&gt;
                 {getString('unsavedChanges')}
               &lt;/Text&gt;
             )}
@@ -418,7 +418,7 @@ export const TemplateStudioSubHeader: (props: TemplateStudioSubHeaderProps) =&gt
             <div class='footer quiet pad2 space-top1 center small'>
                 Code coverage generated by
                 <a href="https://istanbul.js.org/" target="_blank">istanbul</a>
-                at Tue Feb 15 2022 09:24:48 GMT+0000 (Greenwich Mean Time)
+                at Wed Feb 16 2022 08:46:09 GMT+0000 (Greenwich Mean Time)
             </div>
         </div>
         <script src="../../../../../prettify.js"></script>
