@@ -31,6 +31,12 @@ import { LICENSE_STATE_VALUES } from 'framework/LicenseStore/licenseStoreUtil'
 import { FeatureFlag } from '@common/featureFlags'
 import type { ModuleLicenseType } from '@common/constants/SubscriptionTypes'
 import css from './CDPipelineStudio.module.scss'
+import { DiagramFactory, DiagramNodes, NodeType } from '@pipeline/components/AbstractNode/DiagramFactory'
+
+const diagram = new DiagramFactory('graph')
+
+diagram.registerNode('Deployment', DiagramNodes[NodeType.Default])
+export const CDPipelineStudioNew = diagram.render()
 
 const CDPipelineStudio: React.FC = (): JSX.Element => {
   const { accountId, projectIdentifier, orgIdentifier, pipelineIdentifier, module } =
