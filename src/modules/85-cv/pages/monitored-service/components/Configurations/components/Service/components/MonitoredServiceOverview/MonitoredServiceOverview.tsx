@@ -130,10 +130,12 @@ export default function MonitoredServiceOverview(props: MonitoredServiceOverview
       ) : null}
       <NameIdDescriptionTags
         formikProps={formikProps}
-        inputGroupProps={{ disabled: true }}
+        inputGroupProps={{
+          disabled: formikProps.values?.type === ChangeSourceCategoryName.INFRASTRUCTURE ? false : true
+        }}
         className={css.nameTagsDescription}
         identifierProps={{
-          isIdentifierEditable: false,
+          isIdentifierEditable: formikProps.values?.type === ChangeSourceCategoryName.INFRASTRUCTURE ? true : false,
           inputLabel: getString('cv.monitoredServices.monitoredServiceName')
         }}
       />
