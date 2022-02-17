@@ -382,7 +382,7 @@ subscriptions:
     expiry: Trial Expiry Date
     subscribe: Subscribe
   ccm:
-    cloudSpend: '{{ spendLimit }} Cloud Spend'
+    cloudSpend: '${{ spendLimit }} Cloud Spend'
   cd:
     services: '{{ workloads }} Services'
     serviceInstances: '{{ workloads }} Service Instances'

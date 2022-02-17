@@ -28,7 +28,7 @@ const PlansPanel: React.FC<PlansPanelProps> = ({ plans, module }) => {
   if (plans) {
     return (
       <Layout.Vertical>
-        <Layout.Horizontal flex={{ justifyContent: 'flex-end' }}>
+        <Layout.Horizontal flex={{ justifyContent: 'flex-end', alignItems: 'baseline' }}>
           <Text padding={{ right: 'medium', top: 'small' }}>{getString('common.billed')}</Text>
           <Text
             color={Color.PRIMARY_6}
