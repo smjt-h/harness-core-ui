@@ -79,7 +79,8 @@ export function useGitDiffEditorDialog<T>(props: UseGitDiffEditorDialogProps<T>)
     queryParams: {
       ...commonParams,
       yamlGitConfigIdentifier: '',
-      filePath: ''
+      filePath: '',
+      branch: ''
     },
     lazy: true
   })
@@ -164,12 +165,13 @@ export function useGitDiffEditorDialog<T>(props: UseGitDiffEditorDialogProps<T>)
   }, [showGitDiff, modalProps, remoteVersion])
   return {
     openGitDiffDialog: (_entity: T, _gitDetails?: GitData, _modalProps?: IDialogProps) => {
-      const { repoIdentifier = '', filePath = '', rootFolder = '' } = _gitDetails || {}
+      const { repoIdentifier = '', filePath = '', rootFolder = '', branch = '' } = _gitDetails || {}
       fetchRemoteFileContent({
         queryParams: {
           ...commonParams,
           yamlGitConfigIdentifier: repoIdentifier,
           filePath: rootFolder?.concat(filePath) || '',
+          branch,
           commitId: _gitDetails?.resolvedConflictCommitId
         }
       })
