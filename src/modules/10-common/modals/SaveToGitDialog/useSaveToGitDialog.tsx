@@ -268,7 +268,7 @@ export function useSaveToGitDialog<T = Record<string, string>>(
         ) {
           openGitDiffDialog(payloadData, {
             ...data,
-            resolvedConflictCommitId: defaultTo(e?.metadata?.conflictCommitId, '')
+            resolvedConflictCommitId: defaultTo(e?.data?.metadata?.conflictCommitId, '')
           })
         }
       })
