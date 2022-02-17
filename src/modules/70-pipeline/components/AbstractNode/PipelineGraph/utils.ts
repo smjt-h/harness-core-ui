@@ -137,8 +137,14 @@ const getParallelNodeLinks = (
   resultArr: string[] = []
 ): void => {
   const [firstStage, ...restStages] = stages
+  const previousStage = prevStage?.parallel ? prevStage.parallel?.[0] : prevStage
   resultArr.push(
-    getFinalSVGArrowPath('tree-container', prevStage.stage?.identifier as string, firstStage.stage?.identifier, false)
+    getFinalSVGArrowPath(
+      'tree-container',
+      previousStage.stage?.identifier as string,
+      firstStage.stage?.identifier,
+      false
+    )
   )
   restStages?.forEach(stage => {
     resultArr.push(

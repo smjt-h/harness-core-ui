@@ -3,7 +3,7 @@ import React, { useEffect, useLayoutEffect, useState, useRef } from 'react'
 import { cloneDeep } from 'lodash-es'
 import type { PipelineInfoConfig, StageElementWrapperConfig, StageElementConfig } from 'services/cd-ng'
 import { stageTypeToIconMap } from '@pipeline/components/PipelineInputSetForm/PipelineInputSetForm'
-import { Node, NodeType } from '../Node'
+import { NodeType } from '../Node'
 import {
   getFinalSVGArrowPath,
   getScaleToFitValue,
@@ -97,19 +97,20 @@ const PipelineGraph = ({ pipeline, getNode, dropLinkEvent }: PipelineGraphProps)
     }
   }, [state])
 
+  console.log('state', state)
+
   const setSVGLinks = (): void => {
     const SVGLinks = getSVGLinksFromPipeline(pipeline.stages)
-    const lastNode = state?.[state?.length - 1] // pipeline.stages?.[pipeline?.stages?.length - 1]
-    // const stageData = lastNode?.parallel ? lastNode.parallel[0].stage : lastNode?.stage
+    const lastNode = pipeline.stages?.[pipeline?.stages?.length - 1]
+    const stageData = lastNode?.parallel ? lastNode.parallel[0].stage : lastNode?.stage
     return setSvgPath([
       ...SVGLinks,
       getFinalSVGArrowPath(
         'tree-container',
         NodeType.StartNode as string,
-        state?.[0]?.identifier
-        // pipeline?.stages?.[0].stage?.identifier as string
+        pipeline?.stages?.[0].stage?.identifier as string
       ),
-      getFinalSVGArrowPath('tree-container', lastNode?.identifier as string, NodeType.CreateNode as string),
+      getFinalSVGArrowPath('tree-container', stageData?.identifier as string, NodeType.CreateNode as string),
       getFinalSVGArrowPath('tree-container', NodeType.CreateNode as string, NodeType.EndNode as string)
     ])
   }
@@ -122,9 +123,10 @@ const PipelineGraph = ({ pipeline, getNode, dropLinkEvent }: PipelineGraphProps)
   const updateSelectedNode = (nodeId: string): void => {
     setSelectedNode(nodeId)
   }
-  function handleScaleToFit(): void {
+  const handleScaleToFit = (): void => {
     setGraphScale(getScaleToFitValue(canvasRef.current as unknown as HTMLElement))
   }
+
   return (
     <div id="overlay" className={css.overlay}>
       <>

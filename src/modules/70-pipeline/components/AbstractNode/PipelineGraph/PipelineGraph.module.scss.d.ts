@@ -12,6 +12,8 @@ declare const styles: {
   readonly graphNode: string
   readonly graphTree: string
   readonly main: string
+  readonly nodeLeftPadding: string
+  readonly nodeRightPadding: string
   readonly overlay: string
   readonly parallel: string
   readonly svgArrow: string

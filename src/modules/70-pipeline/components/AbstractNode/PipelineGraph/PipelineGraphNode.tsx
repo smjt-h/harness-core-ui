@@ -30,7 +30,7 @@ export const PipelineGraphRecursive = ({
           {/* {getNode(NodeType.StartNode)?.render?.()} */}
         </div>
       </div>
-      {stages?.map(stage => {
+      {stages?.map((stage, index) => {
         return (
           <PipelineGraphNode
             dropLinkEvent={dropLinkEvent}
@@ -39,6 +39,8 @@ export const PipelineGraphRecursive = ({
             key={stage?.identifier}
             getNode={getNode}
             setSelectedNode={setSelectedNode}
+            isNextNodeParallel={!!stages?.[index + 1]?.children?.length}
+            isPrevNodeParallel={!!stages?.[index - 1]?.children?.length}
           />
         )
       })}
@@ -60,6 +62,8 @@ interface PipelineGraphNode {
   setSelectedNode: (nodeId: string) => void
   isParallelNode?: boolean
   dropLinkEvent: (event: any) => void
+  isNextNodeParallel?: boolean
+  isPrevNodeParallel?: boolean
 }
 
 export const PipelineGraphNode = ({
@@ -69,11 +73,15 @@ export const PipelineGraphNode = ({
   setSelectedNode,
   selectedNode,
   isParallelNode,
-  dropLinkEvent
+  dropLinkEvent,
+  isNextNodeParallel,
+  isPrevNodeParallel
 }: PipelineGraphNode): React.ReactElement => {
-  const NodeComponent: React.FC<any> | undefined = getNode(stage?.type)
+  const NodeComponent: React.FC<any> | undefined = getNode(stage?.type) || getNode(NodeType.Default)
   return (
-    <div>
+    <div
+      className={classNames({ [css.nodeRightPadding]: isNextNodeParallel, [css.nodeLeftPadding]: isPrevNodeParallel })}
+    >
       {NodeComponent && (
         <NodeComponent
           {...stage}
