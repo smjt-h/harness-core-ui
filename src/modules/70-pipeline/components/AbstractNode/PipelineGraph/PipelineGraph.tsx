@@ -3,7 +3,7 @@ import React, { useEffect, useLayoutEffect, useState, useRef } from 'react'
 import { cloneDeep } from 'lodash-es'
 import type { PipelineInfoConfig, StageElementWrapperConfig } from 'services/cd-ng'
 import { stageTypeToIconMap } from '@pipeline/components/PipelineInputSetForm/PipelineInputSetForm'
-import { Node, NodeType } from '../Node'
+import { NodeType } from '../Node'
 import {
   getFinalSVGArrowPath,
   getScaleToFitValue,
@@ -92,9 +92,10 @@ const PipelineGraph = ({ pipeline, getNode }: PipelineGraphProps): React.ReactEl
   const updateSelectedNode = (nodeId: string): void => {
     setSelectedNode(nodeId)
   }
-  function handleScaleToFit(): void {
+  const handleScaleToFit = (): void => {
     setGraphScale(getScaleToFitValue(canvasRef.current as unknown as HTMLElement))
   }
+
   return (
     <div id="overlay" className={css.overlay}>
       <>

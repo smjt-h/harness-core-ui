@@ -3,7 +3,7 @@ import classNames from 'classnames'
 import { defaultTo } from 'lodash-es'
 import { Icon, Color } from '@harness/uicore'
 import type { StageElementWrapperConfig } from 'services/cd-ng'
-import { Node, NodeType } from '../Node'
+import { NodeType } from '../Node'
 import css from './PipelineGraph.module.scss'
 
 export const PipelineGraphRecursive = ({
@@ -36,6 +36,8 @@ export const PipelineGraphRecursive = ({
             key={stage.stage ? stage.stage?.identifier : index}
             getNode={getNode}
             setSelectedNode={setSelectedNode}
+            isNextNodeParallel={!!stages?.[index + 1]?.parallel}
+            isPrevNodeParallel={!!stages?.[index - 1]?.parallel}
           />
         )
       })}
@@ -56,6 +58,8 @@ interface PipelineGraphNode {
   selectedNode: string
   setSelectedNode: (nodeId: string) => void
   isParallelNode?: boolean
+  isNextNodeParallel?: boolean
+  isPrevNodeParallel?: boolean
 }
 export const PipelineGraphNode = ({
   className,
@@ -63,7 +67,9 @@ export const PipelineGraphNode = ({
   getNode,
   setSelectedNode,
   selectedNode,
-  isParallelNode
+  isParallelNode,
+  isNextNodeParallel,
+  isPrevNodeParallel
 }: PipelineGraphNode): React.ReactElement => {
   const hasParallelStages = Array.isArray(stage)
   let firstStage, restStages
@@ -71,9 +77,11 @@ export const PipelineGraphNode = ({
     ;[firstStage, ...restStages] = stage
   }
   const stageDetails = defaultTo(firstStage, stage) as StageElementWrapperConfig
-  const NodeComponent: React.FC<any> | undefined = getNode(stageDetails?.stage?.type)
+  const NodeComponent: React.FC<any> | undefined = getNode(stageDetails?.stage?.type) || getNode(NodeType.Default)
   return (
-    <div>
+    <div
+      className={classNames({ [css.nodeRightPadding]: isNextNodeParallel, [css.nodeLeftPadding]: isPrevNodeParallel })}
+    >
       {NodeComponent && (
         <NodeComponent
           {...stageDetails?.stage}
@@ -81,7 +89,7 @@ export const PipelineGraphNode = ({
           setSelectedNode={setSelectedNode}
           isSelected={selectedNode === stageDetails?.stage?.identifier}
         />
-      )}{' '}
+      )}
       {!isParallelNode && (
         <div className={css.addNodeIcon}>
           <Icon name="plus" color={Color.WHITE} />
