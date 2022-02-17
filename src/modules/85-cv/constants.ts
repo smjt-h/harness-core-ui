@@ -24,3 +24,4 @@ export enum HealthSourcesType {
 }
 
 export const appId = '_ia5NKUCSoytYrZJMM15mQ' //t0-jbpLoR7S2BTsNfsk4Iw'
+export const ADD_NEW_VALUE = '@@add_new'

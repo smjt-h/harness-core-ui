@@ -13,6 +13,7 @@ import { useHarnessServicetModal } from '@common/modals/HarnessServiceModal/Harn
 import type { ProjectPathProps } from '@common/interfaces/RouteInterfaces'
 import type { ServiceResponseDTO, ServiceRequestDTO } from 'services/cd-ng'
 import { useStrings } from 'framework/strings'
+import { ADD_NEW_VALUE } from '@cv/constants'
 
 export interface ServiceSelectOrCreateProps {
   item?: SelectOption
@@ -28,9 +29,6 @@ export interface ServiceSelectOrCreateProps {
   name?: string
   customLoading?: boolean
 }
-
-const ADD_NEW_VALUE = '@@add_new'
-
 export function generateOptions(response?: ServiceResponseDTO[]): SelectOption[] {
   return response
     ? (response

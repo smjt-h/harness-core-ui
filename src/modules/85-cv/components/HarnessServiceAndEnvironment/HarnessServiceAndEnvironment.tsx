@@ -27,6 +27,10 @@ import {
   EnvironmentSelectOrCreate,
   EnvironmentSelectOrCreateProps
 } from './components/EnvironmentSelectOrCreate/EnvironmentSelectOrCreate'
+import {
+  EnvironmentMultiSelectOrCreate,
+  EnvironmentMultiSelectOrCreateProps
+} from './components/EnvironmentMultiSelectAndEnv/EnvironmentMultiSelectAndEnv'
 import css from './HarnessServiceAndEnvironment.module.scss'
 
 export function useGetHarnessServices() {
@@ -138,23 +142,38 @@ export function HarnessServiceAsFormField(props: {
 
 export function HarnessEnvironmentAsFormField(props: {
   customRenderProps: Omit<CustomRenderProps, 'render'>
-  environmentProps: EnvironmentSelectOrCreateProps
+  environmentProps: EnvironmentSelectOrCreateProps | EnvironmentMultiSelectOrCreateProps
+  isMultiSelectField?: boolean
 }): JSX.Element {
-  const { customRenderProps, environmentProps } = props
+  const { customRenderProps, environmentProps, isMultiSelectField } = props
 
   return (
     <FormInput.CustomRender
       {...customRenderProps}
-      key={`${environmentProps.item?.value as string}`}
-      render={formikProps => (
-        <EnvironmentSelectOrCreate
-          {...environmentProps}
-          onSelect={selectedOption => {
-            formikProps.setFieldValue(customRenderProps.name, selectedOption)
-            environmentProps.onSelect?.(selectedOption)
-          }}
-        />
-      )}
+      key={`${
+        Array.isArray(environmentProps.item)
+          ? (environmentProps.item?.[0]?.value as string)
+          : (environmentProps.item?.value as string)
+      }`}
+      render={formikProps =>
+        isMultiSelectField ? (
+          <EnvironmentMultiSelectOrCreate
+            {...(environmentProps as EnvironmentMultiSelectOrCreateProps)}
+            onSelect={selectedOption => {
+              formikProps.setFieldValue(customRenderProps.name, selectedOption)
+              ;(environmentProps as EnvironmentMultiSelectOrCreateProps).onSelect?.(selectedOption)
+            }}
+          />
+        ) : (
+          <EnvironmentSelectOrCreate
+            {...(environmentProps as EnvironmentSelectOrCreateProps)}
+            onSelect={selectedOption => {
+              formikProps.setFieldValue(customRenderProps.name, selectedOption)
+              ;(environmentProps as EnvironmentSelectOrCreateProps).onSelect?.(selectedOption)
+            }}
+          />
+        )
+      }
     />
   )
 }

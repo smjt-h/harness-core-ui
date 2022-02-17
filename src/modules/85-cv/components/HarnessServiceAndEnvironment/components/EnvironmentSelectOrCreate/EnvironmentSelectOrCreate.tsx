@@ -5,12 +5,12 @@
  * https://polyformproject.org/wp-content/uploads/2020/06/PolyForm-Shield-1.0.0.txt.
  */
 
-import React, { useMemo } from 'react'
-import { noop } from 'lodash-es'
+import React from 'react'
 import { Container, Select, SelectOption } from '@wings-software/uicore'
 import type { EnvironmentResponseDTO } from 'services/cd-ng'
-import { useHarnessEnvironmentModal } from '@common/modals/HarnessEnvironmentModal/HarnessEnvironmentModal'
 import { useStrings } from 'framework/strings'
+import { ADD_NEW_VALUE } from '@cv/constants'
+import { useEnvironmentSelectOrCreate } from '../UseEnvironmentSelectOrCreate/EnvironmentSelectOrCreateHook'
 
 export interface EnvironmentSelectOrCreateProps {
   item?: SelectOption
@@ -32,8 +32,6 @@ export const EnvironmentTypes = [
   }
 ]
 
-const ADD_NEW_VALUE = '@@add_new'
-
 export function generateOptions(response?: EnvironmentResponseDTO[]): SelectOption[] {
   return response
     ? (response
@@ -51,35 +49,8 @@ export function EnvironmentSelectOrCreate({
   className
 }: EnvironmentSelectOrCreateProps): JSX.Element {
   const { getString } = useStrings()
-  const selectOptions = useMemo(
-    () => [
-      {
-        label: '+ Add New',
-        value: ADD_NEW_VALUE
-      },
-      ...options
-    ],
-    [options]
-  )
 
-  const onSubmit = async (values: any): Promise<void> => {
-    onNewCreated(values)
-  }
-
-  const { openHarnessEnvironmentModal } = useHarnessEnvironmentModal({
-    data: {
-      name: '',
-      description: '',
-      identifier: '',
-      tags: {}
-    },
-    isEnvironment: true,
-    isEdit: false,
-    onClose: noop,
-    modalTitle: getString('newEnvironment'),
-    onCreateOrUpdate: onSubmit
-  })
-
+  const { environmentOptions, openHarnessEnvironmentModal } = useEnvironmentSelectOrCreate({ options, onNewCreated })
   const onSelectChange = (val: SelectOption): void => {
     if (val.value === ADD_NEW_VALUE) {
       openHarnessEnvironmentModal()
@@ -95,7 +66,7 @@ export function EnvironmentSelectOrCreate({
         value={item}
         className={className}
         disabled={disabled}
-        items={selectOptions}
+        items={environmentOptions}
         inputProps={{ placeholder: getString('cv.selectOrCreateEnv') }}
         onChange={onSelectChange}
       />

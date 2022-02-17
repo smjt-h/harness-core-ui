@@ -1,0 +1,16 @@
+.envToolTip {
+  background: hsl(206, 98%, 42%);
+  border-radius: var(--spacing-xsmall);
+  color: #fafbfc !important;
+  padding: 2px;
+  margin-left: var(--spacing-xsmall);
+}
+.popOverClass {
+  color: var(--white) !important;
+}
+
+:global {
+  .bp3-popover-arrow-fill {
+    fill: var(--black) !important;
+  }
+}

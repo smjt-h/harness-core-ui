@@ -36,7 +36,7 @@ export function createOpenHealthSourceTableProps({
     isEdit,
     rowData,
     serviceRef: formik?.values.serviceRef,
-    environmentRef: formik?.values.environmentRef,
+    environmentRef: formik?.values.environmentRef as string,
     monitoredServiceRef: {
       name: formik?.values.name,
       identifier: formik?.values.identifier
