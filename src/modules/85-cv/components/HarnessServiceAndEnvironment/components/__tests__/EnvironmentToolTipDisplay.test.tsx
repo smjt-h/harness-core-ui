@@ -1,6 +1,6 @@
 import React from 'react'
-import { render, waitFor, fireEvent, findByText, act } from '@testing-library/react'
-import { Color, MultiSelectOption } from '@harness/uicore'
+import { render, findByText } from '@testing-library/react'
+import { Color } from '@harness/uicore'
 import { TestWrapper } from '@common/utils/testUtils'
 import { ChangeSourceCategoryName } from '@cv/pages/ChangeSource/ChangeSourceDrawer/ChangeSourceDrawer.constants'
 import { EnvironmentToolTipDisplay, ToolTipProps } from '../EnvironmentToolTipDisplay'
