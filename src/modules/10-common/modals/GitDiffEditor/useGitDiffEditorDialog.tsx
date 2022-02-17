@@ -29,8 +29,12 @@ export interface UseGitDiffEditorDialogProps<T> {
   onClose: () => void
 }
 
+export interface GitData extends SaveToGitFormInterface {
+  conflictCommitId: string
+}
+
 export interface UseGitDiffEditorDialogReturn<T> {
-  openGitDiffDialog: (entity: T, gitDetails?: SaveToGitFormInterface, _modalProps?: IDialogProps) => void
+  openGitDiffDialog: (entity: T, gitDetails?: GitData, _modalProps?: IDialogProps) => void
   hideGitDiffDialog: () => void
 }
 
@@ -44,7 +48,7 @@ export function useGitDiffEditorDialog<T>(props: UseGitDiffEditorDialogProps<T>)
   const { getString } = useStrings()
   const [modalErrorHandler, setModalErrorHandler] = React.useState<ModalErrorHandlerBinding>()
   const [entityAsYaml, setEntityAsYaml] = useState<string>()
-  const [gitDetails, setGitDetails] = useState<SaveToGitFormInterface>()
+  const [gitDetails, setGitDetails] = useState<GitData>()
   const [showGitDiff, setShowGitDiff] = useState<boolean>(false)
   const [remoteVersion, setRemoteVersion] = useState<string>('')
   const defaultModalProps: IDialogProps = {
@@ -160,14 +164,15 @@ export function useGitDiffEditorDialog<T>(props: UseGitDiffEditorDialogProps<T>)
     )
   }, [showGitDiff, modalProps, remoteVersion])
   return {
-    openGitDiffDialog: (_entity: T, _gitDetails?: SaveToGitFormInterface, _modalProps?: IDialogProps) => {
+    openGitDiffDialog: (_entity: T, _gitDetails?: GitData, _modalProps?: IDialogProps) => {
       const { repoIdentifier = '', filePath = '', rootFolder = '', branch = '' } = _gitDetails || {}
       fetchRemoteFileContent({
         queryParams: {
           ...commonParams,
           yamlGitConfigIdentifier: repoIdentifier,
           filePath: rootFolder?.concat(filePath) || '',
-          branch
+          branch,
+          commitId: _gitDetails?.conflictCommitId
         }
       })
       try {

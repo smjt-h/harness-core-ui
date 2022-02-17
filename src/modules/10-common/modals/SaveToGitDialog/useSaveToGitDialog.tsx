@@ -9,7 +9,7 @@ import React, { useState } from 'react'
 import { Button, getErrorInfoFromErrorObject } from '@wings-software/uicore'
 import { Classes, Dialog, IDialogProps } from '@blueprintjs/core'
 import { useParams } from 'react-router-dom'
-import { noop } from 'lodash-es'
+import { defaultTo, noop } from 'lodash-es'
 import { useModalHook } from '@harness/use-modal'
 import { Entities } from '@common/interfaces/GitSyncInterface'
 import SaveToGitForm, {
@@ -266,7 +266,7 @@ export function useSaveToGitDialog<T = Record<string, string>>(
             []
           )?.findIndex((mssg: ResponseMessage) => mssg.code === 'SCM_CONFLICT_ERROR') !== -1
         ) {
-          openGitDiffDialog(payloadData, data)
+          openGitDiffDialog(payloadData, { ...data, conflictCommitId: defaultTo(e?.metadata?.conflictCommitId, '') })
         }
       })
   }
