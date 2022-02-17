@@ -8,15 +8,18 @@
 // this is an auto-generated file, do not update this manually
 declare const styles: {
   readonly addNode: string
+  readonly addNodeIcon: string
   readonly closeNode: string
   readonly conditional: string
   readonly defaultCard: string
   readonly defaultNode: string
+  readonly draggable: string
   readonly hoverName: string
   readonly iconGroup: string
   readonly inComplete: string
   readonly secondaryIcon: string
   readonly selected: string
+  readonly showIcon: string
   readonly template: string
   readonly tertiaryIcon: string
 }

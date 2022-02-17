@@ -11,6 +11,10 @@
   height: 80px;
   cursor: default;
 
+  &.draggable {
+    cursor: move;
+  }
+
   .defaultCard {
     cursor: pointer;
     margin: 0;
@@ -146,4 +150,25 @@
       max-width: 200px !important;
     }
   }
+}
+
+.addNodeIcon {
+  height: 30px;
+  position: relative;
+  left: -50px;
+  width: 30px;
+  display: inline;
+  top: -70px;
+  opacity: 0;
+  border-radius: 50%;
+  padding: 2px;
+  &:hover {
+    opacity: 1;
+    cursor: pointer;
+    border-radius: 50%;
+    background: var(--primary-7);
+  }
+}
+.showIcon {
+  opacity: 1;
 }

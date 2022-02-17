@@ -2,7 +2,7 @@ import React from 'react'
 import classNames from 'classnames'
 import { defaultTo } from 'lodash-es'
 import { Icon, Color } from '@harness/uicore'
-import type { StageElementWrapperConfig } from 'services/cd-ng'
+import type { StageElementWrapperConfig, StageElementConfig } from 'services/cd-ng'
 import { Node, NodeType } from '../Node'
 import css from './PipelineGraph.module.scss'
 
@@ -10,12 +10,14 @@ export const PipelineGraphRecursive = ({
   stages,
   getNode,
   selectedNode,
-  setSelectedNode
+  setSelectedNode,
+  dropLinkEvent
 }: {
-  stages?: StageElementWrapperConfig[]
+  stages?: StageElementConfig[]
   getNode: (type?: string | undefined) => React.FC<any> | undefined
   selectedNode: string
   setSelectedNode: (nodeId: string) => void
+  dropLinkEvent: (event: any) => void
 }): React.ReactElement => {
   const StartNode: React.FC<any> | undefined = getNode(NodeType.StartNode)
   const CreateNode: React.FC<any> | undefined = getNode(NodeType.CreateNode)
@@ -28,12 +30,13 @@ export const PipelineGraphRecursive = ({
           {/* {getNode(NodeType.StartNode)?.render?.()} */}
         </div>
       </div>
-      {stages?.map((stage, index) => {
+      {stages?.map(stage => {
         return (
           <PipelineGraphNode
+            dropLinkEvent={dropLinkEvent}
             selectedNode={selectedNode}
-            stage={stage.parallel ? stage.parallel : stage}
-            key={stage.stage ? stage.stage?.identifier : index}
+            stage={stage}
+            key={stage?.identifier}
             getNode={getNode}
             setSelectedNode={setSelectedNode}
           />
@@ -51,49 +54,42 @@ export const PipelineGraphRecursive = ({
 
 interface PipelineGraphNode {
   className?: string
-  stage: StageElementWrapperConfig | StageElementWrapperConfig[]
+  stage: StageElementConfig
   getNode: (type?: string | undefined) => React.FC<any> | undefined
   selectedNode: string
   setSelectedNode: (nodeId: string) => void
   isParallelNode?: boolean
+  dropLinkEvent: (event: any) => void
 }
+
 export const PipelineGraphNode = ({
   className,
   stage,
   getNode,
   setSelectedNode,
   selectedNode,
-  isParallelNode
+  isParallelNode,
+  dropLinkEvent
 }: PipelineGraphNode): React.ReactElement => {
-  const hasParallelStages = Array.isArray(stage)
-  let firstStage, restStages
-  if (hasParallelStages) {
-    ;[firstStage, ...restStages] = stage
-  }
-  const stageDetails = defaultTo(firstStage, stage) as StageElementWrapperConfig
-  const NodeComponent: React.FC<any> | undefined = getNode(stageDetails?.stage?.type)
+  const NodeComponent: React.FC<any> | undefined = getNode(stage?.type)
   return (
     <div>
       {NodeComponent && (
         <NodeComponent
-          {...stageDetails?.stage}
+          {...stage}
           className={classNames(css.graphNode, className)}
           setSelectedNode={setSelectedNode}
-          isSelected={selectedNode === stageDetails?.stage?.identifier}
+          isSelected={selectedNode === stage?.identifier}
+          dropLinkEvent={dropLinkEvent}
+          isParallelNode={isParallelNode}
         />
       )}{' '}
-      {!isParallelNode && (
-        <div className={css.addNodeIcon}>
-          <Icon name="plus" color={Color.WHITE} />
-        </div>
-      )}
-      {/* {getNode(stageDetails?.stage?.nodeType)?.render?.()} */}
-      {/* <div className={classNames(css.graphNode, className)}>{stageDetails?.stage?.name}</div> */}
       <>
-        {restStages?.map(currentStage => (
+        {stage?.children?.map(currentStage => (
           <PipelineGraphNode
+            dropLinkEvent={dropLinkEvent}
             getNode={getNode}
-            key={currentStage.stage?.identifier}
+            key={stage?.identifier}
             className={css.parallel}
             stage={currentStage}
             selectedNode={selectedNode}

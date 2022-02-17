@@ -8068,6 +8068,7 @@ export interface StageElementConfig {
   when?: StageWhenCondition
   iconName?: IconName
   nodeType?: string
+  children?: StageElementConfig[]
 }
 
 export interface StageElementWrapperConfig {

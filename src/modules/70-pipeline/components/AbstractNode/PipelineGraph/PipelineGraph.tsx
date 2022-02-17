@@ -1,7 +1,7 @@
 /* eslint-disable no-console */
 import React, { useEffect, useLayoutEffect, useState, useRef } from 'react'
 import { cloneDeep } from 'lodash-es'
-import type { PipelineInfoConfig, StageElementWrapperConfig } from 'services/cd-ng'
+import type { PipelineInfoConfig, StageElementWrapperConfig, StageElementConfig } from 'services/cd-ng'
 import { stageTypeToIconMap } from '@pipeline/components/PipelineInputSetForm/PipelineInputSetForm'
 import { Node, NodeType } from '../Node'
 import {
@@ -9,6 +9,7 @@ import {
   getScaleToFitValue,
   getSVGLinksFromPipeline,
   INITIAL_ZOOM_LEVEL,
+  setupNodeDragEventListener,
   setupDragEventListeners
 } from './utils'
 import GraphActions from '../GraphActions/GraphActions'
@@ -18,12 +19,13 @@ import css from './PipelineGraph.module.scss'
 export interface PipelineGraphProps {
   pipeline: PipelineInfoConfig
   getNode: (type?: string | undefined) => React.FC<any> | undefined
+  dropLinkEvent: (event: any) => void
 }
-const PipelineGraph = ({ pipeline, getNode }: PipelineGraphProps): React.ReactElement => {
+const PipelineGraph = ({ pipeline, getNode, dropLinkEvent }: PipelineGraphProps): React.ReactElement => {
   const [svgPath, setSvgPath] = useState<string[]>([])
   const [treeRectangle, setTreeRectangle] = useState<DOMRect | void>()
   const [selectedNode, setSelectedNode] = useState<string>('')
-  const [state, setState] = useState<StageElementWrapperConfig[]>([])
+  const [state, setState] = useState<StageElementConfig[]>([])
   const [graphScale, setGraphScale] = useState(INITIAL_ZOOM_LEVEL)
   const canvasRef = useRef<HTMLDivElement>(null)
 
@@ -58,36 +60,64 @@ const PipelineGraph = ({ pipeline, getNode }: PipelineGraphProps): React.ReactEl
     return clonedData
   }
 
-  useLayoutEffect(() => {
-    if (pipeline.stages?.length) {
-      setState(addInfoToStageData(pipeline.stages))
+  const refactorStagesIntoTree = (stages: StageElementWrapperConfig[]) => {
+    const getIconInfo = (type: string | undefined) => {
+      return {
+        iconName: stageTypeToIconMap[type || 'Deployment'],
+        nodeType: getNodeType[type || 'Deployment']
+      }
     }
-  }, [treeRectangle, pipeline.stages])
+    let treeData: StageElementConfig[] = []
+    stages.forEach((stage: StageElementWrapperConfig) => {
+      if (stage?.stage) {
+        treeData.push({ ...stage.stage, ...getIconInfo(stage?.stage?.type) } as StageElementConfig)
+      } else if (stage?.parallel?.length) {
+        const [first, ...rest] = stage.parallel
+
+        treeData.push({
+          ...({ ...first.stage, ...getIconInfo(first?.stage?.type) } as StageElementConfig),
+          children: refactorStagesIntoTree(rest)
+        })
+      }
+    })
+    return treeData
+  }
 
   useLayoutEffect(() => {
-    state?.length && setSVGLinks()
+    if (pipeline.stages?.length) {
+      setState(refactorStagesIntoTree(pipeline.stages))
+      // console.log('check tree', refactorStagesIntoTree(pipeline.stages))
+    }
+  }, [treeRectangle, pipeline])
+
+  useLayoutEffect(() => {
+    if (state?.length) {
+      setSVGLinks()
+      // setupNodeDragEventListener(canvasRef)
+    }
   }, [state])
 
   const setSVGLinks = (): void => {
     const SVGLinks = getSVGLinksFromPipeline(pipeline.stages)
-    const lastNode = pipeline.stages?.[pipeline?.stages?.length - 1]
-    const stageData = lastNode?.parallel ? lastNode.parallel[0].stage : lastNode?.stage
+    const lastNode = state?.[state?.length - 1] // pipeline.stages?.[pipeline?.stages?.length - 1]
+    // const stageData = lastNode?.parallel ? lastNode.parallel[0].stage : lastNode?.stage
     return setSvgPath([
       ...SVGLinks,
       getFinalSVGArrowPath(
         'tree-container',
         NodeType.StartNode as string,
-        pipeline?.stages?.[0].stage?.identifier as string
+        state?.[0]?.identifier
+        // pipeline?.stages?.[0].stage?.identifier as string
       ),
-      getFinalSVGArrowPath('tree-container', stageData?.identifier as string, NodeType.CreateNode as string),
+      getFinalSVGArrowPath('tree-container', lastNode?.identifier as string, NodeType.CreateNode as string),
       getFinalSVGArrowPath('tree-container', NodeType.CreateNode as string, NodeType.EndNode as string)
     ])
   }
 
   useEffect(() => {
     updateTreeRect()
-    const clearDragListeners = setupDragEventListeners(canvasRef)
-    return () => clearDragListeners()
+    // const clearDragListeners = setupDragEventListeners(canvasRef)
+    // return () => clearDragListeners()
   }, [])
   const updateSelectedNode = (nodeId: string): void => {
     setSelectedNode(nodeId)
@@ -105,6 +135,7 @@ const PipelineGraph = ({ pipeline, getNode }: PipelineGraphProps): React.ReactEl
             stages={state}
             selectedNode={selectedNode}
             setSelectedNode={updateSelectedNode}
+            dropLinkEvent={dropLinkEvent}
           />
         </div>
         <GraphActions setGraphScale={setGraphScale} graphScale={graphScale} handleScaleToFit={handleScaleToFit} />

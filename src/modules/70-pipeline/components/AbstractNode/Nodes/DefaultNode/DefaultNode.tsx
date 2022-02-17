@@ -10,6 +10,7 @@ import type { IconName } from '@wings-software/uicore'
 import { Icon, Text, Color } from '@wings-software/uicore'
 import cx from 'classnames'
 import css from './DefaultNode.module.scss'
+import { DiagramDrag, Event } from '@pipeline/components/Diagram'
 
 const iconStyle = {
   color: 'var(--white)'
@@ -18,48 +19,82 @@ const SECONDARY_ICON: IconName = 'command-echo'
 
 const DefaultNode = (props: any): JSX.Element => {
   return (
-    <div
-      className={cx(css.defaultNode, 'default-node')}
-      onClick={() => {
-        props?.setSelectedNode(props?.identifier)
-      }}
-    >
+    <>
       <div
-        id={props.identifier}
-        className={cx(css.defaultCard, { [css.selected]: props?.isSelected })}
-        style={{
-          width: props.width || 90,
-          height: props.height || 40,
-          marginTop: 32 - (props.height || 64) / 2,
-          cursor: props.disableClick ? 'not-allowed' : props.draggable ? 'move' : 'pointer',
-          opacity: props.dragging ? 0.4 : 1
+        className={`${cx(css.defaultNode, 'default-node')} draggable`}
+        onClick={() => {
+          props?.setSelectedNode(props?.identifier)
         }}
+        // onDrag={event => console.log('dragged', event)}
       >
-        <div className="execution-running-animation" />
-        {props.iconName && (
-          <Icon
-            size={28}
-            name={props.iconName}
-            inverse={props?.isSelected}
-            // {...options.iconProps}
-            style={{ pointerEvents: 'none', ...iconStyle }}
-          />
-        )}
-
-        {SECONDARY_ICON && <Icon className={css.secondaryIcon} size={8} name={SECONDARY_ICON} />}
-      </div>
-      {props.name && (
-        <Text
-          font={{ size: 'normal', align: 'center' }}
-          color={props.defaultSelected ? Color.GREY_900 : Color.GREY_600}
-          style={{ cursor: 'pointer', lineHeight: '1.5', overflowWrap: 'normal', wordBreak: 'keep-all', height: 55 }}
-          padding={'small'}
-          lineClamp={2}
+        <div
+          id={props.identifier}
+          draggable={true}
+          className={cx(css.defaultCard, { [css.selected]: props?.isSelected })}
+          style={{
+            width: props.width || 90,
+            height: props.height || 40,
+            marginTop: 32 - (props.height || 64) / 2,
+            cursor: props.disableClick ? 'not-allowed' : props.draggable ? 'move' : 'pointer',
+            opacity: props.dragging ? 0.4 : 1
+          }}
+          onDragStart={event => {
+            event.stopPropagation()
+            event.dataTransfer.setData(DiagramDrag.NodeDrag, JSON.stringify(props))
+            // NOTE: onDragOver we cannot access dataTransfer data
+            // in order to detect if we can drop, we are setting and using "keys" and then
+            // checking in onDragOver if this type (AllowDropOnLink/AllowDropOnNode) exist we allow drop
+            event.dataTransfer.setData(DiagramDrag.AllowDropOnLink, '1')
+            // if (options.allowDropOnNode) event.dataTransfer.setData(DiagramDrag.AllowDropOnNode, '1')
+            event.dataTransfer.dropEffect = 'move'
+          }}
+          onDragEnd={event => {
+            event.preventDefault()
+          }}
         >
-          {props.name}
-        </Text>
+          <div className="execution-running-animation" />
+          {props.iconName && (
+            <Icon
+              size={28}
+              name={props.iconName}
+              inverse={props?.isSelected}
+              // {...options.iconProps}
+              style={{ pointerEvents: 'none', ...iconStyle }}
+            />
+          )}
+
+          {SECONDARY_ICON && <Icon className={css.secondaryIcon} size={8} name={SECONDARY_ICON} />}
+        </div>
+        {props.name && (
+          <Text
+            font={{ size: 'normal', align: 'center' }}
+            color={props.defaultSelected ? Color.GREY_900 : Color.GREY_600}
+            style={{ cursor: 'pointer', lineHeight: '1.5', overflowWrap: 'normal', wordBreak: 'keep-all', height: 55 }}
+            padding={'small'}
+            lineClamp={2}
+          >
+            {props.name}
+          </Text>
+        )}
+      </div>
+      {!props.isParallelNode && (
+        <div
+          onDragOver={e => {
+            e.preventDefault()
+          }}
+          onDrop={e => {
+            e.stopPropagation()
+            props?.dropLinkEvent({
+              node: JSON.parse(e.dataTransfer.getData(DiagramDrag.NodeDrag)),
+              destinationNode: props
+            })
+          }}
+          className={cx(css.addNodeIcon)}
+        >
+          <Icon name="plus" color={Color.WHITE} />
+        </div>
       )}
-    </div>
+    </>
   )
 }
 

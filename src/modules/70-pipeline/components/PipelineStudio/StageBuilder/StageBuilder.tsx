@@ -362,6 +362,65 @@ const StageBuilder: React.FC<unknown> = (): JSX.Element => {
     })
   }
 
+  const addStageNew = (
+    newStage: StageElementWrapper,
+    isParallel = false,
+    event?: DefaultNodeEvent,
+    insertAt?: number,
+    openSetupAfterAdd?: boolean,
+    pipelineTemp?: PipelineInfoConfig,
+    destinationNode?: StageElementWrapper
+  ): void => {
+    // call telemetry
+    trackEvent(StageActions.SetupStage, { stageType: newStage?.stage?.type || '' })
+
+    if (!pipeline.stages) {
+      pipeline.stages = []
+    }
+    if (destinationNode) {
+      if (pipeline.stages.indexOf(destinationNode) === 0) {
+        pipeline.stages.unshift(newStage)
+      } else {
+        const index = pipeline.stages.indexOf(destinationNode)
+        if (index > 0) {
+          pipeline.stages.splice(index, 0, newStage)
+        }
+      }
+    } else if (isParallel && event?.entity && event.entity instanceof DefaultNodeModel) {
+      const { stage, parent } = getStageFromPipeline(event.entity.getIdentifier())
+      const parentTemp = parent as StageElementWrapperConfig
+      if (stage) {
+        if (parentTemp && parentTemp.parallel && parentTemp.parallel.length > 0) {
+          parentTemp.parallel.push(newStage)
+        } else {
+          const index = pipeline.stages.indexOf(stage)
+          if (index > -1) {
+            pipeline.stages.splice(index, 1, {
+              parallel: [stage, newStage]
+            })
+          }
+        }
+      }
+    } else {
+      if (!isNil(insertAt) && insertAt > -1) {
+        pipeline.stages.splice(insertAt, 0, newStage)
+      } else {
+        pipeline.stages.push(newStage)
+      }
+    }
+    dynamicPopoverHandler?.hide()
+
+    if (newStage.stage && newStage.stage.name !== EmptyStageName) {
+      stageMap.set(newStage.stage.identifier, { isConfigured: true, stage: newStage })
+    }
+    updatePipeline({ ...(pipelineTemp || {}), ...pipeline }).then(() => {
+      if (openSetupAfterAdd) {
+        setSelectionRef.current({ stageId: newStage.stage?.identifier })
+        moveStageToFocusDelayed(engine, newStage.stage?.identifier || '', true, false)
+      }
+    })
+  }
+
   // open split panel if stage is selected stage exist
   // note: this open split panel when user use direct url
   React.useEffect(() => {
@@ -825,6 +884,72 @@ const StageBuilder: React.FC<unknown> = (): JSX.Element => {
       }
     }
   }
+
+  const dropLinkEvent = (event: any) => {
+    // console.log(event.node.identifier === event.entity.getIdentifier())
+
+    const eventTemp = event as DefaultLinkEvent
+    // eventTemp.stopPropagation()
+    console.log('check event', event)
+    if (event?.node?.identifier === event?.destinationNode?.identifier) {
+      return
+    }
+    if (event.node?.identifier) {
+      const dropNode = getStageFromPipeline(event.node.identifier).stage
+      const destinationNode = getStageFromPipeline(event.destinationNode.identifier).stage
+      const parentStageName = (dropNode?.stage as DeploymentStageElementConfig)?.spec?.serviceConfig?.useFromStage
+        ?.stage
+      const dependentStages = getDependantStages(pipeline, dropNode)
+
+      if (parentStageName?.length) {
+        const node = event.entity.getTargetPort().getNode() as DefaultNodeModel
+        const { stage } = getStageFromPipeline(node.getIdentifier())
+        const dropIndex = pipeline?.stages?.indexOf(stage!) || -1
+        const { stageIndex: parentIndex = -1 } = getStageIndexByIdentifier(pipeline, parentStageName)
+
+        if (dropIndex < parentIndex) {
+          setMoveStageDetails({
+            event,
+            direction: MoveDirection.AHEAD
+          })
+          confirmMoveStage()
+          return
+        }
+      } else if (dependentStages?.length) {
+        let dropIndex = -1
+        const node = event.entity.getSourcePort().getNode() as DefaultNodeModel
+        const { stage } = getStageFromPipeline(node.getIdentifier())
+        if (!stage) {
+          //  node on sourceport is parallel so split nodeId to get original node identifier
+          const nodeId = node.getIdentifier().split(EmptyNodeSeparator)[1]
+
+          const { stageIndex: nextStageIndex } = getStageIndexByIdentifier(pipeline, nodeId)
+          dropIndex = nextStageIndex + 1 // adding 1 as we checked source port that is prev to index where we will move this node
+        } else {
+          dropIndex = pipeline?.stages?.indexOf(stage!) || -1
+        }
+
+        const { stageIndex: firstDependentStageIndex = -1 } = getStageIndexByIdentifier(pipeline, dependentStages[0])
+
+        if (dropIndex >= firstDependentStageIndex) {
+          const stagesTobeUpdated = getAffectedDependentStages(dependentStages, dropIndex, pipeline)
+
+          setMoveStageDetails({
+            event,
+            direction: MoveDirection.BEHIND,
+            dependentStages: stagesTobeUpdated
+          })
+          confirmMoveStage()
+          return
+        }
+      }
+
+      const isRemove = removeNodeFromPipeline(getStageFromPipeline(event.node.identifier), pipeline, stageMap, false)
+      if (isRemove && dropNode) {
+        addStageNew(dropNode, false, event, undefined, undefined, undefined, destinationNode)
+      }
+    }
+  }
   //1) setup the diagram engine
   const engine = React.useMemo(() => createEngine({}), [])
 
@@ -895,6 +1020,8 @@ const StageBuilder: React.FC<unknown> = (): JSX.Element => {
 
   const stageType = selectedStage?.stage?.stage?.template ? StageType.Template : selectedStage?.stage?.stage?.type
 
+  console.log('check pipeline', pipeline)
+
   return (
     <Layout.Horizontal className={cx(css.canvasContainer)} padding="medium">
       <div className={css.canvasWrapper}>
@@ -910,7 +1037,11 @@ const StageBuilder: React.FC<unknown> = (): JSX.Element => {
           allowResize={openSplitView}
         >
           {/* {StageCanvas} */}
-          {IS_NEW_PIP_STUDIO_ACTIVE ? <CDPipelineStudioNew pipeline={pipeline} /> : StageCanvas}
+          {IS_NEW_PIP_STUDIO_ACTIVE ? (
+            <CDPipelineStudioNew dropLinkEvent={dropLinkEvent} pipeline={pipeline} />
+          ) : (
+            StageCanvas
+          )}
 
           <div
             style={{
