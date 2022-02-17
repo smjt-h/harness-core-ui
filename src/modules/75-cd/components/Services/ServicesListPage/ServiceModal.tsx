@@ -23,6 +23,8 @@ import { useParams } from 'react-router-dom'
 import { parse } from 'yaml'
 import type { FormikProps } from 'formik'
 import { NameIdDescriptionTags } from '@common/components'
+import { getScopeFromDTO } from '@common/components/EntityReference/EntityReference'
+import { useGetSchemaYaml } from 'services/pipeline-ng'
 import { ServiceRequestDTO, ServiceResponseDTO, useUpsertServiceV2 } from 'services/cd-ng'
 import { useToaster } from '@common/exports'
 import { NameSchema, IdentifierSchema } from '@common/utils/Validation'
@@ -121,7 +123,15 @@ export const NewEditServiceModalYaml: React.FC<NewEditServiceModalPropsYaml> = (
 
   const formikRef = React.useRef<FormikProps<ServiceResponseDTO>>()
   const id = data.identifier
-
+  const { loading, data: serviceSchema } = useGetSchemaYaml({
+    queryParams: {
+      entityType: 'Service',
+      projectIdentifier,
+      orgIdentifier,
+      accountIdentifier: accountId,
+      scope: getScopeFromDTO({ accountIdentifier: accountId, orgIdentifier, projectIdentifier })
+    }
+  })
   const handleModeSwitch = React.useCallback(
     (view: SelectedView) => {
       if (view === SelectedView.VISUAL) {
@@ -202,18 +212,23 @@ export const NewEditServiceModalYaml: React.FC<NewEditServiceModalPropsYaml> = (
                   </FormikForm>
                 ) : (
                   <Container className={css.editor}>
-                    <YAMLBuilder
-                      {...yamlBuilderReadOnlyModeProps}
-                      existingJSON={{
-                        serviceInputSet: {
-                          ...omit(formikProps?.values),
-                          description: formikProps.values.description || '',
-                          tags: formikProps.values.tags || {}
-                        }
-                      }}
-                      bind={setYamlHandler}
-                      showSnippetSection={false}
-                    />
+                    {loading ? (
+                      <PageSpinner />
+                    ) : (
+                      <YAMLBuilder
+                        {...yamlBuilderReadOnlyModeProps}
+                        existingJSON={{
+                          serviceInputSet: {
+                            ...omit(formikProps?.values),
+                            description: formikProps.values.description || '',
+                            tags: formikProps.values.tags || {}
+                          }
+                        }}
+                        bind={setYamlHandler}
+                        schema={serviceSchema?.data}
+                        showSnippetSection={false}
+                      />
+                    )}
                     <Layout.Horizontal padding={{ top: 'large' }}>
                       <Button
                         variation={ButtonVariation.PRIMARY}

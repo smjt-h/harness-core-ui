@@ -81,7 +81,11 @@ const ServiceMenu = (props: ServiceItemProps): React.ReactElement => {
       >
         <Container className={css.editServiceModal}>
           <NewEditServiceModalYaml
-            data={{ ...pick(service, ['name', 'identifier', 'description', 'tags']) } || { name: '', identifier: '' }}
+            data={
+              {
+                ...pick(service, ['name', 'identifier', 'orgIdentifier', 'projectIdentifier', 'description', 'tags'])
+              } || { name: '', identifier: '' }
+            }
             isEdit={true}
             isService={false}
             onCreateOrUpdate={() => {

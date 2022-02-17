@@ -46,3 +46,20 @@
     margin-top: var(--spacing-xlarge) !important;
   }
 }
+
+.noEnvHeading {
+  padding-top: 50px !important;
+  font-weight: 600 !important;
+  font-size: 20px !important;
+  line-height: 28px !important;
+  color: var(--grey-800) !important;
+}
+
+.noEnvText {
+  width: 400px;
+  padding: var(--spacing-large) 0 var(--spacing-xxlarge) !important;
+  font-size: var(--font-size-medium) !important;
+  line-height: 18px !important;
+  color: var(--grey-800) !important;
+  text-align: center !important;
+}

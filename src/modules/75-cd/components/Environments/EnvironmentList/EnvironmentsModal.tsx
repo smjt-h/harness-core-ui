@@ -27,6 +27,8 @@ import { parse } from 'yaml'
 import cx from 'classnames'
 import { EnvironmentRequestDTO, EnvironmentResponseDTO, useUpsertEnvironmentV2 } from 'services/cd-ng'
 import { IdentifierSchema, NameSchema } from '@common/utils/Validation'
+import { getScopeFromDTO } from '@common/components/EntityReference/EntityReference'
+import { useGetSchemaYaml } from 'services/pipeline-ng'
 import { NameIdDescriptionTags, PageSpinner } from '@common/components'
 import { useStrings } from 'framework/strings'
 import YAMLBuilder from '@common/components/YAMLBuilder/YamlBuilder'
@@ -130,6 +132,15 @@ export const NewEditEnvironmentModalYaml: React.FC<NewEditEnvironmentModalProps>
   ]
   const formikRef = React.useRef<FormikProps<EnvironmentResponseDTO>>()
   const id = data.identifier
+  const { loading, data: environmentSchema } = useGetSchemaYaml({
+    queryParams: {
+      entityType: 'Environment',
+      projectIdentifier,
+      orgIdentifier,
+      accountIdentifier: accountId,
+      scope: getScopeFromDTO({ accountIdentifier: accountId, orgIdentifier, projectIdentifier })
+    }
+  })
   const handleModeSwitch = React.useCallback(
     (view: SelectedView) => {
       if (view === SelectedView.VISUAL) {
@@ -216,19 +227,24 @@ export const NewEditEnvironmentModalYaml: React.FC<NewEditEnvironmentModalProps>
                     </FormikForm>
                   ) : (
                     <Container className={css.editorEnv}>
-                      <YAMLBuilder
-                        {...yamlBuilderReadOnlyModeProps}
-                        existingJSON={{
-                          environmentInputSet: {
-                            ...omit(formikProps?.values),
-                            description: formikProps.values.description || '',
-                            tags: formikProps.values.tags || {},
-                            type: formikProps.values.type || ''
-                          }
-                        }}
-                        bind={setYamlHandler}
-                        showSnippetSection={false}
-                      />
+                      {loading ? (
+                        <PageSpinner />
+                      ) : (
+                        <YAMLBuilder
+                          {...yamlBuilderReadOnlyModeProps}
+                          existingJSON={{
+                            environmentInputSet: {
+                              ...omit(formikProps?.values),
+                              description: formikProps.values.description || '',
+                              tags: formikProps.values.tags || {},
+                              type: formikProps.values.type || ''
+                            }
+                          }}
+                          schema={environmentSchema?.data}
+                          bind={setYamlHandler}
+                          showSnippetSection={false}
+                        />
+                      )}
                       <Layout.Horizontal padding={{ top: 'large' }}>
                         <Button
                           variation={ButtonVariation.PRIMARY}

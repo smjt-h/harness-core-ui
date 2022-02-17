@@ -12,6 +12,12 @@ import mockImport from 'framework/utils/mockImport'
 import { EnvironmentList } from '../EnvironmentList/EnvironmentsList'
 import mockEnvironments from './mockEnvironments'
 
+jest.mock('services/pipeline-ng', () => {
+  return {
+    useGetSchemaYaml: jest.fn
+  }
+})
+
 describe('EnvironmentList', () => {
   test('EnvironmentList should render loading correctly', async () => {
     mockImport('services/cd-ng', {

@@ -216,24 +216,10 @@ export const EnvironmentList: React.FC = () => {
           <Container flex={{ align: 'center-center' }} height="100%">
             <Container flex style={{ flexDirection: 'column' }}>
               <img src={EmptyContent} width={220} height={220} />
-              <Heading
-                level={2}
-                style={{ paddingTop: '50px', fontWeight: 600, fontSize: '20px', lineHeight: '28px', color: '#22222A' }}
-              >
+              <Heading className={css.noEnvHeading} level={2}>
                 {getString('cd.noEnvironment.title')}
               </Heading>
-              <Text
-                width={400}
-                style={{
-                  padding: 'var(--spacing-large) 0 var(--spacing-xxlarge)',
-                  fontSize: 'var(--font-size-medium)',
-                  lineHeight: '18px',
-                  color: '#22222A',
-                  textAlign: 'center'
-                }}
-              >
-                {getString('cd.noEnvironment.message')}
-              </Text>
+              <Text className={css.noEnvText}>{getString('cd.noEnvironment.message')}</Text>
             </Container>
           </Container>
         )}
