@@ -227,24 +227,22 @@ export const NewEditEnvironmentModalYaml: React.FC<NewEditEnvironmentModalProps>
                     </FormikForm>
                   ) : (
                     <Container className={css.editorEnv}>
-                      {loading ? (
-                        <PageSpinner />
-                      ) : (
-                        <YAMLBuilder
-                          {...yamlBuilderReadOnlyModeProps}
-                          existingJSON={{
-                            environmentInputSet: {
-                              ...omit(formikProps?.values),
-                              description: formikProps.values.description || '',
-                              tags: formikProps.values.tags || {},
-                              type: formikProps.values.type || ''
-                            }
-                          }}
-                          schema={environmentSchema?.data}
-                          bind={setYamlHandler}
-                          showSnippetSection={false}
-                        />
-                      )}
+                      <YAMLBuilder
+                        {...yamlBuilderReadOnlyModeProps}
+                        existingJSON={{
+                          environmentInputSet: {
+                            ...omit(formikProps?.values),
+                            description: formikProps.values.description || '',
+                            tags: formikProps.values.tags || {},
+                            type: formikProps.values.type || ''
+                          }
+                        }}
+                        isReadOnlyMode={loading}
+                        schema={environmentSchema?.data}
+                        bind={setYamlHandler}
+                        showSnippetSection={false}
+                      />
+
                       <Layout.Horizontal padding={{ top: 'large' }}>
                         <Button
                           variation={ButtonVariation.PRIMARY}

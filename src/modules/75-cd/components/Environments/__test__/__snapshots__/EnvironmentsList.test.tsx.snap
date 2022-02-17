@@ -153,12 +153,24 @@ exports[`EnvironmentList Should go to edit modal by clicking edit 1`] = `
               class="TableV2--cell"
               colspan="1"
               role="columnheader"
-              style="width: 75%;"
+              style="width: 40%;"
             >
               <p
                 class="StyledProps--font StyledProps--main StyledProps--font-variation-table-headers"
               >
                 ENVIRONMENT
+              </p>
+            </div>
+            <div
+              class="TableV2--cell"
+              colspan="1"
+              role="columnheader"
+              style="width: 35%;"
+            >
+              <p
+                class="StyledProps--font StyledProps--main StyledProps--font-variation-table-headers"
+              >
+                Description
               </p>
             </div>
             <div
@@ -196,66 +208,49 @@ exports[`EnvironmentList Should go to edit modal by clicking edit 1`] = `
               <div
                 class="TableV2--cell"
                 role="cell"
-                style="width: 75%;"
+                style="width: 40%;"
               >
                 <div
-                  class="Layout--horizontal StyledProps--main StyledProps--flex StyledProps--flex-distribution-space-between StyledProps--flex-align-center-center StyledProps--padding-left-small StyledProps--padding-right-small"
-                  style="max-width: calc(100% - var(--spacing-medium));"
+                  class="name"
                 >
                   <div
-                    class="Layout--vertical Layout--layout-spacing-xsmall StyledProps--main"
-                    style="max-width: calc(100% - 100px);"
+                    class="Layout--vertical StyledProps--main"
                   >
                     <p
-                      class="StyledProps--font StyledProps--main"
-                      style="color: rgb(34, 34, 42); font-weight: 500;"
+                      class="StyledProps--font StyledProps--main StyledProps--color StyledProps--color-black"
                     >
                       foobar
                     </p>
-                    
                     <div
-                      class="StyledProps--font StyledProps--main StyledProps--padding-top-xsmall StyledProps--margin-bottom-xsmall"
+                      class="Layout--horizontal StyledProps--main StyledProps--flex"
                     >
-                      <div
-                        class="StyledProps--font StyledProps--main identifierContainer"
+                      <p
+                        class="StyledProps--font StyledProps--main StyledProps--margin-top-xsmall StyledProps--margin-right-medium StyledProps--color StyledProps--color-grey500"
+                        style="font-size: 12px; line-height: 24px; word-break: break-word;"
                       >
-                        <span
-                          class="StyledProps--font StyledProps--main StyledProps--inline StyledProps--font-variation-small StyledProps--margin-right-xsmall"
-                        >
-                          idLabel
-                        </span>
-                        <span
-                          class="StyledProps--font StyledProps--main StyledProps--inline StyledProps--font-variation-small"
-                        >
-                          foobar
-                        </span>
-                      </div>
+                        Id: 
+                        foobar
+                      </p>
                     </div>
                   </div>
+                </div>
+              </div>
+              <div
+                class="TableV2--cell"
+                role="cell"
+                style="width: 35%;"
+              >
+                <div
+                  class="Layout--vertical StyledProps--main sourceDestinationWrapper"
+                >
                   <div
-                    class="Layout--horizontal StyledProps--main"
+                    class="destination"
                   >
                     <p
-                      class="StyledProps--font StyledProps--main StyledProps--flex"
-                      style="justify-content: center; display: flex; align-items: center; width: 100px;"
+                      class="StyledProps--font Text--lineclamp StyledProps--main content"
+                      style="--text-line-clamp: 1;"
                     >
-                      <span
-                        class="bp3-icon StyledProps--main Text--icon StyledProps--padding-right-xsmall"
-                        data-icon="main-tags"
-                      >
-                        <svg
-                          height="16"
-                          viewBox="0 0 14 14"
-                          width="16"
-                          xmlns="http://www.w3.org/2000/svg"
-                        >
-                          <path
-                            d="M7 0h-.2c-.2 0-.4.1-.6.3l-6 6c-.3.3-.3.8 0 1.1L2 9.1l4.6 4.6c.3.3.8.3 1.1 0l6-6c.2-.1.3-.3.3-.5v-.7-.3-1.3-2c0-.5-.4-1-1-1h-.9V1c0-.5-.4-1-1-1H7zm0 .6h4.2c.2 0 .4.2.4.4v.9h-1.1c-.3-.3-.5-.4-.8-.4s-.4.1-.6.3h-.5c-.2.1-.4.1-.6.3l-6 6s-.1.1-.1.2L.7 6.9c-.1-.1-.1-.2 0-.3l6-6s.1-.1.2-.1c0 .1.1.1.1.1zm1.9 1.8H13c.2 0 .4.2.4.4v4.3s0 .2-.1.2l-6 6c-.1.1-.2.1-.3 0L2.5 8.8c-.1-.1-.1-.2 0-.3l6-6s.1-.1.2-.1zm2.7.9c-.2 0-.5.1-.6.3-.4.4-.4.9 0 1.3s.9.4 1.3 0 .4-.9 0-1.3c-.3-.2-.5-.3-.7-.3zm0 .7c.1 0 .2 0 .2.1.1.1.1.3 0 .4s-.3.1-.4 0-.1-.3 0-.4c0-.1.1-.1.2-.1z"
-                            fill="#4d5969"
-                          />
-                        </svg>
-                      </span>
-                      0
+                      
                     </p>
                   </div>
                 </div>
@@ -326,85 +321,88 @@ exports[`EnvironmentList Should go to edit modal by clicking edit 1`] = `
               <div
                 class="TableV2--cell"
                 role="cell"
-                style="width: 75%;"
+                style="width: 40%;"
               >
                 <div
-                  class="Layout--horizontal StyledProps--main StyledProps--flex StyledProps--flex-distribution-space-between StyledProps--flex-align-center-center StyledProps--padding-left-small StyledProps--padding-right-small"
-                  style="max-width: calc(100% - var(--spacing-medium));"
+                  class="name"
                 >
                   <div
-                    class="Layout--vertical Layout--layout-spacing-xsmall StyledProps--main"
-                    style="max-width: calc(100% - 100px);"
+                    class="Layout--vertical StyledProps--main"
                   >
                     <p
-                      class="StyledProps--font StyledProps--main"
-                      style="color: rgb(34, 34, 42); font-weight: 500;"
+                      class="StyledProps--font StyledProps--main StyledProps--color StyledProps--color-black"
                     >
                       QB
                     </p>
                     <div
-                      class="StyledProps--font StyledProps--main"
+                      class="Layout--horizontal StyledProps--main StyledProps--flex"
                     >
                       <p
-                        class="StyledProps--font StyledProps--main"
-                        style="color: rgb(107, 109, 133); font-size: 12px; line-height: 18px;"
+                        class="StyledProps--font StyledProps--main StyledProps--margin-top-xsmall StyledProps--margin-right-medium StyledProps--color StyledProps--color-grey500"
+                        style="font-size: 12px; line-height: 24px; word-break: break-word;"
                       >
-                        Harness QB environment
+                        Id: 
+                        QB
                       </p>
-                    </div>
-                    <div
-                      class="StyledProps--font StyledProps--main StyledProps--padding-top-xsmall StyledProps--margin-bottom-xsmall"
-                    >
                       <div
-                        class="StyledProps--font StyledProps--main identifierContainer"
+                        class="tags"
                       >
                         <span
-                          class="StyledProps--font StyledProps--main StyledProps--inline StyledProps--font-variation-small StyledProps--margin-right-xsmall"
+                          class="bp3-popover-wrapper"
                         >
-                          idLabel
-                        </span>
-                        <span
-                          class="StyledProps--font StyledProps--main StyledProps--inline StyledProps--font-variation-small"
-                        >
-                          QB
+                          <span
+                            class="bp3-popover-target"
+                          >
+                            <div
+                              class="Layout--horizontal Layout--layout-spacing-xsmall StyledProps--main tagsPopover StyledProps--flex StyledProps--flex-align-center-center"
+                              tabindex="0"
+                            >
+                              <span
+                                class="bp3-icon StyledProps--main StyledProps--color StyledProps--color-grey600"
+                                data-icon="main-tags"
+                              >
+                                <svg
+                                  height="14"
+                                  viewBox="0 0 14 14"
+                                  width="14"
+                                  xmlns="http://www.w3.org/2000/svg"
+                                >
+                                  <path
+                                    d="M7 0h-.2c-.2 0-.4.1-.6.3l-6 6c-.3.3-.3.8 0 1.1L2 9.1l4.6 4.6c.3.3.8.3 1.1 0l6-6c.2-.1.3-.3.3-.5v-.7-.3-1.3-2c0-.5-.4-1-1-1h-.9V1c0-.5-.4-1-1-1H7zm0 .6h4.2c.2 0 .4.2.4.4v.9h-1.1c-.3-.3-.5-.4-.8-.4s-.4.1-.6.3h-.5c-.2.1-.4.1-.6.3l-6 6s-.1.1-.1.2L.7 6.9c-.1-.1-.1-.2 0-.3l6-6s.1-.1.2-.1c0 .1.1.1.1.1zm1.9 1.8H13c.2 0 .4.2.4.4v4.3s0 .2-.1.2l-6 6c-.1.1-.2.1-.3 0L2.5 8.8c-.1-.1-.1-.2 0-.3l6-6s.1-.1.2-.1zm2.7.9c-.2 0-.5.1-.6.3-.4.4-.4.9 0 1.3s.9.4 1.3 0 .4-.9 0-1.3c-.3-.2-.5-.3-.7-.3zm0 .7c.1 0 .2 0 .2.1.1.1.1.3 0 .4s-.3.1-.4 0-.1-.3 0-.4c0-.1.1-.1.2-.1z"
+                                    fill="#4d5969"
+                                  />
+                                </svg>
+                              </span>
+                              <p
+                                class="StyledProps--font StyledProps--main"
+                              >
+                                6
+                              </p>
+                            </div>
+                          </span>
                         </span>
                       </div>
                     </div>
                   </div>
+                </div>
+              </div>
+              <div
+                class="TableV2--cell"
+                role="cell"
+                style="width: 35%;"
+              >
+                <div
+                  class="Layout--vertical StyledProps--main sourceDestinationWrapper"
+                >
                   <div
-                    class="Layout--horizontal StyledProps--main"
+                    class="destination"
                   >
-                    <span
-                      class="bp3-popover-wrapper"
+                    <p
+                      class="StyledProps--font Text--lineclamp StyledProps--main content"
+                      style="--text-line-clamp: 1;"
                     >
-                      <span
-                        class="bp3-popover-target Text--targetClass"
-                      >
-                        <p
-                          class="StyledProps--font StyledProps--main StyledProps--flex"
-                          style="justify-content: center; display: flex; align-items: center; width: 100px;"
-                          tabindex="0"
-                        >
-                          <span
-                            class="bp3-icon StyledProps--main Text--icon StyledProps--padding-right-xsmall"
-                            data-icon="main-tags"
-                          >
-                            <svg
-                              height="16"
-                              viewBox="0 0 14 14"
-                              width="16"
-                              xmlns="http://www.w3.org/2000/svg"
-                            >
-                              <path
-                                d="M7 0h-.2c-.2 0-.4.1-.6.3l-6 6c-.3.3-.3.8 0 1.1L2 9.1l4.6 4.6c.3.3.8.3 1.1 0l6-6c.2-.1.3-.3.3-.5v-.7-.3-1.3-2c0-.5-.4-1-1-1h-.9V1c0-.5-.4-1-1-1H7zm0 .6h4.2c.2 0 .4.2.4.4v.9h-1.1c-.3-.3-.5-.4-.8-.4s-.4.1-.6.3h-.5c-.2.1-.4.1-.6.3l-6 6s-.1.1-.1.2L.7 6.9c-.1-.1-.1-.2 0-.3l6-6s.1-.1.2-.1c0 .1.1.1.1.1zm1.9 1.8H13c.2 0 .4.2.4.4v4.3s0 .2-.1.2l-6 6c-.1.1-.2.1-.3 0L2.5 8.8c-.1-.1-.1-.2 0-.3l6-6s.1-.1.2-.1zm2.7.9c-.2 0-.5.1-.6.3-.4.4-.4.9 0 1.3s.9.4 1.3 0 .4-.9 0-1.3c-.3-.2-.5-.3-.7-.3zm0 .7c.1 0 .2 0 .2.1.1.1.1.3 0 .4s-.3.1-.4 0-.1-.3 0-.4c0-.1.1-.1.2-.1z"
-                                fill="#4d5969"
-                              />
-                            </svg>
-                          </span>
-                          6
-                        </p>
-                      </span>
-                    </span>
+                      Harness QB environment
+                    </p>
                   </div>
                 </div>
               </div>
@@ -474,85 +472,88 @@ exports[`EnvironmentList Should go to edit modal by clicking edit 1`] = `
               <div
                 class="TableV2--cell"
                 role="cell"
-                style="width: 75%;"
+                style="width: 40%;"
               >
                 <div
-                  class="Layout--horizontal StyledProps--main StyledProps--flex StyledProps--flex-distribution-space-between StyledProps--flex-align-center-center StyledProps--padding-left-small StyledProps--padding-right-small"
-                  style="max-width: calc(100% - var(--spacing-medium));"
+                  class="name"
                 >
                   <div
-                    class="Layout--vertical Layout--layout-spacing-xsmall StyledProps--main"
-                    style="max-width: calc(100% - 100px);"
+                    class="Layout--vertical StyledProps--main"
                   >
                     <p
-                      class="StyledProps--font StyledProps--main"
-                      style="color: rgb(34, 34, 42); font-weight: 500;"
+                      class="StyledProps--font StyledProps--main StyledProps--color StyledProps--color-black"
                     >
                       asdfasdfsa
                     </p>
                     <div
-                      class="StyledProps--font StyledProps--main"
+                      class="Layout--horizontal StyledProps--main StyledProps--flex"
                     >
                       <p
-                        class="StyledProps--font StyledProps--main"
-                        style="color: rgb(107, 109, 133); font-size: 12px; line-height: 18px;"
+                        class="StyledProps--font StyledProps--main StyledProps--margin-top-xsmall StyledProps--margin-right-medium StyledProps--color StyledProps--color-grey500"
+                        style="font-size: 12px; line-height: 24px; word-break: break-word;"
                       >
-                        sadfdsafsdfsadfsadfsdafsfsadfsdafdsaf
+                        Id: 
+                        asdfasdfsa
                       </p>
-                    </div>
-                    <div
-                      class="StyledProps--font StyledProps--main StyledProps--padding-top-xsmall StyledProps--margin-bottom-xsmall"
-                    >
                       <div
-                        class="StyledProps--font StyledProps--main identifierContainer"
+                        class="tags"
                       >
                         <span
-                          class="StyledProps--font StyledProps--main StyledProps--inline StyledProps--font-variation-small StyledProps--margin-right-xsmall"
+                          class="bp3-popover-wrapper"
                         >
-                          idLabel
-                        </span>
-                        <span
-                          class="StyledProps--font StyledProps--main StyledProps--inline StyledProps--font-variation-small"
-                        >
-                          asdfasdfsa
+                          <span
+                            class="bp3-popover-target"
+                          >
+                            <div
+                              class="Layout--horizontal Layout--layout-spacing-xsmall StyledProps--main tagsPopover StyledProps--flex StyledProps--flex-align-center-center"
+                              tabindex="0"
+                            >
+                              <span
+                                class="bp3-icon StyledProps--main StyledProps--color StyledProps--color-grey600"
+                                data-icon="main-tags"
+                              >
+                                <svg
+                                  height="14"
+                                  viewBox="0 0 14 14"
+                                  width="14"
+                                  xmlns="http://www.w3.org/2000/svg"
+                                >
+                                  <path
+                                    d="M7 0h-.2c-.2 0-.4.1-.6.3l-6 6c-.3.3-.3.8 0 1.1L2 9.1l4.6 4.6c.3.3.8.3 1.1 0l6-6c.2-.1.3-.3.3-.5v-.7-.3-1.3-2c0-.5-.4-1-1-1h-.9V1c0-.5-.4-1-1-1H7zm0 .6h4.2c.2 0 .4.2.4.4v.9h-1.1c-.3-.3-.5-.4-.8-.4s-.4.1-.6.3h-.5c-.2.1-.4.1-.6.3l-6 6s-.1.1-.1.2L.7 6.9c-.1-.1-.1-.2 0-.3l6-6s.1-.1.2-.1c0 .1.1.1.1.1zm1.9 1.8H13c.2 0 .4.2.4.4v4.3s0 .2-.1.2l-6 6c-.1.1-.2.1-.3 0L2.5 8.8c-.1-.1-.1-.2 0-.3l6-6s.1-.1.2-.1zm2.7.9c-.2 0-.5.1-.6.3-.4.4-.4.9 0 1.3s.9.4 1.3 0 .4-.9 0-1.3c-.3-.2-.5-.3-.7-.3zm0 .7c.1 0 .2 0 .2.1.1.1.1.3 0 .4s-.3.1-.4 0-.1-.3 0-.4c0-.1.1-.1.2-.1z"
+                                    fill="#4d5969"
+                                  />
+                                </svg>
+                              </span>
+                              <p
+                                class="StyledProps--font StyledProps--main"
+                              >
+                                3
+                              </p>
+                            </div>
+                          </span>
                         </span>
                       </div>
                     </div>
                   </div>
+                </div>
+              </div>
+              <div
+                class="TableV2--cell"
+                role="cell"
+                style="width: 35%;"
+              >
+                <div
+                  class="Layout--vertical StyledProps--main sourceDestinationWrapper"
+                >
                   <div
-                    class="Layout--horizontal StyledProps--main"
+                    class="destination"
                   >
-                    <span
-                      class="bp3-popover-wrapper"
+                    <p
+                      class="StyledProps--font Text--lineclamp StyledProps--main content"
+                      style="--text-line-clamp: 1;"
                     >
-                      <span
-                        class="bp3-popover-target Text--targetClass"
-                      >
-                        <p
-                          class="StyledProps--font StyledProps--main StyledProps--flex"
-                          style="justify-content: center; display: flex; align-items: center; width: 100px;"
-                          tabindex="0"
-                        >
-                          <span
-                            class="bp3-icon StyledProps--main Text--icon StyledProps--padding-right-xsmall"
-                            data-icon="main-tags"
-                          >
-                            <svg
-                              height="16"
-                              viewBox="0 0 14 14"
-                              width="16"
-                              xmlns="http://www.w3.org/2000/svg"
-                            >
-                              <path
-                                d="M7 0h-.2c-.2 0-.4.1-.6.3l-6 6c-.3.3-.3.8 0 1.1L2 9.1l4.6 4.6c.3.3.8.3 1.1 0l6-6c.2-.1.3-.3.3-.5v-.7-.3-1.3-2c0-.5-.4-1-1-1h-.9V1c0-.5-.4-1-1-1H7zm0 .6h4.2c.2 0 .4.2.4.4v.9h-1.1c-.3-.3-.5-.4-.8-.4s-.4.1-.6.3h-.5c-.2.1-.4.1-.6.3l-6 6s-.1.1-.1.2L.7 6.9c-.1-.1-.1-.2 0-.3l6-6s.1-.1.2-.1c0 .1.1.1.1.1zm1.9 1.8H13c.2 0 .4.2.4.4v4.3s0 .2-.1.2l-6 6c-.1.1-.2.1-.3 0L2.5 8.8c-.1-.1-.1-.2 0-.3l6-6s.1-.1.2-.1zm2.7.9c-.2 0-.5.1-.6.3-.4.4-.4.9 0 1.3s.9.4 1.3 0 .4-.9 0-1.3c-.3-.2-.5-.3-.7-.3zm0 .7c.1 0 .2 0 .2.1.1.1.1.3 0 .4s-.3.1-.4 0-.1-.3 0-.4c0-.1.1-.1.2-.1z"
-                                fill="#4d5969"
-                              />
-                            </svg>
-                          </span>
-                          3
-                        </p>
-                      </span>
-                    </span>
+                      sadfdsafsdfsadfsadfsdafsfsadfsdafdsaf
+                    </p>
                   </div>
                 </div>
               </div>
@@ -622,66 +623,49 @@ exports[`EnvironmentList Should go to edit modal by clicking edit 1`] = `
               <div
                 class="TableV2--cell"
                 role="cell"
-                style="width: 75%;"
+                style="width: 40%;"
               >
                 <div
-                  class="Layout--horizontal StyledProps--main StyledProps--flex StyledProps--flex-distribution-space-between StyledProps--flex-align-center-center StyledProps--padding-left-small StyledProps--padding-right-small"
-                  style="max-width: calc(100% - var(--spacing-medium));"
+                  class="name"
                 >
                   <div
-                    class="Layout--vertical Layout--layout-spacing-xsmall StyledProps--main"
-                    style="max-width: calc(100% - 100px);"
+                    class="Layout--vertical StyledProps--main"
                   >
                     <p
-                      class="StyledProps--font StyledProps--main"
-                      style="color: rgb(34, 34, 42); font-weight: 500;"
+                      class="StyledProps--font StyledProps--main StyledProps--color StyledProps--color-black"
                     >
                       EnvironmentJuan
                     </p>
-                    
                     <div
-                      class="StyledProps--font StyledProps--main StyledProps--padding-top-xsmall StyledProps--margin-bottom-xsmall"
+                      class="Layout--horizontal StyledProps--main StyledProps--flex"
                     >
-                      <div
-                        class="StyledProps--font StyledProps--main identifierContainer"
+                      <p
+                        class="StyledProps--font StyledProps--main StyledProps--margin-top-xsmall StyledProps--margin-right-medium StyledProps--color StyledProps--color-grey500"
+                        style="font-size: 12px; line-height: 24px; word-break: break-word;"
                       >
-                        <span
-                          class="StyledProps--font StyledProps--main StyledProps--inline StyledProps--font-variation-small StyledProps--margin-right-xsmall"
-                        >
-                          idLabel
-                        </span>
-                        <span
-                          class="StyledProps--font StyledProps--main StyledProps--inline StyledProps--font-variation-small"
-                        >
-                          EnvironmentJuan
-                        </span>
-                      </div>
+                        Id: 
+                        EnvironmentJuan
+                      </p>
                     </div>
                   </div>
+                </div>
+              </div>
+              <div
+                class="TableV2--cell"
+                role="cell"
+                style="width: 35%;"
+              >
+                <div
+                  class="Layout--vertical StyledProps--main sourceDestinationWrapper"
+                >
                   <div
-                    class="Layout--horizontal StyledProps--main"
+                    class="destination"
                   >
                     <p
-                      class="StyledProps--font StyledProps--main StyledProps--flex"
-                      style="justify-content: center; display: flex; align-items: center; width: 100px;"
+                      class="StyledProps--font Text--lineclamp StyledProps--main content"
+                      style="--text-line-clamp: 1;"
                     >
-                      <span
-                        class="bp3-icon StyledProps--main Text--icon StyledProps--padding-right-xsmall"
-                        data-icon="main-tags"
-                      >
-                        <svg
-                          height="16"
-                          viewBox="0 0 14 14"
-                          width="16"
-                          xmlns="http://www.w3.org/2000/svg"
-                        >
-                          <path
-                            d="M7 0h-.2c-.2 0-.4.1-.6.3l-6 6c-.3.3-.3.8 0 1.1L2 9.1l4.6 4.6c.3.3.8.3 1.1 0l6-6c.2-.1.3-.3.3-.5v-.7-.3-1.3-2c0-.5-.4-1-1-1h-.9V1c0-.5-.4-1-1-1H7zm0 .6h4.2c.2 0 .4.2.4.4v.9h-1.1c-.3-.3-.5-.4-.8-.4s-.4.1-.6.3h-.5c-.2.1-.4.1-.6.3l-6 6s-.1.1-.1.2L.7 6.9c-.1-.1-.1-.2 0-.3l6-6s.1-.1.2-.1c0 .1.1.1.1.1zm1.9 1.8H13c.2 0 .4.2.4.4v4.3s0 .2-.1.2l-6 6c-.1.1-.2.1-.3 0L2.5 8.8c-.1-.1-.1-.2 0-.3l6-6s.1-.1.2-.1zm2.7.9c-.2 0-.5.1-.6.3-.4.4-.4.9 0 1.3s.9.4 1.3 0 .4-.9 0-1.3c-.3-.2-.5-.3-.7-.3zm0 .7c.1 0 .2 0 .2.1.1.1.1.3 0 .4s-.3.1-.4 0-.1-.3 0-.4c0-.1.1-.1.2-.1z"
-                            fill="#4d5969"
-                          />
-                        </svg>
-                      </span>
-                      0
+                      
                     </p>
                   </div>
                 </div>
@@ -752,85 +736,88 @@ exports[`EnvironmentList Should go to edit modal by clicking edit 1`] = `
               <div
                 class="TableV2--cell"
                 role="cell"
-                style="width: 75%;"
+                style="width: 40%;"
               >
                 <div
-                  class="Layout--horizontal StyledProps--main StyledProps--flex StyledProps--flex-distribution-space-between StyledProps--flex-align-center-center StyledProps--padding-left-small StyledProps--padding-right-small"
-                  style="max-width: calc(100% - var(--spacing-medium));"
+                  class="name"
                 >
                   <div
-                    class="Layout--vertical Layout--layout-spacing-xsmall StyledProps--main"
-                    style="max-width: calc(100% - 100px);"
+                    class="Layout--vertical StyledProps--main"
                   >
                     <p
-                      class="StyledProps--font StyledProps--main"
-                      style="color: rgb(34, 34, 42); font-weight: 500;"
+                      class="StyledProps--font StyledProps--main StyledProps--color StyledProps--color-black"
                     >
                       Another Production
                     </p>
                     <div
-                      class="StyledProps--font StyledProps--main"
+                      class="Layout--horizontal StyledProps--main StyledProps--flex"
                     >
                       <p
-                        class="StyledProps--font StyledProps--main"
-                        style="color: rgb(107, 109, 133); font-size: 12px; line-height: 18px;"
+                        class="StyledProps--font StyledProps--main StyledProps--margin-top-xsmall StyledProps--margin-right-medium StyledProps--color StyledProps--color-grey500"
+                        style="font-size: 12px; line-height: 24px; word-break: break-word;"
                       >
-                        Another production env that can be used
+                        Id: 
+                        Another_Production
                       </p>
-                    </div>
-                    <div
-                      class="StyledProps--font StyledProps--main StyledProps--padding-top-xsmall StyledProps--margin-bottom-xsmall"
-                    >
                       <div
-                        class="StyledProps--font StyledProps--main identifierContainer"
+                        class="tags"
                       >
                         <span
-                          class="StyledProps--font StyledProps--main StyledProps--inline StyledProps--font-variation-small StyledProps--margin-right-xsmall"
+                          class="bp3-popover-wrapper"
                         >
-                          idLabel
-                        </span>
-                        <span
-                          class="StyledProps--font StyledProps--main StyledProps--inline StyledProps--font-variation-small"
-                        >
-                          Another_Production
+                          <span
+                            class="bp3-popover-target"
+                          >
+                            <div
+                              class="Layout--horizontal Layout--layout-spacing-xsmall StyledProps--main tagsPopover StyledProps--flex StyledProps--flex-align-center-center"
+                              tabindex="0"
+                            >
+                              <span
+                                class="bp3-icon StyledProps--main StyledProps--color StyledProps--color-grey600"
+                                data-icon="main-tags"
+                              >
+                                <svg
+                                  height="14"
+                                  viewBox="0 0 14 14"
+                                  width="14"
+                                  xmlns="http://www.w3.org/2000/svg"
+                                >
+                                  <path
+                                    d="M7 0h-.2c-.2 0-.4.1-.6.3l-6 6c-.3.3-.3.8 0 1.1L2 9.1l4.6 4.6c.3.3.8.3 1.1 0l6-6c.2-.1.3-.3.3-.5v-.7-.3-1.3-2c0-.5-.4-1-1-1h-.9V1c0-.5-.4-1-1-1H7zm0 .6h4.2c.2 0 .4.2.4.4v.9h-1.1c-.3-.3-.5-.4-.8-.4s-.4.1-.6.3h-.5c-.2.1-.4.1-.6.3l-6 6s-.1.1-.1.2L.7 6.9c-.1-.1-.1-.2 0-.3l6-6s.1-.1.2-.1c0 .1.1.1.1.1zm1.9 1.8H13c.2 0 .4.2.4.4v4.3s0 .2-.1.2l-6 6c-.1.1-.2.1-.3 0L2.5 8.8c-.1-.1-.1-.2 0-.3l6-6s.1-.1.2-.1zm2.7.9c-.2 0-.5.1-.6.3-.4.4-.4.9 0 1.3s.9.4 1.3 0 .4-.9 0-1.3c-.3-.2-.5-.3-.7-.3zm0 .7c.1 0 .2 0 .2.1.1.1.1.3 0 .4s-.3.1-.4 0-.1-.3 0-.4c0-.1.1-.1.2-.1z"
+                                    fill="#4d5969"
+                                  />
+                                </svg>
+                              </span>
+                              <p
+                                class="StyledProps--font StyledProps--main"
+                              >
+                                3
+                              </p>
+                            </div>
+                          </span>
                         </span>
                       </div>
                     </div>
                   </div>
+                </div>
+              </div>
+              <div
+                class="TableV2--cell"
+                role="cell"
+                style="width: 35%;"
+              >
+                <div
+                  class="Layout--vertical StyledProps--main sourceDestinationWrapper"
+                >
                   <div
-                    class="Layout--horizontal StyledProps--main"
+                    class="destination"
                   >
-                    <span
-                      class="bp3-popover-wrapper"
+                    <p
+                      class="StyledProps--font Text--lineclamp StyledProps--main content"
+                      style="--text-line-clamp: 1;"
                     >
-                      <span
-                        class="bp3-popover-target Text--targetClass"
-                      >
-                        <p
-                          class="StyledProps--font StyledProps--main StyledProps--flex"
-                          style="justify-content: center; display: flex; align-items: center; width: 100px;"
-                          tabindex="0"
-                        >
-                          <span
-                            class="bp3-icon StyledProps--main Text--icon StyledProps--padding-right-xsmall"
-                            data-icon="main-tags"
-                          >
-                            <svg
-                              height="16"
-                              viewBox="0 0 14 14"
-                              width="16"
-                              xmlns="http://www.w3.org/2000/svg"
-                            >
-                              <path
-                                d="M7 0h-.2c-.2 0-.4.1-.6.3l-6 6c-.3.3-.3.8 0 1.1L2 9.1l4.6 4.6c.3.3.8.3 1.1 0l6-6c.2-.1.3-.3.3-.5v-.7-.3-1.3-2c0-.5-.4-1-1-1h-.9V1c0-.5-.4-1-1-1H7zm0 .6h4.2c.2 0 .4.2.4.4v.9h-1.1c-.3-.3-.5-.4-.8-.4s-.4.1-.6.3h-.5c-.2.1-.4.1-.6.3l-6 6s-.1.1-.1.2L.7 6.9c-.1-.1-.1-.2 0-.3l6-6s.1-.1.2-.1c0 .1.1.1.1.1zm1.9 1.8H13c.2 0 .4.2.4.4v4.3s0 .2-.1.2l-6 6c-.1.1-.2.1-.3 0L2.5 8.8c-.1-.1-.1-.2 0-.3l6-6s.1-.1.2-.1zm2.7.9c-.2 0-.5.1-.6.3-.4.4-.4.9 0 1.3s.9.4 1.3 0 .4-.9 0-1.3c-.3-.2-.5-.3-.7-.3zm0 .7c.1 0 .2 0 .2.1.1.1.1.3 0 .4s-.3.1-.4 0-.1-.3 0-.4c0-.1.1-.1.2-.1z"
-                                fill="#4d5969"
-                              />
-                            </svg>
-                          </span>
-                          3
-                        </p>
-                      </span>
-                    </span>
+                      Another production env that can be used
+                    </p>
                   </div>
                 </div>
               </div>
@@ -900,85 +887,88 @@ exports[`EnvironmentList Should go to edit modal by clicking edit 1`] = `
               <div
                 class="TableV2--cell"
                 role="cell"
-                style="width: 75%;"
+                style="width: 40%;"
               >
                 <div
-                  class="Layout--horizontal StyledProps--main StyledProps--flex StyledProps--flex-distribution-space-between StyledProps--flex-align-center-center StyledProps--padding-left-small StyledProps--padding-right-small"
-                  style="max-width: calc(100% - var(--spacing-medium));"
+                  class="name"
                 >
                   <div
-                    class="Layout--vertical Layout--layout-spacing-xsmall StyledProps--main"
-                    style="max-width: calc(100% - 100px);"
+                    class="Layout--vertical StyledProps--main"
                   >
                     <p
-                      class="StyledProps--font StyledProps--main"
-                      style="color: rgb(34, 34, 42); font-weight: 500;"
+                      class="StyledProps--font StyledProps--main StyledProps--color StyledProps--color-black"
                     >
                       Production Env
                     </p>
                     <div
-                      class="StyledProps--font StyledProps--main"
+                      class="Layout--horizontal StyledProps--main StyledProps--flex"
                     >
                       <p
-                        class="StyledProps--font StyledProps--main"
-                        style="color: rgb(107, 109, 133); font-size: 12px; line-height: 18px;"
+                        class="StyledProps--font StyledProps--main StyledProps--margin-top-xsmall StyledProps--margin-right-medium StyledProps--color StyledProps--color-grey500"
+                        style="font-size: 12px; line-height: 24px; word-break: break-word;"
                       >
-                        this is a production environment to run an application do be careful when handling it
+                        Id: 
+                        Production_Env
                       </p>
-                    </div>
-                    <div
-                      class="StyledProps--font StyledProps--main StyledProps--padding-top-xsmall StyledProps--margin-bottom-xsmall"
-                    >
                       <div
-                        class="StyledProps--font StyledProps--main identifierContainer"
+                        class="tags"
                       >
                         <span
-                          class="StyledProps--font StyledProps--main StyledProps--inline StyledProps--font-variation-small StyledProps--margin-right-xsmall"
+                          class="bp3-popover-wrapper"
                         >
-                          idLabel
-                        </span>
-                        <span
-                          class="StyledProps--font StyledProps--main StyledProps--inline StyledProps--font-variation-small"
-                        >
-                          Production_Env
+                          <span
+                            class="bp3-popover-target"
+                          >
+                            <div
+                              class="Layout--horizontal Layout--layout-spacing-xsmall StyledProps--main tagsPopover StyledProps--flex StyledProps--flex-align-center-center"
+                              tabindex="0"
+                            >
+                              <span
+                                class="bp3-icon StyledProps--main StyledProps--color StyledProps--color-grey600"
+                                data-icon="main-tags"
+                              >
+                                <svg
+                                  height="14"
+                                  viewBox="0 0 14 14"
+                                  width="14"
+                                  xmlns="http://www.w3.org/2000/svg"
+                                >
+                                  <path
+                                    d="M7 0h-.2c-.2 0-.4.1-.6.3l-6 6c-.3.3-.3.8 0 1.1L2 9.1l4.6 4.6c.3.3.8.3 1.1 0l6-6c.2-.1.3-.3.3-.5v-.7-.3-1.3-2c0-.5-.4-1-1-1h-.9V1c0-.5-.4-1-1-1H7zm0 .6h4.2c.2 0 .4.2.4.4v.9h-1.1c-.3-.3-.5-.4-.8-.4s-.4.1-.6.3h-.5c-.2.1-.4.1-.6.3l-6 6s-.1.1-.1.2L.7 6.9c-.1-.1-.1-.2 0-.3l6-6s.1-.1.2-.1c0 .1.1.1.1.1zm1.9 1.8H13c.2 0 .4.2.4.4v4.3s0 .2-.1.2l-6 6c-.1.1-.2.1-.3 0L2.5 8.8c-.1-.1-.1-.2 0-.3l6-6s.1-.1.2-.1zm2.7.9c-.2 0-.5.1-.6.3-.4.4-.4.9 0 1.3s.9.4 1.3 0 .4-.9 0-1.3c-.3-.2-.5-.3-.7-.3zm0 .7c.1 0 .2 0 .2.1.1.1.1.3 0 .4s-.3.1-.4 0-.1-.3 0-.4c0-.1.1-.1.2-.1z"
+                                    fill="#4d5969"
+                                  />
+                                </svg>
+                              </span>
+                              <p
+                                class="StyledProps--font StyledProps--main"
+                              >
+                                3
+                              </p>
+                            </div>
+                          </span>
                         </span>
                       </div>
                     </div>
                   </div>
+                </div>
+              </div>
+              <div
+                class="TableV2--cell"
+                role="cell"
+                style="width: 35%;"
+              >
+                <div
+                  class="Layout--vertical StyledProps--main sourceDestinationWrapper"
+                >
                   <div
-                    class="Layout--horizontal StyledProps--main"
+                    class="destination"
                   >
-                    <span
-                      class="bp3-popover-wrapper"
+                    <p
+                      class="StyledProps--font Text--lineclamp StyledProps--main content"
+                      style="--text-line-clamp: 1;"
                     >
-                      <span
-                        class="bp3-popover-target Text--targetClass"
-                      >
-                        <p
-                          class="StyledProps--font StyledProps--main StyledProps--flex"
-                          style="justify-content: center; display: flex; align-items: center; width: 100px;"
-                          tabindex="0"
-                        >
-                          <span
-                            class="bp3-icon StyledProps--main Text--icon StyledProps--padding-right-xsmall"
-                            data-icon="main-tags"
-                          >
-                            <svg
-                              height="16"
-                              viewBox="0 0 14 14"
-                              width="16"
-                              xmlns="http://www.w3.org/2000/svg"
-                            >
-                              <path
-                                d="M7 0h-.2c-.2 0-.4.1-.6.3l-6 6c-.3.3-.3.8 0 1.1L2 9.1l4.6 4.6c.3.3.8.3 1.1 0l6-6c.2-.1.3-.3.3-.5v-.7-.3-1.3-2c0-.5-.4-1-1-1h-.9V1c0-.5-.4-1-1-1H7zm0 .6h4.2c.2 0 .4.2.4.4v.9h-1.1c-.3-.3-.5-.4-.8-.4s-.4.1-.6.3h-.5c-.2.1-.4.1-.6.3l-6 6s-.1.1-.1.2L.7 6.9c-.1-.1-.1-.2 0-.3l6-6s.1-.1.2-.1c0 .1.1.1.1.1zm1.9 1.8H13c.2 0 .4.2.4.4v4.3s0 .2-.1.2l-6 6c-.1.1-.2.1-.3 0L2.5 8.8c-.1-.1-.1-.2 0-.3l6-6s.1-.1.2-.1zm2.7.9c-.2 0-.5.1-.6.3-.4.4-.4.9 0 1.3s.9.4 1.3 0 .4-.9 0-1.3c-.3-.2-.5-.3-.7-.3zm0 .7c.1 0 .2 0 .2.1.1.1.1.3 0 .4s-.3.1-.4 0-.1-.3 0-.4c0-.1.1-.1.2-.1z"
-                                fill="#4d5969"
-                              />
-                            </svg>
-                          </span>
-                          3
-                        </p>
-                      </span>
-                    </span>
+                      this is a production environment to run an application do be careful when handling it
+                    </p>
                   </div>
                 </div>
               </div>
@@ -1048,85 +1038,88 @@ exports[`EnvironmentList Should go to edit modal by clicking edit 1`] = `
               <div
                 class="TableV2--cell"
                 role="cell"
-                style="width: 75%;"
+                style="width: 40%;"
               >
                 <div
-                  class="Layout--horizontal StyledProps--main StyledProps--flex StyledProps--flex-distribution-space-between StyledProps--flex-align-center-center StyledProps--padding-left-small StyledProps--padding-right-small"
-                  style="max-width: calc(100% - var(--spacing-medium));"
+                  class="name"
                 >
                   <div
-                    class="Layout--vertical Layout--layout-spacing-xsmall StyledProps--main"
-                    style="max-width: calc(100% - 100px);"
+                    class="Layout--vertical StyledProps--main"
                   >
                     <p
-                      class="StyledProps--font StyledProps--main"
-                      style="color: rgb(34, 34, 42); font-weight: 500;"
+                      class="StyledProps--font StyledProps--main StyledProps--color StyledProps--color-black"
                     >
                       new environment
                     </p>
                     <div
-                      class="StyledProps--font StyledProps--main"
+                      class="Layout--horizontal StyledProps--main StyledProps--flex"
                     >
                       <p
-                        class="StyledProps--font StyledProps--main"
-                        style="color: rgb(107, 109, 133); font-size: 12px; line-height: 18px;"
+                        class="StyledProps--font StyledProps--main StyledProps--margin-top-xsmall StyledProps--margin-right-medium StyledProps--color StyledProps--color-grey500"
+                        style="font-size: 12px; line-height: 24px; word-break: break-word;"
                       >
-                        this is an environment
+                        Id: 
+                        new_environment
                       </p>
-                    </div>
-                    <div
-                      class="StyledProps--font StyledProps--main StyledProps--padding-top-xsmall StyledProps--margin-bottom-xsmall"
-                    >
                       <div
-                        class="StyledProps--font StyledProps--main identifierContainer"
+                        class="tags"
                       >
                         <span
-                          class="StyledProps--font StyledProps--main StyledProps--inline StyledProps--font-variation-small StyledProps--margin-right-xsmall"
+                          class="bp3-popover-wrapper"
                         >
-                          idLabel
-                        </span>
-                        <span
-                          class="StyledProps--font StyledProps--main StyledProps--inline StyledProps--font-variation-small"
-                        >
-                          new_environment
+                          <span
+                            class="bp3-popover-target"
+                          >
+                            <div
+                              class="Layout--horizontal Layout--layout-spacing-xsmall StyledProps--main tagsPopover StyledProps--flex StyledProps--flex-align-center-center"
+                              tabindex="0"
+                            >
+                              <span
+                                class="bp3-icon StyledProps--main StyledProps--color StyledProps--color-grey600"
+                                data-icon="main-tags"
+                              >
+                                <svg
+                                  height="14"
+                                  viewBox="0 0 14 14"
+                                  width="14"
+                                  xmlns="http://www.w3.org/2000/svg"
+                                >
+                                  <path
+                                    d="M7 0h-.2c-.2 0-.4.1-.6.3l-6 6c-.3.3-.3.8 0 1.1L2 9.1l4.6 4.6c.3.3.8.3 1.1 0l6-6c.2-.1.3-.3.3-.5v-.7-.3-1.3-2c0-.5-.4-1-1-1h-.9V1c0-.5-.4-1-1-1H7zm0 .6h4.2c.2 0 .4.2.4.4v.9h-1.1c-.3-.3-.5-.4-.8-.4s-.4.1-.6.3h-.5c-.2.1-.4.1-.6.3l-6 6s-.1.1-.1.2L.7 6.9c-.1-.1-.1-.2 0-.3l6-6s.1-.1.2-.1c0 .1.1.1.1.1zm1.9 1.8H13c.2 0 .4.2.4.4v4.3s0 .2-.1.2l-6 6c-.1.1-.2.1-.3 0L2.5 8.8c-.1-.1-.1-.2 0-.3l6-6s.1-.1.2-.1zm2.7.9c-.2 0-.5.1-.6.3-.4.4-.4.9 0 1.3s.9.4 1.3 0 .4-.9 0-1.3c-.3-.2-.5-.3-.7-.3zm0 .7c.1 0 .2 0 .2.1.1.1.1.3 0 .4s-.3.1-.4 0-.1-.3 0-.4c0-.1.1-.1.2-.1z"
+                                    fill="#4d5969"
+                                  />
+                                </svg>
+                              </span>
+                              <p
+                                class="StyledProps--font StyledProps--main"
+                              >
+                                1
+                              </p>
+                            </div>
+                          </span>
                         </span>
                       </div>
                     </div>
                   </div>
+                </div>
+              </div>
+              <div
+                class="TableV2--cell"
+                role="cell"
+                style="width: 35%;"
+              >
+                <div
+                  class="Layout--vertical StyledProps--main sourceDestinationWrapper"
+                >
                   <div
-                    class="Layout--horizontal StyledProps--main"
+                    class="destination"
                   >
-                    <span
-                      class="bp3-popover-wrapper"
+                    <p
+                      class="StyledProps--font Text--lineclamp StyledProps--main content"
+                      style="--text-line-clamp: 1;"
                     >
-                      <span
-                        class="bp3-popover-target Text--targetClass"
-                      >
-                        <p
-                          class="StyledProps--font StyledProps--main StyledProps--flex"
-                          style="justify-content: center; display: flex; align-items: center; width: 100px;"
-                          tabindex="0"
-                        >
-                          <span
-                            class="bp3-icon StyledProps--main Text--icon StyledProps--padding-right-xsmall"
-                            data-icon="main-tags"
-                          >
-                            <svg
-                              height="16"
-                              viewBox="0 0 14 14"
-                              width="16"
-                              xmlns="http://www.w3.org/2000/svg"
-                            >
-                              <path
-                                d="M7 0h-.2c-.2 0-.4.1-.6.3l-6 6c-.3.3-.3.8 0 1.1L2 9.1l4.6 4.6c.3.3.8.3 1.1 0l6-6c.2-.1.3-.3.3-.5v-.7-.3-1.3-2c0-.5-.4-1-1-1h-.9V1c0-.5-.4-1-1-1H7zm0 .6h4.2c.2 0 .4.2.4.4v.9h-1.1c-.3-.3-.5-.4-.8-.4s-.4.1-.6.3h-.5c-.2.1-.4.1-.6.3l-6 6s-.1.1-.1.2L.7 6.9c-.1-.1-.1-.2 0-.3l6-6s.1-.1.2-.1c0 .1.1.1.1.1zm1.9 1.8H13c.2 0 .4.2.4.4v4.3s0 .2-.1.2l-6 6c-.1.1-.2.1-.3 0L2.5 8.8c-.1-.1-.1-.2 0-.3l6-6s.1-.1.2-.1zm2.7.9c-.2 0-.5.1-.6.3-.4.4-.4.9 0 1.3s.9.4 1.3 0 .4-.9 0-1.3c-.3-.2-.5-.3-.7-.3zm0 .7c.1 0 .2 0 .2.1.1.1.1.3 0 .4s-.3.1-.4 0-.1-.3 0-.4c0-.1.1-.1.2-.1z"
-                                fill="#4d5969"
-                              />
-                            </svg>
-                          </span>
-                          1
-                        </p>
-                      </span>
-                    </span>
+                      this is an environment
+                    </p>
                   </div>
                 </div>
               </div>
@@ -1196,76 +1189,88 @@ exports[`EnvironmentList Should go to edit modal by clicking edit 1`] = `
               <div
                 class="TableV2--cell"
                 role="cell"
-                style="width: 75%;"
+                style="width: 40%;"
               >
                 <div
-                  class="Layout--horizontal StyledProps--main StyledProps--flex StyledProps--flex-distribution-space-between StyledProps--flex-align-center-center StyledProps--padding-left-small StyledProps--padding-right-small"
-                  style="max-width: calc(100% - var(--spacing-medium));"
+                  class="name"
                 >
                   <div
-                    class="Layout--vertical Layout--layout-spacing-xsmall StyledProps--main"
-                    style="max-width: calc(100% - 100px);"
+                    class="Layout--vertical StyledProps--main"
                   >
                     <p
-                      class="StyledProps--font StyledProps--main"
-                      style="color: rgb(34, 34, 42); font-weight: 500;"
+                      class="StyledProps--font StyledProps--main StyledProps--color StyledProps--color-black"
                     >
                       tagged env
                     </p>
-                    
                     <div
-                      class="StyledProps--font StyledProps--main StyledProps--padding-top-xsmall StyledProps--margin-bottom-xsmall"
+                      class="Layout--horizontal StyledProps--main StyledProps--flex"
                     >
+                      <p
+                        class="StyledProps--font StyledProps--main StyledProps--margin-top-xsmall StyledProps--margin-right-medium StyledProps--color StyledProps--color-grey500"
+                        style="font-size: 12px; line-height: 24px; word-break: break-word;"
+                      >
+                        Id: 
+                        tagged_env
+                      </p>
                       <div
-                        class="StyledProps--font StyledProps--main identifierContainer"
+                        class="tags"
                       >
                         <span
-                          class="StyledProps--font StyledProps--main StyledProps--inline StyledProps--font-variation-small StyledProps--margin-right-xsmall"
+                          class="bp3-popover-wrapper"
                         >
-                          idLabel
-                        </span>
-                        <span
-                          class="StyledProps--font StyledProps--main StyledProps--inline StyledProps--font-variation-small"
-                        >
-                          tagged_env
+                          <span
+                            class="bp3-popover-target"
+                          >
+                            <div
+                              class="Layout--horizontal Layout--layout-spacing-xsmall StyledProps--main tagsPopover StyledProps--flex StyledProps--flex-align-center-center"
+                              tabindex="0"
+                            >
+                              <span
+                                class="bp3-icon StyledProps--main StyledProps--color StyledProps--color-grey600"
+                                data-icon="main-tags"
+                              >
+                                <svg
+                                  height="14"
+                                  viewBox="0 0 14 14"
+                                  width="14"
+                                  xmlns="http://www.w3.org/2000/svg"
+                                >
+                                  <path
+                                    d="M7 0h-.2c-.2 0-.4.1-.6.3l-6 6c-.3.3-.3.8 0 1.1L2 9.1l4.6 4.6c.3.3.8.3 1.1 0l6-6c.2-.1.3-.3.3-.5v-.7-.3-1.3-2c0-.5-.4-1-1-1h-.9V1c0-.5-.4-1-1-1H7zm0 .6h4.2c.2 0 .4.2.4.4v.9h-1.1c-.3-.3-.5-.4-.8-.4s-.4.1-.6.3h-.5c-.2.1-.4.1-.6.3l-6 6s-.1.1-.1.2L.7 6.9c-.1-.1-.1-.2 0-.3l6-6s.1-.1.2-.1c0 .1.1.1.1.1zm1.9 1.8H13c.2 0 .4.2.4.4v4.3s0 .2-.1.2l-6 6c-.1.1-.2.1-.3 0L2.5 8.8c-.1-.1-.1-.2 0-.3l6-6s.1-.1.2-.1zm2.7.9c-.2 0-.5.1-.6.3-.4.4-.4.9 0 1.3s.9.4 1.3 0 .4-.9 0-1.3c-.3-.2-.5-.3-.7-.3zm0 .7c.1 0 .2 0 .2.1.1.1.1.3 0 .4s-.3.1-.4 0-.1-.3 0-.4c0-.1.1-.1.2-.1z"
+                                    fill="#4d5969"
+                                  />
+                                </svg>
+                              </span>
+                              <p
+                                class="StyledProps--font StyledProps--main"
+                              >
+                                1
+                              </p>
+                            </div>
+                          </span>
                         </span>
                       </div>
                     </div>
                   </div>
+                </div>
+              </div>
+              <div
+                class="TableV2--cell"
+                role="cell"
+                style="width: 35%;"
+              >
+                <div
+                  class="Layout--vertical StyledProps--main sourceDestinationWrapper"
+                >
                   <div
-                    class="Layout--horizontal StyledProps--main"
+                    class="destination"
                   >
-                    <span
-                      class="bp3-popover-wrapper"
+                    <p
+                      class="StyledProps--font Text--lineclamp StyledProps--main content"
+                      style="--text-line-clamp: 1;"
                     >
-                      <span
-                        class="bp3-popover-target Text--targetClass"
-                      >
-                        <p
-                          class="StyledProps--font StyledProps--main StyledProps--flex"
-                          style="justify-content: center; display: flex; align-items: center; width: 100px;"
-                          tabindex="0"
-                        >
-                          <span
-                            class="bp3-icon StyledProps--main Text--icon StyledProps--padding-right-xsmall"
-                            data-icon="main-tags"
-                          >
-                            <svg
-                              height="16"
-                              viewBox="0 0 14 14"
-                              width="16"
-                              xmlns="http://www.w3.org/2000/svg"
-                            >
-                              <path
-                                d="M7 0h-.2c-.2 0-.4.1-.6.3l-6 6c-.3.3-.3.8 0 1.1L2 9.1l4.6 4.6c.3.3.8.3 1.1 0l6-6c.2-.1.3-.3.3-.5v-.7-.3-1.3-2c0-.5-.4-1-1-1h-.9V1c0-.5-.4-1-1-1H7zm0 .6h4.2c.2 0 .4.2.4.4v.9h-1.1c-.3-.3-.5-.4-.8-.4s-.4.1-.6.3h-.5c-.2.1-.4.1-.6.3l-6 6s-.1.1-.1.2L.7 6.9c-.1-.1-.1-.2 0-.3l6-6s.1-.1.2-.1c0 .1.1.1.1.1zm1.9 1.8H13c.2 0 .4.2.4.4v4.3s0 .2-.1.2l-6 6c-.1.1-.2.1-.3 0L2.5 8.8c-.1-.1-.1-.2 0-.3l6-6s.1-.1.2-.1zm2.7.9c-.2 0-.5.1-.6.3-.4.4-.4.9 0 1.3s.9.4 1.3 0 .4-.9 0-1.3c-.3-.2-.5-.3-.7-.3zm0 .7c.1 0 .2 0 .2.1.1.1.1.3 0 .4s-.3.1-.4 0-.1-.3 0-.4c0-.1.1-.1.2-.1z"
-                                fill="#4d5969"
-                              />
-                            </svg>
-                          </span>
-                          1
-                        </p>
-                      </span>
-                    </span>
+                      
+                    </p>
                   </div>
                 </div>
               </div>
@@ -1335,66 +1340,49 @@ exports[`EnvironmentList Should go to edit modal by clicking edit 1`] = `
               <div
                 class="TableV2--cell"
                 role="cell"
-                style="width: 75%;"
+                style="width: 40%;"
               >
                 <div
-                  class="Layout--horizontal StyledProps--main StyledProps--flex StyledProps--flex-distribution-space-between StyledProps--flex-align-center-center StyledProps--padding-left-small StyledProps--padding-right-small"
-                  style="max-width: calc(100% - var(--spacing-medium));"
+                  class="name"
                 >
                   <div
-                    class="Layout--vertical Layout--layout-spacing-xsmall StyledProps--main"
-                    style="max-width: calc(100% - 100px);"
+                    class="Layout--vertical StyledProps--main"
                   >
                     <p
-                      class="StyledProps--font StyledProps--main"
-                      style="color: rgb(34, 34, 42); font-weight: 500;"
+                      class="StyledProps--font StyledProps--main StyledProps--color StyledProps--color-black"
                     >
                       Another Environment
                     </p>
-                    
                     <div
-                      class="StyledProps--font StyledProps--main StyledProps--padding-top-xsmall StyledProps--margin-bottom-xsmall"
+                      class="Layout--horizontal StyledProps--main StyledProps--flex"
                     >
-                      <div
-                        class="StyledProps--font StyledProps--main identifierContainer"
+                      <p
+                        class="StyledProps--font StyledProps--main StyledProps--margin-top-xsmall StyledProps--margin-right-medium StyledProps--color StyledProps--color-grey500"
+                        style="font-size: 12px; line-height: 24px; word-break: break-word;"
                       >
-                        <span
-                          class="StyledProps--font StyledProps--main StyledProps--inline StyledProps--font-variation-small StyledProps--margin-right-xsmall"
-                        >
-                          idLabel
-                        </span>
-                        <span
-                          class="StyledProps--font StyledProps--main StyledProps--inline StyledProps--font-variation-small"
-                        >
-                          Another_Environment
-                        </span>
-                      </div>
+                        Id: 
+                        Another_Environment
+                      </p>
                     </div>
                   </div>
+                </div>
+              </div>
+              <div
+                class="TableV2--cell"
+                role="cell"
+                style="width: 35%;"
+              >
+                <div
+                  class="Layout--vertical StyledProps--main sourceDestinationWrapper"
+                >
                   <div
-                    class="Layout--horizontal StyledProps--main"
+                    class="destination"
                   >
                     <p
-                      class="StyledProps--font StyledProps--main StyledProps--flex"
-                      style="justify-content: center; display: flex; align-items: center; width: 100px;"
+                      class="StyledProps--font Text--lineclamp StyledProps--main content"
+                      style="--text-line-clamp: 1;"
                     >
-                      <span
-                        class="bp3-icon StyledProps--main Text--icon StyledProps--padding-right-xsmall"
-                        data-icon="main-tags"
-                      >
-                        <svg
-                          height="16"
-                          viewBox="0 0 14 14"
-                          width="16"
-                          xmlns="http://www.w3.org/2000/svg"
-                        >
-                          <path
-                            d="M7 0h-.2c-.2 0-.4.1-.6.3l-6 6c-.3.3-.3.8 0 1.1L2 9.1l4.6 4.6c.3.3.8.3 1.1 0l6-6c.2-.1.3-.3.3-.5v-.7-.3-1.3-2c0-.5-.4-1-1-1h-.9V1c0-.5-.4-1-1-1H7zm0 .6h4.2c.2 0 .4.2.4.4v.9h-1.1c-.3-.3-.5-.4-.8-.4s-.4.1-.6.3h-.5c-.2.1-.4.1-.6.3l-6 6s-.1.1-.1.2L.7 6.9c-.1-.1-.1-.2 0-.3l6-6s.1-.1.2-.1c0 .1.1.1.1.1zm1.9 1.8H13c.2 0 .4.2.4.4v4.3s0 .2-.1.2l-6 6c-.1.1-.2.1-.3 0L2.5 8.8c-.1-.1-.1-.2 0-.3l6-6s.1-.1.2-.1zm2.7.9c-.2 0-.5.1-.6.3-.4.4-.4.9 0 1.3s.9.4 1.3 0 .4-.9 0-1.3c-.3-.2-.5-.3-.7-.3zm0 .7c.1 0 .2 0 .2.1.1.1.1.3 0 .4s-.3.1-.4 0-.1-.3 0-.4c0-.1.1-.1.2-.1z"
-                            fill="#4d5969"
-                          />
-                        </svg>
-                      </span>
-                      0
+                      
                     </p>
                   </div>
                 </div>
@@ -1465,75 +1453,49 @@ exports[`EnvironmentList Should go to edit modal by clicking edit 1`] = `
               <div
                 class="TableV2--cell"
                 role="cell"
-                style="width: 75%;"
+                style="width: 40%;"
               >
                 <div
-                  class="Layout--horizontal StyledProps--main StyledProps--flex StyledProps--flex-distribution-space-between StyledProps--flex-align-center-center StyledProps--padding-left-small StyledProps--padding-right-small"
-                  style="max-width: calc(100% - var(--spacing-medium));"
+                  class="name"
                 >
                   <div
-                    class="Layout--vertical Layout--layout-spacing-xsmall StyledProps--main"
-                    style="max-width: calc(100% - 100px);"
+                    class="Layout--vertical StyledProps--main"
                   >
                     <p
-                      class="StyledProps--font StyledProps--main"
-                      style="color: rgb(34, 34, 42); font-weight: 500;"
+                      class="StyledProps--font StyledProps--main StyledProps--color StyledProps--color-black"
                     >
                       env42
                     </p>
                     <div
-                      class="StyledProps--font StyledProps--main"
+                      class="Layout--horizontal StyledProps--main StyledProps--flex"
                     >
                       <p
-                        class="StyledProps--font StyledProps--main"
-                        style="color: rgb(107, 109, 133); font-size: 12px; line-height: 18px;"
+                        class="StyledProps--font StyledProps--main StyledProps--margin-top-xsmall StyledProps--margin-right-medium StyledProps--color StyledProps--color-grey500"
+                        style="font-size: 12px; line-height: 24px; word-break: break-word;"
                       >
-                        the 42th
+                        Id: 
+                        env42
                       </p>
                     </div>
-                    <div
-                      class="StyledProps--font StyledProps--main StyledProps--padding-top-xsmall StyledProps--margin-bottom-xsmall"
-                    >
-                      <div
-                        class="StyledProps--font StyledProps--main identifierContainer"
-                      >
-                        <span
-                          class="StyledProps--font StyledProps--main StyledProps--inline StyledProps--font-variation-small StyledProps--margin-right-xsmall"
-                        >
-                          idLabel
-                        </span>
-                        <span
-                          class="StyledProps--font StyledProps--main StyledProps--inline StyledProps--font-variation-small"
-                        >
-                          env42
-                        </span>
-                      </div>
-                    </div>
                   </div>
+                </div>
+              </div>
+              <div
+                class="TableV2--cell"
+                role="cell"
+                style="width: 35%;"
+              >
+                <div
+                  class="Layout--vertical StyledProps--main sourceDestinationWrapper"
+                >
                   <div
-                    class="Layout--horizontal StyledProps--main"
+                    class="destination"
                   >
                     <p
-                      class="StyledProps--font StyledProps--main StyledProps--flex"
-                      style="justify-content: center; display: flex; align-items: center; width: 100px;"
+                      class="StyledProps--font Text--lineclamp StyledProps--main content"
+                      style="--text-line-clamp: 1;"
                     >
-                      <span
-                        class="bp3-icon StyledProps--main Text--icon StyledProps--padding-right-xsmall"
-                        data-icon="main-tags"
-                      >
-                        <svg
-                          height="16"
-                          viewBox="0 0 14 14"
-                          width="16"
-                          xmlns="http://www.w3.org/2000/svg"
-                        >
-                          <path
-                            d="M7 0h-.2c-.2 0-.4.1-.6.3l-6 6c-.3.3-.3.8 0 1.1L2 9.1l4.6 4.6c.3.3.8.3 1.1 0l6-6c.2-.1.3-.3.3-.5v-.7-.3-1.3-2c0-.5-.4-1-1-1h-.9V1c0-.5-.4-1-1-1H7zm0 .6h4.2c.2 0 .4.2.4.4v.9h-1.1c-.3-.3-.5-.4-.8-.4s-.4.1-.6.3h-.5c-.2.1-.4.1-.6.3l-6 6s-.1.1-.1.2L.7 6.9c-.1-.1-.1-.2 0-.3l6-6s.1-.1.2-.1c0 .1.1.1.1.1zm1.9 1.8H13c.2 0 .4.2.4.4v4.3s0 .2-.1.2l-6 6c-.1.1-.2.1-.3 0L2.5 8.8c-.1-.1-.1-.2 0-.3l6-6s.1-.1.2-.1zm2.7.9c-.2 0-.5.1-.6.3-.4.4-.4.9 0 1.3s.9.4 1.3 0 .4-.9 0-1.3c-.3-.2-.5-.3-.7-.3zm0 .7c.1 0 .2 0 .2.1.1.1.1.3 0 .4s-.3.1-.4 0-.1-.3 0-.4c0-.1.1-.1.2-.1z"
-                            fill="#4d5969"
-                          />
-                        </svg>
-                      </span>
-                      0
+                      the 42th
                     </p>
                   </div>
                 </div>
@@ -1604,66 +1566,48 @@ exports[`EnvironmentList Should go to edit modal by clicking edit 1`] = `
               <div
                 class="TableV2--cell"
                 role="cell"
-                style="width: 75%;"
+                style="width: 40%;"
               >
                 <div
-                  class="Layout--horizontal StyledProps--main StyledProps--flex StyledProps--flex-distribution-space-between StyledProps--flex-align-center-center StyledProps--padding-left-small StyledProps--padding-right-small"
-                  style="max-width: calc(100% - var(--spacing-medium));"
+                  class="name"
                 >
                   <div
-                    class="Layout--vertical Layout--layout-spacing-xsmall StyledProps--main"
-                    style="max-width: calc(100% - 100px);"
+                    class="Layout--vertical StyledProps--main"
                   >
                     <p
-                      class="StyledProps--font StyledProps--main"
-                      style="color: rgb(34, 34, 42); font-weight: 500;"
+                      class="StyledProps--font StyledProps--main StyledProps--color StyledProps--color-black"
                     >
                       CF Default
                     </p>
                     <div
-                      class="StyledProps--font StyledProps--main StyledProps--padding-top-xsmall StyledProps--margin-bottom-xsmall"
+                      class="Layout--horizontal StyledProps--main StyledProps--flex"
                     >
-                      <div
-                        class="StyledProps--font StyledProps--main identifierContainer"
+                      <p
+                        class="StyledProps--font StyledProps--main StyledProps--margin-top-xsmall StyledProps--margin-right-medium StyledProps--color StyledProps--color-grey500"
+                        style="font-size: 12px; line-height: 24px; word-break: break-word;"
                       >
-                        <span
-                          class="StyledProps--font StyledProps--main StyledProps--inline StyledProps--font-variation-small StyledProps--margin-right-xsmall"
-                        >
-                          idLabel
-                        </span>
-                        <span
-                          class="StyledProps--font StyledProps--main StyledProps--inline StyledProps--font-variation-small"
-                        >
-                          default
-                        </span>
-                      </div>
+                        Id: 
+                        default
+                      </p>
                     </div>
                   </div>
+                </div>
+              </div>
+              <div
+                class="TableV2--cell"
+                role="cell"
+                style="width: 35%;"
+              >
+                <div
+                  class="Layout--vertical StyledProps--main sourceDestinationWrapper"
+                >
                   <div
-                    class="Layout--horizontal StyledProps--main"
+                    class="destination"
                   >
                     <p
-                      class="StyledProps--font StyledProps--main StyledProps--flex"
-                      style="justify-content: center; display: flex; align-items: center; width: 100px;"
-                    >
-                      <span
-                        class="bp3-icon StyledProps--main Text--icon StyledProps--padding-right-xsmall"
-                        data-icon="main-tags"
-                      >
-                        <svg
-                          height="16"
-                          viewBox="0 0 14 14"
-                          width="16"
-                          xmlns="http://www.w3.org/2000/svg"
-                        >
-                          <path
-                            d="M7 0h-.2c-.2 0-.4.1-.6.3l-6 6c-.3.3-.3.8 0 1.1L2 9.1l4.6 4.6c.3.3.8.3 1.1 0l6-6c.2-.1.3-.3.3-.5v-.7-.3-1.3-2c0-.5-.4-1-1-1h-.9V1c0-.5-.4-1-1-1H7zm0 .6h4.2c.2 0 .4.2.4.4v.9h-1.1c-.3-.3-.5-.4-.8-.4s-.4.1-.6.3h-.5c-.2.1-.4.1-.6.3l-6 6s-.1.1-.1.2L.7 6.9c-.1-.1-.1-.2 0-.3l6-6s.1-.1.2-.1c0 .1.1.1.1.1zm1.9 1.8H13c.2 0 .4.2.4.4v4.3s0 .2-.1.2l-6 6c-.1.1-.2.1-.3 0L2.5 8.8c-.1-.1-.1-.2 0-.3l6-6s.1-.1.2-.1zm2.7.9c-.2 0-.5.1-.6.3-.4.4-.4.9 0 1.3s.9.4 1.3 0 .4-.9 0-1.3c-.3-.2-.5-.3-.7-.3zm0 .7c.1 0 .2 0 .2.1.1.1.1.3 0 .4s-.3.1-.4 0-.1-.3 0-.4c0-.1.1-.1.2-.1z"
-                            fill="#4d5969"
-                          />
-                        </svg>
-                      </span>
-                      0
-                    </p>
+                      class="StyledProps--font Text--lineclamp StyledProps--main content"
+                      style="--text-line-clamp: 1;"
+                    />
                   </div>
                 </div>
               </div>

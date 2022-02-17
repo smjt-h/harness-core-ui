@@ -21,24 +21,26 @@ interface ServicesListViewProps {
 const ServicesListView = (props: ServicesListViewProps): React.ReactElement => {
   const { data, gotoPage, onServiceSelect } = props
 
+  const services = data?.data?.content?.map(service => service.service) || []
+
   return (
     <>
       <Container className={css.masonry} style={{ height: 'calc(100% - 66px)', width: '100%' }}>
-        <TableV2
+        <TableV2<any>
           className={css.table}
           sortable
           columns={[
             {
               Header: 'SERVICE',
               id: 'name',
-              accessor: 'service',
+              accessor: 'name',
               width: '60%',
               Cell: ServiceName
             },
             {
               Header: 'DESCRIPTION',
               id: 'destination',
-              accessor: 'service',
+              accessor: 'description',
               width: '35%',
               Cell: ServiceDescription
             },
@@ -52,7 +54,7 @@ const ServicesListView = (props: ServicesListViewProps): React.ReactElement => {
               )
             }
           ]}
-          data={data?.data?.content || []}
+          data={services}
           onRowClick={(row: any) => onServiceSelect(row?.service)}
         />
       </Container>

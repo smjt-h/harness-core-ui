@@ -48,10 +48,7 @@ export enum DeploymentStatus {
 }
 
 const ServiceMenu = (props: ServiceItemProps): React.ReactElement => {
-  const {
-    data: { service },
-    onRefresh
-  } = props
+  const { data: service, onRefresh } = props
   const [menuOpen, setMenuOpen] = useState(false)
   const [deleteError, setDeleteError] = useState('')
   const { accountId, orgIdentifier, projectIdentifier, module } = useParams<ProjectPathProps & ModulePathParams>()
@@ -114,7 +111,7 @@ const ServiceMenu = (props: ServiceItemProps): React.ReactElement => {
             accountId,
             orgIdentifier,
             projectIdentifier,
-            serviceId: service.identifier,
+            serviceId: service?.identifier,
             module
           }),
           search: `tab=${ServiceTabs.REFERENCED_BY}`
@@ -190,7 +187,7 @@ const ServiceMenu = (props: ServiceItemProps): React.ReactElement => {
             permission={{
               resource: {
                 resourceType: ResourceType.SERVICE,
-                resourceIdentifier: defaultTo(service.identifier, '')
+                resourceIdentifier: defaultTo(service?.identifier, '')
               },
               permission: PermissionIdentifier.EDIT_SERVICE
             }}
@@ -202,7 +199,7 @@ const ServiceMenu = (props: ServiceItemProps): React.ReactElement => {
             permission={{
               resource: {
                 resourceType: ResourceType.SERVICE,
-                resourceIdentifier: defaultTo(service.identifier, '')
+                resourceIdentifier: defaultTo(service?.identifier, '')
               },
               permission: PermissionIdentifier.DELETE_SERVICE
             }}
@@ -219,7 +216,7 @@ const ServiceName = ({ row }: ServiceRow): React.ReactElement => {
   return (
     <div className={css.name}>
       <Layout.Vertical>
-        <Text color={Color.BLACK}>{service?.service?.name}</Text>
+        <Text color={Color.BLACK}>{service?.name}</Text>
 
         <Layout.Horizontal flex>
           <Text
@@ -231,15 +228,15 @@ const ServiceName = ({ row }: ServiceRow): React.ReactElement => {
               wordBreak: 'break-word'
             }}
           >
-            Id: {service?.service?.identifier}
+            Id: {service?.identifier}
           </Text>
 
-          {!isEmpty(service?.service?.tags) && (
+          {!isEmpty(service?.tags) && (
             <div className={css.tags}>
               <TagsPopover
                 className={css.tagsPopover}
                 iconProps={{ size: 14, color: Color.GREY_600 }}
-                tags={defaultTo(service?.service?.tags, {})}
+                tags={defaultTo(service?.tags, {})}
               />
             </div>
           )}
@@ -255,7 +252,7 @@ const ServiceDescription = ({ row }: ServiceRow): React.ReactElement => {
     <Layout.Vertical className={css.sourceDestinationWrapper}>
       <div className={css.destination}>
         <Text lineClamp={1} className={css.content}>
-          {service?.service?.description}
+          {service?.description}
         </Text>
       </div>
     </Layout.Vertical>
@@ -267,7 +264,7 @@ const ServiceLastDeploymentStatus = (props: ServiceItemProps): React.ReactElemen
     data: { service }
   } = props
   const { getString } = useStrings()
-  if (!service.identifier) {
+  if (!service?.identifier) {
     return <></>
   }
   const [statusBackgroundColor, statusText] =

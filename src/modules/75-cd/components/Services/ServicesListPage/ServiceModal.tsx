@@ -212,23 +212,20 @@ export const NewEditServiceModalYaml: React.FC<NewEditServiceModalPropsYaml> = (
                   </FormikForm>
                 ) : (
                   <Container className={css.editor}>
-                    {loading ? (
-                      <PageSpinner />
-                    ) : (
-                      <YAMLBuilder
-                        {...yamlBuilderReadOnlyModeProps}
-                        existingJSON={{
-                          serviceInputSet: {
-                            ...omit(formikProps?.values),
-                            description: formikProps.values.description || '',
-                            tags: formikProps.values.tags || {}
-                          }
-                        }}
-                        bind={setYamlHandler}
-                        schema={serviceSchema?.data}
-                        showSnippetSection={false}
-                      />
-                    )}
+                    <YAMLBuilder
+                      {...yamlBuilderReadOnlyModeProps}
+                      existingJSON={{
+                        serviceInputSet: {
+                          ...omit(formikProps?.values),
+                          description: formikProps.values.description || '',
+                          tags: formikProps.values.tags || {}
+                        }
+                      }}
+                      bind={setYamlHandler}
+                      isReadOnlyMode={loading}
+                      schema={serviceSchema?.data}
+                      showSnippetSection={false}
+                    />
                     <Layout.Horizontal padding={{ top: 'large' }}>
                       <Button
                         variation={ButtonVariation.PRIMARY}

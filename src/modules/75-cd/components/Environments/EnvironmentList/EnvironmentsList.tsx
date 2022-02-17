@@ -5,7 +5,7 @@
  * https://polyformproject.org/wp-content/uploads/2020/06/PolyForm-Shield-1.0.0.txt.
  */
 
-import React, { useMemo, useState } from 'react'
+import React, { useEffect, useMemo, useState } from 'react'
 import cx from 'classnames'
 import { Pagination, Layout, Text, Container, Heading, TableV2 } from '@wings-software/uicore'
 import { get } from 'lodash-es'
@@ -22,10 +22,11 @@ import { ResourceType } from '@rbac/interfaces/ResourceType'
 // eslint-disable-next-line no-restricted-imports
 import ListingPageTemplate from '@cf/components/ListingPageTemplate/ListingPageTemplate'
 // eslint-disable-next-line no-restricted-imports
-import { ModifiedByCell, TypeCell, NameCell } from '@cf/pages/environments/EnvironmentsPage'
+import { ModifiedByCell, TypeCell } from '@cf/pages/environments/EnvironmentsPage'
 import { useStrings } from 'framework/strings'
 import EmptyContent from './EmptyContent.svg'
 import { NewEditEnvironmentModalYaml } from './EnvironmentsModal'
+import { EnvironmentDescription, EnvironmentName } from '../EnvironmentsListColumns/EnvironmentsListColumns'
 import css from './EnvironmentsList.module.scss'
 
 export const EnvironmentList: React.FC = () => {
@@ -36,15 +37,14 @@ export const EnvironmentList: React.FC = () => {
   const { fetchDeploymentList } = useEnvironmentStore()
   const [rowData, setRowData] = React.useState<EnvironmentResponseDTO>()
   const [editable, setEditable] = React.useState(false)
-  const queryParams = useMemo(() => {
-    return {
-      accountId,
-      orgIdentifier,
-      projectIdentifier,
-      page,
-      size: 10
-    }
-  }, [accountId, orgIdentifier, projectIdentifier, page])
+
+  const queryParams = {
+    accountId,
+    orgIdentifier,
+    projectIdentifier,
+    page: page,
+    size: 10
+  }
 
   const {
     data: envData,
@@ -97,7 +97,6 @@ export const EnvironmentList: React.FC = () => {
               ;(fetchDeploymentList.current as () => void)?.()
               hideModal()
               setEditable(false)
-              refetch()
             }}
             closeModal={() => {
               hideModal()
@@ -138,9 +137,16 @@ export const EnvironmentList: React.FC = () => {
       {
         Header: getString('environment').toUpperCase(),
         id: 'name',
-        width: '75%',
+        width: '40%',
         accessor: 'name',
-        Cell: NameCell
+        Cell: EnvironmentName
+      },
+      {
+        Header: 'Description',
+        id: 'description',
+        accessor: 'description',
+        width: '35%',
+        Cell: EnvironmentDescription
       },
       {
         Header: getString('typeLabel').toUpperCase(),
@@ -161,6 +167,11 @@ export const EnvironmentList: React.FC = () => {
     ],
     [getString, handleEnvDelete]
   )
+
+  useEffect(() => {
+    fetchDeploymentList.current = refetch
+  }, [fetchDeploymentList, refetch])
+
   return (
     <>
       <ListingPageTemplate
@@ -196,7 +207,6 @@ export const EnvironmentList: React.FC = () => {
             pageIndex={page}
             gotoPage={index => {
               setPage(index)
-              refetch({ queryParams: { ...queryParams, page: index } })
             }}
           />
         }
