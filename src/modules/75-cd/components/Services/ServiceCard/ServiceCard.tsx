@@ -38,7 +38,7 @@ const ServiceCard: React.FC<ServiceCardProps> = props => {
           >
             {data?.service?.name}
           </Text>
-          <ServiceMenu data={data} onRefresh={onRefresh} />
+          <ServiceMenu data={data?.service} onRefresh={onRefresh} />
         </div>
 
         <Layout.Horizontal margin={{ top: 'xsmall', bottom: 'xsmall' }} className={css.idTags}>

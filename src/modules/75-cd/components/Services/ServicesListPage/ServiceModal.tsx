@@ -226,7 +226,7 @@ export const NewEditServiceModalYaml: React.FC<NewEditServiceModalPropsYaml> = (
                       schema={serviceSchema?.data}
                       showSnippetSection={false}
                     />
-                    <Layout.Horizontal padding={{ top: 'large' }}>
+                    <Layout.Horizontal spacing={'xsmall'} padding={{ top: 'large' }}>
                       <Button
                         variation={ButtonVariation.PRIMARY}
                         type="submit"
@@ -236,7 +236,6 @@ export const NewEditServiceModalYaml: React.FC<NewEditServiceModalPropsYaml> = (
                           onSubmit(parse(latestYaml)?.serviceInputSet)
                         }}
                       />
-                      &nbsp; &nbsp;
                       <Button variation={ButtonVariation.TERTIARY} onClick={closeModal} text={getString('cancel')} />
                     </Layout.Horizontal>
                   </Container>

@@ -74,7 +74,7 @@ const ServiceMenu = (props: ServiceItemProps): React.ReactElement => {
         onClose={hideModal}
         title={getString('editService')}
         isCloseButtonShown
-        className={cx('padded-dialog', css.dialogStyles)}
+        className={cx('padded-dialog', css.serviceDialogStyles)}
       >
         <Container className={css.editServiceModal}>
           <NewEditServiceModalYaml
@@ -214,7 +214,7 @@ const ServiceName = ({ row }: ServiceRow): React.ReactElement => {
   const service = row.original
 
   return (
-    <div className={css.name}>
+    <div className={css.serviceName}>
       <Layout.Vertical>
         <Text color={Color.BLACK}>{service?.name}</Text>
 
@@ -232,9 +232,9 @@ const ServiceName = ({ row }: ServiceRow): React.ReactElement => {
           </Text>
 
           {!isEmpty(service?.tags) && (
-            <div className={css.tags}>
+            <div className={css.serviceTags}>
               <TagsPopover
-                className={css.tagsPopover}
+                className={css.serviceTagsPopover}
                 iconProps={{ size: 14, color: Color.GREY_600 }}
                 tags={defaultTo(service?.tags, {})}
               />
@@ -249,42 +249,12 @@ const ServiceName = ({ row }: ServiceRow): React.ReactElement => {
 const ServiceDescription = ({ row }: ServiceRow): React.ReactElement => {
   const service = row.original
   return (
-    <Layout.Vertical className={css.sourceDestinationWrapper}>
-      <div className={css.destination}>
-        <Text lineClamp={1} className={css.content}>
-          {service?.description}
-        </Text>
+    <Layout.Vertical className={css.serviceDescriptionWrapper}>
+      <div className={css.serviceDescription}>
+        <Text lineClamp={1}>{service?.description}</Text>
       </div>
     </Layout.Vertical>
   )
 }
 
-const ServiceLastDeploymentStatus = (props: ServiceItemProps): React.ReactElement => {
-  const {
-    data: { service }
-  } = props
-  const { getString } = useStrings()
-  if (!service?.identifier) {
-    return <></>
-  }
-  const [statusBackgroundColor, statusText] =
-    service?.status?.toLocaleLowerCase() === DeploymentStatus.SUCCESS
-      ? [Color.GREEN_600, getString('success')]
-      : service?.status?.toLocaleLowerCase() === DeploymentStatus.FAILED
-      ? [Color.RED_600, getString('failed')]
-      : [Color.GREEN_600, getString('success')] // fix this once API is updated
-  return (
-    <Layout.Horizontal flex={{ justifyContent: 'flex-end' }}>
-      <Text
-        background={statusBackgroundColor}
-        color={Color.WHITE}
-        font={{ weight: 'semi-bold', size: 'xsmall' }}
-        className={css.statusText}
-      >
-        {statusText?.toLocaleUpperCase()}
-      </Text>
-    </Layout.Horizontal>
-  )
-}
-
-export { ServiceName, ServiceDescription, ServiceMenu, ServiceLastDeploymentStatus }
+export { ServiceName, ServiceDescription, ServiceMenu }
