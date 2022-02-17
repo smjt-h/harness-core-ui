@@ -3,7 +3,7 @@ import { Container, Text, Color } from '@wings-software/uicore'
 import { useStrings } from 'framework/strings'
 import css from './EnvToolTipDisplay.module.scss'
 
-interface ToolTipProps {
+export interface ToolTipProps {
   type?: string
   environmentRef?: string
   envRefList?: string[]
