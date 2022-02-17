@@ -72,7 +72,7 @@ export const EnvironmentList: React.FC = () => {
           hideModal()
           setEditable(false)
         }}
-        title={getString('cd.addEnvironment')}
+        title={editable ? getString('editEnvironment') : getString('cd.addEnvironment')}
         isCloseButtonShown
         className={cx('padded-dialog', css.dialogStylesEnv)}
       >
