@@ -23,30 +23,30 @@
         <div class='clearfix'>
             
             <div class='fl pad1y space-right2'>
-                <span class="strong">63.01% </span>
+                <span class="strong">63.51% </span>
                 <span class="quiet">Statements</span>
-                <span class='fraction'>46/73</span>
+                <span class='fraction'>47/74</span>
             </div>
         
             
             <div class='fl pad1y space-right2'>
-                <span class="strong">59.09% </span>
+                <span class="strong">59.7% </span>
                 <span class="quiet">Branches</span>
-                <span class='fraction'>78/132</span>
+                <span class='fraction'>80/134</span>
             </div>
         
             
             <div class='fl pad1y space-right2'>
-                <span class="strong">80% </span>
+                <span class="strong">81.82% </span>
                 <span class="quiet">Functions</span>
-                <span class='fraction'>8/10</span>
+                <span class='fraction'>9/11</span>
             </div>
         
             
             <div class='fl pad1y space-right2'>
-                <span class="strong">64.29% </span>
+                <span class="strong">64.79% </span>
                 <span class="quiet">Lines</span>
-                <span class='fraction'>45/70</span>
+                <span class='fraction'>46/71</span>
             </div>
         
             
@@ -318,7 +318,12 @@
 <a name='L259'></a><a href='#L259'>259</a>
 <a name='L260'></a><a href='#L260'>260</a>
 <a name='L261'></a><a href='#L261'>261</a>
-<a name='L262'></a><a href='#L262'>262</a></td><td class="line-coverage quiet"><span class="cline-any cline-neutral">&nbsp;</span>
+<a name='L262'></a><a href='#L262'>262</a>
+<a name='L263'></a><a href='#L263'>263</a>
+<a name='L264'></a><a href='#L264'>264</a>
+<a name='L265'></a><a href='#L265'>265</a>
+<a name='L266'></a><a href='#L266'>266</a>
+<a name='L267'></a><a href='#L267'>267</a></td><td class="line-coverage quiet"><span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
@@ -379,6 +384,8 @@
 <span class="cline-any cline-yes">18x</span>
 <span class="cline-any cline-yes">18x</span>
 <span class="cline-any cline-yes">18x</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">18x</span>
 <span class="cline-any cline-yes">18x</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
@@ -386,7 +393,10 @@
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-yes">18x</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-yes">18x</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
@@ -640,55 +650,60 @@ export function getBtnProps({
   const btnProps: BtnProps[] = []
   const planEdition = plan<span class="branch-0 cbranch-no" title="branch not covered" >?.t</span>itle &amp;&amp; (plan<span class="branch-0 cbranch-no" title="branch not covered" >?.t</span>itle<span class="branch-0 cbranch-no" title="branch not covered" >?.t</span>oUpperCase() as Editions)
   const planActions = (planEdition &amp;&amp; actions<span class="branch-0 cbranch-no" title="branch not covered" >?.[p</span>lanEdition]) || <span class="branch-2 cbranch-no" title="branch not covered" >[]</span>
-  planActions<span class="branch-0 cbranch-no" title="branch not covered" >?.f</span>orEach(action =&gt; {
-    let onClick,
-      order,
-      planDisabledStr: string | undefined,
-      isContactSales: boolean | undefined,
-      isContactSupport: boolean | undefined
-    const buttonText =
-      action.action &amp;&amp; PLAN_BTN_ACTIONS[action.action] &amp;&amp; getString(PLAN_BTN_ACTIONS[action.action] as keyof StringsMap)
-    switch (action.action) {
-      case 'START_FREE':
-      case 'START_TRIAL':
-        order = 0
-        onClick = () =&gt; planEdition &amp;&amp; handleStartPlan(planEdition)
-        break
-<span class="branch-2 cbranch-no" title="branch not covered" >      case 'EXTEND_TRIAL':</span>
-<span class="cstat-no" title="statement not covered" >        order = 0</span>
-<span class="cstat-no" title="statement not covered" >        onClick = <span class="fstat-no" title="function not covered" >() =</span>&gt; <span class="cstat-no" title="statement not covered" >planEdition &amp;&amp; handleExtendTrial(planEdition)</span></span>
-<span class="cstat-no" title="statement not covered" >        break</span>
-<span class="branch-3 cbranch-no" title="branch not covered" >      case 'MANAGE':</span>
-<span class="cstat-no" title="statement not covered" >        order = 0</span>
-<span class="cstat-no" title="statement not covered" >        onClick = handleManageSubscription</span>
-<span class="cstat-no" title="statement not covered" >        break</span>
-<span class="branch-4 cbranch-no" title="branch not covered" >      case 'SUBSCRIBE':</span>
-<span class="branch-5 cbranch-no" title="branch not covered" >      case 'UPGRADE':</span>
-<span class="cstat-no" title="statement not covered" >        order = 1</span>
-<span class="cstat-no" title="statement not covered" >        onClick = undefined</span>
-<span class="cstat-no" title="statement not covered" >        break</span>
-<span class="branch-6 cbranch-no" title="branch not covered" >      case 'CONTACT_SALES':</span>
-<span class="cstat-no" title="statement not covered" >        order = 2</span>
-<span class="cstat-no" title="statement not covered" >        onClick = handleContactSales</span>
-<span class="cstat-no" title="statement not covered" >        isContactSales = true</span>
-<span class="cstat-no" title="statement not covered" >        break</span>
-<span class="branch-7 cbranch-no" title="branch not covered" >      case 'CONTACT_SUPPORT':</span>
-<span class="cstat-no" title="statement not covered" >        order = 2</span>
-<span class="cstat-no" title="statement not covered" >        isContactSupport = true</span>
-<span class="cstat-no" title="statement not covered" >        break</span>
-<span class="branch-8 cbranch-no" title="branch not covered" >      case 'DISABLED_BY_ENTERPRISE':</span>
-<span class="branch-9 cbranch-no" title="branch not covered" >      case 'DISABLED_BY_TEAM':</span>
-<span class="cstat-no" title="statement not covered" >        order = 0</span>
-<span class="cstat-no" title="statement not covered" >        onClick = undefined</span>
-<span class="cstat-no" title="statement not covered" >        planDisabledStr = action.reason</span>
-<span class="cstat-no" title="statement not covered" >        break</span>
-<span class="branch-10 cbranch-no" title="branch not covered" >      default:</span>
-<span class="cstat-no" title="statement not covered" >        order = 0</span>
-<span class="cstat-no" title="statement not covered" >        onClick = undefined</span>
-    }
+  // for March's launch, we hide manage subscription, upgrade, subscribe until the functions are fullfilled
+  planActions<span class="branch-0 cbranch-no" title="branch not covered" ></span>
+    ?.filter(action =&gt; action.action &amp;&amp; !['MANAGE', 'SUBSCRIBE', 'UPGRADE'].includes(action.action))
+    .forEach(action =&gt; {
+      let onClick,
+        order,
+        planDisabledStr: string | undefined,
+        isContactSales: boolean | undefined,
+        isContactSupport: boolean | undefined
+      const buttonText =
+        action.action &amp;&amp;
+        PLAN_BTN_ACTIONS[action.action] &amp;&amp;
+        getString(PLAN_BTN_ACTIONS[action.action] as keyof StringsMap)
+      switch (action.action) {
+        case 'START_FREE':
+        case 'START_TRIAL':
+          order = 0
+          onClick = () =&gt; planEdition &amp;&amp; handleStartPlan(planEdition)
+          break
+<span class="branch-2 cbranch-no" title="branch not covered" >        case 'EXTEND_TRIAL':</span>
+<span class="cstat-no" title="statement not covered" >          order = 0</span>
+<span class="cstat-no" title="statement not covered" >          onClick = <span class="fstat-no" title="function not covered" >() =</span>&gt; <span class="cstat-no" title="statement not covered" >planEdition &amp;&amp; handleExtendTrial(planEdition)</span></span>
+<span class="cstat-no" title="statement not covered" >          break</span>
+<span class="branch-3 cbranch-no" title="branch not covered" >        case 'MANAGE':</span>
+<span class="cstat-no" title="statement not covered" >          order = 0</span>
+<span class="cstat-no" title="statement not covered" >          onClick = handleManageSubscription</span>
+<span class="cstat-no" title="statement not covered" >          break</span>
+<span class="branch-4 cbranch-no" title="branch not covered" >        case 'SUBSCRIBE':</span>
+<span class="branch-5 cbranch-no" title="branch not covered" >        case 'UPGRADE':</span>
+<span class="cstat-no" title="statement not covered" >          order = 1</span>
+<span class="cstat-no" title="statement not covered" >          onClick = undefined</span>
+<span class="cstat-no" title="statement not covered" >          break</span>
+<span class="branch-6 cbranch-no" title="branch not covered" >        case 'CONTACT_SALES':</span>
+<span class="cstat-no" title="statement not covered" >          order = 2</span>
+<span class="cstat-no" title="statement not covered" >          onClick = handleContactSales</span>
+<span class="cstat-no" title="statement not covered" >          isContactSales = true</span>
+<span class="cstat-no" title="statement not covered" >          break</span>
+<span class="branch-7 cbranch-no" title="branch not covered" >        case 'CONTACT_SUPPORT':</span>
+<span class="cstat-no" title="statement not covered" >          order = 2</span>
+<span class="cstat-no" title="statement not covered" >          isContactSupport = true</span>
+<span class="cstat-no" title="statement not covered" >          break</span>
+<span class="branch-8 cbranch-no" title="branch not covered" >        case 'DISABLED_BY_ENTERPRISE':</span>
+<span class="branch-9 cbranch-no" title="branch not covered" >        case 'DISABLED_BY_TEAM':</span>
+<span class="cstat-no" title="statement not covered" >          order = 0</span>
+<span class="cstat-no" title="statement not covered" >          onClick = undefined</span>
+<span class="cstat-no" title="statement not covered" >          planDisabledStr = action.reason</span>
+<span class="cstat-no" title="statement not covered" >          break</span>
+<span class="branch-10 cbranch-no" title="branch not covered" >        default:</span>
+<span class="cstat-no" title="statement not covered" >          order = 0</span>
+<span class="cstat-no" title="statement not covered" >          onClick = undefined</span>
+      }
 &nbsp;
-    btnProps.push({ buttonText, onClick, btnLoading, order, planDisabledStr, isContactSales, isContactSupport })
-  })
+      btnProps.push({ buttonText, onClick, btnLoading, order, planDisabledStr, isContactSales, isContactSupport })
+    })
 &nbsp;
   // sort btns for display order
   btnProps.sort(<span class="fstat-no" title="function not covered" >(b</span>tn1, btn2) =&gt; <span class="cstat-no" title="statement not covered" >btn1.order - btn2.order)</span>
@@ -847,7 +862,7 @@ export function getPrice({ timeType, plan, openMarketoContactSales, getString }:
             <div class='footer quiet pad2 space-top1 center small'>
                 Code coverage generated by
                 <a href="https://istanbul.js.org/" target="_blank">istanbul</a>
-                at Thu Feb 17 2022 13:44:37 GMT+0000 (Greenwich Mean Time)
+                at Thu Feb 17 2022 17:38:42 GMT+0000 (Greenwich Mean Time)
             </div>
         </div>
         <script src="../../../../../prettify.js"></script>
