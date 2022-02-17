@@ -266,7 +266,10 @@ export function useSaveToGitDialog<T = Record<string, string>>(
             []
           )?.findIndex((mssg: ResponseMessage) => mssg.code === 'SCM_CONFLICT_ERROR') !== -1
         ) {
-          openGitDiffDialog(payloadData, { ...data, conflictCommitId: defaultTo(e?.metadata?.conflictCommitId, '') })
+          openGitDiffDialog(payloadData, {
+            ...data,
+            resolvedConflictCommitId: defaultTo(e?.metadata?.conflictCommitId, '')
+          })
         }
       })
   }

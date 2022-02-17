@@ -30,7 +30,7 @@ export interface UseGitDiffEditorDialogProps<T> {
 }
 
 export interface GitData extends SaveToGitFormInterface {
-  conflictCommitId: string
+  resolvedConflictCommitId: string
 }
 
 export interface UseGitDiffEditorDialogReturn<T> {
@@ -172,7 +172,7 @@ export function useGitDiffEditorDialog<T>(props: UseGitDiffEditorDialogProps<T>)
           yamlGitConfigIdentifier: repoIdentifier,
           filePath: rootFolder?.concat(filePath) || '',
           branch,
-          commitId: _gitDetails?.conflictCommitId
+          commitId: _gitDetails?.resolvedConflictCommitId
         }
       })
       try {
