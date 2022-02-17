@@ -5,7 +5,7 @@
  * https://polyformproject.org/wp-content/uploads/2020/06/PolyForm-Shield-1.0.0.txt.
  */
 
-import React, { useState } from 'react'
+import React, { Dispatch, SetStateAction, useState } from 'react'
 import type { CellProps, Column, Renderer } from 'react-table'
 import {
   Text,
@@ -27,10 +27,17 @@ import { useToaster } from '@common/components'
 import type { AccountPathProps } from '@common/interfaces/RouteInterfaces'
 import routes from '@common/RouteDefinitions'
 import { CcmMetaData, useFetchCcmMetaDataQuery } from 'services/ce/services'
+import type { orderType, sortType, serverSortProps } from '@common/components/Table/react-table-config'
 import css from '../../pages/anomalies-overview/AnomaliesOverviewPage.module.scss'
 
+interface SortByObjInterface {
+  sort?: sortType
+  order?: orderType
+}
 interface ListProps {
   listData: AnomalyData[]
+  sortByObj: SortByObjInterface
+  setSortByObj: Dispatch<SetStateAction<SortByObjInterface>>
 }
 
 interface AnomaliesMenu {
@@ -98,7 +105,43 @@ const AnomaliesMenu: React.FC<AnomaliesMenu> = ({ anomalyId }) => {
   )
 }
 
-const AnomaliesListGridView: React.FC<ListProps> = ({ listData }) => {
+const getServerSortProps = ({
+  enableServerSort,
+  accessor,
+  sortByObj,
+  setSortByObj
+}: {
+  enableServerSort: boolean
+  accessor: string
+  sortByObj: SortByObjInterface
+  setSortByObj: Dispatch<SetStateAction<SortByObjInterface>>
+}): serverSortProps => {
+  if (!enableServerSort) {
+    return { enableServerSort: false }
+  } else {
+    let newOrder: orderType | undefined
+    const sortName = accessor
+
+    if (sortName === sortByObj.sort && sortByObj.order) {
+      newOrder = sortByObj.order === 'DESC' ? 'ASC' : 'DESC'
+    } else {
+      // no saved state for sortBy of the same sort type
+      newOrder = 'ASC'
+    }
+
+    return {
+      enableServerSort: true,
+      isServerSorted: sortByObj.sort === accessor,
+      isServerSortedDesc: sortByObj.order === 'DESC',
+      getSortedColumn: ({ sort }: { sort?: sortType }) => {
+        console.log('sorting table', sort, newOrder)
+        setSortByObj({ sort, order: newOrder })
+      }
+    }
+  }
+}
+
+const AnomaliesListGridView: React.FC<ListProps> = ({ listData, sortByObj, setSortByObj }) => {
   const { getString } = useStrings()
   const { accountId } = useParams<AccountPathProps>()
 
@@ -233,7 +276,13 @@ const AnomaliesListGridView: React.FC<ListProps> = ({ listData }) => {
         ),
         accessor: 'time',
         Cell: DateCell,
-        width: '20%'
+        width: '20%',
+        serverSortProps: getServerSortProps({
+          enableServerSort: true,
+          accessor: 'TIME',
+          sortByObj,
+          setSortByObj
+        })
       },
       {
         Header: (
@@ -243,7 +292,13 @@ const AnomaliesListGridView: React.FC<ListProps> = ({ listData }) => {
         ),
         accessor: 'actualAmount',
         Cell: CostCell,
-        width: '20%'
+        width: '20%',
+        serverSortProps: getServerSortProps({
+          enableServerSort: true,
+          accessor: 'ACTUAL_COST',
+          sortByObj,
+          setSortByObj
+        })
       },
       {
         Header: (
@@ -263,7 +318,13 @@ const AnomaliesListGridView: React.FC<ListProps> = ({ listData }) => {
         ),
         accessor: 'status',
         Cell: StatusCell,
-        width: '20%'
+        width: '20%',
+        serverSortProps: getServerSortProps({
+          enableServerSort: true,
+          accessor: 'STATUS',
+          sortByObj,
+          setSortByObj
+        })
       },
       {
         Header: ' ',

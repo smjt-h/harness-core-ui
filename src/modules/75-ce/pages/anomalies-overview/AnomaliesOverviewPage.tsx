@@ -23,6 +23,7 @@ import {
   getGMTEndDateTime,
   getGMTStartDateTime
 } from '@ce/utils/momentUtils'
+import type { orderType, sortType } from '@common/components/Table/react-table-config'
 
 const getFilters = (filters: Record<string, Record<string, string>>, searchText: string) => {
   const updatedFilters = Object.values(filters).map(item => {
@@ -61,6 +62,10 @@ interface TimeRange {
   to: string
   from: string
 }
+interface SortByObjInterface {
+  sort?: sortType
+  order?: orderType
+}
 
 const AnomaliesOverviewPage: React.FC = () => {
   const { getString } = useStrings()
@@ -76,6 +81,7 @@ const AnomaliesOverviewPage: React.FC = () => {
     to: DATE_RANGE_SHORTCUTS.LAST_7_DAYS[1].format(CE_DATE_FORMAT_INTERNAL),
     from: DATE_RANGE_SHORTCUTS.LAST_7_DAYS[0].format(CE_DATE_FORMAT_INTERNAL)
   })
+  const [sortByObj, setSortByObj] = useState<SortByObjInterface>({})
 
   const { mutate: getAnomaliesList, loading: isListFetching } = useListAnomalies({
     queryParams: {
@@ -125,8 +131,8 @@ const AnomaliesOverviewPage: React.FC = () => {
           groupBy: [],
           orderBy: [
             {
-              field: 'ACTUAL_COST',
-              order: 'DESCENDING'
+              field: sortByObj.sort || 'ACTUAL_COST',
+              order: sortByObj.order === 'ASC' ? 'ASCENDING' : 'DESCENDING'
             }
           ],
           limit: 100,
@@ -138,6 +144,10 @@ const AnomaliesOverviewPage: React.FC = () => {
       }
     }
 
+    getList()
+  }, [filters, sortByObj, getAnomaliesList, searchText, timeRange.from, timeRange.to])
+
+  useEffect(() => {
     const getSummary = async () => {
       try {
         const response = await getAnomalySummary({
@@ -152,9 +162,8 @@ const AnomaliesOverviewPage: React.FC = () => {
         // console.log('AnomaliesOverviewPage: Error in fetching summary data', error)
       }
     }
-    getList()
     getSummary()
-  }, [filters, getAnomaliesList, getAnomalySummary, searchText, timeRange.from, timeRange.to])
+  }, [filters, getAnomalySummary, searchText, timeRange.from, timeRange.to])
 
   const parseSummaryData = (summaryData: any) => {
     summaryData.forEach((item: any) => {
@@ -216,7 +225,7 @@ const AnomaliesOverviewPage: React.FC = () => {
             statusWiseData={statusWiseData}
             allDefaultProviders={(ccmData?.ccmMetaData || {}) as CcmMetaData}
           />
-          <AnomaliesListGridView listData={listData} />
+          <AnomaliesListGridView listData={listData} sortByObj={sortByObj} setSortByObj={setSortByObj} />
         </Container>
       </PageBody>
     </>
