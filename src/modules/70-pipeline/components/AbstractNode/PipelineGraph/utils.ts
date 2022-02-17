@@ -127,7 +127,7 @@ const getSVGLinksFromPipeline = (stages?: StageElementWrapperConfig[], resultArr
         getFinalSVGArrowPath('tree-container', prevElement.stage?.identifier as string, stage.stage?.identifier, false)
       )
     }
-    prevElement = stage
+    prevElement = stage?.parallel ? stage?.parallel?.[0] : stage
   })
   return resultArr
 }

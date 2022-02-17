@@ -5,7 +5,7 @@
  * https://polyformproject.org/wp-content/uploads/2020/06/PolyForm-Shield-1.0.0.txt.
  */
 
-import React from 'react'
+import React, { useLayoutEffect } from 'react'
 import { Intent, Layout, useToaster, useConfirmationDialog } from '@wings-software/uicore'
 import cx from 'classnames'
 import { cloneDeep, debounce, isEmpty, isNil, noop } from 'lodash-es'
@@ -53,7 +53,8 @@ import {
   resetServiceSelectionForStages,
   getAffectedDependentStages,
   getStageIndexByIdentifier,
-  getNewStageFromTemplate
+  getNewStageFromTemplate,
+  getStageIndexWithParallelNodesFromPipeline
 } from './StageBuilderUtil'
 import { useStageBuilderCanvasState } from './useStageBuilderCanvasState'
 import { StageList } from './views/StageList'
@@ -61,6 +62,8 @@ import { SplitViewTypes } from '../PipelineContext/PipelineActions'
 import { usePipelineContext } from '../PipelineContext/PipelineContext'
 import css from './StageBuilder.module.scss'
 import { CDPipelineStudioNew } from '@cd/pages/pipeline-studio/CDPipelineStudio'
+import { stageTypeToIconMap } from '@pipeline/components/PipelineInputSetForm/PipelineInputSetForm'
+import { getNodeType } from '@pipeline/components/AbstractNode/PipelineGraph/PipelineGraph'
 const IS_NEW_PIP_STUDIO_ACTIVE = true
 export type StageStateMap = Map<string, StageState>
 
@@ -216,6 +219,7 @@ const StageBuilder: React.FC<unknown> = (): JSX.Element => {
   setSelectionRef.current = setSelection
 
   const { openTemplateSelector, closeTemplateSelector } = useTemplateSelector()
+  const [state, setState] = React.useState<StageElementConfig[]>([])
 
   const { trackEvent } = useTelemetry()
 
@@ -381,9 +385,12 @@ const StageBuilder: React.FC<unknown> = (): JSX.Element => {
       if (pipeline.stages.indexOf(destinationNode) === 0) {
         pipeline.stages.unshift(newStage)
       } else {
-        const index = pipeline.stages.indexOf(destinationNode)
-        if (index > 0) {
-          pipeline.stages.splice(index, 0, newStage)
+        const { index, parIndex } = getStageIndexWithParallelNodesFromPipeline(
+          pipeline,
+          destinationNode?.stage?.identifier
+        )
+        if (parIndex > 0) {
+          pipeline.stages.splice(parIndex, 0, newStage)
         }
       }
     } else if (isParallel && event?.entity && event.entity instanceof DefaultNodeModel) {

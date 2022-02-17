@@ -21,6 +21,14 @@ export interface PipelineGraphProps {
   getNode: (type?: string | undefined) => React.FC<any> | undefined
   dropLinkEvent: (event: any) => void
 }
+
+export const getNodeType: Record<string, string> = {
+  Deployment: 'default-node',
+  CI: 'default-node',
+  Pipeline: 'default-node',
+  Custom: 'default-node',
+  Approval: 'default-node'
+}
 const PipelineGraph = ({ pipeline, getNode, dropLinkEvent }: PipelineGraphProps): React.ReactElement => {
   const [svgPath, setSvgPath] = useState<string[]>([])
   const [treeRectangle, setTreeRectangle] = useState<DOMRect | void>()
@@ -33,14 +41,6 @@ const PipelineGraph = ({ pipeline, getNode, dropLinkEvent }: PipelineGraphProps)
     const treeContainer = document.getElementById('tree-container')
     const rectBoundary = treeContainer?.getBoundingClientRect()
     setTreeRectangle(rectBoundary)
-  }
-
-  const getNodeType: Record<string, string> = {
-    Deployment: 'default-node',
-    CI: 'default-node',
-    Pipeline: 'default-node',
-    Custom: 'default-node',
-    Approval: 'default-node'
   }
 
   const addInfoToStageData = (data: StageElementWrapperConfig[]) => {

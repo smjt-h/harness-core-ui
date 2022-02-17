@@ -174,6 +174,29 @@ export const getStageIndexFromPipeline = (data: PipelineInfoConfig, identifier?:
   return { index: _index }
 }
 
+export const getStageIndexWithParallelNodesFromPipeline = (
+  data: PipelineInfoConfig,
+  identifier?: string
+): { index: number; parIndex: number } => {
+  let _parIndex = 0
+  let _index = 0
+  data?.stages?.forEach((stage: StageElementWrapperConfig, parIndex: number) => {
+    if (stage?.stage && stage?.stage?.identifier === identifier) {
+      _parIndex = parIndex
+      _index = 0
+    } else if (stage?.parallel) {
+      stage?.parallel?.forEach((parallelStageNode: StageElementWrapperConfig, index: number) => {
+        if (parallelStageNode?.stage?.identifier === identifier) {
+          _parIndex = parIndex
+          _index = index
+        }
+      })
+    }
+  })
+
+  return { index: _index, parIndex: _parIndex }
+}
+
 export const getFlattenedStages = (
   data: Partial<PipelineInfoConfig>
 ): {
