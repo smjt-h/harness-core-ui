@@ -23,9 +23,9 @@
         <div class='clearfix'>
             
             <div class='fl pad1y space-right2'>
-                <span class="strong">63.08% </span>
+                <span class="strong">64.18% </span>
                 <span class="quiet">Statements</span>
-                <span class='fraction'>41/65</span>
+                <span class='fraction'>43/67</span>
             </div>
         
             
@@ -44,9 +44,9 @@
         
             
             <div class='fl pad1y space-right2'>
-                <span class="strong">63.08% </span>
+                <span class="strong">64.18% </span>
                 <span class="quiet">Lines</span>
-                <span class='fraction'>41/65</span>
+                <span class='fraction'>43/67</span>
             </div>
         
             
@@ -404,7 +404,23 @@
 <a name='L345'></a><a href='#L345'>345</a>
 <a name='L346'></a><a href='#L346'>346</a>
 <a name='L347'></a><a href='#L347'>347</a>
-<a name='L348'></a><a href='#L348'>348</a></td><td class="line-coverage quiet"><span class="cline-any cline-neutral">&nbsp;</span>
+<a name='L348'></a><a href='#L348'>348</a>
+<a name='L349'></a><a href='#L349'>349</a>
+<a name='L350'></a><a href='#L350'>350</a>
+<a name='L351'></a><a href='#L351'>351</a>
+<a name='L352'></a><a href='#L352'>352</a>
+<a name='L353'></a><a href='#L353'>353</a>
+<a name='L354'></a><a href='#L354'>354</a>
+<a name='L355'></a><a href='#L355'>355</a>
+<a name='L356'></a><a href='#L356'>356</a>
+<a name='L357'></a><a href='#L357'>357</a>
+<a name='L358'></a><a href='#L358'>358</a>
+<a name='L359'></a><a href='#L359'>359</a>
+<a name='L360'></a><a href='#L360'>360</a>
+<a name='L361'></a><a href='#L361'>361</a>
+<a name='L362'></a><a href='#L362'>362</a>
+<a name='L363'></a><a href='#L363'>363</a>
+<a name='L364'></a><a href='#L364'>364</a></td><td class="line-coverage quiet"><span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
@@ -447,6 +463,8 @@
 <span class="cline-any cline-yes">3x</span>
 <span class="cline-any cline-yes">3x</span>
 <span class="cline-any cline-yes">3x</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">3x</span>
 <span class="cline-any cline-yes">3x</span>
 <span class="cline-any cline-yes">3x</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
@@ -534,6 +552,7 @@
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
@@ -556,6 +575,7 @@
 <span class="cline-any cline-yes">2x</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-yes">2x</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
@@ -672,6 +692,12 @@
 <span class="cline-any cline-yes">2x</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-yes">2x</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">2x</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-yes">2x</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
@@ -709,6 +735,12 @@
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-yes">2x</span>
 <span class="cline-any cline-yes">2x</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
@@ -793,6 +825,8 @@ import {
 } from '@ce/utils/perspectiveUtils'
 import { CCM_CHART_TYPES } from '@ce/constants'
 import { DAYS_FOR_TICK_INTERVAL } from '@ce/components/CloudCostInsightChart/Chart'
+import { CE_DATE_FORMAT_INTERNAL, getGMTEndDateTime, getGMTStartDateTime } from '@ce/utils/momentUtils'
+import type { TimeRangeFilterType } from '@ce/types'
 import { AGGREGATE_FUNCTION } from '../PerspectiveGrid/Columns'
 import PerspectiveGrid from '../PerspectiveGrid/PerspectiveGrid'
 import css from './PerspectiveBuilderPreview.module.scss'
@@ -888,9 +922,10 @@ interface GroupByViewProps {
   setGroupBy: (groupBy: QlceViewFieldInputInput) =&gt; void
   chartType: ViewChartType
   setChartType: (type: ViewChartType) =&gt; void
+  timeRange: TimeRangeFilterType
 }
 &nbsp;
-const GroupByView: React.FC&lt;GroupByViewProps&gt; = ({ groupBy, setGroupBy, chartType, setChartType }) =&gt; {
+const GroupByView: React.FC&lt;GroupByViewProps&gt; = ({ groupBy, setGroupBy, chartType, setChartType, timeRange }) =&gt; {
   const { perspectiveId } = useParams&lt;{ perspectiveId: string }&gt;()
 &nbsp;
   const { getString } = useStrings()
@@ -905,6 +940,7 @@ const GroupByView: React.FC&lt;GroupByViewProps&gt; = ({ groupBy, setGroupBy, ch
   const [labelResult] = useFetchPerspectiveFiltersValueQuery({
     variables: {
       filters: [
+        ...getTimeFilters(getGMTStartDateTime(timeRange.from), getGMTEndDateTime(timeRange.to)),
         {
           idFilter: {
             field: {
@@ -1019,11 +1055,17 @@ const PerspectiveBuilderPreview: React.FC&lt;PerspectiveBuilderPreviewProps&gt; 
   const timeRange = formValues.viewTimeRange?.viewTimeRangeType || ViewTimeRangeType.Last_7
 &nbsp;
   const dateRange = timeRangeMapper[timeRange]
+&nbsp;
+  const timeRangeObj: TimeRangeFilterType = {
+    to: dateRange[1].format(CE_DATE_FORMAT_INTERNAL),
+    from: dateRange[0].format(CE_DATE_FORMAT_INTERNAL)
+  }
+&nbsp;
   const [chartResult] = useFetchPerspectiveTimeSeriesQuery({
     variables: {
       filters: [
         getViewFilterForId(perspectiveId, true),
-        ...getTimeFilters(dateRange[0].valueOf(), dateRange[1].valueOf()),
+        ...getTimeFilters(getGMTStartDateTime(timeRangeObj.from), getGMTEndDateTime(timeRangeObj.to)),
         ...getRuleFilters(normalizeViewRules(formValues.viewRules))
       ],
       limit: 12,
@@ -1062,7 +1104,13 @@ const PerspectiveBuilderPreview: React.FC&lt;PerspectiveBuilderPreviewProps&gt; 
           &lt;Text font={{ variation: FontVariation.H4 }} margin={{ bottom: 'medium' }}&gt;
             {getString('ce.perspectives.createPerspective.preview.title')}
           &lt;/Text&gt;
-          &lt;GroupByView setGroupBy={setGroupBy} groupBy={groupBy} chartType={chartType} setChartType={setChartType} /&gt;
+          &lt;GroupByView
+            timeRange={timeRangeObj}
+            setGroupBy={setGroupBy}
+            groupBy={groupBy}
+            chartType={chartType}
+            setChartType={setChartType}
+          /&gt;
 &nbsp;
           &lt;CloudCostInsightChart
             chartType={chartType === ViewChartType.StackedLineChart ? CCM_CHART_TYPES.AREA : CCM_CHART_TYPES.COLUMN}
@@ -1105,7 +1153,7 @@ export default PerspectiveBuilderPreview
             <div class='footer quiet pad2 space-top1 center small'>
                 Code coverage generated by
                 <a href="https://istanbul.js.org/" target="_blank">istanbul</a>
-                at Fri Feb 18 2022 05:19:02 GMT+0000 (Greenwich Mean Time)
+                at Fri Feb 18 2022 07:26:36 GMT+0000 (Greenwich Mean Time)
             </div>
         </div>
         <script src="../../../../prettify.js"></script>
