@@ -20,9 +20,8 @@ import { Module, ModuleName, moduleToModuleNameMapping } from 'framework/types/M
 import { useFeatures } from '@common/hooks/useFeatures'
 import { useLocalStorage } from '@common/hooks/useLocalStorage'
 import { useModuleInfo } from '@common/hooks/useModuleInfo'
-import { useFeatureFlag } from '@common/hooks/useFeatureFlag'
-import { FeatureFlag } from '@common/featureFlags'
 import type { AccountPathProps } from '@common/interfaces/RouteInterfaces'
+import { useFeatureFlags } from '@common/hooks/useFeatureFlag'
 import { useStrings } from 'framework/strings'
 import { useGetUsageAndLimit } from '@common/hooks/useGetUsageAndLimit'
 import { BannerType } from './Constants'
@@ -218,7 +217,7 @@ export default function FeatureBanner(): React.ReactElement | null {
   const { module } = useModuleInfo()
   const { getString } = useStrings()
 
-  const isFeatureEnforceEnabled = useFeatureFlag(FeatureFlag.FEATURE_ENFORCEMENT_ENABLED)
+  const { FEATURE_ENFORCEMENT_ENABLED: isFeatureEnforceEnabled, FREE_PLAN_ENFORCEMENT_ENABLED } = useFeatureFlags()
   const [activeModuleFeatures, setActiveModuleFeatures] = React.useState<FeatureProps | null>(null)
   const [isBannerDismissed, setIsBannerDismissed] = useLocalStorage<Partial<Record<Module, boolean>>>(
     BANNER_KEY,
@@ -241,6 +240,7 @@ export default function FeatureBanner(): React.ReactElement | null {
       isEnterpriseEdition
     }
   }, [isFreeEdition, isTeamEdition, isEnterpriseEdition])
+  const shouldDisplayForFreePlanOnly = FREE_PLAN_ENFORCEMENT_ENABLED && (isTeamEdition || isEnterpriseEdition)
 
   React.useEffect(() => {
     if (module) {
@@ -254,7 +254,14 @@ export default function FeatureBanner(): React.ReactElement | null {
 
   const message = messageFn?.()
 
-  if (!isFeatureEnforceEnabled || !message || !bannerType || !module || isBannerDismissed[module]) {
+  if (
+    !isFeatureEnforceEnabled ||
+    shouldDisplayForFreePlanOnly ||
+    !message ||
+    !bannerType ||
+    !module ||
+    isBannerDismissed[module]
+  ) {
     return null
   }
 
