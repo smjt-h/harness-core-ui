@@ -369,7 +369,7 @@ const StageBuilder: React.FC<unknown> = (): JSX.Element => {
   const addStageNew = (
     newStage: StageElementWrapper,
     isParallel = false,
-    event?: DefaultNodeEvent,
+    droppedOnLink?: boolean,
     insertAt?: number,
     openSetupAfterAdd?: boolean,
     pipelineTemp?: PipelineInfoConfig,
@@ -381,20 +381,18 @@ const StageBuilder: React.FC<unknown> = (): JSX.Element => {
     if (!pipeline.stages) {
       pipeline.stages = []
     }
-    if (destinationNode) {
-      if (pipeline.stages.indexOf(destinationNode) === 0) {
+    if (droppedOnLink && destinationNode) {
+      const { index, parIndex } = getStageIndexWithParallelNodesFromPipeline(
+        pipeline,
+        destinationNode?.stage?.identifier
+      )
+      if (parIndex === 0) {
         pipeline.stages.unshift(newStage)
-      } else {
-        const { index, parIndex } = getStageIndexWithParallelNodesFromPipeline(
-          pipeline,
-          destinationNode?.stage?.identifier
-        )
-        if (parIndex > 0) {
-          pipeline.stages.splice(parIndex, 0, newStage)
-        }
+      } else if (parIndex > 0) {
+        pipeline.stages.splice(parIndex, 0, newStage)
       }
-    } else if (isParallel && event?.entity && event.entity instanceof DefaultNodeModel) {
-      const { stage, parent } = getStageFromPipeline(event.entity.getIdentifier())
+    } else if (isParallel && !droppedOnLink) {
+      const { stage, parent } = getStageFromPipeline(destinationNode?.stage?.identifier || '')
       const parentTemp = parent as StageElementWrapperConfig
       if (stage) {
         if (parentTemp && parentTemp.parallel && parentTemp.parallel.length > 0) {
@@ -481,6 +479,44 @@ const StageBuilder: React.FC<unknown> = (): JSX.Element => {
           }
         } else {
           addStage(dropNode, current?.parent?.parallel?.length > 0, event, undefined, false)
+        }
+      }
+    }
+  }
+
+  const updateStageOnAddLinkNew = (event: any, dropNode: StageElementWrapper | undefined, current: any): void => {
+    // Check Drop Node and Current node should not be same
+    if (dropNode?.stage?.identifier !== current?.stage?.stage?.identifier) {
+      const isRemove = removeNodeFromPipeline(getStageFromPipeline(event.node.identifier), pipeline, stageMap, false)
+      if (isRemove && dropNode) {
+        if (!current.parent && current.stage) {
+          const index = pipeline.stages?.indexOf(current.stage) ?? -1
+          if (index > -1) {
+            // Remove current Stage also and make it parallel
+            pipeline?.stages?.splice(index, 1)
+            // Now make a parallel stage and update at the same place
+            addStageNew(
+              {
+                parallel: [current.stage, dropNode]
+              },
+              false,
+              false,
+              index,
+              false,
+              undefined,
+              current?.stage
+            )
+          }
+        } else {
+          addStageNew(
+            dropNode,
+            current?.parent?.parallel?.length > 0,
+            false,
+            undefined,
+            false,
+            undefined,
+            current?.stage
+          )
         }
       }
     }
@@ -953,8 +989,72 @@ const StageBuilder: React.FC<unknown> = (): JSX.Element => {
 
       const isRemove = removeNodeFromPipeline(getStageFromPipeline(event.node.identifier), pipeline, stageMap, false)
       if (isRemove && dropNode) {
-        addStageNew(dropNode, false, event, undefined, undefined, undefined, destinationNode)
+        addStageNew(dropNode, false, true, undefined, undefined, undefined, destinationNode)
       }
+    }
+  }
+
+  const dropNodeEvent = (event: any) => {
+    // const eventTemp = event as DefaultNodeEvent
+    // eventTemp.stopPropagation()
+    if (event.node?.identifier) {
+      const dropNode = getStageFromPipeline(event?.node?.identifier).stage
+      const current = getStageFromPipeline(event?.destinationNode?.identifier)
+      const dependentStages = getDependantStages(pipeline, dropNode)
+      const parentStageId = (dropNode?.stage as DeploymentStageElementConfig)?.spec?.serviceConfig?.useFromStage?.stage
+      if (parentStageId?.length) {
+        const { stageIndex } = getStageIndexByIdentifier(pipeline, current?.stage?.stage?.identifier)
+
+        const { index: parentIndex } = getStageIndexFromPipeline(pipeline, parentStageId)
+        if (stageIndex <= parentIndex) {
+          setMoveStageDetails({
+            event,
+            direction: MoveDirection.AHEAD,
+            currentStage: current
+          })
+          confirmMoveStage()
+          return
+        }
+
+        return
+      } else if (dependentStages?.length) {
+        let finalDropIndex = -1
+        let firstDependentStageIndex
+        const { stageIndex: dependentStageIndex, parallelStageIndex: dependentParallelIndex = -1 } =
+          getStageIndexByIdentifier(pipeline, dependentStages[0])
+
+        firstDependentStageIndex = dependentStageIndex
+
+        if (current.parent) {
+          const { stageIndex } = getStageIndexByIdentifier(pipeline, current?.stage?.stage?.identifier)
+          finalDropIndex = stageIndex
+          firstDependentStageIndex = dependentStageIndex
+        } else if (current?.stage) {
+          const { stageIndex } = getStageIndexByIdentifier(pipeline, current?.stage?.stage?.identifier)
+          finalDropIndex = stageIndex
+        }
+
+        finalDropIndex = finalDropIndex === -1 ? pipeline.stages?.length || 0 : finalDropIndex
+        const stagesTobeUpdated = getAffectedDependentStages(
+          dependentStages,
+          finalDropIndex,
+          pipeline,
+          dependentParallelIndex
+        )
+        if (finalDropIndex >= firstDependentStageIndex) {
+          setMoveStageDetails({
+            event,
+            direction: MoveDirection.BEHIND,
+            dependentStages: stagesTobeUpdated,
+            currentStage: current,
+            isLastAddLink: !current.parent
+          })
+
+          confirmMoveStage()
+          return
+        }
+      }
+      updateStageOnAddLinkNew(event, dropNode, current)
     }
   }
   //1) setup the diagram engine
@@ -1027,8 +1127,6 @@ const StageBuilder: React.FC<unknown> = (): JSX.Element => {
 
   const stageType = selectedStage?.stage?.stage?.template ? StageType.Template : selectedStage?.stage?.stage?.type
 
-  console.log('check pipeline', pipeline)
-
   return (
     <Layout.Horizontal className={cx(css.canvasContainer)} padding="medium">
       <div className={css.canvasWrapper}>
@@ -1045,7 +1143,7 @@ const StageBuilder: React.FC<unknown> = (): JSX.Element => {
         >
           {/* {StageCanvas} */}
           {IS_NEW_PIP_STUDIO_ACTIVE ? (
-            <CDPipelineStudioNew dropLinkEvent={dropLinkEvent} pipeline={pipeline} />
+            <CDPipelineStudioNew dropNodeEvent={dropNodeEvent} dropLinkEvent={dropLinkEvent} pipeline={pipeline} />
           ) : (
             StageCanvas
           )}

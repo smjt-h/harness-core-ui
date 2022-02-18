@@ -11,13 +11,15 @@ export const PipelineGraphRecursive = ({
   getNode,
   selectedNode,
   setSelectedNode,
-  dropLinkEvent
+  dropLinkEvent,
+  dropNodeEvent
 }: {
   stages?: StageElementConfig[]
   getNode: (type?: string | undefined) => React.FC<any> | undefined
   selectedNode: string
   setSelectedNode: (nodeId: string) => void
   dropLinkEvent: (event: any) => void
+  dropNodeEvent: (event: any) => void
 }): React.ReactElement => {
   const StartNode: React.FC<any> | undefined = getNode(NodeType.StartNode)
   const CreateNode: React.FC<any> | undefined = getNode(NodeType.CreateNode)
@@ -33,6 +35,7 @@ export const PipelineGraphRecursive = ({
       {stages?.map((stage, index) => {
         return (
           <PipelineGraphNode
+            dropNodeEvent={dropNodeEvent}
             dropLinkEvent={dropLinkEvent}
             selectedNode={selectedNode}
             stage={stage}
@@ -62,8 +65,10 @@ interface PipelineGraphNode {
   setSelectedNode: (nodeId: string) => void
   isParallelNode?: boolean
   dropLinkEvent: (event: any) => void
+  dropNodeEvent: (event: any) => void
   isNextNodeParallel?: boolean
   isPrevNodeParallel?: boolean
+  isLastChild?: boolean
 }
 
 export const PipelineGraphNode = ({
@@ -74,8 +79,10 @@ export const PipelineGraphNode = ({
   selectedNode,
   isParallelNode,
   dropLinkEvent,
+  dropNodeEvent,
   isNextNodeParallel,
-  isPrevNodeParallel
+  isPrevNodeParallel,
+  isLastChild
 }: PipelineGraphNode): React.ReactElement => {
   const NodeComponent: React.FC<any> | undefined = getNode(stage?.type) || getNode(NodeType.Default)
   return (
@@ -89,13 +96,16 @@ export const PipelineGraphNode = ({
           setSelectedNode={setSelectedNode}
           isSelected={selectedNode === stage?.identifier}
           dropLinkEvent={dropLinkEvent}
+          dropNodeEvent={dropNodeEvent}
           isParallelNode={isParallelNode}
+          allowAdd={(!stage?.children?.length && !isParallelNode) || (isParallelNode && isLastChild)}
         />
       )}{' '}
       <>
-        {stage?.children?.map(currentStage => (
+        {stage?.children?.map((currentStage, index) => (
           <PipelineGraphNode
             dropLinkEvent={dropLinkEvent}
+            dropNodeEvent={dropNodeEvent}
             getNode={getNode}
             key={stage?.identifier}
             className={css.parallel}
@@ -103,6 +113,7 @@ export const PipelineGraphNode = ({
             selectedNode={selectedNode}
             setSelectedNode={setSelectedNode}
             isParallelNode={true}
+            isLastChild={index + 1 === stage?.children?.length}
           />
         ))}
       </>

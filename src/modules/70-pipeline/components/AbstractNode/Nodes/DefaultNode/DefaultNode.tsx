@@ -18,14 +18,75 @@ const iconStyle = {
 const SECONDARY_ICON: IconName = 'command-echo'
 
 const DefaultNode = (props: any): JSX.Element => {
+  const allowAdd = props.allowAdd ?? false
+  const [addClicked, setAddClicked] = React.useState(false)
+  const nodeRef = React.useRef<HTMLDivElement>(null)
+  const [showAdd, setVisibilityOfAdd] = React.useState(false)
+
+  React.useEffect(() => {
+    const currentNode = nodeRef.current
+
+    const onMouseOver = (e: MouseEvent): void => {
+      if (!addClicked && allowAdd) {
+        setVisibilityOfAdd(true)
+      }
+      // onMouseOverNode(e, props.node)
+    }
+
+    const onMouseEnter = (e: MouseEvent): void => {
+      // onMouseEnterNode(e, props.node)
+    }
+
+    const onMouseLeave = (e: MouseEvent): void => {
+      if (!addClicked && allowAdd) {
+        setVisibilityOfAdd(false)
+      }
+      // onMouseLeaveNode(e, props.node)
+    }
+
+    if (currentNode) {
+      currentNode.addEventListener('mouseenter', onMouseEnter)
+      currentNode.addEventListener('mouseover', onMouseOver)
+      currentNode.addEventListener('mouseleave', onMouseLeave)
+    }
+    return () => {
+      if (currentNode) {
+        currentNode.removeEventListener('mouseenter', onMouseEnter)
+        currentNode.removeEventListener('mouseover', onMouseOver)
+        currentNode.removeEventListener('mouseleave', onMouseLeave)
+      }
+    }
+  }, [nodeRef, allowAdd, addClicked])
+
   return (
     <>
       <div
         className={`${cx(css.defaultNode, 'default-node')} draggable`}
+        ref={nodeRef}
         onClick={() => {
           props?.setSelectedNode(props?.identifier)
         }}
-        // onDrag={event => console.log('dragged', event)}
+        onDragOver={event => {
+          if (event.dataTransfer.types.indexOf(DiagramDrag.AllowDropOnNode) !== -1) {
+            if (allowAdd) {
+              setVisibilityOfAdd(true)
+              event.preventDefault()
+            }
+          }
+        }}
+        onDragLeave={event => {
+          if (event.dataTransfer.types.indexOf(DiagramDrag.AllowDropOnNode) !== -1) {
+            if (allowAdd) {
+              setVisibilityOfAdd(false)
+            }
+          }
+        }}
+        onDrop={e => {
+          props?.dropNodeEvent({
+            node: JSON.parse(e.dataTransfer.getData(DiagramDrag.NodeDrag)),
+            destinationNode: props
+          })
+        }}
       >
         <div
           id={props.identifier}
@@ -45,6 +106,7 @@ const DefaultNode = (props: any): JSX.Element => {
             // in order to detect if we can drop, we are setting and using "keys" and then
             // checking in onDragOver if this type (AllowDropOnLink/AllowDropOnNode) exist we allow drop
             event.dataTransfer.setData(DiagramDrag.AllowDropOnLink, '1')
+            event.dataTransfer.setData(DiagramDrag.AllowDropOnNode, '1')
             // if (options.allowDropOnNode) event.dataTransfer.setData(DiagramDrag.AllowDropOnNode, '1')
             event.dataTransfer.dropEffect = 'move'
           }}
@@ -75,6 +137,26 @@ const DefaultNode = (props: any): JSX.Element => {
           >
             {props.name}
           </Text>
+        )}
+        {allowAdd && (
+          <div
+            onClick={e => {
+              e.stopPropagation()
+              setAddClicked(true)
+              setVisibilityOfAdd(true)
+              // onAddNodeClick(e, props.node, setAddClicked)
+            }}
+            className={css.addNode}
+            data-nodeid="add-parallel"
+            style={{
+              width: props.width || 90,
+              height: props.height || 40,
+              display: showAdd ? 'flex' : 'none'
+              // marginLeft: (128 - (props.width || 64)) / 2
+            }}
+          >
+            <Icon name="plus" size={22} color={'var(--diagram-add-node-color)'} />
+          </div>
         )}
       </div>
       {!props.isParallelNode && (

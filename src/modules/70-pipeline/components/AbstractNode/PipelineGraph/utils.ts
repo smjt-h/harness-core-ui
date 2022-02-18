@@ -1,5 +1,5 @@
 import type { RefObject } from 'react'
-import type { StageElementWrapperConfig } from 'services/cd-ng'
+import type { StageElementConfig, StageElementWrapperConfig } from 'services/cd-ng'
 const INITIAL_ZOOM_LEVEL = 1
 const ZOOM_INC_DEC_LEVEL = 0.1
 const getFinalSVGArrowPath = (parentId: string, id1 = '', id2 = '', isParallelNode = false): string => {
@@ -113,43 +113,26 @@ const setupDragEventListeners = (canvasRef: RefObject<HTMLDivElement>): (() => v
   }
 }
 
-const getSVGLinksFromPipeline = (stages?: StageElementWrapperConfig[], resultArr: string[] = []): string[] => {
-  let prevElement: StageElementWrapperConfig
-  stages?.forEach(stage => {
-    if (!prevElement) {
-      prevElement = stage
-      return
+const getSVGLinksFromPipeline = (states?: StageElementConfig[], resultArr: string[] = []): string[] => {
+  let prevElement: StageElementConfig
+  states?.forEach(state => {
+    if (state?.children?.length) {
+      getParallelNodeLinks(state.children, state, resultArr)
     }
-    if (stage.parallel) {
-      getParallelNodeLinks(stage.parallel, prevElement, resultArr)
-    } else {
-      resultArr.push(
-        getFinalSVGArrowPath('tree-container', prevElement.stage?.identifier as string, stage.stage?.identifier, false)
-      )
+    if (prevElement) {
+      resultArr.push(getFinalSVGArrowPath('tree-container', prevElement.identifier, state.identifier, false))
     }
-    prevElement = stage?.parallel ? stage?.parallel?.[0] : stage
+    prevElement = state
   })
   return resultArr
 }
 const getParallelNodeLinks = (
-  stages: StageElementWrapperConfig[],
-  prevStage: StageElementWrapperConfig,
+  stages: StageElementConfig[],
+  firstStage: StageElementConfig | undefined,
   resultArr: string[] = []
 ): void => {
-  const [firstStage, ...restStages] = stages
-  const previousStage = prevStage?.parallel ? prevStage.parallel?.[0] : prevStage
-  resultArr.push(
-    getFinalSVGArrowPath(
-      'tree-container',
-      previousStage.stage?.identifier as string,
-      firstStage.stage?.identifier,
-      false
-    )
-  )
-  restStages?.forEach(stage => {
-    resultArr.push(
-      getFinalSVGArrowPath('tree-container', firstStage.stage?.identifier as string, stage.stage?.identifier, true)
-    )
+  stages?.forEach(stage => {
+    resultArr.push(getFinalSVGArrowPath('tree-container', firstStage?.identifier as string, stage?.identifier, true))
   })
 }
 

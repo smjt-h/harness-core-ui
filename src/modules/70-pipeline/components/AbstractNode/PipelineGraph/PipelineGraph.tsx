@@ -20,6 +20,7 @@ export interface PipelineGraphProps {
   pipeline: PipelineInfoConfig
   getNode: (type?: string | undefined) => React.FC<any> | undefined
   dropLinkEvent: (event: any) => void
+  dropNodeEvent: (event: any) => void
 }
 
 export const getNodeType: Record<string, string> = {
@@ -29,7 +30,7 @@ export const getNodeType: Record<string, string> = {
   Custom: 'default-node',
   Approval: 'default-node'
 }
-const PipelineGraph = ({ pipeline, getNode, dropLinkEvent }: PipelineGraphProps): React.ReactElement => {
+const PipelineGraph = ({ pipeline, getNode, dropLinkEvent, dropNodeEvent }: PipelineGraphProps): React.ReactElement => {
   const [svgPath, setSvgPath] = useState<string[]>([])
   const [treeRectangle, setTreeRectangle] = useState<DOMRect | void>()
   const [selectedNode, setSelectedNode] = useState<string>('')
@@ -97,20 +98,14 @@ const PipelineGraph = ({ pipeline, getNode, dropLinkEvent }: PipelineGraphProps)
     }
   }, [state])
 
-  console.log('state', state)
-
   const setSVGLinks = (): void => {
-    const SVGLinks = getSVGLinksFromPipeline(pipeline.stages)
-    const lastNode = pipeline.stages?.[pipeline?.stages?.length - 1]
-    const stageData = lastNode?.parallel ? lastNode.parallel[0].stage : lastNode?.stage
+    const SVGLinks = getSVGLinksFromPipeline(state)
+    const lastNode = state?.[state?.length - 1]
+    // const stageData = lastNode?.parallel ? lastNode.parallel[0].stage : lastNode?.stage
     return setSvgPath([
       ...SVGLinks,
-      getFinalSVGArrowPath(
-        'tree-container',
-        NodeType.StartNode as string,
-        pipeline?.stages?.[0].stage?.identifier as string
-      ),
-      getFinalSVGArrowPath('tree-container', stageData?.identifier as string, NodeType.CreateNode as string),
+      getFinalSVGArrowPath('tree-container', NodeType.StartNode as string, state?.[0]?.identifier as string),
+      getFinalSVGArrowPath('tree-container', lastNode?.identifier as string, NodeType.CreateNode as string),
       getFinalSVGArrowPath('tree-container', NodeType.CreateNode as string, NodeType.EndNode as string)
     ])
   }
@@ -138,6 +133,7 @@ const PipelineGraph = ({ pipeline, getNode, dropLinkEvent }: PipelineGraphProps)
             selectedNode={selectedNode}
             setSelectedNode={updateSelectedNode}
             dropLinkEvent={dropLinkEvent}
+            dropNodeEvent={dropNodeEvent}
           />
         </div>
         <GraphActions setGraphScale={setGraphScale} graphScale={graphScale} handleScaleToFit={handleScaleToFit} />
