@@ -929,11 +929,6 @@ const StageBuilder: React.FC<unknown> = (): JSX.Element => {
   }
 
   const dropLinkEvent = (event: any) => {
-    // console.log(event.node.identifier === event.entity.getIdentifier())
-
-    const eventTemp = event as DefaultLinkEvent
-    // eventTemp.stopPropagation()
-    console.log('check event', event)
     if (event?.node?.identifier === event?.destinationNode?.identifier) {
       return
     }
@@ -995,8 +990,6 @@ const StageBuilder: React.FC<unknown> = (): JSX.Element => {
   }
 
   const dropNodeEvent = (event: any) => {
-    // const eventTemp = event as DefaultNodeEvent
-    // eventTemp.stopPropagation()
     if (event.node?.identifier) {
       const dropNode = getStageFromPipeline(event?.node?.identifier).stage
       const current = getStageFromPipeline(event?.destinationNode?.identifier)
