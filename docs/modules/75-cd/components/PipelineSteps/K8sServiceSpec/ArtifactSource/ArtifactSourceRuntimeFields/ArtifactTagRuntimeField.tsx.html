@@ -23,30 +23,30 @@
         <div class='clearfix'>
             
             <div class='fl pad1y space-right2'>
-                <span class="strong">78.57% </span>
+                <span class="strong">78.13% </span>
                 <span class="quiet">Statements</span>
-                <span class='fraction'>22/28</span>
+                <span class='fraction'>25/32</span>
             </div>
         
             
             <div class='fl pad1y space-right2'>
-                <span class="strong">63.83% </span>
+                <span class="strong">63.27% </span>
                 <span class="quiet">Branches</span>
-                <span class='fraction'>30/47</span>
+                <span class='fraction'>31/49</span>
             </div>
         
             
             <div class='fl pad1y space-right2'>
-                <span class="strong">60% </span>
+                <span class="strong">66.67% </span>
                 <span class="quiet">Functions</span>
-                <span class='fraction'>3/5</span>
+                <span class='fraction'>4/6</span>
             </div>
         
             
             <div class='fl pad1y space-right2'>
-                <span class="strong">81.48% </span>
+                <span class="strong">80.65% </span>
                 <span class="quiet">Lines</span>
-                <span class='fraction'>22/27</span>
+                <span class='fraction'>25/31</span>
             </div>
         
             
@@ -189,7 +189,15 @@
 <a name='L130'></a><a href='#L130'>130</a>
 <a name='L131'></a><a href='#L131'>131</a>
 <a name='L132'></a><a href='#L132'>132</a>
-<a name='L133'></a><a href='#L133'>133</a></td><td class="line-coverage quiet"><span class="cline-any cline-neutral">&nbsp;</span>
+<a name='L133'></a><a href='#L133'>133</a>
+<a name='L134'></a><a href='#L134'>134</a>
+<a name='L135'></a><a href='#L135'>135</a>
+<a name='L136'></a><a href='#L136'>136</a>
+<a name='L137'></a><a href='#L137'>137</a>
+<a name='L138'></a><a href='#L138'>138</a>
+<a name='L139'></a><a href='#L139'>139</a>
+<a name='L140'></a><a href='#L140'>140</a>
+<a name='L141'></a><a href='#L141'>141</a></td><td class="line-coverage quiet"><span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
@@ -234,6 +242,8 @@
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">10x</span>
 <span class="cline-any cline-yes">10x</span>
 <span class="cline-any cline-yes">10x</span>
 <span class="cline-any cline-yes">10x</span>
@@ -248,6 +258,12 @@
 <span class="cline-any cline-no">&nbsp;</span>
 <span class="cline-any cline-no">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">10x</span>
+<span class="cline-any cline-yes">10x</span>
+<span class="cline-any cline-no">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
@@ -332,7 +348,7 @@ import React, { useEffect, useState } from 'react'
 import { defaultTo, memoize } from 'lodash-es'
 import { Menu } from '@blueprintjs/core'
 &nbsp;
-import { Layout, SelectOption, Text } from '@wings-software/uicore'
+import { Layout, SelectOption, Text, useToaster } from '@wings-software/uicore'
 import type { GetDataError } from 'restful-react'
 import { EXPRESSION_STRING } from '@pipeline/utils/constants'
 import type { DockerBuildDetailsDTO, Failure, Error } from 'services/cd-ng'
@@ -365,10 +381,12 @@ const ArtifactTagRuntimeField = (props: TagsRenderContent): JSX.Element =&gt; {
     isFieldDisabled,
     fetchingTags,
     fetchTags,
-    fetchTagsError
+    fetchTagsError,
+    stageIdentifier
   } = props
   const { getString } = useStrings()
   const loadingTags = getString('pipeline.artifactsSelection.loadingTags')
+  const { showError } = useToaster()
 &nbsp;
   const [tagsList, setTagsList] = useState&lt;SelectOption[]&gt;([])
   useEffect(() =&gt; {
@@ -382,6 +400,12 @@ const ArtifactTagRuntimeField = (props: TagsRenderContent): JSX.Element =&gt; {
       }
     }
   }, [buildDetailsList])
+&nbsp;
+  useEffect(() =&gt; {
+    <span class="missing-if-branch" title="if path not taken" >I</span>if (fetchTagsError) {
+<span class="cstat-no" title="statement not covered" >      showError(`Stage ${stageIdentifier}: ${getTagError(fetchTagsError)}`, undefined, 'cd.tag.fetch.error')</span>
+    }
+  }, [fetchTagsError, showError, stageIdentifier])
 &nbsp;
   const itemRenderer = memoize(<span class="fstat-no" title="function not covered" >(i</span>tem: { label: string }, { handleClick }) =&gt; (
 <span class="cstat-no" title="statement not covered" >    &lt;div key={item.label.toString()}&gt;</span>
@@ -460,7 +484,7 @@ export default ArtifactTagRuntimeField
             <div class='footer quiet pad2 space-top1 center small'>
                 Code coverage generated by
                 <a href="https://istanbul.js.org/" target="_blank">istanbul</a>
-                at Fri Feb 18 2022 08:17:42 GMT+0000 (Greenwich Mean Time)
+                at Sat Feb 19 2022 06:48:52 GMT+0000 (Greenwich Mean Time)
             </div>
         </div>
         <script src="../../../../../../../prettify.js"></script>
