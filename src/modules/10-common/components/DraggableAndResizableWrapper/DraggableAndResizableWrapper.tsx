@@ -6,10 +6,11 @@ interface DraggableAndResizableWrapperProps {
   className?: string
   onResize?: RndResizeCallback
   rndOverrideProps?: ReactRndProps
+  children?: React.ReactNode
 }
 
 export const DraggableAndResizableWrapper = (
-  props: React.PropsWithChildren<DraggableAndResizableWrapperProps>,
+  props: DraggableAndResizableWrapperProps,
   draggableAndResizeableContainerRef: React.ForwardedRef<null | HTMLDivElement>
 ) => {
   const { className, onResize, rndOverrideProps } = props
@@ -38,8 +39,4 @@ export const DraggableAndResizableWrapper = (
   )
 }
 
-export const DraggableAndResizableWrapperWithRef = React.forwardRef(
-  DraggableAndResizableWrapper
-) as React.ForwardRefExoticComponent<
-  React.PropsWithChildren<DraggableAndResizableWrapperProps> & React.RefAttributes<HTMLDivElement | null>
->
+export const DraggableAndResizableWrapperWithRef = React.forwardRef(DraggableAndResizableWrapper)

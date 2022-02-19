@@ -1,0 +1,73 @@
+// Jest Snapshot v1, https://goo.gl/fbAQLP
+
+exports[`Draggable and Resizable test snapshot testing 1 1`] = `
+<div>
+  <div
+    class="react-draggable"
+    style="position: absolute; user-select: auto; width: 480px; height: 500px; display: inline-block; top: 0px; left: 0px; cursor: move; transform: translate(100px,60px); max-width: 9007199254740991px; max-height: 9007199254740991px; box-sizing: border-box; flex-shrink: 0;"
+  >
+    <div
+      class="StyledProps--font StyledProps--main"
+      style="height: 100%;"
+    >
+      <div>
+        Draggable and resizable div
+      </div>
+    </div>
+    <div>
+      <div
+        class=""
+        style="position: absolute; user-select: none; width: 100%; height: 10px; top: -5px; left: 0px; cursor: row-resize;"
+      />
+      <div
+        class=""
+        style="position: absolute; user-select: none; width: 100%; height: 10px; bottom: -5px; left: 0px; cursor: row-resize;"
+      />
+      <div
+        class=""
+        style="position: absolute; user-select: none; width: 10px; height: 100%; top: 0px; left: -5px; cursor: col-resize;"
+      />
+      <div
+        class=""
+        style="position: absolute; user-select: none; width: 10px; height: 100%; top: 0px; right: -5px; cursor: col-resize;"
+      />
+    </div>
+  </div>
+</div>
+`;
+
+exports[`Draggable and Resizable test snapshot testing with additional props 1`] = `
+<div>
+  <div
+    class="draggableAndResizableWrapper react-draggable"
+    style="position: absolute; user-select: auto; width: 480px; height: 500px; display: inline-block; top: 0px; left: 0px; cursor: move; transform: translate(100px,60px); max-width: 9007199254740991px; max-height: 9007199254740991px; min-width: 250px; min-height: 250px; box-sizing: border-box; flex-shrink: 0;"
+  >
+    <div
+      class="StyledProps--font StyledProps--main"
+      style="height: 100%;"
+    >
+      <div>
+        Draggable and resizable div
+      </div>
+    </div>
+    <div>
+      <div
+        class=""
+        style="position: absolute; user-select: none; width: 100%; height: 10px; top: -5px; left: 0px; cursor: row-resize;"
+      />
+      <div
+        class=""
+        style="position: absolute; user-select: none; width: 100%; height: 10px; bottom: -5px; left: 0px; cursor: row-resize;"
+      />
+      <div
+        class=""
+        style="position: absolute; user-select: none; width: 10px; height: 100%; top: 0px; left: -5px; cursor: col-resize;"
+      />
+      <div
+        class=""
+        style="position: absolute; user-select: none; width: 10px; height: 100%; top: 0px; right: -5px; cursor: col-resize;"
+      />
+    </div>
+  </div>
+</div>
+`;
