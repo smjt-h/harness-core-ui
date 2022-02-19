@@ -47,6 +47,18 @@ export interface TemplateStageValues extends StageElementConfig {
   allValues?: StageElementConfig
 }
 
+const RND_OVERRIDE_PROPS = {
+  default: {
+    x: 360,
+    y: 65,
+    width: 650,
+    height: 450
+  },
+  minWidth: 450,
+  minHeight: 450,
+  bounds: '.Pane2'
+}
+
 export const TemplateStageSpecifications = (): JSX.Element => {
   const {
     state: {
@@ -184,6 +196,7 @@ export const TemplateStageSpecifications = (): JSX.Element => {
             onRemoveTemplate={onRemoveTemplate}
             onOpenTemplateSelector={onOpenTemplateSelector}
             className={css.templateBar}
+            rndOverrideProps={RND_OVERRIDE_PROPS}
           />
         )}
         <Formik<TemplateStageValues>

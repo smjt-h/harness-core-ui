@@ -48,6 +48,20 @@ enum StepCommandTabs {
   Advanced = 'Advanced'
 }
 
+const PREVIEW_DIALOG_INITIAL_HEIGHT = 400
+
+const RND_OVERRIDE_PROPS = {
+  default: {
+    x: 50,
+    y: 30,
+    width: 480,
+    height: PREVIEW_DIALOG_INITIAL_HEIGHT
+  },
+  minWidth: 250,
+  minHeight: 250,
+  bounds: '#step-commands-container'
+}
+
 export function StepCommands(
   props: StepCommandsProps & { checkDuplicateStep?: () => boolean },
   ref: StepCommandsRef
@@ -215,13 +229,15 @@ export function StepCommands(
   }
 
   return (
-    <div className={cx(css.stepCommand, className)}>
+    <div id="step-commands-container" className={cx(css.stepCommand, className)}>
       {stepType === StepType.Template && onUseTemplate && onRemoveTemplate ? (
         <Layout.Vertical margin={'xlarge'} spacing={'xxlarge'}>
           <TemplateBar
             templateLinkConfig={(step as TemplateStepNode).template}
             onOpenTemplateSelector={onUseTemplate}
             onRemoveTemplate={onRemoveTemplate}
+            rndOverrideProps={RND_OVERRIDE_PROPS}
+            previewDialogInitialHeight={PREVIEW_DIALOG_INITIAL_HEIGHT}
           />
           <Container>{getStepWidgetWithFormikRef()}</Container>
         </Layout.Vertical>

@@ -11,9 +11,11 @@ declare const styles: {
   readonly active: string
   readonly container: string
   readonly disabled: string
+  readonly draggableAndResizableContainer: string
   readonly main: string
   readonly menuItem: string
   readonly popover: string
+  readonly templateYaml: string
   readonly templateYamlPreviewContainer: string
 }
 export default styles

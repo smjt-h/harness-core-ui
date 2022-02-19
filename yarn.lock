@@ -9860,6 +9860,11 @@ fast-levenshtein@^2.0.6, fast-levenshtein@~2.0.6:
   resolved "https://registry.yarnpkg.com/fast-levenshtein/-/fast-levenshtein-2.0.6.tgz#3d8a5c66883a16a30ca8643e851f19baa7797917"
   integrity "sha1-PYpcZog6FqMMqGQ+hR8Zuqd5eRc= sha512-DCXu6Ifhqcks7TZKY3Hxp3y6qphY5SJZmrWMDrKcERSOXWQdMhU9Ig/PYrzyw/ul9jOIyh0N4M0tbC5hodg8dw=="
 
+fast-memoize@^2.5.1:
+  version "2.5.2"
+  resolved "https://registry.yarnpkg.com/fast-memoize/-/fast-memoize-2.5.2.tgz#79e3bb6a4ec867ea40ba0e7146816f6cdce9b57e"
+  integrity sha512-Ue0LwpDYErFbmNnZSF0UH6eImUwDmogUO1jyE+JbN2gsQz/jICm1Ve7t9QT0rNSsfJt+Hs4/S3GnsDVjL4HVrw==
+
 fast-redact@^3.0.0:
   version "3.0.1"
   resolved "https://registry.yarnpkg.com/fast-redact/-/fast-redact-3.0.1.tgz#d6015b971e933d03529b01333ba7f22c29961e92"
@@ -16424,6 +16429,13 @@ rdf-canonize@^1.0.2:
     node-forge "^0.10.0"
     semver "^6.3.0"
 
+re-resizable@6.9.1:
+  version "6.9.1"
+  resolved "https://registry.yarnpkg.com/re-resizable/-/re-resizable-6.9.1.tgz#6be082b55d02364ca4bfee139e04feebdf52441c"
+  integrity sha512-KRYAgr9/j1PJ3K+t+MBhlQ+qkkoLDJ1rs0z1heIWvYbCW/9Vq4djDU+QumJ3hQbwwtzXF6OInla6rOx6hhgRhQ==
+  dependencies:
+    fast-memoize "^2.5.1"
+
 react-beautiful-dnd@^13.0.0:
   version "13.0.0"
   resolved "https://registry.yarnpkg.com/react-beautiful-dnd/-/react-beautiful-dnd-13.0.0.tgz#f70cc8ff82b84bc718f8af157c9f95757a6c3b40"
@@ -16515,7 +16527,7 @@ react-dom@^17.0.2:
     object-assign "^4.1.1"
     scheduler "^0.20.2"
 
-react-draggable@^4.4.2, react-draggable@^4.4.3:
+react-draggable@4.4.3, react-draggable@^4.4.2, react-draggable@^4.4.3:
   version "4.4.3"
   resolved "https://registry.yarnpkg.com/react-draggable/-/react-draggable-4.4.3.tgz#0727f2cae5813e36b0e4962bf11b2f9ef2b406f3"
   integrity "sha1-ByfyyuWBPjaw5JYr8RsvnvK0BvM= sha512-jV4TE59MBuWm7gb6Ns3Q1mxX8Azffb7oTtDtBgFkxRvhDp38YAARmRplrj0+XGkhOJB5XziArX+4HUUABtyZ0w=="
@@ -16667,6 +16679,15 @@ react-refresh@^0.8.3:
   version "0.8.3"
   resolved "https://registry.yarnpkg.com/react-refresh/-/react-refresh-0.8.3.tgz#721d4657672d400c5e3c75d063c4a85fb2d5d68f"
   integrity "sha1-ch1GV2ctQAxePHXQY8SoX7LV1o8= sha512-X8jZHc7nCMjaCqoU+V2I0cOhNW+QMBwSUkeXnTi8IPe6zaRWfn60ZzvFDZqWPfmSJfjub7dDW1SP0jaHWLu/hg=="
+
+react-rnd@^10.3.5:
+  version "10.3.5"
+  resolved "https://registry.yarnpkg.com/react-rnd/-/react-rnd-10.3.5.tgz#b66e5e06f1eb6823e72eb4b552081b4b9241b139"
+  integrity sha512-LWJP+l5bp76sDPKrKM8pwGJifI6i3B5jHK4ONACczVMbR8ycNGA75ORRqpRuXGyKawUs68s1od05q8cqWgQXgw==
+  dependencies:
+    re-resizable "6.9.1"
+    react-draggable "4.4.3"
+    tslib "2.3.0"
 
 react-router-dom@^5.2.0:
   version "5.2.0"
@@ -19298,6 +19319,11 @@ tsconfig-paths@^3.9.0:
     minimist "^1.2.0"
     strip-bom "^3.0.0"
 
+tslib@2.3.0, tslib@^2.2.0:
+  version "2.3.0"
+  resolved "https://registry.yarnpkg.com/tslib/-/tslib-2.3.0.tgz#803b8cdab3e12ba581a4ca41c8839bbb0dacb09e"
+  integrity sha512-N82ooyxVNm6h1riLCoyS9e3fuJ3AMG2zIZs2Gd1ATcSFjSA23Q0fzjjZeh0jbJvWVDZ0cJT8yaNNaaXHzueNjg==
+
 tslib@^1.10.0, tslib@^1.8.1, tslib@^1.9.3:
   version "1.13.0"
   resolved "https://registry.yarnpkg.com/tslib/-/tslib-1.13.0.tgz#c881e13cc7015894ed914862d276436fa9a47043"
@@ -19312,11 +19338,6 @@ tslib@^2, tslib@^2.0.0, tslib@^2.0.1, tslib@^2.0.3, tslib@^2.1.0, tslib@~2.2.0:
   version "2.2.0"
   resolved "https://registry.yarnpkg.com/tslib/-/tslib-2.2.0.tgz#fb2c475977e35e241311ede2693cee1ec6698f5c"
   integrity "sha1-+yxHWXfjXiQTEe3iaTzuHsZpj1w= sha512-gS9GVHRU+RGn5KQM2rllAlR3dU6m7AcpJKdtH8gFvQiC4Otgk98XnmMU+nZenHt/+VhnBPWwgrJsyrdcw6i23w=="
-
-tslib@^2.2.0:
-  version "2.3.0"
-  resolved "https://registry.yarnpkg.com/tslib/-/tslib-2.3.0.tgz#803b8cdab3e12ba581a4ca41c8839bbb0dacb09e"
-  integrity sha512-N82ooyxVNm6h1riLCoyS9e3fuJ3AMG2zIZs2Gd1ATcSFjSA23Q0fzjjZeh0jbJvWVDZ0cJT8yaNNaaXHzueNjg==
 
 tslib@~1.10.0:
   version "1.10.0"

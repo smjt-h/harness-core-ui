@@ -6,6 +6,7 @@
  */
 
 import React from 'react'
+import cx from 'classnames'
 import { Color, Container, Text, Layout } from '@wings-software/uicore'
 import { defaultTo } from 'lodash-es'
 import MonacoEditor from '@common/components/MonacoEditor/MonacoEditor'
@@ -16,9 +17,14 @@ import css from './TemplateYaml.module.scss'
 export interface TemplateYamlProps {
   templateYaml: string
   withoutHeader?: boolean
+  containerClassName?: string
 }
 
-export const TemplateYaml: React.FC<TemplateYamlProps> = ({ templateYaml, withoutHeader = false }) => {
+export const TemplateYaml: React.FC<TemplateYamlProps> = ({
+  templateYaml,
+  withoutHeader = false,
+  containerClassName
+}) => {
   const [height, setHeight] = React.useState<number>()
 
   React.useEffect(() => {
@@ -27,7 +33,7 @@ export const TemplateYaml: React.FC<TemplateYamlProps> = ({ templateYaml, withou
   }, [templateYaml])
 
   return (
-    <Container className={css.container}>
+    <Container className={cx(css.container, containerClassName)}>
       <Layout.Vertical spacing={'medium'}>
         {!withoutHeader ? (
           <Container

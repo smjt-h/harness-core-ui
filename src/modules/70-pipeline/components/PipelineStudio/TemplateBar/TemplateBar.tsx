@@ -8,6 +8,7 @@
 import React from 'react'
 import { defaultTo } from 'lodash-es'
 import { useParams } from 'react-router-dom'
+import type { Props as ReactRndProps } from 'react-rnd'
 import { Color, Container, Icon, IconName, Layout, Popover, Text, useConfirmationDialog } from '@wings-software/uicore'
 import { Classes, Dialog, Intent, Menu, Position } from '@blueprintjs/core'
 import cx from 'classnames'
@@ -18,6 +19,7 @@ import { FeatureIdentifier } from 'framework/featureStore/FeatureIdentifier'
 import routes from '@common/RouteDefinitions'
 import type { PipelineType, ProjectPathProps, GitQueryParams } from '@common/interfaces/RouteInterfaces'
 import { useGetTemplate } from 'services/template-ng'
+import { DraggableAndResizableWrapperWithRef } from '@common/components/DraggableAndResizableWrapper/DraggableAndResizableWrapper'
 import { getIdentifierFromValue, getScopeFromValue } from '@common/components/EntityReference/EntityReference'
 import { TemplateYaml } from '@pipeline/components/PipelineStudio/TemplateYaml/TemplateYaml'
 import { Scope } from '@common/interfaces/SecretsInterface'
@@ -37,10 +39,21 @@ export interface TemplateBarProps {
   onOpenTemplateSelector: () => void
   onRemoveTemplate: () => Promise<void>
   className?: string
+  rndOverrideProps?: ReactRndProps
+  previewDialogInitialHeight?: number
 }
 
+const HEADER_HEIGHT = 70
+
 export const TemplateBar = (props: TemplateBarProps): JSX.Element => {
-  const { templateLinkConfig, onOpenTemplateSelector, onRemoveTemplate, className = '' } = props
+  const {
+    templateLinkConfig,
+    onOpenTemplateSelector,
+    onRemoveTemplate,
+    className = '',
+    rndOverrideProps,
+    previewDialogInitialHeight = 450
+  } = props
   const [menuOpen, setMenuOpen] = React.useState(false)
   const { getString } = useStrings()
   const { accountId, orgIdentifier, projectIdentifier, module } = useParams<PipelineType<ProjectPathProps>>()
@@ -53,6 +66,8 @@ export const TemplateBar = (props: TemplateBarProps): JSX.Element => {
   })
 
   const [isTemplatePreviewModalOpen, setIsTemplatePreviewModalOpen] = React.useState(false)
+  const [previewDialogHeight, setPreviewDialogHeight] = React.useState(previewDialogInitialHeight)
+  const draggableAndResizeableContainerRef = React.useRef<HTMLDivElement>(null)
 
   const { data } = useGetTemplate({
     templateIdentifier: getIdentifierFromValue(templateLinkConfig.templateRef),
@@ -100,6 +115,17 @@ export const TemplateBar = (props: TemplateBarProps): JSX.Element => {
       window.open(`${window.location.origin}${window.location.pathname}#${templateStudioPath}`, '_blank')
     }
   }
+
+  const handlePreviewDialogResize = React.useCallback(() => {
+    if (!draggableAndResizeableContainerRef.current) {
+      return
+    }
+    const { height } = draggableAndResizeableContainerRef.current.getBoundingClientRect()
+
+    if (previewDialogHeight !== height) {
+      setPreviewDialogHeight(height)
+    }
+  }, [])
 
   const onShowTemplateYAMLPreview = () => {
     setIsTemplatePreviewModalOpen(true)
@@ -188,21 +214,37 @@ export const TemplateBar = (props: TemplateBarProps): JSX.Element => {
           </Popover>
         </Layout.Horizontal>
       </Container>
-      <Dialog
-        isOpen={isTemplatePreviewModalOpen}
-        enforceFocus={false}
-        canEscapeKeyClose
-        canOutsideClickClose
-        onClose={() => setIsTemplatePreviewModalOpen(false)}
-        title={'template.yaml'}
-        isCloseButtonShown
-        className={Classes.DIALOG}
-        usePortal={false}
-      >
-        <Container className={css.templateYamlPreviewContainer}>
-          <TemplateYaml templateYaml={defaultTo(selectedTemplate?.yaml, '')} withoutHeader={true} />
-        </Container>
-      </Dialog>
+      {isTemplatePreviewModalOpen && (
+        <DraggableAndResizableWrapperWithRef
+          ref={draggableAndResizeableContainerRef}
+          onResize={handlePreviewDialogResize}
+          className={css.draggableAndResizableContainer}
+          rndOverrideProps={rndOverrideProps}
+        >
+          <Dialog
+            isOpen={isTemplatePreviewModalOpen}
+            enforceFocus={false}
+            canEscapeKeyClose
+            canOutsideClickClose
+            onClose={() => setIsTemplatePreviewModalOpen(false)}
+            title={'template.yaml'}
+            isCloseButtonShown
+            className={Classes.DIALOG}
+            usePortal={false}
+          >
+            <Container
+              className={css.templateYamlPreviewContainer}
+              style={{ height: `${previewDialogHeight - HEADER_HEIGHT}px` }}
+            >
+              <TemplateYaml
+                templateYaml={defaultTo(selectedTemplate?.yaml, '')}
+                withoutHeader={true}
+                containerClassName={css.templateYaml}
+              />
+            </Container>
+          </Dialog>
+        </DraggableAndResizableWrapperWithRef>
+      )}
     </>
   )
 }
