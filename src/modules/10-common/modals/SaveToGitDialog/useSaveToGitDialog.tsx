@@ -266,9 +266,11 @@ export function useSaveToGitDialog<T = Record<string, string>>(
             []
           )?.findIndex((mssg: ResponseMessage) => mssg.code === 'SCM_CONFLICT_ERROR') !== -1
         ) {
+          const conflictCommitId = e?.metadata?.conflictCommitId || e?.data?.metadata?.conflictCommitId
+
           openGitDiffDialog(payloadData, {
             ...data,
-            resolvedConflictCommitId: defaultTo(e?.data?.metadata?.conflictCommitId, 'dummyCommitId')
+            resolvedConflictCommitId: defaultTo(conflictCommitId, '')
           })
         }
       })
