@@ -135,6 +135,47 @@ jest.mock('@common/hooks', () => ({
 }))
 
 const pipelineVariablesContextMock = {
+  originalPipeline: {
+    name: 'stage1',
+    identifier: 'stage1',
+    stages: [
+      {
+        stage: {
+          name: 's1',
+          identifier: 's1',
+          description: '',
+          type: 'CI',
+          spec: {
+            cloneCodebase: false,
+            infrastructure: {
+              type: 'KubernetesDirect',
+              spec: {
+                connectorRef: 'account.yogesh',
+                namespace: 'harness-delegate'
+              }
+            },
+            execution: {
+              steps: [
+                {
+                  step: {
+                    type: 'Run',
+                    name: 'step1',
+                    identifier: 'step1',
+                    spec: {
+                      connectorRef: 'harnessImage',
+                      image: 'alpine',
+                      command: "echo 'run'",
+                      privileged: false
+                    }
+                  }
+                }
+              ]
+            }
+          }
+        }
+      }
+    ]
+  },
   variablesPipeline: {
     name: 'stage1',
     identifier: 'stage1',

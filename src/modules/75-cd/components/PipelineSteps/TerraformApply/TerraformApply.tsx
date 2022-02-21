@@ -161,6 +161,7 @@ export class TerraformApply extends PipelineStep<TFFormData> {
           onUpdate={data => onUpdate?.(this.processFormData(data))}
           onChange={data => onChange?.(this.processFormData(data))}
           allowableTypes={allowableTypes}
+          allValues={inputSetData?.allValues}
           stepViewType={stepViewType}
           readonly={inputSetData?.readonly}
           inputSetData={inputSetData}

@@ -5,26 +5,38 @@
  * https://polyformproject.org/wp-content/uploads/2020/06/PolyForm-Shield-1.0.0.txt.
  */
 
-import React from 'react'
+import React, { useEffect, useState } from 'react'
 import cx from 'classnames'
 
 import { useParams } from 'react-router-dom'
-import { get } from 'lodash-es'
-import { getMultiTypeFromValue, MultiTypeInputType, FormInput, Label, Color } from '@wings-software/uicore'
+import { get, map } from 'lodash-es'
+import {
+  getMultiTypeFromValue,
+  MultiTypeInputType,
+  FormInput,
+  Label,
+  Color,
+  SelectOption,
+  useToaster
+} from '@wings-software/uicore'
+import { connect } from 'formik'
 import { useQueryParams } from '@common/hooks'
 import type { GitQueryParams } from '@common/interfaces/RouteInterfaces'
 import { useStrings } from 'framework/strings'
 import { Connectors } from '@connectors/constants'
 import { useVariablesExpression } from '@pipeline/components/PipelineStudio/PiplineHooks/useVariablesExpression'
 import { FormMultiTypeConnectorField } from '@connectors/components/ConnectorReferenceField/FormMultiTypeConnectorField'
-
+import { useGetRepositoriesDetailsForArtifactory } from 'services/cd-ng'
 import type { TerraformPlanProps } from '../../Common/Terraform/TerraformInterfaces'
 import stepCss from '@pipeline/components/PipelineSteps/Steps/Steps.module.scss'
 
-export default function ConfigSection(props: TerraformPlanProps): React.ReactElement {
+function ConfigSectionRef(props: TerraformPlanProps & { formik?: any }): React.ReactElement {
   const { getString } = useStrings()
-  const { inputSetData, readonly, initialValues, path, allowableTypes } = props
+  const { showError } = useToaster()
+  const { inputSetData, readonly, initialValues, path, allowableTypes, formik } = props
+
   const config = inputSetData?.template?.spec?.configuration
+  const store = config?.configFiles?.store
   const { accountId, projectIdentifier, orgIdentifier } = useParams<{
     projectIdentifier: string
     orgIdentifier: string
@@ -32,6 +44,54 @@ export default function ConfigSection(props: TerraformPlanProps): React.ReactEle
   }>()
   const { repoIdentifier, branch } = useQueryParams<GitQueryParams>()
   const { expressions } = useVariablesExpression()
+  const [connectorRepos, setConnectorRepos] = useState<SelectOption[]>()
+  let connectorVal = get(formik.values, `${path}.spec.configuration.configFiles.store.spec.connectorRef`)
+  if (!connectorVal) {
+    connectorVal = props?.allValues?.spec?.configuration?.configFiles?.store?.spec?.connectorRef
+  }
+  let repoName = get(formik.values, `${path}.spec.configuration.configFiles.store.spec.repositoryName`)
+  if (!repoName) {
+    repoName = get(props?.allValues, `spec.configuration.configFiles.store.spec.repositoryName`)
+  }
+  let storeType = get(formik?.values, `${path}.spec.configuration.configFiles.store.type`)
+  if (!storeType) {
+    storeType = get(props?.allValues, `spec.configuration.configFiles.store.type`)
+  }
+  const {
+    data: ArtifactRepoData,
+    loading: ArtifactRepoLoading,
+    refetch: getArtifactRepos,
+    error: ArtifactRepoError
+  } = useGetRepositoriesDetailsForArtifactory({
+    queryParams: {
+      connectorRef: connectorVal,
+      accountIdentifier: accountId,
+      orgIdentifier,
+      projectIdentifier
+    },
+    lazy: true
+  })
+
+  useEffect(() => {
+    if (ArtifactRepoError) {
+      showError(ArtifactRepoError.message)
+    }
+  }, [ArtifactRepoError])
+
+  useEffect(() => {
+    if (
+      storeType === Connectors.ARTIFACTORY &&
+      connectorVal &&
+      getMultiTypeFromValue(connectorVal) === MultiTypeInputType.FIXED &&
+      !ArtifactRepoData
+    ) {
+      getArtifactRepos()
+    }
+
+    if (ArtifactRepoData) {
+      setConnectorRepos(map(ArtifactRepoData.data?.repositories, repo => ({ label: repo, value: repo })))
+    }
+  }, [ArtifactRepoData, connectorVal, storeType])
 
   return (
     <>
@@ -66,7 +126,11 @@ export default function ConfigSection(props: TerraformPlanProps): React.ReactEle
             orgIdentifier={orgIdentifier}
             multiTypeProps={{ allowableTypes, expressions }}
             width={400}
-            type={[Connectors.GIT, Connectors.GITHUB, Connectors.GITLAB, Connectors.BITBUCKET]}
+            type={
+              store?.type === Connectors.ARTIFACTORY
+                ? [Connectors.ARTIFACTORY]
+                : [Connectors.GIT, Connectors.GITHUB, Connectors.GITLAB, Connectors.BITBUCKET]
+            }
             name={`${path}.spec.configuration.configFiles.store.spec.connectorRef`}
             label={getString('connector')}
             placeholder={getString('select')}
@@ -121,6 +185,49 @@ export default function ConfigSection(props: TerraformPlanProps): React.ReactEle
           />
         </div>
       )}
+
+      {getMultiTypeFromValue(config?.configFiles?.store?.spec?.repositoryName) === MultiTypeInputType.RUNTIME && (
+        <div className={cx(stepCss.formGroup, stepCss.md)}>
+          <FormInput.MultiTypeInput
+            label={getString('pipelineSteps.repoName')}
+            name={`${path}.spec.configuration.configFiles.store.spec.repositoryName`}
+            placeholder={getString(ArtifactRepoLoading ? 'common.loading' : 'cd.selectRepository')}
+            disabled={readonly}
+            selectItems={connectorRepos ? connectorRepos : []}
+            useValue
+            multiTypeInputProps={{
+              selectProps: {
+                allowCreatingNewItems: true,
+                items: connectorRepos ? connectorRepos : []
+              },
+              expressions,
+              allowableTypes
+            }}
+          />
+        </div>
+      )}
+
+      {store?.type === Connectors.ARTIFACTORY &&
+        getMultiTypeFromValue(config?.configFiles?.store?.spec?.artifactPaths) === MultiTypeInputType.RUNTIME && (
+          <div className={cx(stepCss.formGroup, stepCss.md)}>
+            <FormInput.MultiTextInput
+              label={getString('cd.artifactPath')}
+              name={`${path}.spec.configuration.configFiles.store.spec.artifactPaths`}
+              placeholder={getString('pipeline.manifestType.pathPlaceholder')}
+              disabled={readonly}
+              multiTextInputProps={{
+                expressions,
+                allowableTypes
+              }}
+              onChange={value =>
+                formik?.setFieldValue(`${path}.spec.configuration.configFiles.store.spec.artifactPaths`, [value])
+              }
+            />
+          </div>
+        )}
     </>
   )
 }
+
+const ConfigSection = connect(ConfigSectionRef)
+export default ConfigSection

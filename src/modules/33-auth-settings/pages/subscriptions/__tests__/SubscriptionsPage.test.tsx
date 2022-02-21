@@ -15,7 +15,7 @@ import {
   useExtendTrialLicense,
   useSaveFeedback
 } from 'services/cd-ng'
-import { Editions } from '@common/constants/SubscriptionTypes'
+import { CD_LICENSE_TYPE, Editions } from '@common/constants/SubscriptionTypes'
 import { ModuleName } from 'framework/types/ModuleName'
 import SubscriptionsPage from '../SubscriptionsPage'
 
@@ -421,7 +421,8 @@ describe('Subscriptions Page', () => {
               {
                 edition: Editions.ENTERPRISE,
                 workloads: 100,
-                moduleType: 'CD'
+                moduleType: 'CD',
+                cdLicenseType: CD_LICENSE_TYPE.SERVICES
               }
             ],
             status: 'SUCCESS'
@@ -449,6 +450,46 @@ describe('Subscriptions Page', () => {
       )
 
       expect(getByText('common.subscriptions.cd.services')).toBeInTheDocument()
+    })
+
+    test('should render CD Service Instances', () => {
+      useGetModuleLicenseInfoMock.mockImplementation(() => {
+        return {
+          data: {
+            data: [
+              {
+                edition: Editions.ENTERPRISE,
+                workloads: 100,
+                moduleType: 'CD',
+                cdLicenseType: CD_LICENSE_TYPE.SERVICE_INSTANCES
+              }
+            ],
+            status: 'SUCCESS'
+          },
+          refetch: jest.fn()
+        }
+      })
+
+      useGetAccountMock.mockImplementation(() => {
+        return {
+          data: {
+            data: {
+              accountId: '123'
+            },
+            status: 'SUCCESS'
+          },
+          refetch: jest.fn()
+        }
+      })
+
+      const { getByText, queryByText } = render(
+        <TestWrapper defaultAppStoreValues={{ featureFlags }} pathParams={{ module: ModuleName.CD }}>
+          <SubscriptionsPage />
+        </TestWrapper>
+      )
+
+      expect(queryByText('common.subscriptions.cd.services')).not.toBeInTheDocument()
+      expect(getByText('common.subscriptions.cd.serviceInstances')).toBeInTheDocument()
     })
 
     test('should render CCM details', () => {

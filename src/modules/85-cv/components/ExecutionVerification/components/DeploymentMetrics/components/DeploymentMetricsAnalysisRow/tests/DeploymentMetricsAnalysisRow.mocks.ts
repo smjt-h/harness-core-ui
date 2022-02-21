@@ -292,3 +292,123 @@ export const InputData: DeploymentMetricsAnalysisRowProps[] = [
     healthSourceType: 'APP_DYNAMICS'
   }
 ]
+
+const data1 = [
+  { x: 1642941960000, y: 1000.9333333333334 },
+  { x: 1642942020000, y: 805.1999999999999 },
+  { x: 1642942080000, y: 879.7999999999998 },
+  { x: 1642942140000, y: 864.098 }
+]
+
+const testData = [
+  { x: 1642941960000, y: 456.6666666666667 },
+  { x: 1642942020000, y: 386.6666666666667 },
+  { x: 1642942080000, y: 466.6666666666667 },
+  { x: 1642942140000, y: 702 }
+]
+
+export const seriesMock = [
+  {
+    type: 'spline',
+    data: data1,
+    color: 'var(--primary-7)',
+    name: 'harness-deployment-canary-56b5cc7c5b-9rpq7',
+    connectNulls: true,
+    marker: { enabled: true, lineWidth: 1, symbol: 'circle', fillColor: 'var(--white)', lineColor: 'var(--primary-7)' },
+    lineWidth: 1,
+    dashStyle: 'Dash',
+    baseData: data1,
+    actualTestData: {
+      points: testData,
+      risk: 'HEALTHY',
+      name: 'harness-deployment-canary-56b5cc7c5b-9rpq7'
+    }
+  },
+  {
+    type: 'spline',
+    data: testData,
+    color: 'var(--green-500)',
+    name: 'harness-deployment-canary-56b5cc7c5b-9rpq7',
+    connectNulls: true,
+    marker: { enabled: true, lineWidth: 1, symbol: 'circle', fillColor: 'var(--white)', lineColor: 'var(--green-500)' },
+    lineWidth: 1,
+    baseData: data1,
+    actualTestData: {
+      points: testData,
+      risk: 'HEALTHY',
+      name: 'harness-deployment-canary-56b5cc7c5b-9rpq7'
+    }
+  }
+]
+
+export const testDataMock = {
+  points: [
+    { x: 1642941960000, y: 456.6666666666667 },
+    { x: 1642942020000, y: 386.6666666666667 },
+    { x: 1642942080000, y: 466.6666666666667 },
+    { x: 1642942140000, y: 702 }
+  ],
+  risk: 'HEALTHY',
+  name: 'harness-deployment-canary-56b5cc7c5b-9rpq7'
+}
+
+export const expectedChartConfigData = {
+  chart: { height: 120, type: 'spline', width: 312.5806451612903 },
+  credits: undefined,
+  legend: { enabled: false },
+  plotOptions: { series: { lineWidth: 3, stickyTracking: false, turboThreshold: 50000 } },
+  series: [
+    {
+      actualTestData: {
+        name: 'harness-deployment-canary-56b5cc7c5b-9rpq7',
+        points: testData,
+        risk: 'HEALTHY'
+      },
+      baseData: data1,
+      color: 'var(--primary-7)',
+      connectNulls: true,
+      dashStyle: 'Dash',
+      data: data1,
+      lineWidth: 1,
+      marker: {
+        enabled: true,
+        fillColor: 'var(--white)',
+        lineColor: 'var(--primary-7)',
+        lineWidth: 1,
+        symbol: 'circle'
+      },
+      name: 'harness-deployment-canary-56b5cc7c5b-9rpq7',
+      type: 'spline'
+    },
+    {
+      actualTestData: {
+        name: 'harness-deployment-canary-56b5cc7c5b-9rpq7',
+        points: testData,
+        risk: 'HEALTHY'
+      },
+      baseData: data1,
+      color: 'var(--green-500)',
+      connectNulls: true,
+      data: testData,
+      lineWidth: 1,
+      marker: {
+        enabled: true,
+        fillColor: 'var(--white)',
+        lineColor: 'var(--green-500)',
+        lineWidth: 1,
+        symbol: 'circle'
+      },
+      name: 'harness-deployment-canary-56b5cc7c5b-9rpq7',
+      type: 'spline'
+    }
+  ],
+  subtitle: undefined,
+  title: { text: '' },
+  tooltip: { formatter: expect.any(Function), outside: true },
+  xAxis: {
+    labels: { enabled: false },
+    tickLength: 0,
+    title: { align: 'low', text: 'harness-deployment-canary-56b5cc7c5b-9rpq7' }
+  },
+  yAxis: { gridLineWidth: 0, labels: { enabled: false }, title: { text: '' } }
+}

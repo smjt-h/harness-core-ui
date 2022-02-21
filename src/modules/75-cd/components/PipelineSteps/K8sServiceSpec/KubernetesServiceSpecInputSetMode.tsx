@@ -38,7 +38,7 @@ export interface KubernetesInputSetProps {
   formik?: any
   allowableTypes: MultiTypeInputType[]
 }
-const KubernetesServiceSpecInputSetModeFormikForm = (props: KubernetesInputSetProps) => {
+const KubernetesServiceSpecInputSetModeFormikForm = (props: KubernetesInputSetProps): React.ReactElement => {
   const {
     template,
     path,
@@ -55,19 +55,21 @@ const KubernetesServiceSpecInputSetModeFormikForm = (props: KubernetesInputSetPr
   const { getString } = useStrings()
   return (
     <Layout.Vertical spacing="medium">
-      <KubernetesArtifacts
-        type={allValues?.artifacts?.primary?.type || ''}
-        template={template}
-        artifacts={allValues?.artifacts}
-        artifactSourceBaseFactory={artifactSourceBaseFactory}
-        stepViewType={stepViewType}
-        stageIdentifier={stageIdentifier}
-        formik={formik}
-        path={path}
-        initialValues={initialValues}
-        readonly={readonly}
-        allowableTypes={allowableTypes}
-      />
+      {!!(template?.artifacts?.primary?.type || template?.artifacts?.sidecars?.length) && (
+        <KubernetesArtifacts
+          type={allValues?.artifacts?.primary?.type || ''}
+          template={template}
+          artifacts={allValues?.artifacts}
+          artifactSourceBaseFactory={artifactSourceBaseFactory}
+          stepViewType={stepViewType}
+          stageIdentifier={stageIdentifier}
+          formik={formik}
+          path={path}
+          initialValues={initialValues}
+          readonly={readonly}
+          allowableTypes={allowableTypes}
+        />
+      )}
 
       {/* {!!template?.manifests?.length && (
         <KubernetesManifests

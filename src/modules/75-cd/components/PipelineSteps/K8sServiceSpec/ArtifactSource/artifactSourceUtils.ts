@@ -49,21 +49,28 @@ export const fromPipelineInputTriggerTab = (formik: FormikValues, fromTrigger = 
 
 export const isSelectedStage = (stageIdentifier: string, formikStageId: string): boolean =>
   stageIdentifier === formikStageId
-export const isSelectedPrimaryArtifact = (selectedArtifact: any): boolean =>
-  !isEmpty(selectedArtifact) && (!selectedArtifact.identifier || selectedArtifact.identifier === PRIMARY_ARTIFACT)
+export const isSelectedArtifact = (selectedArtifact: any, identifier?: string): boolean => {
+  if (!isEmpty(identifier)) {
+    return !isEmpty(selectedArtifact) && selectedArtifact.identifier === identifier
+  }
+  return (
+    !isEmpty(selectedArtifact) && (!selectedArtifact.identifier || selectedArtifact.identifier === PRIMARY_ARTIFACT)
+  )
+}
 
 export const isFieldfromTriggerTabDisabled = (
   fieldName: string,
   formik: FormikValues,
   stageIdentifier: string,
-  fromTrigger = false
+  fromTrigger = false,
+  identifier?: string
 ): boolean => {
   if (fromTrigger) {
     // Trigger Configuration Tab
     return get(TriggerDefaultFieldList, fieldName) ? true : false
   } else if (
     fromPipelineInputTriggerTab(formik, fromTrigger) &&
-    isSelectedPrimaryArtifact(formik?.values?.selectedArtifact) &&
+    isSelectedArtifact(formik?.values?.selectedArtifact, identifier) &&
     isSelectedStage(stageIdentifier, formik?.values?.stageId)
   ) {
     return true
@@ -91,11 +98,14 @@ export const getYamlData = (formikValues: Record<string, any>): PipelineInfoConf
 export const setPrimaryInitialValues = (
   initialValues: K8SDirectServiceStep,
   formik: FormikValues,
-  stageIdentifier: string
+  stageIdentifier: string,
+  artifactPath: string
 ): void => {
   if (stageIdentifier === formik?.values?.stageId) {
-    if (initialValues?.artifacts?.primary) {
-      const { selectedArtifact } = formik?.values
+    const initialArtifactValue = get(initialValues, `artifacts.${artifactPath}`)
+    const { selectedArtifact } = formik?.values
+
+    if (initialArtifactValue && isEmpty(selectedArtifact.identifier)) {
       /*
          backend requires eventConditions inside selectedArtifact but should not be added to inputYaml
         */
@@ -103,7 +113,35 @@ export const setPrimaryInitialValues = (
         unset(selectedArtifact?.spec, 'eventConditions')
       }
 
-      merge(initialValues?.artifacts?.primary, {
+      merge(initialArtifactValue, {
+        identifier: selectedArtifact?.identifier,
+        type: selectedArtifact?.type,
+        spec: {
+          ...selectedArtifact?.spec
+        }
+      })
+    }
+  }
+}
+export const setSidecarInitialValues = (
+  initialValues: K8SDirectServiceStep,
+  formik: FormikValues,
+  stageIdentifier: string,
+  artifactPath: string
+): void => {
+  if (stageIdentifier === formik?.values?.stageId) {
+    const initialArtifactValue = get(initialValues, `artifacts.${artifactPath}`)
+    const { selectedArtifact } = formik?.values
+
+    if (initialArtifactValue && selectedArtifact.identifier === initialArtifactValue.identifier) {
+      /*
+         backend requires eventConditions inside selectedArtifact but should not be added to inputYaml
+        */
+      if (selectedArtifact?.spec.eventConditions) {
+        unset(selectedArtifact?.spec, 'eventConditions')
+      }
+
+      merge(initialArtifactValue, {
         identifier: selectedArtifact?.identifier,
         type: selectedArtifact?.type,
         spec: {
@@ -115,3 +153,14 @@ export const setPrimaryInitialValues = (
 }
 
 export const gcrUrlList: SelectOption[] = Object.values(RegistryHostNames).map(item => ({ label: item, value: item }))
+
+export const isArtifactSourceRuntime = (
+  isPrimaryArtifactsRuntime: boolean,
+  isSidecarRuntime: boolean,
+  isSidecar: boolean
+): boolean => (!isSidecar && isPrimaryArtifactsRuntime) || (isSidecar && isSidecarRuntime)
+export const getImagePath = (initialImagePath: string, formikImagePathValue: string): string => {
+  return getMultiTypeFromValue(initialImagePath) !== MultiTypeInputType.RUNTIME
+    ? initialImagePath
+    : formikImagePathValue
+}

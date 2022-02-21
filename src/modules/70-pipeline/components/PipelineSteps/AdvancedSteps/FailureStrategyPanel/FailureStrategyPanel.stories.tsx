@@ -16,7 +16,8 @@ import * as Yup from 'yup'
 import { TestWrapper } from '@common/utils/testUtils'
 import { StageType } from '@pipeline/utils/stageHelpers'
 import { StepMode as Modes } from '@pipeline/utils/stepUtils'
-import FailureStrategyPanel, { AllFailureStrategyConfig } from './FailureStrategyPanel'
+import FailureStrategyPanel from './FailureStrategyPanel'
+import type { AllFailureStrategyConfig } from './utils'
 import { getFailureStrategiesValidationSchema } from './validation'
 
 export default {

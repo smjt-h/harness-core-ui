@@ -18,7 +18,7 @@ import type {
   CIModuleLicenseDTO,
   ModuleLicenseDTO
 } from 'services/cd-ng'
-import { Editions, ModuleLicenseType } from '@common/constants/SubscriptionTypes'
+import { Editions, ModuleLicenseType, CD_LICENSE_TYPE } from '@common/constants/SubscriptionTypes'
 import css from './SubscriptionDetailsCard.module.scss'
 
 interface SubscriptionDetailsCardBodyProps {
@@ -157,13 +157,18 @@ const SubscriptionDetailsCardBody = ({
         {
           const cdModuleLicenseDTO = licenseData as CDModuleLicenseDTO
           const workloads = cdModuleLicenseDTO?.workloads
+          const cdLicenseType = cdModuleLicenseDTO?.cdLicenseType
+          const serviceStr =
+            cdLicenseType === CD_LICENSE_TYPE.SERVICES
+              ? getString('common.subscriptions.cd.services', { workloads: workloads })
+              : getString('common.subscriptions.cd.serviceInstances', { workloads: workloads })
 
           licenseCountFields.push(
             <React.Fragment key="licenseCount">
               {licenseCount}
               <Layout.Vertical spacing="medium">
                 <Text color={Color.BLACK} font={{ weight: 'semi-bold' }} margin={{ bottom: 5 }}>
-                  {getString('common.subscriptions.cd.services', { workloads: workloads })}
+                  {serviceStr}
                 </Text>
               </Layout.Vertical>
             </React.Fragment>

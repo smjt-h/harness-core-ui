@@ -20,7 +20,7 @@ import {
   Text
 } from '@wings-software/uicore'
 import React from 'react'
-import { unset } from 'lodash-es'
+import { unset, map, defaultTo } from 'lodash-es'
 import cx from 'classnames'
 import * as Yup from 'yup'
 import { v4 as uuid } from 'uuid'
@@ -60,7 +60,7 @@ export const TFRemoteWizard: React.FC<StepProps<any> & TFRemoteProps> = ({
             store: {
               spec: {
                 gitFetchType: prevStepData?.varFile?.spec?.store?.spec?.gitFetchType,
-
+                repoName: prevStepData?.varFile?.spec?.store?.spec?.repoName,
                 branch: prevStepData?.varFile?.spec?.store?.spec?.branch,
                 commitId: prevStepData?.varFile?.spec?.store?.spec?.commitId,
                 paths:
@@ -142,10 +142,6 @@ export const TFRemoteWizard: React.FC<StepProps<any> & TFRemoteProps> = ({
     },
     []
   )
-  const connectorValue = prevStepData?.varFile?.spec?.store?.spec?.connectorRef as Connector
-
-  const connectionType =
-    connectorValue?.connector?.spec?.connectionType === 'Account' || connectorValue?.connector?.spec?.type === 'Account'
 
   return (
     <Layout.Vertical spacing="xxlarge" padding="small" className={css.tfVarStore}>
@@ -176,7 +172,7 @@ export const TFRemoteWizard: React.FC<StepProps<any> & TFRemoteProps> = ({
                       ? getMultiTypeFromValue(payload?.connectorRef) === MultiTypeInputType.RUNTIME
                         ? payload?.connectorRef
                         : payload.connectorRef?.value
-                      : ''
+                      : prevStepData.identifier || ''
                   }
                 }
               }
@@ -217,7 +213,16 @@ export const TFRemoteWizard: React.FC<StepProps<any> & TFRemoteProps> = ({
                     is: 'Commit',
                     then: Yup.string().trim().required(getString('validation.commitId'))
                   }),
-                  paths: Yup.string().required(getString('cd.pathCannotBeEmpty'))
+                  paths: Yup.lazy((value): Yup.Schema<unknown> => {
+                    if (getMultiTypeFromValue(value as any) === MultiTypeInputType.FIXED) {
+                      return Yup.array().of(
+                        Yup.object().shape({
+                          path: Yup.string().min(1).required(getString('cd.pathCannotBeEmpty'))
+                        })
+                      )
+                    }
+                    return Yup.string().required(getString('cd.pathCannotBeEmpty'))
+                  })
                 })
               })
             })
@@ -225,6 +230,11 @@ export const TFRemoteWizard: React.FC<StepProps<any> & TFRemoteProps> = ({
         })}
       >
         {formik => {
+          const connectorValue = prevStepData?.varFile?.spec?.store?.spec?.connectorRef as Connector
+          const connectionType =
+            connectorValue?.connector?.spec?.connectionType === 'Account' ||
+            connectorValue?.connector?.spec?.type === 'Account' ||
+            prevStepData?.urlType === 'Account'
           return (
             <Form>
               <div className={css.tfRemoteForm}>
@@ -325,55 +335,52 @@ export const TFRemoteWizard: React.FC<StepProps<any> & TFRemoteProps> = ({
                     <FieldArray
                       name="varFile.spec.store.spec.paths"
                       render={arrayHelpers => {
+                        const paths = defaultTo(formik.values?.varFile?.spec?.store?.spec?.paths, [{ path: '' }])
                         return (
                           <div>
-                            {(formik.values?.varFile?.spec?.store?.spec?.paths || []).map(
-                              (path: PathInterface, index: number) => (
+                            {map(paths, (path: PathInterface, index: number) => (
+                              <Layout.Horizontal
+                                key={`${path}-${index}`}
+                                flex={{ distribution: 'space-between' }}
+                                style={{ alignItems: 'end' }}
+                              >
                                 <Layout.Horizontal
+                                  spacing="medium"
+                                  style={{ alignItems: 'baseline' }}
+                                  className={css.tfContainer}
                                   key={`${path}-${index}`}
-                                  flex={{ distribution: 'space-between' }}
-                                  style={{ alignItems: 'end' }}
+                                  draggable={true}
+                                  onDragEnd={onDragEnd}
+                                  onDragOver={onDragOver}
+                                  onDragLeave={onDragLeave}
+                                  /* istanbul ignore next */
+                                  onDragStart={event => {
+                                    /* istanbul ignore next */
+                                    onDragStart(event, index)
+                                  }}
+                                  /* istanbul ignore next */
+                                  onDrop={event => onDrop(event, arrayHelpers, index)}
                                 >
-                                  <Layout.Horizontal
-                                    spacing="medium"
-                                    style={{ alignItems: 'baseline' }}
-                                    className={css.tfContainer}
-                                    key={`${path}-${index}`}
-                                    draggable={true}
-                                    onDragEnd={onDragEnd}
-                                    onDragOver={onDragOver}
-                                    onDragLeave={onDragLeave}
-                                    /* istanbul ignore next */
-                                    onDragStart={event => {
-                                      /* istanbul ignore next */
-                                      onDragStart(event, index)
+                                  <Icon name="drag-handle-vertical" className={css.drag} />
+                                  <Text width={12}>{`${index + 1}.`}</Text>
+                                  <FormInput.MultiTextInput
+                                    name={`varFile.spec.store.spec.paths[${index}].path`}
+                                    label=""
+                                    multiTextInputProps={{
+                                      expressions,
+                                      allowableTypes: allowableTypes.filter(item => item !== MultiTypeInputType.RUNTIME)
                                     }}
-                                    /* istanbul ignore next */
-                                    onDrop={event => onDrop(event, arrayHelpers, index)}
-                                  >
-                                    <Icon name="drag-handle-vertical" className={css.drag} />
-                                    <Text width={12}>{`${index + 1}.`}</Text>
-                                    <FormInput.MultiTextInput
-                                      name={`varFile.spec.store.spec.paths[${index}].path`}
-                                      label=""
-                                      multiTextInputProps={{
-                                        expressions,
-                                        allowableTypes: allowableTypes.filter(
-                                          item => item !== MultiTypeInputType.RUNTIME
-                                        )
-                                      }}
-                                      style={{ width: 320 }}
-                                    />
-                                    <Button
-                                      minimal
-                                      icon="main-trash"
-                                      data-testid={`remove-header-${index}`}
-                                      onClick={() => arrayHelpers.remove(index)}
-                                    />
-                                  </Layout.Horizontal>
+                                    style={{ width: 320 }}
+                                  />
+                                  <Button
+                                    minimal
+                                    icon="main-trash"
+                                    data-testid={`remove-header-${index}`}
+                                    onClick={() => arrayHelpers.remove(index)}
+                                  />
                                 </Layout.Horizontal>
-                              )
-                            )}
+                              </Layout.Horizontal>
+                            ))}
                             <Button
                               icon="plus"
                               variation={ButtonVariation.LINK}

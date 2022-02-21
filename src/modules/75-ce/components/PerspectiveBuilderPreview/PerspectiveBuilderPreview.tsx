@@ -40,6 +40,8 @@ import {
 } from '@ce/utils/perspectiveUtils'
 import { CCM_CHART_TYPES } from '@ce/constants'
 import { DAYS_FOR_TICK_INTERVAL } from '@ce/components/CloudCostInsightChart/Chart'
+import { CE_DATE_FORMAT_INTERNAL, getGMTEndDateTime, getGMTStartDateTime } from '@ce/utils/momentUtils'
+import type { TimeRangeFilterType } from '@ce/types'
 import { AGGREGATE_FUNCTION } from '../PerspectiveGrid/Columns'
 import PerspectiveGrid from '../PerspectiveGrid/PerspectiveGrid'
 import css from './PerspectiveBuilderPreview.module.scss'
@@ -135,9 +137,10 @@ interface GroupByViewProps {
   setGroupBy: (groupBy: QlceViewFieldInputInput) => void
   chartType: ViewChartType
   setChartType: (type: ViewChartType) => void
+  timeRange: TimeRangeFilterType
 }
 
-const GroupByView: React.FC<GroupByViewProps> = ({ groupBy, setGroupBy, chartType, setChartType }) => {
+const GroupByView: React.FC<GroupByViewProps> = ({ groupBy, setGroupBy, chartType, setChartType, timeRange }) => {
   const { perspectiveId } = useParams<{ perspectiveId: string }>()
 
   const { getString } = useStrings()
@@ -152,6 +155,7 @@ const GroupByView: React.FC<GroupByViewProps> = ({ groupBy, setGroupBy, chartTyp
   const [labelResult] = useFetchPerspectiveFiltersValueQuery({
     variables: {
       filters: [
+        ...getTimeFilters(getGMTStartDateTime(timeRange.from), getGMTEndDateTime(timeRange.to)),
         {
           idFilter: {
             field: {
@@ -266,11 +270,17 @@ const PerspectiveBuilderPreview: React.FC<PerspectiveBuilderPreviewProps> = ({
   const timeRange = formValues.viewTimeRange?.viewTimeRangeType || ViewTimeRangeType.Last_7
 
   const dateRange = timeRangeMapper[timeRange]
+
+  const timeRangeObj: TimeRangeFilterType = {
+    to: dateRange[1].format(CE_DATE_FORMAT_INTERNAL),
+    from: dateRange[0].format(CE_DATE_FORMAT_INTERNAL)
+  }
+
   const [chartResult] = useFetchPerspectiveTimeSeriesQuery({
     variables: {
       filters: [
         getViewFilterForId(perspectiveId, true),
-        ...getTimeFilters(dateRange[0].valueOf(), dateRange[1].valueOf()),
+        ...getTimeFilters(getGMTStartDateTime(timeRangeObj.from), getGMTEndDateTime(timeRangeObj.to)),
         ...getRuleFilters(normalizeViewRules(formValues.viewRules))
       ],
       limit: 12,
@@ -309,7 +319,13 @@ const PerspectiveBuilderPreview: React.FC<PerspectiveBuilderPreviewProps> = ({
           <Text font={{ variation: FontVariation.H4 }} margin={{ bottom: 'medium' }}>
             {getString('ce.perspectives.createPerspective.preview.title')}
           </Text>
-          <GroupByView setGroupBy={setGroupBy} groupBy={groupBy} chartType={chartType} setChartType={setChartType} />
+          <GroupByView
+            timeRange={timeRangeObj}
+            setGroupBy={setGroupBy}
+            groupBy={groupBy}
+            chartType={chartType}
+            setChartType={setChartType}
+          />
 
           <CloudCostInsightChart
             chartType={chartType === ViewChartType.StackedLineChart ? CCM_CHART_TYPES.AREA : CCM_CHART_TYPES.COLUMN}

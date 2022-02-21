@@ -21,10 +21,10 @@ $button-width: 25px;
   }
 
   .graphWrapper {
-    height: $node-height;
-    overflow: hidden;
+    height: calc(#{$node-height} + 8px);
     display: flex;
     max-width: 100%;
+    align-items: flex-end;
 
     &.hasButtons {
       width: calc(100% - #{$button-width});
@@ -46,7 +46,7 @@ $button-width: 25px;
   .scrollLeft,
   .scrollRight {
     position: absolute;
-    top: 5px;
+    top: 14px;
     background: var(--primary-1) !important;
     color: var(--primary-7) !important;
     border: 1px solid var(--primary-7) !important;

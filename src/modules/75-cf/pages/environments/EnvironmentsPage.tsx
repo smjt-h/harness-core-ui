@@ -40,12 +40,12 @@ const withActions = withTableData<
   actions: (column as any).actions as { [P in 'onEdit' | 'onDelete']?: (id: string) => void }
 }))
 
-const TypeCell = withEnvironment(({ environment }) => {
+export const TypeCell = withEnvironment(({ environment }) => {
   const { getString } = useEnvStrings()
   return <Text>{getString(environment.type === EnvironmentType.PRODUCTION ? 'production' : 'nonProduction')}</Text>
 })
 
-const NameCell = withEnvironment(({ environment }) => {
+export const NameCell = withEnvironment(({ environment }) => {
   const { getString } = useEnvStrings()
   const tags = Object.entries(environment.tags ?? {}).reduce(
     (acc: Array<{ name: string; value: string }>, [key, value]: [string, string]) => {
@@ -83,7 +83,7 @@ const NameCell = withEnvironment(({ environment }) => {
               <>
                 <Text>{getString('tagsLabel').toUpperCase()}</Text>
                 {tags.map((elem, i) => (
-                  <Text key={`${elem.value}-${i}`}>{elem.value}</Text>
+                  <Text key={`${elem.value}-${i}`}>{elem.name}</Text>
                 ))}
               </>
             ) : undefined
@@ -100,7 +100,7 @@ const NameCell = withEnvironment(({ environment }) => {
   )
 })
 
-const ModifiedByCell = withActions(({ environment, actions }) => {
+export const ModifiedByCell = withActions(({ environment, actions }) => {
   const { getString } = useEnvStrings()
   const identifier = environment.identifier as string
   const deleteEnvironment = useConfirmAction({

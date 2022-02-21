@@ -5,14 +5,9 @@
  * https://polyformproject.org/wp-content/uploads/2020/06/PolyForm-Shield-1.0.0.txt.
  */
 
-import { renderHook } from '@testing-library/react-hooks'
-import type { Module } from '@common/interfaces/RouteInterfaces'
 import type { GitSyncConfig } from 'services/cd-ng'
-import * as pipelineService from 'services/pipeline-ng'
-import * as featureFlagService from 'services/cf'
 import { HARNESS_FOLDER_SUFFIX } from '../Constants'
 import {
-  useCanEnableGitExperience,
   getCompleteGitPath,
   getEntityUrl,
   getExternalUrl,
@@ -25,13 +20,6 @@ const entity = {
   folderPath: 'second/.harness/',
   branch: 'gitSync',
   entityGitPath: 'pipelineOne.yaml'
-}
-
-const canEnableGitExperienceParam = {
-  projectIdentifier: 'p',
-  orgIdentifier: 'o',
-  accountId: 'a',
-  module: 'cd' as Module
 }
 
 describe('gitSyncUtils test', () => {
@@ -84,38 +72,6 @@ describe('gitSyncUtils test', () => {
       expect(getEntityUrl({ ...entity, folderPath: undefined })).toBe('')
       expect(getEntityUrl({ ...entity, branch: undefined })).toBe('')
       expect(getEntityUrl({ ...entity, entityGitPath: undefined })).toBe('')
-    })
-
-    test('Test should allow enabling Git Experience without pipelines created and without feature flags created', async () => {
-      jest.spyOn(featureFlagService, 'useGetAllFeatures').mockReturnValue({ data: { itemCount: 0 } } as any)
-
-      jest
-        .spyOn(pipelineService, 'getPipelineListPromise')
-        .mockImplementation(() => Promise.resolve({ status: 'SUCCESS', data: { totalElements: 0 } }))
-
-      const { result, waitForNextUpdate } = renderHook(() => useCanEnableGitExperience(canEnableGitExperienceParam))
-      await waitForNextUpdate()
-      expect(result.current).toEqual(true)
-    })
-
-    test('Test should not allow enabling Git Experience with pipelines created and without feature flags', async () => {
-      jest.spyOn(featureFlagService, 'useGetAllFeatures').mockReturnValue({ data: { itemCount: 0 } } as any)
-      jest
-        .spyOn(pipelineService, 'getPipelineListPromise')
-        .mockImplementation(() => Promise.resolve({ status: 'SUCCESS', data: { totalElements: 1 } }))
-
-      const { result } = renderHook(() => useCanEnableGitExperience(canEnableGitExperienceParam))
-      expect(result.current).toEqual(false)
-    })
-
-    test('Test should not allow with pipelines created and with feature flags', async () => {
-      jest.spyOn(featureFlagService, 'useGetAllFeatures').mockReturnValue({ data: { itemCount: 1 } } as any)
-      jest
-        .spyOn(pipelineService, 'getPipelineListPromise')
-        .mockImplementation(() => Promise.resolve({ status: 'SUCCESS', data: { totalElements: 1 } }))
-
-      const { result } = renderHook(() => useCanEnableGitExperience(canEnableGitExperienceParam))
-      expect(result.current).toEqual(false)
     })
   })
 

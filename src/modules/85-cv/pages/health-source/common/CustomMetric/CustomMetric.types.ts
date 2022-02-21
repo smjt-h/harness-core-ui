@@ -11,11 +11,20 @@ import type {
   MapAppDynamicsMetric
 } from '../../connectors/AppDynamics/AppDHealthSource.types'
 import type {
+  InitCustomHealthSourceInterface,
+  MapCustomHealthToService
+} from '../../connectors/CustomHealthSource/CustomHealthSource.types'
+import type {
   InitNewRelicCustomFormInterface,
   MapNewRelicMetric
 } from '../../connectors/NewRelic/NewRelicHealthSource.types'
 
-export type CustomMappedMetric = MapAppDynamicsMetric | MapNewRelicMetric
+export type CustomMappedMetric = MapAppDynamicsMetric | MapNewRelicMetric | MapCustomHealthToService
+
+export type InitCustomFormData =
+  | InitAppDCustomFormInterface
+  | InitNewRelicCustomFormInterface
+  | InitCustomHealthSourceInterface
 export interface GroupedCreatedMetrics {
   [Key: string]: GroupedMetric[]
 }
@@ -52,7 +61,7 @@ export interface UpdateSelectedMetricsMapInterface {
   oldMetric: string
   mappedMetrics: Map<string, CustomMappedMetric>
   formikValues: any
-  initCustomForm: InitAppDCustomFormInterface | InitNewRelicCustomFormInterface
+  initCustomForm: InitCustomFormData
 }
 
 export interface RemoveMetricInterface {

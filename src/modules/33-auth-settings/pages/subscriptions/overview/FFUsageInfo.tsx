@@ -6,6 +6,7 @@
  */
 
 import React from 'react'
+import moment from 'moment'
 import { Layout, PageError } from '@wings-software/uicore'
 import { useStrings } from 'framework/strings'
 import { useGetUsageAndLimit } from '@common/hooks/useGetUsageAndLimit'
@@ -25,7 +26,9 @@ export interface FFUsageInfoProps {
 interface FeatureFlagsUsersCardProps {
   subscribedUsers: number
   activeUsers: number
+  leftHeader?: string
   rightHeader: string
+  tooltip?: string
   errors: {
     usageErrorMsg?: string
     limitErrorMsg?: string
@@ -38,22 +41,23 @@ interface FeatureFlagsUsersCardProps {
 const FeatureFlagsUsersCard: React.FC<FeatureFlagsUsersCardProps> = ({
   subscribedUsers,
   activeUsers,
+  leftHeader,
+  tooltip,
   rightHeader,
   errors,
   refetches
 }) => {
   const { getString } = useStrings()
-  const leftHeader = getString('common.subscriptions.usage.ffUsers')
-  //TO-DO: replace with tooltip
-  const tooltip = 'Active Instance tooltip placeholder'
+  const defaultLeftHeader = leftHeader || getString('common.subscriptions.usage.monthlyUsers')
+  const defaultTooltip = tooltip || getString('common.subscriptions.usage.ffActiveUserTootip')
   const hasBar = true
   const leftFooter = getString('common.subscribed')
   const rightFooter = getString('common.subscribed')
   const props = {
     subscribed: subscribedUsers,
     usage: activeUsers,
-    leftHeader,
-    tooltip,
+    leftHeader: defaultLeftHeader,
+    tooltip: defaultTooltip,
     rightHeader,
     hasBar,
     leftFooter,
@@ -82,8 +86,7 @@ interface FeatureFlagsProps {
 const FeatureFlags: React.FC<FeatureFlagsProps> = ({ featureFlags, error, refetch }) => {
   const { getString } = useStrings()
   const leftHeader = getString('common.purpose.cf.continuous')
-  //TO-DO: replace with tooltip
-  const tooltip = 'Users tooltip placeholder'
+  const tooltip = getString('common.subscriptions.usage.ffFFTooltip')
   const rightHeader = getString('common.current')
   const hasBar = false
   const props = { usage: featureFlags, leftHeader, tooltip, rightHeader, hasBar }
@@ -96,6 +99,7 @@ const FeatureFlags: React.FC<FeatureFlagsProps> = ({ featureFlags, error, refetc
 }
 
 const FFUsageInfo: React.FC = () => {
+  const { getString } = useStrings()
   const { limitData, usageData } = useGetUsageAndLimit(ModuleName.CF)
 
   const isLoading = limitData.loadingLimit || usageData.loadingUsage
@@ -107,6 +111,9 @@ const FFUsageInfo: React.FC = () => {
   const { usageErrorMsg, refetchUsage, usage } = usageData
   const { limitErrorMsg, refetchLimit, limit } = limitData
 
+  const currentDate = moment(new Date())
+  const timeStampAsDate = moment(currentDate)
+
   return (
     <Layout.Horizontal spacing="large">
       <FeatureFlagsUsersCard
@@ -115,9 +122,21 @@ const FFUsageInfo: React.FC = () => {
           refetchUsage,
           refetchLimit
         }}
+        subscribedUsers={limit?.ff?.totalFeatureFlagUnits || 0}
+        activeUsers={usage?.ff?.activeFeatureFlagUsers?.count || 0}
+        leftHeader={getString('common.subscriptions.usage.developers')}
+        tooltip={getString('common.subscriptions.usage.ffDeveloperTooltip')}
+        rightHeader={usage?.ff?.activeFeatureFlagUsers?.displayName || ''}
+      />
+      <FeatureFlagsUsersCard
+        errors={{ usageErrorMsg, limitErrorMsg }}
+        refetches={{
+          refetchUsage,
+          refetchLimit
+        }}
         subscribedUsers={limit?.ff?.totalClientMAUs || 0}
         activeUsers={usage?.ff?.activeClientMAUs?.count || 0}
-        rightHeader={usage?.ff?.activeClientMAUs?.displayName || ''}
+        rightHeader={timeStampAsDate.format('MMMM YYYY')}
       />
       <FeatureFlags featureFlags={limit?.ff?.totalFeatureFlagUnits || 0} error={limitErrorMsg} refetch={refetchLimit} />
     </Layout.Horizontal>

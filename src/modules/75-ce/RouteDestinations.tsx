@@ -60,20 +60,23 @@ featureFactory.registerFeaturesByModule('ce', {
     const usagePercentage = (usageCost / limitCost) * 100
 
     if (usageCost >= limitCost) {
-      const message = isFreeEdition
-        ? getString('ce.enforcementMessage.exceededSpendLimitFreePlan', {
-            usage: formatCost(Number(usageCost), {
-              shortFormat: true
-            }),
-            limit: formatCost(Number(limitCost), {
-              shortFormat: true
-            })
-          })
-        : getString('ce.enforcementMessage.exceededSpendLimit')
-      return {
-        message: () => message,
-        bannerType: BannerType.LEVEL_UP
-      }
+      return isFreeEdition
+        ? {
+            message: () =>
+              getString('ce.enforcementMessage.exceededSpendLimitFreePlan', {
+                usage: formatCost(Number(usageCost), {
+                  shortFormat: true
+                }),
+                limit: formatCost(Number(limitCost), {
+                  shortFormat: true
+                })
+              }),
+            bannerType: BannerType.LEVEL_UP
+          }
+        : {
+            message: () => getString('ce.enforcementMessage.exceededSpendLimit'),
+            bannerType: BannerType.OVERUSE
+          }
     }
 
     if (usagePercentage > FEATURE_USAGE_WARNING_LIMIT) {

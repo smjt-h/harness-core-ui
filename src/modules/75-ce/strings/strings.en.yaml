@@ -8,11 +8,11 @@ common:
 allRegions: 'All Regions'
 allClusters: 'All Clusters'
 enforcementMessage:
-  exceededSpendLimit: You have exceeded your cloud spend subscription limit.
+  exceededSpendLimit: You have exceeded your cloud spend subscription limit. Consider increasing your limits to manage higher cloud spend.
   exceededSpendLimitFreePlan: 'You have used {{ usage }} / {{ limit }} free cloud spend incuded in your current plan. Consider upgrading to manage higher cloud spend.'
   usageInfo: 'You have used {{ percentage }}% of your cloud spend subscription limit.'
-  autoStoppingRules: "You've used {{ limits }} free AutoStopping rules under the free plan."
-  perspectivesLimitMsg: "You've used {{ limits }} free Perspectives under the free plan."
+  autoStoppingRules: "You've used {{ limits }} free AutoStopping rules under the free plan. Consider upgrading for more Auto Stopping rules."
+  perspectivesLimitMsg: "You've used {{ limits }} free Perspectives under the free plan. Consider upgrading for more Perspectives."
 noSavingsDataMessage: 'Savings data not computed yet'
 pageErrorMsg:
   recommendationNoData: 'There are no recommendations yet. Recommendations typically take 24 hours to show up. Please check back later.'
@@ -782,3 +782,7 @@ anomalyDetection:
     whitelistResource: Whitelist resource
     falseAnomaly: This is false anomaly
   userFeedbackSuccessMsg: 'Thanks for your feedback!'
+  tooltip:
+    countText: '{{ count }} Anomalies'
+    anomaliesRedirectionText: View anomalies
+    filterText: Apply cluster filters

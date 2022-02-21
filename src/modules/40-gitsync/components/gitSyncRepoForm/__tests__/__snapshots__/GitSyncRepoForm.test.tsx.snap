@@ -176,7 +176,12 @@ exports[`Git Sync - repo tab Filling gitSync repo form: connectorSelectorDialog 
                   >
                     projectLabel
                   </p>
-                  
+                  <p
+                    class="StyledProps--font Text--lineclamp StyledProps--main StyledProps--font-variation-form-label StyledProps--font-weight-light"
+                    style="--text-line-clamp: 1;"
+                  >
+                    dummy
+                  </p>
                 </div>
               </div>
             </div>
@@ -1260,11 +1265,43 @@ exports[`Git Sync - repo tab Repo type card should be enabled only for Github 1`
     class="StyledProps--font StyledProps--main modalContainer StyledProps--margin-large"
     style="height: inherit;"
   >
-    <p
-      class="StyledProps--font StyledProps--main StyledProps--font-variation-h3 StyledProps--color StyledProps--color-black"
+    <div
+      class="StyledProps--font StyledProps--main StyledProps--margin-bottom-large"
     >
-      enableGitExperience
-    </p>
+      <div
+        class="Layout--horizontal StyledProps--main userInfo StyledProps--flex StyledProps--flex-alignItems-center"
+      >
+        <div
+          class="Avatar--Avatar Avatar--contentStyle"
+        >
+          <span
+            class="bp3-popover-wrapper Avatar--avatarPopOver"
+          >
+            <span
+              class="bp3-popover-target"
+            >
+              <div
+                class="Avatar--AvatarInner"
+                style="border-radius: 100%; line-height: 18px; width: 24px; height: 24px; font-size: 10px;"
+                tabindex="0"
+              >
+                U
+              </div>
+            </span>
+          </span>
+        </div>
+        <p
+          class="StyledProps--font StyledProps--main StyledProps--color StyledProps--color-grey700"
+        >
+          common.git.currentUserLabel
+        </p>
+      </div>
+      <p
+        class="StyledProps--font StyledProps--main StyledProps--font-variation-h3 StyledProps--margin-bottom-large StyledProps--margin-top-small"
+      >
+        enableGitExperience
+      </p>
+    </div>
     <div
       class="Layout--horizontal StyledProps--main"
     >
@@ -1871,11 +1908,43 @@ exports[`Git Sync - repo tab rendering form to create gitSync repo 1`] = `
     class="StyledProps--font StyledProps--main modalContainer StyledProps--margin-large"
     style="height: inherit;"
   >
-    <p
-      class="StyledProps--font StyledProps--main StyledProps--font-variation-h3 StyledProps--color StyledProps--color-black"
+    <div
+      class="StyledProps--font StyledProps--main StyledProps--margin-bottom-large"
     >
-      enableGitExperience
-    </p>
+      <div
+        class="Layout--horizontal StyledProps--main userInfo StyledProps--flex StyledProps--flex-alignItems-center"
+      >
+        <div
+          class="Avatar--Avatar Avatar--contentStyle"
+        >
+          <span
+            class="bp3-popover-wrapper Avatar--avatarPopOver"
+          >
+            <span
+              class="bp3-popover-target"
+            >
+              <div
+                class="Avatar--AvatarInner"
+                style="border-radius: 100%; line-height: 18px; width: 24px; height: 24px; font-size: 10px;"
+                tabindex="0"
+              >
+                U
+              </div>
+            </span>
+          </span>
+        </div>
+        <p
+          class="StyledProps--font StyledProps--main StyledProps--color StyledProps--color-grey700"
+        >
+          common.git.currentUserLabel
+        </p>
+      </div>
+      <p
+        class="StyledProps--font StyledProps--main StyledProps--font-variation-h3 StyledProps--margin-bottom-large StyledProps--margin-top-small"
+      >
+        enableGitExperience
+      </p>
+    </div>
     <div
       class="Layout--horizontal StyledProps--main"
     >
@@ -2482,11 +2551,43 @@ exports[`Git Sync - repo tab rendering form to create gitSync repo 2`] = `
     class="StyledProps--font StyledProps--main modalContainer StyledProps--margin-large"
     style="height: inherit;"
   >
-    <p
-      class="StyledProps--font StyledProps--main StyledProps--font-variation-h3 StyledProps--color StyledProps--color-black"
+    <div
+      class="StyledProps--font StyledProps--main StyledProps--margin-bottom-large"
     >
-      enableGitExperience
-    </p>
+      <div
+        class="Layout--horizontal StyledProps--main userInfo StyledProps--flex StyledProps--flex-alignItems-center"
+      >
+        <div
+          class="Avatar--Avatar Avatar--contentStyle"
+        >
+          <span
+            class="bp3-popover-wrapper Avatar--avatarPopOver"
+          >
+            <span
+              class="bp3-popover-target"
+            >
+              <div
+                class="Avatar--AvatarInner"
+                style="border-radius: 100%; line-height: 18px; width: 24px; height: 24px; font-size: 10px;"
+                tabindex="0"
+              >
+                U
+              </div>
+            </span>
+          </span>
+        </div>
+        <p
+          class="StyledProps--font StyledProps--main StyledProps--color StyledProps--color-grey700"
+        >
+          common.git.currentUserLabel
+        </p>
+      </div>
+      <p
+        class="StyledProps--font StyledProps--main StyledProps--font-variation-h3 StyledProps--margin-bottom-large StyledProps--margin-top-small"
+      >
+        enableGitExperience
+      </p>
+    </div>
     <div
       class="Layout--horizontal StyledProps--main"
     >

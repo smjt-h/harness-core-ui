@@ -35,11 +35,6 @@ export type MapAppDynamicsMetric = {
   pathType?: string
 }
 
-export type SelectedAndMappedMetrics = {
-  selectedMetric: string
-  mappedMetrics: Map<string, MapAppDynamicsMetric>
-}
-
 export interface AppDynamicsData {
   name: string
   identifier: string
@@ -89,9 +84,9 @@ export interface InitAppDCustomFormInterface {
     label: string
     value: string
   }
+  healthScore: boolean
   basePath: BasePathData
   metricPath: MetricPathData
-  healthScore: boolean
   continuousVerification: boolean
   serviceInstanceMetricPath: string
 }

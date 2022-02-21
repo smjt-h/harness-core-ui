@@ -19,15 +19,12 @@ import { useGitSyncStore } from 'framework/GitRepoStore/GitSyncStoreContext'
 import { PermissionIdentifier } from '@rbac/interfaces/PermissionIdentifier'
 import { ResourceType } from '@rbac/interfaces/ResourceType'
 import RbacButton from '@rbac/components/Button/Button'
-import { useCanEnableGitExperience } from '@gitsync/common/gitSyncUtils'
 import css from './NewUserView.module.scss'
 
 const NewUserView: React.FC = () => {
   const { updateAppStore } = useAppStore()
   const { refreshStore } = useGitSyncStore()
-  const { projectIdentifier, orgIdentifier, accountId, module } = useParams<ProjectPathProps & ModulePathParams>()
-
-  const canEnableGitExperience = useCanEnableGitExperience({ projectIdentifier, orgIdentifier, accountId, module })
+  const { projectIdentifier } = useParams<ProjectPathProps & ModulePathParams>()
 
   const { openGitSyncModal } = useCreateGitSyncModal({
     onSuccess: () => {
@@ -53,9 +50,7 @@ const NewUserView: React.FC = () => {
         font={{ size: 'medium' }}
         className={css.gitEnableBtn}
         text={getString('enableGitExperience')}
-        disabled={!canEnableGitExperience}
         onClick={() => openGitSyncModal(true, false, undefined)}
-        tooltip={!canEnableGitExperience ? getString('gitsync.gitEnabledBlockedTooltip') : undefined}
         permission={{
           permission: PermissionIdentifier.UPDATE_PROJECT,
           resource: {

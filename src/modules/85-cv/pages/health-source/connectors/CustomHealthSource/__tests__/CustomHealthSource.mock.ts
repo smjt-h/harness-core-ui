@@ -356,7 +356,7 @@ export const mockedHealthSourcePayload = {
         metricName,
         metricResponseMapping: {
           metricValueJsonPath: jsonPath,
-          serviceInstanceJsonPath: '',
+          serviceInstanceJsonPath: 'serviceInstance',
           timestampFormat: 'MMMM DD YY',
           timestampJsonPath: jsonPath
         },
@@ -493,4 +493,168 @@ export const sourceData = {
   sourceType: 'CustomHealth',
   connectorRef: 'customhealth',
   product: {}
+}
+
+export const mappedMetricValues = [
+  {
+    metricName: 'CustomHealth Metric',
+    metricIdentifier: 'customMetric101',
+    groupName: { label: 'Group 1', value: 'Group 1' },
+    continuousVerification: false,
+    healthScore: false,
+    sli: true,
+    riskCategory: '',
+    serviceInstanceIdentifier: 'serviceInstance',
+    lowerBaselineDeviation: false,
+    higherBaselineDeviation: false,
+    queryType: 'SERVICE_BASED',
+    requestMethod: 'GET',
+    query: '*',
+    baseURL: '',
+    pathURL:
+      'query?query=kubernetes.cpu.usage.total{*}by{pod_name}.rollup(avg,60)&from=start_time_seconds&to=end_time_seconds&pod_name=harness-datadog-dummy-pipeline-deployment-canary-76586cb6fvjsfp',
+    metricValue: '$.series.[*].query_index',
+    timestamp: '$.series.[*].length',
+    timestampFormat: '',
+    serviceInstancePath: '',
+    startTime: { placeholder: 'start_time_seconds', timestampFormat: 'SECONDS', customTimestampFormat: '' },
+    endTime: { placeholder: 'end_time_seconds', timestampFormat: 'SECONDS', customTimestampFormat: '' }
+  },
+  {
+    metricName: 'appdMetric 8ltxanbnvzv',
+    metricIdentifier: '',
+    groupName: { label: 'Group 1', value: 'Group 1' },
+    continuousVerification: false,
+    healthScore: false,
+    sli: true,
+    riskCategory: '',
+    serviceInstanceIdentifier: 'serviceInstance',
+    lowerBaselineDeviation: false,
+    higherBaselineDeviation: false,
+    queryType: 'SERVICE_BASED',
+    requestMethod: 'GET',
+    query: '*',
+    baseURL: '',
+    pathURL:
+      'query?query=kubernetes.cpu.usage.total{*}by{pod_name}.rollup(avg,60)&from=start_time_seconds&to=end_time_seconds&pod_name=harness-datadog-dummy-pipeline-deployment-canary-76586cb6fvjsfp',
+    metricValue: '$.series.[*].interval',
+    timestamp: '$.series.[*].scope',
+    timestampFormat: '',
+    serviceInstancePath: '',
+    startTime: { placeholder: 'start_time_seconds' },
+    endTime: { placeholder: 'end_time_seconds' }
+  }
+]
+
+export const mappedMetricWithValue = new Map()
+mappedMetricWithValue.set('CustomHealth Metric', mappedMetricValues[0])
+mappedMetricWithValue.set('CustomHealth Metric new', mappedMetricValues[1])
+
+export const formikValue = {
+  metricName: 'CustomHealth Metric',
+  metricIdentifier: '',
+  groupName: { label: 'Group 1', value: 'Group 1' },
+  continuousVerification: true,
+  healthScore: true,
+  sli: true,
+  riskCategory: '',
+  serviceInstanceIdentifier: 'serviceInstance',
+  lowerBaselineDeviation: false,
+  higherBaselineDeviation: false,
+  queryType: 'SERVICE_BASED' as any,
+  requestMethod: 'GET' as any,
+  query: '*',
+  baseURL: '',
+  pathURL:
+    'query?query=kubernetes.cpu.usage.total{*}by{pod_name}.rollup(avg,60)&from=start_time_seconds&to=end_time_seconds&pod_name=harness-datadog-dummy-pipeline-deployment-canary-76586cb6fvjsfp',
+  metricValue: '$.series.[*].query_index',
+  timestamp: '$.series.[*].length',
+  timestampFormat: '',
+  serviceInstancePath: '',
+  startTime: { placeholder: 'start_time_seconds', timestampFormat: 'SECONDS' as any, customTimestampFormat: '' },
+  endTime: { placeholder: 'end_time_seconds', timestampFormat: 'SECONDS' as any, customTimestampFormat: '' }
+}
+
+export const recordsData = {
+  status: 'SUCCESS',
+  data: {
+    status: 'ok',
+    resp_version: 1,
+    series: [
+      {
+        end: 1645108259000,
+        attributes: {},
+        metric: 'kubernetes.cpu.usage.total',
+        interval: 60,
+        tag_set: ['pod_name:qa-target-automation-1-xicobc-0'],
+        start: 1645106460000,
+        length: 30,
+        query_index: 0,
+        aggr: null,
+        scope: 'pod_name:qa-target-automation-1-xicobc-0',
+        pointlist: [
+          [1645106460000, 30747548.5],
+          [1645106520000, 604424862.5],
+          [1645106580000, 65365139],
+          [1645106640000, 30227738.25],
+          [1645106700000, 615818645],
+          [1645106760000, 97485564.5],
+          [1645106820000, 32996677],
+          [1645106880000, 606363362.5],
+          [1645106940000, 93898013],
+          [1645107000000, 32993409.5],
+          [1645107060000, 586815239],
+          [1645107120000, 79365294],
+          [1645107180000, 27949067],
+          [1645107240000, 666112412.5],
+          [1645107300000, 80059776],
+          [1645107360000, 27407712.5],
+          [1645107420000, 618593223.5],
+          [1645107480000, 94986383],
+          [1645107540000, 27407679],
+          [1645107600000, 595496268],
+          [1645107660000, 80597132],
+          [1645107720000, 31315295],
+          [1645107780000, 613968769.5],
+          [1645107840000, 103850589],
+          [1645107900000, 21259266.5],
+          [1645107960000, 614662304],
+          [1645108020000, 95614903.5],
+          [1645108080000, 30763894.5],
+          [1645108140000, 645740712.25],
+          [1645108200000, 125004939.33333333]
+        ],
+        expression: 'kubernetes.cpu.usage.total{pod_name:qa-target-automation-1-xicobc-0}.rollup(avg, 60)',
+        unit: [
+          { family: 'cpu', scale_factor: 1e-9, name: 'nanocore', short_name: 'ncores', plural: 'nanocores', id: 121 },
+          null
+        ],
+        display_name: 'kubernetes.cpu.usage.total'
+      }
+    ],
+    to_date: 1645108253000,
+    query: 'kubernetes.cpu.usage.total{*}by{pod_name}.rollup(avg,60)',
+    message: '',
+    res_type: 'time_series',
+    times: [],
+    from_date: 1645106453000,
+    group_by: ['pod_name'],
+    values: []
+  },
+  metaData: null,
+  correlationId: 'f591fee5-d771-4581-9711-7223f667a619'
+}
+
+export const chartData = {
+  correlationId: 'correlationId',
+  data: [
+    {
+      metricName: 'ms 101',
+      metricValue: 100,
+      timestamp: 0,
+      txnName: 'ms101'
+    }
+  ],
+  metaData: {},
+  status: 'SUCCESS'
 }

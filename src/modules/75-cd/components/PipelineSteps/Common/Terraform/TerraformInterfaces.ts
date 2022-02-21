@@ -49,6 +49,7 @@ export interface TerraformProps<T = TerraformData> {
   path?: string
   stepType?: string
   gitScope?: GitFilterScope
+  allValues?: T
 }
 
 export interface TerraformPlanProps {
@@ -67,6 +68,7 @@ export interface TerraformPlanProps {
   readonly?: boolean
   gitScope?: GitFilterScope
   stepType?: string
+  allValues?: TFPlanFormData
 }
 
 export interface RemoteVar {
@@ -124,6 +126,7 @@ export const CommandTypes = {
   Destroy: 'Destroy'
 }
 export interface PathInterface {
+  [x: string]: any
   path: string
 }
 
@@ -182,6 +185,8 @@ export interface Connector {
   live: boolean
   connector: {
     type: string
+    identifier: string
+    name: string
     spec: { val: string; url: string; connectionType?: string; type?: string }
   }
 }
@@ -215,6 +220,8 @@ export interface TFDataSpec {
         commitId?: string
         folderPath?: string
         connectorRef?: string | Connector
+        repositoryName?: string
+        artifactPaths?: string
       }
     }
   }

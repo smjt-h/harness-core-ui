@@ -9,39 +9,18 @@ import { Button } from '@wings-software/uicore'
 import { FieldArray, FormikProps } from 'formik'
 import { v4 as uuid } from 'uuid'
 import { defaultTo, flatMap, get, isEmpty, uniq } from 'lodash-es'
+import cx from 'classnames'
 
 import { String, useStrings } from 'framework/strings'
-import type {
-  RetryFailureActionConfig,
-  IgnoreFailureActionConfig,
-  ManualInterventionFailureActionConfig,
-  AbortFailureActionConfig,
-  StepGroupFailureActionConfig,
-  MarkAsSuccessFailureActionConfig,
-  StageRollbackFailureActionConfig,
-  FailureStrategyConfig,
-  OnFailureConfig
-} from 'services/cd-ng'
 import { StageType } from '@pipeline/utils/stageHelpers'
-import { StepMode as Modes } from '@pipeline/utils/stepUtils'
+import type { StepMode as Modes } from '@pipeline/utils/stepUtils'
 
 import FailureTypeMultiSelect from './FailureTypeMultiSelect'
 import { allowedStrategiesAsPerStep, errorTypesForStages } from './StrategySelection/StrategyConfig'
 import StrategySelection from './StrategySelection/StrategySelection'
+import { isDefaultStageStrategy, findTabWithErrors, hasItems, handleChangeInStrategies, getTabIntent } from './utils'
+import type { AllFailureStrategyConfig } from './utils'
 import css from './FailureStrategyPanel.module.scss'
-
-export type AllActions =
-  | RetryFailureActionConfig
-  | IgnoreFailureActionConfig
-  | ManualInterventionFailureActionConfig
-  | AbortFailureActionConfig
-  | StepGroupFailureActionConfig
-  | MarkAsSuccessFailureActionConfig
-  | StageRollbackFailureActionConfig
-
-export interface AllFailureStrategyConfig extends FailureStrategyConfig {
-  onFailure: OnFailureConfig & { action: AllActions }
-}
 
 /**
  * https://harness.atlassian.net/wiki/spaces/CDNG/pages/865403111/Failure+Strategy+-+CD+Next+Gen
@@ -60,29 +39,20 @@ export interface FailureStrategyPanelProps {
 
 export default function FailureStrategyPanel(props: FailureStrategyPanelProps): React.ReactElement {
   const {
-    formikProps: { values: formValues, submitForm, errors, isSubmitting },
+    formikProps: { values: formValues, submitForm, errors, isSubmitting, setFormikState },
     mode,
     isReadonly,
     stageType = StageType.DEPLOY
   } = props
-  const tabWithErrors =
-    (Array.isArray(errors?.failureStrategies) && errors?.failureStrategies.findIndex(err => !isEmpty(err))) ||
-    /* istanbul ignore next */ 0
-  const [selectedStrategyNum, setSelectedStrategyNum] = React.useState(Math.max(tabWithErrors, 0))
-  const hasFailureStrategies = Array.isArray(formValues.failureStrategies) && formValues.failureStrategies.length > 0
-
+  const [selectedStrategyNum, setSelectedStrategyNum] = React.useState(Math.max(findTabWithErrors(errors), 0))
+  const hasFailureStrategies = hasItems(formValues.failureStrategies)
   const { getString } = useStrings()
-
   const uids = React.useRef<string[]>([])
-
-  const isDefaultStageStrategy = mode === Modes.STAGE && stageType === StageType.DEPLOY && selectedStrategyNum === 0
   const filterTypes = uniq(
-    flatMap(formValues.failureStrategies || /* istanbul ignore next */ [], e => e.onFailure?.errors || [])
+    flatMap(defaultTo(formValues.failureStrategies, []), e => defaultTo(e.onFailure?.errors, []))
   )
-
   const currentTabHasErrors = !isEmpty(get(errors, `failureStrategies[${selectedStrategyNum}]`))
   const addedAllStratgies = filterTypes.length === errorTypesForStages[stageType].length
-
   const isAddBtnDisabled = addedAllStratgies || isReadonly || currentTabHasErrors
 
   async function handleTabChange(n: number): Promise<void> {
@@ -97,7 +67,10 @@ export default function FailureStrategyPanel(props: FailureStrategyPanelProps): 
 
   function handleAdd(push: (obj: any) => void, strategies: AllFailureStrategyConfig[]) {
     return async (): Promise<void> => {
-      await submitForm()
+      /* istanbul ignore else */
+      if (strategies.length > 0) {
+        await submitForm()
+      }
 
       // only allow add if current tab has no errors
       /* istanbul ignore else */
@@ -117,16 +90,19 @@ export default function FailureStrategyPanel(props: FailureStrategyPanelProps): 
   }
 
   React.useEffect(() => {
-    /* istanbul ignore else */
-    if (Array.isArray(formValues.failureStrategies) && selectedStrategyNum >= formValues.failureStrategies.length) {
-      setSelectedStrategyNum(Math.max(0, formValues.failureStrategies.length - 1))
-    }
+    handleChangeInStrategies({
+      formValues,
+      selectedStrategyNum,
+      setFormikState,
+      setSelectedStrategyNum
+    })
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [formValues.failureStrategies, selectedStrategyNum])
 
   // open errored tab
   React.useEffect(() => {
-    if (isSubmitting && Array.isArray(errors?.failureStrategies)) {
-      const tabNum = errors.failureStrategies.findIndex(err => !isEmpty(err))
+    if (isSubmitting) {
+      const tabNum = findTabWithErrors(errors)
 
       if (tabNum > -1) {
         setSelectedStrategyNum(tabNum)
@@ -158,7 +134,7 @@ export default function FailureStrategyPanel(props: FailureStrategyPanelProps): 
                         return (
                           <li key={key} className={css.stepListItem}>
                             <Button
-                              intent={i === selectedStrategyNum ? 'primary' : 'none'}
+                              intent={getTabIntent(i, selectedStrategyNum)}
                               data-selected={i === selectedStrategyNum}
                               onClick={() => handleTabChange(i)}
                               className={css.stepListBtn}
@@ -180,18 +156,16 @@ export default function FailureStrategyPanel(props: FailureStrategyPanelProps): 
                     data-testid="add-failure-strategy"
                     onClick={handleAdd(push, strategies)}
                     disabled={isAddBtnDisabled}
-                    tooltip={
-                      currentTabHasErrors
-                        ? getString('pipeline.failureStrategies.tabHasErrors')
-                        : addedAllStratgies
-                        ? getString('pipeline.failureStrategies.addedAllStrategies')
-                        : undefined
-                    }
+                    tooltip={cx({
+                      [getString('pipeline.failureStrategies.tabHasErrors')]: currentTabHasErrors,
+                      [getString('pipeline.failureStrategies.addedAllStrategies')]:
+                        !currentTabHasErrors && addedAllStratgies
+                    })}
                   >
                     <String stringID="add" />
                   </Button>
                 </div>
-                {hasFailureStrategies && !isDefaultStageStrategy ? (
+                {hasFailureStrategies && !isDefaultStageStrategy(mode, stageType, selectedStrategyNum) ? (
                   <Button
                     icon="main-trash"
                     minimal

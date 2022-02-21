@@ -72,6 +72,7 @@ export function StageNode(props: StageNodeProps): React.ReactElement {
       wrapperTagName="div"
       targetProps={{ onClick: getOnStageClick(stage.nodeUuid || '') }}
       interactionKind="hover"
+      hoverOpenDelay={1000}
     >
       {stage.status === 'Running' ? (
         <RunningIcon />

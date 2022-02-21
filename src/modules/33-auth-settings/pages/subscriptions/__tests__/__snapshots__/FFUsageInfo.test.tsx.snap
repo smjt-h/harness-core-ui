@@ -15,60 +15,128 @@ exports[`FFUsageInfo FFUsageInfo 1`] = `
           class="Layout--horizontal StyledProps--main StyledProps--flex StyledProps--flex-alignItems-baseline StyledProps--flex-justifyContent-space-between"
         >
           <div
-            class="Layout--horizontal Layout--layout-spacing-xsmall StyledProps--main"
+            class="Layout--horizontal Layout--layout-spacing-xsmall StyledProps--main StyledProps--flex StyledProps--flex-alignItems-baseline"
           >
             <p
-              class="StyledProps--font StyledProps--main StyledProps--font-size-small"
+              class="StyledProps--font StyledProps--main StyledProps--font-size-small StyledProps--color StyledProps--color-grey700"
             >
-              common.subscriptions.usage.ffUsers
+              common.subscriptions.usage.developers
             </p>
             <span
               class="bp3-popover-wrapper"
             >
               <span
-                class="bp3-popover-target Text--targetClass"
+                class="bp3-popover-target"
               >
-                <p
-                  class="StyledProps--font StyledProps--main"
-                  style="display: flex; align-items: center;"
+                <span
+                  class="bp3-icon StyledProps--main"
+                  data-icon="info"
                   tabindex="0"
                 >
-                  <span
-                    class="bp3-icon StyledProps--main Text--icon StyledProps--padding-right-xsmall"
-                    data-icon="deployment-incomplete-legacy"
+                  <svg
+                    height="15"
+                    viewBox="0 0 12 12"
+                    width="15"
+                    xmlns="http://www.w3.org/2000/svg"
                   >
-                    <svg
-                      height="15"
-                      viewBox="0 0 14 14"
-                      width="15"
-                      xmlns="http://www.w3.org/2000/svg"
-                    >
-                      <circle
-                        cx="7"
-                        cy="7"
-                        fill="#ff8f3f"
-                        r="7"
-                      />
-                      <circle
-                        cx="7"
-                        cy="7"
-                        fill="#fff"
-                        r="5.2"
-                      />
-                      <path
-                        d="M6.1 9.6c0-.5.3-1 .9-1s.9.4.9 1-.3 1-.9 1-.9-.4-.9-1zm.3-4.5l-.1-1.3h1.5v1.3l-.3 3h-1z"
-                        fill="#ff8f3f"
-                      />
-                    </svg>
-                  </span>
-                </p>
+                    <path
+                      clip-rule="evenodd"
+                      d="M0 6a6 6 0 1012 0A6 6 0 000 6zm.75 0a5.25 5.25 0 1010.5 0A5.25 5.25 0 00.75 6zm4.206 3.104v.646h2.682v-.646l-.836-.144V4.203H4.956v.65l.836.144V8.96l-.836.144zm1.846-7.352v1.03h-1.01v-1.03h1.01z"
+                      fill-rule="evenodd"
+                    />
+                  </svg>
+                </span>
               </span>
             </span>
           </div>
           <p
+            class="StyledProps--font StyledProps--main StyledProps--font-size-small StyledProps--color StyledProps--color-grey500"
+          >
+            
+          </p>
+        </div>
+        <p
+          class="StyledProps--font StyledProps--main StyledProps--font-size-large StyledProps--font-weight-bold StyledProps--color StyledProps--color-black"
+        >
+          0
+        </p>
+        <div
+          class="StyledProps--font StyledProps--main bar StyledProps--background-grey100 StyledProps--border StyledProps--margin-bottom-small"
+          style="width: 100%; height: 10px;"
+        >
+          <div
+            class="StyledProps--font StyledProps--main StyledProps--background-primary6 StyledProps--border"
+            style="width: 0%; height: 100%;"
+          />
+        </div>
+        <div
+          class="Layout--horizontal StyledProps--main StyledProps--flex StyledProps--flex-justifyContent-space-between"
+        >
+          <p
             class="StyledProps--font StyledProps--main StyledProps--font-size-xsmall"
           >
-            Last 30 Days
+            50
+             
+            common.subscribed
+          </p>
+          <p
+            class="StyledProps--font StyledProps--main StyledProps--font-size-xsmall StyledProps--color"
+          >
+            0
+            % 
+            common.subscribed
+          </p>
+        </div>
+      </div>
+    </div>
+    <div
+      class="bp3-card bp3-elevation-0 Card--card innerCard"
+    >
+      <div
+        class="Layout--vertical StyledProps--main"
+      >
+        <div
+          class="Layout--horizontal StyledProps--main StyledProps--flex StyledProps--flex-alignItems-baseline StyledProps--flex-justifyContent-space-between"
+        >
+          <div
+            class="Layout--horizontal Layout--layout-spacing-xsmall StyledProps--main StyledProps--flex StyledProps--flex-alignItems-baseline"
+          >
+            <p
+              class="StyledProps--font StyledProps--main StyledProps--font-size-small StyledProps--color StyledProps--color-grey700"
+            >
+              common.subscriptions.usage.monthlyUsers
+            </p>
+            <span
+              class="bp3-popover-wrapper"
+            >
+              <span
+                class="bp3-popover-target"
+              >
+                <span
+                  class="bp3-icon StyledProps--main"
+                  data-icon="info"
+                  tabindex="0"
+                >
+                  <svg
+                    height="15"
+                    viewBox="0 0 12 12"
+                    width="15"
+                    xmlns="http://www.w3.org/2000/svg"
+                  >
+                    <path
+                      clip-rule="evenodd"
+                      d="M0 6a6 6 0 1012 0A6 6 0 000 6zm.75 0a5.25 5.25 0 1010.5 0A5.25 5.25 0 00.75 6zm4.206 3.104v.646h2.682v-.646l-.836-.144V4.203H4.956v.65l.836.144V8.96l-.836.144zm1.846-7.352v1.03h-1.01v-1.03h1.01z"
+                      fill-rule="evenodd"
+                    />
+                  </svg>
+                </span>
+              </span>
+            </span>
+          </div>
+          <p
+            class="StyledProps--font StyledProps--main StyledProps--font-size-small StyledProps--color StyledProps--color-grey500"
+          >
+            February 2022
           </p>
         </div>
         <p
@@ -115,10 +183,10 @@ exports[`FFUsageInfo FFUsageInfo 1`] = `
           class="Layout--horizontal StyledProps--main StyledProps--flex StyledProps--flex-alignItems-baseline StyledProps--flex-justifyContent-space-between"
         >
           <div
-            class="Layout--horizontal Layout--layout-spacing-xsmall StyledProps--main"
+            class="Layout--horizontal Layout--layout-spacing-xsmall StyledProps--main StyledProps--flex StyledProps--flex-alignItems-baseline"
           >
             <p
-              class="StyledProps--font StyledProps--main StyledProps--font-size-small"
+              class="StyledProps--font StyledProps--main StyledProps--font-size-small StyledProps--color StyledProps--color-grey700"
             >
               common.purpose.cf.continuous
             </p>
@@ -126,47 +194,31 @@ exports[`FFUsageInfo FFUsageInfo 1`] = `
               class="bp3-popover-wrapper"
             >
               <span
-                class="bp3-popover-target Text--targetClass"
+                class="bp3-popover-target"
               >
-                <p
-                  class="StyledProps--font StyledProps--main"
-                  style="display: flex; align-items: center;"
+                <span
+                  class="bp3-icon StyledProps--main"
+                  data-icon="info"
                   tabindex="0"
                 >
-                  <span
-                    class="bp3-icon StyledProps--main Text--icon StyledProps--padding-right-xsmall"
-                    data-icon="deployment-incomplete-legacy"
+                  <svg
+                    height="15"
+                    viewBox="0 0 12 12"
+                    width="15"
+                    xmlns="http://www.w3.org/2000/svg"
                   >
-                    <svg
-                      height="15"
-                      viewBox="0 0 14 14"
-                      width="15"
-                      xmlns="http://www.w3.org/2000/svg"
-                    >
-                      <circle
-                        cx="7"
-                        cy="7"
-                        fill="#ff8f3f"
-                        r="7"
-                      />
-                      <circle
-                        cx="7"
-                        cy="7"
-                        fill="#fff"
-                        r="5.2"
-                      />
-                      <path
-                        d="M6.1 9.6c0-.5.3-1 .9-1s.9.4.9 1-.3 1-.9 1-.9-.4-.9-1zm.3-4.5l-.1-1.3h1.5v1.3l-.3 3h-1z"
-                        fill="#ff8f3f"
-                      />
-                    </svg>
-                  </span>
-                </p>
+                    <path
+                      clip-rule="evenodd"
+                      d="M0 6a6 6 0 1012 0A6 6 0 000 6zm.75 0a5.25 5.25 0 1010.5 0A5.25 5.25 0 00.75 6zm4.206 3.104v.646h2.682v-.646l-.836-.144V4.203H4.956v.65l.836.144V8.96l-.836.144zm1.846-7.352v1.03h-1.01v-1.03h1.01z"
+                      fill-rule="evenodd"
+                    />
+                  </svg>
+                </span>
               </span>
             </span>
           </div>
           <p
-            class="StyledProps--font StyledProps--main StyledProps--font-size-xsmall"
+            class="StyledProps--font StyledProps--main StyledProps--font-size-small StyledProps--color StyledProps--color-grey500"
           >
             common.current
           </p>

@@ -150,6 +150,7 @@ export class TerraformDestroy extends PipelineStep<TFDestroyData> {
         <TerraformInputStep
           initialValues={initialValues}
           onUpdate={onUpdate}
+          allValues={inputSetData?.allValues}
           stepViewType={stepViewType}
           readonly={inputSetData?.readonly}
           inputSetData={inputSetData}

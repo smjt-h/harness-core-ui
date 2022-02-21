@@ -35,6 +35,8 @@ noDeploymentText: There are no deployments in your project
 runModalNoPipelineText: There are no pipelines in your project. Please create a new pipeline
 noBuildsText: There are no builds in your project
 noBuildsLabel: No builds
+parallelSelectedStages: '{{selected}}, +{{total}} Stages'
+parallelStages: '+{{total}} Stages'
 runAPipeline: Run a Pipeline
 regionPlaceholder: Select Region
 repositoryUrlPlaceholder: Enter Repository URL
@@ -287,6 +289,9 @@ failureStrategies:
     DelegateProvisioning: Delegate Provisioning Errors
     Unknown: Unknown Errors
   validation:
+    arrayOrUndefined: Value must be an array if defined.
+    strategyRequired: 'At least 1 strategy is required'
+    strategiesRequired: 'At least {{n}} strategies are required'
     errorsRequired: At least one failure type is required
     errorsMinimum: '{{ $.pipeline.failureStrategies.validation.errorsRequired }}'
     actionRequired: Action is required
@@ -357,9 +362,9 @@ execution:
     abortTitle: Abort Execution?
 resourceConstraints:
   title: Resource Constraint
-  infoText: 'You have {{executioncount}} executions in queue that have to complete before your execution begins. Only one execution on a K8s namespace is allowed at a time.'
+  infoText: 'You have {{executioncount}} {{executiontext}} in queue that have to complete before your execution begins. Only one execution on a K8s namespace is allowed at a time.'
   currentlyExecuting: ' ( currently executing )'
-  yourPipeline: ' ( you execution )'
+  yourPipeline: ' ( your execution )'
 targets:
   title: Targets
 barriers:

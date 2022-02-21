@@ -16,15 +16,22 @@ import QueryMapping from '../QueryMapping'
 import { mocksampledata } from '../../../__tests__/CustomHealthSource.mock'
 import type { QueryMappingInterface } from '../QueryMapping.types'
 
-const SampleComponent: React.FC<Omit<QueryMappingInterface, 'formikProps'>> = (
-  props: Omit<QueryMappingInterface, 'formikProps'>
+const SampleComponent: React.FC<Omit<QueryMappingInterface, 'formValue'>> = (
+  props: Omit<QueryMappingInterface, 'formValue'>
 ) => {
   return (
     <TestWrapper>
       <Formik formName="test" initialValues={{}} onSubmit={jest.fn()} validationSchema={{}}>
         {formikProps => (
           <FormikForm>
-            <QueryMapping {...{ ...props, formikProps: formikProps as any }} />
+            <QueryMapping
+              {...{
+                ...props,
+                onFieldChange: formikProps.setFieldValue,
+                onValueChange: formikProps.setValues,
+                formValue: formikProps.values as any
+              }}
+            />
             <button type="submit" data-testid={'submitButtonJest'} />
           </FormikForm>
         )}
@@ -52,6 +59,8 @@ describe('Validate MapMetricsToServices conponent', () => {
           isQueryExecuted={true}
           recordsData={mocksampledata as any}
           setLoading={setLoading}
+          onFieldChange={jest.fn()}
+          onValueChange={jest.fn()}
         />
       </TestWrapper>
     )
@@ -67,6 +76,8 @@ describe('Validate MapMetricsToServices conponent', () => {
           isQueryExecuted={true}
           recordsData={mocksampledata as any}
           setLoading={setLoading}
+          onFieldChange={jest.fn()}
+          onValueChange={jest.fn()}
         />
       </TestWrapper>
     )
@@ -82,6 +93,8 @@ describe('Validate MapMetricsToServices conponent', () => {
           isQueryExecuted={true}
           recordsData={mocksampledata as any}
           setLoading={setLoading}
+          onFieldChange={jest.fn()}
+          onValueChange={jest.fn()}
         />
       </TestWrapper>
     )

@@ -6,14 +6,14 @@
  */
 
 import React, { useEffect } from 'react'
-import { defaultTo, get } from 'lodash-es'
+import { defaultTo, get, isEmpty } from 'lodash-es'
 
 import { FormInput, getMultiTypeFromValue, Layout, MultiTypeInputType } from '@wings-software/uicore'
 import { ArtifactSourceBase, ArtifactSourceRenderProps } from '@cd/factory/ArtifactSourceFactory/ArtifactSourceBase'
 import { yamlStringify } from '@common/utils/YamlHelperMethods'
 import { useMutateAsGet } from '@common/hooks'
 import { FormMultiTypeConnectorField } from '@connectors/components/ConnectorReferenceField/FormMultiTypeConnectorField'
-import { useGetBuildDetailsForArtifactoryArtifactWithYaml } from 'services/cd-ng'
+import { SidecarArtifact, useGetBuildDetailsForArtifactoryArtifactWithYaml } from 'services/cd-ng'
 
 import { ArtifactToConnectorMap, ENABLED_ARTIFACT_TYPES } from '@pipeline/components/ArtifactsSelection/ArtifactHelper'
 import { repositoryFormat } from '@pipeline/components/ArtifactsSelection/ArtifactUtils'
@@ -23,10 +23,13 @@ import { useVariablesExpression } from '@pipeline/components/PipelineStudio/Pipl
 import { isFieldRuntime } from '../../K8sServiceSpecHelper'
 import {
   fromPipelineInputTriggerTab,
+  getImagePath,
   getYamlData,
+  isArtifactSourceRuntime,
   isFieldfromTriggerTabDisabled,
   resetTags,
-  setPrimaryInitialValues
+  setPrimaryInitialValues,
+  setSidecarInitialValues
 } from '../artifactSourceUtils'
 import ArtifactTagRuntimeField from '../ArtifactSourceRuntimeFields/ArtifactTagRuntimeField'
 import css from '../../K8sServiceSpec.module.scss'
@@ -81,10 +84,10 @@ const Content = (props: ArtifactoryRenderContent): JSX.Element => {
       orgIdentifier,
       repoIdentifier,
       branch,
-      imagePath:
-        getMultiTypeFromValue(artifact?.spec?.imagePath) !== MultiTypeInputType.RUNTIME
-          ? artifact?.spec?.imagePath
-          : get(initialValues?.artifacts, `${artifactPath}.spec.imagePath`, ''),
+      imagePath: getImagePath(
+        artifact?.spec?.imagePath,
+        get(initialValues, `artifacts.${artifactPath}.spec.imagePath`, '')
+      ),
       connectorRef:
         getMultiTypeFromValue(artifact?.spec?.connectorRef) !== MultiTypeInputType.RUNTIME
           ? artifact?.spec?.connectorRef
@@ -104,24 +107,37 @@ const Content = (props: ArtifactoryRenderContent): JSX.Element => {
 
   useEffect(() => {
     /* instanbul ignore else */
-    if (fromPipelineInputTriggerTab(formik, fromTrigger)) {
-      setPrimaryInitialValues(initialValues, formik, stageIdentifier)
+    if (fromPipelineInputTriggerTab(formik, fromTrigger) && !isEmpty(formik?.values?.selectedArtifact)) {
+      if (isSidecar) {
+        setSidecarInitialValues(initialValues, formik, stageIdentifier, artifactPath as string)
+      } else {
+        setPrimaryInitialValues(initialValues, formik, stageIdentifier, artifactPath as string)
+      }
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [formik?.values?.triggerType, formik?.values?.selectedArtifact, fromTrigger, stageIdentifier])
 
   const isFieldDisabled = (fieldName: string, isTag = false): boolean => {
     /* instanbul ignore else */
-    if (readonly) {
+    if (
+      readonly ||
+      isFieldfromTriggerTabDisabled(
+        fieldName,
+        formik,
+        stageIdentifier,
+        fromTrigger,
+        isSidecar ? (artifact as SidecarArtifact)?.identifier : undefined
+      )
+    ) {
       return true
     }
     if (isTag) {
       return isTagsSelectionDisabled(props)
     }
-    return isFieldfromTriggerTabDisabled(fieldName, formik, stageIdentifier, fromTrigger)
+    return false
   }
 
-  const isRuntime = (!isSidecar && isPrimaryArtifactsRuntime) || (isSidecar && isSidecarRuntime)
+  const isRuntime = isArtifactSourceRuntime(isPrimaryArtifactsRuntime, isSidecarRuntime, isSidecar as boolean)
 
   return (
     <>
@@ -146,7 +162,11 @@ const Content = (props: ArtifactoryRenderContent): JSX.Element => {
               onChange={() => resetTags(formik, `${path}.artifacts.${artifactPath}.spec.tag`)}
               className={css.connectorMargin}
               type={ArtifactToConnectorMap[defaultTo(artifact?.type, '')]}
-              gitScope={{ repo: repoIdentifier || '', branch: branch || '', getDefaultFromOtherRepo: true }}
+              gitScope={{
+                repo: defaultTo(repoIdentifier, ''),
+                branch: defaultTo(branch, ''),
+                getDefaultFromOtherRepo: true
+              }}
             />
           )}
 
@@ -210,6 +230,7 @@ const Content = (props: ArtifactoryRenderContent): JSX.Element => {
               fetchTagsError={fetchTagsError}
               fetchTags={fetchTags}
               expressions={expressions}
+              stageIdentifier={stageIdentifier}
             />
           )}
           {isFieldRuntime(`artifacts.${artifactPath}.spec.tagRegex`, template) && (
@@ -235,10 +256,10 @@ export class ArtifactoryArtifactSource extends ArtifactSourceBase<ArtifactSource
 
   isTagsSelectionDisabled(props: ArtifactSourceRenderProps): boolean {
     const { initialValues, artifactPath, artifact } = props
-    const isImagePathPresent =
-      getMultiTypeFromValue(artifact?.spec?.imagePath) !== MultiTypeInputType.RUNTIME
-        ? artifact?.spec?.imagePath
-        : get(initialValues?.artifacts, `${artifactPath}.spec.imagePath`, '')
+    const isImagePathPresent = getImagePath(
+      artifact?.spec?.imagePath,
+      get(initialValues, `artifacts.${artifactPath}.spec.imagePath`, '')
+    )
     const isConnectorPresent =
       getMultiTypeFromValue(artifact?.spec?.connectorRef) !== MultiTypeInputType.RUNTIME
         ? artifact?.spec?.connectorRef

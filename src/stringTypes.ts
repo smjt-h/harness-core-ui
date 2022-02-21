@@ -31,6 +31,8 @@ export interface StringsMap {
   'common.accountResourcesPage.line2': string
   'common.accountSetting.connector.disableBISMHeading': string
   'common.accountSetting.connector.disableBISMSubHeading': string
+  'common.accountSetting.connector.disabledState': string
+  'common.accountSetting.connector.loading': string
   'common.accountSetting.connector.saveSettingSuccess': string
   'common.accountSettings': string
   'common.accountSetup': string
@@ -590,6 +592,7 @@ export interface StringsMap {
   'common.subscribed': string
   'common.subscriptions.banner.trial': string
   'common.subscriptions.ccm.cloudSpend': string
+  'common.subscriptions.cd.serviceInstances': string
   'common.subscriptions.cd.services': string
   'common.subscriptions.ci.developers': string
   'common.subscriptions.expired': string
@@ -607,14 +610,19 @@ export interface StringsMap {
   'common.subscriptions.tabs.plans': string
   'common.subscriptions.title': string
   'common.subscriptions.trial': string
+  'common.subscriptions.usage.activeDevelopers': string
+  'common.subscriptions.usage.ccmTooltip': string
   'common.subscriptions.usage.ccmUsers': string
   'common.subscriptions.usage.cdUsers': string
+  'common.subscriptions.usage.ciTooltip': string
   'common.subscriptions.usage.ciUsers': string
   'common.subscriptions.usage.cloudSpend': string
   'common.subscriptions.usage.developers': string
-  'common.subscriptions.usage.ffUsers': string
+  'common.subscriptions.usage.ffActiveUserTootip': string
+  'common.subscriptions.usage.ffDeveloperTooltip': string
+  'common.subscriptions.usage.ffFFTooltip': string
   'common.subscriptions.usage.header': string
-  'common.subscriptions.usage.last60days': string
+  'common.subscriptions.usage.last30days': string
   'common.subscriptions.usage.monthlyUsers': string
   'common.subscriptions.usage.services': string
   'common.subscriptions.usage.srvcInst': string
@@ -642,7 +650,6 @@ export interface StringsMap {
   'common.test.retest': string
   'common.timePstLabel': string
   'common.tokens': string
-  'common.totalHarnessUser': string
   'common.totalLines': string
   'common.totalSelected': string
   'common.trialInProgress': string
@@ -2444,6 +2451,7 @@ export interface StringsMap {
   'pipeline.failureStrategies.tabHasErrors': string
   'pipeline.failureStrategies.title': string
   'pipeline.failureStrategies.validation.actionRequired': string
+  'pipeline.failureStrategies.validation.arrayOrUndefined': string
   'pipeline.failureStrategies.validation.ciCodebaseRequired': string
   'pipeline.failureStrategies.validation.errorsMinimum': string
   'pipeline.failureStrategies.validation.errorsRequired': string
@@ -2459,6 +2467,8 @@ export interface StringsMap {
   'pipeline.failureStrategies.validation.retryIntervalMaxmimum': string
   'pipeline.failureStrategies.validation.retryIntervalMinimum': string
   'pipeline.failureStrategies.validation.retryIntervalRequired': string
+  'pipeline.failureStrategies.validation.strategiesRequired': string
+  'pipeline.failureStrategies.validation.strategyRequired': string
   'pipeline.failureStrategies.validation.timeoutRequired': string
   'pipeline.featureRestriction.initialDeploymentLimitExceeded': string
   'pipeline.featureRestriction.initialDeploymentWarning': string
@@ -2647,6 +2657,8 @@ export interface StringsMap {
   'pipeline.overrideSets.overrideSetError': string
   'pipeline.overrideSets.overrideSetInfo': string
   'pipeline.overrideSets.overrideSetPlaceholder': string
+  'pipeline.parallelSelectedStages': string
+  'pipeline.parallelStages': string
   'pipeline.pipelineSteps.approvalStageDescription': string
   'pipeline.pipelineSteps.chainedPipeline': string
   'pipeline.pipelineSteps.chainedPipelineDescription': string
@@ -3091,17 +3103,26 @@ export interface StringsMap {
   'templatesLibrary.updated': string
   'templatesLibrary.useTemplate': string
   'cd.GitOpsServerDelete': string
+  'cd.IdEmptyError': string
   'cd.aboutGitOpsServer': string
   'cd.aboutHarnessAdapter': string
   'cd.aboutHarnessManagedGitOpsServer': string
   'cd.aboutProvider': string
   'cd.adapterDelete': string
   'cd.adapterDetails': string
+  'cd.addEnvironment': string
   'cd.addInline': string
   'cd.addRemote': string
+  'cd.addService': string
   'cd.addTFVarFileLabel': string
   'cd.allowSimultaneousDeployments': string
   'cd.argoAdapterURL': string
+  'cd.artifactFormErrors.artifactFilePath': string
+  'cd.artifactFormErrors.artifactName': string
+  'cd.artifactFormErrors.repositoryName': string
+  'cd.artifactName': string
+  'cd.artifactPath': string
+  'cd.artifactPaths': string
   'cd.backEndConfig': string
   'cd.cdLaunchText': string
   'cd.cdSwitchToFirstGen.description1': string
@@ -3114,7 +3135,11 @@ export interface StringsMap {
   'cd.cdTrialHomePage.startTrial.startBtn.description': string
   'cd.chooseProvisionerText': string
   'cd.componentsInstalled': string
+  'cd.configFileDetails': string
   'cd.configFilePlaceHolder': string
+  'cd.configFileStepOne': string
+  'cd.configFileStore': string
+  'cd.configFileStoreTitle': string
   'cd.configIdentifer': string
   'cd.configurationFile': string
   'cd.confirmDeleteTitle': string
@@ -3137,6 +3162,7 @@ export interface StringsMap {
   'cd.duplicateGitOpsServerIdError': string
   'cd.duplicateIdError': string
   'cd.dynamicProvisioning': string
+  'cd.editIdError': string
   'cd.environmentCreated': string
   'cd.environmentUpdated': string
   'cd.featureRestriction.banners.deploymentsPerMonthLevelUp': string
@@ -3159,10 +3185,13 @@ export interface StringsMap {
   'cd.learnMore': string
   'cd.learnMoreAboutHarnessAdapter': string
   'cd.manifestPathsCannotBeEmpty': string
+  'cd.nameEmptyError': string
   'cd.namespaceValidation': string
   'cd.newAdapter': string
   'cd.newGitOpsServer': string
   'cd.noAdapterText': string
+  'cd.noEnvironment.message': string
+  'cd.noEnvironment.title': string
   'cd.noGitOpsServerText': string
   'cd.notReachable': string
   'cd.pathCannotBeEmpty': string
@@ -3192,6 +3221,8 @@ export interface StringsMap {
   'cd.scriptRequired': string
   'cd.searchPlaceholder': string
   'cd.secretManagerRequired': string
+  'cd.selectArtifact': string
+  'cd.selectRepository': string
   'cd.serviceCreated': string
   'cd.serviceDashboard.6monthTrend': string
   'cd.serviceDashboard.activeServiceInstancesLabel': string
@@ -3267,6 +3298,9 @@ export interface StringsMap {
   'ce.anomalyDetection.tableHeaders.status': string
   'ce.anomalyDetection.tableMenu.falseAnomaly': string
   'ce.anomalyDetection.tableMenu.whitelistResource': string
+  'ce.anomalyDetection.tooltip.anomaliesRedirectionText': string
+  'ce.anomalyDetection.tooltip.countText': string
+  'ce.anomalyDetection.tooltip.filterText': string
   'ce.anomalyDetection.userFeedbackSuccessMsg': string
   'ce.budgets.addNewBudget': string
   'ce.budgets.budgetDeletedTxt': string

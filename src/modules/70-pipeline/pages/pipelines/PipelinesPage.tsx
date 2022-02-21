@@ -83,8 +83,9 @@ import { useFeatureFlags } from '@common/hooks/useFeatureFlag'
 import { PipelineGridView } from './views/PipelineGridView'
 import { PipelineListView } from './views/PipelineListView'
 import PipelineFilterForm from '../pipeline-deployment-list/PipelineFilterForm/PipelineFilterForm'
-import pipelineIllustration from './images/pipelines-illustration.svg'
-
+import pipelineIllustration from './images/deploypipeline-illustration.svg'
+import buildpipelineIllustration from './images/buildpipeline-illustration.svg'
+import flagpipelineIllustration from './images/flagpipeline-illustration.svg'
 import css from './PipelinesPage.module.scss'
 
 export enum Sort {
@@ -162,8 +163,14 @@ const PipelinesPage: React.FC<CDPipelinesPageProps> = ({ mockData }) => {
   const isCDEnabled = (selectedProject?.modules && selectedProject.modules?.indexOf('CD') > -1) || false
   const isCIEnabled = (selectedProject?.modules && selectedProject.modules?.indexOf('CI') > -1) || false
   const isCIModule = module === 'ci'
+  const isCFModule = module === 'cf'
   const searchRef = useRef<ExpandingSearchInputHandle>({} as ExpandingSearchInputHandle)
   const { NG_NATIVE_HELM } = useFeatureFlags()
+  const emptyStagePipelineImage = isCIModule
+    ? buildpipelineIllustration
+    : isCFModule
+    ? flagpipelineIllustration
+    : pipelineIllustration
 
   const goToPipelineDetail = useCallback(
     (/* istanbul ignore next */ pipeline?: PMSPipelineSummaryResponse) => {
@@ -739,8 +746,7 @@ const PipelinesPage: React.FC<CDPipelinesPageProps> = ({ mockData }) => {
               </Layout.Vertical>
             ) : (
               <Layout.Vertical spacing="small" flex={{ justifyContent: 'center', alignItems: 'center' }} width={720}>
-                <img src={pipelineIllustration} className={css.image} />
-
+                <img src={emptyStagePipelineImage} className={css.image} />
                 <Text className={css.noPipelineText} margin={{ top: 'medium', bottom: 'small' }}>
                   {getString('pipeline.noPipelineText')}
                 </Text>

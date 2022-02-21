@@ -45,7 +45,7 @@ describe('Canvas Button Tests', () => {
     expect(callBack).toBeCalledWith(CanvasButtonsActions.ZoomToFit)
     callBack.mockReset()
     fireEvent.click(buttons[1])
-    expect(callBack).toBeCalledWith(CanvasButtonsActions.ZoomToFit)
+    expect(callBack).toBeCalledWith(CanvasButtonsActions.Reset)
     callBack.mockReset()
     fireEvent.click(buttons[2])
     expect(callBack).toBeCalledWith(CanvasButtonsActions.ZoomIn)

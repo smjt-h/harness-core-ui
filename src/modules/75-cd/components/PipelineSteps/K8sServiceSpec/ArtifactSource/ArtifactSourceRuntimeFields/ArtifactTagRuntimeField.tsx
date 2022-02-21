@@ -9,7 +9,7 @@ import React, { useEffect, useState } from 'react'
 import { defaultTo, memoize } from 'lodash-es'
 import { Menu } from '@blueprintjs/core'
 
-import { Layout, SelectOption, Text } from '@wings-software/uicore'
+import { Layout, SelectOption, Text, useToaster } from '@wings-software/uicore'
 import type { GetDataError } from 'restful-react'
 import { EXPRESSION_STRING } from '@pipeline/utils/constants'
 import type { DockerBuildDetailsDTO, Failure, Error } from 'services/cd-ng'
@@ -42,10 +42,12 @@ const ArtifactTagRuntimeField = (props: TagsRenderContent): JSX.Element => {
     isFieldDisabled,
     fetchingTags,
     fetchTags,
-    fetchTagsError
+    fetchTagsError,
+    stageIdentifier
   } = props
   const { getString } = useStrings()
   const loadingTags = getString('pipeline.artifactsSelection.loadingTags')
+  const { showError } = useToaster()
 
   const [tagsList, setTagsList] = useState<SelectOption[]>([])
   useEffect(() => {
@@ -59,6 +61,12 @@ const ArtifactTagRuntimeField = (props: TagsRenderContent): JSX.Element => {
       }
     }
   }, [buildDetailsList])
+
+  useEffect(() => {
+    if (fetchTagsError) {
+      showError(`Stage ${stageIdentifier}: ${getTagError(fetchTagsError)}`, undefined, 'cd.tag.fetch.error')
+    }
+  }, [fetchTagsError, showError, stageIdentifier])
 
   const itemRenderer = memoize((item: { label: string }, { handleClick }) => (
     <div key={item.label.toString()}>

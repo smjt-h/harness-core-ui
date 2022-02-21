@@ -39,7 +39,7 @@ const useGetUsageAndLimitReturnMock = {
 jest.mock('@common/hooks/useFeatureFlag', () => ({
   useFeatureFlag: jest.fn(() => true),
   useFeatureFlags: jest.fn(() => {
-    return {}
+    return { FEATURE_ENFORCEMENT_ENABLED: true, FREE_PLAN_ENFORCEMENT_ENABLED: false }
   })
 }))
 

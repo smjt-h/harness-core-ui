@@ -15,8 +15,10 @@ import {
   ButtonVariation,
   shouldShowError,
   useToaster,
-  getErrorInfoFromErrorObject
+  getErrorInfoFromErrorObject,
+  Popover
 } from '@wings-software/uicore'
+import { PopoverInteractionKind } from '@blueprintjs/core'
 import { useParams } from 'react-router-dom'
 
 import { useGetConnectorList, useUpdateAccountSetting } from 'services/cd-ng'
@@ -79,28 +81,40 @@ const ConnectorSettings: React.FC<ConnectorSettingProps> = props => {
   }
   return (
     <Layout.Horizontal flex={{ justifyContent: 'space-between' }} margin={{ top: 'small', bottom: 'small' }}>
-      <Checkbox
-        labelElement={
-          <div>
-            <Text font={{ variation: FontVariation.BODY2 }} color={Color.GREY_900}>
-              {getString('common.accountSetting.connector.disableBISMHeading')}
-            </Text>
-            <Text font={{ variation: FontVariation.SMALL }} color={Color.GREY_600}>
-              {getString('common.accountSetting.connector.disableBISMSubHeading')}
-            </Text>
-          </div>
+      <Popover
+        interactionKind={PopoverInteractionKind.HOVER}
+        boundary="viewport"
+        disabled={!disabled}
+        content={
+          <Text padding="medium" font={{ variation: FontVariation.SMALL }} color={Color.GREY_800}>
+            {loading || loadingSecretsManagers
+              ? getString('common.accountSetting.connector.loading')
+              : getString('common.accountSetting.connector.disabledState')}
+          </Text>
         }
-        data-testid={`checkBox-disable-builtInSM`}
-        defaultChecked={props.disableBuiltInSM}
-        disabled={disabled}
-        checked={props.disableBuiltInSM}
-        onChange={(event: React.FormEvent<HTMLInputElement>) => {
-          props.onChange(event.currentTarget.checked)
-          setDisableApply(false)
-        }}
-        className={css.checkboxBuiltInSm}
-      />
-
+      >
+        <Checkbox
+          labelElement={
+            <div>
+              <Text font={{ variation: FontVariation.BODY2 }} color={Color.GREY_900}>
+                {getString('common.accountSetting.connector.disableBISMHeading')}
+              </Text>
+              <Text font={{ variation: FontVariation.SMALL }} color={Color.GREY_600}>
+                {getString('common.accountSetting.connector.disableBISMSubHeading')}
+              </Text>
+            </div>
+          }
+          data-testid={`checkBox-disable-builtInSM`}
+          defaultChecked={props.disableBuiltInSM}
+          disabled={disabled}
+          checked={props.disableBuiltInSM}
+          onChange={(event: React.FormEvent<HTMLInputElement>) => {
+            props.onChange(event.currentTarget.checked)
+            setDisableApply(false)
+          }}
+          className={css.checkboxBuiltInSm}
+        />
+      </Popover>
       <RbacButton
         data-testid={'apply-connector-setting'}
         variation={ButtonVariation.PRIMARY}

@@ -109,7 +109,7 @@ export function StageFormInternal({
       )}
       {template?.stage?.spec && (
         <StageInputSetForm
-          stageIdentifier={template?.stage?.identifier}
+          stageIdentifier={allValues?.stage?.identifier}
           path={`${path}.spec`}
           deploymentStageTemplate={template?.stage?.spec as DeploymentStageConfig}
           deploymentStage={allValues?.stage?.spec as DeploymentStageConfig}

@@ -6,25 +6,40 @@
  */
 
 import React from 'react'
-import { MemoryRouter } from 'react-router-dom'
 import { fireEvent, render, waitFor } from '@testing-library/react'
 import { act } from 'react-dom/test-utils'
-import { TestWrapper } from '@common/utils/testUtils'
+import { GitSyncTestWrapper } from '@common/utils/gitSyncTestUtils'
+import routes from '@common/RouteDefinitions'
+import { projectPathProps } from '@common/utils/routeUtils'
+import { gitConfigs, sourceCodeManagers } from '@connectors/mocks/mock'
+import { gitHubMock } from '@gitsync/components/gitSyncRepoForm/__tests__/mockData'
 import GitSyncRepoFormStep from '../GitSyncRepoFormStep'
 
+const branches = { data: ['master', 'devBranch'], status: 'SUCCESS' }
 const pathParams = { accountId: 'dummy', orgIdentifier: 'default', projectIdentifier: 'dummyProject' }
+const createGitSynRepo = jest.fn()
+const getGitConnector = jest.fn(() => Promise.resolve(gitHubMock))
+const fetchBranches = jest.fn(() => Promise.resolve(branches))
+
+jest.mock('services/cd-ng', () => ({
+  usePostGitSync: jest.fn().mockImplementation(() => ({ mutate: createGitSynRepo })),
+  useGetConnector: jest.fn().mockImplementation(() => ({ data: gitHubMock, refetch: getGitConnector })),
+  useGetTestGitRepoConnectionResult: jest.fn().mockImplementation(() => ({ mutate: jest.fn })),
+  useListGitSync: jest
+    .fn()
+    .mockImplementation(() => ({ data: gitConfigs, refetch: () => Promise.resolve(gitConfigs) })),
+  useGetSourceCodeManagers: jest.fn().mockImplementation(() => {
+    return { data: sourceCodeManagers, refetch: () => Promise.resolve(sourceCodeManagers) }
+  }),
+  useGetListOfBranchesByConnector: jest.fn().mockImplementation(() => ({ data: branches, refetch: fetchBranches }))
+}))
 
 describe('Test GitSyncRepoFormStep', () => {
   test('Should not allow saving form if folder name is not specified', async () => {
     const { container, getByText } = render(
-      <MemoryRouter>
-        <TestWrapper
-          path="/account/:accountId/ci/orgs/:orgIdentifier/projects/:projectIdentifier/admin/git-sync/repos"
-          pathParams={pathParams}
-        >
-          <GitSyncRepoFormStep {...pathParams} isEditMode={false} isNewUser={false} gitSyncRepoInfo={undefined} />
-        </TestWrapper>
-      </MemoryRouter>
+      <GitSyncTestWrapper path={routes.toGitSyncReposAdmin(projectPathProps)} pathParams={pathParams}>
+        <GitSyncRepoFormStep {...pathParams} isEditMode={false} isNewUser={false} gitSyncRepoInfo={undefined} />
+      </GitSyncTestWrapper>
     )
     await waitFor(() => {
       expect(getByText('selectGitProvider')).toBeTruthy()
@@ -38,14 +53,9 @@ describe('Test GitSyncRepoFormStep', () => {
   })
   test('Should have continue button on first step for new user', async () => {
     const { getByText } = render(
-      <MemoryRouter>
-        <TestWrapper
-          path="/account/:accountId/ci/orgs/:orgIdentifier/projects/:projectIdentifier/admin/git-sync/repos"
-          pathParams={pathParams}
-        >
-          <GitSyncRepoFormStep {...pathParams} isEditMode={false} isNewUser gitSyncRepoInfo={undefined} />
-        </TestWrapper>
-      </MemoryRouter>
+      <GitSyncTestWrapper path={routes.toGitSyncReposAdmin(projectPathProps)} pathParams={pathParams}>
+        <GitSyncRepoFormStep {...pathParams} isEditMode={false} isNewUser gitSyncRepoInfo={undefined} />
+      </GitSyncTestWrapper>
     )
     expect(getByText('continue')).toBeTruthy()
   })

@@ -104,6 +104,19 @@ describe('RUN PIPELINE MODAL', () => {
         cy.intercept('GET', environmentsCall, { fixture: 'ng/api/environmentsV2' })
         cy.intercept('GET', connectorsCall, { fixture: 'ng/api/connectors' })
         cy.intercept('POST', pipelineVariablesCall, { fixture: 'pipeline/api/runpipeline/pipelines.variables' })
+        cy.intercept('POST', resolvedPipelineDetailsCall, req => {
+          req.continue(res => {
+            res.send({
+              status: 'SUCCESS',
+              data: {
+                mergedPipelineYaml: req.body.originalEntityYaml,
+                templateReferenceSummaries: []
+              },
+              metaData: null,
+              correlationId: 'fa9edc77-c155-42f5-b0af-93c1f0546911'
+            })
+          })
+        })
 
         cy.wait(1000)
 

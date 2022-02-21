@@ -600,6 +600,7 @@ export const RightDrawer: React.FC = (): JSX.Element => {
       selectedTemplateRef: getIdentifierFromValue(
         defaultTo((data?.stepConfig?.node as TemplateStepNode)?.template?.templateRef, '')
       ),
+      selectedVersionLabel: (data?.stepConfig?.node as TemplateStepNode)?.template?.versionLabel,
       onUseTemplate: async (template: TemplateSummaryResponse, isCopied = false) => {
         closeTemplateSelector()
         const node = drawerData.data?.stepConfig?.node as StepOrStepGroupOrTemplateStepData

@@ -7,14 +7,16 @@
 
 import React from 'react'
 import { IconName, Icon, Layout, Text } from '@wings-software/uicore'
+import { Color, Container } from '@harness/uicore'
 import type { StageType } from '@pipeline/utils/stageHelpers'
 import type { StageElementWrapper } from '@pipeline/utils/pipelineTypes'
 import { getStageType } from '@pipeline/utils/templateUtils'
-import type { StagesMap } from '../../PipelineContext/PipelineContext'
+import type { StagesMap } from '../../../PipelineContext/PipelineContext'
+import css from './StageList.module.scss'
 
 interface StageListProps {
   stages: StageElementWrapper[]
-  templateTypes: { [key: string]: string }
+  templateTypes?: { [key: string]: string }
   selectedStageId?: string
   stagesMap: StagesMap
   onClick?: (stageId: string, type: StageType) => void
@@ -27,7 +29,7 @@ export const StageList: React.FC<StageListProps> = ({
   onClick,
   stagesMap
 }): JSX.Element => {
-  const list: Array<{ name: string; icon: IconName; identifier: string; type: string }> = []
+  const list: Array<{ name: string; icon: IconName; identifier: string; type: string; isTemplate: boolean }> = []
   stages.forEach((node: StageElementWrapper) => {
     const type = stagesMap[getStageType(node.stage, templateTypes)]
 
@@ -36,36 +38,46 @@ export const StageList: React.FC<StageListProps> = ({
         name: node.stage?.name || '',
         identifier: node.stage?.identifier || '',
         icon: type.icon,
-        type: node.stage?.type || ''
+        type: node.stage?.type || '',
+        isTemplate: !!node.stage?.template
       })
     } else {
       list.push({
         name: node.stage?.name || '',
         identifier: node.stage?.identifier || '',
         icon: type.icon,
-        type: node.stage?.type || ''
+        type: node.stage?.type || '',
+        isTemplate: !!node.stage?.template
       })
     }
   })
   return (
-    <>
+    <Layout.Vertical padding={'small'} spacing={'xsmall'} className={css.container}>
       {list.map(node => (
-        <Layout.Horizontal
-          style={{ cursor: 'pointer' }}
-          spacing="small"
-          padding="small"
+        <Container
           key={node.identifier}
-          onClick={e => {
-            e.stopPropagation()
-            onClick?.(node.identifier, node.type as StageType)
-          }}
+          className={css.stageRow}
+          background={node.isTemplate ? Color.PRIMARY_1 : undefined}
+          padding="small"
         >
-          <Icon name={node.icon} />
-          <Text lineClamp={1} width={200}>
-            {node.name}
-          </Text>
-        </Layout.Horizontal>
+          {node.isTemplate && (
+            <Icon name={'template-library'} size={6} className={css.secondaryIcon} color={Color.PRIMARY_7} />
+          )}
+          <Layout.Horizontal
+            flex={{ alignItems: 'center', justifyContent: 'flex-start' }}
+            spacing="small"
+            onClick={e => {
+              e.stopPropagation()
+              onClick?.(node.identifier, node.type as StageType)
+            }}
+          >
+            <Icon name={node.icon} size={20} />
+            <Text lineClamp={1} font={{ weight: 'semi-bold', size: 'small' }} color={Color.GREY_800}>
+              {node.name}
+            </Text>
+          </Layout.Horizontal>
+        </Container>
       ))}
-    </>
+    </Layout.Vertical>
   )
 }

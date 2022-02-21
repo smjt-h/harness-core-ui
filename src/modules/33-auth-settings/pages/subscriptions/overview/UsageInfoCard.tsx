@@ -6,20 +6,25 @@
  */
 
 import React from 'react'
-import { Card, Color, Layout, Text } from '@wings-software/uicore'
-import { Position } from '@blueprintjs/core'
+import { Card, Color, Layout, Text, Icon, Popover } from '@wings-software/uicore'
+import { Position, PopoverInteractionKind } from '@blueprintjs/core'
 import { useStrings } from 'framework/strings'
 import PercentageBar from './PercentageBar'
 import css from './SubscriptionUsageCard.module.scss'
 
 function getInfoIcon(tooltip: string): React.ReactElement {
   return (
-    <Text
-      icon="deployment-incomplete-legacy"
-      iconProps={{ size: 15 }}
-      tooltip={tooltip}
-      tooltipProps={{ isDark: true, position: Position.BOTTOM }}
-    />
+    <Popover
+      position={Position.BOTTOM}
+      interactionKind={PopoverInteractionKind.HOVER}
+      content={
+        <Text width={200} padding="medium">
+          {tooltip}
+        </Text>
+      }
+    >
+      <Icon name="info" size={15} />
+    </Popover>
   )
 }
 
@@ -117,11 +122,15 @@ const UsageInfoCard: React.FC<UsageInfoCardProps> = ({
     <Card className={css.innerCard}>
       <Layout.Vertical>
         <Layout.Horizontal flex={{ alignItems: 'baseline', justifyContent: 'space-between' }}>
-          <Layout.Horizontal spacing="xsmall">
-            <Text font={{ size: 'small' }}>{leftHeader}</Text>
+          <Layout.Horizontal spacing="xsmall" flex={{ alignItems: 'baseline' }}>
+            <Text font={{ size: 'small' }} color={Color.GREY_700}>
+              {leftHeader}
+            </Text>
             {getInfoIcon(tooltip)}
           </Layout.Horizontal>
-          <Text font={{ size: 'xsmall' }}>{rightHeader}</Text>
+          <Text font={{ size: 'small' }} color={Color.GREY_500}>
+            {rightHeader}
+          </Text>
         </Layout.Horizontal>
         <Text font={{ size: 'large', weight: 'bold' }} color={Color.BLACK}>
           {prefix}

@@ -1,0 +1,125 @@
+/*
+ * Copyright 2022 Harness Inc. All rights reserved.
+ * Use of this source code is governed by the PolyForm Shield 1.0.0 license
+ * that can be found in the licenses directory at the root of this repository, also available at
+ * https://polyformproject.org/wp-content/uploads/2020/06/PolyForm-Shield-1.0.0.txt.
+ */
+
+.statusIcon {
+  svg {
+    fill: white !important;
+  }
+}
+
+.statusText {
+  :global {
+    .bp3-button-text {
+      font-size: 10px !important;
+    }
+
+    .bp3-icon {
+      svg {
+        height: 12px;
+        width: 12px;
+      }
+    }
+  }
+}
+
+.card {
+  width: 270px;
+  padding: 24px;
+  box-shadow: 0 0 1px rgba(40, 41, 61, 0.04), 0 2px 4px rgba(96, 97, 112, 0.16);
+  cursor: pointer;
+  text-align: left;
+
+  .projectInfo {
+    overflow-wrap: anywhere;
+  }
+
+  .projectName {
+    margin: 16px 0 8px 0 !important;
+  }
+
+  .tagsPopover {
+    p {
+      color: var(--grey-600);
+    }
+  }
+
+  .id {
+    font-size: 12px;
+  }
+
+  .iconMore {
+    :global(.bp3-icon) {
+      transform: rotate(90deg) !important;
+      color: var(--grey-450) !important;
+    }
+  }
+
+  .description {
+    padding: var(--spacing-small) 0 0 0 !important;
+    max-height: 40px;
+  }
+}
+
+.mainTitle {
+  display: flex;
+  justify-content: space-between;
+  align-items: baseline;
+  gap: 16px;
+}
+
+.layout {
+  justify-content: flex-end;
+}
+
+.serviceInfo {
+  padding-top: 16px;
+  margin-top: 12px;
+  border-top: 1px solid #d9dae6;
+  font-size: 12px;
+  font-style: normal;
+  font-weight: 400;
+  line-height: 20px;
+  letter-spacing: 0;
+}
+
+.serverStatusContainer {
+  display: inline;
+}
+
+.connectionStatus,
+.healthStatus {
+  display: flex;
+  margin: 8px 0;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.cardInfoRow {
+  display: flex;
+  gap: 8px;
+  margin-bottom: 8px;
+
+  .cardInfoLabel {
+    flex: 1;
+    color: #6b6d85;
+  }
+
+  .cardInfoValue {
+    flex: 1;
+    overflow: hidden;
+    font-weight: 500;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+    color: #0b0b0d;
+  }
+}
+
+.idTags {
+  display: flex;
+  align-items: center;
+  gap: 16px;
+}

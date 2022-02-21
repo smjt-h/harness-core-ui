@@ -60,8 +60,10 @@ ID: Id
 org: Org
 accountSetting:
   connector:
+    loading: 'Loading settings...'
+    disabledState: 'To change this setting, make sure you have a Secret Manager other than Harness Built-In Secret Manager setup at the Account level.'
     saveSettingSuccess: 'Connector Settings saved successfully.'
-    disableBISMHeading: 'Disable default Harness Secret Manager'
+    disableBISMHeading: 'Disable Harness Secret Manager'
     disableBISMSubHeading: 'When this setting is enabled, users cannot use Harness built-in secret manager.'
 instanceValidation:
   required: Instance is an required field
@@ -367,7 +369,6 @@ local: Local
 location: Location
 subscribed: Subscribed
 overSubscribed: Oversubscribed
-totalHarnessUser: Total Harness users
 unlimited: Unlimited
 subscriptions:
   title: Subscriptions
@@ -384,6 +385,7 @@ subscriptions:
     cloudSpend: '{{ spendLimit }} Cloud Spend'
   cd:
     services: '{{ workloads }} Services'
+    serviceInstances: '{{ workloads }} Service Instances'
   featureFlags:
     users: '{{ users }} Feature Flag developers'
     mau: '{{ maus }} Monthly Active users'
@@ -398,16 +400,21 @@ subscriptions:
   noActiveSubscription: No Active Subscription
   usage:
     header: Activity & Usage
-    last60days: Last 60 days
+    last30days: Last 30 days
     services: Active Services
     srvcInst: Active Service Instances
     cdUsers: Active CD Users
-    ciUsers: Active CI Users
-    ffUsers: Feature Flags Developers
+    ciUsers: Active CI Developers
+    ciTooltip: A Developer is an active code committer observed in the builds managed by Harness CI, over last 30 days.
+    ffActiveUserTootip: Monthly Active Users (MAUs) are only applicable to client side applications and are defined as unique end users evaluating flags from client-side SDKs (JavaScript, iOS, Android, C/C++, React, etc.) over a 30-day period.
+    ffDeveloperTooltip: Developers are the users of Harness FF module, that actually engage with the product and use it to create/edit/delete Feature Flags and or Targets/Segments.
+    ffFFTooltip: Total number of Feature Flags currently
     monthlyUsers: Monthly Active Users
-    developers: Active Developers
-    cloudSpend: Active Cloud Spend
+    activeDevelopers: Active Developers
+    developers: Developers
+    cloudSpend: Total Cloud Spend
     ccmUsers: Active CCM Users
+    ccmTooltip: '"Cloud Spend" refers to the total spend (dollars) managed and optimized by Harness Cloud Cost Management.'
 current: Current
 banners:
   email:

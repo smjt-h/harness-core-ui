@@ -51,7 +51,7 @@ export const CanvasButtons: React.FC<CanvasButtonsProps> = ({
       engine.getModel().setZoomLevel(100)
       engine.getModel().setOffset(0, 0)
       engine.repaintCanvas()
-      callback?.(CanvasButtonsActions.ZoomToFit)
+      callback?.(CanvasButtonsActions.Reset)
     },
     [engine, callback]
   )

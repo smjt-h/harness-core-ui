@@ -9,15 +9,18 @@ import React from 'react'
 import { fireEvent, render, waitFor, queryByAttribute, findAllByText, findByText } from '@testing-library/react'
 import { act } from 'react-dom/test-utils'
 import { noop } from 'lodash-es'
-import { TestWrapper } from '@common/utils/testUtils'
 import useCreateGitSyncModal from '@gitsync/modals/useCreateGitSyncModal'
 import { gitHubMock } from '@gitsync/components/gitSyncRepoForm/__tests__/mockData'
+import { gitConfigs, sourceCodeManagers } from '@connectors/mocks/mock'
+import { GitSyncTestWrapper } from '@common/utils/gitSyncTestUtils'
+import routes from '@common/RouteDefinitions'
+import { projectPathProps } from '@common/utils/routeUtils'
 
 const pathParams = { accountId: 'dummy', orgIdentifier: 'default', projectIdentifier: 'dummyProject' }
 const branches = { data: ['master', 'devBranch'], status: 'SUCCESS' }
 const fetchBranches = jest.fn(() => Promise.resolve(branches))
 const createGitSynRepo = jest.fn()
-const getGitConnector = jest.fn(() => Promise.resolve({}))
+const getGitConnector = jest.fn(() => Promise.resolve(gitHubMock))
 const isSaas = jest.fn(() =>
   Promise.resolve({
     data: { saasGit: true }
@@ -35,6 +38,12 @@ jest.mock('services/cd-ng', () => ({
     return {
       mutate: jest.fn()
     }
+  }),
+  useListGitSync: jest
+    .fn()
+    .mockImplementation(() => ({ data: gitConfigs, refetch: () => Promise.resolve(gitConfigs) })),
+  useGetSourceCodeManagers: jest.fn().mockImplementation(() => {
+    return { data: sourceCodeManagers, refetch: () => Promise.resolve(sourceCodeManagers) }
   })
 }))
 
@@ -53,24 +62,18 @@ describe('Test useCreateGitSyncModal', () => {
   }
   test('should open useCreateGitSyncModal', async () => {
     const { container, getByText } = render(
-      <TestWrapper
-        path="/account/:accountId/ci/orgs/:orgIdentifier/projects/:projectIdentifier/admin/git-sync/repos"
-        pathParams={pathParams}
-      >
+      <GitSyncTestWrapper path={routes.toGitSyncReposAdmin(projectPathProps)} pathParams={pathParams}>
         <TestComponent />
-      </TestWrapper>
+      </GitSyncTestWrapper>
     )
     fireEvent.click(container.querySelector('.useCreateGitSyncModalTestOpenDialog')!)
     await waitFor(() => expect(() => getByText('gitsync.configureHarnessFolder')).toBeTruthy())
   })
   test('should open useCreateGitSyncModal', async () => {
     const { container, getByText, queryByText } = render(
-      <TestWrapper
-        path="/account/:accountId/ci/orgs/:orgIdentifier/projects/:projectIdentifier/admin/git-sync/repos"
-        pathParams={pathParams}
-      >
+      <GitSyncTestWrapper path={routes.toGitSyncReposAdmin(projectPathProps)} pathParams={pathParams}>
         <TestComponent />
-      </TestWrapper>
+      </GitSyncTestWrapper>
     )
     fireEvent.click(container.querySelector('.useCreateGitSyncModalTestOpenDialog')!)
     await waitFor(() => expect(() => getByText('gitsync.configureHarnessFolder')).toBeTruthy())
@@ -138,7 +141,7 @@ describe('Test useCreateGitSyncModal', () => {
 
     expect(isSaas).toBeCalledTimes(1)
     await act(async () => {
-      const submitBtn = await findByText(dialog, 'save')
+      const submitBtn = await findByText(dialog, 'saveAndContinue')
       fireEvent.click(submitBtn)
     })
 

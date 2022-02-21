@@ -8,6 +8,7 @@
 import React, { useState } from 'react'
 import { Button, ButtonVariation, Color, Container, Layout, useConfirmationDialog } from '@wings-software/uicore'
 import { Intent } from '@blueprintjs/core'
+import { isEqual } from 'lodash-es'
 import type { TemplateSummaryResponse } from 'services/template-ng'
 import { useStrings } from 'framework/strings'
 import { useAppStore } from 'framework/AppStore/AppStoreContext'
@@ -26,20 +27,33 @@ export const TemplateSelector: React.FC = (): JSX.Element => {
       }
     }
   } = usePipelineContext()
-  const { onUseTemplate, selectedTemplateRef } = data?.selectorData || {}
+  const { onUseTemplate, selectedTemplateRef, selectedVersionLabel } = data?.selectorData || {}
   const [selectedTemplate, setSelectedTemplate] = useState<TemplateSummaryResponse | undefined>()
   const { getString } = useStrings()
   const { isGitSyncEnabled } = useAppStore()
 
+  const defaultVersionLabel = React.useMemo(() => {
+    if (isEqual(selectedTemplate?.identifier, selectedTemplateRef)) {
+      return selectedVersionLabel
+    } else {
+      return selectedTemplate?.versionLabel
+    }
+  }, [selectedTemplate, selectedTemplateRef, selectedVersionLabel])
+
   const getTemplateDetails: React.ReactElement = React.useMemo(() => {
     if (selectedTemplate) {
       return (
-        <TemplateDetails template={selectedTemplate} setTemplate={setSelectedTemplate} allowStableSelection={true} />
+        <TemplateDetails
+          template={selectedTemplate}
+          defaultVersionLabel={defaultVersionLabel}
+          setTemplate={setSelectedTemplate}
+          allowStableSelection={true}
+        />
       )
     } else {
       return <></>
     }
-  }, [selectedTemplate, setSelectedTemplate])
+  }, [selectedTemplate, defaultVersionLabel, setSelectedTemplate])
 
   const onUseTemplateConfirm = React.useCallback(
     (isCopied = false) => {

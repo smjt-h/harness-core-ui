@@ -34,7 +34,7 @@ import { TFRemoteWizard } from './TFRemoteWizard'
 import { TFVarStore } from './TFVarStore'
 
 import InlineVarFile from './InlineVarFile'
-
+import { TFArtifactoryForm } from './TerraformArtifactoryForm'
 import css from './TerraformVarfile.module.scss'
 import stepCss from '@pipeline/components/PipelineSteps/Steps/Steps.module.scss'
 
@@ -42,10 +42,20 @@ interface TfVarFileProps {
   formik: FormikProps<TerraformData>
   isReadonly?: boolean
   allowableTypes: MultiTypeInputType[]
+  getNewConnectorSteps?: any
+  setSelectedConnector?: any
+  selectedConnector?: string
 }
 
 export default function TfVarFileList(props: TfVarFileProps): React.ReactElement {
-  const { formik, isReadonly = false, allowableTypes } = props
+  const {
+    formik,
+    isReadonly = false,
+    allowableTypes,
+    getNewConnectorSteps,
+    setSelectedConnector,
+    selectedConnector
+  } = props
   const inlineInitValues: TerraformVarFileWrapper = {
     varFile: {
       spec: {},
@@ -66,7 +76,17 @@ export default function TfVarFileList(props: TfVarFileProps): React.ReactElement
   const [selectedVar, setSelectedVar] = React.useState(inlineInitValues as any)
   const [selectedVarIndex, setSelectedVarIndex] = React.useState<number>(-1)
   const [showRemoteWizard, setShowRemoteWizard] = React.useState(false)
+  const [connectorView, setConnectorView] = React.useState(false)
   const { getString } = useStrings()
+
+  const onSubmit = (values: any, arrayHelpers: any) => {
+    if (isEditMode) {
+      arrayHelpers.replace(selectedVarIndex, values)
+    } else {
+      arrayHelpers.push(values)
+    }
+    onCloseOfRemoteWizard()
+  }
 
   const remoteRender = (varFile: TerraformVarFileWrapper, index: number): React.ReactElement => {
     const remoteVar = varFile?.varFile as any
@@ -123,8 +143,8 @@ export default function TfVarFileList(props: TfVarFileProps): React.ReactElement
   }
 
   const getTitle = () => (
-    <Layout.Vertical flex style={{ justifyContent: 'center', alignItems: 'center' }}>
-      <Icon name="remotefile" className={css.remoteIcon} size={50} />
+    <Layout.Vertical flex style={{ justifyContent: 'center', alignItems: 'center' }} margin={{ bottom: 'xlarge' }}>
+      <Icon name="service-terraform" className={css.remoteIcon} size={50} padding={{ bottom: 'large' }} />
       <Text color={Color.WHITE}>{getString('pipelineSteps.remoteFile')}</Text>
     </Layout.Vertical>
   )
@@ -271,34 +291,40 @@ export default function TfVarFileList(props: TfVarFileProps): React.ReactElement
                     <div className={css.createTfWizard}>
                       <StepWizard title={getTitle()} initialStep={1} className={css.manifestWizard}>
                         <TFVarStore
+                          isReadonly={isReadonly}
                           name={getString('cd.tfVarStore')}
                           initialValues={isEditMode ? selectedVar : remoteInitialValues}
                           isEditMode={isEditMode}
                           allowableTypes={allowableTypes}
+                          setSelectedConnector={setSelectedConnector}
+                          handleConnectorViewChange={() => setConnectorView(true)}
+                          setConnectorView={setConnectorView}
                         />
-                        <TFRemoteWizard
-                          name={getString('cd.varFileDetails')}
-                          onSubmitCallBack={(values: RemoteVar) => {
-                            if (isEditMode) {
-                              arrayHelpers.replace(selectedVarIndex, values)
-                            } else {
-                              arrayHelpers.push(values)
-                            }
-                            onCloseOfRemoteWizard()
-                          }}
-                          isEditMode={isEditMode}
-                          allowableTypes={allowableTypes}
-                          // initialValues={remoteInitialValues}
-                        />
+                        {connectorView ? getNewConnectorSteps() : null}
+                        {selectedConnector === 'Artifactory' ? (
+                          <TFArtifactoryForm
+                            isConfig={false}
+                            isTerraformPlan={false}
+                            allowableTypes={allowableTypes}
+                            name={getString('cd.varFileDetails')}
+                            onSubmitCallBack={(values: RemoteVar) => onSubmit(values, arrayHelpers)}
+                          />
+                        ) : (
+                          <TFRemoteWizard
+                            name={getString('cd.varFileDetails')}
+                            onSubmitCallBack={(values: RemoteVar) => onSubmit(values, arrayHelpers)}
+                            isEditMode={isEditMode}
+                            isReadonly={isReadonly}
+                            allowableTypes={allowableTypes}
+                          />
+                        )}
                       </StepWizard>
                     </div>
                     <Button
                       minimal
                       icon="cross"
                       iconProps={{ size: 18 }}
-                      onClick={() => {
-                        setShowRemoteWizard(false)
-                      }}
+                      onClick={() => setShowRemoteWizard(false)}
                       className={css.crossIcon}
                     />
                   </Dialog>

@@ -1,0 +1,95 @@
+/*
+ * Copyright 2022 Harness Inc. All rights reserved.
+ * Use of this source code is governed by the PolyForm Shield 1.0.0 license
+ * that can be found in the licenses directory at the root of this repository, also available at
+ * https://polyformproject.org/wp-content/uploads/2020/06/PolyForm-Shield-1.0.0.txt.
+ */
+
+.anomaliesWrapper {
+  border-left: var(--spacing-medium) solid transparent;
+  border-right: var(--spacing-medium) solid transparent;
+  border-bottom: var(--spacing-xxlarge) solid var(--red-700);
+  border-radius: 6px;
+  position: relative;
+}
+
+.anomaliesText {
+  position: absolute;
+  color: var(--white);
+  top: var(--spacing-large);
+  transform: translate(-50%, -50%);
+}
+
+.anomaliesWrapper .anomaliesTooltip {
+  visibility: hidden;
+  width: 180px;
+  background-color: var(--black);
+  color: var(--white);
+  border-radius: 6px;
+  padding: var(--spacing-medium);
+
+  /* Position the tooltip */
+  position: absolute;
+  z-index: 1;
+  left: var(--spacing-large);
+}
+
+.anomaliesWrapper:hover .anomaliesTooltip {
+  visibility: visible;
+}
+
+.anomaliesWrapper .anomaliesTooltip::after {
+  content: '';
+  position: absolute;
+  top: 7%;
+  right: 100%;
+  margin-top: -5px;
+  border-width: 8px;
+  border-style: solid;
+  border-color: transparent var(--black) transparent transparent;
+}
+
+.anomaliesCount {
+  font-style: normal;
+  font-weight: 500;
+  font-size: var(--font-size-xsmall);
+  line-height: 12px;
+  color: var(--grey-50);
+}
+
+.anomaliesCost {
+  font-style: normal;
+  font-weight: 600;
+  font-size: var(--font-size-normal);
+  line-height: 24px;
+  margin-bottom: var(--spacing-small);
+}
+
+.anomaliesNav {
+  font-style: normal;
+  font-weight: bold;
+  font-size: var(--font-size-xsmall);
+  line-height: 15px;
+  display: block;
+  color: var(--primary-5);
+  margin-top: var(--spacing-medium);
+}
+
+.costWrapper {
+  display: flex;
+  align-items: baseline;
+}
+
+.differenceCostPos {
+  font-size: var(--font-size-xsmall);
+  line-height: 15px;
+  color: var(--red-400);
+  margin-left: 12px;
+}
+
+.differenceCostNeg {
+  font-size: var(--font-size-xsmall);
+  line-height: 15px;
+  color: var(--green-500);
+  margin-left: 12px;
+}

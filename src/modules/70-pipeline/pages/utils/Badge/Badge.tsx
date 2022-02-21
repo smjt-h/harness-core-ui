@@ -54,7 +54,7 @@ const TooltipContent: React.FC<BadgeTooltipContentInterface> = (props: BadgeTool
           </Text>
           <div>
             {nonGitErrorStrings.map((errorMessage, index) => (
-              <Text width={500} lineClamp={1} color={Color.GREY_0} key={index} font={{ weight: 'semi-bold' }}>
+              <Text width={480} lineClamp={3} color={Color.GREY_0} key={index} font={{ weight: 'semi-bold' }}>
                 {errorMessage}
               </Text>
             ))}

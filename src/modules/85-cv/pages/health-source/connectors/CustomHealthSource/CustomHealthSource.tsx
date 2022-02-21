@@ -5,38 +5,36 @@
  * https://polyformproject.org/wp-content/uploads/2020/06/PolyForm-Shield-1.0.0.txt.
  */
 
-import React, { useState, useContext, useMemo, useCallback } from 'react'
-import { Container, Formik, FormikForm, Layout, Utils, Accordion } from '@wings-software/uicore'
-import { noop } from 'lodash-es'
+import React, { useState, useContext, useMemo } from 'react'
+import { Formik, FormikForm } from '@wings-software/uicore'
+import { flatten, noop } from 'lodash-es'
 import { SetupSourceTabsContext } from '@cv/components/CVSetupSourcesView/SetupSourceTabs/SetupSourceTabs'
-import { SetupSourceLayout } from '@cv/components/CVSetupSourcesView/SetupSourceLayout/SetupSourceLayout'
-import { MultiItemsSideNav } from '@cv/components/MultiItemsSideNav/MultiItemsSideNav'
-import { SetupSourceCardHeader } from '@cv/components/CVSetupSourcesView/SetupSourceCardHeader/SetupSourceCardHeader'
 import DrawerFooter from '@cv/pages/health-source/common/DrawerFooter/DrawerFooter'
+import type { GroupedCreatedMetrics } from '@cv/components/MultiItemsSideNav/components/SelectedAppsSideNav/components/GroupedSideNav/GroupedSideNav.types'
 import { useStrings } from 'framework/strings'
 import {
+  initGroupedCreatedMetrics,
   initializeCreatedMetrics,
-  initializeSelectedMetricsMap,
-  updateSelectedMetricsMap,
+  initializeSelectedMetricsMap
+} from '../../common/CustomMetric/CustomMetric.utils'
+import {
   transformCustomHealthSourceToSetupSource,
   validateMappings,
   onSubmitCustomHealthSource,
-  generateCustomMetricPack
+  getInitCustomMetricData
 } from './CustomHealthSource.utils'
-import type {
-  CreatedMetricsWithSelectedIndex,
-  CustomHealthSourceSetupSource,
-  MapCustomHealthToService,
-  SelectedAndMappedMetrics
-} from './CustomHealthSource.types'
+import type { CustomHealthSourceSetupSource, MapCustomHealthToService } from './CustomHealthSource.types'
 
 import { defaultMetricName } from './CustomHealthSource.constants'
 import type { UpdatedHealthSource } from '../../HealthSourceDrawer/HealthSourceDrawerContent.types'
-import SelectHealthSourceServices from '../../common/SelectHealthSourceServices/SelectHealthSourceServices'
-import MapMetricsToServices from './components/MapMetricsToServices/MapMetricsToServices'
-import QueryMapping from './components/QueryMapping/QueryMapping'
-import MetricChartsValue from './components/MetricChartsValue/MetricChartsValue'
-import { QueryType } from '../../common/HealthSourceQueryType/HealthSourceQueryType.types'
+import CustomMetric from '../../common/CustomMetric/CustomMetric'
+
+import type {
+  CreatedMetricsWithSelectedIndex,
+  CustomMappedMetric,
+  CustomSelectedAndMappedMetrics
+} from '../../common/CustomMetric/CustomMetric.types'
+import CustomHealthSourceForm from './CustomHealthSourceForm'
 import css from './CustomHealthSource.module.scss'
 
 export interface CustomHealthSourceProps {
@@ -49,183 +47,99 @@ export function CustomHealthSource(props: CustomHealthSourceProps): JSX.Element 
   const { onPrevious } = useContext(SetupSourceTabsContext)
 
   const { data: sourceData, onSubmit } = props
-  const connectorIdentifier = sourceData?.connectorRef || ''
 
   const transformedSourceData = useMemo(() => transformCustomHealthSourceToSetupSource(sourceData), [sourceData])
 
-  const [rerenderKey, setRerenderKey] = useState('')
-  const [{ selectedMetric, mappedMetrics }, setMappedMetrics] = useState<SelectedAndMappedMetrics>(
-    initializeSelectedMetricsMap(defaultMetricName, transformedSourceData.mappedServicesAndEnvs)
+  const [{ selectedMetric, mappedMetrics }, setMappedMetrics] = useState<CustomSelectedAndMappedMetrics>(
+    initializeSelectedMetricsMap(
+      defaultMetricName,
+      getInitCustomMetricData(''),
+      transformedSourceData.mappedServicesAndEnvs as Map<string, CustomMappedMetric>
+    )
   )
+
+  const [groupedCreatedMetrics, setGroupedCreatedMetrics] = useState<GroupedCreatedMetrics>(
+    initGroupedCreatedMetrics(mappedMetrics, getString)
+  )
+
+  const groupedCreatedMetricsList = flatten(Object.values(groupedCreatedMetrics))
+    .map(item => item.metricName)
+    .filter(item => Boolean(item)) as string[]
 
   const [{ createdMetrics, selectedMetricIndex }, setCreatedMetrics] = useState<CreatedMetricsWithSelectedIndex>(
     initializeCreatedMetrics(defaultMetricName, selectedMetric, mappedMetrics)
   )
 
-  const metricPacks = useMemo(() => generateCustomMetricPack(), [])
-
-  const [isQueryExecuted, setIsQueryExecuted] = useState(false)
-  const [sampleDataLoading, setSampleDataLoading] = useState(false)
-  const [recordsData, setrecordsData] = useState<Record<string, unknown> | undefined>()
-
-  const onFetchRecordsSuccess = useCallback((data: Record<string, unknown> | undefined): void => {
-    setrecordsData(data)
-    setIsQueryExecuted(true)
-  }, [])
-
-  const isSelectingJsonPathDisabled = !isQueryExecuted || sampleDataLoading || !recordsData
-
   return (
     <Formik<MapCustomHealthToService>
       formName="mapPrometheus"
       initialValues={mappedMetrics.get(selectedMetric || '') as MapCustomHealthToService}
-      key={rerenderKey}
       isInitialValid={(args: any) =>
-        Object.keys(validateMappings(getString, createdMetrics, selectedMetricIndex, args.initialValues)).length === 0
+        Object.keys(
+          validateMappings(
+            getString,
+            groupedCreatedMetricsList,
+            groupedCreatedMetricsList.indexOf(selectedMetric),
+            args.initialValues
+          )
+        ).length === 0
       }
       onSubmit={noop}
       enableReinitialize={true}
       validate={values => {
-        return validateMappings(getString, createdMetrics, selectedMetricIndex, values)
+        return validateMappings(
+          getString,
+          groupedCreatedMetricsList,
+          groupedCreatedMetricsList.indexOf(selectedMetric),
+          values
+        )
       }}
     >
-      {formikProps => (
-        <FormikForm className={css.formFullheight}>
-          <SetupSourceLayout
-            leftPanelContent={
-              <MultiItemsSideNav
-                defaultMetricName={defaultMetricName}
-                tooptipMessage={getString('cv.monitoringSources.gcoLogs.addQueryTooltip')}
-                addFieldLabel={getString('cv.monitoringSources.addMetric')}
-                createdMetrics={createdMetrics}
-                defaultSelectedMetric={selectedMetric}
-                renamedMetric={formikProps.values?.metricName}
-                isValidInput={formikProps.isValid}
-                onRemoveMetric={(removedMetric, updatedMetric, updatedList, smIndex) => {
-                  setMappedMetrics(oldState => {
-                    const { selectedMetric: oldMetric, mappedMetrics: oldMappedMetric } = oldState
-                    const updatedMap = new Map(oldMappedMetric)
-
-                    if (updatedMap.has(removedMetric)) {
-                      updatedMap.delete(removedMetric)
-                    } else {
-                      // handle case where user updates the metric name for current selected metric
-                      updatedMap.delete(oldMetric)
-                    }
-
-                    // update map with current values
-                    if (formikProps.values?.metricName !== removedMetric) {
-                      updatedMap.set(
-                        updatedMetric,
-                        { ...(formikProps.values as MapCustomHealthToService) } || { metricName: updatedMetric }
-                      )
-                    } else {
-                      setRerenderKey(Utils.randomId())
-                    }
-
-                    setCreatedMetrics({ selectedMetricIndex: smIndex, createdMetrics: updatedList })
-                    return { selectedMetric: updatedMetric, mappedMetrics: updatedMap }
-                  })
-                }}
-                onSelectMetric={(newMetric, updatedList, smIndex) => {
-                  setCreatedMetrics({ selectedMetricIndex: smIndex, createdMetrics: updatedList })
-                  setMappedMetrics(oldState => {
-                    return updateSelectedMetricsMap({
-                      updatedMetric: newMetric,
-                      oldMetric: oldState.selectedMetric,
-                      mappedMetrics: oldState.mappedMetrics,
-                      formikProps
-                    })
-                  })
-                  setRerenderKey(Utils.randomId())
-                }}
+      {formikProps => {
+        return (
+          <FormikForm className={css.formFullheight}>
+            <CustomMetric
+              isValidInput={formikProps.isValid}
+              setMappedMetrics={setMappedMetrics}
+              selectedMetric={selectedMetric}
+              formikValues={formikProps.values as any}
+              mappedMetrics={mappedMetrics}
+              createdMetrics={createdMetrics}
+              setCreatedMetrics={setCreatedMetrics}
+              defaultMetricName={'appdMetric'}
+              tooptipMessage={getString('cv.monitoringSources.gcoLogs.addQueryTooltip')}
+              addFieldLabel={getString('cv.monitoringSources.addMetric')}
+              initCustomForm={getInitCustomMetricData(formikProps.values.baseURL) as any}
+              groupedCreatedMetrics={groupedCreatedMetrics}
+              setGroupedCreatedMetrics={setGroupedCreatedMetrics}
+            >
+              <CustomHealthSourceForm
+                formValue={formikProps.values}
+                onFieldChange={formikProps.setFieldValue}
+                onValueChange={formikProps.setValues}
+                mappedMetrics={mappedMetrics}
+                selectedMetric={selectedMetric}
+                connectorIdentifier={sourceData?.connectorRef || ''}
               />
-            }
-            content={
-              <Container className={css.main}>
-                <SetupSourceCardHeader
-                  mainHeading={getString('cv.monitoringSources.prometheus.querySpecificationsAndMappings')}
-                  subHeading={getString('cv.monitoringSources.prometheus.customizeQuery')}
-                />
-                <Layout.Horizontal className={css.content} spacing="xlarge">
-                  <Accordion activeId="metricToService" className={css.accordian}>
-                    <Accordion.Panel
-                      id="metricToService"
-                      summary={getString('cv.monitoringSources.mapMetricsToServices')}
-                      details={
-                        <MapMetricsToServices
-                          formikProps={formikProps}
-                          mappedMetrics={mappedMetrics}
-                          selectedMetric={selectedMetric}
-                        />
-                      }
-                    />
-                    <Accordion.Panel
-                      id="querymapping"
-                      summary={getString('cv.customHealthSource.Querymapping.title')}
-                      details={
-                        <QueryMapping
-                          formikProps={formikProps}
-                          connectorIdentifier={connectorIdentifier}
-                          onFetchRecordsSuccess={onFetchRecordsSuccess}
-                          recordsData={recordsData}
-                          isQueryExecuted={isQueryExecuted}
-                          setLoading={setSampleDataLoading}
-                        />
-                      }
-                    />
-                    <Accordion.Panel
-                      id="metricChart"
-                      summary={getString('cv.healthSource.connectors.NewRelic.metricValueAndCharts')}
-                      details={
-                        <MetricChartsValue
-                          recordsData={recordsData}
-                          formikValues={formikProps.values}
-                          formikSetFieldValue={formikProps.setFieldValue}
-                          isQueryExecuted={isQueryExecuted}
-                          isSelectingJsonPathDisabled={isSelectingJsonPathDisabled}
-                        />
-                      }
-                    />
-                    <Accordion.Panel
-                      id="riskProfile"
-                      summary={getString('cv.monitoringSources.assign')}
-                      details={
-                        <SelectHealthSourceServices
-                          values={{
-                            sli: !!formikProps?.values?.sli,
-                            healthScore: !!formikProps?.values?.healthScore,
-                            continuousVerification: !!formikProps?.values?.continuousVerification
-                          }}
-                          hideServiceIdentifier
-                          metricPackResponse={metricPacks}
-                          hideCV={formikProps.values?.queryType === QueryType.SERVICE_BASED}
-                          hideSLIAndHealthScore={formikProps.values?.queryType === QueryType.HOST_BASED}
-                        />
-                      }
-                    />
-                  </Accordion>
-                </Layout.Horizontal>
-              </Container>
-            }
-          />
-          <DrawerFooter
-            isSubmit
-            onPrevious={onPrevious}
-            onNext={onSubmitCustomHealthSource({
-              formikProps,
-              createdMetrics,
-              selectedMetricIndex,
-              mappedMetrics,
-              selectedMetric,
-              onSubmit,
-              sourceData,
-              transformedSourceData,
-              getString
-            })}
-          />
-        </FormikForm>
-      )}
+            </CustomMetric>
+            <DrawerFooter
+              isSubmit
+              onPrevious={onPrevious}
+              onNext={onSubmitCustomHealthSource({
+                formikProps,
+                createdMetrics,
+                selectedMetricIndex,
+                mappedMetrics,
+                selectedMetric,
+                onSubmit,
+                sourceData,
+                transformedSourceData,
+                getString
+              })}
+            />
+          </FormikForm>
+        )
+      }}
     </Formik>
   )
 }

@@ -42,7 +42,7 @@ export interface LastQueryData {
 
 export interface KubernetesArtifactsProps {
   type?: string
-  template?: ServiceSpec
+  template: ServiceSpec
   stepViewType?: StepViewType
   artifactSourceBaseFactory: ArtifactSourceBaseFactory
   stageIdentifier: string

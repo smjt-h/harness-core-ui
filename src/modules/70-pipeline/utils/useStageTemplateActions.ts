@@ -66,6 +66,7 @@ export function useStageTemplateActions(): TemplateActionsReturnType {
       templateType: 'Stage',
       selectedChildType: getStageType(stage?.stage, templateTypes),
       selectedTemplateRef: getIdentifierFromValue(defaultTo(stage?.stage?.template?.templateRef, '')),
+      selectedVersionLabel: stage?.stage?.template?.versionLabel,
       onUseTemplate
     })
   }, [stage?.stage, templateTypes, openTemplateSelector, onUseTemplate])

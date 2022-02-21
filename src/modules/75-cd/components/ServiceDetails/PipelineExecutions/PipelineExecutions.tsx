@@ -25,7 +25,7 @@ import { executionStatusInfoToExecutionSummary } from '@cd/pages/dashboard/CDDas
 import { DeploymentsTimeRangeContext } from '@cd/components/Services/common'
 import { useStrings } from 'framework/strings'
 import { PageSpinner } from '@common/components'
-import pipelineIllustration from '@pipeline/pages/pipelines/images/pipelines-illustration.svg'
+import pipelineIllustration from '@pipeline/pages/pipelines/images/deploypipeline-illustration.svg'
 import css from '@cd/components/ServiceDetails/PipelineExecutions/PipelineExecutions.module.scss'
 
 export const PipelineExecutions: React.FC = () => {

@@ -130,7 +130,7 @@ exports[`Subscriptions Page it renders an expired banner when the trial is expir
       >
         <div
           class="Layout--horizontal StyledProps--main"
-          style="width: 150px;"
+          style="width: 200px;"
         >
           <span
             class="bp3-icon StyledProps--main moduleIcons"
@@ -189,7 +189,7 @@ exports[`Subscriptions Page it renders an expired banner when the trial is expir
       >
         <div
           class="Layout--horizontal StyledProps--main"
-          style="width: 150px;"
+          style="width: 200px;"
         >
           <span
             class="bp3-icon StyledProps--main moduleIcons"
@@ -248,7 +248,7 @@ exports[`Subscriptions Page it renders an expired banner when the trial is expir
       >
         <div
           class="Layout--horizontal StyledProps--main"
-          style="width: 150px;"
+          style="width: 200px;"
         >
           <span
             class="bp3-icon StyledProps--main moduleIcons"
@@ -325,7 +325,7 @@ exports[`Subscriptions Page it renders an expired banner when the trial is expir
       >
         <div
           class="Layout--horizontal StyledProps--main"
-          style="width: 150px;"
+          style="width: 200px;"
         >
           <span
             class="bp3-icon StyledProps--main moduleIcons"
@@ -382,7 +382,7 @@ exports[`Subscriptions Page it renders an expired banner when the trial is expir
       >
         <div
           class="Layout--horizontal StyledProps--main"
-          style="width: 150px;"
+          style="width: 200px;"
         >
           <span
             class="bp3-icon StyledProps--main moduleIcons"
@@ -618,7 +618,7 @@ exports[`Subscriptions Page it renders the correct card in the subscriptions pag
       >
         <div
           class="Layout--horizontal StyledProps--main"
-          style="width: 150px;"
+          style="width: 200px;"
         >
           <span
             class="bp3-icon StyledProps--main moduleIcons"
@@ -677,7 +677,7 @@ exports[`Subscriptions Page it renders the correct card in the subscriptions pag
       >
         <div
           class="Layout--horizontal StyledProps--main"
-          style="width: 150px;"
+          style="width: 200px;"
         >
           <span
             class="bp3-icon StyledProps--main moduleIcons"
@@ -736,7 +736,7 @@ exports[`Subscriptions Page it renders the correct card in the subscriptions pag
       >
         <div
           class="Layout--horizontal StyledProps--main"
-          style="width: 150px;"
+          style="width: 200px;"
         >
           <span
             class="bp3-icon StyledProps--main moduleIcons"
@@ -813,7 +813,7 @@ exports[`Subscriptions Page it renders the correct card in the subscriptions pag
       >
         <div
           class="Layout--horizontal StyledProps--main"
-          style="width: 150px;"
+          style="width: 200px;"
         >
           <span
             class="bp3-icon StyledProps--main moduleIcons"
@@ -870,7 +870,7 @@ exports[`Subscriptions Page it renders the correct card in the subscriptions pag
       >
         <div
           class="Layout--horizontal StyledProps--main"
-          style="width: 150px;"
+          style="width: 200px;"
         >
           <span
             class="bp3-icon StyledProps--main moduleIcons"
@@ -1106,7 +1106,7 @@ exports[`Subscriptions Page it renders the subscriptions page 1`] = `
       >
         <div
           class="Layout--horizontal StyledProps--main"
-          style="width: 150px;"
+          style="width: 200px;"
         >
           <span
             class="bp3-icon StyledProps--main moduleIcons"
@@ -1165,7 +1165,7 @@ exports[`Subscriptions Page it renders the subscriptions page 1`] = `
       >
         <div
           class="Layout--horizontal StyledProps--main"
-          style="width: 150px;"
+          style="width: 200px;"
         >
           <span
             class="bp3-icon StyledProps--main moduleIcons"
@@ -1224,7 +1224,7 @@ exports[`Subscriptions Page it renders the subscriptions page 1`] = `
       >
         <div
           class="Layout--horizontal StyledProps--main"
-          style="width: 150px;"
+          style="width: 200px;"
         >
           <span
             class="bp3-icon StyledProps--main moduleIcons"
@@ -1301,7 +1301,7 @@ exports[`Subscriptions Page it renders the subscriptions page 1`] = `
       >
         <div
           class="Layout--horizontal StyledProps--main"
-          style="width: 150px;"
+          style="width: 200px;"
         >
           <span
             class="bp3-icon StyledProps--main moduleIcons"
@@ -1358,7 +1358,7 @@ exports[`Subscriptions Page it renders the subscriptions page 1`] = `
       >
         <div
           class="Layout--horizontal StyledProps--main"
-          style="width: 150px;"
+          style="width: 200px;"
         >
           <span
             class="bp3-icon StyledProps--main moduleIcons"
@@ -1594,7 +1594,7 @@ exports[`Subscriptions Page it renders trial not started information 1`] = `
       >
         <div
           class="Layout--horizontal StyledProps--main"
-          style="width: 150px;"
+          style="width: 200px;"
         >
           <span
             class="bp3-icon StyledProps--main moduleIcons"
@@ -1653,7 +1653,7 @@ exports[`Subscriptions Page it renders trial not started information 1`] = `
       >
         <div
           class="Layout--horizontal StyledProps--main"
-          style="width: 150px;"
+          style="width: 200px;"
         >
           <span
             class="bp3-icon StyledProps--main moduleIcons"
@@ -1712,7 +1712,7 @@ exports[`Subscriptions Page it renders trial not started information 1`] = `
       >
         <div
           class="Layout--horizontal StyledProps--main"
-          style="width: 150px;"
+          style="width: 200px;"
         >
           <span
             class="bp3-icon StyledProps--main moduleIcons"
@@ -1789,7 +1789,7 @@ exports[`Subscriptions Page it renders trial not started information 1`] = `
       >
         <div
           class="Layout--horizontal StyledProps--main"
-          style="width: 150px;"
+          style="width: 200px;"
         >
           <span
             class="bp3-icon StyledProps--main moduleIcons"
@@ -1846,7 +1846,7 @@ exports[`Subscriptions Page it renders trial not started information 1`] = `
       >
         <div
           class="Layout--horizontal StyledProps--main"
-          style="width: 150px;"
+          style="width: 200px;"
         >
           <span
             class="bp3-icon StyledProps--main moduleIcons"
@@ -2040,7 +2040,7 @@ exports[`Subscriptions Page it should update the license store 1`] = `
       >
         <div
           class="Layout--horizontal StyledProps--main"
-          style="width: 150px;"
+          style="width: 200px;"
         >
           <span
             class="bp3-icon StyledProps--main moduleIcons"
@@ -2099,7 +2099,7 @@ exports[`Subscriptions Page it should update the license store 1`] = `
       >
         <div
           class="Layout--horizontal StyledProps--main"
-          style="width: 150px;"
+          style="width: 200px;"
         >
           <span
             class="bp3-icon StyledProps--main moduleIcons"
@@ -2158,7 +2158,7 @@ exports[`Subscriptions Page it should update the license store 1`] = `
       >
         <div
           class="Layout--horizontal StyledProps--main"
-          style="width: 150px;"
+          style="width: 200px;"
         >
           <span
             class="bp3-icon StyledProps--main moduleIcons"
@@ -2235,7 +2235,7 @@ exports[`Subscriptions Page it should update the license store 1`] = `
       >
         <div
           class="Layout--horizontal StyledProps--main"
-          style="width: 150px;"
+          style="width: 200px;"
         >
           <span
             class="bp3-icon StyledProps--main moduleIcons"
@@ -2292,7 +2292,7 @@ exports[`Subscriptions Page it should update the license store 1`] = `
       >
         <div
           class="Layout--horizontal StyledProps--main"
-          style="width: 150px;"
+          style="width: 200px;"
         >
           <span
             class="bp3-icon StyledProps--main moduleIcons"
@@ -2528,7 +2528,7 @@ exports[`Subscriptions Page it shows the header and a loading spinner while the 
       >
         <div
           class="Layout--horizontal StyledProps--main"
-          style="width: 150px;"
+          style="width: 200px;"
         >
           <span
             class="bp3-icon StyledProps--main moduleIcons"
@@ -2587,7 +2587,7 @@ exports[`Subscriptions Page it shows the header and a loading spinner while the 
       >
         <div
           class="Layout--horizontal StyledProps--main"
-          style="width: 150px;"
+          style="width: 200px;"
         >
           <span
             class="bp3-icon StyledProps--main moduleIcons"
@@ -2646,7 +2646,7 @@ exports[`Subscriptions Page it shows the header and a loading spinner while the 
       >
         <div
           class="Layout--horizontal StyledProps--main"
-          style="width: 150px;"
+          style="width: 200px;"
         >
           <span
             class="bp3-icon StyledProps--main moduleIcons"
@@ -2723,7 +2723,7 @@ exports[`Subscriptions Page it shows the header and a loading spinner while the 
       >
         <div
           class="Layout--horizontal StyledProps--main"
-          style="width: 150px;"
+          style="width: 200px;"
         >
           <span
             class="bp3-icon StyledProps--main moduleIcons"
@@ -2780,7 +2780,7 @@ exports[`Subscriptions Page it shows the header and a loading spinner while the 
       >
         <div
           class="Layout--horizontal StyledProps--main"
-          style="width: 150px;"
+          style="width: 200px;"
         >
           <span
             class="bp3-icon StyledProps--main moduleIcons"
@@ -2960,7 +2960,7 @@ exports[`Subscriptions Page it shows the header and a loading spinner while the 
       >
         <div
           class="Layout--horizontal StyledProps--main"
-          style="width: 150px;"
+          style="width: 200px;"
         >
           <span
             class="bp3-icon StyledProps--main moduleIcons"
@@ -3019,7 +3019,7 @@ exports[`Subscriptions Page it shows the header and a loading spinner while the 
       >
         <div
           class="Layout--horizontal StyledProps--main"
-          style="width: 150px;"
+          style="width: 200px;"
         >
           <span
             class="bp3-icon StyledProps--main moduleIcons"
@@ -3078,7 +3078,7 @@ exports[`Subscriptions Page it shows the header and a loading spinner while the 
       >
         <div
           class="Layout--horizontal StyledProps--main"
-          style="width: 150px;"
+          style="width: 200px;"
         >
           <span
             class="bp3-icon StyledProps--main moduleIcons"
@@ -3155,7 +3155,7 @@ exports[`Subscriptions Page it shows the header and a loading spinner while the 
       >
         <div
           class="Layout--horizontal StyledProps--main"
-          style="width: 150px;"
+          style="width: 200px;"
         >
           <span
             class="bp3-icon StyledProps--main moduleIcons"
@@ -3212,7 +3212,7 @@ exports[`Subscriptions Page it shows the header and a loading spinner while the 
       >
         <div
           class="Layout--horizontal StyledProps--main"
-          style="width: 150px;"
+          style="width: 200px;"
         >
           <span
             class="bp3-icon StyledProps--main moduleIcons"

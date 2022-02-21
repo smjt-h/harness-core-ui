@@ -207,12 +207,7 @@ exports[`<TemplateStageSpecifications /> tests snapshot test 1`] = `
                         </div>
                         <div
                           class="Layout--vertical Layout--layout-spacing-medium StyledProps--main"
-                        >
-                          <div
-                            class="nopadLeft accordionSummary"
-                            id="Stage.stage_name.Service.Artifacts.Sidecars"
-                          />
-                        </div>
+                        />
                       </div>
                     </div>
                     <div

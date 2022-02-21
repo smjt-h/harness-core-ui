@@ -5,29 +5,32 @@
  * https://polyformproject.org/wp-content/uploads/2020/06/PolyForm-Shield-1.0.0.txt.
  */
 
-import React from 'react'
+import React, { useState } from 'react'
 import {
   Accordion,
   Button,
+  ButtonVariation,
   Color,
   Formik,
   FormInput,
   getMultiTypeFromValue,
   HarnessDocTooltip,
   IconName,
+  Icon,
   Label,
   Layout,
   MultiTypeInputType,
-  Text
+  Text,
+  StepWizard
 } from '@wings-software/uicore'
-import { Classes, Dialog, IOptionProps } from '@blueprintjs/core'
+import { Classes, Dialog, IOptionProps, IDialogProps } from '@blueprintjs/core'
 import * as Yup from 'yup'
 import { v4 as uuid } from 'uuid'
 
 import { useParams } from 'react-router-dom'
 import cx from 'classnames'
 
-import { cloneDeep, isEmpty, set } from 'lodash-es'
+import { cloneDeep, isEmpty, set, unset, isString } from 'lodash-es'
 import { FormikErrors, FormikProps, yupToFormErrors } from 'formik'
 import { PipelineStep, StepProps } from '@pipeline/components/PipelineSteps/PipelineStep'
 import { StepType } from '@pipeline/components/PipelineSteps/PipelineStepInterface'
@@ -62,6 +65,18 @@ import type { StringNGVariable } from 'services/cd-ng'
 
 import type { StringsMap } from 'stringTypes'
 import { getNameAndIdentifierSchema } from '@pipeline/components/PipelineSteps/Steps/StepsValidateUtils'
+
+import GitDetailsStep from '@connectors/components/CreateConnector/commonSteps/GitDetailsStep'
+import ConnectorDetailsStep from '@connectors/components/CreateConnector/commonSteps/ConnectorDetailsStep'
+import VerifyOutOfClusterDelegate from '@connectors/common/VerifyOutOfClusterDelegate/VerifyOutOfClusterDelegate'
+import StepGitAuthentication from '@connectors/components/CreateConnector/GitConnector/StepAuth/StepGitAuthentication'
+import StepGitlabAuthentication from '@connectors/components/CreateConnector/GitlabConnector/StepAuth/StepGitlabAuthentication'
+import StepGithubAuthentication from '@connectors/components/CreateConnector/GithubConnector/StepAuth/StepGithubAuthentication'
+import StepBitbucketAuthentication from '@connectors/components/CreateConnector/BitbucketConnector/StepAuth/StepBitbucketAuthentication'
+import DelegateSelectorStep from '@connectors/components/CreateConnector/commonSteps/DelegateSelectorStep/DelegateSelectorStep'
+import StepArtifactoryAuthentication from '@connectors/components/CreateConnector/ArtifactoryConnector/StepAuth/StepArtifactoryAuthentication'
+import { Connectors, CONNECTOR_CREDENTIALS_STEP_IDENTIFIER } from '@connectors/constants'
+
 import {
   CommandTypes,
   onSubmitTFPlanData,
@@ -70,10 +85,14 @@ import {
   TFPlanFormData
 } from '../Common/Terraform/TerraformInterfaces'
 import TfVarFileList from './TfPlanVarFileList'
-import ConfigForm from './TfPlanConfigForm'
 
 import TerraformInputStep from './TfPlanInputStep'
 import { TerraformVariableStep } from './TfPlanVariableView'
+import { TerraformConfigStepOne } from '../Common/Terraform/Editview/TerraformConfigFormStepOne'
+import { TerraformConfigStepTwo } from '../Common/Terraform/Editview/TerraformConfigFormStepTwo'
+import { ConnectorMap, ConnectorTypes, getBuildPayload } from '../Common/Terraform/Editview/TerraformConfigFormHelper'
+import { TFArtifactoryForm } from '../Common/Terraform/Editview/TerraformArtifactoryForm'
+import { formatArtifactoryData } from '../Common/Terraform/Editview/TerraformArtifactoryFormHelper'
 
 import { TFMonaco } from '../Common/Terraform/Editview/TFMonacoEditor'
 import stepCss from '@pipeline/components/PipelineSteps/Steps/Steps.module.scss'
@@ -81,6 +100,11 @@ import css from '../Common/Terraform/Editview/TerraformVarfile.module.scss'
 
 const setInitialValues = (data: TFPlanFormData): TFPlanFormData => {
   return data
+}
+interface StepChangeData<SharedObject> {
+  prevStep?: number
+  nextStep?: number
+  prevStepData: SharedObject
 }
 
 function TerraformPlanWidget(
@@ -90,6 +114,8 @@ function TerraformPlanWidget(
   const { initialValues, onUpdate, onChange, allowableTypes, isNewStep, readonly = false, stepViewType } = props
   const { getString } = useStrings()
   const { expressions } = useVariablesExpression()
+  const [connectorView, setConnectorView] = useState(false)
+  const [selectedConnector, setSelectedConnector] = useState<ConnectorTypes | ''>('')
 
   const commandTypeOptions: IOptionProps[] = [
     { label: getString('filters.apply'), value: CommandTypes.Apply },
@@ -102,17 +128,148 @@ function TerraformPlanWidget(
     accountId: string
   }>()
   const { repoIdentifier, branch } = useQueryParams<GitQueryParams>()
-  const modalProps = {
-    isOpen: true,
-    canEscapeKeyClose: true,
-    canOutsideClickClose: true,
-    style: { width: 1000 }
-  }
 
   const query = useQueryParams()
   const sectionId = (query as any).sectionId || ''
 
-  const [showModal, setShowModal] = React.useState(false)
+  const [showRemoteWizard, setShowRemoteWizard] = useState(false)
+  const [isEditMode, setIsEditMode] = useState(false)
+
+  const DIALOG_PROPS: IDialogProps = {
+    isOpen: true,
+    usePortal: true,
+    autoFocus: true,
+    canEscapeKeyClose: true,
+    canOutsideClickClose: true,
+    enforceFocus: false,
+    style: { width: 1175, minHeight: 640, borderLeft: 0, paddingBottom: 0, position: 'relative', overflow: 'hidden' }
+  }
+
+  const onCloseOfRemoteWizard = () => {
+    setConnectorView(false)
+    setShowRemoteWizard(false)
+    setIsEditMode(false)
+  }
+
+  const getNewConnectorSteps = () => {
+    const connectorType = ConnectorMap[selectedConnector]
+    const buildPayload = getBuildPayload(connectorType)
+    return (
+      <StepWizard title={getString('connectors.createNewConnector')}>
+        <ConnectorDetailsStep
+          type={connectorType}
+          name={getString('overview')}
+          isEditMode={isEditMode}
+          gitDetails={{ repoIdentifier, branch, getDefaultFromOtherRepo: true }}
+        />
+        {connectorType !== Connectors.ARTIFACTORY ? (
+          <GitDetailsStep
+            type={connectorType}
+            name={getString('details')}
+            isEditMode={isEditMode}
+            connectorInfo={undefined}
+          />
+        ) : null}
+        {connectorType === Connectors.GIT ? (
+          <StepGitAuthentication
+            name={getString('credentials')}
+            onConnectorCreated={() => {
+              // Handle on success
+            }}
+            isEditMode={isEditMode}
+            setIsEditMode={setIsEditMode}
+            connectorInfo={undefined}
+            accountId={accountId}
+            orgIdentifier={orgIdentifier}
+            projectIdentifier={projectIdentifier}
+          />
+        ) : null}
+        {connectorType === Connectors.GITHUB ? (
+          <StepGithubAuthentication
+            name={getString('credentials')}
+            onConnectorCreated={() => {
+              // Handle on success
+            }}
+            isEditMode={isEditMode}
+            setIsEditMode={setIsEditMode}
+            connectorInfo={undefined}
+            accountId={accountId}
+            orgIdentifier={orgIdentifier}
+            projectIdentifier={projectIdentifier}
+          />
+        ) : null}
+        {connectorType === Connectors.BITBUCKET ? (
+          <StepBitbucketAuthentication
+            name={getString('credentials')}
+            onConnectorCreated={() => {
+              // Handle on success
+            }}
+            isEditMode={isEditMode}
+            setIsEditMode={setIsEditMode}
+            connectorInfo={undefined}
+            accountId={accountId}
+            orgIdentifier={orgIdentifier}
+            projectIdentifier={projectIdentifier}
+          />
+        ) : null}
+        {connectorType === Connectors.GITLAB ? (
+          <StepGitlabAuthentication
+            name={getString('credentials')}
+            identifier={CONNECTOR_CREDENTIALS_STEP_IDENTIFIER}
+            onConnectorCreated={() => {
+              // Handle on success
+            }}
+            isEditMode={isEditMode}
+            setIsEditMode={setIsEditMode}
+            connectorInfo={undefined}
+            accountId={accountId}
+            orgIdentifier={orgIdentifier}
+            projectIdentifier={projectIdentifier}
+          />
+        ) : null}
+        {connectorType === Connectors.ARTIFACTORY ? (
+          <StepArtifactoryAuthentication
+            name={getString('details')}
+            identifier={CONNECTOR_CREDENTIALS_STEP_IDENTIFIER}
+            isEditMode={isEditMode}
+            setIsEditMode={setIsEditMode}
+            connectorInfo={undefined}
+            accountId={accountId}
+            orgIdentifier={orgIdentifier}
+            projectIdentifier={projectIdentifier}
+          />
+        ) : null}
+        <DelegateSelectorStep
+          name={getString('delegate.DelegateselectionLabel')}
+          isEditMode={isEditMode}
+          setIsEditMode={setIsEditMode}
+          buildPayload={buildPayload}
+          connectorInfo={undefined}
+        />
+        <VerifyOutOfClusterDelegate
+          name={getString('connectors.stepThreeName')}
+          connectorInfo={undefined}
+          isStep={true}
+          isLastStep={false}
+          type={connectorType}
+        />
+      </StepWizard>
+    )
+  }
+
+  const onStepChange = (arg: StepChangeData<any>): void => {
+    if (arg?.prevStep && arg?.nextStep && arg.prevStep > arg.nextStep && arg.nextStep <= 2) {
+      setConnectorView(false)
+    }
+  }
+
+  const getTitle = () => (
+    <Layout.Vertical flex style={{ justifyContent: 'center', alignItems: 'center' }} margin={{ bottom: 'xlarge' }}>
+      <Icon name="service-terraform" className={css.remoteIcon} size={50} padding={{ bottom: 'large' }} />
+      <Text color={Color.WHITE}>{getString('cd.configFileStoreTitle')}</Text>
+    </Layout.Vertical>
+  )
+
   return (
     <Formik<TFPlanFormData>
       onSubmit={values => {
@@ -140,6 +297,7 @@ function TerraformPlanWidget(
       {(formik: FormikProps<TFPlanFormData>) => {
         const { values, setFieldValue } = formik
         setFormikRef(formikRef, formik)
+        const configFile = values?.spec?.configuration?.configFiles
         return (
           <>
             <>
@@ -243,23 +401,28 @@ function TerraformPlanWidget(
                 </Label>
                 <div className={cx(css.configFile, css.addMarginBottom)}>
                   <div className={css.configField}>
-                    {!formik.values?.spec?.configuration?.configFiles?.store?.spec?.folderPath && (
-                      <a className={css.configPlaceHolder} onClick={() => setShowModal(true)}>
+                    {!configFile?.store?.spec?.folderPath && !configFile?.store?.spec?.artifactPaths && (
+                      <a className={css.configPlaceHolder} onClick={() => setShowRemoteWizard(true)}>
                         {getString('cd.configFilePlaceHolder')}
                       </a>
                     )}
-                    {formik.values?.spec?.configuration?.configFiles?.store?.spec?.folderPath && (
-                      <Text font="normal" lineClamp={1} width={200}>
-                        /{formik.values?.spec?.configuration?.configFiles?.store?.spec?.folderPath}
+                    {(configFile?.store?.spec?.folderPath || configFile?.store?.spec?.artifactPaths) && (
+                      <Text font="normal" lineClamp={1} width={200} data-testid={configFile?.store?.spec?.folderPath}>
+                        /
+                        {configFile?.store?.spec?.folderPath
+                          ? configFile?.store?.spec?.folderPath
+                          : isString(configFile?.store.spec.artifactPaths)
+                          ? configFile?.store.spec.artifactPaths
+                          : configFile?.store.spec.artifactPaths[0]}
                       </Text>
                     )}
-                    {formik.values?.spec?.configuration?.configFiles?.store?.spec?.folderPath ? (
+                    {configFile?.store?.spec?.folderPath || configFile?.store?.spec?.artifactPaths ? (
                       <Button
                         minimal
                         icon="Edit"
                         withoutBoxShadow
                         iconProps={{ size: 16 }}
-                        onClick={() => setShowModal(true)}
+                        onClick={() => setShowRemoteWizard(true)}
                         data-name="config-edit"
                         withoutCurrentColor={true}
                         className={css.editBtn}
@@ -301,7 +464,14 @@ function TerraformPlanWidget(
                         )}
                       </div>
                       <div className={css.divider} />
-                      <TfVarFileList formik={formik} isReadonly={readonly} allowableTypes={allowableTypes} />
+                      <TfVarFileList
+                        formik={formik}
+                        isReadonly={readonly}
+                        allowableTypes={allowableTypes}
+                        selectedConnector={selectedConnector}
+                        setSelectedConnector={setSelectedConnector}
+                        getNewConnectorSteps={getNewConnectorSteps}
+                      />
                       <div className={css.divider} />
                       <div className={cx(stepCss.formGroup, css.addMarginTop, css.addMarginBottom)}>
                         <MultiTypeFieldSelector
@@ -391,41 +561,88 @@ function TerraformPlanWidget(
                 />
               </Accordion>
             </>
-
-            {showModal && (
+            {showRemoteWizard && (
               <Dialog
-                onClose={() => setShowModal(false)}
-                enforceFocus={false}
-                className={cx(Classes.DIALOG, 'padded-dialog')}
-                {...modalProps}
-                title={getString('pipelineSteps.configFiles')}
+                {...DIALOG_PROPS}
+                isOpen={true}
                 isCloseButtonShown
-                style={{ padding: '24px' }}
+                onClose={() => {
+                  setConnectorView(false)
+                  setShowRemoteWizard(false)
+                }}
+                className={cx(css.modal, Classes.DIALOG)}
               >
-                <ConfigForm
-                  onClick={data => {
-                    const configObject = {
-                      ...data.spec?.configuration?.configFiles
-                    }
-
-                    if (configObject?.store.spec.gitFetchType === 'Branch') {
-                      delete configObject.store.spec.commitId
-                    } else if (configObject?.store.spec.gitFetchType === 'Commit') {
-                      delete configObject.store.spec.branch
-                    }
-
-                    const valObj = cloneDeep(formik.values)
-                    configObject.store.type = configObject?.store?.spec?.connectorRef?.connector?.type || 'Git'
-                    set(valObj, 'spec.configuration.configFiles', { ...configObject })
-
-                    formik.setValues(valObj)
-
-                    setShowModal(false)
-                  }}
-                  data={formik.values}
-                  onHide={() => setShowModal(false)}
-                  isReadonly={readonly}
-                  allowableTypes={allowableTypes}
+                <div className={css.createTfWizard}>
+                  <StepWizard title={getTitle()} className={css.configWizard} onStepChange={onStepChange}>
+                    <TerraformConfigStepOne
+                      name={getString('cd.configFileStepOne')}
+                      data={formik.values}
+                      isTerraformPlan
+                      isReadonly={readonly}
+                      isEditMode={isEditMode}
+                      allowableTypes={allowableTypes}
+                      setConnectorView={setConnectorView}
+                      selectedConnector={selectedConnector}
+                      setSelectedConnector={setSelectedConnector}
+                    />
+                    {connectorView ? getNewConnectorSteps() : null}
+                    {selectedConnector === Connectors.ARTIFACTORY ? (
+                      <TFArtifactoryForm
+                        isConfig
+                        isTerraformPlan
+                        allowableTypes={allowableTypes}
+                        name={getString('cd.configFileDetails')}
+                        onSubmitCallBack={(data: any, prevStepData: any) => {
+                          const configObject = {
+                            ...prevStepData?.formValues?.spec?.configuration?.configFiles
+                          }
+                          const valObj = formatArtifactoryData(prevStepData, data, configObject, formik)
+                          set(valObj, 'spec.configuration.configFiles', { ...configObject })
+                          formik.setValues(valObj)
+                          setConnectorView(false)
+                          setShowRemoteWizard(false)
+                        }}
+                      />
+                    ) : (
+                      <TerraformConfigStepTwo
+                        name={getString('cd.configFileDetails')}
+                        isTerraformPlan
+                        isReadonly={readonly}
+                        allowableTypes={allowableTypes}
+                        onSubmitCallBack={(data: any, prevStepData: any) => {
+                          const configObject = {
+                            ...data.spec?.configuration?.configFiles
+                          }
+                          if (prevStepData.identifier && prevStepData.identifier !== data?.identifier) {
+                            configObject.store.spec.connectorRef = prevStepData?.identifier
+                          }
+                          if (configObject?.store.spec.gitFetchType === 'Branch') {
+                            unset(configObject.store.spec, 'commitId')
+                          } else if (configObject?.store.spec.gitFetchType === 'Commit') {
+                            unset(configObject.store.spec, 'branch')
+                          }
+                          if (configObject?.store?.spec?.artifactPaths) {
+                            unset(configObject?.store.spec, 'artifactPaths')
+                            unset(configObject?.store.spec, 'repositoryName')
+                          }
+                          const valObj = cloneDeep(formik.values)
+                          configObject.store.type = prevStepData?.selectedType
+                          set(valObj, 'spec.configuration.configFiles', { ...configObject })
+                          formik.setValues(valObj)
+                          setConnectorView(false)
+                          setShowRemoteWizard(false)
+                        }}
+                      />
+                    )}
+                  </StepWizard>
+                </div>
+                <Button
+                  variation={ButtonVariation.ICON}
+                  icon="cross"
+                  iconProps={{ size: 18 }}
+                  onClick={onCloseOfRemoteWizard}
+                  data-testid={'close-wizard'}
+                  className={css.crossIcon}
                 />
               </Dialog>
             )}
@@ -569,6 +786,7 @@ export class TerraformPlan extends PipelineStep<TFPlanFormData> {
           onChange={data => onChange?.(this.processFormData(data))}
           allowableTypes={allowableTypes}
           stepViewType={stepViewType}
+          allValues={inputSetData?.allValues}
           readonly={inputSetData?.readonly}
           inputSetData={inputSetData}
           path={inputSetData?.path}

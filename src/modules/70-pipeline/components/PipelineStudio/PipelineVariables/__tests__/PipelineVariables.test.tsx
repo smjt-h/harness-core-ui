@@ -17,14 +17,18 @@ import { CustomVariables } from '@pipeline/components/PipelineSteps/Steps/Custom
 import { branchStatusMock, gitConfigs, sourceCodeManagers } from '@connectors/mocks/mock'
 import { Scope } from '@common/interfaces/SecretsInterface'
 import PipelineVariables from '../PipelineVariables'
-import { PipelineContext, PipelineContextInterface } from '../../PipelineContext/PipelineContext'
+import { PipelineContext } from '../../PipelineContext/PipelineContext'
 import variablesPipeline from './variables.json'
-import pipeline from './pipeline.json'
+import pipelineJson from './pipeline.json'
 import metadataMap from './metadataMap.json'
 
-const pipelineContext: PipelineContextInterface = {
+const pipelineContext: any = {
   updatePipeline: jest.fn(),
-  state: { pipeline, pipelineView: { splitViewData: {} }, selectionState: {} } as any,
+  state: {
+    pipeline: pipelineJson,
+    pipelineView: { splitViewData: {} },
+    selectionState: { selectedStageId: 'stage_1' }
+  } as any,
   contextType: 'Pipeline',
   allowableTypes: [MultiTypeInputType.FIXED, MultiTypeInputType.RUNTIME, MultiTypeInputType.EXPRESSION],
   stepsFactory: factory,
@@ -41,7 +45,7 @@ const pipelineContext: PipelineContextInterface = {
   updateTemplateView: jest.fn(),
   fetchPipeline: jest.fn(),
   deletePipelineCache: jest.fn(),
-  getStageFromPipeline: jest.fn(),
+  getStageFromPipeline: jest.fn((_stageId, pipeline) => ({ stage: pipeline.stages[0], parent: undefined })),
   setYamlHandler: jest.fn(),
   runPipeline: jest.fn(),
   updateStage: jest.fn(),
@@ -79,7 +83,16 @@ describe('<PipelineVariables /> tests', () => {
       <TestWrapper>
         <PipelineContext.Provider value={pipelineContext}>
           <PipelineVariablesContext.Provider
-            value={{ variablesPipeline, loading: false, initLoading: false, error: null, metadataMap } as any}
+            value={
+              {
+                originalPipeline: pipelineJson,
+                variablesPipeline,
+                loading: false,
+                initLoading: false,
+                error: null,
+                metadataMap
+              } as any
+            }
           >
             <PipelineVariables />
           </PipelineVariablesContext.Provider>

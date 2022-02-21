@@ -106,6 +106,7 @@ export interface SelectorData {
   selectedChildType?: string
   allChildTypes?: string[]
   selectedTemplateRef?: string
+  selectedVersionLabel?: string
   onUseTemplate?: (template: TemplateSummaryResponse, isCopied?: boolean) => void
 }
 

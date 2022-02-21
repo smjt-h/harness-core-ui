@@ -12,11 +12,12 @@ import { useParams } from 'react-router-dom'
 import { debounce, defaultTo, get, isPlainObject } from 'lodash-es'
 import type { PipelineInfoConfig } from 'services/cd-ng'
 import type { VariableMergeServiceResponse, Failure } from 'services/pipeline-ng'
-import { useMutateAsGet } from '@common/hooks'
+import { useMutateAsGet, useQueryParams } from '@common/hooks'
 import type { UseMutateAsGetReturn } from '@common/hooks/useMutateAsGet'
 import { useCreateVariables } from 'services/pipeline-ng'
-import type { PipelinePathProps } from '@common/interfaces/RouteInterfaces'
+import type { GitQueryParams, PipelinePathProps } from '@common/interfaces/RouteInterfaces'
 import { yamlStringify } from '@common/utils/YamlHelperMethods'
+import { useGetYamlWithTemplateRefsResolved } from 'services/template-ng'
 import { getRegexForSearch } from '../LogsContent/LogsState/utils'
 export interface KVPair {
   [key: string]: string
@@ -29,6 +30,7 @@ export interface SearchResult {
 }
 export interface PipelineVariablesData {
   variablesPipeline: PipelineInfoConfig
+  originalPipeline: PipelineInfoConfig
   metadataMap: Required<VariableMergeServiceResponse>['metadataMap']
   error?: UseMutateAsGetReturn<Failure | Error>['error'] | null
   initLoading: boolean
@@ -66,6 +68,7 @@ export interface PipelineMeta {
 }
 export const PipelineVariablesContext = React.createContext<PipelineVariablesData>({
   variablesPipeline: { name: '', identifier: '' },
+  originalPipeline: { name: '', identifier: '' },
   metadataMap: {},
   error: null,
   initLoading: true,
@@ -87,6 +90,8 @@ export function PipelineVariablesContextProvider(
     metadataMap: {}
   })
   const { accountId, orgIdentifier, projectIdentifier } = useParams<PipelinePathProps>()
+  const { repoIdentifier, branch } = useQueryParams<GitQueryParams>()
+  const [resolvedPipeline, setResolvedPipeline] = React.useState<PipelineInfoConfig>(originalPipeline)
   const [{ searchText, searchResults, searchIndex, pipelineValues, pipelineFqns, pipelineMetaKeys }, setSearchMeta] =
     React.useState<SearchMeta>({
       searchText: '',
@@ -104,7 +109,7 @@ export function PipelineVariablesContextProvider(
     }))
   }
   const { data, error, initLoading, loading } = useMutateAsGet(useCreateVariables, {
-    body: yamlStringify({ pipeline: originalPipeline }) as unknown as void,
+    body: yamlStringify({ pipeline: resolvedPipeline }) as unknown as void,
     requestOptions: {
       headers: {
         'content-type': 'application/yaml'
@@ -114,6 +119,29 @@ export function PipelineVariablesContextProvider(
     debounce: 800
   })
 
+  const {
+    data: resolvedPipelineResponse,
+    initLoading: initLoadingResolvedPipeline,
+    loading: loadingResolvedPipeline
+  } = useMutateAsGet(useGetYamlWithTemplateRefsResolved, {
+    queryParams: {
+      accountIdentifier: accountId,
+      orgIdentifier,
+      pipelineIdentifier: originalPipeline.identifier,
+      projectIdentifier,
+      repoIdentifier,
+      branch,
+      getDefaultFromOtherRepo: true
+    },
+    body: {
+      originalEntityYaml: yamlStringify(originalPipeline)
+    }
+  })
+
+  React.useEffect(() => {
+    setResolvedPipeline(parse(defaultTo(resolvedPipelineResponse?.data?.mergedPipelineYaml, '')))
+  }, [resolvedPipelineResponse])
+
   React.useEffect(() => {
     const {
       pipelineFqns: updatedPipelineFqns,
@@ -122,7 +150,7 @@ export function PipelineVariablesContextProvider(
     } = getPathToMetaKeyMap({
       data: variablesPipeline as any,
       metaDataMap: metadataMap,
-      pipeline: originalPipeline
+      pipeline: resolvedPipeline
     })
 
     updateSearchMeta({
@@ -130,7 +158,7 @@ export function PipelineVariablesContextProvider(
       pipelineFqns: updatedPipelineFqns,
       pipelineValues: updatedPipelineValues
     })
-  }, [variablesPipeline, metadataMap, originalPipeline])
+  }, [variablesPipeline, metadataMap, resolvedPipeline])
 
   React.useEffect(() => {
     setPipelineVariablesData({
@@ -161,10 +189,11 @@ export function PipelineVariablesContextProvider(
     <PipelineVariablesContext.Provider
       value={{
         variablesPipeline,
+        originalPipeline: resolvedPipeline,
         metadataMap,
         error,
-        initLoading,
-        loading,
+        initLoading: initLoading || initLoadingResolvedPipeline,
+        loading: loading || loadingResolvedPipeline,
         onSearchInputChange,
         searchResults,
         searchText,
