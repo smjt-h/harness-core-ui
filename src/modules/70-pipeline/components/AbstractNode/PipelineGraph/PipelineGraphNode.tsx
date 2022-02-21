@@ -115,21 +115,20 @@ export const PipelineGraphNode = ({
             allowAdd={(!stage?.children?.length && !isParallelNode) || (isParallelNode && isLastChild)}
           />
         )}
-        {stage.identifier === 'deploy6' &&
-          stage?.children?.map((currentStage, index) => (
-            <PipelineGraphNode
-              dropLinkEvent={dropLinkEvent}
-              dropNodeEvent={dropNodeEvent}
-              getNode={getNode}
-              key={currentStage?.identifier}
-              className={css.parallel}
-              stage={currentStage}
-              selectedNode={selectedNode}
-              setSelectedNode={setSelectedNode}
-              isParallelNode={true}
-              isLastChild={index + 1 === stage?.children?.length}
-            />
-          ))}
+        {stage?.children?.map((currentStage, index) => (
+          <PipelineGraphNode
+            dropLinkEvent={dropLinkEvent}
+            dropNodeEvent={dropNodeEvent}
+            getNode={getNode}
+            key={currentStage?.identifier}
+            className={css.parallel}
+            stage={currentStage}
+            selectedNode={selectedNode}
+            setSelectedNode={setSelectedNode}
+            isParallelNode={true}
+            isLastChild={index + 1 === stage?.children?.length}
+          />
+        ))}
       </>
     </div>
   )

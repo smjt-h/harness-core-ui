@@ -41,9 +41,9 @@ export class DiagramFactory {
     this.nodeBank.set(type, Component)
   }
 
-  registerListener(listener: BaseListener): ListenerHandle {
+  registerListener(eventKey: string, listener: BaseListener): ListenerHandle {
     const id = uuid()
-    this.listeners[id] = listener
+    this.listeners[eventKey] = listener
     return {
       id: id,
       listener: listener,
@@ -52,31 +52,31 @@ export class DiagramFactory {
       }
     }
   }
-  deregisterListener(listener: BaseListener | ListenerHandle): boolean {
-    if (typeof listener === 'object') {
-      ;(listener as ListenerHandle).deregister()
-      return true
-    }
-    const handle = this.getListenerHandle(listener)
-    if (handle) {
-      handle.deregister()
+
+  deregisterListener(listenerKey: string): boolean {
+    if (this.listeners[listenerKey]) {
+      delete this.listeners[listenerKey]
       return true
     }
     return false
   }
-  getListenerHandle(listener: BaseListener): ListenerHandle {
-    for (const id in this.listeners) {
-      if (this.listeners[id] === listener) {
-        return {
-          id: id,
-          listener: listener,
-          deregister: () => {
-            delete this.listeners[id]
-          }
+
+  getListenerHandle(listener: string): ListenerHandle | undefined {
+    let listenerHandle
+    if (typeof listener === 'string') {
+      const listernHandle = this.listeners[listener]
+      return {
+        id: listener,
+        listener: listernHandle,
+        deregister: () => {
+          delete this.listeners[listener]
         }
       }
     }
+
+    return listenerHandle
   }
+
   getNode(type?: string): React.FC<any> | undefined {
     return this.nodeBank.get(type as string)
   }
@@ -88,9 +88,13 @@ export class DiagramFactory {
     }
   }
 
+  fireEvent(event: any): void {
+    this.getListenerHandle(event.type)?.listener?.(event)
+  }
+
   render(): React.FC<any> {
     const PipelineStudioHOC: React.FC<any> = (props: any): React.ReactElement => (
-      <PipelineGraph getNode={this.getNode.bind(this)} {...props} />
+      <PipelineGraph getNode={this.getNode.bind(this)} fireEvent={this.fireEvent.bind(this)} {...props} />
     )
     return PipelineStudioHOC
   }

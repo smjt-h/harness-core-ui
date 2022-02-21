@@ -15,19 +15,4 @@ export interface NodeData {
   unSelectedIconColour: string
 }
 
-export interface BaseEvent {
-  firing: boolean
-  stopPropagation: () => any
-}
-
-export interface BaseEventProxy extends BaseEvent {
-  function: string
-}
-
-/**
- * Listeners are always in the form of an object that contains methods that take events
- */
-
-export type BaseListener = {
-  [key: string]: (event: BaseEvent) => any
-}
+export type BaseListener = (event: any) => void
