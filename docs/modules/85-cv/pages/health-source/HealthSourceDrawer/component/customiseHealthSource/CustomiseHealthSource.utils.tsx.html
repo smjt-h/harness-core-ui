@@ -23,16 +23,16 @@
         <div class='clearfix'>
             
             <div class='fl pad1y space-right2'>
-                <span class="strong">66.67% </span>
+                <span class="strong">66% </span>
                 <span class="quiet">Statements</span>
-                <span class='fraction'>32/48</span>
+                <span class='fraction'>33/50</span>
             </div>
         
             
             <div class='fl pad1y space-right2'>
-                <span class="strong">48.72% </span>
+                <span class="strong">48.1% </span>
                 <span class="quiet">Branches</span>
-                <span class='fraction'>38/78</span>
+                <span class='fraction'>38/79</span>
             </div>
         
             
@@ -44,9 +44,9 @@
         
             
             <div class='fl pad1y space-right2'>
-                <span class="strong">65.22% </span>
+                <span class="strong">64.58% </span>
                 <span class="quiet">Lines</span>
-                <span class='fraction'>30/46</span>
+                <span class='fraction'>31/48</span>
             </div>
         
             
@@ -149,13 +149,17 @@
 <a name='L90'></a><a href='#L90'>90</a>
 <a name='L91'></a><a href='#L91'>91</a>
 <a name='L92'></a><a href='#L92'>92</a>
-<a name='L93'></a><a href='#L93'>93</a></td><td class="line-coverage quiet"><span class="cline-any cline-neutral">&nbsp;</span>
+<a name='L93'></a><a href='#L93'>93</a>
+<a name='L94'></a><a href='#L94'>94</a>
+<a name='L95'></a><a href='#L95'>95</a>
+<a name='L96'></a><a href='#L96'>96</a></td><td class="line-coverage quiet"><span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">17x</span>
 <span class="cline-any cline-yes">17x</span>
 <span class="cline-any cline-yes">17x</span>
 <span class="cline-any cline-yes">17x</span>
@@ -202,6 +206,8 @@
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-no">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-no">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
@@ -264,6 +270,7 @@ import { DatadogProduct } from '@cv/pages/health-source/connectors/DatadogMetric
 import { CustomHealthSource } from '@cv/pages/health-source/connectors/CustomHealthSource/CustomHealthSource'
 import { DatadogLogsHealthSource } from '@cv/pages/health-source/connectors/DatadogLogsHealthSource/DatadogLogsHealthSource'
 import ErrorTrackingHealthSource from '@cv/pages/health-source/connectors/ErrorTrackingHealthSource/ErrorTrackingHealthSource'
+import DynatraceHealthSourceContainer from '@cv/pages/health-source/connectors/Dynatrace/DynatraceHealthSourceContainer'
 import type { UpdatedHealthSource } from '../../HealthSourceDrawerContent.types'
 &nbsp;
 export const LoadSourceByType = ({
@@ -302,13 +309,15 @@ export const LoadSourceByType = ({
 <span class="cstat-no" title="statement not covered" >      return &lt;PrometheusHealthSource data={data} onSubmit={onSubmit} /&gt;</span>
 <span class="branch-8 cbranch-no" title="branch not covered" >    case Connectors.NEW_RELIC:</span>
 <span class="cstat-no" title="statement not covered" >      return &lt;NewrelicMonitoredSourceContainer data={data} onSubmit={onSubmit} /&gt;</span>
-<span class="branch-9 cbranch-no" title="branch not covered" >    case Connectors.SPLUNK:</span>
+<span class="branch-9 cbranch-no" title="branch not covered" >    case Connectors.DYNATRACE:</span>
+<span class="cstat-no" title="statement not covered" >      return &lt;DynatraceHealthSourceContainer data={data} onSubmit={onSubmit} /&gt;</span>
+<span class="branch-10 cbranch-no" title="branch not covered" >    case Connectors.SPLUNK:</span>
 <span class="cstat-no" title="statement not covered" >      return &lt;SplunkHealthSource data={data} onSubmit={onSubmit} /&gt;</span>
     case Connectors.CUSTOM_HEALTH:
       return &lt;CustomHealthSource data={data} onSubmit={onSubmit} /&gt;
-<span class="branch-11 cbranch-no" title="branch not covered" >    case Connectors.ERROR_TRACKING:</span>
+<span class="branch-12 cbranch-no" title="branch not covered" >    case Connectors.ERROR_TRACKING:</span>
 <span class="cstat-no" title="statement not covered" >      return &lt;ErrorTrackingHealthSource data={data} onSubmit={onSubmit} /&gt;</span>
-<span class="branch-12 cbranch-no" title="branch not covered" >    default:</span>
+<span class="branch-13 cbranch-no" title="branch not covered" >    default:</span>
 <span class="cstat-no" title="statement not covered" >      return &lt;&gt;&lt;/&gt;</span>
   }
 }
@@ -340,7 +349,7 @@ export const createHealthsourceList = (formData: any, healthSourcesPayload: Upda
             <div class='footer quiet pad2 space-top1 center small'>
                 Code coverage generated by
                 <a href="https://istanbul.js.org/" target="_blank">istanbul</a>
-                at Mon Feb 21 2022 07:25:12 GMT+0000 (Greenwich Mean Time)
+                at Mon Feb 21 2022 14:43:57 GMT+0000 (Greenwich Mean Time)
             </div>
         </div>
         <script src="../../../../../../../prettify.js"></script>

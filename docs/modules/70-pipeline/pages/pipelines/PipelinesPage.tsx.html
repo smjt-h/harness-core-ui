@@ -23,16 +23,16 @@
         <div class='clearfix'>
             
             <div class='fl pad1y space-right2'>
-                <span class="strong">70.82% </span>
+                <span class="strong">71.31% </span>
                 <span class="quiet">Statements</span>
-                <span class='fraction'>165/233</span>
+                <span class='fraction'>169/237</span>
             </div>
         
             
             <div class='fl pad1y space-right2'>
-                <span class="strong">48.5% </span>
+                <span class="strong">48.51% </span>
                 <span class="quiet">Branches</span>
-                <span class='fraction'>194/400</span>
+                <span class='fraction'>196/404</span>
             </div>
         
             
@@ -44,9 +44,9 @@
         
             
             <div class='fl pad1y space-right2'>
-                <span class="strong">70.69% </span>
+                <span class="strong">71.19% </span>
                 <span class="quiet">Lines</span>
-                <span class='fraction'>164/232</span>
+                <span class='fraction'>168/236</span>
             </div>
         
             
@@ -861,7 +861,13 @@
 <a name='L802'></a><a href='#L802'>802</a>
 <a name='L803'></a><a href='#L803'>803</a>
 <a name='L804'></a><a href='#L804'>804</a>
-<a name='L805'></a><a href='#L805'>805</a></td><td class="line-coverage quiet"><span class="cline-any cline-neutral">&nbsp;</span>
+<a name='L805'></a><a href='#L805'>805</a>
+<a name='L806'></a><a href='#L806'>806</a>
+<a name='L807'></a><a href='#L807'>807</a>
+<a name='L808'></a><a href='#L808'>808</a>
+<a name='L809'></a><a href='#L809'>809</a>
+<a name='L810'></a><a href='#L810'>810</a>
+<a name='L811'></a><a href='#L811'>811</a></td><td class="line-coverage quiet"><span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
@@ -947,7 +953,8 @@
 <span class="cline-any cline-yes">2x</span>
 <span class="cline-any cline-yes">2x</span>
 <span class="cline-any cline-yes">2x</span>
-<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">2x</span>
+<span class="cline-any cline-yes">2x</span>
 <span class="cline-any cline-yes">2x</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-yes">2x</span>
@@ -1027,6 +1034,12 @@
 <span class="cline-any cline-yes">82x</span>
 <span class="cline-any cline-yes">82x</span>
 <span class="cline-any cline-yes">82x</span>
+<span class="cline-any cline-yes">82x</span>
+<span class="cline-any cline-yes">82x</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-yes">82x</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
@@ -1612,7 +1625,6 @@
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-no">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
@@ -1750,8 +1762,9 @@ import { useFeatureFlags } from '@common/hooks/useFeatureFlag'
 import { PipelineGridView } from './views/PipelineGridView'
 import { PipelineListView } from './views/PipelineListView'
 import PipelineFilterForm from '../pipeline-deployment-list/PipelineFilterForm/PipelineFilterForm'
-import pipelineIllustration from './images/pipelines-illustration.svg'
-&nbsp;
+import pipelineIllustration from './images/deploypipeline-illustration.svg'
+import buildpipelineIllustration from './images/buildpipeline-illustration.svg'
+import flagpipelineIllustration from './images/flagpipeline-illustration.svg'
 import css from './PipelinesPage.module.scss'
 &nbsp;
 export enum Sort {
@@ -1829,8 +1842,14 @@ const PipelinesPage: React.FC&lt;CDPipelinesPageProps&gt; = ({ mockData }) =&gt;
   const isCDEnabled = (selectedProject?.modules &amp;&amp; selectedProject.modules<span class="branch-0 cbranch-no" title="branch not covered" >?.i</span>ndexOf('CD') &gt; -1) || false
   const isCIEnabled = (selectedProject?.modules &amp;&amp; selectedProject.modules<span class="branch-0 cbranch-no" title="branch not covered" >?.i</span>ndexOf('CI') &gt; -1) || false
   const isCIModule = module === 'ci'
+  const isCFModule = module === 'cf'
   const searchRef = useRef&lt;ExpandingSearchInputHandle&gt;({} as ExpandingSearchInputHandle)
   const { NG_NATIVE_HELM } = useFeatureFlags()
+  const emptyStagePipelineImage = isCIModule
+    ? <span class="branch-0 cbranch-no" title="branch not covered" >buildpipelineIllustration</span>
+    : isCFModule
+    ? <span class="branch-0 cbranch-no" title="branch not covered" >flagpipelineIllustration</span>
+    : pipelineIllustration
 &nbsp;
   const goToPipelineDetail = useCallback(
 <span class="fstat-no" title="function not covered" >    (/</span>* istanbul ignore next */ pipeline?: PMSPipelineSummaryResponse) =&gt; {
@@ -2406,8 +2425,7 @@ const PipelinesPage: React.FC&lt;CDPipelinesPageProps&gt; = ({ mockData }) =&gt;
               &lt;/Layout.Vertical&gt;
             ) : (
               &lt;Layout.Vertical spacing="small" flex={{ justifyContent: 'center', alignItems: 'center' }} width={720}&gt;
-                &lt;img src={pipelineIllustration} className={css.image} /&gt;
-&nbsp;
+                &lt;img src={emptyStagePipelineImage} className={css.image} /&gt;
                 &lt;Text className={css.noPipelineText} margin={{ top: 'medium', bottom: 'small' }}&gt;
                   {getString('pipeline.noPipelineText')}
                 &lt;/Text&gt;
@@ -2476,7 +2494,7 @@ export default PipelinesPage
             <div class='footer quiet pad2 space-top1 center small'>
                 Code coverage generated by
                 <a href="https://istanbul.js.org/" target="_blank">istanbul</a>
-                at Mon Feb 21 2022 07:25:12 GMT+0000 (Greenwich Mean Time)
+                at Mon Feb 21 2022 14:43:57 GMT+0000 (Greenwich Mean Time)
             </div>
         </div>
         <script src="../../../../prettify.js"></script>

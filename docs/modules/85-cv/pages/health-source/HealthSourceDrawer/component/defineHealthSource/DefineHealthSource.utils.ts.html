@@ -23,16 +23,16 @@
         <div class='clearfix'>
             
             <div class='fl pad1y space-right2'>
-                <span class="strong">90.7% </span>
+                <span class="strong">88.64% </span>
                 <span class="quiet">Statements</span>
-                <span class='fraction'>39/43</span>
+                <span class='fraction'>39/44</span>
             </div>
         
             
             <div class='fl pad1y space-right2'>
-                <span class="strong">84.21% </span>
+                <span class="strong">83.12% </span>
                 <span class="quiet">Branches</span>
-                <span class='fraction'>64/76</span>
+                <span class='fraction'>64/77</span>
             </div>
         
             
@@ -44,9 +44,9 @@
         
             
             <div class='fl pad1y space-right2'>
-                <span class="strong">91.89% </span>
+                <span class="strong">89.47% </span>
                 <span class="quiet">Lines</span>
-                <span class='fraction'>34/37</span>
+                <span class='fraction'>34/38</span>
             </div>
         
             
@@ -195,7 +195,19 @@
 <a name='L136'></a><a href='#L136'>136</a>
 <a name='L137'></a><a href='#L137'>137</a>
 <a name='L138'></a><a href='#L138'>138</a>
-<a name='L139'></a><a href='#L139'>139</a></td><td class="line-coverage quiet"><span class="cline-any cline-neutral">&nbsp;</span>
+<a name='L139'></a><a href='#L139'>139</a>
+<a name='L140'></a><a href='#L140'>140</a>
+<a name='L141'></a><a href='#L141'>141</a>
+<a name='L142'></a><a href='#L142'>142</a>
+<a name='L143'></a><a href='#L143'>143</a>
+<a name='L144'></a><a href='#L144'>144</a>
+<a name='L145'></a><a href='#L145'>145</a>
+<a name='L146'></a><a href='#L146'>146</a>
+<a name='L147'></a><a href='#L147'>147</a>
+<a name='L148'></a><a href='#L148'>148</a>
+<a name='L149'></a><a href='#L149'>149</a>
+<a name='L150'></a><a href='#L150'>150</a>
+<a name='L151'></a><a href='#L151'>151</a></td><td class="line-coverage quiet"><span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
@@ -212,6 +224,11 @@
 <span class="cline-any cline-yes">17x</span>
 <span class="cline-any cline-yes">17x</span>
 <span class="cline-any cline-yes">17x</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-yes">17x</span>
@@ -288,6 +305,13 @@
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-yes">28x</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
@@ -349,7 +373,12 @@ import { GCOProduct } from '@cv/pages/health-source/connectors/GCOLogsMonitoring
 import { PrometheusProductNames } from '@cv/pages/health-source/connectors/PrometheusHealthSource/PrometheusHealthSource.constants'
 import { DatadogProduct } from '@cv/pages/health-source/connectors/DatadogMetricsHealthSource/DatadogMetricsHealthSource.utils'
 import { ErrorTrackingProductNames } from '@cv/pages/health-source/connectors/ErrorTrackingHealthSource/ErrorTrackingHealthSource.utils'
-import { NewRelicProductNames, ConnectorRefFieldName, SplunkProduct } from './DefineHealthSource.constant'
+import {
+  NewRelicProductNames,
+  ConnectorRefFieldName,
+  SplunkProduct,
+  DynatraceProductNames
+} from './DefineHealthSource.constant'
 import type { DefineHealthSourceFormInterface } from './DefineHealthSource.types'
 &nbsp;
 export const validate = (getString: UseStringsReturn['getString']) =&gt; {
@@ -425,6 +454,13 @@ export const getFeatureOption = (type: string, getString: UseStringsReturn['getS
           label: getString('connectors.newRelic.products.fullStackObservability')
         }
       ]
+<span class="branch-6 cbranch-no" title="branch not covered" >    case Connectors.DYNATRACE:</span>
+<span class="cstat-no" title="statement not covered" >      return [</span>
+        {
+          value: DynatraceProductNames.APM,
+          label: getString('connectors.newRelic.products.fullStackObservability')
+        }
+      ]
     case Connectors.SPLUNK:
       return [
         {
@@ -432,14 +468,14 @@ export const getFeatureOption = (type: string, getString: UseStringsReturn['getS
           label: getString('cv.monitoringSources.gco.product.logs')
         }
       ]
-<span class="branch-7 cbranch-no" title="branch not covered" >    case Connectors.CUSTOM_HEALTH:</span>
+<span class="branch-8 cbranch-no" title="branch not covered" >    case Connectors.CUSTOM_HEALTH:</span>
 <span class="cstat-no" title="statement not covered" >      return [</span>
         {
           label: getString('connectors.customLabel'),
           value: getString('connectors.customLabel')
         }
       ]
-<span class="branch-8 cbranch-no" title="branch not covered" >    case Connectors.ERROR_TRACKING:</span>
+<span class="branch-9 cbranch-no" title="branch not covered" >    case Connectors.ERROR_TRACKING:</span>
 <span class="cstat-no" title="statement not covered" >      return [</span>
         {
           value: ErrorTrackingProductNames.LOGS,
@@ -478,7 +514,7 @@ export const getSelectedFeature = (sourceData: any): any =&gt; {
             <div class='footer quiet pad2 space-top1 center small'>
                 Code coverage generated by
                 <a href="https://istanbul.js.org/" target="_blank">istanbul</a>
-                at Mon Feb 21 2022 07:25:12 GMT+0000 (Greenwich Mean Time)
+                at Mon Feb 21 2022 14:43:57 GMT+0000 (Greenwich Mean Time)
             </div>
         </div>
         <script src="../../../../../../../prettify.js"></script>

@@ -23,30 +23,30 @@
         <div class='clearfix'>
             
             <div class='fl pad1y space-right2'>
-                <span class="strong">92% </span>
+                <span class="strong">93.1% </span>
                 <span class="quiet">Statements</span>
-                <span class='fraction'>46/50</span>
+                <span class='fraction'>54/58</span>
             </div>
         
             
             <div class='fl pad1y space-right2'>
-                <span class="strong">78.48% </span>
+                <span class="strong">77.5% </span>
                 <span class="quiet">Branches</span>
-                <span class='fraction'>124/158</span>
+                <span class='fraction'>124/160</span>
             </div>
         
             
             <div class='fl pad1y space-right2'>
-                <span class="strong">84.62% </span>
+                <span class="strong">85.71% </span>
                 <span class="quiet">Functions</span>
-                <span class='fraction'>11/13</span>
+                <span class='fraction'>12/14</span>
             </div>
         
             
             <div class='fl pad1y space-right2'>
-                <span class="strong">91.84% </span>
+                <span class="strong">92.98% </span>
                 <span class="quiet">Lines</span>
-                <span class='fraction'>45/49</span>
+                <span class='fraction'>53/57</span>
             </div>
         
             
@@ -275,7 +275,19 @@
 <a name='L216'></a><a href='#L216'>216</a>
 <a name='L217'></a><a href='#L217'>217</a>
 <a name='L218'></a><a href='#L218'>218</a>
-<a name='L219'></a><a href='#L219'>219</a></td><td class="line-coverage quiet"><span class="cline-any cline-neutral">&nbsp;</span>
+<a name='L219'></a><a href='#L219'>219</a>
+<a name='L220'></a><a href='#L220'>220</a>
+<a name='L221'></a><a href='#L221'>221</a>
+<a name='L222'></a><a href='#L222'>222</a>
+<a name='L223'></a><a href='#L223'>223</a>
+<a name='L224'></a><a href='#L224'>224</a>
+<a name='L225'></a><a href='#L225'>225</a>
+<a name='L226'></a><a href='#L226'>226</a>
+<a name='L227'></a><a href='#L227'>227</a>
+<a name='L228'></a><a href='#L228'>228</a>
+<a name='L229'></a><a href='#L229'>229</a>
+<a name='L230'></a><a href='#L230'>230</a>
+<a name='L231'></a><a href='#L231'>231</a></td><td class="line-coverage quiet"><span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
@@ -322,7 +334,19 @@
 <span class="cline-any cline-yes">18x</span>
 <span class="cline-any cline-yes">18x</span>
 <span class="cline-any cline-yes">18x</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-yes">18x</span>
+<span class="cline-any cline-yes">18x</span>
+<span class="cline-any cline-yes">18x</span>
+<span class="cline-any cline-yes">10x</span>
+<span class="cline-any cline-yes">10x</span>
+<span class="cline-any cline-yes">10x</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">10x</span>
+<span class="cline-any cline-yes">10x</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">10x</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-yes">18x</span>
 <span class="cline-any cline-yes">10x</span>
@@ -375,8 +399,7 @@
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-yes">216x</span>
+<span class="cline-any cline-yes">243x</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-yes">189x</span>
@@ -400,6 +423,7 @@
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
@@ -502,16 +526,16 @@
 &nbsp;
 import React, { useCallback, useContext, useMemo } from 'react'
 import {
+  Card,
   Color,
   Container,
-  Card,
   Formik,
   FormikForm,
   FormInput,
-  Text,
+  Icon,
   IconName,
   Layout,
-  Icon
+  Text
 } from '@wings-software/uicore'
 import { useParams } from 'react-router-dom'
 import cx from 'classnames'
@@ -527,7 +551,7 @@ import { SetupSourceTabsContext } from '@cv/components/CVSetupSourcesView/SetupS
 import { Connectors } from '@connectors/constants'
 import { HealthSourceTypes } from '@cv/pages/health-source/types'
 import { ConnectorRefFieldName, HEALTHSOURCE_LIST } from './DefineHealthSource.constant'
-import { validate, getFeatureOption, getInitialValues, validateDuplicateIdentifier } from './DefineHealthSource.utils'
+import { getFeatureOption, getInitialValues, validate, validateDuplicateIdentifier } from './DefineHealthSource.utils'
 import css from './DefineHealthSource.module.scss'
 &nbsp;
 interface DefineHealthSourceProps {
@@ -540,7 +564,19 @@ function DefineHealthSource(props: DefineHealthSourceProps): JSX.Element {
   const { onNext, sourceData } = useContext(SetupSourceTabsContext)
   const { orgIdentifier, projectIdentifier, accountId } = useParams&lt;ProjectPathProps &amp; { identifier: string }&gt;()
   const { isEdit } = sourceData
+&nbsp;
   const isErrorTrackingEnabled = useFeatureFlag(FeatureFlag.ERROR_TRACKING_ENABLED)
+  const isDynatraceAPMEnabled = useFeatureFlag(FeatureFlag.DYNATRACE_APM_ENABLED)
+  const disabledByFF: string[] = useMemo(() =&gt; {
+    const disabledConnectorsList = []
+    <span class="missing-if-branch" title="else path not taken" >E</span>if (!isDynatraceAPMEnabled) {
+      disabledConnectorsList.push(HealthSourceTypes.Dynatrace)
+    }
+    <span class="missing-if-branch" title="else path not taken" >E</span>if (!isErrorTrackingEnabled) {
+      disabledConnectorsList.push(HealthSourceTypes.ErrorTracking)
+    }
+    return disabledConnectorsList
+  }, [isDynatraceAPMEnabled, isErrorTrackingEnabled])
 &nbsp;
   const initialValues = useMemo(() =&gt; {
     return getInitialValues(sourceData)
@@ -593,46 +629,46 @@ function DefineHealthSource(props: DefineHealthSourceProps): JSX.Element {
                           height={120}
                           margin={{ left: 'xxxlarge', right: 'xxxlarge' }}
                         &gt;
-                          {HEALTHSOURCE_LIST.filter(({ name }) =&gt;
-                            name === HealthSourceTypes.ErrorTracking ? isErrorTrackingEnabled : true
-                          ).map(({ name, icon }) =&gt; {
-                            const connectorTypeName =
-                              name === HealthSourceTypes.GoogleCloudOperations ? Connectors.GCP : name
-                            if (isCustomEnabled === false &amp;&amp; name === HealthSourceTypes.CustomHealth) {
-                              return null
+                          {HEALTHSOURCE_LIST.filter(({ name }) =&gt; !disabledByFF.includes(name)).map(
+                            ({ name, icon }) =&gt; {
+                              const connectorTypeName =
+                                name === HealthSourceTypes.GoogleCloudOperations ? Connectors.GCP : name
+                              if (isCustomEnabled === false &amp;&amp; name === HealthSourceTypes.CustomHealth) {
+                                return null
+                              }
+                              return (
+                                &lt;div key={name} className={cx(css.squareCardContainer, isEdit &amp;&amp; css.disabled)}&gt;
+                                  &lt;Card
+                                    disabled={false}
+                                    interactive={true}
+                                    selected={isCardSelected(connectorTypeName, formik)}
+                                    cornerSelected={isCardSelected(connectorTypeName, formik)}
+                                    className={css.squareCard}
+                                    onClick={<span class="fstat-no" title="function not covered" >() =</span>&gt; {
+<span class="cstat-no" title="statement not covered" >                                      formik.setFieldValue('sourceType', connectorTypeName)</span>
+<span class="cstat-no" title="statement not covered" >                                      formik.setFieldValue(</span>
+                                        'product',
+                                        getFeatureOption(connectorTypeName, getString).length === 1
+                                          ? getFeatureOption(connectorTypeName, getString)[0]
+                                          : ''
+                                      )
+<span class="cstat-no" title="statement not covered" >                                      formik.setFieldValue(ConnectorRefFieldName, null)</span>
+                                    }}
+                                  &gt;
+                                    &lt;Icon name={icon as IconName} size={26} height={26} /&gt;
+                                  &lt;/Card&gt;
+                                  &lt;Text
+                                    className={css.healthSourceName}
+                                    style={{
+                                      color: name === formik.values.sourceType ? 'var(--grey-900)' : 'var(--grey-350)'
+                                    }}
+                                  &gt;
+                                    {name}
+                                  &lt;/Text&gt;
+                                &lt;/div&gt;
+                              )
                             }
-                            return (
-                              &lt;div key={name} className={cx(css.squareCardContainer, isEdit &amp;&amp; css.disabled)}&gt;
-                                &lt;Card
-                                  disabled={false}
-                                  interactive={true}
-                                  selected={isCardSelected(connectorTypeName, formik)}
-                                  cornerSelected={isCardSelected(connectorTypeName, formik)}
-                                  className={css.squareCard}
-                                  onClick={<span class="fstat-no" title="function not covered" >() =</span>&gt; {
-<span class="cstat-no" title="statement not covered" >                                    formik.setFieldValue('sourceType', connectorTypeName)</span>
-<span class="cstat-no" title="statement not covered" >                                    formik.setFieldValue(</span>
-                                      'product',
-                                      getFeatureOption(connectorTypeName, getString).length === 1
-                                        ? getFeatureOption(connectorTypeName, getString)[0]
-                                        : ''
-                                    )
-<span class="cstat-no" title="statement not covered" >                                    formik.setFieldValue(ConnectorRefFieldName, null)</span>
-                                  }}
-                                &gt;
-                                  &lt;Icon name={icon as IconName} size={26} height={26} /&gt;
-                                &lt;/Card&gt;
-                                &lt;Text
-                                  className={css.healthSourceName}
-                                  style={{
-                                    color: name === formik.values.sourceType ? 'var(--grey-900)' : 'var(--grey-350)'
-                                  }}
-                                &gt;
-                                  {name}
-                                &lt;/Text&gt;
-                              &lt;/div&gt;
-                            )
-                          })}
+                          )}
                         &lt;/Layout.Horizontal&gt;
                       )
                     }}
@@ -718,7 +754,7 @@ export default DefineHealthSource
             <div class='footer quiet pad2 space-top1 center small'>
                 Code coverage generated by
                 <a href="https://istanbul.js.org/" target="_blank">istanbul</a>
-                at Mon Feb 21 2022 07:25:12 GMT+0000 (Greenwich Mean Time)
+                at Mon Feb 21 2022 14:43:57 GMT+0000 (Greenwich Mean Time)
             </div>
         </div>
         <script src="../../../../../../../prettify.js"></script>
