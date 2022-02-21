@@ -23,30 +23,30 @@
         <div class='clearfix'>
             
             <div class='fl pad1y space-right2'>
-                <span class="strong">100% </span>
+                <span class="strong">0% </span>
                 <span class="quiet">Statements</span>
-                <span class='fraction'>6/6</span>
+                <span class='fraction'>0/6</span>
             </div>
         
             
             <div class='fl pad1y space-right2'>
-                <span class="strong">75% </span>
+                <span class="strong">0% </span>
                 <span class="quiet">Branches</span>
-                <span class='fraction'>9/12</span>
+                <span class='fraction'>0/12</span>
             </div>
         
             
             <div class='fl pad1y space-right2'>
-                <span class="strong">100% </span>
+                <span class="strong">0% </span>
                 <span class="quiet">Functions</span>
-                <span class='fraction'>3/3</span>
+                <span class='fraction'>0/3</span>
             </div>
         
             
             <div class='fl pad1y space-right2'>
-                <span class="strong">100% </span>
+                <span class="strong">0% </span>
                 <span class="quiet">Lines</span>
-                <span class='fraction'>6/6</span>
+                <span class='fraction'>0/6</span>
             </div>
         
             
@@ -55,7 +55,7 @@
             Press <em>n</em> or <em>j</em> to go to the next uncovered block, <em>b</em>, <em>p</em> or <em>k</em> for the previous block.
         </p>
     </div>
-    <div class='status-line high'></div>
+    <div class='status-line low'></div>
     <pre><table class="coverage">
 <tr><td class="line-count quiet"><a name='L1'></a><a href='#L1'>1</a>
 <a name='L2'></a><a href='#L2'>2</a>
@@ -91,17 +91,17 @@
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-yes">19x</span>
+<span class="cline-any cline-no">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-yes">3x</span>
+<span class="cline-any cline-no">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-yes">3x</span>
-<span class="cline-any cline-yes">3x</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-yes">3x</span>
-<span class="cline-any cline-yes">3x</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span></td><td class="text"><pre class="prettyprint lang-js">/*
  * Copyright 2021 Harness Inc. All rights reserved.
@@ -114,17 +114,17 @@ import type { SelectOption } from '@pipeline/components/PipelineSteps/Steps/Step
 import type { UseStringsReturn } from 'framework/strings'
 import type { MapCustomHealthToService } from '../../CustomHealthSource.types'
 &nbsp;
-export function initializeGroupNames(
+<span class="cstat-no" title="statement not covered" >export function <span class="fstat-no" title="function not covered" >i</span>nitializeGroupNames(</span>
   mappedMetrics: Map&lt;string, MapCustomHealthToService&gt;,
   getString: UseStringsReturn['getString']
 ): SelectOption[] {
-  const groupNames = Array.from(mappedMetrics<span class="branch-0 cbranch-no" title="branch not covered" >?.e</span>ntries())
-    .map(metric =&gt; {
-      const { groupName } = metric<span class="branch-0 cbranch-no" title="branch not covered" >?.[1</span>] || <span class="branch-1 cbranch-no" title="branch not covered" >{}</span>
-      return groupName || null
+  const groupNames = <span class="cstat-no" title="statement not covered" >Array.from(mappedMetrics?.entries())</span>
+    .map(<span class="fstat-no" title="function not covered" >metric </span>=&gt; {
+      const { groupName } = <span class="cstat-no" title="statement not covered" >metric?.[1] || {}</span>
+<span class="cstat-no" title="statement not covered" >      return groupName || null</span>
     })
-    .filter(groupItem =&gt; groupItem !== null) as SelectOption[]
-  return [{ label: getString('cv.addNew'), value: '' }, ...groupNames]
+    .filter(<span class="fstat-no" title="function not covered" >groupItem </span>=&gt; <span class="cstat-no" title="statement not covered" >groupItem !== null)</span> as SelectOption[]
+<span class="cstat-no" title="statement not covered" >  return [{ label: getString('cv.addNew'), value: '' }, ...groupNames]</span>
 }
 &nbsp;</pre></td></tr></table></pre>
 
@@ -133,7 +133,7 @@ export function initializeGroupNames(
             <div class='footer quiet pad2 space-top1 center small'>
                 Code coverage generated by
                 <a href="https://istanbul.js.org/" target="_blank">istanbul</a>
-                at Mon Feb 21 2022 03:30:34 GMT+0000 (Greenwich Mean Time)
+                at Mon Feb 21 2022 05:19:27 GMT+0000 (Greenwich Mean Time)
             </div>
         </div>
         <script src="../../../../../../../../prettify.js"></script>
