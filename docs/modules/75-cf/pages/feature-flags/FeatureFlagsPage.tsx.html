@@ -697,10 +697,7 @@
 <a name='L638'></a><a href='#L638'>638</a>
 <a name='L639'></a><a href='#L639'>639</a>
 <a name='L640'></a><a href='#L640'>640</a>
-<a name='L641'></a><a href='#L641'>641</a>
-<a name='L642'></a><a href='#L642'>642</a>
-<a name='L643'></a><a href='#L643'>643</a>
-<a name='L644'></a><a href='#L644'>644</a></td><td class="line-coverage quiet"><span class="cline-any cline-neutral">&nbsp;</span>
+<a name='L641'></a><a href='#L641'>641</a></td><td class="line-coverage quiet"><span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
@@ -1072,7 +1069,6 @@
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-yes">52x</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-yes">52x</span>
@@ -1097,7 +1093,6 @@
 <span class="cline-any cline-yes">12x</span>
 <span class="cline-any cline-yes">12x</span>
 <span class="cline-any cline-yes">6x</span>
-<span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
@@ -1172,7 +1167,6 @@
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-yes">52x</span>
-<span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-yes">52x</span>
@@ -1500,7 +1494,7 @@ const RenderColumnFlag: React.FC&lt;RenderColumnFlagProps&gt; = ({
           dangerouslySetInnerHTML={{
             __html: getString(status ? <span class="branch-0 cbranch-no" title="branch not covered" >'cf.featureFlags.turnOffMessage' </span>: 'cf.featureFlags.turnOnMessage', {
               name: data.name,
-              env: (column as unknown as { activeEnvironment?: EnvironmentResponseDTO })<span class="branch-0 cbranch-no" title="branch not covered" >?.a</span>ctiveEnvironment<span class="branch-0 cbranch-no" title="branch not covered" >?.n</span>ame || ''
+              env: (column as unknown as { activeEnvironment?: EnvironmentResponseDTO })<span class="branch-0 cbranch-no" title="branch not covered" >?.a</span>ctiveEnvironment<span class="branch-1 cbranch-no" title="branch not covered" >?.name </span>|| ''
             })
           }}
         /&gt;
@@ -1708,12 +1702,11 @@ interface ColumnMenuProps {
 &nbsp;
 const RenderColumnEdit: React.FC&lt;ColumnMenuProps&gt; = ({ gitSync, deleteFlag, cell: { row, column }, environment }) =&gt; {
   const data = row.original
-  const { projectIdentifier, orgIdentifier, accountId } = useParams&lt;Record&lt;string, string&gt;&gt;()
+  const { projectIdentifier, orgIdentifier, accountId: accountIdentifier } = useParams&lt;Record&lt;string, string&gt;&gt;()
   const queryParams = {
-    project: projectIdentifier as string,
-    account: accountId,
-    accountIdentifier: accountId,
-    org: orgIdentifier
+    projectIdentifier,
+    accountIdentifier,
+    orgIdentifier
   } as DeleteFeatureFlagQueryParams
 &nbsp;
   const refetch = (column as unknown as { refetch: () =&gt; void }).refetch
@@ -1733,24 +1726,23 @@ const RenderColumnEdit: React.FC&lt;ColumnMenuProps&gt; = ({ gitSync, deleteFlag
 }
 &nbsp;
 const FeatureFlagsPage: React.FC = () =&gt; {
-  const { projectIdentifier, orgIdentifier, accountId } = useParams&lt;Record&lt;string, string&gt;&gt;()
+  const { projectIdentifier, orgIdentifier, accountId: accountIdentifier } = useParams&lt;Record&lt;string, string&gt;&gt;()
   const history = useHistory()
-  const { activeEnvironment, withActiveEnvironment } = useActiveEnvironment()
+  const { activeEnvironment: environmentIdentifier, withActiveEnvironment } = useActiveEnvironment()
   const [pageNumber, setPageNumber] = useState(0)
   const [searchTerm, setSearchTerm] = useState('')
   const queryParams = useMemo(
     () =&gt; ({
-      project: projectIdentifier as string,
-      environment: activeEnvironment,
-      account: accountId,
-      accountIdentifier: accountId,
-      org: orgIdentifier,
+      projectIdentifier,
+      environmentIdentifier,
+      accountIdentifier,
+      orgIdentifier,
       pageSize: CF_DEFAULT_PAGE_SIZE,
       pageNumber,
       metrics: true,
       name: searchTerm
     }),
-    [projectIdentifier, activeEnvironment, accountId, orgIdentifier, pageNumber, searchTerm] // eslint-disable-line react-hooks/exhaustive-deps
+    [projectIdentifier, environmentIdentifier, accountIdentifier, orgIdentifier, pageNumber, searchTerm] // eslint-disable-line react-hooks/exhaustive-deps
   )
   const {
     data,
@@ -1768,21 +1760,21 @@ const FeatureFlagsPage: React.FC = () =&gt; {
     refetch: refetchEnvironments,
     environments
   } = useEnvironmentSelectV2({
-    selectedEnvironmentIdentifier: activeEnvironment,
+    selectedEnvironmentIdentifier: environmentIdentifier,
     onChange: (_value, _environment, _userEvent) =&gt; {
       rewriteCurrentLocationWithActiveEnvironment(_environment)
-      refetch({ queryParams: { ...queryParams, environment: _environment.identifier as string } })
+      refetch({ queryParams: { ...queryParams, environmentIdentifier: _environment.identifier as string } })
     },
     onEmpty: <span class="fstat-no" title="function not covered" >() =</span>&gt; {
-<span class="cstat-no" title="statement not covered" >      refetch({ queryParams: { ...queryParams, environment: undefined as unknown as string } })</span>
+<span class="cstat-no" title="statement not covered" >      refetch({ queryParams: { ...queryParams, environmentIdentifier: undefined as unknown as string } })</span>
     }
   })
 &nbsp;
   const toggleFeatureFlag = useToggleFeatureFlag({
-    accountIdentifier: accountId,
+    accountIdentifier,
     orgIdentifier,
     projectIdentifier,
-    environmentIdentifier: activeEnvironment
+    environmentIdentifier
   })
 &nbsp;
   const deleteFlag = useDeleteFeatureFlag({ queryParams })
@@ -1816,7 +1808,6 @@ const FeatureFlagsPage: React.FC = () =&gt; {
         Header: getString('featureFlagsText').toUpperCase(),
         accessor: row =&gt; row.name,
         width: '40%',
-        activeEnvironment,
         Cell: function WrapperRenderColumnFlag(cell: Cell&lt;Feature&gt;) {
           return (
             &lt;RenderColumnFlag
@@ -1884,7 +1875,7 @@ const FeatureFlagsPage: React.FC = () =&gt; {
         refetch
       }
     ],
-    [gitSync.isAutoCommitEnabled, gitSync.isGitSyncEnabled, activeEnvironment, features]
+    [refetch, gitSync, toggleFeatureFlag, features, deleteFlag.mutate]
   )
   const onSearchInputChanged = useCallback(
 <span class="fstat-no" title="function not covered" >    name </span>=&gt; {
@@ -1909,7 +1900,7 @@ const FeatureFlagsPage: React.FC = () =&gt; {
         displayToolbar &amp;&amp; (
           &lt;&gt;
             &lt;div className={css.leftToolbar}&gt;
-              &lt;FlagDialog environment={activeEnvironment} /&gt;
+              &lt;FlagDialog environment={environmentIdentifier} /&gt;
               {gitSync<span class="branch-0 cbranch-no" title="branch not covered" >?.i</span>sGitSyncActionsEnabled &amp;&amp; (
 <span class="branch-1 cbranch-no" title="branch not covered" >                &lt;GitSyncActions</span>
                   isLoading={gitSync.gitSyncLoading || gitSyncing}
@@ -1965,7 +1956,7 @@ const FeatureFlagsPage: React.FC = () =&gt; {
                     orgIdentifier: orgIdentifier as string,
                     projectIdentifier: projectIdentifier as string,
                     featureFlagIdentifier: feature.identifier,
-                    accountId
+                    accountId: accountIdentifier
                   })
                 )
               )
@@ -1977,7 +1968,7 @@ const FeatureFlagsPage: React.FC = () =&gt; {
       {!loading &amp;&amp; emptyFeatureFlags &amp;&amp; (
 <span class="branch-2 cbranch-no" title="branch not covered" >        &lt;Container width="100%" height="100%" flex={{ align: 'center-center' }}&gt;</span>
           &lt;NoData imageURL={imageURL} message={getString(searchTerm ? 'cf.noResultMatch' : 'cf.noFlag')}&gt;
-            &lt;FlagDialog environment={activeEnvironment} /&gt;
+            &lt;FlagDialog environment={environmentIdentifier} /&gt;
           &lt;/NoData&gt;
         &lt;/Container&gt;
       )}
@@ -1993,7 +1984,7 @@ export default FeatureFlagsPage
             <div class='footer quiet pad2 space-top1 center small'>
                 Code coverage generated by
                 <a href="https://istanbul.js.org/" target="_blank">istanbul</a>
-                at Mon Feb 21 2022 17:07:53 GMT+0000 (Greenwich Mean Time)
+                at Mon Feb 21 2022 18:24:10 GMT+0000 (Greenwich Mean Time)
             </div>
         </div>
         <script src="../../../../prettify.js"></script>

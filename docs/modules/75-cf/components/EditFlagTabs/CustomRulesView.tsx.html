@@ -1094,7 +1094,12 @@
 <a name='L1035'></a><a href='#L1035'>1035</a>
 <a name='L1036'></a><a href='#L1036'>1036</a>
 <a name='L1037'></a><a href='#L1037'>1037</a>
-<a name='L1038'></a><a href='#L1038'>1038</a></td><td class="line-coverage quiet"><span class="cline-any cline-neutral">&nbsp;</span>
+<a name='L1038'></a><a href='#L1038'>1038</a>
+<a name='L1039'></a><a href='#L1039'>1039</a>
+<a name='L1040'></a><a href='#L1040'>1040</a>
+<a name='L1041'></a><a href='#L1041'>1041</a>
+<a name='L1042'></a><a href='#L1042'>1042</a>
+<a name='L1043'></a><a href='#L1043'>1043</a></td><td class="line-coverage quiet"><span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
@@ -1752,7 +1757,6 @@
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-yes">5x</span>
 <span class="cline-any cline-yes">2x</span>
 <span class="cline-any cline-yes">2x</span>
@@ -1989,6 +1993,12 @@
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-yes">3x</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-yes">7x</span>
 <span class="cline-any cline-yes">7x</span>
 <span class="cline-any cline-yes">7x</span>
@@ -2752,8 +2762,8 @@ interface ServingCardRowProps {
   variation: string
   variationOps: Option&lt;string&gt;[]
   editing: boolean
-  environment: string
-  project: string
+  environmentIdentifier: string
+  projectIdentifier: string
   targetAvatars: { name: string }[]
   error?: { variation?: string; targets?: string }
   onChangeTargets: (data: any[]) =&gt; void
@@ -2769,8 +2779,8 @@ const ServingCardRow: React.FC&lt;ServingCardRowProps&gt; = ({
   index,
   variation,
   targetAvatars,
-  environment,
-  project,
+  environmentIdentifier,
+  projectIdentifier,
   error,
   onChangeTargets,
   onChangeVariation,
@@ -2778,14 +2788,13 @@ const ServingCardRow: React.FC&lt;ServingCardRowProps&gt; = ({
 }) =&gt; {
   const { getString } = useStrings()
   const [tagOpts] = useOptions(targetAvatars, prop(['name']))
-  const { orgIdentifier, accountId } = useParams&lt;Record&lt;string, string&gt;&gt;()
+  const { orgIdentifier, accountId: accountIdentifier } = useParams&lt;Record&lt;string, string&gt;&gt;()
   const { data, loading } = useGetAllTargets({
     queryParams: {
-      environment,
-      project,
-      account: accountId,
-      accountIdentifier: accountId,
-      org: orgIdentifier,
+      environmentIdentifier,
+      projectIdentifier,
+      accountIdentifier,
+      orgIdentifier,
       pageSize: 1000
     } as GetAllTargetsQueryParams
   })
@@ -2936,8 +2945,8 @@ interface ServingCardProps {
   variations: Variation[]
   servings: Serving[]
   editing: boolean
-  environment: string
-  project: string
+  environmentIdentifier: string
+  projectIdentifier: string
   errors: any
   onAdd: () =&gt; void
   onUpdate: (idx: number, attr: 'targets' | 'variation', data: any) =&gt; void
@@ -2950,8 +2959,8 @@ const ServingCard: React.FC&lt;ServingCardProps&gt; = ({
   servings,
   variations,
   editing,
-  environment,
-  project,
+  environmentIdentifier,
+  projectIdentifier,
   errors,
   onAdd,
   onUpdate,
@@ -2992,8 +3001,8 @@ const ServingCard: React.FC&lt;ServingCardProps&gt; = ({
               variationOps={variationOps}
               targetAvatars={targetAvatars ?? <span class="branch-1 cbranch-no" title="branch not covered" >[]}</span>
               editing={editing}
-              environment={environment}
-              project={project}
+              environmentIdentifier={environmentIdentifier}
+              projectIdentifier={projectIdentifier}
               onChangeTargets={handleUpdate(idx, 'targets')}
               onChangeVariation={handleUpdate(idx, 'variation')}
               onDelete={<span class="fstat-no" title="function not covered" >() =</span>&gt; <span class="cstat-no" title="statement not covered" >onRemove(idx)}</span>
@@ -3013,8 +3022,8 @@ export interface CustomRulesViewProps {
   feature: Feature
   formikProps: any
   editing: boolean
-  environment: string
-  project: string
+  environmentIdentifier: string
+  projectIdentifier: string
 }
 &nbsp;
 function <span class="fstat-no" title="function not covered" >arrayMove&lt;</span>T&gt;(arr: T[], from: number, to: number): T[] {
@@ -3025,7 +3034,13 @@ function <span class="fstat-no" title="function not covered" >arrayMove&lt;</spa
   }
 }
 &nbsp;
-const CustomRulesView: React.FC&lt;CustomRulesViewProps&gt; = ({ feature, formikProps, editing, environment, project }) =&gt; {
+const CustomRulesView: React.FC&lt;CustomRulesViewProps&gt; = ({
+  feature,
+  formikProps,
+  editing,
+  environmentIdentifier,
+  projectIdentifier
+}) =&gt; {
   const { getString } = useStrings()
   const tempRules: ServingRule[] = formikProps.values.customRules
   const setTempRules = <span class="fstat-no" title="function not covered" >(d</span>ata: RuleData[]) =&gt; <span class="cstat-no" title="statement not covered" >formikProps.setFieldValue('customRules', data)</span>
@@ -3085,8 +3100,8 @@ const CustomRulesView: React.FC&lt;CustomRulesViewProps&gt; = ({ feature, formik
               editing={editing}
               servings={servings}
               variations={feature.variations}
-              environment={environment}
-              project={project}
+              environmentIdentifier={environmentIdentifier}
+              projectIdentifier={projectIdentifier}
               onAdd={handleAddServing}
               onUpdate={handleUpdateServing}
               onRemove={handleDeleteServing}
@@ -3175,7 +3190,7 @@ export default CustomRulesView
             <div class='footer quiet pad2 space-top1 center small'>
                 Code coverage generated by
                 <a href="https://istanbul.js.org/" target="_blank">istanbul</a>
-                at Mon Feb 21 2022 17:07:53 GMT+0000 (Greenwich Mean Time)
+                at Mon Feb 21 2022 18:24:10 GMT+0000 (Greenwich Mean Time)
             </div>
         </div>
         <script src="../../../../prettify.js"></script>

@@ -397,9 +397,7 @@
 <a name='L338'></a><a href='#L338'>338</a>
 <a name='L339'></a><a href='#L339'>339</a>
 <a name='L340'></a><a href='#L340'>340</a>
-<a name='L341'></a><a href='#L341'>341</a>
-<a name='L342'></a><a href='#L342'>342</a>
-<a name='L343'></a><a href='#L343'>343</a></td><td class="line-coverage quiet"><span class="cline-any cline-neutral">&nbsp;</span>
+<a name='L341'></a><a href='#L341'>341</a></td><td class="line-coverage quiet"><span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
@@ -462,7 +460,6 @@
 <span class="cline-any cline-yes">11x</span>
 <span class="cline-any cline-yes">11x</span>
 <span class="cline-any cline-yes">11x</span>
-<span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
@@ -541,7 +538,6 @@
 <span class="cline-any cline-yes">11x</span>
 <span class="cline-any cline-yes">11x</span>
 <span class="cline-any cline-yes">11x</span>
-<span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
@@ -785,7 +781,7 @@ import { NoSegmentsView } from './NoSegmentsView'
 import { NewSegmentButton } from './NewSegmentButton'
 &nbsp;
 export const SegmentsPage: React.FC = () =&gt; {
-  const { activeEnvironment, withActiveEnvironment } = useActiveEnvironment()
+  const { activeEnvironment: environmentIdentifier, withActiveEnvironment } = useActiveEnvironment()
   const {
     EnvironmentSelect,
     loading: loadingEnvironments,
@@ -793,27 +789,26 @@ export const SegmentsPage: React.FC = () =&gt; {
     refetch: refetchEnvs,
     environments
   } = useEnvironmentSelectV2({
-    selectedEnvironmentIdentifier: activeEnvironment,
+    selectedEnvironmentIdentifier: environmentIdentifier,
     onChange: <span class="fstat-no" title="function not covered" >(_</span>value, _environment, _userEvent) =&gt; {
 <span class="cstat-no" title="statement not covered" >      rewriteCurrentLocationWithActiveEnvironment(_environment)</span>
     }
   })
-  const { projectIdentifier, orgIdentifier, accountId } = useParams&lt;Record&lt;string, string&gt;&gt;()
+  const { projectIdentifier, orgIdentifier, accountId: accountIdentifier } = useParams&lt;Record&lt;string, string&gt;&gt;()
   const { getString } = useStrings()
   const [pageNumber, setPageNumber] = useState(0)
   const [searchTerm, setSearchTerm] = useState('')
   const queryParams = useMemo(
     () =&gt; ({
-      project: projectIdentifier,
-      environment: activeEnvironment,
+      projectIdentifier,
+      environmentIdentifier,
       pageNumber,
       pageSize: CF_DEFAULT_PAGE_SIZE,
-      account: accountId,
-      accountIdentifier: accountId,
-      org: orgIdentifier,
+      accountIdentifier,
+      orgIdentifier,
       name: searchTerm
     }),
-    [accountId, orgIdentifier, projectIdentifier, activeEnvironment, pageNumber, searchTerm] // eslint-disable-line react-hooks/exhaustive-deps
+    [accountIdentifier, orgIdentifier, projectIdentifier, environmentIdentifier, pageNumber, searchTerm] // eslint-disable-line react-hooks/exhaustive-deps
   )
   const {
     data: segmentsData,
@@ -822,7 +817,7 @@ export const SegmentsPage: React.FC = () =&gt; {
     refetch: refetchSegments
   } = useGetAllSegments({
     queryParams,
-    lazy: !activeEnvironment
+    lazy: !environmentIdentifier
   })
   const history = useHistory()
   const onSearchInputChanged = useCallback(
@@ -848,18 +843,18 @@ export const SegmentsPage: React.FC = () =&gt; {
             segmentIdentifier: identifier as string,
             projectIdentifier,
             orgIdentifier,
-            accountId
+            accountId: accountIdentifier
           })
         )
       )
     },
-    [history, accountId, orgIdentifier, projectIdentifier, withActiveEnvironment]
+    [history, accountIdentifier, orgIdentifier, projectIdentifier, withActiveEnvironment]
   )
   const toolbar = (
     &lt;&gt;
       &lt;Layout.Horizontal spacing="medium"&gt;
         &lt;NewSegmentButton
-          accountId={accountId}
+          accountIdentifier={accountIdentifier}
           orgIdentifier={orgIdentifier}
           projectIdentifier={projectIdentifier}
           onCreated={<span class="fstat-no" title="function not covered" >segmentIdentifier </span>=&gt; {
@@ -883,13 +878,12 @@ export const SegmentsPage: React.FC = () =&gt; {
   const { showError, clear } = useToaster()
   const deleteSegmentParams = useMemo(
     () =&gt; ({
-      account: accountId,
-      accountIdentifier: accountId,
-      org: orgIdentifier,
-      project: projectIdentifier,
-      environment: activeEnvironment
+      accountIdentifier,
+      orgIdentifier,
+      projectIdentifier,
+      environmentIdentifier
     }),
-    [accountId, orgIdentifier, projectIdentifier, activeEnvironment] // eslint-disable-line react-hooks/exhaustive-deps
+    [accountIdentifier, orgIdentifier, projectIdentifier, environmentIdentifier] // eslint-disable-line react-hooks/exhaustive-deps
   )
   const { mutate: deleteSegment } = useDeleteSegment({
     queryParams: deleteSegmentParams
@@ -986,7 +980,7 @@ export const SegmentsPage: React.FC = () =&gt; {
                         gotoSegmentDetailPage(cell.row.original.identifier as string)
                       },
                       permission: {
-                        resource: { resourceType: ResourceType.ENVIRONMENT, resourceIdentifier: activeEnvironment },
+                        resource: { resourceType: ResourceType.ENVIRONMENT, resourceIdentifier: environmentIdentifier },
                         permission: PermissionIdentifier.EDIT_FF_TARGETGROUP
                       }
                     },
@@ -995,7 +989,7 @@ export const SegmentsPage: React.FC = () =&gt; {
                       text: getString('delete'),
                       onClick: deleteSegmentConfirm,
                       permission: {
-                        resource: { resourceType: ResourceType.ENVIRONMENT, resourceIdentifier: activeEnvironment },
+                        resource: { resourceType: ResourceType.ENVIRONMENT, resourceIdentifier: environmentIdentifier },
                         permission: PermissionIdentifier.DELETE_FF_TARGETGROUP
                       }
                     }
@@ -1007,7 +1001,7 @@ export const SegmentsPage: React.FC = () =&gt; {
         }
       }
     ],
-    [getString, activeEnvironment, clear, deleteSegment, refetchSegments, showError, gotoSegmentDetailPage]
+    [getString, environmentIdentifier, clear, deleteSegment, refetchSegments, showError, gotoSegmentDetailPage]
   )
 &nbsp;
   useEffect(() =&gt; {
@@ -1090,7 +1084,7 @@ export const SegmentsPage: React.FC = () =&gt; {
             <div class='footer quiet pad2 space-top1 center small'>
                 Code coverage generated by
                 <a href="https://istanbul.js.org/" target="_blank">istanbul</a>
-                at Mon Feb 21 2022 17:07:53 GMT+0000 (Greenwich Mean Time)
+                at Mon Feb 21 2022 18:24:10 GMT+0000 (Greenwich Mean Time)
             </div>
         </div>
         <script src="../../../../../prettify.js"></script>

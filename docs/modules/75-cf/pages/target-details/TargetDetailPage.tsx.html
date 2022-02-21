@@ -271,7 +271,10 @@
 <a name='L212'></a><a href='#L212'>212</a>
 <a name='L213'></a><a href='#L213'>213</a>
 <a name='L214'></a><a href='#L214'>214</a>
-<a name='L215'></a><a href='#L215'>215</a></td><td class="line-coverage quiet"><span class="cline-any cline-neutral">&nbsp;</span>
+<a name='L215'></a><a href='#L215'>215</a>
+<a name='L216'></a><a href='#L216'>216</a>
+<a name='L217'></a><a href='#L217'>217</a>
+<a name='L218'></a><a href='#L218'>218</a></td><td class="line-coverage quiet"><span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
@@ -314,18 +317,13 @@
 <span class="cline-any cline-yes">1x</span>
 <span class="cline-any cline-yes">7x</span>
 <span class="cline-any cline-yes">7x</span>
-<span class="cline-any cline-yes">7x</span>
-<span class="cline-any cline-yes">7x</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-yes">7x</span>
-<span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">7x</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
@@ -339,6 +337,15 @@
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">7x</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-yes">7x</span>
 <span class="cline-any cline-yes">7x</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
@@ -354,7 +361,6 @@
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-yes">7x</span>
 <span class="cline-any cline-yes">7x</span>
-<span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
@@ -528,8 +534,13 @@ export const fullSizeContentStyle: React.CSSProperties = {
 export const TargetDetailPage: React.FC = () =&gt; {
   const { getString } = useStrings()
   const { showError, clear } = useToaster()
-  const { accountId, orgIdentifier, projectIdentifier, targetIdentifier } = useParams&lt;Record&lt;string, string&gt;&gt;()
-  const { activeEnvironment, withActiveEnvironment } = useActiveEnvironment()
+  const {
+    accountId: accountIdentifier,
+    orgIdentifier,
+    projectIdentifier,
+    targetIdentifier
+  } = useParams&lt;Record&lt;string, string&gt;&gt;()
+  const { activeEnvironment: environmentIdentifier, withActiveEnvironment } = useActiveEnvironment()
   const {
     data: target,
     loading,
@@ -538,17 +549,16 @@ export const TargetDetailPage: React.FC = () =&gt; {
   } = useGetTarget({
     identifier: targetIdentifier,
     queryParams: {
-      account: accountId,
-      accountIdentifier: accountId,
-      org: orgIdentifier,
-      project: projectIdentifier,
-      environment: activeEnvironment
+      accountIdentifier,
+      orgIdentifier,
+      projectIdentifier,
+      environmentIdentifier
     } as GetTargetQueryParams
   })
   const { data: environment } = useGetEnvironment({
-    environmentIdentifier: activeEnvironment,
+    environmentIdentifier,
     queryParams: {
-      accountId,
+      accountId: accountIdentifier,
       projectIdentifier,
       orgIdentifier
     }
@@ -559,7 +569,7 @@ export const TargetDetailPage: React.FC = () =&gt; {
       title,
       url: withActiveEnvironment(
         routes.toCFTargets({
-          accountId,
+          accountId: accountIdentifier,
           orgIdentifier,
           projectIdentifier
         })
@@ -569,11 +579,10 @@ export const TargetDetailPage: React.FC = () =&gt; {
   const history = useHistory()
   const { mutate: deleteTarget } = useDeleteTarget({
     queryParams: {
-      project: projectIdentifier,
-      environment: target?.environment as string,
-      account: accountId,
-      accountIdentifier: accountId,
-      org: orgIdentifier
+      projectIdentifier,
+      environmentIdentifier: target?.environment as string,
+      accountIdentifier,
+      orgIdentifier
     } as DeleteTargetQueryParams
   })
   const deleteTargetConfirm = useConfirmAction({
@@ -599,7 +608,7 @@ export const TargetDetailPage: React.FC = () =&gt; {
                 routes.toCFTargets({
                   projectIdentifier,
                   orgIdentifier,
-                  accountId
+                  accountId: accountIdentifier
                 })
               )
             )
@@ -669,7 +678,7 @@ export const TargetDetailPage: React.FC = () =&gt; {
                   text: getString('delete'),
                   onClick: deleteTargetConfirm,
                   permission: {
-                    resource: { resourceType: ResourceType.ENVIRONMENT, resourceIdentifier: activeEnvironment },
+                    resource: { resourceType: ResourceType.ENVIRONMENT, resourceIdentifier: environmentIdentifier },
                     permission: PermissionIdentifier.DELETE_FF_TARGETGROUP
                   }
                 }
@@ -706,7 +715,7 @@ export const TargetDetailPage: React.FC = () =&gt; {
             <div class='footer quiet pad2 space-top1 center small'>
                 Code coverage generated by
                 <a href="https://istanbul.js.org/" target="_blank">istanbul</a>
-                at Mon Feb 21 2022 17:07:53 GMT+0000 (Greenwich Mean Time)
+                at Mon Feb 21 2022 18:24:10 GMT+0000 (Greenwich Mean Time)
             </div>
         </div>
         <script src="../../../../prettify.js"></script>
