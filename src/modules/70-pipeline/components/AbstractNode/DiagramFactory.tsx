@@ -12,7 +12,9 @@ import DefaultNode from './Nodes/DefaultNode/DefaultNode'
 import EndNode from './Nodes/EndNode'
 import StartNode from './Nodes/StartNode'
 import PipelineGraph from './PipelineGraph/PipelineGraph'
+import GroupNode from './Nodes/GroupNode/GroupNode'
 import type { BaseListener, ListenerHandle } from './types'
+import { StepGroupNode } from './Nodes/StepGroupNode/StepGroupNode'
 
 export class DiagramFactory {
   /**
@@ -30,6 +32,8 @@ export class DiagramFactory {
     this.registerNode(NodeType.StartNode, StartNode)
     this.registerNode(NodeType.CreateNode, CreateNode)
     this.registerNode(NodeType.EndNode, EndNode)
+    this.registerNode(NodeType.GroupNode, GroupNode)
+    this.registerNode(NodeType.StepGroupNode, StepGroupNode)
     this.listeners = {}
   }
 

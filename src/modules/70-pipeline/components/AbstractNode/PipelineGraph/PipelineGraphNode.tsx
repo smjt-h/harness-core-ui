@@ -1,10 +1,12 @@
 import React, { useEffect, useRef, useState } from 'react'
-import { throttle } from 'lodash-es'
+import { defaultTo, throttle } from 'lodash-es'
 import classNames from 'classnames'
 import type { StageElementConfig } from 'services/cd-ng'
 import { NodeType } from '../Node'
 import { checkIntersectonBottom, useIntersectionObserver } from './utils'
 import css from './PipelineGraph.module.scss'
+import GroupNode from '../Nodes/GroupNode/GroupNode'
+import type { IconName } from '@blueprintjs/core'
 
 export const PipelineGraphRecursive = ({
   stages,
@@ -92,11 +94,36 @@ export const PipelineGraphNode = ({
   const NodeComponent: React.FC<any> | undefined = getNode(stage?.type) || getNode(NodeType.Default)
   const ref = useRef<HTMLDivElement>(null)
   const isIntersecting = useIntersectionObserver(ref, { threshold: 0.98 }, checkIntersectonBottom)
-  const [collapseNode, setCollapseNode] = useState(false)
+  const [collapseNode, setCollapseNode] = useState(true)
 
-  useEffect(() => {
-    throttle(() => setCollapseNode(isIntersecting), 100, { trailing: true })
-  }, [isIntersecting])
+  const getGroupNodeHeader = (): Array<StageElementConfig> => {
+    const nodes: StageElementConfig[] = []
+    if (!stage) return nodes
+    nodes.push(stage)
+    stage?.children?.forEach(child => {
+      if (nodes.length < 2) {
+        nodes.push(child)
+      }
+      if (child?.identifier === selectedNode) {
+        if (nodes.length === 2) {
+          nodes.splice(1, 1)
+          nodes.unshift(child)
+        }
+      }
+    })
+    return nodes
+  }
+
+  const getGroupNodeName = (nodes: StageElementConfig[]): string => {
+    return `${defaultTo(nodes?.[0]?.name, '')} ${defaultTo(nodes?.[1]?.name, '')} ${
+      (stage?.children?.length || 0) > 1 ? ` + ${(stage?.children?.length || 0) - 1} more stages` : ''
+    }`
+  }
+
+  // useEffect(() => {
+  //   console.log('check', collapseNode, isIntersecting)
+  //   throttle(() => setCollapseNode(isIntersecting), 100)
+  // }, [isIntersecting])
 
   return (
     <div
@@ -106,37 +133,54 @@ export const PipelineGraphNode = ({
         css.node
       )}
     >
-      <>
-        {NodeComponent && (
-          <NodeComponent
-            {...stage}
-            fireEvent={fireEvent}
-            className={classNames(css.graphNode, className)}
-            setSelectedNode={setSelectedNode}
-            isSelected={selectedNode === stage?.identifier}
-            dropLinkEvent={dropLinkEvent}
-            dropNodeEvent={dropNodeEvent}
-            isParallelNode={isParallelNode}
-            key={stage?.identifier}
-            allowAdd={(!stage?.children?.length && !isParallelNode) || (isParallelNode && isLastChild)}
-          />
-        )}
-        {stage?.children?.map((currentStage, index) => (
-          <PipelineGraphNode
-            fireEvent={fireEvent}
-            dropLinkEvent={dropLinkEvent}
-            dropNodeEvent={dropNodeEvent}
-            getNode={getNode}
-            key={currentStage?.identifier}
-            className={css.parallel}
-            stage={currentStage}
-            selectedNode={selectedNode}
-            setSelectedNode={setSelectedNode}
-            isParallelNode={true}
-            isLastChild={index + 1 === stage?.children?.length}
-          />
-        ))}
-      </>
+      {collapseNode ? (
+        <GroupNode
+          {...stage}
+          icons={(getGroupNodeHeader() || []).map(node => node.iconName)}
+          name={getGroupNodeName(getGroupNodeHeader() || [])}
+          fireEvent={fireEvent}
+          className={classNames(css.graphNode, className)}
+          setSelectedNode={setSelectedNode}
+          isSelected={selectedNode === stage?.identifier}
+          dropLinkEvent={dropLinkEvent}
+          dropNodeEvent={dropNodeEvent}
+          isParallelNode={isParallelNode}
+          key={stage?.identifier}
+          allowAdd={(!stage?.children?.length && !isParallelNode) || (isParallelNode && isLastChild)}
+        />
+      ) : (
+        <>
+          {NodeComponent && (
+            <NodeComponent
+              {...stage}
+              fireEvent={fireEvent}
+              className={classNames(css.graphNode, className)}
+              setSelectedNode={setSelectedNode}
+              isSelected={selectedNode === stage?.identifier}
+              dropLinkEvent={dropLinkEvent}
+              dropNodeEvent={dropNodeEvent}
+              isParallelNode={isParallelNode}
+              key={stage?.identifier}
+              allowAdd={(!stage?.children?.length && !isParallelNode) || (isParallelNode && isLastChild)}
+            />
+          )}
+          {stage?.children?.map((currentStage, index) => (
+            <PipelineGraphNode
+              fireEvent={fireEvent}
+              dropLinkEvent={dropLinkEvent}
+              dropNodeEvent={dropNodeEvent}
+              getNode={getNode}
+              key={currentStage?.identifier}
+              className={css.parallel}
+              stage={currentStage}
+              selectedNode={selectedNode}
+              setSelectedNode={setSelectedNode}
+              isParallelNode={true}
+              isLastChild={index + 1 === stage?.children?.length}
+            />
+          ))}
+        </>
+      )}
     </div>
   )
 }

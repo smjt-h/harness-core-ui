@@ -224,6 +224,8 @@ const StageBuilder: React.FC<StageBuilderProps> = ({ diagram }): JSX.Element => 
   setSelectionRef.current = setSelection
 
   const { openTemplateSelector, closeTemplateSelector } = useTemplateSelector()
+  const [state, setState] = React.useState<StageElementConfig[]>([])
+
   const { trackEvent } = useTelemetry()
 
   const { getString } = useStrings()
@@ -532,14 +534,13 @@ const StageBuilder: React.FC<StageBuilderProps> = ({ diagram }): JSX.Element => 
   const nodeListeners: NodeModelListener = {
     // Can not remove this Any because of React Diagram Issue
     [Event.ClickNode]: (event: any) => {
-      const eventTemp = event as DefaultNodeEvent
+      // const eventTemp = event as DefaultNodeEvent
       dynamicPopoverHandler?.hide()
-
-      /* istanbul ignore else */ if (eventTemp.entity) {
-        if (eventTemp.entity.getType() === DiagramType.CreateNew) {
+      /* istanbul ignore else */ if (event.entityType) {
+        if (event.entityType === DiagramType.CreateNew) {
           setSelectionRef.current({ stageId: undefined, sectionId: undefined })
           dynamicPopoverHandler?.show(
-            `[data-nodeid="${eventTemp.entity.getID()}"]`,
+            `[data-nodeid="${event.identifier}"]`,
             {
               addStage,
               isStageView: false,
@@ -553,11 +554,12 @@ const StageBuilder: React.FC<StageBuilderProps> = ({ diagram }): JSX.Element => 
             },
             { useArrows: true, darkMode: false, fixedPosition: false }
           )
-        } else if (eventTemp.entity.getType() === DiagramType.GroupNode && selectedStageId) {
-          const parent = getStageFromPipeline(eventTemp.entity.getIdentifier()).parent as StageElementWrapperConfig
+        } else if (event.entityType === DiagramType.GroupNode && selectedStageId) {
+          const parent = getStageFromPipeline(event.identifier).parent as StageElementWrapperConfig
+          console.log('parent', parent)
           /* istanbul ignore else */ if (parent?.parallel) {
             dynamicPopoverHandler?.show(
-              `[data-nodeid="${eventTemp.entity.getID()}"]`,
+              `[data-nodeid="${event.identifier}"]`,
               {
                 isGroupStage: true,
                 groupSelectedStageId: selectedStageId,
@@ -579,13 +581,13 @@ const StageBuilder: React.FC<StageBuilderProps> = ({ diagram }): JSX.Element => 
               { useArrows: false, darkMode: false, fixedPosition: false }
             )
           }
-        } /* istanbul ignore else */ else if (eventTemp.entity.getType() !== DiagramType.StartNode) {
-          const data = getStageFromPipeline(eventTemp.entity.getIdentifier()).stage
+        } /* istanbul ignore else */ else if (event.entityType !== DiagramType.StartNode) {
+          const data = getStageFromPipeline(event.identifier).stage
           if (isSplitViewOpen && data?.stage?.identifier) {
             if (data?.stage?.name === EmptyStageName) {
               // TODO: check if this is unused code
               dynamicPopoverHandler?.show(
-                `[data-nodeid="${eventTemp.entity.getID()}"]`,
+                `[data-nodeid="${event.identifier}"]`,
                 {
                   isStageView: true,
                   data,
@@ -618,7 +620,7 @@ const StageBuilder: React.FC<StageBuilderProps> = ({ diagram }): JSX.Element => 
             } else {
               // TODO: check if this is unused code
               dynamicPopoverHandler?.show(
-                `[data-nodeid="${eventTemp.entity.getID()}"]`,
+                `[data-nodeid="${event.identifier}"]`,
                 {
                   isStageView: true,
                   data,
@@ -652,10 +654,10 @@ const StageBuilder: React.FC<StageBuilderProps> = ({ diagram }): JSX.Element => 
       confirmDeleteStage()
     },
     [Event.AddParallelNode]: (event: any) => {
-      // const eventTemp = event as DefaultNodeEvent
-      // event.stopPropagation()
-      dynamicPopoverHandler?.hide()
-      // console.log('event', eventTemp.entity.getID(), event)
+      const eventTemp = event as DefaultNodeEvent
+      eventTemp.stopPropagation()
+      // dynamicPopoverHandler?.hide()
+
       updatePipelineView({
         ...pipelineView,
         isSplitViewOpen: false,
@@ -663,14 +665,14 @@ const StageBuilder: React.FC<StageBuilderProps> = ({ diagram }): JSX.Element => 
       })
       setSelectionRef.current({ stageId: undefined, sectionId: undefined })
 
-      if (event.identifier) {
+      if (eventTemp.entity) {
         dynamicPopoverHandler?.show(
-          `[data-nodeid="${event.identifier}"] [data-nodeid="add-parallel"]`,
+          `[data-nodeid="${eventTemp.entity.getID()}"] [data-nodeid="add-parallel"]`,
           {
             addStage,
             isParallel: true,
             isStageView: false,
-            event: event,
+            event: eventTemp,
             stagesMap,
             renderPipelineStage,
             contextType,
@@ -680,7 +682,7 @@ const StageBuilder: React.FC<StageBuilderProps> = ({ diagram }): JSX.Element => 
             closeTemplateSelector
           },
           { useArrows: false, darkMode: false, fixedPosition: false },
-          event.callback
+          eventTemp.callback
         )
       }
     },

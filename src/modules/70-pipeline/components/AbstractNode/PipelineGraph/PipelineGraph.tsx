@@ -113,8 +113,8 @@ const PipelineGraph = ({
 
   useEffect(() => {
     updateTreeRect()
-    // const clearDragListeners = setupDragEventListeners(canvasRef)
-    // return () => clearDragListeners()
+    const clearDragListeners = setupDragEventListeners(canvasRef)
+    return () => clearDragListeners()
   }, [])
   const updateSelectedNode = (nodeId: string): void => {
     setSelectedNode(nodeId)
