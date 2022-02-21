@@ -100,6 +100,7 @@ const CDPipelineStudio: React.FC = (): JSX.Element => {
       runPipeline={handleRunPipeline}
     >
       <PipelineStudio
+        diagram={diagram}
         className={css.container}
         routePipelineStudio={routes.toPipelineStudio}
         routePipelineProject={routes.toDeployments}

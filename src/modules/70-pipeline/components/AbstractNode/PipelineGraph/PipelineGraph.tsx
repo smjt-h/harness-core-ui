@@ -18,12 +18,19 @@ import css from './PipelineGraph.module.scss'
 
 export interface PipelineGraphProps {
   pipeline: PipelineInfoConfig
+  fireEvent: (event: any) => void
   getNode: (type?: string | undefined) => React.FC<any> | undefined
   dropLinkEvent: (event: any) => void
   dropNodeEvent: (event: any) => void
 }
 
-const PipelineGraph = ({ pipeline, getNode, dropLinkEvent, dropNodeEvent }: PipelineGraphProps): React.ReactElement => {
+const PipelineGraph = ({
+  pipeline,
+  getNode,
+  dropLinkEvent,
+  dropNodeEvent,
+  fireEvent
+}: PipelineGraphProps): React.ReactElement => {
   const [svgPath, setSvgPath] = useState<string[]>([])
   const [treeRectangle, setTreeRectangle] = useState<DOMRect | void>()
   const [selectedNode, setSelectedNode] = useState<string>('')
@@ -106,8 +113,8 @@ const PipelineGraph = ({ pipeline, getNode, dropLinkEvent, dropNodeEvent }: Pipe
 
   useEffect(() => {
     updateTreeRect()
-    const clearDragListeners = setupDragEventListeners(canvasRef)
-    return () => clearDragListeners()
+    // const clearDragListeners = setupDragEventListeners(canvasRef)
+    // return () => clearDragListeners()
   }, [])
   const updateSelectedNode = (nodeId: string): void => {
     setSelectedNode(nodeId)
@@ -122,6 +129,7 @@ const PipelineGraph = ({ pipeline, getNode, dropLinkEvent, dropNodeEvent }: Pipe
         <div className={css.graphMain} ref={canvasRef} style={{ transform: `scale(${graphScale})` }}>
           <SVGComponent svgPath={svgPath} />
           <PipelineGraphRecursive
+            fireEvent={fireEvent}
             getNode={getNode}
             stages={state}
             selectedNode={selectedNode}

@@ -9,7 +9,7 @@ import React from 'react'
 import type { IconName } from '@wings-software/uicore'
 import { Icon, Text, Color } from '@wings-software/uicore'
 import cx from 'classnames'
-import { DiagramDrag } from '@pipeline/components/Diagram'
+import { DiagramDrag, DiagramType, Event } from '@pipeline/components/Diagram'
 import css from './DefaultNode.module.scss'
 
 const iconStyle = {
@@ -22,6 +22,22 @@ const DefaultNode = (props: any): JSX.Element => {
   const [addClicked, setAddClicked] = React.useState(false)
   const nodeRef = React.useRef<HTMLDivElement>(null)
   const [showAdd, setVisibilityOfAdd] = React.useState(false)
+
+  const onAddNodeClick = (
+    e: React.MouseEvent<Element, MouseEvent>,
+    identifier: string,
+    setAddClicked: React.Dispatch<React.SetStateAction<boolean>>
+  ): void => {
+    e.stopPropagation()
+    props?.fireEvent({
+      type: Event.AddParallelNode,
+      identifier,
+      callback: () => {
+        setAddClicked(false)
+      },
+      target: e.target
+    })
+  }
 
   React.useEffect(() => {
     const currentNode = nodeRef.current
@@ -64,6 +80,7 @@ const DefaultNode = (props: any): JSX.Element => {
         className={`${cx(css.defaultNode, 'default-node')} draggable`}
         ref={nodeRef}
         onClick={() => {
+          props?.fireEvent({ type: Event.ClickNode, entityType: DiagramType.Default, identifier: props?.identifier })
           props?.setSelectedNode(props?.identifier)
         }}
         onDragOver={event => {
@@ -82,7 +99,8 @@ const DefaultNode = (props: any): JSX.Element => {
           }
         }}
         onDrop={e => {
-          props?.dropNodeEvent({
+          props?.fireEvent({
+            type: Event.DropNodeEvent,
             node: JSON.parse(e.dataTransfer.getData(DiagramDrag.NodeDrag)),
             destinationNode: props
           })
@@ -90,6 +108,7 @@ const DefaultNode = (props: any): JSX.Element => {
       >
         <div
           id={props.identifier}
+          data-nodeid={props.identifier}
           draggable={true}
           className={cx(css.defaultCard, { [css.selected]: props?.isSelected })}
           style={{
@@ -144,7 +163,7 @@ const DefaultNode = (props: any): JSX.Element => {
               e.stopPropagation()
               setAddClicked(true)
               setVisibilityOfAdd(true)
-              // onAddNodeClick(e, props.node, setAddClicked)
+              onAddNodeClick(e, props.identifier, props.node)
             }}
             className={css.addNode}
             data-nodeid="add-parallel"
@@ -166,7 +185,8 @@ const DefaultNode = (props: any): JSX.Element => {
           }}
           onDrop={e => {
             e.stopPropagation()
-            props?.dropLinkEvent({
+            props?.fireEvent({
+              type: Event.DropLinkEvent,
               node: JSON.parse(e.dataTransfer.getData(DiagramDrag.NodeDrag)),
               destinationNode: props
             })

@@ -10,6 +10,7 @@ export const PipelineGraphRecursive = ({
   stages,
   getNode,
   selectedNode,
+  fireEvent,
   setSelectedNode,
   dropLinkEvent,
   dropNodeEvent
@@ -17,6 +18,7 @@ export const PipelineGraphRecursive = ({
   stages?: StageElementConfig[]
   getNode: (type?: string | undefined) => React.FC<any> | undefined
   selectedNode: string
+  fireEvent: (event: any) => void
   setSelectedNode: (nodeId: string) => void
   dropLinkEvent: (event: any) => void
   dropNodeEvent: (event: any) => void
@@ -35,6 +37,7 @@ export const PipelineGraphRecursive = ({
       {stages?.map((stage, index) => {
         return (
           <PipelineGraphNode
+            fireEvent={fireEvent}
             dropNodeEvent={dropNodeEvent}
             dropLinkEvent={dropLinkEvent}
             selectedNode={selectedNode}
@@ -60,6 +63,7 @@ export const PipelineGraphRecursive = ({
 interface PipelineGraphNode {
   className?: string
   stage: StageElementConfig
+  fireEvent: (event: any) => void
   getNode: (type?: string | undefined) => React.FC<any> | undefined
   selectedNode: string
   setSelectedNode: (nodeId: string) => void
@@ -74,6 +78,7 @@ interface PipelineGraphNode {
 export const PipelineGraphNode = ({
   className,
   stage,
+  fireEvent,
   getNode,
   setSelectedNode,
   selectedNode,
@@ -105,6 +110,7 @@ export const PipelineGraphNode = ({
         {NodeComponent && (
           <NodeComponent
             {...stage}
+            fireEvent={fireEvent}
             className={classNames(css.graphNode, className)}
             setSelectedNode={setSelectedNode}
             isSelected={selectedNode === stage?.identifier}
@@ -117,6 +123,7 @@ export const PipelineGraphNode = ({
         )}
         {stage?.children?.map((currentStage, index) => (
           <PipelineGraphNode
+            fireEvent={fireEvent}
             dropLinkEvent={dropLinkEvent}
             dropNodeEvent={dropNodeEvent}
             getNode={getNode}

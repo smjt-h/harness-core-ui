@@ -23,6 +23,7 @@ import { PipelineCanvas } from './PipelineCanvas/PipelineCanvas'
 import { PipelineContext } from './PipelineContext/PipelineContext'
 import { PipelineSchemaContextProvider } from './PipelineSchema/PipelineSchemaContext'
 import css from './PipelineStudio.module.scss'
+import type { DiagramFactory } from '../AbstractNode/DiagramFactory'
 
 export interface PipelineStudioProps {
   className?: string
@@ -32,6 +33,7 @@ export interface PipelineStudioProps {
   routePipelineDetail: PathFn<PipelineType<PipelinePathProps>>
   routePipelineList: PathFn<PipelineType<ProjectPathProps>>
   routePipelineProject: PathFn<PipelineType<ProjectPathProps>>
+  diagram: DiagramFactory
   getOtherModal?: (
     onSubmit: (values: PipelineInfoConfig) => void,
     onClose: () => void
@@ -109,6 +111,7 @@ export class PipelineStudio extends React.Component<PipelineStudioProps, Pipelin
       )
     }
     const {
+      diagram,
       className = '',
       routePipelineStudio,
       routePipelineDetail,
@@ -121,6 +124,7 @@ export class PipelineStudio extends React.Component<PipelineStudioProps, Pipelin
         <GitSyncStoreProvider>
           <div className={cx(css.container, className)}>
             <PipelineCanvas
+              diagram={diagram}
               toPipelineStudio={routePipelineStudio}
               toPipelineDetail={routePipelineDetail}
               toPipelineList={routePipelineList}

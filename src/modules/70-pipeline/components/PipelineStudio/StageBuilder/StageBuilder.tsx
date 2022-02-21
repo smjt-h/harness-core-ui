@@ -64,6 +64,7 @@ import { StageList } from './views/StageList'
 import { SplitViewTypes } from '../PipelineContext/PipelineActions'
 import { usePipelineContext } from '../PipelineContext/PipelineContext'
 import css from './StageBuilder.module.scss'
+import { DiagramFactory } from '@pipeline/components/AbstractNode/DiagramFactory'
 const IS_NEW_PIP_STUDIO_ACTIVE = false
 export type StageStateMap = Map<string, StageState>
 
@@ -190,7 +191,11 @@ export const renderPopover = ({
   })
 }
 
-const StageBuilder: React.FC<unknown> = (): JSX.Element => {
+interface StageBuilderProps {
+  diagram: DiagramFactory
+}
+
+const StageBuilder: React.FC<StageBuilderProps> = ({ diagram }): JSX.Element => {
   const {
     state: {
       pipeline,
@@ -219,8 +224,6 @@ const StageBuilder: React.FC<unknown> = (): JSX.Element => {
   setSelectionRef.current = setSelection
 
   const { openTemplateSelector, closeTemplateSelector } = useTemplateSelector()
-  const [state, setState] = React.useState<StageElementConfig[]>([])
-
   const { trackEvent } = useTelemetry()
 
   const { getString } = useStrings()
@@ -649,10 +652,10 @@ const StageBuilder: React.FC<unknown> = (): JSX.Element => {
       confirmDeleteStage()
     },
     [Event.AddParallelNode]: (event: any) => {
-      const eventTemp = event as DefaultNodeEvent
-      eventTemp.stopPropagation()
-      // dynamicPopoverHandler?.hide()
-
+      // const eventTemp = event as DefaultNodeEvent
+      // event.stopPropagation()
+      dynamicPopoverHandler?.hide()
+      // console.log('event', eventTemp.entity.getID(), event)
       updatePipelineView({
         ...pipelineView,
         isSplitViewOpen: false,
@@ -660,14 +663,14 @@ const StageBuilder: React.FC<unknown> = (): JSX.Element => {
       })
       setSelectionRef.current({ stageId: undefined, sectionId: undefined })
 
-      if (eventTemp.entity) {
+      if (event.identifier) {
         dynamicPopoverHandler?.show(
-          `[data-nodeid="${eventTemp.entity.getID()}"] [data-nodeid="add-parallel"]`,
+          `[data-nodeid="${event.identifier}"] [data-nodeid="add-parallel"]`,
           {
             addStage,
             isParallel: true,
             isStageView: false,
-            event: eventTemp,
+            event: event,
             stagesMap,
             renderPipelineStage,
             contextType,
@@ -677,7 +680,7 @@ const StageBuilder: React.FC<unknown> = (): JSX.Element => {
             closeTemplateSelector
           },
           { useArrows: false, darkMode: false, fixedPosition: false },
-          eventTemp.callback
+          event.callback
         )
       }
     },
@@ -1050,6 +1053,15 @@ const StageBuilder: React.FC<unknown> = (): JSX.Element => {
       updateStageOnAddLinkNew(event, dropNode, current)
     }
   }
+
+  diagram.registerListener(Event.DropLinkEvent, dropLinkEvent)
+
+  diagram.registerListener(Event.DropNodeEvent, dropNodeEvent)
+
+  diagram.registerListener(Event.ClickNode, nodeListeners[Event.ClickNode])
+
+  diagram.registerListener(Event.AddParallelNode, nodeListeners[Event.AddParallelNode])
+
   //1) setup the diagram engine
   const engine = React.useMemo(() => createEngine({}), [])
 
