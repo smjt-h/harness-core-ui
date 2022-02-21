@@ -191,7 +191,7 @@ describe('Verify CustomHealthSourceForm', () => {
     await waitFor(() => expect(container.querySelector('input[name="continuousVerification"]')).not.toBeInTheDocument())
   })
 
-  test('should render CustomHealthSourceForm with new value', async () => {
+  test('should render CustomHealthSourceForm with SERVICE_BASED sli false', async () => {
     const onFieldChange = jest.fn()
     const onValueChange = jest.fn()
     const { container, getByText } = render(
@@ -204,7 +204,14 @@ describe('Verify CustomHealthSourceForm', () => {
           {() => (
             <FormikForm>
               <CustomHealthSourceForm
-                formValue={formikValue}
+                formValue={
+                  {
+                    queryType: 'SERVICE_BASED',
+                    sli: false,
+                    healthScore: true,
+                    continuousVerification: true
+                  } as any
+                }
                 onFieldChange={onFieldChange}
                 onValueChange={onValueChange}
                 mappedMetrics={mappedMetricWithValue}
@@ -222,5 +229,44 @@ describe('Verify CustomHealthSourceForm', () => {
     userEvent.click(getByText('cv.monitoringSources.assign'))
     await waitFor(() => expect(container.querySelector('input[name="healthScore"]')).toBeChecked())
     await waitFor(() => expect(container.querySelector('input[name="sli"]')).not.toBeChecked())
+  })
+
+  test('should render CustomHealthSourceForm with HOST_BASED sli false', async () => {
+    const onFieldChange = jest.fn()
+    const onValueChange = jest.fn()
+    const { container, getByText } = render(
+      <TestWrapper>
+        <Formik
+          formName="test-form"
+          initialValues={mappedMetricWithValue.get('CustomHealth Metric new')}
+          onSubmit={jest.fn()}
+        >
+          {() => (
+            <FormikForm>
+              <CustomHealthSourceForm
+                formValue={
+                  {
+                    queryType: 'HOST_BASED',
+                    sli: false,
+                    healthScore: true,
+                    continuousVerification: true
+                  } as any
+                }
+                onFieldChange={onFieldChange}
+                onValueChange={onValueChange}
+                mappedMetrics={mappedMetricWithValue}
+                selectedMetric={'CustomHealth Metric new'}
+                connectorIdentifier={sourceData?.connectorRef || ''}
+              />
+            </FormikForm>
+          )}
+        </Formik>
+      </TestWrapper>
+    )
+
+    // Verify clicking on POST shows query textare
+
+    userEvent.click(getByText('cv.monitoringSources.assign'))
+    await waitFor(() => expect(container.querySelector('input[name="continuousVerification"]')).toBeChecked())
   })
 })

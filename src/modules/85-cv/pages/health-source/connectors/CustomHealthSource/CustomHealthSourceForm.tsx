@@ -105,14 +105,14 @@ export default function CustomHealthSourceForm(props: CustomHealthSourceFormInte
             details={
               <SelectHealthSourceServices
                 values={{
-                  sli: !!formValue?.sli,
-                  healthScore: !!formValue?.healthScore,
-                  continuousVerification: !!formValue?.continuousVerification
+                  sli: !!formValue.sli,
+                  healthScore: !!formValue.healthScore,
+                  continuousVerification: !!formValue.continuousVerification
                 }}
                 hideServiceIdentifier
                 metricPackResponse={metricPacks}
-                hideCV={formValue?.queryType === QueryType.SERVICE_BASED}
-                hideSLIAndHealthScore={formValue?.queryType === QueryType.HOST_BASED}
+                hideCV={formValue.queryType === QueryType.SERVICE_BASED}
+                hideSLIAndHealthScore={formValue.queryType === QueryType.HOST_BASED}
               />
             }
           />

@@ -524,7 +524,7 @@ export const mappedMetricValues = [
     metricName: 'appdMetric 8ltxanbnvzv',
     metricIdentifier: '',
     groupName: { label: 'Group 1', value: 'Group 1' },
-    continuousVerification: false,
+    continuousVerification: true,
     healthScore: true,
     sli: false,
     riskCategory: '',
