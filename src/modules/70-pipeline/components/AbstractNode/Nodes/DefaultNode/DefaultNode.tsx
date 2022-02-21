@@ -9,8 +9,8 @@ import React from 'react'
 import type { IconName } from '@wings-software/uicore'
 import { Icon, Text, Color } from '@wings-software/uicore'
 import cx from 'classnames'
+import { DiagramDrag } from '@pipeline/components/Diagram'
 import css from './DefaultNode.module.scss'
-import { DiagramDrag, Event } from '@pipeline/components/Diagram'
 
 const iconStyle = {
   color: 'var(--white)'

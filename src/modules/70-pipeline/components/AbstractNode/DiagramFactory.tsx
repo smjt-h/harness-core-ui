@@ -4,24 +4,15 @@
  * that can be found in the licenses directory at the root of this repository, also available at
  * https://polyformproject.org/wp-content/uploads/2020/06/PolyForm-Shield-1.0.0.txt.
  */
-
-import type { IconName } from '@wings-software/uicore'
 import React from 'react'
+import { v4 as uuid } from 'uuid'
 import { NodeType } from './Node'
 import CreateNode from './Nodes/CreateNode/CreateNode'
 import DefaultNode from './Nodes/DefaultNode/DefaultNode'
 import EndNode from './Nodes/EndNode'
 import StartNode from './Nodes/StartNode'
 import PipelineGraph from './PipelineGraph/PipelineGraph'
-
-export interface NodeData {
-  name: string
-  icon: IconName
-  selectedColour: string
-  unSelectedColour: string
-  selectedIconColour: string
-  unSelectedIconColour: string
-}
+import type { BaseListener, ListenerHandle } from './types'
 
 export class DiagramFactory {
   /**
@@ -30,8 +21,8 @@ export class DiagramFactory {
   type = ''
   canCreate = false
   canDelete = false
-  nodeBank: Map<string, React.FC<any>>
-
+  nodeBank: Map<string, React.FC>
+  listeners: { [id: string]: BaseListener }
   constructor(diagramType: string) {
     this.nodeBank = new Map()
     this.type = diagramType
@@ -39,16 +30,53 @@ export class DiagramFactory {
     this.registerNode(NodeType.StartNode, StartNode)
     this.registerNode(NodeType.CreateNode, CreateNode)
     this.registerNode(NodeType.EndNode, EndNode)
+    this.listeners = {}
   }
 
   getType(): string {
     return this.type
   }
 
-  registerNode(type: string, Component: React.FC<any>): void {
+  registerNode(type: string, Component: React.FC): void {
     this.nodeBank.set(type, Component)
   }
 
+  registerListener(listener: BaseListener): ListenerHandle {
+    const id = uuid()
+    this.listeners[id] = listener
+    return {
+      id: id,
+      listener: listener,
+      deregister: () => {
+        delete this.listeners[id]
+      }
+    }
+  }
+  deregisterListener(listener: BaseListener | ListenerHandle): boolean {
+    if (typeof listener === 'object') {
+      ;(listener as ListenerHandle).deregister()
+      return true
+    }
+    const handle = this.getListenerHandle(listener)
+    if (handle) {
+      handle.deregister()
+      return true
+    }
+    return false
+  }
+  getListenerHandle(listener: BaseListener): ListenerHandle {
+    for (const id in this.listeners) {
+      if (this.listeners[id] === listener) {
+        return {
+          id: id,
+          listener: listener,
+          deregister: () => {
+            delete this.listeners[id]
+          }
+        }
+      }
+    }
+  }
   getNode(type?: string): React.FC<any> | undefined {
     return this.nodeBank.get(type as string)
   }

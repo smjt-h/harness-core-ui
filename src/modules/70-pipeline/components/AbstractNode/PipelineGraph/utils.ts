@@ -1,5 +1,5 @@
-import type { RefObject } from 'react'
-import type { StageElementConfig, StageElementWrapperConfig } from 'services/cd-ng'
+import { MutableRefObject, RefObject, useEffect, useRef, useState } from 'react'
+import type { StageElementConfig } from 'services/cd-ng'
 const INITIAL_ZOOM_LEVEL = 1
 const ZOOM_INC_DEC_LEVEL = 0.1
 const getFinalSVGArrowPath = (parentId: string, id1 = '', id2 = '', isParallelNode = false): string => {
@@ -60,25 +60,30 @@ const getFinalSVGArrowPath = (parentId: string, id1 = '', id2 = '', isParallelNo
   }
 }
 
-const getComputedPosition = (parentId: string, childId: string): DOMRect => {
-  const parentPos = document.getElementById(parentId)?.getBoundingClientRect() as DOMRect
-  const childPos = document.getElementById(childId)?.getBoundingClientRect() as DOMRect
-  const updatedTop = childPos.top - parentPos.top
-  const updatedLeft = childPos.left - parentPos.left
-  const updatedRight = updatedLeft + childPos.width
-  const updatedBottom = updatedTop + childPos.height
-  const updatedPos: DOMRect = {
-    ...childPos,
-    left: updatedLeft,
-    top: updatedTop,
-    right: updatedRight,
-    bottom: updatedBottom,
-    width: childPos.width,
-    height: childPos.height,
-    x: childPos.x,
-    y: childPos.y
+const getComputedPosition = (parentId: string, childId: string): DOMRect | null => {
+  try {
+    const parentPos = document.getElementById(parentId)?.getBoundingClientRect() as DOMRect
+    const childPos = document.getElementById(childId)?.getBoundingClientRect() as DOMRect
+
+    const updatedTop = childPos.top - parentPos.top
+    const updatedLeft = childPos.left - parentPos.left
+    const updatedRight = updatedLeft + childPos.width
+    const updatedBottom = updatedTop + childPos.height
+    const updatedPos: DOMRect = {
+      ...childPos,
+      left: updatedLeft,
+      top: updatedTop,
+      right: updatedRight,
+      bottom: updatedBottom,
+      width: childPos.width,
+      height: childPos.height,
+      x: childPos.x,
+      y: childPos.y
+    }
+    return updatedPos
+  } catch (e) {
+    return null
   }
-  return updatedPos
 }
 
 const setupDragEventListeners = (canvasRef: RefObject<HTMLDivElement>): (() => void) => {
@@ -126,6 +131,7 @@ const getSVGLinksFromPipeline = (states?: StageElementConfig[], resultArr: strin
   })
   return resultArr
 }
+
 const getParallelNodeLinks = (
   stages: StageElementConfig[],
   firstStage: StageElementConfig | undefined,
@@ -145,11 +151,64 @@ const getScaleToFitValue = (elm: HTMLElement, paddingFromBottom = 20): number =>
     )
   )
 }
+
+const useIntersectionObserver = (
+  ref: MutableRefObject<Element | null>,
+  options: IntersectionObserverInit = {},
+  compareFn?: (data: IntersectionObserverEntry) => boolean
+): boolean => {
+  const [element, setElement] = useState<Element | null>(null)
+  const [isIntersecting, setIsIntersecting] = useState(false)
+  const observer = useRef<null | IntersectionObserver>(null)
+
+  const cleanOb = (): void => {
+    if (observer.current) {
+      observer.current.disconnect()
+    }
+  }
+  useEffect(() => {
+    setElement(ref.current)
+  }, [ref])
+
+  useEffect(() => {
+    if (!element) return
+    cleanOb()
+    const ob = (observer.current = new IntersectionObserver(
+      ([entry]) => {
+        const isElementIntersecting = typeof compareFn === 'function' ? compareFn(entry) : entry.isIntersecting
+        isElementIntersecting !== isIntersecting && setIsIntersecting(isElementIntersecting)
+      },
+      { ...options }
+    ))
+    ob.observe(element)
+    return () => {
+      cleanOb()
+    }
+  }, [element, options])
+
+  return isIntersecting
+}
+
+const checkIntersectonBottom = (entry: IntersectionObserverEntry): boolean => {
+  console.log(entry.boundingClientRect.bottom >= (entry.rootBounds as DOMRect)?.bottom)
+  return entry.boundingClientRect.bottom >= (entry.rootBounds as DOMRect)?.bottom
+}
+
+const getNodeType: Record<string, string> = {
+  Deployment: 'default-node',
+  CI: 'default-node',
+  Pipeline: 'default-node',
+  Custom: 'default-node',
+  Approval: 'default-node'
+}
 export {
   getFinalSVGArrowPath,
   setupDragEventListeners,
   getSVGLinksFromPipeline,
   ZOOM_INC_DEC_LEVEL,
   INITIAL_ZOOM_LEVEL,
-  getScaleToFitValue
+  getScaleToFitValue,
+  useIntersectionObserver,
+  getNodeType,
+  checkIntersectonBottom
 }

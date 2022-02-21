@@ -1,9 +1,9 @@
-import React from 'react'
+import React, { useEffect, useRef, useState } from 'react'
+import { throttle } from 'lodash-es'
 import classNames from 'classnames'
-import { defaultTo } from 'lodash-es'
-import { Icon, Color } from '@harness/uicore'
-import type { StageElementWrapperConfig, StageElementConfig } from 'services/cd-ng'
-import { Node, NodeType } from '../Node'
+import type { StageElementConfig } from 'services/cd-ng'
+import { NodeType } from '../Node'
+import { checkIntersectonBottom, useIntersectionObserver } from './utils'
 import css from './PipelineGraph.module.scss'
 
 export const PipelineGraphRecursive = ({
@@ -83,39 +83,53 @@ export const PipelineGraphNode = ({
   isNextNodeParallel,
   isPrevNodeParallel,
   isLastChild
-}: PipelineGraphNode): React.ReactElement => {
+}: PipelineGraphNode): React.ReactElement | null => {
   const NodeComponent: React.FC<any> | undefined = getNode(stage?.type) || getNode(NodeType.Default)
+  const ref = useRef<HTMLDivElement>(null)
+  const isIntersecting = useIntersectionObserver(ref, { threshold: 0.98 }, checkIntersectonBottom)
+  const [collapseNode, setCollapseNode] = useState(false)
+
+  useEffect(() => {
+    throttle(() => setCollapseNode(isIntersecting), 100, { trailing: true })
+  }, [isIntersecting])
+
   return (
     <div
-      className={classNames({ [css.nodeRightPadding]: isNextNodeParallel, [css.nodeLeftPadding]: isPrevNodeParallel })}
+      ref={ref}
+      className={classNames(
+        { [css.nodeRightPadding]: isNextNodeParallel, [css.nodeLeftPadding]: isPrevNodeParallel },
+        css.node
+      )}
     >
-      {NodeComponent && (
-        <NodeComponent
-          {...stage}
-          className={classNames(css.graphNode, className)}
-          setSelectedNode={setSelectedNode}
-          isSelected={selectedNode === stage?.identifier}
-          dropLinkEvent={dropLinkEvent}
-          dropNodeEvent={dropNodeEvent}
-          isParallelNode={isParallelNode}
-          allowAdd={(!stage?.children?.length && !isParallelNode) || (isParallelNode && isLastChild)}
-        />
-      )}{' '}
       <>
-        {stage?.children?.map((currentStage, index) => (
-          <PipelineGraphNode
+        {NodeComponent && (
+          <NodeComponent
+            {...stage}
+            className={classNames(css.graphNode, className)}
+            setSelectedNode={setSelectedNode}
+            isSelected={selectedNode === stage?.identifier}
             dropLinkEvent={dropLinkEvent}
             dropNodeEvent={dropNodeEvent}
-            getNode={getNode}
+            isParallelNode={isParallelNode}
             key={stage?.identifier}
-            className={css.parallel}
-            stage={currentStage}
-            selectedNode={selectedNode}
-            setSelectedNode={setSelectedNode}
-            isParallelNode={true}
-            isLastChild={index + 1 === stage?.children?.length}
+            allowAdd={(!stage?.children?.length && !isParallelNode) || (isParallelNode && isLastChild)}
           />
-        ))}
+        )}
+        {stage.identifier === 'deploy6' &&
+          stage?.children?.map((currentStage, index) => (
+            <PipelineGraphNode
+              dropLinkEvent={dropLinkEvent}
+              dropNodeEvent={dropNodeEvent}
+              getNode={getNode}
+              key={currentStage?.identifier}
+              className={css.parallel}
+              stage={currentStage}
+              selectedNode={selectedNode}
+              setSelectedNode={setSelectedNode}
+              isParallelNode={true}
+              isLastChild={index + 1 === stage?.children?.length}
+            />
+          ))}
       </>
     </div>
   )

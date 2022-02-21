@@ -5,7 +5,7 @@
  * https://polyformproject.org/wp-content/uploads/2020/06/PolyForm-Shield-1.0.0.txt.
  */
 
-import React, { useLayoutEffect } from 'react'
+import React from 'react'
 import { Intent, Layout, useToaster, useConfirmationDialog } from '@wings-software/uicore'
 import cx from 'classnames'
 import { cloneDeep, debounce, isEmpty, isNil, noop } from 'lodash-es'
@@ -27,6 +27,9 @@ import { useGlobalEventListener } from '@common/hooks'
 import type { DeploymentStageElementConfig, StageElementWrapper } from '@pipeline/utils/pipelineTypes'
 import { StageType } from '@pipeline/utils/stageHelpers'
 import { useTemplateSelector } from '@pipeline/utils/useTemplateSelector'
+import { CDPipelineStudioNew } from '@cd/pages/pipeline-studio/CDPipelineStudio'
+import { stageTypeToIconMap } from '@pipeline/components/PipelineInputSetForm/PipelineInputSetForm'
+import { getNodeType } from '@pipeline/components/AbstractNode/PipelineGraph/PipelineGraph'
 import {
   CanvasWidget,
   createEngine,
@@ -61,10 +64,7 @@ import { StageList } from './views/StageList'
 import { SplitViewTypes } from '../PipelineContext/PipelineActions'
 import { usePipelineContext } from '../PipelineContext/PipelineContext'
 import css from './StageBuilder.module.scss'
-import { CDPipelineStudioNew } from '@cd/pages/pipeline-studio/CDPipelineStudio'
-import { stageTypeToIconMap } from '@pipeline/components/PipelineInputSetForm/PipelineInputSetForm'
-import { getNodeType } from '@pipeline/components/AbstractNode/PipelineGraph/PipelineGraph'
-const IS_NEW_PIP_STUDIO_ACTIVE = true
+const IS_NEW_PIP_STUDIO_ACTIVE = false
 export type StageStateMap = Map<string, StageState>
 
 declare global {

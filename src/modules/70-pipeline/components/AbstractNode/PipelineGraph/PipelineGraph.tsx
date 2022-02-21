@@ -9,7 +9,7 @@ import {
   getScaleToFitValue,
   getSVGLinksFromPipeline,
   INITIAL_ZOOM_LEVEL,
-  setupNodeDragEventListener,
+  getNodeType,
   setupDragEventListeners
 } from './utils'
 import GraphActions from '../GraphActions/GraphActions'
@@ -23,13 +23,6 @@ export interface PipelineGraphProps {
   dropNodeEvent: (event: any) => void
 }
 
-export const getNodeType: Record<string, string> = {
-  Deployment: 'default-node',
-  CI: 'default-node',
-  Pipeline: 'default-node',
-  Custom: 'default-node',
-  Approval: 'default-node'
-}
 const PipelineGraph = ({ pipeline, getNode, dropLinkEvent, dropNodeEvent }: PipelineGraphProps): React.ReactElement => {
   const [svgPath, setSvgPath] = useState<string[]>([])
   const [treeRectangle, setTreeRectangle] = useState<DOMRect | void>()
@@ -44,7 +37,7 @@ const PipelineGraph = ({ pipeline, getNode, dropLinkEvent, dropNodeEvent }: Pipe
     setTreeRectangle(rectBoundary)
   }
 
-  const addInfoToStageData = (data: StageElementWrapperConfig[]) => {
+  const addInfoToStageData = (data: StageElementWrapperConfig[]): StageElementWrapperConfig[] => {
     const clonedData = cloneDeep(data)
     clonedData?.forEach((stage: StageElementWrapperConfig) => {
       if (stage.stage) {
@@ -55,6 +48,7 @@ const PipelineGraph = ({ pipeline, getNode, dropLinkEvent, dropNodeEvent }: Pipe
           nodeType: getNodeType[stageInstance.type || 'Deployment']
         }
       } else {
+        // eslint-disable-next-line @typescript-eslint/no-unused-vars
         stage.parallel = addInfoToStageData(stage.parallel as StageElementWrapperConfig[])
       }
     })
@@ -68,7 +62,7 @@ const PipelineGraph = ({ pipeline, getNode, dropLinkEvent, dropNodeEvent }: Pipe
         nodeType: getNodeType[type || 'Deployment']
       }
     }
-    let treeData: StageElementConfig[] = []
+    const treeData: StageElementConfig[] = []
     stages.forEach((stage: StageElementWrapperConfig) => {
       if (stage?.stage) {
         treeData.push({ ...stage.stage, ...getIconInfo(stage?.stage?.type) } as StageElementConfig)
@@ -112,8 +106,8 @@ const PipelineGraph = ({ pipeline, getNode, dropLinkEvent, dropNodeEvent }: Pipe
 
   useEffect(() => {
     updateTreeRect()
-    // const clearDragListeners = setupDragEventListeners(canvasRef)
-    // return () => clearDragListeners()
+    const clearDragListeners = setupDragEventListeners(canvasRef)
+    return () => clearDragListeners()
   }, [])
   const updateSelectedNode = (nodeId: string): void => {
     setSelectedNode(nodeId)
