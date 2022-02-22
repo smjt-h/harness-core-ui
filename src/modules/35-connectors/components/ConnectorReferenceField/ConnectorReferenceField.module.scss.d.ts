@@ -15,6 +15,7 @@ declare const styles: {
   readonly flexOne: string
   readonly flexTwo: string
   readonly gitBranchIcon: string
+  readonly gitDetailMaxWidth: string
   readonly gitHubConnectorDetails: string
   readonly gitInfo: string
   readonly gitUrl: string

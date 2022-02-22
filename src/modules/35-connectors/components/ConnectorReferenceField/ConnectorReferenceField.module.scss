@@ -123,6 +123,9 @@
 .gitInfo {
   background: var(--grey-100) !important;
   border-radius: 8px !important;
+  .gitDetailMaxWidth {
+    max-width: 150px;
+  }
   .gitBranchIcon {
     padding-left: var(--spacing-small) !important;
     border-left: 1px var(--grey-600) solid;

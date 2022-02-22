@@ -353,6 +353,7 @@ const RecordRender: React.FC<RecordRenderProps> = props => {
               color={Color.GREY_450}
               icon="repository"
               iconProps={{ size: 12 }}
+              className={css.gitDetailMaxWidth}
             >
               {item.record.gitDetails.repoIdentifier}
             </Text>
@@ -360,7 +361,7 @@ const RecordRender: React.FC<RecordRenderProps> = props => {
               lineClamp={1}
               font={{ size: 'small', weight: 'light' }}
               color={Color.GREY_450}
-              className={cx(css.gitBranchIcon)}
+              className={cx(css.gitBranchIcon, css.gitDetailMaxWidth)}
               icon="git-new-branch"
               iconProps={{ size: 12 }}
             >
