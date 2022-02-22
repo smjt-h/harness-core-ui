@@ -51,7 +51,7 @@ export const PipelineGraphRecursive = ({
           />
         )
       })}
-      <div>{CreateNode && <CreateNode name={'Add Stage'} />}</div>
+      <div>{CreateNode && <CreateNode name={'Add Stage'} fireEvent={fireEvent} getNode={getNode} />}</div>
       <div>
         <div id={NodeType.EndNode.toString()} className={classNames(css.graphNode)}>
           {EndNode && <EndNode />}

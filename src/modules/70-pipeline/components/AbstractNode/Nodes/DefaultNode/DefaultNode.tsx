@@ -33,6 +33,7 @@ const DefaultNode = (props: any): JSX.Element => {
     props?.fireEvent({
       type: Event.AddParallelNode,
       identifier: props?.identifier,
+      node: props,
       callback: () => {
         setAddClicked(false)
       },
@@ -80,11 +81,14 @@ const DefaultNode = (props: any): JSX.Element => {
       <div
         className={`${cx(css.defaultNode, 'default-node')} draggable`}
         ref={nodeRef}
-        onClick={() => {
+        onClick={event => {
+          event.stopPropagation()
           props?.fireEvent({ type: Event.ClickNode, entityType: DiagramType.Default, identifier: props?.identifier })
           props?.setSelectedNode(props?.identifier)
         }}
         onDragOver={event => {
+          event.stopPropagation()
+
           if (event.dataTransfer.types.indexOf(DiagramDrag.AllowDropOnNode) !== -1) {
             if (allowAdd) {
               setVisibilityOfAdd(true)
@@ -93,16 +97,19 @@ const DefaultNode = (props: any): JSX.Element => {
           }
         }}
         onDragLeave={event => {
+          event.stopPropagation()
+
           if (event.dataTransfer.types.indexOf(DiagramDrag.AllowDropOnNode) !== -1) {
             if (allowAdd) {
               setVisibilityOfAdd(false)
             }
           }
         }}
-        onDrop={e => {
+        onDrop={event => {
+          event.stopPropagation()
           props?.fireEvent({
             type: Event.DropNodeEvent,
-            node: JSON.parse(e.dataTransfer.getData(DiagramDrag.NodeDrag)),
+            node: JSON.parse(event.dataTransfer.getData(DiagramDrag.NodeDrag)),
             destinationNode: props
           })
         }}
@@ -175,11 +182,12 @@ const DefaultNode = (props: any): JSX.Element => {
         )}
         {allowAdd && (
           <div
-            onClick={e => {
-              e.stopPropagation()
+            onClick={event => {
+              event.stopPropagation()
+
               setAddClicked(true)
               setVisibilityOfAdd(true)
-              onAddNodeClick(e)
+              onAddNodeClick(event)
             }}
             className={css.addNode}
             data-nodeid="add-parallel"
@@ -196,14 +204,24 @@ const DefaultNode = (props: any): JSX.Element => {
       </div>
       {!props.isParallelNode && (
         <div
-          onDragOver={e => {
-            e.preventDefault()
+          data-linkid={props?.identifier}
+          onClick={event => {
+            event.stopPropagation()
+            props?.fireEvent({
+              type: Event.AddLinkClicked,
+              identifier: props?.identifier,
+              node: props
+            })
           }}
-          onDrop={e => {
-            e.stopPropagation()
+          onDragOver={event => {
+            event.stopPropagation()
+            event.preventDefault()
+          }}
+          onDrop={event => {
+            event.stopPropagation()
             props?.fireEvent({
               type: Event.DropLinkEvent,
-              node: JSON.parse(e.dataTransfer.getData(DiagramDrag.NodeDrag)),
+              node: JSON.parse(event.dataTransfer.getData(DiagramDrag.NodeDrag)),
               destinationNode: props
             })
           }}

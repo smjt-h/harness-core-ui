@@ -45,7 +45,7 @@ export interface PopoverData {
   stagesMap: StagesMap
   groupSelectedStageId?: string
   isParallel?: boolean
-  event?: Diagram.DefaultNodeEvent
+  event?: any
   addStage?: (
     newStage: StageElementWrapperConfig,
     isParallel?: boolean,
@@ -53,6 +53,15 @@ export interface PopoverData {
     insertAt?: number,
     openSetupAfterAdd?: boolean,
     pipeline?: PipelineInfoConfig
+  ) => void
+  addStageNew?: (
+    newStage: StageElementWrapper,
+    isParallel?: boolean,
+    droppedOnLink?: boolean,
+    insertAt?: number,
+    openSetupAfterAdd?: boolean,
+    pipelineTemp?: PipelineInfoConfig,
+    destinationNode?: StageElementWrapper
   ) => void
   onSubmitPrimaryData?: (values: StageElementWrapperConfig, identifier: string) => void
   onClickGroupStage?: (stageId: string, type: StageType) => void

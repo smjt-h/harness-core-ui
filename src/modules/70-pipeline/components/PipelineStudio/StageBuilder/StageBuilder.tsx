@@ -63,6 +63,7 @@ import { StageList } from './views/StageList'
 import { SplitViewTypes } from '../PipelineContext/PipelineActions'
 import { usePipelineContext } from '../PipelineContext/PipelineContext'
 import css from './StageBuilder.module.scss'
+import type { PipelineGraphState } from '@pipeline/components/AbstractNode/types'
 const IS_NEW_PIP_STUDIO_ACTIVE = true
 export type StageStateMap = Map<string, StageState>
 
@@ -105,7 +106,7 @@ export const initializeStageStateMap = (pipeline: PipelineInfoConfig, mapState: 
 
 export const renderPopover = ({
   data,
-  addStage,
+  addStageNew,
   isParallel,
   isGroupStage,
   groupStages,
@@ -176,9 +177,9 @@ export const renderPopover = ({
     getNewStageFromTemplate: getNewStageFromTemplate as any,
     onSelectStage: (type, stage, pipelineTemp) => {
       if (stage) {
-        addStage?.(stage, isParallel, event, undefined, true, pipelineTemp)
+        addStageNew?.(stage, isParallel, !isParallel, undefined, true, pipelineTemp, event?.node)
       } else {
-        addStage?.(getNewStageFromType(type as any), isParallel, event)
+        addStageNew?.(getNewStageFromType(type as any), isParallel, !isParallel, event?.node)
       }
     },
     contextType: contextType,
@@ -370,12 +371,12 @@ const StageBuilder: React.FC<StageBuilderProps> = ({ diagram }): JSX.Element => 
 
   const addStageNew = (
     newStage: StageElementWrapper,
-    isParallel = false,
+    isParallel: boolean,
     droppedOnLink?: boolean,
     insertAt?: number,
     openSetupAfterAdd?: boolean,
     pipelineTemp?: PipelineInfoConfig,
-    destinationNode?: StageElementWrapper
+    destinationNode?: any
   ): void => {
     // call telemetry
     trackEvent(StageActions.SetupStage, { stageType: newStage?.stage?.type || '' })
@@ -383,18 +384,24 @@ const StageBuilder: React.FC<StageBuilderProps> = ({ diagram }): JSX.Element => 
     if (!pipeline.stages) {
       pipeline.stages = []
     }
-    if (droppedOnLink && destinationNode) {
-      const { index, parIndex } = getStageIndexWithParallelNodesFromPipeline(
-        pipeline,
-        destinationNode?.stage?.identifier
-      )
-      if (parIndex === 0) {
-        pipeline.stages.unshift(newStage)
-      } else if (parIndex > 0) {
-        pipeline.stages.splice(parIndex, 0, newStage)
+    if (droppedOnLink) {
+      if (!destinationNode) {
+        pipeline.stages.push(newStage)
+      } else {
+        const { index, parIndex } = getStageIndexWithParallelNodesFromPipeline(
+          pipeline,
+          destinationNode?.stage?.identifier || destinationNode?.identifier
+        )
+        if (parIndex === 0) {
+          pipeline.stages.unshift(newStage)
+        } else if (parIndex > 0) {
+          pipeline.stages.splice(parIndex, 0, newStage)
+        }
       }
     } else if (isParallel && !droppedOnLink) {
-      const { stage, parent } = getStageFromPipeline(destinationNode?.stage?.identifier || '')
+      const { stage, parent } = getStageFromPipeline(
+        destinationNode?.stage?.identifier || destinationNode?.identifier || ''
+      )
       const parentTemp = parent as StageElementWrapperConfig
       if (stage) {
         if (parentTemp && parentTemp.parallel && parentTemp.parallel.length > 0) {
@@ -662,9 +669,9 @@ const StageBuilder: React.FC<StageBuilderProps> = ({ diagram }): JSX.Element => 
 
       if (eventTemp.identifier) {
         dynamicPopoverHandler?.show(
-          `[data-nodeid="${eventTemp.identifier}"] [data-nodeid="add-parallel"]`,
+          `[data-nodeid="${eventTemp.identifier}"] ~[data-nodeid="add-parallel"]`,
           {
-            addStage,
+            addStageNew,
             isParallel: true,
             isStageView: false,
             event: eventTemp,
@@ -846,13 +853,13 @@ const StageBuilder: React.FC<StageBuilderProps> = ({ diagram }): JSX.Element => 
   })
   const linkListeners: LinkModelListener = {
     [Event.AddLinkClicked]: (event: any) => {
-      const eventTemp = event as DefaultNodeEvent
+      const eventTemp = event
       dynamicPopoverHandler?.hide()
-      if (eventTemp.entity) {
+      if (eventTemp.identifier) {
         dynamicPopoverHandler?.show(
-          `[data-linkid="${eventTemp.entity.getID()}"] circle`,
+          `[data-linkid="${eventTemp.identifier}"]`,
           {
-            addStage,
+            addStageNew,
             isStageView: true,
             event: eventTemp,
             stagesMap,
@@ -1056,7 +1063,8 @@ const StageBuilder: React.FC<StageBuilderProps> = ({ diagram }): JSX.Element => 
     [Event.DropNodeEvent]: dropNodeEvent,
     [Event.ClickNode]: nodeListeners[Event.ClickNode],
     [Event.AddParallelNode]: nodeListeners[Event.AddParallelNode],
-    [Event.RemoveNode]: nodeListeners[Event.RemoveNode]
+    [Event.RemoveNode]: nodeListeners[Event.RemoveNode],
+    [Event.AddLinkClicked]: linkListeners[Event.AddLinkClicked]
   }
 
   diagram.registerListeners(events)
@@ -1147,7 +1155,28 @@ const StageBuilder: React.FC<StageBuilderProps> = ({ diagram }): JSX.Element => 
         >
           {/* {StageCanvas} */}
           {IS_NEW_PIP_STUDIO_ACTIVE ? (
-            <CDPipelineStudioNew dropNodeEvent={dropNodeEvent} dropLinkEvent={dropLinkEvent} pipeline={pipeline} />
+            <div
+              className={css.canvas}
+              ref={canvasRef}
+              onClick={e => {
+                const div = e.target as HTMLDivElement
+                if (div === canvasRef.current?.children[0]) {
+                  dynamicPopoverHandler?.hide()
+                }
+
+                if (isSplitViewOpen) {
+                  setSelectionRef.current({ stageId: undefined, sectionId: undefined })
+                }
+              }}
+            >
+              <CDPipelineStudioNew dropNodeEvent={dropNodeEvent} dropLinkEvent={dropLinkEvent} pipeline={pipeline} />
+              <DynamicPopover
+                darkMode={false}
+                className={css.renderPopover}
+                render={renderPopover}
+                bind={setDynamicPopoverHandler}
+              />
+            </div>
           ) : (
             StageCanvas
           )}

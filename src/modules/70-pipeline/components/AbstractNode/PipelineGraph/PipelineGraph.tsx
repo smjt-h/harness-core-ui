@@ -14,6 +14,7 @@ import GraphActions from '../GraphActions/GraphActions'
 import { PipelineGraphRecursive } from './PipelineGraphNode'
 import type { PipelineGraphState } from '../types'
 import css from './PipelineGraph.module.scss'
+import Draggable from 'react-draggable'
 
 export interface PipelineGraphProps {
   pipeline: PipelineInfoConfig
@@ -69,8 +70,6 @@ const PipelineGraph = ({
 
   useEffect(() => {
     updateTreeRect()
-    const clearDragListeners = setupDragEventListeners(canvasRef)
-    return () => clearDragListeners()
   }, [])
   const updateSelectedNode = (nodeId: string): void => {
     setSelectedNode(nodeId)
@@ -80,23 +79,25 @@ const PipelineGraph = ({
   }
 
   return (
-    <div id="overlay" className={css.overlay}>
-      <>
-        <div className={css.graphMain} ref={canvasRef} style={{ transform: `scale(${graphScale})` }}>
-          <SVGComponent svgPath={svgPath} />
-          <PipelineGraphRecursive
-            fireEvent={fireEvent}
-            getNode={getNode}
-            stages={state}
-            selectedNode={selectedNode}
-            setSelectedNode={updateSelectedNode}
-            dropLinkEvent={dropLinkEvent}
-            dropNodeEvent={dropNodeEvent}
-          />
-        </div>
-        <GraphActions setGraphScale={setGraphScale} graphScale={graphScale} handleScaleToFit={handleScaleToFit} />
-      </>
-    </div>
+    <Draggable>
+      <div id="overlay" className={css.overlay}>
+        <>
+          <div className={css.graphMain} ref={canvasRef} style={{ transform: `scale(${graphScale})` }}>
+            <SVGComponent svgPath={svgPath} />
+            <PipelineGraphRecursive
+              fireEvent={fireEvent}
+              getNode={getNode}
+              stages={state}
+              selectedNode={selectedNode}
+              setSelectedNode={updateSelectedNode}
+              dropLinkEvent={dropLinkEvent}
+              dropNodeEvent={dropNodeEvent}
+            />
+          </div>
+          <GraphActions setGraphScale={setGraphScale} graphScale={graphScale} handleScaleToFit={handleScaleToFit} />
+        </>
+      </div>
+    </Draggable>
   )
 }
 

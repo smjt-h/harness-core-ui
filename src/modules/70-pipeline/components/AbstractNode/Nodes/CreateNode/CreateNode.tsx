@@ -13,12 +13,22 @@ import { isEmpty } from 'lodash-es'
 import { NodeType } from '../../Node'
 import cssDefault from '../DefaultNode/DefaultNode.module.scss'
 import css from './CreateNode.module.scss'
+import { Event } from '@pipeline/components/Diagram'
 
 const CreateNode = (props: any) => {
   return (
     <div className={cx(cssDefault.defaultNode, css.createNode)}>
       <div
         id={NodeType.CreateNode.toString()}
+        data-linkid={NodeType.CreateNode.toString()}
+        onClick={event => {
+          event.preventDefault()
+          event.stopPropagation()
+          props?.fireEvent({
+            type: Event.AddLinkClicked,
+            identifier: NodeType.CreateNode.toString()
+          })
+        }}
         className={cx(
           cssDefault.defaultCard,
           css.createNew,
