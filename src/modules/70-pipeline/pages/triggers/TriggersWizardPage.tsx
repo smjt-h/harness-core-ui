@@ -1625,6 +1625,7 @@ const TriggersWizardPage: React.FC = (): JSX.Element => {
     formikProps: FormikProps<any>
     latestYaml?: any // validate from YAML view
   }): Promise<FormikErrors<FlatValidWebhookFormikValuesInterface>> => {
+    if (!formikProps) return {}
     const { values, setErrors, setSubmitting } = formikProps
     let latestPipelineFromYamlView
     const latestPipeline = {
