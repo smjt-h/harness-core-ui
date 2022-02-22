@@ -1,12 +1,11 @@
-import React, { useEffect, useRef, useState } from 'react'
-import { defaultTo, throttle } from 'lodash-es'
+import React, { useRef, useState } from 'react'
+import { defaultTo } from 'lodash-es'
 import classNames from 'classnames'
-import type { StageElementConfig } from 'services/cd-ng'
 import { NodeType } from '../Node'
-import { checkIntersectonBottom, useIntersectionObserver } from './utils'
-import css from './PipelineGraph.module.scss'
+import { checkIntersectonBottom, useIntersectionObserver } from './PipelineGraphUtils'
 import GroupNode from '../Nodes/GroupNode/GroupNode'
-import type { IconName } from '@blueprintjs/core'
+import type { PipelineGraphState } from '../types'
+import css from './PipelineGraph.module.scss'
 
 export const PipelineGraphRecursive = ({
   stages,
@@ -17,7 +16,7 @@ export const PipelineGraphRecursive = ({
   dropLinkEvent,
   dropNodeEvent
 }: {
-  stages?: StageElementConfig[]
+  stages?: PipelineGraphState[]
   getNode: (type?: string | undefined) => React.FC<any> | undefined
   selectedNode: string
   fireEvent: (event: any) => void
@@ -43,7 +42,7 @@ export const PipelineGraphRecursive = ({
             dropNodeEvent={dropNodeEvent}
             dropLinkEvent={dropLinkEvent}
             selectedNode={selectedNode}
-            stage={stage}
+            data={stage}
             key={stage?.identifier}
             getNode={getNode}
             setSelectedNode={setSelectedNode}
@@ -64,7 +63,7 @@ export const PipelineGraphRecursive = ({
 
 interface PipelineGraphNode {
   className?: string
-  stage: StageElementConfig
+  data: PipelineGraphState
   fireEvent: (event: any) => void
   getNode: (type?: string | undefined) => React.FC<any> | undefined
   selectedNode: string
@@ -79,7 +78,7 @@ interface PipelineGraphNode {
 
 export const PipelineGraphNode = ({
   className,
-  stage,
+  data,
   fireEvent,
   getNode,
   setSelectedNode,
@@ -91,16 +90,16 @@ export const PipelineGraphNode = ({
   isPrevNodeParallel,
   isLastChild
 }: PipelineGraphNode): React.ReactElement | null => {
-  const NodeComponent: React.FC<any> | undefined = getNode(stage?.type) || getNode(NodeType.Default)
+  const NodeComponent: React.FC<any> | undefined = getNode(data?.nodeType) || getNode(NodeType.Default)
   const ref = useRef<HTMLDivElement>(null)
   const isIntersecting = useIntersectionObserver(ref, { threshold: 0.98 }, checkIntersectonBottom)
   const [collapseNode, setCollapseNode] = useState(true)
 
-  const getGroupNodeHeader = (): Array<StageElementConfig> => {
-    const nodes: StageElementConfig[] = []
-    if (!stage) return nodes
-    nodes.push(stage)
-    stage?.children?.forEach(child => {
+  const getGroupNodeHeader = (): Array<PipelineGraphState> => {
+    const nodes: PipelineGraphState[] = []
+    if (!data) return nodes
+    nodes.push(data)
+    data?.children?.forEach(child => {
       if (nodes.length < 2) {
         nodes.push(child)
       }
@@ -114,9 +113,9 @@ export const PipelineGraphNode = ({
     return nodes
   }
 
-  const getGroupNodeName = (nodes: StageElementConfig[]): string => {
+  const getGroupNodeName = (nodes: PipelineGraphState[]): string => {
     return `${defaultTo(nodes?.[0]?.name, '')} ${defaultTo(nodes?.[1]?.name, '')} ${
-      (stage?.children?.length || 0) > 1 ? ` + ${(stage?.children?.length || 0) - 1} more stages` : ''
+      (data?.children?.length || 0) > 1 ? ` + ${(data?.children?.length || 0) - 1} more stages` : ''
     }`
   }
 
@@ -135,36 +134,36 @@ export const PipelineGraphNode = ({
     >
       {collapseNode ? (
         <GroupNode
-          {...stage}
-          icons={(getGroupNodeHeader() || []).map(node => node.iconName)}
+          {...data}
+          icons={(getGroupNodeHeader() || []).map(node => node.icon)}
           name={getGroupNodeName(getGroupNodeHeader() || [])}
           fireEvent={fireEvent}
           className={classNames(css.graphNode, className)}
           setSelectedNode={setSelectedNode}
-          isSelected={selectedNode === stage?.identifier}
+          isSelected={selectedNode === data?.identifier}
           dropLinkEvent={dropLinkEvent}
           dropNodeEvent={dropNodeEvent}
           isParallelNode={isParallelNode}
-          key={stage?.identifier}
-          allowAdd={(!stage?.children?.length && !isParallelNode) || (isParallelNode && isLastChild)}
+          key={data?.identifier}
+          allowAdd={(!data?.children?.length && !isParallelNode) || (isParallelNode && isLastChild)}
         />
       ) : (
         <>
           {NodeComponent && (
             <NodeComponent
-              {...stage}
+              {...data}
               fireEvent={fireEvent}
               className={classNames(css.graphNode, className)}
               setSelectedNode={setSelectedNode}
-              isSelected={selectedNode === stage?.identifier}
+              isSelected={selectedNode === data?.identifier}
               dropLinkEvent={dropLinkEvent}
               dropNodeEvent={dropNodeEvent}
               isParallelNode={isParallelNode}
-              key={stage?.identifier}
-              allowAdd={(!stage?.children?.length && !isParallelNode) || (isParallelNode && isLastChild)}
+              key={data?.identifier}
+              allowAdd={(!data?.children?.length && !isParallelNode) || (isParallelNode && isLastChild)}
             />
           )}
-          {stage?.children?.map((currentStage, index) => (
+          {data?.children?.map((currentStage, index) => (
             <PipelineGraphNode
               fireEvent={fireEvent}
               dropLinkEvent={dropLinkEvent}
@@ -172,11 +171,11 @@ export const PipelineGraphNode = ({
               getNode={getNode}
               key={currentStage?.identifier}
               className={css.parallel}
-              stage={currentStage}
+              data={currentStage}
               selectedNode={selectedNode}
               setSelectedNode={setSelectedNode}
               isParallelNode={true}
-              isLastChild={index + 1 === stage?.children?.length}
+              isLastChild={index + 1 === data?.children?.length}
             />
           ))}
         </>

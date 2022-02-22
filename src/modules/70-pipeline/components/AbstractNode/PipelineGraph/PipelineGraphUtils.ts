@@ -1,5 +1,11 @@
+import { defaultTo, get } from 'lodash-es'
+import type { IconName } from '@harness/uicore'
 import { MutableRefObject, RefObject, useEffect, useRef, useState } from 'react'
-import type { StageElementConfig } from 'services/cd-ng'
+import { stageTypeToIconMap } from '@pipeline/components/PipelineInputSetForm/PipelineInputSetForm'
+import type { ExecutionWrapperConfig, StageElementWrapperConfig } from 'services/cd-ng'
+import type { PipelineGraphState } from '../types'
+import { PipelineGraphType } from '../types'
+import stepsJSON from './steps.json'
 const INITIAL_ZOOM_LEVEL = 1
 const ZOOM_INC_DEC_LEVEL = 0.1
 const getFinalSVGArrowPath = (parentId: string, id1 = '', id2 = '', isParallelNode = false): string => {
@@ -118,11 +124,11 @@ const setupDragEventListeners = (canvasRef: RefObject<HTMLDivElement>): (() => v
   }
 }
 
-const getSVGLinksFromPipeline = (states?: StageElementConfig[], resultArr: string[] = []): string[] => {
-  let prevElement: StageElementConfig
+const getSVGLinksFromPipeline = (states?: PipelineGraphState[], resultArr: string[] = []): string[] => {
+  let prevElement: PipelineGraphState
   states?.forEach(state => {
     if (state?.children?.length) {
-      getParallelNodeLinks(state.children, state, resultArr)
+      getParallelNodeLinks(state?.children, state, resultArr)
     }
     if (prevElement) {
       resultArr.push(getFinalSVGArrowPath('tree-container', prevElement.identifier, state.identifier, false))
@@ -133,8 +139,8 @@ const getSVGLinksFromPipeline = (states?: StageElementConfig[], resultArr: strin
 }
 
 const getParallelNodeLinks = (
-  stages: StageElementConfig[],
-  firstStage: StageElementConfig | undefined,
+  stages: PipelineGraphState[],
+  firstStage: PipelineGraphState | undefined,
   resultArr: string[] = []
 ): void => {
   stages?.forEach(stage => {
@@ -189,26 +195,125 @@ const useIntersectionObserver = (
   return isIntersecting
 }
 
-const checkIntersectonBottom = (entry: IntersectionObserverEntry): boolean => {
-  console.log(entry.boundingClientRect.bottom >= (entry.rootBounds as DOMRect)?.bottom)
-  return entry.boundingClientRect.bottom >= (entry.rootBounds as DOMRect)?.bottom
-}
+const checkIntersectonBottom = (entry: IntersectionObserverEntry): boolean =>
+  entry.boundingClientRect.bottom >= (entry.rootBounds as DOMRect)?.bottom
 
-const getNodeType: Record<string, string> = {
+const NodeTypeToNodeMap: Record<string, string> = {
   Deployment: 'default-node',
   CI: 'default-node',
   Pipeline: 'default-node',
   Custom: 'default-node',
   Approval: 'default-node'
 }
+
+const getPipelineGraphData = (data: StageElementWrapperConfig[] | ExecutionWrapperConfig[]): PipelineGraphState[] => {
+  let graphState: PipelineGraphState[] = []
+  const pipGraphDataType = getPipelineGraphDataType(data)
+  if (pipGraphDataType === PipelineGraphType.STAGE_GRAPH) {
+    graphState = trasformStageData(data, pipGraphDataType)
+  } else {
+    graphState = trasformStepsData(data, pipGraphDataType)
+  }
+
+  return graphState
+}
+
+const trasformStageData = (stages: StageElementWrapperConfig[], graphType: PipelineGraphType): PipelineGraphState[] => {
+  const finalData: PipelineGraphState[] = []
+  stages.forEach((stage: StageElementWrapperConfig) => {
+    if (stage?.stage) {
+      const { nodeType, iconName } = getNodeInfo(stage.stage.type)
+      finalData.push({
+        identifier: stage.stage.identifier as string,
+        name: stage.stage.name as string,
+        type: stage.stage.type as string,
+        nodeType: nodeType as string,
+        icon: iconName,
+        graphType,
+        data: stage
+      })
+    } else if (stage?.parallel?.length) {
+      const [first, ...rest] = stage.parallel
+      const { nodeType, iconName } = getNodeInfo(first?.stage?.type)
+      finalData.push({
+        identifier: first?.stage?.identifier as string,
+        name: first?.stage?.name as string,
+        nodeType: nodeType as string,
+        type: first?.stage?.type as string,
+        icon: iconName,
+        data: stage,
+        children: trasformStageData(rest, graphType)
+      })
+    }
+  })
+  return finalData
+}
+
+const trasformStepsData = (steps: ExecutionWrapperConfig[], graphType: PipelineGraphType): PipelineGraphState[] => {
+  const finalData: PipelineGraphState[] = []
+  steps.forEach((step: ExecutionWrapperConfig) => {
+    if (step?.step) {
+      const { nodeType, iconName } = getNodeInfo(step.step.type)
+      finalData.push({
+        identifier: step.step.identifier as string,
+        name: step.step.name as string,
+        type: step.step.type as string,
+        nodeType: nodeType as string,
+        icon: iconName,
+        graphType,
+        data: step
+      })
+    } else if (step?.parallel?.length) {
+      const [first, ...rest] = step.parallel
+      const { nodeType, iconName } = getNodeInfo(first?.step?.type)
+      finalData.push({
+        identifier: first?.step?.identifier as string,
+        name: first?.step?.name as string,
+        type: first?.step?.type as string,
+        nodeType: nodeType as string,
+        icon: iconName,
+        data: step,
+        children: trasformStepsData(rest, graphType)
+      })
+    } else {
+      const { iconName } = getNodeInfo('')
+      finalData.push({
+        identifier: step.stepGroup?.identifier as string,
+        name: step.stepGroup?.name as string,
+        type: 'StepGroup',
+        nodeType: 'StepGroup',
+        icon: iconName,
+        data: step,
+        children: trasformStepsData(step.stepGroup?.steps as StageElementWrapperConfig[], graphType)
+      })
+    }
+  })
+  return finalData
+}
+
+const getNodeInfo = (type: string | undefined): { iconName: IconName; nodeType: string } => {
+  return {
+    iconName: stageTypeToIconMap[type || 'Deployment'],
+    nodeType: NodeTypeToNodeMap[type || 'Deployment']
+  }
+}
+const getPipelineGraphDataType = (data: StageElementWrapperConfig[] | ExecutionWrapperConfig[]): PipelineGraphType => {
+  const hasStageData = defaultTo(get(data, '[0].parallel.stage'), get(data, '[0].stage'))
+  if (hasStageData) {
+    return PipelineGraphType.STAGE_GRAPH
+  }
+  return PipelineGraphType.STEP_GRAPH
+}
+console.log(getPipelineGraphData(stepsJSON))
 export {
+  ZOOM_INC_DEC_LEVEL,
+  INITIAL_ZOOM_LEVEL,
+  NodeTypeToNodeMap,
   getFinalSVGArrowPath,
   setupDragEventListeners,
   getSVGLinksFromPipeline,
-  ZOOM_INC_DEC_LEVEL,
-  INITIAL_ZOOM_LEVEL,
   getScaleToFitValue,
   useIntersectionObserver,
-  getNodeType,
-  checkIntersectonBottom
+  checkIntersectonBottom,
+  getPipelineGraphData
 }

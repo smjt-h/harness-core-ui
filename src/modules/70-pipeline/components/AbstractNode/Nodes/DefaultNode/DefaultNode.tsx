@@ -26,6 +26,7 @@ const DefaultNode = (props: any): JSX.Element => {
   const onAddNodeClick = (
     e: React.MouseEvent<Element, MouseEvent>,
     identifier: string,
+    // eslint-disable-next-line @typescript-eslint/no-shadow
     setAddClicked: React.Dispatch<React.SetStateAction<boolean>>
   ): void => {
     e.stopPropagation()
@@ -42,18 +43,18 @@ const DefaultNode = (props: any): JSX.Element => {
   React.useEffect(() => {
     const currentNode = nodeRef.current
 
-    const onMouseOver = (e: MouseEvent): void => {
+    const onMouseOver = (_e: MouseEvent): void => {
       if (!addClicked && allowAdd) {
         setVisibilityOfAdd(true)
       }
       // onMouseOverNode(e, props.node)
     }
 
-    const onMouseEnter = (e: MouseEvent): void => {
+    const onMouseEnter = (_e: MouseEvent): void => {
       // onMouseEnterNode(e, props.node)
     }
 
-    const onMouseLeave = (e: MouseEvent): void => {
+    const onMouseLeave = (_e: MouseEvent): void => {
       if (!addClicked && allowAdd) {
         setVisibilityOfAdd(false)
       }

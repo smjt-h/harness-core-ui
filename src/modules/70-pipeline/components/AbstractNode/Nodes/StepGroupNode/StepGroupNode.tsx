@@ -8,11 +8,11 @@
 import * as React from 'react'
 import { map } from 'lodash-es'
 import classnames from 'classnames'
-import { DiagramEngine, NodeWidget, NodeModel } from '@projectstorm/react-diagrams-core'
+import type { NodeModel } from '@projectstorm/react-diagrams-core'
 import { Text, Icon, Color, Layout, Link } from '@wings-software/uicore'
 import { useStrings } from 'framework/strings'
-import type { StepGroupNodeLayerModel } from '../../../Diagram/node-layer/StepGroupNodeLayerModel'
 import { Event, StepsType, DiagramDrag } from '@pipeline/components/Diagram'
+import type { StepGroupNodeLayerModel } from '../../../Diagram/node-layer/StepGroupNodeLayerModel'
 import { RollbackToggleSwitch } from '../../../Diagram/canvas/RollbackToggleSwitch/RollbackToggleSwitch'
 import css from '../../../Diagram/node-layer/StepGroupNodeLayer.module.scss'
 

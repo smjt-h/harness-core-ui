@@ -6,23 +6,20 @@
  */
 
 import React from 'react'
-import { Icon, IconName, Text, Color } from '@wings-software/uicore'
+import { Icon, Text, Color } from '@wings-software/uicore'
 import cx from 'classnames'
-import css from '../DefaultNode/DefaultNode.module.scss'
 import { DiagramDrag, DiagramType, Event } from '@pipeline/components/Diagram'
-
-const DEFAULT_ICON: IconName = 'stop'
-const SELECTED_COLOUR = 'var(--diagram-stop-node)'
+import css from '../DefaultNode/DefaultNode.module.scss'
 
 const GroupNode = (props: any): React.ReactElement => {
   const allowAdd = props.allowAdd ?? false
-  const [addClicked, setAddClicked] = React.useState(false)
-  const nodeRef = React.useRef<HTMLDivElement>(null)
+  const [_addClicked, setAddClicked] = React.useState(false)
   const [showAdd, setVisibilityOfAdd] = React.useState(false)
 
   const onAddNodeClick = (
     e: React.MouseEvent<Element, MouseEvent>,
     identifier: string,
+    // eslint-disable-next-line @typescript-eslint/no-shadow
     setAddClicked: React.Dispatch<React.SetStateAction<boolean>>
   ): void => {
     e.stopPropagation()

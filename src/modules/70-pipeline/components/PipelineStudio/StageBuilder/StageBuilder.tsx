@@ -28,8 +28,7 @@ import type { DeploymentStageElementConfig, StageElementWrapper } from '@pipelin
 import { StageType } from '@pipeline/utils/stageHelpers'
 import { useTemplateSelector } from '@pipeline/utils/useTemplateSelector'
 import { CDPipelineStudioNew } from '@cd/pages/pipeline-studio/CDPipelineStudio'
-import { stageTypeToIconMap } from '@pipeline/components/PipelineInputSetForm/PipelineInputSetForm'
-import { getNodeType } from '@pipeline/components/AbstractNode/PipelineGraph/PipelineGraph'
+import type { DiagramFactory } from '@pipeline/components/AbstractNode/DiagramFactory'
 import {
   CanvasWidget,
   createEngine,
@@ -64,8 +63,7 @@ import { StageList } from './views/StageList'
 import { SplitViewTypes } from '../PipelineContext/PipelineActions'
 import { usePipelineContext } from '../PipelineContext/PipelineContext'
 import css from './StageBuilder.module.scss'
-import { DiagramFactory } from '@pipeline/components/AbstractNode/DiagramFactory'
-const IS_NEW_PIP_STUDIO_ACTIVE = false
+const IS_NEW_PIP_STUDIO_ACTIVE = true
 export type StageStateMap = Map<string, StageState>
 
 declare global {
@@ -224,7 +222,6 @@ const StageBuilder: React.FC<StageBuilderProps> = ({ diagram }): JSX.Element => 
   setSelectionRef.current = setSelection
 
   const { openTemplateSelector, closeTemplateSelector } = useTemplateSelector()
-  const [state, setState] = React.useState<StageElementConfig[]>([])
 
   const { trackEvent } = useTelemetry()
 
