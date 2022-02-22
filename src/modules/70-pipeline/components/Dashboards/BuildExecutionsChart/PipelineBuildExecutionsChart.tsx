@@ -32,7 +32,7 @@ export default function PipelineBuildExecutionsChart() {
   })
 
   // TODO: To be handled appropriately
-  useErrorHandler(error)
+  useErrorHandler(error as any)
 
   const chartData = useMemo(() => {
     if (data?.data?.pipelineExecutionInfoList?.length) {
