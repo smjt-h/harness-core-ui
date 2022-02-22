@@ -1,7 +1,9 @@
 /* eslint-disable no-console */
 import React, { useEffect, useLayoutEffect, useState, useRef } from 'react'
 import Draggable from 'react-draggable'
+import { get } from 'lodash-es'
 import type { PipelineInfoConfig, StageElementWrapperConfig } from 'services/cd-ng'
+import type { ExecutionWrapperConfig } from 'services/ci'
 import { NodeType } from '../Node'
 import {
   getFinalSVGArrowPath,
@@ -44,6 +46,11 @@ const PipelineGraph = ({
   }
 
   useLayoutEffect(() => {
+    const stepData = get(pipeline, 'stage.spec.execution.steps')
+    if (stepData) {
+      setState(getPipelineGraphData(stepData as ExecutionWrapperConfig[]))
+      return
+    }
     if (pipeline.stages?.length) {
       setState(getPipelineGraphData(pipeline.stages as StageElementWrapperConfig[]))
     }

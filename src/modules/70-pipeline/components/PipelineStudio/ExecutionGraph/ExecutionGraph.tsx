@@ -31,6 +31,7 @@ import type {
 import type { DependencyElement } from 'services/ci'
 import { useFeatureFlag } from '@common/hooks/useFeatureFlag'
 import { FeatureFlag } from '@common/featureFlags'
+import { CDPipelineStudioNew } from '@cd/pages/pipeline-studio/CDPipelineStudio'
 import { ExecutionStepModel, GridStyleInterface } from './ExecutionStepModel'
 import { StepType as PipelineStepType } from '../../PipelineSteps/PipelineStepInterface'
 import {
@@ -71,7 +72,7 @@ import {
 } from '../../Diagram'
 import { CanvasButtons } from '../../CanvasButtons/CanvasButtons'
 import css from './ExecutionGraph.module.scss'
-
+const USE_NEW_PIPELINE_STUDIO = true
 export interface ExecutionGraphRefObj {
   stepGroupUpdated: (stepOrGroup: ExecutionWrapper) => void
 }
@@ -770,20 +771,26 @@ function ExecutionGraphRef<T extends StageElementConfig>(
             {getString('rollbackLabel')}
           </Text>
         )}
-        <CanvasWidget
-          engine={engine}
-          isRollback={hasRollback}
-          rollBackProps={{
-            style: { top: 62, ...rollBackPropsStyle },
-            active: state.isRollback ? StepsType.Rollback : StepsType.Normal
-          }}
-        />
-        <CanvasButtons
-          engine={engine}
-          tooltipPosition={canvasButtonsTooltipPosition}
-          layout={canvasButtonsLayout}
-          className={css.canvasButtons}
-        />
+        {stage.stage?.identifier === 'Deploy1' ? (
+          <CDPipelineStudioNew pipeline={stage} />
+        ) : (
+          <>
+            <CanvasWidget
+              engine={engine}
+              isRollback={hasRollback}
+              rollBackProps={{
+                style: { top: 62, ...rollBackPropsStyle },
+                active: state.isRollback ? StepsType.Rollback : StepsType.Normal
+              }}
+            />
+            <CanvasButtons
+              engine={engine}
+              tooltipPosition={canvasButtonsTooltipPosition}
+              layout={canvasButtonsLayout}
+              className={css.canvasButtons}
+            />
+          </>
+        )}
         <DynamicPopover
           className={css.addStepPopover}
           darkMode={true}
