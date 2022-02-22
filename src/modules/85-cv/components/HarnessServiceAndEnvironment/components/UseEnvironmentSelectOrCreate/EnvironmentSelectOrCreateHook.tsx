@@ -6,11 +6,11 @@ import { useHarnessEnvironmentModal } from '@common/modals/HarnessEnvironmentMod
 import type { EnvironmentResponseDTO } from 'services/cd-ng'
 import { ADD_NEW_VALUE } from '@cv/constants'
 
-interface MultiselectEnv {
+export interface MultiselectEnv {
   options: SelectOption[]
   onNewCreated(value: EnvironmentResponseDTO): void
 }
-interface MultiSelectReturn {
+export interface MultiSelectReturn {
   environmentOptions: SelectOption[]
   openHarnessEnvironmentModal: () => void
 }
