@@ -265,16 +265,29 @@ const trasformStepsData = (steps: ExecutionWrapperConfig[], graphType: PipelineG
       })
     } else if (step?.parallel?.length) {
       const [first, ...rest] = step.parallel
-      const { nodeType, iconName } = getNodeInfo(first?.step?.type)
-      finalData.push({
-        identifier: first?.step?.identifier as string,
-        name: first?.step?.name as string,
-        type: first?.step?.type as string,
-        nodeType: nodeType as string,
-        icon: iconName,
-        data: step,
-        children: trasformStepsData(rest, graphType)
-      })
+      if (first.stepGroup) {
+        const { iconName } = getNodeInfo('')
+        finalData.push({
+          identifier: first.stepGroup?.identifier as string,
+          name: first.stepGroup?.name as string,
+          type: 'StepGroup',
+          nodeType: 'StepGroup',
+          icon: iconName,
+          data: first,
+          children: trasformStepsData(rest as ExecutionWrapperConfig[], graphType)
+        })
+      } else {
+        const { nodeType, iconName } = getNodeInfo(first?.step?.type)
+        finalData.push({
+          identifier: first?.step?.identifier as string,
+          name: first?.step?.name as string,
+          type: first?.step?.type as string,
+          nodeType: nodeType as string,
+          icon: iconName,
+          data: first,
+          children: trasformStepsData(rest, graphType)
+        })
+      }
     } else {
       const { iconName } = getNodeInfo('')
       finalData.push({
@@ -284,7 +297,7 @@ const trasformStepsData = (steps: ExecutionWrapperConfig[], graphType: PipelineG
         nodeType: 'StepGroup',
         icon: iconName,
         data: step,
-        children: trasformStepsData(step.stepGroup?.steps as StageElementWrapperConfig[], graphType)
+        children: trasformStepsData(step.stepGroup?.steps as ExecutionWrapperConfig[], graphType)
       })
     }
   })

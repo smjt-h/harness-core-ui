@@ -1,5 +1,6 @@
 /* eslint-disable no-console */
 import React, { useEffect, useLayoutEffect, useState, useRef } from 'react'
+import Draggable from 'react-draggable'
 import type { PipelineInfoConfig, StageElementWrapperConfig } from 'services/cd-ng'
 import { NodeType } from '../Node'
 import {
@@ -7,14 +8,12 @@ import {
   getPipelineGraphData,
   getScaleToFitValue,
   getSVGLinksFromPipeline,
-  INITIAL_ZOOM_LEVEL,
-  setupDragEventListeners
+  INITIAL_ZOOM_LEVEL
 } from './PipelineGraphUtils'
 import GraphActions from '../GraphActions/GraphActions'
 import { PipelineGraphRecursive } from './PipelineGraphNode'
 import type { PipelineGraphState } from '../types'
 import css from './PipelineGraph.module.scss'
-import Draggable from 'react-draggable'
 
 export interface PipelineGraphProps {
   pipeline: PipelineInfoConfig
@@ -52,8 +51,7 @@ const PipelineGraph = ({
 
   useLayoutEffect(() => {
     if (state?.length) {
-      setSVGLinks()
-      // setupNodeDragEventListener(canvasRef)
+      setTimeout(setSVGLinks, 500)
     }
   }, [state])
 
@@ -79,7 +77,7 @@ const PipelineGraph = ({
   }
 
   return (
-    <Draggable>
+    <Draggable scale={graphScale}>
       <div id="overlay" className={css.overlay}>
         <>
           <div className={css.graphMain} ref={canvasRef} style={{ transform: `scale(${graphScale})` }}>

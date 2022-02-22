@@ -82,6 +82,11 @@ const config = {
   devtool: DEV ? 'cheap-module-source-map' : 'hidden-source-map',
   devServer: DEV
     ? {
+        client: {
+          overlay: {
+            errors: JSON.parse(process.env.SHOW_ERROR_OVERLAY) ?? true
+          }
+        },
         historyApiFallback: true,
         port: 8181,
         https: {

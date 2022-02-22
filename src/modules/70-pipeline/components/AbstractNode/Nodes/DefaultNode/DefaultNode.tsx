@@ -139,6 +139,7 @@ const DefaultNode = (props: any): JSX.Element => {
           }}
           onDragEnd={event => {
             event.preventDefault()
+            event.stopPropagation()
           }}
         >
           <div className="execution-running-animation" />
