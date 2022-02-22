@@ -93,7 +93,7 @@ export const PipelineGraphNode = ({
   const NodeComponent: React.FC<any> | undefined = getNode(data?.nodeType) || getNode(NodeType.Default)
   const ref = useRef<HTMLDivElement>(null)
   const isIntersecting = useIntersectionObserver(ref, { threshold: 0.98 }, checkIntersectonBottom)
-  const [collapseNode, setCollapseNode] = useState(true)
+  const [collapseNode, setCollapseNode] = useState(false)
 
   const getGroupNodeHeader = (): Array<PipelineGraphState> => {
     const nodes: PipelineGraphState[] = []

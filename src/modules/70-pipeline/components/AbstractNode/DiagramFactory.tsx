@@ -45,16 +45,20 @@ export class DiagramFactory {
     this.nodeBank.set(type, Component)
   }
 
-  registerListener(eventKey: string, listener: BaseListener): ListenerHandle {
-    const id = uuid()
-    this.listeners[eventKey] = listener
-    return {
-      id: id,
-      listener: listener,
-      deregister: () => {
-        delete this.listeners[id]
+  registerListeners(listeners: Record<string, BaseListener>): Record<string, ListenerHandle> {
+    const result: Record<string, ListenerHandle> = {}
+    Object.entries(listeners).forEach(listener => {
+      const id = uuid()
+      this.listeners[listener[0]] = listener[1]
+      result[id] = {
+        id: id,
+        listener: listener[1],
+        deregister: () => {
+          delete this.listeners[id]
+        }
       }
-    }
+    })
+    return result
   }
 
   deregisterListener(listenerKey: string): boolean {

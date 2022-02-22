@@ -645,16 +645,14 @@ const StageBuilder: React.FC<StageBuilderProps> = ({ diagram }): JSX.Element => 
     },
     // Can not remove this Any because of React Diagram Issue
     [Event.RemoveNode]: (event: any) => {
-      const eventTemp = event as DefaultNodeEvent
-      const stageIdToBeRemoved = eventTemp.entity.getIdentifier()
+      const eventTemp = event
+      const stageIdToBeRemoved = eventTemp.identifier
       setDeleteId(stageIdToBeRemoved)
       confirmDeleteStage()
     },
     [Event.AddParallelNode]: (event: any) => {
-      const eventTemp = event as DefaultNodeEvent
-      eventTemp.stopPropagation()
-      // dynamicPopoverHandler?.hide()
-
+      const eventTemp = event
+      dynamicPopoverHandler?.hide()
       updatePipelineView({
         ...pipelineView,
         isSplitViewOpen: false,
@@ -662,9 +660,9 @@ const StageBuilder: React.FC<StageBuilderProps> = ({ diagram }): JSX.Element => 
       })
       setSelectionRef.current({ stageId: undefined, sectionId: undefined })
 
-      if (eventTemp.entity) {
+      if (eventTemp.identifier) {
         dynamicPopoverHandler?.show(
-          `[data-nodeid="${eventTemp.entity.getID()}"] [data-nodeid="add-parallel"]`,
+          `[data-nodeid="${eventTemp.identifier}"] [data-nodeid="add-parallel"]`,
           {
             addStage,
             isParallel: true,
@@ -1053,13 +1051,15 @@ const StageBuilder: React.FC<StageBuilderProps> = ({ diagram }): JSX.Element => 
     }
   }
 
-  diagram.registerListener(Event.DropLinkEvent, dropLinkEvent)
+  const events = {
+    [Event.DropLinkEvent]: dropLinkEvent,
+    [Event.DropNodeEvent]: dropNodeEvent,
+    [Event.ClickNode]: nodeListeners[Event.ClickNode],
+    [Event.AddParallelNode]: nodeListeners[Event.AddParallelNode],
+    [Event.RemoveNode]: nodeListeners[Event.RemoveNode]
+  }
 
-  diagram.registerListener(Event.DropNodeEvent, dropNodeEvent)
-
-  diagram.registerListener(Event.ClickNode, nodeListeners[Event.ClickNode])
-
-  diagram.registerListener(Event.AddParallelNode, nodeListeners[Event.AddParallelNode])
+  diagram.registerListeners(events)
 
   //1) setup the diagram engine
   const engine = React.useMemo(() => createEngine({}), [])

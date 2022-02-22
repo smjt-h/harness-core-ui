@@ -7,7 +7,7 @@
 
 import React from 'react'
 import type { IconName } from '@wings-software/uicore'
-import { Icon, Text, Color } from '@wings-software/uicore'
+import { Icon, Text, Color, Button, ButtonVariation } from '@wings-software/uicore'
 import cx from 'classnames'
 import { DiagramDrag, DiagramType, Event } from '@pipeline/components/Diagram'
 import css from './DefaultNode.module.scss'
@@ -24,15 +24,15 @@ const DefaultNode = (props: any): JSX.Element => {
   const [showAdd, setVisibilityOfAdd] = React.useState(false)
 
   const onAddNodeClick = (
-    e: React.MouseEvent<Element, MouseEvent>,
-    identifier: string,
+    e: React.MouseEvent<Element, MouseEvent>
+    // identifier: string,
     // eslint-disable-next-line @typescript-eslint/no-shadow
-    setAddClicked: React.Dispatch<React.SetStateAction<boolean>>
+    // setAddClicked: React.Dispatch<React.SetStateAction<boolean>>
   ): void => {
     e.stopPropagation()
     props?.fireEvent({
       type: Event.AddParallelNode,
-      identifier,
+      identifier: props?.identifier,
       callback: () => {
         setAddClicked(false)
       },
@@ -135,10 +135,10 @@ const DefaultNode = (props: any): JSX.Element => {
           }}
         >
           <div className="execution-running-animation" />
-          {props.iconName && (
+          {props.icon && (
             <Icon
               size={28}
-              name={props.iconName}
+              name={props.icon}
               inverse={props?.isSelected}
               // {...options.iconProps}
               style={{ pointerEvents: 'none', ...iconStyle }}
@@ -146,6 +146,21 @@ const DefaultNode = (props: any): JSX.Element => {
           )}
 
           {SECONDARY_ICON && <Icon className={css.secondaryIcon} size={8} name={SECONDARY_ICON} />}
+          <Button
+            className={css.closeNode}
+            minimal
+            icon="cross"
+            variation={ButtonVariation.PRIMARY}
+            iconProps={{ size: 10 }}
+            onMouseDown={e => {
+              e.stopPropagation()
+              props?.fireEvent({
+                type: Event.RemoveNode,
+                identifier: props?.identifier
+              })
+            }}
+            withoutCurrentColor={true}
+          />
         </div>
         {props.name && (
           <Text
@@ -164,7 +179,7 @@ const DefaultNode = (props: any): JSX.Element => {
               e.stopPropagation()
               setAddClicked(true)
               setVisibilityOfAdd(true)
-              onAddNodeClick(e, props.identifier, props.node)
+              onAddNodeClick(e)
             }}
             className={css.addNode}
             data-nodeid="add-parallel"
