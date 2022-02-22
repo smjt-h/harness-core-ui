@@ -7,21 +7,36 @@
 import React from 'react'
 import { MultiSelectDropDown } from '@harness/uicore'
 import { fireEvent, render, waitFor } from '@testing-library/react'
+
 import { TestWrapper } from '@common/utils/testUtils'
 import { MultiselectEnv, useEnvironmentSelectOrCreate } from '../EnvironmentSelectOrCreateHook'
 
+jest.mock('@common/modals/HarnessEnvironmentModal/HarnessEnvironmentModal', () => {
+  return {
+    useHarnessEnvironmentModal: jest.fn(data => {
+      return {
+        openHarnessEnvironmentModal: jest.fn(() => {
+          data.onCreateOrUpdate()
+        })
+      }
+    })
+  }
+})
 const WrapperComponent = (props: MultiselectEnv) => {
-  const { environmentOptions } = useEnvironmentSelectOrCreate({ options: props.options, onNewCreated: jest.fn() })
+  const { environmentOptions, openHarnessEnvironmentModal } = useEnvironmentSelectOrCreate({
+    options: props.options,
+    onNewCreated: jest.fn()
+  })
   return (
-    <MultiSelectDropDown
-      // value={item}
-      items={environmentOptions}
-      // className={className}
-      // disabled={disabled}
-      // onChange={onSelectChange}
-      buttonTestId={'sourceFilter'}
-      // popoverClassName={popOverClassName}
-    />
+    <>
+      <MultiSelectDropDown items={environmentOptions} buttonTestId={'sourceFilter'} />
+      <button
+        className="open"
+        onClick={() => {
+          openHarnessEnvironmentModal()
+        }}
+      />
+    </>
   )
 }
 describe('EnvironmentSelectOrCreateHook', () => {
@@ -43,5 +58,31 @@ describe('EnvironmentSelectOrCreateHook', () => {
     })
     await waitFor(() => expect(getByText('env102')).toBeTruthy())
     await waitFor(() => expect(getByText('env101')).toBeTruthy())
+    await waitFor(() => {
+      fireEvent.click(getByText('env102')!)
+    })
+  })
+
+  test('Should render the test option in the dropdown values', async () => {
+    const options = [
+      { value: 'env101', label: 'env101' },
+      { value: 'env102', label: 'env102' }
+    ]
+
+    const { getByTestId, getByText, container } = render(
+      <TestWrapper>
+        <WrapperComponent options={options} onNewCreated={jest.fn()} />
+      </TestWrapper>
+    )
+    const sourcesDropdown = getByTestId('sourceFilter') as HTMLInputElement
+
+    await waitFor(() => {
+      fireEvent.click(sourcesDropdown!)
+    })
+    await waitFor(() => expect(getByText('env102')).toBeTruthy())
+    await waitFor(() => expect(getByText('env101')).toBeTruthy())
+    await waitFor(() => {
+      fireEvent.click(container.querySelector('.open')!)
+    })
   })
 })
