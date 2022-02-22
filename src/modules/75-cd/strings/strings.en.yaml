@@ -194,3 +194,4 @@ artifactFormErrors:
   artifactName: '{{$.validation.nameRequired}}'
 artifactPath: Artifact Path
 artifactPaths: Artifact Paths
+entityTypeRequired: Entity Type is required

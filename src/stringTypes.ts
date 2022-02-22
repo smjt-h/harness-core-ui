@@ -409,18 +409,21 @@ export interface StringsMap {
   'common.plusNumber': string
   'common.plusNumberNoSpace': string
   'common.policies': string
+  'common.policiesSets.addOrModifyPolicySet': string
   'common.policiesSets.evaluationCriteria': string
   'common.policiesSets.newPolicyset': string
   'common.policiesSets.noPolicySet': string
   'common.policiesSets.noPolicySetResult': string
   'common.policiesSets.noPolicySets': string
   'common.policiesSets.policySetSearch': string
+  'common.policiesSets.selectPolicySet': string
   'common.policiesSets.stepOne.validId': string
   'common.policiesSets.stepOne.validIdRegex': string
   'common.policiesSets.stepOne.validName': string
   'common.policiesSets.table.enforced': string
   'common.policiesSets.table.entityType': string
   'common.policiesSets.table.name': string
+  'common.policy.customInputRequired': string
   'common.policy.evaluations': string
   'common.policy.newPolicy': string
   'common.policy.noPolicy': string
@@ -428,6 +431,7 @@ export interface StringsMap {
   'common.policy.noPolicyResult': string
   'common.policy.noSelectInput': string
   'common.policy.policySearch': string
+  'common.policy.policySetRequired': string
   'common.policy.policysets': string
   'common.policy.table.createdAt': string
   'common.policy.table.lastModified': string
@@ -2431,6 +2435,7 @@ export interface StringsMap {
   'pipeline.failureStrategies.errorTypeLabels.Authentication': string
   'pipeline.failureStrategies.errorTypeLabels.Authorization': string
   'pipeline.failureStrategies.errorTypeLabels.DelegateProvisioning': string
+  'pipeline.failureStrategies.errorTypeLabels.Evaluation': string
   'pipeline.failureStrategies.errorTypeLabels.Timeout': string
   'pipeline.failureStrategies.errorTypeLabels.Unknown': string
   'pipeline.failureStrategies.errorTypeLabels.Verification': string
@@ -2779,6 +2784,7 @@ export interface StringsMap {
   'pipeline.stepDescription.K8sRollingRollback': string
   'pipeline.stepDescription.K8sScale': string
   'pipeline.stepDescription.Plugin': string
+  'pipeline.stepDescription.Policy': string
   'pipeline.stepDescription.ResourceConstraint': string
   'pipeline.stepDescription.RestoreCacheGCS': string
   'pipeline.stepDescription.RestoreCacheS3': string
@@ -3163,6 +3169,7 @@ export interface StringsMap {
   'cd.duplicateIdError': string
   'cd.dynamicProvisioning': string
   'cd.editIdError': string
+  'cd.entityTypeRequired': string
   'cd.environmentCreated': string
   'cd.environmentUpdated': string
   'cd.featureRestriction.banners.deploymentsPerMonthLevelUp': string

@@ -572,6 +572,8 @@ policy:
     name: Policy
     lastModified: Last Modified
     createdAt: Created At
+  policySetRequired: You need to add atleast 1 policy set
+  customInputRequired: Custom policy input is required
 policiesSets:
   newPolicyset: New Policy Set
   noPolicySets: No Policy Sets evaluated
@@ -587,6 +589,8 @@ policiesSets:
     name: Policy Set
     enforced: Enforced
     entityType: Entity Type {{name}}
+  selectPolicySet: Select Policy Set
+  addOrModifyPolicySet: Add/Modify Policy Set
 accountResourcesPage:
   line1: 'Account Resources are shared and available for use within any organization or projects within your account.'
   line2: 'For better isolation of resources, it is recommended that you create resources at the organization or project levels respectively.'

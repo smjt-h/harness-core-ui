@@ -1,0 +1,69 @@
+/*
+ * Copyright 2022 Harness Inc. All rights reserved.
+ * Use of this source code is governed by the PolyForm Shield 1.0.0 license
+ * that can be found in the licenses directory at the root of this repository, also available at
+ * https://polyformproject.org/wp-content/uploads/2020/06/PolyForm-Shield-1.0.0.txt.
+ */
+
+.referenceSelect {
+  &.dialog {
+    width: auto;
+    padding-bottom: 0;
+  }
+}
+
+.contentContainer {
+  padding: var(--spacing-medium) var(--spacing-xxlarge) var(--spacing-xxlarge);
+  position: relative;
+  width: 800px;
+
+  .closeButton {
+    position: absolute;
+    top: 13px;
+    right: var(--spacing-small);
+  }
+
+  :global {
+    .bp3-tab-indicator-wrapper .bp3-tab-indicator {
+      background-color: var(--primary-7);
+      height: 3.5px;
+    }
+
+    .bp3-tab[aria-selected='true'],
+    .bp3-tab:not([aria-disabled='true']):hover {
+      color: var(--blue-600);
+    }
+  }
+}
+
+.titleHeader {
+  padding-bottom: 10px !important;
+  margin-right: 60px !important;
+  border: 1.5px solid transparent;
+  cursor: pointer;
+}
+
+.titleHeaderSelected {
+  border-bottom: 1.5px solid #0278d5 !important;
+}
+
+.selectedCount {
+  display: flex;
+  background-color: #0278d5;
+  color: white;
+  border-radius: 10px;
+  margin-left: 10px;
+  padding: 0px 5px;
+  text-align: center;
+}
+
+.tickIcon {
+  align-self: center;
+}
+
+.separator {
+  margin: 0;
+  opacity: 0.1;
+  border: 1.5px solid #000000;
+  border-width: 1px;
+}

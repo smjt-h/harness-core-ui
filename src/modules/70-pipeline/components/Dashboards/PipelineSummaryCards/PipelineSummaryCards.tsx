@@ -33,7 +33,8 @@ export default function PipelineSummaryCards() {
     }
   })
 
-  useErrorHandler(error)
+  // TODO: To be handled appropriately
+  useErrorHandler(error as any)
 
   return (
     <Container>

@@ -4965,6 +4965,7 @@ export interface OnFailureConfig {
     | 'Authorization'
     | 'Verification'
     | 'DelegateProvisioning'
+    | 'Evaluation'
   )[]
 }
 

@@ -72,7 +72,8 @@ export const errorTypesForStages: Record<StageType, FailureErrorType[]> = {
     ErrorType.Timeout,
     ErrorType.Unknown,
     ErrorType.Verification,
-    ErrorType.AllErrors
+    ErrorType.AllErrors,
+    ErrorType.Evaluation
   ],
   [StageType.BUILD]: [ErrorType.Timeout, ErrorType.Unknown, ErrorType.AllErrors],
   [StageType.APPROVAL]: [

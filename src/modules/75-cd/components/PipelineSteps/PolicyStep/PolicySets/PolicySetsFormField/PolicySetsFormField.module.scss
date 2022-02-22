@@ -1,0 +1,157 @@
+/*
+ * Copyright 2022 Harness Inc. All rights reserved.
+ * Use of this source code is governed by the PolyForm Shield 1.0.0 license
+ * that can be found in the licenses directory at the root of this repository, also available at
+ * https://polyformproject.org/wp-content/uploads/2020/06/PolyForm-Shield-1.0.0.txt.
+ */
+
+.addModifyButton {
+  box-shadow: none !important;
+  color: #0278d5 !important;
+  font-weight: bolder;
+  height: 30px !important;
+  position: relative;
+  padding: var(--spacing-xsmall) var(--spacing-small) !important;
+  font-size: 12px !important;
+
+  :global(.bp3-button-text) {
+    width: 100%;
+  }
+}
+
+.policySetHolder {
+  width: 420px;
+  background: #fafbfc !important;
+  border: 1px solid #dedfe9 !important;
+  border-radius: 4px;
+  font-size: 14px;
+  padding: var(--spacing-2) var(--spacing-medium) !important;
+}
+
+.styledPolicy {
+  background: #fafbfc;
+  border: 0.6px solid #b0b1c4;
+  border-radius: 5px;
+  color: #0278d5 !important;
+  padding: var(--spacing-xsmall) var(--spacing-small) !important;
+  font-size: 12px;
+  margin-right: 2px;
+}
+
+.accountIdentifier {
+  color: black;
+}
+
+.accountType {
+  font-size: 12px;
+  width: 48px;
+}
+
+// TODO: TO be filtered
+.table {
+  padding: var(--spacing-large) var(--spacing-xxlarge);
+  padding-bottom: var(--spacing-none);
+  [class*='Table-module_body'] {
+    overflow-y: scroll;
+    height: calc(100% - 115px);
+  }
+}
+.closeIcon {
+  position: absolute;
+  right: var(--spacing-large);
+  top: var(--spacing-large);
+}
+
+.policyAssignment {
+  display: flex;
+  align-items: stretch;
+  flex-direction: column;
+  align-content: space-between;
+  margin-bottom: var(--spacing-large) !important;
+  :global {
+    .FieldArray--container {
+      height: 400px;
+      margin-bottom: var(--spacing-large) !important;
+    }
+  }
+}
+
+.containerProps {
+  table {
+    border: 0px !important;
+  }
+  :global {
+    .FieldArray--noData {
+      border: 0px !important;
+    }
+    .Select--menuItem {
+      height: unset !important;
+      padding: var(--spacing-small) !important;
+    }
+  }
+}
+
+.noWrap * {
+  white-space: nowrap !important;
+}
+
+.useNav {
+  :global {
+    .StepWizard--stepDetails {
+      background-color: var(--grey-0) !important;
+      padding: 0 !important;
+    }
+    .StepWizard--harnessWatermark {
+      display: none !important;
+    }
+  }
+}
+
+.policyRowSelected {
+  background-color: #effbff;
+  color: var(--primary-7);
+}
+
+.policyRows {
+  padding-left: var(--spacing-small);
+  padding-right: var(--spacing-small);
+  border-top: hidden !important;
+  border-radius: 4px;
+  box-shadow: 0px 0px 1px rgba(40, 41, 61, 0.04), 0px 2px 4px rgba(96, 97, 112, 0.16);
+  :global {
+    .CollapseHeader--leftSection {
+      width: 100% !important;
+
+      & svg {
+        color: var(--primary-7);
+      }
+    }
+  }
+}
+
+.policyRowContent {
+  display: flex;
+  width: 100%;
+  flex-direction: row;
+  align-items: center;
+}
+
+.severity {
+  margin-left: auto !important;
+  margin-right: var(--spacing-large) !important;
+}
+
+.input {
+  display: block;
+  width: 100%;
+  border: 1px solid var(--grey-200);
+  border-radius: var(--spacing-2);
+  font-size: var(--font-size-normal);
+  padding: var(--spacing-small);
+  height: var(--spacing-8);
+  color: var(--grey-900);
+  box-shadow: none;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  word-break: break-all;
+}
