@@ -139,7 +139,9 @@ export function PipelineVariablesContextProvider(
   })
 
   React.useEffect(() => {
-    setResolvedPipeline(parse(defaultTo(resolvedPipelineResponse?.data?.mergedPipelineYaml, '')))
+    if (resolvedPipelineResponse?.data?.mergedPipelineYaml) {
+      setResolvedPipeline(parse(resolvedPipelineResponse.data.mergedPipelineYaml))
+    }
   }, [resolvedPipelineResponse])
 
   React.useEffect(() => {
