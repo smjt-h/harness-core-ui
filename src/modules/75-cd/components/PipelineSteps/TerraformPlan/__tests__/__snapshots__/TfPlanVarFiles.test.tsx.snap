@@ -21,7 +21,7 @@ exports[`<TfVarFile /> tests snapshot test for tf var files 1`] = `
   </div>
   <div
     class="StyledProps--font StyledProps--main StyledProps--flex StyledProps--padding-bottom-small"
-    style="width: 120px;"
+    style="width: 300px;"
   >
     <p
       class="StyledProps--font StyledProps--main StyledProps--font-weight-bold"

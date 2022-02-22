@@ -32,7 +32,12 @@ describe('Validate MapMetricsToServices conponent', () => {
   test('should render MapMetricsToServices', () => {
     const { container } = render(
       <TestWrapper>
-        <MapMetricsToServices mappedMetrics={mappedMetrics} formikProps={formikProps} selectedMetric={selectedMetric} />
+        <MapMetricsToServices
+          onChange={jest.fn()}
+          mappedMetrics={mappedMetrics}
+          formValue={formikProps.values}
+          selectedMetric={selectedMetric}
+        />
       </TestWrapper>
     )
     expect(container).toMatchSnapshot()

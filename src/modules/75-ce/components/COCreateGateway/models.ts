@@ -142,3 +142,8 @@ export interface CustomDomainDetails {
     hosted_zone_id: string
   }
 }
+
+export interface ActiveStepDetailsProps {
+  count?: number
+  tabId?: string
+}

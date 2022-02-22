@@ -33,7 +33,7 @@ import css from './CFHomePage.module.scss'
 
 const CFHomePage: React.FC = () => {
   const { getString } = useStrings()
-  const { accountId } = useParams<AccountPathProps>()
+  const { accountId: accountIdentifier } = useParams<AccountPathProps>()
   const { currentUserInfo, selectedProject } = useAppStore()
   const { NG_LICENSES_ENABLED } = useFeatureFlags()
   const { licenseInformation, updateLicenseStore } = useLicenseStore()
@@ -41,7 +41,7 @@ const CFHomePage: React.FC = () => {
   const module = moduleType.toLowerCase() as Module
 
   const { accounts } = currentUserInfo
-  const createdFromNG = accounts?.find(account => account.uuid === accountId)?.createdFromNG
+  const createdFromNG = accounts?.find(account => account.uuid === accountIdentifier)?.createdFromNG
 
   const {
     data: licenseData,
@@ -50,7 +50,7 @@ const CFHomePage: React.FC = () => {
     loading: gettingLicense
   } = useGetLicensesAndSummary({
     queryParams: { moduleType },
-    accountIdentifier: accountId
+    accountIdentifier
   })
 
   // get project lists via accountId
@@ -61,7 +61,7 @@ const CFHomePage: React.FC = () => {
     refetch: refetchProject
   } = useGetProjectList({
     queryParams: {
-      accountIdentifier: accountId,
+      accountIdentifier,
       pageSize: 1
     }
   })
@@ -75,7 +75,7 @@ const CFHomePage: React.FC = () => {
           pathname: routes.toCFOnboarding({
             orgIdentifier: projectData?.orgIdentifier || '',
             projectIdentifier: projectData.identifier,
-            accountId
+            accountId: accountIdentifier
           })
         })
       }
@@ -152,7 +152,7 @@ const CFHomePage: React.FC = () => {
   if (showTrialPages && licenseData?.status === 'SUCCESS' && !licenseData.data) {
     history.push(
       routes.toModuleTrialHome({
-        accountId,
+        accountId: accountIdentifier,
         module
       })
     )
@@ -174,7 +174,7 @@ const CFHomePage: React.FC = () => {
       routes.toCFFeatureFlags({
         projectIdentifier: selectedProject.identifier,
         orgIdentifier: selectedProject.orgIdentifier || '',
-        accountId
+        accountId: accountIdentifier
       })
     )
   }

@@ -5,7 +5,6 @@
  * https://polyformproject.org/wp-content/uploads/2020/06/PolyForm-Shield-1.0.0.txt.
  */
 
-import type { StringKeys } from 'framework/strings'
 import type { TimeSeriesSampleDTO } from 'services/cv'
 import { initNewRelicCustomForm } from '../../NewRelicHealthSource.constants'
 import type { InitNewRelicCustomFormInterface } from '../../NewRelicHealthSource.types'
@@ -14,11 +13,9 @@ export const getOptionsForChart = (newRelicTimeSeriesData: TimeSeriesSampleDTO[]
   return newRelicTimeSeriesData?.map(el => [el?.timestamp, el?.metricValue]) || []
 }
 
-export const initNewRelicCustomFormValue = (
-  getString: (key: StringKeys) => string
-): InitNewRelicCustomFormInterface => {
+export const initNewRelicCustomFormValue = (): InitNewRelicCustomFormInterface => {
   return {
     ...initNewRelicCustomForm,
-    groupName: { label: getString('cv.addGroupName'), value: getString('cv.addGroupName') }
+    groupName: { label: '', value: '' }
   }
 }

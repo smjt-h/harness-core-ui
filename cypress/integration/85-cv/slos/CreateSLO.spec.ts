@@ -559,7 +559,7 @@ describe('Create SLO', () => {
     cy.wait('@getMonitoredService')
     cy.findByRole('button', { name: /Save/i }).click({ force: true })
 
-    cy.contains('span', 'Monitoring Service updated').should('be.visible')
+    cy.contains('span', 'Monitored Service updated').should('be.visible')
 
     cy.contains('h2', 'Define SLO identification').should('be.visible')
 

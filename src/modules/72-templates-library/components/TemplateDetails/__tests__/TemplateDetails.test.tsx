@@ -8,11 +8,11 @@
 import React from 'react'
 import { act, fireEvent, render } from '@testing-library/react'
 import { useLocation } from 'react-router-dom'
+import { defaultTo } from 'lodash-es'
 import { TestWrapper } from '@common/utils/testUtils'
-import { useMutateAsGet } from '@common/hooks'
 import MonacoEditor from '@common/components/MonacoEditor/__mocks__/MonacoEditor'
 import { mockTemplates, mockTemplatesSuccessResponse } from '@templates-library/TemplatesTestHelper'
-import { TemplateDetails } from '../TemplateDetails'
+import { TemplateDetails, TemplateDetailsProps } from '../TemplateDetails'
 
 jest.mock('@common/components/YAMLBuilder/YamlBuilder')
 jest.mock('@wings-software/monaco-yaml/lib/esm/languageservice/yamlLanguageService', () => ({
@@ -24,41 +24,54 @@ jest.mock('@common/hooks', () => ({
   useMutateAsGet: jest.fn()
 }))
 
+jest.mock('@common/hooks', () => ({
+  ...(jest.requireActual('@common/hooks') as any),
+  useMutateAsGet: jest.fn().mockImplementation(() => mockTemplatesSuccessResponse)
+}))
+
 jest.mock('react-monaco-editor', () => ({
   MonacoDiffEditor: MonacoEditor
 }))
 
 jest.mock('@common/components/MonacoEditor/MonacoEditor', () => MonacoEditor)
 
-function ComponentWrapper(): React.ReactElement {
+function ComponentWrapper(props: TemplateDetailsProps): React.ReactElement {
   const location = useLocation()
   return (
     <React.Fragment>
-      <TemplateDetails template={mockTemplates?.data?.content?.[0] || {}} />
+      <TemplateDetails {...props} />
       <div data-testid="location">{`${location.pathname}${location.search}`}</div>
     </React.Fragment>
   )
 }
 
 describe('<TemplateDetails /> tests', () => {
-  beforeEach(() => {
-    // eslint-disable-next-line
-    // @ts-ignore
-    useMutateAsGet.mockReturnValue(mockTemplatesSuccessResponse)
-  })
-  test('snapshot test', async () => {
+  const baseProps = {
+    template: defaultTo(mockTemplates?.data?.content?.[0], {})
+  }
+  test('should match snapshot', async () => {
     const { container } = render(
       <TestWrapper>
-        <ComponentWrapper />
+        <ComponentWrapper {...baseProps} />
       </TestWrapper>
     )
     expect(container).toMatchSnapshot()
   })
 
+  test('should show selected version label', async () => {
+    const { getByTestId } = render(
+      <TestWrapper>
+        <ComponentWrapper {...baseProps} allowStableSelection={true} />
+      </TestWrapper>
+    )
+    const dropValue = getByTestId('dropdown-value')
+    expect(dropValue).toHaveTextContent('templatesLibrary.alwaysUseStableVersion')
+  })
+
   test('should open template studio on clicking open in template studio', async () => {
     const { getByRole, getByTestId } = render(
       <TestWrapper>
-        <ComponentWrapper />
+        <ComponentWrapper {...baseProps} />
       </TestWrapper>
     )
 

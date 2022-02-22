@@ -13,25 +13,25 @@ import { ContainerSpinner } from '@common/components/ContainerSpinner/ContainerS
 import { ModuleName } from 'framework/types/ModuleName'
 import UsageInfoCard from './UsageInfoCard'
 
-interface ActiveUsersProps {
+interface ActiveDevelopersProps {
   subscribedUsers: number
   activeUsers: number
   rightHeader: string
 }
 
-const ActiveUsers: React.FC<ActiveUsersProps> = ({ subscribedUsers, activeUsers, rightHeader }) => {
+const ActiveDevelopers: React.FC<ActiveDevelopersProps> = ({ subscribedUsers, activeUsers, rightHeader }) => {
   const { getString } = useStrings()
-  const leftHeader = getString('common.subscriptions.usage.ciUsers')
-  //TO-DO: replace with tooltip
-  const tooltip = 'Users tooltip placeholder'
+  const leftHeader = getString('common.subscriptions.usage.activeDevelopers')
+  const tooltip = getString('common.subscriptions.usage.ciTooltip')
   const hasBar = true
-  const leftFooter = getString('common.totalHarnessUser')
+  const leftFooter = getString('common.subscribed')
+  const defaultRightHeader = rightHeader || getString('common.subscriptions.usage.last30days')
   const props = {
     subscribed: subscribedUsers,
     usage: activeUsers,
     leftHeader,
     tooltip,
-    rightHeader,
+    rightHeader: defaultRightHeader,
     hasBar,
     leftFooter
   }
@@ -60,7 +60,7 @@ const CIUsageInfo: React.FC = () => {
 
   return (
     <Layout.Horizontal spacing="large">
-      <ActiveUsers
+      <ActiveDevelopers
         rightHeader={usage?.ci?.activeCommitters?.displayName || ''}
         subscribedUsers={limit?.ci?.totalDevelopers || 0}
         activeUsers={usage?.ci?.activeCommitters?.count || 0}

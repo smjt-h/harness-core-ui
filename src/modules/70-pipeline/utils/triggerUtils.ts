@@ -14,7 +14,7 @@ export const mapTriggerTypeToStringID = (triggerType: ExecutionTriggerInfo['trig
     case 'WEBHOOK_CUSTOM':
       return 'execution.triggerType.WEBHOOK'
     case 'SCHEDULER_CRON':
-      return 'pipeline.triggers.scheduledLabel'
+      return 'triggers.scheduledLabel'
     default:
       return 'execution.triggerType.MANUAL'
   }

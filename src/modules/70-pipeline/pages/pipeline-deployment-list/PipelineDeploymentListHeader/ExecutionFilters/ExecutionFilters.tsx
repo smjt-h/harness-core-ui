@@ -139,8 +139,8 @@ export function ExecutionFilters(): React.ReactElement {
       new Map<string, string>([
         ['pipelineName', getString('filters.executions.pipelineName')],
         ['status', getString('status')],
-        ['sourceBranch', getString('pipeline.triggers.conditionsPanel.sourceBranch')],
-        ['targetBranch', getString('pipeline.triggers.conditionsPanel.targetBranch')],
+        ['sourceBranch', getString('common.sourceBranch')],
+        ['targetBranch', getString('common.targetBranch')],
         ['branch', getString('pipelineSteps.deploy.inputSet.branch')],
         ['tag', getString('tagLabel')],
         ['buildType', getString('filters.executions.buildType')],

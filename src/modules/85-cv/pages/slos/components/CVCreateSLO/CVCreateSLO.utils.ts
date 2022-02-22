@@ -284,7 +284,7 @@ export const getPeriodTypeOptions = (getString: UseStringsReturn['getString']): 
 export const getPeriodLengthOptions = (getString: UseStringsReturn['getString']): SelectOption[] => {
   return [
     {
-      label: getString('pipeline.triggers.schedulePanel.weeklyTabTitle'),
+      label: getString('triggers.schedulePanel.weeklyTabTitle'),
       value: PeriodLengthTypes.WEEKLY
     },
     {

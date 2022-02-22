@@ -23,6 +23,10 @@ export function validate(
   return errors
 }
 
+function getUniqueGroupName(arr: SelectOption[]): SelectOption[] {
+  return [...new Map(arr.map(item => [item.value, item])).values()]
+}
+
 export function initializeGroupNames(
   mappedMetrics: Map<string, any>,
   getString: UseStringsReturn['getString']
@@ -33,5 +37,8 @@ export function initializeGroupNames(
       return groupName || null
     })
     .filter(groupItem => groupItem !== null) as SelectOption[]
-  return [{ label: getString('cv.addNew'), value: '' }, ...groupNames]
+
+  const uniqueGroupNames = getUniqueGroupName(groupNames)
+
+  return [{ label: getString('cv.addNew'), value: '' }, ...uniqueGroupNames]
 }

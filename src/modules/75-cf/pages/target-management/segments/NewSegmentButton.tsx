@@ -35,14 +35,14 @@ interface SegmentFormData {
 }
 
 export interface NewSegmentButtonProps {
-  accountId: string
+  accountIdentifier: string
   orgIdentifier: string
   projectIdentifier: string
   onCreated: (segmentIdentifier: string) => void
 }
 
 export const NewSegmentButton: React.FC<NewSegmentButtonProps> = ({
-  accountId,
+  accountIdentifier,
   orgIdentifier,
   projectIdentifier,
   onCreated
@@ -51,7 +51,7 @@ export const NewSegmentButton: React.FC<NewSegmentButtonProps> = ({
   const { showError } = useToaster()
 
   const { mutate: createSegment } = useCreateSegment({
-    queryParams: { account: accountId, accountIdentifier: accountId, org: orgIdentifier } as CreateSegmentQueryParams
+    queryParams: { accountIdentifier, orgIdentifier } as CreateSegmentQueryParams
   })
   const { activeEnvironment } = useActiveEnvironment()
 

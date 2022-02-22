@@ -31,11 +31,10 @@ const makeTargetsToSegmentHook =
     const { mutate } = usePatchSegment({
       identifier: '',
       queryParams: {
-        account: accountIdentifier,
         accountIdentifier,
-        org: orgIdentifier,
-        project: projectIdentifier,
-        environment: environmentIdentifier
+        orgIdentifier,
+        projectIdentifier,
+        environmentIdentifier
       } as PatchSegmentQueryParams
     })
 

@@ -5,11 +5,11 @@
  * https://polyformproject.org/wp-content/uploads/2020/06/PolyForm-Shield-1.0.0.txt.
  */
 
-import type { FormikProps } from 'formik'
 import type { MapCustomHealthToService } from '../../CustomHealthSource.types'
 
 export interface MapMetricsToServicesInterface {
-  formikProps: FormikProps<MapCustomHealthToService | undefined>
+  formValue: MapCustomHealthToService
+  onChange: (field: string, value: any) => void
   mappedMetrics: Map<string, MapCustomHealthToService>
   selectedMetric: string
 }

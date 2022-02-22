@@ -3026,7 +3026,8 @@ exports[`Render Forms - Snapshot Testing render Overlay Input Set Form view 1`] 
                                         class="bp3-control-indicator"
                                       />
                                       <div
-                                        class="Layout--horizontal StyledProps--main StyledProps--flex StyledProps--flex-alignItems-center"
+                                        class="Layout--horizontal StyledProps--main StyledProps--flex StyledProps--flex-alignItems-center StyledProps--flex-justifyContent-flex-start"
+                                        style="width: 100%;"
                                       >
                                         <span
                                           class="bp3-icon StyledProps--main"

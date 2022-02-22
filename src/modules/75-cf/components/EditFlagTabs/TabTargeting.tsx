@@ -30,7 +30,7 @@ export interface TabTargetingProps {
   setEditing: (flag: boolean) => void
   environmentIdentifier: string
   projectIdentifier: string
-  org: string
+  orgIdentifier: string
   accountIdentifier: string
 }
 
@@ -42,7 +42,7 @@ const TabTargeting: React.FC<TabTargetingProps> = props => {
     setEditing,
     environmentIdentifier,
     projectIdentifier,
-    org,
+    orgIdentifier,
     accountIdentifier
   } = props
   const [isEditRulesOn, setEditRulesOn] = useState(false)
@@ -76,10 +76,10 @@ const TabTargeting: React.FC<TabTargetingProps> = props => {
 
   return (
     <TargetAttributesProvider
-      project={projectIdentifier}
-      org={org}
+      projectIdentifier={projectIdentifier}
+      orgIdentifier={orgIdentifier}
       accountIdentifier={accountIdentifier}
-      environment={environmentIdentifier}
+      environmentIdentifier={environmentIdentifier}
     >
       <Layout.Vertical padding={{ left: 'huge', right: 'large', bottom: 'large' }} spacing="medium">
         <Layout.Horizontal className={css.contentHeading} flex={{ alignItems: 'center' }}>
@@ -124,8 +124,8 @@ const TabTargeting: React.FC<TabTargetingProps> = props => {
               feature={feature}
               editing={isEditRulesOn}
               formikProps={formikProps}
-              environment={environmentIdentifier}
-              project={projectIdentifier}
+              environmentIdentifier={environmentIdentifier}
+              projectIdentifier={projectIdentifier}
             />
           )}
         </Layout.Vertical>

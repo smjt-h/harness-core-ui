@@ -10,9 +10,27 @@ import { useParams, useHistory } from 'react-router-dom'
 import cronstrue from 'cronstrue'
 import qs from 'qs'
 import cx from 'classnames'
-import { Button, Container, Text, Color, PageHeader, PageBody, Icon, FontVariation } from '@wings-software/uicore'
+import {
+  Button,
+  Container,
+  Text,
+  Color,
+  PageHeader,
+  PageBody,
+  Icon,
+  FontVariation,
+  useToaster,
+  getErrorInfoFromErrorObject
+} from '@wings-software/uicore'
 import routes from '@common/RouteDefinitions'
-import { useGetPerspective, useGetReportSetting } from 'services/ce/'
+import {
+  PerspectiveAnomalyData,
+  QLCEViewFilterWrapper,
+  QLCEViewGroupBy,
+  useGetPerspective,
+  useGetReportSetting,
+  useListPerspectiveAnomalies
+} from 'services/ce/'
 import {
   useFetchPerspectiveTimeSeriesQuery,
   QlceViewTimeGroupType,
@@ -54,6 +72,8 @@ import { DAYS_FOR_TICK_INTERVAL } from '@ce/components/CloudCostInsightChart/Cha
 import { useTelemetry } from '@common/hooks/useTelemetry'
 import { PAGE_NAMES } from '@ce/TrackingEventsConstants'
 import { NGBreadcrumbs } from '@common/components/NGBreadcrumbs/NGBreadcrumbs'
+import { useFeatureFlag } from '@common/hooks/useFeatureFlag'
+import { FeatureFlag } from '@common/featureFlags'
 import { useQueryParams, useUpdateQueryParams } from '@common/hooks'
 import type { PerspectiveQueryParams, TimeRangeFilterType } from '@ce/types'
 import { useQueryParamsState } from '@common/hooks/useQueryParamsState'
@@ -164,6 +184,8 @@ const PerspectiveDetailsPage: React.FC = () => {
   const history = useHistory()
   const { perspectiveId, accountId, perspectiveName } = useParams<PerspectiveParams>()
   const { getString } = useStrings()
+  const isAnomaliesEnabled = useFeatureFlag(FeatureFlag.CCM_ANOMALY_DETECTION_NG)
+  const { showError } = useToaster()
 
   const { updateQueryParams } = useUpdateQueryParams()
 
@@ -191,6 +213,15 @@ const PerspectiveDetailsPage: React.FC = () => {
       accountIdentifier: accountId
     }
   })
+
+  const { mutate: getAnomalies } = useListPerspectiveAnomalies({
+    perspectiveId,
+    queryParams: {
+      accountIdentifier: accountId
+    }
+  })
+
+  const [anomaliesCountData, setAnomaliesCountData] = useState<PerspectiveAnomalyData[]>([])
 
   const chartRef = useRef<Highcharts.Chart>()
 
@@ -226,6 +257,26 @@ const PerspectiveDetailsPage: React.FC = () => {
       updateQueryParams(queryParamsToUpdate, {}, true)
     }
   }, [perspectiveData])
+
+  useEffect(() => {
+    const fetchAnomaliesCount = async () => {
+      try {
+        const response = await getAnomalies({
+          filters: [
+            ...getTimeFilters(getGMTStartDateTime(timeRange.from), getGMTEndDateTime(timeRange.to)),
+            ...getFilters(filters)
+          ] as QLCEViewFilterWrapper[],
+          groupBy: [getGroupByFilter(groupBy)] as QLCEViewGroupBy[]
+        })
+        setAnomaliesCountData(response?.data as PerspectiveAnomalyData[])
+      } catch (error: any) {
+        showError(getErrorInfoFromErrorObject(error))
+      }
+    }
+    if (isAnomaliesEnabled) {
+      fetchAnomaliesCount()
+    }
+  }, [isAnomaliesEnabled, timeRange.from, timeRange.to])
 
   const setFilterUsingChartClick: (value: string) => void = value => {
     setFilters([
@@ -388,6 +439,7 @@ const PerspectiveDetailsPage: React.FC = () => {
                 data={chartData?.perspectiveTimeSeriesStats as any}
                 aggregation={aggregation}
                 xAxisPointCount={chartData?.perspectiveTimeSeriesStats?.stats?.length || DAYS_FOR_TICK_INTERVAL + 1}
+                anomaliesCountData={anomaliesCountData}
               />
             )}
           </Container>

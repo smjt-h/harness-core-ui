@@ -6,7 +6,7 @@
  */
 
 import React, { useEffect, useMemo, useState } from 'react'
-import { flatten, noop } from 'lodash-es'
+import { noop } from 'lodash-es'
 import { useParams } from 'react-router-dom'
 import {
   Color,
@@ -36,7 +36,7 @@ import ValidationStatus from '@cv/pages/components/ValidationStatus/ValidationSt
 import MetricsVerificationModal from '@cv/components/MetricsVerificationModal/MetricsVerificationModal'
 import { StatusOfValidation } from '@cv/pages/components/ValidationStatus/ValidationStatus.constants'
 import { getErrorMessage } from '@cv/utils/CommonUtils'
-import type { GroupedCreatedMetrics } from '@cv/components/MultiItemsSideNav/components/SelectedAppsSideNav/components/GroupedSideNav/GroupedSideNav.types'
+import useGroupedSideNaveHook from '@cv/hooks/GroupedSideNaveHook/useGroupedSideNaveHook'
 import {
   getOptions,
   getInputGroupProps,
@@ -57,15 +57,7 @@ import type { AppDynamicsData, AppDynamicsFomikFormInterface } from './AppDHealt
 import MetricPackCustom from '../MetricPackCustom'
 import CustomMetric from '../../common/CustomMetric/CustomMetric'
 import AppDCustomMetricForm from './Components/AppDCustomMetricForm/AppDCustomMetricForm'
-import {
-  initGroupedCreatedMetrics,
-  initializeCreatedMetrics,
-  initializeSelectedMetricsMap
-} from '../../common/CustomMetric/CustomMetric.utils'
-import type {
-  CreatedMetricsWithSelectedIndex,
-  CustomSelectedAndMappedMetrics
-} from '../../common/CustomMetric/CustomMetric.types'
+
 import css from './AppDHealthSource.module.scss'
 
 export default function AppDMonitoredSource({
@@ -203,29 +195,20 @@ export default function AppDMonitoredSource({
 
   const [showCustomMetric, setShowCustomMetric] = useState(!!Array.from(appDynamicsData?.mappedServicesAndEnvs)?.length)
 
-  const [{ selectedMetric, mappedMetrics }, setMappedMetrics] = useState<CustomSelectedAndMappedMetrics>(
-    initializeSelectedMetricsMap(
-      getString('cv.monitoringSources.appD.defaultAppDMetricName'),
-      initAppDCustomFormValue(getString),
-      appDynamicsData?.mappedServicesAndEnvs
-    )
-  )
-
-  const [{ createdMetrics }, setCreatedMetrics] = useState<CreatedMetricsWithSelectedIndex>(
-    initializeCreatedMetrics(
-      getString('cv.monitoringSources.appD.defaultAppDMetricName'),
-      selectedMetric,
-      mappedMetrics
-    )
-  )
-
-  const [groupedCreatedMetrics, setGroupedCreatedMetrics] = useState<GroupedCreatedMetrics>(
-    initGroupedCreatedMetrics(mappedMetrics, getString)
-  )
-
-  const groupedCreatedMetricsList = flatten(Object.values(groupedCreatedMetrics))
-    .map(item => item.metricName)
-    .filter(item => Boolean(item)) as string[]
+  const {
+    createdMetrics,
+    mappedMetrics,
+    selectedMetric,
+    groupedCreatedMetrics,
+    groupedCreatedMetricsList,
+    setMappedMetrics,
+    setCreatedMetrics,
+    setGroupedCreatedMetrics
+  } = useGroupedSideNaveHook({
+    defaultCustomMetricName: getString('cv.monitoringSources.appD.defaultAppDMetricName'),
+    initCustomMetricData: initAppDCustomFormValue(getString),
+    mappedServicesAndEnvs: appDynamicsData?.mappedServicesAndEnvs
+  })
 
   const [nonCustomFeilds, setNonCustomFeilds] = useState(initializeNonCustomFields(appDynamicsData))
 

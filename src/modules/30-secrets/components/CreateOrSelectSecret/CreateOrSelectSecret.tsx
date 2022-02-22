@@ -8,6 +8,7 @@
 import React from 'react'
 import { useParams } from 'react-router-dom'
 import { pick } from 'lodash-es'
+import type { SelectOption } from '@wings-software/uicore'
 import SecretReference from '@secrets/components/SecretReference/SecretReference'
 import { getReference } from '@common/utils/utils'
 import type { SecretResponseWrapper, ResponsePageSecretResponseWrapper, ConnectorInfoDTO } from 'services/cd-ng'
@@ -29,6 +30,8 @@ export interface CreateOrSelectSecretProps {
   connectorTypeContext?: ConnectorInfoDTO['type']
   onCancel?: () => void
   handleInlineSSHSecretCreation: () => void
+  secretType?: SelectOption
+  setSecretType?: (val: SelectOption) => void
 }
 
 const CreateOrSelectSecret: React.FC<CreateOrSelectSecretProps> = ({
@@ -37,10 +40,11 @@ const CreateOrSelectSecret: React.FC<CreateOrSelectSecretProps> = ({
   secretsListMockData,
   connectorTypeContext,
   onCancel,
-  handleInlineSSHSecretCreation
+  handleInlineSSHSecretCreation,
+  secretType,
+  setSecretType
 }) => {
   const { accountId, orgIdentifier, projectIdentifier } = useParams<ProjectPathProps>()
-
   return (
     <section className={css.main}>
       <SecretReference
@@ -58,6 +62,8 @@ const CreateOrSelectSecret: React.FC<CreateOrSelectSecretProps> = ({
         mock={secretsListMockData}
         connectorTypeContext={connectorTypeContext}
         handleInlineSSHSecretCreation={handleInlineSSHSecretCreation}
+        secretType={secretType}
+        setSecretType={setSecretType}
       />
     </section>
   )

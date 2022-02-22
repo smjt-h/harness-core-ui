@@ -175,6 +175,7 @@ const FormContent = ({
             <div className={stepCss.formGroup}>
               <FieldArray
                 name="spec.approverInputs"
+                validateOnChange={false}
                 render={({ push, remove }) => {
                   return (
                     <div>
@@ -256,7 +257,6 @@ function HarnessApprovalStepMode(
       onSubmit={values => onUpdate?.(values)}
       initialValues={props.initialValues}
       formName="harnessApproval"
-      enableReinitialize={true}
       validate={data => {
         onChange?.(data)
       }}

@@ -56,7 +56,7 @@ const VariationsList: React.FC<{ featureFlag: Feature; onEditSuccess: () => void
   onEditSuccess,
   gitSync
 }) => {
-  const { orgIdentifier, accountId, projectIdentifier } = useParams<Record<string, string>>()
+  const { orgIdentifier, accountId: accountIdentifier, projectIdentifier } = useParams<Record<string, string>>()
   const isFlagTypeBoolean = featureFlag.kind === FlagTypeVariations.booleanFlag
   const { variations } = featureFlag
   const { getString } = useStrings()
@@ -71,7 +71,7 @@ const VariationsList: React.FC<{ featureFlag: Feature; onEditSuccess: () => void
         <FlexExpander />
         <EditVariationsModal
           gitSync={gitSync}
-          accountId={accountId}
+          accountIdentifier={accountIdentifier}
           orgIdentifier={orgIdentifier}
           projectIdentifier={projectIdentifier}
           feature={featureFlag}
@@ -119,39 +119,36 @@ const FlagActivationDetails: React.FC<FlagActivationDetailsProps> = props => {
   const urlQuery: Record<string, string> = useQueryParams()
   const { featureFlag, refetchFlag, gitSyncActionsComponent, gitSync } = props
   const { getString } = useStrings()
-  const { orgIdentifier, accountId, projectIdentifier } = useParams<Record<string, string>>()
+  const { orgIdentifier, accountId: accountIdentifier, projectIdentifier } = useParams<Record<string, string>>()
   const featureFlagListURL =
     routes.toCFFeatureFlags({
-      projectIdentifier: projectIdentifier,
-      orgIdentifier: orgIdentifier,
-      accountId
+      projectIdentifier,
+      orgIdentifier,
+      accountId: accountIdentifier
     }) + `${urlQuery?.activeEnvironment ? `?activeEnvironment=${urlQuery.activeEnvironment}` : ''}`
   const { mutate: submitPatch } = usePatchFeature({
     identifier: featureFlag.identifier as string,
     queryParams: {
-      project: featureFlag.project as string,
-      environment: featureFlag.envProperties?.environment as string,
-      account: accountId,
-      accountIdentifier: accountId,
-      org: orgIdentifier
+      projectIdentifier: featureFlag.project as string,
+      environmentIdentifier: featureFlag.envProperties?.environment as string,
+      accountIdentifier,
+      orgIdentifier
     } as PatchFeatureQueryParams
   })
 
   const { mutate: deleteFeatureFlag } = useDeleteFeatureFlag({
     queryParams: {
-      project: projectIdentifier as string,
-      account: accountId,
-      accountIdentifier: accountId,
-      org: orgIdentifier
+      projectIdentifier,
+      accountIdentifier,
+      orgIdentifier
     } as DeleteFeatureFlagQueryParams
   })
 
   const queryParams = {
-    account: accountId,
-    accountIdentifier: accountId,
-    org: orgIdentifier,
-    project: projectIdentifier,
-    environment: featureFlag.envProperties?.environment as string
+    accountIdentifier,
+    orgIdentifier,
+    projectIdentifier,
+    environmentIdentifier: featureFlag.envProperties?.environment as string
   } as PatchFeatureQueryParams
 
   const renderTime = (time: number, langString: StringKeys, style?: React.CSSProperties): React.ReactNode => (

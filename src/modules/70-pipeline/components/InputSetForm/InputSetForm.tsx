@@ -403,7 +403,7 @@ export const InputSetForm: React.FC<InputSetFormProps> = (props): JSX.Element =>
             }
           })
         } else {
-          throw new Error(getString('pipeline.triggers.validation.identifier'))
+          throw new Error(getString('common.validation.identifierIsRequired'))
         }
       } else {
         response = await createInputSet(yamlStringify({ inputSet: clearNullUndefined(inputSetObj) }) as any, {

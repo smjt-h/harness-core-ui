@@ -6,10 +6,13 @@
  */
 
 .pageBody {
-  height: calc(100% - 140px) !important;
+  height: 100% !important;
+  box-sizing: border-box;
 
   .container {
-    height: 100%;
+    height: calc(100% - 40px) !important;
+    margin: 20px !important;
+    box-sizing: border-box;
   }
 
   .card {

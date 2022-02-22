@@ -61,24 +61,28 @@ export const FlagSettings: React.FC<FlagSettingsProps> = ({ target, gitSync }) =
   const { getString } = useStrings()
   const [sortByField] = useState(FlagsSortByField.NAME)
   const [sortOrder, setSortOrder] = useState(SortOrder.ASCENDING)
-  const { accountId, orgIdentifier, projectIdentifier, targetIdentifier } = useParams<Record<string, string>>()
-  const { activeEnvironment } = useActiveEnvironment()
-  const patchParams = {
-    accountIdentifier: accountId,
+  const {
+    accountId: accountIdentifier,
     orgIdentifier,
     projectIdentifier,
-    environmentIdentifier: activeEnvironment
+    targetIdentifier
+  } = useParams<Record<string, string>>()
+  const { activeEnvironment: environmentIdentifier } = useActiveEnvironment()
+  const patchParams = {
+    accountIdentifier,
+    orgIdentifier,
+    projectIdentifier,
+    environmentIdentifier
   }
 
   const [pageNumber, setPageNumber] = useState(0)
   const [queryString, setQueryString] = useState('')
   const queryParams = useMemo(
     () => ({
-      account: accountId,
-      accountIdentifier: accountId,
-      org: orgIdentifier,
-      project: projectIdentifier as string,
-      environment: activeEnvironment,
+      accountIdentifier,
+      orgIdentifier,
+      projectIdentifier,
+      environmentIdentifier,
       targetIdentifier,
       pageSize: CF_DEFAULT_PAGE_SIZE,
       pageNumber,
@@ -87,10 +91,10 @@ export const FlagSettings: React.FC<FlagSettingsProps> = ({ target, gitSync }) =
       name: queryString
     }),
     [
-      accountId,
+      accountIdentifier,
       orgIdentifier,
       projectIdentifier,
-      activeEnvironment,
+      environmentIdentifier,
       targetIdentifier,
       pageNumber,
       sortByField,

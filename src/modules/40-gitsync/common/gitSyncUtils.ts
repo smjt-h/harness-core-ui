@@ -6,15 +6,9 @@
  */
 
 import type { IconName } from '@wings-software/uicore'
-import { pick } from 'lodash-es'
-import { useEffect, useState } from 'react'
 import { Connectors } from '@connectors/constants'
 import type { GitSyncConfig, ConnectorInfoDTO, GitSyncEntityDTO, EntityGitDetails } from 'services/cd-ng'
-import type { ModulePathParams, ProjectPathProps } from '@common/interfaces/RouteInterfaces'
-import { getPipelineListPromise } from 'services/pipeline-ng'
 import { GitSuffixRegex } from '@common/utils/StringUtils'
-import { getAllFeaturesPromise } from 'services/cf'
-import { useFeatureFlags } from '@common/hooks/useFeatureFlag'
 
 export const getGitConnectorIcon = (type: GitSyncConfig['gitConnectorType']): IconName => {
   switch (type) {
@@ -159,66 +153,4 @@ export const getRepoEntityObject = (
     branch: repo?.branch,
     entityGitPath: gitDetails?.filePath
   }
-}
-
-/**
- * This hook will be used to decide whether user can enable git experience for any project or not.
- * Current conditions where Git Sync cannot be enabled:
- *  - If Pipelines have been created
- *  - If Feature Flags have been created
- * Once complete sync will be implemented, blocking user to enable the gitSync will be not required.
- */
-
-export const useCanEnableGitExperience = (queryParam: ProjectPathProps & ModulePathParams): boolean => {
-  const { NG_GIT_FULL_SYNC, FF_GITSYNC } = useFeatureFlags()
-  const [canEnableGit, setCanEnableGit] = useState<boolean>(false)
-
-  useEffect(() => {
-    const defaultQueryParamsForPipelines = {
-      ...pick(queryParam, ['projectIdentifier', 'orgIdentifier']),
-      accountIdentifier: queryParam.accountId,
-      searchTerm: '',
-      page: 0,
-      size: 1
-    }
-
-    const checkEnableGitConditions = async (): Promise<void> => {
-      try {
-        const pipelinesResponse = await getPipelineListPromise({
-          queryParams: defaultQueryParamsForPipelines,
-          body: { filterType: 'PipelineSetup' }
-        })
-
-        const hasPipelines = !!(
-          pipelinesResponse?.status === 'SUCCESS' &&
-          pipelinesResponse?.data?.totalElements &&
-          pipelinesResponse?.data?.totalElements > 0
-        )
-
-        let hasFeatureFlags = false
-
-        if (FF_GITSYNC) {
-          const featureFlagsResponse = await getAllFeaturesPromise({
-            queryParams: {
-              accountIdentifier: queryParam.accountId,
-              org: queryParam.orgIdentifier,
-              project: queryParam.projectIdentifier
-            }
-          })
-
-          hasFeatureFlags = !!(featureFlagsResponse && featureFlagsResponse.itemCount > 0)
-        }
-
-        if (hasFeatureFlags === false && hasPipelines === false) {
-          setCanEnableGit(true)
-        }
-      } catch (error) {
-        setCanEnableGit(true)
-      }
-    }
-
-    checkEnableGitConditions()
-  }, [])
-
-  return NG_GIT_FULL_SYNC ? true : canEnableGit
 }

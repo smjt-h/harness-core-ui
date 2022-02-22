@@ -14,11 +14,10 @@ import { Icon, Text } from '@harness/uicore'
 import { Tooltip } from '@blueprintjs/core'
 import { useStrings } from 'framework/strings'
 import artifactSourceBaseFactory from '@cd/factory/ArtifactSourceFactory/ArtifactSourceBaseFactory'
-import { StepViewType } from '@pipeline/components/AbstractSteps/Step'
 import type { GitQueryParams, InputSetPathProps, PipelineType } from '@common/interfaces/RouteInterfaces'
 import { useQueryParams } from '@common/hooks'
 import type { KubernetesArtifactsProps } from '../../K8sServiceSpecInterface'
-import { getNonRuntimeFields } from '../../K8sServiceSpecHelper'
+import { getNonRuntimeFields, isRuntimeMode } from '../../K8sServiceSpecHelper'
 import css from '../../K8sServiceSpec.module.scss'
 
 export const KubernetesPrimaryArtifacts = (props: KubernetesArtifactsProps): React.ReactElement | null => {
@@ -28,7 +27,7 @@ export const KubernetesPrimaryArtifacts = (props: KubernetesArtifactsProps): Rea
   >()
   const { repoIdentifier, branch } = useQueryParams<GitQueryParams>()
 
-  const runtimeMode = props.stepViewType === StepViewType.InputSet || props.stepViewType === StepViewType.DeploymentForm
+  const runtimeMode = isRuntimeMode(props.stepViewType)
   const isArtifactsRuntime = runtimeMode && !!get(props.template, 'artifacts', false)
   const isPrimaryArtifactsRuntime = runtimeMode && !!get(props.template, 'artifacts.primary', false)
   const isSidecarRuntime = runtimeMode && !!get(props.template, 'artifacts.sidecars', false)
@@ -73,6 +72,7 @@ export const KubernetesPrimaryArtifacts = (props: KubernetesArtifactsProps): Rea
           repoIdentifier,
           branch,
           artifactPath,
+          isSidecar: false,
           artifact
         })}
       </div>

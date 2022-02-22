@@ -33,9 +33,14 @@ export default function TerraformInputStep<T extends TerraformData = TerraformDa
   props: TerraformProps<T>
 ): React.ReactElement {
   const { getString } = useStrings()
-  const { inputSetData, readonly, path, allowableTypes } = props
+  const { inputSetData, readonly, path, allowableTypes, onUpdate, onChange } = props
   const { expressions } = useVariablesExpression()
-
+  const onUpdateRef = (arg: TerraformData): void => {
+    onUpdate?.(arg as T)
+  }
+  const onChangeRef = (arg: TerraformData): void => {
+    onChange?.(arg as T)
+  }
   return (
     <FormikForm>
       {getMultiTypeFromValue((inputSetData?.template as TerraformData)?.spec?.provisionerIdentifier) ===
@@ -67,7 +72,7 @@ export default function TerraformInputStep<T extends TerraformData = TerraformDa
           />
         </div>
       )}
-      <ConfigInputs {...props} />
+      <ConfigInputs {...props} onUpdate={onUpdateRef} onChange={onChangeRef} />
       {inputSetData?.template?.spec?.configuration?.spec?.varFiles?.length && (
         <Label style={{ color: Color.GREY_900, paddingBottom: 'var(--spacing-medium)' }}>
           {getString('cd.terraformVarFiles')}
@@ -97,7 +102,15 @@ export default function TerraformInputStep<T extends TerraformData = TerraformDa
             </React.Fragment>
           )
         } else if (varFile.varFile?.type === TerraformStoreTypes.Remote) {
-          return <TFRemoteSection remoteVar={varFile} index={index} {...props} />
+          return (
+            <TFRemoteSection
+              remoteVar={varFile}
+              index={index}
+              {...props}
+              onUpdate={onUpdateRef}
+              onChange={onChangeRef}
+            />
+          )
         }
         return <></>
       })}

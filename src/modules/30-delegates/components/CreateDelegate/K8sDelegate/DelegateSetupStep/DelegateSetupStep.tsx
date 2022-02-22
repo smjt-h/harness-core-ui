@@ -28,12 +28,10 @@ import {
   useGetDelegateSizes,
   useValidateKubernetesYaml,
   DelegateSetupDetails,
-  useGetDelegateTokens,
-  GetDelegateTokensQueryParams,
   DelegateTokenDetails
 } from 'services/portal'
 
-import { useListDelegateProfilesNg } from 'services/cd-ng'
+import { useListDelegateProfilesNg, useGetDelegateTokens, GetDelegateTokensQueryParams } from 'services/cd-ng'
 import { useStrings } from 'framework/strings'
 
 import type { DelegateProfile } from '@delegates/DelegateInterface'
@@ -146,7 +144,7 @@ const DelegateSetup: React.FC<StepProps<K8sDelegateWizardData> & DelegateSetupSt
 
   const { data: tokensResponse, refetch: getTokens } = useGetDelegateTokens({
     queryParams: {
-      accountId,
+      accountIdentifier: accountId,
       projectIdentifier,
       orgIdentifier,
       status: 'ACTIVE'

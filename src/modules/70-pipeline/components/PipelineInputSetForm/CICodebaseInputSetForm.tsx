@@ -85,8 +85,8 @@ const CICodebaseInputSetFormInternal = ({
   }
 
   const inputLabels = {
-    branch: getString('pipeline.triggers.conditionsPanel.branchName'),
-    tag: getString('pipeline.triggers.conditionsPanel.tagName'),
+    branch: getString('common.branchName'),
+    tag: getString('common.tagName'),
     PR: getString('pipeline.ciCodebase.pullRequestNumber')
   }
 

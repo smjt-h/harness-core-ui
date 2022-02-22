@@ -17,6 +17,8 @@ import { ExecutionVerificationSummary } from './components/ExecutionVerification
 import type { DeploymentNodeAnalysisResult } from './components/DeploymentProgressAndNodes/components/DeploymentNodes/DeploymentNodes.constants'
 import LogAnalysisContainer from './components/LogAnalysisContainer/LogAnalysisView.container'
 import { getActivityId, getDefaultTabId } from './ExecutionVerificationView.utils'
+import { ManualInterventionVerifyStep } from './components/ManualInterventionVerifyStep/ManualInterventionVerifyStep'
+import InterruptedHistory from './components/InterruptedHistory/InterruptedHistory'
 import css from './ExecutionVerificationView.module.scss'
 
 interface ExecutionVerificationViewProps {
@@ -33,39 +35,43 @@ export function ExecutionVerificationView(props: ExecutionVerificationViewProps)
   const isErrorTrackingEnabled = useFeatureFlag(FeatureFlag.ERROR_TRACKING_ENABLED)
 
   const content = activityId ? (
-    <Tabs id="AnalysisTypeTabs" defaultSelectedTabId={defaultTabId}>
-      <Tab
-        id={getString('pipeline.verification.analysisTab.metrics')}
-        title={getString('pipeline.verification.analysisTab.metrics')}
-        panelClassName={css.mainTabPanel}
-        panel={
-          <Layout.Horizontal style={{ height: '100%' }}>
-            <ExecutionVerificationSummary
-              displayAnalysisCount={false}
-              step={step}
-              className={css.executionSummary}
-              onSelectNode={setSelectedNode}
-              isConsoleView
-            />
-            <DeploymentMetrics step={step} selectedNode={selectedNode} activityId={activityId} />
-          </Layout.Horizontal>
-        }
-      />
-      <Tab
-        id={getString('pipeline.verification.analysisTab.logs')}
-        title={getString('pipeline.verification.analysisTab.logs')}
-        panel={<LogAnalysisContainer step={step} hostName={selectedNode?.hostName} />}
-      />
-      {isErrorTrackingEnabled && (
+    <>
+      <ManualInterventionVerifyStep step={step} />
+      <InterruptedHistory interruptedHistories={step?.interruptHistories} />
+      <Tabs id="AnalysisTypeTabs" defaultSelectedTabId={defaultTabId}>
         <Tab
-          id={getString('errors')}
-          title={getString('errors')}
+          id={getString('pipeline.verification.analysisTab.metrics')}
+          title={getString('pipeline.verification.analysisTab.metrics')}
+          panelClassName={css.mainTabPanel}
           panel={
-            <LogAnalysisContainer step={step} hostName={'errortracking'} isErrorTracking={isErrorTrackingEnabled} />
+            <Layout.Horizontal style={{ height: '100%' }}>
+              <ExecutionVerificationSummary
+                displayAnalysisCount={false}
+                step={step}
+                className={css.executionSummary}
+                onSelectNode={setSelectedNode}
+                isConsoleView
+              />
+              <DeploymentMetrics step={step} selectedNode={selectedNode} activityId={activityId} />
+            </Layout.Horizontal>
           }
         />
-      )}
-    </Tabs>
+        <Tab
+          id={getString('pipeline.verification.analysisTab.logs')}
+          title={getString('pipeline.verification.analysisTab.logs')}
+          panel={<LogAnalysisContainer step={step} hostName={selectedNode?.hostName} />}
+        />
+        {isErrorTrackingEnabled && (
+          <Tab
+            id={getString('errors')}
+            title={getString('errors')}
+            panel={
+              <LogAnalysisContainer step={step} hostName={'errortracking'} isErrorTracking={isErrorTrackingEnabled} />
+            }
+          />
+        )}
+      </Tabs>
+    </>
   ) : (
     <Container className={css.noAnalysis}>
       <NoDataCard message={getString('pipeline.verification.logs.noAnalysis')} icon="warning-sign" />

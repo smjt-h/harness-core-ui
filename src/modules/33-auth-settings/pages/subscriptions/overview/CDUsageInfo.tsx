@@ -22,7 +22,7 @@ const ActiveInstanceCard: React.FC<{ subscribedIns: number; activeIns: number }>
 
   const leftHeader = getString('common.subscriptions.usage.srvcInst')
   const tooltip = 'Active Instance tooltip placeholder'
-  const rightHeader = getString('common.subscriptions.usage.last60days')
+  const rightHeader = getString('common.subscriptions.usage.last30days')
   const hasBar = true
   const leftFooter = getString('common.subscribed')
   const rightFooter = getString('common.subscribed')
@@ -48,7 +48,7 @@ const ActiveServices: React.FC<{ subscribedService: number; activeService: numbe
   const leftHeader = getString('common.subscriptions.usage.services')
   //TO-DO: replace with tooltip
   const tooltip = 'Services tooltip placeholder'
-  const rightHeader = getString('common.subscriptions.usage.last60days')
+  const rightHeader = getString('common.subscriptions.usage.last30days')
   const hasBar = true
   const leftFooter = getString('total')
   const props = {
@@ -69,9 +69,9 @@ const ActiveUsers: React.FC<{ subscribedUsers: number; activeUsers: number }> = 
   const leftHeader = getString('common.subscriptions.usage.cdUsers')
   //TO-DO: replace with tooltip
   const tooltip = 'Active CD Users tooltip placeholder'
-  const rightHeader = getString('common.subscriptions.usage.last60days')
+  const rightHeader = getString('common.subscriptions.usage.last30days')
   const hasBar = true
-  const leftFooter = getString('common.totalHarnessUser')
+  const leftFooter = getString('common.subscribed')
   const props = {
     subscribed: subscribedUsers,
     usage: activeUsers,

@@ -293,9 +293,12 @@ export default function MetricDashboardWidgetNav<T>(props: MetricDashboardWidget
 
   const metricWidgets: MetricWidget[] = useMemo(() => {
     return (
-      dashboardWidgetsData?.data?.map((widgetToMap: any) => {
-        return dashboardWidgetMapper(selectedDashboard?.itemId || '', widgetToMap)
-      }) || []
+      (dashboardWidgetsData?.data &&
+        Array.isArray(dashboardWidgetsData.data) &&
+        dashboardWidgetsData.data.map((widgetToMap: any) => {
+          return dashboardWidgetMapper(selectedDashboard?.itemId || '', widgetToMap)
+        })) ||
+      []
     )
   }, [dashboardWidgetsData, dashboardWidgetMapper])
 

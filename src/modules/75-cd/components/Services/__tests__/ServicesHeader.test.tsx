@@ -6,8 +6,8 @@
  */
 
 import React from 'react'
-import { render } from '@testing-library/react'
-import { TestWrapper } from '@common/utils/testUtils'
+import { render, fireEvent, getByText } from '@testing-library/react'
+import { TestWrapper, findDialogContainer } from '@common/utils/testUtils'
 import { ServicesHeader } from '@cd/components/Services/ServicesHeader/ServicesHeader'
 
 describe('ServiceHeader', () => {
@@ -21,5 +21,20 @@ describe('ServiceHeader', () => {
       </TestWrapper>
     )
     expect(container).toMatchSnapshot()
+  })
+  test('should open and close the Services modal', async () => {
+    const { container } = render(
+      <TestWrapper>
+        <ServicesHeader />
+      </TestWrapper>
+    )
+    fireEvent.click(container.querySelector('[data-testid="add-service"]') as HTMLElement)
+
+    const dialog = findDialogContainer() as HTMLElement
+    expect(dialog).toMatchSnapshot()
+    expect(dialog).toBeTruthy()
+    expect(getByText(document.body, 'cancel')).toBeDefined()
+    fireEvent.click(getByText(document.body, 'cancel') as HTMLButtonElement)
+    expect(findDialogContainer()).toBeFalsy()
   })
 })

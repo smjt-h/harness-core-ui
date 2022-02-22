@@ -11,9 +11,7 @@ import { useParams } from 'react-router-dom'
 import { Button, Layout } from '@wings-software/uicore'
 import { useModalHook } from '@harness/use-modal'
 import { Dialog } from '@blueprintjs/core'
-import { NGBreadcrumbs } from '@common/components/NGBreadcrumbs/NGBreadcrumbs'
 import { useStrings } from 'framework/strings'
-import { Page } from '@common/exports'
 import { ParamsType, useServiceStore, Views } from '@cd/components/Services/common'
 import { NewEditServiceModal } from '@cd/components/PipelineSteps/DeployServiceStep/DeployServiceStep'
 import RbacButton from '@rbac/components/Button/Button'
@@ -57,7 +55,6 @@ export const ServicesHeader: React.FC = () => {
 
   return (
     <>
-      <Page.Header title={getString('services')} breadcrumbs={<NGBreadcrumbs />} />
       <Layout.Horizontal className={css.header} flex={{ distribution: 'space-between' }}>
         <Layout.Horizontal>
           <RbacButton

@@ -48,7 +48,6 @@ import { TestStatus } from '@common/components/TestConnectionWidget/TestConnecti
 import { HARNESS_FOLDER_NAME_PLACEHOLDER, HARNESS_FOLDER_SUFFIX } from '@gitsync/common/Constants'
 import { getScopeFromDTO, ScopedObjectDTO } from '@common/components/EntityReference/EntityReference'
 import SCMCheck from '@common/components/SCMCheck/SCMCheck'
-import { useFeatureFlags } from '@common/hooks/useFeatureFlag'
 import { GitSyncStoreProvider } from 'framework/GitRepoStore/GitSyncStoreContext'
 import RepoBranchSelect from './RepoBranchSelect'
 import RepoTestConnection from './RepoTestConnection'
@@ -93,13 +92,9 @@ const getConnectorIdentifierWithScope = (scope: Scope, identifier: string): stri
 const getConnectorTypeIcon = (isSelected: boolean, icon: ConnectorCardInterface['icon']): IconName =>
   isSelected ? icon?.selected : icon?.default
 
-// Need SCM only with FF for 1st repo
-const needToAddSCM = (isNewUser: boolean, fullSync = false): boolean => isNewUser && fullSync
-
 const GitSyncRepoForm: React.FC<ModalConfigureProps & GitSyncRepoFormProps> = props => {
   const { accountId, projectIdentifier, orgIdentifier, isNewUser, onClose } = props
-  const { NG_GIT_FULL_SYNC } = useFeatureFlags()
-  const [needSCM, setNeedSCM] = React.useState<boolean>(needToAddSCM(isNewUser, NG_GIT_FULL_SYNC))
+  const [needSCM, setNeedSCM] = React.useState<boolean>(isNewUser)
   const [modalErrorHandler, setModalErrorHandler] = useState<ModalErrorHandlerBinding | undefined>()
   const [connectorIdentifierRef, setConnectorIdentifierRef] = useState<string>('')
   const [repositoryURL, setRepositoryURL] = useState<string | undefined>()
@@ -141,7 +136,7 @@ const GitSyncRepoForm: React.FC<ModalConfigureProps & GitSyncRepoFormProps> = pr
 
   return (
     <Container height={'inherit'} className={css.modalContainer} margin="large">
-      {needToAddSCM(isNewUser, NG_GIT_FULL_SYNC) ? (
+      {isNewUser ? (
         <GitSyncStoreProvider>
           <SCMCheck profileLinkClickHandler={onClose} title={modalTitle} validateSCM={hasSCM => setNeedSCM(!hasSCM)} />
         </GitSyncStoreProvider>

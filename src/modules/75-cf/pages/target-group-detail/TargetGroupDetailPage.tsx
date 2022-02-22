@@ -30,7 +30,7 @@ import css from './TargetGroupDetailPage.module.scss'
 
 const TargetGroupDetailPage: FC = () => {
   const { getString } = useStrings()
-  const { withActiveEnvironment, activeEnvironment: environment } = useActiveEnvironment()
+  const { withActiveEnvironment, activeEnvironment: environmentIdentifier } = useActiveEnvironment()
   const gitSync = useGitSync()
   const { isPlanEnforcementEnabled } = usePlanEnforcement()
 
@@ -38,8 +38,8 @@ const TargetGroupDetailPage: FC = () => {
 
   const {
     accountId: accountIdentifier,
-    orgIdentifier: org,
-    projectIdentifier: project,
+    orgIdentifier,
+    projectIdentifier,
     segmentIdentifier
   } = useParams<Record<string, string>>()
 
@@ -52,9 +52,9 @@ const TargetGroupDetailPage: FC = () => {
     identifier: segmentIdentifier,
     queryParams: {
       accountIdentifier,
-      org,
-      project,
-      environment
+      orgIdentifier,
+      projectIdentifier,
+      environmentIdentifier
     }
   })
 
@@ -64,11 +64,11 @@ const TargetGroupDetailPage: FC = () => {
     error: envError,
     refetch: refetchEnv
   } = useGetEnvironment({
-    environmentIdentifier: environment,
+    environmentIdentifier,
     queryParams: {
       accountId: accountIdentifier,
-      orgIdentifier: org,
-      projectIdentifier: project
+      orgIdentifier,
+      projectIdentifier
     }
   })
 
@@ -79,13 +79,13 @@ const TargetGroupDetailPage: FC = () => {
         url: withActiveEnvironment(
           routes.toCFSegments({
             accountId: accountIdentifier,
-            orgIdentifier: org,
-            projectIdentifier: project
+            orgIdentifier,
+            projectIdentifier
           })
         )
       }
     ],
-    [accountIdentifier, org, project, withActiveEnvironment]
+    [accountIdentifier, orgIdentifier, projectIdentifier, withActiveEnvironment]
   )
 
   const createdDate = useMemo<string | undefined>(

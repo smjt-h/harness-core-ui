@@ -6,6 +6,7 @@
  */
 
 import React from 'react'
+import { toLower } from 'lodash-es'
 import { useParams, Link } from 'react-router-dom'
 import { Spinner } from '@blueprintjs/core'
 import { Color, Container, Layout, Text } from '@wings-software/uicore'
@@ -52,7 +53,13 @@ export default function ResourceConstraintTooltip(props: ResourceConstraintToolt
       {props?.data?.executionList?.length && (
         <Layout.Vertical spacing={'small'}>
           <Text font={{ size: 'small' }}>
-            {getString('pipeline.resourceConstraints.infoText', { executioncount: noOfExecutionsBeforePipeline })}
+            {getString('pipeline.resourceConstraints.infoText', {
+              executioncount: noOfExecutionsBeforePipeline,
+              executiontext:
+                noOfExecutionsBeforePipeline > 1
+                  ? toLower(getString('executionsText'))
+                  : toLower(getString('executionText'))
+            })}
           </Text>
           {props?.data?.executionList?.map((pipeline: ResourceConstraintDetail, index: number) => (
             <Container key={`${pipeline.pipelineIdentifier}-${index}`}>

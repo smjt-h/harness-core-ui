@@ -19,20 +19,24 @@ import SelectFlagGitRepoPage from './SelectFlagGitRepoPage'
 import css from './FeatureFlagsLandingPage.module.scss'
 
 const FeatureFlagsLandingPage: React.FC = () => {
-  const { projectIdentifier, accountId, orgIdentifier } = useParams<ProjectPathProps & ModulePathParams>()
+  const {
+    projectIdentifier,
+    accountId: accountIdentifier,
+    orgIdentifier
+  } = useParams<ProjectPathProps & ModulePathParams>()
   const FF_GITSYNC = useFeatureFlag(FeatureFlag.FF_GITSYNC)
   const isGitSyncEnabled = useIsGitSyncEnabled({
     queryParams: {
-      accountIdentifier: accountId,
-      orgIdentifier: orgIdentifier,
-      projectIdentifier: projectIdentifier
+      accountIdentifier,
+      orgIdentifier,
+      projectIdentifier
     }
   })
   const gitRepo = useGetGitRepo({
     identifier: projectIdentifier,
     queryParams: {
-      accountIdentifier: accountId,
-      org: orgIdentifier
+      accountIdentifier,
+      orgIdentifier
     }
   })
 

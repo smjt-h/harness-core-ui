@@ -9,6 +9,7 @@ import type { SelectOption } from '@wings-software/uicore'
 import type { FormikProps } from 'formik'
 import type { UseStringsReturn } from 'framework/strings'
 import type { CustomHealthMetricDefinition, TimestampInfo } from 'services/cv'
+import type { CustomMappedMetric } from '../../common/CustomMetric/CustomMetric.types'
 import type { UpdatedHealthSource } from '../../HealthSourceDrawer/HealthSourceDrawerContent.types'
 
 export interface CustomHealthSourceSetupSource {
@@ -46,24 +47,29 @@ export type MapCustomHealthToService = {
   serviceInstanceIdentifier?: string
 }
 
-export type SelectedAndMappedMetrics = {
-  selectedMetric: string
-  mappedMetrics: Map<string, MapCustomHealthToService>
-}
-
-export type CreatedMetricsWithSelectedIndex = {
-  createdMetrics: string[]
-  selectedMetricIndex: number
-}
-
 export interface onSubmitCustomHealthSourceInterface {
   formikProps: FormikProps<MapCustomHealthToService | undefined>
   createdMetrics: string[]
   selectedMetricIndex: number
-  mappedMetrics: Map<string, MapCustomHealthToService>
+  mappedMetrics: Map<string, CustomMappedMetric>
   selectedMetric: string
   onSubmit: (formdata: CustomHealthSourceSetupSource, UpdatedHealthSource: UpdatedHealthSource) => Promise<void>
   sourceData: any
   transformedSourceData: CustomHealthSourceSetupSource
   getString: UseStringsReturn['getString']
+}
+export interface InitCustomHealthSourceInterface {
+  sli: boolean
+  healthScore: boolean
+  continuousVerification: boolean
+  serviceInstanceMetricPath: string
+  metricIdentifier: string
+  baseURL: string
+  pathURL: string
+  metricValue: string
+  requestMethod: string
+  timestamp: string
+  timestampFormat: string
+  queryType: string
+  query: string
 }

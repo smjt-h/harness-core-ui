@@ -19,7 +19,7 @@ export interface NoSegmentsViewProps {
 }
 
 export const NoSegmentsView: React.FC<NoSegmentsViewProps> = ({ hasEnvironment, onNewSegmentCreated }) => {
-  const { projectIdentifier, orgIdentifier, accountId } = useParams<Record<string, string>>()
+  const { projectIdentifier, orgIdentifier, accountId: accountIdentifier } = useParams<Record<string, string>>()
   const { getString } = useStrings()
 
   return (
@@ -29,7 +29,7 @@ export const NoSegmentsView: React.FC<NoSegmentsViewProps> = ({ hasEnvironment, 
         message={getString(hasEnvironment ? 'cf.segments.noSegmentForEnv' : 'cf.segments.noSegment')}
       >
         <NewSegmentButton
-          accountId={accountId}
+          accountIdentifier={accountIdentifier}
           orgIdentifier={orgIdentifier}
           projectIdentifier={projectIdentifier}
           onCreated={onNewSegmentCreated}

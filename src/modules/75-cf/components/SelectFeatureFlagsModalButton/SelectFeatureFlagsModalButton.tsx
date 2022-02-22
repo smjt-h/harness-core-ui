@@ -43,7 +43,7 @@ export interface SelectedFeatureFlag {
 }
 
 export interface SelectFeatureFlagsModalButtonProps extends Omit<ButtonProps, 'onClick' | 'onSubmit'> {
-  accountId: string
+  accountIdentifier: string
   orgIdentifier: string
   projectIdentifier: string
   environmentIdentifier: string
@@ -63,7 +63,7 @@ export interface SelectFeatureFlagsModalButtonProps extends Omit<ButtonProps, 'o
 }
 
 export const SelectFeatureFlagsModalButton: React.FC<SelectFeatureFlagsModalButtonProps> = ({
-  accountId,
+  accountIdentifier,
   orgIdentifier,
   projectIdentifier,
   targetIdentifier,
@@ -88,11 +88,10 @@ export const SelectFeatureFlagsModalButton: React.FC<SelectFeatureFlagsModalButt
 
     const queryParams = useMemo(
       () => ({
-        account: accountId,
-        accountIdentifier: accountId,
-        org: orgIdentifier,
-        project: projectIdentifier,
-        environment: environmentIdentifier,
+        accountIdentifier,
+        orgIdentifier,
+        projectIdentifier,
+        environmentIdentifier,
         name: queryString,
         sortOrder,
         sortByField,

@@ -32,7 +32,7 @@ export interface GCOMetricInfo {
 export interface GCOMetricSetupSource {
   isEdit: boolean
   metricDefinition: Map<string, GCOMetricInfo> // metricName to MapPrometheusQueryToService
-  selectedDashboards: StackdriverDashboardDTO[]
+  selectedDashboards: (StackdriverDashboardDTO & { id?: string })[]
   healthSourceIdentifier: string
   healthSourceName: string
   product: SelectOption

@@ -7,7 +7,7 @@
 
 import React from 'react'
 
-import { render, queryByAttribute, fireEvent, act } from '@testing-library/react'
+import { render, queryByAttribute, fireEvent, act, screen } from '@testing-library/react'
 
 import { MultiTypeInputType } from '@wings-software/uicore'
 import { TestWrapper } from '@common/utils/testUtils'
@@ -21,7 +21,9 @@ const props = {
     }
   },
   isEditMode: false,
-  allowableTypes: [MultiTypeInputType.FIXED, MultiTypeInputType.EXPRESSION, MultiTypeInputType.RUNTIME]
+  allowableTypes: [MultiTypeInputType.FIXED, MultiTypeInputType.EXPRESSION, MultiTypeInputType.RUNTIME],
+  handleConnectorViewChange: jest.fn(),
+  setSelectedConnector: jest.fn()
 }
 describe('Terraform Var Store tests', () => {
   test('initial render', async () => {
@@ -62,7 +64,9 @@ describe('Terraform Var Store tests', () => {
         }
       },
       isEditMode: true,
-      allowableTypes: [MultiTypeInputType.FIXED, MultiTypeInputType.EXPRESSION, MultiTypeInputType.RUNTIME]
+      allowableTypes: [MultiTypeInputType.FIXED, MultiTypeInputType.EXPRESSION, MultiTypeInputType.RUNTIME],
+      handleConnectorViewChange: jest.fn(),
+      setSelectedConnector: jest.fn()
     }
     const { container } = render(
       <TestWrapper>
@@ -76,5 +80,73 @@ describe('Terraform Var Store tests', () => {
     })
 
     expect(container).toMatchSnapshot()
+  })
+
+  test('on edit mode for tf var store ', async () => {
+    const defaultProps = {
+      name: 'Terraform Var store',
+      initialValues: {
+        varFile: {
+          type: 'Remote',
+          spec: {
+            store: {
+              type: 'Git'
+            }
+          }
+        }
+      },
+      isEditMode: true,
+      allowableTypes: [MultiTypeInputType.FIXED, MultiTypeInputType.EXPRESSION, MultiTypeInputType.RUNTIME],
+      handleConnectorViewChange: jest.fn(),
+      setSelectedConnector: jest.fn()
+    }
+    const { container } = render(
+      <TestWrapper>
+        <TFVarStore {...defaultProps} />
+      </TestWrapper>
+    )
+
+    const storeCard = queryByAttribute('data-testid', container, 'varStore-Git')
+    act(() => {
+      fireEvent.click(storeCard!)
+    })
+
+    expect(container).toMatchSnapshot()
+  })
+
+  test('new connector view works correctly', async () => {
+    const defaultProps = {
+      name: 'Terraform Var store',
+      initialValues: {
+        varFile: {
+          type: 'Remote',
+          spec: {
+            store: {
+              type: 'Git'
+            }
+          }
+        }
+      },
+      isEditMode: true,
+      isReadOnly: false,
+      allowableTypes: [MultiTypeInputType.FIXED, MultiTypeInputType.EXPRESSION, MultiTypeInputType.RUNTIME],
+      handleConnectorViewChange: jest.fn(),
+      setSelectedConnector: jest.fn()
+    }
+    render(
+      <TestWrapper>
+        <TFVarStore {...defaultProps} />
+      </TestWrapper>
+    )
+
+    const newConnectorLabel = await screen.findByText('newLabel pipeline.manifestType.gitConnectorLabel connector')
+    expect(newConnectorLabel).toBeInTheDocument()
+    fireEvent.click(newConnectorLabel)
+
+    const nextStepButton = await screen.findByText('continue')
+    expect(nextStepButton).toBeDefined()
+    fireEvent.click(nextStepButton)
+
+    expect(screen).toMatchSnapshot()
   })
 })

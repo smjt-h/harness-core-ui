@@ -20,8 +20,7 @@ const ActiveCloudSpend: React.FC<{
   const prefix = '$'
   const { getString } = useStrings()
   const leftHeader = getString('common.subscriptions.usage.cloudSpend')
-  //TO-DO: replace with tooltip
-  const tooltip = 'Active Cloud tooltip placeholder'
+  const tooltip = getString('common.subscriptions.usage.ccmTooltip')
   const rightHeader = displayName
   const hasBar = true
   const leftFooter = getString('common.subscribed')

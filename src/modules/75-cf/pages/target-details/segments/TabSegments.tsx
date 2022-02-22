@@ -28,22 +28,26 @@ import { ExcludeSegmentRow } from './ExcludeSegmentRow'
 
 export const TabSegments: React.FC<{ target?: Target | null }> = ({ target }) => {
   const { getString } = useStrings()
-  const { accountId, orgIdentifier, projectIdentifier, targetIdentifier } = useParams<Record<string, string>>()
-  const { activeEnvironment } = useActiveEnvironment()
-  const patchParams = {
-    accountIdentifier: accountId,
+  const {
+    accountId: accountIdentifier,
     orgIdentifier,
     projectIdentifier,
-    environmentIdentifier: activeEnvironment
+    targetIdentifier
+  } = useParams<Record<string, string>>()
+  const { activeEnvironment: environmentIdentifier } = useActiveEnvironment()
+  const patchParams = {
+    accountIdentifier,
+    orgIdentifier,
+    projectIdentifier,
+    environmentIdentifier
   }
   const { loading, error, data, refetch } = useGetTargetSegments({
     identifier: targetIdentifier,
     queryParams: {
-      account: accountId,
-      accountIdentifier: accountId,
-      org: orgIdentifier,
-      project: projectIdentifier,
-      environment: activeEnvironment
+      accountIdentifier,
+      orgIdentifier,
+      projectIdentifier,
+      environmentIdentifier
     } as GetTargetSegmentsQueryParams
   })
   const _useAddTargetsToIncludeList = useAddTargetsToIncludeList(patchParams)
@@ -106,10 +110,10 @@ export const TabSegments: React.FC<{ target?: Target | null }> = ({ target }) =>
             text={getString('cf.targetDetail.addToSegment')}
             minimal
             intent="primary"
-            accountId={accountId}
+            accountIdentifier={accountIdentifier}
             orgIdentifier={orgIdentifier}
             projectIdentifier={projectIdentifier}
-            environmentIdentifier={activeEnvironment}
+            environmentIdentifier={environmentIdentifier}
             targetIdentifier={targetIdentifier}
             modalTitle={getString('cf.targetDetail.addTargetToSegment')}
             onSubmit={addTargetToSegments}
@@ -168,10 +172,10 @@ export const TabSegments: React.FC<{ target?: Target | null }> = ({ target }) =>
             text={getString('cf.targetDetail.excludefromSegment')}
             minimal
             intent="primary"
-            accountId={accountId}
+            accountIdentifier={accountIdentifier}
             orgIdentifier={orgIdentifier}
             projectIdentifier={projectIdentifier}
-            environmentIdentifier={activeEnvironment}
+            environmentIdentifier={environmentIdentifier}
             targetIdentifier={targetIdentifier}
             modalTitle={getString('cf.targetDetail.excludeTargetFromSegment')}
             submitButtonTitle={getString('cf.targetDetail.exclude')}

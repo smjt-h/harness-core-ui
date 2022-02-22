@@ -39,8 +39,13 @@ export const fullSizeContentStyle: React.CSSProperties = {
 export const SegmentDetailPage: React.FC = () => {
   const { getString } = useStrings()
   const { showError, clear } = useToaster()
-  const { accountId, orgIdentifier, projectIdentifier, segmentIdentifier } = useParams<Record<string, string>>()
-  const { activeEnvironment, withActiveEnvironment } = useActiveEnvironment()
+  const {
+    accountId: accountIdentifier,
+    orgIdentifier,
+    projectIdentifier,
+    segmentIdentifier
+  } = useParams<Record<string, string>>()
+  const { activeEnvironment: environmentIdentifier, withActiveEnvironment } = useActiveEnvironment()
   const {
     data: segment,
     loading: segmentLoading,
@@ -49,11 +54,10 @@ export const SegmentDetailPage: React.FC = () => {
   } = useGetSegment({
     identifier: segmentIdentifier,
     queryParams: {
-      account: accountId,
-      accountIdentifier: accountId,
-      org: orgIdentifier,
-      project: projectIdentifier,
-      environment: activeEnvironment
+      accountIdentifier,
+      orgIdentifier,
+      projectIdentifier,
+      environmentIdentifier
     } as GetSegmentQueryParams
   })
   const {
@@ -62,10 +66,10 @@ export const SegmentDetailPage: React.FC = () => {
     error: envError,
     refetch: envRefetch
   } = useSyncedEnvironment({
-    accountId,
+    accountId: accountIdentifier,
     orgIdentifier,
     projectIdentifier,
-    environmentIdentifier: activeEnvironment
+    environmentIdentifier
   })
   const title = `${getString('cf.shared.targetManagement')}: ${getString('cf.shared.segments')}`
   const breadcrumbs = [
@@ -73,7 +77,7 @@ export const SegmentDetailPage: React.FC = () => {
       title,
       url: withActiveEnvironment(
         routes.toCFSegments({
-          accountId,
+          accountId: accountIdentifier,
           orgIdentifier,
           projectIdentifier
         })
@@ -83,11 +87,10 @@ export const SegmentDetailPage: React.FC = () => {
   const history = useHistory()
   const { mutate: deleteSegment } = useDeleteSegment({
     queryParams: {
-      project: projectIdentifier,
-      environment: segment?.environment as string,
-      account: accountId,
-      accountIdentifier: accountId,
-      org: orgIdentifier
+      projectIdentifier,
+      environmentIdentifier: segment?.environment as string,
+      accountIdentifier,
+      orgIdentifier
     } as DeleteSegmentQueryParams
   })
   const deleteSegmentConfirm = useConfirmAction({
@@ -112,7 +115,7 @@ export const SegmentDetailPage: React.FC = () => {
               routes.toCFSegments({
                 projectIdentifier,
                 orgIdentifier,
-                accountId
+                accountId: accountIdentifier
               })
             )
             showToaster(getString('cf.messages.segmentDeleted'))
@@ -180,7 +183,7 @@ export const SegmentDetailPage: React.FC = () => {
           <Container style={{ position: 'absolute', top: '15px', right: '25px' }}>
             <SegmentDetailsPageOptionsMenu
               deleteSegmentConfirm={deleteSegmentConfirm}
-              activeEnvironment={activeEnvironment}
+              activeEnvironment={environmentIdentifier}
             />
           </Container>
           <Text style={{ position: 'absolute', top: '76px', right: '30px' }}>

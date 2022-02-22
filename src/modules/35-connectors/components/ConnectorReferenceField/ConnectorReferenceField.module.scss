@@ -4,66 +4,23 @@
  * that can be found in the licenses directory at the root of this repository, also available at
  * https://polyformproject.org/wp-content/uploads/2020/06/PolyForm-Shield-1.0.0.txt.
  */
-
-.listItem {
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
-  .item {
-    display: flex;
-    align-items: center;
-    width: 250px;
-    .connectorInfo {
-      max-width: 240px;
-      .connectorNameId {
-        max-width: 230px;
-        padding-left: var(--spacing-xsmall);
-        span {
-          max-width: 230px;
-        }
-      }
-    }
-    .edit-btn {
-      display: none !important;
-    }
-  }
-
-  .itemWithGit {
-    width: 240px;
-    .connectorInfo {
-      max-width: 180px;
-      .connectorNameId {
-        max-width: 140px;
-        span {
-          max-width: 140px;
-        }
-      }
+.item {
+  .leftInfo {
+    flex: 1;
+    flex-shrink: unset !important;
+    .connectorNameId {
+      padding-left: var(--spacing-xsmall);
     }
   }
   .edit-btn {
-    display: none !important;
-  }
-  .gitInfo {
-    width: 100% !important;
-    .gitBranchIcon {
-      padding-left: 10px;
-      border-left: 1px var(--grey-600) solid;
-    }
-  }
-
-  &:hover {
-    .edit-btn {
-      display: flex !important;
-      color: var(--grey-600) !important;
-    }
-    .iconCheck {
-      visibility: visible;
-    }
+    visibility: hidden;
   }
   .iconCheck {
     visibility: hidden;
     margin-right: var(--spacing-xsmall);
     cursor: pointer;
+    align-self: center;
+
     > svg {
       > path {
         stroke-width: 1;
@@ -71,15 +28,27 @@
       }
     }
   }
+
   .iconChecked {
     visibility: visible !important;
     > svg {
       > path {
-        stroke: var(--primary-6);
+        stroke: var(--primary-7);
       }
     }
   }
+
+  &:hover {
+    .edit-btn {
+      color: var(--grey-600) !important;
+      visibility: visible;
+    }
+    .iconCheck {
+      visibility: visible;
+    }
+  }
 }
+
 .connector-label {
   padding-bottom: var(--spacing-small);
 
@@ -100,6 +69,9 @@
   align-items: center;
   display: flex;
   align-content: center;
+  > svg {
+    margin: auto;
+  }
 
   /* for increased specificity */
   &.red-status:global(.bp3-icon) {
@@ -148,9 +120,61 @@
 .noDataCardContainerContent {
   margin-top: 0px !important;
 }
-.lastConnected {
-  margin-top: 8px !important;
-  background-color: var(--orange-100) !important;
-  color: var(--orange-900) !important;
-  font-size: var(--font-size-xsmall) !important;
+.gitInfo {
+  background: var(--grey-100) !important;
+  border-radius: 8px !important;
+  .gitBranchIcon {
+    padding-left: var(--spacing-small) !important;
+    border-left: 1px var(--grey-600) solid;
+  }
+}
+
+.connectorDetails {
+  min-height: 70px;
+
+  .gitHubConnectorDetails {
+    display: grid !important;
+    grid-template-columns: 150px 300px 100px;
+    grid-column-gap: 15px;
+    .gitUrlStyle {
+      width: 300px;
+      font-size: var(--font-size-small);
+      max-width: 300px;
+      overflow: hidden;
+      white-space: nowrap;
+      text-overflow: ellipsis;
+    }
+    .gitUrl {
+      width: 300px;
+    }
+  }
+
+  .flexOne {
+    flex: 1;
+  }
+  .flexTwo {
+    flex: 2;
+  }
+}
+.gitUrlStyleInPopover {
+  width: 177px;
+  font-size: var(--font-size-small);
+  max-width: 177px;
+  overflow: hidden;
+  white-space: nowrap;
+  text-overflow: ellipsis;
+}
+.detailsContainer {
+  min-height: 130px;
+  max-height: 300px;
+}
+.selectedPopover {
+  :global {
+    .bp3-popover-content {
+      border-radius: 4px !important;
+    }
+  }
+}
+.selectedConnector {
+  cursor: pointer;
 }

@@ -1,0 +1,68 @@
+/*
+ * Copyright 2022 Harness Inc. All rights reserved.
+ * Use of this source code is governed by the PolyForm Shield 1.0.0 license
+ * that can be found in the licenses directory at the root of this repository, also available at
+ * https://polyformproject.org/wp-content/uploads/2020/06/PolyForm-Shield-1.0.0.txt.
+ */
+
+.referenceList {
+  min-width: 770px;
+  height: 400px;
+  overflow-y: scroll;
+  .listItem {
+    box-sizing: border-box;
+    padding: var(--spacing-medium) var(--spacing-medium) var(--spacing-medium);
+    border-bottom: 1px solid var(--grey-200);
+    display: flex;
+    align-items: center;
+    &:hover {
+      background-color: var(--primary-1);
+    }
+  }
+  .selectedItem {
+    background-color: var(--primary-2) !important;
+  }
+
+  [class*='Collapse--collapse'] {
+    margin: unset !important;
+    background-color: var(--grey-50);
+  }
+
+  .collapeTitle {
+    min-height: 50px;
+  }
+  .collapseHeader {
+    min-height: 50px;
+    padding-right: var(--spacing-medium) !important;
+    padding-left: var(--spacing-medium) !important;
+    padding-bottom: var(--spacing-small) !important;
+
+    [class*='CollapseHeader--leftSection'] {
+      width: 100%;
+    }
+    .collapeHeaderContent {
+      width: 100%;
+    }
+  }
+
+  .hideCollapseIcon {
+    [class*='CollapseHeader--leftSection'] {
+      > span {
+        display: none;
+      }
+    }
+  }
+  .collapseWrapper {
+    border-top: unset !important;
+    border-radius: 4px;
+    box-shadow: 0 1px 5px -4px var(--black);
+    padding: unset !important;
+    min-height: 50px;
+
+    margin: 3px 3px 10px;
+    width: calc(100% - 6px);
+    &:hover {
+      background-color: var(--primary-1);
+    }
+  }
+}

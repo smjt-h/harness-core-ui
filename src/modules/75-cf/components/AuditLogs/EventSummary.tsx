@@ -24,7 +24,7 @@ import { useLocalStorage } from '@common/hooks'
 import { ContainerSpinner } from '@common/components/ContainerSpinner/ContainerSpinner'
 import { useStrings } from 'framework/strings'
 import { useAppStore } from 'framework/AppStore/AppStoreContext'
-import { AuditTrail, Feature, useGetOSById } from 'services/cf'
+import { AuditTrail, Feature, useGetOSByID } from 'services/cf'
 import { yamlStringify } from '@common/utils/YamlHelperMethods'
 import { translateEvents } from './AuditLogsUtils'
 import css from './EventSummary.module.scss'
@@ -73,7 +73,7 @@ export const EventSummary: React.FC<EventSummaryProps> = ({ data, flagData, onCl
     loading,
     error,
     refetch
-  } = useGetOSById({
+  } = useGetOSByID({
     identifiers: isNewObject ? [objectAfter] : [objectBefore, objectAfter],
     lazy: !showDiff
   })

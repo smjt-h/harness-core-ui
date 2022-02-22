@@ -41,8 +41,13 @@ export const fullSizeContentStyle: React.CSSProperties = {
 export const TargetDetailPage: React.FC = () => {
   const { getString } = useStrings()
   const { showError, clear } = useToaster()
-  const { accountId, orgIdentifier, projectIdentifier, targetIdentifier } = useParams<Record<string, string>>()
-  const { activeEnvironment, withActiveEnvironment } = useActiveEnvironment()
+  const {
+    accountId: accountIdentifier,
+    orgIdentifier,
+    projectIdentifier,
+    targetIdentifier
+  } = useParams<Record<string, string>>()
+  const { activeEnvironment: environmentIdentifier, withActiveEnvironment } = useActiveEnvironment()
   const {
     data: target,
     loading,
@@ -51,17 +56,16 @@ export const TargetDetailPage: React.FC = () => {
   } = useGetTarget({
     identifier: targetIdentifier,
     queryParams: {
-      account: accountId,
-      accountIdentifier: accountId,
-      org: orgIdentifier,
-      project: projectIdentifier,
-      environment: activeEnvironment
+      accountIdentifier,
+      orgIdentifier,
+      projectIdentifier,
+      environmentIdentifier
     } as GetTargetQueryParams
   })
   const { data: environment } = useGetEnvironment({
-    environmentIdentifier: activeEnvironment,
+    environmentIdentifier,
     queryParams: {
-      accountId,
+      accountId: accountIdentifier,
       projectIdentifier,
       orgIdentifier
     }
@@ -72,7 +76,7 @@ export const TargetDetailPage: React.FC = () => {
       title,
       url: withActiveEnvironment(
         routes.toCFTargets({
-          accountId,
+          accountId: accountIdentifier,
           orgIdentifier,
           projectIdentifier
         })
@@ -82,11 +86,10 @@ export const TargetDetailPage: React.FC = () => {
   const history = useHistory()
   const { mutate: deleteTarget } = useDeleteTarget({
     queryParams: {
-      project: projectIdentifier,
-      environment: target?.environment as string,
-      account: accountId,
-      accountIdentifier: accountId,
-      org: orgIdentifier
+      projectIdentifier,
+      environmentIdentifier: target?.environment as string,
+      accountIdentifier,
+      orgIdentifier
     } as DeleteTargetQueryParams
   })
   const deleteTargetConfirm = useConfirmAction({
@@ -112,7 +115,7 @@ export const TargetDetailPage: React.FC = () => {
                 routes.toCFTargets({
                   projectIdentifier,
                   orgIdentifier,
-                  accountId
+                  accountId: accountIdentifier
                 })
               )
             )
@@ -182,7 +185,7 @@ export const TargetDetailPage: React.FC = () => {
                   text: getString('delete'),
                   onClick: deleteTargetConfirm,
                   permission: {
-                    resource: { resourceType: ResourceType.ENVIRONMENT, resourceIdentifier: activeEnvironment },
+                    resource: { resourceType: ResourceType.ENVIRONMENT, resourceIdentifier: environmentIdentifier },
                     permission: PermissionIdentifier.DELETE_FF_TARGETGROUP
                   }
                 }

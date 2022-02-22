@@ -32,15 +32,14 @@ const FlagConfigurationInputSetStep = connect<FlagConfigurationInputSetStepProps
       [pathPrefix]
     )
 
-    const { accountId, orgIdentifier, projectIdentifier } = useParams<Record<string, string>>()
+    const { accountId: accountIdentifier, orgIdentifier, projectIdentifier } = useParams<Record<string, string>>()
     const { getString } = useStrings()
 
     const queryParams = {
-      account: accountId,
-      accountIdentifier: accountId,
-      org: orgIdentifier,
-      project: projectIdentifier,
-      environment: existingValues?.spec.environment || '',
+      accountIdentifier,
+      orgIdentifier,
+      projectIdentifier,
+      environmentIdentifier: existingValues?.spec.environment || '',
       pageSize: 1000
     }
 

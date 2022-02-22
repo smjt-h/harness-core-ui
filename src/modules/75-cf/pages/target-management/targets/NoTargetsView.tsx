@@ -19,14 +19,14 @@ export interface NoTargetsViewProps {
 }
 
 export const NoTargetsView: React.FC<NoTargetsViewProps> = ({ onNewTargetsCreated, hasEnvironment }) => {
-  const { projectIdentifier, orgIdentifier, accountId } = useParams<Record<string, string>>()
+  const { projectIdentifier, orgIdentifier, accountId: accountIdentifier } = useParams<Record<string, string>>()
   const { getString } = useStrings()
 
   return (
     <Container width="100%" height="100%" flex={{ align: 'center-center' }}>
       <NoData imageURL={imageURL} message={getString(hasEnvironment ? 'cf.noTargetForEnv' : 'cf.noTarget')}>
         <NewTargets
-          accountId={accountId}
+          accountIdentifier={accountIdentifier}
           orgIdentifier={orgIdentifier}
           projectIdentifier={projectIdentifier}
           onCreated={onNewTargetsCreated}

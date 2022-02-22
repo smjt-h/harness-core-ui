@@ -51,22 +51,26 @@ export interface UseGitSync {
 export const GIT_SYNC_ERROR_CODE = 424
 
 export const useGitSync = (): UseGitSync => {
-  const { projectIdentifier, accountId, orgIdentifier } = useParams<ProjectPathProps & ModulePathParams>()
+  const {
+    projectIdentifier,
+    accountId: accountIdentifier,
+    orgIdentifier
+  } = useParams<ProjectPathProps & ModulePathParams>()
   const { getString } = useStrings()
 
   const getGitRepo = useGetGitRepo({
     identifier: projectIdentifier,
     queryParams: {
-      accountIdentifier: accountId,
-      org: orgIdentifier
+      accountIdentifier,
+      orgIdentifier
     }
   })
 
   const patchGitRepo = usePatchGitRepo({
     identifier: projectIdentifier,
     queryParams: {
-      accountIdentifier: accountId,
-      org: orgIdentifier
+      accountIdentifier,
+      orgIdentifier
     }
   })
 

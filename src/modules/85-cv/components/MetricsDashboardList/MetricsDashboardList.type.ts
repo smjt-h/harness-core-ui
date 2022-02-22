@@ -16,6 +16,7 @@ export interface MetricsDashboardListProps<T> {
   selectedDashboardList: T[]
   tableTitle: StringKeys
   dashboardsRequest: UseGetReturn<any, any, any>
+  noDataMessage?: string
 }
 
 export type TableDashboardItem = {

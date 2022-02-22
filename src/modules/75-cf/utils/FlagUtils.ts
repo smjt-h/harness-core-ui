@@ -36,11 +36,10 @@ const makePatchHook =
     const { mutate } = usePatchFeature({
       identifier: '',
       queryParams: {
-        account: accountIdentifier,
         accountIdentifier,
-        org: orgIdentifier,
-        project: projectIdentifier,
-        environment: environmentIdentifier
+        orgIdentifier,
+        projectIdentifier,
+        environmentIdentifier
       } as PatchFeatureQueryParams
     })
 

@@ -116,7 +116,7 @@ export const TemplateStageSpecifications = (): JSX.Element => {
         setFormValues(
           produce(stage?.stage as TemplateStageValues, draft => {
             setTemplateInputs(draft, mergedTemplateInputs)
-            draft.inputsTemplate = { ...templateInputs, identifier: stage.stage?.identifier }
+            draft.inputsTemplate = templateInputs
             draft.allValues = {
               ...parse(defaultTo(templateResponse?.data?.yaml, '')).template.spec,
               identifier: stage.stage?.identifier

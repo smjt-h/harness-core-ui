@@ -49,7 +49,7 @@ const renderComponent = (props: Partial<TabTargetingProps> = {}): RenderResult =
       setEditing={jest.fn}
       environmentIdentifier="qa"
       projectIdentifier="Kevin_Test"
-      org="harness"
+      orgIdentifier="harness"
       accountIdentifier="px7xd_BFRCi-pfWPYXVjvw"
       {...props}
     />,

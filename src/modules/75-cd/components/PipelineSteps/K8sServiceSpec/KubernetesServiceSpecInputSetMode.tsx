@@ -20,9 +20,11 @@ import type { CustomVariableInputSetExtraProps } from '@pipeline/components/Pipe
 import type { AllNGVariables } from '@pipeline/utils/types'
 import { StepType } from '@pipeline/components/PipelineSteps/PipelineStepInterface'
 import artifactSourceBaseFactory from '@cd/factory/ArtifactSourceFactory/ArtifactSourceBaseFactory'
+// import manifestSourceBaseFactory from '@cd/factory/ManifestSourceFactory/ManifestSourceBaseFactory'
 import { ManifestInputForm } from '@cd/components/ManifestInputForm/ManifestInputForm'
 import type { K8SDirectServiceStep } from './K8sServiceSpecInterface'
 import { KubernetesArtifacts } from './KubernetesArtifacts/KubernetesArtifacts'
+// import { KubernetesManifests } from './KubernetesManifests/KubernetesManifests'
 import css from './K8sServiceSpec.module.scss'
 
 export interface KubernetesInputSetProps {
@@ -38,7 +40,7 @@ export interface KubernetesInputSetProps {
   formik?: any
   allowableTypes: MultiTypeInputType[]
 }
-const KubernetesServiceSpecInputSetModeFormikForm = (props: KubernetesInputSetProps) => {
+const KubernetesServiceSpecInputSetModeFormikForm = (props: KubernetesInputSetProps): React.ReactElement => {
   const {
     template,
     path,
@@ -55,32 +57,37 @@ const KubernetesServiceSpecInputSetModeFormikForm = (props: KubernetesInputSetPr
   const { getString } = useStrings()
   return (
     <Layout.Vertical spacing="medium">
-      <KubernetesArtifacts
-        type={allValues?.artifacts?.primary?.type || ''}
-        template={template}
-        artifacts={allValues?.artifacts}
-        artifactSourceBaseFactory={artifactSourceBaseFactory}
-        stepViewType={stepViewType}
-        stageIdentifier={stageIdentifier}
-        formik={formik}
-        path={path}
-        initialValues={initialValues}
-        readonly={readonly}
-        allowableTypes={allowableTypes}
-      />
+      {!!(template?.artifacts?.primary?.type || template?.artifacts?.sidecars?.length) && (
+        <KubernetesArtifacts
+          type={allValues?.artifacts?.primary?.type || ''}
+          template={template}
+          artifacts={allValues?.artifacts}
+          artifactSourceBaseFactory={artifactSourceBaseFactory}
+          stepViewType={stepViewType}
+          stageIdentifier={stageIdentifier}
+          formik={formik}
+          path={path}
+          initialValues={initialValues}
+          readonly={readonly}
+          allowableTypes={allowableTypes}
+        />
+      )}
 
       {/* {!!template?.manifests?.length && (
         <KubernetesManifests
           template={template}
-          path={path}
-          stepViewType={stepViewType}
           manifests={allValues?.manifests}
-          initialValues={initialValues}
-          readonly={readonly}
+          manifestSourceBaseFactory={manifestSourceBaseFactory}
+          stepViewType={stepViewType}
           stageIdentifier={stageIdentifier}
           formik={formik}
+          path={path}
+          initialValues={initialValues}
+          readonly={readonly}
+          allowableTypes={allowableTypes}
         />
       )} */}
+
       {!!template?.manifests?.length && (
         <ManifestInputForm
           template={template}

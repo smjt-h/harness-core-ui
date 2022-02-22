@@ -5,12 +5,14 @@ rules:
         - lodash.*
         - microfrontends/*
         - modules/72-templates-library/*
+        - modules/72-triggers/*
         - modules/75-cd/*
         - modules/75-ce/*
         - modules/75-cf/*
         - modules/75-ci/*
         - modules/85-cv/*
         - '@templates-library/*'
+        - '@triggers/*'
         - '@cd/*'
         - '@ce/*'
         - '@cf/*'

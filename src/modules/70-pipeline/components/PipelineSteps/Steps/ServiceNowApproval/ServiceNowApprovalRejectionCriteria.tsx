@@ -137,7 +137,7 @@ export const Conditions = ({
               <div className={css.criteriaRow}>
                 <div className={css.headers}>
                   <span>{getString('pipeline.approvalCriteria.field')}</span>
-                  <span>{getString('pipeline.triggers.conditionsPanel.operator')}</span>
+                  <span>{getString('common.operator')}</span>
                   <span>{getString('valueLabel')}</span>
                 </div>
                 {values.spec.conditions?.map((condition: ApprovalRejectionCriteriaCondition, i: number) => (

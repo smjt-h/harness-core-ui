@@ -69,7 +69,7 @@ import css from './FlagActivation.module.scss'
 const WAIT_TIME_FOR_NEWLY_CREATED_ENVIRONMENT = 3000
 
 interface FlagActivationProps {
-  project: string
+  projectIdentifier: string
   flagData: Feature
   gitSync: UseGitSync
   refetchFlag: () => Promise<unknown>
@@ -98,20 +98,19 @@ const fromVariationMapToObj = (variationMap: VariationMap[]) =>
   }, {})
 
 const FlagActivation: React.FC<FlagActivationProps> = props => {
-  const { flagData, project, refetchFlag, gitSync } = props
+  const { flagData, projectIdentifier, refetchFlag, gitSync } = props
   const { showError } = useToaster()
   const [editing, setEditing] = useState(false)
   const [loadingFlags, setLoadingFlags] = useState(false)
-  const { orgIdentifier, accountId } = useParams<Record<string, string>>()
-  const { activeEnvironment, withActiveEnvironment } = useActiveEnvironment()
+  const { orgIdentifier, accountId: accountIdentifier } = useParams<Record<string, string>>()
+  const { activeEnvironment: environmentIdentifier, withActiveEnvironment } = useActiveEnvironment()
   const { mutate: patchFeature } = usePatchFeature({
     identifier: flagData.identifier as string,
     queryParams: {
-      project: project as string,
-      environment: activeEnvironment,
-      account: accountId,
-      accountIdentifier: accountId,
-      org: orgIdentifier
+      projectIdentifier,
+      environmentIdentifier,
+      accountIdentifier,
+      orgIdentifier
     } as PatchFeatureQueryParams
   })
   const {
@@ -121,7 +120,7 @@ const FlagActivation: React.FC<FlagActivationProps> = props => {
     refetch: refetchEnvironments,
     environments
   } = useEnvironmentSelectV2({
-    selectedEnvironmentIdentifier: activeEnvironment,
+    selectedEnvironmentIdentifier: environmentIdentifier,
     onChange: (_value, _environment, _userEvent) => {
       rewriteCurrentLocationWithActiveEnvironment(_environment)
 
@@ -470,7 +469,7 @@ const FlagActivation: React.FC<FlagActivationProps> = props => {
                   orgIdentifier,
                   projectIdentifier: flagData.project,
                   featureFlagIdentifier: flagData.identifier,
-                  accountId
+                  accountId: accountIdentifier
                 }),
                 response?.data?.identifier
               )
@@ -537,12 +536,12 @@ const FlagActivation: React.FC<FlagActivationProps> = props => {
                           <TabTargeting
                             formikProps={formikProps}
                             editing={editing}
-                            projectIdentifier={project}
-                            environmentIdentifier={activeEnvironment}
+                            projectIdentifier={projectIdentifier}
+                            environmentIdentifier={environmentIdentifier}
                             setEditing={setEditing}
                             feature={flagData}
-                            org={orgIdentifier}
-                            accountIdentifier={accountId}
+                            orgIdentifier={orgIdentifier}
+                            accountIdentifier={accountIdentifier}
                           />
                         }
                       />

@@ -46,10 +46,10 @@ const FlagConfigurationStepWidget = forwardRef(
     const formValuesRef = useRef<FlagConfigurationStepData>({} as FlagConfigurationStepData)
     const { getString } = useStrings()
 
-    const { accountId, orgIdentifier, projectIdentifier } = useParams<Record<string, string>>()
+    const { accountId: accountIdentifier, orgIdentifier, projectIdentifier } = useParams<Record<string, string>>()
 
     const envQueryParams: GetEnvironmentListQueryParams = {
-      accountIdentifier: accountId,
+      accountIdentifier,
       orgIdentifier,
       projectIdentifier
     }
@@ -65,10 +65,10 @@ const FlagConfigurationStepWidget = forwardRef(
     })
 
     const featureQueryParams: GetAllFeaturesQueryParams = {
-      accountIdentifier: accountId,
-      org: orgIdentifier,
-      project: projectIdentifier,
-      environment: formValuesRef.current?.spec?.environment || '',
+      accountIdentifier,
+      orgIdentifier,
+      projectIdentifier,
+      environmentIdentifier: formValuesRef.current?.spec?.environment || '',
       pageSize: 15,
       pageNumber: 0
     }

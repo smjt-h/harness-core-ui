@@ -13,7 +13,6 @@ import {
   MultiTypeInputValue,
   Layout,
   Text,
-  Color,
   FixedTypeComponentProps,
   MultiTypeInputType,
   ButtonVariation,
@@ -21,10 +20,8 @@ import {
 } from '@wings-software/uicore'
 import { Classes, Dialog } from '@blueprintjs/core'
 import cx from 'classnames'
-import { useParams } from 'react-router-dom'
 import type { Scope } from '@common/interfaces/SecretsInterface'
 import { useStrings } from 'framework/strings'
-import type { ProjectPathProps, SecretsPathProps, ModulePathParams } from '@common/interfaces/RouteInterfaces'
 import { EntityReferenceProps, EntityReference } from '../EntityReference/EntityReference'
 import css from './ReferenceSelect.module.scss'
 export interface MinimalObject {
@@ -36,7 +33,16 @@ export interface Item {
   value: string
   scope: Scope
 }
-export interface ReferenceSelectProps<T extends MinimalObject> extends Omit<EntityReferenceProps<T>, 'onSelect'> {
+
+export interface ReferenceSelectDialogTitleProps {
+  componentName?: string
+  createNewLabel?: string
+  createNewHandler?: () => void
+  isNewConnectorLabelVisible?: boolean
+}
+export interface ReferenceSelectProps<T extends MinimalObject>
+  extends Omit<EntityReferenceProps<T>, 'onSelect'>,
+    ReferenceSelectDialogTitleProps {
   name: string
   placeholder: string
   selectAnReferenceLabel: string
@@ -53,27 +59,36 @@ export interface ReferenceSelectProps<T extends MinimalObject> extends Omit<Enti
   componentName?: string
 }
 
-export const ReferenceSelectDialogTitle = (compName: string): JSX.Element => {
+export const ReferenceSelectDialogTitle = (props: ReferenceSelectDialogTitleProps): JSX.Element => {
   const { getString } = useStrings()
-  const { projectIdentifier, orgIdentifier } = useParams<ProjectPathProps & SecretsPathProps & ModulePathParams>()
-  const projectScopeTitle = projectIdentifier ? `${getString('projectsText')} / ` : ''
-  const orgScopeTitle = orgIdentifier ? `${getString('orgsText')} / ` : ''
-  const scopes = `${projectScopeTitle}${orgScopeTitle}${getString('account')}`
+  const { componentName, createNewHandler, createNewLabel } = props
   return (
-    <>
-      <Layout.Vertical spacing="xsmall" padding={{ top: 'xxxlarge', left: 'large', right: 'large' }}>
+    <Layout.Horizontal flex={{ distribution: 'space-between' }}>
+      <Layout.Vertical spacing="xsmall">
         <Text font={{ variation: FontVariation.H4 }}>
           {getString('common.entityReferenceTitle', {
-            compName
+            compName: componentName
           })}
         </Text>
-        <Text font={{ variation: FontVariation.SMALL }} color={Color.GREY_350}>
-          {`${getString('common.entityReferenceSubTitle', {
-            compName
-          })} (${scopes})`}
-        </Text>
       </Layout.Vertical>
-    </>
+
+      {createNewLabel &&
+        createNewHandler &&
+        (props.isNewConnectorLabelVisible === undefined ? true : props.isNewConnectorLabelVisible) && (
+          <>
+            <Layout.Horizontal className={Classes.POPOVER_DISMISS}>
+              <Button
+                variation={ButtonVariation.SECONDARY}
+                onClick={() => {
+                  props.createNewHandler?.()
+                }}
+                text={`+ ${createNewLabel}`}
+                margin={{ right: 'small' }}
+              ></Button>
+            </Layout.Horizontal>
+          </>
+        )}
+    </Layout.Horizontal>
   )
 }
 
@@ -127,32 +142,15 @@ export function ReferenceSelect<T extends MinimalObject>(props: ReferenceSelectP
         canOutsideClickClose
         onClose={() => setOpen(false)}
         className={cx(css.referenceSelect, css.dialog)}
-        title={ReferenceSelectDialogTitle(componentName)}
+        title={ReferenceSelectDialogTitle({
+          componentName,
+          createNewLabel,
+          createNewHandler,
+          isNewConnectorLabelVisible
+        })}
       >
         <div className={cx(css.contentContainer)}>
-          <Layout.Horizontal
-            flex={{ justifyContent: 'space-between' }}
-            style={{
-              borderBottom: '1px solid var(--grey-200)',
-              paddingTop: 'var(--spacing-xsmall)',
-              paddingBottom: 'var(--spacing-medium)'
-            }}
-          >
-            {createNewLabel && createNewHandler && isNewConnectorLabelVisible && (
-              <>
-                <Layout.Horizontal className={Classes.POPOVER_DISMISS}>
-                  <Button
-                    variation={ButtonVariation.SECONDARY}
-                    onClick={() => {
-                      createNewHandler?.()
-                    }}
-                    text={`+ ${createNewLabel}`}
-                  ></Button>
-                </Layout.Horizontal>
-              </>
-            )}
-            {editRenderer && selected && selected.value && <Layout.Horizontal>{editRenderer}</Layout.Horizontal>}
-          </Layout.Horizontal>
+          {editRenderer && selected && selected.value && <Layout.Horizontal>{editRenderer}</Layout.Horizontal>}
           <EntityReference<T>
             {...referenceProps}
             onSelect={(record, scope) => {

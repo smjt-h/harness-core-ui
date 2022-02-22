@@ -619,8 +619,8 @@ interface ServingCardRowProps {
   variation: string
   variationOps: Option<string>[]
   editing: boolean
-  environment: string
-  project: string
+  environmentIdentifier: string
+  projectIdentifier: string
   targetAvatars: { name: string }[]
   error?: { variation?: string; targets?: string }
   onChangeTargets: (data: any[]) => void
@@ -636,8 +636,8 @@ const ServingCardRow: React.FC<ServingCardRowProps> = ({
   index,
   variation,
   targetAvatars,
-  environment,
-  project,
+  environmentIdentifier,
+  projectIdentifier,
   error,
   onChangeTargets,
   onChangeVariation,
@@ -645,14 +645,13 @@ const ServingCardRow: React.FC<ServingCardRowProps> = ({
 }) => {
   const { getString } = useStrings()
   const [tagOpts] = useOptions(targetAvatars, prop(['name']))
-  const { orgIdentifier, accountId } = useParams<Record<string, string>>()
+  const { orgIdentifier, accountId: accountIdentifier } = useParams<Record<string, string>>()
   const { data, loading } = useGetAllTargets({
     queryParams: {
-      environment,
-      project,
-      account: accountId,
-      accountIdentifier: accountId,
-      org: orgIdentifier,
+      environmentIdentifier,
+      projectIdentifier,
+      accountIdentifier,
+      orgIdentifier,
       pageSize: 1000
     } as GetAllTargetsQueryParams
   })
@@ -803,8 +802,8 @@ interface ServingCardProps {
   variations: Variation[]
   servings: Serving[]
   editing: boolean
-  environment: string
-  project: string
+  environmentIdentifier: string
+  projectIdentifier: string
   errors: any
   onAdd: () => void
   onUpdate: (idx: number, attr: 'targets' | 'variation', data: any) => void
@@ -817,8 +816,8 @@ const ServingCard: React.FC<ServingCardProps> = ({
   servings,
   variations,
   editing,
-  environment,
-  project,
+  environmentIdentifier,
+  projectIdentifier,
   errors,
   onAdd,
   onUpdate,
@@ -859,8 +858,8 @@ const ServingCard: React.FC<ServingCardProps> = ({
               variationOps={variationOps}
               targetAvatars={targetAvatars ?? []}
               editing={editing}
-              environment={environment}
-              project={project}
+              environmentIdentifier={environmentIdentifier}
+              projectIdentifier={projectIdentifier}
               onChangeTargets={handleUpdate(idx, 'targets')}
               onChangeVariation={handleUpdate(idx, 'variation')}
               onDelete={() => onRemove(idx)}
@@ -880,8 +879,8 @@ export interface CustomRulesViewProps {
   feature: Feature
   formikProps: any
   editing: boolean
-  environment: string
-  project: string
+  environmentIdentifier: string
+  projectIdentifier: string
 }
 
 function arrayMove<T>(arr: T[], from: number, to: number): T[] {
@@ -892,7 +891,13 @@ function arrayMove<T>(arr: T[], from: number, to: number): T[] {
   }
 }
 
-const CustomRulesView: React.FC<CustomRulesViewProps> = ({ feature, formikProps, editing, environment, project }) => {
+const CustomRulesView: React.FC<CustomRulesViewProps> = ({
+  feature,
+  formikProps,
+  editing,
+  environmentIdentifier,
+  projectIdentifier
+}) => {
   const { getString } = useStrings()
   const tempRules: ServingRule[] = formikProps.values.customRules
   const setTempRules = (data: RuleData[]) => formikProps.setFieldValue('customRules', data)
@@ -952,8 +957,8 @@ const CustomRulesView: React.FC<CustomRulesViewProps> = ({ feature, formikProps,
               editing={editing}
               servings={servings}
               variations={feature.variations}
-              environment={environment}
-              project={project}
+              environmentIdentifier={environmentIdentifier}
+              projectIdentifier={projectIdentifier}
               onAdd={handleAddServing}
               onUpdate={handleUpdateServing}
               onRemove={handleDeleteServing}

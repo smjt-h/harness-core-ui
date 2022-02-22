@@ -53,7 +53,7 @@ const FlagWizard: React.FC<FlagWizardProps> = props => {
   const { flagTypeView, environmentIdentifier, toggleFlagType, hideModal, goBackToTypeSelections } = props
   const [modalErrorHandler, setModalErrorHandler] = useState<ModalErrorHandlerBinding | undefined>()
   const { showError } = useToaster()
-  const { projectIdentifier, orgIdentifier, accountId } = useParams<Record<string, string>>()
+  const { projectIdentifier, orgIdentifier, accountId: accountIdentifier } = useParams<Record<string, string>>()
   const history = useHistory()
   const { activeEnvironment, withActiveEnvironment } = useActiveEnvironment()
 
@@ -63,10 +63,9 @@ const FlagWizard: React.FC<FlagWizardProps> = props => {
 
   const { mutate: createFeatureFlag, loading: isLoadingCreateFeatureFlag } = useCreateFeatureFlag({
     queryParams: {
-      account: accountId,
-      accountIdentifier: accountId,
-      org: orgIdentifier,
-      environment: activeEnvironment
+      accountIdentifier,
+      orgIdentifier,
+      environmentIdentifier: activeEnvironment
     } as CreateFeatureFlagQueryParams
   })
 
@@ -104,7 +103,7 @@ const FlagWizard: React.FC<FlagWizardProps> = props => {
                 orgIdentifier: orgIdentifier as string,
                 projectIdentifier: projectIdentifier as string,
                 featureFlagIdentifier: formData.identifier,
-                accountId
+                accountId: accountIdentifier
               }),
               environmentIdentifier
             )

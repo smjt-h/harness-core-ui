@@ -138,7 +138,9 @@ const FixedScheduleForm: React.FC<FixedScheduleFormProps> = props => {
   return (
     <Layout.Vertical spacing="xlarge" className={css.fixedScheduleFormContainer}>
       <Heading color={Color.GREY_800} level={2}>
-        {getString('ce.co.autoStoppingRule.configuration.step4.tabs.schedules.newScheduleTitle')}
+        {props.isEdit
+          ? getString('ce.co.autoStoppingRule.configuration.step4.tabs.schedules.fixedSchedule')
+          : getString('ce.co.autoStoppingRule.configuration.step4.tabs.schedules.newScheduleTitle')}
       </Heading>
       {!_isEmpty(errorString) && <Text className={css.errorDisplayContainer}>{errorString}</Text>}
       <Formik
@@ -149,10 +151,15 @@ const FixedScheduleForm: React.FC<FixedScheduleFormProps> = props => {
         validationSchema={Yup.object().shape({
           name: Yup.string().max(25).required(),
           type: Yup.string().required(),
-          repeats: Yup.array().when('beginsOn', {
-            is: val => !val,
-            then: Yup.array().min(1).required()
-          })
+          repeats: Yup.array()
+            .when('beginsOn', {
+              is: val => !val,
+              then: Yup.array().min(1).required()
+            })
+            .when('everyday', {
+              is: false,
+              then: Yup.array().min(1).required()
+            })
         })}
       >
         {_formikProps => (
@@ -307,6 +314,15 @@ const PeriodSelection = ({ formikProps }: PeriodSelectionProps) => {
 const DaysAndTimeSelector = ({ formikProps }: DaysAndTimeSelectorProps) => {
   const { getString } = useStrings()
 
+  const handleTimeRangeRadioSelection = () => {
+    formikProps.setValues({
+      ...formikProps.values,
+      allDay: false,
+      endTime: { hour: 0, min: 0 },
+      startTime: { hour: 0, min: 0 }
+    })
+  }
+
   return (
     <Container>
       <Heading level={3} className={css.heading}>
@@ -369,7 +385,7 @@ const DaysAndTimeSelector = ({ formikProps }: DaysAndTimeSelectorProps) => {
               label=""
               value={'sometime'}
               checked={!formikProps.values.allDay}
-              onChange={_ => formikProps.setFieldValue('allDay', false)}
+              onChange={handleTimeRangeRadioSelection}
             />
             <Container>
               <Layout.Horizontal flex={{ alignItems: 'center', justifyContent: 'start' }} className={css.fromTime}>

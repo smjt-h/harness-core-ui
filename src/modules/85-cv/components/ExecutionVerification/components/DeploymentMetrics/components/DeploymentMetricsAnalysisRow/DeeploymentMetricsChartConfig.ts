@@ -67,11 +67,13 @@ export function chartsConfig(
         // @ts-ignore
         const testDataValue = actualTestData?.points?.[this.point.index]?.y
 
+        // to show "No data" text when the y axis value is null
+        const baseDataDisplayValue = baseDataValue?.toFixed(2) ?? getString('noData')
+        const testDataDisplayValue = testDataValue?.toFixed(2) ?? getString('noData')
+
         return `<section class="serviceGuardTimeSeriesTooltip"><p>${getString(
           'connectors.cdng.baseline'
-        )}: ${baseDataValue.toFixed(2)}</p><br/><p>${getString('common.current')}: ${testDataValue.toFixed(
-          2
-        )}</p></section>`
+        )}: ${baseDataDisplayValue}</p><br/><p>${getString('common.current')}: ${testDataDisplayValue}</p></section>`
       },
       outside: true
     },

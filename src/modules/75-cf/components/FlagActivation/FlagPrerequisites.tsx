@@ -74,7 +74,12 @@ export const FlagPrerequisites: React.FC<FlagPrerequisitesProps> = props => {
   const { featureFlag, refetchFlag, gitSync } = props
   const { showError } = useToaster()
   const { getString } = useStrings()
-  const { orgIdentifier, accountId, projectIdentifier, environmentIdentifier } = useParams<Record<string, string>>()
+  const {
+    orgIdentifier,
+    accountId: accountIdentifier,
+    projectIdentifier,
+    environmentIdentifier
+  } = useParams<Record<string, string>>()
   const [searchTerm, setSearchTerm] = useState<string>()
 
   const gitSyncFormMeta = gitSync?.getGitSyncFormMeta(AUTO_COMMIT_MESSAGES.UPDATES_FLAG_PREREQS)
@@ -82,15 +87,14 @@ export const FlagPrerequisites: React.FC<FlagPrerequisitesProps> = props => {
 
   const queryParams = useMemo(
     () => ({
-      environment: environmentIdentifier !== 'undefined' ? environmentIdentifier : '',
-      project: projectIdentifier as string,
-      account: accountId,
-      accountIdentifier: accountId,
-      org: orgIdentifier,
+      environmentIdentifier: environmentIdentifier !== 'undefined' ? environmentIdentifier : '',
+      projectIdentifier,
+      accountIdentifier,
+      orgIdentifier,
       name: searchTerm,
       pageSize: PAGE_SIZE
     }),
-    [searchTerm]
+    [accountIdentifier, environmentIdentifier, orgIdentifier, projectIdentifier, searchTerm]
   )
   const {
     data: searchedFeatures,
@@ -112,11 +116,10 @@ export const FlagPrerequisites: React.FC<FlagPrerequisitesProps> = props => {
   const { mutate: patchPrerequisites } = usePatchFeature({
     identifier: featureFlag.identifier as string,
     queryParams: {
-      project: featureFlag.project as string,
-      environment: featureFlag.envProperties?.environment as string,
-      account: accountId,
-      accountIdentifier: accountId,
-      org: orgIdentifier
+      projectIdentifier: featureFlag.project as string,
+      environmentIdentifier: featureFlag.envProperties?.environment as string,
+      accountIdentifier,
+      orgIdentifier
     } as PatchFeatureQueryParams
   })
 

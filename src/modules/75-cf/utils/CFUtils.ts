@@ -147,8 +147,8 @@ export const unescapeI18nSupportedTags = (str: string) =>
 
 // FF Environment SDK Type
 export enum EnvironmentSDKKeyType {
-  SERVER = 'Server',
-  CLIENT = 'Client'
+  SERVER = 'server',
+  CLIENT = 'client'
 }
 
 export const NO_ENVIRONMENT_IDENTIFIER = '-1'
@@ -386,4 +386,22 @@ export const rewriteCurrentLocationWithActiveEnvironment = (activeEnvironment: E
 export enum CFEntityType {
   TARGET = 'target',
   TARGET_GROUP = 'segment'
+}
+
+export const getDefaultVariation = (flag: Feature): Variation => {
+  if (!isFeatureFlagOn(flag)) {
+    return flag.variations.find(({ identifier }) => identifier === flag.defaultOffVariation) as Variation
+  }
+
+  if (flag.envProperties?.defaultServe?.variation) {
+    const variation = flag.variations.find(
+      ({ identifier }) => identifier === flag.envProperties?.defaultServe?.variation
+    )
+
+    if (variation) {
+      return variation
+    }
+  }
+
+  return flag.variations.find(({ identifier }) => identifier === flag.defaultOnVariation) as Variation
 }

@@ -29,8 +29,8 @@ const renderComponent = (props: Partial<FlagOptionsMenuButtonProps> = {}): Rende
         deleteFlag={jest.fn()}
         queryParams={{
           accountIdentifier: 'test_acc',
-          org: 'test_org',
-          project: 'test_project',
+          orgIdentifier: 'test_org',
+          projectIdentifier: 'test_project',
           commitMsg: 'test message'
         }}
         refetchFlags={jest.fn()}
@@ -94,7 +94,12 @@ describe('FlagOptionsButton', () => {
     userEvent.click(screen.getByRole('button', { name: 'delete' }))
 
     expect(deleteFlagMock).toBeCalledWith('new_flag', {
-      queryParams: { accountIdentifier: 'test_acc', commitMsg: '', org: 'test_org', project: 'test_project' }
+      queryParams: {
+        accountIdentifier: 'test_acc',
+        commitMsg: '',
+        orgIdentifier: 'test_org',
+        projectIdentifier: 'test_project'
+      }
     })
   })
 
@@ -148,7 +153,12 @@ describe('FlagOptionsButton', () => {
     userEvent.click(screen.getByRole('button', { name: 'delete' }))
 
     expect(deleteFlagMock).toBeCalledWith('new_flag', {
-      queryParams: { accountIdentifier: 'test_acc', commitMsg: '', org: 'test_org', project: 'test_project' }
+      queryParams: {
+        accountIdentifier: 'test_acc',
+        commitMsg: '',
+        orgIdentifier: 'test_org',
+        projectIdentifier: 'test_project'
+      }
     })
   })
 
@@ -178,8 +188,8 @@ describe('FlagOptionsButton', () => {
         queryParams: {
           accountIdentifier: 'test_acc',
           commitMsg: 'test commit message',
-          org: 'test_org',
-          project: 'test_project'
+          orgIdentifier: 'test_org',
+          projectIdentifier: 'test_project'
         }
       })
     )
@@ -211,8 +221,8 @@ describe('FlagOptionsButton', () => {
         queryParams: {
           accountIdentifier: 'test_acc',
           commitMsg: 'test commit message',
-          org: 'test_org',
-          project: 'test_project'
+          orgIdentifier: 'test_org',
+          projectIdentifier: 'test_project'
         }
       })
     )

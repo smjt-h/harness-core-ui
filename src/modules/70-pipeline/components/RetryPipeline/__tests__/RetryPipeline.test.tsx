@@ -165,7 +165,7 @@ describe('Retry Pipeline tests', () => {
       </TestWrapper>
     )
     // Navigate to 'Provide Values'
-    fireEvent.click(getByText('pipeline.triggers.pipelineInputPanel.provide'))
+    fireEvent.click(getByText('pipeline.pipelineInputPanel.provide'))
     await waitFor(() => expect(queryByText('customVariables.pipelineVariablesTitle')).toBeTruthy())
 
     // Submit the incomplete form
@@ -187,7 +187,7 @@ describe('Retry Pipeline tests', () => {
     )
 
     // Navigate to 'Provide Values'
-    fireEvent.click(getByText('pipeline.triggers.pipelineInputPanel.provide'))
+    fireEvent.click(getByText('pipeline.pipelineInputPanel.provide'))
     await waitFor(() => expect(queryByText('customVariables.pipelineVariablesTitle')).toBeTruthy())
 
     // Enter a value for the pipeline variable

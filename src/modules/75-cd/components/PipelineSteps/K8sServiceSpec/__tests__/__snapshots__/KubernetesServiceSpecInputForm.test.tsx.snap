@@ -658,10 +658,6 @@ exports[`MANIFEST renders the K8 manifest: manifest form skeleton 1`] = `
   >
     <div
       class="nopadLeft accordionSummary"
-      id="Stage.testStageIdentifier.Service.Artifacts.Sidecars"
-    />
-    <div
-      class="nopadLeft accordionSummary"
       id="Stage.testStageIdentifier.Service.Manifests"
     >
       <div
@@ -692,10 +688,6 @@ exports[`VARIABLES renders the service variables form: variables with default va
     <div
       class="Layout--vertical Layout--layout-spacing-medium StyledProps--main"
     >
-      <div
-        class="nopadLeft accordionSummary"
-        id="Stage.testStageIdentifier.Service.Artifacts.Sidecars"
-      />
       <div
         class="nopadLeft accordionSummary"
         id="Stage.testStageIdentifier.Service.Variables"

@@ -75,7 +75,7 @@ export const GroupNodeWidget = (props: GroupNodeProps): JSX.Element => {
           width: options.width,
           height: options.height,
           marginTop: 15 - (options.height || 64) / 2,
-          marginLeft: 15
+          marginLeft: 30
         }}
       ></div>
       <div
@@ -85,7 +85,7 @@ export const GroupNodeWidget = (props: GroupNodeProps): JSX.Element => {
           width: options.width,
           height: options.height,
           marginTop: 20 - (options.height || 64) / 2,
-          marginLeft: 10
+          marginLeft: 25
         }}
       ></div>
       <div

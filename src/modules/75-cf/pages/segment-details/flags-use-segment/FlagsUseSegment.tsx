@@ -41,15 +41,19 @@ interface FlagsUseSegmentProps {
 export const FlagsUseSegment = ({ gitSync }: FlagsUseSegmentProps): ReactElement => {
   const { getString } = useStrings()
   const { showError } = useToaster()
-  const { accountId, orgIdentifier, projectIdentifier, segmentIdentifier } = useParams<Record<string, string>>()
-  const { activeEnvironment } = useActiveEnvironment()
+  const {
+    accountId: accountIdentifier,
+    orgIdentifier,
+    projectIdentifier,
+    segmentIdentifier
+  } = useParams<Record<string, string>>()
+  const { activeEnvironment: environmentIdentifier } = useActiveEnvironment()
 
   const queryParams = {
-    account: accountId,
-    accountIdentifier: accountId,
-    org: orgIdentifier,
-    project: projectIdentifier,
-    environment: activeEnvironment
+    accountIdentifier,
+    orgIdentifier,
+    projectIdentifier,
+    environmentIdentifier
   }
   const {
     loading,
@@ -106,9 +110,11 @@ export const FlagsUseSegment = ({ gitSync }: FlagsUseSegmentProps): ReactElement
       })
   }
 
-  const removeSegmentToVariationTargetMap = async (
+  const removeRules = async (
     featureFlagIdentifier: string,
-    variationIdentifier: string,
+    instruction: string,
+    variationIdentifier?: string,
+    ruleId?: string,
     gitSyncFormValues?: GitSyncFormValues
   ): Promise<void> => {
     let gitDetails
@@ -127,8 +133,12 @@ export const FlagsUseSegment = ({ gitSync }: FlagsUseSegmentProps): ReactElement
     const instructions = {
       instructions: [
         {
-          kind: 'removeSegmentToVariationTargetMap',
-          parameters: { variation: variationIdentifier, targetSegments: [segmentIdentifier] }
+          kind: instruction,
+          parameters: {
+            variation: variationIdentifier,
+            targetSegments: [segmentIdentifier],
+            ruleID: ruleId
+          }
         }
       ]
     }
@@ -162,10 +172,10 @@ export const FlagsUseSegment = ({ gitSync }: FlagsUseSegmentProps): ReactElement
           minimal
           gitSync={gitSync}
           intent="primary"
-          accountId={accountId}
+          accountIdentifier={accountIdentifier}
           orgIdentifier={orgIdentifier}
           projectIdentifier={projectIdentifier}
-          environmentIdentifier={activeEnvironment}
+          environmentIdentifier={environmentIdentifier}
           modalTitle={getString('cf.segmentDetail.addSegmentToFlag')}
           submitButtonTitle={getString('add')}
           onSubmit={async (checkedFeatureFlags, gitSyncFormValues) =>
@@ -184,9 +194,7 @@ export const FlagsUseSegment = ({ gitSync }: FlagsUseSegmentProps): ReactElement
         style={{ overflow: 'auto', padding: '0 var(--spacing-xxlarge) var(--spacing-xxlarge)' }}
       >
         {error && <PageError message={getErrorMessage(error)} onClick={() => refetchFlags()} />}
-        {!error && !loading && (
-          <FlagsList flags={flags} gitSync={gitSync} onRemoveVariationMapping={removeSegmentToVariationTargetMap} />
-        )}
+        {!error && !loading && <FlagsList flags={flags} gitSync={gitSync} onRemoveRule={removeRules} />}
         {loading && <ContainerSpinner />}
       </Container>
     </Container>
@@ -234,8 +242,14 @@ const SectionHeader: React.FC<HeadingProps> = ({ children, ...props }) => {
 const FlagsList: React.FC<{
   gitSync: UseGitSync
   flags: SegmentFlagsResponseResponse | null
-  onRemoveVariationMapping: (featureFlagIdentifier: string, variationIdentifier: string) => Promise<void>
-}> = ({ flags, onRemoveVariationMapping, gitSync }) => {
+  onRemoveRule: (
+    featureFlagIdentifier: string,
+    instruction: string,
+    variationIdentifier?: string,
+    ruleId?: string,
+    gitSyncFormValues?: GitSyncFormValues
+  ) => Promise<void>
+}> = ({ flags, onRemoveRule, gitSync }) => {
   const { isPlanEnforcementEnabled } = usePlanEnforcement()
   const { getString } = useStrings()
   const directAddedFlags = flags?.filter(flag => flag.type === EntityAddingMode.DIRECT) || []
@@ -256,7 +270,8 @@ const FlagsList: React.FC<{
                 key={_flag.identifier}
                 flag={_flag}
                 gitSync={gitSync}
-                onRemoveVariationMapping={onRemoveVariationMapping}
+                onRemoveRule={onRemoveRule}
+                instruction="removeSegmentToVariationTargetMap"
                 isPlanEnforcementEnabled={isPlanEnforcementEnabled}
               />
             ))}
@@ -272,6 +287,8 @@ const FlagsList: React.FC<{
                 key={_flag.identifier}
                 flag={_flag}
                 gitSync={gitSync}
+                onRemoveRule={onRemoveRule}
+                instruction="removeRule"
                 isPlanEnforcementEnabled={isPlanEnforcementEnabled}
               />
             ))}
@@ -286,23 +303,27 @@ interface FlagItemProps extends ItemContainerProps {
   gitSync: UseGitSync
   flag: SegmentFlag
   isPlanEnforcementEnabled: boolean
-  onRemoveVariationMapping?: (
+  instruction: string
+  onRemoveRule?: (
     featureFlagIdentifier: string,
-    variationIdentifier: string,
-    formValues?: GitSyncFormValues
-  ) => void
+    instruction: string,
+    variationIdentifier?: string,
+    ruleId?: string,
+    gitSyncFormValues?: GitSyncFormValues
+  ) => Promise<void>
 }
 
 const FlagItem: React.FC<FlagItemProps> = ({
   gitSync,
   flag,
-  onRemoveVariationMapping,
+  onRemoveRule,
+  instruction,
   isPlanEnforcementEnabled,
   ...props
 }) => {
   const { name, description, variation } = flag
 
-  const variationTextWidth = onRemoveVariationMapping ? '88px' : '135px'
+  const variationTextWidth = onRemoveRule ? '88px' : '135px'
   const [isDeleteModalOpen, setIsDeleteModalOpen] = useState(false)
 
   return (
@@ -322,13 +343,13 @@ const FlagItem: React.FC<FlagItemProps> = ({
             Only identifier text for now. See: https://harness.atlassian.net/browse/FFM-699 */}
         <Text style={{ minWidth: variationTextWidth, maxWidth: variationTextWidth }}>{variation}</Text>
 
-        {onRemoveVariationMapping && (
+        {onRemoveRule && (
           <FlagItemOptionsMenuButton
             onClick={() => {
               if (gitSync?.isGitSyncEnabled && !gitSync?.isAutoCommitEnabled) {
                 setIsDeleteModalOpen(true)
               } else {
-                onRemoveVariationMapping(flag.identifier, variation)
+                onRemoveRule(flag.identifier, instruction, variation, flag.ruleId)
               }
             }}
           />
@@ -338,7 +359,7 @@ const FlagItem: React.FC<FlagItemProps> = ({
         <SaveFlagToGitModal
           flagName={flag.name}
           flagIdentifier={flag.identifier}
-          onSubmit={formValues => onRemoveVariationMapping?.(flag.identifier, variation, formValues)}
+          onSubmit={formValues => onRemoveRule?.(flag.identifier, instruction, variation, flag.ruleId, formValues)}
           onClose={() => {
             setIsDeleteModalOpen(false)
           }}

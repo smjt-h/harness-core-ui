@@ -15,55 +15,45 @@ import {
   Card,
   Color,
   Formik,
-  getMultiTypeFromValue,
   Heading,
   Icon,
   Layout,
   MultiTypeInputType,
+  getMultiTypeFromValue,
   StepProps,
-  Text
+  Text,
+  ButtonSize
 } from '@wings-software/uicore'
-
 import { Form } from 'formik'
 import { useStrings } from 'framework/strings'
-import { FormMultiTypeConnectorField } from '@connectors/components/ConnectorReferenceField/FormMultiTypeConnectorField'
 import type { ConnectorSelectedValue } from '@connectors/components/ConnectorReferenceField/ConnectorReferenceField'
-
+import { FormMultiTypeConnectorField } from '@connectors/components/ConnectorReferenceField/FormMultiTypeConnectorField'
 import { useVariablesExpression } from '@pipeline/components/PipelineStudio/PiplineHooks/useVariablesExpression'
-import type { ConnectorInfoDTO } from 'services/cd-ng'
-import { Connectors } from '@connectors/constants'
-
 import { ConnectorRefSchema } from '@common/utils/Validation'
+import { ConnectorTypes, AllowedTypes, tfVarIcons, ConnectorMap, ConnectorLabelMap } from './TerraformConfigFormHelper'
+
 import css from './TerraformVarfile.module.scss'
-
-export type TFVarStores = 'Git' | 'Github' | 'GitLab' | 'Bitbucket'
-export const TFConnectorMap: Record<TFVarStores | string, ConnectorInfoDTO['type']> = {
-  Git: Connectors.GIT,
-  Github: Connectors.GITHUB,
-  GitLab: Connectors.GITLAB,
-  Bitbucket: Connectors.BITBUCKET
-}
-
-const allowedTypes = ['Git', 'Github', 'GitLab', 'Bitbucket']
-
-const tfVarIcons: any = {
-  Git: 'service-github',
-  Github: 'github',
-  GitLab: 'service-gotlab',
-  Bitbucket: 'bitbucket'
-}
 
 interface TFVarStoreProps {
   initialValues: any
   isEditMode: boolean
   allowableTypes: MultiTypeInputType[]
+  handleConnectorViewChange?: () => void
+  isReadonly?: boolean
+  setConnectorView?: (val: boolean) => void
+  setSelectedConnector: (val: string) => void
 }
 
 export const TFVarStore: React.FC<StepProps<any> & TFVarStoreProps> = ({
+  prevStepData,
   nextStep,
   initialValues,
   isEditMode,
-  allowableTypes
+  allowableTypes,
+  handleConnectorViewChange,
+  isReadonly,
+  setConnectorView,
+  setSelectedConnector
 }) => {
   const [selectedType, setSelectedType] = React.useState('')
   const { getString } = useStrings()
@@ -85,31 +75,21 @@ export const TFVarStore: React.FC<StepProps<any> & TFVarStoreProps> = ({
   React.useEffect(() => {
     /* istanbul ignore next */
     setSelectedType(initialValues?.varFile?.spec?.store?.type)
-  }, [isEditMode])
+    setSelectedConnector(initialValues?.varFile?.spec?.store?.type)
+    if (setConnectorView) {
+      setConnectorView(false)
+    }
+  }, [])
+
+  const newConnectorLabel = `${getString('newLabel')} ${
+    !!selectedType && getString(ConnectorLabelMap[selectedType as ConnectorTypes])
+  } ${getString('connector')}`
 
   return (
-    <Layout.Vertical spacing="xxlarge" padding="small" className={css.tfVarStore}>
-      <Heading level={2} style={{ color: Color.GREY_800, fontSize: 24 }} margin={{ bottom: 'large' }}>
+    <Layout.Vertical padding="small" className={css.tfVarStore}>
+      <Heading level={2} style={{ color: Color.BLACK, fontSize: 24, fontWeight: 'bold' }} margin={{ bottom: 'large' }}>
         {getString('cd.specifyTfVarStore')}
       </Heading>
-
-      <Layout.Horizontal flex={{ justifyContent: 'flex-start', alignItems: 'flex-start' }}>
-        {allowedTypes.map(item => (
-          <div key={item} className={css.squareCardContainer}>
-            <Card
-              className={css.manifestIcon}
-              selected={item === selectedType}
-              data-testid={`varStore-${item}`}
-              onClick={() => {
-                setSelectedType(item)
-              }}
-            >
-              <Icon name={tfVarIcons[item]} size={26} />
-            </Card>
-            <Text color={Color.BLACK_100}>{item}</Text>
-          </div>
-        ))}
-      </Layout.Horizontal>
 
       <Formik
         formName="tfVarStoreForm"
@@ -130,56 +110,97 @@ export const TFVarStore: React.FC<StepProps<any> & TFVarStoreProps> = ({
         })}
       >
         {formik => {
+          const connectorRef = formik.values.varFile?.spec?.store?.spec?.connectorRef
+          const isFixedValue = getMultiTypeFromValue(connectorRef) === MultiTypeInputType.FIXED
+          const disabled = !selectedType || (isFixedValue && !(connectorRef as ConnectorSelectedValue)?.connector)
           return (
-            <Form>
-              <div className={css.formContainerStepOne}>
-                {selectedType && (
-                  <FormMultiTypeConnectorField
-                    label={
-                      <Text style={{ display: 'flex', alignItems: 'center' }}>
-                        {selectedType} {getString('connector')}
-                        <Button
-                          icon="question"
-                          minimal
-                          tooltip={getString('connectors.title.gitConnector')}
-                          iconProps={{ size: 14 }}
-                        />
-                      </Text>
-                    }
-                    type={TFConnectorMap[selectedType]}
-                    width={400}
-                    name="varFile.spec.store.spec.connectorRef"
-                    placeholder={`${getString('select')} ${selectedType} ${getString('connector')}`}
-                    accountIdentifier={accountId}
-                    projectIdentifier={projectIdentifier}
-                    orgIdentifier={orgIdentifier}
-                    style={{ marginBottom: 10 }}
-                    multiTypeProps={{ expressions, allowableTypes }}
-                  />
-                )}
-              </div>
-
-              <Layout.Horizontal spacing="xxlarge">
-                <Button
-                  variation={ButtonVariation.PRIMARY}
-                  type="submit"
-                  text={getString('continue')}
-                  rightIcon="chevron-right"
-                  /* istanbul ignore next */
-                  onClick={() => {
-                    /* istanbul ignore next */
-                    nextStep?.({ ...formik.values, selectedType })
-                  }}
-                  disabled={
-                    /* istanbul ignore next */
-                    !selectedType ||
-                    (getMultiTypeFromValue(formik.values.varFile?.spec?.store?.spec?.connectorRef) ===
-                      MultiTypeInputType.FIXED &&
-                      !(formik.values.varFile?.spec?.store?.spec?.connectorRef as ConnectorSelectedValue)?.connector)
-                  }
-                />
+            <>
+              <Layout.Horizontal flex={{ justifyContent: 'flex-start', alignItems: 'flex-start' }}>
+                {AllowedTypes.map(item => (
+                  <div key={item} className={css.squareCardContainer}>
+                    <Card
+                      className={css.manifestIcon}
+                      selected={item === selectedType}
+                      data-testid={`varStore-${item}`}
+                      onClick={() => {
+                        setSelectedConnector(item)
+                        setSelectedType(item)
+                        if (isFixedValue) {
+                          formik?.setFieldValue('varFile.spec.store.spec.connectorRef', '')
+                        }
+                      }}
+                    >
+                      <Icon name={tfVarIcons[item]} size={26} />
+                    </Card>
+                    <Text color={Color.BLACK_100}>{item}</Text>
+                  </div>
+                ))}
               </Layout.Horizontal>
-            </Form>
+              <Form className={css.formComponent}>
+                <div className={css.formContainerStepOne}>
+                  {selectedType && (
+                    <Layout.Horizontal
+                      spacing={'medium'}
+                      flex={{ alignItems: 'flex-start', justifyContent: 'flex-start' }}
+                    >
+                      <FormMultiTypeConnectorField
+                        label={
+                          <Text style={{ display: 'flex', alignItems: 'center' }}>
+                            {selectedType} {getString('connector')}
+                            <Button
+                              icon="question"
+                              minimal
+                              tooltip={`${selectedType} ${getString('connector')}`}
+                              iconProps={{ size: 14 }}
+                            />
+                          </Text>
+                        }
+                        type={ConnectorMap[selectedType]}
+                        width={400}
+                        name="varFile.spec.store.spec.connectorRef"
+                        placeholder={`${getString('select')} ${selectedType} ${getString('connector')}`}
+                        accountIdentifier={accountId}
+                        projectIdentifier={projectIdentifier}
+                        orgIdentifier={orgIdentifier}
+                        style={{ marginBottom: 10 }}
+                        multiTypeProps={{ expressions, allowableTypes }}
+                      />
+                      <Button
+                        variation={ButtonVariation.LINK}
+                        size={ButtonSize.SMALL}
+                        disabled={isReadonly}
+                        id="new-var-connector"
+                        text={newConnectorLabel}
+                        className={css.newConnectorButton}
+                        icon="plus"
+                        iconProps={{ size: 12 }}
+                        onClick={() => {
+                          if (handleConnectorViewChange) {
+                            handleConnectorViewChange()
+                          }
+                          nextStep?.({ ...prevStepData, selectedType })
+                        }}
+                      />
+                    </Layout.Horizontal>
+                  )}
+                </div>
+
+                <Layout.Horizontal spacing="xxlarge">
+                  <Button
+                    variation={ButtonVariation.PRIMARY}
+                    type="submit"
+                    text={getString('continue')}
+                    rightIcon="chevron-right"
+                    /* istanbul ignore next */
+                    onClick={() => {
+                      /* istanbul ignore next */
+                      nextStep?.({ ...formik.values, selectedType })
+                    }}
+                    disabled={disabled}
+                  />
+                </Layout.Horizontal>
+              </Form>
+            </>
           )
         }}
       </Formik>

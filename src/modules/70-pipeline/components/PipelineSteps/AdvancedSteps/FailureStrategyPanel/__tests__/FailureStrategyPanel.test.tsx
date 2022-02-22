@@ -253,12 +253,14 @@ describe('<FailureStrategyPanel /> tests', () => {
 
     await waitFor(() => findByTestId('failure-strategy-step-0'))
 
-    const add = await findByTestId('add-failure-strategy')
+    const tab1 = await findByTestId('failure-strategy-step-0')
 
     await act(() => {
-      fireEvent.click(add)
+      fireEvent.click(tab1)
       return Promise.resolve()
     })
+
+    const add = await findByTestId('add-failure-strategy')
 
     await findByText('pipeline.failureStrategies.validation.errorsRequired')
     expect(add.classList.contains('bp3-disabled')).toBe(true)

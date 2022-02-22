@@ -114,13 +114,14 @@ export function ExecutionsChart({
         return Math.max((curr?.success || 0) + (curr?.failed || 0) + (curr?.aborted || 0) + (curr?.expired || 0), acc)
       }, 0)
       totalMax = Math.ceil(Math.max(totalMax * 1.2, 10))
+      const highchartsTime = new Highcharts.Time({})
       data.forEach(val => {
         successful.push(val?.success || 0)
         failed.push(val?.failed || 0)
         aborted.push(val?.aborted || 0)
         expired.push(val?.expired || 0)
         empty.push(totalMax - ((val?.success || 0) + (val?.failed || 0) + (val?.aborted || 0) + (val?.expired || 0)))
-        xCategories.push(moment(val.time).format('YYYY-MM-DD'))
+        xCategories.push(highchartsTime.dateFormat('%e %B, %Y', val.time))
       })
       setChartOptions(
         merge({}, defaultChartOptions, {

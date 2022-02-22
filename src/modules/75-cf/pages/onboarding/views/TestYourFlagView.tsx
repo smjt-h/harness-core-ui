@@ -28,26 +28,25 @@ export interface TestYourFlagViewProps {
 }
 
 export const TestYourFlagView: React.FC<TestYourFlagViewProps> = props => {
-  const { flagInfo } = props
-  const { projectIdentifier, orgIdentifier, accountId } = useParams<Record<string, string>>()
+  const { flagInfo, environmentIdentifier } = props
+  const { projectIdentifier, orgIdentifier, accountId: accountIdentifier } = useParams<Record<string, string>>()
   const { getString } = useStrings()
   const toggleFeatureFlag = useToggleFeatureFlag({
-    accountIdentifier: accountId,
+    accountIdentifier,
     orgIdentifier,
     projectIdentifier,
-    environmentIdentifier: props.environmentIdentifier as string
+    environmentIdentifier: environmentIdentifier as string
   })
   const queryParams = useMemo(
     () => ({
-      account: accountId,
-      accountIdentifier: accountId,
-      org: orgIdentifier,
-      project: projectIdentifier as string,
-      environment: props.environmentIdentifier,
+      accountIdentifier,
+      orgIdentifier,
+      projectIdentifier,
+      environmentIdentifier,
       identifier: flagInfo.identifier,
       metrics: true
     }),
-    [projectIdentifier, props.environmentIdentifier, accountId, orgIdentifier, flagInfo.identifier]
+    [projectIdentifier, environmentIdentifier, accountIdentifier, orgIdentifier, flagInfo.identifier]
   )
   const { data, loading, refetch } = useGetAllFeatures({
     lazy: true,
@@ -60,7 +59,7 @@ export const TestYourFlagView: React.FC<TestYourFlagViewProps> = props => {
     orgIdentifier: orgIdentifier as string,
     projectIdentifier: projectIdentifier as string,
     featureFlagIdentifier: flagInfo.identifier,
-    accountId
+    accountId: accountIdentifier
   })
   link = location.hash.startsWith('#/account/') ? '/#' + link : link
 

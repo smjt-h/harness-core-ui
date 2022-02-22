@@ -513,28 +513,26 @@ export const SegmentRules: React.FC<{ segment: Segment; onUpdate: () => void }> 
   const { showError } = useToaster()
   const [editing, setEditing] = useState(false)
   const [errors, setErrors] = useState<RuleErrors>({})
-  const { orgIdentifier, accountId } = useParams<Record<string, string>>()
-  const { projectIdentifier: project, segmentIdentifier: identifier } = useParams<any>()
-  const { activeEnvironment } = useActiveEnvironment()
+  const { orgIdentifier, accountId: accountIdentifier } = useParams<Record<string, string>>()
+  const { projectIdentifier, segmentIdentifier: identifier } = useParams<any>()
+  const { activeEnvironment: environmentIdentifier } = useActiveEnvironment()
 
   const { data: rawTargets, loading: loadingTargets } = useGetAllTargets({
     queryParams: {
-      environment: activeEnvironment,
-      project,
-      account: accountId,
-      accountIdentifier: accountId,
-      org: orgIdentifier
+      environmentIdentifier,
+      projectIdentifier,
+      accountIdentifier,
+      orgIdentifier
     } as GetAllTargetsQueryParams
   })
 
   const { mutate: sendPatch, loading: loadingPatch } = usePatchSegment({
     identifier,
     queryParams: {
-      environment: activeEnvironment,
-      project,
-      account: accountId,
-      accountIdentifier: accountId,
-      org: orgIdentifier
+      environmentIdentifier,
+      projectIdentifier,
+      accountIdentifier,
+      orgIdentifier
     } as PatchSegmentQueryParams
   })
 

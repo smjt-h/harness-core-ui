@@ -20,7 +20,12 @@ describe('NewSegmentButton', () => {
         path="/account/:accountId/cf/orgs/:orgIdentifier/projects/:projectIdentifier/onboarding/detail"
         pathParams={params}
       >
-        <NewSegmentButton accountId="dummy" orgIdentifier="dummy" projectIdentifier="dummy" onCreated={jest.fn()} />
+        <NewSegmentButton
+          accountIdentifier="dummy"
+          orgIdentifier="dummy"
+          projectIdentifier="dummy"
+          onCreated={jest.fn()}
+        />
       </TestWrapper>
     )
 
@@ -48,7 +53,12 @@ describe('NewSegmentButton', () => {
         path="/account/:accountId/cf/orgs/:orgIdentifier/projects/:projectIdentifier/onboarding/detail"
         pathParams={params}
       >
-        <NewSegmentButton accountId="dummy" orgIdentifier="dummy" projectIdentifier="dummy" onCreated={onCreated} />
+        <NewSegmentButton
+          accountIdentifier="dummy"
+          orgIdentifier="dummy"
+          projectIdentifier="dummy"
+          onCreated={onCreated}
+        />
       </TestWrapper>
     )
 

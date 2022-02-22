@@ -13,7 +13,7 @@ import { CreateTargetQueryParams, useCreateTarget } from 'services/cf'
 import CreateTargetModal, { TargetData } from './CreateTargetModal'
 
 export interface NewTargetsProps {
-  accountId: string
+  accountIdentifier: string
   orgIdentifier: string
   projectIdentifier: string
   onCreated: () => void
@@ -24,13 +24,18 @@ type SettledTarget = {
   data: TargetData
 }
 
-export const NewTargets: React.FC<NewTargetsProps> = ({ accountId, orgIdentifier, projectIdentifier, onCreated }) => {
+export const NewTargets: React.FC<NewTargetsProps> = ({
+  accountIdentifier,
+  orgIdentifier,
+  projectIdentifier,
+  onCreated
+}) => {
   const { showError, clear } = useToaster()
   const [loadingBulk, setLoadingBulk] = useState<boolean>(false)
   const { mutate: createTarget, loading: loadingCreateTarget } = useCreateTarget({
-    queryParams: { account: accountId, accountIdentifier: accountId, org: orgIdentifier } as CreateTargetQueryParams
+    queryParams: { accountIdentifier, orgIdentifier } as CreateTargetQueryParams
   })
-  const { activeEnvironment } = useActiveEnvironment()
+  const { activeEnvironment: environmentIdentifier } = useActiveEnvironment()
 
   const bulkTargetCreation = (ts: TargetData[]): Promise<SettledTarget[]> => {
     return Promise.all(
@@ -40,9 +45,9 @@ export const NewTargets: React.FC<NewTargetsProps> = ({ accountId, orgIdentifier
           name: t.name,
           anonymous: false,
           attributes: {},
-          environment: activeEnvironment,
+          environment: environmentIdentifier,
           project: projectIdentifier,
-          account: accountId,
+          account: accountIdentifier,
           org: orgIdentifier
         })
           .then(() => ({

@@ -7,6 +7,7 @@ rules:
         - modules/45-dashboards/*
         - modules/70-pipeline/*
         - modules/72-templates-library/*
+        - modules/72-triggers/*
         - modules/75-cd/*
         - modules/75-ce/*
         - modules/75-cf/*
@@ -15,6 +16,7 @@ rules:
         - '@dashboards/*'
         - '@pipeline/*'
         - '@templates-library/*'
+        - '@triggers/*'
         - '@cd/*'
         - '@ce/*'
         - '@cf/*'

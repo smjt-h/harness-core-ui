@@ -26,7 +26,7 @@ describe('DetailPageCard tests', () => {
           title={result.current.getString('overview')}
           content={[
             {
-              label: result.current.getString('pipeline.triggers.triggerConfigurationPanel.triggerName'),
+              label: result.current.getString('triggers.triggerConfigurationPanel.triggerName'),
               value: 'name'
             },
             {
@@ -55,7 +55,7 @@ describe('DetailPageCard tests', () => {
               type: ContentType.CUSTOM
             },
             {
-              label: result.current.getString('pipeline.triggers.pipelineExecutionInput'),
+              label: result.current.getString('triggers.pipelineExecutionInput'),
               value: <pre>code</pre>,
               type: ContentType.CUSTOM
             }

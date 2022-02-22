@@ -150,6 +150,9 @@
   padding-left: var(--spacing-large) !important;
   font-size: var(--font-size-small) !important;
   color: var(--black) !important;
+  :global(.bp3-control-indicator) {
+    flex-shrink: 0;
+  }
 }
 
 .inputSetGitDetails {

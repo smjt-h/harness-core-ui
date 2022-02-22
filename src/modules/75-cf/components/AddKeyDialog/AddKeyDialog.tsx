@@ -49,11 +49,10 @@ const AddKeyDialog: React.FC<Props> = ({ disabled, primary, environment, onCreat
   const { getString, getEnvString } = useEnvStrings()
   const { mutate: createKey, loading } = useAddAPIKey({
     queryParams: {
-      account: environment.accountId as string,
       accountIdentifier: environment.accountId as string,
-      environment: environment.identifier as string,
-      org: environment.orgIdentifier as string,
-      project: environment.projectIdentifier as string
+      environmentIdentifier: environment.identifier as string,
+      orgIdentifier: environment.orgIdentifier as string,
+      projectIdentifier: environment.projectIdentifier as string
     } as AddAPIKeyQueryParams
   })
 
@@ -79,7 +78,7 @@ const AddKeyDialog: React.FC<Props> = ({ disabled, primary, environment, onCreat
     createKey({
       identifier: values.name,
       name: values.name,
-      type: values.type
+      type: values.type === 'server' ? 'Server' : 'Client'
     })
       .then((created: ApiKey) => onCreate(created, hideModal))
       .catch(error => showError(getErrorMessage(error), undefined, 'cf.create.key.error'))

@@ -113,7 +113,21 @@
 
   [class*='stepDetails'] {
     background-color: var(--white) !important;
-    margin: var(--spacing-xxlarge) !important;
+  }
+  [class*='navBarList'] {
+    grid-template-rows: repeat(auto-fill, var(--spacing-xxxlarge)) !important;
+  }
+
+  div[class*='nestedStep']:nth-of-type(2) {
+    margin-top: var(--spacing-medium) !important;
+  }
+}
+
+.configWizard {
+  width: 100%;
+
+  [class*='stepDetails'] {
+    background-color: var(--white) !important;
   }
   [class*='navBarList'] {
     grid-template-rows: repeat(auto-fill, var(--spacing-xxxlarge)) !important;
@@ -151,7 +165,6 @@
 }
 
 .tfVarStore {
-  padding: var(--spacing-small) 0 0 var(--spacing-small) !important;
   height: 100%;
   position: relative;
   div[class*='OverlaySpinner'] {
@@ -162,7 +175,8 @@
   }
 
   .formContainerStepOne {
-    height: 100%;
+    margin-top: 20px !important;
+    height: 80%;
     min-height: 280px;
   }
 
@@ -175,6 +189,11 @@
       z-index: 2;
     }
   }
+}
+
+.formComponent {
+  height: 100%;
+  padding-bottom: var(--spacing-10);
 }
 
 .crossIcon {
@@ -272,4 +291,8 @@
   margin-top: var(--spacing-3);
   margin-bottom: var(--spacing-5);
   border-top: 0.5px solid var(--grey-200);
+}
+
+.newConnectorButton {
+  margin-top: 40px !important;
 }

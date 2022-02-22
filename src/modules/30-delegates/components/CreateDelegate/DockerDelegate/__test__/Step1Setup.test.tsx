@@ -6,7 +6,8 @@
  */
 
 import React from 'react'
-import { render } from '@testing-library/react'
+import { render, waitFor } from '@testing-library/react'
+import userEvent from '@testing-library/user-event'
 import { TestWrapper } from '@common/utils/testUtils'
 import Step1Setup from '../Step1Setup/Step1Setup'
 
@@ -14,10 +15,9 @@ const featureFlags = {
   NG_SHOW_DEL_TOKENS: true
 }
 
+const nextStepFn = jest.fn().mockImplementation(() => undefined)
+
 jest.mock('services/portal', () => ({
-  useCreateDelegateToken: jest.fn().mockImplementation(() => ({
-    mutate: jest.fn().mockImplementation(() => undefined)
-  })),
   useGetDelegateSizes: jest.fn().mockImplementation(() => {
     return {
       data: [
@@ -33,18 +33,21 @@ jest.mock('services/portal', () => ({
       loading: false
     }
   }),
-  useGenerateDockerDelegate: jest.fn().mockImplementation(() => {
-    return {
-      mutate: jest.fn().mockImplementation(() => ({
-        resource: {}
-      }))
-    }
-  }),
+  validateDockerDelegatePromise: jest.fn().mockImplementation(() => Promise.resolve({ responseMessages: [] }))
+}))
+
+jest.mock('services/cd-ng', () => ({
+  useCreateDelegateToken: jest.fn().mockImplementation(() => ({
+    mutate: jest.fn().mockImplementation(() => undefined)
+  })),
   useGetDelegateTokens: jest.fn().mockImplementation(() => ({
     mutate: jest.fn().mockImplementation(() => ({
       resource: [
         {
-          name: 'Token1'
+          name: 'Token 1'
+        },
+        {
+          name: 'Token 2'
         }
       ]
     }))
@@ -52,12 +55,34 @@ jest.mock('services/portal', () => ({
 }))
 
 describe('Create Docker Step1Setup', () => {
-  test('render data', () => {
+  test('render step1 initial', () => {
     const { container } = render(
       <TestWrapper defaultAppStoreValues={{ featureFlags }}>
         <Step1Setup />
       </TestWrapper>
     )
     expect(container).toMatchSnapshot()
+  })
+  test('render step1 with previous data', async () => {
+    const { getByRole } = render(
+      <TestWrapper defaultAppStoreValues={{ featureFlags }}>
+        <Step1Setup
+          prevStepData={{
+            name: 'delegate1docker',
+            identifier: 'delegate1ident',
+            description: '',
+            tags: ['tag1', 'tag2'],
+            tokenName: 'Token 1'
+          }}
+          nextStep={nextStepFn}
+        />
+      </TestWrapper>
+    )
+    const submitBtn = getByRole('button', { name: /continue/ })
+    userEvent.click(submitBtn!)
+
+    await waitFor(() => {
+      expect(nextStepFn).toBeCalled()
+    })
   })
 })

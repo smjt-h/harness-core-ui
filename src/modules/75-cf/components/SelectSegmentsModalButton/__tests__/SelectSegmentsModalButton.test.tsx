@@ -27,6 +27,7 @@ describe('SelectSegmentsModalButton', () => {
       >
         <SelectSegmentsModalButton
           {...params}
+          accountIdentifier={params.accountId}
           environmentIdentifier="dummy"
           modalTitle="Test Title"
           onSubmit={jest.fn()}
@@ -65,6 +66,7 @@ describe('SelectSegmentsModalButton', () => {
       >
         <SelectSegmentsModalButton
           {...params}
+          accountIdentifier={params.accountId}
           environmentIdentifier="dummy"
           modalTitle="Test Title"
           onSubmit={jest.fn()}
@@ -100,6 +102,7 @@ describe('SelectSegmentsModalButton', () => {
       >
         <SelectSegmentsModalButton
           {...params}
+          accountIdentifier={params.accountId}
           environmentIdentifier="dummy"
           modalTitle="Test Title"
           onSubmit={onSubmit}

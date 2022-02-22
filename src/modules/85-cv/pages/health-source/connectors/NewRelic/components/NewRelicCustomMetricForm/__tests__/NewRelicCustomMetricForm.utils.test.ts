@@ -22,11 +22,11 @@ describe('Validate utils', () => {
   })
 
   test('should validate initNewRelicCustomFormValue', () => {
-    expect(initNewRelicCustomFormValue(val => val)).toEqual({
+    expect(initNewRelicCustomFormValue()).toEqual({
       continuousVerification: false,
       groupName: {
-        label: 'cv.addGroupName',
-        value: 'cv.addGroupName'
+        label: '',
+        value: ''
       },
       healthScore: false,
       metricValue: '',

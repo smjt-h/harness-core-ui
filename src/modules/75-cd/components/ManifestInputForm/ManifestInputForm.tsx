@@ -29,7 +29,7 @@ import { GitConfigDTO, ManifestConfigWrapper, useGetBucketListForS3, useGetGCSBu
 
 import { useVariablesExpression } from '@pipeline/components/PipelineStudio/PiplineHooks/useVariablesExpression'
 import type { KubernetesServiceInputFormProps } from '@pipeline/factories/ArtifactTriggerInputFactory/types'
-import { TriggerTypes, TriggerDefaultFieldList } from '@pipeline/pages/triggers/utils/TriggersWizardPageUtils'
+import { TriggerTypes, TriggerDefaultFieldList } from '@triggers/pages/triggers/utils/TriggersWizardPageUtils'
 
 import {
   ManifestToConnectorMap,

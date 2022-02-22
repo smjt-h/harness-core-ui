@@ -9,7 +9,7 @@ import React, { Dispatch, SetStateAction } from 'react'
 import { useParams } from 'react-router-dom'
 import * as Yup from 'yup'
 import type { FormikErrors } from 'formik'
-import { defaultTo, omit } from 'lodash-es'
+import { defaultTo, isUndefined, omit, omitBy, isNull } from 'lodash-es'
 import type { MutateMethod } from 'restful-react'
 import { Button, ButtonVariation, Formik, Layout, Popover } from '@wings-software/uicore'
 import { Classes } from '@blueprintjs/core'
@@ -27,7 +27,6 @@ import GitContextForm, { GitContextProps } from '@common/components/GitContextFo
 import type { SaveToGitFormInterface } from '@common/components/SaveToGitForm/SaveToGitForm'
 import { useSaveToGitDialog, UseSaveSuccessResponse } from '@common/modals/SaveToGitDialog/useSaveToGitDialog'
 import type { GitQueryParams, PipelineType } from '@common/interfaces/RouteInterfaces'
-import { clearNullUndefined } from '@pipeline/pages/triggers/utils/TriggersWizardPageUtils'
 import { getFormattedErrors } from '@pipeline/utils/runPipelineUtils'
 import { useStrings } from 'framework/strings'
 import RbacButton from '@rbac/components/Button/Button'
@@ -37,6 +36,10 @@ import { GitSyncStoreProvider } from 'framework/GitRepoStore/GitSyncStoreContext
 import { yamlStringify } from '@common/utils/YamlHelperMethods'
 import type { InputSetDTO } from '../InputSetForm/InputSetForm'
 import type { Values } from '../PipelineStudio/StepCommands/StepCommandTypes'
+
+function clearNullUndefined<T>(data: T): T {
+  return omitBy(omitBy(data, isUndefined), isNull) as T
+}
 
 interface UseCreateUpdateInputSetReturnType {
   createUpdateInputSet: (

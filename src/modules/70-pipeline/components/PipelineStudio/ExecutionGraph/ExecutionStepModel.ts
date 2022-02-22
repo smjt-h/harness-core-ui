@@ -333,6 +333,7 @@ export class ExecutionStepModel extends DiagramModel {
               conditionalExecutionEnabled: stepNode?.when
                 ? stepNode?.when?.stageStatus !== 'Success' || !!stepNode?.when?.condition?.trim()
                 : false,
+              isTemplate: isTemplateStep,
               customNodeStyle: { borderColor: 'var(--pipeline-grey-border)' },
               iconStyle: {
                 color:

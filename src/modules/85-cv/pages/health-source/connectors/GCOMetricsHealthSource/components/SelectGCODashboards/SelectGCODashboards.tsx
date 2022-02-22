@@ -11,22 +11,23 @@ import { StackdriverDashboardDTO, useGetStackdriverDashboards } from 'services/c
 import { SetupSourceTabsContext } from '@cv/components/CVSetupSourcesView/SetupSourceTabs/SetupSourceTabs'
 import MetricsDashboardList from '@cv/components/MetricsDashboardList/MetricsDashboardList'
 import type { TableDashboardItem } from '@cv/components/MetricsDashboardList/MetricsDashboardList.type'
-import { transformGCOMetricHealthSourceToGCOMetricSetupSource } from '../../GCOMetricsHealthSource.utils'
+import { getSelectedDashboards } from '../../GCOMetricsHealthSource.utils'
 
 export function SelectGCODashboards(): JSX.Element {
   const { sourceData } = useContext(SetupSourceTabsContext)
-  const dashboardItemMapper: (dashboard: StackdriverDashboardDTO) => TableDashboardItem = useCallback(dashboard => {
-    return {
-      name: dashboard.name,
-      id: dashboard.path
-    }
-  }, [])
+  const dashboardItemMapper: (dashboard: StackdriverDashboardDTO & { id?: string }) => TableDashboardItem = useCallback(
+    dashboard => {
+      const { name = '', path = '', id = '' } = dashboard
+      return {
+        name: name,
+        id: path || id
+      }
+    },
+    []
+  )
 
   const selectedDashboards = useMemo(() => {
-    return (
-      sourceData.selectedDashboards ||
-      transformGCOMetricHealthSourceToGCOMetricSetupSource(sourceData).selectedDashboards
-    )
+    return sourceData.selectedDashboards || getSelectedDashboards(sourceData)
   }, [sourceData])
   return (
     <MetricsDashboardList<StackdriverDashboardDTO>

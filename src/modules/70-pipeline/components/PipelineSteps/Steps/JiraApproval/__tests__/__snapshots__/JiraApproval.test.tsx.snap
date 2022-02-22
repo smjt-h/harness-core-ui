@@ -1264,7 +1264,7 @@ exports[`Jira Approval tests Edit stage - readonly: edit stage view readonly 1`]
                     pipeline.jiraApprovalStep.jiraField
                   </span>
                   <span>
-                    pipeline.triggers.conditionsPanel.operator
+                    common.operator
                   </span>
                   <span>
                     valueLabel

@@ -5,7 +5,12 @@
  * https://polyformproject.org/wp-content/uploads/2020/06/PolyForm-Shield-1.0.0.txt.
  */
 
-import { K8sManifestSource } from '@cd/components/PipelineSteps/K8sServiceSpec/ManifestSource/K8sManifestSource'
+import { K8sManifestSource } from '@cd/components/PipelineSteps/K8sServiceSpec/ManifestSource/K8sManifestSource/K8sManifestSource'
+import { ValuesYamlManifestSource } from '@cd/components/PipelineSteps/K8sServiceSpec/ManifestSource/ValuesYamlManifestSource/ValuesYamlManifestSource'
+import { OpenshiftTemplateManifestSource } from '@cd/components/PipelineSteps/K8sServiceSpec/ManifestSource/OpenshiftTemplateManifestSource/OpenshiftTemplateManifestSource'
+import { OpenshiftParamManifestSource } from '@cd/components/PipelineSteps/K8sServiceSpec/ManifestSource/OpenshiftParamManifestSource/OpenshiftParamManifestSource'
+import { KustomizeManifestSource } from '@cd/components/PipelineSteps/K8sServiceSpec/ManifestSource/KustomizeManifestSource/KustomizeManifestSource'
+import { KustomizePatchesManifestSource } from '@cd/components/PipelineSteps/K8sServiceSpec/ManifestSource/KustomizePatchesManifestSource/KustomizePatchesManifestSource'
 import type { ManifestSourceBase } from './ManifestSourceBase'
 
 export class ManifestSourceBaseFactory {
@@ -32,5 +37,10 @@ export class ManifestSourceBaseFactory {
 
 const manifestSourceBaseFactory = new ManifestSourceBaseFactory()
 manifestSourceBaseFactory.registerManifestSource(new K8sManifestSource())
+manifestSourceBaseFactory.registerManifestSource(new ValuesYamlManifestSource())
+manifestSourceBaseFactory.registerManifestSource(new OpenshiftTemplateManifestSource())
+manifestSourceBaseFactory.registerManifestSource(new OpenshiftParamManifestSource())
+manifestSourceBaseFactory.registerManifestSource(new KustomizeManifestSource())
+manifestSourceBaseFactory.registerManifestSource(new KustomizePatchesManifestSource())
 
 export default manifestSourceBaseFactory

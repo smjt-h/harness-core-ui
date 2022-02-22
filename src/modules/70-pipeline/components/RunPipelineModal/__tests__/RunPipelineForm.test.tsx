@@ -119,9 +119,7 @@ describe('STUDIO MODE', () => {
     await waitFor(() => expect(editorDiv).toBeTruthy())
 
     fireEvent.click(getByText('VISUAL'))
-    await waitFor(() =>
-      expect(queryByText('pipeline.triggers.pipelineInputPanel.selectedExisitingOrProvide')).toBeTruthy()
-    )
+    await waitFor(() => expect(queryByText('pipeline.pipelineInputPanel.selectedExisitingOrProvide')).toBeTruthy())
   })
 
   test('should display the help text on hover', async () => {
@@ -131,7 +129,7 @@ describe('STUDIO MODE', () => {
       </TestWrapper>
     )
 
-    fireEvent.mouseOver(getByText('pipeline.triggers.pipelineInputPanel.whatAreInputsets'))
+    fireEvent.mouseOver(getByText('pipeline.pipelineInputPanel.whatAreInputsets'))
     await waitFor(() => expect(queryByText('pipeline.inputSets.aboutInputSets')).toBeTruthy())
   })
 
@@ -142,7 +140,7 @@ describe('STUDIO MODE', () => {
       </TestWrapper>
     )
     // Navigate to 'Provide Values'
-    fireEvent.click(getByText('pipeline.triggers.pipelineInputPanel.provide'))
+    fireEvent.click(getByText('pipeline.pipelineInputPanel.provide'))
     await waitFor(() => expect(queryByText('customVariables.pipelineVariablesTitle')).toBeTruthy())
 
     // Submit the incomplete form
@@ -165,7 +163,7 @@ describe('STUDIO MODE', () => {
       </TestWrapper>
     )
     // Navigate to 'Provide Values'
-    fireEvent.click(getByText('pipeline.triggers.pipelineInputPanel.provide'))
+    fireEvent.click(getByText('pipeline.pipelineInputPanel.provide'))
     await waitFor(() => expect(queryByText('customVariables.pipelineVariablesTitle')).toBeTruthy())
 
     // Submit the incomplete form by pressing enter
@@ -188,7 +186,7 @@ describe('STUDIO MODE', () => {
     )
 
     // Navigate to 'Provide Values'
-    fireEvent.click(getByText('pipeline.triggers.pipelineInputPanel.provide'))
+    fireEvent.click(getByText('pipeline.pipelineInputPanel.provide'))
     await waitFor(() => expect(queryByText('customVariables.pipelineVariablesTitle')).toBeTruthy())
 
     // Enter a value for the pipeline variable
@@ -220,7 +218,7 @@ describe('STUDIO MODE', () => {
     )
 
     // Navigate to 'Provide Values'
-    fireEvent.click(getByText('pipeline.triggers.pipelineInputPanel.provide'))
+    fireEvent.click(getByText('pipeline.pipelineInputPanel.provide'))
     await waitFor(() => expect(queryByText('customVariables.pipelineVariablesTitle')).toBeTruthy())
 
     // Enter a value for the pipeline variable
@@ -269,9 +267,7 @@ describe('STUDIO MODE', () => {
       </TestWrapper>
     )
 
-    await waitFor(() =>
-      expect(queryByText('pipeline.triggers.pipelineInputPanel.selectedExisitingOrProvide')).toBeTruthy()
-    )
+    await waitFor(() => expect(queryByText('pipeline.pipelineInputPanel.selectedExisitingOrProvide')).toBeTruthy())
 
     // Click on the Add input sets button
     act(() => {
@@ -326,9 +322,7 @@ describe('STUDIO MODE', () => {
       </TestWrapper>
     )
 
-    await waitFor(() =>
-      expect(queryByText('pipeline.triggers.pipelineInputPanel.selectedExisitingOrProvide')).toBeTruthy()
-    )
+    await waitFor(() => expect(queryByText('pipeline.pipelineInputPanel.selectedExisitingOrProvide')).toBeTruthy())
 
     // Click on the Add input sets button
     act(() => {

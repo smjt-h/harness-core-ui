@@ -142,17 +142,16 @@ function ValidationChart(props: ValidationChartProps): JSX.Element {
 export function GCOMetricsHealthSource(props: GCOMetricsHealthSourceProps): JSX.Element {
   const { data, onSubmit } = props
 
-  const {
-    onPrevious,
-    sourceData: { existingMetricDetails }
-  } = useContext(SetupSourceTabsContext)
+  const { onPrevious, sourceData } = useContext(SetupSourceTabsContext)
+
+  const { existingMetricDetails, selectedDashboards: selectedDashboardsContextValue = [] } = sourceData || {}
 
   const metricDefinitions = existingMetricDetails?.spec?.metricDefinitions
 
   const { getString } = useStrings()
   const transformedData = useMemo(() => transformGCOMetricHealthSourceToGCOMetricSetupSource(data), [data])
   const [updatedData, setUpdatedData] = useState(
-    initializeSelectedMetrics(data.selectedDashboards || [], transformedData.metricDefinition)
+    initializeSelectedMetrics(selectedDashboardsContextValue, transformedData.metricDefinition)
   )
   const [shouldShowChart, setShouldShowChart] = useState(false)
   const [isIdentifierEdited, setIsIdentifierEdited] = useState(false)
@@ -259,7 +258,7 @@ export function GCOMetricsHealthSource(props: GCOMetricsHealthSourceProps): JSX.
           setIsIdentifierEdited(true)
         }
 
-        const dashboard: { itemId: string; title: string }[] = data.selectedDashboards.map(
+        const dashboard: { itemId: string; title: string }[] = selectedDashboardsContextValue.map(
           (item: { id: string; name: string }) => {
             return { itemId: item.id, title: item.name }
           }
@@ -422,7 +421,7 @@ export function GCOMetricsHealthSource(props: GCOMetricsHealthSourceProps): JSX.
                 dashboards={isDashdoardEmpty ? [] : dashboard}
                 dashboardWidgetMapper={mapstackdriverDashboardDetailToMetricWidget}
                 dashboardDetailsRequest={stackDriverDashBoardRequest}
-                addManualQueryTitle={'cv.monitoringSources.datadog.manualInputQueryModal.modalTitle'}
+                addManualQueryTitle={'cv.monitoringSources.gco.manualInputQueryModal.modalTitle'}
                 connectorIdentifier={data.connectorRef as string}
                 manuallyInputQueries={getManuallyCreatedQueries(updatedData)}
                 showSpinnerOnLoad={!selectedMetric}

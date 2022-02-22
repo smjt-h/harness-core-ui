@@ -4,11 +4,13 @@ rules:
     - patterns:
         - lodash.*
         - microfrontends/*
+        - modules/72-triggers/*
         - modules/75-cd/*
         - modules/75-ce/*
         - modules/75-cf/*
         - modules/75-ci/*
         - modules/85-cv/*
+        - '@triggers/*'
         - '@cd/*'
         - '@ce/*'
         - '@cf/*'

@@ -146,16 +146,16 @@ export const AuditLogsList: React.FC<AuditLogsListProps> = ({
   loadingStyle,
   ...props
 }) => {
-  const { projectIdentifier, orgIdentifier, accountId } = useParams<Record<string, string>>()
-  const { activeEnvironment } = useActiveEnvironment()
+  const { projectIdentifier, orgIdentifier, accountId: accountIdentifier } = useParams<Record<string, string>>()
+  const { activeEnvironment: environmentIdentifier } = useActiveEnvironment()
   const [pageNumber, setPageNumber] = useState(0)
   const queryParams = useMemo(() => {
     return {
-      account: accountId,
-      accountIdentifier: accountId,
-      org: orgIdentifier,
-      project: projectIdentifier as string,
-      environment: activeEnvironment,
+      accountIdentifier,
+      orgIdentifier,
+      project: projectIdentifier,
+      projectIdentifier,
+      environmentIdentifier,
       objectType,
       identifier: flagData.identifier,
       pageSize: CF_DEFAULT_PAGE_SIZE,
@@ -163,7 +163,7 @@ export const AuditLogsList: React.FC<AuditLogsListProps> = ({
       startTime: startDate.getTime(),
       endTime: endDate.getTime()
     }
-  }, [projectIdentifier, activeEnvironment, accountId, orgIdentifier, pageNumber, startDate, endDate])
+  }, [projectIdentifier, environmentIdentifier, accountIdentifier, orgIdentifier, pageNumber, startDate, endDate])
   const { data, loading, error, refetch } = useGetAuditByParams({
     queryParams
   })

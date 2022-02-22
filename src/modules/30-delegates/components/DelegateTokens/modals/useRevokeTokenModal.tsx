@@ -11,7 +11,7 @@ import { Dialog, Button, Layout, Text, ButtonVariation, Heading, FontVariation }
 import { useModalHook } from '@harness/use-modal'
 import type { IDialogProps } from '@blueprintjs/core'
 import { useStrings } from 'framework/strings'
-import { revokeDelegateTokenPromise } from 'services/portal'
+import { revokeDelegateTokenPromise } from 'services/cd-ng'
 import TokenDelegatesList from './TokenDelegatesList'
 
 import css from '../DelegateTokens.module.scss'
@@ -51,7 +51,7 @@ export const useRevokeTokenModal = ({ onSuccess }: RevokeTokenModalProps): Revok
     async hideModalFn => {
       await revokeDelegateTokenPromise({
         queryParams: {
-          accountId,
+          accountIdentifier: accountId,
           projectIdentifier,
           orgIdentifier,
           tokenName

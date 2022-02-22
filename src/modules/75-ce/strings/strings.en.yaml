@@ -8,11 +8,11 @@ common:
 allRegions: 'All Regions'
 allClusters: 'All Clusters'
 enforcementMessage:
-  exceededSpendLimit: You have exceeded your cloud spend subscription limit.
+  exceededSpendLimit: You have exceeded your cloud spend subscription limit. Consider increasing your limits to manage higher cloud spend.
   exceededSpendLimitFreePlan: 'You have used {{ usage }} / {{ limit }} free cloud spend incuded in your current plan. Consider upgrading to manage higher cloud spend.'
   usageInfo: 'You have used {{ percentage }}% of your cloud spend subscription limit.'
-  autoStoppingRules: "You've used {{ limits }} free AutoStopping rules under the free plan."
-  perspectivesLimitMsg: "You've used {{ limits }} free Perspectives under the free plan."
+  autoStoppingRules: "You've used {{ limits }} free AutoStopping rules under the free plan. Consider upgrading for more Auto Stopping rules."
+  perspectivesLimitMsg: "You've used {{ limits }} free Perspectives under the free plan. Consider upgrading for more Perspectives."
 noSavingsDataMessage: 'Savings data not computed yet'
 pageErrorMsg:
   recommendationNoData: 'There are no recommendations yet. Recommendations typically take 24 hours to show up. Please check back later.'
@@ -108,6 +108,7 @@ co:
             description: 'Set dependencies between two or more AutoStopping Rules when you want one Rule to make one or more other Rules active based on the traffic that it receives. For example, for an application server dependant on a database server, you would create two Rules managing each of the two servers, and then set the Rule managing the application server to be dependant on the Rule managing the database server.'
           schedules:
             title: 'Fixed Schedules'
+            fixedSchedule: 'Fixed Schedule'
             description: 'Create scheduled windows of fixed up time or down time for the resources that are managed by this AutoStopping Rule. If a resource is set to be up or down based on a fixed schedule, then it will not be affected by any activity or idleness for that defined period.'
             addSchedulesBtn: 'Add fixed schedule'
             newScheduleTitle: 'New Fixed Schedule'
@@ -572,7 +573,7 @@ perspectives:
       nameError: '{{$.validation.nameRequired}}'
       ruleError: 'values length should be greater than 1'
     filters:
-      operator: '{{$.pipeline.triggers.conditionsPanel.operator}}'
+      operator: '{{$.common.operator}}'
       searchText: 'Search Here'
       selectValues: 'Select Values'
       rulesTitle: 'Rules for Perspective'
@@ -656,7 +657,7 @@ perspectives:
       forecasted: Forecasted
       basedOn: Based on
       exceeds: exceeds
-      percent: % of Budget
+      percent: '% of Budget'
       createAlert: '+ add new alert'
 overview:
   title: '{{ $.overview }}'
@@ -782,3 +783,7 @@ anomalyDetection:
     whitelistResource: Whitelist resource
     falseAnomaly: This is false anomaly
   userFeedbackSuccessMsg: 'Thanks for your feedback!'
+  tooltip:
+    countText: '{{ count }} Anomalies'
+    anomaliesRedirectionText: View anomalies
+    filterText: Apply cluster filters

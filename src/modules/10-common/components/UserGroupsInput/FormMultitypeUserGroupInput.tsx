@@ -53,7 +53,7 @@ export const FormMultiTypeUserGroupInput: React.FC<Extended> = props => {
   return (
     <FormGroup
       helperText={showFormError ? <FormError name={name} errorMessage={formError} /> : null}
-      intent={formError ? Intent.DANGER : Intent.NONE}
+      intent={showFormError ? Intent.DANGER : Intent.NONE}
       label={<HarnessDocTooltip tooltipId={tooltipProps?.dataTooltipId} labelText={label} />}
     >
       <ExpressionAndRuntimeType

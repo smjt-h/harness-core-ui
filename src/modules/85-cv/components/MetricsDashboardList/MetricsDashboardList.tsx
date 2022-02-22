@@ -36,7 +36,7 @@ const TOTAL_ITEMS_PER_PAGE = 7
 
 export default function MetricsDashboardList<T>(props: MetricsDashboardListProps<T>): JSX.Element {
   const { getString } = useStrings()
-  const { tableItemMapper, defaultItemIcon, dashboardsRequest, manualQueryInputTitle } = props
+  const { tableItemMapper, defaultItemIcon, dashboardsRequest, manualQueryInputTitle, noDataMessage } = props
   const [{ filter, pageOffset }, setFilterAndPageOffset] = useState<{
     pageOffset: number
     filter?: string
@@ -118,7 +118,7 @@ export default function MetricsDashboardList<T>(props: MetricsDashboardListProps
             <NoDataCard
               icon="warning-sign"
               className={css.loadingErrorNoData}
-              message={getString('cv.monitoringSources.gco.selectDashboardsPage.noDataText')}
+              message={noDataMessage ?? getString('cv.monitoringSources.gco.selectDashboardsPage.noDataText')}
               buttonText={getString('cv.monitoringSources.gco.addManualInputQuery')}
               onClick={() => setIsModalOpen(true)}
             />
@@ -228,7 +228,9 @@ export default function MetricsDashboardList<T>(props: MetricsDashboardListProps
         </Container>
       }
       footerCTAProps={{
-        onNext: () => onNext({ ...propsData, selectedDashboards: Array.from(selectedDashboards.values()) }),
+        onNext: () => {
+          return onNext({ ...propsData, selectedDashboards: Array.from(selectedDashboards.values()) })
+        },
         onPrevious: onPrevious,
         className: css.footer
       }}

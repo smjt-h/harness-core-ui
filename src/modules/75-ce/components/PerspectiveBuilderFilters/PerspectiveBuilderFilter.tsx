@@ -186,6 +186,7 @@ const PerspectiveBuilderFilter: React.FC<FilterPillProps> = ({
         service={service}
         fieldValuesList={fieldValuesList}
         setProviderAndIdentifier={setProviderAndIdentifier}
+        timeRange={timeRange}
       />
       <OperatorSelector isDisabled={!provider.id} operator={operator} onOperatorChange={onOperatorChange} />
       <ValuesSelector

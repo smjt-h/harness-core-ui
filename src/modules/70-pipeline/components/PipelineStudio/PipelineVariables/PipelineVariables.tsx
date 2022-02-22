@@ -21,15 +21,15 @@ import VariableAccordionSummary from './VariableAccordionSummary'
 import css from './PipelineVariables.module.scss'
 
 export const PipelineVariables: React.FC = (): JSX.Element => {
+  const { updatePipeline, stepsFactory, isReadonly, allowableTypes, updateStage } = usePipelineContext()
   const {
-    updatePipeline,
-    stepsFactory,
-    state: { pipeline: originalPipeline },
-    isReadonly,
-    allowableTypes,
-    updateStage
-  } = usePipelineContext()
-  const { variablesPipeline, metadataMap, error, initLoading, searchIndex = 0 } = usePipelineVariables()
+    originalPipeline,
+    variablesPipeline,
+    metadataMap,
+    error,
+    initLoading,
+    searchIndex = 0
+  } = usePipelineVariables()
   const { getString } = useStrings()
 
   const pipelineVariablesRef = React.useRef()

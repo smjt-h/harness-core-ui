@@ -5,7 +5,7 @@
  * https://polyformproject.org/wp-content/uploads/2020/06/PolyForm-Shield-1.0.0.txt.
  */
 
-import React, { useCallback, useMemo, useState } from 'react'
+import React, { useMemo, useState } from 'react'
 import { useStrings } from 'framework/strings'
 import { SetupSourceTabs } from '@cv/components/CVSetupSourcesView/SetupSourceTabs/SetupSourceTabs'
 import { DatadogProduct } from '../connectors/DatadogMetricsHealthSource/DatadogMetricsHealthSource.utils'
@@ -17,6 +17,7 @@ import type { HealthSourceDrawerInterface } from './HealthSourceDrawerContent.ty
 import { GCOProduct } from '../connectors/GCOLogsMonitoringSource/GoogleCloudOperationsMonitoringSourceUtils'
 import { SelectGCODashboards } from '../connectors/GCOMetricsHealthSource/components/SelectGCODashboards/SelectGCODashboards'
 import { getSelectedFeature } from './component/defineHealthSource/DefineHealthSource.utils'
+import { HealthSourceMaxTab } from './HealthSourceDrawerContent.constant'
 
 function HealthSourceDrawerContent({
   serviceRef,
@@ -87,20 +88,11 @@ function HealthSourceDrawerContent({
     ]
   }, [selectedProduct])
 
-  const determineMaxTabBySourceType = useCallback(() => {
-    switch (selectedProduct) {
-      case GCOProduct.CLOUD_METRICS:
-        return 2
-      default:
-        return 1
-    }
-  }, [selectedProduct])
-
   return (
     <>
       <SetupSourceTabs
         data={sourceData}
-        determineMaxTab={isEdit ? determineMaxTabBySourceType : undefined}
+        determineMaxTab={isEdit ? () => HealthSourceMaxTab : undefined}
         tabTitles={tabTitles}
         disableCache={true}
       >

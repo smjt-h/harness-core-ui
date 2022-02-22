@@ -6,7 +6,6 @@
  */
 
 import { cloneDeep } from 'lodash-es'
-import type { FormikProps } from 'formik'
 import type {
   CustomHealthMetricDefinition,
   CustomHealthSourceSpec,
@@ -16,114 +15,13 @@ import type {
 } from 'services/cv'
 import type { StringKeys, UseStringsReturn } from 'framework/strings'
 import type {
-  CreatedMetricsWithSelectedIndex,
   MapCustomHealthToService,
-  SelectedAndMappedMetrics,
   CustomHealthSourceSetupSource,
   onSubmitCustomHealthSourceInterface
 } from './CustomHealthSource.types'
 import { HealthSourceTypes } from '../../types'
 import type { UpdatedHealthSource } from '../../HealthSourceDrawer/HealthSourceDrawerContent.types'
-import { CustomHealthSourceFieldNames, defaultMetricName } from './CustomHealthSource.constants'
-
-type UpdateSelectedMetricsMap = {
-  updatedMetric: string
-  oldMetric: string
-  mappedMetrics: Map<string, MapCustomHealthToService>
-  formikProps: FormikProps<MapCustomHealthToService | undefined>
-}
-
-export function updateSelectedMetricsMap({
-  updatedMetric,
-  oldMetric,
-  mappedMetrics,
-  formikProps
-}: UpdateSelectedMetricsMap): SelectedAndMappedMetrics {
-  const updatedMap = new Map(mappedMetrics)
-
-  // in the case where user updates metric name, update the key for current value
-  if (oldMetric !== formikProps.values?.metricName) {
-    updatedMap.delete(oldMetric)
-  }
-
-  // if newly created metric create form object
-  if (!updatedMap.has(updatedMetric)) {
-    updatedMap.set(updatedMetric, {
-      ...({
-        sli: false,
-        healthScore: false,
-        continuousVerification: false,
-        serviceInstanceMetricPath: '',
-        metricIdentifier: '',
-        baseURL: '',
-        pathURL: '',
-        metricValue: '',
-        timestamp: '',
-        timestampFormat: '',
-        metricName: updatedMetric,
-        queryType: '',
-        query: '',
-        requestMethod: ''
-      } as any)
-    })
-  }
-
-  // update map with current form data
-  if (formikProps.values?.metricName) {
-    updatedMap.set(formikProps.values.metricName, formikProps.values as MapCustomHealthToService)
-  }
-  return { selectedMetric: updatedMetric, mappedMetrics: updatedMap }
-}
-
-export function initializeSelectedMetricsMap(
-  defaultSelectedMetricName: string,
-  mappedServicesAndEnvs?: Map<string, MapCustomHealthToService>
-): SelectedAndMappedMetrics {
-  return {
-    selectedMetric: (Array.from(mappedServicesAndEnvs?.keys() || [])?.[0] as string) || defaultSelectedMetricName,
-    mappedMetrics:
-      mappedServicesAndEnvs ||
-      new Map([
-        [
-          defaultSelectedMetricName,
-          {
-            metricName: defaultSelectedMetricName,
-            query: '',
-            queryType: undefined,
-            requestMethod: undefined,
-            metricIdentifier: '',
-            baseURL: '',
-            pathURL: '',
-            metricValue: '',
-            timestamp: '',
-            timestampFormat: '',
-            serviceInstancePath: '',
-            startTime: {
-              placeholder: '',
-              timestampFormat: 'SECONDS',
-              customTimestampFormat: ''
-            },
-            endTime: {
-              placeholder: '',
-              timestampFormat: 'SECONDS',
-              customTimestampFormat: ''
-            }
-          }
-        ]
-      ])
-  }
-}
-
-export function initializeCreatedMetrics(
-  defaultSelectedMetricName: string,
-  selectedMetric: string,
-  mappedMetrics: SelectedAndMappedMetrics['mappedMetrics']
-): CreatedMetricsWithSelectedIndex {
-  return {
-    createdMetrics: Array.from(mappedMetrics.keys()) || [defaultSelectedMetricName],
-    selectedMetricIndex: Array.from(mappedMetrics.keys()).findIndex(metric => metric === selectedMetric)
-  }
-}
+import { CustomHealthSourceFieldNames, defaultMetricName, INITFORMDATA } from './CustomHealthSource.constants'
 
 export function validateMappings(
   getString: UseStringsReturn['getString'],
@@ -326,7 +224,7 @@ export function transformCustomHealthSourceToSetupSource(sourceData: any): Custo
           metricDefinition?.analysis?.riskProfile?.category && metricDefinition?.analysis?.riskProfile?.metricType
             ? `${metricDefinition?.analysis?.riskProfile?.category}/${metricDefinition?.analysis?.riskProfile?.metricType}`
             : '',
-        serviceInstanceIdentifier: metricDefinition?.analysis?.deploymentVerification?.serviceInstanceFieldName,
+        serviceInstanceIdentifier: metricDefinition.metricResponseMapping?.serviceInstanceJsonPath || '',
         lowerBaselineDeviation:
           metricDefinition?.analysis?.riskProfile?.thresholdTypes?.includes('ACT_WHEN_LOWER') || false,
         higherBaselineDeviation:
@@ -335,7 +233,7 @@ export function transformCustomHealthSourceToSetupSource(sourceData: any): Custo
         //
         queryType: metricDefinition.queryType,
         requestMethod: metricDefinition.method,
-        query: metricDefinition.requestBody || '*',
+        query: metricDefinition.requestBody || '',
         baseURL: '', // get this from connector API
         pathURL: metricDefinition.urlPath || '',
         metricValue: metricDefinition.metricResponseMapping?.metricValueJsonPath || '',
@@ -385,6 +283,7 @@ export function transformCustomSetupSourceToHealthSource(
       higherBaselineDeviation,
       sli,
       continuousVerification,
+      serviceInstanceIdentifier,
       healthScore,
       pathURL,
       startTime,
@@ -420,7 +319,7 @@ export function transformCustomSetupSourceToHealthSource(
       metricResponseMapping: {
         metricValueJsonPath: metricValue,
         timestampJsonPath: timestamp,
-        serviceInstanceJsonPath: '',
+        serviceInstanceJsonPath: serviceInstanceIdentifier,
         timestampFormat: timestampFormat
       },
       sli: { enabled: Boolean(sli) },
@@ -490,7 +389,7 @@ export const onSubmitCustomHealthSource = ({
       transformCustomSetupSourceToHealthSource({
         ...transformedSourceData,
         mappedServicesAndEnvs: mappedMetrics
-      })
+      } as CustomHealthSourceSetupSource)
     )
   }
 }
@@ -579,4 +478,8 @@ export function generateCustomMetricPack(): ReturnType<typeof useGetMetricPacks>
     refetch: () => Promise.resolve(),
     response: null
   }
+}
+
+export const getInitCustomMetricData = (baseURL: string) => {
+  return { ...INITFORMDATA, baseURL }
 }

@@ -1,5 +1,5 @@
 /*
- * Copyright 2021 Harness Inc. All rights reserved.
+ * Copyright 2022 Harness Inc. All rights reserved.
  * Use of this source code is governed by the PolyForm Shield 1.0.0 license
  * that can be found in the licenses directory at the root of this repository, also available at
  * https://polyformproject.org/wp-content/uploads/2020/06/PolyForm-Shield-1.0.0.txt.
@@ -12,122 +12,332 @@ import { Get, GetProps, useGet, UseGetProps, Mutate, MutateProps, useMutate, Use
 
 import { getConfig, getUsingFetch, mutateUsingFetch, GetUsingFetchProps, MutateUsingFetchProps } from '../config'
 export const SPEC_VERSION = '1.0.0'
+/**
+ * The API key is used by SDKs to connect to Harness Feature Flags
+ */
 export interface ApiKey {
   /**
-   * The Key will be shown only on create. On subsequemt GET calls, only the masked APIKeys will be returned
+   * The Key will be shown only on create. On subsequent GET calls, only the masked APIKeys will be returned
    */
   apiKey: string
+  /**
+   * The environment that this key was created in
+   */
   identifier: string
   /**
-   * The hashed API key
+   * A hash of API key
    */
   key?: string
+  /**
+   * The user friendly identifier for the API Key
+   */
   name: string
-  type: 'Server' | 'Client'
+  /**
+   * The type of key depending on the SDK that is being used.
+   */
+  type: 'server' | 'client'
 }
 
+/**
+ * A list of API Keys
+ */
 export type ApiKeys = Pagination & {
   apiKeys?: ApiKey[]
 }
 
+/**
+ * The audit trail shows events that have occured for a given object
+ */
 export interface AuditTrail {
+  /**
+   * The action which triggered the event such as Created or Patched
+   */
   action: string
+  /**
+   * The user that performed the event
+   */
   actor: string
+  /**
+   * A user specified comment when performing the action
+   */
   comment: string
-  enviroment?: string
+  /**
+   * The environment identifier
+   */
+  environment: string
+  /**
+   * The date in milliseconds the event was performed
+   */
   executedOn: number
+  /**
+   * JSON payload representing the instruction that triggered the audit event
+   */
   instructionSet: { [key: string]: any }[]
   objectAfter: string
   objectBefore: string
+  /**
+   * The objects identifier
+   */
   objectIdentifier: string
+  /**
+   * The type of the object such as Target, FeatureConfig
+   */
   objectType: string
+  /**
+   * The project identifier
+   */
   project: string
+  /**
+   * The status of the event indicating if it was successful or not
+   */
   status: string
 }
 
+/**
+ * A list of Audit Trail events
+ */
 export type AuditTrails = Pagination & {
   auditTrails?: AuditTrail[]
 }
 
+/**
+ * License Usage details for the feature flag account
+ */
 export interface CFLicenseUsageDTO {
+  /**
+   * The account ID to get usage details for
+   */
   accountIdnetifier?: string
   activeClientMAUs?: UsageDataDTO
   activeFeatureFlagUsers?: UsageDataDTO
+  /**
+   * The module type
+   */
   module?: string
+  /**
+   * The time that this data was generated
+   */
   timestamp?: number
 }
 
+/**
+ * A clause describes what conditions are used to evaluate a flag
+ */
 export interface Clause {
+  /**
+   * The attribute to use in the clause.  This can be any target attribute
+   */
   attribute: string
+  /**
+   * The unique ID for the clause
+   */
   id: string
+  /**
+   * Is the operation negated?
+   */
   negate: boolean
+  /**
+   * The type of operation such as equals, starts_with, contains
+   */
   op: string
+  /**
+   * The values that are compared against the operator
+   */
   values: string[]
 }
 
+/**
+ * Describes a distribution rule
+ */
 export interface Distribution {
+  /**
+   * The attribute to use when distributing targets across buckets
+   */
   bucketBy: string
+  /**
+   * A list of variations and the weight that should be given to each
+   */
   variations: WeightedVariation[]
 }
 
+/**
+ * Environment Response
+ */
 export interface Environment {
   apiKeys: ApiKeys
+  /**
+   * A description for this Environment
+   */
   description?: string
+  /**
+   * The Environment internal ID
+   */
   id?: string
+  /**
+   * The Environment identifier
+   */
   identifier: string
+  /**
+   * The user friendly name of the Environment
+   */
   name: string
+  /**
+   * The project for this Environment
+   */
   project: string
   tags?: Tag[]
 }
 
+/**
+ * A list of Environments
+ */
 export interface Environments {
   environments?: Environment[]
 }
 
 export interface Error {
+  /**
+   * The http error code
+   */
   code: string
+  /**
+   * The reason the request failed
+   */
   message: string
 }
 
+/**
+ * A Feature Flag response
+ */
 export interface Feature {
+  /**
+   * Indicates if the flag has been archived and is no longer used
+   */
   archived: boolean
+  /**
+   * The date the flag was created in milliseconds
+   */
   createdAt: number
+  /**
+   * The default value returned when a flag is off
+   */
   defaultOffVariation: string
+  /**
+   * The default value returned when a flag is on
+   */
   defaultOnVariation: string
+  /**
+   * A description for this flag
+   */
   description?: string
+  /**
+   * The Feature Flag rules for a given environment
+   */
   envProperties?: {
     defaultServe: Serve
+    /**
+     * The environment identifier
+     */
     environment: string
+    /**
+     * The last time the flag was modified in this environment
+     */
     modifiedAt: number
+    /**
+     * The variation to serve for this flag in this environment when the flag is off
+     */
     offVariation: string
+    /**
+     * A list of rules to use when evaluating this flag in this environment
+     */
     rules?: ServingRule[]
     state: FeatureState
+    /**
+     * A list of the variations that will be served to specific targets or target groups in an environment.
+     */
     variationMap?: VariationMap[]
+    /**
+     * The version of the flag.  This is incremented each time it is changed
+     */
     version?: number
   }
+  /**
+   * The value that the flag will return for the current user
+   */
   evaluation?: string
+  /**
+   * The identifier for the returned evaluation
+   */
   evaluationIdentifier?: string
+  /**
+   * The Feature Flag identifier
+   */
   identifier: string
+  /**
+   * The type of Feature flag
+   */
   kind: 'boolean' | 'int' | 'string' | 'json'
+  /**
+   * The date the flag was last modified in milliseconds
+   */
   modifiedAt: number
+  /**
+   * The name of the Feature Flag
+   */
   name: string
+  /**
+   * The user who created the flag
+   */
   owner?: string[]
+  /**
+   * Indicates if this is a permanent flag, or one that should expire
+   */
   permanent: boolean
   prerequisites?: Prerequisite[]
+  /**
+   * The project this Feature belongs to
+   */
   project: string
+  /**
+   * The results shows which variations have been evaluated, and how many times each of these have been evaluated.
+   */
   results?: Results[]
   status?: FeatureStatus
+  /**
+   * A list of tags for this Feature Flag
+   */
   tags?: Tag[]
+  /**
+   * The variations that can be returned for this flag
+   */
   variations: Variation[]
 }
 
+/**
+ * A Feature Flag evaluation describes a variation for the flag and the number of times it was evaluated
+ */
 export interface FeatureEvaluation {
+  /**
+   * The number of times this variation has been evaluated
+   */
   count?: number
+  /**
+   * The date in milliseconds
+   */
   date?: number
+  /**
+   * The variation identifier
+   */
   variationIdentifier?: string
+  /**
+   * The user friendly name for this variation
+   */
   variationName?: string
 }
 
+/**
+ * A list of Feature Evaluations
+ */
 export interface FeatureEvaluations {
   evaluations?: FeatureEvaluation[]
 }
@@ -136,53 +346,122 @@ export interface FeatureEvaluations {
  * Feature flags yaml for a project
  */
 export interface FeatureFlagsYaml {
+  /**
+   * The yaml payload describing the feature flags configuration
+   */
   yaml: string
 }
 
 export interface FeatureMetric {
+  /**
+   * The feature flag identifier
+   */
   identifier?: string
+  /**
+   * The name of the feature flag
+   */
   name?: string
   results?: Results[]
   status?: FeatureStatus
 }
 
+/**
+ * A list of FeatureMetrics
+ */
 export interface FeatureMetrics {
   metrics?: FeatureMetric[]
 }
 
+/**
+ * The state of a flag either off or on
+ */
 export type FeatureState = 'on' | 'off'
 
+/**
+ * Indicates when the flag was last evaluated
+ */
 export interface FeatureStatus {
   lastAccess: number
   status: 'active' | 'inactive' | 'never-requested'
 }
 
+/**
+ * A list of Feature Flags
+ */
 export type Features = Pagination & {
   features?: Feature[]
 }
 
+/**
+ * A flag Identifier and name
+ */
 export interface FlagBasicInfo {
+  /**
+   * The flag identifier
+   */
   identifier: string
+  /**
+   * The user friendly flag name
+   */
   name: string
 }
 
+/**
+ * A list of Flags
+ */
 export type FlagBasicInfos = Pagination & {
   featureFlags?: FlagBasicInfo[]
 }
 
+/**
+ * The commit message to use as part of a gitsync operation
+ */
 export interface GitDetails {
+  /**
+   * A description of the change or action
+   */
   commitMsg: string
 }
 
+/**
+ * The git repository that has been configured for the feature flag project
+ */
 export interface GitRepo {
+  /**
+   * Should all flag changes be automatically committed
+   */
   autoCommit?: boolean
+  /**
+   * The branch where feature flag commits will be pushed
+   */
   branch: string
+  /**
+   * Indicates if feature flag changes will be saved to the repository
+   */
   enabled?: boolean
+  /**
+   * The path within the rootFolder to store the flags
+   */
   filePath: string
+  /**
+   * The last date and time that the feature flags were synced to git in milliseconds
+   */
   lastSync?: number
+  /**
+   * The objectId
+   */
   objectId: string
+  /**
+   * The identifier for the git repository
+   */
   repoIdentifier: string
+  /**
+   * The root folder in the repository where the feature flag yaml will be written
+   */
   rootFolder: string
+  /**
+   * An error message describing any problems with the generated yaml
+   */
   yamlError?: string
 }
 
@@ -192,6 +471,9 @@ export interface GitRepoResp {
 }
 
 export interface GitSyncPatchOperation {
+  /**
+   * A comment explaining the reason for this patch operation
+   */
   comment?: string
   /**
    * Time of execution in unix epoch milliseconds when the scheduled changes will be applied
@@ -202,25 +484,52 @@ export interface GitSyncPatchOperation {
 }
 
 /**
- * A pair of object id and object body
+ * An object id and object body generated from an audit event
  */
 export interface ObjectSnapshot {
+  /**
+   * The identifier of the object e.g. the feature flag identifier or the target identifier
+   */
   id: string
+  /**
+   * A JSON representative of the object that was modified
+   */
   value?: { [key: string]: any }
 }
 
+/**
+ * A list of Object Snapshots
+ */
 export interface ObjectSnapshots {
   objectsnapshots?: ObjectSnapshot[]
 }
 
 export interface Pagination {
+  /**
+   * The total number of items
+   */
   itemCount: number
+  /**
+   * The total number of pages
+   */
   pageCount: number
+  /**
+   * The current page
+   */
   pageIndex: number
+  /**
+   * The number of items per page
+   */
   pageSize: number
+  /**
+   * The version of this object.  The version will be incremented each time the object is modified
+   */
   version?: number
 }
 
+/**
+ * A list of Patch Instructions
+ */
 export type PatchInstruction = {
   /**
    * The name of the modification you would like to perform on a resource.
@@ -230,6 +539,9 @@ export type PatchInstruction = {
 }[]
 
 export interface PatchOperation {
+  /**
+   * A comment explaining the reason for this patch operation
+   */
   comment?: string
   /**
    * Time of execution in unix epoch milliseconds when the scheduled changes will be applied
@@ -238,167 +550,444 @@ export interface PatchOperation {
   instructions: PatchInstruction
 }
 
+/**
+ * Feature Flag pre-requisites
+ */
 export interface Prerequisite {
+  /**
+   * The feature identifier that is the prerequisite
+   */
   feature: string
+  /**
+   * A list of variations that must be met
+   */
   variations: string[]
 }
 
+/**
+ * A project response
+ */
 export interface Project {
+  /**
+   * The project description
+   */
   description?: string
+  /**
+   * The unique identifier for this project
+   */
   identifier: string
+  /**
+   * The user friendly name for the project
+   */
   name: string
+  /**
+   * A list of tags for this project
+   */
   tags?: Tag[]
 }
 
+/**
+ * A list of projects
+ */
 export interface Projects {
+  /**
+   * The total number of items
+   */
   itemCount?: number
+  /**
+   * The total number of pages
+   */
   pageCount?: number
+  /**
+   * The current page
+   */
   pageIndex?: number
+  /**
+   * The number of items per page
+   */
   pageSize?: number
+  /**
+   * A list of projects
+   */
   projects?: Project[]
 }
 
 export interface ReferenceDTO {
+  /**
+   * The account which this reference belongs to
+   */
   accountIdentifier?: string
+  /**
+   * The unique identifier for this reference
+   */
   identifier?: string
+  /**
+   * The name of the reference
+   */
   name?: string
+  /**
+   * The organization which this reference belongs to
+   */
   orgIdentifier?: string
+  /**
+   * The project which this reference belongs to
+   */
   projectIdentifier?: string
 }
 
+/**
+ * This result object shows details of how many times a variation has been evaluated
+ */
 export interface Results {
+  /**
+   * The number of times this variation has been returned in a evaluation
+   */
   count: number
+  /**
+   * The unique variation identifier
+   */
   variationIdentifier: string
+  /**
+   * The user friendly variation name
+   */
   variationName: string
 }
 
+/**
+ * A Target Group (Segment) response
+ */
 export interface Segment {
+  /**
+   * The data and time in milliseconds when the group was created
+   */
   createdAt?: number
+  /**
+   * The environment this target group belongs to
+   */
   environment?: string
+  /**
+   * A list of Targets who are excluded from this target group
+   */
   excluded?: Target[]
   /**
-   * Unique identifier for the segment.
+   * Unique identifier for the target group.
    */
   identifier: string
+  /**
+   * A list of Targets who belong to this target group
+   */
   included?: Target[]
+  /**
+   * The data and time in milliseconds when the group was last modified
+   */
   modifiedAt?: number
   /**
-   * Name of the segment.
+   * Name of the target group.
    */
   name: string
   /**
    * An array of rules that can cause a user to be included in this segment.
    */
   rules?: Clause[]
+  /**
+   * Tags for this target group
+   */
   tags?: Tag[]
+  /**
+   * The version of this group.  Each time it is modified the version is incremented
+   */
   version?: number
 }
 
+/**
+ * Details of a Feature Flag that has been included in a Target Group (Segment)
+ */
 export interface SegmentFlag {
+  /**
+   * A description of the feature flag
+   */
   description?: string
+  /**
+   * The environment identifier for the feature flag
+   */
   environment: string
+  /**
+   * The identifier of the feature flag
+   */
   identifier: string
+  /**
+   * The name of the feature flag
+   */
   name: string
+  /**
+   * The project identifier for the feature flag
+   */
   project: string
+  /**
+   * The unique identifier for this rule
+   */
+  ruleId?: string
+  /**
+   * How the the flag has been included, either directly or via a custom rule
+   */
   type: 'DIRECT' | 'CONDITION'
+  /**
+   * The identifier for the variation of the flag that should be served to members of the group
+   */
   variation: string
 }
 
+/**
+ * A list of Target Groups (Segments)
+ */
 export type Segments = Pagination & {
   segments?: Segment[]
 }
 
+/**
+ * Describe the distribution rule and the variation that should be served to the target
+ */
 export interface Serve {
   distribution?: Distribution
   variation?: string
 }
 
+/**
+ * The rule used to determine what variation to serve to a target
+ */
 export interface ServingRule {
+  /**
+   * A list of clauses to use in the rule
+   */
   clauses: Clause[]
+  /**
+   * The rules priority relative to other rules.  The rules are evaluated in order with 1 being the highest
+   */
   priority: number
+  /**
+   * The unique identifier for this rule
+   */
   ruleId: string
   serve: Serve
 }
 
+/**
+ * Indicates if the request was successful or not
+ */
 export type Status = 'SUCCESS' | 'FAILURE' | 'ERROR'
 
 /**
- * A name and value pair.
+ * A tag has a name and value
  */
 export interface Tag {
+  /**
+   * The name of the tag
+   */
   name: string
+  /**
+   * The value of the tag
+   */
   value?: string
 }
 
+/**
+ * A Target object
+ */
 export interface Target {
+  /**
+   * The account ID that the target belongs to
+   */
   account: string
+  /**
+   * Indicates if this target is anonymous
+   */
   anonymous?: boolean
+  /**
+   * a JSON representation of the attributes for this target
+   */
   attributes?: { [key: string]: any }
+  /**
+   * The date and time in milliseconds when this Target was created
+   */
   createdAt?: number
+  /**
+   * The identifier for the environment that the target belongs to
+   */
   environment: string
+  /**
+   * The unique identifier for this target
+   */
   identifier: string
+  /**
+   * The name of this Target
+   */
   name: string
+  /**
+   * The identifier for the organization that the target belongs to
+   */
   org: string
+  /**
+   * The identifier for the project that this target belongs to
+   */
   project: string
+  /**
+   * A list of Target Groups (Segments) that this Target belongs to
+   */
   segments?: Segment[]
 }
 
+/**
+ * A Target or Target Group (Segments)
+ */
 export interface TargetAndSegment {
+  /**
+   * The unique identifier for the target or target group
+   */
   identifier?: string
+  /**
+   * The name of the entity
+   */
   name?: string
+  /**
+   * The type either target or segment (target group)
+   */
   type: 'target' | 'segment'
 }
 
+/**
+ * Details of which Target Groups (Segments) a target is included in or excluded from
+ */
 export interface TargetDetail {
+  /**
+   * A list of target groups (segments) that the target is excluded from.
+   */
   excludedSegments?: TargetDetailSegment[]
-  identifier?: string
+  /**
+   * The unique identifier for the target
+   */
+  identifier: string
+  /**
+   * A list of target groups (segments) that the target is included in.
+   */
   includedSegments?: TargetDetailSegment[]
+  /**
+   * A list of target groups (segments) that the target is included in via group rules.
+   */
   ruleSegments?: TargetDetailSegment[]
 }
 
 export interface TargetDetailSegment {
+  /**
+   * The unique identifier
+   */
   identifier?: string
+  /**
+   * The name
+   */
   name?: string
 }
 
+/**
+ * Target map provides the details of a target that belongs to a flag
+ */
 export interface TargetMap {
-  identifier?: string
+  /**
+   * The identifier for the target
+   */
+  identifier: string
+  /**
+   * The name of the target
+   */
   name: string
 }
 
+/**
+ * A list of Targets
+ */
 export type Targets = Pagination & {
   targets?: Target[]
 }
 
+/**
+ * A list of Target and Target Groups (Segments)
+ */
 export type TargetsAndSegments = Pagination & {
   entities?: TargetAndSegment[]
 }
 
+/**
+ * A list of Target and Target Groups (Segments)
+ */
 export type TargetsAndSegmentsInfo = {
   entities?: TargetAndSegment[]
 }
 
 export interface UsageDataDTO {
+  /**
+   * The number of times the resource has been used
+   */
   count?: number
+  /**
+   * The name of the resource
+   */
   displayName?: string
+  /**
+   * References to who used the resource
+   */
   references?: ReferenceDTO[]
 }
 
+/**
+ * A variation of a flag that can be returned to a target
+ */
 export interface Variation {
+  /**
+   * A description of the variation
+   */
   description?: string
+  /**
+   * The unique identifier for the variation
+   */
   identifier: string
+  /**
+   * The user friendly name of the variation
+   */
   name?: string
+  /**
+   * The variation value to serve such as true or false for a boolean flag
+   */
   value: string
 }
 
+/**
+ * A mapping of variations to targets and target groups (segments).  The targets listed here should receive this variation.
+ */
 export interface VariationMap {
+  /**
+   * A list of target groups (segments)
+   */
   targetSegments?: string[]
+  /**
+   * A list of target mappings
+   */
   targets?: TargetMap[]
+  /**
+   * The variation identifier
+   */
   variation: string
 }
 
+/**
+ * A variation and the weighting it should receive as part of a percentage rollout
+ */
 export interface WeightedVariation {
+  /**
+   * The variation identifier
+   */
   variation: string
+  /**
+   * The weight to be given to the variation in percent
+   */
   weight: number
 }
 
@@ -673,21 +1262,21 @@ export type UnauthorizedResponse = Error
 
 export interface GetAllAPIKeysQueryParams {
   /**
-   * Account
+   * Account Identifier
    */
   accountIdentifier: string
   /**
    * Organization Identifier
    */
-  org: string
+  orgIdentifier: string
   /**
-   * Project
+   * The Project identifier
    */
-  project: string
+  projectIdentifier: string
   /**
-   * Environment
+   * Environment Identifier
    */
-  environment: string
+  environmentIdentifier: string
   /**
    * PageNumber
    */
@@ -709,9 +1298,9 @@ export type GetAllAPIKeysProps = Omit<
 >
 
 /**
- * Get all APiKeys for an environment
+ * Returns API Keys for an Environment
  *
- * Get all the apiKeys for an environment
+ * Returns all the API Keys for an Environment
  */
 export const GetAllAPIKeys = (props: GetAllAPIKeysProps) => (
   <Get<
@@ -737,9 +1326,9 @@ export type UseGetAllAPIKeysProps = Omit<
 >
 
 /**
- * Get all APiKeys for an environment
+ * Returns API Keys for an Environment
  *
- * Get all the apiKeys for an environment
+ * Returns all the API Keys for an Environment
  */
 export const useGetAllAPIKeys = (props: UseGetAllAPIKeysProps) =>
   useGet<
@@ -750,9 +1339,9 @@ export const useGetAllAPIKeys = (props: UseGetAllAPIKeysProps) =>
   >(`/admin/apikey`, { base: getConfig('cf'), ...props })
 
 /**
- * Get all APiKeys for an environment
+ * Returns API Keys for an Environment
  *
- * Get all the apiKeys for an environment
+ * Returns all the API Keys for an Environment
  */
 export const getAllAPIKeysPromise = (
   props: GetUsingFetchProps<
@@ -772,21 +1361,21 @@ export const getAllAPIKeysPromise = (
 
 export interface AddAPIKeyQueryParams {
   /**
-   * Account
+   * Account Identifier
    */
   accountIdentifier: string
   /**
    * Organization Identifier
    */
-  org: string
+  orgIdentifier: string
   /**
-   * Environment
+   * Environment Identifier
    */
-  environment: string
+  environmentIdentifier: string
   /**
-   * Project
+   * The Project identifier
    */
-  project: string
+  projectIdentifier: string
 }
 
 export type AddAPIKeyProps = Omit<
@@ -805,9 +1394,9 @@ export type AddAPIKeyProps = Omit<
 >
 
 /**
- * Add an API Key to environment.
+ * Creates an API key for the given Environment
  *
- * Used to create a key in an environment. The Key will be shown only on create. On subsequemt GET calls, only the masked APIKeys will be returned
+ * Creates an API key for the given Environment
  */
 export const AddAPIKey = (props: AddAPIKeyProps) => (
   <Mutate<
@@ -844,9 +1433,9 @@ export type UseAddAPIKeyProps = Omit<
 >
 
 /**
- * Add an API Key to environment.
+ * Creates an API key for the given Environment
  *
- * Used to create a key in an environment. The Key will be shown only on create. On subsequemt GET calls, only the masked APIKeys will be returned
+ * Creates an API key for the given Environment
  */
 export const useAddAPIKey = (props: UseAddAPIKeyProps) =>
   useMutate<
@@ -862,9 +1451,9 @@ export const useAddAPIKey = (props: UseAddAPIKeyProps) =>
   >('POST', `/admin/apikey`, { base: getConfig('cf'), ...props })
 
 /**
- * Add an API Key to environment.
+ * Creates an API key for the given Environment
  *
- * Used to create a key in an environment. The Key will be shown only on create. On subsequemt GET calls, only the masked APIKeys will be returned
+ * Creates an API key for the given Environment
  */
 export const addAPIKeyPromise = (
   props: MutateUsingFetchProps<
@@ -892,30 +1481,30 @@ export const addAPIKeyPromise = (
     void
   >('POST', getConfig('cf'), `/admin/apikey`, props, signal)
 
-export interface DeleteApiKeyQueryParams {
+export interface DeleteAPIKeyQueryParams {
   /**
-   * Project
+   * The Project identifier
    */
-  project: string
+  projectIdentifier: string
   /**
-   * Environment
+   * Environment Identifier
    */
-  environment: string
+  environmentIdentifier: string
   /**
-   * Account
+   * Account Identifier
    */
   accountIdentifier: string
   /**
    * Organization Identifier
    */
-  org: string
+  orgIdentifier: string
 }
 
-export type DeleteApiKeyProps = Omit<
+export type DeleteAPIKeyProps = Omit<
   MutateProps<
     void,
     UnauthenticatedResponse | UnauthorizedResponse | NotFoundResponse | InternalServerErrorResponse,
-    DeleteApiKeyQueryParams,
+    DeleteAPIKeyQueryParams,
     string,
     void
   >,
@@ -923,15 +1512,15 @@ export type DeleteApiKeyProps = Omit<
 >
 
 /**
- * Delete APIKey
+ * Deletes an API Key
  *
- * Used to delete an APIKey
+ * Deletes an API key for the given identifier
  */
-export const DeleteApiKey = (props: DeleteApiKeyProps) => (
+export const DeleteAPIKey = (props: DeleteAPIKeyProps) => (
   <Mutate<
     void,
     UnauthenticatedResponse | UnauthorizedResponse | NotFoundResponse | InternalServerErrorResponse,
-    DeleteApiKeyQueryParams,
+    DeleteAPIKeyQueryParams,
     string,
     void
   >
@@ -942,11 +1531,11 @@ export const DeleteApiKey = (props: DeleteApiKeyProps) => (
   />
 )
 
-export type UseDeleteApiKeyProps = Omit<
+export type UseDeleteAPIKeyProps = Omit<
   UseMutateProps<
     void,
     UnauthenticatedResponse | UnauthorizedResponse | NotFoundResponse | InternalServerErrorResponse,
-    DeleteApiKeyQueryParams,
+    DeleteAPIKeyQueryParams,
     string,
     void
   >,
@@ -954,29 +1543,29 @@ export type UseDeleteApiKeyProps = Omit<
 >
 
 /**
- * Delete APIKey
+ * Deletes an API Key
  *
- * Used to delete an APIKey
+ * Deletes an API key for the given identifier
  */
-export const useDeleteApiKey = (props: UseDeleteApiKeyProps) =>
+export const useDeleteAPIKey = (props: UseDeleteAPIKeyProps) =>
   useMutate<
     void,
     UnauthenticatedResponse | UnauthorizedResponse | NotFoundResponse | InternalServerErrorResponse,
-    DeleteApiKeyQueryParams,
+    DeleteAPIKeyQueryParams,
     string,
     void
   >('DELETE', `/admin/apikey`, { base: getConfig('cf'), ...props })
 
 /**
- * Delete APIKey
+ * Deletes an API Key
  *
- * Used to delete an APIKey
+ * Deletes an API key for the given identifier
  */
-export const deleteApiKeyPromise = (
+export const deleteAPIKeyPromise = (
   props: MutateUsingFetchProps<
     void,
     UnauthenticatedResponse | UnauthorizedResponse | NotFoundResponse | InternalServerErrorResponse,
-    DeleteApiKeyQueryParams,
+    DeleteAPIKeyQueryParams,
     string,
     void
   >,
@@ -985,28 +1574,28 @@ export const deleteApiKeyPromise = (
   mutateUsingFetch<
     void,
     UnauthenticatedResponse | UnauthorizedResponse | NotFoundResponse | InternalServerErrorResponse,
-    DeleteApiKeyQueryParams,
+    DeleteAPIKeyQueryParams,
     string,
     void
   >('DELETE', getConfig('cf'), `/admin/apikey`, props, signal)
 
 export interface GetAPIKeyQueryParams {
   /**
-   * Project
+   * The Project identifier
    */
-  project: string
+  projectIdentifier: string
   /**
-   * Environment
+   * Environment Identifier
    */
-  environment: string
+  environmentIdentifier: string
   /**
-   * Account
+   * Account Identifier
    */
   accountIdentifier: string
   /**
    * Organization Identifier
    */
-  org: string
+  orgIdentifier: string
 }
 
 export interface GetAPIKeyPathParams {
@@ -1028,9 +1617,9 @@ export type GetAPIKeyProps = Omit<
   GetAPIKeyPathParams
 
 /**
- * Get all APiKeys for an environment
+ * Returns API keys
  *
- * Get all the apiKeys for an environment
+ * Returns all the API Keys for the given identifier
  */
 export const GetAPIKey = ({ identifier, ...props }: GetAPIKeyProps) => (
   <Get<
@@ -1057,9 +1646,9 @@ export type UseGetAPIKeyProps = Omit<
   GetAPIKeyPathParams
 
 /**
- * Get all APiKeys for an environment
+ * Returns API keys
  *
- * Get all the apiKeys for an environment
+ * Returns all the API Keys for the given identifier
  */
 export const useGetAPIKey = ({ identifier, ...props }: UseGetAPIKeyProps) =>
   useGet<
@@ -1074,9 +1663,9 @@ export const useGetAPIKey = ({ identifier, ...props }: UseGetAPIKeyProps) =>
   })
 
 /**
- * Get all APiKeys for an environment
+ * Returns API keys
  *
- * Get all the apiKeys for an environment
+ * Returns all the API Keys for the given identifier
  */
 export const getAPIKeyPromise = (
   {
@@ -1104,21 +1693,21 @@ export const getAPIKeyPromise = (
 
 export interface UpdateAPIKeyQueryParams {
   /**
-   * Project
+   * The Project identifier
    */
-  project: string
+  projectIdentifier: string
   /**
-   * Environment
+   * Environment Identifier
    */
-  environment: string
+  environmentIdentifier: string
   /**
-   * Account
+   * Account Identifier
    */
   accountIdentifier: string
   /**
    * Organization Identifier
    */
-  org: string
+  orgIdentifier: string
 }
 
 export interface UpdateAPIKeyPathParams {
@@ -1145,9 +1734,9 @@ export type UpdateAPIKeyProps = Omit<
   UpdateAPIKeyPathParams
 
 /**
- * Add an API Key to environment.
+ * Updates an API Key
  *
- * Used to create a key in an environment.
+ * Updates an API key for the given identifier
  */
 export const UpdateAPIKey = ({ identifier, ...props }: UpdateAPIKeyProps) => (
   <Mutate<
@@ -1185,9 +1774,9 @@ export type UseUpdateAPIKeyProps = Omit<
   UpdateAPIKeyPathParams
 
 /**
- * Add an API Key to environment.
+ * Updates an API Key
  *
- * Used to create a key in an environment.
+ * Updates an API key for the given identifier
  */
 export const useUpdateAPIKey = ({ identifier, ...props }: UseUpdateAPIKeyProps) =>
   useMutate<
@@ -1207,9 +1796,9 @@ export const useUpdateAPIKey = ({ identifier, ...props }: UseUpdateAPIKeyProps) 
   })
 
 /**
- * Add an API Key to environment.
+ * Updates an API Key
  *
- * Used to create a key in an environment.
+ * Updates an API key for the given identifier
  */
 export const updateAPIKeyPromise = (
   {
@@ -1249,11 +1838,11 @@ export interface GetAuditByParamsQueryParams {
   /**
    * Environment
    */
-  environment?: string
+  environmentIdentifier?: string
   /**
    * Project
    */
-  project?: string
+  projectIdentifier?: string
   /**
    * Object Type (FeatureActivation Or Segment)
    */
@@ -1261,9 +1850,9 @@ export interface GetAuditByParamsQueryParams {
   /**
    * Organization Identifier
    */
-  org: string
+  orgIdentifier: string
   /**
-   * Account
+   * Account Identifier
    */
   accountIdentifier: string
   /**
@@ -1315,9 +1904,9 @@ export type GetAuditByParamsProps = Omit<
 >
 
 /**
- * Retrieve Audit
+ * Returns audit details
  *
- * Used to retrieve audit details based on environment, project, object type, organization, account and timestamp
+ * Returns audit details for the given environment, project, type organization and account
  */
 export const GetAuditByParams = (props: GetAuditByParamsProps) => (
   <Get<
@@ -1343,9 +1932,9 @@ export type UseGetAuditByParamsProps = Omit<
 >
 
 /**
- * Retrieve Audit
+ * Returns audit details
  *
- * Used to retrieve audit details based on environment, project, object type, organization, account and timestamp
+ * Returns audit details for the given environment, project, type organization and account
  */
 export const useGetAuditByParams = (props: UseGetAuditByParamsProps) =>
   useGet<
@@ -1356,9 +1945,9 @@ export const useGetAuditByParams = (props: UseGetAuditByParamsProps) =>
   >(`/admin/audit`, { base: getConfig('cf'), ...props })
 
 /**
- * Retrieve Audit
+ * Returns audit details
  *
- * Used to retrieve audit details based on environment, project, object type, organization, account and timestamp
+ * Returns audit details for the given environment, project, type organization and account
  */
 export const getAuditByParamsPromise = (
   props: GetUsingFetchProps<
@@ -1378,17 +1967,17 @@ export const getAuditByParamsPromise = (
 
 export interface GetAllEnvironmentsQueryParams {
   /**
-   * Account
+   * Account Identifier
    */
   accountIdentifier: string
   /**
    * Organization Identifier
    */
-  org: string
+  orgIdentifier: string
   /**
-   * Project
+   * The Project identifier
    */
-  project: string
+  projectIdentifier: string
   /**
    * PageNumber
    */
@@ -1418,9 +2007,9 @@ export type GetAllEnvironmentsProps = Omit<
 >
 
 /**
- * Get all environments in a project
+ * Returns Environment details
  *
- * Get all the environments in a project
+ * Returns Environment details for the given Account, Organization and Project
  */
 export const GetAllEnvironments = (props: GetAllEnvironmentsProps) => (
   <Get<
@@ -1446,9 +2035,9 @@ export type UseGetAllEnvironmentsProps = Omit<
 >
 
 /**
- * Get all environments in a project
+ * Returns Environment details
  *
- * Get all the environments in a project
+ * Returns Environment details for the given Account, Organization and Project
  */
 export const useGetAllEnvironments = (props: UseGetAllEnvironmentsProps) =>
   useGet<
@@ -1459,9 +2048,9 @@ export const useGetAllEnvironments = (props: UseGetAllEnvironmentsProps) =>
   >(`/admin/environments`, { base: getConfig('cf'), ...props })
 
 /**
- * Get all environments in a project
+ * Returns Environment details
  *
- * Get all the environments in a project
+ * Returns Environment details for the given Account, Organization and Project
  */
 export const getAllEnvironmentsPromise = (
   props: GetUsingFetchProps<
@@ -1481,13 +2070,13 @@ export const getAllEnvironmentsPromise = (
 
 export interface CreateEnvironmentQueryParams {
   /**
-   * Account
+   * Account Identifier
    */
   accountIdentifier: string
   /**
    * Organization Identifier
    */
-  org: string
+  orgIdentifier: string
 }
 
 export type CreateEnvironmentProps = Omit<
@@ -1506,9 +2095,9 @@ export type CreateEnvironmentProps = Omit<
 >
 
 /**
- * Create Environment.
+ * Create an Environment.
  *
- * Used to create an environment.
+ * Creates an Environment in the Organization
  */
 export const CreateEnvironment = (props: CreateEnvironmentProps) => (
   <Mutate<
@@ -1545,9 +2134,9 @@ export type UseCreateEnvironmentProps = Omit<
 >
 
 /**
- * Create Environment.
+ * Create an Environment.
  *
- * Used to create an environment.
+ * Creates an Environment in the Organization
  */
 export const useCreateEnvironment = (props: UseCreateEnvironmentProps) =>
   useMutate<
@@ -1563,9 +2152,9 @@ export const useCreateEnvironment = (props: UseCreateEnvironmentProps) =>
   >('POST', `/admin/environments`, { base: getConfig('cf'), ...props })
 
 /**
- * Create Environment.
+ * Create an Environment.
  *
- * Used to create an environment.
+ * Creates an Environment in the Organization
  */
 export const createEnvironmentPromise = (
   props: MutateUsingFetchProps<
@@ -1595,17 +2184,17 @@ export const createEnvironmentPromise = (
 
 export interface DeleteEnvironmentQueryParams {
   /**
-   * Project
+   * The Project identifier
    */
-  project: string
+  projectIdentifier: string
   /**
-   * Account
+   * Account Identifier
    */
   accountIdentifier: string
   /**
    * Organization Identifier
    */
-  org: string
+  orgIdentifier: string
 }
 
 export type DeleteEnvironmentProps = Omit<
@@ -1620,9 +2209,9 @@ export type DeleteEnvironmentProps = Omit<
 >
 
 /**
- * Delete Environment
+ * Delete an Environment
  *
- * Used to delete an Environment
+ * Delete an Environment in the PRoject
  */
 export const DeleteEnvironment = (props: DeleteEnvironmentProps) => (
   <Mutate<
@@ -1651,9 +2240,9 @@ export type UseDeleteEnvironmentProps = Omit<
 >
 
 /**
- * Delete Environment
+ * Delete an Environment
  *
- * Used to delete an Environment
+ * Delete an Environment in the PRoject
  */
 export const useDeleteEnvironment = (props: UseDeleteEnvironmentProps) =>
   useMutate<
@@ -1665,9 +2254,9 @@ export const useDeleteEnvironment = (props: UseDeleteEnvironmentProps) =>
   >('DELETE', `/admin/environments`, { base: getConfig('cf'), ...props })
 
 /**
- * Delete Environment
+ * Delete an Environment
  *
- * Used to delete an Environment
+ * Delete an Environment in the PRoject
  */
 export const deleteEnvironmentPromise = (
   props: MutateUsingFetchProps<
@@ -1689,17 +2278,17 @@ export const deleteEnvironmentPromise = (
 
 export interface GetEnvironmentQueryParams {
   /**
-   * Project
+   * The Project identifier
    */
-  project: string
+  projectIdentifier: string
   /**
-   * Account
+   * Account Identifier
    */
   accountIdentifier: string
   /**
    * Organization Identifier
    */
-  org: string
+  orgIdentifier: string
 }
 
 export interface GetEnvironmentPathParams {
@@ -1721,9 +2310,9 @@ export type GetEnvironmentProps = Omit<
   GetEnvironmentPathParams
 
 /**
- * Get Environment by an identifier.
+ * Returns Environment details for the given identifier
  *
- * Used to retrieve an Environment by the Environment Identifier.
+ * Returns Environment details for the given Environment Identifier
  */
 export const GetEnvironment = ({ identifier, ...props }: GetEnvironmentProps) => (
   <Get<
@@ -1750,9 +2339,9 @@ export type UseGetEnvironmentProps = Omit<
   GetEnvironmentPathParams
 
 /**
- * Get Environment by an identifier.
+ * Returns Environment details for the given identifier
  *
- * Used to retrieve an Environment by the Environment Identifier.
+ * Returns Environment details for the given Environment Identifier
  */
 export const useGetEnvironment = ({ identifier, ...props }: UseGetEnvironmentProps) =>
   useGet<
@@ -1767,9 +2356,9 @@ export const useGetEnvironment = ({ identifier, ...props }: UseGetEnvironmentPro
   })
 
 /**
- * Get Environment by an identifier.
+ * Returns Environment details for the given identifier
  *
- * Used to retrieve an Environment by the Environment Identifier.
+ * Returns Environment details for the given Environment Identifier
  */
 export const getEnvironmentPromise = (
   {
@@ -1797,17 +2386,17 @@ export const getEnvironmentPromise = (
 
 export interface ModifyEnvironmentQueryParams {
   /**
-   * Account
+   * Account Identifier
    */
   accountIdentifier: string
   /**
    * Organization Identifier
    */
-  org: string
+  orgIdentifier: string
   /**
-   * Project
+   * The Project identifier
    */
-  project: string
+  projectIdentifier: string
 }
 
 export interface ModifyEnvironmentPathParams {
@@ -1834,9 +2423,9 @@ export type ModifyEnvironmentProps = Omit<
   ModifyEnvironmentPathParams
 
 /**
- * Modify an Environment.
+ * Updates an Environment
  *
- * Used to modify an Environment.
+ * Updates an Environment for the given identifier
  */
 export const ModifyEnvironment = ({ identifier, ...props }: ModifyEnvironmentProps) => (
   <Mutate<
@@ -1874,9 +2463,9 @@ export type UseModifyEnvironmentProps = Omit<
   ModifyEnvironmentPathParams
 
 /**
- * Modify an Environment.
+ * Updates an Environment
  *
- * Used to modify an Environment.
+ * Updates an Environment for the given identifier
  */
 export const useModifyEnvironment = ({ identifier, ...props }: UseModifyEnvironmentProps) =>
   useMutate<
@@ -1896,9 +2485,9 @@ export const useModifyEnvironment = ({ identifier, ...props }: UseModifyEnvironm
   })
 
 /**
- * Modify an Environment.
+ * Updates an Environment
  *
- * Used to modify an Environment.
+ * Updates an Environment for the given identifier
  */
 export const modifyEnvironmentPromise = (
   {
@@ -1936,21 +2525,21 @@ export const modifyEnvironmentPromise = (
 
 export interface GetAllFeaturesQueryParams {
   /**
-   * Account
+   * Account Identifier
    */
   accountIdentifier: string
   /**
    * Organization Identifier
    */
-  org: string
+  orgIdentifier: string
   /**
-   * Project
+   * The Project identifier
    */
-  project: string
+  projectIdentifier: string
   /**
    * Environment
    */
-  environment?: string
+  environmentIdentifier?: string
   /**
    * PageNumber
    */
@@ -1991,6 +2580,10 @@ export interface GetAllFeaturesQueryParams {
    * Parameter to indicate if metrics data is requested in response
    */
   metrics?: boolean
+  /**
+   * Comma separated identifiers for multiple Features
+   */
+  featureIdentifiers?: string
 }
 
 export type GetAllFeaturesProps = Omit<
@@ -2004,9 +2597,9 @@ export type GetAllFeaturesProps = Omit<
 >
 
 /**
- * Retrieve all feature activations.
+ * Returns all Feature Flags for the project
  *
- * Used to retrieve all feature activations for certain account id.
+ * Returns all the Feature Flag details for the given project
  */
 export const GetAllFeatures = (props: GetAllFeaturesProps) => (
   <Get<
@@ -2032,9 +2625,9 @@ export type UseGetAllFeaturesProps = Omit<
 >
 
 /**
- * Retrieve all feature activations.
+ * Returns all Feature Flags for the project
  *
- * Used to retrieve all feature activations for certain account id.
+ * Returns all the Feature Flag details for the given project
  */
 export const useGetAllFeatures = (props: UseGetAllFeaturesProps) =>
   useGet<
@@ -2045,9 +2638,9 @@ export const useGetAllFeatures = (props: UseGetAllFeaturesProps) =>
   >(`/admin/features`, { base: getConfig('cf'), ...props })
 
 /**
- * Retrieve all feature activations.
+ * Returns all Feature Flags for the project
  *
- * Used to retrieve all feature activations for certain account id.
+ * Returns all the Feature Flag details for the given project
  */
 export const getAllFeaturesPromise = (
   props: GetUsingFetchProps<
@@ -2067,13 +2660,13 @@ export const getAllFeaturesPromise = (
 
 export interface CreateFeatureFlagQueryParams {
   /**
-   * Account
+   * Account Identifier
    */
   accountIdentifier: string
   /**
    * Organization Identifier
    */
-  org: string
+  orgIdentifier: string
 }
 
 export type CreateFeatureFlagProps = Omit<
@@ -2093,9 +2686,9 @@ export type CreateFeatureFlagProps = Omit<
 >
 
 /**
- * Create a feature
+ * Creates a Feature Flag
  *
- * Create a feature flag.
+ * Creates a Feature Flag in the Project
  */
 export const CreateFeatureFlag = (props: CreateFeatureFlagProps) => (
   <Mutate<
@@ -2134,9 +2727,9 @@ export type UseCreateFeatureFlagProps = Omit<
 >
 
 /**
- * Create a feature
+ * Creates a Feature Flag
  *
- * Create a feature flag.
+ * Creates a Feature Flag in the Project
  */
 export const useCreateFeatureFlag = (props: UseCreateFeatureFlagProps) =>
   useMutate<
@@ -2153,9 +2746,9 @@ export const useCreateFeatureFlag = (props: UseCreateFeatureFlagProps) =>
   >('POST', `/admin/features`, { base: getConfig('cf'), ...props })
 
 /**
- * Create a feature
+ * Creates a Feature Flag
  *
- * Create a feature flag.
+ * Creates a Feature Flag in the Project
  */
 export const createFeatureFlagPromise = (
   props: MutateUsingFetchProps<
@@ -2187,21 +2780,21 @@ export const createFeatureFlagPromise = (
 
 export interface GetFeatureMetricsQueryParams {
   /**
-   * Account
+   * Account Identifier
    */
   accountIdentifier: string
   /**
    * Organization Identifier
    */
-  org: string
+  orgIdentifier: string
   /**
-   * Project
+   * The Project identifier
    */
-  project: string
+  projectIdentifier: string
   /**
-   * Environment
+   * Environment Identifier
    */
-  environment: string
+  environmentIdentifier: string
   /**
    * Unique feature identifiers
    */
@@ -2219,9 +2812,9 @@ export type GetFeatureMetricsProps = Omit<
 >
 
 /**
- * Retrieve metrics data for a group of features
+ * Returns metrics for for a group of Feature Flags
  *
- * Used to retrieve metrics for a collection of features
+ * Returns metrics such as the variations status for a group of Feature Flags
  */
 export const GetFeatureMetrics = (props: GetFeatureMetricsProps) => (
   <Get<
@@ -2247,9 +2840,9 @@ export type UseGetFeatureMetricsProps = Omit<
 >
 
 /**
- * Retrieve metrics data for a group of features
+ * Returns metrics for for a group of Feature Flags
  *
- * Used to retrieve metrics for a collection of features
+ * Returns metrics such as the variations status for a group of Feature Flags
  */
 export const useGetFeatureMetrics = (props: UseGetFeatureMetricsProps) =>
   useGet<
@@ -2260,9 +2853,9 @@ export const useGetFeatureMetrics = (props: UseGetFeatureMetricsProps) =>
   >(`/admin/features/metrics`, { base: getConfig('cf'), ...props })
 
 /**
- * Retrieve metrics data for a group of features
+ * Returns metrics for for a group of Feature Flags
  *
- * Used to retrieve metrics for a collection of features
+ * Returns metrics such as the variations status for a group of Feature Flags
  */
 export const getFeatureMetricsPromise = (
   props: GetUsingFetchProps<
@@ -2282,17 +2875,17 @@ export const getFeatureMetricsPromise = (
 
 export interface GetFlagsYamlQueryParams {
   /**
-   * Account
+   * Account Identifier
    */
   accountIdentifier: string
   /**
    * Organization Identifier
    */
-  org: string
+  orgIdentifier: string
   /**
-   * Project
+   * The Project identifier
    */
-  project: string
+  projectIdentifier: string
 }
 
 export type GetFlagsYamlProps = Omit<
@@ -2306,9 +2899,9 @@ export type GetFlagsYamlProps = Omit<
 >
 
 /**
- * Get feature flags yaml
+ * Return Feature Flag details in a YAML format
  *
- * Used to retrieve the entire feature flags yaml for a project
+ * Returns all the Feature Flag details in a YAML format in the Project.
  */
 export const GetFlagsYaml = (props: GetFlagsYamlProps) => (
   <Get<
@@ -2334,9 +2927,9 @@ export type UseGetFlagsYamlProps = Omit<
 >
 
 /**
- * Get feature flags yaml
+ * Return Feature Flag details in a YAML format
  *
- * Used to retrieve the entire feature flags yaml for a project
+ * Returns all the Feature Flag details in a YAML format in the Project.
  */
 export const useGetFlagsYaml = (props: UseGetFlagsYamlProps) =>
   useGet<
@@ -2347,9 +2940,9 @@ export const useGetFlagsYaml = (props: UseGetFlagsYamlProps) =>
   >(`/admin/features/yaml`, { base: getConfig('cf'), ...props })
 
 /**
- * Get feature flags yaml
+ * Return Feature Flag details in a YAML format
  *
- * Used to retrieve the entire feature flags yaml for a project
+ * Returns all the Feature Flag details in a YAML format in the Project.
  */
 export const getFlagsYamlPromise = (
   props: GetUsingFetchProps<
@@ -2369,17 +2962,17 @@ export const getFlagsYamlPromise = (
 
 export interface UpdateFlagsYamlQueryParams {
   /**
-   * Account
+   * Account Identifier
    */
   accountIdentifier: string
   /**
    * Organization Identifier
    */
-  org: string
+  orgIdentifier: string
   /**
-   * Project
+   * The Project identifier
    */
-  project: string
+  projectIdentifier: string
 }
 
 export type UpdateFlagsYamlProps = Omit<
@@ -2398,9 +2991,9 @@ export type UpdateFlagsYamlProps = Omit<
 >
 
 /**
- * Update feature flags yaml file
+ * Update YAML file for Feature Flags
  *
- * Update feature flags yaml
+ * Update YAML file for the Feature Flags in the project.
  */
 export const UpdateFlagsYaml = (props: UpdateFlagsYamlProps) => (
   <Mutate<
@@ -2437,9 +3030,9 @@ export type UseUpdateFlagsYamlProps = Omit<
 >
 
 /**
- * Update feature flags yaml file
+ * Update YAML file for Feature Flags
  *
- * Update feature flags yaml
+ * Update YAML file for the Feature Flags in the project.
  */
 export const useUpdateFlagsYaml = (props: UseUpdateFlagsYamlProps) =>
   useMutate<
@@ -2455,9 +3048,9 @@ export const useUpdateFlagsYaml = (props: UseUpdateFlagsYamlProps) =>
   >('PUT', `/admin/features/yaml`, { base: getConfig('cf'), ...props })
 
 /**
- * Update feature flags yaml file
+ * Update YAML file for Feature Flags
  *
- * Update feature flags yaml
+ * Update YAML file for the Feature Flags in the project.
  */
 export const updateFlagsYamlPromise = (
   props: MutateUsingFetchProps<
@@ -2487,17 +3080,17 @@ export const updateFlagsYamlPromise = (
 
 export interface DeleteFeatureFlagQueryParams {
   /**
-   * Account
+   * Account Identifier
    */
   accountIdentifier: string
   /**
    * Organization Identifier
    */
-  org: string
+  orgIdentifier: string
   /**
-   * Project
+   * The Project identifier
    */
-  project: string
+  projectIdentifier: string
   /**
    * Git commit message
    */
@@ -2520,9 +3113,9 @@ export type DeleteFeatureFlagProps = Omit<
 >
 
 /**
- * Delete a feature
+ * Delete a Feature Flag
  *
- * Delete feature with certain identifier and account id.
+ * Delete Feature Flag for the given identifier and account ID
  */
 export const DeleteFeatureFlag = (props: DeleteFeatureFlagProps) => (
   <Mutate<
@@ -2559,9 +3152,9 @@ export type UseDeleteFeatureFlagProps = Omit<
 >
 
 /**
- * Delete a feature
+ * Delete a Feature Flag
  *
- * Delete feature with certain identifier and account id.
+ * Delete Feature Flag for the given identifier and account ID
  */
 export const useDeleteFeatureFlag = (props: UseDeleteFeatureFlagProps) =>
   useMutate<
@@ -2577,9 +3170,9 @@ export const useDeleteFeatureFlag = (props: UseDeleteFeatureFlagProps) =>
   >('DELETE', `/admin/features`, { base: getConfig('cf'), ...props })
 
 /**
- * Delete a feature
+ * Delete a Feature Flag
  *
- * Delete feature with certain identifier and account id.
+ * Delete Feature Flag for the given identifier and account ID
  */
 export const deleteFeatureFlagPromise = (
   props: MutateUsingFetchProps<
@@ -2609,21 +3202,21 @@ export const deleteFeatureFlagPromise = (
 
 export interface GetFeatureFlagQueryParams {
   /**
-   * Account
+   * Account Identifier
    */
   accountIdentifier: string
   /**
    * Organization Identifier
    */
-  org: string
+  orgIdentifier: string
   /**
-   * Project
+   * The Project identifier
    */
-  project: string
+  projectIdentifier: string
   /**
    * Environment
    */
-  environment?: string
+  environmentIdentifier?: string
 }
 
 export interface GetFeatureFlagPathParams {
@@ -2645,9 +3238,9 @@ export type GetFeatureFlagProps = Omit<
   GetFeatureFlagPathParams
 
 /**
- * Retrieve a feature
+ * Returns a Feature Flag
  *
- * Retrieve certain feature flag with certain identifier and account id.
+ * Returns details such as Variation name, identifier etc for the given Feature Flag
  */
 export const GetFeatureFlag = ({ identifier, ...props }: GetFeatureFlagProps) => (
   <Get<
@@ -2674,9 +3267,9 @@ export type UseGetFeatureFlagProps = Omit<
   GetFeatureFlagPathParams
 
 /**
- * Retrieve a feature
+ * Returns a Feature Flag
  *
- * Retrieve certain feature flag with certain identifier and account id.
+ * Returns details such as Variation name, identifier etc for the given Feature Flag
  */
 export const useGetFeatureFlag = ({ identifier, ...props }: UseGetFeatureFlagProps) =>
   useGet<
@@ -2691,9 +3284,9 @@ export const useGetFeatureFlag = ({ identifier, ...props }: UseGetFeatureFlagPro
   })
 
 /**
- * Retrieve a feature
+ * Returns a Feature Flag
  *
- * Retrieve certain feature flag with certain identifier and account id.
+ * Returns details such as Variation name, identifier etc for the given Feature Flag
  */
 export const getFeatureFlagPromise = (
   {
@@ -2721,21 +3314,21 @@ export const getFeatureFlagPromise = (
 
 export interface PatchFeatureQueryParams {
   /**
-   * Account
+   * Account Identifier
    */
   accountIdentifier: string
   /**
    * Organization Identifier
    */
-  org: string
+  orgIdentifier: string
   /**
-   * Project
+   * The Project identifier
    */
-  project: string
+  projectIdentifier: string
   /**
    * Environment
    */
-  environment?: string
+  environmentIdentifier?: string
 }
 
 export interface PatchFeaturePathParams {
@@ -2764,9 +3357,19 @@ export type PatchFeatureProps = Omit<
   PatchFeaturePathParams
 
 /**
- * Modify a feature using instructions
+ * Updates a Feature Flag
  *
- * Modify feature flag with certain identifier and account id.
+ * This operation is used to modify a Feature Flag.  The request body can include one or more instructions that can modify
+ * flag attributes such as the state (off|on), the variations that are returned and serving rules.
+ * For example if you want to turn a flag off you can use this opeartion and send the setFeatureFlagState
+ *
+ * {
+ *   "kind": "setFeatureFlagState",
+ *   "parameters": {
+ *     "state": "off"
+ *   }
+ * }
+ *
  */
 export const PatchFeature = ({ identifier, ...props }: PatchFeatureProps) => (
   <Mutate<
@@ -2808,9 +3411,19 @@ export type UsePatchFeatureProps = Omit<
   PatchFeaturePathParams
 
 /**
- * Modify a feature using instructions
+ * Updates a Feature Flag
  *
- * Modify feature flag with certain identifier and account id.
+ * This operation is used to modify a Feature Flag.  The request body can include one or more instructions that can modify
+ * flag attributes such as the state (off|on), the variations that are returned and serving rules.
+ * For example if you want to turn a flag off you can use this opeartion and send the setFeatureFlagState
+ *
+ * {
+ *   "kind": "setFeatureFlagState",
+ *   "parameters": {
+ *     "state": "off"
+ *   }
+ * }
+ *
  */
 export const usePatchFeature = ({ identifier, ...props }: UsePatchFeatureProps) =>
   useMutate<
@@ -2832,9 +3445,19 @@ export const usePatchFeature = ({ identifier, ...props }: UsePatchFeatureProps) 
   })
 
 /**
- * Modify a feature using instructions
+ * Updates a Feature Flag
  *
- * Modify feature flag with certain identifier and account id.
+ * This operation is used to modify a Feature Flag.  The request body can include one or more instructions that can modify
+ * flag attributes such as the state (off|on), the variations that are returned and serving rules.
+ * For example if you want to turn a flag off you can use this opeartion and send the setFeatureFlagState
+ *
+ * {
+ *   "kind": "setFeatureFlagState",
+ *   "parameters": {
+ *     "state": "off"
+ *   }
+ * }
+ *
  */
 export const patchFeaturePromise = (
   {
@@ -2876,21 +3499,21 @@ export const patchFeaturePromise = (
 
 export interface GetFeatureEvaluationsQueryParams {
   /**
-   * Account
+   * Account Identifier
    */
   accountIdentifier: string
   /**
    * Organization Identifier
    */
-  org: string
+  orgIdentifier: string
   /**
-   * Project
+   * The Project identifier
    */
-  project: string
+  projectIdentifier: string
   /**
    * Environment
    */
-  environment?: string
+  environmentIdentifier?: string
   /**
    * Start Time
    */
@@ -2994,35 +3617,35 @@ export const getFeatureEvaluationsPromise = (
     GetFeatureEvaluationsPathParams
   >(getConfig('cf'), `/admin/features/${identifier}/evaluations`, props, signal)
 
-export interface GetOSByIdPathParams {
+export interface GetOSByIDPathParams {
   /**
    * Unique identifiers for the object in the API.
    */
   identifiers: string[]
 }
 
-export type GetOSByIdProps = Omit<
+export type GetOSByIDProps = Omit<
   GetProps<
     ObjectSnapshotResponseResponse | void,
     UnauthenticatedResponse | UnauthorizedResponse | NotFoundResponse | InternalServerErrorResponse,
     void,
-    GetOSByIdPathParams
+    GetOSByIDPathParams
   >,
   'path'
 > &
-  GetOSByIdPathParams
+  GetOSByIDPathParams
 
 /**
- * Retrieve Object Snapshot
+ * Retrieves snapshot of an object
  *
- * Used to retrieve the json body of the object from the object snapshot table
+ * Used to retrieve the JSON body of the object from the object snapshot table
  */
-export const GetOSById = ({ identifiers, ...props }: GetOSByIdProps) => (
+export const GetOSByID = ({ identifiers, ...props }: GetOSByIDProps) => (
   <Get<
     ObjectSnapshotResponseResponse | void,
     UnauthenticatedResponse | UnauthorizedResponse | NotFoundResponse | InternalServerErrorResponse,
     void,
-    GetOSByIdPathParams
+    GetOSByIDPathParams
   >
     path={`/admin/objects/${identifiers}`}
     base={getConfig('cf')}
@@ -3030,40 +3653,40 @@ export const GetOSById = ({ identifiers, ...props }: GetOSByIdProps) => (
   />
 )
 
-export type UseGetOSByIdProps = Omit<
+export type UseGetOSByIDProps = Omit<
   UseGetProps<
     ObjectSnapshotResponseResponse | void,
     UnauthenticatedResponse | UnauthorizedResponse | NotFoundResponse | InternalServerErrorResponse,
     void,
-    GetOSByIdPathParams
+    GetOSByIDPathParams
   >,
   'path'
 > &
-  GetOSByIdPathParams
+  GetOSByIDPathParams
 
 /**
- * Retrieve Object Snapshot
+ * Retrieves snapshot of an object
  *
- * Used to retrieve the json body of the object from the object snapshot table
+ * Used to retrieve the JSON body of the object from the object snapshot table
  */
-export const useGetOSById = ({ identifiers, ...props }: UseGetOSByIdProps) =>
+export const useGetOSByID = ({ identifiers, ...props }: UseGetOSByIDProps) =>
   useGet<
     ObjectSnapshotResponseResponse | void,
     UnauthenticatedResponse | UnauthorizedResponse | NotFoundResponse | InternalServerErrorResponse,
     void,
-    GetOSByIdPathParams
-  >((paramsInPath: GetOSByIdPathParams) => `/admin/objects/${paramsInPath.identifiers}`, {
+    GetOSByIDPathParams
+  >((paramsInPath: GetOSByIDPathParams) => `/admin/objects/${paramsInPath.identifiers}`, {
     base: getConfig('cf'),
     pathParams: { identifiers },
     ...props
   })
 
 /**
- * Retrieve Object Snapshot
+ * Retrieves snapshot of an object
  *
- * Used to retrieve the json body of the object from the object snapshot table
+ * Used to retrieve the JSON body of the object from the object snapshot table
  */
-export const getOSByIdPromise = (
+export const getOSByIDPromise = (
   {
     identifiers,
     ...props
@@ -3071,7 +3694,7 @@ export const getOSByIdPromise = (
     ObjectSnapshotResponseResponse | void,
     UnauthenticatedResponse | UnauthorizedResponse | NotFoundResponse | InternalServerErrorResponse,
     void,
-    GetOSByIdPathParams
+    GetOSByIDPathParams
   > & {
     /**
      * Unique identifiers for the object in the API.
@@ -3084,18 +3707,18 @@ export const getOSByIdPromise = (
     ObjectSnapshotResponseResponse | void,
     UnauthenticatedResponse | UnauthorizedResponse | NotFoundResponse | InternalServerErrorResponse,
     void,
-    GetOSByIdPathParams
+    GetOSByIDPathParams
   >(getConfig('cf'), `/admin/objects/${identifiers}`, props, signal)
 
 export interface GetAllProjectsQueryParams {
   /**
-   * Account
+   * Account Identifier
    */
   accountIdentifier: string
   /**
    * Organization Identifier
    */
-  org: string
+  orgIdentifier: string
   /**
    * PageNumber
    */
@@ -3125,9 +3748,9 @@ export type GetAllProjectsProps = Omit<
 >
 
 /**
- * Get all projects
+ * List Projects
  *
- * Get all projects
+ * Lists all the Projects in the given Organization
  */
 export const GetAllProjects = (props: GetAllProjectsProps) => (
   <Get<
@@ -3153,9 +3776,9 @@ export type UseGetAllProjectsProps = Omit<
 >
 
 /**
- * Get all projects
+ * List Projects
  *
- * Get all projects
+ * Lists all the Projects in the given Organization
  */
 export const useGetAllProjects = (props: UseGetAllProjectsProps) =>
   useGet<
@@ -3166,9 +3789,9 @@ export const useGetAllProjects = (props: UseGetAllProjectsProps) =>
   >(`/admin/projects`, { base: getConfig('cf'), ...props })
 
 /**
- * Get all projects
+ * List Projects
  *
- * Get all projects
+ * Lists all the Projects in the given Organization
  */
 export const getAllProjectsPromise = (
   props: GetUsingFetchProps<
@@ -3188,13 +3811,13 @@ export const getAllProjectsPromise = (
 
 export interface CreateProjectQueryParams {
   /**
-   * Account
+   * Account Identifier
    */
   accountIdentifier: string
   /**
    * Organization Identifier
    */
-  org: string
+  orgIdentifier: string
 }
 
 export type CreateProjectProps = Omit<
@@ -3215,7 +3838,7 @@ export type CreateProjectProps = Omit<
 /**
  * Create Project.
  *
- * Used to create a project.
+ * Create a Project in the given Organization
  */
 export const CreateProject = (props: CreateProjectProps) => (
   <Mutate<
@@ -3254,7 +3877,7 @@ export type UseCreateProjectProps = Omit<
 /**
  * Create Project.
  *
- * Used to create a project.
+ * Create a Project in the given Organization
  */
 export const useCreateProject = (props: UseCreateProjectProps) =>
   useMutate<
@@ -3272,7 +3895,7 @@ export const useCreateProject = (props: UseCreateProjectProps) =>
 /**
  * Create Project.
  *
- * Used to create a project.
+ * Create a Project in the given Organization
  */
 export const createProjectPromise = (
   props: MutateUsingFetchProps<
@@ -3302,13 +3925,13 @@ export const createProjectPromise = (
 
 export interface DeleteProjectQueryParams {
   /**
-   * Account
+   * Account Identifier
    */
   accountIdentifier: string
   /**
    * Organization Identifier
    */
-  org: string
+  orgIdentifier: string
 }
 
 export type DeleteProjectProps = Omit<
@@ -3323,9 +3946,9 @@ export type DeleteProjectProps = Omit<
 >
 
 /**
- * Delete Project
+ * Delete a Project
  *
- * Used to delete project
+ * Delete a Project in the Organization for the given identifier
  */
 export const DeleteProject = (props: DeleteProjectProps) => (
   <Mutate<
@@ -3354,9 +3977,9 @@ export type UseDeleteProjectProps = Omit<
 >
 
 /**
- * Delete Project
+ * Delete a Project
  *
- * Used to delete project
+ * Delete a Project in the Organization for the given identifier
  */
 export const useDeleteProject = (props: UseDeleteProjectProps) =>
   useMutate<
@@ -3368,9 +3991,9 @@ export const useDeleteProject = (props: UseDeleteProjectProps) =>
   >('DELETE', `/admin/projects`, { base: getConfig('cf'), ...props })
 
 /**
- * Delete Project
+ * Delete a Project
  *
- * Used to delete project
+ * Delete a Project in the Organization for the given identifier
  */
 export const deleteProjectPromise = (
   props: MutateUsingFetchProps<
@@ -3392,13 +4015,13 @@ export const deleteProjectPromise = (
 
 export interface GetProjectQueryParams {
   /**
-   * Account
+   * Account Identifier
    */
   accountIdentifier: string
   /**
    * Organization Identifier
    */
-  org: string
+  orgIdentifier: string
 }
 
 export interface GetProjectPathParams {
@@ -3420,9 +4043,9 @@ export type GetProjectProps = Omit<
   GetProjectPathParams
 
 /**
- * Get Project by an key.
+ * Returns Project details
  *
- * Used to retrieve project by the projectKey.
+ * Returns Project details for the given identifier
  */
 export const GetProject = ({ identifier, ...props }: GetProjectProps) => (
   <Get<
@@ -3449,9 +4072,9 @@ export type UseGetProjectProps = Omit<
   GetProjectPathParams
 
 /**
- * Get Project by an key.
+ * Returns Project details
  *
- * Used to retrieve project by the projectKey.
+ * Returns Project details for the given identifier
  */
 export const useGetProject = ({ identifier, ...props }: UseGetProjectProps) =>
   useGet<
@@ -3466,9 +4089,9 @@ export const useGetProject = ({ identifier, ...props }: UseGetProjectProps) =>
   })
 
 /**
- * Get Project by an key.
+ * Returns Project details
  *
- * Used to retrieve project by the projectKey.
+ * Returns Project details for the given identifier
  */
 export const getProjectPromise = (
   {
@@ -3496,13 +4119,13 @@ export const getProjectPromise = (
 
 export interface ModifyProjectQueryParams {
   /**
-   * Account
+   * Account Identifier
    */
   accountIdentifier: string
   /**
    * Organization Identifier
    */
-  org: string
+  orgIdentifier: string
 }
 
 export interface ModifyProjectPathParams {
@@ -3529,9 +4152,9 @@ export type ModifyProjectProps = Omit<
   ModifyProjectPathParams
 
 /**
- * Modify a Project.
+ * Updates a Project
  *
- * Used to modify a project.
+ * Updates a Project in the Organization for the given identifier
  */
 export const ModifyProject = ({ identifier, ...props }: ModifyProjectProps) => (
   <Mutate<
@@ -3569,9 +4192,9 @@ export type UseModifyProjectProps = Omit<
   ModifyProjectPathParams
 
 /**
- * Modify a Project.
+ * Updates a Project
  *
- * Used to modify a project.
+ * Updates a Project in the Organization for the given identifier
  */
 export const useModifyProject = ({ identifier, ...props }: UseModifyProjectProps) =>
   useMutate<
@@ -3591,9 +4214,9 @@ export const useModifyProject = ({ identifier, ...props }: UseModifyProjectProps
   })
 
 /**
- * Modify a Project.
+ * Updates a Project
  *
- * Used to modify a project.
+ * Updates a Project in the Organization for the given identifier
  */
 export const modifyProjectPromise = (
   {
@@ -3631,13 +4254,13 @@ export const modifyProjectPromise = (
 
 export interface DeleteGitRepoQueryParams {
   /**
-   * Account
+   * Account Identifier
    */
   accountIdentifier: string
   /**
    * Organization Identifier
    */
-  org: string
+  orgIdentifier: string
 }
 
 export interface DeleteGitRepoPathParams {
@@ -3660,9 +4283,9 @@ export type DeleteGitRepoProps = Omit<
   DeleteGitRepoPathParams
 
 /**
- * Delete Git Repo
+ * Delete a Git Repo
  *
- * Used to delete a project git repo
+ * Deletes a Git repo in the Project
  */
 export const DeleteGitRepo = ({ identifier, ...props }: DeleteGitRepoProps) => (
   <Mutate<
@@ -3692,9 +4315,9 @@ export type UseDeleteGitRepoProps = Omit<
   DeleteGitRepoPathParams
 
 /**
- * Delete Git Repo
+ * Delete a Git Repo
  *
- * Used to delete a project git repo
+ * Deletes a Git repo in the Project
  */
 export const useDeleteGitRepo = ({ identifier, ...props }: UseDeleteGitRepoProps) =>
   useMutate<
@@ -3710,9 +4333,9 @@ export const useDeleteGitRepo = ({ identifier, ...props }: UseDeleteGitRepoProps
   })
 
 /**
- * Delete Git Repo
+ * Delete a Git Repo
  *
- * Used to delete a project git repo
+ * Deletes a Git repo in the Project
  */
 export const deleteGitRepoPromise = (
   {
@@ -3742,13 +4365,13 @@ export const deleteGitRepoPromise = (
 
 export interface GetGitRepoQueryParams {
   /**
-   * Account
+   * Account Identifier
    */
   accountIdentifier: string
   /**
    * Organization Identifier
    */
-  org: string
+  orgIdentifier: string
 }
 
 export interface GetGitRepoPathParams {
@@ -3770,9 +4393,9 @@ export type GetGitRepoProps = Omit<
   GetGitRepoPathParams
 
 /**
- * Get project git repo details.
+ * Returns Git repo Details
  *
- * Used to retrieve project git repo details.
+ * Returns Git repo details in a Project
  */
 export const GetGitRepo = ({ identifier, ...props }: GetGitRepoProps) => (
   <Get<
@@ -3799,9 +4422,9 @@ export type UseGetGitRepoProps = Omit<
   GetGitRepoPathParams
 
 /**
- * Get project git repo details.
+ * Returns Git repo Details
  *
- * Used to retrieve project git repo details.
+ * Returns Git repo details in a Project
  */
 export const useGetGitRepo = ({ identifier, ...props }: UseGetGitRepoProps) =>
   useGet<
@@ -3816,9 +4439,9 @@ export const useGetGitRepo = ({ identifier, ...props }: UseGetGitRepoProps) =>
   })
 
 /**
- * Get project git repo details.
+ * Returns Git repo Details
  *
- * Used to retrieve project git repo details.
+ * Returns Git repo details in a Project
  */
 export const getGitRepoPromise = (
   {
@@ -3846,13 +4469,13 @@ export const getGitRepoPromise = (
 
 export interface PatchGitRepoQueryParams {
   /**
-   * Account
+   * Account Identifier
    */
   accountIdentifier: string
   /**
    * Organization Identifier
    */
-  org: string
+  orgIdentifier: string
 }
 
 export interface PatchGitRepoPathParams {
@@ -3879,9 +4502,9 @@ export type PatchGitRepoProps = Omit<
   PatchGitRepoPathParams
 
 /**
- * Modify a git repo using instructions
+ * Updates a Git repo details
  *
- * Modify git repo with certain project identifier and account id.
+ * Updates a Git repo details for the given PRoject identifier and Account ID
  */
 export const PatchGitRepo = ({ identifier, ...props }: PatchGitRepoProps) => (
   <Mutate<
@@ -3919,9 +4542,9 @@ export type UsePatchGitRepoProps = Omit<
   PatchGitRepoPathParams
 
 /**
- * Modify a git repo using instructions
+ * Updates a Git repo details
  *
- * Modify git repo with certain project identifier and account id.
+ * Updates a Git repo details for the given PRoject identifier and Account ID
  */
 export const usePatchGitRepo = ({ identifier, ...props }: UsePatchGitRepoProps) =>
   useMutate<
@@ -3941,9 +4564,9 @@ export const usePatchGitRepo = ({ identifier, ...props }: UsePatchGitRepoProps) 
   })
 
 /**
- * Modify a git repo using instructions
+ * Updates a Git repo details
  *
- * Modify git repo with certain project identifier and account id.
+ * Updates a Git repo details for the given PRoject identifier and Account ID
  */
 export const patchGitRepoPromise = (
   {
@@ -3981,13 +4604,13 @@ export const patchGitRepoPromise = (
 
 export interface CreateGitRepoQueryParams {
   /**
-   * Account
+   * Account Identifier
    */
   accountIdentifier: string
   /**
    * Organization Identifier
    */
-  org: string
+  orgIdentifier: string
 }
 
 export interface CreateGitRepoPathParams {
@@ -4014,9 +4637,9 @@ export type CreateGitRepoProps = Omit<
   CreateGitRepoPathParams
 
 /**
- * Add git repo details
+ * Adds Git repo details
  *
- * Used to add repo details to a project.
+ * Adds Git repo details to a Project
  */
 export const CreateGitRepo = ({ identifier, ...props }: CreateGitRepoProps) => (
   <Mutate<
@@ -4054,9 +4677,9 @@ export type UseCreateGitRepoProps = Omit<
   CreateGitRepoPathParams
 
 /**
- * Add git repo details
+ * Adds Git repo details
  *
- * Used to add repo details to a project.
+ * Adds Git repo details to a Project
  */
 export const useCreateGitRepo = ({ identifier, ...props }: UseCreateGitRepoProps) =>
   useMutate<
@@ -4076,9 +4699,9 @@ export const useCreateGitRepo = ({ identifier, ...props }: UseCreateGitRepoProps
   })
 
 /**
- * Add git repo details
+ * Adds Git repo details
  *
- * Used to add repo details to a project.
+ * Adds Git repo details to a Project
  */
 export const createGitRepoPromise = (
   {
@@ -4116,21 +4739,21 @@ export const createGitRepoPromise = (
 
 export interface GetAllSegmentsQueryParams {
   /**
-   * Account
+   * Account Identifier
    */
   accountIdentifier: string
   /**
    * Organization Identifier
    */
-  org: string
+  orgIdentifier: string
   /**
-   * Environment
+   * Environment Identifier
    */
-  environment: string
+  environmentIdentifier: string
   /**
-   * Project
+   * The Project identifier
    */
-  project: string
+  projectIdentifier: string
   /**
    * PageNumber
    */
@@ -4168,9 +4791,9 @@ export type GetAllSegmentsProps = Omit<
 >
 
 /**
- * Retrieve all segments.
+ * Returns all Target Groups
  *
- * Used to retrieve all segments for certain account id.
+ * Returns Target Group details for the given account
  */
 export const GetAllSegments = (props: GetAllSegmentsProps) => (
   <Get<
@@ -4196,9 +4819,9 @@ export type UseGetAllSegmentsProps = Omit<
 >
 
 /**
- * Retrieve all segments.
+ * Returns all Target Groups
  *
- * Used to retrieve all segments for certain account id.
+ * Returns Target Group details for the given account
  */
 export const useGetAllSegments = (props: UseGetAllSegmentsProps) =>
   useGet<
@@ -4209,9 +4832,9 @@ export const useGetAllSegments = (props: UseGetAllSegmentsProps) =>
   >(`/admin/segments`, { base: getConfig('cf'), ...props })
 
 /**
- * Retrieve all segments.
+ * Returns all Target Groups
  *
- * Used to retrieve all segments for certain account id.
+ * Returns Target Group details for the given account
  */
 export const getAllSegmentsPromise = (
   props: GetUsingFetchProps<
@@ -4231,13 +4854,13 @@ export const getAllSegmentsPromise = (
 
 export interface CreateSegmentQueryParams {
   /**
-   * Account
+   * Account Identifier
    */
   accountIdentifier: string
   /**
    * Organization Identifier
    */
-  org: string
+  orgIdentifier: string
 }
 
 export type CreateSegmentProps = Omit<
@@ -4256,9 +4879,9 @@ export type CreateSegmentProps = Omit<
 >
 
 /**
- * Create segment.
+ * Creates a Target Group
  *
- * Used to create segment.
+ * Creates a Target Group in the given Project
  */
 export const CreateSegment = (props: CreateSegmentProps) => (
   <Mutate<
@@ -4295,9 +4918,9 @@ export type UseCreateSegmentProps = Omit<
 >
 
 /**
- * Create segment.
+ * Creates a Target Group
  *
- * Used to create segment.
+ * Creates a Target Group in the given Project
  */
 export const useCreateSegment = (props: UseCreateSegmentProps) =>
   useMutate<
@@ -4313,9 +4936,9 @@ export const useCreateSegment = (props: UseCreateSegmentProps) =>
   >('POST', `/admin/segments`, { base: getConfig('cf'), ...props })
 
 /**
- * Create segment.
+ * Creates a Target Group
  *
- * Used to create segment.
+ * Creates a Target Group in the given Project
  */
 export const createSegmentPromise = (
   props: MutateUsingFetchProps<
@@ -4345,21 +4968,21 @@ export const createSegmentPromise = (
 
 export interface DeleteSegmentQueryParams {
   /**
-   * Account
+   * Account Identifier
    */
   accountIdentifier: string
   /**
    * Organization Identifier
    */
-  org: string
+  orgIdentifier: string
   /**
-   * Project
+   * The Project identifier
    */
-  project: string
+  projectIdentifier: string
   /**
-   * Environment
+   * Environment Identifier
    */
-  environment: string
+  environmentIdentifier: string
 }
 
 export type DeleteSegmentProps = Omit<
@@ -4374,9 +4997,9 @@ export type DeleteSegmentProps = Omit<
 >
 
 /**
- * Delete segment.
+ * Deletes a Target Group
  *
- * Used to delete segment with certain id and account id.
+ * Deletes a Target Group for the given ID
  */
 export const DeleteSegment = (props: DeleteSegmentProps) => (
   <Mutate<
@@ -4405,9 +5028,9 @@ export type UseDeleteSegmentProps = Omit<
 >
 
 /**
- * Delete segment.
+ * Deletes a Target Group
  *
- * Used to delete segment with certain id and account id.
+ * Deletes a Target Group for the given ID
  */
 export const useDeleteSegment = (props: UseDeleteSegmentProps) =>
   useMutate<
@@ -4419,9 +5042,9 @@ export const useDeleteSegment = (props: UseDeleteSegmentProps) =>
   >('DELETE', `/admin/segments`, { base: getConfig('cf'), ...props })
 
 /**
- * Delete segment.
+ * Deletes a Target Group
  *
- * Used to delete segment with certain id and account id.
+ * Deletes a Target Group for the given ID
  */
 export const deleteSegmentPromise = (
   props: MutateUsingFetchProps<
@@ -4443,21 +5066,21 @@ export const deleteSegmentPromise = (
 
 export interface GetSegmentQueryParams {
   /**
-   * Account
+   * Account Identifier
    */
   accountIdentifier: string
   /**
    * Organization Identifier
    */
-  org: string
+  orgIdentifier: string
   /**
-   * Project
+   * The Project identifier
    */
-  project: string
+  projectIdentifier: string
   /**
-   * Environment
+   * Environment Identifier
    */
-  environment: string
+  environmentIdentifier: string
 }
 
 export interface GetSegmentPathParams {
@@ -4479,9 +5102,9 @@ export type GetSegmentProps = Omit<
   GetSegmentPathParams
 
 /**
- * Retrieve segment.
+ * Returns Target Group details for the given identifier
  *
- * Used to retrieve certain segment for certain id and account id.
+ * Returns Target Group details for the given ID
  */
 export const GetSegment = ({ identifier, ...props }: GetSegmentProps) => (
   <Get<
@@ -4508,9 +5131,9 @@ export type UseGetSegmentProps = Omit<
   GetSegmentPathParams
 
 /**
- * Retrieve segment.
+ * Returns Target Group details for the given identifier
  *
- * Used to retrieve certain segment for certain id and account id.
+ * Returns Target Group details for the given ID
  */
 export const useGetSegment = ({ identifier, ...props }: UseGetSegmentProps) =>
   useGet<
@@ -4525,9 +5148,9 @@ export const useGetSegment = ({ identifier, ...props }: UseGetSegmentProps) =>
   })
 
 /**
- * Retrieve segment.
+ * Returns Target Group details for the given identifier
  *
- * Used to retrieve certain segment for certain id and account id.
+ * Returns Target Group details for the given ID
  */
 export const getSegmentPromise = (
   {
@@ -4555,21 +5178,21 @@ export const getSegmentPromise = (
 
 export interface PatchSegmentQueryParams {
   /**
-   * Account
+   * Account Identifier
    */
   accountIdentifier: string
   /**
    * Organization Identifier
    */
-  org: string
+  orgIdentifier: string
   /**
-   * Project
+   * The Project identifier
    */
-  project: string
+  projectIdentifier: string
   /**
-   * Environment
+   * Environment Identifier
    */
-  environment: string
+  environmentIdentifier: string
 }
 
 export interface PatchSegmentPathParams {
@@ -4597,9 +5220,9 @@ export type PatchSegmentProps = Omit<
   PatchSegmentPathParams
 
 /**
- * Patch segment.
+ * Updates a Target Group
  *
- * Used to modify segment with certain id and account id.
+ * Updates a Target Group for the given identifier
  */
 export const PatchSegment = ({ identifier, ...props }: PatchSegmentProps) => (
   <Mutate<
@@ -4639,9 +5262,9 @@ export type UsePatchSegmentProps = Omit<
   PatchSegmentPathParams
 
 /**
- * Patch segment.
+ * Updates a Target Group
  *
- * Used to modify segment with certain id and account id.
+ * Updates a Target Group for the given identifier
  */
 export const usePatchSegment = ({ identifier, ...props }: UsePatchSegmentProps) =>
   useMutate<
@@ -4662,9 +5285,9 @@ export const usePatchSegment = ({ identifier, ...props }: UsePatchSegmentProps) 
   })
 
 /**
- * Patch segment.
+ * Updates a Target Group
  *
- * Used to modify segment with certain id and account id.
+ * Updates a Target Group for the given identifier
  */
 export const patchSegmentPromise = (
   {
@@ -4704,21 +5327,21 @@ export const patchSegmentPromise = (
 
 export interface GetAvailableFlagsForSegmentQueryParams {
   /**
-   * Account
+   * Account Identifier
    */
   accountIdentifier: string
   /**
    * Organization Identifier
    */
-  org: string
+  orgIdentifier: string
   /**
-   * Project
+   * The Project identifier
    */
-  project: string
+  projectIdentifier: string
   /**
-   * Environment
+   * Environment Identifier
    */
-  environment: string
+  environmentIdentifier: string
   /**
    * PageNumber
    */
@@ -4760,11 +5383,9 @@ export type GetAvailableFlagsForSegmentProps = Omit<
   GetAvailableFlagsForSegmentPathParams
 
 /**
- * Retrieve the available flags that the segment can be added to
+ * Returns Feature Flags that are available to be added to the given Target Group
  *
- * This returns the flags that the segment can be added to. This list will exclude any flags that the |
- *   segment currently belongs to.
- *
+ * Returns the list of Feature Flags that the Target Group can be added to.  This list will exclude any Feature Flag that the Target Group is already part of.
  */
 export const GetAvailableFlagsForSegment = ({ identifier, ...props }: GetAvailableFlagsForSegmentProps) => (
   <Get<
@@ -4791,11 +5412,9 @@ export type UseGetAvailableFlagsForSegmentProps = Omit<
   GetAvailableFlagsForSegmentPathParams
 
 /**
- * Retrieve the available flags that the segment can be added to
+ * Returns Feature Flags that are available to be added to the given Target Group
  *
- * This returns the flags that the segment can be added to. This list will exclude any flags that the |
- *   segment currently belongs to.
- *
+ * Returns the list of Feature Flags that the Target Group can be added to.  This list will exclude any Feature Flag that the Target Group is already part of.
  */
 export const useGetAvailableFlagsForSegment = ({ identifier, ...props }: UseGetAvailableFlagsForSegmentProps) =>
   useGet<
@@ -4810,11 +5429,9 @@ export const useGetAvailableFlagsForSegment = ({ identifier, ...props }: UseGetA
   )
 
 /**
- * Retrieve the available flags that the segment can be added to
+ * Returns Feature Flags that are available to be added to the given Target Group
  *
- * This returns the flags that the segment can be added to. This list will exclude any flags that the |
- *   segment currently belongs to.
- *
+ * Returns the list of Feature Flags that the Target Group can be added to.  This list will exclude any Feature Flag that the Target Group is already part of.
  */
 export const getAvailableFlagsForSegmentPromise = (
   {
@@ -4842,21 +5459,21 @@ export const getAvailableFlagsForSegmentPromise = (
 
 export interface GetSegmentFlagsQueryParams {
   /**
-   * Account
+   * Account Identifier
    */
   accountIdentifier: string
   /**
    * Organization Identifier
    */
-  org: string
+  orgIdentifier: string
   /**
-   * Project
+   * The Project identifier
    */
-  project: string
+  projectIdentifier: string
   /**
-   * Environment
+   * Environment Identifier
    */
-  environment: string
+  environmentIdentifier: string
 }
 
 export interface GetSegmentFlagsPathParams {
@@ -4878,9 +5495,9 @@ export type GetSegmentFlagsProps = Omit<
   GetSegmentFlagsPathParams
 
 /**
- * Retrieve segment flags.
+ * Returns Feature Flags in a Target Group
  *
- * Used to retrieve certain segment flags for certain id and account id.
+ * Returns the details of a Feature Flag in a Target Group for the given identifier
  */
 export const GetSegmentFlags = ({ identifier, ...props }: GetSegmentFlagsProps) => (
   <Get<
@@ -4907,9 +5524,9 @@ export type UseGetSegmentFlagsProps = Omit<
   GetSegmentFlagsPathParams
 
 /**
- * Retrieve segment flags.
+ * Returns Feature Flags in a Target Group
  *
- * Used to retrieve certain segment flags for certain id and account id.
+ * Returns the details of a Feature Flag in a Target Group for the given identifier
  */
 export const useGetSegmentFlags = ({ identifier, ...props }: UseGetSegmentFlagsProps) =>
   useGet<
@@ -4924,9 +5541,9 @@ export const useGetSegmentFlags = ({ identifier, ...props }: UseGetSegmentFlagsP
   })
 
 /**
- * Retrieve segment flags.
+ * Returns Feature Flags in a Target Group
  *
- * Used to retrieve certain segment flags for certain id and account id.
+ * Returns the details of a Feature Flag in a Target Group for the given identifier
  */
 export const getSegmentFlagsPromise = (
   {
@@ -4954,21 +5571,21 @@ export const getSegmentFlagsPromise = (
 
 export interface GetAllTargetsQueryParams {
   /**
-   * Account
+   * Account Identifier
    */
   accountIdentifier: string
   /**
    * Organization Identifier
    */
-  org: string
+  orgIdentifier: string
   /**
-   * Project
+   * The Project identifier
    */
-  project: string
+  projectIdentifier: string
   /**
-   * Environment
+   * Environment Identifier
    */
-  environment: string
+  environmentIdentifier: string
   /**
    * PageNumber
    */
@@ -5006,9 +5623,9 @@ export type GetAllTargetsProps = Omit<
 >
 
 /**
- * Retrieve all targets.
+ * Returns all Targets
  *
- * Used to retrieve all targets for certain account id.
+ * Returns all the Targets for the given Account ID
  */
 export const GetAllTargets = (props: GetAllTargetsProps) => (
   <Get<
@@ -5034,9 +5651,9 @@ export type UseGetAllTargetsProps = Omit<
 >
 
 /**
- * Retrieve all targets.
+ * Returns all Targets
  *
- * Used to retrieve all targets for certain account id.
+ * Returns all the Targets for the given Account ID
  */
 export const useGetAllTargets = (props: UseGetAllTargetsProps) =>
   useGet<
@@ -5047,9 +5664,9 @@ export const useGetAllTargets = (props: UseGetAllTargetsProps) =>
   >(`/admin/targets`, { base: getConfig('cf'), ...props })
 
 /**
- * Retrieve all targets.
+ * Returns all Targets
  *
- * Used to retrieve all targets for certain account id.
+ * Returns all the Targets for the given Account ID
  */
 export const getAllTargetsPromise = (
   props: GetUsingFetchProps<
@@ -5069,13 +5686,13 @@ export const getAllTargetsPromise = (
 
 export interface CreateTargetQueryParams {
   /**
-   * Account
+   * Account Identifier
    */
   accountIdentifier: string
   /**
    * Organization Identifier
    */
-  org: string
+  orgIdentifier: string
 }
 
 export type CreateTargetProps = Omit<
@@ -5094,9 +5711,9 @@ export type CreateTargetProps = Omit<
 >
 
 /**
- * Create target.
+ * Creates a Target
  *
- * Used to create target.
+ * Create Targets for the given identifier
  */
 export const CreateTarget = (props: CreateTargetProps) => (
   <Mutate<
@@ -5133,9 +5750,9 @@ export type UseCreateTargetProps = Omit<
 >
 
 /**
- * Create target.
+ * Creates a Target
  *
- * Used to create target.
+ * Create Targets for the given identifier
  */
 export const useCreateTarget = (props: UseCreateTargetProps) =>
   useMutate<
@@ -5151,9 +5768,9 @@ export const useCreateTarget = (props: UseCreateTargetProps) =>
   >('POST', `/admin/targets`, { base: getConfig('cf'), ...props })
 
 /**
- * Create target.
+ * Creates a Target
  *
- * Used to create target.
+ * Create Targets for the given identifier
  */
 export const createTargetPromise = (
   props: MutateUsingFetchProps<
@@ -5183,21 +5800,21 @@ export const createTargetPromise = (
 
 export interface GetTargetsAndSegmentsInfoQueryParams {
   /**
-   * Account
+   * Account Identifier
    */
   accountIdentifier: string
   /**
    * Organization Identifier
    */
-  org: string
+  orgIdentifier: string
   /**
-   * Project
+   * The Project identifier
    */
-  project: string
+  projectIdentifier: string
   /**
-   * Environment
+   * Environment Identifier
    */
-  environment: string
+  environmentIdentifier: string
   /**
    * Comma separated identifiers for multiple targets
    */
@@ -5219,9 +5836,9 @@ export type GetTargetsAndSegmentsInfoProps = Omit<
 >
 
 /**
- * Get the name of specified targets and segments
+ * Returns Targets and Target Group details
  *
- * Get the names of the specified targets and segments
+ * Returns the name of the specified Targets and Target Group
  */
 export const GetTargetsAndSegmentsInfo = (props: GetTargetsAndSegmentsInfoProps) => (
   <Get<
@@ -5247,9 +5864,9 @@ export type UseGetTargetsAndSegmentsInfoProps = Omit<
 >
 
 /**
- * Get the name of specified targets and segments
+ * Returns Targets and Target Group details
  *
- * Get the names of the specified targets and segments
+ * Returns the name of the specified Targets and Target Group
  */
 export const useGetTargetsAndSegmentsInfo = (props: UseGetTargetsAndSegmentsInfoProps) =>
   useGet<
@@ -5260,9 +5877,9 @@ export const useGetTargetsAndSegmentsInfo = (props: UseGetTargetsAndSegmentsInfo
   >(`/admin/targets-segments-info/`, { base: getConfig('cf'), ...props })
 
 /**
- * Get the name of specified targets and segments
+ * Returns Targets and Target Group details
  *
- * Get the names of the specified targets and segments
+ * Returns the name of the specified Targets and Target Group
  */
 export const getTargetsAndSegmentsInfoPromise = (
   props: GetUsingFetchProps<
@@ -5282,21 +5899,21 @@ export const getTargetsAndSegmentsInfoPromise = (
 
 export interface GetTargetsAndSegmentsQueryParams {
   /**
-   * Account
+   * Account Identifier
    */
   accountIdentifier: string
   /**
    * Organization Identifier
    */
-  org: string
+  orgIdentifier: string
   /**
-   * Project
+   * The Project identifier
    */
-  project: string
+  projectIdentifier: string
   /**
-   * Environment
+   * Environment Identifier
    */
-  environment: string
+  environmentIdentifier: string
   /**
    * Identifier of the target or segment
    */
@@ -5334,9 +5951,9 @@ export type GetTargetsAndSegmentsProps = Omit<
 >
 
 /**
- * Get targets and segments for an environment with search and sort features
+ * Returns Targets and Segments details for an Environment
  *
- * Get targets and segments for an environment with search and sort features
+ * Returns Targets and Segments details for an Environment with search and sort features.
  */
 export const GetTargetsAndSegments = (props: GetTargetsAndSegmentsProps) => (
   <Get<
@@ -5362,9 +5979,9 @@ export type UseGetTargetsAndSegmentsProps = Omit<
 >
 
 /**
- * Get targets and segments for an environment with search and sort features
+ * Returns Targets and Segments details for an Environment
  *
- * Get targets and segments for an environment with search and sort features
+ * Returns Targets and Segments details for an Environment with search and sort features.
  */
 export const useGetTargetsAndSegments = (props: UseGetTargetsAndSegmentsProps) =>
   useGet<
@@ -5375,9 +5992,9 @@ export const useGetTargetsAndSegments = (props: UseGetTargetsAndSegmentsProps) =
   >(`/admin/targets-segments/`, { base: getConfig('cf'), ...props })
 
 /**
- * Get targets and segments for an environment with search and sort features
+ * Returns Targets and Segments details for an Environment
  *
- * Get targets and segments for an environment with search and sort features
+ * Returns Targets and Segments details for an Environment with search and sort features.
  */
 export const getTargetsAndSegmentsPromise = (
   props: GetUsingFetchProps<
@@ -5397,21 +6014,21 @@ export const getTargetsAndSegmentsPromise = (
 
 export interface GetAllTargetAttributesQueryParams {
   /**
-   * Account
+   * Account Identifier
    */
   accountIdentifier: string
   /**
    * Organization Identifier
    */
-  org: string
+  orgIdentifier: string
   /**
-   * Project
+   * The Project identifier
    */
-  project: string
+  projectIdentifier: string
   /**
-   * Environment
+   * Environment Identifier
    */
-  environment: string
+  environmentIdentifier: string
 }
 
 export type GetAllTargetAttributesProps = Omit<
@@ -5425,9 +6042,9 @@ export type GetAllTargetAttributesProps = Omit<
 >
 
 /**
- * Retrieve all target attributes for the environment
+ * Returns Target attributes for an Environment
  *
- * Used to retrieve all attribute key names for all targets within the specified environment
+ * Returns names of the attributes for all the Targets in the specified Environment
  */
 export const GetAllTargetAttributes = (props: GetAllTargetAttributesProps) => (
   <Get<
@@ -5453,9 +6070,9 @@ export type UseGetAllTargetAttributesProps = Omit<
 >
 
 /**
- * Retrieve all target attributes for the environment
+ * Returns Target attributes for an Environment
  *
- * Used to retrieve all attribute key names for all targets within the specified environment
+ * Returns names of the attributes for all the Targets in the specified Environment
  */
 export const useGetAllTargetAttributes = (props: UseGetAllTargetAttributesProps) =>
   useGet<
@@ -5466,9 +6083,9 @@ export const useGetAllTargetAttributes = (props: UseGetAllTargetAttributesProps)
   >(`/admin/targets/attributes`, { base: getConfig('cf'), ...props })
 
 /**
- * Retrieve all target attributes for the environment
+ * Returns Target attributes for an Environment
  *
- * Used to retrieve all attribute key names for all targets within the specified environment
+ * Returns names of the attributes for all the Targets in the specified Environment
  */
 export const getAllTargetAttributesPromise = (
   props: GetUsingFetchProps<
@@ -5488,21 +6105,21 @@ export const getAllTargetAttributesPromise = (
 
 export interface UploadTargetsQueryParams {
   /**
-   * Account
+   * Account Identifier
    */
   accountIdentifier: string
   /**
    * Organization Identifier
    */
-  org: string
+  orgIdentifier: string
   /**
-   * Project
+   * The Project identifier
    */
-  project: string
+  projectIdentifier: string
   /**
-   * Environment
+   * Environment Identifier
    */
-  environment: string
+  environmentIdentifier: string
 }
 
 export type UploadTargetsProps = Omit<
@@ -5521,9 +6138,9 @@ export type UploadTargetsProps = Omit<
 >
 
 /**
- * Upload targets
+ * Add Target details
  *
- * Add targets by uploading a CSV file.
+ * Add targets by uploading a CSV file
  */
 export const UploadTargets = (props: UploadTargetsProps) => (
   <Mutate<
@@ -5560,9 +6177,9 @@ export type UseUploadTargetsProps = Omit<
 >
 
 /**
- * Upload targets
+ * Add Target details
  *
- * Add targets by uploading a CSV file.
+ * Add targets by uploading a CSV file
  */
 export const useUploadTargets = (props: UseUploadTargetsProps) =>
   useMutate<
@@ -5578,9 +6195,9 @@ export const useUploadTargets = (props: UseUploadTargetsProps) =>
   >('POST', `/admin/targets/upload`, { base: getConfig('cf'), ...props })
 
 /**
- * Upload targets
+ * Add Target details
  *
- * Add targets by uploading a CSV file.
+ * Add targets by uploading a CSV file
  */
 export const uploadTargetsPromise = (
   props: MutateUsingFetchProps<
@@ -5610,21 +6227,21 @@ export const uploadTargetsPromise = (
 
 export interface DeleteTargetQueryParams {
   /**
-   * Account
+   * Account Identifier
    */
   accountIdentifier: string
   /**
    * Organization Identifier
    */
-  org: string
+  orgIdentifier: string
   /**
-   * Project
+   * The Project identifier
    */
-  project: string
+  projectIdentifier: string
   /**
-   * Environment
+   * Environment Identifier
    */
-  environment: string
+  environmentIdentifier: string
 }
 
 export type DeleteTargetProps = Omit<
@@ -5639,9 +6256,9 @@ export type DeleteTargetProps = Omit<
 >
 
 /**
- * Delete target.
+ * Deletes a Target
  *
- * Used to delete target with certain id and account id.
+ * Deletes a Target for the given identifier
  */
 export const DeleteTarget = (props: DeleteTargetProps) => (
   <Mutate<
@@ -5670,9 +6287,9 @@ export type UseDeleteTargetProps = Omit<
 >
 
 /**
- * Delete target.
+ * Deletes a Target
  *
- * Used to delete target with certain id and account id.
+ * Deletes a Target for the given identifier
  */
 export const useDeleteTarget = (props: UseDeleteTargetProps) =>
   useMutate<
@@ -5684,9 +6301,9 @@ export const useDeleteTarget = (props: UseDeleteTargetProps) =>
   >('DELETE', `/admin/targets`, { base: getConfig('cf'), ...props })
 
 /**
- * Delete target.
+ * Deletes a Target
  *
- * Used to delete target with certain id and account id.
+ * Deletes a Target for the given identifier
  */
 export const deleteTargetPromise = (
   props: MutateUsingFetchProps<
@@ -5708,21 +6325,21 @@ export const deleteTargetPromise = (
 
 export interface GetTargetQueryParams {
   /**
-   * Account
+   * Account Identifier
    */
   accountIdentifier: string
   /**
    * Organization Identifier
    */
-  org: string
+  orgIdentifier: string
   /**
-   * Project
+   * The Project identifier
    */
-  project: string
+  projectIdentifier: string
   /**
-   * Environment
+   * Environment Identifier
    */
-  environment: string
+  environmentIdentifier: string
 }
 
 export interface GetTargetPathParams {
@@ -5744,9 +6361,9 @@ export type GetTargetProps = Omit<
   GetTargetPathParams
 
 /**
- * Retrieve target.
+ * Returns details of a Target
  *
- * Used to retrieve certain target for certain id and account id.
+ * Returns details of a Target for the given identifier
  */
 export const GetTarget = ({ identifier, ...props }: GetTargetProps) => (
   <Get<
@@ -5773,9 +6390,9 @@ export type UseGetTargetProps = Omit<
   GetTargetPathParams
 
 /**
- * Retrieve target.
+ * Returns details of a Target
  *
- * Used to retrieve certain target for certain id and account id.
+ * Returns details of a Target for the given identifier
  */
 export const useGetTarget = ({ identifier, ...props }: UseGetTargetProps) =>
   useGet<
@@ -5790,9 +6407,9 @@ export const useGetTarget = ({ identifier, ...props }: UseGetTargetProps) =>
   })
 
 /**
- * Retrieve target.
+ * Returns details of a Target
  *
- * Used to retrieve certain target for certain id and account id.
+ * Returns details of a Target for the given identifier
  */
 export const getTargetPromise = (
   {
@@ -5820,21 +6437,21 @@ export const getTargetPromise = (
 
 export interface PatchTargetQueryParams {
   /**
-   * Account
+   * Account Identifier
    */
   accountIdentifier: string
   /**
    * Organization Identifier
    */
-  org: string
+  orgIdentifier: string
   /**
-   * Project
+   * The Project identifier
    */
-  project: string
+  projectIdentifier: string
   /**
-   * Environment
+   * Environment Identifier
    */
-  environment: string
+  environmentIdentifier: string
 }
 
 export interface PatchTargetPathParams {
@@ -5862,9 +6479,9 @@ export type PatchTargetProps = Omit<
   PatchTargetPathParams
 
 /**
- * Patch target.
+ * Updates a Target
  *
- * Used to modify target with certain id and account id.
+ * Updates a Target for the given identifier
  */
 export const PatchTarget = ({ identifier, ...props }: PatchTargetProps) => (
   <Mutate<
@@ -5904,9 +6521,9 @@ export type UsePatchTargetProps = Omit<
   PatchTargetPathParams
 
 /**
- * Patch target.
+ * Updates a Target
  *
- * Used to modify target with certain id and account id.
+ * Updates a Target for the given identifier
  */
 export const usePatchTarget = ({ identifier, ...props }: UsePatchTargetProps) =>
   useMutate<
@@ -5927,9 +6544,9 @@ export const usePatchTarget = ({ identifier, ...props }: UsePatchTargetProps) =>
   })
 
 /**
- * Patch target.
+ * Updates a Target
  *
- * Used to modify target with certain id and account id.
+ * Updates a Target for the given identifier
  */
 export const patchTargetPromise = (
   {
@@ -5969,21 +6586,21 @@ export const patchTargetPromise = (
 
 export interface ModifyTargetQueryParams {
   /**
-   * Account
+   * Account Identifier
    */
   accountIdentifier: string
   /**
    * Organization Identifier
    */
-  org: string
+  orgIdentifier: string
   /**
-   * Project
+   * The Project identifier
    */
-  project: string
+  projectIdentifier: string
   /**
-   * Environment
+   * Environment Identifier
    */
-  environment: string
+  environmentIdentifier: string
 }
 
 export interface ModifyTargetPathParams {
@@ -6011,9 +6628,9 @@ export type ModifyTargetProps = Omit<
   ModifyTargetPathParams
 
 /**
- * Modify target
+ * Modifies a Target
  *
- * Used to modify target with certain id and account id.
+ * Modifies a Target for the given account identifier
  */
 export const ModifyTarget = ({ identifier, ...props }: ModifyTargetProps) => (
   <Mutate<
@@ -6053,9 +6670,9 @@ export type UseModifyTargetProps = Omit<
   ModifyTargetPathParams
 
 /**
- * Modify target
+ * Modifies a Target
  *
- * Used to modify target with certain id and account id.
+ * Modifies a Target for the given account identifier
  */
 export const useModifyTarget = ({ identifier, ...props }: UseModifyTargetProps) =>
   useMutate<
@@ -6076,9 +6693,9 @@ export const useModifyTarget = ({ identifier, ...props }: UseModifyTargetProps) 
   })
 
 /**
- * Modify target
+ * Modifies a Target
  *
- * Used to modify target with certain id and account id.
+ * Modifies a Target for the given account identifier
  */
 export const modifyTargetPromise = (
   {
@@ -6118,21 +6735,21 @@ export const modifyTargetPromise = (
 
 export interface GetTargetAvailableSegmentsQueryParams {
   /**
-   * Account
+   * Account Identifier
    */
   accountIdentifier: string
   /**
    * Organization Identifier
    */
-  org: string
+  orgIdentifier: string
   /**
-   * Project
+   * The Project identifier
    */
-  project: string
+  projectIdentifier: string
   /**
-   * Environment
+   * Environment Identifier
    */
-  environment: string
+  environmentIdentifier: string
   /**
    * PageNumber
    */
@@ -6174,11 +6791,9 @@ export type GetTargetAvailableSegmentsProps = Omit<
   GetTargetAvailableSegmentsPathParams
 
 /**
- * Retrieve the available segments that the target can be included in or excluded from.
+ * Returns available Target Group for the given Target
  *
- * This returns the segments that the target can be added to. This list will exclude any segments that the |
- *   target currently belongs to.
- *
+ * Returns the available Target Group details that the Target can be added to.  This list will exclude any Target Group that the Target is already part of.
  */
 export const GetTargetAvailableSegments = ({ identifier, ...props }: GetTargetAvailableSegmentsProps) => (
   <Get<
@@ -6205,11 +6820,9 @@ export type UseGetTargetAvailableSegmentsProps = Omit<
   GetTargetAvailableSegmentsPathParams
 
 /**
- * Retrieve the available segments that the target can be included in or excluded from.
+ * Returns available Target Group for the given Target
  *
- * This returns the segments that the target can be added to. This list will exclude any segments that the |
- *   target currently belongs to.
- *
+ * Returns the available Target Group details that the Target can be added to.  This list will exclude any Target Group that the Target is already part of.
  */
 export const useGetTargetAvailableSegments = ({ identifier, ...props }: UseGetTargetAvailableSegmentsProps) =>
   useGet<
@@ -6224,11 +6837,9 @@ export const useGetTargetAvailableSegments = ({ identifier, ...props }: UseGetTa
   )
 
 /**
- * Retrieve the available segments that the target can be included in or excluded from.
+ * Returns available Target Group for the given Target
  *
- * This returns the segments that the target can be added to. This list will exclude any segments that the |
- *   target currently belongs to.
- *
+ * Returns the available Target Group details that the Target can be added to.  This list will exclude any Target Group that the Target is already part of.
  */
 export const getTargetAvailableSegmentsPromise = (
   {
@@ -6256,21 +6867,21 @@ export const getTargetAvailableSegmentsPromise = (
 
 export interface GetTargetSegmentsQueryParams {
   /**
-   * Account
+   * Account Identifier
    */
   accountIdentifier: string
   /**
    * Organization Identifier
    */
-  org: string
+  orgIdentifier: string
   /**
-   * Project
+   * The Project identifier
    */
-  project: string
+  projectIdentifier: string
   /**
-   * Environment
+   * Environment Identifier
    */
-  environment: string
+  environmentIdentifier: string
 }
 
 export interface GetTargetSegmentsPathParams {
@@ -6292,9 +6903,9 @@ export type GetTargetSegmentsProps = Omit<
   GetTargetSegmentsPathParams
 
 /**
- * Retrieve the segmenets that the specified target belongs to.
+ * Returns Target Groups for the given Target
  *
- * Used to retrieve certain segments for a certian target
+ * Returns the Target Groups that the specified Target belongs to.
  */
 export const GetTargetSegments = ({ identifier, ...props }: GetTargetSegmentsProps) => (
   <Get<
@@ -6321,9 +6932,9 @@ export type UseGetTargetSegmentsProps = Omit<
   GetTargetSegmentsPathParams
 
 /**
- * Retrieve the segmenets that the specified target belongs to.
+ * Returns Target Groups for the given Target
  *
- * Used to retrieve certain segments for a certian target
+ * Returns the Target Groups that the specified Target belongs to.
  */
 export const useGetTargetSegments = ({ identifier, ...props }: UseGetTargetSegmentsProps) =>
   useGet<
@@ -6338,9 +6949,9 @@ export const useGetTargetSegments = ({ identifier, ...props }: UseGetTargetSegme
   })
 
 /**
- * Retrieve the segmenets that the specified target belongs to.
+ * Returns Target Groups for the given Target
  *
- * Used to retrieve certain segments for a certian target
+ * Returns the Target Groups that the specified Target belongs to.
  */
 export const getTargetSegmentsPromise = (
   {
@@ -6368,7 +6979,7 @@ export const getTargetSegmentsPromise = (
 
 export interface GetLicenseUsageQueryParams {
   /**
-   * Account
+   * Account Identifier
    */
   accountIdentifier: string
   /**
@@ -6382,7 +6993,7 @@ export type GetLicenseUsageProps = Omit<GetProps<CFLicenseUsageDTO, void, GetLic
 /**
  * Find current license usage data by accountIdentifier
  *
- * Query current CF licnese usage data for an account.
+ * Query current CF license usage data for an account.
  */
 export const GetLicenseUsage = (props: GetLicenseUsageProps) => (
   <Get<CFLicenseUsageDTO, void, GetLicenseUsageQueryParams, void> path={`/usage`} base={getConfig('cf')} {...props} />
@@ -6396,7 +7007,7 @@ export type UseGetLicenseUsageProps = Omit<
 /**
  * Find current license usage data by accountIdentifier
  *
- * Query current CF licnese usage data for an account.
+ * Query current CF license usage data for an account.
  */
 export const useGetLicenseUsage = (props: UseGetLicenseUsageProps) =>
   useGet<CFLicenseUsageDTO, void, GetLicenseUsageQueryParams, void>(`/usage`, { base: getConfig('cf'), ...props })
@@ -6404,7 +7015,7 @@ export const useGetLicenseUsage = (props: UseGetLicenseUsageProps) =>
 /**
  * Find current license usage data by accountIdentifier
  *
- * Query current CF licnese usage data for an account.
+ * Query current CF license usage data for an account.
  */
 export const getLicenseUsagePromise = (
   props: GetUsingFetchProps<CFLicenseUsageDTO, void, GetLicenseUsageQueryParams, void>,

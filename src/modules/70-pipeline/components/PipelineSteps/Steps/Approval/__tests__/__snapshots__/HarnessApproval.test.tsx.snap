@@ -752,7 +752,7 @@ exports[`Harness Approval tests Basic snapshot - inputset mode: input set with e
       class="deploymentViewMedium"
     >
       <div
-        class="bp3-form-group bp3-intent-danger"
+        class="bp3-form-group"
       >
         <label
           class="bp3-label"

@@ -6,7 +6,8 @@
  */
 
 import React from 'react'
-import { act, fireEvent, render } from '@testing-library/react'
+import { act, fireEvent, render, waitFor } from '@testing-library/react'
+import userEvent from '@testing-library/user-event'
 import { TestWrapper } from '@common/utils/testUtils'
 import CreateK8sDelegate from '../CreateK8sDelegate'
 import DelegateSizesmock from './DelegateSizesmock.json'
@@ -18,9 +19,6 @@ const featureFlags = {
 jest.mock('@common/components/YAMLBuilder/YamlBuilder')
 const mockGetCallFunction = jest.fn()
 jest.mock('services/portal', () => ({
-  useCreateDelegateToken: jest.fn().mockImplementation(() => ({
-    mutate: jest.fn().mockImplementation(() => undefined)
-  })),
   useGetDelegateProfilesV2: jest.fn().mockImplementation(args => {
     mockGetCallFunction(args)
     return { data: {}, refetch: jest.fn(), error: null, loading: false }
@@ -31,19 +29,32 @@ jest.mock('services/portal', () => ({
   }),
   useValidateKubernetesYaml: jest.fn().mockImplementation(args => {
     mockGetCallFunction(args)
-    return { data: {}, refetch: jest.fn(), error: null, loading: false }
-  }),
-  useGetDelegateTokens: jest.fn().mockImplementation(() => ({
-    mutate: jest.fn().mockImplementation(() => ({
-      resource: []
-    }))
-  }))
+    return {
+      mutate: jest.fn().mockImplementation(() =>
+        Promise.resolve({
+          responseMessages: [],
+          resource: 'yaml value'
+        })
+      )
+    }
+  })
 }))
 
 jest.mock('services/cd-ng', () => ({
   useListDelegateProfilesNg: jest.fn().mockImplementation(args => {
     mockGetCallFunction(args)
     return { data: {}, refetch: jest.fn(), error: null, loading: false }
+  }),
+  useCreateDelegateToken: jest.fn().mockImplementation(() => ({
+    mutate: jest.fn().mockImplementation(() => undefined)
+  })),
+  useGetDelegateTokens: jest.fn().mockReturnValue({
+    data: {
+      resource: [{ name: 'Token1' }]
+    },
+    refetch: jest.fn().mockImplementation(() => ({
+      resource: [{ name: 'Token1' }]
+    }))
   })
 }))
 jest.mock('@common/exports', () => ({
@@ -55,13 +66,25 @@ jest.mock('@common/exports', () => ({
 const onBack = jest.fn()
 
 describe('Create K8s Delegate', () => {
-  test('render data', () => {
-    const { container } = render(
+  test('test component flow', async () => {
+    const { container, getByRole } = render(
       <TestWrapper defaultAppStoreValues={{ featureFlags }}>
         <CreateK8sDelegate onBack={onBack} />
       </TestWrapper>
     )
-    expect(container).toMatchSnapshot()
+
+    const delegateNameInput = container.getElementsByTagName('input')[0]
+
+    fireEvent.change(delegateNameInput, {
+      target: { value: 'new-delegate-name' }
+    })
+
+    const continueBtn = getByRole('button', { name: /continue/ })
+    userEvent.click(continueBtn!)
+
+    await waitFor(() => {
+      expect(document.body.innerHTML).not.toContain('continue')
+    })
   })
   test('test back btn', () => {
     const { container } = render(

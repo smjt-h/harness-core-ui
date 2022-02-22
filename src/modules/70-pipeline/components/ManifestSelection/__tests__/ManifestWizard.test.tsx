@@ -64,7 +64,7 @@ describe('ManifestSelection tests', () => {
           expressions={[]}
           allowableTypes={[MultiTypeInputType.FIXED, MultiTypeInputType.RUNTIME, MultiTypeInputType.EXPRESSION]}
           isReadonly={false}
-          manifestStoreTypes={['Git', 'Github', 'GitLab', 'Bitbucket']}
+          manifestStoreTypes={['Git', 'Github', 'Gitlab', 'Bitbucket']}
           labels={{
             firstStepName: 'first step',
             secondStepName: 'second step'
@@ -95,7 +95,7 @@ describe('ManifestSelection tests', () => {
           expressions={[]}
           allowableTypes={[MultiTypeInputType.FIXED, MultiTypeInputType.RUNTIME, MultiTypeInputType.EXPRESSION]}
           isReadonly={false}
-          manifestStoreTypes={['Git', 'Github', 'GitLab', 'Bitbucket']}
+          manifestStoreTypes={['Git', 'Github', 'Gitlab', 'Bitbucket']}
           labels={{
             firstStepName: 'first step',
             secondStepName: 'second step'
@@ -127,7 +127,7 @@ describe('ManifestSelection tests', () => {
           expressions={[]}
           allowableTypes={[MultiTypeInputType.FIXED, MultiTypeInputType.RUNTIME, MultiTypeInputType.EXPRESSION]}
           isReadonly={false}
-          manifestStoreTypes={['Git', 'Github', 'GitLab', 'Bitbucket']}
+          manifestStoreTypes={['Git', 'Github', 'Gitlab', 'Bitbucket']}
           labels={{
             firstStepName: 'Specify Manifest Type',
             secondStepName: 'Specify Manifest Store'
@@ -193,7 +193,7 @@ describe('ManifestSelection tests', () => {
           expressions={[]}
           allowableTypes={[MultiTypeInputType.FIXED, MultiTypeInputType.RUNTIME, MultiTypeInputType.EXPRESSION]}
           isReadonly={false}
-          manifestStoreTypes={['Git', 'Github', 'GitLab', 'Bitbucket']}
+          manifestStoreTypes={['Git', 'Github', 'Gitlab', 'Bitbucket']}
           labels={{
             firstStepName: 'Specify Manifest Type',
             secondStepName: 'Specify Manifest Store'
@@ -272,7 +272,7 @@ describe('ManifestSelection tests', () => {
           expressions={[]}
           allowableTypes={[MultiTypeInputType.FIXED, MultiTypeInputType.RUNTIME, MultiTypeInputType.EXPRESSION]}
           isReadonly={false}
-          manifestStoreTypes={['Git', 'Github', 'GitLab', 'Bitbucket']}
+          manifestStoreTypes={['Git', 'Github', 'Gitlab', 'Bitbucket']}
           labels={{
             firstStepName: 'Specify Manifest Type',
             secondStepName: 'Specify Manifest Store'
@@ -330,7 +330,7 @@ describe('ManifestSelection tests', () => {
           expressions={[]}
           allowableTypes={[MultiTypeInputType.FIXED, MultiTypeInputType.RUNTIME, MultiTypeInputType.EXPRESSION]}
           isReadonly={false}
-          manifestStoreTypes={['Git', 'Github', 'GitLab', 'Bitbucket']}
+          manifestStoreTypes={['Git', 'Github', 'Gitlab', 'Bitbucket']}
           labels={{
             firstStepName: 'Specify Manifest Type',
             secondStepName: 'Specify Manifest Store'

@@ -5,17 +5,26 @@
  * https://polyformproject.org/wp-content/uploads/2020/06/PolyForm-Shield-1.0.0.txt.
  */
 
-import React from 'react'
+import React, { useEffect, useState } from 'react'
 import cx from 'classnames'
-
+import { connect, FormikContext } from 'formik'
 import { useParams } from 'react-router-dom'
-import { get } from 'lodash-es'
+import { get, map } from 'lodash-es'
 
-import { getMultiTypeFromValue, MultiTypeInputType, FormInput, Container, Text } from '@wings-software/uicore'
+import {
+  getMultiTypeFromValue,
+  MultiTypeInputType,
+  FormInput,
+  Container,
+  Text,
+  useToaster,
+  SelectOption
+} from '@wings-software/uicore'
 import { useStrings } from 'framework/strings'
 import List from '@common/components/List/List'
+import { Connectors } from '@connectors/constants'
 import { FormMultiTypeConnectorField } from '@connectors/components/ConnectorReferenceField/FormMultiTypeConnectorField'
-
+import { useGetRepositoriesDetailsForArtifactory } from 'services/cd-ng'
 import { useVariablesExpression } from '@pipeline/components/PipelineStudio/PiplineHooks/useVariablesExpression'
 
 import { useQueryParams } from '@common/hooks'
@@ -23,13 +32,14 @@ import type { GitQueryParams } from '@common/interfaces/RouteInterfaces'
 import type { TerraformPlanProps } from '../../Common/Terraform/TerraformInterfaces'
 import stepCss from '@pipeline/components/PipelineSteps/Steps/Steps.module.scss'
 
-export default function TFRemoteSection(
+function TFRemoteSectionRef(
   props: TerraformPlanProps & {
     remoteVar: any
     index: number
+    formik?: FormikContext<any>
   }
 ): React.ReactElement {
-  const { remoteVar, index, allowableTypes } = props
+  const { remoteVar, index, allowableTypes, formik } = props
   const { getString } = useStrings()
   const { expressions } = useVariablesExpression()
 
@@ -39,12 +49,61 @@ export default function TFRemoteSection(
     orgIdentifier: string
     accountId: string
   }>()
-
+  const { showError } = useToaster()
   const { repoIdentifier, branch } = useQueryParams<GitQueryParams>()
+  const [connectorRepos, setConnectorRepos] = useState<SelectOption[]>()
+  let connectorVal = get(
+    formik?.values,
+    `${path}.spec.configuration.varFiles[${index}].varFile.spec.store.spec.connectorRef`
+  )
+  if (!connectorVal) {
+    const varFiles = get(props?.allValues, 'spec.configuration.varFiles', [])
+    const varID = get(formik?.values, `${path}.spec.configuration.varFiles[${index}].varFile.identifier`, '')
+    varFiles.forEach((file: any) => {
+      if (file?.varFile?.identifier === varID) {
+        connectorVal = get(file?.varFile, 'spec.store.spec.connectorRef')
+      }
+    })
+  }
+  const storeType = get(formik?.values, `${path}.spec.configuration.varFiles[${index}].varFile.spec.store.type`)
+  const {
+    data: ArtifactRepoData,
+    loading: ArtifactRepoLoading,
+    refetch: getArtifactRepos,
+    error: ArtifactRepoError
+  } = useGetRepositoriesDetailsForArtifactory({
+    queryParams: {
+      connectorRef: connectorVal,
+      accountIdentifier: accountId,
+      orgIdentifier,
+      projectIdentifier
+    },
+    lazy: true
+  })
 
+  useEffect(() => {
+    if (ArtifactRepoError) {
+      showError(ArtifactRepoError.message)
+    }
+  }, [ArtifactRepoError])
+
+  useEffect(() => {
+    if (
+      storeType === Connectors.ARTIFACTORY &&
+      connectorVal &&
+      getMultiTypeFromValue(connectorVal) === MultiTypeInputType.FIXED &&
+      !ArtifactRepoData
+    ) {
+      getArtifactRepos()
+    }
+
+    if (ArtifactRepoData) {
+      setConnectorRepos(map(ArtifactRepoData.data?.repositories, repo => ({ label: repo, value: repo })))
+    }
+  }, [ArtifactRepoData, connectorVal, storeType])
   return (
     <>
-      <Container flex width={120} padding={{ bottom: 'small' }}>
+      <Container flex width={300} padding={{ bottom: 'small' }}>
         <Text font={{ weight: 'bold' }}>{getString('cd.varFile')}:</Text>
         {remoteVar.varFile?.identifier}
       </Container>
@@ -108,6 +167,40 @@ export default function TFRemoteSection(
           />
         </div>
       )}
+      {getMultiTypeFromValue(remoteVar.varFile?.spec?.store?.spec?.repositoryName) === MultiTypeInputType.RUNTIME && (
+        <div className={cx(stepCss.formGroup, stepCss.md)}>
+          <FormInput.MultiTypeInput
+            label={getString('pipelineSteps.repoName')}
+            name={`${path}.spec.configuration.varFiles[${index}].varFile.spec.store.spec.repositoryName`}
+            placeholder={getString(ArtifactRepoLoading ? 'common.loading' : 'cd.selectRepository')}
+            disabled={readonly}
+            useValue
+            multiTypeInputProps={{
+              selectProps: {
+                allowCreatingNewItems: true,
+                items: connectorRepos ? connectorRepos : []
+              },
+              expressions,
+              allowableTypes
+            }}
+            selectItems={connectorRepos ? connectorRepos : []}
+          />
+        </div>
+      )}
+      {getMultiTypeFromValue(remoteVar.varFile?.spec?.store?.spec?.artifactPaths) === MultiTypeInputType.RUNTIME && (
+        <div className={cx(stepCss.formGroup, stepCss.md)}>
+          <List
+            label={getString('cd.artifactPaths')}
+            name={`${path}.spec.configuration.varFiles[${index}].varFile.spec.store.spec.artifactPaths`}
+            disabled={readonly}
+            style={{ marginBottom: 'var(--spacing-small)' }}
+            isNameOfArrayType
+          />
+        </div>
+      )}
     </>
   )
 }
+
+const TFRemoteSection = connect(TFRemoteSectionRef)
+export default TFRemoteSection

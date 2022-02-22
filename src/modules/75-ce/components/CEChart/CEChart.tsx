@@ -7,6 +7,7 @@
 
 import React from 'react'
 import Highcharts from 'highcharts'
+import AnnotationsFactory from 'highcharts/modules/annotations'
 
 import patternFill from 'highcharts/modules/pattern-fill'
 
@@ -18,7 +19,7 @@ import CEChartOptions from './CEChartOptions'
 
 patternFill(Highcharts)
 highchartsMore(Highcharts)
-
+AnnotationsFactory(Highcharts)
 addBoostCanvastModule(Highcharts)
 addBoostModule(Highcharts)
 

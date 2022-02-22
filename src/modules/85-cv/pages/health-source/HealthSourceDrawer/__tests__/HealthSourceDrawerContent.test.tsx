@@ -127,7 +127,7 @@ describe('HealthSource table', () => {
     expect(elements.getElementsByClassName('bp3-tab').length).toBe(3)
 
     expect(getAllByText('cv.healthSource.defineHealthSource')[0].getAttribute('aria-disabled')).toBe('false')
-    expect(getAllByText('cv.healthSource.customizeHealthSource')[0].getAttribute('aria-disabled')).toBe('false')
+    expect(getAllByText('cv.healthSource.customizeHealthSource')[0].getAttribute('aria-disabled')).toBe('true')
     expect(getAllByText('cv.healthSource.connectors.gco.selectDashboardTab')[0].getAttribute('aria-disabled')).toBe(
       'false'
     )

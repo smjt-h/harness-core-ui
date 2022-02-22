@@ -30,15 +30,20 @@ import { FeatureFlag } from '@common/featureFlags'
 import css from './CFPipelineStudio.module.scss'
 
 const CIPipelineStudio: React.FC = (): JSX.Element => {
-  const { accountId, projectIdentifier, orgIdentifier, pipelineIdentifier, module } =
-    useParams<PipelineType<PipelinePathProps & AccountPathProps>>()
+  const {
+    accountId: accountIdentifier,
+    projectIdentifier,
+    orgIdentifier,
+    pipelineIdentifier,
+    module
+  } = useParams<PipelineType<PipelinePathProps & AccountPathProps>>()
   const { branch, repoIdentifier } = useQueryParams<GitQueryParams>()
   const { getString } = useStrings()
   const history = useHistory()
   const handleRunPipeline = (): void => {
     history.push(
       routes.toPipelineStudio({
-        accountId,
+        accountId: accountIdentifier,
         orgIdentifier,
         projectIdentifier,
         pipelineIdentifier,
@@ -56,7 +61,7 @@ const CIPipelineStudio: React.FC = (): JSX.Element => {
   return (
     <PipelineProvider
       stagesMap={stagesCollection.getAllStagesAttributes(getString)}
-      queryParams={{ accountIdentifier: accountId, orgIdentifier, projectIdentifier, repoIdentifier, branch }}
+      queryParams={{ accountIdentifier, orgIdentifier, projectIdentifier, repoIdentifier, branch }}
       pipelineIdentifier={pipelineIdentifier}
       renderPipelineStage={args =>
         getCFPipelineStages(

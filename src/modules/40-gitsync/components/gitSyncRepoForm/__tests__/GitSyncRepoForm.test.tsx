@@ -8,7 +8,10 @@
 import React from 'react'
 import { render, waitFor, act, fireEvent, queryByAttribute, findAllByText, findByText } from '@testing-library/react'
 import { noop } from 'lodash-es'
-import { TestWrapper } from '@common/utils/testUtils'
+import { GitSyncTestWrapper } from '@common/utils/gitSyncTestUtils'
+import { gitConfigs, sourceCodeManagers } from '@connectors/mocks/mock'
+import { projectPathProps } from '@common/utils/routeUtils'
+import routes from '@common/RouteDefinitions'
 import GitSyncRepoForm from '../GitSyncRepoForm'
 import { gitHubMock } from './mockData'
 
@@ -22,7 +25,13 @@ jest.mock('services/cd-ng', () => ({
   useGetConnector: jest.fn().mockImplementation(() => ({ data: gitHubMock, refetch: getGitConnector })),
   getConnectorListPromise: jest.fn().mockImplementation(() => Promise.resolve(gitHubMock)),
   useGetListOfBranchesByConnector: jest.fn().mockImplementation(() => ({ data: branches, refetch: fetchBranches })),
-  useGetTestGitRepoConnectionResult: jest.fn().mockImplementation(() => ({ mutate: jest.fn }))
+  useGetTestGitRepoConnectionResult: jest.fn().mockImplementation(() => ({ mutate: jest.fn })),
+  useListGitSync: jest
+    .fn()
+    .mockImplementation(() => ({ data: gitConfigs, refetch: () => Promise.resolve(gitConfigs) })),
+  useGetSourceCodeManagers: jest.fn().mockImplementation(() => {
+    return { data: sourceCodeManagers, refetch: () => Promise.resolve(sourceCodeManagers) }
+  })
 }))
 
 const pathParams = { accountId: 'dummy', orgIdentifier: 'default', projectIdentifier: 'dummyProject' }
@@ -30,10 +39,7 @@ const pathParams = { accountId: 'dummy', orgIdentifier: 'default', projectIdenti
 describe('Git Sync - repo tab', () => {
   test('rendering form to create gitSync repo', async () => {
     const { container, getByText } = render(
-      <TestWrapper
-        path="/account/:accountId/ci/orgs/:orgIdentifier/projects/:projectIdentifier/admin/git-sync/repos"
-        pathParams={pathParams}
-      >
+      <GitSyncTestWrapper path={routes.toGitSyncReposAdmin(projectPathProps)} pathParams={pathParams}>
         <GitSyncRepoForm
           {...pathParams}
           isEditMode={false}
@@ -42,7 +48,7 @@ describe('Git Sync - repo tab', () => {
           onSuccess={noop}
           onClose={noop}
         />
-      </TestWrapper>
+      </GitSyncTestWrapper>
     )
 
     await waitFor(() => {
@@ -60,10 +66,7 @@ describe('Git Sync - repo tab', () => {
 
   test('Repo type card should be enabled only for Github', async () => {
     const { container, getByText } = render(
-      <TestWrapper
-        path="/account/:accountId/ci/orgs/:orgIdentifier/projects/:projectIdentifier/admin/git-sync/repos"
-        pathParams={pathParams}
-      >
+      <GitSyncTestWrapper path={routes.toGitSyncReposAdmin(projectPathProps)} pathParams={pathParams}>
         <GitSyncRepoForm
           {...pathParams}
           isEditMode={false}
@@ -72,7 +75,7 @@ describe('Git Sync - repo tab', () => {
           onSuccess={noop}
           onClose={noop}
         />
-      </TestWrapper>
+      </GitSyncTestWrapper>
     )
 
     await waitFor(() => {
@@ -95,10 +98,7 @@ describe('Git Sync - repo tab', () => {
 
   test('Filling gitSync repo form', async () => {
     const { container, getByText, queryByText } = render(
-      <TestWrapper
-        path="/account/:accountId/ci/orgs/:orgIdentifier/projects/:projectIdentifier/admin/git-sync/repos"
-        pathParams={pathParams}
-      >
+      <GitSyncTestWrapper path={routes.toGitSyncReposAdmin(projectPathProps)} pathParams={pathParams}>
         <GitSyncRepoForm
           {...pathParams}
           isEditMode={false}
@@ -107,7 +107,7 @@ describe('Git Sync - repo tab', () => {
           onSuccess={noop}
           onClose={noop}
         />
-      </TestWrapper>
+      </GitSyncTestWrapper>
     )
 
     await waitFor(() => {

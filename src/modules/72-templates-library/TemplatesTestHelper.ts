@@ -8,11 +8,12 @@
 import type {
   ResponseString,
   ResponsePageTemplateSummaryResponse,
-  ResponseTemplateResponse
+  ResponseTemplateResponse,
+  TemplateResponse
 } from 'services/template-ng'
 import type { UseGetMockDataWithMutateAndRefetch } from '@common/utils/testUtils'
 
-export const stageTemplate: ResponseTemplateResponse = {
+export const stageTemplateVersion1: ResponseTemplateResponse = {
   status: 'SUCCESS',
   data: {
     accountId: 'px7xd_BFRCi-pfWPYXVjvw',
@@ -84,7 +85,7 @@ export const stageTemplate: ResponseTemplateResponse = {
   }
 }
 
-export const stageMockTemplatesInputYaml: ResponseString = {
+export const stageMockTemplateVersion1InputYaml: ResponseString = {
   status: 'SUCCESS',
   data:
     'type: "Deployment"' +
@@ -96,17 +97,66 @@ export const stageMockTemplatesInputYaml: ResponseString = {
     '\n      type: "KubernetesDirect"' +
     '\n      spec:' +
     '\n        namespace: "<+input>"' +
-    '\n  execution:' +
-    '\n    steps:' +
-    '\n    - step:' +
-    '\n        identifier: "Step_1"' +
-    '\n        type: "ShellScript"' +
-    '\n        spec:' +
-    '\n          source:' +
-    '\n            type: "Inline"' +
-    '\n            spec:' +
-    '\n              script: "<+input>"' +
     '\n'
+}
+
+export const stageTemplateVersion2: ResponseTemplateResponse = {
+  ...stageTemplateVersion1,
+  data: {
+    ...(stageTemplateVersion1.data as TemplateResponse),
+    versionLabel: 'Version2',
+    yaml:
+      'template:' +
+      '\n    name: Test Stage Template' +
+      '\n    identifier: Test_Stage_Template' +
+      '\n    versionLabel: Version2' +
+      '\n    type: Stage' +
+      '\n    projectIdentifier: Yogesh_Test' +
+      '\n    orgIdentifier: default' +
+      '\n    tags: {}' +
+      '\n    spec:' +
+      '\n        type: Deployment' +
+      '\n        spec:' +
+      '\n            serviceConfig:' +
+      '\n                serviceDefinition:' +
+      '\n                    type: Kubernetes' +
+      '\n                    spec:' +
+      '\n                        variables: []' +
+      '\n                serviceRef: Some_Service' +
+      '\n            infrastructure:' +
+      '\n                environmentRef: Some_Environment' +
+      '\n                infrastructureDefinition:' +
+      '\n                    type: KubernetesDirect' +
+      '\n                    spec:' +
+      '\n                        connectorRef: account.test_k8' +
+      '\n                        namespace: default' +
+      '\n                        releaseName: release-<+INFRA_KEY>' +
+      '\n                allowSimultaneousDeployments: false' +
+      '\n            execution:' +
+      '\n                steps:' +
+      '\n                    - step:' +
+      '\n                          type: ShellScript' +
+      '\n                          name: Step 1' +
+      '\n                          identifier: Step_1' +
+      '\n                          spec:' +
+      '\n                              shell: Bash' +
+      '\n                              onDelegate: true' +
+      '\n                              source:' +
+      '\n                                  type: Inline' +
+      '\n                                  spec:' +
+      '\n                                      script: echo 1' +
+      '\n                              environmentVariables: []' +
+      '\n                              outputVariables: []' +
+      '\n                              executionTarget: {}' +
+      '\n                          timeout: 10m' +
+      '\n                rollbackSteps: []' +
+      '\n            serviceDependencies: []' +
+      '\n'
+  }
+}
+
+export const stageMockTemplateVersion2InputYaml: ResponseString = {
+  status: 'SUCCESS'
 }
 
 export const stepTemplate: ResponseTemplateResponse = {

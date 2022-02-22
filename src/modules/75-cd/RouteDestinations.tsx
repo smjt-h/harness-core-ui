@@ -73,19 +73,19 @@ import { RedirectToSecretDetailHome } from '@secrets/RouteDestinations'
 import SecretReferences from '@secrets/pages/secretReferences/SecretReferences'
 import SecretDetailsHomePage from '@secrets/pages/secretDetailsHomePage/SecretDetailsHomePage'
 import InputSetList from '@pipeline/pages/inputSet-list/InputSetList'
-import TriggersPage from '@pipeline/pages/triggers/TriggersPage'
-import TriggersWizardPage from '@pipeline/pages/triggers/TriggersWizardPage'
+import TriggersPage from '@triggers/pages/triggers/TriggersPage'
+import TriggersWizardPage from '@triggers/pages/triggers/TriggersWizardPage'
 import ExecutionLandingPage from '@pipeline/pages/execution/ExecutionLandingPage/ExecutionLandingPage'
 import ExecutionPipelineView from '@pipeline/pages/execution/ExecutionPipelineView/ExecutionPipelineView'
 import ExecutionArtifactsView from '@pipeline/pages/execution/ExecutionArtifactsView/ExecutionArtifactsView'
 import ExecutionInputsView from '@pipeline/pages/execution/ExecutionInputsView/ExecutionInputsView'
 import PipelineDetails from '@pipeline/pages/pipeline-details/PipelineDetails'
-import TriggerDetails from '@pipeline/pages/trigger-details/TriggerDetails'
+import TriggerDetails from '@triggers/pages/trigger-details/TriggerDetails'
 import CDPipelineDeploymentList from '@cd/pages/pipeline-deployment-list/CDPipelineDeploymentList'
 import { useAppStore } from 'framework/AppStore/AppStoreContext'
 import { ModuleName } from 'framework/types/ModuleName'
 import { EnhancedInputSetForm } from '@pipeline/components/InputSetForm/InputSetForm'
-import TriggersDetailPage from '@pipeline/pages/triggers/TriggersDetailPage'
+import TriggersDetailPage from '@triggers/pages/triggers/TriggersDetailPage'
 import CreateConnectorFromYamlPage from '@connectors/pages/createConnectorFromYaml/CreateConnectorFromYamlPage'
 import CreateSecretFromYamlPage from '@secrets/pages/createSecretFromYaml/CreateSecretFromYamlPage'
 import ServiceDetailPage from '@cd/pages/ServiceDetailPage/ServiceDetailPage'
@@ -131,6 +131,7 @@ import TemplatesPage from '@templates-library/pages/TemplatesPage/TemplatesPage'
 import { GovernanceRouteDestinations } from '@governance/RouteDestinations'
 import GitSyncConfigTab from '@gitsync/pages/config/GitSyncConfigTab'
 import FullPageLogView from '@pipeline/pages/full-page-log-view/FullPageLogView'
+import { Environments } from './components/Environments/Environments'
 import CDTrialHomePage from './pages/home/CDTrialHomePage'
 
 import { CDExecutionCardSummary } from './components/CDExecutionCardSummary/CDExecutionCardSummary'
@@ -535,6 +536,15 @@ export default (
     >
       <ServiceDetails />
     </RouteWithLayout>
+    <RouteWithLayout
+      exact
+      licenseRedirectData={licenseRedirectData}
+      sidebarProps={CDSideNavProps}
+      path={routes.toEnvironment({ ...accountPathProps, ...projectPathProps, ...pipelineModuleParams })}
+    >
+      <Environments />
+    </RouteWithLayout>
+
     <RouteWithLayout
       licenseRedirectData={licenseRedirectData}
       sidebarProps={CDSideNavProps}

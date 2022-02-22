@@ -6,9 +6,15 @@
  */
 
 .referenceSelect {
+  padding: var(--spacing-xlarge);
   &.dialog {
     width: auto;
-    padding-bottom: 0;
+  }
+  :global {
+    .bp3-dialog-header {
+      padding: 0;
+      margin-top: 0 !important;
+    }
   }
 }
 
@@ -47,9 +53,6 @@
   }
 }
 .contentContainer {
-  padding: var(--spacing-medium) var(--spacing-xxxlarge) var(--spacing-xxxlarge);
-  position: relative;
-
   .closeButton {
     position: absolute;
     top: 13px;

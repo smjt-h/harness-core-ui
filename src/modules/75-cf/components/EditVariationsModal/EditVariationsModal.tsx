@@ -45,7 +45,7 @@ import patch from '../../utils/instructions'
 import SaveFlagToGitSubForm from '../SaveFlagToGitSubForm/SaveFlagToGitSubForm'
 
 export interface EditVariationsModalProps extends Omit<ButtonProps, 'onClick' | 'onSubmit'> {
-  accountId: string
+  accountIdentifier: string
   orgIdentifier: string
   projectIdentifier: string
 
@@ -60,7 +60,7 @@ export interface EditVariationsModalProps extends Omit<ButtonProps, 'onClick' | 
 }
 
 export const EditVariationsModal: React.FC<EditVariationsModalProps> = ({
-  accountId,
+  accountIdentifier,
   orgIdentifier,
   projectIdentifier,
   feature,
@@ -81,11 +81,10 @@ export const EditVariationsModal: React.FC<EditVariationsModalProps> = ({
     const { mutate: submitPatch, loading: patchLoading } = usePatchFeature({
       identifier: feature.identifier as string,
       queryParams: {
-        project: feature.project as string,
-        environment: feature.envProperties?.environment as string,
-        account: accountId,
-        accountIdentifier: accountId,
-        org: orgIdentifier
+        projectIdentifier: feature.project as string,
+        environmentIdentifier: feature.envProperties?.environment as string,
+        accountIdentifier,
+        orgIdentifier
       } as PatchFeatureQueryParams
     })
 

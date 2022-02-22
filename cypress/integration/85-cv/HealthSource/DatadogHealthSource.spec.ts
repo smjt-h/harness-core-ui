@@ -99,7 +99,7 @@ describe('Configure Datadog health source', () => {
 
     // Creating the monitored service with Datadog health source.
     cy.findByRole('button', { name: /Save/i }).click()
-    cy.contains('span', 'Monitoring Service created').should('be.visible')
+    cy.contains('span', 'Monitored Service created').should('be.visible')
   })
 
   it('should be able to create Datadog Health Source with existing dashboard', () => {
@@ -148,7 +148,7 @@ describe('Configure Datadog health source', () => {
 
     // Creating the monitored service with Datadog health source.
     cy.findByRole('button', { name: /Save/i }).click()
-    cy.contains('span', 'Monitoring Service created').should('be.visible')
+    cy.contains('span', 'Monitored Service created').should('be.visible')
   })
 
   it('should be able to edit an existing Data dog health source', () => {
@@ -175,6 +175,6 @@ describe('Configure Datadog health source', () => {
 
     // Updating the monitored service with Datadog health source.
     cy.findByRole('button', { name: /Save/i }).click()
-    cy.contains('span', 'Monitoring Service updated').should('be.visible')
+    cy.contains('span', 'Monitored Service updated').should('be.visible')
   })
 })

@@ -6,30 +6,6 @@ exports[`<KubernetesServiceSpecInputSetMode /> tests snapshot test for kubernete
     class="Layout--vertical Layout--layout-spacing-medium StyledProps--main"
   >
     <div
-      class="nopadLeft accordionSummary"
-      id="Stage..Service.Artifacts"
-    >
-      <div
-        class="subheading"
-      >
-        pipelineSteps.deploy.serviceSpecifications.deploymentTypes.artifacts
-         
-      </div>
-      <div
-        class="nestedAccordions artifactsAccordion"
-      >
-        <p
-          class="StyledProps--font StyledProps--main inputheader"
-        >
-          primaryArtifactText
-        </p>
-      </div>
-    </div>
-    <div
-      class="nopadLeft accordionSummary"
-      id="Stage..Service.Artifacts.Sidecars"
-    />
-    <div
       id="manifestInputForm"
     />
     <div

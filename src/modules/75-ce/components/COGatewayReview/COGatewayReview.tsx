@@ -17,6 +17,7 @@ import FixedSchedeulesList from '@ce/common/FixedSchedulesList/FixedSchedulesLis
 import { useStrings } from 'framework/strings'
 import { useTelemetry } from '@common/hooks/useTelemetry'
 import { USER_JOURNEY_EVENTS } from '@ce/TrackingEventsConstants'
+import { AdvancedConfigTabs } from '@ce/constants'
 import { getFulfilmentIcon } from '../COGatewayList/Utils'
 import KubernetesRuleYamlEditor from '../COGatewayConfig/KubernetesRuleYamlEditor'
 import { DisplaySelectedEcsService } from '../COGatewayConfig/steps/ManageResources/DisplaySelectedEcsService'
@@ -98,6 +99,11 @@ const COGatewayReview: React.FC<COGatewayReviewProps> = props => {
       delay: d.delay_secs as number
     }))
     return _defaultTo(list, [])
+  }
+
+  const handleAdvancedConfigEdit = () => {
+    const activeStepId = !_isEmpty(filteredSchedules) ? AdvancedConfigTabs.schedules : AdvancedConfigTabs.deps
+    props.onEdit({ id: 'configuration', metaData: { activeStepCount: 4, activeStepTabId: activeStepId } })
   }
 
   return (
@@ -225,12 +231,7 @@ const COGatewayReview: React.FC<COGatewayReviewProps> = props => {
         </ReviewDetailsSection>
       )}
       {props.gatewayDetails.opts && (
-        <ReviewDetailsSection
-          isEditable
-          onEdit={() =>
-            props.onEdit({ id: 'configuration', metaData: { activeStepCount: 4, activeStepTabId: 'advanced' } })
-          }
-        >
+        <ReviewDetailsSection isEditable onEdit={handleAdvancedConfigEdit}>
           <Heading level={2}>Advanced configuration</Heading>
           <Layout.Vertical style={{ marginTop: 'var(--spacing-large)' }}>
             {isK8sRule && (

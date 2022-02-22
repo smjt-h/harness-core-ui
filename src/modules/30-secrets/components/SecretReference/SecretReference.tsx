@@ -5,8 +5,8 @@
  * https://polyformproject.org/wp-content/uploads/2020/06/PolyForm-Shield-1.0.0.txt.
  */
 
-import React from 'react'
-import { Icon, SelectOption, Text, Button, Container, Layout, ButtonVariation, Color } from '@wings-software/uicore'
+import React, { useState } from 'react'
+import { Icon, SelectOption, Text, Button, Container, Layout, Color } from '@wings-software/uicore'
 import { Select } from '@blueprintjs/select'
 import { MenuItem } from '@blueprintjs/core'
 import cx from 'classnames'
@@ -24,8 +24,11 @@ import { EntityReferenceResponse, getScopeFromDTO } from '@common/components/Ent
 import { Scope } from '@common/interfaces/SecretsInterface'
 import { useStrings } from 'framework/strings'
 import useCreateUpdateSecretModal from '@secrets/modals/CreateSecretModal/useCreateUpdateSecretModal'
+import { ResourceType } from '@rbac/interfaces/ResourceType'
+import { PermissionIdentifier } from '@rbac/interfaces/PermissionIdentifier'
+import RbacButton from '@rbac/components/Button/Button'
 import SecretEmptyState from '../../pages/secrets/secrets-empty-state.png'
-import type { SecretFormData } from '../CreateUpdateSecret/CreateUpdateSecret'
+import type { SecretFormData, SecretIdentifiers } from '../CreateUpdateSecret/CreateUpdateSecret'
 import css from './SecretReference.module.scss'
 
 const CustomSelect = Select.ofType<SelectOption>()
@@ -33,7 +36,17 @@ export interface SecretRef extends SecretDTOV2 {
   scope: Scope
 }
 
-export interface SecretReferenceProps {
+export const enum SecretTypeEnum {
+  SECRET_TEXT = 'SecretText',
+  SSH_KEY = 'SSHKey',
+  SECRET_FILE = 'SecretFile'
+}
+
+interface SceretTypeDropDownProps {
+  secretType?: SelectOption
+  setSecretType?: (val: SelectOption) => void
+}
+export interface SecretReferenceProps extends SceretTypeDropDownProps {
   onSelect: (secret: SecretRef) => void
   accountIdentifier: string
   projectIdentifier?: string
@@ -47,6 +60,8 @@ export interface SecretReferenceProps {
 }
 
 const fetchRecords = (
+  pageIndex: number,
+  setPagedSecretData: (data: ResponsePageSecretResponseWrapper) => void,
   scope: Scope,
   search: string | undefined,
   done: (records: EntityReferenceResponse<SecretRef>[]) => void,
@@ -76,13 +91,16 @@ const fetchRecords = (
       searchTerm: search?.trim(),
       projectIdentifier: scope === Scope.PROJECT ? projectIdentifier : undefined,
       orgIdentifier: scope === Scope.PROJECT || scope === Scope.ORG ? orgIdentifier : undefined,
-      source_category: sourceCategory
+      source_category: sourceCategory,
+      pageIndex: pageIndex,
+      pageSize: 10
     },
     mock
   })
     .then(responseData => {
       if (responseData?.data?.content) {
         const secrets = responseData.data.content
+        setPagedSecretData(responseData)
         const response: EntityReferenceResponse<SecretRef>[] = []
         secrets.forEach(secret => {
           response.push({
@@ -100,20 +118,8 @@ const fetchRecords = (
       throw err.message
     })
 }
-
-const SecretReference: React.FC<SecretReferenceProps> = props => {
-  const {
-    defaultScope,
-    accountIdentifier,
-    projectIdentifier,
-    orgIdentifier,
-    type,
-    mock,
-    connectorTypeContext,
-    handleInlineSSHSecretCreation
-  } = props
+const SelectTypeDropdown: React.FC<SceretTypeDropDownProps> = props => {
   const { getString } = useStrings()
-
   const secretTypeOptions: SelectOption[] = [
     {
       label: getString('secrets.secret.labelText'),
@@ -124,21 +130,8 @@ const SecretReference: React.FC<SecretReferenceProps> = props => {
       value: 'SecretFile'
     }
   ]
-  const defaultSecretType = secretTypeOptions.findIndex(val => val.value === type)
-  const [secretType, setSecretType] = React.useState<SelectOption>(
-    secretTypeOptions[defaultSecretType === -1 ? 0 : defaultSecretType]
-  )
-  const { openCreateSecretModal } = useCreateUpdateSecretModal({
-    onSuccess: data => {
-      props.onSelect({
-        ...data,
-        spec: {},
-        scope: getScopeFromDTO<SecretFormData>(data)
-      })
-      //refetch()
-    }
-  })
-  const selectTypeDropdown = (
+
+  return (
     <Container flex={{ alignItems: 'baseline' }}>
       <Text margin={{ left: 'medium', right: 'xsmall' }}>{getString('secrets.secret.labelSecretType')}</Text>
       <CustomSelect
@@ -148,7 +141,7 @@ const SecretReference: React.FC<SecretReferenceProps> = props => {
           <MenuItem className={css.popoverWidth} key={item.value as string} text={item.label} onClick={handleClick} />
         )}
         onItemSelect={item => {
-          setSecretType(item)
+          props.setSecretType?.(item)
         }}
         popoverProps={{ minimal: true, popoverClassName: css.popoverWidth }}
       >
@@ -158,41 +151,31 @@ const SecretReference: React.FC<SecretReferenceProps> = props => {
           inline
           minimal
           rightIcon="chevron-down"
-          text={secretType.label}
+          text={props.secretType?.label}
         />
       </CustomSelect>
     </Container>
   )
+}
+
+const SecretReference: React.FC<SecretReferenceProps> = props => {
+  const { defaultScope, accountIdentifier, projectIdentifier, orgIdentifier, type, mock, connectorTypeContext } = props
+  const { getString } = useStrings()
+  const [pagedSecretData, setPagedSecretData] = useState<ResponsePageSecretResponseWrapper>({})
+  const [pageNo, setPageNo] = useState(0)
+
+  const { openCreateSecretModal } = useCreateUpdateSecretModal({
+    onSuccess: data => {
+      props.onSelect({
+        ...data,
+        spec: {},
+        scope: getScopeFromDTO<SecretFormData>(data)
+      })
+    }
+  })
+
   return (
     <Container className={css.secretRefContainer}>
-      <Layout.Horizontal className={css.createSecretsBtnLayout}>
-        {type !== 'SSHKey' && (
-          <Button
-            text={
-              type === 'SecretText' || secretType.value === 'SecretText'
-                ? getString('secrets.secret.newSecretText')
-                : getString('secrets.secret.newSecretFile')
-            }
-            icon="plus"
-            onClick={() =>
-              openCreateSecretModal(
-                type === 'SecretText' || secretType.value === 'SecretText' ? 'SecretText' : 'SecretFile'
-              )
-            }
-            variation={ButtonVariation.SECONDARY}
-            margin={{ bottom: 'medium' }}
-          />
-        )}
-        {type === 'SSHKey' && handleInlineSSHSecretCreation && (
-          <Button
-            text={getString('secrets.secret.newSSHCredential')}
-            icon="plus"
-            onClick={handleInlineSSHSecretCreation}
-            variation={ButtonVariation.SECONDARY}
-            margin={{ bottom: 'medium' }}
-          />
-        )}
-      </Layout.Horizontal>
       <EntityReference<SecretRef>
         onSelect={(secret, scope) => {
           secret.scope = scope
@@ -205,10 +188,11 @@ const SecretReference: React.FC<SecretReferenceProps> = props => {
           containerClassName: css.noDataCardContainerSecret,
           className: css.noDataCardContainerSecret
         }}
-        recordClassName={css.listItem}
-        fetchRecords={(scope, search, done) => {
-          const selectedType = type || (secretType?.value as SecretDTOV2['type'])
+        fetchRecords={(scope, done, search, page = 0) => {
+          const selectedType = type || (props.secretType?.value as SecretDTOV2['type'])
           fetchRecords(
+            page,
+            setPagedSecretData,
             scope,
             search,
             done,
@@ -224,41 +208,89 @@ const SecretReference: React.FC<SecretReferenceProps> = props => {
         orgIdentifier={orgIdentifier}
         onCancel={props.onCancel}
         noRecordsText={getString('secrets.secret.noSecretsFound')}
-        searchInlineComponent={!type ? selectTypeDropdown : undefined}
+        searchInlineComponent={
+          !type ? <SelectTypeDropdown secretType={props.secretType} setSecretType={props.setSecretType} /> : undefined
+        }
+        input={!type ? type || (props.secretType?.value as SecretDTOV2['type']) : undefined}
         renderTabSubHeading
-        recordRender={({ item, selected }) => (
-          <>
-            <Layout.Horizontal className={css.item} flex={{ alignItems: 'center', justifyContent: 'space-between' }}>
-              <Layout.Horizontal flex={{ alignItems: 'center' }}>
-                {item.record.type === 'SecretText' || item.record.type === 'SecretFile' ? (
+        pagination={{
+          itemCount: pagedSecretData?.data?.totalItems || 0,
+          pageSize: pagedSecretData?.data?.pageSize || 10,
+          pageCount: pagedSecretData?.data?.totalPages || -1,
+          pageIndex: pageNo || 0,
+          gotoPage: pageIndex => setPageNo(pageIndex)
+        }}
+        disableCollapse={true}
+        recordRender={({ item, selectedScope, selected }) => {
+          return (
+            <>
+              <Layout.Horizontal className={css.item} flex={{ alignItems: 'center', justifyContent: 'space-between' }}>
+                <Layout.Horizontal spacing="medium" className={css.leftInfo}>
                   <Icon
-                    name={item.record.type === 'SecretText' ? 'text' : 'file'}
-                    size={24}
-                    className={css.secretIcon}
+                    className={cx(css.iconCheck, { [css.iconChecked]: selected })}
+                    size={14}
+                    name="pipeline-approval"
                   />
-                ) : null}
-                <Layout.Vertical>
-                  <Text lineClamp={1} font={{ weight: 'bold' }} color={Color.BLACK}>
-                    {item.record.name}
-                  </Text>
-                  {item.record.type === 'SecretText' || item.record.type === 'SecretFile' ? (
-                    <Text lineClamp={1} font={{ size: 'small', weight: 'light' }} color={Color.GREY_600}>
-                      {`${getString('common.ID')}: ${item.identifier}.${
-                        (item.record.spec as SecretTextSpecDTO).secretManagerIdentifier
-                      }`}
-                    </Text>
-                  ) : null}
-                  {item.record.type === 'SSHKey' ? (
-                    <Text lineClamp={1} font={{ size: 'small', weight: 'light' }} color={Color.GREY_600}>
-                      {`${getString('common.ID')}: ${item.identifier}`}
-                    </Text>
-                  ) : null}
-                </Layout.Vertical>
+                  <Layout.Horizontal flex={{ alignItems: 'center' }}>
+                    {item.record.type === SecretTypeEnum.SECRET_TEXT ||
+                    item.record.type === SecretTypeEnum.SECRET_FILE ? (
+                      <Icon
+                        name={item.record.type === SecretTypeEnum.SECRET_TEXT ? 'text' : 'file'}
+                        size={24}
+                        className={css.secretIcon}
+                      />
+                    ) : null}
+                    <Layout.Vertical padding={{ left: 'small' }}>
+                      <Text lineClamp={1} font={{ weight: 'bold' }} color={Color.BLACK}>
+                        {item.record.name}
+                      </Text>
+                      {item.record.type === SecretTypeEnum.SECRET_TEXT ||
+                      item.record.type === SecretTypeEnum.SECRET_FILE ? (
+                        <Text lineClamp={1} font={{ size: 'small', weight: 'light' }} color={Color.GREY_600}>
+                          {`${getString('common.ID')}: ${item.identifier}.${
+                            (item.record.spec as SecretTextSpecDTO).secretManagerIdentifier
+                          }`}
+                        </Text>
+                      ) : null}
+                      {item.record.type === SecretTypeEnum.SSH_KEY ? (
+                        <Text lineClamp={1} font={{ size: 'small', weight: 'light' }} color={Color.GREY_600}>
+                          {`${getString('common.ID')}: ${item.identifier}`}
+                        </Text>
+                      ) : null}
+                    </Layout.Vertical>
+                  </Layout.Horizontal>
+                </Layout.Horizontal>
+
+                <RbacButton
+                  minimal
+                  className={css.editBtn}
+                  data-testid={`${name}-edit`}
+                  onClick={() =>
+                    openCreateSecretModal(item.record.type, {
+                      identifier: item.identifier,
+                      projectIdentifier: item.record.projectIdentifier,
+                      orgIdentifier: item.record.orgIdentifier
+                    } as SecretIdentifiers)
+                  }
+                  permission={{
+                    permission: PermissionIdentifier.UPDATE_SECRET,
+                    resource: {
+                      resourceType: ResourceType.SECRET,
+                      resourceIdentifier: item.identifier
+                    },
+                    resourceScope: {
+                      accountIdentifier,
+                      orgIdentifier:
+                        selectedScope === Scope.ORG || selectedScope === Scope.PROJECT ? orgIdentifier : undefined,
+                      projectIdentifier: selectedScope === Scope.PROJECT ? projectIdentifier : undefined
+                    }
+                  }}
+                  text={<Icon size={16} name={'Edit'} color={Color.GREY_600} />}
+                />
               </Layout.Horizontal>
-              <Icon className={cx(css.iconCheck, { [css.iconChecked]: selected })} name="pipeline-approval" />
-            </Layout.Horizontal>
-          </>
-        )}
+            </>
+          )
+        }}
       />
     </Container>
   )

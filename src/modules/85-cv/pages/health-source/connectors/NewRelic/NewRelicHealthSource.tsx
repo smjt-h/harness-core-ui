@@ -31,7 +31,7 @@ import DrawerFooter from '@cv/pages/health-source/common/DrawerFooter/DrawerFoot
 import MetricsVerificationModal from '@cv/components/MetricsVerificationModal/MetricsVerificationModal'
 import ValidationStatus from '@cv/pages/components/ValidationStatus/ValidationStatus'
 import { StatusOfValidation } from '@cv/pages/components/ValidationStatus/ValidationStatus.constants'
-import type { GroupedCreatedMetrics } from '@cv/components/MultiItemsSideNav/components/SelectedAppsSideNav/components/GroupedSideNav/GroupedSideNav.types'
+import useGroupedSideNaveHook from '@cv/hooks/GroupedSideNaveHook/useGroupedSideNaveHook'
 import {
   getOptions,
   getInputGroupProps,
@@ -49,15 +49,6 @@ import {
 } from './NewRelicHealthSource.utils'
 import CustomMetric from '../../common/CustomMetric/CustomMetric'
 import MetricPackCustom from '../MetricPackCustom'
-import {
-  initializeSelectedMetricsMap,
-  initializeCreatedMetrics,
-  initGroupedCreatedMetrics
-} from '../../common/CustomMetric/CustomMetric.utils'
-import type {
-  CreatedMetricsWithSelectedIndex,
-  CustomSelectedAndMappedMetrics
-} from '../../common/CustomMetric/CustomMetric.types'
 import NewRelicCustomMetricForm from './components/NewRelicCustomMetricForm/NewRelicCustomMetricForm'
 import { initNewRelicCustomFormValue } from './components/NewRelicCustomMetricForm/NewRelicCustomMetricForm.utils'
 import css from './NewrelicMonitoredSource.module.scss'
@@ -89,20 +80,21 @@ export default function NewRelicHealthSource({
   const { accountId, orgIdentifier, projectIdentifier } = useParams<ProjectPathProps>()
   const connectorIdentifier = newRelicData?.connectorRef?.connector?.identifier || newRelicData?.connectorRef
   const [showCustomMetric, setShowCustomMetric] = useState(!!Array.from(newRelicData?.mappedServicesAndEnvs)?.length)
-  const [{ selectedMetric, mappedMetrics }, setMappedMetrics] = useState<CustomSelectedAndMappedMetrics>(
-    initializeSelectedMetricsMap(
-      defailtMetricName,
-      initNewRelicCustomFormValue(getString),
-      newRelicData?.mappedServicesAndEnvs
-    )
-  )
-  const [{ createdMetrics, selectedMetricIndex }, setCreatedMetrics] = useState<CreatedMetricsWithSelectedIndex>(
-    initializeCreatedMetrics(defailtMetricName, selectedMetric, mappedMetrics)
-  )
 
-  const [groupedCreatedMetrics, setGroupedCreatedMetrics] = useState<GroupedCreatedMetrics>(
-    initGroupedCreatedMetrics(mappedMetrics, getString)
-  )
+  const {
+    createdMetrics,
+    mappedMetrics,
+    selectedMetric,
+    groupedCreatedMetrics,
+    groupedCreatedMetricsList,
+    setMappedMetrics,
+    setCreatedMetrics,
+    setGroupedCreatedMetrics
+  } = useGroupedSideNaveHook({
+    defaultCustomMetricName: defailtMetricName,
+    initCustomMetricData: initNewRelicCustomFormValue(),
+    mappedServicesAndEnvs: newRelicData?.mappedServicesAndEnvs
+  })
 
   const [nonCustomFeilds, setNonCustomFeilds] = useState(initializeNonCustomFields(newRelicData))
 
@@ -181,10 +173,22 @@ export default function NewRelicHealthSource({
       enableReinitialize
       formName={'newRelicHealthSourceform'}
       isInitialValid={(args: any) =>
-        Object.keys(validateMapping(args.initialValues, createdMetrics, selectedMetricIndex, getString)).length === 0
+        Object.keys(
+          validateMapping(
+            args.initialValues,
+            groupedCreatedMetricsList,
+            groupedCreatedMetricsList.indexOf(selectedMetric),
+            getString
+          )
+        ).length === 0
       }
       validate={values => {
-        return validateMapping(values, createdMetrics, selectedMetricIndex, getString)
+        return validateMapping(
+          values,
+          groupedCreatedMetricsList,
+          groupedCreatedMetricsList.indexOf(selectedMetric),
+          getString
+        )
       }}
       initialValues={initPayload}
       onSubmit={async values => {
@@ -300,7 +304,7 @@ export default function NewRelicHealthSource({
                 defaultMetricName={defailtMetricName}
                 tooptipMessage={getString('cv.monitoringSources.gcoLogs.addQueryTooltip')}
                 addFieldLabel={getString('cv.monitoringSources.addMetric')}
-                initCustomForm={initNewRelicCustomFormValue(getString)}
+                initCustomForm={initNewRelicCustomFormValue()}
               >
                 <NewRelicCustomMetricForm
                   connectorIdentifier={connectorIdentifier}
@@ -333,8 +337,8 @@ export default function NewRelicHealthSource({
                   formik,
                   mappedMetrics,
                   selectedMetric,
-                  selectedMetricIndex,
-                  createdMetrics,
+                  groupedCreatedMetricsList.indexOf(selectedMetric),
+                  groupedCreatedMetricsList,
                   getString,
                   onSubmit
                 )

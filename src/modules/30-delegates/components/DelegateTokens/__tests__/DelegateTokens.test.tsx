@@ -6,7 +6,7 @@
  */
 
 import React from 'react'
-import { render, waitFor } from '@testing-library/react'
+import { render, waitFor, fireEvent, act } from '@testing-library/react'
 import userEvent from '@testing-library/user-event'
 import type { DelegateTokenDetails } from 'services/portal'
 import { TestWrapper } from '@common/utils/testUtils'
@@ -30,6 +30,10 @@ const createToken = jest.fn().mockResolvedValue({
 })
 
 jest.mock('services/portal', () => ({
+  useGetDelegatesByToken: jest.fn().mockImplementation(() => ({}))
+}))
+
+jest.mock('services/cd-ng', () => ({
   useCreateDelegateToken: jest.fn().mockImplementation(() => ({
     mutate: createToken
   })),
@@ -39,11 +43,8 @@ jest.mock('services/portal', () => ({
     },
     refetch: jest.fn()
   })),
-  useGetDelegatesByToken: jest.fn().mockImplementation(() => ({})),
   revokeDelegateTokenPromise: jest.fn().mockImplementation(() => undefined)
 }))
-
-jest.mock('services/cd-ng', () => ({}))
 
 describe('Delegate Tokens page', () => {
   test('render delegate tokens', async () => {
@@ -65,6 +66,21 @@ describe('Delegate Tokens page', () => {
     userEvent.click(createTokenBtn!)
     await waitFor(() => {
       expect(document.body.innerHTML).toContain('apply')
+    })
+
+    const newTokenNameInput = document.body.querySelectorAll('input')[2]
+
+    await act(async () => {
+      fireEvent.change(newTokenNameInput!, {
+        target: { value: 'newTokenName' }
+      })
+    })
+
+    const applyTokenBtn = getByRole('button', { name: /apply/ })
+    userEvent.click(applyTokenBtn!)
+
+    await waitFor(() => {
+      expect(document.body.innerHTML).not.toContain('delegates.tokens.generatedValuePlaceholder')
     })
   })
 

@@ -24,7 +24,11 @@ export interface SaveFlagRepoDialogProps {
 }
 
 const SaveFlagRepoDialog = ({ isOpen, closeModal, gitRepoRefetch }: SaveFlagRepoDialogProps): ReactElement => {
-  const { projectIdentifier, accountId, orgIdentifier } = useParams<ProjectPathProps & ModulePathParams>()
+  const {
+    projectIdentifier,
+    accountId: accountIdentifier,
+    orgIdentifier
+  } = useParams<ProjectPathProps & ModulePathParams>()
 
   const { showError } = useToaster()
   const { getString } = useStrings()
@@ -32,8 +36,8 @@ const SaveFlagRepoDialog = ({ isOpen, closeModal, gitRepoRefetch }: SaveFlagRepo
   const { mutate: createGitRepo } = useCreateGitRepo({
     identifier: projectIdentifier,
     queryParams: {
-      accountIdentifier: accountId,
-      org: orgIdentifier
+      accountIdentifier,
+      orgIdentifier
     }
   })
 

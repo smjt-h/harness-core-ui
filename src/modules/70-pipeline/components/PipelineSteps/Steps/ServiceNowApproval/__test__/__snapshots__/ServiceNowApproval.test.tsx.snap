@@ -1059,7 +1059,7 @@ exports[`ServiceNow Approval tests Edit stage - readonly: edit stage view readon
                     pipeline.approvalCriteria.field
                   </span>
                   <span>
-                    pipeline.triggers.conditionsPanel.operator
+                    common.operator
                   </span>
                   <span>
                     valueLabel

@@ -56,15 +56,15 @@ export default function PipelineFilterForm<
           <div className={css.subfilter} key="buildSubType">
             <FormInput.Text
               name={'sourceBranch'}
-              label={getString('pipeline.triggers.conditionsPanel.sourceBranch')}
+              label={getString('common.sourceBranch')}
               key={'sourceBranch'}
-              placeholder={getString('pipeline.triggers.conditionsPanel.sourceBranchPlaceholder')}
+              placeholder={getString('common.sourceBranchPlaceholder')}
             />
             <FormInput.Text
               name={'targetBranch'}
-              label={getString('pipeline.triggers.conditionsPanel.targetBranch')}
+              label={getString('common.targetBranch')}
               key={'targetBranch'}
-              placeholder={getString('pipeline.triggers.conditionsPanel.targetBranchPlaceholder')}
+              placeholder={getString('common.targetBranchPlaceholder')}
             />
           </div>
         )

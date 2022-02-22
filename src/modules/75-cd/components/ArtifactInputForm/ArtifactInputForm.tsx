@@ -59,7 +59,7 @@ import {
   PRIMARY_ARTIFACT,
   TriggerDefaultFieldList,
   TriggerTypes
-} from '@pipeline/pages/triggers/utils/TriggersWizardPageUtils'
+} from '@triggers/pages/triggers/utils/TriggersWizardPageUtils'
 import { repositoryFormat } from '@pipeline/components/ArtifactsSelection/ArtifactUtils'
 import ExperimentalInput from '../PipelineSteps/K8sServiceSpec/K8sServiceSpecForms/ExperimentalInput'
 
@@ -72,7 +72,6 @@ const setSideCarInitialValues = (initialValues: K8SDirectServiceStep, formik: an
     (item: any) => item?.sidecar?.identifier === formik?.values?.selectedArtifact?.identifier
   ) || {
     artifact: {
-      identifier: '',
       type: formik?.values?.selectedArtifact?.type,
       spec: {
         store: {
@@ -95,10 +94,8 @@ const setSideCarInitialValues = (initialValues: K8SDirectServiceStep, formik: an
       if (artifactSpec.eventConditions) {
         delete artifactSpec.eventConditions
       }
-
       selectedArtifact = {
         artifact: {
-          identifier: formik?.values?.selectedArtifact?.identifier,
           type: formik?.values?.selectedArtifact?.type,
           spec: {
             ...artifactSpec
@@ -126,7 +123,6 @@ const setPrimaryInitialValues = (initialValues: K8SDirectServiceStep, formik: an
 
       selectedArtifact = {
         artifact: {
-          identifier: formik?.values?.selectedArtifact?.identifier,
           type: formik?.values?.selectedArtifact?.type,
           spec: {
             ...artifactSpec

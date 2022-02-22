@@ -26,11 +26,7 @@ export interface TargetBasedOnConditionsProps {
 const TargetBasedOnConditions: FC<TargetBasedOnConditionsProps> = ({ targetGroup, values }) => {
   const { getString } = useStrings()
 
-  const {
-    accountId: accountIdentifier,
-    orgIdentifier: org,
-    projectIdentifier: project
-  } = useParams<Record<string, string>>()
+  const { accountId: accountIdentifier, orgIdentifier, projectIdentifier } = useParams<Record<string, string>>()
 
   const {
     data: targetAttributes,
@@ -39,10 +35,10 @@ const TargetBasedOnConditions: FC<TargetBasedOnConditionsProps> = ({ targetGroup
     refetch: refetchTargetAttributes
   } = useGetAllTargetAttributes({
     queryParams: {
-      environment: targetGroup.environment as string,
+      environmentIdentifier: targetGroup.environment as string,
       accountIdentifier,
-      org,
-      project
+      orgIdentifier,
+      projectIdentifier
     }
   })
 

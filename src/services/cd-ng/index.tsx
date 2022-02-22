@@ -40,6 +40,7 @@ export interface AccessControlCheckError {
     | 'USER_DOMAIN_NOT_ALLOWED'
     | 'MAX_FAILED_ATTEMPT_COUNT_EXCEEDED'
     | 'RESOURCE_NOT_FOUND'
+    | 'INVALID_FORMAT'
     | 'ROLE_DOES_NOT_EXIST'
     | 'EMAIL_NOT_VERIFIED'
     | 'EMAIL_VERIFICATION_TOKEN_NOT_FOUND'
@@ -290,6 +291,7 @@ export interface AccessControlCheckError {
     | 'INSTANCE_STATS_PROCESS_ERROR'
     | 'INSTANCE_STATS_MIGRATION_ERROR'
     | 'DEPLOYMENT_MIGRATION_ERROR'
+    | 'CG_LICENSE_USAGE_ERROR'
     | 'INSTANCE_STATS_AGGREGATION_ERROR'
     | 'UNRESOLVED_EXPRESSIONS_ERROR'
     | 'KRYO_HANDLER_NOT_FOUND_ERROR'
@@ -318,6 +320,11 @@ export interface AccessControlCheckError {
     | 'GIT_SYNC_ERROR'
     | 'TEMPLATE_EXCEPTION'
     | 'ENTITY_REFERENCE_EXCEPTION'
+    | 'INVALID_INPUT_SET'
+    | 'INVALID_OVERLAY_INPUT_SET'
+    | 'RESOURCE_ALREADY_EXISTS'
+    | 'INVALID_JSON_PAYLOAD'
+    | 'POLICY_EVALUATION_FAILURE'
   correlationId?: string
   detailedMessage?: string
   failedPermissionChecks?: PermissionCheck[]
@@ -730,6 +737,11 @@ export interface ArtifactSummary {
   type?: string
 }
 
+export interface ArtifactoryArtifactBuildDetailsDTO {
+  artifactName?: string
+  artifactPath?: string
+}
+
 export interface ArtifactoryAuthCredentials {
   [key: string]: any
 }
@@ -757,6 +769,12 @@ export type ArtifactoryConnector = ConnectorConfigDTO & {
   delegateSelectors?: string[]
 }
 
+export interface ArtifactoryRepoDetailsDTO {
+  repositories?: {
+    [key: string]: string
+  }
+}
+
 export interface ArtifactoryRequestDTO {
   tag?: string
   tagRegex?: string
@@ -765,6 +783,13 @@ export interface ArtifactoryRequestDTO {
 
 export interface ArtifactoryResponseDTO {
   buildDetailsList?: ArtifactoryBuildDetailsDTO[]
+}
+
+export type ArtifactoryStoreConfig = StoreConfig & {
+  artifactPaths?: string[]
+  connectorRef: string
+  metadata?: string
+  repositoryName: string
 }
 
 export type ArtifactoryUsernamePasswordAuth = ArtifactoryAuthCredentials & {
@@ -790,6 +815,7 @@ export type AuditFilterProperties = FilterProperties & {
     | 'REVOKE_INVITE'
     | 'ADD_COLLABORATOR'
     | 'REMOVE_COLLABORATOR'
+    | 'CREATE_TOKEN'
     | 'REVOKE_TOKEN'
     | 'LOGIN'
     | 'LOGIN2FA'
@@ -1662,6 +1688,17 @@ export interface DelegateResponseData {
   [key: string]: any
 }
 
+export interface DelegateTokenDetails {
+  accountId?: string
+  createdAt?: number
+  createdBy?: EmbeddedUser
+  name?: string
+  ownerIdentifier?: string
+  status?: 'ACTIVE' | 'REVOKED'
+  uuid?: string
+  value?: string
+}
+
 export type DeleteManifestPathSpec = DeleteResourcesBaseSpec & {
   allManifestPaths?: boolean
   manifestPaths?: string[]
@@ -1968,6 +2005,7 @@ export interface EntityDetail {
     | 'JiraApproval'
     | 'HarnessApproval'
     | 'Barrier'
+    | 'FlagConfiguration'
     | 'ShellScript'
     | 'K8sCanaryDeploy'
     | 'Connectors'
@@ -2002,6 +2040,7 @@ export interface EntityDetail {
     | 'RestoreCacheS3'
     | 'SaveCacheGCS'
     | 'SaveCacheS3'
+    | 'Security'
     | 'ArtifactoryUpload'
     | 'GCSUpload'
     | 'S3Upload'
@@ -2087,7 +2126,6 @@ export interface EnvironmentRequestDTO {
     [key: string]: string
   }
   type: 'PreProduction' | 'Production'
-  version?: number
 }
 
 export interface EnvironmentResponse {
@@ -2141,6 +2179,7 @@ export interface Error {
     | 'USER_DOMAIN_NOT_ALLOWED'
     | 'MAX_FAILED_ATTEMPT_COUNT_EXCEEDED'
     | 'RESOURCE_NOT_FOUND'
+    | 'INVALID_FORMAT'
     | 'ROLE_DOES_NOT_EXIST'
     | 'EMAIL_NOT_VERIFIED'
     | 'EMAIL_VERIFICATION_TOKEN_NOT_FOUND'
@@ -2391,6 +2430,7 @@ export interface Error {
     | 'INSTANCE_STATS_PROCESS_ERROR'
     | 'INSTANCE_STATS_MIGRATION_ERROR'
     | 'DEPLOYMENT_MIGRATION_ERROR'
+    | 'CG_LICENSE_USAGE_ERROR'
     | 'INSTANCE_STATS_AGGREGATION_ERROR'
     | 'UNRESOLVED_EXPRESSIONS_ERROR'
     | 'KRYO_HANDLER_NOT_FOUND_ERROR'
@@ -2419,6 +2459,11 @@ export interface Error {
     | 'GIT_SYNC_ERROR'
     | 'TEMPLATE_EXCEPTION'
     | 'ENTITY_REFERENCE_EXCEPTION'
+    | 'INVALID_INPUT_SET'
+    | 'INVALID_OVERLAY_INPUT_SET'
+    | 'RESOURCE_ALREADY_EXISTS'
+    | 'INVALID_JSON_PAYLOAD'
+    | 'POLICY_EVALUATION_FAILURE'
   correlationId?: string
   detailedMessage?: string
   message?: string
@@ -2507,6 +2552,7 @@ export interface Failure {
     | 'USER_DOMAIN_NOT_ALLOWED'
     | 'MAX_FAILED_ATTEMPT_COUNT_EXCEEDED'
     | 'RESOURCE_NOT_FOUND'
+    | 'INVALID_FORMAT'
     | 'ROLE_DOES_NOT_EXIST'
     | 'EMAIL_NOT_VERIFIED'
     | 'EMAIL_VERIFICATION_TOKEN_NOT_FOUND'
@@ -2757,6 +2803,7 @@ export interface Failure {
     | 'INSTANCE_STATS_PROCESS_ERROR'
     | 'INSTANCE_STATS_MIGRATION_ERROR'
     | 'DEPLOYMENT_MIGRATION_ERROR'
+    | 'CG_LICENSE_USAGE_ERROR'
     | 'INSTANCE_STATS_AGGREGATION_ERROR'
     | 'UNRESOLVED_EXPRESSIONS_ERROR'
     | 'KRYO_HANDLER_NOT_FOUND_ERROR'
@@ -2785,6 +2832,11 @@ export interface Failure {
     | 'GIT_SYNC_ERROR'
     | 'TEMPLATE_EXCEPTION'
     | 'ENTITY_REFERENCE_EXCEPTION'
+    | 'INVALID_INPUT_SET'
+    | 'INVALID_OVERLAY_INPUT_SET'
+    | 'RESOURCE_ALREADY_EXISTS'
+    | 'INVALID_JSON_PAYLOAD'
+    | 'POLICY_EVALUATION_FAILURE'
   correlationId?: string
   errors?: ValidationError[]
   message?: string
@@ -2848,6 +2900,7 @@ export interface FeatureRestrictionDetailListRequestDTO {
     | 'TERRAFORM_DESTROY'
     | 'TERRAFORM_ROLLBACK'
     | 'INTEGRATED_APPROVALS_WITH_SERVICE_NOW'
+    | 'SECURITY'
     | 'DEVELOPERS'
     | 'MONTHLY_ACTIVE_USERS'
   )[]
@@ -2900,6 +2953,7 @@ export interface FeatureRestrictionDetailRequestDTO {
     | 'TERRAFORM_DESTROY'
     | 'TERRAFORM_ROLLBACK'
     | 'INTEGRATED_APPROVALS_WITH_SERVICE_NOW'
+    | 'SECURITY'
     | 'DEVELOPERS'
     | 'MONTHLY_ACTIVE_USERS'
 }
@@ -2954,6 +3008,7 @@ export interface FeatureRestrictionDetailsDTO {
     | 'TERRAFORM_DESTROY'
     | 'TERRAFORM_ROLLBACK'
     | 'INTEGRATED_APPROVALS_WITH_SERVICE_NOW'
+    | 'SECURITY'
     | 'DEVELOPERS'
     | 'MONTHLY_ACTIVE_USERS'
   restriction?: RestrictionDTO
@@ -3016,6 +3071,7 @@ export interface FeatureRestrictionMetadataDTO {
     | 'TERRAFORM_DESTROY'
     | 'TERRAFORM_ROLLBACK'
     | 'INTEGRATED_APPROVALS_WITH_SERVICE_NOW'
+    | 'SECURITY'
     | 'DEVELOPERS'
     | 'MONTHLY_ACTIVE_USERS'
   restrictionMetadata?: {
@@ -3212,6 +3268,7 @@ export interface GitEntityBranchFilterSummaryProperties {
     | 'JiraApproval'
     | 'HarnessApproval'
     | 'Barrier'
+    | 'FlagConfiguration'
     | 'ShellScript'
     | 'K8sCanaryDeploy'
     | 'Connectors'
@@ -3246,6 +3303,7 @@ export interface GitEntityBranchFilterSummaryProperties {
     | 'RestoreCacheS3'
     | 'SaveCacheGCS'
     | 'SaveCacheS3'
+    | 'Security'
     | 'ArtifactoryUpload'
     | 'GCSUpload'
     | 'S3Upload'
@@ -3268,6 +3326,7 @@ export interface GitEntityFilterProperties {
     | 'JiraApproval'
     | 'HarnessApproval'
     | 'Barrier'
+    | 'FlagConfiguration'
     | 'ShellScript'
     | 'K8sCanaryDeploy'
     | 'Connectors'
@@ -3302,6 +3361,7 @@ export interface GitEntityFilterProperties {
     | 'RestoreCacheS3'
     | 'SaveCacheGCS'
     | 'SaveCacheS3'
+    | 'Security'
     | 'ArtifactoryUpload'
     | 'GCSUpload'
     | 'S3Upload'
@@ -3357,6 +3417,7 @@ export interface GitFullSyncEntityInfoDTO {
     | 'JiraApproval'
     | 'HarnessApproval'
     | 'Barrier'
+    | 'FlagConfiguration'
     | 'ShellScript'
     | 'K8sCanaryDeploy'
     | 'Connectors'
@@ -3391,6 +3452,7 @@ export interface GitFullSyncEntityInfoDTO {
     | 'RestoreCacheS3'
     | 'SaveCacheGCS'
     | 'SaveCacheS3'
+    | 'Security'
     | 'ArtifactoryUpload'
     | 'GCSUpload'
     | 'S3Upload'
@@ -3421,6 +3483,7 @@ export interface GitFullSyncEntityInfoFilterKeys {
     | 'JiraApproval'
     | 'HarnessApproval'
     | 'Barrier'
+    | 'FlagConfiguration'
     | 'ShellScript'
     | 'K8sCanaryDeploy'
     | 'Connectors'
@@ -3455,6 +3518,7 @@ export interface GitFullSyncEntityInfoFilterKeys {
     | 'RestoreCacheS3'
     | 'SaveCacheGCS'
     | 'SaveCacheS3'
+    | 'Security'
     | 'ArtifactoryUpload'
     | 'GCSUpload'
     | 'S3Upload'
@@ -3562,6 +3626,7 @@ export interface GitSyncEntityDTO {
     | 'JiraApproval'
     | 'HarnessApproval'
     | 'Barrier'
+    | 'FlagConfiguration'
     | 'ShellScript'
     | 'K8sCanaryDeploy'
     | 'Connectors'
@@ -3596,6 +3661,7 @@ export interface GitSyncEntityDTO {
     | 'RestoreCacheS3'
     | 'SaveCacheGCS'
     | 'SaveCacheS3'
+    | 'Security'
     | 'ArtifactoryUpload'
     | 'GCSUpload'
     | 'S3Upload'
@@ -3620,6 +3686,7 @@ export interface GitSyncEntityListDTO {
     | 'JiraApproval'
     | 'HarnessApproval'
     | 'Barrier'
+    | 'FlagConfiguration'
     | 'ShellScript'
     | 'K8sCanaryDeploy'
     | 'Connectors'
@@ -3654,6 +3721,7 @@ export interface GitSyncEntityListDTO {
     | 'RestoreCacheS3'
     | 'SaveCacheGCS'
     | 'SaveCacheS3'
+    | 'Security'
     | 'ArtifactoryUpload'
     | 'GCSUpload'
     | 'S3Upload'
@@ -3695,6 +3763,7 @@ export interface GitSyncErrorDTO {
     | 'JiraApproval'
     | 'HarnessApproval'
     | 'Barrier'
+    | 'FlagConfiguration'
     | 'ShellScript'
     | 'K8sCanaryDeploy'
     | 'Connectors'
@@ -3729,6 +3798,7 @@ export interface GitSyncErrorDTO {
     | 'RestoreCacheS3'
     | 'SaveCacheGCS'
     | 'SaveCacheS3'
+    | 'Security'
     | 'ArtifactoryUpload'
     | 'GCSUpload'
     | 'S3Upload'
@@ -5802,6 +5872,13 @@ export interface ResponseArtifactoryBuildDetailsDTO {
   status?: 'SUCCESS' | 'FAILURE' | 'ERROR'
 }
 
+export interface ResponseArtifactoryRepoDetailsDTO {
+  correlationId?: string
+  data?: ArtifactoryRepoDetailsDTO
+  metaData?: { [key: string]: any }
+  status?: 'SUCCESS' | 'FAILURE' | 'ERROR'
+}
+
 export interface ResponseArtifactoryResponseDTO {
   correlationId?: string
   data?: ArtifactoryResponseDTO
@@ -6145,6 +6222,13 @@ export interface ResponseListApiKeyDTO {
   status?: 'SUCCESS' | 'FAILURE' | 'ERROR'
 }
 
+export interface ResponseListArtifactoryArtifactBuildDetailsDTO {
+  correlationId?: string
+  data?: ArtifactoryArtifactBuildDetailsDTO[]
+  metaData?: { [key: string]: any }
+  status?: 'SUCCESS' | 'FAILURE' | 'ERROR'
+}
+
 export interface ResponseListConnectorResponse {
   correlationId?: string
   data?: ConnectorResponse[]
@@ -6390,6 +6474,7 @@ export interface ResponseMessage {
     | 'USER_DOMAIN_NOT_ALLOWED'
     | 'MAX_FAILED_ATTEMPT_COUNT_EXCEEDED'
     | 'RESOURCE_NOT_FOUND'
+    | 'INVALID_FORMAT'
     | 'ROLE_DOES_NOT_EXIST'
     | 'EMAIL_NOT_VERIFIED'
     | 'EMAIL_VERIFICATION_TOKEN_NOT_FOUND'
@@ -6640,6 +6725,7 @@ export interface ResponseMessage {
     | 'INSTANCE_STATS_PROCESS_ERROR'
     | 'INSTANCE_STATS_MIGRATION_ERROR'
     | 'DEPLOYMENT_MIGRATION_ERROR'
+    | 'CG_LICENSE_USAGE_ERROR'
     | 'INSTANCE_STATS_AGGREGATION_ERROR'
     | 'UNRESOLVED_EXPRESSIONS_ERROR'
     | 'KRYO_HANDLER_NOT_FOUND_ERROR'
@@ -6668,6 +6754,11 @@ export interface ResponseMessage {
     | 'GIT_SYNC_ERROR'
     | 'TEMPLATE_EXCEPTION'
     | 'ENTITY_REFERENCE_EXCEPTION'
+    | 'INVALID_INPUT_SET'
+    | 'INVALID_OVERLAY_INPUT_SET'
+    | 'RESOURCE_ALREADY_EXISTS'
+    | 'INVALID_JSON_PAYLOAD'
+    | 'POLICY_EVALUATION_FAILURE'
   exception?: Throwable
   failureTypes?: (
     | 'EXPIRED'
@@ -6678,6 +6769,7 @@ export interface ResponseMessage {
     | 'APPLICATION_ERROR'
     | 'AUTHORIZATION_ERROR'
     | 'TIMEOUT_ERROR'
+    | 'POLICY_EVALUATION_FAILURE'
   )[]
   level?: 'INFO' | 'ERROR'
   message?: string
@@ -7258,6 +7350,22 @@ export interface RestResponseDelegateProfileDetailsNg {
   responseMessages?: ResponseMessage[]
 }
 
+export interface RestResponseDelegateTokenDetails {
+  metaData?: {
+    [key: string]: { [key: string]: any }
+  }
+  resource?: DelegateTokenDetails
+  responseMessages?: ResponseMessage[]
+}
+
+export interface RestResponseListDelegateTokenDetails {
+  metaData?: {
+    [key: string]: { [key: string]: any }
+  }
+  resource?: DelegateTokenDetails[]
+  responseMessages?: ResponseMessage[]
+}
+
 export interface RestResponseLoginSettings {
   metaData?: {
     [key: string]: { [key: string]: any }
@@ -7614,6 +7722,7 @@ export type SamlSettings = SSOSettings & {
     | 'SSO_SAML'
     | 'GCP_SECRETS_MANAGER'
     | 'TRIGGER'
+  userIdAttr?: string
 }
 
 export type SampleErrorMetadataDTO = ErrorMetadataDTO & {
@@ -8020,7 +8129,6 @@ export interface ServiceRequestDTO {
   tags?: {
     [key: string]: string
   }
-  version?: number
 }
 
 export interface ServiceResponse {
@@ -8356,7 +8464,7 @@ export interface StoreConfig {
 export interface StoreConfigWrapper {
   metadata?: string
   spec: StoreConfig
-  type: 'Git' | 'Github' | 'Bitbucket' | 'GitLab' | 'Http' | 'S3' | 'Gcs'
+  type: 'Git' | 'Github' | 'Bitbucket' | 'GitLab' | 'Http' | 'S3' | 'Gcs' | 'Artifactory'
 }
 
 export type StringNGVariable = NGVariable & {
@@ -8753,6 +8861,13 @@ export interface UserGroupDTO {
   users?: string[]
 }
 
+export interface UserGroupEntityReference {
+  accountId?: string
+  appId?: string
+  entityType?: string
+  id?: string
+}
+
 export interface UserGroupFilterDTO {
   accountIdentifier?: string
   databaseIdFilter?: string[]
@@ -9058,7 +9173,7 @@ export type GetBuildDetailsForArtifactoryArtifactWithYamlBodyRequestBody = strin
 
 export type GetBuildDetailsForEcrWithYamlBodyRequestBody = string
 
-export type SubscribeBodyRequestBody = string[]
+export type ProcessPollingResultNgBodyRequestBody = string[]
 
 export type UpdateWhitelistedDomainsBodyRequestBody = string[]
 
@@ -9544,6 +9659,7 @@ export interface ListActivitiesQueryParams {
     | 'JiraApproval'
     | 'HarnessApproval'
     | 'Barrier'
+    | 'FlagConfiguration'
     | 'ShellScript'
     | 'K8sCanaryDeploy'
     | 'Connectors'
@@ -9578,6 +9694,7 @@ export interface ListActivitiesQueryParams {
     | 'RestoreCacheS3'
     | 'SaveCacheGCS'
     | 'SaveCacheS3'
+    | 'Security'
     | 'ArtifactoryUpload'
     | 'GCSUpload'
     | 'S3Upload'
@@ -9594,6 +9711,7 @@ export interface ListActivitiesQueryParams {
     | 'JiraApproval'
     | 'HarnessApproval'
     | 'Barrier'
+    | 'FlagConfiguration'
     | 'ShellScript'
     | 'K8sCanaryDeploy'
     | 'Connectors'
@@ -9628,6 +9746,7 @@ export interface ListActivitiesQueryParams {
     | 'RestoreCacheS3'
     | 'SaveCacheGCS'
     | 'SaveCacheS3'
+    | 'Security'
     | 'ArtifactoryUpload'
     | 'GCSUpload'
     | 'S3Upload'
@@ -9748,6 +9867,7 @@ export interface GetActivitiesSummaryQueryParams {
     | 'JiraApproval'
     | 'HarnessApproval'
     | 'Barrier'
+    | 'FlagConfiguration'
     | 'ShellScript'
     | 'K8sCanaryDeploy'
     | 'Connectors'
@@ -9782,6 +9902,7 @@ export interface GetActivitiesSummaryQueryParams {
     | 'RestoreCacheS3'
     | 'SaveCacheGCS'
     | 'SaveCacheS3'
+    | 'Security'
     | 'ArtifactoryUpload'
     | 'GCSUpload'
     | 'S3Upload'
@@ -9798,6 +9919,7 @@ export interface GetActivitiesSummaryQueryParams {
     | 'JiraApproval'
     | 'HarnessApproval'
     | 'Barrier'
+    | 'FlagConfiguration'
     | 'ShellScript'
     | 'K8sCanaryDeploy'
     | 'Connectors'
@@ -9832,6 +9954,7 @@ export interface GetActivitiesSummaryQueryParams {
     | 'RestoreCacheS3'
     | 'SaveCacheGCS'
     | 'SaveCacheS3'
+    | 'Security'
     | 'ArtifactoryUpload'
     | 'GCSUpload'
     | 'S3Upload'
@@ -10779,6 +10902,82 @@ export const updateApiKeyPromise = (
     signal
   )
 
+export interface GetArtifactsBuildsDetailsForArtifactoryQueryParams {
+  connectorRef: string
+  repositoryName: string
+  filePath?: string
+  maxVersions: number
+  accountIdentifier: string
+  orgIdentifier: string
+  projectIdentifier: string
+}
+
+export type GetArtifactsBuildsDetailsForArtifactoryProps = Omit<
+  GetProps<
+    ResponseListArtifactoryArtifactBuildDetailsDTO,
+    Failure | Error,
+    GetArtifactsBuildsDetailsForArtifactoryQueryParams,
+    void
+  >,
+  'path'
+>
+
+/**
+ * Gets artifacts builds details
+ */
+export const GetArtifactsBuildsDetailsForArtifactory = (props: GetArtifactsBuildsDetailsForArtifactoryProps) => (
+  <Get<
+    ResponseListArtifactoryArtifactBuildDetailsDTO,
+    Failure | Error,
+    GetArtifactsBuildsDetailsForArtifactoryQueryParams,
+    void
+  >
+    path={`/artifacts/artifactory/artifactBuildsDetails`}
+    base={getConfig('ng/api')}
+    {...props}
+  />
+)
+
+export type UseGetArtifactsBuildsDetailsForArtifactoryProps = Omit<
+  UseGetProps<
+    ResponseListArtifactoryArtifactBuildDetailsDTO,
+    Failure | Error,
+    GetArtifactsBuildsDetailsForArtifactoryQueryParams,
+    void
+  >,
+  'path'
+>
+
+/**
+ * Gets artifacts builds details
+ */
+export const useGetArtifactsBuildsDetailsForArtifactory = (props: UseGetArtifactsBuildsDetailsForArtifactoryProps) =>
+  useGet<
+    ResponseListArtifactoryArtifactBuildDetailsDTO,
+    Failure | Error,
+    GetArtifactsBuildsDetailsForArtifactoryQueryParams,
+    void
+  >(`/artifacts/artifactory/artifactBuildsDetails`, { base: getConfig('ng/api'), ...props })
+
+/**
+ * Gets artifacts builds details
+ */
+export const getArtifactsBuildsDetailsForArtifactoryPromise = (
+  props: GetUsingFetchProps<
+    ResponseListArtifactoryArtifactBuildDetailsDTO,
+    Failure | Error,
+    GetArtifactsBuildsDetailsForArtifactoryQueryParams,
+    void
+  >,
+  signal?: RequestInit['signal']
+) =>
+  getUsingFetch<
+    ResponseListArtifactoryArtifactBuildDetailsDTO,
+    Failure | Error,
+    GetArtifactsBuildsDetailsForArtifactoryQueryParams,
+    void
+  >(getConfig('ng/api'), `/artifacts/artifactory/artifactBuildsDetails`, props, signal)
+
 export interface GetBuildDetailsForArtifactoryArtifactQueryParams {
   repository?: string
   imagePath?: string
@@ -11022,6 +11221,68 @@ export const getLastSuccessfulBuildForArtifactoryArtifactPromise = (
     ArtifactoryRequestDTO,
     void
   >('POST', getConfig('ng/api'), `/artifacts/artifactory/getLastSuccessfulBuild`, props, signal)
+
+export interface GetRepositoriesDetailsForArtifactoryQueryParams {
+  connectorRef: string
+  repositoryType?: string
+  accountIdentifier: string
+  orgIdentifier: string
+  projectIdentifier: string
+}
+
+export type GetRepositoriesDetailsForArtifactoryProps = Omit<
+  GetProps<ResponseArtifactoryRepoDetailsDTO, Failure | Error, GetRepositoriesDetailsForArtifactoryQueryParams, void>,
+  'path'
+>
+
+/**
+ * Gets repository details
+ */
+export const GetRepositoriesDetailsForArtifactory = (props: GetRepositoriesDetailsForArtifactoryProps) => (
+  <Get<ResponseArtifactoryRepoDetailsDTO, Failure | Error, GetRepositoriesDetailsForArtifactoryQueryParams, void>
+    path={`/artifacts/artifactory/repositoriesDetails`}
+    base={getConfig('ng/api')}
+    {...props}
+  />
+)
+
+export type UseGetRepositoriesDetailsForArtifactoryProps = Omit<
+  UseGetProps<
+    ResponseArtifactoryRepoDetailsDTO,
+    Failure | Error,
+    GetRepositoriesDetailsForArtifactoryQueryParams,
+    void
+  >,
+  'path'
+>
+
+/**
+ * Gets repository details
+ */
+export const useGetRepositoriesDetailsForArtifactory = (props: UseGetRepositoriesDetailsForArtifactoryProps) =>
+  useGet<ResponseArtifactoryRepoDetailsDTO, Failure | Error, GetRepositoriesDetailsForArtifactoryQueryParams, void>(
+    `/artifacts/artifactory/repositoriesDetails`,
+    { base: getConfig('ng/api'), ...props }
+  )
+
+/**
+ * Gets repository details
+ */
+export const getRepositoriesDetailsForArtifactoryPromise = (
+  props: GetUsingFetchProps<
+    ResponseArtifactoryRepoDetailsDTO,
+    Failure | Error,
+    GetRepositoriesDetailsForArtifactoryQueryParams,
+    void
+  >,
+  signal?: RequestInit['signal']
+) =>
+  getUsingFetch<
+    ResponseArtifactoryRepoDetailsDTO,
+    Failure | Error,
+    GetRepositoriesDetailsForArtifactoryQueryParams,
+    void
+  >(getConfig('ng/api'), `/artifacts/artifactory/repositoriesDetails`, props, signal)
 
 export interface ValidateArtifactServerForArtifactoryQueryParams {
   connectorRef?: string
@@ -16006,6 +16267,138 @@ export const updateSelectorsNgPromise = (
     UpdateSelectorsNgPathParams
   >('PUT', getConfig('ng/api'), `/delegate-profiles/ng/${delegateProfileId}/selectors`, props, signal)
 
+export interface GetDelegateTokensQueryParams {
+  accountIdentifier: string
+  orgIdentifier?: string
+  projectIdentifier?: string
+  status?: 'ACTIVE' | 'REVOKED'
+}
+
+export type GetDelegateTokensProps = Omit<
+  GetProps<RestResponseListDelegateTokenDetails, unknown, GetDelegateTokensQueryParams, void>,
+  'path'
+>
+
+export const GetDelegateTokens = (props: GetDelegateTokensProps) => (
+  <Get<RestResponseListDelegateTokenDetails, unknown, GetDelegateTokensQueryParams, void>
+    path={`/delegate-token-ng`}
+    base={getConfig('ng/api')}
+    {...props}
+  />
+)
+
+export type UseGetDelegateTokensProps = Omit<
+  UseGetProps<RestResponseListDelegateTokenDetails, unknown, GetDelegateTokensQueryParams, void>,
+  'path'
+>
+
+export const useGetDelegateTokens = (props: UseGetDelegateTokensProps) =>
+  useGet<RestResponseListDelegateTokenDetails, unknown, GetDelegateTokensQueryParams, void>(`/delegate-token-ng`, {
+    base: getConfig('ng/api'),
+    ...props
+  })
+
+export const getDelegateTokensPromise = (
+  props: GetUsingFetchProps<RestResponseListDelegateTokenDetails, unknown, GetDelegateTokensQueryParams, void>,
+  signal?: RequestInit['signal']
+) =>
+  getUsingFetch<RestResponseListDelegateTokenDetails, unknown, GetDelegateTokensQueryParams, void>(
+    getConfig('ng/api'),
+    `/delegate-token-ng`,
+    props,
+    signal
+  )
+
+export interface CreateDelegateTokenQueryParams {
+  accountIdentifier: string
+  orgIdentifier?: string
+  projectIdentifier?: string
+  tokenName: string
+}
+
+export type CreateDelegateTokenProps = Omit<
+  MutateProps<RestResponseDelegateTokenDetails, unknown, CreateDelegateTokenQueryParams, void, void>,
+  'path' | 'verb'
+>
+
+export const CreateDelegateToken = (props: CreateDelegateTokenProps) => (
+  <Mutate<RestResponseDelegateTokenDetails, unknown, CreateDelegateTokenQueryParams, void, void>
+    verb="POST"
+    path={`/delegate-token-ng`}
+    base={getConfig('ng/api')}
+    {...props}
+  />
+)
+
+export type UseCreateDelegateTokenProps = Omit<
+  UseMutateProps<RestResponseDelegateTokenDetails, unknown, CreateDelegateTokenQueryParams, void, void>,
+  'path' | 'verb'
+>
+
+export const useCreateDelegateToken = (props: UseCreateDelegateTokenProps) =>
+  useMutate<RestResponseDelegateTokenDetails, unknown, CreateDelegateTokenQueryParams, void, void>(
+    'POST',
+    `/delegate-token-ng`,
+    { base: getConfig('ng/api'), ...props }
+  )
+
+export const createDelegateTokenPromise = (
+  props: MutateUsingFetchProps<RestResponseDelegateTokenDetails, unknown, CreateDelegateTokenQueryParams, void, void>,
+  signal?: RequestInit['signal']
+) =>
+  mutateUsingFetch<RestResponseDelegateTokenDetails, unknown, CreateDelegateTokenQueryParams, void, void>(
+    'POST',
+    getConfig('ng/api'),
+    `/delegate-token-ng`,
+    props,
+    signal
+  )
+
+export interface RevokeDelegateTokenQueryParams {
+  accountIdentifier: string
+  orgIdentifier?: string
+  projectIdentifier?: string
+  tokenName: string
+}
+
+export type RevokeDelegateTokenProps = Omit<
+  MutateProps<RestResponseDelegateTokenDetails, unknown, RevokeDelegateTokenQueryParams, void, void>,
+  'path' | 'verb'
+>
+
+export const RevokeDelegateToken = (props: RevokeDelegateTokenProps) => (
+  <Mutate<RestResponseDelegateTokenDetails, unknown, RevokeDelegateTokenQueryParams, void, void>
+    verb="PUT"
+    path={`/delegate-token-ng`}
+    base={getConfig('ng/api')}
+    {...props}
+  />
+)
+
+export type UseRevokeDelegateTokenProps = Omit<
+  UseMutateProps<RestResponseDelegateTokenDetails, unknown, RevokeDelegateTokenQueryParams, void, void>,
+  'path' | 'verb'
+>
+
+export const useRevokeDelegateToken = (props: UseRevokeDelegateTokenProps) =>
+  useMutate<RestResponseDelegateTokenDetails, unknown, RevokeDelegateTokenQueryParams, void, void>(
+    'PUT',
+    `/delegate-token-ng`,
+    { base: getConfig('ng/api'), ...props }
+  )
+
+export const revokeDelegateTokenPromise = (
+  props: MutateUsingFetchProps<RestResponseDelegateTokenDetails, unknown, RevokeDelegateTokenQueryParams, void, void>,
+  signal?: RequestInit['signal']
+) =>
+  mutateUsingFetch<RestResponseDelegateTokenDetails, unknown, RevokeDelegateTokenQueryParams, void, void>(
+    'PUT',
+    getConfig('ng/api'),
+    `/delegate-token-ng`,
+    props,
+    signal
+  )
+
 export interface GetFeatureRestrictionDetailQueryParams {
   accountIdentifier: string
 }
@@ -16329,6 +16722,7 @@ export interface FetchFeatureRestrictionMetadataPathParams {
     | 'TERRAFORM_DESTROY'
     | 'TERRAFORM_ROLLBACK'
     | 'INTEGRATED_APPROVALS_WITH_SERVICE_NOW'
+    | 'SECURITY'
     | 'DEVELOPERS'
     | 'MONTHLY_ACTIVE_USERS'
 }
@@ -16451,6 +16845,7 @@ export const fetchFeatureRestrictionMetadataPromise = (
       | 'TERRAFORM_DESTROY'
       | 'TERRAFORM_ROLLBACK'
       | 'INTEGRATED_APPROVALS_WITH_SERVICE_NOW'
+      | 'SECURITY'
       | 'DEVELOPERS'
       | 'MONTHLY_ACTIVE_USERS'
   },
@@ -16480,6 +16875,7 @@ export interface ListReferredByEntitiesQueryParams {
     | 'JiraApproval'
     | 'HarnessApproval'
     | 'Barrier'
+    | 'FlagConfiguration'
     | 'ShellScript'
     | 'K8sCanaryDeploy'
     | 'Connectors'
@@ -16514,6 +16910,7 @@ export interface ListReferredByEntitiesQueryParams {
     | 'RestoreCacheS3'
     | 'SaveCacheGCS'
     | 'SaveCacheS3'
+    | 'Security'
     | 'ArtifactoryUpload'
     | 'GCSUpload'
     | 'S3Upload'
@@ -18808,6 +19205,7 @@ export interface ListGitSyncEntitiesByTypePathParams {
     | 'JiraApproval'
     | 'HarnessApproval'
     | 'Barrier'
+    | 'FlagConfiguration'
     | 'ShellScript'
     | 'K8sCanaryDeploy'
     | 'Connectors'
@@ -18842,6 +19240,7 @@ export interface ListGitSyncEntitiesByTypePathParams {
     | 'RestoreCacheS3'
     | 'SaveCacheGCS'
     | 'SaveCacheS3'
+    | 'Security'
     | 'ArtifactoryUpload'
     | 'GCSUpload'
     | 'S3Upload'
@@ -18926,6 +19325,7 @@ export const listGitSyncEntitiesByTypePromise = (
       | 'JiraApproval'
       | 'HarnessApproval'
       | 'Barrier'
+      | 'FlagConfiguration'
       | 'ShellScript'
       | 'K8sCanaryDeploy'
       | 'Connectors'
@@ -18960,6 +19360,7 @@ export const listGitSyncEntitiesByTypePromise = (
       | 'RestoreCacheS3'
       | 'SaveCacheGCS'
       | 'SaveCacheS3'
+      | 'Security'
       | 'ArtifactoryUpload'
       | 'GCSUpload'
       | 'S3Upload'
@@ -22192,6 +22593,7 @@ export interface GetStepYamlSchemaQueryParams {
     | 'JiraApproval'
     | 'HarnessApproval'
     | 'Barrier'
+    | 'FlagConfiguration'
     | 'ShellScript'
     | 'K8sCanaryDeploy'
     | 'Connectors'
@@ -22226,6 +22628,7 @@ export interface GetStepYamlSchemaQueryParams {
     | 'RestoreCacheS3'
     | 'SaveCacheGCS'
     | 'SaveCacheS3'
+    | 'Security'
     | 'ArtifactoryUpload'
     | 'GCSUpload'
     | 'S3Upload'
@@ -22718,7 +23121,7 @@ export type ProcessPollingResultNgProps = Omit<
     void,
     Failure | Error,
     ProcessPollingResultNgQueryParams,
-    SubscribeBodyRequestBody,
+    ProcessPollingResultNgBodyRequestBody,
     ProcessPollingResultNgPathParams
   >,
   'path' | 'verb'
@@ -22730,7 +23133,7 @@ export const ProcessPollingResultNg = ({ perpetualTaskId, ...props }: ProcessPol
     void,
     Failure | Error,
     ProcessPollingResultNgQueryParams,
-    SubscribeBodyRequestBody,
+    ProcessPollingResultNgBodyRequestBody,
     ProcessPollingResultNgPathParams
   >
     verb="POST"
@@ -22745,7 +23148,7 @@ export type UseProcessPollingResultNgProps = Omit<
     void,
     Failure | Error,
     ProcessPollingResultNgQueryParams,
-    SubscribeBodyRequestBody,
+    ProcessPollingResultNgBodyRequestBody,
     ProcessPollingResultNgPathParams
   >,
   'path' | 'verb'
@@ -22757,7 +23160,7 @@ export const useProcessPollingResultNg = ({ perpetualTaskId, ...props }: UseProc
     void,
     Failure | Error,
     ProcessPollingResultNgQueryParams,
-    SubscribeBodyRequestBody,
+    ProcessPollingResultNgBodyRequestBody,
     ProcessPollingResultNgPathParams
   >(
     'POST',
@@ -22773,7 +23176,7 @@ export const processPollingResultNgPromise = (
     void,
     Failure | Error,
     ProcessPollingResultNgQueryParams,
-    SubscribeBodyRequestBody,
+    ProcessPollingResultNgBodyRequestBody,
     ProcessPollingResultNgPathParams
   > & { perpetualTaskId: string },
   signal?: RequestInit['signal']
@@ -22782,17 +23185,17 @@ export const processPollingResultNgPromise = (
     void,
     Failure | Error,
     ProcessPollingResultNgQueryParams,
-    SubscribeBodyRequestBody,
+    ProcessPollingResultNgBodyRequestBody,
     ProcessPollingResultNgPathParams
   >('POST', getConfig('ng/api'), `/polling/delegate-response/${perpetualTaskId}`, props, signal)
 
 export type SubscribeProps = Omit<
-  MutateProps<ResponsePollingResponseDTO, Failure | Error, void, SubscribeBodyRequestBody, void>,
+  MutateProps<ResponsePollingResponseDTO, Failure | Error, void, ProcessPollingResultNgBodyRequestBody, void>,
   'path' | 'verb'
 >
 
 export const Subscribe = (props: SubscribeProps) => (
-  <Mutate<ResponsePollingResponseDTO, Failure | Error, void, SubscribeBodyRequestBody, void>
+  <Mutate<ResponsePollingResponseDTO, Failure | Error, void, ProcessPollingResultNgBodyRequestBody, void>
     verb="POST"
     path={`/polling/subscribe`}
     base={getConfig('ng/api')}
@@ -22801,22 +23204,28 @@ export const Subscribe = (props: SubscribeProps) => (
 )
 
 export type UseSubscribeProps = Omit<
-  UseMutateProps<ResponsePollingResponseDTO, Failure | Error, void, SubscribeBodyRequestBody, void>,
+  UseMutateProps<ResponsePollingResponseDTO, Failure | Error, void, ProcessPollingResultNgBodyRequestBody, void>,
   'path' | 'verb'
 >
 
 export const useSubscribe = (props: UseSubscribeProps) =>
-  useMutate<ResponsePollingResponseDTO, Failure | Error, void, SubscribeBodyRequestBody, void>(
+  useMutate<ResponsePollingResponseDTO, Failure | Error, void, ProcessPollingResultNgBodyRequestBody, void>(
     'POST',
     `/polling/subscribe`,
     { base: getConfig('ng/api'), ...props }
   )
 
 export const subscribePromise = (
-  props: MutateUsingFetchProps<ResponsePollingResponseDTO, Failure | Error, void, SubscribeBodyRequestBody, void>,
+  props: MutateUsingFetchProps<
+    ResponsePollingResponseDTO,
+    Failure | Error,
+    void,
+    ProcessPollingResultNgBodyRequestBody,
+    void
+  >,
   signal?: RequestInit['signal']
 ) =>
-  mutateUsingFetch<ResponsePollingResponseDTO, Failure | Error, void, SubscribeBodyRequestBody, void>(
+  mutateUsingFetch<ResponsePollingResponseDTO, Failure | Error, void, ProcessPollingResultNgBodyRequestBody, void>(
     'POST',
     getConfig('ng/api'),
     `/polling/subscribe`,
@@ -22825,12 +23234,12 @@ export const subscribePromise = (
   )
 
 export type UnsubscribeProps = Omit<
-  MutateProps<boolean, Failure | Error, void, SubscribeBodyRequestBody, void>,
+  MutateProps<boolean, Failure | Error, void, ProcessPollingResultNgBodyRequestBody, void>,
   'path' | 'verb'
 >
 
 export const Unsubscribe = (props: UnsubscribeProps) => (
-  <Mutate<boolean, Failure | Error, void, SubscribeBodyRequestBody, void>
+  <Mutate<boolean, Failure | Error, void, ProcessPollingResultNgBodyRequestBody, void>
     verb="POST"
     path={`/polling/unsubscribe`}
     base={getConfig('ng/api')}
@@ -22839,21 +23248,22 @@ export const Unsubscribe = (props: UnsubscribeProps) => (
 )
 
 export type UseUnsubscribeProps = Omit<
-  UseMutateProps<boolean, Failure | Error, void, SubscribeBodyRequestBody, void>,
+  UseMutateProps<boolean, Failure | Error, void, ProcessPollingResultNgBodyRequestBody, void>,
   'path' | 'verb'
 >
 
 export const useUnsubscribe = (props: UseUnsubscribeProps) =>
-  useMutate<boolean, Failure | Error, void, SubscribeBodyRequestBody, void>('POST', `/polling/unsubscribe`, {
-    base: getConfig('ng/api'),
-    ...props
-  })
+  useMutate<boolean, Failure | Error, void, ProcessPollingResultNgBodyRequestBody, void>(
+    'POST',
+    `/polling/unsubscribe`,
+    { base: getConfig('ng/api'), ...props }
+  )
 
 export const unsubscribePromise = (
-  props: MutateUsingFetchProps<boolean, Failure | Error, void, SubscribeBodyRequestBody, void>,
+  props: MutateUsingFetchProps<boolean, Failure | Error, void, ProcessPollingResultNgBodyRequestBody, void>,
   signal?: RequestInit['signal']
 ) =>
-  mutateUsingFetch<boolean, Failure | Error, void, SubscribeBodyRequestBody, void>(
+  mutateUsingFetch<boolean, Failure | Error, void, ProcessPollingResultNgBodyRequestBody, void>(
     'POST',
     getConfig('ng/api'),
     `/polling/unsubscribe`,
@@ -31016,6 +31426,7 @@ export interface GetYamlSchemaQueryParams {
     | 'JiraApproval'
     | 'HarnessApproval'
     | 'Barrier'
+    | 'FlagConfiguration'
     | 'ShellScript'
     | 'K8sCanaryDeploy'
     | 'Connectors'
@@ -31050,6 +31461,7 @@ export interface GetYamlSchemaQueryParams {
     | 'RestoreCacheS3'
     | 'SaveCacheGCS'
     | 'SaveCacheS3'
+    | 'Security'
     | 'ArtifactoryUpload'
     | 'GCSUpload'
     | 'S3Upload'

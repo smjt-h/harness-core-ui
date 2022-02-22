@@ -17,7 +17,7 @@ import { Classes } from '@blueprintjs/core'
 import { useStrings } from 'framework/strings'
 import { VariationWithIcon } from '@cf/components/VariationWithIcon/VariationWithIcon'
 import { CFVariationColors } from '@cf/constants'
-import { Feature, FeatureEvaluation, useGetFeatureEvaluations } from 'services/cf'
+import { Feature, FeatureEvaluation, GetFeatureEvaluationsQueryParams, useGetFeatureEvaluations } from 'services/cf'
 import { formatDate, formatNumber, getErrorMessage } from '@cf/utils/CFUtils'
 import useActiveEnvironment from '@cf/hooks/useActiveEnvironment'
 import { EvaluationsChart } from './EvaluationsChart'
@@ -43,20 +43,21 @@ const _formatDateWithoutYear = (date: number): string => {
 
 export const TabEvaluations: React.FC<TabEvaluationsProps> = ({ flagData, startDate, endDate }) => {
   const { getString } = useStrings()
-  const { accountId: account, orgIdentifier: org, projectIdentifier: project } = useParams<Record<string, string>>()
+  const { accountId: accountIdentifier, orgIdentifier, projectIdentifier } = useParams<Record<string, string>>()
   const { activeEnvironment: environmentIdentifier } = useActiveEnvironment()
 
-  const queryParams = useMemo(
+  const queryParams = useMemo<GetFeatureEvaluationsQueryParams>(
     () => ({
-      account,
-      accountIdentifier: account,
-      org,
-      project,
-      environment: environmentIdentifier,
+      accountIdentifier,
+      org: orgIdentifier,
+      orgIdentifier,
+      project: projectIdentifier,
+      projectIdentifier,
+      environmentIdentifier,
       startTime: startDate.getTime(),
       endTime: endDate.getTime()
     }),
-    [startDate, endDate, account, org, project, environmentIdentifier]
+    [startDate, endDate, accountIdentifier, orgIdentifier, projectIdentifier, environmentIdentifier]
   )
   const { data, loading, error, refetch } = useGetFeatureEvaluations({
     identifier: flagData.identifier,

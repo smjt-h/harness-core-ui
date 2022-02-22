@@ -37,3 +37,4 @@ src/modules/72-templates-library @harness/ui-pipeline
 src/modules/75-cd @harness/ui-pipeline
 src/modules/85-cv @harness/ui-cv
 src/modules/75-ci @harness/ui-ci
+src/modules/72-triggers @harness/ui-ci

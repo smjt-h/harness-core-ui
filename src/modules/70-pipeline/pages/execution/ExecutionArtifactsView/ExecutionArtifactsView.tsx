@@ -110,7 +110,7 @@ export default function ExecutionArtifactsView(): React.ReactElement {
         <Container className={css.emptyArtifacts}>
           <img src={artifactsEmptyState} />
           <Text>
-            <String stringID="pipeline.triggers.artifactTriggerConfigPanel.noArtifacts" />
+            <String stringID="pipeline.artifactTriggerConfigPanel.noArtifacts" />
           </Text>
         </Container>
       )}

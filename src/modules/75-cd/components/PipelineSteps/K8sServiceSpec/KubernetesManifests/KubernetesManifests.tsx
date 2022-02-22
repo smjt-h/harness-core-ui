@@ -6,33 +6,20 @@
  */
 
 import React from 'react'
-import { get } from 'lodash-es'
+import { get, isEmpty } from 'lodash-es'
 import { useParams } from 'react-router-dom'
 import cx from 'classnames'
+import { Icon, Text } from '@harness/uicore'
+import { Tooltip } from '@blueprintjs/core'
 
-import { MultiTypeInputType } from '@harness/uicore'
 import { useStrings } from 'framework/strings'
-import type { ManifestConfigWrapper, ServiceSpec } from 'services/cd-ng'
 import manifestSourceBaseFactory from '@cd/factory/ManifestSourceFactory/ManifestSourceBaseFactory'
-import { StepViewType } from '@pipeline/components/AbstractSteps/Step'
 import type { GitQueryParams, InputSetPathProps, PipelineType } from '@common/interfaces/RouteInterfaces'
 import { useQueryParams } from '@common/hooks'
-
-import type { K8SDirectServiceStep } from '../K8sServiceSpecInterface'
+import type { ManifestConfig } from 'services/cd-ng'
+import type { KubernetesManifestsProps } from '../K8sServiceSpecInterface'
+import { getNonRuntimeFields, isRuntimeMode } from '../K8sServiceSpecHelper'
 import css from './KubernetesManifests.module.scss'
-
-export interface KubernetesManifestsProps {
-  template?: ServiceSpec
-  path?: string
-  stepViewType?: StepViewType
-  manifests?: ManifestConfigWrapper[]
-  initialValues: K8SDirectServiceStep
-  readonly: boolean
-  stageIdentifier: string
-  formik?: any
-  expressions?: string[]
-  fromTrigger?: boolean
-}
 
 export function KubernetesManifests(props: KubernetesManifestsProps): React.ReactElement {
   const { getString } = useStrings()
@@ -40,8 +27,8 @@ export function KubernetesManifests(props: KubernetesManifestsProps): React.Reac
     PipelineType<InputSetPathProps> & { accountId: string }
   >()
   const { repoIdentifier, branch } = useQueryParams<GitQueryParams>()
-  const allowableTypes = [MultiTypeInputType.FIXED, MultiTypeInputType.EXPRESSION]
-  const runtimeMode = props.stepViewType === StepViewType.InputSet || props.stepViewType === StepViewType.DeploymentForm
+
+  const runtimeMode = isRuntimeMode(props.stepViewType)
   const isManifestsRuntime = runtimeMode && !!get(props.template, 'manifests', false)
   return (
     <div className={cx(css.nopadLeft, css.accordionSummary)} id={`Stage.${props.stageIdentifier}.Service.Manifests`}>
@@ -50,29 +37,49 @@ export function KubernetesManifests(props: KubernetesManifestsProps): React.Reac
           {getString('pipelineSteps.deploy.serviceSpecifications.deploymentTypes.manifests')}
         </div>
       )}
+      {props.template.manifests?.map(({ manifest }, index) => {
+        if (!manifest || !props.manifests?.length) {
+          return null
+        }
 
-      {props.template?.manifests
-        ?.filter(m => !!m)
-        ?.map?.(manifestData => {
-          const manifestSource = manifestSourceBaseFactory.getManifestSource(manifestData.manifest?.type as string)
+        const manifestPath = `manifests[${index}].manifest`
+        const manifestSource = manifestSourceBaseFactory.getManifestSource(manifest.type)
+        const manifestDefaultValue = props.manifests.find(
+          manifestData => manifestData?.manifest?.identifier === manifest.identifier
+        )?.manifest as ManifestConfig
 
-          return manifestSource ? (
-            <>
-              {manifestSource.renderContent({
+        return (
+          <div key={manifest.identifier}>
+            <Text className={css.inputheader} margin={{ top: 'medium', bottom: 'small' }}>
+              {!props.fromTrigger && get(manifest, 'identifier', '')}
+              {!isEmpty(
+                JSON.parse(getNonRuntimeFields(manifestDefaultValue?.spec, get(props.template, `${manifestPath}.spec`)))
+              ) && (
+                <Tooltip
+                  position="top"
+                  className={css.manifestInfoTooltip}
+                  content={getNonRuntimeFields(manifestDefaultValue?.spec, get(props.template, `${manifestPath}.spec`))}
+                >
+                  <Icon name="info" />
+                </Tooltip>
+              )}
+            </Text>
+            {manifestSource &&
+              manifestSource.renderContent({
                 ...props,
                 isManifestsRuntime,
-                getString,
                 projectIdentifier,
                 orgIdentifier,
                 accountId,
                 pipelineIdentifier,
                 repoIdentifier,
                 branch,
-                allowableTypes
+                manifestPath,
+                manifest: manifestDefaultValue
               })}
-            </>
-          ) : null
-        })}
+          </div>
+        )
+      })}
     </div>
   )
 }

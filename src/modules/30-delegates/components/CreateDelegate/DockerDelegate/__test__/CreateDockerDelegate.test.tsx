@@ -16,9 +16,6 @@ const featureFlags = {
 
 const onBack = jest.fn()
 jest.mock('services/portal', () => ({
-  useCreateDelegateToken: jest.fn().mockImplementation(() => ({
-    mutate: jest.fn().mockImplementation(() => undefined)
-  })),
   useGetDelegateSizes: jest.fn().mockImplementation(() => {
     return {
       data: [
@@ -40,7 +37,13 @@ jest.mock('services/portal', () => ({
         resource: {}
       }))
     }
-  }),
+  })
+}))
+
+jest.mock('services/cd-ng', () => ({
+  useCreateDelegateToken: jest.fn().mockImplementation(() => ({
+    mutate: jest.fn().mockImplementation(() => undefined)
+  })),
   useGetDelegateTokens: jest.fn().mockImplementation(() => ({
     mutate: jest.fn().mockImplementation(() => ({
       resource: []

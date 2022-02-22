@@ -49,7 +49,7 @@ exports[`DetailPageCard tests Render custom content type 1`] = `
           class="StyledProps--font StyledProps--main"
           style="font-size: 12px;"
         >
-          pipeline.triggers.pipelineExecutionInput
+          triggers.pipelineExecutionInput
         </p>
         <pre>
           code
@@ -116,7 +116,7 @@ exports[`DetailPageCard tests Render text content type 1`] = `
             class="StyledProps--font StyledProps--main"
             style="font-size: 12px;"
           >
-            pipeline.triggers.triggerConfigurationPanel.triggerName
+            triggers.triggerConfigurationPanel.triggerName
           </p>
           <p
             class="StyledProps--font Text--lineclamp StyledProps--main StyledProps--color StyledProps--color-black"

@@ -31,7 +31,7 @@ import { SegmentRow } from './SegmentRow'
 import { NoDataFoundRow } from '../NoDataFoundRow/NoDataFoundRow'
 
 export interface SelectSegmentsModalButtonProps extends Omit<ButtonProps, 'onClick' | 'onSubmit'> {
-  accountId: string
+  accountIdentifier: string
   orgIdentifier: string
   projectIdentifier: string
   environmentIdentifier: string
@@ -45,7 +45,7 @@ export interface SelectSegmentsModalButtonProps extends Omit<ButtonProps, 'onCli
 }
 
 export const SelectSegmentsModalButton: React.FC<SelectSegmentsModalButtonProps> = ({
-  accountId,
+  accountIdentifier,
   orgIdentifier,
   projectIdentifier,
   environmentIdentifier,
@@ -65,11 +65,10 @@ export const SelectSegmentsModalButton: React.FC<SelectSegmentsModalButtonProps>
     const [pageNumber, setPageNumber] = useState(0)
     const queryParams = useMemo(
       () => ({
-        account: accountId,
-        accountIdentifier: accountId,
-        org: orgIdentifier,
-        project: projectIdentifier,
-        environment: environmentIdentifier,
+        accountIdentifier,
+        orgIdentifier,
+        projectIdentifier,
+        environmentIdentifier,
         segmentName: queryString,
         sortOrder,
         sortByField,

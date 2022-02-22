@@ -15,24 +15,20 @@ import targetToSelectOption from '@cf/utils/targetToSelectOption'
 import css from './TargetSelect.module.scss'
 
 export interface TargetSelectProps {
-  environment: string
+  environmentIdentifier: string
   fieldName: string
   label: ReactNode
 }
 
-const TargetSelect: FC<TargetSelectProps> = ({ environment, fieldName, label }) => {
+const TargetSelect: FC<TargetSelectProps> = ({ environmentIdentifier, fieldName, label }) => {
   const { getString } = useStrings()
-  const {
-    accountId: accountIdentifier,
-    orgIdentifier: org,
-    projectIdentifier: project
-  } = useParams<Record<string, string>>()
+  const { accountId: accountIdentifier, orgIdentifier, projectIdentifier } = useParams<Record<string, string>>()
 
   const queryParams: UseGetAllTargetsProps['queryParams'] = {
-    environment,
+    environmentIdentifier,
     accountIdentifier,
-    org,
-    project,
+    orgIdentifier,
+    projectIdentifier,
     pageSize: 100,
     sortByField: 'name'
   }

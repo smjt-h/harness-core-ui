@@ -32,6 +32,7 @@ describe('getFailureStrategiesValidationSchema tests', () => {
         "{
           0: {
             onFailure: {
+              errors: \\"pipeline.failureStrategies.validation.errorsRequired\\",
               action: {
                 type: \\"pipeline.failureStrategies.validation.actionRequired\\"
               }
@@ -52,6 +53,7 @@ describe('getFailureStrategiesValidationSchema tests', () => {
         "{
           0: {
             onFailure: {
+              errors: \\"pipeline.failureStrategies.validation.errorsRequired\\",
               action: {
                 type: \\"pipeline.failureStrategies.validation.actionRequired\\"
               }
@@ -73,8 +75,10 @@ describe('getFailureStrategiesValidationSchema tests', () => {
         "{
           0: {
             onFailure: {
+              errors: \\"pipeline.failureStrategies.validation.errorsRequired\\",
               action: {
                 spec: {
+                  timeout: \\"pipeline.failureStrategies.validation.timeoutRequired\\",
                   onTimeout: {
                     action: {
                       type: \\"pipeline.failureStrategies.validation.onTimeoutRequired\\"
@@ -100,8 +104,11 @@ describe('getFailureStrategiesValidationSchema tests', () => {
         "{
           0: {
             onFailure: {
+              errors: \\"pipeline.failureStrategies.validation.errorsRequired\\",
               action: {
                 spec: {
+                  retryCount: \\"pipeline.failureStrategies.validation.retryCountRequired\\",
+                  retryIntervals: \\"pipeline.failureStrategies.validation.retryIntervalRequired\\",
                   onRetryFailure: {
                     action: {
                       type: \\"pipeline.failureStrategies.validation.onRetryFailureRequired\\"

@@ -12,8 +12,10 @@ import { SetupSourceTabsContext } from '@cv/components/CVSetupSourcesView/SetupS
 import MetricsDashboardList from '@cv/components/MetricsDashboardList/MetricsDashboardList'
 import type { TableDashboardItem } from '@cv/components/MetricsDashboardList/MetricsDashboardList.type'
 import { mapDatadogMetricHealthSourceToDatadogMetricSetupSource } from '@cv/pages/health-source/connectors/DatadogMetricsHealthSource/DatadogMetricsHealthSource.utils'
+import { useStrings } from 'framework/strings'
 
 export function SelectDatadogMetricsDashboards(): JSX.Element {
+  const { getString } = useStrings()
   const { sourceData } = useContext(SetupSourceTabsContext)
   const dashboardItemMapper: (dashboard: DatadogDashboardDTO) => TableDashboardItem = useCallback(dashboard => {
     return {
@@ -31,6 +33,7 @@ export function SelectDatadogMetricsDashboards(): JSX.Element {
   return (
     <MetricsDashboardList<DatadogDashboardDTO>
       manualQueryInputTitle={'cv.monitoringSources.datadog.manualInputQueryModal.modalTitle'}
+      noDataMessage={getString('cv.monitoringSources.datadog.selectDashboardsPage.noDataText')}
       dashboardsRequest={useGetDatadogDashboards({ lazy: true })}
       defaultItemIcon={'service-datadog'}
       tableTitle={'cv.monitoringSources.datadog.selectDashboardsPage.dashboardColumnName'}

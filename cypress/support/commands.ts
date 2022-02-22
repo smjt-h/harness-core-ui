@@ -55,6 +55,7 @@ declare global {
       mapMetricToServices(): void
       addingGroupName(name: string): void
       populateDefineHealthSource(connectorType: string, connectorName: string, healthSourceName: string): void
+      visitVerifyStepInPipeline(): void
     }
   }
 }
@@ -88,6 +89,14 @@ Cypress.Commands.add('visitCreatePipeline', () => {
 
 Cypress.Commands.add('fillName', (value: string) => {
   cy.fillField('name', value)
+})
+
+Cypress.Commands.add('visitVerifyStepInPipeline', () => {
+  cy.contains('p', 'Projects').click()
+  cy.contains('p', 'Project 1').click()
+  cy.contains('p', 'Delivery').click()
+  cy.contains('p', 'Pipelines').click()
+  cy.contains('span', 'Create a Pipeline').click()
 })
 
 // Change Intelligence commands

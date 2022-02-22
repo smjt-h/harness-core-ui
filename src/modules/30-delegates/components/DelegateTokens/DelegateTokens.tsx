@@ -28,7 +28,7 @@ import {
 
 import { PageSpinner } from '@common/components'
 
-import { useGetDelegateTokens, GetDelegateTokensQueryParams } from 'services/portal'
+import { useGetDelegateTokens, GetDelegateTokensQueryParams } from 'services/cd-ng'
 
 import { useStrings } from 'framework/strings'
 import type { DelegateTokenDetails } from 'services/portal'
@@ -60,7 +60,7 @@ export const DelegateListing: React.FC = () => {
     loading: showLoader
   } = useGetDelegateTokens({
     queryParams: {
-      accountId,
+      accountIdentifier: accountId,
       projectIdentifier,
       orgIdentifier,
       status: 'ACTIVE'
@@ -75,7 +75,7 @@ export const DelegateListing: React.FC = () => {
 
   const getTokens = () => {
     const queryParams = {
-      accountId,
+      accountIdentifier: accountId,
       projectIdentifier,
       orgIdentifier
     } as GetDelegateTokensQueryParams

@@ -5,7 +5,7 @@
  * https://polyformproject.org/wp-content/uploads/2020/06/PolyForm-Shield-1.0.0.txt.
  */
 
-import React, { useState, useEffect, useCallback, useRef } from 'react'
+import React, { useState, useEffect, useRef } from 'react'
 import cx from 'classnames'
 import {
   Container,
@@ -22,16 +22,18 @@ import {
   FontVariation,
   PageError,
   NoDataCard,
-  NoDataCardProps
+  NoDataCardProps,
+  PaginationProps
 } from '@harness/uicore'
 import { Classes } from '@blueprintjs/core'
 import { debounce, isEmpty } from 'lodash-es'
 import { useParams } from 'react-router-dom'
 import { Scope } from '@common/interfaces/SecretsInterface'
-import { useStrings } from 'framework/strings'
+import { useStrings, UseStringsReturn } from 'framework/strings'
 import type { StringKeys } from 'framework/strings'
 import { useAppStore } from 'framework/AppStore/AppStoreContext'
 import type { AccountPathProps } from '@common/interfaces/RouteInterfaces'
+import { CollapsableList } from '../CollapsableList/CollapsableList'
 import css from './EntityReference.module.scss'
 
 export interface ScopedObjectDTO {
@@ -57,6 +59,22 @@ export function getScopeFromValue(value: string): Scope {
   }
   return Scope.PROJECT
 }
+export function getScopeLabelfromScope(scope: Scope, getString: UseStringsReturn['getString']): string {
+  let label = ''
+  switch (scope) {
+    case Scope.ACCOUNT:
+      label += getString('account')
+      break
+    case Scope.PROJECT:
+      label += getString('projectLabel')
+      break
+    case Scope.ORG:
+      label += getString('orgLabel')
+      break
+    default:
+  }
+  return label
+}
 
 export function getIdentifierFromValue(value: string): string {
   const scope = getScopeFromValue(value)
@@ -74,8 +92,18 @@ export type EntityReferenceResponse<T> = {
 
 export interface EntityReferenceProps<T> {
   onSelect: (reference: T, scope: Scope) => void
-  fetchRecords: (scope: Scope, searchTerm: string, done: (records: EntityReferenceResponse<T>[]) => void) => void
+  fetchRecords: (
+    scope: Scope,
+    done: (records: EntityReferenceResponse<T>[]) => void,
+    searchTerm: string,
+    page: number
+  ) => void
   recordRender: (args: { item: EntityReferenceResponse<T>; selectedScope: Scope; selected?: boolean }) => JSX.Element
+  collapsedRecordRender?: (args: {
+    item: EntityReferenceResponse<T>
+    selectedScope: Scope
+    selected?: boolean
+  }) => JSX.Element
   recordClassName?: string
   className?: string
   projectIdentifier?: string
@@ -86,6 +114,9 @@ export interface EntityReferenceProps<T> {
   searchInlineComponent?: JSX.Element
   onCancel?: () => void
   renderTabSubHeading?: boolean
+  pagination: PaginationProps
+  disableCollapse?: boolean
+  input?: any
 }
 
 function getDefaultScope(orgIdentifier?: string, projectIdentifier?: string): Scope {
@@ -97,6 +128,16 @@ function getDefaultScope(orgIdentifier?: string, projectIdentifier?: string): Sc
   return Scope.ACCOUNT
 }
 
+const enum TAB_ID {
+  PROJECT = 'project',
+  ORGANIZATION = 'organization',
+  ACCOUNT = 'account'
+}
+
+function getDefaultTab(projectIdentifier: string | undefined, orgIdentifier: string | undefined) {
+  return projectIdentifier ? TAB_ID.PROJECT : orgIdentifier ? TAB_ID.ORGANIZATION : TAB_ID.ACCOUNT
+}
+
 export function EntityReference<T>(props: EntityReferenceProps<T>): JSX.Element {
   const { getString } = useStrings()
   const {
@@ -106,10 +147,12 @@ export function EntityReference<T>(props: EntityReferenceProps<T>): JSX.Element 
     fetchRecords,
     className = '',
     recordRender,
-    recordClassName = '',
+    collapsedRecordRender,
     searchInlineComponent,
     noDataCard,
-    renderTabSubHeading = false
+    renderTabSubHeading = false,
+    disableCollapse,
+    input
   } = props
   const [searchTerm, setSearchTerm] = useState<string>('')
   const [selectedScope, setSelectedScope] = useState<Scope>(
@@ -133,33 +176,63 @@ export function EntityReference<T>(props: EntityReferenceProps<T>): JSX.Element 
 
   const delayedFetchRecords = useRef(debounce((fn: () => void) => fn(), 300)).current
 
-  const fetchData = useCallback(() => {
+  const inputRef = useRef()
+  const firstUpdate = useRef(true)
+
+  const fetchData = (resetPageIndex: boolean, inputChange = false) => {
     try {
       setError(null)
-      if (!searchTerm) {
+      if (!searchTerm && !inputChange) {
         setLoading(true)
-        fetchRecords(selectedScope, searchTerm, records => {
-          setData(records)
-          setLoading(false)
-        })
+        fetchRecords(
+          selectedScope,
+          records => {
+            setData(records)
+            setLoading(false)
+          },
+          searchTerm,
+          props.pagination.pageIndex as number
+        )
       } else {
+        if (resetPageIndex && props.pagination.pageIndex !== 0) {
+          props.pagination.gotoPage?.(0)
+        }
+        const pageNo = resetPageIndex ? 0 : props.pagination.pageIndex
         delayedFetchRecords(() => {
           setLoading(true)
           setSelectedRecord(undefined)
-          fetchRecords(selectedScope, searchTerm, records => {
-            setData(records)
-            setLoading(false)
-          })
+          fetchRecords(
+            selectedScope,
+            records => {
+              setData(records)
+              setLoading(false)
+            },
+            searchTerm,
+            pageNo as number
+          )
         })
       }
     } catch (msg) {
       setError(msg)
     }
-  }, [selectedScope, delayedFetchRecords, searchTerm, searchInlineComponent])
+  }
 
   useEffect(() => {
-    fetchData()
-  }, [fetchData])
+    if (inputRef.current === input) {
+      fetchData(true)
+    } else {
+      fetchData(true, true)
+      inputRef.current = input
+    }
+  }, [selectedScope, delayedFetchRecords, searchTerm, input])
+
+  useEffect(() => {
+    if (firstUpdate.current) {
+      firstUpdate.current = false
+    } else {
+      fetchData(false)
+    }
+  }, [props.pagination.pageIndex])
 
   const onScopeChange = (scope: Scope): void => {
     setSelectedRecord(undefined)
@@ -167,44 +240,52 @@ export function EntityReference<T>(props: EntityReferenceProps<T>): JSX.Element 
   }
 
   const iconProps = {
-    size: 16
+    size: 14
   }
 
-  const enum TAB_ID {
-    PROJECT = 'project',
-    ORGANIZATION = 'organization',
-    ACCOUNT = 'account'
-  }
+  const defaultTab = getDefaultTab(projectIdentifier, orgIdentifier)
 
-  const defaultTab = projectIdentifier ? TAB_ID.PROJECT : orgIdentifier ? TAB_ID.ORGANIZATION : TAB_ID.ACCOUNT
-
-  const renderedList = loading ? (
-    <Container flex={{ align: 'center-center' }} padding="small">
-      <Icon name="spinner" size={24} color={Color.PRIMARY_7} />
-    </Container>
-  ) : error ? (
-    <Container>
-      <PageError message={error} onClick={fetchData} />
-    </Container>
-  ) : data.length ? (
-    <div className={cx(css.referenceList, { [css.referenceListOverflow]: data.length > 5 })}>
-      {data.map((item: EntityReferenceResponse<T>) => (
-        <div
-          key={item.identifier}
-          className={cx(css.listItem, recordClassName, {
-            [css.selectedItem]: selectedRecord === item.record
-          })}
-          onClick={() => setSelectedRecord(selectedRecord === item.record ? undefined : item.record)}
-        >
-          {recordRender({ item, selectedScope, selected: selectedRecord === item.record })}
+  const RenderList = () => {
+    return (
+      <Layout.Vertical spacing="large">
+        <div className={css.searchBox}>
+          <TextInput
+            wrapperClassName={css.search}
+            placeholder={getString('search')}
+            leftIcon="search"
+            value={searchTerm}
+            autoFocus
+            onChange={(e: React.ChangeEvent<HTMLInputElement>) => setSearchTerm(e.target.value)}
+          />
+          {searchInlineComponent}
         </div>
-      ))}
-    </div>
-  ) : (
-    <Container padding={{ top: 'xlarge' }} flex={{ align: 'center-center' }} className={css.noDataContainer}>
-      <NoDataCard {...noDataCard} containerClassName={css.noDataCardImg} />
-    </Container>
-  )
+        {loading ? (
+          <Container flex={{ align: 'center-center' }} padding="small">
+            <Icon name="spinner" size={24} color={Color.PRIMARY_7} />
+          </Container>
+        ) : error ? (
+          <Container>
+            <PageError message={error} onClick={() => fetchData(true)} />
+          </Container>
+        ) : data.length ? (
+          <CollapsableList<T>
+            selectedRecord={selectedRecord}
+            setSelectedRecord={setSelectedRecord}
+            data={data}
+            recordRender={recordRender}
+            collapsedRecordRender={collapsedRecordRender}
+            selectedScope={selectedScope}
+            pagination={props.pagination}
+            disableCollapse={disableCollapse}
+          />
+        ) : (
+          <Container padding={{ top: 'xlarge' }} flex={{ align: 'center-center' }} className={css.noDataContainer}>
+            <NoDataCard {...noDataCard} containerClassName={css.noDataCardImg} />
+          </Container>
+        )}
+      </Layout.Vertical>
+    )
+  }
 
   const renderTab = (
     show: boolean,
@@ -219,54 +300,49 @@ export function EntityReference<T>(props: EntityReferenceProps<T>): JSX.Element 
         id={id}
         title={
           <Layout.Horizontal
+            onClick={() => onScopeChange(scope)}
             flex={{ alignItems: 'center', justifyContent: 'flex-start' }}
-            padding={{ top: 'small', bottom: 'small' }}
           >
             <Icon name={icon} {...iconProps} className={css.tabIcon} />
-            <Layout.Vertical
-              onClick={() => onScopeChange(scope)}
-              padding={{ left: 'small' }}
-              className={css.tabTitleContainer}
-            >
-              <Text lineClamp={1} font={{ variation: FontVariation.H6, weight: 'light' }}>
-                {getString(title)}
+
+            <Text lineClamp={1} font={{ variation: FontVariation.H6, weight: 'light' }}>
+              {getString(title)}
+            </Text>
+            {renderTabSubHeading && tabDesc && (
+              <Text
+                lineClamp={1}
+                font={{ variation: FontVariation.FORM_LABEL, weight: 'light' }}
+                padding={{ left: 'xsmall' }}
+                className={css.tabValue}
+              >
+                {`[${tabDesc}]`}
               </Text>
-              {renderTabSubHeading && tabDesc && (
-                <Text lineClamp={1} font={{ variation: FontVariation.FORM_LABEL, weight: 'light' }}>
-                  {tabDesc}
-                </Text>
-              )}
-            </Layout.Vertical>
+            )}
           </Layout.Horizontal>
         }
-        panel={renderedList}
+        panel={RenderList()}
       />
     ) : null
   }
 
   return (
     <Container className={cx(css.container, className)}>
-      <Layout.Vertical spacing="medium">
-        <div className={css.searchBox}>
-          <TextInput
-            wrapperClassName={css.search}
-            placeholder={getString('search')}
-            leftIcon="search"
-            value={searchTerm}
-            autoFocus
-            onChange={(e: React.ChangeEvent<HTMLInputElement>) => setSearchTerm(e.target.value)}
-          />
-          {searchInlineComponent}
-        </div>
-      </Layout.Vertical>
       <div className={css.tabsContainer}>
-        <Tabs id={'selectScope'} vertical defaultSelectedTabId={defaultTab}>
-          {renderTab(!!projectIdentifier, TAB_ID.PROJECT, Scope.PROJECT, 'cube', 'projectLabel', selectedProject?.name)}
+        <Tabs id={'selectScope'} defaultSelectedTabId={defaultTab}>
+          {renderTab(
+            !!projectIdentifier,
+            TAB_ID.PROJECT,
+            Scope.PROJECT,
+            'projects-wizard',
+            'projectLabel',
+            selectedProject?.name
+          )}
           {renderTab(!!orgIdentifier, TAB_ID.ORGANIZATION, Scope.ORG, 'diagram-tree', 'orgLabel', selectedOrg?.name)}
           {renderTab(true, TAB_ID.ACCOUNT, Scope.ACCOUNT, 'layers', 'account', selectedAccount?.accountName)}
         </Tabs>
       </div>
-      <Layout.Horizontal spacing="medium">
+
+      <Layout.Horizontal spacing="medium" padding={{ top: 'medium' }}>
         <Button
           variation={ButtonVariation.PRIMARY}
           text={getString('entityReference.apply')}

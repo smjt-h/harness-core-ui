@@ -62,6 +62,7 @@ export const getConnectorIconByType = (type: string): string => {
     case Connectors.PAGER_DUTY:
       return 'service-pagerduty'
     case Connectors.GCP:
+      return 'service-stackdriver'
     case Connectors.CE_GCP:
     case 'Gcr':
       return 'service-gcp'

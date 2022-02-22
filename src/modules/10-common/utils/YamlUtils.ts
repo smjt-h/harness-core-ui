@@ -11,6 +11,7 @@ import * as yamlLanguageService from '@wings-software/monaco-yaml/lib/esm/langua
 import { isEmpty } from 'lodash-es'
 import { TextDocument, Diagnostic } from 'vscode-languageserver-types'
 import { parse } from 'yaml'
+import { yamlStringify } from '@common/utils/YamlHelperMethods'
 
 const DEFAULT_YAML_PATH = 'DEFAULT_YAML_PATH'
 

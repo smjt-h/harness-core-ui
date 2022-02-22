@@ -28,7 +28,7 @@ enum TabId {
 export const OnboardingDetailPage: React.FC = () => {
   const { getString } = useStrings()
   const { showError } = useToaster()
-  const { accountId, orgIdentifier, projectIdentifier } = useParams<Record<string, string>>()
+  const { accountId: accountIdentifier, orgIdentifier, projectIdentifier } = useParams<Record<string, string>>()
   const [selectedTabId, setSelectedTabId] = React.useState<string>(TabId.CREATE_A_FLAG)
   const [flagName, setFlagName] = useState('')
   const [language, setLanguage] = useState<PlatformEntry>()
@@ -56,9 +56,8 @@ export const OnboardingDetailPage: React.FC = () => {
   const history = useHistory()
   const { mutate: createFeatureFlag, loading: isLoadingCreateFeatureFlag } = useCreateFeatureFlag({
     queryParams: {
-      account: accountId,
-      accountIdentifier: accountId,
-      org: orgIdentifier
+      accountIdentifier,
+      orgIdentifier
     } as CreateFeatureFlagQueryParams
   })
 
@@ -81,14 +80,14 @@ export const OnboardingDetailPage: React.FC = () => {
         setSelectedTabId(TabId.TEST_YOUR_FLAG)
         break
       case TabId.TEST_YOUR_FLAG:
-        history.push(routes.toCFOnboarding({ accountId, orgIdentifier, projectIdentifier }))
+        history.push(routes.toCFOnboarding({ accountId: accountIdentifier, orgIdentifier, projectIdentifier }))
         break
     }
   }
   const onPrevious = (): void => {
     switch (selectedTabId) {
       case TabId.CREATE_A_FLAG:
-        history.push(routes.toCFOnboarding({ accountId, orgIdentifier, projectIdentifier }))
+        history.push(routes.toCFOnboarding({ accountId: accountIdentifier, orgIdentifier, projectIdentifier }))
         break
       case TabId.SET_UP_APP:
         setSelectedTabId(TabId.CREATE_A_FLAG)
@@ -112,7 +111,7 @@ export const OnboardingDetailPage: React.FC = () => {
           border: '1px solid #E7E7E7'
         }}
       >
-        <Link to={routes.toCFOnboarding({ accountId, orgIdentifier, projectIdentifier })}>
+        <Link to={routes.toCFOnboarding({ accountId: accountIdentifier, orgIdentifier, projectIdentifier })}>
           {getString('cf.shared.getStarted')}
         </Link>
         <Text>/</Text>

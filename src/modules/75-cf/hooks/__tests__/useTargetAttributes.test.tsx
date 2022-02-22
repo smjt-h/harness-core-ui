@@ -23,10 +23,10 @@ describe('useTargetAttributes', () => {
   }: {
     loading?: boolean
     data?: string[]
-    project?: string
-    org?: string
+    projectIdentifier?: string
+    orgIdentifier?: string
     accountIdentifier?: string
-    environment?: string
+    environmentIdentifier?: string
   } = {}) => {
     useGetAllTargetAttributesMock = jest
       .spyOn(serviceHooks, 'useGetAllTargetAttributes')
@@ -35,10 +35,10 @@ describe('useTargetAttributes', () => {
     return renderHook(() => useTargetAttributes(), {
       wrapper: TargetAttributesProvider,
       initialProps: {
-        project: 'TEST_PROJECT',
-        org: 'TEST_ORG',
+        projectIdentifier: 'TEST_PROJECT',
+        orgIdentifier: 'TEST_ORG',
         accountIdentifier: 'TEST_ACC',
-        environment: 'TEST_ENV',
+        environmentIdentifier: 'TEST_ENV',
         ...serviceProps
       }
     })
@@ -61,19 +61,19 @@ describe('useTargetAttributes', () => {
   })
 
   test('it should call the useGetAllTargetAttributes hook with the appropriate params', () => {
-    const project = 'TEST_PROJECT_123'
-    const org = 'TEST_ORG_123'
+    const projectIdentifier = 'TEST_PROJECT_123'
+    const orgIdentifier = 'TEST_ORG_123'
     const accountIdentifier = 'TEST_ACC_123'
-    const environment = 'ENV_123'
+    const environmentIdentifier = 'ENV_123'
 
-    renderTargetAttributesHook({ project, org, accountIdentifier, environment })
+    renderTargetAttributesHook({ projectIdentifier, orgIdentifier, accountIdentifier, environmentIdentifier })
 
     expect(useGetAllTargetAttributesMock).toHaveBeenCalled()
 
     const params = useGetAllTargetAttributesMock.mock.calls[0][0].queryParams
-    expect(params).toHaveProperty('project', project)
-    expect(params).toHaveProperty('org', org)
+    expect(params).toHaveProperty('projectIdentifier', projectIdentifier)
+    expect(params).toHaveProperty('orgIdentifier', orgIdentifier)
     expect(params).toHaveProperty('accountIdentifier', accountIdentifier)
-    expect(params).toHaveProperty('environment', environment)
+    expect(params).toHaveProperty('environmentIdentifier', environmentIdentifier)
   })
 })

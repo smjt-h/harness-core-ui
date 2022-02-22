@@ -1,0 +1,508 @@
+// Jest Snapshot v1, https://goo.gl/fbAQLP
+
+exports[`ServiceListColumns ServiceDescription 1`] = `
+<div>
+  <div
+    class="Layout--vertical StyledProps--main serviceDescriptionWrapper"
+  >
+    <div
+      class="serviceDescription"
+    >
+      <p
+        class="StyledProps--font Text--lineclamp StyledProps--main"
+        style="--text-line-clamp: 1;"
+      >
+        Descrip
+      </p>
+    </div>
+  </div>
+</div>
+`;
+
+exports[`ServiceListColumns ServiceName 1`] = `
+<div>
+  <div
+    class="serviceName"
+  >
+    <div
+      class="Layout--vertical StyledProps--main"
+    >
+      <p
+        class="StyledProps--font StyledProps--main StyledProps--color StyledProps--color-black"
+      >
+        Test 13
+      </p>
+      <div
+        class="Layout--horizontal StyledProps--main StyledProps--flex"
+      >
+        <p
+          class="StyledProps--font StyledProps--main StyledProps--margin-top-xsmall StyledProps--margin-right-medium StyledProps--color StyledProps--color-grey500"
+          style="font-size: 12px; line-height: 24px; word-break: break-word;"
+        >
+          Id: 
+          Test_13
+        </p>
+      </div>
+    </div>
+  </div>
+</div>
+`;
+
+exports[`ServiceMenu Should allow deleting 1`] = `
+<div
+  class="bp3-dialog useConfirmationDialog--dialog"
+  style="width: 500px; min-height: 218px;"
+>
+  <div
+    class="StyledProps--font StyledProps--main useConfirmationDialog--iconContainer StyledProps--flex"
+  >
+    <span
+      class="bp3-icon StyledProps--main useConfirmationDialog--icon"
+      data-icon="main-close"
+    >
+      <svg
+        height="8"
+        viewBox="0 0 14 14"
+        width="8"
+        xmlns="http://www.w3.org/2000/svg"
+      >
+        <path
+          d="M8.6 7l5-5c.3-.2.4-.5.4-.8 0-.7-.5-1.2-1.2-1.2-.3 0-.6.1-.8.3l-5 5-5-5C1.8.1 1.5 0 1.2 0 .5 0 0 .5 0 1.2c0 .3.1.6.3.8l5 5-5 5c-.2.2-.3.5-.3.8 0 .7.5 1.2 1.2 1.2.3 0 .6-.1.8-.3l5-5 5 5c.2.2.5.4.8.4.6 0 1.2-.5 1.2-1.2 0-.3-.1-.6-.3-.8z"
+          fill="#4d5969"
+        />
+      </svg>
+    </span>
+  </div>
+  <div
+    class="Layout--horizontal StyledProps--main useConfirmationDialog--header StyledProps--padding-left-xsmall"
+  >
+    <span
+      class="bp3-icon StyledProps--main StyledProps--margin-right-small"
+      data-icon="danger-icon"
+    >
+      <svg
+        fill="none"
+        height="32"
+        viewBox="0 0 32 32"
+        width="32"
+        xmlns="http://www.w3.org/2000/svg"
+      >
+        <path
+          clip-rule="evenodd"
+          d="M16.878 4.506a1 1 0 00-1.737 0L3.153 25.505A1 1 0 004.022 27h23.974a1 1 0 00.869-1.495L16.878 4.506zm.603 17.973c0-.823-.684-1.49-1.527-1.49-.843 0-1.527.667-1.527 1.49 0 .822.684 1.49 1.527 1.49.843 0 1.527-.668 1.527-1.49zm-1.527-3.486a1 1 0 001-1v-6.997a1 1 0 00-2 0v6.997a1 1 0 001 1z"
+          fill="#DA291D"
+          fill-rule="evenodd"
+        />
+        <path
+          clip-rule="evenodd"
+          d="M4.022 26L16.009 5.002 27.996 26H4.022zm11.832-6.01a2 2 0 01-1.9-1.997v-6.997a2 2 0 114 0v6.997a2 2 0 01-1.9 1.998c1.328.052 2.427 1.124 2.427 2.488 0 1.398-1.155 2.49-2.527 2.49s-2.527-1.092-2.527-2.49c0-1.364 1.099-2.436 2.427-2.488zM15.14 4.507a1 1 0 011.737 0l11.987 20.999A1 1 0 0127.996 27H4.022a1 1 0 01-.869-1.495L15.141 4.506zm.813 16.483c.843 0 1.527.667 1.527 1.49 0 .822-.684 1.49-1.527 1.49-.843 0-1.527-.668-1.527-1.49 0-.823.684-1.49 1.527-1.49zm1-2.996a1 1 0 01-2 0v-6.997a1 1 0 112 0v6.997z"
+          fill="#DA291D"
+          fill-rule="evenodd"
+        />
+      </svg>
+    </span>
+    <p
+      class="StyledProps--font StyledProps--main StyledProps--font-variation-h4"
+    >
+      common.deleteService
+    </p>
+  </div>
+  <div
+    class="Layout--vertical StyledProps--main useConfirmationDialog--body StyledProps--font StyledProps--font-variation-body StyledProps--color StyledProps--color-black StyledProps--margin-top-large StyledProps--margin-bottom-xxlarge"
+  >
+    common.deleteServiceConfirmation
+  </div>
+  <div
+    class="Layout--horizontal Layout--layout-spacing-small StyledProps--main"
+  >
+    <button
+      class="bp3-button Button--button StyledProps--font StyledProps--main StyledProps--intent-primary Button--with-current-color"
+      type="button"
+    >
+      <span
+        class="bp3-button-text"
+      >
+        confirm
+      </span>
+    </button>
+    <button
+      class="bp3-button Button--button StyledProps--font StyledProps--main Button--with-current-color Button--variation Button--variation-tertiary"
+      type="button"
+    >
+      <span
+        class="bp3-button-text"
+      >
+        cancel
+      </span>
+    </button>
+  </div>
+</div>
+`;
+
+exports[`ServiceMenu Should go to editModal by clicking edit 1`] = `
+<div>
+  <div
+    class="Layout--horizontal StyledProps--main"
+  >
+    <span
+      class="bp3-popover-wrapper bp3-dark"
+    >
+      <span
+        class="bp3-popover-target"
+      >
+        <button
+          class="bp3-button bp3-disabled bp3-loading bp3-minimal Button--button StyledProps--font StyledProps--main Button--with-current-color Button--iconOnly Button--without-shadow Button--withLeftIcon"
+          disabled=""
+          tabindex="-1"
+          type="button"
+        >
+          <div
+            class="bp3-spinner bp3-button-spinner"
+          >
+            <div
+              class="bp3-spinner-animation"
+            >
+              <svg
+                height="20"
+                stroke-width="16.00"
+                viewBox="-3.00 -3.00 106.00 106.00"
+                width="20"
+              >
+                <path
+                  class="bp3-spinner-track"
+                  d="M 50,50 m 0,-45 a 45,45 0 1 1 0,90 a 45,45 0 1 1 0,-90"
+                />
+                <path
+                  class="bp3-spinner-head"
+                  d="M 50,50 m 0,-45 a 45,45 0 1 1 0,90 a 45,45 0 1 1 0,-90"
+                  pathLength="280"
+                  stroke-dasharray="280 280"
+                  stroke-dashoffset="210"
+                />
+              </svg>
+            </div>
+          </div>
+          <span
+            class="bp3-icon StyledProps--main"
+            data-icon="Options"
+          >
+            <svg
+              fill="none"
+              height="16"
+              viewBox="0 0 4 16"
+              width="16"
+              xmlns="http://www.w3.org/2000/svg"
+            >
+              <path
+                clip-rule="evenodd"
+                d="M2 12.5a1 1 0 100 2 1 1 0 000-2zm-2 1a2 2 0 114 0 2 2 0 01-4 0zm2-12a1 1 0 100 2 1 1 0 000-2zm-2 1a2 2 0 114 0 2 2 0 01-4 0zM2 7a1 1 0 100 2 1 1 0 000-2zM0 8a2 2 0 114 0 2 2 0 01-4 0z"
+                fill="currentColor"
+                fill-rule="evenodd"
+              />
+            </svg>
+          </span>
+        </button>
+      </span>
+    </span>
+  </div>
+</div>
+`;
+
+exports[`ServiceMenu Should go to editModal by clicking edit 2`] = `
+<div
+  class="bp3-dialog Dialog--dialog padded-dialog serviceDialogStyles"
+>
+  <div
+    class="bp3-dialog-header"
+  >
+    <h4
+      class="bp3-heading"
+    >
+      editService
+    </h4>
+  </div>
+  <span
+    class="bp3-icon StyledProps--main Dialog--close"
+    data-icon="Stroke"
+  >
+    <svg
+      fill="none"
+      height="15"
+      width="15"
+      xmlns="http://www.w3.org/2000/svg"
+    >
+      <path
+        d="M1 .8l6 6 6-6-12 12 6-6 6 6"
+        stroke="#8F90A6"
+        stroke-linecap="round"
+        stroke-linejoin="round"
+      />
+    </svg>
+  </span>
+  <div
+    class="StyledProps--font StyledProps--main Dialog--children StyledProps--padding-none"
+  >
+    <div
+      class="StyledProps--font StyledProps--main"
+    >
+      <div
+        class="StyledProps--font StyledProps--main yamlToggle"
+      >
+        <div
+          class="Layout--horizontal StyledProps--main StyledProps--flex StyledProps--flex-justifyContent-flex-start"
+          padding-top="8px"
+        >
+          <div
+            class="PillToggle--optionBtns"
+          >
+            <div
+              class="PillToggle--item PillToggle--selected"
+              data-name="toggle-option-one"
+              role="button"
+              tabindex="0"
+            >
+              VISUAL
+            </div>
+            <div
+              class="PillToggle--item"
+              data-name="toggle-option-two"
+              role="button"
+              tabindex="0"
+            >
+              YAML
+            </div>
+          </div>
+        </div>
+      </div>
+      <div
+        class="OverlaySpinner--overlaySpinner"
+      >
+        <form
+          class="FormikForm--main"
+        >
+          <div>
+            <div
+              class="StyledProps--font StyledProps--main main"
+            >
+              <div
+                class="InputWithIdentifier--txtNameContainer TextInput--main"
+              >
+                <div
+                  class="Layout--horizontal Layout--layout-spacing-xsmall StyledProps--main InputWithIdentifier--txtIdContainer"
+                >
+                  <div
+                    class="Text--withDocsTooltip"
+                    data-tooltip-id="addService_identifier"
+                  >
+                    <p
+                      class="StyledProps--font StyledProps--main"
+                    >
+                      ID
+                    </p>
+                  </div>
+                  <p
+                    class="StyledProps--font StyledProps--main"
+                  >
+                    :
+                  </p>
+                  <span
+                    class="bp3-popover-wrapper"
+                  >
+                    <span
+                      class="bp3-popover-target"
+                    >
+                      <div
+                        class="bp3-editable-text bp3-disabled bp3-editable-text-placeholder InputWithIdentifier--idValue"
+                      >
+                        <span
+                          class="bp3-editable-text-content"
+                          style="height: 1px; line-height: 1px; min-width: 0;"
+                        />
+                      </div>
+                    </span>
+                  </span>
+                </div>
+                <div
+                  class="bp3-form-group"
+                  data-id="name-0"
+                >
+                  <label
+                    class="bp3-label"
+                    for="name"
+                  >
+                    <span
+                      class="Tooltip--acenter"
+                      data-tooltip-id="addService_name"
+                    >
+                      name
+                    </span>
+                     
+                    <span
+                      class="bp3-text-muted"
+                    />
+                  </label>
+                  <div
+                    class="bp3-form-content"
+                  >
+                    <div
+                      class="bp3-input-group"
+                    >
+                      <input
+                        autocomplete="off"
+                        class="bp3-input"
+                        name="name"
+                        type="text"
+                        value=""
+                      />
+                    </div>
+                  </div>
+                </div>
+              </div>
+              <div
+                class="StyledProps--font StyledProps--main"
+              >
+                <label
+                  class="Label--main bp3-label descriptionLabel"
+                >
+                  optionalField
+                  <span
+                    class="bp3-icon StyledProps--main editOpen"
+                    data-icon="Edit"
+                    data-name="edit"
+                    data-testid="description-edit"
+                  >
+                    <svg
+                      height="12"
+                      viewBox="0 0 16 16"
+                      width="12"
+                      xmlns="http://www.w3.org/2000/svg"
+                    >
+                      <path
+                        clip-rule="evenodd"
+                        d="M11.207.485a.5.5 0 01.354-.146 3.5 3.5 0 013.5 3.5.5.5 0 01-.146.353l-11 11a.5.5 0 01-.354.147h-3a.5.5 0 01-.5-.5v-3a.5.5 0 01.146-.354l11-11zm.553.862L1.061 12.046v2.293h2.293l10.7-10.7a2.5 2.5 0 00-2.294-2.292z"
+                        fill="currentColor"
+                        fill-rule="evenodd"
+                      />
+                      <path
+                        clip-rule="evenodd"
+                        d="M11.89 2.646a.5.5 0 010 .708L8.353 6.889a.5.5 0 01-.708-.707l3.536-3.536a.5.5 0 01.707 0z"
+                        fill="currentColor"
+                        fill-rule="evenodd"
+                        opacity="0.3"
+                      />
+                    </svg>
+                  </span>
+                </label>
+              </div>
+              <div
+                class="StyledProps--font StyledProps--main"
+              >
+                <label
+                  class="Label--main bp3-label descriptionLabel"
+                >
+                  optionalField
+                  <span
+                    class="bp3-icon StyledProps--main editOpen"
+                    data-icon="Edit"
+                    data-name="edit"
+                    data-testid="tags-edit"
+                  >
+                    <svg
+                      height="12"
+                      viewBox="0 0 16 16"
+                      width="12"
+                      xmlns="http://www.w3.org/2000/svg"
+                    >
+                      <path
+                        clip-rule="evenodd"
+                        d="M11.207.485a.5.5 0 01.354-.146 3.5 3.5 0 013.5 3.5.5.5 0 01-.146.353l-11 11a.5.5 0 01-.354.147h-3a.5.5 0 01-.5-.5v-3a.5.5 0 01.146-.354l11-11zm.553.862L1.061 12.046v2.293h2.293l10.7-10.7a2.5 2.5 0 00-2.294-2.292z"
+                        fill="currentColor"
+                        fill-rule="evenodd"
+                      />
+                      <path
+                        clip-rule="evenodd"
+                        d="M11.89 2.646a.5.5 0 010 .708L8.353 6.889a.5.5 0 01-.708-.707l3.536-3.536a.5.5 0 01.707 0z"
+                        fill="currentColor"
+                        fill-rule="evenodd"
+                        opacity="0.3"
+                      />
+                    </svg>
+                  </span>
+                </label>
+              </div>
+            </div>
+            <div
+              class="Layout--horizontal StyledProps--main editServiceSaveCancel"
+            >
+              <button
+                class="bp3-button Button--button StyledProps--font StyledProps--main Button--with-current-color Button--variation Button--variation-primary"
+                data-id="service-save"
+                type="submit"
+              >
+                <span
+                  class="bp3-button-text"
+                >
+                  save
+                </span>
+              </button>
+               
+              <button
+                class="bp3-button Button--button StyledProps--font StyledProps--main Button--with-current-color Button--variation Button--variation-tertiary"
+                type="button"
+              >
+                <span
+                  class="bp3-button-text"
+                >
+                  cancel
+                </span>
+              </button>
+            </div>
+          </div>
+        </form>
+      </div>
+    </div>
+  </div>
+  <footer />
+</div>
+`;
+
+exports[`ServiceMenu Should render options edit/delete 1`] = `
+<div>
+  <div
+    class="Layout--horizontal StyledProps--main"
+  >
+    <span
+      class="bp3-popover-wrapper bp3-dark"
+    >
+      <span
+        class="bp3-popover-target"
+      >
+        <button
+          class="bp3-button bp3-minimal Button--button StyledProps--font StyledProps--main Button--with-current-color Button--iconOnly Button--without-shadow Button--withLeftIcon"
+          type="button"
+        >
+          <span
+            class="bp3-icon StyledProps--main"
+            data-icon="Options"
+          >
+            <svg
+              fill="none"
+              height="16"
+              viewBox="0 0 4 16"
+              width="16"
+              xmlns="http://www.w3.org/2000/svg"
+            >
+              <path
+                clip-rule="evenodd"
+                d="M2 12.5a1 1 0 100 2 1 1 0 000-2zm-2 1a2 2 0 114 0 2 2 0 01-4 0zm2-12a1 1 0 100 2 1 1 0 000-2zm-2 1a2 2 0 114 0 2 2 0 01-4 0zM2 7a1 1 0 100 2 1 1 0 000-2zM0 8a2 2 0 114 0 2 2 0 01-4 0z"
+                fill="currentColor"
+                fill-rule="evenodd"
+              />
+            </svg>
+          </span>
+        </button>
+      </span>
+    </span>
+  </div>
+</div>
+`;

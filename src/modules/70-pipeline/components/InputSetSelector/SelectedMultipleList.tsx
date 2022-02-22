@@ -93,7 +93,11 @@ export default function SelectedMultipleList(props: SelectedMultipleListProps): 
             <Checkbox
               className={css.checkbox}
               labelElement={
-                <Layout.Horizontal flex={{ alignItems: 'center' }} padding={{ left: true }}>
+                <Layout.Horizontal
+                  flex={{ alignItems: 'center', justifyContent: 'flex-start' }}
+                  padding={{ left: true }}
+                  width="100%"
+                >
                   <Icon name={getIconByType(selected.type)}></Icon>
                   <Container margin={{ left: true }} className={css.nameIdContainer}>
                     <Text lineClamp={1} font={{ weight: 'bold' }} color={Color.GREY_800}>

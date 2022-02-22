@@ -30,7 +30,7 @@ const renderComponent = (): void => {
       pathParams={{ accountId: 'dummy', orgIdentifier: 'dummy', projectIdentifier: 'dummy' }}
     >
       <EditVariationsModal
-        accountId="dummy"
+        accountIdentifier="dummy"
         orgIdentifier="dummy"
         projectIdentifier="dummy"
         gitSync={mockGitSync}

@@ -24,10 +24,10 @@ const useDeleteTargetGroupDialog = (targetGroup: Segment): UseConfirmationDialog
 
   const { mutate: deleteTargetGroup } = useDeleteSegment({
     queryParams: {
-      project: projectIdentifier,
-      org: orgIdentifier,
+      projectIdentifier,
+      orgIdentifier,
       accountIdentifier,
-      environment: targetGroup.environment as string
+      environmentIdentifier: targetGroup.environment as string
     }
   })
 

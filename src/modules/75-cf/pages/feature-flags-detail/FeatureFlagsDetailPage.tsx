@@ -23,16 +23,21 @@ import css from './FeatureFlagsDetailPage.module.scss'
 const FeatureFlagsDetailPage: React.FC = () => {
   const { getString } = useStrings()
   const [skipLoading, setSkipLoading] = useState(false)
-  const { orgIdentifier, projectIdentifier, featureFlagIdentifier, accountId } = useParams<Record<string, string>>()
-  const { activeEnvironment } = useActiveEnvironment()
+  const {
+    orgIdentifier,
+    projectIdentifier,
+    featureFlagIdentifier,
+    accountId: accountIdentifier
+  } = useParams<Record<string, string>>()
+  const { activeEnvironment: environmentIdentifier } = useActiveEnvironment()
 
   useDocumentTitle(getString('featureFlagsText'))
+
   const queryParams = {
-    project: projectIdentifier as string,
-    environment: activeEnvironment,
-    account: accountId,
-    accountIdentifier: accountId,
-    org: orgIdentifier
+    projectIdentifier,
+    environmentIdentifier,
+    accountIdentifier,
+    orgIdentifier
   } as GetFeatureFlagQueryParams
 
   const {
@@ -80,7 +85,7 @@ const FeatureFlagsDetailPage: React.FC = () => {
     await refetch({
       queryParams: {
         ...queryParams,
-        environment: activeEnvironment
+        environmentIdentifier
       }
     }).finally(() => {
       setSkipLoading(false)
@@ -122,7 +127,7 @@ const FeatureFlagsDetailPage: React.FC = () => {
             <FlagActivation
               refetchFlag={refetchFlag}
               gitSync={gitSync}
-              project={projectIdentifier as string}
+              projectIdentifier={projectIdentifier as string}
               flagData={featureFlag}
             />
           )}

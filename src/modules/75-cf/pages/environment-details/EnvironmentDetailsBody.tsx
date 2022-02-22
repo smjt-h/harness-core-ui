@@ -24,7 +24,7 @@ import {
 import { get } from 'lodash-es'
 import type { Column } from 'react-table'
 import type { EnvironmentResponseDTO } from 'services/cd-ng'
-import { ApiKey, useDeleteApiKey, useGetAllAPIKeys } from 'services/cf'
+import { ApiKey, useDeleteAPIKey, useGetAllAPIKeys } from 'services/cf'
 import { useToaster } from '@common/exports'
 import { ContainerSpinner } from '@common/components/ContainerSpinner/ContainerSpinner'
 import { useEnvStrings } from '@cf/hooks/environment'
@@ -149,11 +149,10 @@ const EnvironmentSDKKeys: React.FC<{ environment: EnvironmentResponseDTO }> = ({
   const [page, setPage] = useState<number>(0)
 
   const queryParams = {
-    project: environment.projectIdentifier as string,
-    environment: environment.identifier as string,
-    account: environment.accountId as string,
+    projectIdentifier: environment.projectIdentifier as string,
+    environmentIdentifier: environment.identifier as string,
     accountIdentifier: environment.accountId as string,
-    org: environment.orgIdentifier as string
+    orgIdentifier: environment.orgIdentifier as string
   }
 
   const { data, loading, error, refetch } = useGetAllAPIKeys({
@@ -164,7 +163,7 @@ const EnvironmentSDKKeys: React.FC<{ environment: EnvironmentResponseDTO }> = ({
     }
   })
 
-  const { mutate: deleteKey } = useDeleteApiKey({ queryParams })
+  const { mutate: deleteKey } = useDeleteAPIKey({ queryParams })
   const handleDelete = (id: string, keyName: string): void => {
     deleteKey(id)
       .then(() => showSuccess(getString('cf.environments.apiKeys.deleteSuccess', { keyName })))

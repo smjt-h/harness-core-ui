@@ -130,7 +130,7 @@ const FlagChanges: FC<FlagChangesProps> = ({
           setField={setField}
           fieldValues={fieldValues}
           selectedFeature={selectedFeature as FlagChangesFormProps['selectedFeature']}
-          environment={selectedEnvironmentId as string}
+          environmentIdentifier={selectedEnvironmentId as string}
         />
       )}
     </Layout.Vertical>

@@ -12,9 +12,8 @@ import { debounce } from 'lodash-es'
 
 import type { StageElementWrapperConfig } from 'services/cd-ng'
 import { useStrings } from 'framework/strings'
-import FailureStrategyPanel, {
-  AllFailureStrategyConfig
-} from '@pipeline/components/PipelineSteps/AdvancedSteps/FailureStrategyPanel/FailureStrategyPanel'
+import FailureStrategyPanel from '@pipeline/components/PipelineSteps/AdvancedSteps/FailureStrategyPanel/FailureStrategyPanel'
+import type { AllFailureStrategyConfig } from '@pipeline/components/PipelineSteps/AdvancedSteps/FailureStrategyPanel/utils'
 import { ErrorType, Strategy } from '@pipeline/utils/FailureStrategyUtils'
 import { getFailureStrategiesValidationSchema } from '@pipeline/components/PipelineSteps/AdvancedSteps/FailureStrategyPanel/validation'
 import { StepMode as Modes } from '@pipeline/utils/stepUtils'
@@ -104,7 +103,10 @@ export function FailureStrategy(props: FailureStrategyProps, ref: StepCommandsRe
         failureStrategies: (selectedStage?.stage?.failureStrategies as AllFailureStrategyConfig[]) || fallbackValues
       }}
       validationSchema={Yup.object().shape({
-        failureStrategies: getFailureStrategiesValidationSchema(getString).required().min(1)
+        failureStrategies: getFailureStrategiesValidationSchema(getString, {
+          required: stageType === StageType.DEPLOY,
+          minLength: stageType === StageType.DEPLOY ? 1 : 0
+        })
       })}
       onSubmit={onUpdate}
       validate={debouncedUpdate}

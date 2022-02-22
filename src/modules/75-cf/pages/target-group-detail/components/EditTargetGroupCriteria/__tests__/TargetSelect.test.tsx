@@ -36,7 +36,7 @@ const renderComponent = (props: Partial<TargetSelectProps> = {}): RenderResult =
       }}
       queryParams={{ environment: 'env' }}
     >
-      <TargetSelect environment="env" fieldName="testField" label="Field" {...props} />
+      <TargetSelect environmentIdentifier="env" fieldName="testField" label="Field" {...props} />
     </TestWrapper>
   )
 

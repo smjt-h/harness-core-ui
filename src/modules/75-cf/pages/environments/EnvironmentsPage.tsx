@@ -11,7 +11,12 @@ import type { Column } from 'react-table'
 import { get } from 'lodash-es'
 import { Position } from '@blueprintjs/core'
 import { Container, Layout, Pagination, Text, TableV2 } from '@wings-software/uicore'
-import { EnvironmentResponseDTO, useDeleteEnvironmentV2, useGetEnvironmentListForProject } from 'services/cd-ng'
+import {
+  EnvironmentResponseDTO,
+  GetEnvironmentListForProjectQueryParams,
+  useDeleteEnvironmentV2,
+  useGetEnvironmentListForProject
+} from 'services/cd-ng'
 import { useToaster } from '@common/exports'
 import { IdentifierText } from '@cf/components/IdentifierText/IdentifierText'
 import { CF_DEFAULT_PAGE_SIZE } from '@cf/utils/CFUtils'
@@ -40,12 +45,12 @@ const withActions = withTableData<
   actions: (column as any).actions as { [P in 'onEdit' | 'onDelete']?: (id: string) => void }
 }))
 
-const TypeCell = withEnvironment(({ environment }) => {
+export const TypeCell = withEnvironment(({ environment }) => {
   const { getString } = useEnvStrings()
   return <Text>{getString(environment.type === EnvironmentType.PRODUCTION ? 'production' : 'nonProduction')}</Text>
 })
 
-const NameCell = withEnvironment(({ environment }) => {
+export const NameCell = withEnvironment(({ environment }) => {
   const { getString } = useEnvStrings()
   const tags = Object.entries(environment.tags ?? {}).reduce(
     (acc: Array<{ name: string; value: string }>, [key, value]: [string, string]) => {
@@ -83,7 +88,7 @@ const NameCell = withEnvironment(({ environment }) => {
               <>
                 <Text>{getString('tagsLabel').toUpperCase()}</Text>
                 {tags.map((elem, i) => (
-                  <Text key={`${elem.value}-${i}`}>{elem.value}</Text>
+                  <Text key={`${elem.value}-${i}`}>{elem.name}</Text>
                 ))}
               </>
             ) : undefined
@@ -100,7 +105,7 @@ const NameCell = withEnvironment(({ environment }) => {
   )
 })
 
-const ModifiedByCell = withActions(({ environment, actions }) => {
+export const ModifiedByCell = withActions(({ environment, actions }) => {
   const { getString } = useEnvStrings()
   const identifier = environment.identifier as string
   const deleteEnvironment = useConfirmAction({
@@ -157,16 +162,16 @@ const EnvironmentsPage: React.FC = () => {
   const { showError, showSuccess } = useToaster()
   const history = useHistory()
   const [page, setPage] = useState(0)
-  const { accountId, projectIdentifier, orgIdentifier } = useParams<Record<string, string>>()
-  const queryParams = useMemo(() => {
+  const { accountId: accountIdentifier, projectIdentifier, orgIdentifier } = useParams<Record<string, string>>()
+  const queryParams = useMemo<GetEnvironmentListForProjectQueryParams>(() => {
     return {
-      accountId,
+      accountId: accountIdentifier,
       orgIdentifier,
       projectIdentifier,
       size: CF_DEFAULT_PAGE_SIZE,
       page
     }
-  }, [accountId, orgIdentifier, projectIdentifier, page])
+  }, [accountIdentifier, orgIdentifier, projectIdentifier, page])
   const {
     data: envData,
     loading,
@@ -177,7 +182,7 @@ const EnvironmentsPage: React.FC = () => {
   })
   const { mutate: deleteEnvironment } = useDeleteEnvironmentV2({
     queryParams: {
-      accountIdentifier: accountId,
+      accountIdentifier,
       projectIdentifier,
       orgIdentifier
     }
@@ -194,7 +199,7 @@ const EnvironmentsPage: React.FC = () => {
         environmentIdentifier: id,
         projectIdentifier,
         orgIdentifier,
-        accountId
+        accountId: accountIdentifier
       })
     )
   }
@@ -254,7 +259,7 @@ const EnvironmentsPage: React.FC = () => {
                       environmentIdentifier: response?.data?.identifier as string,
                       projectIdentifier,
                       orgIdentifier,
-                      accountId
+                      accountId: accountIdentifier
                     })
                   )
                 }, 1000)
@@ -299,7 +304,7 @@ const EnvironmentsPage: React.FC = () => {
                     environmentIdentifier: response?.data?.identifier as string,
                     projectIdentifier,
                     orgIdentifier,
-                    accountId
+                    accountId: accountIdentifier
                   })
                 )
               }, 1000)

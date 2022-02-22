@@ -22,7 +22,7 @@ describe('OnboardingDetailPage', () => {
       useEnvironmentSelectV2: () => ({
         loading: true,
         refetch: jest.fn(),
-        EnvironmentSelec: <div />,
+        EnvironmentSelect: <div />,
         environments: [
           {
             accountId: 'harness',
@@ -50,7 +50,7 @@ describe('OnboardingDetailPage', () => {
       useEnvironmentSelectV2: () => ({
         loading: true,
         refetch: jest.fn(),
-        EnvironmentSelec: <div />,
+        EnvironmentSelect: <div />,
         environments: [
           {
             accountId: 'harness',
@@ -91,7 +91,7 @@ describe('OnboardingDetailPage', () => {
       useEnvironmentSelectV2: () => ({
         loading: true,
         refetch: jest.fn(),
-        EnvironmentSelec: <div />,
+        EnvironmentSelect: <div />,
         environments: [
           {
             accountId: 'harness',
@@ -138,7 +138,7 @@ describe('OnboardingDetailPage', () => {
       useEnvironmentSelectV2: () => ({
         loading: true,
         refetch: jest.fn(),
-        EnvironmentSelec: <div />,
+        EnvironmentSelect: <div />,
         environments: [
           {
             accountId: 'harness',
@@ -176,7 +176,7 @@ describe('OnboardingDetailPage', () => {
             name: 'xxx-xxx-xxx',
             apiKey: 'xxx-xxx-xxx',
             identifier: 'xxx-xxx-xxx',
-            type: 'Server'
+            type: 'server'
           }}
           setApiKey={jest.fn()}
           setEnvironmentIdentifier={jest.fn()}
@@ -192,7 +192,7 @@ describe('OnboardingDetailPage', () => {
       useEnvironmentSelectV2: () => ({
         loading: true,
         refetch: jest.fn(),
-        EnvironmentSelec: <div />,
+        EnvironmentSelect: <div />,
         environments: [
           {
             accountId: 'harness',
@@ -229,7 +229,7 @@ describe('OnboardingDetailPage', () => {
             name: 'xxx-xxx-xxx',
             apiKey: 'xxx-xxx-xxx',
             identifier: 'xxx-xxx-xxx',
-            type: 'Server'
+            type: 'server'
           }}
           environmentIdentifier="foo-123-bar"
           testDone={false}
@@ -268,7 +268,7 @@ describe('OnboardingDetailPage', () => {
       useEnvironmentSelectV2: () => ({
         loading: true,
         refetch: jest.fn(),
-        EnvironmentSelec: <div />,
+        EnvironmentSelect: <div />,
         environments: [
           {
             accountId: 'harness',

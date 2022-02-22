@@ -15,23 +15,25 @@ export interface UseTargetAttributesHookAPI {
 }
 
 export interface TargetAttributesProviderProps {
-  project: string
-  org: string
+  projectIdentifier: string
+  orgIdentifier: string
   accountIdentifier: string
-  environment: string
+  environmentIdentifier: string
   children?: ReactNode | ReactNode[]
 }
 
 const TargetAttributesContext = createContext<UseTargetAttributesHookAPI>({ loading: false, targetAttributes: [] })
 
 export const TargetAttributesProvider = ({
-  project,
-  org,
+  projectIdentifier,
+  orgIdentifier,
   accountIdentifier,
-  environment,
+  environmentIdentifier,
   children
 }: TargetAttributesProviderProps): ReactElement => {
-  const { loading, data } = useGetAllTargetAttributes({ queryParams: { project, org, accountIdentifier, environment } })
+  const { loading, data } = useGetAllTargetAttributes({
+    queryParams: { projectIdentifier, orgIdentifier, accountIdentifier, environmentIdentifier }
+  })
 
   const targetAttributes = useMemo<string[]>(() => sortStrings(data || []), [data])
 

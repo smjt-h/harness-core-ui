@@ -42,7 +42,7 @@ import { NoSegmentsView } from './NoSegmentsView'
 import { NewSegmentButton } from './NewSegmentButton'
 
 export const SegmentsPage: React.FC = () => {
-  const { activeEnvironment, withActiveEnvironment } = useActiveEnvironment()
+  const { activeEnvironment: environmentIdentifier, withActiveEnvironment } = useActiveEnvironment()
   const {
     EnvironmentSelect,
     loading: loadingEnvironments,
@@ -50,27 +50,26 @@ export const SegmentsPage: React.FC = () => {
     refetch: refetchEnvs,
     environments
   } = useEnvironmentSelectV2({
-    selectedEnvironmentIdentifier: activeEnvironment,
+    selectedEnvironmentIdentifier: environmentIdentifier,
     onChange: (_value, _environment, _userEvent) => {
       rewriteCurrentLocationWithActiveEnvironment(_environment)
     }
   })
-  const { projectIdentifier, orgIdentifier, accountId } = useParams<Record<string, string>>()
+  const { projectIdentifier, orgIdentifier, accountId: accountIdentifier } = useParams<Record<string, string>>()
   const { getString } = useStrings()
   const [pageNumber, setPageNumber] = useState(0)
   const [searchTerm, setSearchTerm] = useState('')
   const queryParams = useMemo(
     () => ({
-      project: projectIdentifier,
-      environment: activeEnvironment,
+      projectIdentifier,
+      environmentIdentifier,
       pageNumber,
       pageSize: CF_DEFAULT_PAGE_SIZE,
-      account: accountId,
-      accountIdentifier: accountId,
-      org: orgIdentifier,
+      accountIdentifier,
+      orgIdentifier,
       name: searchTerm
     }),
-    [accountId, orgIdentifier, projectIdentifier, activeEnvironment, pageNumber, searchTerm] // eslint-disable-line react-hooks/exhaustive-deps
+    [accountIdentifier, orgIdentifier, projectIdentifier, environmentIdentifier, pageNumber, searchTerm] // eslint-disable-line react-hooks/exhaustive-deps
   )
   const {
     data: segmentsData,
@@ -79,7 +78,7 @@ export const SegmentsPage: React.FC = () => {
     refetch: refetchSegments
   } = useGetAllSegments({
     queryParams,
-    lazy: !activeEnvironment
+    lazy: !environmentIdentifier
   })
   const history = useHistory()
   const onSearchInputChanged = useCallback(
@@ -105,18 +104,18 @@ export const SegmentsPage: React.FC = () => {
             segmentIdentifier: identifier as string,
             projectIdentifier,
             orgIdentifier,
-            accountId
+            accountId: accountIdentifier
           })
         )
       )
     },
-    [history, accountId, orgIdentifier, projectIdentifier, withActiveEnvironment]
+    [history, accountIdentifier, orgIdentifier, projectIdentifier, withActiveEnvironment]
   )
   const toolbar = (
     <>
       <Layout.Horizontal spacing="medium">
         <NewSegmentButton
-          accountId={accountId}
+          accountIdentifier={accountIdentifier}
           orgIdentifier={orgIdentifier}
           projectIdentifier={projectIdentifier}
           onCreated={segmentIdentifier => {
@@ -140,13 +139,12 @@ export const SegmentsPage: React.FC = () => {
   const { showError, clear } = useToaster()
   const deleteSegmentParams = useMemo(
     () => ({
-      account: accountId,
-      accountIdentifier: accountId,
-      org: orgIdentifier,
-      project: projectIdentifier,
-      environment: activeEnvironment
+      accountIdentifier,
+      orgIdentifier,
+      projectIdentifier,
+      environmentIdentifier
     }),
-    [accountId, orgIdentifier, projectIdentifier, activeEnvironment] // eslint-disable-line react-hooks/exhaustive-deps
+    [accountIdentifier, orgIdentifier, projectIdentifier, environmentIdentifier] // eslint-disable-line react-hooks/exhaustive-deps
   )
   const { mutate: deleteSegment } = useDeleteSegment({
     queryParams: deleteSegmentParams
@@ -243,7 +241,7 @@ export const SegmentsPage: React.FC = () => {
                         gotoSegmentDetailPage(cell.row.original.identifier as string)
                       },
                       permission: {
-                        resource: { resourceType: ResourceType.ENVIRONMENT, resourceIdentifier: activeEnvironment },
+                        resource: { resourceType: ResourceType.ENVIRONMENT, resourceIdentifier: environmentIdentifier },
                         permission: PermissionIdentifier.EDIT_FF_TARGETGROUP
                       }
                     },
@@ -252,7 +250,7 @@ export const SegmentsPage: React.FC = () => {
                       text: getString('delete'),
                       onClick: deleteSegmentConfirm,
                       permission: {
-                        resource: { resourceType: ResourceType.ENVIRONMENT, resourceIdentifier: activeEnvironment },
+                        resource: { resourceType: ResourceType.ENVIRONMENT, resourceIdentifier: environmentIdentifier },
                         permission: PermissionIdentifier.DELETE_FF_TARGETGROUP
                       }
                     }
@@ -264,7 +262,7 @@ export const SegmentsPage: React.FC = () => {
         }
       }
     ],
-    [getString, activeEnvironment, clear, deleteSegment, refetchSegments, showError, gotoSegmentDetailPage]
+    [getString, environmentIdentifier, clear, deleteSegment, refetchSegments, showError, gotoSegmentDetailPage]
   )
 
   useEffect(() => {

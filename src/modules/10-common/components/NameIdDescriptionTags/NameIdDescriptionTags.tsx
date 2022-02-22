@@ -35,7 +35,7 @@ export interface NameIdDescriptionTagsProps {
   tooltipProps?: DataTooltipInterface
 }
 
-interface NameIdProps {
+export interface NameIdProps {
   nameLabel?: string // Strong default preference for "Name" vs. Contextual Name (e.g. "Service Name") unless approved otherwise
   namePlaceholder?: string
   identifierProps?: Omit<InputWithIdentifierProps, 'formik'>

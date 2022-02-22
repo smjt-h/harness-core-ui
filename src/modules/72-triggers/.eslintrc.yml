@@ -1,0 +1,29 @@
+rules:
+  no-restricted-imports:
+    - error
+    - patterns:
+        - lodash.*
+        - microfrontends/*
+        - modules/72-templates-library/*
+        - modules/75-cd/*
+        - modules/75-ce/*
+        - modules/75-cf/*
+        - modules/75-ci/*
+        - modules/85-cv/*
+        - '@templates-library/*'
+        - '@cd/*'
+        - '@ce/*'
+        - '@cf/*'
+        - '@ci/*'
+        - '@cv/*'
+      paths:
+        - lodash
+        - name: yaml
+          importNames:
+            - stringify
+          message: Please use yamlStringify from @common/utils/YamlHelperMethods instead
+            of this
+        - name: react-router
+          message: import from "react-router-dom" instead
+        - name: microfrontends
+          message: Import from 'microfrontends' is only allowed in child apps

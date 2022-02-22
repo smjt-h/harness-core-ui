@@ -47,11 +47,10 @@ export const useToggleFeatureFlag = ({
   const { mutate, loading, error } = usePatchFeature({
     identifier: '',
     queryParams: {
-      project: projectIdentifier,
-      environment: environmentIdentifier,
-      account: accountIdentifier,
+      projectIdentifier,
+      environmentIdentifier,
       accountIdentifier,
-      org: orgIdentifier
+      orgIdentifier
     } as PatchFeatureQueryParams
   })
 

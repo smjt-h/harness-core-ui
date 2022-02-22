@@ -16,6 +16,7 @@ import { DefaultPortModel } from '../../port/DefaultPortModel'
 export interface GroupNodeModelOptions
   extends Omit<DefaultNodeModelOptions, 'icon | iconProps | secondaryIconStyle | secondaryIconProps | secondaryIcon '> {
   icons: Array<IconName>
+  parallelNodes: Array<string>
   iconPropsAr?: Array<IconProps>
 }
 

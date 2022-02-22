@@ -1,0 +1,64 @@
+// Jest Snapshot v1, https://goo.gl/fbAQLP
+
+exports[`TestCoverageItem test should render TestCoverageItem 1`] = `
+<div>
+  <div
+    class="StyledProps--font StyledProps--main coverageItem StyledProps--flex StyledProps--padding-medium"
+  >
+    <p
+      class="StyledProps--font Text--lineclamp StyledProps--main name StyledProps--font-weight-semi-bold StyledProps--color StyledProps--color-grey800"
+      style="--text-line-clamp: 1;"
+    >
+      TestCoverageItem
+    </p>
+    <div
+      class="StyledProps--font StyledProps--main StyledProps--flex"
+    >
+      <span
+        class="bp3-icon StyledProps--main StyledProps--color StyledProps--color-green600 StyledProps--margin-right-large"
+        data-icon="command-artifact-check"
+      >
+        <svg
+          height="16"
+          viewBox="0 0 14 14"
+          width="16"
+          xmlns="http://www.w3.org/2000/svg"
+        >
+          <path
+            d="M7 14c-3.9 0-7-3.1-7-7s3.1-7 7-7 7 3.1 7 7-3.1 7-7 7zm3.3-10c-.2 0-.3.1-.4.2L5.7 8.4 4.1 6.9c-.1-.2-.2-.2-.4-.2-.4 0-.7.3-.7.6 0 .2.1.4.2.5l2 2c.1.1.3.2.5.2s.3-.1.4-.2l4.7-4.7c.1-.1.2-.2.2-.4 0-.4-.3-.7-.7-.7z"
+            fill="#4d5969"
+          />
+        </svg>
+      </span>
+      <div
+        class="StyledProps--font StyledProps--main commitHash StyledProps--flex StyledProps--flex-justifyContent-flex-start"
+      >
+        <span
+          class="bp3-icon bp3-icon-clipboard StyledProps--main StyledProps--color StyledProps--color-grey500"
+          icon="clipboard"
+        >
+          <svg
+            data-icon="clipboard"
+            height="12"
+            viewBox="0 0 16 16"
+            width="12"
+          >
+            <desc>
+              clipboard
+            </desc>
+            <path
+              d="M11 2c0-.55-.45-1-1-1h.22C9.88.4 9.24 0 8.5 0S7.12.4 6.78 1H7c-.55 0-1 .45-1 1v1h5V2zm2 0h-1v2H5V2H4c-.55 0-1 .45-1 1v12c0 .55.45 1 1 1h9c.55 0 1-.45 1-1V3c0-.55-.45-1-1-1z"
+              fill-rule="evenodd"
+            />
+          </svg>
+        </span>
+        <span
+          class="StyledProps--font StyledProps--main StyledProps--inline"
+        >
+          commitId
+        </span>
+      </div>
+    </div>
+  </div>
+</div>
+`;

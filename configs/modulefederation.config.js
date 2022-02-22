@@ -6,7 +6,7 @@
  */
 
 const packageJSON = require('../package.json')
-const { pick, omit, mapValues } = require('lodash')
+const { pick, mapValues } = require('lodash')
 
 /**
  * These packages must be stricly shared with exact versions
@@ -24,7 +24,7 @@ const ExactSharedPackages = [
   'restful-react'
 ]
 
-module.exports = ({ enableGitOpsUI, enableSTO }) => {
+module.exports = ({ enableGovernance, enableGitOpsUI, enableSTO }) => {
   const remotes = {}
 
   if (enableGitOpsUI) {
@@ -33,7 +33,9 @@ module.exports = ({ enableGitOpsUI, enableSTO }) => {
   }
 
   // TODO (tnhu): Use build an environment variable to enable Governance
+  // if (enableGovernance) {
   remotes.governance = "governance@[window.getApiBaseUrl('pm/remoteEntry.js')]"
+  // }
 
   if (enableSTO) {
     remotes.sto = "sto@[window.getApiBaseUrl('sto/remoteEntry.js')]"

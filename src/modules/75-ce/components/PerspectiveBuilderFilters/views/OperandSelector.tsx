@@ -18,8 +18,10 @@ import {
 import CustomMenuItem from '@ce/components/CustomMenu/CustomMenuItem'
 import { FIELD_TO_ICON_MAPPING } from '@ce/components/PerspectiveFilters/constants'
 import { useStrings } from 'framework/strings'
+import type { TimeRangeFilterType } from '@ce/types'
+import { getTimeFilters } from '@ce/utils/perspectiveUtils'
+import { getGMTEndDateTime, getGMTStartDateTime } from '@ce/utils/momentUtils'
 import type { ProviderType } from '../PerspectiveBuilderFilter'
-
 import css from '../PerspectiveBuilderFilter.module.scss'
 
 interface LabelSelectorProps {
@@ -205,17 +207,20 @@ interface OperandSelectorProps {
   provider: ProviderType | null | undefined
   service: ProviderType | null | undefined
   setProviderAndIdentifier: (providerData: ProviderType, serviceData: ProviderType) => void
+  timeRange: TimeRangeFilterType
 }
 
 const OperandSelector: React.FC<OperandSelectorProps> = ({
   service,
   provider,
   fieldValuesList,
-  setProviderAndIdentifier
+  setProviderAndIdentifier,
+  timeRange
 }) => {
   const [labelResult] = useFetchPerspectiveFiltersValueQuery({
     variables: {
       filters: [
+        ...getTimeFilters(getGMTStartDateTime(timeRange.from), getGMTEndDateTime(timeRange.to)),
         {
           idFilter: {
             field: {

@@ -18,9 +18,6 @@ const featureFlags = {
 
 const mockGetCallFunction = jest.fn()
 jest.mock('services/portal', () => ({
-  useCreateDelegateToken: jest.fn().mockImplementation(() => ({
-    mutate: jest.fn().mockImplementation(() => undefined)
-  })),
   useGetDelegateSizes: jest.fn().mockImplementation(args => {
     mockGetCallFunction(args)
     return { data: DelegateSizesmock, refetch: jest.fn(), error: null, loading: false }
@@ -28,18 +25,21 @@ jest.mock('services/portal', () => ({
   useValidateKubernetesYaml: jest.fn().mockImplementation(args => {
     mockGetCallFunction(args)
     return { data: {}, refetch: jest.fn(), error: null, loading: false }
-  }),
-  useGetDelegateTokens: jest.fn().mockImplementation(() => ({
-    mutate: jest.fn().mockImplementation(() => ({
-      resource: []
-    }))
-  }))
+  })
 }))
 jest.mock('services/cd-ng', () => ({
   useListDelegateProfilesNg: jest.fn().mockImplementation(args => {
     mockGetCallFunction(args)
     return { data: DelegateProfilesMock, refetch: jest.fn(), error: null, loading: false }
-  })
+  }),
+  useCreateDelegateToken: jest.fn().mockImplementation(() => ({
+    mutate: jest.fn().mockImplementation(() => undefined)
+  })),
+  useGetDelegateTokens: jest.fn().mockImplementation(() => ({
+    mutate: jest.fn().mockImplementation(() => ({
+      resource: []
+    }))
+  }))
 }))
 describe('Create DelegateSetup Step', () => {
   test('render data', () => {

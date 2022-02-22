@@ -54,7 +54,7 @@ export interface FlagChangesFormProps {
   setField: (fieldName: string, value: unknown) => void
   fieldValues: FlagConfigurationStepData
   selectedFeature: Feature
-  environment: string
+  environmentIdentifier: string
 }
 
 const FlagChangesForm: FC<FlagChangesFormProps> = ({
@@ -64,17 +64,16 @@ const FlagChangesForm: FC<FlagChangesFormProps> = ({
   fieldValues,
   initialInstructions,
   selectedFeature,
-  environment
+  environmentIdentifier
 }) => {
   const [isInitialRender, setIsInitialRender] = useState<boolean>(true)
-  const { accountId, orgIdentifier, projectIdentifier } = useParams<Record<string, string>>()
+  const { accountId: accountIdentifier, orgIdentifier, projectIdentifier } = useParams<Record<string, string>>()
 
   const queryParams = {
-    account: accountId,
-    accountIdentifier: accountId,
-    org: orgIdentifier,
-    project: projectIdentifier,
-    environment,
+    accountIdentifier,
+    orgIdentifier,
+    projectIdentifier,
+    environmentIdentifier,
     pageSize: 1000
   }
 

@@ -146,20 +146,24 @@ export const DatadogMetricsQueryBuilder = (
 }
 
 export function mapMetricTagsHostIdentifierKeysOptions(metricTags: string[]): SelectOption[] {
-  return Array.from(
-    new Set(
-      metricTags.concat('host').map(metricTag => {
-        return metricTag.split(':')?.[0]
-      })
+  if (metricTags && Array.isArray(metricTags)) {
+    return Array.from(
+      new Set(
+        metricTags.concat('host').map(metricTag => {
+          return metricTag.split(':')?.[0]
+        })
+      )
     )
-  )
-    .filter(tagKey => !!tagKey)
-    .map(tagKey => {
-      return {
-        label: tagKey,
-        value: tagKey
-      }
-    })
+      .filter(tagKey => !!tagKey)
+      .map(tagKey => {
+        return {
+          label: tagKey,
+          value: tagKey
+        }
+      })
+  } else {
+    return []
+  }
 }
 
 export function mapMetricTagsToMetricTagsOptions(metricTags: string[]): SelectOption[] {

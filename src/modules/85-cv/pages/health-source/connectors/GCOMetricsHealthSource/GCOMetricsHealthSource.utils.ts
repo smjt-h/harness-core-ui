@@ -55,6 +55,25 @@ export function formatJSON(val?: string | Record<string, unknown>): string | und
   }
 }
 
+export const getSelectedDashboards = (sourceData: any) => {
+  const selectedDashboards = []
+
+  const healthSource: UpdatedHealthSource = sourceData?.healthSourceList?.find(
+    (source: UpdatedHealthSource) => source.name === sourceData.healthSourceName
+  )
+
+  const gcoMetricSpec: StackdriverMetricHealthSourceSpec = healthSource?.spec || {}
+  for (const metricDefinition of gcoMetricSpec.metricDefinitions || []) {
+    if (!sourceData.selectedDashboards?.length) {
+      selectedDashboards.push({
+        name: metricDefinition.dashboardName,
+        id: metricDefinition.dashboardPath
+      })
+    }
+  }
+  return selectedDashboards
+}
+
 export function transformGCOMetricHealthSourceToGCOMetricSetupSource(sourceData: any): GCOMetricSetupSource {
   const healthSource: UpdatedHealthSource = sourceData?.healthSourceList?.find(
     (source: UpdatedHealthSource) => source.name === sourceData.healthSourceName
@@ -91,12 +110,6 @@ export function transformGCOMetricHealthSourceToGCOMetricSetupSource(sourceData:
       metricTags[tag] = ''
     }
 
-    if (!sourceData.selectedDashboards?.length) {
-      setupSource.selectedDashboards.push({
-        name: metricDefinition.dashboardName,
-        path: metricDefinition.dashboardPath
-      })
-    }
     setupSource.metricDefinition.set(metricDefinition.metricName, {
       metricName: metricDefinition.metricName,
       identifier: metricDefinition.identifier,

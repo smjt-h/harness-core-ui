@@ -53,7 +53,7 @@ import { NoTargetsView } from './NoTargetsView'
 import { NewTargets } from './NewTarget'
 
 export const TargetsPage: React.FC = () => {
-  const { activeEnvironment, withActiveEnvironment } = useActiveEnvironment()
+  const { activeEnvironment: environmentIdentifier, withActiveEnvironment } = useActiveEnvironment()
   const {
     EnvironmentSelect,
     loading: loadingEnvironments,
@@ -61,27 +61,26 @@ export const TargetsPage: React.FC = () => {
     refetch: refetchEnvs,
     environments
   } = useEnvironmentSelectV2({
-    selectedEnvironmentIdentifier: activeEnvironment,
+    selectedEnvironmentIdentifier: environmentIdentifier,
     onChange: (_value, _environment, _userEvent) => {
       rewriteCurrentLocationWithActiveEnvironment(_environment)
     }
   })
-  const { projectIdentifier, orgIdentifier, accountId } = useParams<Record<string, string>>()
+  const { projectIdentifier, orgIdentifier, accountId: accountIdentifier } = useParams<Record<string, string>>()
   const { getString } = useStrings()
   const [pageNumber, setPageNumber] = useState(0)
   const [searchTerm, setSearchTerm] = useState('')
   const queryParams = useMemo(
     () => ({
-      account: accountId,
-      accountIdentifier: accountId,
-      org: orgIdentifier,
-      project: projectIdentifier,
-      environment: activeEnvironment,
+      accountIdentifier,
+      orgIdentifier,
+      projectIdentifier,
+      environmentIdentifier,
       pageNumber,
       pageSize: CF_DEFAULT_PAGE_SIZE,
       targetName: searchTerm
     }),
-    [accountId, orgIdentifier, projectIdentifier, activeEnvironment, pageNumber, searchTerm] // eslint-disable-line react-hooks/exhaustive-deps
+    [accountIdentifier, orgIdentifier, projectIdentifier, environmentIdentifier, pageNumber, searchTerm] // eslint-disable-line react-hooks/exhaustive-deps
   )
   const {
     data: targetsData,
@@ -90,7 +89,7 @@ export const TargetsPage: React.FC = () => {
     refetch: refetchTargets
   } = useGetAllTargets({
     queryParams,
-    lazy: !activeEnvironment
+    lazy: !environmentIdentifier
   })
   const history = useHistory()
   const onSearchInputChanged = useCallback(
@@ -121,7 +120,7 @@ export const TargetsPage: React.FC = () => {
     <>
       <Layout.Horizontal spacing="medium">
         <NewTargets
-          accountId={accountId}
+          accountIdentifier={accountIdentifier}
           orgIdentifier={orgIdentifier}
           projectIdentifier={projectIdentifier}
           onCreated={() => {
@@ -148,7 +147,7 @@ export const TargetsPage: React.FC = () => {
       history.push(
         withActiveEnvironment(
           routes.toCFTargetDetails({
-            accountId,
+            accountId: accountIdentifier,
             orgIdentifier,
             projectIdentifier,
             targetIdentifier: identifier as string
@@ -156,18 +155,17 @@ export const TargetsPage: React.FC = () => {
         )
       )
     },
-    [history, accountId, orgIdentifier, projectIdentifier, withActiveEnvironment]
+    [history, accountIdentifier, orgIdentifier, projectIdentifier, withActiveEnvironment]
   )
   const { showError, clear } = useToaster()
   const deleteTargetParams = useMemo(
     () => ({
-      account: accountId,
-      accountIdentifier: accountId,
-      org: orgIdentifier,
-      project: projectIdentifier,
-      environment: activeEnvironment
+      accountIdentifier,
+      orgIdentifier,
+      projectIdentifier,
+      environmentIdentifier
     }),
-    [accountId, orgIdentifier, projectIdentifier, activeEnvironment] // eslint-disable-line react-hooks/exhaustive-deps
+    [accountIdentifier, orgIdentifier, projectIdentifier, environmentIdentifier] // eslint-disable-line react-hooks/exhaustive-deps
   )
   const { mutate: deleteTarget } = useDeleteTarget({
     queryParams: deleteTargetParams
@@ -301,7 +299,7 @@ export const TargetsPage: React.FC = () => {
                         gotoTargetDetailPage(cell.row.original.identifier as string)
                       },
                       permission: {
-                        resource: { resourceType: ResourceType.ENVIRONMENT, resourceIdentifier: activeEnvironment },
+                        resource: { resourceType: ResourceType.ENVIRONMENT, resourceIdentifier: environmentIdentifier },
                         permission: PermissionIdentifier.EDIT_FF_TARGETGROUP
                       },
                       ...planEnforcementProps
@@ -311,7 +309,7 @@ export const TargetsPage: React.FC = () => {
                       text: getString('delete'),
                       onClick: deleteTargetConfirm,
                       permission: {
-                        resource: { resourceType: ResourceType.ENVIRONMENT, resourceIdentifier: activeEnvironment },
+                        resource: { resourceType: ResourceType.ENVIRONMENT, resourceIdentifier: environmentIdentifier },
                         permission: PermissionIdentifier.DELETE_FF_TARGETGROUP
                       },
                       ...planEnforcementProps
@@ -324,7 +322,7 @@ export const TargetsPage: React.FC = () => {
         }
       }
     ],
-    [activeEnvironment]
+    [environmentIdentifier]
   )
 
   useEffect(() => {

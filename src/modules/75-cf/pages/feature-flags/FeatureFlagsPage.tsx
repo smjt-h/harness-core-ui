@@ -52,6 +52,7 @@ import {
   CF_DEFAULT_PAGE_SIZE,
   FeatureFlagActivationStatus,
   featureFlagHasCustomRules,
+  getDefaultVariation,
   getErrorMessage,
   isFeatureFlagOn,
   rewriteCurrentLocationWithActiveEnvironment,
@@ -314,9 +315,9 @@ const RenderColumnDetails: Renderer<CellProps<Feature>> = ({ row }) => {
   const { getString } = useStrings()
   const isOn = isFeatureFlagOn(data)
   const hasCustomRules = featureFlagHasCustomRules(data)
-  const index = data.variations.findIndex(
-    d => d.identifier === (isOn ? data.envProperties?.defaultServe.variation : data.envProperties?.offVariation)
-  )
+
+  const defaultVariation = getDefaultVariation(data)
+
   const isFlagTypeBoolean = data.kind === FlagTypeVariations.booleanFlag
   const typeToString = useFeatureFlagTypeToStringMapping()
 
@@ -336,8 +337,8 @@ const RenderColumnDetails: Renderer<CellProps<Feature>> = ({ row }) => {
       {!hasCustomRules && (
         <Container style={{ display: 'flex', alignItems: 'center' }}>
           <VariationWithIcon
-            variation={data.variations[index]}
-            index={index}
+            variation={defaultVariation}
+            index={data.variations.indexOf(defaultVariation)}
             textStyle={{
               fontSize: '12px',
               lineHeight: '24px',
@@ -345,7 +346,7 @@ const RenderColumnDetails: Renderer<CellProps<Feature>> = ({ row }) => {
               paddingLeft: 'var(--spacing-xsmall)'
             }}
             textElement={getString(isOn ? 'cf.featureFlags.defaultServedOn' : 'cf.featureFlags.defaultServedOff', {
-              defaultVariation: data.variations[index].name || data.variations[index].value
+              defaultVariation: defaultVariation.name || defaultVariation.value
             })}
           />
         </Container>
@@ -363,12 +364,11 @@ interface ColumnMenuProps {
 
 const RenderColumnEdit: React.FC<ColumnMenuProps> = ({ gitSync, deleteFlag, cell: { row, column }, environment }) => {
   const data = row.original
-  const { projectIdentifier, orgIdentifier, accountId } = useParams<Record<string, string>>()
+  const { projectIdentifier, orgIdentifier, accountId: accountIdentifier } = useParams<Record<string, string>>()
   const queryParams = {
-    project: projectIdentifier as string,
-    account: accountId,
-    accountIdentifier: accountId,
-    org: orgIdentifier
+    projectIdentifier,
+    accountIdentifier,
+    orgIdentifier
   } as DeleteFeatureFlagQueryParams
 
   const refetch = (column as unknown as { refetch: () => void }).refetch
@@ -388,24 +388,23 @@ const RenderColumnEdit: React.FC<ColumnMenuProps> = ({ gitSync, deleteFlag, cell
 }
 
 const FeatureFlagsPage: React.FC = () => {
-  const { projectIdentifier, orgIdentifier, accountId } = useParams<Record<string, string>>()
+  const { projectIdentifier, orgIdentifier, accountId: accountIdentifier } = useParams<Record<string, string>>()
   const history = useHistory()
-  const { activeEnvironment, withActiveEnvironment } = useActiveEnvironment()
+  const { activeEnvironment: environmentIdentifier, withActiveEnvironment } = useActiveEnvironment()
   const [pageNumber, setPageNumber] = useState(0)
   const [searchTerm, setSearchTerm] = useState('')
   const queryParams = useMemo(
     () => ({
-      project: projectIdentifier as string,
-      environment: activeEnvironment,
-      account: accountId,
-      accountIdentifier: accountId,
-      org: orgIdentifier,
+      projectIdentifier,
+      environmentIdentifier,
+      accountIdentifier,
+      orgIdentifier,
       pageSize: CF_DEFAULT_PAGE_SIZE,
       pageNumber,
       metrics: true,
       name: searchTerm
     }),
-    [projectIdentifier, activeEnvironment, accountId, orgIdentifier, pageNumber, searchTerm] // eslint-disable-line react-hooks/exhaustive-deps
+    [projectIdentifier, environmentIdentifier, accountIdentifier, orgIdentifier, pageNumber, searchTerm] // eslint-disable-line react-hooks/exhaustive-deps
   )
   const {
     data,
@@ -423,21 +422,21 @@ const FeatureFlagsPage: React.FC = () => {
     refetch: refetchEnvironments,
     environments
   } = useEnvironmentSelectV2({
-    selectedEnvironmentIdentifier: activeEnvironment,
+    selectedEnvironmentIdentifier: environmentIdentifier,
     onChange: (_value, _environment, _userEvent) => {
       rewriteCurrentLocationWithActiveEnvironment(_environment)
-      refetch({ queryParams: { ...queryParams, environment: _environment.identifier as string } })
+      refetch({ queryParams: { ...queryParams, environmentIdentifier: _environment.identifier as string } })
     },
     onEmpty: () => {
-      refetch({ queryParams: { ...queryParams, environment: undefined as unknown as string } })
+      refetch({ queryParams: { ...queryParams, environmentIdentifier: undefined as unknown as string } })
     }
   })
 
   const toggleFeatureFlag = useToggleFeatureFlag({
-    accountIdentifier: accountId,
+    accountIdentifier,
     orgIdentifier,
     projectIdentifier,
-    environmentIdentifier: activeEnvironment
+    environmentIdentifier
   })
 
   const deleteFlag = useDeleteFeatureFlag({ queryParams })
@@ -471,7 +470,6 @@ const FeatureFlagsPage: React.FC = () => {
         Header: getString('featureFlagsText').toUpperCase(),
         accessor: row => row.name,
         width: '40%',
-        activeEnvironment,
         Cell: function WrapperRenderColumnFlag(cell: Cell<Feature>) {
           return (
             <RenderColumnFlag
@@ -539,7 +537,7 @@ const FeatureFlagsPage: React.FC = () => {
         refetch
       }
     ],
-    [gitSync.isAutoCommitEnabled, gitSync.isGitSyncEnabled, activeEnvironment, features]
+    [refetch, gitSync, toggleFeatureFlag, features, deleteFlag.mutate]
   )
   const onSearchInputChanged = useCallback(
     name => {
@@ -552,7 +550,6 @@ const FeatureFlagsPage: React.FC = () => {
   const hasFeatureFlags = features?.features && features?.features?.length > 0
   const emptyFeatureFlags = !loading && features?.features?.length === 0
   const title = getString('featureFlagsText')
-
   const displayToolbar = hasFeatureFlags || searchTerm
 
   return (
@@ -564,7 +561,7 @@ const FeatureFlagsPage: React.FC = () => {
         displayToolbar && (
           <>
             <div className={css.leftToolbar}>
-              <FlagDialog environment={activeEnvironment} />
+              <FlagDialog environment={environmentIdentifier} />
               {gitSync?.isGitSyncActionsEnabled && (
                 <GitSyncActions
                   isLoading={gitSync.gitSyncLoading || gitSyncing}
@@ -620,7 +617,7 @@ const FeatureFlagsPage: React.FC = () => {
                     orgIdentifier: orgIdentifier as string,
                     projectIdentifier: projectIdentifier as string,
                     featureFlagIdentifier: feature.identifier,
-                    accountId
+                    accountId: accountIdentifier
                   })
                 )
               )
@@ -632,7 +629,7 @@ const FeatureFlagsPage: React.FC = () => {
       {!loading && emptyFeatureFlags && (
         <Container width="100%" height="100%" flex={{ align: 'center-center' }}>
           <NoData imageURL={imageURL} message={getString(searchTerm ? 'cf.noResultMatch' : 'cf.noFlag')}>
-            <FlagDialog environment={activeEnvironment} />
+            <FlagDialog environment={environmentIdentifier} />
           </NoData>
         </Container>
       )}

@@ -20,13 +20,9 @@ import {
   FormInput
 } from '@wings-software/uicore'
 import * as Yup from 'yup'
-import {
-  validateDockerDelegatePromise,
-  useGetDelegateTokens,
-  GetDelegateTokensQueryParams,
-  ValidateDockerDelegateQueryParams
-} from 'services/portal'
+import { validateDockerDelegatePromise, ValidateDockerDelegateQueryParams } from 'services/portal'
 import type { DelegateTokenDetails } from 'services/portal'
+import { useGetDelegateTokens, GetDelegateTokensQueryParams } from 'services/cd-ng'
 
 import { useStrings } from 'framework/strings'
 
@@ -115,7 +111,7 @@ const Step1Setup: React.FC<StepProps<DockerDelegateWizardData> & DelegateSetupSt
 
   const { data: tokensResponse, refetch: getTokens } = useGetDelegateTokens({
     queryParams: {
-      accountId,
+      accountIdentifier: accountId,
       projectIdentifier,
       orgIdentifier,
       status: 'ACTIVE'

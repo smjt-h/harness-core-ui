@@ -5,6 +5,8 @@
  * https://polyformproject.org/wp-content/uploads/2020/06/PolyForm-Shield-1.0.0.txt.
  */
 
+require('dotenv').config()
+
 const path = require('path')
 
 const webpack = require('webpack')
@@ -23,8 +25,9 @@ const {
 const CONTEXT = process.cwd()
 const ChildAppError = path.resolve(CONTEXT, './src/microfrontends/ChildAppError.tsx')
 
-const enableGitOpsUI = process.env.ENABLE_GITOPSUI === 'true'
-const enableSTO = process.env.ENABLE_STO === 'true'
+const enableGovernance = process.env.ENABLE_GOVERNANCE !== 'false'
+const enableGitOpsUI = process.env.ENABLE_GITOPSUI !== 'false'
+const enableSTO = process.env.ENABLE_STO !== 'false'
 const HARNESS_ENABLE_NG_AUTH_UI = process.env.HARNESS_ENABLE_NG_AUTH_UI !== 'false'
 
 const config = {
@@ -163,7 +166,9 @@ const config = {
   },
   plugins: [
     new ExternalRemotesPlugin(),
-    new ModuleFederationPlugin(moduleFederationConfig({ enableGitOpsUI, enableSTO })),
+    new ModuleFederationPlugin(
+      moduleFederationConfig({ enableGovernance, enableGitOpsUI, enableSTO })
+    ),
     new webpack.ContextReplacementPlugin(/moment[\/\\]locale$/, /en/),
     new webpack.DefinePlugin({
       'process.env': '{}', // required for @blueprintjs/core

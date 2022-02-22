@@ -29,8 +29,8 @@ const renderComponent = (props: Partial<FlagDetailsOptionsMenuButtonProps> = {})
         deleteFeatureFlag={jest.fn()}
         queryParams={{
           accountIdentifier: 'test_acc',
-          org: 'test_org',
-          project: 'test_project',
+          orgIdentifier: 'test_org',
+          projectIdentifier: 'test_project',
           commitMsg: 'test message'
         }}
         refetchFlag={jest.fn()}
@@ -96,7 +96,12 @@ describe('FlagDetailsOptionsMenuButton', () => {
       userEvent.click(screen.getByRole('button', { name: 'delete' }))
 
       expect(deleteFlagMock).toBeCalledWith('new_flag', {
-        queryParams: { accountIdentifier: 'test_acc', commitMsg: '', org: 'test_org', project: 'test_project' }
+        queryParams: {
+          accountIdentifier: 'test_acc',
+          commitMsg: '',
+          orgIdentifier: 'test_org',
+          projectIdentifier: 'test_project'
+        }
       })
     })
 
@@ -149,7 +154,12 @@ describe('FlagDetailsOptionsMenuButton', () => {
       userEvent.click(screen.getByRole('button', { name: 'delete' }))
 
       expect(deleteFlagMock).toBeCalledWith('new_flag', {
-        queryParams: { accountIdentifier: 'test_acc', commitMsg: '', org: 'test_org', project: 'test_project' }
+        queryParams: {
+          accountIdentifier: 'test_acc',
+          commitMsg: '',
+          orgIdentifier: 'test_org',
+          projectIdentifier: 'test_project'
+        }
       })
     })
 
@@ -179,8 +189,8 @@ describe('FlagDetailsOptionsMenuButton', () => {
           queryParams: {
             accountIdentifier: 'test_acc',
             commitMsg: 'test commit message',
-            org: 'test_org',
-            project: 'test_project'
+            orgIdentifier: 'test_org',
+            projectIdentifier: 'test_project'
           }
         })
       )
@@ -212,8 +222,8 @@ describe('FlagDetailsOptionsMenuButton', () => {
           queryParams: {
             accountIdentifier: 'test_acc',
             commitMsg: 'test commit message',
-            org: 'test_org',
-            project: 'test_project'
+            orgIdentifier: 'test_org',
+            projectIdentifier: 'test_project'
           }
         })
       )

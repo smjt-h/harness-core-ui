@@ -118,7 +118,13 @@ serviceDashboard:
   helmChartDetails: Helm Chart Details
   helmChartName: Helm Chart Name
   helmRopoUrl: Repo URL
+noEnvironment:
+  title: No Environments Available
+  message: Create an environment and let’s start configuring the deployment
 gitOps: GitOps
+addService: Add Service
+addEnvironment: Add Environment
+editIdError: 'ID: {{id}} cannot be edited'
 newAdapter: New Adapter
 newGitOpsServer: New GitOps Server
 adapterDetails: Adapter Details
@@ -132,6 +138,8 @@ installAdapterHelperText: 'Install Argo CD adapter in your cluster. This adapter
 whatIsHarnessAdapter: 'What is an Adapter?'
 aboutHarnessAdapter: 'The adapter is a service you run in your local network or VPC to establish connectivity between Harness UI and Argo CD.'
 learnMoreAboutHarnessAdapter: 'Learn More about this'
+nameEmptyError: 'Service name cannot be empty'
+IdEmptyError: 'Identifier cannot be empty'
 updating: 'Updating adapter {{name}}'
 creating: 'Creating adapter {{name}}'
 createdSuccessfully: 'Adapter {{name}} created successfully'
@@ -169,6 +177,20 @@ featureRestriction:
     deploymentsPerMonthLevelUp: 'You have used {{ count }} / {{ deploymentsLimit }} free deployments this month. Consider upgrading for unlimited deployments.'
     serviceAndDeploymentsLevelUp: 'You have used {{ deploymentsLimit }} free deployments this month and {{ serviceLimit }} free services. Consider upgrading for higher limits.'
     serviceWarningActive: You have used {{ warningLimit }}% of your service subscription limit.
+
     dpmWarningActive: You have used {{ count }} / {{ warningLimit }} free deployments this month.
     initialDeploymentsWarningActive: You have used {{ warningLimit }}% of deployments included in the free plan. After 1,000 deployments, the free plan will be restricted to 100 deployments per month.
     serviceOveruseTeamEnterprise: You have exceeded your service subscription limit. Consider increasing your limits to keep shipping.
+configFileDetails: 'Config File Details'
+configFileStore: 'Specify Terraform Config File Store'
+configFileStepOne: 'Terraform Config Store'
+configFileStoreTitle: 'Config File'
+selectRepository: Select a repository
+selectArtifact: Select an artifact
+artifactName: Artifact Name
+artifactFormErrors:
+  artifactFilePath: Enter the artifact path. You can use wildcards such as `todo/*/*`
+  repositoryName: Repository name is required
+  artifactName: '{{$.validation.nameRequired}}'
+artifactPath: Artifact Path
+artifactPaths: Artifact Paths

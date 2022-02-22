@@ -26,7 +26,7 @@ export const ManifestDataType: Record<ManifestTypes, ManifestTypes> = {
 export const ManifestStoreMap: { [key: string]: ManifestStores } = {
   Git: 'Git',
   Github: 'Github',
-  GitLab: 'GitLab',
+  GitLab: 'Gitlab',
   Bitbucket: 'Bitbucket',
   Http: 'Http',
   S3: 'S3',
@@ -81,7 +81,7 @@ export const helmVersions: Array<{ label: string; value: HelmVersionOptions }> =
 export const ManifestIconByType: Record<ManifestStores, IconName> = {
   Git: 'service-github',
   Github: 'github',
-  GitLab: 'service-gotlab',
+  Gitlab: 'service-gotlab',
   Bitbucket: 'bitbucket',
   Http: 'service-helm',
   S3: 'service-service-s3',
@@ -91,7 +91,7 @@ export const ManifestIconByType: Record<ManifestStores, IconName> = {
 export const ManifestStoreTitle: Record<ManifestStores, StringKeys> = {
   Git: 'pipeline.manifestType.gitConnectorLabel',
   Github: 'common.repo_provider.githubLabel',
-  GitLab: 'common.repo_provider.gitlabLabel',
+  Gitlab: 'common.repo_provider.gitlabLabel',
   Bitbucket: 'pipeline.manifestType.bitBucketLabel',
   Http: 'pipeline.manifestType.httpHelmRepoConnectorLabel',
   S3: 'connectors.S3',
@@ -111,7 +111,7 @@ export const ManifestToConnectorMap: Record<ManifestStores | string, ConnectorIn
 export const ManifestToConnectorLabelMap: Record<ManifestStores, StringKeys> = {
   Git: 'pipeline.manifestType.gitConnectorLabel',
   Github: 'common.repo_provider.githubLabel',
-  GitLab: 'common.repo_provider.gitlabLabel',
+  Gitlab: 'common.repo_provider.gitlabLabel',
   Bitbucket: 'pipeline.manifestType.bitBucketLabel',
   Http: 'connectors.title.helmConnector',
   S3: 'pipeline.manifestToConnectorLabelMap.AWSLabel',

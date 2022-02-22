@@ -33,8 +33,8 @@ $ brew install yarn
 3. Clone this repo
 
 ```
-$ git clone git@github.com:wings-software/nextgenui.git
-$ cd nextgenui
+$ git clone git@github.com:harness/harness-core-ui.git
+$ cd harness-core-ui
 ```
 
 4. Add config to make Harness Github Package Registry accessible

@@ -138,3 +138,8 @@ export enum AS_RESOURCE_TYPE {
 }
 
 export const ENFORCEMENT_USAGE_THRESHOLD = 90
+
+export enum AdvancedConfigTabs {
+  deps = 'deps',
+  schedules = 'schedules'
+}

@@ -27,7 +27,7 @@ import type { IDialogProps } from '@blueprintjs/core'
 import { NameSchema } from '@common/utils/Validation'
 import CopyToClipboard from '@common/components/CopyToClipBoard/CopyToClipBoard'
 import { useStrings } from 'framework/strings'
-import { useCreateDelegateToken, CreateDelegateTokenQueryParams } from 'services/portal'
+import { useCreateDelegateToken, CreateDelegateTokenQueryParams } from 'services/cd-ng'
 
 import css from '../DelegateTokens.module.scss'
 
@@ -61,7 +61,7 @@ export const useCreateTokenModal = ({ onSuccess }: CreateTokenModalProps): Creat
 
   const { mutate: createToken, loading } = useCreateDelegateToken({
     queryParams: {
-      accountId,
+      accountIdentifier: accountId,
       orgIdentifier,
       projectIdentifier,
       tokenName: ''
@@ -73,8 +73,9 @@ export const useCreateTokenModal = ({ onSuccess }: CreateTokenModalProps): Creat
   const onSubmit = async (values: FormikProps, formikActions: FormikActions<any>) => {
     try {
       const createTokenResponse = await createToken(undefined, {
+        headers: { 'content-type': 'application/json' },
         queryParams: {
-          accountId,
+          accountIdentifier: accountId,
           orgIdentifier,
           projectIdentifier,
           tokenName: values.name

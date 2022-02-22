@@ -94,7 +94,7 @@ describe('EnvironmentDetailsBody', () => {
       identifier: 'NewKey',
       apiKey: 'api-key',
       name: 'NewKey',
-      type: 'Server'
+      type: 'server'
     }
 
     renderComponent()
@@ -116,7 +116,7 @@ describe('EnvironmentDetailsBody', () => {
       name: 'EXISTING KEY NAME',
       identifier: 'EXISTING KEY IDENTIFIER',
       apiKey: 'existing-api-key',
-      type: 'Server'
+      type: 'server'
     }
 
     useGetAllAPIKeysMock.mockReturnValue(getMockResponseData([existingKey]))

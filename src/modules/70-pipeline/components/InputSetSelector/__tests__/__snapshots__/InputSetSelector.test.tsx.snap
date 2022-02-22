@@ -320,7 +320,8 @@ exports[`INPUT SET SELECTOR input set displayed in popover list: snapshot aftero
                           class="bp3-control-indicator"
                         />
                         <div
-                          class="Layout--horizontal StyledProps--main StyledProps--flex StyledProps--flex-alignItems-center"
+                          class="Layout--horizontal StyledProps--main StyledProps--flex StyledProps--flex-alignItems-center StyledProps--flex-justifyContent-flex-start"
+                          style="width: 100%;"
                         >
                           <span
                             class="bp3-icon StyledProps--main"
@@ -411,7 +412,8 @@ exports[`INPUT SET SELECTOR input set displayed in popover list: snapshot aftero
                           class="bp3-control-indicator"
                         />
                         <div
-                          class="Layout--horizontal StyledProps--main StyledProps--flex StyledProps--flex-alignItems-center"
+                          class="Layout--horizontal StyledProps--main StyledProps--flex StyledProps--flex-alignItems-center StyledProps--flex-justifyContent-flex-start"
+                          style="width: 100%;"
                         >
                           <span
                             class="bp3-icon StyledProps--main"
@@ -874,7 +876,8 @@ exports[`INPUT SET SELECTOR input set displayed in popover list: snapshot aftero
                           class="bp3-control-indicator"
                         />
                         <div
-                          class="Layout--horizontal StyledProps--main StyledProps--flex StyledProps--flex-alignItems-center"
+                          class="Layout--horizontal StyledProps--main StyledProps--flex StyledProps--flex-alignItems-center StyledProps--flex-justifyContent-flex-start"
+                          style="width: 100%;"
                         >
                           <span
                             class="bp3-icon StyledProps--main"
@@ -965,7 +968,8 @@ exports[`INPUT SET SELECTOR input set displayed in popover list: snapshot aftero
                           class="bp3-control-indicator"
                         />
                         <div
-                          class="Layout--horizontal StyledProps--main StyledProps--flex StyledProps--flex-alignItems-center"
+                          class="Layout--horizontal StyledProps--main StyledProps--flex StyledProps--flex-alignItems-center StyledProps--flex-justifyContent-flex-start"
+                          style="width: 100%;"
                         >
                           <span
                             class="bp3-icon StyledProps--main"
@@ -1428,7 +1432,8 @@ exports[`INPUT SET SELECTOR input set displayed in popover list: snapshot aftero
                           class="bp3-control-indicator"
                         />
                         <div
-                          class="Layout--horizontal StyledProps--main StyledProps--flex StyledProps--flex-alignItems-center"
+                          class="Layout--horizontal StyledProps--main StyledProps--flex StyledProps--flex-alignItems-center StyledProps--flex-justifyContent-flex-start"
+                          style="width: 100%;"
                         >
                           <span
                             class="bp3-icon StyledProps--main"
@@ -1519,7 +1524,8 @@ exports[`INPUT SET SELECTOR input set displayed in popover list: snapshot aftero
                           class="bp3-control-indicator"
                         />
                         <div
-                          class="Layout--horizontal StyledProps--main StyledProps--flex StyledProps--flex-alignItems-center"
+                          class="Layout--horizontal StyledProps--main StyledProps--flex StyledProps--flex-alignItems-center StyledProps--flex-justifyContent-flex-start"
+                          style="width: 100%;"
                         >
                           <span
                             class="bp3-icon StyledProps--main"

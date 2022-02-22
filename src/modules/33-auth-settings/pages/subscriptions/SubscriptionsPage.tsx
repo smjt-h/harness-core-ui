@@ -192,7 +192,7 @@ const SubscriptionsPage: React.FC = () => {
   }
 
   function getModuleSelectElements(): React.ReactElement[] {
-    const cards = ACTIVE_MODULE_SELECT_CARDS.map(cardData => {
+    return ACTIVE_MODULE_SELECT_CARDS.map(cardData => {
       function handleCardClick(): void {
         setSelectedModuleCard(cardData)
         // reset default tab
@@ -209,7 +209,7 @@ const SubscriptionsPage: React.FC = () => {
           selected={isSelected}
           onClick={handleCardClick}
         >
-          <Layout.Horizontal width={150}>
+          <Layout.Horizontal width={200}>
             <Icon className={css.moduleIcons} name={cardData.icon} size={28} />
             <Layout.Vertical>
               <Text color={Color.BLACK} font={{ size: 'xsmall' }}>
@@ -223,8 +223,6 @@ const SubscriptionsPage: React.FC = () => {
         </Card>
       )
     })
-
-    return cards
   }
 
   const expiryTime = latestModuleLicense?.expiryTime

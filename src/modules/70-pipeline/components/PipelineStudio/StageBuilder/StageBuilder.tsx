@@ -8,7 +8,7 @@
 import React from 'react'
 import { Intent, Layout, useToaster, useConfirmationDialog } from '@wings-software/uicore'
 import cx from 'classnames'
-import { cloneDeep, debounce, isEmpty, isNil, noop } from 'lodash-es'
+import { cloneDeep, debounce, defaultTo, isEmpty, isNil, noop } from 'lodash-es'
 import type { NodeModelListener, LinkModelListener } from '@projectstorm/react-diagrams-core'
 import SplitPane from 'react-split-pane'
 import { DynamicPopover, DynamicPopoverHandlerBinding } from '@common/components/DynamicPopover/DynamicPopover'
@@ -36,6 +36,7 @@ import {
   DefaultNodeModel,
   DiagramType,
   Event,
+  GroupNodeModelOptions,
   NodeStartModel
 } from '../../Diagram'
 import { StageBuilderModel } from './StageBuilderModel'
@@ -56,7 +57,7 @@ import {
   getNewStageFromTemplate
 } from './StageBuilderUtil'
 import { useStageBuilderCanvasState } from './useStageBuilderCanvasState'
-import { StageList } from './views/StageList'
+import { StageList } from './views/StageList/StageList'
 import { SplitViewTypes } from '../PipelineContext/PipelineActions'
 import { usePipelineContext } from '../PipelineContext/PipelineContext'
 import css from './StageBuilder.module.scss'
@@ -343,8 +344,10 @@ const StageBuilder: React.FC<unknown> = (): JSX.Element => {
         linkListeners
       },
       stagesMap,
+      zoomLevel: model.getZoomLevel(),
       getString,
       isReadonly,
+      splitPaneSize: canvasRef.current?.offsetHeight,
       parentPath: 'pipeline.stages',
       errorMap,
       templateTypes
@@ -447,8 +450,9 @@ const StageBuilder: React.FC<unknown> = (): JSX.Element => {
             },
             { useArrows: true, darkMode: false, fixedPosition: false }
           )
-        } else if (eventTemp.entity.getType() === DiagramType.GroupNode && selectedStageId) {
+        } else if (eventTemp.entity.getType() === DiagramType.GroupNode) {
           const parent = getStageFromPipeline(eventTemp.entity.getIdentifier()).parent as StageElementWrapperConfig
+          const parallelStages = (eventTemp.entity.getOptions() as GroupNodeModelOptions).parallelNodes
           /* istanbul ignore else */ if (parent?.parallel) {
             dynamicPopoverHandler?.show(
               `[data-nodeid="${eventTemp.entity.getID()}"]`,
@@ -456,7 +460,9 @@ const StageBuilder: React.FC<unknown> = (): JSX.Element => {
                 isGroupStage: true,
                 groupSelectedStageId: selectedStageId,
                 isStageView: false,
-                groupStages: parent.parallel,
+                groupStages: parent.parallel.filter(
+                  node => parallelStages.indexOf(defaultTo(node.stage?.identifier, '')) > -1
+                ),
                 onClickGroupStage: (stageId: string) => {
                   dynamicPopoverHandler?.hide()
                   setSelectionRef.current({ stageId })
@@ -829,6 +835,7 @@ const StageBuilder: React.FC<unknown> = (): JSX.Element => {
 
   //2) setup the diagram model
   const model = React.useMemo(() => new StageBuilderModel(), [])
+
   const [splitPaneSize, setSplitPaneSize] = React.useState(DefaultSplitPaneSize)
 
   model.addUpdateGraph({
@@ -837,11 +844,12 @@ const StageBuilder: React.FC<unknown> = (): JSX.Element => {
       nodeListeners,
       linkListeners
     },
+    zoomLevel: model.getZoomLevel(),
     stagesMap,
     getString,
     isReadonly,
     selectedStageId,
-    splitPaneSize,
+    splitPaneSize: canvasRef.current?.offsetHeight,
     parentPath: 'pipeline.stages',
     errorMap,
     templateTypes
@@ -881,7 +889,29 @@ const StageBuilder: React.FC<unknown> = (): JSX.Element => {
         render={renderPopover}
         bind={setDynamicPopoverHandler}
       />
-      <CanvasButtons tooltipPosition="left" engine={engine} callback={() => dynamicPopoverHandler?.hide()} />
+      <CanvasButtons
+        tooltipPosition="left"
+        engine={engine}
+        callback={() => {
+          dynamicPopoverHandler?.hide()
+          model.addUpdateGraph({
+            data: pipeline,
+            listeners: {
+              nodeListeners,
+              linkListeners
+            },
+            zoomLevel: model.getZoomLevel(),
+            stagesMap,
+            getString,
+            isReadonly,
+            selectedStageId,
+            splitPaneSize: canvasRef.current?.offsetHeight,
+            parentPath: 'pipeline.stages',
+            errorMap,
+            templateTypes
+          })
+        }}
+      />
     </div>
   )
 

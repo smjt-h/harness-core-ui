@@ -201,7 +201,7 @@ export default function PipelineDetails({ children }: React.PropsWithChildren<un
                   disabled: pipelineIdentifier === DefaultNewPipelineId
                 },
                 {
-                  label: getString('pipeline.triggers.triggersLabel'),
+                  label: getString('common.triggersLabel'),
                   to: routes.toTriggersPage({
                     orgIdentifier,
                     projectIdentifier,

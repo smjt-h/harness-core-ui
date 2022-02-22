@@ -1,6 +1,6 @@
 // Jest Snapshot v1, https://goo.gl/fbAQLP
 
-exports[`Create Docker Step1Setup render data 1`] = `
+exports[`Create Docker Step1Setup render step1 initial 1`] = `
 <div>
   <div
     class="Layout--vertical StyledProps--main StyledProps--padding-xxlarge"

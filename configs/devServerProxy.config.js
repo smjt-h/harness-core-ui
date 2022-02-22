@@ -5,8 +5,6 @@
  * https://polyformproject.org/wp-content/uploads/2020/06/PolyForm-Shield-1.0.0.txt.
  */
 
-require('dotenv').config()
-
 const baseUrl = process.env.BASE_URL ?? 'https://qa.harness.io/gateway'
 const targetLocalHost = (process.env.TARGET_LOCALHOST && JSON.parse(process.env.TARGET_LOCALHOST)) ?? true // set to false to target baseUrl environment instead of localhost
 console.table({ baseUrl, targetLocalHost })
@@ -87,11 +85,11 @@ module.exports = {
   },
   '/sto/api': {
     pathRewrite: { '^/sto': '' },
-    target: process.env.STO_API_URL || 'http://localhost:3001'
+    target: process.env.STO_API_URL || 'http://localhost:4000'
   },
   '/sto': {
     pathRewrite: { '^/sto': '' },
-    target: process.env.STO_UI_URL || 'http://localhost:3000'
+    target: process.env.STO_UI_URL || 'http://localhost:3002'
   },
   '/gitops': {
     pathRewrite: { '^/gitops': '' },

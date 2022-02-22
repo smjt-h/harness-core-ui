@@ -5,9 +5,11 @@
  * https://polyformproject.org/wp-content/uploads/2020/06/PolyForm-Shield-1.0.0.txt.
  */
 
+import { isEmpty } from 'lodash-es'
 import type { UseStringsReturn } from 'framework/strings'
 import { Scope } from '@common/interfaces/SecretsInterface'
 import type { ProjectPathProps } from '@common/interfaces/RouteInterfaces'
+import type { TemplateSummaryResponse } from 'services/template-ng'
 
 export enum TemplateType {
   Step = 'Step',
@@ -73,3 +75,11 @@ export const getAllowedTemplateTypes = (getString: UseStringsReturn['getString']
     disabled: true
   }
 ]
+
+export const getVersionLabelText = (template: TemplateSummaryResponse, getString: UseStringsReturn['getString']) => {
+  return isEmpty(template.versionLabel)
+    ? getString('templatesLibrary.alwaysUseStableVersion')
+    : template.stableTemplate
+    ? getString('templatesLibrary.stableVersion', { entity: template.versionLabel })
+    : template.versionLabel
+}

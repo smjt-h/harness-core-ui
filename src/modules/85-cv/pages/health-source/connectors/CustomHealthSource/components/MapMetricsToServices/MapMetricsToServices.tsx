@@ -12,13 +12,14 @@ import { useStrings } from 'framework/strings'
 import { NameId } from '@common/components/NameIdDescriptionTags/NameIdDescriptionTags'
 import { SetupSourceTabsContext } from '@cv/components/CVSetupSourcesView/SetupSourceTabs/SetupSourceTabs'
 import GroupName from '@cv/components/GroupName/GroupName'
-import { initializeGroupNames } from './MapMetricsToServices.utils'
+import { initializeGroupNames } from '@cv/pages/health-source/common/GroupName/GroupName.utils'
 import { CustomHealthSourceFieldNames } from '../../CustomHealthSource.constants'
 import type { MapMetricsToServicesInterface } from './MapMetricsToServices.types'
 import css from './MapMetricsToServices.module.scss'
 
 export default function MapMetricsToServices({
-  formikProps,
+  onChange,
+  formValue,
   mappedMetrics,
   selectedMetric
 }: MapMetricsToServicesInterface): JSX.Element {
@@ -47,8 +48,8 @@ export default function MapMetricsToServices({
       />
       <GroupName
         groupNames={groupNames}
-        onChange={formikProps.setFieldValue}
-        item={formikProps.values?.groupName}
+        onChange={onChange}
+        item={formValue?.groupName}
         setGroupNames={setPrometheusGroupName}
         label={getString('cv.monitoringSources.prometheus.groupName')}
         title={getString('cv.customHealthSource.addGroupNameTitle')}

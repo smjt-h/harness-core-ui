@@ -90,7 +90,7 @@ const renderComponent = (
               fieldValues={values}
               initialInstructions={get(initialValues, 'spec.instructions')}
               selectedFeature={mockFeature}
-              environment="e1"
+              environmentIdentifier="e1"
               {...props}
             />
           )

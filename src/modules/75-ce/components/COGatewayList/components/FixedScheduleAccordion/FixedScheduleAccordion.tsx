@@ -153,11 +153,17 @@ const FixedScheduleAccordion: React.FC<FixedScheduleAccordionProps> = props => {
 
   const scheduleClientData = data?.response?.map(s => Utils.convertScheduleToClientSchedule(s))
 
+  const totalSchedules = _defaultTo(data?.response?.length, 0)
+
   return (
     <Accordion className={css.serviceAccordionContainer}>
       <Accordion.Panel
         id="fixedSchedules"
-        summary={`${_defaultTo(data?.response?.length, '')} Fixed Schedule`}
+        summary={`${totalSchedules} ${
+          totalSchedules > 1
+            ? getString('ce.co.autoStoppingRule.configuration.step4.tabs.schedules.title')
+            : getString('ce.co.autoStoppingRule.configuration.step4.tabs.schedules.fixedSchedule')
+        }`}
         details={
           <Container className={css.scheduleAccordion}>
             <Heading level={4} color={Color.GREY_400}>

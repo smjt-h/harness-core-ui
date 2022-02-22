@@ -22,6 +22,12 @@
         }
       }
     }
+    .bp3-dialog {
+      transform: unset !important;
+      top: unset !important;
+      right: inherit !important;
+      border-left: none !important;
+    }
   }
 
   .content {
@@ -125,13 +131,4 @@
 
 .callLogs {
   cursor: pointer !important;
-}
-
-:global {
-  .bp3-dialog {
-    transform: unset !important;
-    top: unset !important;
-    right: inherit !important;
-    border-left: none !important;
-  }
 }

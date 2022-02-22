@@ -48,14 +48,13 @@ exports[`HealthSource table Should Render all the componetns in edit mode for cl
         </div>
         <div
           aria-controls="bp3-tab-panel_setup-sources_2"
-          aria-disabled="false"
+          aria-disabled="true"
           aria-expanded="false"
           aria-selected="false"
           class="bp3-tab"
           data-tab-id="2"
           id="bp3-tab-title_setup-sources_2"
           role="tab"
-          tabindex="0"
         >
           cv.healthSource.customizeHealthSource
         </div>

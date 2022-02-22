@@ -8,10 +8,10 @@
 import React, { useState } from 'react'
 import { Layout, Toggle, Tabs, Tab } from '@wings-software/uicore'
 import { defaultTo as _defaultTo } from 'lodash-es'
-import { CONFIG_STEP_IDS, RESOURCES } from '@ce/constants'
+import { AdvancedConfigTabs, CONFIG_STEP_IDS, RESOURCES } from '@ce/constants'
 import { useStrings } from 'framework/strings'
 import { Utils } from '@ce/common/Utils'
-import type { FixedScheduleClient, GatewayDetails } from '@ce/components/COCreateGateway/models'
+import type { ActiveStepDetailsProps, FixedScheduleClient, GatewayDetails } from '@ce/components/COCreateGateway/models'
 import type { Service } from 'services/lw'
 import COGatewayConfigStep from '../../COGatewayConfigStep'
 import RuleDependency from './RuleDependency'
@@ -23,17 +23,17 @@ interface AdvancedConfigurationProps {
   gatewayDetails: GatewayDetails
   setGatewayDetails: (details: GatewayDetails) => void
   allServices: Service[]
-}
-
-enum AdvancedConfigTabs {
-  deps = 'deps',
-  schedules = 'schedules'
+  activeStepDetails?: ActiveStepDetailsProps | null
 }
 
 const AdvancedConfiguration: React.FC<AdvancedConfigurationProps> = props => {
   const { getString } = useStrings()
 
-  const [selectedTab, setSelectedTab] = useState<AdvancedConfigTabs>(AdvancedConfigTabs.deps)
+  const [selectedTab, setSelectedTab] = useState<AdvancedConfigTabs>(
+    props.activeStepDetails?.count === 4 && props.activeStepDetails?.tabId
+      ? (props.activeStepDetails?.tabId as AdvancedConfigTabs)
+      : AdvancedConfigTabs.deps
+  )
 
   const isK8sSelected = props.selectedResource === RESOURCES.KUBERNETES
   const isAwsProvider = Utils.isProviderAws(props.gatewayDetails.provider)

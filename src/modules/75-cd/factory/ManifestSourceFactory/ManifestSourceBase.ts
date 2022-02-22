@@ -5,12 +5,9 @@
  * https://polyformproject.org/wp-content/uploads/2020/06/PolyForm-Shield-1.0.0.txt.
  */
 
-import type { StringsMap } from 'stringTypes'
-import type { KubernetesServiceInputFormProps } from '@pipeline/factories/ArtifactTriggerInputFactory/types'
-
-export interface ManifestSourceRenderProps extends KubernetesServiceInputFormProps {
+import type { KubernetesManifestsProps } from '@cd/components/PipelineSteps/K8sServiceSpec/K8sServiceSpecInterface'
+export interface ManifestSourceRenderProps extends KubernetesManifestsProps {
   isManifestsRuntime: boolean
-  getString: (key: keyof StringsMap, vars?: Record<string, any> | undefined) => string
   projectIdentifier: string
   orgIdentifier: string
   accountId: string
@@ -21,10 +18,9 @@ export interface ManifestSourceRenderProps extends KubernetesServiceInputFormPro
 
 export abstract class ManifestSourceBase<T> {
   protected abstract manifestType: string
-  abstract isFieldDisabled(params: T): boolean
-  abstract renderContent(props: ManifestSourceRenderProps): JSX.Element | null
+  abstract renderContent(props: T): JSX.Element | null
 
-  getManifestSourceType() {
+  getManifestSourceType(): string {
     return this.manifestType
   }
 }
