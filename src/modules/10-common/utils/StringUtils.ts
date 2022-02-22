@@ -55,7 +55,7 @@ export const regexPositiveNumbers = /^[1-9]+[0-9]*$/
 
 export const regexIdentifier = /^[a-zA-Z_.][0-9a-zA-Z_$]*$/
 
-export const keyRegexIdentifier = /^[a-zA-Z_][0-9a-zA-Z_$]+(\.[0-9a-zA-Z_$]+)*$/
+export const keyRegexIdentifier = /^([a-zA-Z_])([0-9a-zA-Z_$]*)+((\.[0-9a-zA-Z_$]+)*)$/
 
 export const k8sLabelRegex = /[a-z0-9]([-a-z0-9]*[a-z0-9])?(\.[a-z0-9]([-a-z0-9]*[a-z0-9])?)*/
 
