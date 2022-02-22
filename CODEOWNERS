@@ -33,6 +33,8 @@ src/modules/35-user-profile @harness/ui-platform
 src/modules/40-gitsync @harness/ui-platform
 src/modules/45-projects-orgs @harness/ui-platform
 src/modules/70-pipeline @harness/ui-pipeline
+src/modules/70-pipeline/pages/triggers @harness/ui-ci
+src/modules/70-pipeline/pages/trigger-details @harness/ui-ci
 src/modules/72-templates-library @harness/ui-pipeline
 src/modules/75-cd @harness/ui-pipeline
 src/modules/85-cv @harness/ui-cv
