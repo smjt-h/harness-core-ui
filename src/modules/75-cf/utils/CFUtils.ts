@@ -387,3 +387,21 @@ export enum CFEntityType {
   TARGET = 'target',
   TARGET_GROUP = 'segment'
 }
+
+export const getDefaultVariation = (flag: Feature): Variation => {
+  if (!isFeatureFlagOn(flag)) {
+    return flag.variations.find(({ identifier }) => identifier === flag.defaultOffVariation) as Variation
+  }
+
+  if (flag.envProperties?.defaultServe?.variation) {
+    const variation = flag.variations.find(
+      ({ identifier }) => identifier === flag.envProperties?.defaultServe?.variation
+    )
+
+    if (variation) {
+      return variation
+    }
+  }
+
+  return flag.variations.find(({ identifier }) => identifier === flag.defaultOnVariation) as Variation
+}

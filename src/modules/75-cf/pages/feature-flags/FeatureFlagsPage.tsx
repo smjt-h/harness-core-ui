@@ -52,6 +52,7 @@ import {
   CF_DEFAULT_PAGE_SIZE,
   FeatureFlagActivationStatus,
   featureFlagHasCustomRules,
+  getDefaultVariation,
   getErrorMessage,
   isFeatureFlagOn,
   rewriteCurrentLocationWithActiveEnvironment,
@@ -314,9 +315,9 @@ const RenderColumnDetails: Renderer<CellProps<Feature>> = ({ row }) => {
   const { getString } = useStrings()
   const isOn = isFeatureFlagOn(data)
   const hasCustomRules = featureFlagHasCustomRules(data)
-  const index = data.variations.findIndex(
-    d => d.identifier === (isOn ? data.envProperties?.defaultServe.variation : data.envProperties?.offVariation)
-  )
+
+  const defaultVariation = getDefaultVariation(data)
+
   const isFlagTypeBoolean = data.kind === FlagTypeVariations.booleanFlag
   const typeToString = useFeatureFlagTypeToStringMapping()
 
@@ -336,8 +337,8 @@ const RenderColumnDetails: Renderer<CellProps<Feature>> = ({ row }) => {
       {!hasCustomRules && (
         <Container style={{ display: 'flex', alignItems: 'center' }}>
           <VariationWithIcon
-            variation={data.variations[index]}
-            index={index}
+            variation={defaultVariation}
+            index={data.variations.indexOf(defaultVariation)}
             textStyle={{
               fontSize: '12px',
               lineHeight: '24px',
@@ -345,7 +346,7 @@ const RenderColumnDetails: Renderer<CellProps<Feature>> = ({ row }) => {
               paddingLeft: 'var(--spacing-xsmall)'
             }}
             textElement={getString(isOn ? 'cf.featureFlags.defaultServedOn' : 'cf.featureFlags.defaultServedOff', {
-              defaultVariation: data.variations[index].name || data.variations[index].value
+              defaultVariation: defaultVariation.name || defaultVariation.value
             })}
           />
         </Container>

@@ -5,6 +5,7 @@
  * https://polyformproject.org/wp-content/uploads/2020/06/PolyForm-Shield-1.0.0.txt.
  */
 
+import { set, cloneDeep, omit } from 'lodash-es'
 import type { Feature } from 'services/cf'
 import * as CFUtils from '../CFUtils'
 
@@ -37,6 +38,49 @@ describe('CFUtils', () => {
       expect(CFUtils.formatToCompactNumber(1000000)).toEqual('1M')
       expect(CFUtils.formatToCompactNumber(10000000)).toEqual('10M')
       expect(CFUtils.formatToCompactNumber(100000000)).toEqual('100M')
+    })
+  })
+
+  describe('getDefaultVariation', () => {
+    const mockFlag = {
+      variations: [
+        { identifier: 'OFF_VARIATION', name: 'Off Variation', value: 'offVariation' },
+        { identifier: 'ON_VARIATION', name: 'On Variation', value: 'onVariation' },
+        { identifier: 'ENV_VARIATION', name: 'Env Variation', value: 'envVariation' }
+      ],
+      defaultOffVariation: 'OFF_VARIATION',
+      defaultOnVariation: 'ON_VARIATION',
+      envProperties: {
+        state: 'on',
+        defaultServe: {
+          variation: 'ENV_VARIATION'
+        }
+      }
+    } as Feature
+
+    test('it should return the default off variation when the flag is off', async () => {
+      const flag = cloneDeep(mockFlag)
+      set(flag, 'envProperties.state', 'off')
+
+      expect(CFUtils.getDefaultVariation(flag)).toEqual(flag.variations[0])
+    })
+
+    test('it should return the env default serve variation when the flag is on', async () => {
+      const flag = cloneDeep(mockFlag)
+
+      expect(CFUtils.getDefaultVariation(flag)).toEqual(flag.variations[2])
+    })
+
+    test('it should return the default on variation when the flag is on and there is no default serve variation', async () => {
+      const flag = omit(mockFlag, 'envProperties.defaultServe.variation')
+
+      expect(CFUtils.getDefaultVariation(flag)).toEqual(flag.variations[1])
+    })
+
+    test('it should return the default on variation when the flag is on and there is no default serve', async () => {
+      const flag = omit(mockFlag, 'envProperties.defaultServe')
+
+      expect(CFUtils.getDefaultVariation(flag)).toEqual(flag.variations[1])
     })
   })
 })
