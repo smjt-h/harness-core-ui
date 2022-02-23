@@ -1,10 +1,17 @@
+/*
+ * Copyright 2022 Harness Inc. All rights reserved.
+ * Use of this source code is governed by the PolyForm Shield 1.0.0 license
+ * that can be found in the licenses directory at the root of this repository, also available at
+ * https://polyformproject.org/wp-content/uploads/2020/06/PolyForm-Shield-1.0.0.txt.
+ */
+
 import React from 'react'
 import { render, waitFor, fireEvent, findByText, act } from '@testing-library/react'
 import type { MultiSelectOption } from '@harness/uicore'
 import { TestWrapper } from '@common/utils/testUtils'
 import { EnvironmentMultiSelectOrCreate, EnvironmentMultiSelectOrCreateProps } from '../EnvironmentMultiSelectAndEnv'
 import environments from './mock.json'
-import inputSetEnvironments from './envMock'
+import inputSetEnvironments from './env.mock'
 jest.mock('services/cd-ng', () => ({
   useGetEnvironmentList: jest
     .fn()
