@@ -23,7 +23,7 @@ export const PipelineGraphRecursive = ({
   fireEvent,
   setSelectedNode,
   uniqueNodeIds,
-  startEndNodeNeeded,
+  startEndNodeNeeded = true,
   mergeSVGLinks
 }: PipelineGraphRecursiveProps): React.ReactElement => {
   const StartNode: React.FC<any> | undefined = getNode(NodeType.StartNode)
@@ -49,7 +49,8 @@ export const PipelineGraphRecursive = ({
             setSelectedNode={setSelectedNode}
             isNextNodeParallel={!!stages?.[index + 1]?.children?.length}
             isPrevNodeParallel={!!stages?.[index - 1]?.children?.length}
-            mergeSVGLinks={mergeSVGLinks}
+            updateSVGLinks={mergeSVGLinks}
+            prevNodeIdentifier={stages?.[index - 1]?.identifier}
           />
         )
       })}
@@ -77,26 +78,28 @@ interface PipelineGraphNode {
   isNextNodeParallel?: boolean
   isPrevNodeParallel?: boolean
   isLastChild?: boolean
-  mergeSVGLinks?: (svgPath: string[]) => void
+  updateSVGLinks?: (svgPath: string[]) => void
+  prevNodeIdentifier?: string
 }
 
 export const PipelineGraphNode = ({
-  className,
-  data,
   fireEvent,
   getNode,
   setSelectedNode,
+  updateSVGLinks,
+  data,
+  className,
+  isLastChild,
   selectedNode,
   isParallelNode,
+  prevNodeIdentifier,
   isNextNodeParallel,
-  isPrevNodeParallel,
-  isLastChild,
-  mergeSVGLinks
+  isPrevNodeParallel
 }: PipelineGraphNode): React.ReactElement | null => {
   const NodeComponent: React.FC<any> | undefined = getNode?.(data?.nodeType) || getNode?.(NodeType.Default)
 
   const ref = useRef<HTMLDivElement>(null)
-  const isIntersecting = useIntersectionObserver(ref, { threshold: 0.98 }, checkIntersectonBottom)
+  // const isIntersecting = useIntersectionObserver(ref, { threshold: 0.98 }, checkIntersectonBottom)
   const [collapseNode, setCollapseNode] = useState(false)
 
   const getGroupNodeHeader = (): Array<PipelineGraphState> => {
@@ -143,6 +146,8 @@ export const PipelineGraphNode = ({
           isParallelNode={isParallelNode}
           key={data?.identifier}
           allowAdd={(!data?.children?.length && !isParallelNode) || (isParallelNode && isLastChild)}
+          prevNodeIdentifier={prevNodeIdentifier}
+          updateSVGLinks={updateSVGLinks}
         />
       ) : (
         <>
@@ -158,7 +163,8 @@ export const PipelineGraphNode = ({
               key={data?.identifier}
               allowAdd={(!data?.children?.length && !isParallelNode) || (isParallelNode && isLastChild)}
               isFirstParallelNode={true}
-              updateSVGLinks={mergeSVGLinks}
+              updateSVGLinks={updateSVGLinks}
+              prevNodeIdentifier={prevNodeIdentifier}
             />
           )}
           {data?.children?.map((currentStage, index) => (
@@ -172,7 +178,8 @@ export const PipelineGraphNode = ({
               setSelectedNode={setSelectedNode}
               isParallelNode={true}
               isLastChild={index + 1 === data?.children?.length}
-              mergeSVGLinks={mergeSVGLinks}
+              updateSVGLinks={updateSVGLinks}
+              prevNodeIdentifier={prevNodeIdentifier}
             />
           ))}
         </>

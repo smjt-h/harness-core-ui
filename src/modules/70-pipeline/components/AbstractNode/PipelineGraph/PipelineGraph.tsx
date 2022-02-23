@@ -28,6 +28,7 @@ export interface PipelineGraphProps {
 
 const PipelineGraph = ({ pipeline, getNode, fireEvent }: PipelineGraphProps): React.ReactElement => {
   const [svgPath, setSvgPath] = useState<string[]>([])
+  const [childLinks, setChildLinks] = useState<string[]>([])
   const [treeRectangle, setTreeRectangle] = useState<DOMRect | void>()
   const [selectedNode, setSelectedNode] = useState<string>('')
   const [state, setState] = useState<PipelineGraphState[]>([])
@@ -68,15 +69,22 @@ const PipelineGraph = ({ pipeline, getNode, fireEvent }: PipelineGraphProps): Re
   const setSVGLinks = (): void => {
     const SVGLinks = getSVGLinksFromPipeline(state)
     const lastNode = state?.[state?.length - 1]
+
+    const stepData = get(pipeline, 'stage.spec.execution.steps')
+    if (stepData) {
+      console.log({ childLinks })
+    }
     return setSvgPath([
       ...SVGLinks,
       getFinalSVGArrowPath(uniqueNodeIds.startNode, state?.[0]?.identifier as string),
       getFinalSVGArrowPath(lastNode?.identifier as string, uniqueNodeIds.createNode as string),
-      getFinalSVGArrowPath(uniqueNodeIds.createNode as string, uniqueNodeIds.endNode as string)
+      getFinalSVGArrowPath(uniqueNodeIds.createNode as string, uniqueNodeIds.endNode as string),
+      ...childLinks
     ])
   }
   const mergeSVGLinks = (updatedLinks: string[]): void => {
-    setSvgPath([...svgPath, ...updatedLinks])
+    console.log([...childLinks, ...updatedLinks])
+    setChildLinks([...childLinks, ...updatedLinks])
   }
 
   useEffect(() => {
@@ -117,8 +125,6 @@ interface SVGComponentProps {
 }
 
 export const SVGComponent = ({ svgPath }: SVGComponentProps): React.ReactElement => {
-  console.trace()
-
   return (
     <svg className={css.common}>
       {svgPath.map((path, idx) => (

@@ -98,6 +98,7 @@ export const StepGroupNode = (props: any): JSX.Element => {
   return (
     <>
       <div
+        id={props.identifier}
         className={classnames(css.stepGroup, css.firstnode)}
         ref={layerRef}
         onDragOver={event => {
@@ -143,10 +144,13 @@ export const StepGroupNode = (props: any): JSX.Element => {
           </Layout.Horizontal>
         </div>
         <div className={css.stepGroupBody}>
-          <StepGroupGraph data={props?.data?.stepGroup?.steps} fireEvent={props?.fireEvent} getNode={props?.getNode} />
-          {/* <CDPipelineStudioNew pipeline={props?.data?.stepGroup?.steps} isStepGroupNode={true} /> */}
-          {/* <PipelineGraph /> */}
-          {/* <CreateNode /> */}
+          <StepGroupGraph
+            prevNodeIdentifier={props?.prevNodeIdentifier}
+            data={props?.data?.stepGroup?.steps}
+            fireEvent={props?.fireEvent}
+            getNode={props?.getNode}
+            updateSVGLinks={props.updateSVGLinks}
+          />
         </div>
       </div>
     </>

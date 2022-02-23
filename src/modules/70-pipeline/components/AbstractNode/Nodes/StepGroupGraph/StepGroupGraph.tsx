@@ -2,9 +2,9 @@ import React, { useEffect, useLayoutEffect, useRef, useState } from 'react'
 import { SVGComponent } from '../../PipelineGraph/PipelineGraph'
 import { PipelineGraphRecursive } from '../../PipelineGraph/PipelineGraphNode'
 import {
+  getFinalSVGArrowPath,
   getPipelineGraphData,
-  getSVGLinksFromPipeline,
-  INITIAL_ZOOM_LEVEL
+  getSVGLinksFromPipeline
 } from '../../PipelineGraph/PipelineGraphUtils'
 import type { NodeIds, PipelineGraphState } from '../../types'
 import css from './StepGroupGraph.module.scss'
@@ -16,7 +16,8 @@ interface StepGroupGraphProps {
   fireEvent: (event: any) => void
   setSelectedNode?: (nodeId: string) => void
   startEndNodeNeeded?: boolean
-  mergeSVGLinks?: (svgPath: string[]) => void
+  updateSVGLinks?: (svgPath: string[]) => void
+  prevNodeIdentifier?: string
 }
 
 interface LayoutStyles {
@@ -39,7 +40,7 @@ const StepGroupGraph = (props: StepGroupGraphProps): React.ReactElement => {
   const [layoutStyles, setLayoutStyles] = useState<LayoutStyles>({ height: 'auto', width: 'auto' })
   const [selectedNode, setSelectedNode] = useState<string>('')
   const [state, setState] = useState<PipelineGraphState[]>([])
-  const [graphScale, setGraphScale] = useState(INITIAL_ZOOM_LEVEL)
+  const graphRef = useRef<HTMLDivElement>(null)
 
   const updateTreeRect = (): void => {
     const treeContainer = document.getElementById('tree-container')
@@ -55,15 +56,16 @@ const StepGroupGraph = (props: StepGroupGraphProps): React.ReactElement => {
   useLayoutEffect(() => {
     if (state?.length) {
       setLayoutStyles(getCalculatedStyles(state))
-      // console.log(getCalculatedStyles(state))
-      // setTimeout(setSvgPath, 200)
     }
   }, [state])
 
   const setSVGLinks = (): void => {
+    const parentElement = (graphRef?.current as HTMLDivElement)?.closest('#tree-container') as HTMLDivElement
     const SVGLinks = getSVGLinksFromPipeline(state)
+
     return setSvgPath([...SVGLinks])
   }
+
   const mergeSVGLinks = (updatedLinks: string[]): void => {
     setSvgPath([...svgPath, ...updatedLinks])
   }
@@ -72,7 +74,7 @@ const StepGroupGraph = (props: StepGroupGraphProps): React.ReactElement => {
     updateTreeRect()
   }, [])
   return (
-    <div className={css.main} style={layoutStyles}>
+    <div className={css.main} style={layoutStyles} ref={graphRef}>
       <SVGComponent svgPath={svgPath} />
       <PipelineGraphRecursive
         fireEvent={props.fireEvent}
@@ -80,6 +82,7 @@ const StepGroupGraph = (props: StepGroupGraphProps): React.ReactElement => {
         stages={state}
         selectedNode={selectedNode}
         mergeSVGLinks={mergeSVGLinks}
+        startEndNodeNeeded={false}
       />
     </div>
   )

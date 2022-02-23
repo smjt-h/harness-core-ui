@@ -5,13 +5,12 @@ import { stageTypeToIconMap } from '@pipeline/components/PipelineInputSetForm/Pi
 import type { ExecutionWrapperConfig, StageElementWrapperConfig } from 'services/cd-ng'
 import type { PipelineGraphState } from '../types'
 import { PipelineGraphType } from '../types'
-import stepsJSON from './steps.json'
 const INITIAL_ZOOM_LEVEL = 1
 const ZOOM_INC_DEC_LEVEL = 0.1
 
-const getFinalSVGArrowPath = (id1 = '', id2 = '', isParallelNode = false): string => {
-  const node1 = getComputedPosition(id1)
-  const node2 = getComputedPosition(id2)
+const getFinalSVGArrowPath = (id1 = '', id2 = '', isParallelNode = false, parentElement?: HTMLDivElement): string => {
+  const node1 = getComputedPosition(id1, parentElement)
+  const node2 = getComputedPosition(id2, parentElement)
   if (!node1 || !node2) {
     return ''
   }
@@ -64,11 +63,11 @@ const getFinalSVGArrowPath = (id1 = '', id2 = '', isParallelNode = false): strin
   }
 }
 
-const getComputedPosition = (childId: string): DOMRect | null => {
+const getComputedPosition = (childId: string, parentElement?: HTMLDivElement): DOMRect | null => {
   try {
     const childEl = document.getElementById(childId) as HTMLDivElement
     const childPos = childEl?.getBoundingClientRect() as DOMRect
-    const parentPos = childEl.closest('#tree-container')?.getBoundingClientRect() as DOMRect
+    const parentPos = defaultTo(parentElement, childEl.closest('#tree-container'))?.getBoundingClientRect() as DOMRect
 
     const updatedTop = childPos.top - parentPos.top
     const updatedLeft = childPos.left - parentPos.left
@@ -123,14 +122,18 @@ const setupDragEventListeners = (canvasRef: RefObject<HTMLDivElement>): (() => v
   }
 }
 
-const getSVGLinksFromPipeline = (states?: PipelineGraphState[], resultArr: string[] = []): string[] => {
+const getSVGLinksFromPipeline = (
+  states?: PipelineGraphState[],
+  parentElement?: HTMLDivElement,
+  resultArr: string[] = []
+): string[] => {
   let prevElement: PipelineGraphState
   states?.forEach(state => {
     if (state?.children?.length) {
-      getParallelNodeLinks(state?.children, state, resultArr)
+      getParallelNodeLinks(state?.children, state, resultArr, parentElement)
     }
     if (prevElement) {
-      resultArr.push(getFinalSVGArrowPath(prevElement.identifier, state.identifier, false))
+      resultArr.push(getFinalSVGArrowPath(prevElement.identifier, state.identifier, false, parentElement))
     }
     prevElement = state
   })
@@ -140,10 +143,11 @@ const getSVGLinksFromPipeline = (states?: PipelineGraphState[], resultArr: strin
 const getParallelNodeLinks = (
   stages: PipelineGraphState[],
   firstStage: PipelineGraphState | undefined,
-  resultArr: string[] = []
+  resultArr: string[] = [],
+  parentElement?: HTMLDivElement
 ): void => {
   stages?.forEach(stage => {
-    resultArr.push(getFinalSVGArrowPath(firstStage?.identifier as string, stage?.identifier, true))
+    resultArr.push(getFinalSVGArrowPath(firstStage?.identifier as string, stage?.identifier, true, parentElement))
   })
 }
 
@@ -316,7 +320,6 @@ const getPipelineGraphDataType = (data: StageElementWrapperConfig[] | ExecutionW
   }
   return PipelineGraphType.STEP_GRAPH
 }
-console.log(getPipelineGraphData(stepsJSON))
 export {
   ZOOM_INC_DEC_LEVEL,
   INITIAL_ZOOM_LEVEL,
