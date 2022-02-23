@@ -511,4 +511,206 @@ describe('Test TerraformApply', () => {
     )
     expect(container).toMatchSnapshot()
   })
+  test('should trigger validation error for fixed value', async () => {
+    const ref = React.createRef<StepFormikRef<unknown>>()
+    const onUpdate = jest.fn()
+    const { container, getByText } = render(
+      <TestStepWidget
+        initialValues={{
+          type: 'TerraformApply',
+          name: 'Test A',
+          identifier: 'Test_A',
+          timeout: '10m',
+          spec: {
+            provisionerIdentifier: '',
+            configuration: {
+              type: 'Inline',
+              spec: {
+                configFiles: {
+                  store: {
+                    spec: {
+                      folderPath: 'test',
+                      connectorRef: {
+                        label: 'test',
+                        value: 'test',
+                        scope: 'account',
+
+                        connector: { type: 'Git' }
+                      }
+                    }
+                  }
+                },
+                varFiles: [
+                  {
+                    varFile: {
+                      type: 'Inline',
+                      spec: {
+                        content: 'test'
+                      }
+                    }
+                  },
+                  {
+                    varFile: {
+                      type: 'Remote',
+                      store: {
+                        spec: {
+                          connectorRef: 'test',
+                          branch: 'test-brancg',
+                          folderPath: 'testfolder'
+                        }
+                      }
+                    }
+                  }
+                ]
+              }
+            }
+          }
+        }}
+        type={StepType.TerraformApply}
+        stepViewType={StepViewType.Edit}
+        ref={ref}
+        onUpdate={onUpdate}
+      />
+    )
+    await act(() => ref.current?.submitForm())
+    const errMsg = getByText('common.validation.provisionerIdentifierIsRequired')
+    expect(errMsg).toBeInTheDocument()
+    expect(container).toMatchSnapshot()
+  })
+
+  test('should trigger validation error for invalid fixed value', async () => {
+    const ref = React.createRef<StepFormikRef<unknown>>()
+    const onUpdate = jest.fn()
+    const { container, getByText } = render(
+      <TestStepWidget
+        initialValues={{
+          type: 'TerraformApply',
+          name: 'Test A',
+          identifier: 'Test_A',
+          timeout: '10m',
+          spec: {
+            provisionerIdentifier: '$%',
+            configuration: {
+              type: 'Inline',
+              spec: {
+                configFiles: {
+                  store: {
+                    spec: {
+                      folderPath: 'test',
+                      connectorRef: {
+                        label: 'test',
+                        value: 'test',
+                        scope: 'account',
+
+                        connector: { type: 'Git' }
+                      }
+                    }
+                  }
+                },
+                varFiles: [
+                  {
+                    varFile: {
+                      type: 'Inline',
+                      spec: {
+                        content: 'test'
+                      }
+                    }
+                  },
+                  {
+                    varFile: {
+                      type: 'Remote',
+                      store: {
+                        spec: {
+                          connectorRef: 'test',
+                          branch: 'test-brancg',
+                          folderPath: 'testfolder'
+                        }
+                      }
+                    }
+                  }
+                ]
+              }
+            }
+          }
+        }}
+        type={StepType.TerraformApply}
+        stepViewType={StepViewType.Edit}
+        ref={ref}
+        onUpdate={onUpdate}
+      />
+    )
+    await act(() => ref.current?.submitForm())
+    const errMsg = getByText('common.validation.provisionerIdentifierPatternIsNotValid')
+    expect(errMsg).toBeInTheDocument()
+    expect(container).toMatchSnapshot()
+  })
+
+  test('should trigger validation error for expression value', async () => {
+    const ref = React.createRef<StepFormikRef<unknown>>()
+    const onUpdate = jest.fn()
+    const { container, getByText, getByPlaceholderText } = render(
+      <TestStepWidget
+        initialValues={{
+          type: 'TerraformApply',
+          name: 'Test A',
+          identifier: 'Test_A',
+          timeout: '10m',
+          spec: {
+            provisionerIdentifier: '<+service.test.id>',
+            configuration: {
+              type: 'Inline',
+              spec: {
+                configFiles: {
+                  store: {
+                    spec: {
+                      folderPath: 'test',
+                      connectorRef: {
+                        label: 'test',
+                        value: 'test',
+                        scope: 'account',
+
+                        connector: { type: 'Git' }
+                      }
+                    }
+                  }
+                },
+                varFiles: [
+                  {
+                    varFile: {
+                      type: 'Inline',
+                      spec: {
+                        content: 'test'
+                      }
+                    }
+                  },
+                  {
+                    varFile: {
+                      type: 'Remote',
+                      store: {
+                        spec: {
+                          connectorRef: 'test',
+                          branch: 'test-brancg',
+                          folderPath: 'testfolder'
+                        }
+                      }
+                    }
+                  }
+                ]
+              }
+            }
+          }
+        }}
+        type={StepType.TerraformApply}
+        stepViewType={StepViewType.Edit}
+        ref={ref}
+        onUpdate={onUpdate}
+      />
+    )
+    const input = getByPlaceholderText('<+expression>')
+    fireEvent.change(input!, { target: { value: '' } })
+    await act(() => ref.current?.submitForm())
+    const errMsg = getByText('common.validation.provisionerIdentifierIsRequired')
+    expect(errMsg).toBeInTheDocument()
+    expect(container).toMatchSnapshot()
+  })
 })
