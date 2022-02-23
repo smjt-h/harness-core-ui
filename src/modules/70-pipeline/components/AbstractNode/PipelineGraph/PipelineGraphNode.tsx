@@ -10,11 +10,11 @@ export interface PipelineGraphRecursiveProps {
   stages?: PipelineGraphState[]
   getNode: (type?: string | undefined) => React.FC<any> | undefined
   selectedNode: string
-  uniqueNodeIds: NodeIds
-  fireEvent: (event: any) => void
-  setSelectedNode: (nodeId: string) => void
+  uniqueNodeIds?: NodeIds
+  fireEvent?: (event: any) => void
+  setSelectedNode?: (nodeId: string) => void
   startEndNodeNeeded?: boolean
-  mergeSVGLinks: (svgPath: string[]) => void
+  mergeSVGLinks?: (svgPath: string[]) => void
 }
 export const PipelineGraphRecursive = ({
   stages,
@@ -33,7 +33,7 @@ export const PipelineGraphRecursive = ({
     <div id="tree-container" className={classNames(css.graphTree, css.common)}>
       {StartNode && startEndNodeNeeded && (
         <div>
-          <div id={uniqueNodeIds.startNode} className={classNames(css.graphNode)}>
+          <div id={uniqueNodeIds?.startNode} className={classNames(css.graphNode)}>
             <StartNode />
           </div>
         </div>
@@ -54,10 +54,10 @@ export const PipelineGraphRecursive = ({
         )
       })}
       {CreateNode && startEndNodeNeeded && (
-        <CreateNode identifier={uniqueNodeIds.createNode} name={'Add Stage'} fireEvent={fireEvent} getNode={getNode} />
+        <CreateNode identifier={uniqueNodeIds?.createNode} name={'Add Stage'} fireEvent={fireEvent} getNode={getNode} />
       )}
       {EndNode && startEndNodeNeeded && (
-        <div id={uniqueNodeIds.endNode} className={classNames(css.graphNode)}>
+        <div id={uniqueNodeIds?.endNode} className={classNames(css.graphNode)}>
           <EndNode />
         </div>
       )}
@@ -69,15 +69,15 @@ export const PipelineGraphRecursive = ({
 interface PipelineGraphNode {
   className?: string
   data: PipelineGraphState
-  fireEvent: (event: any) => void
-  getNode: (type?: string | undefined) => React.FC<any> | undefined
+  fireEvent?: (event: any) => void
+  getNode?: (type?: string | undefined) => React.FC<any> | undefined
   selectedNode: string
-  setSelectedNode: (nodeId: string) => void
+  setSelectedNode?: (nodeId: string) => void
   isParallelNode?: boolean
   isNextNodeParallel?: boolean
   isPrevNodeParallel?: boolean
   isLastChild?: boolean
-  mergeSVGLinks: (svgPath: string[]) => void
+  mergeSVGLinks?: (svgPath: string[]) => void
 }
 
 export const PipelineGraphNode = ({
@@ -93,11 +93,8 @@ export const PipelineGraphNode = ({
   isLastChild,
   mergeSVGLinks
 }: PipelineGraphNode): React.ReactElement | null => {
-  let NodeComponent: React.FC<any> | undefined = getNode(data?.nodeType) || getNode(NodeType.Default)
-  // if (data?.nodeType === 'StepGroup') {
-  //   return null
-  // }
-  console.log('nodeType', data?.nodeType)
+  const NodeComponent: React.FC<any> | undefined = getNode?.(data?.nodeType) || getNode?.(NodeType.Default)
+
   const ref = useRef<HTMLDivElement>(null)
   const isIntersecting = useIntersectionObserver(ref, { threshold: 0.98 }, checkIntersectonBottom)
   const [collapseNode, setCollapseNode] = useState(false)

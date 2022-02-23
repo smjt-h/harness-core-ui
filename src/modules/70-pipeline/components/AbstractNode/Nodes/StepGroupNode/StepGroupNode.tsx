@@ -13,6 +13,7 @@ import type { StepGroupNodeLayerModel } from '../../../Diagram/node-layer/StepGr
 import CreateNode from '../CreateNode/CreateNode'
 import css from './StepGroupNode.module.scss'
 import PipelineGraph from '../../PipelineGraph/PipelineGraph'
+import StepGroupGraph from '../StepGroupGraph/StepGroupGraph'
 
 const onAddNodeClick = (
   e: React.MouseEvent<Element, MouseEvent>,
@@ -142,12 +143,7 @@ export const StepGroupNode = (props: any): JSX.Element => {
           </Layout.Horizontal>
         </div>
         <div className={css.stepGroupBody}>
-          <PipelineGraph
-            pipeline={props?.data?.stepGroup}
-            fireEvent={props?.fireEvent}
-            startEndNodeNeeded={false}
-            getNode={props?.getNode}
-          />
+          <StepGroupGraph data={props?.data?.stepGroup?.steps} fireEvent={props?.fireEvent} getNode={props?.getNode} />
           {/* <CDPipelineStudioNew pipeline={props?.data?.stepGroup?.steps} isStepGroupNode={true} /> */}
           {/* <PipelineGraph /> */}
           {/* <CreateNode /> */}
