@@ -235,6 +235,8 @@ const COGatewayAnalytics: React.FC<COGatewayAnalyticsProps> = props => {
     setActualHoursSeries(newActualHours)
   }, [graphData])
 
+  const isRdsRule = !_isEmpty(props.service?.data.routing?.database)
+
   return (
     <Container>
       <Layout.Vertical spacing="large" padding="xlarge">
@@ -351,12 +353,14 @@ const COGatewayAnalytics: React.FC<COGatewayAnalyticsProps> = props => {
             <Container className={css.serviceDetailsItemContainer}>
               <Text className={css.detailItemHeader}>Compute type</Text>
               <Layout.Horizontal spacing="xsmall" className={css.detailItemValue}>
-                {isK8sRule ? (
+                {isRdsRule ? (
+                  ''
+                ) : isK8sRule ? (
                   <Icon name="app-kubernetes" size={18} />
                 ) : (
                   <img src={props.service?.data.fulfilment === 'spot' ? spotIcon : odIcon} alt="" aria-hidden />
                 )}
-                <Text>{props.service?.data.fulfilment}</Text>
+                <Text>{Utils.getConditionalResult(isRdsRule, '-', props.service?.data.fulfilment)}</Text>
               </Layout.Horizontal>
             </Container>
             {/* <Layout.Vertical spacing="large" padding="medium">

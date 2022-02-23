@@ -99,6 +99,15 @@ function IconCell(tableProps: CellProps<Service>): JSX.Element {
       ? onDemandDisableIcon
       : odIcon
   }
+
+  if (!_isEmpty(tableProps.row.original.routing?.database)) {
+    return (
+      <Layout.Horizontal flex={{ justifyContent: 'center', alignItems: 'center' }}>
+        <Text>{'-'}</Text>
+      </Layout.Horizontal>
+    )
+  }
+
   return (
     <Layout.Horizontal spacing="medium">
       {isK8sRule ? (

@@ -101,4 +101,18 @@ describe('Autostopping rule analytics drawer', () => {
     )
     expect(container).toMatchSnapshot()
   })
+
+  test('render RDS rule analytics drawer', () => {
+    const { container } = render(
+      <TestWrapper>
+        <COGatewayAnalytics
+          service={{ index: 0, data: { ...mockServiceData, routing: { database: { id: 'id', region: 'region' } } } }}
+          handleServiceToggle={jest.fn()}
+          handleServiceDeletion={jest.fn()}
+          handleServiceEdit={jest.fn()}
+        />
+      </TestWrapper>
+    )
+    expect(container).toMatchSnapshot()
+  })
 })
