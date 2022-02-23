@@ -1,11 +1,36 @@
 .stepGroup {
+  position: relative;
+  .horizontalBar {
+    position: absolute;
+    top: 46px;
+    height: 40px;
+    opacity: 0;
+    // width: 100%;
+    left: 0;
+    right: 0;
+  }
+  .svgLeftJointPoint {
+    position: absolute;
+    top: 46px;
+    height: 40px;
+    opacity: 0;
+    // width: 100%;
+    left: 0;
+  }
+  .svgRightJointPoint {
+    position: absolute;
+    top: 46px;
+    height: 40px;
+    opacity: 0;
+    // width: 100%;
+    right: 0;
+  }
   background: rgba(244, 251, 255, 0.25);
   margin-bottom: 20px;
   border-radius: 8px;
   border: dashed 1px var(--primary-4);
   &.firstnode {
     top: -47px;
-    position: relative;
   }
   .stepGroupHeader {
     padding: var(--spacing-small) var(--spacing-small) 0 var(--spacing-small);

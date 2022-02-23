@@ -98,7 +98,7 @@ export const StepGroupNode = (props: any): JSX.Element => {
   return (
     <>
       <div
-        id={props.identifier}
+        // id={props.identifier}
         className={classnames(css.stepGroup, css.firstnode)}
         ref={layerRef}
         onDragOver={event => {
@@ -120,6 +120,9 @@ export const StepGroupNode = (props: any): JSX.Element => {
           props.fireEvent(Event.DropLinkEvent, { node: dropData })
         }}
       >
+        <div id={props?.identifier} className={css.horizontalBar}></div>
+        <div id={`left-${props?.identifier}`} className={css.svgLeftJointPoint}></div>
+        <div id={`right-${props?.identifier}`} className={css.svgRightJointPoint}></div>
         <div className={css.stepGroupHeader}>
           <Layout.Horizontal
             spacing="xsmall"
@@ -145,6 +148,7 @@ export const StepGroupNode = (props: any): JSX.Element => {
         </div>
         <div className={css.stepGroupBody}>
           <StepGroupGraph
+            identifier={props?.identifier}
             prevNodeIdentifier={props?.prevNodeIdentifier}
             data={props?.data?.stepGroup?.steps}
             fireEvent={props?.fireEvent}

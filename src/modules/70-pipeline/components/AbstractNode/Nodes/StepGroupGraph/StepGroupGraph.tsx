@@ -18,6 +18,7 @@ interface StepGroupGraphProps {
   startEndNodeNeeded?: boolean
   updateSVGLinks?: (svgPath: string[]) => void
   prevNodeIdentifier?: string
+  identifier?: string
 }
 
 interface LayoutStyles {
@@ -50,20 +51,26 @@ const StepGroupGraph = (props: StepGroupGraphProps): React.ReactElement => {
 
   useLayoutEffect(() => {
     props?.data?.length && setState(getPipelineGraphData(props.data!))
-    setSVGLinks()
   }, [treeRectangle, props.data])
 
   useLayoutEffect(() => {
     if (state?.length) {
+      setSVGLinks()
       setLayoutStyles(getCalculatedStyles(state))
     }
   }, [state])
 
+  console.log('state', state)
   const setSVGLinks = (): void => {
     const parentElement = (graphRef?.current as HTMLDivElement)?.closest('#tree-container') as HTMLDivElement
     const SVGLinks = getSVGLinksFromPipeline(state)
-
-    return setSvgPath([...SVGLinks])
+    const firstNodeIdentifier = state?.[0]?.identifier
+    const lastNodeIdentifier = state?.[state?.length - 1]?.identifier
+    return setSvgPath([
+      ...SVGLinks,
+      getFinalSVGArrowPath(firstNodeIdentifier as string, props?.identifier),
+      getFinalSVGArrowPath(lastNodeIdentifier as string, props?.identifier)
+    ])
   }
 
   const mergeSVGLinks = (updatedLinks: string[]): void => {

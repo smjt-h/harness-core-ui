@@ -9,8 +9,11 @@
 declare const styles: {
   readonly collapseIcon: string
   readonly firstnode: string
+  readonly horizontalBar: string
   readonly stepGroup: string
   readonly stepGroupBody: string
   readonly stepGroupHeader: string
+  readonly svgLeftJointPoint: string
+  readonly svgRightJointPoint: string
 }
 export default styles
