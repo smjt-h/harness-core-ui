@@ -410,7 +410,24 @@
 <a name='L351'></a><a href='#L351'>351</a>
 <a name='L352'></a><a href='#L352'>352</a>
 <a name='L353'></a><a href='#L353'>353</a>
-<a name='L354'></a><a href='#L354'>354</a></td><td class="line-coverage quiet"><span class="cline-any cline-neutral">&nbsp;</span>
+<a name='L354'></a><a href='#L354'>354</a>
+<a name='L355'></a><a href='#L355'>355</a>
+<a name='L356'></a><a href='#L356'>356</a>
+<a name='L357'></a><a href='#L357'>357</a>
+<a name='L358'></a><a href='#L358'>358</a>
+<a name='L359'></a><a href='#L359'>359</a>
+<a name='L360'></a><a href='#L360'>360</a>
+<a name='L361'></a><a href='#L361'>361</a>
+<a name='L362'></a><a href='#L362'>362</a>
+<a name='L363'></a><a href='#L363'>363</a>
+<a name='L364'></a><a href='#L364'>364</a>
+<a name='L365'></a><a href='#L365'>365</a>
+<a name='L366'></a><a href='#L366'>366</a>
+<a name='L367'></a><a href='#L367'>367</a>
+<a name='L368'></a><a href='#L368'>368</a>
+<a name='L369'></a><a href='#L369'>369</a>
+<a name='L370'></a><a href='#L370'>370</a>
+<a name='L371'></a><a href='#L371'>371</a></td><td class="line-coverage quiet"><span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
@@ -528,6 +545,8 @@
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-no">&nbsp;</span>
 <span class="cline-any cline-no">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
@@ -541,6 +560,10 @@
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
@@ -607,11 +630,15 @@
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-yes">2x</span>
 <span class="cline-any cline-yes">1x</span>
 <span class="cline-any cline-yes">1x</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
@@ -684,6 +711,7 @@
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-no">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
@@ -709,7 +737,13 @@
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-yes">2x</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
@@ -875,9 +909,11 @@ export const FlagsUseSegment = ({ gitSync }: FlagsUseSegmentProps): ReactElement
       })
   }
 &nbsp;
-  const removeSegmentToVariationTargetMap = <span class="fstat-no" title="function not covered" >async </span>(
+  const removeRules = <span class="fstat-no" title="function not covered" >async </span>(
     featureFlagIdentifier: string,
-    variationIdentifier: string,
+    instruction: string,
+    variationIdentifier?: string,
+    ruleId?: string,
     gitSyncFormValues?: GitSyncFormValues
   ): Promise&lt;void&gt; =&gt; {
     let gitDetails
@@ -896,8 +932,12 @@ export const FlagsUseSegment = ({ gitSync }: FlagsUseSegmentProps): ReactElement
     const instructions = <span class="cstat-no" title="statement not covered" >{</span>
       instructions: [
         {
-          kind: 'removeSegmentToVariationTargetMap',
-          parameters: { variation: variationIdentifier, targetSegments: [segmentIdentifier] }
+          kind: instruction,
+          parameters: {
+            variation: variationIdentifier,
+            targetSegments: [segmentIdentifier],
+            ruleID: ruleId
+          }
         }
       ]
     }
@@ -953,9 +993,7 @@ export const FlagsUseSegment = ({ gitSync }: FlagsUseSegmentProps): ReactElement
         style={{ overflow: 'auto', padding: '0 var(--spacing-xxlarge) var(--spacing-xxlarge)' }}
       &gt;
         {error &amp;&amp; <span class="branch-1 cbranch-no" title="branch not covered" >&lt;PageError message={getErrorMessage(error)} onClick={<span class="fstat-no" title="function not covered" >() =</span>&gt; <span class="cstat-no" title="statement not covered" >refetchFlags()}</span> /&gt;}</span>
-        {!error &amp;&amp; !loading &amp;&amp; (
-          &lt;FlagsList flags={flags} gitSync={gitSync} onRemoveVariationMapping={removeSegmentToVariationTargetMap} /&gt;
-        )}
+        {!error &amp;&amp; !loading &amp;&amp; &lt;FlagsList flags={flags} gitSync={gitSync} onRemoveRule={removeRules} /&gt;}
         {loading &amp;&amp; <span class="branch-1 cbranch-no" title="branch not covered" >&lt;ContainerSpinner /&gt;}</span>
       &lt;/Container&gt;
     &lt;/Container&gt;
@@ -1003,8 +1041,14 @@ const SectionHeader: React.FC&lt;HeadingProps&gt; = ({ children, ...props }) =&g
 const FlagsList: React.FC&lt;{
   gitSync: UseGitSync
   flags: SegmentFlagsResponseResponse | null
-  onRemoveVariationMapping: (featureFlagIdentifier: string, variationIdentifier: string) =&gt; Promise&lt;void&gt;
-}&gt; = ({ flags, onRemoveVariationMapping, gitSync }) =&gt; {
+  onRemoveRule: (
+    featureFlagIdentifier: string,
+    instruction: string,
+    variationIdentifier?: string,
+    ruleId?: string,
+    gitSyncFormValues?: GitSyncFormValues
+  ) =&gt; Promise&lt;void&gt;
+}&gt; = ({ flags, onRemoveRule, gitSync }) =&gt; {
   const { isPlanEnforcementEnabled } = usePlanEnforcement()
   const { getString } = useStrings()
   const directAddedFlags = flags<span class="branch-0 cbranch-no" title="branch not covered" >?.f</span>ilter(flag =&gt; flag.type === EntityAddingMode.DIRECT) || <span class="branch-1 cbranch-no" title="branch not covered" >[]</span>
@@ -1025,7 +1069,8 @@ const FlagsList: React.FC&lt;{
                 key={_flag.identifier}
                 flag={_flag}
                 gitSync={gitSync}
-                onRemoveVariationMapping={onRemoveVariationMapping}
+                onRemoveRule={onRemoveRule}
+                instruction="removeSegmentToVariationTargetMap"
                 isPlanEnforcementEnabled={isPlanEnforcementEnabled}
               /&gt;
             ))}
@@ -1041,6 +1086,8 @@ const FlagsList: React.FC&lt;{
                 key={_flag.identifier}
                 flag={_flag}
                 gitSync={gitSync}
+                onRemoveRule={onRemoveRule}
+                instruction="removeRule"
                 isPlanEnforcementEnabled={isPlanEnforcementEnabled}
               /&gt;
             ))}
@@ -1055,23 +1102,27 @@ interface FlagItemProps extends ItemContainerProps {
   gitSync: UseGitSync
   flag: SegmentFlag
   isPlanEnforcementEnabled: boolean
-  onRemoveVariationMapping?: (
+  instruction: string
+  onRemoveRule?: (
     featureFlagIdentifier: string,
-    variationIdentifier: string,
-    formValues?: GitSyncFormValues
-  ) =&gt; void
+    instruction: string,
+    variationIdentifier?: string,
+    ruleId?: string,
+    gitSyncFormValues?: GitSyncFormValues
+  ) =&gt; Promise&lt;void&gt;
 }
 &nbsp;
 const FlagItem: React.FC&lt;FlagItemProps&gt; = ({
   gitSync,
   flag,
-  onRemoveVariationMapping,
+  onRemoveRule,
+  instruction,
   isPlanEnforcementEnabled,
   ...props
 }) =&gt; {
   const { name, description, variation } = flag
 &nbsp;
-  const variationTextWidth = onRemoveVariationMapping ? '88px' : <span class="branch-1 cbranch-no" title="branch not covered" >'135px'</span>
+  const variationTextWidth = onRemoveRule ? '88px' : <span class="branch-1 cbranch-no" title="branch not covered" >'135px'</span>
   const [isDeleteModalOpen, setIsDeleteModalOpen] = useState(false)
 &nbsp;
   return (
@@ -1091,13 +1142,13 @@ const FlagItem: React.FC&lt;FlagItemProps&gt; = ({
             Only identifier text for now. See: https://harness.atlassian.net/browse/FFM-699 */}
         &lt;Text style={{ minWidth: variationTextWidth, maxWidth: variationTextWidth }}&gt;{variation}&lt;/Text&gt;
 &nbsp;
-        {onRemoveVariationMapping &amp;&amp; (
+        {onRemoveRule &amp;&amp; (
           &lt;FlagItemOptionsMenuButton
             onClick={<span class="fstat-no" title="function not covered" >() =</span>&gt; {
 <span class="cstat-no" title="statement not covered" >              if (gitSync?.isGitSyncEnabled &amp;&amp; !gitSync?.isAutoCommitEnabled) {</span>
 <span class="cstat-no" title="statement not covered" >                setIsDeleteModalOpen(true)</span>
               } else {
-<span class="cstat-no" title="statement not covered" >                onRemoveVariationMapping(flag.identifier, variation)</span>
+<span class="cstat-no" title="statement not covered" >                onRemoveRule(flag.identifier, instruction, variation, flag.ruleId)</span>
               }
             }}
           /&gt;
@@ -1107,7 +1158,7 @@ const FlagItem: React.FC&lt;FlagItemProps&gt; = ({
 <span class="branch-1 cbranch-no" title="branch not covered" >        &lt;SaveFlagToGitModal</span>
           flagName={flag.name}
           flagIdentifier={flag.identifier}
-          onSubmit={<span class="fstat-no" title="function not covered" >formValues </span>=&gt; <span class="cstat-no" title="statement not covered" >onRemoveVariationMapping?.(flag.identifier, variation, formValues)}</span>
+          onSubmit={<span class="fstat-no" title="function not covered" >formValues </span>=&gt; <span class="cstat-no" title="statement not covered" >onRemoveRule?.(flag.identifier, instruction, variation, flag.ruleId, formValues)}</span>
           onClose={<span class="fstat-no" title="function not covered" >() =</span>&gt; {
 <span class="cstat-no" title="statement not covered" >            setIsDeleteModalOpen(false)</span>
           }}
@@ -1123,7 +1174,7 @@ const FlagItem: React.FC&lt;FlagItemProps&gt; = ({
             <div class='footer quiet pad2 space-top1 center small'>
                 Code coverage generated by
                 <a href="https://istanbul.js.org/" target="_blank">istanbul</a>
-                at Tue Feb 22 2022 14:10:34 GMT+0000 (Greenwich Mean Time)
+                at Wed Feb 23 2022 03:26:40 GMT+0000 (Greenwich Mean Time)
             </div>
         </div>
         <script src="../../../../../prettify.js"></script>
