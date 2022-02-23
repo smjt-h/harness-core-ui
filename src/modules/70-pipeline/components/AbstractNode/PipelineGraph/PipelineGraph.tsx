@@ -83,6 +83,9 @@ const PipelineGraph = ({
       getFinalSVGArrowPath(uniqueNodeIds.createNode as string, uniqueNodeIds.endNode as string)
     ])
   }
+  const mergeSVGLinks = (updatedLinks: string[]): void => {
+    setSvgPath([...svgPath, ...updatedLinks])
+  }
 
   console.log('check state', state)
 
@@ -110,6 +113,7 @@ const PipelineGraph = ({
               selectedNode={selectedNode}
               setSelectedNode={updateSelectedNode}
               uniqueNodeIds={uniqueNodeIds}
+              mergeSVGLinks={mergeSVGLinks}
             />
           </div>
           <GraphActions setGraphScale={setGraphScale} graphScale={graphScale} handleScaleToFit={handleScaleToFit} />

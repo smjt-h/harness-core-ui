@@ -14,6 +14,7 @@ export interface PipelineGraphRecursiveProps {
   fireEvent: (event: any) => void
   setSelectedNode: (nodeId: string) => void
   startEndNodeNeeded?: boolean
+  mergeSVGLinks: (svgPath: string[]) => void
 }
 export const PipelineGraphRecursive = ({
   stages,
@@ -22,7 +23,8 @@ export const PipelineGraphRecursive = ({
   fireEvent,
   setSelectedNode,
   uniqueNodeIds,
-  startEndNodeNeeded
+  startEndNodeNeeded,
+  mergeSVGLinks
 }: PipelineGraphRecursiveProps): React.ReactElement => {
   const StartNode: React.FC<any> | undefined = getNode(NodeType.StartNode)
   const CreateNode: React.FC<any> | undefined = getNode(NodeType.CreateNode)
@@ -47,6 +49,7 @@ export const PipelineGraphRecursive = ({
             setSelectedNode={setSelectedNode}
             isNextNodeParallel={!!stages?.[index + 1]?.children?.length}
             isPrevNodeParallel={!!stages?.[index - 1]?.children?.length}
+            mergeSVGLinks={mergeSVGLinks}
           />
         )
       })}
@@ -74,6 +77,7 @@ interface PipelineGraphNode {
   isNextNodeParallel?: boolean
   isPrevNodeParallel?: boolean
   isLastChild?: boolean
+  mergeSVGLinks: (svgPath: string[]) => void
 }
 
 export const PipelineGraphNode = ({
@@ -86,7 +90,8 @@ export const PipelineGraphNode = ({
   isParallelNode,
   isNextNodeParallel,
   isPrevNodeParallel,
-  isLastChild
+  isLastChild,
+  mergeSVGLinks
 }: PipelineGraphNode): React.ReactElement | null => {
   let NodeComponent: React.FC<any> | undefined = getNode(data?.nodeType) || getNode(NodeType.Default)
   // if (data?.nodeType === 'StepGroup') {
@@ -156,6 +161,7 @@ export const PipelineGraphNode = ({
               key={data?.identifier}
               allowAdd={(!data?.children?.length && !isParallelNode) || (isParallelNode && isLastChild)}
               isFirstParallelNode={true}
+              updateSVGLinks={mergeSVGLinks}
             />
           )}
           {data?.children?.map((currentStage, index) => (
@@ -169,6 +175,7 @@ export const PipelineGraphNode = ({
               setSelectedNode={setSelectedNode}
               isParallelNode={true}
               isLastChild={index + 1 === data?.children?.length}
+              mergeSVGLinks={mergeSVGLinks}
             />
           ))}
         </>
