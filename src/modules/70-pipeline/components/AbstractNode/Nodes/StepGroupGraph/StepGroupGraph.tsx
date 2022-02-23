@@ -22,15 +22,16 @@ interface StepGroupGraphProps {
 interface LayoutStyles {
   height: string
   width: string
+  marginLeft?: string
 }
 const getCalculatedStyles = (data: PipelineGraphState[]): LayoutStyles => {
   let width = 0
   let maxChildLength = 0
   data.forEach(node => {
-    width += 90
+    width += 170
     maxChildLength = Math.max(maxChildLength, node?.children?.length || 0)
   })
-  return { height: `${(maxChildLength + 1) * 40}px`, width: `${width}px` }
+  return { height: `${(maxChildLength + 1) * 100}px`, width: `${width}px`, marginLeft: '40px' }
 }
 const StepGroupGraph = (props: StepGroupGraphProps): React.ReactElement => {
   const [svgPath, setSvgPath] = useState<string[]>([])
@@ -53,8 +54,9 @@ const StepGroupGraph = (props: StepGroupGraphProps): React.ReactElement => {
 
   useLayoutEffect(() => {
     if (state?.length) {
-      console.log(getCalculatedStyles(state))
-      setTimeout(setSvgPath, 200)
+      setLayoutStyles(getCalculatedStyles(state))
+      // console.log(getCalculatedStyles(state))
+      // setTimeout(setSvgPath, 200)
     }
   }, [state])
 
