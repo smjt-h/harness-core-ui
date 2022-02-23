@@ -23,9 +23,9 @@
         <div class='clearfix'>
             
             <div class='fl pad1y space-right2'>
-                <span class="strong">85.32% </span>
+                <span class="strong">84.76% </span>
                 <span class="quiet">Statements</span>
-                <span class='fraction'>93/109</span>
+                <span class='fraction'>89/105</span>
             </div>
         
             
@@ -44,9 +44,9 @@
         
             
             <div class='fl pad1y space-right2'>
-                <span class="strong">84.76% </span>
+                <span class="strong">84.62% </span>
                 <span class="quiet">Lines</span>
-                <span class='fraction'>89/105</span>
+                <span class='fraction'>88/104</span>
             </div>
         
             
@@ -573,7 +573,13 @@
 <a name='L514'></a><a href='#L514'>514</a>
 <a name='L515'></a><a href='#L515'>515</a>
 <a name='L516'></a><a href='#L516'>516</a>
-<a name='L517'></a><a href='#L517'>517</a></td><td class="line-coverage quiet"><span class="cline-any cline-neutral">&nbsp;</span>
+<a name='L517'></a><a href='#L517'>517</a>
+<a name='L518'></a><a href='#L518'>518</a>
+<a name='L519'></a><a href='#L519'>519</a>
+<a name='L520'></a><a href='#L520'>520</a>
+<a name='L521'></a><a href='#L521'>521</a>
+<a name='L522'></a><a href='#L522'>522</a>
+<a name='L523'></a><a href='#L523'>523</a></td><td class="line-coverage quiet"><span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
@@ -616,12 +622,14 @@
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-yes">1x</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-yes">1x</span>
 <span class="cline-any cline-yes">1x</span>
 <span class="cline-any cline-yes">1x</span>
 <span class="cline-any cline-yes">1x</span>
 <span class="cline-any cline-yes">1x</span>
 <span class="cline-any cline-yes">1x</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
@@ -671,7 +679,9 @@
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-yes">2x</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
@@ -715,7 +725,9 @@
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-yes">2x</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
@@ -790,7 +802,7 @@
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-yes">1x</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-yes">12x</span>
 <span class="cline-any cline-yes">12x</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
@@ -1132,6 +1144,7 @@ import { TICallToAction } from './TICallToAction'
 // import { TestsCoverage } from './TestsCoverage'
 import css from './BuildTests.module.scss'
 &nbsp;
+/* eslint-disable @typescript-eslint/no-shadow */
 enum UI {
   TIAndReports,
   TI,
@@ -1139,6 +1152,7 @@ enum UI {
   ZeroState,
   LoadingState
 }
+/* eslint-enable @typescript-eslint/no-shadow */
 &nbsp;
 interface BuildTestsProps {
   reportSummaryMock?: TestReportSummary
@@ -1171,7 +1185,7 @@ const renderTestsOverview = ({
 <span class="cstat-no" title="statement not covered" >  return null</span>
 }
 &nbsp;
-export const TIAndReports = ({
+export function TIAndReports({
   header,
   testOverviewData,
   reportSummaryData,
@@ -1187,43 +1201,45 @@ export const TIAndReports = ({
   stepId?: string
   serviceToken?: string | null
   testsCountDiff?: number
-}): JSX.Element =&gt; (
-  &lt;&gt;
-    {header}
-    &lt;Layout.Horizontal spacing="large" margin={{ bottom: 'xlarge' }}&gt;
-      {renderTestsOverview({ testOverviewData, testsCountDiff })}
-      {typeof reportSummaryData<span class="branch-0 cbranch-no" title="branch not covered" >?.t</span>otal_tests !== 'undefined' &amp;&amp;
-        typeof reportSummaryData<span class="branch-0 cbranch-no" title="branch not covered" >?.f</span>ailed_tests !== 'undefined' &amp;&amp;
-        typeof reportSummaryData<span class="branch-0 cbranch-no" title="branch not covered" >?.s</span>uccessful_tests !== 'undefined' &amp;&amp;
-        typeof reportSummaryData<span class="branch-0 cbranch-no" title="branch not covered" >?.s</span>kipped_tests !== 'undefined' &amp;&amp; (
-          &lt;TestsExecutionResult
-            totalTests={reportSummaryData.total_tests}
-            failedTests={reportSummaryData.failed_tests}
-            successfulTests={reportSummaryData.successful_tests}
-            skippedTests={reportSummaryData.skipped_tests}
-          /&gt;
+}): JSX.Element {
+  return (
+    &lt;&gt;
+      {header}
+      &lt;Layout.Horizontal spacing="large" margin={{ bottom: 'xlarge' }}&gt;
+        {renderTestsOverview({ testOverviewData, testsCountDiff })}
+        {typeof reportSummaryData<span class="branch-0 cbranch-no" title="branch not covered" >?.t</span>otal_tests !== 'undefined' &amp;&amp;
+          typeof reportSummaryData<span class="branch-0 cbranch-no" title="branch not covered" >?.f</span>ailed_tests !== 'undefined' &amp;&amp;
+          typeof reportSummaryData<span class="branch-0 cbranch-no" title="branch not covered" >?.s</span>uccessful_tests !== 'undefined' &amp;&amp;
+          typeof reportSummaryData<span class="branch-0 cbranch-no" title="branch not covered" >?.s</span>kipped_tests !== 'undefined' &amp;&amp; (
+            &lt;TestsExecutionResult
+              totalTests={reportSummaryData.total_tests}
+              failedTests={reportSummaryData.failed_tests}
+              successfulTests={reportSummaryData.successful_tests}
+              skippedTests={reportSummaryData.skipped_tests}
+            /&gt;
+          )}
+        {typeof testOverviewData<span class="branch-0 cbranch-no" title="branch not covered" >?.s</span>elected_tests<span class="branch-0 cbranch-no" title="branch not covered" >?.s</span>ource_code_changes !== 'undefined' &amp;&amp;
+          typeof testOverviewData<span class="branch-0 cbranch-no" title="branch not covered" >?.s</span>elected_tests<span class="branch-0 cbranch-no" title="branch not covered" >?.n</span>ew_tests !== 'undefined' &amp;&amp;
+          typeof testOverviewData<span class="branch-0 cbranch-no" title="branch not covered" >?.s</span>elected_tests<span class="branch-0 cbranch-no" title="branch not covered" >?.u</span>pdated_tests !== 'undefined' &amp;&amp; (
+            &lt;TestsSelectionBreakdown
+              sourceCodeChanges={testOverviewData.selected_tests.source_code_changes}
+              newTests={testOverviewData.selected_tests.new_tests}
+              updatedTests={testOverviewData.selected_tests.updated_tests}
+            /&gt;
+          )}
+      &lt;/Layout.Horizontal&gt;
+      &lt;Layout.Horizontal spacing="large"&gt;
+        {/* &lt;TestsCoverage /&gt; */}
+        {/* TI is above Reports which is 100% width */}
+        {stageId &amp;&amp; stepId &amp;&amp; serviceToken &amp;&amp; (
+          &lt;TestsExecution stageId={stageId} stepId={stepId} serviceToken={serviceToken} showCallGraph /&gt;
         )}
-      {typeof testOverviewData<span class="branch-0 cbranch-no" title="branch not covered" >?.s</span>elected_tests<span class="branch-0 cbranch-no" title="branch not covered" >?.s</span>ource_code_changes !== 'undefined' &amp;&amp;
-        typeof testOverviewData<span class="branch-0 cbranch-no" title="branch not covered" >?.s</span>elected_tests<span class="branch-0 cbranch-no" title="branch not covered" >?.n</span>ew_tests !== 'undefined' &amp;&amp;
-        typeof testOverviewData<span class="branch-0 cbranch-no" title="branch not covered" >?.s</span>elected_tests<span class="branch-0 cbranch-no" title="branch not covered" >?.u</span>pdated_tests !== 'undefined' &amp;&amp; (
-          &lt;TestsSelectionBreakdown
-            sourceCodeChanges={testOverviewData.selected_tests.source_code_changes}
-            newTests={testOverviewData.selected_tests.new_tests}
-            updatedTests={testOverviewData.selected_tests.updated_tests}
-          /&gt;
-        )}
-    &lt;/Layout.Horizontal&gt;
-    &lt;Layout.Horizontal spacing="large"&gt;
-      {/* &lt;TestsCoverage /&gt; */}
-      {/* TI is above Reports which is 100% width */}
-      {stageId &amp;&amp; stepId &amp;&amp; serviceToken &amp;&amp; (
-        &lt;TestsExecution stageId={stageId} stepId={stepId} serviceToken={serviceToken} showCallGraph /&gt;
-      )}
-    &lt;/Layout.Horizontal&gt;
-  &lt;/&gt;
-)
+      &lt;/Layout.Horizontal&gt;
+    &lt;/&gt;
+  )
+}
 &nbsp;
-export const TI = ({
+export function TI({
   header,
   testOverviewData,
   testsCountDiff
@@ -1231,25 +1247,27 @@ export const TI = ({
   header: JSX.Element
   testOverviewData?: SelectionOverview | null
   testsCountDiff?: number
-}): JSX.Element =&gt; (
-  &lt;&gt;
-    {header}
-    &lt;Layout.Horizontal spacing="large" margin={{ bottom: 'xlarge' }}&gt;
-      {renderTestsOverview({ testOverviewData, testsCountDiff })}
-      {typeof testOverviewData<span class="branch-0 cbranch-no" title="branch not covered" >?.s</span>elected_tests<span class="branch-0 cbranch-no" title="branch not covered" >?.s</span>ource_code_changes !== 'undefined' &amp;&amp;
-        typeof testOverviewData<span class="branch-0 cbranch-no" title="branch not covered" >?.s</span>elected_tests<span class="branch-0 cbranch-no" title="branch not covered" >?.n</span>ew_tests !== 'undefined' &amp;&amp;
-        typeof testOverviewData<span class="branch-0 cbranch-no" title="branch not covered" >?.s</span>elected_tests<span class="branch-0 cbranch-no" title="branch not covered" >?.u</span>pdated_tests !== 'undefined' &amp;&amp; (
-          &lt;TestsSelectionBreakdown
-            sourceCodeChanges={testOverviewData.selected_tests.source_code_changes}
-            newTests={testOverviewData.selected_tests.new_tests}
-            updatedTests={testOverviewData.selected_tests.updated_tests}
-          /&gt;
-        )}
-    &lt;/Layout.Horizontal&gt;
-  &lt;/&gt;
-)
+}): JSX.Element {
+  return (
+    &lt;&gt;
+      {header}
+      &lt;Layout.Horizontal spacing="large" margin={{ bottom: 'xlarge' }}&gt;
+        {renderTestsOverview({ testOverviewData, testsCountDiff })}
+        {typeof testOverviewData<span class="branch-0 cbranch-no" title="branch not covered" >?.s</span>elected_tests<span class="branch-0 cbranch-no" title="branch not covered" >?.s</span>ource_code_changes !== 'undefined' &amp;&amp;
+          typeof testOverviewData<span class="branch-0 cbranch-no" title="branch not covered" >?.s</span>elected_tests<span class="branch-0 cbranch-no" title="branch not covered" >?.n</span>ew_tests !== 'undefined' &amp;&amp;
+          typeof testOverviewData<span class="branch-0 cbranch-no" title="branch not covered" >?.s</span>elected_tests<span class="branch-0 cbranch-no" title="branch not covered" >?.u</span>pdated_tests !== 'undefined' &amp;&amp; (
+            &lt;TestsSelectionBreakdown
+              sourceCodeChanges={testOverviewData.selected_tests.source_code_changes}
+              newTests={testOverviewData.selected_tests.new_tests}
+              updatedTests={testOverviewData.selected_tests.updated_tests}
+            /&gt;
+          )}
+      &lt;/Layout.Horizontal&gt;
+    &lt;/&gt;
+  )
+}
 &nbsp;
-export const Reports = ({
+export function Reports({
   header,
   reportSummaryData,
   stageId,
@@ -1263,7 +1281,7 @@ export const Reports = ({
   stepId?: string
   serviceToken?: string | null
   testsCountDiff?: number
-}): JSX.Element =&gt; {
+}): JSX.Element {
   const { NG_LICENSES_ENABLED } = useFeatureFlags()
 &nbsp;
   return (
@@ -1306,7 +1324,7 @@ export const Reports = ({
     &lt;/&gt;
   )
 }
-const BuildTests: React.FC&lt;BuildTestsProps&gt; = ({ reportSummaryMock, testOverviewMock }) =&gt; {
+function BuildTests({ reportSummaryMock, testOverviewMock }: BuildTestsProps): React.ReactElement | null {
   const context = useExecutionContext()
   const { getString } = useStrings()
 &nbsp;
@@ -1612,7 +1630,7 @@ export default BuildTests
             <div class='footer quiet pad2 space-top1 center small'>
                 Code coverage generated by
                 <a href="https://istanbul.js.org/" target="_blank">istanbul</a>
-                at Wed Feb 23 2022 10:19:18 GMT+0000 (Greenwich Mean Time)
+                at Wed Feb 23 2022 11:45:52 GMT+0000 (Greenwich Mean Time)
             </div>
         </div>
         <script src="../../../../../prettify.js"></script>

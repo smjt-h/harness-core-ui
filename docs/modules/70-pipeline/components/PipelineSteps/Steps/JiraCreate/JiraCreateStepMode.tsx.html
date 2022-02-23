@@ -23,9 +23,9 @@
         <div class='clearfix'>
             
             <div class='fl pad1y space-right2'>
-                <span class="strong">73.64% </span>
+                <span class="strong">73.23% </span>
                 <span class="quiet">Statements</span>
-                <span class='fraction'>95/129</span>
+                <span class='fraction'>93/127</span>
             </div>
         
             
@@ -44,9 +44,9 @@
         
             
             <div class='fl pad1y space-right2'>
-                <span class="strong">74.22% </span>
+                <span class="strong">73.81% </span>
                 <span class="quiet">Lines</span>
-                <span class='fraction'>95/128</span>
+                <span class='fraction'>93/126</span>
             </div>
         
             
@@ -696,7 +696,9 @@
 <a name='L637'></a><a href='#L637'>637</a>
 <a name='L638'></a><a href='#L638'>638</a>
 <a name='L639'></a><a href='#L639'>639</a>
-<a name='L640'></a><a href='#L640'>640</a></td><td class="line-coverage quiet"><span class="cline-any cline-neutral">&nbsp;</span>
+<a name='L640'></a><a href='#L640'>640</a>
+<a name='L641'></a><a href='#L641'>641</a>
+<a name='L642'></a><a href='#L642'>642</a></td><td class="line-coverage quiet"><span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
@@ -769,7 +771,7 @@
 <span class="cline-any cline-yes">94x</span>
 <span class="cline-any cline-yes">94x</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-yes">94x</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
@@ -939,11 +941,13 @@
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-yes">26x</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-yes">8x</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-yes">2x</span>
 <span class="cline-any cline-yes">2x</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
@@ -1408,7 +1412,7 @@ import { getNameAndIdentifierSchema } from '../StepsValidateUtils'
 import stepCss from '@pipeline/components/PipelineSteps/Steps/Steps.module.scss'
 import css from './JiraCreate.module.scss'
 &nbsp;
-const FormContent = ({
+function FormContent({
   formik,
   refetchProjects,
   refetchProjectMetadata,
@@ -1422,7 +1426,7 @@ const FormContent = ({
   allowableTypes,
   stepViewType,
   readonly
-}: JiraCreateFormContentInterface): JSX.Element =&gt; {
+}: JiraCreateFormContentInterface): JSX.Element {
   const { getString } = useStrings()
   const { expressions } = useVariablesExpression()
   const { accountId, projectIdentifier, orgIdentifier } =
@@ -1578,22 +1582,24 @@ const FormContent = ({
     )
   }, [projectOptions, connectorRefFixedValue, formik.values.spec.selectedFields, formik.values.spec.fields])
 &nbsp;
-  const AddFieldsButton = () =&gt; (
-    &lt;Text
-      onClick={() =&gt; {
-        <span class="missing-if-branch" title="else path not taken" >E</span>if (!isApprovalStepFieldDisabled(readonly)) {
-          showDynamicFieldsModal()
-        }
-      }}
-      style={{
-        cursor: isApprovalStepFieldDisabled(readonly) ? <span class="branch-0 cbranch-no" title="branch not covered" >'not-allowed' </span>: 'pointer'
-      }}
-      tooltipProps={{ dataTooltipId: 'jiraCreateAddFields' }}
-      intent="primary"
-    &gt;
-      {getString('pipeline.jiraCreateStep.fieldSelectorAdd')}
-    &lt;/Text&gt;
-  )
+  function AddFieldsButton(): React.ReactElement {
+    return (
+      &lt;Text
+        onClick={() =&gt; {
+          <span class="missing-if-branch" title="else path not taken" >E</span>if (!isApprovalStepFieldDisabled(readonly)) {
+            showDynamicFieldsModal()
+          }
+        }}
+        style={{
+          cursor: isApprovalStepFieldDisabled(readonly) ? <span class="branch-0 cbranch-no" title="branch not covered" >'not-allowed' </span>: 'pointer'
+        }}
+        tooltipProps={{ dataTooltipId: 'jiraCreateAddFields' }}
+        intent="primary"
+      &gt;
+        {getString('pipeline.jiraCreateStep.fieldSelectorAdd')}
+      &lt;/Text&gt;
+    )
+  }
 &nbsp;
   return (
     &lt;React.Fragment&gt;
@@ -1981,7 +1987,7 @@ export default JiraCreateStepModeWithRef
             <div class='footer quiet pad2 space-top1 center small'>
                 Code coverage generated by
                 <a href="https://istanbul.js.org/" target="_blank">istanbul</a>
-                at Wed Feb 23 2022 10:19:18 GMT+0000 (Greenwich Mean Time)
+                at Wed Feb 23 2022 11:45:52 GMT+0000 (Greenwich Mean Time)
             </div>
         </div>
         <script src="../../../../../../prettify.js"></script>

@@ -23,9 +23,9 @@
         <div class='clearfix'>
             
             <div class='fl pad1y space-right2'>
-                <span class="strong">89.29% </span>
+                <span class="strong">89.16% </span>
                 <span class="quiet">Statements</span>
-                <span class='fraction'>75/84</span>
+                <span class='fraction'>74/83</span>
             </div>
         
             
@@ -486,7 +486,12 @@
 <a name='L427'></a><a href='#L427'>427</a>
 <a name='L428'></a><a href='#L428'>428</a>
 <a name='L429'></a><a href='#L429'>429</a>
-<a name='L430'></a><a href='#L430'>430</a></td><td class="line-coverage quiet"><span class="cline-any cline-neutral">&nbsp;</span>
+<a name='L430'></a><a href='#L430'>430</a>
+<a name='L431'></a><a href='#L431'>431</a>
+<a name='L432'></a><a href='#L432'>432</a>
+<a name='L433'></a><a href='#L433'>433</a>
+<a name='L434'></a><a href='#L434'>434</a>
+<a name='L435'></a><a href='#L435'>435</a></td><td class="line-coverage quiet"><span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
@@ -530,6 +535,7 @@
 <span class="cline-any cline-yes">2x</span>
 <span class="cline-any cline-yes">2x</span>
 <span class="cline-any cline-yes">2x</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
@@ -666,6 +672,7 @@
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-yes">2x</span>
 <span class="cline-any cline-yes">24x</span>
 <span class="cline-any cline-yes">24x</span>
@@ -679,6 +686,7 @@
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-yes">32x</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
@@ -769,10 +777,12 @@
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-yes">2x</span>
 <span class="cline-any cline-yes">24x</span>
 <span class="cline-any cline-yes">24x</span>
 <span class="cline-any cline-yes">24x</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
@@ -983,6 +993,7 @@ type CustomColumn&lt;T extends Record&lt;string, any&gt;&gt; = Column&lt;T&gt; &
   refetchPipeline?: () =&gt; void
 }
 &nbsp;
+// eslint-disable-next-line react/function-component-definition
 const RenderColumnMenu: Renderer&lt;CellProps&lt;PipelineDTO&gt;&gt; = ({ row, column }) =&gt; {
   const data = row.original
   const [menuOpen, setMenuOpen] = React.useState(false)
@@ -1095,6 +1106,7 @@ const RenderColumnMenu: Renderer&lt;CellProps&lt;PipelineDTO&gt;&gt; = ({ row, c
   )
 }
 &nbsp;
+// eslint-disable-next-line react/function-component-definition
 const RenderColumnPipeline: Renderer&lt;CellProps&lt;PipelineDTO&gt;&gt; = ({ row }) =&gt; {
   const data = row.original
   const { getString } = useStrings()
@@ -1151,6 +1163,7 @@ const RenderColumnPipeline: Renderer&lt;CellProps&lt;PipelineDTO&gt;&gt; = ({ ro
   )
 }
 &nbsp;
+// eslint-disable-next-line react/function-component-definition
 const RenderActivity: Renderer&lt;CellProps&lt;PipelineDTO&gt;&gt; = ({ row, column }) =&gt; {
   const data = row.original
 &nbsp;
@@ -1198,6 +1211,7 @@ const RenderActivity: Renderer&lt;CellProps&lt;PipelineDTO&gt;&gt; = ({ row, col
   )
 }
 &nbsp;
+// eslint-disable-next-line react/function-component-definition
 const RenderLastRun: Renderer&lt;CellProps&lt;PipelineDTO&gt;&gt; = ({ row }) =&gt; {
   const data = row.original
   const { getString } = useStrings()
@@ -1217,6 +1231,7 @@ const RenderLastRun: Renderer&lt;CellProps&lt;PipelineDTO&gt;&gt; = ({ row }) =&
   )
 }
 &nbsp;
+// eslint-disable-next-line react/function-component-definition
 const RenderRunPipeline: Renderer&lt;CellProps&lt;PipelineDTO&gt;&gt; = ({ row }): JSX.Element =&gt; {
   const rowdata = row.original
 &nbsp;
@@ -1258,7 +1273,7 @@ const RenderRunPipeline: Renderer&lt;CellProps&lt;PipelineDTO&gt;&gt; = ({ row }
   )
 }
 &nbsp;
-export const PipelineListView: React.FC&lt;PipelineListViewProps&gt; = ({
+export function PipelineListView({
   data,
   goToPipelineDetail,
   gotoPage,
@@ -1266,7 +1281,7 @@ export const PipelineListView: React.FC&lt;PipelineListViewProps&gt; = ({
   goToPipelineStudio,
   onDeletePipeline,
   onDelete
-}): JSX.Element =&gt; {
+}: PipelineListViewProps): React.ReactElement {
   const { getString } = useStrings()
   const { isGitSyncEnabled } = useAppStore()
   const columns: CustomColumn&lt;PipelineDTO&gt;[] = React.useMemo(
@@ -1351,7 +1366,7 @@ export const PipelineListView: React.FC&lt;PipelineListViewProps&gt; = ({
             <div class='footer quiet pad2 space-top1 center small'>
                 Code coverage generated by
                 <a href="https://istanbul.js.org/" target="_blank">istanbul</a>
-                at Wed Feb 23 2022 10:19:18 GMT+0000 (Greenwich Mean Time)
+                at Wed Feb 23 2022 11:45:52 GMT+0000 (Greenwich Mean Time)
             </div>
         </div>
         <script src="../../../../../prettify.js"></script>
