@@ -13,8 +13,7 @@ export interface PipelineGraphRecursiveProps {
   uniqueNodeIds: NodeIds
   fireEvent: (event: any) => void
   setSelectedNode: (nodeId: string) => void
-  dropLinkEvent: (event: any) => void
-  dropNodeEvent: (event: any) => void
+  startEndNodeNeeded?: boolean
 }
 export const PipelineGraphRecursive = ({
   stages,
@@ -22,26 +21,25 @@ export const PipelineGraphRecursive = ({
   selectedNode,
   fireEvent,
   setSelectedNode,
-  dropLinkEvent,
-  dropNodeEvent,
-  uniqueNodeIds
+  uniqueNodeIds,
+  startEndNodeNeeded
 }: PipelineGraphRecursiveProps): React.ReactElement => {
   const StartNode: React.FC<any> | undefined = getNode(NodeType.StartNode)
   const CreateNode: React.FC<any> | undefined = getNode(NodeType.CreateNode)
   const EndNode: React.FC<any> | undefined = getNode(NodeType.EndNode)
   return (
     <div id="tree-container" className={classNames(css.graphTree, css.common)}>
-      <div>
-        <div id={uniqueNodeIds.startNode} className={classNames(css.graphNode)}>
-          {StartNode && <StartNode />}
+      {StartNode && startEndNodeNeeded && (
+        <div>
+          <div id={uniqueNodeIds.startNode} className={classNames(css.graphNode)}>
+            <StartNode />
+          </div>
         </div>
-      </div>
+      )}
       {stages?.map((stage, index) => {
         return (
           <PipelineGraphNode
             fireEvent={fireEvent}
-            dropNodeEvent={dropNodeEvent}
-            dropLinkEvent={dropLinkEvent}
             selectedNode={selectedNode}
             data={stage}
             key={stage?.identifier}
@@ -52,21 +50,15 @@ export const PipelineGraphRecursive = ({
           />
         )
       })}
-      <div>
-        {CreateNode && (
-          <CreateNode
-            identifier={uniqueNodeIds.createNode}
-            name={'Add Stage'}
-            fireEvent={fireEvent}
-            getNode={getNode}
-          />
-        )}
-      </div>
-      <div>
+      {CreateNode && startEndNodeNeeded && (
+        <CreateNode identifier={uniqueNodeIds.createNode} name={'Add Stage'} fireEvent={fireEvent} getNode={getNode} />
+      )}
+      {EndNode && startEndNodeNeeded && (
         <div id={uniqueNodeIds.endNode} className={classNames(css.graphNode)}>
-          {EndNode && <EndNode />}
+          <EndNode />
         </div>
-      </div>
+      )}
+      <div></div>
     </div>
   )
 }
@@ -79,8 +71,6 @@ interface PipelineGraphNode {
   selectedNode: string
   setSelectedNode: (nodeId: string) => void
   isParallelNode?: boolean
-  dropLinkEvent: (event: any) => void
-  dropNodeEvent: (event: any) => void
   isNextNodeParallel?: boolean
   isPrevNodeParallel?: boolean
   isLastChild?: boolean
@@ -94,13 +84,15 @@ export const PipelineGraphNode = ({
   setSelectedNode,
   selectedNode,
   isParallelNode,
-  dropLinkEvent,
-  dropNodeEvent,
   isNextNodeParallel,
   isPrevNodeParallel,
   isLastChild
 }: PipelineGraphNode): React.ReactElement | null => {
-  const NodeComponent: React.FC<any> | undefined = getNode(data?.nodeType) || getNode(NodeType.Default)
+  let NodeComponent: React.FC<any> | undefined = getNode(data?.nodeType) || getNode(NodeType.Default)
+  // if (data?.nodeType === 'StepGroup') {
+  //   return null
+  // }
+  console.log('nodeType', data?.nodeType)
   const ref = useRef<HTMLDivElement>(null)
   const isIntersecting = useIntersectionObserver(ref, { threshold: 0.98 }, checkIntersectonBottom)
   const [collapseNode, setCollapseNode] = useState(false)
@@ -146,8 +138,6 @@ export const PipelineGraphNode = ({
           className={classNames(css.graphNode, className)}
           setSelectedNode={setSelectedNode}
           isSelected={selectedNode === data?.identifier}
-          dropLinkEvent={dropLinkEvent}
-          dropNodeEvent={dropNodeEvent}
           isParallelNode={isParallelNode}
           key={data?.identifier}
           allowAdd={(!data?.children?.length && !isParallelNode) || (isParallelNode && isLastChild)}
@@ -157,12 +147,11 @@ export const PipelineGraphNode = ({
           {NodeComponent && (
             <NodeComponent
               {...data}
+              getNode={getNode}
               fireEvent={fireEvent}
               className={classNames(css.graphNode, className)}
               setSelectedNode={setSelectedNode}
               isSelected={selectedNode === data?.identifier}
-              dropLinkEvent={dropLinkEvent}
-              dropNodeEvent={dropNodeEvent}
               isParallelNode={isParallelNode}
               key={data?.identifier}
               allowAdd={(!data?.children?.length && !isParallelNode) || (isParallelNode && isLastChild)}
@@ -172,8 +161,6 @@ export const PipelineGraphNode = ({
           {data?.children?.map((currentStage, index) => (
             <PipelineGraphNode
               fireEvent={fireEvent}
-              dropLinkEvent={dropLinkEvent}
-              dropNodeEvent={dropNodeEvent}
               getNode={getNode}
               key={currentStage?.identifier}
               className={css.parallel}

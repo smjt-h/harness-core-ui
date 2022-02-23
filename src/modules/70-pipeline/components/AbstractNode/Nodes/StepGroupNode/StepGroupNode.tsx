@@ -12,6 +12,7 @@ import { Event, DiagramDrag } from '@pipeline/components/Diagram'
 import type { StepGroupNodeLayerModel } from '../../../Diagram/node-layer/StepGroupNodeLayerModel'
 import CreateNode from '../CreateNode/CreateNode'
 import css from './StepGroupNode.module.scss'
+import PipelineGraph from '../../PipelineGraph/PipelineGraph'
 
 const onAddNodeClick = (
   e: React.MouseEvent<Element, MouseEvent>,
@@ -52,40 +53,40 @@ export const StepGroupNode = (props: any): JSX.Element => {
   const [showAdd, setVisibilityOfAdd] = React.useState(false)
   const [addClicked, setAddClicked] = React.useState(false)
   // const [hover, setHover] = React.useState(false)
-  React.useEffect(() => {
-    const nodeLayer = layerRef.current
+  //   React.useEffect(() => {
+  //     const nodeLayer = layerRef.current
 
-    const onMouseOver = (e: MouseEvent): void => {
-      if (!addClicked) {
-        setVisibilityOfAdd(true)
-      }
-      onMouseOverNode(e, props.layer)
-    }
+  //     const onMouseOver = (e: MouseEvent): void => {
+  //       if (!addClicked) {
+  //         setVisibilityOfAdd(true)
+  //       }
+  //       onMouseOverNode(e, props.layer)
+  //     }
 
-    const onMouseEnter = (e: MouseEvent): void => {
-      onMouseEnterNode(e, props.layer)
-    }
+  //     const onMouseEnter = (e: MouseEvent): void => {
+  //       onMouseEnterNode(e, props.layer)
+  //     }
 
-    const onMouseLeave = (e: MouseEvent): void => {
-      if (!addClicked) {
-        setVisibilityOfAdd(false)
-      }
-      onMouseLeaveNode(e, props.layer)
-    }
+  //     const onMouseLeave = (e: MouseEvent): void => {
+  //       if (!addClicked) {
+  //         setVisibilityOfAdd(false)
+  //       }
+  //       onMouseLeaveNode(e, props.layer)
+  //     }
 
-    if (nodeLayer && allowAdd) {
-      nodeLayer.addEventListener('mouseenter', onMouseEnter)
-      nodeLayer.addEventListener('mouseover', onMouseOver)
-      nodeLayer.addEventListener('mouseleave', onMouseLeave)
-    }
-    return () => {
-      if (nodeLayer && allowAdd) {
-        nodeLayer.removeEventListener('mouseenter', onMouseEnter)
-        nodeLayer.removeEventListener('mouseover', onMouseOver)
-        nodeLayer.removeEventListener('mouseleave', onMouseLeave)
-      }
-    }
-  }, [layerRef, allowAdd, addClicked])
+  //     if (nodeLayer && allowAdd) {
+  //       nodeLayer.addEventListener('mouseenter', onMouseEnter)
+  //       nodeLayer.addEventListener('mouseover', onMouseOver)
+  //       nodeLayer.addEventListener('mouseleave', onMouseLeave)
+  //     }
+  //     return () => {
+  //       if (nodeLayer && allowAdd) {
+  //         nodeLayer.removeEventListener('mouseenter', onMouseEnter)
+  //         nodeLayer.removeEventListener('mouseover', onMouseOver)
+  //         nodeLayer.removeEventListener('mouseleave', onMouseLeave)
+  //       }
+  //     }
+  //   }, [layerRef, allowAdd, addClicked])
 
   React.useEffect(() => {
     if (!addClicked) {
@@ -141,7 +142,15 @@ export const StepGroupNode = (props: any): JSX.Element => {
           </Layout.Horizontal>
         </div>
         <div className={css.stepGroupBody}>
-          <CreateNode />
+          <PipelineGraph
+            pipeline={props?.data?.stepGroup}
+            fireEvent={props?.fireEvent}
+            startEndNodeNeeded={false}
+            getNode={props?.getNode}
+          />
+          {/* <CDPipelineStudioNew pipeline={props?.data?.stepGroup?.steps} isStepGroupNode={true} /> */}
+          {/* <PipelineGraph /> */}
+          {/* <CreateNode /> */}
         </div>
       </div>
     </>

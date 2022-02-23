@@ -4,7 +4,7 @@ import React, { useEffect, useLayoutEffect, useState, useRef, useMemo } from 're
 import Draggable from 'react-draggable'
 import { v4 as uuid } from 'uuid'
 import { get } from 'lodash-es'
-import type { PipelineInfoConfig, StageElementWrapperConfig } from 'services/cd-ng'
+import type { PipelineInfoConfig, StageElementWrapperConfig, StepGroupElementConfig } from 'services/cd-ng'
 import type { ExecutionWrapperConfig } from 'services/ci'
 import {
   getFinalSVGArrowPath,
@@ -19,19 +19,17 @@ import type { NodeIds, PipelineGraphState } from '../types'
 import css from './PipelineGraph.module.scss'
 
 export interface PipelineGraphProps {
-  pipeline: PipelineInfoConfig
+  pipeline: PipelineInfoConfig | StepGroupElementConfig
   fireEvent: (event: any) => void
   getNode: (type?: string | undefined) => React.FC<any> | undefined
-  dropLinkEvent: (event: any) => void
-  dropNodeEvent: (event: any) => void
+  startEndNodeNeeded?: boolean
 }
 
 const PipelineGraph = ({
   pipeline,
   getNode,
-  dropLinkEvent,
-  dropNodeEvent,
-  fireEvent
+  fireEvent,
+  startEndNodeNeeded = true
 }: PipelineGraphProps): React.ReactElement => {
   const [svgPath, setSvgPath] = useState<string[]>([])
   const [treeRectangle, setTreeRectangle] = useState<DOMRect | void>()
@@ -59,9 +57,10 @@ const PipelineGraph = ({
     if (stepData) {
       setState(getPipelineGraphData(stepData as ExecutionWrapperConfig[]))
       return
-    }
-    if (pipeline.stages?.length) {
+    } else if (pipeline.stages?.length) {
       setState(getPipelineGraphData(pipeline.stages as StageElementWrapperConfig[]))
+    } else if (pipeline.steps?.length) {
+      setState(getPipelineGraphData(pipeline.steps as ExecutionWrapperConfig[]))
     }
   }, [treeRectangle, pipeline])
 
@@ -74,6 +73,9 @@ const PipelineGraph = ({
   const setSVGLinks = (): void => {
     const SVGLinks = getSVGLinksFromPipeline(state)
     const lastNode = state?.[state?.length - 1]
+    if (!startEndNodeNeeded) {
+      return setSvgPath([...SVGLinks])
+    }
     return setSvgPath([
       ...SVGLinks,
       getFinalSVGArrowPath(uniqueNodeIds.startNode, state?.[0]?.identifier as string),
@@ -81,6 +83,8 @@ const PipelineGraph = ({
       getFinalSVGArrowPath(uniqueNodeIds.createNode as string, uniqueNodeIds.endNode as string)
     ])
   }
+
+  console.log('check state', state)
 
   useEffect(() => {
     updateTreeRect()
@@ -99,13 +103,12 @@ const PipelineGraph = ({
           <div className={css.graphMain} ref={canvasRef} style={{ transform: `scale(${graphScale})` }}>
             <SVGComponent svgPath={svgPath} />
             <PipelineGraphRecursive
+              startEndNodeNeeded={startEndNodeNeeded}
               fireEvent={fireEvent}
               getNode={getNode}
               stages={state}
               selectedNode={selectedNode}
               setSelectedNode={updateSelectedNode}
-              dropLinkEvent={dropLinkEvent}
-              dropNodeEvent={dropNodeEvent}
               uniqueNodeIds={uniqueNodeIds}
             />
           </div>

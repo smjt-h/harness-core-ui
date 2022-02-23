@@ -113,6 +113,10 @@ const DiagramNodes = {
   [NodeType.CreateNode]: CreateNode,
   [NodeType.EndNode]: EndNode,
   [NodeType.StartNode]: StartNode,
+<<<<<<< Updated upstream
+=======
+  [NodeType.GroupNode]: GroupNode,
+>>>>>>> Stashed changes
   [NodeType.StepGroupNode]: StepGroupNode
 }
 
