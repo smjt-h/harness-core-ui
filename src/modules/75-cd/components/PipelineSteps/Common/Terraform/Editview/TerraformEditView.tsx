@@ -84,9 +84,14 @@ export default function TerraformEditView(
     ...getNameAndIdentifierSchema(getString, stepViewType),
     timeout: getDurationValidationSchema({ minimum: '10s' }).required(getString('validation.timeout10SecMinimum')),
     spec: Yup.object().shape({
-      provisionerIdentifier: IdentifierSchemaWithOutName(getString, {
-        requiredErrorMsg: getString('common.validation.provisionerIdentifierIsRequired'),
-        regexErrorMsg: getString('common.validation.provisionerIdentifierPatternIsNotValid')
+      provisionerIdentifier: Yup.lazy((value): Yup.Schema<unknown> => {
+        if (getMultiTypeFromValue(value as any) === MultiTypeInputType.FIXED) {
+          return IdentifierSchemaWithOutName(getString, {
+            requiredErrorMsg: getString('common.validation.provisionerIdentifierIsRequired'),
+            regexErrorMsg: getString('common.validation.provisionerIdentifierPatternIsNotValid')
+          })
+        }
+        return Yup.string().required(getString('common.validation.provisionerIdentifierIsRequired'))
       }),
       configuration: Yup.object().shape({
         type: Yup.string().required(getString('pipelineSteps.configurationTypeRequired'))
