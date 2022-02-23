@@ -81,6 +81,9 @@ const PipelineGraph = ({
       getFinalSVGArrowPath(uniqueNodeIds.createNode as string, uniqueNodeIds.endNode as string)
     ])
   }
+  const mergeSVGLinks = (updatedLinks: string[]): void => {
+    setSvgPath([...svgPath, ...updatedLinks])
+  }
 
   useEffect(() => {
     updateTreeRect()
@@ -107,6 +110,7 @@ const PipelineGraph = ({
               dropLinkEvent={dropLinkEvent}
               dropNodeEvent={dropNodeEvent}
               uniqueNodeIds={uniqueNodeIds}
+              mergeSVGLinks={mergeSVGLinks}
             />
           </div>
           <GraphActions setGraphScale={setGraphScale} graphScale={graphScale} handleScaleToFit={handleScaleToFit} />
