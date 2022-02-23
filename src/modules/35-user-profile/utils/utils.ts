@@ -25,12 +25,26 @@ export enum AuthTypes {
   AWSCredentials = 'AWSCredentials'
 }
 
+export interface SourceCodeType {
+  text: string
+  value: SourceCodeTypes
+  icon: IconName
+}
+
 export enum SourceCodeTypes {
   BITBUCKET = 'BITBUCKET',
   GITHUB = 'GITHUB',
   GITLAB = 'GITLAB',
   AZURE_DEV_OPS = 'AZURE_DEV_OPS',
   AWS_CODE_COMMIT = 'AWS_CODE_COMMIT'
+}
+
+export const selectedValueToTypeMap: Record<SourceCodeTypes, SourceCodeTypes> = {
+  [SourceCodeTypes.BITBUCKET]: SourceCodeTypes.BITBUCKET,
+  [SourceCodeTypes.GITHUB]: SourceCodeTypes.GITHUB,
+  [SourceCodeTypes.GITLAB]: SourceCodeTypes.GITLAB,
+  [SourceCodeTypes.AWS_CODE_COMMIT]: SourceCodeTypes.AWS_CODE_COMMIT,
+  [SourceCodeTypes.AZURE_DEV_OPS]: SourceCodeTypes.AZURE_DEV_OPS
 }
 
 export const getIconBySCM = (item: SourceCodeTypes): IconName => {
@@ -78,50 +92,22 @@ export const getAuthentication = (values: SCMData): SourceCodeManagerAuthenticat
           }
         }
       }
-    case AuthTypes.SSH_KEY:
-      return {
-        type: ConnectionType.SSH,
-        spec: {
-          sshKeyRef: values.sshKey
-        }
-      }
-    case AuthTypes.KERBEROS:
-      return {
-        type: ConnectionType.HTTP,
-        spec: {
-          type: AuthTypes.KERBEROS,
-          spec: {
-            kerberosKeyRef: values.kerberosKey?.referenceString
-          }
-        }
-      }
-    case AuthTypes.AWSCredentials:
-      return {
-        type: ConnectionType.HTTPS,
-        spec: {
-          type: AuthTypes.AWSCredentials,
-          spec: {
-            ...(values.accessKey?.type === ValueType.TEXT
-              ? { accessKey: values.accessKey.value }
-              : { accessKeyRef: values.accessKey?.value }),
-            secretKeyRef: values.secretKey?.referenceString
-          }
-        }
-      }
     default:
       return undefined
   }
 }
 
-const getGithubFormData = async (sourceCodeManagerData: SourceCodeManagerDTO, accountIdentifier: string) => {
+const getBitBucketFormData = async (
+  sourceCodeManagerData: SourceCodeManagerDTO,
+  accountIdentifier: string
+): Promise<SCMData> => {
   const { name, authentication } = sourceCodeManagerData
   return {
     name: name,
     authType: authentication?.spec?.type,
-    accessToken: await setSecretField(
-      authentication?.spec?.spec?.tokenRef || authentication?.spec?.apiAccess?.spec?.tokenRef,
-      { accountIdentifier }
-    ),
+    password: (await setSecretField(authentication?.spec?.spec?.passwordRef, {
+      accountIdentifier
+    })) as SCMData['password'],
     username: {
       value: authentication?.spec?.spec?.username || authentication?.spec?.spec?.usernameRef,
       type: authentication?.spec?.spec?.usernameRef ? ValueType.ENCRYPTED : ValueType.TEXT
@@ -129,11 +115,57 @@ const getGithubFormData = async (sourceCodeManagerData: SourceCodeManagerDTO, ac
   }
 }
 
-export const getFormDataBasedOnSCMType = (sourceCodeManagerData: SourceCodeManagerDTO, accountIdentifier: string) => {
+const getGithubFormData = async (
+  sourceCodeManagerData: SourceCodeManagerDTO,
+  accountIdentifier: string
+): Promise<SCMData> => {
+  const { name, authentication } = sourceCodeManagerData
+  return {
+    name: name,
+    authType: authentication?.spec?.type,
+    accessToken: (await setSecretField(
+      authentication?.spec?.spec?.tokenRef || authentication?.spec?.apiAccess?.spec?.tokenRef,
+      { accountIdentifier }
+    )) as SCMData['accessToken'],
+    username: {
+      value: authentication?.spec?.spec?.username || authentication?.spec?.spec?.usernameRef,
+      type: authentication?.spec?.spec?.usernameRef ? ValueType.ENCRYPTED : ValueType.TEXT
+    }
+  }
+}
+
+export const getFormDataBasedOnSCMType = (
+  sourceCodeManagerData: SourceCodeManagerDTO,
+  accountIdentifier: string
+): Promise<SCMData | undefined> => {
   switch (sourceCodeManagerData.type) {
+    case SourceCodeTypes.BITBUCKET:
+      return getBitBucketFormData(sourceCodeManagerData, accountIdentifier)
     case SourceCodeTypes.GITHUB:
       return getGithubFormData(sourceCodeManagerData, accountIdentifier)
     default:
-      return Promise.resolve({})
+      return Promise.resolve(undefined)
+  }
+}
+
+export const getDefaultSCMType = (
+  supportedSCMS: SourceCodeType[],
+  currentSCM?: SourceCodeManagerDTO['type']
+): SourceCodeType => {
+  return supportedSCMS.find(item => item.value === currentSCM) || supportedSCMS[0]
+}
+
+export const getDefaultSelected = (type?: SourceCodeTypes): AuthTypes | undefined => {
+  switch (type) {
+    case SourceCodeTypes.GITHUB:
+      return AuthTypes.USERNAME_TOKEN
+    case SourceCodeTypes.BITBUCKET:
+    case SourceCodeTypes.GITLAB:
+    case SourceCodeTypes.AZURE_DEV_OPS:
+      return AuthTypes.USERNAME_PASSWORD
+    case SourceCodeTypes.AWS_CODE_COMMIT:
+      return AuthTypes.AWSCredentials
+    default:
+      return undefined
   }
 }

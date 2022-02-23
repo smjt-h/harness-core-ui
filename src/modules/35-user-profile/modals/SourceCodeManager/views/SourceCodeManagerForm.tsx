@@ -18,14 +18,15 @@ import {
   FormInput,
   CardSelect,
   CardBody,
-  IconName,
   Container,
   SelectOption,
   ModalErrorHandler,
   ModalErrorHandlerBinding,
-  ButtonVariation
+  ButtonVariation,
+  useToaster
 } from '@wings-software/uicore'
 import * as Yup from 'yup'
+import type { FormikProps } from 'formik'
 import { useStrings } from 'framework/strings'
 import { NameSchema } from '@common/utils/Validation'
 import type { AccountPathProps } from '@common/interfaces/RouteInterfaces'
@@ -35,17 +36,24 @@ import { SourceCodeManagerDTO, useSaveSourceCodeManagers, useUpdateSourceCodeMan
 import {
   AuthTypes,
   getAuthentication,
+  getDefaultSCMType,
+  getDefaultSelected,
   getFormDataBasedOnSCMType,
   getIconBySCM,
+  SourceCodeType,
   SourceCodeTypes
 } from '@user-profile/utils/utils'
 import type { TextReferenceInterface } from '@secrets/components/TextReference/TextReference'
-import { useToaster } from '@common/exports'
+import { FeatureFlag } from '@common/featureFlags'
+import { useFeatureFlag } from '@common/hooks/useFeatureFlag'
+
 import Authentication from './Authentication'
 import css from '../useSourceCodeManager.module.scss'
 
-// We only support github scm ATM, remove this constant and its occurrences logically once more scms are supported
-const MULTIPLE_SCM_TYPES_SUPPORTED = false
+export interface RenderAuthSectionProps {
+  selected?: SourceCodeType
+  formikProps: FormikProps<SCMData>
+}
 
 interface SourceCodeManagerProps {
   onSubmit: () => void
@@ -64,93 +72,19 @@ export interface SCMData {
   accessKey?: TextReferenceInterface
   secretKey?: SecretReference
 }
-interface SourceCodeType {
-  text: string
-  value: SourceCodeTypes
-  icon: IconName
-}
 
-const SourceCodeManagerForm: React.FC<SourceCodeManagerProps> = props => {
-  const { onSubmit, onClose, initialValues } = props
+const allowSCMChange = (isEditMode: boolean, selected?: string): boolean => Boolean(selected) && !isEditMode
+
+const RenderAuthSection: React.FC<RenderAuthSectionProps> = props => {
+  const { selected, formikProps } = props
   const { getString } = useStrings()
-  const { showSuccess, showError } = useToaster()
-  const [modalErrorHandler, setModalErrorHandler] = useState<ModalErrorHandlerBinding>()
-  const { accountId } = useParams<AccountPathProps>()
-  const [data, setData] = useState({})
-  const isEditMode = !isEmpty(initialValues)
-  const [loading, setLoading] = useState(isEditMode)
-
-  const { mutate: saveSourceCodeManager } = useSaveSourceCodeManagers({})
-  const { mutate: updateSourceCodeManage } = useUpdateSourceCodeManagers({ identifier: initialValues?.id as string })
-
-  const sourceCodeManagers: SourceCodeType[] = [
-    {
-      text: getString('common.repo_provider.githubLabel'),
-      value: SourceCodeTypes.GITHUB,
-      icon: getIconBySCM(SourceCodeTypes.GITHUB)
-    },
-    {
-      text: getString('common.repo_provider.bitbucketLabel'),
-      value: SourceCodeTypes.BITBUCKET,
-      icon: getIconBySCM(SourceCodeTypes.BITBUCKET)
-    },
-    {
-      text: getString('common.repo_provider.gitlabLabel'),
-      value: SourceCodeTypes.GITLAB,
-      icon: getIconBySCM(SourceCodeTypes.GITLAB)
-    },
-    {
-      text: getString('common.repo_provider.awscodecommit'),
-      value: SourceCodeTypes.AWS_CODE_COMMIT,
-      icon: getIconBySCM(SourceCodeTypes.AWS_CODE_COMMIT)
-    },
-    {
-      text: getString('common.repo_provider.azureDev'),
-      value: SourceCodeTypes.AZURE_DEV_OPS,
-      icon: getIconBySCM(SourceCodeTypes.AZURE_DEV_OPS)
-    }
-  ]
-
-  const [selected, setSelected] = useState<SourceCodeType | undefined>(
-    MULTIPLE_SCM_TYPES_SUPPORTED ? undefined : sourceCodeManagers[0]
-  )
-
-  useEffect(() => {
-    if (loading && initialValues) {
-      getFormDataBasedOnSCMType(initialValues, accountId).then(formData => {
-        setData(formData)
-        setLoading(false)
-      })
-    }
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [loading])
-
-  const getDefaultSelected = (type?: SourceCodeTypes): AuthTypes | undefined => {
-    switch (type) {
-      case SourceCodeTypes.GITHUB:
-        return AuthTypes.USERNAME_TOKEN
-      case SourceCodeTypes.BITBUCKET:
-      case SourceCodeTypes.GITLAB:
-      case SourceCodeTypes.AZURE_DEV_OPS:
-        return AuthTypes.USERNAME_PASSWORD
-      case SourceCodeTypes.AWS_CODE_COMMIT:
-        return AuthTypes.AWSCredentials
-      default:
-        return undefined
-    }
-  }
-
-  const getAuthOptions = (type: SourceCodeTypes): SelectOption[] => {
+  const getAuthOptions = (type?: SourceCodeTypes): SelectOption[] => {
     switch (type) {
       case SourceCodeTypes.BITBUCKET:
         return [
           {
             label: getString('usernamePassword'),
             value: AuthTypes.USERNAME_PASSWORD
-          },
-          {
-            label: getString('SSH_KEY'),
-            value: AuthTypes.SSH_KEY
           }
         ]
       case SourceCodeTypes.GITHUB:
@@ -210,6 +144,54 @@ const SourceCodeManagerForm: React.FC<SourceCodeManagerProps> = props => {
     }
   }
 
+  return selected ? <Authentication formikProps={formikProps} authOptions={getAuthOptions(selected?.value)} /> : null
+}
+
+const SourceCodeManagerForm: React.FC<SourceCodeManagerProps> = props => {
+  const { onSubmit, onClose, initialValues } = props
+  const { getString } = useStrings()
+  const { showError, showSuccess } = useToaster()
+  const bitBucketSupported = useFeatureFlag(FeatureFlag.GIT_SYNC_WITH_BITBUCKET)
+
+  const [modalErrorHandler, setModalErrorHandler] = useState<ModalErrorHandlerBinding>()
+  const { accountId } = useParams<AccountPathProps>()
+  const [data, setData] = useState({})
+  const isEditMode = !isEmpty(initialValues)
+  const [loading, setLoading] = useState(isEditMode)
+
+  const { mutate: saveSourceCodeManager } = useSaveSourceCodeManagers({})
+  const { mutate: updateSourceCodeManage } = useUpdateSourceCodeManagers({ identifier: initialValues?.id as string })
+
+  const sourceCodeManagers: SourceCodeType[] = [
+    {
+      text: getString('common.repo_provider.githubLabel'),
+      value: SourceCodeTypes.GITHUB,
+      icon: getIconBySCM(SourceCodeTypes.GITHUB)
+    }
+  ]
+
+  if (bitBucketSupported) {
+    sourceCodeManagers.push({
+      text: getString('common.repo_provider.bitbucketLabel'),
+      value: SourceCodeTypes.BITBUCKET,
+      icon: getIconBySCM(SourceCodeTypes.BITBUCKET)
+    })
+  }
+
+  const [selected, setSelected] = useState<SourceCodeType | undefined>(
+    getDefaultSCMType(sourceCodeManagers, initialValues?.type)
+  )
+
+  useEffect(() => {
+    if (loading && initialValues) {
+      getFormDataBasedOnSCMType(initialValues, accountId).then(formData => {
+        formData && setData(formData)
+        setLoading(false)
+      })
+    }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [loading])
+
   const selectedValueToTypeMap: Record<SourceCodeTypes, SourceCodeTypes> = {
     [SourceCodeTypes.BITBUCKET]: SourceCodeTypes.BITBUCKET,
     [SourceCodeTypes.GITHUB]: SourceCodeTypes.GITHUB,
@@ -218,43 +200,50 @@ const SourceCodeManagerForm: React.FC<SourceCodeManagerProps> = props => {
     [SourceCodeTypes.AZURE_DEV_OPS]: SourceCodeTypes.AZURE_DEV_OPS
   }
 
-  const handleSubmit = async (values: SCMData): Promise<void> => {
-    if (selected?.value) {
-      const type = selectedValueToTypeMap[selected.value]
-      if (!type) {
-        return undefined
-      }
-
-      const dataToSubmit: SourceCodeManagerDTO = {
-        name: values.name,
-        authentication: getAuthentication(values),
-        accountIdentifier: accountId,
-        type
-      }
-
-      try {
-        const successMessage = isEditMode
-          ? getString('userProfile.scmUpdateSuccess')
-          : getString('userProfile.scmCreateSuccess')
-        const failMessage = isEditMode ? getString('userProfile.scmUpdateFail') : getString('userProfile.scmCreateFail')
-        /* istanbul ignore else */ if (dataToSubmit) {
-          const parsedDataToSubmit: SourceCodeManagerDTO = isEditMode
-            ? { ...dataToSubmit, userIdentifier: initialValues?.userIdentifier }
-            : dataToSubmit
-          const saved = await (isEditMode ? updateSourceCodeManage : saveSourceCodeManager)(parsedDataToSubmit)
-          if (saved) {
-            onSubmit()
-            showSuccess(successMessage)
-          } else showError(failMessage)
-        }
-      } catch (e) {
-        modalErrorHandler?.showDanger(e.data?.message || e.message)
-      }
-    } else modalErrorHandler?.showDanger(getString('userProfile.selectSCM'))
+  const handleCreate = async (dataToSubmit: SourceCodeManagerDTO): Promise<void> => {
+    const saved = await saveSourceCodeManager(dataToSubmit)
+    if (saved) {
+      onSubmit()
+      showSuccess(getString('userProfile.scmCreateSuccess'))
+    } else {
+      showError(getString('userProfile.scmCreateFail'))
+    }
   }
+
+  const handleUpdate = async (dataToSubmit: SourceCodeManagerDTO): Promise<void> => {
+    const parsedDataToSubmit: SourceCodeManagerDTO = { ...dataToSubmit, userIdentifier: initialValues?.userIdentifier }
+
+    const saved = await updateSourceCodeManage(parsedDataToSubmit)
+    if (saved) {
+      onSubmit()
+      showSuccess(getString('userProfile.scmUpdateSuccess'))
+    } else {
+      showError(getString('userProfile.scmUpdateFail'))
+    }
+  }
+
+  const handleSubmit = async (values: SCMData): Promise<void> => {
+    if (!selected?.value) {
+      modalErrorHandler?.showDanger(getString('userProfile.selectSCM'))
+      return
+    }
+
+    const dataToSubmit: SourceCodeManagerDTO = {
+      name: values.name,
+      authentication: getAuthentication(values),
+      accountIdentifier: accountId,
+      type: selectedValueToTypeMap[selected.value]
+    }
+
+    isEditMode ? handleUpdate(dataToSubmit) : handleCreate(dataToSubmit)
+  }
+
+  const submitText = isEditMode ? getString('update') : getString('add')
+  const availableSCMs = selected ? [selected] : sourceCodeManagers
+
   const formInitialValues = {
     name: '',
-    ...(MULTIPLE_SCM_TYPES_SUPPORTED ? {} : { authType: getDefaultSelected(selected?.value) }),
+    ...{ authType: getDefaultSelected(selected?.value) },
     ...data
   }
 
@@ -320,14 +309,10 @@ const SourceCodeManagerForm: React.FC<SourceCodeManagerProps> = props => {
                   <Container width={400}>
                     <FormInput.Text name="name" label={getString('name')} />
                   </Container>
-                  <Text color={Color.BLACK}>
-                    {MULTIPLE_SCM_TYPES_SUPPORTED
-                      ? getString('userProfile.selectSCM')
-                      : getString('userProfile.selectedSCM')}
-                  </Text>
+                  <Text color={Color.BLACK}>{getString('userProfile.selectedSCM')}</Text>
                   <Layout.Horizontal spacing="medium" flex={{ alignItems: 'center', justifyContent: 'flex-start' }}>
                     <CardSelect
-                      data={selected ? [selected] : sourceCodeManagers}
+                      data={availableSCMs}
                       cornerSelected={true}
                       className={css.cardRow}
                       cardClassName={css.card}
@@ -352,7 +337,8 @@ const SourceCodeManagerForm: React.FC<SourceCodeManagerProps> = props => {
                       }}
                       selected={selected}
                     />
-                    {selected && MULTIPLE_SCM_TYPES_SUPPORTED ? (
+
+                    {allowSCMChange(isEditMode, selected?.value) ? (
                       <Button
                         text={getString('change')}
                         variation={ButtonVariation.LINK}
@@ -364,15 +350,11 @@ const SourceCodeManagerForm: React.FC<SourceCodeManagerProps> = props => {
                     ) : null}
                   </Layout.Horizontal>
                 </Layout.Vertical>
-                {selected ? (
-                  <Authentication formikProps={formikProps} authOptions={getAuthOptions(selected.value)} />
-                ) : null}
+
+                <RenderAuthSection selected={selected} formikProps={formikProps} />
+
                 <Layout.Horizontal spacing="small" padding={{ top: 'huge' }}>
-                  <Button
-                    variation={ButtonVariation.PRIMARY}
-                    text={isEditMode ? getString('update') : getString('add')}
-                    type="submit"
-                  />
+                  <Button variation={ButtonVariation.PRIMARY} text={submitText} type="submit" />
                   <Button text={getString('cancel')} onClick={onClose} variation={ButtonVariation.TERTIARY} />
                 </Layout.Horizontal>
               </Form>
