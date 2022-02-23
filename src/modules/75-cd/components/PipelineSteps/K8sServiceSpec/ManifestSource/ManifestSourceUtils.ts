@@ -7,7 +7,7 @@
 
 import type { FormikValues } from 'formik'
 import { get, isEmpty } from 'lodash-es'
-import { TriggerDefaultFieldList, TriggerTypes } from '@pipeline/pages/triggers/utils/TriggersWizardPageUtils'
+import { TriggerDefaultFieldList, TriggerTypes } from '@triggers/pages/triggers/utils/TriggersWizardPageUtils'
 import { GitRepoName } from '@pipeline/components/ManifestSelection/Manifesthelper'
 
 export const fromPipelineInputTriggerTab = (formik: FormikValues, fromTrigger = false): boolean => {
