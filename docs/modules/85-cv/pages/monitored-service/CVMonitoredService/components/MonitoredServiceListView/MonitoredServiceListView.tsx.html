@@ -23,16 +23,16 @@
         <div class='clearfix'>
             
             <div class='fl pad1y space-right2'>
-                <span class="strong">86.89% </span>
+                <span class="strong">87.3% </span>
                 <span class="quiet">Statements</span>
-                <span class='fraction'>53/61</span>
+                <span class='fraction'>55/63</span>
             </div>
         
             
             <div class='fl pad1y space-right2'>
-                <span class="strong">56.52% </span>
+                <span class="strong">60.34% </span>
                 <span class="quiet">Branches</span>
-                <span class='fraction'>26/46</span>
+                <span class='fraction'>35/58</span>
             </div>
         
             
@@ -44,9 +44,9 @@
         
             
             <div class='fl pad1y space-right2'>
-                <span class="strong">86.89% </span>
+                <span class="strong">87.3% </span>
                 <span class="quiet">Lines</span>
-                <span class='fraction'>53/61</span>
+                <span class='fraction'>55/63</span>
             </div>
         
             
@@ -382,7 +382,15 @@
 <a name='L323'></a><a href='#L323'>323</a>
 <a name='L324'></a><a href='#L324'>324</a>
 <a name='L325'></a><a href='#L325'>325</a>
-<a name='L326'></a><a href='#L326'>326</a></td><td class="line-coverage quiet"><span class="cline-any cline-neutral">&nbsp;</span>
+<a name='L326'></a><a href='#L326'>326</a>
+<a name='L327'></a><a href='#L327'>327</a>
+<a name='L328'></a><a href='#L328'>328</a>
+<a name='L329'></a><a href='#L329'>329</a>
+<a name='L330'></a><a href='#L330'>330</a>
+<a name='L331'></a><a href='#L331'>331</a>
+<a name='L332'></a><a href='#L332'>332</a>
+<a name='L333'></a><a href='#L333'>333</a>
+<a name='L334'></a><a href='#L334'>334</a></td><td class="line-coverage quiet"><span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
@@ -404,6 +412,8 @@
 <span class="cline-any cline-yes">8x</span>
 <span class="cline-any cline-yes">8x</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">8x</span>
 <span class="cline-any cline-yes">8x</span>
 <span class="cline-any cline-yes">8x</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
@@ -427,6 +437,12 @@
 <span class="cline-any cline-yes">60x</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-yes">60x</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">60x</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
@@ -729,6 +745,8 @@ import noServiceAvailableImage from '@cv/assets/noServiceAvailable.png'
 import FilterCard from '@cv/components/FilterCard/FilterCard'
 import ContextMenuActions from '@cv/components/ContextMenuActions/ContextMenuActions'
 import type { MonitoredServiceListItemDTO } from 'services/cv'
+import type { ExtendedMonitoredServiceDTO } from '@cv/pages/monitored-service/components/Configurations/Configurations.utils'
+import { EnvironmentToolTipDisplay } from '@cv/components/HarnessServiceAndEnvironment/components/EnvironmentToolTipDisplay'
 import IconGrid from '../IconGrid/IconGrid'
 import {
   calculateChangePercentage,
@@ -750,6 +768,8 @@ const CategoryProps: Renderer&lt;CellProps&lt;MonitoredServiceListItemDTO&gt;&gt
 const RenderServiceName: Renderer&lt;CellProps&lt;MonitoredServiceListItemDTO&gt;&gt; = ({ row }) =&gt; {
   const { accountId, orgIdentifier, projectIdentifier } = useParams&lt;ProjectPathProps&gt;()
   const monitoredService = row.original
+&nbsp;
+  const envRefList = (monitoredService as ExtendedMonitoredServiceDTO)<span class="branch-0 cbranch-no" title="branch not covered" >?.e</span>nvironmentRefList
 &nbsp;
   return (
     &lt;Layout.Vertical&gt;
@@ -775,9 +795,13 @@ const RenderServiceName: Renderer&lt;CellProps&lt;MonitoredServiceListItemDTO&gt
           module: 'cv'
         })}
       &gt;
-        &lt;Text color={Color.PRIMARY_7} font={{ align: 'left', size: 'xsmall' }}&gt;
-          {monitoredService.environmentName}
-        &lt;/Text&gt;
+        &lt;EnvironmentToolTipDisplay
+          type={monitoredService<span class="branch-0 cbranch-no" title="branch not covered" >?.t</span>ype}
+          color={Color.PRIMARY_7}
+          font={{ align: 'left', size: 'xsmall' }}
+          envRefList={envRefList}
+          environmentRef={monitoredService<span class="branch-0 cbranch-no" title="branch not covered" >?.e</span>nvironmentRef}
+        /&gt;
       &lt;/Link&gt;
     &lt;/Layout.Vertical&gt;
   )
@@ -1039,7 +1063,7 @@ export default MonitoredServiceListView
             <div class='footer quiet pad2 space-top1 center small'>
                 Code coverage generated by
                 <a href="https://istanbul.js.org/" target="_blank">istanbul</a>
-                at Wed Feb 23 2022 06:57:49 GMT+0000 (Greenwich Mean Time)
+                at Wed Feb 23 2022 08:36:41 GMT+0000 (Greenwich Mean Time)
             </div>
         </div>
         <script src="../../../../../../../prettify.js"></script>
