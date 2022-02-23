@@ -1,0 +1,20 @@
+.stepGroup {
+  background: #87ceeb38;
+  border-radius: 4px;
+  border: dashed 1px var(--primary-1);
+  &.firstnode {
+    top: -48px;
+    position: relative;
+  }
+  .stepGroupHeader {
+    padding: var(--spacing-small) var(--spacing-small) 0 var(--spacing-small);
+
+    .collapseIcon {
+      color: var(--primary-7) !important;
+      cursor: pointer;
+    }
+  }
+  .stepGroupBody {
+    padding: var(--spacing-large) var(--spacing-xxxlarge);
+  }
+}

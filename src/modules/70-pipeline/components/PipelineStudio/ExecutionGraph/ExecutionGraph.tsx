@@ -31,7 +31,7 @@ import type {
 import type { DependencyElement } from 'services/ci'
 import { useFeatureFlag } from '@common/hooks/useFeatureFlag'
 import { FeatureFlag } from '@common/featureFlags'
-import { CDPipelineStudioNew } from '@cd/pages/pipeline-studio/CDPipelineStudio'
+import { DiagramFactory, DiagramNodes, NodeType } from '@pipeline/components/AbstractNode/DiagramFactory'
 import { ExecutionStepModel, GridStyleInterface } from './ExecutionStepModel'
 import { StepType as PipelineStepType } from '../../PipelineSteps/PipelineStepInterface'
 import {
@@ -72,7 +72,13 @@ import {
 } from '../../Diagram'
 import { CanvasButtons } from '../../CanvasButtons/CanvasButtons'
 import css from './ExecutionGraph.module.scss'
-const USE_NEW_PIPELINE_STUDIO = true
+
+const diagram = new DiagramFactory('graph')
+
+diagram.registerNode('Deployment', DiagramNodes[NodeType.Default])
+diagram.registerNode('StepGroup', DiagramNodes[NodeType.StepGroupNode])
+
+export const CDPipelineStudioNew = diagram.render()
 export interface ExecutionGraphRefObj {
   stepGroupUpdated: (stepOrGroup: ExecutionWrapper) => void
 }

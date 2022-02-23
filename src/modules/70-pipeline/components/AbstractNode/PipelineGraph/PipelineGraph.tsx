@@ -1,10 +1,11 @@
 /* eslint-disable no-console */
-import React, { useEffect, useLayoutEffect, useState, useRef } from 'react'
+import React, { useEffect, useLayoutEffect, useState, useRef, useMemo } from 'react'
+
 import Draggable from 'react-draggable'
+import { v4 as uuid } from 'uuid'
 import { get } from 'lodash-es'
 import type { PipelineInfoConfig, StageElementWrapperConfig } from 'services/cd-ng'
 import type { ExecutionWrapperConfig } from 'services/ci'
-import { NodeType } from '../Node'
 import {
   getFinalSVGArrowPath,
   getPipelineGraphData,
@@ -14,7 +15,7 @@ import {
 } from './PipelineGraphUtils'
 import GraphActions from '../GraphActions/GraphActions'
 import { PipelineGraphRecursive } from './PipelineGraphNode'
-import type { PipelineGraphState } from '../types'
+import type { NodeIds, PipelineGraphState } from '../types'
 import css from './PipelineGraph.module.scss'
 
 export interface PipelineGraphProps {
@@ -38,6 +39,14 @@ const PipelineGraph = ({
   const [state, setState] = useState<PipelineGraphState[]>([])
   const [graphScale, setGraphScale] = useState(INITIAL_ZOOM_LEVEL)
   const canvasRef = useRef<HTMLDivElement>(null)
+  const uniqueNodeIds = useMemo(
+    (): NodeIds => ({
+      startNode: uuid(),
+      endNode: uuid(),
+      createNode: uuid()
+    }),
+    []
+  )
 
   const updateTreeRect = (): void => {
     const treeContainer = document.getElementById('tree-container')
@@ -67,9 +76,9 @@ const PipelineGraph = ({
     const lastNode = state?.[state?.length - 1]
     return setSvgPath([
       ...SVGLinks,
-      getFinalSVGArrowPath('tree-container', NodeType.StartNode as string, state?.[0]?.identifier as string),
-      getFinalSVGArrowPath('tree-container', lastNode?.identifier as string, NodeType.CreateNode as string),
-      getFinalSVGArrowPath('tree-container', NodeType.CreateNode as string, NodeType.EndNode as string)
+      getFinalSVGArrowPath(uniqueNodeIds.startNode, state?.[0]?.identifier as string),
+      getFinalSVGArrowPath(lastNode?.identifier as string, uniqueNodeIds.createNode as string),
+      getFinalSVGArrowPath(uniqueNodeIds.createNode as string, uniqueNodeIds.endNode as string)
     ])
   }
 
@@ -97,6 +106,7 @@ const PipelineGraph = ({
               setSelectedNode={updateSelectedNode}
               dropLinkEvent={dropLinkEvent}
               dropNodeEvent={dropNodeEvent}
+              uniqueNodeIds={uniqueNodeIds}
             />
           </div>
           <GraphActions setGraphScale={setGraphScale} graphScale={graphScale} handleScaleToFit={handleScaleToFit} />

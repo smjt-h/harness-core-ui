@@ -10,23 +10,22 @@ import { Text } from '@wings-software/uicore'
 import { Icon } from '@blueprintjs/core'
 import cx from 'classnames'
 import { isEmpty } from 'lodash-es'
-import { NodeType } from '../../Node'
+import { Event } from '@pipeline/components/Diagram'
 import cssDefault from '../DefaultNode/DefaultNode.module.scss'
 import css from './CreateNode.module.scss'
-import { Event } from '@pipeline/components/Diagram'
 
-const CreateNode = (props: any) => {
+const CreateNode = (props: any): React.ReactElement => {
   return (
     <div className={cx(cssDefault.defaultNode, css.createNode)}>
       <div
-        id={NodeType.CreateNode.toString()}
-        data-linkid={NodeType.CreateNode.toString()}
+        id={props.identifier}
+        data-linkid={props.identifier}
         onClick={event => {
           event.preventDefault()
           event.stopPropagation()
           props?.fireEvent({
             type: Event.AddLinkClicked,
-            identifier: NodeType.CreateNode.toString()
+            identifier: props.identifier
           })
         }}
         className={cx(

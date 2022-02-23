@@ -112,7 +112,8 @@ const DiagramNodes = {
   [NodeType.Default]: DefaultNode,
   [NodeType.CreateNode]: CreateNode,
   [NodeType.EndNode]: EndNode,
-  [NodeType.StartNode]: StartNode
+  [NodeType.StartNode]: StartNode,
+  [NodeType.StepGroupNode]: StepGroupNode
 }
 
 export { DiagramNodes, NodeType }

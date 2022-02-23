@@ -22,7 +22,7 @@ export enum NodeType {
   GroupNode = 'group-node',
   IconNode = 'icon-node',
   EndNode = 'end-node',
-  StepGroupNode = 'step-group-nodes'
+  StepGroupNode = 'step-group-node'
 }
 
 export interface NodeProps<T> {

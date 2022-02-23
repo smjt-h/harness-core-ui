@@ -6,61 +6,48 @@
  */
 
 import * as React from 'react'
-import { map } from 'lodash-es'
 import classnames from 'classnames'
-import type { NodeModel } from '@projectstorm/react-diagrams-core'
-import { Text, Icon, Color, Layout, Link } from '@wings-software/uicore'
-import { useStrings } from 'framework/strings'
-import { Event, StepsType, DiagramDrag } from '@pipeline/components/Diagram'
+import { Icon, Layout, Text } from '@wings-software/uicore'
+import { Event, DiagramDrag } from '@pipeline/components/Diagram'
 import type { StepGroupNodeLayerModel } from '../../../Diagram/node-layer/StepGroupNodeLayerModel'
-import { RollbackToggleSwitch } from '../../../Diagram/canvas/RollbackToggleSwitch/RollbackToggleSwitch'
-import css from '../../../Diagram/node-layer/StepGroupNodeLayer.module.scss'
+import CreateNode from '../CreateNode/CreateNode'
+import css from './StepGroupNode.module.scss'
 
 const onAddNodeClick = (
   e: React.MouseEvent<Element, MouseEvent>,
-  node: StepGroupNodeLayerModel,
-  setAddClicked: React.Dispatch<React.SetStateAction<boolean>>
+  _node: StepGroupNodeLayerModel,
+  _setAddClicked: React.Dispatch<React.SetStateAction<boolean>>
 ): void => {
   e.stopPropagation()
-  node.fireEvent(
-    {
-      callback: () => {
-        setAddClicked(false)
-      },
-      target: e.target
-    },
-    Event.AddParallelNode
-  )
+  // node.fireEvent(
+  //   {
+  //     callback: () => {
+  //       setAddClicked(false)
+  //     },
+  //     target: e.target
+  //   },
+  //   Event.AddParallelNode
+  // )
 }
 
-const onMouseOverNode = (e: MouseEvent, layer: StepGroupNodeLayerModel): void => {
+const onMouseOverNode = (e: MouseEvent, _layer: StepGroupNodeLayerModel): void => {
   e.stopPropagation()
-  layer.fireEvent({ target: e.target }, Event.MouseOverNode)
+  // layer.fireEvent({ target: e.target }, Event.MouseOverNode)
 }
 
-const onMouseEnterNode = (e: MouseEvent, layer: StepGroupNodeLayerModel): void => {
+const onMouseEnterNode = (e: MouseEvent, _layer: StepGroupNodeLayerModel): void => {
   e.stopPropagation()
-  layer.fireEvent({ target: e.target }, Event.MouseEnterNode)
+  // layer.fireEvent({ target: e.target }, Event.MouseEnterNode)
 }
 
-const onMouseLeaveNode = (e: MouseEvent, layer: StepGroupNodeLayerModel): void => {
+const onMouseLeaveNode = (e: MouseEvent, _layer: StepGroupNodeLayerModel): void => {
   e.stopPropagation()
-  layer.fireEvent({ target: e.target }, Event.MouseLeaveNode)
+  // layer.fireEvent({ target: e.target }, Event.MouseLeaveNode)
 }
 
 export const StepGroupNode = (props: any): JSX.Element => {
-  const options = props.layer.getOptions()
-  const allowAdd = options.allowAdd
-  const childrenDistance = options.childrenDistance || 140
-  const { getString } = useStrings()
-  const rollBackProps = options.rollBackProps || {}
-  const config = {
-    maxX: props.layer.endNode.getPosition().x,
-    maxY: 0,
-    minX: props.layer.startNode.getPosition().x,
-    minY: 0
-  }
-  const nodes = props.layer.getNodes()
+  const allowAdd = props.allowAdd
+
   const layerRef = React.useRef<HTMLDivElement>(null)
   const [showAdd, setVisibilityOfAdd] = React.useState(false)
   const [addClicked, setAddClicked] = React.useState(false)
@@ -106,44 +93,11 @@ export const StepGroupNode = (props: any): JSX.Element => {
     }
   }, [addClicked])
 
-  let nodeWidth = 0
-  let nodeHeight = 0
-  map(nodes, (node: NodeModel) => {
-    const position = node.getPosition()
-    if (node.width > nodeWidth) {
-      nodeWidth = node.width
-      nodeHeight = node.height
-    }
-    if (config.maxY === 0) {
-      config.maxY = position.y
-      config.minY = position.y
-    }
-    if (config.maxY < position.y) {
-      config.maxY = position.y
-    }
-    if (config.minY > position.y) {
-      config.minY = position.y
-    }
-  })
-  const depth = options.depth || 1
-  const headerDepth = options.headerDepth || 0
-  const width = config.maxX - config.minX
-
-  const height = childrenDistance * depth + 20
-
   return (
     <>
       <div
-        className={classnames(css.stepGroup)}
+        className={classnames(css.stepGroup, css.firstnode)}
         ref={layerRef}
-        style={{
-          left: config.minX,
-          cursor: 'pointer',
-          top: config.minY - childrenDistance * headerDepth,
-          pointerEvents: allowAdd ? 'all' : 'none',
-          position: 'absolute',
-          height: height
-        }}
         onDragOver={event => {
           if (allowAdd) {
             setVisibilityOfAdd(true)
@@ -160,129 +114,36 @@ export const StepGroupNode = (props: any): JSX.Element => {
           const dropData: { id: string; identifier: string } = JSON.parse(
             event.dataTransfer.getData(DiagramDrag.NodeDrag)
           )
-          props.layer.fireEvent({ node: dropData }, Event.DropLinkEvent)
+          props.fireEvent(Event.DropLinkEvent, { node: dropData })
         }}
       >
-        <div
-          className={css.groupLayer}
-          ref={layerRef}
-          style={{
-            width,
-            height,
-            ...options.containerCss
-            //background: 'rgba(0,0,0,0.1)'
-          }}
-        ></div>
-        {options.showRollback && (
-          <div onMouseDown={e => e.stopPropagation()}>
-            <RollbackToggleSwitch
-              disabled={options.inComplete}
-              large={false}
-              style={{ left: width - 60, top: 0 }}
-              {...rollBackProps}
-              //   onChange={type => props.layer.fireEvent({ type }, Event.RollbackClicked)}
-            />
-          </div>
-        )}
-        {/*NOTE: "!!nodeWidth"  is a workaround for CDNG-7023 */}
-        {allowAdd && !!nodeWidth && (
-          <div
-            onClick={e => {
-              setAddClicked(true)
-              onAddNodeClick(e, props.layer, setAddClicked)
+        <div className={css.stepGroupHeader}>
+          <Layout.Horizontal
+            spacing="xsmall"
+            onMouseOver={e => {
+              e.stopPropagation()
+              //setHover(true)
             }}
-            className={css.addNode}
-            style={{
-              left: config.minX + width / 2 - nodeWidth / 2,
-              top: config.minY + height - 20,
-              width: nodeWidth,
-              height: nodeHeight,
-              display: showAdd ? 'flex' : 'none'
+            onMouseOut={e => {
+              e.stopPropagation()
+              //setHover(false)
             }}
           >
-            <Icon name="plus" style={{ color: 'var(--diagram-add-node-color)' }} />
-          </div>
-        )}
+            <Icon
+              className={css.collapseIcon}
+              name="minus"
+              onClick={e => {
+                e.stopPropagation()
+                // props.layer.fireEvent({}, Event.StepGroupCollapsed)
+              }}
+            />
+            <Text lineClamp={1}>{props.name}</Text>
+          </Layout.Horizontal>
+        </div>
+        <div className={css.stepGroupBody}>
+          <CreateNode />
+        </div>
       </div>
-      <Layout.Horizontal
-        spacing="xsmall"
-        className={css.header}
-        style={{
-          top: config.minY - (childrenDistance * headerDepth - 5),
-          left: config.minX + 10,
-          width: width - 20 - (options.showRollback ? 50 : 0),
-          alignItems: 'center'
-        }}
-        onMouseOver={e => {
-          e.stopPropagation()
-          //setHover(true)
-        }}
-        onMouseOut={e => {
-          e.stopPropagation()
-          //setHover(false)
-        }}
-      >
-        <Icon
-          className={css.collapseIcon}
-          name="minus"
-          onClick={e => {
-            e.stopPropagation()
-            props.layer.fireEvent({}, Event.StepGroupCollapsed)
-          }}
-        />
-
-        {options.skipCondition && (
-          <div className={css.conditional}>
-            <Link
-              tooltip={`Skip condition:\n${options.skipCondition}`}
-              tooltipProps={{
-                isDark: true
-              }}
-              withoutHref
-            >
-              <Icon size={26} name={'conditional-skip-new'} color="white" />
-            </Link>
-          </div>
-        )}
-        {options.conditionalExecutionEnabled && (
-          <div className={css.conditional}>
-            <Text
-              tooltip={getString('pipeline.conditionalExecution.title')}
-              tooltipProps={{
-                isDark: true
-              }}
-            >
-              <Icon size={26} name={'conditional-skip-new'} color="white" />
-            </Text>
-          </div>
-        )}
-        <Text
-          tooltipProps={{ portalClassName: css.labelTooltip }}
-          icon={options.inComplete ? 'warning-sign' : undefined}
-          iconProps={{ color: Color.ORANGE_500 }}
-          style={{ ...options.textCss }}
-          lineClamp={1}
-          onClick={e => {
-            e.stopPropagation()
-            // props.layer.fireEvent({}, Event.StepGroupClicked)
-          }}
-          onMouseEnter={e => {
-            e.stopPropagation()
-            // props.layer.fireEvent({ target: e.target }, Event.MouseEnterStepGroupTitle)
-          }}
-          onMouseLeave={e => {
-            e.stopPropagation()
-            // props.layer.fireEvent({ target: e.target }, Event.MouseLeaveStepGroupTitle)
-          }}
-        >
-          {options.label} {options.rollBackProps?.active === StepsType.Rollback && `(${getString('rollbackLabel')})`}
-        </Text>
-      </Layout.Horizontal>
-      {/* <>
-        {map(nodes, (node: NodeModel) => {
-          return <NodeWidget key={node.getID()} diagramEngine={props.engine} node={node} />
-        })}
-      </> */}
     </>
   )
 }

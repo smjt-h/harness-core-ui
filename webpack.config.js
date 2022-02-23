@@ -84,7 +84,7 @@ const config = {
     ? {
         client: {
           overlay: {
-            errors: JSON.parse(process.env.SHOW_ERROR_OVERLAY) ?? true
+            errors: (process.env.SHOW_ERROR_OVERLAY && JSON.parse(process.env.SHOW_ERROR_OVERLAY)) ?? true
           }
         },
         historyApiFallback: true,

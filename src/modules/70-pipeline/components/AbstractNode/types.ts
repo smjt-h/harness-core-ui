@@ -32,3 +32,9 @@ export interface PipelineGraphState {
   graphType?: PipelineGraphType
   children?: PipelineGraphState[]
 }
+
+export interface NodeIds {
+  startNode: string
+  createNode: string
+  endNode: string
+}

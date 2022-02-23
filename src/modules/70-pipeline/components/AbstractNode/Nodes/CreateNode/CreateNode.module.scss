@@ -1,11 +1,12 @@
 .createNode {
   cursor: pointer;
-  &:hover {
-    box-shadow: 0px 8px 16px 0px #60617029;
-  }
+
   display: block;
 
   .createNew {
+    &:hover {
+      box-shadow: 0px 8px 16px 0px #60617029;
+    }
     border: 2px dashed var(--grey-400) !important;
 
     &.selected {

@@ -8,12 +8,10 @@ import { PipelineGraphType } from '../types'
 import stepsJSON from './steps.json'
 const INITIAL_ZOOM_LEVEL = 1
 const ZOOM_INC_DEC_LEVEL = 0.1
-const getFinalSVGArrowPath = (parentId: string, id1 = '', id2 = '', isParallelNode = false): string => {
-  if (!parentId) {
-    return ''
-  }
-  const node1 = getComputedPosition(parentId, id1)
-  const node2 = getComputedPosition(parentId, id2)
+
+const getFinalSVGArrowPath = (id1 = '', id2 = '', isParallelNode = false): string => {
+  const node1 = getComputedPosition(id1)
+  const node2 = getComputedPosition(id2)
   if (!node1 || !node2) {
     return ''
   }
@@ -66,10 +64,11 @@ const getFinalSVGArrowPath = (parentId: string, id1 = '', id2 = '', isParallelNo
   }
 }
 
-const getComputedPosition = (parentId: string, childId: string): DOMRect | null => {
+const getComputedPosition = (childId: string): DOMRect | null => {
   try {
-    const parentPos = document.getElementById(parentId)?.getBoundingClientRect() as DOMRect
-    const childPos = document.getElementById(childId)?.getBoundingClientRect() as DOMRect
+    const childEl = document.getElementById(childId) as HTMLDivElement
+    const childPos = childEl?.getBoundingClientRect() as DOMRect
+    const parentPos = childEl.closest('#tree-container')?.getBoundingClientRect() as DOMRect
 
     const updatedTop = childPos.top - parentPos.top
     const updatedLeft = childPos.left - parentPos.left
@@ -131,7 +130,7 @@ const getSVGLinksFromPipeline = (states?: PipelineGraphState[], resultArr: strin
       getParallelNodeLinks(state?.children, state, resultArr)
     }
     if (prevElement) {
-      resultArr.push(getFinalSVGArrowPath('tree-container', prevElement.identifier, state.identifier, false))
+      resultArr.push(getFinalSVGArrowPath(prevElement.identifier, state.identifier, false))
     }
     prevElement = state
   })
@@ -144,7 +143,7 @@ const getParallelNodeLinks = (
   resultArr: string[] = []
 ): void => {
   stages?.forEach(stage => {
-    resultArr.push(getFinalSVGArrowPath('tree-container', firstStage?.identifier as string, stage?.identifier, true))
+    resultArr.push(getFinalSVGArrowPath(firstStage?.identifier as string, stage?.identifier, true))
   })
 }
 
