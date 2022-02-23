@@ -127,6 +127,14 @@ Run unit tests
 $ yarn test
 ```
 
+### Customizing ESLint rules at module level
+
+Add a `custom.eslintrc.yml` file to the module, if not already present. Run `node scripts/generate-eslint-config-for-imports.mjs` once.
+
+Now you can update `custom.eslintrc.yml` as per your requirements.
+
+> Note: This should be only used to tighten the rules and not the other way around. Individual module owners will be responsbile, if any problem arises due to missue of this feature.
+
 ### Hotfix Process
 
 1. Find out which release branch you need to hotfix. You can do that checking the currently deployed version in the environment you want to hotfix. For eg. For UAT environment, you can hit https://uat.harness.io/ng/static/version.json to get the currently deployed version. (eg. `0.53.4`)

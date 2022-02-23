@@ -22,7 +22,7 @@ import {
 } from '@wings-software/uicore'
 import cx from 'classnames'
 import { useParams } from 'react-router-dom'
-import { noop } from 'lodash-es'
+import { defaultTo, noop } from 'lodash-es'
 import HighchartsReact from 'highcharts-react-official'
 import Highcharts from 'highcharts'
 import { Drawer } from '@blueprintjs/core'
@@ -240,7 +240,7 @@ export function GCOMetricsHealthSource(props: GCOMetricsHealthSourceProps): JSX.
       }}
     >
       {formikProps => {
-        const { sli = false, healthScore = false, continuousVerification = false } = formikProps?.values
+        const { sli = false, healthScore = false, continuousVerification = false } = defaultTo(formikProps?.values, {})
 
         const currentSelectedMetricDetail = metricDefinitions?.find(
           (metricDefinition: StackdriverDefinition) =>

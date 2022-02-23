@@ -6,7 +6,7 @@
  */
 
 import React, { useCallback } from 'react'
-import { noop } from 'lodash-es'
+import { defaultTo, noop } from 'lodash-es'
 import * as Yup from 'yup'
 import { Formik, FormikContext } from 'formik'
 import { useParams } from 'react-router-dom'
@@ -124,7 +124,7 @@ function Service({
     >
       {formik => {
         serviceTabformRef.current = formik
-        const { serviceRef, environmentRef } = formik?.values
+        const { serviceRef, environmentRef } = defaultTo(formik?.values, {} as MonitoredServiceForm)
         if (formik.dirty) {
           setDBData?.(formik.values)
         }

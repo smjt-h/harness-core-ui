@@ -16,6 +16,7 @@ import { useParams } from 'react-router-dom'
 import { Classes } from '@blueprintjs/core'
 import merge from 'lodash-es/merge'
 import moment from 'moment'
+import { defaultTo } from 'lodash-es'
 import { useStrings } from 'framework/strings'
 import type { ProjectPathProps } from '@common/interfaces/RouteInterfaces'
 import { roundNumber, useErrorHandler } from '@pipeline/components/Dashboards/shared'
@@ -60,7 +61,7 @@ export default function DeploymentsHealthCards(props: any) {
     if (data?.data?.healthDeploymentInfo) {
       const ret: any = {}
       if (data?.data?.healthDeploymentInfo?.total) {
-        const { countList, production, nonProduction } = data?.data?.healthDeploymentInfo?.total
+        const { countList, production, nonProduction } = defaultTo(data?.data?.healthDeploymentInfo?.total, {})
         if (countList?.length) {
           ret.totalChartOptions = merge({}, defaultChartOptions, primaryChartOptions, {
             chart: {

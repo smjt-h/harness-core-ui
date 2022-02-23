@@ -9,7 +9,7 @@ import React, { useEffect, useMemo, useState, useCallback, MouseEvent } from 're
 import { useHistory, useParams } from 'react-router-dom'
 import { v4 as uuid } from 'uuid'
 import type { FormikActions } from 'formik'
-import { cloneDeep, get, isEqual } from 'lodash-es'
+import { cloneDeep, defaultTo, get, isEqual } from 'lodash-es'
 import {
   Layout,
   Container,
@@ -51,7 +51,7 @@ import useActiveEnvironment from '@cf/hooks/useActiveEnvironment'
 import type { FeatureFlagPathProps, ProjectPathProps } from '@common/interfaces/RouteInterfaces'
 
 import { AUTO_COMMIT_MESSAGES } from '@cf/constants/GitSyncConstants'
-import { GIT_SYNC_ERROR_CODE, UseGitSync } from '@cf/hooks/useGitSync'
+import { GitSyncFormMeta, GIT_SYNC_ERROR_CODE, UseGitSync } from '@cf/hooks/useGitSync'
 import usePlanEnforcement from '@cf/hooks/usePlanEnforcement'
 import FlagElemTest from '../CreateFlagWizard/FlagElemTest'
 import TabTargeting from '../EditFlagTabs/TabTargeting'
@@ -131,8 +131,9 @@ const FlagActivation: React.FC<FlagActivationProps> = props => {
     }
   })
 
-  const { gitSyncValidationSchema, gitSyncInitialValues } = gitSync?.getGitSyncFormMeta(
-    AUTO_COMMIT_MESSAGES.UPDATED_FLAG_RULES
+  const { gitSyncValidationSchema, gitSyncInitialValues } = defaultTo(
+    gitSync?.getGitSyncFormMeta(AUTO_COMMIT_MESSAGES.UPDATED_FLAG_RULES),
+    {} as GitSyncFormMeta
   )
 
   const initialValues = useMemo(

@@ -6,7 +6,7 @@
  */
 
 import React, { useContext, useMemo } from 'react'
-import { omit } from 'lodash-es'
+import { defaultTo, omit } from 'lodash-es'
 import { useParams } from 'react-router-dom'
 import { useToaster } from '@wings-software/uicore'
 import { useStrings } from 'framework/strings'
@@ -59,7 +59,7 @@ export default function CustomiseHealthSource({
   const submitData = async (formdata: any, healthSourcePayload: UpdatedHealthSource): Promise<void> => {
     if (shouldRenderAtVerifyStep) {
       const healthSourceList = createHealthsourceList(formdata, healthSourcePayload)
-      const { identifier, name, description = '', tags = {} } = formdata?.monitoredServiceRef
+      const { identifier, name, description = '', tags = {} } = defaultTo(formdata?.monitoredServiceRef, {})
       try {
         const payload: MonitoredServiceDTO = {
           orgIdentifier: params.orgIdentifier,

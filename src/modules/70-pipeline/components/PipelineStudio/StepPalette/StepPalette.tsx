@@ -7,7 +7,7 @@
 
 import React, { useState, useEffect } from 'react'
 import { ExpandingSearchInput, Text, Icon, Layout, Color, Container, Heading } from '@wings-software/uicore'
-import { cloneDeep, uniqBy, isEmpty } from 'lodash-es'
+import { cloneDeep, uniqBy, isEmpty, defaultTo } from 'lodash-es'
 import cx from 'classnames'
 import { useParams } from 'react-router-dom'
 import { StepCategory, StepData, StepPalleteModuleInfo, useGetStepsV2 } from 'services/pipeline-ng'
@@ -94,7 +94,7 @@ export function StepPalette({ onSelect, stepsFactory, stepPaletteModuleInfos }: 
     const toShow: StepCategory[] = []
     fromApi?.forEach(stepCat => {
       if (stepCat?.stepCategories?.length) {
-        toShow.push(...stepCat?.stepCategories)
+        toShow.push(...defaultTo(stepCat?.stepCategories, []))
       }
     })
     if (toShow) {

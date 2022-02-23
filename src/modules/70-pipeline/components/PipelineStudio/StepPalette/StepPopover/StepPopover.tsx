@@ -33,7 +33,11 @@ interface StepTooltipContentInterface {
   description?: keyof StringsMap
 }
 
-function TooltipContent({ description, stepsFactory, stepData }: StepTooltipContentInterface) {
+function TooltipContent({
+  description,
+  stepsFactory,
+  stepData
+}: StepTooltipContentInterface): React.ReactElement | null {
   // Component renders the tooltip over steps in the palette.
   // If the step is disabled, show the enforcement tooltip
   const { getString } = useStrings()
@@ -61,7 +65,7 @@ function TooltipContent({ description, stepsFactory, stepData }: StepTooltipCont
   return null
 }
 
-export const StepPopover: React.FC<StepPopoverProps> = props => {
+export function StepPopover(props: StepPopoverProps): React.ReactElement {
   const { stepData, stepsFactory, popoverProps, className } = props
   if (stepData && !isEmpty(stepData)) {
     const step = stepsFactory.getStep(stepData.type)

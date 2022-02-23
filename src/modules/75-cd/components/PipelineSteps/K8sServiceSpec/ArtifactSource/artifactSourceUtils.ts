@@ -102,7 +102,7 @@ export const setPrimaryInitialValues = (
 ): void => {
   if (stageIdentifier === formik?.values?.stageId) {
     const initialArtifactValue = get(initialValues, `artifacts.${artifactPath}`)
-    const { selectedArtifact } = formik?.values
+    const { selectedArtifact } = defaultTo(formik?.values, {})
 
     if (initialArtifactValue && isEmpty(selectedArtifact.identifier)) {
       /*
@@ -130,7 +130,7 @@ export const setSidecarInitialValues = (
 ): void => {
   if (stageIdentifier === formik?.values?.stageId) {
     const initialArtifactValue = get(initialValues, `artifacts.${artifactPath}`)
-    const { selectedArtifact } = formik?.values
+    const { selectedArtifact } = defaultTo(formik?.values, {})
 
     if (initialArtifactValue && selectedArtifact.identifier === initialArtifactValue.identifier) {
       /*

@@ -29,7 +29,7 @@ export interface GitSyncFormValues {
   gitDetails: GitDetails
   autoCommit: boolean
 }
-interface GitSyncFormMeta {
+export interface GitSyncFormMeta {
   gitSyncInitialValues: GitSyncFormValues
   gitSyncValidationSchema: ObjectSchema<Record<string, unknown> | undefined>
 }

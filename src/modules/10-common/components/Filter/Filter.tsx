@@ -9,7 +9,7 @@ import React, { ReactElement, useEffect } from 'react'
 import * as Yup from 'yup'
 import { Drawer, IDrawerProps } from '@blueprintjs/core'
 import { Formik, FormikProps, FormikErrors } from 'formik'
-import { truncate } from 'lodash-es'
+import { defaultTo, truncate } from 'lodash-es'
 import { FormikForm, Button, Layout, OverlaySpinner, ButtonVariation } from '@wings-software/uicore'
 import { useStrings } from 'framework/strings'
 import { CrudOperation, FilterCRUD, FilterCRUDRef } from './FilterCRUD/FilterCRUD'
@@ -128,7 +128,7 @@ const FilterRef = <T, U extends FilterInterface>(props: FilterProps<T, U>, filte
     )
   }
 
-  const { name, filterVisibility, identifier } = initialFilter?.metadata
+  const { name, filterVisibility, identifier } = defaultTo(initialFilter?.metadata, {} as FilterInterface)
   const isUpdate = (name !== '' && filterVisibility !== undefined) as boolean
 
   return (

@@ -9,6 +9,7 @@ import React, { useContext, useEffect, useMemo, useState } from 'react'
 import { Color, Container, Heading, Text, useConfirmationDialog } from '@wings-software/uicore'
 
 import { useParams } from 'react-router-dom'
+import { defaultTo } from 'lodash-es'
 import { useStrings } from 'framework/strings'
 import { SetupSourceLayout } from '@cv/components/CVSetupSourcesView/SetupSourceLayout/SetupSourceLayout'
 import { transformSampleDataIntoHighchartOptions } from '@cv/pages/health-source/connectors/GCOMetricsHealthSource/GCOMetricsHealthSource.utils'
@@ -79,7 +80,7 @@ export default function CloudMetricsHealthSource<T>(props: CloudMetricsHealthSou
     continuousVerification = false,
     isManualQuery,
     isCustomCreatedMetric
-  } = formikProps?.values
+  } = defaultTo(formikProps?.values, {})
   return (
     <Container>
       <SetupSourceLayout

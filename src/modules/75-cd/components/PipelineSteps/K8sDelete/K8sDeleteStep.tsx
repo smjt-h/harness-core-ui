@@ -776,7 +776,7 @@ export class K8sDeleteStep extends PipelineStep<K8sDeleteFormData> {
               MultiTypeInputType.RUNTIME
                 ? initialValues.spec?.deleteResources?.spec?.resourceNames
                 : initialValues.spec?.deleteResources?.spec?.resourceNames?.length
-                ? (initialValues.spec?.deleteResources?.spec?.resourceNames).map((item: string) => ({
+                ? initialValues.spec?.deleteResources?.spec?.resourceNames?.map((item: string) => ({
                     value: item,
                     id: uuid()
                   }))

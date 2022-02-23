@@ -8,7 +8,7 @@
 import React, { useState } from 'react'
 import { Dialog, Divider, Intent } from '@blueprintjs/core'
 import * as yup from 'yup'
-import { isEqual, zip, orderBy, clone } from 'lodash-es'
+import { isEqual, zip, orderBy, clone, defaultTo } from 'lodash-es'
 import {
   Button,
   Text,
@@ -279,7 +279,7 @@ export const EditVariationsModal: React.FC<EditVariationsModalProps> = ({
                         style={{ paddingLeft: 0 }}
                         onClick={() => {
                           formikProps.setFieldValue('variations', [
-                            ...formikProps.values?.variations,
+                            ...defaultTo(formikProps.values?.variations, []),
                             { identifier: '', name: '', value: '', description: '' }
                           ])
                         }}
