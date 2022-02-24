@@ -64,7 +64,7 @@ const ConnectorSettings: React.FC<ConnectorSettingProps> = props => {
   const saveConnectorSettings = async () => {
     try {
       await updateConnectorSetting({
-        accountIdentifier: 'xxxyz',
+        accountIdentifier: accountId,
         orgIdentifier: orgIdentifier,
         projectIdentifier: projectIdentifier,
         type: 'Connector',
