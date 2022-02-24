@@ -10,13 +10,14 @@ const ZOOM_INC_DEC_LEVEL = 0.1
 interface DrawSVGPathOptions {
   isParallelNode?: boolean
   parentElement?: HTMLDivElement
-  direction?: 'rtl' | 'ltl'
+  direction?: 'rtl' | 'ltl' | 'rtr'
   styles?: React.CSSProperties
 }
 /**
  * Direction of SVG Path (Only supported for straight horizontal lines)
  * 'rtl' ---> Right of Element1 to Left of Element2
  * 'ltl' ---> Left of Element1 to Left of Element2
+ * 'rtr' ---> Left of Element1 to Right of Element2
  **/
 const getFinalSVGArrowPath = (id1 = '', id2 = '', options?: DrawSVGPathOptions): { [key: string]: string } => {
   const node1 = getComputedPosition(id1, options?.parentElement)
@@ -39,13 +40,14 @@ const getFinalSVGArrowPath = (id1 = '', id2 = '', options?: DrawSVGPathOptions):
     finalSVGPath = `M${startPoint} L${horizontalMid - 20},${node1VerticalMid} ${curveLeftToTop} 
     L${horizontalMid},${node2VerticalMid + 20} ${curveBottomToRight} L${endPoint}`
   } else if (node1.y === node2.y) {
+    // both nodes are at same level vertically
     if (options?.direction === 'ltl') {
       const startPointLeft = `${node1.left},${node1VerticalMid}`
       finalSVGPath = `M${startPointLeft}  L${endPoint}`
-    }
-
-    // both nodes are at same level vertically
-    else finalSVGPath = `M${startPoint}  L${endPoint}`
+    } else if (options?.direction === 'rtr') {
+      const endPointRight = `${node2.right},${node2VerticalMid}`
+      finalSVGPath = `M${startPoint}  L${endPointRight}`
+    } else finalSVGPath = `M${startPoint}  L${endPoint}`
   } else {
     //  child node is at bottom
     const curveLeftToBottom = `Q${horizontalMid},${node1VerticalMid} ${horizontalMid},${node1VerticalMid + 20}`
@@ -270,6 +272,7 @@ const trasformStageData = (stages: StageElementWrapperConfig[], graphType: Pipel
         nodeType: nodeType as string,
         type: first?.stage?.type as string,
         icon: iconName,
+        graphType,
         data: stage,
         children: trasformStageData(rest, graphType)
       })
@@ -303,7 +306,8 @@ const trasformStepsData = (steps: ExecutionWrapperConfig[], graphType: PipelineG
           nodeType: 'StepGroup',
           icon: iconName,
           data: first,
-          children: trasformStepsData(rest as ExecutionWrapperConfig[], graphType)
+          children: trasformStepsData(rest as ExecutionWrapperConfig[], graphType),
+          graphType
         })
       } else {
         const { nodeType, iconName } = getNodeInfo(first?.step?.type)
@@ -314,7 +318,8 @@ const trasformStepsData = (steps: ExecutionWrapperConfig[], graphType: PipelineG
           nodeType: nodeType as string,
           icon: iconName,
           data: first,
-          children: trasformStepsData(rest, graphType)
+          children: trasformStepsData(rest, graphType),
+          graphType
         })
       }
     } else {
@@ -326,7 +331,9 @@ const trasformStepsData = (steps: ExecutionWrapperConfig[], graphType: PipelineG
         nodeType: 'StepGroup',
         icon: iconName,
         data: step,
-        children: trasformStepsData(step.stepGroup?.steps as ExecutionWrapperConfig[], graphType)
+        graphType
+
+        // children: trasformStepsData(step.stepGroup?.steps as ExecutionWrapperConfig[], graphType)
       })
     }
   })

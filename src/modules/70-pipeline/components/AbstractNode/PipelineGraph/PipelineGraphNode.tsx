@@ -2,6 +2,7 @@ import React, { useRef, useState } from 'react'
 import { defaultTo } from 'lodash-es'
 import classNames from 'classnames'
 import { NodeType } from '../Node'
+import { v4 as uuid } from 'uuid'
 // import { checkIntersectonBottom, useIntersectionObserver } from './PipelineGraphUtils'
 import GroupNode from '../Nodes/GroupNode/GroupNode'
 import type { NodeIds, PipelineGraphState } from '../types'
@@ -14,6 +15,7 @@ export interface PipelineGraphRecursiveProps {
   fireEvent?: (event: any) => void
   setSelectedNode?: (nodeId: string) => void
   startEndNodeNeeded?: boolean
+  startEndNodeStyle?: { height?: string; width?: string }
 }
 export const PipelineGraphRecursive = ({
   nodes,
@@ -22,7 +24,8 @@ export const PipelineGraphRecursive = ({
   fireEvent,
   setSelectedNode,
   uniqueNodeIds,
-  startEndNodeNeeded = true
+  startEndNodeNeeded = true,
+  startEndNodeStyle
 }: PipelineGraphRecursiveProps): React.ReactElement => {
   const StartNode: React.FC<any> | undefined = getNode(NodeType.StartNode)
   const CreateNode: React.FC<any> | undefined = getNode(NodeType.CreateNode)
@@ -31,7 +34,7 @@ export const PipelineGraphRecursive = ({
     <div id="tree-container" className={classNames(css.graphTree, css.common)}>
       {StartNode && startEndNodeNeeded && (
         <div>
-          <div id={uniqueNodeIds?.startNode} className={classNames(css.graphNode)}>
+          <div style={startEndNodeStyle} id={uniqueNodeIds?.startNode} className={classNames(css.graphNode)}>
             <StartNode />
           </div>
         </div>
@@ -52,10 +55,16 @@ export const PipelineGraphRecursive = ({
         )
       })}
       {CreateNode && startEndNodeNeeded && (
-        <CreateNode identifier={uniqueNodeIds?.createNode} name={'Add Stage'} fireEvent={fireEvent} getNode={getNode} />
+        <CreateNode
+          graphType={nodes?.[0]?.graphType}
+          identifier={uniqueNodeIds?.createNode}
+          name={'Add Stage'}
+          fireEvent={fireEvent}
+          getNode={getNode}
+        />
       )}
       {EndNode && startEndNodeNeeded && (
-        <div id={uniqueNodeIds?.endNode} className={classNames(css.graphNode)}>
+        <div style={startEndNodeStyle} id={uniqueNodeIds?.endNode} className={classNames(css.graphNode)}>
           <EndNode />
         </div>
       )}
@@ -92,9 +101,12 @@ const PipelineGraphNodeBasic = ({
   isPrevNodeParallel
 }: PipelineGraphNode): React.ReactElement | null => {
   const NodeComponent: React.FC<any> | undefined = getNode?.(data?.nodeType) || getNode?.(NodeType.Default)
-
   const ref = useRef<HTMLDivElement>(null)
   // const isIntersecting = useIntersectionObserver(ref, { threshold: 0.98 }, checkIntersectonBottom)
+  const [id, setId] = useState<string>('')
+  const rerenderChild = () => {
+    setId(uuid())
+  }
   const [collapseNode, setCollapseNode] = useState(false)
 
   const getGroupNodeHeader = (): Array<PipelineGraphState> => {
@@ -151,13 +163,14 @@ const PipelineGraphNodeBasic = ({
           {NodeComponent && (
             <NodeComponent
               {...data}
+              rerenderChild={rerenderChild}
               getNode={getNode}
               fireEvent={fireEvent}
               className={classNames(css.graphNode, className)}
               setSelectedNode={setSelectedNode}
               isSelected={selectedNode === data?.identifier}
               isParallelNode={isParallelNode}
-              key={data?.identifier}
+              key={`${id}-${data?.identifier}`}
               allowAdd={(!data?.children?.length && !isParallelNode) || (isParallelNode && isLastChild)}
               isFirstParallelNode={true}
               prevNodeIdentifier={prevNodeIdentifier}
@@ -167,7 +180,7 @@ const PipelineGraphNodeBasic = ({
             <PipelineGraphNode
               fireEvent={fireEvent}
               getNode={getNode}
-              key={currentStage?.identifier}
+              key={`${id}-${currentStage?.identifier}`}
               className={css.parallel}
               data={currentStage}
               selectedNode={selectedNode}

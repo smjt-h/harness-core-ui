@@ -10,6 +10,7 @@ declare const styles: {
   readonly collapseIcon: string
   readonly firstnode: string
   readonly horizontalBar: string
+  readonly marginBottom: string
   readonly stepGroup: string
   readonly stepGroupBody: string
   readonly stepGroupHeader: string

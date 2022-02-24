@@ -1,11 +1,14 @@
 .stepGroup {
+  .marginBottom {
+    margin-bottom: 20px;
+  }
   position: relative;
   // width: fit-content;
   // margin: 0 auto;
   .horizontalBar {
     position: absolute;
     top: 46px;
-    height: 40px;
+    height: 64px;
     opacity: 0;
     // width: 100%;
     left: 0;
@@ -28,7 +31,7 @@
     right: 0;
   }
   background: rgba(244, 251, 255, 0.25);
-  margin-bottom: 20px;
+  // margin-bottom: 20px;
   border-radius: 8px;
   border: dashed 1px var(--primary-4);
   &.firstnode {

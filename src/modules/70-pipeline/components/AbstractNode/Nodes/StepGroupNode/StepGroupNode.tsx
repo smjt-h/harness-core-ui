@@ -14,6 +14,7 @@ import CreateNode from '../CreateNode/CreateNode'
 import css from './StepGroupNode.module.scss'
 import PipelineGraph from '../../PipelineGraph/PipelineGraph'
 import StepGroupGraph from '../StepGroupGraph/StepGroupGraph'
+import DefaultNode from '../DefaultNode/DefaultNode'
 
 const onAddNodeClick = (
   e: React.MouseEvent<Element, MouseEvent>,
@@ -53,6 +54,7 @@ export const StepGroupNode = (props: any): JSX.Element => {
   const layerRef = React.useRef<HTMLDivElement>(null)
   const [showAdd, setVisibilityOfAdd] = React.useState(false)
   const [addClicked, setAddClicked] = React.useState(false)
+  const [isNodeCollapsed, setNodeCollapsed] = React.useState(false)
   // const [hover, setHover] = React.useState(false)
   //   React.useEffect(() => {
   //     const nodeLayer = layerRef.current
@@ -95,68 +97,89 @@ export const StepGroupNode = (props: any): JSX.Element => {
     }
   }, [addClicked])
 
+  // React.useEffect(() => {
+  //   props?.rerenderChild?.()
+  // }, [isNodeCollapsed])
+
   return (
     <>
-      <div
-        // id={props.identifier}
-        className={classnames(css.stepGroup, css.firstnode)}
-        ref={layerRef}
-        onDragOver={event => {
-          if (allowAdd) {
-            setVisibilityOfAdd(true)
-            event.preventDefault()
-          }
-        }}
-        onDragLeave={() => {
-          if (allowAdd) {
-            setVisibilityOfAdd(false)
-          }
-        }}
-        onDrop={event => {
-          event.stopPropagation()
-          const dropData: { id: string; identifier: string } = JSON.parse(
-            event.dataTransfer.getData(DiagramDrag.NodeDrag)
-          )
-          props.fireEvent(Event.DropLinkEvent, { node: dropData })
-        }}
-      >
-        <div id={props?.identifier} className={css.horizontalBar}></div>
-        <div id={`left-${props?.identifier}`} className={css.svgLeftJointPoint}></div>
-        <div id={`right-${props?.identifier}`} className={css.svgRightJointPoint}></div>
-        <div className={css.stepGroupHeader}>
-          <Layout.Horizontal
-            spacing="xsmall"
-            onMouseOver={e => {
-              e.stopPropagation()
-              //setHover(true)
-            }}
-            onMouseOut={e => {
-              e.stopPropagation()
-              //setHover(false)
-            }}
-          >
-            <Icon
-              className={css.collapseIcon}
-              name="minus"
-              onClick={e => {
+      {isNodeCollapsed ? (
+        <DefaultNode
+          onClick={() => {
+            setNodeCollapsed(false)
+            props?.rerenderChild?.()
+          }}
+          {...props}
+          icon="step-group"
+        />
+      ) : (
+        <div
+          // id={props.identifier}
+          className={classnames(
+            css.stepGroup,
+            { [css.firstnode]: !props?.isParallelNode },
+            { [css.marginBottom]: props?.isParallelNode }
+          )}
+          ref={layerRef}
+          onDragOver={event => {
+            if (allowAdd) {
+              setVisibilityOfAdd(true)
+              event.preventDefault()
+            }
+          }}
+          onDragLeave={() => {
+            if (allowAdd) {
+              setVisibilityOfAdd(false)
+            }
+          }}
+          onDrop={event => {
+            event.stopPropagation()
+            const dropData: { id: string; identifier: string } = JSON.parse(
+              event.dataTransfer.getData(DiagramDrag.NodeDrag)
+            )
+            props.fireEvent(Event.DropLinkEvent, { node: dropData })
+          }}
+        >
+          <div id={props?.identifier} className={css.horizontalBar}></div>
+          <div id={`left-${props?.identifier}`} className={css.svgLeftJointPoint}></div>
+          <div id={`right-${props?.identifier}`} className={css.svgRightJointPoint}></div>
+          <div className={css.stepGroupHeader}>
+            <Layout.Horizontal
+              spacing="xsmall"
+              onMouseOver={e => {
                 e.stopPropagation()
-                // props.layer.fireEvent({}, Event.StepGroupCollapsed)
+                //setHover(true)
               }}
+              onMouseOut={e => {
+                e.stopPropagation()
+                //setHover(false)
+              }}
+            >
+              <Icon
+                className={css.collapseIcon}
+                name="minus"
+                onClick={e => {
+                  e.stopPropagation()
+                  setNodeCollapsed(true)
+                  props?.rerenderChild?.()
+                  // props.layer.fireEvent({}, Event.StepGroupCollapsed)
+                }}
+              />
+              <Text lineClamp={1}>{props.name}</Text>
+            </Layout.Horizontal>
+          </div>
+          <div className={css.stepGroupBody}>
+            <StepGroupGraph
+              identifier={props?.identifier}
+              prevNodeIdentifier={props?.prevNodeIdentifier}
+              data={props?.data?.stepGroup?.steps}
+              fireEvent={props?.fireEvent}
+              getNode={props?.getNode}
+              updateSVGLinks={props.updateSVGLinks}
             />
-            <Text lineClamp={1}>{props.name}</Text>
-          </Layout.Horizontal>
+          </div>
         </div>
-        <div className={css.stepGroupBody}>
-          <StepGroupGraph
-            identifier={props?.identifier}
-            prevNodeIdentifier={props?.prevNodeIdentifier}
-            data={props?.data?.stepGroup?.steps}
-            fireEvent={props?.fireEvent}
-            getNode={props?.getNode}
-            updateSVGLinks={props.updateSVGLinks}
-          />
-        </div>
-      </div>
+      )}
     </>
   )
 }

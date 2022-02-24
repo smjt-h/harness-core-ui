@@ -13,6 +13,7 @@ import { isEmpty } from 'lodash-es'
 import { Event } from '@pipeline/components/Diagram'
 import cssDefault from '../DefaultNode/DefaultNode.module.scss'
 import css from './CreateNode.module.scss'
+import { PipelineGraphType } from '../../types'
 
 const CreateNode = (props: any): React.ReactElement => {
   return (
@@ -38,8 +39,8 @@ const CreateNode = (props: any): React.ReactElement => {
         )}
         style={{
           marginTop: 32 - (props.height || 64) / 2,
-          height: props.height || 40,
-          width: props.width || 90,
+          width: props.graphType === PipelineGraphType.STEP_GRAPH ? 64 : 90,
+          height: props.graphType === PipelineGraphType.STEP_GRAPH ? 64 : 40,
           ...props.customNodeStyle
         }}
       >

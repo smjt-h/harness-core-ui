@@ -12,6 +12,7 @@ import cx from 'classnames'
 import { DiagramDrag, DiagramType, Event } from '@pipeline/components/Diagram'
 import SVGMarker from '../SVGMarker'
 import css from './DefaultNode.module.scss'
+import { PipelineGraphType } from '../../types'
 
 const iconStyle = {
   color: 'var(--white)'
@@ -83,6 +84,10 @@ const DefaultNode = (props: any): JSX.Element => {
         className={`${cx(css.defaultNode, 'default-node')} draggable`}
         ref={nodeRef}
         onClick={event => {
+          if (props?.onClick) {
+            props.onClick()
+            return
+          }
           event.stopPropagation()
           props?.fireEvent({ type: Event.ClickNode, entityType: DiagramType.Default, identifier: props?.identifier })
           props?.setSelectedNode(props?.identifier)
@@ -121,8 +126,8 @@ const DefaultNode = (props: any): JSX.Element => {
           draggable={true}
           className={cx(css.defaultCard, { [css.selected]: props?.isSelected })}
           style={{
-            width: props.width || 90,
-            height: props.height || 40,
+            width: props.graphType === PipelineGraphType.STEP_GRAPH ? 64 : 90,
+            height: props.graphType === PipelineGraphType.STEP_GRAPH ? 64 : 40,
             marginTop: 32 - (props.height || 64) / 2,
             cursor: props.disableClick ? 'not-allowed' : props.draggable ? 'move' : 'pointer',
             opacity: props.dragging ? 0.4 : 1
@@ -199,8 +204,8 @@ const DefaultNode = (props: any): JSX.Element => {
             className={css.addNode}
             data-nodeid="add-parallel"
             style={{
-              width: props.width || 90,
-              height: props.height || 40,
+              width: props.graphType === PipelineGraphType.STEP_GRAPH ? 64 : 90,
+              height: props.graphType === PipelineGraphType.STEP_GRAPH ? 64 : 40,
               display: showAdd ? 'flex' : 'none'
               // marginLeft: (128 - (props.width || 64)) / 2
             }}

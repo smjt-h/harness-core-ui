@@ -12,7 +12,7 @@ import {
 } from './PipelineGraphUtils'
 import GraphActions from '../GraphActions/GraphActions'
 import { PipelineGraphRecursive } from './PipelineGraphNode'
-import type { NodeIds, PipelineGraphState, SVGPathRecord } from '../types'
+import { NodeIds, PipelineGraphState, PipelineGraphType, SVGPathRecord } from '../types'
 import css from './PipelineGraph.module.scss'
 
 export interface PipelineGraphProps {
@@ -88,6 +88,7 @@ const PipelineGraph = ({ data, getNode, fireEvent }: PipelineGraphProps): React.
               selectedNode={selectedNode}
               setSelectedNode={updateSelectedNode}
               uniqueNodeIds={uniqueNodeIds}
+              startEndNodeStyle={state?.[0]?.graphType === PipelineGraphType.STEP_GRAPH ? { height: '64px' } : {}}
             />
           </div>
           <GraphActions setGraphScale={setGraphScale} graphScale={graphScale} handleScaleToFit={handleScaleToFit} />

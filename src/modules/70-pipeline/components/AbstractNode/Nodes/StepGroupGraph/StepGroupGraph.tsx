@@ -73,7 +73,10 @@ const StepGroupGraph = (props: StepGroupGraphProps): React.ReactElement => {
         direction: 'ltl',
         parentElement
       }),
-      getFinalSVGArrowPath(lastNodeIdentifier as string, props?.identifier)
+      getFinalSVGArrowPath(lastNodeIdentifier as string, props?.identifier, {
+        direction: 'rtr',
+        parentElement
+      })
     ])
   }
 
