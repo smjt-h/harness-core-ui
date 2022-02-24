@@ -8,6 +8,7 @@
 import React from 'react'
 import { Intent, Layout, useToaster, useConfirmationDialog } from '@wings-software/uicore'
 import cx from 'classnames'
+
 import { cloneDeep, debounce, defaultTo, isEmpty, isNil, noop } from 'lodash-es'
 import type { NodeModelListener, LinkModelListener } from '@projectstorm/react-diagrams-core'
 import SplitPane from 'react-split-pane'
