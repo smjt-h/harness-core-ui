@@ -19,6 +19,7 @@
     "lint": "eslint  --rulesdir ./scripts/eslint-rules --ext .ts --ext .tsx src",
     "typecheck": "tsc",
     "cypress:ci": "cypress run --config videoUploadOnPasses=false --browser chrome",
+    "cypress:ciparallel": "cypress run --config videoUploadOnPasses=false --browser chrome --record --key 6db8a87e-221c-4464-926a-64ec0218370b --parallel",
     "cypress:open": "cypress open",
     "cypress:openCoverage": "CYPRESS_COVERAGE=true cypress open",
     "strings-check": "node ./scripts/yaml-strings-check.js",

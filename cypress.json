@@ -3,5 +3,6 @@
   "integrationFolder": "cypress/integration",
   "experimentalInteractiveRunEvents": true,
   "viewportWidth": 1500,
-  "viewportHeight": 1000
+  "viewportHeight": 1000,
+  "projectId": "gxur8z"
 }
