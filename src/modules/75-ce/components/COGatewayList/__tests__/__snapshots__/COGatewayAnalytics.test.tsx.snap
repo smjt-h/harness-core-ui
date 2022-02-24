@@ -445,18 +445,22 @@ exports[`Autostopping rule analytics drawer render RDS rule analytics drawer 1`]
           Showing data for Last 7 days
         </p>
       </div>
-      <h3
-        class="StyledProps--font StyledProps--font-h3 StyledProps--main"
-        level="3"
+      <div
+        class="Layout--vertical Layout--layout-spacing-large StyledProps--main"
       >
-        SPEND VS SAVINGS
-      </h3>
-      <p
-        class="StyledProps--font StyledProps--main"
-        style="align-self: center;"
-      >
-        ce.co.noData
-      </p>
+        <h3
+          class="StyledProps--font StyledProps--font-h3 StyledProps--main"
+          level="3"
+        >
+          SPEND VS SAVINGS
+        </h3>
+        <p
+          class="StyledProps--font StyledProps--main"
+          style="align-self: center;"
+        >
+          ce.co.noData
+        </p>
+      </div>
       <h3
         class="StyledProps--font StyledProps--font-h3 StyledProps--main"
         level="3"
@@ -979,18 +983,22 @@ exports[`Autostopping rule analytics drawer render analytics drawer 1`] = `
           Showing data for Last 7 days
         </p>
       </div>
-      <h3
-        class="StyledProps--font StyledProps--font-h3 StyledProps--main"
-        level="3"
+      <div
+        class="Layout--vertical Layout--layout-spacing-large StyledProps--main"
       >
-        SPEND VS SAVINGS
-      </h3>
-      <p
-        class="StyledProps--font StyledProps--main"
-        style="align-self: center;"
-      >
-        ce.co.noData
-      </p>
+        <h3
+          class="StyledProps--font StyledProps--font-h3 StyledProps--main"
+          level="3"
+        >
+          SPEND VS SAVINGS
+        </h3>
+        <p
+          class="StyledProps--font StyledProps--main"
+          style="align-self: center;"
+        >
+          ce.co.noData
+        </p>
+      </div>
       <h3
         class="StyledProps--font StyledProps--font-h3 StyledProps--main"
         level="3"
@@ -1513,18 +1521,22 @@ exports[`Autostopping rule analytics drawer render k8s rule analytics drawer 1`]
           Showing data for Last 7 days
         </p>
       </div>
-      <h3
-        class="StyledProps--font StyledProps--font-h3 StyledProps--main"
-        level="3"
+      <div
+        class="Layout--vertical Layout--layout-spacing-large StyledProps--main"
       >
-        SPEND VS SAVINGS
-      </h3>
-      <p
-        class="StyledProps--font StyledProps--main"
-        style="align-self: center;"
-      >
-        ce.co.noData
-      </p>
+        <h3
+          class="StyledProps--font StyledProps--font-h3 StyledProps--main"
+          level="3"
+        >
+          SPEND VS SAVINGS
+        </h3>
+        <p
+          class="StyledProps--font StyledProps--main"
+          style="align-self: center;"
+        >
+          ce.co.noData
+        </p>
+      </div>
       <h3
         class="StyledProps--font StyledProps--font-h3 StyledProps--main"
         level="3"
