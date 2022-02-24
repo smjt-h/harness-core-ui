@@ -31,6 +31,7 @@ export interface PipelineGraphState {
   nodeType?: string
   graphType?: PipelineGraphType
   children?: PipelineGraphState[]
+  parentStepGroupId?: string
 }
 
 export interface NodeIds {

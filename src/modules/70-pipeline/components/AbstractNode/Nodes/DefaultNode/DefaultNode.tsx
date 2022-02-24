@@ -89,7 +89,12 @@ const DefaultNode = (props: any): JSX.Element => {
             return
           }
           event.stopPropagation()
-          props?.fireEvent({ type: Event.ClickNode, entityType: DiagramType.Default, identifier: props?.identifier })
+          props?.fireEvent({
+            type: props?.graphType === PipelineGraphType.STEP_GRAPH ? Event.ClickStepNode : Event.ClickNode,
+            entityType: DiagramType.Default,
+            identifier: props?.identifier,
+            parentIdentifier: props?.parentIdentifier
+          })
           props?.setSelectedNode(props?.identifier)
         }}
         onDragOver={event => {

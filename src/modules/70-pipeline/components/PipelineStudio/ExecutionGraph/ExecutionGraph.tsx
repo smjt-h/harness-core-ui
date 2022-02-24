@@ -509,6 +509,96 @@ function ExecutionGraphRef<T extends StageElementConfig>(
     [Event.MouseEnterNode]: mouseEnterNodeListener,
     [Event.MouseLeaveNode]: mouseLeaveNodeListener
   }
+  const nodeListenersNew: NodeModelListener = {
+    [Event.ClickStepNode]: (event: any) => {
+      const eventTemp = event
+      // eventTemp.stopPropagation()
+      const stepState = state?.states?.get(event?.identifier)
+      dynamicPopoverHandler?.hide()
+      const nodeRender = document.querySelector(`[data-nodeid="${eventTemp?.identifier}"]`)
+      // const layer = eventTemp.entity.getParent()
+      // const parentIdentifier = (event.entity.getParent().getOptions() as StepGroupNodeLayerOptions).identifier
+      if (eventTemp.entityType === DiagramType.CreateNew && nodeRender) {
+        if (event?.parentIdentifier === STATIC_SERVICE_GROUP_NAME) {
+          addStep({
+            entity: event.entity,
+            isRollback: state.isRollback,
+            isParallel: false,
+            stepsMap: state.states,
+            parentIdentifier: (event.entity.getParent().getOptions() as StepGroupNodeLayerOptions).identifier
+          })
+        } else {
+          handleAdd(false, nodeRender, !event?.parentIdentifier, event)
+        }
+      } else if (stepState && stepState.isStepGroupCollapsed) {
+        const stepStates = state.states.set(event.identifier, {
+          ...stepState,
+          isStepGroupCollapsed: !stepState.isStepGroupCollapsed
+        })
+        setState(prev => ({ ...prev, states: stepStates }))
+      } else {
+        let node: ExecutionWrapper | DependencyElement | undefined
+        if (stepState?.stepType === StepType.STEP) {
+          node = getStepFromNode(
+            state.stepsData,
+            undefined,
+            false,
+            false,
+            event?.identifier,
+            event?.parentIdentifier
+          ).node
+        } else if (stepState?.stepType === StepType.SERVICE) {
+          node = getDependencyFromNode(state.dependenciesData, eventTemp.entity).node
+        }
+        /* istanbul ignore else */ if (node) {
+          editStep({
+            node: node,
+            isUnderStepGroup: event?.parentIdentifier,
+            isStepGroup: false,
+            stepsMap: state.states,
+            addOrEdit: 'edit',
+            stepType: stepState?.stepType
+          })
+
+          onSelectStep?.((node as DependencyElement).identifier)
+        }
+      }
+    },
+    [Event.RemoveStepNode]: (event: any) => {
+      const eventTemp = event as DefaultNodeEvent
+      eventTemp.stopPropagation()
+      dynamicPopoverHandler?.hide()
+      const isRemoved = removeStepOrGroup(state, eventTemp.entity)
+      if (isRemoved) {
+        const newStateMap = new Map<string, StepState>([...state.states])
+        newStateMap.delete(eventTemp.entity?.getIdentifier())
+        setState(prevState => ({
+          ...prevState,
+          states: newStateMap
+        }))
+        updateStageWithNewData(state)
+        trackEvent(StepActions.DeleteStep, { type: eventTemp.entity.getType() || '' })
+      }
+    },
+    [Event.AddParallelNode]: (event: any) => {
+      const eventTemp = event as DefaultNodeEvent
+      eventTemp.stopPropagation()
+      const layer = eventTemp.entity.getParent()
+      if (layer instanceof StepGroupNodeLayerModel) {
+        const node = getStepFromNode(state.stepsData, eventTemp.entity).node
+        if (node) {
+          handleAdd(true, eventTemp.target, false, event, eventTemp.callback)
+        }
+      } else {
+        /* istanbul ignore else */ if (eventTemp.target) {
+          handleAdd(true, eventTemp.target, true, event, eventTemp.callback)
+        }
+      }
+    },
+    [Event.DropLinkEvent]: dropNodeListener,
+    [Event.MouseEnterNode]: mouseEnterNodeListener,
+    [Event.MouseLeaveNode]: mouseLeaveNodeListener
+  }
 
   const linkListeners: LinkModelListener = {
     [Event.AddLinkClicked]: (event: any) => {
@@ -707,6 +797,11 @@ function ExecutionGraphRef<T extends StageElementConfig>(
       stepGroupUpdated
     }
   }, [ref, stepGroupUpdated])
+
+  const listerners = {
+    [Event.ClickStepNode]: nodeListenersNew[Event.ClickStepNode]
+  }
+  diagram.registerListeners(listerners)
 
   return (
     <div

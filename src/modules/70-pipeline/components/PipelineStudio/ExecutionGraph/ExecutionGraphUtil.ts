@@ -144,19 +144,21 @@ export const getDependencyFromNode = (
 
 export const getStepFromNode = (
   stepData: ExecutionWrapper | undefined,
-  node: DefaultNodeModel,
+  node?: DefaultNodeModel,
   isComplete = false,
-  isFindParallelNode = false
+  isFindParallelNode = false,
+  nodeId?: string,
+  parentId?: string
 ): { node: ExecutionWrapper | undefined; parent: ExecutionWrapper[] } => {
   let data = stepData
-  const layer = node.getParent()
-  if (layer instanceof StepGroupNodeLayerModel) {
-    const group = getStepFromId(data, layer.getIdentifier() || '', false).node
+  // const layer = node.getParent()
+  if (parentId) {
+    const group = getStepFromId(data, parentId || '', false).node
     if (group) {
       data = group
     }
   }
-  return getStepFromId(data, node.getIdentifier(), isComplete, isFindParallelNode)
+  return getStepFromId(data, nodeId || node?.getIdentifier() || '', isComplete, isFindParallelNode)
 }
 
 export const getStepFromId = (
@@ -429,6 +431,7 @@ export const removeStepOrGroup = (
   entity: DefaultNodeModel,
   skipFlatten = false
 ): boolean => {
+  console.log('checkit', entity.getOptions().identifier, entity.getIdentifier())
   // 1. services
   const servicesData = state.dependenciesData
   if (servicesData) {

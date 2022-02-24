@@ -87,6 +87,7 @@ const StepGroupGraph = (props: StepGroupGraphProps): React.ReactElement => {
     <div className={css.main} style={layoutStyles} ref={graphRef}>
       <SVGComponent svgPath={svgPath} className={css.stepGroupSvg} />
       <PipelineGraphRecursive
+        parentIdentifier={props?.identifier}
         fireEvent={props.fireEvent}
         getNode={props.getNode}
         nodes={state}

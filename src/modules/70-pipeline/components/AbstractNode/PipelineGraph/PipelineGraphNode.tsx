@@ -16,6 +16,7 @@ export interface PipelineGraphRecursiveProps {
   setSelectedNode?: (nodeId: string) => void
   startEndNodeNeeded?: boolean
   startEndNodeStyle?: { height?: string; width?: string }
+  parentIdentifier?: string
 }
 export const PipelineGraphRecursive = ({
   nodes,
@@ -25,7 +26,8 @@ export const PipelineGraphRecursive = ({
   setSelectedNode,
   uniqueNodeIds,
   startEndNodeNeeded = true,
-  startEndNodeStyle
+  startEndNodeStyle,
+  parentIdentifier
 }: PipelineGraphRecursiveProps): React.ReactElement => {
   const StartNode: React.FC<any> | undefined = getNode(NodeType.StartNode)
   const CreateNode: React.FC<any> | undefined = getNode(NodeType.CreateNode)
@@ -42,6 +44,7 @@ export const PipelineGraphRecursive = ({
       {nodes?.map((node, index) => {
         return (
           <PipelineGraphNode
+            parentIdentifier={parentIdentifier}
             fireEvent={fireEvent}
             selectedNode={selectedNode}
             data={node}
@@ -85,6 +88,7 @@ interface PipelineGraphNode {
   isPrevNodeParallel?: boolean
   isLastChild?: boolean
   prevNodeIdentifier?: string
+  parentIdentifier?: string
 }
 
 const PipelineGraphNodeBasic = ({
@@ -98,7 +102,8 @@ const PipelineGraphNodeBasic = ({
   isParallelNode,
   prevNodeIdentifier,
   isNextNodeParallel,
-  isPrevNodeParallel
+  isPrevNodeParallel,
+  parentIdentifier
 }: PipelineGraphNode): React.ReactElement | null => {
   const NodeComponent: React.FC<any> | undefined = getNode?.(data?.nodeType) || getNode?.(NodeType.Default)
   const ref = useRef<HTMLDivElement>(null)
@@ -162,6 +167,7 @@ const PipelineGraphNodeBasic = ({
         <>
           {NodeComponent && (
             <NodeComponent
+              parentIdentifier={parentIdentifier}
               {...data}
               rerenderChild={rerenderChild}
               getNode={getNode}
@@ -178,6 +184,7 @@ const PipelineGraphNodeBasic = ({
           )}
           {data?.children?.map((currentStage, index) => (
             <PipelineGraphNode
+              parentIdentifier={parentIdentifier}
               fireEvent={fireEvent}
               getNode={getNode}
               key={`${id}-${currentStage?.identifier}`}
