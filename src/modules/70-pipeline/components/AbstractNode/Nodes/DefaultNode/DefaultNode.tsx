@@ -10,6 +10,7 @@ import type { IconName } from '@wings-software/uicore'
 import { Icon, Text, Color, Button, ButtonVariation } from '@wings-software/uicore'
 import cx from 'classnames'
 import { DiagramDrag, DiagramType, Event } from '@pipeline/components/Diagram'
+import SVGMarker from '../SVGMarker'
 import css from './DefaultNode.module.scss'
 
 const iconStyle = {
@@ -142,6 +143,9 @@ const DefaultNode = (props: any): JSX.Element => {
             event.stopPropagation()
           }}
         >
+          <div className={css.markerStart}>
+            <SVGMarker />
+          </div>
           <div className="execution-running-animation" />
           {props.icon && (
             <Icon
@@ -152,7 +156,6 @@ const DefaultNode = (props: any): JSX.Element => {
               style={{ pointerEvents: 'none', ...iconStyle }}
             />
           )}
-
           {SECONDARY_ICON && <Icon className={css.secondaryIcon} size={8} name={SECONDARY_ICON} />}
           <Button
             className={css.closeNode}
@@ -169,6 +172,9 @@ const DefaultNode = (props: any): JSX.Element => {
             }}
             withoutCurrentColor={true}
           />
+          <div className={css.markerEnd}>
+            <SVGMarker />
+          </div>
         </div>
         {props.name && (
           <Text

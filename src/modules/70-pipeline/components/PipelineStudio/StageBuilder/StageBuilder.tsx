@@ -29,6 +29,7 @@ import { StageType } from '@pipeline/utils/stageHelpers'
 import { useTemplateSelector } from '@pipeline/utils/useTemplateSelector'
 import { CDPipelineStudioNew } from '@cd/pages/pipeline-studio/CDPipelineStudio'
 import type { DiagramFactory } from '@pipeline/components/AbstractNode/DiagramFactory'
+import { getPipelineGraphData } from '@pipeline/components/AbstractNode/PipelineGraph/PipelineGraphUtils'
 import {
   CanvasWidget,
   createEngine,
@@ -63,7 +64,6 @@ import { StageList } from './views/StageList'
 import { SplitViewTypes } from '../PipelineContext/PipelineActions'
 import { usePipelineContext } from '../PipelineContext/PipelineContext'
 import css from './StageBuilder.module.scss'
-import type { PipelineGraphState } from '@pipeline/components/AbstractNode/types'
 const IS_NEW_PIP_STUDIO_ACTIVE = true
 export type StageStateMap = Map<string, StageState>
 
@@ -1153,7 +1153,6 @@ const StageBuilder: React.FC<StageBuilderProps> = ({ diagram }): JSX.Element => 
           onChange={handleStageResize}
           allowResize={openSplitView}
         >
-          {/* {StageCanvas} */}
           {IS_NEW_PIP_STUDIO_ACTIVE ? (
             <div
               className={css.canvas}
@@ -1169,7 +1168,7 @@ const StageBuilder: React.FC<StageBuilderProps> = ({ diagram }): JSX.Element => 
                 }
               }}
             >
-              <CDPipelineStudioNew dropNodeEvent={dropNodeEvent} dropLinkEvent={dropLinkEvent} pipeline={pipeline} />
+              <CDPipelineStudioNew data={getPipelineGraphData(pipeline.stages)} />
               <DynamicPopover
                 darkMode={false}
                 className={css.renderPopover}

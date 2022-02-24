@@ -7,14 +7,24 @@ import type { PipelineGraphState } from '../types'
 import { PipelineGraphType } from '../types'
 const INITIAL_ZOOM_LEVEL = 1
 const ZOOM_INC_DEC_LEVEL = 0.1
-
-const getFinalSVGArrowPath = (id1 = '', id2 = '', isParallelNode = false, parentElement?: HTMLDivElement): string => {
-  const node1 = getComputedPosition(id1, parentElement)
-  const node2 = getComputedPosition(id2, parentElement)
+interface DrawSVGPathOptions {
+  isParallelNode?: boolean
+  parentElement?: HTMLDivElement
+  direction?: 'rtl' | 'ltl'
+  styles?: React.CSSProperties
+}
+/**
+ * Direction of SVG Path (Only supported for straight horizontal lines)
+ * 'rtl' ---> Right of Element1 to Left of Element2
+ * 'ltl' ---> Left of Element1 to Left of Element2
+ **/
+const getFinalSVGArrowPath = (id1 = '', id2 = '', options?: DrawSVGPathOptions): { [key: string]: string } => {
+  const node1 = getComputedPosition(id1, options?.parentElement)
+  const node2 = getComputedPosition(id2, options?.parentElement)
   if (!node1 || !node2) {
-    return ''
+    return { [id1]: '' }
   }
-
+  let finalSVGPath = ''
   const node1VerticalMid = node1.top + node1.height / 2
   const node2VerticalMid = node2.top + node2.height / 2
 
@@ -26,18 +36,23 @@ const getFinalSVGArrowPath = (id1 = '', id2 = '', isParallelNode = false, parent
     //  child node is at top
     const curveLeftToTop = `Q${horizontalMid},${node1VerticalMid} ${horizontalMid},${node1VerticalMid - 20}`
     const curveBottomToRight = `Q${horizontalMid},${node2VerticalMid} ${horizontalMid + 20},${node2VerticalMid}`
-    return `M${startPoint} L${horizontalMid - 20},${node1VerticalMid} ${curveLeftToTop} 
+    finalSVGPath = `M${startPoint} L${horizontalMid - 20},${node1VerticalMid} ${curveLeftToTop} 
     L${horizontalMid},${node2VerticalMid + 20} ${curveBottomToRight} L${endPoint}`
   } else if (node1.y === node2.y) {
+    if (options?.direction === 'ltl') {
+      const startPointLeft = `${node1.left},${node1VerticalMid}`
+      finalSVGPath = `M${startPointLeft}  L${endPoint}`
+    }
+
     // both nodes are at same level vertically
-    return `M${startPoint}  L${endPoint} `
+    else finalSVGPath = `M${startPoint}  L${endPoint}`
   } else {
     //  child node is at bottom
     const curveLeftToBottom = `Q${horizontalMid},${node1VerticalMid} ${horizontalMid},${node1VerticalMid + 20}`
 
     const curveTopToRight = `Q${horizontalMid},${node2VerticalMid} ${horizontalMid + 20},${node2VerticalMid}`
 
-    if (isParallelNode) {
+    if (options?.isParallelNode) {
       const updatedStart = node1.left - 45 // new start point
       const parallelLinkStart = `${
         updatedStart // half of link length
@@ -46,7 +61,7 @@ const getFinalSVGArrowPath = (id1 = '', id2 = '', isParallelNode = false, parent
       const curveLBparallel = `Q${updatedStart + 20},${node1VerticalMid} ${updatedStart + 20},${node1VerticalMid + 20} `
       const curveTRparallel = `Q${updatedStart + 20},${node2VerticalMid} ${updatedStart + 40},${node2VerticalMid}`
 
-      return `M${parallelLinkStart} 
+      finalSVGPath = `M${parallelLinkStart} 
       ${curveLBparallel} 
       L${updatedStart + 20},${node2VerticalMid - 20} 
       ${curveTRparallel} 
@@ -57,10 +72,12 @@ const getFinalSVGArrowPath = (id1 = '', id2 = '', isParallelNode = false, parent
       L${node2.right + 25},${node1VerticalMid + 20}
       Q${node2.right + 25},${node1VerticalMid} ${node2.right + 40},${node1VerticalMid}
       `
-    }
-    return `M${startPoint} L${horizontalMid - 20},${node1VerticalMid} ${curveLeftToBottom} 
+    } else {
+      finalSVGPath = `M${startPoint} L${horizontalMid - 20},${node1VerticalMid} ${curveLeftToBottom} 
     L${horizontalMid},${node2VerticalMid - 20} ${curveTopToRight} L${endPoint}`
+    }
   }
+  return { [id1]: finalSVGPath }
 }
 
 const getComputedPosition = (childId: string, parentElement?: HTMLDivElement): DOMRect | null => {
@@ -125,15 +142,17 @@ const setupDragEventListeners = (canvasRef: RefObject<HTMLDivElement>): (() => v
 const getSVGLinksFromPipeline = (
   states?: PipelineGraphState[],
   parentElement?: HTMLDivElement,
-  resultArr: string[] = []
-): string[] => {
+  resultArr: { [key: string]: string }[] = []
+): { [key: string]: string }[] => {
   let prevElement: PipelineGraphState
   states?.forEach(state => {
     if (state?.children?.length) {
       getParallelNodeLinks(state?.children, state, resultArr, parentElement)
     }
     if (prevElement) {
-      resultArr.push(getFinalSVGArrowPath(prevElement.identifier, state.identifier, false, parentElement))
+      resultArr.push(
+        getFinalSVGArrowPath(prevElement.identifier, state.identifier, { isParallelNode: false, parentElement })
+      )
     }
     prevElement = state
   })
@@ -143,11 +162,16 @@ const getSVGLinksFromPipeline = (
 const getParallelNodeLinks = (
   stages: PipelineGraphState[],
   firstStage: PipelineGraphState | undefined,
-  resultArr: string[] = [],
+  resultArr: { [key: string]: string }[] = [],
   parentElement?: HTMLDivElement
 ): void => {
   stages?.forEach(stage => {
-    resultArr.push(getFinalSVGArrowPath(firstStage?.identifier as string, stage?.identifier, true, parentElement))
+    resultArr.push(
+      getFinalSVGArrowPath(firstStage?.identifier as string, stage?.identifier, {
+        isParallelNode: true,
+        parentElement
+      })
+    )
   })
 }
 
@@ -209,7 +233,9 @@ const NodeTypeToNodeMap: Record<string, string> = {
   Approval: 'default-node'
 }
 
-const getPipelineGraphData = (data: StageElementWrapperConfig[] | ExecutionWrapperConfig[]): PipelineGraphState[] => {
+const getPipelineGraphData = (
+  data: StageElementWrapperConfig[] | ExecutionWrapperConfig[] = []
+): PipelineGraphState[] => {
   let graphState: PipelineGraphState[] = []
   const pipGraphDataType = getPipelineGraphDataType(data)
   if (pipGraphDataType === PipelineGraphType.STAGE_GRAPH) {
@@ -314,7 +340,7 @@ const getNodeInfo = (type: string | undefined): { iconName: IconName; nodeType: 
   }
 }
 const getPipelineGraphDataType = (data: StageElementWrapperConfig[] | ExecutionWrapperConfig[]): PipelineGraphType => {
-  const hasStageData = defaultTo(get(data, '[0].parallel.stage'), get(data, '[0].stage'))
+  const hasStageData = defaultTo(get(data, '[0].parallel.[0].stage'), get(data, '[0].stage'))
   if (hasStageData) {
     return PipelineGraphType.STAGE_GRAPH
   }

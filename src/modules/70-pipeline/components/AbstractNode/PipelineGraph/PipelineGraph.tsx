@@ -1,37 +1,31 @@
 /* eslint-disable no-console */
 import React, { useEffect, useLayoutEffect, useState, useRef, useMemo } from 'react'
 
+import classNames from 'classnames'
 import Draggable from 'react-draggable'
 import { v4 as uuid } from 'uuid'
-import { get } from 'lodash-es'
-import type { PipelineInfoConfig, StageElementWrapperConfig } from 'services/cd-ng'
-import type { ExecutionWrapperConfig } from 'services/ci'
 import {
   getFinalSVGArrowPath,
-  getPipelineGraphData,
   getScaleToFitValue,
   getSVGLinksFromPipeline,
   INITIAL_ZOOM_LEVEL
 } from './PipelineGraphUtils'
 import GraphActions from '../GraphActions/GraphActions'
 import { PipelineGraphRecursive } from './PipelineGraphNode'
-import type { NodeIds, PipelineGraphState } from '../types'
+import type { NodeIds, PipelineGraphState, SVGPathRecord } from '../types'
 import css from './PipelineGraph.module.scss'
 
 export interface PipelineGraphProps {
-  pipeline: PipelineInfoConfig
+  data: PipelineGraphState[]
   fireEvent: (event: any) => void
   getNode: (type?: string | undefined) => React.FC<any> | undefined
-  dropLinkEvent: (event: any) => void
-  dropNodeEvent: (event: any) => void
 }
 
-const PipelineGraph = ({ pipeline, getNode, fireEvent }: PipelineGraphProps): React.ReactElement => {
-  const [svgPath, setSvgPath] = useState<string[]>([])
-  const [childLinks, setChildLinks] = useState<string[]>([])
+const PipelineGraph = ({ data, getNode, fireEvent }: PipelineGraphProps): React.ReactElement => {
+  const [svgPath, setSvgPath] = useState<SVGPathRecord[]>([])
   const [treeRectangle, setTreeRectangle] = useState<DOMRect | void>()
   const [selectedNode, setSelectedNode] = useState<string>('')
-  const [state, setState] = useState<PipelineGraphState[]>([])
+  const [state, setState] = useState<PipelineGraphState[]>(data)
   const [graphScale, setGraphScale] = useState(INITIAL_ZOOM_LEVEL)
   const canvasRef = useRef<HTMLDivElement>(null)
   const uniqueNodeIds = useMemo(
@@ -50,19 +44,12 @@ const PipelineGraph = ({ pipeline, getNode, fireEvent }: PipelineGraphProps): Re
   }
 
   useLayoutEffect(() => {
-    const stepData = get(pipeline, 'stage.spec.execution.steps')
-    if (stepData) {
-      setState(getPipelineGraphData(stepData as ExecutionWrapperConfig[]))
-      return
-    }
-    if (pipeline.stages?.length) {
-      setState(getPipelineGraphData(pipeline.stages as StageElementWrapperConfig[]))
-    }
-  }, [treeRectangle, pipeline])
+    setState(data)
+  }, [treeRectangle, data])
 
   useLayoutEffect(() => {
     if (state?.length) {
-      setTimeout(setSVGLinks, 500)
+      setSVGLinks()
     }
   }, [state])
 
@@ -70,21 +57,12 @@ const PipelineGraph = ({ pipeline, getNode, fireEvent }: PipelineGraphProps): Re
     const SVGLinks = getSVGLinksFromPipeline(state)
     const lastNode = state?.[state?.length - 1]
 
-    const stepData = get(pipeline, 'stage.spec.execution.steps')
-    if (stepData) {
-      console.log({ childLinks })
-    }
     return setSvgPath([
       ...SVGLinks,
       getFinalSVGArrowPath(uniqueNodeIds.startNode, state?.[0]?.identifier as string),
       getFinalSVGArrowPath(lastNode?.identifier as string, uniqueNodeIds.createNode as string),
-      getFinalSVGArrowPath(uniqueNodeIds.createNode as string, uniqueNodeIds.endNode as string),
-      ...childLinks
+      getFinalSVGArrowPath(uniqueNodeIds.createNode as string, uniqueNodeIds.endNode as string)
     ])
-  }
-  const mergeSVGLinks = (updatedLinks: string[]): void => {
-    console.log([...childLinks, ...updatedLinks])
-    setChildLinks([...childLinks, ...updatedLinks])
   }
 
   useEffect(() => {
@@ -106,11 +84,10 @@ const PipelineGraph = ({ pipeline, getNode, fireEvent }: PipelineGraphProps): Re
             <PipelineGraphRecursive
               fireEvent={fireEvent}
               getNode={getNode}
-              stages={state}
+              nodes={state}
               selectedNode={selectedNode}
               setSelectedNode={updateSelectedNode}
               uniqueNodeIds={uniqueNodeIds}
-              mergeSVGLinks={mergeSVGLinks}
             />
           </div>
           <GraphActions setGraphScale={setGraphScale} graphScale={graphScale} handleScaleToFit={handleScaleToFit} />
@@ -121,15 +98,17 @@ const PipelineGraph = ({ pipeline, getNode, fireEvent }: PipelineGraphProps): Re
 }
 
 interface SVGComponentProps {
-  svgPath: string[]
+  svgPath: SVGPathRecord[]
+  className?: string
 }
 
-export const SVGComponent = ({ svgPath }: SVGComponentProps): React.ReactElement => {
+export const SVGComponent = ({ svgPath, className }: SVGComponentProps): React.ReactElement => {
   return (
     <svg className={css.common}>
-      {svgPath.map((path, idx) => (
-        <path className={css.svgArrow} key={idx} d={path} />
-      ))}
+      {svgPath.map((path, idx) => {
+        const [[nodeId, pathValue]] = Object.entries(path)
+        return <path className={classNames(css.svgArrow, className)} id={`${nodeId}-link`} key={idx} d={pathValue} />
+      })}
     </svg>
   )
 }

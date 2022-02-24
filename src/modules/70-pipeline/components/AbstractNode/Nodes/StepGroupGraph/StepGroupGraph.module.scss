@@ -1,4 +1,10 @@
 .main {
   position: relative;
-  // border-top: 2px solid var(--grey-100);
+  margin: 0 auto;
+}
+
+.stepGroupSVG {
+  stroke: var(--pipeline-grey-border);
+  stroke-width: 2;
+  stroke-dasharray: 4;
 }

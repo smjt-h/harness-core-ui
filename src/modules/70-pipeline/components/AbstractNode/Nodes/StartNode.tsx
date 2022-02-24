@@ -6,23 +6,22 @@
  */
 
 import React from 'react'
-import { Icon, IconName } from '@wings-software/uicore'
+import { Icon, IconName, Color } from '@wings-software/uicore'
 import { NodeType } from '../Node'
-import css from '../../Diagram/node/NodeStart/NodeStart.module.scss'
+import SVGMarker from './SVGMarker'
+import css from './Nodes.module.scss'
 
 const DEFAULT_ICON: IconName = 'play'
-const SELECTED_COLOUR = 'var(--diagram-start-node)'
 
 const StartNode = (): React.ReactElement => {
   return (
     <div className={css.defaultNode}>
-      <div
-        id={NodeType.StartNode.toString()}
-        className={css.nodeStart}
-        style={{ backgroundColor: '#f3f3fa', border: '1px solid #b0b1c4' }}
-      >
+      <div id={NodeType.StartNode.toString()} className={css.nodeStart}>
+        <div className={css.markerStartNode}>
+          <SVGMarker />
+        </div>
         <div>
-          <Icon name={DEFAULT_ICON} style={{ color: SELECTED_COLOUR }} className={css.icon} />
+          <Icon name={DEFAULT_ICON} color={Color.GREEN_400} className={css.icon} />
         </div>
       </div>
     </div>

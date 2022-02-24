@@ -13,7 +13,7 @@ import EndNode from './Nodes/EndNode'
 import StartNode from './Nodes/StartNode'
 import PipelineGraph from './PipelineGraph/PipelineGraph'
 import GroupNode from './Nodes/GroupNode/GroupNode'
-import type { BaseListener, ListenerHandle } from './types'
+import type { BaseListener, ListenerHandle, PipelineGraphState } from './types'
 import { StepGroupNode } from './Nodes/StepGroupNode/StepGroupNode'
 
 export class DiagramFactory {
@@ -100,8 +100,10 @@ export class DiagramFactory {
     this.getListenerHandle(event.type)?.listener?.(event)
   }
 
-  render(): React.FC<any> {
-    const PipelineStudioHOC: React.FC<any> = (props: any): React.ReactElement => (
+  render(): React.FC<{ data: PipelineGraphState[] }> {
+    const PipelineStudioHOC: React.FC<{ data: PipelineGraphState[] }> = (props: {
+      data: PipelineGraphState[]
+    }): React.ReactElement => (
       <PipelineGraph getNode={this.getNode.bind(this)} fireEvent={this.fireEvent.bind(this)} {...props} />
     )
     return PipelineStudioHOC

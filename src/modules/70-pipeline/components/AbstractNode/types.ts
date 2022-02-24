@@ -38,3 +38,7 @@ export interface NodeIds {
   createNode: string
   endNode: string
 }
+
+export interface SVGPathRecord {
+  [key: string]: string
+}

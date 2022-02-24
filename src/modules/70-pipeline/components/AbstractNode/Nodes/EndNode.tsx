@@ -9,7 +9,8 @@ import React from 'react'
 import { Icon, IconName } from '@wings-software/uicore'
 import cx from 'classnames'
 import { NodeType } from '../Node'
-import css from '../../Diagram/node/NodeStart/NodeStart.module.scss'
+import SVGMarker from './SVGMarker'
+import css from './Nodes.module.scss'
 
 const DEFAULT_ICON: IconName = 'stop'
 const SELECTED_COLOUR = 'var(--diagram-stop-node)'
@@ -24,6 +25,9 @@ const EndNode = (): React.ReactElement => {
       >
         <div>
           <Icon name={DEFAULT_ICON} style={{ color: SELECTED_COLOUR }} className={css.icon} />
+        </div>
+        <div className={css.markerEndNode}>
+          <SVGMarker />
         </div>
       </div>
     </div>

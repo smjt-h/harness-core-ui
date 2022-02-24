@@ -2,29 +2,27 @@ import React, { useRef, useState } from 'react'
 import { defaultTo } from 'lodash-es'
 import classNames from 'classnames'
 import { NodeType } from '../Node'
-import { checkIntersectonBottom, useIntersectionObserver } from './PipelineGraphUtils'
+// import { checkIntersectonBottom, useIntersectionObserver } from './PipelineGraphUtils'
 import GroupNode from '../Nodes/GroupNode/GroupNode'
 import type { NodeIds, PipelineGraphState } from '../types'
 import css from './PipelineGraph.module.scss'
 export interface PipelineGraphRecursiveProps {
-  stages?: PipelineGraphState[]
+  nodes?: PipelineGraphState[]
   getNode: (type?: string | undefined) => React.FC<any> | undefined
   selectedNode: string
   uniqueNodeIds?: NodeIds
   fireEvent?: (event: any) => void
   setSelectedNode?: (nodeId: string) => void
   startEndNodeNeeded?: boolean
-  mergeSVGLinks?: (svgPath: string[]) => void
 }
 export const PipelineGraphRecursive = ({
-  stages,
+  nodes,
   getNode,
   selectedNode,
   fireEvent,
   setSelectedNode,
   uniqueNodeIds,
-  startEndNodeNeeded = true,
-  mergeSVGLinks
+  startEndNodeNeeded = true
 }: PipelineGraphRecursiveProps): React.ReactElement => {
   const StartNode: React.FC<any> | undefined = getNode(NodeType.StartNode)
   const CreateNode: React.FC<any> | undefined = getNode(NodeType.CreateNode)
@@ -38,19 +36,18 @@ export const PipelineGraphRecursive = ({
           </div>
         </div>
       )}
-      {stages?.map((stage, index) => {
+      {nodes?.map((node, index) => {
         return (
           <PipelineGraphNode
             fireEvent={fireEvent}
             selectedNode={selectedNode}
-            data={stage}
-            key={stage?.identifier}
+            data={node}
+            key={node?.identifier}
             getNode={getNode}
             setSelectedNode={setSelectedNode}
-            isNextNodeParallel={!!stages?.[index + 1]?.children?.length}
-            isPrevNodeParallel={!!stages?.[index - 1]?.children?.length}
-            updateSVGLinks={mergeSVGLinks}
-            prevNodeIdentifier={stages?.[index - 1]?.identifier}
+            isNextNodeParallel={!!nodes?.[index + 1]?.children?.length}
+            isPrevNodeParallel={!!nodes?.[index - 1]?.children?.length}
+            prevNodeIdentifier={nodes?.[index - 1]?.identifier}
           />
         )
       })}
@@ -78,15 +75,13 @@ interface PipelineGraphNode {
   isNextNodeParallel?: boolean
   isPrevNodeParallel?: boolean
   isLastChild?: boolean
-  updateSVGLinks?: (svgPath: string[]) => void
   prevNodeIdentifier?: string
 }
 
-export const PipelineGraphNode = ({
+const PipelineGraphNodeBasic = ({
   fireEvent,
   getNode,
   setSelectedNode,
-  updateSVGLinks,
   data,
   className,
   isLastChild,
@@ -125,6 +120,9 @@ export const PipelineGraphNode = ({
       (data?.children?.length || 0) > 1 ? ` + ${(data?.children?.length || 0) - 1} more stages` : ''
     }`
   }
+  if (data.identifier === 'stpgrp11') {
+    console.log(data)
+  }
 
   return (
     <div
@@ -147,7 +145,6 @@ export const PipelineGraphNode = ({
           key={data?.identifier}
           allowAdd={(!data?.children?.length && !isParallelNode) || (isParallelNode && isLastChild)}
           prevNodeIdentifier={prevNodeIdentifier}
-          updateSVGLinks={updateSVGLinks}
         />
       ) : (
         <>
@@ -163,7 +160,6 @@ export const PipelineGraphNode = ({
               key={data?.identifier}
               allowAdd={(!data?.children?.length && !isParallelNode) || (isParallelNode && isLastChild)}
               isFirstParallelNode={true}
-              updateSVGLinks={updateSVGLinks}
               prevNodeIdentifier={prevNodeIdentifier}
             />
           )}
@@ -178,7 +174,6 @@ export const PipelineGraphNode = ({
               setSelectedNode={setSelectedNode}
               isParallelNode={true}
               isLastChild={index + 1 === data?.children?.length}
-              updateSVGLinks={updateSVGLinks}
               prevNodeIdentifier={prevNodeIdentifier}
             />
           ))}
@@ -187,3 +182,5 @@ export const PipelineGraphNode = ({
     </div>
   )
 }
+const PipelineGraphNode = React.memo(PipelineGraphNodeBasic)
+export { PipelineGraphNode }

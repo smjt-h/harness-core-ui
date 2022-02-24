@@ -6,7 +6,7 @@ import {
   getPipelineGraphData,
   getSVGLinksFromPipeline
 } from '../../PipelineGraph/PipelineGraphUtils'
-import type { NodeIds, PipelineGraphState } from '../../types'
+import type { NodeIds, PipelineGraphState, SVGPathRecord } from '../../types'
 import css from './StepGroupGraph.module.scss'
 interface StepGroupGraphProps {
   data?: any[]
@@ -33,10 +33,11 @@ const getCalculatedStyles = (data: PipelineGraphState[]): LayoutStyles => {
     width += 170
     maxChildLength = Math.max(maxChildLength, node?.children?.length || 0)
   })
-  return { height: `${(maxChildLength + 1) * 100}px`, width: `${width}px`, marginLeft: '40px' }
+  return { height: `${(maxChildLength + 1) * 100}px`, width: `${width}px` }
 }
+
 const StepGroupGraph = (props: StepGroupGraphProps): React.ReactElement => {
-  const [svgPath, setSvgPath] = useState<string[]>([])
+  const [svgPath, setSvgPath] = useState<SVGPathRecord[]>([])
   const [treeRectangle, setTreeRectangle] = useState<DOMRect | void>()
   const [layoutStyles, setLayoutStyles] = useState<LayoutStyles>({ height: 'auto', width: 'auto' })
   const [selectedNode, setSelectedNode] = useState<string>('')
@@ -60,21 +61,20 @@ const StepGroupGraph = (props: StepGroupGraphProps): React.ReactElement => {
     }
   }, [state])
 
-  console.log('state', state)
   const setSVGLinks = (): void => {
-    const parentElement = (graphRef?.current as HTMLDivElement)?.closest('#tree-container') as HTMLDivElement
     const SVGLinks = getSVGLinksFromPipeline(state)
     const firstNodeIdentifier = state?.[0]?.identifier
     const lastNodeIdentifier = state?.[state?.length - 1]?.identifier
+    const parentElement = graphRef.current?.querySelector('#tree-container') as HTMLDivElement
+
     return setSvgPath([
       ...SVGLinks,
-      getFinalSVGArrowPath(firstNodeIdentifier as string, props?.identifier),
+      getFinalSVGArrowPath(props?.identifier, firstNodeIdentifier as string, {
+        direction: 'ltl',
+        parentElement
+      }),
       getFinalSVGArrowPath(lastNodeIdentifier as string, props?.identifier)
     ])
-  }
-
-  const mergeSVGLinks = (updatedLinks: string[]): void => {
-    setSvgPath([...svgPath, ...updatedLinks])
   }
 
   useEffect(() => {
@@ -82,13 +82,12 @@ const StepGroupGraph = (props: StepGroupGraphProps): React.ReactElement => {
   }, [])
   return (
     <div className={css.main} style={layoutStyles} ref={graphRef}>
-      <SVGComponent svgPath={svgPath} />
+      <SVGComponent svgPath={svgPath} className={css.stepGroupSvg} />
       <PipelineGraphRecursive
         fireEvent={props.fireEvent}
         getNode={props.getNode}
-        stages={state}
+        nodes={state}
         selectedNode={selectedNode}
-        mergeSVGLinks={mergeSVGLinks}
         startEndNodeNeeded={false}
       />
     </div>

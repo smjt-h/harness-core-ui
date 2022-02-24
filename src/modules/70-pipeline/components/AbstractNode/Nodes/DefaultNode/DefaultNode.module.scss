@@ -172,3 +172,20 @@
 .showIcon {
   opacity: 1;
 }
+.markerStart {
+  width: 20px;
+  height: 24px;
+  position: relative;
+  top: 2px;
+  left: -20px;
+  z-index: 99;
+}
+
+.markerEnd {
+  width: 20px;
+  height: 20px;
+  position: relative;
+  top: 0;
+  right: -20px;
+  z-index: 99;
+}

@@ -72,6 +72,7 @@ import {
 } from '../../Diagram'
 import { CanvasButtons } from '../../CanvasButtons/CanvasButtons'
 import css from './ExecutionGraph.module.scss'
+import { getPipelineGraphData } from '@pipeline/components/AbstractNode/PipelineGraph/PipelineGraphUtils'
 
 const diagram = new DiagramFactory('graph')
 
@@ -778,7 +779,7 @@ function ExecutionGraphRef<T extends StageElementConfig>(
           </Text>
         )}
         {stage.stage?.identifier === 'Deploy1' ? (
-          <CDPipelineStudioNew pipeline={stage} />
+          <CDPipelineStudioNew data={getPipelineGraphData(stage.stage.spec?.execution?.steps)} />
         ) : (
           <>
             <CanvasWidget
