@@ -74,6 +74,7 @@ import {
   SelectedStageData,
   StageSelectionData
 } from '@pipeline/utils/runPipelineUtils'
+import { RunPipelineFormCacheContextProvider } from '@pipeline/context/RunPipelineFormCacheContext'
 import { useMutateAsGet, useQueryParams } from '@common/hooks'
 import { yamlStringify } from '@common/utils/YamlHelperMethods'
 import { PipelineActions } from '@common/constants/TrackingConstants'
@@ -1243,7 +1244,9 @@ export function RunPipelineFormWrapper(props: RunPipelineFormWrapperProps): Reac
 export function RunPipelineForm(props: RunPipelineFormProps & InputSetGitQueryParams): React.ReactElement {
   return (
     <NestedAccordionProvider>
-      <RunPipelineFormBasic {...props} />
+      <RunPipelineFormCacheContextProvider>
+        <RunPipelineFormBasic {...props} />
+      </RunPipelineFormCacheContextProvider>
     </NestedAccordionProvider>
   )
 }
