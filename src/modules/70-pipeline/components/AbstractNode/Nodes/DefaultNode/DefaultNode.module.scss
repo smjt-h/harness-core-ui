@@ -155,7 +155,6 @@
 .addNodeIcon {
   height: 30px;
   position: relative;
-  left: -50px;
   width: 30px;
   display: inline;
   top: -70px;
@@ -168,7 +167,14 @@
     border-radius: 50%;
     background: var(--primary-7);
   }
+  &.left {
+    left: -50px;
+  }
+  &.right {
+    right: -80px;
+  }
 }
+
 .showIcon {
   opacity: 1;
 }

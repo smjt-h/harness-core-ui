@@ -329,7 +329,7 @@ function ExecutionGraphRef<T extends StageElementConfig>(
     isParallel: boolean,
     el: Element,
     showStepGroup: boolean,
-    event?: DefaultNodeEvent | undefined,
+    event?: any,
     onHide?: () => void | undefined
   ): void => {
     const options: Labels = { addStep: getString('addStep') }
@@ -510,7 +510,7 @@ function ExecutionGraphRef<T extends StageElementConfig>(
     [Event.MouseLeaveNode]: mouseLeaveNodeListener
   }
   const nodeListenersNew: NodeModelListener = {
-    [Event.ClickStepNode]: (event: any) => {
+    [Event.ClickNode]: (event: any) => {
       const eventTemp = event
       // eventTemp.stopPropagation()
       const stepState = state?.states?.get(event?.identifier)
@@ -528,7 +528,7 @@ function ExecutionGraphRef<T extends StageElementConfig>(
             parentIdentifier: (event.entity.getParent().getOptions() as StepGroupNodeLayerOptions).identifier
           })
         } else {
-          handleAdd(false, nodeRender, !event?.parentIdentifier, event)
+          handleAdd(false, nodeRender, !event?.parentIdentifier, { entity: { ...event } })
         }
       } else if (stepState && stepState.isStepGroupCollapsed) {
         const stepStates = state.states.set(event.identifier, {
@@ -564,7 +564,7 @@ function ExecutionGraphRef<T extends StageElementConfig>(
         }
       }
     },
-    [Event.RemoveStepNode]: (event: any) => {
+    [Event.RemoveNode]: (event: any) => {
       const eventTemp = event as DefaultNodeEvent
       eventTemp.stopPropagation()
       dynamicPopoverHandler?.hide()
@@ -581,17 +581,24 @@ function ExecutionGraphRef<T extends StageElementConfig>(
       }
     },
     [Event.AddParallelNode]: (event: any) => {
-      const eventTemp = event as DefaultNodeEvent
-      eventTemp.stopPropagation()
-      const layer = eventTemp.entity.getParent()
-      if (layer instanceof StepGroupNodeLayerModel) {
-        const node = getStepFromNode(state.stepsData, eventTemp.entity).node
+      const eventTemp = event
+      // eventTemp.stopPropagation()
+      const layer = eventTemp?.parentIdentifier
+      if (layer) {
+        const node = getStepFromNode(
+          state.stepsData,
+          undefined,
+          false,
+          false,
+          eventTemp?.identifier,
+          eventTemp?.parentIdentifier
+        ).node
         if (node) {
-          handleAdd(true, eventTemp.target, false, event, eventTemp.callback)
+          handleAdd(true, eventTemp.target, false, { entity: { ...event } }, eventTemp.callback)
         }
       } else {
         /* istanbul ignore else */ if (eventTemp.target) {
-          handleAdd(true, eventTemp.target, true, event, eventTemp.callback)
+          handleAdd(true, eventTemp.target, true, { entity: { ...event } }, eventTemp.callback)
         }
       }
     },
@@ -618,6 +625,46 @@ function ExecutionGraphRef<T extends StageElementConfig>(
         handleAdd(false, linkRender, false, event)
       } else if (linkRender) {
         handleAdd(false, linkRender, true, event)
+      }
+    },
+    [Event.DropLinkEvent]: (event: any) => {
+      const eventTemp = event as DefaultLinkEvent
+      eventTemp.stopPropagation()
+      if (event.node?.identifier && event.node?.id) {
+        const dropEntity = model.getNodeFromId(event.node.id)
+        if (dropEntity) {
+          const dropNode = getStepFromNode(state.stepsData, dropEntity, true).node as ExecutionWrapperConfig
+          if (dropNode?.stepGroup && isLinkUnderStepGroup(eventTemp.entity)) {
+            showError(getString('stepGroupInAnotherStepGroup'), undefined, 'pipeline.setgroup.error')
+          } else {
+            const isRemove = removeStepOrGroup(state, dropEntity)
+            if (isRemove && dropNode) {
+              addStepOrGroup(eventTemp.entity, state.stepsData, dropNode, false, state.isRollback)
+              updateStageWithNewData(state)
+            }
+          }
+        }
+      }
+    }
+  }
+  const linkListenersNew: LinkModelListener = {
+    [Event.AddLinkClicked]: (event: any) => {
+      const eventTemp = event
+      // eventTemp.stopPropagation()
+      dynamicPopoverHandler?.hide()
+      const linkRender = document.querySelector(`[data-linkid="${eventTemp.identifier}"]`)
+      const sourceLayer = eventTemp.entity?.getSourcePort().getNode().getParent()
+      const targetLayer = eventTemp.entity?.getTargetPort().getNode().getParent()
+      // check if the link is under step group then directly show add Step
+      if (
+        sourceLayer instanceof StepGroupNodeLayerModel &&
+        targetLayer instanceof StepGroupNodeLayerModel &&
+        sourceLayer === targetLayer &&
+        linkRender
+      ) {
+        handleAdd(false, linkRender, false, { entity: { ...event } })
+      } else if (linkRender) {
+        handleAdd(false, linkRender, true, { entity: { ...event } })
       }
     },
     [Event.DropLinkEvent]: (event: any) => {
@@ -799,9 +846,13 @@ function ExecutionGraphRef<T extends StageElementConfig>(
   }, [ref, stepGroupUpdated])
 
   const listerners = {
-    [Event.ClickStepNode]: nodeListenersNew[Event.ClickStepNode]
+    [Event.ClickNode]: nodeListenersNew[Event.ClickNode],
+    [Event.AddParallelNode]: nodeListenersNew[Event.AddParallelNode],
+    [Event.AddLinkClicked]: linkListenersNew[Event.AddLinkClicked]
   }
   diagram.registerListeners(listerners)
+
+  console.log('state', state)
 
   return (
     <div

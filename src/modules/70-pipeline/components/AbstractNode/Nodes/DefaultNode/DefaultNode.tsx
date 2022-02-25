@@ -13,6 +13,7 @@ import { DiagramDrag, DiagramType, Event } from '@pipeline/components/Diagram'
 import SVGMarker from '../SVGMarker'
 import css from './DefaultNode.module.scss'
 import { PipelineGraphType } from '../../types'
+import { NodeType } from '../../Node'
 
 const iconStyle = {
   color: 'var(--white)'
@@ -200,6 +201,38 @@ const DefaultNode = (props: any): JSX.Element => {
             event.stopPropagation()
             props?.fireEvent({
               type: Event.AddLinkClicked,
+              entityType: DiagramType.Link,
+              node: props,
+              prevNodeIdentifier: props?.prevNodeIdentifier,
+              parentIdentifier: props?.parentIdentifier,
+              identifier: props?.identifier
+            })
+          }}
+          onDragOver={event => {
+            event.stopPropagation()
+            event.preventDefault()
+          }}
+          onDrop={event => {
+            event.stopPropagation()
+            props?.fireEvent({
+              type: Event.DropLinkEvent,
+              node: JSON.parse(event.dataTransfer.getData(DiagramDrag.NodeDrag)),
+              destinationNode: props
+            })
+          }}
+          className={cx(css.addNodeIcon, css.left)}
+        >
+          <Icon name="plus" color={Color.WHITE} />
+        </div>
+      )}
+      {(props?.nextNode?.nodeType === NodeType.StepGroupNode || (!props?.nextNode && props?.parentIdentifier)) && (
+        <div
+          data-linkid={props?.identifier}
+          onClick={event => {
+            event.stopPropagation()
+            props?.fireEvent({
+              linkBeforeStepGroup: true,
+              type: Event.AddLinkClicked,
               prevNodeIdentifier: props?.prevNodeIdentifier,
               parentIdentifier: props?.parentIdentifier,
               entityType: DiagramType.Link,
@@ -219,7 +252,7 @@ const DefaultNode = (props: any): JSX.Element => {
               destinationNode: props
             })
           }}
-          className={cx(css.addNodeIcon)}
+          className={cx(css.addNodeIcon, css.right)}
         >
           <Icon name="plus" color={Color.WHITE} />
         </div>

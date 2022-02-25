@@ -54,6 +54,8 @@ export const PipelineGraphRecursive = ({
             isNextNodeParallel={!!nodes?.[index + 1]?.children?.length}
             isPrevNodeParallel={!!nodes?.[index - 1]?.children?.length}
             prevNodeIdentifier={nodes?.[index - 1]?.identifier}
+            nextNode={nodes?.[index + 1]}
+            prevNode={nodes?.[index - 1]}
           />
         )
       })}
@@ -89,6 +91,8 @@ interface PipelineGraphNode {
   isLastChild?: boolean
   prevNodeIdentifier?: string
   parentIdentifier?: string
+  nextNode?: PipelineGraphState
+  prevNode?: PipelineGraphState
 }
 
 const PipelineGraphNodeBasic = ({
@@ -103,7 +107,9 @@ const PipelineGraphNodeBasic = ({
   prevNodeIdentifier,
   isNextNodeParallel,
   isPrevNodeParallel,
-  parentIdentifier
+  parentIdentifier,
+  prevNode,
+  nextNode
 }: PipelineGraphNode): React.ReactElement | null => {
   const NodeComponent: React.FC<any> | undefined = getNode?.(data?.nodeType) || getNode?.(NodeType.Default)
   const ref = useRef<HTMLDivElement>(null)
@@ -137,10 +143,6 @@ const PipelineGraphNodeBasic = ({
       (data?.children?.length || 0) > 1 ? ` + ${(data?.children?.length || 0) - 1} more stages` : ''
     }`
   }
-  if (data.identifier === 'stpgrp11') {
-    console.log(data)
-  }
-
   return (
     <div
       ref={ref}
@@ -180,6 +182,8 @@ const PipelineGraphNodeBasic = ({
               allowAdd={(!data?.children?.length && !isParallelNode) || (isParallelNode && isLastChild)}
               isFirstParallelNode={true}
               prevNodeIdentifier={prevNodeIdentifier}
+              prevNode={prevNode}
+              nextNode={nextNode}
             />
           )}
           {data?.children?.map((currentStage, index) => (

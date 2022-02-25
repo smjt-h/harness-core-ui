@@ -1,3 +1,4 @@
+import { DiagramType, Event } from '@pipeline/components/Diagram'
 import React, { useEffect, useLayoutEffect, useRef, useState } from 'react'
 import { SVGComponent } from '../../PipelineGraph/PipelineGraph'
 import { PipelineGraphRecursive } from '../../PipelineGraph/PipelineGraphNode'
@@ -6,7 +7,8 @@ import {
   getPipelineGraphData,
   getSVGLinksFromPipeline
 } from '../../PipelineGraph/PipelineGraphUtils'
-import type { NodeIds, PipelineGraphState, SVGPathRecord } from '../../types'
+import { NodeIds, PipelineGraphState, PipelineGraphType, SVGPathRecord } from '../../types'
+import CreateNode from '../CreateNode/CreateNode'
 import css from './StepGroupGraph.module.scss'
 interface StepGroupGraphProps {
   data?: any[]
@@ -33,7 +35,7 @@ const getCalculatedStyles = (data: PipelineGraphState[]): LayoutStyles => {
     width += 170
     maxChildLength = Math.max(maxChildLength, node?.children?.length || 0)
   })
-  return { height: `${(maxChildLength + 1) * 100}px`, width: `${width}px` }
+  return { height: `${(maxChildLength + 1) * 100}px`, width: `${width - 80}px` }
 }
 
 const StepGroupGraph = (props: StepGroupGraphProps): React.ReactElement => {
@@ -86,14 +88,31 @@ const StepGroupGraph = (props: StepGroupGraphProps): React.ReactElement => {
   return (
     <div className={css.main} style={layoutStyles} ref={graphRef}>
       <SVGComponent svgPath={svgPath} className={css.stepGroupSvg} />
-      <PipelineGraphRecursive
-        parentIdentifier={props?.identifier}
-        fireEvent={props.fireEvent}
-        getNode={props.getNode}
-        nodes={state}
-        selectedNode={selectedNode}
-        startEndNodeNeeded={false}
-      />
+      {props?.data?.length ? (
+        <PipelineGraphRecursive
+          parentIdentifier={props?.identifier}
+          fireEvent={props.fireEvent}
+          getNode={props.getNode}
+          nodes={state}
+          selectedNode={selectedNode}
+          startEndNodeNeeded={false}
+        />
+      ) : (
+        <CreateNode
+          identifier={props?.identifier}
+          graphType={PipelineGraphType.STEP_GRAPH}
+          onClick={(event: any) => {
+            props?.fireEvent({
+              type: Event.ClickNode,
+              identifier: props?.identifier,
+              parentIdentifier: props?.identifier,
+              entityType: DiagramType.CreateNew,
+              node: props,
+              target: event.target
+            })
+          }}
+        />
+      )}
     </div>
   )
 }

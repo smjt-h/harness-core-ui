@@ -17,8 +17,10 @@ declare const styles: {
   readonly hoverName: string
   readonly iconGroup: string
   readonly inComplete: string
+  readonly left: string
   readonly markerEnd: string
   readonly markerStart: string
+  readonly right: string
   readonly secondaryIcon: string
   readonly selected: string
   readonly showIcon: string

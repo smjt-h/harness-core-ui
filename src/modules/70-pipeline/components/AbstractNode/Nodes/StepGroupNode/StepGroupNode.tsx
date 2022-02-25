@@ -7,11 +7,12 @@
 
 import * as React from 'react'
 import classnames from 'classnames'
-import { Icon, Layout, Text } from '@wings-software/uicore'
-import { Event, DiagramDrag } from '@pipeline/components/Diagram'
+import { Icon, Layout, Text, Color } from '@wings-software/uicore'
+import { Event, DiagramDrag, DiagramType } from '@pipeline/components/Diagram'
 import type { StepGroupNodeLayerModel } from '../../../Diagram/node-layer/StepGroupNodeLayerModel'
 import CreateNode from '../CreateNode/CreateNode'
 import css from './StepGroupNode.module.scss'
+import defaultcss from '../DefaultNode/DefaultNode.module.scss'
 import PipelineGraph from '../../PipelineGraph/PipelineGraph'
 import StepGroupGraph from '../StepGroupGraph/StepGroupGraph'
 import DefaultNode from '../DefaultNode/DefaultNode'
@@ -141,8 +142,6 @@ export const StepGroupNode = (props: any): JSX.Element => {
           }}
         >
           <div id={props?.identifier} className={css.horizontalBar}></div>
-          <div id={`left-${props?.identifier}`} className={css.svgLeftJointPoint}></div>
-          <div id={`right-${props?.identifier}`} className={css.svgRightJointPoint}></div>
           <div className={css.stepGroupHeader}>
             <Layout.Horizontal
               spacing="xsmall"

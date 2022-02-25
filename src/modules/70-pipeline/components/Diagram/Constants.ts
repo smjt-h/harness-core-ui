@@ -9,11 +9,9 @@ export const Event: { [key: string]: string } = {
   AddLinkClicked: 'addLinkClicked',
   SelectionChanged: 'selectionChanged',
   ClickNode: 'clickNode',
-  ClickStepNode: 'clickStepNode',
   ColorChanged: 'colorChanged',
   WidthChanged: 'widthChanged',
   RemoveNode: 'removeNode',
-  RemoveStepNode: 'removeStepNode',
   NodesUpdated: 'nodesUpdated',
   LinksUpdated: 'linksUpdated',
   OffsetUpdated: 'offsetUpdated',
@@ -23,13 +21,11 @@ export const Event: { [key: string]: string } = {
   StepGroupClicked: 'stepGroupClicked',
   EntityRemoved: 'entityRemoved',
   RollbackClicked: 'rollbackClicked',
-  AddParallelStepNode: 'addParallelStepNode',
+  AddParallelNode: 'addParallelNode',
   SourcePortChanged: 'sourcePortChanged',
   TargetPortChanged: 'targetPortChanged',
-  DropLinkEventOnStep: 'dropLinkEventOnStep',
   DropLinkEvent: 'dropLinkEvent',
   DropNodeEvent: 'dropNodeEvent',
-  DropStepNodeEvent: 'dropStepNodeEvent',
   MouseEnterNode: 'mouseEnterNode',
   MouseOverNode: 'mouseOverNode',
   MouseLeaveNode: 'mouseLeaveNode',
@@ -44,7 +40,9 @@ export const DiagramType: { [key: string]: string } = {
   DiamondNode: 'default-diamond',
   StartNode: 'node-start',
   GroupNode: 'group-node',
-  IconNode: 'icon-node'
+  StepGroupNode: 'step-group-node',
+  IconNode: 'icon-node',
+  Link: 'link'
 }
 
 export enum StepsType {

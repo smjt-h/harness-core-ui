@@ -10,7 +10,7 @@ import { Text } from '@wings-software/uicore'
 import { Icon } from '@blueprintjs/core'
 import cx from 'classnames'
 import { isEmpty } from 'lodash-es'
-import { Event } from '@pipeline/components/Diagram'
+import { DiagramType, Event } from '@pipeline/components/Diagram'
 import cssDefault from '../DefaultNode/DefaultNode.module.scss'
 import css from './CreateNode.module.scss'
 import { PipelineGraphType } from '../../types'
@@ -21,12 +21,19 @@ const CreateNode = (props: any): React.ReactElement => {
       <div
         id={props.identifier}
         data-linkid={props.identifier}
+        data-nodeid={props.identifier}
         onClick={event => {
           event.preventDefault()
           event.stopPropagation()
+          if (props?.onClick) {
+            props?.onClick(event)
+            return
+          }
           props?.fireEvent({
             type: Event.AddLinkClicked,
-            identifier: props.identifier
+            entityType: DiagramType.CreateNew,
+            identifier: props.identifier,
+            target: event.target
           })
         }}
         className={cx(

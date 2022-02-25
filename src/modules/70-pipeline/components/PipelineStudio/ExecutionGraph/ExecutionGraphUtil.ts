@@ -26,7 +26,8 @@ import {
   StepGroupNodeLayerModel,
   StepGroupNodeLayerOptions,
   StepsType,
-  DiamondNodeModel
+  DiamondNodeModel,
+  DiagramType
 } from '../../Diagram'
 
 // TODO: have to be auto generated from swagger/API
@@ -498,29 +499,139 @@ export const addService = (data: DependencyElement[], service: DependencyElement
   data.push(service)
 }
 
+// export const addStepOrGroup = (
+//   entity: BaseModel,
+//   data: ExecutionWrapper,
+//   step: ExecutionWrapperConfig,
+//   isParallel: boolean,
+//   isRollback: boolean
+// ): void => {
+//   if (entity instanceof DefaultLinkModel) {
+//     const sourceNode = entity.getSourcePort().getNode() as DefaultNodeModel
+//     const targetNode = entity.getTargetPort().getNode() as DefaultNodeModel
+//     if (isLinkUnderStepGroup(entity)) {
+//       const layer = sourceNode.getParent()
+//       if (layer instanceof StepGroupNodeLayerModel) {
+//         const node = getStepFromId(data, layer.getIdentifier() || '', false).node
+//         if (node) {
+//           data = node
+//         }
+//       }
+//     }
+//     let response = getStepFromId(data, sourceNode.getIdentifier(), true)
+//     let next = 1
+//     if (!response.node) {
+//       response = getStepFromId(data, targetNode.getIdentifier(), true)
+//       next = 0
+//     }
+//     if (response.node) {
+//       const index = response.parent.indexOf(response.node)
+//       if (index > -1) {
+//         response.parent.splice(index + next, 0, step)
+//       }
+//     } else {
+//       // parallel next parallel case
+//       let nodeId = sourceNode.getIdentifier().split(EmptyNodeSeparator)[1]
+//       response = getStepFromId(data, nodeId, true, true)
+//       next = 1
+//       if (!response.node) {
+//         nodeId = targetNode.getIdentifier().split(EmptyNodeSeparator)[2]
+//         response = getStepFromId(data, nodeId, true, true)
+//         next = 0
+//       }
+//       if (response.node) {
+//         const index = response.parent.indexOf(response.node)
+//         if (index > -1) {
+//           response.parent.splice(index + next, 0, step)
+//         }
+//       }
+//     }
+//   } else if (entity instanceof CreateNewModel) {
+//     // Steps if you are under step group
+//     const groupId = entity.getIdentifier().split(EmptyNodeSeparator)[1]
+//     const node = getStepFromId(data, groupId).node
+//     const layer = entity.getParent()
+//     if (layer instanceof StepGroupNodeLayerModel) {
+//       const options = layer.getOptions() as StepGroupNodeLayerOptions
+//       const isRollbackGroup = options.rollBackProps?.active === StepsType.Rollback
+//       if (!isRollbackGroup && isExecutionElementConfig(node) && node?.steps) {
+//         node.steps.push(step)
+//       } else if (isRollbackGroup && isExecutionElementConfig(node) && node) {
+//         if (isNil(node.rollbackSteps)) {
+//           node.rollbackSteps = []
+//         }
+//         node.rollbackSteps.push(step)
+//       }
+//     } else {
+//       if (isRollback) {
+//         if (isExecutionElementConfig(data)) data.rollbackSteps?.push?.(step)
+//       } else {
+//         if (isExecutionElementConfig(data)) data.steps.push(step)
+//       }
+//     }
+//   } else if (entity instanceof DefaultNodeModel) {
+//     if (isParallel) {
+//       const response = getStepFromId(data, entity.getIdentifier(), true, true) as {
+//         node: ExecutionWrapperConfig
+//         parent: ExecutionWrapperConfig[]
+//       }
+//       if (response.node) {
+//         if (response.node.parallel && response.node.parallel.length > 0) {
+//           response.node.parallel.push(step)
+//         } else {
+//           const index = response.parent.indexOf(response.node)
+//           if (index > -1) {
+//             response.parent.splice(index, 1, { parallel: [response.node, step] })
+//           }
+//         }
+//       }
+//     } else {
+//       if (isRollback) {
+//         ;(data as ExecutionElementConfig).rollbackSteps?.push?.(step)
+//       } else {
+//         ;(data as ExecutionElementConfig).steps.push(step)
+//       }
+//     }
+//   } else if (entity instanceof StepGroupNodeLayerModel) {
+//     if (isParallel) {
+//       const response = getStepFromId(data, entity.getIdentifier() || '', true, true) as {
+//         node: ExecutionWrapperConfig
+//         parent: ExecutionWrapperConfig[]
+//       }
+//       if (response.node) {
+//         if (response.node.parallel && response.node.parallel.length > 0) {
+//           response.node.parallel.push(step)
+//         } else {
+//           const index = response.parent.indexOf(response.node)
+//           if (index > -1) {
+//             response.parent.splice(index, 1, { parallel: [response.node, step] })
+//           }
+//         }
+//       }
+//     }
+//   }
+// }
+
 export const addStepOrGroup = (
-  entity: BaseModel,
+  entity: any,
   data: ExecutionWrapper,
   step: ExecutionWrapperConfig,
   isParallel: boolean,
   isRollback: boolean
 ): void => {
-  if (entity instanceof DefaultLinkModel) {
-    const sourceNode = entity.getSourcePort().getNode() as DefaultNodeModel
-    const targetNode = entity.getTargetPort().getNode() as DefaultNodeModel
-    if (isLinkUnderStepGroup(entity)) {
-      const layer = sourceNode.getParent()
-      if (layer instanceof StepGroupNodeLayerModel) {
-        const node = getStepFromId(data, layer.getIdentifier() || '', false).node
-        if (node) {
-          data = node
-        }
+  if (entity?.entityType === DiagramType.Link) {
+    const sourceNode = entity?.linkBeforeStepGroup ? entity?.node : entity?.node?.prevNode
+    const targetNode = entity?.linkBeforeStepGroup ? entity?.node?.nextNode : entity?.node
+    if (entity?.node?.parentIdentifier) {
+      const node = getStepFromId(data, entity?.node?.parentIdentifier || '', false).node
+      if (node) {
+        data = node
       }
     }
-    let response = getStepFromId(data, sourceNode.getIdentifier(), true)
+    let response = getStepFromId(data, sourceNode?.identifier || '', true, sourceNode?.children?.length)
     let next = 1
     if (!response.node) {
-      response = getStepFromId(data, targetNode.getIdentifier(), true)
+      response = getStepFromId(data, targetNode?.identifier || '', true, targetNode?.children?.length)
       next = 0
     }
     if (response.node) {
@@ -530,11 +641,12 @@ export const addStepOrGroup = (
       }
     } else {
       // parallel next parallel case
-      let nodeId = sourceNode.getIdentifier().split(EmptyNodeSeparator)[1]
+      // let nodeId = sourceNode.getIdentifier().split(EmptyNodeSeparator)[1]
+      let nodeId = sourceNode?.identifier
       response = getStepFromId(data, nodeId, true, true)
       next = 1
       if (!response.node) {
-        nodeId = targetNode.getIdentifier().split(EmptyNodeSeparator)[2]
+        nodeId = targetNode?.identifier
         response = getStepFromId(data, nodeId, true, true)
         next = 0
       }
@@ -545,14 +657,14 @@ export const addStepOrGroup = (
         }
       }
     }
-  } else if (entity instanceof CreateNewModel) {
+  } else if (entity?.entityType === DiagramType.CreateNew) {
     // Steps if you are under step group
-    const groupId = entity.getIdentifier().split(EmptyNodeSeparator)[1]
+    const groupId = entity?.identifier
     const node = getStepFromId(data, groupId).node
-    const layer = entity.getParent()
-    if (layer instanceof StepGroupNodeLayerModel) {
-      const options = layer.getOptions() as StepGroupNodeLayerOptions
-      const isRollbackGroup = options.rollBackProps?.active === StepsType.Rollback
+    if (entity?.parentIdentifier) {
+      // const options = layer.getOptions() as StepGroupNodeLayerOptions
+      const options = {}
+      const isRollbackGroup = options?.rollBackProps?.active === StepsType.Rollback
       if (!isRollbackGroup && isExecutionElementConfig(node) && node?.steps) {
         node.steps.push(step)
       } else if (isRollbackGroup && isExecutionElementConfig(node) && node) {
@@ -568,9 +680,9 @@ export const addStepOrGroup = (
         if (isExecutionElementConfig(data)) data.steps.push(step)
       }
     }
-  } else if (entity instanceof DefaultNodeModel) {
+  } else if (entity?.entityType === DiagramType.Default) {
     if (isParallel) {
-      const response = getStepFromId(data, entity.getIdentifier(), true, true) as {
+      const response = getStepFromId(data, entity.identifier, true, true) as {
         node: ExecutionWrapperConfig
         parent: ExecutionWrapperConfig[]
       }
@@ -591,9 +703,9 @@ export const addStepOrGroup = (
         ;(data as ExecutionElementConfig).steps.push(step)
       }
     }
-  } else if (entity instanceof StepGroupNodeLayerModel) {
+  } else if (entity?.entityType === DiagramType.StepGroupNode) {
     if (isParallel) {
-      const response = getStepFromId(data, entity.getIdentifier() || '', true, true) as {
+      const response = getStepFromId(data, entity.identifier || '', true, true) as {
         node: ExecutionWrapperConfig
         parent: ExecutionWrapperConfig[]
       }
