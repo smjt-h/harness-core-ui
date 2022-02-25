@@ -21,62 +21,32 @@ const SECONDARY_ICON: IconName = 'command-echo'
 
 const DefaultNode = (props: any): JSX.Element => {
   const allowAdd = props.allowAdd ?? false
-  const [addClicked, setAddClicked] = React.useState(false)
   const nodeRef = React.useRef<HTMLDivElement>(null)
   const [showAdd, setVisibilityOfAdd] = React.useState(false)
 
-  const onAddNodeClick = (
-    e: React.MouseEvent<Element, MouseEvent>
-    // identifier: string,
-    // eslint-disable-next-line @typescript-eslint/no-shadow
-    // setAddClicked: React.Dispatch<React.SetStateAction<boolean>>
-  ): void => {
-    e.stopPropagation()
-    props?.fireEvent({
-      type: Event.AddParallelNode,
-      identifier: props?.identifier,
-      node: props,
-      callback: () => {
-        setAddClicked(false)
-      },
-      target: e.target
-    })
-  }
-
   React.useEffect(() => {
     const currentNode = nodeRef.current
-
     const onMouseOver = (_e: MouseEvent): void => {
-      if (!addClicked && allowAdd) {
+      if (allowAdd) {
         setVisibilityOfAdd(true)
       }
-      // onMouseOverNode(e, props.node)
     }
-
-    const onMouseEnter = (_e: MouseEvent): void => {
-      // onMouseEnterNode(e, props.node)
-    }
-
     const onMouseLeave = (_e: MouseEvent): void => {
-      if (!addClicked && allowAdd) {
+      if (allowAdd) {
         setVisibilityOfAdd(false)
       }
-      // onMouseLeaveNode(e, props.node)
     }
-
     if (currentNode) {
-      currentNode.addEventListener('mouseenter', onMouseEnter)
       currentNode.addEventListener('mouseover', onMouseOver)
       currentNode.addEventListener('mouseleave', onMouseLeave)
     }
     return () => {
       if (currentNode) {
-        currentNode.removeEventListener('mouseenter', onMouseEnter)
         currentNode.removeEventListener('mouseover', onMouseOver)
         currentNode.removeEventListener('mouseleave', onMouseLeave)
       }
     }
-  }, [nodeRef, allowAdd, addClicked])
+  }, [nodeRef, allowAdd])
 
   return (
     <>
@@ -90,7 +60,7 @@ const DefaultNode = (props: any): JSX.Element => {
           }
           event.stopPropagation()
           props?.fireEvent({
-            type: props?.graphType === PipelineGraphType.STEP_GRAPH ? Event.ClickStepNode : Event.ClickNode,
+            type: Event.ClickNode,
             entityType: DiagramType.Default,
             identifier: props?.identifier,
             parentIdentifier: props?.parentIdentifier
@@ -201,10 +171,14 @@ const DefaultNode = (props: any): JSX.Element => {
           <div
             onClick={event => {
               event.stopPropagation()
-
-              setAddClicked(true)
-              setVisibilityOfAdd(true)
-              onAddNodeClick(event)
+              props?.fireEvent({
+                type: Event.AddParallelNode,
+                identifier: props?.identifier,
+                parentIdentifier: props?.parentIdentifier,
+                entityType: DiagramType.Default,
+                node: props,
+                target: event.target
+              })
             }}
             className={css.addNode}
             data-nodeid="add-parallel"
@@ -226,6 +200,9 @@ const DefaultNode = (props: any): JSX.Element => {
             event.stopPropagation()
             props?.fireEvent({
               type: Event.AddLinkClicked,
+              prevNodeIdentifier: props?.prevNodeIdentifier,
+              parentIdentifier: props?.parentIdentifier,
+              entityType: DiagramType.Link,
               identifier: props?.identifier,
               node: props
             })
