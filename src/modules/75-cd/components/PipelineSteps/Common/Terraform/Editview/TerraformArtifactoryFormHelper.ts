@@ -6,7 +6,7 @@
  */
 import { getMultiTypeFromValue, MultiTypeInputType } from '@wings-software/uicore'
 import * as Yup from 'yup'
-import { cloneDeep, unset, size, isUndefined } from 'lodash-es'
+import { cloneDeep, unset, size, isUndefined, set } from 'lodash-es'
 import { IdentifierSchema } from '@common/utils/Validation'
 import { TerraformStoreTypes, PathInterface } from '../TerraformInterfaces'
 
@@ -25,9 +25,9 @@ export const formatInitialValues = (isConfig: boolean, prevStepData: any, isTerr
             store: {
               spec: {
                 repositoryName:
-                  prevStepData.formValues?.spec?.configuration?.configFiles?.store.spec?.repositoryName || '',
+                  prevStepData?.formValues?.spec?.configuration?.configFiles?.store?.spec?.repositoryName || '',
                 artifactPaths: formatPaths(
-                  prevStepData.formValues?.spec?.configuration?.configFiles?.store.spec?.artifactPaths || ['']
+                  prevStepData?.formValues?.spec?.configuration?.configFiles?.store?.spec?.artifactPaths || ['']
                 )
               }
             }
@@ -45,9 +45,9 @@ export const formatInitialValues = (isConfig: boolean, prevStepData: any, isTerr
             store: {
               spec: {
                 repositoryName:
-                  prevStepData.formValues?.spec?.configuration?.spec?.configFiles?.store.spec?.repositoryName || '',
+                  prevStepData?.formValues?.spec?.configuration?.spec?.configFiles?.store?.spec?.repositoryName || '',
                 artifactPaths: formatPaths(
-                  prevStepData.formValues?.spec?.configuration?.spec?.configFiles?.store.spec?.artifactPaths || ['']
+                  prevStepData?.formValues?.spec?.configuration?.spec?.configFiles?.store?.spec?.artifactPaths || ['']
                 )
               }
             }
@@ -187,7 +187,7 @@ export const formatOnSubmitData = (values: any, prevStepData: any, connectorValu
 /* istanbul ignore next */
 export const formatArtifactoryData = (prevStepData: any, data: any, configObject: any, formik: any) => {
   if (prevStepData.identifier && prevStepData.identifier !== data?.identifier) {
-    configObject.store.spec.connectorRef = prevStepData?.identifier
+    set(configObject, 'store.spec.connectorRef', prevStepData?.identifier)
   }
 
   if (configObject?.store?.spec?.gitFetchType) {
