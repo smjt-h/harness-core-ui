@@ -329,5 +329,4 @@ const MonitoredServiceListView: React.FC<MonitoredServiceListViewProps> = ({
     </Container>
   )
 }
-
 export default MonitoredServiceListView
