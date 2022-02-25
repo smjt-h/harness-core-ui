@@ -26,6 +26,7 @@ export const EnvironmentToolTipDisplay = ({
         <Text
           color={color}
           font={font}
+          className={css.envName}
           tooltip={
             <Container className={css.popOverClass} padding="small" border={{ radius: 5 }} background="black">
               {envRefList?.map(i => (
@@ -38,7 +39,7 @@ export const EnvironmentToolTipDisplay = ({
           {envRefList && envRefList?.length > 1 ? <span className={css.envToolTip}>+{envRefList.length - 1}</span> : ''}
         </Text>
       ) : (
-        <Text color={color} font={font}>
+        <Text color={color} className={css.envName} title={environmentRef} font={font}>
           {`${shouldAddEnvPrefix ? getString('environment') + ': ' : ''}${environmentRef}`}
         </Text>
       )}

@@ -68,3 +68,9 @@ $headerHeight: 146px;
   height: 350px;
   margin-right: 40px;
 }
+
+.monitoredServiceName{
+  white-space: nowrap !important; 
+  overflow: hidden !important;
+  text-overflow: ellipsis !important;
+}

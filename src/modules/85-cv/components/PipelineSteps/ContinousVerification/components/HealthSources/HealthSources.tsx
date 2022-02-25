@@ -35,7 +35,7 @@ export default function HealthSources(props: HealthSourcesProps): React.ReactEle
         <div className={css.healthsourcetype}>
           <Icon name={getIconBySourceType(type)} size={18} />
         </div>
-        {name}
+        <span>{name}</span>
       </div>
     )
   }
