@@ -416,13 +416,11 @@ export interface StringsMap {
   'common.policiesSets.noPolicySetResult': string
   'common.policiesSets.noPolicySets': string
   'common.policiesSets.policySetSearch': string
+  'common.policiesSets.policyset': string
   'common.policiesSets.selectPolicySet': string
   'common.policiesSets.stepOne.validId': string
   'common.policiesSets.stepOne.validIdRegex': string
   'common.policiesSets.stepOne.validName': string
-  'common.policiesSets.table.enforced': string
-  'common.policiesSets.table.entityType': string
-  'common.policiesSets.table.name': string
   'common.policy.customInputRequired': string
   'common.policy.evaluations': string
   'common.policy.newPolicy': string
@@ -2664,6 +2662,7 @@ export interface StringsMap {
   'pipeline.overrideSets.overrideSetPlaceholder': string
   'pipeline.parallelSelectedStages': string
   'pipeline.parallelStages': string
+  'pipeline.payload': string
   'pipeline.pipelineSteps.approvalStageDescription': string
   'pipeline.pipelineSteps.chainedPipeline': string
   'pipeline.pipelineSteps.chainedPipelineDescription': string

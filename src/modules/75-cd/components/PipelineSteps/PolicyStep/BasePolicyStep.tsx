@@ -32,7 +32,7 @@ export const entityTypeOptions: SelectOption[] = [
   // { label: 'Pipeline', value: 'Pipeline' }
 ]
 
-export enum PolicyType {
+export enum PolicySetType {
   ACCOUNT = 'Account',
   ORG = 'Org',
   PROJECT = 'Project'
@@ -43,14 +43,13 @@ export default function BasePolicyStep(props: {
   isNewStep: boolean
   readonly?: boolean
   stepViewType?: StepViewType
-  allowableTypes: MultiTypeInputType[]
 }): React.ReactElement {
   const {
     formik: { values: formValues, setFieldValue, errors },
     formik,
     isNewStep,
     readonly,
-    allowableTypes
+    stepViewType
   } = props
   const [entityType, setEntityType] = useState<string | number | symbol>('Custom')
   const { getString } = useStrings()
@@ -76,6 +75,33 @@ export default function BasePolicyStep(props: {
         />
       </div>
       <div className={cx(stepCss.formGroup, stepCss.lg)}>
+        <FormMultiTypeDurationField
+          name="timeout"
+          label={getString('pipelineSteps.timeoutLabel')}
+          multiTypeDurationProps={{
+            enableConfigureOptions: false,
+            expressions,
+            disabled: readonly
+          }}
+          className={stepCss.duration}
+          disabled={readonly}
+        />
+        {getMultiTypeFromValue(formValues?.timeout) === MultiTypeInputType.RUNTIME && (
+          <ConfigureOptions
+            value={formValues?.timeout as string}
+            type="String"
+            variableName="step.timeout"
+            showRequiredField={false}
+            showDefaultField={false}
+            showAdvanced={true}
+            onChange={value => {
+              setFieldValue('timeout', value)
+            }}
+            isReadonly={readonly}
+          />
+        )}
+      </div>
+      <div className={cx(stepCss.formGroup, stepCss.lg)}>
         <FormInput.Select
           items={entityTypeOptions}
           name="spec.type"
@@ -84,43 +110,22 @@ export default function BasePolicyStep(props: {
           onChange={option => setEntityType(option?.value)}
         />
       </div>
-      <PolicySetsFormField name="spec.policySets" formikProps={formik} error={errors?.spec?.policySets} />
-      {entityType === 'Custom' && (
-        <div className={cx(stepCss.formGroup, stepCss.lg)}>
-          <FormMultiTypeDurationField
-            name="timeout"
-            label={getString('pipelineSteps.timeoutLabel')}
-            multiTypeDurationProps={{ enableConfigureOptions: false, expressions, disabled: readonly, allowableTypes }}
-            className={stepCss.duration}
-            disabled={readonly}
-          />
-          {getMultiTypeFromValue(formValues?.timeout) === MultiTypeInputType.RUNTIME && (
-            <ConfigureOptions
-              value={formValues?.timeout as string}
-              type="String"
-              variableName="step.timeout"
-              showRequiredField={false}
-              showDefaultField={false}
-              showAdvanced={true}
-              onChange={value => {
-                setFieldValue('timeout', value)
-              }}
-              isReadonly={readonly}
-            />
-          )}
-        </div>
-      )}
+      <PolicySetsFormField
+        name="spec.policySets"
+        formikProps={formik}
+        error={errors?.spec?.policySets}
+        stepViewType={stepViewType}
+      />
       {entityType === 'Custom' && (
         <div className={cx(stepCss.formGroup)}>
           <FormMultiTypeTextAreaField
             name={`spec.policySpec.payload`}
             disabled={readonly}
-            label={getString('common.input')}
+            label={getString('pipeline.payload')}
             className={css.jexlExpression}
             multiTypeTextArea={{
               expressions
             }}
-            allowableTypes={[MultiTypeInputType.FIXED, MultiTypeInputType.EXPRESSION]}
           />
         </div>
       )}

@@ -32,14 +32,12 @@ export class PolicyStep extends PipelineStep<PolicyStepData> {
   protected stepDescription: keyof StringsMap = 'pipeline.stepDescription.Policy'
 
   renderStep(props: StepProps<PolicyStepData>): JSX.Element {
-    const { initialValues, onUpdate, onChange, allowableTypes, stepViewType, formikRef, isNewStep, readonly } = props
-
+    const { initialValues, onUpdate, onChange, stepViewType, formikRef, isNewStep, readonly } = props
     return (
       <PolicyStepWidgetWithRef
         initialValues={this.getInitialValues(initialValues)}
         onUpdate={data => onUpdate?.(this.processFormData(data))}
         onChange={data => onChange?.(this.processFormData(data))}
-        allowableTypes={allowableTypes}
         stepViewType={stepViewType}
         isNewStep={isNewStep}
         readonly={readonly}

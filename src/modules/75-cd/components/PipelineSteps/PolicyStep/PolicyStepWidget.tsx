@@ -6,7 +6,7 @@
  */
 
 import React from 'react'
-import { Formik, MultiTypeInputType } from '@wings-software/uicore'
+import { Formik } from '@wings-software/uicore'
 import * as Yup from 'yup'
 import type { FormikProps } from 'formik'
 
@@ -27,22 +27,13 @@ interface PolicyStepWidgetProps {
   initialValues: PolicyStepFormData
   onUpdate?: (data: PolicyStepFormData) => void
   onChange?: (data: PolicyStepFormData) => void
-  allowableTypes: MultiTypeInputType[]
   readonly?: boolean
   stepViewType?: StepViewType
   isNewStep?: boolean
 }
 
 export function PolicyStepWidget(
-  {
-    initialValues,
-    onUpdate,
-    onChange,
-    allowableTypes,
-    isNewStep = true,
-    readonly,
-    stepViewType
-  }: PolicyStepWidgetProps,
+  { initialValues, onUpdate, onChange, isNewStep = true, readonly, stepViewType }: PolicyStepWidgetProps,
   formikRef: StepFormikFowardRef
 ): JSX.Element {
   const { getString } = useStrings()
@@ -51,7 +42,10 @@ export function PolicyStepWidget(
     timeout: getDurationValidationSchema({ minimum: '10s' }).required(getString('validation.timeout10SecMinimum')),
     spec: Yup.object().shape({
       type: Yup.string().trim().required(getString('cd.entityTypeRequired')),
-      policySets: Yup.array().min(1).required(getString('common.policy.customInputRequired'))
+      policySets: Yup.array().min(1).required(getString('common.policy.customInputRequired')),
+      policySpec: Yup.object().shape({
+        payload: Yup.string().trim().required(getString('common.validation.valueIsRequired'))
+      })
     }),
     ...getNameAndIdentifierSchema(getString, stepViewType)
   })
@@ -76,15 +70,7 @@ export function PolicyStepWidget(
     >
       {(formik: FormikProps<PolicyStepFormData>) => {
         setFormikRef(formikRef, formik)
-        return (
-          <BasePolicyStep
-            isNewStep={isNewStep}
-            formik={formik}
-            readonly={readonly}
-            stepViewType={stepViewType}
-            allowableTypes={allowableTypes}
-          />
-        )
+        return <BasePolicyStep isNewStep={isNewStep} formik={formik} readonly={readonly} stepViewType={stepViewType} />
       }}
     </Formik>
   )

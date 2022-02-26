@@ -7,16 +7,21 @@
  **/
 // this is an auto-generated file, do not update this manually
 declare const styles: {
-  readonly addModifyButton: string
   readonly closeIcon: string
-  readonly formGroup: string
+  readonly containerProps: string
   readonly input: string
+  readonly noWrap: string
+  readonly policyAssignment: string
   readonly policyRowContent: string
   readonly policyRowSelected: string
   readonly policyRows: string
-  readonly policySetHolder: string
-  readonly renderer: string
+  readonly selectedCount: string
+  readonly separator: string
   readonly severity: string
-  readonly styledPolicy: string
+  readonly table: string
+  readonly tickIcon: string
+  readonly titleHeader: string
+  readonly titleHeaderSelected: string
+  readonly useNav: string
 }
 export default styles

@@ -110,7 +110,6 @@ export interface FormMultiTypeTextAreaProps extends Omit<IFormGroupProps, 'label
   onChange?: MultiTypeTextAreaProps['onChange']
   isOptional?: boolean
   tooltipProps?: DataTooltipInterface
-  allowableTypes?: MultiTypeInputType[]
 }
 
 export const FormMultiTypeTextArea: React.FC<FormMultiTypeTextAreaProps> = props => {
@@ -123,7 +122,6 @@ export const FormMultiTypeTextArea: React.FC<FormMultiTypeTextAreaProps> = props
     onChange,
     isOptional = false,
     tooltipProps,
-    allowableTypes,
     ...restProps
   } = props
   const hasError = errorCheck(name, formik)
@@ -168,7 +166,6 @@ export const FormMultiTypeTextArea: React.FC<FormMultiTypeTextAreaProps> = props
           formik?.setFieldValue(name, val)
           onChange?.(val, valueType, type)
         }}
-        allowableTypes={allowableTypes}
       />
     </FormGroup>
   )

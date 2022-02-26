@@ -6,28 +6,36 @@
  */
 
 import moment from 'moment'
-import React from 'react'
-import { Collapse, Color, Container, Layout, Text } from '@harness/uicore'
+import React, { FormEvent } from 'react'
+import { Checkbox, Collapse, Color, Container, Layout, Page, Text } from '@harness/uicore'
 import { DEFAULT_DATE_FORMAT } from '@common/utils/StringUtils'
 import { useStrings } from 'framework/strings'
 import type { LinkedPolicy, PolicySet } from 'services/pm'
-import { PoliciesRenderer } from '../PolicySetsFormField/PolicySetsFormField'
 import PolicySetsCss from '../PolicySetsFormField/PolicySetsFormField.module.scss'
 
 export interface PolicySetListRendererProps {
   policySetList: PolicySet[]
   selectedPolicies: PolicySet[]
   setSelectedPolicies: (list: PolicySet[]) => void
-  ps1?: string[] | undefined
+  loading: any
+  error: any
+  refetch: any
 }
 
 export function PolicySetListRenderer(props: PolicySetListRendererProps) {
-  const { policySetList, selectedPolicies, setSelectedPolicies } = props
+  const { policySetList, selectedPolicies, setSelectedPolicies, loading, error, refetch } = props
   const { getString } = useStrings()
   return (
-    <Container
-      // padding={{ left: 'xxxlarge', right: 'xxxlarge', top: 'small', bottom: 'small' }}
-      style={{ height: '500px', overflowX: 'hidden', overflowY: 'auto' }}
+    <Page.Body
+      loading={loading}
+      error={(error?.data as Error)?.message || error?.message}
+      retryOnError={() => refetch()}
+      noData={{
+        when: () => !policySetList?.length,
+        icon: 'nav-project',
+        message: getString('common.policiesSets.noPolicySetResult')
+      }}
+      className={PolicySetsCss.renderer}
     >
       {policySetList?.map((policy: LinkedPolicy) => {
         const checked = selectedPolicies?.some(_policy => _policy.identifier === policy.identifier) ?? false
@@ -40,13 +48,12 @@ export function PolicySetListRenderer(props: PolicySetListRendererProps) {
             heading={
               <div className={PolicySetsCss.policyRowContent}>
                 <Layout.Vertical flex={{ alignItems: 'center' }} padding={{ left: 'medium' }}>
-                  <input
+                  <Checkbox
                     name="selectedPolicies"
-                    type="checkbox"
                     value={policy.identifier}
                     checked={checked}
-                    onChange={async (e: React.ChangeEvent<HTMLInputElement>) => {
-                      if (e.target.checked) {
+                    onChange={(e: FormEvent<HTMLInputElement>) => {
+                      if ((e.target as any).checked) {
                         setSelectedPolicies([...selectedPolicies, { ...policy }])
                       } else {
                         setSelectedPolicies(
@@ -67,12 +74,14 @@ export function PolicySetListRenderer(props: PolicySetListRendererProps) {
             expandedIcon={'main-chevron-down'}
           >
             <Layout.Horizontal>
+              {/* TODO: To be added once the policy set list api starts returning policies
               <Container padding={{ top: 'medium', bottom: 'medium' }} background={Color.GREY_50} width={'50%'}>
                 <Text font={{ size: 'normal' }} padding={{ bottom: 'small' }}>
                   Policy
                 </Text>
-                <PoliciesRenderer />
-              </Container>
+                TODO: To be added once the policy set list api starts returning policies
+                  <PoliciesRenderer policies={['Policy 1', 'Policy 2', 'Policy 3']} />
+              </Container> */}
               <Container padding={{ top: 'medium', bottom: 'medium' }} background={Color.GREY_50}>
                 <Text font={{ size: 'normal' }} padding={{ bottom: 'small' }}>
                   {getString('common.policy.table.lastModified')}
@@ -85,6 +94,6 @@ export function PolicySetListRenderer(props: PolicySetListRendererProps) {
           </Collapse>
         )
       })}
-    </Container>
+    </Page.Body>
   )
 }

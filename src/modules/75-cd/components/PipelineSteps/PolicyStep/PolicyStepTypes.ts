@@ -5,10 +5,7 @@
  * https://polyformproject.org/wp-content/uploads/2020/06/PolyForm-Shield-1.0.0.txt.
  */
 
-import type { SelectOption } from '@wings-software/uicore'
 import type { StepElementConfig, StepSpecType } from 'services/cd-ng'
-
-export const scriptOutputType: SelectOption[] = [{ label: 'String', value: 'String' }]
 
 export interface PolicyStepData extends StepElementConfig {
   spec: PolicyStepInfo

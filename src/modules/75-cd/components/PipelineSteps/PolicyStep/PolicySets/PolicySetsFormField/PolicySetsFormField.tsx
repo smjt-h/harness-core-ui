@@ -9,20 +9,22 @@ import React from 'react'
 import { useParams } from 'react-router-dom'
 import type { FormikErrors, FormikProps } from 'formik'
 
-import { Button, FormError, Layout } from '@harness/uicore'
+import { Button, Color, FormError, Layout, Text } from '@harness/uicore'
 import { FormGroup, IFormGroupProps, Intent } from '@blueprintjs/core'
 import { useStrings } from 'framework/strings'
 import { GetPolicySet, GetPolicySetQueryParams, PolicySet } from 'services/pm'
+import type { StepViewType } from '@pipeline/components/AbstractSteps/Step'
 
 import type { PolicyStepFormData } from '../../PolicyStepTypes'
-import { PolicyType } from '../../BasePolicyStep'
-import { PolicySetSelector } from '../PolicySetSelector/PolicySetSelector'
+import { PolicySetType } from '../../BasePolicyStep'
+import { PolicySetModal } from '../PolicySetModal/PolicySetModal'
 
 import css from './PolicySetsFormField.module.scss'
 interface PolicySetsFormFieldInterface extends Omit<IFormGroupProps, 'label'> {
   name: string
   formikProps?: FormikProps<PolicyStepFormData>
   error?: string | FormikErrors<any> | undefined
+  stepViewType?: StepViewType
 }
 
 interface MiniPolicySetRendererProps {
@@ -36,16 +38,42 @@ interface PoliciesRendererProps {
   policies?: (string | undefined)[]
 }
 
-export const PoliciesRenderer = (props: PoliciesRendererProps) => {
-  const { policies } = props
-  const policyList = policies || ['Policy 1', 'Policy 2', 'Policy 3']
+export const PoliciesRenderer = ({ policies }: PoliciesRendererProps) => {
+  const length = policies?.length ?? 0
+  if (!length) return null
   return (
-    <Layout.Horizontal flex={{ alignItems: 'center', justifyContent: 'flex-start' }} margin={{ right: 'medium' }}>
-      {policyList.map((policyName, index) => (
-        <div className={css.styledPolicy} key={index}>
-          {policyName}
-        </div>
+    <Layout.Horizontal flex={{ justifyContent: 'flex-start' }} margin={{ right: 'small' }}>
+      {policies?.slice(0, 2).map((policy, index) => (
+        <Text className={css.styledPolicy} key={index} lineClamp={1}>
+          {policy}
+        </Text>
       ))}
+      {length > 2 && (
+        <Text
+          className={css.styledPolicy}
+          background={Color.GREY_100}
+          alwaysShowTooltip
+          tooltip={
+            <Layout.Vertical padding="medium">
+              <div>
+                {policies?.splice(2).map((policy, index) => (
+                  <Text
+                    lineClamp={1}
+                    color={Color.BLACK}
+                    margin={{ top: 'small', bottom: 'small' }}
+                    style={{ maxWidth: '400px' }}
+                    key={index}
+                  >
+                    {policy}
+                  </Text>
+                ))}
+              </div>
+            </Layout.Vertical>
+          }
+        >
+          {`+${length - 2}`}
+        </Text>
+      )}
     </Layout.Horizontal>
   )
 }
@@ -59,10 +87,10 @@ const MiniPolicySetRenderer: React.FC<MiniPolicySetRendererProps> = props => {
       {renderPolicySets &&
         policySets?.map(policySet => {
           const accountType = policySet.includes('acc.')
-            ? PolicyType.ACCOUNT
+            ? PolicySetType.ACCOUNT
             : policySet.includes('org.')
-            ? PolicyType.ORG
-            : PolicyType.PROJECT
+            ? PolicySetType.ORG
+            : PolicySetType.PROJECT
           let queryParams: GetPolicySetQueryParams = { accountIdentifier }
 
           if (accountType === 'Org') queryParams = { ...queryParams, orgIdentifier }
@@ -84,10 +112,14 @@ const MiniPolicySetRenderer: React.FC<MiniPolicySetRendererProps> = props => {
                         flex={{ justifyContent: 'space-between', alignItems: 'center' }}
                         margin={{ bottom: 'xsmall' }}
                       >
-                        <div className={css.accountIdentifier}>{data?.name}</div>
+                        <Text lineClamp={1} color={Color.BLACK}>
+                          {data?.name}
+                        </Text>
                         <Layout.Horizontal flex={{ alignItems: 'center', justifyContent: 'flex-end' }}>
                           <PoliciesRenderer policies={data?.policies?.map(policy => policy.name)} />
-                          <div className={css.accountType}>{accountType}</div>
+                          <Text font={'small'} width={48}>
+                            {accountType}
+                          </Text>
                         </Layout.Horizontal>
                       </Layout.Horizontal>
                     )}
@@ -102,7 +134,7 @@ const MiniPolicySetRenderer: React.FC<MiniPolicySetRendererProps> = props => {
 }
 
 const PolicySetsFormField: React.FC<PolicySetsFormFieldInterface> = props => {
-  const { formikProps, name, error, disabled, ...rest } = props
+  const { formikProps, name, error, disabled, stepViewType, ...rest } = props
   const { accountId, projectIdentifier, orgIdentifier } = useParams<{
     projectIdentifier: string
     orgIdentifier: string
@@ -128,7 +160,13 @@ const PolicySetsFormField: React.FC<PolicySetsFormFieldInterface> = props => {
   const intent = error ? Intent.DANGER : Intent.NONE
 
   return (
-    <FormGroup {...rest} helperText={helperText} intent={intent}>
+    <FormGroup
+      {...rest}
+      helperText={helperText}
+      intent={intent}
+      className={css.formGroup}
+      label={getString('common.policiesSets.policyset')}
+    >
       <MiniPolicySetRenderer
         policySets={policySets}
         accountIdentifier={accountId}
@@ -152,15 +190,13 @@ const PolicySetsFormField: React.FC<PolicySetsFormFieldInterface> = props => {
         {getString('common.policiesSets.addOrModifyPolicySet')}
       </Button>
       {isOpen && (
-        <PolicySetSelector
-          accountIdentifier={accountId}
-          projectIdentifier={projectIdentifier}
-          orgIdentifier={orgIdentifier}
+        <PolicySetModal
           isOpen={isOpen}
           setOpen={setOpen}
           policySetList={policySetList}
           setPolicySetList={formatPolicySetList}
           policySets={policySets}
+          stepViewType={stepViewType}
         />
       )}
     </FormGroup>

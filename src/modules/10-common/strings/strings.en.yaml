@@ -575,20 +575,17 @@ policy:
   policySetRequired: You need to add atleast 1 policy set
   customInputRequired: Custom policy input is required
 policiesSets:
+  policyset: Policy Set
   newPolicyset: New Policy Set
   noPolicySets: No Policy Sets evaluated
   evaluationCriteria: Policy evaluation criteria
   policySetSearch: Search Policy Set by name
-  noPolicySet: You have no Policy Set. Click on the button below to create a new one.
+  noPolicySet: You have no Policy Sets. Click on the button below to create a new one.
   noPolicySetResult: No policy sets found
   stepOne:
     validName: '{{$.validation.nameRequired}}'
     validId: '{{$.validation.identifierRequired}}'
     validIdRegex: '{{$.common.validation.formatMustBeAlphanumeric}}'
-  table:
-    name: Policy Set
-    enforced: Enforced
-    entityType: Entity Type {{name}}
   selectPolicySet: Select Policy Set
   addOrModifyPolicySet: Add/Modify Policy Set
 accountResourcesPage:
