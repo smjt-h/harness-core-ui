@@ -13,7 +13,7 @@ import { getStageType } from '@pipeline/utils/templateUtils'
 import type { StagesMap } from '../../PipelineContext/PipelineContext'
 
 interface StageListProps {
-  stages: StageElementWrapper[]
+  stages: any
   templateTypes: { [key: string]: string }
   selectedStageId?: string
   stagesMap: StagesMap
@@ -28,28 +28,9 @@ export const StageList: React.FC<StageListProps> = ({
   stagesMap
 }): JSX.Element => {
   const list: Array<{ name: string; icon: IconName; identifier: string; type: string }> = []
-  stages.forEach((node: StageElementWrapper) => {
-    const type = stagesMap[getStageType(node.stage, templateTypes)]
-
-    if (node.stage?.identifier === selectedStageId) {
-      list.unshift({
-        name: node.stage?.name || '',
-        identifier: node.stage?.identifier || '',
-        icon: type.icon,
-        type: node.stage?.type || ''
-      })
-    } else {
-      list.push({
-        name: node.stage?.name || '',
-        identifier: node.stage?.identifier || '',
-        icon: type.icon,
-        type: node.stage?.type || ''
-      })
-    }
-  })
   return (
     <>
-      {list.map(node => (
+      {stages.map((node: any) => (
         <Layout.Horizontal
           style={{ cursor: 'pointer' }}
           spacing="small"

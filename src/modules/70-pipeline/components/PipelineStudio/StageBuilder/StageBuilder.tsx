@@ -556,17 +556,17 @@ const StageBuilder: React.FC<StageBuilderProps> = ({ diagram }): JSX.Element => 
             },
             { useArrows: true, darkMode: false, fixedPosition: false }
           )
-        } else if (event.entityType === DiagramType.GroupNode && selectedStageId) {
+        } else if (event.entityType === DiagramType.GroupNode && event?.identifier) {
           const parent = getStageFromPipeline(event.identifier).parent as StageElementWrapperConfig
-          console.log('parent', parent)
-          /* istanbul ignore else */ if (parent?.parallel) {
+
+          /* istanbul ignore else */ if (event?.nodesInfo) {
             dynamicPopoverHandler?.show(
               `[data-nodeid="${event.identifier}"]`,
               {
                 isGroupStage: true,
-                groupSelectedStageId: selectedStageId,
+                groupSelectedStageId: event?.identifier,
                 isStageView: false,
-                groupStages: parent.parallel,
+                groupStages: event?.nodesInfo,
                 onClickGroupStage: (stageId: string) => {
                   dynamicPopoverHandler?.hide()
                   setSelectionRef.current({ stageId })

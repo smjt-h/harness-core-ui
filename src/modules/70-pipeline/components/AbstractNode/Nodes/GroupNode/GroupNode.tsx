@@ -16,39 +16,56 @@ const GroupNode = (props: any): React.ReactElement => {
   const allowAdd = props.allowAdd ?? false
   const [_addClicked, setAddClicked] = React.useState(false)
   const [showAdd, setVisibilityOfAdd] = React.useState(false)
+  const nodeRef = React.useRef<HTMLDivElement>(null)
+
+  React.useEffect(() => {
+    const currentNode = nodeRef.current
+    const onMouseOver = (_e: MouseEvent): void => {
+      if (allowAdd) {
+        setVisibilityOfAdd(true)
+      }
+    }
+    const onMouseLeave = (_e: MouseEvent): void => {
+      if (allowAdd) {
+        setTimeout(() => {
+          setVisibilityOfAdd(false)
+        }, 100)
+      }
+    }
+    if (currentNode) {
+      currentNode.addEventListener('mouseover', onMouseOver)
+      currentNode.addEventListener('mouseleave', onMouseLeave)
+    }
+    return () => {
+      if (currentNode) {
+        currentNode.removeEventListener('mouseover', onMouseOver)
+        currentNode.removeEventListener('mouseleave', onMouseLeave)
+      }
+    }
+  }, [nodeRef, allowAdd])
 
   const nodesInfo = React.useMemo(() => {
     return props?.children
       ?.slice(props.intersectingIndex - 1)
-      .map((node: any) => ({ name: node.name, icon: node.icon }))
+      .map((node: any) => ({ name: node.name, icon: node.icon, identifier: node.identifier, type: node.type }))
   }, [props?.children, props.intersectingIndex])
 
   const getGroupNodeName = (): string => {
     return `${defaultTo(nodesInfo?.[0]?.name, '')} +  ${nodesInfo.length - 1} more stages`
   }
-  const onAddNodeClick = (
-    e: React.MouseEvent<Element, MouseEvent>,
-    identifier: string,
-    // eslint-disable-next-line @typescript-eslint/no-shadow
-    setAddClicked: React.Dispatch<React.SetStateAction<boolean>>
-  ): void => {
-    e.stopPropagation()
-    props?.fireEvent({
-      type: Event.AddParallelNode,
-      identifier,
-      callback: () => {
-        setAddClicked(false)
-      },
-      target: e.target
-    })
-  }
 
   return (
     <div
       className={css.defaultNode}
-      //   onClick={e => onClickNode(e, props.node)}
-      onMouseDown={e => {
-        props?.fireEvent({ type: Event.ClickNode, entityType: DiagramType.GroupNode, identifier: props?.identifier })
+      ref={nodeRef}
+      onMouseDown={(event: any) => {
+        event.preventDefault()
+        props?.fireEvent({
+          type: Event.ClickNode,
+          entityType: DiagramType.GroupNode,
+          identifier: props?.identifier,
+          nodesInfo
+        })
         props?.setSelectedNode(props?.identifier)
       }}
       onDragOver={event => {
@@ -125,11 +142,16 @@ const GroupNode = (props: any): React.ReactElement => {
       </Text>
       {allowAdd && (
         <div
-          onClick={e => {
-            e.stopPropagation()
-            setAddClicked(true)
-            setVisibilityOfAdd(true)
-            onAddNodeClick(e, props.identifier, props.node)
+          onClick={event => {
+            event.stopPropagation()
+            props?.fireEvent({
+              type: Event.AddParallelNode,
+              identifier: props?.identifier,
+              parentIdentifier: props?.parentIdentifier,
+              entityType: DiagramType.Default,
+              node: props,
+              target: event.target
+            })
           }}
           className={css.addNode}
           data-nodeid="add-parallel"

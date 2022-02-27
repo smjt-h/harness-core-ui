@@ -204,9 +204,9 @@ const PipelineGraphNodeBasic = ({
                   className={classNames(css.graphNode, className)}
                   setSelectedNode={setSelectedNode}
                   isSelected={selectedNode === data?.identifier}
-                  isParallelNode={isParallelNode}
+                  isParallelNode={true}
                   key={data?.identifier}
-                  allowAdd={(!data?.children?.length && !isParallelNode) || (isParallelNode && isLastChild)}
+                  allowAdd={true}
                   prevNodeIdentifier={prevNodeIdentifier}
                   identifier={currentStage.identifier}
                   intersectingIndex={intersectingIndex}
@@ -221,9 +221,9 @@ const PipelineGraphNodeBasic = ({
                     className={classNames(css.graphNode, className)}
                     setSelectedNode={setSelectedNode}
                     isSelected={selectedNode === data?.identifier}
-                    isParallelNode={isParallelNode}
+                    isParallelNode={true}
                     key={currentStage?.identifier}
-                    // allowAdd={(!currentStage?.children?.length && !isParallelNode) || (isParallelNode && isLastChild)}
+                    allowAdd={index + 1 === data?.children?.length}
                     isFirstParallelNode={true}
                     prevNodeIdentifier={prevNodeIdentifier}
                     prevNode={prevNode}

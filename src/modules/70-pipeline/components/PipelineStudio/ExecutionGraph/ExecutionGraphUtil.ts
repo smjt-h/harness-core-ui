@@ -29,6 +29,7 @@ import {
   DiamondNodeModel,
   DiagramType
 } from '../../Diagram'
+import { StepType as PipelineStepType } from '@pipeline/components/PipelineSteps/PipelineStepInterface'
 
 // TODO: have to be auto generated from swagger/API
 export interface DependenciesWrapper {
@@ -807,4 +808,12 @@ export const getModelByStepType = (type: string, props: any) => {
     return new StepModel({ ...props, ...defaultProps, allowAdd: true })
   }
   return new StepModel({ ...props, ...defaultProps })
+}
+
+export const StepTypeToPipelineIconMap = {
+  [PipelineStepType.SHELLSCRIPT]: 'command-shell-script',
+  [PipelineStepType.K8sRollingRollback]: 'undo'
+  // [PipelineStepType.SHELLSCRIPT] : 'command-shell-script',
+  // [PipelineStepType.SHELLSCRIPT] : 'command-shell-script',
+  // [PipelineStepType.SHELLSCRIPT] : 'command-shell-script',
 }
