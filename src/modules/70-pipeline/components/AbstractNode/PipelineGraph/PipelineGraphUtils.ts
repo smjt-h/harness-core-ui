@@ -211,7 +211,8 @@ const useIntersectionObserver = (
     const ob = (observer.current = new IntersectionObserver(
       ([entry]) => {
         const isElementIntersecting = typeof compareFn === 'function' ? compareFn(entry) : entry.isIntersecting
-        isElementIntersecting !== isIntersecting && setIsIntersecting(isElementIntersecting)
+
+        setIsIntersecting(isElementIntersecting)
       },
       { ...options }
     ))
@@ -224,8 +225,9 @@ const useIntersectionObserver = (
   return isIntersecting
 }
 
-const checkIntersectonBottom = (entry: IntersectionObserverEntry): boolean =>
-  entry.boundingClientRect.bottom >= (entry.rootBounds as DOMRect)?.bottom
+const checkIntersectionBottom = (entry: IntersectionObserverEntry): boolean => {
+  return entry.boundingClientRect.bottom >= (entry.rootBounds as DOMRect)?.bottom
+}
 
 const NodeTypeToNodeMap: Record<string, string> = {
   Deployment: 'default-node',
@@ -362,6 +364,6 @@ export {
   getSVGLinksFromPipeline,
   getScaleToFitValue,
   useIntersectionObserver,
-  checkIntersectonBottom,
+  checkIntersectionBottom,
   getPipelineGraphData
 }

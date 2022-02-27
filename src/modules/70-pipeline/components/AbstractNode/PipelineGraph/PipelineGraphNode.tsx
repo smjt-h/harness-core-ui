@@ -1,9 +1,7 @@
-import React, { useRef, useState } from 'react'
-import { defaultTo } from 'lodash-es'
+import React, { useEffect, useLayoutEffect, useRef, useState } from 'react'
 import classNames from 'classnames'
 import { NodeType } from '../Node'
-import { v4 as uuid } from 'uuid'
-// import { checkIntersectonBottom, useIntersectionObserver } from './PipelineGraphUtils'
+import { checkIntersectionBottom, useIntersectionObserver } from './PipelineGraphUtils'
 import GroupNode from '../Nodes/GroupNode/GroupNode'
 import type { NodeIds, PipelineGraphState } from '../types'
 import css from './PipelineGraph.module.scss'
@@ -17,6 +15,7 @@ export interface PipelineGraphRecursiveProps {
   startEndNodeNeeded?: boolean
   startEndNodeStyle?: { height?: string; width?: string }
   parentIdentifier?: string
+  updateGraphLinks?: () => void
 }
 export const PipelineGraphRecursive = ({
   nodes,
@@ -27,7 +26,8 @@ export const PipelineGraphRecursive = ({
   uniqueNodeIds,
   startEndNodeNeeded = true,
   startEndNodeStyle,
-  parentIdentifier
+  parentIdentifier,
+  updateGraphLinks
 }: PipelineGraphRecursiveProps): React.ReactElement => {
   const StartNode: React.FC<any> | undefined = getNode(NodeType.StartNode)
   const CreateNode: React.FC<any> | undefined = getNode(NodeType.CreateNode)
@@ -56,6 +56,7 @@ export const PipelineGraphRecursive = ({
             prevNodeIdentifier={nodes?.[index - 1]?.identifier}
             nextNode={nodes?.[index + 1]}
             prevNode={nodes?.[index - 1]}
+            updateGraphLinks={updateGraphLinks}
           />
         )
       })}
@@ -93,6 +94,7 @@ interface PipelineGraphNode {
   parentIdentifier?: string
   nextNode?: PipelineGraphState
   prevNode?: PipelineGraphState
+  updateGraphLinks?: () => void
 }
 
 const PipelineGraphNodeBasic = ({
@@ -109,16 +111,28 @@ const PipelineGraphNodeBasic = ({
   isPrevNodeParallel,
   parentIdentifier,
   prevNode,
-  nextNode
+  nextNode,
+  updateGraphLinks
 }: PipelineGraphNode): React.ReactElement | null => {
   const NodeComponent: React.FC<any> | undefined = getNode?.(data?.nodeType) || getNode?.(NodeType.Default)
   const ref = useRef<HTMLDivElement>(null)
-  // const isIntersecting = useIntersectionObserver(ref, { threshold: 0.98 }, checkIntersectonBottom)
-  const [id, setId] = useState<string>('')
-  const rerenderChild = () => {
-    setId(uuid())
-  }
-  const [collapseNode, setCollapseNode] = useState(false)
+  const isIntersecting = useIntersectionObserver(
+    ref,
+    { threshold: 0.98, root: document.getElementsByClassName('Pane1')[0] },
+    checkIntersectionBottom
+  )
+  const [intersectingIndex, setIntersectingIndex] = useState<number>(-1)
+
+  useEffect(() => {
+    if (isIntersecting) {
+      const indexToGroupFrom = Number(ref.current?.dataset.index || -1) as unknown as number
+      Number.isInteger(indexToGroupFrom) && setIntersectingIndex(indexToGroupFrom)
+    }
+  }, [isIntersecting])
+
+  useLayoutEffect(() => {
+    updateGraphLinks?.()
+  }, [intersectingIndex])
 
   const getGroupNodeHeader = (): Array<PipelineGraphState> => {
     const nodes: PipelineGraphState[] = []
@@ -138,73 +152,100 @@ const PipelineGraphNodeBasic = ({
     return nodes
   }
 
-  const getGroupNodeName = (nodes: PipelineGraphState[]): string => {
-    return `${defaultTo(nodes?.[0]?.name, '')} ${defaultTo(nodes?.[1]?.name, '')} ${
-      (data?.children?.length || 0) > 1 ? ` + ${(data?.children?.length || 0) - 1} more stages` : ''
-    }`
-  }
   return (
     <div
-      ref={ref}
       className={classNames(
         { [css.nodeRightPadding]: isNextNodeParallel, [css.nodeLeftPadding]: isPrevNodeParallel },
         css.node
       )}
     >
-      {collapseNode ? (
-        <GroupNode
-          {...data}
-          icons={(getGroupNodeHeader() || []).map(node => node.icon)}
-          name={getGroupNodeName(getGroupNodeHeader() || [])}
-          fireEvent={fireEvent}
-          className={classNames(css.graphNode, className)}
-          setSelectedNode={setSelectedNode}
-          isSelected={selectedNode === data?.identifier}
-          isParallelNode={isParallelNode}
-          key={data?.identifier}
-          allowAdd={(!data?.children?.length && !isParallelNode) || (isParallelNode && isLastChild)}
-          prevNodeIdentifier={prevNodeIdentifier}
-        />
-      ) : (
-        <>
-          {NodeComponent && (
-            <NodeComponent
-              parentIdentifier={parentIdentifier}
-              {...data}
-              rerenderChild={rerenderChild}
-              getNode={getNode}
-              fireEvent={fireEvent}
-              className={classNames(css.graphNode, className)}
-              setSelectedNode={setSelectedNode}
-              isSelected={selectedNode === data?.identifier}
-              isParallelNode={isParallelNode}
-              key={`${id}-${data?.identifier}`}
-              allowAdd={(!data?.children?.length && !isParallelNode) || (isParallelNode && isLastChild)}
-              isFirstParallelNode={true}
-              prevNodeIdentifier={prevNodeIdentifier}
-              prevNode={prevNode}
-              nextNode={nextNode}
-            />
-          )}
-          {data?.children?.map((currentStage, index) => (
-            <PipelineGraphNode
-              parentIdentifier={parentIdentifier}
-              fireEvent={fireEvent}
-              getNode={getNode}
-              key={`${id}-${currentStage?.identifier}`}
-              className={css.parallel}
-              data={currentStage}
-              selectedNode={selectedNode}
-              setSelectedNode={setSelectedNode}
-              isParallelNode={true}
-              isLastChild={index + 1 === data?.children?.length}
-              prevNodeIdentifier={prevNodeIdentifier}
-            />
-          ))}
-        </>
-      )}
+      <>
+        {NodeComponent && (
+          <NodeComponent
+            parentIdentifier={parentIdentifier}
+            {...data}
+            getNode={getNode}
+            fireEvent={fireEvent}
+            className={classNames(css.graphNode, className)}
+            setSelectedNode={setSelectedNode}
+            isSelected={selectedNode === data?.identifier}
+            isParallelNode={isParallelNode}
+            key={data?.identifier}
+            allowAdd={(!data?.children?.length && !isParallelNode) || (isParallelNode && isLastChild)}
+            isFirstParallelNode={true}
+            prevNodeIdentifier={prevNodeIdentifier}
+            prevNode={prevNode}
+            nextNode={nextNode}
+          />
+        )}
+        {data?.children?.map((currentStage, index) => {
+          const ChildNodeComponent: React.FC<any> | undefined = getNode?.(data?.nodeType) || getNode?.(NodeType.Default)
+          const refIndex =
+            intersectingIndex > -1 && index === intersectingIndex - 1 ? index : (data?.children?.length || 0) - 1
+          return (
+            <div
+              ref={refIndex === index ? ref : null}
+              data-index={index}
+              id={`fiv_${currentStage?.identifier}`}
+              key={currentStage?.identifier}
+            >
+              {index === intersectingIndex - 1 ? (
+                <GroupNode
+                  {...data}
+                  fireEvent={fireEvent}
+                  className={classNames(css.graphNode, className)}
+                  setSelectedNode={setSelectedNode}
+                  isSelected={selectedNode === data?.identifier}
+                  isParallelNode={isParallelNode}
+                  key={data?.identifier}
+                  allowAdd={(!data?.children?.length && !isParallelNode) || (isParallelNode && isLastChild)}
+                  prevNodeIdentifier={prevNodeIdentifier}
+                  identifier={currentStage.identifier}
+                  intersectingIndex={intersectingIndex}
+                />
+              ) : index > intersectingIndex - 1 && intersectingIndex !== -1 ? null : (
+                ChildNodeComponent && (
+                  <ChildNodeComponent
+                    parentIdentifier={parentIdentifier}
+                    {...currentStage}
+                    getNode={getNode}
+                    fireEvent={fireEvent}
+                    className={classNames(css.graphNode, className)}
+                    setSelectedNode={setSelectedNode}
+                    isSelected={selectedNode === data?.identifier}
+                    isParallelNode={isParallelNode}
+                    key={currentStage?.identifier}
+                    // allowAdd={(!currentStage?.children?.length && !isParallelNode) || (isParallelNode && isLastChild)}
+                    isFirstParallelNode={true}
+                    prevNodeIdentifier={prevNodeIdentifier}
+                    prevNode={prevNode}
+                    nextNode={nextNode}
+                  />
+                )
+              )}
+            </div>
+          )
+
+          //   (
+          //   <PipelineGraphNode
+          //     parentIdentifier={parentIdentifier}
+          //     fireEvent={fireEvent}
+          //     getNode={getNode}
+          //     key={`${id}-${currentStage?.identifier}`}
+          //     className={css.parallel}
+          //     data={currentStage}
+          //     selectedNode={selectedNode}
+          //     setSelectedNode={setSelectedNode}
+          //     isParallelNode={true}
+          //     isLastChild={index + 1 === data?.children?.length}
+          //     prevNodeIdentifier={prevNodeIdentifier}
+          //   />
+          // )
+        })}
+      </>
     </div>
   )
 }
+
 const PipelineGraphNode = React.memo(PipelineGraphNodeBasic)
 export { PipelineGraphNode }

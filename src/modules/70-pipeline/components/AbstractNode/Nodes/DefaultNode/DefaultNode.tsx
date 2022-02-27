@@ -6,14 +6,14 @@
  */
 
 import React from 'react'
+import cx from 'classnames'
 import type { IconName } from '@wings-software/uicore'
 import { Icon, Text, Color, Button, ButtonVariation } from '@wings-software/uicore'
-import cx from 'classnames'
 import { DiagramDrag, DiagramType, Event } from '@pipeline/components/Diagram'
 import SVGMarker from '../SVGMarker'
-import css from './DefaultNode.module.scss'
 import { PipelineGraphType } from '../../types'
 import { NodeType } from '../../Node'
+import css from './DefaultNode.module.scss'
 
 const iconStyle = {
   color: 'var(--white)'
@@ -139,7 +139,7 @@ const DefaultNode = (props: any): JSX.Element => {
           )}
           {SECONDARY_ICON && <Icon className={css.secondaryIcon} size={8} name={SECONDARY_ICON} />}
           <Button
-            className={css.closeNode}
+            className={cx(css.closeNode, { [css.readonly]: props.readonly })}
             minimal
             icon="cross"
             variation={ButtonVariation.PRIMARY}
@@ -159,9 +159,10 @@ const DefaultNode = (props: any): JSX.Element => {
         </div>
         {props.name && (
           <Text
+            width={props.graphType === PipelineGraphType.STEP_GRAPH ? 64 : 90}
             font={{ size: 'normal', align: 'center' }}
             color={props.defaultSelected ? Color.GREY_900 : Color.GREY_600}
-            style={{ cursor: 'pointer', lineHeight: '1.5', overflowWrap: 'normal', wordBreak: 'keep-all', height: 55 }}
+            className={css.nameText}
             padding={'small'}
             lineClamp={2}
           >

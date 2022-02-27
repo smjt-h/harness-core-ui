@@ -68,9 +68,11 @@ const PipelineGraph = ({ data, getNode, fireEvent }: PipelineGraphProps): React.
   useEffect(() => {
     updateTreeRect()
   }, [])
+
   const updateSelectedNode = (nodeId: string): void => {
     setSelectedNode(nodeId)
   }
+
   const handleScaleToFit = (): void => {
     setGraphScale(getScaleToFitValue(canvasRef.current as unknown as HTMLElement))
   }
@@ -88,6 +90,7 @@ const PipelineGraph = ({ data, getNode, fireEvent }: PipelineGraphProps): React.
               selectedNode={selectedNode}
               setSelectedNode={updateSelectedNode}
               uniqueNodeIds={uniqueNodeIds}
+              updateGraphLinks={setSVGLinks}
               startEndNodeStyle={state?.[0]?.graphType === PipelineGraphType.STEP_GRAPH ? { height: '64px' } : {}}
             />
           </div>

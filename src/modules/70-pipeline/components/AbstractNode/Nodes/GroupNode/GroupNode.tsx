@@ -6,8 +6,9 @@
  */
 
 import React from 'react'
-import { Icon, Text, Color } from '@wings-software/uicore'
 import cx from 'classnames'
+import { defaultTo } from 'lodash-es'
+import { Icon, Text, Color } from '@wings-software/uicore'
 import { DiagramDrag, DiagramType, Event } from '@pipeline/components/Diagram'
 import css from '../DefaultNode/DefaultNode.module.scss'
 
@@ -16,6 +17,15 @@ const GroupNode = (props: any): React.ReactElement => {
   const [_addClicked, setAddClicked] = React.useState(false)
   const [showAdd, setVisibilityOfAdd] = React.useState(false)
 
+  const nodesInfo = React.useMemo(() => {
+    return props?.children
+      ?.slice(props.intersectingIndex - 1)
+      .map((node: any) => ({ name: node.name, icon: node.icon }))
+  }, [props?.children, props.intersectingIndex])
+
+  const getGroupNodeName = (): string => {
+    return `${defaultTo(nodesInfo?.[0]?.name, '')} +  ${nodesInfo.length - 1} more stages`
+  }
   const onAddNodeClick = (
     e: React.MouseEvent<Element, MouseEvent>,
     identifier: string,
@@ -100,8 +110,8 @@ const GroupNode = (props: any): React.ReactElement => {
         }}
       >
         <div className={css.iconGroup}>
-          {props.icons?.[0] && <Icon size={28} name={props.icons[0]} {...props.iconPropsAr?.[0]} />}
-          {props.icons?.[1] && <Icon size={28} name={props.icons[1]} {...props.iconPropsAr?.[1]} />}
+          {nodesInfo[0].icon && <Icon size={28} name={nodesInfo[0].icon} />}
+          {nodesInfo[1].icon && <Icon size={28} name={nodesInfo[1].icon} />}
         </div>
       </div>
       <Text
@@ -110,12 +120,8 @@ const GroupNode = (props: any): React.ReactElement => {
         style={{ cursor: 'pointer', lineHeight: '1.5', overflowWrap: 'normal', wordBreak: 'keep-all', height: 55 }}
         padding={'small'}
         lineClamp={2}
-        // font={{ size: 'normal', align: 'center' }}
-        // style={{ cursor: 'pointer' }}
-        // padding="xsmall"
-        // // width={90}
       >
-        {props.name}
+        {getGroupNodeName()}
       </Text>
       {allowAdd && (
         <div
@@ -131,7 +137,6 @@ const GroupNode = (props: any): React.ReactElement => {
             width: props.width || 90,
             height: props.height || 40,
             display: showAdd ? 'flex' : 'none'
-            // marginLeft: (128 - (props.width || 64)) / 2
           }}
         >
           <Icon name="plus" size={22} color={'var(--diagram-add-node-color)'} />

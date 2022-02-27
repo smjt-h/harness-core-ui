@@ -20,6 +20,8 @@ declare const styles: {
   readonly left: string
   readonly markerEnd: string
   readonly markerStart: string
+  readonly nameText: string
+  readonly readonly: string
   readonly right: string
   readonly secondaryIcon: string
   readonly selected: string

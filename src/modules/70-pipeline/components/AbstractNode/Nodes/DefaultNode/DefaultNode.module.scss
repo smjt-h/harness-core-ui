@@ -44,6 +44,9 @@
 
   &:hover .closeNode {
     opacity: 1;
+    &.readonly {
+      opacity: 0;
+    }
     pointer-events: initial;
   }
 
@@ -194,4 +197,12 @@
   top: 0;
   right: -20px;
   z-index: 99;
+}
+
+.nameText {
+  cursor: pointer;
+  line-height: 1.5;
+  overflow-wrap: normal;
+  word-break: keep-all;
+  height: 46px;
 }
