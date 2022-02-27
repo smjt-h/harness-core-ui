@@ -1,0 +1,74 @@
+/*
+ * Copyright 2022 Harness Inc. All rights reserved.
+ * Use of this source code is governed by the PolyForm Shield 1.0.0 license
+ * that can be found in the licenses directory at the root of this repository, also available at
+ * https://polyformproject.org/wp-content/uploads/2020/06/PolyForm-Shield-1.0.0.txt.
+ */
+
+import React from 'react'
+import * as Yup from 'yup'
+import type { FormikProps } from 'formik'
+
+import { Formik } from '@harness/uicore'
+import { useStrings } from 'framework/strings'
+
+import { getDurationValidationSchema } from '@common/components/MultiTypeDuration/MultiTypeDuration'
+
+import { setFormikRef, StepFormikFowardRef, StepViewType } from '@pipeline/components/AbstractSteps/Step'
+import { getNameAndIdentifierSchema } from '@pipeline/components/PipelineSteps/Steps/StepsValidateUtils'
+
+import type { PolicyStepFormData } from './PolicyStepTypes'
+import BasePolicyStep from './BasePolicyStep'
+
+interface PolicyStepWidgetProps {
+  initialValues: PolicyStepFormData
+  onUpdate?: (data: PolicyStepFormData) => void
+  onChange?: (data: PolicyStepFormData) => void
+  stepViewType?: StepViewType
+  isNewStep?: boolean
+  readonly?: boolean
+}
+
+function PolicyStepWidget(
+  { initialValues, onUpdate, onChange, isNewStep = true, readonly, stepViewType }: PolicyStepWidgetProps,
+  formikRef: StepFormikFowardRef
+): JSX.Element {
+  const { getString } = useStrings()
+
+  const validationSchema = Yup.object().shape({
+    timeout: getDurationValidationSchema({ minimum: '10s' }).required(getString('validation.timeout10SecMinimum')),
+    spec: Yup.object().shape({
+      type: Yup.string()
+        .trim()
+        .required(getString('fieldRequired', { field: 'Entity Type' })),
+      policySets: Yup.array().min(1).required(getString('common.policy.customInputRequired')),
+      policySpec: Yup.object().shape({
+        payload: Yup.string()
+          .trim()
+          .required(getString('fieldRequired', { field: 'Payload' }))
+      })
+    }),
+    ...getNameAndIdentifierSchema(getString, stepViewType)
+  })
+
+  return (
+    <Formik<PolicyStepFormData>
+      onSubmit={submit => {
+        onUpdate?.(submit)
+      }}
+      validate={formValues => {
+        onChange?.(formValues)
+      }}
+      formName="policyStepForm"
+      initialValues={initialValues}
+      validationSchema={validationSchema}
+    >
+      {(formik: FormikProps<PolicyStepFormData>) => {
+        setFormikRef(formikRef, formik)
+        return <BasePolicyStep isNewStep={isNewStep} formik={formik} readonly={readonly} stepViewType={stepViewType} />
+      }}
+    </Formik>
+  )
+}
+
+export const PolicyStepWidgetWithRef = React.forwardRef(PolicyStepWidget)

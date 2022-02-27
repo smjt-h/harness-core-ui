@@ -574,25 +574,21 @@ policy:
   noPolicyResult: No policy found
   noPolicyEvalResult: No policy Evaluations found
   noSelectInput: Select appropriate options
-  table:
-    name: Policy
-    lastModified: Last Modified
-    createdAt: Created At
+  customInputRequired: Custom policy input is required
 policiesSets:
+  policyset: Policy Set
   newPolicyset: New Policy Set
   noPolicySets: No Policy Sets evaluated
   evaluationCriteria: Policy evaluation criteria
   policySetSearch: Search Policy Set by name
-  noPolicySet: You have no Policy Set. Click on the button below to create a new one.
+  noPolicySet: You have no Policy Sets. Click on the button below to create a new one.
   noPolicySetResult: No policy sets found
   stepOne:
     validName: '{{$.validation.nameRequired}}'
     validId: '{{$.validation.identifierRequired}}'
     validIdRegex: '{{$.common.validation.formatMustBeAlphanumeric}}'
-  table:
-    name: Policy Set
-    enforced: Enforced
-    entityType: Entity Type {{name}}
+  selectPolicySet: Select Policy Set
+  addOrModifyPolicySet: Add/Modify Policy Set
 accountResourcesPage:
   line1: 'Account Resources are shared and available for use within any organization or projects within your account.'
   line2: 'For better isolation of resources, it is recommended that you create resources at the organization or project levels respectively.'
@@ -791,3 +787,4 @@ branchName: 'Branch Name'
 tagName: 'Tag Name'
 jexlCondition: 'JEXL Condition'
 triggersLabel: 'Triggers'
+payload: Payload

@@ -29,7 +29,8 @@ export const ErrorType: Record<FailureErrorType, FailureErrorType> = {
   Authorization: 'Authorization',
   Verification: 'Verification',
   DelegateProvisioning: 'DelegateProvisioning',
-  Unknown: 'Unknown'
+  Unknown: 'Unknown',
+  PolicyEvaluationFailure: 'PolicyEvaluationFailure'
 }
 
 export const strategyIconMap: Record<Strategy, IconName> = {
