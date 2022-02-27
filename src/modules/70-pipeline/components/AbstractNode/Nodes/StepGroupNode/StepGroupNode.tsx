@@ -116,7 +116,7 @@ export const StepGroupNode = (props: any): JSX.Element => {
             className={classnames(
               css.stepGroup,
               { [css.firstnode]: !props?.isParallelNode },
-              { [css.marginBottom]: props?.isParallelNode }
+              { [css.marginBottom]: !props?.isParallelNode }
             )}
             ref={layerRef}
             // onDragOver={event => {

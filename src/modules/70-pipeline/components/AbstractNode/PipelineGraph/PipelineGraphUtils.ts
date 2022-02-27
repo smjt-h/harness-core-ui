@@ -5,6 +5,9 @@ import { stageTypeToIconMap } from '@pipeline/components/PipelineInputSetForm/Pi
 import type { ExecutionWrapperConfig, StageElementWrapperConfig } from 'services/cd-ng'
 import type { PipelineGraphState } from '../types'
 import { PipelineGraphType } from '../types'
+import { StepTypeToPipelineIconMap } from '@pipeline/components/PipelineStudio/ExecutionGraph/ExecutionGraphUtil'
+import { StepType as PipelineStepType } from '@pipeline/components/PipelineSteps/PipelineStepInterface'
+
 const INITIAL_ZOOM_LEVEL = 1
 const ZOOM_INC_DEC_LEVEL = 0.1
 interface DrawSVGPathOptions {
@@ -255,7 +258,7 @@ const trasformStageData = (stages: StageElementWrapperConfig[], graphType: Pipel
   const finalData: PipelineGraphState[] = []
   stages.forEach((stage: StageElementWrapperConfig) => {
     if (stage?.stage) {
-      const { nodeType, iconName } = getNodeInfo(stage.stage.type)
+      const { nodeType, iconName } = getNodeInfo(stage.stage.type, graphType)
       finalData.push({
         identifier: stage.stage.identifier as string,
         name: stage.stage.name as string,
@@ -267,7 +270,7 @@ const trasformStageData = (stages: StageElementWrapperConfig[], graphType: Pipel
       })
     } else if (stage?.parallel?.length) {
       const [first, ...rest] = stage.parallel
-      const { nodeType, iconName } = getNodeInfo(first?.stage?.type)
+      const { nodeType, iconName } = getNodeInfo(first?.stage?.type, graphType)
       finalData.push({
         identifier: first?.stage?.identifier as string,
         name: first?.stage?.name as string,
@@ -287,7 +290,7 @@ const trasformStepsData = (steps: ExecutionWrapperConfig[], graphType: PipelineG
   const finalData: PipelineGraphState[] = []
   steps.forEach((step: ExecutionWrapperConfig) => {
     if (step?.step) {
-      const { nodeType, iconName } = getNodeInfo(step.step.type)
+      const { nodeType, iconName } = getNodeInfo(step.step.type, graphType)
       finalData.push({
         identifier: step.step.identifier as string,
         name: step.step.name as string,
@@ -300,7 +303,7 @@ const trasformStepsData = (steps: ExecutionWrapperConfig[], graphType: PipelineG
     } else if (step?.parallel?.length) {
       const [first, ...rest] = step.parallel
       if (first.stepGroup) {
-        const { iconName } = getNodeInfo('')
+        const { iconName } = getNodeInfo('', graphType)
         finalData.push({
           identifier: first.stepGroup?.identifier as string,
           name: first.stepGroup?.name as string,
@@ -312,7 +315,7 @@ const trasformStepsData = (steps: ExecutionWrapperConfig[], graphType: PipelineG
           graphType
         })
       } else {
-        const { nodeType, iconName } = getNodeInfo(first?.step?.type)
+        const { nodeType, iconName } = getNodeInfo(first?.step?.type, graphType)
         finalData.push({
           identifier: first?.step?.identifier as string,
           name: first?.step?.name as string,
@@ -325,7 +328,7 @@ const trasformStepsData = (steps: ExecutionWrapperConfig[], graphType: PipelineG
         })
       }
     } else {
-      const { iconName } = getNodeInfo('')
+      const { iconName } = getNodeInfo('', graphType)
       finalData.push({
         identifier: step.stepGroup?.identifier as string,
         name: step.stepGroup?.name as string,
@@ -342,12 +345,21 @@ const trasformStepsData = (steps: ExecutionWrapperConfig[], graphType: PipelineG
   return finalData
 }
 
-const getNodeInfo = (type: string | undefined): { iconName: IconName; nodeType: string } => {
-  return {
-    iconName: stageTypeToIconMap[type || 'Deployment'],
-    nodeType: NodeTypeToNodeMap[type || 'Deployment']
-  }
+const getNodeInfo = (
+  type: string | undefined,
+  graphType: PipelineGraphType
+): { iconName: IconName; nodeType: string } => {
+  return graphType === PipelineGraphType.STEP_GRAPH
+    ? {
+        iconName: StepTypeToPipelineIconMap[type as any],
+        nodeType: NodeTypeToNodeMap[type as string]
+      }
+    : {
+        iconName: stageTypeToIconMap[type as string],
+        nodeType: NodeTypeToNodeMap[type as string]
+      }
 }
+
 const getPipelineGraphDataType = (data: StageElementWrapperConfig[] | ExecutionWrapperConfig[]): PipelineGraphType => {
   const hasStageData = defaultTo(get(data, '[0].parallel.[0].stage'), get(data, '[0].stage'))
   if (hasStageData) {
