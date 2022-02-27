@@ -881,8 +881,6 @@ function ExecutionGraphRef<T extends StageElementConfig>(
   }
   diagram.registerListeners(listerners)
 
-  console.log('state', state)
-
   return (
     <div
       className={css.container}

@@ -11,9 +11,9 @@ import { Icon } from '@blueprintjs/core'
 import cx from 'classnames'
 import { isEmpty } from 'lodash-es'
 import { DiagramType, Event } from '@pipeline/components/Diagram'
+import { PipelineGraphType } from '../../types'
 import cssDefault from '../DefaultNode/DefaultNode.module.scss'
 import css from './CreateNode.module.scss'
-import { PipelineGraphType } from '../../types'
 
 const CreateNode = (props: any): React.ReactElement => {
   return (

@@ -188,7 +188,7 @@ const getScaleToFitValue = (elm: HTMLElement, paddingFromBottom = 20): number =>
 }
 
 const useIntersectionObserver = (
-  ref: MutableRefObject<Element | null>,
+  ref: MutableRefObject<Element | null> | null,
   options: IntersectionObserverInit = {},
   compareFn?: (data: IntersectionObserverEntry) => boolean
 ): boolean => {
@@ -202,7 +202,7 @@ const useIntersectionObserver = (
     }
   }
   useEffect(() => {
-    setElement(ref.current)
+    ref?.current && setElement(ref.current)
   }, [ref])
 
   useEffect(() => {

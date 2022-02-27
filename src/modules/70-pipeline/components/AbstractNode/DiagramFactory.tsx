@@ -100,9 +100,10 @@ export class DiagramFactory {
     this.getListenerHandle(event.type)?.listener?.(event)
   }
 
-  render(): React.FC<{ data: PipelineGraphState[] }> {
-    const PipelineStudioHOC: React.FC<{ data: PipelineGraphState[] }> = (props: {
+  render(): React.FC<{ data: PipelineGraphState[]; collapseOnIntersect?: boolean }> {
+    const PipelineStudioHOC: React.FC<{ data: PipelineGraphState[]; collapseOnIntersect?: boolean }> = (props: {
       data: PipelineGraphState[]
+      collapseOnIntersect?: boolean
     }): React.ReactElement => (
       <PipelineGraph getNode={this.getNode.bind(this)} fireEvent={this.fireEvent.bind(this)} {...props} />
     )

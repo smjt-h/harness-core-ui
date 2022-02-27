@@ -16,6 +16,7 @@ export interface PipelineGraphRecursiveProps {
   startEndNodeStyle?: { height?: string; width?: string }
   parentIdentifier?: string
   updateGraphLinks?: () => void
+  collapseOnIntersect?: boolean
 }
 export const PipelineGraphRecursive = ({
   nodes,
@@ -27,7 +28,8 @@ export const PipelineGraphRecursive = ({
   startEndNodeNeeded = true,
   startEndNodeStyle,
   parentIdentifier,
-  updateGraphLinks
+  updateGraphLinks,
+  collapseOnIntersect
 }: PipelineGraphRecursiveProps): React.ReactElement => {
   const StartNode: React.FC<any> | undefined = getNode(NodeType.StartNode)
   const CreateNode: React.FC<any> | undefined = getNode(NodeType.CreateNode)
@@ -57,6 +59,7 @@ export const PipelineGraphRecursive = ({
             nextNode={nodes?.[index + 1]}
             prevNode={nodes?.[index - 1]}
             updateGraphLinks={updateGraphLinks}
+            collapseOnIntersect={collapseOnIntersect}
           />
         )
       })}
@@ -95,6 +98,7 @@ interface PipelineGraphNode {
   nextNode?: PipelineGraphState
   prevNode?: PipelineGraphState
   updateGraphLinks?: () => void
+  collapseOnIntersect?: boolean
 }
 
 const PipelineGraphNodeBasic = ({
@@ -112,13 +116,17 @@ const PipelineGraphNodeBasic = ({
   parentIdentifier,
   prevNode,
   nextNode,
-  updateGraphLinks
+  updateGraphLinks,
+  collapseOnIntersect
 }: PipelineGraphNode): React.ReactElement | null => {
   const NodeComponent: React.FC<any> | undefined = getNode?.(data?.nodeType) || getNode?.(NodeType.Default)
   const ref = useRef<HTMLDivElement>(null)
   const isIntersecting = useIntersectionObserver(
-    ref,
-    { threshold: 0.98, root: document.getElementsByClassName('Pane1')[0] },
+    collapseOnIntersect ? ref : null,
+    {
+      threshold: 0.5,
+      root: document.getElementsByClassName('Pane1')[0]
+    },
     checkIntersectionBottom
   )
   const [intersectingIndex, setIntersectingIndex] = useState<number>(-1)
@@ -186,7 +194,7 @@ const PipelineGraphNodeBasic = ({
             <div
               ref={refIndex === index ? ref : null}
               data-index={index}
-              id={`fiv_${currentStage?.identifier}`}
+              id={`ref_${currentStage?.identifier}`}
               key={currentStage?.identifier}
             >
               {index === intersectingIndex - 1 ? (
@@ -225,22 +233,6 @@ const PipelineGraphNodeBasic = ({
               )}
             </div>
           )
-
-          //   (
-          //   <PipelineGraphNode
-          //     parentIdentifier={parentIdentifier}
-          //     fireEvent={fireEvent}
-          //     getNode={getNode}
-          //     key={`${id}-${currentStage?.identifier}`}
-          //     className={css.parallel}
-          //     data={currentStage}
-          //     selectedNode={selectedNode}
-          //     setSelectedNode={setSelectedNode}
-          //     isParallelNode={true}
-          //     isLastChild={index + 1 === data?.children?.length}
-          //     prevNodeIdentifier={prevNodeIdentifier}
-          //   />
-          // )
         })}
       </>
     </div>

@@ -1166,7 +1166,7 @@ const StageBuilder: React.FC<StageBuilderProps> = ({ diagram }): JSX.Element => 
                 }
               }}
             >
-              <CDPipelineStudioNew data={getPipelineGraphData(pipeline.stages)} />
+              <CDPipelineStudioNew data={getPipelineGraphData(pipeline.stages)} collapseOnIntersect={true} />
               <DynamicPopover
                 darkMode={false}
                 className={css.renderPopover}

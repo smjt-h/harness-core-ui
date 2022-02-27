@@ -1,6 +1,5 @@
 /* eslint-disable no-console */
 import React, { useEffect, useLayoutEffect, useState, useRef, useMemo } from 'react'
-
 import classNames from 'classnames'
 import Draggable from 'react-draggable'
 import { v4 as uuid } from 'uuid'
@@ -15,17 +14,23 @@ import { PipelineGraphRecursive } from './PipelineGraphNode'
 import { NodeIds, PipelineGraphState, PipelineGraphType, SVGPathRecord } from '../types'
 import css from './PipelineGraph.module.scss'
 
+interface ControlPosition {
+  x: number
+  y: number
+}
 export interface PipelineGraphProps {
   data: PipelineGraphState[]
   fireEvent: (event: any) => void
   getNode: (type?: string | undefined) => React.FC<any> | undefined
+  collapseOnIntersect?: boolean
 }
 
-const PipelineGraph = ({ data, getNode, fireEvent }: PipelineGraphProps): React.ReactElement => {
+const PipelineGraph = ({ data, getNode, fireEvent, collapseOnIntersect }: PipelineGraphProps): React.ReactElement => {
   const [svgPath, setSvgPath] = useState<SVGPathRecord[]>([])
   const [treeRectangle, setTreeRectangle] = useState<DOMRect | void>()
   const [selectedNode, setSelectedNode] = useState<string>('')
   const [state, setState] = useState<PipelineGraphState[]>(data)
+  const [controlPosition, setPosition] = useState<ControlPosition>({ x: 20, y: 60 })
   const [graphScale, setGraphScale] = useState(INITIAL_ZOOM_LEVEL)
   const canvasRef = useRef<HTMLDivElement>(null)
   const uniqueNodeIds = useMemo(
@@ -78,7 +83,7 @@ const PipelineGraph = ({ data, getNode, fireEvent }: PipelineGraphProps): React.
   }
 
   return (
-    <Draggable scale={graphScale}>
+    <Draggable scale={graphScale} offsetParent={document.body}>
       <div id="overlay" className={css.overlay}>
         <>
           <div className={css.graphMain} ref={canvasRef} style={{ transform: `scale(${graphScale})` }}>
@@ -92,6 +97,7 @@ const PipelineGraph = ({ data, getNode, fireEvent }: PipelineGraphProps): React.
               uniqueNodeIds={uniqueNodeIds}
               updateGraphLinks={setSVGLinks}
               startEndNodeStyle={state?.[0]?.graphType === PipelineGraphType.STEP_GRAPH ? { height: '64px' } : {}}
+              collapseOnIntersect={collapseOnIntersect}
             />
           </div>
           <GraphActions setGraphScale={setGraphScale} graphScale={graphScale} handleScaleToFit={handleScaleToFit} />
