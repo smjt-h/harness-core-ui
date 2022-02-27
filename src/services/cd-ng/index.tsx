@@ -5150,6 +5150,7 @@ export interface OnFailureConfig {
     | 'Authorization'
     | 'Verification'
     | 'DelegateProvisioning'
+    | 'PolicyEvaluationFailure'
   )[]
 }
 

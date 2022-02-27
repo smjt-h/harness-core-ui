@@ -1,5 +1,5 @@
 /*
- * Copyright 2021 Harness Inc. All rights reserved.
+ * Copyright 2022 Harness Inc. All rights reserved.
  * Use of this source code is governed by the PolyForm Shield 1.0.0 license
  * that can be found in the licenses directory at the root of this repository, also available at
  * https://polyformproject.org/wp-content/uploads/2020/06/PolyForm-Shield-1.0.0.txt.
@@ -52,17 +52,26 @@ export interface Evaluation {
 }
 
 export interface EvaluationDetail {
+  account_id?: string
+  action?: string
   created?: number
   details?: EvaluatedPolicy[]
+  enabled?: boolean
   identifier?: string
   name?: string
+  org_id?: string
+  project_id?: string
   status?: 'error' | 'warning' | 'pass'
+  type?: string
+  updated?: number
 }
 
 export type EvaluationDetails = EvaluationDetail[]
 
 export interface Example {
+  desc?: string
   input?: string
+  name?: string
   rego?: string
   type?: string
 }
@@ -178,6 +187,7 @@ export interface UserInput {
 }
 
 export interface Version {
+  commit?: string
   version?: string
 }
 
@@ -187,7 +197,7 @@ export type EvaluateByIdsInputRequestBody = string
 
 export type LoginRequestBody = void
 
-export type AuthResponse = Token[]
+export type AuthResponse = Token
 
 export type DashboardResponse = DashboardMetrics
 
@@ -383,6 +393,10 @@ export interface GetEvaluationListQueryParams {
    */
   per_page?: string
   /**
+   * the page requested page number
+   */
+  page?: string
+  /**
    * the id of the last returned record
    */
   last_seen?: string
@@ -551,6 +565,11 @@ export interface GetPolicyListQueryParams {
    * the page requested page number
    */
   page?: string
+  /**
+   * include results from the account/org/project hierarchy
+   */
+  include_hierarchy?: boolean
+  searchTerm?: string
 }
 
 export type GetPolicyListProps = Omit<GetProps<PolicyListResponse, unknown, GetPolicyListQueryParams, void>, 'path'>
@@ -757,6 +776,11 @@ export interface GetPolicySetListQueryParams {
    * The page requested page number
    */
   page?: string
+  /**
+   * include results from the account/org/project hierarchy
+   */
+  include_hierarchy?: boolean
+  searchTerm?: string
 }
 
 export type GetPolicySetListProps = Omit<

@@ -1,0 +1,56 @@
+/*
+ * Copyright 2022 Harness Inc. All rights reserved.
+ * Use of this source code is governed by the PolyForm Shield 1.0.0 license
+ * that can be found in the licenses directory at the root of this repository, also available at
+ * https://polyformproject.org/wp-content/uploads/2020/06/PolyForm-Shield-1.0.0.txt.
+ */
+
+.policySetHolder {
+  min-width: 420px;
+  background-color: #fafbfc !important;
+  border: 1px solid #dedfe9 !important;
+  border-radius: 4px;
+  font-size: 14px;
+  padding: var(--spacing-2) var(--spacing-medium) !important;
+  margin-bottom: var(--spacing-small) !important;
+}
+
+.styledPolicy {
+  border: 0.6px solid #b0b1c4;
+  border-radius: 5px;
+  color: #0278d5 !important;
+  padding: var(--spacing-xsmall) var(--spacing-small) !important;
+  font-size: 12px !important;
+  margin-right: 2px !important;
+  max-width: 100px;
+}
+
+.renderer {
+  min-height: 450px !important;
+  height: 450px !important;
+  overflow-x: hidden !important;
+  overflow-y: auto !important;
+
+  :global {
+    .NoDataCard--noDataCard {
+      height: 450px !important;
+    }
+  }
+}
+
+.policySetRows {
+  padding-left: var(--spacing-small);
+  padding-right: var(--spacing-small);
+  border-top: hidden !important;
+  border-radius: 4px;
+  box-shadow: 0px 0px 1px rgba(40, 41, 61, 0.04), 0px 2px 4px rgba(96, 97, 112, 0.16);
+  :global {
+    .CollapseHeader--leftSection {
+      width: 100% !important;
+
+      & svg {
+        color: var(--primary-7);
+      }
+    }
+  }
+}
