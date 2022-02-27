@@ -30,6 +30,7 @@ import { TerraformPlan } from './TerraformPlan/TerraformPlan'
 import { TerraformApply } from './TerraformApply/TerraformApply'
 import { InfraProvisioning } from './InfraProvisioning/InfraProvisioning'
 import { GcpInfrastructureSpec } from './GcpInfrastructureSpec/GcpInfrastructureSpec'
+import { PolicyStep } from './PolicyStep/PolicyStep'
 
 factory.registerStep(new HttpStep())
 factory.registerStep(new K8RolloutDeployStep())
@@ -54,3 +55,4 @@ factory.registerStep(new TerraformDestroy())
 factory.registerStep(new TerraformApply())
 factory.registerStep(new TerraformPlan())
 factory.registerStep(new InfraProvisioning())
+factory.registerStep(new PolicyStep())

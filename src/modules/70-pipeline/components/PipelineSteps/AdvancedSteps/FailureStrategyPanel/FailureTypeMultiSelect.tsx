@@ -33,7 +33,8 @@ const stringsMap: Record<FailureErrorType, StringKeys> = {
   Connectivity: 'common.connectivityErrors',
   DelegateProvisioning: 'pipeline.failureStrategies.errorTypeLabels.DelegateProvisioning',
   Timeout: 'pipeline.failureStrategies.errorTypeLabels.Timeout',
-  Verification: 'pipeline.failureStrategies.errorTypeLabels.Verification'
+  Verification: 'pipeline.failureStrategies.errorTypeLabels.Verification',
+  PolicyEvaluationFailure: 'pipeline.failureStrategies.errorTypeLabels.PolicyEvaluationFailure'
 }
 
 const MultiSelect = BPMultiSelect.ofType<Option>()

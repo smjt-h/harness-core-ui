@@ -403,6 +403,7 @@ export interface StringsMap {
   'common.pagerDuty': string
   'common.paste': string
   'common.path': string
+  'common.payload': string
   'common.pendingInvitation': string
   'common.perMonth': string
   'common.performAction': string
@@ -418,18 +419,19 @@ export interface StringsMap {
   'common.plusNumber': string
   'common.plusNumberNoSpace': string
   'common.policies': string
+  'common.policiesSets.addOrModifyPolicySet': string
   'common.policiesSets.evaluationCriteria': string
   'common.policiesSets.newPolicyset': string
   'common.policiesSets.noPolicySet': string
   'common.policiesSets.noPolicySetResult': string
   'common.policiesSets.noPolicySets': string
   'common.policiesSets.policySetSearch': string
+  'common.policiesSets.policyset': string
+  'common.policiesSets.selectPolicySet': string
   'common.policiesSets.stepOne.validId': string
   'common.policiesSets.stepOne.validIdRegex': string
   'common.policiesSets.stepOne.validName': string
-  'common.policiesSets.table.enforced': string
-  'common.policiesSets.table.entityType': string
-  'common.policiesSets.table.name': string
+  'common.policy.customInputRequired': string
   'common.policy.evaluations': string
   'common.policy.newPolicy': string
   'common.policy.noPolicy': string
@@ -438,9 +440,6 @@ export interface StringsMap {
   'common.policy.noSelectInput': string
   'common.policy.policySearch': string
   'common.policy.policysets': string
-  'common.policy.table.createdAt': string
-  'common.policy.table.lastModified': string
-  'common.policy.table.name': string
   'common.powershell': string
   'common.production': string
   'common.projectSetup': string
@@ -2470,6 +2469,7 @@ export interface StringsMap {
   'pipeline.failureStrategies.errorTypeLabels.Authentication': string
   'pipeline.failureStrategies.errorTypeLabels.Authorization': string
   'pipeline.failureStrategies.errorTypeLabels.DelegateProvisioning': string
+  'pipeline.failureStrategies.errorTypeLabels.PolicyEvaluationFailure': string
   'pipeline.failureStrategies.errorTypeLabels.Timeout': string
   'pipeline.failureStrategies.errorTypeLabels.Unknown': string
   'pipeline.failureStrategies.errorTypeLabels.Verification': string
@@ -2825,6 +2825,7 @@ export interface StringsMap {
   'pipeline.stepDescription.K8sRollingRollback': string
   'pipeline.stepDescription.K8sScale': string
   'pipeline.stepDescription.Plugin': string
+  'pipeline.stepDescription.Policy': string
   'pipeline.stepDescription.ResourceConstraint': string
   'pipeline.stepDescription.RestoreCacheGCS': string
   'pipeline.stepDescription.RestoreCacheS3': string

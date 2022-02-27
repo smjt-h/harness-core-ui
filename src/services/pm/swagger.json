@@ -181,6 +181,13 @@
           },
           {
             "type": "string",
+            "example": "5",
+            "description": "the page requested page number",
+            "name": "page",
+            "in": "query"
+          },
+          {
+            "type": "string",
             "example": "150",
             "description": "the id of the last returned record",
             "name": "last_seen",
@@ -277,6 +284,7 @@
     "/login": {
       "post": {
         "description": "Return system health information",
+        "consumes": ["multipart/form-data"],
         "tags": ["login"],
         "operationId": "login",
         "parameters": [
@@ -331,6 +339,17 @@
             "example": "5",
             "description": "the page requested page number",
             "name": "page",
+            "in": "query"
+          },
+          {
+            "type": "boolean",
+            "description": "include results from the account/org/project hierarchy",
+            "name": "include_hierarchy",
+            "in": "query"
+          },
+          {
+            "type": "string",
+            "name": "searchTerm",
             "in": "query"
           }
         ],
@@ -528,6 +547,17 @@
             "example": "5",
             "description": "The page requested page number",
             "name": "page",
+            "in": "query"
+          },
+          {
+            "type": "boolean",
+            "description": "include results from the account/org/project hierarchy",
+            "name": "include_hierarchy",
+            "in": "query"
+          },
+          {
+            "type": "string",
+            "name": "searchTerm",
             "in": "query"
           }
         ],
@@ -770,6 +800,7 @@
     "/register": {
       "post": {
         "description": "Return system version information",
+        "consumes": ["multipart/form-data"],
         "tags": ["register"],
         "operationId": "register",
         "parameters": [
@@ -1046,6 +1077,12 @@
     "EvaluationDetail": {
       "type": "object",
       "properties": {
+        "account_id": {
+          "type": "string"
+        },
+        "action": {
+          "type": "string"
+        },
         "created": {
           "type": "integer",
           "format": "int64"
@@ -1056,15 +1093,31 @@
             "$ref": "#/definitions/EvaluatedPolicy"
           }
         },
+        "enabled": {
+          "type": "boolean"
+        },
         "identifier": {
           "type": "string"
         },
         "name": {
           "type": "string"
         },
+        "org_id": {
+          "type": "string"
+        },
+        "project_id": {
+          "type": "string"
+        },
         "status": {
           "type": "string",
           "enum": ["error", "warning", "pass"]
+        },
+        "type": {
+          "type": "string"
+        },
+        "updated": {
+          "type": "integer",
+          "format": "int64"
         }
       }
     },
@@ -1077,7 +1130,13 @@
     "Example": {
       "type": "object",
       "properties": {
+        "desc": {
+          "type": "string"
+        },
         "input": {
+          "type": "string"
+        },
+        "name": {
           "type": "string"
         },
         "rego": {
@@ -1389,6 +1448,9 @@
     "Version": {
       "type": "object",
       "properties": {
+        "commit": {
+          "type": "string"
+        },
         "version": {
           "type": "string"
         }
@@ -1399,10 +1461,7 @@
     "auth": {
       "description": "",
       "schema": {
-        "type": "array",
-        "items": {
-          "$ref": "#/definitions/Token"
-        }
+        "$ref": "#/definitions/Token"
       }
     },
     "dashboard": {
