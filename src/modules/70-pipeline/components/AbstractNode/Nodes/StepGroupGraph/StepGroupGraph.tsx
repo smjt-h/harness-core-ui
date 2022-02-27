@@ -45,6 +45,9 @@ const StepGroupGraph = (props: StepGroupGraphProps): React.ReactElement => {
   const [selectedNode, setSelectedNode] = useState<string>('')
   const [state, setState] = useState<PipelineGraphState[]>([])
   const graphRef = useRef<HTMLDivElement>(null)
+  const updateSelectedNode = (nodeId: string): void => {
+    setSelectedNode(nodeId)
+  }
 
   const updateTreeRect = (): void => {
     const treeContainer = document.getElementById('tree-container')
@@ -95,6 +98,7 @@ const StepGroupGraph = (props: StepGroupGraphProps): React.ReactElement => {
           getNode={props.getNode}
           nodes={state}
           selectedNode={selectedNode}
+          setSelectedNode={updateSelectedNode}
           startEndNodeNeeded={false}
         />
       ) : (

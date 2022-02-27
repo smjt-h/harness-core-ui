@@ -11,5 +11,6 @@ declare const styles: {
   readonly createNode: string
   readonly disabled: string
   readonly selected: string
+  readonly steps: string
 }
 export default styles

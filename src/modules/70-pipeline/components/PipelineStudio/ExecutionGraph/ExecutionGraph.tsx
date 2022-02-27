@@ -357,45 +357,64 @@ function ExecutionGraphRef<T extends StageElementConfig>(
   }
 
   const dropNodeListener = (event: any): void => {
-    const eventTemp = event as DefaultNodeEvent
-    eventTemp.stopPropagation()
-    if (event.node?.identifier) {
-      const dropEntity = model.getNodeFromId(event.node.id)
-      if (dropEntity) {
-        const drop = getStepFromNode(state.stepsData, dropEntity, true)
-        const dropNode = drop.node as ExecutionWrapperConfig
-        const current = getStepFromNode(state.stepsData, eventTemp.entity, true, true) as {
-          node: ExecutionWrapperConfig
-          parent?: ExecutionWrapperConfig[]
-        }
-        const skipFlattenIfSameParallel = drop.parent === current.node?.parallel
-        // Check Drop Node and Current node should not be same
-        if (event.node.identifier !== eventTemp.entity.getIdentifier() && dropNode) {
-          if (dropNode?.stepGroup && eventTemp.entity.getParent() instanceof StepGroupNodeLayerModel) {
-            showError(getString('stepGroupInAnotherStepGroup'), undefined, 'pipeline.setgroup.error')
-          } else {
-            const isRemove = removeStepOrGroup(state, dropEntity, skipFlattenIfSameParallel)
-            if (isRemove) {
-              if (current.node) {
-                if (current.parent && (current.node.step || current.node.stepGroup)) {
-                  const index = current.parent?.indexOf(current.node) ?? -1
-                  if (index > -1) {
-                    // Remove current Stage also and make it parallel
-                    current.parent?.splice(index, 1, { parallel: [current.node, dropNode] })
-                    updateStageWithNewData(state)
-                  }
-                } else if (current.node.parallel && (current.node.parallel?.length || 0) > 0) {
-                  current.node.parallel?.push?.(dropNode)
+    const eventTemp = event
+    if (event?.node?.identifier && event?.node?.data) {
+      const drop = getStepFromNode(
+        state.stepsData,
+        undefined,
+        true,
+        false,
+        event?.node?.identifier,
+        event?.node?.parentIdentifier
+      )
+      const dropNode = drop?.node as ExecutionWrapperConfig
+      const current = getStepFromNode(
+        state.stepsData,
+        eventTemp.entity,
+        true,
+        true,
+        event?.destination?.identifier,
+        event?.destination?.parentIdentifier
+      ) as {
+        node: ExecutionWrapperConfig
+        parent?: ExecutionWrapperConfig[]
+      }
+      const skipFlattenIfSameParallel = drop.parent === current.node?.parallel
+      // Check Drop Node and Current node should not be same
+      if (event.node?.identifier !== event?.destination?.identifier && dropNode) {
+        if (dropNode?.stepGroup && event?.destination?.parentIdentifier) {
+          showError(getString('stepGroupInAnotherStepGroup'), undefined, 'pipeline.setgroup.error')
+        } else {
+          const isRemove = removeStepOrGroup(state, event, skipFlattenIfSameParallel)
+          if (isRemove) {
+            if (current.node) {
+              if (current.parent && (current.node.step || current.node.stepGroup)) {
+                const index = current.parent?.indexOf(current.node) ?? -1
+                if (index > -1) {
+                  // Remove current Stage also and make it parallel
+                  current.parent?.splice(index, 1, { parallel: [current.node, dropNode] })
                   updateStageWithNewData(state)
                 }
-              } else {
-                addStepOrGroup(eventTemp.entity, state.stepsData, dropNode, false, state.isRollback)
+              } else if (current.node.parallel && (current.node.parallel?.length || 0) > 0) {
+                current.node.parallel?.push?.(dropNode)
                 updateStageWithNewData(state)
               }
+            } else {
+              addStepOrGroup(
+                { ...eventTemp, node: { ...eventTemp?.destination } },
+                state.stepsData,
+                dropNode,
+                false,
+                state.isRollback
+              )
+              updateStageWithNewData(state)
             }
           }
         }
       }
+      // const dropEntity = model.getNodeFromId(event.node.id)
+      // if (dropEntity) {
+      // }
     }
   }
 
@@ -565,10 +584,9 @@ function ExecutionGraphRef<T extends StageElementConfig>(
       }
     },
     [Event.RemoveNode]: (event: any) => {
-      const eventTemp = event as DefaultNodeEvent
-      eventTemp.stopPropagation()
+      const eventTemp = event
       dynamicPopoverHandler?.hide()
-      const isRemoved = removeStepOrGroup(state, eventTemp.entity)
+      const isRemoved = removeStepOrGroup(state, eventTemp)
       if (isRemoved) {
         const newStateMap = new Map<string, StepState>([...state.states])
         newStateMap.delete(eventTemp.entity?.getIdentifier())
@@ -577,7 +595,7 @@ function ExecutionGraphRef<T extends StageElementConfig>(
           states: newStateMap
         }))
         updateStageWithNewData(state)
-        trackEvent(StepActions.DeleteStep, { type: eventTemp.entity.getType() || '' })
+        trackEvent(StepActions.DeleteStep, { type: eventTemp.entityType || '' })
       }
     },
     [Event.AddParallelNode]: (event: any) => {
@@ -602,7 +620,7 @@ function ExecutionGraphRef<T extends StageElementConfig>(
         }
       }
     },
-    [Event.DropLinkEvent]: dropNodeListener,
+    [Event.DropNodeEvent]: dropNodeListener,
     [Event.MouseEnterNode]: mouseEnterNodeListener,
     [Event.MouseLeaveNode]: mouseLeaveNodeListener
   }
@@ -668,20 +686,28 @@ function ExecutionGraphRef<T extends StageElementConfig>(
       }
     },
     [Event.DropLinkEvent]: (event: any) => {
-      const eventTemp = event as DefaultLinkEvent
-      eventTemp.stopPropagation()
-      if (event.node?.identifier && event.node?.id) {
-        const dropEntity = model.getNodeFromId(event.node.id)
-        if (dropEntity) {
-          const dropNode = getStepFromNode(state.stepsData, dropEntity, true).node as ExecutionWrapperConfig
-          if (dropNode?.stepGroup && isLinkUnderStepGroup(eventTemp.entity)) {
-            showError(getString('stepGroupInAnotherStepGroup'), undefined, 'pipeline.setgroup.error')
-          } else {
-            const isRemove = removeStepOrGroup(state, dropEntity)
-            if (isRemove && dropNode) {
-              addStepOrGroup(eventTemp.entity, state.stepsData, dropNode, false, state.isRollback)
-              updateStageWithNewData(state)
-            }
+      const eventTemp = event
+      // eventTemp.stopPropagation()
+      if (event.node?.identifier && event?.node?.data) {
+        // const dropEntity = model.getNodeFromId(event.node.id)
+        // const dropNode = getStepFromNode(state.stepsData, dropEntity, true).node as ExecutionWrapperConfig
+        if (
+          event?.node?.stepGroup &&
+          event?.node?.nextNode?.parentIdentifier &&
+          event?.node?.prevNode?.parentIdentifier
+        ) {
+          showError(getString('stepGroupInAnotherStepGroup'), undefined, 'pipeline.setgroup.error')
+        } else {
+          const isRemove = removeStepOrGroup(state, event)
+          if (isRemove) {
+            addStepOrGroup(
+              { ...eventTemp, node: { ...eventTemp?.destination } },
+              state.stepsData,
+              event?.node?.data,
+              false,
+              state.isRollback
+            )
+            updateStageWithNewData(state)
           }
         }
       }
@@ -848,7 +874,10 @@ function ExecutionGraphRef<T extends StageElementConfig>(
   const listerners = {
     [Event.ClickNode]: nodeListenersNew[Event.ClickNode],
     [Event.AddParallelNode]: nodeListenersNew[Event.AddParallelNode],
-    [Event.AddLinkClicked]: linkListenersNew[Event.AddLinkClicked]
+    [Event.DropNodeEvent]: nodeListenersNew[Event.DropNodeEvent],
+    [Event.RemoveNode]: nodeListenersNew[Event.RemoveNode],
+    [Event.AddLinkClicked]: linkListenersNew[Event.AddLinkClicked],
+    [Event.DropLinkEvent]: linkListenersNew[Event.DropLinkEvent]
   }
   diagram.registerListeners(listerners)
 

@@ -376,7 +376,7 @@ const StageBuilder: React.FC<StageBuilderProps> = ({ diagram }): JSX.Element => 
     insertAt?: number,
     openSetupAfterAdd?: boolean,
     pipelineTemp?: PipelineInfoConfig,
-    destinationNode?: any
+    destination?: any
   ): void => {
     // call telemetry
     trackEvent(StageActions.SetupStage, { stageType: newStage?.stage?.type || '' })
@@ -385,12 +385,12 @@ const StageBuilder: React.FC<StageBuilderProps> = ({ diagram }): JSX.Element => 
       pipeline.stages = []
     }
     if (droppedOnLink) {
-      if (!destinationNode) {
+      if (!destination) {
         pipeline.stages.push(newStage)
       } else {
         const { index, parIndex } = getStageIndexWithParallelNodesFromPipeline(
           pipeline,
-          destinationNode?.stage?.identifier || destinationNode?.identifier
+          destination?.stage?.identifier || destination?.identifier
         )
         if (parIndex === 0) {
           pipeline.stages.unshift(newStage)
@@ -399,9 +399,7 @@ const StageBuilder: React.FC<StageBuilderProps> = ({ diagram }): JSX.Element => 
         }
       }
     } else if (isParallel && !droppedOnLink) {
-      const { stage, parent } = getStageFromPipeline(
-        destinationNode?.stage?.identifier || destinationNode?.identifier || ''
-      )
+      const { stage, parent } = getStageFromPipeline(destination?.stage?.identifier || destination?.identifier || '')
       const parentTemp = parent as StageElementWrapperConfig
       if (stage) {
         if (parentTemp && parentTemp.parallel && parentTemp.parallel.length > 0) {
@@ -936,12 +934,12 @@ const StageBuilder: React.FC<StageBuilderProps> = ({ diagram }): JSX.Element => 
   }
 
   const dropLinkEvent = (event: any) => {
-    if (event?.node?.identifier === event?.destinationNode?.identifier) {
+    if (event?.node?.identifier === event?.destination?.identifier) {
       return
     }
     if (event.node?.identifier) {
       const dropNode = getStageFromPipeline(event.node.identifier).stage
-      const destinationNode = getStageFromPipeline(event.destinationNode.identifier).stage
+      const destination = getStageFromPipeline(event.destination.identifier).stage
       const parentStageName = (dropNode?.stage as DeploymentStageElementConfig)?.spec?.serviceConfig?.useFromStage
         ?.stage
       const dependentStages = getDependantStages(pipeline, dropNode)
@@ -991,7 +989,7 @@ const StageBuilder: React.FC<StageBuilderProps> = ({ diagram }): JSX.Element => 
 
       const isRemove = removeNodeFromPipeline(getStageFromPipeline(event.node.identifier), pipeline, stageMap, false)
       if (isRemove && dropNode) {
-        addStageNew(dropNode, false, true, undefined, undefined, undefined, destinationNode)
+        addStageNew(dropNode, false, true, undefined, undefined, undefined, destination)
       }
     }
   }
@@ -999,7 +997,7 @@ const StageBuilder: React.FC<StageBuilderProps> = ({ diagram }): JSX.Element => 
   const dropNodeEvent = (event: any) => {
     if (event.node?.identifier) {
       const dropNode = getStageFromPipeline(event?.node?.identifier).stage
-      const current = getStageFromPipeline(event?.destinationNode?.identifier)
+      const current = getStageFromPipeline(event?.destination?.identifier)
       const dependentStages = getDependantStages(pipeline, dropNode)
       const parentStageId = (dropNode?.stage as DeploymentStageElementConfig)?.spec?.serviceConfig?.useFromStage?.stage
       if (parentStageId?.length) {

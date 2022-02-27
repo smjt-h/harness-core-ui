@@ -427,18 +427,68 @@ export const updateStepsState = (
   }
 }
 
-export const removeStepOrGroup = (
-  state: ExecutionGraphState,
-  entity: DefaultNodeModel,
-  skipFlatten = false
-): boolean => {
-  console.log('checkit', entity.getOptions().identifier, entity.getIdentifier())
+// export const removeStepOrGroup = (
+//   state: ExecutionGraphState,
+//   entity: DefaultNodeModel,
+//   skipFlatten = false
+// ): boolean => {
+//   console.log('checkit', entity.getOptions().identifier, entity.getIdentifier())
+//   // 1. services
+//   const servicesData = state.dependenciesData
+//   if (servicesData) {
+//     let idx
+//     servicesData.forEach((service, _idx) => {
+//       if (service.identifier === entity.getOptions().identifier) {
+//         idx = _idx
+//       }
+//     })
+//     if (idx !== undefined) {
+//       servicesData.splice(idx, 1)
+//       return true
+//     }
+//   }
+
+//   // 2. steps
+//   let isRemoved = false
+//   let data: ExecutionWrapper = state.stepsData
+//   const layer = entity.getParent()
+//   if (layer instanceof StepGroupNodeLayerModel) {
+//     const node = getStepFromId(data, layer.getIdentifier() || '', false).node
+//     if (node) {
+//       data = node
+//     }
+//   }
+//   const response = getStepFromId(data, entity.getIdentifier(), true)
+//   if (response.node) {
+//     const index = response.parent.indexOf(response.node)
+//     if (index > -1) {
+//       response.parent.splice(index, 1)
+//       // NOTE: if there is one item in parallel array, we are removing parallel array
+//       if (
+//         !skipFlatten &&
+//         response.parallelParent &&
+//         (response.parallelParent as ExecutionWrapperConfig).parallel?.length === 1
+//       ) {
+//         // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
+//         const stepToReAttach = (response.parallelParent as ExecutionWrapperConfig).parallel![0]
+//         // reattach step
+//         if (response.parallelParentParent && response.parallelParentIdx !== undefined) {
+//           response.parallelParentParent[response.parallelParentIdx] = stepToReAttach
+//         }
+//       }
+//       isRemoved = true
+//     }
+//   }
+//   return isRemoved
+// }
+
+export const removeStepOrGroup = (state: ExecutionGraphState, entity: any, skipFlatten = false): boolean => {
   // 1. services
   const servicesData = state.dependenciesData
   if (servicesData) {
     let idx
     servicesData.forEach((service, _idx) => {
-      if (service.identifier === entity.getOptions().identifier) {
+      if (service.identifier === entity?.node?.identifier) {
         idx = _idx
       }
     })
@@ -451,14 +501,14 @@ export const removeStepOrGroup = (
   // 2. steps
   let isRemoved = false
   let data: ExecutionWrapper = state.stepsData
-  const layer = entity.getParent()
-  if (layer instanceof StepGroupNodeLayerModel) {
-    const node = getStepFromId(data, layer.getIdentifier() || '', false).node
+  // const layer = entity.getParent()
+  if (entity?.node?.parentIdentifier) {
+    const node = getStepFromId(data, entity?.node?.parentIdentifier || '', false).node
     if (node) {
       data = node
     }
   }
-  const response = getStepFromId(data, entity.getIdentifier(), true)
+  const response = getStepFromId(data, entity?.node?.identifier, true)
   if (response.node) {
     const index = response.parent.indexOf(response.node)
     if (index > -1) {

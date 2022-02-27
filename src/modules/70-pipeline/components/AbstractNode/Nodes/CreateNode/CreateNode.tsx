@@ -22,6 +22,10 @@ const CreateNode = (props: any): React.ReactElement => {
         id={props.identifier}
         data-linkid={props.identifier}
         data-nodeid={props.identifier}
+        onDragOver={event => event.preventDefault()}
+        onDrop={event => {
+          props?.onDrop && props?.onDrop(event)
+        }}
         onClick={event => {
           event.preventDefault()
           event.stopPropagation()
@@ -40,16 +44,17 @@ const CreateNode = (props: any): React.ReactElement => {
           cssDefault.defaultCard,
           css.createNew,
           { [css.disabled]: props.disabled || false },
-          { [css.selected]: props?.node?.isSelected() },
+          { [css.selected]: props?.node?.isSelected },
           { [cssDefault.selected]: props.dropable },
-          props.nodeClassName
+          { [props.className]: props.className },
+          {
+            [css.steps]: props.graphType === PipelineGraphType.STAGE_GRAPH
+          }
         )}
-        style={{
-          marginTop: 32 - (props.height || 64) / 2,
-          width: props.graphType === PipelineGraphType.STEP_GRAPH ? 64 : 90,
-          height: props.graphType === PipelineGraphType.STEP_GRAPH ? 64 : 40,
-          ...props.customNodeStyle
-        }}
+        // style={{
+        //   width: props.graphType === PipelineGraphType.STEP_GRAPH ? 64 : 90,
+        //   height: props.graphType === PipelineGraphType.STEP_GRAPH ? 64 : 40
+        // }}
       >
         <div>
           <Icon icon="plus" iconSize={22} color={'var(--diagram-add-node-color)'} />

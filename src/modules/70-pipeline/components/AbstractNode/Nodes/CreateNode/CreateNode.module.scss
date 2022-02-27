@@ -1,6 +1,7 @@
 .createNode {
   cursor: pointer;
-
+  height: 40px;
+  width: 90px;
   display: block;
 
   .createNew {
@@ -22,4 +23,9 @@
   [data-name*='node-name'] {
     word-break: break-word;
   }
+}
+
+.steps {
+  width: 90px;
+  height: 40px;
 }

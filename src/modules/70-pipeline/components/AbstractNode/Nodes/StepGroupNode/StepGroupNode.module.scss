@@ -1,4 +1,11 @@
+.stepGroupNode {
+  height: 80px !important;
+  width: 80px !important;
+}
 .stepGroup {
+  padding-bottom: var(--spacing-xlarge);
+  padding-right: var(--spacing-xxxlarge);
+  padding-left: var(--spacing-xxxlarge);
   .marginBottom {
     margin-bottom: 20px;
   }

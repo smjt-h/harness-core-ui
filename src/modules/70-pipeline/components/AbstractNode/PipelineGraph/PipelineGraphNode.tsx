@@ -3,7 +3,7 @@ import classNames from 'classnames'
 import { NodeType } from '../Node'
 import { checkIntersectionBottom, useIntersectionObserver } from './PipelineGraphUtils'
 import GroupNode from '../Nodes/GroupNode/GroupNode'
-import type { NodeIds, PipelineGraphState } from '../types'
+import { NodeIds, PipelineGraphState, PipelineGraphType } from '../types'
 import css from './PipelineGraph.module.scss'
 export interface PipelineGraphRecursiveProps {
   nodes?: PipelineGraphState[]

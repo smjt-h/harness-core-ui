@@ -14,6 +14,7 @@ declare const styles: {
   readonly stepGroup: string
   readonly stepGroupBody: string
   readonly stepGroupHeader: string
+  readonly stepGroupNode: string
   readonly svgLeftJointPoint: string
   readonly svgRightJointPoint: string
 }
