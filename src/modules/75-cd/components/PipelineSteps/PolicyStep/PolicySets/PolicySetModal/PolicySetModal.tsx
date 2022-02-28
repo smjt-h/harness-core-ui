@@ -30,9 +30,8 @@ import { GetPolicySetQueryParams, PolicySet, useGetPolicySetList } from 'service
 import type { ProjectPathProps } from '@common/interfaces/RouteInterfaces'
 
 import { PolicySetListRenderer } from '../PolicySetListRenderer/PolicySetListRenderer'
-import { PolicySetType } from '../../BasePolicyStep'
-import type { PolicyStepFormData } from '../../PolicyStepTypes'
-import { getErrorMessage } from '../PolicySetsFormField/PolicySetsFormField'
+import { PolicySetType, PolicyStepFormData } from '../../PolicyStepTypes'
+import { getErrorMessage } from '../../utils'
 
 import css from './PolicySetModal.module.scss'
 

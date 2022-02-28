@@ -16,7 +16,7 @@ import type { PolicySet } from 'services/pm'
 
 import { DATE_WITHOUT_TIME_FORMAT } from '@common/utils/StringUtils'
 
-import { PolicySetType } from '../../BasePolicyStep'
+import { PolicySetType } from '../../PolicyStepTypes'
 
 import css from './PolicySetListRenderer.module.scss'
 

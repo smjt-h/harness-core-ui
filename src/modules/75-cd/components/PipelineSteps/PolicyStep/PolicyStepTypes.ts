@@ -7,6 +7,12 @@
 
 import type { StepElementConfig, StepSpecType } from 'services/cd-ng'
 
+export enum PolicySetType {
+  ACCOUNT = 'Account',
+  ORG = 'Org',
+  PROJECT = 'Project'
+}
+
 export interface PolicyStepData extends StepElementConfig {
   spec: PolicyStepInfo
 }
