@@ -1,0 +1,367 @@
+// Jest Snapshot v1, https://goo.gl/fbAQLP
+
+exports[`Policy Set List Renderer snapshot test when no data 1`] = `
+<div>
+  <div
+    class="StyledProps--font StyledProps--main PageBody--pageBody renderer"
+    data-name="page-body"
+  >
+    <div
+      class="StyledProps--font StyledProps--main NoDataCard--noDataCard StyledProps--flex StyledProps--flex-align-center-center"
+    >
+      <div
+        class="Layout--vertical Layout--layout-spacing-medium StyledProps--main"
+        style="align-items: center; margin-top: -48px; width: 470px;"
+      >
+        <span
+          class="bp3-icon StyledProps--main StyledProps--color StyledProps--color-grey600"
+          data-icon="nav-project"
+        >
+          <svg
+            height="48"
+            viewBox="0 0 22 22"
+            width="48"
+            xmlns="http://www.w3.org/2000/svg"
+          >
+            <path
+              d="M1.1 4.583L11 0l9.9 4.583v12.834L11 22l-9.9-4.583zm9 5.171l-7.2-3.33v9.811l7.2 3.338V9.754zm9 6.481V6.424l-7.2 3.33v9.819zm-1.462-11.15L11 2.012 4.362 5.085 11 8.157z"
+              fill="#56778d"
+            />
+          </svg>
+        </span>
+        <p
+          class="StyledProps--font StyledProps--main NoDataCard--message StyledProps--font-align-center StyledProps--color StyledProps--color-grey600"
+        >
+          common.policiesSets.noPolicySetResult
+        </p>
+        <div
+          class="NoDataCard--buttonContainer"
+        />
+      </div>
+    </div>
+  </div>
+</div>
+`;
+
+exports[`Policy Set List Renderer when account data is already selected 1`] = `
+<div>
+  <div
+    class="StyledProps--font StyledProps--main PageBody--pageBody renderer"
+    data-name="page-body"
+  >
+    <div
+      class="Collapse--main policySetRows"
+    >
+      <div
+        class="StyledProps--font StyledProps--main CollapseHeader--main Collapse--header"
+      >
+        <div
+          class="StyledProps--font StyledProps--main CollapseHeader--leftSection"
+        >
+          <span
+            class="bp3-icon StyledProps--main StyledProps--color StyledProps--color-grey400"
+            data-icon="main-chevron-right"
+          >
+            <svg
+              height="10"
+              viewBox="0 0 8 14"
+              width="10"
+              xmlns="http://www.w3.org/2000/svg"
+            >
+              <path
+                d="M7.7 6.3l-6-6C1.5.1 1.3 0 1 0 .4 0 0 .4 0 1c0 .3.1.5.3.7L5.6 7 .3 12.3c-.2.2-.3.4-.3.7 0 .6.4 1 1 1 .3 0 .5-.1.7-.3l6-6c.2-.2.3-.4.3-.7s-.1-.5-.3-.7z"
+                fill="#4d5969"
+              />
+            </svg>
+          </span>
+          <div
+            class="Layout--horizontal StyledProps--main StyledProps--flex StyledProps--flex-justifyContent-flex-start StyledProps--flex-alignItems-center"
+            style="width: 100%;"
+          >
+            <div
+              class="Layout--vertical StyledProps--main StyledProps--padding-left-medium"
+            >
+              <label
+                class="bp3-control bp3-checkbox StyledProps--font Checkbox--checkbox StyledProps--main"
+              >
+                <input
+                  checked=""
+                  name="selectedPolicySets"
+                  type="checkbox"
+                  value="test"
+                />
+                <span
+                  class="bp3-control-indicator"
+                />
+              </label>
+            </div>
+            <p
+              class="StyledProps--font StyledProps--main StyledProps--font-size-normal StyledProps--font-weight-semi-bold StyledProps--color StyledProps--color-black StyledProps--padding-medium"
+            >
+              test
+            </p>
+          </div>
+        </div>
+        <div
+          class="StyledProps--font StyledProps--main"
+        />
+      </div>
+      <div
+        class="Collapse--collapse"
+      >
+        <div
+          class="bp3-collapse"
+        >
+          <div
+            aria-hidden="false"
+            class="bp3-collapse-body"
+            style="transform: translateY(-undefinedpx);"
+          />
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+`;
+
+exports[`Policy Set List Renderer when no data is selected 1`] = `
+<div>
+  <div
+    class="StyledProps--font StyledProps--main PageBody--pageBody renderer"
+    data-name="page-body"
+  >
+    <div
+      class="Collapse--main policySetRows"
+    >
+      <div
+        class="StyledProps--font StyledProps--main CollapseHeader--main Collapse--header"
+      >
+        <div
+          class="StyledProps--font StyledProps--main CollapseHeader--leftSection"
+        >
+          <span
+            class="bp3-icon StyledProps--main StyledProps--color StyledProps--color-grey400"
+            data-icon="main-chevron-right"
+          >
+            <svg
+              height="10"
+              viewBox="0 0 8 14"
+              width="10"
+              xmlns="http://www.w3.org/2000/svg"
+            >
+              <path
+                d="M7.7 6.3l-6-6C1.5.1 1.3 0 1 0 .4 0 0 .4 0 1c0 .3.1.5.3.7L5.6 7 .3 12.3c-.2.2-.3.4-.3.7 0 .6.4 1 1 1 .3 0 .5-.1.7-.3l6-6c.2-.2.3-.4.3-.7s-.1-.5-.3-.7z"
+                fill="#4d5969"
+              />
+            </svg>
+          </span>
+          <div
+            class="Layout--horizontal StyledProps--main StyledProps--flex StyledProps--flex-justifyContent-flex-start StyledProps--flex-alignItems-center"
+            style="width: 100%;"
+          >
+            <div
+              class="Layout--vertical StyledProps--main StyledProps--padding-left-medium"
+            >
+              <label
+                class="bp3-control bp3-checkbox StyledProps--font Checkbox--checkbox StyledProps--main"
+              >
+                <input
+                  name="selectedPolicySets"
+                  type="checkbox"
+                  value="test"
+                />
+                <span
+                  class="bp3-control-indicator"
+                />
+              </label>
+            </div>
+            <p
+              class="StyledProps--font StyledProps--main StyledProps--font-size-normal StyledProps--font-weight-semi-bold StyledProps--color StyledProps--color-black StyledProps--padding-medium"
+            >
+              test
+            </p>
+          </div>
+        </div>
+        <div
+          class="StyledProps--font StyledProps--main"
+        />
+      </div>
+      <div
+        class="Collapse--collapse"
+      >
+        <div
+          class="bp3-collapse"
+        >
+          <div
+            aria-hidden="false"
+            class="bp3-collapse-body"
+            style="transform: translateY(-undefinedpx);"
+          />
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+`;
+
+exports[`Policy Set List Renderer when org data is already selected 1`] = `
+<div>
+  <div
+    class="StyledProps--font StyledProps--main PageBody--pageBody renderer"
+    data-name="page-body"
+  >
+    <div
+      class="Collapse--main policySetRows"
+    >
+      <div
+        class="StyledProps--font StyledProps--main CollapseHeader--main Collapse--header"
+      >
+        <div
+          class="StyledProps--font StyledProps--main CollapseHeader--leftSection"
+        >
+          <span
+            class="bp3-icon StyledProps--main StyledProps--color StyledProps--color-grey400"
+            data-icon="main-chevron-right"
+          >
+            <svg
+              height="10"
+              viewBox="0 0 8 14"
+              width="10"
+              xmlns="http://www.w3.org/2000/svg"
+            >
+              <path
+                d="M7.7 6.3l-6-6C1.5.1 1.3 0 1 0 .4 0 0 .4 0 1c0 .3.1.5.3.7L5.6 7 .3 12.3c-.2.2-.3.4-.3.7 0 .6.4 1 1 1 .3 0 .5-.1.7-.3l6-6c.2-.2.3-.4.3-.7s-.1-.5-.3-.7z"
+                fill="#4d5969"
+              />
+            </svg>
+          </span>
+          <div
+            class="Layout--horizontal StyledProps--main StyledProps--flex StyledProps--flex-justifyContent-flex-start StyledProps--flex-alignItems-center"
+            style="width: 100%;"
+          >
+            <div
+              class="Layout--vertical StyledProps--main StyledProps--padding-left-medium"
+            >
+              <label
+                class="bp3-control bp3-checkbox StyledProps--font Checkbox--checkbox StyledProps--main"
+              >
+                <input
+                  checked=""
+                  name="selectedPolicySets"
+                  type="checkbox"
+                  value="test"
+                />
+                <span
+                  class="bp3-control-indicator"
+                />
+              </label>
+            </div>
+            <p
+              class="StyledProps--font StyledProps--main StyledProps--font-size-normal StyledProps--font-weight-semi-bold StyledProps--color StyledProps--color-black StyledProps--padding-medium"
+            >
+              test
+            </p>
+          </div>
+        </div>
+        <div
+          class="StyledProps--font StyledProps--main"
+        />
+      </div>
+      <div
+        class="Collapse--collapse"
+      >
+        <div
+          class="bp3-collapse"
+        >
+          <div
+            aria-hidden="false"
+            class="bp3-collapse-body"
+            style="transform: translateY(-undefinedpx);"
+          />
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+`;
+
+exports[`Policy Set List Renderer when project data is already selected 1`] = `
+<div>
+  <div
+    class="StyledProps--font StyledProps--main PageBody--pageBody renderer"
+    data-name="page-body"
+  >
+    <div
+      class="Collapse--main policySetRows"
+    >
+      <div
+        class="StyledProps--font StyledProps--main CollapseHeader--main Collapse--header"
+      >
+        <div
+          class="StyledProps--font StyledProps--main CollapseHeader--leftSection"
+        >
+          <span
+            class="bp3-icon StyledProps--main StyledProps--color StyledProps--color-grey400"
+            data-icon="main-chevron-right"
+          >
+            <svg
+              height="10"
+              viewBox="0 0 8 14"
+              width="10"
+              xmlns="http://www.w3.org/2000/svg"
+            >
+              <path
+                d="M7.7 6.3l-6-6C1.5.1 1.3 0 1 0 .4 0 0 .4 0 1c0 .3.1.5.3.7L5.6 7 .3 12.3c-.2.2-.3.4-.3.7 0 .6.4 1 1 1 .3 0 .5-.1.7-.3l6-6c.2-.2.3-.4.3-.7s-.1-.5-.3-.7z"
+                fill="#4d5969"
+              />
+            </svg>
+          </span>
+          <div
+            class="Layout--horizontal StyledProps--main StyledProps--flex StyledProps--flex-justifyContent-flex-start StyledProps--flex-alignItems-center"
+            style="width: 100%;"
+          >
+            <div
+              class="Layout--vertical StyledProps--main StyledProps--padding-left-medium"
+            >
+              <label
+                class="bp3-control bp3-checkbox StyledProps--font Checkbox--checkbox StyledProps--main"
+              >
+                <input
+                  checked=""
+                  name="selectedPolicySets"
+                  type="checkbox"
+                  value="test"
+                />
+                <span
+                  class="bp3-control-indicator"
+                />
+              </label>
+            </div>
+            <p
+              class="StyledProps--font StyledProps--main StyledProps--font-size-normal StyledProps--font-weight-semi-bold StyledProps--color StyledProps--color-black StyledProps--padding-medium"
+            >
+              test
+            </p>
+          </div>
+        </div>
+        <div
+          class="StyledProps--font StyledProps--main"
+        />
+      </div>
+      <div
+        class="Collapse--collapse"
+      >
+        <div
+          class="bp3-collapse"
+        >
+          <div
+            aria-hidden="false"
+            class="bp3-collapse-body"
+            style="transform: translateY(-undefinedpx);"
+          />
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+`;
