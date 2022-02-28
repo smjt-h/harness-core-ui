@@ -100,13 +100,6 @@ export function PolicySetListRenderer({
             expandedIcon={'main-chevron-down'}
           >
             <Layout.Horizontal>
-              {/* TODO: To be added once the policy set list api starts returning policies
-              <Container padding={{ top: 'medium', bottom: 'medium' }} background={Color.GREY_50} width={'50%'}>
-                <Text font={{ size: 'normal' }} padding={{ bottom: 'small' }}>
-                  Policy
-                </Text>
-                <PoliciesRenderer policies={['Policy 1', 'Policy 2', 'Policy 3']} />
-              </Container> */}
               <Container padding={{ top: 'medium', bottom: 'medium' }} background={Color.GREY_50}>
                 <Text font={{ size: 'normal' }} padding={{ bottom: 'small' }} style={{ textTransform: 'capitalize' }}>
                   {getString('common.lastModifiedTime')}
