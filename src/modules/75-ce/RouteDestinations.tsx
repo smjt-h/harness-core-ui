@@ -263,7 +263,7 @@ const CERoutes: React.FC = () => {
         >
           <Budgets />
         </RouteWithLayout>
-
+        {/* 
         <RouteWithLayout
           licenseRedirectData={licenseRedirectData}
           sidebarProps={CESideNavProps}
@@ -274,7 +274,7 @@ const CERoutes: React.FC = () => {
           })}
         >
           <BudgetDetails />
-        </RouteWithLayout>
+        </RouteWithLayout> */}
 
         <RouteWithLayout
           licenseRedirectData={licenseRedirectData}
