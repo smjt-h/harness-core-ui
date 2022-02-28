@@ -70,6 +70,7 @@ const DefaultNode = (props: any): JSX.Element => {
           })
           props?.setSelectedNode(props?.identifier)
         }}
+        onMouseDown={e => e.stopPropagation()}
         onDragOver={event => {
           event.stopPropagation()
 

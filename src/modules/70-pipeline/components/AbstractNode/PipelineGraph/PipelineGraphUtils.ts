@@ -3,10 +3,10 @@ import type { IconName } from '@harness/uicore'
 import { MutableRefObject, RefObject, useEffect, useRef, useState } from 'react'
 import { stageTypeToIconMap } from '@pipeline/components/PipelineInputSetForm/PipelineInputSetForm'
 import type { ExecutionWrapperConfig, StageElementWrapperConfig } from 'services/cd-ng'
+import { StepTypeToPipelineIconMap } from '@pipeline/components/PipelineStudio/ExecutionGraph/ExecutionGraphUtil'
+import type { StepType } from '@pipeline/components/PipelineSteps/PipelineStepInterface'
 import type { PipelineGraphState } from '../types'
 import { PipelineGraphType } from '../types'
-import { StepTypeToPipelineIconMap } from '@pipeline/components/PipelineStudio/ExecutionGraph/ExecutionGraphUtil'
-import { StepType as PipelineStepType } from '@pipeline/components/PipelineSteps/PipelineStepInterface'
 
 const INITIAL_ZOOM_LEVEL = 1
 const ZOOM_INC_DEC_LEVEL = 0.1
@@ -351,7 +351,7 @@ const getNodeInfo = (
 ): { iconName: IconName; nodeType: string } => {
   return graphType === PipelineGraphType.STEP_GRAPH
     ? {
-        iconName: StepTypeToPipelineIconMap[type as any],
+        iconName: StepTypeToPipelineIconMap[type as StepType],
         nodeType: NodeTypeToNodeMap[type as string]
       }
     : {

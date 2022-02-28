@@ -33,7 +33,9 @@ const PipelineGraph = ({ data, getNode, fireEvent, collapseOnIntersect }: Pipeli
   const [selectedNode, setSelectedNode] = useState<string>('')
   const [state, setState] = useState<PipelineGraphState[]>(data)
   const [graphScale, setGraphScale] = useState(INITIAL_ZOOM_LEVEL)
+  // const [position, setPosition] = useState<ControlPosition | undefined>(undefined)
   const canvasRef = useRef<HTMLDivElement>(null)
+
   const uniqueNodeIds = useMemo(
     (): NodeIds => ({
       startNode: uuid(),
@@ -84,9 +86,9 @@ const PipelineGraph = ({ data, getNode, fireEvent, collapseOnIntersect }: Pipeli
   }
 
   return (
-    <div id="overlay" className={css.overlay}>
-      <>
-        <Draggable scale={graphScale} defaultPosition={DEFAULT_POSITION} offsetParent={document.body}>
+    <>
+      <Draggable scale={graphScale} defaultPosition={DEFAULT_POSITION} offsetParent={document.body}>
+        <div id="overlay" className={css.overlay}>
           <div className={css.graphMain} ref={canvasRef} style={{ transform: `scale(${graphScale})` }}>
             <SVGComponent svgPath={svgPath} />
             <PipelineGraphRecursive
@@ -101,10 +103,10 @@ const PipelineGraph = ({ data, getNode, fireEvent, collapseOnIntersect }: Pipeli
               collapseOnIntersect={collapseOnIntersect}
             />
           </div>
-        </Draggable>
-        <GraphActions setGraphScale={setGraphScale} graphScale={graphScale} handleScaleToFit={handleScaleToFit} />
-      </>
-    </div>
+        </div>
+      </Draggable>
+      <GraphActions setGraphScale={setGraphScale} graphScale={graphScale} handleScaleToFit={handleScaleToFit} />
+    </>
   )
 }
 

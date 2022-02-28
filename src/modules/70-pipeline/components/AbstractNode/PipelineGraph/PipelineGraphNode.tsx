@@ -142,24 +142,6 @@ const PipelineGraphNodeBasic = ({
     updateGraphLinks?.()
   }, [intersectingIndex])
 
-  const getGroupNodeHeader = (): Array<PipelineGraphState> => {
-    const nodes: PipelineGraphState[] = []
-    if (!data) return nodes
-    nodes.push(data)
-    data?.children?.forEach(child => {
-      if (nodes.length < 2) {
-        nodes.push(child)
-      }
-      if (child?.identifier === selectedNode) {
-        if (nodes.length === 2) {
-          nodes.splice(1, 1)
-          nodes.unshift(child)
-        }
-      }
-    })
-    return nodes
-  }
-
   return (
     <div
       className={classNames(
