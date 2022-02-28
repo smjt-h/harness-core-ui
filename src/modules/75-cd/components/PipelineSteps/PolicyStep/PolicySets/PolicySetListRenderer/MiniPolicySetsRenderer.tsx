@@ -16,7 +16,7 @@ import { GetPolicySet, GetPolicySetQueryParams, LinkedPolicy } from 'services/pm
 import type { ProjectPathProps } from '@common/interfaces/RouteInterfaces'
 
 import { PolicySetType } from '../../BasePolicyStep'
-import { getErrorMessage } from '../PolicySetModal/PolicySetModal'
+import { getErrorMessage } from '../PolicySetsFormField/PolicySetsFormField'
 
 import css from './PolicySetListRenderer.module.scss'
 
@@ -48,33 +48,34 @@ export function MiniPolicySetsRenderer({ policySetIds }: MiniPolicySetsRendererP
               if (error) {
                 showError(getErrorMessage(error))
                 return null
-              }
-              return (
-                <>
-                  {policySet && (
-                    <Layout.Horizontal
-                      className={css.policySetHolder}
-                      flex={{ justifyContent: 'space-between', alignItems: 'center' }}
-                    >
-                      {loading ? (
-                        <Spinner size={Spinner.SIZE_SMALL} />
-                      ) : (
-                        <>
-                          <Text lineClamp={1} color={Color.BLACK}>
-                            {policySet.name}
-                          </Text>
-                          <Layout.Horizontal flex={{ justifyContent: 'flex-end', alignItems: 'center' }}>
-                            <MiniPoliciesRenderer policies={defaultTo(policySet.policies, [])} />
-                            <Text font={'small'} width={48}>
-                              {policySetType}
+              } else {
+                return (
+                  <>
+                    {policySet && (
+                      <Layout.Horizontal
+                        className={css.policySetHolder}
+                        flex={{ justifyContent: 'space-between', alignItems: 'center' }}
+                      >
+                        {loading ? (
+                          <Spinner size={Spinner.SIZE_SMALL} />
+                        ) : (
+                          <>
+                            <Text lineClamp={1} color={Color.BLACK}>
+                              {policySet.name}
                             </Text>
-                          </Layout.Horizontal>
-                        </>
-                      )}
-                    </Layout.Horizontal>
-                  )}
-                </>
-              )
+                            <Layout.Horizontal flex={{ justifyContent: 'flex-end', alignItems: 'center' }}>
+                              <MiniPoliciesRenderer policies={defaultTo(policySet.policies, [])} />
+                              <Text font={'small'} width={48}>
+                                {policySetType}
+                              </Text>
+                            </Layout.Horizontal>
+                          </>
+                        )}
+                      </Layout.Horizontal>
+                    )}
+                  </>
+                )
+              }
             }}
           </GetPolicySet>
         )
@@ -89,6 +90,7 @@ interface MiniPoliciesRendererProps {
 
 export const MiniPoliciesRenderer = ({ policies }: MiniPoliciesRendererProps) => {
   const length = policies.length
+  // istanbul ignore else
   if (length === 0) {
     return null
   }

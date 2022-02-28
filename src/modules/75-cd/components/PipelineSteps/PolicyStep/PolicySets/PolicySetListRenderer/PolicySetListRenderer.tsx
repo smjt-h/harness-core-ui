@@ -7,6 +7,7 @@
 
 import React, { FormEvent } from 'react'
 import moment from 'moment'
+import { defaultTo } from 'lodash-es'
 import type { GetDataError } from 'restful-react'
 
 import { Checkbox, Collapse, Color, Container, Layout, Page, Text } from '@harness/uicore'
@@ -43,8 +44,8 @@ export function PolicySetListRenderer({
   return (
     <Page.Body
       loading={loading}
-      error={(error?.data as Error)?.message || error?.message}
-      retryOnError={() => refetch()}
+      error={/*istanbul ignore next*/ defaultTo((error?.data as Error)?.message, error?.message)}
+      retryOnError={/* istanbul ignore next */ () => refetch()}
       noData={{
         when: () => !policySetList?.length,
         icon: 'nav-project',
