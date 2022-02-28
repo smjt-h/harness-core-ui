@@ -8,6 +8,7 @@
 import React from 'react'
 import * as Yup from 'yup'
 import type { FormikProps } from 'formik'
+import { defaultTo } from 'lodash-es'
 
 import { Formik } from '@harness/uicore'
 import { useStrings } from 'framework/strings'
@@ -30,7 +31,7 @@ interface PolicyStepWidgetProps {
 }
 
 function PolicyStepWidget(
-  { initialValues, onUpdate, onChange, isNewStep = true, readonly, stepViewType }: PolicyStepWidgetProps,
+  { initialValues, onUpdate, onChange, isNewStep, readonly, stepViewType }: PolicyStepWidgetProps,
   formikRef: StepFormikFowardRef
 ): JSX.Element {
   const { getString } = useStrings()
@@ -53,11 +54,13 @@ function PolicyStepWidget(
 
   return (
     <Formik<PolicyStepFormData>
-      onSubmit={submit => {
-        onUpdate?.(submit)
-      }}
+      onSubmit={
+        /* istanbul ignore next */ values => {
+          onUpdate?.(values)
+        }
+      }
       validate={formValues => {
-        onChange?.(formValues)
+        /* istanbul ignore next */ onChange?.(formValues)
       }}
       formName="policyStepForm"
       initialValues={initialValues}
@@ -65,7 +68,14 @@ function PolicyStepWidget(
     >
       {(formik: FormikProps<PolicyStepFormData>) => {
         setFormikRef(formikRef, formik)
-        return <BasePolicyStep isNewStep={isNewStep} formik={formik} readonly={readonly} stepViewType={stepViewType} />
+        return (
+          <BasePolicyStep
+            isNewStep={defaultTo(isNewStep, true)}
+            formik={formik}
+            readonly={readonly}
+            stepViewType={stepViewType}
+          />
+        )
       }}
     </Formik>
   )
