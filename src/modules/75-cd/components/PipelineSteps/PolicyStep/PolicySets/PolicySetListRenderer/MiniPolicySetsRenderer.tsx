@@ -15,8 +15,8 @@ import { GetPolicySet, GetPolicySetQueryParams, LinkedPolicy } from 'services/pm
 
 import type { ProjectPathProps } from '@common/interfaces/RouteInterfaces'
 
-import { PolicySetType } from '../../BasePolicyStep'
-import { getErrorMessage } from '../PolicySetsFormField/PolicySetsFormField'
+import { PolicySetType } from '../../PolicyStepTypes'
+import { getErrorMessage } from '../../utils'
 
 import css from './PolicySetListRenderer.module.scss'
 

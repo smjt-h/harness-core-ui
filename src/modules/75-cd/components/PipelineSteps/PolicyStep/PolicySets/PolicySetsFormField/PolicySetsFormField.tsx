@@ -7,7 +7,7 @@
 
 import React from 'react'
 import type { FormikErrors, FormikProps } from 'formik'
-import { defaultTo, get } from 'lodash-es'
+import { defaultTo } from 'lodash-es'
 
 import { Button, FormError } from '@harness/uicore'
 import { useModalHook } from '@harness/use-modal'
@@ -72,6 +72,3 @@ const PolicySetsFormField = ({
 }
 
 export default PolicySetsFormField
-
-export const getErrorMessage = (error: any): string =>
-  get(error, 'data.error', get(error, 'data.message', error?.message))
