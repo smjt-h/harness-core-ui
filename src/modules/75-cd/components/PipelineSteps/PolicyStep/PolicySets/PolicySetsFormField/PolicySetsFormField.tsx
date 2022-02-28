@@ -25,7 +25,7 @@ import css from './PolicySetsFormField.module.scss'
 interface PolicySetsFormFieldInterface extends Omit<IFormGroupProps, 'label'> {
   name: string
   formikProps?: FormikProps<PolicyStepFormData>
-  error?: string | FormikErrors<any> | undefined
+  error?: string | FormikErrors<any>
   stepViewType?: StepViewType
 }
 
