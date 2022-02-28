@@ -26,7 +26,7 @@ export const ManifestDataType: Record<ManifestTypes, ManifestTypes> = {
 export const ManifestStoreMap: { [key: string]: ManifestStores } = {
   Git: 'Git',
   Github: 'Github',
-  GitLab: 'Gitlab',
+  GitLab: 'GitLab',
   Bitbucket: 'Bitbucket',
   Http: 'Http',
   S3: 'S3',
@@ -81,7 +81,7 @@ export const helmVersions: Array<{ label: string; value: HelmVersionOptions }> =
 export const ManifestIconByType: Record<ManifestStores, IconName> = {
   Git: 'service-github',
   Github: 'github',
-  Gitlab: 'service-gotlab',
+  GitLab: 'service-gotlab',
   Bitbucket: 'bitbucket',
   Http: 'service-helm',
   S3: 'service-service-s3',
@@ -91,7 +91,7 @@ export const ManifestIconByType: Record<ManifestStores, IconName> = {
 export const ManifestStoreTitle: Record<ManifestStores, StringKeys> = {
   Git: 'pipeline.manifestType.gitConnectorLabel',
   Github: 'common.repo_provider.githubLabel',
-  Gitlab: 'common.repo_provider.gitlabLabel',
+  GitLab: 'common.repo_provider.gitlabLabel',
   Bitbucket: 'pipeline.manifestType.bitBucketLabel',
   Http: 'pipeline.manifestType.httpHelmRepoConnectorLabel',
   S3: 'connectors.S3',
@@ -101,7 +101,7 @@ export const ManifestStoreTitle: Record<ManifestStores, StringKeys> = {
 export const ManifestToConnectorMap: Record<ManifestStores | string, ConnectorInfoDTO['type']> = {
   Git: Connectors.GIT,
   Github: Connectors.GITHUB,
-  Gitlab: Connectors.GITLAB,
+  GitLab: Connectors.GITLAB,
   Bitbucket: Connectors.BITBUCKET,
   Http: Connectors.HttpHelmRepo,
   S3: Connectors.AWS,
@@ -111,7 +111,7 @@ export const ManifestToConnectorMap: Record<ManifestStores | string, ConnectorIn
 export const ManifestToConnectorLabelMap: Record<ManifestStores, StringKeys> = {
   Git: 'pipeline.manifestType.gitConnectorLabel',
   Github: 'common.repo_provider.githubLabel',
-  Gitlab: 'common.repo_provider.gitlabLabel',
+  GitLab: 'common.repo_provider.gitlabLabel',
   Bitbucket: 'pipeline.manifestType.bitBucketLabel',
   Http: 'connectors.title.helmConnector',
   S3: 'pipeline.manifestToConnectorLabelMap.AWSLabel',

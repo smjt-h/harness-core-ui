@@ -25,7 +25,7 @@ export type ManifestTypes =
   | 'OpenshiftParam'
   | 'KustomizePatches'
 
-export type ManifestStores = 'Git' | 'Github' | 'Gitlab' | 'Bitbucket' | 'Http' | 'S3' | 'Gcs'
+export type ManifestStores = 'Git' | 'Github' | 'GitLab' | 'Bitbucket' | 'Http' | 'S3' | 'Gcs'
 export type HelmVersionOptions = 'V2' | 'V3'
 export interface ManifestSelectionProps {
   isForOverrideSets?: boolean
