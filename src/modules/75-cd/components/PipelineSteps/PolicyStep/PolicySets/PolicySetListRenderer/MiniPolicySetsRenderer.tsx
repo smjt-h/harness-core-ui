@@ -27,11 +27,10 @@ interface MiniPolicySetsRendererProps {
 export function MiniPolicySetsRenderer({ policySetIds }: MiniPolicySetsRendererProps) {
   const { accountId: accountIdentifier, projectIdentifier, orgIdentifier } = useParams<ProjectPathProps>()
   const { showError } = useToaster()
-
   return (
     <>
       {policySetIds.map(policySetId => {
-        const accountType = policySetId.includes('acc.')
+        const policySetType = policySetId.includes('acc.')
           ? PolicySetType.ACCOUNT
           : policySetId.includes('org.')
           ? PolicySetType.ORG
@@ -39,17 +38,12 @@ export function MiniPolicySetsRenderer({ policySetIds }: MiniPolicySetsRendererP
 
         const queryParams: GetPolicySetQueryParams = {
           accountIdentifier,
-          ...((accountType === PolicySetType.ORG || accountType === PolicySetType.PROJECT) && { orgIdentifier }),
-          ...(accountType === PolicySetType.PROJECT && { projectIdentifier })
+          ...((policySetType === PolicySetType.ORG || policySetType === PolicySetType.PROJECT) && { orgIdentifier }),
+          ...(policySetType === PolicySetType.PROJECT && { projectIdentifier })
         }
 
         return (
-          <GetPolicySet
-            policyset={policySetId}
-            resolve={psInfo => psInfo}
-            queryParams={{ ...queryParams }}
-            key={policySetId}
-          >
+          <GetPolicySet policyset={policySetId} queryParams={{ ...queryParams }} key={policySetId}>
             {(policySet, { loading, error }) => {
               if (error) {
                 showError(getErrorMessage(error))
@@ -72,7 +66,7 @@ export function MiniPolicySetsRenderer({ policySetIds }: MiniPolicySetsRendererP
                           <Layout.Horizontal flex={{ justifyContent: 'flex-end', alignItems: 'center' }}>
                             <MiniPoliciesRenderer policies={defaultTo(policySet.policies, [])} />
                             <Text font={'small'} width={48}>
-                              {accountType}
+                              {policySetType}
                             </Text>
                           </Layout.Horizontal>
                         </>

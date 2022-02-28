@@ -30,7 +30,7 @@ export default function PolicyInputSetStep(props: {
   const { readonly, template, path } = props
   const { getString } = useStrings()
   const { expressions } = useVariablesExpression()
-  const prefix = isEmpty(path) ? '' : `${path}.`
+  const prefix = isEmpty(path) ? /* istanbul ignore next */ '' : `${path}.`
 
   return (
     <>
