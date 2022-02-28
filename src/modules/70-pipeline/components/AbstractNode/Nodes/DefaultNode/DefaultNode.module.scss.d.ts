@@ -18,6 +18,7 @@ declare const styles: {
   readonly iconGroup: string
   readonly inComplete: string
   readonly left: string
+  readonly marginBottom: string
   readonly markerEnd: string
   readonly markerStart: string
   readonly nameText: string
@@ -26,6 +27,7 @@ declare const styles: {
   readonly secondaryIcon: string
   readonly selected: string
   readonly showIcon: string
+  readonly stepGroupAddIcon: string
   readonly template: string
   readonly tertiaryIcon: string
 }

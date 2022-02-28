@@ -54,40 +54,34 @@ export const StepGroupNode = (props: any): JSX.Element => {
   const [addClicked, setAddClicked] = React.useState(false)
   const [isNodeCollapsed, setNodeCollapsed] = React.useState(false)
   // const [hover, setHover] = React.useState(false)
-  //   React.useEffect(() => {
-  //     const nodeLayer = layerRef.current
+  React.useEffect(() => {
+    const nodeLayer = layerRef.current
 
-  //     const onMouseOver = (e: MouseEvent): void => {
-  //       if (!addClicked) {
-  //         setVisibilityOfAdd(true)
-  //       }
-  //       onMouseOverNode(e, props.layer)
-  //     }
+    const onMouseOver = (e: MouseEvent): void => {
+      if (!addClicked) {
+        setVisibilityOfAdd(true)
+      }
+      onMouseOverNode(e, props.layer)
+    }
 
-  //     const onMouseEnter = (e: MouseEvent): void => {
-  //       onMouseEnterNode(e, props.layer)
-  //     }
+    const onMouseLeave = (e: MouseEvent): void => {
+      if (!addClicked) {
+        setVisibilityOfAdd(false)
+      }
+      onMouseLeaveNode(e, props.layer)
+    }
 
-  //     const onMouseLeave = (e: MouseEvent): void => {
-  //       if (!addClicked) {
-  //         setVisibilityOfAdd(false)
-  //       }
-  //       onMouseLeaveNode(e, props.layer)
-  //     }
-
-  //     if (nodeLayer && allowAdd) {
-  //       nodeLayer.addEventListener('mouseenter', onMouseEnter)
-  //       nodeLayer.addEventListener('mouseover', onMouseOver)
-  //       nodeLayer.addEventListener('mouseleave', onMouseLeave)
-  //     }
-  //     return () => {
-  //       if (nodeLayer && allowAdd) {
-  //         nodeLayer.removeEventListener('mouseenter', onMouseEnter)
-  //         nodeLayer.removeEventListener('mouseover', onMouseOver)
-  //         nodeLayer.removeEventListener('mouseleave', onMouseLeave)
-  //       }
-  //     }
-  //   }, [layerRef, allowAdd, addClicked])
+    if (nodeLayer && allowAdd) {
+      nodeLayer.addEventListener('mouseover', onMouseOver)
+      nodeLayer.addEventListener('mouseleave', onMouseLeave)
+    }
+    return () => {
+      if (nodeLayer && allowAdd) {
+        nodeLayer.removeEventListener('mouseover', onMouseOver)
+        nodeLayer.removeEventListener('mouseleave', onMouseLeave)
+      }
+    }
+  }, [layerRef, allowAdd])
 
   React.useEffect(() => {
     if (!addClicked) {
@@ -175,7 +169,7 @@ export const StepGroupNode = (props: any): JSX.Element => {
               />
             </div>
           </div>
-          {allowAdd && (
+          {allowAdd && showAdd && (
             <CreateNode
               className={css.stepGroupNode}
               onDrop={(event: any) => {

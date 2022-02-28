@@ -54,7 +54,7 @@ const DefaultNode = (props: any): JSX.Element => {
   return (
     <>
       <div
-        className={`${cx(css.defaultNode, 'default-node')} draggable`}
+        className={`${cx(css.defaultNode, 'default-node', { [css.marginBottom]: props.isParallelNode })} draggable`}
         ref={nodeRef}
         onClick={event => {
           if (props?.onClick) {
@@ -227,7 +227,9 @@ const DefaultNode = (props: any): JSX.Element => {
               destination: props
             })
           }}
-          className={cx(css.addNodeIcon, css.left)}
+          className={cx(css.addNodeIcon, css.left, {
+            [css.stepGroupAddIcon]: props.graphType === PipelineGraphType.STEP_GRAPH
+          })}
         >
           <Icon name="plus" color={Color.WHITE} />
         </div>
@@ -262,7 +264,9 @@ const DefaultNode = (props: any): JSX.Element => {
                 destination: props
               })
             }}
-            className={cx(css.addNodeIcon, css.right)}
+            className={cx(css.addNodeIcon, css.right, {
+              [css.stepGroupAddIcon]: props.graphType === PipelineGraphType.STEP_GRAPH
+            })}
           >
             <Icon name="plus" color={Color.WHITE} />
           </div>

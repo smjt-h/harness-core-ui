@@ -11,6 +11,10 @@
   height: 80px;
   cursor: default;
 
+  &.marginBottom {
+    margin-bottom: 20px;
+  }
+
   &.draggable {
     cursor: move;
   }
@@ -164,6 +168,9 @@
   opacity: 0;
   border-radius: 50%;
   padding: 2px;
+  &.stepGroupAddIcon {
+    top: -56px;
+  }
   &:hover {
     opacity: 1;
     cursor: pointer;

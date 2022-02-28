@@ -94,8 +94,7 @@ const PipelineGraph = ({ data, getNode, fireEvent, collapseOnIntersect }: Pipeli
       <Draggable scale={graphScale} defaultPosition={DEFAULT_POSITION} offsetParent={document.body}>
         <div
           id="overlay"
-          onClick={e => {
-            e.stopPropagation()
+          onClick={() => {
             fireEvent({ type: Event.CanvasClick })
           }}
           className={css.overlay}
