@@ -30,8 +30,7 @@ export class PolicyStep extends PipelineStep<PolicyStepData> {
 
   protected type = StepType.Policy
   protected stepName = 'Configure Run Test Steps'
-  // TODO: Change icon name
-  protected stepIcon: IconName = 'command-shell-script'
+  protected stepIcon: IconName = 'evaluate-policy'
   protected stepIconColor = Color.GREY_700
   protected stepDescription: keyof StringsMap = 'pipeline.stepDescription.Policy'
 
