@@ -124,7 +124,7 @@ tokens:
   revoked: 'Revoked'
   tokenRequired: 'Token is required.'
   createdBySystem: 'system'
-delegateProfilesDepricated: 'Delegate profiles are depricated, please use INIT_SCRIPT instead.'
+delegateProfilesDepricated: 'Delegate profiles are deprecated, please use INIT_SCRIPT instead.'
 noInstances: 'No instances'
 successfullyUpdatedConfig: 'Successfully Updated Delegate Configuration'
 configNameRequired: 'Delegate Configuration name is Required.'
