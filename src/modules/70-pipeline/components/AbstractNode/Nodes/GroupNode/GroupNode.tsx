@@ -58,8 +58,9 @@ const GroupNode = (props: any): React.ReactElement => {
     <div
       className={css.defaultNode}
       ref={nodeRef}
-      onMouseDown={(event: any) => {
+      onClick={(event: any) => {
         event.preventDefault()
+        event.stopPropagation()
         props?.fireEvent({
           type: Event.ClickNode,
           entityType: DiagramType.GroupNode,
@@ -85,13 +86,20 @@ const GroupNode = (props: any): React.ReactElement => {
       }}
       onDrop={event => {
         event.stopPropagation()
-        if (event.dataTransfer.types.indexOf(DiagramDrag.AllowDropOnNode) !== -1) {
-          const dropData: { id: string; identifier: string } = JSON.parse(
-            event.dataTransfer.getData(DiagramDrag.NodeDrag)
-          )
-          props.node.setSelected(false)
-          props.node.fireEvent({ node: dropData }, Event.DropLinkEvent)
-        }
+        props?.fireEvent({
+          type: Event.DropNodeEvent,
+          entityType: DiagramType.Default,
+          node: JSON.parse(event.dataTransfer.getData(DiagramDrag.NodeDrag)),
+          // last element of groupnode
+          destination: props?.children?.slice(-1)?.[0]
+        })
+        // if (event.dataTransfer.types.indexOf(DiagramDrag.AllowDropOnNode) !== -1) {
+        //   const dropData: { id: string; identifier: string } = JSON.parse(
+        //     event.dataTransfer.getData(DiagramDrag.NodeDrag)
+        //   )
+        //   props.node.setSelected(false)
+        //   props.node.fireEvent({ node: dropData }, Event.DropLinkEvent)
+        // }
       }}
     >
       <div

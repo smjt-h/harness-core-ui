@@ -10,6 +10,7 @@ export const Event: { [key: string]: string } = {
   SelectionChanged: 'selectionChanged',
   ClickNode: 'clickNode',
   ColorChanged: 'colorChanged',
+  CanvasClick: 'CanvasClick',
   WidthChanged: 'widthChanged',
   RemoveNode: 'removeNode',
   NodesUpdated: 'nodesUpdated',

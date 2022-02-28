@@ -871,13 +871,18 @@ function ExecutionGraphRef<T extends StageElementConfig>(
     }
   }, [ref, stepGroupUpdated])
 
+  const canvasClick = () => {
+    dynamicPopoverHandler?.hide()
+  }
+
   const listerners = {
     [Event.ClickNode]: nodeListenersNew[Event.ClickNode],
     [Event.AddParallelNode]: nodeListenersNew[Event.AddParallelNode],
     [Event.DropNodeEvent]: nodeListenersNew[Event.DropNodeEvent],
     [Event.RemoveNode]: nodeListenersNew[Event.RemoveNode],
     [Event.AddLinkClicked]: linkListenersNew[Event.AddLinkClicked],
-    [Event.DropLinkEvent]: linkListenersNew[Event.DropLinkEvent]
+    [Event.DropLinkEvent]: linkListenersNew[Event.DropLinkEvent],
+    [Event.CanvasClick]: canvasClick
   }
   diagram.registerListeners(listerners)
 

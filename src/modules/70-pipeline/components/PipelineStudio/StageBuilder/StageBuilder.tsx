@@ -1056,13 +1056,18 @@ const StageBuilder: React.FC<StageBuilderProps> = ({ diagram }): JSX.Element => 
     }
   }
 
+  const canvasClick = () => {
+    dynamicPopoverHandler?.hide()
+  }
+
   const events = {
     [Event.DropLinkEvent]: dropLinkEvent,
     [Event.DropNodeEvent]: dropNodeEvent,
     [Event.ClickNode]: nodeListeners[Event.ClickNode],
     [Event.AddParallelNode]: nodeListeners[Event.AddParallelNode],
     [Event.RemoveNode]: nodeListeners[Event.RemoveNode],
-    [Event.AddLinkClicked]: linkListeners[Event.AddLinkClicked]
+    [Event.AddLinkClicked]: linkListeners[Event.AddLinkClicked],
+    [Event.CanvasClick]: canvasClick
   }
 
   diagram.registerListeners(events)

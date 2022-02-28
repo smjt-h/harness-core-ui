@@ -21,6 +21,7 @@ interface StepGroupGraphProps {
   updateSVGLinks?: (svgPath: string[]) => void
   prevNodeIdentifier?: string
   identifier?: string
+  renderer?: boolean
 }
 
 interface LayoutStyles {
@@ -64,7 +65,13 @@ const StepGroupGraph = (props: StepGroupGraphProps): React.ReactElement => {
       setSVGLinks()
       setLayoutStyles(getCalculatedStyles(state))
     }
-  }, [state])
+  }, [state, props?.renderer])
+
+  useLayoutEffect(() => {
+    if (state?.length) {
+      setSVGLinks()
+    }
+  }, [layoutStyles])
 
   const setSVGLinks = (): void => {
     const SVGLinks = getSVGLinksFromPipeline(state)

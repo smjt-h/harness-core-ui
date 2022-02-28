@@ -95,9 +95,9 @@ export const StepGroupNode = (props: any): JSX.Element => {
     }
   }, [addClicked])
 
-  // React.useEffect(() => {
-  //   props?.rerenderChild?.()
-  // }, [isNodeCollapsed])
+  React.useEffect(() => {
+    props?.updateSvgs()
+  }, [isNodeCollapsed])
 
   return (
     <>
@@ -171,6 +171,7 @@ export const StepGroupNode = (props: any): JSX.Element => {
                 fireEvent={props?.fireEvent}
                 getNode={props?.getNode}
                 updateSVGLinks={props.updateSVGLinks}
+                renderer={props?.renderer}
               />
             </div>
           </div>

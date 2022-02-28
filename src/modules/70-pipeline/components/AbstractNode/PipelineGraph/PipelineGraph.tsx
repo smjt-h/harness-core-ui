@@ -13,6 +13,7 @@ import GraphActions from '../GraphActions/GraphActions'
 import { PipelineGraphRecursive } from './PipelineGraphNode'
 import { NodeIds, PipelineGraphState, PipelineGraphType, SVGPathRecord } from '../types'
 import css from './PipelineGraph.module.scss'
+import { Event } from '@pipeline/components/Diagram'
 
 interface ControlPosition {
   x: number
@@ -33,7 +34,10 @@ const PipelineGraph = ({ data, getNode, fireEvent, collapseOnIntersect }: Pipeli
   const [selectedNode, setSelectedNode] = useState<string>('')
   const [state, setState] = useState<PipelineGraphState[]>(data)
   const [graphScale, setGraphScale] = useState(INITIAL_ZOOM_LEVEL)
-  // const [position, setPosition] = useState<ControlPosition | undefined>(undefined)
+  const [renderer, setRenderer] = useState(false)
+  const updateSvgs = () => {
+    setRenderer(!renderer)
+  }
   const canvasRef = useRef<HTMLDivElement>(null)
 
   const uniqueNodeIds = useMemo(
@@ -59,7 +63,7 @@ const PipelineGraph = ({ data, getNode, fireEvent, collapseOnIntersect }: Pipeli
     if (state?.length) {
       setSVGLinks()
     }
-  }, [state])
+  }, [state, renderer])
 
   const setSVGLinks = (): void => {
     const SVGLinks = getSVGLinksFromPipeline(state)
@@ -88,7 +92,14 @@ const PipelineGraph = ({ data, getNode, fireEvent, collapseOnIntersect }: Pipeli
   return (
     <>
       <Draggable scale={graphScale} defaultPosition={DEFAULT_POSITION} offsetParent={document.body}>
-        <div id="overlay" className={css.overlay}>
+        <div
+          id="overlay"
+          onClick={e => {
+            e.stopPropagation()
+            fireEvent({ type: Event.CanvasClick })
+          }}
+          className={css.overlay}
+        >
           <div className={css.graphMain} ref={canvasRef} style={{ transform: `scale(${graphScale})` }}>
             <SVGComponent svgPath={svgPath} />
             <PipelineGraphRecursive
@@ -101,6 +112,8 @@ const PipelineGraph = ({ data, getNode, fireEvent, collapseOnIntersect }: Pipeli
               updateGraphLinks={setSVGLinks}
               startEndNodeStyle={state?.[0]?.graphType === PipelineGraphType.STEP_GRAPH ? { height: '64px' } : {}}
               collapseOnIntersect={collapseOnIntersect}
+              updateSvgs={updateSvgs}
+              renderer={renderer}
             />
           </div>
         </div>

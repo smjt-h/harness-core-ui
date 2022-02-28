@@ -17,6 +17,8 @@ export interface PipelineGraphRecursiveProps {
   parentIdentifier?: string
   updateGraphLinks?: () => void
   collapseOnIntersect?: boolean
+  updateSvgs?: () => void
+  renderer?: boolean
 }
 export const PipelineGraphRecursive = ({
   nodes,
@@ -29,7 +31,9 @@ export const PipelineGraphRecursive = ({
   startEndNodeStyle,
   parentIdentifier,
   updateGraphLinks,
-  collapseOnIntersect
+  collapseOnIntersect,
+  updateSvgs,
+  renderer
 }: PipelineGraphRecursiveProps): React.ReactElement => {
   const StartNode: React.FC<any> | undefined = getNode(NodeType.StartNode)
   const CreateNode: React.FC<any> | undefined = getNode(NodeType.CreateNode)
@@ -60,6 +64,8 @@ export const PipelineGraphRecursive = ({
             prevNode={nodes?.[index - 1]}
             updateGraphLinks={updateGraphLinks}
             collapseOnIntersect={collapseOnIntersect}
+            updateSvgs={updateSvgs}
+            renderer={renderer}
           />
         )
       })}
@@ -99,6 +105,8 @@ interface PipelineGraphNode {
   prevNode?: PipelineGraphState
   updateGraphLinks?: () => void
   collapseOnIntersect?: boolean
+  updateSvgs?: () => void
+  renderer?: boolean
 }
 
 const PipelineGraphNodeBasic = ({
@@ -117,7 +125,9 @@ const PipelineGraphNodeBasic = ({
   prevNode,
   nextNode,
   updateGraphLinks,
-  collapseOnIntersect
+  collapseOnIntersect,
+  updateSvgs,
+  renderer
 }: PipelineGraphNode): React.ReactElement | null => {
   const NodeComponent: React.FC<any> | undefined = getNode?.(data?.nodeType) || getNode?.(NodeType.Default)
   const ref = useRef<HTMLDivElement>(null)
@@ -166,6 +176,8 @@ const PipelineGraphNodeBasic = ({
             prevNodeIdentifier={prevNodeIdentifier}
             prevNode={prevNode}
             nextNode={nextNode}
+            updateSvgs={updateSvgs}
+            renderer={renderer}
           />
         )}
         {data?.children?.map((currentStage, index) => {
@@ -185,9 +197,9 @@ const PipelineGraphNodeBasic = ({
                   fireEvent={fireEvent}
                   className={classNames(css.graphNode, className)}
                   setSelectedNode={setSelectedNode}
-                  isSelected={selectedNode === data?.identifier}
+                  isSelected={selectedNode === currentStage?.identifier}
                   isParallelNode={true}
-                  key={data?.identifier}
+                  key={currentStage?.identifier}
                   allowAdd={true}
                   prevNodeIdentifier={prevNodeIdentifier}
                   identifier={currentStage.identifier}
@@ -202,7 +214,7 @@ const PipelineGraphNodeBasic = ({
                     fireEvent={fireEvent}
                     className={classNames(css.graphNode, className)}
                     setSelectedNode={setSelectedNode}
-                    isSelected={selectedNode === data?.identifier}
+                    isSelected={selectedNode === currentStage?.identifier}
                     isParallelNode={true}
                     key={currentStage?.identifier}
                     allowAdd={index + 1 === data?.children?.length}
@@ -210,6 +222,8 @@ const PipelineGraphNodeBasic = ({
                     prevNodeIdentifier={prevNodeIdentifier}
                     prevNode={prevNode}
                     nextNode={nextNode}
+                    updateSvgs={updateSvgs}
+                    renderer={renderer}
                   />
                 )
               )}
