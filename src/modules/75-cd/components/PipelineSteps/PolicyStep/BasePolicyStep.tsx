@@ -5,15 +5,13 @@
  * https://polyformproject.org/wp-content/uploads/2020/06/PolyForm-Shield-1.0.0.txt.
  */
 
-import React, { useEffect, useState } from 'react'
+import React, { useState } from 'react'
 import type { FormikProps } from 'formik'
 import cx from 'classnames'
-import { isEmpty } from 'lodash-es'
 
-import { getMultiTypeFromValue, MultiTypeInputType, SelectOption, FormInput } from '@harness/uicore'
+import { SelectOption, FormInput } from '@harness/uicore'
 import { useStrings } from 'framework/strings'
 
-import { ConfigureOptions } from '@common/components/ConfigureOptions/ConfigureOptions'
 import { FormMultiTypeDurationField } from '@common/components/MultiTypeDuration/MultiTypeDuration'
 import { NameId } from '@common/components/NameIdDescriptionTags/NameIdDescriptionTags'
 import { FormMultiTypeTextAreaField } from '@common/components'
@@ -42,7 +40,7 @@ export default function BasePolicyStep(props: {
   stepViewType?: StepViewType
 }): React.ReactElement {
   const {
-    formik: { values: formValues, setFieldValue, errors },
+    formik: { errors },
     formik,
     isNewStep,
     readonly,
@@ -52,14 +50,6 @@ export default function BasePolicyStep(props: {
   const [entityType, setEntityType] = useState<string | number | symbol>('Custom')
   const { getString } = useStrings()
   const { expressions } = useVariablesExpression()
-
-  useEffect(() => {
-    const { spec: { type } = { type: '' } } = formValues
-
-    if (!isEmpty(type)) {
-      setEntityType(type)
-    }
-  }, [])
 
   return (
     <>
@@ -83,27 +73,13 @@ export default function BasePolicyStep(props: {
             disabled: readonly
           }}
         />
-        {getMultiTypeFromValue(formValues?.timeout) === MultiTypeInputType.RUNTIME && (
-          <ConfigureOptions
-            value={formValues?.timeout as string}
-            type="String"
-            variableName="step.timeout"
-            showRequiredField={false}
-            showDefaultField={false}
-            showAdvanced={true}
-            onChange={value => {
-              setFieldValue('timeout', value)
-            }}
-            isReadonly={readonly}
-          />
-        )}
       </div>
       <div className={cx(stepCss.formGroup, stepCss.lg)}>
         <FormInput.Select
           name="spec.type"
           label={getString('common.entityType')}
           disabled={readonly}
-          onChange={option => setEntityType(option?.value)}
+          onChange={/* istanbul ignore next */ option => setEntityType(option?.value)}
           items={entityTypeOptions}
         />
       </div>

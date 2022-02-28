@@ -82,8 +82,7 @@ export class PolicyStep extends PipelineStep<PolicyStepData> {
     viewType
   }: ValidateInputSetProps<PolicyStepData>): FormikErrors<PolicyStepData> {
     const errors: FormikErrors<PolicyStepData> = {}
-    const isRequired = viewType === StepViewType.DeploymentForm || viewType === StepViewType.TriggerForm
-
+    const isRequired = viewType === StepViewType.DeploymentForm
     /* istanbul ignore else */
     if (getMultiTypeFromValue(template?.timeout) === MultiTypeInputType.RUNTIME) {
       let timeoutSchema = getDurationValidationSchema({ minimum: '10s' })
@@ -108,9 +107,10 @@ export class PolicyStep extends PipelineStep<PolicyStepData> {
 
     /* istanbul ignore else */
     if (
-      getMultiTypeFromValue(template?.spec?.policySpec?.payload) === MultiTypeInputType.RUNTIME &&
+      getMultiTypeFromValue(/* istanbul ignore next */ template?.spec?.policySpec?.payload) ===
+        MultiTypeInputType.RUNTIME &&
       isRequired &&
-      isEmpty(data?.spec?.policySpec?.payload?.trim())
+      isEmpty(/* istanbul ignore next */ data?.spec?.policySpec?.payload?.trim())
     ) {
       set(errors, 'spec.policySpec.payload', getString?.('fieldRequired', { field: 'Payload' }))
     }
