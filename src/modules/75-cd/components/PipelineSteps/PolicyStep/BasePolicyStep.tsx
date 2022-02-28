@@ -27,12 +27,6 @@ import css from './PolicyStep.module.scss'
 
 export const entityTypeOptions: SelectOption[] = [{ label: 'Custom', value: 'Custom' }]
 
-export enum PolicySetType {
-  ACCOUNT = 'Account',
-  ORG = 'Org',
-  PROJECT = 'Project'
-}
-
 export default function BasePolicyStep(props: {
   formik: FormikProps<PolicyStepFormData>
   isNewStep: boolean

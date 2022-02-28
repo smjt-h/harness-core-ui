@@ -11,7 +11,7 @@ import { act, fireEvent, render, waitFor } from '@testing-library/react'
 import { TestWrapper } from '@common/utils/testUtils'
 
 import { PolicySetListRenderer } from '../PolicySetListRenderer'
-import { PolicySetType } from '../../../BasePolicyStep'
+import { PolicySetType } from '../../../PolicyStepTypes'
 
 jest.mock('@common/exports', () => ({
   useToaster: () => ({
