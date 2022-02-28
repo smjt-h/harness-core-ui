@@ -40,7 +40,7 @@ export function getInstancesLink(service: Service, resources: AllResourcesOfAcco
   } else {
     const region = resources.response?.length ? resources.response[0].region : ''
     if (service.kind === GatewayKindType.DATABASE) {
-      return getAwsConsoleDatabaseLink(_defaultTo(region, ''), _defaultTo(resources.response?.[0].id, ''))
+      return getAwsConsoleDatabaseLink(_defaultTo(region, ''), _defaultTo(resources.response?.[0]?.id, ''))
     } else {
       const instanceIDs = _defaultTo(
         resources.response?.map(x => x.id),
