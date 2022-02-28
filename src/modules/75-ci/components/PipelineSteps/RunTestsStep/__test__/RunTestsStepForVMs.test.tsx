@@ -42,7 +42,7 @@ describe('RunTests Step', () => {
 
       await waitFor(() => {
         fireEvent.click(dropdownSelects[0])
-        const menuItemLabels = document.querySelectorAll('[class*="menuItemLabel"]')
+        const menuItemLabels = container.querySelectorAll('[class*="menuItemLabel"]')
         expect(menuItemLabels.length).toEqual(2)
         // Csharp option should only be visible for AWS VMs Build Infra
         expect(menuItemLabels[0].innerHTML).toEqual('Csharp')

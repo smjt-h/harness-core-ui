@@ -67,7 +67,7 @@ describe('Run Step view', () => {
       expect(shellOptionsDropdownSelect).toBeTruthy()
       await waitFor(() => {
         fireEvent.click(shellOptionsDropdownSelect)
-        const menuItemLabels = document.querySelectorAll('[class*="menuItemLabel"]')
+        const menuItemLabels = container.querySelectorAll('[class*="menuItemLabel"]')
         expect(menuItemLabels.length).toEqual(4)
         expect(menuItemLabels[0].innerHTML).toEqual('common.bash')
         expect(menuItemLabels[1].innerHTML).toEqual('common.shell')

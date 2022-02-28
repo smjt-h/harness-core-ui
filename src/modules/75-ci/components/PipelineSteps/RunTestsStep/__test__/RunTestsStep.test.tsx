@@ -74,7 +74,7 @@ describe('RunTests Step', () => {
 
       await waitFor(() => {
         fireEvent.click(dropdownSelects[1])
-        const menuItemLabels = document.querySelectorAll('[class*="menuItemLabel"]')
+        const menuItemLabels = container.querySelectorAll('[class*="menuItemLabel"]')
         expect(menuItemLabels.length).toEqual(1)
         // Only Java option should be visible
         expect(menuItemLabels[0].innerHTML).toEqual('Java')
