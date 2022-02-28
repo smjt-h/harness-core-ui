@@ -7,7 +7,8 @@
 
 import React, { useEffect, useMemo, useState } from 'react'
 import { useParams } from 'react-router-dom'
-import { get } from 'lodash-es'
+import { defaultTo, isEqual } from 'lodash-es'
+import type { FormikProps } from 'formik'
 
 import {
   Button,
@@ -24,29 +25,30 @@ import {
 import { Dialog, Tab } from '@blueprintjs/core'
 
 import { useStrings, StringKeys } from 'framework/strings'
-import { GetPolicySetQueryParams, LinkedPolicy, useGetPolicySetList } from 'services/pm'
+import { GetPolicySetQueryParams, PolicySet, useGetPolicySetList } from 'services/pm'
 
 import type { ProjectPathProps } from '@common/interfaces/RouteInterfaces'
-import type { StepViewType } from '@pipeline/components/AbstractSteps/Step'
 
 import { PolicySetListRenderer } from '../PolicySetListRenderer/PolicySetListRenderer'
 import { PolicySetType } from '../../BasePolicyStep'
+import type { PolicyStepFormData } from '../../PolicyStepTypes'
+import { getErrorMessage } from '../PolicySetsFormField/PolicySetsFormField'
 
 import css from './PolicySetModal.module.scss'
 
 export interface PolicySetModalProps {
-  closeModal: () => void
+  name: string
+  formikProps?: FormikProps<PolicyStepFormData>
   policySetIds: string[]
-  setPolicySetIds: (list: string[]) => void
-  stepViewType?: StepViewType
+  closeModal: () => void
 }
 
-export function PolicySetModal({ policySetIds, setPolicySetIds, closeModal }: PolicySetModalProps): JSX.Element {
+export function PolicySetModal({ name, formikProps, policySetIds, closeModal }: PolicySetModalProps): JSX.Element {
   const { getString } = useStrings()
   const { showError } = useToaster()
 
   const [selectedTabId, setSelectedTabId] = useState(PolicySetType.ACCOUNT)
-  const [policySetList, setPolicySetList] = useState<LinkedPolicy[]>([])
+  const [policySetList, setPolicySetList] = useState<PolicySet[]>([])
   const [newPolicySetIds, setNewPolicySetIds] = useState<string[]>([])
   const [pageIndex, setPageIndex] = useState<number>(0)
   const [pageSize, setPageSize] = useState<number>(40)
@@ -64,6 +66,7 @@ export function PolicySetModal({ policySetIds, setPolicySetIds, closeModal }: Po
   })
 
   useEffect(() => {
+    // istanbul ignore else
     if (policySetIds.length > 0) {
       setNewPolicySetIds(policySetIds)
     }
@@ -106,24 +109,29 @@ export function PolicySetModal({ policySetIds, setPolicySetIds, closeModal }: Po
   })
 
   const pageCount = useMemo(
-    () => parseInt(policySetResponse?.headers?.get('x-total-pages') || '0'),
+    () => parseInt(defaultTo(/* istanbul ignore next */ policySetResponse?.headers?.get('x-total-pages'), '0')),
     [policySetResponse]
   )
 
   const itemCount = useMemo(
-    () => parseInt(policySetResponse?.headers?.get('x-total-items') || '0'),
+    () => parseInt(defaultTo(/* istanbul ignore next */ policySetResponse?.headers?.get('x-total-items'), '0')),
     [policySetResponse]
   )
 
   useEffect(() => {
-    if (error) showError(getErrorMessage(error))
+    // istanbul ignore else
+    if (error) {
+      showError(getErrorMessage(error))
+    }
+    // istanbul ignore else
     if (!policySets && !error) {
       refetch()
     }
-    if (policySets) {
-      setPolicySetList(policySets)
+    // istanbul ignore else
+    if (!isEqual(policySets, policySetList)) {
+      setPolicySetList(defaultTo(policySets, []))
     }
-  }, [error, policySets, refetch, selectedTabId])
+  }, [error, policySets, refetch])
 
   const handleTabChange = (nextTab: PolicySetType): void => {
     setSelectedTabId(nextTab)
@@ -135,18 +143,18 @@ export function PolicySetModal({ policySetIds, setPolicySetIds, closeModal }: Po
     icon,
     type,
     count,
-    name
+    identifier
   }: {
     icon: IconName
     type: StringKeys
     count: number
-    name?: string
+    identifier?: string
   }) => {
     return (
       <Container>
         <Text font={{ size: 'normal' }} icon={icon}>
           {getString(type)}
-          {name ? `\xA0[${name}]` : ''}
+          {identifier ? `\xA0[${identifier}]` : ''}
           {count > 0 && (
             <span className={css.selectedCount}>
               {<Icon className={css.tickIcon} name="main-tick" size={10} color="white" />}&nbsp;
@@ -187,7 +195,7 @@ export function PolicySetModal({ policySetIds, setPolicySetIds, closeModal }: Po
             text="Apply"
             intent="primary"
             onClick={() => {
-              setPolicySetIds(newPolicySetIds)
+              formikProps?.setFieldValue(name, newPolicySetIds)
               closeModal()
             }}
           />
@@ -231,7 +239,7 @@ export function PolicySetModal({ policySetIds, setPolicySetIds, closeModal }: Po
                   icon="diagram-tree"
                   type={'orgLabel'}
                   count={counts[PolicySetType.ORG]}
-                  name={orgIdentifier}
+                  identifier={orgIdentifier}
                 />
               }
               panel={<TabPanel />}
@@ -244,7 +252,7 @@ export function PolicySetModal({ policySetIds, setPolicySetIds, closeModal }: Po
                   icon="cube"
                   type={'projectLabel'}
                   count={counts[PolicySetType.PROJECT]}
-                  name={projectIdentifier}
+                  identifier={projectIdentifier}
                 />
               }
               panel={<TabPanel />}
@@ -256,6 +264,3 @@ export function PolicySetModal({ policySetIds, setPolicySetIds, closeModal }: Po
     </>
   )
 }
-
-export const getErrorMessage = (error: any): string =>
-  get(error, 'data.error', get(error, 'data.message', error?.message))

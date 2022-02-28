@@ -7,7 +7,7 @@
 
 import React from 'react'
 import type { FormikErrors, FormikProps } from 'formik'
-import { defaultTo } from 'lodash-es'
+import { defaultTo, get } from 'lodash-es'
 
 import { Button, FormError } from '@harness/uicore'
 import { useModalHook } from '@harness/use-modal'
@@ -39,22 +39,11 @@ const PolicySetsFormField = ({
 }: PolicySetsFormFieldInterface) => {
   const { getString } = useStrings()
 
-  const setPolicySetIds = (list: string[]) => {
-    formikProps?.setFieldValue(name, list)
-  }
-
-  const policySetIds = defaultTo(formikProps?.values?.spec?.policySets, [])
+  const policySetIds = defaultTo(/* istanbul ignore next */ formikProps?.values?.spec?.policySets, [])
 
   const [showModal, closeModal] = useModalHook(
-    () => (
-      <PolicySetModal
-        closeModal={closeModal}
-        policySetIds={policySetIds}
-        setPolicySetIds={setPolicySetIds}
-        stepViewType={stepViewType}
-      />
-    ),
-    [policySetIds, setPolicySetIds, stepViewType]
+    () => <PolicySetModal name={name} formikProps={formikProps} policySetIds={policySetIds} closeModal={closeModal} />,
+    [name, formikProps, policySetIds, stepViewType]
   )
 
   const helperText = error ? <FormError name={name} errorMessage={error} /> : undefined
@@ -83,3 +72,6 @@ const PolicySetsFormField = ({
 }
 
 export default PolicySetsFormField
+
+export const getErrorMessage = (error: any): string =>
+  get(error, 'data.error', get(error, 'data.message', error?.message))
