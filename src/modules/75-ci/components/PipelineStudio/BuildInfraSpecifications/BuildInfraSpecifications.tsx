@@ -221,9 +221,6 @@ export default function BuildInfraSpecifications({ children }: React.PropsWithCh
   )
 
   React.useEffect(() => {
-    if (!propagatedStage) {
-      setCurrentMode(Modes.NewConfiguration)
-    }
     if (CI_VM_INFRASTRUCTURE) {
       const stageBuildInfraType = (stage?.stage?.spec?.infrastructure as K8sDirectInfraYaml)?.type
       const propagatedStageType = (propagatedStage?.stage?.spec?.infrastructure as K8sDirectInfraYaml)?.type
