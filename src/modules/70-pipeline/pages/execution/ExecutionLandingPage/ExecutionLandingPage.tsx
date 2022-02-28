@@ -22,7 +22,7 @@ import {
 } from '@pipeline/utils/executionUtils'
 import { useQueryParams, useDeepCompareEffect } from '@common/hooks'
 import { joinAsASentence } from '@common/utils/StringUtils'
-import { useStrings } from 'framework/strings'
+import { String, useStrings } from 'framework/strings'
 import type { ExecutionPageQueryParams } from '@pipeline/utils/types'
 import type { ExecutionPathProps, PipelineType } from '@common/interfaces/RouteInterfaces'
 import { PipelineExecutionWarning } from '@pipeline/components/PipelineExecutionWarning/PipelineExecutionWarning'
@@ -284,9 +284,13 @@ export default function ExecutionLandingPage(props: React.PropsWithChildren<unkn
                           </Text>
                         </Layout.Horizontal>
                         <Text font={{ weight: 'semi-bold', size: 'small' }} color={Color.PRIMARY_10} lineClamp={2}>
-                          {getString('pipeline.unsupportedImagesWarning', {
-                            summary: `${getDeprecatedImageSummary(deprecatedImages)}.`
-                          })}
+                          <String
+                            stringID="pipeline.unsupportedImagesWarning"
+                            vars={{
+                              summary: `${getDeprecatedImageSummary(deprecatedImages)}.`
+                            }}
+                            useRichText
+                          />
                         </Text>
                         {/* <Link to={'/'}>{getString('learnMore')}</Link> */}
                       </>
