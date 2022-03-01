@@ -358,6 +358,49 @@ function ExecutionGraphRef<T extends StageElementConfig>(
   }
 
   const dropNodeListener = (event: any): void => {
+    const eventTemp = event as DefaultNodeEvent
+    eventTemp.stopPropagation()
+    if (event.node?.identifier) {
+      const dropEntity = model.getNodeFromId(event.node.id)
+      if (dropEntity) {
+        const drop = getStepFromNode(state.stepsData, dropEntity, true)
+        const dropNode = drop.node as ExecutionWrapperConfig
+        const current = getStepFromNode(state.stepsData, eventTemp.entity, true, true) as {
+          node: ExecutionWrapperConfig
+          parent?: ExecutionWrapperConfig[]
+        }
+        const skipFlattenIfSameParallel = drop.parent === current.node?.parallel
+        // Check Drop Node and Current node should not be same
+        if (event.node.identifier !== eventTemp.entity.getIdentifier() && dropNode) {
+          if (dropNode?.stepGroup && eventTemp.entity.getParent() instanceof StepGroupNodeLayerModel) {
+            showError(getString('stepGroupInAnotherStepGroup'), undefined, 'pipeline.setgroup.error')
+          } else {
+            const isRemove = removeStepOrGroup(state, dropEntity, skipFlattenIfSameParallel)
+            if (isRemove) {
+              if (current.node) {
+                if (current.parent && (current.node.step || current.node.stepGroup)) {
+                  const index = current.parent?.indexOf(current.node) ?? -1
+                  if (index > -1) {
+                    // Remove current Stage also and make it parallel
+                    current.parent?.splice(index, 1, { parallel: [current.node, dropNode] })
+                    updateStageWithNewData(state)
+                  }
+                } else if (current.node.parallel && (current.node.parallel?.length || 0) > 0) {
+                  current.node.parallel?.push?.(dropNode)
+                  updateStageWithNewData(state)
+                }
+              } else {
+                addStepOrGroup(eventTemp.entity, state.stepsData, dropNode, false, state.isRollback)
+                updateStageWithNewData(state)
+              }
+            }
+          }
+        }
+      }
+    }
+  }
+
+  const dropNodeListenerNew = (event: any): void => {
     const eventTemp = event
     if (event?.node?.identifier && event?.node?.data) {
       const drop = getStepFromNode(
@@ -622,7 +665,7 @@ function ExecutionGraphRef<T extends StageElementConfig>(
         }
       }
     },
-    [Event.DropNodeEvent]: dropNodeListener,
+    [Event.DropNodeEvent]: dropNodeListenerNew,
     [Event.MouseEnterNode]: mouseEnterNodeListener,
     [Event.MouseLeaveNode]: mouseLeaveNodeListener
   }
@@ -958,7 +1001,7 @@ function ExecutionGraphRef<T extends StageElementConfig>(
             {getString('rollbackLabel')}
           </Text>
         )}
-        {stage.stage?.identifier === 'Deploy1' ? (
+        {localStorage.getItem('IS_NEW_PIP_STUDIO_ACTIVE') === 'true' ? (
           <CDPipelineStudioNew
             selectedNodeId={selectedStepId}
             data={getPipelineGraphData(stage.stage.spec?.execution?.steps)}

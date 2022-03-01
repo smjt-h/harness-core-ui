@@ -8,7 +8,7 @@
 import React from 'react'
 import { Intent, Layout, useToaster, useConfirmationDialog } from '@wings-software/uicore'
 import cx from 'classnames'
-import { cloneDeep, debounce, isEmpty, isNil, noop } from 'lodash-es'
+import { cloneDeep, debounce, defaultTo, isEmpty, isNil, noop } from 'lodash-es'
 import type { NodeModelListener, LinkModelListener } from '@projectstorm/react-diagrams-core'
 import SplitPane from 'react-split-pane'
 import { DynamicPopover, DynamicPopoverHandlerBinding } from '@common/components/DynamicPopover/DynamicPopover'
@@ -39,6 +39,7 @@ import {
   DefaultNodeModel,
   DiagramType,
   Event,
+  GroupNodeModelOptions,
   NodeStartModel
 } from '../../Diagram'
 import { StageBuilderModel } from './StageBuilderModel'
@@ -64,7 +65,7 @@ import { StageList } from './views/StageList'
 import { SplitViewTypes } from '../PipelineContext/PipelineActions'
 import { usePipelineContext } from '../PipelineContext/PipelineContext'
 import css from './StageBuilder.module.scss'
-const IS_NEW_PIP_STUDIO_ACTIVE = true
+const IS_NEW_PIP_STUDIO_ACTIVE = localStorage.getItem('IS_NEW_PIP_STUDIO_ACTIVE')
 export type StageStateMap = Map<string, StageState>
 
 declare global {
@@ -106,6 +107,7 @@ export const initializeStageStateMap = (pipeline: PipelineInfoConfig, mapState: 
 
 export const renderPopover = ({
   data,
+  addStage,
   addStageNew,
   isParallel,
   isGroupStage,
@@ -170,6 +172,26 @@ export const renderPopover = ({
       </HoverCard>
     )
   }
+  if (localStorage.getItem('IS_NEW_PIP_STUDIO_ACTIVE') === 'true') {
+    return renderPipelineStage({
+      isParallel,
+      showSelectMenu: true,
+      getNewStageFromType: getNewStageFromType as any,
+      getNewStageFromTemplate: getNewStageFromTemplate as any,
+      onSelectStage: (type, stage, pipelineTemp) => {
+        if (stage) {
+          addStageNew?.(stage, isParallel, !isParallel, undefined, true, pipelineTemp, event?.node)
+        } else {
+          addStageNew?.(getNewStageFromType(type as any), isParallel, !isParallel, event?.node)
+        }
+      },
+      contextType: contextType,
+      templateTypes,
+      setTemplateTypes,
+      openTemplateSelector,
+      closeTemplateSelector
+    })
+  }
   return renderPipelineStage({
     isParallel,
     showSelectMenu: true,
@@ -177,9 +199,9 @@ export const renderPopover = ({
     getNewStageFromTemplate: getNewStageFromTemplate as any,
     onSelectStage: (type, stage, pipelineTemp) => {
       if (stage) {
-        addStageNew?.(stage, isParallel, !isParallel, undefined, true, pipelineTemp, event?.node)
+        addStage?.(stage, isParallel, event, undefined, true, pipelineTemp)
       } else {
-        addStageNew?.(getNewStageFromType(type as any), isParallel, !isParallel, event?.node)
+        addStage?.(getNewStageFromType(type as any), isParallel, event)
       }
     },
     contextType: contextType,
@@ -536,6 +558,268 @@ const StageBuilder: React.FC<StageBuilderProps> = ({ diagram }): JSX.Element => 
   const nodeListeners: NodeModelListener = {
     // Can not remove this Any because of React Diagram Issue
     [Event.ClickNode]: (event: any) => {
+      const eventTemp = event as DefaultNodeEvent
+      dynamicPopoverHandler?.hide()
+
+      /* istanbul ignore else */ if (eventTemp.entity) {
+        if (eventTemp.entity.getType() === DiagramType.CreateNew) {
+          setSelectionRef.current({ stageId: undefined, sectionId: undefined })
+          dynamicPopoverHandler?.show(
+            `[data-nodeid="${eventTemp.entity.getID()}"]`,
+            {
+              addStage,
+              isStageView: false,
+              renderPipelineStage,
+              stagesMap,
+              contextType,
+              templateTypes,
+              setTemplateTypes,
+              openTemplateSelector,
+              closeTemplateSelector
+            },
+            { useArrows: true, darkMode: false, fixedPosition: false }
+          )
+        } else if (eventTemp.entity.getType() === DiagramType.GroupNode) {
+          const parent = getStageFromPipeline(eventTemp.entity.getIdentifier()).parent as StageElementWrapperConfig
+          const parallelStages = (eventTemp.entity.getOptions() as GroupNodeModelOptions).parallelNodes
+          /* istanbul ignore else */ if (parent?.parallel) {
+            dynamicPopoverHandler?.show(
+              `[data-nodeid="${eventTemp.entity.getID()}"]`,
+              {
+                isGroupStage: true,
+                groupSelectedStageId: selectedStageId,
+                isStageView: false,
+                groupStages: parent.parallel.filter(
+                  node => parallelStages.indexOf(defaultTo(node.stage?.identifier, '')) > -1
+                ),
+                onClickGroupStage: (stageId: string) => {
+                  dynamicPopoverHandler?.hide()
+                  setSelectionRef.current({ stageId })
+                  moveStageToFocusDelayed(engine, stageId, true)
+                },
+                stagesMap,
+                renderPipelineStage,
+                contextType,
+                templateTypes,
+                setTemplateTypes,
+                openTemplateSelector,
+                closeTemplateSelector
+              },
+              { useArrows: false, darkMode: false, fixedPosition: false }
+            )
+          }
+        } /* istanbul ignore else */ else if (eventTemp.entity.getType() !== DiagramType.StartNode) {
+          const data = getStageFromPipeline(eventTemp.entity.getIdentifier()).stage
+          if (isSplitViewOpen && data?.stage?.identifier) {
+            if (data?.stage?.name === EmptyStageName) {
+              // TODO: check if this is unused code
+              dynamicPopoverHandler?.show(
+                `[data-nodeid="${eventTemp.entity.getID()}"]`,
+                {
+                  isStageView: true,
+                  data,
+                  onSubmitPrimaryData: (node, identifier) => {
+                    updatePipeline(pipeline)
+                    stageMap.set(node.stage?.identifier || '', { isConfigured: true, stage: node })
+                    dynamicPopoverHandler.hide()
+                    resetDiagram(engine)
+                    setSelectionRef.current({ stageId: identifier })
+                  },
+                  stagesMap,
+                  renderPipelineStage,
+                  contextType,
+                  templateTypes,
+                  setTemplateTypes,
+                  openTemplateSelector,
+                  closeTemplateSelector
+                },
+                { useArrows: false, darkMode: false, fixedPosition: false }
+              )
+              setSelectionRef.current({ stageId: undefined, sectionId: undefined })
+            } else {
+              setSelectionRef.current({ stageId: data?.stage?.identifier, sectionId: undefined })
+              moveStageToFocusDelayed(engine, data?.stage?.identifier, true)
+            }
+          } /* istanbul ignore else */ else if (!isSplitViewOpen) {
+            if (stageMap.has(data?.stage?.identifier || '')) {
+              setSelectionRef.current({ stageId: data?.stage?.identifier })
+              moveStageToFocusDelayed(engine, data?.stage?.identifier || '', true)
+            } else {
+              // TODO: check if this is unused code
+              dynamicPopoverHandler?.show(
+                `[data-nodeid="${eventTemp.entity.getID()}"]`,
+                {
+                  isStageView: true,
+                  data,
+                  onSubmitPrimaryData: (node, identifier) => {
+                    updatePipeline(pipeline)
+                    stageMap.set(node.stage?.identifier || '', { isConfigured: true, stage: node })
+                    dynamicPopoverHandler.hide()
+                    resetDiagram(engine)
+                    setSelectionRef.current({ stageId: identifier })
+                  },
+                  stagesMap,
+                  renderPipelineStage,
+                  contextType,
+                  templateTypes,
+                  setTemplateTypes,
+                  openTemplateSelector,
+                  closeTemplateSelector
+                },
+                { useArrows: false, darkMode: false, fixedPosition: false }
+              )
+            }
+          }
+        }
+      }
+    },
+    // Can not remove this Any because of React Diagram Issue
+    [Event.RemoveNode]: (event: any) => {
+      const eventTemp = event as DefaultNodeEvent
+      const stageIdToBeRemoved = eventTemp.entity.getIdentifier()
+      setDeleteId(stageIdToBeRemoved)
+      confirmDeleteStage()
+    },
+    [Event.AddParallelNode]: (event: any) => {
+      const eventTemp = event as DefaultNodeEvent
+      eventTemp.stopPropagation()
+      // dynamicPopoverHandler?.hide()
+
+      updatePipelineView({
+        ...pipelineView,
+        isSplitViewOpen: false,
+        splitViewData: {}
+      })
+      setSelectionRef.current({ stageId: undefined, sectionId: undefined })
+
+      if (eventTemp.entity) {
+        dynamicPopoverHandler?.show(
+          `[data-nodeid="${eventTemp.entity.getID()}"] [data-nodeid="add-parallel"]`,
+          {
+            addStage,
+            isParallel: true,
+            isStageView: false,
+            event: eventTemp,
+            stagesMap,
+            renderPipelineStage,
+            contextType,
+            templateTypes,
+            setTemplateTypes,
+            openTemplateSelector,
+            closeTemplateSelector
+          },
+          { useArrows: false, darkMode: false, fixedPosition: false },
+          eventTemp.callback
+        )
+      }
+    },
+    [Event.DropLinkEvent]: (event: any) => {
+      const eventTemp = event as DefaultNodeEvent
+      eventTemp.stopPropagation()
+      if (event.node?.identifier) {
+        const dropNode = getStageFromPipeline(event.node.identifier).stage
+        const current = getStageFromPipeline(eventTemp.entity.getIdentifier())
+        const dependentStages = getDependantStages(pipeline, dropNode)
+        const parentStageId = (dropNode?.stage as DeploymentStageElementConfig)?.spec?.serviceConfig?.useFromStage
+          ?.stage
+        if (parentStageId?.length) {
+          const { stageIndex } = getStageIndexByIdentifier(pipeline, current?.stage?.stage?.identifier)
+
+          const { index: parentIndex } = getStageIndexFromPipeline(pipeline, parentStageId)
+          if (stageIndex <= parentIndex) {
+            setMoveStageDetails({
+              event,
+              direction: MoveDirection.AHEAD,
+              currentStage: current
+            })
+            confirmMoveStage()
+            return
+          }
+
+          return
+        } else if (dependentStages?.length) {
+          let finalDropIndex = -1
+          let firstDependentStageIndex
+          const { stageIndex: dependentStageIndex, parallelStageIndex: dependentParallelIndex = -1 } =
+            getStageIndexByIdentifier(pipeline, dependentStages[0])
+
+          firstDependentStageIndex = dependentStageIndex
+
+          if (current.parent) {
+            const { stageIndex } = getStageIndexByIdentifier(pipeline, current?.stage?.stage?.identifier)
+            finalDropIndex = stageIndex
+            firstDependentStageIndex = dependentStageIndex
+          } else if (current?.stage) {
+            const { stageIndex } = getStageIndexByIdentifier(pipeline, current?.stage?.stage?.identifier)
+            finalDropIndex = stageIndex
+          }
+
+          finalDropIndex = finalDropIndex === -1 ? pipeline.stages?.length || 0 : finalDropIndex
+          const stagesTobeUpdated = getAffectedDependentStages(
+            dependentStages,
+            finalDropIndex,
+            pipeline,
+            dependentParallelIndex
+          )
+
+          if (finalDropIndex >= firstDependentStageIndex) {
+            setMoveStageDetails({
+              event,
+              direction: MoveDirection.BEHIND,
+              dependentStages: stagesTobeUpdated,
+              currentStage: current,
+              isLastAddLink: !current.parent
+            })
+
+            confirmMoveStage()
+            return
+          }
+        }
+        updateStageOnAddLink(event, dropNode, current)
+      }
+    },
+    [Event.MouseEnterNode]: (event: any) => {
+      const eventTemp = event as DefaultNodeEvent
+      eventTemp.stopPropagation()
+      const current = getStageFromPipeline(eventTemp.entity.getIdentifier())
+      if (current.stage?.stage?.when) {
+        const { pipelineStatus, condition } = current.stage.stage.when
+        if (pipelineStatus === PipelineOrStageStatus.SUCCESS && isEmpty(condition)) {
+          return
+        }
+        dynamicPopoverHandler?.show(
+          `[data-nodeid="${eventTemp.entity.getID()}"]`,
+          {
+            event: eventTemp,
+            data: current.stage,
+            isStageView: false,
+            isHoverView: true,
+            stagesMap,
+            renderPipelineStage,
+            contextType,
+            templateTypes,
+            setTemplateTypes,
+            openTemplateSelector,
+            closeTemplateSelector
+          },
+          { useArrows: true, darkMode: false, fixedPosition: false, placement: 'top' },
+          noop,
+          true
+        )
+      }
+    },
+    [Event.MouseLeaveNode]: (event: any) => {
+      const eventTemp = event as DefaultNodeEvent
+      eventTemp.stopPropagation()
+      if (dynamicPopoverHandler?.isHoverView?.()) {
+        dynamicPopoverHandler?.hide()
+      }
+    }
+  }
+
+  const nodeListenersNew: NodeModelListener = {
+    // Can not remove this Any because of React Diagram Issue
+    [Event.ClickNode]: (event: any) => {
       // const eventTemp = event as DefaultNodeEvent
       dynamicPopoverHandler?.hide()
       /* istanbul ignore else */ if (event.entityType) {
@@ -848,6 +1132,90 @@ const StageBuilder: React.FC<StageBuilderProps> = ({ diagram }): JSX.Element => 
   })
   const linkListeners: LinkModelListener = {
     [Event.AddLinkClicked]: (event: any) => {
+      const eventTemp = event as DefaultNodeEvent
+      dynamicPopoverHandler?.hide()
+      if (eventTemp.entity) {
+        dynamicPopoverHandler?.show(
+          `[data-linkid="${eventTemp.entity.getID()}"] circle`,
+          {
+            addStage,
+            isStageView: true,
+            event: eventTemp,
+            stagesMap,
+            renderPipelineStage,
+            contextType,
+            templateTypes,
+            setTemplateTypes,
+            openTemplateSelector,
+            closeTemplateSelector
+          },
+          { useArrows: false, darkMode: false, fixedPosition: openSplitView }
+        )
+      }
+    },
+    [Event.DropLinkEvent]: (event: any) => {
+      // console.log(event.node.identifier === event.entity.getIdentifier())
+      const eventTemp = event as DefaultLinkEvent
+      eventTemp.stopPropagation()
+      if (event.node?.identifier) {
+        const dropNode = getStageFromPipeline(event.node.identifier).stage
+        const parentStageName = (dropNode?.stage as DeploymentStageElementConfig)?.spec?.serviceConfig?.useFromStage
+          ?.stage
+        const dependentStages = getDependantStages(pipeline, dropNode)
+
+        if (parentStageName?.length) {
+          const node = event.entity.getTargetPort().getNode() as DefaultNodeModel
+          const { stage } = getStageFromPipeline(node.getIdentifier())
+          const dropIndex = pipeline?.stages?.indexOf(stage!) || -1
+          const { stageIndex: parentIndex = -1 } = getStageIndexByIdentifier(pipeline, parentStageName)
+
+          if (dropIndex < parentIndex) {
+            setMoveStageDetails({
+              event,
+              direction: MoveDirection.AHEAD
+            })
+            confirmMoveStage()
+            return
+          }
+        } else if (dependentStages?.length) {
+          let dropIndex = -1
+          const node = event.entity.getSourcePort().getNode() as DefaultNodeModel
+          const { stage } = getStageFromPipeline(node.getIdentifier())
+          if (!stage) {
+            //  node on sourceport is parallel so split nodeId to get original node identifier
+            const nodeId = node.getIdentifier().split(EmptyNodeSeparator)[1]
+
+            const { stageIndex: nextStageIndex } = getStageIndexByIdentifier(pipeline, nodeId)
+            dropIndex = nextStageIndex + 1 // adding 1 as we checked source port that is prev to index where we will move this node
+          } else {
+            dropIndex = pipeline?.stages?.indexOf(stage!) || -1
+          }
+
+          const { stageIndex: firstDependentStageIndex = -1 } = getStageIndexByIdentifier(pipeline, dependentStages[0])
+
+          if (dropIndex >= firstDependentStageIndex) {
+            const stagesTobeUpdated = getAffectedDependentStages(dependentStages, dropIndex, pipeline)
+
+            setMoveStageDetails({
+              event,
+              direction: MoveDirection.BEHIND,
+              dependentStages: stagesTobeUpdated
+            })
+            confirmMoveStage()
+            return
+          }
+        }
+
+        const isRemove = removeNodeFromPipeline(getStageFromPipeline(event.node.identifier), pipeline, stageMap, false)
+        if (isRemove && dropNode) {
+          addStage(dropNode, false, event)
+        }
+      }
+    }
+  }
+
+  const linkListenersNew: LinkModelListener = {
+    [Event.AddLinkClicked]: (event: any) => {
       const eventTemp = event
       dynamicPopoverHandler?.hide()
       if (eventTemp.identifier) {
@@ -936,12 +1304,12 @@ const StageBuilder: React.FC<StageBuilderProps> = ({ diagram }): JSX.Element => 
   }
 
   const events = {
-    [Event.DropLinkEvent]: linkListeners[Event.DropLinkEvent],
-    [Event.DropNodeEvent]: nodeListeners[Event.DropNodeEvent],
-    [Event.ClickNode]: nodeListeners[Event.ClickNode],
-    [Event.AddParallelNode]: nodeListeners[Event.AddParallelNode],
-    [Event.RemoveNode]: nodeListeners[Event.RemoveNode],
-    [Event.AddLinkClicked]: linkListeners[Event.AddLinkClicked],
+    [Event.DropLinkEvent]: linkListenersNew[Event.DropLinkEvent],
+    [Event.DropNodeEvent]: nodeListenersNew[Event.DropNodeEvent],
+    [Event.ClickNode]: nodeListenersNew[Event.ClickNode],
+    [Event.AddParallelNode]: nodeListenersNew[Event.AddParallelNode],
+    [Event.RemoveNode]: nodeListenersNew[Event.RemoveNode],
+    [Event.AddLinkClicked]: linkListenersNew[Event.AddLinkClicked],
     [Event.CanvasClick]: canvasClick
   }
 
@@ -1031,7 +1399,7 @@ const StageBuilder: React.FC<StageBuilderProps> = ({ diagram }): JSX.Element => 
           onChange={handleStageResize}
           allowResize={openSplitView}
         >
-          {IS_NEW_PIP_STUDIO_ACTIVE ? (
+          {IS_NEW_PIP_STUDIO_ACTIVE === 'true' ? (
             <div
               className={css.canvas}
               ref={canvasRef}
