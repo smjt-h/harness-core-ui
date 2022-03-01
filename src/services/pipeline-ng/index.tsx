@@ -251,6 +251,7 @@ export type ConnectorFilterProperties = FilterProperties & {
     | 'ServiceNow'
     | 'ErrorTracking'
     | 'Pdc'
+    | 'Azure'
   )[]
 }
 
