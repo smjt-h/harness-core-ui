@@ -1,5 +1,5 @@
-import { DiagramType, Event } from '@pipeline/components/Diagram'
 import React, { useEffect, useLayoutEffect, useRef, useState } from 'react'
+import { DiagramType, Event } from '@pipeline/components/Diagram'
 import { SVGComponent } from '../../PipelineGraph/PipelineGraph'
 import { PipelineGraphRecursive } from '../../PipelineGraph/PipelineGraphNode'
 import {
@@ -7,12 +7,13 @@ import {
   getPipelineGraphData,
   getSVGLinksFromPipeline
 } from '../../PipelineGraph/PipelineGraphUtils'
-import { NodeIds, PipelineGraphState, PipelineGraphType, SVGPathRecord } from '../../types'
+import { NodeDetails, NodeIds, PipelineGraphState, PipelineGraphType, SVGPathRecord } from '../../types'
 import CreateNode from '../CreateNode/CreateNode'
 import css from './StepGroupGraph.module.scss'
 interface StepGroupGraphProps {
   data?: any[]
-  getNode: (type?: string | undefined) => React.FC<any> | undefined
+  getNode: (type?: string | undefined) => NodeDetails | undefined
+  getDefaultNode(): NodeDetails | null
   selectedNode?: string
   uniqueNodeIds?: NodeIds
   fireEvent: (event: any) => void

@@ -137,7 +137,6 @@ const DefaultNode = (props: any): JSX.Element => {
               size={28}
               name={props.icon}
               inverse={props?.isSelected}
-              // {...options.iconProps}
               style={{ pointerEvents: 'none', ...iconStyle }}
             />
           )}

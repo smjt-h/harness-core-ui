@@ -3,11 +3,11 @@ import classNames from 'classnames'
 import { NodeType } from '../Node'
 import { checkIntersectionBottom, useIntersectionObserver } from './PipelineGraphUtils'
 import GroupNode from '../Nodes/GroupNode/GroupNode'
-import { NodeIds, PipelineGraphState, PipelineGraphType } from '../types'
+import type { NodeDetails, NodeIds, PipelineGraphState } from '../types'
 import css from './PipelineGraph.module.scss'
 export interface PipelineGraphRecursiveProps {
   nodes?: PipelineGraphState[]
-  getNode: (type?: string | undefined) => React.FC<any> | undefined
+  getNode: (type?: string | undefined) => NodeDetails | undefined
   selectedNode: string
   uniqueNodeIds?: NodeIds
   fireEvent?: (event: any) => void
@@ -19,6 +19,7 @@ export interface PipelineGraphRecursiveProps {
   collapseOnIntersect?: boolean
   updateSvgs?: () => void
   renderer?: boolean
+  getDefaultNode(): NodeDetails | null
 }
 export const PipelineGraphRecursive = ({
   nodes,
@@ -33,11 +34,12 @@ export const PipelineGraphRecursive = ({
   updateGraphLinks,
   collapseOnIntersect,
   updateSvgs,
-  renderer
+  renderer,
+  getDefaultNode
 }: PipelineGraphRecursiveProps): React.ReactElement => {
-  const StartNode: React.FC<any> | undefined = getNode(NodeType.StartNode)
-  const CreateNode: React.FC<any> | undefined = getNode(NodeType.CreateNode)
-  const EndNode: React.FC<any> | undefined = getNode(NodeType.EndNode)
+  const StartNode: React.FC<any> | undefined = getNode(NodeType.StartNode)?.component
+  const CreateNode: React.FC<any> | undefined = getNode(NodeType.CreateNode)?.component
+  const EndNode: React.FC<any> | undefined = getNode(NodeType.EndNode)?.component
   return (
     <div id="tree-container" className={classNames(css.graphTree, css.common)}>
       {StartNode && startEndNodeNeeded && (
@@ -50,6 +52,7 @@ export const PipelineGraphRecursive = ({
       {nodes?.map((node, index) => {
         return (
           <PipelineGraphNode
+            getDefaultNode={getDefaultNode}
             parentIdentifier={parentIdentifier}
             fireEvent={fireEvent}
             selectedNode={selectedNode}
@@ -92,7 +95,7 @@ interface PipelineGraphNode {
   className?: string
   data: PipelineGraphState
   fireEvent?: (event: any) => void
-  getNode?: (type?: string | undefined) => React.FC<any> | undefined
+  getNode?: (type?: string | undefined) => NodeDetails | undefined
   selectedNode: string
   setSelectedNode?: (nodeId: string) => void
   isParallelNode?: boolean
@@ -107,6 +110,7 @@ interface PipelineGraphNode {
   collapseOnIntersect?: boolean
   updateSvgs?: () => void
   renderer?: boolean
+  getDefaultNode(): NodeDetails | null
 }
 
 const PipelineGraphNodeBasic = ({
@@ -127,9 +131,11 @@ const PipelineGraphNodeBasic = ({
   updateGraphLinks,
   collapseOnIntersect,
   updateSvgs,
-  renderer
+  renderer,
+  getDefaultNode
 }: PipelineGraphNode): React.ReactElement | null => {
-  const NodeComponent: React.FC<any> | undefined = getNode?.(data?.nodeType) || getNode?.(NodeType.Default)
+  const defaultNode = getDefaultNode()?.component
+  const NodeComponent: React.FC<any> | undefined = getNode?.(data?.nodeType)?.component || defaultNode
   const ref = useRef<HTMLDivElement>(null)
   const isIntersecting = useIntersectionObserver(
     collapseOnIntersect ? ref : null,
@@ -181,7 +187,7 @@ const PipelineGraphNodeBasic = ({
           />
         )}
         {data?.children?.map((currentStage, index) => {
-          const ChildNodeComponent: React.FC<any> | undefined = getNode?.(data?.nodeType) || getNode?.(NodeType.Default)
+          const ChildNodeComponent: React.FC<any> | undefined = getNode?.(data?.nodeType)?.component || defaultNode
           const refIndex =
             intersectingIndex > -1 && index === intersectingIndex - 1 ? index : (data?.children?.length || 0) - 1
           return (

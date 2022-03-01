@@ -33,7 +33,6 @@ export interface PipelineGraphState {
   children?: PipelineGraphState[]
   parentStepGroupId?: string
 }
-
 export interface NodeIds {
   startNode: string
   createNode: string
@@ -42,4 +41,10 @@ export interface NodeIds {
 
 export interface SVGPathRecord {
   [key: string]: string
+}
+
+export type NodeBank = Map<string, NodeDetails>
+export interface NodeDetails {
+  component: React.FC
+  isDefault?: boolean
 }

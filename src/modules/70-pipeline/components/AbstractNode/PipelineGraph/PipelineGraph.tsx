@@ -3,6 +3,7 @@ import React, { useEffect, useLayoutEffect, useState, useRef, useMemo } from 're
 import classNames from 'classnames'
 import Draggable from 'react-draggable'
 import { v4 as uuid } from 'uuid'
+import { Event } from '@pipeline/components/Diagram'
 import {
   getFinalSVGArrowPath,
   getScaleToFitValue,
@@ -11,9 +12,8 @@ import {
 } from './PipelineGraphUtils'
 import GraphActions from '../GraphActions/GraphActions'
 import { PipelineGraphRecursive } from './PipelineGraphNode'
-import { NodeIds, PipelineGraphState, PipelineGraphType, SVGPathRecord } from '../types'
+import { NodeDetails, NodeIds, PipelineGraphState, PipelineGraphType, SVGPathRecord } from '../types'
 import css from './PipelineGraph.module.scss'
-import { Event } from '@pipeline/components/Diagram'
 
 interface ControlPosition {
   x: number
@@ -24,18 +24,26 @@ const DEFAULT_POSITION: ControlPosition = { x: 30, y: 60 }
 export interface PipelineGraphProps {
   data: PipelineGraphState[]
   fireEvent: (event: any) => void
-  getNode: (type?: string | undefined) => React.FC<any> | undefined
+  getNode: (type?: string | undefined) => NodeDetails | undefined
+
   collapseOnIntersect?: boolean
+  getDefaultNode(): NodeDetails | null
 }
 
-const PipelineGraph = ({ data, getNode, fireEvent, collapseOnIntersect }: PipelineGraphProps): React.ReactElement => {
+const PipelineGraph = ({
+  data,
+  getNode,
+  fireEvent,
+  collapseOnIntersect,
+  getDefaultNode
+}: PipelineGraphProps): React.ReactElement => {
   const [svgPath, setSvgPath] = useState<SVGPathRecord[]>([])
   const [treeRectangle, setTreeRectangle] = useState<DOMRect | void>()
   const [selectedNode, setSelectedNode] = useState<string>('')
   const [state, setState] = useState<PipelineGraphState[]>(data)
   const [graphScale, setGraphScale] = useState(INITIAL_ZOOM_LEVEL)
   const [renderer, setRenderer] = useState(false)
-  const updateSvgs = () => {
+  const updateSvgs = (): void => {
     setRenderer(!renderer)
   }
   const canvasRef = useRef<HTMLDivElement>(null)
@@ -113,6 +121,7 @@ const PipelineGraph = ({ data, getNode, fireEvent, collapseOnIntersect }: Pipeli
               collapseOnIntersect={collapseOnIntersect}
               updateSvgs={updateSvgs}
               renderer={renderer}
+              getDefaultNode={getDefaultNode}
             />
           </div>
         </div>

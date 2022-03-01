@@ -13,7 +13,7 @@ import EndNode from './Nodes/EndNode'
 import StartNode from './Nodes/StartNode'
 import PipelineGraph from './PipelineGraph/PipelineGraph'
 import GroupNode from './Nodes/GroupNode/GroupNode'
-import type { BaseListener, ListenerHandle, PipelineGraphState } from './types'
+import type { BaseListener, ListenerHandle, NodeBank, NodeDetails, PipelineGraphState } from './types'
 import { StepGroupNode } from './Nodes/StepGroupNode/StepGroupNode'
 
 export class DiagramFactory {
@@ -23,16 +23,16 @@ export class DiagramFactory {
   type = ''
   canCreate = false
   canDelete = false
-  nodeBank: Map<string, React.FC>
+  nodeBank: NodeBank
+  groupNode: React.FC = GroupNode
   listeners: { [id: string]: BaseListener }
   constructor(diagramType: string) {
-    this.nodeBank = new Map()
+    this.nodeBank = new Map<string, NodeDetails>()
     this.type = diagramType
     this.registerNode(NodeType.Default, DefaultNode)
     this.registerNode(NodeType.StartNode, StartNode)
     this.registerNode(NodeType.CreateNode, CreateNode)
     this.registerNode(NodeType.EndNode, EndNode)
-    this.registerNode(NodeType.GroupNode, GroupNode)
     this.registerNode(NodeType.StepGroupNode, StepGroupNode)
     this.listeners = {}
   }
@@ -42,7 +42,7 @@ export class DiagramFactory {
   }
 
   registerNode(type: string, Component: React.FC): void {
-    this.nodeBank.set(type, Component)
+    this.nodeBank.set(type, { component: Component })
   }
 
   registerListeners(listeners: Record<string, BaseListener>): Record<string, ListenerHandle> {
@@ -69,6 +69,25 @@ export class DiagramFactory {
     return false
   }
 
+  getDefaultNode(): NodeDetails | null {
+    let defaultNode = null
+
+    for (const node of this.nodeBank.entries()) {
+      if (node[1].isDefault) {
+        defaultNode = node[1]
+      }
+    }
+    return defaultNode
+  }
+
+  registerGroupNode(Component: React.FC): void {
+    this.groupNode = Component
+  }
+
+  getGroupNode(): React.FC {
+    return this.groupNode
+  }
+
   getListenerHandle(listener: string): ListenerHandle | undefined {
     let listenerHandle
     if (typeof listener === 'string') {
@@ -85,7 +104,7 @@ export class DiagramFactory {
     return listenerHandle
   }
 
-  getNode(type?: string): React.FC<any> | undefined {
+  getNode(type?: string): NodeDetails | undefined {
     return this.nodeBank.get(type as string)
   }
 
@@ -105,7 +124,12 @@ export class DiagramFactory {
       data: PipelineGraphState[]
       collapseOnIntersect?: boolean
     }): React.ReactElement => (
-      <PipelineGraph getNode={this.getNode.bind(this)} fireEvent={this.fireEvent.bind(this)} {...props} />
+      <PipelineGraph
+        getDefaultNode={this.getDefaultNode.bind(this)}
+        getNode={this.getNode.bind(this)}
+        fireEvent={this.fireEvent.bind(this)}
+        {...props}
+      />
     )
     return PipelineStudioHOC
   }
