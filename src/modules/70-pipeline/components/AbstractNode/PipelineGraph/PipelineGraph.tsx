@@ -28,6 +28,7 @@ export interface PipelineGraphProps {
 
   collapseOnIntersect?: boolean
   getDefaultNode(): NodeDetails | null
+  selectedNodeId?: string
 }
 
 const PipelineGraph = ({
@@ -35,11 +36,12 @@ const PipelineGraph = ({
   getNode,
   fireEvent,
   collapseOnIntersect,
-  getDefaultNode
+  getDefaultNode,
+  selectedNodeId = ''
 }: PipelineGraphProps): React.ReactElement => {
   const [svgPath, setSvgPath] = useState<SVGPathRecord[]>([])
   const [treeRectangle, setTreeRectangle] = useState<DOMRect | void>()
-  const [selectedNode, setSelectedNode] = useState<string>('')
+  const [selectedNode, setSelectedNode] = useState<string>(selectedNodeId)
   const [state, setState] = useState<PipelineGraphState[]>(data)
   const [graphScale, setGraphScale] = useState(INITIAL_ZOOM_LEVEL)
   const [renderer, setRenderer] = useState(false)

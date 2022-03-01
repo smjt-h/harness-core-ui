@@ -73,10 +73,11 @@ import {
 import { CanvasButtons } from '../../CanvasButtons/CanvasButtons'
 import css from './ExecutionGraph.module.scss'
 import { getPipelineGraphData } from '@pipeline/components/AbstractNode/PipelineGraph/PipelineGraphUtils'
+import PipelineStageNode from '@pipeline/components/AbstractNode/Nodes/DefaultNode/PipelineStageNode'
 
 const diagram = new DiagramFactory('graph')
 
-diagram.registerNode('Deployment', DiagramNodes[NodeType.Default])
+diagram.registerNode('Deployment', PipelineStageNode, true)
 diagram.registerNode('StepGroup', DiagramNodes[NodeType.StepGroupNode])
 
 export const CDPipelineStudioNew = diagram.render()
@@ -958,7 +959,10 @@ function ExecutionGraphRef<T extends StageElementConfig>(
           </Text>
         )}
         {stage.stage?.identifier === 'Deploy1' ? (
-          <CDPipelineStudioNew data={getPipelineGraphData(stage.stage.spec?.execution?.steps)} />
+          <CDPipelineStudioNew
+            selectedNodeId={selectedStepId}
+            data={getPipelineGraphData(stage.stage.spec?.execution?.steps)}
+          />
         ) : (
           <>
             <CanvasWidget

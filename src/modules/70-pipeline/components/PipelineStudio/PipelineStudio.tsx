@@ -33,7 +33,7 @@ export interface PipelineStudioProps {
   routePipelineDetail: PathFn<PipelineType<PipelinePathProps>>
   routePipelineList: PathFn<PipelineType<ProjectPathProps>>
   routePipelineProject: PathFn<PipelineType<ProjectPathProps>>
-  diagram: DiagramFactory
+  diagram?: DiagramFactory
   getOtherModal?: (
     onSubmit: (values: PipelineInfoConfig) => void,
     onClose: () => void

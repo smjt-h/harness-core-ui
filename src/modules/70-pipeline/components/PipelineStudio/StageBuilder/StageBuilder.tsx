@@ -191,7 +191,7 @@ export const renderPopover = ({
 }
 
 interface StageBuilderProps {
-  diagram: DiagramFactory
+  diagram?: DiagramFactory
 }
 
 const StageBuilder: React.FC<StageBuilderProps> = ({ diagram }): JSX.Element => {
@@ -945,7 +945,7 @@ const StageBuilder: React.FC<StageBuilderProps> = ({ diagram }): JSX.Element => 
     [Event.CanvasClick]: canvasClick
   }
 
-  diagram.registerListeners(events)
+  if (diagram) diagram.registerListeners(events)
 
   //1) setup the diagram engine
   const engine = React.useMemo(() => createEngine({}), [])
@@ -1046,7 +1046,11 @@ const StageBuilder: React.FC<StageBuilderProps> = ({ diagram }): JSX.Element => 
                 }
               }}
             >
-              <CDPipelineStudioNew data={getPipelineGraphData(pipeline.stages)} collapseOnIntersect={true} />
+              <CDPipelineStudioNew
+                selectedNodeId={selectedStageId}
+                data={getPipelineGraphData(pipeline.stages)}
+                collapseOnIntersect={true}
+              />
               <DynamicPopover
                 darkMode={false}
                 className={css.renderPopover}

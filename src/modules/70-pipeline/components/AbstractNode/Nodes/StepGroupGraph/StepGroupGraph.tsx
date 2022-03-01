@@ -23,6 +23,7 @@ interface StepGroupGraphProps {
   prevNodeIdentifier?: string
   identifier?: string
   renderer?: boolean
+  getDefaultNode(): NodeDetails | null
 }
 
 interface LayoutStyles {
@@ -101,6 +102,7 @@ const StepGroupGraph = (props: StepGroupGraphProps): React.ReactElement => {
       <SVGComponent svgPath={svgPath} className={css.stepGroupSvg} />
       {props?.data?.length ? (
         <PipelineGraphRecursive
+          getDefaultNode={props?.getDefaultNode}
           parentIdentifier={props?.identifier}
           fireEvent={props.fireEvent}
           getNode={props.getNode}

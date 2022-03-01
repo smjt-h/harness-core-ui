@@ -8,14 +8,13 @@ import React from 'react'
 import { v4 as uuid } from 'uuid'
 import { NodeType } from './Node'
 import CreateNode from './Nodes/CreateNode/CreateNode'
-import DefaultNode from './Nodes/DefaultNode/DefaultNode'
 import EndNode from './Nodes/EndNode'
 import StartNode from './Nodes/StartNode'
 import PipelineGraph from './PipelineGraph/PipelineGraph'
 import GroupNode from './Nodes/GroupNode/GroupNode'
 import type { BaseListener, ListenerHandle, NodeBank, NodeDetails, PipelineGraphState } from './types'
 import { StepGroupNode } from './Nodes/StepGroupNode/StepGroupNode'
-import DefaultNodeNew from './Nodes/DefaultNode/DefaultNodeNew'
+import DefaultNode from './Nodes/DefaultNode/DefaultNode'
 
 export class DiagramFactory {
   /**
@@ -30,7 +29,7 @@ export class DiagramFactory {
   constructor(diagramType: string) {
     this.nodeBank = new Map<string, NodeDetails>()
     this.type = diagramType
-    this.registerNode(NodeType.Default, DefaultNodeNew)
+    this.registerNode(NodeType.Default, DefaultNode)
     this.registerNode(NodeType.StartNode, StartNode)
     this.registerNode(NodeType.CreateNode, CreateNode)
     this.registerNode(NodeType.EndNode, EndNode)
@@ -42,8 +41,8 @@ export class DiagramFactory {
     return this.type
   }
 
-  registerNode(type: string, Component: React.FC): void {
-    this.nodeBank.set(type, { component: Component })
+  registerNode(type: string, Component: React.FC, isDefault = false): void {
+    this.nodeBank.set(type, { component: Component, isDefault })
   }
 
   registerListeners(listeners: Record<string, BaseListener>): Record<string, ListenerHandle> {
@@ -120,10 +119,15 @@ export class DiagramFactory {
     this.getListenerHandle(event.type)?.listener?.(event)
   }
 
-  render(): React.FC<{ data: PipelineGraphState[]; collapseOnIntersect?: boolean }> {
-    const PipelineStudioHOC: React.FC<{ data: PipelineGraphState[]; collapseOnIntersect?: boolean }> = (props: {
+  render(): React.FC<{ data: PipelineGraphState[]; collapseOnIntersect?: boolean; selectedNodeId?: string }> {
+    const PipelineStudioHOC: React.FC<{
       data: PipelineGraphState[]
       collapseOnIntersect?: boolean
+      selectedNodeId?: string
+    }> = (props: {
+      data: PipelineGraphState[]
+      collapseOnIntersect?: boolean
+      selectedNodeId?: string
     }): React.ReactElement => (
       <PipelineGraph
         getDefaultNode={this.getDefaultNode.bind(this)}

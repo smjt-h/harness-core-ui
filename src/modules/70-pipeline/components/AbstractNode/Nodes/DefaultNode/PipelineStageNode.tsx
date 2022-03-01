@@ -7,12 +7,20 @@
 
 import React from 'react'
 import cx from 'classnames'
+import type { IconName } from '@wings-software/uicore'
 import { Icon, Text, Color, Button, ButtonVariation } from '@wings-software/uicore'
 import { DiagramDrag, DiagramType, Event } from '@pipeline/components/Diagram'
 import SVGMarker from '../SVGMarker'
+import { PipelineGraphType } from '../../types'
+import { NodeType } from '../../Node'
 import css from './DefaultNode.module.scss'
 
-const DefaultNodeNew = (props: any): JSX.Element => {
+const iconStyle = {
+  color: 'var(--white)'
+}
+const SECONDARY_ICON: IconName = 'command-echo'
+
+const PipelineStageNode = (props: any): JSX.Element => {
   const allowAdd = props.allowAdd ?? false
   const nodeRef = React.useRef<HTMLDivElement>(null)
   const [showAdd, setVisibilityOfAdd] = React.useState(false)
@@ -49,15 +57,16 @@ const DefaultNodeNew = (props: any): JSX.Element => {
         className={`${cx(css.defaultNode, 'default-node', { [css.marginBottom]: props.isParallelNode })} draggable`}
         ref={nodeRef}
         onClick={event => {
-          event.stopPropagation()
           if (props?.onClick) {
             props.onClick()
             return
           }
+          event.stopPropagation()
           props?.fireEvent({
             type: Event.ClickNode,
             entityType: DiagramType.Default,
-            ...props
+            identifier: props?.identifier,
+            parentIdentifier: props?.parentIdentifier
           })
           props?.setSelectedNode(props?.identifier)
         }}
@@ -97,8 +106,9 @@ const DefaultNodeNew = (props: any): JSX.Element => {
           draggable={true}
           className={cx(css.defaultCard, { [css.selected]: props?.isSelected })}
           style={{
-            width: props.width || 90,
-            height: props.height || 40,
+            width: props.graphType === PipelineGraphType.STEP_GRAPH ? 64 : 90,
+            height: props.graphType === PipelineGraphType.STEP_GRAPH ? 64 : 40,
+            marginTop: 32 - (props.height || 64) / 2,
             cursor: props.disableClick ? 'not-allowed' : props.draggable ? 'move' : 'pointer',
             opacity: props.dragging ? 0.4 : 1
           }}
@@ -127,9 +137,10 @@ const DefaultNodeNew = (props: any): JSX.Element => {
               size={28}
               name={props.icon}
               inverse={props?.isSelected}
-              style={{ pointerEvents: 'none', ...props?.iconStyle }}
+              style={{ pointerEvents: 'none', ...iconStyle }}
             />
           )}
+          {SECONDARY_ICON && <Icon className={css.secondaryIcon} size={8} name={SECONDARY_ICON} />}
           <Button
             className={cx(css.closeNode, { [css.readonly]: props.readonly })}
             minimal
@@ -152,7 +163,7 @@ const DefaultNodeNew = (props: any): JSX.Element => {
         </div>
         {props.name && (
           <Text
-            width={props.width || 90}
+            width={props.graphType === PipelineGraphType.STEP_GRAPH ? 64 : 90}
             font={{ size: 'normal', align: 'center' }}
             color={props.defaultSelected ? Color.GREY_900 : Color.GREY_600}
             className={css.nameText}
@@ -168,18 +179,18 @@ const DefaultNodeNew = (props: any): JSX.Element => {
               event.stopPropagation()
               props?.fireEvent({
                 type: Event.AddParallelNode,
-                entityType: DiagramType.Default,
-                target: event.target,
                 identifier: props?.identifier,
                 parentIdentifier: props?.parentIdentifier,
-                node: props
+                entityType: DiagramType.Default,
+                node: props,
+                target: event.target
               })
             }}
             className={css.addNode}
             data-nodeid="add-parallel"
             style={{
-              width: props.width || 90,
-              height: props.height || 40,
+              width: props.graphType === PipelineGraphType.STEP_GRAPH ? 64 : 90,
+              height: props.graphType === PipelineGraphType.STEP_GRAPH ? 64 : 40,
               visibility: showAdd ? 'visible' : 'hidden'
             }}
           >
@@ -187,8 +198,80 @@ const DefaultNodeNew = (props: any): JSX.Element => {
           </div>
         )}
       </div>
+      {!props.isParallelNode && (
+        <div
+          data-linkid={props?.identifier}
+          onClick={event => {
+            event.stopPropagation()
+            props?.fireEvent({
+              type: Event.AddLinkClicked,
+              entityType: DiagramType.Link,
+              node: props,
+              prevNodeIdentifier: props?.prevNodeIdentifier,
+              parentIdentifier: props?.parentIdentifier,
+              identifier: props?.identifier
+            })
+          }}
+          onDragOver={event => {
+            event.stopPropagation()
+            event.preventDefault()
+          }}
+          onDrop={event => {
+            event.stopPropagation()
+            props?.fireEvent({
+              type: Event.DropLinkEvent,
+              linkBeforeStepGroup: false,
+              entityType: DiagramType.Link,
+              node: JSON.parse(event.dataTransfer.getData(DiagramDrag.NodeDrag)),
+              destination: props
+            })
+          }}
+          className={cx(css.addNodeIcon, css.left, {
+            [css.stepGroupAddIcon]: props.graphType === PipelineGraphType.STEP_GRAPH
+          })}
+        >
+          <Icon name="plus" color={Color.WHITE} />
+        </div>
+      )}
+      {(props?.nextNode?.nodeType === NodeType.StepGroupNode || (!props?.nextNode && props?.parentIdentifier)) &&
+        !props.isParallelNode && (
+          <div
+            data-linkid={props?.identifier}
+            onClick={event => {
+              event.stopPropagation()
+              props?.fireEvent({
+                type: Event.AddLinkClicked,
+                linkBeforeStepGroup: true,
+                prevNodeIdentifier: props?.prevNodeIdentifier,
+                parentIdentifier: props?.parentIdentifier,
+                entityType: DiagramType.Link,
+                identifier: props?.identifier,
+                node: props
+              })
+            }}
+            onDragOver={event => {
+              event.stopPropagation()
+              event.preventDefault()
+            }}
+            onDrop={event => {
+              event.stopPropagation()
+              props?.fireEvent({
+                type: Event.DropLinkEvent,
+                linkBeforeStepGroup: true,
+                entityType: DiagramType.Link,
+                node: JSON.parse(event.dataTransfer.getData(DiagramDrag.NodeDrag)),
+                destination: props
+              })
+            }}
+            className={cx(css.addNodeIcon, css.right, {
+              [css.stepGroupAddIcon]: props.graphType === PipelineGraphType.STEP_GRAPH
+            })}
+          >
+            <Icon name="plus" color={Color.WHITE} />
+          </div>
+        )}
     </>
   )
 }
 
-export default DefaultNodeNew
+export default PipelineStageNode

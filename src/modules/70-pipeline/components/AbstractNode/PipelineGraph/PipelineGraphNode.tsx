@@ -135,7 +135,7 @@ const PipelineGraphNodeBasic = ({
   getDefaultNode
 }: PipelineGraphNode): React.ReactElement | null => {
   const defaultNode = getDefaultNode()?.component
-  const NodeComponent: React.FC<any> | undefined = getNode?.(data?.nodeType)?.component || defaultNode
+  const NodeComponent: React.FC<any> | undefined = getNode?.(data?.type)?.component || defaultNode
   const ref = useRef<HTMLDivElement>(null)
   const isIntersecting = useIntersectionObserver(
     collapseOnIntersect ? ref : null,
@@ -172,6 +172,7 @@ const PipelineGraphNodeBasic = ({
             {...data}
             getNode={getNode}
             fireEvent={fireEvent}
+            getDefaultNode={getDefaultNode}
             className={classNames(css.graphNode, className)}
             setSelectedNode={setSelectedNode}
             isSelected={selectedNode === data?.identifier}
@@ -218,6 +219,7 @@ const PipelineGraphNodeBasic = ({
                     {...currentStage}
                     getNode={getNode}
                     fireEvent={fireEvent}
+                    getDefaultNode={getDefaultNode}
                     className={classNames(css.graphNode, className)}
                     setSelectedNode={setSelectedNode}
                     isSelected={selectedNode === currentStage?.identifier}

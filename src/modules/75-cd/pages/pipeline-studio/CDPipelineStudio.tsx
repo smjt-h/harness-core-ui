@@ -32,10 +32,11 @@ import { FeatureFlag } from '@common/featureFlags'
 import type { ModuleLicenseType } from '@common/constants/SubscriptionTypes'
 import { DiagramFactory, DiagramNodes, NodeType } from '@pipeline/components/AbstractNode/DiagramFactory'
 import css from './CDPipelineStudio.module.scss'
+import PipelineStageNode from '@pipeline/components/AbstractNode/Nodes/DefaultNode/PipelineStageNode'
 
 const diagram = new DiagramFactory('graph')
 
-diagram.registerNode('Deployment', DiagramNodes[NodeType.Default])
+diagram.registerNode('Deployment', PipelineStageNode)
 
 export const CDPipelineStudioNew = diagram.render()
 

@@ -13,7 +13,7 @@ import type { StepGroupNodeLayerModel } from '../../../Diagram/node-layer/StepGr
 import CreateNode from '../CreateNode/CreateNode'
 import css from './StepGroupNode.module.scss'
 import StepGroupGraph from '../StepGroupGraph/StepGroupGraph'
-import DefaultNode from '../DefaultNode/DefaultNode'
+import DefaultNode from '../DefaultNode/PipelineStageNode'
 
 const onAddNodeClick = (
   e: React.MouseEvent<Element, MouseEvent>,
@@ -159,6 +159,7 @@ export const StepGroupNode = (props: any): JSX.Element => {
             </div>
             <div className={css.stepGroupBody}>
               <StepGroupGraph
+                getDefaultNode={props?.getDefaultNode}
                 identifier={props?.identifier}
                 prevNodeIdentifier={props?.prevNodeIdentifier}
                 data={props?.data?.stepGroup?.steps}
