@@ -528,6 +528,7 @@ function ExecutionGraphRef<T extends StageElementConfig>(
     [Event.MouseEnterNode]: mouseEnterNodeListener,
     [Event.MouseLeaveNode]: mouseLeaveNodeListener
   }
+
   const nodeListenersNew: NodeModelListener = {
     [Event.ClickNode]: (event: any) => {
       const eventTemp = event

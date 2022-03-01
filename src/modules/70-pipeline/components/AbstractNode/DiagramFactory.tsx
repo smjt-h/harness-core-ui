@@ -15,6 +15,7 @@ import PipelineGraph from './PipelineGraph/PipelineGraph'
 import GroupNode from './Nodes/GroupNode/GroupNode'
 import type { BaseListener, ListenerHandle, NodeBank, NodeDetails, PipelineGraphState } from './types'
 import { StepGroupNode } from './Nodes/StepGroupNode/StepGroupNode'
+import DefaultNodeNew from './Nodes/DefaultNode/DefaultNodeNew'
 
 export class DiagramFactory {
   /**
@@ -29,7 +30,7 @@ export class DiagramFactory {
   constructor(diagramType: string) {
     this.nodeBank = new Map<string, NodeDetails>()
     this.type = diagramType
-    this.registerNode(NodeType.Default, DefaultNode)
+    this.registerNode(NodeType.Default, DefaultNodeNew)
     this.registerNode(NodeType.StartNode, StartNode)
     this.registerNode(NodeType.CreateNode, CreateNode)
     this.registerNode(NodeType.EndNode, EndNode)

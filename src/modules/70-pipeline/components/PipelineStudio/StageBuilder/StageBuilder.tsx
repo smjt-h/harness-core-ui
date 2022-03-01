@@ -686,12 +686,10 @@ const StageBuilder: React.FC<StageBuilderProps> = ({ diagram }): JSX.Element => 
         )
       }
     },
-    [Event.DropLinkEvent]: (event: any) => {
-      const eventTemp = event as DefaultNodeEvent
-      eventTemp.stopPropagation()
+    [Event.DropNodeEvent]: (event: any) => {
       if (event.node?.identifier) {
-        const dropNode = getStageFromPipeline(event.node.identifier).stage
-        const current = getStageFromPipeline(eventTemp.entity.getIdentifier())
+        const dropNode = getStageFromPipeline(event?.node?.identifier).stage
+        const current = getStageFromPipeline(event?.destination?.identifier)
         const dependentStages = getDependantStages(pipeline, dropNode)
         const parentStageId = (dropNode?.stage as DeploymentStageElementConfig)?.spec?.serviceConfig?.useFromStage
           ?.stage
@@ -734,7 +732,6 @@ const StageBuilder: React.FC<StageBuilderProps> = ({ diagram }): JSX.Element => 
             pipeline,
             dependentParallelIndex
           )
-
           if (finalDropIndex >= firstDependentStageIndex) {
             setMoveStageDetails({
               event,
@@ -748,7 +745,7 @@ const StageBuilder: React.FC<StageBuilderProps> = ({ diagram }): JSX.Element => 
             return
           }
         }
-        updateStageOnAddLink(event, dropNode, current)
+        updateStageOnAddLinkNew(event, dropNode, current)
       }
     },
     [Event.MouseEnterNode]: (event: any) => {
@@ -873,11 +870,12 @@ const StageBuilder: React.FC<StageBuilderProps> = ({ diagram }): JSX.Element => 
       }
     },
     [Event.DropLinkEvent]: (event: any) => {
-      // console.log(event.node.identifier === event.entity.getIdentifier())
-      const eventTemp = event as DefaultLinkEvent
-      eventTemp.stopPropagation()
+      if (event?.node?.identifier === event?.destination?.identifier) {
+        return
+      }
       if (event.node?.identifier) {
         const dropNode = getStageFromPipeline(event.node.identifier).stage
+        const destination = getStageFromPipeline(event.destination.identifier).stage
         const parentStageName = (dropNode?.stage as DeploymentStageElementConfig)?.spec?.serviceConfig?.useFromStage
           ?.stage
         const dependentStages = getDependantStages(pipeline, dropNode)
@@ -927,132 +925,9 @@ const StageBuilder: React.FC<StageBuilderProps> = ({ diagram }): JSX.Element => 
 
         const isRemove = removeNodeFromPipeline(getStageFromPipeline(event.node.identifier), pipeline, stageMap, false)
         if (isRemove && dropNode) {
-          addStage(dropNode, false, event)
+          addStageNew(dropNode, false, true, undefined, undefined, undefined, destination)
         }
       }
-    }
-  }
-
-  const dropLinkEvent = (event: any) => {
-    if (event?.node?.identifier === event?.destination?.identifier) {
-      return
-    }
-    if (event.node?.identifier) {
-      const dropNode = getStageFromPipeline(event.node.identifier).stage
-      const destination = getStageFromPipeline(event.destination.identifier).stage
-      const parentStageName = (dropNode?.stage as DeploymentStageElementConfig)?.spec?.serviceConfig?.useFromStage
-        ?.stage
-      const dependentStages = getDependantStages(pipeline, dropNode)
-
-      if (parentStageName?.length) {
-        const node = event.entity.getTargetPort().getNode() as DefaultNodeModel
-        const { stage } = getStageFromPipeline(node.getIdentifier())
-        const dropIndex = pipeline?.stages?.indexOf(stage!) || -1
-        const { stageIndex: parentIndex = -1 } = getStageIndexByIdentifier(pipeline, parentStageName)
-
-        if (dropIndex < parentIndex) {
-          setMoveStageDetails({
-            event,
-            direction: MoveDirection.AHEAD
-          })
-          confirmMoveStage()
-          return
-        }
-      } else if (dependentStages?.length) {
-        let dropIndex = -1
-        const node = event.entity.getSourcePort().getNode() as DefaultNodeModel
-        const { stage } = getStageFromPipeline(node.getIdentifier())
-        if (!stage) {
-          //  node on sourceport is parallel so split nodeId to get original node identifier
-          const nodeId = node.getIdentifier().split(EmptyNodeSeparator)[1]
-
-          const { stageIndex: nextStageIndex } = getStageIndexByIdentifier(pipeline, nodeId)
-          dropIndex = nextStageIndex + 1 // adding 1 as we checked source port that is prev to index where we will move this node
-        } else {
-          dropIndex = pipeline?.stages?.indexOf(stage!) || -1
-        }
-
-        const { stageIndex: firstDependentStageIndex = -1 } = getStageIndexByIdentifier(pipeline, dependentStages[0])
-
-        if (dropIndex >= firstDependentStageIndex) {
-          const stagesTobeUpdated = getAffectedDependentStages(dependentStages, dropIndex, pipeline)
-
-          setMoveStageDetails({
-            event,
-            direction: MoveDirection.BEHIND,
-            dependentStages: stagesTobeUpdated
-          })
-          confirmMoveStage()
-          return
-        }
-      }
-
-      const isRemove = removeNodeFromPipeline(getStageFromPipeline(event.node.identifier), pipeline, stageMap, false)
-      if (isRemove && dropNode) {
-        addStageNew(dropNode, false, true, undefined, undefined, undefined, destination)
-      }
-    }
-  }
-
-  const dropNodeEvent = (event: any) => {
-    if (event.node?.identifier) {
-      const dropNode = getStageFromPipeline(event?.node?.identifier).stage
-      const current = getStageFromPipeline(event?.destination?.identifier)
-      const dependentStages = getDependantStages(pipeline, dropNode)
-      const parentStageId = (dropNode?.stage as DeploymentStageElementConfig)?.spec?.serviceConfig?.useFromStage?.stage
-      if (parentStageId?.length) {
-        const { stageIndex } = getStageIndexByIdentifier(pipeline, current?.stage?.stage?.identifier)
-
-        const { index: parentIndex } = getStageIndexFromPipeline(pipeline, parentStageId)
-        if (stageIndex <= parentIndex) {
-          setMoveStageDetails({
-            event,
-            direction: MoveDirection.AHEAD,
-            currentStage: current
-          })
-          confirmMoveStage()
-          return
-        }
-
-        return
-      } else if (dependentStages?.length) {
-        let finalDropIndex = -1
-        let firstDependentStageIndex
-        const { stageIndex: dependentStageIndex, parallelStageIndex: dependentParallelIndex = -1 } =
-          getStageIndexByIdentifier(pipeline, dependentStages[0])
-
-        firstDependentStageIndex = dependentStageIndex
-
-        if (current.parent) {
-          const { stageIndex } = getStageIndexByIdentifier(pipeline, current?.stage?.stage?.identifier)
-          finalDropIndex = stageIndex
-          firstDependentStageIndex = dependentStageIndex
-        } else if (current?.stage) {
-          const { stageIndex } = getStageIndexByIdentifier(pipeline, current?.stage?.stage?.identifier)
-          finalDropIndex = stageIndex
-        }
-
-        finalDropIndex = finalDropIndex === -1 ? pipeline.stages?.length || 0 : finalDropIndex
-        const stagesTobeUpdated = getAffectedDependentStages(
-          dependentStages,
-          finalDropIndex,
-          pipeline,
-          dependentParallelIndex
-        )
-        if (finalDropIndex >= firstDependentStageIndex) {
-          setMoveStageDetails({
-            event,
-            direction: MoveDirection.BEHIND,
-            dependentStages: stagesTobeUpdated,
-            currentStage: current,
-            isLastAddLink: !current.parent
-          })
-
-          confirmMoveStage()
-          return
-        }
-      }
-      updateStageOnAddLinkNew(event, dropNode, current)
     }
   }
 
@@ -1061,8 +936,8 @@ const StageBuilder: React.FC<StageBuilderProps> = ({ diagram }): JSX.Element => 
   }
 
   const events = {
-    [Event.DropLinkEvent]: dropLinkEvent,
-    [Event.DropNodeEvent]: dropNodeEvent,
+    [Event.DropLinkEvent]: linkListeners[Event.DropLinkEvent],
+    [Event.DropNodeEvent]: nodeListeners[Event.DropNodeEvent],
     [Event.ClickNode]: nodeListeners[Event.ClickNode],
     [Event.AddParallelNode]: nodeListeners[Event.AddParallelNode],
     [Event.RemoveNode]: nodeListeners[Event.RemoveNode],
