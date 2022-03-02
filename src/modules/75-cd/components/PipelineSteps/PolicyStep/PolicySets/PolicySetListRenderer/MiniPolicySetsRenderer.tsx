@@ -30,7 +30,7 @@ export function MiniPolicySetsRenderer({ policySetIds }: MiniPolicySetsRendererP
   return (
     <>
       {policySetIds.map(policySetId => {
-        const policySetType = policySetId.includes('acc.')
+        const policySetType = policySetId.includes('account.')
           ? PolicySetType.ACCOUNT
           : policySetId.includes('org.')
           ? PolicySetType.ORG

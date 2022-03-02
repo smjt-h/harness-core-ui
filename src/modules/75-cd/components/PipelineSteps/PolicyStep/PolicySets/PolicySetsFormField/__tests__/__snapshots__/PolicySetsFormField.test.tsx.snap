@@ -63,7 +63,7 @@ exports[`Test Policy Sets Form Field renders error 1`] = `
 </div>
 `;
 
-exports[`Test Policy Sets Form Field snapshot test 1`] = `
+exports[`Test Policy Sets Form Field snapshot test and open close modal 1`] = `
 <div>
   <div
     class="bp3-form-group formGroup"
