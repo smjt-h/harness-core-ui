@@ -681,7 +681,7 @@ exports[`<ExecutionGraphView /> tests step details are shown when step is select
                                   class="StyledProps--font StyledProps--main timer StyledProps--inline"
                                 >
                                   
-                                  
+                                  0s
                                 </span>
                               </td>
                             </tr>
