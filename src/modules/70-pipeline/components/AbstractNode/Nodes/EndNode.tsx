@@ -15,7 +15,7 @@ import css from './Nodes.module.scss'
 const DEFAULT_ICON: IconName = 'stop'
 const SELECTED_COLOUR = 'var(--diagram-stop-node)'
 
-const EndNode = (): React.ReactElement => {
+function EndNode(): React.ReactElement {
   return (
     <div className={css.defaultNode}>
       <div

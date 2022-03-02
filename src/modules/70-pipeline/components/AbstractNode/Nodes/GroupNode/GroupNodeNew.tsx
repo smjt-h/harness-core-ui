@@ -12,7 +12,7 @@ import { Icon, Text, Color } from '@wings-software/uicore'
 import { DiagramDrag, DiagramType, Event } from '@pipeline/components/Diagram'
 import css from '../DefaultNode/DefaultNode.module.scss'
 
-const GroupNode = (props: any): React.ReactElement => {
+function GroupNode(props: any): React.ReactElement {
   const allowAdd = props.allowAdd ?? false
   const [_addClicked, setAddClicked] = React.useState(false)
   const [showAdd, setVisibilityOfAdd] = React.useState(false)
