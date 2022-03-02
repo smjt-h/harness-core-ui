@@ -34,3 +34,14 @@
   margin: 0;
   border: 1px solid rgba(0, 0, 0, 0.1);
 }
+
+.newPolicySetBtn {
+  border-radius: var(--spacing-2);
+  border: 1px solid var(--primary-6) !important;
+}
+
+.closeIcon {
+  position: absolute;
+  right: var(--spacing-large);
+  top: var(--spacing-large);
+}

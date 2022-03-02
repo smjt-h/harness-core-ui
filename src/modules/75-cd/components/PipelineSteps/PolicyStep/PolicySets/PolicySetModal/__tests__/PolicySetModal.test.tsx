@@ -23,6 +23,10 @@ jest.mock('@common/exports', () => ({
   })
 }))
 
+jest.mock('@governance/PolicySetWizard', () => ({
+  PolicySetWizard: () => <div>Policy Set Wizard Mock</div>
+}))
+
 jest.mock('services/pm', () => ({
   useGetPolicySetList: jest.fn().mockImplementation(() => ({
     data: [
@@ -111,5 +115,42 @@ describe('Test Policy Set Modal', () => {
     })
 
     await waitFor(() => expect(closeModal).toHaveBeenCalled())
+  })
+
+  test('should open policy set wizard modal', async () => {
+    const closeModal = jest.fn()
+
+    const { getByText } = render(
+      <TestWrapper
+        queryParams={{
+          accountIdentifier: 'acc',
+          orgIdentifier: 'org',
+          projectIdentifier: 'project'
+        }}
+      >
+        <PolicySetModal
+          name={'spec.policySets'}
+          policySetIds={['acc.test']}
+          closeModal={closeModal}
+          formikProps={
+            {
+              setFieldValue: jest.fn().mockImplementation((name, ids) => ({
+                name,
+                ids
+              }))
+            } as any
+          }
+        />
+      </TestWrapper>
+    )
+
+    const newPolicySetButton = getByText('common.policiesSets.newPolicyset')
+    expect(newPolicySetButton).toBeInTheDocument()
+
+    act(() => {
+      fireEvent.click(newPolicySetButton)
+    })
+
+    await waitFor(() => expect(screen.getByText('Policy Set Wizard Mock')).toBeInTheDocument())
   })
 })

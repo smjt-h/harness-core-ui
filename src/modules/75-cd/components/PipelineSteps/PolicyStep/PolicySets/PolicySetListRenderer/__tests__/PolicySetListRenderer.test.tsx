@@ -37,6 +37,7 @@ describe('Policy Set List Renderer', () => {
           setNewPolicySetIds={jest.fn}
           policySetList={[]}
           selectedTabId={PolicySetType.ACCOUNT}
+          showModal={jest.fn()}
         />
       </TestWrapper>
     )
@@ -68,6 +69,7 @@ describe('Policy Set List Renderer', () => {
             }
           ]}
           selectedTabId={PolicySetType.ACCOUNT}
+          showModal={jest.fn()}
         />
       </TestWrapper>
     )
@@ -109,6 +111,7 @@ describe('Policy Set List Renderer', () => {
             }
           ]}
           selectedTabId={PolicySetType.ORG}
+          showModal={jest.fn()}
         />
       </TestWrapper>
     )
@@ -151,6 +154,7 @@ describe('Policy Set List Renderer', () => {
             }
           ]}
           selectedTabId={PolicySetType.PROJECT}
+          showModal={jest.fn()}
         />
       </TestWrapper>
     )
@@ -191,6 +195,7 @@ describe('Policy Set List Renderer', () => {
             }
           ]}
           selectedTabId={PolicySetType.ACCOUNT}
+          showModal={jest.fn()}
         />
       </TestWrapper>
     )

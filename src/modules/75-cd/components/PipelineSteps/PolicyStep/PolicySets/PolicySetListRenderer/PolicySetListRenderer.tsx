@@ -16,6 +16,7 @@ import type { PolicySet } from 'services/pm'
 
 import { DATE_WITHOUT_TIME_FORMAT } from '@common/utils/StringUtils'
 
+import { NewPolicySetButton } from '../PolicySetModal/PolicySetModal'
 import { PolicySetType } from '../../PolicyStepTypes'
 
 import css from './PolicySetListRenderer.module.scss'
@@ -28,6 +29,7 @@ export interface PolicySetListRendererProps {
   setNewPolicySetIds: (list: string[]) => void
   policySetList: PolicySet[]
   selectedTabId: PolicySetType
+  showModal: () => void
 }
 
 export function PolicySetListRenderer({
@@ -37,7 +39,8 @@ export function PolicySetListRenderer({
   newPolicySetIds,
   setNewPolicySetIds,
   policySetList,
-  selectedTabId
+  selectedTabId,
+  showModal
 }: PolicySetListRendererProps) {
   const { getString } = useStrings()
 
@@ -49,7 +52,8 @@ export function PolicySetListRenderer({
       noData={{
         when: () => !policySetList?.length,
         icon: 'nav-project',
-        message: getString('common.policiesSets.noPolicySetResult')
+        message: getString('common.policiesSets.noPolicySetResult'),
+        button: <NewPolicySetButton onClick={showModal} />
       }}
       className={css.renderer}
     >
@@ -66,27 +70,28 @@ export function PolicySetListRenderer({
             }
           }) ?? false
 
+        const policySetId = policySet.project_id
+          ? `${policySet.identifier}`
+          : policySet.org_id
+          ? `org.${policySet.identifier}`
+          : `account.${policySet.identifier}`
+
         return (
           <Collapse
-            key={policySet.identifier}
+            key={policySetId}
             collapseClassName={css.policySetRows}
             heading={
               <Layout.Horizontal width={'100%'} flex={{ justifyContent: 'flex-start', alignItems: 'center' }}>
                 <Layout.Vertical padding={{ left: 'medium' }}>
                   <Checkbox
                     name="selectedPolicySets"
-                    value={policySet.identifier}
+                    value={policySetId}
                     checked={checked}
                     onChange={(e: FormEvent<HTMLInputElement>) => {
-                      const id = policySet.project_id
-                        ? `${policySet.identifier}`
-                        : policySet.org_id
-                        ? `org.${policySet.identifier}`
-                        : `account.${policySet.identifier}`
                       if ((e.target as any).checked) {
-                        setNewPolicySetIds([...newPolicySetIds, id])
+                        setNewPolicySetIds([...newPolicySetIds, policySetId])
                       } else {
-                        setNewPolicySetIds(newPolicySetIds.filter(_id => _id !== id))
+                        setNewPolicySetIds(newPolicySetIds.filter(_id => _id !== policySetId))
                       }
                     }}
                   />

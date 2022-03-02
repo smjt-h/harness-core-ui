@@ -23,12 +23,15 @@ import {
   IconName,
   ExpandingSearchInput
 } from '@harness/uicore'
-import { Dialog, Tab } from '@blueprintjs/core'
+import { useModalHook } from '@harness/use-modal'
+import { Dialog, IDialogProps, Tab } from '@blueprintjs/core'
 
 import { useStrings, StringKeys } from 'framework/strings'
 import { GetPolicySetQueryParams, PolicySet, useGetPolicySetList } from 'services/pm'
 
 import type { ProjectPathProps } from '@common/interfaces/RouteInterfaces'
+
+import { PolicySetWizard } from '@governance/PolicySetWizard'
 
 import { PolicySetListRenderer } from '../PolicySetListRenderer/PolicySetListRenderer'
 import { PolicySetType, PolicyStepFormData } from '../../PolicyStepTypes'
@@ -41,6 +44,19 @@ export interface PolicySetModalProps {
   formikProps?: FormikProps<PolicyStepFormData>
   policySetIds: string[]
   closeModal: () => void
+}
+
+const modalProps: IDialogProps = {
+  isOpen: true,
+  enforceFocus: false,
+  canOutsideClickClose: true,
+  style: {
+    width: 1080,
+    borderLeft: 0,
+    paddingBottom: 0,
+    position: 'relative',
+    overflow: 'auto'
+  }
 }
 
 export function PolicySetModal({ name, formikProps, policySetIds, closeModal }: PolicySetModalProps): JSX.Element {
@@ -136,6 +152,24 @@ export function PolicySetModal({ name, formikProps, policySetIds, closeModal }: 
     }
   }, [error, policySets, refetch])
 
+  const [showModal, hideModal] = useModalHook(() => {
+    return (
+      <Dialog {...modalProps} onClose={hideModal}>
+        <PolicySetWizard hideModal={hideModal} refetch={refetch} queryParams={queryParams} />
+        <Button
+          minimal
+          className={css.closeIcon}
+          icon="cross"
+          iconProps={{ size: 18 }}
+          onClick={() => {
+            refetch()
+            hideModal()
+          }}
+        />
+      </Dialog>
+    )
+  }, [queryParams])
+
   const handleTabChange = (nextTab: PolicySetType): void => {
     setSelectedTabId(nextTab)
     setPageIndex(0)
@@ -191,6 +225,7 @@ export function PolicySetModal({ name, formikProps, policySetIds, closeModal }: 
         error={error}
         refetch={refetch}
         selectedTabId={selectedTabId}
+        showModal={showModal}
       />
       <Pagination
         itemCount={itemCount}
@@ -235,6 +270,7 @@ export function PolicySetModal({ name, formikProps, policySetIds, closeModal }: 
             flex={{ justifyContent: 'space-between' }}
           >
             <Text font={{ variation: FontVariation.H3 }}>{getString('common.policiesSets.selectPolicySet')}</Text>
+            <NewPolicySetButton onClick={showModal} />
           </Layout.Horizontal>
         }
       >
@@ -276,5 +312,20 @@ export function PolicySetModal({ name, formikProps, policySetIds, closeModal }: 
         </Container>
       </Dialog>
     </>
+  )
+}
+
+export function NewPolicySetButton({ onClick }: { onClick: () => void }): JSX.Element {
+  const { getString } = useStrings()
+
+  return (
+    <Button
+      minimal
+      icon="plus"
+      className={css.newPolicySetBtn}
+      text={getString('common.policiesSets.newPolicyset')}
+      margin={{ bottom: 'small' }}
+      onClick={onClick}
+    />
   )
 }

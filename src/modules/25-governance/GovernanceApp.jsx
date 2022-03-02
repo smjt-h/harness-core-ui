@@ -27,6 +27,7 @@ const RemoteGovernanceApp = lazy(() => import('governance/App'))
 export const RemoteEvaluationModal = lazy(() => import('governance/EvaluationModal'))
 export const RemotePipelineGovernanceView = lazy(() => import('governance/PipelineGovernanceView'))
 export const RemoteEvaluationView = lazy(() => import('governance/EvaluationView'))
+export const RemotePolicySetWizard = lazy(() => import('governance/PolicySetWizard'))
 
 export const GovernanceRemoteComponentMounter = props => {
   const { spinner, component } = props
