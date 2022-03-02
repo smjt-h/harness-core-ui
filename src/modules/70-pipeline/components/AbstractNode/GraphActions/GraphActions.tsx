@@ -8,7 +8,7 @@ interface GraphActionProps {
   graphScale: number
   handleScaleToFit: () => void
 }
-const GraphActions = ({ setGraphScale, graphScale, handleScaleToFit }: GraphActionProps): React.ReactElement => {
+function GraphActions({ setGraphScale, graphScale, handleScaleToFit }: GraphActionProps): React.ReactElement {
   const { getString } = useStrings()
   return (
     <span className={css.canvasButtons}>

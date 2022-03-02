@@ -113,7 +113,7 @@ interface PipelineGraphNode {
   getDefaultNode(): NodeDetails | null
 }
 
-const PipelineGraphNodeBasic = ({
+function PipelineGraphNodeBasic({
   fireEvent,
   getNode,
   setSelectedNode,
@@ -133,7 +133,7 @@ const PipelineGraphNodeBasic = ({
   updateSvgs,
   renderer,
   getDefaultNode
-}: PipelineGraphNode): React.ReactElement | null => {
+}: PipelineGraphNode): React.ReactElement | null {
   const defaultNode = getDefaultNode()?.component
   const NodeComponent: React.FC<any> | undefined = getNode?.(data?.type)?.component || defaultNode
   const ref = useRef<HTMLDivElement>(null)

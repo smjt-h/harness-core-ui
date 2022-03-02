@@ -47,7 +47,7 @@ const onMouseLeaveNode = (e: MouseEvent, _layer: StepGroupNodeLayerModel): void 
   // layer.fireEvent({ target: e.target }, Event.MouseLeaveNode)
 }
 
-export const StepGroupNode = (props: any): JSX.Element => {
+export function StepGroupNode(props: any): JSX.Element {
   const allowAdd = props.allowAdd ?? false
   const layerRef = React.useRef<HTMLDivElement>(null)
   const [showAdd, setVisibilityOfAdd] = React.useState(false)

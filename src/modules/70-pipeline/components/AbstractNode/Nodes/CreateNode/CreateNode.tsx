@@ -15,7 +15,7 @@ import { PipelineGraphType } from '../../types'
 import cssDefault from '../DefaultNode/DefaultNode.module.scss'
 import css from './CreateNode.module.scss'
 
-const CreateNode = (props: any): React.ReactElement => {
+function CreateNode(props: any): React.ReactElement {
   return (
     <div className={cx(cssDefault.defaultNode, css.createNode)}>
       <div
