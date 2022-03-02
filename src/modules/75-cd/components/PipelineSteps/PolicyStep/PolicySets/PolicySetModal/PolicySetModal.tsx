@@ -20,7 +20,8 @@ import {
   Tabs,
   Text,
   FontVariation,
-  IconName
+  IconName,
+  ExpandingSearchInput
 } from '@harness/uicore'
 import { Dialog, Tab } from '@blueprintjs/core'
 
@@ -56,6 +57,7 @@ export function PolicySetModal({ name, formikProps, policySetIds, closeModal }: 
     [PolicySetType.ORG]: 0,
     [PolicySetType.PROJECT]: 0
   })
+  const [searchTerm, setsearchTerm] = useState<string>('')
 
   const { accountId: accountIdentifier, projectIdentifier, orgIdentifier } = useParams<ProjectPathProps>()
   const [queryParams, setQueryParams] = useState<GetPolicySetQueryParams>({
@@ -92,9 +94,10 @@ export function PolicySetModal({ name, formikProps, policySetIds, closeModal }: 
     () => ({
       ...queryParams,
       page: String(pageIndex),
-      per_page: pageSize.toString()
+      per_page: pageSize.toString(),
+      searchTerm: searchTerm
     }),
-    [pageIndex, pageSize, queryParams]
+    [pageIndex, pageSize, queryParams, searchTerm]
   )
 
   const {
@@ -104,7 +107,8 @@ export function PolicySetModal({ name, formikProps, policySetIds, closeModal }: 
     refetch,
     response: policySetResponse
   } = useGetPolicySetList({
-    queryParams: reqQueryParams
+    queryParams: reqQueryParams,
+    debounce: 300
   })
 
   const pageCount = useMemo(
@@ -168,6 +172,17 @@ export function PolicySetModal({ name, formikProps, policySetIds, closeModal }: 
   // This component renders the tab panel in the modal
   const TabPanel = () => (
     <>
+      <ExpandingSearchInput
+        alwaysExpanded
+        placeholder={getString('common.searchPlaceholder')}
+        onChange={text => {
+          setsearchTerm(text.trim())
+        }}
+        width={'100%'}
+        autoFocus={false}
+        defaultValue={searchTerm}
+        throttle={300}
+      />
       <PolicySetListRenderer
         newPolicySetIds={newPolicySetIds}
         setNewPolicySetIds={setNewPolicySetIds}
