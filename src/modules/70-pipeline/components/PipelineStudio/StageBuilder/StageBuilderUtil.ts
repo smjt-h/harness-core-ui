@@ -45,7 +45,7 @@ export interface PopoverData {
   stagesMap: StagesMap
   groupSelectedStageId?: string
   isParallel?: boolean
-  event?: Diagram.DefaultNodeEvent
+  event?: any
   addStage?: (
     newStage: StageElementWrapperConfig,
     isParallel?: boolean,
@@ -53,6 +53,15 @@ export interface PopoverData {
     insertAt?: number,
     openSetupAfterAdd?: boolean,
     pipeline?: PipelineInfoConfig
+  ) => void
+  addStageNew?: (
+    newStage: StageElementWrapper,
+    isParallel?: boolean,
+    droppedOnLink?: boolean,
+    insertAt?: number,
+    openSetupAfterAdd?: boolean,
+    pipelineTemp?: PipelineInfoConfig,
+    destinationNode?: StageElementWrapper
   ) => void
   onSubmitPrimaryData?: (values: StageElementWrapperConfig, identifier: string) => void
   onClickGroupStage?: (stageId: string, type: StageType) => void
@@ -172,6 +181,29 @@ export const getStageIndexFromPipeline = (data: PipelineInfoConfig, identifier?:
 
   _index = findIndex(stages, o => o.stage?.identifier === identifier)
   return { index: _index }
+}
+
+export const getStageIndexWithParallelNodesFromPipeline = (
+  data: PipelineInfoConfig,
+  identifier?: string
+): { index: number; parIndex: number } => {
+  let _parIndex = 0
+  let _index = 0
+  data?.stages?.forEach((stage: StageElementWrapperConfig, parIndex: number) => {
+    if (stage?.stage && stage?.stage?.identifier === identifier) {
+      _parIndex = parIndex
+      _index = 0
+    } else if (stage?.parallel) {
+      stage?.parallel?.forEach((parallelStageNode: StageElementWrapperConfig, index: number) => {
+        if (parallelStageNode?.stage?.identifier === identifier) {
+          _parIndex = parIndex
+          _index = index
+        }
+      })
+    }
+  })
+
+  return { index: _index, parIndex: _parIndex }
 }
 
 export const getFlattenedStages = (
