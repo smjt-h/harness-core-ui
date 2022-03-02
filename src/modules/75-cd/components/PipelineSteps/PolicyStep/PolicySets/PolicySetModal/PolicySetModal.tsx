@@ -75,9 +75,9 @@ export function PolicySetModal({ name, formikProps, policySetIds, closeModal }: 
 
   useEffect(() => {
     setCounts({
-      [PolicySetType.ACCOUNT]: newPolicySetIds.filter(id => id.includes('acc.')).length,
+      [PolicySetType.ACCOUNT]: newPolicySetIds.filter(id => id.includes('account.')).length,
       [PolicySetType.ORG]: newPolicySetIds.filter(id => id.includes('org.')).length,
-      [PolicySetType.PROJECT]: newPolicySetIds.filter(id => !id.includes('org.') && !id.includes('acc.')).length
+      [PolicySetType.PROJECT]: newPolicySetIds.filter(id => !id.includes('account.') && !id.includes('org.')).length
     })
   }, [newPolicySetIds])
 
@@ -112,7 +112,7 @@ export function PolicySetModal({ name, formikProps, policySetIds, closeModal }: 
   })
 
   const pageCount = useMemo(
-    () => parseInt(defaultTo(/* istanbul ignore next */ policySetResponse?.headers?.get('x-total-pages'), '0')),
+    () => parseInt(defaultTo(/* istanbul ignore next */ policySetResponse?.headers?.get('x-total-pages'), '1')),
     [policySetResponse]
   )
 

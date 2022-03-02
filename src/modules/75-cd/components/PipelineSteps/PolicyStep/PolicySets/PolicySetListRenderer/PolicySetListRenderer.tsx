@@ -59,7 +59,7 @@ export function PolicySetListRenderer({
             const parts = _id.split('.')
             if (parts[1] === undefined && selectedTabId === PolicySetType.PROJECT) {
               return parts[0] === policySet.identifier
-            } else if (parts[0] === 'acc' && selectedTabId === PolicySetType.ACCOUNT) {
+            } else if (parts[0] === 'account' && selectedTabId === PolicySetType.ACCOUNT) {
               return parts[1] === policySet.identifier
             } else if (parts[0] === 'org' && selectedTabId === PolicySetType.ORG) {
               return parts[1] === policySet.identifier
@@ -82,7 +82,7 @@ export function PolicySetListRenderer({
                         ? `${policySet.identifier}`
                         : policySet.org_id
                         ? `org.${policySet.identifier}`
-                        : `acc.${policySet.identifier}`
+                        : `account.${policySet.identifier}`
                       if ((e.target as any).checked) {
                         setNewPolicySetIds([...newPolicySetIds, id])
                       } else {

@@ -24,7 +24,7 @@ jest.mock('services/pm', () => ({
   GetPolicySet: jest.fn().mockImplementation((props: any) => {
     const MockComponent = () => {
       let policySet: PolicySetWithLinkedPolicies = {}
-      if (props.policyset === 'acc.test') {
+      if (props.policyset === 'account.test') {
         policySet = {
           name: 'Policy set 1',
           policies: [
@@ -72,12 +72,12 @@ describe('Mini Policy Sets Renderer', () => {
     const { container } = render(
       <TestWrapper
         queryParams={{
-          accountIdentifier: 'acc',
+          accountIdentifier: 'account',
           orgIdentifier: 'org',
           projectIdentifier: 'project'
         }}
       >
-        <MiniPolicySetsRenderer policySetIds={['acc.test', 'org.test', 'test', 'loadingId']} />
+        <MiniPolicySetsRenderer policySetIds={['account.test', 'org.test', 'test', 'loadingId']} />
       </TestWrapper>
     )
 
