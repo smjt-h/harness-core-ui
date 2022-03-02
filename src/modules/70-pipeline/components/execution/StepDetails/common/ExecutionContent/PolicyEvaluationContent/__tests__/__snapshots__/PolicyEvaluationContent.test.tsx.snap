@@ -82,7 +82,7 @@ exports[`Policy Evaluation Content snapshot for all policy set statuses and poli
                       />
                     </svg>
                   </span>
-                  Success
+                  SUCCESS
                 </div>
               </div>
             </div>
@@ -174,7 +174,7 @@ exports[`Policy Evaluation Content snapshot for all policy set statuses and poli
                       />
                     </svg>
                   </span>
-                  Failed
+                  FAILED
                 </div>
               </div>
             </div>
@@ -266,7 +266,7 @@ exports[`Policy Evaluation Content snapshot for all policy set statuses and poli
                       />
                     </svg>
                   </span>
-                  Warning
+                  WARNING
                 </div>
               </div>
             </div>
@@ -386,7 +386,7 @@ exports[`Policy Info under Policy Evaluation Content snapshot renders for failed
           />
         </svg>
       </span>
-      Failed
+      FAILED
     </div>
   </div>
 </div>
@@ -457,7 +457,7 @@ exports[`Policy Info under Policy Evaluation Content snapshot renders for failed
           />
         </svg>
       </span>
-      Failed
+      FAILED
     </div>
   </div>
 </div>
@@ -526,7 +526,7 @@ exports[`Policy Info under Policy Evaluation Content snapshot renders for failed
           />
         </svg>
       </span>
-      Failed
+      FAILED
     </div>
   </div>
 </div>
@@ -578,7 +578,7 @@ exports[`Policy Info under Policy Evaluation Content snapshot renders for passed
           />
         </svg>
       </span>
-      Success
+      SUCCESS
     </div>
   </div>
 </div>
@@ -649,7 +649,7 @@ exports[`Policy Info under Policy Evaluation Content snapshot renders for policy
           />
         </svg>
       </span>
-      Warning
+      WARNING
     </div>
   </div>
 </div>

@@ -63,6 +63,7 @@ describe('Test Policy Sets Form Field', () => {
               }
             } as any
           }
+          touched={false}
         />
       </TestWrapper>
     )
@@ -88,7 +89,7 @@ describe('Test Policy Sets Form Field', () => {
           projectIdentifier: 'project'
         }}
       >
-        <PolicySetsFormField name="dummy" error={'Failed to validate'} />
+        <PolicySetsFormField name="dummy" error={'Failed to validate'} touched={true} />
       </TestWrapper>
     )
 

@@ -34,7 +34,7 @@ export default function BasePolicyStep(props: {
   stepViewType?: StepViewType
 }): React.ReactElement {
   const {
-    formik: { errors },
+    formik: { errors, touched },
     formik,
     isNewStep,
     readonly,
@@ -83,6 +83,7 @@ export default function BasePolicyStep(props: {
         formikProps={formik}
         error={errors?.spec?.policySets}
         stepViewType={stepViewType}
+        touched={touched?.spec?.policySets}
       />
       {entityType === 'Custom' && (
         <div className={cx(stepCss.formGroup)}>
