@@ -21,7 +21,7 @@ export interface PipelineGraphRecursiveProps {
   renderer?: boolean
   getDefaultNode(): NodeDetails | null
 }
-export const PipelineGraphRecursive = ({
+export function PipelineGraphRecursive({
   nodes,
   getNode,
   selectedNode,
@@ -36,7 +36,7 @@ export const PipelineGraphRecursive = ({
   updateSvgs,
   renderer,
   getDefaultNode
-}: PipelineGraphRecursiveProps): React.ReactElement => {
+}: PipelineGraphRecursiveProps): React.ReactElement {
   const StartNode: React.FC<any> | undefined = getNode(NodeType.StartNode)?.component
   const CreateNode: React.FC<any> | undefined = getNode(NodeType.CreateNode)?.component
   const EndNode: React.FC<any> | undefined = getNode(NodeType.EndNode)?.component
@@ -164,7 +164,7 @@ function PipelineGraphNodeBasic({
     >
       <>
         <div ref={intersectingIndex === 0 && data.children ? ref : null} key={data?.identifier}>
-          {intersectingIndex == 0 ? (
+          {intersectingIndex == 0 && collapseOnIntersect ? (
             <GroupNode
               key={data?.identifier}
               fireEvent={fireEvent}
@@ -205,7 +205,29 @@ function PipelineGraphNodeBasic({
           const ChildNodeComponent: React.FC<any> | undefined = getNode?.(data?.nodeType)?.component || defaultNode
           const refIndex =
             intersectingIndex > -1 && index === intersectingIndex - 1 ? index : (data?.children?.length || 0) - 1
-          return (
+          return !collapseOnIntersect ? (
+            ChildNodeComponent && (
+              <ChildNodeComponent
+                parentIdentifier={parentIdentifier}
+                {...currentStage}
+                getNode={getNode}
+                fireEvent={fireEvent}
+                getDefaultNode={getDefaultNode}
+                className={classNames(css.graphNode, className)}
+                setSelectedNode={setSelectedNode}
+                isSelected={selectedNode === currentStage?.identifier}
+                isParallelNode={true}
+                key={currentStage?.identifier}
+                allowAdd={index + 1 === data?.children?.length}
+                isFirstParallelNode={true}
+                prevNodeIdentifier={prevNodeIdentifier}
+                prevNode={prevNode}
+                nextNode={nextNode}
+                updateSvgs={updateSvgs}
+                renderer={renderer}
+              />
+            )
+          ) : (
             <div
               ref={refIndex === index ? ref : null}
               data-index={index}
