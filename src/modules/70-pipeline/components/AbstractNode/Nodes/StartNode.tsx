@@ -13,7 +13,7 @@ import css from './Nodes.module.scss'
 
 const DEFAULT_ICON: IconName = 'play'
 
-const StartNode = (): React.ReactElement => {
+function StartNode(): React.ReactElement {
   return (
     <div className={css.defaultNode}>
       <div id={NodeType.StartNode.toString()} className={css.nodeStart}>

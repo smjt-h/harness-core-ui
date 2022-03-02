@@ -12,7 +12,7 @@ import { DiagramDrag, DiagramType, Event } from '@pipeline/components/Diagram'
 import SVGMarker from '../SVGMarker'
 import css from './DefaultNode.module.scss'
 
-const DefaultNode = (props: any): JSX.Element => {
+function DefaultNode(props: any): JSX.Element {
   const allowAdd = props.allowAdd ?? false
   const nodeRef = React.useRef<HTMLDivElement>(null)
   const [showAdd, setVisibilityOfAdd] = React.useState(false)

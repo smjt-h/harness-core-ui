@@ -20,7 +20,7 @@ const iconStyle = {
 }
 const SECONDARY_ICON: IconName = 'command-echo'
 
-const PipelineStageNode = (props: any): JSX.Element => {
+function PipelineStageNode(props: any): JSX.Element {
   const allowAdd = props.allowAdd ?? false
   const nodeRef = React.useRef<HTMLDivElement>(null)
   const [showAdd, setVisibilityOfAdd] = React.useState(false)

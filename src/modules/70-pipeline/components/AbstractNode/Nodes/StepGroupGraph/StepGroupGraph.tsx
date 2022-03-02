@@ -41,7 +41,7 @@ const getCalculatedStyles = (data: PipelineGraphState[]): LayoutStyles => {
   return { height: `${(maxChildLength + 1) * 100}px`, width: `${width - 80}px` }
 }
 
-const StepGroupGraph = (props: StepGroupGraphProps): React.ReactElement => {
+function StepGroupGraph(props: StepGroupGraphProps): React.ReactElement {
   const [svgPath, setSvgPath] = useState<SVGPathRecord[]>([])
   const [treeRectangle, setTreeRectangle] = useState<DOMRect | void>()
   const [layoutStyles, setLayoutStyles] = useState<LayoutStyles>({ height: 'auto', width: 'auto' })
