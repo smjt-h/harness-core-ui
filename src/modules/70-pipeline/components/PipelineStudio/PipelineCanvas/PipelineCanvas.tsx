@@ -1013,7 +1013,7 @@ export function PipelineCanvas({
                       e.stopPropagation()
                       openRunPipelineModal()
                     }}
-                    featuresProps={getFeaturePropsForRunPipelineButton(template?.data?.modules)}
+                    featuresProps={getFeaturePropsForRunPipelineButton({ modules: template?.data?.modules, getString })}
                     permission={{
                       resourceScope: {
                         accountIdentifier: accountId,
