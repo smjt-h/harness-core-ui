@@ -12,5 +12,6 @@ export default {
   getToken: () => AppStorage.get('token'),
   username: () => AppStorage.get('username'),
   accountId: () => AppStorage.get('acctId'),
+  getUuid: () => AppStorage.get('uuid'),
   getLastTokenSetTime: () => AppStorage.get('lastTokenSetTime')
 }

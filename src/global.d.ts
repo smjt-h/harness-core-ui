@@ -61,6 +61,7 @@ declare interface Window {
   TOUR_GUIDE_USER_ID: string
   deploymentType: 'SAAS' | 'ON_PREM' | 'COMMUNITY'
   resourceBasePath: string
+  Appcues: any
 }
 
 declare interface WindowEventMap {

@@ -7,7 +7,7 @@
 
 import React, { useEffect, useState } from 'react'
 
-import { useHistory, useParams } from 'react-router-dom'
+import { useHistory, useParams, useLocation } from 'react-router-dom'
 import { RestfulProvider } from 'restful-react'
 import { FocusStyleManager } from '@blueprintjs/core'
 import { TooltipContextProvider } from '@wings-software/uicore'
@@ -53,10 +53,12 @@ const Harness = (window.Harness = window.Harness || {})
 export function AppWithAuthentication(props: AppProps): React.ReactElement {
   const token = SessionToken.getToken()
   const username = SessionToken.username()
+  const uuid = SessionToken.getUuid()
   // always use accountId from URL, and not from local storage
   // if user lands on /, they'll first get redirected to a path with accountId
   const { accountId } = useParams<AccountPathProps>()
   const history = useHistory()
+  const location = useLocation()
 
   const getRequestOptions = React.useCallback((): Partial<RequestInit> => {
     const headers: RequestInit['headers'] = {}
@@ -102,7 +104,12 @@ export function AppWithAuthentication(props: AppProps): React.ReactElement {
   useEffect(() => {
     // Allow FullStory to recognize current user
     identifyFullStoryUser({ username })
-  }, [username])
+    window.Appcues.identify(uuid)
+  }, [username, uuid])
+
+  useEffect(() => {
+    window.Appcues.page()
+  }, [location])
 
   const checkAndRefreshToken = (): void => {
     const currentTime = +new Date()
