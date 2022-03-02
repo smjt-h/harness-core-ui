@@ -1,0 +1,140 @@
+/*
+ * Copyright 2022 Harness Inc. All rights reserved.
+ * Use of this source code is governed by the PolyForm Shield 1.0.0 license
+ * that can be found in the licenses directory at the root of this repository, also available at
+ * https://polyformproject.org/wp-content/uploads/2020/06/PolyForm-Shield-1.0.0.txt.
+ */
+
+import React from 'react'
+import { render } from '@testing-library/react'
+
+import { TestWrapper } from '@common/utils/testUtils'
+
+import { PolicyEvaluationContent, PolicyInfo } from '../PolicyEvaluationContent'
+
+import StepProps from '../__mocks__/StepProps.json'
+
+describe('Policy Evaluation Content', () => {
+  test('snapshot for no policy details', () => {
+    const { container } = render(
+      <TestWrapper
+        queryParams={{
+          accountIdentifier: 'acc',
+          orgIdentifier: 'org',
+          projectIdentifier: 'project'
+        }}
+      >
+        <PolicyEvaluationContent
+          step={{
+            outcomes: {}
+          }}
+        />
+      </TestWrapper>
+    )
+
+    expect(container).toMatchSnapshot()
+  })
+
+  test('snapshot for all policy set statuses and policy set headers', () => {
+    const { container } = render(
+      <TestWrapper
+        queryParams={{
+          accountIdentifier: 'acc',
+          orgIdentifier: 'org',
+          projectIdentifier: 'project'
+        }}
+      >
+        <PolicyEvaluationContent step={StepProps as any} />
+      </TestWrapper>
+    )
+
+    expect(container).toMatchSnapshot()
+  })
+})
+
+describe('Policy Info under Policy Evaluation Content', () => {
+  test('snapshot renders for passed policy', () => {
+    const policy = StepProps.outcomes.output.policySetDetails['org.policySet1'].policyDetails['org.policy1']
+    const { container } = render(
+      <TestWrapper
+        queryParams={{
+          accountIdentifier: 'acc',
+          orgIdentifier: 'org',
+          projectIdentifier: 'project'
+        }}
+      >
+        <PolicyInfo policy={policy} scope={'Organization'} numberInList={1} />
+      </TestWrapper>
+    )
+
+    expect(container).toMatchSnapshot()
+  })
+
+  test('snapshot renders for failed policy with 1 deny message', () => {
+    const policy = StepProps.outcomes.output.policySetDetails['account.policySet1'].policyDetails['account.policy1']
+    const { container } = render(
+      <TestWrapper
+        queryParams={{
+          accountIdentifier: 'acc',
+          orgIdentifier: 'org',
+          projectIdentifier: 'project'
+        }}
+      >
+        <PolicyInfo policy={policy} scope={'Account'} numberInList={1} />
+      </TestWrapper>
+    )
+
+    expect(container).toMatchSnapshot()
+  })
+
+  test('snapshot renders for failed policy with > 1 deny messages', () => {
+    const policy = StepProps.outcomes.output.policySetDetails['account.policySet1'].policyDetails['account.policy2']
+    const { container } = render(
+      <TestWrapper
+        queryParams={{
+          accountIdentifier: 'acc',
+          orgIdentifier: 'org',
+          projectIdentifier: 'project'
+        }}
+      >
+        <PolicyInfo policy={policy} scope={'Account'} numberInList={1} />
+      </TestWrapper>
+    )
+
+    expect(container).toMatchSnapshot()
+  })
+
+  test('snapshot renders for failed policy with 1 error message', () => {
+    const policy = StepProps.outcomes.output.policySetDetails['account.policySet1'].policyDetails['account.policy3']
+    const { container } = render(
+      <TestWrapper
+        queryParams={{
+          accountIdentifier: 'acc',
+          orgIdentifier: 'org',
+          projectIdentifier: 'project'
+        }}
+      >
+        <PolicyInfo policy={policy} scope={'Account'} numberInList={1} />
+      </TestWrapper>
+    )
+
+    expect(container).toMatchSnapshot()
+  })
+
+  test('snapshot renders for policy with warning', () => {
+    const policy = StepProps.outcomes.output.policySetDetails['policySet1'].policyDetails['policy1']
+    const { container } = render(
+      <TestWrapper
+        queryParams={{
+          accountIdentifier: 'acc',
+          orgIdentifier: 'org',
+          projectIdentifier: 'project'
+        }}
+      >
+        <PolicyInfo policy={policy} scope={'Project'} numberInList={1} />
+      </TestWrapper>
+    )
+
+    expect(container).toMatchSnapshot()
+  })
+})
