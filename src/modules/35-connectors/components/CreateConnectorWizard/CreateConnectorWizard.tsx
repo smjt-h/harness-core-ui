@@ -100,6 +100,8 @@ export const ConnectorWizard: React.FC<CreateConnectorWizardProps> = props => {
     })
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [])
+  const { NG_AZURE } = useFeatureFlags()
+
   switch (type) {
     case Connectors.CUSTOM:
       return <CreateCustomHealthConnector {...commonProps} />
@@ -168,8 +170,7 @@ export const ConnectorWizard: React.FC<CreateConnectorWizardProps> = props => {
     case Connectors.ERROR_TRACKING:
       return ERROR_TRACKING_ENABLED ? <CreateErrorTrackingConnector {...commonProps} /> : null
     case Connectors.AZURE:
-      return <CreateAzureConnector {...commonProps} />
-    // return NG_AZURE ? <CreateAzureConnector {...commonProps} /> : null
+      return NG_AZURE ? <CreateAzureConnector {...commonProps} /> : null
     default:
       return null
   }
