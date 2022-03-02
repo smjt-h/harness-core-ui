@@ -1385,6 +1385,7 @@ const StageBuilder: React.FC<StageBuilderProps> = ({ diagram }): JSX.Element => 
 
   const stageType = selectedStage?.stage?.stage?.template ? StageType.Template : selectedStage?.stage?.stage?.type
 
+  console.log('selectedStageId', selectedStageId)
   return (
     <Layout.Horizontal className={cx(css.canvasContainer)} padding="medium">
       <div className={css.canvasWrapper}>

@@ -115,8 +115,8 @@ const PipelineGraph = ({
               fireEvent={fireEvent}
               getNode={getNode}
               nodes={state}
-              selectedNode={selectedNode}
-              setSelectedNode={updateSelectedNode}
+              selectedNode={selectedNodeId}
+              // setSelectedNode={updateSelectedNode}
               uniqueNodeIds={uniqueNodeIds}
               updateGraphLinks={setSVGLinks}
               startEndNodeStyle={state?.[0]?.graphType === PipelineGraphType.STEP_GRAPH ? { height: '64px' } : {}}

@@ -26,7 +26,7 @@ export const PipelineGraphRecursive = ({
   getNode,
   selectedNode,
   fireEvent,
-  setSelectedNode,
+  // setSelectedNode,
   uniqueNodeIds,
   startEndNodeNeeded = true,
   startEndNodeStyle,
@@ -59,7 +59,7 @@ export const PipelineGraphRecursive = ({
             data={node}
             key={node?.identifier}
             getNode={getNode}
-            setSelectedNode={setSelectedNode}
+            // setSelectedNode={setSelectedNode}
             isNextNodeParallel={!!nodes?.[index + 1]?.children?.length}
             isPrevNodeParallel={!!nodes?.[index - 1]?.children?.length}
             prevNodeIdentifier={nodes?.[index - 1]?.identifier}
@@ -116,7 +116,7 @@ interface PipelineGraphNode {
 const PipelineGraphNodeBasic = ({
   fireEvent,
   getNode,
-  setSelectedNode,
+  // setSelectedNode,
   data,
   className,
   isLastChild,
@@ -174,7 +174,7 @@ const PipelineGraphNodeBasic = ({
             fireEvent={fireEvent}
             getDefaultNode={getDefaultNode}
             className={classNames(css.graphNode, className)}
-            setSelectedNode={setSelectedNode}
+            // setSelectedNode={setSelectedNode}
             isSelected={selectedNode === data?.identifier}
             isParallelNode={isParallelNode}
             key={data?.identifier}
@@ -188,7 +188,7 @@ const PipelineGraphNodeBasic = ({
           />
         )}
         {data?.children?.map((currentStage, index) => {
-          const ChildNodeComponent: React.FC<any> | undefined = getNode?.(data?.nodeType)?.component || defaultNode
+          const ChildNodeComponent: React.FC<any> | undefined = getNode?.(data?.type)?.component || defaultNode
           const refIndex =
             intersectingIndex > -1 && index === intersectingIndex - 1 ? index : (data?.children?.length || 0) - 1
           return (
@@ -203,7 +203,7 @@ const PipelineGraphNodeBasic = ({
                   {...data}
                   fireEvent={fireEvent}
                   className={classNames(css.graphNode, className)}
-                  setSelectedNode={setSelectedNode}
+                  // setSelectedNode={setSelectedNode}
                   isSelected={selectedNode === currentStage?.identifier}
                   isParallelNode={true}
                   key={currentStage?.identifier}
@@ -221,7 +221,7 @@ const PipelineGraphNodeBasic = ({
                     fireEvent={fireEvent}
                     getDefaultNode={getDefaultNode}
                     className={classNames(css.graphNode, className)}
-                    setSelectedNode={setSelectedNode}
+                    // setSelectedNode={setSelectedNode}
                     isSelected={selectedNode === currentStage?.identifier}
                     isParallelNode={true}
                     key={currentStage?.identifier}

@@ -55,11 +55,11 @@ const DefaultNode = (props: any): JSX.Element => {
             return
           }
           props?.fireEvent({
+            ...props,
             type: Event.ClickNode,
-            entityType: DiagramType.Default,
-            ...props
+            entityType: DiagramType.Default
           })
-          props?.setSelectedNode(props?.identifier)
+          // props?.setSelectedNode(props?.identifier)
         }}
         onMouseDown={e => e.stopPropagation()}
         onDragOver={event => {
