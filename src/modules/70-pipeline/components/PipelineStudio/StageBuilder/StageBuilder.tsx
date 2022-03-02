@@ -216,7 +216,7 @@ interface StageBuilderProps {
   diagram?: DiagramFactory
 }
 
-const StageBuilder: React.FC<StageBuilderProps> = ({ diagram }): JSX.Element => {
+function StageBuilder({ diagram }: StageBuilderProps): JSX.Element {
   const {
     state: {
       pipeline,
@@ -377,7 +377,8 @@ const StageBuilder: React.FC<StageBuilderProps> = ({ diagram }): JSX.Element => 
       isReadonly,
       parentPath: 'pipeline.stages',
       errorMap,
-      templateTypes
+      templateTypes,
+      zoomLevel: 0
     })
     if (newStage.stage && newStage.stage.name !== EmptyStageName) {
       stageMap.set(newStage.stage.identifier, { isConfigured: true, stage: newStage })
@@ -1335,7 +1336,8 @@ const StageBuilder: React.FC<StageBuilderProps> = ({ diagram }): JSX.Element => 
     splitPaneSize,
     parentPath: 'pipeline.stages',
     errorMap,
-    templateTypes
+    templateTypes,
+    zoomLevel: 0
   })
   const setSplitPaneSizeDeb = React.useRef(debounce(setSplitPaneSize, 200))
   // load model into engine

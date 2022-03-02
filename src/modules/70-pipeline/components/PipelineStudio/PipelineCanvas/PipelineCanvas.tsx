@@ -126,12 +126,12 @@ export interface PipelineCanvasProps {
   ) => React.ReactElement<OtherModalProps>
 }
 
-export const PipelineCanvas: React.FC<PipelineCanvasProps> = ({
+export function PipelineCanvas({
   diagram,
   toPipelineList,
   toPipelineStudio,
   getOtherModal
-}): JSX.Element => {
+}: PipelineCanvasProps): JSX.Element {
   const { isGitSyncEnabled } = React.useContext(AppStoreContext)
   const {
     state,
@@ -1013,7 +1013,7 @@ export const PipelineCanvas: React.FC<PipelineCanvasProps> = ({
                       e.stopPropagation()
                       openRunPipelineModal()
                     }}
-                    featuresProps={getFeaturePropsForRunPipelineButton(template?.data?.modules)}
+                    featuresProps={getFeaturePropsForRunPipelineButton({ modules: template?.data?.modules, getString })}
                     permission={{
                       resourceScope: {
                         accountIdentifier: accountId,
