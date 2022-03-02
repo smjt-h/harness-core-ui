@@ -43,7 +43,7 @@ jest.mock('services/pm', () => ({
 }))
 
 describe('Test Policy Sets Form Field', () => {
-  test('snapshot test', async () => {
+  test('snapshot test and open close modal', async () => {
     const { container } = render(
       <TestWrapper
         queryParams={{
@@ -60,7 +60,8 @@ describe('Test Policy Sets Form Field', () => {
                 spec: {
                   policySets: ['acc.test', 'org.test', 'test']
                 }
-              }
+              },
+              setFieldTouched: jest.fn()
             } as any
           }
           touched={false}
@@ -78,6 +79,15 @@ describe('Test Policy Sets Form Field', () => {
     })
 
     await waitFor(() => expect(screen.getByText('common.policiesSets.selectPolicySet')).toBeDefined())
+
+    const cancelButton = screen.getByText('Cancel')
+    await waitFor(() => expect(cancelButton).toBeInTheDocument())
+
+    act(() => {
+      fireEvent.click(cancelButton)
+    })
+
+    await waitFor(() => expect(cancelButton).not.toBeInTheDocument())
   })
 
   test('renders error', () => {

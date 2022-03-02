@@ -24,7 +24,7 @@ describe('Policy Set List Renderer', () => {
     const { container } = render(
       <TestWrapper
         queryParams={{
-          accountIdentifier: 'acc',
+          accountIdentifier: 'account',
           orgIdentifier: 'org',
           projectIdentifier: 'project'
         }}
@@ -48,7 +48,7 @@ describe('Policy Set List Renderer', () => {
     const { container } = render(
       <TestWrapper
         queryParams={{
-          accountIdentifier: 'acc',
+          accountIdentifier: 'account',
           orgIdentifier: 'org',
           projectIdentifier: 'project'
         }}
@@ -57,7 +57,7 @@ describe('Policy Set List Renderer', () => {
           loading={false}
           error={null}
           refetch={jest.fn()}
-          newPolicySetIds={['acc.test']}
+          newPolicySetIds={['account.test']}
           setNewPolicySetIds={jest.fn}
           policySetList={[
             {
@@ -88,7 +88,7 @@ describe('Policy Set List Renderer', () => {
     const { container } = render(
       <TestWrapper
         queryParams={{
-          accountIdentifier: 'acc',
+          accountIdentifier: 'account',
           orgIdentifier: 'org',
           projectIdentifier: 'project'
         }}
@@ -129,7 +129,7 @@ describe('Policy Set List Renderer', () => {
     const { container } = render(
       <TestWrapper
         queryParams={{
-          accountIdentifier: 'acc',
+          accountIdentifier: 'account',
           orgIdentifier: 'org',
           projectIdentifier: 'project'
         }}
@@ -171,7 +171,7 @@ describe('Policy Set List Renderer', () => {
     const { container } = render(
       <TestWrapper
         queryParams={{
-          accountIdentifier: 'acc',
+          accountIdentifier: 'account',
           orgIdentifier: 'org',
           projectIdentifier: 'project'
         }}
