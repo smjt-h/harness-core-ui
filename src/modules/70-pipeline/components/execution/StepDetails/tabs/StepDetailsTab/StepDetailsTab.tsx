@@ -17,6 +17,8 @@ import { ErrorHandler } from '@common/components/ErrorHandler/ErrorHandler'
 import { LogsContentWithErrorBoundary as LogsContent } from '@pipeline/components/LogsContent/LogsContent'
 import { isExecutionSkipped, isExecutionCompletedWithBadState } from '@pipeline/utils/statusHelpers'
 import { StepDetails } from '@pipeline/components/execution/StepDetails/common/StepDetails/StepDetails'
+import { StepType } from '@pipeline/components/PipelineSteps/PipelineStepInterface'
+import { PolicyEvaluationContent } from '@pipeline/components/execution/StepDetails/common/ExecutionContent/PolicyEvaluationContent/PolicyEvaluationContent'
 import { useQueryParams } from '@common/hooks'
 import type { ExecutionQueryParams } from '@pipeline/utils/executionUtils'
 
@@ -37,6 +39,9 @@ export function StepDetailsTab(props: ExecutionStepDetailsTabProps): React.React
   const isFailed = isExecutionCompletedWithBadState(step.status)
   const isSkipped = isExecutionSkipped(step.status)
 
+  const shouldShowPolicyEvaluationContent = step.stepType === StepType.Policy
+  const shouldShowLogsContent = step.stepType !== StepType.Policy
+
   return (
     <div className={css.detailsTab}>
       {step.failureInfo?.responseMessages?.length ? (
@@ -48,7 +53,8 @@ export function StepDetailsTab(props: ExecutionStepDetailsTabProps): React.React
         </div>
       ) : null}
       <StepDetails step={step} />
-      <LogsContent mode="step-details" toConsoleView={logUrl} />
+      {shouldShowPolicyEvaluationContent && <PolicyEvaluationContent step={step} />}
+      {shouldShowLogsContent && <LogsContent mode="step-details" toConsoleView={logUrl} />}
     </div>
   )
 }

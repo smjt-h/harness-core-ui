@@ -1,0 +1,71 @@
+{
+  "outcomes": {
+    "output": {
+      "status": "error",
+      "policySetDetails": {
+        "org.policySet1": {
+          "status": "pass",
+          "identifier": "org.policySet1",
+          "name": "Org Policy Set 1",
+          "policyDetails": {
+            "org.policy1": {
+              "identifier": "org.policy1",
+              "name": "Org Policy 1",
+              "status": "pass",
+              "denyMessages": [],
+              "error": ""
+            }
+          }
+        },
+        "account.policySet1": {
+          "status": "error",
+          "identifier": "account.policySet1",
+          "name": "Account Policy Set 1",
+          "policyDetails": {
+            "account.policy1": {
+              "identifier": "account.policy1",
+              "name": "Account Policy 1",
+              "status": "error",
+              "denyMessages": ["Deny Message 1"],
+              "error": ""
+            },
+            "account.policy2": {
+              "identifier": "account.policy2",
+              "name": "Account Policy 2",
+              "status": "error",
+              "denyMessages": ["Deny Message 1", "Deny Message 2", "Deny Message 3"],
+              "error": ""
+            },
+            "account.policy3": {
+              "identifier": "account.policy3",
+              "name": "Account Policy 3",
+              "status": "error",
+              "denyMessages": [],
+              "error": "Error Message 1"
+            }
+          }
+        },
+        "policySet1": {
+          "status": "warning",
+          "identifier": "policySet1",
+          "name": "Policy Set 1",
+          "policyDetails": {
+            "policy1": {
+              "identifier": "policy1",
+              "name": "Policy 1",
+              "status": "warning",
+              "denyMessages": ["Deny Message 1"],
+              "error": ""
+            }
+          }
+        },
+        "emptyPolicySet": {
+          "status": "error",
+          "identifier": "emptyPolicySet",
+          "name": "Empty Policy Set",
+          "policyDetails": {}
+        }
+      }
+    }
+  }
+}
