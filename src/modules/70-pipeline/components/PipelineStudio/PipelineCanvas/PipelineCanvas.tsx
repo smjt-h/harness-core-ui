@@ -80,6 +80,7 @@ import StageBuilder from '../StageBuilder/StageBuilder'
 import { usePipelineSchema } from '../PipelineSchema/PipelineSchemaContext'
 import StudioGitPopover from '../StudioGitPopover'
 import css from './PipelineCanvas.module.scss'
+import type { DiagramFactory } from '@pipeline/components/AbstractNode/DiagramFactory'
 
 interface OtherModalProps {
   onSubmit?: (values: PipelineInfoConfig) => void
@@ -114,6 +115,7 @@ const runModalProps: IDialogProps = {
 }
 
 export interface PipelineCanvasProps {
+  diagram?: DiagramFactory
   toPipelineStudio: PathFn<PipelineType<PipelinePathProps> & PipelineStudioQueryParams>
   toPipelineDetail: PathFn<PipelineType<PipelinePathProps>>
   toPipelineList: PathFn<PipelineType<ProjectPathProps>>
@@ -124,11 +126,12 @@ export interface PipelineCanvasProps {
   ) => React.ReactElement<OtherModalProps>
 }
 
-export function PipelineCanvas({
+export const PipelineCanvas: React.FC<PipelineCanvasProps> = ({
+  diagram,
   toPipelineList,
   toPipelineStudio,
   getOtherModal
-}: PipelineCanvasProps): React.ReactElement {
+}): JSX.Element => {
   const { isGitSyncEnabled } = React.useContext(AppStoreContext)
   const {
     state,
@@ -1010,7 +1013,7 @@ export function PipelineCanvas({
                       e.stopPropagation()
                       openRunPipelineModal()
                     }}
-                    featuresProps={getFeaturePropsForRunPipelineButton({ modules: template?.data?.modules, getString })}
+                    featuresProps={getFeaturePropsForRunPipelineButton(template?.data?.modules)}
                     permission={{
                       resourceScope: {
                         accountIdentifier: accountId,
@@ -1029,7 +1032,7 @@ export function PipelineCanvas({
             </div>
           </div>
         </div>
-        {isYaml ? <PipelineYamlView /> : <StageBuilder />}
+        {isYaml ? <PipelineYamlView /> : <StageBuilder diagram={diagram} />}
         {shouldShowGovernanceEvaluation && (
           <EvaluationModal
             accountId={accountId}
