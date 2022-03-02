@@ -27,27 +27,39 @@ interface PolicySetsFormFieldInterface extends Omit<IFormGroupProps, 'label'> {
   formikProps?: FormikProps<PolicyStepFormData>
   error?: string | FormikErrors<any>
   stepViewType?: StepViewType
+  touched?: boolean
 }
 
-const PolicySetsFormField = ({
+function PolicySetsFormField({
   formikProps,
   name,
   error,
   disabled,
   stepViewType,
+  touched,
   ...rest
-}: PolicySetsFormFieldInterface) => {
+}: PolicySetsFormFieldInterface) {
   const { getString } = useStrings()
 
   const policySetIds = defaultTo(/* istanbul ignore next */ formikProps?.values?.spec?.policySets, [])
 
   const [showModal, closeModal] = useModalHook(
-    () => <PolicySetModal name={name} formikProps={formikProps} policySetIds={policySetIds} closeModal={closeModal} />,
+    () => (
+      <PolicySetModal
+        name={name}
+        formikProps={formikProps}
+        policySetIds={policySetIds}
+        closeModal={() => {
+          formikProps?.setFieldTouched(name, true)
+          closeModal()
+        }}
+      />
+    ),
     [name, formikProps, policySetIds, stepViewType]
   )
 
-  const helperText = error ? <FormError name={name} errorMessage={error} /> : undefined
-  const intent = error ? Intent.DANGER : Intent.NONE
+  const helperText = touched && error ? <FormError name={name} errorMessage={error} /> : undefined
+  const intent = touched && error ? Intent.DANGER : Intent.NONE
 
   return (
     <FormGroup

@@ -102,10 +102,10 @@ function PolicySetInfo({ policySet }: { policySet: { [key: string]: any } }) {
                 }
                 label={
                   status === EvaluationStatus.PASS
-                    ? 'Success'
+                    ? 'SUCCESS'
                     : status === EvaluationStatus.WARNING
-                    ? 'Warning'
-                    : 'Failed'
+                    ? 'WARNING'
+                    : 'FAILED'
                 }
               />
             </Layout.Horizontal>
@@ -176,7 +176,7 @@ export function PolicyInfo({ policy, scope, numberInList }: { policy: any; scope
             : 'InterventionWaiting'
         }
         label={
-          status === EvaluationStatus.PASS ? 'Success' : status === EvaluationStatus.WARNING ? 'Warning' : 'Failed'
+          status === EvaluationStatus.PASS ? 'SUCCESS' : status === EvaluationStatus.WARNING ? 'WARNING' : 'FAILED'
         }
       />
     </Layout.Horizontal>
