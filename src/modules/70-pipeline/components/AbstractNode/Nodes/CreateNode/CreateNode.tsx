@@ -15,7 +15,11 @@ import { PipelineGraphType } from '../../types'
 import cssDefault from '../DefaultNode/DefaultNode.module.scss'
 import css from './CreateNode.module.scss'
 
+<<<<<<< HEAD
 function CreateNode(props: any): React.ReactElement {
+=======
+const CreateNode = (props: any): React.ReactElement => {
+>>>>>>> fix: Added diagram factory files
   return (
     <div className={cx(cssDefault.defaultNode, css.createNode)}>
       <div

@@ -160,7 +160,6 @@ function PipelineGraphNodeBasic({
   useLayoutEffect(() => {
     updateGraphLinks?.()
   }, [intersectingIndex])
-
   return (
     <div
       className={classNames(
