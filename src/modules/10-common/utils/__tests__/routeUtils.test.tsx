@@ -5,7 +5,15 @@
  * https://polyformproject.org/wp-content/uploads/2020/06/PolyForm-Shield-1.0.0.txt.
  */
 
-import { validateReturnUrl, returnLaunchUrl, withOrgIdentifier, withProjectIdentifier } from '../routeUtils'
+import {
+  validateReturnUrl,
+  returnLaunchUrl,
+  withOrgIdentifier,
+  withProjectIdentifier,
+  withAccountId,
+  getScopeBasedRoute,
+  returnUrlParams
+} from '../routeUtils'
 
 describe('validateReturnUrl', () => {
   test('different hostname url', () => {
@@ -23,10 +31,17 @@ describe('validateReturnUrl', () => {
     expect(validateReturnUrl('https://localhost:8181/#/login')).toBeTruthy()
     expect(validateReturnUrl(encodeURIComponent('https://localhost:8181/#/login'))).toBeTruthy()
   })
+})
+
+describe('route utils', () => {
   test('Launch redirection url', async () => {
     const redirectionUrl = '#/account/abc123/dashboard'
     const path = returnLaunchUrl(redirectionUrl)
     expect(path).toEqual(`${window.location.pathname}${redirectionUrl}`)
+  })
+  test('with account identifier', () => {
+    const withAccountURL = withAccountId(() => '/dummy')
+    expect(withAccountURL({ accountId: 'accountId' })).toEqual('/account/accountId/dummy')
   })
   test('with org identifier', () => {
     const withOrgURL = withOrgIdentifier(() => '/dummy')
@@ -35,5 +50,20 @@ describe('validateReturnUrl', () => {
   test('with project identifier', () => {
     const withProjectURL = withProjectIdentifier(() => '/dummy')
     expect(withProjectURL({ projectIdentifier: 'projectId' })).toEqual('/projects/projectId/dummy')
+  })
+  test('getScopeBasedRoute', () => {
+    expect(getScopeBasedRoute({ scope: {}, path: 'dummy' })).toEqual('/settings/dummy')
+    expect(getScopeBasedRoute({ scope: { orgIdentifier: 'org' }, path: 'dummy' })).toEqual(
+      '/settings/organizations/org/setup/dummy'
+    )
+    expect(
+      getScopeBasedRoute({ scope: { orgIdentifier: 'org', projectIdentifier: 'project' }, path: 'dummy' })
+    ).toEqual('/home/orgs/org/projects/project/setup/dummy')
+    expect(
+      getScopeBasedRoute({ scope: { orgIdentifier: 'org', projectIdentifier: 'project', module: 'cd' }, path: 'dummy' })
+    ).toEqual('/cd/orgs/org/projects/project/setup/dummy')
+  })
+  test('returnUrlParams', () => {
+    expect(returnUrlParams('/dummy?a=b')).toEqual('?returnUrl=%2Fdummy%3Fa%3Db')
   })
 })
