@@ -15,10 +15,9 @@ import { Card, Color, Container, Layout, Text, PageError, Button } from '@wings-
 import { useStrings } from 'framework/strings'
 import { Ticker, TickerVerticalAlignment } from '@common/components/Ticker/Ticker'
 import { getBucketSizeForTimeRange } from '@common/components/TimeRangeSelector/TimeRangeSelector'
-import { StackedColumnChart } from '@common/components/StackedColumnChart/StackedColumnChart'
+import { StackedColumnChart, StackedColumnChartProps } from '@common/components/StackedColumnChart/StackedColumnChart'
 import { PageSpinner, TimeSeriesAreaChart } from '@common/components'
 import type { TimeSeriesAreaChartProps } from '@common/components/TimeSeriesAreaChart/TimeSeriesAreaChart'
-import type { StackedColumnChartProps } from '@common/components/StackedColumnChart/StackedColumnChart'
 import {
   DeploymentsTimeRangeContext,
   getFixed,
