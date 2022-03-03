@@ -7,6 +7,7 @@
 
 import React from 'react'
 import { FormInput } from '@wings-software/uicore'
+import { Radio, RadioGroup } from '@blueprintjs/core'
 import type { FormikContext } from 'formik'
 import type { SecretDTOV2 } from 'services/cd-ng'
 
@@ -19,7 +20,7 @@ interface VaultFormFieldsProps {
 }
 
 interface FormikContextProps<T> {
-  formik?: FormikContext<T>
+  formik: FormikContext<T>
 }
 
 const VaultFormFields: React.FC<VaultFormFieldsProps & FormikContextProps<any>> = ({
@@ -29,18 +30,23 @@ const VaultFormFields: React.FC<VaultFormFieldsProps & FormikContextProps<any>> 
   readonly
 }) => {
   const { getString } = useStrings()
+
   return (
     <>
       {type === 'SecretText' ? (
         <>
-          <FormInput.RadioGroup
-            name="valueType"
-            radioGroup={{ inline: true }}
-            items={[
-              { label: getString('secrets.secret.inlineSecret'), value: 'Inline', disabled: readonly },
-              { label: getString('secrets.secret.referenceSecret'), value: 'Reference' }
-            ]}
-          />
+          <RadioGroup
+            inline
+            selectedValue={formik.values.valueType}
+            onChange={e => {
+              formik.setFieldValue('valueType', e.currentTarget.value)
+            }}
+          >
+            <Radio value={'Inline'} label={getString('secrets.secret.inlineSecret')} disabled={readonly} />
+
+            <Radio value={'Reference'} label={getString('secrets.secret.referenceSecret')} />
+          </RadioGroup>
+
           {formik?.values['valueType'] === 'Inline' ? (
             <FormInput.Text
               name="value"
