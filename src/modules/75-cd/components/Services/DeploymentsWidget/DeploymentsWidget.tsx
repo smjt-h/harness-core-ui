@@ -204,7 +204,7 @@ export const DeploymentsWidget: React.FC<DeploymentWidgetProps> = props => {
           {
             name: getString('success'),
             data: success,
-            color: '#5fb34e'
+            color: 'var(--success)'
           },
           {
             name: getString('failed'),
