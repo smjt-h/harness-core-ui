@@ -97,7 +97,7 @@ export const MiniPoliciesRenderer = ({ policies }: MiniPoliciesRendererProps) =>
   const policyNames = policies.map(policy => policy.name)
 
   return (
-    <Layout.Horizontal flex={{ alignItems: 'center' }} margin={{ right: 'small' }}>
+    <Layout.Horizontal flex={{ justifyContent: 'flex-start', alignItems: 'center' }} margin={{ right: 'small' }}>
       {policyNames.slice(0, 2).map((policy, index) => (
         <Text className={css.styledPolicy} key={index} lineClamp={1}>
           {policy}

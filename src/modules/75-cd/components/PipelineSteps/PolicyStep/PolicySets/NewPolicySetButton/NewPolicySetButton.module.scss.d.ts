@@ -7,10 +7,6 @@
  **/
 // this is an auto-generated file, do not update this manually
 declare const styles: {
-  readonly closeIcon: string
-  readonly policySetModal: string
-  readonly selectedCount: string
-  readonly separator: string
-  readonly tickIcon: string
+  readonly newPolicySetBtn: string
 }
 export default styles

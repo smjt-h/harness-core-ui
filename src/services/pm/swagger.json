@@ -1270,6 +1270,12 @@
         "updated": {
           "type": "integer",
           "format": "int64"
+        },
+        "policies": {
+          "type": "array",
+          "items": {
+            "$ref": "#/definitions/LinkedPolicy"
+          }
         }
       }
     },

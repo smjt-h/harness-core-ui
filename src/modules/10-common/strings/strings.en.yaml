@@ -566,6 +566,7 @@ myProfile: My Profile
 accountResources: Account Resources
 policies: 'Policies'
 policy:
+  label: Policy
   policysets: Policy Sets
   newPolicy: New Policy
   evaluations: Evaluation

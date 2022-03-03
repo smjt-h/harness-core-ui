@@ -433,6 +433,7 @@ export interface StringsMap {
   'common.policiesSets.stepOne.validName': string
   'common.policy.customInputRequired': string
   'common.policy.evaluations': string
+  'common.policy.label': string
   'common.policy.newPolicy': string
   'common.policy.noPolicy': string
   'common.policy.noPolicyEvalResult': string

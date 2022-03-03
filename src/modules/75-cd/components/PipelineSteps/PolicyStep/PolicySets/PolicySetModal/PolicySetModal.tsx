@@ -34,6 +34,7 @@ import type { ProjectPathProps } from '@common/interfaces/RouteInterfaces'
 import { PolicySetWizard } from '@governance/PolicySetWizard'
 
 import { PolicySetListRenderer } from '../PolicySetListRenderer/PolicySetListRenderer'
+import { NewPolicySetButton } from '../NewPolicySetButton/NewPolicySetButton'
 import { PolicySetType, PolicyStepFormData } from '../../PolicyStepTypes'
 import { getErrorMessage } from '../../utils'
 
@@ -312,20 +313,5 @@ export function PolicySetModal({ name, formikProps, policySetIds, closeModal }: 
         </Container>
       </Dialog>
     </>
-  )
-}
-
-export function NewPolicySetButton({ onClick }: { onClick: () => void }): JSX.Element {
-  const { getString } = useStrings()
-
-  return (
-    <Button
-      minimal
-      icon="plus"
-      className={css.newPolicySetBtn}
-      text={getString('common.policiesSets.newPolicyset')}
-      margin={{ bottom: 'small' }}
-      onClick={onClick}
-    />
   )
 }

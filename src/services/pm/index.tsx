@@ -117,6 +117,7 @@ export interface PolicySet {
   identifier?: string
   name?: string
   org_id?: string
+  policies?: LinkedPolicy[]
   project_id?: string
   type?: string
   updated?: number

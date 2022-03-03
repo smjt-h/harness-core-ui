@@ -15,7 +15,7 @@ exports[`Mini Policy Sets Renderer snapshot test 1`] = `
       class="Layout--horizontal StyledProps--main StyledProps--flex StyledProps--flex-justifyContent-flex-end StyledProps--flex-alignItems-center"
     >
       <div
-        class="Layout--horizontal StyledProps--main StyledProps--flex StyledProps--flex-alignItems-center StyledProps--margin-right-small"
+        class="Layout--horizontal StyledProps--main StyledProps--flex StyledProps--flex-justifyContent-flex-start StyledProps--flex-alignItems-center StyledProps--margin-right-small"
       >
         <p
           class="StyledProps--font Text--lineclamp StyledProps--main styledPolicy"
@@ -51,7 +51,7 @@ exports[`Mini Policy Sets Renderer snapshot test 1`] = `
       class="Layout--horizontal StyledProps--main StyledProps--flex StyledProps--flex-justifyContent-flex-end StyledProps--flex-alignItems-center"
     >
       <div
-        class="Layout--horizontal StyledProps--main StyledProps--flex StyledProps--flex-alignItems-center StyledProps--margin-right-small"
+        class="Layout--horizontal StyledProps--main StyledProps--flex StyledProps--flex-justifyContent-flex-start StyledProps--flex-alignItems-center StyledProps--margin-right-small"
       >
         <p
           class="StyledProps--font Text--lineclamp StyledProps--main styledPolicy"

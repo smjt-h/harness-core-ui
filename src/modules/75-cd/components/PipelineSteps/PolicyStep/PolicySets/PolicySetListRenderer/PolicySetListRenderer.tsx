@@ -14,9 +14,10 @@ import { Checkbox, Collapse, Color, Container, Layout, Page, Text } from '@harne
 import { useStrings } from 'framework/strings'
 import type { PolicySet } from 'services/pm'
 
-import { DATE_WITHOUT_TIME_FORMAT } from '@common/utils/StringUtils'
+import { DEFAULT_DATE_FORMAT } from '@common/utils/StringUtils'
 
-import { NewPolicySetButton } from '../PolicySetModal/PolicySetModal'
+import { MiniPoliciesRenderer } from './MiniPolicySetsRenderer'
+import { NewPolicySetButton } from '../NewPolicySetButton/NewPolicySetButton'
 import { PolicySetType } from '../../PolicyStepTypes'
 
 import css from './PolicySetListRenderer.module.scss'
@@ -104,13 +105,19 @@ export function PolicySetListRenderer({
             collapsedIcon={'main-chevron-right'}
             expandedIcon={'main-chevron-down'}
           >
-            <Layout.Horizontal>
-              <Container padding={{ top: 'medium', bottom: 'medium' }} background={Color.GREY_50}>
+            <Layout.Horizontal border={{ top: true }} background={Color.GREY_50}>
+              <Container padding={{ top: 'medium', bottom: 'medium' }} width={'50%'}>
+                <Text font={{ size: 'normal' }} padding={{ bottom: 'small' }} style={{ textTransform: 'capitalize' }}>
+                  {getString('common.policy.label')}
+                </Text>
+                <MiniPoliciesRenderer policies={defaultTo(policySet.policies, [])} />
+              </Container>
+              <Container padding={{ top: 'medium', bottom: 'medium' }}>
                 <Text font={{ size: 'normal' }} padding={{ bottom: 'small' }} style={{ textTransform: 'capitalize' }}>
                   {getString('common.lastModifiedTime')}
                 </Text>
-                <Text font={{ size: 'normal' }} style={{ color: '#0B0B0D' }}>
-                  {moment.unix((policySet.updated as number) / 1000).format(DATE_WITHOUT_TIME_FORMAT)}
+                <Text font={{ size: 'normal' }} color={Color.GREY_900}>
+                  {moment.unix((policySet.updated as number) / 1000).format(DEFAULT_DATE_FORMAT)}
                 </Text>
               </Container>
             </Layout.Horizontal>
