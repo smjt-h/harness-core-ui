@@ -8,13 +8,17 @@
 import React, { useCallback, useContext, useMemo } from 'react'
 import ReactDOM from 'react-dom'
 import { useParams } from 'react-router-dom'
+import cx from 'classnames'
+import { defaultTo } from 'lodash-es'
 import type { SeriesAreaOptions } from 'highcharts'
-import { Card, Color, Container, Layout, Text, PageError } from '@wings-software/uicore'
+import { Card, Color, Container, Layout, Text, PageError, Button } from '@wings-software/uicore'
 import { useStrings } from 'framework/strings'
 import { Ticker, TickerVerticalAlignment } from '@common/components/Ticker/Ticker'
 import { getBucketSizeForTimeRange } from '@common/components/TimeRangeSelector/TimeRangeSelector'
+import { StackedColumnChart } from '@common/components/StackedColumnChart/StackedColumnChart'
 import { PageSpinner, TimeSeriesAreaChart } from '@common/components'
 import type { TimeSeriesAreaChartProps } from '@common/components/TimeSeriesAreaChart/TimeSeriesAreaChart'
+import type { StackedColumnChartProps } from '@common/components/StackedColumnChart/StackedColumnChart'
 import {
   DeploymentsTimeRangeContext,
   getFixed,
@@ -29,6 +33,7 @@ import {
   useGetServiceDeploymentsInfo
 } from 'services/cd-ng'
 import type { ProjectPathProps } from '@common/interfaces/RouteInterfaces'
+import { ChartType } from '@common/components/OverviewChartsWithToggle/OverviewChartsWithToggle'
 import css from '@cd/components/Services/DeploymentsWidget/DeploymentsWidget.module.scss'
 
 export interface ChangeValue {
@@ -40,7 +45,7 @@ interface DeploymentWidgetData {
   deployments: ChangeValue
   failureRate: ChangeValue
   frequency: ChangeValue
-  data: TimeSeriesAreaChartProps['seriesData']
+  data: TimeSeriesAreaChartProps['seriesData'] | StackedColumnChartProps['data']
 }
 
 export interface DeploymentWidgetProps {
@@ -134,7 +139,7 @@ const DeploymentsTooltip: React.FC<any> = props => {
 export const DeploymentsWidget: React.FC<DeploymentWidgetProps> = props => {
   const { getString } = useStrings()
   const { accountId, orgIdentifier, projectIdentifier } = useParams<ProjectPathProps>()
-
+  const [selectedView, setSelectedView] = React.useState<ChartType>(ChartType.BAR)
   const { serviceIdentifier } = props
   const { timeRange } = useContext(DeploymentsTimeRangeContext)
 
@@ -200,7 +205,7 @@ export const DeploymentsWidget: React.FC<DeploymentWidgetProps> = props => {
           {
             name: getString('success'),
             data: success,
-            color: '#3dc7f6'
+            color: '#5fb34e'
           },
           {
             name: getString('failed'),
@@ -273,7 +278,11 @@ export const DeploymentsWidget: React.FC<DeploymentWidgetProps> = props => {
         ...(serviceDeploymentsInfo?.data?.serviceDeploymentList || []).map(
           deployment => (deployment.deployments?.failure || 0) + (deployment.deployments?.success || 0)
         )
-      )
+      ),
+      title: {
+        text: '# of Deployments',
+        style: { color: 'var(--grey-400)' }
+      }
     },
     tooltip: {
       useHTML: true,
@@ -284,7 +293,7 @@ export const DeploymentsWidget: React.FC<DeploymentWidgetProps> = props => {
       }
     },
     plotOptions: {
-      area: {
+      series: {
         pointStart: 0,
         stacking: 'normal',
         animation: false,
@@ -305,10 +314,38 @@ export const DeploymentsWidget: React.FC<DeploymentWidgetProps> = props => {
   const isDeploymentBoost = deployments.change === INVALID_CHANGE_RATE
   return (
     <DeploymentWidgetContainer>
+      <Text font={{ weight: 'semi-bold' }} color={Color.GREY_600}>
+        {getString('deploymentsText')}
+      </Text>
       <Container data-test="deploymentsWidgetContent">
-        <Text font={{ weight: 'semi-bold' }} color={Color.GREY_600}>
-          {getString('deploymentsText')}
-        </Text>
+        <Container className={css.toggleBtns}>
+          <Button
+            minimal
+            icon="bar-chart"
+            active={selectedView === ChartType.BAR}
+            className={cx(css.chartIcon, { [css.active]: selectedView === ChartType.BAR })}
+            iconProps={{ size: 12, color: selectedView === ChartType.BAR ? Color.PRIMARY_6 : Color.GREY_700 }}
+            onClick={e => {
+              e.stopPropagation()
+              if (selectedView !== ChartType.BAR) {
+                setSelectedView(ChartType.BAR)
+              }
+            }}
+          />
+          <Button
+            minimal
+            icon="line-chart"
+            active={selectedView === ChartType.LINE}
+            iconProps={{ size: 12, color: selectedView === ChartType.LINE ? Color.PRIMARY_6 : Color.GREY_700 }}
+            className={cx(css.chartIcon, { [css.active]: selectedView === ChartType.LINE })}
+            onClick={e => {
+              e.stopPropagation()
+              if (selectedView !== ChartType.LINE) {
+                setSelectedView(ChartType.LINE)
+              }
+            }}
+          />
+        </Container>
         <Layout.Horizontal flex={{ alignItems: 'flex-end', justifyContent: 'flex-start' }}>
           <Layout.Horizontal width={240}>
             <Ticker
@@ -388,7 +425,11 @@ export const DeploymentsWidget: React.FC<DeploymentWidgetProps> = props => {
             )
           })}
         </Layout.Horizontal>
-        <TimeSeriesAreaChart seriesData={data} customChartOptions={customChartOptions} />
+        {selectedView === ChartType.BAR ? (
+          <StackedColumnChart options={customChartOptions} data={defaultTo(data, [])} />
+        ) : (
+          <TimeSeriesAreaChart customChartOptions={customChartOptions} seriesData={data} />
+        )}
       </Container>
     </DeploymentWidgetContainer>
   )

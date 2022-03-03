@@ -7,11 +7,14 @@
  **/
 // this is an auto-generated file, do not update this manually
 declare const styles: {
+  readonly active: string
   readonly card: string
+  readonly chartIcon: string
   readonly text: string
   readonly tickerCard: string
   readonly tickerContainerStyles: string
   readonly tickerValueStyles: string
+  readonly toggleBtns: string
   readonly tooltipCard: string
   readonly tooltipTimestamp: string
 }
