@@ -9,12 +9,13 @@ import React, { useState } from 'react'
 import type { FormikProps } from 'formik'
 import cx from 'classnames'
 
-import { SelectOption, FormInput } from '@harness/uicore'
+import { SelectOption, FormInput, MultiTypeInputType } from '@harness/uicore'
 import { useStrings } from 'framework/strings'
 
 import { FormMultiTypeDurationField } from '@common/components/MultiTypeDuration/MultiTypeDuration'
 import { NameId } from '@common/components/NameIdDescriptionTags/NameIdDescriptionTags'
-import { FormMultiTypeTextAreaField } from '@common/components'
+import MultiTypeFieldSelector from '@common/components/MultiTypeFieldSelector/MultiTypeFieldSelector'
+import { MonacoTextField } from '@common/components/MonacoTextField/MonacoTextField'
 
 import { useVariablesExpression } from '@pipeline/components/PipelineStudio/PiplineHooks/useVariablesExpression'
 import { StepViewType } from '@pipeline/components/AbstractSteps/Step'
@@ -23,7 +24,6 @@ import type { PolicyStepFormData } from './PolicyStepTypes'
 import PolicySetsFormField from './PolicySets/PolicySetsFormField/PolicySetsFormField'
 
 import stepCss from '@pipeline/components/PipelineSteps/Steps/Steps.module.scss'
-import css from './PolicyStep.module.scss'
 
 export const entityTypeOptions: SelectOption[] = [{ label: 'Custom', value: 'Custom' }]
 
@@ -32,13 +32,15 @@ export default function BasePolicyStep(props: {
   isNewStep: boolean
   readonly?: boolean
   stepViewType?: StepViewType
+  allowableTypes: MultiTypeInputType[]
 }): React.ReactElement {
   const {
     formik: { errors, touched },
     formik,
     isNewStep,
     readonly,
-    stepViewType
+    stepViewType,
+    allowableTypes
   } = props
 
   const [entityType, setEntityType] = useState<string | number | symbol>('Custom')
@@ -60,6 +62,7 @@ export default function BasePolicyStep(props: {
         <FormMultiTypeDurationField
           name="timeout"
           label={getString('pipelineSteps.timeoutLabel')}
+          disabled={readonly}
           className={stepCss.duration}
           multiTypeDurationProps={{
             enableConfigureOptions: false,
@@ -86,17 +89,34 @@ export default function BasePolicyStep(props: {
         touched={touched?.spec?.policySets}
       />
       {entityType === 'Custom' && (
-        <div className={cx(stepCss.formGroup)}>
-          <FormMultiTypeTextAreaField
-            name={`spec.policySpec.payload`}
+        <div className={cx(stepCss.formGroup, stepCss.alignStart)}>
+          <MultiTypeFieldSelector
+            name="spec.policySpec.payload"
             label={getString('common.payload')}
-            placeholder={getString('common.payload')}
+            defaultValueToReset=""
+            allowedTypes={allowableTypes}
+            skipRenderValueInExpressionLabel
             disabled={readonly}
-            className={css.jexlExpression}
-            multiTypeTextArea={{
-              expressions
-            }}
-          />
+            expressionRender={
+              /* istanbul ignore next */ () => {
+                return (
+                  <MonacoTextField
+                    name={'spec.policySpec.payload'}
+                    expressions={expressions}
+                    height={300}
+                    disabled={readonly}
+                  />
+                )
+              }
+            }
+          >
+            <MonacoTextField
+              name={'spec.policySpec.payload'}
+              expressions={expressions}
+              height={300}
+              disabled={readonly}
+            />
+          </MultiTypeFieldSelector>
         </div>
       )}
     </>

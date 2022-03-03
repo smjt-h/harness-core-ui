@@ -13,28 +13,29 @@ import { getMultiTypeFromValue, MultiTypeInputType } from '@harness/uicore'
 import { useStrings } from 'framework/strings'
 
 import { FormMultiTypeDurationField } from '@common/components/MultiTypeDuration/MultiTypeDuration'
-import { FormMultiTypeTextAreaField } from '@common/components'
+import MultiTypeFieldSelector from '@common/components/MultiTypeFieldSelector/MultiTypeFieldSelector'
+import { MonacoTextField } from '@common/components/MonacoTextField/MonacoTextField'
 
 import { useVariablesExpression } from '@pipeline/components/PipelineStudio/PiplineHooks/useVariablesExpression'
 
 import type { PolicyStepData } from './PolicyStepTypes'
 
 import stepCss from '@pipeline/components/PipelineSteps/Steps/Steps.module.scss'
-import css from './PolicyStep.module.scss'
 
 export default function PolicyInputSetStep(props: {
   readonly?: boolean
   template?: PolicyStepData
   path?: string
+  allowableTypes: MultiTypeInputType[]
 }): React.ReactElement {
-  const { readonly, template, path } = props
+  const { readonly, template, path, allowableTypes } = props
   const { getString } = useStrings()
   const { expressions } = useVariablesExpression()
-  const prefix = isEmpty(path) ? /* istanbul ignore next */ '' : `${path}.`
+  const prefix = isEmpty(path) ? '' : `${path}.`
 
   return (
     <>
-      {getMultiTypeFromValue(template?.timeout) === MultiTypeInputType.RUNTIME && (
+      {getMultiTypeFromValue(/* istanbul ignore next */ template?.timeout) === MultiTypeInputType.RUNTIME && (
         <div className={cx(stepCss.formGroup, stepCss.lg)}>
           <FormMultiTypeDurationField
             name={`${prefix}timeout`}
@@ -49,17 +50,35 @@ export default function PolicyInputSetStep(props: {
           />
         </div>
       )}
-      {getMultiTypeFromValue(template?.spec?.policySpec?.payload) === MultiTypeInputType.RUNTIME && (
-        <div className={cx(stepCss.formGroup)}>
-          <FormMultiTypeTextAreaField
+      {getMultiTypeFromValue(/* istanbul ignore next */ template?.spec?.policySpec?.payload) ===
+        MultiTypeInputType.RUNTIME && (
+        <div
+          className={cx(stepCss.formGroup, stepCss.alignStart)}
+          onKeyDown={
+            /* istanbul ignore next */ event => {
+              if (event.key === 'Enter') {
+                event.stopPropagation()
+              }
+            }
+          }
+        >
+          <MultiTypeFieldSelector
             name={`${prefix}spec.policySpec.payload`}
             label={getString('common.payload')}
+            defaultValueToReset=""
+            allowedTypes={allowableTypes}
+            skipRenderValueInExpressionLabel
             disabled={readonly}
-            className={css.jexlExpression}
-            multiTypeTextArea={{
-              expressions
-            }}
-          />
+            expressionRender={
+              /* istanbul ignore next */ () => {
+                return (
+                  <MonacoTextField name={`${prefix}spec.policySpec.payload`} expressions={expressions} height={300} />
+                )
+              }
+            }
+          >
+            <MonacoTextField name={`${prefix}spec.policySpec.payload`} expressions={expressions} height={300} />
+          </MultiTypeFieldSelector>
         </div>
       )}
     </>

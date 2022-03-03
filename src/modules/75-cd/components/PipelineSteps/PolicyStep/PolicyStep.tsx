@@ -49,7 +49,17 @@ export class PolicyStep extends PipelineStep<PolicyStepData> {
   }
 
   renderStep(props: StepProps<PolicyStepData>): JSX.Element {
-    const { initialValues, onUpdate, onChange, stepViewType, formikRef, isNewStep, readonly, inputSetData } = props
+    const {
+      initialValues,
+      onUpdate,
+      onChange,
+      stepViewType,
+      formikRef,
+      isNewStep,
+      readonly,
+      inputSetData,
+      allowableTypes
+    } = props
 
     if (stepViewType === StepViewType.InputSet || stepViewType === StepViewType.DeploymentForm) {
       return (
@@ -57,6 +67,7 @@ export class PolicyStep extends PipelineStep<PolicyStepData> {
           readonly={!!inputSetData?.readonly}
           template={inputSetData?.template}
           path={inputSetData?.path || ''}
+          allowableTypes={allowableTypes}
         />
       )
     }
@@ -70,6 +81,7 @@ export class PolicyStep extends PipelineStep<PolicyStepData> {
         isNewStep={isNewStep}
         readonly={readonly}
         ref={formikRef}
+        allowableTypes={allowableTypes}
       />
     )
   }

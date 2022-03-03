@@ -10,7 +10,7 @@ import * as Yup from 'yup'
 import type { FormikProps } from 'formik'
 import { defaultTo } from 'lodash-es'
 
-import { Formik } from '@harness/uicore'
+import { Formik, MultiTypeInputType } from '@harness/uicore'
 import { useStrings } from 'framework/strings'
 
 import { getDurationValidationSchema } from '@common/components/MultiTypeDuration/MultiTypeDuration'
@@ -28,10 +28,11 @@ interface PolicyStepWidgetProps {
   stepViewType?: StepViewType
   isNewStep?: boolean
   readonly?: boolean
+  allowableTypes: MultiTypeInputType[]
 }
 
 function PolicyStepWidget(
-  { initialValues, onUpdate, onChange, isNewStep, readonly, stepViewType }: PolicyStepWidgetProps,
+  { initialValues, onUpdate, onChange, isNewStep, readonly, stepViewType, allowableTypes }: PolicyStepWidgetProps,
   formikRef: StepFormikFowardRef
 ): JSX.Element {
   const { getString } = useStrings()
@@ -74,6 +75,7 @@ function PolicyStepWidget(
             formik={formik}
             readonly={readonly}
             stepViewType={stepViewType}
+            allowableTypes={allowableTypes}
           />
         )
       }}
