@@ -42,6 +42,7 @@ const config = {
     pathinfo: false,
     assetModuleFilename: 'images/[hash:6][ext][query]'
   },
+  watch: isCypress ? false : true,
   devServer: {
     historyApiFallback: true,
     port: 8181,
