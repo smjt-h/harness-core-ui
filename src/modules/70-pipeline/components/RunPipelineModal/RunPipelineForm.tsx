@@ -22,8 +22,8 @@ import { useModalHook } from '@harness/use-modal'
 import cx from 'classnames'
 import { useHistory } from 'react-router-dom'
 import { parse } from 'yaml'
-import { pick, mergeWith, isEmpty, isEqual, defaultTo, keyBy } from 'lodash-es'
-import type { FormikErrors } from 'formik'
+import { pick, mergeWith, isEmpty, isEqual, defaultTo, keyBy, debounce } from 'lodash-es'
+import type { FormikErrors, FormikProps } from 'formik'
 import type { PipelineInfoConfig, ResponseJsonNode } from 'services/cd-ng'
 import {
   useGetPipeline,
@@ -93,11 +93,13 @@ import { PipelineInvalidRequestContent } from './PipelineInvalidRequestContent'
 import RunModalHeader from './RunModalHeader'
 import CheckBoxActions from './CheckBoxActions'
 import VisualView from './VisualView'
+import { useInputSets } from './useInputSets'
+import type { InputSetValue } from '../InputSetSelector/utils'
 
 import css from './RunPipelineForm.module.scss'
 
 export interface RunPipelineFormProps extends PipelineType<PipelinePathProps & GitQueryParams> {
-  inputSetSelected?: InputSetSelectorProps['value']
+  inputSetSelected?: InputSetValue[]
   inputSetYAML?: string
   onClose?: () => void
   executionView?: boolean
@@ -142,6 +144,9 @@ function RunPipelineFormBasic({
   const [currentPipeline, setCurrentPipeline] = useState<{ pipeline?: PipelineInfoConfig } | undefined>(
     inputSetYAML ? parse(inputSetYAML) : undefined
   )
+  // eslint-disable-next-line react-hooks/exhaustive-deps
+  const setCurrentPipelineDebounced = useCallback(debounce(setCurrentPipeline, 400), [setCurrentPipeline])
+  const formikRef = React.useRef<FormikProps<Values> | null>(null)
   const { trackEvent } = useTelemetry()
   const { showError, showSuccess, showWarning } = useToaster()
   const history = useHistory()
@@ -156,6 +161,22 @@ function RunPipelineFormBasic({
   })
   const [loadingInputSetUpdate, setLoadingInputSetUpdate] = useState(false)
   const { setPipeline: updatePipelineInVaribalesContext } = usePipelineVariables()
+  const { executionId } = useQueryParams<{ executionId?: string }>()
+  const pipelineExecutionId = executionIdentifier ?? executionId
+  // const dummy = useInputSets({
+  //   accountId,
+  //   projectIdentifier,
+  //   orgIdentifier,
+  //   pipelineIdentifier,
+  //   pipelineExecutionId,
+  //   selectedStageData,
+  //   branch,
+  //   repoIdentifier,
+  //   rerunInputSetYaml: inputSetYAML,
+  //   inputSetSelected
+  // })
+
+  // console.log('dummy', dummy)
 
   useEffect(() => {
     getInputSetsList()
@@ -280,8 +301,7 @@ function RunPipelineFormBasic({
     },
     identifier: pipelineIdentifier
   })
-  const { executionId } = useQueryParams<{ executionId?: string }>()
-  const pipelineExecutionId = executionIdentifier ?? executionId
+
   const { mutate: reRunPipeline, loading: reRunLoading } = useRePostPipelineExecuteWithInputSetYaml({
     queryParams: {
       accountIdentifier: accountId,

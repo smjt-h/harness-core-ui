@@ -205,3 +205,19 @@ export const getAllStageItem = (getString: UseStringsReturn['getString']): Selec
   label: getString('pipeline.allStages'),
   value: ALL_STAGE_VALUE
 })
+
+export function getStageIdentifierFromStageData(
+  selectedStageData: StageSelectionData,
+  stagesExecuted?: string[]
+): string[] {
+  let stageIds: string[] = []
+  stageIds = stagesExecuted?.length
+    ? stagesExecuted
+    : selectedStageData.allStagesSelected
+    ? []
+    : (selectedStageData.selectedStageItems.map(stageData => stageData.value) as string[])
+  if (stageIds.includes(ALL_STAGE_VALUE)) {
+    stageIds = []
+  }
+  return stageIds
+}
