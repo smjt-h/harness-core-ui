@@ -50,14 +50,11 @@ function DefaultNode(props: any): JSX.Element {
         ref={nodeRef}
         onClick={event => {
           event.stopPropagation()
-          if (props?.onClick) {
-            props.onClick()
-            return
-          }
+
           props?.fireEvent({
+            ...props,
             type: Event.ClickNode,
-            entityType: DiagramType.Default,
-            ...props
+            entityType: DiagramType.Default
           })
           props?.setSelectedNode(props?.identifier)
         }}

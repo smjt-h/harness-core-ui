@@ -5,6 +5,7 @@ import GroupNode from '../Nodes/GroupNode/GroupNode'
 import type { NodeDetails, NodeIds, PipelineGraphState } from '../types'
 import { useNodeResizeObserver } from '../hooks/useResizeObserver'
 import css from './PipelineGraph.module.scss'
+import { defaultTo } from 'lodash-es'
 export interface PipelineGraphRecursiveProps {
   nodes?: PipelineGraphState[]
   getNode: (type?: string | undefined) => NodeDetails | undefined
@@ -137,24 +138,29 @@ function PipelineGraphNodeBasic({
   const defaultNode = getDefaultNode()?.component
   const NodeComponent: React.FC<any> | undefined = getNode?.(data?.type)?.component || defaultNode
   const ref = useRef<HTMLDivElement>(null)
-  const { shouldCollapse, shouldExpand } = useNodeResizeObserver('.Pane1', ref?.current)
+  const resizeState = useNodeResizeObserver('.Pane1', ref?.current)
   const [intersectingIndex, setIntersectingIndex] = useState<number>(-1)
 
-  useEffect(() => {
-    if (shouldCollapse) {
-      const indexToGroupFrom = Number(ref.current?.dataset.index || -1) as unknown as number
-      Number.isInteger(indexToGroupFrom) && setIntersectingIndex(indexToGroupFrom)
-    } else {
-      if (intersectingIndex < (data?.children?.length as number) - 1) {
-        const indexToGroupFrom = Number(ref.current?.dataset.index || -1) as unknown as number
-        Number.isInteger(indexToGroupFrom) && setIntersectingIndex(indexToGroupFrom + 1)
+  useLayoutEffect(() => {
+    const element = (ref?.current || ref) as HTMLElement
+    if (resizeState.shouldCollapse) {
+      const indexToGroupFrom = Number(element?.dataset.index || -1) as unknown as number
+      Number.isInteger(indexToGroupFrom) && indexToGroupFrom > 0 && setIntersectingIndex(indexToGroupFrom - 1)
+    }
+    if (resizeState.shouldExpand) {
+      if (intersectingIndex < (data?.children?.length as number)) {
+        const indexToGroupFrom = Number(element?.dataset.index || -1) as unknown as number
+        Number.isInteger(indexToGroupFrom) &&
+          indexToGroupFrom < (data.children as unknown as [])?.length &&
+          setIntersectingIndex(indexToGroupFrom + 1)
       }
     }
-  }, [shouldCollapse, shouldExpand])
+  }, [resizeState])
 
   useLayoutEffect(() => {
     updateGraphLinks?.()
   }, [intersectingIndex])
+
   return (
     <div
       className={classNames(
@@ -163,7 +169,12 @@ function PipelineGraphNodeBasic({
       )}
     >
       <>
-        <div ref={intersectingIndex === 0 && data.children ? ref : null} key={data?.identifier}>
+        <div
+          id={`ref_${data?.identifier}`}
+          ref={intersectingIndex === 0 && data.children && collapseOnIntersect ? ref : null}
+          key={data?.identifier}
+          data-index={0}
+        >
           {intersectingIndex == 0 && collapseOnIntersect ? (
             <GroupNode
               key={data?.identifier}
@@ -203,8 +214,10 @@ function PipelineGraphNodeBasic({
         </div>
         {data?.children?.map((currentStage, index) => {
           const ChildNodeComponent: React.FC<any> | undefined = getNode?.(data?.nodeType)?.component || defaultNode
-          const refIndex =
-            intersectingIndex > -1 && index === intersectingIndex - 1 ? index : (data?.children?.length || 0) - 1
+          const lastChildIndex = defaultTo(data.children?.length, 0) - 1
+          const indexRelativeToParent = index + 1 // counting parent as 0 and children from 1
+          const isCurrentChildLast = index === lastChildIndex
+          const attachRef = intersectingIndex === -1 ? isCurrentChildLast : intersectingIndex === indexRelativeToParent
           return !collapseOnIntersect ? (
             ChildNodeComponent && (
               <ChildNodeComponent
@@ -218,7 +231,7 @@ function PipelineGraphNodeBasic({
                 isSelected={selectedNode === currentStage?.identifier}
                 isParallelNode={true}
                 key={currentStage?.identifier}
-                allowAdd={index + 1 === data?.children?.length}
+                allowAdd={indexRelativeToParent === data?.children?.length}
                 isFirstParallelNode={true}
                 prevNodeIdentifier={prevNodeIdentifier}
                 prevNode={prevNode}
@@ -229,12 +242,12 @@ function PipelineGraphNodeBasic({
             )
           ) : (
             <div
-              ref={refIndex === index ? ref : null}
-              data-index={index}
+              ref={attachRef ? ref : null}
+              data-index={indexRelativeToParent}
               id={`ref_${currentStage?.identifier}`}
               key={currentStage?.identifier}
             >
-              {index === intersectingIndex - 1 ? (
+              {attachRef && !isCurrentChildLast ? (
                 <GroupNode
                   {...data}
                   fireEvent={fireEvent}
@@ -248,7 +261,7 @@ function PipelineGraphNodeBasic({
                   identifier={currentStage.identifier}
                   intersectingIndex={intersectingIndex}
                 />
-              ) : index > intersectingIndex - 1 && intersectingIndex !== -1 ? null : (
+              ) : indexRelativeToParent > intersectingIndex && intersectingIndex !== -1 ? null : (
                 ChildNodeComponent && (
                   <ChildNodeComponent
                     parentIdentifier={parentIdentifier}
@@ -262,7 +275,6 @@ function PipelineGraphNodeBasic({
                     isParallelNode={true}
                     key={currentStage?.identifier}
                     allowAdd={index + 1 === data?.children?.length}
-                    isFirstParallelNode={true}
                     prevNodeIdentifier={prevNodeIdentifier}
                     prevNode={prevNode}
                     nextNode={nextNode}
