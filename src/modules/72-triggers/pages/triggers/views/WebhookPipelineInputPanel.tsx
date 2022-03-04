@@ -48,7 +48,6 @@ const applyArtifactToPipeline = (newPipelineObject: any, formikProps: any) => {
   if (artifactIndex >= 0) {
     const selectedArtifact = {
       sidecar: {
-        identifier: formikProps?.values?.selectedArtifact?.identifier,
         type: formikProps?.values?.selectedArtifact?.type,
         spec: {
           ...formikProps?.values?.selectedArtifact?.spec
@@ -61,7 +60,6 @@ const applyArtifactToPipeline = (newPipelineObject: any, formikProps: any) => {
     filteredStageArtifacts[artifactIndex] = selectedArtifact
   } else if (artifactIndex < 0) {
     const selectedArtifact = {
-      identifier: formikProps?.values?.selectedArtifact?.identifier,
       type: formikProps?.values?.selectedArtifact?.type,
       spec: {
         ...formikProps?.values?.selectedArtifact?.spec
@@ -101,7 +99,6 @@ const applySelectedArtifactToPipelineObject = (pipelineObj: any, formikProps: an
 
       const selectedArtifact = {
         manifest: {
-          identifier: formikProps?.values?.selectedArtifact?.identifier,
           type: formikProps?.values?.selectedArtifact?.type,
           spec: {
             ...formikProps?.values?.selectedArtifact?.spec
