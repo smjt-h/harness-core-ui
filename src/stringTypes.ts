@@ -709,7 +709,9 @@ export interface StringsMap {
   'common.validation.namePatternIsNotValid': string
   'common.validation.provisionerIdentifierIsRequired': string
   'common.validation.provisionerIdentifierPatternIsNotValid': string
+  'common.validation.repository': string
   'common.validation.repositoryName': string
+  'common.validation.subscription': string
   'common.validation.testRepoIsRequired': string
   'common.validation.typeIsRequired': string
   'common.validation.urlIsRequired': string
@@ -1336,6 +1338,10 @@ export interface StringsMap {
   'authSettings.whitelistedDomainsDisabled': string
   'authSettings.yourAccountWillBeLockedOut': string
   'connectors.ACR.name': string
+  'connectors.ACR.registry': string
+  'connectors.ACR.registryError': string
+  'connectors.ACR.repositoryError': string
+  'connectors.ACR.subscription': string
   'connectors.ECR.fullName': string
   'connectors.ECR.name': string
   'connectors.GCP.delegateInClusterInfo': string
@@ -1926,6 +1932,7 @@ export interface StringsMap {
   'connectors.stackdriverMetricsLabel': string
   'connectors.stepFourName': string
   'connectors.stepThreeName': string
+  'connectors.subscription': string
   'connectors.successfullCreate': string
   'connectors.successfullUpdate': string
   'connectors.successfullyCreated': string
@@ -2352,9 +2359,12 @@ export interface StringsMap {
   'pipeline.artifactsSelection.validation.artifactPath': string
   'pipeline.artifactsSelection.validation.imagePath': string
   'pipeline.artifactsSelection.validation.region': string
+  'pipeline.artifactsSelection.validation.registry': string
+  'pipeline.artifactsSelection.validation.repository': string
   'pipeline.artifactsSelection.validation.repositoryPort': string
   'pipeline.artifactsSelection.validation.repositoryUrl': string
   'pipeline.artifactsSelection.validation.sidecarId': string
+  'pipeline.artifactsSelection.validation.subscription': string
   'pipeline.artifactsSelection.validation.tag': string
   'pipeline.artifactsSelection.validation.tagRegex': string
   'pipeline.barrierStep.barrierReference': string

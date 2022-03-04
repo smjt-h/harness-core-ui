@@ -634,6 +634,13 @@ artifactsSelection:
     sidecarId: Sidecar Identifier is required
     repositoryPort: Repository Port is required
     repositoryUrl: Repository URL is required
+    artifactDirectory: Artifact Directory is required
+    artifactPathFilter: Artifact Path Filter is required
+    subscription: '{{ $.common.validation.subscription }}'
+    registry: 'Registry is required'
+    repository: '{{ $.common.validation.repository }}'
+  errors:
+    noRepositories: No repositories found with given connector
 overrideSets:
   createOverrideSet: Create Override Set
   overrideSetPlaceholder: Enter Override Set Name

@@ -72,6 +72,21 @@ export interface ImagePathTypes {
   repository?: string
   repositoryUrl?: string
   repositoryPortorRepositoryURL?: string
+  artifactDirectory?: string
+  dockerRepositoryServer?: string
+  repositoryPortorDockerServer?: string
+  subscription?: string
+  registry?: string
+}
+
+export interface ACRArtifactType {
+  identifier: string
+  tag: any
+  tagRegex: any
+  tagType: TagTypes
+  repository?: string
+  subscription?: string
+  registry?: string
 }
 
 export interface ImagePathProps {
