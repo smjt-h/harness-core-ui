@@ -29,12 +29,12 @@ export const useNodeResizeObserver = (
   }, [selectorString])
 
   const onResize = throttle(([entry]) => {
-    const finalData = isIntersectingBottomWhenResize(entry, refElement as Element, 50)
+    const finalData = isIntersectingBottomWhenResize(entry, refElement as Element, 120)
     setState(finalData)
   }, 100)
 
   useEffect(() => {
-    if (!selectorString || !element) return
+    if (!selectorString || !element || !refElement) return
     cleanup()
     const ob = (observer.current = new ResizeObserver(onResize))
     ob.observe(element as Element)
@@ -47,9 +47,9 @@ export const useNodeResizeObserver = (
   return state
 }
 
-const checkIntersectionBottom = (entry: IntersectionObserverEntry): boolean => {
-  return entry.boundingClientRect.bottom >= (entry.rootBounds as DOMRect)?.bottom
-}
+// const checkIntersectionBottom = (entry: IntersectionObserverEntry): boolean => {
+//   return entry.boundingClientRect.bottom >= (entry.rootBounds as DOMRect)?.bottom
+// }
 
 const isIntersectingBottomWhenResize = (
   entry: ResizeObserverEntry,
@@ -57,7 +57,9 @@ const isIntersectingBottomWhenResize = (
   bottomPadding: number
 ): ResizeObserverResult => {
   const elementPos = getComputedPosition(el.id, entry.target as HTMLDivElement) as DOMRect
-  const intersectingBottom = elementPos.bottom >= entry.contentRect.bottom
-  const notIntersectingBottom = elementPos.bottom + bottomPadding >= entry.contentRect.bottom
+  const percentageVisibleHeight = elementPos.height * 0.8
+  const intersectingBottom = elementPos.top + (elementPos.height - percentageVisibleHeight) >= entry.contentRect.bottom
+  const notIntersectingBottom = elementPos.bottom + bottomPadding < entry.contentRect.bottom
+
   return { shouldCollapse: intersectingBottom, shouldExpand: notIntersectingBottom }
 }
