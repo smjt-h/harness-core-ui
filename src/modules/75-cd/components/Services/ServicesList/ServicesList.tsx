@@ -34,14 +34,25 @@ import type { ChangeValue } from '@cd/components/Services/DeploymentsWidget/Depl
 import { useStrings } from 'framework/strings'
 import { Ticker } from '@common/components/Ticker/Ticker'
 import { PieChart, PieChartProps } from '@cd/components/PieChart/PieChart'
-import { getFixed, INVALID_CHANGE_RATE, numberFormatter } from '@cd/components/Services/common'
-import { ServiceDetailsDTO, useDeleteServiceV2 } from 'services/cd-ng'
+import {
+  DeploymentsTimeRangeContext,
+  getFixed,
+  INVALID_CHANGE_RATE,
+  numberFormatter
+} from '@cd/components/Services/common'
+import {
+  GetDeploymentsByServiceIdQueryParams,
+  ServiceDetailsDTO,
+  useDeleteServiceV2,
+  useGetDeploymentsByServiceId
+} from 'services/cd-ng'
 import { DeploymentTypeIcons } from '@cd/components/DeploymentTypeIcons/DeploymentTypeIcons'
 import { ResourceType } from '@rbac/interfaces/ResourceType'
 import { PermissionIdentifier } from '@rbac/interfaces/PermissionIdentifier'
 import { NewEditServiceModal } from '@cd/components/PipelineSteps/DeployServiceStep/DeployServiceStep'
 import RbacMenuItem from '@rbac/components/MenuItem/MenuItem'
 import { ServiceTabs } from '@cd/components/ServiceDetails/ServiceDetailsContent/ServiceDetailsContent'
+import { isExecutionNotStarted } from '@pipeline/utils/statusHelpers'
 import css from '@cd/components/Services/ServicesList/ServiceList.module.scss'
 
 export enum DeploymentStatus {
@@ -67,6 +78,8 @@ export interface ServiceListItem {
   lastDeployment: {
     name: string
     id: string
+    serviceId: string
+    executionId: string
     timestamp: number
     status: string
   }
@@ -106,6 +119,8 @@ const transformServiceDetailsData = (data: ServiceDetailsDTO[]): ServiceListItem
     lastDeployment: {
       name: defaultTo(item.lastPipelineExecuted?.name, ''),
       id: defaultTo(item.lastPipelineExecuted?.pipelineExecutionId, ''),
+      executionId: defaultTo(item.lastPipelineExecuted?.identifier, ''),
+      serviceId: defaultTo(item.serviceIdentifier, ''),
       timestamp: defaultTo(item.lastPipelineExecuted?.lastExecutedAt, 0),
       status: defaultTo(item.lastPipelineExecuted?.status, '')
     }
@@ -221,12 +236,42 @@ const RenderServiceInstances: Renderer<CellProps<ServiceListItem>> = ({ row }) =
     </Layout.Horizontal>
   )
 }
-
 const RenderLastDeployment: Renderer<CellProps<ServiceListItem>> = ({ row }) => {
   const {
-    lastDeployment: { id, name, timestamp }
+    lastDeployment: { id, name, executionId, timestamp, status, serviceId }
   } = row.original
   const { getString } = useStrings()
+  const { timeRange } = React.useContext(DeploymentsTimeRangeContext)
+  const { showError } = useToaster()
+  const history = useHistory()
+  const { accountId, orgIdentifier, projectIdentifier } = useParams<ProjectPathProps>()
+  const queryParams: GetDeploymentsByServiceIdQueryParams = {
+    accountIdentifier: accountId,
+    orgIdentifier,
+    projectIdentifier,
+    serviceId: serviceId,
+    startTime: defaultTo(timeRange?.range[0]?.getTime(), 0),
+    endTime: defaultTo(timeRange?.range[1]?.getTime(), 0)
+  }
+  const { data } = useGetDeploymentsByServiceId({ queryParams })
+  const planExecId = defaultTo(data?.data?.deployments, [])[0]?.planExecutionId
+  const disabled = isExecutionNotStarted(status)
+  function handleClick(): void {
+    if (!disabled && id && executionId && planExecId) {
+      history.push(
+        routes.toExecutionPipelineView({
+          orgIdentifier,
+          pipelineIdentifier: executionId,
+          executionIdentifier: planExecId,
+          projectIdentifier,
+          accountId,
+          module: 'cd'
+        })
+      )
+    } else {
+      showError(getString('cd.serviceDashboard.noPipelinesExecution'))
+    }
+  }
   if (!id) {
     return <></>
   }
@@ -245,12 +290,18 @@ const RenderLastDeployment: Renderer<CellProps<ServiceListItem>> = ({ row }) => 
         >
           {name}
         </Text>
-        <Text font={{ size: 'small' }} color={Color.GREY_500} className={css.lastDeploymentText}>{`(${getString(
-          'cd.serviceDashboard.executionId',
-          {
-            id
-          }
-        )})`}</Text>
+        <Text
+          data-testid="executionId"
+          font={{ size: 'small' }}
+          color={Color.PRIMARY_7}
+          className={css.lastDeploymentText}
+          onClick={e => {
+            e.stopPropagation()
+            handleClick()
+          }}
+        >{`(${getString('cd.serviceDashboard.executionId', {
+          id
+        })})`}</Text>
       </Layout.Horizontal>
       {timestamp ? (
         <ReactTimeago
