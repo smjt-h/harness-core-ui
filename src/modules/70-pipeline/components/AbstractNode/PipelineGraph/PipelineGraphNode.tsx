@@ -1,11 +1,11 @@
-import React, { useRef, useState, useEffect, useLayoutEffect } from 'react'
+import React, { useRef, useState, useLayoutEffect } from 'react'
+import { defaultTo } from 'lodash-es'
 import classNames from 'classnames'
 import { NodeType } from '../Node'
 import GroupNode from '../Nodes/GroupNode/GroupNode'
 import type { NodeDetails, NodeIds, PipelineGraphState } from '../types'
 import { useNodeResizeObserver } from '../hooks/useResizeObserver'
 import css from './PipelineGraph.module.scss'
-import { defaultTo } from 'lodash-es'
 export interface PipelineGraphRecursiveProps {
   nodes?: PipelineGraphState[]
   getNode: (type?: string | undefined) => NodeDetails | undefined
@@ -160,7 +160,6 @@ function PipelineGraphNodeBasic({
   useLayoutEffect(() => {
     updateGraphLinks?.()
   }, [intersectingIndex])
-
   return (
     <div
       className={classNames(
