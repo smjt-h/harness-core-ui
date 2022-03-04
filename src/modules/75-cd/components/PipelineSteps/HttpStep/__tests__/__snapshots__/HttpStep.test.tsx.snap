@@ -1936,3 +1936,23 @@ exports[`Http Step should render edit view as new step 1`] = `
   </div>
 </div>
 `;
+
+exports[`validate http step input sets validates default inputs set correctly 1`] = `Object {}`;
+
+exports[`validate http step input sets validates error in inputs set 1`] = `
+Object {
+  "spec": Object {
+    "outputVariables": Array [
+      Object {
+        "value": "common.validation.valueIsRequired",
+      },
+    ],
+  },
+}
+`;
+
+exports[`validate http step input sets validates timeout is min 10s 1`] = `
+Object {
+  "timeout": "Value must be greater than or equal to \\"10s\\"",
+}
+`;

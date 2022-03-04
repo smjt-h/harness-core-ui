@@ -206,3 +206,146 @@ describe('Http Step', () => {
     expect(container).toMatchSnapshot()
   })
 })
+
+describe('validate http step input sets', () => {
+  test('validates default inputs set correctly', () => {
+    const response = new HttpStep().validateInputSet({
+      data: {
+        name: 'HTTP Step',
+        identifier: 'HTTP_Step',
+        timeout: '10s',
+        type: 'Http',
+        spec: {
+          url: 'https://abc.com',
+          method: 'POST',
+          headers: [
+            {
+              key: 'Authorization',
+              value: 'header.payload.signature'
+            }
+          ],
+          outputVariables: [
+            {
+              name: 'someVar',
+              value: 'dummy',
+              type: 'String'
+            }
+          ],
+          requestBody: '{\nsomeVar: "Ash"\n}'
+        }
+      },
+      template: {
+        name: 'HTTP Step',
+        identifier: 'HTTP_Step',
+        timeout: '<+input>',
+        type: 'Http',
+        spec: {
+          url: '<+input>',
+          method: '<+input>',
+          headers: [
+            {
+              key: 'Authorization',
+              value: '<+input>'
+            }
+          ],
+          outputVariables: [
+            {
+              name: 'someVar',
+              value: '<+input>',
+              type: 'String'
+            }
+          ],
+          requestBody: '<+input>'
+        }
+      },
+      viewType: StepViewType.DeploymentForm,
+      getString: jest.fn().mockImplementation(val => val)
+    })
+    expect(response).toMatchSnapshot()
+  })
+
+  test('validates error in inputs set', () => {
+    const response = new HttpStep().validateInputSet({
+      data: {
+        name: 'HTTP Step',
+        identifier: 'HTTP_Step',
+        timeout: '10s',
+        type: 'Http',
+        spec: {
+          url: '',
+          method: '',
+          headers: [
+            {
+              key: 'Authorization',
+              value: ''
+            }
+          ],
+          outputVariables: [
+            {
+              name: 'someVar',
+              value: '',
+              type: 'String'
+            }
+          ],
+          requestBody: ''
+        }
+      },
+      template: {
+        name: 'HTTP Step',
+        identifier: 'HTTP_Step',
+        timeout: '<+input>',
+        type: 'Http',
+        spec: {
+          url: '<+input>',
+          method: '<+input>',
+          headers: [
+            {
+              key: 'Authorization',
+              value: '<+input>'
+            }
+          ],
+          outputVariables: [
+            {
+              name: 'someVar',
+              value: '<+input>',
+              type: 'String'
+            }
+          ],
+          requestBody: '<+input>'
+        }
+      },
+      viewType: StepViewType.DeploymentForm,
+      getString: jest.fn().mockImplementation(val => val)
+    })
+    expect(response).toMatchSnapshot()
+  })
+
+  test('validates timeout is min 10s', () => {
+    const response = new HttpStep().validateInputSet({
+      data: {
+        name: 'HTTP Step',
+        identifier: 'HTTP_Step',
+        timeout: '1s',
+        type: 'Http',
+        spec: {
+          url: 'https://abc.com',
+          method: 'POST',
+          requestBody: '{\nsomeVar: "Ash"\n}'
+        }
+      },
+      template: {
+        name: 'HTTP Step',
+        identifier: 'HTTP_Step',
+        timeout: '<+input>',
+        type: 'Http',
+        spec: {
+          url: '<+input>',
+          method: '<+input>',
+          requestBody: '{\nsomeVar: "Ash"\n}'
+        }
+      },
+      viewType: StepViewType.TriggerForm
+    })
+    expect(response).toMatchSnapshot()
+  })
+})
