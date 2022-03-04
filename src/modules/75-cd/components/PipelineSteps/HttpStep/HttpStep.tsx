@@ -80,7 +80,7 @@ export class HttpStep extends PipelineStep<HttpStepData> {
   }
 
   protected type = StepType.HTTP
-  protected stepName = 'Http Step'
+  protected stepName = 'HTTP Step'
   protected stepIcon: IconName = 'http-step'
   protected stepIconColor = Color.GREY_700
   protected stepDescription: keyof StringsMap = 'pipeline.stepDescription.HTTP'
