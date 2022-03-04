@@ -50,23 +50,23 @@ interface AppProps {
 
 const Harness = (window.Harness = window.Harness || {})
 
-export function AppWithAuthentication(props: AppProps): React.ReactElement {
+const getRequestOptions = (): Partial<RequestInit> => {
   const token = SessionToken.getToken()
+  const headers: RequestInit['headers'] = {}
+
+  if (token && token.length > 0) {
+    headers.Authorization = `Bearer ${token}`
+  }
+
+  return { headers }
+}
+
+export function AppWithAuthentication(props: AppProps): React.ReactElement {
   const username = SessionToken.username()
   // always use accountId from URL, and not from local storage
   // if user lands on /, they'll first get redirected to a path with accountId
   const { accountId } = useParams<AccountPathProps>()
   const history = useHistory()
-
-  const getRequestOptions = React.useCallback((): Partial<RequestInit> => {
-    const headers: RequestInit['headers'] = {}
-
-    if (token && token.length > 0) {
-      headers.Authorization = `Bearer ${token}`
-    }
-
-    return { headers }
-  }, [token])
 
   const getQueryParams = React.useCallback(() => {
     return {
@@ -84,13 +84,14 @@ export function AppWithAuthentication(props: AppProps): React.ReactElement {
   })
 
   useEffect(() => {
+    const token = SessionToken.getToken()
     if (!token) {
       history.push({
         pathname: routes.toRedirect(),
         search: returnUrlParams(getLoginPageURL({ returnUrl: window.location.href }))
       })
     }
-  }, [history, token])
+  })
 
   useEffect(() => {
     if (refreshTokenResponse?.resource) {
@@ -118,6 +119,7 @@ export function AppWithAuthentication(props: AppProps): React.ReactElement {
   Harness.openTooltipEditor = () => setShowTooltipEditor(true)
 
   const globalResponseHandler = (response: Response): void => {
+    const token = SessionToken.getToken()
     if (!response.ok && response.status === 401) {
       if (token) {
         const lastTokenSetTime = SessionToken.getLastTokenSetTime() as number
