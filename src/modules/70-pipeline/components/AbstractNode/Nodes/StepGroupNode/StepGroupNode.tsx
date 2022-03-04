@@ -12,6 +12,7 @@ import { Event, DiagramDrag, DiagramType } from '@pipeline/components/Diagram'
 import type { StepGroupNodeLayerModel } from '../../../Diagram/node-layer/StepGroupNodeLayerModel'
 import CreateNode from '../CreateNode/CreateNode'
 import css from './StepGroupNode.module.scss'
+import defaultCss from '../DefaultNode/DefaultNode.module.scss'
 import StepGroupGraph from '../StepGroupGraph/StepGroupGraph'
 import DefaultNode from '../DefaultNode/PipelineStageNode'
 
@@ -54,34 +55,34 @@ export function StepGroupNode(props: any): JSX.Element {
   const [addClicked, setAddClicked] = React.useState(false)
   const [isNodeCollapsed, setNodeCollapsed] = React.useState(false)
   // const [hover, setHover] = React.useState(false)
-  React.useEffect(() => {
-    const nodeLayer = layerRef.current
+  // React.useEffect(() => {
+  //   const nodeLayer = layerRef.current
 
-    const onMouseOver = (e: MouseEvent): void => {
-      if (!addClicked) {
-        setVisibilityOfAdd(true)
-      }
-      onMouseOverNode(e, props.layer)
-    }
+  //   const onMouseOver = (e: MouseEvent): void => {
+  //     if (!addClicked) {
+  //       setVisibilityOfAdd(true)
+  //     }
+  //     onMouseOverNode(e, props.layer)
+  //   }
 
-    const onMouseLeave = (e: MouseEvent): void => {
-      if (!addClicked) {
-        setVisibilityOfAdd(false)
-      }
-      onMouseLeaveNode(e, props.layer)
-    }
+  //   const onMouseLeave = (e: MouseEvent): void => {
+  //     if (!addClicked) {
+  //       setVisibilityOfAdd(false)
+  //     }
+  //     onMouseLeaveNode(e, props.layer)
+  //   }
 
-    if (nodeLayer && allowAdd) {
-      nodeLayer.addEventListener('mouseover', onMouseOver)
-      nodeLayer.addEventListener('mouseleave', onMouseLeave)
-    }
-    return () => {
-      if (nodeLayer && allowAdd) {
-        nodeLayer.removeEventListener('mouseover', onMouseOver)
-        nodeLayer.removeEventListener('mouseleave', onMouseLeave)
-      }
-    }
-  }, [layerRef, allowAdd])
+  //   if (nodeLayer && allowAdd) {
+  //     nodeLayer.addEventListener('mouseover', onMouseOver)
+  //     nodeLayer.addEventListener('mouseleave', onMouseLeave)
+  //   }
+  //   return () => {
+  //     if (nodeLayer && allowAdd) {
+  //       nodeLayer.removeEventListener('mouseover', onMouseOver)
+  //       nodeLayer.removeEventListener('mouseleave', onMouseLeave)
+  //     }
+  //   }
+  // }, [layerRef, allowAdd])
 
   React.useEffect(() => {
     if (!addClicked) {
@@ -90,7 +91,7 @@ export function StepGroupNode(props: any): JSX.Element {
   }, [addClicked])
 
   React.useEffect(() => {
-    props?.updateSvgs()
+    props?.updateGraphLinks()
   }, [isNodeCollapsed])
 
   return (
@@ -104,7 +105,7 @@ export function StepGroupNode(props: any): JSX.Element {
           icon="step-group"
         />
       ) : (
-        <>
+        <div style={{ position: 'relative' }}>
           <div
             // id={props.identifier}
             className={classnames(
@@ -112,7 +113,8 @@ export function StepGroupNode(props: any): JSX.Element {
               { [css.firstnode]: !props?.isParallelNode },
               { [css.marginBottom]: !props?.isParallelNode }
             )}
-            ref={layerRef}
+            onMouseOver={() => allowAdd && setVisibilityOfAdd(true)}
+            onMouseLeave={() => allowAdd && setVisibilityOfAdd(false)}
             // onDragOver={event => {
             //   if (allowAdd) {
             //     setVisibilityOfAdd(true)
@@ -166,13 +168,16 @@ export function StepGroupNode(props: any): JSX.Element {
                 fireEvent={props?.fireEvent}
                 getNode={props?.getNode}
                 updateSVGLinks={props.updateSVGLinks}
-                renderer={props?.renderer}
+                isNodeCollapsed={isNodeCollapsed}
+                updateGraphLinks={props?.updateGraphLinks}
               />
             </div>
           </div>
-          {allowAdd && showAdd && (
+          {allowAdd && (
             <CreateNode
-              className={css.stepGroupNode}
+              className={classnames(defaultCss.addNode, defaultCss.stepGroupAddNode, { [defaultCss.visible]: showAdd })}
+              onMouseOver={() => allowAdd && setVisibilityOfAdd(true)}
+              onMouseLeave={() => allowAdd && setVisibilityOfAdd(false)}
               onDrop={(event: any) => {
                 props?.fireEvent({
                   type: Event.DropNodeEvent,
@@ -194,7 +199,7 @@ export function StepGroupNode(props: any): JSX.Element {
               }}
             />
           )}
-        </>
+        </div>
       )}
     </>
   )

@@ -7,10 +7,10 @@
  **/
 // this is an auto-generated file, do not update this manually
 declare const styles: {
-  readonly createNew: string
   readonly createNode: string
   readonly disabled: string
   readonly selected: string
-  readonly steps: string
+  readonly stageAddIcon: string
+  readonly stepAddIcon: string
 }
 export default styles

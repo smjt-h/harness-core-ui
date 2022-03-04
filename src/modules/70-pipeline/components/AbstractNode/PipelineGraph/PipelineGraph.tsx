@@ -5,6 +5,7 @@ import Draggable from 'react-draggable'
 import { v4 as uuid } from 'uuid'
 import { Event } from '@pipeline/components/Diagram'
 import {
+  getComputedPosition,
   getFinalSVGArrowPath,
   getScaleToFitValue,
   getSVGLinksFromPipeline,
@@ -41,13 +42,9 @@ function PipelineGraph({
 }: PipelineGraphProps): React.ReactElement {
   const [svgPath, setSvgPath] = useState<SVGPathRecord[]>([])
   const [treeRectangle, setTreeRectangle] = useState<DOMRect | void>()
-  const [selectedNode, setSelectedNode] = useState<string>(selectedNodeId)
+  // const [selectedNode, setSelectedNode] = useState<string>(selectedNodeId)
   const [state, setState] = useState<PipelineGraphState[]>(data)
   const [graphScale, setGraphScale] = useState(INITIAL_ZOOM_LEVEL)
-  const [renderer, setRenderer] = useState(false)
-  const updateSvgs = (): void => {
-    setRenderer(!renderer)
-  }
   const canvasRef = useRef<HTMLDivElement>(null)
 
   const uniqueNodeIds = useMemo(
@@ -73,10 +70,10 @@ function PipelineGraph({
     if (state?.length) {
       setSVGLinks()
     }
-  }, [state, renderer])
+  }, [state])
 
   const setSVGLinks = (): void => {
-    const SVGLinks = getSVGLinksFromPipeline(state)
+    const SVGLinks = getSVGLinksFromPipeline(state, undefined, undefined, uniqueNodeIds.createNode)
     const lastNode = state?.[state?.length - 1]
 
     return setSvgPath([
@@ -89,22 +86,41 @@ function PipelineGraph({
 
   useEffect(() => {
     updateTreeRect()
+    const draggableParent = document.getElementById('draggable-parent')
+    const overlay = document.getElementById('overlay') as HTMLElement
+    if (draggableParent && overlay) {
+      draggableParent.onmousedown = function (event) {
+        let initialX = event.pageX
+        let initialY = event.pageY
+        const overlayPosition = getComputedPosition('overlay', draggableParent as HTMLDivElement) as DOMRect
+        function moveAt(pageX: number, pageY: number) {
+          const newX = overlayPosition?.left + pageX - initialX
+          const newY = overlayPosition?.top + pageY - initialY
+          overlay.style.transform = `translate(${newX}px,${newY}px)`
+        }
+        function onMouseMove(event) {
+          moveAt(event.pageX, event.pageY)
+        }
+        draggableParent.addEventListener('mousemove', onMouseMove)
+        draggableParent.onmouseup = function () {
+          draggableParent.removeEventListener('mousemove', onMouseMove)
+          draggableParent.onmouseup = null
+        }
+      }
+    }
   }, [])
-
-  const updateSelectedNode = (nodeId: string): void => {
-    setSelectedNode(nodeId)
-  }
 
   const handleScaleToFit = (): void => {
     setGraphScale(getScaleToFitValue(canvasRef.current as unknown as HTMLElement))
   }
 
   return (
-    <>
+    <div id="draggable-parent">
       <Draggable scale={graphScale} defaultPosition={DEFAULT_POSITION} offsetParent={document.body}>
         <div
           id="overlay"
-          onClick={() => {
+          onMouseDown={e => e.stopPropagation()}
+          onClick={e => {
             fireEvent({ type: Event.CanvasClick })
           }}
           className={css.overlay}
@@ -115,21 +131,18 @@ function PipelineGraph({
               fireEvent={fireEvent}
               getNode={getNode}
               nodes={state}
-              selectedNode={selectedNode}
-              setSelectedNode={updateSelectedNode}
+              selectedNode={selectedNodeId}
               uniqueNodeIds={uniqueNodeIds}
               updateGraphLinks={setSVGLinks}
               startEndNodeStyle={state?.[0]?.graphType === PipelineGraphType.STEP_GRAPH ? { height: '64px' } : {}}
               collapseOnIntersect={collapseOnIntersect}
-              updateSvgs={updateSvgs}
-              renderer={renderer}
               getDefaultNode={getDefaultNode}
             />
           </div>
         </div>
       </Draggable>
       <GraphActions setGraphScale={setGraphScale} graphScale={graphScale} handleScaleToFit={handleScaleToFit} />
-    </>
+    </div>
   )
 }
 

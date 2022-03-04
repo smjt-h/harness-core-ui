@@ -12,14 +12,11 @@ export interface PipelineGraphRecursiveProps {
   selectedNode: string
   uniqueNodeIds?: NodeIds
   fireEvent?: (event: any) => void
-  setSelectedNode?: (nodeId: string) => void
   startEndNodeNeeded?: boolean
   startEndNodeStyle?: { height?: string; width?: string }
   parentIdentifier?: string
   updateGraphLinks?: () => void
   collapseOnIntersect?: boolean
-  updateSvgs?: () => void
-  renderer?: boolean
   getDefaultNode(): NodeDetails | null
 }
 export function PipelineGraphRecursive({
@@ -27,15 +24,12 @@ export function PipelineGraphRecursive({
   getNode,
   selectedNode,
   fireEvent,
-  setSelectedNode,
   uniqueNodeIds,
   startEndNodeNeeded = true,
   startEndNodeStyle,
   parentIdentifier,
   updateGraphLinks,
   collapseOnIntersect,
-  updateSvgs,
-  renderer,
   getDefaultNode
 }: PipelineGraphRecursiveProps): React.ReactElement {
   const StartNode: React.FC<any> | undefined = getNode(NodeType.StartNode)?.component
@@ -60,7 +54,6 @@ export function PipelineGraphRecursive({
             data={node}
             key={node?.identifier}
             getNode={getNode}
-            setSelectedNode={setSelectedNode}
             isNextNodeParallel={!!nodes?.[index + 1]?.children?.length}
             isPrevNodeParallel={!!nodes?.[index - 1]?.children?.length}
             prevNodeIdentifier={nodes?.[index - 1]?.identifier}
@@ -68,8 +61,6 @@ export function PipelineGraphRecursive({
             prevNode={nodes?.[index - 1]}
             updateGraphLinks={updateGraphLinks}
             collapseOnIntersect={collapseOnIntersect}
-            updateSvgs={updateSvgs}
-            renderer={renderer}
           />
         )
       })}
@@ -109,15 +100,12 @@ interface PipelineGraphNode {
   prevNode?: PipelineGraphState
   updateGraphLinks?: () => void
   collapseOnIntersect?: boolean
-  updateSvgs?: () => void
-  renderer?: boolean
   getDefaultNode(): NodeDetails | null
 }
 
 function PipelineGraphNodeBasic({
   fireEvent,
   getNode,
-  setSelectedNode,
   data,
   className,
   isLastChild,
@@ -131,8 +119,6 @@ function PipelineGraphNodeBasic({
   nextNode,
   updateGraphLinks,
   collapseOnIntersect,
-  updateSvgs,
-  renderer,
   getDefaultNode
 }: PipelineGraphNode): React.ReactElement | null {
   const defaultNode = getDefaultNode()?.component
@@ -179,7 +165,6 @@ function PipelineGraphNodeBasic({
               key={data?.identifier}
               fireEvent={fireEvent}
               className={classNames(css.graphNode, className)}
-              setSelectedNode={setSelectedNode}
               isSelected={selectedNode === data?.identifier}
               isParallelNode={true}
               allowAdd={true}
@@ -196,7 +181,6 @@ function PipelineGraphNodeBasic({
                 fireEvent={fireEvent}
                 getDefaultNode={getDefaultNode}
                 className={classNames(css.graphNode, className)}
-                setSelectedNode={setSelectedNode}
                 isSelected={selectedNode === data?.identifier}
                 isParallelNode={isParallelNode}
                 allowAdd={(!data?.children?.length && !isParallelNode) || (isParallelNode && isLastChild)}
@@ -204,15 +188,14 @@ function PipelineGraphNodeBasic({
                 prevNodeIdentifier={prevNodeIdentifier}
                 prevNode={prevNode}
                 nextNode={nextNode}
-                updateSvgs={updateSvgs}
-                renderer={renderer}
+                updateGraphLinks={updateGraphLinks}
                 {...data}
               />
             )
           )}
         </div>
         {data?.children?.map((currentStage, index) => {
-          const ChildNodeComponent: React.FC<any> | undefined = getNode?.(data?.nodeType)?.component || defaultNode
+          const ChildNodeComponent: React.FC<any> | undefined = getNode?.(data?.type)?.component || defaultNode
           const lastChildIndex = defaultTo(data.children?.length, 0) - 1
           const indexRelativeToParent = index + 1 // counting parent as 0 and children from 1
           const isCurrentChildLast = index === lastChildIndex
@@ -226,7 +209,6 @@ function PipelineGraphNodeBasic({
                 fireEvent={fireEvent}
                 getDefaultNode={getDefaultNode}
                 className={classNames(css.graphNode, className)}
-                setSelectedNode={setSelectedNode}
                 isSelected={selectedNode === currentStage?.identifier}
                 isParallelNode={true}
                 key={currentStage?.identifier}
@@ -235,8 +217,7 @@ function PipelineGraphNodeBasic({
                 prevNodeIdentifier={prevNodeIdentifier}
                 prevNode={prevNode}
                 nextNode={nextNode}
-                updateSvgs={updateSvgs}
-                renderer={renderer}
+                updateGraphLinks={updateGraphLinks}
               />
             )
           ) : (
@@ -251,7 +232,6 @@ function PipelineGraphNodeBasic({
                   {...data}
                   fireEvent={fireEvent}
                   className={classNames(css.graphNode, className)}
-                  setSelectedNode={setSelectedNode}
                   isSelected={selectedNode === currentStage?.identifier}
                   isParallelNode={true}
                   key={currentStage?.identifier}
@@ -269,7 +249,6 @@ function PipelineGraphNodeBasic({
                     fireEvent={fireEvent}
                     getDefaultNode={getDefaultNode}
                     className={classNames(css.graphNode, className)}
-                    setSelectedNode={setSelectedNode}
                     isSelected={selectedNode === currentStage?.identifier}
                     isParallelNode={true}
                     key={currentStage?.identifier}
@@ -277,8 +256,7 @@ function PipelineGraphNodeBasic({
                     prevNodeIdentifier={prevNodeIdentifier}
                     prevNode={prevNode}
                     nextNode={nextNode}
-                    updateSvgs={updateSvgs}
-                    renderer={renderer}
+                    updateGraphLinks={updateGraphLinks}
                   />
                 )
               )}

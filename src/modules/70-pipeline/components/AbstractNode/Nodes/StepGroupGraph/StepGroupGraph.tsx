@@ -22,8 +22,9 @@ interface StepGroupGraphProps {
   updateSVGLinks?: (svgPath: string[]) => void
   prevNodeIdentifier?: string
   identifier?: string
-  renderer?: boolean
   getDefaultNode(): NodeDetails | null
+  isNodeCollapsed: boolean
+  updateGraphLinks: () => void
 }
 
 interface LayoutStyles {
@@ -66,12 +67,14 @@ function StepGroupGraph(props: StepGroupGraphProps): React.ReactElement {
     if (state?.length) {
       setSVGLinks()
       setLayoutStyles(getCalculatedStyles(state))
+      console.log('called 2')
     }
-  }, [state, props?.renderer])
+  }, [state, props?.isNodeCollapsed])
 
   useLayoutEffect(() => {
     if (state?.length) {
       setSVGLinks()
+      props?.updateGraphLinks()
     }
   }, [layoutStyles])
 
@@ -108,7 +111,6 @@ function StepGroupGraph(props: StepGroupGraphProps): React.ReactElement {
           getNode={props.getNode}
           nodes={state}
           selectedNode={selectedNode}
-          setSelectedNode={updateSelectedNode}
           startEndNodeNeeded={false}
         />
       ) : (

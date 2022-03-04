@@ -17,44 +17,55 @@ import css from './CreateNode.module.scss'
 
 function CreateNode(props: any): React.ReactElement {
   return (
-    <div className={cx(cssDefault.defaultNode, css.createNode)}>
+    <div
+      onMouseOver={() => {
+        if (props?.onMouseOver) {
+          props.onMouseOver()
+        }
+      }}
+      onMouseLeave={() => {
+        if (props?.onMouseLeave) {
+          props.onMouseLeave()
+        }
+      }}
+      className={cssDefault.defaultNode}
+      onDragOver={event => event.preventDefault()}
+      onDrop={event => {
+        props?.onDrop && props?.onDrop(event)
+      }}
+      onClick={event => {
+        event.preventDefault()
+        event.stopPropagation()
+        if (props?.onClick) {
+          props?.onClick(event)
+          return
+        }
+        props?.fireEvent({
+          type: Event.AddLinkClicked,
+          entityType: DiagramType.CreateNew,
+          identifier: props.identifier,
+          target: event.target
+        })
+      }}
+    >
       <div
         id={props.identifier}
         data-linkid={props.identifier}
-        data-nodeid={props.identifier}
-        onDragOver={event => event.preventDefault()}
-        onDrop={event => {
-          props?.onDrop && props?.onDrop(event)
-        }}
-        onClick={event => {
-          event.preventDefault()
-          event.stopPropagation()
-          if (props?.onClick) {
-            props?.onClick(event)
-            return
-          }
-          props?.fireEvent({
-            type: Event.AddLinkClicked,
-            entityType: DiagramType.CreateNew,
-            identifier: props.identifier,
-            target: event.target
-          })
-        }}
+        data-nodeid={props.identifier || props['data-nodeid']}
         className={cx(
           cssDefault.defaultCard,
-          css.createNew,
+          css.createNode,
           { [css.disabled]: props.disabled || false },
           { [css.selected]: props?.node?.isSelected },
           { [cssDefault.selected]: props.dropable },
           { [props.className]: props.className },
           {
-            [css.steps]: props.graphType === PipelineGraphType.STAGE_GRAPH
+            [css.stepAddIcon]: props.graphType === PipelineGraphType.STEP_GRAPH
+          },
+          {
+            [css.stageAddIcon]: props.graphType === PipelineGraphType.STAGE_GRAPH
           }
         )}
-        // style={{
-        //   width: props.graphType === PipelineGraphType.STEP_GRAPH ? 64 : 90,
-        //   height: props.graphType === PipelineGraphType.STEP_GRAPH ? 64 : 40
-        // }}
       >
         <div>
           <Icon icon="plus" iconSize={22} color={'var(--diagram-add-node-color)'} />
