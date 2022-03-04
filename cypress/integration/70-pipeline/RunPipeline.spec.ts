@@ -28,6 +28,8 @@ describe('RUN PIPELINE MODAL', () => {
     '/ng/api/connectors?accountIdentifier=accountId&type=K8sCluster&searchTerm=&projectIdentifier=project1&orgIdentifier=default'
   const stagesExecutionListCall =
     '/pipeline/api/pipeline/execute/stagesExecutionList?routingId=px7xd_BFRCi-pfWPYXVjvw&accountIdentifier=px7xd_BFRCi-pfWPYXVjvw&orgIdentifier=default&projectIdentifier=Kapil&pipelineIdentifier=My_test_pipeline'
+  const yamlSnippetCall = '/pipeline/api/approvals/stage-yaml-snippet?routingId=accountId&approvalType=HarnessApproval'
+
   beforeEach(() => {
     cy.on('uncaught:exception', () => {
       // returning false here prevents Cypress from
@@ -185,5 +187,46 @@ describe('RUN PIPELINE MODAL', () => {
         cy.get('#pipeline-panel').contains('span', 'cypress').should('be.visible')
       })
     })
+  })
+
+  describe('For approval stage', () => {
+    beforeEach(() => {
+      cy.get('[icon="plus"]').click()
+      cy.findByTestId('stage-Approval').click()
+      cy.fillName('testStageApproval')
+      cy.contains('p', 'Harness Approval').click()
+      cy.clickSubmit()
+    })
+
+    it('should display the delete pipeline stage modal', () => {
+      cy.intercept('GET', yamlSnippetCall, { fixture: 'pipeline/api/approvals/stageYamlSnippet' })
+      cy.wait(2000)
+      cy.get('[icon="play"]').click({ force: true, multiple: true })
+      cy.wait(2000)
+      cy.contains('p', 'testStageApproval').trigger('mouseover')
+      cy.get('[icon="cross"]').click({ force: true })
+      cy.contains('p', 'Delete Pipeline Stage').should('be.visible')
+      cy.contains('span', 'Delete').click({ force: true })
+      cy.contains('span', 'Pipeline Stage Successfully removed.').should('be.visible')
+    })
+
+    it('visual to variable view for stage configuration', () => {
+      // Toggle to variable view
+
+      cy.intercept('GET', yamlSnippetCall, { fixture: 'pipeline/api/approvals/stageYamlSnippet' })
+
+      cy.contains('span', 'Variables').click()
+      cy.wait(2000)
+
+      cy.get('#pipeline-panel').contains('span', 'testPipeline_Cypress').should('be.visible')
+      cy.get('#pipeline-panel').contains('span', 'testStageApproval').should('be.visible')
+
+      cy.get('#pipeline-panel').contains('span', 'connectorRef').should('be.visible')
+      cy.get('#pipeline-panel').contains('span', 'test1111').should('be.visible')
+
+      cy.get('#pipeline-panel').contains('span', 'namespace').should('be.visible')
+      cy.get('#pipeline-panel').contains('span', 'cypress').should('be.visible')
+    })
+    // })
   })
 })
