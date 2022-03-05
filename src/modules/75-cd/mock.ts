@@ -106,6 +106,29 @@ export const serviceDetails = {
     ]
   }
 }
+export const serviceLastDeployment = {
+  status: 'SUCCESS',
+  data: {
+    deployments: [
+      {
+        pipelineName: 'qa',
+        pipelineIdentifier: 'qa',
+        startTs: 1646480299996,
+        endTs: 1646480311007,
+        status: 'SUCCESS',
+        planExecutionId: 'PJqUPNQKSKKwnPP30JXIZA',
+        serviceInfoList: [
+          {
+            serviceName: 'demo1',
+            serviceTag: null
+          }
+        ]
+      }
+    ]
+  },
+  metaData: null,
+  correlationId: '23fb6247-9ad5-49dd-8a24-607a60c4afd6'
+}
 
 export const serviceInstances = {
   serviceCount: 10,

@@ -5,7 +5,7 @@
  * https://polyformproject.org/wp-content/uploads/2020/06/PolyForm-Shield-1.0.0.txt.
  */
 
-import React, { useCallback, useMemo, useState } from 'react'
+import React, { useCallback, useEffect, useMemo, useState } from 'react'
 import cx from 'classnames'
 import { useHistory, useParams } from 'react-router-dom'
 import type { CellProps, Renderer } from 'react-table'
@@ -242,7 +242,6 @@ const RenderLastDeployment: Renderer<CellProps<ServiceListItem>> = ({ row }) => 
   } = row.original
   const { getString } = useStrings()
   const { timeRange } = React.useContext(DeploymentsTimeRangeContext)
-  const { showError } = useToaster()
   const history = useHistory()
   const { accountId, orgIdentifier, projectIdentifier } = useParams<ProjectPathProps>()
   const queryParams: GetDeploymentsByServiceIdQueryParams = {
@@ -253,96 +252,92 @@ const RenderLastDeployment: Renderer<CellProps<ServiceListItem>> = ({ row }) => 
     startTime: defaultTo(timeRange?.range[0]?.getTime(), 0),
     endTime: defaultTo(timeRange?.range[1]?.getTime(), 0)
   }
-  const { data } = useGetDeploymentsByServiceId({ queryParams })
-  const planExecId = defaultTo(data?.data?.deployments, [])[0]?.planExecutionId
+  const { data, loading } = useGetDeploymentsByServiceId({ queryParams })
+  const [planExecId, setPlanExecId] = useState('')
   const disabled = isExecutionNotStarted(status)
-  function handleClick(): void {
-    if (!disabled && id && executionId && planExecId) {
-      history.push(
-        routes.toExecutionPipelineView({
-          orgIdentifier,
-          pipelineIdentifier: executionId,
-          executionIdentifier: planExecId,
-          projectIdentifier,
-          accountId,
-          module: 'cd'
-        })
-      )
-    } else {
-      showError(getString('cd.serviceDashboard.noPipelinesExecution'))
-    }
-  }
-  if (!id) {
-    return <></>
-  }
-  return (
-    <Layout.Vertical margin={{ right: 'large' }} flex={{ alignItems: 'flex-start' }}>
-      <Layout.Horizontal
-        margin={{ bottom: 'xsmall' }}
-        flex={{ alignItems: 'center', justifyContent: 'flex-start' }}
-        width="100%"
-      >
-        <Text
-          font={{ weight: 'semi-bold' }}
-          color={Color.GREY_700}
-          margin={{ right: 'xsmall' }}
-          className={css.lastDeploymentText}
-        >
-          {name}
-        </Text>
-        <Text
-          data-testid="executionId"
-          font={{ size: 'small' }}
-          color={Color.PRIMARY_7}
-          className={css.lastDeploymentText}
-          onClick={e => {
-            e.stopPropagation()
-            handleClick()
-          }}
-        >{`(${getString('cd.serviceDashboard.executionId', {
-          id
-        })})`}</Text>
-      </Layout.Horizontal>
-      {timestamp ? (
-        <ReactTimeago
-          date={timestamp}
-          component={val => (
-            <Text font={{ size: 'small' }} color={Color.GREY_500}>
-              {val.children}
-            </Text>
-          )}
-        />
-      ) : (
-        <></>
-      )}
-    </Layout.Vertical>
-  )
-}
 
-const RenderLastDeploymentStatus: Renderer<CellProps<ServiceListItem>> = ({ row }) => {
-  const {
-    lastDeployment: { id, status }
-  } = row.original
-  const { getString } = useStrings()
-  if (!id) {
-    return <></>
+  useEffect(() => {
+    if (!planExecId) {
+      const deploymentData = defaultTo(data?.data?.deployments, [])
+      setPlanExecId(defaultTo(deploymentData[0]?.planExecutionId, ''))
+    }
+  }, [loading, data])
+
+  function handleClick(): void {
+    history.push(
+      routes.toExecutionPipelineView({
+        orgIdentifier,
+        pipelineIdentifier: executionId,
+        executionIdentifier: planExecId,
+        projectIdentifier,
+        accountId,
+        module: 'cd'
+      })
+    )
   }
+
   const [statusBackgroundColor, statusText] =
     status?.toLocaleLowerCase() === DeploymentStatus.SUCCESS
       ? [Color.GREEN_600, getString('success')]
       : status?.toLocaleLowerCase() === DeploymentStatus.FAILED
       ? [Color.RED_600, getString('failed')]
       : [Color.YELLOW_600, status]
+
+  if (!id || disabled || !planExecId) {
+    return <></>
+  }
   return (
-    <Layout.Horizontal flex={{ justifyContent: 'flex-end' }}>
-      <Text
-        background={statusBackgroundColor}
-        color={Color.WHITE}
-        font={{ weight: 'semi-bold', size: 'xsmall' }}
-        className={css.statusText}
-      >
-        {statusText?.toLocaleUpperCase()}
-      </Text>
+    <Layout.Horizontal>
+      <Layout.Vertical margin={{ right: 'large' }} flex={{ alignItems: 'flex-start' }} width="75%">
+        <Layout.Horizontal
+          margin={{ bottom: 'xsmall' }}
+          flex={{ alignItems: 'center', justifyContent: 'flex-start' }}
+          width="100%"
+        >
+          <Text
+            font={{ weight: 'semi-bold' }}
+            color={Color.GREY_700}
+            margin={{ right: 'xsmall' }}
+            className={css.lastDeploymentText}
+          >
+            {name}
+          </Text>
+          <Text
+            data-testid="executionId"
+            font={{ size: 'small' }}
+            color={Color.PRIMARY_7}
+            className={css.lastDeploymentText}
+            onClick={e => {
+              e.stopPropagation()
+              handleClick()
+            }}
+          >{`(${getString('cd.serviceDashboard.executionId', {
+            id
+          })})`}</Text>
+        </Layout.Horizontal>
+        {timestamp ? (
+          <ReactTimeago
+            date={timestamp}
+            component={val => (
+              <Text font={{ size: 'small' }} color={Color.GREY_500}>
+                {val.children}
+              </Text>
+            )}
+          />
+        ) : (
+          <></>
+        )}
+      </Layout.Vertical>
+      <Layout.Horizontal flex={{ justifyContent: 'flex-end' }} width="20%">
+        <Text
+          background={statusBackgroundColor}
+          color={Color.WHITE}
+          font={{ weight: 'semi-bold', size: 'xsmall' }}
+          className={css.statusText}
+        >
+          {statusText?.toLocaleUpperCase()}
+        </Text>
+      </Layout.Horizontal>
     </Layout.Horizontal>
   )
 }
@@ -564,14 +559,8 @@ export const ServicesList: React.FC<ServicesListProps> = props => {
         {
           Header: getString('cd.serviceDashboard.lastDeployment').toLocaleUpperCase(),
           id: 'lastDeployment',
-          width: '22%',
+          width: '27%',
           Cell: RenderLastDeployment
-        },
-        {
-          Header: '',
-          id: 'status',
-          width: '5%',
-          Cell: RenderLastDeploymentStatus
         },
         {
           Header: '',

@@ -10,15 +10,18 @@ import { render, fireEvent, getByText, waitFor } from '@testing-library/react'
 import { noop } from 'lodash-es'
 import { TestWrapper, findDialogContainer } from '@common/utils/testUtils'
 import { ServicesList } from '@cd/components/Services/ServicesList/ServicesList'
-import mockImport from 'framework/utils/mockImport'
-import { serviceDetails } from '@cd/mock'
+import { serviceDetails, serviceLastDeployment } from '@cd/mock'
 import type { ServiceDetailsDTO } from 'services/cd-ng'
+
+const mutate = jest.fn(() => {
+  return Promise.resolve({ data: {} })
+})
 
 jest.mock('highcharts-react-official', () => () => <></>)
 jest.mock('services/cd-ng', () => {
   return {
-    useGetDeploymentsByServiceId: jest.fn(() => ({ data: null })),
-    useDeleteServiceV2: jest.fn(() => ({ data: null })),
+    useGetDeploymentsByServiceId: jest.fn(() => ({ loading: false, data: serviceLastDeployment })),
+    useDeleteServiceV2: jest.fn(() => ({ mutate })),
     useUpsertServiceV2: jest.fn(() => ({ loading: false, data: null }))
   }
 })
@@ -57,7 +60,6 @@ describe('ServicesList', () => {
     )
     fireEvent.click(container.querySelector('[data-testid="executionId"]') as HTMLElement)
     expect(container.querySelector('[data-testid="executionId"]')).toBeDefined()
-    fireEvent.click(container.querySelector('.lastDeploymentText') as HTMLElement)
     expect(container).toMatchSnapshot()
   })
 
@@ -88,16 +90,6 @@ describe('ServicesList', () => {
   })
 
   test('Should allow deleting', async () => {
-    const mutate = jest.fn(() => {
-      return Promise.resolve({ data: {} })
-    })
-
-    mockImport('services/cd-ng', {
-      useDeleteServiceV2: () => ({
-        mutate
-      })
-    })
-
     const { container } = render(
       <TestWrapper
         path="account/:accountId/cd/orgs/:orgIdentifier/projects/:projectIdentifier/services"

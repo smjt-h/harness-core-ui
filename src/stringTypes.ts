@@ -3275,7 +3275,6 @@ export interface StringsMap {
   'cd.serviceDashboard.noActiveServices': string
   'cd.serviceDashboard.noDeployments': string
   'cd.serviceDashboard.noPipelines': string
-  'cd.serviceDashboard.noPipelinesExecution': string
   'cd.serviceDashboard.noServiceDetails': string
   'cd.serviceDashboard.noServiceInstances': string
   'cd.serviceDashboard.noServices': string
