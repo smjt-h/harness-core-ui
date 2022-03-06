@@ -7,24 +7,14 @@
  **/
 // this is an auto-generated file, do not update this manually
 declare const styles: {
-  readonly active: string
   readonly card: string
   readonly cardTitle: string
-  readonly chartIcon: string
   readonly deploymentsChartContainer: string
   readonly frequencyContainer: string
   readonly frequencyCount: string
   readonly groupByValue: string
   readonly summaryCard: string
   readonly summaryCardsContainer: string
-  readonly text: string
-  readonly tickerCard: string
-  readonly tickerContainerStyles: string
-  readonly tickerValueStyles: string
-  readonly toggleBtns: string
-  readonly tooltipCard: string
-  readonly tooltipTimestamp: string
-  readonly trend: string
   readonly trendContainer: string
 }
 export default styles
