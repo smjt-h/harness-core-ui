@@ -167,20 +167,19 @@ export const DeploymentsWidget: React.FC<DeploymentWidgetProps> = props => {
         failureData.push(defaultTo(val.deployments?.failure, 0))
         custom.push(val)
       })
-      return [
-        {
-          name: 'Success',
-          data: successData,
-          color: 'var(--success)',
-          custom
-        },
-        {
-          name: 'Failed',
-          data: failureData,
-          color: 'var(--red-400)',
-          custom
-        }
-      ]
+      const successArr = {
+        name: 'Success',
+        data: successData,
+        color: 'var(--success)',
+        custom
+      }
+      const failureArr = {
+        name: 'Failed',
+        data: failureData,
+        color: 'var(--red-400)',
+        custom
+      }
+      return [successArr, failureArr]
     }
   }, [serviceDeploymentsInfo])
 
