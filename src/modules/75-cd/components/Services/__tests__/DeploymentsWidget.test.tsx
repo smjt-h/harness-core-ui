@@ -6,7 +6,7 @@
  */
 
 import React from 'react'
-import { render } from '@testing-library/react'
+import { render, getByText, fireEvent } from '@testing-library/react'
 import { TestWrapper } from '@common/utils/testUtils'
 import { DeploymentsWidget } from '@cd/components/Services/DeploymentsWidget/DeploymentsWidget'
 import { deploymentsInfo } from '@cd/mock'
@@ -56,8 +56,9 @@ describe('DeploymentsWidget', () => {
   })
 
   test('should display error state', () => {
+    const refetch = jest.fn()
     jest.spyOn(cdngServices, 'useGetServiceDeploymentsInfo').mockImplementation(() => {
-      return { loading: false, error: true, data: [], refetch: jest.fn() } as any
+      return { loading: false, error: true, data: [], refetch } as any
     })
     const { container } = render(
       <TestWrapper
@@ -71,13 +72,17 @@ describe('DeploymentsWidget', () => {
     expect(getError(container)).toBeTruthy()
     expect(getEmpty(container)).toBeFalsy()
     expect(getContent(container)).toBeFalsy()
+
+    expect(getByText(document.body, 'Retry')).toBeDefined()
+    fireEvent.click(getByText(document.body, 'Retry') as HTMLButtonElement)
+    expect(refetch).toBeCalledTimes(1)
   })
 
   test('should display correct data', () => {
     jest.spyOn(cdngServices, 'useGetServiceDeploymentsInfo').mockImplementation(() => {
       return { loading: false, error: false, data: deploymentsInfo, refetch: jest.fn() } as any
     })
-    const { container } = render(
+    const { container, queryByText } = render(
       <TestWrapper
         path="account/:accountId/cd/orgs/:orgIdentifier/projects/:projectIdentifier/services"
         pathParams={{ accountId: 'dummy', orgIdentifier: 'dummy', projectIdentifier: 'dummy' }}
@@ -88,27 +93,14 @@ describe('DeploymentsWidget', () => {
     expect(getLoader(container)).toBeFalsy()
     expect(getError(container)).toBeFalsy()
     expect(getEmpty(container)).toBeFalsy()
-    expect(getContent(container)).toBeTruthy()
 
-    const tickers = container.querySelectorAll('[data-test="ticker"]')
-    expect(tickers.length).toBe(3)
+    expect(queryByText('deploymentsText')).toBeInTheDocument()
+    expect(queryByText('57')).toBeInTheDocument()
+    expect(queryByText('common.failureRate')).toBeInTheDocument()
+    expect(queryByText('24.2%')).toBeInTheDocument()
+    expect(queryByText('pipeline.deploymentFrequency')).toBeInTheDocument()
 
-    expect(tickers[0].querySelector('[data-test="tickerText"]')?.textContent).toBe(
-      `${deploymentsInfo.data.totalDeployments}`
-    )
-    expect(tickers[0].querySelector('[data-test="tickerValue"]')?.textContent).toBe(
-      `${deploymentsInfo.data.totalDeploymentsChangeRate}%`
-    )
-    expect(tickers[1].querySelector('[data-test="tickerText"]')?.textContent).toBe(
-      `${deploymentsInfo.data.failureRate}`
-    )
-    expect(tickers[1].querySelector('[data-test="tickerValue"]')?.textContent).toBe(
-      `${deploymentsInfo.data.failureRateChangeRate}%`
-    )
-    expect(tickers[2].querySelector('[data-test="tickerText"]')?.textContent).toBe(`${deploymentsInfo.data.frequency}`)
-    expect(tickers[2].querySelector('[data-test="tickerValue"]')?.textContent).toBe(
-      `${deploymentsInfo.data.frequencyChangeRate}%`
-    )
+    expect(container).toMatchSnapshot()
   })
 
   test('should refetch data if time range is changed', () => {

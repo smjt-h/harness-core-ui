@@ -1,5 +1,249 @@
 // Jest Snapshot v1, https://goo.gl/fbAQLP
 
+exports[`DeploymentsWidget should display correct data 1`] = `
+<div>
+  <div
+    class="bp3-card bp3-elevation-0 Card--card card"
+  >
+    <div
+      class="Layout--vertical StyledProps--main"
+      style="height: 100%;"
+    >
+      <div
+        class="deploymentsChartContainer"
+      >
+        <div
+          class="Layout--vertical Layout--layout-spacing-large StyledProps--main"
+        >
+          <div
+            class="StyledProps--font StyledProps--main StyledProps--flex"
+          >
+            <div
+              class="Layout--horizontal Layout--layout-spacing-medium StyledProps--main"
+            >
+              <div
+                class="StyledProps--font StyledProps--main summaryCardsContainer"
+              >
+                <div
+                  class="StyledProps--font StyledProps--main summaryCard"
+                >
+                  <p
+                    class="StyledProps--font StyledProps--main cardTitle StyledProps--font-size-medium StyledProps--color StyledProps--color-grey700"
+                  >
+                    deploymentsText
+                  </p>
+                  <div
+                    class="Layout--horizontal StyledProps--main"
+                  >
+                    <div
+                      class="Layout--horizontal StyledProps--main frequencyContainer"
+                    >
+                      <p
+                        class="StyledProps--font StyledProps--main frequencyCount StyledProps--color StyledProps--color-black StyledProps--font-size-large StyledProps--font-weight-bold"
+                      >
+                        57
+                      </p>
+                    </div>
+                    <div
+                      class="StyledProps--font StyledProps--main trendContainer StyledProps--flex"
+                    >
+                      <div
+                        class="StyledProps--font StyledProps--main StyledProps--flex"
+                      >
+                        <span
+                          class="bp3-icon bp3-icon-caret-up StyledProps--main StyledProps--color StyledProps--color-green500"
+                          icon="caret-up"
+                        >
+                          <svg
+                            data-icon="caret-up"
+                            height="16"
+                            viewBox="0 0 16 16"
+                            width="16"
+                          >
+                            <desc>
+                              caret-up
+                            </desc>
+                            <path
+                              d="M11.87 9.17s.01 0 0 0l-3.5-4C8.28 5.07 8.15 5 8 5s-.28.07-.37.17l-3.5 4a.495.495 0 00.37.83h7a.495.495 0 00.37-.83z"
+                              fill-rule="evenodd"
+                            />
+                          </svg>
+                        </span>
+                        <p
+                          class="StyledProps--font StyledProps--main StyledProps--font-xsmall StyledProps--color StyledProps--color-green500"
+                        >
+                          34.4%
+                        </p>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+                <div
+                  class="StyledProps--font StyledProps--main summaryCard"
+                >
+                  <p
+                    class="StyledProps--font StyledProps--main cardTitle StyledProps--font-size-medium StyledProps--color StyledProps--color-grey700"
+                  >
+                    common.failureRate
+                  </p>
+                  <div
+                    class="Layout--horizontal StyledProps--main"
+                  >
+                    <div
+                      class="Layout--horizontal StyledProps--main frequencyContainer"
+                    >
+                      <p
+                        class="StyledProps--font StyledProps--main frequencyCount StyledProps--color StyledProps--color-black StyledProps--font-size-large StyledProps--font-weight-bold"
+                      >
+                        24.2%
+                      </p>
+                    </div>
+                    <div
+                      class="StyledProps--font StyledProps--main trendContainer StyledProps--flex"
+                    >
+                      <div
+                        class="StyledProps--font StyledProps--main StyledProps--flex"
+                      >
+                        <span
+                          class="bp3-icon bp3-icon-caret-up StyledProps--main StyledProps--color StyledProps--color-green500"
+                          icon="caret-up"
+                        >
+                          <svg
+                            data-icon="caret-up"
+                            height="16"
+                            viewBox="0 0 16 16"
+                            width="16"
+                          >
+                            <desc>
+                              caret-up
+                            </desc>
+                            <path
+                              d="M11.87 9.17s.01 0 0 0l-3.5-4C8.28 5.07 8.15 5 8 5s-.28.07-.37.17l-3.5 4a.495.495 0 00.37.83h7a.495.495 0 00.37-.83z"
+                              fill-rule="evenodd"
+                            />
+                          </svg>
+                        </span>
+                        <p
+                          class="StyledProps--font StyledProps--main StyledProps--font-xsmall StyledProps--color StyledProps--color-green500"
+                        >
+                          45.7%
+                        </p>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+                <div
+                  class="StyledProps--font StyledProps--main summaryCard"
+                >
+                  <p
+                    class="StyledProps--font StyledProps--main cardTitle StyledProps--font-size-medium StyledProps--color StyledProps--color-grey700"
+                  >
+                    pipeline.deploymentFrequency
+                  </p>
+                  <div
+                    class="Layout--horizontal StyledProps--main"
+                  >
+                    <div
+                      class="Layout--horizontal StyledProps--main frequencyContainer"
+                    >
+                      <p
+                        class="StyledProps--font StyledProps--main frequencyCount StyledProps--color StyledProps--color-black StyledProps--font-size-large StyledProps--font-weight-bold"
+                      >
+                        324.2
+                      </p>
+                    </div>
+                    <div
+                      class="StyledProps--font StyledProps--main trendContainer StyledProps--flex"
+                    >
+                      <div
+                        class="StyledProps--font StyledProps--main StyledProps--flex"
+                      >
+                        <span
+                          class="bp3-icon bp3-icon-caret-up StyledProps--main StyledProps--color StyledProps--color-green500"
+                          icon="caret-up"
+                        >
+                          <svg
+                            data-icon="caret-up"
+                            height="16"
+                            viewBox="0 0 16 16"
+                            width="16"
+                          >
+                            <desc>
+                              caret-up
+                            </desc>
+                            <path
+                              d="M11.87 9.17s.01 0 0 0l-3.5-4C8.28 5.07 8.15 5 8 5s-.28.07-.37.17l-3.5 4a.495.495 0 00.37.83h7a.495.495 0 00.37-.83z"
+                              fill-rule="evenodd"
+                            />
+                          </svg>
+                        </span>
+                        <p
+                          class="StyledProps--font StyledProps--main StyledProps--font-xsmall StyledProps--color StyledProps--color-green500"
+                        >
+                          23.2%
+                        </p>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+            <div
+              class="StyledProps--font StyledProps--main toggleBtns StyledProps--flex"
+            >
+              <button
+                class="bp3-button bp3-active bp3-minimal Button--button StyledProps--font StyledProps--main chartIcon active Button--with-current-color Button--iconOnly Button--without-shadow Button--withLeftIcon"
+                type="button"
+              >
+                <span
+                  class="bp3-icon StyledProps--main StyledProps--color StyledProps--color-primary6"
+                  data-icon="bar-chart"
+                >
+                  <svg
+                    fill="none"
+                    height="12"
+                    viewBox="0 0 14 11"
+                    width="12"
+                    xmlns="http://www.w3.org/2000/svg"
+                  >
+                    <path
+                      d="M11.995 0v10.798H14V0h-2.005zM3.996 1.601v9.197h2.005V1.6H3.996zm4.003 1.601v7.596h1.998V3.202H7.999zM0 4.797v6h1.998v-6H0z"
+                      fill="currentColor"
+                    />
+                  </svg>
+                </span>
+              </button>
+              <button
+                class="bp3-button bp3-minimal Button--button StyledProps--font StyledProps--main chartIcon Button--with-current-color Button--iconOnly Button--without-shadow Button--withLeftIcon"
+                type="button"
+              >
+                <span
+                  class="bp3-icon StyledProps--main StyledProps--color StyledProps--color-grey700"
+                  data-icon="line-chart"
+                >
+                  <svg
+                    fill="none"
+                    height="12"
+                    viewBox="0 0 14 11"
+                    width="12"
+                    xmlns="http://www.w3.org/2000/svg"
+                  >
+                    <path
+                      d="M7.758 10.265L5.703 1.807l-2.799 4.1H0v-.746h2.51L6.032 0l2.076 8.546 2.81-3.765H14v.747h-2.706l-3.536 4.737z"
+                      fill="currentColor"
+                    />
+                  </svg>
+                </span>
+              </button>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+`;
+
 exports[`DeploymentsWidget should render DeploymentsWidget 1`] = `
 <div>
   <div
@@ -9,231 +253,232 @@ exports[`DeploymentsWidget should render DeploymentsWidget 1`] = `
       class="Layout--vertical StyledProps--main"
       style="height: 100%;"
     >
-      <p
-        class="StyledProps--font StyledProps--main StyledProps--font-weight-semi-bold StyledProps--color StyledProps--color-grey600"
-      >
-        deploymentsText
-      </p>
       <div
-        class="StyledProps--font StyledProps--main"
-        data-test="deploymentsWidgetContent"
+        class="deploymentsChartContainer"
       >
         <div
-          class="StyledProps--font StyledProps--main toggleBtns"
-        >
-          <button
-            class="bp3-button bp3-active bp3-minimal Button--button StyledProps--font StyledProps--main chartIcon active Button--with-current-color Button--iconOnly Button--without-shadow Button--withLeftIcon"
-            type="button"
-          >
-            <span
-              class="bp3-icon StyledProps--main StyledProps--color StyledProps--color-primary6"
-              data-icon="bar-chart"
-            >
-              <svg
-                fill="none"
-                height="12"
-                viewBox="0 0 14 11"
-                width="12"
-                xmlns="http://www.w3.org/2000/svg"
-              >
-                <path
-                  d="M11.995 0v10.798H14V0h-2.005zM3.996 1.601v9.197h2.005V1.6H3.996zm4.003 1.601v7.596h1.998V3.202H7.999zM0 4.797v6h1.998v-6H0z"
-                  fill="currentColor"
-                />
-              </svg>
-            </span>
-          </button>
-          <button
-            class="bp3-button bp3-minimal Button--button StyledProps--font StyledProps--main chartIcon Button--with-current-color Button--iconOnly Button--without-shadow Button--withLeftIcon"
-            type="button"
-          >
-            <span
-              class="bp3-icon StyledProps--main StyledProps--color StyledProps--color-grey700"
-              data-icon="line-chart"
-            >
-              <svg
-                fill="none"
-                height="12"
-                viewBox="0 0 14 11"
-                width="12"
-                xmlns="http://www.w3.org/2000/svg"
-              >
-                <path
-                  d="M7.758 10.265L5.703 1.807l-2.799 4.1H0v-.746h2.51L6.032 0l2.076 8.546 2.81-3.765H14v.747h-2.706l-3.536 4.737z"
-                  fill="currentColor"
-                />
-              </svg>
-            </span>
-          </button>
-        </div>
-        <div
-          class="Layout--horizontal StyledProps--main StyledProps--flex StyledProps--flex-alignItems-flex-end StyledProps--flex-justifyContent-flex-start"
+          class="Layout--vertical Layout--layout-spacing-large StyledProps--main"
         >
           <div
-            class="Layout--horizontal StyledProps--main"
-            style="width: 240px;"
+            class="StyledProps--font StyledProps--main StyledProps--flex"
           >
             <div
-              class="tickerContainer"
-              data-test="ticker"
+              class="Layout--horizontal Layout--layout-spacing-medium StyledProps--main"
             >
               <div
-                class="Layout--vertical StyledProps--main"
-              >
-                <p
-                  class="StyledProps--font StyledProps--main text StyledProps--color StyledProps--color-black StyledProps--font-weight-semi-bold"
-                  data-test="tickerText"
-                >
-                  57
-                </p>
-                <p
-                  class="StyledProps--font StyledProps--main StyledProps--font-size-xsmall StyledProps--font-weight-semi-bold StyledProps--color StyledProps--color-grey400"
-                >
-                  cd.serviceDashboard.in
-                </p>
-              </div>
-              <div
-                class="ticker tickerCenterAlign"
+                class="StyledProps--font StyledProps--main summaryCardsContainer"
               >
                 <div
-                  class="iconContainer"
-                >
-                  <span
-                    class="bp3-icon StyledProps--main StyledProps--color StyledProps--color-green600"
-                    data-icon="main-caret-up"
-                  >
-                    <svg
-                      height="6"
-                      viewBox="0 0 14 9"
-                      width="6"
-                      xmlns="http://www.w3.org/2000/svg"
-                    >
-                      <path
-                        d="M13.7 7.2L7.9.4C7.7.2 7.4 0 7 0s-.7.2-.9.4L.3 7.2c-.2.2-.3.4-.3.7C0 8.5.5 9 1.2 9h11.7c.6 0 1.1-.5 1.1-1.1 0-.3-.1-.5-.3-.7z"
-                        fill="#4d5969"
-                      />
-                    </svg>
-                  </span>
-                </div>
-                <div
-                  class="tickerValue"
-                  data-test="tickerValue"
+                  class="StyledProps--font StyledProps--main summaryCard"
                 >
                   <p
-                    class="StyledProps--font StyledProps--main StyledProps--font-size-xsmall StyledProps--color StyledProps--color-green600"
+                    class="StyledProps--font StyledProps--main cardTitle StyledProps--font-size-medium StyledProps--color StyledProps--color-grey700"
                   >
-                    34.4%
+                    deploymentsText
                   </p>
+                  <div
+                    class="Layout--horizontal StyledProps--main"
+                  >
+                    <div
+                      class="Layout--horizontal StyledProps--main frequencyContainer"
+                    >
+                      <p
+                        class="StyledProps--font StyledProps--main frequencyCount StyledProps--color StyledProps--color-black StyledProps--font-size-large StyledProps--font-weight-bold"
+                      >
+                        57
+                      </p>
+                    </div>
+                    <div
+                      class="StyledProps--font StyledProps--main trendContainer StyledProps--flex"
+                    >
+                      <div
+                        class="StyledProps--font StyledProps--main StyledProps--flex"
+                      >
+                        <span
+                          class="bp3-icon bp3-icon-caret-up StyledProps--main StyledProps--color StyledProps--color-green500"
+                          icon="caret-up"
+                        >
+                          <svg
+                            data-icon="caret-up"
+                            height="16"
+                            viewBox="0 0 16 16"
+                            width="16"
+                          >
+                            <desc>
+                              caret-up
+                            </desc>
+                            <path
+                              d="M11.87 9.17s.01 0 0 0l-3.5-4C8.28 5.07 8.15 5 8 5s-.28.07-.37.17l-3.5 4a.495.495 0 00.37.83h7a.495.495 0 00.37-.83z"
+                              fill-rule="evenodd"
+                            />
+                          </svg>
+                        </span>
+                        <p
+                          class="StyledProps--font StyledProps--main StyledProps--font-xsmall StyledProps--color StyledProps--color-green500"
+                        >
+                          34.4%
+                        </p>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+                <div
+                  class="StyledProps--font StyledProps--main summaryCard"
+                >
+                  <p
+                    class="StyledProps--font StyledProps--main cardTitle StyledProps--font-size-medium StyledProps--color StyledProps--color-grey700"
+                  >
+                    common.failureRate
+                  </p>
+                  <div
+                    class="Layout--horizontal StyledProps--main"
+                  >
+                    <div
+                      class="Layout--horizontal StyledProps--main frequencyContainer"
+                    >
+                      <p
+                        class="StyledProps--font StyledProps--main frequencyCount StyledProps--color StyledProps--color-black StyledProps--font-size-large StyledProps--font-weight-bold"
+                      >
+                        24.2%
+                      </p>
+                    </div>
+                    <div
+                      class="StyledProps--font StyledProps--main trendContainer StyledProps--flex"
+                    >
+                      <div
+                        class="StyledProps--font StyledProps--main StyledProps--flex"
+                      >
+                        <span
+                          class="bp3-icon bp3-icon-caret-up StyledProps--main StyledProps--color StyledProps--color-green500"
+                          icon="caret-up"
+                        >
+                          <svg
+                            data-icon="caret-up"
+                            height="16"
+                            viewBox="0 0 16 16"
+                            width="16"
+                          >
+                            <desc>
+                              caret-up
+                            </desc>
+                            <path
+                              d="M11.87 9.17s.01 0 0 0l-3.5-4C8.28 5.07 8.15 5 8 5s-.28.07-.37.17l-3.5 4a.495.495 0 00.37.83h7a.495.495 0 00.37-.83z"
+                              fill-rule="evenodd"
+                            />
+                          </svg>
+                        </span>
+                        <p
+                          class="StyledProps--font StyledProps--main StyledProps--font-xsmall StyledProps--color StyledProps--color-green500"
+                        >
+                          45.7%
+                        </p>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+                <div
+                  class="StyledProps--font StyledProps--main summaryCard"
+                >
+                  <p
+                    class="StyledProps--font StyledProps--main cardTitle StyledProps--font-size-medium StyledProps--color StyledProps--color-grey700"
+                  >
+                    pipeline.deploymentFrequency
+                  </p>
+                  <div
+                    class="Layout--horizontal StyledProps--main"
+                  >
+                    <div
+                      class="Layout--horizontal StyledProps--main frequencyContainer"
+                    >
+                      <p
+                        class="StyledProps--font StyledProps--main frequencyCount StyledProps--color StyledProps--color-black StyledProps--font-size-large StyledProps--font-weight-bold"
+                      >
+                        324.2
+                      </p>
+                    </div>
+                    <div
+                      class="StyledProps--font StyledProps--main trendContainer StyledProps--flex"
+                    >
+                      <div
+                        class="StyledProps--font StyledProps--main StyledProps--flex"
+                      >
+                        <span
+                          class="bp3-icon bp3-icon-caret-up StyledProps--main StyledProps--color StyledProps--color-green500"
+                          icon="caret-up"
+                        >
+                          <svg
+                            data-icon="caret-up"
+                            height="16"
+                            viewBox="0 0 16 16"
+                            width="16"
+                          >
+                            <desc>
+                              caret-up
+                            </desc>
+                            <path
+                              d="M11.87 9.17s.01 0 0 0l-3.5-4C8.28 5.07 8.15 5 8 5s-.28.07-.37.17l-3.5 4a.495.495 0 00.37.83h7a.495.495 0 00.37-.83z"
+                              fill-rule="evenodd"
+                            />
+                          </svg>
+                        </span>
+                        <p
+                          class="StyledProps--font StyledProps--main StyledProps--font-xsmall StyledProps--color StyledProps--color-green500"
+                        >
+                          23.2%
+                        </p>
+                      </div>
+                    </div>
+                  </div>
                 </div>
               </div>
             </div>
-          </div>
-          <div
-            class="Layout--vertical StyledProps--main tickerCard StyledProps--padding-small StyledProps--margin-right-medium"
-          >
-            <p
-              class="StyledProps--font StyledProps--main StyledProps--font-size-xsmall StyledProps--font-weight-semi-bold StyledProps--margin-bottom-small StyledProps--color StyledProps--color-grey600"
-            >
-              common.failureRate
-            </p>
             <div
-              class="tickerContainer tickerContainerStyles"
-              data-test="ticker"
+              class="StyledProps--font StyledProps--main toggleBtns StyledProps--flex"
             >
-              <p
-                class="StyledProps--font StyledProps--main StyledProps--color StyledProps--color-black StyledProps--font-weight-semi-bold StyledProps--font-size-medium StyledProps--margin-right-xsmall"
-                data-test="tickerText"
+              <button
+                class="bp3-button bp3-active bp3-minimal Button--button StyledProps--font StyledProps--main chartIcon active Button--with-current-color Button--iconOnly Button--without-shadow Button--withLeftIcon"
+                type="button"
               >
-                24.2
-              </p>
-              <div
-                class="ticker tickerCenterAlign"
+                <span
+                  class="bp3-icon StyledProps--main StyledProps--color StyledProps--color-primary6"
+                  data-icon="bar-chart"
+                >
+                  <svg
+                    fill="none"
+                    height="12"
+                    viewBox="0 0 14 11"
+                    width="12"
+                    xmlns="http://www.w3.org/2000/svg"
+                  >
+                    <path
+                      d="M11.995 0v10.798H14V0h-2.005zM3.996 1.601v9.197h2.005V1.6H3.996zm4.003 1.601v7.596h1.998V3.202H7.999zM0 4.797v6h1.998v-6H0z"
+                      fill="currentColor"
+                    />
+                  </svg>
+                </span>
+              </button>
+              <button
+                class="bp3-button bp3-minimal Button--button StyledProps--font StyledProps--main chartIcon Button--with-current-color Button--iconOnly Button--without-shadow Button--withLeftIcon"
+                type="button"
               >
-                <div
-                  class="iconContainer"
+                <span
+                  class="bp3-icon StyledProps--main StyledProps--color StyledProps--color-grey700"
+                  data-icon="line-chart"
                 >
-                  <span
-                    class="bp3-icon StyledProps--main StyledProps--color StyledProps--color-red500"
-                    data-icon="main-caret-up"
+                  <svg
+                    fill="none"
+                    height="12"
+                    viewBox="0 0 14 11"
+                    width="12"
+                    xmlns="http://www.w3.org/2000/svg"
                   >
-                    <svg
-                      height="6"
-                      viewBox="0 0 14 9"
-                      width="6"
-                      xmlns="http://www.w3.org/2000/svg"
-                    >
-                      <path
-                        d="M13.7 7.2L7.9.4C7.7.2 7.4 0 7 0s-.7.2-.9.4L.3 7.2c-.2.2-.3.4-.3.7C0 8.5.5 9 1.2 9h11.7c.6 0 1.1-.5 1.1-1.1 0-.3-.1-.5-.3-.7z"
-                        fill="#4d5969"
-                      />
-                    </svg>
-                  </span>
-                </div>
-                <div
-                  class="tickerValue"
-                  data-test="tickerValue"
-                >
-                  <p
-                    class="StyledProps--font StyledProps--main StyledProps--font-size-xsmall StyledProps--color StyledProps--color-red500"
-                  >
-                    45.7%
-                  </p>
-                </div>
-              </div>
-            </div>
-          </div>
-          <div
-            class="Layout--vertical StyledProps--main tickerCard StyledProps--padding-small StyledProps--margin-right-medium"
-          >
-            <p
-              class="StyledProps--font StyledProps--main StyledProps--font-size-xsmall StyledProps--font-weight-semi-bold StyledProps--margin-bottom-small StyledProps--color StyledProps--color-grey600"
-            >
-              cd.serviceDashboard.frequency
-            </p>
-            <div
-              class="tickerContainer tickerContainerStyles"
-              data-test="ticker"
-            >
-              <p
-                class="StyledProps--font StyledProps--main StyledProps--color StyledProps--color-black StyledProps--font-weight-semi-bold StyledProps--font-size-medium StyledProps--margin-right-xsmall"
-                data-test="tickerText"
-              >
-                324.2
-              </p>
-              <div
-                class="ticker tickerCenterAlign"
-              >
-                <div
-                  class="iconContainer"
-                >
-                  <span
-                    class="bp3-icon StyledProps--main StyledProps--color StyledProps--color-green600"
-                    data-icon="main-caret-up"
-                  >
-                    <svg
-                      height="6"
-                      viewBox="0 0 14 9"
-                      width="6"
-                      xmlns="http://www.w3.org/2000/svg"
-                    >
-                      <path
-                        d="M13.7 7.2L7.9.4C7.7.2 7.4 0 7 0s-.7.2-.9.4L.3 7.2c-.2.2-.3.4-.3.7C0 8.5.5 9 1.2 9h11.7c.6 0 1.1-.5 1.1-1.1 0-.3-.1-.5-.3-.7z"
-                        fill="#4d5969"
-                      />
-                    </svg>
-                  </span>
-                </div>
-                <div
-                  class="tickerValue"
-                  data-test="tickerValue"
-                >
-                  <p
-                    class="StyledProps--font StyledProps--main StyledProps--font-size-xsmall StyledProps--color StyledProps--color-green600"
-                  >
-                    23.2%
-                  </p>
-                </div>
-              </div>
+                    <path
+                      d="M7.758 10.265L5.703 1.807l-2.799 4.1H0v-.746h2.51L6.032 0l2.076 8.546 2.81-3.765H14v.747h-2.706l-3.536 4.737z"
+                      fill="currentColor"
+                    />
+                  </svg>
+                </span>
+              </button>
             </div>
           </div>
         </div>
