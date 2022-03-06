@@ -167,14 +167,16 @@ export const DeploymentsWidget: React.FC<DeploymentWidgetProps> = props => {
         failureData.push(defaultTo(val.deployments?.failure, 0))
         custom.push(val)
       })
+      const successCount = successData.reduce((sum, i) => sum + i, 0)
+      const failureCount = failureData.reduce((sum, i) => sum + i, 0)
       const successArr = {
-        name: 'Success',
+        name: `Success (${successCount})`,
         data: successData,
         color: 'var(--success)',
         custom
       }
       const failureArr = {
-        name: 'Failed',
+        name: `Failed (${failureCount})`,
         data: failureData,
         color: 'var(--red-400)',
         custom
