@@ -102,7 +102,7 @@ const StepCommonFields = ({
               multiTypeInputProps: {
                 expressions,
                 selectProps: { addClearBtn: true, items: GetImagePullPolicyOptions() },
-                allowableTypes: AllMultiTypeInputTypesForStep
+                allowableTypes: [MultiTypeInputType.FIXED, MultiTypeInputType.EXPRESSION]
               },
               disabled
             }}
@@ -138,7 +138,7 @@ const StepCommonFields = ({
               multiTypeInputProps: {
                 expressions,
                 selectProps: { addClearBtn: true, items: GetShellOptions(buildInfrastructureType) },
-                allowableTypes: AllMultiTypeInputTypesForStep
+                allowableTypes: [MultiTypeInputType.FIXED, MultiTypeInputType.EXPRESSION]
               },
               disabled
             }}
@@ -209,7 +209,7 @@ const StepCommonFields = ({
               multiTextInputProps={{
                 multiTextInputProps: {
                   expressions,
-                  allowableTypes: AllMultiTypeInputTypesForStep
+                  allowableTypes: [MultiTypeInputType.FIXED, MultiTypeInputType.EXPRESSION]
                 },
                 disabled
               }}

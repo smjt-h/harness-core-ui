@@ -310,7 +310,7 @@ export const RunTestsStepBase = (
                     formik.setFieldValue('spec.buildTool', '')
                   }
                 },
-                allowableTypes: AllMultiTypeInputTypesForStep
+                allowableTypes: [MultiTypeInputType.FIXED, MultiTypeInputType.EXPRESSION]
               })}
             </Container>
             <Container className={cx(css.formGroup, css.lg, css.bottomMargin5)}>
@@ -319,7 +319,7 @@ export const RunTestsStepBase = (
                 fieldLabelKey: 'buildToolLabel',
                 tooltipId: 'runTestsBuildTool',
                 selectFieldOptions: buildToolOptions,
-                allowableTypes: AllMultiTypeInputTypesForStep
+                allowableTypes: [MultiTypeInputType.FIXED, MultiTypeInputType.EXPRESSION]
               })}
             </Container>
             {(formik.values?.spec?.language as any)?.value === Language.Java &&
