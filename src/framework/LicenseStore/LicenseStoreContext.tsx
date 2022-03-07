@@ -226,7 +226,11 @@ export function LicenseStoreProvider(props: React.PropsWithChildren<unknown>): R
     const licenses: { [key: string]: ModuleLicenseDTO } = {}
     Object.keys(allLicenses).forEach((key: string) => {
       const moduleLicenses = allLicenses[key]
+<<<<<<< HEAD
       if (moduleLicenses?.length > 0) {
+=======
+      if (moduleLicenses && moduleLicenses.length > 0) {
+>>>>>>> fix: [GTM-730]: fix handle licenses null check
         licenses[key] = moduleLicenses[moduleLicenses.length - 1]
       }
     })
