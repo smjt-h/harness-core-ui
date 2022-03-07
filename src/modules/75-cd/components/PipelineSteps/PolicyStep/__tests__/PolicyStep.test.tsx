@@ -9,7 +9,6 @@ import React from 'react'
 import { act, fireEvent, queryByAttribute, render } from '@testing-library/react'
 
 import { RUNTIME_INPUT_VALUE } from '@harness/uicore'
-import * as pmServices from 'services/pm'
 
 import { StepFormikRef, StepViewType } from '@pipeline/components/AbstractSteps/Step'
 import { StepType } from '@pipeline/components/PipelineSteps/PipelineStepInterface'
@@ -17,7 +16,18 @@ import { factory, TestStepWidget } from '@pipeline/components/PipelineSteps/Step
 
 import { PolicyStep } from '../PolicyStep'
 
-jest.spyOn(pmServices, 'GetPolicySet').mockReturnValue(<div>Test</div>)
+jest.mock('services/pm', () => ({
+  useGetPolicySet: jest.fn().mockImplementation(() => {
+    return {
+      data: {
+        name: 'test',
+        policies: ['ptest1']
+      },
+      loading: false,
+      error: {}
+    }
+  })
+}))
 
 describe('Test Policy Step', () => {
   beforeEach(() => {
