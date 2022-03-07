@@ -18,7 +18,7 @@ import type { StepViewType } from '@pipeline/components/AbstractSteps/Step'
 
 import type { PolicyStepFormData } from '../../PolicyStepTypes'
 import { PolicySetModal } from '../PolicySetModal/PolicySetModal'
-import { MiniPolicySetsRenderer } from '../PolicySetListRenderer/MiniPolicySetsRenderer'
+import { MiniPolicySetRenderer } from '../PolicySetListRenderer/MiniPolicySetRenderer'
 
 import css from './PolicySetsFormField.module.scss'
 
@@ -69,7 +69,9 @@ function PolicySetsFormField({
       className={css.formGroup}
       label={getString('common.policiesSets.policyset')}
     >
-      <MiniPolicySetsRenderer policySetIds={policySetIds} />
+      {policySetIds.map(policySetId => {
+        return <MiniPolicySetRenderer policySetId={policySetId} key={policySetId} />
+      })}
       <Button
         minimal
         text={getString('common.policiesSets.addOrModifyPolicySet')}

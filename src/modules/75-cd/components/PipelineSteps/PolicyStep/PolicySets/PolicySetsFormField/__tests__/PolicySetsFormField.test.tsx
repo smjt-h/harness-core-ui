@@ -24,19 +24,16 @@ jest.mock('@common/exports', () => ({
 }))
 
 jest.mock('services/pm', () => ({
-  GetPolicySet: ({ children }: any) => {
-    const MockComponent = () => {
-      return children(
-        {
-          name: 'test',
-          policies: ['ptest1']
-        },
-        { loading: false, error: {} }
-      )
+  useGetPolicySet: jest.fn().mockImplementation(() => {
+    return {
+      data: {
+        name: 'test',
+        policies: ['ptest1']
+      },
+      loading: false,
+      error: {}
     }
-
-    return <MockComponent />
-  },
+  }),
   useGetPolicySetList: jest.fn().mockImplementation(() => ({
     error: 'Bad Modal'
   }))
