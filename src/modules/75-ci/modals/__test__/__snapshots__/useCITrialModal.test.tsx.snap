@@ -358,6 +358,16 @@ exports[`open and close CITrial Modal create or select project modal 1`] = `
               class="Layout--horizontal Layout--layout-spacing-small StyledProps--main StyledProps--padding-top-large"
             >
               <button
+                class="bp3-button Button--button StyledProps--font StyledProps--main StyledProps--intent-primary Button--with-current-color"
+                type="button"
+              >
+                <span
+                  class="bp3-button-text"
+                >
+                  projectsOrgs.selectAnExistingProject
+                </span>
+              </button>
+              <button
                 class="bp3-button Button--button StyledProps--font StyledProps--main Button--with-current-color"
                 type="button"
               >

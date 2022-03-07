@@ -30,7 +30,7 @@ cdTrialHomePage:
   startTrial:
     description: Take your software build processes to the next level using our Harness Continuous Delivery.
     startBtn:
-      description: Start CD Free Plan
+      description: Start 14 day CD Enterprise trial
 cdSwitchToFirstGen:
   description1: Harness Continuous Delivery First Generation is our dedicated industry leading Continuous Delivery Platform.
   description2: Don’t worry, you can switch back to the Next Generation Platform at any time to get access to additional integrated Harness modules and features.

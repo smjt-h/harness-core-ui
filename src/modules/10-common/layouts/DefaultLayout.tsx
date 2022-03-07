@@ -11,6 +11,7 @@ import MainNav from '@common/navigation/MainNav'
 import SideNav from '@common/navigation/SideNav'
 
 import { useSidebar } from '@common/navigation/SidebarProvider'
+import { useModuleInfo } from '@common/hooks/useModuleInfo'
 
 import FeatureBanner from './FeatureBanner'
 
@@ -18,7 +19,7 @@ import css from './layouts.module.scss'
 
 export function DefaultLayout(props: React.PropsWithChildren<unknown>): React.ReactElement {
   const { title, subtitle, icon, navComponent: NavComponent } = useSidebar()
-
+  const { module } = useModuleInfo()
   return (
     <div className={css.main} data-layout="default">
       <MainNav />
@@ -26,7 +27,7 @@ export function DefaultLayout(props: React.PropsWithChildren<unknown>): React.Re
         <NavComponent />
       </SideNav>
       <div className={css.rhs}>
-        <FeatureBanner />
+        {module && <FeatureBanner />}
         <div className={css.children}>{props.children}</div>
       </div>
     </div>

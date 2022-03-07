@@ -6,14 +6,15 @@
  */
 
 import React from 'react'
-
+import { useModuleInfo } from '@common/hooks/useModuleInfo'
 import FeatureBanner from './FeatureBanner'
 import css from './layouts.module.scss'
 
 export function EmptyLayout(props: React.PropsWithChildren<unknown>): React.ReactElement {
+  const { module } = useModuleInfo()
   return (
     <div className={css.main} data-layout="empty">
-      <FeatureBanner />
+      {module && <FeatureBanner />}
       <div className={css.children}>{props.children}</div>
     </div>
   )

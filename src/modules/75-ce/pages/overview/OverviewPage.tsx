@@ -38,7 +38,7 @@ import { useCreateConnectorMinimal } from '@ce/components/CreateConnector/Create
 import NoData from '@ce/components/OverviewPage/OverviewNoData'
 import { TrialLicenseBanner } from '@common/components/Banners/TrialLicenseBanner'
 import { ModuleName } from 'framework/types/ModuleName'
-import { useGetLicensesAndSummary } from 'services/cd-ng'
+import { useGetLicensesAndSummary, GetLicensesAndSummaryQueryParams } from 'services/cd-ng'
 import type { AccountPathProps, Module } from '@common/interfaces/RouteInterfaces'
 import { handleUpdateLicenseStore, useLicenseStore } from 'framework/LicenseStore/LicenseStoreContext'
 import type { TrialBannerProps } from '@projects-orgs/pages/HomePageTemplate/HomePageTemplate'
@@ -122,7 +122,7 @@ const OverviewPage: React.FC = () => {
   const forecastedCost = (summaryData?.perspectiveForecastCost?.cost || {}) as StatsInfo
 
   const { data, refetch, loading } = useGetLicensesAndSummary({
-    queryParams: { moduleType: ModuleName.CE as any },
+    queryParams: { moduleType: ModuleName.CE as GetLicensesAndSummaryQueryParams['moduleType'] },
     accountIdentifier: accountId
   })
 

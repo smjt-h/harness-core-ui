@@ -21,7 +21,7 @@ exports[`CDTrialHomePage snapshot test should render properly 1`] = `
           class="StyledProps--font StyledProps--main StyledProps--padding-bottom-xxlarge"
           style="width: 500px;"
         >
-          common.selectAVersion.description
+          cd.cdTrialHomePage.startTrial.description
         </p>
         <a
           class="learnMore"
