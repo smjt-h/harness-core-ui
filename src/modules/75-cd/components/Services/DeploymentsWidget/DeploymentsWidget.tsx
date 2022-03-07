@@ -151,7 +151,7 @@ export const DeploymentsWidget: React.FC<DeploymentWidgetProps> = props => {
       },
       {
         title: getString('pipeline.deploymentFrequency'),
-        count: numberFormatter(defaultTo(data?.frequency, 0)),
+        count: numberFormatter(Math.round(defaultTo(data?.frequency, 0))),
         trend: numberFormatter(data?.frequencyChangeRate) + '%'
       }
     ]

@@ -149,7 +149,7 @@ exports[`DeploymentsWidget should display correct data 1`] = `
                       <p
                         class="StyledProps--font StyledProps--main frequencyCount StyledProps--color StyledProps--color-black StyledProps--font-size-large StyledProps--font-weight-bold"
                       >
-                        324.2
+                        324
                       </p>
                     </div>
                     <div
@@ -393,7 +393,7 @@ exports[`DeploymentsWidget should render DeploymentsWidget 1`] = `
                       <p
                         class="StyledProps--font StyledProps--main frequencyCount StyledProps--color StyledProps--color-black StyledProps--font-size-large StyledProps--font-weight-bold"
                       >
-                        324.2
+                        324
                       </p>
                     </div>
                     <div
