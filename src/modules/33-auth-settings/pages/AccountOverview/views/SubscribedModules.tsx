@@ -162,7 +162,7 @@ const SubscribedModules: React.FC = () => {
   const subscribedModules =
     Object.values(modules).length > 0 ? (
       Object.values(modules).map(moduleLicenses => {
-        if (moduleLicenses.length > 0) {
+        if (moduleLicenses?.length > 0) {
           const latestModuleLicense = moduleLicenses[moduleLicenses.length - 1]
           return (
             <div key={latestModuleLicense.moduleType}>

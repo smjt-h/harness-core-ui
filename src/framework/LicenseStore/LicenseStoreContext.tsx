@@ -226,7 +226,7 @@ export function LicenseStoreProvider(props: React.PropsWithChildren<unknown>): R
     const licenses: { [key: string]: ModuleLicenseDTO } = {}
     Object.keys(allLicenses).forEach((key: string) => {
       const moduleLicenses = allLicenses[key]
-      if (moduleLicenses.length > 0) {
+      if (moduleLicenses?.length > 0) {
         licenses[key] = moduleLicenses[moduleLicenses.length - 1]
       }
     })
