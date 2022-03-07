@@ -89,8 +89,9 @@ export function FailureStrategy(props: FailureStrategyProps, ref: StepCommandsRe
 
   const stageType = selectedStage?.stage?.type as StageType
   const getInitialValues = (): AllFailureStrategyConfig[] => {
-    if (stageType === StageType.BUILD) return []
-    else {
+    if (stageType === StageType.BUILD) {
+      return []
+    } else {
       return [
         {
           onFailure: {
