@@ -351,7 +351,7 @@ export default function SelectDeploymentType(props: SelectServiceDeploymentTypeP
         deploymentType: getServiceDeploymentTypeSchema(getString)
       })}
     >
-      {formik => {
+      {(formik: any) => {
         window.dispatchEvent(new CustomEvent('UPDATE_ERRORS_STRIP', { detail: DeployTabs.SERVICE }))
         formikRef.current = formik
         return (

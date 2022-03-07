@@ -200,7 +200,7 @@ export const NewEditEnvironmentModalYaml: React.FC<NewEditEnvironmentModalProps>
           })}
         >
           {formikProps => {
-            formikRef.current = formikProps
+            formikRef.current = formikProps as FormikProps<EnvironmentResponseDTO>
             return (
               <>
                 {selectedView === SelectedView.VISUAL ? (

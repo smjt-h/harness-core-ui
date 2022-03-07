@@ -35,6 +35,8 @@ const StepTemplateForm = (_props: unknown, formikRef: TemplateFormRef): JSX.Elem
     resetForm() {
       return stepFormikRef.current?.resetForm()
     },
+    // eslint-disable-next-line @typescript-eslint/ban-ts-comment
+    // @ts-ignore
     submitForm() {
       return stepFormikRef.current?.submitForm()
     },

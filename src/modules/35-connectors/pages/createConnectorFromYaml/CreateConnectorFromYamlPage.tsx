@@ -204,7 +204,7 @@ const CreateConnectorFromYamlPage: React.FC = () => {
                   hideModal()
                 }}
               >
-                {formikProps => (
+                {(formikProps: any) => (
                   <FormikForm>
                     <NameIdDescriptionTags
                       formikProps={formikProps}

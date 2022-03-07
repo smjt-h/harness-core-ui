@@ -28,7 +28,7 @@ import {
 import * as Yup from 'yup'
 import cx from 'classnames'
 import { debounce, defaultTo } from 'lodash-es'
-import type { FormikContext } from 'formik'
+import type { FormikContextType } from 'formik'
 import { useParams } from 'react-router-dom'
 import {
   GitSyncConfig,
@@ -77,7 +77,7 @@ const FullSyncForm: React.FC<ModalConfigureProps & FullSyncFormProps> = props =>
   const { getString } = useStrings()
 
   const [modalErrorHandler, setModalErrorHandler] = React.useState<ModalErrorHandlerBinding>()
-  const formikRef = useRef<FormikContext<GitFullSyncConfigRequestDTO>>()
+  const formikRef = useRef<FormikContextType<GitFullSyncConfigRequestDTO>>()
   const [hasSCM, setHasSCM] = React.useState<boolean>(false)
   const [rootFolderSelectOptions, setRootFolderSelectOptions] = React.useState<SelectOption[]>([])
   const [repoSelectOptions, setRepoSelectOptions] = React.useState<SelectOption[]>([])
@@ -133,7 +133,7 @@ const FullSyncForm: React.FC<ModalConfigureProps & FullSyncFormProps> = props =>
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [loadingConfig])
 
-  const resetCreatePRFields = (formik: FormikContext<GitFullSyncConfigRequestDTO>): void => {
+  const resetCreatePRFields = (formik: FormikContextType<GitFullSyncConfigRequestDTO>): void => {
     formik.setFieldValue('targetBranch', '')
     formik.setFieldTouched('targetBranch', false)
     formik.setFieldValue('createPullRequest', false)
@@ -144,7 +144,7 @@ const FullSyncForm: React.FC<ModalConfigureProps & FullSyncFormProps> = props =>
     setDisableBranchSelection(true)
   }
 
-  const handleRepoChange = (repoIdentifier: string, formik: FormikContext<GitFullSyncConfigRequestDTO>): void => {
+  const handleRepoChange = (repoIdentifier: string, formik: FormikContextType<GitFullSyncConfigRequestDTO>): void => {
     const changedRepo = gitSyncRepos.find((repo: GitSyncConfig) => repo.identifier === repoIdentifier)
     const defaultRootFolder = changedRepo?.gitSyncFolderConfigDTOs?.find(
       (folder: GitSyncFolderConfigDTO) => folder.isDefault
@@ -159,7 +159,7 @@ const FullSyncForm: React.FC<ModalConfigureProps & FullSyncFormProps> = props =>
     resetCreatePRFields(formik)
   }
 
-  const handleBranchTypeChange = (isNew: boolean, formik: FormikContext<GitFullSyncConfigRequestDTO>): void => {
+  const handleBranchTypeChange = (isNew: boolean, formik: FormikContextType<GitFullSyncConfigRequestDTO>): void => {
     const defaultBranch = gitSyncRepos.find(
       (repo: GitSyncConfig) => repo.identifier === formikRef.current?.values.repoIdentifier
     )?.branch

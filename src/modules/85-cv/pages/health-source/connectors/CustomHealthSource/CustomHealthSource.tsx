@@ -82,7 +82,7 @@ export function CustomHealthSource(props: CustomHealthSourceProps): JSX.Element 
         )
       }}
     >
-      {formikProps => {
+      {(formikProps: any) => {
         return (
           <FormikForm className={css.formFullheight}>
             <CustomMetric

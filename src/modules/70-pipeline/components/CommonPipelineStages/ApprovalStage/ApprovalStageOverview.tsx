@@ -97,7 +97,7 @@ export function ApprovalStageOverview(props: ApprovalStageOverviewProps): React.
               }
               return errors
             }}
-            onSubmit={() => noop}
+            onSubmit={noop}
           >
             {formikProps => (
               <FormikForm>

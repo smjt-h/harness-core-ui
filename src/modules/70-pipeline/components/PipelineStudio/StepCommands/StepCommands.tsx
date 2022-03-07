@@ -125,6 +125,8 @@ export function StepCommands(
         return advancedConfRef.current.dirty
       }
     },
+    // eslint-disable-next-line @typescript-eslint/ban-ts-comment
+    // @ts-ignore
     submitForm() {
       if (activeTab === StepCommandTabs.StepConfiguration && stepRef.current) {
         return stepRef.current.submitForm()

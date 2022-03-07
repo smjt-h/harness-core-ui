@@ -20,7 +20,7 @@ interface TestProps {
 
 const TestComponent = ({ initialValues }: TestProps): React.ReactElement => (
   <TestWrapper>
-    <Formik initialValues={initialValues} onSubmit={() => null}>
+    <Formik initialValues={initialValues} onSubmit={() => null as any}>
       <Form>
         <MultiTypeMap
           name="test"
@@ -74,7 +74,7 @@ describe('<MultiTypeMapInputSet /> tests', () => {
   })
 
   test('Should render properly', () => {
-    const { container } = render(<TestComponent />)
+    const { container } = render(<TestComponent initialValues={{}} />)
     expect(container).toMatchSnapshot()
   })
 })

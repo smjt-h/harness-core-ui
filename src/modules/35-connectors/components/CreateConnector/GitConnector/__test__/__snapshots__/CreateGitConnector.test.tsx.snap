@@ -134,6 +134,7 @@ exports[`Create Git connector Wizard Creating Git step one 1`] = `
             class="OverlaySpinner--overlaySpinner"
           >
             <form
+              action="#"
               class="FormikForm--main"
             >
               <div>
@@ -568,6 +569,7 @@ exports[`Create Git connector Wizard Creating Github step one and step two for H
           class="OverlaySpinner--overlaySpinner"
         >
           <form
+            action="#"
             class="FormikForm--main fullHeight fullHeightDivsWithFlex"
           >
             <div>
@@ -1036,6 +1038,7 @@ exports[`Create Git connector Wizard Creating Github step one and step two for H
           class="OverlaySpinner--overlaySpinner"
         >
           <form
+            action="#"
             class="FormikForm--main fullHeight fullHeightDivsWithFlex"
           >
             <div>
@@ -1514,6 +1517,7 @@ exports[`Create Git connector Wizard should be able to edit form for http and au
             class="OverlaySpinner--overlaySpinner"
           >
             <form
+              action="#"
               class="FormikForm--main"
             >
               <div>
@@ -1905,6 +1909,7 @@ exports[`Create Git connector Wizard should be able to edit form for http and au
           class="OverlaySpinner--overlaySpinner"
         >
           <form
+            action="#"
             class="FormikForm--main fullHeight fullHeightDivsWithFlex"
           >
             <div>

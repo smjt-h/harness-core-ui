@@ -216,7 +216,7 @@ export default function BuildStageSpecifications({ children }: React.PropsWithCh
           formName="ciBuildStage"
           onSubmit={values => logger.info(JSON.stringify(values))}
         >
-          {formik => {
+          {(formik: any) => {
             const { values: formValues, setFieldValue } = formik
             window.dispatchEvent(new CustomEvent('UPDATE_ERRORS_STRIP', { detail: BuildTabs.OVERVIEW }))
             formikRef.current = formik

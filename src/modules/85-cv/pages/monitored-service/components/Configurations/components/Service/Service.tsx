@@ -8,7 +8,7 @@
 import React, { useCallback } from 'react'
 import { noop } from 'lodash-es'
 import * as Yup from 'yup'
-import { Formik, FormikContext } from 'formik'
+import { Formik, FormikContextType } from 'formik'
 import { useParams } from 'react-router-dom'
 import { Text, Color } from '@wings-software/uicore'
 import { useStrings } from 'framework/strings'
@@ -51,7 +51,7 @@ function Service({
   const isEdit = !!identifier
 
   const updateChangeSource = useCallback(
-    (data: any, formik: FormikContext<MonitoredServiceForm>): void => {
+    (data: any, formik: FormikContextType<MonitoredServiceForm>): void => {
       formik.setFieldValue('sources', {
         ...formik.values?.sources,
         changeSources: data
@@ -91,7 +91,7 @@ function Service({
       formik,
       onSuccessChangeSource
     }: {
-      formik: FormikContext<MonitoredServiceForm>
+      formik: FormikContextType<MonitoredServiceForm>
       onSuccessChangeSource: (data: ChangeSourceDTO[]) => void
     }) => {
       // has required fields
@@ -113,7 +113,7 @@ function Service({
   return (
     <Formik<MonitoredServiceForm>
       initialValues={cachedInitialValues || initialValues}
-      onSubmit={() => noop}
+      onSubmit={noop}
       validationSchema={Yup.object().shape({
         name: Yup.string().nullable().required(getString('cv.monitoredServices.nameValidation')),
         type: Yup.string().nullable().required(getString('common.validation.typeIsRequired')),
