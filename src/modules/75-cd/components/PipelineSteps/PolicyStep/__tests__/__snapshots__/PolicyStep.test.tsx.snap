@@ -269,15 +269,6 @@ exports[`Test Policy Step render edit view as edit step 1`] = `
       <div
         class="bp3-form-content"
       >
-        <div>
-          Test
-        </div>
-        <div>
-          Test
-        </div>
-        <div>
-          Test
-        </div>
         <button
           class="bp3-button bp3-minimal Button--button StyledProps--font StyledProps--main addModifyButton Button--without-shadow"
           type="button"
@@ -995,15 +986,6 @@ exports[`Test Policy Step render runtime inputs in edit step 1`] = `
       <div
         class="bp3-form-content"
       >
-        <div>
-          Test
-        </div>
-        <div>
-          Test
-        </div>
-        <div>
-          Test
-        </div>
         <button
           class="bp3-button bp3-minimal Button--button StyledProps--font StyledProps--main addModifyButton Button--without-shadow"
           type="button"

@@ -1,6 +1,6 @@
 // Jest Snapshot v1, https://goo.gl/fbAQLP
 
-exports[`Mini Policy Sets Renderer snapshot test 1`] = `
+exports[`Mini Policy Set Renderer snapshot test 1`] = `
 <div>
   <div
     class="Layout--horizontal StyledProps--main policySetHolder StyledProps--flex StyledProps--flex-justifyContent-space-between StyledProps--flex-alignItems-center"

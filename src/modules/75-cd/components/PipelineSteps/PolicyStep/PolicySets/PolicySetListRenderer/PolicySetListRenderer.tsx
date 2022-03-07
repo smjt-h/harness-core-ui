@@ -16,7 +16,7 @@ import type { PolicySet } from 'services/pm'
 
 import { DEFAULT_DATE_FORMAT } from '@common/utils/StringUtils'
 
-import { MiniPoliciesRenderer } from './MiniPolicySetsRenderer'
+import { MiniPoliciesRenderer } from './MiniPolicySetRenderer'
 import { NewPolicySetButton } from '../NewPolicySetButton/NewPolicySetButton'
 import { PolicySetType } from '../../PolicyStepTypes'
 

@@ -8,11 +8,9 @@
 import React from 'react'
 import { render } from '@testing-library/react'
 
-import type { PolicySetWithLinkedPolicies } from 'services/pm'
-
 import { TestWrapper } from '@common/utils/testUtils'
 
-import { MiniPolicySetsRenderer } from '../MiniPolicySetsRenderer'
+import { MiniPolicySetRenderer } from '../MiniPolicySetRenderer'
 
 jest.mock('@common/exports', () => ({
   useToaster: () => ({
@@ -21,11 +19,10 @@ jest.mock('@common/exports', () => ({
 }))
 
 jest.mock('services/pm', () => ({
-  GetPolicySet: jest.fn().mockImplementation((props: any) => {
-    const MockComponent = () => {
-      let policySet: PolicySetWithLinkedPolicies = {}
-      if (props.policyset === 'account.test') {
-        policySet = {
+  useGetPolicySet: jest.fn().mockImplementation((props: any) => {
+    if (props.policyset === 'account.test') {
+      return {
+        data: {
           name: 'Policy set 1',
           policies: [
             {
@@ -36,8 +33,10 @@ jest.mock('services/pm', () => ({
             }
           ]
         }
-      } else if (props.policyset === 'org.test') {
-        policySet = {
+      }
+    } else if (props.policyset === 'org.test') {
+      return {
+        data: {
           name: 'policy set 2',
           policies: [
             {
@@ -51,23 +50,20 @@ jest.mock('services/pm', () => ({
             }
           ]
         }
-      } else {
-        policySet = {
+      }
+    } else {
+      return {
+        data: {
           name: 'policy set 3',
           policies: []
-        }
+        },
+        loading: props.policyset === 'loadingId'
       }
-      return props.children(policySet, {
-        loading: props.policyset === 'loadingId',
-        error: false
-      })
     }
-
-    return <MockComponent {...props} />
   })
 }))
 
-describe('Mini Policy Sets Renderer', () => {
+describe('Mini Policy Set Renderer', () => {
   test('snapshot test', () => {
     const { container } = render(
       <TestWrapper
@@ -77,7 +73,9 @@ describe('Mini Policy Sets Renderer', () => {
           projectIdentifier: 'project'
         }}
       >
-        <MiniPolicySetsRenderer policySetIds={['account.test', 'org.test', 'test', 'loadingId']} />
+        {['account.test', 'org.test', 'test', 'loadingId'].map(policySetId => (
+          <MiniPolicySetRenderer policySetId={policySetId} key={policySetId} />
+        ))}
       </TestWrapper>
     )
 
