@@ -129,35 +129,30 @@ const getComputedPosition = (childId: string, parentElement?: HTMLDivElement): D
   }
 }
 
-const setupDragEventListeners = (canvasRef: RefObject<HTMLDivElement>): (() => void) => {
-  let offset = [0, 0]
-  const divOverlay = (canvasRef.current as HTMLDivElement).parentElement as HTMLDivElement
-  const canvas = canvasRef.current as HTMLDivElement
-  let isDown = false
-
-  const onMouseMove = (e: any): void => {
-    e.preventDefault()
-    if (isDown) {
-      canvas.style.left = e.clientX + offset[0] + 'px'
-      canvas.style.top = e.clientY + offset[1] + 'px'
+const setupDragEventListeners = (draggableParent: HTMLElement, overlay: HTMLElement): void => {
+  draggableParent.onmousedown = function (event) {
+    if (event?.target !== draggableParent) return
+    const initialX = event.pageX
+    const initialY = event.pageY
+    const overlayPosition = getComputedPosition('overlay', draggableParent as HTMLDivElement) as DOMRect
+    const moveAt = (pageX: number, pageY: number) => {
+      const newX = overlayPosition?.left + pageX - initialX
+      const newY = overlayPosition?.top + pageY - initialY
+      overlay.style.transform = `translate(${newX}px,${newY}px)`
     }
-  }
+    function onMouseMove(event: MouseEvent) {
+      console.log('aa gya move')
 
-  const onMouseDown = (e: any): void => {
-    isDown = true
-    offset = [canvas.offsetLeft - e.clientX, canvas.offsetTop - e.clientY]
-  }
-  const onMouseUp = (): void => {
-    isDown = false
-  }
-
-  divOverlay.addEventListener('mousedown', onMouseDown, true)
-  document.addEventListener('mouseup', onMouseUp, true)
-  document.addEventListener('mousemove', onMouseMove, true)
-  return () => {
-    divOverlay.removeEventListener('mousedown', onMouseDown)
-    document.removeEventListener('mouseup', onMouseUp)
-    document.removeEventListener('mousemove', onMouseMove)
+      moveAt(event.pageX, event.pageY)
+    }
+    draggableParent.addEventListener('mousemove', onMouseMove)
+    draggableParent.onmouseup = function () {
+      draggableParent.removeEventListener('mousemove', onMouseMove)
+      draggableParent.onmouseup = null
+    }
+    draggableParent.onmouseleave = function () {
+      draggableParent.removeEventListener('mousemove', onMouseMove)
+    }
   }
 }
 
@@ -348,6 +343,7 @@ const getPipelineGraphDataType = (data: StageElementWrapperConfig[] | ExecutionW
   }
   return PipelineGraphType.STEP_GRAPH
 }
+
 export {
   ZOOM_INC_DEC_LEVEL,
   INITIAL_ZOOM_LEVEL,

@@ -5,11 +5,11 @@ import Draggable from 'react-draggable'
 import { v4 as uuid } from 'uuid'
 import { Event } from '@pipeline/components/Diagram'
 import {
-  getComputedPosition,
   getFinalSVGArrowPath,
   getScaleToFitValue,
   getSVGLinksFromPipeline,
-  INITIAL_ZOOM_LEVEL
+  INITIAL_ZOOM_LEVEL,
+  setupDragEventListeners
 } from './PipelineGraphUtils'
 import GraphActions from '../GraphActions/GraphActions'
 import { PipelineGraphRecursive } from './PipelineGraphNode'
@@ -93,26 +93,7 @@ function PipelineGraph({
     updateTreeRect()
     const draggableParent = document.getElementById('draggable-parent')
     const overlay = document.getElementById('overlay') as HTMLElement
-    if (draggableParent && overlay) {
-      draggableParent.onmousedown = function (event) {
-        const initialX = event.pageX
-        const initialY = event.pageY
-        const overlayPosition = getComputedPosition('overlay', draggableParent as HTMLDivElement) as DOMRect
-        function moveAt(pageX: number, pageY: number) {
-          const newX = overlayPosition?.left + pageX - initialX
-          const newY = overlayPosition?.top + pageY - initialY
-          overlay.style.transform = `translate(${newX}px,${newY}px)`
-        }
-        function onMouseMove(event) {
-          moveAt(event.pageX, event.pageY)
-        }
-        draggableParent.addEventListener('mousemove', onMouseMove)
-        draggableParent.onmouseup = function () {
-          draggableParent.removeEventListener('mousemove', onMouseMove)
-          draggableParent.onmouseup = null
-        }
-      }
-    }
+    if (draggableParent && overlay) setupDragEventListeners(draggableParent, overlay)
   }, [])
 
   const handleScaleToFit = (): void => {
@@ -124,8 +105,7 @@ function PipelineGraph({
       <Draggable scale={graphScale} defaultPosition={DEFAULT_POSITION} offsetParent={document.body}>
         <div
           id="overlay"
-          onMouseDown={e => e.stopPropagation()}
-          onClick={e => {
+          onClick={() => {
             fireEvent({ type: Event.CanvasClick })
           }}
           className={css.overlay}

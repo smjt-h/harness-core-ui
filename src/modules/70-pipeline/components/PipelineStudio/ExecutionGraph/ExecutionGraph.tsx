@@ -1004,7 +1004,7 @@ function ExecutionGraphRef<T extends StageElementConfig>(
         {localStorage.getItem('IS_NEW_PIP_STUDIO_ACTIVE') === 'true' ? (
           <CDPipelineStudioNew
             selectedNodeId={selectedStepId}
-            data={getPipelineGraphData(stage.stage.spec?.execution?.steps)}
+            data={getPipelineGraphData(stage?.stage?.spec?.execution?.steps)}
           />
         ) : (
           <>

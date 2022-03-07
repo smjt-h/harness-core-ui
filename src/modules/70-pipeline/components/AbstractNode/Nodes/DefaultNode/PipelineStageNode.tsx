@@ -23,34 +23,7 @@ const SECONDARY_ICON: IconName = 'command-echo'
 
 function PipelineStageNode(props: any): JSX.Element {
   const allowAdd = props.allowAdd ?? false
-  const nodeRef = React.useRef<HTMLDivElement>(null)
   const [showAdd, setVisibilityOfAdd] = React.useState(false)
-
-  // React.useEffect(() => {
-  //   const currentNode = nodeRef.current
-  //   const onMouseOver = (_e: MouseEvent): void => {
-  //     if (allowAdd) {
-  //       setVisibilityOfAdd(true)
-  //     }
-  //   }
-  //   const onMouseLeave = (_e: MouseEvent): void => {
-  //     if (allowAdd) {
-  //       setTimeout(() => {
-  //         setVisibilityOfAdd(false)
-  //       }, 100)
-  //     }
-  //   }
-  //   if (currentNode) {
-  //     currentNode.addEventListener('mouseover', onMouseOver)
-  //     currentNode.addEventListener('mouseleave', onMouseLeave)
-  //   }
-  //   return () => {
-  //     if (currentNode) {
-  //       currentNode.removeEventListener('mouseover', onMouseOver)
-  //       currentNode.removeEventListener('mouseleave', onMouseLeave)
-  //     }
-  //   }
-  // }, [nodeRef, allowAdd])
 
   return (
     <div style={{ position: 'relative' }}>
@@ -60,11 +33,11 @@ function PipelineStageNode(props: any): JSX.Element {
         onMouseOver={() => allowAdd && setVisibilityOfAdd(true)}
         onMouseLeave={() => allowAdd && setVisibilityOfAdd(false)}
         onClick={event => {
+          event.stopPropagation()
           if (props?.onClick) {
             props.onClick()
             return
           }
-          event.stopPropagation()
           props?.fireEvent({
             type: Event.ClickNode,
             entityType: DiagramType.Default,
