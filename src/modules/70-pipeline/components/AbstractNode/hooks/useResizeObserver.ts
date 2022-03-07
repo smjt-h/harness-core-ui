@@ -1,15 +1,17 @@
-import { throttle } from 'lodash-es'
+import { debounce } from 'lodash-es'
 import { useState, useEffect, useRef } from 'react'
 import { getComputedPosition } from '../PipelineGraph/PipelineGraphUtils'
+import type { NodeCollapsibleProps } from '../types'
 
 export interface ResizeObserverResult {
   shouldCollapse: boolean
   shouldExpand: boolean
 }
 export const useNodeResizeObserver = (
-  selectorString: string,
-  elementToCompare: Element | null
+  elementToCompare: Element | null,
+  options: NodeCollapsibleProps = {} as NodeCollapsibleProps
 ): ResizeObserverResult => {
+  const { percentageNodeVisible = 0.8, bottomMarginInPixels = 120, parentSelector = '' } = options
   const [element, setElement] = useState<Element | null>(null)
   const [refElement, setRefElement] = useState<Element | null>(null)
   const [state, setState] = useState<ResizeObserverResult>({ shouldCollapse: false, shouldExpand: false })
@@ -25,16 +27,21 @@ export const useNodeResizeObserver = (
   }, [elementToCompare])
 
   useEffect(() => {
-    setElement(document.querySelector(selectorString!) as HTMLElement)
-  }, [selectorString])
+    setElement(document.querySelector(parentSelector!) as HTMLElement)
+  }, [parentSelector])
 
-  const onResize = throttle(([entry]) => {
-    const finalData = isIntersectingBottomWhenResize(entry, refElement as Element, 120)
+  const onResize = debounce(([entry]) => {
+    const finalData = isIntersectingBottomWhenResize(
+      entry,
+      refElement as Element,
+      bottomMarginInPixels,
+      percentageNodeVisible
+    )
     setState(finalData)
   }, 100)
 
   useEffect(() => {
-    if (!selectorString || !element || !refElement) return
+    if (!parentSelector || !element || !refElement) return
     cleanup()
     const ob = (observer.current = new ResizeObserver(onResize))
     ob.observe(element as Element)
@@ -54,10 +61,11 @@ export const useNodeResizeObserver = (
 const isIntersectingBottomWhenResize = (
   entry: ResizeObserverEntry,
   el: Element,
-  bottomPadding: number
+  bottomPadding: number,
+  percentageNodeVisible: number
 ): ResizeObserverResult => {
   const elementPos = getComputedPosition(el.id, entry.target as HTMLDivElement) as DOMRect
-  const percentageVisibleHeight = elementPos.height * 0.8
+  const percentageVisibleHeight = elementPos.height * percentageNodeVisible
   const intersectingBottom = elementPos.top + (elementPos.height - percentageVisibleHeight) >= entry.contentRect.bottom
   const notIntersectingBottom = elementPos.bottom + bottomPadding < entry.contentRect.bottom
 

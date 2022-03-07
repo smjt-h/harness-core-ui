@@ -12,7 +12,14 @@ import EndNode from './Nodes/EndNode'
 import StartNode from './Nodes/StartNode'
 import PipelineGraph from './PipelineGraph/PipelineGraph'
 import GroupNode from './Nodes/GroupNode/GroupNode'
-import type { BaseListener, ListenerHandle, NodeBank, NodeDetails, PipelineGraphState } from './types'
+import type {
+  BaseListener,
+  NodeCollapsibleProps,
+  ListenerHandle,
+  NodeBank,
+  NodeDetails,
+  PipelineGraphState
+} from './types'
 import { StepGroupNode } from './Nodes/StepGroupNode/StepGroupNode'
 import DefaultNode from './Nodes/DefaultNode/DefaultNode'
 
@@ -119,24 +126,25 @@ export class DiagramFactory {
     this.getListenerHandle(event.type)?.listener?.(event)
   }
 
-  render(): React.FC<{ data: PipelineGraphState[]; collapseOnIntersect?: boolean; selectedNodeId?: string }> {
-    const PipelineStudioHOC: React.FC<{
-      data: PipelineGraphState[]
-      collapseOnIntersect?: boolean
-      selectedNodeId?: string
-    }> = (props: {
-      data: PipelineGraphState[]
-      collapseOnIntersect?: boolean
-      selectedNodeId?: string
-    }): React.ReactElement => (
-      <PipelineGraph
-        getDefaultNode={this.getDefaultNode.bind(this)}
-        getNode={this.getNode.bind(this)}
-        fireEvent={this.fireEvent.bind(this)}
-        {...props}
-      />
-    )
-    return PipelineStudioHOC
+  render(): React.FC<{ data: PipelineGraphState[]; collapsibleProps?: NodeCollapsibleProps; selectedNodeId?: string }> {
+    function PipelineStudioHOC(
+      this: DiagramFactory,
+      props: {
+        data: PipelineGraphState[]
+        collapsibleProps?: NodeCollapsibleProps
+        selectedNodeId?: string
+      }
+    ): React.ReactElement {
+      return (
+        <PipelineGraph
+          getDefaultNode={this.getDefaultNode.bind(this)}
+          getNode={this.getNode.bind(this)}
+          fireEvent={this.fireEvent.bind(this)}
+          {...props}
+        />
+      )
+    }
+    return PipelineStudioHOC.bind(this)
   }
 }
 

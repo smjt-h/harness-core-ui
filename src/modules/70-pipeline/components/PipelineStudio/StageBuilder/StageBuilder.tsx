@@ -1419,7 +1419,7 @@ function StageBuilder({ diagram }: StageBuilderProps): JSX.Element {
               <CDPipelineStudioNew
                 selectedNodeId={selectedStageId}
                 data={getPipelineGraphData(pipeline.stages)}
-                collapseOnIntersect={true}
+                collapsibleProps={{ parentSelector: '.Pane1', percentageNodeVisible: 0.8, bottomMarginInPixels: 80 }}
               />
               <DynamicPopover
                 darkMode={false}

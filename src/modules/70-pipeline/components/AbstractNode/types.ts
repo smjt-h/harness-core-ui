@@ -48,3 +48,12 @@ export interface NodeDetails {
   component: React.FC
   isDefault?: boolean
 }
+
+export interface NodeCollapsibleProps {
+  /** parent element selector to listen resize event on */
+  parentSelector: string
+  /** percent child visible to collapse */
+  percentageNodeVisible?: number
+  /** margin from child bottom to start expanding */
+  bottomMarginInPixels?: number
+}

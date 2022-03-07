@@ -13,7 +13,14 @@ import {
 } from './PipelineGraphUtils'
 import GraphActions from '../GraphActions/GraphActions'
 import { PipelineGraphRecursive } from './PipelineGraphNode'
-import { NodeDetails, NodeIds, PipelineGraphState, PipelineGraphType, SVGPathRecord } from '../types'
+import {
+  NodeCollapsibleProps,
+  NodeDetails,
+  NodeIds,
+  PipelineGraphState,
+  PipelineGraphType,
+  SVGPathRecord
+} from '../types'
 import css from './PipelineGraph.module.scss'
 
 interface ControlPosition {
@@ -26,16 +33,16 @@ export interface PipelineGraphProps {
   data: PipelineGraphState[]
   fireEvent: (event: any) => void
   getNode: (type?: string | undefined) => NodeDetails | undefined
-  collapseOnIntersect?: boolean
   getDefaultNode(): NodeDetails | null
   selectedNodeId?: string
+  collapsibleProps?: NodeCollapsibleProps
 }
 
 function PipelineGraph({
   data,
   getNode,
   fireEvent,
-  collapseOnIntersect,
+  collapsibleProps,
   getDefaultNode,
   selectedNodeId = ''
 }: PipelineGraphProps): React.ReactElement {
@@ -133,7 +140,7 @@ function PipelineGraph({
               uniqueNodeIds={uniqueNodeIds}
               updateGraphLinks={setSVGLinks}
               startEndNodeStyle={state?.[0]?.graphType === PipelineGraphType.STEP_GRAPH ? { height: '64px' } : {}}
-              collapseOnIntersect={collapseOnIntersect}
+              collapsibleProps={collapsibleProps}
               getDefaultNode={getDefaultNode}
             />
           </div>
