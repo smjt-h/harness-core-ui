@@ -33,9 +33,9 @@ describe('<Failure Strategy/> tests', () => {
               failureStrategies: [
                 {
                   onFailure: {
-                    errors: [ErrorType.Unknown],
+                    errors: [ErrorType.AllErrors],
                     action: {
-                      type: 'Ignore'
+                      type: 'StageRollback'
                     }
                   }
                 }

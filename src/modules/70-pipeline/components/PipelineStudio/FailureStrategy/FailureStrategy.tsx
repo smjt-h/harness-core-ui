@@ -5,7 +5,7 @@
  * https://polyformproject.org/wp-content/uploads/2020/06/PolyForm-Shield-1.0.0.txt.
  */
 
-import React from 'react'
+import React, { useEffect } from 'react'
 import { Formik, FormikProps } from 'formik'
 import * as Yup from 'yup'
 import { debounce } from 'lodash-es'
@@ -83,24 +83,31 @@ export function FailureStrategy(props: FailureStrategyProps, ref: StepCommandsRe
     }
   }))
 
+  useEffect(() => {
+    debouncedUpdate({ failureStrategies: getInitialValues() })
+  }, [])
+
   const stageType = selectedStage?.stage?.type as StageType
-  const fallbackValues: AllFailureStrategyConfig[] =
-    stageType === StageType.BUILD
-      ? []
-      : [
-          {
-            onFailure: {
-              errors: [ErrorType.Unknown],
-              action: {
-                type: Strategy.StageRollback
-              }
+  const getInitialValues = (): AllFailureStrategyConfig[] => {
+    if (stageType === StageType.BUILD) return []
+    else {
+      return [
+        {
+          onFailure: {
+            errors: [ErrorType.AllErrors],
+            action: {
+              type: Strategy.StageRollback
             }
           }
-        ]
+        }
+      ] as AllFailureStrategyConfig[]
+    }
+  }
+
   return (
     <Formik
       initialValues={{
-        failureStrategies: (selectedStage?.stage?.failureStrategies as AllFailureStrategyConfig[]) || fallbackValues
+        failureStrategies: (selectedStage?.stage?.failureStrategies as AllFailureStrategyConfig[]) || getInitialValues()
       }}
       validationSchema={Yup.object().shape({
         failureStrategies: getFailureStrategiesValidationSchema(getString, {

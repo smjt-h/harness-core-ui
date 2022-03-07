@@ -131,48 +131,16 @@ exports[`<Failure Strategy/> tests renders ok with data 1`] = `
                 class=""
               >
                 <div
-                  class="bp3-input bp3-tag-input bp3-fill bp3-multi-select"
+                  class="bp3-input bp3-tag-input bp3-disabled bp3-fill bp3-multi-select"
                 >
                   <div
                     class="bp3-tag-input-values"
                   >
-                    <span
-                      class="bp3-tag tag"
-                      data-tag-index="0"
-                    >
-                      <span
-                        class="bp3-text-overflow-ellipsis bp3-fill"
-                      >
-                        pipeline.failureStrategies.errorTypeLabels.Unknown
-                      </span>
-                      <button
-                        class="bp3-tag-remove"
-                        type="button"
-                      >
-                        <span
-                          class="bp3-icon bp3-icon-small-cross"
-                          icon="small-cross"
-                        >
-                          <svg
-                            data-icon="small-cross"
-                            height="16"
-                            viewBox="0 0 16 16"
-                            width="16"
-                          >
-                            <desc>
-                              small-cross
-                            </desc>
-                            <path
-                              d="M9.41 8l2.29-2.29c.19-.18.3-.43.3-.71a1.003 1.003 0 00-1.71-.71L8 6.59l-2.29-2.3a1.003 1.003 0 00-1.42 1.42L6.59 8 4.3 10.29c-.19.18-.3.43-.3.71a1.003 1.003 0 001.71.71L8 9.41l2.29 2.29c.18.19.43.3.71.3a1.003 1.003 0 00.71-1.71L9.41 8z"
-                              fill-rule="evenodd"
-                            />
-                          </svg>
-                        </span>
-                      </button>
-                    </span>
                     <input
                       class="bp3-input-ghost bp3-multi-select-tag-input-input"
+                      disabled=""
                       name="failureStrategies[0].onFailure.errors"
+                      placeholder="Search..."
                       value=""
                     />
                   </div>
@@ -184,6 +152,7 @@ exports[`<Failure Strategy/> tests renders ok with data 1`] = `
             class="bp3-control bp3-checkbox"
           >
             <input
+              checked=""
               name="failureStrategies[0].onFailure.errors"
               type="checkbox"
               value="AllErrors"
@@ -225,31 +194,9 @@ exports[`<Failure Strategy/> tests renders ok with data 1`] = `
                 class="Thumbnail--squareCardContainer thumbnail"
               >
                 <div
-                  class="bp3-card bp3-elevation-0 Card--card Thumbnail--squareCard Card--selected"
+                  class="bp3-card bp3-interactive bp3-elevation-0 Card--card Thumbnail--squareCard Card--interactive"
+                  tabindex="0"
                 >
-                  <span
-                    class="Card--corner"
-                  >
-                    <span
-                      class="Card--badge"
-                    />
-                    <span
-                      class="bp3-icon StyledProps--main StyledProps--color StyledProps--color-white"
-                      data-icon="main-tick"
-                    >
-                      <svg
-                        height="10"
-                        viewBox="0 0 11 8"
-                        width="10"
-                        xmlns="http://www.w3.org/2000/svg"
-                      >
-                        <path
-                          d="M9.219.894c.356-.38.982-.413 1.398-.072.391.32.457.857.167 1.236l-.06.07-5.138 5.486c-.362.386-.993.41-1.403.068l-.07-.064-3.2-3.214A.88.88 0 01.95 3.098a1.045 1.045 0 011.328-.003l.074.067 2.443 2.454L9.22.894z"
-                          fill="currentColor"
-                        />
-                      </svg>
-                    </span>
-                  </span>
                   <span
                     class="bp3-icon bp3-icon-delete StyledProps--main"
                     icon="delete"
@@ -276,7 +223,6 @@ exports[`<Failure Strategy/> tests renders ok with data 1`] = `
                   pipeline.failureStrategies.strategiesLabel.Ignore
                 </p>
                 <input
-                  checked=""
                   name="failureStrategies[0].onFailure.action.type"
                   type="checkbox"
                   value="Ignore"
@@ -427,48 +373,16 @@ exports[`<Failure Strategy/> tests renders ok with no data 1`] = `
                 class=""
               >
                 <div
-                  class="bp3-input bp3-tag-input bp3-fill bp3-multi-select"
+                  class="bp3-input bp3-tag-input bp3-disabled bp3-fill bp3-multi-select"
                 >
                   <div
                     class="bp3-tag-input-values"
                   >
-                    <span
-                      class="bp3-tag tag"
-                      data-tag-index="0"
-                    >
-                      <span
-                        class="bp3-text-overflow-ellipsis bp3-fill"
-                      >
-                        pipeline.failureStrategies.errorTypeLabels.Unknown
-                      </span>
-                      <button
-                        class="bp3-tag-remove"
-                        type="button"
-                      >
-                        <span
-                          class="bp3-icon bp3-icon-small-cross"
-                          icon="small-cross"
-                        >
-                          <svg
-                            data-icon="small-cross"
-                            height="16"
-                            viewBox="0 0 16 16"
-                            width="16"
-                          >
-                            <desc>
-                              small-cross
-                            </desc>
-                            <path
-                              d="M9.41 8l2.29-2.29c.19-.18.3-.43.3-.71a1.003 1.003 0 00-1.71-.71L8 6.59l-2.29-2.3a1.003 1.003 0 00-1.42 1.42L6.59 8 4.3 10.29c-.19.18-.3.43-.3.71a1.003 1.003 0 001.71.71L8 9.41l2.29 2.29c.18.19.43.3.71.3a1.003 1.003 0 00.71-1.71L9.41 8z"
-                              fill-rule="evenodd"
-                            />
-                          </svg>
-                        </span>
-                      </button>
-                    </span>
                     <input
                       class="bp3-input-ghost bp3-multi-select-tag-input-input"
+                      disabled=""
                       name="failureStrategies[0].onFailure.errors"
+                      placeholder="Search..."
                       value=""
                     />
                   </div>
@@ -480,6 +394,7 @@ exports[`<Failure Strategy/> tests renders ok with no data 1`] = `
             class="bp3-control bp3-checkbox"
           >
             <input
+              checked=""
               name="failureStrategies[0].onFailure.errors"
               type="checkbox"
               value="AllErrors"
