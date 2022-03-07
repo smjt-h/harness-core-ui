@@ -6,7 +6,7 @@
  */
 
 import type { NodeModelListener, LinkModelListener } from '@projectstorm/react-diagrams-core'
-import type { BaseModelListener, BaseModel } from '@projectstorm/react-canvas-core'
+import type { BaseModelListener } from '@projectstorm/react-canvas-core'
 import { v4 as nameSpace, v5 as uuid, version } from 'uuid'
 import { isNil } from 'lodash-es'
 import { IconNodeModel } from '@pipeline/components/Diagram/node/IconNode/IconNodeModel'
@@ -18,6 +18,7 @@ import type {
   StepGroupElementConfig
 } from 'services/cd-ng'
 import type { DependencyElement } from 'services/ci'
+import { StepType as PipelineStepType } from '@pipeline/components/PipelineSteps/PipelineStepInterface'
 import { EmptyNodeSeparator } from '../StageBuilder/StageBuilderUtil'
 import {
   CreateNewModel,
@@ -29,7 +30,6 @@ import {
   DiamondNodeModel,
   DiagramType
 } from '../../Diagram'
-import { StepType as PipelineStepType } from '@pipeline/components/PipelineSteps/PipelineStepInterface'
 
 // TODO: have to be auto generated from swagger/API
 export interface DependenciesWrapper {
@@ -816,5 +816,6 @@ export const getModelByStepType = (type: string, props: any) => {
 
 export const StepTypeToPipelineIconMap = {
   [PipelineStepType.SHELLSCRIPT]: 'command-shell-script',
-  [PipelineStepType.K8sRollingRollback]: 'undo'
+  [PipelineStepType.K8sRollingRollback]: 'undo',
+  [PipelineStepType.K8sRollingDeploy]: 'rolling'
 }

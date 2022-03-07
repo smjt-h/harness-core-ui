@@ -27,8 +27,13 @@ declare const styles: {
   readonly secondaryIcon: string
   readonly selected: string
   readonly showIcon: string
-  readonly stepGroupAddIcon: string
+  readonly stageAddIcon: string
+  readonly stageAddNode: string
+  readonly stepAddIcon: string
+  readonly stepAddNode: string
+  readonly stepGroupAddNode: string
   readonly template: string
   readonly tertiaryIcon: string
+  readonly visible: string
 }
 export default styles

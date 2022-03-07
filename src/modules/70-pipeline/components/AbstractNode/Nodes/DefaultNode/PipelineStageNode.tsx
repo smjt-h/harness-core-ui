@@ -14,6 +14,7 @@ import SVGMarker from '../SVGMarker'
 import { PipelineGraphType } from '../../types'
 import { NodeType } from '../../Node'
 import css from './DefaultNode.module.scss'
+import CreateNode from '../CreateNode/CreateNode'
 
 const iconStyle = {
   color: 'var(--white)'
@@ -25,37 +26,39 @@ function PipelineStageNode(props: any): JSX.Element {
   const nodeRef = React.useRef<HTMLDivElement>(null)
   const [showAdd, setVisibilityOfAdd] = React.useState(false)
 
-  React.useEffect(() => {
-    const currentNode = nodeRef.current
-    const onMouseOver = (_e: MouseEvent): void => {
-      if (allowAdd) {
-        setVisibilityOfAdd(true)
-      }
-    }
-    const onMouseLeave = (_e: MouseEvent): void => {
-      if (allowAdd) {
-        setTimeout(() => {
-          setVisibilityOfAdd(false)
-        }, 100)
-      }
-    }
-    if (currentNode) {
-      currentNode.addEventListener('mouseover', onMouseOver)
-      currentNode.addEventListener('mouseleave', onMouseLeave)
-    }
-    return () => {
-      if (currentNode) {
-        currentNode.removeEventListener('mouseover', onMouseOver)
-        currentNode.removeEventListener('mouseleave', onMouseLeave)
-      }
-    }
-  }, [nodeRef, allowAdd])
+  // React.useEffect(() => {
+  //   const currentNode = nodeRef.current
+  //   const onMouseOver = (_e: MouseEvent): void => {
+  //     if (allowAdd) {
+  //       setVisibilityOfAdd(true)
+  //     }
+  //   }
+  //   const onMouseLeave = (_e: MouseEvent): void => {
+  //     if (allowAdd) {
+  //       setTimeout(() => {
+  //         setVisibilityOfAdd(false)
+  //       }, 100)
+  //     }
+  //   }
+  //   if (currentNode) {
+  //     currentNode.addEventListener('mouseover', onMouseOver)
+  //     currentNode.addEventListener('mouseleave', onMouseLeave)
+  //   }
+  //   return () => {
+  //     if (currentNode) {
+  //       currentNode.removeEventListener('mouseover', onMouseOver)
+  //       currentNode.removeEventListener('mouseleave', onMouseLeave)
+  //     }
+  //   }
+  // }, [nodeRef, allowAdd])
 
   return (
-    <>
+    <div style={{ position: 'relative' }}>
       <div
-        className={`${cx(css.defaultNode, 'default-node', { [css.marginBottom]: props.isParallelNode })} draggable`}
-        ref={nodeRef}
+        className={`${cx(css.defaultNode, 'default-node')} draggable`}
+        // ref={nodeRef}
+        onMouseOver={() => allowAdd && setVisibilityOfAdd(true)}
+        onMouseLeave={() => allowAdd && setVisibilityOfAdd(false)}
         onClick={event => {
           if (props?.onClick) {
             props.onClick()
@@ -68,7 +71,6 @@ function PipelineStageNode(props: any): JSX.Element {
             identifier: props?.identifier,
             parentIdentifier: props?.parentIdentifier
           })
-          props?.setSelectedNode(props?.identifier)
         }}
         onMouseDown={e => e.stopPropagation()}
         onDragOver={event => {
@@ -173,31 +175,63 @@ function PipelineStageNode(props: any): JSX.Element {
             {props.name}
           </Text>
         )}
-        {allowAdd && (
-          <div
-            onClick={event => {
-              event.stopPropagation()
-              props?.fireEvent({
-                type: Event.AddParallelNode,
-                identifier: props?.identifier,
-                parentIdentifier: props?.parentIdentifier,
-                entityType: DiagramType.Default,
-                node: props,
-                target: event.target
-              })
-            }}
-            className={css.addNode}
-            data-nodeid="add-parallel"
-            style={{
-              width: props.graphType === PipelineGraphType.STEP_GRAPH ? 64 : 90,
-              height: props.graphType === PipelineGraphType.STEP_GRAPH ? 64 : 40,
-              visibility: showAdd ? 'visible' : 'hidden'
-            }}
-          >
-            <Icon name="plus" size={22} color={'var(--diagram-add-node-color)'} />
-          </div>
-        )}
       </div>
+      {allowAdd && (
+        <CreateNode
+          onMouseOver={() => allowAdd && setVisibilityOfAdd(true)}
+          onMouseLeave={() => allowAdd && setVisibilityOfAdd(false)}
+          onClick={event => {
+            event.stopPropagation()
+            props?.fireEvent({
+              type: Event.AddParallelNode,
+              identifier: props?.identifier,
+              parentIdentifier: props?.parentIdentifier,
+              entityType: DiagramType.Default,
+              node: props,
+              target: event.target
+            })
+          }}
+          className={cx(
+            css.addNode,
+            { [css.visible]: showAdd },
+            {
+              [css.stepAddNode]: props.graphType === PipelineGraphType.STEP_GRAPH
+            },
+            {
+              [css.stageAddNode]: props.graphType === PipelineGraphType.STAGE_GRAPH
+            }
+          )}
+          data-nodeid="add-parallel"
+        />
+        // <div
+        //   onMouseOver={() => allowAdd && setVisibilityOfAdd(true)}
+        //   onMouseLeave={() => allowAdd && setVisibilityOfAdd(false)}
+        //   onClick={event => {
+        //     event.stopPropagation()
+        //     props?.fireEvent({
+        //       type: Event.AddParallelNode,
+        //       identifier: props?.identifier,
+        //       parentIdentifier: props?.parentIdentifier,
+        //       entityType: DiagramType.Default,
+        //       node: props,
+        //       target: event.target
+        //     })
+        //   }}
+        //   className={cx(
+        //     css.addNode,
+        //     { [css.visible]: showAdd },
+        //     {
+        //       [css.stepAddNode]: props.graphType === PipelineGraphType.STEP_GRAPH
+        //     },
+        //     {
+        //       [css.stageAddNode]: props.graphType === PipelineGraphType.STAGE_GRAPH
+        //     }
+        //   )}
+        //   data-nodeid="add-parallel"
+        // >
+        //   <Icon name="plus" size={22} color={'var(--diagram-add-node-color)'} />
+        // </div>
+      )}
       {!props.isParallelNode && (
         <div
           data-linkid={props?.identifier}
@@ -226,9 +260,16 @@ function PipelineStageNode(props: any): JSX.Element {
               destination: props
             })
           }}
-          className={cx(css.addNodeIcon, css.left, {
-            [css.stepGroupAddIcon]: props.graphType === PipelineGraphType.STEP_GRAPH
-          })}
+          className={cx(
+            css.addNodeIcon,
+            css.left,
+            {
+              [css.stepAddIcon]: props.graphType === PipelineGraphType.STEP_GRAPH
+            },
+            {
+              [css.stageAddIcon]: props.graphType === PipelineGraphType.STAGE_GRAPH
+            }
+          )}
         >
           <Icon name="plus" color={Color.WHITE} />
         </div>
@@ -263,14 +304,21 @@ function PipelineStageNode(props: any): JSX.Element {
                 destination: props
               })
             }}
-            className={cx(css.addNodeIcon, css.right, {
-              [css.stepGroupAddIcon]: props.graphType === PipelineGraphType.STEP_GRAPH
-            })}
+            className={cx(
+              css.addNodeIcon,
+              css.right,
+              {
+                [css.stepAddIcon]: props.graphType === PipelineGraphType.STEP_GRAPH
+              },
+              {
+                [css.stageAddIcon]: props.graphType === PipelineGraphType.STAGE_GRAPH
+              }
+            )}
           >
             <Icon name="plus" color={Color.WHITE} />
           </div>
         )}
-    </>
+    </div>
   )
 }
 

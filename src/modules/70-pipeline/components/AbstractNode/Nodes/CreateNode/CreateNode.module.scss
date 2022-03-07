@@ -1,31 +1,40 @@
 .createNode {
-  cursor: pointer;
   height: 40px;
   width: 90px;
-  display: block;
+  background: var(--white);
+  border: 2px dashed var(--grey-400);
+  border-radius: 8px;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  cursor: pointer;
+  margin: 0;
+  box-shadow: -1px 4px 7px 0 rgba(135, 149, 159, 0.27);
+  pointer-events: all;
 
-  .createNew {
-    &:hover {
-      box-shadow: 0px 8px 16px 0px #60617029;
-    }
-    border: 2px dashed var(--grey-400) !important;
+  &:hover {
+    box-shadow: 0px 8px 16px 0px #60617029;
+  }
 
-    &.selected {
-      border-color: var(--primary-7) !important;
-    }
+  &.selected {
+    border-color: var(--primary-7) !important;
+  }
 
-    &.disabled {
-      background-color: var(--grey-200);
-      cursor: not-allowed;
-    }
+  &.disabled {
+    background-color: var(--grey-200);
+    cursor: not-allowed;
   }
 
   [data-name*='node-name'] {
     word-break: break-word;
   }
-}
 
-.steps {
-  width: 90px !important ;
-  height: 40px !important;
+  &.stepAddIcon {
+    height: 64px !important;
+    width: 64px !important;
+  }
+  &.stageAddIcon {
+    height: 40px !important;
+    width: 90px !important;
+  }
 }
