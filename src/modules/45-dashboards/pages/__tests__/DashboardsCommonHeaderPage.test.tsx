@@ -39,7 +39,13 @@ describe('DashboardsHeader', () => {
     expect(screen.getByText('Home')).toBeInTheDocument()
   })
 
-  test('it should display no breadcrumbs', async () => {
+  test('it should display last breadcrumb as the title', async () => {
+    renderComponent()
+
+    expect(screen.getAllByText('Dashboards')).toHaveLength(2)
+  })
+
+  test('it should include default breadcrumb in breadcrumbs and title', async () => {
     useDashboardsContextMock.mockReturnValue({
       includeBreadcrumbs: jest.fn(),
       breadcrumbs: []
@@ -47,7 +53,7 @@ describe('DashboardsHeader', () => {
 
     renderComponent()
 
-    expect(screen.queryByText('Home')).not.toBeInTheDocument()
+    expect(screen.getAllByText('common.dashboards')).toHaveLength(2)
   })
 
   test('it should open the getting started sidebar when clicking the getStarted button', async () => {

@@ -1401,16 +1401,17 @@ const routes = {
   toCEPerspectiveDashboard: withAccountId(() => `/ce/perspective`),
   toCEAnomalyDetection: withAccountId(() => `/ce/anomaly-detection`),
   /********************************************************************************************************************/
-  toCustomDashboard: withAccountId(() => '/home/dashboards'),
+  toOldCustomDashboard: withAccountId(() => '/home/dashboards*'),
+  toCustomDashboard: withAccountId(() => '/dashboards'),
   toCustomDashboardHome: withAccountId(
-    ({ folderId }: { folderId?: string }) => `/home/dashboards/folder/${folderId ? folderId : 'shared'}`
+    ({ folderId }: { folderId?: string }) => `/dashboards/folder/${folderId ? folderId : 'shared'}`
   ),
   toViewCustomDashboard: withAccountId(
     ({ viewId, folderId }: { viewId: string; folderId: string }) =>
-      `/home/dashboards/folder/${folderId ? folderId : 'shared'}/view/${viewId}`
+      `/dashboards/folder/${folderId ? folderId : 'shared'}/view/${viewId}`
   ),
-  toCustomFolderHome: withAccountId(() => '/home/dashboards/folders'),
-  toViewCustomFolder: withAccountId(({ folderId }: { folderId: string }) => `/home/dashboards/folder/view/${folderId}`)
+  toCustomFolderHome: withAccountId(() => '/dashboards/folders'),
+  toViewCustomFolder: withAccountId(({ folderId }: { folderId: string }) => `/dashboards/folder/${folderId}`)
 
   /****************** Secret Usage************************************************************************************/
 }

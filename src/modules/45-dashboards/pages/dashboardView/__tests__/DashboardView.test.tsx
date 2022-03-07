@@ -9,6 +9,7 @@ import React from 'react'
 import { render, RenderResult, screen } from '@testing-library/react'
 import { TestWrapper } from '@common/utils/testUtils'
 import routes from '@common/RouteDefinitions'
+import { accountPathProps } from '@common/utils/routeUtils'
 import * as dashboardsContext from '@dashboards/pages/DashboardsContext'
 import * as CustomDashboardsService from '@dashboards/services/CustomDashboardsService'
 import DashboardViewPage from '../DashboardView'
@@ -17,11 +18,11 @@ const accountId = 'ggre4325'
 const folderId = 'gh544'
 const viewId = '45udb23'
 
-const renderComponent = (): RenderResult =>
+const renderComponent = (folder = folderId): RenderResult =>
   render(
     <TestWrapper
-      path={routes.toViewCustomDashboard({ viewId, folderId, accountId })}
-      pathParams={{ accountId: accountId, folderId: folderId, viewId: viewId }}
+      path={routes.toViewCustomDashboard({ ...accountPathProps, folderId: ':folderId', viewId: ':viewId' })}
+      pathParams={{ accountId: accountId, folderId: folder, viewId: viewId }}
     >
       <DashboardViewPage />
     </TestWrapper>
@@ -76,13 +77,23 @@ describe('DashboardView', () => {
     expect(screen.getByText('this the actual error message')).toBeInTheDocument()
   })
 
-  test('it should not include a folder link in breadcrumbs when using the shared folder', async () => {
-    useGetFolderDetailMock.mockReturnValue({})
-
+  test('it should include a folder link in breadcrumbs when using a named folder', async () => {
     renderComponent()
 
     expect(includeBreadcrumbs).toBeCalledWith([
-      { label: 'dashboard name', url: '/account/undefined/home/dashboards/folder/shared/view/undefined' }
+      { label: 'dashboards.homePage.folders', url: `/account/${accountId}/dashboards/folders` },
+      { label: 'folder name', url: `/account/${accountId}/dashboards/folder/${folderId}` },
+      { label: 'dashboard name', url: `/account/${accountId}/dashboards/folder/${folderId}/view/${viewId}` }
+    ])
+  })
+
+  test('it should not include a folder link in breadcrumbs when using the shared folder', async () => {
+    useGetFolderDetailMock.mockReturnValue({})
+
+    renderComponent('shared')
+
+    expect(includeBreadcrumbs).toBeCalledWith([
+      { label: 'dashboard name', url: `/account/${accountId}/dashboards/folder/shared/view/${viewId}` }
     ])
   })
 })

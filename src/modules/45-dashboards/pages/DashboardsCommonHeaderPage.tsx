@@ -24,7 +24,7 @@ const DashboardsHeader: React.FC = () => {
   const { accountId, folderId } = useParams<{ accountId: string; folderId: string }>()
   const [isOpen, setDrawerOpen] = useState(false)
 
-  const title = breadcrumbs.length ? breadcrumbs[breadcrumbs.length - 1].label : ''
+  const title = breadcrumbs.length ? breadcrumbs[breadcrumbs.length - 1].label : getString('common.dashboards')
 
   return (
     <Page.Header

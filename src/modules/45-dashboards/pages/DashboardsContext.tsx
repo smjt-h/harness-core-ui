@@ -6,11 +6,7 @@
  */
 
 import React, { useState, useContext } from 'react'
-import { useParams } from 'react-router-dom'
 import type { Breadcrumb } from '@harness/uicore'
-import { useStrings } from 'framework/strings'
-import routes from '@common/RouteDefinitions'
-import type { AccountPathProps } from '@common/interfaces/RouteInterfaces'
 
 export interface DashboardsContextProps {
   breadcrumbs: Breadcrumb[]
@@ -20,19 +16,10 @@ export interface DashboardsContextProps {
 const DashboardsContext = React.createContext<DashboardsContextProps>({} as DashboardsContextProps)
 
 export function DashboardsContextProvider(props: React.PropsWithChildren<unknown>): React.ReactElement {
-  const { getString } = useStrings()
-  const { accountId } = useParams<AccountPathProps>()
-
-  const standardBreadcrumbs: Breadcrumb[] = [
-    {
-      url: routes.toCustomDashboardHome({ accountId }),
-      label: getString('common.dashboards')
-    }
-  ]
-  const [breadcrumbs, setBreadcrumbs] = useState<Breadcrumb[]>(standardBreadcrumbs)
+  const [breadcrumbs, setBreadcrumbs] = useState<Breadcrumb[]>([])
 
   const includeBreadcrumbs = (breadcrumbsToAdd: Breadcrumb[]): void => {
-    setBreadcrumbs([...standardBreadcrumbs, ...breadcrumbsToAdd])
+    setBreadcrumbs(breadcrumbsToAdd)
   }
 
   return (

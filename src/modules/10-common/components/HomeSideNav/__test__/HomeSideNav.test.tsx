@@ -6,9 +6,8 @@
  */
 
 import React from 'react'
-import { render, screen } from '@testing-library/react'
+import { render } from '@testing-library/react'
 import { TestWrapper } from '@common/utils/testUtils'
-import * as featureFlags from '@common/hooks/useFeatureFlag'
 import * as LicenseStoreContext from 'framework/LicenseStore/LicenseStoreContext'
 import { LICENSE_STATE_VALUES } from 'framework/LicenseStore/licenseStoreUtil'
 import HomeSideNav from '../HomeSideNav'
@@ -45,27 +44,5 @@ describe('HomeSidenav', () => {
       </TestWrapper>
     )
     expect(container).toMatchSnapshot()
-  })
-
-  test('Hide dashboards by default', () => {
-    jest.spyOn(featureFlags, 'useFeatureFlags').mockReturnValue({})
-    render(
-      <TestWrapper>
-        <HomeSideNav />
-      </TestWrapper>
-    )
-    expect(screen.queryByText('common.dashboards')).not.toBeInTheDocument()
-  })
-
-  test('Show dashboards when enabled', () => {
-    jest.spyOn(featureFlags, 'useFeatureFlags').mockReturnValue({
-      NG_DASHBOARDS: true
-    })
-    render(
-      <TestWrapper>
-        <HomeSideNav />
-      </TestWrapper>
-    )
-    expect(screen.getByText('common.dashboards')).toBeInTheDocument()
   })
 })
