@@ -27,7 +27,6 @@ import type { StageType } from '@pipeline/utils/stageHelpers'
 import type { DeploymentStageElementConfig, StageElementWrapper } from '@pipeline/utils/pipelineTypes'
 import type { TemplateSummaryResponse } from 'services/template-ng'
 import type { SelectorData } from '@pipeline/components/PipelineStudio/PipelineContext/PipelineActions'
-import { SplitViewTypes } from '@pipeline/components/PipelineStudio/PipelineContext/PipelineActions'
 import { EmptyStageName } from '../PipelineConstants'
 import type { PipelineContextInterface, StagesMap } from '../PipelineContext/PipelineContext'
 import { getStageFromPipeline } from '../PipelineContext/helpers'
@@ -439,25 +438,11 @@ export const getLinkEventListeners = (
   stageMap: Map<string, StageState>
 ): LinkModelListener => {
   const {
-    state: {
-      pipeline,
-      pipelineView: {
-        isSplitViewOpen,
-        splitViewData: { type = SplitViewTypes.StageView }
-      },
-      pipelineView,
-      isInitialized,
-      selectionState: { selectedStageId },
-      templateTypes
-    },
+    state: { pipeline, templateTypes },
     contextType = 'Pipeline',
-    isReadonly,
     stagesMap,
-    updatePipeline,
-    updatePipelineView,
     renderPipelineStage,
     getStageFromPipeline,
-    setSelection,
     setTemplateTypes
   } = pipelineContext
 
@@ -573,23 +558,16 @@ export const getNodeEventListerner = (
   const {
     state: {
       pipeline,
-      pipelineView: {
-        isSplitViewOpen,
-        splitViewData: { type = SplitViewTypes.StageView }
-      },
+      pipelineView: { isSplitViewOpen },
       pipelineView,
-      isInitialized,
-      selectionState: { selectedStageId },
       templateTypes
     },
     contextType = 'Pipeline',
-    isReadonly,
     stagesMap,
     updatePipeline,
     updatePipelineView,
     renderPipelineStage,
     getStageFromPipeline,
-    setSelection,
     setTemplateTypes
   } = pipelineContext
   return {
