@@ -46,7 +46,6 @@ export function MiniPolicySetRenderer({ policySetId }: MiniPolicySetRendererProp
     },
     policyset: policySetId
   })
-  console.log(policySet)
 
   if (error) {
     showError(getErrorMessage(error))
