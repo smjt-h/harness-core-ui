@@ -16,6 +16,7 @@ interface DrawSVGPathOptions {
   direction?: 'rtl' | 'ltl' | 'rtr'
   styles?: React.CSSProperties
   nextNode?: string
+  parentNode?: string
 }
 /**
  * Direction of SVG Path (Only supported for straight horizontal lines)
@@ -74,21 +75,23 @@ const getFinalSVGArrowPath = (id1 = '', id2 = '', options?: DrawSVGPathOptions):
       L${node2.left},${node2VerticalMid}`
 
       let secondCurve = ''
-      if (options?.nextNode) {
-        let nextNode = getComputedPosition(options.nextNode, options?.parentElement)
-        if (!nextNode) return { [id1]: '' }
-        let nextNodeVerticalMid = nextNode.top + nextNode.height / 2
+      if (options?.nextNode && options?.parentNode) {
+        const nextNode = getComputedPosition(options.nextNode, options?.parentElement)
+        const parentNode = getComputedPosition(options.parentNode, options?.parentElement)
+        if (!nextNode || !parentNode) return { [id1]: '' }
+        const newRight = parentNode?.right > node2.right ? parentNode?.right : node2.right
+        const nextNodeVerticalMid = nextNode.top + nextNode.height / 2
         secondCurve = `M${node2.right},${node2VerticalMid}
-        L${nextNode.left - 115},${node2VerticalMid}
-        Q${nextNode.left - 100},${node2VerticalMid} ${nextNode.left - 100},${node2VerticalMid - 20}
-        L${nextNode.left - 100},${nextNodeVerticalMid + 20}
-        Q${nextNode.left - 100},${nextNodeVerticalMid} ${nextNode.left - 85},${nextNodeVerticalMid}`
+        L${newRight + 10},${node2VerticalMid}
+        Q${newRight + 25},${node2VerticalMid} ${newRight + 25},${node2VerticalMid - 20}
+        L${newRight + 25},${nextNodeVerticalMid + 20}
+        Q${newRight + 25},${nextNodeVerticalMid} ${newRight + 40},${nextNodeVerticalMid}`
       } else {
         secondCurve = `M${node2.right},${node2VerticalMid}
         L${node2.right + 10},${node2VerticalMid}
         Q${node2.right + 25},${node2VerticalMid} ${node2.right + 25},${node2VerticalMid - 20}
         L${node2.right + 25},${node1VerticalMid + 20}
-        Q${node2.right + 25},${node1VerticalMid} ${node2.right + 40},${node1VerticalMid}`
+        Q${node2.right + 25},${node1VerticalMid} ${node2.right - 40},${node1VerticalMid}`
       }
       finalSVGPath = firstCurve + secondCurve
     } else {
@@ -167,8 +170,8 @@ const getSVGLinksFromPipeline = (
   let prevElement: PipelineGraphState
   states?.forEach((state, index) => {
     if (state?.children?.length) {
-      let nextNodeId = states?.[index + 1]?.identifier || endNodeId
-      getParallelNodeLinks(state?.children, state, resultArr, parentElement, nextNodeId)
+      const nextNodeId = states?.[index + 1]?.identifier || endNodeId
+      getParallelNodeLinks(state?.children, state, resultArr, parentElement, nextNodeId, state.identifier)
     }
     if (prevElement) {
       resultArr.push(
@@ -185,14 +188,16 @@ const getParallelNodeLinks = (
   firstStage: PipelineGraphState | undefined,
   resultArr: { [key: string]: string }[] = [],
   parentElement?: HTMLDivElement,
-  nextNode?: string
+  nextNode?: string,
+  parentNode?: string
 ): void => {
   stages?.forEach(stage => {
     resultArr.push(
       getFinalSVGArrowPath(firstStage?.identifier as string, stage?.identifier, {
         isParallelNode: true,
         parentElement,
-        nextNode
+        nextNode,
+        parentNode
       })
     )
   })
