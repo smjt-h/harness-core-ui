@@ -67,11 +67,15 @@ const getK8sYamlSchema = ({ isEdit }: K8sYamlSchemaProps) => ({
         service: {
           $id: '#/properties/spec/properties/service',
           type: 'object',
-          required: ['name'],
+          required: ['name', 'port'],
           properties: {
             name: {
               $id: '#/properties/spec/properties/service/properties/name',
               type: 'string'
+            },
+            port: {
+              $id: '#/properties/spec/properties/service/properties/port',
+              type: 'integer'
             }
           }
         },
@@ -195,7 +199,7 @@ const getK8sIngressTemplate = ({
       }
     },
     spec: {
-      service: { name: '<replace with your service name>' },
+      service: { name: '<replace with your service name>', port: 80 },
       ingress: {
         name: '<replace with ingress name>',
         controllerName: 'nginx'
