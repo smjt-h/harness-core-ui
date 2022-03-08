@@ -105,8 +105,8 @@ function GroupNode(props: any): React.ReactElement {
         ></div>
 
         <div
-          id={props.identifier}
-          data-nodeid={props.identifier}
+          id={props.id}
+          data-nodeid={props.id}
           className={cx(css.defaultCard, { [css.selected]: props?.isSelected })}
           style={{
             width: props.width || 90,

@@ -6,6 +6,7 @@ import { StepTypeToPipelineIconMap } from '@pipeline/components/PipelineStudio/E
 import type { StepType } from '@pipeline/components/PipelineSteps/PipelineStepInterface'
 import type { PipelineGraphState } from '../types'
 import { PipelineGraphType } from '../types'
+import { v4 as uuid } from 'uuid'
 
 const INITIAL_ZOOM_LEVEL = 1
 const ZOOM_INC_DEC_LEVEL = 0.1
@@ -163,13 +164,11 @@ const getSVGLinksFromPipeline = (
   let prevElement: PipelineGraphState
   states?.forEach((state, index) => {
     if (state?.children?.length) {
-      const nextNodeId = states?.[index + 1]?.identifier || endNodeId
-      getParallelNodeLinks(state?.children, state, resultArr, parentElement, nextNodeId, state.identifier)
+      const nextNodeId = states?.[index + 1]?.id || endNodeId
+      getParallelNodeLinks(state?.children, state, resultArr, parentElement, nextNodeId, state.id)
     }
     if (prevElement) {
-      resultArr.push(
-        getFinalSVGArrowPath(prevElement.identifier, state.identifier, { isParallelNode: false, parentElement })
-      )
+      resultArr.push(getFinalSVGArrowPath(prevElement.id, state.id, { isParallelNode: false, parentElement }))
     }
     prevElement = state
   })
@@ -186,7 +185,7 @@ const getParallelNodeLinks = (
 ): void => {
   stages?.forEach(stage => {
     resultArr.push(
-      getFinalSVGArrowPath(firstStage?.identifier as string, stage?.identifier, {
+      getFinalSVGArrowPath(firstStage?.id as string, stage?.id, {
         isParallelNode: true,
         parentElement,
         nextNode,
@@ -234,6 +233,7 @@ const trasformStageData = (stages: StageElementWrapperConfig[], graphType: Pipel
     if (stage?.stage) {
       const { nodeType, iconName } = getNodeInfo(stage.stage.type, graphType)
       finalData.push({
+        id: uuid() as string,
         identifier: stage.stage.identifier as string,
         name: stage.stage.name as string,
         type: stage.stage.type as string,
@@ -246,6 +246,7 @@ const trasformStageData = (stages: StageElementWrapperConfig[], graphType: Pipel
       const [first, ...rest] = stage.parallel
       const { nodeType, iconName } = getNodeInfo(first?.stage?.type, graphType)
       finalData.push({
+        id: uuid() as string,
         identifier: first?.stage?.identifier as string,
         name: first?.stage?.name as string,
         nodeType: nodeType as string,
@@ -266,6 +267,7 @@ const trasformStepsData = (steps: ExecutionWrapperConfig[], graphType: PipelineG
     if (step?.step) {
       const { nodeType, iconName } = getNodeInfo(step.step.type, graphType)
       finalData.push({
+        id: uuid() as string,
         identifier: step.step.identifier as string,
         name: step.step.name as string,
         type: step.step.type as string,
@@ -279,6 +281,7 @@ const trasformStepsData = (steps: ExecutionWrapperConfig[], graphType: PipelineG
       if (first.stepGroup) {
         const { iconName } = getNodeInfo('', graphType)
         finalData.push({
+          id: uuid() as string,
           identifier: first.stepGroup?.identifier as string,
           name: first.stepGroup?.name as string,
           type: 'StepGroup',
@@ -291,6 +294,7 @@ const trasformStepsData = (steps: ExecutionWrapperConfig[], graphType: PipelineG
       } else {
         const { nodeType, iconName } = getNodeInfo(first?.step?.type, graphType)
         finalData.push({
+          id: uuid() as string,
           identifier: first?.step?.identifier as string,
           name: first?.step?.name as string,
           type: first?.step?.type as string,
@@ -304,6 +308,7 @@ const trasformStepsData = (steps: ExecutionWrapperConfig[], graphType: PipelineG
     } else {
       const { iconName } = getNodeInfo('', graphType)
       finalData.push({
+        id: uuid() as string,
         identifier: step.stepGroup?.identifier as string,
         name: step.stepGroup?.name as string,
         type: 'StepGroup',

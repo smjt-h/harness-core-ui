@@ -176,7 +176,8 @@ const PipelineGraphNodeWithoutCollapse = React.forwardRef(
             )}
           </div>
           {data?.children?.map((currentNodeData, index) => {
-            const ChildNodeComponent: React.FC<any> | undefined = getNode?.(data?.type)?.component || defaultNode
+            const ChildNodeComponent: React.FC<any> | undefined =
+              getNode?.(currentNodeData?.type)?.component || defaultNode
             const lastChildIndex = defaultTo(data.children?.length, 0) - 1
             const indexRelativeToParent = index + 1 // counting parent as 0 and children from 1
             const isCurrentChildLast = index === lastChildIndex

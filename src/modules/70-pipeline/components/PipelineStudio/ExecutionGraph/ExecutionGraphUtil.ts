@@ -817,5 +817,6 @@ export const getModelByStepType = (type: string, props: any) => {
 export const StepTypeToPipelineIconMap = {
   [PipelineStepType.SHELLSCRIPT]: 'command-shell-script',
   [PipelineStepType.K8sRollingRollback]: 'undo',
-  [PipelineStepType.K8sRollingDeploy]: 'rolling'
+  [PipelineStepType.K8sRollingDeploy]: 'rolling',
+  [PipelineStepType.Barrier]: 'barrier-open'
 }

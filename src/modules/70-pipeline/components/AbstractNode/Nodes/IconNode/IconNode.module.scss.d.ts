@@ -7,17 +7,9 @@
  **/
 // this is an auto-generated file, do not update this manually
 declare const styles: {
-  readonly closeNode: string
-  readonly collapseIcon: string
-  readonly firstnode: string
-  readonly horizontalBar: string
-  readonly marginBottom: string
-  readonly readonly: string
-  readonly stepGroup: string
-  readonly stepGroupBody: string
-  readonly stepGroupHeader: string
-  readonly stepGroupNode: string
-  readonly svgLeftJointPoint: string
-  readonly svgRightJointPoint: string
+  readonly hoverName: string
+  readonly iconNode: string
+  readonly iconNodeContainer: string
+  readonly inComplete: string
 }
 export default styles

@@ -5,45 +5,29 @@
  * https://polyformproject.org/wp-content/uploads/2020/06/PolyForm-Shield-1.0.0.txt.
  */
 
-import React from 'react'
+import * as React from 'react'
+import type { DiagramEngine } from '@projectstorm/react-diagrams-core'
+import { isEmpty } from 'lodash-es'
 import cx from 'classnames'
-import type { IconName } from '@wings-software/uicore'
-import { Icon, Text, Color, Button, ButtonVariation } from '@wings-software/uicore'
+import { Text, IconName, Icon, Button, ButtonVariation, Color } from '@wings-software/uicore'
+import { Position } from '@blueprintjs/core'
+import cssDefault from '../DefaultNode/DefaultNode.module.scss'
+import css from './IconNode.module.scss'
 import { DiagramDrag, DiagramType, Event } from '@pipeline/components/Diagram'
-import SVGMarker from '../SVGMarker'
+import CreateNode from '../CreateNode/CreateNode'
 import { PipelineGraphType } from '../../types'
 import { NodeType } from '../../Node'
-import css from './DefaultNode.module.scss'
-import CreateNode from '../CreateNode/CreateNode'
 
-const iconStyle = {
-  color: 'var(--white)'
-}
-const SECONDARY_ICON: IconName = 'command-echo'
-
-function PipelineStageNode(props: any): JSX.Element {
+export function IconNode(props: any): React.ReactElement {
+  const [dropable, setDropable] = React.useState(false)
+  const [dragging, setDragging] = React.useState(false)
   const allowAdd = props.allowAdd ?? false
-  const [showAdd, setVisibilityOfAdd] = React.useState(false)
 
+  const [showAdd, setVisibilityOfAdd] = React.useState(false)
+  const [addClicked, setAddClicked] = React.useState(false)
   return (
     <div
-      className={`${cx(css.defaultNode, 'default-node')} draggable`}
-      // ref={nodeRef}
-      onMouseOver={() => allowAdd && setVisibilityOfAdd(true)}
-      onMouseLeave={() => allowAdd && setVisibilityOfAdd(false)}
-      onClick={event => {
-        event.stopPropagation()
-        if (props?.onClick) {
-          props.onClick()
-          return
-        }
-        props?.fireEvent({
-          type: Event.ClickNode,
-          entityType: DiagramType.Default,
-          identifier: props?.identifier,
-          parentIdentifier: props?.parentIdentifier
-        })
-      }}
+      className={cx(cssDefault.defaultNode, css.iconNodeContainer)}
       onMouseDown={e => e.stopPropagation()}
       onDragOver={event => {
         event.stopPropagation()
@@ -64,6 +48,19 @@ function PipelineStageNode(props: any): JSX.Element {
           }
         }
       }}
+      onClick={event => {
+        event.stopPropagation()
+        if (props?.onClick) {
+          props.onClick()
+          return
+        }
+        props?.fireEvent({
+          type: Event.ClickNode,
+          entityType: DiagramType.Default,
+          identifier: props?.identifier,
+          parentIdentifier: props?.parentIdentifier
+        })
+      }}
       onDrop={event => {
         event.stopPropagation()
         props?.fireEvent({
@@ -76,16 +73,14 @@ function PipelineStageNode(props: any): JSX.Element {
     >
       <div
         id={props.id}
-        data-nodeid={props.id}
+        className={cx(
+          cssDefault.defaultCard,
+          css.iconNode,
+          { [cssDefault.selected]: props.isSelected },
+          { [cssDefault.selected]: dropable }
+        )}
+        data-nodeid={props.identifier}
         draggable={true}
-        className={cx(css.defaultCard, { [css.selected]: props?.isSelected })}
-        style={{
-          width: props.graphType === PipelineGraphType.STEP_GRAPH ? 64 : 90,
-          height: props.graphType === PipelineGraphType.STEP_GRAPH ? 64 : 40,
-          marginTop: 32 - (props.height || 64) / 2,
-          cursor: props.disableClick ? 'not-allowed' : props.draggable ? 'move' : 'pointer',
-          opacity: props.dragging ? 0.4 : 1
-        }}
         onDragStart={event => {
           event.stopPropagation()
           event.dataTransfer.setData(DiagramDrag.NodeDrag, JSON.stringify(props))
@@ -102,40 +97,36 @@ function PipelineStageNode(props: any): JSX.Element {
           event.stopPropagation()
         }}
       >
-        <div className={css.markerStart}>
-          <SVGMarker />
-        </div>
-        <div className="execution-running-animation" />
-        {props.icon && <Icon size={28} name={props.icon} inverse={props?.isSelected} />}
-        {SECONDARY_ICON && <Icon className={css.secondaryIcon} size={8} name={SECONDARY_ICON} />}
-        <Button
-          className={cx(css.closeNode, { [css.readonly]: props.readonly })}
-          minimal
-          icon="cross"
-          variation={ButtonVariation.PRIMARY}
-          iconProps={{ size: 10 }}
-          onMouseDown={e => {
-            e.stopPropagation()
-            props?.fireEvent({
-              type: Event.RemoveNode,
-              identifier: props?.identifier,
-              node: props
-            })
-          }}
-          withoutCurrentColor={true}
-        />
-        <div className={css.markerEnd}>
-          <SVGMarker />
+        <div>
+          {props.isInComplete && <Icon className={css.inComplete} size={12} name={'warning-sign'} color="orange500" />}
+          {props.canDelete && (
+            <Button
+              className={cx(cssDefault.closeNode)}
+              variation={ButtonVariation.PRIMARY}
+              minimal
+              withoutCurrentColor
+              icon="cross"
+              iconProps={{ size: 10 }}
+              //   onMouseDown={e => onClick(e, props.node)}
+            />
+          )}
+          <Icon name={props.icon as IconName} size={50} inverse={props.isSelected} />
         </div>
       </div>
-      {props.name && (
+      {!isEmpty(props.name) && (
         <Text
-          width={props.graphType === PipelineGraphType.STEP_GRAPH ? 64 : 90}
           font={{ size: 'normal', align: 'center' }}
-          color={props.defaultSelected ? Color.GREY_900 : Color.GREY_600}
-          className={css.nameText}
-          padding={'small'}
+          style={{
+            cursor: 'pointer',
+            lineHeight: '1.6',
+            overflowWrap: 'normal',
+            wordBreak: 'keep-all',
+            marginLeft: '0px',
+            marginRight: '0px'
+          }}
+          padding="xsmall"
           lineClamp={2}
+          tooltipProps={{ position: Position.RIGHT, portalClassName: css.hoverName }}
         >
           {props.name}
         </Text>
@@ -156,13 +147,13 @@ function PipelineStageNode(props: any): JSX.Element {
             })
           }}
           className={cx(
-            css.addNode,
-            { [css.visible]: showAdd },
+            cssDefault.addNode,
+            { [cssDefault.visible]: showAdd },
             {
-              [css.stepAddNode]: props.graphType === PipelineGraphType.STEP_GRAPH
+              [cssDefault.stepAddNode]: props.graphType === PipelineGraphType.STEP_GRAPH
             },
             {
-              [css.stageAddNode]: props.graphType === PipelineGraphType.STAGE_GRAPH
+              [cssDefault.stageAddNode]: props.graphType === PipelineGraphType.STAGE_GRAPH
             }
           )}
           data-nodeid="add-parallel"
@@ -197,13 +188,13 @@ function PipelineStageNode(props: any): JSX.Element {
             })
           }}
           className={cx(
-            css.addNodeIcon,
-            css.left,
+            cssDefault.addNodeIcon,
+            cssDefault.left,
             {
-              [css.stepAddIcon]: props.graphType === PipelineGraphType.STEP_GRAPH
+              [cssDefault.stepAddIcon]: props.graphType === PipelineGraphType.STEP_GRAPH
             },
             {
-              [css.stageAddIcon]: props.graphType === PipelineGraphType.STAGE_GRAPH
+              [cssDefault.stageAddIcon]: props.graphType === PipelineGraphType.STAGE_GRAPH
             }
           )}
         >
@@ -241,13 +232,13 @@ function PipelineStageNode(props: any): JSX.Element {
               })
             }}
             className={cx(
-              css.addNodeIcon,
-              css.right,
+              cssDefault.addNodeIcon,
+              cssDefault.right,
               {
-                [css.stepAddIcon]: props.graphType === PipelineGraphType.STEP_GRAPH
+                [cssDefault.stepAddIcon]: props.graphType === PipelineGraphType.STEP_GRAPH
               },
               {
-                [css.stageAddIcon]: props.graphType === PipelineGraphType.STAGE_GRAPH
+                [cssDefault.stageAddIcon]: props.graphType === PipelineGraphType.STAGE_GRAPH
               }
             )}
           >
@@ -257,5 +248,3 @@ function PipelineStageNode(props: any): JSX.Element {
     </div>
   )
 }
-
-export default PipelineStageNode

@@ -66,6 +66,7 @@ import {
   DefaultNodeModelGenerics,
   DiagramType,
   Event,
+  RollbackToggleSwitch,
   StepGroupNodeLayerModel,
   StepGroupNodeLayerOptions,
   StepsType
@@ -75,11 +76,15 @@ import css from './ExecutionGraph.module.scss'
 import { getPipelineGraphData } from '@pipeline/components/AbstractNode/PipelineGraph/PipelineGraphUtils'
 import PipelineStageNode from '@pipeline/components/AbstractNode/Nodes/DefaultNode/PipelineStageNode'
 import { PipelineGraphType } from '@pipeline/components/AbstractNode/types'
+import { DiamondNodeWidget } from '@pipeline/components/AbstractNode/Nodes/DiamondNode/DiamondNode'
+import { IconNode } from '@pipeline/components/AbstractNode/Nodes/IconNode/IconNode'
 
 const diagram = new DiagramFactory('graph')
 
 diagram.registerNode('Deployment', PipelineStageNode, true)
 diagram.registerNode('StepGroup', DiagramNodes[NodeType.StepGroupNode])
+diagram.registerNode('Approval', DiamondNodeWidget)
+diagram.registerNode('Barrier', IconNode)
 
 export const CDPipelineStudioNew = diagram.render()
 export interface ExecutionGraphRefObj {
@@ -820,6 +825,10 @@ function ExecutionGraphRef<T extends StageElementConfig>(
     })
   }, [engine])
 
+  const onRollbackToggleSwitchClick = (type: StepsType) => {
+    setState(prev => ({ ...prev, isRollback: type === StepsType.Rollback }))
+  }
+
   // renderParallelNodes(model)
   model.setSelectedNodeId(selectedStepId)
   model.addUpdateGraph({
@@ -1003,11 +1012,24 @@ function ExecutionGraphRef<T extends StageElementConfig>(
           </Text>
         )}
         {localStorage.getItem('IS_NEW_PIP_STUDIO_ACTIVE') === 'true' ? (
-          <CDPipelineStudioNew
-            graphType={PipelineGraphType.STEP_GRAPH}
-            selectedNodeId={selectedStepId}
-            data={getPipelineGraphData(stage?.stage?.spec?.execution?.steps)}
-          />
+          <>
+            <CDPipelineStudioNew
+              graphType={PipelineGraphType.STEP_GRAPH}
+              selectedNodeId={selectedStepId}
+              data={
+                state?.isRollback
+                  ? getPipelineGraphData(stage?.stage?.spec?.execution?.rollbackSteps)
+                  : getPipelineGraphData(stage?.stage?.spec?.execution?.steps)
+              }
+            />
+            {hasRollback && (
+              <RollbackToggleSwitch
+                style={{ top: 62, ...rollBackPropsStyle }}
+                active={state.isRollback ? StepsType.Rollback : StepsType.Normal}
+                onChange={type => onRollbackToggleSwitchClick(type)}
+              />
+            )}
+          </>
         ) : (
           <>
             <CanvasWidget

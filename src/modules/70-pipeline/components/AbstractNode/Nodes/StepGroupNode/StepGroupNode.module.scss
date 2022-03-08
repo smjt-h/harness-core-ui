@@ -12,6 +12,40 @@
     margin-bottom: 20px;
   }
   position: relative;
+
+  &:hover .closeNode {
+    opacity: 1;
+    &.readonly {
+      opacity: 0;
+    }
+    pointer-events: initial;
+  }
+
+  .closeNode {
+    --icon-padding: 0 !important;
+    position: absolute;
+    top: 0;
+    opacity: 0;
+    pointer-events: none;
+    transition: opacity 0.2s ease-in-out;
+    display: flex;
+    justify-content: center;
+    left: -15px;
+    background-color: var(--primary-7) !important;
+    min-width: 14px !important;
+    min-height: 14px !important;
+    height: 14px !important;
+    padding: 0 !important;
+    align-items: center;
+    z-index: 1;
+    cursor: pointer;
+
+    :global {
+      span.bp3-icon {
+        color: var(--white) !important;
+      }
+    }
+  }
   // width: fit-content;
   // margin: 0 auto;
   .horizontalBar {

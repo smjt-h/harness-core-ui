@@ -33,10 +33,14 @@ import type { ModuleLicenseType } from '@common/constants/SubscriptionTypes'
 import { DiagramFactory } from '@pipeline/components/AbstractNode/DiagramFactory'
 import PipelineStageNode from '@pipeline/components/AbstractNode/Nodes/DefaultNode/PipelineStageNode'
 import css from './CDPipelineStudio.module.scss'
+import { DiamondNodeWidget } from '@pipeline/components/AbstractNode/Nodes/DiamondNode/DiamondNode'
+import { IconNode } from '@pipeline/components/AbstractNode/Nodes/IconNode/IconNode'
 
 const diagram = new DiagramFactory('graph')
 
 diagram.registerNode('Deployment', PipelineStageNode)
+diagram.registerNode('Approval', DiamondNodeWidget)
+diagram.registerNode('Barrier', IconNode)
 
 export const CDPipelineStudioNew = diagram.render()
 

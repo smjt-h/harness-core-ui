@@ -7,7 +7,7 @@
 
 import * as React from 'react'
 import classnames from 'classnames'
-import { Icon, Layout, Text } from '@wings-software/uicore'
+import { Icon, Layout, Text, Button, ButtonVariation } from '@wings-software/uicore'
 import { Event, DiagramDrag, DiagramType } from '@pipeline/components/Diagram'
 import CreateNode from '../CreateNode/CreateNode'
 import css from './StepGroupNode.module.scss'
@@ -43,7 +43,7 @@ export function StepGroupNode(props: any): JSX.Element {
               { [css.marginBottom]: props?.isParallelNode }
             )}
           >
-            <div id={props?.identifier} className={css.horizontalBar}></div>
+            <div id={props?.id} className={css.horizontalBar}></div>
             <div className={css.stepGroupHeader}>
               <Layout.Horizontal
                 spacing="xsmall"
@@ -78,6 +78,22 @@ export function StepGroupNode(props: any): JSX.Element {
                 updateGraphLinks={props?.updateGraphLinks}
               />
             </div>
+            <Button
+              className={classnames(css.closeNode, { [defaultCss.readonly]: props.readonly })}
+              minimal
+              icon="cross"
+              variation={ButtonVariation.PRIMARY}
+              iconProps={{ size: 10 }}
+              onMouseDown={e => {
+                e.stopPropagation()
+                props?.fireEvent({
+                  type: Event.RemoveNode,
+                  identifier: props?.identifier,
+                  node: props
+                })
+              }}
+              withoutCurrentColor={true}
+            />
           </div>
           {allowAdd && (
             <CreateNode

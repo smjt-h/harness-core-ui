@@ -7,17 +7,14 @@
  **/
 // this is an auto-generated file, do not update this manually
 declare const styles: {
-  readonly closeNode: string
-  readonly collapseIcon: string
-  readonly firstnode: string
-  readonly horizontalBar: string
-  readonly marginBottom: string
-  readonly readonly: string
-  readonly stepGroup: string
-  readonly stepGroupBody: string
-  readonly stepGroupHeader: string
-  readonly stepGroupNode: string
-  readonly svgLeftJointPoint: string
-  readonly svgRightJointPoint: string
+  readonly conditional: string
+  readonly diamond: string
+  readonly diamondClose: string
+  readonly diamondPortIn: string
+  readonly diamondPortOut: string
+  readonly inComplete: string
+  readonly secondaryIcon: string
+  readonly template: string
+  readonly tertiaryIcon: string
 }
 export default styles

@@ -87,8 +87,8 @@ function PipelineGraph({
         ])
       : setSvgPath([
           ...SVGLinks,
-          getFinalSVGArrowPath(uniqueNodeIds.startNode, state?.[0]?.identifier as string),
-          getFinalSVGArrowPath(lastNode?.identifier as string, uniqueNodeIds.createNode as string),
+          getFinalSVGArrowPath(uniqueNodeIds.startNode, state?.[0]?.id as string),
+          getFinalSVGArrowPath(lastNode?.id as string, uniqueNodeIds.createNode as string),
           getFinalSVGArrowPath(uniqueNodeIds.createNode as string, uniqueNodeIds.endNode as string)
         ])
   }

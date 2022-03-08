@@ -11,6 +11,7 @@ import { NodeDetails, NodeIds, PipelineGraphState, PipelineGraphType, SVGPathRec
 import CreateNode from '../CreateNode/CreateNode'
 import css from './StepGroupGraph.module.scss'
 interface StepGroupGraphProps {
+  id?: string
   data?: any[]
   getNode: (type?: string | undefined) => NodeDetails | undefined
   getDefaultNode(): NodeDetails | null
@@ -67,7 +68,6 @@ function StepGroupGraph(props: StepGroupGraphProps): React.ReactElement {
     if (state?.length) {
       setSVGLinks()
       setLayoutStyles(getCalculatedStyles(state))
-      console.log('called 2')
     }
   }, [state, props?.isNodeCollapsed])
 
@@ -80,17 +80,17 @@ function StepGroupGraph(props: StepGroupGraphProps): React.ReactElement {
 
   const setSVGLinks = (): void => {
     const SVGLinks = getSVGLinksFromPipeline(state)
-    const firstNodeIdentifier = state?.[0]?.identifier
-    const lastNodeIdentifier = state?.[state?.length - 1]?.identifier
+    const firstNodeIdentifier = state?.[0]?.id
+    const lastNodeIdentifier = state?.[state?.length - 1]?.id
     const parentElement = graphRef.current?.querySelector('#tree-container') as HTMLDivElement
 
     return setSvgPath([
       ...SVGLinks,
-      getFinalSVGArrowPath(props?.identifier, firstNodeIdentifier as string, {
+      getFinalSVGArrowPath(props?.id, firstNodeIdentifier as string, {
         direction: 'ltl',
         parentElement
       }),
-      getFinalSVGArrowPath(lastNodeIdentifier as string, props?.identifier, {
+      getFinalSVGArrowPath(lastNodeIdentifier as string, props?.id, {
         direction: 'rtr',
         parentElement
       })

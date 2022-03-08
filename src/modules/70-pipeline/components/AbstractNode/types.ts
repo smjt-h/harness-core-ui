@@ -23,6 +23,7 @@ export const enum PipelineGraphType {
   STEP_GRAPH = 'STEP_GRAPH'
 }
 export interface PipelineGraphState {
+  id: string
   identifier: string
   type: string
   name: string
