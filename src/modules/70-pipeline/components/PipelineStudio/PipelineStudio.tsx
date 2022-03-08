@@ -23,7 +23,10 @@ import { PipelineCanvas } from './PipelineCanvas/PipelineCanvas'
 import { PipelineContext } from './PipelineContext/PipelineContext'
 import { PipelineSchemaContextProvider } from './PipelineSchema/PipelineSchemaContext'
 import css from './PipelineStudio.module.scss'
-import type { DiagramFactory } from '../AbstractNode/DiagramFactory'
+import { DiagramFactory } from '../AbstractNode/DiagramFactory'
+import PipelineStageNode from '../AbstractNode/Nodes/DefaultNode/PipelineStageNode'
+import { DiamondNodeWidget } from '../AbstractNode/Nodes/DiamondNode/DiamondNode'
+import { IconNode } from '../AbstractNode/Nodes/IconNode/IconNode'
 
 export interface PipelineStudioProps {
   className?: string
@@ -49,6 +52,14 @@ interface OtherModalProps {
   initialValues?: PipelineInfoConfig
   onClose?: () => void
 }
+
+const diagram = new DiagramFactory('graph')
+
+diagram.registerNode('Deployment', PipelineStageNode)
+diagram.registerNode('Approval', DiamondNodeWidget)
+diagram.registerNode('Barrier', IconNode)
+
+export const CDPipelineStudioNew = diagram.render()
 export class PipelineStudio extends React.Component<PipelineStudioProps, PipelineStudioState> {
   state: PipelineStudioState = { error: undefined }
   context!: React.ContextType<typeof PipelineContext>
@@ -111,7 +122,6 @@ export class PipelineStudio extends React.Component<PipelineStudioProps, Pipelin
       )
     }
     const {
-      diagram,
       className = '',
       routePipelineStudio,
       routePipelineDetail,

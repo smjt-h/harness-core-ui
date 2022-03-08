@@ -30,19 +30,7 @@ import { useLicenseStore } from 'framework/LicenseStore/LicenseStoreContext'
 import { LICENSE_STATE_VALUES } from 'framework/LicenseStore/licenseStoreUtil'
 import { FeatureFlag } from '@common/featureFlags'
 import type { ModuleLicenseType } from '@common/constants/SubscriptionTypes'
-import { DiagramFactory } from '@pipeline/components/AbstractNode/DiagramFactory'
-import PipelineStageNode from '@pipeline/components/AbstractNode/Nodes/DefaultNode/PipelineStageNode'
 import css from './CDPipelineStudio.module.scss'
-import { DiamondNodeWidget } from '@pipeline/components/AbstractNode/Nodes/DiamondNode/DiamondNode'
-import { IconNode } from '@pipeline/components/AbstractNode/Nodes/IconNode/IconNode'
-
-const diagram = new DiagramFactory('graph')
-
-diagram.registerNode('Deployment', PipelineStageNode)
-diagram.registerNode('Approval', DiamondNodeWidget)
-diagram.registerNode('Barrier', IconNode)
-
-export const CDPipelineStudioNew = diagram.render()
 
 const CDPipelineStudio: React.FC = (): JSX.Element => {
   const { accountId, projectIdentifier, orgIdentifier, pipelineIdentifier, module } =
@@ -105,7 +93,6 @@ const CDPipelineStudio: React.FC = (): JSX.Element => {
       runPipeline={handleRunPipeline}
     >
       <PipelineStudio
-        diagram={diagram}
         className={css.container}
         routePipelineStudio={routes.toPipelineStudio}
         routePipelineProject={routes.toDeployments}

@@ -26,7 +26,6 @@ import { useGlobalEventListener } from '@common/hooks'
 import type { StageElementWrapper } from '@pipeline/utils/pipelineTypes'
 import { StageType } from '@pipeline/utils/stageHelpers'
 import { useTemplateSelector } from '@pipeline/utils/useTemplateSelector'
-import { CDPipelineStudioNew } from '@cd/pages/pipeline-studio/CDPipelineStudio'
 import type { DiagramFactory } from '@pipeline/components/AbstractNode/DiagramFactory'
 import { getPipelineGraphData } from '@pipeline/components/AbstractNode/PipelineGraph/PipelineGraphUtils'
 import {
@@ -60,6 +59,7 @@ import { usePipelineContext } from '../PipelineContext/PipelineContext'
 import { getLinkEventListenersOld, getLinkListernersOld } from './StageBuildOldUtils'
 import css from './StageBuilder.module.scss'
 import { PipelineGraphType } from '@pipeline/components/AbstractNode/types'
+import { CDPipelineStudioNew } from '../PipelineStudio'
 const IS_NEW_PIP_STUDIO_ACTIVE = localStorage.getItem('IS_NEW_PIP_STUDIO_ACTIVE')
 export type StageStateMap = Map<string, StageState>
 
