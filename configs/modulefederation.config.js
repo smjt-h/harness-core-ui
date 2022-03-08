@@ -7,20 +7,19 @@
 
 const packageJSON = require('../package.json')
 const { pick, omit, mapValues } = require('lodash')
+const { version } = require('fork-ts-checker-webpack-plugin')
 
 /**
  * These packages must be stricly shared with exact versions
  */
-const ExactSharedPackages = [
+const ExactSharedPackages = ['react-dom', 'react', 'react-router-dom', 'restful-react']
+
+const SharedPackages = [
   'formik',
-  'react-dom',
-  'react',
-  'react-router-dom',
   '@harness/uicore',
   '@blueprintjs/core',
   '@blueprintjs/select',
-  '@blueprintjs/datetime',
-  'restful-react'
+  '@blueprintjs/datetime'
 ]
 
 module.exports = ({ enableGitOpsUI, enableSTO }) => {
@@ -37,13 +36,13 @@ module.exports = ({ enableGitOpsUI, enableSTO }) => {
   if (enableSTO) {
     remotes.sto = "sto@[window.getApiBaseUrl('sto/remoteEntry.js')]"
   }
-  
-  if(process.env.TARGET_LOCALHOST) {
-    remotes.errortracking = "errortracking@http://localhost:3091/remoteEntry.js";
-  }else{
-    remotes.errortracking = "errortracking@[window.getApiBaseUrl('et/remoteEntry.js')]";
+
+  if (process.env.TARGET_LOCALHOST) {
+    remotes.errortracking = 'errortracking@http://localhost:3091/remoteEntry.js'
+  } else {
+    remotes.errortracking = "errortracking@[window.getApiBaseUrl('et/remoteEntry.js')]"
   }
-  
+
   return {
     name: 'nextgenui',
     remotes,
@@ -52,7 +51,8 @@ module.exports = ({ enableGitOpsUI, enableSTO }) => {
       mapValues(pick(packageJSON.dependencies, ExactSharedPackages), version => ({
         singleton: true,
         requiredVersion: version
-      }))
+      })),
+      pick(packageJSON.dependencies, SharedPackages)
     )
   }
 }
