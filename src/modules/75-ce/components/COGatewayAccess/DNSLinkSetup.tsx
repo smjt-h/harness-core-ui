@@ -734,7 +734,7 @@ const DNSLinkSetup: React.FC<DNSLinkSetupProps> = props => {
               <Container className={css.dnsLinkContainer}>
                 <Heading level={3} font={{ weight: 'bold' }} className={css.header}>
                   {getString(
-                    isAwsProvider
+                    isAwsProvider || isGcpProvider
                       ? 'ce.co.autoStoppingRule.setupAccess.selectLb'
                       : 'ce.co.autoStoppingRule.setupAccess.selectAppGateway'
                   )}
@@ -762,7 +762,7 @@ const DNSLinkSetup: React.FC<DNSLinkSetupProps> = props => {
                       {!isEditFlow && _isEmpty(props.gatewayDetails.routing.container_svc) && (
                         <Text color={Color.PRIMARY_6} onClick={handleCreateNewLb} style={{ cursor: 'pointer' }}>
                           {'+' +
-                            (isAwsProvider
+                            (isAwsProvider || isGcpProvider
                               ? getString('ce.co.accessPoint.new')
                               : getString('ce.co.accessPoint.newAppGateway'))}
                         </Text>
