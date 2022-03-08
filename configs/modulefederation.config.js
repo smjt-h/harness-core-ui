@@ -12,7 +12,7 @@ const { version } = require('fork-ts-checker-webpack-plugin')
 /**
  * These packages must be stricly shared with exact versions
  */
-const ExactSharedPackages = ['react-dom', 'react', 'react-router-dom', 'restful-react']
+const ExactSharedPackages = ['react-dom', 'react', 'react-router-dom', 'restful-react', '@harness/use-modal']
 
 const SharedPackages = [
   'formik',
