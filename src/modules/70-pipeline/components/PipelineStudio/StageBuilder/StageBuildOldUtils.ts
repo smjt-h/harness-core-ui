@@ -1,12 +1,10 @@
+import type { MutableRefObject } from 'react'
 import { defaultTo, isEmpty, noop } from 'lodash-es'
 import type { NodeModelListener, LinkModelListener, DiagramEngine } from '@projectstorm/react-diagrams-core'
 import type { StageElementWrapperConfig, PipelineInfoConfig } from 'services/cd-ng'
 import type * as Diagram from '@pipeline/components/Diagram'
 import type { DeploymentStageElementConfig, StageElementWrapper } from '@pipeline/utils/pipelineTypes'
 import type { SelectorData } from '@pipeline/components/PipelineStudio/PipelineContext/PipelineActions'
-import { SplitViewTypes } from '@pipeline/components/PipelineStudio/PipelineContext/PipelineActions'
-import { EmptyStageName } from '../PipelineConstants'
-import type { PipelineContextInterface } from '../PipelineContext/PipelineContext'
 import {
   DefaultLinkEvent,
   DefaultNodeEvent,
@@ -15,8 +13,12 @@ import {
   Event,
   GroupNodeModelOptions
 } from '@pipeline/components/Diagram'
-import type { MoveDirection, MoveStageDetailsType } from './StageBuilder'
 import type { DynamicPopoverHandlerBinding } from '@common/components/DynamicPopover/DynamicPopover'
+import { moveStageToFocusDelayed } from '@pipeline/components/ExecutionStageDiagram/ExecutionStageDiagramUtils'
+import { PipelineOrStageStatus } from '@pipeline/components/PipelineSteps/AdvancedSteps/ConditionalExecutionPanel/ConditionalExecutionPanelUtils'
+import { EmptyStageName } from '../PipelineConstants'
+import type { PipelineContextInterface } from '../PipelineContext/PipelineContext'
+import { MoveDirection, MoveStageDetailsType } from './StageBuilder'
 import {
   PopoverData,
   resetDiagram,
@@ -28,12 +30,11 @@ import {
   EmptyNodeSeparator,
   removeNodeFromPipeline
 } from './StageBuilderUtil'
-import { moveStageToFocusDelayed } from '@pipeline/components/ExecutionStageDiagram/ExecutionStageDiagramUtils'
-import { PipelineOrStageStatus } from '@pipeline/components/PipelineSteps/AdvancedSteps/ConditionalExecutionPanel/ConditionalExecutionPanelUtils'
+import type { PipelineSelectionState } from '../PipelineQueryParamState/usePipelineQueryParam'
 
 export const getLinkEventListenersOld = (
   updateStageOnAddLink: (event: any, dropNode: StageElementWrapper | undefined, current: any) => void,
-  setSelectionRef,
+  setSelectionRef: MutableRefObject<(selectionState: PipelineSelectionState) => void>,
   confirmDeleteStage: () => void,
   updateDeleteId: (id: string | undefined) => void,
 

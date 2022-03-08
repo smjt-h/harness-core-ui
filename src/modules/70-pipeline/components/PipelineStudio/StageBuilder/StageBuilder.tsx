@@ -8,7 +8,7 @@
 import React from 'react'
 import { Intent, Layout, useToaster, useConfirmationDialog } from '@wings-software/uicore'
 import cx from 'classnames'
-import { cloneDeep, debounce, defaultTo, isEmpty, isNil, noop } from 'lodash-es'
+import { cloneDeep, debounce, isNil } from 'lodash-es'
 import type { NodeModelListener, LinkModelListener } from '@projectstorm/react-diagrams-core'
 import SplitPane from 'react-split-pane'
 import { DynamicPopover, DynamicPopoverHandlerBinding } from '@common/components/DynamicPopover/DynamicPopover'
@@ -21,10 +21,9 @@ import { moveStageToFocusDelayed } from '@pipeline/components/ExecutionStageDiag
 import { useValidationErrors } from '@pipeline/components/PipelineStudio/PiplineHooks/useValidationErrors'
 import HoverCard from '@pipeline/components/HoverCard/HoverCard'
 import { StepMode as Modes } from '@pipeline/utils/stepUtils'
-import { PipelineOrStageStatus } from '@pipeline/components/PipelineSteps/AdvancedSteps/ConditionalExecutionPanel/ConditionalExecutionPanelUtils'
 import ConditionalExecutionTooltip from '@pipeline/components/ConditionalExecutionToolTip/ConditionalExecutionTooltip'
 import { useGlobalEventListener } from '@common/hooks'
-import type { DeploymentStageElementConfig, StageElementWrapper } from '@pipeline/utils/pipelineTypes'
+import type { StageElementWrapper } from '@pipeline/utils/pipelineTypes'
 import { StageType } from '@pipeline/utils/stageHelpers'
 import { useTemplateSelector } from '@pipeline/utils/useTemplateSelector'
 import { CDPipelineStudioNew } from '@cd/pages/pipeline-studio/CDPipelineStudio'
@@ -33,13 +32,10 @@ import { getPipelineGraphData } from '@pipeline/components/AbstractNode/Pipeline
 import {
   CanvasWidget,
   createEngine,
-  DefaultLinkEvent,
   DefaultLinkModel,
   DefaultNodeEvent,
   DefaultNodeModel,
-  DiagramType,
   Event,
-  GroupNodeModelOptions,
   NodeStartModel
 } from '../../Diagram'
 import { StageBuilderModel } from './StageBuilderModel'
@@ -49,14 +45,9 @@ import {
   PopoverData,
   EmptyNodeSeparator,
   StageState,
-  resetDiagram,
   removeNodeFromPipeline,
   mayBeStripCIProps,
-  getStageIndexFromPipeline,
-  getDependantStages,
   resetServiceSelectionForStages,
-  getAffectedDependentStages,
-  getStageIndexByIdentifier,
   getNewStageFromTemplate,
   getStageIndexWithParallelNodesFromPipeline,
   getLinkEventListeners,
@@ -66,8 +57,8 @@ import { useStageBuilderCanvasState } from './useStageBuilderCanvasState'
 import { StageList } from './views/StageList'
 import { SplitViewTypes } from '../PipelineContext/PipelineActions'
 import { usePipelineContext } from '../PipelineContext/PipelineContext'
-import css from './StageBuilder.module.scss'
 import { getLinkEventListenersOld, getLinkListernersOld } from './StageBuildOldUtils'
+import css from './StageBuilder.module.scss'
 const IS_NEW_PIP_STUDIO_ACTIVE = localStorage.getItem('IS_NEW_PIP_STUDIO_ACTIVE')
 export type StageStateMap = Map<string, StageState>
 

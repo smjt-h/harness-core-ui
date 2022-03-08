@@ -51,7 +51,8 @@ function PipelineGraph({
   const [state, setState] = useState<PipelineGraphState[]>(data)
   const [graphScale, setGraphScale] = useState(INITIAL_ZOOM_LEVEL)
   const canvasRef = useRef<HTMLDivElement>(null)
-
+  const draggableRef = useRef<HTMLDivElement>(null)
+  const overlayRef = useRef<HTMLDivElement>(null)
   const uniqueNodeIds = useMemo(
     (): NodeIds => ({
       startNode: uuid(),
@@ -72,27 +73,30 @@ function PipelineGraph({
   }, [treeRectangle, data])
 
   useLayoutEffect(() => {
-    if (state?.length) {
-      setSVGLinks()
-    }
+    setSVGLinks()
   }, [state])
 
   const setSVGLinks = (): void => {
     const SVGLinks = getSVGLinksFromPipeline(state, undefined, undefined, uniqueNodeIds.createNode)
     const lastNode = state?.[state?.length - 1]
 
-    return setSvgPath([
-      ...SVGLinks,
-      getFinalSVGArrowPath(uniqueNodeIds.startNode, state?.[0]?.identifier as string),
-      getFinalSVGArrowPath(lastNode?.identifier as string, uniqueNodeIds.createNode as string),
-      getFinalSVGArrowPath(uniqueNodeIds.createNode as string, uniqueNodeIds.endNode as string)
-    ])
+    return state.length === 0
+      ? setSvgPath([
+          getFinalSVGArrowPath(uniqueNodeIds.startNode, uniqueNodeIds.createNode as string),
+          getFinalSVGArrowPath(uniqueNodeIds.createNode as string, uniqueNodeIds.endNode as string)
+        ])
+      : setSvgPath([
+          ...SVGLinks,
+          getFinalSVGArrowPath(uniqueNodeIds.startNode, state?.[0]?.identifier as string),
+          getFinalSVGArrowPath(lastNode?.identifier as string, uniqueNodeIds.createNode as string),
+          getFinalSVGArrowPath(uniqueNodeIds.createNode as string, uniqueNodeIds.endNode as string)
+        ])
   }
 
   useEffect(() => {
     updateTreeRect()
-    const draggableParent = document.getElementById('draggable-parent')
-    const overlay = document.getElementById('overlay') as HTMLElement
+    const draggableParent = draggableRef.current
+    const overlay = overlayRef.current as HTMLElement
     if (draggableParent && overlay) setupDragEventListeners(draggableParent, overlay)
   }, [])
 
@@ -101,7 +105,7 @@ function PipelineGraph({
   }
 
   return (
-    <div id="draggable-parent">
+    <div id="draggable-parent" ref={draggableRef}>
       <Draggable scale={graphScale} defaultPosition={DEFAULT_POSITION} offsetParent={document.body}>
         <div
           id="overlay"
@@ -109,6 +113,7 @@ function PipelineGraph({
             fireEvent({ type: Event.CanvasClick })
           }}
           className={css.overlay}
+          ref={overlayRef}
         >
           <div className={css.graphMain} ref={canvasRef} style={{ transform: `scale(${graphScale})` }}>
             <SVGComponent svgPath={svgPath} />

@@ -1,6 +1,5 @@
 import { defaultTo, get } from 'lodash-es'
 import type { IconName } from '@harness/uicore'
-import type { RefObject } from 'react'
 import { stageTypeToIconMap } from '@pipeline/components/PipelineInputSetForm/PipelineInputSetForm'
 import type { ExecutionWrapperConfig, StageElementWrapperConfig } from 'services/cd-ng'
 import { StepTypeToPipelineIconMap } from '@pipeline/components/PipelineStudio/ExecutionGraph/ExecutionGraphUtil'
@@ -102,9 +101,9 @@ const getFinalSVGArrowPath = (id1 = '', id2 = '', options?: DrawSVGPathOptions):
   return { [id1]: finalSVGPath }
 }
 
-const getComputedPosition = (childId: string, parentElement?: HTMLDivElement): DOMRect | null => {
+const getComputedPosition = (childId: string | HTMLElement, parentElement?: HTMLDivElement): DOMRect | null => {
   try {
-    const childEl = document.getElementById(childId) as HTMLDivElement
+    const childEl = typeof childId === 'string' ? (document.getElementById(childId) as HTMLDivElement) : childId
     const childPos = childEl?.getBoundingClientRect() as DOMRect
     const parentPos = defaultTo(parentElement, childEl.closest('#tree-container'))?.getBoundingClientRect() as DOMRect
 
@@ -134,15 +133,14 @@ const setupDragEventListeners = (draggableParent: HTMLElement, overlay: HTMLElem
     if (event?.target !== draggableParent) return
     const initialX = event.pageX
     const initialY = event.pageY
-    const overlayPosition = getComputedPosition('overlay', draggableParent as HTMLDivElement) as DOMRect
+    const overlayPosition = getComputedPosition(overlay, draggableParent as HTMLDivElement) as DOMRect
     const moveAt = (pageX: number, pageY: number) => {
       const newX = overlayPosition?.left + pageX - initialX
       const newY = overlayPosition?.top + pageY - initialY
       overlay.style.transform = `translate(${newX}px,${newY}px)`
     }
-    function onMouseMove(event: MouseEvent) {
-      console.log('aa gya move')
 
+    function onMouseMove(event: MouseEvent): void {
       moveAt(event.pageX, event.pageY)
     }
     draggableParent.addEventListener('mousemove', onMouseMove)
