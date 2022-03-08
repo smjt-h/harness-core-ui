@@ -737,6 +737,7 @@ stepDescription:
   HelmDeploy: Performs native Helm deployments. Requires Helm and Tiller and supports basic deployments. Helm charts are also supported in Harness Kubernetes deployments without requiring Helm or Tiller and using all deployment strategies.
   HelmRollback: Rolls back all the deployed objects to the previous version.
   ServiceNowApproval: Use ServiceNow issues to approve steps and stages.
+  ServiceNowCreate: Create a ServiceNow issue as a step in the execution of a Pipeline.
 executionStrategy:
   executionStrategies: Execution Strategies
   useStrategy: Use Strategy

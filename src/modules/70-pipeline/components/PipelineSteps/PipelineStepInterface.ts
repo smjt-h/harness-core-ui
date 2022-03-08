@@ -43,6 +43,7 @@ export enum StepType {
   HarnessApproval = 'HarnessApproval',
   JiraApproval = 'JiraApproval',
   ServiceNowApproval = 'ServiceNowApproval',
+  ServiceNowCreate = 'ServiceNowCreate',
   Verify = 'Verify',
   JiraCreate = 'JiraCreate',
   JiraUpdate = 'JiraUpdate',

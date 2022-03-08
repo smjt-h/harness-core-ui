@@ -41,7 +41,7 @@ export function ApprovalTypeCards({ isReadonly }: { formikProps: FormikValues; i
         label: 'ServiceNow',
         value: 'SERVICENOW_APPROVAL',
         icon: 'service-servicenow',
-        disabled: SERVICENOW_NG_INTEGRATION ? false : true,
+        // disabled: SERVICENOW_NG_INTEGRATION ? false : true,
         featureProps: {
           featureRequest: {
             featureName: FeatureIdentifier.INTEGRATED_APPROVALS_WITH_SERVICE_NOW

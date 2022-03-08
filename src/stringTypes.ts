@@ -2835,6 +2835,7 @@ export interface StringsMap {
   'pipeline.stepDescription.SaveCacheGCS': string
   'pipeline.stepDescription.SaveCacheS3': string
   'pipeline.stepDescription.ServiceNowApproval': string
+  'pipeline.stepDescription.ServiceNowCreate': string
   'pipeline.stepDescription.TerraformApply': string
   'pipeline.stepDescription.TerraformDestroy': string
   'pipeline.stepDescription.TerraformPlan': string
