@@ -17,13 +17,21 @@
 
 .graph-node {
   width: fit-content;
-  height: 40px;
+  // height: 40px;
   opacity: 1;
   position: relative;
   border-radius: 8px;
   display: flex;
   justify-content: center;
   align-items: center;
+}
+
+.stageNode {
+  height: 40px;
+}
+
+.stepNode {
+  height: 64px;
 }
 
 .common {

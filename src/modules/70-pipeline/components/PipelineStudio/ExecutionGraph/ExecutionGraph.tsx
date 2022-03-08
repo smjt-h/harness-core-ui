@@ -74,6 +74,7 @@ import { CanvasButtons } from '../../CanvasButtons/CanvasButtons'
 import css from './ExecutionGraph.module.scss'
 import { getPipelineGraphData } from '@pipeline/components/AbstractNode/PipelineGraph/PipelineGraphUtils'
 import PipelineStageNode from '@pipeline/components/AbstractNode/Nodes/DefaultNode/PipelineStageNode'
+import { PipelineGraphType } from '@pipeline/components/AbstractNode/types'
 
 const diagram = new DiagramFactory('graph')
 
@@ -1003,6 +1004,7 @@ function ExecutionGraphRef<T extends StageElementConfig>(
         )}
         {localStorage.getItem('IS_NEW_PIP_STUDIO_ACTIVE') === 'true' ? (
           <CDPipelineStudioNew
+            graphType={PipelineGraphType.STEP_GRAPH}
             selectedNodeId={selectedStepId}
             data={getPipelineGraphData(stage?.stage?.spec?.execution?.steps)}
           />

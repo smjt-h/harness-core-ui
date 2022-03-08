@@ -59,6 +59,7 @@ import { SplitViewTypes } from '../PipelineContext/PipelineActions'
 import { usePipelineContext } from '../PipelineContext/PipelineContext'
 import { getLinkEventListenersOld, getLinkListernersOld } from './StageBuildOldUtils'
 import css from './StageBuilder.module.scss'
+import { PipelineGraphType } from '@pipeline/components/AbstractNode/types'
 const IS_NEW_PIP_STUDIO_ACTIVE = localStorage.getItem('IS_NEW_PIP_STUDIO_ACTIVE')
 export type StageStateMap = Map<string, StageState>
 
@@ -794,6 +795,7 @@ function StageBuilder({ diagram }: StageBuilderProps): JSX.Element {
             >
               <CDPipelineStudioNew
                 selectedNodeId={selectedStageId}
+                graphType={PipelineGraphType.STAGE_GRAPH}
                 data={getPipelineGraphData(pipeline.stages)}
                 collapsibleProps={{ parentSelector: '.Pane1', percentageNodeVisible: 0.8, bottomMarginInPixels: 80 }}
               />

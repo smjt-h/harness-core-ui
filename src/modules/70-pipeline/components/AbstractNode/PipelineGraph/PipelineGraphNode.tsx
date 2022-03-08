@@ -15,7 +15,7 @@ export interface PipelineGraphRecursiveProps {
   selectedNode: string
   uniqueNodeIds?: NodeIds
   startEndNodeNeeded?: boolean
-  startEndNodeStyle?: { height?: string; width?: string }
+  shape?: string
   parentIdentifier?: string
   collapsibleProps?: NodeCollapsibleProps
 }
@@ -26,11 +26,11 @@ export function PipelineGraphRecursive({
   fireEvent,
   uniqueNodeIds,
   startEndNodeNeeded = true,
-  startEndNodeStyle,
   parentIdentifier,
   updateGraphLinks,
   collapsibleProps,
-  getDefaultNode
+  getDefaultNode,
+  shape
 }: PipelineGraphRecursiveProps): React.ReactElement {
   const StartNode: React.FC<any> | undefined = getNode(NodeType.StartNode)?.component
   const CreateNode: React.FC<any> | undefined = getNode(NodeType.CreateNode)?.component
@@ -38,10 +38,8 @@ export function PipelineGraphRecursive({
   return (
     <div id="tree-container" className={classNames(css.graphTree, css.common)}>
       {StartNode && startEndNodeNeeded && (
-        <div>
-          <div style={startEndNodeStyle} id={uniqueNodeIds?.startNode} className={classNames(css.graphNode)}>
-            <StartNode />
-          </div>
+        <div id={uniqueNodeIds?.startNode} className={classNames(css.graphNode, { [shape || '']: shape })}>
+          <StartNode />
         </div>
       )}
       {nodes?.map((node, index) => {
@@ -74,7 +72,7 @@ export function PipelineGraphRecursive({
         />
       )}
       {EndNode && startEndNodeNeeded && (
-        <div style={startEndNodeStyle} id={uniqueNodeIds?.endNode} className={classNames(css.graphNode)}>
+        <div id={uniqueNodeIds?.endNode} className={classNames(css.graphNode, { [shape || '']: shape })}>
           <EndNode />
         </div>
       )}

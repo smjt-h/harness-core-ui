@@ -18,7 +18,8 @@ import type {
   ListenerHandle,
   NodeBank,
   NodeDetails,
-  PipelineGraphState
+  PipelineGraphState,
+  PipelineGraphType
 } from './types'
 import { StepGroupNode } from './Nodes/StepGroupNode/StepGroupNode'
 import DefaultNode from './Nodes/DefaultNode/DefaultNode'
@@ -126,13 +127,19 @@ export class DiagramFactory {
     this.getListenerHandle(event.type)?.listener?.(event)
   }
 
-  render(): React.FC<{ data: PipelineGraphState[]; collapsibleProps?: NodeCollapsibleProps; selectedNodeId?: string }> {
+  render(): React.FC<{
+    data: PipelineGraphState[]
+    collapsibleProps?: NodeCollapsibleProps
+    selectedNodeId?: string
+    graphType: PipelineGraphType
+  }> {
     function PipelineStudioHOC(
       this: DiagramFactory,
       props: {
         data: PipelineGraphState[]
         collapsibleProps?: NodeCollapsibleProps
         selectedNodeId?: string
+        graphType: PipelineGraphType
       }
     ): React.ReactElement {
       return (

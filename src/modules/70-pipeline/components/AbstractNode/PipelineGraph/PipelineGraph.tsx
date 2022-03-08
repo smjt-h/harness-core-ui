@@ -44,6 +44,7 @@ function PipelineGraph({
   fireEvent,
   collapsibleProps,
   getDefaultNode,
+  graphType,
   selectedNodeId = ''
 }: PipelineGraphProps): React.ReactElement {
   const [svgPath, setSvgPath] = useState<SVGPathRecord[]>([])
@@ -79,7 +80,6 @@ function PipelineGraph({
   const setSVGLinks = (): void => {
     const SVGLinks = getSVGLinksFromPipeline(state, undefined, undefined, uniqueNodeIds.createNode)
     const lastNode = state?.[state?.length - 1]
-
     return state.length === 0
       ? setSvgPath([
           getFinalSVGArrowPath(uniqueNodeIds.startNode, uniqueNodeIds.createNode as string),
@@ -124,7 +124,7 @@ function PipelineGraph({
               selectedNode={selectedNodeId}
               uniqueNodeIds={uniqueNodeIds}
               updateGraphLinks={setSVGLinks}
-              startEndNodeStyle={state?.[0]?.graphType === PipelineGraphType.STEP_GRAPH ? { height: '64px' } : {}}
+              shape={graphType === PipelineGraphType.STEP_GRAPH ? css.stepNode : css.stageNode}
               collapsibleProps={collapsibleProps}
               getDefaultNode={getDefaultNode}
             />
