@@ -21,6 +21,7 @@ import {
   useConfirmationDialog
 } from '@wings-software/uicore'
 import { Classes, Menu, Position, Intent } from '@blueprintjs/core'
+import { defaultTo } from 'lodash-es'
 import routes from '@common/RouteDefinitions'
 import { QlceView, ViewState, ViewType } from 'services/ce/services'
 import { perspectiveDateLabelToDisplayText, SOURCE_ICON_MAPPING } from '@ce/utils/perspectiveUtils'
@@ -37,7 +38,7 @@ interface PerspectiveListViewProps {
     viewType: ViewType
   ) => void
   deletePerpsective: (perspectiveId: string, perspectiveName: string) => void
-  clonePerspective: (values: QlceView | Record<string, string>, isClone: boolean) => void
+  clonePerspective: (perspectiveId: string, perspectiveName: string) => void
 }
 
 const PerspectiveListView: React.FC<PerspectiveListViewProps> = ({
@@ -137,7 +138,7 @@ const PerspectiveListView: React.FC<PerspectiveListViewProps> = ({
       buttonIntent: Intent.DANGER,
       onCloseDialog: async (isConfirmed: boolean) => {
         if (isConfirmed) {
-          row.original.id && deletePerpsective(row.original.id, row.original.name || '')
+          row.original.id && deletePerpsective(row.original.id, defaultTo(row.original.name, ''))
         }
       }
     })
@@ -160,7 +161,9 @@ const PerspectiveListView: React.FC<PerspectiveListViewProps> = ({
     const onCloneClick: (e: any) => void = e => {
       e.stopPropagation()
       setMenuOpen(false)
-      clonePerspective(row.original, true)
+      if (row.original.id && row.original.name) {
+        clonePerspective(row.original.id, row.original.name)
+      }
     }
 
     return (
@@ -180,11 +183,17 @@ const PerspectiveListView: React.FC<PerspectiveListViewProps> = ({
               e.stopPropagation()
               setMenuOpen(true)
             }}
+            data-testid={`menu-${row.original.id}`}
           />
           <Container>
             <Menu>
               <Menu.Item disabled={disableActions} onClick={editClick} icon="edit" text="Edit" />
-              <Menu.Item onClick={onCloneClick} icon="duplicate" text="Clone" />
+              <Menu.Item
+                onClick={onCloneClick}
+                icon="duplicate"
+                text="Clone"
+                data-testid={`clone-perspective-${row.original.id}`}
+              />
               <Menu.Item disabled={disableActions} onClick={onDeleteClick} icon="trash" text="Delete" />
             </Menu>
           </Container>
