@@ -37,6 +37,8 @@ export function StepGroupNode(props: any): JSX.Element {
       ) : (
         <div style={{ position: 'relative' }}>
           <div
+            onMouseOver={() => allowAdd && setVisibilityOfAdd(true)}
+            onMouseLeave={() => allowAdd && setVisibilityOfAdd(false)}
             className={classnames(
               css.stepGroup,
               { [css.firstnode]: !props?.isParallelNode },
@@ -68,6 +70,7 @@ export function StepGroupNode(props: any): JSX.Element {
             <div className={css.stepGroupBody}>
               <StepGroupGraph
                 getDefaultNode={props?.getDefaultNode}
+                id={props?.id}
                 identifier={props?.identifier}
                 prevNodeIdentifier={props?.prevNodeIdentifier}
                 data={props?.data?.stepGroup?.steps}
@@ -97,7 +100,12 @@ export function StepGroupNode(props: any): JSX.Element {
           </div>
           {allowAdd && (
             <CreateNode
-              className={classnames(defaultCss.addNode, defaultCss.stepGroupAddNode, { [defaultCss.visible]: showAdd })}
+              className={classnames(
+                defaultCss.addNode,
+                defaultCss.stepGroupAddNode,
+                { [defaultCss.visible]: showAdd },
+                { [defaultCss.marginBottom]: props?.isParallelNode }
+              )}
               onMouseOver={() => allowAdd && setVisibilityOfAdd(true)}
               onMouseLeave={() => allowAdd && setVisibilityOfAdd(false)}
               onDrop={(event: any) => {

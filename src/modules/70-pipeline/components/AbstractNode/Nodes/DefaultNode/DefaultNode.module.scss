@@ -10,7 +10,7 @@
   width: fit-content;
   height: fit-content;
   cursor: default;
-  po &.marginBottom {
+  &.marginBottom {
     margin-bottom: 20px;
   }
 
@@ -157,7 +157,7 @@
   &.stepGroupAddNode {
     width: 84px;
     height: 84px;
-    margin-top: 20px;
+    // margin-top: 20px;
     border: 1px dashed var(--grey-400);
   }
 }
