@@ -139,6 +139,13 @@ export default function ArtifactsSelection({
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [])
 
+  useEffect(() => {
+    if (NG_AZURE && !allowedArtifactTypes.includes(ENABLED_ARTIFACT_TYPES.Acr)) {
+      allowedArtifactTypes.push(ENABLED_ARTIFACT_TYPES.Acr)
+    }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [])
+
   const getPrimaryArtifactByIdentifier = (): PrimaryArtifact => {
     return artifacts
       .map((artifact: { overrideSet: { identifier: string; artifacts: { primary: Record<string, any> } } }) => {
