@@ -17,6 +17,7 @@ import css from './DiamondNode.module.scss'
 import cssDefault from '../DefaultNode/DefaultNode.module.scss'
 import { DiagramDrag, DiagramType, Event } from '@pipeline/components/Diagram'
 import { PipelineGraphType } from '../../types'
+import { NodeType } from '../../Node'
 
 export function DiamondNodeWidget(props: any): JSX.Element {
   const [dragging, setDragging] = React.useState(false)
@@ -42,25 +43,23 @@ export function DiamondNodeWidget(props: any): JSX.Element {
       onMouseDown={e => e.stopPropagation()}
     >
       <div
-        id={props.id}
-        data-nodeid={props.id}
         className={cx(cssDefault.defaultCard, css.diamond, { [cssDefault.selected]: isSelected }, props.nodeClassName)}
         draggable={true}
         onDragStart={event => {
-          setDragging(true)
-          event.dataTransfer.setData(DiagramDrag.NodeDrag, JSON.stringify(props.node.serialize()))
+          event.stopPropagation()
+          event.dataTransfer.setData(DiagramDrag.NodeDrag, JSON.stringify(props))
           // NOTE: onDragOver we cannot access dataTransfer data
           // in order to detect if we can drop, we are setting and using "keys" and then
           // checking in onDragOver if this type (AllowDropOnLink/AllowDropOnNode) exist we allow drop
-          if (props.allowDropOnLink) event.dataTransfer.setData(DiagramDrag.AllowDropOnLink, '1')
-          if (props.allowDropOnNode) event.dataTransfer.setData(DiagramDrag.AllowDropOnNode, '1')
+          event.dataTransfer.setData(DiagramDrag.AllowDropOnLink, '1')
           event.dataTransfer.dropEffect = 'move'
         }}
         onDragEnd={event => {
           event.preventDefault()
-          setDragging(false)
+          event.stopPropagation()
         }}
       >
+        <div id={props.id} data-nodeid={props.id} className={css.horizontalBar}></div>
         <div className="execution-running-animation" />
         {props.icon && <Icon size={28} inverse={isSelected} name={props.icon} style={props.iconStyle} />}
         {props.isInComplete && <Icon className={css.inComplete} size={12} name={'warning-sign'} color="orange500" />}
@@ -133,16 +132,104 @@ export function DiamondNodeWidget(props: any): JSX.Element {
           />
         )}
       </div>
-      <Text
-        width={props.graphType === PipelineGraphType.STEP_GRAPH ? 64 : 90}
-        font={{ size: 'normal', align: 'center' }}
-        color={props.defaultSelected ? Color.GREY_900 : Color.GREY_600}
-        className={cssDefault.nameText}
-        padding={'small'}
-        lineClamp={2}
-      >
-        {props.name}
-      </Text>
+      {props.name && (
+        <Text
+          width={props.graphType === PipelineGraphType.STEP_GRAPH ? 64 : 90}
+          font={{ size: 'normal', align: 'center' }}
+          color={props.defaultSelected ? Color.GREY_900 : Color.GREY_600}
+          className={cssDefault.nameText}
+          padding={'small'}
+          lineClamp={2}
+        >
+          {props.name}
+        </Text>
+      )}
+      {!props.isParallelNode && (
+        <div
+          data-linkid={props?.identifier}
+          onClick={event => {
+            event.stopPropagation()
+            props?.fireEvent({
+              type: Event.AddLinkClicked,
+              entityType: DiagramType.Link,
+              node: props,
+              prevNodeIdentifier: props?.prevNodeIdentifier,
+              parentIdentifier: props?.parentIdentifier,
+              identifier: props?.identifier
+            })
+          }}
+          onDragOver={event => {
+            event.stopPropagation()
+            event.preventDefault()
+          }}
+          onDrop={event => {
+            event.stopPropagation()
+            props?.fireEvent({
+              type: Event.DropLinkEvent,
+              linkBeforeStepGroup: false,
+              entityType: DiagramType.Link,
+              node: JSON.parse(event.dataTransfer.getData(DiagramDrag.NodeDrag)),
+              destination: props
+            })
+          }}
+          className={cx(
+            cssDefault.addNodeIcon,
+            cssDefault.left,
+            {
+              [cssDefault.stepAddIcon]: props.graphType === PipelineGraphType.STEP_GRAPH
+            },
+            {
+              [cssDefault.stageAddIcon]: props.graphType === PipelineGraphType.STAGE_GRAPH
+            }
+          )}
+        >
+          <Icon name="plus" color={Color.WHITE} />
+        </div>
+      )}
+      {(props?.nextNode?.nodeType === NodeType.StepGroupNode || (!props?.nextNode && props?.parentIdentifier)) &&
+        !props.isParallelNode && (
+          <div
+            data-linkid={props?.identifier}
+            onClick={event => {
+              event.stopPropagation()
+              props?.fireEvent({
+                type: Event.AddLinkClicked,
+                linkBeforeStepGroup: true,
+                prevNodeIdentifier: props?.prevNodeIdentifier,
+                parentIdentifier: props?.parentIdentifier,
+                entityType: DiagramType.Link,
+                identifier: props?.identifier,
+                node: props
+              })
+            }}
+            onDragOver={event => {
+              event.stopPropagation()
+              event.preventDefault()
+            }}
+            onDrop={event => {
+              event.stopPropagation()
+              props?.fireEvent({
+                type: Event.DropLinkEvent,
+                linkBeforeStepGroup: true,
+                entityType: DiagramType.Link,
+                node: JSON.parse(event.dataTransfer.getData(DiagramDrag.NodeDrag)),
+                destination: props
+              })
+            }}
+            className={cx(
+              cssDefault.addNodeIcon,
+              cssDefault.right,
+              {
+                [cssDefault.stepAddIcon]: props.graphType === PipelineGraphType.STEP_GRAPH
+              },
+              {
+                [cssDefault.stageAddIcon]: props.graphType === PipelineGraphType.STAGE_GRAPH
+              }
+            )}
+          >
+            <Icon name="plus" color={Color.WHITE} />
+          </div>
+        )}
     </div>
   )
 }

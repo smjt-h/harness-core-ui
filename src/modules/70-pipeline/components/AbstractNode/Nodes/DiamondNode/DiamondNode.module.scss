@@ -8,13 +8,20 @@
 .diamond {
   transform: rotate(45deg);
   position: absolute;
-  top: -13px;
+  top: -12px;
 
   :global(.execution-running-animation) {
     &::before {
       --node-running-transform-start: translate3d(-100%, -100%, 0) rotate(-45deg);
       --node-running-transform-end: translate3d(100%, 100%, 0) rotate(-45deg);
     }
+  }
+
+  .horizontalBar {
+    height: 40px;
+    position: absolute;
+    width: 130%;
+    transform: rotate(-45deg);
   }
 
   & > span {

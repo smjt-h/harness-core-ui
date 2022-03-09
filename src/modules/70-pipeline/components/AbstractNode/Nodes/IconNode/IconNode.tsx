@@ -88,7 +88,7 @@ export function IconNode(props: any): React.ReactElement {
           // in order to detect if we can drop, we are setting and using "keys" and then
           // checking in onDragOver if this type (AllowDropOnLink/AllowDropOnNode) exist we allow drop
           event.dataTransfer.setData(DiagramDrag.AllowDropOnLink, '1')
-          event.dataTransfer.setData(DiagramDrag.AllowDropOnNode, '1')
+          //   event.dataTransfer.setData(DiagramDrag.AllowDropOnNode, '1')
           // if (options.allowDropOnNode) event.dataTransfer.setData(DiagramDrag.AllowDropOnNode, '1')
           event.dataTransfer.dropEffect = 'move'
         }}

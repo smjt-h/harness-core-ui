@@ -9,6 +9,7 @@ import {
   getScaleToFitValue,
   getSVGLinksFromPipeline,
   INITIAL_ZOOM_LEVEL,
+  scrollZoom,
   setupDragEventListeners
 } from './PipelineGraphUtils'
 import GraphActions from '../GraphActions/GraphActions'
@@ -63,6 +64,10 @@ function PipelineGraph({
     []
   )
 
+  const updateGraphScale = (newScale: number) => {
+    setGraphScale(newScale)
+  }
+
   const updateTreeRect = (): void => {
     const treeContainer = document.getElementById('tree-container')
     const rectBoundary = treeContainer?.getBoundingClientRect()
@@ -97,7 +102,10 @@ function PipelineGraph({
     updateTreeRect()
     const draggableParent = draggableRef.current
     const overlay = overlayRef.current as HTMLElement
-    if (draggableParent && overlay) setupDragEventListeners(draggableParent, overlay)
+    if (draggableParent && overlay) {
+      setupDragEventListeners(draggableParent, overlay)
+      scrollZoom(overlay, 40, 0.01, updateGraphScale)
+    }
   }, [])
 
   const handleScaleToFit = (): void => {

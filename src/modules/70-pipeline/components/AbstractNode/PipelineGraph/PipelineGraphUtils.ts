@@ -38,13 +38,16 @@ const getFinalSVGArrowPath = (id1 = '', id2 = '', options?: DrawSVGPathOptions):
   const horizontalMid = Math.abs((node1.right + node2.left) / 2)
   const endPoint = `${node2.left},${node2VerticalMid}`
 
-  if (node2.y < node1.y) {
+  const node1Y = Math.round(node1.y * 10) / 10
+  const node2Y = Math.round(node2.y * 10) / 10
+
+  if (node2Y < node1Y) {
     //  child node is at top
     const curveLeftToTop = `Q${horizontalMid},${node1VerticalMid} ${horizontalMid},${node1VerticalMid - 20}`
     const curveBottomToRight = `Q${horizontalMid},${node2VerticalMid} ${horizontalMid + 20},${node2VerticalMid}`
     finalSVGPath = `M${startPoint} L${horizontalMid - 20},${node1VerticalMid} ${curveLeftToTop} 
     L${horizontalMid},${node2VerticalMid + 20} ${curveBottomToRight} L${endPoint}`
-  } else if (node1.y === node2.y) {
+  } else if (node1Y === node2Y) {
     // both nodes are at same level vertically
     if (options?.direction === 'ltl') {
       const startPointLeft = `${node1.left},${node1VerticalMid}`
@@ -126,6 +129,32 @@ const getComputedPosition = (childId: string | HTMLElement, parentElement?: HTML
     return updatedPos
   } catch (e) {
     return null
+  }
+}
+
+export const scrollZoom = (
+  container: HTMLElement,
+  max_scale: number,
+  factor: number,
+  callback: (newScale: number) => void
+) => {
+  var scale = 1
+  container.style.transformOrigin = '0 0'
+  container.onwheel = scrolled
+
+  function scrolled(e) {
+    e.preventDefault()
+    var delta = e.delta || e.wheelDelta
+    if (delta === undefined) {
+      //we are on firefox
+      delta = e.detail
+    }
+    delta = Math.max(-1, Math.min(1, delta)) // cap the delta to [-1,1] for cross browser consistency
+    // apply zoom
+    scale += delta * factor * scale
+    scale = Math.max(1, Math.min(max_scale, scale))
+    console.log('scale', scale)
+    callback(scale)
   }
 }
 
