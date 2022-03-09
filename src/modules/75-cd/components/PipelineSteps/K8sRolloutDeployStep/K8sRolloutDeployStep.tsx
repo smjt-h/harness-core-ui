@@ -77,6 +77,7 @@ function K8RolloutDeployWidget(
           ...getNameAndIdentifierSchema(getString, stepViewType),
           timeout: getDurationValidationSchema({ minimum: '10s' }).required(getString('validation.timeout10SecMinimum'))
         })}
+        validateOnBlur={false}
       >
         {(formik: FormikProps<K8RolloutDeployData>) => {
           setFormikRef(formikRef, formik)

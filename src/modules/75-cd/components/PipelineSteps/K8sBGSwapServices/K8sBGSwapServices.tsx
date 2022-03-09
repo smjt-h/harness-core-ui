@@ -96,6 +96,7 @@ function K8sBGSwapWidget(
           ...getNameAndIdentifierSchema(getString, stepViewType),
           timeout: getDurationValidationSchema({ minimum: '10s' }).required(getString('validation.timeout10SecMinimum'))
         })}
+        validateOnBlur={false}
       >
         {(formik: FormikProps<K8sBGSwapServicesData>) => {
           const { values, setFieldValue } = formik
