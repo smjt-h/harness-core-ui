@@ -31,6 +31,7 @@
 // -- This will overwrite an existing command --
 // Cypress.Commands.overwrite('visit', (originalFn, url, options) => { ... })
 import '@testing-library/cypress/add-commands'
+require('@reportportal/agent-js-cypress/lib/commands/reportPortalCommands')
 import { getConnectorIconByType } from '../utils/connctors-utils'
 import {
   servicesCall,
@@ -38,7 +39,6 @@ import {
   environmentsCall,
   environmentResponse
 } from './85-cv/monitoredService/constants'
-import '@reportportal/agent-js-cypress/lib/commands/reportPortalCommands'
 import {
   applyTemplatesCall,
   monitoresServices,

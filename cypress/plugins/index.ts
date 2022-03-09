@@ -25,11 +25,11 @@
 // eslint-disable-next-line no-unused-vars
 const registerReportPortalPlugin = require('@reportportal/agent-js-cypress/lib/plugin')
 const cypressTypeScriptPreprocessor = require('./cy-ts-preprocessor')
-module.exports = on => registerReportPortalPlugin(on)
 module.exports = (on: Cypress.PluginEvents, config: Cypress.PluginConfigOptions) => {
   if (process.env.CYPRESS_COVERAGE) {
     require('@cypress/code-coverage/task')(on, config)
   }
   on('file:preprocessor', cypressTypeScriptPreprocessor)
+  registerReportPortalPlugin(on)
   return config
 }
