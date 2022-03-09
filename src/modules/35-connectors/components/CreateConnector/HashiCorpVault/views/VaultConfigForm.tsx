@@ -52,7 +52,9 @@ const VaultConfigForm: React.FC<StepProps<StepDetailsProps> & ConnectorDetailsPr
     secretId: undefined,
     authToken: undefined,
     sinkPath: undefined,
-    renewalIntervalMinutes: 10
+    renewalIntervalMinutes: 10,
+    vaultK8sAuthRole: undefined,
+    serviceAccountTokenPath: undefined
   }
 
   const [initialValues, setInitialValues] = useState(defaultInitialFormData)
@@ -137,6 +139,14 @@ const VaultConfigForm: React.FC<StepProps<StepDetailsProps> & ConnectorDetailsPr
           awsRegion: Yup.string().when('accessType', {
             is: HashiCorpVaultAccessTypes.AWS_IAM,
             then: Yup.string().trim().required(getString('validation.regionRequired'))
+          }),
+          vaultK8sAuthRole: Yup.string().when('accessType', {
+            is: HashiCorpVaultAccessTypes.K8s_AUTH,
+            then: Yup.string().trim().required(getString('connectors.hashiCorpVault.vaultK8sAuthRoleRequired'))
+          }),
+          serviceAccountTokenPath: Yup.string().when('accessType', {
+            is: HashiCorpVaultAccessTypes.K8s_AUTH,
+            then: Yup.string().trim().required(getString('connectors.hashiCorpVault.serviceAccountRequired'))
           })
         })}
         onSubmit={formData => {

@@ -23,16 +23,23 @@ import { useStrings } from 'framework/strings'
 import type { StringKeys } from 'framework/strings'
 import { HashiCorpVaultAccessTypes } from '@connectors/interfaces/ConnectorInterface'
 import TagsRenderer from '@common/components/TagsRenderer/TagsRenderer'
+import { accessTypeOptionsMap } from '@connectors/components/CreateConnector/HashiCorpVault/views/VaultConnectorFormFields'
 import { getLabelForAuthType } from '../../utils/ConnectorHelper'
 import css from './SavedConnectorDetails.module.scss'
 
 interface SavedConnectorDetailsProps {
   connector: ConnectorInfoDTO
 }
-
+enum StringKeyObjectType {
+  StringKeyType = 'StringKeyType'
+}
+interface StringKeysObject {
+  type: StringKeyObjectType
+  value: string
+}
 interface ActivityDetailsRowInterface {
   label: string
-  value: string | TagsInterface | number | boolean | null | undefined
+  value: StringKeysObject | string | TagsInterface | number | boolean | null | undefined
   iconData?: {
     textId: StringKeys
     icon: IconName
@@ -328,10 +335,18 @@ const getHelmHttpSchema = (connector: ConnectorInfoDTO): Array<ActivityDetailsRo
 
 const getVaultSchema = (connector: ConnectorInfoDTO): Array<ActivityDetailsRowInterface> => {
   const data = connector.spec as VaultConnectorDTO
+
   return [
     {
       label: 'connectors.hashiCorpVault.vaultUrl',
       value: data.vaultUrl
+    },
+    {
+      label: 'authentication',
+      value: {
+        type: StringKeyObjectType.StringKeyType,
+        value: accessTypeOptionsMap.get(data.accessType as HashiCorpVaultAccessTypes) as string
+      }
     },
     {
       label: 'connectors.hashiCorpVault.engineName',
@@ -362,8 +377,12 @@ const getVaultSchema = (connector: ConnectorInfoDTO): Array<ActivityDetailsRowIn
       value: data.readOnly
     },
     {
-      label: 'connectors.hashiCorpVault.default',
-      value: data.default ? YesOrNo.YES : YesOrNo.NO
+      label: 'connectors.hashiCorpVault.serviceAccountTokenPath',
+      value: data.serviceAccountTokenPath
+    },
+    {
+      label: 'connectors.hashiCorpVault.vaultK8sAuthRole',
+      value: data.vaultK8sAuthRole
     }
   ]
 }
@@ -791,11 +810,22 @@ export const RenderDetailsSection: React.FC<RenderDetailsSectionProps> = props =
             className={css.detailsSectionRowWrapper}
             spacing="xsmall"
             padding={{ top: 'medium', bottom: 'medium' }}
-            key={`${item.value}${index}`}
+            key={`${
+              typeof item.value === 'object' && item?.value?.type === StringKeyObjectType.StringKeyType
+                ? item?.value?.value
+                : item?.value
+            }${index}`}
           >
             <Text font={{ size: 'small' }}>{getString(item.label as StringKeys)}</Text>
-            {item.label === 'tagsLabel' && typeof item.value === 'object' ? (
-              <TagsRenderer tags={item.value} length={4} />
+            {(item.label === 'tagsLabel' && typeof item.value === 'object') ||
+            (typeof item.value === 'object' && item?.value?.type === StringKeyObjectType.StringKeyType) ? (
+              item?.value?.type === StringKeyObjectType.StringKeyType ? (
+                <Text inline className={css.detailsValue} color={Color.BLACK}>
+                  {getString(item?.value?.value as StringKeys)}
+                </Text>
+              ) : (
+                <TagsRenderer tags={item.value as TagsInterface} length={4} />
+              )
             ) : (
               <Layout.Horizontal spacing="small" className={css.detailsSectionRow}>
                 <Text

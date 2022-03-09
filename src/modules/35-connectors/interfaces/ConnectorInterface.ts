@@ -57,7 +57,8 @@ export enum HashiCorpVaultAccessTypes {
   APP_ROLE = 'APP_ROLE',
   TOKEN = 'TOKEN',
   VAULT_AGENT = 'VAULT_AGENT',
-  AWS_IAM = 'AWS_IAM'
+  AWS_IAM = 'AWS_IAM',
+  K8s_AUTH = 'K8s_AUTH'
 }
 
 export interface AwsKmsConfigFormData {
@@ -112,6 +113,8 @@ export interface VaultConfigFormData {
   authToken?: SecretReference
   sinkPath?: string
   renewalIntervalMinutes: number
+  vaultK8sAuthRole?: string
+  serviceAccountTokenPath?: string
 }
 
 export interface SetupEngineFormData {

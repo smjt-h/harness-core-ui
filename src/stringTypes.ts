@@ -1793,6 +1793,7 @@ export interface StringsMap {
   'connectors.hashiCorpVault.engineName': string
   'connectors.hashiCorpVault.engineVersion': string
   'connectors.hashiCorpVault.fetchEngines': string
+  'connectors.hashiCorpVault.k8s_auth': string
   'connectors.hashiCorpVault.manuallyConfigureEngine': string
   'connectors.hashiCorpVault.readOnly': string
   'connectors.hashiCorpVault.readOnlyVault': string
@@ -1803,11 +1804,15 @@ export interface StringsMap {
   'connectors.hashiCorpVault.secretId': string
   'connectors.hashiCorpVault.serverIdHeader': string
   'connectors.hashiCorpVault.serverIdHeaderRequired': string
+  'connectors.hashiCorpVault.serviceAccountRequired': string
+  'connectors.hashiCorpVault.serviceAccountTokenPath': string
   'connectors.hashiCorpVault.setupEngine': string
   'connectors.hashiCorpVault.sinkPath': string
   'connectors.hashiCorpVault.sinkPathIsRequired': string
   'connectors.hashiCorpVault.stepTwoName': string
   'connectors.hashiCorpVault.vaultAgent': string
+  'connectors.hashiCorpVault.vaultK8sAuthRole': string
+  'connectors.hashiCorpVault.vaultK8sAuthRoleRequired': string
   'connectors.hashiCorpVault.vaultUrl': string
   'connectors.hashicorpVaultDetails': string
   'connectors.helmRepo.helmRepoUrl': string
