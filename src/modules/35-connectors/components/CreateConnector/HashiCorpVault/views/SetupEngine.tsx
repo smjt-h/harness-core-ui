@@ -45,7 +45,8 @@ import {
   ConnectorRequestBody,
   ConnectorConfigDTO,
   VaultAwsIamRoleCredentialDTO,
-  VaultAgentCredentialDTO
+  VaultAgentCredentialDTO,
+  VaultK8sCredentialDTO
 } from 'services/cd-ng'
 import { useToaster } from '@common/exports'
 
@@ -129,6 +130,11 @@ const SetupEngine: React.FC<StepProps<StepDetailsProps> & ConnectorDetailsProps>
               ? ({
                   authToken: formData.authToken?.referenceString
                 } as VaultAuthTokenCredentialDTO)
+              : formData.accessType === HashiCorpVaultAccessTypes.K8s_AUTH
+              ? ({
+                  vaultK8sAuthRole: formData.vaultK8sAuthRole,
+                  serviceAccountTokenPath: formData.serviceAccountTokenPath
+                } as VaultK8sCredentialDTO)
               : ({
                   sinkPath: formData.sinkPath
                 } as VaultAgentCredentialDTO)

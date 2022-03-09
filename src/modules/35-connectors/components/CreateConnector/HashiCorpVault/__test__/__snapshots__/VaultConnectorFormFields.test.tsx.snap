@@ -383,6 +383,16 @@ exports[`Check AWS Auth should render form in edit for the aws Iam 1`] = `
                                     connectors.hashiCorpVault.awsAuth
                                   </p>
                                 </li>
+                                <li
+                                  class="Select--menuItem"
+                                >
+                                  <p
+                                    class="StyledProps--font Text--lineclamp StyledProps--main Select--menuItemLabel"
+                                    style="--text-line-clamp: 1;"
+                                  >
+                                    connectors.hashiCorpVault.k8s_auth
+                                  </p>
+                                </li>
                               </ul>
                             </div>
                           </div>

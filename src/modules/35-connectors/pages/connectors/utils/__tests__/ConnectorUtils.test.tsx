@@ -873,7 +873,16 @@ describe('Connector Utils', () => {
           referenceString: 'account.secretdevxDDUx'
         },
         sinkPath: '',
-        renewalIntervalMinutes: 10
+        renewalIntervalMinutes: 10,
+        awsRegion: undefined,
+        namespace: undefined,
+        secretId: undefined,
+        serviceAccountTokenPath: '',
+        useAwsIam: undefined,
+        useK8sAuth: undefined,
+        vaultAwsIamRole: undefined,
+        vaultK8sAuthRole: '',
+        xvaultAwsIamServerId: undefined
       })
     }),
     test('test buildVaultPayload', () => {
@@ -915,19 +924,25 @@ describe('Connector Utils', () => {
           tags: {},
           type: 'Vault',
           spec: {
-            useVaultAgent: false,
             basePath: '/harness',
             vaultUrl: 'https://vaultqa.harness.io',
             readOnly: false,
             default: false,
-            renewalIntervalMinutes: 10,
             delegateSelectors: [],
+            xvaultAwsIamServerId: undefined,
+            useAwsIam: false,
+            renewalIntervalMinutes: 10,
             authToken: 'account.secretdevxDDUx',
+            appRoleId: undefined,
+            secretId: undefined,
+            useVaultAgent: false,
+            sinkPath: undefined,
             secretEngineManuallyConfigured: false,
             secretEngineName: 'harness',
             secretEngineVersion: '2',
-            useAwsIam: false,
-            xvaultAwsIamServerId: undefined
+            vaultK8sAuthRole: undefined,
+            serviceAccountTokenPath: undefined,
+            useK8sAuth: false
           }
         }
       })
