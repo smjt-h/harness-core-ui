@@ -8,7 +8,8 @@
     "endpoint": "http://35.193.123.16:8080/api/v1",
     "token": "dcb47b65-a18f-4915-95f3-84dba42232a8",
     "project": "default_personal",
-    "launch": "default_TEST_EXAMPLE",
+    "launch": "Cypress_UI",
+    "autoMerge": true,
     "description": "Cypress UI Test cases"
   }
 }
