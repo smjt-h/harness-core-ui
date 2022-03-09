@@ -3,5 +3,12 @@
   "integrationFolder": "cypress/integration",
   "experimentalInteractiveRunEvents": true,
   "viewportWidth": 1500,
-  "viewportHeight": 1000
+  "reporter": "@reportportal/agent-js-cypress",
+  "reporterOptions": {
+    "endpoint": "http://35.193.123.16:8080",
+    "token": "dcb47b65-a18f-4915-95f3-84dba42232a8",
+    "project": "default_personal",
+    "launch": "default_TEST_EXAMPLE",
+    "description": "Cypress UI Test cases"
+  }
 }
