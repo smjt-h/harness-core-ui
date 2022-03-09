@@ -88,6 +88,7 @@ export function ApprovalStageMinimalMode(props: ApprovalStageMinimalModeProps): 
         })}
         validate={handleValidate}
         onSubmit={(values: ApprovalStageMinimalValues) => handleSubmit(values)}
+        validateOnBlur={false}
       >
         {formikProps => (
           <FormikForm>
