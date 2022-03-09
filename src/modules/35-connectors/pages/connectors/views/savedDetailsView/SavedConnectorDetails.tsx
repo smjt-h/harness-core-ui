@@ -37,9 +37,10 @@ interface StringKeysObject {
   type: StringKeyObjectType
   value: string
 }
+type ActivityDetailsRowInterfaceValue = StringKeysObject | string | TagsInterface | number | boolean | null | undefined
 interface ActivityDetailsRowInterface {
   label: string
-  value: StringKeysObject | string | TagsInterface | number | boolean | null | undefined
+  value: ActivityDetailsRowInterfaceValue
   iconData?: {
     textId: StringKeys
     icon: IconName
