@@ -106,6 +106,7 @@ export const HarnessEnvironmentModal: React.FC<HarnessEnvironmentModalProps> = (
         onSubmit={values => {
           onSubmit(values)
         }}
+        validateOnBlur={false}
         validationSchema={Yup.object().shape({
           name: NameSchema({ requiredErrorMsg: getString?.('fieldRequired', { field: 'Environment' }) }),
           type: Yup.string().required(getString?.('fieldRequired', { field: 'Type' })),

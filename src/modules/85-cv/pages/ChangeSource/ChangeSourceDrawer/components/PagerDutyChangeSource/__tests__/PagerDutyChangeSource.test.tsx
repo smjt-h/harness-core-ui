@@ -40,7 +40,7 @@ interface InitValue {
 const TestComponent = ({ initialValues }: { initialValues: InitValue }): React.ReactElement => (
   <TestWrapper>
     <Formik initialValues={{ spec: initialValues.spec }} onSubmit={noop}>
-      {formik => {
+      {(formik: any) => {
         return <PagerDutyChangeSource formik={formik} isEdit={initialValues.isEdit} />
       }}
     </Formik>

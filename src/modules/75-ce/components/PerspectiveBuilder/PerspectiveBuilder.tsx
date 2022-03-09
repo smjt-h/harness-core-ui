@@ -184,7 +184,8 @@ const PerspectiveBuilder: React.FC<{ perspectiveData?: CEView; onNext: (resource
           Promise.resolve()
         }}
         validationSchema={validationSchema}
-        render={formikProps => {
+      >
+        {formikProps => {
           return (
             <FormikForm className={css.formContainer}>
               <Container className={css.innerContainer}>
@@ -309,7 +310,7 @@ const PerspectiveBuilder: React.FC<{ perspectiveData?: CEView; onNext: (resource
             </FormikForm>
           )
         }}
-      />
+      </Formik>
     </Container>
   )
 }

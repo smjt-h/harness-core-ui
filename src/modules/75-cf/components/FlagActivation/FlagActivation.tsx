@@ -8,7 +8,7 @@
 import React, { useEffect, useMemo, useState, useCallback, MouseEvent } from 'react'
 import { useHistory, useParams } from 'react-router-dom'
 import { v4 as uuid } from 'uuid'
-import type { FormikActions } from 'formik'
+import type { FormikHelpers } from 'formik'
 import { cloneDeep, get, isEqual } from 'lodash-es'
 import {
   Layout,
@@ -165,7 +165,7 @@ const FlagActivation: React.FC<FlagActivationProps> = props => {
   const [isGitSyncOpenModal, setIsGitSyncModalOpen] = useState(false)
 
   const onSaveChanges = useCallback(
-    (values: FlagActivationFormValues, formikActions: FormikActions<FlagActivationFormValues>): void => {
+    (values: FlagActivationFormValues, formikActions: FormikHelpers<FlagActivationFormValues>): void => {
       // handle flag state changed - e.g. toggled from off to on
       if (values.state !== initialValues.state) {
         patch.feature.addInstruction(patch.creators.setFeatureFlagState(values?.state as FeatureState))
@@ -467,9 +467,11 @@ const FlagActivation: React.FC<FlagActivationProps> = props => {
       validationSchema={yup.object().shape({
         gitDetails: gitSyncValidationSchema
       })}
+      // eslint-disable-next-line @typescript-eslint/ban-ts-comment
+      // @ts-ignore - todo manualy test this
       onSubmit={onSaveChanges}
     >
-      {formikProps => {
+      {(formikProps: any) => {
         return (
           <FormikForm>
             <Container className={css.formContainer}>

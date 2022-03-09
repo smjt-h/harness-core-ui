@@ -55,6 +55,8 @@ export function FailureStrategy(props: FailureStrategyProps, ref: StepCommandsRe
         return formikRef.current.dirty
       }
     },
+    // eslint-disable-next-line @typescript-eslint/ban-ts-comment
+    // @ts-ignore todo check
     submitForm() {
       if (formikRef.current) {
         return formikRef.current.submitForm()
@@ -111,7 +113,7 @@ export function FailureStrategy(props: FailureStrategyProps, ref: StepCommandsRe
       onSubmit={onUpdate}
       validate={debouncedUpdate}
     >
-      {formik => {
+      {(formik: any) => {
         !!tabName && window.dispatchEvent(new CustomEvent('UPDATE_ERRORS_STRIP', { detail: tabName }))
         formikRef.current = formik
         return (

@@ -2448,6 +2448,7 @@ exports[`Test TerraformApply should render edit view 1`] = `
     class="OverlaySpinner--overlaySpinner"
   >
     <form
+      action="#"
       class="FormikForm--main"
     >
       <div>

@@ -20,6 +20,7 @@ exports[`<TemplateStudioSubHeaderLeftView /> tests edit btn should work as expec
         class="OverlaySpinner--overlaySpinner"
       >
         <form
+          action="#"
           class="FormikForm--main"
         >
           <div>

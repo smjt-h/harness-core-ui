@@ -153,7 +153,7 @@ const ConnectorDetailsStep: React.FC<StepProps<ConnectorConfigDTO> & ConnectorDe
             ...props.formData
           }}
         >
-          {formikProps => {
+          {(formikProps: any) => {
             saveCurrentStepData<ConnectorInfoDTO>(
               props.getCurrentStepData,
               formikProps.values as unknown as ConnectorInfoDTO

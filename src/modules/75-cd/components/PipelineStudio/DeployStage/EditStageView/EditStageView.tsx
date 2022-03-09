@@ -221,7 +221,7 @@ export const EditStageView: React.FC<EditStageViewProps> = ({
             }}
             validationSchema={Yup.object().shape(getNameAndIdentifierSchema(getString, contextType))}
           >
-            {formikProps => {
+            {(formikProps: any) => {
               window.dispatchEvent(new CustomEvent('UPDATE_ERRORS_STRIP', { detail: DeployTabs.OVERVIEW }))
               formikRef.current = formikProps
               return (

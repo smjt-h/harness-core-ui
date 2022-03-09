@@ -153,6 +153,7 @@ export const NewEditEnvironmentModal: React.FC<NewEditEnvironmentModalProps> = (
         onSubmit={values => {
           onSubmit(values)
         }}
+        validateOnBlur={false}
         validationSchema={Yup.object().shape({
           name: NameSchema({ requiredErrorMsg: getString?.('fieldRequired', { field: 'Environment' }) }),
           type: Yup.string().required(getString?.('fieldRequired', { field: 'Type' })),
@@ -419,11 +420,12 @@ const DeployEnvironmentWidget: React.FC<DeployEnvironmentProps> = ({
           ...initialValues,
           ...{ environmentRef }
         }}
+        validateOnBlur={false}
         validationSchema={Yup.object().shape({
           environmentRef: getEnvironmentRefSchema(getString)
         })}
       >
-        {formik => {
+        {(formik: any) => {
           window.dispatchEvent(new CustomEvent('UPDATE_ERRORS_STRIP', { detail: DeployTabs.INFRASTRUCTURE }))
           formikRef.current = formik
           const { values, setFieldValue } = formik

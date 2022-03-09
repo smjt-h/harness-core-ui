@@ -1113,7 +1113,7 @@ function RunPipelineFormBasic({
           setCurrentPipeline(latestPipeline)
           const runPipelineFormErrors = await getFormErrors(latestPipeline, yamlTemplate, pipeline)
           // https://github.com/formium/formik/issues/1392
-          throw runPipelineFormErrors
+          return runPipelineFormErrors
         }}
       >
         {({ submitForm, values, setFormikState }) => {
@@ -1165,7 +1165,7 @@ function RunPipelineFormBasic({
                       onClick={event => {
                         event.stopPropagation()
                         setRunClicked(true)
-                        setFormikState({ submitCount: 1 })
+                        setFormikState(prevState => ({ ...prevState, submitCount: 1 }))
                         if ((!selectedInputSets || selectedInputSets.length === 0) && existingProvide === 'existing') {
                           setExistingProvide('provide')
                         } else {

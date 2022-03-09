@@ -9,6 +9,7 @@ exports[`GCP AP form fill form 1`] = `
       class="OverlaySpinner--overlaySpinner"
     >
       <form
+        action="#"
         class="FormikForm--main"
       >
         <div>
@@ -478,6 +479,7 @@ exports[`GCP AP form fill form 2`] = `
       class="OverlaySpinner--overlaySpinner"
     >
       <form
+        action="#"
         class="FormikForm--main"
       >
         <div>
@@ -554,7 +556,7 @@ exports[`GCP AP form fill form 2`] = `
                   >
                     <div
                       class="bp3-transition-container bp3-popover-exit bp3-popover-exit-active"
-                      style="position: absolute; will-change: transform; top: 0px; left: 0px; transform: translate3d(NaNpx, NaNpx, 0);"
+                      style="position: absolute; top: 0px; left: 0px; transform: translate3d(NaNpx, NaNpx, 0); will-change: transform;"
                     >
                       <div
                         class="bp3-popover bp3-minimal bp3-select-popover"
@@ -1111,6 +1113,7 @@ exports[`GCP AP form form in edit mode 1`] = `
       class="OverlaySpinner--overlaySpinner"
     >
       <form
+        action="#"
         class="FormikForm--main"
       >
         <div>
@@ -1612,6 +1615,7 @@ exports[`GCP AP form form while saving 1`] = `
       class="OverlaySpinner--overlaySpinner"
     >
       <form
+        action="#"
         class="FormikForm--main"
       >
         <div>
@@ -2125,6 +2129,7 @@ exports[`GCP AP form form with no data 1`] = `
       class="OverlaySpinner--overlaySpinner"
     >
       <form
+        action="#"
         class="FormikForm--main"
       >
         <div>

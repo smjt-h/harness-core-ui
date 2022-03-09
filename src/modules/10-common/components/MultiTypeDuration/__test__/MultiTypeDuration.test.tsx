@@ -19,7 +19,7 @@ interface TestProps {
 
 const TestComponent = ({ initialValues }: TestProps): React.ReactElement => (
   <TestWrapper>
-    <Formik initialValues={initialValues} onSubmit={() => null}>
+    <Formik initialValues={initialValues} onSubmit={() => null as any}>
       <Form>
         <FormMultiTypeDurationField name="test" label={'Duration'} />
       </Form>

@@ -18,6 +18,7 @@ exports[`CREATE MODE if form changesupdate the preview card: changed value shoul
         class="OverlaySpinner--overlaySpinner"
       >
         <form
+          action="#"
           class="FormikForm--main"
         >
           <div>
@@ -335,7 +336,7 @@ exports[`CREATE MODE if form changesupdate the preview card: changed value shoul
               data-testid="templatename"
               style="--text-line-clamp: 1;"
             >
-              templatename
+              templatesLibrary.createNewModal.namePlaceholder
             </p>
             <p
               class="StyledProps--font Text--lineclamp StyledProps--main StyledProps--font-small StyledProps--color StyledProps--color-grey400 StyledProps--margin-top-xsmall"
