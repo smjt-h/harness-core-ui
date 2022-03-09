@@ -634,6 +634,7 @@ function JiraCreateStepMode(props: JiraCreateStepModeProps, formikRef: StepFormi
           summary: Yup.string().trim().required(getString('pipeline.jiraCreateStep.validations.summary'))
         })
       })}
+      validateOnBlur={false}
     >
       {(formik: FormikProps<JiraCreateData>) => {
         setFormikRef(formikRef, formik)

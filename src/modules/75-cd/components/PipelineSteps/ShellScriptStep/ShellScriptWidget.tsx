@@ -89,6 +89,7 @@ export function ShellScriptWidget(
       formName="shellScriptForm"
       initialValues={values}
       validationSchema={validationSchema}
+      validateOnBlur={false}
     >
       {(formik: FormikProps<ShellScriptFormData>) => {
         // this is required
