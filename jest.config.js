@@ -48,6 +48,19 @@ module.exports = {
     '!src/modules/75-cd/factory/**'
   ],
   coverageReporters: ['lcov', 'json-summary', 'json'],
+  reporters: [
+    'default',
+    [
+      '@reportportal/agent-js-jest',
+      {
+        token: 'dcb47b65-a18f-4915-95f3-84dba42232a8'
+        endpoint: 'http://35.193.123.16:8080',
+        project: 'default_personal',
+        launch: 'default_TEST_EXAMPLE',
+        description: 'UI Jest Project'
+      }
+    ]
+  ],
   transform: {
     '^.+\\.tsx?$': 'ts-jest',
     '^.+\\.jsx?$': 'ts-jest',

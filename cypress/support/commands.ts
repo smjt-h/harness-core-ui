@@ -38,7 +38,7 @@ import {
   environmentsCall,
   environmentResponse
 } from './85-cv/monitoredService/constants'
-
+import '@reportportal/agent-js-cypress/lib/commands/reportPortalCommands'
 import {
   applyTemplatesCall,
   monitoresServices,
