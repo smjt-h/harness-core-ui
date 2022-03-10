@@ -127,11 +127,7 @@ export class PipelineStudio extends React.Component<PipelineStudioProps, Pipelin
         <GitSyncStoreProvider>
           <div className={cx(css.container, className)}>
             <PipelineCanvas
-<<<<<<< HEAD
               // diagram={diagram}
-=======
-              diagram={diagram}
->>>>>>> rebased to master
               toPipelineStudio={routePipelineStudio}
               toPipelineDetail={routePipelineDetail}
               toPipelineList={routePipelineList}

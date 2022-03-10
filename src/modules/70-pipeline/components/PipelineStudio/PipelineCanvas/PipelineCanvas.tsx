@@ -1035,7 +1035,7 @@ export function PipelineCanvas({
             </div>
           </div>
         </div>
-        {isYaml ? <PipelineYamlView /> : <StageBuilder diagram={diagram} />}
+        {isYaml ? <PipelineYamlView /> : <StageBuilder />}
         {shouldShowGovernanceEvaluation && (
           <EvaluationModal
             accountId={accountId}
