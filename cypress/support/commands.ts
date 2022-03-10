@@ -262,9 +262,9 @@ Cypress.Commands.add('verifyStepSelectConnector', () => {
   cy.intercept('POST', applyTemplatesCall).as('applyTemplatesCall')
   cy.contains('p', /^Kubernetes$/).click()
 
-  cy.contains('span', 'Select Connector').click({ force: true })
+  cy.contains('span', 'Select Connector').scrollIntoView().click({ force: true })
   cy.wait('@connectors')
-  cy.contains('p', 'test1111').click({ force: true })
+  cy.contains('p', 'test1111').scrollIntoView().click({ force: true })
   cy.wait(1000)
   cy.findByRole('button', { name: /Apply Selected/i })
     .scrollIntoView()
