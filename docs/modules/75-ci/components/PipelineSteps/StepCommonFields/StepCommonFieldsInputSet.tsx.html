@@ -304,7 +304,13 @@
 <a name='L245'></a><a href='#L245'>245</a>
 <a name='L246'></a><a href='#L246'>246</a>
 <a name='L247'></a><a href='#L247'>247</a>
-<a name='L248'></a><a href='#L248'>248</a></td><td class="line-coverage quiet"><span class="cline-any cline-neutral">&nbsp;</span>
+<a name='L248'></a><a href='#L248'>248</a>
+<a name='L249'></a><a href='#L249'>249</a>
+<a name='L250'></a><a href='#L250'>250</a>
+<a name='L251'></a><a href='#L251'>251</a>
+<a name='L252'></a><a href='#L252'>252</a>
+<a name='L253'></a><a href='#L253'>253</a>
+<a name='L254'></a><a href='#L254'>254</a></td><td class="line-coverage quiet"><span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
@@ -392,6 +398,12 @@
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-yes">31x</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
@@ -736,36 +748,42 @@ function StepCommonFieldsInputSet&lt;T&gt;(props: StepCommonFieldsInputSetProps&
             &lt;/Text&gt;
 &nbsp;
             &lt;Layout.Horizontal
-              className={cx(css.formGroup, css.lg)}
+              className={cx(css.formGroup, css.lgOverride)}
               style={{ marginTop: 'small', marginBottom: 'small' }}
               spacing="medium"
             &gt;
-              {isLimitMemoryRuntime &amp;&amp;
-                renderMultiTypeTextField({
-                  name: `${isEmpty(path) ? '' : <span class="branch-1 cbranch-no" title="branch not covered" >`${path}.`}</span>spec.resources.limits.memory`,
-                  tooltipId: 'limitMemory',
-                  labelKey: 'pipelineSteps.limitMemoryLabel',
-                  inputProps: {
-                    multiTextInputProps: {
-                      expressions,
-                      allowableTypes: AllMultiTypeInputTypesForInputSet
-                    },
-                    disabled: readonly
-                  }
-                })}
-              {isLimitCPURuntime &amp;&amp;
-                renderMultiTypeTextField({
-                  name: `${isEmpty(path) ? '' : <span class="branch-1 cbranch-no" title="branch not covered" >`${path}.`}</span>spec.resources.limits.cpu`,
-                  tooltipId: 'limitCPULabel',
-                  labelKey: 'pipelineSteps.limitCPULabel',
-                  inputProps: {
-                    multiTextInputProps: {
-                      expressions,
-                      allowableTypes: AllMultiTypeInputTypesForInputSet
-                    },
-                    disabled: readonly
-                  }
-                })}
+              {isLimitMemoryRuntime &amp;&amp; (
+                &lt;Container style={{ flex: 1 }}&gt;
+                  {renderMultiTypeTextField({
+                    name: `${isEmpty(path) ? '' : <span class="branch-1 cbranch-no" title="branch not covered" >`${path}.`}</span>spec.resources.limits.memory`,
+                    tooltipId: 'limitMemory',
+                    labelKey: 'pipelineSteps.limitMemoryLabel',
+                    inputProps: {
+                      multiTextInputProps: {
+                        expressions,
+                        allowableTypes: AllMultiTypeInputTypesForInputSet
+                      },
+                      disabled: readonly
+                    }
+                  })}
+                &lt;/Container&gt;
+              )}
+              {isLimitCPURuntime &amp;&amp; (
+                &lt;Container style={{ flex: 1 }}&gt;
+                  {renderMultiTypeTextField({
+                    name: `${isEmpty(path) ? '' : <span class="branch-1 cbranch-no" title="branch not covered" >`${path}.`}</span>spec.resources.limits.cpu`,
+                    tooltipId: 'limitCPULabel',
+                    labelKey: 'pipelineSteps.limitCPULabel',
+                    inputProps: {
+                      multiTextInputProps: {
+                        expressions,
+                        allowableTypes: AllMultiTypeInputTypesForInputSet
+                      },
+                      disabled: readonly
+                    }
+                  })}
+                &lt;/Container&gt;
+              )}
             &lt;/Layout.Horizontal&gt;
           &lt;/Container&gt;
         &lt;/&gt;
@@ -805,7 +823,7 @@ export default connect(StepCommonFieldsInputSet)
             <div class='footer quiet pad2 space-top1 center small'>
                 Code coverage generated by
                 <a href="https://istanbul.js.org/" target="_blank">istanbul</a>
-                at Thu Mar 10 2022 16:10:08 GMT+0000 (Greenwich Mean Time)
+                at Thu Mar 10 2022 17:23:47 GMT+0000 (Greenwich Mean Time)
             </div>
         </div>
         <script src="../../../../../prettify.js"></script>

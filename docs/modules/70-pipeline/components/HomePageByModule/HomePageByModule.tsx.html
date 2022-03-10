@@ -23,16 +23,16 @@
         <div class='clearfix'>
             
             <div class='fl pad1y space-right2'>
-                <span class="strong">84.54% </span>
+                <span class="strong">84.38% </span>
                 <span class="quiet">Statements</span>
-                <span class='fraction'>82/97</span>
+                <span class='fraction'>81/96</span>
             </div>
         
             
             <div class='fl pad1y space-right2'>
-                <span class="strong">80.77% </span>
+                <span class="strong">76.42% </span>
                 <span class="quiet">Branches</span>
-                <span class='fraction'>105/130</span>
+                <span class='fraction'>81/106</span>
             </div>
         
             
@@ -44,9 +44,9 @@
         
             
             <div class='fl pad1y space-right2'>
-                <span class="strong">86.02% </span>
+                <span class="strong">85.87% </span>
                 <span class="quiet">Lines</span>
-                <span class='fraction'>80/93</span>
+                <span class='fraction'>79/92</span>
             </div>
         
             
@@ -333,17 +333,7 @@
 <a name='L274'></a><a href='#L274'>274</a>
 <a name='L275'></a><a href='#L275'>275</a>
 <a name='L276'></a><a href='#L276'>276</a>
-<a name='L277'></a><a href='#L277'>277</a>
-<a name='L278'></a><a href='#L278'>278</a>
-<a name='L279'></a><a href='#L279'>279</a>
-<a name='L280'></a><a href='#L280'>280</a>
-<a name='L281'></a><a href='#L281'>281</a>
-<a name='L282'></a><a href='#L282'>282</a>
-<a name='L283'></a><a href='#L283'>283</a>
-<a name='L284'></a><a href='#L284'>284</a>
-<a name='L285'></a><a href='#L285'>285</a>
-<a name='L286'></a><a href='#L286'>286</a>
-<a name='L287'></a><a href='#L287'>287</a></td><td class="line-coverage quiet"><span class="cline-any cline-neutral">&nbsp;</span>
+<a name='L277'></a><a href='#L277'>277</a></td><td class="line-coverage quiet"><span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
@@ -530,14 +520,6 @@
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-yes">18x</span>
-<span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-yes">18x</span>
-<span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-yes">18x</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
@@ -596,7 +578,6 @@
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-yes">8x</span>
 <span class="cline-any cline-no">&nbsp;</span>
 <span class="cline-any cline-no">&nbsp;</span>
@@ -616,7 +597,6 @@
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-yes">8x</span>
-<span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
@@ -653,7 +633,7 @@ import routes from '@common/RouteDefinitions'
 import { useQueryParams } from '@common/hooks'
 import { useGetLicensesAndSummary, useGetProjectList } from 'services/cd-ng'
 import { useFeatureFlags } from '@common/hooks/useFeatureFlag'
-import { Editions, ModuleLicenseType } from '@common/constants/SubscriptionTypes'
+import { ModuleLicenseType } from '@common/constants/SubscriptionTypes'
 import { getTrialModalProps, openModal } from '@pipeline/components/TrialModalTemplate/trialModalUtils'
 import type { UseTrialModalProps } from '@pipeline/components/TrialModalTemplate/trialModalUtils'
 import type { StringsMap } from 'stringTypes'
@@ -817,14 +797,6 @@ function HomePageByModule({ moduleName, bgImageURL, useTrialModal }: HomePageMod
 &nbsp;
   const history = useHistory()
 &nbsp;
-  const trialBannerProps = {
-    expiryTime: licenseData?.data?.maxExpiryTime,
-    licenseType: licenseData?.data?.licenseType,
-    module: moduleName,
-    edition: licenseData?.data?.edition as Editions,
-    refetch: refetchLicense
-  }
-&nbsp;
   useEffect(
     () =&gt; {
       openModal({
@@ -878,7 +850,6 @@ function HomePageByModule({ moduleName, bgImageURL, useTrialModal }: HomePageMod
         title={getString(title as keyof StringsMap)}
         bgImageUrl={bgImageURL}
         trialInProgressProps={trialInProgressProps}
-        trialBannerProps={trialBannerProps}
       /&gt;
     )
   }
@@ -909,7 +880,6 @@ function HomePageByModule({ moduleName, bgImageURL, useTrialModal }: HomePageMod
       subTitle={getString(subTitle as keyof StringsMap)}
       documentText={getString(documentText as keyof StringsMap)}
       documentURL={documentURL}
-      trialBannerProps={trialBannerProps}
     /&gt;
   )
 }
@@ -922,7 +892,7 @@ export default HomePageByModule
             <div class='footer quiet pad2 space-top1 center small'>
                 Code coverage generated by
                 <a href="https://istanbul.js.org/" target="_blank">istanbul</a>
-                at Thu Mar 10 2022 16:10:08 GMT+0000 (Greenwich Mean Time)
+                at Thu Mar 10 2022 17:23:47 GMT+0000 (Greenwich Mean Time)
             </div>
         </div>
         <script src="../../../../prettify.js"></script>
