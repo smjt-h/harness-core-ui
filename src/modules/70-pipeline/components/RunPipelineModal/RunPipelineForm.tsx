@@ -728,12 +728,12 @@ function RunPipelineFormBasic({
   }
 
   const formRefDom = React.useRef<HTMLElement | undefined>()
-  const handleValidation = async (values: Values): Promise<void> => {
+  const handleValidation = async (values: Values) => {
     const latestPipeline = { ...currentPipeline, pipeline: values as PipelineInfoConfig }
     setCurrentPipeline(latestPipeline)
     const runPipelineFormErrors = await getFormErrors(latestPipeline, yamlTemplate, pipeline)
     // https://github.com/formium/formik/issues/1392
-    throw runPipelineFormErrors
+    return runPipelineFormErrors
   }
 
   if (shouldShowPageSpinner()) {
@@ -869,7 +869,7 @@ function RunPipelineFormBasic({
                         onClick={event => {
                           event.stopPropagation()
                           setRunClicked(true)
-                          setFormikState({ submitCount: 1 })
+                          setFormikState(prevState => ({ ...prevState, submitCount: 1 }))
                           if (
                             (!selectedInputSets || selectedInputSets.length === 0) &&
                             existingProvide === 'existing'

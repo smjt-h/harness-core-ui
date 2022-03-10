@@ -728,7 +728,8 @@ const DNSLinkSetup: React.FC<DNSLinkSetupProps> = props => {
             )
             .required()
         })}
-        render={formik => (
+      >
+        {formik => (
           <FormikForm>
             <Layout.Vertical spacing="large">
               <Container className={css.dnsLinkContainer}>
@@ -990,7 +991,7 @@ const DNSLinkSetup: React.FC<DNSLinkSetupProps> = props => {
             </Layout.Vertical>
           </FormikForm>
         )}
-      ></Formik>
+      </Formik>
     </Layout.Vertical>
   )
 }

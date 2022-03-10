@@ -141,7 +141,7 @@ const ChannelRow: React.FC<ChannelRow> = ({ data, userGroup, onSubmit, notificat
   const handleTest = async (formikProps: FormikProps<RowData>): Promise<boolean> => {
     const errors = await formikProps.validateForm()
     if (Object.keys(errors).length) {
-      formikProps.setFieldTouched(getFieldDetails(formikProps.values.type).name, true)
+      formikProps.setFieldTouched(getFieldDetails(formikProps.values.type).name, true, false)
       return false
     }
     return true

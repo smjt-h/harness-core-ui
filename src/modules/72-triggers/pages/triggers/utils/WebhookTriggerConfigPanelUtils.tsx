@@ -148,7 +148,7 @@ export const renderNonCustomEventFields = ({
                   defaultChecked={(Array.isArray(actions) && actions.length === 0) || false}
                   className={css.checkboxAlignment}
                   onClick={(e: React.FormEvent<HTMLInputElement>) => {
-                    formikProps.setFieldTouched('actions', true)
+                    formikProps.setFieldTouched('actions', true, false)
                     if (e.currentTarget?.checked) {
                       formikProps.setFieldValue('actions', [])
                     } else {

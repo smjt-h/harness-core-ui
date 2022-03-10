@@ -141,10 +141,10 @@ export const createSLORequestPayload = (
 
 export const isFormDataValid = (formikProps: FormikProps<SLOForm>, selectedTabId: CreateSLOTabs): boolean => {
   if (selectedTabId === CreateSLOTabs.NAME) {
-    formikProps.setFieldTouched(SLOFormFields.NAME)
-    formikProps.setFieldTouched(SLOFormFields.IDENTIFIER)
-    formikProps.setFieldTouched(SLOFormFields.USER_JOURNEY_REF)
-    formikProps.setFieldTouched(SLOFormFields.MONITORED_SERVICE_REF)
+    formikProps.setFieldTouched(SLOFormFields.NAME, true, false)
+    formikProps.setFieldTouched(SLOFormFields.IDENTIFIER, true, false)
+    formikProps.setFieldTouched(SLOFormFields.USER_JOURNEY_REF, true, false)
+    formikProps.setFieldTouched(SLOFormFields.MONITORED_SERVICE_REF, true, false)
 
     const { name, identifier, userJourneyRef } = formikProps.values
 
@@ -154,13 +154,13 @@ export const isFormDataValid = (formikProps: FormikProps<SLOForm>, selectedTabId
   }
 
   if (selectedTabId === CreateSLOTabs.SLI) {
-    formikProps.setFieldTouched(SLOFormFields.HEALTH_SOURCE_REF)
-    formikProps.setFieldTouched(SLOFormFields.EVENT_TYPE)
-    formikProps.setFieldTouched(SLOFormFields.GOOD_REQUEST_METRIC)
-    formikProps.setFieldTouched(SLOFormFields.VALID_REQUEST_METRIC)
-    formikProps.setFieldTouched(SLOFormFields.OBJECTIVE_VALUE)
-    formikProps.setFieldTouched(SLOFormFields.OBJECTIVE_COMPARATOR)
-    formikProps.setFieldTouched(SLOFormFields.SLI_MISSING_DATA_TYPE)
+    formikProps.setFieldTouched(SLOFormFields.HEALTH_SOURCE_REF, true, false)
+    formikProps.setFieldTouched(SLOFormFields.EVENT_TYPE, true, false)
+    formikProps.setFieldTouched(SLOFormFields.GOOD_REQUEST_METRIC, true, false)
+    formikProps.setFieldTouched(SLOFormFields.VALID_REQUEST_METRIC, true, false)
+    formikProps.setFieldTouched(SLOFormFields.OBJECTIVE_VALUE, true, false)
+    formikProps.setFieldTouched(SLOFormFields.OBJECTIVE_COMPARATOR, true, false)
+    formikProps.setFieldTouched(SLOFormFields.SLI_MISSING_DATA_TYPE, true, false)
 
     const {
       healthSourceRef,

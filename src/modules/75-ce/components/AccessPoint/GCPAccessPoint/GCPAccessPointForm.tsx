@@ -223,7 +223,8 @@ const GCPAccessPointForm: React.FC<GCPAccessPointFormProps> = ({
         }}
         formName="lbFormSecond"
         onSubmit={values => handleSubmit?.(values)}
-        render={({ submitForm, setFieldValue, values }) => (
+      >
+        {({ submitForm, setFieldValue, values }) => (
           <FormikForm>
             <Layout.Horizontal className={css.formFieldRow}>
               <FormInput.Select
@@ -330,7 +331,7 @@ const GCPAccessPointForm: React.FC<GCPAccessPointFormProps> = ({
             </Layout.Horizontal>
           </FormikForm>
         )}
-      ></Formik>
+      </Formik>
     </Container>
   )
 }

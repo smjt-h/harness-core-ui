@@ -47,7 +47,7 @@ const JsonSelectorFormInput = (props: JsonSelectorFormInputProps & { formik?: an
   const onPathSelect = (path: string): void => {
     hideModal()
     formik.setFieldValue(name, path)
-    formik.setFieldTouched(name, true)
+    formik.setFieldTouched(name, true, false)
   }
 
   const onOpenModal = (): void => {

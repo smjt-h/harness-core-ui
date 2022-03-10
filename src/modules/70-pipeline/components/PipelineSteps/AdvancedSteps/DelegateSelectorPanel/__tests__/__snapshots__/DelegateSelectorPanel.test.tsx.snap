@@ -6,6 +6,7 @@ exports[`<DelegateSelectorPanel /> test should be able to select multiple tags f
     class="OverlaySpinner--overlaySpinner"
   >
     <form
+      action="#"
       class="FormikForm--main"
     >
       <div>
@@ -181,6 +182,7 @@ exports[`<DelegateSelectorPanel /> test snapshot testing 1`] = `
     class="OverlaySpinner--overlaySpinner"
   >
     <form
+      action="#"
       class="FormikForm--main"
     >
       <div>

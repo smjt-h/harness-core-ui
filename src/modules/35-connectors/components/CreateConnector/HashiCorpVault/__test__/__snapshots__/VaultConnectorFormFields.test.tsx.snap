@@ -151,6 +151,7 @@ exports[`Check AWS Auth should render form in edit for the aws Iam 1`] = `
           class="OverlaySpinner--overlaySpinner"
         >
           <form
+            action="#"
             class="FormikForm--main"
           >
             <div>
@@ -931,6 +932,7 @@ exports[`Check AWS Auth should render form in edit for the aws Iam 2`] = `
           class="OverlaySpinner--overlaySpinner"
         >
           <form
+            action="#"
             class="FormikForm--main"
           >
             <div>

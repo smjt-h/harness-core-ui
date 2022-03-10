@@ -60,7 +60,7 @@ export function CreatePipelineForm(props: CreatePipelineFormProps): React.ReactE
         })
       }}
     >
-      {formikProps => {
+      {(formikProps: any) => {
         return (
           <Form>
             <Text style={{ color: Color.BLACK, paddingBottom: 8, fontWeight: 600, fontSize: 'large' }}>

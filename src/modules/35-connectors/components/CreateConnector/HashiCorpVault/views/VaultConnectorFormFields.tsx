@@ -14,7 +14,7 @@ import {
   ModalErrorHandlerBinding,
   SelectOption
 } from '@wings-software/uicore'
-import type { FormikContext } from 'formik'
+import type { FormikContextType } from 'formik'
 import { useParams } from 'react-router-dom'
 import { useStrings } from 'framework/strings'
 import SecretInput from '@secrets/components/SecretInput/SecretInput'
@@ -23,7 +23,7 @@ import { useListAwsRegions } from 'services/portal'
 import type { OrgPathProps } from '@common/interfaces/RouteInterfaces'
 
 interface VaultConnectorFormFieldsProps {
-  formik: FormikContext<VaultConfigFormData>
+  formik: FormikContextType<VaultConfigFormData>
 }
 
 const VaultConnectorFormFields: React.FC<VaultConnectorFormFieldsProps> = ({ formik }) => {

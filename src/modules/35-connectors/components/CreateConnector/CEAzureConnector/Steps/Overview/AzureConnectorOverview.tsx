@@ -224,7 +224,7 @@ const Overview: React.FC<StepProps<CEAzureDTO> & OverviewProps> = props => {
           ...prevStepData
         }}
       >
-        {formikProps => {
+        {(formikProps: any) => {
           return (
             <FormikForm>
               <Container style={{ minHeight: 550 }}>

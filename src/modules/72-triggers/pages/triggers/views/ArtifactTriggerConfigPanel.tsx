@@ -61,7 +61,7 @@ const onRemoveSelectedArtifactManifest = ({
     stageId: undefined,
     stages: undefined // clears all artifact runtime inputs
   })
-  formikProps.setFieldTouched('selectedArtifact')
+  formikProps.setFieldTouched('selectedArtifact', true, false)
 }
 
 const onEdit = ({
@@ -183,7 +183,7 @@ const showAddArtifactManifest = ({
         onClick={() => {
           if (allowSelectArtifact) {
             setModalOpen(true)
-            formikProps.setFieldTouched('selectedArtifact')
+            formikProps.setFieldTouched('selectedArtifact', true, false)
           }
         }}
       >

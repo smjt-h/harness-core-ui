@@ -17,7 +17,7 @@ import {
   MultiTextInputProps,
   RUNTIME_INPUT_VALUE
 } from '@wings-software/uicore'
-import { connect, FormikContext } from 'formik'
+import { connect, FormikContextType } from 'formik'
 import { get, isEmpty } from 'lodash-es'
 import { ConfigureOptions, ConfigureOptionsProps } from '@common/components/ConfigureOptions/ConfigureOptions'
 import { useStrings } from 'framework/strings'
@@ -46,7 +46,7 @@ export interface MultiTypeListProps {
   multiTextInputProps?: Omit<MultiTextInputProps, 'name'>
   enableConfigureOptions?: boolean
   configureOptionsProps?: MultiTypeListConfigureOptionsProps
-  formik?: FormikContext<any>
+  formik?: FormikContextType<any>
   style?: React.CSSProperties
   disabled?: boolean
 }
@@ -104,7 +104,7 @@ export const MultiTypeListInputSet = (props: MultiTypeListProps): React.ReactEle
   }
 
   const changeValue: (id: string, newValue: string) => void = (id, newValue) => {
-    formik?.setFieldTouched(name, true)
+    formik?.setFieldTouched(name, true, false)
     setValue(currentValue =>
       currentValue.map(item => {
         if (item.id === id) {

@@ -232,6 +232,7 @@ exports[`Create Azure connector Wizard should render create new billing exports 
                 class="OverlaySpinner--overlaySpinner"
               >
                 <form
+                  action="#"
                   class="FormikForm--main"
                   style="padding: 10px 0px 25px;"
                 >
@@ -1023,6 +1024,7 @@ exports[`Create Azure connector Wizard should render existing billing exports fo
                 class="OverlaySpinner--overlaySpinner"
               >
                 <form
+                  action="#"
                   class="FormikForm--main"
                   style="padding: 10px 0px 25px;"
                 >
@@ -2935,6 +2937,7 @@ exports[`Create Azure connector Wizard should render overview step 1`] = `
               class="OverlaySpinner--overlaySpinner"
             >
               <form
+                action="#"
                 class="FormikForm--main"
               >
                 <div>
@@ -3396,6 +3399,7 @@ exports[`Create Azure connector Wizard should throw an error when connectors alr
               class="OverlaySpinner--overlaySpinner"
             >
               <form
+                action="#"
                 class="FormikForm--main"
               >
                 <div>

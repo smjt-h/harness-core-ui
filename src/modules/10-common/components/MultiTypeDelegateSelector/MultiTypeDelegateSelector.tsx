@@ -6,7 +6,7 @@
  */
 
 import React from 'react'
-import { connect, FormikContext } from 'formik'
+import { connect, FormikContextType } from 'formik'
 import {
   DataTooltipInterface,
   ExpressionAndRuntimeType,
@@ -34,7 +34,7 @@ export interface MultiTypeDelegateSelectorProps extends IFormGroupProps {
 
 export interface ConnectedMultiTypeDelegateSelectorProps extends MultiTypeDelegateSelectorProps {
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
-  formik: FormikContext<any>
+  formik: FormikContextType<any>
 }
 
 export function MultiTypeDelegateSelector(props: ConnectedMultiTypeDelegateSelectorProps): React.ReactElement {

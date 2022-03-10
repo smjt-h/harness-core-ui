@@ -8,7 +8,7 @@
 import React from 'react'
 import { FormGroup, Menu, Intent, Checkbox } from '@blueprintjs/core'
 import { MultiSelect as BPMultiSelect, ItemRenderer } from '@blueprintjs/select'
-import { connect, FormikContext } from 'formik'
+import { connect, FormikContextType } from 'formik'
 import { get } from 'lodash-es'
 
 import { errorCheck } from '@common/utils/formikHelpers'
@@ -58,7 +58,7 @@ export interface FailureTypeMultiSelectProps {
 
 export interface ConnectedFailureTypeMultiSelectProps extends FailureTypeMultiSelectProps {
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
-  formik: FormikContext<any>
+  formik: FormikContextType<any>
 }
 
 export function FailureTypeMultiSelect(props: ConnectedFailureTypeMultiSelectProps): React.ReactElement {
@@ -87,7 +87,7 @@ export function FailureTypeMultiSelect(props: ConnectedFailureTypeMultiSelectPro
 
   function handleItemSelect(item: Option): void {
     formik.setFieldValue(name, [...selectedValues, item.value])
-    formik.setFieldTouched(name, true)
+    formik.setFieldTouched(name, true, false)
   }
 
   // list of options to show
@@ -115,7 +115,7 @@ export function FailureTypeMultiSelect(props: ConnectedFailureTypeMultiSelectPro
   function onRemove(value: string): void {
     const newItems = selectedOptions.filter(item => item.label !== value).map(item => item.value)
     formik.setFieldValue(name, newItems)
-    formik.setFieldTouched(name, true)
+    formik.setFieldTouched(name, true, false)
   }
 
   // handler for AllErrors checkbox
@@ -123,7 +123,7 @@ export function FailureTypeMultiSelect(props: ConnectedFailureTypeMultiSelectPro
     const { checked } = e.target
 
     formik.setFieldValue(name, checked ? [ErrorType.AllErrors] : [])
-    formik.setFieldTouched(name, true)
+    formik.setFieldTouched(name, true, false)
   }
 
   return (

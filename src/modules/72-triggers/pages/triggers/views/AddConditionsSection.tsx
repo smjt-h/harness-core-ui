@@ -81,7 +81,7 @@ export const ConditionRow = ({
         label=""
         placeholder={getString('pipeline.operatorPlaceholder')}
         onChange={() => {
-          formikProps.setFieldTouched(valueKey, true)
+          formikProps.setFieldTouched(valueKey, true, false)
         }}
       />
       <FormInput.Text
@@ -90,7 +90,7 @@ export const ConditionRow = ({
         className={css.textContainer}
         label=""
         onChange={() => {
-          formikProps.setFieldTouched(operatorKey, true)
+          formikProps.setFieldTouched(operatorKey, true, false)
         }}
         placeholder={
           inNotInArr.includes(operatorValue)

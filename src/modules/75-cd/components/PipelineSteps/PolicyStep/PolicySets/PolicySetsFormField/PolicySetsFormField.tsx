@@ -50,7 +50,7 @@ function PolicySetsFormField({
         formikProps={formikProps}
         policySetIds={policySetIds}
         closeModal={() => {
-          formikProps?.setFieldTouched(name, true)
+          formikProps?.setFieldTouched(name, true, false)
           closeModal()
         }}
       />
