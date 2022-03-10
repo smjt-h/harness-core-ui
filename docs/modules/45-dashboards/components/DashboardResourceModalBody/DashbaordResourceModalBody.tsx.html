@@ -25,14 +25,14 @@
             <div class='fl pad1y space-right2'>
                 <span class="strong">0% </span>
                 <span class="quiet">Statements</span>
-                <span class='fraction'>0/28</span>
+                <span class='fraction'>0/29</span>
             </div>
         
             
             <div class='fl pad1y space-right2'>
                 <span class="strong">0% </span>
                 <span class="quiet">Branches</span>
-                <span class='fraction'>0/34</span>
+                <span class='fraction'>0/32</span>
             </div>
         
             
@@ -46,7 +46,7 @@
             <div class='fl pad1y space-right2'>
                 <span class="strong">0% </span>
                 <span class="quiet">Lines</span>
-                <span class='fraction'>0/25</span>
+                <span class='fraction'>0/26</span>
             </div>
         
             
@@ -188,7 +188,10 @@
 <a name='L129'></a><a href='#L129'>129</a>
 <a name='L130'></a><a href='#L130'>130</a>
 <a name='L131'></a><a href='#L131'>131</a>
-<a name='L132'></a><a href='#L132'>132</a></td><td class="line-coverage quiet"><span class="cline-any cline-neutral">&nbsp;</span>
+<a name='L132'></a><a href='#L132'>132</a>
+<a name='L133'></a><a href='#L133'>133</a>
+<a name='L134'></a><a href='#L134'>134</a>
+<a name='L135'></a><a href='#L135'>135</a></td><td class="line-coverage quiet"><span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
@@ -219,6 +222,8 @@
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
 <span class="cline-any cline-no">&nbsp;</span>
 <span class="cline-any cline-no">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
@@ -239,6 +244,7 @@
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
@@ -349,6 +355,8 @@ interface FolderList {
   Children: { id: string; name: string }[]
 }
 &nbsp;
+const PAGE_SIZE = <span class="cstat-no" title="statement not covered" >5</span>
+&nbsp;
 export const <span class="cstat-no" title="statement not covered" >RenderColumnSecret: Renderer&lt;CellProps&lt;FolderList&gt;&gt; = <span class="cstat-no" title="statement not covered" ><span class="fstat-no" title="function not covered" >(</span>{</span> row }) =&gt; {</span>
   const data = <span class="cstat-no" title="statement not covered" >row.original</span>
   const { accountId } = <span class="cstat-no" title="statement not covered" >useParams&lt;{ accountId: string }&gt;()</span>
@@ -367,13 +375,14 @@ export const <span class="cstat-no" title="statement not covered" >RenderColumnS
           &lt;Icon name="main-share" color={Color.GREY_600} /&gt;
         &lt;/Link&gt;
       &lt;/Text&gt;
-      &lt;Layout.Horizontal spacing="medium"&gt;
+      &lt;Container flex={{ justifyContent: 'start' }} className={css.dashboardShortcutList}&gt;
         {data.Children.map(<span class="fstat-no" title="function not covered" >(d</span>ashboards: { id: string; name: string }) =&gt; {
 <span class="cstat-no" title="statement not covered" >          return (</span>
             &lt;Layout.Horizontal className={css.dashboardDetail} key={dashboards?.name + '_' + dashboards?.id}&gt;
-              {dashboards.name}{' '}
+              {dashboards.name}
               &lt;Link
                 target="_blank"
+                className={css.dashboardDetailLink}
                 to={routes.toViewCustomDashboard({
                   viewId: dashboards.id,
                   accountId: accountId,
@@ -385,7 +394,7 @@ export const <span class="cstat-no" title="statement not covered" >RenderColumnS
             &lt;/Layout.Horizontal&gt;
           )
         })}
-      &lt;/Layout.Horizontal&gt;
+      &lt;/Container&gt;
     &lt;/Layout.Vertical&gt;
   )
 }
@@ -404,7 +413,7 @@ const DashboardResourceModalBody: React.FC&lt;RbacResourceModalProps&gt; = <span
   const { data: folders, loading: fethingFolders } = <span class="cstat-no" title="statement not covered" >useGet({</span>
     // Inferred from RestfulProvider in index.js
     path: 'gateway/dashboard/folder',
-    queryParams: { accountId: accountIdentifier, page: page + 1, pageSize: 10, isAdmin: true }
+    queryParams: { accountId: accountIdentifier, page: page + 1, pageSize: PAGE_SIZE, isAdmin: true }
   })
 &nbsp;
   const totalFolders: number = <span class="cstat-no" title="statement not covered" >folders?.total</span>
@@ -430,9 +439,9 @@ const DashboardResourceModalBody: React.FC&lt;RbacResourceModalProps&gt; = <span
           }
         ]}
         pagination={{
-          itemCount: totalFolders || 10,
-          pageSize: 10,
-          pageCount: totalFolders &gt;= 10 ? Math.round(totalFolders / 10) : 10,
+          itemCount: totalFolders || 1,
+          pageSize: PAGE_SIZE,
+          pageCount: Math.ceil(totalFolders / PAGE_SIZE),
           pageIndex: page || 0,
           gotoPage: <span class="fstat-no" title="function not covered" >pageNumber </span>=&gt; <span class="cstat-no" title="statement not covered" >setPage(pageNumber)</span>
         }}
@@ -457,7 +466,7 @@ const DashboardResourceModalBody: React.FC&lt;RbacResourceModalProps&gt; = <span
             <div class='footer quiet pad2 space-top1 center small'>
                 Code coverage generated by
                 <a href="https://istanbul.js.org/" target="_blank">istanbul</a>
-                at Wed Feb 23 2022 11:45:52 GMT+0000 (Greenwich Mean Time)
+                at Thu Mar 10 2022 11:26:25 GMT+0000 (Greenwich Mean Time)
             </div>
         </div>
         <script src="../../../../prettify.js"></script>

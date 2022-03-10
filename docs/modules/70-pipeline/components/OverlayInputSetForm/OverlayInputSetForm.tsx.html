@@ -23,9 +23,9 @@
         <div class='clearfix'>
             
             <div class='fl pad1y space-right2'>
-                <span class="strong">80.61% </span>
+                <span class="strong">80.72% </span>
                 <span class="quiet">Statements</span>
-                <span class='fraction'>133/165</span>
+                <span class='fraction'>134/166</span>
             </div>
         
             
@@ -44,9 +44,9 @@
         
             
             <div class='fl pad1y space-right2'>
-                <span class="strong">80.98% </span>
+                <span class="strong">81.1% </span>
                 <span class="quiet">Lines</span>
-                <span class='fraction'>132/163</span>
+                <span class='fraction'>133/164</span>
             </div>
         
             
@@ -749,7 +749,8 @@
 <a name='L690'></a><a href='#L690'>690</a>
 <a name='L691'></a><a href='#L691'>691</a>
 <a name='L692'></a><a href='#L692'>692</a>
-<a name='L693'></a><a href='#L693'>693</a></td><td class="line-coverage quiet"><span class="cline-any cline-neutral">&nbsp;</span>
+<a name='L693'></a><a href='#L693'>693</a>
+<a name='L694'></a><a href='#L694'>694</a></td><td class="line-coverage quiet"><span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
@@ -813,10 +814,10 @@
 <span class="cline-any cline-yes">3x</span>
 <span class="cline-any cline-yes">3x</span>
 <span class="cline-any cline-yes">3x</span>
-<span class="cline-any cline-yes">3x</span>
-<span class="cline-any cline-yes">3x</span>
-<span class="cline-any cline-yes">3x</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">3x</span>
+<span class="cline-any cline-yes">3x</span>
+<span class="cline-any cline-yes">3x</span>
 <span class="cline-any cline-yes">3x</span>
 <span class="cline-any cline-yes">3x</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
@@ -1114,7 +1115,7 @@
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">2x</span>
 <span class="cline-any cline-yes">2x</span>
 <span class="cline-any cline-yes">2x</span>
 <span class="cline-any cline-yes">2x</span>
@@ -1164,6 +1165,7 @@
 <span class="cline-any cline-no">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-yes">2x</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
@@ -1313,7 +1315,7 @@
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-yes">27x</span>
+<span class="cline-any cline-yes">26x</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
@@ -1505,10 +1507,10 @@ import GitContextForm, { GitContextProps } from '@common/components/GitContextFo
 import { useQueryParams } from '@common/hooks'
 import { AppStoreContext } from 'framework/AppStore/AppStoreContext'
 import { GitSyncStoreProvider } from 'framework/GitRepoStore/GitSyncStoreContext'
+import type { CreateUpdateInputSetsReturnType, InputSetDTO } from '@pipeline/utils/types'
 import { yamlStringify } from '@common/utils/YamlHelperMethods'
 import { getOverlayErrors } from '@pipeline/utils/runPipelineUtils'
 import { ErrorsStrip } from '../ErrorsStrip/ErrorsStrip'
-import type { InputSetDTO } from '../InputSetForm/InputSetForm'
 import { InputSetSelector, InputSetSelectorProps } from '../InputSetSelector/InputSetSelector'
 import {
   anyOneOf,
@@ -1805,8 +1807,8 @@ export function OverlayInputSetForm({
     inputSetObj: InputSetDTO,
     gitDetails?: SaveToGitFormInterface,
     objectId = ''
-  ) =&gt; {
-    let response: ResponseOverlayInputSetResponse | null
+  ): CreateUpdateInputSetsReturnType =&gt; {
+    let response: ResponseOverlayInputSetResponse | null = null
     try {
       const requestData = yamlStringify({ overlayInputSet: clearNullUndefined(inputSetObj) }) as any
       const requestOptions = getCreateUpdateRequestBodyOptions({
@@ -1846,16 +1848,17 @@ export function OverlayInputSetForm({
       <span class="missing-if-branch" title="else path not taken" >E</span>if (!isGitSyncEnabled) {
         closeForm()
       }
-    } catch (e: any) {
+    } catch (e) {
       const invaliderrors = <span class="cstat-no" title="statement not covered" >getOverlayErrors(e?.data?.metadata?.invalidReferences)</span>
 <span class="cstat-no" title="statement not covered" >      if (Object.keys(invaliderrors).length) {</span>
 <span class="cstat-no" title="statement not covered" >        setFormErrors(invaliderrors)</span>
       }
       // This is done because when git sync is enabled, errors are displayed in a modal
-      else <span class="cstat-no" title="statement not covered" >if (!isGitSyncEnabled) {</span>
+<span class="cstat-no" title="statement not covered" >      if (!isGitSyncEnabled) {</span>
 <span class="cstat-no" title="statement not covered" >        showError(getErrorInfoFromErrorObject(e), undefined, 'pipeline.common.error')</span>
+      } else {
+<span class="cstat-no" title="statement not covered" >        throw e</span>
       }
-<span class="cstat-no" title="statement not covered" >      throw e</span>
     }
     return {
       status: response<span class="branch-0 cbranch-no" title="branch not covered" >?.s</span>tatus,
@@ -2140,7 +2143,7 @@ export function OverlayInputSetForm({
             <div class='footer quiet pad2 space-top1 center small'>
                 Code coverage generated by
                 <a href="https://istanbul.js.org/" target="_blank">istanbul</a>
-                at Wed Feb 23 2022 11:45:52 GMT+0000 (Greenwich Mean Time)
+                at Thu Mar 10 2022 11:26:25 GMT+0000 (Greenwich Mean Time)
             </div>
         </div>
         <script src="../../../../prettify.js"></script>

@@ -329,8 +329,8 @@
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-yes">82x</span>
-<span class="cline-any cline-yes">82x</span>
+<span class="cline-any cline-yes">83x</span>
+<span class="cline-any cline-yes">83x</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
@@ -343,20 +343,18 @@
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-yes">82x</span>
-<span class="cline-any cline-yes">82x</span>
-<span class="cline-any cline-yes">82x</span>
-<span class="cline-any cline-yes">82x</span>
-<span class="cline-any cline-yes">82x</span>
-<span class="cline-any cline-yes">82x</span>
-<span class="cline-any cline-yes">82x</span>
+<span class="cline-any cline-yes">83x</span>
+<span class="cline-any cline-yes">83x</span>
+<span class="cline-any cline-yes">83x</span>
+<span class="cline-any cline-yes">83x</span>
+<span class="cline-any cline-yes">83x</span>
+<span class="cline-any cline-yes">83x</span>
+<span class="cline-any cline-yes">83x</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-yes">82x</span>
+<span class="cline-any cline-yes">83x</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-yes">82x</span>
-<span class="cline-any cline-yes">82x</span>
-<span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">83x</span>
+<span class="cline-any cline-yes">83x</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
@@ -368,13 +366,15 @@
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-yes">82x</span>
-<span class="cline-any cline-yes">82x</span>
-<span class="cline-any cline-yes">82x</span>
-<span class="cline-any cline-yes">82x</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-yes">574x</span>
-<span class="cline-any cline-yes">82x</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">83x</span>
+<span class="cline-any cline-yes">83x</span>
+<span class="cline-any cline-yes">83x</span>
+<span class="cline-any cline-yes">83x</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">581x</span>
+<span class="cline-any cline-yes">83x</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
@@ -633,7 +633,7 @@ import type {
   ImagePathProps,
   ImagePathTypes
 } from '@pipeline/components/ArtifactsSelection/ArtifactInterface'
-import { ArtifactIdentifierValidation } from '../../../ArtifactHelper'
+import { ArtifactIdentifierValidation, ModalViewFor } from '../../../ArtifactHelper'
 import ArtifactImagePathTagView from '../ArtifactImagePathTagView/ArtifactImagePathTagView'
 import SideCarArtifactIdentifier from '../SideCarArtifactIdentifier'
 import css from '../../ArtifactConnector.module.scss'
@@ -718,7 +718,7 @@ export function GCRImagePath({
   }, [lastQueryData, refetch])
 &nbsp;
   const getInitialValues = useCallback((): ImagePathTypes =&gt; {
-    return getArtifactFormData(initialValues, selectedArtifact as ArtifactType, context === 2)
+    return getArtifactFormData(initialValues, selectedArtifact as ArtifactType, context === ModalViewFor.SIDECAR)
   }, [context, initialValues, selectedArtifact])
 &nbsp;
   const fetchTags = <span class="fstat-no" title="function not covered" >(i</span>magePath = <span class="branch-0 cbranch-no" title="branch not covered" >'',</span> registryHostname = <span class="branch-0 cbranch-no" title="branch not covered" >'')</span>: void =&gt; {
@@ -737,7 +737,7 @@ export function GCRImagePath({
   }, [])
 &nbsp;
   const submitFormData = (formData: ImagePathTypes &amp; { connectorId?: string }): void =&gt; {
-    const artifactObj = getFinalArtifactObj(formData, context === 2)
+    const artifactObj = getFinalArtifactObj(formData, context === ModalViewFor.SIDECAR)
     merge(artifactObj.spec, { registryHostname: formData<span class="branch-0 cbranch-no" title="branch not covered" >?.r</span>egistryHostname })
     handleSubmit(artifactObj)
   }
@@ -763,7 +763,7 @@ export function GCRImagePath({
 &nbsp;
       &lt;Formik
         initialValues={getInitialValues()}
-        validationSchema={context === 2 ? sidecarSchema : primarySchema}
+        validationSchema={context === ModalViewFor.SIDECAR ? sidecarSchema : primarySchema}
         formName="gcrImagePath"
         onSubmit={formData =&gt; {
           submitFormData({
@@ -777,7 +777,7 @@ export function GCRImagePath({
         {formik =&gt; (
           &lt;Form&gt;
             &lt;div className={css.connectorForm}&gt;
-              {context === 2 &amp;&amp; &lt;SideCarArtifactIdentifier /&gt;}
+              {context === ModalViewFor.SIDECAR &amp;&amp; &lt;SideCarArtifactIdentifier /&gt;}
               &lt;div className={css.imagePathContainer}&gt;
                 &lt;FormInput.MultiTypeInput
                   label={getString('connectors.GCR.registryHostname')}
@@ -859,7 +859,7 @@ export function GCRImagePath({
             <div class='footer quiet pad2 space-top1 center small'>
                 Code coverage generated by
                 <a href="https://istanbul.js.org/" target="_blank">istanbul</a>
-                at Wed Feb 23 2022 11:45:52 GMT+0000 (Greenwich Mean Time)
+                at Thu Mar 10 2022 11:26:25 GMT+0000 (Greenwich Mean Time)
             </div>
         </div>
         <script src="../../../../../../../prettify.js"></script>

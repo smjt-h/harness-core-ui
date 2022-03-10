@@ -23,16 +23,16 @@
         <div class='clearfix'>
             
             <div class='fl pad1y space-right2'>
-                <span class="strong">34.88% </span>
+                <span class="strong">31.91% </span>
                 <span class="quiet">Statements</span>
-                <span class='fraction'>15/43</span>
+                <span class='fraction'>15/47</span>
             </div>
         
             
             <div class='fl pad1y space-right2'>
-                <span class="strong">29.63% </span>
+                <span class="strong">24.24% </span>
                 <span class="quiet">Branches</span>
-                <span class='fraction'>8/27</span>
+                <span class='fraction'>8/33</span>
             </div>
         
             
@@ -44,9 +44,9 @@
         
             
             <div class='fl pad1y space-right2'>
-                <span class="strong">30.77% </span>
+                <span class="strong">27.91% </span>
                 <span class="quiet">Lines</span>
-                <span class='fraction'>12/39</span>
+                <span class='fraction'>12/43</span>
             </div>
         
             
@@ -173,7 +173,12 @@
 <a name='L114'></a><a href='#L114'>114</a>
 <a name='L115'></a><a href='#L115'>115</a>
 <a name='L116'></a><a href='#L116'>116</a>
-<a name='L117'></a><a href='#L117'>117</a></td><td class="line-coverage quiet"><span class="cline-any cline-neutral">&nbsp;</span>
+<a name='L117'></a><a href='#L117'>117</a>
+<a name='L118'></a><a href='#L118'>118</a>
+<a name='L119'></a><a href='#L119'>119</a>
+<a name='L120'></a><a href='#L120'>120</a>
+<a name='L121'></a><a href='#L121'>121</a>
+<a name='L122'></a><a href='#L122'>122</a></td><td class="line-coverage quiet"><span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
@@ -232,12 +237,17 @@
 <span class="cline-any cline-no">&nbsp;</span>
 <span class="cline-any cline-no">&nbsp;</span>
 <span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-no">&nbsp;</span>
 <span class="cline-any cline-no">&nbsp;</span>
 <span class="cline-any cline-no">&nbsp;</span>
-<span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-no">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
@@ -296,7 +306,7 @@
  * https://polyformproject.org/wp-content/uploads/2020/06/PolyForm-Shield-1.0.0.txt.
  */
 &nbsp;
-import { isEmpty as _isEmpty } from 'lodash-es'
+import { isEmpty as _isEmpty, defaultTo as _defaultTo } from 'lodash-es'
 import { ASRuleTabs, GatewayKindType } from '@ce/constants'
 import type { RoutingData, Service } from 'services/lw'
 import { Utils } from '@ce/common/Utils'
@@ -345,6 +355,7 @@ export const getServiceObjectFromgatewayDetails = <span class="fstat-no" title="
 ): Service =&gt; {
   const hasInstances = <span class="cstat-no" title="statement not covered" >!_isEmpty(gatewayDetails.selectedInstances)</span>
   const isK8sRule = <span class="cstat-no" title="statement not covered" >Utils.isK8sRule(gatewayDetails)</span>
+  const isGcpProvider = <span class="cstat-no" title="statement not covered" >Utils.isProviderGcp(gatewayDetails.provider)</span>
   const routing: RoutingData = <span class="cstat-no" title="statement not covered" >{ ports: gatewayDetails.routing.ports, lb: undefined }</span>
   let kind = <span class="cstat-no" title="statement not covered" >GatewayKindType.INSTANCE</span>
 <span class="cstat-no" title="statement not covered" >  if (isK8sRule) {</span>
@@ -352,10 +363,14 @@ export const getServiceObjectFromgatewayDetails = <span class="fstat-no" title="
 <span class="cstat-no" title="statement not covered" >    kind = GatewayKindType.KUBERNETES</span>
 <span class="cstat-no" title="statement not covered" >    routing.k8s = gatewayDetails.routing.k8s</span>
   } else <span class="cstat-no" title="statement not covered" >if (hasInstances) {</span>
-    // ec2 rule check
+    // VMs rule check
     const instanceIDs = <span class="cstat-no" title="statement not covered" >gatewayDetails.selectedInstances.map(<span class="fstat-no" title="function not covered" >instance </span>=&gt; <span class="cstat-no" title="statement not covered" >`'${instance.id}'`)</span>.join(',')</span>
+    let filterText = <span class="cstat-no" title="statement not covered" >`id = [${instanceIDs}]`</span>
+<span class="cstat-no" title="statement not covered" >    if (isGcpProvider) {</span>
+<span class="cstat-no" title="statement not covered" >      filterText += `\n regions=['${_defaultTo(gatewayDetails.selectedInstances[0].metadata?.availabilityZone, '')}']`</span>
+    }
 <span class="cstat-no" title="statement not covered" >    routing.instance = {</span>
-      filter_text: `id = [${instanceIDs}]` // eslint-disable-line
+      filter_text: filterText
     }
   } else <span class="cstat-no" title="statement not covered" >if (!_isEmpty(gatewayDetails.routing.container_svc)) {</span>
     // ECS rule check
@@ -412,7 +427,7 @@ export const getServiceObjectFromgatewayDetails = <span class="fstat-no" title="
             <div class='footer quiet pad2 space-top1 center small'>
                 Code coverage generated by
                 <a href="https://istanbul.js.org/" target="_blank">istanbul</a>
-                at Wed Feb 23 2022 11:45:52 GMT+0000 (Greenwich Mean Time)
+                at Thu Mar 10 2022 11:26:25 GMT+0000 (Greenwich Mean Time)
             </div>
         </div>
         <script src="../../../../prettify.js"></script>

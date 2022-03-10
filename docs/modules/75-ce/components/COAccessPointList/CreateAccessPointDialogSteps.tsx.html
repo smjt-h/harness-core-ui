@@ -23,30 +23,30 @@
         <div class='clearfix'>
             
             <div class='fl pad1y space-right2'>
-                <span class="strong">89.47% </span>
+                <span class="strong">88.89% </span>
                 <span class="quiet">Statements</span>
-                <span class='fraction'>17/19</span>
+                <span class='fraction'>16/18</span>
+            </div>
+        
+            
+            <div class='fl pad1y space-right2'>
+                <span class="strong">20% </span>
+                <span class="quiet">Branches</span>
+                <span class='fraction'>2/10</span>
             </div>
         
             
             <div class='fl pad1y space-right2'>
                 <span class="strong">50% </span>
-                <span class="quiet">Branches</span>
-                <span class='fraction'>4/8</span>
-            </div>
-        
-            
-            <div class='fl pad1y space-right2'>
-                <span class="strong">66.67% </span>
                 <span class="quiet">Functions</span>
-                <span class='fraction'>2/3</span>
+                <span class='fraction'>1/2</span>
             </div>
         
             
             <div class='fl pad1y space-right2'>
-                <span class="strong">89.47% </span>
+                <span class="strong">88.89% </span>
                 <span class="quiet">Lines</span>
-                <span class='fraction'>17/19</span>
+                <span class='fraction'>16/18</span>
             </div>
         
             
@@ -133,7 +133,12 @@
 <a name='L74'></a><a href='#L74'>74</a>
 <a name='L75'></a><a href='#L75'>75</a>
 <a name='L76'></a><a href='#L76'>76</a>
-<a name='L77'></a><a href='#L77'>77</a></td><td class="line-coverage quiet"><span class="cline-any cline-neutral">&nbsp;</span>
+<a name='L77'></a><a href='#L77'>77</a>
+<a name='L78'></a><a href='#L78'>78</a>
+<a name='L79'></a><a href='#L79'>79</a>
+<a name='L80'></a><a href='#L80'>80</a>
+<a name='L81'></a><a href='#L81'>81</a>
+<a name='L82'></a><a href='#L82'>82</a></td><td class="line-coverage quiet"><span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
@@ -146,15 +151,12 @@
 <span class="cline-any cline-yes">2x</span>
 <span class="cline-any cline-yes">2x</span>
 <span class="cline-any cline-yes">2x</span>
-<span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-yes">2x</span>
 <span class="cline-any cline-yes">2x</span>
-<span class="cline-any cline-yes">2x</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-yes">2x</span>
@@ -184,6 +186,14 @@
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-yes">2x</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
@@ -219,18 +229,15 @@
 import React, { useState } from 'react'
 import { useParams } from 'react-router-dom'
 import type { AccessPoint } from 'services/lw'
+import { PROVIDER_TYPES } from '@ce/constants'
 import LoadBalancerDnsConfig from '../COGatewayAccess/LoadBalancerDnsConfig'
 import COAPProviderSelector from '../COProviderSelector/COAPProviderSelector'
 import AzureAPConfig from './AzureAPConfig'
+import GCPAccessPointConfig from '../AccessPoint/GCPAccessPoint/GCPAccessPointConfig'
 &nbsp;
 interface CreateAccessPointDialogScreensProps {
   onSave: (lb: AccessPoint) =&gt; void
   onCancel: () =&gt; void
-}
-&nbsp;
-enum CloudProvider {
-  AWS = 'aws',
-  AZURE = 'azure'
 }
 &nbsp;
 const CreateAccessPointDialogScreens: React.FC&lt;CreateAccessPointDialogScreensProps&gt; = props =&gt; {
@@ -263,7 +270,7 @@ const CreateAccessPointDialogScreens: React.FC&lt;CreateAccessPointDialogScreens
     &lt;div&gt;
       {showProviderSelectorScreen ? (
         &lt;COAPProviderSelector onSubmit={handleCloudProviderSubmission} accountId={accountId} /&gt;
-      ) : <span class="branch-1 cbranch-no" title="branch not covered" >selectedProvider === CloudProvider.AWS ? (</span>
+      ) : <span class="branch-1 cbranch-no" title="branch not covered" >selectedProvider === PROVIDER_TYPES.AWS ? (</span>
         &lt;LoadBalancerDnsConfig
           loadBalancer={initialLoadBalancer}
           cloudAccountId={connectorIdentifier}
@@ -271,7 +278,7 @@ const CreateAccessPointDialogScreens: React.FC&lt;CreateAccessPointDialogScreens
           mode={'create'}
           onSave={props.onSave}
         /&gt;
-      ) : (
+      ) : selectedProvider === PROVIDER_TYPES.AZURE ? (
         &lt;AzureAPConfig
           cloudAccountId={connectorIdentifier}
           onSave={props.onSave}
@@ -279,7 +286,15 @@ const CreateAccessPointDialogScreens: React.FC&lt;CreateAccessPointDialogScreens
           onClose={props.onCancel}
           loadBalancer={initialLoadBalancer}
         /&gt;
-      )}
+      ) : selectedProvider === PROVIDER_TYPES.GCP ? (
+        &lt;GCPAccessPointConfig
+          cloudAccountId={connectorIdentifier}
+          onSave={props.onSave}
+          mode={'create'}
+          onClose={props.onCancel}
+          loadBalancer={initialLoadBalancer}
+        /&gt;
+      ) : null}
     &lt;/div&gt;
   )
 }
@@ -292,7 +307,7 @@ export default CreateAccessPointDialogScreens
             <div class='footer quiet pad2 space-top1 center small'>
                 Code coverage generated by
                 <a href="https://istanbul.js.org/" target="_blank">istanbul</a>
-                at Wed Feb 23 2022 11:45:52 GMT+0000 (Greenwich Mean Time)
+                at Thu Mar 10 2022 11:26:25 GMT+0000 (Greenwich Mean Time)
             </div>
         </div>
         <script src="../../../../prettify.js"></script>

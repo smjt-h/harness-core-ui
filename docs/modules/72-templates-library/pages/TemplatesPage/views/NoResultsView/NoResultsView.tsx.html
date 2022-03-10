@@ -25,14 +25,14 @@
             <div class='fl pad1y space-right2'>
                 <span class="strong">100% </span>
                 <span class="quiet">Statements</span>
-                <span class='fraction'>9/9</span>
+                <span class='fraction'>8/8</span>
             </div>
         
             
             <div class='fl pad1y space-right2'>
-                <span class="strong">90% </span>
+                <span class="strong">100% </span>
                 <span class="quiet">Branches</span>
-                <span class='fraction'>9/10</span>
+                <span class='fraction'>12/12</span>
             </div>
         
             
@@ -46,7 +46,7 @@
             <div class='fl pad1y space-right2'>
                 <span class="strong">100% </span>
                 <span class="quiet">Lines</span>
-                <span class='fraction'>9/9</span>
+                <span class='fraction'>8/8</span>
             </div>
         
             
@@ -111,25 +111,18 @@
 <a name='L52'></a><a href='#L52'>52</a>
 <a name='L53'></a><a href='#L53'>53</a>
 <a name='L54'></a><a href='#L54'>54</a>
-<a name='L55'></a><a href='#L55'>55</a>
-<a name='L56'></a><a href='#L56'>56</a>
-<a name='L57'></a><a href='#L57'>57</a>
-<a name='L58'></a><a href='#L58'>58</a>
-<a name='L59'></a><a href='#L59'>59</a>
-<a name='L60'></a><a href='#L60'>60</a>
-<a name='L61'></a><a href='#L61'>61</a></td><td class="line-coverage quiet"><span class="cline-any cline-neutral">&nbsp;</span>
+<a name='L55'></a><a href='#L55'>55</a></td><td class="line-coverage quiet"><span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-yes">11x</span>
-<span class="cline-any cline-yes">11x</span>
-<span class="cline-any cline-yes">11x</span>
-<span class="cline-any cline-yes">11x</span>
-<span class="cline-any cline-yes">11x</span>
-<span class="cline-any cline-yes">11x</span>
+<span class="cline-any cline-yes">12x</span>
+<span class="cline-any cline-yes">12x</span>
+<span class="cline-any cline-yes">12x</span>
+<span class="cline-any cline-yes">12x</span>
+<span class="cline-any cline-yes">12x</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
@@ -138,19 +131,14 @@
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-yes">11x</span>
+<span class="cline-any cline-yes">12x</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-yes">9x</span>
-<span class="cline-any cline-yes">9x</span>
-<span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">16x</span>
+<span class="cline-any cline-yes">16x</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
@@ -188,8 +176,7 @@ import React from 'react'
 import { Button, ButtonSize, ButtonVariation, Color, Container, Icon, Layout, Text } from '@wings-software/uicore'
 import templateIllustration from '@templates-library/pages/TemplatesPage/images/templates-illustration.svg'
 import { useStrings } from 'framework/strings'
-import { NewTemplatePopover } from '@templates-library/pages/TemplatesPage/views/NewTemplatePopover'
-import css from './NoResultsView.module.scss'
+import { NewTemplatePopover } from '../NewTemplatePopover/NewTemplatePopover'
 &nbsp;
 export interface NoResultsViewProps {
   hasSearchParam?: boolean
@@ -206,9 +193,9 @@ export default function NoResultsView({
 }: NoResultsViewProps): React.ReactElement {
   const { getString } = useStrings()
   return (
-    &lt;Container height={'100%'} className={css.main}&gt;
+    &lt;Container height={'100%'}&gt;
       {hasSearchParam ? (
-<span class="branch-0 cbranch-no" title="branch not covered" >        &lt;Layout.Vertical height={'100%'} spacing={'xlarge'} flex={{ align: 'center-center' }}&gt;</span>
+        &lt;Layout.Vertical height={'100%'} spacing={'xlarge'} flex={{ align: 'center-center' }}&gt;
           &lt;Icon color={Color.GREY_400} name="template-library" size={50} /&gt;
           &lt;Text font={{ weight: 'bold', size: 'medium' }} color={Color.GREY_400}&gt;
             {getString('common.filters.noMatchingFilterData')}
@@ -221,14 +208,9 @@ export default function NoResultsView({
           /&gt;
         &lt;/Layout.Vertical&gt;
       ) : (
-        &lt;Layout.Vertical
-          spacing={minimal ? 'large' : 'xxxlarge'}
-          height={'100%'}
-          flex={{ align: 'center-center' }}
-          className={minimal ? css.minimal : ''}
-        &gt;
-          &lt;img src={templateIllustration} className={css.illustration} /&gt;
-          &lt;Text className={css.infoText} color={Color.GREY_700}&gt;
+        &lt;Layout.Vertical spacing={minimal ? 'large' : 'xxxlarge'} height={'100%'} flex={{ align: 'center-center' }}&gt;
+          &lt;img src={templateIllustration} width={minimal ? '117px' : '220px'} /&gt;
+          &lt;Text font={{ size: minimal ? 'small' : 'normal' }} color={Color.GREY_700}&gt;
             {text}
           &lt;/Text&gt;
           {!minimal &amp;&amp; &lt;NewTemplatePopover /&gt;}
@@ -244,7 +226,7 @@ export default function NoResultsView({
             <div class='footer quiet pad2 space-top1 center small'>
                 Code coverage generated by
                 <a href="https://istanbul.js.org/" target="_blank">istanbul</a>
-                at Wed Feb 23 2022 11:45:52 GMT+0000 (Greenwich Mean Time)
+                at Thu Mar 10 2022 11:26:25 GMT+0000 (Greenwich Mean Time)
             </div>
         </div>
         <script src="../../../../../../prettify.js"></script>

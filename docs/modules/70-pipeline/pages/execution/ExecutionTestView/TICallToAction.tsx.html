@@ -23,30 +23,30 @@
         <div class='clearfix'>
             
             <div class='fl pad1y space-right2'>
-                <span class="strong">75% </span>
+                <span class="strong">100% </span>
                 <span class="quiet">Statements</span>
-                <span class='fraction'>12/16</span>
+                <span class='fraction'>15/15</span>
             </div>
         
             
             <div class='fl pad1y space-right2'>
-                <span class="strong">0% </span>
+                <span class="strong">62.5% </span>
                 <span class="quiet">Branches</span>
-                <span class='fraction'>0/8</span>
+                <span class='fraction'>5/8</span>
             </div>
         
             
             <div class='fl pad1y space-right2'>
-                <span class="strong">0% </span>
+                <span class="strong">100% </span>
                 <span class="quiet">Functions</span>
-                <span class='fraction'>0/1</span>
+                <span class='fraction'>1/1</span>
             </div>
         
             
             <div class='fl pad1y space-right2'>
-                <span class="strong">75% </span>
+                <span class="strong">100% </span>
                 <span class="quiet">Lines</span>
-                <span class='fraction'>12/16</span>
+                <span class='fraction'>15/15</span>
             </div>
         
             
@@ -151,10 +151,10 @@
 <span class="cline-any cline-yes">1x</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-yes">1x</span>
-<span class="cline-any cline-no">&nbsp;</span>
-<span class="cline-any cline-no">&nbsp;</span>
-<span class="cline-any cline-no">&nbsp;</span>
-<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-yes">6x</span>
+<span class="cline-any cline-yes">6x</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">6x</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
@@ -219,11 +219,11 @@ export interface TICallToActionProps {
 const setUpTIDocs = 'https://ngdocs.harness.io/article/428cs02e6u'
 const aboutTIDocs = 'https://ngdocs.harness.io/article/vtu9k1dsfa-test-intelligence-concepts'
 &nbsp;
-export function <span class="fstat-no" title="function not covered" >TICallToAction(</span>_props: TICallToActionProps): React.ReactElement {
-  const { getString } = <span class="cstat-no" title="statement not covered" >useStrings()</span>
-<span class="cstat-no" title="statement not covered" >  useFeature({ featureRequest: { featureName: FeatureIdentifier.TEST_INTELLIGENCE } })</span>
-  const canUseTI = <span class="cstat-no" title="statement not covered" >false</span>
-<span class="cstat-no" title="statement not covered" >  return (</span>
+export function TICallToAction(_props: TICallToActionProps): React.ReactElement {
+  const { getString } = useStrings()
+  const canUseTI = useFeature({ featureRequest: { featureName: FeatureIdentifier.TEST_INTELLIGENCE } })
+&nbsp;
+  return (
     &lt;div className={cx(css.widgetWrapper, css.tiCallToActionWrapper)}&gt;
       &lt;Container style={{ paddingTop: 'var(--spacing-3)' }} className={css.widget} height="100%"&gt;
         &lt;Layout.Horizontal spacing="medium"&gt;
@@ -238,12 +238,12 @@ export function <span class="fstat-no" title="function not covered" >TICallToAct
               &lt;Text color={Color.BLACK} className={css.subText}&gt;
                 {canUseTI
                   ? getString('pipeline.testsReports.tiCallToAction.utilizeTISubText')
-                  : getString('pipeline.testsReports.tiCallToAction.upsellSubText')}
+                  : <span class="branch-1 cbranch-no" title="branch not covered" >getString('pipeline.testsReports.tiCallToAction.upsellSubText')}</span>
               &lt;/Text&gt;
               {canUseTI &amp;&amp; &lt;Text color={Color.GREY_500}&gt;Support for .Net and Python coming soon!&lt;/Text&gt;}
             &lt;/Container&gt;
             &lt;Layout.Horizontal spacing="medium" className={css.actionsContainer}&gt;
-              &lt;a rel="noreferrer" target="_blank" href={canUseTI ? setUpTIDocs : aboutTIDocs}&gt;
+              &lt;a rel="noreferrer" target="_blank" href={canUseTI ? setUpTIDocs : <span class="branch-1 cbranch-no" title="branch not covered" >aboutTIDocs}</span>&gt;
                 &lt;Button className={css.findOutMoreBtn} variation={ButtonVariation.PRIMARY}&gt;
                   {getString('common.findOutMore')}
                 &lt;/Button&gt;
@@ -253,7 +253,7 @@ export function <span class="fstat-no" title="function not covered" >TICallToAct
                   {getString('pipeline.testsReports.tiCallToAction.addRunTestsStep')}
                 &lt;/Text&gt;
               ) : (
-                &lt;Container className={css.upgradeRequiredWrapper}&gt;
+<span class="branch-1 cbranch-no" title="branch not covered" >                &lt;Container className={css.upgradeRequiredWrapper}&gt;</span>
                   &lt;FeatureWarningWithTooltip featureName={FeatureIdentifier.TEST_INTELLIGENCE} /&gt;
                 &lt;/Container&gt;
               )}
@@ -271,7 +271,7 @@ export function <span class="fstat-no" title="function not covered" >TICallToAct
             <div class='footer quiet pad2 space-top1 center small'>
                 Code coverage generated by
                 <a href="https://istanbul.js.org/" target="_blank">istanbul</a>
-                at Wed Feb 23 2022 11:45:52 GMT+0000 (Greenwich Mean Time)
+                at Thu Mar 10 2022 11:26:25 GMT+0000 (Greenwich Mean Time)
             </div>
         </div>
         <script src="../../../../../prettify.js"></script>

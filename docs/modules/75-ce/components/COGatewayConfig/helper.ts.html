@@ -23,30 +23,30 @@
         <div class='clearfix'>
             
             <div class='fl pad1y space-right2'>
-                <span class="strong">85.45% </span>
+                <span class="strong">83.93% </span>
                 <span class="quiet">Statements</span>
-                <span class='fraction'>47/55</span>
+                <span class='fraction'>47/56</span>
             </div>
         
             
             <div class='fl pad1y space-right2'>
-                <span class="strong">59.09% </span>
+                <span class="strong">56.82% </span>
                 <span class="quiet">Branches</span>
-                <span class='fraction'>26/44</span>
+                <span class='fraction'>25/44</span>
             </div>
         
             
             <div class='fl pad1y space-right2'>
-                <span class="strong">81.25% </span>
+                <span class="strong">80% </span>
                 <span class="quiet">Functions</span>
-                <span class='fraction'>13/16</span>
+                <span class='fraction'>12/15</span>
             </div>
         
             
             <div class='fl pad1y space-right2'>
-                <span class="strong">84.31% </span>
+                <span class="strong">82.69% </span>
                 <span class="quiet">Lines</span>
-                <span class='fraction'>43/51</span>
+                <span class='fraction'>43/52</span>
             </div>
         
             
@@ -195,7 +195,8 @@
 <a name='L136'></a><a href='#L136'>136</a>
 <a name='L137'></a><a href='#L137'>137</a>
 <a name='L138'></a><a href='#L138'>138</a>
-<a name='L139'></a><a href='#L139'>139</a></td><td class="line-coverage quiet"><span class="cline-any cline-neutral">&nbsp;</span>
+<a name='L139'></a><a href='#L139'>139</a>
+<a name='L140'></a><a href='#L140'>140</a></td><td class="line-coverage quiet"><span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
@@ -296,19 +297,20 @@
 <span class="cline-any cline-no">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-yes">1x</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">1x</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-yes">4x</span>
-<span class="cline-any cline-yes">175x</span>
-<span class="cline-any cline-yes">175x</span>
-<span class="cline-any cline-yes">140x</span>
+<span class="cline-any cline-yes">155x</span>
+<span class="cline-any cline-yes">155x</span>
+<span class="cline-any cline-yes">124x</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-yes">35x</span>
-<span class="cline-any cline-yes">35x</span>
-<span class="cline-any cline-yes">35x</span>
+<span class="cline-any cline-yes">31x</span>
+<span class="cline-any cline-yes">31x</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-yes">35x</span>
+<span class="cline-any cline-yes">31x</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-yes">4x</span>
@@ -420,7 +422,7 @@ class InstanceData implements InstanceDetails {
   }
 }
 &nbsp;
-export const fromResourceToInstanceDetails = (item: Resource, addMeta: boolean) =&gt; {
+export const fromResourceToInstanceDetails = (item: Resource, resourceType: { isAzure: boolean; isGcp: boolean }) =&gt; {
   const instanceDetails = new InstanceData()
     .setName(item.name as string)
     .setId(item.id as string)
@@ -430,22 +432,23 @@ export const fromResourceToInstanceDetails = (item: Resource, addMeta: boolean) 
     .setLaunchTime(item.launch_time as string)
     .setStatus(item.status as string)
     .setVpc(item.metadata<span class="branch-1 cbranch-no" title="branch not covered" >?.['vpcID'] as string)</span>
-  <span class="missing-if-branch" title="if path not taken" >I</span>if (addMeta) {
+  <span class="missing-if-branch" title="if path not taken" >I</span>if (resourceType.isAzure) {
 <span class="cstat-no" title="statement not covered" >    instanceDetails.setMetadata({ resourceGroup: item.metadata?.resourceGroup })</span>
+  }
+  <span class="missing-if-branch" title="if path not taken" >I</span>if (resourceType.isGcp) {
+<span class="cstat-no" title="statement not covered" >    instanceDetails.setMetadata({ availabilityZone: item.availability_zone })</span>
   }
   return instanceDetails
 }
 &nbsp;
-export const isFFEnabledForResource = (flags: string[] | undefined, featureFlagsMap: Record&lt;string, boolean&gt;) =&gt; {
+export const isFFEnabledForResource = (flag: string | undefined | null, featureFlagsMap: Record&lt;string, boolean&gt;) =&gt; {
   let enableStatus = true
-  if (!flags || _isEmpty(flags)) {
+  if (_isEmpty(flag)) {
     return enableStatus
   }
-  flags.forEach(_flag =&gt; {
-    <span class="missing-if-branch" title="else path not taken" >E</span>if (!featureFlagsMap[_flag]) {
-      enableStatus = false
-    }
-  })
+  <span class="missing-if-branch" title="else path not taken" >E</span>if (!featureFlagsMap[flag as string]) {
+    enableStatus = false
+  }
   return enableStatus
 }
 &nbsp;
@@ -478,7 +481,7 @@ export const getSelectedResourceFromGatewayDetails = (gatewayDetails: GatewayDet
             <div class='footer quiet pad2 space-top1 center small'>
                 Code coverage generated by
                 <a href="https://istanbul.js.org/" target="_blank">istanbul</a>
-                at Wed Feb 23 2022 11:45:52 GMT+0000 (Greenwich Mean Time)
+                at Thu Mar 10 2022 11:26:25 GMT+0000 (Greenwich Mean Time)
             </div>
         </div>
         <script src="../../../../prettify.js"></script>

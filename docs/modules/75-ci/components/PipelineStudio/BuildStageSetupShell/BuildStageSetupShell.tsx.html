@@ -23,30 +23,30 @@
         <div class='clearfix'>
             
             <div class='fl pad1y space-right2'>
-                <span class="strong">80.21% </span>
+                <span class="strong">81.25% </span>
                 <span class="quiet">Statements</span>
-                <span class='fraction'>77/96</span>
+                <span class='fraction'>78/96</span>
             </div>
         
             
             <div class='fl pad1y space-right2'>
-                <span class="strong">55.49% </span>
+                <span class="strong">60.22% </span>
                 <span class="quiet">Branches</span>
-                <span class='fraction'>202/364</span>
+                <span class='fraction'>218/362</span>
             </div>
         
             
             <div class='fl pad1y space-right2'>
-                <span class="strong">68.75% </span>
+                <span class="strong">75% </span>
                 <span class="quiet">Functions</span>
-                <span class='fraction'>11/16</span>
+                <span class='fraction'>12/16</span>
             </div>
         
             
             <div class='fl pad1y space-right2'>
-                <span class="strong">80.21% </span>
+                <span class="strong">81.25% </span>
                 <span class="quiet">Lines</span>
-                <span class='fraction'>77/96</span>
+                <span class='fraction'>78/96</span>
             </div>
         
             
@@ -477,7 +477,9 @@
 <a name='L418'></a><a href='#L418'>418</a>
 <a name='L419'></a><a href='#L419'>419</a>
 <a name='L420'></a><a href='#L420'>420</a>
-<a name='L421'></a><a href='#L421'>421</a></td><td class="line-coverage quiet"><span class="cline-any cline-neutral">&nbsp;</span>
+<a name='L421'></a><a href='#L421'>421</a>
+<a name='L422'></a><a href='#L422'>422</a>
+<a name='L423'></a><a href='#L423'>423</a></td><td class="line-coverage quiet"><span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
@@ -540,7 +542,6 @@
 <span class="cline-any cline-yes">15x</span>
 <span class="cline-any cline-yes">15x</span>
 <span class="cline-any cline-yes">15x</span>
-<span class="cline-any cline-yes">15x</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
@@ -597,6 +598,21 @@
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">15x</span>
+<span class="cline-any cline-yes">3x</span>
+<span class="cline-any cline-yes">3x</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
@@ -689,18 +705,6 @@
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-yes">15x</span>
-<span class="cline-any cline-no">&nbsp;</span>
-<span class="cline-any cline-no">&nbsp;</span>
-<span class="cline-any cline-no">&nbsp;</span>
-<span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-no">&nbsp;</span>
-<span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-no">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
@@ -906,11 +910,11 @@
 &nbsp;
 import React from 'react'
 import { Expander } from '@blueprintjs/core'
-import { cloneDeep, isEmpty, isEqual, set, get } from 'lodash-es'
+import { cloneDeep, isEmpty, isEqual, set } from 'lodash-es'
 import produce from 'immer'
 import { Tabs, Tab, Icon, Button, Layout, Color, ButtonVariation } from '@wings-software/uicore'
 import type { HarnessIconName } from '@wings-software/uicore/dist/icons/HarnessIcons'
-import { useFeatureFlags, useFeatureFlag } from '@common/hooks/useFeatureFlag'
+import { useFeatureFlag } from '@common/hooks/useFeatureFlag'
 import {
   PipelineContextType,
   usePipelineContext
@@ -957,7 +961,6 @@ interface StagesFilledStateFlags {
 &nbsp;
 export default function BuildStageSetupShell(): JSX.Element {
   const { getString } = useStrings()
-  const { CI_VM_INFRASTRUCTURE } = useFeatureFlags()
   const isTemplatesEnabled = useFeatureFlag(FeatureFlag.NG_TEMPLATES)
   const [selectedTabId, setSelectedTabId] = React.useState&lt;BuildTabs&gt;(BuildTabs.OVERVIEW)
   const [filledUpStages, setFilledUpStages] = React.useState&lt;StagesFilledStateFlags&gt;({
@@ -1020,6 +1023,21 @@ export default function BuildStageSetupShell(): JSX.Element {
     ((stageData?.spec?.infrastructure as VmInfraYaml)<span class="branch-1 cbranch-no" title="branch not covered" >?.spec as VmPoolYaml)<span class="branch-1 cbranch-no" title="branch not covered" >?</span>.spec<span class="branch-1 cbranch-no" title="branch not covered" >?</span>.identifier,</span>
     stageData?.spec?.execution<span class="branch-1 cbranch-no" title="branch not covered" >?.steps<span class="branch-1 cbranch-no" title="branch not covered" >?</span>.length</span>
   ])
+&nbsp;
+  /* If a stage A propagates it's infra from another stage B and number of stages in a pipeline change due to deletion of propagated stage B, then infra for stage A needs to be reset */
+  React.useEffect(() =&gt; {
+    const propagatedStageId = (<span class="branch-1 cbranch-no" title="branch not covered" >stageData?.spec<span class="branch-1 cbranch-no" title="branch not covered" >?</span>.infrastructure as UseFromStageInfraYaml)<span class="branch-1 cbranch-no" title="branch not covered" >?</span>.useFromStage</span>
+    <span class="missing-if-branch" title="if path not taken" >I</span>if (stageData &amp;&amp; <span class="branch-1 cbranch-no" title="branch not covered" >propagatedStageId)</span> {
+      const { stage: propagatedStage } = <span class="cstat-no" title="statement not covered" >getStageFromPipeline&lt;BuildStageElementConfig&gt;(propagatedStageId)</span>
+<span class="cstat-no" title="statement not covered" >      if (!propagatedStage) {</span>
+        // indicates propagated stage doesn't exist
+        const stageWithoutInfra = <span class="cstat-no" title="statement not covered" >set(stageData, 'spec.infrastructure', {</span>
+          useFromStage: {}
+        })
+<span class="cstat-no" title="statement not covered" >        updateStage(stageWithoutInfra)</span>
+      }
+    }
+  }, [pipeline<span class="branch-0 cbranch-no" title="branch not covered" >?.s</span>tages<span class="branch-0 cbranch-no" title="branch not covered" >?.l</span>ength])
 &nbsp;
   React.useEffect(() =&gt; {
     <span class="missing-if-branch" title="else path not taken" >E</span>if (selectedStageId &amp;&amp; isSplitViewOpen) {
@@ -1112,18 +1130,6 @@ export default function BuildStageSetupShell(): JSX.Element {
     &lt;/Layout.Horizontal&gt;
   )
 &nbsp;
-  const shouldEnableDependencies = React.useCallback(<span class="fstat-no" title="function not covered" >(): boolean =</span>&gt; {
-    const isPropagatedStage = <span class="cstat-no" title="statement not covered" >!isEmpty((stageData?.spec?.infrastructure as UseFromStageInfraYaml)?.useFromStage)</span>
-<span class="cstat-no" title="statement not covered" >    if (isPropagatedStage) {</span>
-      const { stage: baseStage } = <span class="cstat-no" title="statement not covered" >getStageFromPipeline&lt;BuildStageElementConfig&gt;(</span>
-        (stageData?.spec?.infrastructure as UseFromStageInfraYaml)?.useFromStage
-      )
-<span class="cstat-no" title="statement not covered" >      return (get(baseStage, 'stage.spec.infrastructure.type') as K8sDirectInfraYaml['type']) !== 'VM'</span>
-    } else {
-<span class="cstat-no" title="statement not covered" >      return (get(stageData, 'spec.infrastructure.type') as K8sDirectInfraYaml['type']) !== 'VM'</span>
-    }
-  }, [stageData])
-&nbsp;
   return (
     &lt;section className={css.setupShell} ref={layoutRef} key={selectedStageId}&gt;
       &lt;Tabs id="stageSetupShell" onChange={handleTabChange} selectedTabId={selectedTabId}&gt;
@@ -1187,7 +1193,7 @@ export default function BuildStageSetupShell(): JSX.Element {
                 allowAddGroup={false}
                 hasRollback={false}
                 isReadonly={isReadonly}
-                hasDependencies={CI_VM_INFRASTRUCTURE ? <span class="branch-0 cbranch-no" title="branch not covered" >shouldEnableDependencies() </span>: true}
+                hasDependencies={true}
                 stepsFactory={stepsFactory}
                 stage={selectedStageClone}
                 originalStage={originalStage}
@@ -1324,7 +1330,7 @@ export default function BuildStageSetupShell(): JSX.Element {
             <div class='footer quiet pad2 space-top1 center small'>
                 Code coverage generated by
                 <a href="https://istanbul.js.org/" target="_blank">istanbul</a>
-                at Wed Feb 23 2022 11:45:52 GMT+0000 (Greenwich Mean Time)
+                at Thu Mar 10 2022 11:26:25 GMT+0000 (Greenwich Mean Time)
             </div>
         </div>
         <script src="../../../../../prettify.js"></script>

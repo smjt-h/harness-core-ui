@@ -23,9 +23,9 @@
         <div class='clearfix'>
             
             <div class='fl pad1y space-right2'>
-                <span class="strong">82.14% </span>
+                <span class="strong">85.71% </span>
                 <span class="quiet">Statements</span>
-                <span class='fraction'>23/28</span>
+                <span class='fraction'>24/28</span>
             </div>
         
             
@@ -37,16 +37,16 @@
         
             
             <div class='fl pad1y space-right2'>
-                <span class="strong">33.33% </span>
+                <span class="strong">66.67% </span>
                 <span class="quiet">Functions</span>
-                <span class='fraction'>1/3</span>
+                <span class='fraction'>2/3</span>
             </div>
         
             
             <div class='fl pad1y space-right2'>
-                <span class="strong">81.48% </span>
+                <span class="strong">85.71% </span>
                 <span class="quiet">Lines</span>
-                <span class='fraction'>22/27</span>
+                <span class='fraction'>24/28</span>
             </div>
         
             
@@ -148,12 +148,7 @@
 <a name='L89'></a><a href='#L89'>89</a>
 <a name='L90'></a><a href='#L90'>90</a>
 <a name='L91'></a><a href='#L91'>91</a>
-<a name='L92'></a><a href='#L92'>92</a>
-<a name='L93'></a><a href='#L93'>93</a>
-<a name='L94'></a><a href='#L94'>94</a>
-<a name='L95'></a><a href='#L95'>95</a>
-<a name='L96'></a><a href='#L96'>96</a>
-<a name='L97'></a><a href='#L97'>97</a></td><td class="line-coverage quiet"><span class="cline-any cline-neutral">&nbsp;</span>
+<a name='L92'></a><a href='#L92'>92</a></td><td class="line-coverage quiet"><span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
@@ -168,7 +163,6 @@
 <span class="cline-any cline-yes">3x</span>
 <span class="cline-any cline-yes">3x</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-yes">3x</span>
 <span class="cline-any cline-yes">3x</span>
 <span class="cline-any cline-yes">3x</span>
@@ -176,12 +170,9 @@
 <span class="cline-any cline-yes">3x</span>
 <span class="cline-any cline-yes">3x</span>
 <span class="cline-any cline-yes">3x</span>
-<span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-yes">3x</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">3x</span>
 <span class="cline-any cline-yes">4x</span>
 <span class="cline-any cline-yes">3x</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
@@ -241,9 +232,8 @@
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-yes">3x</span>
-<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-yes">4x</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
@@ -258,28 +248,24 @@
 &nbsp;
 import React, { useCallback } from 'react'
 import { MultiTypeInputType, NestedAccordionProvider, PageError } from '@wings-software/uicore'
-import { get, omit, set } from 'lodash-es'
+import { omit, set } from 'lodash-es'
 import { useTemplateVariables } from '@pipeline/components/TemplateVariablesContext/TemplateVariablesContext'
 import { PageSpinner } from '@common/components'
 import StageCard from '@pipeline/components/PipelineStudio/PipelineVariables/Cards/StageCard'
 import { TemplateContext } from '@templates-library/components/TemplateStudio/TemplateContext/TemplateContext'
 import type { StageElementConfig, StepElementConfig } from 'services/cd-ng'
-import type { NGTemplateInfoConfig } from 'services/template-ng'
 import { StepCardPanel } from '@pipeline/components/PipelineStudio/PipelineVariables/Cards/StepCard'
 import factory from '@pipeline/components/PipelineSteps/PipelineStepFactory'
 import { DefaultNewStageId } from '@templates-library/components/TemplateStudio/StageTemplateCanvas/StageTemplateForm/StageTemplateForm'
 import { GitSyncStoreProvider } from 'framework/GitRepoStore/GitSyncStoreContext'
 import { sanitize } from '@common/utils/JSONUtils'
 import { VariablesHeader } from '@pipeline/components/PipelineStudio/PipelineVariables/VariablesHeader/VariablesHeader'
+import { TemplateType } from '@templates-library/utils/templatesUtils'
 import css from '@pipeline/components/PipelineStudio/PipelineVariables/PipelineVariables.module.scss'
 &nbsp;
-export const TemplateVariables: React.FC = (): JSX.Element =&gt; {
-  const {
-    state: { template: originalTemplate },
-    isReadonly,
-    updateTemplate
-  } = React.useContext(TemplateContext)
-  const { variablesTemplate, metadataMap, error, initLoading } = useTemplateVariables()
+const TemplateVariables: React.FC = (): JSX.Element =&gt; {
+  const { isReadonly, updateTemplate } = React.useContext(TemplateContext)
+  const { originalTemplate, variablesTemplate, metadataMap, error, initLoading } = useTemplateVariables()
 &nbsp;
   const onUpdate = useCallback(
 <span class="fstat-no" title="function not covered" >    async </span>(stage: StageElementConfig | StepElementConfig) =&gt; {
@@ -304,9 +290,9 @@ export const TemplateVariables: React.FC = (): JSX.Element =&gt; {
           &lt;VariablesHeader enableSearch={false} /&gt;
           &lt;div className={css.variableList}&gt;
             &lt;GitSyncStoreProvider&gt;
-              {(variablesTemplate as { stage: NGTemplateInfoConfig }).stage &amp;&amp; (
+              {originalTemplate.type === TemplateType.Stage &amp;&amp; (
                 &lt;StageCard
-                  stage={get(variablesTemplate, 'stage') as StageElementConfig}
+                  stage={variablesTemplate as StageElementConfig}
                   originalStage={{ ...originalTemplate.spec, identifier: DefaultNewStageId } as StageElementConfig}
                   metadataMap={metadataMap}
                   readonly={isReadonly}
@@ -316,17 +302,16 @@ export const TemplateVariables: React.FC = (): JSX.Element =&gt; {
                   updateStage={onUpdate}
                 /&gt;
               )}
-              {(variablesTemplate as { step: NGTemplateInfoConfig }).step &amp;&amp; (
+              {originalTemplate.type === TemplateType.Step &amp;&amp; (
 <span class="branch-1 cbranch-no" title="branch not covered" >                &lt;StepCardPanel</span>
-                  step={get(variablesTemplate, 'step') as StepElementConfig}
+                  step={variablesTemplate as StepElementConfig}
                   originalStep={originalTemplate.spec as StepElementConfig}
                   metadataMap={metadataMap}
                   readonly={isReadonly}
-                  path="template"
+                  stepPath="template"
                   allowableTypes={[MultiTypeInputType.FIXED, MultiTypeInputType.RUNTIME, MultiTypeInputType.EXPRESSION]}
                   stageIdentifier={DefaultNewStageId}
                   onUpdateStep={onUpdate}
-                  stepPath={''}
                   stepsFactory={factory}
                 /&gt;
               )}
@@ -338,8 +323,8 @@ export const TemplateVariables: React.FC = (): JSX.Element =&gt; {
   )
 }
 &nbsp;
-export default function <span class="fstat-no" title="function not covered" >TemplateVariablesWrapper(</span>): React.ReactElement {
-<span class="cstat-no" title="statement not covered" >  return (</span>
+export default function TemplateVariablesWrapper(): React.ReactElement {
+  return (
     &lt;NestedAccordionProvider&gt;
       &lt;TemplateVariables /&gt;
     &lt;/NestedAccordionProvider&gt;
@@ -352,7 +337,7 @@ export default function <span class="fstat-no" title="function not covered" >Tem
             <div class='footer quiet pad2 space-top1 center small'>
                 Code coverage generated by
                 <a href="https://istanbul.js.org/" target="_blank">istanbul</a>
-                at Wed Feb 23 2022 11:45:52 GMT+0000 (Greenwich Mean Time)
+                at Thu Mar 10 2022 11:26:25 GMT+0000 (Greenwich Mean Time)
             </div>
         </div>
         <script src="../../../../../prettify.js"></script>

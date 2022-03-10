@@ -23,30 +23,30 @@
         <div class='clearfix'>
             
             <div class='fl pad1y space-right2'>
-                <span class="strong">90.63% </span>
+                <span class="strong">90.91% </span>
                 <span class="quiet">Statements</span>
-                <span class='fraction'>87/96</span>
+                <span class='fraction'>90/99</span>
             </div>
         
             
             <div class='fl pad1y space-right2'>
-                <span class="strong">67.79% </span>
+                <span class="strong">67.87% </span>
                 <span class="quiet">Branches</span>
-                <span class='fraction'>242/357</span>
+                <span class='fraction'>245/361</span>
             </div>
         
             
             <div class='fl pad1y space-right2'>
-                <span class="strong">93.33% </span>
+                <span class="strong">93.75% </span>
                 <span class="quiet">Functions</span>
-                <span class='fraction'>14/15</span>
+                <span class='fraction'>15/16</span>
             </div>
         
             
             <div class='fl pad1y space-right2'>
-                <span class="strong">90.53% </span>
+                <span class="strong">90.82% </span>
                 <span class="quiet">Lines</span>
-                <span class='fraction'>86/95</span>
+                <span class='fraction'>89/98</span>
             </div>
         
             
@@ -390,7 +390,12 @@
 <a name='L331'></a><a href='#L331'>331</a>
 <a name='L332'></a><a href='#L332'>332</a>
 <a name='L333'></a><a href='#L333'>333</a>
-<a name='L334'></a><a href='#L334'>334</a></td><td class="line-coverage quiet"><span class="cline-any cline-neutral">&nbsp;</span>
+<a name='L334'></a><a href='#L334'>334</a>
+<a name='L335'></a><a href='#L335'>335</a>
+<a name='L336'></a><a href='#L336'>336</a>
+<a name='L337'></a><a href='#L337'>337</a>
+<a name='L338'></a><a href='#L338'>338</a>
+<a name='L339'></a><a href='#L339'>339</a></td><td class="line-coverage quiet"><span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
@@ -443,6 +448,11 @@
 <span class="cline-any cline-yes">7x</span>
 <span class="cline-any cline-yes">17x</span>
 <span class="cline-any cline-yes">17x</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">7x</span>
+<span class="cline-any cline-yes">34x</span>
+<span class="cline-any cline-yes">34x</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
@@ -620,7 +630,6 @@
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-yes">51x</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
@@ -658,6 +667,7 @@
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-yes">1x</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
@@ -776,6 +786,11 @@ const getArtifactId = (isManifest: boolean, selectedArtifactId: string) =&gt; {
 const getArtifactBasefactory = () =&gt; {
   const artifactForm = TriggerFactory.getTriggerFormDetails(TriggerFormType.Artifact)
   return artifactForm.baseFactory
+}
+&nbsp;
+const getManifesttBasefactory = () =&gt; {
+  const manifestForm = TriggerFactory.getTriggerFormDetails(TriggerFormType.Manifest)
+  return manifestForm.baseFactory
 }
 &nbsp;
 interface SelectArtifactModalPropsInterface {
@@ -946,10 +961,9 @@ const SelectArtifactModal: React.FC&lt;SelectArtifactModalPropsInterface&gt; = (
     : getString('pipeline.artifactTriggerConfigPanel.artifact')
 &nbsp;
   const formComponentProps = isManifest
-    ? { allValues: templateObject }
+    ? { manifestSourceBaseFactory: getManifesttBasefactory(), manifests: templateObject<span class="branch-0 cbranch-no" title="branch not covered" >?.m</span>anifests }
     : {
         artifactSourceBaseFactory: getArtifactBasefactory(),
-        stepViewType: StepViewType.InputSet,
         type: defaultTo(templateObject<span class="branch-0 cbranch-no" title="branch not covered" >?.a</span>rtifacts<span class="branch-0 cbranch-no" title="branch not covered" >?.p</span>rimary?.type, ''),
         artifacts: templateObject<span class="branch-0 cbranch-no" title="branch not covered" >?.a</span>rtifacts
       }
@@ -1013,6 +1027,7 @@ const SelectArtifactModal: React.FC&lt;SelectArtifactModalPropsInterface&gt; = (
               stageIdentifier={selectedStageId}
               formik={formikProps}
               fromTrigger={true}
+              stepViewType={StepViewType.InputSet}
               {...formComponentProps}
             /&gt;
           &lt;/PipelineVariablesContextProvider&gt;
@@ -1063,7 +1078,7 @@ export default SelectArtifactModal
             <div class='footer quiet pad2 space-top1 center small'>
                 Code coverage generated by
                 <a href="https://istanbul.js.org/" target="_blank">istanbul</a>
-                at Wed Feb 23 2022 11:45:52 GMT+0000 (Greenwich Mean Time)
+                at Thu Mar 10 2022 11:26:25 GMT+0000 (Greenwich Mean Time)
             </div>
         </div>
         <script src="../../../../../../prettify.js"></script>

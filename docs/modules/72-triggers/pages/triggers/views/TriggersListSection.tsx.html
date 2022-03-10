@@ -701,8 +701,7 @@
 <a name='L642'></a><a href='#L642'>642</a>
 <a name='L643'></a><a href='#L643'>643</a>
 <a name='L644'></a><a href='#L644'>644</a>
-<a name='L645'></a><a href='#L645'>645</a>
-<a name='L646'></a><a href='#L646'>646</a></td><td class="line-coverage quiet"><span class="cline-any cline-neutral">&nbsp;</span>
+<a name='L645'></a><a href='#L645'>645</a></td><td class="line-coverage quiet"><span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
@@ -1160,7 +1159,6 @@
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-yes">42x</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-yes">42x</span>
@@ -1384,7 +1382,7 @@ import { PermissionIdentifier } from '@rbac/interfaces/PermissionIdentifier'
 import { ResourceType } from '@rbac/interfaces/ResourceType'
 import { useStrings } from 'framework/strings'
 import { yamlStringify } from '@common/utils/YamlHelperMethods'
-import type { StringKeys } from 'framework/strings'
+import type { UseStringsReturn } from 'framework/strings'
 import {
   getTriggerIcon,
   GitSourceProviders,
@@ -1420,7 +1418,7 @@ interface RenderColumnMenuColumn {
   goToEditWizard: ({ triggerIdentifier, triggerType }: GoToEditWizardInterface) =&gt; void
   showSuccess: (str: string) =&gt; void
   showError: (str: string) =&gt; void
-  getString: (str: StringKeys) =&gt; string
+  getString: UseStringsReturn['getString']
   projectIdentifier: string
   orgIdentifier: string
   accountId: string
@@ -1540,7 +1538,7 @@ const RenderColumnTrigger: Renderer&lt;CellProps&lt;NGTriggerDetailsResponse&gt;
   column
 }: {
   row: RenderColumnRow
-  column: { getString: (str: string) =&gt; string }
+  column: { getString: UseStringsReturn['getString'] }
 }) =&gt; {
   const data = row.original
   return (
@@ -1562,11 +1560,11 @@ const RenderColumnTrigger: Renderer&lt;CellProps&lt;NGTriggerDetailsResponse&gt;
           &lt;Layout.Horizontal spacing="small" data-testid={data.identifier}&gt;
             &lt;Text color={Color.BLACK} lineClamp={1} width={!isEmpty(data.tags) ? '270px' : '300px'}&gt;
               {data.name}
-              {!isEmpty(data.tags) ? &lt;TagsPopover className={css.tags} tags={data.tags as tagsType} /&gt; : null}
             &lt;/Text&gt;
+            {!isEmpty(data.tags) ? &lt;TagsPopover className={css.tags} tags={data.tags as tagsType} /&gt; : null}
           &lt;/Layout.Horizontal&gt;
-          &lt;Text color={Color.GREY_400} lineClamp={1} width="300px"&gt;
-            {column.getString('common.ID')}: {data.identifier}
+          &lt;Text color={Color.GREY_400} lineClamp={1} width={300}&gt;
+            {column.getString('idLabel', { id: data.identifier })}
           &lt;/Text&gt;
         &lt;/Layout.Vertical&gt;
       &lt;/Layout.Horizontal&gt;
@@ -1579,7 +1577,7 @@ const RenderColumnStatus: Renderer&lt;CellProps&lt;NGTriggerDetailsResponse&gt;&
   column
 }: {
   row: RenderColumnRow
-  column: { getString: (str: string) =&gt; string }
+  column: { getString: UseStringsReturn['getString'] }
 }) =&gt; {
   const data = row.original
   const { validationStatus, pollingSubscriptionStatus, webhookAutoRegistrationStatus } = data<span class="branch-0 cbranch-no" title="branch not covered" >?.t</span>riggerStatus || {}
@@ -1624,7 +1622,7 @@ const RenderColumnActivity: Renderer&lt;CellProps&lt;NGTriggerDetailsResponse&gt
   column
 }: {
   row: RenderColumnRow
-  column: { getString: (str: string, obj: { numActivations?: number; numDays?: number }) =&gt; string }
+  column: { getString: UseStringsReturn['getString'] }
 }) =&gt; {
   const data = row.original as any // temporary until API ready
   const executions = data.executions
@@ -1685,7 +1683,7 @@ const RenderWebhookIcon = ({
     accountId: string
     orgIdentifier: string
     projectIdentifier: string
-    getString: (str: string) =&gt; string
+    getString: UseStringsReturn['getString']
     isTriggerRbacDisabled: boolean
   }
 }): JSX.Element =&gt; {
@@ -1769,7 +1767,7 @@ const RenderColumnWebhook: Renderer&lt;CellProps&lt;NGTriggerDetailsResponse&gt;
     accountId: string
     orgIdentifier: string
     projectIdentifier: string
-    getString: (str: string) =&gt; string
+    getString: UseStringsReturn['getString']
     isTriggerRbacDisabled: boolean
   }
 }) =&gt; {
@@ -1796,8 +1794,7 @@ const RenderColumnEnable: Renderer&lt;CellProps&lt;NGTriggerDetailsResponse&gt;&
   column: {
     showSuccess: (str: string) =&gt; void
     showError: (str: string) =&gt; void
-    // getString: (key: StringKeys) =&gt; string
-    getString: (str: string, obj?: { enabled: string; name: string }) =&gt; string
+    getString: UseStringsReturn['getString']
     refetchTriggerList: () =&gt; void
     projectIdentifier: string
     orgIdentifier: string
@@ -1999,7 +1996,7 @@ export const TriggersListSection: React.FC&lt;TriggersListSectionProps&gt; = ({
             <div class='footer quiet pad2 space-top1 center small'>
                 Code coverage generated by
                 <a href="https://istanbul.js.org/" target="_blank">istanbul</a>
-                at Wed Feb 23 2022 11:45:52 GMT+0000 (Greenwich Mean Time)
+                at Thu Mar 10 2022 11:26:25 GMT+0000 (Greenwich Mean Time)
             </div>
         </div>
         <script src="../../../../../prettify.js"></script>

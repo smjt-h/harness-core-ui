@@ -30,9 +30,9 @@
         
             
             <div class='fl pad1y space-right2'>
-                <span class="strong">78.26% </span>
+                <span class="strong">77.08% </span>
                 <span class="quiet">Branches</span>
-                <span class='fraction'>36/46</span>
+                <span class='fraction'>37/48</span>
             </div>
         
             
@@ -228,40 +228,41 @@
 <a name='L169'></a><a href='#L169'>169</a>
 <a name='L170'></a><a href='#L170'>170</a>
 <a name='L171'></a><a href='#L171'>171</a>
-<a name='L172'></a><a href='#L172'>172</a></td><td class="line-coverage quiet"><span class="cline-any cline-neutral">&nbsp;</span>
+<a name='L172'></a><a href='#L172'>172</a>
+<a name='L173'></a><a href='#L173'>173</a></td><td class="line-coverage quiet"><span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-yes">77x</span>
-<span class="cline-any cline-yes">77x</span>
-<span class="cline-any cline-yes">77x</span>
+<span class="cline-any cline-yes">78x</span>
+<span class="cline-any cline-yes">78x</span>
+<span class="cline-any cline-yes">78x</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-yes">77x</span>
-<span class="cline-any cline-yes">77x</span>
-<span class="cline-any cline-yes">77x</span>
+<span class="cline-any cline-yes">78x</span>
+<span class="cline-any cline-yes">78x</span>
+<span class="cline-any cline-yes">78x</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-yes">77x</span>
-<span class="cline-any cline-yes">77x</span>
-<span class="cline-any cline-yes">77x</span>
-<span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-yes">77x</span>
+<span class="cline-any cline-yes">78x</span>
+<span class="cline-any cline-yes">78x</span>
+<span class="cline-any cline-yes">78x</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">78x</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-yes">77x</span>
-<span class="cline-any cline-yes">77x</span>
-<span class="cline-any cline-yes">77x</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-yes">77x</span>
-<span class="cline-any cline-yes">77x</span>
-<span class="cline-any cline-yes">77x</span>
-<span class="cline-any cline-yes">77x</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-yes">77x</span>
+<span class="cline-any cline-yes">78x</span>
+<span class="cline-any cline-yes">78x</span>
+<span class="cline-any cline-yes">78x</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">78x</span>
+<span class="cline-any cline-yes">78x</span>
+<span class="cline-any cline-yes">78x</span>
+<span class="cline-any cline-yes">78x</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">78x</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
@@ -293,6 +294,7 @@
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-yes">4x</span>
 <span class="cline-any cline-yes">4x</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
@@ -398,7 +400,7 @@
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-yes">77x</span>
+<span class="cline-any cline-yes">78x</span>
 <span class="cline-any cline-neutral">&nbsp;</span></td><td class="text"><pre class="prettyprint lang-js">/*
  * Copyright 2021 Harness Inc. All rights reserved.
  * Use of this source code is governed by the PolyForm Shield 1.0.0 license
@@ -429,11 +431,11 @@ import { transformValuesFieldsConfig, editViewValidateFieldsConfig } from './Dep
 import type { DependencyProps, DependencyData, DependencyDataUI } from './Dependency'
 import { CIStep } from '../CIStep/CIStep'
 import { CIStepOptionalConfig } from '../CIStep/CIStepOptionalConfig'
-import { useGetPropagatedStageById } from '../CIStep/StepUtils'
+import { AllMultiTypeInputTypesForStep, useGetPropagatedStageById } from '../CIStep/StepUtils'
 import css from '@pipeline/components/PipelineSteps/Steps/Steps.module.scss'
 &nbsp;
 export const DependencyBase = (
-  { initialValues, onUpdate, isNewStep, readonly, stepViewType, allowableTypes, onChange }: DependencyProps,
+  { initialValues, onUpdate, isNewStep, readonly, stepViewType, onChange }: DependencyProps,
   formikRef: StepFormikFowardRef&lt;DependencyData&gt;
 ): JSX.Element =&gt; {
   const {
@@ -473,7 +475,8 @@ export const DependencyBase = (
             type: StepType.Dependency,
             getString
           },
-          stepViewType
+          stepViewType,
+          buildInfrastructureType
         )
       }}
       onSubmit={(_values: DependencyDataUI) =&gt; {
@@ -496,7 +499,6 @@ export const DependencyBase = (
                 readonly={readonly}
                 stepLabel={getString('dependencyNameLabel')}
                 stepViewType={stepViewType}
-                allowableTypes={allowableTypes}
                 formik={formik}
                 enableFields={{
                   name: {},
@@ -524,10 +526,10 @@ export const DependencyBase = (
                       disabled: readonly,
                       multiTextInputProps: {
                         expressions,
-                        allowableTypes,
                         textProps: {
                           autoComplete: 'off'
-                        }
+                        },
+                        allowableTypes: AllMultiTypeInputTypesForStep
                       }
                     }
                   }
@@ -546,15 +548,16 @@ export const DependencyBase = (
                           'spec.privileged': {},
                           'spec.envVariables': { tooltipId: 'dependencyEnvironmentVariables' },
                           'spec.entrypoint': {},
-                          'spec.args': {}
+                          'spec.args': {},
+                          ...(buildInfrastructureType === 'VM' &amp;&amp; <span class="branch-1 cbranch-no" title="branch not covered" >{</span>
+                            'spec.portBindings': {}
+                          })
                         }}
-                        allowableTypes={allowableTypes}
                       /&gt;
                       &lt;StepCommonFields
                         enableFields={['spec.imagePullPolicy']}
                         withoutTimeout
                         disabled={readonly}
-                        allowableTypes={allowableTypes}
                         buildInfrastructureType={buildInfrastructureType}
                       /&gt;
                     &lt;/Container&gt;
@@ -577,7 +580,7 @@ export const DependencyBaseWithRef = React.forwardRef(DependencyBase)
             <div class='footer quiet pad2 space-top1 center small'>
                 Code coverage generated by
                 <a href="https://istanbul.js.org/" target="_blank">istanbul</a>
-                at Wed Feb 23 2022 11:45:52 GMT+0000 (Greenwich Mean Time)
+                at Thu Mar 10 2022 11:26:25 GMT+0000 (Greenwich Mean Time)
             </div>
         </div>
         <script src="../../../../../prettify.js"></script>

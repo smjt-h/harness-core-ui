@@ -30,9 +30,9 @@
         
             
             <div class='fl pad1y space-right2'>
-                <span class="strong">88.89% </span>
+                <span class="strong">85.29% </span>
                 <span class="quiet">Branches</span>
-                <span class='fraction'>32/36</span>
+                <span class='fraction'>29/34</span>
             </div>
         
             
@@ -204,15 +204,10 @@
 <span class="cline-any cline-yes">8x</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-yes">8x</span>
+<span class="cline-any cline-yes">6x</span>
+<span class="cline-any cline-yes">6x</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-yes">8x</span>
-<span class="cline-any cline-yes">8x</span>
-<span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-yes">8x</span>
-<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">6x</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
@@ -223,19 +218,24 @@
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-yes">8x</span>
-<span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-yes">8x</span>
-<span class="cline-any cline-yes">8x</span>
-<span class="cline-any cline-yes">7x</span>
+<span class="cline-any cline-yes">6x</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-yes">8x</span>
-<span class="cline-any cline-yes">3x</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">6x</span>
+<span class="cline-any cline-yes">6x</span>
+<span class="cline-any cline-yes">6x</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">6x</span>
+<span class="cline-any cline-yes">1x</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
@@ -320,7 +320,7 @@ import React, { useEffect } from 'react'
 import { useParams } from 'react-router-dom'
 import { Classes } from '@blueprintjs/core'
 import { Color, Container, FontVariation, Layout, Text, Icon, Intent } from '@wings-software/uicore'
-import { useGetMonitoredServiceScoresFromServiceAndEnvironment } from 'services/cv'
+import { useGetMonitoredServiceScores } from 'services/cv'
 import { RiskValues, getErrorMessage } from '@cv/utils/CommonUtils'
 import type { ProjectPathProps } from '@common/interfaces/RouteInterfaces'
 import { RiskTagWithLabel } from '@cv/pages/monitored-service/CVMonitoredService/CVMonitoredService.utils'
@@ -329,20 +329,14 @@ import ErrorTooltip from '@common/components/ErrorTooltip/ErrorTooltip'
 import type { HealthScoreCardProps } from './HealthScoreCard.types'
 import css from './HealthScoreCard.module.scss'
 &nbsp;
-const HealthScoreCard: React.FC&lt;HealthScoreCardProps&gt; = ({
-  serviceIdentifier,
-  environmentIdentifier,
-  monitoredServiceLoading
-}) =&gt; {
+const HealthScoreCard: React.FC&lt;HealthScoreCardProps&gt; = ({ monitoredServiceIdentifier, monitoredServiceLoading }) =&gt; {
   const { getString } = useStrings()
   const { accountId, orgIdentifier, projectIdentifier } = useParams&lt;ProjectPathProps &amp; { identifier: string }&gt;()
 &nbsp;
   const queryParams = {
     accountId,
     orgIdentifier,
-    projectIdentifier,
-    serviceIdentifier,
-    environmentIdentifier
+    projectIdentifier
   }
 &nbsp;
   const {
@@ -350,15 +344,21 @@ const HealthScoreCard: React.FC&lt;HealthScoreCardProps&gt; = ({
     refetch: fetchHealthScore,
     loading,
     error
-  } = useGetMonitoredServiceScoresFromServiceAndEnvironment({
+  } = useGetMonitoredServiceScores({
+    identifier: '',
     lazy: true
   })
 &nbsp;
   useEffect(() =&gt; {
-    if (serviceIdentifier &amp;&amp; environmentIdentifier) {
-      fetchHealthScore({ queryParams })
+    <span class="missing-if-branch" title="else path not taken" >E</span>if (monitoredServiceIdentifier) {
+      fetchHealthScore({
+        pathParams: {
+          identifier: monitoredServiceIdentifier
+        },
+        queryParams
+      })
     }
-  }, [serviceIdentifier, environmentIdentifier])
+  }, [monitoredServiceIdentifier])
 &nbsp;
   if (loading || monitoredServiceLoading) {
     return (
@@ -442,7 +442,7 @@ export default HealthScoreCard
             <div class='footer quiet pad2 space-top1 center small'>
                 Code coverage generated by
                 <a href="https://istanbul.js.org/" target="_blank">istanbul</a>
-                at Wed Feb 23 2022 11:45:52 GMT+0000 (Greenwich Mean Time)
+                at Thu Mar 10 2022 11:26:25 GMT+0000 (Greenwich Mean Time)
             </div>
         </div>
         <script src="../../../../../../../../prettify.js"></script>

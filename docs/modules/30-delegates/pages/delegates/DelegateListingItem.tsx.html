@@ -23,16 +23,16 @@
         <div class='clearfix'>
             
             <div class='fl pad1y space-right2'>
-                <span class="strong">83.54% </span>
+                <span class="strong">83.33% </span>
                 <span class="quiet">Statements</span>
-                <span class='fraction'>66/79</span>
+                <span class='fraction'>65/78</span>
             </div>
         
             
             <div class='fl pad1y space-right2'>
-                <span class="strong">40% </span>
+                <span class="strong">41.1% </span>
                 <span class="quiet">Branches</span>
-                <span class='fraction'>30/75</span>
+                <span class='fraction'>30/73</span>
             </div>
         
             
@@ -44,9 +44,9 @@
         
             
             <div class='fl pad1y space-right2'>
-                <span class="strong">83.12% </span>
+                <span class="strong">82.89% </span>
                 <span class="quiet">Lines</span>
-                <span class='fraction'>64/77</span>
+                <span class='fraction'>63/76</span>
             </div>
         
             
@@ -404,11 +404,7 @@
 <a name='L345'></a><a href='#L345'>345</a>
 <a name='L346'></a><a href='#L346'>346</a>
 <a name='L347'></a><a href='#L347'>347</a>
-<a name='L348'></a><a href='#L348'>348</a>
-<a name='L349'></a><a href='#L349'>349</a>
-<a name='L350'></a><a href='#L350'>350</a>
-<a name='L351'></a><a href='#L351'>351</a>
-<a name='L352'></a><a href='#L352'>352</a></td><td class="line-coverage quiet"><span class="cline-any cline-neutral">&nbsp;</span>
+<a name='L348'></a><a href='#L348'>348</a></td><td class="line-coverage quiet"><span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
@@ -431,7 +427,6 @@
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-yes">9x</span>
 <span class="cline-any cline-yes">9x</span>
 <span class="cline-any cline-yes">9x</span>
 <span class="cline-any cline-yes">9x</span>
@@ -686,7 +681,6 @@
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-yes">1x</span>
 <span class="cline-any cline-yes">1x</span>
 <span class="cline-any cline-yes">1x</span>
@@ -725,8 +719,6 @@
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-no">&nbsp;</span>
-<span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
@@ -792,7 +784,6 @@ import RbacMenuItem from '@rbac/components/MenuItem/MenuItem'
 import { PermissionIdentifier } from '@rbac/interfaces/PermissionIdentifier'
 import { ResourceType } from '@rbac/interfaces/ResourceType'
 import { usePermission } from '@rbac/hooks/usePermission'
-import { DelegateTypes } from '@delegates/constants'
 &nbsp;
 import css from './DelegatesPage.module.scss'
 &nbsp;
@@ -1004,12 +995,11 @@ export const DelegateListingItem = ({ delegate, setOpenTroubleshoter }: delTroub
           /&gt;
           &lt;Text icon={delegateTypeToIcon(delegate.delegateType as string)} iconProps={{ size: 24 }} /&gt;
         &lt;/div&gt;
-        &lt;Layout.Horizontal width={columnWidths.name} data-testid={delegate.groupHostName}&gt;
+        &lt;Layout.Horizontal width={columnWidths.name}&gt;
           &lt;Layout.Vertical&gt;
             &lt;Layout.Horizontal spacing="small" data-testid={delegate.groupName}&gt;
               &lt;Text color={Color.BLACK}&gt;{delegate.groupName}&lt;/Text&gt;
             &lt;/Layout.Horizontal&gt;
-            &lt;div className={css.groupHostName}&gt;{delegate.groupHostName}&lt;/div&gt;
           &lt;/Layout.Vertical&gt;
         &lt;/Layout.Horizontal&gt;
 &nbsp;
@@ -1083,13 +1073,11 @@ export const DelegateListingItem = ({ delegate, setOpenTroubleshoter }: delTroub
                 &lt;/Layout.Horizontal&gt;
                 &lt;Container className={css.connectivity} width={columnWidths.tags} /&gt;
                 &lt;Container width={columnWidths.instances} className={css.instancesColumn}&gt;
-                  {instanceDetails.delegateType === DelegateTypes.DOCKER
-                    ? `${delegate.groupHostName}-${instanceDetails.hostName}`
-                    : instanceDetails.hostName}
+                  {instanceDetails.hostName}
                 &lt;/Container&gt;
                 &lt;Layout.Horizontal width={columnWidths.heartbeat}&gt;
-                  {instanceDetails.lastHeartBeat ? (
-                    &lt;ReactTimeago date={instanceDetails.lastHeartBeat} live /&gt;
+                  {instanceDetails.lastHeartbeat ? (
+                    &lt;ReactTimeago date={instanceDetails.lastHeartbeat} live /&gt;
                   ) : (
                     getString('na')
                   )}
@@ -1117,7 +1105,7 @@ export default DelegateListingItem
             <div class='footer quiet pad2 space-top1 center small'>
                 Code coverage generated by
                 <a href="https://istanbul.js.org/" target="_blank">istanbul</a>
-                at Wed Feb 23 2022 11:45:52 GMT+0000 (Greenwich Mean Time)
+                at Thu Mar 10 2022 11:26:25 GMT+0000 (Greenwich Mean Time)
             </div>
         </div>
         <script src="../../../../prettify.js"></script>

@@ -23,16 +23,16 @@
         <div class='clearfix'>
             
             <div class='fl pad1y space-right2'>
-                <span class="strong">77.64% </span>
+                <span class="strong">77.36% </span>
                 <span class="quiet">Statements</span>
-                <span class='fraction'>125/161</span>
+                <span class='fraction'>123/159</span>
             </div>
         
             
             <div class='fl pad1y space-right2'>
-                <span class="strong">57.69% </span>
+                <span class="strong">57.77% </span>
                 <span class="quiet">Branches</span>
-                <span class='fraction'>120/208</span>
+                <span class='fraction'>119/206</span>
             </div>
         
             
@@ -44,9 +44,9 @@
         
             
             <div class='fl pad1y space-right2'>
-                <span class="strong">78.13% </span>
+                <span class="strong">77.85% </span>
                 <span class="quiet">Lines</span>
-                <span class='fraction'>125/160</span>
+                <span class='fraction'>123/158</span>
             </div>
         
             
@@ -692,12 +692,7 @@
 <a name='L633'></a><a href='#L633'>633</a>
 <a name='L634'></a><a href='#L634'>634</a>
 <a name='L635'></a><a href='#L635'>635</a>
-<a name='L636'></a><a href='#L636'>636</a>
-<a name='L637'></a><a href='#L637'>637</a>
-<a name='L638'></a><a href='#L638'>638</a>
-<a name='L639'></a><a href='#L639'>639</a>
-<a name='L640'></a><a href='#L640'>640</a>
-<a name='L641'></a><a href='#L641'>641</a></td><td class="line-coverage quiet"><span class="cline-any cline-neutral">&nbsp;</span>
+<a name='L636'></a><a href='#L636'>636</a></td><td class="line-coverage quiet"><span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
@@ -760,7 +755,6 @@
 <span class="cline-any cline-yes">3x</span>
 <span class="cline-any cline-yes">3x</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-yes">3x</span>
 <span class="cline-any cline-yes">3x</span>
 <span class="cline-any cline-yes">3x</span>
 <span class="cline-any cline-yes">3x</span>
@@ -789,7 +783,6 @@
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-yes">104x</span>
-<span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-yes">104x</span>
 <span class="cline-any cline-yes">104x</span>
 <span class="cline-any cline-yes">104x</span>
@@ -1162,8 +1155,6 @@
 <span class="cline-any cline-yes">12x</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-yes">12x</span>
-<span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-yes">12x</span>
 <span class="cline-any cline-yes">12x</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
@@ -1309,7 +1300,6 @@
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-yes">1x</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
@@ -1404,7 +1394,6 @@ import SaveFlagToGitModal from '@cf/components/SaveFlagToGitModal/SaveFlagToGitM
 import { AUTO_COMMIT_MESSAGES } from '@cf/constants/GitSyncConstants'
 import GitSyncActions from '@cf/components/GitSyncActions/GitSyncActions'
 import { GitDetails, GitSyncFormValues, GIT_SYNC_ERROR_CODE, useGitSync, UseGitSync } from '@cf/hooks/useGitSync'
-import UsageLimitBanner from '@cf/components/UsageLimitBanner/UsageLimitBanner'
 import usePlanEnforcement from '@cf/hooks/usePlanEnforcement'
 import FlagOptionsMenuButton from '@cf/components/FlagOptionsMenuButton/FlagOptionsMenuButton'
 import { FeatureIdentifier } from 'framework/featureStore/FeatureIdentifier'
@@ -1429,7 +1418,6 @@ const RenderColumnFlag: React.FC&lt;RenderColumnFlagProps&gt; = ({
   update
 }) =&gt; {
   const data = row.original
-&nbsp;
   const [status, setStatus] = useState(isFeatureFlagOn(data))
   const { getString } = useStrings()
   const { showError } = useToaster()
@@ -1799,8 +1787,6 @@ const FeatureFlagsPage: React.FC = () =&gt; {
 &nbsp;
   const gitSync = useGitSync()
 &nbsp;
-  const { isPlanEnforcementEnabled } = usePlanEnforcement()
-&nbsp;
   const error = flagsError || envsError || deleteFlag.error || toggleFeatureFlag.error
 &nbsp;
   const columns: Column&lt;Feature&gt;[] = useMemo(
@@ -1876,7 +1862,7 @@ const FeatureFlagsPage: React.FC = () =&gt; {
         refetch
       }
     ],
-    [refetch, gitSync, toggleFeatureFlag, features, deleteFlag.mutate]
+    [gitSync.isAutoCommitEnabled, gitSync.isGitSyncEnabled, features]
   )
   const onSearchInputChanged = useCallback(
 <span class="fstat-no" title="function not covered" >    name </span>=&gt; {
@@ -1943,7 +1929,6 @@ const FeatureFlagsPage: React.FC = () =&gt; {
 <span class="cstat-no" title="statement not covered" >        refetchEnvironments()</span>
       }}
     &gt;
-      {isPlanEnforcementEnabled &amp;&amp; <span class="branch-1 cbranch-no" title="branch not covered" >&lt;UsageLimitBanner /&gt;}</span>
       {hasFeatureFlags &amp;&amp; (
         &lt;Container padding={{ top: 'medium', right: 'xlarge', left: 'xlarge' }}&gt;
           &lt;TableV2&lt;Feature&gt;
@@ -1984,7 +1969,7 @@ export default FeatureFlagsPage
             <div class='footer quiet pad2 space-top1 center small'>
                 Code coverage generated by
                 <a href="https://istanbul.js.org/" target="_blank">istanbul</a>
-                at Wed Feb 23 2022 11:45:52 GMT+0000 (Greenwich Mean Time)
+                at Thu Mar 10 2022 11:26:25 GMT+0000 (Greenwich Mean Time)
             </div>
         </div>
         <script src="../../../../prettify.js"></script>

@@ -276,15 +276,7 @@
 <a name='L217'></a><a href='#L217'>217</a>
 <a name='L218'></a><a href='#L218'>218</a>
 <a name='L219'></a><a href='#L219'>219</a>
-<a name='L220'></a><a href='#L220'>220</a>
-<a name='L221'></a><a href='#L221'>221</a>
-<a name='L222'></a><a href='#L222'>222</a>
-<a name='L223'></a><a href='#L223'>223</a>
-<a name='L224'></a><a href='#L224'>224</a>
-<a name='L225'></a><a href='#L225'>225</a>
-<a name='L226'></a><a href='#L226'>226</a>
-<a name='L227'></a><a href='#L227'>227</a>
-<a name='L228'></a><a href='#L228'>228</a></td><td class="line-coverage quiet"><span class="cline-any cline-neutral">&nbsp;</span>
+<a name='L220'></a><a href='#L220'>220</a></td><td class="line-coverage quiet"><span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
@@ -321,7 +313,6 @@
 <span class="cline-any cline-yes">10x</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-yes">10x</span>
-<span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
@@ -332,7 +323,6 @@
 <span class="cline-any cline-yes">8x</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-yes">8x</span>
-<span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
@@ -382,14 +372,11 @@
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-yes">8x</span>
 <span class="cline-any cline-yes">8x</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-yes">8x</span>
 <span class="cline-any cline-yes">8x</span>
-<span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
@@ -507,9 +494,6 @@
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-yes">10x</span>
 <span class="cline-any cline-neutral">&nbsp;</span></td><td class="text"><pre class="prettyprint lang-js">/*
  * Copyright 2022 Harness Inc. All rights reserved.
@@ -548,8 +532,7 @@ import { VerificationType } from '../HealthSourceDropDown/HealthSourceDropDown.c
 import css from './LogAnalysis.module.scss'
 &nbsp;
 const ClusterChartContainer: React.FC&lt;LogAnalysisContentProps&gt; = ({
-  serviceIdentifier,
-  environmentIdentifier,
+  monitoredServiceIdentifier,
   startTime,
   endTime,
   logEvent,
@@ -563,8 +546,7 @@ const ClusterChartContainer: React.FC&lt;LogAnalysisContentProps&gt; = ({
       accountId,
       orgIdentifier,
       projectIdentifier,
-      serviceIdentifier,
-      environmentIdentifier,
+      monitoredServiceIdentifier,
       startTime,
       endTime,
       ...(logEvent ? { clusterTypes: [logEvent] } : {}),
@@ -603,8 +585,7 @@ const ClusterChartContainer: React.FC&lt;LogAnalysisContentProps&gt; = ({
 }
 &nbsp;
 const LogAnalysisContent: React.FC&lt;LogAnalysisContentProps&gt; = ({
-  serviceIdentifier,
-  environmentIdentifier,
+  monitoredServiceIdentifier,
   startTime,
   endTime,
   logEvent,
@@ -620,8 +601,7 @@ const LogAnalysisContent: React.FC&lt;LogAnalysisContentProps&gt; = ({
       accountId,
       orgIdentifier,
       projectIdentifier,
-      serviceIdentifier,
-      environmentIdentifier,
+      monitoredServiceIdentifier,
       startTime,
       endTime,
       ...(logEvent ? { clusterTypes: [logEvent] } : {}),
@@ -630,12 +610,11 @@ const LogAnalysisContent: React.FC&lt;LogAnalysisContentProps&gt; = ({
   }, [
     accountId,
     endTime,
-    environmentIdentifier,
     healthSource,
     logEvent,
     orgIdentifier,
     projectIdentifier,
-    serviceIdentifier,
+    monitoredServiceIdentifier,
     startTime
   ])
 &nbsp;
@@ -684,7 +663,7 @@ const LogAnalysisContent: React.FC&lt;LogAnalysisContentProps&gt; = ({
   )
 }
 &nbsp;
-const LogAnalysis: React.FC&lt;LogAnalysisProps&gt; = ({ serviceIdentifier, environmentIdentifier, startTime, endTime }) =&gt; {
+const LogAnalysis: React.FC&lt;LogAnalysisProps&gt; = ({ monitoredServiceIdentifier, startTime, endTime }) =&gt; {
   const { getString } = useStrings()
 &nbsp;
   const [logEvent, setLogEvent] = useState&lt;LogEvents&gt;(LogEvents.UNKNOWN)
@@ -705,8 +684,7 @@ const LogAnalysis: React.FC&lt;LogAnalysisProps&gt; = ({ serviceIdentifier, envi
         &lt;HealthSourceDropDown
           onChange={setHealthSource}
           className={css.logsAnalysisFilters}
-          serviceIdentifier={serviceIdentifier}
-          environmentIdentifier={environmentIdentifier}
+          monitoredServiceIdentifier={monitoredServiceIdentifier}
           verificationType={VerificationType.LOG}
         /&gt;
       &lt;/Layout.Horizontal&gt;
@@ -716,8 +694,7 @@ const LogAnalysis: React.FC&lt;LogAnalysisProps&gt; = ({ serviceIdentifier, envi
           {getString('pipeline.verification.logs.logCluster')}
         &lt;/Heading&gt;
         &lt;ClusterChartContainer
-          serviceIdentifier={serviceIdentifier}
-          environmentIdentifier={environmentIdentifier}
+          monitoredServiceIdentifier={monitoredServiceIdentifier}
           startTime={startTime}
           endTime={endTime}
           logEvent={logEvent}
@@ -726,8 +703,7 @@ const LogAnalysis: React.FC&lt;LogAnalysisProps&gt; = ({ serviceIdentifier, envi
       &lt;/Card&gt;
 &nbsp;
       &lt;LogAnalysisContent
-        serviceIdentifier={serviceIdentifier}
-        environmentIdentifier={environmentIdentifier}
+        monitoredServiceIdentifier={monitoredServiceIdentifier}
         startTime={startTime}
         endTime={endTime}
         logEvent={logEvent}
@@ -745,7 +721,7 @@ export default LogAnalysis
             <div class='footer quiet pad2 space-top1 center small'>
                 Code coverage generated by
                 <a href="https://istanbul.js.org/" target="_blank">istanbul</a>
-                at Wed Feb 23 2022 11:45:52 GMT+0000 (Greenwich Mean Time)
+                at Thu Mar 10 2022 11:26:25 GMT+0000 (Greenwich Mean Time)
             </div>
         </div>
         <script src="../../../../prettify.js"></script>

@@ -23,30 +23,30 @@
         <div class='clearfix'>
             
             <div class='fl pad1y space-right2'>
-                <span class="strong">78.26% </span>
+                <span class="strong">43.48% </span>
                 <span class="quiet">Statements</span>
-                <span class='fraction'>18/23</span>
+                <span class='fraction'>10/23</span>
             </div>
         
             
             <div class='fl pad1y space-right2'>
-                <span class="strong">25% </span>
+                <span class="strong">0% </span>
                 <span class="quiet">Branches</span>
-                <span class='fraction'>2/8</span>
+                <span class='fraction'>0/8</span>
             </div>
         
             
             <div class='fl pad1y space-right2'>
-                <span class="strong">66.67% </span>
+                <span class="strong">0% </span>
                 <span class="quiet">Functions</span>
-                <span class='fraction'>2/3</span>
+                <span class='fraction'>0/3</span>
             </div>
         
             
             <div class='fl pad1y space-right2'>
-                <span class="strong">78.26% </span>
+                <span class="strong">43.48% </span>
                 <span class="quiet">Lines</span>
-                <span class='fraction'>18/23</span>
+                <span class='fraction'>10/23</span>
             </div>
         
             
@@ -55,7 +55,7 @@
             Press <em>n</em> or <em>j</em> to go to the next uncovered block, <em>b</em>, <em>p</em> or <em>k</em> for the previous block.
         </p>
     </div>
-    <div class='status-line high'></div>
+    <div class='status-line low'></div>
     <pre><table class="coverage">
 <tr><td class="line-count quiet"><a name='L1'></a><a href='#L1'>1</a>
 <a name='L2'></a><a href='#L2'>2</a>
@@ -187,23 +187,8 @@
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-yes">2x</span>
+<span class="cline-any cline-no">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-yes">2x</span>
-<span class="cline-any cline-yes">2x</span>
-<span class="cline-any cline-yes">2x</span>
-<span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-yes">2x</span>
-<span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-yes">2x</span>
-<span class="cline-any cline-yes">1x</span>
 <span class="cline-any cline-no">&nbsp;</span>
 <span class="cline-any cline-no">&nbsp;</span>
 <span class="cline-any cline-no">&nbsp;</span>
@@ -215,6 +200,21 @@
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-no">&nbsp;</span>
@@ -238,7 +238,7 @@
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-yes">2x</span>
+<span class="cline-any cline-no">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
@@ -288,12 +288,12 @@ interface NoEntityFoundProps {
   entityType: string
 }
 &nbsp;
-function NoEntityFound(props: NoEntityFoundProps): JSX.Element {
-  const { identifier, entityType } = props
+function <span class="fstat-no" title="function not covered" >NoEntityFound(</span>props: NoEntityFoundProps): JSX.Element {
+  const { identifier, entityType } = <span class="cstat-no" title="statement not covered" >props</span>
 &nbsp;
-  const { getString } = useStrings()
-  const history = useHistory()
-  const { accountId, projectIdentifier, orgIdentifier, module, templateType } = useParams&lt;
+  const { getString } = <span class="cstat-no" title="statement not covered" >useStrings()</span>
+  const history = <span class="cstat-no" title="statement not covered" >useHistory()</span>
+  const { accountId, projectIdentifier, orgIdentifier, module, templateType } = <span class="cstat-no" title="statement not covered" >useParams&lt;</span>
     PipelineType&lt;{
       orgIdentifier: string
       projectIdentifier: string
@@ -302,10 +302,10 @@ function NoEntityFound(props: NoEntityFoundProps): JSX.Element {
     }&gt; &amp;
       TemplateStudioPathProps
   &gt;()
-  const { repoIdentifier, branch, versionLabel } = useQueryParams&lt;TemplateStudioQueryParams&gt;()
+  const { repoIdentifier, branch, versionLabel } = <span class="cstat-no" title="statement not covered" >useQueryParams&lt;TemplateStudioQueryParams&gt;()</span>
 &nbsp;
-  const onGitBranchChange = React.useMemo(
-    () =&gt; <span class="fstat-no" title="function not covered" >(s</span>electedFilter: GitFilterScope) =&gt; {
+  const onGitBranchChange = <span class="cstat-no" title="statement not covered" >React.useMemo(</span>
+<span class="fstat-no" title="function not covered" >    () =</span>&gt; <span class="cstat-no" title="statement not covered" ><span class="fstat-no" title="function not covered" >(s</span>electedFilter: GitFilterScope) =&gt; {</span>
 <span class="cstat-no" title="statement not covered" >      if (branch !== selectedFilter.branch) {</span>
 <span class="cstat-no" title="statement not covered" >        if (entityType === 'pipeline') {</span>
 <span class="cstat-no" title="statement not covered" >          history.push(</span>
@@ -340,7 +340,7 @@ function NoEntityFound(props: NoEntityFoundProps): JSX.Element {
     [repoIdentifier, branch, identifier, orgIdentifier, projectIdentifier, accountId, module]
   )
 &nbsp;
-  return (
+<span class="cstat-no" title="statement not covered" >  return (</span>
     &lt;div className={css.noPipelineFoundContainer}&gt;
       &lt;Layout.Vertical spacing="small" flex={{ justifyContent: 'center', alignItems: 'center' }}&gt;
         &lt;img src={noEntityFoundImage} className={css.noPipelineFoundImage} /&gt;
@@ -370,7 +370,7 @@ export default NoEntityFound
             <div class='footer quiet pad2 space-top1 center small'>
                 Code coverage generated by
                 <a href="https://istanbul.js.org/" target="_blank">istanbul</a>
-                at Wed Feb 23 2022 11:45:52 GMT+0000 (Greenwich Mean Time)
+                at Thu Mar 10 2022 11:26:25 GMT+0000 (Greenwich Mean Time)
             </div>
         </div>
         <script src="../../../../../prettify.js"></script>
