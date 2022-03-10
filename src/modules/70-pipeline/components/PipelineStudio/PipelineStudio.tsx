@@ -23,10 +23,10 @@ import { PipelineCanvas } from './PipelineCanvas/PipelineCanvas'
 import { PipelineContext } from './PipelineContext/PipelineContext'
 import { PipelineSchemaContextProvider } from './PipelineSchema/PipelineSchemaContext'
 import css from './PipelineStudio.module.scss'
-import { DiagramFactory } from '../AbstractNode/DiagramFactory'
-import PipelineStageNode from '../AbstractNode/Nodes/DefaultNode/PipelineStageNode'
-import { DiamondNodeWidget } from '../AbstractNode/Nodes/DiamondNode/DiamondNode'
-import { IconNode } from '../AbstractNode/Nodes/IconNode/IconNode'
+// import { DiagramFactory } from '../AbstractNode/DiagramFactory'
+// import PipelineStageNode from '../AbstractNode/Nodes/DefaultNode/PipelineStageNode'
+// import { DiamondNodeWidget } from '../AbstractNode/Nodes/DiamondNode/DiamondNode'
+// import { IconNode } from '../AbstractNode/Nodes/IconNode/IconNode'
 
 export interface PipelineStudioProps {
   className?: string
@@ -36,7 +36,7 @@ export interface PipelineStudioProps {
   routePipelineDetail: PathFn<PipelineType<PipelinePathProps>>
   routePipelineList: PathFn<PipelineType<ProjectPathProps>>
   routePipelineProject: PathFn<PipelineType<ProjectPathProps>>
-  diagram?: DiagramFactory
+  // diagram?: DiagramFactory
   getOtherModal?: (
     onSubmit: (values: PipelineInfoConfig) => void,
     onClose: () => void
@@ -53,13 +53,6 @@ interface OtherModalProps {
   onClose?: () => void
 }
 
-const diagram = new DiagramFactory('graph')
-
-diagram.registerNode('Deployment', PipelineStageNode)
-diagram.registerNode('Approval', DiamondNodeWidget)
-diagram.registerNode('Barrier', IconNode)
-
-export const CDPipelineStudioNew = diagram.render()
 export class PipelineStudio extends React.Component<PipelineStudioProps, PipelineStudioState> {
   state: PipelineStudioState = { error: undefined }
   context!: React.ContextType<typeof PipelineContext>
@@ -134,7 +127,7 @@ export class PipelineStudio extends React.Component<PipelineStudioProps, Pipelin
         <GitSyncStoreProvider>
           <div className={cx(css.container, className)}>
             <PipelineCanvas
-              diagram={diagram}
+              // diagram={diagram}
               toPipelineStudio={routePipelineStudio}
               toPipelineDetail={routePipelineDetail}
               toPipelineList={routePipelineList}
