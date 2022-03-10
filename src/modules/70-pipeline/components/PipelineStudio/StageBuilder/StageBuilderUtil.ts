@@ -31,7 +31,7 @@ import { EmptyStageName } from '../PipelineConstants'
 import type { PipelineContextInterface, StagesMap } from '../PipelineContext/PipelineContext'
 import { getStageFromPipeline } from '../PipelineContext/helpers'
 import { DefaultNodeModel, DiagramType, Event } from '@pipeline/components/Diagram'
-import type { MoveDirection, MoveStageDetailsType } from './StageBuilder'
+import type { MoveStageDetailsType } from './StageBuilder'
 import type { DynamicPopoverHandlerBinding } from '@common/components/DynamicPopover/DynamicPopover'
 
 export interface StageState {
@@ -39,6 +39,10 @@ export interface StageState {
   stage: StageElementWrapperConfig
 }
 
+export enum MoveDirection {
+  AHEAD,
+  BEHIND
+}
 export interface PopoverData {
   data?: StageElementWrapperConfig
   isStageView: boolean
@@ -534,7 +538,7 @@ export const getLinkEventListeners = (
 
 export const getNodeEventListerner = (
   updateStageOnAddLinkNew: (event: any, dropNode: StageElementWrapper | undefined, current: any) => void,
-  setSelectionRef,
+  setSelectionRef: any,
   confirmDeleteStage: () => void,
   updateDeleteId: (id: string | undefined) => void,
 

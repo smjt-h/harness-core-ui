@@ -37,6 +37,7 @@ export interface PipelineGraphProps {
   getDefaultNode(): NodeDetails | null
   selectedNodeId?: string
   collapsibleProps?: NodeCollapsibleProps
+  graphType?: PipelineGraphType
 }
 
 function PipelineGraph({
