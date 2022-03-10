@@ -9,6 +9,7 @@ import type { NodeModelListener, LinkModelListener } from '@projectstorm/react-d
 import type { BaseModelListener } from '@projectstorm/react-canvas-core'
 import { v4 as nameSpace, v5 as uuid, version } from 'uuid'
 import { isNil } from 'lodash-es'
+import type { IconName } from '@wings-software/uicore'
 import { IconNodeModel } from '@pipeline/components/Diagram/node/IconNode/IconNodeModel'
 import type {
   ExecutionElementConfig,
@@ -30,7 +31,6 @@ import {
   DiamondNodeModel,
   DiagramType
 } from '../../Diagram'
-import type { IconName } from '@wings-software/uicore'
 
 // TODO: have to be auto generated from swagger/API
 export interface DependenciesWrapper {
@@ -719,11 +719,11 @@ export const addStepOrGroupV2 = (
     const node = getStepFromId(data, groupId).node
     if (entity?.parentIdentifier) {
       // const options = layer.getOptions() as StepGroupNodeLayerOptions
-      const options = {}
-      const isRollbackGroup = options?.rollBackProps?.active === StepsType.Rollback
-      if (!isRollbackGroup && isExecutionElementConfig(node) && node?.steps) {
+      // const options = {}
+      // const isRollbackGroup = options?.rollBackProps?.active === StepsType.Rollback
+      if (isExecutionElementConfig(node) && node?.steps) {
         node.steps.push(step)
-      } else if (isRollbackGroup && isExecutionElementConfig(node) && node) {
+      } else if (isExecutionElementConfig(node) && node) {
         if (isNil(node.rollbackSteps)) {
           node.rollbackSteps = []
         }

@@ -1,11 +1,18 @@
+/*
+ * Copyright 2022 Harness Inc. All rights reserved.
+ * Use of this source code is governed by the PolyForm Shield 1.0.0 license
+ * that can be found in the licenses directory at the root of this repository, also available at
+ * https://polyformproject.org/wp-content/uploads/2020/06/PolyForm-Shield-1.0.0.txt.
+ */
+
 import { defaultTo, get } from 'lodash-es'
 import type { IconName } from '@harness/uicore'
-import { stageTypeToIconMap } from '@pipeline/components/PipelineInputSetForm/PipelineInputSetForm'
 import type { ExecutionWrapperConfig, StageElementWrapperConfig } from 'services/cd-ng'
 import { StepTypeToPipelineIconMap } from '@pipeline/components/PipelineStudio/ExecutionGraph/ExecutionGraphUtil'
 import type { PipelineGraphState } from '../types'
 import { PipelineGraphType } from '../types'
 import { v4 as uuid } from 'uuid'
+import { stageTypeToIconMap } from '@pipeline/utils/constants'
 
 const INITIAL_ZOOM_LEVEL = 1
 const ZOOM_INC_DEC_LEVEL = 0.1
