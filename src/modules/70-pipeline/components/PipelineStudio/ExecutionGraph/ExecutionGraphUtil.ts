@@ -31,7 +31,6 @@ import {
   DiamondNodeModel,
   DiagramType
 } from '../../Diagram'
-import type { IconName } from '@wings-software/uicore'
 
 // TODO: have to be auto generated from swagger/API
 export interface DependenciesWrapper {
