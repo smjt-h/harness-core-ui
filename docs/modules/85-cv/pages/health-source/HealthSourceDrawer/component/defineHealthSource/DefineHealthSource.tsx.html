@@ -23,16 +23,16 @@
         <div class='clearfix'>
             
             <div class='fl pad1y space-right2'>
-                <span class="strong">91.8% </span>
+                <span class="strong">91.94% </span>
                 <span class="quiet">Statements</span>
-                <span class='fraction'>56/61</span>
+                <span class='fraction'>57/62</span>
             </div>
         
             
             <div class='fl pad1y space-right2'>
-                <span class="strong">77.33% </span>
+                <span class="strong">77.59% </span>
                 <span class="quiet">Branches</span>
-                <span class='fraction'>133/172</span>
+                <span class='fraction'>135/174</span>
             </div>
         
             
@@ -44,9 +44,9 @@
         
             
             <div class='fl pad1y space-right2'>
-                <span class="strong">91.67% </span>
+                <span class="strong">91.8% </span>
                 <span class="quiet">Lines</span>
-                <span class='fraction'>55/60</span>
+                <span class='fraction'>56/61</span>
             </div>
         
             
@@ -291,7 +291,15 @@
 <a name='L232'></a><a href='#L232'>232</a>
 <a name='L233'></a><a href='#L233'>233</a>
 <a name='L234'></a><a href='#L234'>234</a>
-<a name='L235'></a><a href='#L235'>235</a></td><td class="line-coverage quiet"><span class="cline-any cline-neutral">&nbsp;</span>
+<a name='L235'></a><a href='#L235'>235</a>
+<a name='L236'></a><a href='#L236'>236</a>
+<a name='L237'></a><a href='#L237'>237</a>
+<a name='L238'></a><a href='#L238'>238</a>
+<a name='L239'></a><a href='#L239'>239</a>
+<a name='L240'></a><a href='#L240'>240</a>
+<a name='L241'></a><a href='#L241'>241</a>
+<a name='L242'></a><a href='#L242'>242</a>
+<a name='L243'></a><a href='#L243'>243</a></td><td class="line-coverage quiet"><span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
@@ -411,6 +419,8 @@
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-yes">196x</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">196x</span>
 <span class="cline-any cline-yes">196x</span>
 <span class="cline-any cline-yes">28x</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
@@ -423,14 +433,20 @@
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-no">&nbsp;</span>
-<span class="cline-any cline-no">&nbsp;</span>
-<span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
@@ -645,11 +661,16 @@ function DefineHealthSource(props: DefineHealthSourceProps): JSX.Element {
                             ({ name, icon }) =&gt; {
                               const connectorTypeName =
                                 name === HealthSourceTypes.GoogleCloudOperations ? Connectors.GCP : name
+                              const healthsourceName =
+                                name === HealthSourceTypes.CustomHealth ? getString('connectors.customLabel') : name
                               if (isCustomEnabled === false &amp;&amp; name === HealthSourceTypes.CustomHealth) {
                                 return null
                               }
                               return (
-                                &lt;div key={name} className={cx(css.squareCardContainer, isEdit &amp;&amp; css.disabled)}&gt;
+                                &lt;div
+                                  key={healthsourceName}
+                                  className={cx(css.squareCardContainer, isEdit &amp;&amp; css.disabled)}
+                                &gt;
                                   &lt;Card
                                     disabled={false}
                                     interactive={true}
@@ -672,10 +693,13 @@ function DefineHealthSource(props: DefineHealthSourceProps): JSX.Element {
                                   &lt;Text
                                     className={css.healthSourceName}
                                     style={{
-                                      color: name === formik.values.sourceType ? 'var(--grey-900)' : 'var(--grey-350)'
+                                      color:
+                                        healthsourceName === formik.values.sourceType
+                                          ? 'var(--grey-900)'
+                                          : 'var(--grey-350)'
                                     }}
                                   &gt;
-                                    {name}
+                                    {healthsourceName}
                                   &lt;/Text&gt;
                                 &lt;/div&gt;
                               )
@@ -766,7 +790,7 @@ export default DefineHealthSource
             <div class='footer quiet pad2 space-top1 center small'>
                 Code coverage generated by
                 <a href="https://istanbul.js.org/" target="_blank">istanbul</a>
-                at Thu Mar 10 2022 11:54:25 GMT+0000 (Greenwich Mean Time)
+                at Thu Mar 10 2022 12:36:53 GMT+0000 (Greenwich Mean Time)
             </div>
         </div>
         <script src="../../../../../../../prettify.js"></script>
