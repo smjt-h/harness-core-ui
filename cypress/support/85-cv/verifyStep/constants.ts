@@ -29,6 +29,7 @@ export const inputSetTemplateForRuntimeServiceCall = `/cv/api/verify-step/input-
 export const serviceEnvironmentTest1Call = `/cv/api/monitored-service/service-environment?routingId=${accountId}&accountId=${accountId}&orgIdentifier=${org}&projectIdentifier=${project}&environmentIdentifier=${ENV}&serviceIdentifier=testService`
 export const serviceEnvironmentTest2Call = `/cv/api/monitored-service/service-environment?routingId=${accountId}&accountId=${accountId}&orgIdentifier=${org}&projectIdentifier=${project}&environmentIdentifier=${ENV}&serviceIdentifier=testService2`
 export const serviceEnvironmentTest3Call = `/cv/api/monitored-service/service-environment?routingId=${accountId}&accountId=${accountId}&orgIdentifier=${org}&projectIdentifier=${project}&environmentIdentifier=${ENV}&serviceIdentifier=testService3`
+export const connectorsCall = `/ng/api/connectors?accountIdentifier=${accountId}&type=K8sCluster&searchTerm=&pageIndex=0&pageSize=10&projectIdentifier=${project}&orgIdentifier=${org}`
 
 export const strategiesResponse = {
   status: 'SUCCESS',

@@ -41,6 +41,7 @@ import {
 
 import {
   applyTemplatesCall,
+  connectorsCall,
   monitoresServices,
   monitoresServicesResponse,
   pipelineSteps,
@@ -257,13 +258,17 @@ Cypress.Commands.add('verifyStepInitialSetup', () => {
 })
 
 Cypress.Commands.add('verifyStepSelectConnector', () => {
+  cy.intercept('GET', connectorsCall).as('connectors')
   cy.intercept('POST', applyTemplatesCall).as('applyTemplatesCall')
   cy.contains('p', /^Kubernetes$/).click()
 
   cy.contains('span', 'Select Connector').click({ force: true })
-  cy.wait(500)
-  cy.contains('p', 'test1111', { timeout: 10000 }).click({ force: true })
-  cy.contains('span', 'Apply Selected', { timeout: 10000 }).click({ force: true })
+  cy.wait('@connectors')
+  cy.contains('p', 'test1111').click({ force: true })
+  cy.wait(1000)
+  cy.findByRole('button', { name: /Apply Selected/i })
+    .scrollIntoView()
+    .click()
 
   cy.wait('@applyTemplatesCall')
 

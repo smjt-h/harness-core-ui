@@ -28,7 +28,7 @@ import {
 } from '../../support/85-cv/verifyStep/constants'
 
 // eslint-disable-next-line jest/no-disabled-tests
-describe.skip('Verify step add', () => {
+describe('Verify step add', () => {
   beforeEach(() => {
     cy.on('uncaught:exception', () => {
       // returning false here prevents Cypress from
