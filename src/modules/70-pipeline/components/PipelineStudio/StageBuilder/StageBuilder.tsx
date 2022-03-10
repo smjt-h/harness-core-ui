@@ -26,8 +26,12 @@ import { useGlobalEventListener } from '@common/hooks'
 import type { StageElementWrapper } from '@pipeline/utils/pipelineTypes'
 import { StageType } from '@pipeline/utils/stageHelpers'
 import { useTemplateSelector } from '@pipeline/utils/useTemplateSelector'
-import type { DiagramFactory } from '@pipeline/components/AbstractNode/DiagramFactory'
 import { getPipelineGraphData } from '@pipeline/components/AbstractNode/PipelineGraph/PipelineGraphUtils'
+import { PipelineGraphType } from '@pipeline/components/AbstractNode/types'
+import PipelineStageNode from '@pipeline/components/AbstractNode/Nodes/DefaultNode/PipelineStageNode'
+import { DiamondNodeWidget } from '@pipeline/components/AbstractNode/Nodes/DiamondNode/DiamondNode'
+import { IconNode } from '@pipeline/components/AbstractNode/Nodes/IconNode/IconNode'
+import { DiagramFactory } from '@pipeline/components/AbstractNode/DiagramFactory'
 import {
   CanvasWidget,
   createEngine,
@@ -58,8 +62,17 @@ import { SplitViewTypes } from '../PipelineContext/PipelineActions'
 import { usePipelineContext } from '../PipelineContext/PipelineContext'
 import { getLinkEventListenersOld, getLinkListernersOld } from './StageBuildOldUtils'
 import css from './StageBuilder.module.scss'
-import { PipelineGraphType } from '@pipeline/components/AbstractNode/types'
-import { CDPipelineStudioNew } from '../PipelineStudio'
+
+// import { CDPipelineStudioNew } from '../PipelineStudio'
+
+const diagram = new DiagramFactory('graph')
+
+diagram.registerNode('Deployment', PipelineStageNode)
+diagram.registerNode('Approval', DiamondNodeWidget)
+diagram.registerNode('Barrier', IconNode)
+
+const CDPipelineStudioNew = diagram.render()
+
 const IS_NEW_PIP_STUDIO_ACTIVE = localStorage.getItem('IS_NEW_PIP_STUDIO_ACTIVE')
 export type StageStateMap = Map<string, StageState>
 
@@ -207,11 +220,7 @@ export const renderPopover = ({
   })
 }
 
-interface StageBuilderProps {
-  diagram?: DiagramFactory
-}
-
-function StageBuilder({ diagram }: StageBuilderProps): JSX.Element {
+function StageBuilder(): JSX.Element {
   const pipelineContext = usePipelineContext()
   const {
     state: {
