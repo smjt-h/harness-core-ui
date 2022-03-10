@@ -9,6 +9,7 @@ exports[`GCP AP form fill form 1`] = `
       class="OverlaySpinner--overlaySpinner"
     >
       <form
+        action="#"
         class="FormikForm--main"
       >
         <div>
@@ -478,6 +479,7 @@ exports[`GCP AP form form in edit mode 1`] = `
       class="OverlaySpinner--overlaySpinner"
     >
       <form
+        action="#"
         class="FormikForm--main"
       >
         <div>
@@ -979,6 +981,7 @@ exports[`GCP AP form form while saving 1`] = `
       class="OverlaySpinner--overlaySpinner"
     >
       <form
+        action="#"
         class="FormikForm--main"
       >
         <div>
@@ -1492,6 +1495,7 @@ exports[`GCP AP form form with no data 1`] = `
       class="OverlaySpinner--overlaySpinner"
     >
       <form
+        action="#"
         class="FormikForm--main"
       >
         <div>
