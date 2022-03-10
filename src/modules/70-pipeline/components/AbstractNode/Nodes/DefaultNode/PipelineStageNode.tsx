@@ -16,14 +16,12 @@ import { NodeType } from '../../Node'
 import css from './DefaultNode.module.scss'
 import CreateNode from '../CreateNode/CreateNode'
 
-const iconStyle = {
-  color: 'var(--white)'
-}
 const SECONDARY_ICON: IconName = 'command-echo'
 
 function PipelineStageNode(props: any): JSX.Element {
   const allowAdd = props.allowAdd ?? false
-  const [showAdd, setVisibilityOfAdd] = React.useState(false)
+  const [showAddNode, setVisibilityOfAdd] = React.useState(false)
+  const [showAddLink, setShowAddLink] = React.useState(false)
 
   return (
     <div
@@ -157,7 +155,7 @@ function PipelineStageNode(props: any): JSX.Element {
           }}
           className={cx(
             css.addNode,
-            { [css.visible]: showAdd },
+            { [css.visible]: showAddNode },
             {
               [css.stepAddNode]: props.graphType === PipelineGraphType.STEP_GRAPH
             },
@@ -185,9 +183,16 @@ function PipelineStageNode(props: any): JSX.Element {
           onDragOver={event => {
             event.stopPropagation()
             event.preventDefault()
+            setShowAddLink(true)
+          }}
+          onDragLeave={event => {
+            event.stopPropagation()
+            event.preventDefault()
+            setShowAddLink(false)
           }}
           onDrop={event => {
             event.stopPropagation()
+            setShowAddLink(false)
             props?.fireEvent({
               type: Event.DropLinkEvent,
               linkBeforeStepGroup: false,
@@ -199,6 +204,9 @@ function PipelineStageNode(props: any): JSX.Element {
           className={cx(
             css.addNodeIcon,
             css.left,
+            {
+              [css.show]: showAddLink
+            },
             {
               [css.stepAddIcon]: props.graphType === PipelineGraphType.STEP_GRAPH
             },
@@ -243,6 +251,9 @@ function PipelineStageNode(props: any): JSX.Element {
             className={cx(
               css.addNodeIcon,
               css.right,
+              {
+                [css.show]: showAddLink
+              },
               {
                 [css.stepAddIcon]: props.graphType === PipelineGraphType.STEP_GRAPH
               },

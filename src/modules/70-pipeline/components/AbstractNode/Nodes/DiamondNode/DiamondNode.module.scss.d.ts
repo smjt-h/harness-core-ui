@@ -17,5 +17,6 @@ declare const styles: {
   readonly secondaryIcon: string
   readonly template: string
   readonly tertiaryIcon: string
+  readonly top: string
 }
 export default styles

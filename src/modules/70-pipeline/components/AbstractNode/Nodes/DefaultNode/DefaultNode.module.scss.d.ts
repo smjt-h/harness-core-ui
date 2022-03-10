@@ -26,6 +26,7 @@ declare const styles: {
   readonly right: string
   readonly secondaryIcon: string
   readonly selected: string
+  readonly show: string
   readonly showIcon: string
   readonly stageAddIcon: string
   readonly stageAddNode: string

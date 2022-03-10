@@ -194,7 +194,8 @@
   &.stageAddIcon {
     top: 10px; // half the height of node
   }
-  &:hover {
+  &:hover,
+  &.show {
     opacity: 1;
     cursor: pointer;
     border-radius: 50%;

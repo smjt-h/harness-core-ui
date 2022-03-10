@@ -84,6 +84,7 @@ const diagram = new DiagramFactory('graph')
 diagram.registerNode('Deployment', PipelineStageNode, true)
 diagram.registerNode('StepGroup', DiagramNodes[NodeType.StepGroupNode])
 diagram.registerNode('Approval', DiamondNodeWidget)
+diagram.registerNode('JiraApproval', DiamondNodeWidget)
 diagram.registerNode('Barrier', IconNode)
 
 export const CDPipelineStudioNew = diagram.render()

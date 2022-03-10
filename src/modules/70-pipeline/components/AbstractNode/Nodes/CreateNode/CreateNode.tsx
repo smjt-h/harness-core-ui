@@ -29,7 +29,10 @@ function CreateNode(props: any): React.ReactElement {
         }
       }}
       className={cssDefault.defaultNode}
-      onDragOver={event => event.preventDefault()}
+      onDragOver={event => {
+        event.preventDefault()
+        event.stopPropagation()
+      }}
       onDrop={event => {
         props?.onDrop && props?.onDrop(event)
       }}
@@ -57,7 +60,6 @@ function CreateNode(props: any): React.ReactElement {
           css.createNode,
           { [css.disabled]: props.disabled || false },
           { [css.selected]: props?.node?.isSelected },
-          { [cssDefault.selected]: props.dropable },
           { [props.className]: props.className },
           {
             [css.stepAddIcon]: props.graphType === PipelineGraphType.STEP_GRAPH

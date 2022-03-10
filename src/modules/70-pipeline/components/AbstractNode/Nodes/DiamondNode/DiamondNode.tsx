@@ -6,23 +6,20 @@
  */
 
 import React from 'react'
-import { Position } from '@blueprintjs/core'
-import type { DiagramEngine } from '@projectstorm/react-diagrams-core'
 import { Icon, Text, Button, ButtonVariation, Color } from '@wings-software/uicore'
 import cx from 'classnames'
-import { DefaultPortLabel } from '@pipeline/components/Diagram/port/DefaultPortLabelWidget'
-import type { DefaultPortModel } from '@pipeline/components/Diagram/port/DefaultPortModel'
 import { useStrings } from 'framework/strings'
 import css from './DiamondNode.module.scss'
 import cssDefault from '../DefaultNode/DefaultNode.module.scss'
 import { DiagramDrag, DiagramType, Event } from '@pipeline/components/Diagram'
 import { PipelineGraphType } from '../../types'
 import { NodeType } from '../../Node'
+import SVGMarker from '../SVGMarker'
 
 export function DiamondNodeWidget(props: any): JSX.Element {
-  const [dragging, setDragging] = React.useState(false)
   const { getString } = useStrings()
   const isSelected = props?.isSelected
+  const [showAddLink, setShowAddLink] = React.useState(false)
 
   return (
     <div
@@ -43,7 +40,12 @@ export function DiamondNodeWidget(props: any): JSX.Element {
       onMouseDown={e => e.stopPropagation()}
     >
       <div
-        className={cx(cssDefault.defaultCard, css.diamond, { [cssDefault.selected]: isSelected }, props.nodeClassName)}
+        className={cx(
+          cssDefault.defaultCard,
+          css.diamond,
+          { [cssDefault.selected]: isSelected },
+          { [css.top]: props.graphType === PipelineGraphType.STAGE_GRAPH }
+        )}
         draggable={true}
         onDragStart={event => {
           event.stopPropagation()
@@ -59,7 +61,19 @@ export function DiamondNodeWidget(props: any): JSX.Element {
           event.stopPropagation()
         }}
       >
-        <div id={props.id} data-nodeid={props.id} className={css.horizontalBar}></div>
+        <div
+          id={props.id}
+          data-nodeid={props.id}
+          className={css.horizontalBar}
+          style={{ height: props.graphType === PipelineGraphType.STAGE_GRAPH ? 40 : 64 }}
+        >
+          {/* <div className={cssDefault.markerStart}>
+            <SVGMarker />
+          </div>
+          <div className={cssDefault.markerEnd}>
+            <SVGMarker />
+          </div> */}
+        </div>
         <div className="execution-running-animation" />
         {props.icon && <Icon size={28} inverse={isSelected} name={props.icon} style={props.iconStyle} />}
         {props.isInComplete && <Icon className={css.inComplete} size={12} name={'warning-sign'} color="orange500" />}
@@ -161,6 +175,12 @@ export function DiamondNodeWidget(props: any): JSX.Element {
           onDragOver={event => {
             event.stopPropagation()
             event.preventDefault()
+            setShowAddLink(true)
+          }}
+          onDragLeave={event => {
+            event.stopPropagation()
+            event.preventDefault()
+            setShowAddLink(false)
           }}
           onDrop={event => {
             event.stopPropagation()
@@ -175,6 +195,9 @@ export function DiamondNodeWidget(props: any): JSX.Element {
           className={cx(
             cssDefault.addNodeIcon,
             cssDefault.left,
+            {
+              [cssDefault.show]: showAddLink
+            },
             {
               [cssDefault.stepAddIcon]: props.graphType === PipelineGraphType.STEP_GRAPH
             },
