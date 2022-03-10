@@ -80,7 +80,7 @@ import StageBuilder from '../StageBuilder/StageBuilder'
 import { usePipelineSchema } from '../PipelineSchema/PipelineSchemaContext'
 import StudioGitPopover from '../StudioGitPopover'
 import css from './PipelineCanvas.module.scss'
-import type { DiagramFactory } from '@pipeline/components/AbstractNode/DiagramFactory'
+// import type { DiagramFactory } from '@pipeline/components/AbstractNode/DiagramFactory'
 
 interface OtherModalProps {
   onSubmit?: (values: PipelineInfoConfig) => void
@@ -115,7 +115,7 @@ const runModalProps: IDialogProps = {
 }
 
 export interface PipelineCanvasProps {
-  diagram?: DiagramFactory
+  // diagram?: DiagramFactory
   toPipelineStudio: PathFn<PipelineType<PipelinePathProps> & PipelineStudioQueryParams>
   toPipelineDetail: PathFn<PipelineType<PipelinePathProps>>
   toPipelineList: PathFn<PipelineType<ProjectPathProps>>
@@ -127,7 +127,7 @@ export interface PipelineCanvasProps {
 }
 
 export function PipelineCanvas({
-  diagram,
+  // diagram,
   toPipelineList,
   toPipelineStudio,
   getOtherModal
@@ -1035,7 +1035,7 @@ export function PipelineCanvas({
             </div>
           </div>
         </div>
-        {isYaml ? <PipelineYamlView /> : <StageBuilder diagram={diagram} />}
+        {isYaml ? <PipelineYamlView /> : <StageBuilder />}
         {shouldShowGovernanceEvaluation && (
           <EvaluationModal
             accountId={accountId}
