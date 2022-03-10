@@ -220,7 +220,16 @@ const PipelineInputSetFormInternal: React.FC<PipelineInputSetFormProps> = props 
         ) : null}
         {template?.variables && template?.variables?.length > 0 && (
           <>
-            <div className={css.subheading}>{getString('customVariables.pipelineVariablesTitle')}</div>
+            <Layout.Horizontal spacing="small" padding={{ top: 'medium', left: 'large', right: 0, bottom: 0 }}>
+              <Text
+                color={Color.BLACK_100}
+                font={{ weight: 'semi-bold' }}
+                icon={'pipeline-variables'}
+                iconProps={{ size: 18, color: Color.PRIMARY_7 }}
+              >
+                {getString('customVariables.pipelineVariablesTitle')}
+              </Text>
+            </Layout.Horizontal>
             <StepWidget<CustomVariablesData, CustomVariableInputSetExtraProps>
               factory={factory as unknown as AbstractStepFactory}
               initialValues={{
