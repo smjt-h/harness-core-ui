@@ -14,7 +14,6 @@ import cssDefault from '../DefaultNode/DefaultNode.module.scss'
 import { DiagramDrag, DiagramType, Event } from '@pipeline/components/Diagram'
 import { PipelineGraphType } from '../../types'
 import { NodeType } from '../../Node'
-import SVGMarker from '../SVGMarker'
 
 export function DiamondNodeWidget(props: any): JSX.Element {
   const { getString } = useStrings()

@@ -10,15 +10,15 @@ import {
 import { NodeDetails, NodeIds, PipelineGraphState, PipelineGraphType, SVGPathRecord } from '../../types'
 import CreateNode from '../CreateNode/CreateNode'
 import css from './StepGroupGraph.module.scss'
+import { defaultTo } from 'lodash-es'
 interface StepGroupGraphProps {
   id?: string
   data?: any[]
   getNode: (type?: string | undefined) => NodeDetails | undefined
   getDefaultNode(): NodeDetails | null
-  selectedNode?: string
+  selectedNodeId?: string
   uniqueNodeIds?: NodeIds
   fireEvent: (event: any) => void
-  setSelectedNode?: (nodeId: string) => void
   startEndNodeNeeded?: boolean
   updateSVGLinks?: (svgPath: string[]) => void
   prevNodeIdentifier?: string
@@ -47,12 +47,8 @@ function StepGroupGraph(props: StepGroupGraphProps): React.ReactElement {
   const [svgPath, setSvgPath] = useState<SVGPathRecord[]>([])
   const [treeRectangle, setTreeRectangle] = useState<DOMRect | void>()
   const [layoutStyles, setLayoutStyles] = useState<LayoutStyles>({ height: 'auto', width: 'auto' })
-  const [selectedNode, setSelectedNode] = useState<string>('')
   const [state, setState] = useState<PipelineGraphState[]>([])
   const graphRef = useRef<HTMLDivElement>(null)
-  const updateSelectedNode = (nodeId: string): void => {
-    setSelectedNode(nodeId)
-  }
 
   const updateTreeRect = (): void => {
     const treeContainer = document.getElementById('tree-container')
@@ -110,7 +106,7 @@ function StepGroupGraph(props: StepGroupGraphProps): React.ReactElement {
           fireEvent={props.fireEvent}
           getNode={props.getNode}
           nodes={state}
-          selectedNode={selectedNode}
+          selectedNode={defaultTo(props?.selectedNodeId, '')}
           startEndNodeNeeded={false}
         />
       ) : (

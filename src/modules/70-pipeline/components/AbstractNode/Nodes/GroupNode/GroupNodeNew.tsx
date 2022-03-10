@@ -14,7 +14,6 @@ import css from '../DefaultNode/DefaultNode.module.scss'
 
 function GroupNode(props: any): React.ReactElement {
   const allowAdd = props.allowAdd ?? false
-  const [_addClicked, setAddClicked] = React.useState(false)
   const [showAdd, setVisibilityOfAdd] = React.useState(false)
   const nodeRef = React.useRef<HTMLDivElement>(null)
 
@@ -93,13 +92,6 @@ function GroupNode(props: any): React.ReactElement {
           // last element of groupnode
           destination: props?.children?.slice(-1)?.[0]
         })
-        // if (event.dataTransfer.types.indexOf(DiagramDrag.AllowDropOnNode) !== -1) {
-        //   const dropData: { id: string; identifier: string } = JSON.parse(
-        //     event.dataTransfer.getData(DiagramDrag.NodeDrag)
-        //   )
-        //   props.node.setSelected(false)
-        //   props.node.fireEvent({ node: dropData }, Event.DropLinkEvent)
-        // }
       }}
     >
       <div

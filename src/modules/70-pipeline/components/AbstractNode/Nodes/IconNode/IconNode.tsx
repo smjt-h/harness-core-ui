@@ -6,7 +6,6 @@
  */
 
 import * as React from 'react'
-import type { DiagramEngine } from '@projectstorm/react-diagrams-core'
 import { isEmpty } from 'lodash-es'
 import cx from 'classnames'
 import { Text, IconName, Icon, Button, ButtonVariation, Color } from '@wings-software/uicore'
@@ -19,12 +18,8 @@ import { PipelineGraphType } from '../../types'
 import { NodeType } from '../../Node'
 
 export function IconNode(props: any): React.ReactElement {
-  const [dropable, setDropable] = React.useState(false)
-  const [dragging, setDragging] = React.useState(false)
   const allowAdd = props.allowAdd ?? false
-
   const [showAdd, setVisibilityOfAdd] = React.useState(false)
-  const [addClicked, setAddClicked] = React.useState(false)
   return (
     <div
       className={cx(cssDefault.defaultNode, css.iconNodeContainer)}
@@ -73,12 +68,7 @@ export function IconNode(props: any): React.ReactElement {
     >
       <div
         id={props.id}
-        className={cx(
-          cssDefault.defaultCard,
-          css.iconNode,
-          { [cssDefault.selected]: props.isSelected },
-          { [cssDefault.selected]: dropable }
-        )}
+        className={cx(cssDefault.defaultCard, css.iconNode, { [cssDefault.selected]: props.isSelected })}
         data-nodeid={props.identifier}
         draggable={true}
         onDragStart={event => {
@@ -135,7 +125,7 @@ export function IconNode(props: any): React.ReactElement {
         <CreateNode
           onMouseOver={() => allowAdd && setVisibilityOfAdd(true)}
           onMouseLeave={() => allowAdd && setVisibilityOfAdd(false)}
-          onClick={event => {
+          onClick={(event: MouseEvent) => {
             event.stopPropagation()
             props?.fireEvent({
               type: Event.AddParallelNode,

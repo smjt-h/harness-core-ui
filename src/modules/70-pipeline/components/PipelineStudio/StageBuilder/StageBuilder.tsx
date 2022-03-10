@@ -225,7 +225,7 @@ function StageBuilder({ diagram }: StageBuilderProps): JSX.Element {
       selectionState: { selectedStageId },
       templateTypes
     },
-    contextType = 'Pipeline',
+    // contextType = 'Pipeline',
     isReadonly,
     stagesMap,
     updatePipeline,

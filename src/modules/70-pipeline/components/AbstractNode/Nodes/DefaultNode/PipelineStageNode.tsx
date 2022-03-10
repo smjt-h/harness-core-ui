@@ -142,7 +142,7 @@ function PipelineStageNode(props: any): JSX.Element {
         <CreateNode
           onMouseOver={() => allowAdd && setVisibilityOfAdd(true)}
           onMouseLeave={() => allowAdd && setVisibilityOfAdd(false)}
-          onClick={event => {
+          onClick={(event: MouseEvent) => {
             event.stopPropagation()
             props?.fireEvent({
               type: Event.AddParallelNode,
