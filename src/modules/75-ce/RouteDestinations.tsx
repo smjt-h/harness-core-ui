@@ -184,6 +184,8 @@ const CERoutes: React.FC = () => {
     })
   }, [accountId])
 
+  const enableMicroFrontend = true
+
   return (
     <Provider value={urqlClient}>
       <Switch>
@@ -255,26 +257,30 @@ const CERoutes: React.FC = () => {
           <CECOLoadBalancersPage />
         </RouteWithLayout>
 
-        <RouteWithLayout
-          licenseRedirectData={licenseRedirectData}
-          sidebarProps={CESideNavProps}
-          path={routes.toCEBudgets({ ...accountPathProps })}
-          exact
-        >
-          <Budgets />
-        </RouteWithLayout>
-        {/* 
-        <RouteWithLayout
-          licenseRedirectData={licenseRedirectData}
-          sidebarProps={CESideNavProps}
-          path={routes.toCEBudgetDetails({
-            ...accountPathProps,
-            budgetId: ':budgetId',
-            budgetName: ':budgetName'
-          })}
-        >
-          <BudgetDetails />
-        </RouteWithLayout> */}
+        {!enableMicroFrontend ? (
+          <RouteWithLayout
+            licenseRedirectData={licenseRedirectData}
+            sidebarProps={CESideNavProps}
+            path={routes.toCEBudgets({ ...accountPathProps })}
+            exact
+          >
+            <Budgets />
+          </RouteWithLayout>
+        ) : null}
+
+        {!enableMicroFrontend ? (
+          <RouteWithLayout
+            licenseRedirectData={licenseRedirectData}
+            sidebarProps={CESideNavProps}
+            path={routes.toCEBudgetDetails({
+              ...accountPathProps,
+              budgetId: ':budgetId',
+              budgetName: ':budgetName'
+            })}
+          >
+            <BudgetDetails />
+          </RouteWithLayout>
+        ) : null}
 
         <RouteWithLayout
           licenseRedirectData={licenseRedirectData}
@@ -414,9 +420,22 @@ const CERoutes: React.FC = () => {
         >
           <OverviewPage />
         </RouteWithLayout>
-        <RouteWithLayout path={routes.toCEMicro({ ...accountPathProps })} sidebarProps={CESideNavProps}>
-          <ChildAppMounter ChildApp={CcmMicroFrontendPath} />
-        </RouteWithLayout>
+
+        {enableMicroFrontend ? (
+          <RouteWithLayout path={routes.toCEBudgets({ ...accountPathProps })} sidebarProps={CESideNavProps}>
+            <ChildAppMounter ChildApp={CcmMicroFrontendPath} />
+          </RouteWithLayout>
+        ) : null}
+
+        {enableMicroFrontend ? (
+          <RouteWithLayout
+            path={routes.toCEBudgetDetails({ ...accountPathProps, budgetId: ':budgetId', budgetName: ':budgetName' })}
+            sidebarProps={CESideNavProps}
+          >
+            <ChildAppMounter ChildApp={CcmMicroFrontendPath} />
+          </RouteWithLayout>
+        ) : null}
+
         <Route path="*">
           <NotFoundPage />
         </Route>
