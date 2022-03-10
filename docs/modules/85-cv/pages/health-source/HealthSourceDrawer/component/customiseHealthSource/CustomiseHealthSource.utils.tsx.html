@@ -23,16 +23,16 @@
         <div class='clearfix'>
             
             <div class='fl pad1y space-right2'>
-                <span class="strong">66% </span>
+                <span class="strong">66.67% </span>
                 <span class="quiet">Statements</span>
-                <span class='fraction'>33/50</span>
+                <span class='fraction'>36/54</span>
             </div>
         
             
             <div class='fl pad1y space-right2'>
-                <span class="strong">48.1% </span>
+                <span class="strong">49.41% </span>
                 <span class="quiet">Branches</span>
-                <span class='fraction'>38/79</span>
+                <span class='fraction'>42/85</span>
             </div>
         
             
@@ -44,9 +44,9 @@
         
             
             <div class='fl pad1y space-right2'>
-                <span class="strong">64.58% </span>
+                <span class="strong">65.38% </span>
                 <span class="quiet">Lines</span>
-                <span class='fraction'>31/48</span>
+                <span class='fraction'>34/52</span>
             </div>
         
             
@@ -152,13 +152,21 @@
 <a name='L93'></a><a href='#L93'>93</a>
 <a name='L94'></a><a href='#L94'>94</a>
 <a name='L95'></a><a href='#L95'>95</a>
-<a name='L96'></a><a href='#L96'>96</a></td><td class="line-coverage quiet"><span class="cline-any cline-neutral">&nbsp;</span>
+<a name='L96'></a><a href='#L96'>96</a>
+<a name='L97'></a><a href='#L97'>97</a>
+<a name='L98'></a><a href='#L98'>98</a>
+<a name='L99'></a><a href='#L99'>99</a>
+<a name='L100'></a><a href='#L100'>100</a>
+<a name='L101'></a><a href='#L101'>101</a>
+<a name='L102'></a><a href='#L102'>102</a></td><td class="line-coverage quiet"><span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">17x</span>
+<span class="cline-any cline-yes">17x</span>
 <span class="cline-any cline-yes">17x</span>
 <span class="cline-any cline-yes">17x</span>
 <span class="cline-any cline-yes">17x</span>
@@ -220,6 +228,10 @@
 <span class="cline-any cline-no">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-yes">1x</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">1x</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-no">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
@@ -271,6 +283,8 @@ import { CustomHealthSource } from '@cv/pages/health-source/connectors/CustomHea
 import { DatadogLogsHealthSource } from '@cv/pages/health-source/connectors/DatadogLogsHealthSource/DatadogLogsHealthSource'
 import ErrorTrackingHealthSource from '@cv/pages/health-source/connectors/ErrorTrackingHealthSource/ErrorTrackingHealthSource'
 import DynatraceHealthSourceContainer from '@cv/pages/health-source/connectors/Dynatrace/DynatraceHealthSourceContainer'
+import CustomHealthLogSource from '@cv/pages/health-source/connectors/CustomHealthLogSource/CustomHealthLogSource'
+import { CustomHealthProduct } from '@cv/pages/health-source/connectors/CustomHealthSource/CustomHealthSource.constants'
 import type { UpdatedHealthSource } from '../../HealthSourceDrawerContent.types'
 &nbsp;
 export const LoadSourceByType = ({
@@ -313,8 +327,12 @@ export const LoadSourceByType = ({
 <span class="cstat-no" title="statement not covered" >      return &lt;DynatraceHealthSourceContainer data={data} onSubmit={onSubmit} /&gt;</span>
 <span class="branch-10 cbranch-no" title="branch not covered" >    case Connectors.SPLUNK:</span>
 <span class="cstat-no" title="statement not covered" >      return &lt;SplunkHealthSource data={data} onSubmit={onSubmit} /&gt;</span>
-    case Connectors.CUSTOM_HEALTH:
-      return &lt;CustomHealthSource data={data} onSubmit={onSubmit} /&gt;
+    case HealthSourceTypes.CustomHealth:
+      <span class="missing-if-branch" title="if path not taken" >I</span>if (data.product<span class="branch-0 cbranch-no" title="branch not covered" >?.v</span>alue === CustomHealthProduct.METRICS) {
+<span class="cstat-no" title="statement not covered" >        return &lt;CustomHealthSource data={data} onSubmit={onSubmit} /&gt;</span>
+      } else {
+        return &lt;CustomHealthLogSource data={data} onSubmit={onSubmit} /&gt;
+      }
 <span class="branch-12 cbranch-no" title="branch not covered" >    case Connectors.ERROR_TRACKING:</span>
 <span class="cstat-no" title="statement not covered" >      return &lt;ErrorTrackingHealthSource data={data} onSubmit={onSubmit} /&gt;</span>
 <span class="branch-13 cbranch-no" title="branch not covered" >    default:</span>
@@ -349,7 +367,7 @@ export const createHealthsourceList = (formData: any, healthSourcesPayload: Upda
             <div class='footer quiet pad2 space-top1 center small'>
                 Code coverage generated by
                 <a href="https://istanbul.js.org/" target="_blank">istanbul</a>
-                at Thu Mar 10 2022 18:46:22 GMT+0000 (Greenwich Mean Time)
+                at Thu Mar 10 2022 21:41:17 GMT+0000 (Greenwich Mean Time)
             </div>
         </div>
         <script src="../../../../../../../prettify.js"></script>
