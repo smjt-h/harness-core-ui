@@ -30,6 +30,7 @@ import {
   DiamondNodeModel,
   DiagramType
 } from '../../Diagram'
+import type { IconName } from '@wings-software/uicore'
 
 // TODO: have to be auto generated from swagger/API
 export interface DependenciesWrapper {
@@ -814,7 +815,7 @@ export const getModelByStepType = (type: string, props: any) => {
   return new StepModel({ ...props, ...defaultProps })
 }
 
-export const StepTypeToPipelineIconMap = {
+export const StepTypeToPipelineIconMap: Record<any, IconName> = {
   [PipelineStepType.SHELLSCRIPT]: 'command-shell-script',
   [PipelineStepType.K8sRollingRollback]: 'undo',
   [PipelineStepType.K8sRollingDeploy]: 'rolling',

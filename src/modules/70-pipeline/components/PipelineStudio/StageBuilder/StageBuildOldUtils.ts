@@ -18,7 +18,7 @@ import { moveStageToFocusDelayed } from '@pipeline/components/ExecutionStageDiag
 import { PipelineOrStageStatus } from '@pipeline/components/PipelineSteps/AdvancedSteps/ConditionalExecutionPanel/ConditionalExecutionPanelUtils'
 import { EmptyStageName } from '../PipelineConstants'
 import type { PipelineContextInterface } from '../PipelineContext/PipelineContext'
-import { MoveDirection, MoveStageDetailsType } from './StageBuilder'
+import type { MoveStageDetailsType } from './StageBuilder'
 import {
   PopoverData,
   resetDiagram,
@@ -31,6 +31,11 @@ import {
   removeNodeFromPipeline
 } from './StageBuilderUtil'
 import type { PipelineSelectionState } from '../PipelineQueryParamState/usePipelineQueryParam'
+
+export enum MoveDirection {
+  AHEAD,
+  BEHIND
+}
 
 export const getLinkEventListenersOld = (
   updateStageOnAddLink: (event: any, dropNode: StageElementWrapper | undefined, current: any) => void,

@@ -16,7 +16,6 @@ import { PipelineGraphType } from '../../types'
 
 function GroupNode(props: any): React.ReactElement {
   const allowAdd = props.allowAdd ?? false
-  const [_addClicked, setAddClicked] = React.useState(false)
   const [showAdd, setVisibilityOfAdd] = React.useState(false)
 
   const nodesInfo = React.useMemo(() => {
@@ -134,7 +133,7 @@ function GroupNode(props: any): React.ReactElement {
         <CreateNode
           onMouseOver={() => allowAdd && setVisibilityOfAdd(true)}
           onMouseLeave={() => allowAdd && setVisibilityOfAdd(false)}
-          onClick={event => {
+          onClick={(event: MouseEvent) => {
             event.stopPropagation()
             props?.fireEvent({
               type: Event.AddParallelNode,
