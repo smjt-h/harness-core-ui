@@ -130,19 +130,11 @@ function GroupNode(props: any): React.ReactElement {
           {getGroupNodeName()}
         </Text>
       </div>
-<<<<<<< HEAD
       {allowAdd && CreateNode && (
         <CreateNode
           onMouseOver={() => allowAdd && setVisibilityOfAdd(true)}
           onMouseLeave={() => allowAdd && setVisibilityOfAdd(false)}
           onClick={(event: MouseEvent) => {
-=======
-      {allowAdd && (
-        <CreateNode
-          onMouseOver={() => allowAdd && setVisibilityOfAdd(true)}
-          onMouseLeave={() => allowAdd && setVisibilityOfAdd(false)}
-          onClick={event => {
->>>>>>> rebased to master
             event.stopPropagation()
             props?.fireEvent({
               type: Event.AddParallelNode,
