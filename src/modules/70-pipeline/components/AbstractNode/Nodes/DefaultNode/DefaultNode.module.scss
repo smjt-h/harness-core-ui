@@ -7,13 +7,21 @@
 
 .defaultNode {
   display: block;
-  width: 128px;
-  height: 80px;
+  width: fit-content;
+  height: fit-content;
   cursor: default;
+  position: relative;
+  &.marginBottom {
+    margin-bottom: 20px;
+  }
+
+  &.draggable {
+    cursor: move;
+  }
 
   .defaultCard {
     cursor: pointer;
-    margin: 0 auto;
+    margin: 0;
     position: relative;
     background-color: var(--white);
     border-radius: 8px;
@@ -26,6 +34,9 @@
 
     &.selected {
       background: linear-gradient(123.92deg, #0092e4 32.53%, #0778fc 112.21%);
+      border-color: var(--diagram-selected);
+      background: var(--pipeline-selected-node);
+      border-width: 2px;
     }
   }
 
@@ -37,6 +48,9 @@
 
   &:hover .closeNode {
     opacity: 1;
+    &.readonly {
+      opacity: 0;
+    }
     pointer-events: initial;
   }
 
@@ -119,15 +133,34 @@
   }
 }
 .addNode {
-  background: var(--white);
-  border: 2px dashed var(--diagram-add-node-color);
-  border-radius: 8px;
-  display: flex;
-  justify-content: center;
-  align-items: center;
-  cursor: pointer;
-  margin: 0 auto;
-  box-shadow: -1px 4px 7px 0 rgba(135, 149, 159, 0.27);
+  // background: var(--white);
+  // border: 2px dashed var(--grey-400);
+  // border-radius: 8px;
+  // display: flex;
+  // justify-content: center;
+  // align-items: center;
+  // cursor: pointer;
+  // margin: 0;
+  // box-shadow: -1px 4px 7px 0 rgba(135, 149, 159, 0.27);
+  // pointer-events: all;
+  visibility: hidden;
+  &.visible {
+    visibility: visible;
+  }
+  &.stepAddNode {
+    width: 64px;
+    height: 64px;
+  }
+  &.stageAddNode {
+    width: 90px;
+    height: 40px;
+  }
+  &.stepGroupAddNode {
+    width: 84px;
+    height: 84px;
+    // margin-top: 20px;
+    border: 1px dashed var(--grey-400);
+  }
 }
 
 :global {
@@ -142,4 +175,65 @@
       max-width: 200px !important;
     }
   }
+}
+
+.addNodeIcon {
+  height: 20px;
+  position: absolute;
+  width: 20px;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  top: 0;
+  opacity: 0;
+  border-radius: 50%;
+  padding: 2px;
+  &.stepAddIcon {
+    top: 22px; // half the height of node
+  }
+  &.stageAddIcon {
+    top: 10px; // half the height of node
+  }
+  &:hover,
+  &.show {
+    opacity: 1;
+    cursor: pointer;
+    border-radius: 50%;
+    background: var(--primary-7);
+  }
+  &.left {
+    left: -40px;
+  }
+  &.right {
+    right: -40px;
+  }
+}
+
+.showIcon {
+  opacity: 1;
+}
+.markerStart {
+  width: 20px;
+  height: 24px;
+  position: relative;
+  top: 2px;
+  left: -20px;
+  z-index: 99;
+}
+
+.markerEnd {
+  width: 20px;
+  height: 20px;
+  position: relative;
+  top: 0;
+  right: -20px;
+  z-index: 99;
+}
+
+.nameText {
+  cursor: pointer;
+  line-height: 1.5;
+  overflow-wrap: normal;
+  word-break: keep-all;
+  height: 46px;
 }
