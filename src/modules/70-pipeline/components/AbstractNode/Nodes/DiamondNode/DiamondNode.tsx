@@ -9,11 +9,11 @@ import React from 'react'
 import { Icon, Text, Button, ButtonVariation, Color } from '@wings-software/uicore'
 import cx from 'classnames'
 import { useStrings } from 'framework/strings'
-import css from './DiamondNode.module.scss'
-import cssDefault from '../DefaultNode/DefaultNode.module.scss'
 import { DiagramDrag, DiagramType, Event } from '@pipeline/components/Diagram'
 import { PipelineGraphType } from '../../types'
 import { NodeType } from '../../Node'
+import cssDefault from '../DefaultNode/DefaultNode.module.scss'
+import css from './DiamondNode.module.scss'
 
 export function DiamondNodeWidget(props: any): JSX.Element {
   const { getString } = useStrings()

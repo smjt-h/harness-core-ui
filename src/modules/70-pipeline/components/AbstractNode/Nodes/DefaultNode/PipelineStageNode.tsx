@@ -25,6 +25,8 @@ function PipelineStageNode(props: any): JSX.Element {
   return (
     <div
       className={cx(css.defaultNode, 'default-node', { draggable: !props.readonly })}
+      onMouseOver={() => allowAdd && setVisibilityOfAdd(true)}
+      onMouseLeave={() => allowAdd && setVisibilityOfAdd(false)}
       onClick={event => {
         event.stopPropagation()
         if (props?.onClick) {
