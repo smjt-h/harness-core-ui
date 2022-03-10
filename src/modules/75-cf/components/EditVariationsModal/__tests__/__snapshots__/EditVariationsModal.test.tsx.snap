@@ -2,7 +2,6 @@
 
 exports[`EditVariationsModal it should render correctly 1`] = `
 <form
-  action="#"
   class="FormikForm--main"
   data-testid="edit-variation-modal"
 >

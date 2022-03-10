@@ -17,7 +17,6 @@ exports[`StepWidget tests renders DeployStageSpecifications without crashing  1`
       id="stageOverview"
     >
       <form
-        action="#"
         class="FormikForm--main"
       >
         <div>
