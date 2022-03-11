@@ -152,14 +152,14 @@ export const EditStageView: React.FC<EditStageView> = ({ data, template, onSubmi
   const validationSchema = () =>
     Yup.lazy((values: Values): any =>
       Yup.object().shape({
-        ...(contextType === PipelineContextType.Pipeline && {
+        ...(contextType !== PipelineContextType.StageTemplate && {
           name: NameSchemaWithoutHook(getString, {
             requiredErrorMsg: getString('fieldRequired', { field: getString('stageNameLabel') })
           }),
           identifier: IdentifierSchemaWithoutHook(getString)
         }),
         ...(!codebase &&
-          contextType === PipelineContextType.Pipeline &&
+          contextType !== PipelineContextType.StageTemplate &&
           values.cloneCodebase && {
             connectorRef: Yup.mixed().required(getString('fieldRequired', { field: getString('connector') })),
             ...(connectionType === 'Account' && {
@@ -246,7 +246,7 @@ export const EditStageView: React.FC<EditStageView> = ({ data, template, onSubmi
               >
                 {getString('pipelineSteps.build.create.aboutYourStage')}
               </Text>
-              {contextType === PipelineContextType.Pipeline &&
+              {contextType !== PipelineContextType.StageTemplate &&
                 (template ? (
                   <NameId
                     identifierProps={{
@@ -293,7 +293,7 @@ export const EditStageView: React.FC<EditStageView> = ({ data, template, onSubmi
                 </div>
               )}
               {/* We don't need to configure CI Codebase if it is already configured or we are skipping Clone Codebase step */}
-              {!codebase && formikProps.values.cloneCodebase && contextType === PipelineContextType.Pipeline && (
+              {!codebase && formikProps.values.cloneCodebase && contextType !== PipelineContextType.StageTemplate && (
                 <div className={css.configureCodebase}>
                   <Text
                     font={{ size: 'normal', weight: 'semi-bold' }}
