@@ -11,7 +11,7 @@ import { useParams, useLocation } from 'react-router-dom'
 import { get, isEmpty, pickBy } from 'lodash-es'
 import { Text, Icon, Color, FontVariation, PageError, PageSpinner, Layout } from '@wings-software/uicore'
 import { DeprecatedImageInfo, useGetExecutionConfig } from 'services/ci'
-import { GovernanceMetadata, useGetExecutionDetail, ResponsePipelineExecutionDetail } from 'services/pipeline-ng'
+import { GovernanceMetadata, ResponsePipelineExecutionDetail, useGetExecutionDetailV2 } from 'services/pipeline-ng'
 import type { ExecutionNode } from 'services/pipeline-ng'
 import { ExecutionStatus, isExecutionComplete } from '@pipeline/utils/statusHelpers'
 import {
@@ -117,7 +117,7 @@ export default function ExecutionLandingPage(props: React.PropsWithChildren<unkn
     zoom: 100
   })
 
-  const { data, refetch, loading, error } = useGetExecutionDetail({
+  const { data, refetch, loading, error } = useGetExecutionDetailV2({
     planExecutionId: executionIdentifier,
     queryParams: {
       orgIdentifier,
