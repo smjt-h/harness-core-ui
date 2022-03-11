@@ -107,7 +107,8 @@ const isDelegateSelectorMandatory = (prevStepData: ConnectorConfigDTO = {}): boo
     DelegateTypes.DELEGATE_IN_CLUSTER_IRSA === prevStepData?.delegateType ||
     CredTypeValues.AssumeIAMRole === prevStepData?.credType ||
     CredTypeValues.AssumeRoleSTS === prevStepData?.credType ||
-    HashiCorpVaultAccessTypes.VAULT_AGENT === prevStepData?.accessType
+    HashiCorpVaultAccessTypes.VAULT_AGENT === prevStepData?.accessType ||
+    HashiCorpVaultAccessTypes.K8s_AUTH === prevStepData?.accessType
   )
 }
 
