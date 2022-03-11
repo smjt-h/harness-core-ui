@@ -27,12 +27,12 @@ import type { StageType } from '@pipeline/utils/stageHelpers'
 import type { DeploymentStageElementConfig, StageElementWrapper } from '@pipeline/utils/pipelineTypes'
 import type { TemplateSummaryResponse } from 'services/template-ng'
 import type { SelectorData } from '@pipeline/components/PipelineStudio/PipelineContext/PipelineActions'
+import type { DynamicPopoverHandlerBinding } from '@common/components/DynamicPopover/DynamicPopover'
+import { DefaultNodeModel, DiagramType, Event } from '@pipeline/components/Diagram'
 import { EmptyStageName } from '../PipelineConstants'
 import type { PipelineContextInterface, StagesMap } from '../PipelineContext/PipelineContext'
 import { getStageFromPipeline } from '../PipelineContext/helpers'
-import { DefaultNodeModel, DiagramType, Event } from '@pipeline/components/Diagram'
 import type { MoveStageDetailsType } from './StageBuilder'
-import type { DynamicPopoverHandlerBinding } from '@common/components/DynamicPopover/DynamicPopover'
 
 export interface StageState {
   isConfigured: boolean
@@ -446,7 +446,7 @@ export const getLinkEventListeners = (
     contextType = 'Pipeline',
     stagesMap,
     renderPipelineStage,
-    getStageFromPipeline,
+    getStageFromPipeline: getStageFromPipelineContext,
     setTemplateTypes
   } = pipelineContext
 
@@ -478,15 +478,15 @@ export const getLinkEventListeners = (
         return
       }
       if (event.node?.identifier) {
-        const dropNode = getStageFromPipeline(event.node.identifier).stage
-        const destination = getStageFromPipeline(event.destination.identifier).stage
+        const dropNode = getStageFromPipelineContext(event.node.identifier).stage
+        const destination = getStageFromPipelineContext(event.destination.identifier).stage
         const parentStageName = (dropNode?.stage as DeploymentStageElementConfig)?.spec?.serviceConfig?.useFromStage
           ?.stage
         const dependentStages = getDependantStages(pipeline, dropNode)
 
         if (parentStageName?.length) {
           const node = event.entity.getTargetPort().getNode() as DefaultNodeModel
-          const { stage } = getStageFromPipeline(node.getIdentifier())
+          const { stage } = getStageFromPipelineContext(node.getIdentifier())
           const dropIndex = pipeline?.stages?.indexOf(stage!) || -1
           const { stageIndex: parentIndex = -1 } = getStageIndexByIdentifier(pipeline, parentStageName)
 
@@ -501,7 +501,7 @@ export const getLinkEventListeners = (
         } else if (dependentStages?.length) {
           let dropIndex = -1
           const node = event.entity.getSourcePort().getNode() as DefaultNodeModel
-          const { stage } = getStageFromPipeline(node.getIdentifier())
+          const { stage } = getStageFromPipelineContext(node.getIdentifier())
           if (!stage) {
             //  node on sourceport is parallel so split nodeId to get original node identifier
             const nodeId = node.getIdentifier().split(EmptyNodeSeparator)[1]
@@ -527,7 +527,12 @@ export const getLinkEventListeners = (
           }
         }
 
-        const isRemove = removeNodeFromPipeline(getStageFromPipeline(event.node.identifier), pipeline, stageMap, false)
+        const isRemove = removeNodeFromPipeline(
+          getStageFromPipelineContext(event.node.identifier),
+          pipeline,
+          stageMap,
+          false
+        )
         if (isRemove && dropNode) {
           addStageNew(dropNode, false, true, undefined, undefined, undefined, destination)
         }
@@ -571,7 +576,7 @@ export const getNodeEventListerner = (
     updatePipeline,
     updatePipelineView,
     renderPipelineStage,
-    getStageFromPipeline,
+    getStageFromPipeline: getStageFromPipelineContext,
     setTemplateTypes
   } = pipelineContext
   return {
@@ -623,7 +628,7 @@ export const getNodeEventListerner = (
             )
           }
         } /* istanbul ignore else */ else if (event.entityType !== DiagramType.StartNode) {
-          const data = getStageFromPipeline(event.identifier).stage
+          const data = getStageFromPipelineContext(event.identifier).stage
           if (isSplitViewOpen && data?.stage?.identifier) {
             if (data?.stage?.name === EmptyStageName) {
               // TODO: check if this is unused code
@@ -723,8 +728,8 @@ export const getNodeEventListerner = (
     },
     [Event.DropNodeEvent]: (event: any) => {
       if (event.node?.identifier) {
-        const dropNode = getStageFromPipeline(event?.node?.identifier).stage
-        const current = getStageFromPipeline(event?.destination?.identifier)
+        const dropNode = getStageFromPipelineContext(event?.node?.identifier).stage
+        const current = getStageFromPipelineContext(event?.destination?.identifier)
         const dependentStages = getDependantStages(pipeline, dropNode)
         const parentStageId = (dropNode?.stage as DeploymentStageElementConfig)?.spec?.serviceConfig?.useFromStage
           ?.stage

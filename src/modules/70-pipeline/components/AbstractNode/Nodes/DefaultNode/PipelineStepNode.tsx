@@ -10,6 +10,7 @@ import cx from 'classnames'
 import type { IconName } from '@wings-software/uicore'
 import { Icon, Text, Color, Button, ButtonVariation } from '@wings-software/uicore'
 import { DiagramDrag, DiagramType, Event } from '@pipeline/components/Diagram'
+import stepsfactory from '@pipeline/components/PipelineSteps/PipelineStepFactory'
 import SVGMarker from '../SVGMarker'
 import { PipelineGraphType } from '../../types'
 import { NodeType } from '../../Node'
@@ -22,7 +23,7 @@ function PipelineStageNode(props: any): JSX.Element {
   const allowAdd = props.allowAdd ?? false
   const [showAddNode, setVisibilityOfAdd] = React.useState(false)
   const [showAddLink, setShowAddLink] = React.useState(false)
-
+  const stepData = stepsfactory.getStepData(props.type)
   return (
     <div
       className={`${cx(css.defaultNode, 'default-node')} draggable`}
@@ -104,7 +105,7 @@ function PipelineStageNode(props: any): JSX.Element {
           <SVGMarker />
         </div>
         <div className="execution-running-animation" />
-        {props.icon && <Icon size={28} name={props.icon} inverse={props?.isSelected} />}
+        {props.icon && <Icon size={28} name={stepData?.icon || 'cross'} inverse={props?.isSelected} />}
         {SECONDARY_ICON && <Icon className={css.secondaryIcon} size={8} name={SECONDARY_ICON} />}
         <Button
           className={cx(css.closeNode, { [css.readonly]: props.readonly })}
