@@ -30,9 +30,9 @@
         
             
             <div class='fl pad1y space-right2'>
-                <span class="strong">80.56% </span>
+                <span class="strong">82.61% </span>
                 <span class="quiet">Branches</span>
-                <span class='fraction'>58/72</span>
+                <span class='fraction'>76/92</span>
             </div>
         
             
@@ -379,7 +379,9 @@
 <a name='L320'></a><a href='#L320'>320</a>
 <a name='L321'></a><a href='#L321'>321</a>
 <a name='L322'></a><a href='#L322'>322</a>
-<a name='L323'></a><a href='#L323'>323</a></td><td class="line-coverage quiet"><span class="cline-any cline-neutral">&nbsp;</span>
+<a name='L323'></a><a href='#L323'>323</a>
+<a name='L324'></a><a href='#L324'>324</a>
+<a name='L325'></a><a href='#L325'>325</a></td><td class="line-coverage quiet"><span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
@@ -594,6 +596,8 @@
 <span class="cline-any cline-yes">4x</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-yes">4x</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-yes">4x</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
@@ -868,8 +872,8 @@ function getLicenseCountByModule({
   switch (licenseData<span class="branch-0 cbranch-no" title="branch not covered" >?.m</span>oduleType) {
     case ModuleName.CF: {
       const cfModuleLicenseDTO = licenseData as CFModuleLicenseDTO
-      const featureFlagUsers = cfModuleLicenseDTO<span class="branch-0 cbranch-no" title="branch not covered" >?.n</span>umberOfUsers
-      const monthlyActiveUsers = cfModuleLicenseDTO<span class="branch-0 cbranch-no" title="branch not covered" >?.n</span>umberOfClientMAUs
+      const featureFlagUsers = cfModuleLicenseDTO<span class="branch-0 cbranch-no" title="branch not covered" >?.n</span>umberOfUsers?.toLocaleString()
+      const monthlyActiveUsers = cfModuleLicenseDTO<span class="branch-0 cbranch-no" title="branch not covered" >?.n</span>umberOfClientMAUs?.toLocaleString()
       return (
         &lt;Layout.Vertical spacing="medium"&gt;
           &lt;Text color={Color.BLACK} font={{ weight: 'semi-bold' }} margin={{ bottom: 5 }}&gt;
@@ -886,7 +890,7 @@ function getLicenseCountByModule({
       const committers =
         ciModuleLicenseDTO<span class="branch-0 cbranch-no" title="branch not covered" >?.n</span>umberOfCommitters === -1
           ? getString('common.unlimited')
-          : ciModuleLicenseDTO<span class="branch-0 cbranch-no" title="branch not covered" >?.n</span>umberOfCommitters
+          : ciModuleLicenseDTO<span class="branch-0 cbranch-no" title="branch not covered" >?.n</span>umberOfCommitters<span class="branch-0 cbranch-no" title="branch not covered" >?.t</span>oLocaleString()
       return (
         &lt;Layout.Vertical spacing="medium"&gt;
           &lt;Text color={Color.BLACK} font={{ weight: 'semi-bold' }} margin={{ bottom: 5 }}&gt;
@@ -897,7 +901,7 @@ function getLicenseCountByModule({
     }
     case ModuleName.CD: {
       const cdModuleLicenseDTO = licenseData as CDModuleLicenseDTO
-      const workloads = cdModuleLicenseDTO<span class="branch-0 cbranch-no" title="branch not covered" >?.w</span>orkloads
+      const workloads = cdModuleLicenseDTO<span class="branch-0 cbranch-no" title="branch not covered" >?.w</span>orkloads?.toLocaleString()
       const cdLicenseType = cdModuleLicenseDTO<span class="branch-0 cbranch-no" title="branch not covered" >?.c</span>dLicenseType
       const serviceStr =
         cdLicenseType === CD_LICENSE_TYPE.SERVICES
@@ -915,7 +919,9 @@ function getLicenseCountByModule({
     case ModuleName.CE: {
       const ceModuleLicenseDTO = licenseData as CEModuleLicenseDTO
       const spendLimit =
-        ceModuleLicenseDTO<span class="branch-0 cbranch-no" title="branch not covered" >?.s</span>pendLimit === -1 ? getString('common.unlimited') : `$${ceModuleLicenseDTO<span class="branch-0 cbranch-no" title="branch not covered" >?.s</span>pendLimit}`
+        ceModuleLicenseDTO<span class="branch-0 cbranch-no" title="branch not covered" >?.s</span>pendLimit === -1
+          ? getString('common.unlimited')
+          : `$${ceModuleLicenseDTO<span class="branch-0 cbranch-no" title="branch not covered" >?.s</span>pendLimit<span class="branch-0 cbranch-no" title="branch not covered" >?.t</span>oLocaleString()}`
       return (
         &lt;Layout.Vertical spacing="medium"&gt;
           &lt;Text color={Color.BLACK} font={{ weight: 'semi-bold' }} margin={{ bottom: 5 }}&gt;
@@ -1030,7 +1036,7 @@ export const SubscriptionDetailsCardInfo = ({
             <div class='footer quiet pad2 space-top1 center small'>
                 Code coverage generated by
                 <a href="https://istanbul.js.org/" target="_blank">istanbul</a>
-                at Fri Mar 11 2022 15:33:18 GMT+0000 (Greenwich Mean Time)
+                at Fri Mar 11 2022 17:06:22 GMT+0000 (Greenwich Mean Time)
             </div>
         </div>
         <script src="../../../../../prettify.js"></script>
