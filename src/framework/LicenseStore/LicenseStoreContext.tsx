@@ -222,7 +222,71 @@ export function LicenseStoreProvider(props: React.PropsWithChildren<unknown>): R
   )
 
   useDeepCompareEffect(() => {
-    const allLicenses = accountLicensesData?.data?.allModuleLicenses || {}
+    const allLicenses = {
+      "CI": [
+        {
+          "id": "608894e722eae532c9e4cb1e",
+          "accountIdentifier": "px7xd_BFRCi-pfWPYXVjvw",
+          "moduleType": "CI",
+          "edition": "ENTERPRISE",
+          "licenseType": "PAID",
+          "status": "ACTIVE",
+          "startTime": 1619563751,
+          "expiryTime": 1697543263000,
+          "createdAt": 1619563751222,
+          "lastModifiedAt": 1638335713475,
+          "numberOfCommitters": 10
+        }
+      ],
+      "CD": [
+        {
+          "id": "6225dafbb0b49518f218a6fe",
+          "accountIdentifier": "px7xd_BFRCi-pfWPYXVjvw",
+          "moduleType": "CD",
+          "edition": "ENTERPRISE",
+          "licenseType": "PAID",
+          "status": "ACTIVE",
+          "startTime": 1633977619398,
+          "expiryTime": 1766494425000,
+          "createdAt": 1646648059065,
+          "lastModifiedAt": 1646648059065,
+          "cdLicenseType": "SERVICES",
+          "workloads": 100
+        }
+      ],
+      "CV": [],
+      "CE": [
+        {
+          "id": "60aef62e15eed279aadfb122",
+          "accountIdentifier": "px7xd_BFRCi-pfWPYXVjvw",
+          "moduleType": "CE",
+          "edition": "ENTERPRISE",
+          "licenseType": "PAID",
+          "status": "ACTIVE",
+          "startTime": 1622079022085,
+          "expiryTime": 1697543263000,
+          "createdAt": 1622079022231,
+          "lastModifiedAt": 1638335665670,
+          "spendLimit": 250000
+        }
+      ],
+      "CF": [
+        {
+          "id": "60900bf1d99866016b0ed945",
+          "accountIdentifier": "px7xd_BFRCi-pfWPYXVjvw",
+          "moduleType": "CF",
+          "edition": "ENTERPRISE",
+          "licenseType": "PAID",
+          "status": "ACTIVE",
+          "startTime": 1620052977,
+          "expiryTime": 1697543263000,
+          "createdAt": 1620052977243,
+          "lastModifiedAt": 1638335691815,
+          "numberOfUsers": 2,
+          "numberOfClientMAUs": 5000
+        }
+      ]
+    }
     const licenses: { [key: string]: ModuleLicenseDTO } = {}
     Object.keys(allLicenses).forEach((key: string) => {
       const moduleLicenses = allLicenses[key]
