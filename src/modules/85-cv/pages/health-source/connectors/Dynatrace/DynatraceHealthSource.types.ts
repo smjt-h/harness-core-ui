@@ -54,3 +54,17 @@ export interface DynatraceMetricData {
 }
 
 export interface DynatraceFormDataInterface extends DynatraceMetricData, DynatraceMetricInfo {}
+
+export interface InitDynatraceCustomMetricInterface {
+  metricSelector: string
+  sli: boolean
+  healthScore: boolean
+  continuousVerification: boolean
+  identifier: string
+  metricName: string
+  isNew: boolean
+  groupName: {
+    label: string
+    value: string
+  }
+}

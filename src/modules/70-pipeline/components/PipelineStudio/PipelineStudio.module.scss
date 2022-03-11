@@ -7,7 +7,7 @@
 
 .container {
   --pipeline-transparent: transparent;
-  --pipeline-grey-border: #c8c6c6;
+  --pipeline-grey-border: var(--grey-300);
   --pipeline-light-grey: #e7e7e7;
   --pipeline-blue-color: #25a6f7;
   --pipeline-blue-bc: #021c3c;

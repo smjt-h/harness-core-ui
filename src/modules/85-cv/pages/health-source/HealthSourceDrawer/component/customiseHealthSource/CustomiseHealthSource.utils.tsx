@@ -22,6 +22,8 @@ import { CustomHealthSource } from '@cv/pages/health-source/connectors/CustomHea
 import { DatadogLogsHealthSource } from '@cv/pages/health-source/connectors/DatadogLogsHealthSource/DatadogLogsHealthSource'
 import ErrorTrackingHealthSource from '@cv/pages/health-source/connectors/ErrorTrackingHealthSource/ErrorTrackingHealthSource'
 import DynatraceHealthSourceContainer from '@cv/pages/health-source/connectors/Dynatrace/DynatraceHealthSourceContainer'
+import CustomHealthLogSource from '@cv/pages/health-source/connectors/CustomHealthLogSource/CustomHealthLogSource'
+import { CustomHealthProduct } from '@cv/pages/health-source/connectors/CustomHealthSource/CustomHealthSource.constants'
 import type { UpdatedHealthSource } from '../../HealthSourceDrawerContent.types'
 
 export const LoadSourceByType = ({
@@ -64,8 +66,12 @@ export const LoadSourceByType = ({
       return <DynatraceHealthSourceContainer data={data} onSubmit={onSubmit} />
     case Connectors.SPLUNK:
       return <SplunkHealthSource data={data} onSubmit={onSubmit} />
-    case Connectors.CUSTOM_HEALTH:
-      return <CustomHealthSource data={data} onSubmit={onSubmit} />
+    case HealthSourceTypes.CustomHealth:
+      if (data.product?.value === CustomHealthProduct.METRICS) {
+        return <CustomHealthSource data={data} onSubmit={onSubmit} />
+      } else {
+        return <CustomHealthLogSource data={data} onSubmit={onSubmit} />
+      }
     case Connectors.ERROR_TRACKING:
       return <ErrorTrackingHealthSource data={data} onSubmit={onSubmit} />
     default:

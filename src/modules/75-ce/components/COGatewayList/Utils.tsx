@@ -15,7 +15,7 @@ import {
   StoppedStatusIndicator
 } from '@ce/common/InstanceStatusIndicator/InstanceStatusIndicator'
 import type { AllResourcesOfAccountResponse, Service } from 'services/lw'
-import { GatewayKindType } from '@ce/constants'
+import { GatewayKindType, PROVIDER_TYPES } from '@ce/constants'
 import odIcon from './images/ondemandIcon.svg'
 import spotIcon from './images/spotIcon.svg'
 
@@ -34,9 +34,21 @@ const getAwsConsoleDatabaseLink = (region: string, db: string) => {
 const getAzureInstancesLink = () =>
   'https://portal.azure.com/#blade/HubsExtension/BrowseResource/resourceType/Microsoft.Compute%2FVirtualMachines'
 
+const getGcpInstancesLink = () => {
+  return `https://console.cloud.google.com/compute/instances`
+}
+
+const getGcpInstanceDetailsLink = (zone: string, name: string) => {
+  return `https://console.cloud.google.com/compute/instancesDetail/zones/${zone}/instances/${name}`
+}
+
 export function getInstancesLink(service: Service, resources: AllResourcesOfAccountResponse): string {
-  if (!_isEmpty(resources.response) && resources.response?.[0].provider_type === 'azure') {
+  if (!_isEmpty(resources.response) && resources.response?.[0].provider_type === PROVIDER_TYPES.AZURE) {
     return getAzureInstancesLink()
+  } else if (resources.response?.[0].provider_type === PROVIDER_TYPES.GCP) {
+    const zone = _defaultTo(resources.response?.[0]?.availability_zone, '')
+    const name = _defaultTo(resources.response?.[0]?.name, '')
+    return resources.response.length > 1 ? getGcpInstancesLink() : getGcpInstanceDetailsLink(zone, name)
   } else {
     const region = resources.response?.length ? resources.response[0].region : ''
     if (service.kind === GatewayKindType.DATABASE) {

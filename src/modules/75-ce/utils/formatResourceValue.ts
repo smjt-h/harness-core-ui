@@ -5,6 +5,8 @@
  * https://polyformproject.org/wp-content/uploads/2020/06/PolyForm-Shield-1.0.0.txt.
  */
 
+import { QualityOfService } from '@ce/types'
+
 const BYTES_IN_A_GB = 1000000000
 const BYTES_IN_A_MB = 1000000
 
@@ -55,9 +57,12 @@ export const getMemValueInGB: fnNumberToString = val => {
 export const getRecommendationYaml: (
   cpuReqVal: string | number,
   memReqVal: string | number,
-  memLimitVal: string | number
-) => string = (cpuReqVal, memReqVal, memLimitVal) => {
-  return `limits:\n  memory: ${memLimitVal}\nrequests:\n  memory: ${memReqVal}\n  cpu: ${cpuReqVal}\n`
+  memLimitVal: string | number,
+  qualityOfService: QualityOfService
+) => string = (cpuReqVal, memReqVal, memLimitVal, qualityOfService) => {
+  const cpuLimitVal = qualityOfService === QualityOfService.GUARANTEED ? `\n  cpu: ${cpuReqVal}` : null
+
+  return `limits:\n  memory: ${memLimitVal}${cpuLimitVal}\nrequests:\n  memory: ${memReqVal}\n  cpu: ${cpuReqVal}\n`
 }
 
 export const getMemoryValueInGBFromExpression: (val: string | number) => number = val => {

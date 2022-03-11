@@ -6,8 +6,10 @@
  */
 
 import React from 'react'
-import { Container, Layout, Text } from '@wings-software/uicore'
-import type { ResourceDetails, ResourceObject } from '@ce/types'
+import { Container, Layout, Text, Color, FontVariation } from '@wings-software/uicore'
+import type { BorderProps } from '@harness/uicore/dist/styled-props/border/BorderProps'
+import cx from 'classnames'
+import { QualityOfService, ResourceDetails, ResourceObject } from '@ce/types'
 
 import css from './RecommendationDiffViewer.module.scss'
 
@@ -16,28 +18,58 @@ interface DiffBlockProps {
   color: string
   textColor: string
   resources: ResourceDetails
-  showLeftBorder?: boolean
+  border?: BorderProps
+  qualityOfService?: QualityOfService
+  dataTestId?: string
 }
 
-const DiffBlock: React.FC<DiffBlockProps> = ({ text, color, resources, textColor, showLeftBorder }) => {
+const DiffBlock: React.FC<DiffBlockProps> = ({
+  text,
+  color,
+  resources,
+  textColor,
+  border,
+  qualityOfService,
+  dataTestId
+}) => {
   const innerElement = (
     <>
-      <Text>{text}:</Text>
+      <Text font={{ mono: true, variation: FontVariation.BODY }} color={Color.GREY_600}>
+        {text}:
+      </Text>
       <Layout.Horizontal padding={{ left: 'medium', top: 'xsmall' }}>
-        <Text>memory:</Text>
-        <Text color={textColor} padding={{ left: 'xsmall' }}>
+        <Text font={{ mono: true, variation: FontVariation.BODY }} color={Color.GREY_600}>
+          memory:
+        </Text>
+        <Text
+          font={{ mono: true, variation: FontVariation.BODY }}
+          color={textColor}
+          padding={{ left: 'small' }}
+          data-testid={`${dataTestId}-memVal`}
+        >
           {resources.memory}
         </Text>
       </Layout.Horizontal>
-      <Layout.Horizontal padding={{ left: 'medium', top: 'xsmall' }}>
-        <Text>cpu:</Text>
-        <Text color={textColor} padding={{ left: 'xsmall' }}>
-          {resources.cpu || '-'}
-        </Text>
-      </Layout.Horizontal>
+      {qualityOfService !== QualityOfService.BURSTABLE ? (
+        <Layout.Horizontal padding={{ left: 'medium', top: 'xsmall' }}>
+          <Text font={{ mono: true, variation: FontVariation.BODY }} color={Color.GREY_600}>
+            cpu:
+          </Text>
+          {resources.cpu ? (
+            <Text
+              font={{ mono: true, variation: FontVariation.BODY }}
+              color={textColor}
+              padding={{ left: 'xsmall' }}
+              data-testid={`${dataTestId}-cpuVal`}
+            >
+              {resources.cpu}
+            </Text>
+          ) : null}
+        </Layout.Horizontal>
+      ) : null}
     </>
   )
-  return showLeftBorder ? (
+  return border ? (
     <Container
       background={color}
       padding={{
@@ -45,9 +77,11 @@ const DiffBlock: React.FC<DiffBlockProps> = ({ text, color, resources, textColor
         top: 'small',
         bottom: 'small'
       }}
-      border={{
-        left: showLeftBorder
-      }}
+      className={cx(
+        { [css.borderLeft]: border.left },
+        { [css.borderRight]: border.right },
+        { [css.borderBottom]: border.bottom }
+      )}
     >
       {innerElement}
     </Container>
@@ -68,29 +102,41 @@ const DiffBlock: React.FC<DiffBlockProps> = ({ text, color, resources, textColor
 interface RecommendationDiffViewerProps {
   recommendedResources: ResourceObject
   currentResources: ResourceObject
+  qualityOfService: QualityOfService
 }
 
 const RecommendationDiffViewer: React.FC<RecommendationDiffViewerProps> = ({
   recommendedResources,
-  currentResources
+  currentResources,
+  qualityOfService
 }) => {
   return (
     <Container className={css.diffContainer}>
-      <DiffBlock resources={currentResources.limits} text="limits" color="green100" textColor="red500" />
+      <DiffBlock resources={currentResources.limits} text="limits" color={Color.GREEN_100} textColor={Color.RED_700} />
       <DiffBlock
-        resources={recommendedResources.limits}
+        resources={
+          qualityOfService === QualityOfService.GUARANTEED ? recommendedResources.requests : recommendedResources.limits
+        }
         text="limits"
-        color="green100"
-        showLeftBorder
-        textColor="green500"
+        color={Color.GREEN_100}
+        border={{ left: true, right: true }}
+        textColor={Color.GREEN_700}
+        qualityOfService={qualityOfService}
+        dataTestId="limitsId"
       />
-      <DiffBlock resources={currentResources.requests} text="request" color="primary1" textColor="red500" />
+      <DiffBlock
+        resources={currentResources.requests}
+        text="request"
+        color={Color.PRIMARY_1}
+        textColor={Color.RED_700}
+      />
       <DiffBlock
         resources={recommendedResources.requests}
         text="request"
-        color="primary1"
-        showLeftBorder
-        textColor="green500"
+        color={Color.PRIMARY_1}
+        border={{ left: true, right: true, bottom: true }}
+        textColor={Color.GREEN_700}
+        dataTestId="requestId"
       />
     </Container>
   )

@@ -551,8 +551,7 @@ exports[`Create Git connector Wizard Creating Github step one and step two for H
     >
        
       <div
-        class="Layout--vertical StyledProps--main firstep stepContainer"
-        style="min-height: 460px; width: 60%;"
+        class="Layout--vertical StyledProps--main gitDetails firstep stepContainer"
       >
         <div
           class="Text--withDocsTooltip"
@@ -568,7 +567,7 @@ exports[`Create Git connector Wizard Creating Github step one and step two for H
           class="OverlaySpinner--overlaySpinner"
         >
           <form
-            class="FormikForm--main fullHeight fullHeightDivsWithFlex"
+            class="FormikForm--main connectorForm fullHeight fullHeightDivsWithFlex"
           >
             <div>
               <div
@@ -701,7 +700,7 @@ exports[`Create Git connector Wizard Creating Github step one and step two for H
                   </div>
                 </div>
                 <div
-                  class="bp3-form-group"
+                  class="bp3-form-group formElm"
                   data-id="url-2"
                 >
                   <label
@@ -749,7 +748,7 @@ exports[`Create Git connector Wizard Creating Github step one and step two for H
                     common.git.testRepositoryDescription
                   </p>
                   <div
-                    class="bp3-form-group"
+                    class="bp3-form-group formElm"
                     data-id="validationRepo-3"
                   >
                     <label
@@ -1019,8 +1018,7 @@ exports[`Create Git connector Wizard Creating Github step one and step two for H
     >
        
       <div
-        class="Layout--vertical StyledProps--main firstep stepContainer"
-        style="min-height: 460px; width: 60%;"
+        class="Layout--vertical StyledProps--main gitDetails firstep stepContainer"
       >
         <div
           class="Text--withDocsTooltip"
@@ -1036,7 +1034,7 @@ exports[`Create Git connector Wizard Creating Github step one and step two for H
           class="OverlaySpinner--overlaySpinner"
         >
           <form
-            class="FormikForm--main fullHeight fullHeightDivsWithFlex"
+            class="FormikForm--main connectorForm fullHeight fullHeightDivsWithFlex"
           >
             <div>
               <div
@@ -1169,7 +1167,7 @@ exports[`Create Git connector Wizard Creating Github step one and step two for H
                   </div>
                 </div>
                 <div
-                  class="bp3-form-group"
+                  class="bp3-form-group formElm"
                   data-id="url-2"
                 >
                   <label
@@ -1217,7 +1215,7 @@ exports[`Create Git connector Wizard Creating Github step one and step two for H
                     common.git.testRepositoryDescription
                   </p>
                   <div
-                    class="bp3-form-group bp3-intent-danger"
+                    class="bp3-form-group bp3-intent-danger formElm"
                     data-id="validationRepo-3"
                   >
                     <label

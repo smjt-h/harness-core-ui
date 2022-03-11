@@ -14,14 +14,6 @@ import { TestWrapper } from '@common/utils/testUtils'
 import { StepViewType } from '@pipeline/components/AbstractSteps/Step'
 import { KubernetesServiceSpecInputSetMode } from '../KubernetesServiceSpecInputSetMode'
 
-jest.mock('@cd/components/ManifestInputForm/ManifestInputForm', () => ({
-  ...(jest.requireActual('@cd/components/ManifestInputForm/ManifestInputForm') as any),
-  // eslint-disable-next-line react/display-name
-  ManifestInputForm: () => {
-    return <div id="manifestInputForm" />
-  }
-}))
-
 describe('<KubernetesServiceSpecInputSetMode /> tests', () => {
   test('snapshot test for kubernetes service spec input set mode', () => {
     const { container } = render(

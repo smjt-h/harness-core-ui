@@ -101,7 +101,7 @@ export const RiskTagWithLabel = ({
         className={css.healthScoreCard}
         style={{ backgroundColor: getRiskColorValue(riskStatus, true, !!isDarkBackground) }}
       >
-        {healthScore}
+        {healthScore || '-'}
       </Tag>
       <Text color={color ?? Color.BLACK} font={{ variation: labelVariation ?? FontVariation.BODY }}>
         {label ?? getString(getRiskLabelStringId(riskStatus))}

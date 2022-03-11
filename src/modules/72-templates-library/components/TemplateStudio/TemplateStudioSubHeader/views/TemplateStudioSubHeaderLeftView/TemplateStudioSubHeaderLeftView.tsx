@@ -60,7 +60,7 @@ interface TemplateWithGitContextFormProps extends NGTemplateInfoConfig {
   branch?: string
 }
 
-interface TemplateStudioSubHeaderLeftViewProps {
+export interface TemplateStudioSubHeaderLeftViewProps {
   onGitBranchChange?: (selectedFilter: GitFilterScope) => void
 }
 
@@ -253,7 +253,7 @@ export const TemplateStudioSubHeaderLeftView: (props: TemplateStudioSubHeaderLef
               font={{ weight: 'bold' }}
               tooltip={template?.name}
             >
-              {template?.name}
+              {template.name}
             </Text>
             {!isNil(template?.tags) && !isEmpty(template?.tags) && <TagsPopover tags={template.tags} />}
             {isGitSyncEnabled && onGitBranchChange && (

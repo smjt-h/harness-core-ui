@@ -90,7 +90,6 @@ import CreateConnectorFromYamlPage from '@connectors/pages/createConnectorFromYa
 import CreateSecretFromYamlPage from '@secrets/pages/createSecretFromYaml/CreateSecretFromYamlPage'
 import ServiceDetailPage from '@cd/pages/ServiceDetailPage/ServiceDetailPage'
 import ServiceDetails from '@cd/components/ServiceDetails/ServiceDetails'
-// eslint-disable-next-line no-restricted-imports
 import ChildAppMounter from 'microfrontends/ChildAppMounter'
 
 import './components/PipelineSteps'
@@ -144,6 +143,9 @@ import artifactSourceBaseFactory from './factory/ArtifactSourceFactory/ArtifactS
 import { KubernetesArtifacts } from './components/PipelineSteps/K8sServiceSpec/KubernetesArtifacts/KubernetesArtifacts'
 import { KubernetesManifests } from './components/PipelineSteps/K8sServiceSpec/KubernetesManifests/KubernetesManifests'
 import manifestSourceBaseFactory from './factory/ManifestSourceFactory/ManifestSourceBaseFactory'
+import { DeployServiceWidget } from './components/PipelineSteps/DeployServiceStep/DeployServiceStep'
+import { DeployEnvironmentWidget } from './components/PipelineSteps/DeployEnvStep/DeployEnvStep'
+import type { GitOpsCustomMicroFrontendProps } from './interfaces/GitOps.types'
 
 // eslint-disable-next-line import/no-unresolved
 const GitOpsServersList = React.lazy(() => import('gitopsui/MicroFrontendApp'))
@@ -413,7 +415,12 @@ const GitOpsPage = (): React.ReactElement | null => {
   const { ARGO_PHASE1, ARGO_PHASE2_MANAGED } = useFeatureFlags()
 
   if (ARGO_PHASE2_MANAGED) {
-    return <ChildAppMounter ChildApp={GitOpsServersList} />
+    return (
+      <ChildAppMounter<GitOpsCustomMicroFrontendProps>
+        ChildApp={GitOpsServersList}
+        customComponents={{ DeployEnvironmentWidget, DeployServiceWidget }}
+      />
+    )
   }
 
   if (ARGO_PHASE1) {

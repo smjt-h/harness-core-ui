@@ -121,6 +121,21 @@ export default function BuildStageSetupShell(): JSX.Element {
     stageData?.spec?.execution?.steps?.length
   ])
 
+  /* If a stage A propagates it's infra from another stage B and number of stages in a pipeline change due to deletion of propagated stage B, then infra for stage A needs to be reset */
+  React.useEffect(() => {
+    const propagatedStageId = (stageData?.spec?.infrastructure as UseFromStageInfraYaml)?.useFromStage
+    if (stageData && propagatedStageId) {
+      const { stage: propagatedStage } = getStageFromPipeline<BuildStageElementConfig>(propagatedStageId)
+      if (!propagatedStage) {
+        // indicates propagated stage doesn't exist
+        const stageWithoutInfra = set(stageData, 'spec.infrastructure', {
+          useFromStage: {}
+        })
+        updateStage(stageWithoutInfra)
+      }
+    }
+  }, [pipeline?.stages?.length])
+
   React.useEffect(() => {
     if (selectedStageId && isSplitViewOpen) {
       const { stage } = cloneDeep(getStageFromPipeline<BuildStageElementConfig>(selectedStageId))

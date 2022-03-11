@@ -1084,6 +1084,22 @@ export const logSampleDataResponse = {
   correlationId: 'af878454-a4bf-4cfe-810a-9c0eb91b466f'
 }
 
+export const jsonMetricDefinition = {
+  dataSets: [
+    {
+      timeSeriesQuery: {
+        timeSeriesFilter: {
+          filter: 'metric.type="kubernetes.io/container/restart_count" resource.type="k8s_container"',
+          aggregation: {
+            perSeriesAligner: 'ALIGN_RATE',
+            crossSeriesReducer: 'REDUCE_SUM'
+          }
+        }
+      }
+    }
+  ]
+}
+
 export const monitoredService = {
   status: 'SUCCESS',
   data: {
@@ -1172,6 +1188,49 @@ export const monitoredService = {
                   metricTags: ['Restart count - Works'],
                   serviceInstanceField: null,
                   isManualQuery: false
+                }
+              ]
+            }
+          },
+          {
+            name: 'GCO Metric',
+            identifier: 'GCO_Metric',
+            type: 'Stackdriver',
+            spec: {
+              connectorRef: 'Google_Cloud_Operations_project',
+              metricDefinitions: [
+                {
+                  identifier: 'test',
+                  metricName: 'test',
+                  riskProfile: {
+                    category: 'Errors',
+                    metricType: null,
+                    thresholdTypes: []
+                  },
+                  analysis: {
+                    liveMonitoring: {
+                      enabled: false
+                    },
+                    deploymentVerification: {
+                      enabled: false,
+                      serviceInstanceFieldName: null,
+                      serviceInstanceMetricPath: null
+                    },
+                    riskProfile: {
+                      category: 'Errors',
+                      metricType: null,
+                      thresholdTypes: []
+                    }
+                  },
+                  sli: {
+                    enabled: true
+                  },
+                  dashboardName: '',
+                  dashboardPath: '',
+                  jsonMetricDefinition,
+                  metricTags: ['test'],
+                  serviceInstanceField: null,
+                  isManualQuery: true
                 }
               ]
             }

@@ -22,21 +22,27 @@ import MonacoEditor from '@common/components/MonacoEditor/MonacoEditor'
 import MonacoDiffEditor from '@common/components/MonacoDiffEditor/MonacoDiffEditor'
 import YAMLBuilder from '@common/components/YAMLBuilder/YamlBuilder'
 import AppStorage from 'framework/utils/AppStorage'
-
 import ChildAppError from './ChildAppError'
 import type { ChildAppProps, Scope } from './index'
 
 const logger = loggerFor(ModuleName.FRAMEWORK)
 
-export interface ChildAppMounterProps extends RouteComponentProps<Scope> {
+export { ChildAppProps }
+
+export interface BaseChildAppMounterProps {
   ChildApp: React.LazyExoticComponent<React.ComponentType<ChildAppProps>>
 }
+
+export type ChildAppMounterProps<T = never> = T extends never ? BaseChildAppMounterProps : T & BaseChildAppMounterProps
 
 export interface ChildAppMounterState {
   hasError: boolean
 }
 
-export class ChildAppMounter extends React.Component<ChildAppMounterProps, ChildAppMounterState> {
+export class ChildAppMounter<T = never> extends React.Component<
+  ChildAppMounterProps<T> & RouteComponentProps<Scope>,
+  ChildAppMounterState
+> {
   state: ChildAppMounterState = {
     hasError: false
   }
@@ -48,7 +54,7 @@ export class ChildAppMounter extends React.Component<ChildAppMounterProps, Child
   }
 
   render(): React.ReactElement {
-    const { ChildApp, match } = this.props
+    const { ChildApp, match, children, ...rest } = this.props
 
     // We use routeMatch instead of location because,
     // we want to pass the mount url and not the actual url
@@ -61,7 +67,8 @@ export class ChildAppMounter extends React.Component<ChildAppMounterProps, Child
     return (
       <React.Suspense fallback={<PageSpinner />}>
         <ChildApp
-          {...this.props}
+          // eslint-disable-next-line @typescript-eslint/no-explicit-any
+          {...(rest as any)}
           renderUrl={url}
           matchPath={path}
           scope={params}
@@ -88,4 +95,13 @@ export class ChildAppMounter extends React.Component<ChildAppMounterProps, Child
   }
 }
 
-export default withRouter(ChildAppMounter)
+// eslint-disable-next-line @typescript-eslint/no-explicit-any
+const ChildAppMounterWithRouter = withRouter(ChildAppMounter as any)
+
+// It's impossible to use a HOC with Generics, while using `withRouter`
+// hence, we need to create a wrapper around it to add support for generics
+function ChildAppMounterWithRouterWrapper<T = never>(props: ChildAppMounterProps<T>): React.ReactElement {
+  return <ChildAppMounterWithRouter {...props} />
+}
+
+export default ChildAppMounterWithRouterWrapper

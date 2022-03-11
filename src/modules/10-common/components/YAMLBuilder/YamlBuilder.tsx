@@ -547,8 +547,14 @@ const YAMLBuilder: React.FC<YamlBuilderProps> = (props: YamlBuilderProps): JSX.E
     [dynamicWidth, height, currentYaml, onYamlChange]
   )
 
+  const throttledOnResize = throttle(() => {
+    editorRef.current?.editor?.layout()
+  }, 500)
+
   useEffect(() => {
+    window.addEventListener('resize', throttledOnResize)
     return () => {
+      window.removeEventListener('resize', throttledOnResize)
       disposePreviousSuggestions()
     }
   }, [])

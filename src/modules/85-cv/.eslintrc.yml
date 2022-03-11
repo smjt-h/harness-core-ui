@@ -4,6 +4,7 @@ rules:
     - patterns:
         - lodash.*
         - microfrontends/*
+        - '!microfrontends/ChildAppMounter'
         - modules/85-sto-steps/*
         - '@sto-steps/*'
       paths:

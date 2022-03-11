@@ -259,6 +259,7 @@ exports[`UsersPage Test Add Roles 1`] = `
                               <input
                                 autocomplete="off"
                                 class="bp3-input"
+                                data-testid="resourceGroup-0"
                                 disabled=""
                                 placeholder="rbac.usersPage.selectResourceGroup"
                                 style="padding-right: 0px;"
@@ -396,6 +397,7 @@ exports[`UsersPage Test Add Roles 1`] = `
                               <input
                                 autocomplete="off"
                                 class="bp3-input"
+                                data-testid="resourceGroup-1"
                                 disabled=""
                                 placeholder="rbac.usersPage.selectResourceGroup"
                                 style="padding-right: 0px;"
@@ -505,10 +507,11 @@ exports[`UsersPage Test Add Roles 1`] = `
                               <input
                                 autocomplete="off"
                                 class="bp3-input"
+                                data-testid="resourceGroup-2"
                                 placeholder="rbac.usersPage.selectResourceGroup"
                                 style="padding-right: 0px;"
                                 type="text"
-                                value="rbac.allAccountResources"
+                                value="rbac.allResourcesIncludingChildScopes"
                               />
                               <span
                                 class="bp3-input-action"
@@ -1001,6 +1004,7 @@ exports[`UsersPage Test Invite a User 1`] = `
                               <input
                                 autocomplete="off"
                                 class="bp3-input"
+                                data-testid="resourceGroup-0"
                                 disabled=""
                                 placeholder="rbac.usersPage.selectResourceGroup"
                                 style="padding-right: 0px;"

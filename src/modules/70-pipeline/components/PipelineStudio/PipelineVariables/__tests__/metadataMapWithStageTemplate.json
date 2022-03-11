@@ -1,0 +1,121 @@
+{
+  "Cg5feCBTQ8a5f7MGrTIbwA": {
+    "yamlProperties": {
+      "fqn": "pipeline.name",
+      "localName": "pipeline.name"
+    },
+    "yamlOutputProperties": null
+  },
+  "RICvXPeRSSuPSDHNDaxTDQ": {
+    "yamlProperties": {
+      "fqn": "pipeline",
+      "localName": "pipeline"
+    },
+    "yamlOutputProperties": null
+  },
+  "ldMcqTjtQUCf76SaggytJg": {
+    "yamlProperties": {
+      "fqn": "serviceConfig",
+      "localName": ""
+    },
+    "yamlOutputProperties": null
+  },
+  "ydTHrpV6R62bJrz92DS7Bw": {
+    "yamlProperties": {
+      "fqn": "pipeline.stages.Stage_1.spec.serviceConfig.serviceRef",
+      "localName": "serviceConfig.serviceRef"
+    },
+    "yamlOutputProperties": null
+  },
+  "AOX5By0RSSaEXtvsShcBBA": {
+    "yamlProperties": {
+      "fqn": "pipeline.stages.Stage_1.spec.infrastructure.infrastructureDefinition.spec.connectorRef",
+      "localName": "infrastructure.infrastructureDefinition.spec.connectorRef"
+    },
+    "yamlOutputProperties": null
+  },
+  "1CYevzdoRUCZGg2lmhHw9g": {
+    "yamlProperties": {
+      "fqn": "pipeline.stages.Stage_1.spec.infrastructure.environmentRef",
+      "localName": "infrastructure.environmentRef"
+    },
+    "yamlOutputProperties": null
+  },
+  "sDIuZnmYReKvIJ9DKEVxHw": {
+    "yamlProperties": {
+      "fqn": "pipeline.stages.Stage_1.name",
+      "localName": "stage.name"
+    },
+    "yamlOutputProperties": null
+  },
+  "MOcVenH3T0y-XXqv9OIT8w": {
+    "yamlProperties": {
+      "fqn": "infrastructure",
+      "localName": ""
+    },
+    "yamlOutputProperties": null
+  },
+  "tAeeXFqbQIKIRwQ29g-yBw": {
+    "yamlProperties": {
+      "fqn": "pipeline.stages.Stage_1.spec.infrastructure.infrastructureDefinition.spec.namespace",
+      "localName": "infrastructure.infrastructureDefinition.spec.namespace"
+    },
+    "yamlOutputProperties": null
+  },
+  "lBCPQZiNRcSfM3I1LQO0FQ": {
+    "yamlProperties": {
+      "fqn": "pipeline.stages.Stage_1.spec.infrastructure.infrastructureDefinition.spec.releaseName",
+      "localName": "infrastructure.infrastructureDefinition.spec.releaseName"
+    },
+    "yamlOutputProperties": null
+  },
+  "Ec4NnNc8RS26wSeoxg47Cg": {
+    "yamlProperties": {
+      "fqn": "pipeline.stages.Stage_1",
+      "localName": "stage"
+    },
+    "yamlOutputProperties": null
+  },
+  "5gBSpGoGRvm_Pi_8w03YVw": {
+    "yamlProperties": {
+      "fqn": "pipeline.stages.Stage_1.spec.execution.steps.Step_1.spec.shell",
+      "localName": "execution.steps.Step_1.spec.shell"
+    },
+    "yamlOutputProperties": null
+  },
+  "qEQI-kgySQGri4_phdH5Hw": {
+    "yamlProperties": {
+      "fqn": "pipeline.stages.Stage_1.spec.execution.steps.Step_1.name",
+      "localName": "execution.steps.Step_1.name"
+    },
+    "yamlOutputProperties": null
+  },
+  "hC_mylChR56TdbblBbfkvQ": {
+    "yamlProperties": {
+      "fqn": "pipeline.stages.Stage_1.spec.execution.steps.Step_1",
+      "localName": "step"
+    },
+    "yamlOutputProperties": null
+  },
+  "m2-PKk27SjmTRdToXZv0vA": {
+    "yamlProperties": {
+      "fqn": "pipeline.stages.Stage_1.spec.execution.steps.Step_1.spec.source.spec.script",
+      "localName": "execution.steps.Step_1.spec.source.spec.script"
+    },
+    "yamlOutputProperties": null
+  },
+  "CE-hpV8cR3ORASrPN4uuGA": {
+    "yamlProperties": {
+      "fqn": "pipeline.stages.Stage_1.spec.execution.steps.Step_1.timeout",
+      "localName": "execution.steps.Step_1.timeout"
+    },
+    "yamlOutputProperties": null
+  },
+  "9csxbYLyQWm2nMaG4ktDCg": {
+    "yamlProperties": {
+      "fqn": "pipeline.stages.Stage_1.spec.execution.steps.Step_1.spec.onDelegate",
+      "localName": "execution.steps.Step_1.spec.onDelegate"
+    },
+    "yamlOutputProperties": null
+  }
+}

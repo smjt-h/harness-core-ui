@@ -25,7 +25,7 @@ export function HealthSourceMultiSelectDropDown(props: HealthSourceMultiSelectDr
   const { getString } = useStrings()
 
   const healthSources: SelectOption[] = useMemo(() => {
-    return getDropdownOptions({ loading, error, data, verificationType }, getString)
+    return getDropdownOptions({ loading, error, data, verificationType }, getString, false)
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [data, error, loading, verificationType])
 

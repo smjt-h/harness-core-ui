@@ -135,7 +135,7 @@ const Content = (props: GCRRenderContent): JSX.Element => {
               accountIdentifier={accountId}
               projectIdentifier={projectIdentifier}
               orgIdentifier={orgIdentifier}
-              width={384}
+              width={391}
               setRefValue
               disabled={isFieldDisabled(`artifacts.${artifactPath}.spec.connectorRef`)}
               multiTypeProps={{

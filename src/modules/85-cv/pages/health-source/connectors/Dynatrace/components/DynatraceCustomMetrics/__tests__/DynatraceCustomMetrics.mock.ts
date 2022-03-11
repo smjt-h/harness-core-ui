@@ -63,7 +63,6 @@ export const SELECTED_AND_MAPPED_METRICS_WITH_DEFAULT_MOCK: SelectedAndMappedMet
 }
 
 export const DYNATRACE_CUSTOM_METRICS_PROPS_MOCK: DynatraceCustomMetricsProps = {
-  isFormValid: false,
   formikSetField: jest.fn(),
   metricValues: {
     identifier: 'mapped_metric_1',
@@ -73,10 +72,7 @@ export const DYNATRACE_CUSTOM_METRICS_PROPS_MOCK: DynatraceCustomMetricsProps = 
     continuousVerification: false,
     metricName: 'mapped_metric_1'
   },
-  createdMetrics: ['mapped_metric_1', 'mapped_metric_2'],
-  setCreatedMetrics: jest.fn(),
   mappedMetrics: MAPPED_METRICS_LIST_MOCK,
-  setMappedMetrics: jest.fn(),
   selectedMetric: 'mapped_metric_1',
   connectorIdentifier: 'mock_connector',
   selectedServiceId: 'mock_service_id'

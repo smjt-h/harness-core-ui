@@ -450,9 +450,10 @@ connector:
 recommendation:
   sideNavText: Recommendations
   listPage:
-    monthlySavingsText: POTENTIAL MONTHLY SAVINGS
+    monthlySavingsText: Potential Monthly Savings
     monthlyForcastedCostText: FORECASTED MONTHLY SPEND
     forecatedCostSubText: without applying recommendations
+    monthlyPotentialCostText: Potential Monthly Spend
     uptoText: upto
     recommnedationBreakdown: 'Recommendations Breakdown'
     filterHereText: 'Filter here'
@@ -476,7 +477,11 @@ recommendation:
     recommendationDetails:
       resize: 'resize CPU and memory'
   detailsPage:
+    headerText: 'Recommendations for'
     viewMoreDetailsText: 'View more details'
+    workloadMonthlySavingsText: 'Potential Monthly Workload Savings'
+    workloadMonthlyPotentialCostText: 'Potential Monthly Workload Spend'
+    containerHeader: 'Container ({{currentContainer}}/{{totalContainers}}): '
     histogramTextDetails1: 'A histogram is a bar graph-like representation of data that buckets a range of outcomes into columns along the x-axis.'
     histogramTextDetails2: 'The y-axis represents the number count or percentage of occurrences in the data for each column and can be used to visualize data distributions.'
     histogramText: 'HISTOGRAM'
@@ -484,15 +489,18 @@ recommendation:
     performanceOptimized: 'Performance Optimized'
     resourceChanges: 'RESOURCE CHANGES TO BE MADE TO APPLY THE RECOMMENDATION'
     currentResources: 'Current limits/request for CPU/Memory'
-    recommendedResources: '{{recommendationType}} limits/request for CPU/Memory'
+    recommendedResources: 'limits/request for CPU/Memory'
     timeChangeText: 'OF SAMPLES ANALYSED OVER THE'
     percentileOfReqAndLimit: 'Percentile of request and limit'
     resizeText: 'Resize from a to b'
     howItWorks: 'How it works / Options you have'
     recommendationComputation: 'The recommendations are computed by analyzing the past utilization of CPU and memory of your workload.'
+    utilizationDataComputation: 'Compute recommendations based on utilization data for'
     costOptimizedDetails: 'The lower bound is based on the 50th percentiles of CPU samples and memory peaks. There is no upper bound for CPU samples and memory peaks are based on the 50th percentile.'
     performanceOptimizedDetails: 'The performance-optimized recommendations are computed using the 95th percentile of CPU samples and memory peaks.'
-    customDetails: 'The recommendations are computed by analyzing the past utilization of CPU and memory of your workload. The recommendations are computed by analyzing the past utilization of CPU and memory of your workload.'
+    customDetailsText1: 'The recommendations are computed by analyzing the past utilization of CPU and memory of your workload. The implementation uses a histogram method to compute the recommendations.'
+    customDetailsText2: 'You can also '
+    customDetailsText3: 'tune recommendations by changing the Quality of Service (QoS) and the percentage of recommended CPU and memory requests/limits buffer.'
     totalCost: 'TOTAL COST'
     idleCost: 'IDLE COST'
     reqPercentileLegendText: 'Percentile of Samples whose request will be met'
@@ -500,12 +508,26 @@ recommendation:
     resetRecommendationText: 'Reset to default {{recommendationType}}'
     costOptimizedCaps: 'COST OPTIMIZED'
     performanceOptimizedCaps: 'PERFORMANCE OPTIMIZED'
+    tuneRecommendations: Tune Recommendations
+    setQoSAndBuffer: 'Set QoS and Buffer for recommended requests/limits'
+    qualityOfService: 'Quality Of Service(QoS)'
+    memoryValueBuffer: '% Buffer to be considered for CPU/Memory values'
+    burstable: 'BURSTABLE'
+    guaranteed: 'GUARANTEED'
+    monthlySpendByDate: 'by {{date}}'
   recommendationChart:
     cpuPlaceholder: 'CPU Usage(millicores)'
     noOfSamples: 'Number of samples'
     memoryLabel: 'MEMORY'
+    limitLabel: 'LIMIT'
     memoryLabelRegular: 'Memory'
+    limitLabelRegular: 'Limit'
+    and: '{{ $.common.and }}'
+    request: '{{ $.common.request }}'
     memoryUsagePlaceholder: 'Memory usage(GBs)'
+    willBeMet: 'will be met'
+    cpuHistogramHeader: ' {{ $.ce.recommendation.recommendationChart.noOfSamples }} {{ $.common.whose }} {{ $.delegate.delegateCPU }}'
+    memoryHistogramHeader: ' {{ $.ce.recommendation.recommendationChart.noOfSamples }} {{ $.common.whose }} {{ $.ce.recommendation.recommendationChart.memoryLabelRegular }}'
 savedYamlSuccess: YAML validated successfully
 uploadCertiHeader: Upload a new certificate for the Application Load Balancer
 perspectives:
@@ -525,7 +547,7 @@ perspectives:
       text: 'Aggregation:'
       timeWeighted: 'Time-weighted'
       absolute: 'Absolute'
-    workloadDetailsText: 'WORKLOAD DETAILS'
+    workloadDetailsText: 'Workload Details'
     costDetailsText: 'COST DETAILS'
     fieldNames:
       workload: '{{ $.pipelineSteps.workload }}'
@@ -686,6 +708,7 @@ overview:
   addClusterBtn: '+ Add a cluster'
   totalCost: Total Cost
   workload: Workload Resizing
+  nodepool: Nodepool Rightsizing
   savings: savings per month
   cardtitles:
     multipleCloud: Cost by cloud providers

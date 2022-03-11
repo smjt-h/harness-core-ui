@@ -606,19 +606,31 @@ export interface CustomHealthKeyAndValue {
   valueEncrypted?: boolean
 }
 
+export interface CustomHealthLogDefinition {
+  logMessageJsonPath?: string
+  queryName?: string
+  requestDefinition?: CustomHealthRequestDefinition
+  serviceInstanceJsonPath?: string
+  timestampJsonPath?: string
+}
+
 export interface CustomHealthMetricDefinition {
   analysis?: AnalysisDTO
-  endTime?: TimestampInfo
   groupName?: string
   identifier: string
-  method?: 'GET' | 'POST'
   metricName: string
   metricResponseMapping?: MetricResponseMapping
   queryType?: 'SERVICE_BASED' | 'HOST_BASED'
-  requestBody?: string
+  requestDefinition?: CustomHealthRequestDefinition
   riskProfile?: RiskProfile
   sli?: Slidto
-  startTime?: TimestampInfo
+}
+
+export interface CustomHealthRequestDefinition {
+  endTimeInfo?: TimestampInfo
+  method?: 'GET' | 'POST'
+  requestBody?: string
+  startTimeInfo?: TimestampInfo
   urlPath?: string
 }
 
@@ -630,7 +642,11 @@ export interface CustomHealthSampleDataRequest {
   urlPath: string
 }
 
-export type CustomHealthSourceSpec = HealthSourceSpec & {
+export type CustomHealthSourceLogSpec = HealthSourceSpec & {
+  logDefinitions?: CustomHealthLogDefinition[]
+}
+
+export type CustomHealthSourceMetricSpec = HealthSourceSpec & {
   metricDefinitions?: CustomHealthMetricDefinition[]
 }
 
@@ -801,7 +817,8 @@ export interface DatasourceTypeDTO {
     | 'DATADOG_LOG'
     | 'ERROR_TRACKING'
     | 'DYNATRACE'
-    | 'CUSTOM_HEALTH'
+    | 'CUSTOM_HEALTH_METRIC'
+    | 'CUSTOM_HEALTH_LOG'
   verificationType?: 'TIME_SERIES' | 'LOG'
 }
 
@@ -1275,6 +1292,8 @@ export interface Error {
     | 'INVALID_JSON_PAYLOAD'
     | 'POLICY_EVALUATION_FAILURE'
     | 'POLICY_SET_ERROR'
+    | 'INVALID_ARTIFACTORY_REGISTRY_REQUEST'
+    | 'INVALID_NEXUS_REGISTRY_REQUEST'
   correlationId?: string
   detailedMessage?: string
   message?: string
@@ -1615,6 +1634,8 @@ export interface Failure {
     | 'INVALID_JSON_PAYLOAD'
     | 'POLICY_EVALUATION_FAILURE'
     | 'POLICY_SET_ERROR'
+    | 'INVALID_ARTIFACTORY_REGISTRY_REQUEST'
+    | 'INVALID_NEXUS_REGISTRY_REQUEST'
   correlationId?: string
   errors?: ValidationError[]
   message?: string
@@ -1885,7 +1906,8 @@ export interface HealthSource {
     | 'DatadogLog'
     | 'Dynatrace'
     | 'ErrorTracking'
-    | 'CustomHealth'
+    | 'CustomHealthMetric'
+    | 'CustomHealthLog'
 }
 
 export interface HealthSourceDTO {
@@ -1903,7 +1925,8 @@ export interface HealthSourceDTO {
     | 'DATADOG_LOG'
     | 'ERROR_TRACKING'
     | 'DYNATRACE'
-    | 'CUSTOM_HEALTH'
+    | 'CUSTOM_HEALTH_METRIC'
+    | 'CUSTOM_HEALTH_LOG'
   verificationType?: 'TIME_SERIES' | 'LOG'
 }
 
@@ -2306,6 +2329,7 @@ export interface MetricDefinition {
 
 export interface MetricDefinitionDTO {
   included?: boolean
+  metricIdentifier?: string
   name?: string
   path?: string
   responseJsonPath?: string
@@ -2344,7 +2368,8 @@ export interface MetricPack {
     | 'DATADOG_LOG'
     | 'ERROR_TRACKING'
     | 'DYNATRACE'
-    | 'CUSTOM_HEALTH'
+    | 'CUSTOM_HEALTH_METRIC'
+    | 'CUSTOM_HEALTH_LOG'
   identifier?: string
   lastUpdatedAt?: number
   metrics?: MetricDefinition[]
@@ -2368,7 +2393,8 @@ export interface MetricPackDTO {
     | 'DATADOG_LOG'
     | 'ERROR_TRACKING'
     | 'DYNATRACE'
-    | 'CUSTOM_HEALTH'
+    | 'CUSTOM_HEALTH_METRIC'
+    | 'CUSTOM_HEALTH_LOG'
   identifier?: string
   metrics?: MetricDefinitionDTO[]
   orgIdentifier?: string
@@ -3321,6 +3347,8 @@ export interface ResponseMessage {
     | 'INVALID_JSON_PAYLOAD'
     | 'POLICY_EVALUATION_FAILURE'
     | 'POLICY_SET_ERROR'
+    | 'INVALID_ARTIFACTORY_REGISTRY_REQUEST'
+    | 'INVALID_NEXUS_REGISTRY_REQUEST'
   exception?: Throwable
   failureTypes?: (
     | 'EXPIRED'
@@ -3530,6 +3558,14 @@ export interface RestResponseChangeTimeline {
     [key: string]: { [key: string]: any }
   }
   resource?: ChangeTimeline
+  responseMessages?: ResponseMessage[]
+}
+
+export interface RestResponseDataCollectionTask {
+  metaData?: {
+    [key: string]: { [key: string]: any }
+  }
+  resource?: DataCollectionTask
   responseMessages?: ResponseMessage[]
 }
 
@@ -4494,7 +4530,8 @@ export interface TimeSeriesMetricDataDTO {
     | 'DATADOG_LOG'
     | 'ERROR_TRACKING'
     | 'DYNATRACE'
-    | 'CUSTOM_HEALTH'
+    | 'CUSTOM_HEALTH_METRIC'
+    | 'CUSTOM_HEALTH_LOG'
   environmentIdentifier?: string
   groupName?: string
   metricDataList?: MetricData[]
@@ -4587,7 +4624,8 @@ export interface TimeSeriesThreshold {
     | 'DATADOG_LOG'
     | 'ERROR_TRACKING'
     | 'DYNATRACE'
-    | 'CUSTOM_HEALTH'
+    | 'CUSTOM_HEALTH_METRIC'
+    | 'CUSTOM_HEALTH_LOG'
   lastUpdatedAt?: number
   metricGroupName?: string
   metricIdentifier: string
@@ -4622,7 +4660,8 @@ export interface TimeSeriesThresholdDTO {
     | 'DATADOG_LOG'
     | 'ERROR_TRACKING'
     | 'DYNATRACE'
-    | 'CUSTOM_HEALTH'
+    | 'CUSTOM_HEALTH_METRIC'
+    | 'CUSTOM_HEALTH_LOG'
   metricGroupName?: string
   metricName?: string
   metricPackIdentifier?: string
@@ -4672,7 +4711,8 @@ export interface TransactionMetricInfo {
     | 'DATADOG_LOG'
     | 'ERROR_TRACKING'
     | 'DYNATRACE'
-    | 'CUSTOM_HEALTH'
+    | 'CUSTOM_HEALTH_METRIC'
+    | 'CUSTOM_HEALTH_LOG'
   nodeRiskCountDTO?: NodeRiskCountDTO
   nodes?: HostData[]
   transactionMetric?: TransactionMetric
@@ -4949,6 +4989,7 @@ export const changeEventListPromise = (
 export interface ChangeEventTimelineQueryParams {
   serviceIdentifiers?: string[]
   envIdentifiers?: string[]
+  monitoredServiceIdentifiers?: string[]
   changeCategories?: ('Deployment' | 'Infrastructure' | 'Alert')[]
   changeSourceTypes?: ('HarnessCDNextGen' | 'PagerDuty' | 'K8sCluster' | 'HarnessCD')[]
   searchText?: string
@@ -7617,7 +7658,8 @@ export interface GetMetricPacksQueryParams {
     | 'DATADOG_LOG'
     | 'ERROR_TRACKING'
     | 'DYNATRACE'
-    | 'CUSTOM_HEALTH'
+    | 'CUSTOM_HEALTH_METRIC'
+    | 'CUSTOM_HEALTH_LOG'
 }
 
 export type GetMetricPacksProps = Omit<
@@ -7680,7 +7722,8 @@ export interface SaveMetricPacksQueryParams {
     | 'DATADOG_LOG'
     | 'ERROR_TRACKING'
     | 'DYNATRACE'
-    | 'CUSTOM_HEALTH'
+    | 'CUSTOM_HEALTH_METRIC'
+    | 'CUSTOM_HEALTH_LOG'
 }
 
 export type SaveMetricPacksProps = Omit<
@@ -10899,7 +10942,8 @@ export interface GetAnomalousMetricDashboardDataQueryParams {
     | 'DATADOG_LOG'
     | 'ERROR_TRACKING'
     | 'DYNATRACE'
-    | 'CUSTOM_HEALTH'
+    | 'CUSTOM_HEALTH_METRIC'
+    | 'CUSTOM_HEALTH_LOG'
 }
 
 export type GetAnomalousMetricDashboardDataProps = Omit<
@@ -10976,7 +11020,8 @@ export interface GetMetricDataQueryParams {
     | 'DATADOG_LOG'
     | 'ERROR_TRACKING'
     | 'DYNATRACE'
-    | 'CUSTOM_HEALTH'
+    | 'CUSTOM_HEALTH_METRIC'
+    | 'CUSTOM_HEALTH_LOG'
 }
 
 export type GetMetricDataProps = Omit<

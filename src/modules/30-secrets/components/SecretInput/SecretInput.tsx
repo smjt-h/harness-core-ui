@@ -105,7 +105,11 @@ const SecretInput: React.FC<FormikSecretInput> = props => {
       !isPlainObject(get(formik?.errors, name))) as boolean
 
   const getPlaceHolder = (): string => {
-    return placeholder || getString('createOrSelectSecret')
+    if (placeholder) {
+      return placeholder
+    }
+
+    return allowSelection ? getString('createOrSelectSecret') : getString('secrets.createSecret')
   }
   const tooltipContext = React.useContext(FormikTooltipContext)
   const dataTooltipId =

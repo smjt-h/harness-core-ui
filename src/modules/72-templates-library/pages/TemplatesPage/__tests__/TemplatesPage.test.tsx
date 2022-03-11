@@ -39,6 +39,19 @@ jest.mock('react-monaco-editor', () => ({
 
 jest.mock('@common/components/MonacoEditor/MonacoEditor', () => MonacoEditor)
 
+jest.mock('services/template-ng', () => ({
+  ...(jest.requireActual('services/template-ng') as any),
+  useGetTemplateInputSetYaml: jest.fn().mockImplementation(() => ({
+    data: {
+      status: 'SUCCESS',
+      data: 'type: "HarnessApproval"\ntimeout: "<+input>"' + '\nspec:\n  approvalMessage: "<+input>"\n'
+    },
+    refetch: jest.fn(),
+    error: null,
+    loading: false
+  }))
+}))
+
 describe('<TemplatesPage /> tests', () => {
   test('snapshot test in grid view', async () => {
     const { container } = render(

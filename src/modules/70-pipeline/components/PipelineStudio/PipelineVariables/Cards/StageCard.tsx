@@ -48,9 +48,7 @@ export default function StageCard(props: StageCardProps): React.ReactElement {
   const stageSpec = stage.spec as DeploymentStageConfig
   const originalSpec = originalStage.spec as DeploymentStageConfig
 
-  const content = originalStage.template ? (
-    <></>
-  ) : (
+  const content = (
     <div className={css.variableCard}>
       <VariablesListTable
         data={stage}

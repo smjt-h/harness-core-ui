@@ -6,7 +6,7 @@
  */
 
 import React from 'react'
-import { render } from '@testing-library/react'
+import { render, queryByText, fireEvent, act } from '@testing-library/react'
 import { Provider } from 'urql'
 import { fromValue } from 'wonka'
 import { TestWrapper } from '@common/utils/testUtils'
@@ -15,14 +15,18 @@ import RecommendationDetailsPage from '../RecommendationDetailsPage'
 import ResponseData from './DetailsData.json'
 
 jest.mock('@ce/components/CEChart/CEChart', () => 'mock')
+jest.mock('@ce/components/RecommendationDetailsSummaryCards/RecommendationDetailsSummaryCards', () => ({
+  RecommendationDetailsSpendCard: () => 'recommendation-details-spend-card-mock',
+  RecommendationDetailsSavingsCard: () => 'recommendation-details-savings-card-mock'
+}))
 
 const params = {
   accountId: 'TEST_ACC',
   recommendation: 'RECOMMENDATION_ID'
 }
 
-describe('test cases for Recommendation List Page', () => {
-  test('should be able to render the list page', async () => {
+describe('test cases for Recommendation details Page', () => {
+  test('should be able to render the details page', async () => {
     const responseState = {
       executeQuery: () => fromValue(ResponseData)
     }
@@ -35,5 +39,28 @@ describe('test cases for Recommendation List Page', () => {
       </TestWrapper>
     )
     expect(container).toMatchSnapshot()
+  })
+
+  test('should be able to render the details page and should be able to switch between guaranteed and burstable', async () => {
+    const responseState = {
+      executeQuery: () => fromValue(ResponseData)
+    }
+    const { container } = render(
+      <TestWrapper pathParams={params}>
+        <Provider value={responseState as any}>
+          <RecommendationDetailsPage />
+        </Provider>
+      </TestWrapper>
+    )
+    expect(container).toMatchSnapshot()
+
+    expect(container.querySelector('[data-testid="limitsId-memVal"]')?.textContent).toEqual('4.4Gi')
+    expect(container.querySelector('[data-testid="requestId-memVal"]')?.textContent).toEqual('3.5Gi')
+
+    act(() => {
+      fireEvent.click(queryByText(container, 'ce.recommendation.detailsPage.guaranteed')!)
+    })
+
+    expect(container.querySelector('[data-testid="limitsId-memVal"]')?.textContent).toEqual('3.5Gi')
   })
 })

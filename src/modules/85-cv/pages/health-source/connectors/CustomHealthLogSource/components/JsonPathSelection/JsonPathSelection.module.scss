@@ -1,0 +1,9 @@
+.main {
+  .errorBanner {
+    padding: var(--spacing-small) !important;
+    margin-bottom: var(--spacing-small) !important;
+    background-color: var(--red-100) !important;
+    border-radius: 5px;
+    border: 1px solid var(--red-600);
+  }
+}

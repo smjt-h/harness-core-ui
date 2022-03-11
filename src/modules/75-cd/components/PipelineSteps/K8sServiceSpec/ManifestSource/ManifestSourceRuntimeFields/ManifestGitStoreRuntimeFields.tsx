@@ -67,7 +67,7 @@ const ManifestGitStoreRuntimeFields = ({
               allowableTypes,
               expressions
             }}
-            width={370}
+            width={391}
             accountIdentifier={accountId}
             projectIdentifier={projectIdentifier}
             orgIdentifier={orgIdentifier}

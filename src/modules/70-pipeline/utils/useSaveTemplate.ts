@@ -150,15 +150,17 @@ export function useSaveTemplate(TemplateContextMetadata: TemplateContextMetadata
         throw response
       }
     } catch (error) {
+      clear()
       if (!isGitSyncEnabled) {
-        clear()
         showError(
           get(error, 'data.error', get(error, 'data.message', error?.message)),
           undefined,
           'template.update.template.error'
         )
+        return { status: 'FAILURE' }
+      } else {
+        throw error
       }
-      return { status: 'FAILURE' }
     }
   }
 
@@ -204,15 +206,17 @@ export function useSaveTemplate(TemplateContextMetadata: TemplateContextMetadata
           throw response
         }
       } catch (error) {
+        clear()
         if (!isGitSyncEnabled) {
-          clear()
           showError(
             get(error, 'data.error', get(error, 'data.message', error?.message)),
             undefined,
             'template.save.template.error'
           )
+          return { status: 'FAILURE' }
+        } else {
+          throw error
         }
-        return { status: 'FAILURE' }
       }
     }
   }

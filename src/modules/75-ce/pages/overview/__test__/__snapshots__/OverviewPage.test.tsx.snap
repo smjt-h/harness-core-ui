@@ -3,7 +3,7 @@
 exports[`test cases for Overview Page should be able to render the overview dashboard 1`] = `
 <div>
   <div
-    class="StyledProps--font StyledProps--main body hasNoBanner"
+    class="StyledProps--font StyledProps--main"
   >
     <div
       class="Layout--horizontal StyledProps--main PageHeader--container PageHeader--standard StyledProps--flex StyledProps--padding-left-xlarge StyledProps--padding-right-xlarge StyledProps--background-white"
@@ -124,7 +124,7 @@ exports[`test cases for Overview Page should be able to render the overview dash
                         </div>
                       </div>
                       <span
-                        class="StyledProps--font StyledProps--main StyledProps--font-small StyledProps--color StyledProps--color-grey700 StyledProps--inline"
+                        class="StyledProps--font StyledProps--main StyledProps--font-variation-small-semi StyledProps--color StyledProps--color-grey700 StyledProps--inline"
                         style="display: inline-flex; align-items: center;"
                       >
                         <span
@@ -183,9 +183,29 @@ exports[`test cases for Overview Page should be able to render the overview dash
                         </div>
                       </div>
                       <span
-                        class="StyledProps--font StyledProps--main StyledProps--font-small StyledProps--color StyledProps--color-grey700 StyledProps--inline"
+                        class="StyledProps--font StyledProps--main StyledProps--font-variation-small-semi StyledProps--color StyledProps--color-grey400 StyledProps--inline"
+                        style="display: inline-flex; align-items: center;"
                       >
-                        —
+                        <span
+                          class="bp3-icon bp3-icon-caret-up StyledProps--main Text--icon StyledProps--padding-right-xsmall StyledProps--color StyledProps--color-green500"
+                          icon="caret-up"
+                        >
+                          <svg
+                            data-icon="caret-up"
+                            height="16"
+                            viewBox="0 0 16 16"
+                            width="16"
+                          >
+                            <desc>
+                              caret-up
+                            </desc>
+                            <path
+                              d="M11.87 9.17s.01 0 0 0l-3.5-4C8.28 5.07 8.15 5 8 5s-.28.07-.37.17l-3.5 4a.495.495 0 00.37.83h7a.495.495 0 00.37-.83z"
+                              fill-rule="evenodd"
+                            />
+                          </svg>
+                        </span>
+                        NA%
                       </span>
                     </div>
                     <p
@@ -250,7 +270,7 @@ exports[`test cases for Overview Page should be able to render the overview dash
                           $2,452.03
                         </p>
                         <span
-                          class="StyledProps--font StyledProps--main StyledProps--font-small StyledProps--color StyledProps--color-grey700 StyledProps--inline"
+                          class="StyledProps--font StyledProps--main StyledProps--font-variation-small-semi StyledProps--color StyledProps--color-grey700 StyledProps--inline"
                           style="display: inline-flex; align-items: center;"
                         >
                           <span
@@ -398,7 +418,7 @@ exports[`test cases for Overview Page should be able to render the overview dash
                           </p>
                         </div>
                         <div
-                          class="Layout--horizontal Layout--layout-spacing-small StyledProps--main"
+                          class="Layout--horizontal Layout--layout-spacing-medium StyledProps--main"
                           style="align-items: center;"
                         >
                           <p
@@ -408,7 +428,7 @@ exports[`test cases for Overview Page should be able to render the overview dash
                             65
                           </p>
                           <span
-                            class="StyledProps--font StyledProps--main StyledProps--font-small StyledProps--color StyledProps--color-grey700 StyledProps--inline"
+                            class="StyledProps--font StyledProps--main StyledProps--font-variation-small-semi StyledProps--color StyledProps--color-grey700 StyledProps--inline"
                             style="display: inline-flex; align-items: center;"
                           >
                             <span
@@ -706,7 +726,6 @@ exports[`test cases for Overview Page should be able to render the overview dash
 exports[`test cases for Overview Page should render NoData page when cluster and cloud data are not present 1`] = `
 <div>
   <div
-    class="body hasNoBanner"
     style="background-image: url(test-file-stub); background-size: cover; height: 100%; width: 100%;"
   >
     <div

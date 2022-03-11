@@ -55,3 +55,8 @@ export const INITFORMDATA: InitCustomHealthSourceInterface = {
     timestampFormat: 'SECONDS'
   }
 }
+
+export const CustomHealthProduct = {
+  METRICS: 'metrics',
+  LOGS: 'logs'
+}

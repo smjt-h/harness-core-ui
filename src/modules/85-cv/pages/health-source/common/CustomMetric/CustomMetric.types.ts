@@ -15,6 +15,10 @@ import type {
   MapCustomHealthToService
 } from '../../connectors/CustomHealthSource/CustomHealthSource.types'
 import type {
+  DynatraceFormDataInterface,
+  InitDynatraceCustomMetricInterface
+} from '../../connectors/Dynatrace/DynatraceHealthSource.types'
+import type {
   InitNewRelicCustomFormInterface,
   MapNewRelicMetric
 } from '../../connectors/NewRelic/NewRelicHealthSource.types'
@@ -25,11 +29,13 @@ export type CustomMappedMetric =
   | MapNewRelicMetric
   | MapCustomHealthToService
   | MapPrometheusQueryToService
+  | DynatraceFormDataInterface
 
 export type InitCustomFormData =
   | InitAppDCustomFormInterface
   | InitNewRelicCustomFormInterface
   | InitCustomHealthSourceInterface
+  | InitDynatraceCustomMetricInterface
 export interface GroupedCreatedMetrics {
   [Key: string]: GroupedMetric[]
 }
@@ -54,8 +60,9 @@ export interface CustomMetricInterface {
   isValidInput: boolean
   formikValues: CustomMappedMetric
   mappedMetrics: Map<string, CustomMappedMetric>
-  initCustomForm: InitAppDCustomFormInterface | InitNewRelicCustomFormInterface
+  initCustomForm: InitCustomFormData
   groupedCreatedMetrics?: GroupedCreatedMetrics
+  shouldBeAbleToDeleteLastMetric?: boolean
   setMappedMetrics: React.Dispatch<React.SetStateAction<CustomSelectedAndMappedMetrics>>
   setCreatedMetrics: React.Dispatch<React.SetStateAction<CreatedMetricsWithSelectedIndex>>
   setGroupedCreatedMetrics: React.Dispatch<React.SetStateAction<GroupedCreatedMetrics>>
@@ -86,5 +93,5 @@ export interface SelectMetricInerface {
   setCreatedMetrics: (value: React.SetStateAction<CreatedMetricsWithSelectedIndex>) => void
   setMappedMetrics: React.Dispatch<React.SetStateAction<CustomSelectedAndMappedMetrics>>
   formikValues: any
-  initCustomForm: InitAppDCustomFormInterface | InitNewRelicCustomFormInterface
+  initCustomForm: InitCustomFormData
 }

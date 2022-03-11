@@ -29,6 +29,7 @@ export interface MultiItemsSideNavProps {
   tooptipMessage: string
   addFieldLabel: string
   groupedCreatedMetrics?: GroupedCreatedMetrics
+  shouldBeAbleToDeleteLastMetric?: boolean
 }
 
 export function MultiItemsSideNav(props: MultiItemsSideNavProps): JSX.Element {
@@ -42,7 +43,8 @@ export function MultiItemsSideNav(props: MultiItemsSideNavProps): JSX.Element {
     defaultMetricName,
     tooptipMessage,
     addFieldLabel,
-    groupedCreatedMetrics
+    groupedCreatedMetrics,
+    shouldBeAbleToDeleteLastMetric
   } = props
   const [filter, setFilter] = useState<string | undefined>()
   const [createdMetrics, setCreatedMetrics] = useState<string[]>(
@@ -71,6 +73,8 @@ export function MultiItemsSideNav(props: MultiItemsSideNavProps): JSX.Element {
     () => getCreatedMetricLength(createdMetrics, groupedCreatedMetrics),
     [groupedCreatedMetrics, createdMetrics]
   )
+
+  const hasOnRemove = shouldBeAbleToDeleteLastMetric ? shouldBeAbleToDeleteLastMetric : createdMetricsLength > 1
 
   return (
     <Container className={css.main}>
@@ -103,7 +107,7 @@ export function MultiItemsSideNav(props: MultiItemsSideNavProps): JSX.Element {
         selectedApps={metricsToRender}
         groupedSelectedApps={groupedCreatedMetrics}
         onRemoveItem={
-          createdMetricsLength > 1
+          hasOnRemove
             ? (removedItem, index) => {
                 setCreatedMetrics(oldMetrics => {
                   const filteredOldMetrics = oldMetrics.filter(item => item !== removedItem)

@@ -209,7 +209,7 @@ const StepCommonFields = ({
               multiTextInputProps={{
                 multiTextInputProps: {
                   expressions,
-                  allowableTypes: [MultiTypeInputType.FIXED, MultiTypeInputType.EXPRESSION]
+                  allowableTypes: AllMultiTypeInputTypesForStep
                 },
                 disabled
               }}

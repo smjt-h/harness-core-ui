@@ -338,7 +338,7 @@ function ConfigureOptionsDialog(props: ConfigureOptionsDialogProps): JSX.Element
           <>
             <div>
               <FormGroup className={css.label} label={getString('variableLabel')} inline>
-                <Text>{variableName}</Text>
+                <Text lineClamp={1}>{variableName}</Text>
               </FormGroup>
               <FormGroup className={css.label} label={getString('typeLabel')} inline>
                 {typeof type === 'string' ? <Text>{type}</Text> : type}

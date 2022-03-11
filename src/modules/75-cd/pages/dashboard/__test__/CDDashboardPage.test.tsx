@@ -294,9 +294,7 @@ const workloadsMock = {
 jest.mock('services/cd-ng', () => ({
   useGetDeployments: () => ({
     loading: false,
-    data: {
-      data: deploymentsMock
-    }
+    data: deploymentsMock
   }),
   useGetDeploymentHealth: () => ({
     loading: false,

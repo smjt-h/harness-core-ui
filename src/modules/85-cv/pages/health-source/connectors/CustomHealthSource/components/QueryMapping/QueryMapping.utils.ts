@@ -9,8 +9,8 @@ import type { MutateMethod } from 'restful-react'
 import { getScopeFromValue, getIdentifierFromValue } from '@common/components/EntityReference/EntityReference'
 import type { UseGetConnectorProps } from 'services/cd-ng'
 import type {
-  CustomHealthMetricDefinition,
   CustomHealthSampleDataRequest,
+  CustomHealthRequestDefinition,
   FetchSampleDataQueryParams,
   ResponseObject,
   TimestampInfo
@@ -21,7 +21,7 @@ export const onFetchRecords = async (
   urlPath?: string,
   endTime?: TimestampInfo,
   startTime?: TimestampInfo,
-  requestMethod?: CustomHealthMetricDefinition['method'],
+  requestMethod?: CustomHealthRequestDefinition['method'],
   query?: string,
   getSampleData?: MutateMethod<ResponseObject, CustomHealthSampleDataRequest, FetchSampleDataQueryParams, void>,
   onFetchRecordsSuccess?: (data: { [key: string]: { [key: string]: any } }) => void

@@ -71,7 +71,7 @@ const applyArtifactToPipeline = (newPipelineObject: any, formikProps: any) => {
   }
   return newPipelineObject
 }
-// Selected Artifact is applied to inputYaml on Pipeline Input Panel in ManifestInputForm.tsx
+// Selected Artifact is applied to inputYaml on Pipeline Input Panel in KubernetesManifests.tsx
 // This is to apply the selected artifact values
 // to the applied input sets pipeline stage values
 const applySelectedArtifactToPipelineObject = (pipelineObj: any, formikProps: any) => {

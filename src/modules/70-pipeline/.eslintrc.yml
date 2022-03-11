@@ -6,6 +6,7 @@ rules:
     - patterns:
         - lodash.*
         - microfrontends/*
+        - '!microfrontends/ChildAppMounter'
         - modules/72-templates-library/*
         - modules/72-triggers/*
         - modules/75-cd/*

@@ -72,7 +72,7 @@ export const usernameTokenWithAPIAccess: ConnectorInfoDTO = {
       }
     },
     apiAccess: {
-      type: 'UsernamePassword',
+      type: 'UsernameToken',
       spec: { username: 'dev', usernameRef: undefined, tokenRef: 'account.githubPassword' }
     },
     type: 'Account',

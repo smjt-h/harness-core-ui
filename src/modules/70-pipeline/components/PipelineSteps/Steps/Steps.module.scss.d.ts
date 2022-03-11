@@ -29,6 +29,7 @@ declare const styles: {
   readonly kvpairLg: string
   readonly label: string
   readonly lg: string
+  readonly lgOverride: string
   readonly mainLabel: string
   readonly md: string
   readonly nameIdLabel: string

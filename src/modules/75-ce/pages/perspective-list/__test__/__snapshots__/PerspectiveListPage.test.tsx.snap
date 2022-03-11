@@ -576,6 +576,7 @@ exports[`test cases for Perspective details Page should be able to render and sw
                     >
                       <button
                         class="bp3-button bp3-minimal Button--button StyledProps--font StyledProps--main Button--with-current-color Button--iconOnly Button--without-shadow Button--withLeftIcon"
+                        data-testid="menu-id4"
                         type="button"
                       >
                         <span
@@ -729,6 +730,7 @@ exports[`test cases for Perspective details Page should be able to render and sw
                     >
                       <button
                         class="bp3-button bp3-minimal Button--button StyledProps--font StyledProps--main Button--with-current-color Button--iconOnly Button--without-shadow Button--withLeftIcon"
+                        data-testid="menu-id3"
                         type="button"
                       >
                         <span
@@ -830,6 +832,7 @@ exports[`test cases for Perspective details Page should be able to render and sw
                     >
                       <button
                         class="bp3-button bp3-minimal Button--button StyledProps--font StyledProps--main Button--with-current-color Button--iconOnly Button--without-shadow Button--withLeftIcon"
+                        data-testid="menu-Yv-id2-rzZvBA"
                         type="button"
                       >
                         <span
@@ -1006,6 +1009,7 @@ exports[`test cases for Perspective details Page should be able to render and sw
                     >
                       <button
                         class="bp3-button bp3-minimal Button--button StyledProps--font StyledProps--main Button--with-current-color Button--iconOnly Button--without-shadow Button--withLeftIcon"
+                        data-testid="menu-id1"
                         type="button"
                       >
                         <span
@@ -1273,6 +1277,7 @@ exports[`test cases for Perspective details Page should be able to render and sw
                   >
                     <button
                       class="bp3-button bp3-minimal Button--button StyledProps--font StyledProps--main Button--with-current-color Button--iconOnly Button--without-shadow Button--withLeftIcon"
+                      data-testid="menu-id1"
                       type="button"
                     >
                       <span
@@ -1374,6 +1379,7 @@ exports[`test cases for Perspective details Page should be able to render and sw
                   >
                     <button
                       class="bp3-button bp3-minimal Button--button StyledProps--font StyledProps--main Button--with-current-color Button--iconOnly Button--without-shadow Button--withLeftIcon"
+                      data-testid="menu-Yv-id2-rzZvBA"
                       type="button"
                     >
                       <span
@@ -1527,6 +1533,7 @@ exports[`test cases for Perspective details Page should be able to render and sw
                   >
                     <button
                       class="bp3-button bp3-minimal Button--button StyledProps--font StyledProps--main Button--with-current-color Button--iconOnly Button--without-shadow Button--withLeftIcon"
+                      data-testid="menu-id3"
                       type="button"
                     >
                       <span
@@ -1628,6 +1635,7 @@ exports[`test cases for Perspective details Page should be able to render and sw
                   >
                     <button
                       class="bp3-button bp3-minimal Button--button StyledProps--font StyledProps--main Button--with-current-color Button--iconOnly Button--without-shadow Button--withLeftIcon"
+                      data-testid="menu-id4"
                       type="button"
                     >
                       <span

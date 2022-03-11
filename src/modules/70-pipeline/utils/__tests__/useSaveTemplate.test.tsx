@@ -6,14 +6,17 @@
  */
 
 import React from 'react'
-import { act, fireEvent, render } from '@testing-library/react'
+import { act, fireEvent, render, waitFor, getByText as getElementByText } from '@testing-library/react'
+import userEvent from '@testing-library/user-event'
 import { noop } from 'lodash-es'
 import { findDialogContainer, TestWrapper } from '@common/utils/testUtils'
 import { TemplateContextMetadata, useSaveTemplate } from '@pipeline/utils/useSaveTemplate'
 import type { NGTemplateInfoConfig } from 'services/template-ng'
-import { createTemplatePromise, updateExistingTemplateLabelPromise } from 'services/template-ng'
+import * as templateNg from 'services/template-ng'
 import { branchStatusMock, gitConfigs, sourceCodeManagers } from '@connectors/mocks/mock'
 import gitSyncListResponse from '@common/utils/__tests__/mocks/gitSyncRepoListMock.json'
+import { GitSyncTestWrapper } from '@common/utils/gitSyncTestUtils'
+import { createTemplatePromiseArg, updateExistingTemplateLabelPromiseArg } from './useSaveTemplateHelper'
 
 export const stepTemplateMock = {
   name: 'Test Http Template',
@@ -77,7 +80,7 @@ describe('useSaveTemplate Test', () => {
     await act(async () => {
       fireEvent.click(saveBtn)
     })
-    expect(createTemplatePromise).toBeCalled()
+    expect(templateNg.createTemplatePromise).toBeCalled()
     expect(props.deleteTemplateCache).toBeCalled()
   })
   test('edit should work as expected', async () => {
@@ -95,7 +98,7 @@ describe('useSaveTemplate Test', () => {
     await act(async () => {
       fireEvent.click(saveBtn)
     })
-    expect(updateExistingTemplateLabelPromise).toBeCalled()
+    expect(templateNg.updateExistingTemplateLabelPromise).toBeCalled()
     expect(props.fetchTemplate).toBeCalled()
   })
 
@@ -152,5 +155,180 @@ describe('useSaveTemplate Test', () => {
     const filePath = commentsDialog!.querySelector('input[name="filePath"]')!
     expect(filePath).toBeDefined()
     expect(filePath?.getAttribute('value')).toBe('Test_Http_Template_v100-0_0.yaml')
+    props.template.versionLabel = 'v1'
+  })
+
+  describe('When GitSync is enabled', () => {
+    test('edit should work as expected', async () => {
+      const props: TemplateContextMetadata = {
+        template: stepTemplateMock as NGTemplateInfoConfig,
+        gitDetails: {
+          branch: 'feature',
+          filePath: 'test_pipeline.yaml',
+          objectId: '4471ec3aa40c26377353974c29a6670d998db06f',
+          repoIdentifier: 'gitSyncRepo',
+          rootFolder: '/rootFolderTest/.harness/'
+        },
+        fetchTemplate: jest.fn()
+      }
+      const { getByText } = render(
+        <GitSyncTestWrapper defaultAppStoreValues={{ isGitSyncEnabled: true }}>
+          <Wrapped {...props} />
+        </GitSyncTestWrapper>
+      )
+
+      const editBtn = getByText('Edit')
+      userEvent.click(editBtn)
+
+      let saveToGitSaveBtn: HTMLElement
+      await waitFor(() => {
+        const portalDiv = document.getElementsByClassName('bp3-portal')[0] as HTMLElement
+        const savePipelinesToGitHeader = getByText('common.git.saveResourceLabel')
+        expect(savePipelinesToGitHeader).toBeInTheDocument()
+
+        const nameInput = document.querySelector('input[name="name"]')
+        expect(nameInput).toBeDisabled()
+        expect(nameInput?.getAttribute('value')).toBe('Test Http Template')
+
+        saveToGitSaveBtn = getElementByText(portalDiv, 'save').parentElement as HTMLElement
+        expect(saveToGitSaveBtn).toBeInTheDocument()
+      })
+      fireEvent.click(saveToGitSaveBtn!)
+      await waitFor(() => expect(templateNg.updateExistingTemplateLabelPromise).toHaveBeenCalled())
+      expect(templateNg.updateExistingTemplateLabelPromise).toHaveBeenCalledWith(updateExistingTemplateLabelPromiseArg)
+
+      expect(props.fetchTemplate).toBeCalled()
+    })
+
+    test('edit should work as expected', async () => {
+      jest
+        .spyOn(templateNg, 'updateExistingTemplateLabelPromise')
+        .mockImplementation(() => Promise.reject({ status: 'ERROR', message: 'There was error' }))
+
+      const props: TemplateContextMetadata = {
+        template: stepTemplateMock as NGTemplateInfoConfig,
+        gitDetails: {
+          branch: 'feature',
+          filePath: 'test_pipeline.yaml',
+          objectId: '4471ec3aa40c26377353974c29a6670d998db06f',
+          repoIdentifier: 'gitSyncRepo',
+          rootFolder: '/rootFolderTest/.harness/'
+        },
+        fetchTemplate: jest.fn()
+      }
+      const { getByText } = render(
+        <GitSyncTestWrapper defaultAppStoreValues={{ isGitSyncEnabled: true }}>
+          <Wrapped {...props} />
+        </GitSyncTestWrapper>
+      )
+
+      const editBtn = getByText('Edit')
+      userEvent.click(editBtn)
+
+      let saveToGitSaveBtn: HTMLElement
+      await waitFor(() => {
+        const portalDiv = document.getElementsByClassName('bp3-portal')[0] as HTMLElement
+        const savePipelinesToGitHeader = getByText('common.git.saveResourceLabel')
+        expect(savePipelinesToGitHeader).toBeInTheDocument()
+
+        const nameInput = document.querySelector('input[name="name"]')
+        expect(nameInput).toBeDisabled()
+        expect(nameInput?.getAttribute('value')).toBe('Test Http Template')
+
+        saveToGitSaveBtn = getElementByText(portalDiv, 'save').parentElement as HTMLElement
+        expect(saveToGitSaveBtn).toBeInTheDocument()
+      })
+      fireEvent.click(saveToGitSaveBtn!)
+      await waitFor(() => expect(templateNg.updateExistingTemplateLabelPromise).toHaveBeenCalled())
+      expect(templateNg.updateExistingTemplateLabelPromise).toHaveBeenCalledWith(updateExistingTemplateLabelPromiseArg)
+
+      expect(props.fetchTemplate).toBeCalledTimes(0)
+      await waitFor(() => expect(getByText('There was error')).toBeInTheDocument())
+    })
+
+    test('create should work as expected', async () => {
+      const props: TemplateContextMetadata = {
+        template: stepTemplateMock as NGTemplateInfoConfig,
+        deleteTemplateCache: jest.fn(),
+        gitDetails: {
+          branch: 'feature',
+          filePath: 'test_pipeline.yaml',
+          repoIdentifier: 'gitSyncRepo',
+          rootFolder: '/rootFolderTest/.harness/'
+        }
+      }
+      const { getByText } = render(
+        <GitSyncTestWrapper defaultAppStoreValues={{ isGitSyncEnabled: true }}>
+          <Wrapped {...props} />
+        </GitSyncTestWrapper>
+      )
+
+      const saveBtn = getByText('Save')
+      userEvent.click(saveBtn)
+
+      let saveToGitSaveBtn: HTMLElement
+      await waitFor(() => {
+        const portalDiv = document.getElementsByClassName('bp3-portal')[0] as HTMLElement
+        const savePipelinesToGitHeader = getByText('common.git.saveResourceLabel')
+        expect(savePipelinesToGitHeader).toBeInTheDocument()
+
+        const nameInput = document.querySelector('input[name="name"]')
+        expect(nameInput).toBeDisabled()
+        expect(nameInput?.getAttribute('value')).toBe('Test Http Template')
+
+        saveToGitSaveBtn = getElementByText(portalDiv, 'save').parentElement as HTMLElement
+        expect(saveToGitSaveBtn).toBeInTheDocument()
+      })
+      fireEvent.click(saveToGitSaveBtn!)
+      await waitFor(() => expect(templateNg.createTemplatePromise).toHaveBeenCalled())
+      expect(templateNg.createTemplatePromise).toHaveBeenCalledWith(createTemplatePromiseArg)
+
+      expect(props.deleteTemplateCache).toBeCalled()
+    })
+
+    test('error should be displayed in the progress modal when create API fails', async () => {
+      jest
+        .spyOn(templateNg, 'createTemplatePromise')
+        .mockImplementation(() => Promise.reject({ status: 'ERROR', message: 'There was error' }))
+
+      const props: TemplateContextMetadata = {
+        template: stepTemplateMock as NGTemplateInfoConfig,
+        deleteTemplateCache: jest.fn(),
+        gitDetails: {
+          branch: 'feature',
+          filePath: 'test_pipeline.yaml',
+          repoIdentifier: 'gitSyncRepo',
+          rootFolder: '/rootFolderTest/.harness/'
+        }
+      }
+      const { getByText } = render(
+        <GitSyncTestWrapper defaultAppStoreValues={{ isGitSyncEnabled: true }}>
+          <Wrapped {...props} />
+        </GitSyncTestWrapper>
+      )
+
+      const saveBtn = getByText('Save')
+      userEvent.click(saveBtn)
+
+      let saveToGitSaveBtn: HTMLElement
+      await waitFor(() => {
+        const portalDiv = document.getElementsByClassName('bp3-portal')[0] as HTMLElement
+        const savePipelinesToGitHeader = getByText('common.git.saveResourceLabel')
+        expect(savePipelinesToGitHeader).toBeInTheDocument()
+
+        const nameInput = document.querySelector('input[name="name"]')
+        expect(nameInput).toBeDisabled()
+        expect(nameInput?.getAttribute('value')).toBe('Test Http Template')
+
+        saveToGitSaveBtn = getElementByText(portalDiv, 'save').parentElement as HTMLElement
+        expect(saveToGitSaveBtn).toBeInTheDocument()
+      })
+      fireEvent.click(saveToGitSaveBtn!)
+      await waitFor(() => expect(templateNg.createTemplatePromise).toHaveBeenCalled())
+      expect(templateNg.createTemplatePromise).toHaveBeenCalledWith(createTemplatePromiseArg)
+
+      expect(props.deleteTemplateCache).toBeCalledTimes(0)
+      await waitFor(() => expect(getByText('There was error')).toBeInTheDocument())
+    })
   })
 })

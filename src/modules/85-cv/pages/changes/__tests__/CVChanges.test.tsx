@@ -278,6 +278,36 @@ describe('Unit tests for CVChanges', () => {
     expect(mockFetch).toHaveBeenCalledTimes(3)
   })
 
+  test('clear Filter', async () => {
+    const { container, getByTestId, getByText } = render(<WrapperComponent />)
+
+    const changeTypeDropdown = getByTestId('changeTypeFilter') as HTMLInputElement
+
+    await waitFor(() => {
+      fireEvent.click(changeTypeDropdown!)
+    })
+
+    const typeChangeFilter = await findByText(container, 'deploymentText')
+
+    expect(typeChangeFilter).toBeInTheDocument()
+    act(() => {
+      fireEvent.click(typeChangeFilter)
+    })
+
+    expect(findByText(container, 'cv.cvChanges.changeTypeFilterDefault')).toBeDefined()
+    const typeToSelectType = await findByText(container, 'cv.cvChanges.clearFilters')
+
+    expect(typeToSelectType).toBeInTheDocument()
+    act(() => {
+      fireEvent.click(typeToSelectType)
+    })
+
+    expect(getByText('services: all')).toBeDefined()
+    expect(getByText('environments: all')).toBeDefined()
+    expect(getByText('cv.cvChanges.sourceFilterDefault: all')).toBeDefined()
+    expect(getByText('cv.cvChanges.changeTypeFilterDefault: all')).toBeDefined()
+  })
+
   test('delete filter', async () => {
     const { container, getByTestId } = render(<WrapperComponent />)
 

@@ -3,59 +3,54 @@
 exports[`CFHomePage should move to trial in progress page when query param experience is TRIAL 1`] = `
 <div>
   <div
-    class="StyledProps--font StyledProps--main PageBody--pageBody body hasNoBanner"
-    data-name="page-body"
+    class="StyledProps--font StyledProps--main container"
+    style="background: transparent url(test-file-stub) no-repeat;"
   >
     <div
-      class="StyledProps--font StyledProps--main container"
-      style="background: transparent url(test-file-stub) no-repeat;"
+      class="Layout--vertical Layout--layout-spacing-medium StyledProps--main"
     >
       <div
-        class="Layout--vertical Layout--layout-spacing-medium StyledProps--main"
+        class="Layout--horizontal Layout--layout-spacing-small StyledProps--main"
       >
-        <div
-          class="Layout--horizontal Layout--layout-spacing-small StyledProps--main content"
+        <h1
+          class="StyledProps--font StyledProps--font-h1 StyledProps--main StyledProps--font-weight-bold StyledProps--font-size-large StyledProps--color StyledProps--color-black100"
         >
-          <h1
-            class="StyledProps--font StyledProps--font-h1 StyledProps--main StyledProps--font-weight-bold StyledProps--font-size-large StyledProps--color StyledProps--color-black100"
-          >
-            cf.continuous
-          </h1>
-          <p
-            class="StyledProps--font StyledProps--main StyledProps--padding-xsmall StyledProps--border StyledProps--color StyledProps--color-white StyledProps--background-orange500 StyledProps--font-align-center"
-          >
-            common.trialInProgress
-          </p>
-        </div>
-        <div
-          class="Layout--vertical Layout--layout-spacing-small StyledProps--main"
+          cf.continuous
+        </h1>
+        <p
+          class="StyledProps--font StyledProps--main StyledProps--padding-xsmall StyledProps--border StyledProps--color StyledProps--color-white StyledProps--background-orange500 StyledProps--font-align-center"
         >
+          common.trialInProgress
+        </p>
+      </div>
+      <div
+        class="Layout--vertical Layout--layout-spacing-small StyledProps--main"
+      >
+        <p
+          class="StyledProps--font StyledProps--main description StyledProps--padding-bottom-xxlarge"
+          style="width: 500px;"
+        >
+          common.trialInProgressDescription
+        </p>
+        <div
+          class="Layout--horizontal Layout--layout-spacing-small StyledProps--main"
+        >
+          <button
+            class="bp3-button Button--button StyledProps--font StyledProps--main StyledProps--intent-primary Button--with-current-color"
+            style="width: 200px; height: 45px;"
+            type="button"
+          >
+            <span
+              class="bp3-button-text"
+            >
+              createProject
+            </span>
+          </button>
           <p
-            class="StyledProps--font StyledProps--main description StyledProps--padding-bottom-xxlarge"
-            style="width: 500px;"
+            class="StyledProps--font StyledProps--main StyledProps--font-size-medium StyledProps--color StyledProps--color-black StyledProps--padding-small"
           >
-            common.trialInProgressDescription
+            orSelectExisting
           </p>
-          <div
-            class="Layout--horizontal Layout--layout-spacing-small StyledProps--main"
-          >
-            <button
-              class="bp3-button Button--button StyledProps--font StyledProps--main StyledProps--intent-primary Button--with-current-color"
-              style="width: 200px; height: 45px;"
-              type="button"
-            >
-              <span
-                class="bp3-button-text"
-              >
-                createProject
-              </span>
-            </button>
-            <p
-              class="StyledProps--font StyledProps--main StyledProps--font-size-medium StyledProps--color StyledProps--color-black StyledProps--padding-small"
-            >
-              orSelectExisting
-            </p>
-          </div>
         </div>
       </div>
     </div>
@@ -66,62 +61,57 @@ exports[`CFHomePage should move to trial in progress page when query param exper
 exports[`CFHomePage should render HomePageTemplate when return success with data 1`] = `
 <div>
   <div
-    class="StyledProps--font StyledProps--main PageBody--pageBody body hasNoBanner"
-    data-name="page-body"
+    class="StyledProps--font StyledProps--main container"
+    style="background: transparent url(test-file-stub) no-repeat;"
   >
     <div
-      class="StyledProps--font StyledProps--main container"
-      style="background: transparent url(test-file-stub) no-repeat;"
+      class="Layout--vertical Layout--layout-spacing-medium StyledProps--main"
     >
-      <div
-        class="Layout--vertical Layout--layout-spacing-medium StyledProps--main"
+      <h1
+        class="StyledProps--font StyledProps--font-h1 StyledProps--main StyledProps--font-weight-bold StyledProps--font-size-large StyledProps--color StyledProps--color-black100"
       >
-        <h1
-          class="StyledProps--font StyledProps--font-h1 StyledProps--main StyledProps--font-weight-bold StyledProps--font-size-large StyledProps--color StyledProps--color-black100"
+        cf.continuous
+      </h1>
+      <p
+        class="StyledProps--font StyledProps--main subTitle StyledProps--color"
+      >
+        cf.homepage.slogan
+      </p>
+      <a
+        class="bp3-button Button--button StyledProps--font StyledProps--main link StyledProps--color StyledProps--font StyledProps--font-size-normal Button--with-current-color Button--link"
+        href="https://ngdocs.harness.io/article/0a2u2ppp8s-getting-started-with-continuous-features"
+        rel="noreferrer noopener"
+        role="button"
+        tabindex="0"
+        target="_blank"
+      >
+        <span
+          class="bp3-button-text"
         >
-          cf.continuous
-        </h1>
-        <p
-          class="StyledProps--font StyledProps--main subTitle StyledProps--color"
-        >
-          cf.homepage.slogan
-        </p>
-        <a
-          class="bp3-button Button--button StyledProps--font StyledProps--main link StyledProps--color StyledProps--font StyledProps--font-size-normal Button--with-current-color Button--link"
-          href="https://ngdocs.harness.io/article/0a2u2ppp8s-getting-started-with-continuous-features"
-          rel="noreferrer noopener"
-          role="button"
-          tabindex="0"
-          target="_blank"
+          cf.homepage.learnMore
+        </span>
+      </a>
+      <div
+        class="Layout--horizontal Layout--layout-spacing-large StyledProps--main StyledProps--flex"
+      >
+        <button
+          class="bp3-button bp3-large Button--button StyledProps--font StyledProps--main Button--with-current-color Button--iconOnly Button--variation Button--variation-primary"
+          type="button"
         >
           <span
             class="bp3-button-text"
           >
-            cf.homepage.learnMore
+            createProject
           </span>
-        </a>
-        <div
-          class="Layout--horizontal Layout--layout-spacing-large StyledProps--main StyledProps--flex"
+        </button>
+        <p
+          class="StyledProps--font StyledProps--main StyledProps--font-size-medium StyledProps--color StyledProps--color-black"
         >
-          <button
-            class="bp3-button bp3-large Button--button StyledProps--font StyledProps--main Button--with-current-color Button--iconOnly Button--variation Button--variation-primary"
-            type="button"
-          >
-            <span
-              class="bp3-button-text"
-            >
-              createProject
-            </span>
-          </button>
-          <p
-            class="StyledProps--font StyledProps--main StyledProps--font-size-medium StyledProps--color StyledProps--color-black"
-          >
-            orSelectExisting
-          </p>
-          <span
-            style="flex-grow: 1;"
-          />
-        </div>
+          orSelectExisting
+        </p>
+        <span
+          style="flex-grow: 1;"
+        />
       </div>
     </div>
   </div>
@@ -131,62 +121,57 @@ exports[`CFHomePage should render HomePageTemplate when return success with data
 exports[`CFHomePage should render HomePageTemplate when return success with data 2`] = `
 <div>
   <div
-    class="StyledProps--font StyledProps--main PageBody--pageBody body hasNoBanner"
-    data-name="page-body"
+    class="StyledProps--font StyledProps--main container"
+    style="background: transparent url(test-file-stub) no-repeat;"
   >
     <div
-      class="StyledProps--font StyledProps--main container"
-      style="background: transparent url(test-file-stub) no-repeat;"
+      class="Layout--vertical Layout--layout-spacing-medium StyledProps--main"
     >
-      <div
-        class="Layout--vertical Layout--layout-spacing-medium StyledProps--main"
+      <h1
+        class="StyledProps--font StyledProps--font-h1 StyledProps--main StyledProps--font-weight-bold StyledProps--font-size-large StyledProps--color StyledProps--color-black100"
       >
-        <h1
-          class="StyledProps--font StyledProps--font-h1 StyledProps--main StyledProps--font-weight-bold StyledProps--font-size-large StyledProps--color StyledProps--color-black100"
+        cf.continuous
+      </h1>
+      <p
+        class="StyledProps--font StyledProps--main subTitle StyledProps--color"
+      >
+        cf.homepage.slogan
+      </p>
+      <a
+        class="bp3-button Button--button StyledProps--font StyledProps--main link StyledProps--color StyledProps--font StyledProps--font-size-normal Button--with-current-color Button--link"
+        href="https://ngdocs.harness.io/article/0a2u2ppp8s-getting-started-with-continuous-features"
+        rel="noreferrer noopener"
+        role="button"
+        tabindex="0"
+        target="_blank"
+      >
+        <span
+          class="bp3-button-text"
         >
-          cf.continuous
-        </h1>
-        <p
-          class="StyledProps--font StyledProps--main subTitle StyledProps--color"
-        >
-          cf.homepage.slogan
-        </p>
-        <a
-          class="bp3-button Button--button StyledProps--font StyledProps--main link StyledProps--color StyledProps--font StyledProps--font-size-normal Button--with-current-color Button--link"
-          href="https://ngdocs.harness.io/article/0a2u2ppp8s-getting-started-with-continuous-features"
-          rel="noreferrer noopener"
-          role="button"
-          tabindex="0"
-          target="_blank"
+          cf.homepage.learnMore
+        </span>
+      </a>
+      <div
+        class="Layout--horizontal Layout--layout-spacing-large StyledProps--main StyledProps--flex"
+      >
+        <button
+          class="bp3-button bp3-large Button--button StyledProps--font StyledProps--main Button--with-current-color Button--iconOnly Button--variation Button--variation-primary"
+          type="button"
         >
           <span
             class="bp3-button-text"
           >
-            cf.homepage.learnMore
+            createProject
           </span>
-        </a>
-        <div
-          class="Layout--horizontal Layout--layout-spacing-large StyledProps--main StyledProps--flex"
+        </button>
+        <p
+          class="StyledProps--font StyledProps--main StyledProps--font-size-medium StyledProps--color StyledProps--color-black"
         >
-          <button
-            class="bp3-button bp3-large Button--button StyledProps--font StyledProps--main Button--with-current-color Button--iconOnly Button--variation Button--variation-primary"
-            type="button"
-          >
-            <span
-              class="bp3-button-text"
-            >
-              createProject
-            </span>
-          </button>
-          <p
-            class="StyledProps--font StyledProps--main StyledProps--font-size-medium StyledProps--color StyledProps--color-black"
-          >
-            orSelectExisting
-          </p>
-          <span
-            style="flex-grow: 1;"
-          />
-        </div>
+          orSelectExisting
+        </p>
+        <span
+          style="flex-grow: 1;"
+        />
       </div>
     </div>
   </div>
@@ -196,62 +181,57 @@ exports[`CFHomePage should render HomePageTemplate when return success with data
 exports[`CFHomePage should render the home page template when the current user is not created from NG 1`] = `
 <div>
   <div
-    class="StyledProps--font StyledProps--main PageBody--pageBody body hasNoBanner"
-    data-name="page-body"
+    class="StyledProps--font StyledProps--main container"
+    style="background: transparent url(test-file-stub) no-repeat;"
   >
     <div
-      class="StyledProps--font StyledProps--main container"
-      style="background: transparent url(test-file-stub) no-repeat;"
+      class="Layout--vertical Layout--layout-spacing-medium StyledProps--main"
     >
-      <div
-        class="Layout--vertical Layout--layout-spacing-medium StyledProps--main"
+      <h1
+        class="StyledProps--font StyledProps--font-h1 StyledProps--main StyledProps--font-weight-bold StyledProps--font-size-large StyledProps--color StyledProps--color-black100"
       >
-        <h1
-          class="StyledProps--font StyledProps--font-h1 StyledProps--main StyledProps--font-weight-bold StyledProps--font-size-large StyledProps--color StyledProps--color-black100"
+        cf.continuous
+      </h1>
+      <p
+        class="StyledProps--font StyledProps--main subTitle StyledProps--color"
+      >
+        cf.homepage.slogan
+      </p>
+      <a
+        class="bp3-button Button--button StyledProps--font StyledProps--main link StyledProps--color StyledProps--font StyledProps--font-size-normal Button--with-current-color Button--link"
+        href="https://ngdocs.harness.io/article/0a2u2ppp8s-getting-started-with-continuous-features"
+        rel="noreferrer noopener"
+        role="button"
+        tabindex="0"
+        target="_blank"
+      >
+        <span
+          class="bp3-button-text"
         >
-          cf.continuous
-        </h1>
-        <p
-          class="StyledProps--font StyledProps--main subTitle StyledProps--color"
-        >
-          cf.homepage.slogan
-        </p>
-        <a
-          class="bp3-button Button--button StyledProps--font StyledProps--main link StyledProps--color StyledProps--font StyledProps--font-size-normal Button--with-current-color Button--link"
-          href="https://ngdocs.harness.io/article/0a2u2ppp8s-getting-started-with-continuous-features"
-          rel="noreferrer noopener"
-          role="button"
-          tabindex="0"
-          target="_blank"
+          cf.homepage.learnMore
+        </span>
+      </a>
+      <div
+        class="Layout--horizontal Layout--layout-spacing-large StyledProps--main StyledProps--flex"
+      >
+        <button
+          class="bp3-button bp3-large Button--button StyledProps--font StyledProps--main Button--with-current-color Button--iconOnly Button--variation Button--variation-primary"
+          type="button"
         >
           <span
             class="bp3-button-text"
           >
-            cf.homepage.learnMore
+            createProject
           </span>
-        </a>
-        <div
-          class="Layout--horizontal Layout--layout-spacing-large StyledProps--main StyledProps--flex"
+        </button>
+        <p
+          class="StyledProps--font StyledProps--main StyledProps--font-size-medium StyledProps--color StyledProps--color-black"
         >
-          <button
-            class="bp3-button bp3-large Button--button StyledProps--font StyledProps--main Button--with-current-color Button--iconOnly Button--variation Button--variation-primary"
-            type="button"
-          >
-            <span
-              class="bp3-button-text"
-            >
-              createProject
-            </span>
-          </button>
-          <p
-            class="StyledProps--font StyledProps--main StyledProps--font-size-medium StyledProps--color StyledProps--color-black"
-          >
-            orSelectExisting
-          </p>
-          <span
-            style="flex-grow: 1;"
-          />
-        </div>
+          orSelectExisting
+        </p>
+        <span
+          style="flex-grow: 1;"
+        />
       </div>
     </div>
   </div>
@@ -310,62 +290,57 @@ exports[`CFHomePage should return error page if call fails 1`] = `
 exports[`CFHomePage should update the license store 1`] = `
 <div>
   <div
-    class="StyledProps--font StyledProps--main PageBody--pageBody body hasNoBanner"
-    data-name="page-body"
+    class="StyledProps--font StyledProps--main container"
+    style="background: transparent url(test-file-stub) no-repeat;"
   >
     <div
-      class="StyledProps--font StyledProps--main container"
-      style="background: transparent url(test-file-stub) no-repeat;"
+      class="Layout--vertical Layout--layout-spacing-medium StyledProps--main"
     >
-      <div
-        class="Layout--vertical Layout--layout-spacing-medium StyledProps--main"
+      <h1
+        class="StyledProps--font StyledProps--font-h1 StyledProps--main StyledProps--font-weight-bold StyledProps--font-size-large StyledProps--color StyledProps--color-black100"
       >
-        <h1
-          class="StyledProps--font StyledProps--font-h1 StyledProps--main StyledProps--font-weight-bold StyledProps--font-size-large StyledProps--color StyledProps--color-black100"
+        cf.continuous
+      </h1>
+      <p
+        class="StyledProps--font StyledProps--main subTitle StyledProps--color"
+      >
+        cf.homepage.slogan
+      </p>
+      <a
+        class="bp3-button Button--button StyledProps--font StyledProps--main link StyledProps--color StyledProps--font StyledProps--font-size-normal Button--with-current-color Button--link"
+        href="https://ngdocs.harness.io/article/0a2u2ppp8s-getting-started-with-continuous-features"
+        rel="noreferrer noopener"
+        role="button"
+        tabindex="0"
+        target="_blank"
+      >
+        <span
+          class="bp3-button-text"
         >
-          cf.continuous
-        </h1>
-        <p
-          class="StyledProps--font StyledProps--main subTitle StyledProps--color"
-        >
-          cf.homepage.slogan
-        </p>
-        <a
-          class="bp3-button Button--button StyledProps--font StyledProps--main link StyledProps--color StyledProps--font StyledProps--font-size-normal Button--with-current-color Button--link"
-          href="https://ngdocs.harness.io/article/0a2u2ppp8s-getting-started-with-continuous-features"
-          rel="noreferrer noopener"
-          role="button"
-          tabindex="0"
-          target="_blank"
+          cf.homepage.learnMore
+        </span>
+      </a>
+      <div
+        class="Layout--horizontal Layout--layout-spacing-large StyledProps--main StyledProps--flex"
+      >
+        <button
+          class="bp3-button bp3-large Button--button StyledProps--font StyledProps--main Button--with-current-color Button--iconOnly Button--variation Button--variation-primary"
+          type="button"
         >
           <span
             class="bp3-button-text"
           >
-            cf.homepage.learnMore
+            createProject
           </span>
-        </a>
-        <div
-          class="Layout--horizontal Layout--layout-spacing-large StyledProps--main StyledProps--flex"
+        </button>
+        <p
+          class="StyledProps--font StyledProps--main StyledProps--font-size-medium StyledProps--color StyledProps--color-black"
         >
-          <button
-            class="bp3-button bp3-large Button--button StyledProps--font StyledProps--main Button--with-current-color Button--iconOnly Button--variation Button--variation-primary"
-            type="button"
-          >
-            <span
-              class="bp3-button-text"
-            >
-              createProject
-            </span>
-          </button>
-          <p
-            class="StyledProps--font StyledProps--main StyledProps--font-size-medium StyledProps--color StyledProps--color-black"
-          >
-            orSelectExisting
-          </p>
-          <span
-            style="flex-grow: 1;"
-          />
-        </div>
+          orSelectExisting
+        </p>
+        <span
+          style="flex-grow: 1;"
+        />
       </div>
     </div>
   </div>

@@ -137,4 +137,28 @@ describe('SecretInput', () => {
 
     await waitFor(() => expect(handleSuccess).toHaveBeenCalled())
   })
+
+  test('placeholder text when selection is now allowed', () => {
+    const { container } = render(
+      <TestWrapper>
+        <Formik initialValues={{}} onSubmit={noop} formName="TestWrapper">
+          {() => {
+            return (
+              <FormikForm>
+                <SecretInput
+                  name="test"
+                  label="test"
+                  allowSelection={false}
+                  secretsListMockData={secretsListMockData as any}
+                />
+              </FormikForm>
+            )
+          }}
+        </Formik>
+      </TestWrapper>
+    )
+
+    const placeHolder = container.querySelector('.containerLinkText')
+    expect(placeHolder?.textContent).toEqual('secrets.createSecret')
+  })
 })

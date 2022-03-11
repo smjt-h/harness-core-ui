@@ -283,7 +283,18 @@ exports[`Unit tests for CVChanges Verify if all the fields are rendered correctl
           </div>
         </div>
       </div>
+      <button
+        class="bp3-button Button--button StyledProps--font StyledProps--main Button--with-current-color Button--variation Button--variation-link"
+        type="button"
+      >
+        <span
+          class="bp3-button-text"
+        >
+          cv.cvChanges.clearFilters
+        </span>
+      </button>
     </div>
+    s
   </div>
   <div
     class="css-1ungryv"

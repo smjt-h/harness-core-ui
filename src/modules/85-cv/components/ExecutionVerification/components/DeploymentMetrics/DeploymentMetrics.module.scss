@@ -145,6 +145,10 @@
           --border-color: var(--orange-500);
           --background-color: var(--orange-200);
         }
+        &Observe {
+          --border-color: var(--yellow-600);
+          --background-color: var(--yellow-200);
+        }
         &Fail {
           --border-color: var(--red-500);
           --background-color: var(--red-200);
@@ -190,6 +194,16 @@
       overflow: hidden !important;
       text-overflow: ellipsis !important;
       white-space: nowrap !important;
+    }
+  }
+
+  .nodeCount {
+    align-items: center;
+
+    p.nodeCountMessage {
+      white-space: normal !important;
+      max-width: 100% !important;
+      margin-left: var(--spacing-xsmall) !important;
     }
   }
 }

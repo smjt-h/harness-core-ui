@@ -16,7 +16,7 @@ const DefaultRenderer: React.FC = () => {
   const { CDNG_ENABLED, CVNG_ENABLED, CING_ENABLED, CENG_ENABLED, CFNG_ENABLED } = useFeatureFlags()
 
   return (
-    <Layout.Vertical padding={{ left: 'xlarge', right: 'xlarge', bottom: 'xlarge' }} className={css.started}>
+    <Layout.Vertical padding={{ top: 'xlarge' }} className={css.started}>
       <Text font={{ size: 'small', weight: 'semi-bold' }} padding={{ bottom: 'xsmall' }}>
         {getString('modules')}
       </Text>

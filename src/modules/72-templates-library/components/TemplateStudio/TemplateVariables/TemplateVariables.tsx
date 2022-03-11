@@ -23,7 +23,7 @@ import { TemplateType } from '@templates-library/utils/templatesUtils'
 import css from '@pipeline/components/PipelineStudio/PipelineVariables/PipelineVariables.module.scss'
 
 const TemplateVariables: React.FC = (): JSX.Element => {
-  const { isReadonly, updateTemplate } = React.useContext(TemplateContext)
+  const { updateTemplate } = React.useContext(TemplateContext)
   const { originalTemplate, variablesTemplate, metadataMap, error, initLoading } = useTemplateVariables()
 
   const onUpdate = useCallback(
@@ -54,7 +54,7 @@ const TemplateVariables: React.FC = (): JSX.Element => {
                   stage={variablesTemplate as StageElementConfig}
                   originalStage={{ ...originalTemplate.spec, identifier: DefaultNewStageId } as StageElementConfig}
                   metadataMap={metadataMap}
-                  readonly={isReadonly}
+                  readonly={true}
                   path="template"
                   allowableTypes={[MultiTypeInputType.FIXED, MultiTypeInputType.RUNTIME, MultiTypeInputType.EXPRESSION]}
                   stepsFactory={factory}
@@ -66,7 +66,7 @@ const TemplateVariables: React.FC = (): JSX.Element => {
                   step={variablesTemplate as StepElementConfig}
                   originalStep={originalTemplate.spec as StepElementConfig}
                   metadataMap={metadataMap}
-                  readonly={isReadonly}
+                  readonly={true}
                   stepPath="template"
                   allowableTypes={[MultiTypeInputType.FIXED, MultiTypeInputType.RUNTIME, MultiTypeInputType.EXPRESSION]}
                   stageIdentifier={DefaultNewStageId}

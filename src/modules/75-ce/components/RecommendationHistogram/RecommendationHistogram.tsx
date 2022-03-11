@@ -5,7 +5,7 @@
  * https://polyformproject.org/wp-content/uploads/2020/06/PolyForm-Shield-1.0.0.txt.
  */
 
-import { Container, Text } from '@wings-software/uicore'
+import { Container, Text, Layout, FontVariation, Color } from '@wings-software/uicore'
 import React from 'react'
 import type { Point } from 'highcharts'
 
@@ -39,6 +39,38 @@ export enum ChartColors {
   'GREEN' = '#38d168',
   'GREY' = '#c4c4c4',
   'GREEN_300' = '#d7f4e0'
+}
+
+interface HistogramHeaderProps {
+  header: string
+}
+
+const HistogramHeader: React.FC<HistogramHeaderProps> = props => (
+  <Text
+    padding="xsmall"
+    font={{ variation: FontVariation.TABLE_HEADERS, align: 'center' }}
+    background={Color.PRIMARY_1}
+    color={Color.PRIMARY_5}
+  >
+    {props.header}
+  </Text>
+)
+
+interface HistogramDescriptionProps {
+  description: React.ReactNode
+}
+
+const HistogramDescription: React.FC<HistogramDescriptionProps> = props => {
+  const { getString } = useStrings()
+
+  return (
+    <Layout.Horizontal spacing="xsmall" padding={{ bottom: 'small' }}>
+      {props.description}
+      <Text font={{ variation: FontVariation.SMALL_SEMI }}>
+        {getString('ce.recommendation.recommendationChart.willBeMet')}
+      </Text>
+    </Layout.Horizontal>
+  )
 }
 
 interface RecommendationChartProps {
@@ -161,98 +193,335 @@ const RecommendationHistogram: React.FC<RecommendationChartProps> = props => {
     const columnData = chart.series[0].points as CustomPoint[]
     const filteredColData = columnData.filter(point => point.x <= memReqValue)
     const pointArgs = filteredColData[filteredColData.length - 1]
-    const memReqValX = pointArgs.plotX + chart.plotLeft + pointArgs.pointWidth / 2 - 9
+    const memReqValX = (pointArgs?.plotX || 0) + chart.plotLeft + (pointArgs?.pointWidth || 0) / 2 - 9
     return memReqValX
   }
 
   return (
     <Container className={css.chartContainer}>
-      {/* <label className={css.sampleText}>Number of Samples</label> */}
-      <Container>
-        <Text padding="xsmall" font={{ size: 'normal', align: 'center' }} background="primary1" color="primary5">
-          {getString('delegate.delegateCPU')}
-        </Text>
-        <CEChart
-          options={{
-            tooltip: {
-              formatter: function () {
-                return `CPU: ${getCPUValueInReadableForm(this.x)}`
-              }
-            },
-            series: [
-              {
-                showInLegend: false,
-                pointPlacement: -0.5,
+      <Layout.Vertical>
+        <HistogramDescription
+          description={
+            <>
+              <Text font={{ variation: FontVariation.SMALL_SEMI }}>
+                {getString('ce.recommendation.recommendationChart.cpuHistogramHeader')}
+              </Text>
+              <Text font={{ variation: FontVariation.SMALL_SEMI }} color={Color.PRIMARY_7}>
+                {getString('ce.recommendation.recommendationChart.request')}
+              </Text>
+            </>
+          }
+        />
+        <Container>
+          <HistogramHeader header={getString('delegate.delegateCPU')} />
+          <CEChart
+            options={{
+              tooltip: {
+                formatter: function () {
+                  return `CPU: ${getCPUValueInReadableForm(this.x)}`
+                }
+              },
+              series: [
+                {
+                  showInLegend: false,
+                  pointPlacement: -0.5,
+                  type: 'column',
+                  data: formattedCPUData,
+                  zoneAxis: 'x',
+                  name: getString('delegate.delegateCPU'),
+                  zones: [
+                    {
+                      value:
+                        convertNumberToFixedDecimalPlaces(histogramData?.cpuHistogram.precomputed[cpuReqVal], 2) +
+                        0.001,
+                      color: ChartColors.BLUE
+                    },
+                    {
+                      color: ChartColors.GREY
+                    }
+                  ]
+                }
+              ],
+              chart: {
+                height: 380,
+                spacingBottom: 100,
+                spacingRight: 30,
                 type: 'column',
-                data: formattedCPUData,
-                zoneAxis: 'x',
-                name: getString('delegate.delegateCPU'),
-                zones: [
-                  {
-                    value:
-                      convertNumberToFixedDecimalPlaces(histogramData?.cpuHistogram.precomputed[cpuReqVal], 2) + 0.001,
-                    color: ChartColors.BLUE
-                  },
-                  {
-                    color: ChartColors.GREY
+                events: {
+                  load() {
+                    const chart = this as CustomHighcharts
+
+                    onCPUChartLoad(chart)
+
+                    const cpuReqValue =
+                      convertNumberToFixedDecimalPlaces(histogramData?.cpuHistogram.precomputed[cpuReqVal], 2) + 0.001
+
+                    const cpuReqValueXPost = getInitialXPosition(chart, cpuReqValue)
+
+                    const requestPlotLine = chart.renderer
+                      .image(requestMarker, cpuReqValueXPost, 0, 20, 310)
+                      .attr({
+                        zIndex: 3
+                      })
+                      .add() as any
+
+                    requestPlotLine.chartX = cpuReqValueXPost
+
+                    chart.renderer
+                      .rect(chart.plotLeft, 282, 0.5, 16)
+                      .attr({
+                        'stroke-width': 1,
+                        stroke: ChartColors.BLUE,
+                        zIndex: 3
+                      })
+                      .add()
+
+                    const requestPlotLineMarker = chart.renderer
+                      .rect(chart.plotLeft, 290, cpuReqValueXPost - chart.plotLeft + 10, 0.5)
+                      .attr({
+                        'stroke-width': 1,
+                        stroke: ChartColors.BLUE,
+                        zIndex: 3
+                      })
+                      .add()
+
+                    const CPUReqPercentileText = chart.renderer
+                      .text(`${cpuReqVal}th`, cpuReqValueXPost + 15, 295)
+                      .attr({
+                        color: ChartColors.BLUE,
+                        zIndex: 3
+                      })
+                      .add()
+
+                    chart.container.onmousemove = function (e) {
+                      const chartEvent = e as any
+                      if (requestPlotLine.drag) {
+                        chart.pointer.normalize(chartEvent)
+
+                        const extremes = {
+                          left: chart.plotLeft,
+                          right: chart.plotLeft + chart.plotWidth
+                        }
+
+                        if (chartEvent.chartX >= extremes.left - 10 && chartEvent.chartX <= extremes.right - 10) {
+                          requestPlotLine.attr({ x: chartEvent.chartX })
+                          requestPlotLine.chartX = chartEvent.chartX
+                          requestPlotLineMarker.attr({
+                            width: chartEvent.chartX - chart.plotLeft + 10
+                          })
+
+                          CPUReqPercentileText.attr({
+                            x: chartEvent.chartX + 15
+                          })
+
+                          const reqPercentileVal = findNearestCPUData(
+                            chart.xAxis[0].toValue(requestPlotLine.chartX + 10)
+                          )
+
+                          CPUReqPercentileText.attr({
+                            text: `${reqPercentileVal}th`
+                          })
+                        }
+                      }
+                    }
+
+                    requestPlotLine.element.onmousedown = function () {
+                      requestPlotLine.drag = true
+                    }
+
+                    requestPlotLine.element.onmouseup = function () {
+                      requestPlotLine.drag = false
+                    }
+
+                    chart.rePlaceMarker = currentReqVal => {
+                      const currentCPUReqValue =
+                        convertNumberToFixedDecimalPlaces(histogramData?.cpuHistogram.precomputed[currentReqVal], 2) +
+                        0.001
+
+                      const cuurentCPUReqValueXPost = getInitialXPosition(chart, currentCPUReqValue)
+
+                      requestPlotLine.attr({ x: cuurentCPUReqValueXPost })
+                      requestPlotLine.chartX = cuurentCPUReqValueXPost
+                      requestPlotLineMarker.attr({
+                        width: cuurentCPUReqValueXPost - chart.plotLeft + 10
+                      })
+
+                      CPUReqPercentileText.attr({
+                        x: cuurentCPUReqValueXPost + 15,
+                        text: `${currentReqVal}th`
+                      })
+                    }
                   }
-                ]
+                }
+              },
+              plotOptions,
+              xAxis: {
+                crosshair: true,
+                title: {
+                  text: getString('ce.recommendation.recommendationChart.cpuPlaceholder')
+                }
+              },
+              yAxis: {
+                endOnTick: true,
+                title: {
+                  text: getString('ce.recommendation.recommendationChart.noOfSamples')
+                },
+                labels: {
+                  formatter: function () {
+                    return getCPUValueInmCPUs(Number(this.value))
+                  }
+                }
               }
-            ],
-            chart: {
-              height: 380,
-              spacingBottom: 100,
-              spacingRight: 30,
-              type: 'column',
-              events: {
-                load() {
-                  const chart = this as CustomHighcharts
+            }}
+          />
+        </Container>
+      </Layout.Vertical>
+      <Layout.Vertical>
+        <HistogramDescription
+          description={
+            <>
+              <Text font={{ variation: FontVariation.SMALL_SEMI }}>
+                {getString('ce.recommendation.recommendationChart.memoryHistogramHeader')}
+              </Text>
+              <Text font={{ variation: FontVariation.SMALL_SEMI }} color={Color.PRIMARY_7}>
+                {getString('ce.recommendation.recommendationChart.request')}
+              </Text>
+              <Text font={{ variation: FontVariation.SMALL_SEMI }}>
+                {getString('ce.recommendation.recommendationChart.and')}
+              </Text>
+              <Text font={{ variation: FontVariation.SMALL_SEMI }} color={Color.GREEN_500}>
+                {getString('ce.recommendation.recommendationChart.limitLabelRegular')}
+              </Text>
+            </>
+          }
+        />
+        <Container>
+          <HistogramHeader header={getString('ce.recommendation.recommendationChart.memoryLabel')} />
+          <CEChart
+            options={{
+              tooltip: {
+                formatter: function () {
+                  return `Memory: ${getMemValueInReadableFormForChart(this.x)}`
+                }
+              },
+              series: [
+                {
+                  showInLegend: false,
+                  pointPlacement: -0.5,
+                  type: 'column',
+                  name: getString('ce.recommendation.recommendationChart.memoryLabelRegular'),
+                  data: formattedmemData,
+                  zoneAxis: 'x',
+                  zones: [
+                    {
+                      value:
+                        convertNumberToFixedDecimalPlaces(histogramData?.memoryHistogram.precomputed[memReqVal], 2) + 1,
+                      color: ChartColors.BLUE
+                    },
+                    {
+                      value:
+                        convertNumberToFixedDecimalPlaces(histogramData?.memoryHistogram.precomputed[memLimitVal], 2) +
+                        1,
+                      color: ChartColors.GREEN
+                    },
+                    {
+                      color: ChartColors.GREY
+                    }
+                  ]
+                }
+              ],
+              chart: {
+                height: 380,
+                type: 'column',
+                spacingRight: 30,
+                spacingBottom: 100,
+                events: {
+                  load() {
+                    const chart = this as CustomHighcharts
 
-                  onCPUChartLoad(chart)
+                    onMemoryChartLoad(chart)
 
-                  const cpuReqValue =
-                    convertNumberToFixedDecimalPlaces(histogramData?.cpuHistogram.precomputed[cpuReqVal], 2) + 0.001
+                    const memReqValue =
+                      convertNumberToFixedDecimalPlaces(histogramData?.memoryHistogram.precomputed[memReqVal], 2) + 1
 
-                  const cpuReqValueXPost = getInitialXPosition(chart, cpuReqValue)
+                    const memLimitValue =
+                      convertNumberToFixedDecimalPlaces(histogramData?.memoryHistogram.precomputed[memLimitVal], 2) + 1
 
-                  const requestPlotLine = chart.renderer
-                    .image(requestMarker, cpuReqValueXPost, 0, 20, 310)
-                    .attr({
-                      zIndex: 3
-                    })
-                    .add() as any
+                    const memRequestMarkerXPos = getInitialXPosition(chart, memReqValue)
+                    const memLimitMarkerXPos = getInitialXPosition(chart, memLimitValue)
 
-                  requestPlotLine.chartX = cpuReqValueXPost
+                    const requestPlotLine = chart.renderer
+                      .image(requestMarker, memRequestMarkerXPos, 0, 20, 310)
+                      .attr({
+                        zIndex: 3
+                      })
+                      .add() as any
 
-                  chart.renderer
-                    .rect(chart.plotLeft, 282, 0.5, 16)
-                    .attr({
-                      'stroke-width': 1,
-                      stroke: ChartColors.BLUE,
-                      zIndex: 3
-                    })
-                    .add()
+                    const requestPlotLineMarker = chart.renderer
+                      .rect(chart.plotLeft, 290, memRequestMarkerXPos - chart.plotLeft + 10, 0.5)
+                      .attr({
+                        'stroke-width': 1,
+                        stroke: ChartColors.BLUE,
+                        zIndex: 3
+                      })
+                      .add()
 
-                  const requestPlotLineMarker = chart.renderer
-                    .rect(chart.plotLeft, 290, cpuReqValueXPost - chart.plotLeft + 10, 0.5)
-                    .attr({
-                      'stroke-width': 1,
-                      stroke: ChartColors.BLUE,
-                      zIndex: 3
-                    })
-                    .add()
+                    chart.renderer
+                      .rect(chart.plotLeft, 282, 0.5, 16)
+                      .attr({
+                        'stroke-width': 1,
+                        stroke: ChartColors.BLUE,
+                        zIndex: 3
+                      })
+                      .add()
 
-                  const CPUReqPercentileText = chart.renderer
-                    .text(`${cpuReqVal}th`, cpuReqValueXPost + 15, 295)
-                    .attr({
-                      color: ChartColors.BLUE,
-                      zIndex: 3
-                    })
-                    .add()
+                    const LimitPlotLineMarker = chart.renderer
+                      .rect(chart.plotLeft, 310, memLimitMarkerXPos - chart.plotLeft + 10, 0.5)
+                      .attr({
+                        'stroke-width': 1,
+                        stroke: ChartColors.GREEN,
+                        zIndex: 3
+                      })
+                      .add()
 
-                  chart.container.onmousemove = function (e) {
-                    const chartEvent = e as any
-                    if (requestPlotLine.drag) {
+                    chart.renderer
+                      .rect(chart.plotLeft, 302, 0.5, 16)
+                      .attr({
+                        'stroke-width': 1,
+                        stroke: ChartColors.GREEN,
+                        zIndex: 3
+                      })
+                      .add()
+
+                    const memLimitPercentileText = chart.renderer
+                      .text(`${memLimitVal}th`, memLimitMarkerXPos + 15, 315)
+                      .attr({
+                        color: ChartColors.GREEN,
+                        zIndex: 3
+                      })
+                      .add()
+
+                    const memReqPercentileText = chart.renderer
+                      .text(`${memReqVal}th`, memRequestMarkerXPos + 15, 295)
+                      .attr({
+                        color: ChartColors.BLUE,
+                        zIndex: 3
+                      })
+                      .add()
+
+                    requestPlotLine.chartX = memRequestMarkerXPos
+
+                    const limitPlotLine = chart.renderer
+                      .image(limitMarker, memLimitMarkerXPos, 0, 20, 330)
+                      .attr({
+                        zIndex: 3
+                      })
+                      .add() as any
+
+                    limitPlotLine.chartX = memLimitMarkerXPos
+
+                    chart.container.onmousemove = function (e) {
+                      const chartEvent = e as any
                       chart.pointer.normalize(chartEvent)
 
                       const extremes = {
@@ -260,340 +529,138 @@ const RecommendationHistogram: React.FC<RecommendationChartProps> = props => {
                         right: chart.plotLeft + chart.plotWidth
                       }
 
-                      if (chartEvent.chartX >= extremes.left - 10 && chartEvent.chartX <= extremes.right - 10) {
-                        requestPlotLine.attr({ x: chartEvent.chartX })
-                        requestPlotLine.chartX = chartEvent.chartX
-                        requestPlotLineMarker.attr({
-                          width: chartEvent.chartX - chart.plotLeft + 10
-                        })
+                      if (requestPlotLine.drag) {
+                        if (chartEvent.chartX >= extremes.left - 10 && chartEvent.chartX <= extremes.right - 10) {
+                          requestPlotLine.attr({ x: chartEvent.chartX })
+                          requestPlotLine.chartX = chartEvent.chartX
+                          requestPlotLineMarker.attr({
+                            width: chartEvent.chartX - chart.plotLeft + 10
+                          })
 
-                        CPUReqPercentileText.attr({
-                          x: chartEvent.chartX + 15
-                        })
-
-                        const reqPercentileVal = findNearestCPUData(chart.xAxis[0].toValue(requestPlotLine.chartX + 10))
-
-                        CPUReqPercentileText.attr({
-                          text: `${reqPercentileVal}th`
-                        })
+                          memReqPercentileText.attr({
+                            x: chartEvent.chartX + 15
+                          })
+                          const percentileValues = findNearestMemData(
+                            chart.xAxis[0].toValue(requestPlotLine.chartX + 10),
+                            chart.xAxis[0].toValue(limitPlotLine.chartX + 10)
+                          )
+                          memReqPercentileText.attr({
+                            text: `${percentileValues.requestPercentileValue}th`
+                          })
+                        }
                       }
-                    }
-                  }
 
-                  requestPlotLine.element.onmousedown = function () {
-                    requestPlotLine.drag = true
-                  }
+                      if (limitPlotLine.drag) {
+                        if (chartEvent.chartX >= extremes.left - 10 && chartEvent.chartX <= extremes.right - 10) {
+                          limitPlotLine.attr({ x: chartEvent.chartX })
+                          limitPlotLine.chartX = chartEvent.chartX
 
-                  requestPlotLine.element.onmouseup = function () {
-                    requestPlotLine.drag = false
-                  }
+                          LimitPlotLineMarker.attr({
+                            width: chartEvent.chartX - chart.plotLeft + 10
+                          })
+                          memLimitPercentileText.attr({
+                            x: chartEvent.chartX + 15
+                          })
 
-                  chart.rePlaceMarker = currentReqVal => {
-                    const currentCPUReqValue =
-                      convertNumberToFixedDecimalPlaces(histogramData?.cpuHistogram.precomputed[currentReqVal], 2) +
-                      0.001
+                          const percentileValues = findNearestMemData(
+                            chart.xAxis[0].toValue(requestPlotLine.chartX + 10),
+                            chart.xAxis[0].toValue(limitPlotLine.chartX + 10)
+                          )
 
-                    const cuurentCPUReqValueXPost = getInitialXPosition(chart, currentCPUReqValue)
-
-                    requestPlotLine.attr({ x: cuurentCPUReqValueXPost })
-                    requestPlotLine.chartX = cuurentCPUReqValueXPost
-                    requestPlotLineMarker.attr({
-                      width: cuurentCPUReqValueXPost - chart.plotLeft + 10
-                    })
-
-                    CPUReqPercentileText.attr({
-                      x: cuurentCPUReqValueXPost + 15,
-                      text: `${currentReqVal}th`
-                    })
-                  }
-                }
-              }
-            },
-            plotOptions,
-            xAxis: {
-              crosshair: true,
-              title: {
-                text: getString('ce.recommendation.recommendationChart.cpuPlaceholder')
-              }
-            },
-            yAxis: {
-              endOnTick: true,
-              title: {
-                text: getString('ce.recommendation.recommendationChart.noOfSamples')
-              },
-              labels: {
-                formatter: function () {
-                  return getCPUValueInmCPUs(Number(this.value))
-                }
-              }
-            }
-          }}
-        />
-      </Container>
-      <Container>
-        <Text padding="xsmall" font={{ size: 'normal', align: 'center' }} background="primary1" color="primary5">
-          {getString('ce.recommendation.recommendationChart.memoryLabel')}
-        </Text>
-        <CEChart
-          options={{
-            tooltip: {
-              formatter: function () {
-                return `Memory: ${getMemValueInReadableFormForChart(this.x)}`
-              }
-            },
-            series: [
-              {
-                showInLegend: false,
-                pointPlacement: -0.5,
-                type: 'column',
-                name: getString('ce.recommendation.recommendationChart.memoryLabelRegular'),
-                data: formattedmemData,
-                zoneAxis: 'x',
-                zones: [
-                  {
-                    value:
-                      convertNumberToFixedDecimalPlaces(histogramData?.memoryHistogram.precomputed[memReqVal], 2) + 1,
-                    color: ChartColors.BLUE
-                  },
-                  {
-                    value:
-                      convertNumberToFixedDecimalPlaces(histogramData?.memoryHistogram.precomputed[memLimitVal], 2) + 1,
-                    color: ChartColors.GREEN
-                  },
-                  {
-                    color: ChartColors.GREY
-                  }
-                ]
-              }
-            ],
-            chart: {
-              height: 380,
-              type: 'column',
-              spacingRight: 30,
-              spacingBottom: 100,
-              events: {
-                load() {
-                  const chart = this as CustomHighcharts
-
-                  onMemoryChartLoad(chart)
-
-                  const memReqValue =
-                    convertNumberToFixedDecimalPlaces(histogramData?.memoryHistogram.precomputed[memReqVal], 2) + 1
-
-                  const memLimitValue =
-                    convertNumberToFixedDecimalPlaces(histogramData?.memoryHistogram.precomputed[memLimitVal], 2) + 1
-
-                  const memRequestMarkerXPos = getInitialXPosition(chart, memReqValue)
-                  const memLimitMarkerXPos = getInitialXPosition(chart, memLimitValue)
-
-                  const requestPlotLine = chart.renderer
-                    .image(requestMarker, memRequestMarkerXPos, 0, 20, 310)
-                    .attr({
-                      zIndex: 3
-                    })
-                    .add() as any
-
-                  const requestPlotLineMarker = chart.renderer
-                    .rect(chart.plotLeft, 290, memRequestMarkerXPos - chart.plotLeft + 10, 0.5)
-                    .attr({
-                      'stroke-width': 1,
-                      stroke: ChartColors.BLUE,
-                      zIndex: 3
-                    })
-                    .add()
-
-                  chart.renderer
-                    .rect(chart.plotLeft, 282, 0.5, 16)
-                    .attr({
-                      'stroke-width': 1,
-                      stroke: ChartColors.BLUE,
-                      zIndex: 3
-                    })
-                    .add()
-
-                  const LimitPlotLineMarker = chart.renderer
-                    .rect(chart.plotLeft, 310, memLimitMarkerXPos - chart.plotLeft + 10, 0.5)
-                    .attr({
-                      'stroke-width': 1,
-                      stroke: ChartColors.GREEN,
-                      zIndex: 3
-                    })
-                    .add()
-
-                  chart.renderer
-                    .rect(chart.plotLeft, 302, 0.5, 16)
-                    .attr({
-                      'stroke-width': 1,
-                      stroke: ChartColors.GREEN,
-                      zIndex: 3
-                    })
-                    .add()
-
-                  const memLimitPercentileText = chart.renderer
-                    .text(`${memLimitVal}th`, memLimitMarkerXPos + 15, 315)
-                    .attr({
-                      color: ChartColors.GREEN,
-                      zIndex: 3
-                    })
-                    .add()
-
-                  const memReqPercentileText = chart.renderer
-                    .text(`${memReqVal}th`, memRequestMarkerXPos + 15, 295)
-                    .attr({
-                      color: ChartColors.BLUE,
-                      zIndex: 3
-                    })
-                    .add()
-
-                  requestPlotLine.chartX = memRequestMarkerXPos
-
-                  const limitPlotLine = chart.renderer
-                    .image(limitMarker, memLimitMarkerXPos, 0, 20, 330)
-                    .attr({
-                      zIndex: 3
-                    })
-                    .add() as any
-
-                  limitPlotLine.chartX = memLimitMarkerXPos
-
-                  chart.container.onmousemove = function (e) {
-                    const chartEvent = e as any
-                    chart.pointer.normalize(chartEvent)
-
-                    const extremes = {
-                      left: chart.plotLeft,
-                      right: chart.plotLeft + chart.plotWidth
-                    }
-
-                    if (requestPlotLine.drag) {
-                      if (chartEvent.chartX >= extremes.left - 10 && chartEvent.chartX <= extremes.right - 10) {
-                        requestPlotLine.attr({ x: chartEvent.chartX })
-                        requestPlotLine.chartX = chartEvent.chartX
-                        requestPlotLineMarker.attr({
-                          width: chartEvent.chartX - chart.plotLeft + 10
-                        })
-
-                        memReqPercentileText.attr({
-                          x: chartEvent.chartX + 15
-                        })
-                        const percentileValues = findNearestMemData(
-                          chart.xAxis[0].toValue(requestPlotLine.chartX + 10),
-                          chart.xAxis[0].toValue(limitPlotLine.chartX + 10)
-                        )
-                        memReqPercentileText.attr({
-                          text: `${percentileValues.requestPercentileValue}th`
-                        })
+                          memLimitPercentileText.attr({
+                            text: `${percentileValues.limitPercentileValue}th`
+                          })
+                        }
                       }
                     }
 
-                    if (limitPlotLine.drag) {
-                      if (chartEvent.chartX >= extremes.left - 10 && chartEvent.chartX <= extremes.right - 10) {
-                        limitPlotLine.attr({ x: chartEvent.chartX })
-                        limitPlotLine.chartX = chartEvent.chartX
+                    requestPlotLine.element.onmousedown = function () {
+                      requestPlotLine.drag = true
+                    }
 
-                        LimitPlotLineMarker.attr({
-                          width: chartEvent.chartX - chart.plotLeft + 10
-                        })
-                        memLimitPercentileText.attr({
-                          x: chartEvent.chartX + 15
-                        })
+                    requestPlotLine.element.onmouseup = function () {
+                      requestPlotLine.drag = false
+                    }
 
-                        const percentileValues = findNearestMemData(
-                          chart.xAxis[0].toValue(requestPlotLine.chartX + 10),
-                          chart.xAxis[0].toValue(limitPlotLine.chartX + 10)
-                        )
+                    limitPlotLine.element.onmousedown = function () {
+                      limitPlotLine.drag = true
+                    }
 
-                        memLimitPercentileText.attr({
-                          text: `${percentileValues.limitPercentileValue}th`
-                        })
-                      }
+                    limitPlotLine.element.onmouseup = function () {
+                      limitPlotLine.drag = false
+                    }
+
+                    chart.rePlaceMarker = (currentReqVal, currentLimitVal) => {
+                      const currentMemReqValue =
+                        convertNumberToFixedDecimalPlaces(
+                          histogramData?.memoryHistogram.precomputed[currentReqVal],
+                          2
+                        ) + 1
+
+                      const currentMemLimitValue =
+                        convertNumberToFixedDecimalPlaces(
+                          histogramData?.memoryHistogram.precomputed[currentLimitVal as number],
+                          2
+                        ) + 1
+
+                      const currentMemRequestMarkerXPos = getInitialXPosition(chart, currentMemReqValue)
+                      const currentMemLimitMarkerXPos = getInitialXPosition(chart, currentMemLimitValue)
+
+                      requestPlotLine.attr({ x: currentMemRequestMarkerXPos })
+                      requestPlotLine.chartX = currentMemRequestMarkerXPos
+                      requestPlotLineMarker.attr({
+                        width: currentMemRequestMarkerXPos - chart.plotLeft + 10
+                      })
+
+                      memReqPercentileText.attr({
+                        x: currentMemRequestMarkerXPos + 15,
+                        text: `${currentReqVal}th`
+                      })
+
+                      limitPlotLine.attr({ x: currentMemLimitMarkerXPos })
+                      limitPlotLine.chartX = currentMemLimitMarkerXPos
+
+                      LimitPlotLineMarker.attr({
+                        width: currentMemLimitMarkerXPos - chart.plotLeft + 10
+                      })
+                      memLimitPercentileText.attr({
+                        x: currentMemLimitMarkerXPos + 15
+                      })
+
+                      memLimitPercentileText.attr({
+                        text: `${currentLimitVal}th`
+                      })
                     }
                   }
-
-                  requestPlotLine.element.onmousedown = function () {
-                    requestPlotLine.drag = true
+                }
+              },
+              plotOptions,
+              xAxis: {
+                title: {
+                  text: getString('ce.recommendation.recommendationChart.memoryUsagePlaceholder')
+                },
+                labels: {
+                  formatter: function () {
+                    return `${getMemValueInGB(Number(this.value))}`
                   }
-
-                  requestPlotLine.element.onmouseup = function () {
-                    requestPlotLine.drag = false
-                  }
-
-                  limitPlotLine.element.onmousedown = function () {
-                    limitPlotLine.drag = true
-                  }
-
-                  limitPlotLine.element.onmouseup = function () {
-                    limitPlotLine.drag = false
-                  }
-
-                  chart.rePlaceMarker = (currentReqVal, currentLimitVal) => {
-                    const currentMemReqValue =
-                      convertNumberToFixedDecimalPlaces(histogramData?.memoryHistogram.precomputed[currentReqVal], 2) +
-                      1
-
-                    const currentMemLimitValue =
-                      convertNumberToFixedDecimalPlaces(
-                        histogramData?.memoryHistogram.precomputed[currentLimitVal as number],
-                        2
-                      ) + 1
-
-                    const currentMemRequestMarkerXPos = getInitialXPosition(chart, currentMemReqValue)
-                    const currentMemLimitMarkerXPos = getInitialXPosition(chart, currentMemLimitValue)
-
-                    requestPlotLine.attr({ x: currentMemRequestMarkerXPos })
-                    requestPlotLine.chartX = currentMemRequestMarkerXPos
-                    requestPlotLineMarker.attr({
-                      width: currentMemRequestMarkerXPos - chart.plotLeft + 10
-                    })
-
-                    memReqPercentileText.attr({
-                      x: currentMemRequestMarkerXPos + 15,
-                      text: `${currentReqVal}th`
-                    })
-
-                    limitPlotLine.attr({ x: currentMemLimitMarkerXPos })
-                    limitPlotLine.chartX = currentMemLimitMarkerXPos
-
-                    LimitPlotLineMarker.attr({
-                      width: currentMemLimitMarkerXPos - chart.plotLeft + 10
-                    })
-                    memLimitPercentileText.attr({
-                      x: currentMemLimitMarkerXPos + 15
-                    })
-
-                    memLimitPercentileText.attr({
-                      text: `${currentLimitVal}th`
-                    })
+                },
+                crosshair: true
+              },
+              yAxis: {
+                endOnTick: true,
+                title: {
+                  text: getString('ce.recommendation.recommendationChart.noOfSamples')
+                },
+                labels: {
+                  formatter: function () {
+                    return `${this['value']}`
                   }
                 }
               }
-            },
-            plotOptions,
-            xAxis: {
-              title: {
-                text: getString('ce.recommendation.recommendationChart.memoryUsagePlaceholder')
-              },
-              labels: {
-                formatter: function () {
-                  return `${getMemValueInGB(Number(this.value))}`
-                }
-              },
-              crosshair: true
-            },
-            yAxis: {
-              endOnTick: true,
-              title: {
-                text: getString('ce.recommendation.recommendationChart.noOfSamples')
-              },
-              labels: {
-                formatter: function () {
-                  return `${this['value']}`
-                }
-              }
-            }
-          }}
-        />
-      </Container>
+            }}
+          />
+        </Container>
+      </Layout.Vertical>
     </Container>
   )
 }

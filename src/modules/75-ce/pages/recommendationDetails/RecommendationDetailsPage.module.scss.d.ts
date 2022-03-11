@@ -7,14 +7,19 @@
  **/
 // this is an auto-generated file, do not update this manually
 declare const styles: {
+  readonly actionText: string
   readonly breadCrumb: string
+  readonly bufferSlider: string
   readonly costContainer: string
   readonly customImage: string
   readonly detailsContainer: string
   readonly mainContainer: string
   readonly pageBody: string
+  readonly pillToggle: string
   readonly savingsContainer: string
+  readonly sliderContainer: string
   readonly subText: string
+  readonly tuneRecomContainer: string
   readonly viewDetailsButton: string
 }
 export default styles

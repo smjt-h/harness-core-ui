@@ -202,6 +202,7 @@ export function CustomVariableEditable(props: CustomVariableEditableProps): Reac
                         <TextInputWithCopyBtn
                           name={`variables[${index}].name`}
                           label=""
+                          disabled={readonly}
                           localName={yamlData?.localName}
                           fullName={yamlData?.fqn}
                           outerClassName={css.copyTextRow}

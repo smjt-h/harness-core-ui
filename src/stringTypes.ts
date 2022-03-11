@@ -41,6 +41,7 @@ export interface StringsMap {
   'common.advanced': string
   'common.agent': string
   'common.allErrors': string
+  'common.and': string
   'common.apiKeys': string
   'common.apiStatus': string
   'common.apikey': string
@@ -96,6 +97,7 @@ export interface StringsMap {
   'common.billed': string
   'common.blank': string
   'common.branchName': string
+  'common.by': string
   'common.capsAll': string
   'common.ce.autostopping': string
   'common.ce.cost': string
@@ -517,6 +519,7 @@ export interface StringsMap {
   'common.reportName': string
   'common.reportNameRequired': string
   'common.repositoryName': string
+  'common.request': string
   'common.resolveConflict': string
   'common.resourceCenter.bottomlayout.apiDocs': string
   'common.resourceCenter.bottomlayout.changeLog': string
@@ -613,9 +616,10 @@ export interface StringsMap {
   'common.subscriptions.featureFlags.users': string
   'common.subscriptions.noActiveSubscription': string
   'common.subscriptions.overview.details': string
-  'common.subscriptions.overview.expiry': string
+  'common.subscriptions.overview.freeExpiry': string
   'common.subscriptions.overview.plan': string
   'common.subscriptions.overview.subscribe': string
+  'common.subscriptions.overview.trialExpiry': string
   'common.subscriptions.paid': string
   'common.subscriptions.tabs.billing': string
   'common.subscriptions.tabs.overview': string
@@ -717,6 +721,9 @@ export interface StringsMap {
   'common.viewUsage': string
   'common.webhookURL': string
   'common.welcome': string
+  'common.whose': string
+  'common.with': string
+  'common.without': string
   'common.yearly': string
   'notifications.buttonSend': string
   'notifications.emailOrAlias': string
@@ -805,6 +812,7 @@ export interface StringsMap {
   'rbac.allOrgResources': string
   'rbac.allProjectResources': string
   'rbac.allResources': string
+  'rbac.allResourcesIncludingChildScopes': string
   'rbac.apiKey.confirmDelete': string
   'rbac.apiKey.confirmDeleteTitle': string
   'rbac.apiKey.createLabel': string
@@ -1125,6 +1133,7 @@ export interface StringsMap {
   'secrets.createSSHCredWizard.verifyRetest': string
   'secrets.createSSHCredWizard.verifyStepOne': string
   'secrets.createSSHCredWizard.verifyStepTwo': string
+  'secrets.createSecret': string
   'secrets.incompleteSecret': string
   'secrets.labelPath': string
   'secrets.labelSecretName': string
@@ -1426,6 +1435,7 @@ export interface StringsMap {
   'connectors.cdng.validations.jobNameRequired': string
   'connectors.cdng.validations.monitoringServiceRequired': string
   'connectors.cdng.validations.sensitivityRequired': string
+  'connectors.cdng.validations.timeoutValidation': string
   'connectors.cdng.validations.verificationTypeRequired': string
   'connectors.cdng.verificationSensitivityLabel.high': string
   'connectors.cdng.verificationSensitivityLabel.low': string
@@ -1982,6 +1992,7 @@ export interface StringsMap {
   'connectors.unableToUpdateConnector': string
   'connectors.updatedSuccessfully': string
   'connectors.updating': string
+  'connectors.validation.personalAccessToken': string
   'connectors.validation.serviceNowUrl': string
   'connectors.validationPath': string
   'connectors.verifyConnection': string
@@ -2352,6 +2363,7 @@ export interface StringsMap {
   'pipeline.commentModal.info': string
   'pipeline.conditionalExecution.belowExpression': string
   'pipeline.conditionalExecution.condition': string
+  'pipeline.conditionalExecution.conditionLabel': string
   'pipeline.conditionalExecution.statusOption.all': string
   'pipeline.conditionalExecution.statusOption.failure': string
   'pipeline.conditionalExecution.statusOption.success': string
@@ -2585,6 +2597,7 @@ export interface StringsMap {
   'pipeline.inputSets.noRuntimeInputsWhileExecution': string
   'pipeline.inputSets.overlayISHelperText': string
   'pipeline.inputSets.selectPlaceholder': string
+  'pipeline.invalidRequest': string
   'pipeline.jiraApprovalStep.connectToJira': string
   'pipeline.jiraApprovalStep.connectorRef': string
   'pipeline.jiraApprovalStep.execution.allConditionsMsg': string
@@ -3768,6 +3781,7 @@ export interface StringsMap {
   'ce.overview.noData.explore': string
   'ce.overview.noData.info': string
   'ce.overview.noData.ngDocs': string
+  'ce.overview.nodepool': string
   'ce.overview.savings': string
   'ce.overview.seeAll': string
   'ce.overview.title': string
@@ -3926,30 +3940,44 @@ export interface StringsMap {
   'ce.perspectives.workloadDetails.fieldNames.workload': string
   'ce.perspectives.workloadDetails.fieldNames.workloadType': string
   'ce.perspectives.workloadDetails.workloadDetailsText': string
+  'ce.recommendation.detailsPage.burstable': string
+  'ce.recommendation.detailsPage.containerHeader': string
   'ce.recommendation.detailsPage.costOptimized': string
   'ce.recommendation.detailsPage.costOptimizedCaps': string
   'ce.recommendation.detailsPage.costOptimizedDetails': string
   'ce.recommendation.detailsPage.currentResources': string
-  'ce.recommendation.detailsPage.customDetails': string
+  'ce.recommendation.detailsPage.customDetailsText1': string
+  'ce.recommendation.detailsPage.customDetailsText2': string
+  'ce.recommendation.detailsPage.customDetailsText3': string
+  'ce.recommendation.detailsPage.guaranteed': string
+  'ce.recommendation.detailsPage.headerText': string
   'ce.recommendation.detailsPage.histogramText': string
   'ce.recommendation.detailsPage.histogramTextDetails1': string
   'ce.recommendation.detailsPage.histogramTextDetails2': string
   'ce.recommendation.detailsPage.howItWorks': string
   'ce.recommendation.detailsPage.idleCost': string
   'ce.recommendation.detailsPage.limitPercentileLegendText': string
+  'ce.recommendation.detailsPage.memoryValueBuffer': string
+  'ce.recommendation.detailsPage.monthlySpendByDate': string
   'ce.recommendation.detailsPage.percentileOfReqAndLimit': string
   'ce.recommendation.detailsPage.performanceOptimized': string
   'ce.recommendation.detailsPage.performanceOptimizedCaps': string
   'ce.recommendation.detailsPage.performanceOptimizedDetails': string
+  'ce.recommendation.detailsPage.qualityOfService': string
   'ce.recommendation.detailsPage.recommendationComputation': string
   'ce.recommendation.detailsPage.recommendedResources': string
   'ce.recommendation.detailsPage.reqPercentileLegendText': string
   'ce.recommendation.detailsPage.resetRecommendationText': string
   'ce.recommendation.detailsPage.resizeText': string
   'ce.recommendation.detailsPage.resourceChanges': string
+  'ce.recommendation.detailsPage.setQoSAndBuffer': string
   'ce.recommendation.detailsPage.timeChangeText': string
   'ce.recommendation.detailsPage.totalCost': string
+  'ce.recommendation.detailsPage.tuneRecommendations': string
+  'ce.recommendation.detailsPage.utilizationDataComputation': string
   'ce.recommendation.detailsPage.viewMoreDetailsText': string
+  'ce.recommendation.detailsPage.workloadMonthlyPotentialCostText': string
+  'ce.recommendation.detailsPage.workloadMonthlySavingsText': string
   'ce.recommendation.listPage.backToPerspectives': string
   'ce.recommendation.listPage.filterHereText': string
   'ce.recommendation.listPage.filters.clusterName': string
@@ -3965,17 +3993,25 @@ export interface StringsMap {
   'ce.recommendation.listPage.listTableHeaders.resourceName': string
   'ce.recommendation.listPage.listTableHeaders.resourceType': string
   'ce.recommendation.listPage.monthlyForcastedCostText': string
+  'ce.recommendation.listPage.monthlyPotentialCostText': string
   'ce.recommendation.listPage.monthlySavingsText': string
   'ce.recommendation.listPage.recommendationDetails.resize': string
   'ce.recommendation.listPage.recommendationTypes.resizing': string
   'ce.recommendation.listPage.recommendationTypes.rightSizing': string
   'ce.recommendation.listPage.recommnedationBreakdown': string
   'ce.recommendation.listPage.uptoText': string
+  'ce.recommendation.recommendationChart.and': string
+  'ce.recommendation.recommendationChart.cpuHistogramHeader': string
   'ce.recommendation.recommendationChart.cpuPlaceholder': string
+  'ce.recommendation.recommendationChart.limitLabel': string
+  'ce.recommendation.recommendationChart.limitLabelRegular': string
+  'ce.recommendation.recommendationChart.memoryHistogramHeader': string
   'ce.recommendation.recommendationChart.memoryLabel': string
   'ce.recommendation.recommendationChart.memoryLabelRegular': string
   'ce.recommendation.recommendationChart.memoryUsagePlaceholder': string
   'ce.recommendation.recommendationChart.noOfSamples': string
+  'ce.recommendation.recommendationChart.request': string
+  'ce.recommendation.recommendationChart.willBeMet': string
   'ce.recommendation.sideNavText': string
   'ce.savedYamlSuccess': string
   'ce.sideNav.perspective': string
@@ -4655,25 +4691,34 @@ export interface StringsMap {
   'cv.copyURL': string
   'cv.currentProductionRisk': string
   'cv.customHealthSource.Querymapping.endTimeLabel': string
+  'cv.customHealthSource.Querymapping.jsonPathTitle': string
   'cv.customHealthSource.Querymapping.label': string
+  'cv.customHealthSource.Querymapping.queryValueJsonPath': string
   'cv.customHealthSource.Querymapping.startAndEndTimeTitle': string
   'cv.customHealthSource.Querymapping.startTimeLabel': string
   'cv.customHealthSource.Querymapping.title': string
   'cv.customHealthSource.Querymapping.validation.body': string
+  'cv.customHealthSource.Querymapping.validation.enableJSONPaths': string
   'cv.customHealthSource.Querymapping.validation.endTime.placeholder': string
   'cv.customHealthSource.Querymapping.validation.endTime.timestamp': string
+  'cv.customHealthSource.Querymapping.validation.logMessageJsonPath': string
   'cv.customHealthSource.Querymapping.validation.path': string
   'cv.customHealthSource.Querymapping.validation.pathWithoutPlaceholder': string
+  'cv.customHealthSource.Querymapping.validation.queryName': string
   'cv.customHealthSource.Querymapping.validation.queryType': string
   'cv.customHealthSource.Querymapping.validation.startAndEndTime': string
   'cv.customHealthSource.Querymapping.validation.startTime.placeholder': string
   'cv.customHealthSource.Querymapping.validation.startTime.timestamp': string
+  'cv.customHealthSource.Querymapping.validation.timestampJsonPath': string
   'cv.customHealthSource.ServiceInstance.pathLabel': string
   'cv.customHealthSource.ServiceInstance.pathModalHeader': string
   'cv.customHealthSource.addGroupNameTitle': string
+  'cv.customHealthSource.customHealthLog': string
+  'cv.customHealthSource.customHealthMetric': string
   'cv.customHealthSource.fetchRecordsButton': string
   'cv.cvChanges.changeTypeFilterDefault': string
   'cv.cvChanges.changesTimeline': string
+  'cv.cvChanges.clearFilters': string
   'cv.cvChanges.monitoredSVC': string
   'cv.cvChanges.sourceFilterDefault': string
   'cv.cvTrialHomePage.startTrial.description': string
@@ -4904,7 +4949,6 @@ export interface StringsMap {
   'cv.monitoringSources.appD.validationsPassed': string
   'cv.monitoringSources.appD.verificationsInProgress': string
   'cv.monitoringSources.assign': string
-  'cv.monitoringSources.backToMapping': string
   'cv.monitoringSources.baselineDeviation': string
   'cv.monitoringSources.buildYourQuery': string
   'cv.monitoringSources.datadog.manualInputQueryModal.modalTitle': string
@@ -5040,7 +5084,6 @@ export interface StringsMap {
   'cv.monitoringSources.queryName': string
   'cv.monitoringSources.queryNameLabel': string
   'cv.monitoringSources.queryNameValidation': string
-  'cv.monitoringSources.reviewPageSubHeading': string
   'cv.monitoringSources.riskCategoryLabel': string
   'cv.monitoringSources.riskProfile': string
   'cv.monitoringSources.serviceInstanceIdentifier': string

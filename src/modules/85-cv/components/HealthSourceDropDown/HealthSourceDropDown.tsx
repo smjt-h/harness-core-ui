@@ -37,6 +37,7 @@ export function HealthSourceDropDown(props: HealthSourceDropDownProps): JSX.Elem
       name="healthsources-select"
       items={healthSources}
       className={classNames(css.maxDropDownWidth, className)}
+      defaultSelectedItem={healthSources?.[0]}
       key={healthSources?.[0]?.value as string}
       inputProps={{ placeholder: getString('pipeline.verification.healthSourcePlaceholder') }}
       onChange={item => {

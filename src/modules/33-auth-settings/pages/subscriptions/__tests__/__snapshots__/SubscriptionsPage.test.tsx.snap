@@ -557,7 +557,12 @@ exports[`Subscriptions Page it renders an expired banner when the trial is expir
             <p
               class="StyledProps--font StyledProps--main StyledProps--color StyledProps--color-grey600"
             >
-              common.subscriptions.overview.expiry
+              common.account.licenseCount
+            </p>
+            <p
+              class="StyledProps--font StyledProps--main StyledProps--color StyledProps--color-grey600"
+            >
+              common.extendTrial.expiryDate
             </p>
             <p
               class="StyledProps--font StyledProps--main StyledProps--color StyledProps--color-black StyledProps--font-weight-semi-bold"
@@ -1045,7 +1050,12 @@ exports[`Subscriptions Page it renders the correct card in the subscriptions pag
             <p
               class="StyledProps--font StyledProps--main StyledProps--color StyledProps--color-grey600"
             >
-              common.subscriptions.overview.expiry
+              common.account.licenseCount
+            </p>
+            <p
+              class="StyledProps--font StyledProps--main StyledProps--color StyledProps--color-grey600"
+            >
+              common.extendTrial.expiryDate
             </p>
             <p
               class="StyledProps--font StyledProps--main StyledProps--color StyledProps--color-black StyledProps--font-weight-semi-bold"
@@ -1533,7 +1543,12 @@ exports[`Subscriptions Page it renders the subscriptions page 1`] = `
             <p
               class="StyledProps--font StyledProps--main StyledProps--color StyledProps--color-grey600"
             >
-              common.subscriptions.overview.expiry
+              common.account.licenseCount
+            </p>
+            <p
+              class="StyledProps--font StyledProps--main StyledProps--color StyledProps--color-grey600"
+            >
+              common.extendTrial.expiryDate
             </p>
             <p
               class="StyledProps--font StyledProps--main StyledProps--color StyledProps--color-black StyledProps--font-weight-semi-bold"
@@ -2467,7 +2482,12 @@ exports[`Subscriptions Page it should update the license store 1`] = `
             <p
               class="StyledProps--font StyledProps--main StyledProps--color StyledProps--color-grey600"
             >
-              common.subscriptions.overview.expiry
+              common.account.licenseCount
+            </p>
+            <p
+              class="StyledProps--font StyledProps--main StyledProps--color StyledProps--color-grey600"
+            >
+              common.extendTrial.expiryDate
             </p>
             <p
               class="StyledProps--font StyledProps--main StyledProps--color StyledProps--color-black StyledProps--font-weight-semi-bold"

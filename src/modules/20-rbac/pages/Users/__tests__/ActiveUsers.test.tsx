@@ -6,7 +6,16 @@
  */
 
 import React from 'react'
-import { act, fireEvent, getByText, queryByText, render, RenderResult, waitFor } from '@testing-library/react'
+import {
+  act,
+  fireEvent,
+  getByText,
+  queryByAttribute,
+  queryByText,
+  render,
+  RenderResult,
+  waitFor
+} from '@testing-library/react'
 
 import { findDialogContainer, findPopoverContainer, TestWrapper } from '@common/utils/testUtils'
 import type { ResponseBoolean } from 'services/cd-ng'
@@ -154,6 +163,26 @@ describe('UsersPage Test', () => {
     })
 
     expect(form).toMatchSnapshot()
+  })
+  test('Default Resource Group Test', async () => {
+    createRole.mockReset()
+    const addRole = container.querySelector(`[data-testid="addRole-${activeUserMock.data?.content?.[0].user.uuid}"]`)
+    expect(addRole).toBeTruthy()
+    act(() => {
+      fireEvent.click(addRole!)
+    })
+    const form = findDialogContainer()
+    expect(form).toBeTruthy()
+    const addButton = form?.querySelector('button[data-id="btn-add"]')
+    expect(addButton).toBeTruthy()
+
+    act(() => {
+      fireEvent.click(addButton!)
+    })
+
+    expect(queryByAttribute('data-testid', form!, 'resourceGroup-2')?.getAttribute('value'))?.toEqual(
+      'rbac.allResourcesIncludingChildScopes'
+    )
   })
   test('Unlock Active User', async () => {
     unlockActiveUser.mockReset()

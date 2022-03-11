@@ -14,6 +14,7 @@ declare const styles: {
   readonly formRow: string
   readonly inputWidth: string
   readonly lastRow: string
+  readonly marginTop: string
   readonly simultaneousDeployment: string
 }
 export default styles

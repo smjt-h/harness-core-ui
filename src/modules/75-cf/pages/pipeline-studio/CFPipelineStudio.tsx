@@ -25,7 +25,6 @@ import { PipelineStudio } from '@pipeline/components/PipelineStudio/PipelineStud
 import { useQueryParams } from '@common/hooks'
 import { useFeatureFlag } from '@common/hooks/useFeatureFlag'
 import { useLicenseStore } from 'framework/LicenseStore/LicenseStoreContext'
-import { LICENSE_STATE_VALUES } from 'framework/LicenseStore/licenseStoreUtil'
 import { FeatureFlag } from '@common/featureFlags'
 import css from './CFPipelineStudio.module.scss'
 
@@ -57,7 +56,7 @@ const CIPipelineStudio: React.FC = (): JSX.Element => {
   const isCDEnabled = useFeatureFlag(FeatureFlag.CDNG_ENABLED)
   const isCFEnabled = useFeatureFlag(FeatureFlag.CFNG_ENABLED)
   const isCIEnabled = useFeatureFlag(FeatureFlag.CING_ENABLED)
-  const { CI_LICENSE_STATE, FF_LICENSE_STATE, CD_LICENSE_STATE } = useLicenseStore()
+  const { licenseInformation } = useLicenseStore()
   return (
     <PipelineProvider
       stagesMap={stagesCollection.getAllStagesAttributes(getString)}
@@ -67,9 +66,9 @@ const CIPipelineStudio: React.FC = (): JSX.Element => {
         getCFPipelineStages(
           args,
           getString,
-          CI_LICENSE_STATE === LICENSE_STATE_VALUES.ACTIVE && isCIEnabled,
-          CD_LICENSE_STATE === LICENSE_STATE_VALUES.ACTIVE && isCDEnabled,
-          FF_LICENSE_STATE === LICENSE_STATE_VALUES.ACTIVE && isCFEnabled,
+          licenseInformation['CI'] && isCIEnabled,
+          licenseInformation['CD'] && isCDEnabled,
+          licenseInformation['CF'] && isCFEnabled,
           true
         )
       }

@@ -31,6 +31,7 @@ import SecretInput from '@secrets/components/SecretInput/SecretInput'
 import TextReference, { TextReferenceInterface, ValueType } from '@secrets/components/TextReference/TextReference'
 import { useStrings } from 'framework/strings'
 import { GitAuthTypes, GitAPIAuthTypes } from '@connectors/pages/connectors/utils/ConnectorHelper'
+import { getCommonConnectorsValidationSchema } from '../../CreateConnectorUtils'
 import commonStyles from '@connectors/components/CreateConnector/commonSteps/ConnectorCommonStyles.module.scss'
 import css from './StepGitlabAuthentication.module.scss'
 import commonCss from '../../commonSteps/ConnectorCommonStyles.module.scss'
@@ -139,11 +140,20 @@ const RenderAPIAccessFormWrapper: React.FC<FormikProps<GitlabFormInterface>> = f
     }
   ]
 
+  useEffect(() => {
+    formikProps.setFieldValue('apiAuthType', GitAPIAuthTypes.TOKEN)
+  }, [])
+
   return (
     <>
       <Container className={css.authHeaderRow}>
         <Text font={{ variation: FontVariation.H6 }}>{getString('common.git.APIAuthentication')}</Text>
-        <FormInput.Select name="apiAuthType" items={apiAuthOptions} className={commonStyles.authTypeSelect} />
+        <FormInput.Select
+          name="apiAuthType"
+          items={apiAuthOptions}
+          className={commonStyles.authTypeSelect}
+          value={apiAuthOptions[0]}
+        />
       </Container>
       <RenderAPIAccessForm {...formikProps} />
     </>
@@ -204,49 +214,30 @@ const StepGitlabAuthentication: React.FC<StepProps<StepGitlabAuthenticationProps
             ...prevStepData
           }}
           formName="stepGitlabAuth"
-          validationSchema={Yup.object().shape({
-            username: Yup.string().when(['connectionType', 'authType'], {
-              is: (connectionType, authType) =>
-                connectionType === GitConnectionType.HTTP && authType !== GitAuthTypes.KERBEROS,
-              then: Yup.string().trim().required(getString('validation.username')),
-              otherwise: Yup.string().nullable()
-            }),
-            authType: Yup.string().when('connectionType', {
-              is: val => val === GitConnectionType.HTTP,
-              then: Yup.string().trim().required(getString('validation.authType'))
-            }),
-            sshKey: Yup.object().when('connectionType', {
-              is: val => val === GitConnectionType.SSH,
-              then: Yup.object().required(getString('validation.sshKey')),
-              otherwise: Yup.object().nullable()
-            }),
-            password: Yup.object().when(['connectionType', 'authType'], {
-              is: (connectionType, authType) =>
-                connectionType === GitConnectionType.HTTP && authType === GitAuthTypes.USER_PASSWORD,
-              then: Yup.object().required(getString('validation.password')),
-              otherwise: Yup.object().nullable()
-            }),
-            kerberosKey: Yup.object().when('authType', {
-              is: val => val === GitAuthTypes.KERBEROS,
-              then: Yup.object().required(getString('validation.kerberosKey')),
-              otherwise: Yup.object().nullable()
-            }),
-            accessToken: Yup.object().when(['connectionType', 'authType'], {
-              is: (connectionType, authType) =>
-                connectionType === GitConnectionType.HTTP && authType === GitAuthTypes.USER_TOKEN,
-              then: Yup.object().required(getString('validation.accessToken')),
-              otherwise: Yup.object().nullable()
-            }),
-            apiAuthType: Yup.string().when('enableAPIAccess', {
-              is: val => val,
-              then: Yup.string().trim().required(getString('validation.authType'))
-            }),
-            apiAccessToken: Yup.object().when(['enableAPIAccess', 'apiAuthType'], {
-              is: (enableAPIAccess, apiAuthType) => enableAPIAccess && apiAuthType === GitAPIAuthTypes.TOKEN,
-              then: Yup.object().required(getString('validation.accessToken')),
-              otherwise: Yup.object().nullable()
+          validationSchema={getCommonConnectorsValidationSchema(getString).concat(
+            Yup.object().shape({
+              kerberosKey: Yup.object().when('authType', {
+                is: val => val === GitAuthTypes.KERBEROS,
+                then: Yup.object().required(getString('validation.kerberosKey')),
+                otherwise: Yup.object().nullable()
+              }),
+              accessToken: Yup.object().when(['connectionType', 'authType'], {
+                is: (connectionType, authType) =>
+                  connectionType === GitConnectionType.HTTP && authType === GitAuthTypes.USER_TOKEN,
+                then: Yup.object().required(getString('connectors.validation.personalAccessToken')),
+                otherwise: Yup.object().nullable()
+              }),
+              apiAuthType: Yup.string().when('enableAPIAccess', {
+                is: val => val,
+                then: Yup.string().trim().required(getString('validation.authType'))
+              }),
+              apiAccessToken: Yup.object().when(['enableAPIAccess', 'apiAuthType'], {
+                is: (enableAPIAccess, apiAuthType) => enableAPIAccess && apiAuthType === GitAPIAuthTypes.TOKEN,
+                then: Yup.object().required(getString('connectors.validation.personalAccessToken')),
+                otherwise: Yup.object().nullable()
+              })
             })
-          })}
+          )}
           onSubmit={handleSubmit}
         >
           {formikProps => (

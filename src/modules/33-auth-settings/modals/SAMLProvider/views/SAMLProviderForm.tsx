@@ -90,8 +90,8 @@ const SAMLProviderForm: React.FC<Props> = ({ onSubmit, onCancel, samlProvider })
       entityIdEnabled: samlProvider ? !!samlProvider?.entityIdentifier : false,
       entityIdentifier: defaultTo(samlProvider?.entityIdentifier, ''),
       enableClientIdAndSecret: samlProvider ? !!samlProvider?.clientSecret || !!samlProvider?.clientId : false,
-      clientSecret: samlProvider ? samlProvider?.clientSecret : undefined,
-      clientId: samlProvider ? samlProvider?.clientId : '',
+      clientSecret: defaultTo(samlProvider?.clientSecret, ''),
+      clientId: defaultTo(samlProvider?.clientId, ''),
       samlProviderType:
         samlProvider && samlProvider?.samlProviderType ? (samlProvider?.samlProviderType as Providers) : undefined
     }

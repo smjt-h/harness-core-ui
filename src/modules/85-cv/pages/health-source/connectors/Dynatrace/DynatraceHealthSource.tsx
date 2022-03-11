@@ -15,22 +15,18 @@ import type {
 } from '@cv/pages/health-source/connectors/Dynatrace/DynatraceHealthSource.types'
 import CardWithOuterTitle from '@cv/pages/health-source/common/CardWithOuterTitle/CardWithOuterTitle'
 import DrawerFooter from '@cv/pages/health-source/common/DrawerFooter/DrawerFooter'
+import useGroupedSideNaveHook from '@cv/hooks/GroupedSideNaveHook/useGroupedSideNaveHook'
 import { useStrings } from 'framework/strings'
 import {
+  defaultDynatraceCustomMetric,
   mapDynatraceDataToDynatraceForm,
   onSubmitDynatraceData,
   validateMapping
 } from '@cv/pages/health-source/connectors/Dynatrace/DynatraceHealthSource.utils'
 import DynatraceCustomMetrics from '@cv/pages/health-source/connectors/Dynatrace/components/DynatraceCustomMetrics/DynatraceCustomMetrics'
-import type {
-  CreatedMetricsWithSelectedIndex,
-  SelectedAndMappedMetrics
-} from '@cv/pages/health-source/connectors/Dynatrace/components/DynatraceCustomMetrics/DynatraceCustomMetrics.types'
-import {
-  initializeCreatedMetrics,
-  initializeSelectedMetricsMap
-} from '@cv/pages/health-source/connectors/Dynatrace/components/DynatraceCustomMetrics/DynatraceCustomMetrics.utils'
 import DynatraceMetricPacksToService from './components/DynatraceMetricPacksToService/DynatraceMetricPacksToService'
+
+import CustomMetric from '../../common/CustomMetric/CustomMetric'
 import css from '@cv/pages/health-source/connectors/Dynatrace/DynatraceHealthSource.module.scss'
 
 export default function DynatraceHealthSource(props: DynatraceHealthSourceProps): JSX.Element {
@@ -38,35 +34,51 @@ export default function DynatraceHealthSource(props: DynatraceHealthSourceProps)
   const { getString } = useStrings()
   const [dynatraceMetricData, setDynatraceMetricData] = useState<DynatraceFormDataInterface>(initialPayload)
   const [showCustomMetric, setShowCustomMetric] = useState<boolean>(!!dynatraceMetricData.customMetrics.size)
-  const [{ selectedMetric, mappedMetrics }, setMappedMetrics] = useState<SelectedAndMappedMetrics>(
-    initializeSelectedMetricsMap(
-      getString('cv.healthSource.connectors.Dynatrace.defaultMetricName'),
-      dynatraceMetricData.customMetrics
-    )
-  )
-  const [{ createdMetrics, selectedMetricIndex }, setCreatedMetrics] = useState<CreatedMetricsWithSelectedIndex>(
-    initializeCreatedMetrics(
-      getString('cv.healthSource.connectors.Dynatrace.defaultMetricName'),
-      selectedMetric,
-      mappedMetrics
-    )
-  )
+
+  const {
+    createdMetrics,
+    mappedMetrics,
+    selectedMetric,
+    groupedCreatedMetrics,
+    groupedCreatedMetricsList,
+    setMappedMetrics,
+    setCreatedMetrics,
+    setGroupedCreatedMetrics
+  } = useGroupedSideNaveHook({
+    defaultCustomMetricName: getString('cv.healthSource.connectors.Dynatrace.defaultMetricName'),
+    initCustomMetricData: defaultDynatraceCustomMetric(getString),
+    mappedServicesAndEnvs: dynatraceMetricData.customMetrics
+  })
 
   const dynatraceMetricFormData = useMemo(
     () => mapDynatraceDataToDynatraceForm(dynatraceMetricData, mappedMetrics, selectedMetric, showCustomMetric),
     [dynatraceMetricData, mappedMetrics, selectedMetric, showCustomMetric]
   )
+
   return (
     <Formik<DynatraceFormDataInterface>
       onSubmit={noop}
       enableReinitialize
       formName={'dynatraceHealthSourceForm'}
       isInitialValid={(args: any) =>
-        Object.keys(validateMapping(args.initialValues, createdMetrics, selectedMetricIndex, getString, mappedMetrics))
-          .length === 0
+        Object.keys(
+          validateMapping(
+            args.initialValues,
+            groupedCreatedMetricsList,
+            groupedCreatedMetricsList.indexOf(selectedMetric),
+            getString,
+            mappedMetrics
+          )
+        ).length === 0
       }
       validate={values => {
-        return validateMapping(values, createdMetrics, selectedMetricIndex, getString, mappedMetrics)
+        return validateMapping(
+          values,
+          groupedCreatedMetricsList,
+          groupedCreatedMetricsList.indexOf(selectedMetric),
+          getString,
+          mappedMetrics
+        )
       }}
       initialValues={dynatraceMetricFormData}
     >
@@ -80,18 +92,30 @@ export default function DynatraceHealthSource(props: DynatraceHealthSourceProps)
               metricValues={formik.values}
             />
             {showCustomMetric ? (
-              <DynatraceCustomMetrics
-                isFormValid={formik.isValid}
-                metricValues={formik.values}
-                formikSetField={formik.setFieldValue}
-                mappedMetrics={mappedMetrics}
+              <CustomMetric
+                isValidInput={formik.isValid}
                 setMappedMetrics={setMappedMetrics}
-                createdMetrics={createdMetrics}
-                setCreatedMetrics={setCreatedMetrics}
                 selectedMetric={selectedMetric}
-                connectorIdentifier={connectorIdentifier}
-                selectedServiceId={(formik.values.selectedService.value as string) || ''}
-              />
+                formikValues={formik.values}
+                mappedMetrics={mappedMetrics}
+                createdMetrics={createdMetrics}
+                groupedCreatedMetrics={groupedCreatedMetrics}
+                setCreatedMetrics={setCreatedMetrics}
+                setGroupedCreatedMetrics={setGroupedCreatedMetrics}
+                defaultMetricName={getString('cv.healthSource.connectors.Dynatrace.defaultMetricName')}
+                tooptipMessage={getString('cv.monitoringSources.gcoLogs.addQueryTooltip')}
+                addFieldLabel={getString('cv.monitoringSources.addMetric')}
+                initCustomForm={defaultDynatraceCustomMetric(getString)}
+              >
+                <DynatraceCustomMetrics
+                  metricValues={formik.values}
+                  formikSetField={formik.setFieldValue}
+                  mappedMetrics={mappedMetrics}
+                  selectedMetric={selectedMetric}
+                  connectorIdentifier={connectorIdentifier}
+                  selectedServiceId={(formik.values.selectedService.value as string) || ''}
+                />
+              </CustomMetric>
             ) : (
               formik.values.selectedService.value && (
                 <CardWithOuterTitle title={getString('cv.healthSource.connectors.customMetrics')}>
@@ -117,7 +141,7 @@ export default function DynatraceHealthSource(props: DynatraceHealthSourceProps)
                   formik,
                   mappedMetrics,
                   selectedMetric,
-                  selectedMetricIndex,
+                  groupedCreatedMetricsList.indexOf(selectedMetric),
                   createdMetrics,
                   getString,
                   onSubmit

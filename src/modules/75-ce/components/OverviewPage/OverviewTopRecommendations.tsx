@@ -8,7 +8,12 @@
 import React, { useMemo } from 'react'
 import { Link, useParams } from 'react-router-dom'
 import { Color, Container, Layout, Text, FontVariation } from '@wings-software/uicore'
-import { K8sRecommendationFilterDtoInput, RecommendationItemDto, useRecommendationsQuery } from 'services/ce/services'
+import {
+  K8sRecommendationFilterDtoInput,
+  RecommendationItemDto,
+  ResourceType,
+  useRecommendationsQuery
+} from 'services/ce/services'
 import { useStrings } from 'framework/strings'
 import routes from '@common/RouteDefinitions'
 import formatCost from '@ce/utils/formatCost'
@@ -17,13 +22,22 @@ import type { AccountPathProps } from '@common/interfaces/RouteInterfaces'
 import { Loader } from './OverviewPageLayout'
 import css from './OverviewPage.module.scss'
 
+type RouteFn = (
+  params: {
+    recommendation: string
+    recommendationName: string
+  } & {
+    accountId: string
+  }
+) => string
+
 const OverviewTopRecommendations = () => {
   const { getString } = useStrings()
   const pathParams = useParams<AccountPathProps>()
   const [result] = useRecommendationsQuery({
     requestPolicy: 'network-only',
     variables: {
-      filter: { offset: 0, limit: 20, resourceTypes: ['WORKLOAD'], minSaving: 0 } as K8sRecommendationFilterDtoInput
+      filter: { offset: 0, limit: 20, minSaving: 0 } as K8sRecommendationFilterDtoInput
     }
   })
 
@@ -74,19 +88,27 @@ const Recommendation = (props: RecommendationProps) => {
   const { getString } = useStrings()
   const { accountId } = useParams<AccountPathProps>()
   const {
-    data: { id, resourceName }
+    data: { id, resourceName, resourceType }
   } = props
 
   const map: Record<string, string> = useMemo(
     () => ({
-      WORKLOAD: getString('ce.overview.workload')
+      [ResourceType.Workload]: getString('ce.overview.workload'),
+      [ResourceType.NodePool]: getString('ce.overview.nodepool')
     }),
     []
   )
 
+  const resourceTypeToRoute: Record<ResourceType, RouteFn> = useMemo(() => {
+    return {
+      [ResourceType.Workload]: routes.toCERecommendationDetails,
+      [ResourceType.NodePool]: routes.toCENodeRecommendationDetails
+    }
+  }, [])
+
   return (
     <Link
-      to={routes.toCERecommendationDetails({ accountId, recommendation: id, recommendationName: resourceName || id })}
+      to={resourceTypeToRoute[resourceType]({ accountId, recommendation: id, recommendationName: resourceName || id })}
     >
       <div className={css.recommendation}>
         <Layout.Vertical spacing="xsmall">

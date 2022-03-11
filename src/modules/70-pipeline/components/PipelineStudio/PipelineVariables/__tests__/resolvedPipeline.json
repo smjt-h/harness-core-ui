@@ -1,0 +1,77 @@
+{
+  "name": "Random",
+  "identifier": "Random",
+  "allowStageExecutions": false,
+  "projectIdentifier": "Yogesh_Test",
+  "orgIdentifier": "default",
+  "tags": {},
+  "stages": [
+    {
+      "stage": {
+        "name": "Stage 1",
+        "identifier": "Stage_1",
+        "type": "Deployment",
+        "spec": {
+          "serviceConfig": {
+            "serviceDefinition": {
+              "type": "Kubernetes",
+              "spec": {
+                "variables": []
+              }
+            },
+            "serviceRef": "Some_Service"
+          },
+          "infrastructure": {
+            "infrastructureDefinition": {
+              "type": "KubernetesDirect",
+              "spec": {
+                "connectorRef": "account.arpit2929",
+                "namespace": "default",
+                "releaseName": "release-<+INFRA_KEY>"
+              }
+            },
+            "allowSimultaneousDeployments": false,
+            "environmentRef": "Some_Environment"
+          },
+          "execution": {
+            "steps": [
+              {
+                "step": {
+                  "identifier": "Step_1",
+                  "type": "ShellScript",
+                  "name": "Step 1",
+                  "spec": {
+                    "shell": "Bash",
+                    "onDelegate": true,
+                    "source": {
+                      "type": "Inline",
+                      "spec": {
+                        "script": "echo 1"
+                      }
+                    },
+                    "environmentVariables": [],
+                    "outputVariables": [],
+                    "executionTarget": {}
+                  },
+                  "timeout": "10m"
+                }
+              }
+            ],
+            "rollbackSteps": []
+          },
+          "serviceDependencies": []
+        },
+        "failureStrategies": [
+          {
+            "onFailure": {
+              "errors": ["AllErrors"],
+              "action": {
+                "type": "StageRollback"
+              }
+            }
+          }
+        ]
+      }
+    }
+  ]
+}

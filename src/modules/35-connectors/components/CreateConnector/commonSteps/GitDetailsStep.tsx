@@ -210,7 +210,7 @@ const GitDetailsStep: React.FC<StepProps<ConnectorConfigDTO> & ConnectorDetailsS
   }
 
   return (
-    <Layout.Vertical width="60%" style={{ minHeight: 460 }} className={cx(css.firstep, commonCss.stepContainer)}>
+    <Layout.Vertical className={cx(css.gitDetails, css.firstep, commonCss.stepContainer)}>
       <ModalErrorHandler bind={setModalErrorHandler} />
       <Text
         font={{ variation: FontVariation.H3 }}
@@ -260,7 +260,7 @@ const GitDetailsStep: React.FC<StepProps<ConnectorConfigDTO> & ConnectorDetailsS
             formikProps.values as unknown as ConnectorInfoDTO
           )
           return (
-            <FormikForm className={cx(commonCss.fullHeight, commonCss.fullHeightDivsWithFlex)}>
+            <FormikForm className={cx(css.connectorForm, commonCss.fullHeight, commonCss.fullHeightDivsWithFlex)}>
               <Layout.Vertical className={commonCss.paddingTop8}>
                 <Container className={commonCss.bottomPadding1}>
                   <Layout.Vertical spacing="xsmall">
@@ -300,6 +300,7 @@ const GitDetailsStep: React.FC<StepProps<ConnectorConfigDTO> & ConnectorDetailsS
                 </Container>
                 <FormInput.Text
                   name="url"
+                  className={css.formElm}
                   label={
                     <Text font={{ variation: FontVariation.FORM_LABEL }}>
                       {getUrlLabel(props.type, formikProps.values.urlType)}
@@ -318,6 +319,7 @@ const GitDetailsStep: React.FC<StepProps<ConnectorConfigDTO> & ConnectorDetailsS
                     </Text>
                     <FormInput.Text
                       name="validationRepo"
+                      className={css.formElm}
                       label={
                         <Text font={{ variation: FontVariation.FORM_LABEL }}>
                           {getString('common.git.testRepository')}

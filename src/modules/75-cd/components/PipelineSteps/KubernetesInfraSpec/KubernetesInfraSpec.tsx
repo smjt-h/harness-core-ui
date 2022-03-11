@@ -270,7 +270,7 @@ const KubernetesInfraSpecInputForm: React.FC<KubernetesInfraSpecEditableProps & 
             tooltipProps={{
               dataTooltipId: 'k8sDirectInfraConnector'
             }}
-            width={445}
+            width={391}
             name={`${path}.connectorRef`}
             label={getString('connector')}
             gitScope={{ repo: repoIdentifier || '', branch, getDefaultFromOtherRepo: true }}

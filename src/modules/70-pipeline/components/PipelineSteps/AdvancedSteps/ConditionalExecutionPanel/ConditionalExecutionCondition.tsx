@@ -5,15 +5,15 @@
  * https://polyformproject.org/wp-content/uploads/2020/06/PolyForm-Shield-1.0.0.txt.
  */
 
-import React from 'react'
-import { Container, HarnessDocTooltip } from '@wings-software/uicore'
+import React, { useState } from 'react'
+import { Container, getMultiTypeFromValue, HarnessDocTooltip, MultiTypeInputType } from '@wings-software/uicore'
 import { Checkbox } from '@blueprintjs/core'
 import type { FormikProps } from 'formik'
 import cx from 'classnames'
 import { useStrings } from 'framework/strings'
-import { MonacoTextField } from '@common/components/MonacoTextField/MonacoTextField'
+import { MultiTypeExecutionCondition } from '@common/components/MultiTypeExecutionCondition/MultiTypeExecutionCondition'
+import { useVariablesExpression } from '@pipeline/components/PipelineStudio/PiplineHooks/useVariablesExpression'
 import type { StepMode as Modes } from '@pipeline/utils/stepUtils'
-import { useVariablesExpression } from '../../../PipelineStudio/PiplineHooks/useVariablesExpression'
 import type { ConditionalExecutionOption } from './ConditionalExecutionPanelUtils'
 import { ModeEntityNameMap } from './ConditionalExecutionPanelUtils'
 import css from './ConditionalExecutionPanel.module.scss'
@@ -25,9 +25,12 @@ interface ConditionalExecutionConditionProps {
 }
 
 export default function ConditionalExecutionCondition(props: ConditionalExecutionConditionProps): React.ReactElement {
-  const { expressions } = useVariablesExpression()
   const { getString } = useStrings()
   const { formikProps, mode, isReadonly } = props
+  const conditionValue = formikProps.values?.condition
+  const [multiType, setMultiType] = useState<MultiTypeInputType>(getMultiTypeFromValue(conditionValue))
+  const isInputDisabled = !formikProps.values.enableJEXL || isReadonly
+  const { expressions } = useVariablesExpression()
 
   return (
     <>
@@ -47,14 +50,18 @@ export default function ConditionalExecutionCondition(props: ConditionalExecutio
           formikProps.setFieldValue('enableJEXL', isChecked)
           if (!isChecked) {
             formikProps.setFieldValue('condition', null)
+            setMultiType(MultiTypeInputType.FIXED)
           }
         }}
       />
       <Container padding={{ top: 'small', left: 'large' }}>
-        <MonacoTextField
-          name="condition"
+        <MultiTypeExecutionCondition
+          path={'condition'}
+          allowableTypes={[MultiTypeInputType.FIXED, MultiTypeInputType.RUNTIME]}
+          isInputDisabled={isInputDisabled}
+          multiType={multiType}
+          setMultiType={setMultiType}
           expressions={expressions}
-          disabled={!formikProps.values.enableJEXL || isReadonly}
         />
       </Container>
     </>

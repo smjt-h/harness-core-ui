@@ -16,6 +16,7 @@ import type { ClusterChartProps } from './ClusterChart.types'
 export default function ClusterChart({ data }: ClusterChartProps): JSX.Element {
   const { getString } = useStrings()
   const chartConfig = useMemo(() => {
+    const dataToRender = data.length > 1000 ? data.slice(0, 1000) : data
     return chartOptions(
       [
         {
@@ -24,7 +25,7 @@ export default function ClusterChart({ data }: ClusterChartProps): JSX.Element {
             radius: 8,
             symbol: 'circle'
           },
-          data: data.map(val =>
+          data: dataToRender.map(val =>
             Object.assign(
               {},
               {
@@ -40,6 +41,7 @@ export default function ClusterChart({ data }: ClusterChartProps): JSX.Element {
       ],
       getString
     )
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [data])
   return (
     <Container padding="medium">

@@ -13,7 +13,8 @@ import type { DynatraceHealthSourceSpec, DynatraceServiceDTO } from 'services/cv
 import type {
   DynatraceFormDataInterface,
   DynatraceMetricData,
-  DynatraceMetricInfo
+  DynatraceMetricInfo,
+  InitDynatraceCustomMetricInterface
 } from '@cv/pages/health-source/connectors/Dynatrace/DynatraceHealthSource.types'
 import type { StringKeys } from 'framework/strings'
 import { DynatraceProductNames } from '@cv/pages/health-source/HealthSourceDrawer/component/defineHealthSource/DefineHealthSource.constant'
@@ -97,18 +98,14 @@ export const mapDynatraceDataToDynatraceForm = (
   selectedMetric: string,
   showCustomMetric: boolean
 ): DynatraceFormDataInterface => {
-  const isCurrentDataSameAsSelected = dynatraceMetricData.metricName === selectedMetric
-  if (isCurrentDataSameAsSelected) {
-    return {
-      ...dynatraceMetricData,
-      showCustomMetric
-    }
-  }
+  const metricIdentifier = selectedMetric.split(' ').join('_')
   return {
     ...dynatraceMetricData,
     ...mappedMetrics.get(selectedMetric),
     metricData: dynatraceMetricData.metricData,
-    showCustomMetric
+    metricName: selectedMetric,
+    showCustomMetric,
+    identifier: metricIdentifier
   }
 }
 
@@ -222,4 +219,19 @@ export const onSubmitDynatraceData = (
   }
   const updatedValues = { ...formik.values, customMetrics: updatedMetric.showCustomMetric ? mappedMetrics : new Map() }
   onSubmit(updatedValues)
+}
+
+export const defaultDynatraceCustomMetric = (
+  getString: (key: StringKeys) => string
+): InitDynatraceCustomMetricInterface => {
+  return {
+    metricSelector: '',
+    sli: false,
+    healthScore: false,
+    continuousVerification: false,
+    identifier: getString('cv.healthSource.connectors.Dynatrace.defaultMetricName').split(' ').join('_'),
+    metricName: getString('cv.healthSource.connectors.Dynatrace.defaultMetricName'),
+    isNew: true,
+    groupName: { label: '', value: '' }
+  }
 }

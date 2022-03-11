@@ -11,6 +11,7 @@ import { Link } from 'react-router-dom'
 
 import { TestWrapper } from '@common/utils/testUtils'
 import featuresFactory from 'framework/featureStore/FeaturesFactory'
+import { useGetLicensesAndSummary, useExtendTrialLicense, useSaveFeedback } from 'services/cd-ng'
 
 import { BANNER_KEY } from '../FeatureBanner'
 import { BannerType } from '../Constants'
@@ -25,6 +26,26 @@ jest.mock('@common/hooks/useGetUsageAndLimit', () => {
     useGetUsageAndLimit: () => {
       return useGetUsageAndLimitReturnMock
     }
+  }
+})
+
+jest.mock('services/cd-ng')
+const useGetLicensesAndSummaryMock = useGetLicensesAndSummary as jest.MockedFunction<any>
+useGetLicensesAndSummaryMock.mockImplementation(() => {
+  return {
+    data: {}
+  }
+})
+const useExtendTrialLicenseMock = useExtendTrialLicense as jest.MockedFunction<any>
+useExtendTrialLicenseMock.mockImplementation(() => {
+  return {
+    mutate: jest.fn()
+  }
+})
+const useSaveFeedbackMock = useSaveFeedback as jest.MockedFunction<any>
+useSaveFeedbackMock.mockImplementation(() => {
+  return {
+    mutate: jest.fn()
   }
 })
 const useGetUsageAndLimitReturnMock = {

@@ -38,7 +38,7 @@ const NodeRiskCountsDisplay: React.FC<NodeCountProps> = props => {
           <Container
             key={risk}
             data-testid="nodecount_display"
-            margin={{ right: 'small' }}
+            margin={{ right: 'xsmall' }}
             color={Color.WHITE}
             className={cx(css.nodeCountDisplay, {
               [nodeCountDisplayHealthy]: risk === HEALTHY,

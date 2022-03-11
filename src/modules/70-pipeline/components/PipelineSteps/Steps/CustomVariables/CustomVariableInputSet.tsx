@@ -16,7 +16,7 @@ import {
   FontVariation
 } from '@wings-software/uicore'
 import cx from 'classnames'
-import { defaultTo, get, isUndefined } from 'lodash-es'
+import { defaultTo, get, isEqual, isUndefined } from 'lodash-es'
 import { connect } from 'formik'
 import { useStrings } from 'framework/strings'
 import type { AllNGVariables } from '@pipeline/utils/types'
@@ -90,9 +90,12 @@ function CustomVariableInputSetBasic(props: CustomVariableInputSetProps): React.
             value: formikValue?.value || pipelineVariable?.default || ''
           }
         }) || []
-      formik.setFieldValue(`${basePath}variables`, updatedVariables)
+
+      if (!isEqual(get(formik?.values, `${basePath}variables`, []), updatedVariables)) {
+        formik.setFieldValue(`${basePath}variables`, updatedVariables)
+      }
     }
-  }, [])
+  }, [formik?.values, template?.variables, allValues?.variables])
 
   const formikVariables = get(formik?.values, `${basePath}variables`, [])
 

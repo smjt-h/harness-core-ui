@@ -97,7 +97,9 @@ function ArtifactListView({
                 </div>
                 <div>
                   <Text width={340} lineClamp={1} style={{ color: Color.GREY_500 }}>
-                    <span className={css.noWrap}>{primaryArtifact?.spec?.imagePath}</span>
+                    <span className={css.noWrap}>
+                      {primaryArtifact.spec.imagePath ?? primaryArtifact.spec.artifactPath}
+                    </span>
                   </Text>
                 </div>
                 {overrideSetIdentifier?.length === 0 && !isReadonly && (
@@ -171,7 +173,7 @@ function ArtifactListView({
                     </div>
                     <div className={css.locationField}>
                       <Text width={340} lineClamp={1} style={{ color: Color.GREY_500 }}>
-                        <span className={css.noWrap}>{sidecar?.spec?.imagePath}</span>
+                        <span className={css.noWrap}>{sidecar?.spec.imagePath ?? sidecar?.spec.artifactPath}</span>
                       </Text>
                     </div>
                     {overrideSetIdentifier?.length === 0 && !isReadonly && (

@@ -10,7 +10,7 @@ import { HealthSourceFieldNames } from '@cv/pages/health-source/common/utils/Hea
 export const DynatraceHealthSourceFieldNames = {
   ...HealthSourceFieldNames,
   METRIC_SELECTOR: 'metricSelector',
-  DYNATRACE_SELECTED_SERVICE: 'selectedService',
+  DYNATRACE_SELECTED_SERVICE: 'dynatraceService',
   ACTIVE_METRIC_SELECTOR: 'activeMetricSelector'
 }
 

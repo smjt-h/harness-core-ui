@@ -1,0 +1,100 @@
+{
+  "name": "Cg5feCBTQ8a5f7MGrTIbwA",
+  "identifier": "Random",
+  "allowStageExecutions": "bpgW5jtwRwWme5iAcurHuw",
+  "projectIdentifier": "DWz2uRm6SzWjeX8VRlPgeg",
+  "orgIdentifier": "ES8BHTBcQJapFNn6A_DIpw",
+  "tags": {
+    "__uuid": "vjAvN_c0Sj-zkSDc48OLPA"
+  },
+  "stages": [
+    {
+      "stage": {
+        "name": "sDIuZnmYReKvIJ9DKEVxHw",
+        "identifier": "Stage_1",
+        "type": "Deployment",
+        "spec": {
+          "serviceConfig": {
+            "serviceDefinition": {
+              "type": "Kubernetes",
+              "spec": {
+                "variables": [],
+                "__uuid": "tz1fOG0ER_mzSbOzDxZxwg"
+              },
+              "__uuid": "oQILI3FGSLSoD6Vg0JQivA"
+            },
+            "serviceRef": "ydTHrpV6R62bJrz92DS7Bw",
+            "__uuid": "ldMcqTjtQUCf76SaggytJg"
+          },
+          "infrastructure": {
+            "infrastructureDefinition": {
+              "type": "KubernetesDirect",
+              "spec": {
+                "connectorRef": "AOX5By0RSSaEXtvsShcBBA",
+                "namespace": "tAeeXFqbQIKIRwQ29g-yBw",
+                "releaseName": "lBCPQZiNRcSfM3I1LQO0FQ",
+                "__uuid": "jsKXsHV5Qni4e_lL-np-Bg"
+              },
+              "__uuid": "RmZhQYJMQbuguFXLU2zV7w"
+            },
+            "allowSimultaneousDeployments": "sd79FdAAShm3EvxwpCox3g",
+            "environmentRef": "1CYevzdoRUCZGg2lmhHw9g",
+            "__uuid": "MOcVenH3T0y-XXqv9OIT8w"
+          },
+          "execution": {
+            "steps": [
+              {
+                "step": {
+                  "identifier": "Step_1",
+                  "type": "ShellScript",
+                  "name": "qEQI-kgySQGri4_phdH5Hw",
+                  "spec": {
+                    "shell": "5gBSpGoGRvm_Pi_8w03YVw",
+                    "onDelegate": "9csxbYLyQWm2nMaG4ktDCg",
+                    "source": {
+                      "type": "Inline",
+                      "spec": {
+                        "script": "m2-PKk27SjmTRdToXZv0vA",
+                        "__uuid": "e6yIezGWQmGNrLAkwR0sMQ"
+                      },
+                      "__uuid": "Yj_MCb3nSWidzY5iEnHtnA"
+                    },
+                    "environmentVariables": [],
+                    "outputVariables": [],
+                    "executionTarget": {
+                      "__uuid": "CrMP8tLKTguhYvi88lj01w"
+                    },
+                    "__uuid": "XBcp3Z_0Sw-Q4H8JvgKO6A"
+                  },
+                  "timeout": "CE-hpV8cR3ORASrPN4uuGA",
+                  "__uuid": "hC_mylChR56TdbblBbfkvQ"
+                },
+                "__uuid": "5ibyyG-jTPaWgA_MWdH_4Q"
+              }
+            ],
+            "rollbackSteps": [],
+            "__uuid": "MomnIw-aQ6mfMRlf8sMrPQ"
+          },
+          "serviceDependencies": [],
+          "__uuid": "AG6KlL72Q5iM5397n_2o7A"
+        },
+        "failureStrategies": [
+          {
+            "onFailure": {
+              "errors": "XXWOgPtKQnm2SJZucnNlaw",
+              "action": {
+                "type": "StageRollback",
+                "__uuid": "vPu_xnJiQ4SQt7YSzeRvQQ"
+              },
+              "__uuid": "Or5yosTCQnm7DFr3kZHRmg"
+            },
+            "__uuid": "MWwCpKyIQ-yNCMlcW1xAyw"
+          }
+        ],
+        "__uuid": "Ec4NnNc8RS26wSeoxg47Cg"
+      },
+      "__uuid": "LZJ00DqlRX-WBmrWz49qpA"
+    }
+  ],
+  "__uuid": "RICvXPeRSSuPSDHNDaxTDQ"
+}

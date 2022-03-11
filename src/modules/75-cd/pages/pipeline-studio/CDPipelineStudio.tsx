@@ -27,7 +27,6 @@ import { TrialType } from '@pipeline/components/TrialModalTemplate/trialModalUti
 import type { PipelineInfoConfig } from 'services/cd-ng'
 import { useQueryParams } from '@common/hooks'
 import { useLicenseStore } from 'framework/LicenseStore/LicenseStoreContext'
-import { LICENSE_STATE_VALUES } from 'framework/LicenseStore/licenseStoreUtil'
 import { FeatureFlag } from '@common/featureFlags'
 import type { ModuleLicenseType } from '@common/constants/SubscriptionTypes'
 import css from './CDPipelineStudio.module.scss'
@@ -68,7 +67,7 @@ const CDPipelineStudio: React.FC = (): JSX.Element => {
       })
     )
   }
-  const { CI_LICENSE_STATE, FF_LICENSE_STATE, CD_LICENSE_STATE } = useLicenseStore()
+  const { licenseInformation } = useLicenseStore()
   const isCFEnabled = useFeatureFlag(FeatureFlag.CFNG_ENABLED)
   const isCIEnabled = useFeatureFlag(FeatureFlag.CING_ENABLED)
   const isCDEnabled = useFeatureFlag(FeatureFlag.CDNG_ENABLED)
@@ -83,9 +82,9 @@ const CDPipelineStudio: React.FC = (): JSX.Element => {
         getCDPipelineStages(
           args,
           getString,
-          CI_LICENSE_STATE === LICENSE_STATE_VALUES.ACTIVE && isCIEnabled,
-          CD_LICENSE_STATE === LICENSE_STATE_VALUES.ACTIVE && isCDEnabled,
-          FF_LICENSE_STATE === LICENSE_STATE_VALUES.ACTIVE && isCFEnabled,
+          licenseInformation['CI'] && isCIEnabled,
+          licenseInformation['CD'] && isCDEnabled,
+          licenseInformation['CF'] && isCFEnabled,
           true
         )
       }

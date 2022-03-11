@@ -5,9 +5,8 @@
  * https://polyformproject.org/wp-content/uploads/2020/06/PolyForm-Shield-1.0.0.txt.
  */
 
-import React, { useEffect, useState } from 'react'
+import React from 'react'
 import * as Yup from 'yup'
-import { parse } from 'yaml'
 import cx from 'classnames'
 import {
   Accordion,
@@ -28,10 +27,8 @@ import {
 import { useParams } from 'react-router-dom'
 import { isEmpty, get, set, unset } from 'lodash-es'
 import { Classes, Dialog } from '@blueprintjs/core'
-import flatten from 'lodash-es/flatten'
 import produce from 'immer'
 import { useStrings } from 'framework/strings'
-import { useAppStore } from 'framework/AppStore/AppStoreContext'
 import type { MultiTypeSelectOption } from '@pipeline/components/PipelineSteps/Steps/StepsTypes'
 import {
   ConnectorInfoDTO,
@@ -41,7 +38,6 @@ import {
   PipelineInfoConfig,
   useGetConnector
 } from 'services/cd-ng'
-import { useGetYamlWithTemplateRefsResolved } from 'services/template-ng'
 import {
   ConnectorReferenceField,
   ConnectorReferenceFieldProps
@@ -56,13 +52,11 @@ import type { PipelineType, GitQueryParams } from '@common/interfaces/RouteInter
 import { Scope } from '@common/interfaces/SecretsInterface'
 import { useFeatureFlag } from '@common/hooks/useFeatureFlag'
 import { FeatureFlag } from '@common/featureFlags'
-import { yamlStringify } from '@common/utils/YamlHelperMethods'
 import {
   generateSchemaForLimitCPU,
   generateSchemaForLimitMemory
 } from '@pipeline/components/PipelineSteps/Steps/StepsValidateUtils'
-import { StageType } from '@pipeline/utils/stageHelpers'
-import { useMutateAsGet, useQueryParams } from '@common/hooks'
+import { useQueryParams } from '@common/hooks'
 import { usePipelineContext } from '../PipelineContext/PipelineContext'
 import { DrawerTypes } from '../PipelineContext/PipelineActions'
 import { RightDrawer } from '../RightDrawer/RightDrawer'
@@ -128,10 +122,8 @@ export function RightBar(): JSX.Element {
   const codebase = pipeline?.properties?.ci?.codebase
   const [codebaseStatus, setCodebaseStatus] = React.useState<CodebaseStatuses>(CodebaseStatuses.ZeroState)
   const enableGovernanceSidebar = useFeatureFlag(FeatureFlag.OPA_PIPELINE_GOVERNANCE)
-  const [enableCodebase, setEnableCodebase] = useState<boolean>()
-  const [isCloneCodebaseEnabled, setIsCloneCodebaseEnabled] = useState<boolean>()
 
-  const { accountId, projectIdentifier, orgIdentifier, pipelineIdentifier } = useParams<
+  const { accountId, projectIdentifier, orgIdentifier } = useParams<
     PipelineType<{
       orgIdentifier: string
       projectIdentifier: string
@@ -213,138 +205,73 @@ export function RightBar(): JSX.Element {
     setConnectorUrl
   ])
 
-  const { selectedProject } = useAppStore()
+  React.useEffect(() => {
+    if (!codebase?.connectorRef) {
+      setCodebaseStatus(CodebaseStatuses.NotConfigured)
+    } else {
+      const validate = async () => {
+        setCodebaseStatus(CodebaseStatuses.Validating)
 
-  const {
-    data: pipelineYamlWithTemplateRefsResolved,
-    loading: loadingPipelineYamlWithTemplateRefsResolved,
-    refetch: getPipelineYamlWithTemplateRefsResolved
-  } = useMutateAsGet(useGetYamlWithTemplateRefsResolved, {
-    queryParams: {
-      accountIdentifier: accountId,
-      orgIdentifier,
-      pipelineIdentifier,
-      projectIdentifier,
-      repoIdentifier,
-      branch,
-      getDefaultFromOtherRepo: true
-    },
-    body: {
-      originalEntityYaml: yamlStringify(pipeline)
-    },
-    lazy: true
-  })
-
-  useEffect(() => {
-    getPipelineYamlWithTemplateRefsResolved()
-  }, [pipeline?.properties?.ci?.codebase])
-
-  useEffect(() => {
-    if (
-      !loadingPipelineYamlWithTemplateRefsResolved &&
-      pipelineYamlWithTemplateRefsResolved?.data?.mergedPipelineYaml
-    ) {
-      try {
-        const resolvedPipeline = parse(
-          pipelineYamlWithTemplateRefsResolved?.data?.mergedPipelineYaml
-        ) as PipelineInfoConfig
-        const pipelineStages = flatten(resolvedPipeline?.stages?.map(s => s?.parallel || s))
-
-        const ciStageExists = pipelineStages?.some?.(stage => {
-          if (stage?.stage?.type) {
-            return stage?.stage?.type === StageType.BUILD
-          } else {
-            return false
+        const connectorResult = await getConnectorPromise({
+          identifier: connectorId,
+          queryParams: {
+            accountIdentifier: accountId,
+            orgIdentifier: initialScope === Scope.ORG || initialScope === Scope.PROJECT ? orgIdentifier : undefined,
+            projectIdentifier: initialScope === Scope.PROJECT ? projectIdentifier : undefined
           }
         })
 
-        setEnableCodebase(
-          typeof codebaseStatus !== 'undefined' &&
-            selectedProject?.modules &&
-            selectedProject.modules.indexOf?.('CI') > -1 &&
-            ciStageExists
-        )
-        setIsCloneCodebaseEnabled(pipelineStages?.some?.(stage => (stage?.stage?.spec as any)?.cloneCodebase))
-      } catch (e) {
-        //Ignore error
-      }
-    }
-  }, [pipelineYamlWithTemplateRefsResolved])
+        if (connectorResult?.data?.connector?.spec.type === 'Account') {
+          try {
+            const response = await getTestGitRepoConnectionResultPromise({
+              identifier: connectorId,
+              queryParams: {
+                accountIdentifier: accountId,
+                orgIdentifier: initialScope === Scope.ORG || initialScope === Scope.PROJECT ? orgIdentifier : undefined,
+                projectIdentifier: initialScope === Scope.PROJECT ? projectIdentifier : undefined,
+                repoURL:
+                  (connectorResult?.data?.connector?.spec.url[connectorResult?.data?.connector?.spec.url.length - 1] ===
+                  '/'
+                    ? connectorResult?.data?.connector?.spec.url
+                    : connectorResult?.data?.connector?.spec.url + '/') + codebase?.repoName
+              },
+              body: undefined
+            })
 
-  React.useEffect(() => {
-    if (isCloneCodebaseEnabled) {
-      if (!codebase?.connectorRef) {
-        setCodebaseStatus(CodebaseStatuses.NotConfigured)
-      } else {
-        const validate = async () => {
-          setCodebaseStatus(CodebaseStatuses.Validating)
-
-          const connectorResult = await getConnectorPromise({
-            identifier: connectorId,
-            queryParams: {
-              accountIdentifier: accountId,
-              orgIdentifier: initialScope === Scope.ORG || initialScope === Scope.PROJECT ? orgIdentifier : undefined,
-              projectIdentifier: initialScope === Scope.PROJECT ? projectIdentifier : undefined
-            }
-          })
-
-          if (connectorResult?.data?.connector?.spec.type === 'Account') {
-            try {
-              const response = await getTestGitRepoConnectionResultPromise({
-                identifier: connectorId,
-                queryParams: {
-                  accountIdentifier: accountId,
-                  orgIdentifier:
-                    initialScope === Scope.ORG || initialScope === Scope.PROJECT ? orgIdentifier : undefined,
-                  projectIdentifier: initialScope === Scope.PROJECT ? projectIdentifier : undefined,
-                  repoURL:
-                    (connectorResult?.data?.connector?.spec.url[
-                      connectorResult?.data?.connector?.spec.url.length - 1
-                    ] === '/'
-                      ? connectorResult?.data?.connector?.spec.url
-                      : connectorResult?.data?.connector?.spec.url + '/') + codebase?.repoName
-                },
-                body: undefined
-              })
-
-              if (response?.data?.status === 'SUCCESS') {
-                setCodebaseStatus(CodebaseStatuses.Valid)
-              } else {
-                setCodebaseStatus(CodebaseStatuses.Invalid)
-              }
-            } catch (error) {
+            if (response?.data?.status === 'SUCCESS') {
+              setCodebaseStatus(CodebaseStatuses.Valid)
+            } else {
               setCodebaseStatus(CodebaseStatuses.Invalid)
             }
-          } else {
-            try {
-              const response = await getTestConnectionResultPromise({
-                identifier: connectorId,
-                queryParams: {
-                  accountIdentifier: accountId,
-                  orgIdentifier:
-                    initialScope === Scope.ORG || initialScope === Scope.PROJECT ? orgIdentifier : undefined,
-                  projectIdentifier: initialScope === Scope.PROJECT ? projectIdentifier : undefined
-                },
-                body: undefined
-              })
+          } catch (error) {
+            setCodebaseStatus(CodebaseStatuses.Invalid)
+          }
+        } else {
+          try {
+            const response = await getTestConnectionResultPromise({
+              identifier: connectorId,
+              queryParams: {
+                accountIdentifier: accountId,
+                orgIdentifier: initialScope === Scope.ORG || initialScope === Scope.PROJECT ? orgIdentifier : undefined,
+                projectIdentifier: initialScope === Scope.PROJECT ? projectIdentifier : undefined
+              },
+              body: undefined
+            })
 
-              if (response?.data?.status === 'SUCCESS') {
-                setCodebaseStatus(CodebaseStatuses.Valid)
-              } else {
-                setCodebaseStatus(CodebaseStatuses.Invalid)
-              }
-            } catch (error) {
+            if (response?.data?.status === 'SUCCESS') {
+              setCodebaseStatus(CodebaseStatuses.Valid)
+            } else {
               setCodebaseStatus(CodebaseStatuses.Invalid)
             }
+          } catch (error) {
+            setCodebaseStatus(CodebaseStatuses.Invalid)
           }
         }
-
-        validate()
       }
-    } else {
-      setCodebaseStatus(CodebaseStatuses.ZeroState)
+
+      validate()
     }
-  }, [codebase?.connectorRef, codebase?.repoName, isCloneCodebaseEnabled])
+  }, [codebase?.connectorRef, codebase?.repoName])
 
   const openCodebaseDialog = React.useCallback(() => {
     setIsCodebaseDialogOpen(true)
@@ -459,7 +386,7 @@ export function RightBar(): JSX.Element {
         />
       )}
 
-      {enableCodebase && !isYaml && (
+      {!isYaml && (
         <Button
           className={css.iconButton}
           text={getString('codebase')}

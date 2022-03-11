@@ -9,6 +9,7 @@ import React from 'react'
 
 import MainNav from '@common/navigation/MainNav'
 import { useModuleInfo } from '@common/hooks/useModuleInfo'
+import { TrialLicenseBanner } from '@common/layouts/TrialLicenseBanner'
 import FeatureBanner from './FeatureBanner'
 import css from './layouts.module.scss'
 
@@ -18,6 +19,7 @@ export function MinimalLayout(props: React.PropsWithChildren<unknown>): React.Re
     <div className={css.main} data-layout="minimal">
       <MainNav />
       <div className={css.rhs}>
+        {module && <TrialLicenseBanner />}
         {module && <FeatureBanner />}
         <div className={css.children}>{props.children}</div>
       </div>

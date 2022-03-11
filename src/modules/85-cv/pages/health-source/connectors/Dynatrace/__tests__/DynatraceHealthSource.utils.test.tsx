@@ -265,7 +265,39 @@ describe('Validate DynatraceHealthSource Utils', () => {
         'mapped_metric_1',
         false
       )
-    ).toEqual({ ...MockDynatraceMetricData, showCustomMetric: false, metricName: 'mapped_metric_1' })
+    ).toEqual({
+      ...MockDynatraceMetricData,
+      aggregator: 'avg',
+      serviceInstanceIdentifierTag: 'host',
+      identifier: 'mapped_metric_1',
+      isCustomCreatedMetric: false,
+      continuousVerification: true,
+      metric: 'system.cpu.user',
+      metricPath: 'mock_metric_path',
+      dashboardId: 'mock_dashboard_id',
+      metricTags: [
+        {
+          label: 'system.cpu.user',
+          value: 'system.cpu.user'
+        },
+        {
+          label: 'test.metric.1',
+          value: 'test.metric.1'
+        },
+        {
+          label: 'test.metric.2',
+          value: 'test.metric.2'
+        }
+      ],
+      groupName: {
+        label: 'mockGroupName',
+        value: 'mockGroupName'
+      },
+      query: 'avg:system.cpu.user{version}.rollup(avg, 60)',
+      sli: false,
+      showCustomMetric: false,
+      metricName: 'mapped_metric_1'
+    })
 
     const selectedMetric = MAPPED_METRICS_LIST_MOCK.get('mapped_metric_2')
     // case when selected custom metric is changed

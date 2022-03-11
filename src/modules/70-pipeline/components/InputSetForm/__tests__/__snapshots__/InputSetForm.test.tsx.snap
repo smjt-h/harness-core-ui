@@ -719,12 +719,12 @@ exports[`Render Forms - Snapshot Testing render Edit Input Set Form view: expand
                                           >
                                             <div
                                               class="Layout--horizontal StyledProps--main MultiTypeInput--main"
-                                              style="width: 445px;"
+                                              style="width: 391px;"
                                             >
                                               <button
                                                 class="bp3-button bp3-minimal Button--button StyledProps--font StyledProps--main container Button--iconOnly Button--without-shadow Button--withRightIcon"
                                                 data-testid="cr-field-pipeline.stages[0].stage.spec.infrastructure.infrastructureDefinition.spec.connectorRef"
-                                                style="width: 445px;"
+                                                style="width: 391px;"
                                                 type="button"
                                               >
                                                 <span
@@ -2165,12 +2165,12 @@ exports[`Render Forms - Snapshot Testing render Input Set Form view 1`] = `
                                           >
                                             <div
                                               class="Layout--horizontal StyledProps--main MultiTypeInput--main"
-                                              style="width: 445px;"
+                                              style="width: 391px;"
                                             >
                                               <button
                                                 class="bp3-button bp3-minimal Button--button StyledProps--font StyledProps--main container Button--iconOnly Button--without-shadow Button--withRightIcon"
                                                 data-testid="cr-field-pipeline.stages[0].stage.spec.infrastructure.infrastructureDefinition.spec.connectorRef"
-                                                style="width: 445px;"
+                                                style="width: 391px;"
                                                 type="button"
                                               >
                                                 <span

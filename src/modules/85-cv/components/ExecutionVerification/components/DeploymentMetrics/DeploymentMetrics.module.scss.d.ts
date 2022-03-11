@@ -10,6 +10,7 @@ declare const styles: {
   readonly accordionToggleButtons: string
   readonly actualFail: string
   readonly actualHealthy: string
+  readonly actualObserve: string
   readonly actualWarning: string
   readonly analysisRow: string
   readonly content: string
@@ -30,6 +31,8 @@ declare const styles: {
   readonly metricsPagination: string
   readonly noActivityId: string
   readonly noData: string
+  readonly nodeCount: string
+  readonly nodeCountMessage: string
   readonly predicted: string
   readonly refreshButton: string
 }

@@ -75,6 +75,10 @@ describe('Create empty monitored service', () => {
     cy.get('input[name="newRelicApplication"]').should('have.value', 'My Application')
     cy.get('input[name="metricData.Performance"]').should('be.checked')
     cy.contains('span', 'Submit').click({ force: true })
+
+    // Creating the monitored service.
+    cy.findByRole('button', { name: /Save/i }).click()
+    cy.findByText('Monitored Service created').should('be.visible')
   })
 
   it('Add new NewRelic monitored service with custom metric', () => {
@@ -130,5 +134,9 @@ describe('Create empty monitored service', () => {
     cy.get('input[name="sli"]').click({ force: true })
 
     cy.contains('span', 'Submit').click({ force: true })
+
+    // Creating the monitored service.
+    cy.findByRole('button', { name: /Save/i }).click()
+    cy.findByText('Monitored Service created').should('be.visible')
   })
 })

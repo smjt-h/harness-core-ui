@@ -1,0 +1,247 @@
+// Jest Snapshot v1, https://goo.gl/fbAQLP
+
+exports[`test cases for overview top recommendations should be able to render top recommendations 1`] = `
+<div>
+  <div
+    class="topRecommendations"
+  >
+    <div
+      class="Layout--vertical Layout--layout-spacing-medium StyledProps--main"
+    >
+      <div
+        class="Layout--horizontal StyledProps--main"
+        style="justify-content: space-between; align-items: center;"
+      >
+        <p
+          class="StyledProps--font StyledProps--main StyledProps--color StyledProps--color-grey800 StyledProps--font-weight-semi-bold StyledProps--font-size-medium"
+        >
+          ce.overview.cardtitles.topRecommendation
+        </p>
+        <a
+          href="/account/undefined/ce/recommendations"
+        >
+          <span
+            class="StyledProps--font StyledProps--main StyledProps--inline StyledProps--color StyledProps--color-primary7"
+          >
+            ce.overview.seeAll
+          </span>
+        </a>
+      </div>
+      <div
+        class="recommendations"
+      >
+        <a
+          href="/account/undefined/ce/recommendations/1/name/resource-1/details"
+        >
+          <div
+            class="recommendation"
+          >
+            <div
+              class="Layout--vertical Layout--layout-spacing-xsmall StyledProps--main"
+            >
+              <div
+                class="StyledProps--font StyledProps--main"
+              >
+                <span
+                  class="StyledProps--font StyledProps--main resourceType StyledProps--inline"
+                >
+                  ce.overview.workload
+                </span>
+              </div>
+              <p
+                class="StyledProps--font Text--lineclamp StyledProps--main StyledProps--color StyledProps--color-grey800"
+                style="--text-line-clamp: 1;"
+              >
+                resource-1
+              </p>
+            </div>
+            <div
+              class="Layout--vertical Layout--layout-spacing-xsmall StyledProps--main"
+              style="align-items: flex-end;"
+            >
+              <p
+                class="StyledProps--font StyledProps--main StyledProps--color StyledProps--color-green700"
+              >
+                $19.08
+              </p>
+              <p
+                class="StyledProps--font StyledProps--main StyledProps--font-variation-small StyledProps--color StyledProps--color-grey400"
+              >
+                ce.overview.savings
+              </p>
+            </div>
+          </div>
+        </a>
+        <a
+          href="/account/undefined/ce/recommendations/2/name/resource-2/details"
+        >
+          <div
+            class="recommendation"
+          >
+            <div
+              class="Layout--vertical Layout--layout-spacing-xsmall StyledProps--main"
+            >
+              <div
+                class="StyledProps--font StyledProps--main"
+              >
+                <span
+                  class="StyledProps--font StyledProps--main resourceType StyledProps--inline"
+                >
+                  ce.overview.workload
+                </span>
+              </div>
+              <p
+                class="StyledProps--font Text--lineclamp StyledProps--main StyledProps--color StyledProps--color-grey800"
+                style="--text-line-clamp: 1;"
+              >
+                resource-2
+              </p>
+            </div>
+            <div
+              class="Layout--vertical Layout--layout-spacing-xsmall StyledProps--main"
+              style="align-items: flex-end;"
+            >
+              <p
+                class="StyledProps--font StyledProps--main StyledProps--color StyledProps--color-green700"
+              >
+                $19.08
+              </p>
+              <p
+                class="StyledProps--font StyledProps--main StyledProps--font-variation-small StyledProps--color StyledProps--color-grey400"
+              >
+                ce.overview.savings
+              </p>
+            </div>
+          </div>
+        </a>
+        <a
+          href="/account/undefined/ce/recommendations/3/name/resource-3/details"
+        >
+          <div
+            class="recommendation"
+          >
+            <div
+              class="Layout--vertical Layout--layout-spacing-xsmall StyledProps--main"
+            >
+              <div
+                class="StyledProps--font StyledProps--main"
+              >
+                <span
+                  class="StyledProps--font StyledProps--main resourceType StyledProps--inline"
+                >
+                  ce.overview.workload
+                </span>
+              </div>
+              <p
+                class="StyledProps--font Text--lineclamp StyledProps--main StyledProps--color StyledProps--color-grey800"
+                style="--text-line-clamp: 1;"
+              >
+                resource-3
+              </p>
+            </div>
+            <div
+              class="Layout--vertical Layout--layout-spacing-xsmall StyledProps--main"
+              style="align-items: flex-end;"
+            >
+              <p
+                class="StyledProps--font StyledProps--main StyledProps--color StyledProps--color-green700"
+              >
+                $18.79
+              </p>
+              <p
+                class="StyledProps--font StyledProps--main StyledProps--font-variation-small StyledProps--color StyledProps--color-grey400"
+              >
+                ce.overview.savings
+              </p>
+            </div>
+          </div>
+        </a>
+        <a
+          href="/account/undefined/ce/recommendations/4/name/resource-4/details"
+        >
+          <div
+            class="recommendation"
+          >
+            <div
+              class="Layout--vertical Layout--layout-spacing-xsmall StyledProps--main"
+            >
+              <div
+                class="StyledProps--font StyledProps--main"
+              >
+                <span
+                  class="StyledProps--font StyledProps--main resourceType StyledProps--inline"
+                >
+                  ce.overview.workload
+                </span>
+              </div>
+              <p
+                class="StyledProps--font Text--lineclamp StyledProps--main StyledProps--color StyledProps--color-grey800"
+                style="--text-line-clamp: 1;"
+              >
+                resource-4
+              </p>
+            </div>
+            <div
+              class="Layout--vertical Layout--layout-spacing-xsmall StyledProps--main"
+              style="align-items: flex-end;"
+            >
+              <p
+                class="StyledProps--font StyledProps--main StyledProps--color StyledProps--color-green700"
+              >
+                $18.79
+              </p>
+              <p
+                class="StyledProps--font StyledProps--main StyledProps--font-variation-small StyledProps--color StyledProps--color-grey400"
+              >
+                ce.overview.savings
+              </p>
+            </div>
+          </div>
+        </a>
+        <a
+          href="/account/undefined/ce/recommendations/5/name/resource-5/details"
+        >
+          <div
+            class="recommendation"
+          >
+            <div
+              class="Layout--vertical Layout--layout-spacing-xsmall StyledProps--main"
+            >
+              <div
+                class="StyledProps--font StyledProps--main"
+              >
+                <span
+                  class="StyledProps--font StyledProps--main resourceType StyledProps--inline"
+                >
+                  ce.overview.workload
+                </span>
+              </div>
+              <p
+                class="StyledProps--font Text--lineclamp StyledProps--main StyledProps--color StyledProps--color-grey800"
+                style="--text-line-clamp: 1;"
+              >
+                resource-5
+              </p>
+            </div>
+            <div
+              class="Layout--vertical Layout--layout-spacing-xsmall StyledProps--main"
+              style="align-items: flex-end;"
+            >
+              <p
+                class="StyledProps--font StyledProps--main StyledProps--color StyledProps--color-green700"
+              >
+                $18.79
+              </p>
+              <p
+                class="StyledProps--font StyledProps--main StyledProps--font-variation-small StyledProps--color StyledProps--color-grey400"
+              >
+                ce.overview.savings
+              </p>
+            </div>
+          </div>
+        </a>
+      </div>
+    </div>
+  </div>
+</div>
+`;

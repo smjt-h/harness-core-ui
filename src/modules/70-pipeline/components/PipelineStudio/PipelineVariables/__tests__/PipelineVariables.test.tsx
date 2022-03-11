@@ -9,6 +9,8 @@ import React from 'react'
 import { render } from '@testing-library/react'
 import { MultiTypeInputType, VisualYamlSelectedView as SelectedView } from '@wings-software/uicore'
 
+import produce from 'immer'
+import { set } from 'lodash-es'
 import { TestWrapper } from '@common/utils/testUtils'
 import * as cdng from 'services/cd-ng'
 import { PipelineVariablesContext } from '@pipeline/components/PipelineVariablesContext/PipelineVariablesContext'
@@ -16,11 +18,17 @@ import { factory } from '@pipeline/components/PipelineSteps/Steps/__tests__/Step
 import { CustomVariables } from '@pipeline/components/PipelineSteps/Steps/CustomVariables/CustomVariables'
 import { branchStatusMock, gitConfigs, sourceCodeManagers } from '@connectors/mocks/mock'
 import { Scope } from '@common/interfaces/SecretsInterface'
+import * as PipelineCard from '@pipeline/components/PipelineStudio/PipelineVariables/Cards/PipelineCard'
+import * as StageCard from '@pipeline/components/PipelineStudio/PipelineVariables/Cards/StageCard'
 import PipelineVariables from '../PipelineVariables'
 import { PipelineContext } from '../../PipelineContext/PipelineContext'
 import variablesPipeline from './variables.json'
+import variablesWithStageTemplate from './variablesWithStageTemplate.json'
 import pipelineJson from './pipeline.json'
+import pipelineWithStageTemplate from './pipelineWithStageTemplate.json'
+import resolvedPipeline from './resolvedPipeline.json'
 import metadataMap from './metadataMap.json'
+import metadataMapWithStageTemplate from './metadataMapWithStageTemplate.json'
 
 const pipelineContext: any = {
   updatePipeline: jest.fn(),
@@ -57,6 +65,10 @@ const pipelineContext: any = {
   getStagePathFromPipeline: jest.fn(),
   setTemplateTypes: jest.fn()
 }
+
+const stageTemplateContextMock = produce(pipelineContext, (draft: any) => {
+  set(draft, 'state.pipeline', pipelineWithStageTemplate)
+}) as any
 
 jest.mock('@common/components/YAMLBuilder/YamlBuilder')
 
@@ -103,12 +115,90 @@ describe('<PipelineVariables /> tests', () => {
     expect(container).toMatchSnapshot()
   })
 
+  test('should call PipelineCard with unresolved pipeline ', () => {
+    const PipelineCardMock = jest.spyOn(PipelineCard, 'default')
+
+    render(
+      <TestWrapper>
+        <PipelineContext.Provider value={stageTemplateContextMock}>
+          <PipelineVariablesContext.Provider
+            value={
+              {
+                originalPipeline: resolvedPipeline,
+                variablesPipeline: variablesWithStageTemplate,
+                loading: false,
+                initLoading: false,
+                error: null,
+                metadataMap: metadataMapWithStageTemplate
+              } as any
+            }
+          >
+            <PipelineVariables />
+          </PipelineVariablesContext.Provider>
+        </PipelineContext.Provider>
+      </TestWrapper>
+    )
+
+    expect(PipelineCardMock).toBeCalledWith(
+      expect.objectContaining({
+        pipeline: pipelineWithStageTemplate,
+        variablePipeline: variablesWithStageTemplate,
+        metadataMap: metadataMapWithStageTemplate
+      }),
+      expect.anything()
+    )
+  })
+
+  test('should render StageCard in readonly mode and with resolved stage for stage template', () => {
+    const StageCardMock = jest.spyOn(StageCard, 'default')
+
+    render(
+      <TestWrapper>
+        <PipelineContext.Provider value={stageTemplateContextMock}>
+          <PipelineVariablesContext.Provider
+            value={
+              {
+                originalPipeline: resolvedPipeline,
+                variablesPipeline: variablesWithStageTemplate,
+                loading: false,
+                initLoading: false,
+                error: null,
+                metadataMap: metadataMapWithStageTemplate
+              } as any
+            }
+          >
+            <PipelineVariables />
+          </PipelineVariablesContext.Provider>
+        </PipelineContext.Provider>
+      </TestWrapper>
+    )
+
+    expect(StageCardMock).toBeCalledWith(
+      expect.objectContaining({
+        originalStage: resolvedPipeline.stages[0].stage,
+        stage: variablesWithStageTemplate.stages[0].stage,
+        metadataMap: metadataMapWithStageTemplate,
+        readonly: true
+      }),
+      expect.anything()
+    )
+  })
+
   test('renders loader', () => {
     const { container } = render(
       <TestWrapper>
         <PipelineContext.Provider value={pipelineContext}>
           <PipelineVariablesContext.Provider
-            value={{ variablesPipeline, loading: false, initLoading: true, error: null, metadataMap } as any}
+            value={
+              {
+                originalPipeline: pipelineJson,
+                variablesPipeline,
+                loading: false,
+                initLoading: true,
+                error: null,
+                metadataMap
+              } as any
+            }
           >
             <PipelineVariables />
           </PipelineVariablesContext.Provider>
@@ -126,6 +216,7 @@ describe('<PipelineVariables /> tests', () => {
           <PipelineVariablesContext.Provider
             value={
               {
+                originalPipeline: pipelineJson,
                 variablesPipeline,
                 loading: false,
                 initLoading: false,

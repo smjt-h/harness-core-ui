@@ -8,7 +8,7 @@
 import type { SelectOption } from '@wings-software/uicore'
 import type { FormikProps } from 'formik'
 import type { UseStringsReturn } from 'framework/strings'
-import type { CustomHealthMetricDefinition, TimestampInfo } from 'services/cv'
+import type { CustomHealthRequestDefinition, CustomHealthMetricDefinition, TimestampInfo } from 'services/cv'
 import type { CustomMappedMetric } from '../../common/CustomMetric/CustomMetric.types'
 import type { UpdatedHealthSource } from '../../HealthSourceDrawer/HealthSourceDrawerContent.types'
 
@@ -29,7 +29,7 @@ export type MapCustomHealthToService = {
   pathURL: string
   queryType: CustomHealthMetricDefinition['queryType']
   query: string
-  requestMethod: CustomHealthMetricDefinition['method']
+  requestMethod: CustomHealthRequestDefinition['method']
   metricValue: string
   timestamp: string
   timestampFormat: string

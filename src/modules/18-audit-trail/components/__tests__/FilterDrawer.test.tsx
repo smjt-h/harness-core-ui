@@ -16,6 +16,18 @@ import { StringUtils } from '@common/exports'
 import FilterDrawer from '../FilterDrawer/FilterDrawer'
 import { filters as filterResponse } from './mockData'
 
+jest.mock('services/audit', () => ({
+  usePostAuditFilter: () => {
+    return { data: filterResponse }
+  },
+  useUpdateAuditFilter: () => {
+    return { data: filterResponse }
+  },
+  useDeleteAuditFilter: () => {
+    return { data: filterResponse }
+  }
+}))
+
 describe('<FilterDrawer />', () => {
   test('render filter drawer', () => {
     render(

@@ -122,15 +122,15 @@ export const getMappedMetrics = (
   selectedMetric: string
   mappedMetrics: Map<string, CustomMappedMetric>
 } => {
+  const metricName = formikValues.metricName || ''
   const duplicateName =
-    Array.from(mappedMetrics.keys()).indexOf(formikValues.metricName) > -1 &&
-    oldState.selectedMetric !== formikValues?.metricName
+    Array.from(mappedMetrics.keys()).indexOf(metricName) > -1 && oldState.selectedMetric !== formikValues?.metricName
   if (duplicateName) {
     return { selectedMetric: oldState.selectedMetric, mappedMetrics: mappedMetrics }
   }
 
   return updateSelectedMetricsMap({
-    updatedMetric: formikValues.metricName,
+    updatedMetric: metricName,
     oldMetric: oldState.selectedMetric,
     mappedMetrics: oldState.mappedMetrics,
     formikValues,

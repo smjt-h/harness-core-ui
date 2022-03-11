@@ -396,6 +396,7 @@ export function DeploymentMetrics(props: DeploymentMetricsProps): JSX.Element {
             <Text font={{ variation: FontVariation.SMALL }}> {getString('connectors.cdng.baseline')}</Text>
             <span className={css.actualFail} />
             <span className={css.actualWarning} />
+            <span className={css.actualObserve} />
             <span className={css.actualHealthy} />
             <Text font={{ variation: FontVariation.SMALL }}>{getString('common.current')}</Text>
           </Layout.Horizontal>

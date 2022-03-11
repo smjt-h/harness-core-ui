@@ -106,6 +106,7 @@ export const getGcpApFromLoadBalancer = (gatewayDetails: GatewayDetails, account
     account_id: accountId,
     region: _defaultTo(gatewayDetails.selectedInstances?.[0]?.region, ''),
     vpc: (lb?.details as GCPAccessPointCore)?.vpc,
+    type: gatewayDetails.provider.value,
     metadata: {
       zone: _defaultTo(gatewayDetails.selectedInstances[0].metadata?.availabilityZone, ''),
       security_groups: (lb?.details as GCPAccessPointCore)?.security_groups,

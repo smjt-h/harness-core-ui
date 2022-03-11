@@ -36,7 +36,6 @@ import { StageType } from '@pipeline/utils/stageHelpers'
 import { useFeatureFlag } from '@common/hooks/useFeatureFlag'
 import { FeatureFlag } from '@common/featureFlags'
 import { useLicenseStore } from 'framework/LicenseStore/LicenseStoreContext'
-import { LICENSE_STATE_VALUES } from 'framework/LicenseStore/licenseStoreUtil'
 import type { PipelineSelectionState } from '@pipeline/components/PipelineStudio/PipelineQueryParamState/usePipelineQueryParam'
 import type { GetPipelineQueryParams } from 'services/pipeline-ng'
 import { getScopeFromDTO } from '@common/components/EntityReference/EntityReference'
@@ -57,10 +56,10 @@ export function TemplatePipelineProvider({
 }: React.PropsWithChildren<TemplatePipelineProviderProps>): React.ReactElement {
   const contextType = PipelineContextType.Template
   const allowableTypes = [MultiTypeInputType.FIXED, MultiTypeInputType.RUNTIME, MultiTypeInputType.EXPRESSION]
-  const { CI_LICENSE_STATE, FF_LICENSE_STATE, CD_LICENSE_STATE } = useLicenseStore()
-  const isCDEnabled = useFeatureFlag(FeatureFlag.CDNG_ENABLED) && CD_LICENSE_STATE === LICENSE_STATE_VALUES.ACTIVE
-  const isCIEnabled = useFeatureFlag(FeatureFlag.CING_ENABLED) && CI_LICENSE_STATE === LICENSE_STATE_VALUES.ACTIVE
-  const isCFEnabled = useFeatureFlag(FeatureFlag.CFNG_ENABLED) && FF_LICENSE_STATE === LICENSE_STATE_VALUES.ACTIVE
+  const { licenseInformation } = useLicenseStore()
+  const isCDEnabled = useFeatureFlag(FeatureFlag.CDNG_ENABLED) && !!licenseInformation['CD']
+  const isCIEnabled = useFeatureFlag(FeatureFlag.CING_ENABLED) && !!licenseInformation['CI']
+  const isCFEnabled = useFeatureFlag(FeatureFlag.CFNG_ENABLED) && !!licenseInformation['CF']
   const { getString } = useStrings()
   const [state, dispatch] = React.useReducer(PipelineReducer, initialState)
   const [view, setView] = useLocalStorage<SelectedView>('pipeline_studio_view', SelectedView.VISUAL)

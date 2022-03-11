@@ -137,7 +137,7 @@ validation:
   typeIsRequired: Type is required
   keyIsRequired: '{{$.validation.keyRequired}}'
   fileIsRequired: File is required
-  yamlFilePath: 'File path can only contain valid file/folder name (should contain alphanumerics, _ and -) sepaerated by / and should end with .yaml.'
+  yamlFilePath: 'File path can only contain valid file/folder name (should contain alphanumerics, _ and -) separated by / and should end with .yaml.'
   variableAlreadyExists: Variable with same name already exists
   fieldIsRequired: '{{ name }} is required'
   fieldMustStartWithAlphanumericAndCanNotHaveSpace: '{{ name }} must start with alphanumerics and should not contain whitespaces'
@@ -311,7 +311,7 @@ git:
   bitbucketPlaceholderSSH: 'git@bitbucket.com:account/'
   enableAPIAccess: 'Enable API access (recommended)'
   APIAccessDescription: 'API Access is required for using “Git Experience”, for creation of Git based triggers, Webhooks management and updating Git statuses'
-  testRepositoryDescription: Please provide a Repository name to test the credentials. The Connector will still be created at the Account level.
+  testRepositoryDescription: Please provide a repository to test the credentials. This is required just for checking connectivity. The connector will still be created at account level.
   APIAuthentication: 'API Authentication'
   gitHubApp: 'GitHub App'
   installationId: 'GitHub Installation Id'
@@ -385,10 +385,11 @@ subscriptions:
   overview:
     details: Subscription Details
     plan: Plan
-    expiry: Trial Expiry Date
+    trialExpiry: Trial Expiry Date
+    freeExpiry: Does not expire
     subscribe: Subscribe
   ccm:
-    cloudSpend: '${{ spendLimit }} Cloud Spend'
+    cloudSpend: '{{ spendLimit }} Cloud Spend'
   cd:
     services: '{{ workloads }} Services'
     serviceInstances: '{{ workloads }} Service Instances'
@@ -788,4 +789,10 @@ branchName: 'Branch Name'
 tagName: 'Tag Name'
 jexlCondition: 'JEXL Condition'
 triggersLabel: 'Triggers'
+with: with
+without: without
+by: by
+request: Request
+whose: whose
+and: and
 payload: Payload

@@ -15,6 +15,7 @@ import { StepFormikFowardRef, setFormikRef } from '@pipeline/components/Abstract
 import { useStrings } from 'framework/strings'
 
 import { getNameAndIdentifierSchema } from '@pipeline/components/PipelineSteps/Steps/StepsValidateUtils'
+import { getDurationValidationSchema } from '@common/components/MultiTypeDuration/MultiTypeDuration'
 import type { ContinousVerificationData } from '../../types'
 import type { ContinousVerificationWidgetProps } from './types'
 import { ContinousVerificationWidgetSections } from './components/ContinousVerificationWidgetSections/ContinousVerificationWidgetSections'
@@ -33,6 +34,12 @@ export function ContinousVerificationWidget(
   const { getString } = useStrings()
   const defaultCVSchema = Yup.object().shape({
     ...getNameAndIdentifierSchema(getString, stepViewType),
+    timeout: Yup.string().when(['spec.spec.duration.value'], {
+      is: durationValue => durationValue?.length,
+      then: getDurationValidationSchema({ minimum: '40m' }).required(
+        getString('connectors.cdng.validations.timeoutValidation')
+      )
+    }),
     spec: Yup.object().shape({
       type: Yup.string().required(getString('connectors.cdng.validations.verificationTypeRequired')),
       monitoredServiceRef: Yup.string().required(getString('connectors.cdng.validations.monitoringServiceRequired')),

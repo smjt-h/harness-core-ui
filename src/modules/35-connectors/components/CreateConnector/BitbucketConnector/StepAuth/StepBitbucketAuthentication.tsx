@@ -31,6 +31,7 @@ import SecretInput from '@secrets/components/SecretInput/SecretInput'
 import TextReference, { TextReferenceInterface, ValueType } from '@secrets/components/TextReference/TextReference'
 import { useStrings } from 'framework/strings'
 import { GitAuthTypes } from '@connectors/pages/connectors/utils/ConnectorHelper'
+import { getCommonConnectorsValidationSchema } from '../../CreateConnectorUtils'
 import commonStyles from '@connectors/components/CreateConnector/commonSteps/ConnectorCommonStyles.module.scss'
 import css from './StepBitbucketAuthentication.module.scss'
 import commonCss from '../../commonSteps/ConnectorCommonStyles.module.scss'
@@ -99,11 +100,20 @@ const RenderAPIAccessFormWrapper: React.FC<FormikProps<BitbucketFormInterface>> 
     }
   ]
 
+  useEffect(() => {
+    props.setFieldValue('apiAuthType', GitAuthTypes.USER_TOKEN)
+  }, [])
+
   return (
     <>
       <Container className={css.authHeaderRow}>
         <Text font={{ variation: FontVariation.H6 }}>{getString('common.git.APIAuthentication')}</Text>
-        <FormInput.Select name="apiAuthType" items={apiAuthOptions} className={commonStyles.authTypeSelect} />
+        <FormInput.Select
+          name="apiAuthType"
+          items={apiAuthOptions}
+          className={commonStyles.authTypeSelect}
+          value={apiAuthOptions[0]}
+        />
       </Container>
       <TextReference
         name="apiAccessUsername"
@@ -161,43 +171,25 @@ const StepBitbucketAuthentication: React.FC<
           ...prevStepData
         }}
         formName="bitbAuthForm"
-        validationSchema={Yup.object().shape({
-          username: Yup.string().when(['connectionType'], {
-            is: connectionType => connectionType === GitConnectionType.HTTP,
-            then: Yup.string().trim().required(getString('validation.username')),
-            otherwise: Yup.string().nullable()
-          }),
-          authType: Yup.string().when('connectionType', {
-            is: val => val === GitConnectionType.HTTP,
-            then: Yup.string().trim().required(getString('validation.authType'))
-          }),
-          sshKey: Yup.object().when('connectionType', {
-            is: val => val === GitConnectionType.SSH,
-            then: Yup.object().required(getString('validation.sshKey')),
-            otherwise: Yup.object().nullable()
-          }),
-          password: Yup.object().when(['connectionType', 'authType'], {
-            is: (connectionType, authType) =>
-              connectionType === GitConnectionType.HTTP && authType === GitAuthTypes.USER_PASSWORD,
-            then: Yup.object().required(getString('validation.password')),
-            otherwise: Yup.object().nullable()
-          }),
-          apiAuthType: Yup.string().when('enableAPIAccess', {
-            is: val => val,
-            then: Yup.string().trim().required(getString('validation.authType')),
-            otherwise: Yup.string().nullable()
-          }),
-          apiAccessUsername: Yup.string().when(['enableAPIAccess', 'apiAuthType'], {
-            is: (enableAPIAccess, apiAuthType) => enableAPIAccess && apiAuthType === GitAuthTypes.USER_TOKEN,
-            then: Yup.string().trim().required(getString('validation.username')),
-            otherwise: Yup.string().nullable()
-          }),
-          accessToken: Yup.object().when(['enableAPIAccess', 'apiAuthType'], {
-            is: (enableAPIAccess, apiAuthType) => enableAPIAccess && apiAuthType === GitAuthTypes.USER_TOKEN,
-            then: Yup.object().required(getString('validation.accessToken')),
-            otherwise: Yup.object().nullable()
+        validationSchema={getCommonConnectorsValidationSchema(getString).concat(
+          Yup.object().shape({
+            apiAuthType: Yup.string().when('enableAPIAccess', {
+              is: val => val,
+              then: Yup.string().trim().required(getString('validation.authType')),
+              otherwise: Yup.string().nullable()
+            }),
+            apiAccessUsername: Yup.string().when(['enableAPIAccess', 'apiAuthType'], {
+              is: (enableAPIAccess, apiAuthType) => enableAPIAccess && apiAuthType === GitAuthTypes.USER_TOKEN,
+              then: Yup.string().trim().required(getString('validation.username')),
+              otherwise: Yup.string().nullable()
+            }),
+            accessToken: Yup.object().when(['enableAPIAccess', 'apiAuthType'], {
+              is: (enableAPIAccess, apiAuthType) => enableAPIAccess && apiAuthType === GitAuthTypes.USER_TOKEN,
+              then: Yup.object().required(getString('connectors.validation.personalAccessToken')),
+              otherwise: Yup.object().nullable()
+            })
           })
-        })}
+        )}
         onSubmit={handleSubmit}
       >
         {formikProps => (

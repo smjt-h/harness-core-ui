@@ -3,7 +3,7 @@
 exports[`Default Renderer test initializes ok  1`] = `
 <div>
   <div
-    class="Layout--vertical StyledProps--main started StyledProps--padding-left-xlarge StyledProps--padding-right-xlarge StyledProps--padding-bottom-xlarge"
+    class="Layout--vertical StyledProps--main started StyledProps--padding-top-xlarge"
   >
     <p
       class="StyledProps--font StyledProps--main StyledProps--font-size-small StyledProps--font-weight-semi-bold StyledProps--padding-bottom-xsmall"

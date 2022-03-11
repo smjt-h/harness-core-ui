@@ -140,7 +140,7 @@ describe('Validate utils', () => {
         startTime: null
       } as any)
     ).toEqual({
-      'endTime.placeholder': 'cv.customHealthSource.Querymapping.validation.endTime.timestamp',
+      'endTime.placeholder': 'cv.customHealthSource.Querymapping.validation.endTime.placeholder',
       'endTime.timestampFormat': 'cv.customHealthSource.Querymapping.validation.endTime.timestamp',
       'startTime.placeholder': 'cv.customHealthSource.Querymapping.validation.startTime.placeholder',
       'startTime.timestampFormat': 'cv.customHealthSource.Querymapping.validation.startTime.timestamp'

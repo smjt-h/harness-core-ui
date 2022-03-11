@@ -268,6 +268,7 @@ const GcpInfrastructureSpecEditable: React.FC<GcpInfrastructureSpecEditableProps
                       formik.setFieldValue('cluster', '')
                     }}
                     isReadonly={readonly}
+                    className={css.marginTop}
                   />
                 )}
               </Layout.Horizontal>
@@ -317,6 +318,7 @@ const GcpInfrastructureSpecEditable: React.FC<GcpInfrastructureSpecEditableProps
                         formik.setFieldValue('cluster', value)
                       }}
                       isReadonly={readonly}
+                      className={css.marginTop}
                     />
                   )}
               </Layout.Horizontal>
@@ -344,6 +346,7 @@ const GcpInfrastructureSpecEditable: React.FC<GcpInfrastructureSpecEditableProps
                       formik.setFieldValue('namespace', value)
                     }}
                     isReadonly={readonly}
+                    className={css.marginTop}
                   />
                 )}
               </Layout.Horizontal>
@@ -474,7 +477,7 @@ const GcpInfrastructureSpecInputForm: React.FC<GcpInfrastructureSpecEditableProp
   ))
 
   return (
-    <Layout.Vertical padding="medium" spacing="small">
+    <Layout.Vertical spacing="small">
       {getMultiTypeFromValue(template?.connectorRef) === MultiTypeInputType.RUNTIME && (
         <div className={cx(stepCss.formGroup, stepCss.md)}>
           <FormMultiTypeConnectorField

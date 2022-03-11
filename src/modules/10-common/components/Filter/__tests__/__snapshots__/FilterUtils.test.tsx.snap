@@ -1,0 +1,31 @@
+// Jest Snapshot v1, https://goo.gl/fbAQLP
+
+exports[`filter utils tests get filter summary 1`] = `
+<ol
+  className="noStyleUl"
+>
+  <li
+    className="summaryItem"
+  >
+    <span>
+      value
+       : 
+    </span>
+    <span
+      style={
+        Object {
+          "fontWeight": "bold",
+        }
+      }
+    >
+      value
+    </span>
+  </li>
+</ol>
+`;
+
+exports[`filter utils tests get filter summary 2`] = `
+<ol
+  className="noStyleUl"
+/>
+`;

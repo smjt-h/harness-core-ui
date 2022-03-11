@@ -8,6 +8,7 @@
 import { cloneDeep, isEmpty } from 'lodash-es'
 import type { FormikProps } from 'formik'
 import type { StringKeys } from 'framework/strings'
+import type { StringsMap } from 'framework/strings/StringsContext'
 import type { AppDMetricDefinitions, AppDynamicsHealthSourceSpec, MetricPackDTO, RiskProfile } from 'services/cv'
 import type { SelectOption } from '@pipeline/components/PipelineSteps/Steps/StepsTypes'
 import type { UpdatedHealthSource } from '../../HealthSourceDrawer/HealthSourceDrawerContent.types'
@@ -489,7 +490,7 @@ export const createAppDFormData = (
   showCustomMetric: boolean
 ): AppDynamicsFomikFormInterface => {
   const mappedMetricsData = mappedMetrics.get(selectedMetric) as MapAppDynamicsMetric
-  const metricIdentifier = mappedMetricsData?.metricIdentifier || selectedMetric.split(' ').join('_')
+  const metricIdentifier = mappedMetricsData?.metricIdentifier || selectedMetric?.split(' ').join('_')
   const { basePath = {}, metricPath = {} } = mappedMetricsData || {}
   const lastItemBasePath = Object.keys(basePath)[Object.keys(basePath).length - 1]
   const lastItemMetricPath = Object.keys(metricPath)[Object.keys(metricPath).length - 1]
@@ -543,3 +544,9 @@ export const initAppDCustomFormValue = () => {
     groupName: { label: '', value: '' }
   }
 }
+
+export const getPlaceholder = (
+  loading: boolean,
+  placeholderText: keyof StringsMap,
+  getString: (key: StringKeys) => string
+): string => (loading ? getString('loading') : getString(placeholderText))

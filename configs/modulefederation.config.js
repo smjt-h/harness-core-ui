@@ -17,6 +17,7 @@ const ExactSharedPackages = [
   'react',
   'react-router-dom',
   '@harness/uicore',
+  '@harness/use-modal',
   '@blueprintjs/core',
   '@blueprintjs/select',
   '@blueprintjs/datetime',
@@ -32,7 +33,9 @@ module.exports = ({ enableGitOpsUI, enableSTO }) => {
   }
 
   // TODO (tnhu): Use build an environment variable to enable Governance
+  // if (enableGovernance) {
   remotes.governance = "governance@[window.getApiBaseUrl('pm/remoteEntry.js')]"
+  // }
 
   if (enableSTO) {
     remotes.sto = "sto@[window.getApiBaseUrl('sto/remoteEntry.js')]"

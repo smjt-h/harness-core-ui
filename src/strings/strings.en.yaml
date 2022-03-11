@@ -866,7 +866,7 @@ pipelineSteps:
   deleteResourcesBy: 'Delete resources by'
   deleteResourcesPlaceHolder: 'Specify resources to delete'
   manifestPathsPlaceHolder: 'Specify file paths'
-  deleteNamespaceWarning: 'Warning: Ensure that you are not deleting a namespace that is used by other deployments'
+  deleteNamespaceWarning: 'Ensure that you are not deleting a namespace that is used by other deployments'
   typeName: 'instanceType'
   awsConnectorLabel: AWS Connector
   gcpConnectorLabel: GCP Connector

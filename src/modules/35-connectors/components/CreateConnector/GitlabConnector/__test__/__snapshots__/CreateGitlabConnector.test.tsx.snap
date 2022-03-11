@@ -599,8 +599,7 @@ exports[`Create Gitlab connector Wizard Creating gitlab step one and step two fo
     >
        
       <div
-        class="Layout--vertical StyledProps--main firstep stepContainer"
-        style="min-height: 460px; width: 60%;"
+        class="Layout--vertical StyledProps--main gitDetails firstep stepContainer"
       >
         <div
           class="Text--withDocsTooltip"
@@ -616,7 +615,7 @@ exports[`Create Gitlab connector Wizard Creating gitlab step one and step two fo
           class="OverlaySpinner--overlaySpinner"
         >
           <form
-            class="FormikForm--main fullHeight fullHeightDivsWithFlex"
+            class="FormikForm--main connectorForm fullHeight fullHeightDivsWithFlex"
           >
             <div>
               <div
@@ -749,7 +748,7 @@ exports[`Create Gitlab connector Wizard Creating gitlab step one and step two fo
                   </div>
                 </div>
                 <div
-                  class="bp3-form-group"
+                  class="bp3-form-group formElm"
                   data-id="url-2"
                 >
                   <label
@@ -797,7 +796,7 @@ exports[`Create Gitlab connector Wizard Creating gitlab step one and step two fo
                     common.git.testRepositoryDescription
                   </p>
                   <div
-                    class="bp3-form-group"
+                    class="bp3-form-group formElm"
                     data-id="validationRepo-3"
                   >
                     <label
@@ -1091,8 +1090,7 @@ exports[`Create Gitlab connector Wizard Creating gitlab step one and step two fo
     >
        
       <div
-        class="Layout--vertical StyledProps--main firstep stepContainer"
-        style="min-height: 460px; width: 60%;"
+        class="Layout--vertical StyledProps--main gitDetails firstep stepContainer"
       >
         <div
           class="Text--withDocsTooltip"
@@ -1108,7 +1106,7 @@ exports[`Create Gitlab connector Wizard Creating gitlab step one and step two fo
           class="OverlaySpinner--overlaySpinner"
         >
           <form
-            class="FormikForm--main fullHeight fullHeightDivsWithFlex"
+            class="FormikForm--main connectorForm fullHeight fullHeightDivsWithFlex"
           >
             <div>
               <div
@@ -1241,7 +1239,7 @@ exports[`Create Gitlab connector Wizard Creating gitlab step one and step two fo
                   </div>
                 </div>
                 <div
-                  class="bp3-form-group"
+                  class="bp3-form-group formElm"
                   data-id="url-2"
                 >
                   <label
@@ -1289,7 +1287,7 @@ exports[`Create Gitlab connector Wizard Creating gitlab step one and step two fo
                     common.git.testRepositoryDescription
                   </p>
                   <div
-                    class="bp3-form-group bp3-intent-danger"
+                    class="bp3-form-group bp3-intent-danger formElm"
                     data-id="validationRepo-3"
                   >
                     <label
@@ -1614,8 +1612,7 @@ exports[`Create Gitlab connector Wizard Creating gitlab step two for SSH key 1`]
     >
        
       <div
-        class="Layout--vertical StyledProps--main firstep stepContainer"
-        style="min-height: 460px; width: 60%;"
+        class="Layout--vertical StyledProps--main gitDetails firstep stepContainer"
       >
         <div
           class="Text--withDocsTooltip"
@@ -1631,7 +1628,7 @@ exports[`Create Gitlab connector Wizard Creating gitlab step two for SSH key 1`]
           class="OverlaySpinner--overlaySpinner"
         >
           <form
-            class="FormikForm--main fullHeight fullHeightDivsWithFlex"
+            class="FormikForm--main connectorForm fullHeight fullHeightDivsWithFlex"
           >
             <div>
               <div
@@ -1764,7 +1761,7 @@ exports[`Create Gitlab connector Wizard Creating gitlab step two for SSH key 1`]
                   </div>
                 </div>
                 <div
-                  class="bp3-form-group"
+                  class="bp3-form-group formElm"
                   data-id="url-2"
                 >
                   <label
@@ -1812,7 +1809,7 @@ exports[`Create Gitlab connector Wizard Creating gitlab step two for SSH key 1`]
                     common.git.testRepositoryDescription
                   </p>
                   <div
-                    class="bp3-form-group"
+                    class="bp3-form-group formElm"
                     data-id="validationRepo-3"
                   >
                     <label
@@ -2106,8 +2103,7 @@ exports[`Create Gitlab connector Wizard Creating gitlab step two for SSH key 2`]
     >
        
       <div
-        class="Layout--vertical StyledProps--main firstep stepContainer"
-        style="min-height: 460px; width: 60%;"
+        class="Layout--vertical StyledProps--main gitDetails firstep stepContainer"
       >
         <div
           class="Text--withDocsTooltip"
@@ -2123,7 +2119,7 @@ exports[`Create Gitlab connector Wizard Creating gitlab step two for SSH key 2`]
           class="OverlaySpinner--overlaySpinner"
         >
           <form
-            class="FormikForm--main fullHeight fullHeightDivsWithFlex"
+            class="FormikForm--main connectorForm fullHeight fullHeightDivsWithFlex"
           >
             <div>
               <div
@@ -2256,7 +2252,7 @@ exports[`Create Gitlab connector Wizard Creating gitlab step two for SSH key 2`]
                   </div>
                 </div>
                 <div
-                  class="bp3-form-group"
+                  class="bp3-form-group formElm"
                   data-id="url-2"
                 >
                   <label
@@ -2304,7 +2300,7 @@ exports[`Create Gitlab connector Wizard Creating gitlab step two for SSH key 2`]
                     common.git.testRepositoryDescription
                   </p>
                   <div
-                    class="bp3-form-group bp3-intent-danger"
+                    class="bp3-form-group bp3-intent-danger formElm"
                     data-id="validationRepo-3"
                   >
                     <label

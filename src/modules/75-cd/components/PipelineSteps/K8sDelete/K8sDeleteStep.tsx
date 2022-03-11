@@ -16,7 +16,10 @@ import {
   IconName,
   Layout,
   MultiTypeInputType,
-  Text
+  Text,
+  Icon,
+  FontVariation,
+  Intent
 } from '@wings-software/uicore'
 import cx from 'classnames'
 import { FieldArray, FormikErrors, FormikProps, yupToFormErrors } from 'formik'
@@ -323,11 +326,7 @@ function K8sDeleteDeployWidget(props: K8sDeleteProps, formikRef: StepFormikFowar
                             (formikProps.values?.spec?.deleteResources?.spec?.resourceNames ||
                               []) as K8sDeleteConfigHeader[]
                           )?.map((_path: K8sDeleteConfigHeader, index: number) => (
-                            <Layout.Horizontal
-                              key={_path.id}
-                              flex={{ distribution: 'space-between' }}
-                              style={{ alignItems: 'end' }}
-                            >
+                            <Layout.Horizontal key={_path.id}>
                               <FormInput.MultiTextInput
                                 label=""
                                 placeholder={getString('pipelineSteps.deleteResourcesPlaceHolder')}
@@ -452,17 +451,16 @@ function K8sDeleteDeployWidget(props: K8sDeleteProps, formikRef: StepFormikFowar
                   <Container
                     id="warning-deletenamespace"
                     intent="warning"
-                    padding="medium"
+                    padding={{ left: 'small' }}
                     font={{
                       align: 'center'
                     }}
-                    background="red200"
-                    flex
-                    border={{
-                      color: 'red500'
-                    }}
+                    flex={{ justifyContent: 'flex-start' }}
                   >
-                    <Text>{getString('pipelineSteps.deleteNamespaceWarning')}</Text>
+                    <Icon name="warning-icon" intent={Intent.DANGER} margin={{ right: 'small' }} />
+                    <Text font={{ variation: FontVariation.FORM_MESSAGE_WARNING }}>
+                      {getString('pipelineSteps.deleteNamespaceWarning')}
+                    </Text>
                   </Container>
                 )}
             </>

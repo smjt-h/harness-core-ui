@@ -230,6 +230,20 @@ export default function BuildInfraSpecifications({ children }: React.PropsWithCh
     }
   }, [stage, propagatedStage, currentMode])
 
+  /* If a stage A propagates it's infra from another stage B and number of stages in the pipeline change due to deletion of propagated stage B, then infra for stage A needs to be reset */
+  React.useEffect(() => {
+    const stageData = stage?.stage
+    const propagatedStageId = (stageData?.spec?.infrastructure as UseFromStageInfraYaml)?.useFromStage
+    if (stageData && propagatedStageId) {
+      if (!propagatedStage) {
+        set(stageData, 'spec.infrastructure', {
+          useFromStage: {}
+        })
+        setCurrentMode(Modes.NewConfiguration)
+      }
+    }
+  }, [pipeline?.stages?.length])
+
   const otherBuildStagesWithInfraConfigurationOptions: { label: string; value: string }[] = []
 
   if (stages && stages.length > 0) {

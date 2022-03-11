@@ -189,9 +189,6 @@ export const defaultArtifactInitialValues = (selectedArtifact: ArtifactType): Im
     case ENABLED_ARTIFACT_TYPES.ArtifactoryRegistry:
       return {
         identifier: '',
-        artifactPath: '',
-        repository: '',
-        repositoryUrl: '',
         tagType: TagTypes.Value,
         tag: RUNTIME_INPUT_VALUE,
         tagRegex: RUNTIME_INPUT_VALUE
@@ -199,14 +196,10 @@ export const defaultArtifactInitialValues = (selectedArtifact: ArtifactType): Im
     case ENABLED_ARTIFACT_TYPES.Nexus3Registry:
       return {
         identifier: '',
-        artifactPath: '',
         tagType: TagTypes.Value,
         tag: RUNTIME_INPUT_VALUE,
         tagRegex: RUNTIME_INPUT_VALUE,
-        repository: '',
-        repositoryPortorRepositoryURL: RepositoryPortOrServer.RepositoryUrl,
-        repositoryPort: '',
-        repositoryUrl: ''
+        repositoryPortorRepositoryURL: RepositoryPortOrServer.RepositoryUrl
       }
     case ENABLED_ARTIFACT_TYPES.DockerRegistry:
     case ENABLED_ARTIFACT_TYPES.Ecr:

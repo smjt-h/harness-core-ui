@@ -30,8 +30,10 @@ describe('Validate Healthsource table Utils', () => {
   })
 
   test('Ensure correct logo is returned by getIconBySourceType', async () => {
-    expect(getIconBySourceType('CustomHealth')).toEqual('service-custom-connector')
-    expect(getIconBySourceType('CUSTOM_HEALTH')).toEqual('service-custom-connector')
+    expect(getIconBySourceType('CustomHealthLog')).toEqual('service-custom-connector')
+    expect(getIconBySourceType('CustomHealthMetric')).toEqual('service-custom-connector')
+    expect(getIconBySourceType('CUSTOM_HEALTH_METRIC')).toEqual('service-custom-connector')
+    expect(getIconBySourceType('CUSTOM_HEALTH_LOG')).toEqual('service-custom-connector')
     expect(getIconBySourceType('DATADOG_LOG')).toEqual('service-datadog')
     expect(getIconBySourceType('DATADOG_METRICS')).toEqual('service-datadog')
     expect(getIconBySourceType('STACKDRIVER_LOG')).toEqual('service-stackdriver')

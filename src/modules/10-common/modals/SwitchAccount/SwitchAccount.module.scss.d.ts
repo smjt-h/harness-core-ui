@@ -10,5 +10,7 @@ declare const styles: {
   readonly alignCenter: string
   readonly container: string
   readonly modal: string
+  readonly noDataCard: string
+  readonly noDataCardContainer: string
 }
 export default styles

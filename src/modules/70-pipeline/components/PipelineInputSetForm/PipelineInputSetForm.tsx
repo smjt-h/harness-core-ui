@@ -27,6 +27,7 @@ import type { AccountPathProps } from '@common/interfaces/RouteInterfaces'
 import { useDeepCompareEffect } from '@common/hooks'
 import { TEMPLATE_INPUT_PATH } from '@pipeline/utils/templateUtils'
 import { StageInputSetForm } from './StageInputSetForm'
+import { StageAdvancedInputSetForm } from './StageAdvancedInputSetForm'
 import { CICodebaseInputSetForm } from './CICodebaseInputSetForm'
 import { StepWidget } from '../AbstractSteps/StepWidget'
 import factory from '../PipelineSteps/PipelineStepFactory'
@@ -114,6 +115,15 @@ export function StageFormInternal({
           deploymentStage={allValues?.stage?.spec as DeploymentStageConfig}
           readonly={readonly}
           viewType={viewType}
+          allowableTypes={allowableTypes}
+        />
+      )}
+      {!isEmpty(template?.stage?.when) && (
+        <StageAdvancedInputSetForm
+          stageIdentifier={allValues?.stage?.identifier}
+          path={path}
+          deploymentStageTemplate={(template as StageElementWrapperConfig).stage}
+          readonly={readonly}
           allowableTypes={allowableTypes}
         />
       )}

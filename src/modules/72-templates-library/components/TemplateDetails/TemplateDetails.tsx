@@ -76,7 +76,7 @@ export const TemplateDetails: React.FC<TemplateDetailsProps> = props => {
   const [templates, setTemplates] = React.useState<TemplateSummaryResponse[]>([])
   const [selectedTemplate, setSelectedTemplate] = React.useState<TemplateSummaryResponse>()
   const [selectedParentTab, setSelectedParentTab] = React.useState<ParentTemplateTabs>(ParentTemplateTabs.BASIC)
-  const [selectedTab, setSelectedTab] = React.useState<TemplateTabs>(TemplateTabs.YAML)
+  const [selectedTab, setSelectedTab] = React.useState<TemplateTabs>(TemplateTabs.INPUTS)
   const { module } = useParams<ProjectPathProps & ModulePathParams>()
 
   const {

@@ -9,12 +9,18 @@
 declare const styles: {
   readonly btn: string
   readonly children: string
+  readonly expired: string
   readonly featuresBanner: string
   readonly info: string
   readonly infoIcon: string
+  readonly issueIcon: string
   readonly levelUp: string
+  readonly link: string
   readonly main: string
+  readonly notExpired: string
   readonly overUse: string
   readonly rhs: string
+  readonly trialLicenseBanner: string
+  readonly whiteColor: string
 }
 export default styles

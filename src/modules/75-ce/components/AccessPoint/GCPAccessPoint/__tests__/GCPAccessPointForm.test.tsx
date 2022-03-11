@@ -115,8 +115,6 @@ describe('GCP AP form', () => {
       }
     ])
 
-    expect(container).toMatchSnapshot()
-
     const target = container.querySelectorAll('button[type="button"]')?.[1]
     expect(target).toBeDefined()
     if (target) {

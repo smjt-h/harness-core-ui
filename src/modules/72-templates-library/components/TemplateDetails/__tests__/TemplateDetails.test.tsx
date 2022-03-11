@@ -33,6 +33,18 @@ jest.mock('react-monaco-editor', () => ({
   MonacoDiffEditor: MonacoEditor
 }))
 
+const mockYaml = {
+  status: 'SUCCESS',
+  data: 'type: "HarnessApproval"\ntimeout: "<+input>"' + '\nspec:\n  approvalMessage: "<+input>"\n'
+}
+
+jest.mock('services/template-ng', () => ({
+  ...(jest.requireActual('services/template-ng') as any),
+  useGetTemplateInputSetYaml: jest
+    .fn()
+    .mockImplementation(() => ({ data: mockYaml, refetch: jest.fn(), error: null, loading: false }))
+}))
+
 jest.mock('@common/components/MonacoEditor/MonacoEditor', () => MonacoEditor)
 
 function ComponentWrapper(props: TemplateDetailsProps): React.ReactElement {

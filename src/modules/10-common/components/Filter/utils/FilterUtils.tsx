@@ -85,4 +85,4 @@ export const getFilterSize = (obj: Record<string, any>): number => {
 }
 
 export const getFilterByIdentifier = (filters: FilterDTO[], identifier: string): FilterDTO | undefined =>
-  filters?.find((filter: FilterDTO) => filter.identifier?.toLowerCase() === identifier.toLowerCase())
+  filters.find((filter: FilterDTO) => filter.identifier?.toLowerCase() === identifier.toLowerCase())

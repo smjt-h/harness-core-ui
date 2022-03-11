@@ -4,6 +4,7 @@ rules:
     - patterns:
         - lodash.*
         - microfrontends/*
+        - '!microfrontends/ChildAppMounter'
         - modules/18-audit-trail/*
         - modules/20-rbac/*
         - modules/25-governance/*

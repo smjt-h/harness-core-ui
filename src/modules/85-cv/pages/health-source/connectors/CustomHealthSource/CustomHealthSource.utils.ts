@@ -6,20 +6,13 @@
  */
 
 import { cloneDeep } from 'lodash-es'
-import type {
-  CustomHealthMetricDefinition,
-  CustomHealthSourceSpec,
-  RiskProfile,
-  MetricPackDTO,
-  useGetMetricPacks
-} from 'services/cv'
+import type { CustomHealthSourceMetricSpec, RiskProfile, MetricPackDTO, useGetMetricPacks } from 'services/cv'
 import type { StringKeys, UseStringsReturn } from 'framework/strings'
 import type {
   MapCustomHealthToService,
   CustomHealthSourceSetupSource,
   onSubmitCustomHealthSourceInterface
 } from './CustomHealthSource.types'
-import { HealthSourceTypes } from '../../types'
 import type { UpdatedHealthSource } from '../../HealthSourceDrawer/HealthSourceDrawerContent.types'
 import { CustomHealthSourceFieldNames, defaultMetricName, INITFORMDATA } from './CustomHealthSource.constants'
 
@@ -65,55 +58,11 @@ const validateCustomMetricFields = (
     completErrors['metricName'] = getString('cv.monitoringSources.metricNameValidation')
   }
 
-  if (!formValues.pathURL) {
-    completErrors['pathURL'] = getString('cv.customHealthSource.Querymapping.validation.path')
-  }
-
-  if (!formValues.startTime?.timestampFormat) {
-    completErrors['startTime.timestampFormat'] = getString(
-      'cv.customHealthSource.Querymapping.validation.startTime.timestamp'
-    )
-  }
-
   if (!formValues.queryType) {
     completErrors['queryType'] = getString('cv.customHealthSource.Querymapping.validation.queryType')
   }
 
-  if (!formValues.requestMethod) {
-    completErrors['requestMethod'] = getString('connectors.customHealth.requestMethod')
-  }
-
-  if (!formValues.startTime?.placeholder) {
-    completErrors['startTime.placeholder'] = getString(
-      'cv.customHealthSource.Querymapping.validation.startTime.placeholder'
-    )
-  }
-
-  if (!formValues.endTime?.timestampFormat) {
-    completErrors['endTime.timestampFormat'] = getString(
-      'cv.customHealthSource.Querymapping.validation.endTime.timestamp'
-    )
-  }
-
-  if (!formValues.endTime?.placeholder) {
-    completErrors['endTime.placeholder'] = getString('cv.customHealthSource.Querymapping.validation.endTime.timestamp')
-  }
-
-  if (formValues.endTime?.placeholder && formValues.startTime?.placeholder) {
-    if (formValues.startTime.placeholder === formValues.endTime.placeholder) {
-      completErrors['startTime.placeholder'] = getString(
-        'cv.customHealthSource.Querymapping.validation.startAndEndTime'
-      )
-    }
-    if (
-      (!formValues.pathURL?.includes(formValues.startTime.placeholder) ||
-        !formValues.pathURL?.includes(formValues.endTime.placeholder)) &&
-      (!formValues.query?.includes(formValues.startTime.placeholder) ||
-        !formValues.query.includes(formValues.endTime.placeholder))
-    ) {
-      completErrors['pathURL'] = getString('cv.customHealthSource.Querymapping.validation.pathWithoutPlaceholder')
-    }
-  }
+  validateMappingInfo(formValues, completErrors, getString)
 
   if (formValues.requestMethod === 'POST' && !formValues.query) {
     completErrors['query'] = getString('cv.customHealthSource.Querymapping.validation.body')
@@ -133,6 +82,60 @@ const validateCustomMetricFields = (
 
   completErrors = validateAssignComponent(isAssignComponentValid, completErrors, getString, values, isRiskCategoryValid)
   return completErrors
+}
+
+export function validateMappingInfo(
+  formValues: any,
+  completErrors: any,
+  getString: UseStringsReturn['getString']
+): void {
+  if (!formValues.pathURL) {
+    completErrors['pathURL'] = getString('cv.customHealthSource.Querymapping.validation.path')
+  }
+
+  if (!formValues.startTime?.timestampFormat) {
+    completErrors['startTime.timestampFormat'] = getString(
+      'cv.customHealthSource.Querymapping.validation.startTime.timestamp'
+    )
+  }
+
+  if (!formValues.requestMethod) {
+    completErrors['requestMethod'] = getString('connectors.customHealth.requestMethod')
+  }
+
+  if (!formValues.startTime?.placeholder) {
+    completErrors['startTime.placeholder'] = getString(
+      'cv.customHealthSource.Querymapping.validation.startTime.placeholder'
+    )
+  }
+
+  if (!formValues.endTime?.timestampFormat) {
+    completErrors['endTime.timestampFormat'] = getString(
+      'cv.customHealthSource.Querymapping.validation.endTime.timestamp'
+    )
+  }
+
+  if (!formValues.endTime?.placeholder) {
+    completErrors['endTime.placeholder'] = getString(
+      'cv.customHealthSource.Querymapping.validation.endTime.placeholder'
+    )
+  }
+
+  if (formValues.endTime?.placeholder && formValues.startTime?.placeholder) {
+    if (formValues.startTime.placeholder === formValues.endTime.placeholder) {
+      completErrors['startTime.placeholder'] = getString(
+        'cv.customHealthSource.Querymapping.validation.startAndEndTime'
+      )
+    }
+    if (
+      (!formValues.pathURL?.includes(formValues.startTime.placeholder) ||
+        !formValues.pathURL?.includes(formValues.endTime.placeholder)) &&
+      (!formValues.query?.includes(formValues.startTime.placeholder) ||
+        !formValues.query.includes(formValues.endTime.placeholder))
+    ) {
+      completErrors['pathURL'] = getString('cv.customHealthSource.Querymapping.validation.pathWithoutPlaceholder')
+    }
+  }
 }
 
 const validateAssignComponent = (
@@ -209,7 +212,7 @@ export function transformCustomHealthSourceToSetupSource(sourceData: any): Custo
     connectorRef: sourceData.connectorRef
   }
 
-  for (const metricDefinition of (healthSource?.spec as CustomHealthSourceSpec)?.metricDefinitions || []) {
+  for (const metricDefinition of (healthSource?.spec as CustomHealthSourceMetricSpec)?.metricDefinitions || []) {
     if (metricDefinition?.metricName) {
       setupSource.mappedServicesAndEnvs.set(metricDefinition.metricName, {
         metricName: metricDefinition.metricName,
@@ -218,37 +221,37 @@ export function transformCustomHealthSourceToSetupSource(sourceData: any): Custo
 
         // assign section
         continuousVerification: Boolean(metricDefinition?.analysis?.deploymentVerification?.enabled),
-        healthScore: Boolean(metricDefinition?.analysis?.liveMonitoring?.enabled),
+        healthScore: Boolean(metricDefinition.analysis?.liveMonitoring?.enabled),
         sli: Boolean(metricDefinition.sli?.enabled),
         riskCategory:
-          metricDefinition?.analysis?.riskProfile?.category && metricDefinition?.analysis?.riskProfile?.metricType
-            ? `${metricDefinition?.analysis?.riskProfile?.category}/${metricDefinition?.analysis?.riskProfile?.metricType}`
+          metricDefinition.analysis?.riskProfile?.category && metricDefinition.analysis.riskProfile.metricType
+            ? `${metricDefinition.analysis.riskProfile.category}/${metricDefinition.analysis.riskProfile.metricType}`
             : '',
         serviceInstanceIdentifier: metricDefinition.metricResponseMapping?.serviceInstanceJsonPath || '',
         lowerBaselineDeviation:
-          metricDefinition?.analysis?.riskProfile?.thresholdTypes?.includes('ACT_WHEN_LOWER') || false,
+          metricDefinition.analysis?.riskProfile?.thresholdTypes?.includes('ACT_WHEN_LOWER') || false,
         higherBaselineDeviation:
-          metricDefinition?.analysis?.riskProfile?.thresholdTypes?.includes('ACT_WHEN_HIGHER') || false,
+          metricDefinition.analysis?.riskProfile?.thresholdTypes?.includes('ACT_WHEN_HIGHER') || false,
 
         //
         queryType: metricDefinition.queryType,
-        requestMethod: metricDefinition.method,
-        query: metricDefinition.requestBody || '',
+        requestMethod: metricDefinition.requestDefinition?.method,
+        query: metricDefinition.requestDefinition?.requestBody || '',
         baseURL: '', // get this from connector API
-        pathURL: metricDefinition.urlPath || '',
+        pathURL: metricDefinition.requestDefinition?.urlPath || '',
         metricValue: metricDefinition.metricResponseMapping?.metricValueJsonPath || '',
         timestamp: metricDefinition.metricResponseMapping?.timestampJsonPath || '',
         timestampFormat: metricDefinition.metricResponseMapping?.timestampFormat || '',
         serviceInstancePath: metricDefinition.metricResponseMapping?.serviceInstanceJsonPath || '',
         startTime: {
-          placeholder: metricDefinition.startTime?.placeholder,
-          timestampFormat: metricDefinition.startTime?.timestampFormat,
-          customTimestampFormat: metricDefinition.startTime?.customTimestampFormat
+          placeholder: metricDefinition.requestDefinition?.startTimeInfo?.placeholder,
+          timestampFormat: metricDefinition.requestDefinition?.startTimeInfo?.timestampFormat,
+          customTimestampFormat: metricDefinition.requestDefinition?.startTimeInfo?.customTimestampFormat
         },
         endTime: {
-          placeholder: metricDefinition.endTime?.placeholder,
-          timestampFormat: metricDefinition.endTime?.timestampFormat,
-          customTimestampFormat: metricDefinition.endTime?.customTimestampFormat
+          placeholder: metricDefinition.requestDefinition?.endTimeInfo?.placeholder,
+          timestampFormat: metricDefinition.requestDefinition?.endTimeInfo?.timestampFormat,
+          customTimestampFormat: metricDefinition.requestDefinition?.endTimeInfo?.customTimestampFormat
         }
       })
     }
@@ -260,14 +263,16 @@ export function transformCustomHealthSourceToSetupSource(sourceData: any): Custo
 export function transformCustomSetupSourceToHealthSource(
   setupSource: CustomHealthSourceSetupSource
 ): UpdatedHealthSource {
-  const dsConfig = {
-    type: HealthSourceTypes.CustomHealth as UpdatedHealthSource['type'],
+  const spec: CustomHealthSourceMetricSpec = {
+    connectorRef: setupSource?.connectorRef,
+    metricDefinitions: []
+  }
+
+  const dsConfig: UpdatedHealthSource = {
+    type: 'CustomHealthMetric',
     identifier: setupSource.healthSourceIdentifier,
     name: setupSource.healthSourceName,
-    spec: {
-      connectorRef: setupSource?.connectorRef,
-      metricDefinitions: [] as CustomHealthMetricDefinition[]
-    }
+    spec
   }
 
   for (const entry of setupSource.mappedServicesAndEnvs.entries()) {
@@ -306,16 +311,18 @@ export function transformCustomSetupSourceToHealthSource(
       thresholdTypes.push('ACT_WHEN_HIGHER')
     }
 
-    dsConfig.spec?.metricDefinitions?.push({
+    spec.metricDefinitions?.push({
       identifier: metricIdentifier,
+      requestDefinition: {
+        urlPath: pathURL,
+        method: requestMethod,
+        requestBody: query,
+        startTimeInfo: startTime,
+        endTimeInfo: endTime
+      },
       queryType,
       metricName,
       groupName: groupName.value as string,
-      urlPath: pathURL,
-      method: requestMethod,
-      requestBody: query,
-      startTime,
-      endTime,
       metricResponseMapping: {
         metricValueJsonPath: metricValue,
         timestampJsonPath: timestamp,
@@ -332,7 +339,7 @@ export function transformCustomSetupSourceToHealthSource(
         liveMonitoring: { enabled: Boolean(healthScore) },
         deploymentVerification: {
           enabled: Boolean(continuousVerification),
-          serviceInstanceFieldName: 'serviceInstance'
+          serviceInstanceMetricPath: serviceInstanceIdentifier
         }
       }
     })
@@ -404,7 +411,7 @@ function getMetricPackDTO(
     accountId: '',
     orgIdentifier: '',
     projectIdentifier: '',
-    dataSourceType: 'CUSTOM_HEALTH',
+    dataSourceType: 'CUSTOM_HEALTH_METRIC',
     identifier,
     category,
     metrics

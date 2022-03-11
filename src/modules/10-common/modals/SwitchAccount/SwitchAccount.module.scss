@@ -17,4 +17,11 @@
   .alignCenter {
     align-items: center;
   }
+  .noDataCard {
+    margin-top: 0px !important;
+    justify-content: center !important;
+  }
+  .noDataCardContainer {
+    max-height: 500px !important;
+  }
 }

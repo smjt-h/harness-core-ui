@@ -334,7 +334,7 @@ export const mockedHealthSourcePayload = {
         analysis: {
           deploymentVerification: {
             enabled: false,
-            serviceInstanceFieldName: 'serviceInstance'
+            serviceInstanceMetricPath: 'serviceInstance'
           },
           liveMonitoring: {
             enabled: true
@@ -345,37 +345,39 @@ export const mockedHealthSourcePayload = {
             thresholdTypes: ['ACT_WHEN_HIGHER']
           }
         },
-        endTime: {
-          customTimestampFormat: '',
-          placeholder: 'end_time',
-          timestampFormat: 'MILLISECONDS'
-        },
         groupName: 'Group 1',
         identifier: 'CustomHealthMetric101',
-        method: 'POST',
-        metricName,
+        metricName: 'CustomHealth Metric 101',
         metricResponseMapping: {
-          metricValueJsonPath: jsonPath,
+          metricValueJsonPath: '$.series.[*].pointlist.[*]',
           serviceInstanceJsonPath: 'serviceInstance',
           timestampFormat: 'MMMM DD YY',
-          timestampJsonPath: jsonPath
+          timestampJsonPath: '$.series.[*].pointlist.[*]'
         },
         queryType: 'SERVICE_BASED',
-        requestBody: 'Select * from ',
+        requestDefinition: {
+          endTimeInfo: {
+            customTimestampFormat: '',
+            placeholder: 'end_time',
+            timestampFormat: 'MILLISECONDS'
+          },
+          method: 'POST',
+          requestBody: 'Select * from ',
+          startTimeInfo: {
+            customTimestampFormat: '',
+            placeholder: 'start_time',
+            timestampFormat: 'MILLISECONDS'
+          },
+          urlPath:
+            'https://localhost:8181/#/account/kmpySmUISimoRrJL6NL73w/cv/orgs/default/projects/CustomHealthSource/monitoringservices/edit/Service_101_QA?tab=Configurations'
+        },
         sli: {
           enabled: false
-        },
-        startTime: {
-          customTimestampFormat: '',
-          placeholder: 'start_time',
-          timestampFormat: 'MILLISECONDS'
-        },
-        urlPath:
-          'https://localhost:8181/#/account/kmpySmUISimoRrJL6NL73w/cv/orgs/default/projects/CustomHealthSource/monitoringservices/edit/Service_101_QA?tab=Configurations'
+        }
       }
     ]
   },
-  type: 'CustomHealth'
+  type: 'CustomHealthMetric'
 }
 
 export const noErrorValidatation = {
@@ -409,7 +411,7 @@ export const sourceData = {
     {
       name: 'New Custom',
       identifier: 'New_Custom',
-      type: 'CustomHealth',
+      type: 'Custom Health',
       spec: {
         connectorRef: 'customhealth',
         metricDefinitions: [

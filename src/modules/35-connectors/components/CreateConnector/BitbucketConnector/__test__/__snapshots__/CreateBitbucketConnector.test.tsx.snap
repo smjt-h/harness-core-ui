@@ -553,8 +553,7 @@ exports[`Create Bitbucketconnector Wizard Creating Bitbucket connector step one 
     >
        
       <div
-        class="Layout--vertical StyledProps--main firstep stepContainer"
-        style="min-height: 460px; width: 60%;"
+        class="Layout--vertical StyledProps--main gitDetails firstep stepContainer"
       >
         <div
           class="Text--withDocsTooltip"
@@ -570,7 +569,7 @@ exports[`Create Bitbucketconnector Wizard Creating Bitbucket connector step one 
           class="OverlaySpinner--overlaySpinner"
         >
           <form
-            class="FormikForm--main fullHeight fullHeightDivsWithFlex"
+            class="FormikForm--main connectorForm fullHeight fullHeightDivsWithFlex"
           >
             <div>
               <div
@@ -703,7 +702,7 @@ exports[`Create Bitbucketconnector Wizard Creating Bitbucket connector step one 
                   </div>
                 </div>
                 <div
-                  class="bp3-form-group"
+                  class="bp3-form-group formElm"
                   data-id="url-2"
                 >
                   <label
@@ -751,7 +750,7 @@ exports[`Create Bitbucketconnector Wizard Creating Bitbucket connector step one 
                     common.git.testRepositoryDescription
                   </p>
                   <div
-                    class="bp3-form-group"
+                    class="bp3-form-group formElm"
                     data-id="validationRepo-3"
                   >
                     <label
@@ -1022,8 +1021,7 @@ exports[`Create Bitbucketconnector Wizard Creating Bitbucket connector step one 
     >
        
       <div
-        class="Layout--vertical StyledProps--main firstep stepContainer"
-        style="min-height: 460px; width: 60%;"
+        class="Layout--vertical StyledProps--main gitDetails firstep stepContainer"
       >
         <div
           class="Text--withDocsTooltip"
@@ -1039,7 +1037,7 @@ exports[`Create Bitbucketconnector Wizard Creating Bitbucket connector step one 
           class="OverlaySpinner--overlaySpinner"
         >
           <form
-            class="FormikForm--main fullHeight fullHeightDivsWithFlex"
+            class="FormikForm--main connectorForm fullHeight fullHeightDivsWithFlex"
           >
             <div>
               <div
@@ -1172,7 +1170,7 @@ exports[`Create Bitbucketconnector Wizard Creating Bitbucket connector step one 
                   </div>
                 </div>
                 <div
-                  class="bp3-form-group"
+                  class="bp3-form-group formElm"
                   data-id="url-2"
                 >
                   <label
@@ -1220,7 +1218,7 @@ exports[`Create Bitbucketconnector Wizard Creating Bitbucket connector step one 
                     common.git.testRepositoryDescription
                   </p>
                   <div
-                    class="bp3-form-group bp3-intent-danger"
+                    class="bp3-form-group bp3-intent-danger formElm"
                     data-id="validationRepo-3"
                   >
                     <label
@@ -1522,8 +1520,7 @@ exports[`Create Bitbucketconnector Wizard Creating Bitbucket connector step two 
     >
        
       <div
-        class="Layout--vertical StyledProps--main firstep stepContainer"
-        style="min-height: 460px; width: 60%;"
+        class="Layout--vertical StyledProps--main gitDetails firstep stepContainer"
       >
         <div
           class="Text--withDocsTooltip"
@@ -1539,7 +1536,7 @@ exports[`Create Bitbucketconnector Wizard Creating Bitbucket connector step two 
           class="OverlaySpinner--overlaySpinner"
         >
           <form
-            class="FormikForm--main fullHeight fullHeightDivsWithFlex"
+            class="FormikForm--main connectorForm fullHeight fullHeightDivsWithFlex"
           >
             <div>
               <div
@@ -1672,7 +1669,7 @@ exports[`Create Bitbucketconnector Wizard Creating Bitbucket connector step two 
                   </div>
                 </div>
                 <div
-                  class="bp3-form-group"
+                  class="bp3-form-group formElm"
                   data-id="url-2"
                 >
                   <label
@@ -1720,7 +1717,7 @@ exports[`Create Bitbucketconnector Wizard Creating Bitbucket connector step two 
                     common.git.testRepositoryDescription
                   </p>
                   <div
-                    class="bp3-form-group"
+                    class="bp3-form-group formElm"
                     data-id="validationRepo-3"
                   >
                     <label
@@ -1991,8 +1988,7 @@ exports[`Create Bitbucketconnector Wizard Creating Bitbucket connector step two 
     >
        
       <div
-        class="Layout--vertical StyledProps--main firstep stepContainer"
-        style="min-height: 460px; width: 60%;"
+        class="Layout--vertical StyledProps--main gitDetails firstep stepContainer"
       >
         <div
           class="Text--withDocsTooltip"
@@ -2008,7 +2004,7 @@ exports[`Create Bitbucketconnector Wizard Creating Bitbucket connector step two 
           class="OverlaySpinner--overlaySpinner"
         >
           <form
-            class="FormikForm--main fullHeight fullHeightDivsWithFlex"
+            class="FormikForm--main connectorForm fullHeight fullHeightDivsWithFlex"
           >
             <div>
               <div
@@ -2141,7 +2137,7 @@ exports[`Create Bitbucketconnector Wizard Creating Bitbucket connector step two 
                   </div>
                 </div>
                 <div
-                  class="bp3-form-group"
+                  class="bp3-form-group formElm"
                   data-id="url-2"
                 >
                   <label
@@ -2189,7 +2185,7 @@ exports[`Create Bitbucketconnector Wizard Creating Bitbucket connector step two 
                     common.git.testRepositoryDescription
                   </p>
                   <div
-                    class="bp3-form-group bp3-intent-danger"
+                    class="bp3-form-group bp3-intent-danger formElm"
                     data-id="validationRepo-3"
                   >
                     <label
@@ -3410,7 +3406,7 @@ exports[`Create Bitbucketconnector Wizard should form for edit http and authtype
                               placeholder="- Select -"
                               style="padding-right: 0px;"
                               type="text"
-                              value=""
+                              value="usernameToken"
                             />
                             <span
                               class="bp3-input-action"

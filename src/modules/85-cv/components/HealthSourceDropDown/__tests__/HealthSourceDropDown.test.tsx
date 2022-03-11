@@ -60,6 +60,10 @@ describe('Unit tests for HealthSourceDropDown', () => {
     }
     expect(getDropdownOptions(newDropdownData, getString)).toEqual([
       {
+        label: 'all',
+        value: 'all'
+      },
+      {
         icon: {
           name: 'service-appdynamics'
         },

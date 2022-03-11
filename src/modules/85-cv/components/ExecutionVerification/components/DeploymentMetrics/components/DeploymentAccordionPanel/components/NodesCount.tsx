@@ -10,7 +10,7 @@ import { FontVariation, Layout, Text } from '@wings-software/uicore'
 import type { NodeRiskCountDTO } from 'services/cv'
 import { useStrings } from 'framework/strings'
 import NodeRiskCountsDisplay from './NodeRiskCountsDisplay'
-import css from './NodesCount.module.scss'
+import DeploymentMetricsStyle from '../../../DeploymentMetrics.module.scss'
 
 interface NodeCountProps {
   nodeRiskCount?: NodeRiskCountDTO
@@ -21,13 +21,15 @@ const NodeCount: React.FC<NodeCountProps> = props => {
   const { nodeRiskCount } = props
 
   return (
-    <Layout.Horizontal className={css.nodeCount}>
+    <Layout.Horizontal className={DeploymentMetricsStyle.nodeCount}>
       <NodeRiskCountsDisplay nodeDetails={nodeRiskCount?.nodeRiskCounts} />
-      <Layout.Horizontal>
-        <Text font={{ variation: FontVariation.SMALL_BOLD }} margin={{ right: 'xsmall', left: 'small' }}>
-          {nodeRiskCount?.anomalousNodeCount}/{nodeRiskCount?.totalNodeCount}
+      <Layout.Horizontal style={{ flex: '1' }}>
+        <Text font={{ variation: FontVariation.SMALL }} className={DeploymentMetricsStyle.nodeCountMessage}>
+          <strong>
+            {nodeRiskCount?.anomalousNodeCount}/{nodeRiskCount?.totalNodeCount} &nbsp;
+          </strong>
+          {getString('pipeline.verification.nodeCountDisplay')}
         </Text>
-        <Text font={{ variation: FontVariation.SMALL }}>{getString('pipeline.verification.nodeCountDisplay')}</Text>
       </Layout.Horizontal>
     </Layout.Horizontal>
   )

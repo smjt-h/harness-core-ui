@@ -112,7 +112,7 @@ export const CIStep: React.FC<CIStepProps> = props => {
         disabled={readonly}
       />
     ),
-    []
+    [expressions]
   )
 
   return (

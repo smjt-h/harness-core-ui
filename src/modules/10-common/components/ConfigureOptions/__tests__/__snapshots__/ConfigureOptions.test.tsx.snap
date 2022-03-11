@@ -58,7 +58,8 @@ exports[`Test ConfigureOptions should render configure options 1`] = `
           class="bp3-form-content"
         >
           <p
-            class="StyledProps--font StyledProps--main"
+            class="StyledProps--font Text--lineclamp StyledProps--main"
+            style="--text-line-clamp: 1;"
           >
             var-test
           </p>
@@ -324,7 +325,8 @@ exports[`Test ConfigureOptions test allowed advanced values 1`] = `
           class="bp3-form-content"
         >
           <p
-            class="StyledProps--font StyledProps--main"
+            class="StyledProps--font Text--lineclamp StyledProps--main"
+            style="--text-line-clamp: 1;"
           >
             var-test
           </p>
@@ -574,7 +576,8 @@ exports[`Test ConfigureOptions test allowed values 1`] = `
           class="bp3-form-content"
         >
           <p
-            class="StyledProps--font StyledProps--main"
+            class="StyledProps--font Text--lineclamp StyledProps--main"
+            style="--text-line-clamp: 1;"
           >
             var-test
           </p>
@@ -946,7 +949,8 @@ exports[`Test ConfigureOptions test regex expression 1`] = `
           class="bp3-form-content"
         >
           <p
-            class="StyledProps--font StyledProps--main"
+            class="StyledProps--font Text--lineclamp StyledProps--main"
+            style="--text-line-clamp: 1;"
           >
             var-test
           </p>

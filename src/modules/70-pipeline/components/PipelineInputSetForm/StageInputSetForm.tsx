@@ -50,6 +50,7 @@ import { StepType } from '../PipelineSteps/PipelineStepInterface'
 import { CollapseForm } from './CollapseForm'
 import { getStepFromStage } from '../PipelineStudio/StepUtil'
 import { StepWidget } from '../AbstractSteps/StepWidget'
+import { ConditionalExecutionForm } from './StageAdvancedInputSetForm'
 import type { StepViewType } from '../AbstractSteps/Step'
 import { useVariablesExpression } from '../PipelineStudio/PiplineHooks/useVariablesExpression'
 import stepCss from '@pipeline/components/PipelineSteps/Steps/Steps.module.scss'
@@ -150,6 +151,15 @@ function StepFormInternal({
             disabled={readonly}
           />
         </div>
+      )}
+      {getMultiTypeFromValue((template?.step as StepElementConfig)?.when?.condition) === MultiTypeInputType.RUNTIME && (
+        <Container padding={{ left: 'xlarge' }} className={cx(stepCss.formGroup, stepCss.sm)}>
+          <ConditionalExecutionForm
+            readonly={readonly}
+            path={`${path}.when.condition`}
+            allowableTypes={allowableTypes}
+          />
+        </Container>
       )}
     </div>
   )

@@ -74,8 +74,10 @@ export const getIconBySourceType = (type: string): IconName => {
       return 'service-splunk'
     case 'PagerDuty':
       return 'service-pagerduty'
-    case 'CustomHealth':
-    case 'CUSTOM_HEALTH':
+    case 'CUSTOM_HEALTH_METRIC':
+    case 'CUSTOM_HEALTH_LOG':
+    case 'CustomHealthLog':
+    case 'CustomHealthMetric':
       return 'service-custom-connector'
     case 'DYNATRACE':
     case 'Dynatrace':

@@ -249,7 +249,7 @@ Cypress.Commands.add('apiMocksForVerifyStep', () => {
 
 Cypress.Commands.add('verifyStepInitialSetup', () => {
   cy.apiMocksForVerifyStep()
-  cy.get('[icon="plus"]').click()
+  cy.get('[icon="plus"]').first().click()
   cy.findByTestId('stage-Deployment').click()
 
   cy.fillName('testStage_Cypress')
@@ -261,8 +261,9 @@ Cypress.Commands.add('verifyStepSelectConnector', () => {
   cy.contains('p', /^Kubernetes$/).click()
 
   cy.contains('span', 'Select Connector').click({ force: true })
-  cy.contains('p', 'test1111').click({ force: true })
-  cy.contains('span', 'Apply Selected').click({ force: true })
+  cy.wait(500)
+  cy.contains('p', 'test1111', { timeout: 10000 }).click({ force: true })
+  cy.contains('span', 'Apply Selected', { timeout: 10000 }).click({ force: true })
 
   cy.wait('@applyTemplatesCall')
 

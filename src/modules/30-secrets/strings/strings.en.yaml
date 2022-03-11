@@ -77,3 +77,4 @@ secret:
   newSecretFile: New Secret File
   secretNotFound: 'Secret not found'
 secretsTitle: 'Resources: Secrets'
+createSecret: Create a Secret

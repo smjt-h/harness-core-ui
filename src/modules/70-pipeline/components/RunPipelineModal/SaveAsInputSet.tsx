@@ -230,6 +230,7 @@ function SaveAsInputSet({
     return (
       <Popover
         disabled={!canEdit}
+        lazy
         content={
           <div>
             <Formik<InputSetDTO & GitContextProps>

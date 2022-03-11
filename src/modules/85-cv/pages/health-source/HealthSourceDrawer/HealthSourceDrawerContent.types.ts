@@ -16,9 +16,10 @@ import type {
   SplunkHealthSourceSpec,
   ChangeSourceDTO,
   DatadogMetricHealthSourceSpec,
-  CustomHealthSourceSpec,
+  CustomHealthSourceMetricSpec,
   ErrorTrackingHealthSourceSpec,
-  DynatraceHealthSourceSpec
+  DynatraceHealthSourceSpec,
+  CustomHealthSourceLogSpec
 } from 'services/cv'
 import type { DatadogLogsHealthSpec } from '@cv/pages/health-source/connectors/DatadogLogsHealthSource/DatadogLogsHealthSource.type'
 import type { GCOLogsHealthSourceSpec } from '../connectors/GCOLogsMonitoringSource/components/MapQueriesToHarnessService/types'
@@ -33,7 +34,8 @@ export interface UpdatedHealthSource extends Omit<HealthSource, 'spec'> {
     | SplunkHealthSourceSpec
     | DatadogMetricHealthSourceSpec
     | DatadogLogsHealthSpec
-    | CustomHealthSourceSpec
+    | CustomHealthSourceMetricSpec
+    | CustomHealthSourceLogSpec
     | ErrorTrackingHealthSourceSpec
     | DynatraceHealthSourceSpec
 }

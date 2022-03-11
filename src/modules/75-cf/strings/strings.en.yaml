@@ -119,7 +119,7 @@ selectFlagRepo:
   createRepoError: 'Unable to save flags to repository'
 clause:
   operators:
-    and: and
+    and: '{{ $.common.and }}'
     in: '{{ $.common.in }}'
     startsWith: 'starts with'
     endsWith: 'ends with'

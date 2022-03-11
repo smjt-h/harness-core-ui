@@ -45,10 +45,7 @@ module.exports = {
     '!src/modules/70-pipeline/components/PipelineStudio/PipelineContext/PipelineContext.tsx',
     '!src/modules/70-pipeline/components/PipelineStudio/ExecutionGraph/**',
     '!src/modules/25-governance/**', // 25-governance will be moved to a separate micro-frontend repository shortly
-    '!src/modules/75-cd/factory/**',
-    // To be removed once this component is deleted. It is not being used anywhere
-    '!src/modules/75-cd/components/ArtifactInputForm/ArtifactInputForm.tsx',
-    '!src/modules/75-cd/components/ManifestInputForm/ManifestInputForm.tsx'
+    '!src/modules/75-cd/factory/**'
   ],
   coverageReporters: ['lcov', 'json-summary', 'json'],
   transform: {

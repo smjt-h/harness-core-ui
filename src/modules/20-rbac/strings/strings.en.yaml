@@ -64,6 +64,7 @@ allResources: All Resources
 allProjectResources: All Project Level Resources
 allOrgResources: All Organization Level Resources
 allAccountResources: All Account Level Resources
+allResourcesIncludingChildScopes: All Resources Including Child Scopes
 userGroupPage:
   newUserGroup: New {{ $.common.userGroup}}
   editUserGroup: Edit {{ $.common.userGroup}}

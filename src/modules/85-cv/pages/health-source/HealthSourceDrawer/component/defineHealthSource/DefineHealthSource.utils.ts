@@ -7,6 +7,7 @@
 
 import * as Yup from 'yup'
 import type { UseStringsReturn } from 'framework/strings'
+import type { HealthSource } from 'services/cv'
 import { Connectors } from '@connectors/constants'
 import { HealthSourceTypes } from '@cv/pages/health-source/types'
 import type { SelectOption } from '@pipeline/components/PipelineSteps/Steps/StepsTypes'
@@ -14,6 +15,7 @@ import { GCOProduct } from '@cv/pages/health-source/connectors/GCOLogsMonitoring
 import { PrometheusProductNames } from '@cv/pages/health-source/connectors/PrometheusHealthSource/PrometheusHealthSource.constants'
 import { DatadogProduct } from '@cv/pages/health-source/connectors/DatadogMetricsHealthSource/DatadogMetricsHealthSource.utils'
 import { ErrorTrackingProductNames } from '@cv/pages/health-source/connectors/ErrorTrackingHealthSource/ErrorTrackingHealthSource.utils'
+import { CustomHealthProduct } from '@cv/pages/health-source/connectors/CustomHealthSource/CustomHealthSource.constants'
 import {
   NewRelicProductNames,
   ConnectorRefFieldName,
@@ -112,8 +114,12 @@ export const getFeatureOption = (type: string, getString: UseStringsReturn['getS
     case Connectors.CUSTOM_HEALTH:
       return [
         {
-          label: getString('connectors.customLabel'),
-          value: getString('connectors.customLabel')
+          label: getString('cv.customHealthSource.customHealthMetric'),
+          value: CustomHealthProduct.METRICS
+        },
+        {
+          label: getString('cv.customHealthSource.customHealthLog'),
+          value: CustomHealthProduct.LOGS
         }
       ]
     case Connectors.ERROR_TRACKING:
@@ -128,14 +134,31 @@ export const getFeatureOption = (type: string, getString: UseStringsReturn['getS
   }
 }
 
-export const getInitialValues = (sourceData: any): any => {
+export function getProductBasedOnType(
+  getString: UseStringsReturn['getString'],
+  type?: HealthSource['type'],
+  currProduct?: SelectOption
+): SelectOption | undefined {
+  switch (type) {
+    case 'CustomHealthLog':
+      return getFeatureOption(Connectors.CUSTOM_HEALTH, getString)[1]
+    case 'CustomHealthMetric':
+      return getFeatureOption(Connectors.CUSTOM_HEALTH, getString)[0]
+    default:
+      return { ...currProduct } as SelectOption
+  }
+}
+
+export const getInitialValues = (sourceData: any, getString: UseStringsReturn['getString']): any => {
   const currentHealthSource = sourceData?.healthSourceList?.find(
     (el: any) => el?.identifier === sourceData?.healthSourceIdentifier
   )
   const selectedFeature = currentHealthSource?.spec?.feature
   const initialValues = {
     ...sourceData,
-    product: selectedFeature ? { label: selectedFeature, value: selectedFeature } : { ...sourceData?.product }
+    product: selectedFeature
+      ? { label: selectedFeature, value: selectedFeature }
+      : getProductBasedOnType(getString, currentHealthSource?.type, sourceData?.product)
   }
   return initialValues
 }
@@ -147,4 +170,21 @@ export const getSelectedFeature = (sourceData: any): any => {
   const selectedFeature = currentHealthSource?.spec?.feature
 
   return selectedFeature ? { label: selectedFeature, value: selectedFeature } : { ...sourceData?.product }
+}
+
+export const modifyCustomHealthFeatureBasedOnFF = (
+  isCustomLogEnabled: boolean,
+  isCustomMetricEnabled: boolean,
+  customHealthOptions: SelectOption[]
+): SelectOption[] => {
+  const featureOptionForConnector = []
+  if (isCustomMetricEnabled) {
+    featureOptionForConnector.push(customHealthOptions[0])
+  }
+
+  if (isCustomLogEnabled) {
+    featureOptionForConnector.push(customHealthOptions[1])
+  }
+
+  return featureOptionForConnector
 }

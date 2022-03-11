@@ -7,7 +7,7 @@
 
 import React, { useEffect } from 'react'
 import { act } from 'react-test-renderer'
-import { fireEvent, render, waitFor } from '@testing-library/react'
+import { fireEvent, render } from '@testing-library/react'
 import {
   DynatraceHealthSourcePropsMock,
   DynatraceMockHealthSourceData,
@@ -21,10 +21,8 @@ import DynatraceHealthSource from '@cv/pages/health-source/connectors/Dynatrace/
 import type { DynatraceHealthSourceProps } from '@cv/pages/health-source/connectors/Dynatrace/DynatraceHealthSource.types'
 import * as cvService from 'services/cv'
 import type { DynatraceMetricPacksToServiceProps } from '@cv/pages/health-source/connectors/Dynatrace/components/DynatraceMetricPacksToService/DynatraceMetricPacksToService.types'
-import * as DynatraceCustomMetricsUtils from '@cv/pages/health-source/connectors/Dynatrace/components/DynatraceCustomMetrics/DynatraceCustomMetrics.utils'
 import * as DynatraceHealthSourceUtils from '@cv/pages/health-source/connectors/Dynatrace/DynatraceHealthSource.utils'
 
-import { SELECTED_AND_MAPPED_METRICS_WITH_DEFAULT_MOCK } from '@cv/pages/health-source/connectors/Dynatrace/components/DynatraceCustomMetrics/__tests__/DynatraceCustomMetrics.mock'
 import type { FooterCTAProps } from '@cv/components/CVSetupSourcesView/SetupSourceLayout/SetupSourceLayout'
 
 jest.mock('@cv/hooks/IndexedDBHook/IndexedDBHook', () => ({
@@ -95,37 +93,6 @@ describe('Validate DynatraceHealthSource', () => {
   beforeEach(() => {
     jest.clearAllMocks()
     jest.spyOn(cvService, 'useGetDynatraceServices').mockReturnValue(mockUseGetDynatraceServices as any)
-  })
-
-  test('Should render custom metrics when Add metric link is clicked', async () => {
-    const propsWithoutCustomMetrics = {
-      ...DynatraceHealthSourcePropsMock,
-      dynatraceFormData: { ...DynatraceHealthSourcePropsMock.dynatraceFormData, customMetrics: new Map() }
-    }
-    const initializeCreatedMetricsMock = jest.spyOn(DynatraceCustomMetricsUtils, 'initializeCreatedMetrics')
-
-    const initializeSelectedMetricsMapMock = jest
-      .spyOn(DynatraceCustomMetricsUtils, 'initializeSelectedMetricsMap')
-      .mockReturnValue(SELECTED_AND_MAPPED_METRICS_WITH_DEFAULT_MOCK)
-    const { getByText } = render(<WrapperComponent {...propsWithoutCustomMetrics} />)
-
-    expect(initializeSelectedMetricsMapMock).toHaveBeenNthCalledWith(
-      1,
-      'cv.healthSource.connectors.Dynatrace.defaultMetricName',
-      propsWithoutCustomMetrics.dynatraceFormData.customMetrics
-    )
-
-    expect(initializeCreatedMetricsMock).toHaveBeenNthCalledWith(
-      1,
-      'cv.healthSource.connectors.Dynatrace.defaultMetricName',
-      SELECTED_AND_MAPPED_METRICS_WITH_DEFAULT_MOCK.selectedMetric,
-      SELECTED_AND_MAPPED_METRICS_WITH_DEFAULT_MOCK.mappedMetrics
-    )
-    await waitFor(() => expect(getByText('cv.monitoringSources.addMetric')).not.toBeNull())
-    act(() => {
-      fireEvent.click(getByText('cv.monitoringSources.addMetric'))
-    })
-    await waitFor(() => expect(customMetricsComponentRenderMock).toHaveBeenCalledTimes(1))
   })
 
   test('should render DynatraceMetricPacksToService', async () => {

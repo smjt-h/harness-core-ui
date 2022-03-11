@@ -4,6 +4,7 @@ rules:
     - patterns:
         - lodash.*
         - microfrontends/*
+        - '!microfrontends/ChildAppMounter'
         - modules/35-connectors/*
         - modules/40-gitsync/*
         - modules/45-dashboards/*

@@ -6,11 +6,10 @@
  */
 
 import React from 'react'
-import { Container, Layout, Text } from '@wings-software/uicore'
+import { Container, Layout, Text, Color, FontVariation } from '@wings-software/uicore'
 import cx from 'classnames'
 
 import { useStrings } from 'framework/strings'
-import formatCost from '@ce/utils/formatCost'
 import { useTelemetry } from '@common/hooks/useTelemetry'
 import { USER_JOURNEY_EVENTS } from '@ce/TrackingEventsConstants'
 import { RecommendationType } from './constants'
@@ -35,12 +34,7 @@ const RecommendationTabs: React.FC<RecommendationTabsProps> = ({
   setSelectedRecommendation,
   setCPUReqVal,
   setMemReqVal,
-  setMemLimitVal,
-  costOptimizedSavings,
-  performanceOptimizedSavings,
-  currentSavings,
-  isPerfOptimizedCustomized,
-  isCostOptimizedCustomized
+  setMemLimitVal
 }) => {
   const { getString } = useStrings()
   const { trackEvent } = useTelemetry()
@@ -64,44 +58,20 @@ const RecommendationTabs: React.FC<RecommendationTabsProps> = ({
           }}
         >
           <Text
-            font={{
-              size: 'small',
-              align: 'center'
-            }}
+            font={{ variation: FontVariation.SMALL_BOLD, align: 'center' }}
+            color={selectedRecommendation === RecommendationType.CostOptimized ? Color.WHITE : Color.PRIMARY_9}
             className={cx({ [css.selectedTab]: selectedRecommendation === RecommendationType.CostOptimized })}
+            tooltipProps={{ dataTooltipId: 'costOptimized' }}
           >
             {getString('ce.recommendation.detailsPage.costOptimized')}
           </Text>
-          {costOptimizedSavings > 0 ? (
-            <Text
-              font={{
-                size: 'xsmall',
-                align: 'center'
-              }}
-              className={cx(css.recommendationCost, {
-                [css.selectedTabCost]: selectedRecommendation === RecommendationType.CostOptimized
-              })}
-              padding={{
-                left: 'small',
-                right: 'small'
-              }}
-            >
-              {formatCost(
-                selectedRecommendation === RecommendationType.CostOptimized ? currentSavings : costOptimizedSavings
-              )}
-              {isCostOptimizedCustomized ? (
-                <Text className={css.astericSign} inline font="normal">
-                  *
-                </Text>
-              ) : null}
-            </Text>
-          ) : null}
         </Layout.Horizontal>
 
         <Layout.Horizontal
           className={cx(css.recommendationTypeText, {
             [css.selectedTab]: selectedRecommendation === RecommendationType.PerformanceOptimized
           })}
+          color={selectedRecommendation === RecommendationType.PerformanceOptimized ? Color.WHITE : Color.PRIMARY_9}
           spacing="xsmall"
           onClick={() => {
             trackEvent(USER_JOURNEY_EVENTS.RECOMMENDATION_COST_PERFORMANCE_OPTIMISED_CLICK, {
@@ -114,40 +84,13 @@ const RecommendationTabs: React.FC<RecommendationTabsProps> = ({
           }}
         >
           <Text
-            font={{
-              size: 'small',
-              align: 'center'
-            }}
+            font={{ variation: FontVariation.SMALL_BOLD, align: 'center' }}
+            color={selectedRecommendation === RecommendationType.PerformanceOptimized ? Color.WHITE : Color.PRIMARY_9}
             className={cx({ [css.selectedTab]: selectedRecommendation === RecommendationType.PerformanceOptimized })}
+            tooltipProps={{ dataTooltipId: 'performanceOptimized' }}
           >
             {getString('ce.recommendation.detailsPage.performanceOptimized')}
           </Text>
-          {performanceOptimizedSavings > 0 ? (
-            <Text
-              font={{
-                size: 'xsmall',
-                align: 'center'
-              }}
-              className={cx(css.recommendationCost, {
-                [css.selectedTabCost]: selectedRecommendation === RecommendationType.PerformanceOptimized
-              })}
-              padding={{
-                left: 'small',
-                right: 'small'
-              }}
-            >
-              {formatCost(
-                selectedRecommendation === RecommendationType.PerformanceOptimized
-                  ? currentSavings
-                  : performanceOptimizedSavings
-              )}
-              {isPerfOptimizedCustomized ? (
-                <Text className={css.astericSign} inline font="normal">
-                  *
-                </Text>
-              ) : null}
-            </Text>
-          ) : null}
         </Layout.Horizontal>
       </Layout.Horizontal>
     </Container>

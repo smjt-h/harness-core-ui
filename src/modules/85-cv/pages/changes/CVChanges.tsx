@@ -6,7 +6,15 @@
  */
 
 /* eslint-disable react-hooks/exhaustive-deps */
-import { Container, MultiSelectDropDown, MultiSelectOption, Select, SelectOption } from '@wings-software/uicore'
+import {
+  Button,
+  ButtonVariation,
+  Container,
+  MultiSelectDropDown,
+  MultiSelectOption,
+  Select,
+  SelectOption
+} from '@wings-software/uicore'
 import React, { useCallback, useEffect, useMemo, useState } from 'react'
 import type { Column } from 'react-table'
 import moment from 'moment'
@@ -81,6 +89,16 @@ export const CVChanges = ({ updateTime }: { updateTime?: Date }): JSX.Element =>
     return getStartAndEndTime((selectedTimePeriod?.value as string) || '').endTimeRoundedOffToNearest30min
   }, [selectedTimePeriod, serviceOptions, environmentOptions, sourceTypes, connectorOptions])
 
+  const clearFilter = () => {
+    setSelectedTimePeriod({
+      value: TimePeriodEnum.TWENTY_FOUR_HOURS,
+      label: getString('cv.monitoredServices.serviceHealth.last24Hrs')
+    })
+    setSelectedEnvs([])
+    setSelectedServices([])
+    setSelectedChangeTypes([])
+    setSelectedSources([])
+  }
   useEffect(() => {
     setLastUpdated(updateTime || new Date())
   }, [selectedServices, selectedEnvs, selectedChangeTypes, selectedSources, selectedTimePeriod])
@@ -202,7 +220,13 @@ export const CVChanges = ({ updateTime }: { updateTime?: Date }): JSX.Element =>
             onChange={setSelectedSources}
             buttonTestId={'sourceFilter'}
           />
+          <Button
+            variation={ButtonVariation.LINK}
+            onClick={clearFilter}
+            text={getString('cv.cvChanges.clearFilters')}
+          />
         </Container>
+        s
       </ChangeTimeLineHeader>
       <PBody>
         <HorizontalLayout>

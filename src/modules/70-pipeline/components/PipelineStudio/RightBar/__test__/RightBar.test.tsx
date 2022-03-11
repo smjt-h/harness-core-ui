@@ -28,31 +28,31 @@ jest.mock('../../RightDrawer/RightDrawer', () => ({
 }))
 
 const connectorMock = {
+  status: 'SUCCESS',
   data: {
     connector: {
-      name: 'Git5',
-      identifier: 'Git5',
+      name: 'test-connector',
+      identifier: 'test_connector',
       description: '',
-      orgIdentifier: 'CV',
-      projectIdentifier: 'Milos2',
+      orgIdentifier: 'default',
+      projectIdentifier: 'projectIdentifier',
       tags: {},
-      type: 'Git',
+      type: 'Github',
       spec: {
-        url: 'https://github.com/wings-software/template-yaml-bugbash.git',
-        branchName: null,
-        delegateSelectors: [],
-        type: 'Http',
-        connectionType: 'Repo',
-        spec: {
-          username: 'AutoUserHarness1',
-          usernameRef: null,
-          passwordRef: 'GitPass2'
+        url: 'https://github.com/',
+        validationRepo: 'devrepo',
+        authentication: {
+          type: 'Http',
+          spec: {
+            type: 'UsernameToken',
+            spec: {
+              username: 'username',
+              usernameRef: null,
+              tokenRef: 'tokenRef'
+            }
+          }
         },
-        gitSync: {
-          enabled: false,
-          customCommitAttributes: null,
-          syncEnabled: false
-        }
+        type: 'Account'
       }
     }
   }
@@ -121,7 +121,7 @@ const stateMock = {
   error: ''
 }
 
-const pipelineContext: PipelineContextInterface = {
+export const pipelineContext: PipelineContextInterface = {
   updatePipeline: jest.fn(),
   state: stateMock as any,
   contextType: 'Pipeline',
@@ -228,6 +228,52 @@ describe('RightBar', () => {
     expect(pipelineContext.updatePipelineView).toHaveBeenCalledWith({
       drawerData: {
         type: 'FlowControl'
+      },
+      isDrawerOpened: true,
+      isSplitViewOpen: false,
+      splitViewData: {}
+    })
+  })
+
+  test('clicking on Codebase Configuration should open Codebase Configuration view in right drawer', async () => {
+    const { getByText } = render(
+      <TestWrapper>
+        <PipelineContext.Provider value={pipelineContext}>
+          <RightBar />
+        </PipelineContext.Provider>
+      </TestWrapper>
+    )
+    const codebaseConfigurationBtn = getByText('codebase')
+    act(() => {
+      fireEvent.click(codebaseConfigurationBtn)
+    })
+    await waitFor(() => expect(pipelineContext.updatePipelineView).toHaveBeenCalled())
+    expect(pipelineContext.updatePipelineView).toHaveBeenCalledWith({
+      drawerData: {
+        type: 'AddCommand'
+      },
+      isDrawerOpened: false,
+      isSplitViewOpen: false,
+      splitViewData: {}
+    })
+  })
+
+  test('clicking on Advanced Options should open Advanced Options view in right drawer', async () => {
+    const { getByText } = render(
+      <TestWrapper>
+        <PipelineContext.Provider value={pipelineContext}>
+          <RightBar />
+        </PipelineContext.Provider>
+      </TestWrapper>
+    )
+    const advancedOptionsBtn = getByText('pipeline.advancedOptions')
+    act(() => {
+      fireEvent.click(advancedOptionsBtn)
+    })
+    await waitFor(() => expect(pipelineContext.updatePipelineView).toHaveBeenCalled())
+    expect(pipelineContext.updatePipelineView).toHaveBeenCalledWith({
+      drawerData: {
+        type: 'AdvancedOptions'
       },
       isDrawerOpened: true,
       isSplitViewOpen: false,

@@ -200,9 +200,10 @@ const ProjectCard: React.FC<ProjectCardProps> = props => {
               />
             </Layout.Vertical>
           </Layout.Horizontal>
+
+          <DefaultRenderer />
         </Container>
       </Container>
-      <DefaultRenderer />
     </Card>
   )
 }

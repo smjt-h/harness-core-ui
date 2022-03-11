@@ -46,6 +46,7 @@ import {
 import { HealthSoureSupportedConnectorTypes } from '../MonitoredServiceConnector.constants'
 import {
   createAppDFormData,
+  getPlaceholder,
   initAppDCustomFormValue,
   initializeNonCustomFields,
   setAppDynamicsApplication,
@@ -155,12 +156,6 @@ export default function AppDMonitoredSource({
     })
   }
 
-  if (applicationError || tierError) {
-    clear()
-    tierError && showError(getErrorMessage(tierError))
-    applicationError && showError(getErrorMessage(applicationError))
-  }
-
   const applicationOptions: SelectOption[] = useMemo(
     () =>
       getOptions(
@@ -207,7 +202,7 @@ export default function AppDMonitoredSource({
   } = useGroupedSideNaveHook({
     defaultCustomMetricName: getString('cv.monitoringSources.appD.defaultAppDMetricName'),
     initCustomMetricData: initAppDCustomFormValue(),
-    mappedServicesAndEnvs: appDynamicsData?.mappedServicesAndEnvs
+    mappedServicesAndEnvs: showCustomMetric ? appDynamicsData?.mappedServicesAndEnvs : new Map()
   })
 
   const [nonCustomFeilds, setNonCustomFeilds] = useState(initializeNonCustomFields(appDynamicsData))
@@ -216,6 +211,18 @@ export default function AppDMonitoredSource({
     () => createAppDFormData(appDynamicsData, mappedMetrics, selectedMetric, nonCustomFeilds, showCustomMetric),
     [appDynamicsData, mappedMetrics, selectedMetric, nonCustomFeilds, showCustomMetric]
   )
+
+  useEffect(() => {
+    if (!selectedMetric && !mappedMetrics.size) {
+      setShowCustomMetric(false)
+    }
+  }, [mappedMetrics, selectedMetric])
+
+  useEffect(() => {
+    clear()
+    tierError && showError(getErrorMessage(tierError))
+    applicationError && showError(getErrorMessage(applicationError))
+  }, [applicationError, tierError])
 
   return (
     <Formik<AppDynamicsFomikFormInterface>
@@ -272,11 +279,11 @@ export default function AppDMonitoredSource({
                     }}
                     value={setAppDynamicsApplication(formik?.values?.appdApplication, applicationOptions)}
                     name={'appdApplication'}
-                    placeholder={
-                      applicationLoading
-                        ? getString('loading')
-                        : getString('cv.healthSource.connectors.AppDynamics.applicationPlaceholder')
-                    }
+                    placeholder={getPlaceholder(
+                      applicationLoading,
+                      'cv.healthSource.connectors.AppDynamics.applicationPlaceholder',
+                      getString
+                    )}
                     items={applicationOptions}
                     label={getString('cv.healthSource.connectors.AppDynamics.applicationLabel')}
                     {...getInputGroupProps(() =>
@@ -292,11 +299,11 @@ export default function AppDMonitoredSource({
                     <FormInput.Select
                       className={css.tierDropdown}
                       name={'appDTier'}
-                      placeholder={
-                        tierLoading
-                          ? getString('loading')
-                          : getString('cv.healthSource.connectors.AppDynamics.tierPlaceholder')
-                      }
+                      placeholder={getPlaceholder(
+                        tierLoading,
+                        'cv.healthSource.connectors.AppDynamics.tierPlaceholder',
+                        getString
+                      )}
                       value={setAppDynamicsTier(tierLoading, formik?.values?.appDTier, tierOptions)}
                       onChange={async item => {
                         setNonCustomFeilds({
@@ -381,6 +388,7 @@ export default function AppDMonitoredSource({
                   tooptipMessage={getString('cv.monitoringSources.gcoLogs.addQueryTooltip')}
                   addFieldLabel={getString('cv.monitoringSources.addMetric')}
                   initCustomForm={initAppDCustomFormValue()}
+                  shouldBeAbleToDeleteLastMetric
                 >
                   <AppDCustomMetricForm
                     formikValues={formik.values}

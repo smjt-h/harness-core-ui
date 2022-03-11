@@ -6,7 +6,7 @@
  */
 
 import React from 'react'
-import { Intent, Layout, useToaster, useConfirmationDialog } from '@wings-software/uicore'
+import { Intent, Layout, useToaster, useToggleOpen, ConfirmationDialog } from '@harness/uicore'
 import cx from 'classnames'
 import { cloneDeep, debounce, defaultTo, isEmpty, isNil, noop } from 'lodash-es'
 import type { NodeModelListener, LinkModelListener } from '@projectstorm/react-diagrams-core'
@@ -229,33 +229,11 @@ function StageBuilder(): React.ReactElement {
 
   const [deleteId, setDeleteId] = React.useState<string | undefined>(undefined)
   const { showSuccess, showError } = useToaster()
-  const { openDialog: confirmDeleteStage } = useConfirmationDialog({
-    contentText: `${getString('stageConfirmationText', {
-      name: getStageFromPipeline(deleteId || '').stage?.stage?.name || deleteId,
-      id: deleteId
-    })} `,
-    titleText: getString('deletePipelineStage'),
-    confirmButtonText: getString('delete'),
-    cancelButtonText: getString('cancel'),
-    intent: Intent.DANGER,
-    buttonIntent: Intent.DANGER,
-    onCloseDialog: async (isConfirmed: boolean) => {
-      if (deleteId && isConfirmed) {
-        const cloned = cloneDeep(pipeline)
-        const stageToDelete = getStageFromPipeline(deleteId, cloned)
-        const isRemove = removeNodeFromPipeline(stageToDelete, cloned, stageMap)
-        const isStripped = mayBeStripCIProps(cloned)
-        if (isRemove || isStripped) {
-          updatePipeline(cloned)
-          showSuccess(getString('deleteStageSuccess'))
-          // call telemetry
-          trackEvent(StageActions.DeleteStage, { stageType: stageToDelete?.stage?.stage?.type || '' })
-        } else {
-          showError(getString('deleteStageFailure'), undefined, 'pipeline.delete.stage.error')
-        }
-      }
-    }
-  })
+  const {
+    open: openConfirmDeleteStage,
+    isOpen: isConfirmDeleteStageOpen,
+    close: closeConfirmDeleteStage
+  } = useToggleOpen()
 
   const canvasRef = React.useRef<HTMLDivElement | null>(null)
   const [stageMap, setStageMap] = React.useState(new Map<string, StageState>())
@@ -549,7 +527,7 @@ function StageBuilder(): React.ReactElement {
       const eventTemp = event as DefaultNodeEvent
       const stageIdToBeRemoved = eventTemp.entity.getIdentifier()
       setDeleteId(stageIdToBeRemoved)
-      confirmDeleteStage()
+      openConfirmDeleteStage()
     },
     [Event.AddParallelNode]: (event: any) => {
       const eventTemp = event as DefaultNodeEvent
@@ -603,7 +581,7 @@ function StageBuilder(): React.ReactElement {
               direction: MoveDirection.AHEAD,
               currentStage: current
             })
-            confirmMoveStage()
+            openConfirmMoveStage()
             return
           }
 
@@ -642,7 +620,7 @@ function StageBuilder(): React.ReactElement {
               isLastAddLink: !current.parent
             })
 
-            confirmMoveStage()
+            openConfirmMoveStage()
             return
           }
         }
@@ -705,48 +683,7 @@ function StageBuilder(): React.ReactElement {
       ...DEFAULT_MOVE_STAGE_DETAILS
     })
 
-  const { openDialog: confirmMoveStage } = useConfirmationDialog({
-    contentText: getString('pipeline.moveStage.description'),
-    titleText: getString('pipeline.moveStage.title'),
-    confirmButtonText: getString('common.move'),
-    cancelButtonText: getString('cancel'),
-    intent: Intent.WARNING,
-    onCloseDialog: async (isConfirmed: boolean) => {
-      if (isConfirmed) {
-        const {
-          event,
-          dependentStages = [],
-          currentStage = false,
-          isLastAddLink = false
-        }: { event?: any; dependentStages?: string[]; currentStage?: any; isLastAddLink?: boolean } = moveStageDetails
-
-        const nodeIdentifier = event?.node?.identifier
-        const dropNode = getStageFromPipeline(nodeIdentifier).stage
-
-        if (currentStage?.parent?.parallel || isLastAddLink) {
-          if (dropNode && event.node.identifier !== event?.entity.getIdentifier()) {
-            updateStageOnAddLink(event, dropNode, currentStage)
-            const updatedStages = resetServiceSelectionForStages(
-              dependentStages.length ? dependentStages : [nodeIdentifier],
-              pipeline
-            )
-
-            resetPipelineStages(updatedStages)
-          }
-        } else {
-          const isRemove = removeNodeFromPipeline(getStageFromPipeline(nodeIdentifier), pipeline, stageMap, false)
-          if (isRemove && dropNode) {
-            addStage(dropNode, !!currentStage, event as any)
-            const updatedStages = resetServiceSelectionForStages(
-              dependentStages.length ? dependentStages : [nodeIdentifier],
-              pipeline
-            )
-            resetPipelineStages(updatedStages)
-          }
-        }
-      }
-    }
-  })
+  const { open: openConfirmMoveStage, isOpen: isConfirmMoveStageOpen, close: closeConfirmMoveStage } = useToggleOpen()
   const linkListeners: LinkModelListener = {
     [Event.AddLinkClicked]: (event: any) => {
       const eventTemp = event as DefaultNodeEvent
@@ -791,7 +728,7 @@ function StageBuilder(): React.ReactElement {
               event,
               direction: MoveDirection.AHEAD
             })
-            confirmMoveStage()
+            openConfirmMoveStage()
             return
           }
         } else if (dependentStages?.length) {
@@ -818,7 +755,7 @@ function StageBuilder(): React.ReactElement {
               direction: MoveDirection.BEHIND,
               dependentStages: stagesTobeUpdated
             })
-            confirmMoveStage()
+            openConfirmMoveStage()
             return
           }
         }
@@ -959,6 +896,87 @@ function StageBuilder(): React.ReactElement {
           </div>
         </SplitPane>
       </div>
+      <ConfirmationDialog
+        isOpen={isConfirmDeleteStageOpen}
+        lazy
+        contentText={`${getString('stageConfirmationText', {
+          name: getStageFromPipeline(deleteId || '').stage?.stage?.name || deleteId,
+          id: deleteId
+        })} `}
+        titleText={getString('deletePipelineStage')}
+        confirmButtonText={getString('delete')}
+        cancelButtonText={getString('cancel')}
+        intent={Intent.DANGER}
+        buttonIntent={Intent.DANGER}
+        onClose={async (isConfirmed: boolean) => {
+          if (deleteId && isConfirmed) {
+            const cloned = cloneDeep(pipeline)
+            const stageToDelete = getStageFromPipeline(deleteId, cloned)
+            const isRemove = removeNodeFromPipeline(stageToDelete, cloned, stageMap)
+            const isStripped = mayBeStripCIProps(cloned)
+            if (isRemove || isStripped) {
+              updatePipeline(cloned)
+              showSuccess(getString('deleteStageSuccess'))
+              // call telemetry
+              trackEvent(StageActions.DeleteStage, { stageType: stageToDelete?.stage?.stage?.type || '' })
+            } else {
+              showError(getString('deleteStageFailure'), undefined, 'pipeline.delete.stage.error')
+            }
+          }
+          closeConfirmDeleteStage()
+        }}
+      />
+      <ConfirmationDialog
+        isOpen={isConfirmMoveStageOpen}
+        lazy
+        contentText={getString('pipeline.moveStage.description')}
+        titleText={getString('pipeline.moveStage.title')}
+        confirmButtonText={getString('common.move')}
+        cancelButtonText={getString('cancel')}
+        intent={Intent.WARNING}
+        onClose={async (isConfirmed: boolean) => {
+          if (isConfirmed) {
+            const {
+              event,
+              dependentStages = [],
+              currentStage = false,
+              isLastAddLink = false
+            }: {
+              event?: any
+              dependentStages?: string[]
+              currentStage?: any
+              isLastAddLink?: boolean
+            } = moveStageDetails
+
+            const nodeIdentifier = event?.node?.identifier
+            const dropNode = getStageFromPipeline(nodeIdentifier).stage
+
+            if (currentStage?.parent?.parallel || isLastAddLink) {
+              if (dropNode && event.node.identifier !== event?.entity.getIdentifier()) {
+                updateStageOnAddLink(event, dropNode, currentStage)
+                const updatedStages = resetServiceSelectionForStages(
+                  dependentStages.length ? dependentStages : [nodeIdentifier],
+                  pipeline
+                )
+
+                resetPipelineStages(updatedStages)
+              }
+            } else {
+              const isRemove = removeNodeFromPipeline(getStageFromPipeline(nodeIdentifier), pipeline, stageMap, false)
+              if (isRemove && dropNode) {
+                addStage(dropNode, !!currentStage, event as any)
+                const updatedStages = resetServiceSelectionForStages(
+                  dependentStages.length ? dependentStages : [nodeIdentifier],
+                  pipeline
+                )
+                resetPipelineStages(updatedStages)
+              }
+            }
+          }
+
+          closeConfirmMoveStage()
+        }}
+      />
     </Layout.Horizontal>
   )
 }

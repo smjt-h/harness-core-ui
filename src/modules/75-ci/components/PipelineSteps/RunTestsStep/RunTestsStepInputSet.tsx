@@ -22,7 +22,6 @@ import { useStrings } from 'framework/strings'
 import type { StringsMap } from 'stringTypes'
 import { ShellScriptMonacoField } from '@common/components/ShellScriptMonaco/ShellScriptMonaco'
 import StepCommonFieldsInputSet from '@ci/components/PipelineSteps/StepCommonFields/StepCommonFieldsInputSet'
-import MultiTypeListInputSet from '@common/components/MultiTypeListInputSet/MultiTypeListInputSet'
 import MultiTypeFieldSelector from '@common/components/MultiTypeFieldSelector/MultiTypeFieldSelector'
 import { FormMultiTypeCheckboxField } from '@common/components'
 import { MultiTypeTextField } from '@common/components/MultiTypeText/MultiTypeText'
@@ -30,9 +29,9 @@ import { Connectors } from '@connectors/constants'
 import { StepViewType } from '@pipeline/components/AbstractSteps/Step'
 import { useVariablesExpression } from '@pipeline/components/PipelineStudio/PiplineHooks/useVariablesExpression'
 import type { RunTestsStepProps } from './RunTestsStep'
-import { shouldRenderRunTimeInputView } from '../CIStep/StepUtils'
+import { AllMultiTypeInputTypesForInputSet, shouldRenderRunTimeInputView } from '../CIStep/StepUtils'
 import { CIStep } from '../CIStep/CIStep'
-import { CIStepOptionalConfig, getOptionalSubLabel } from '../CIStep/CIStepOptionalConfig'
+import { CIStepOptionalConfig, getOptionalSubLabel, renderMultiTypeListInputSet } from '../CIStep/CIStepOptionalConfig'
 import css from '@pipeline/components/PipelineSteps/Steps/Steps.module.scss'
 
 export const RunTestsStepInputSetBasic: React.FC<RunTestsStepProps> = ({
@@ -232,34 +231,31 @@ export const RunTestsStepInputSetBasic: React.FC<RunTestsStepProps> = ({
         renderCommandEditor(`${prefix}spec.postCommand`, 'ci.postCommandLabel', 'runTestsPostCommand')}
       {shouldRenderRunTimeInputView(template?.spec?.reports?.spec?.paths) && (
         <Container className={cx(css.formGroup, stepCss, css.bottomMargin5)}>
-          <MultiTypeListInputSet
-            name={`${prefix}spec.reports.spec.paths`}
-            multiTextInputProps={{
-              allowableTypes,
-              expressions
-            }}
-            multiTypeFieldSelectorProps={{
-              label: (
-                <Layout.Horizontal flex={{ justifyContent: 'flex-start', alignItems: 'baseline' }}>
-                  <Text
-                    className={css.inpLabel}
-                    color={Color.GREY_800}
-                    font={{ size: 'small', weight: 'semi-bold' }}
-                    style={{ display: 'flex', alignItems: 'center' }}
-                  >
-                    {getString('pipelineSteps.reportPathsLabel')}
-                  </Text>
-                  &nbsp;
-                  {getOptionalSubLabel(getString, 'reportPaths')}
-                </Layout.Horizontal>
-              ),
-              allowedTypes: allowableTypes.filter(
-                type => type !== MultiTypeInputType.EXPRESSION && type !== MultiTypeInputType.RUNTIME
-              )
-            }}
-            placeholder={getString('pipelineSteps.reportPathsPlaceholder')}
-            disabled={readonly}
-          />
+          {renderMultiTypeListInputSet({
+            name: `${prefix}spec.reports.spec.paths`,
+            tooltipId: 'reportPaths',
+            labelKey: 'pipelineSteps.reportPathsLabel',
+            allowedTypes: AllMultiTypeInputTypesForInputSet,
+            placeholderKey: 'pipelineSteps.reportPathsPlaceholder',
+            expressions,
+            getString,
+            readonly,
+            formik
+          })}
+        </Container>
+      )}
+      {shouldRenderRunTimeInputView(template?.spec?.outputVariables) && (
+        <Container className={cx(css.formGroup, stepCss, css.bottomMargin5)}>
+          {renderMultiTypeListInputSet({
+            name: `${prefix}spec.outputVariables`,
+            tooltipId: 'outputVariables',
+            labelKey: 'pipelineSteps.outputVariablesLabel',
+            allowedTypes: AllMultiTypeInputTypesForInputSet,
+            expressions,
+            getString,
+            readonly,
+            formik
+          })}
         </Container>
       )}
       <CIStepOptionalConfig

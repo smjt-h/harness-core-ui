@@ -6,7 +6,7 @@
  */
 
 import React from 'react'
-import { Color, IconName, Text } from '@wings-software/uicore'
+import { Color, IconName, Text, FontVariation } from '@wings-software/uicore'
 
 interface TrendProps {
   value: number
@@ -14,10 +14,18 @@ interface TrendProps {
   upIcon?: string
   iconSize?: number
   flipColors?: boolean
+  defaultIcon?: string
 }
 
 const CostTrend = (props: TrendProps) => {
-  const { iconSize = 16, value = 0, downIcon = 'caret-down', upIcon = 'caret-up', flipColors } = props
+  const {
+    iconSize = 16,
+    value = 0,
+    downIcon = 'caret-down',
+    upIcon = 'caret-up',
+    flipColors,
+    defaultIcon = 'caret-up'
+  } = props
 
   const v = +value
   let icon: Record<string, string | undefined> = { name: undefined, color: undefined } // when v = 0
@@ -30,13 +38,13 @@ const CostTrend = (props: TrendProps) => {
 
   return (
     <Text
-      font="small"
-      color="grey700"
+      font={{ variation: FontVariation.SMALL_SEMI }}
+      color={v ? Color.GREY_700 : Color.GREY_400}
       inline
-      icon={icon.name as IconName}
-      iconProps={{ size: iconSize, color: icon.color }}
+      icon={(icon.name || defaultIcon) as IconName}
+      iconProps={{ size: iconSize, color: icon.color || Color.GREEN_500 }}
     >
-      {v ? `${Math.abs(v)}%` : '—'}
+      {v ? `${Math.abs(v)}%` : 'NA%'}
     </Text>
   )
 }

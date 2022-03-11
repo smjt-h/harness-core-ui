@@ -117,7 +117,10 @@ const OverviewClusterCostBreakdown = (props: ClusterCostBreakdownProps) => {
               <Container padding={{ top: 'medium' }}>
                 <TableList data={chartData.slice(0, LEGEND_LIMIT)} type={ListType.KEY_VALUE} classNames={css.rowGap8} />
               </Container>
-              <EfficiencyScore score={!isNaN(statsValue as number) ? Number(statsValue) : 0} trend={statsTrend} />
+              <EfficiencyScore
+                score={!isNaN(statsValue as number) && totalCost?.value > 0 ? Number(statsValue) : 0}
+                trend={totalCost?.value > 0 ? statsTrend : 0}
+              />
             </div>
           </div>
         }

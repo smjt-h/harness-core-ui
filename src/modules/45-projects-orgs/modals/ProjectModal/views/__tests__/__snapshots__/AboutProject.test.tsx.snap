@@ -907,19 +907,19 @@ exports[`About Project test create project  2`] = `
                       </div>
                     </div>
                   </div>
+                  <div
+                    class="Layout--vertical StyledProps--main started StyledProps--padding-top-xlarge"
+                  >
+                    <p
+                      class="StyledProps--font StyledProps--main StyledProps--font-size-small StyledProps--font-weight-semi-bold StyledProps--padding-bottom-xsmall"
+                    >
+                      modules
+                    </p>
+                    <div
+                      class="Layout--horizontal Layout--layout-spacing-small StyledProps--main"
+                    />
+                  </div>
                 </div>
-              </div>
-              <div
-                class="Layout--vertical StyledProps--main started StyledProps--padding-left-xlarge StyledProps--padding-right-xlarge StyledProps--padding-bottom-xlarge"
-              >
-                <p
-                  class="StyledProps--font StyledProps--main StyledProps--font-size-small StyledProps--font-weight-semi-bold StyledProps--padding-bottom-xsmall"
-                >
-                  modules
-                </p>
-                <div
-                  class="Layout--horizontal Layout--layout-spacing-small StyledProps--main"
-                />
               </div>
             </div>
           </div>

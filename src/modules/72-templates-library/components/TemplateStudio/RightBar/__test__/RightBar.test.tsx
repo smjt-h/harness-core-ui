@@ -9,8 +9,9 @@ import React from 'react'
 import { act, fireEvent, render, waitFor } from '@testing-library/react'
 import { TestWrapper } from '@common/utils/testUtils'
 import { TemplateContext } from '@templates-library/components/TemplateStudio/TemplateContext/TemplateContext'
-import templateContextMock from '@templates-library/components/TemplateStudio/SaveTemplatePopover/_test_/stateMock'
 import { RightBar } from '@templates-library/components/TemplateStudio/RightBar/RightBar'
+import { getTemplateContextMock } from '@templates-library/components/TemplateStudio/__tests__/stateMock'
+import { TemplateType } from '@templates-library/utils/templatesUtils'
 
 jest.mock('@templates-library/components/TemplateStudio/RightDrawer/RightDrawer', () => ({
   ...(jest.requireActual('@templates-library/components/TemplateStudio/RightDrawer/RightDrawer') as any),
@@ -19,11 +20,13 @@ jest.mock('@templates-library/components/TemplateStudio/RightDrawer/RightDrawer'
   }
 }))
 
+const stepTemplateContextMock = getTemplateContextMock(TemplateType.Step)
+
 describe('RightBar', () => {
   test('renders correctly', () => {
     const { container } = render(
       <TestWrapper>
-        <TemplateContext.Provider value={templateContextMock}>
+        <TemplateContext.Provider value={stepTemplateContextMock}>
           <RightBar />
         </TemplateContext.Provider>
       </TestWrapper>
@@ -33,7 +36,7 @@ describe('RightBar', () => {
   test('clicking on Variables should open variables view in right drawer', async () => {
     const { getByText } = render(
       <TestWrapper>
-        <TemplateContext.Provider value={templateContextMock}>
+        <TemplateContext.Provider value={stepTemplateContextMock}>
           <RightBar />
         </TemplateContext.Provider>
       </TestWrapper>
@@ -42,8 +45,8 @@ describe('RightBar', () => {
     act(() => {
       fireEvent.click(variableBtn)
     })
-    await waitFor(() => expect(templateContextMock.updateTemplateView).toHaveBeenCalled())
-    expect(templateContextMock.updateTemplateView).toHaveBeenCalledWith({
+    await waitFor(() => expect(stepTemplateContextMock.updateTemplateView).toHaveBeenCalled())
+    expect(stepTemplateContextMock.updateTemplateView).toHaveBeenCalledWith({
       drawerData: {
         type: 'TemplateVariables'
       },

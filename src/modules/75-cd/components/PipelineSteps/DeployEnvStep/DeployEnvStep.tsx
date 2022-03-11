@@ -193,7 +193,7 @@ export const NewEditEnvironmentModal: React.FC<NewEditEnvironmentModalProps> = (
   )
 }
 
-interface DeployEnvironmentProps {
+export interface DeployEnvironmentProps {
   initialValues: DeployEnvData
   onUpdate?: (data: DeployEnvData) => void
   stepViewType?: StepViewType
@@ -222,7 +222,7 @@ function isEditEnvironment(data: DeployEnvData): boolean {
   return false
 }
 
-const DeployEnvironmentWidget: React.FC<DeployEnvironmentProps> = ({
+export const DeployEnvironmentWidget: React.FC<DeployEnvironmentProps> = ({
   initialValues,
   onUpdate,
   readonly,

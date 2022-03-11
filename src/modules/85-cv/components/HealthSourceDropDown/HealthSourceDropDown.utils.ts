@@ -13,7 +13,8 @@ import type { DropdownData } from './HealthSourceDropDown.types'
 
 export const getDropdownOptions = (
   { loading, error, data, verificationType }: DropdownData,
-  getString: UseStringsReturn['getString']
+  getString: UseStringsReturn['getString'],
+  showAllOption = true
 ): SelectOption[] | [] => {
   if (loading) {
     return [{ value: '', label: getString('loading') }]
@@ -31,6 +32,10 @@ export const getDropdownOptions = (
         icon: { name: getIconBySourceType(source?.type as string) as IconName }
       })
     }
+  }
+
+  if (showAllOption && options.length > 1) {
+    options.unshift({ label: getString('all'), value: 'all' })
   }
 
   return options

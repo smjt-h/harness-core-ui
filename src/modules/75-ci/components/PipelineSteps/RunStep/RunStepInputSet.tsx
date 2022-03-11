@@ -7,21 +7,12 @@
 
 import React from 'react'
 import { connect } from 'formik'
-import {
-  Text,
-  getMultiTypeFromValue,
-  MultiTypeInputType,
-  FormikForm,
-  Color,
-  Container,
-  Layout
-} from '@wings-software/uicore'
+import { Text, getMultiTypeFromValue, MultiTypeInputType, FormikForm, Color, Container } from '@wings-software/uicore'
 import { isEmpty, startCase } from 'lodash-es'
 import cx from 'classnames'
 import { useStrings } from 'framework/strings'
 import { ShellScriptMonacoField } from '@common/components/ShellScriptMonaco/ShellScriptMonaco'
 import MultiTypeFieldSelector from '@common/components/MultiTypeFieldSelector/MultiTypeFieldSelector'
-import MultiTypeListInputSet from '@common/components/MultiTypeListInputSet/MultiTypeListInputSet'
 import { FormMultiTypeCheckboxField } from '@common/components/MultiTypeCheckbox/MultiTypeCheckbox'
 import { useVariablesExpression } from '@pipeline/components/PipelineStudio/PiplineHooks/useVariablesExpression'
 import StepCommonFieldsInputSet from '@ci/components/PipelineSteps/StepCommonFields/StepCommonFieldsInputSet'
@@ -29,8 +20,8 @@ import { StepViewType } from '@pipeline/components/AbstractSteps/Step'
 import { Connectors } from '@connectors/constants'
 import type { RunStepProps } from './RunStep'
 import { CIStep } from '../CIStep/CIStep'
-import { CIStepOptionalConfig, getOptionalSubLabel } from '../CIStep/CIStepOptionalConfig'
-import { shouldRenderRunTimeInputView } from '../CIStep/StepUtils'
+import { CIStepOptionalConfig, renderMultiTypeListInputSet } from '../CIStep/CIStepOptionalConfig'
+import { AllMultiTypeInputTypesForInputSet, shouldRenderRunTimeInputView } from '../CIStep/StepUtils'
 import css from '@pipeline/components/PipelineSteps/Steps/Steps.module.scss'
 
 export const RunStepInputSetBasic: React.FC<RunStepProps> = ({
@@ -145,38 +136,33 @@ export const RunStepInputSetBasic: React.FC<RunStepProps> = ({
         </div>
       )}
       {shouldRenderRunTimeInputView(template?.spec?.reports?.spec?.paths) && (
-        <>
-          <Container className={cx(css.formGroup, stepCss, css.bottomMargin5)}>
-            <MultiTypeListInputSet
-              name={`${prefix}spec.reports.spec.paths`}
-              multiTextInputProps={{
-                allowableTypes,
-                expressions
-              }}
-              multiTypeFieldSelectorProps={{
-                label: (
-                  <Layout.Horizontal flex={{ justifyContent: 'flex-start', alignItems: 'baseline' }}>
-                    <Text
-                      style={{ display: 'flex', alignItems: 'center' }}
-                      className={css.inpLabel}
-                      color={Color.GREY_800}
-                      font={{ size: 'small', weight: 'semi-bold' }}
-                    >
-                      {getString('pipelineSteps.reportPathsLabel')}
-                    </Text>
-                    &nbsp;
-                    {getOptionalSubLabel(getString, 'reportPaths')}
-                  </Layout.Horizontal>
-                ),
-                allowedTypes: allowableTypes.filter(
-                  type => type !== MultiTypeInputType.EXPRESSION && type !== MultiTypeInputType.RUNTIME
-                )
-              }}
-              placeholder={getString('pipelineSteps.reportPathsPlaceholder')}
-              disabled={readonly}
-            />
-          </Container>
-        </>
+        <Container className={cx(css.formGroup, stepCss, css.bottomMargin5)}>
+          {renderMultiTypeListInputSet({
+            name: `${prefix}spec.reports.spec.paths`,
+            tooltipId: 'reportPaths',
+            labelKey: 'pipelineSteps.reportPathsLabel',
+            allowedTypes: AllMultiTypeInputTypesForInputSet,
+            placeholderKey: 'pipelineSteps.reportPathsPlaceholder',
+            expressions,
+            getString,
+            readonly,
+            formik
+          })}
+        </Container>
+      )}
+      {shouldRenderRunTimeInputView(template?.spec?.outputVariables) && (
+        <Container className={cx(css.formGroup, stepCss, css.bottomMargin5)}>
+          {renderMultiTypeListInputSet({
+            name: `${prefix}spec.outputVariables`,
+            tooltipId: 'outputVariables',
+            labelKey: 'pipelineSteps.outputVariablesLabel',
+            allowedTypes: AllMultiTypeInputTypesForInputSet,
+            expressions,
+            getString,
+            readonly,
+            formik
+          })}
+        </Container>
       )}
       <CIStepOptionalConfig
         stepViewType={stepViewType}

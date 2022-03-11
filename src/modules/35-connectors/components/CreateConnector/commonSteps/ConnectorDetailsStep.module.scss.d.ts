@@ -10,6 +10,7 @@ declare const styles: {
   readonly connectorForm: string
   readonly firstep: string
   readonly formElm: string
+  readonly gitDetails: string
   readonly heading: string
 }
 export default styles

@@ -27,7 +27,8 @@ import {
   stagesExecutionListResponse
 } from '../../support/85-cv/verifyStep/constants'
 
-describe('Verify step add', () => {
+// eslint-disable-next-line jest/no-disabled-tests
+describe.skip('Verify step add', () => {
   beforeEach(() => {
     cy.on('uncaught:exception', () => {
       // returning false here prevents Cypress from
@@ -135,7 +136,7 @@ describe('Verify step add', () => {
     cy.wait(1000)
 
     cy.verifyStepSelectStrategyAndVerifyStep()
-    cy.wait('@noMonitoredServices')
+    cy.wait('@noMonitoredServices', { timeout: 10000 })
 
     cy.findByRole('button', { name: /Click to autocreate a monitored service/i }).should('exist')
     cy.findByText(/^Health Sources$/i).should('not.exist')
@@ -205,7 +206,7 @@ describe('Verify step add', () => {
     cy.wait(1000)
 
     cy.verifyStepSelectStrategyAndVerifyStep()
-    cy.wait('@noMonitoredServices')
+    cy.wait('@noMonitoredServices', { timeout: 10000 })
 
     cy.findByRole('button', { name: /Click to autocreate a monitored service/i }).should('not.exist')
     cy.findByText(/^Health Sources$/i).should('not.exist')

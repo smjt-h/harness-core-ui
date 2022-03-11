@@ -92,7 +92,8 @@ export function getRadialChartOptions(
         cursor: 'pointer',
         dataLabels: {
           enabled: false
-        }
+        },
+        ...options?.plotOptions?.pie
       }
     },
     series: [

@@ -12,7 +12,7 @@ import produce from 'immer'
 import { TestWrapper } from '@common/utils/testUtils'
 import routes from '@common/RouteDefinitions'
 import { accountPathProps, pipelineModuleParams, templatePathProps } from '@common/utils/routeUtils'
-import { stageTemplateMock } from '@templates-library/components/TemplateStudio/SaveTemplatePopover/_test_/stateMock'
+import { stageTemplateMock } from '@templates-library/components/TemplateStudio/__tests__/stateMock'
 import { PipelineContext } from '@pipeline/components/PipelineStudio/PipelineContext/PipelineContext'
 import pipelineContextMock from '@pipeline/components/PipelineStudio/RightDrawer/__tests__/stateMock'
 import {

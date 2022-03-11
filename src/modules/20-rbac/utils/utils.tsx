@@ -34,6 +34,9 @@ import type { ProjectSelectOption } from '@audit-trail/components/FilterDrawer/F
 import type { RbacMenuItemProps } from '@rbac/components/MenuItem/MenuItem'
 import css from './utils.module.scss'
 
+export const DEFAULT_RG = '_all_resources_including_child_scopes'
+export const PROJECT_DEFAULT_RG = '_all_project_level_resources'
+
 export enum PrincipalType {
   USER = 'USER',
   USER_GROUP = 'USER_GROUP',
@@ -116,7 +119,25 @@ export const getPermissionRequestFromProps = (
   }
 }
 
-export const getScopeBasedManagedResourceGroup = (
+export const getScopeBasedDefaultResourceGroup = (
+  scope: Scope,
+  getString: UseStringsReturn['getString']
+): SelectOption => {
+  switch (scope) {
+    case Scope.PROJECT:
+      return {
+        label: getString('rbac.allProjectResources'),
+        value: '_all_project_level_resources'
+      }
+    default:
+      return {
+        label: getString('rbac.allResourcesIncludingChildScopes'),
+        value: DEFAULT_RG
+      }
+  }
+}
+
+export const getScopeLevelManagedResourceGroup = (
   scope: Scope,
   getString: UseStringsReturn['getString']
 ): SelectOption => {
@@ -154,7 +175,7 @@ export const getScopeBasedDefaultAssignment = (
   } else {
     const resourceGroup: ResourceGroupOption = {
       managedRoleAssignment: true,
-      ...getScopeBasedManagedResourceGroup(scope, getString)
+      ...getScopeLevelManagedResourceGroup(scope, getString)
     }
     switch (scope) {
       case Scope.ACCOUNT:

@@ -142,12 +142,12 @@ exports[`Docker Artifact Source tests snapshot test for Sidecar Docker artifact 
               >
                 <div
                   class="Layout--horizontal StyledProps--main MultiTypeInput--main"
-                  style="width: 384px;"
+                  style="width: 391px;"
                 >
                   <button
                     class="bp3-button bp3-minimal Button--button StyledProps--font StyledProps--main container Button--iconOnly Button--without-shadow Button--withRightIcon"
                     data-testid="cr-field-undefined.artifacts.sidecars[1].sidecar.spec.connectorRef"
-                    style="width: 384px;"
+                    style="width: 391px;"
                     type="button"
                   >
                     <span

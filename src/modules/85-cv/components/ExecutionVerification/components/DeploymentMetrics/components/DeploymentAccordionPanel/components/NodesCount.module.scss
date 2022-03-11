@@ -7,11 +7,6 @@
 
 $nodeCountDisplaySize: 25px;
 
-.nodeCount {
-  align-items: center;
-  flex-wrap: wrap;
-}
-
 .nodeCountDisplay {
   --backgroundColor: var(--grey-400);
   background: var(--backgroundColor) !important;

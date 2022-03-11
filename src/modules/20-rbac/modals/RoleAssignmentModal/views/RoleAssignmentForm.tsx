@@ -24,7 +24,7 @@ import type { ProjectPathProps } from '@common/interfaces/RouteInterfaces'
 import { useGetResourceGroupList } from 'services/resourcegroups'
 import { errorCheck } from '@common/utils/formikHelpers'
 import { useToaster } from '@common/components'
-import { getScopeBasedManagedResourceGroup, isAssignmentFieldDisabled } from '@rbac/utils/utils'
+import { getScopeBasedDefaultResourceGroup, isAssignmentFieldDisabled } from '@rbac/utils/utils'
 import { getScopeFromDTO } from '@common/components/EntityReference/EntityReference'
 import NewUserRoleDropdown from '@rbac/components/NewUserRoleDropdown/NewUserRoleDropdown'
 import type { Assignment, RoleOption, UserRoleAssignmentValues } from './UserRoleAssigment'
@@ -47,7 +47,7 @@ const RoleAssignmentForm: React.FC<RoleAssignmentFormProps> = ({ noRoleAssignmen
   const { getString } = useStrings()
   const scope = getScopeFromDTO({ accountIdentifier: accountId, orgIdentifier, projectIdentifier })
   const { showSuccess, showError } = useToaster()
-  const defaultResourceGroup = getScopeBasedManagedResourceGroup(scope, getString)
+  const defaultResourceGroup = getScopeBasedDefaultResourceGroup(scope, getString)
 
   const { mutate: deleteRoleAssignment } = useDeleteRoleAssignment({
     queryParams: {
@@ -152,7 +152,10 @@ const RoleAssignmentForm: React.FC<RoleAssignmentFormProps> = ({ noRoleAssignmen
                     disabled={isAssignmentFieldDisabled(value)}
                     popoverClassName={css.selectPopover}
                     inputProps={{
-                      placeholder: getString('rbac.usersPage.selectResourceGroup')
+                      placeholder: getString('rbac.usersPage.selectResourceGroup'),
+                      // eslint-disable-next-line @typescript-eslint/ban-ts-comment
+                      // @ts-ignore
+                      'data-testid': `resourceGroup-${_index}`
                     }}
                     onChange={handleChange}
                   />

@@ -82,25 +82,27 @@ export default function QueryMapping({
     <Container>
       <Text margin={{ bottom: 'medium' }}>{getString('cv.customHealthSource.Querymapping.label')}</Text>
       <Container margin={{ top: 'medium', bottom: 'medium' }} border={{ bottom: true }}>
-        <HealthSourceQueryType
-          onChange={val => {
-            if (val === QueryType.HOST_BASED) {
-              onValueChange({
-                ...formValue,
-                queryType: val,
-                [CustomHealthSourceFieldNames.SLI]: false,
-                [CustomHealthSourceFieldNames.HEALTH_SCORE]: false,
-                [CustomHealthSourceFieldNames.CONTINUOUS_VERIFICATION]: true
-              })
-            } else {
-              onValueChange({
-                ...formValue,
-                queryType: val,
-                [CustomHealthSourceFieldNames.CONTINUOUS_VERIFICATION]: false
-              })
-            }
-          }}
-        />
+        {onValueChange && (
+          <HealthSourceQueryType
+            onChange={val => {
+              if (val === QueryType.HOST_BASED) {
+                onValueChange({
+                  ...formValue,
+                  queryType: val,
+                  [CustomHealthSourceFieldNames.SLI]: false,
+                  [CustomHealthSourceFieldNames.HEALTH_SCORE]: false,
+                  [CustomHealthSourceFieldNames.CONTINUOUS_VERIFICATION]: true
+                })
+              } else {
+                onValueChange({
+                  ...formValue,
+                  queryType: val,
+                  [CustomHealthSourceFieldNames.CONTINUOUS_VERIFICATION]: false
+                })
+              }
+            }}
+          />
+        )}
       </Container>
 
       <Container padding={{ top: 'medium', bottom: 'medium' }}>
@@ -185,7 +187,7 @@ export default function QueryMapping({
               loading={sampleDataLoading}
               data={[recordsData]}
               error={sampleDataError}
-              query={'*'}
+              query={''}
               isQueryExecuted={isQueryExecuted}
               queryNotExecutedMessage={getString('cv.customHealthSource.fetchRecordsButton')}
             />

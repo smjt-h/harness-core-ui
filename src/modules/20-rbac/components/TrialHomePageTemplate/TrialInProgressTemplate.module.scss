@@ -5,16 +5,6 @@
  * https://polyformproject.org/wp-content/uploads/2020/06/PolyForm-Shield-1.0.0.txt.
  */
 
-.body {
-  &.hasBanner {
-    --page-header-height: 50px !important;
-  }
-
-  &.hasNoBanner {
-    --page-header-height: 0px !important;
-  }
-}
-
 .container {
   padding-left: 80px !important;
   padding-top: 80px !important;

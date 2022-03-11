@@ -1,6 +1,6 @@
 continuous: '{{$.common.purpose.cv.serviceReliability}}'
 methodLabel: Method Label
-request: Request
+request: '{{ $.common.request }}'
 response: Response
 responseBody: Response Body
 statusCode: Status Code
@@ -186,8 +186,6 @@ monitoringSources:
   oneMetricMappingValidation: At least one application must be mapped
   oneMetricPackValidation: At least one Metric Pack must be selected
   oneMetricMappingValidationSubtext: You need to select one Metric Pack for verification
-  backToMapping: Back to Mapping
-  reviewPageSubHeading: You’ve done it! These services below are ready for your project. If it doesn’t look right, you can make changes now.
   metricNameLabel: Metric Name
   metricLabel: Metric
   queryNameLabel: Name your Query
@@ -784,6 +782,7 @@ cvChanges:
   sourceFilterDefault: 'Sources'
   changesTimeline: 'Changes Timeline'
   monitoredSVC: 'Monitored SVC'
+  clearFilters: 'Clear filters'
 componentValidations:
   requestMethod: Request Method is required
   queryType: Query Type is required
@@ -791,24 +790,32 @@ componentValidations:
 customHealthSource:
   fetchRecordsButton: Click on Fetch Records to pull records from provided URL
   addGroupNameTitle: Add New Custom Health Group Name
+  customHealthMetric: Custom Health Metrics
+  customHealthLog: Custom Health Log
   Querymapping:
     title: Query specifications and mapping
+    jsonPathTitle: JSON path selection
     label: Customize the query to get our desired output and map to Harness Service
     startAndEndTimeTitle: Start and End Time Placeholders
     startTimeLabel: Start time placeholder
     endTimeLabel: End time placeholder
+    queryValueJsonPath: Log Message JSON Path
     validation:
+      queryName: Query name is required
       body: Body is required.
       path: Please select path.
       pathWithoutPlaceholder: Start and end time placeholders must be included in either Path or Body.
       queryType: Query Type is required.
       startAndEndTime: Start and end time placeholders must differ.
+      enableJSONPaths: Fetch records from provided URL to enable path fields
+      timestampJsonPath: Timestamp JSON Path is required.
+      logMessageJsonPath: Log Message JSON Path is reqired.
       startTime:
-        placeholder: Please select start time placeholder
-        timestamp: Please select start time timestamp Format
+        placeholder: Start time placeholder is required.
+        timestamp: Start time unit is required.
       endTime:
-        placeholder: Please select end time placeholder
-        timestamp: Please select end time timestamp Format
+        placeholder: End time placeholder is required.
+        timestamp: End time unit is required.
   ServiceInstance:
     pathLabel: Provide Service Instance to map to Harness Service Instance
     pathModalHeader: Select path for Service Instance

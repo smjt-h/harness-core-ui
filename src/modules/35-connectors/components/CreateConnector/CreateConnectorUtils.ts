@@ -4,9 +4,12 @@
  * that can be found in the licenses directory at the root of this repository, also available at
  * https://polyformproject.org/wp-content/uploads/2020/06/PolyForm-Shield-1.0.0.txt.
  */
-
+import * as Yup from 'yup'
 import { Scope } from '@common/interfaces/SecretsInterface'
 import type { ConnectorConfigDTO } from 'services/cd-ng'
+import { GitConnectionType } from '@connectors/pages/connectors/utils/ConnectorUtils'
+import { GitAuthTypes } from '@connectors/pages/connectors/utils/ConnectorHelper'
+import type { StringsMap } from 'stringTypes'
 
 export const ConnectorSecretScope: { [scope: string]: string } = {
   [Scope.ORG]: 'org.',
@@ -20,3 +23,29 @@ export function getScopingStringFromSecretRef(connecterConfig: ConnectorConfigDT
     ? ConnectorSecretScope[connecterConfig.passwordRefSecret.scope]
     : undefined
 }
+
+export const getCommonConnectorsValidationSchema = (
+  getString: (key: keyof StringsMap, vars?: Record<string, any> | undefined) => string
+): Yup.ObjectSchema =>
+  Yup.object().shape({
+    username: Yup.string().when(['connectionType', 'authType'], {
+      is: (connectionType, authType) => connectionType === GitConnectionType.HTTP && authType !== GitAuthTypes.KERBEROS,
+      then: Yup.string().trim().required(getString('validation.username')),
+      otherwise: Yup.string().nullable()
+    }),
+    authType: Yup.string().when('connectionType', {
+      is: val => val === GitConnectionType.HTTP,
+      then: Yup.string().trim().required(getString('validation.authType'))
+    }),
+    sshKey: Yup.object().when('connectionType', {
+      is: val => val === GitConnectionType.SSH,
+      then: Yup.object().required(getString('validation.sshKey')),
+      otherwise: Yup.object().nullable()
+    }),
+    password: Yup.object().when(['connectionType', 'authType'], {
+      is: (connectionType, authType) =>
+        connectionType === GitConnectionType.HTTP && authType === GitAuthTypes.USER_PASSWORD,
+      then: Yup.object().required(getString('validation.password')),
+      otherwise: Yup.object().nullable()
+    })
+  })

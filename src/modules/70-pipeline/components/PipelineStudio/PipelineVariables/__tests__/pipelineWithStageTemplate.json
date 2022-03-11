@@ -1,0 +1,20 @@
+{
+  "name": "Random",
+  "identifier": "Random",
+  "allowStageExecutions": false,
+  "projectIdentifier": "Yogesh_Test",
+  "orgIdentifier": "default",
+  "tags": {},
+  "stages": [
+    {
+      "stage": {
+        "name": "Stage 1",
+        "identifier": "Stage_1",
+        "template": {
+          "templateRef": "Test_Stage_Template",
+          "versionLabel": "Version1"
+        }
+      }
+    }
+  ]
+}

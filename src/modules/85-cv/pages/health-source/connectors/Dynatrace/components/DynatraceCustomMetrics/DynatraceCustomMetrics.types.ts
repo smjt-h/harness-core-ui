@@ -12,14 +12,12 @@ export type CreatedMetricsWithSelectedIndex = {
   selectedMetricIndex: number
 }
 
+// createdMetrics, setCreatedMetrics, setMappedMetrics
+
 export interface DynatraceCustomMetricsProps {
-  isFormValid: boolean
   formikSetField: any
   metricValues: DynatraceMetricInfo
-  createdMetrics: string[]
-  setCreatedMetrics: React.Dispatch<React.SetStateAction<CreatedMetricsWithSelectedIndex>>
   mappedMetrics: Map<string, DynatraceMetricInfo>
-  setMappedMetrics: React.Dispatch<React.SetStateAction<SelectedAndMappedMetrics>>
   selectedMetric: string
   connectorIdentifier: string
   selectedServiceId: string

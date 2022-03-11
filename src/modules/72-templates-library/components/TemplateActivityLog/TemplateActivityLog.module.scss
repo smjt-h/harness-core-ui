@@ -46,5 +46,10 @@
     margin: var(--spacing-2) 0 0 var(--spacing-2) !important;
     min-width: var(--spacing-6) !important;
     box-shadow: none;
+    cursor: default;
+
+    &:hover {
+      box-shadow: none;
+    }
   }
 }

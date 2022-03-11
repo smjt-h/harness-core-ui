@@ -261,7 +261,9 @@ const BasicTemplateDetails = (props: BasicDetailsInterface): JSX.Element => {
                             label={getString('optionalField', {
                               name: getString('common.commentModal.commentLabel')
                             })}
-                            className={css.comment}
+                            textArea={{
+                              className: css.comment
+                            }}
                           />
                         )}
                       </Layout.Vertical>

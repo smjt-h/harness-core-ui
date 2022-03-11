@@ -18,7 +18,13 @@ exports[`HealthScoreCard Tests Both Service and Dependency Health score data not
       >
         <span
           class="bp3-tag healthScoreCard"
-        />
+        >
+          <span
+            class="bp3-text-overflow-ellipsis bp3-fill"
+          >
+            -
+          </span>
+        </span>
       </span>
       <p
         class="StyledProps--font StyledProps--main StyledProps--color StyledProps--color-black StyledProps--font-variation-body"
@@ -34,7 +40,13 @@ exports[`HealthScoreCard Tests Both Service and Dependency Health score data not
       >
         <span
           class="bp3-tag healthScoreCard"
-        />
+        >
+          <span
+            class="bp3-text-overflow-ellipsis bp3-fill"
+          >
+            -
+          </span>
+        </span>
       </span>
       <p
         class="StyledProps--font StyledProps--main StyledProps--color StyledProps--color-black StyledProps--font-variation-body"

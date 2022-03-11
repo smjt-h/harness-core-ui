@@ -9,3 +9,15 @@
   display: grid;
   grid-template-columns: 1fr 1fr;
 }
+
+.borderLeft {
+  border-left: 2px solid var(--green-700);
+}
+
+.borderRight {
+  border-right: 2px solid var(--green-700);
+}
+
+.borderBottom {
+  border-bottom: 2px solid var(--green-700);
+}

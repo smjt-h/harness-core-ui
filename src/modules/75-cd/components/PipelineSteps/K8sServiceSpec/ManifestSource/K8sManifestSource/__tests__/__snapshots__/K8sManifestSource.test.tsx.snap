@@ -46,12 +46,12 @@ exports[`K8sManifestSource tests Should match snapshot 1`] = `
                 >
                   <div
                     class="Layout--horizontal StyledProps--main MultiTypeInput--main"
-                    style="width: 370px;"
+                    style="width: 391px;"
                   >
                     <button
                       class="bp3-button bp3-minimal Button--button StyledProps--font StyledProps--main container Button--iconOnly Button--without-shadow Button--withRightIcon"
                       data-testid="cr-field-stages[0].stage.spec.serviceConfig.serviceDefinition.spec.manifests[0].manifest.spec.store.spec.connectorRef"
-                      style="width: 370px;"
+                      style="width: 391px;"
                       type="button"
                     >
                       <span
@@ -290,12 +290,12 @@ exports[`K8sManifestSource tests Should match snapshot with fromTrigger 1`] = `
                 >
                   <div
                     class="Layout--horizontal StyledProps--main MultiTypeInput--main"
-                    style="width: 370px;"
+                    style="width: 391px;"
                   >
                     <button
                       class="bp3-button bp3-minimal Button--button StyledProps--font StyledProps--main container Button--iconOnly Button--without-shadow Button--withRightIcon"
                       data-testid="cr-field-stages[0].stage.spec.serviceConfig.serviceDefinition.spec.manifests[0].manifest.spec.store.spec.connectorRef"
-                      style="width: 370px;"
+                      style="width: 391px;"
                       type="button"
                     >
                       <span

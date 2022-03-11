@@ -99,7 +99,6 @@ describe('Nexus Artifact tests', () => {
           artifactPath: 'artifact-path',
           repository: 'repository',
           tag: '<+input>',
-          repositoryUrl: '',
           repositoryFormat: 'docker'
         }
       })

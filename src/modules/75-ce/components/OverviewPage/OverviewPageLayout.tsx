@@ -8,7 +8,7 @@
 import React, { ReactNode, useMemo } from 'react'
 import { Link, useParams } from 'react-router-dom'
 import cx from 'classnames'
-import { Container, Icon, Layout, Text } from '@wings-software/uicore'
+import { Container, Icon, Layout, Text, Color, Utils } from '@wings-software/uicore'
 import routes from '@common/RouteDefinitions'
 import { CE_COLOR_CONST, getRadialChartOptions } from '@ce/components/CEChart/CEChartOptions'
 import CEChart from '@ce/components/CEChart/CEChart'
@@ -151,7 +151,16 @@ export const HorizontalLayout = (props: HorizontalLayoutProps) => {
 
 const CostDistributionRadialChart = (props: CostDistributionRadialChartProps) => {
   const { data, colors = CE_COLOR_CONST, chartSize, gist } = props
-  const options = useMemo(() => getRadialChartOptions(data as any, colors, { chart: chartSize }), [data, colors])
+  const options = useMemo(
+    () =>
+      getRadialChartOptions(data as any, colors, {
+        chart: chartSize,
+        plotOptions: {
+          pie: { color: Utils.getRealCSSColor(Color.GREY_100), fillColor: Utils.getRealCSSColor(Color.GREY_100) }
+        }
+      }),
+    [data, colors]
+  )
 
   return (
     <div className={css.chartContainer}>
@@ -172,7 +181,7 @@ const Gist = (props: GistProps) => {
       <Text color="grey800" font={{ weight: 'bold' }} style={{ fontSize: totalCostFontSize }}>
         {formatCost(totalCost?.value)}
       </Text>
-      {showTrend && <CostTrend value={totalCost?.trend} />}
+      {showTrend && <CostTrend value={totalCost?.trend} defaultIcon="caret-down" />}
     </Layout.Vertical>
   )
 }
@@ -184,11 +193,11 @@ export const EfficiencyScore = (props: EfficiencyScoreProps) => {
     <div className={css.efficienyScore}>
       <Layout.Vertical>
         <Text tooltipProps={{ dataTooltipId: 'overviewCostEfficiencyScore' }}>{title}</Text>
-        <Layout.Horizontal spacing="small" style={{ alignItems: 'center' }}>
+        <Layout.Horizontal spacing="medium" style={{ alignItems: 'center' }}>
           <Text color="grey800" font={{ weight: 'bold' }} style={{ fontSize: 24 }}>
-            {score}
+            {score || '-'}
           </Text>
-          <CostTrend value={trend} flipColors />
+          <CostTrend value={trend} flipColors defaultIcon="caret-up" />
         </Layout.Horizontal>
       </Layout.Vertical>
     </div>

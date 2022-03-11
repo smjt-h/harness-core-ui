@@ -18,6 +18,7 @@ import {
   useConfirmationDialog
 } from '@wings-software/uicore'
 import { Menu, Classes, Intent } from '@blueprintjs/core'
+import { defaultTo } from 'lodash-es'
 import routes from '@common/RouteDefinitions'
 import { QlceView, ViewType, ViewState } from 'services/ce/services'
 import { perspectiveDateLabelToDisplayText, SOURCE_ICON_MAPPING } from '@ce/utils/perspectiveUtils'
@@ -34,7 +35,7 @@ interface PerspectiveGridCardProps {
     viewType: ViewType
   ) => void
   deletePerpsective: (perspectiveId: string, perspectiveName: string) => void
-  clonePerspective: (values: QlceView | Record<string, string>, isClone: boolean) => void
+  clonePerspective: (perspectiveId: string, perspectiveName: string) => void
 }
 
 const PerpsectiveGridCard: (props: PerspectiveGridCardProps) => JSX.Element | null = ({
@@ -64,7 +65,7 @@ const PerpsectiveGridCard: (props: PerspectiveGridCardProps) => JSX.Element | nu
     buttonIntent: Intent.DANGER,
     onCloseDialog: async (isConfirmed: boolean) => {
       if (isConfirmed) {
-        data.id && deletePerpsective(data.id, data.name || '')
+        data.id && deletePerpsective(data.id, defaultTo(data.name, ''))
       }
     }
   })
@@ -89,7 +90,9 @@ const PerpsectiveGridCard: (props: PerspectiveGridCardProps) => JSX.Element | nu
   }
 
   const onCloneClick: () => void = () => {
-    clonePerspective(data, true)
+    if (data?.id && data?.name) {
+      clonePerspective(data.id, data.name)
+    }
   }
 
   const viewType = data?.viewType
@@ -106,8 +109,8 @@ const PerpsectiveGridCard: (props: PerspectiveGridCardProps) => JSX.Element | nu
           navigateToPerspectiveDetailsPage(
             data?.id,
             data.viewState,
-            data?.name || data.id,
-            data.viewType || ViewType.Customer
+            defaultTo(data?.name, data.id),
+            defaultTo(data.viewType, ViewType.Customer)
           )
       }}
     >
@@ -123,7 +126,12 @@ const PerpsectiveGridCard: (props: PerspectiveGridCardProps) => JSX.Element | nu
           >
             <Menu>
               <Menu.Item disabled={isDefaultPerspective} onClick={editClick} icon="edit" text="Edit" />
-              <Menu.Item onClick={onCloneClick} icon="duplicate" text="Clone" />
+              <Menu.Item
+                onClick={onCloneClick}
+                icon="duplicate"
+                text="Clone"
+                data-testid={`clone-perspective-${data?.id}`}
+              />
               <Menu.Item
                 disabled={isDefaultPerspective}
                 className={Classes.POPOVER_DISMISS}
@@ -193,7 +201,7 @@ interface PerspectiveListViewProps {
     viewType: ViewType
   ) => void
   deletePerpsective: (perspectiveId: string, perspectiveName: string) => void
-  clonePerspective: (values: QlceView | Record<string, string>, isClone: boolean) => void
+  clonePerspective: (perspectiveId: string, perspectiveName: string) => void
 }
 
 const PerspectiveListView: React.FC<PerspectiveListViewProps> = ({

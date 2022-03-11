@@ -14,14 +14,21 @@ import { useStrings } from 'framework/strings'
 import { GitSyncStoreProvider } from 'framework/GitRepoStore/GitSyncStoreContext'
 import { usePipelineVariables } from '@pipeline/components/PipelineVariablesContext/PipelineVariablesContext'
 import { VariablesHeader } from '@pipeline/components/PipelineStudio/PipelineVariables/VariablesHeader/VariablesHeader'
+import PipelineCard from '@pipeline/components/PipelineStudio/PipelineVariables/Cards/PipelineCard'
+import StageCard from '@pipeline/components/PipelineStudio/PipelineVariables/Cards/StageCard'
 import { usePipelineContext } from '../PipelineContext/PipelineContext'
-import PipelineCard from './Cards/PipelineCard'
-import StageCard from './Cards/StageCard'
 import VariableAccordionSummary from './VariableAccordionSummary'
 import css from './PipelineVariables.module.scss'
 
 export function PipelineVariables(): React.ReactElement {
-  const { updatePipeline, stepsFactory, isReadonly, allowableTypes, updateStage } = usePipelineContext()
+  const {
+    state: { pipeline },
+    updatePipeline,
+    stepsFactory,
+    isReadonly,
+    allowableTypes,
+    updateStage
+  } = usePipelineContext()
   const {
     originalPipeline,
     variablesPipeline,
@@ -48,28 +55,32 @@ export function PipelineVariables(): React.ReactElement {
     variablesPipeline.stages?.forEach((data, i) => {
       if (data.parallel && data.parallel.length > 0) {
         data.parallel.forEach((nodeP, j: number) => {
-          nodeP.stage &&
+          if (nodeP.stage) {
+            const isTemplateStage = !!get(pipeline, `stages[${i}].parallel[${j}].stage.template`)
             stagesCards.push(
               <StageCard
                 originalStage={get(originalPipeline, `stages[${i}].parallel[${j}].stage`)}
                 key={nodeP.stage.identifier}
                 stage={nodeP.stage}
                 metadataMap={metadataMap}
+                readonly={isReadonly || isTemplateStage}
                 path="pipeline"
                 allowableTypes={allowableTypes}
                 stepsFactory={stepsFactory}
                 updateStage={updateStage}
               />
             )
+          }
         })
       } /* istanbul ignore else */ else if (data.stage) {
+        const isTemplateStage = !!get(pipeline, `stages[${i}].stage.template`)
         stagesCards.push(
           <StageCard
             key={data.stage.identifier}
             stage={data.stage}
             originalStage={get(originalPipeline, `stages[${i}].stage`)}
             metadataMap={metadataMap}
-            readonly={isReadonly}
+            readonly={isReadonly || isTemplateStage}
             path="pipeline"
             allowableTypes={allowableTypes}
             stepsFactory={stepsFactory}
@@ -108,7 +119,7 @@ export function PipelineVariables(): React.ReactElement {
                   <>
                     <PipelineCard
                       variablePipeline={variablesPipeline}
-                      pipeline={originalPipeline}
+                      pipeline={pipeline}
                       stepsFactory={stepsFactory}
                       updatePipeline={updatePipeline}
                       metadataMap={metadataMap}

@@ -15,7 +15,6 @@ import { accountPathProps, projectPathProps } from '@common/utils/routeUtils'
 import { SetupSourceTabs } from '@cv/components/CVSetupSourcesView/SetupSourceTabs/SetupSourceTabs'
 import DynatraceCustomMetrics from '@cv/pages/health-source/connectors/Dynatrace/components/DynatraceCustomMetrics/DynatraceCustomMetrics'
 import type { DynatraceCustomMetricsProps } from '@cv/pages/health-source/connectors/Dynatrace/components/DynatraceCustomMetrics/DynatraceCustomMetrics.types'
-import type { MultiItemsSideNavProps } from '@cv/components/MultiItemsSideNav/MultiItemsSideNav'
 import { DYNATRACE_CUSTOM_METRICS_PROPS_MOCK } from '@cv/pages/health-source/connectors/Dynatrace/components/DynatraceCustomMetrics/__tests__/DynatraceCustomMetrics.mock'
 import * as cvService from 'services/cv'
 import type { QueryContentProps } from '@cv/components/QueryViewer/types'
@@ -63,34 +62,6 @@ jest.mock('@cv/components/QueryViewer/QueryViewer', () => ({
     return (
       <>
         <button name={'fetchRecordsButton'} onClick={props.handleFetchRecords} />
-      </>
-    )
-  }
-}))
-
-const createdMetricsValidationMock = jest.fn()
-jest.mock('@cv/components/MultiItemsSideNav/MultiItemsSideNav', () => ({
-  __esModule: true,
-  MultiItemsSideNav: (props: MultiItemsSideNavProps) => {
-    const { createdMetrics } = props
-    // whenever createdMetrics is changed, call mock so test can validate passed props
-    useEffect(() => {
-      createdMetricsValidationMock(createdMetrics)
-    }, [createdMetrics])
-    return (
-      <>
-        <button
-          data-testid={'triggerSelectMetricButtonMock'}
-          onClick={() => {
-            props.onSelectMetric('', [], 0)
-          }}
-        />
-        <button
-          data-testid={'triggerRemoveMetricButtonMock'}
-          onClick={() => {
-            props.onRemoveMetric('', '', [], 0)
-          }}
-        />
       </>
     )
   }
@@ -154,10 +125,6 @@ describe('Validate Dynatrace Custom Metrics', () => {
     } as any)
   })
 
-  test('Ensure that existing metrics are transformed and passed to MultiItemsSideNav correctly', async () => {
-    render(<WrapperComponent {...DYNATRACE_CUSTOM_METRICS_PROPS_MOCK} />)
-    expect(createdMetricsValidationMock).toHaveBeenNthCalledWith(1, ['mapped_metric_1', 'mapped_metric_2'])
-  })
   test('Ensure that QueryContent is rendered with proper query', async () => {
     const { container } = render(<WrapperComponent {...DYNATRACE_CUSTOM_METRICS_PROPS_MOCK} />)
     const queryContainerPanel = container.querySelector('[data-testid="querySpecificationsAndMapping-summary"]')
@@ -204,28 +171,6 @@ describe('Validate Dynatrace Custom Metrics', () => {
       })
     }
     await waitFor(() => expect(getSampleDataMock).toHaveBeenCalledTimes(1))
-  })
-
-  test('verify that onSelectMetric and onRemoveMetric are called', async () => {
-    const setCreatedMetricsMock = jest.fn()
-    const setMappedMetricsMock = jest.fn()
-
-    const propsWithStatesMock = {
-      ...DYNATRACE_CUSTOM_METRICS_PROPS_MOCK,
-      setCreatedMetrics: setCreatedMetricsMock,
-      setMappedMetrics: setMappedMetricsMock
-    }
-    const { getByTestId } = render(<WrapperComponent {...propsWithStatesMock} />)
-
-    act(() => {
-      fireEvent.click(getByTestId('triggerRemoveMetricButtonMock'))
-    })
-    await waitFor(() => expect(setMappedMetricsMock).toHaveBeenCalledTimes(1))
-
-    act(() => {
-      fireEvent.click(getByTestId('triggerSelectMetricButtonMock'))
-    })
-    await waitFor(() => expect(setCreatedMetricsMock).toHaveBeenCalledTimes(1))
   })
 
   test('ensure that manual query form field is updated when undo is clicked', async () => {

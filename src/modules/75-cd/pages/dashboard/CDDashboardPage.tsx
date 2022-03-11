@@ -8,7 +8,7 @@
 import React, { useState } from 'react'
 import { Container, PageHeader } from '@wings-software/uicore'
 import { useHistory, useParams } from 'react-router-dom'
-import { camelCase, defaultTo, get } from 'lodash-es'
+import { defaultTo, get } from 'lodash-es'
 import moment from 'moment'
 import routes from '@common/RouteDefinitions'
 import { Page } from '@common/exports'
@@ -18,7 +18,13 @@ import CardRailView from '@pipeline/components/Dashboards/CardRailView/CardRailV
 import { useGetWorkloads, useGetDeployments, CDPipelineModuleInfo, ExecutionStatusInfo } from 'services/cd-ng'
 import type { CIBuildCommit, CIWebhookInfoDTO } from 'services/ci'
 import type { PipelineExecutionSummary } from 'services/pipeline-ng'
-import { ActiveStatus, FailedStatus, useErrorHandler, useRefetchCall } from '@pipeline/components/Dashboards/shared'
+import {
+  ActiveStatus,
+  FailedStatus,
+  mapToExecutionStatus,
+  useErrorHandler,
+  useRefetchCall
+} from '@pipeline/components/Dashboards/shared'
 import { NGBreadcrumbs } from '@common/components/NGBreadcrumbs/NGBreadcrumbs'
 import { useDocumentTitle } from '@common/hooks/useDocumentTitle'
 import ExecutionCard from '@pipeline/components/ExecutionCard/ExecutionCard'
@@ -62,7 +68,7 @@ export function executionStatusInfoToExecutionSummary(info: ExecutionStatusInfo)
     startTs: info.startTs,
     endTs: typeof info.endTs === 'number' && info.endTs > 0 ? info.endTs : undefined,
     name: info.pipelineName,
-    status: (info.status ? info.status.charAt(0).toUpperCase() + camelCase(info.status).slice(1) : '') as any,
+    status: mapToExecutionStatus(info.status),
     planExecutionId: info.planExecutionId,
     pipelineIdentifier: info.pipelineIdentifier,
     moduleInfo: {

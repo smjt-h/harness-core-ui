@@ -42,6 +42,19 @@
         "createdAt": 1619563751222,
         "lastModifiedAt": 1624954619316,
         "numberOfCommitters": 10
+      },
+      "CD": {
+        "id": "608894e722eae532c9e4cb1e",
+        "accountIdentifier": "accountId",
+        "moduleType": "CD",
+        "edition": "ENTERPRISE",
+        "licenseType": "TRIAL",
+        "status": "ACTIVE",
+        "startTime": 1619563751,
+        "expiryTime": 1819990200000,
+        "createdAt": 1619563751222,
+        "lastModifiedAt": 1624954619316,
+        "numberOfCommitters": 10
       }
     },
     "allModuleLicenses": {
@@ -84,6 +97,21 @@
           "edition": "ENTERPRISE",
           "licenseType": "TRIAL",
           "status": "EXPIRED",
+          "startTime": 1619563751,
+          "expiryTime": 1819990200000,
+          "createdAt": 1619563751222,
+          "lastModifiedAt": 1624954619316,
+          "numberOfCommitters": 10
+        }
+      ],
+      "CD": [
+        {
+          "id": "608894e722eae532c9e4cb1e",
+          "accountIdentifier": "accountId",
+          "moduleType": "CD",
+          "edition": "ENTERPRISE",
+          "licenseType": "TRIAL",
+          "status": "ACTIVE",
           "startTime": 1619563751,
           "expiryTime": 1819990200000,
           "createdAt": 1619563751222,
