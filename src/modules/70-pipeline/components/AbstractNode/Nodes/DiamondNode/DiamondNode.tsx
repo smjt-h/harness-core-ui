@@ -74,7 +74,7 @@ export function DiamondNodeWidget(props: any): JSX.Element {
           </div> */}
         </div>
         <div className="execution-running-animation" />
-        {props.icon && <Icon size={28} inverse={isSelected} name={props.icon} style={props.iconStyle} />}
+        {props.icon && <Icon size={28} inverse={isSelected} name={props.icon} style={{ color: 'white' }} />}
         {props.isInComplete && <Icon className={css.inComplete} size={12} name={'warning-sign'} color="orange500" />}
         {props?.tertiaryIcon && (
           <Icon
@@ -147,7 +147,7 @@ export function DiamondNodeWidget(props: any): JSX.Element {
       </div>
       {props.name && (
         <Text
-          width={props.graphType === PipelineGraphType.STEP_GRAPH ? 64 : 90}
+          width={64}
           font={{ size: 'normal', align: 'center' }}
           color={props.defaultSelected ? Color.GREY_900 : Color.GREY_600}
           className={cssDefault.nameText}
