@@ -5,7 +5,7 @@
  * https://polyformproject.org/wp-content/uploads/2020/06/PolyForm-Shield-1.0.0.txt.
  */
 
-import React from 'react'
+import React, { useMemo } from 'react'
 import { Intent, Layout, useToaster, useConfirmationDialog } from '@wings-software/uicore'
 import cx from 'classnames'
 import { cloneDeep, debounce, isNil } from 'lodash-es'
@@ -768,6 +768,9 @@ function StageBuilder(): JSX.Element {
     : { display: 'inline-table' }
 
   const stageType = selectedStage?.stage?.stage?.template ? StageType.Template : selectedStage?.stage?.stage?.type
+  const stageData = useMemo(() => {
+    return getPipelineGraphData(pipeline.stages)
+  }, [pipeline.stages])
 
   return (
     <Layout.Horizontal className={cx(css.canvasContainer)} padding="medium">
@@ -801,7 +804,7 @@ function StageBuilder(): JSX.Element {
               <CDPipelineStudioNew
                 selectedNodeId={selectedStageId}
                 graphType={PipelineGraphType.STAGE_GRAPH}
-                data={getPipelineGraphData(pipeline.stages)}
+                data={stageData}
                 collapsibleProps={{ parentSelector: '.Pane1', percentageNodeVisible: 0.8, bottomMarginInPixels: 80 }}
               />
               <DynamicPopover
