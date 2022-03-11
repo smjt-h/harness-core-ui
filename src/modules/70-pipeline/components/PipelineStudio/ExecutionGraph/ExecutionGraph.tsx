@@ -32,6 +32,11 @@ import type { DependencyElement } from 'services/ci'
 import { useFeatureFlag } from '@common/hooks/useFeatureFlag'
 import { FeatureFlag } from '@common/featureFlags'
 import { DiagramFactory, DiagramNodes, NodeType } from '@pipeline/components/AbstractNode/DiagramFactory'
+import { DiamondNodeWidget } from '@pipeline/components/AbstractNode/Nodes/DiamondNode/DiamondNode'
+import { getPipelineGraphData } from '@pipeline/components/AbstractNode/PipelineGraph/PipelineGraphUtils'
+import PipelineStepNode from '@pipeline/components/AbstractNode/Nodes/DefaultNode/PipelineStepNode'
+import { PipelineGraphType } from '@pipeline/components/AbstractNode/types'
+import { IconNode } from '@pipeline/components/AbstractNode/Nodes/IconNode/IconNode'
 import { ExecutionStepModel, GridStyleInterface } from './ExecutionStepModel'
 import { StepType as PipelineStepType } from '../../PipelineSteps/PipelineStepInterface'
 import {
@@ -73,15 +78,10 @@ import {
 } from '../../Diagram'
 import { CanvasButtons } from '../../CanvasButtons/CanvasButtons'
 import css from './ExecutionGraph.module.scss'
-import { getPipelineGraphData } from '@pipeline/components/AbstractNode/PipelineGraph/PipelineGraphUtils'
-import PipelineStageNode from '@pipeline/components/AbstractNode/Nodes/DefaultNode/PipelineStageNode'
-import { PipelineGraphType } from '@pipeline/components/AbstractNode/types'
-import { DiamondNodeWidget } from '@pipeline/components/AbstractNode/Nodes/DiamondNode/DiamondNode'
-import { IconNode } from '@pipeline/components/AbstractNode/Nodes/IconNode/IconNode'
 
 const diagram = new DiagramFactory('graph')
 
-diagram.registerNode('Deployment', PipelineStageNode, true)
+diagram.registerNode('Deployment', PipelineStepNode, true)
 diagram.registerNode('StepGroup', DiagramNodes[NodeType.StepGroupNode])
 diagram.registerNode('Approval', DiamondNodeWidget)
 diagram.registerNode('JiraApproval', DiamondNodeWidget)

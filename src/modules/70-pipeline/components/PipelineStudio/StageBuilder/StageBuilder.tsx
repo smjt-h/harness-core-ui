@@ -54,7 +54,8 @@ import {
   getNewStageFromTemplate,
   getStageIndexWithParallelNodesFromPipeline,
   getLinkEventListeners,
-  getNodeEventListerner
+  getNodeEventListerner,
+  MoveDirection
 } from './StageBuilderUtil'
 import { useStageBuilderCanvasState } from './useStageBuilderCanvasState'
 import { StageList } from './views/StageList'
@@ -80,11 +81,6 @@ declare global {
   interface WindowEventMap {
     CLOSE_CREATE_STAGE_POPOVER: CustomEvent<string>
   }
-}
-
-export enum MoveDirection {
-  AHEAD,
-  BEHIND
 }
 export interface MoveStageDetailsType {
   direction: MoveDirection
