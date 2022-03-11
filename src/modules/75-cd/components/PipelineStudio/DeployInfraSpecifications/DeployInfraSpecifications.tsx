@@ -22,7 +22,10 @@ import {
 import StringWithTooltip from '@common/components/StringWithTooltip/StringWithTooltip'
 import factory from '@pipeline/components/PipelineSteps/PipelineStepFactory'
 import { StepType } from '@pipeline/components/PipelineSteps/PipelineStepInterface'
-import type { InfraProvisioningData } from '@cd/components/PipelineSteps/InfraProvisioning/InfraProvisioning'
+import type {
+  InfraProvisioningData,
+  ProvisionersOptions
+} from '@cd/components/PipelineSteps/InfraProvisioning/InfraProvisioning'
 import type { GcpInfrastructureSpec } from '@cd/components/PipelineSteps/GcpInfrastructureSpec/GcpInfrastructureSpec'
 import { useStrings } from 'framework/strings'
 import { usePipelineContext } from '@pipeline/components/PipelineStudio/PipelineContext/PipelineContext'
@@ -148,6 +151,7 @@ export default function DeployInfraSpecifications(props: React.PropsWithChildren
   }
 
   const [provisionerEnabled, setProvisionerEnabled] = useState<boolean>(false)
+  const [provisionerType, setProvisionerType] = useState<ProvisionersOptions>('TERRAFORM')
   const [provisionerSnippetLoading, setProvisionerSnippetLoading] = useState<boolean>(false)
 
   const isProvisionerEmpty = (stageData: StageElementWrapper): boolean => {
@@ -159,7 +163,7 @@ export default function DeployInfraSpecifications(props: React.PropsWithChildren
   useEffect(() => {
     if (stage && isProvisionerEmpty(stage) && provisionerEnabled) {
       setProvisionerSnippetLoading(true)
-      getProvisionerExecutionStrategyYamlPromise({ queryParams: { provisionerType: 'TERRAFORM' } }).then(res => {
+      getProvisionerExecutionStrategyYamlPromise({ queryParams: { provisionerType: provisionerType } }).then(res => {
         const provisionerSnippet = YAML.parse(res?.data || '')
         if (stage && isProvisionerEmpty(stage) && provisionerSnippet) {
           const stageData = produce(stage, draft => {
@@ -431,11 +435,13 @@ export default function DeployInfraSpecifications(props: React.PropsWithChildren
                           cleanUpEmptyProvisioner(draft)
                         })
                         if (stageData.stage) {
+                          setProvisionerType(value.selectedProvisioner!)
                           updateStage(stageData.stage).then(() => {
                             setProvisionerEnabled(value.provisionerEnabled)
                           })
                         }
                       } else {
+                        setProvisionerType(value.selectedProvisioner!)
                         setProvisionerEnabled(value.provisionerEnabled)
                       }
                     }}

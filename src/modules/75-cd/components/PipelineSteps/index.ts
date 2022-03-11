@@ -31,6 +31,7 @@ import { TerraformApply } from './TerraformApply/TerraformApply'
 import { InfraProvisioning } from './InfraProvisioning/InfraProvisioning'
 import { GcpInfrastructureSpec } from './GcpInfrastructureSpec/GcpInfrastructureSpec'
 import { PolicyStep } from './PolicyStep/PolicyStep'
+import { CFCreateStack } from './CloudFormation/CloudFormationCreateStack/CloudFormationCreateStack'
 
 factory.registerStep(new HttpStep())
 factory.registerStep(new K8RolloutDeployStep())
@@ -56,3 +57,4 @@ factory.registerStep(new TerraformApply())
 factory.registerStep(new TerraformPlan())
 factory.registerStep(new InfraProvisioning())
 factory.registerStep(new PolicyStep())
+factory.registerStep(new CFCreateStack())

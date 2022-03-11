@@ -206,3 +206,9 @@ artifactPaths: Artifact Paths
 serviceList:
   noIdentifier: Selected service does not have any identifier associated with it.
 artifactRepoTooltip: Enter the name of the repository where the artifact source is located.
+cloudFormation:
+  templateFile: Template File
+  specifyTemplateFile: Specify Template File
+  stackName: Custom Stack Name
+  specifyCapabilities: Specify Capabilities
+  cfParameterFiles: Cloud Formation Parameter Files

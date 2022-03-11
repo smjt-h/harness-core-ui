@@ -12,10 +12,10 @@ import type { StepViewType, StepProps } from '@pipeline/components/AbstractSteps
 import type { ExecutionElementConfig } from 'services/cd-ng'
 import { StepType } from '@pipeline/components/PipelineSteps/PipelineStepInterface'
 import { PipelineStep } from '@pipeline/components/PipelineSteps/PipelineStep'
-import { InfraProvisioningBaseWithRef } from './InfraProvisioningBase'
+import { CloudFormationCreateStack } from './CloudFormationCreateStackRef'
 
-export type ProvisionersOptions = 'TERRAFORM' | 'CLOUD_FORMATION'
-export interface InfraProvisioningData {
+export type ProvisionersOptions = 'CLOUD_FORMATION'
+export interface CloudFormationData {
   provisioner: ExecutionElementConfig
   originalProvisioner?: Partial<ExecutionElementConfig>
   provisionerEnabled: boolean
@@ -23,7 +23,7 @@ export interface InfraProvisioningData {
   selectedProvisioner?: ProvisionersOptions
 }
 
-export interface InfraProvisioningDataUI extends Omit<InfraProvisioningData, 'provisioner'> {
+export interface CloudFormationDataUI extends Omit<CloudFormationData, 'provisioner'> {
   provisioner: {
     stage: {
       spec: {
@@ -33,45 +33,47 @@ export interface InfraProvisioningDataUI extends Omit<InfraProvisioningData, 'pr
   }
 }
 
-export interface InfraProvisioningProps {
-  initialValues: InfraProvisioningData
-  template?: InfraProvisioningData
+export interface CloudFormationProps {
+  initialValues: CloudFormationData
+  template?: CloudFormationData
   path?: string
   readonly?: boolean
   stepViewType?: StepViewType
-  onUpdate?: (data: InfraProvisioningData) => void
-  onChange?: (data: InfraProvisioningData) => void
+  onUpdate?: (data: CloudFormationData) => void
+  onChange?: (data: CloudFormationData) => void
   allowableTypes: MultiTypeInputType[]
 }
 
-export class InfraProvisioning extends PipelineStep<any> {
-  protected type = StepType.InfraProvisioning
-  protected defaultValues: any = {}
-
-  // TODO: replace with right icon (if needed)
-  protected stepIcon: IconName = 'cross'
-  protected stepName = 'Infrastructure provisioning'
-  protected stepPaletteVisible = false
-
+export class CFCreateStack extends PipelineStep<any> {
   constructor() {
     super()
   }
+
+  protected type = StepType.CloudFormationCreateStack
+  protected defaultValues: any = {}
+
+  protected stepIcon: IconName = 'cloudformation'
+  protected stepName = 'Cloud Formation Create Stack'
 
   validateInputSet(): FormikErrors<any> {
     return {}
   }
 
   renderStep(props: StepProps<any>): JSX.Element {
-    const { initialValues, onUpdate, onChange, allowableTypes, stepViewType, formikRef } = props
+    window.console.log('props: ', props)
+    const { initialValues, onUpdate, onChange, allowableTypes, stepViewType, formikRef, isNewStep } = props
 
     return (
-      <InfraProvisioningBaseWithRef
+      <CloudFormationCreateStack
         initialValues={initialValues}
-        stepViewType={stepViewType}
-        onUpdate={onUpdate}
-        onChange={onChange}
+        onUpdate={(data: any) => onUpdate?.(this.processFormData(data))}
+        onChange={(data: any) => onChange?.(this.processFormData(data))}
         allowableTypes={allowableTypes}
+        isNewStep={isNewStep}
+        stepViewType={stepViewType}
         ref={formikRef}
+        stepType={StepType.TerraformPlan}
+        readonly={props.readonly}
       />
     )
   }
