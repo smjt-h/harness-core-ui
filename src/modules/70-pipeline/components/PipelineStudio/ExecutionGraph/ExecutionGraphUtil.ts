@@ -819,5 +819,9 @@ export const StepTypeToPipelineIconMap: Record<any, IconName> = {
   [PipelineStepType.SHELLSCRIPT]: 'command-shell-script',
   [PipelineStepType.K8sRollingRollback]: 'undo',
   [PipelineStepType.K8sRollingDeploy]: 'rolling',
+  [PipelineStepType.JiraApproval]: 'jira-approve',
+  [PipelineStepType.HarnessApproval]: 'harness-with-color',
+  [PipelineStepType.JiraCreate]: 'jira-create',
+  [PipelineStepType.JiraUpdate]: 'jira-update',
   [PipelineStepType.Barrier]: 'barrier-open'
 }
