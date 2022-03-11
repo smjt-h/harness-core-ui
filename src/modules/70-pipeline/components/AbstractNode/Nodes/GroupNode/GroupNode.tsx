@@ -34,6 +34,7 @@ function GroupNode(props: any): React.ReactElement {
     return `${defaultTo(nodesInfo?.[0]?.name, '')} +  ${nodesInfo.length - 1} more stages`
   }
 
+  console.log(nodesInfo)
   return (
     <div style={{ position: 'relative' }}>
       <div
