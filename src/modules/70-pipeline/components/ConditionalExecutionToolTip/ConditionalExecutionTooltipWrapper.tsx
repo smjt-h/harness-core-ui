@@ -14,7 +14,7 @@ import {
 import type { StepMode as Modes } from '@pipeline/utils/stepUtils'
 import type { StringsMap } from 'stringTypes'
 import type { ConditionalExecutionNodeRunInfo } from '@pipeline/utils/types'
-import type { ExpressionBlock } from 'services/pipeline-ng'
+import type { NodeRunInfo } from 'services/pipeline-ng'
 import ConditionalExecutionTooltipPreExecution from './ConditionalExecutionTooltip'
 
 const statusToStringIdMapping: any = {
@@ -52,7 +52,7 @@ export interface ResolvedVariableInterface {
   expressionValue: string
 }
 
-const processResolvedVariables = (expressions: ExpressionBlock[] | undefined) => {
+const processResolvedVariables = (expressions: NodeRunInfo[] | undefined) => {
   const resolvedVariables: ResolvedVariableInterface[] = []
   expressions?.forEach(expression => {
     const expressionStr: string | undefined = expression.expression

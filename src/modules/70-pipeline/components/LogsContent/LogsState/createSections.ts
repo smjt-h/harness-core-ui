@@ -13,6 +13,7 @@ import {
   isExecutionRunningLike,
   isExecutionSuccess
 } from '@pipeline/utils/statusHelpers'
+import type { UnitProgress } from 'services/pipeline-ng'
 
 import { getDefaultReducerState } from './utils'
 import type { Action, ActionType, LogSectionData, State, ProgressMapValue, UnitLoadingStatus } from './types'
@@ -102,8 +103,8 @@ export function createSections(state: State, action: Action<ActionType.CreateSec
         manuallyToggled: isSameStep ? manuallyToggled : false,
         status: isSameStep && NON_MUTATE_STATES.includes(currentStatus) && isRunning ? currentStatus : unitStatus,
         unitStatus,
-        startTime: parseToTime(unitProgress?.startTime),
-        endTime: parseToTime(unitProgress?.endTime),
+        startTime: parseToTime((unitProgress as UnitProgress)?.startTime),
+        endTime: parseToTime((unitProgress as UnitProgress)?.endTime),
         dataSource: isRunning ? 'stream' : 'blob'
       }
 
