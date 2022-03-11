@@ -85,6 +85,8 @@ diagram.registerNode('Deployment', PipelineStepNode, true)
 diagram.registerNode('StepGroup', DiagramNodes[NodeType.StepGroupNode])
 diagram.registerNode('Approval', DiamondNodeWidget)
 diagram.registerNode('JiraApproval', DiamondNodeWidget)
+diagram.registerNode('HarnessApproval', DiamondNodeWidget)
+diagram.registerNode('default-diamond', DiamondNodeWidget)
 diagram.registerNode('Barrier', IconNode)
 
 export const CDPipelineStudioNew = diagram.render()
