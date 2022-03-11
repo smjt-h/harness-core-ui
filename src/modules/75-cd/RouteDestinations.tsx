@@ -90,7 +90,7 @@ import CreateConnectorFromYamlPage from '@connectors/pages/createConnectorFromYa
 import CreateSecretFromYamlPage from '@secrets/pages/createSecretFromYaml/CreateSecretFromYamlPage'
 import ServiceDetailPage from '@cd/pages/ServiceDetailPage/ServiceDetailPage'
 import ServiceDetails from '@cd/components/ServiceDetails/ServiceDetails'
-import ChildAppMounter from 'microfrontends/ChildAppMounter'
+import ChildAppMounterWithRouterWrapper from 'microfrontends/ChildAppMounter'
 
 import './components/PipelineSteps'
 import './components/PipelineStudio/DeployStage'
@@ -416,7 +416,7 @@ const GitOpsPage = (): React.ReactElement | null => {
 
   if (ARGO_PHASE2_MANAGED) {
     return (
-      <ChildAppMounter<GitOpsCustomMicroFrontendProps>
+      <ChildAppMounterWithRouterWrapper<GitOpsCustomMicroFrontendProps>
         ChildApp={GitOpsServersList}
         customComponents={{ DeployEnvironmentWidget, DeployServiceWidget }}
       />
