@@ -1571,18 +1571,6 @@ exports[`Saved Connector Details render for Vault schema 1`] = `
       >
         credentials
       </p>
-      <div
-        class="Layout--vertical Layout--layout-spacing-xsmall StyledProps--main detailsSectionRowWrapper StyledProps--padding-top-medium StyledProps--padding-bottom-medium"
-      >
-        <p
-          class="StyledProps--font StyledProps--main StyledProps--font-size-small"
-        >
-          authentication
-        </p>
-        <span
-          class="StyledProps--font StyledProps--main detailsValue StyledProps--inline StyledProps--color StyledProps--color-black"
-        />
-      </div>
     </div>
   </div>
 </div>
@@ -1717,11 +1705,15 @@ exports[`Saved Connector Details render for VaultWithIamAMS schema 1`] = `
         >
           authentication
         </p>
-        <span
-          class="StyledProps--font StyledProps--main detailsValue StyledProps--inline StyledProps--color StyledProps--color-black"
+        <div
+          class="Layout--horizontal Layout--layout-spacing-small StyledProps--main detailsSectionRow"
         >
-          connectors.hashiCorpVault.awsAuth
-        </span>
+          <span
+            class="StyledProps--font StyledProps--main detailsValue StyledProps--inline StyledProps--color StyledProps--color-black"
+          >
+            connectors.hashiCorpVault.awsAuth
+          </span>
+        </div>
       </div>
       <div
         class="Layout--vertical Layout--layout-spacing-xsmall StyledProps--main detailsSectionRowWrapper StyledProps--padding-top-medium StyledProps--padding-bottom-medium"
