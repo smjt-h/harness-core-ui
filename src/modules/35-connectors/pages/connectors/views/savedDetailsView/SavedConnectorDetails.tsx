@@ -19,7 +19,7 @@ import type {
 } from 'services/cd-ng'
 import { StringUtils } from '@common/exports'
 import type { TagsInterface } from '@common/interfaces/ConnectorsInterface'
-import { useStrings } from 'framework/strings'
+import { useStrings, UseStringsReturn } from 'framework/strings'
 import type { StringKeys } from 'framework/strings'
 import { HashiCorpVaultAccessTypes } from '@connectors/interfaces/ConnectorInterface'
 import TagsRenderer from '@common/components/TagsRenderer/TagsRenderer'
@@ -30,17 +30,9 @@ import css from './SavedConnectorDetails.module.scss'
 interface SavedConnectorDetailsProps {
   connector: ConnectorInfoDTO
 }
-enum StringKeyObjectType {
-  StringKeyType = 'StringKeyType'
-}
-interface StringKeysObject {
-  type: StringKeyObjectType
-  value: string
-}
-type ActivityDetailsRowInterfaceValue = StringKeysObject | string | TagsInterface | number | boolean | null | undefined
 interface ActivityDetailsRowInterface {
   label: string
-  value: ActivityDetailsRowInterfaceValue
+  value: string | TagsInterface | number | boolean | null | undefined
   iconData?: {
     textId: StringKeys
     icon: IconName
@@ -334,7 +326,10 @@ const getHelmHttpSchema = (connector: ConnectorInfoDTO): Array<ActivityDetailsRo
   ]
 }
 
-const getVaultSchema = (connector: ConnectorInfoDTO): Array<ActivityDetailsRowInterface> => {
+const getVaultSchema = (
+  connector: ConnectorInfoDTO,
+  getString: UseStringsReturn['getString']
+): Array<ActivityDetailsRowInterface> => {
   const data = connector.spec as VaultConnectorDTO
 
   return [
@@ -344,10 +339,7 @@ const getVaultSchema = (connector: ConnectorInfoDTO): Array<ActivityDetailsRowIn
     },
     {
       label: 'authentication',
-      value: {
-        type: StringKeyObjectType.StringKeyType,
-        value: accessTypeOptionsMap.get(data.accessType as HashiCorpVaultAccessTypes) as string
-      }
+      value: data?.accessType ? getString(accessTypeOptionsMap[data.accessType]) : ''
     },
     {
       label: 'connectors.hashiCorpVault.engineName',
@@ -671,7 +663,11 @@ const getServiceNowSchema = (connector: ConnectorInfoDTO): Array<ActivityDetails
   ]
 }
 
-const getSchemaByType = (connector: ConnectorInfoDTO, type: string): Array<ActivityDetailsRowInterface> => {
+const getSchemaByType = (
+  connector: ConnectorInfoDTO,
+  type: string,
+  getString: UseStringsReturn['getString']
+): Array<ActivityDetailsRowInterface> => {
   switch (type) {
     case Connectors.KUBERNETES_CLUSTER:
       return getKubernetesSchema(connector)
@@ -697,7 +693,7 @@ const getSchemaByType = (connector: ConnectorInfoDTO, type: string): Array<Activ
       return getArtifactorySchema(connector)
     case Connectors.VAULT:
     case Connectors.LOCAL:
-      return getVaultSchema(connector)
+      return getVaultSchema(connector, getString)
     case Connectors.AWS_KMS:
       return getAwsKmsSchema(connector)
     case Connectors.AWS_SECRET_MANAGER:
@@ -811,22 +807,11 @@ export const RenderDetailsSection: React.FC<RenderDetailsSectionProps> = props =
             className={css.detailsSectionRowWrapper}
             spacing="xsmall"
             padding={{ top: 'medium', bottom: 'medium' }}
-            key={`${
-              typeof item.value === 'object' && item?.value?.type === StringKeyObjectType.StringKeyType
-                ? item?.value?.value
-                : item?.value
-            }${index}`}
+            key={`${item.value}${index}`}
           >
             <Text font={{ size: 'small' }}>{getString(item.label as StringKeys)}</Text>
-            {(item.label === 'tagsLabel' && typeof item.value === 'object') ||
-            (typeof item.value === 'object' && item?.value?.type === StringKeyObjectType.StringKeyType) ? (
-              item?.value?.type === StringKeyObjectType.StringKeyType ? (
-                <Text inline className={css.detailsValue} color={Color.BLACK}>
-                  {getString(item?.value?.value as StringKeys)}
-                </Text>
-              ) : (
-                <TagsRenderer tags={item.value as TagsInterface} length={4} />
-              )
+            {item.label === 'tagsLabel' && typeof item.value === 'object' ? (
+              <TagsRenderer tags={item.value} length={4} />
             ) : (
               <Layout.Horizontal spacing="small" className={css.detailsSectionRow}>
                 <Text
@@ -862,7 +847,7 @@ export const RenderDetailsSection: React.FC<RenderDetailsSectionProps> = props =
 const SavedConnectorDetails: React.FC<SavedConnectorDetailsProps> = props => {
   const { getString } = useStrings()
   const connectorDetailsSchema = getSchema(props)
-  const credenatialsDetailsSchema = getSchemaByType(props.connector, props.connector?.type)
+  const credenatialsDetailsSchema = getSchemaByType(props.connector, props.connector?.type, getString)
   const commonCredentialsDetailsSchema = getCommonCredentialsDetailsSchema(props.connector)
 
   return (

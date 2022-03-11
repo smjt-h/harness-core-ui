@@ -25,13 +25,16 @@ import type { OrgPathProps } from '@common/interfaces/RouteInterfaces'
 interface VaultConnectorFormFieldsProps {
   formik: FormikContext<VaultConfigFormData>
 }
-export const accessTypeOptionsMap = new Map([
-  [HashiCorpVaultAccessTypes.APP_ROLE, 'connectors.hashiCorpVault.appRole'],
-  [HashiCorpVaultAccessTypes.TOKEN, 'token'],
-  [HashiCorpVaultAccessTypes.VAULT_AGENT, 'connectors.hashiCorpVault.vaultAgent'],
-  [HashiCorpVaultAccessTypes.K8s_AUTH, 'connectors.hashiCorpVault.k8s_auth'],
-  [HashiCorpVaultAccessTypes.AWS_IAM, 'connectors.hashiCorpVault.awsAuth']
-])
+type AccessType = {
+  [key in HashiCorpVaultAccessTypes]: StringKeys
+}
+export const accessTypeOptionsMap: AccessType = {
+  [HashiCorpVaultAccessTypes.APP_ROLE]: 'connectors.hashiCorpVault.appRole',
+  [HashiCorpVaultAccessTypes.TOKEN]: 'token',
+  [HashiCorpVaultAccessTypes.VAULT_AGENT]: 'connectors.hashiCorpVault.vaultAgent',
+  [HashiCorpVaultAccessTypes.K8s_AUTH]: 'connectors.hashiCorpVault.k8s_auth',
+  [HashiCorpVaultAccessTypes.AWS_IAM]: 'connectors.hashiCorpVault.awsAuth'
+}
 const VaultConnectorFormFields: React.FC<VaultConnectorFormFieldsProps> = ({ formik }) => {
   const { getString } = useStrings()
   const { accountId } = useParams<OrgPathProps>()
@@ -59,23 +62,23 @@ const VaultConnectorFormFields: React.FC<VaultConnectorFormFieldsProps> = ({ for
 
   const accessTypeOptions: SelectOption[] = [
     {
-      label: getString(accessTypeOptionsMap.get(HashiCorpVaultAccessTypes.APP_ROLE) as StringKeys),
+      label: getString(accessTypeOptionsMap[HashiCorpVaultAccessTypes.APP_ROLE]),
       value: HashiCorpVaultAccessTypes.APP_ROLE
     },
     {
-      label: getString(accessTypeOptionsMap.get(HashiCorpVaultAccessTypes.TOKEN) as StringKeys),
+      label: getString(accessTypeOptionsMap[HashiCorpVaultAccessTypes.TOKEN]),
       value: HashiCorpVaultAccessTypes.TOKEN
     },
     {
-      label: getString(accessTypeOptionsMap.get(HashiCorpVaultAccessTypes.VAULT_AGENT) as StringKeys),
+      label: getString(accessTypeOptionsMap[HashiCorpVaultAccessTypes.VAULT_AGENT]),
       value: HashiCorpVaultAccessTypes.VAULT_AGENT
     },
     {
-      label: getString(accessTypeOptionsMap.get(HashiCorpVaultAccessTypes.AWS_IAM) as StringKeys),
+      label: getString(accessTypeOptionsMap[HashiCorpVaultAccessTypes.AWS_IAM]),
       value: HashiCorpVaultAccessTypes.AWS_IAM
     },
     {
-      label: getString(accessTypeOptionsMap.get(HashiCorpVaultAccessTypes.K8s_AUTH) as StringKeys),
+      label: getString(accessTypeOptionsMap[HashiCorpVaultAccessTypes.K8s_AUTH]),
       value: HashiCorpVaultAccessTypes.K8s_AUTH
     }
   ]
