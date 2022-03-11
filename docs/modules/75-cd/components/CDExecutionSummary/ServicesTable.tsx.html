@@ -23,30 +23,30 @@
         <div class='clearfix'>
             
             <div class='fl pad1y space-right2'>
-                <span class="strong">55.56% </span>
+                <span class="strong">100% </span>
                 <span class="quiet">Statements</span>
-                <span class='fraction'>5/9</span>
+                <span class='fraction'>9/9</span>
             </div>
         
             
             <div class='fl pad1y space-right2'>
-                <span class="strong">0% </span>
+                <span class="strong">94.44% </span>
                 <span class="quiet">Branches</span>
-                <span class='fraction'>0/18</span>
+                <span class='fraction'>17/18</span>
             </div>
         
             
             <div class='fl pad1y space-right2'>
-                <span class="strong">0% </span>
+                <span class="strong">100% </span>
                 <span class="quiet">Functions</span>
-                <span class='fraction'>0/3</span>
+                <span class='fraction'>3/3</span>
             </div>
         
             
             <div class='fl pad1y space-right2'>
-                <span class="strong">55.56% </span>
+                <span class="strong">100% </span>
                 <span class="quiet">Lines</span>
-                <span class='fraction'>5/9</span>
+                <span class='fraction'>9/9</span>
             </div>
         
             
@@ -55,7 +55,7 @@
             Press <em>n</em> or <em>j</em> to go to the next uncovered block, <em>b</em>, <em>p</em> or <em>k</em> for the previous block.
         </p>
     </div>
-    <div class='status-line medium'></div>
+    <div class='status-line high'></div>
     <pre><table class="coverage">
 <tr><td class="line-count quiet"><a name='L1'></a><a href='#L1'>1</a>
 <a name='L2'></a><a href='#L2'>2</a>
@@ -138,11 +138,9 @@
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-yes">2x</span>
-<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-yes">1x</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-no">&nbsp;</span>
-<span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">1x</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
@@ -150,9 +148,9 @@
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-no">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">3x</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
@@ -165,7 +163,9 @@
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">1x</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
@@ -198,10 +198,10 @@ export interface ServicesTableProps {
   services: ServiceExecutionSummary[]
 }
 &nbsp;
-export function <span class="fstat-no" title="function not covered" >ServicesTable(</span>{ services }: ServicesTableProps): React.ReactElement {
-  const { getString } = <span class="cstat-no" title="statement not covered" >useStrings()</span>
+export function ServicesTable({ services }: ServicesTableProps): React.ReactElement {
+  const { getString } = useStrings()
 &nbsp;
-<span class="cstat-no" title="statement not covered" >  return (</span>
+  return (
     &lt;HTMLTable small className={css.servicesTable}&gt;
       &lt;thead&gt;
         &lt;tr&gt;
@@ -211,7 +211,7 @@ export function <span class="fstat-no" title="function not covered" >ServicesTab
         &lt;/tr&gt;
       &lt;/thead&gt;
       &lt;tbody&gt;
-        {services.map(<span class="fstat-no" title="function not covered" >(s</span>ervice, i) =&gt; <span class="cstat-no" title="statement not covered" >(</span>
+        {services.map((service, i) =&gt; (
           &lt;tr key={`${service.identifier}-${i}`}&gt;
             &lt;td&gt;{service.displayName}&lt;/td&gt;
             &lt;td&gt;
@@ -223,10 +223,10 @@ export function <span class="fstat-no" title="function not covered" >ServicesTab
                 : '-'}
             &lt;/td&gt;
             &lt;td&gt;
-              {service.artifacts?.sidecars &amp;&amp; service.artifacts?.sidecars.length &gt; 0
+              {service.artifacts?.sidecars &amp;&amp; service.artifacts<span class="branch-0 cbranch-no" title="branch not covered" >?.s</span>idecars.length &gt; 0
                 ? service.artifacts.sidecars
-                    .map(<span class="fstat-no" title="function not covered" >artifact </span>=&gt;
-<span class="cstat-no" title="statement not covered" >                      getString('artifactDisplay', {</span>
+                    .map(artifact =&gt;
+                      getString('artifactDisplay', {
                         image: (artifact as unknown as any).imagePath,
                         tag: (artifact as unknown as any).tag
                       })
@@ -247,7 +247,7 @@ export function <span class="fstat-no" title="function not covered" >ServicesTab
             <div class='footer quiet pad2 space-top1 center small'>
                 Code coverage generated by
                 <a href="https://istanbul.js.org/" target="_blank">istanbul</a>
-                at Fri Mar 11 2022 12:06:33 GMT+0000 (Greenwich Mean Time)
+                at Fri Mar 11 2022 13:03:04 GMT+0000 (Greenwich Mean Time)
             </div>
         </div>
         <script src="../../../../prettify.js"></script>
