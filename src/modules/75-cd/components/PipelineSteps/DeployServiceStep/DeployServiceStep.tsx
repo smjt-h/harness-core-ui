@@ -177,7 +177,7 @@ export const NewEditServiceModal: React.FC<NewEditServiceModalProps> = ({
   )
 }
 
-export interface DeployServiceProps {
+interface DeployServiceProps {
   initialValues: DeployServiceData
   onUpdate?: (data: DeployServiceData) => void
   stepViewType?: StepViewType
@@ -188,7 +188,6 @@ export interface DeployServiceProps {
     readonly?: boolean
   }
   allowableTypes: MultiTypeInputType[]
-  serviceLabel?: string
 }
 
 interface DeployServiceState {
@@ -214,12 +213,11 @@ function isEditService(data: DeployServiceData): boolean {
   return false
 }
 
-export const DeployServiceWidget: React.FC<DeployServiceProps> = ({
+const DeployServiceWidget: React.FC<DeployServiceProps> = ({
   initialValues,
   onUpdate,
   readonly,
-  allowableTypes,
-  serviceLabel
+  allowableTypes
 }): JSX.Element => {
   const { getString } = useStrings()
   const { accountId, projectIdentifier, orgIdentifier } = useParams<
@@ -422,7 +420,7 @@ export const DeployServiceWidget: React.FC<DeployServiceProps> = ({
             >
               <FormInput.MultiTypeInput
                 tooltipProps={{ dataTooltipId: 'specifyYourService' }}
-                label={serviceLabel ? serviceLabel : getString('cd.pipelineSteps.serviceTab.specifyYourService')}
+                label={getString('cd.pipelineSteps.serviceTab.specifyYourService')}
                 name="serviceRef"
                 useValue
                 disabled={readonly || (type === MultiTypeInputType.FIXED && loading)}
@@ -509,6 +507,7 @@ const DeployServiceInputStep: React.FC<DeployServiceProps & { formik?: any }> = 
       accountId: string
     }>
   >()
+
   const { showError, clear } = useToaster()
   const { expressions } = useVariablesExpression()
   const {
@@ -519,7 +518,6 @@ const DeployServiceInputStep: React.FC<DeployServiceProps & { formik?: any }> = 
     queryParams: { accountIdentifier: accountId, orgIdentifier, projectIdentifier },
     lazy: true
   })
-
   const [services, setService] = React.useState<SelectOption[]>([])
 
   React.useEffect(() => {
