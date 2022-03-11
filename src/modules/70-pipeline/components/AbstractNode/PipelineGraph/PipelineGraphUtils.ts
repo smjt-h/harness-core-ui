@@ -7,12 +7,12 @@
 
 import { defaultTo, get } from 'lodash-es'
 import type { IconName } from '@harness/uicore'
+import { v4 as uuid } from 'uuid'
 import type { ExecutionWrapperConfig, StageElementWrapperConfig } from 'services/cd-ng'
 import { StepTypeToPipelineIconMap } from '@pipeline/components/PipelineStudio/ExecutionGraph/ExecutionGraphUtil'
+import { stageTypeToIconMap } from '@pipeline/utils/constants'
 import type { PipelineGraphState } from '../types'
 import { PipelineGraphType } from '../types'
-import { v4 as uuid } from 'uuid'
-import { stageTypeToIconMap } from '@pipeline/utils/constants'
 
 const INITIAL_ZOOM_LEVEL = 1
 const ZOOM_INC_DEC_LEVEL = 0.1
@@ -143,14 +143,14 @@ export const scrollZoom = (
   max_scale: number,
   factor: number,
   callback: (newScale: number) => void
-) => {
-  var scale = 1
+): void => {
+  let scale = 1
   container.style.transformOrigin = '0 0'
   container.onwheel = scrolled
 
-  function scrolled(e: any) {
+  function scrolled(e: any): void {
     e.preventDefault()
-    var delta = e.delta || e.wheelDelta
+    let delta = e.delta || e.wheelDelta
     if (delta === undefined) {
       //we are on firefox
       delta = e.detail
@@ -159,7 +159,7 @@ export const scrollZoom = (
     // apply zoom
     scale += delta * factor * scale
     scale = Math.max(1, Math.min(max_scale, scale))
-    console.log('scale', scale)
+
     callback(scale)
   }
 }
@@ -170,14 +170,14 @@ const setupDragEventListeners = (draggableParent: HTMLElement, overlay: HTMLElem
     const initialX = event.pageX
     const initialY = event.pageY
     const overlayPosition = getComputedPosition(overlay, draggableParent as HTMLDivElement) as DOMRect
-    const moveAt = (pageX: number, pageY: number) => {
+    const moveAt = (pageX: number, pageY: number): void => {
       const newX = overlayPosition?.left + pageX - initialX
       const newY = overlayPosition?.top + pageY - initialY
       overlay.style.transform = `translate(${newX}px,${newY}px)`
     }
 
-    function onMouseMove(event: MouseEvent): void {
-      moveAt(event.pageX, event.pageY)
+    function onMouseMove(e: MouseEvent): void {
+      moveAt(e.pageX, e.pageY)
     }
     draggableParent.addEventListener('mousemove', onMouseMove)
     draggableParent.onmouseup = function () {
