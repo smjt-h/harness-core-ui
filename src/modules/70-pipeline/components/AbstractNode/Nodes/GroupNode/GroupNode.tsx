@@ -24,6 +24,7 @@ function GroupNode(props: any): React.ReactElement {
       name: node.name,
       icon: node.icon,
       identifier: node.identifier,
+      id: node.id,
       type: node.type
     }))
   }, [props?.children, props.intersectingIndex])
@@ -32,6 +33,7 @@ function GroupNode(props: any): React.ReactElement {
     return `${defaultTo(nodesInfo?.[0]?.name, '')} +  ${nodesInfo.length - 1} more stages`
   }
 
+  console.log(nodesInfo)
   return (
     <div style={{ position: 'relative' }}>
       <div
@@ -45,7 +47,6 @@ function GroupNode(props: any): React.ReactElement {
             identifier: props?.identifier,
             nodesInfo
           })
-          props?.setSelectedNode(props?.identifier)
         }}
         onMouseOver={() => allowAdd && setVisibilityOfAdd(true)}
         onMouseLeave={() => allowAdd && setVisibilityOfAdd(false)}
@@ -104,8 +105,8 @@ function GroupNode(props: any): React.ReactElement {
         ></div>
 
         <div
-          id={props.id}
-          data-nodeid={props.id}
+          id={nodesInfo?.[0]?.id || props.id}
+          data-nodeid={nodesInfo?.[0]?.id || props.id}
           className={cx(css.defaultCard, { [css.selected]: props?.isSelected })}
           style={{
             width: props.width || 90,
