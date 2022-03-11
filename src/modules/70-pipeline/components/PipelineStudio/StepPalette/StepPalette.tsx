@@ -245,6 +245,32 @@ export function StepPalette({ onSelect, stepsFactory, stepPaletteModuleInfos }: 
                 </section>
               )
             })}
+            <section className={css.categorySteps} key={'cloud-formation'}>
+              <section className={cx(css.categoryName)}>Cloud Formation</section>
+              <section className={cx(css.steps)}>
+                <section
+                  className={css.step}
+                  onClick={() => {
+                    onSelect({
+                      name: 'Cloud Formation Create Stack',
+                      type: 'CloudFormationCreateStack',
+                      icon: stepsFactory.getStepIcon('CloudFormationCreateStack')
+                    })
+                    trackEvent(StepActions.SelectStep, { name: 'Create Stack', type: 'CloudFormationCreateStack' })
+                  }}
+                >
+                  <StepPopover
+                    stepData={{
+                      disabled: false,
+                      name: 'Cloud Formation Create Stack',
+                      type: 'CloudFormationCreateStack'
+                    }}
+                    stepsFactory={stepsFactory}
+                  />
+                  <section className={css.stepName}>Cloud Formation Create Stack</section>
+                </section>
+              </section>
+            </section>
           </Layout.Vertical>
         </section>
         <section className={css.categoriesRenderer}>
