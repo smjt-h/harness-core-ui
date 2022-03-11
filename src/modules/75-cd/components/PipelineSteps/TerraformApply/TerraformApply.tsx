@@ -32,10 +32,9 @@ import {
   TFFormData
 } from '../Common/Terraform/TerraformInterfaces'
 
-// import TerraformEditView from '../Common/Terraform/Editview/TerraformEditView'
-import { CloudFormationCreateStack } from '../CloudFormation/CloudFormationCreateStack/CloudFormationCreateStackRef'
+import TerraformEditView from '../Common/Terraform/Editview/TerraformEditView'
 
-// const TerraformApplyWidgetWithRef = React.forwardRef(TerraformEditView)
+const TerraformApplyWidgetWithRef = React.forwardRef(TerraformEditView)
 
 export class TerraformApply extends PipelineStep<TFFormData> {
   constructor() {
@@ -179,10 +178,10 @@ export class TerraformApply extends PipelineStep<TFFormData> {
       )
     }
     return (
-      <CloudFormationCreateStack
+      <TerraformApplyWidgetWithRef
         initialValues={this.getInitialValues(initialValues)}
-        onUpdate={(data: any) => onUpdate?.(this.processFormData(data))}
-        onChange={(data: any) => onChange?.(this.processFormData(data))}
+        onUpdate={data => onUpdate?.(this.processFormData(data))}
+        onChange={data => onChange?.(this.processFormData(data))}
         allowableTypes={allowableTypes}
         isNewStep={isNewStep}
         stepViewType={stepViewType}

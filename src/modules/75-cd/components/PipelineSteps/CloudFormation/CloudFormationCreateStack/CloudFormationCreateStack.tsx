@@ -47,6 +47,8 @@ export interface CloudFormationProps {
 export class CFCreateStack extends PipelineStep<any> {
   constructor() {
     super()
+    this._hasStepVariables = true
+    this._hasDelegateSelectionVisible = true
   }
 
   protected type = StepType.CloudFormationCreateStack
