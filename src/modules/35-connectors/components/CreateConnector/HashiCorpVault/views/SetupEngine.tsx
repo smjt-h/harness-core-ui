@@ -46,15 +46,68 @@ import {
   ConnectorConfigDTO,
   VaultAwsIamRoleCredentialDTO,
   VaultAgentCredentialDTO,
-  VaultK8sCredentialDTO
+  VaultK8sCredentialDTO,
+  SecretManagerMetadataRequestDTO,
+  ResponseSecretManagerMetadataDTO
 } from 'services/cd-ng'
 import { useToaster } from '@common/exports'
+import value from '*.png'
+import type { FormikProps } from 'formik'
+import { defaultTo } from 'lodash'
 
 const defaultInitialFormData: SetupEngineFormData = {
   secretEngine: '',
   engineType: 'fetch',
   secretEngineName: '',
   secretEngineVersion: 2
+}
+const getMetadataPayLoad = (formData: ConnectorConfigDTO): SecretManagerMetadataRequestDTO => {
+  return {
+    identifier: formData.identifier,
+    encryptionType: 'VAULT',
+    orgIdentifier: formData.orgIdentifier,
+    projectIdentifier: formData.projectIdentifier,
+    spec: {
+      url: formData.vaultUrl,
+      accessType: formData.accessType,
+      delegateSelectors: formData.delegateSelectors,
+      namespace: formData.namespace,
+      spec:
+        formData.accessType === HashiCorpVaultAccessTypes.APP_ROLE
+          ? ({
+              appRoleId: formData.appRoleId,
+              secretId: formData.secretId?.referenceString
+            } as VaultAppRoleCredentialDTO)
+          : formData.accessType === HashiCorpVaultAccessTypes.AWS_IAM
+          ? ({
+              awsRegion: formData.awsRegion,
+              vaultAwsIamRole: formData.vaultAwsIamRole,
+              xvaultAwsIamServerId: formData.xvaultAwsIamServerId?.referenceString
+            } as VaultAwsIamRoleCredentialDTO)
+          : formData.accessType === HashiCorpVaultAccessTypes.TOKEN
+          ? ({
+              authToken: formData.authToken?.referenceString
+            } as VaultAuthTokenCredentialDTO)
+          : formData.accessType === HashiCorpVaultAccessTypes.K8s_AUTH
+          ? ({
+              vaultK8sAuthRole: formData.vaultK8sAuthRole,
+              serviceAccountTokenPath: formData.serviceAccountTokenPath
+            } as VaultK8sCredentialDTO)
+          : ({
+              sinkPath: formData.sinkPath
+            } as VaultAgentCredentialDTO)
+    } as VaultMetadataRequestSpecDTO
+  }
+}
+const getSecretEngineOptions = (res: ResponseSecretManagerMetadataDTO): SelectOption[] => {
+  return (
+    (res.data?.spec as VaultMetadataSpecDTO)?.secretEngines?.map(secretEngine => {
+      return {
+        label: secretEngine.name || '',
+        value: `${secretEngine.name || ''}@@@${secretEngine.version || 2}`
+      }
+    }) || []
+  )
 }
 
 const SetupEngine: React.FC<StepProps<StepDetailsProps> & ConnectorDetailsProps> = ({
@@ -104,51 +157,9 @@ const SetupEngine: React.FC<StepProps<StepDetailsProps> & ConnectorDetailsProps>
 
   const handleFetchEngines = async (formData: ConnectorConfigDTO): Promise<void> => {
     try {
-      const res = await getMetadata({
-        identifier: formData.identifier,
-        encryptionType: 'VAULT',
-        orgIdentifier: formData.orgIdentifier,
-        projectIdentifier: formData.projectIdentifier,
-        spec: {
-          url: formData.vaultUrl,
-          accessType: formData.accessType,
-          delegateSelectors: formData.delegateSelectors,
-          namespace: formData.namespace,
-          spec:
-            formData.accessType === HashiCorpVaultAccessTypes.APP_ROLE
-              ? ({
-                  appRoleId: formData.appRoleId,
-                  secretId: formData.secretId?.referenceString
-                } as VaultAppRoleCredentialDTO)
-              : formData.accessType === HashiCorpVaultAccessTypes.AWS_IAM
-              ? ({
-                  awsRegion: formData.awsRegion,
-                  vaultAwsIamRole: formData.vaultAwsIamRole,
-                  xvaultAwsIamServerId: formData.xvaultAwsIamServerId?.referenceString
-                } as VaultAwsIamRoleCredentialDTO)
-              : formData.accessType === HashiCorpVaultAccessTypes.TOKEN
-              ? ({
-                  authToken: formData.authToken?.referenceString
-                } as VaultAuthTokenCredentialDTO)
-              : formData.accessType === HashiCorpVaultAccessTypes.K8s_AUTH
-              ? ({
-                  vaultK8sAuthRole: formData.vaultK8sAuthRole,
-                  serviceAccountTokenPath: formData.serviceAccountTokenPath
-                } as VaultK8sCredentialDTO)
-              : ({
-                  sinkPath: formData.sinkPath
-                } as VaultAgentCredentialDTO)
-        } as VaultMetadataRequestSpecDTO
-      })
+      const res = await getMetadata(getMetadataPayLoad(formData))
 
-      setSecretEngineOptions(
-        (res.data?.spec as VaultMetadataSpecDTO)?.secretEngines?.map(secretEngine => {
-          return {
-            label: secretEngine.name || '',
-            value: `${secretEngine.name || ''}@@@${secretEngine.version || 2}`
-          }
-        }) || []
-      )
+      setSecretEngineOptions(getSecretEngineOptions(res))
     } catch (err) {
       /* istanbul ignore else */
       //added condition to don't show the toaster if it's an abort error
@@ -178,10 +189,11 @@ const SetupEngine: React.FC<StepProps<StepDetailsProps> & ConnectorDetailsProps>
       connectorInfo &&
       !connectorInfo.spec.secretEngineManuallyConfigured
     ) {
+      const engineNameTemp = defaultTo(connectorInfo.spec.secretEngineName, '')
       setSecretEngineOptions([
         {
-          label: connectorInfo.spec.secretEngineName || '',
-          value: `${connectorInfo.spec.secretEngineName || ''}@@@${connectorInfo.spec.secretEngineVersion || 2}`
+          label: engineNameTemp,
+          value: `${engineNameTemp}@@@${defaultTo(connectorInfo.spec.secretEngineVersion, 2)}`
         }
       ])
     }
@@ -214,6 +226,36 @@ const SetupEngine: React.FC<StepProps<StepDetailsProps> & ConnectorDetailsProps>
     }
   }
 
+  const renderEngineType = (formik: FormikProps<SetupEngineFormData>) => {
+    switch (formik.values['engineType']) {
+      case 'manual':
+        return (
+          <Layout.Horizontal spacing="medium">
+            <FormInput.Text name="secretEngineName" label={getString('connectors.hashiCorpVault.engineName')} />
+            <FormInput.Text name="secretEngineVersion" label={getString('connectors.hashiCorpVault.engineVersion')} />
+          </Layout.Horizontal>
+        )
+      case 'fetch':
+        return (
+          <Layout.Horizontal spacing="medium">
+            <FormInput.Select
+              name="secretEngine"
+              items={secretEngineOptions}
+              disabled={secretEngineOptions.length === 0 || loading}
+            />
+            <Button
+              intent="primary"
+              text={getString('connectors.hashiCorpVault.fetchEngines')}
+              onClick={() => handleFetchEngines(prevStepData as ConnectorConfigDTO)}
+              disabled={loading}
+              loading={loading}
+            />
+          </Layout.Horizontal>
+        )
+      default:
+        return null
+    }
+  }
   return loadingFormData || savingDataInProgress ? (
     <PageSpinner message={savingDataInProgress ? getString('connectors.hashiCorpVault.saveInProgress') : undefined} />
   ) : (
@@ -256,31 +298,7 @@ const SetupEngine: React.FC<StepProps<StepDetailsProps> & ConnectorDetailsProps>
                   radioGroup={{ inline: true }}
                   items={engineTypeOptions}
                 />
-                {formik.values['engineType'] === 'fetch' ? (
-                  <Layout.Horizontal spacing="medium">
-                    <FormInput.Select
-                      name="secretEngine"
-                      items={secretEngineOptions}
-                      disabled={secretEngineOptions.length === 0 || loading}
-                    />
-                    <Button
-                      intent="primary"
-                      text={getString('connectors.hashiCorpVault.fetchEngines')}
-                      onClick={() => handleFetchEngines(prevStepData as ConnectorConfigDTO)}
-                      disabled={loading}
-                      loading={loading}
-                    />
-                  </Layout.Horizontal>
-                ) : null}
-                {formik.values['engineType'] === 'manual' ? (
-                  <Layout.Horizontal spacing="medium">
-                    <FormInput.Text name="secretEngineName" label={getString('connectors.hashiCorpVault.engineName')} />
-                    <FormInput.Text
-                      name="secretEngineVersion"
-                      label={getString('connectors.hashiCorpVault.engineVersion')}
-                    />
-                  </Layout.Horizontal>
-                ) : null}
+                {renderEngineType(formik)}
               </Container>
               <Layout.Horizontal spacing="medium">
                 <Button
