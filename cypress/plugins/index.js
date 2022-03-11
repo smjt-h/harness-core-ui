@@ -17,17 +17,26 @@
 // https://on.cypress.io/plugins-guide
 // ***********************************************************
 
+const { cypressEsbuildPreprocessor } = require('cypress-esbuild-preprocessor')
+const path = require('path')
+
 // This function is called when a project is opened or re-opened (e.g. due to
 // the project's config changing)
 /**
  * @type {Cypress.PluginConfig}
  */
-// eslint-disable-next-line no-unused-vars
-const cypressTypeScriptPreprocessor = require('./cy-ts-preprocessor')
-module.exports = (on: Cypress.PluginEvents, config: Cypress.PluginConfigOptions) => {
+module.exports = (on, config) => {
   if (process.env.CYPRESS_COVERAGE) {
     require('@cypress/code-coverage/task')(on, config)
   }
-  on('file:preprocessor', cypressTypeScriptPreprocessor)
+  on(
+    'file:preprocessor',
+    cypressEsbuildPreprocessor({
+      esbuildOptions: {
+        // optional tsconfig for typescript support and path mapping (see https://github.com/evanw/esbuild for all options)
+        tsconfig: path.resolve(__dirname, '../tsconfig.json')
+      }
+    })
+  )
   return config
 }

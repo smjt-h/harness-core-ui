@@ -34,7 +34,7 @@ if (!certificateExists) {
 const config = {
   mode: 'development',
   devtool: 'cheap-module-source-map',
-  cache: { type: 'filesystem' },
+  cache: isCypress ? false : { type: 'filesystem' },
   output: {
     path: path.resolve(CONTEXT, 'dist'),
     filename: '[name].js',
@@ -139,7 +139,9 @@ if (isCypress && isCypressCoverage) {
       }
     }
   })
-} else {
+}
+
+if (!isCypress) {
   mergedConfig.plugins.push(new ForkTsCheckerWebpackPlugin())
 }
 

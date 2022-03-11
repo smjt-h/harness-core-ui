@@ -7,12 +7,13 @@
 
 const express = require('express')
 const fs = require('fs')
-const key = fs.readFileSync('./certificates/localhost-key.pem')
-const cert = fs.readFileSync('./certificates/localhost.pem')
-const https = require('https')
+const path = require('path')
+// const key = fs.readFileSync('./certificates/localhost-key.pem')
+// const cert = fs.readFileSync('./certificates/localhost.pem')
+// const https = require('https')
 const app = express()
 const PORT = 8080
-const server = https.createServer({ key: key, cert: cert }, app)
+// const server = https.createServer({ key: key, cert: cert }, app)
 
 function checkFileExistsSync(filepath) {
   let flag = true
@@ -21,12 +22,14 @@ function checkFileExistsSync(filepath) {
   } catch (e) {
     flag = false
   }
-  console.log(filepath, flag)
+
   return flag
 }
 
 function getFile(req) {
-  return `./cypress/fixtures${req.url.split('?')[0]}${req.method === 'POST' ? '.post' : ''}.json`
+  const url = req.url.split('?')[0].replace(/^\/gateway/, '')
+
+  return path.resolve(process.cwd(), `fixtures${url}${req.method === 'POST' ? '.post' : ''}.json`)
 }
 
 app.all('*', (req, res) => {
@@ -48,6 +51,7 @@ app.all('*', (req, res) => {
     )
   }
 })
-server.listen(PORT, () => {
-  console.log(`⚡️[server]: Server is running at https://localhost:${PORT}`)
+
+app.listen(PORT, () => {
+  console.log(`⚡️[server]: Server is running at http://localhost:${PORT}`)
 })

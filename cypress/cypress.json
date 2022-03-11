@@ -1,0 +1,11 @@
+{
+  "baseUrl": "https://localhost:8181",
+  "experimentalInteractiveRunEvents": true,
+  "viewportWidth": 1500,
+  "viewportHeight": 1000,
+  "projectId": "if5p69",
+  "integrationFolder": "integration",
+  "pluginsFile": "plugins/index.js",
+  "fixturesFolder": "fixtures",
+  "supportFile": "support/index.ts"
+}
