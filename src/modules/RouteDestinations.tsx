@@ -68,7 +68,7 @@ RbacFactory.registerResourceTypeHandler(ResourceType.SLO, {
   }
 })
 
-export default function RouteDestinations(): React.ReactElement {
+export default function RouteDestinations(props): React.ReactElement {
   const { CDNG_ENABLED, CVNG_ENABLED, CING_ENABLED, CENG_ENABLED, CFNG_ENABLED } = useFeatureFlags()
 
   return (

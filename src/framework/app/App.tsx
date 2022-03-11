@@ -36,6 +36,7 @@ import { PermissionsProvider } from 'framework/rbac/PermissionsContext'
 import { FeaturesProvider } from 'framework/featureStore/FeaturesContext'
 import { useGlobalEventListener } from '@common/hooks'
 import { identifyFullStoryUser } from '../../3rd-party/FullStory'
+import HelpPanelHoc from './HelpPanelHoc'
 
 FocusStyleManager.onlyShowFocusOnTabs()
 
@@ -170,7 +171,9 @@ export function AppWithAuthentication(props: AppProps): React.ReactElement {
               <FeaturesProvider>
                 <LicenseStoreProvider>
                   <PermissionsProvider>
-                    <RouteDestinations />
+                    <HelpPanelHoc>
+                      <RouteDestinations />
+                    </HelpPanelHoc>
                     <NGTooltipEditorPortal
                       showTooltipEditor={showTooltipEditor}
                       onEditorClose={() => setShowTooltipEditor(false)}

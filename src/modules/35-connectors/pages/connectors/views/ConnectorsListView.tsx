@@ -390,25 +390,28 @@ const ConnectorsListView: React.FC<ConnectorListViewProps> = props => {
   }
 
   return (
-    <TableV2<ConnectorResponse>
-      className={css.table}
-      columns={columns}
-      data={listData}
-      name="ConnectorsListView"
-      onRowClick={connector => {
-        const url = routes.toConnectorDetails({ ...params, connectorId: connector.connector?.identifier })
-        const gitInfo: EntityGitDetails = connector.gitDetails ?? {}
-        const urlForGit = `${url}?repoIdentifier=${gitInfo.repoIdentifier}&branch=${gitInfo.branch}`
-        history.push(gitInfo?.objectId ? urlForGit : url)
-      }}
-      pagination={{
-        itemCount: data?.totalItems || 0,
-        pageSize: data?.pageSize || 10,
-        pageCount: data?.totalPages || -1,
-        pageIndex: data?.pageIndex || 0,
-        gotoPage
-      }}
-    />
+    <>
+      {/* <HelpPanel /> */}
+      <TableV2<ConnectorResponse>
+        className={css.table}
+        columns={columns}
+        data={listData}
+        name="ConnectorsListView"
+        onRowClick={connector => {
+          const url = routes.toConnectorDetails({ ...params, connectorId: connector.connector?.identifier })
+          const gitInfo: EntityGitDetails = connector.gitDetails ?? {}
+          const urlForGit = `${url}?repoIdentifier=${gitInfo.repoIdentifier}&branch=${gitInfo.branch}`
+          history.push(gitInfo?.objectId ? urlForGit : url)
+        }}
+        pagination={{
+          itemCount: data?.totalItems || 0,
+          pageSize: data?.pageSize || 10,
+          pageCount: data?.totalPages || -1,
+          pageIndex: data?.pageIndex || 0,
+          gotoPage
+        }}
+      />
+    </>
   )
 }
 
