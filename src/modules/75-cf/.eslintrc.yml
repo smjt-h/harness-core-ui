@@ -4,7 +4,6 @@ rules:
     - patterns:
         - lodash.*
         - microfrontends/*
-        - '!microfrontends/ChildAppMounter'
         - modules/75-cd/*
         - modules/75-ce/*
         - modules/75-ci/*
