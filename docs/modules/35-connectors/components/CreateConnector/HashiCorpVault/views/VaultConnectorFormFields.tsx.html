@@ -23,16 +23,16 @@
         <div class='clearfix'>
             
             <div class='fl pad1y space-right2'>
-                <span class="strong">95% </span>
+                <span class="strong">91.67% </span>
                 <span class="quiet">Statements</span>
-                <span class='fraction'>19/20</span>
+                <span class='fraction'>22/24</span>
             </div>
         
             
             <div class='fl pad1y space-right2'>
-                <span class="strong">57.38% </span>
+                <span class="strong">57.14% </span>
                 <span class="quiet">Branches</span>
-                <span class='fraction'>35/61</span>
+                <span class='fraction'>36/63</span>
             </div>
         
             
@@ -44,9 +44,9 @@
         
             
             <div class='fl pad1y space-right2'>
-                <span class="strong">94.74% </span>
+                <span class="strong">91.3% </span>
                 <span class="quiet">Lines</span>
-                <span class='fraction'>18/19</span>
+                <span class='fraction'>21/23</span>
             </div>
         
             
@@ -211,7 +211,12 @@
 <a name='L152'></a><a href='#L152'>152</a>
 <a name='L153'></a><a href='#L153'>153</a>
 <a name='L154'></a><a href='#L154'>154</a>
-<a name='L155'></a><a href='#L155'>155</a></td><td class="line-coverage quiet"><span class="cline-any cline-neutral">&nbsp;</span>
+<a name='L155'></a><a href='#L155'>155</a>
+<a name='L156'></a><a href='#L156'>156</a>
+<a name='L157'></a><a href='#L157'>157</a>
+<a name='L158'></a><a href='#L158'>158</a>
+<a name='L159'></a><a href='#L159'>159</a>
+<a name='L160'></a><a href='#L160'>160</a></td><td class="line-coverage quiet"><span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
@@ -234,6 +239,7 @@
 <span class="cline-any cline-yes">211x</span>
 <span class="cline-any cline-yes">211x</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">211x</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
@@ -249,6 +255,7 @@
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-yes">211x</span>
+<span class="cline-any cline-yes">15x</span>
 <span class="cline-any cline-yes">15x</span>
 <span class="cline-any cline-yes">15x</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
@@ -291,6 +298,9 @@
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">15x</span>
+<span class="cline-any cline-no">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
@@ -388,6 +398,7 @@ import SecretInput from '@secrets/components/SecretInput/SecretInput'
 import { VaultConfigFormData, HashiCorpVaultAccessTypes } from '@connectors/interfaces/ConnectorInterface'
 import { useListAwsRegions } from 'services/portal'
 import type { OrgPathProps } from '@common/interfaces/RouteInterfaces'
+import { useFeatureFlags } from '@common/hooks/useFeatureFlag'
 &nbsp;
 interface VaultConnectorFormFieldsProps {
   formik: FormikContext&lt;VaultConfigFormData&gt;
@@ -405,6 +416,7 @@ export const accessTypeOptionsMap: AccessType = {
 const VaultConnectorFormFields: React.FC&lt;VaultConnectorFormFieldsProps&gt; = ({ formik }) =&gt; {
   const { getString } = useStrings()
   const { accountId } = useParams&lt;OrgPathProps&gt;()
+  const { ENABLE_K8S_AUTH_IN_VAULT } = useFeatureFlags()
 &nbsp;
   const [modalErrorHandler, setModalErrorHandler] = useState&lt;ModalErrorHandlerBinding&gt;()
   const {
@@ -443,12 +455,15 @@ const VaultConnectorFormFields: React.FC&lt;VaultConnectorFormFieldsProps&gt; = 
     {
       label: getString(accessTypeOptionsMap[HashiCorpVaultAccessTypes.AWS_IAM]),
       value: HashiCorpVaultAccessTypes.AWS_IAM
-    },
-    {
-      label: getString(accessTypeOptionsMap[HashiCorpVaultAccessTypes.K8s_AUTH]),
-      value: HashiCorpVaultAccessTypes.K8s_AUTH
     }
   ]
+&nbsp;
+  <span class="missing-if-branch" title="if path not taken" >I</span>if (ENABLE_K8S_AUTH_IN_VAULT) {
+<span class="cstat-no" title="statement not covered" >    accessTypeOptions.push({</span>
+      label: getString(accessTypeOptionsMap[HashiCorpVaultAccessTypes.K8s_AUTH]),
+      value: HashiCorpVaultAccessTypes.K8s_AUTH
+    })
+  }
 &nbsp;
   return (
     &lt;&gt;
@@ -526,7 +541,7 @@ export default VaultConnectorFormFields
             <div class='footer quiet pad2 space-top1 center small'>
                 Code coverage generated by
                 <a href="https://istanbul.js.org/" target="_blank">istanbul</a>
-                at Sat Mar 12 2022 07:05:14 GMT+0000 (Greenwich Mean Time)
+                at Sun Mar 13 2022 07:46:44 GMT+0000 (Greenwich Mean Time)
             </div>
         </div>
         <script src="../../../../../../prettify.js"></script>
