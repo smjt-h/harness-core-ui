@@ -502,19 +502,21 @@ const TriggersWizardPage: React.FC = (): JSX.Element => {
   })
 
   useEffect(() => {
-    if (!loadingResolvedPipeline) {
-      fetchResolvedPipeline()
-    }
+    fetchResolvedPipeline()
   }, [pipelineResponse?.data?.yamlPipeline])
 
-  // useEffect(() => {
-  //   if (!loadingResolvedPipeline && templateRefsResolvedPipeline?.data?.mergedPipelineYaml) {
-  //     setPipelineWithoutTemplateRefsAsString(templateRefsResolvedPipeline?.data?.mergedPipelineYaml)
-  //     setPipelineWithoutTemplateRefs(
-  //       parse(templateRefsResolvedPipeline?.data?.mergedPipelineYaml) as PipelineInfoConfig
-  //     )
-  //   }
-  // }, [templateRefsResolvedPipeline?.data?.mergedPipelineYaml])
+  useEffect(() => {
+    if (!loadingResolvedPipeline && templateRefsResolvedPipeline?.data?.mergedPipelineYaml) {
+      setPipelineWithoutTemplateRefsAsString(templateRefsResolvedPipeline?.data?.mergedPipelineYaml)
+      try {
+        setPipelineWithoutTemplateRefs(
+          parse(templateRefsResolvedPipeline?.data?.mergedPipelineYaml) as PipelineInfoConfig
+        )
+      } catch (e) {
+        // ignore e
+      }
+    }
+  }, [templateRefsResolvedPipeline?.data?.mergedPipelineYaml])
 
   const originalPipeline: PipelineInfoConfig | undefined = parse(
     (templateRefsResolvedPipeline?.data?.mergedPipelineYaml as any) || ''
