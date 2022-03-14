@@ -13,7 +13,6 @@ import { DiagramDrag, DiagramType, Event } from '@pipeline/components/Diagram'
 import stepsfactory from '@pipeline/components/PipelineSteps/PipelineStepFactory'
 import SVGMarker from '../SVGMarker'
 import { NodeType } from '../../Node'
-import CreateNode from '../CreateNode/CreateNode'
 import css from './DefaultNode.module.scss'
 
 const SECONDARY_ICON: IconName = 'command-echo'
@@ -23,6 +22,8 @@ function PipelineStepNode(props: any): JSX.Element {
   const [showAddNode, setVisibilityOfAdd] = React.useState(false)
   const [showAddLink, setShowAddLink] = React.useState(false)
   const stepData = stepsfactory.getStepData(props.type)
+  const CreateNode: React.FC<any> | undefined = props?.getNode(NodeType.CreateNode)?.component
+
   return (
     <div
       className={`${cx(css.defaultNode, 'default-node')} draggable`}
@@ -135,7 +136,7 @@ function PipelineStepNode(props: any): JSX.Element {
           {props.name}
         </Text>
       )}
-      {allowAdd && (
+      {allowAdd && CreateNode && (
         <CreateNode
           onMouseOver={() => allowAdd && setVisibilityOfAdd(true)}
           onMouseLeave={() => allowAdd && setVisibilityOfAdd(false)}
@@ -157,6 +158,9 @@ function PipelineStepNode(props: any): JSX.Element {
       {!props.isParallelNode && (
         <div
           data-linkid={props?.identifier}
+          onMouseOver={event => event.stopPropagation()}
+          onMouseEnter={event => event.stopPropagation()}
+          onMouseLeave={event => event.stopPropagation()}
           onClick={event => {
             event.stopPropagation()
             props?.fireEvent({
@@ -196,43 +200,45 @@ function PipelineStepNode(props: any): JSX.Element {
           <Icon name="plus" color={Color.WHITE} />
         </div>
       )}
-      {(props?.nextNode?.nodeType === NodeType.StepGroupNode || (!props?.nextNode && props?.parentIdentifier)) &&
-        !props.isParallelNode && (
-          <div
-            data-linkid={props?.identifier}
-            onClick={event => {
-              event.stopPropagation()
-              props?.fireEvent({
-                type: Event.AddLinkClicked,
-                linkBeforeStepGroup: true,
-                prevNodeIdentifier: props?.prevNodeIdentifier,
-                parentIdentifier: props?.parentIdentifier,
-                entityType: DiagramType.Link,
-                identifier: props?.identifier,
-                node: props
-              })
-            }}
-            onDragOver={event => {
-              event.stopPropagation()
-              event.preventDefault()
-            }}
-            onDrop={event => {
-              event.stopPropagation()
-              props?.fireEvent({
-                type: Event.DropLinkEvent,
-                linkBeforeStepGroup: true,
-                entityType: DiagramType.Link,
-                node: JSON.parse(event.dataTransfer.getData(DiagramDrag.NodeDrag)),
-                destination: props
-              })
-            }}
-            className={cx(css.addNodeIcon, css.right, css.stepAddIcon, {
-              [css.show]: showAddLink
-            })}
-          >
-            <Icon name="plus" color={Color.WHITE} />
-          </div>
-        )}
+      {!props?.nextNode && props?.parentIdentifier && !props.isParallelNode && (
+        <div
+          data-linkid={props?.identifier}
+          onMouseOver={event => event.stopPropagation()}
+          onMouseEnter={event => event.stopPropagation()}
+          onMouseLeave={event => event.stopPropagation()}
+          onClick={event => {
+            event.stopPropagation()
+            props?.fireEvent({
+              type: Event.AddLinkClicked,
+              linkBeforeStepGroup: true,
+              prevNodeIdentifier: props?.prevNodeIdentifier,
+              parentIdentifier: props?.parentIdentifier,
+              entityType: DiagramType.Link,
+              identifier: props?.identifier,
+              node: props
+            })
+          }}
+          onDragOver={event => {
+            event.stopPropagation()
+            event.preventDefault()
+          }}
+          onDrop={event => {
+            event.stopPropagation()
+            props?.fireEvent({
+              type: Event.DropLinkEvent,
+              linkBeforeStepGroup: true,
+              entityType: DiagramType.Link,
+              node: JSON.parse(event.dataTransfer.getData(DiagramDrag.NodeDrag)),
+              destination: props
+            })
+          }}
+          className={cx(css.addNodeIcon, css.right, css.stepAddIcon, {
+            [css.show]: showAddLink
+          })}
+        >
+          <Icon name="plus" color={Color.WHITE} />
+        </div>
+      )}
     </div>
   )
 }

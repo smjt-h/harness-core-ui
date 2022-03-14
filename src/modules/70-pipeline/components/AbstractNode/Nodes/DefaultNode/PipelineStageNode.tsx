@@ -12,7 +12,7 @@ import { Icon, Text, Color, Button, ButtonVariation } from '@wings-software/uico
 import { DiagramDrag, DiagramType, Event } from '@pipeline/components/Diagram'
 import SVGMarker from '../SVGMarker'
 import { NodeType } from '../../Node'
-import CreateNode from '../CreateNode/CreateNode'
+// import CreateNode from '../CreateNode/CreateNodeStage'
 import css from './DefaultNode.module.scss'
 
 const SECONDARY_ICON: IconName = 'command-echo'
@@ -21,7 +21,7 @@ function PipelineStageNode(props: any): JSX.Element {
   const allowAdd = props.allowAdd ?? false
   const [showAddNode, setVisibilityOfAdd] = React.useState(false)
   const [showAddLink, setShowAddLink] = React.useState(false)
-
+  const CreateNode: React.FC<any> | undefined = props?.getNode(NodeType.CreateNode)?.component
   return (
     <div
       className={`${cx(css.defaultNode, 'default-node')} draggable`}
@@ -135,7 +135,7 @@ function PipelineStageNode(props: any): JSX.Element {
           {props.name}
         </Text>
       )}
-      {allowAdd && (
+      {allowAdd && CreateNode && (
         <CreateNode
           onMouseOver={() => allowAdd && setVisibilityOfAdd(true)}
           onMouseLeave={() => allowAdd && setVisibilityOfAdd(false)}
@@ -196,43 +196,42 @@ function PipelineStageNode(props: any): JSX.Element {
           <Icon name="plus" color={Color.WHITE} />
         </div>
       )}
-      {(props?.nextNode?.nodeType === NodeType.StepGroupNode || (!props?.nextNode && props?.parentIdentifier)) &&
-        !props.isParallelNode && (
-          <div
-            data-linkid={props?.identifier}
-            onClick={event => {
-              event.stopPropagation()
-              props?.fireEvent({
-                type: Event.AddLinkClicked,
-                linkBeforeStepGroup: true,
-                prevNodeIdentifier: props?.prevNodeIdentifier,
-                parentIdentifier: props?.parentIdentifier,
-                entityType: DiagramType.Link,
-                identifier: props?.identifier,
-                node: props
-              })
-            }}
-            onDragOver={event => {
-              event.stopPropagation()
-              event.preventDefault()
-            }}
-            onDrop={event => {
-              event.stopPropagation()
-              props?.fireEvent({
-                type: Event.DropLinkEvent,
-                linkBeforeStepGroup: true,
-                entityType: DiagramType.Link,
-                node: JSON.parse(event.dataTransfer.getData(DiagramDrag.NodeDrag)),
-                destination: props
-              })
-            }}
-            className={cx(css.addNodeIcon, css.right, css.stageAddIcon, {
-              [css.show]: showAddLink
-            })}
-          >
-            <Icon name="plus" color={Color.WHITE} />
-          </div>
-        )}
+      {!props?.nextNode && props?.parentIdentifier && !props.isParallelNode && (
+        <div
+          data-linkid={props?.identifier}
+          onClick={event => {
+            event.stopPropagation()
+            props?.fireEvent({
+              type: Event.AddLinkClicked,
+              linkBeforeStepGroup: true,
+              prevNodeIdentifier: props?.prevNodeIdentifier,
+              parentIdentifier: props?.parentIdentifier,
+              entityType: DiagramType.Link,
+              identifier: props?.identifier,
+              node: props
+            })
+          }}
+          onDragOver={event => {
+            event.stopPropagation()
+            event.preventDefault()
+          }}
+          onDrop={event => {
+            event.stopPropagation()
+            props?.fireEvent({
+              type: Event.DropLinkEvent,
+              linkBeforeStepGroup: true,
+              entityType: DiagramType.Link,
+              node: JSON.parse(event.dataTransfer.getData(DiagramDrag.NodeDrag)),
+              destination: props
+            })
+          }}
+          className={cx(css.addNodeIcon, css.right, css.stageAddIcon, {
+            [css.show]: showAddLink
+          })}
+        >
+          <Icon name="plus" color={Color.WHITE} />
+        </div>
+      )}
     </div>
   )
 }
