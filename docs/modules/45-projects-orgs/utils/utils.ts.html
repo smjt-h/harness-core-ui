@@ -23,30 +23,30 @@
         <div class='clearfix'>
             
             <div class='fl pad1y space-right2'>
-                <span class="strong">63.79% </span>
+                <span class="strong">84.48% </span>
                 <span class="quiet">Statements</span>
-                <span class='fraction'>37/58</span>
+                <span class='fraction'>49/58</span>
             </div>
         
             
             <div class='fl pad1y space-right2'>
-                <span class="strong">52.78% </span>
+                <span class="strong">80.56% </span>
                 <span class="quiet">Branches</span>
-                <span class='fraction'>19/36</span>
+                <span class='fraction'>29/36</span>
             </div>
         
             
             <div class='fl pad1y space-right2'>
-                <span class="strong">57.14% </span>
+                <span class="strong">85.71% </span>
                 <span class="quiet">Functions</span>
-                <span class='fraction'>4/7</span>
+                <span class='fraction'>6/7</span>
             </div>
         
             
             <div class='fl pad1y space-right2'>
-                <span class="strong">58.82% </span>
+                <span class="strong">82.35% </span>
                 <span class="quiet">Lines</span>
-                <span class='fraction'>30/51</span>
+                <span class='fraction'>42/51</span>
             </div>
         
             
@@ -55,7 +55,7 @@
             Press <em>n</em> or <em>j</em> to go to the next uncovered block, <em>b</em>, <em>p</em> or <em>k</em> for the previous block.
         </p>
     </div>
-    <div class='status-line medium'></div>
+    <div class='status-line high'></div>
     <pre><table class="coverage">
 <tr><td class="line-count quiet"><a name='L1'></a><a href='#L1'>1</a>
 <a name='L2'></a><a href='#L2'>2</a>
@@ -235,17 +235,17 @@
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-yes">18x</span>
-<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-yes">5x</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-yes">1x</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-yes">1x</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-yes">1x</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-yes">1x</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-yes">1x</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-yes">18x</span>
@@ -292,17 +292,17 @@
 <span class="cline-any cline-no">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-yes">18x</span>
-<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-yes">5x</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-yes">1x</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-yes">1x</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-yes">1x</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-yes">1x</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-yes">1x</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span></td><td class="text"><pre class="prettyprint lang-js">/*
@@ -358,18 +358,18 @@ export const getModulePurpose = (module: ModuleName): keyof StringsMap | undefin
       return 'common.purpose.cf.flags'
   }
 }
-export const getModuleDescriptionsForModuleSelectionDialog = <span class="fstat-no" title="function not covered" >(m</span>odule: ModuleName): keyof StringsMap | undefined =&gt; {
-<span class="cstat-no" title="statement not covered" >  switch (module) {</span>
+export const getModuleDescriptionsForModuleSelectionDialog = (module: ModuleName): keyof StringsMap | undefined =&gt; {
+  switch (module) {
     case ModuleName.CD:
-<span class="cstat-no" title="statement not covered" >      return 'common.selectAVersion.description'</span>
+      return 'common.selectAVersion.description'
     case ModuleName.CV:
-<span class="cstat-no" title="statement not covered" >      return 'common.purpose.cv.moduleSelectionSubHeading'</span>
+      return 'common.purpose.cv.moduleSelectionSubHeading'
     case ModuleName.CI:
-<span class="cstat-no" title="statement not covered" >      return 'common.purpose.ci.descriptionOnly'</span>
+      return 'common.purpose.ci.descriptionOnly'
     case ModuleName.CE:
-<span class="cstat-no" title="statement not covered" >      return 'common.purpose.ce.moduleSelectionSubHeading'</span>
+      return 'common.purpose.ce.moduleSelectionSubHeading'
     case ModuleName.CF:
-<span class="cstat-no" title="statement not covered" >      return 'common.purpose.cf.moduleSelectionSubHeading'</span>
+      return 'common.purpose.cf.moduleSelectionSubHeading'
   }
 }
 export const getModuleDescription = <span class="fstat-no" title="function not covered" >(m</span>odule: ModuleName): StringKeys =&gt; {
@@ -415,18 +415,18 @@ export const getDetailsUrl = ({ accountId, orgIdentifier, projectIdentifier }: S
   }
 <span class="cstat-no" title="statement not covered" >  return ''</span>
 }
-export const getModuleFullLengthTitle = <span class="fstat-no" title="function not covered" >(m</span>odule: ModuleName): keyof StringsMap =&gt; {
-<span class="cstat-no" title="statement not covered" >  switch (module) {</span>
+export const getModuleFullLengthTitle = (module: ModuleName): keyof StringsMap =&gt; {
+  switch (module) {
     case ModuleName.CV:
-<span class="cstat-no" title="statement not covered" >      return 'common.purpose.cv.continuous'</span>
+      return 'common.purpose.cv.continuous'
     case ModuleName.CE:
-<span class="cstat-no" title="statement not covered" >      return 'common.purpose.ce.continuous'</span>
+      return 'common.purpose.ce.continuous'
     case ModuleName.CF:
-<span class="cstat-no" title="statement not covered" >      return 'common.purpose.cf.continuous'</span>
+      return 'common.purpose.cf.continuous'
     case ModuleName.CI:
-<span class="cstat-no" title="statement not covered" >      return 'common.purpose.ci.continuous'</span>
+      return 'common.purpose.ci.continuous'
     default:
-<span class="cstat-no" title="statement not covered" >      return 'common.purpose.cd.continuous'</span>
+      return 'common.purpose.cd.continuous'
   }
 }
 &nbsp;</pre></td></tr></table></pre>
@@ -436,7 +436,7 @@ export const getModuleFullLengthTitle = <span class="fstat-no" title="function n
             <div class='footer quiet pad2 space-top1 center small'>
                 Code coverage generated by
                 <a href="https://istanbul.js.org/" target="_blank">istanbul</a>
-                at Mon Mar 14 2022 04:27:02 GMT+0000 (Greenwich Mean Time)
+                at Mon Mar 14 2022 05:38:27 GMT+0000 (Greenwich Mean Time)
             </div>
         </div>
         <script src="../../../prettify.js"></script>
