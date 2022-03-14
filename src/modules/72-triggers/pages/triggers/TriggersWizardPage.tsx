@@ -308,8 +308,6 @@ const TriggersWizardPage: React.FC = (): JSX.Element => {
   const history = useHistory()
   const { location } = useHistory()
   const { getString } = useStrings()
-  const [pipelineWithoutTemplateRefsAsString, setPipelineWithoutTemplateRefsAsString] = useState<string>()
-  const [pipelineWithoutTemplateRefs, setPipelineWithoutTemplateRefs] = useState<PipelineInfoConfig>()
   // use passed params on new trigger
   const queryParamsOnNew = location?.search ? getQueryParamsOnNew(location.search) : undefined
   const {
@@ -483,40 +481,25 @@ const TriggersWizardPage: React.FC = (): JSX.Element => {
     }
   })
 
-  const {
-    data: templateRefsResolvedPipeline,
-    loading: loadingResolvedPipeline,
-    refetch: fetchResolvedPipeline
-  } = useMutateAsGet(useGetYamlWithTemplateRefsResolved, {
-    queryParams: {
-      accountIdentifier: accountId,
-      orgIdentifier,
-      pipelineIdentifier,
-      projectIdentifier
-    },
-    lazy: true,
-    body: {
-      originalEntityYaml: yamlStringify(parse(defaultTo(pipelineResponse?.data?.yamlPipeline, ''))?.pipeline)
+  const { data: templateRefsResolvedPipeline, refetch: fetchResolvedPipeline } = useMutateAsGet(
+    useGetYamlWithTemplateRefsResolved,
+    {
+      queryParams: {
+        accountIdentifier: accountId,
+        orgIdentifier,
+        pipelineIdentifier,
+        projectIdentifier
+      },
+      lazy: true,
+      body: {
+        originalEntityYaml: yamlStringify(parse(defaultTo(pipelineResponse?.data?.yamlPipeline, ''))?.pipeline)
+      }
     }
-  })
+  )
 
   useEffect(() => {
     fetchResolvedPipeline()
   }, [pipelineResponse?.data?.yamlPipeline])
-
-  useEffect(() => {
-    if (!loadingResolvedPipeline && templateRefsResolvedPipeline?.data?.mergedPipelineYaml) {
-      // below line is causing render loop
-      // setPipelineWithoutTemplateRefsAsString(templateRefsResolvedPipeline?.data?.mergedPipelineYaml)
-      try {
-        setPipelineWithoutTemplateRefs(
-          parse(templateRefsResolvedPipeline?.data?.mergedPipelineYaml) as PipelineInfoConfig
-        )
-      } catch (e) {
-        // ignore e
-      }
-    }
-  }, [templateRefsResolvedPipeline?.data?.mergedPipelineYaml])
 
   const originalPipeline: PipelineInfoConfig | undefined = parse(
     (templateRefsResolvedPipeline?.data?.mergedPipelineYaml as any) || ''
@@ -1355,7 +1338,9 @@ const TriggersWizardPage: React.FC = (): JSX.Element => {
   }, [onEditInitialValues, currentPipeline])
 
   useEffect(() => {
-    const yamlPipeline = pipelineWithoutTemplateRefsAsString
+    // causing render loop
+    // const yamlPipeline = templateRefsResolvedPipeline?.data?.mergedPipelineYaml
+    const yamlPipeline = ''
 
     if (
       yamlPipeline &&
@@ -1395,7 +1380,12 @@ const TriggersWizardPage: React.FC = (): JSX.Element => {
         setErrorToasterMessage(getString('triggers.cannotParseInputValues'))
       }
     }
-  }, [pipelineWithoutTemplateRefs, onEditInitialValues?.identifier, initialValues, currentPipeline])
+  }, [
+    templateRefsResolvedPipeline?.data?.mergedPipelineYaml,
+    onEditInitialValues?.identifier,
+    initialValues,
+    currentPipeline
+  ])
 
   const { data: connectorData, refetch: getConnectorDetails } = useGetConnector({
     identifier: getIdentifierFromValue(
