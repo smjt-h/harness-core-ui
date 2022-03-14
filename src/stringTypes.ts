@@ -3237,7 +3237,9 @@ export interface StringsMap {
   'cd.dynamicProvisioning': string
   'cd.editIdError': string
   'cd.environmentCreated': string
+  'cd.environmentDelete': string
   'cd.environmentUpdated': string
+  'cd.environments.delete.message': string
   'cd.featureRestriction.banners.deploymentsPerMonthLevelUp': string
   'cd.featureRestriction.banners.dpmWarningActive': string
   'cd.featureRestriction.banners.initialDeploymentsWarningActive': string
@@ -8076,6 +8078,10 @@ export interface StringsMap {
    * @deprecated migrate this string to module level file
    */
   'pre-flight-check.verifyingPipelineInputs': string
+  /**
+   * @deprecated migrate this string to module level file
+   */
+  preProduction: string
   /**
    * @deprecated migrate this string to module level file
    */
