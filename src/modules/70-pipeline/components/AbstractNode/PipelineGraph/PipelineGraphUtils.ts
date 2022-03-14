@@ -158,8 +158,7 @@ export const scrollZoom = (
     delta = Math.max(-1, Math.min(1, delta)) // cap the delta to [-1,1] for cross browser consistency
     // apply zoom
     scale += delta * factor * scale
-    scale = Math.max(1, Math.min(max_scale, scale))
-
+    scale = Math.min(max_scale, scale)
     callback(scale)
   }
 }
