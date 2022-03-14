@@ -202,8 +202,11 @@ const SetupEngine: React.FC<StepProps<StepDetailsProps> & ConnectorDetailsProps>
     ) {
       setSecretEngineOptions([
         {
-          label: connectorInfo.spec.secretEngineName || '',
-          value: `${connectorInfo.spec.secretEngineName || ''}@@@${connectorInfo.spec.secretEngineVersion || 2}`
+          label: defaultTo(connectorInfo.spec.secretEngineName, ''),
+          value: `${defaultTo(connectorInfo.spec.secretEngineName, '')}@@@${defaultTo(
+            connectorInfo.spec.secretEngineVersion,
+            2
+          )}`
         }
       ])
     }
@@ -235,10 +238,12 @@ const SetupEngine: React.FC<StepProps<StepDetailsProps> & ConnectorDetailsProps>
       }
     }
   }
-
-  return loadingFormData || savingDataInProgress ? (
-    <PageSpinner message={savingDataInProgress ? getString('connectors.hashiCorpVault.saveInProgress') : undefined} />
-  ) : (
+  if (loadingFormData || savingDataInProgress) {
+    return (
+      <PageSpinner message={savingDataInProgress ? getString('connectors.hashiCorpVault.saveInProgress') : undefined} />
+    )
+  }
+  return (
     <Container padding={{ top: 'medium' }} width="64%">
       <Text font={{ variation: FontVariation.H3 }} padding={{ bottom: 'xlarge' }} color={Color.BLACK}>
         {getString('connectors.hashiCorpVault.setupEngine')}
@@ -293,8 +298,7 @@ const SetupEngine: React.FC<StepProps<StepDetailsProps> & ConnectorDetailsProps>
                       loading={loading}
                     />
                   </Layout.Horizontal>
-                ) : null}
-                {formik.values['engineType'] === 'manual' ? (
+                ) : (
                   <Layout.Horizontal spacing="medium">
                     <FormInput.Text name="secretEngineName" label={getString('connectors.hashiCorpVault.engineName')} />
                     <FormInput.Text
@@ -302,7 +306,7 @@ const SetupEngine: React.FC<StepProps<StepDetailsProps> & ConnectorDetailsProps>
                       label={getString('connectors.hashiCorpVault.engineVersion')}
                     />
                   </Layout.Horizontal>
-                ) : null}
+                )}
               </Container>
               <Layout.Horizontal spacing="medium">
                 <Button
