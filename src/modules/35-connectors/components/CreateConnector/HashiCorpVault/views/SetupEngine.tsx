@@ -25,6 +25,8 @@ import {
   shouldShowError
 } from '@wings-software/uicore'
 import type { IOptionProps } from '@blueprintjs/core'
+import defaultTo from 'lodash/defaultTo'
+import type { MutateMethod } from 'restful-react'
 import { useStrings } from 'framework/strings'
 import {
   StepDetailsProps,
@@ -46,7 +48,10 @@ import {
   ConnectorConfigDTO,
   VaultAwsIamRoleCredentialDTO,
   VaultAgentCredentialDTO,
-  VaultK8sCredentialDTO
+  VaultK8sCredentialDTO,
+  ResponseSecretManagerMetadataDTO,
+  SecretManagerMetadataRequestDTO,
+  GetMetadataQueryParams
 } from 'services/cd-ng'
 import { useToaster } from '@common/exports'
 
@@ -56,7 +61,73 @@ const defaultInitialFormData: SetupEngineFormData = {
   secretEngineName: '',
   secretEngineVersion: 2
 }
+const getMetadataPayLoad = (formData: ConnectorConfigDTO): SecretManagerMetadataRequestDTO => {
+  return {
+    identifier: formData.identifier,
+    encryptionType: 'VAULT',
+    orgIdentifier: formData.orgIdentifier,
+    projectIdentifier: formData.projectIdentifier,
+    spec: {
+      url: formData.vaultUrl,
+      accessType: formData.accessType,
+      delegateSelectors: formData.delegateSelectors,
+      namespace: formData.namespace,
+      spec:
+        formData.accessType === HashiCorpVaultAccessTypes.APP_ROLE
+          ? ({
+              appRoleId: formData.appRoleId,
+              secretId: formData.secretId?.referenceString
+            } as VaultAppRoleCredentialDTO)
+          : formData.accessType === HashiCorpVaultAccessTypes.AWS_IAM
+          ? ({
+              awsRegion: formData.awsRegion,
+              vaultAwsIamRole: formData.vaultAwsIamRole,
+              xvaultAwsIamServerId: formData.xvaultAwsIamServerId?.referenceString
+            } as VaultAwsIamRoleCredentialDTO)
+          : formData.accessType === HashiCorpVaultAccessTypes.TOKEN
+          ? ({
+              authToken: formData.authToken?.referenceString
+            } as VaultAuthTokenCredentialDTO)
+          : formData.accessType === HashiCorpVaultAccessTypes.K8s_AUTH
+          ? ({
+              vaultK8sAuthRole: formData.vaultK8sAuthRole,
+              serviceAccountTokenPath: formData.serviceAccountTokenPath
+            } as VaultK8sCredentialDTO)
+          : ({
+              sinkPath: formData.sinkPath
+            } as VaultAgentCredentialDTO)
+    } as VaultMetadataRequestSpecDTO
+  }
+}
+const getSecretEngineOptions = (res: ResponseSecretManagerMetadataDTO): SelectOption[] => {
+  return (
+    (res.data?.spec as VaultMetadataSpecDTO)?.secretEngines?.map(secretEngine => {
+      return {
+        label: secretEngine.name || '',
+        value: `${secretEngine.name || ''}@@@${secretEngine.version || 2}`
+      }
+    }) || []
+  )
+}
+const handleFetchEnginesExec = async (
+  formData: ConnectorConfigDTO,
+  getMetadata: MutateMethod<
+    ResponseSecretManagerMetadataDTO,
+    SecretManagerMetadataRequestDTO,
+    GetMetadataQueryParams,
+    void
+  >
+): Promise<{ data: any; error: any }> => {
+  try {
+    const res = await getMetadata(getMetadataPayLoad(formData))
 
+    return { data: getSecretEngineOptions(res), error: null }
+  } catch (err) {
+    /* istanbul ignore else */
+    //added condition to don't show the toaster if it's an abort error
+    return { data: null, error: err }
+  }
+}
 const SetupEngine: React.FC<StepProps<StepDetailsProps> & ConnectorDetailsProps> = ({
   prevStepData,
   previousStep,
@@ -101,60 +172,11 @@ const SetupEngine: React.FC<StepProps<StepDetailsProps> & ConnectorDetailsProps>
       })
     }
   }, [isEditMode, connectorInfo, accountId])
-
   const handleFetchEngines = async (formData: ConnectorConfigDTO): Promise<void> => {
-    try {
-      const res = await getMetadata({
-        identifier: formData.identifier,
-        encryptionType: 'VAULT',
-        orgIdentifier: formData.orgIdentifier,
-        projectIdentifier: formData.projectIdentifier,
-        spec: {
-          url: formData.vaultUrl,
-          accessType: formData.accessType,
-          delegateSelectors: formData.delegateSelectors,
-          namespace: formData.namespace,
-          spec:
-            formData.accessType === HashiCorpVaultAccessTypes.APP_ROLE
-              ? ({
-                  appRoleId: formData.appRoleId,
-                  secretId: formData.secretId?.referenceString
-                } as VaultAppRoleCredentialDTO)
-              : formData.accessType === HashiCorpVaultAccessTypes.AWS_IAM
-              ? ({
-                  awsRegion: formData.awsRegion,
-                  vaultAwsIamRole: formData.vaultAwsIamRole,
-                  xvaultAwsIamServerId: formData.xvaultAwsIamServerId?.referenceString
-                } as VaultAwsIamRoleCredentialDTO)
-              : formData.accessType === HashiCorpVaultAccessTypes.TOKEN
-              ? ({
-                  authToken: formData.authToken?.referenceString
-                } as VaultAuthTokenCredentialDTO)
-              : formData.accessType === HashiCorpVaultAccessTypes.K8s_AUTH
-              ? ({
-                  vaultK8sAuthRole: formData.vaultK8sAuthRole,
-                  serviceAccountTokenPath: formData.serviceAccountTokenPath
-                } as VaultK8sCredentialDTO)
-              : ({
-                  sinkPath: formData.sinkPath
-                } as VaultAgentCredentialDTO)
-        } as VaultMetadataRequestSpecDTO
-      })
-
-      setSecretEngineOptions(
-        (res.data?.spec as VaultMetadataSpecDTO)?.secretEngines?.map(secretEngine => {
-          return {
-            label: secretEngine.name || '',
-            value: `${secretEngine.name || ''}@@@${secretEngine.version || 2}`
-          }
-        }) || []
-      )
-    } catch (err) {
-      /* istanbul ignore else */
-      //added condition to don't show the toaster if it's an abort error
-      if (shouldShowError(err)) {
-        showError(err.data?.message || err.message)
-      }
+    const { data: engineData, error } = await handleFetchEnginesExec(formData, getMetadata)
+    setSecretEngineOptions(defaultTo(engineData, secretEngineOptions))
+    if (shouldShowError(error)) {
+      showError(defaultTo(error.data?.message, error.message))
     }
   }
 
