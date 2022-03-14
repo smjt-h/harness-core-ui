@@ -25,9 +25,6 @@ function PipelineStageNode(props: any): JSX.Element {
   return (
     <div
       className={`${cx(css.defaultNode, 'default-node')} draggable`}
-      // ref={nodeRef}
-      onMouseOver={() => allowAdd && setVisibilityOfAdd(true)}
-      onMouseLeave={() => allowAdd && setVisibilityOfAdd(false)}
       onClick={event => {
         event.stopPropagation()
         if (props?.onClick) {
@@ -83,6 +80,8 @@ function PipelineStageNode(props: any): JSX.Element {
           width: 90,
           height: 40
         }}
+        onMouseOver={() => allowAdd && setVisibilityOfAdd(true)}
+        onMouseLeave={() => allowAdd && setVisibilityOfAdd(false)}
         onDragStart={event => {
           event.stopPropagation()
           event.dataTransfer.setData(DiagramDrag.NodeDrag, JSON.stringify(props))
