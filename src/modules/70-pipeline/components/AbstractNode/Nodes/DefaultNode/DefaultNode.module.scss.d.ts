@@ -30,9 +30,11 @@ declare const styles: {
   readonly showIcon: string
   readonly stageAddIcon: string
   readonly stageAddNode: string
+  readonly stageMarker: string
   readonly stepAddIcon: string
   readonly stepAddNode: string
   readonly stepGroupAddNode: string
+  readonly stepMarker: string
   readonly template: string
   readonly tertiaryIcon: string
   readonly visible: string

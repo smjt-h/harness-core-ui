@@ -770,7 +770,7 @@ function StageBuilder(): JSX.Element {
   const stageType = selectedStage?.stage?.stage?.template ? StageType.Template : selectedStage?.stage?.stage?.type
   const stageData = useMemo(() => {
     return getPipelineGraphData(pipeline.stages)
-  }, [pipeline.stages])
+  }, [pipeline])
 
   return (
     <Layout.Horizontal className={cx(css.canvasContainer)} padding="medium">
