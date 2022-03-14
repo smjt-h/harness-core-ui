@@ -140,6 +140,8 @@ export const getIconForTemplate = (
         return factory.getStepIcon(childType)
       case TemplateType.Stage:
         return stagesCollection.getStageAttributes(childType, getString)?.icon
+      case TemplateType.Pipeline:
+        return 'pipeline'
       default:
         return undefined
     }
