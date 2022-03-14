@@ -37,9 +37,9 @@ export default function UserNav(): React.ReactElement {
       // eslint-disable-next-line @typescript-eslint/no-explicit-any
       const response: any = await logout()
       AppStorage.clear()
-      if (response?.logoutUrl) {
+      if (response?.resource?.logoutUrl) {
         // if BE returns a logoutUrl, redirect there. Used by some customers in onprem
-        window.location.href = response.logoutUrl
+        window.location.href = response.resource.logoutUrl
       } else {
         history.push({ pathname: routes.toRedirect(), search: returnUrlParams(getLoginPageURL({})) })
       }

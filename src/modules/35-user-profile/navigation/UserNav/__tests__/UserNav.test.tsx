@@ -42,7 +42,7 @@ describe('User Profile Page', () => {
   })
 
   test('Logout with no return url', async () => {
-    mockLogout = jest.fn().mockReturnValue({ logoutUrl: undefined })
+    mockLogout = jest.fn().mockReturnValue({ resource: { logoutUrl: undefined } })
     const { getByTestId } = render(
       <TestWrapper path="/account/:accountId" pathParams={{ accountId: 'testAcc' }}>
         <UserNav />
@@ -65,7 +65,7 @@ describe('User Profile Page', () => {
       set: setHrefSpy
     })
 
-    mockLogout = jest.fn().mockReturnValue({ logoutUrl: 'http://dummy.com' })
+    mockLogout = jest.fn().mockReturnValue({ resource: { logoutUrl: 'http://dummy.com' } })
     const { getByTestId } = render(
       <TestWrapper path="/account/:accountId" pathParams={{ accountId: 'testAcc' }}>
         <UserNav />
