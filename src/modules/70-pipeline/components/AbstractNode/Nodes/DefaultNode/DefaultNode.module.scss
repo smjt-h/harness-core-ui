@@ -38,20 +38,19 @@
       background: var(--pipeline-selected-node);
       border-width: 2px;
     }
+    &:hover .closeNode {
+      opacity: 1;
+      &.readonly {
+        opacity: 0;
+      }
+      pointer-events: initial;
+    }
   }
 
   &:hover {
     .defaultCard {
       box-shadow: 0px 8px 16px 0px #60617029;
     }
-  }
-
-  &:hover .closeNode {
-    opacity: 1;
-    &.readonly {
-      opacity: 0;
-    }
-    pointer-events: initial;
   }
 
   .secondaryIcon {

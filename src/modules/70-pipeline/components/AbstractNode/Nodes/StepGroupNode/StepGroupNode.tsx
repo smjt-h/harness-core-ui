@@ -10,7 +10,6 @@ import classnames from 'classnames'
 import { Icon, Layout, Text, Button, ButtonVariation, Color } from '@wings-software/uicore'
 import { Event, DiagramDrag, DiagramType } from '@pipeline/components/Diagram'
 import StepGroupGraph from '../StepGroupGraph/StepGroupGraph'
-import DefaultNode from '../DefaultNode/PipelineStageNode'
 import { NodeType } from '../../Node'
 import css from './StepGroupNode.module.scss'
 import defaultCss from '../DefaultNode/DefaultNode.module.scss'
@@ -21,6 +20,7 @@ export function StepGroupNode(props: any): JSX.Element {
   const [showAddLink, setShowAddLink] = React.useState(false)
   const [isNodeCollapsed, setNodeCollapsed] = React.useState(false)
   const CreateNode: React.FC<any> | undefined = props?.getNode(NodeType.CreateNode)?.component
+  const DefaultNode: React.FC<any> | undefined = props?.getDefaultNode()?.component
 
   React.useEffect(() => {
     props?.updateGraphLinks()
@@ -28,7 +28,7 @@ export function StepGroupNode(props: any): JSX.Element {
 
   return (
     <>
-      {isNodeCollapsed ? (
+      {isNodeCollapsed && DefaultNode ? (
         <DefaultNode
           onClick={() => {
             setNodeCollapsed(false)
@@ -104,8 +104,6 @@ export function StepGroupNode(props: any): JSX.Element {
             <div
               data-linkid={props?.identifier}
               onMouseOver={event => event.stopPropagation()}
-              onMouseEnter={event => event.stopPropagation()}
-              onMouseLeave={event => event.stopPropagation()}
               onClick={event => {
                 event.stopPropagation()
                 props?.fireEvent({
