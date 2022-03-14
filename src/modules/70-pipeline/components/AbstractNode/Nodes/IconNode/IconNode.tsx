@@ -10,16 +10,18 @@ import { isEmpty } from 'lodash-es'
 import cx from 'classnames'
 import { Text, IconName, Icon, Button, ButtonVariation, Color } from '@wings-software/uicore'
 import { Position } from '@blueprintjs/core'
-import cssDefault from '../DefaultNode/DefaultNode.module.scss'
-import css from './IconNode.module.scss'
 import { DiagramDrag, DiagramType, Event } from '@pipeline/components/Diagram'
-import CreateNode from '../CreateNode/CreateNode'
+// import CreateNode from '../CreateNode/CreateNodeStage'
 import { PipelineGraphType } from '../../types'
 import { NodeType } from '../../Node'
+import cssDefault from '../DefaultNode/DefaultNode.module.scss'
+import css from './IconNode.module.scss'
 
 export function IconNode(props: any): React.ReactElement {
   const allowAdd = props.allowAdd ?? false
   const [showAdd, setVisibilityOfAdd] = React.useState(false)
+  const CreateNode: React.FC<any> | undefined = props?.getNode(NodeType.CreateNode)?.component
+
   return (
     <div
       className={cx(cssDefault.defaultNode, css.iconNodeContainer)}
@@ -121,7 +123,7 @@ export function IconNode(props: any): React.ReactElement {
           {props.name}
         </Text>
       )}
-      {allowAdd && (
+      {allowAdd && CreateNode && (
         <CreateNode
           onMouseOver={() => allowAdd && setVisibilityOfAdd(true)}
           onMouseLeave={() => allowAdd && setVisibilityOfAdd(false)}

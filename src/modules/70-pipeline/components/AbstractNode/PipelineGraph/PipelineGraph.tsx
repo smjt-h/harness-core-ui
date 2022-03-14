@@ -1,3 +1,10 @@
+/*
+ * Copyright 2022 Harness Inc. All rights reserved.
+ * Use of this source code is governed by the PolyForm Shield 1.0.0 license
+ * that can be found in the licenses directory at the root of this repository, also available at
+ * https://polyformproject.org/wp-content/uploads/2020/06/PolyForm-Shield-1.0.0.txt.
+ */
+
 /* eslint-disable no-console */
 import React, { useEffect, useLayoutEffect, useState, useRef, useMemo } from 'react'
 import classNames from 'classnames'
@@ -14,14 +21,7 @@ import {
 } from './PipelineGraphUtils'
 import GraphActions from '../GraphActions/GraphActions'
 import { PipelineGraphRecursive } from './PipelineGraphNode'
-import {
-  NodeCollapsibleProps,
-  NodeDetails,
-  NodeIds,
-  PipelineGraphState,
-  PipelineGraphType,
-  SVGPathRecord
-} from '../types'
+import type { NodeCollapsibleProps, NodeDetails, NodeIds, PipelineGraphState, SVGPathRecord } from '../types'
 import css from './PipelineGraph.module.scss'
 
 interface ControlPosition {
@@ -37,7 +37,6 @@ export interface PipelineGraphProps {
   getDefaultNode(): NodeDetails | null
   selectedNodeId?: string
   collapsibleProps?: NodeCollapsibleProps
-  graphType?: PipelineGraphType
 }
 
 function PipelineGraph({
@@ -46,7 +45,6 @@ function PipelineGraph({
   fireEvent,
   collapsibleProps,
   getDefaultNode,
-  graphType,
   selectedNodeId = ''
 }: PipelineGraphProps): React.ReactElement {
   const [svgPath, setSvgPath] = useState<SVGPathRecord[]>([])
@@ -133,7 +131,6 @@ function PipelineGraph({
               selectedNode={selectedNodeId}
               uniqueNodeIds={uniqueNodeIds}
               updateGraphLinks={setSVGLinks}
-              shape={graphType === PipelineGraphType.STEP_GRAPH ? css.stepNode : css.stageNode}
               collapsibleProps={collapsibleProps}
               getDefaultNode={getDefaultNode}
             />

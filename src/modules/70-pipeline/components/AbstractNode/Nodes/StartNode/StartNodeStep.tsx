@@ -6,17 +6,17 @@
  */
 
 import React from 'react'
+import cx from 'classnames'
 import { Icon, IconName, Color } from '@wings-software/uicore'
-import { NodeType } from '../Node'
-import SVGMarker from './SVGMarker'
-import css from './Nodes.module.scss'
+import SVGMarker from '../SVGMarker'
+import css from '../Nodes.module.scss'
 
 const DEFAULT_ICON: IconName = 'play'
 
-function StartNode(): React.ReactElement {
+function StartNodeStep(props: any): React.ReactElement {
   return (
-    <div className={css.defaultNode}>
-      <div id={NodeType.StartNode.toString()} className={css.nodeStart}>
+    <div id={props?.id} className={cx({ [props.className]: props.className }, css.stepNode)}>
+      <div className={cx(css.nodeStart)} style={{ backgroundColor: '#f3f3fa', border: '1px solid #b0b1c4' }}>
         <div className={css.markerStartNode}>
           <SVGMarker />
         </div>
@@ -28,4 +28,4 @@ function StartNode(): React.ReactElement {
   )
 }
 
-export default StartNode
+export default StartNodeStep

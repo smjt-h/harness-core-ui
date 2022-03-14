@@ -9,6 +9,13 @@
   stroke-width: 0.5px;
   fill: #fff;
 }
+.stageNode {
+  height: 40px;
+}
+
+.stepNode {
+  height: 64px;
+}
 
 .nodeStart {
   border: 1px solid var(--grey-300);
