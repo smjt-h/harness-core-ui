@@ -1,3 +1,10 @@
+/*
+ * Copyright 2022 Harness Inc. All rights reserved.
+ * Use of this source code is governed by the PolyForm Shield 1.0.0 license
+ * that can be found in the licenses directory at the root of this repository, also available at
+ * https://polyformproject.org/wp-content/uploads/2020/06/PolyForm-Shield-1.0.0.txt.
+ */
+
 import React, { useRef, useState, useLayoutEffect, ForwardedRef } from 'react'
 import { defaultTo } from 'lodash-es'
 import classNames from 'classnames'
@@ -15,7 +22,6 @@ export interface PipelineGraphRecursiveProps {
   selectedNode: string
   uniqueNodeIds?: NodeIds
   startEndNodeNeeded?: boolean
-  shape?: string
   parentIdentifier?: string
   collapsibleProps?: NodeCollapsibleProps
 }
@@ -29,8 +35,7 @@ export function PipelineGraphRecursive({
   parentIdentifier,
   updateGraphLinks,
   collapsibleProps,
-  getDefaultNode,
-  shape
+  getDefaultNode
 }: PipelineGraphRecursiveProps): React.ReactElement {
   const StartNode: React.FC<any> | undefined = getNode(NodeType.StartNode)?.component
   const CreateNode: React.FC<any> | undefined = getNode(NodeType.CreateNode)?.component
@@ -38,9 +43,7 @@ export function PipelineGraphRecursive({
   return (
     <div id="tree-container" className={classNames(css.graphTree, css.common)}>
       {StartNode && startEndNodeNeeded && (
-        <div id={uniqueNodeIds?.startNode} className={classNames(css.graphNode, { [shape || '']: shape })}>
-          <StartNode />
-        </div>
+        <StartNode id={uniqueNodeIds?.startNode} className={classNames(css.graphNode)} />
       )}
       {nodes?.map((node, index) => {
         return (
@@ -63,19 +66,9 @@ export function PipelineGraphRecursive({
         )
       })}
       {CreateNode && startEndNodeNeeded && (
-        <CreateNode
-          graphType={nodes?.[0]?.graphType}
-          identifier={uniqueNodeIds?.createNode}
-          name={'Add Stage'}
-          fireEvent={fireEvent}
-          getNode={getNode}
-        />
+        <CreateNode identifier={uniqueNodeIds?.createNode} name={'Add Stage'} fireEvent={fireEvent} getNode={getNode} />
       )}
-      {EndNode && startEndNodeNeeded && (
-        <div id={uniqueNodeIds?.endNode} className={classNames(css.graphNode, { [shape || '']: shape })}>
-          <EndNode />
-        </div>
-      )}
+      {EndNode && startEndNodeNeeded && <EndNode id={uniqueNodeIds?.endNode} className={classNames(css.graphNode)} />}
       <div></div>
     </div>
   )

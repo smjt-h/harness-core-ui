@@ -35,8 +35,10 @@ import { DiagramFactory, DiagramNodes, NodeType } from '@pipeline/components/Abs
 import { DiamondNodeWidget } from '@pipeline/components/AbstractNode/Nodes/DiamondNode/DiamondNode'
 import { getPipelineGraphData } from '@pipeline/components/AbstractNode/PipelineGraph/PipelineGraphUtils'
 import PipelineStepNode from '@pipeline/components/AbstractNode/Nodes/DefaultNode/PipelineStepNode'
-import { PipelineGraphType } from '@pipeline/components/AbstractNode/types'
 import { IconNode } from '@pipeline/components/AbstractNode/Nodes/IconNode/IconNode'
+import CreateNodeStep from '@pipeline/components/AbstractNode/Nodes/CreateNode/CreateNodeStep'
+import EndNodeStep from '@pipeline/components/AbstractNode/Nodes/EndNode/EndNodeStep'
+import StartNodeStep from '@pipeline/components/AbstractNode/Nodes/StartNode/StartNodeStep'
 import { ExecutionStepModel, GridStyleInterface } from './ExecutionStepModel'
 import { StepType as PipelineStepType } from '../../PipelineSteps/PipelineStepInterface'
 import {
@@ -82,6 +84,9 @@ import css from './ExecutionGraph.module.scss'
 const diagram = new DiagramFactory('graph')
 
 diagram.registerNode('Deployment', PipelineStepNode, true)
+diagram.registerNode(NodeType.CreateNode, CreateNodeStep)
+diagram.registerNode(NodeType.EndNode, EndNodeStep)
+diagram.registerNode(NodeType.StartNode, StartNodeStep)
 diagram.registerNode('StepGroup', DiagramNodes[NodeType.StepGroupNode])
 diagram.registerNode('Approval', DiamondNodeWidget)
 diagram.registerNode('JiraApproval', DiamondNodeWidget)
@@ -1017,7 +1022,6 @@ function ExecutionGraphRef<T extends StageElementConfig>(
         {localStorage.getItem('IS_NEW_PIP_STUDIO_ACTIVE') === 'true' ? (
           <>
             <CDPipelineStudioNew
-              graphType={PipelineGraphType.STEP_GRAPH}
               selectedNodeId={selectedStepId}
               data={
                 state?.isRollback

@@ -17,8 +17,6 @@ declare const styles: {
   readonly nodeRightPadding: string
   readonly overlay: string
   readonly parallel: string
-  readonly stageNode: string
-  readonly stepNode: string
   readonly svgArrow: string
 }
 export default styles

@@ -7,18 +7,20 @@
 
 import * as React from 'react'
 import classnames from 'classnames'
-import { Icon, Layout, Text, Button, ButtonVariation } from '@wings-software/uicore'
+import { Icon, Layout, Text, Button, ButtonVariation, Color } from '@wings-software/uicore'
 import { Event, DiagramDrag, DiagramType } from '@pipeline/components/Diagram'
-import CreateNode from '../CreateNode/CreateNode'
-import css from './StepGroupNode.module.scss'
-import defaultCss from '../DefaultNode/DefaultNode.module.scss'
 import StepGroupGraph from '../StepGroupGraph/StepGroupGraph'
 import DefaultNode from '../DefaultNode/PipelineStageNode'
+import { NodeType } from '../../Node'
+import css from './StepGroupNode.module.scss'
+import defaultCss from '../DefaultNode/DefaultNode.module.scss'
 
 export function StepGroupNode(props: any): JSX.Element {
   const allowAdd = props.allowAdd ?? false
   const [showAdd, setVisibilityOfAdd] = React.useState(false)
+  const [showAddLink, setShowAddLink] = React.useState(false)
   const [isNodeCollapsed, setNodeCollapsed] = React.useState(false)
+  const CreateNode: React.FC<any> | undefined = props?.getNode(NodeType.CreateNode)?.component
 
   React.useEffect(() => {
     props?.updateGraphLinks()
@@ -98,7 +100,52 @@ export function StepGroupNode(props: any): JSX.Element {
               withoutCurrentColor={true}
             />
           </div>
-          {allowAdd && (
+          {!props.isParallelNode && (
+            <div
+              data-linkid={props?.identifier}
+              onMouseOver={event => event.stopPropagation()}
+              onMouseEnter={event => event.stopPropagation()}
+              onMouseLeave={event => event.stopPropagation()}
+              onClick={event => {
+                event.stopPropagation()
+                props?.fireEvent({
+                  type: Event.AddLinkClicked,
+                  entityType: DiagramType.Link,
+                  node: props,
+                  prevNodeIdentifier: props?.prevNodeIdentifier,
+                  parentIdentifier: props?.parentIdentifier,
+                  identifier: props?.identifier
+                })
+              }}
+              onDragOver={event => {
+                event.stopPropagation()
+                event.preventDefault()
+                setShowAddLink(true)
+              }}
+              onDragLeave={event => {
+                event.stopPropagation()
+                event.preventDefault()
+                setShowAddLink(false)
+              }}
+              onDrop={event => {
+                event.stopPropagation()
+                setShowAddLink(false)
+                props?.fireEvent({
+                  type: Event.DropLinkEvent,
+                  linkBeforeStepGroup: false,
+                  entityType: DiagramType.Link,
+                  node: JSON.parse(event.dataTransfer.getData(DiagramDrag.NodeDrag)),
+                  destination: props
+                })
+              }}
+              className={classnames(defaultCss.addNodeIcon, defaultCss.left, defaultCss.stepAddIcon, {
+                [defaultCss.show]: showAddLink
+              })}
+            >
+              <Icon name="plus" color={Color.WHITE} />
+            </div>
+          )}
+          {allowAdd && CreateNode && (
             <CreateNode
               className={classnames(
                 defaultCss.addNode,

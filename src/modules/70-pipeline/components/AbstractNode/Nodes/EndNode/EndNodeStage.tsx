@@ -8,16 +8,16 @@
 import React from 'react'
 import { Icon, IconName } from '@wings-software/uicore'
 import cx from 'classnames'
-import { NodeType } from '../Node'
-import SVGMarker from './SVGMarker'
-import css from './Nodes.module.scss'
+import { NodeType } from '../../Node'
+import SVGMarker from '../SVGMarker'
+import css from '../Nodes.module.scss'
 
 const DEFAULT_ICON: IconName = 'stop'
 const SELECTED_COLOUR = 'var(--diagram-stop-node)'
 
-function EndNode(): React.ReactElement {
+function EndNodeStage(props: any): React.ReactElement {
   return (
-    <div className={css.defaultNode}>
+    <div id={props?.id} className={cx({ [props.className]: props.className }, css.stageNode)}>
       <div
         id={NodeType.EndNode.toString()}
         className={cx(css.nodeStart)}
@@ -34,4 +34,4 @@ function EndNode(): React.ReactElement {
   )
 }
 
-export default EndNode
+export default EndNodeStage

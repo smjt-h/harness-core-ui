@@ -7,9 +7,7 @@
 import React from 'react'
 import { v4 as uuid } from 'uuid'
 import { NodeType } from './Node'
-import CreateNode from './Nodes/CreateNode/CreateNode'
-import EndNode from './Nodes/EndNode'
-import StartNode from './Nodes/StartNode'
+// import CreateNode from './Nodes/CreateNode/CreateNodeStage'
 import PipelineGraph from './PipelineGraph/PipelineGraph'
 import GroupNode from './Nodes/GroupNode/GroupNode'
 import type {
@@ -18,8 +16,7 @@ import type {
   ListenerHandle,
   NodeBank,
   NodeDetails,
-  PipelineGraphState,
-  PipelineGraphType
+  PipelineGraphState
 } from './types'
 import { StepGroupNode } from './Nodes/StepGroupNode/StepGroupNode'
 import DefaultNode from './Nodes/DefaultNode/DefaultNode'
@@ -38,9 +35,6 @@ export class DiagramFactory {
     this.nodeBank = new Map<string, NodeDetails>()
     this.type = diagramType
     this.registerNode(NodeType.Default, DefaultNode)
-    this.registerNode(NodeType.StartNode, StartNode)
-    this.registerNode(NodeType.CreateNode, CreateNode)
-    this.registerNode(NodeType.EndNode, EndNode)
     this.registerNode(NodeType.StepGroupNode, StepGroupNode)
     this.listeners = {}
   }
@@ -131,7 +125,6 @@ export class DiagramFactory {
     data: PipelineGraphState[]
     collapsibleProps?: NodeCollapsibleProps
     selectedNodeId?: string
-    graphType: PipelineGraphType
   }> {
     function PipelineStudioHOC(
       this: DiagramFactory,
@@ -139,7 +132,6 @@ export class DiagramFactory {
         data: PipelineGraphState[]
         collapsibleProps?: NodeCollapsibleProps
         selectedNodeId?: string
-        graphType: PipelineGraphType
       }
     ): React.ReactElement {
       return (
@@ -157,9 +149,6 @@ export class DiagramFactory {
 
 const DiagramNodes = {
   [NodeType.Default]: DefaultNode,
-  [NodeType.CreateNode]: CreateNode,
-  [NodeType.EndNode]: EndNode,
-  [NodeType.StartNode]: StartNode,
   [NodeType.GroupNode]: GroupNode,
   [NodeType.StepGroupNode]: StepGroupNode
 }

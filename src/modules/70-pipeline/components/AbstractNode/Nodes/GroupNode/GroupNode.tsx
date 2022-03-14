@@ -10,13 +10,14 @@ import cx from 'classnames'
 import { defaultTo } from 'lodash-es'
 import { Icon, Text, Color } from '@wings-software/uicore'
 import { DiagramDrag, DiagramType, Event } from '@pipeline/components/Diagram'
-import css from '../DefaultNode/DefaultNode.module.scss'
-import CreateNode from '../CreateNode/CreateNode'
 import { PipelineGraphType } from '../../types'
+import { NodeType } from '../../Node'
+import css from '../DefaultNode/DefaultNode.module.scss'
 
 function GroupNode(props: any): React.ReactElement {
   const allowAdd = props.allowAdd ?? false
   const [showAdd, setVisibilityOfAdd] = React.useState(false)
+  const CreateNode: React.FC<any> | undefined = props?.getNode(NodeType.CreateNode)?.component
 
   const nodesInfo = React.useMemo(() => {
     const nodesArr = props.intersectingIndex < 1 ? props?.children : props?.children?.slice(props.intersectingIndex - 1)
@@ -33,7 +34,6 @@ function GroupNode(props: any): React.ReactElement {
     return `${defaultTo(nodesInfo?.[0]?.name, '')} +  ${nodesInfo.length - 1} more stages`
   }
 
-  console.log(nodesInfo)
   return (
     <div style={{ position: 'relative' }}>
       <div
@@ -130,7 +130,7 @@ function GroupNode(props: any): React.ReactElement {
           {getGroupNodeName()}
         </Text>
       </div>
-      {allowAdd && (
+      {allowAdd && CreateNode && (
         <CreateNode
           onMouseOver={() => allowAdd && setVisibilityOfAdd(true)}
           onMouseLeave={() => allowAdd && setVisibilityOfAdd(false)}

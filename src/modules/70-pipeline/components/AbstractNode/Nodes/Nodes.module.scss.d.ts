@@ -13,5 +13,7 @@ declare const styles: {
   readonly markerEndNode: string
   readonly markerStartNode: string
   readonly nodeStart: string
+  readonly stageNode: string
+  readonly stepNode: string
 }
 export default styles

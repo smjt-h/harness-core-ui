@@ -27,11 +27,13 @@ import type { StageElementWrapper } from '@pipeline/utils/pipelineTypes'
 import { StageType } from '@pipeline/utils/stageHelpers'
 import { useTemplateSelector } from '@pipeline/utils/useTemplateSelector'
 import { getPipelineGraphData } from '@pipeline/components/AbstractNode/PipelineGraph/PipelineGraphUtils'
-import { PipelineGraphType } from '@pipeline/components/AbstractNode/types'
 import PipelineStageNode from '@pipeline/components/AbstractNode/Nodes/DefaultNode/PipelineStageNode'
 import { DiamondNodeWidget } from '@pipeline/components/AbstractNode/Nodes/DiamondNode/DiamondNode'
 import { IconNode } from '@pipeline/components/AbstractNode/Nodes/IconNode/IconNode'
-import { DiagramFactory } from '@pipeline/components/AbstractNode/DiagramFactory'
+import { DiagramFactory, NodeType } from '@pipeline/components/AbstractNode/DiagramFactory'
+import CreateNodeStage from '@pipeline/components/AbstractNode/Nodes/CreateNode/CreateNodeStage'
+import EndNodeStage from '@pipeline/components/AbstractNode/Nodes/EndNode/EndNodeStage'
+import StartNodeStage from '@pipeline/components/AbstractNode/Nodes/StartNode/StartNodeStage'
 import {
   CanvasWidget,
   createEngine,
@@ -69,8 +71,12 @@ import css from './StageBuilder.module.scss'
 const diagram = new DiagramFactory('graph')
 
 diagram.registerNode('Deployment', PipelineStageNode)
+diagram.registerNode('CI', PipelineStageNode)
 diagram.registerNode('Approval', DiamondNodeWidget)
 diagram.registerNode('Barrier', IconNode)
+diagram.registerNode(NodeType.CreateNode, CreateNodeStage)
+diagram.registerNode(NodeType.EndNode, EndNodeStage)
+diagram.registerNode(NodeType.StartNode, StartNodeStage)
 
 const CDPipelineStudioNew = diagram.render()
 
@@ -803,7 +809,6 @@ function StageBuilder(): JSX.Element {
             >
               <CDPipelineStudioNew
                 selectedNodeId={selectedStageId}
-                graphType={PipelineGraphType.STAGE_GRAPH}
                 data={stageData}
                 collapsibleProps={{ parentSelector: '.Pane1', percentageNodeVisible: 0.8, bottomMarginInPixels: 80 }}
               />

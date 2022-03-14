@@ -11,11 +11,10 @@ import { Icon } from '@blueprintjs/core'
 import cx from 'classnames'
 import { isEmpty } from 'lodash-es'
 import { DiagramDrag, DiagramType, Event } from '@pipeline/components/Diagram'
-import { PipelineGraphType } from '../../types'
 import cssDefault from '../DefaultNode/DefaultNode.module.scss'
 import css from './CreateNode.module.scss'
 
-function CreateNode(props: any): React.ReactElement {
+function CreateNodeStep(props: any): React.ReactElement {
   return (
     <div
       onMouseOver={() => {
@@ -65,15 +64,10 @@ function CreateNode(props: any): React.ReactElement {
         className={cx(
           cssDefault.defaultCard,
           css.createNode,
+          css.stepAddIcon,
           { [css.disabled]: props.disabled || false },
           { [css.selected]: props?.node?.isSelected },
-          { [props.className]: props.className },
-          {
-            [css.stepAddIcon]: props.graphType === PipelineGraphType.STEP_GRAPH
-          },
-          {
-            [css.stageAddIcon]: props.graphType === PipelineGraphType.STAGE_GRAPH
-          }
+          { [props.className]: props.className }
         )}
       >
         <div>
@@ -95,4 +89,4 @@ function CreateNode(props: any): React.ReactElement {
   )
 }
 
-export default CreateNode
+export default CreateNodeStep
