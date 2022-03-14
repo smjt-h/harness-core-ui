@@ -11,7 +11,6 @@ import type { IconName } from '@wings-software/uicore'
 import { Icon, Text, Color, Button, ButtonVariation } from '@wings-software/uicore'
 import { DiagramDrag, DiagramType, Event } from '@pipeline/components/Diagram'
 import SVGMarker from '../SVGMarker'
-import { PipelineGraphType } from '../../types'
 import { NodeType } from '../../Node'
 import CreateNode from '../CreateNode/CreateNode'
 import css from './DefaultNode.module.scss'
@@ -72,17 +71,17 @@ function PipelineStageNode(props: any): JSX.Element {
         })
       }}
     >
+      <div className={cx(css.markerStart, css.stageMarker)}>
+        <SVGMarker />
+      </div>
       <div
         id={props.id}
         data-nodeid={props.id}
         draggable={true}
         className={cx(css.defaultCard, { [css.selected]: props?.isSelected })}
         style={{
-          width: props.graphType === PipelineGraphType.STEP_GRAPH ? 64 : 90,
-          height: props.graphType === PipelineGraphType.STEP_GRAPH ? 64 : 40,
-          marginTop: 32 - (props.height || 64) / 2,
-          cursor: props.disableClick ? 'not-allowed' : props.draggable ? 'move' : 'pointer',
-          opacity: props.dragging ? 0.4 : 1
+          width: 90,
+          height: 40
         }}
         onDragStart={event => {
           event.stopPropagation()
@@ -100,9 +99,6 @@ function PipelineStageNode(props: any): JSX.Element {
           event.stopPropagation()
         }}
       >
-        <div className={css.markerStart}>
-          <SVGMarker />
-        </div>
         <div className="execution-running-animation" />
         {props.icon && <Icon size={28} name={props.icon} inverse={props?.isSelected} />}
         {SECONDARY_ICON && <Icon className={css.secondaryIcon} size={8} name={SECONDARY_ICON} />}
@@ -122,13 +118,14 @@ function PipelineStageNode(props: any): JSX.Element {
           }}
           withoutCurrentColor={true}
         />
-        <div className={css.markerEnd}>
-          <SVGMarker />
-        </div>
       </div>
+      <div className={cx(css.markerEnd, css.stageMarker)}>
+        <SVGMarker />
+      </div>
+
       {props.name && (
         <Text
-          width={props.graphType === PipelineGraphType.STEP_GRAPH ? 64 : 90}
+          width={90}
           font={{ size: 'normal', align: 'center' }}
           color={props.defaultSelected ? Color.GREY_900 : Color.GREY_600}
           className={css.nameText}
@@ -153,16 +150,7 @@ function PipelineStageNode(props: any): JSX.Element {
               target: event.target
             })
           }}
-          className={cx(
-            css.addNode,
-            { [css.visible]: showAddNode },
-            {
-              [css.stepAddNode]: props.graphType === PipelineGraphType.STEP_GRAPH
-            },
-            {
-              [css.stageAddNode]: props.graphType === PipelineGraphType.STAGE_GRAPH
-            }
-          )}
+          className={cx(css.addNode, css.stageAddNode, { [css.visible]: showAddNode })}
           data-nodeid="add-parallel"
         />
       )}
@@ -201,19 +189,9 @@ function PipelineStageNode(props: any): JSX.Element {
               destination: props
             })
           }}
-          className={cx(
-            css.addNodeIcon,
-            css.left,
-            {
-              [css.show]: showAddLink
-            },
-            {
-              [css.stepAddIcon]: props.graphType === PipelineGraphType.STEP_GRAPH
-            },
-            {
-              [css.stageAddIcon]: props.graphType === PipelineGraphType.STAGE_GRAPH
-            }
-          )}
+          className={cx(css.addNodeIcon, css.left, css.stageAddIcon, {
+            [css.show]: showAddLink
+          })}
         >
           <Icon name="plus" color={Color.WHITE} />
         </div>
@@ -248,19 +226,9 @@ function PipelineStageNode(props: any): JSX.Element {
                 destination: props
               })
             }}
-            className={cx(
-              css.addNodeIcon,
-              css.right,
-              {
-                [css.show]: showAddLink
-              },
-              {
-                [css.stepAddIcon]: props.graphType === PipelineGraphType.STEP_GRAPH
-              },
-              {
-                [css.stageAddIcon]: props.graphType === PipelineGraphType.STAGE_GRAPH
-              }
-            )}
+            className={cx(css.addNodeIcon, css.right, css.stageAddIcon, {
+              [css.show]: showAddLink
+            })}
           >
             <Icon name="plus" color={Color.WHITE} />
           </div>

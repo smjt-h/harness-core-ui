@@ -214,19 +214,22 @@
 }
 .markerStart {
   width: 20px;
-  height: 24px;
-  position: relative;
-  top: 2px;
-  left: -20px;
+  position: absolute;
+  left: -14px;
   z-index: 99;
+}
+.stageMarker {
+  top: 9px;
+}
+
+.stepMarker {
+  top: 21px;
 }
 
 .markerEnd {
   width: 20px;
-  height: 20px;
-  position: relative;
-  top: 0;
-  right: -20px;
+  position: absolute;
+  right: -14px;
   z-index: 99;
 }
 
