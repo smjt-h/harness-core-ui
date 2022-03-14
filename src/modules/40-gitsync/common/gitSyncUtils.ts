@@ -6,9 +6,15 @@
  */
 
 import type { IconName } from '@wings-software/uicore'
+import defaultTo from 'lodash/defaultTo'
+import pick from 'lodash/pick'
 import { Connectors } from '@connectors/constants'
 import type { GitSyncConfig, ConnectorInfoDTO, GitSyncEntityDTO, EntityGitDetails } from 'services/cd-ng'
 import { GitSuffixRegex } from '@common/utils/StringUtils'
+import type { GitSyncFormInterface } from '@gitsync/components/gitSyncRepoForm/GitSyncRepoForm'
+import type { ConnectorSelectedValue } from '@connectors/components/ConnectorReferenceField/ConnectorReferenceField'
+import { GitUrlType } from '@connectors/pages/connectors/utils/ConnectorUtils'
+import { HARNESS_FOLDER_SUFFIX } from './Constants'
 
 export const getGitConnectorIcon = (type: GitSyncConfig['gitConnectorType']): IconName => {
   switch (type) {
@@ -143,5 +149,33 @@ export const getRepoEntityObject = (
     folderPath: gitDetails?.rootFolder,
     branch: repo?.branch,
     entityGitPath: gitDetails?.filePath
+  }
+}
+
+const getRepoUrlForConnectorType = (formValues: GitSyncFormInterface, repoNameParam?: string): string => {
+  const repoName = defaultTo(repoNameParam, formValues.repo)
+  if (formValues.gitConnector?.connector?.spec?.type === GitUrlType.REPO) {
+    return repoName
+  }
+  return getRepoUrl(formValues.gitConnector?.connector?.spec?.url, repoName)
+}
+
+export const getGitSyncDataFromFormData = (
+  formData: GitSyncFormInterface,
+  orgIdentifier: string,
+  projectIdentifier: string
+): GitSyncConfig => {
+  return {
+    ...pick(formData, ['gitConnectorType', 'branch', 'name', 'identifier']),
+    repo: getRepoUrlForConnectorType(formData),
+    gitConnectorRef: (formData.gitConnector as ConnectorSelectedValue)?.value,
+    gitSyncFolderConfigDTOs: [
+      {
+        rootFolder: getHarnessFolderPathWithSuffix(formData.rootfolder.trim(), HARNESS_FOLDER_SUFFIX),
+        isDefault: true
+      }
+    ],
+    projectIdentifier: projectIdentifier,
+    orgIdentifier: orgIdentifier
   }
 }

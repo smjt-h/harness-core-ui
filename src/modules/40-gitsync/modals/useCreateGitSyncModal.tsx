@@ -13,7 +13,6 @@ import { useParams } from 'react-router-dom'
 import type { GitSyncConfig } from 'services/cd-ng'
 import { useStrings } from 'framework/strings'
 import type { ProjectPathProps } from '@common/interfaces/RouteInterfaces'
-import GitSyncRepoFormStep from '@gitsync/pages/steps/GitSyncRepoFormStep'
 import GitConnection from '@gitsync/components/GitConnection/GitConnection'
 import { GitFullSyncStep } from '@gitsync/pages/steps/GitFullSyncStep/GitFullSyncStep'
 import GitSyncRepoForm from '../components/gitSyncRepoForm/GitSyncRepoForm'
@@ -75,7 +74,7 @@ const useCreateGitSyncModal = (props: UseCreateGitSyncModalProps): UseCreateGitS
           icon="git-landing-page"
           iconProps={{ size: 80, className: css.icon }}
         >
-          <GitSyncRepoFormStep
+          <GitSyncRepoForm
             name={getString('gitsync.configureHarnessFolder')}
             accountId={accountId}
             isEditMode={isEditMode}
