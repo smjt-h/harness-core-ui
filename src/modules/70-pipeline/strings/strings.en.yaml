@@ -255,8 +255,8 @@ manifestTypeLabels:
   ValuesYaml: Values YAML
   HelmChartLabel: Helm Chart
   KustomizeLabel: Kustomize
-  OpenshiftTemplate: Openshift Template
-  OpenshiftParam: Openshift Param
+  OpenshiftTemplate: OpenShift Template
+  OpenshiftParam: OpenShift Param
   KustomizePatches: Kustomize Patches
 manifestToConnectorLabelMap:
   AWSLabel: '{{ $.common.aws }}'
