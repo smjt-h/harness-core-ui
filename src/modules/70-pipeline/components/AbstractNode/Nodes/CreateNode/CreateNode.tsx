@@ -10,7 +10,7 @@ import { Text } from '@wings-software/uicore'
 import { Icon } from '@blueprintjs/core'
 import cx from 'classnames'
 import { isEmpty } from 'lodash-es'
-import { DiagramType, Event } from '@pipeline/components/Diagram'
+import { DiagramDrag, DiagramType, Event } from '@pipeline/components/Diagram'
 import { PipelineGraphType } from '../../types'
 import cssDefault from '../DefaultNode/DefaultNode.module.scss'
 import css from './CreateNode.module.scss'
@@ -35,6 +35,13 @@ function CreateNode(props: any): React.ReactElement {
       }}
       onDrop={event => {
         props?.onDrop && props?.onDrop(event)
+        event.stopPropagation()
+        props?.fireEvent({
+          type: Event.DropNodeEvent,
+          entityType: DiagramType.CreateNew,
+          node: JSON.parse(event.dataTransfer.getData(DiagramDrag.NodeDrag)),
+          destination: props
+        })
       }}
       onClick={event => {
         event.preventDefault()
