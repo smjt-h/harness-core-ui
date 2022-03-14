@@ -12,6 +12,7 @@ export type SelectHealthSourceServicesProps = {
     sli: boolean
     healthScore: boolean
     continuousVerification: boolean
+    serviceInstance?: string
   }
   metricPackResponse: ReturnType<typeof useGetMetricPacks>
   labelNamesResponse?: ReturnType<typeof useGetLabelNames>

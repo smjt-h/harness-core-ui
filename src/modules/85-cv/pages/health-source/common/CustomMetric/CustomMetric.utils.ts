@@ -31,7 +31,8 @@ export function updateSelectedMetricsMap({
   oldMetric,
   mappedMetrics,
   formikValues,
-  initCustomForm
+  initCustomForm,
+  isPrimaryMetric
 }: UpdateSelectedMetricsMapInterface): { selectedMetric: string; mappedMetrics: Map<string, CustomMappedMetric> } {
   const emptyName = formikValues.metricName?.length
   if (!emptyName) {
@@ -53,12 +54,18 @@ export function updateSelectedMetricsMap({
 
   // if newly created metric create form object
   if (!updatedMap.has(updatedMetric)) {
+    const metricIdentifier = updatedMetric.split(' ').join('_')
+    const identifierObject = isPrimaryMetric
+      ? {
+          metricIdentifier,
+          identifier: metricIdentifier
+        }
+      : { metricIdentifier }
     updatedMap.set(updatedMetric, {
       ...{
         _id: uuid(),
         metricName: updatedMetric,
-        identifier: updatedMetric.split(' ').join('_'),
-        metricIdentifier: updatedMetric.split(' ').join('_'),
+        ...identifierObject,
         ...initCustomForm
       }
     } as any)
@@ -113,31 +120,6 @@ export const getGroupedCreatedMetrics = (
   })
 }
 
-export const getMappedMetrics = (
-  mappedMetrics: Map<string, CustomMappedMetric>,
-  formikValues: CustomMappedMetric,
-  oldState: CustomSelectedAndMappedMetrics,
-  initCustomForm: InitCustomFormData
-): {
-  selectedMetric: string
-  mappedMetrics: Map<string, CustomMappedMetric>
-} => {
-  const metricName = formikValues.metricName || ''
-  const duplicateName =
-    Array.from(mappedMetrics.keys()).indexOf(metricName) > -1 && oldState.selectedMetric !== formikValues?.metricName
-  if (duplicateName) {
-    return { selectedMetric: oldState.selectedMetric, mappedMetrics: mappedMetrics }
-  }
-
-  return updateSelectedMetricsMap({
-    updatedMetric: metricName,
-    oldMetric: oldState.selectedMetric,
-    mappedMetrics: oldState.mappedMetrics,
-    formikValues,
-    initCustomForm
-  })
-}
-
 export const onRemoveMetric = ({
   removedMetric,
   updatedMetric,
@@ -178,7 +160,8 @@ export const onSelectMetric = ({
   setCreatedMetrics,
   setMappedMetrics,
   formikValues,
-  initCustomForm
+  initCustomForm,
+  isPrimaryMetric
 }: SelectMetricInerface): void => {
   setMappedMetrics(oldState => {
     setCreatedMetrics({ selectedMetricIndex: smIndex, createdMetrics: updatedList })
@@ -187,7 +170,8 @@ export const onSelectMetric = ({
       oldMetric: oldState.selectedMetric,
       mappedMetrics: oldState.mappedMetrics,
       formikValues,
-      initCustomForm
+      initCustomForm,
+      isPrimaryMetric
     })
   })
 }

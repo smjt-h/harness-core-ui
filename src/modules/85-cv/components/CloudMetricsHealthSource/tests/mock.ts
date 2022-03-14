@@ -35,10 +35,12 @@ export const mockCloudMetricHealthSourceProps = (
         query: 'test_query',
         sli: true,
         healthScore: false,
-        continuousVerification: false
+        continuousVerification: false,
+        serviceInstance: 'cluster-name'
       },
       setFieldValue: jest.fn()
     } as any,
+    serviceInstanceList: ['cluster-name'],
     addManualQueryTitle: 'cv.monitoringSources.datadog.manualInputQueryModal.modalTitle',
     dataSourceType: DatasourceTypeEnum.DATADOG_METRICS,
     selectedMetricInfo: {

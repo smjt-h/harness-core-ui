@@ -95,7 +95,7 @@ describe('Configure Datadog health source', () => {
     cy.wait('@getMetricsTags')
 
     // map metric to services
-    cy.mapMetricToServices()
+    cy.mapMetricToServices(true)
 
     // Creating the monitored service with Datadog health source.
     cy.findByRole('button', { name: /Save/i }).click()
@@ -160,6 +160,7 @@ describe('Configure Datadog health source', () => {
       'monitoredServiceCall'
     )
 
+    cy.wait(1000)
     cy.get('span[data-icon="Options"]').click()
     cy.contains('div', 'Edit service').click()
     cy.wait('@monitoredServiceCall')
@@ -223,7 +224,7 @@ describe('Configure Datadog health source', () => {
     cy.wait('@getMetricsTags')
 
     // map metric to services
-    cy.mapMetricToServices()
+    cy.mapMetricToServices(true)
 
     // Creating the monitored service with Datadog health source.
     cy.findByRole('button', { name: /Save/i }).click()

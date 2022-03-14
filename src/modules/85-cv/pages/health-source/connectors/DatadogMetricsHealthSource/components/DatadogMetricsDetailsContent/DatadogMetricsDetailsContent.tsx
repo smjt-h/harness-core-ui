@@ -6,6 +6,7 @@
  */
 
 import React, { useEffect, useMemo, useState } from 'react'
+import type { ITagInputProps } from '@blueprintjs/core'
 import { FormInput, SelectOption } from '@wings-software/uicore'
 import { DatadogMetricsHealthSourceFieldNames } from '@cv/pages/health-source/connectors/DatadogMetricsHealthSource/DatadogMetricsHealthSource.constants'
 import GroupName from '@cv/components/GroupName/GroupName'
@@ -14,13 +15,20 @@ import { useStrings } from 'framework/strings'
 import {
   DatadogMetricsQueryBuilder,
   DatadogMetricsQueryExtractor,
+  getActiveMetric,
   getDatadogAggregationOptions,
+  getOptions,
+  getPlaceholder,
   initializeDatadogGroupNames,
-  mapMetricTagsHostIdentifierKeysOptions,
-  mapMetricTagsToMetricTagsOptions
+  mapMetricTagsToMetricTagsOptions,
+  onMetricChange,
+  renderSearchLoading,
+  setSearchPredicate,
+  setServiceInstanceTag
 } from '@cv/pages/health-source/connectors/DatadogMetricsHealthSource/components/DatadogMetricsDetailsContent/DatadogMetricsDetailsContent.utils'
 import { NameId } from '@common/components/NameIdDescriptionTags/NameIdDescriptionTags'
 import type { DatadogMetricsDetailsContentProps } from './DatadogMetricsDetailsContent.type'
+import css from '../../DatadogMetricsHealthSource.module.scss'
 
 export default function DatadogMetricsDetailsContent(props: DatadogMetricsDetailsContentProps): JSX.Element {
   const {
@@ -30,15 +38,16 @@ export default function DatadogMetricsDetailsContent(props: DatadogMetricsDetail
     metricHealthDetailsData,
     setMetricHealthDetailsData,
     metricTags,
-    activeMetrics
+    activeMetrics,
+    metricTagsLoading,
+    activeMetricsLoading,
+    fetchActiveMetrics,
+    fetchMetricTags
   } = props
   const { getString } = useStrings()
   const [metricGroupNames, setMetricGroupNames] = useState<SelectOption[]>(
     initializeDatadogGroupNames(metricHealthDetailsData, getString)
   )
-  const hostIdentifierKeysOptions = useMemo(() => {
-    return mapMetricTagsHostIdentifierKeysOptions(metricTags)
-  }, [metricTags])
 
   const aggregationItems = useMemo(() => getDatadogAggregationOptions(getString), [])
 
@@ -60,22 +69,34 @@ export default function DatadogMetricsDetailsContent(props: DatadogMetricsDetail
         })) ||
       []
     )
-  }, [activeMetrics])
+  }, [activeMetrics, activeMetricsLoading])
+
+  const [isDefaultMetricSet, setIsDefaultMetricSet] = useState(false)
+  const [defaultMetric, setDefaultMetric] = useState<SelectOption[]>()
+  const [itemList, setItemList] = useState<SelectOption[]>(
+    getOptions(activeMetricsOptions, getString, activeMetricsLoading)
+  )
+
+  useEffect(() => {
+    if (!isDefaultMetricSet && activeMetricsOptions.length) {
+      setIsDefaultMetricSet(true)
+      setDefaultMetric(activeMetricsOptions)
+    }
+    setItemList(getOptions(activeMetricsOptions, getString, activeMetricsLoading))
+  }, [activeMetricsOptions])
+
   const metricTagsOptions = useMemo(() => {
     return mapMetricTagsToMetricTagsOptions(metricTags || [])
   }, [metricTags])
 
-  const currentActiveMetric = useMemo(() => {
-    return activeMetricsOptions.find(activeMetric => {
-      return selectedMetricData?.metric?.includes(activeMetric.value)
-    })
-  }, [selectedMetricData?.metric, activeMetricsOptions])
+  const currentActiveMetric: SelectOption = useMemo(
+    () => getActiveMetric(activeMetricsOptions, selectedMetricData),
+    [selectedMetricData?.metric, activeMetricsOptions]
+  )
 
-  const currentActiveServiceInstanceIdentifierTag = useMemo(() => {
-    return hostIdentifierKeysOptions.find(serviceTag => {
-      return selectedMetricData?.serviceInstanceIdentifierTag === serviceTag.value
-    })
-  }, [selectedMetricData?.serviceInstanceIdentifierTag, hostIdentifierKeysOptions])
+  useEffect(() => {
+    setServiceInstanceTag(formikProps, onRebuildMetricData)
+  }, [formikProps.values?.serviceInstance])
 
   useEffect(() => {
     if (
@@ -141,6 +162,7 @@ export default function DatadogMetricsDetailsContent(props: DatadogMetricsDetail
       onRebuildMetricData(undefined, undefined, undefined, undefined, selectedMetricData?.groupName)
     }
   }, [formikProps.values.isManualQuery, formikProps.values.identifier, selectedMetricData])
+
   return (
     <>
       <NameId
@@ -159,10 +181,11 @@ export default function DatadogMetricsDetailsContent(props: DatadogMetricsDetail
         groupNames={metricGroupNames}
         onChange={(fieldName: string, chosenOption: SelectOption) => {
           formikProps.setFieldValue(fieldName, chosenOption)
+          const filteredMetricTags = formikProps.values.metricTags?.filter(tag => tag.value)
           onRebuildMetricData(
             formikProps.values.metric,
             formikProps.values.aggregator,
-            formikProps.values.metricTags,
+            filteredMetricTags,
             formikProps.values.serviceInstanceIdentifierTag,
             chosenOption
           )
@@ -174,17 +197,22 @@ export default function DatadogMetricsDetailsContent(props: DatadogMetricsDetail
         disabled={!selectedMetricData?.isCustomCreatedMetric || formikProps?.values?.isManualQuery}
         label={getString('cv.monitoringSources.metricLabel')}
         name={DatadogMetricsHealthSourceFieldNames.METRIC}
-        items={activeMetricsOptions}
-        value={currentActiveMetric || { label: '', value: '' }}
+        items={itemList}
+        value={currentActiveMetric}
+        onQueryChange={search => {
+          if (search) {
+            fetchActiveMetrics?.(search)
+          }
+        }}
+        placeholder={getPlaceholder(getString, activeMetricsLoading)}
+        selectProps={{
+          addClearBtn: !activeMetricsLoading,
+          whenPopoverClosed: () => defaultMetric && setItemList(defaultMetric),
+          itemListPredicate: search => setSearchPredicate(getString, search, itemList)
+        }}
+        inputGroup={{ rightElement: renderSearchLoading(activeMetricsLoading) }}
         onChange={event => {
-          formikProps.setFieldValue(DatadogMetricsHealthSourceFieldNames.METRIC, event.value)
-          onRebuildMetricData(
-            event.value as string,
-            formikProps.values.aggregator,
-            formikProps.values.metricTags,
-            formikProps.values.serviceInstanceIdentifierTag,
-            formikProps.values.groupName
-          )
+          onMetricChange(event.value as string, formikProps, onRebuildMetricData, fetchActiveMetrics)
         }}
       />
       <FormInput.Select
@@ -209,11 +237,16 @@ export default function DatadogMetricsDetailsContent(props: DatadogMetricsDetail
         }}
       />
       <FormInput.MultiSelect
+        className={css.metricTag}
         disabled={!selectedMetricData?.isCustomCreatedMetric || formikProps?.values?.isManualQuery}
         label={getString('cv.monitoringSources.gco.mapMetricsToServicesPage.metricTagsLabel')}
         name={DatadogMetricsHealthSourceFieldNames.METRIC_TAGS}
-        items={metricTagsOptions}
+        items={getOptions(metricTagsOptions, getString, metricTagsLoading)}
         isOptional={true}
+        tagInputProps={{ rightElement: renderSearchLoading(metricTagsLoading) } as unknown as ITagInputProps}
+        multiSelectProps={{
+          onQueryChange: search => fetchMetricTags?.(search)
+        }}
         onChange={selectedOptions => {
           onRebuildMetricData(
             formikProps.values.metric,
@@ -224,29 +257,6 @@ export default function DatadogMetricsDetailsContent(props: DatadogMetricsDetail
           )
         }}
       />
-      {formikProps.values.continuousVerification && (
-        <FormInput.Select
-          disabled={!selectedMetricData}
-          label={'Service instance tag'}
-          name={DatadogMetricsHealthSourceFieldNames.SERVICE_INSTANCE_IDENTIFIER_TAG}
-          items={hostIdentifierKeysOptions}
-          isOptional={true}
-          value={currentActiveServiceInstanceIdentifierTag || { label: '', value: '' }}
-          onChange={event => {
-            formikProps.setFieldValue(DatadogMetricsHealthSourceFieldNames.SERVICE_INSTANCE_IDENTIFIER_TAG, event.value)
-            onRebuildMetricData(
-              formikProps.values.metric,
-              formikProps.values.aggregator,
-              formikProps.values.metricTags,
-              event.value as string,
-              formikProps.values.groupName
-            )
-          }}
-          selectProps={{
-            addClearBtn: true
-          }}
-        />
-      )}
     </>
   )
 }

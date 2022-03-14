@@ -111,10 +111,11 @@ describe('Unit tests for CloudMetricsHealthSource', () => {
       values: {
         sli: mockCloudMetricHealthSourcePropsValue.formikProps.values.sli,
         healthScore: mockCloudMetricHealthSourcePropsValue.formikProps.values.healthScore,
-        continuousVerification: mockCloudMetricHealthSourcePropsValue.formikProps.values.continuousVerification
+        continuousVerification: mockCloudMetricHealthSourcePropsValue.formikProps.values.continuousVerification,
+        serviceInstance: mockCloudMetricHealthSourcePropsValue.formikProps.values.serviceInstance
       },
       metricPackResponse: mockUseGetReturnData,
-      hideServiceIdentifier: true
+      labelNamesResponse: { data: { data: ['cluster-name'] } }
     })
     expect(mockMonacoEditor).toHaveBeenCalledTimes(0)
   })

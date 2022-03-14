@@ -12,6 +12,40 @@ import { Get, GetProps, useGet, UseGetProps, Mutate, MutateProps, useMutate, Use
 
 import { getConfig, getUsingFetch, mutateUsingFetch, GetUsingFetchProps, MutateUsingFetchProps } from '../config'
 export const SPEC_VERSION = '1.0'
+export interface Activity {
+  accountId: string
+  activityEndTime?: number
+  activityName?: string
+  activitySourceId?: string
+  activityStartTime: number
+  analysisStatus?:
+    | 'IGNORED'
+    | 'NOT_STARTED'
+    | 'VERIFICATION_PASSED'
+    | 'VERIFICATION_FAILED'
+    | 'ERROR'
+    | 'ABORTED'
+    | 'IN_PROGRESS'
+  changeSourceIdentifier?: string
+  createdAt?: number
+  environmentIdentifier: string
+  eventTime?: number
+  lastUpdatedAt?: number
+  monitoredServiceIdentifier?: string
+  orgIdentifier: string
+  projectIdentifier: string
+  serviceIdentifier?: string
+  tags?: string[]
+  type: 'DEPLOYMENT' | 'CONFIG' | 'KUBERNETES' | 'HARNESS_CD' | 'PAGER_DUTY' | 'HARNESS_CD_CURRENT_GEN'
+  uuid?: string
+  validUntil?: string
+  verificationIteration?: number
+  verificationJobInstanceIds?: string[]
+  verificationJobRuntimeDetails?: VerificationJobRuntimeDetails[]
+  verificationJobs?: VerificationJob[]
+  verificationSummary?: ActivityVerificationSummary
+}
+
 export interface ActivityVerificationResultDTO {
   activityId?: string
   activityName?: string
@@ -34,6 +68,39 @@ export interface ActivityVerificationResultDTO {
     | 'ERROR'
     | 'ABORTED'
     | 'IN_PROGRESS'
+}
+
+export interface ActivityVerificationSummary {
+  aborted?: number
+  aggregatedStatus?:
+    | 'IGNORED'
+    | 'NOT_STARTED'
+    | 'VERIFICATION_PASSED'
+    | 'VERIFICATION_FAILED'
+    | 'ERROR'
+    | 'ABORTED'
+    | 'IN_PROGRESS'
+  durationMs?: number
+  errors?: number
+  failed?: number
+  notStarted?: number
+  passed?: number
+  progress?: number
+  progressPercentage?: number
+  remainingTimeMs?: number
+  risk?: 'NO_DATA' | 'NO_ANALYSIS' | 'HEALTHY' | 'OBSERVE' | 'NEED_ATTENTION' | 'UNHEALTHY'
+  startTime?: number
+  total?: number
+  verficationStatusMap?: {
+    [key: string]:
+      | 'IGNORED'
+      | 'NOT_STARTED'
+      | 'VERIFICATION_PASSED'
+      | 'VERIFICATION_FAILED'
+      | 'ERROR'
+      | 'ABORTED'
+      | 'IN_PROGRESS'
+  }
 }
 
 export interface AdditionalInfo {
@@ -86,8 +153,11 @@ export interface AnalysisStateMachine {
   completedStates?: AnalysisState[]
   createdAt?: number
   currentState?: AnalysisState
+  endTime?: number
   lastUpdatedAt?: number
+  logLevel?: 'INFO' | 'WARN' | 'ERROR'
   nextAttemptTime?: number
+  startTime?: number
   stateMachineIgnoreMinutes?: number
   status?: 'CREATED' | 'RUNNING' | 'SUCCESS' | 'RETRY' | 'TRANSITION' | 'IGNORED' | 'TIMEOUT' | 'FAILED' | 'COMPLETED'
   uuid?: string
@@ -411,6 +481,56 @@ export type CEKubernetesClusterConfig = ConnectorConfigDTO & {
   featuresEnabled?: ('BILLING' | 'OPTIMIZATION' | 'VISIBILITY')[]
 }
 
+export interface CVConfig {
+  accountId: string
+  category: 'PERFORMANCE' | 'ERRORS' | 'INFRASTRUCTURE'
+  connectorIdentifier: string
+  createNextTaskIteration?: number
+  createdAt?: number
+  demo?: boolean
+  eligibleForDemo?: boolean
+  enabled?: boolean
+  envIdentifier: string
+  firstTimeDataCollectionStartTime?: number
+  firstTimeDataCollectionTimeRange?: TimeRange
+  fullyQualifiedIdentifier?: string
+  identifier: string
+  lastUpdatedAt?: number
+  monitoredServiceIdentifier?: string
+  monitoringSourceName: string
+  orgIdentifier: string
+  productName?: string
+  projectIdentifier: string
+  serviceIdentifier: string
+  type?:
+    | 'APP_DYNAMICS'
+    | 'SPLUNK'
+    | 'STACKDRIVER'
+    | 'STACKDRIVER_LOG'
+    | 'KUBERNETES'
+    | 'NEW_RELIC'
+    | 'PROMETHEUS'
+    | 'DATADOG_METRICS'
+    | 'DATADOG_LOG'
+    | 'ERROR_TRACKING'
+    | 'DYNATRACE'
+    | 'CUSTOM_HEALTH'
+  uuid?: string
+  verificationType: 'TIME_SERIES' | 'LOG'
+}
+
+export interface CVNGLog {
+  accountId?: string
+  endTime?: number
+  lastUpdatedAt?: number
+  logRecords?: CVNGLogRecord[]
+  logType?: 'API_CALL_LOG' | 'EXECUTION_LOG'
+  startTime?: number
+  traceableId?: string
+  traceableType?: 'ONBOARDING' | 'VERIFICATION_TASK'
+  uuid?: string
+}
+
 export interface CVNGLogDTO {
   accountId?: string
   createdAt?: number
@@ -419,6 +539,31 @@ export interface CVNGLogDTO {
   traceableId?: string
   traceableType?: 'ONBOARDING' | 'VERIFICATION_TASK'
   type?: 'API_CALL_LOG' | 'EXECUTION_LOG'
+}
+
+export interface CVNGLogRecord {
+  createdAt?: number
+  errorLog?: boolean
+}
+
+export interface CVNGStepTask {
+  accountId?: string
+  activityId?: string
+  asyncTaskIteration?: number
+  callbackId?: string
+  createdAt?: number
+  deploymentStartTime?: number
+  deploymentTag?: string
+  environmentIdentifier?: string
+  lastUpdatedAt?: number
+  orgIdentifier?: string
+  projectIdentifier?: string
+  serviceIdentifier?: string
+  skip?: boolean
+  status?: 'IN_PROGRESS' | 'DONE'
+  uuid?: string
+  validUntil?: string
+  verificationJobInstanceId?: string
 }
 
 export type CalenderSLOTargetSpec = SLOTargetSpec & {
@@ -709,6 +854,7 @@ export interface DataCollectionTask {
   exception?: string
   lastPickedAt?: number
   lastUpdatedAt?: number
+  logLevel?: 'INFO' | 'WARN' | 'ERROR'
   nextTaskId?: string
   retryCount?: number
   stacktrace?: string
@@ -1930,6 +2076,14 @@ export interface HealthSourceDTO {
   verificationType?: 'TIME_SERIES' | 'LOG'
 }
 
+export interface HealthSourceMetricDefinition {
+  analysis?: AnalysisDTO
+  identifier: string
+  metricName: string
+  riskProfile?: RiskProfile
+  sli?: Slidto
+}
+
 export interface HealthSourceSpec {
   connectorRef?: string
 }
@@ -2127,11 +2281,14 @@ export interface LearningEngineTask {
     | 'SERVICE_GUARD_FEEDBACK_ANALYSIS'
     | 'TIME_SERIES_LOAD_TEST'
   createdAt?: number
+  endTime?: number
   exception?: string
   failureUrl?: string
   lastUpdatedAt?: number
+  logLevel?: 'INFO' | 'WARN' | 'ERROR'
   pickedAt?: number
   stackTrace?: string
+  startTime?: number
   taskPriority?: number
   taskStatus?: 'QUEUED' | 'RUNNING' | 'FAILED' | 'SUCCESS' | 'TIMEOUT'
   type?:
@@ -2348,6 +2505,7 @@ export interface MetricGraph {
 }
 
 export interface MetricHistory {
+  metricIdentifier?: string
   metricName?: string
   value?: number[]
 }
@@ -2418,8 +2576,20 @@ export interface MetricResponseMapping {
 
 export interface MetricSum {
   data?: number
+  metricIdentifier?: string
   metricName?: string
   risk?: number
+}
+
+export interface MetricSumDTO {
+  data?: number
+  metricName?: string
+  risk?: number
+}
+
+export interface MetricTagResponseDTO {
+  metricTags?: string[]
+  tagKeys?: string[]
 }
 
 export interface MetricValidationResponse {
@@ -2502,6 +2672,7 @@ export type NewRelicHealthSourceSpec = HealthSourceSpec & {
   applicationId?: string
   applicationName?: string
   feature?: string
+  metricDefinitions?: HealthSourceMetricDefinition[]
   metricPacks?: MetricPackDTO[]
   newRelicMetricDefinitions?: NewRelicMetricDefinition[]
 }
@@ -3372,6 +3543,13 @@ export interface ResponseMetricPackValidationResponse {
   status?: 'SUCCESS' | 'FAILURE' | 'ERROR'
 }
 
+export interface ResponseMetricTagResponseDTO {
+  correlationId?: string
+  data?: MetricTagResponseDTO
+  metaData?: { [key: string]: any }
+  status?: 'SUCCESS' | 'FAILURE' | 'ERROR'
+}
+
 export interface ResponseMonitoredServiceResponse {
   correlationId?: string
   data?: MonitoredServiceResponse
@@ -3807,25 +3985,25 @@ export interface RestResponseMapStringMapStringListDouble {
   responseMessages?: ResponseMessage[]
 }
 
-export interface RestResponseMapStringMapStringListMetricSum {
+export interface RestResponseMapStringMapStringListMetricSumDTO {
   metaData?: {
     [key: string]: { [key: string]: any }
   }
   resource?: {
     [key: string]: {
-      [key: string]: MetricSum[]
+      [key: string]: MetricSumDTO[]
     }
   }
   responseMessages?: ResponseMessage[]
 }
 
-export interface RestResponseMapStringMapStringListTimeSeriesAnomalies {
+export interface RestResponseMapStringMapStringListTimeSeriesAnomaliesDTO {
   metaData?: {
     [key: string]: { [key: string]: any }
   }
   resource?: {
     [key: string]: {
-      [key: string]: TimeSeriesAnomalies[]
+      [key: string]: TimeSeriesAnomaliesDTO[]
     }
   }
   responseMessages?: ResponseMessage[]
@@ -3860,6 +4038,14 @@ export interface RestResponsePageAnalyzedLogDataDTO {
     [key: string]: { [key: string]: any }
   }
   resource?: PageAnalyzedLogDataDTO
+  responseMessages?: ResponseMessage[]
+}
+
+export interface RestResponsePageCVNGLogDTO {
+  metaData?: {
+    [key: string]: { [key: string]: any }
+  }
+  resource?: PageCVNGLogDTO
   responseMessages?: ResponseMessage[]
 }
 
@@ -3996,6 +4182,14 @@ export interface RestResponseUserJourneyResponse {
     [key: string]: { [key: string]: any }
   }
   resource?: UserJourneyResponse
+  responseMessages?: ResponseMessage[]
+}
+
+export interface RestResponseVerifyStepDebugResponse {
+  metaData?: {
+    [key: string]: { [key: string]: any }
+  }
+  resource?: VerifyStepDebugResponse
   responseMessages?: ResponseMessage[]
 }
 
@@ -4214,8 +4408,8 @@ export interface ServiceGuardTimeSeriesAnalysisDTO {
 }
 
 export interface ServiceGuardTxnMetricAnalysisDataDTO {
-  anomalousPatterns?: TimeSeriesAnomalies[]
-  cumulativeSums?: MetricSum
+  anomalousPatterns?: TimeSeriesAnomaliesDTO[]
+  cumulativeSums?: MetricSumDTO
   keyTransaction?: boolean
   lastSeenTime?: number
   longTermPattern?: boolean
@@ -4471,6 +4665,14 @@ export interface TimeSeriesAnalysisSummary {
 }
 
 export interface TimeSeriesAnomalies {
+  anomalousTimestamps?: number[]
+  metricIdentifier?: string
+  metricName?: string
+  testData?: number[]
+  transactionName?: string
+}
+
+export interface TimeSeriesAnomaliesDTO {
   anomalousTimestamps?: number[]
   metricName?: string
   testData?: number[]
@@ -4729,6 +4931,7 @@ export interface TransactionMetricRisk {
   anomalous?: boolean
   lastSeenTime?: number
   longTermPattern?: boolean
+  metricIdentifier?: string
   metricName?: string
   metricRisk?: 'NO_DATA' | 'NO_ANALYSIS' | 'HEALTHY' | 'OBSERVE' | 'NEED_ATTENTION' | 'UNHEALTHY'
   metricScore?: number
@@ -4779,6 +4982,115 @@ export type VaultConnectorDTO = ConnectorConfigDTO & {
   xvaultAwsIamServerId?: string
 }
 
+export interface VerificationJob {
+  accountId: string
+  activitySourceIdentifier?: string
+  allMonitoringSourcesEnabled?: boolean
+  createdAt?: number
+  dataSources?: (
+    | 'APP_DYNAMICS'
+    | 'SPLUNK'
+    | 'STACKDRIVER'
+    | 'STACKDRIVER_LOG'
+    | 'KUBERNETES'
+    | 'NEW_RELIC'
+    | 'PROMETHEUS'
+    | 'DATADOG_METRICS'
+    | 'DATADOG_LOG'
+    | 'ERROR_TRACKING'
+    | 'DYNATRACE'
+    | 'CUSTOM_HEALTH'
+  )[]
+  defaultJob?: boolean
+  duration?: Duration
+  envIdentifier: string
+  executionDuration?: Duration
+  identifier: string
+  jobName: string
+  lastUpdatedAt?: number
+  monitoringSources?: string[]
+  orgIdentifier?: string
+  projectIdentifier?: string
+  serviceIdentifier: string
+  type?: 'TEST' | 'CANARY' | 'BLUE_GREEN' | 'HEALTH'
+  uuid?: string
+  verificationJobDTO?: VerificationJobDTO
+  verificationJobUrl?: string
+}
+
+export interface VerificationJobDTO {
+  activitySourceIdentifier?: string
+  allMonitoringSourcesEnabled?: boolean
+  dataSources?: (
+    | 'APP_DYNAMICS'
+    | 'SPLUNK'
+    | 'STACKDRIVER'
+    | 'STACKDRIVER_LOG'
+    | 'KUBERNETES'
+    | 'NEW_RELIC'
+    | 'PROMETHEUS'
+    | 'DATADOG_METRICS'
+    | 'DATADOG_LOG'
+    | 'ERROR_TRACKING'
+    | 'DYNATRACE'
+    | 'CUSTOM_HEALTH'
+  )[]
+  defaultJob?: boolean
+  duration?: string
+  envIdentifier?: string
+  envName?: string
+  identifier?: string
+  jobName?: string
+  monitoringSources?: string[]
+  orgIdentifier?: string
+  projectIdentifier?: string
+  serviceIdentifier?: string
+  serviceName?: string
+  type?: 'TEST' | 'CANARY' | 'BLUE_GREEN' | 'HEALTH'
+  verificationJobUrl?: string
+}
+
+export interface VerificationJobInstance {
+  accountId: string
+  createdAt?: number
+  cvConfigMap?: {
+    [key: string]: CVConfig
+  }
+  dataCollectionDelay?: Duration
+  dataCollectionTaskIteration?: number
+  deploymentStartTime?: number
+  endTime?: number
+  executionStatus?: 'QUEUED' | 'RUNNING' | 'FAILED' | 'SUCCESS' | 'TIMEOUT' | 'ABORTED'
+  lastUpdatedAt?: number
+  name?: string
+  newHostsTrafficSplitPercentage?: number
+  newVersionHosts?: string[]
+  oldVersionHosts?: string[]
+  progressLogs?: ProgressLog[]
+  progressPercentage?: number
+  resolvedJob?: VerificationJob
+  startTime?: number
+  timeoutTaskIteration?: number
+  uuid?: string
+  validUntil?: string
+  verificationStatus?:
+    | 'IGNORED'
+    | 'NOT_STARTED'
+    | 'VERIFICATION_PASSED'
+    | 'VERIFICATION_FAILED'
+    | 'ERROR'
+    | 'ABORTED'
+    | 'IN_PROGRESS'
+  verificationTasksCount?: number
+}
+
+export interface VerificationJobRuntimeDetails {
+  runtimeValues?: {
+    [key: string]: string
+  }
+  verificationJobIdentifier?: string
+}
+
 export interface VerificationTask {
   accountId?: string
   createdAt?: number
@@ -4788,6 +5100,26 @@ export interface VerificationTask {
   taskInfo?: TaskInfo
   uuid?: string
   validUntil?: string
+}
+
+export interface VerifyStepDebugResponse {
+  activity?: Activity
+  cvngStepTask?: CVNGStepTask
+  projectParams?: ProjectParams
+  verificationJobInstance?: VerificationJobInstance
+  verificationTaskIdToAnalysisStateMachineMap?: {
+    [key: string]: AnalysisStateMachine
+  }
+  verificationTaskIdToCVNGApiLogMap?: {
+    [key: string]: CVNGLog[]
+  }
+  verificationTaskIdToCVNGExecutionLogMap?: {
+    [key: string]: CVNGLog[]
+  }
+  verificationTaskIdToDataCollectionTaskMap?: {
+    [key: string]: DataCollectionTask[]
+  }
+  verificationTaskList?: VerificationTask[]
 }
 
 export interface VerifyStepSummary {
@@ -6273,8 +6605,6 @@ export interface GetMonitoredServiceChangeTimelineQueryParams {
   accountId: string
   orgIdentifier: string
   projectIdentifier: string
-  environmentIdentifier?: string
-  serviceIdentifier?: string
   monitoredServiceIdentifier?: string
   changeSourceTypes?: ('HarnessCDNextGen' | 'PagerDuty' | 'K8sCluster' | 'HarnessCD')[]
   searchText?: string
@@ -6679,6 +7009,7 @@ export interface GetDatadogActiveMetricsQueryParams {
   orgIdentifier: string
   projectIdentifier: string
   connectorIdentifier: string
+  filter?: string
   tracingId: string
 }
 
@@ -6888,6 +7219,60 @@ export const getDatadogMetricTagsListPromise = (
   getUsingFetch<ResponseListString, Failure | Error, GetDatadogMetricTagsListQueryParams, void>(
     getConfig('cv/api'),
     `/datadog-metrics/metric-tags`,
+    props,
+    signal
+  )
+
+export interface GetDatadogMetricTagsQueryParams {
+  accountId: string
+  orgIdentifier: string
+  projectIdentifier: string
+  connectorIdentifier: string
+  metric: string
+  filter?: string
+  tracingId: string
+}
+
+export type GetDatadogMetricTagsProps = Omit<
+  GetProps<ResponseMetricTagResponseDTO, Failure | Error, GetDatadogMetricTagsQueryParams, void>,
+  'path'
+>
+
+/**
+ * get datadog metric tag list
+ */
+export const GetDatadogMetricTags = (props: GetDatadogMetricTagsProps) => (
+  <Get<ResponseMetricTagResponseDTO, Failure | Error, GetDatadogMetricTagsQueryParams, void>
+    path={`/datadog-metrics/metric-tags-v2`}
+    base={getConfig('cv/api')}
+    {...props}
+  />
+)
+
+export type UseGetDatadogMetricTagsProps = Omit<
+  UseGetProps<ResponseMetricTagResponseDTO, Failure | Error, GetDatadogMetricTagsQueryParams, void>,
+  'path'
+>
+
+/**
+ * get datadog metric tag list
+ */
+export const useGetDatadogMetricTags = (props: UseGetDatadogMetricTagsProps) =>
+  useGet<ResponseMetricTagResponseDTO, Failure | Error, GetDatadogMetricTagsQueryParams, void>(
+    `/datadog-metrics/metric-tags-v2`,
+    { base: getConfig('cv/api'), ...props }
+  )
+
+/**
+ * get datadog metric tag list
+ */
+export const getDatadogMetricTagsPromise = (
+  props: GetUsingFetchProps<ResponseMetricTagResponseDTO, Failure | Error, GetDatadogMetricTagsQueryParams, void>,
+  signal?: RequestInit['signal']
+) =>
+  getUsingFetch<ResponseMetricTagResponseDTO, Failure | Error, GetDatadogMetricTagsQueryParams, void>(
+    getConfig('cv/api'),
+    `/datadog-metrics/metric-tags-v2`,
     props,
     signal
   )
@@ -7525,8 +7910,6 @@ export interface GetAllLogsClusterDataQueryParams {
   accountId?: string
   orgIdentifier: string
   projectIdentifier: string
-  serviceIdentifier?: string
-  environmentIdentifier?: string
   monitoredServiceIdentifier?: string
   clusterTypes?: ('KNOWN' | 'UNEXPECTED' | 'UNKNOWN')[]
   startTime: number
@@ -7587,8 +7970,6 @@ export interface GetAllLogsDataQueryParams {
   accountId?: string
   orgIdentifier: string
   projectIdentifier: string
-  serviceIdentifier?: string
-  environmentIdentifier?: string
   monitoredServiceIdentifier?: string
   clusterTypes?: ('KNOWN' | 'UNEXPECTED' | 'UNKNOWN')[]
   startTime: number
@@ -10917,163 +11298,10 @@ export const getSumoLogicEndPointsPromise = (
     signal
   )
 
-export interface GetAnomalousMetricDashboardDataQueryParams {
-  accountId: string
-  projectIdentifier: string
-  orgIdentifier: string
-  environmentIdentifier?: string
-  serviceIdentifier?: string
-  monitoringCategory?: string
-  startTime: number
-  endTime: number
-  analysisStartTime: number
-  page?: number
-  size?: number
-  filter?: string
-  datasourceType?:
-    | 'APP_DYNAMICS'
-    | 'SPLUNK'
-    | 'STACKDRIVER'
-    | 'STACKDRIVER_LOG'
-    | 'KUBERNETES'
-    | 'NEW_RELIC'
-    | 'PROMETHEUS'
-    | 'DATADOG_METRICS'
-    | 'DATADOG_LOG'
-    | 'ERROR_TRACKING'
-    | 'DYNATRACE'
-    | 'CUSTOM_HEALTH_METRIC'
-    | 'CUSTOM_HEALTH_LOG'
-}
-
-export type GetAnomalousMetricDashboardDataProps = Omit<
-  GetProps<RestResponsePageTimeSeriesMetricDataDTO, unknown, GetAnomalousMetricDashboardDataQueryParams, void>,
-  'path'
->
-
-/**
- * get anomalous time series data in a given time range
- */
-export const GetAnomalousMetricDashboardData = (props: GetAnomalousMetricDashboardDataProps) => (
-  <Get<RestResponsePageTimeSeriesMetricDataDTO, unknown, GetAnomalousMetricDashboardDataQueryParams, void>
-    path={`/timeseries-dashboard/anomalous-metric-data`}
-    base={getConfig('cv/api')}
-    {...props}
-  />
-)
-
-export type UseGetAnomalousMetricDashboardDataProps = Omit<
-  UseGetProps<RestResponsePageTimeSeriesMetricDataDTO, unknown, GetAnomalousMetricDashboardDataQueryParams, void>,
-  'path'
->
-
-/**
- * get anomalous time series data in a given time range
- */
-export const useGetAnomalousMetricDashboardData = (props: UseGetAnomalousMetricDashboardDataProps) =>
-  useGet<RestResponsePageTimeSeriesMetricDataDTO, unknown, GetAnomalousMetricDashboardDataQueryParams, void>(
-    `/timeseries-dashboard/anomalous-metric-data`,
-    { base: getConfig('cv/api'), ...props }
-  )
-
-/**
- * get anomalous time series data in a given time range
- */
-export const getAnomalousMetricDashboardDataPromise = (
-  props: GetUsingFetchProps<
-    RestResponsePageTimeSeriesMetricDataDTO,
-    unknown,
-    GetAnomalousMetricDashboardDataQueryParams,
-    void
-  >,
-  signal?: RequestInit['signal']
-) =>
-  getUsingFetch<RestResponsePageTimeSeriesMetricDataDTO, unknown, GetAnomalousMetricDashboardDataQueryParams, void>(
-    getConfig('cv/api'),
-    `/timeseries-dashboard/anomalous-metric-data`,
-    props,
-    signal
-  )
-
-export interface GetMetricDataQueryParams {
-  accountId: string
-  projectIdentifier: string
-  orgIdentifier: string
-  environmentIdentifier?: string
-  serviceIdentifier?: string
-  monitoringCategory?: string
-  startTime: number
-  endTime: number
-  analysisStartTime: number
-  page?: number
-  size?: number
-  filter?: string
-  datasourceType?:
-    | 'APP_DYNAMICS'
-    | 'SPLUNK'
-    | 'STACKDRIVER'
-    | 'STACKDRIVER_LOG'
-    | 'KUBERNETES'
-    | 'NEW_RELIC'
-    | 'PROMETHEUS'
-    | 'DATADOG_METRICS'
-    | 'DATADOG_LOG'
-    | 'ERROR_TRACKING'
-    | 'DYNATRACE'
-    | 'CUSTOM_HEALTH_METRIC'
-    | 'CUSTOM_HEALTH_LOG'
-}
-
-export type GetMetricDataProps = Omit<
-  GetProps<RestResponsePageTimeSeriesMetricDataDTO, unknown, GetMetricDataQueryParams, void>,
-  'path'
->
-
-/**
- * get all time series data in a given time range
- */
-export const GetMetricData = (props: GetMetricDataProps) => (
-  <Get<RestResponsePageTimeSeriesMetricDataDTO, unknown, GetMetricDataQueryParams, void>
-    path={`/timeseries-dashboard/metric-data`}
-    base={getConfig('cv/api')}
-    {...props}
-  />
-)
-
-export type UseGetMetricDataProps = Omit<
-  UseGetProps<RestResponsePageTimeSeriesMetricDataDTO, unknown, GetMetricDataQueryParams, void>,
-  'path'
->
-
-/**
- * get all time series data in a given time range
- */
-export const useGetMetricData = (props: UseGetMetricDataProps) =>
-  useGet<RestResponsePageTimeSeriesMetricDataDTO, unknown, GetMetricDataQueryParams, void>(
-    `/timeseries-dashboard/metric-data`,
-    { base: getConfig('cv/api'), ...props }
-  )
-
-/**
- * get all time series data in a given time range
- */
-export const getMetricDataPromise = (
-  props: GetUsingFetchProps<RestResponsePageTimeSeriesMetricDataDTO, unknown, GetMetricDataQueryParams, void>,
-  signal?: RequestInit['signal']
-) =>
-  getUsingFetch<RestResponsePageTimeSeriesMetricDataDTO, unknown, GetMetricDataQueryParams, void>(
-    getConfig('cv/api'),
-    `/timeseries-dashboard/metric-data`,
-    props,
-    signal
-  )
-
 export interface GetTimeSeriesMetricDataQueryParams {
   accountId: string
   orgIdentifier: string
   projectIdentifier: string
-  serviceIdentifier?: string
-  environmentIdentifier?: string
   monitoredServiceIdentifier?: string
   startTime: number
   endTime: number
@@ -11127,87 +11355,6 @@ export const getTimeSeriesMetricDataPromise = (
     props,
     signal
   )
-
-export interface GetActivityMetricsQueryParams {
-  accountId: string
-  projectIdentifier: string
-  orgIdentifier: string
-  environmentIdentifier?: string
-  serviceIdentifier?: string
-  startTime: number
-  endTime: number
-  anomalousOnly?: boolean
-  page?: number
-  size?: number
-}
-
-export interface GetActivityMetricsPathParams {
-  activityId: string
-}
-
-export type GetActivityMetricsProps = Omit<
-  GetProps<
-    RestResponsePageTimeSeriesMetricDataDTO,
-    unknown,
-    GetActivityMetricsQueryParams,
-    GetActivityMetricsPathParams
-  >,
-  'path'
-> &
-  GetActivityMetricsPathParams
-
-/**
- * get activity metrics for given activityId
- */
-export const GetActivityMetrics = ({ activityId, ...props }: GetActivityMetricsProps) => (
-  <Get<RestResponsePageTimeSeriesMetricDataDTO, unknown, GetActivityMetricsQueryParams, GetActivityMetricsPathParams>
-    path={`/timeseries-dashboard/${activityId}/metrics`}
-    base={getConfig('cv/api')}
-    {...props}
-  />
-)
-
-export type UseGetActivityMetricsProps = Omit<
-  UseGetProps<
-    RestResponsePageTimeSeriesMetricDataDTO,
-    unknown,
-    GetActivityMetricsQueryParams,
-    GetActivityMetricsPathParams
-  >,
-  'path'
-> &
-  GetActivityMetricsPathParams
-
-/**
- * get activity metrics for given activityId
- */
-export const useGetActivityMetrics = ({ activityId, ...props }: UseGetActivityMetricsProps) =>
-  useGet<RestResponsePageTimeSeriesMetricDataDTO, unknown, GetActivityMetricsQueryParams, GetActivityMetricsPathParams>(
-    (paramsInPath: GetActivityMetricsPathParams) => `/timeseries-dashboard/${paramsInPath.activityId}/metrics`,
-    { base: getConfig('cv/api'), pathParams: { activityId }, ...props }
-  )
-
-/**
- * get activity metrics for given activityId
- */
-export const getActivityMetricsPromise = (
-  {
-    activityId,
-    ...props
-  }: GetUsingFetchProps<
-    RestResponsePageTimeSeriesMetricDataDTO,
-    unknown,
-    GetActivityMetricsQueryParams,
-    GetActivityMetricsPathParams
-  > & { activityId: string },
-  signal?: RequestInit['signal']
-) =>
-  getUsingFetch<
-    RestResponsePageTimeSeriesMetricDataDTO,
-    unknown,
-    GetActivityMetricsQueryParams,
-    GetActivityMetricsPathParams
-  >(getConfig('cv/api'), `/timeseries-dashboard/${activityId}/metrics`, props, signal)
 
 export interface GetTimeSeriesDataQueryParams {
   accountId: string

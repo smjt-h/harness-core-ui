@@ -143,6 +143,7 @@ export function PrometheusHealthSource(props: PrometheusHealthSourceProps): JSX.
         return (
           <FormikForm>
             <CustomMetric
+              isPrimaryMetric
               isValidInput={formikProps.isValid}
               setMappedMetrics={setMappedMetrics}
               selectedMetric={selectedMetric}

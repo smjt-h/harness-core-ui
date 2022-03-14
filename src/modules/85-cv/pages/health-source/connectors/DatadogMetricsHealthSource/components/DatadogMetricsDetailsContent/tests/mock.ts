@@ -6,6 +6,8 @@
  */
 
 import type React from 'react'
+// eslint-disable-next-line no-restricted-imports
+import type { Cancelable } from 'lodash'
 import type { FormikProps } from 'formik'
 import { DatadogProduct } from '@cv/pages/health-source/connectors/DatadogMetricsHealthSource/DatadogMetricsHealthSource.utils'
 import type { DatadogMetricInfo } from '@cv/pages/health-source/connectors/DatadogMetricsHealthSource/DatadogMetricsHealthSource.type'
@@ -14,6 +16,8 @@ import type { DatadogMetricsDetailsContentProps } from '../DatadogMetricsDetails
 export const MockMetricsContentProps = (
   setMetricsHealthData: React.Dispatch<React.SetStateAction<Map<string, DatadogMetricInfo>>>,
   formikProps: FormikProps<DatadogMetricInfo>,
+  fetchActiveMetrics: ((query?: string | undefined) => void) & Cancelable,
+  fetchMetricTags: ((query?: string | undefined) => void) & Cancelable,
   mockMetricInfo?: DatadogMetricInfo
 ): DatadogMetricsDetailsContentProps => {
   return {
@@ -23,7 +27,9 @@ export const MockMetricsContentProps = (
     setMetricHealthDetailsData: setMetricsHealthData,
     formikProps: formikProps,
     metricTags: MOCK_METRIC_TAGS_WITH_DUPLICATES,
-    activeMetrics: MOCK_ACTIVE_METRICS
+    activeMetrics: MOCK_ACTIVE_METRICS,
+    fetchActiveMetrics,
+    fetchMetricTags
   }
 }
 export const MockDatadogMetricsHealthSource = {

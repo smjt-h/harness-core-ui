@@ -21,10 +21,11 @@ interface RiskProfileProps {
   metricPackResponse: ReturnType<typeof useGetMetricPacks>
   labelNamesResponse?: ReturnType<typeof useGetLabelNames>
   continuousVerificationEnabled?: boolean
+  serviceInstance?: string
 }
 
 export function RiskProfile(props: RiskProfileProps): JSX.Element {
-  const { metricPackResponse, labelNamesResponse, continuousVerificationEnabled } = props
+  const { metricPackResponse, labelNamesResponse, continuousVerificationEnabled, serviceInstance } = props
   const { error, loading, data } = metricPackResponse
   const { getString } = useStrings()
   const { showError, clear } = useToaster()
@@ -86,6 +87,7 @@ export function RiskProfile(props: RiskProfileProps): JSX.Element {
           name={FieldNames.SERVICE_INSTANCE}
           label={<ServiceInstanceLabel />}
           items={transformedLabelNames}
+          value={serviceInstance ? { label: serviceInstance, value: serviceInstance } : undefined}
         />
       ) : null}
     </Container>

@@ -33,6 +33,7 @@ export default function CustomMetric(props: CustomMetricInterface): JSX.Element 
     setCreatedMetrics,
     setGroupedCreatedMetrics,
     initCustomForm,
+    isPrimaryMetric,
     shouldBeAbleToDeleteLastMetric
   } = props
   const { getString } = useStrings()
@@ -56,7 +57,8 @@ export default function CustomMetric(props: CustomMetricInterface): JSX.Element 
         oldMetric: oldState.selectedMetric,
         mappedMetrics: oldState.mappedMetrics,
         formikValues,
-        initCustomForm
+        initCustomForm,
+        isPrimaryMetric
       })
     })
   }, [formikValues?.groupName, formikValues?.metricName])
@@ -89,7 +91,8 @@ export default function CustomMetric(props: CustomMetricInterface): JSX.Element 
         setCreatedMetrics,
         setMappedMetrics,
         formikValues,
-        initCustomForm
+        initCustomForm,
+        isPrimaryMetric
       }),
     [formikValues]
   )

@@ -77,12 +77,15 @@ describe('DatadogMetricsDetailsContent unit tests', () => {
       setFieldValue: jest.fn()
     }
     const mockSetMetricsData = jest.fn()
-    const { container } = render(<WrapperComponent {...MockMetricsContentProps(mockSetMetricsData, mockFormikProps)} />)
+    const { container } = render(
+      <WrapperComponent
+        {...MockMetricsContentProps(mockSetMetricsData, mockFormikProps, jest.fn() as any, jest.fn() as any)}
+      />
+    )
     expect(container.querySelector('input[name="metric"]')).toHaveValue(MOCK_ACTIVE_METRIC)
     expect(container.querySelector('input[name="aggregator"]')).toHaveValue(
       'cv.monitoringSources.prometheus.avgAggregator'
     )
-    expect(container.querySelector('input[name="serviceInstanceIdentifierTag"]')).toHaveValue('host')
   })
   test('Ensure that fields are enabled when manual query provided', async () => {
     const mockDatadogMetricInfo: DatadogMetricInfo = { ...MockDatadogMetricInfo, isCustomCreatedMetric: true }
@@ -96,8 +99,18 @@ describe('DatadogMetricsDetailsContent unit tests', () => {
       setFieldValue: jest.fn()
     }
     const mockSetMetricsData = jest.fn()
+    const fetchActiveMetrics = jest.fn()
+    const fetchMetricTags = jest.fn()
     const { container } = render(
-      <WrapperComponent {...MockMetricsContentProps(mockSetMetricsData, mockFormikProps, mockDatadogMetricInfo)} />
+      <WrapperComponent
+        {...MockMetricsContentProps(
+          mockSetMetricsData,
+          mockFormikProps,
+          fetchActiveMetrics as any,
+          fetchMetricTags as any,
+          mockDatadogMetricInfo
+        )}
+      />
     )
     expect(container.querySelector('input[name="metricTags"]')).not.toHaveAttribute('disabled')
     expect(container.querySelector('input[name="metric"]')).not.toHaveAttribute('disabled')
@@ -116,9 +129,19 @@ describe('DatadogMetricsDetailsContent unit tests', () => {
       setFieldValue: jest.fn()
     }
     const mockSetMetricsData = jest.fn()
+    const fetchActiveMetrics = jest.fn()
+    const fetchMetricTags = jest.fn()
     render(
-      <WrapperComponent {...MockMetricsContentProps(mockSetMetricsData, mockFormikProps, mockDatadogMetricInfo)} />
+      <WrapperComponent
+        {...MockMetricsContentProps(
+          mockSetMetricsData,
+          mockFormikProps,
+          fetchActiveMetrics as any,
+          fetchMetricTags as any,
+          mockDatadogMetricInfo
+        )}
+      />
     )
-    expect(nameIdRenderMock).toHaveBeenCalledTimes(1)
+    expect(nameIdRenderMock).toHaveBeenCalledTimes(2)
   })
 })

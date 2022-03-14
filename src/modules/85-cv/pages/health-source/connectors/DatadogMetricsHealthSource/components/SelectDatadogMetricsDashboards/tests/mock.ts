@@ -30,7 +30,7 @@ export const DatadogMetricsMockHealthSource = {
   monitoringSourceName: 'todolist',
   monitoredServiceIdentifier: 'todolist',
   healthSourceName: 'mockHealthSourceName',
-  healthSourceIdentifier: 'datadog',
+  healthSourceIdentifier: 'test',
   sourceType: 'DatadogLog',
   connectorRef: 'datadogConnector',
   product: { label: DatadogProduct.CLOUD_METRICS, value: DatadogProduct.CLOUD_METRICS }

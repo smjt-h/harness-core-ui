@@ -49,4 +49,5 @@ export interface CloudMetricsHealthSourceProps<T> {
   dashboardDetailMapper: (dashboardId: string, detail: T) => MetricWidget
   formikProps: FormikProps<DatadogMetricInfo>
   onChangeManualEditQuery?: (enabled: boolean) => void
+  serviceInstanceList?: string[]
 }

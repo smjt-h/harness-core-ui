@@ -39,6 +39,7 @@ export interface DatadogMetricInfo {
   continuousVerification?: boolean
   healthScore?: boolean
   isNew?: boolean
+  serviceInstance?: string
 }
 
 export interface DatadogMetricSetupSource {

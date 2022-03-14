@@ -6,6 +6,8 @@
  */
 
 import type React from 'react'
+// eslint-disable-next-line no-restricted-imports
+import type { Cancelable } from 'lodash'
 import type { FormikProps } from 'formik'
 import type { DatadogMetricInfo } from '@cv/pages/health-source/connectors/DatadogMetricsHealthSource/DatadogMetricsHealthSource.type'
 
@@ -16,5 +18,9 @@ export interface DatadogMetricsDetailsContentProps {
   setMetricHealthDetailsData: React.Dispatch<React.SetStateAction<Map<string, DatadogMetricInfo>>>
   formikProps: FormikProps<DatadogMetricInfo>
   metricTags: string[]
-  activeMetrics: string[]
+  activeMetrics: string[] | undefined
+  activeMetricsLoading?: boolean
+  metricTagsLoading?: boolean
+  fetchActiveMetrics: ((query?: string | undefined) => void) & Cancelable
+  fetchMetricTags: ((query?: string | undefined) => void) & Cancelable
 }

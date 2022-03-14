@@ -161,10 +161,10 @@ export const metrics = {
 }
 
 export const metricTags = {
-  getMetricsTags: `/cv/api/datadog-metrics/metric-tags?routingId=${accountId}&projectIdentifier=${projectIdentifier}&orgIdentifier=${orgIdentifier}&accountId=${accountId}&connectorIdentifier=${connectorIdentifier}&tracingId=*&metric=datadog.agent.python.version`,
+  getMetricsTags: `/cv/api/datadog-metrics/metric-tags-v2?routingId=${accountId}&projectIdentifier=${projectIdentifier}&orgIdentifier=${orgIdentifier}&accountId=${accountId}&connectorIdentifier=${connectorIdentifier}&tracingId=*&metric=datadog.agent.python.version`,
   getMetricsTagsResponse: {
     status: 'SUCCESS',
-    data: ['agent_version_major:7'],
+    data: { metricTags: ['agent_version_major:7'], tagKeys: ['agent_version_major'] },
     metaData: null,
     correlationId: 'd5055d0d-e6d2-4ac5-8f29-c373ad9ae893'
   }
@@ -349,6 +349,7 @@ export const dataDogMonitoredService = {
                     },
                     riskProfile: { category: 'Errors', metricType: 'ERROR', thresholdTypes: ['ACT_WHEN_HIGHER'] }
                   },
+                  serviceInstanceIdentifierTag: 'agent_version_major',
                   sli: { enabled: false },
                   dashboardId: null,
                   dashboardName: 'group-1',
@@ -357,7 +358,6 @@ export const dataDogMonitoredService = {
                   groupingQuery: `${configuredMetric}{}.rollup(avg, 60)`,
                   metric: configuredMetric,
                   aggregation: null,
-                  serviceInstanceIdentifierTag: '',
                   metricTags: [''],
                   isManualQuery: false,
                   isCustomCreatedMetric: true

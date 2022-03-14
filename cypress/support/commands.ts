@@ -67,7 +67,7 @@ declare global {
       clickSubmit(): void
       fillField(fieldName: string, value: string): void
       addNewMonitoredServiceWithServiceAndEnv(): void
-      mapMetricToServices(): void
+      mapMetricToServices(hasServiceIndentifier?: boolean): void
       addingGroupName(name: string): void
       populateDefineHealthSource(connectorType: string, connectorName: string, healthSourceName: string): void
       selectFeature(featureName: string): void
@@ -168,7 +168,7 @@ Cypress.Commands.add('addNewMonitoredServiceWithServiceAndEnv', () => {
   cy.get('button').contains('span', 'Discard').parent().should('be.enabled')
 })
 
-Cypress.Commands.add('mapMetricToServices', () => {
+Cypress.Commands.add('mapMetricToServices', (hasServiceIndentifier = false) => {
   // Triggering validations again
   cy.findByRole('button', { name: /Submit/i }).click()
 
@@ -187,6 +187,12 @@ Cypress.Commands.add('mapMetricToServices', () => {
   cy.contains('span', 'One selection is required.').should('exist')
   cy.get('input[name="higherBaselineDeviation"]').click({ force: true })
   cy.contains('span', 'One selection is required.').should('not.exist')
+
+  if (hasServiceIndentifier) {
+    cy.get('input[name="serviceInstance"]').click()
+    cy.get('.Select--menuItem').first().click()
+  }
+
   cy.findByRole('button', { name: /Submit/i }).click()
 })
 
