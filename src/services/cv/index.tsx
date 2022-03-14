@@ -324,11 +324,11 @@ export interface AwsKmsConnectorCredential {
 }
 
 export type AwsKmsConnectorDTO = ConnectorConfigDTO & {
-  credential?: AwsKmsConnectorCredential
+  credential: AwsKmsConnectorCredential
   default?: boolean
   delegateSelectors?: string[]
   kmsArn: string
-  region?: string
+  region: string
 }
 
 export interface AwsKmsCredentialSpec {
@@ -514,7 +514,8 @@ export interface CVConfig {
     | 'DATADOG_LOG'
     | 'ERROR_TRACKING'
     | 'DYNATRACE'
-    | 'CUSTOM_HEALTH'
+    | 'CUSTOM_HEALTH_METRIC'
+    | 'CUSTOM_HEALTH_LOG'
   uuid?: string
   verificationType: 'TIME_SERIES' | 'LOG'
 }
@@ -1829,10 +1830,10 @@ export type GcpKmsConnectorDTO = ConnectorConfigDTO & {
   credentials: string
   default?: boolean
   delegateSelectors?: string[]
-  keyName?: string
-  keyRing?: string
-  projectId?: string
-  region?: string
+  keyName: string
+  keyRing: string
+  projectId: string
+  region: string
 }
 
 export type GcpManualDetails = GcpCredentialSpec & {
@@ -4960,7 +4961,7 @@ export interface ValidationError {
 }
 
 export type VaultConnectorDTO = ConnectorConfigDTO & {
-  accessType?: 'APP_ROLE' | 'TOKEN' | 'VAULT_AGENT' | 'AWS_IAM'
+  accessType?: 'APP_ROLE' | 'TOKEN' | 'VAULT_AGENT' | 'AWS_IAM' | 'K8s_AUTH'
   appRoleId?: string
   authToken?: string
   awsRegion?: string
@@ -4969,16 +4970,19 @@ export type VaultConnectorDTO = ConnectorConfigDTO & {
   delegateSelectors?: string[]
   namespace?: string
   readOnly?: boolean
-  renewalIntervalMinutes?: number
+  renewalIntervalMinutes: number
   secretEngineManuallyConfigured?: boolean
   secretEngineName?: string
   secretEngineVersion?: number
   secretId?: string
+  serviceAccountTokenPath?: string
   sinkPath?: string
   useAwsIam?: boolean
+  useK8sAuth?: boolean
   useVaultAgent?: boolean
   vaultAwsIamRole?: string
-  vaultUrl?: string
+  vaultK8sAuthRole?: string
+  vaultUrl: string
   xvaultAwsIamServerId?: string
 }
 
@@ -4999,7 +5003,8 @@ export interface VerificationJob {
     | 'DATADOG_LOG'
     | 'ERROR_TRACKING'
     | 'DYNATRACE'
-    | 'CUSTOM_HEALTH'
+    | 'CUSTOM_HEALTH_METRIC'
+    | 'CUSTOM_HEALTH_LOG'
   )[]
   defaultJob?: boolean
   duration?: Duration
@@ -5033,7 +5038,8 @@ export interface VerificationJobDTO {
     | 'DATADOG_LOG'
     | 'ERROR_TRACKING'
     | 'DYNATRACE'
-    | 'CUSTOM_HEALTH'
+    | 'CUSTOM_HEALTH_METRIC'
+    | 'CUSTOM_HEALTH_LOG'
   )[]
   defaultJob?: boolean
   duration?: string
