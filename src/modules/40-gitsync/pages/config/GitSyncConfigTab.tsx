@@ -15,7 +15,6 @@ import {
   PageSpinner,
   ExpandingSearchInput,
   Checkbox,
-  useToaster,
   MultiSelectDropDown,
   SelectOption,
   MultiSelectOption,
@@ -32,7 +31,6 @@ import {
   GitFullSyncEntityInfoFilterKeys,
   PageGitFullSyncEntityInfoDTO,
   ResponsePageGitFullSyncEntityInfoDTO,
-  triggerFullSyncPromise,
   useListFullSyncFiles
 } from 'services/cd-ng'
 import { useStrings } from 'framework/strings'
@@ -53,7 +51,6 @@ const enum SyncStatus {
 const GitSyncConfigTab: React.FC = () => {
   const { accountId, projectIdentifier, orgIdentifier } = useParams<ProjectPathProps>()
   const { getString } = useStrings()
-  const { showError, showSuccess } = useToaster()
   const [fullSyncEntities, setFullSyncEntities] = useState<PageGitFullSyncEntityInfoDTO | undefined>()
   const [searchTerm, setSearchTerm] = useState('')
   const [page, setPage] = useState(0)
@@ -130,24 +127,6 @@ const GitSyncConfigTab: React.FC = () => {
     debouncedGetFullSyncFiles().then(response => setFullSyncEntities(response.data))
   }, [searchTerm, page, showOnlyFailed, selectedEntity, debouncedGetFullSyncFiles])
 
-  const handleReSync = async (): Promise<void> => {
-    const triggerFullSync = await triggerFullSyncPromise({
-      queryParams: {
-        accountIdentifier: accountId,
-        orgIdentifier,
-        projectIdentifier
-      },
-      body: undefined
-    })
-    setFullSyncEntities((await debouncedGetFullSyncFiles()).data)
-
-    if (triggerFullSync.status === 'SUCCESS') {
-      showSuccess(getString('gitsync.resyncSucessToaster'))
-    } else {
-      showError((triggerFullSync as Error)?.message || getString('gitsync.resyncFailToaster'))
-    }
-  }
-
   return (
     <>
       <Page.SubHeader>
@@ -190,12 +169,6 @@ const GitSyncConfigTab: React.FC = () => {
             <Button
               variation={ButtonVariation.SECONDARY}
               text={getString('gitsync.resyncButtonText')}
-              disabled={loading}
-              onClick={handleReSync}
-            />
-            <Button
-              variation={ButtonVariation.SECONDARY}
-              text={getString('gitsync.editConfigButtonText')}
               disabled={loading}
               onClick={() => showModal()}
             />

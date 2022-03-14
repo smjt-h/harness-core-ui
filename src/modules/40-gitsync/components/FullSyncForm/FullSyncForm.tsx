@@ -23,7 +23,8 @@ import {
   ModalErrorHandlerBinding,
   PageSpinner,
   FontVariation,
-  useToaster
+  useToaster,
+  ButtonVariation
 } from '@harness/uicore'
 import * as Yup from 'yup'
 import cx from 'classnames'
@@ -174,12 +175,14 @@ const FullSyncForm: React.FC<ModalConfigureProps & FullSyncFormProps> = props =>
   }
 
   const fetchBranches = (repoIdentifier: string, query?: string): void => {
+    const selecteddRepo = gitSyncRepos.find((repo: GitSyncConfig) => repo.identifier === repoIdentifier)
     branchFetchHandler(
       {
         accountIdentifier: accountId,
         orgIdentifier,
         projectIdentifier,
-        yamlGitConfigIdentifier: repoIdentifier,
+        connectorIdentifierRef: selecteddRepo?.gitConnectorRef,
+        repoURL: selecteddRepo?.repo,
         page: 0,
         size: 10,
         searchTerm: query
@@ -389,8 +392,17 @@ const FullSyncForm: React.FC<ModalConfigureProps & FullSyncFormProps> = props =>
                   </Container>
 
                   <Layout.Horizontal spacing="medium">
-                    <Button type="submit" intent="primary" text={getString('save')} disabled={!hasSCM} />
-                    <Button text={getString('cancel')} margin={{ left: 'medium' }} onClick={onClose} />
+                    <Button
+                      type="submit"
+                      variation={ButtonVariation.PRIMARY}
+                      text={getString('save')}
+                      disabled={!hasSCM}
+                    />
+                    <Button
+                      text={isNewUser ? getString('common.skip') : getString('cancel')}
+                      variation={ButtonVariation.SECONDARY}
+                      onClick={onClose}
+                    />
                   </Layout.Horizontal>
                 </FormikForm>
               )

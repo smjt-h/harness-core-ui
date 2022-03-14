@@ -9,6 +9,7 @@ certificate: Certificate
 notEnabled: 'Not Enabled'
 apiStatus: 'API Status'
 gpgkey: 'GPG Key'
+skip: Skip
 sync: Sync
 accountSetup: Account Setup
 projectSetup: Project Setup

@@ -12,14 +12,13 @@ import type { UseStringsReturn } from 'framework/strings/String'
 import {
   createGitFullSyncConfigPromise,
   Failure,
-  getListOfBranchesWithStatusPromise,
-  GetListOfBranchesWithStatusQueryParams,
-  GitBranchDTO,
+  getListOfBranchesByConnectorPromise,
+  GetListOfBranchesByConnectorQueryParams,
   GitFullSyncConfigDTO,
   GitFullSyncConfigRequestDTO,
   GitSyncConfig,
   GitSyncFolderConfigDTO,
-  ResponseGitBranchListDTO,
+  ResponseListString,
   ResponseGitFullSyncConfigDTO,
   triggerFullSyncPromise,
   updateGitFullSyncConfigPromise,
@@ -141,7 +140,7 @@ export const handleConfigResponse = (
 }
 
 export const branchFetchHandler = (
-  queryParams: GetListOfBranchesWithStatusQueryParams,
+  queryParams: GetListOfBranchesByConnectorQueryParams,
   isNewBranch: boolean,
   currentConfigBranch: string | undefined,
   createPR: boolean,
@@ -152,11 +151,11 @@ export const branchFetchHandler = (
   const { setDisableCreatePR, setDisableBranchSelection, setBranches, getString } = handlers
   modalErrorHandler?.hide()
 
-  getListOfBranchesWithStatusPromise({
+  getListOfBranchesByConnectorPromise({
     queryParams
   })
-    .then((response: ResponseGitBranchListDTO) => {
-      const branchesInResponse = response?.data?.branches?.content
+    .then((response: ResponseListString) => {
+      const branchesInResponse = response?.data
       /* Show error in case no branches exist on a git repo at all */
       /* A valid git repo should have atleast one branch in it(a.k.a default branch) */
       if (!query && isEmpty(branchesInResponse)) {
@@ -165,8 +164,8 @@ export const branchFetchHandler = (
         modalErrorHandler?.showDanger(getString('common.git.noBranchesFound'))
         return
       }
-      const branchOptions = branchesInResponse?.map((branch: GitBranchDTO) => {
-        return { label: branch?.branchName, value: branch?.branchName }
+      const branchOptions = branchesInResponse?.map((branch: string) => {
+        return { label: branch, value: branch }
       }) as SelectOption[]
 
       // Handling for currentConfigBranch may not be in response

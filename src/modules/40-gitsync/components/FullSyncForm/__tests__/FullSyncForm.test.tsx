@@ -17,7 +17,7 @@ import mockFullSyncConfig from './mockData/mockConfig.json'
 
 const pathParams = { accountId: 'dummy', orgIdentifier: 'default', projectIdentifier: 'dummyProject' }
 
-const fetchBranches = jest.fn(() => Promise.resolve([]))
+const fetchBranches = jest.fn(() => Promise.resolve(['master', 'dev']))
 
 const fetchConfig = jest.fn(() => {
   Promise.resolve(mockFullSyncConfig)
@@ -31,7 +31,7 @@ jest.mock('services/cd-ng', () => ({
   createGitFullSyncConfigPromise: jest.fn().mockImplementation(config => updateConfig(config)),
   updateGitFullSyncConfigPromise: jest.fn().mockImplementation(config => updateConfig(config)),
   triggerFullSyncPromise: jest.fn().mockImplementation(() => noop()),
-  getListOfBranchesWithStatusPromise: jest.fn().mockImplementation(() => fetchBranches()),
+  getListOfBranchesByConnectorPromise: jest.fn().mockImplementation(() => fetchBranches()),
   useGetGitFullSyncConfig: jest.fn().mockImplementation(() => {
     return { loading: false, data: mockFullSyncConfig, refetch: fetchConfig }
   })

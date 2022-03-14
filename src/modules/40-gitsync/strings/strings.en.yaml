@@ -50,6 +50,6 @@ selectBranchTitle: Select an existing branch
 syncSucessToaster: Sync started for existing Harness entities
 resyncSucessToaster: Resync triggered
 resyncFailToaster: Resync trigger failed
-resyncButtonText: Resync Failed Entities
+resyncButtonText: Resync
 editConfigButtonText: Edit config
 configSaveToaster: Full sync config is saved
