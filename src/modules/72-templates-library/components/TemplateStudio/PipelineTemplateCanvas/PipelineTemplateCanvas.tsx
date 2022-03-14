@@ -55,13 +55,13 @@ const PipelineTemplateCanvas = () => {
     await updateTemplate(template)
   }
 
-  const openVariablesDrawer = () => {
+  const openVariablesDrawer = React.useCallback(() => {
     updateTemplateView({
       ...templateView,
       isDrawerOpened: true,
       drawerData: { type: DrawerTypes.TemplateVariables }
     })
-  }
+  }, [templateView, updateTemplateView])
 
   useGlobalEventListener('OPEN_PIPELINE_TEMPLATE_VARIABLES', () => {
     openVariablesDrawer()
