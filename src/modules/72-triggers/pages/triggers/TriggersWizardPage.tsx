@@ -492,8 +492,7 @@ const TriggersWizardPage: React.FC = (): JSX.Element => {
       accountIdentifier: accountId,
       orgIdentifier,
       pipelineIdentifier,
-      projectIdentifier,
-      getDefaultFromOtherRepo: true
+      projectIdentifier
     },
     lazy: true,
     body: {
@@ -501,14 +500,14 @@ const TriggersWizardPage: React.FC = (): JSX.Element => {
     }
   })
 
-  // causing render loop
   useEffect(() => {
-    // fetchResolvedPipeline()
+    fetchResolvedPipeline()
   }, [pipelineResponse?.data?.yamlPipeline])
 
   useEffect(() => {
     if (!loadingResolvedPipeline && templateRefsResolvedPipeline?.data?.mergedPipelineYaml) {
-      setPipelineWithoutTemplateRefsAsString(templateRefsResolvedPipeline?.data?.mergedPipelineYaml)
+      // below line is causing render loop
+      // setPipelineWithoutTemplateRefsAsString(templateRefsResolvedPipeline?.data?.mergedPipelineYaml)
       try {
         setPipelineWithoutTemplateRefs(
           parse(templateRefsResolvedPipeline?.data?.mergedPipelineYaml) as PipelineInfoConfig
