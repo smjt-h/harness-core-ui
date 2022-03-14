@@ -501,8 +501,9 @@ const TriggersWizardPage: React.FC = (): JSX.Element => {
     }
   })
 
+  // causing render loop
   useEffect(() => {
-    fetchResolvedPipeline()
+    // fetchResolvedPipeline()
   }, [pipelineResponse?.data?.yamlPipeline])
 
   useEffect(() => {
