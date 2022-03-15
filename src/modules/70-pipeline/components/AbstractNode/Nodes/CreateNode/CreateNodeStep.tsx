@@ -31,6 +31,16 @@ function CreateNodeStep(props: any): React.ReactElement {
       onDragOver={event => {
         event.preventDefault()
         event.stopPropagation()
+        if (props?.onDragOver) {
+          props.onDragOver()
+        }
+      }}
+      onDragLeave={event => {
+        event.preventDefault()
+        event.stopPropagation()
+        if (props?.onDragLeave) {
+          props.onDragLeave()
+        }
       }}
       onDrop={event => {
         props?.onDrop && props?.onDrop(event)

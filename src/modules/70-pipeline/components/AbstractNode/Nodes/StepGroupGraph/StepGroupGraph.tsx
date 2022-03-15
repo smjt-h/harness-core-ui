@@ -15,7 +15,7 @@ import {
   getPipelineGraphData,
   getSVGLinksFromPipeline
 } from '../../PipelineGraph/PipelineGraphUtils'
-import { NodeDetails, NodeIds, PipelineGraphState, PipelineGraphType, SVGPathRecord } from '../../types'
+import type { NodeDetails, NodeIds, PipelineGraphState, SVGPathRecord } from '../../types'
 // import CreateNode from '../CreateNode/CreateNode'
 import { NodeType } from '../../Node'
 import css from './StepGroupGraph.module.scss'
@@ -120,10 +120,8 @@ function StepGroupGraph(props: StepGroupGraphProps): React.ReactElement {
       ) : (
         CreateNode && (
           <CreateNode
-            identifier={props?.identifier}
+            {...props}
             isInsideStepGroup={true}
-            fireEvent={props.fireEvent}
-            graphType={PipelineGraphType.STEP_GRAPH}
             onClick={(event: any) => {
               props?.fireEvent({
                 type: Event.ClickNode,
@@ -134,6 +132,7 @@ function StepGroupGraph(props: StepGroupGraphProps): React.ReactElement {
                 target: event.target
               })
             }}
+            name={null}
           />
         )
       )}
