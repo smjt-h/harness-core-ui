@@ -492,7 +492,7 @@ function TerraformPlanWidget(
                             return (
                               <TFMonaco
                                 name="spec.configuration.backendConfig.spec.content"
-                                formik={formik}
+                                formik={formik as any}
                                 expressions={expressions}
                                 title={getString('cd.backEndConfig')}
                               />
@@ -502,7 +502,7 @@ function TerraformPlanWidget(
                         >
                           <TFMonaco
                             name="spec.configuration.backendConfig.spec.content"
-                            formik={formik}
+                            formik={formik as any}
                             expressions={expressions}
                             title={getString('cd.backEndConfig')}
                           />

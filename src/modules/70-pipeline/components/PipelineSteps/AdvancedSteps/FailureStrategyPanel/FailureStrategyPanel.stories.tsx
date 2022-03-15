@@ -43,7 +43,7 @@ export const Basic: Story<BasicArgs> = args => {
         })}
         onSubmit={() => void 0}
       >
-        {formik => {
+        {(formik: any) => {
           return (
             <div style={{ display: 'grid', gridTemplateColumns: '480px 1fr', columnGap: '20px' }}>
               <Card>

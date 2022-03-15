@@ -14,7 +14,7 @@ import {
   ModalErrorHandlerBinding,
   SelectOption
 } from '@wings-software/uicore'
-import type { FormikContext } from 'formik'
+import type { FormikContextType } from 'formik'
 import { useParams } from 'react-router-dom'
 import { StringKeys, useStrings } from 'framework/strings'
 import SecretInput from '@secrets/components/SecretInput/SecretInput'
@@ -24,7 +24,7 @@ import type { OrgPathProps } from '@common/interfaces/RouteInterfaces'
 import { useFeatureFlags } from '@common/hooks/useFeatureFlag'
 
 interface VaultConnectorFormFieldsProps {
-  formik: FormikContext<VaultConfigFormData>
+  formik: FormikContextType<VaultConfigFormData>
 }
 type AccessType = {
   [key in HashiCorpVaultAccessTypes]: StringKeys

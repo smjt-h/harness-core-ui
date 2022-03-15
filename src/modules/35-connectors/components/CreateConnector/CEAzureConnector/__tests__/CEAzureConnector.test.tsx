@@ -7,7 +7,7 @@
 
 import React from 'react'
 import { noop } from 'lodash-es'
-import { render, fireEvent, waitFor } from '@testing-library/react'
+import { render, fireEvent, waitFor, queryByText } from '@testing-library/react'
 import { act } from 'react-dom/test-utils'
 import { TestWrapper } from '@common/utils/testUtils'
 import { InputTypes, fillAtForm, clickSubmit } from '@common/utils/JestFormHelper'
@@ -265,7 +265,11 @@ describe('Create Azure connector Wizard', () => {
 
     const { container, getByText } = render(
       <TestWrapper path="/account/:accountId/resources/connectors" pathParams={{ accountId: 'dummy' }}>
-        <CreateAzureConnector {...commonProps} isEditMode={false} connectorInfo={undefined} />
+        <CreateAzureConnector
+          {...commonProps}
+          isEditMode={false}
+          connectorInfo={{ spec: { featuresEnabled: ['BILLING'] } } as any}
+        />
       </TestWrapper>
     )
 
@@ -295,10 +299,44 @@ describe('Create Azure connector Wizard', () => {
     })
 
     // Existing billing export page is rendered
-    expect(getByText('connectors.ceAzure.existingExports.instruction')).toBeDefined()
+    expect(getByText('connectors.ceAzure.billing.instruction')).toBeDefined()
+
+    await fillAtForm([
+      {
+        container,
+        type: InputTypes.TEXTFIELD,
+        fieldId: 'storageAccountName',
+        value: 'abcd'
+      },
+      // {
+      //   container,
+      //   type: InputTypes.TEXTFIELD,
+      //   fieldId: 'subscriptionId',
+      //   value: 'subscriptionIdValue'
+      // },
+      {
+        container,
+        type: InputTypes.TEXTFIELD,
+        fieldId: 'containerName',
+        value: 'containerNameValue'
+      },
+      {
+        container,
+        type: InputTypes.TEXTFIELD,
+        fieldId: 'directoryName',
+        value: 'directoryNameValue'
+      },
+      {
+        container,
+        type: InputTypes.TEXTFIELD,
+        fieldId: 'reportName',
+        value: 'reportNameValue'
+      }
+    ])
 
     await act(async () => {
-      clickSubmit(container)
+      // clickSubmit(container)
+      fireEvent.click(queryByText(container, 'continue')!)
     })
 
     // Choose requirement page and both feature cards are rendered

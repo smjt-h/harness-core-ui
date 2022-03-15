@@ -121,7 +121,7 @@ describe('Harness Approval tests', () => {
     )
 
     // Submit with empty form
-    await act(() => ref.current?.submitForm())
+    await act(() => ref.current?.submitForm()!)
     expect(getByText('pipelineSteps.stepNameRequired')).toBeTruthy()
 
     const queryByNameAttribute = (name: string): HTMLElement | null => queryByAttribute('name', container, name)
@@ -135,10 +135,10 @@ describe('Harness Approval tests', () => {
     })
     fireEvent.change(queryByNameAttribute('timeout')!, { target: { value: '' } })
 
-    await act(() => ref.current?.submitForm())
+    await act(() => ref.current?.submitForm()!)
     expect(queryByText('validation.timeout10SecMinimum')).toBeTruthy()
 
-    await act(() => ref.current?.submitForm())
+    await act(() => ref.current?.submitForm()!)
 
     await waitFor(() => expect(queryByText('pipeline.approvalStep.validation.userGroups')).toBeTruthy())
   })
@@ -174,7 +174,7 @@ describe('Harness Approval tests', () => {
 
     expect(container).toMatchSnapshot('edit stage readonly with expressions')
 
-    await act(() => ref.current?.submitForm())
+    await act(() => ref.current?.submitForm()!)
     expect(props.onUpdate).toBeCalledWith({
       identifier: 'hhaass',
       timeout: '10s',
@@ -207,8 +207,7 @@ describe('Harness Approval tests', () => {
     )
 
     expect(container).toMatchSnapshot('minimum count as negative')
-
-    await act(() => ref.current?.submitForm())
+    await act(() => ref.current?.submitForm()!)
     await waitFor(() => expect(queryByText('pipeline.approvalStep.validation.minimumCountOne')).toBeTruthy())
   })
 
@@ -247,8 +246,8 @@ describe('Harness Approval tests', () => {
     expect(secondApproverInputNameField).toHaveValue('')
     expect(secondApproverInputValueField).toHaveValue('')
 
-    act(() => {
-      fireEvent.change(secondApproverInputNameField, { target: { value: 'someotherkey' } })
+    await act(async () => {
+      await fireEvent.change(secondApproverInputNameField, { target: { value: 'someotherkey' } })
       fireEvent.change(secondApproverInputValueField, { target: { value: 'someothervalue' } })
     })
     expect(props.onChange).toBeCalledWith({
@@ -298,7 +297,7 @@ describe('Harness Approval tests', () => {
       fireEvent.click(getByText('pipeline.approvalStep.addApproverInputs'))
     })
 
-    await act(() => ref.current?.submitForm())
+    await act(() => ref.current?.submitForm()!)
     expect(props.onUpdate).toBeCalledWith({
       identifier: 'hhaass',
       timeout: '10m',

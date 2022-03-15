@@ -5,10 +5,10 @@
  * https://polyformproject.org/wp-content/uploads/2020/06/PolyForm-Shield-1.0.0.txt.
  */
 
-import type { FormikContext } from 'formik'
+import type { FormikContextType } from 'formik'
 import { get, isPlainObject } from 'lodash-es'
 
-export const errorCheck = (name: string, formik?: FormikContext<any>): boolean | '' | 0 | undefined =>
+export const errorCheck = (name: string, formik?: FormikContextType<any>): boolean | '' | 0 | undefined =>
   ((get(formik?.touched, name) || (formik?.submitCount && formik?.submitCount > 0)) &&
     get(formik?.errors, name) &&
     !isPlainObject(get(formik?.errors, name))) as boolean

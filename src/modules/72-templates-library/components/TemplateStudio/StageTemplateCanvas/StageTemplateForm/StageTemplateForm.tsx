@@ -38,7 +38,7 @@ const StageTemplateForm = (_props: unknown, formikRef: TemplateFormRef) => {
       setKey(uuid())
     },
     submitForm() {
-      return noop
+      return Promise.resolve()
     },
     getErrors() {
       return noop
