@@ -1,5 +1,4 @@
 import type { IconName } from '@harness/uicore'
-import type { StageElementWrapperConfig, ExecutionWrapperConfig } from 'services/cd-ng'
 
 export interface ListenerHandle {
   deregister: () => any
@@ -28,7 +27,7 @@ export interface PipelineGraphState {
   type: string
   name: string
   icon: IconName
-  data: StageElementWrapperConfig | ExecutionWrapperConfig
+  data: any
   nodeType?: string
   graphType?: PipelineGraphType
   children?: PipelineGraphState[]

@@ -24,7 +24,7 @@ function PipelineStageNode(props: any): JSX.Element {
   const CreateNode: React.FC<any> | undefined = props?.getNode(NodeType.CreateNode)?.component
   return (
     <div
-      className={`${cx(css.defaultNode, 'default-node')} draggable`}
+      className={cx(css.defaultNode, 'default-node', { draggable: !props.readonly })}
       onClick={event => {
         event.stopPropagation()
         if (props?.onClick) {
@@ -74,7 +74,7 @@ function PipelineStageNode(props: any): JSX.Element {
       <div
         id={props.id}
         data-nodeid={props.id}
-        draggable={true}
+        draggable={!props.readonly}
         className={cx(css.defaultCard, { [css.selected]: props?.isSelected })}
         style={{
           width: 90,
@@ -134,7 +134,7 @@ function PipelineStageNode(props: any): JSX.Element {
           {props.name}
         </Text>
       )}
-      {allowAdd && CreateNode && (
+      {allowAdd && CreateNode && !props.readonly && (
         <CreateNode
           onMouseOver={() => allowAdd && setVisibilityOfAdd(true)}
           onMouseLeave={() => allowAdd && setVisibilityOfAdd(false)}
@@ -153,7 +153,7 @@ function PipelineStageNode(props: any): JSX.Element {
           data-nodeid="add-parallel"
         />
       )}
-      {!props.isParallelNode && (
+      {!props.isParallelNode && !props.readonly && (
         <div
           data-linkid={props?.identifier}
           onClick={event => {
@@ -195,7 +195,7 @@ function PipelineStageNode(props: any): JSX.Element {
           <Icon name="plus" color={Color.WHITE} />
         </div>
       )}
-      {!props?.nextNode && props?.parentIdentifier && !props.isParallelNode && (
+      {!props?.nextNode && props?.parentIdentifier && !props.isParallelNode && !props.readonly && (
         <div
           data-linkid={props?.identifier}
           onClick={event => {

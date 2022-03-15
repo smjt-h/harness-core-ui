@@ -125,6 +125,7 @@ export class DiagramFactory {
     data: PipelineGraphState[]
     collapsibleProps?: NodeCollapsibleProps
     selectedNodeId?: string
+    readonly?: boolean
   }> {
     function PipelineStudioHOC(
       this: DiagramFactory,
@@ -132,6 +133,7 @@ export class DiagramFactory {
         data: PipelineGraphState[]
         collapsibleProps?: NodeCollapsibleProps
         selectedNodeId?: string
+        readonly?: boolean
       }
     ): React.ReactElement {
       return (

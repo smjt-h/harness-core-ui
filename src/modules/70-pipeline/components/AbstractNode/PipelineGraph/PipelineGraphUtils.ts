@@ -11,7 +11,7 @@ import { v4 as uuid } from 'uuid'
 import type { ExecutionWrapperConfig, StageElementWrapperConfig } from 'services/cd-ng'
 import { StepTypeToPipelineIconMap } from '@pipeline/components/PipelineStudio/ExecutionGraph/ExecutionGraphUtil'
 import { stageTypeToIconMap } from '@pipeline/utils/constants'
-import type { PipelineGraphState } from '../types'
+import type { PipelineGraphState, SVGPathRecord } from '../types'
 import { PipelineGraphType } from '../types'
 
 const INITIAL_ZOOM_LEVEL = 1
@@ -377,7 +377,43 @@ const getPipelineGraphDataType = (data: StageElementWrapperConfig[] | ExecutionW
   }
   return PipelineGraphType.STEP_GRAPH
 }
-
+const getTerminalNodeLinks = ({
+  firstNodeId = '',
+  lastNodeId = '',
+  createNodeId,
+  startNodeId,
+  endNodeId,
+  readonly = false
+}: {
+  startNodeId: string
+  endNodeId: string
+  firstNodeId?: string
+  lastNodeId?: string
+  createNodeId?: string
+  readonly?: boolean
+}): SVGPathRecord[] => {
+  const finalNodeLinks: SVGPathRecord[] = []
+  if (firstNodeId && !readonly) {
+    finalNodeLinks.push(
+      ...[
+        getFinalSVGArrowPath(startNodeId, firstNodeId),
+        getFinalSVGArrowPath(lastNodeId, createNodeId),
+        getFinalSVGArrowPath(createNodeId, endNodeId)
+      ]
+    )
+  }
+  if (firstNodeId && readonly) {
+    finalNodeLinks.push(
+      ...[getFinalSVGArrowPath(startNodeId, firstNodeId), getFinalSVGArrowPath(lastNodeId, endNodeId)]
+    )
+  }
+  if (!firstNodeId && !readonly) {
+    finalNodeLinks.push(
+      ...[getFinalSVGArrowPath(startNodeId, createNodeId), getFinalSVGArrowPath(createNodeId, endNodeId)]
+    )
+  }
+  return finalNodeLinks
+}
 export {
   ZOOM_INC_DEC_LEVEL,
   INITIAL_ZOOM_LEVEL,
@@ -387,5 +423,6 @@ export {
   getFinalSVGArrowPath,
   getPipelineGraphData,
   setupDragEventListeners,
-  getSVGLinksFromPipeline
+  getSVGLinksFromPipeline,
+  getTerminalNodeLinks
 }
