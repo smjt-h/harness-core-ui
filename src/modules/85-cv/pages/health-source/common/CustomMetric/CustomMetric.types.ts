@@ -56,6 +56,8 @@ export interface CustomMetricInterface {
   mappedMetrics: Map<string, CustomMappedMetric>
   initCustomForm: InitAppDCustomFormInterface | InitNewRelicCustomFormInterface
   groupedCreatedMetrics?: GroupedCreatedMetrics
+  shouldBeAbleToDeleteLastMetric?: boolean
+  isPrimaryMetric?: boolean
   setMappedMetrics: React.Dispatch<React.SetStateAction<CustomSelectedAndMappedMetrics>>
   setCreatedMetrics: React.Dispatch<React.SetStateAction<CreatedMetricsWithSelectedIndex>>
   setGroupedCreatedMetrics: React.Dispatch<React.SetStateAction<GroupedCreatedMetrics>>
@@ -67,6 +69,7 @@ export interface UpdateSelectedMetricsMapInterface {
   mappedMetrics: Map<string, CustomMappedMetric>
   formikValues: any
   initCustomForm: InitCustomFormData
+  isPrimaryMetric?: boolean
 }
 
 export interface RemoveMetricInterface {
@@ -86,5 +89,6 @@ export interface SelectMetricInerface {
   setCreatedMetrics: (value: React.SetStateAction<CreatedMetricsWithSelectedIndex>) => void
   setMappedMetrics: React.Dispatch<React.SetStateAction<CustomSelectedAndMappedMetrics>>
   formikValues: any
-  initCustomForm: InitAppDCustomFormInterface | InitNewRelicCustomFormInterface
+  initCustomForm: InitCustomFormData
+  isPrimaryMetric?: boolean
 }

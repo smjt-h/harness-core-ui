@@ -11,6 +11,21 @@ import { mappedMetricsMap, formikValues, expectedMappedMetrics } from './CustomM
 
 describe('Validate  utils functions', () => {
   const initCustomForm = initAppDCustomFormValue()
+  test('should validate with isPrimaryMetric', () => {
+    // isPrimaryMetric true
+    const withIsPrimaryMetric = updateSelectedMetricsMap({
+      updatedMetric: 'appdMetric 101',
+      oldMetric: 'appdMetric',
+      mappedMetrics: mappedMetricsMap,
+      formikValues,
+      initCustomForm,
+      isPrimaryMetric: true
+    })
+    const data: any = withIsPrimaryMetric.mappedMetrics.get('appdMetric 101')
+    expect(withIsPrimaryMetric.selectedMetric).toEqual('appdMetric 101')
+    expect(data?.metricIdentifier).toEqual('appdMetric_101')
+    expect(data?.identifier).toEqual('appdMetric_101')
+  })
   test('should validate updateSelectedMetricsMap', () => {
     const { selectedMetric, mappedMetrics } = updateSelectedMetricsMap({
       updatedMetric: 'appdMetric new',

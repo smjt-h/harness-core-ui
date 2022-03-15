@@ -64,6 +64,7 @@ allowpaths:
   - /datadog-metrics/metric-tags
   - /datadog-logs/log-indexes
   - /datadog-logs/sample-data
+  - /datadog-metrics/metric-tags-v2
   - /activity-source
   - /activity-source/{identifier}
   - /activity-source/list

@@ -22,7 +22,7 @@ export default function SelectHealthSourceServices({
   hideSLIAndHealthScore
 }: SelectHealthSourceServicesProps): JSX.Element {
   const { getString } = useStrings()
-  const { continuousVerification, healthScore } = values
+  const { continuousVerification, healthScore, serviceInstance } = values
   return (
     <Container className={css.main}>
       <Container className={css.checkBoxGroup}>
@@ -47,6 +47,7 @@ export default function SelectHealthSourceServices({
           metricPackResponse={metricPackResponse}
           labelNamesResponse={labelNamesResponse}
           continuousVerificationEnabled={continuousVerification && !hideServiceIdentifier}
+          serviceInstance={serviceInstance}
         />
       )}
     </Container>

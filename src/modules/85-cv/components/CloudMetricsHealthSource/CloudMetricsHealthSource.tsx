@@ -22,7 +22,7 @@ import MetricDashboardWidgetNav from '@cv/components/MetricDashboardWidgetNav/Me
 import type { CloudMetricsHealthSourceProps } from '@cv/components/CloudMetricsHealthSource/CloudMetricsHealthSource.type'
 import SelectHealthSourceServices from '@cv/pages/health-source/common/SelectHealthSourceServices/SelectHealthSourceServices'
 import type { ProjectPathProps } from '@common/interfaces/RouteInterfaces'
-import { useGetMetricPacks } from 'services/cv'
+import { useGetLabelNames, useGetMetricPacks } from 'services/cv'
 import css from '@cv/components/CloudMetricsHealthSource/CloudMetricHealthSource.module.scss'
 
 export default function CloudMetricsHealthSource<T>(props: CloudMetricsHealthSourceProps<T>): JSX.Element {
@@ -42,7 +42,8 @@ export default function CloudMetricsHealthSource<T>(props: CloudMetricsHealthSou
     dashboardDetailRequest,
     dashboardDetailMapper,
     formikProps,
-    onChangeManualEditQuery
+    onChangeManualEditQuery,
+    serviceInstanceList
   } = props
   const { getString } = useStrings()
   const { onPrevious } = useContext(SetupSourceTabsContext)
@@ -78,8 +79,10 @@ export default function CloudMetricsHealthSource<T>(props: CloudMetricsHealthSou
     healthScore = false,
     continuousVerification = false,
     isManualQuery,
-    isCustomCreatedMetric
+    isCustomCreatedMetric,
+    serviceInstance
   } = formikProps?.values
+
   return (
     <Container>
       <SetupSourceLayout
@@ -127,10 +130,11 @@ export default function CloudMetricsHealthSource<T>(props: CloudMetricsHealthSou
                     values={{
                       sli,
                       healthScore,
+                      serviceInstance,
                       continuousVerification
                     }}
                     metricPackResponse={metricPackResponse}
-                    hideServiceIdentifier
+                    labelNamesResponse={{ data: { data: serviceInstanceList } } as ReturnType<typeof useGetLabelNames>}
                   />
                 </Container>
               </Container>

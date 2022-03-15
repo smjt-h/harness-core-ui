@@ -34,6 +34,7 @@ import {
 } from '@cv/pages/health-source/connectors/DatadogMetricsHealthSource/components/DatadogMetricsDetailsContent/DatadogMetricsDetailsContent.utils'
 import {
   DatadogMetricsHealthSourceFieldNames,
+  defaultServiceInstaceValue,
   QUERY_CONTAINS_VALIDATION_PARAM
 } from '@cv/pages/health-source/connectors/DatadogMetricsHealthSource/DatadogMetricsHealthSource.constants'
 
@@ -44,7 +45,7 @@ export const DatadogProduct = {
 
 export function mapDatadogMetricHealthSourceToDatadogMetricSetupSource(sourceData: any): DatadogMetricSetupSource {
   const healthSource: UpdatedHealthSource = sourceData?.healthSourceList?.find(
-    (source: UpdatedHealthSource) => source.name === sourceData.healthSourceName
+    (source: UpdatedHealthSource) => source.identifier === sourceData.healthSourceIdentifier
   )
 
   const setupSource: DatadogMetricSetupSource = {
@@ -99,11 +100,16 @@ export function mapDatadogMetricHealthSourceToDatadogMetricSetupSource(sourceDat
         metricDefinition?.analysis?.riskProfile?.category && metricDefinition?.analysis?.riskProfile?.metricType
           ? `${metricDefinition?.analysis?.riskProfile?.category}/${metricDefinition?.analysis?.riskProfile?.metricType}`
           : '',
-      higherBaselineDeviation: Boolean(metricDefinition.riskProfile?.thresholdTypes?.includes('ACT_WHEN_HIGHER')),
-      lowerBaselineDeviation: Boolean(metricDefinition.riskProfile?.thresholdTypes?.includes('ACT_WHEN_LOWER')),
+      higherBaselineDeviation: Boolean(
+        metricDefinition.analysis?.riskProfile?.thresholdTypes?.includes('ACT_WHEN_HIGHER')
+      ),
+      lowerBaselineDeviation: Boolean(
+        metricDefinition.analysis?.riskProfile?.thresholdTypes?.includes('ACT_WHEN_LOWER')
+      ),
       query: metricDefinition.query,
       groupingQuery: metricDefinition.groupingQuery,
       serviceInstanceIdentifierTag: metricDefinition.serviceInstanceIdentifierTag,
+      serviceInstance: metricDefinition.serviceInstanceIdentifierTag,
       continuousVerification: metricDefinition?.analysis?.deploymentVerification?.enabled,
       healthScore: Boolean(metricDefinition?.analysis?.liveMonitoring?.enabled),
       sli: Boolean(metricDefinition.sli?.enabled)
@@ -224,6 +230,11 @@ export function validateFormMappings(
     if (!(values.higherBaselineDeviation || values.lowerBaselineDeviation)) {
       errors[DatadogMetricsHealthSourceFieldNames.HIGHER_BASELINE_DEVIATION] = getString(
         'cv.monitoringSources.gco.mapMetricsToServicesPage.validation.baseline'
+      )
+    }
+    if (values.continuousVerification && !values.serviceInstance) {
+      errors[DatadogMetricsHealthSourceFieldNames.SERVICE_INSTANCE] = getString(
+        'cv.monitoringSources.gcoLogs.validation.serviceInstance'
       )
     }
   }
@@ -373,4 +384,14 @@ export function getCustomCreatedMetrics(selectedMetrics: Map<string, DatadogMetr
     }
   }
   return manualQueries
+}
+
+export const getServiceIntance = (tagKeys?: string[]): string[] => {
+  let serviceInstanceList = tagKeys
+  if (serviceInstanceList) {
+    serviceInstanceList?.unshift(defaultServiceInstaceValue)
+  } else {
+    serviceInstanceList = [defaultServiceInstaceValue]
+  }
+  return serviceInstanceList
 }

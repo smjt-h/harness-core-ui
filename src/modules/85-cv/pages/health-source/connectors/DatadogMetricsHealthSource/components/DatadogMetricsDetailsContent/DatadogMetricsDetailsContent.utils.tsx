@@ -5,14 +5,19 @@
  * https://polyformproject.org/wp-content/uploads/2020/06/PolyForm-Shield-1.0.0.txt.
  */
 
-import type { SelectOption } from '@wings-software/uicore'
+import React from 'react'
+import type { FormikProps } from 'formik'
+import { Icon, SelectOption } from '@wings-software/uicore'
 import type {
   DatadogAggregation,
   DatadogAggregationType,
   DatadogMetricInfo
 } from '@cv/pages/health-source/connectors/DatadogMetricsHealthSource/DatadogMetricsHealthSource.type'
 import type { StringKeys, UseStringsReturn } from 'framework/strings'
-import { QUERY_CONTAINS_VALIDATION_PARAM } from '@cv/pages/health-source/connectors/DatadogMetricsHealthSource/DatadogMetricsHealthSource.constants'
+import {
+  DatadogMetricsHealthSourceFieldNames,
+  QUERY_CONTAINS_VALIDATION_PARAM
+} from '@cv/pages/health-source/connectors/DatadogMetricsHealthSource/DatadogMetricsHealthSource.constants'
 
 const datadogAggregations: DatadogAggregationType[] = ['avg', 'max', 'min', 'sum']
 export const datadogAggregationOptions: DatadogAggregation[] = [
@@ -193,5 +198,116 @@ export function initializeDatadogGroupNames(
     return groupName
   }).filter(groupItem => groupItem !== null) as SelectOption[]
 
-  return [{ label: getString('cv.addNew'), value: '' }, ...groupNames]
+  return [{ label: getString('cv.addNew'), value: '' }, ...groupNames].filter(val => val)
+}
+
+export const getOptions = (
+  options: SelectOption[],
+  getString: UseStringsReturn['getString'],
+  loading?: boolean
+): SelectOption[] =>
+  loading
+    ? [
+        {
+          value: getString('loading'),
+          label: getString('loading')
+        }
+      ]
+    : options
+
+export const renderSearchLoading = (loading?: boolean): JSX.Element =>
+  loading ? <Icon name="spinner" size={18} margin={{ top: 'xsmall', right: 'medium' }} /> : <></>
+
+export const getActiveMetric = (
+  activeMetricsOptions: SelectOption[],
+  selectedMetricData?: DatadogMetricInfo
+): SelectOption => {
+  let activeMetricItem = activeMetricsOptions.find(activeMetric => {
+    return selectedMetricData?.metric?.includes(activeMetric.value as string)
+  })
+  if (!activeMetricItem) {
+    activeMetricItem = { label: selectedMetricData?.metric || '', value: selectedMetricData?.metric || '' }
+  }
+  return activeMetricItem
+}
+
+export const setServiceInstanceTag = (
+  formikProps: FormikProps<DatadogMetricInfo>,
+  onRebuildMetricData: (
+    activeMetric?: string | undefined,
+    aggregator?: DatadogAggregationType | undefined,
+    selectedMetricTagOptions?: SelectOption[],
+    serviceInstanceIdentifier?: string | undefined,
+    groupName?: SelectOption | undefined
+  ) => void
+): void => {
+  if (formikProps.values.serviceInstanceIdentifierTag !== formikProps.values?.serviceInstance) {
+    formikProps.setFieldValue(
+      DatadogMetricsHealthSourceFieldNames.SERVICE_INSTANCE_IDENTIFIER_TAG,
+      formikProps.values.serviceInstanceIdentifierTag
+    )
+    onRebuildMetricData(
+      formikProps.values.metric,
+      formikProps.values.aggregator,
+      formikProps.values.metricTags,
+      formikProps.values?.serviceInstance as string,
+      formikProps.values.groupName
+    )
+  }
+}
+
+export const getPlaceholder = (getString: UseStringsReturn['getString'], loading?: boolean): string =>
+  loading ? getString('loading') : ''
+
+export const getMetricValue = (currentActiveMetric: SelectOption, loading?: boolean): SelectOption =>
+  loading ? { label: '', value: '' } : currentActiveMetric
+
+export const onMetricChange = (
+  value: string,
+  formikProps: FormikProps<DatadogMetricInfo>,
+  onRebuildMetricData: (
+    activeMetric?: string | undefined,
+    aggregator?: DatadogAggregationType | undefined,
+    selectedMetricTagOptions?: SelectOption[],
+    serviceInstanceIdentifier?: string | undefined,
+    groupName?: SelectOption | undefined
+  ) => void,
+  resetActiveMetrics?: () => void
+): void => {
+  if (!value) {
+    resetActiveMetrics?.()
+  }
+  formikProps.setFieldValue(DatadogMetricsHealthSourceFieldNames.METRIC, value)
+  const filteredMetricTags = formikProps.values.metricTags?.filter(tag => tag.value)
+  onRebuildMetricData(
+    value as string,
+    formikProps.values.aggregator,
+    filteredMetricTags,
+    formikProps.values.serviceInstanceIdentifierTag,
+    formikProps.values.groupName
+  )
+}
+
+export const setSearchPredicate = (
+  getString: UseStringsReturn['getString'],
+  search: string,
+  itemList: SelectOption[]
+): SelectOption[] => {
+  if (!itemList.length && search.length) {
+    return [
+      {
+        label: getString('cv.monitoredServices.noMatchingData'),
+        value: getString('cv.monitoredServices.noMatchingData')
+      }
+    ]
+  } else if (!itemList.length && !search.length) {
+    return [
+      {
+        label: getString('cv.monitoredServices.noMatchingData'),
+        value: getString('cv.monitoredServices.noMatchingData')
+      }
+    ]
+  } else {
+    return itemList
+  }
 }

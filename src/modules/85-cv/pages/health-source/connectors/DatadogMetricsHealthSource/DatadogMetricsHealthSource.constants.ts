@@ -18,7 +18,9 @@ export const DatadogMetricsHealthSourceFieldNames = {
   RISK_CATEGORY: 'riskCategory',
   HIGHER_BASELINE_DEVIATION: 'higherBaselineDeviation',
   LOWER_BASELINE_DEVIATION: 'lowerBaselineDeviation',
-  SLI: 'sli'
+  SLI: 'sli',
+  SERVICE_INSTANCE: 'serviceInstance'
 }
 
+export const defaultServiceInstaceValue = 'host'
 export const QUERY_CONTAINS_VALIDATION_PARAM = '.rollup(avg, 60)'
