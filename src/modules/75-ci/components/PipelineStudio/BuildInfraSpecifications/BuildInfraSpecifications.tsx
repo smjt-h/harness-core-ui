@@ -344,6 +344,7 @@ export default function BuildInfraSpecifications({ children }: React.PropsWithCh
 
   const handleValidate = (values: any): void => {
     if (stage) {
+      const buildInfraType = values.buildInfraType || buildInfraTypes[0].value
       const errors: { [key: string]: string } = {}
       const stageData = produce(stage, draft => {
         if (currentMode === Modes.Propagate && values.useFromStage) {

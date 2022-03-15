@@ -983,6 +983,7 @@ exports[`BuildInfraSpecifications snapshot tests for K8s Build Infra able to sel
             pipelineSteps.build.infraSpecifications.whereToRun
           </p>
           <form
+            action="#"
             class="FormikForm--main"
           >
             <div>

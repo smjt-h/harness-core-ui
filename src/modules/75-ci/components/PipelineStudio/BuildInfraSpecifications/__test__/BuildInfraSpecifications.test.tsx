@@ -87,7 +87,8 @@ describe('BuildInfraSpecifications snapshot tests for K8s Build Infra', () => {
               getStageFromPipeline: jest.fn(() => {
                 return { stage: contextMock.state.pipeline.stages[0], parent: undefined }
               }),
-              updatePipeline: jest.fn
+              updatePipeline: jest.fn,
+              updateStage: jest.fn
             } as any
           }
         >
@@ -121,7 +122,8 @@ describe('BuildInfraSpecifications snapshot tests for K8s Build Infra', () => {
               getStageFromPipeline: jest.fn(() => {
                 return { stage: contextMock.state.pipeline.stages[0], parent: undefined }
               }),
-              updatePipeline: jest.fn
+              updatePipeline: jest.fn,
+              updateStage: jest.fn
             } as any
           }
         >
@@ -184,7 +186,8 @@ describe('BuildInfraSpecifications snapshot tests for K8s Build Infra', () => {
               getStageFromPipeline: jest.fn(() => {
                 return { stage: contextMock.state.pipeline.stages[0], parent: undefined }
               }),
-              updatePipeline: jest.fn
+              updatePipeline: jest.fn,
+              updateStage: jest.fn
             } as any
           }
         >
