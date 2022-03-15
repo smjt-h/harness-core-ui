@@ -102,7 +102,7 @@ export const TemplateInputs: React.FC<TemplateInputsProps> = props => {
       default:
         return {}
     }
-  }, [template, inputSetTemplate])
+  }, [template.templateEntityType, inputSetTemplate])
 
   const originalValues = React.useMemo(() => {
     const templateSpec = (template as TemplateSummaryResponse).yaml
