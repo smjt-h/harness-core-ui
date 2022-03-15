@@ -23,9 +23,9 @@
         <div class='clearfix'>
             
             <div class='fl pad1y space-right2'>
-                <span class="strong">55.36% </span>
+                <span class="strong">58.18% </span>
                 <span class="quiet">Statements</span>
-                <span class='fraction'>31/56</span>
+                <span class='fraction'>32/55</span>
             </div>
         
             
@@ -44,9 +44,9 @@
         
             
             <div class='fl pad1y space-right2'>
-                <span class="strong">55.56% </span>
+                <span class="strong">58.49% </span>
                 <span class="quiet">Lines</span>
-                <span class='fraction'>30/54</span>
+                <span class='fraction'>31/53</span>
             </div>
         
             
@@ -249,7 +249,10 @@
 <a name='L190'></a><a href='#L190'>190</a>
 <a name='L191'></a><a href='#L191'>191</a>
 <a name='L192'></a><a href='#L192'>192</a>
-<a name='L193'></a><a href='#L193'>193</a></td><td class="line-coverage quiet"><span class="cline-any cline-neutral">&nbsp;</span>
+<a name='L193'></a><a href='#L193'>193</a>
+<a name='L194'></a><a href='#L194'>194</a>
+<a name='L195'></a><a href='#L195'>195</a>
+<a name='L196'></a><a href='#L196'>196</a></td><td class="line-coverage quiet"><span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
@@ -316,9 +319,10 @@
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-yes">244x</span>
+<span class="cline-any cline-yes">245x</span>
+<span class="cline-any cline-yes">245x</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-yes">244x</span>
+<span class="cline-any cline-yes">245x</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
@@ -418,13 +422,15 @@
 <span class="cline-any cline-no">&nbsp;</span>
 <span class="cline-any cline-no">&nbsp;</span>
 <span class="cline-any cline-no">&nbsp;</span>
-<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-no">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-no">&nbsp;</span>
 <span class="cline-any cline-no">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-no">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
@@ -509,6 +515,7 @@ export const WizardFooter = ({
   setSubmittedForm
 }: WizardFooterProps): JSX.Element =&gt; {
   const { getString } = useStrings()
+  const invalidYamlString = getString('common.validation.invalidYamlText')
 &nbsp;
   return (
     &lt;Layout.Horizontal className={cx(css.footer, !isYamlView &amp;&amp; css.nonYamlViewFooter)}&gt;
@@ -596,7 +603,7 @@ export const WizardFooter = ({
 <span class="cstat-no" title="statement not covered" >                (<span class="branch-0 cbranch-no" title="branch not covered" >yamlHandler?.getYAMLValidationErrorMap() as unknown as Map&lt;number, string&gt;) </span>||</span>
                 /* istanbul ignore next */ ''
 <span class="cstat-no" title="statement not covered" >              if (errorsYaml?.size &gt; 0) {</span>
-<span class="cstat-no" title="statement not covered" >                showError(getString('invalidYamlText'))</span>
+<span class="cstat-no" title="statement not covered" >                showError(invalidYamlString)</span>
 <span class="cstat-no" title="statement not covered" >                return</span>
               }
 &nbsp;
@@ -610,13 +617,15 @@ export const WizardFooter = ({
                 const parsedYaml = <span class="cstat-no" title="statement not covered" >parse(latestYaml)</span>
                 const processedFormik = <span class="cstat-no" title="statement not covered" >yamlObjectKey ? parsedYaml?.[yamlObjectKey] : parsedYaml</span>
 <span class="cstat-no" title="statement not covered" >                if (!parsedYaml) {</span>
-<span class="cstat-no" title="statement not covered" >                  showError(getString('invalidYamlText'))</span>
+                  /* istanbul ignore next */
+                  showError(invalidYamlString)
 <span class="cstat-no" title="statement not covered" >                  return</span>
                 }
 <span class="cstat-no" title="statement not covered" >                formikProps.setSubmitting(true)</span>
 <span class="cstat-no" title="statement not covered" >                onYamlSubmit?.(processedFormik)</span>
               } catch (e) {
-<span class="cstat-no" title="statement not covered" >                showError(getString('invalidYamlText'))</span>
+                /* istanbul ignore next */
+                showError(invalidYamlString)
 <span class="cstat-no" title="statement not covered" >                return</span>
               }
             }}
@@ -640,7 +649,7 @@ export const WizardFooter = ({
             <div class='footer quiet pad2 space-top1 center small'>
                 Code coverage generated by
                 <a href="https://istanbul.js.org/" target="_blank">istanbul</a>
-                at Tue Mar 15 2022 20:17:57 GMT+0000 (Greenwich Mean Time)
+                at Tue Mar 15 2022 22:02:49 GMT+0000 (Greenwich Mean Time)
             </div>
         </div>
         <script src="../../../../prettify.js"></script>
