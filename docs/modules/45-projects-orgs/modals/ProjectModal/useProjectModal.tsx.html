@@ -23,9 +23,9 @@
         <div class='clearfix'>
             
             <div class='fl pad1y space-right2'>
-                <span class="strong">86.44% </span>
+                <span class="strong">85.71% </span>
                 <span class="quiet">Statements</span>
-                <span class='fraction'>51/59</span>
+                <span class='fraction'>48/56</span>
             </div>
         
             
@@ -44,9 +44,9 @@
         
             
             <div class='fl pad1y space-right2'>
-                <span class="strong">86.21% </span>
+                <span class="strong">85.45% </span>
                 <span class="quiet">Lines</span>
-                <span class='fraction'>50/58</span>
+                <span class='fraction'>47/55</span>
             </div>
         
             
@@ -209,11 +209,7 @@
 <a name='L150'></a><a href='#L150'>150</a>
 <a name='L151'></a><a href='#L151'>151</a>
 <a name='L152'></a><a href='#L152'>152</a>
-<a name='L153'></a><a href='#L153'>153</a>
-<a name='L154'></a><a href='#L154'>154</a>
-<a name='L155'></a><a href='#L155'>155</a>
-<a name='L156'></a><a href='#L156'>156</a>
-<a name='L157'></a><a href='#L157'>157</a></td><td class="line-coverage quiet"><span class="cline-any cline-neutral">&nbsp;</span>
+<a name='L153'></a><a href='#L153'>153</a></td><td class="line-coverage quiet"><span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
@@ -224,12 +220,10 @@
 <span class="cline-any cline-yes">14x</span>
 <span class="cline-any cline-yes">14x</span>
 <span class="cline-any cline-yes">14x</span>
-<span class="cline-any cline-yes">14x</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-yes">14x</span>
 <span class="cline-any cline-yes">14x</span>
-<span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-yes">14x</span>
 <span class="cline-any cline-yes">14x</span>
 <span class="cline-any cline-yes">14x</span>
@@ -258,21 +252,19 @@
 <span class="cline-any cline-yes">84x</span>
 <span class="cline-any cline-yes">84x</span>
 <span class="cline-any cline-yes">84x</span>
-<span class="cline-any cline-yes">84x</span>
-<span class="cline-any cline-yes">84x</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-yes">84x</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-yes">84x</span>
-<span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-yes">84x</span>
 <span class="cline-any cline-yes">1x</span>
 <span class="cline-any cline-yes">1x</span>
@@ -380,12 +372,10 @@ import React, { useCallback, useState } from 'react'
 import { StepWizard, Button } from '@wings-software/uicore'
 import { useModalHook } from '@harness/use-modal'
 import { Dialog, IDialogProps } from '@blueprintjs/core'
-import { useLocation, useParams } from 'react-router-dom'
 import type { ModuleName } from 'framework/types/ModuleName'
 import type { Project } from 'services/cd-ng'
 import { useStrings } from 'framework/strings'
-import paths from '@common/RouteDefinitions'
-import type { ProjectPathProps, SecretsPathProps, ModulePathParams } from '@common/interfaces/RouteInterfaces'
+import { useModuleInfo } from '@common/hooks/useModuleInfo'
 import { useModuleSelectModal } from '../ModuleSelect/useModuleSelect'
 import { Views } from './Constants'
 import { ProjectCollaboratorsStep } from './views/Collaborators'
@@ -414,10 +404,7 @@ export const useProjectModal = ({
   const [projectData, setProjectData] = useState&lt;Project&gt;()
   const [refreshProjects, setRefreshProjects] = useState(false)
   const { getString } = useStrings()
-  const { pathname } = useLocation()
-  const params = useParams&lt;ProjectPathProps &amp; SecretsPathProps &amp; ModulePathParams&gt;()
 &nbsp;
-  const isHome = pathname.indexOf(paths.toHome({ accountId: params.accountId })) !== -1
   const modalProps: IDialogProps = {
     isOpen: true,
     enforceFocus: false,
@@ -429,6 +416,7 @@ export const useProjectModal = ({
       overflow: 'auto'
     }
   }
+  const { module } = useModuleInfo()
   const { openModuleSelectModal } = useModuleSelectModal({
     onSuccess: () =&gt; onWizardComplete<span class="branch-0 cbranch-no" title="branch not covered" >?.(p</span>rojectData),
     onCloseModal: () =&gt; onWizardComplete<span class="branch-0 cbranch-no" title="branch not covered" >?.(p</span>rojectData)
@@ -437,7 +425,7 @@ export const useProjectModal = ({
     <span class="missing-if-branch" title="if path not taken" >I</span>if (!wizardData) {
 <span class="cstat-no" title="statement not covered" >      setProjectData(wizardData)</span>
     }
-    <span class="missing-if-branch" title="else path not taken" >E</span>if (wizardData &amp;&amp; isHome) {
+    <span class="missing-if-branch" title="else path not taken" >E</span>if (wizardData &amp;&amp; !module) {
       openModuleSelectModal(wizardData)
     } else {
 <span class="cstat-no" title="statement not covered" >      onWizardComplete?.(wizardData)</span>
@@ -532,7 +520,7 @@ export const useProjectModal = ({
             <div class='footer quiet pad2 space-top1 center small'>
                 Code coverage generated by
                 <a href="https://istanbul.js.org/" target="_blank">istanbul</a>
-                at Tue Mar 15 2022 13:14:53 GMT+0000 (Greenwich Mean Time)
+                at Tue Mar 15 2022 14:05:08 GMT+0000 (Greenwich Mean Time)
             </div>
         </div>
         <script src="../../../../prettify.js"></script>
