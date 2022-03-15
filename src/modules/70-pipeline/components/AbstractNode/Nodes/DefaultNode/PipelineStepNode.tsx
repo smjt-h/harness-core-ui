@@ -26,7 +26,7 @@ function PipelineStepNode(props: any): JSX.Element {
 
   return (
     <div
-      className={`${cx(css.defaultNode, 'default-node')} draggable`}
+      className={cx(css.defaultNode, 'default-node', { draggable: !props.readOnly })}
       // ref={nodeRef}
       onMouseOver={() => allowAdd && setVisibilityOfAdd(true)}
       onMouseLeave={() => allowAdd && setVisibilityOfAdd(false)}
@@ -102,7 +102,7 @@ function PipelineStepNode(props: any): JSX.Element {
         }}
       >
         <div className="execution-running-animation" />
-        {props.icon && <Icon size={28} name={stepData?.icon || 'cross'} inverse={props?.isSelected} />}
+        {stepData?.icon && <Icon size={28} name={stepData?.icon || 'cross'} inverse={props?.isSelected} />}
         {SECONDARY_ICON && <Icon className={css.secondaryIcon} size={8} name={SECONDARY_ICON} />}
         <Button
           className={cx(css.closeNode, { [css.readonly]: props.readonly })}

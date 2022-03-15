@@ -24,6 +24,7 @@ export interface PipelineGraphRecursiveProps {
   startEndNodeNeeded?: boolean
   parentIdentifier?: string
   collapsibleProps?: NodeCollapsibleProps
+  readonly?: boolean
 }
 export function PipelineGraphRecursive({
   nodes,
@@ -35,7 +36,8 @@ export function PipelineGraphRecursive({
   parentIdentifier,
   updateGraphLinks,
   collapsibleProps,
-  getDefaultNode
+  getDefaultNode,
+  readonly = false
 }: PipelineGraphRecursiveProps): React.ReactElement {
   const StartNode: React.FC<any> | undefined = getNode(NodeType.StartNode)?.component
   const CreateNode: React.FC<any> | undefined = getNode(NodeType.CreateNode)?.component
@@ -62,10 +64,11 @@ export function PipelineGraphRecursive({
             prevNode={nodes?.[index - 1]}
             updateGraphLinks={updateGraphLinks}
             collapsibleProps={collapsibleProps}
+            readonly={readonly}
           />
         )
       })}
-      {CreateNode && startEndNodeNeeded && (
+      {CreateNode && startEndNodeNeeded && !readonly && (
         <CreateNode identifier={uniqueNodeIds?.createNode} name={'Add Stage'} fireEvent={fireEvent} getNode={getNode} />
       )}
       {EndNode && startEndNodeNeeded && <EndNode id={uniqueNodeIds?.endNode} className={classNames(css.graphNode)} />}
@@ -93,6 +96,7 @@ interface PipelineGraphNodeWithoutCollapseProps {
   getDefaultNode(): NodeDetails | null
   collapseOnIntersect?: boolean
   intersectingIndex?: number
+  readonly?: boolean
 }
 const PipelineGraphNodeWithoutCollapse = React.forwardRef(
   (
@@ -113,7 +117,8 @@ const PipelineGraphNodeWithoutCollapse = React.forwardRef(
       updateGraphLinks,
       collapseOnIntersect,
       getDefaultNode,
-      intersectingIndex = -1
+      intersectingIndex = -1,
+      readonly
     }: PipelineGraphNodeWithoutCollapseProps,
     ref: ForwardedRef<HTMLDivElement>
   ): React.ReactElement | null => {
@@ -144,6 +149,7 @@ const PipelineGraphNodeWithoutCollapse = React.forwardRef(
                 allowAdd={true}
                 prevNodeIdentifier={prevNodeIdentifier}
                 intersectingIndex={intersectingIndex}
+                readonly={readonly}
                 {...data}
               />
             ) : (
@@ -163,6 +169,7 @@ const PipelineGraphNodeWithoutCollapse = React.forwardRef(
                   prevNode={prevNode}
                   nextNode={nextNode}
                   updateGraphLinks={updateGraphLinks}
+                  readonly={readonly}
                   {...data}
                 />
               )
@@ -193,6 +200,7 @@ const PipelineGraphNodeWithoutCollapse = React.forwardRef(
                   prevNodeIdentifier={prevNodeIdentifier}
                   prevNode={prevNode}
                   nextNode={nextNode}
+                  readonly={readonly}
                   updateGraphLinks={updateGraphLinks}
                 />
               )
@@ -215,6 +223,7 @@ const PipelineGraphNodeWithoutCollapse = React.forwardRef(
                     prevNodeIdentifier={prevNodeIdentifier}
                     identifier={currentNodeData.identifier}
                     intersectingIndex={intersectingIndex}
+                    readonly={readonly}
                   />
                 ) : indexRelativeToParent > intersectingIndex && intersectingIndex !== -1 ? null : (
                   ChildNodeComponent && (
@@ -232,6 +241,7 @@ const PipelineGraphNodeWithoutCollapse = React.forwardRef(
                       prevNodeIdentifier={prevNodeIdentifier}
                       prevNode={prevNode}
                       nextNode={nextNode}
+                      readonly={readonly}
                       updateGraphLinks={updateGraphLinks}
                     />
                   )

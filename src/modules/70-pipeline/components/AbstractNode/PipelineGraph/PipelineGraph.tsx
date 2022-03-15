@@ -12,9 +12,9 @@ import Draggable from 'react-draggable'
 import { v4 as uuid } from 'uuid'
 import { Event } from '@pipeline/components/Diagram'
 import {
-  getFinalSVGArrowPath,
   getScaleToFitValue,
   getSVGLinksFromPipeline,
+  getTerminalNodeLinks,
   INITIAL_ZOOM_LEVEL,
   scrollZoom,
   setupDragEventListeners
@@ -37,6 +37,7 @@ export interface PipelineGraphProps {
   getDefaultNode(): NodeDetails | null
   selectedNodeId?: string
   collapsibleProps?: NodeCollapsibleProps
+  readonly?: boolean
 }
 
 function PipelineGraph({
@@ -45,7 +46,8 @@ function PipelineGraph({
   fireEvent,
   collapsibleProps,
   getDefaultNode,
-  selectedNodeId = ''
+  selectedNodeId = '',
+  readonly
 }: PipelineGraphProps): React.ReactElement {
   const [svgPath, setSvgPath] = useState<SVGPathRecord[]>([])
   const [treeRectangle, setTreeRectangle] = useState<DOMRect | void>()
@@ -82,19 +84,22 @@ function PipelineGraph({
   }, [state])
 
   const setSVGLinks = (): void => {
-    const SVGLinks = getSVGLinksFromPipeline(state, undefined, undefined, uniqueNodeIds.createNode)
     const lastNode = state?.[state?.length - 1]
-    return state.length === 0
-      ? setSvgPath([
-          getFinalSVGArrowPath(uniqueNodeIds.startNode, uniqueNodeIds.createNode as string),
-          getFinalSVGArrowPath(uniqueNodeIds.createNode as string, uniqueNodeIds.endNode as string)
-        ])
-      : setSvgPath([
-          ...SVGLinks,
-          getFinalSVGArrowPath(uniqueNodeIds.startNode, state?.[0]?.id as string),
-          getFinalSVGArrowPath(lastNode?.id as string, uniqueNodeIds.createNode as string),
-          getFinalSVGArrowPath(uniqueNodeIds.createNode as string, uniqueNodeIds.endNode as string)
-        ])
+    const terminalNodeLinks: SVGPathRecord[] = getTerminalNodeLinks({
+      startNodeId: uniqueNodeIds.startNode,
+      endNodeId: uniqueNodeIds.endNode,
+      firstNodeId: state?.[0]?.id,
+      lastNodeId: lastNode?.id,
+      createNodeId: uniqueNodeIds.createNode,
+      readonly
+    })
+    const SVGLinks = getSVGLinksFromPipeline(
+      state,
+      undefined,
+      undefined,
+      readonly ? uniqueNodeIds.endNode : uniqueNodeIds.createNode
+    )
+    return setSvgPath([...SVGLinks, ...terminalNodeLinks])
   }
 
   useEffect(() => {
@@ -133,6 +138,7 @@ function PipelineGraph({
               updateGraphLinks={setSVGLinks}
               collapsibleProps={collapsibleProps}
               getDefaultNode={getDefaultNode}
+              readonly={readonly}
             />
           </div>
         </div>
