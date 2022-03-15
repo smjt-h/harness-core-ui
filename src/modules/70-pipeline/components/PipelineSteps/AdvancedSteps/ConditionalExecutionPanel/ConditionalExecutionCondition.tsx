@@ -6,12 +6,15 @@
  */
 
 import React, { useState } from 'react'
-import { Container, getMultiTypeFromValue, HarnessDocTooltip, MultiTypeInputType } from '@wings-software/uicore'
+import { Container, HarnessDocTooltip, MultiTypeInputType } from '@wings-software/uicore'
 import { Checkbox } from '@blueprintjs/core'
 import type { FormikProps } from 'formik'
 import cx from 'classnames'
 import { useStrings } from 'framework/strings'
-import { MultiTypeExecutionCondition } from '@common/components/MultiTypeExecutionCondition/MultiTypeExecutionCondition'
+import {
+  MultiTypeExecutionCondition,
+  getRestrictedMultiTypeFromValue
+} from '@common/components/MultiTypeExecutionCondition/MultiTypeExecutionCondition'
 import { useVariablesExpression } from '@pipeline/components/PipelineStudio/PiplineHooks/useVariablesExpression'
 import type { StepMode as Modes } from '@pipeline/utils/stepUtils'
 import type { ConditionalExecutionOption } from './ConditionalExecutionPanelUtils'
@@ -28,7 +31,7 @@ export default function ConditionalExecutionCondition(props: ConditionalExecutio
   const { getString } = useStrings()
   const { formikProps, mode, isReadonly } = props
   const conditionValue = formikProps.values?.condition
-  const [multiType, setMultiType] = useState<MultiTypeInputType>(getMultiTypeFromValue(conditionValue))
+  const [multiType, setMultiType] = useState<MultiTypeInputType>(getRestrictedMultiTypeFromValue(conditionValue))
   const isInputDisabled = !formikProps.values.enableJEXL || isReadonly
   const { expressions } = useVariablesExpression()
 

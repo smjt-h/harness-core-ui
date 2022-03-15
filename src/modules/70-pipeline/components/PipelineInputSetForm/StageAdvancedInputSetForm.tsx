@@ -6,21 +6,16 @@
  */
 
 import React, { useState } from 'react'
-import {
-  Text,
-  Color,
-  HarnessDocTooltip,
-  Layout,
-  Container,
-  MultiTypeInputType,
-  getMultiTypeFromValue
-} from '@wings-software/uicore'
+import { Text, Color, HarnessDocTooltip, Layout, Container, MultiTypeInputType } from '@wings-software/uicore'
 import { isEmpty, get } from 'lodash-es'
 import { connect, FormikContext } from 'formik'
 import cx from 'classnames'
 import type { StageElementConfig } from 'services/cd-ng'
 import { useVariablesExpression } from '@pipeline/components/PipelineStudio/PiplineHooks/useVariablesExpression'
-import { MultiTypeExecutionCondition } from '@common/components/MultiTypeExecutionCondition/MultiTypeExecutionCondition'
+import {
+  MultiTypeExecutionCondition,
+  getRestrictedMultiTypeFromValue
+} from '@common/components/MultiTypeExecutionCondition/MultiTypeExecutionCondition'
 import { useStrings } from 'framework/strings'
 import css from './PipelineInputSetForm.module.scss'
 import stepCss from '@pipeline/components/PipelineSteps/Steps/Steps.module.scss'
@@ -45,7 +40,7 @@ function ConditionalExecutionFormInternal(props: ConditionalExecutionFormProps):
   const { getString } = useStrings()
   const conditionValue = get(formik?.values, path)
   const { expressions } = useVariablesExpression()
-  const [multiType, setMultiType] = useState<MultiTypeInputType>(getMultiTypeFromValue(conditionValue))
+  const [multiType, setMultiType] = useState<MultiTypeInputType>(getRestrictedMultiTypeFromValue(conditionValue))
 
   return (
     <Container margin={{ bottom: 'medium' }}>

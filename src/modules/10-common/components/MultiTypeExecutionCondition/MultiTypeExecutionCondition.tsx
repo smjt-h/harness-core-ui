@@ -9,7 +9,7 @@ import React from 'react'
 import cx from 'classnames'
 import { connect, FormikContext } from 'formik'
 import { filter, get } from 'lodash-es'
-import { Container, ExpressionAndRuntimeType, MultiTypeInputType } from '@wings-software/uicore'
+import { Container, ExpressionAndRuntimeType, getMultiTypeFromValue, MultiTypeInputType } from '@wings-software/uicore'
 import { MonacoTextField } from '@common/components/MonacoTextField/MonacoTextField'
 import multiBtnCss from '@common/components/MultiTypeTextArea/MultiTypeTextArea.module.scss'
 import css from './MultiTypeExecutionCondition.module.scss'
@@ -37,6 +37,13 @@ function MultiTypeMonacoTextFieldFixedTypeComponent(props: {
       <MonacoTextField name={name} expressions={expressions} disabled={readonly} />
     </Container>
   )
+}
+
+export function getRestrictedMultiTypeFromValue(conditionValue: string) {
+  const multiType = getMultiTypeFromValue(conditionValue)
+
+  // Since expression type is not support for JEXL input
+  return multiType === MultiTypeInputType.EXPRESSION ? MultiTypeInputType.FIXED : multiType
 }
 
 function MultiTypeExecutionConditionInternal(props: MultiTypeExecutionConditionProps) {
