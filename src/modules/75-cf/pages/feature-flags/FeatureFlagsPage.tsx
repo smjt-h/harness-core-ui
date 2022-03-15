@@ -19,6 +19,8 @@ import {
   Utils,
   TableV2
 } from '@wings-software/uicore'
+import type { GovernanceMetadata } from 'services/pipeline-ng'
+import { EvaluationModal } from '@governance/EvaluationModal'
 import { noop } from 'lodash-es'
 import { Classes, Position, Switch } from '@blueprintjs/core'
 import type { Cell, CellProps, Column, Renderer } from 'react-table'
@@ -69,6 +71,7 @@ import usePlanEnforcement from '@cf/hooks/usePlanEnforcement'
 import FlagOptionsMenuButton from '@cf/components/FlagOptionsMenuButton/FlagOptionsMenuButton'
 import { FeatureIdentifier } from 'framework/featureStore/FeatureIdentifier'
 import { useFeature } from '@common/hooks/useFeatures'
+import { useFeatureFlags } from '@common/hooks/useFeatureFlag'
 import { FeatureWarningTooltip } from '@common/components/FeatureWarning/FeatureWarningWithTooltip'
 import imageURL from './Feature_Flags_Teepee.svg'
 import { FeatureFlagStatus, FlagStatus } from './FlagStatus'
@@ -79,12 +82,14 @@ interface RenderColumnFlagProps {
   gitSync: UseGitSync
   cell: Cell<Feature>
   toggleFeatureFlag: UseToggleFeatureFlag
+  setGovernanceMetadata: (data: any) => void
   update: (status: boolean) => void
 }
 
 const RenderColumnFlag: React.FC<RenderColumnFlagProps> = ({
   gitSync,
   toggleFeatureFlag,
+  setGovernanceMetadata,
   cell: { row, column },
   update
 }) => {
@@ -137,7 +142,11 @@ const RenderColumnFlag: React.FC<RenderColumnFlagProps> = ({
       if (error.status === GIT_SYNC_ERROR_CODE) {
         gitSync.handleError(error.data as GitSyncErrorResponse)
       } else {
-        showError(getErrorMessage(error), 0, 'cf.toggle.ff.status.error')
+        if (error?.data?.details?.governanceMetadata) {
+          setGovernanceMetadata(error?.data?.details?.governanceMetadata)
+        } else {
+          showError(getErrorMessage(error), 0, 'cf.toggle.ff.status.error')
+        }
       }
     }
   }
@@ -388,6 +397,10 @@ const RenderColumnEdit: React.FC<ColumnMenuProps> = ({ gitSync, deleteFlag, cell
 const FeatureFlagsPage: React.FC = () => {
   const { projectIdentifier, orgIdentifier, accountId: accountIdentifier } = useParams<Record<string, string>>()
   const history = useHistory()
+  const { OPA_FF_GOVERNANCE } = useFeatureFlags()
+  const [governanceMetadata, setGovernanceMetadata] = useState<GovernanceMetadata>()
+  const shouldShowGovernanceEvaluation =
+    OPA_FF_GOVERNANCE && (governanceMetadata?.status === 'error' || governanceMetadata?.status === 'warning')
   const { activeEnvironment: environmentIdentifier, withActiveEnvironment } = useActiveEnvironment()
   const [pageNumber, setPageNumber] = useState(0)
   const [searchTerm, setSearchTerm] = useState('')
@@ -458,7 +471,8 @@ const FeatureFlagsPage: React.FC = () => {
 
   const gitSync = useGitSync()
 
-  const error = flagsError || envsError || deleteFlag.error || toggleFeatureFlag.error
+  const error =
+    flagsError || envsError || deleteFlag.error || (toggleFeatureFlag.error && !shouldShowGovernanceEvaluation)
 
   const columns: Column<Feature>[] = useMemo(
     () => [
@@ -471,6 +485,7 @@ const FeatureFlagsPage: React.FC = () => {
             <RenderColumnFlag
               gitSync={gitSync}
               toggleFeatureFlag={toggleFeatureFlag}
+              setGovernanceMetadata={setGovernanceMetadata}
               cell={cell}
               update={status => {
                 const feature = features?.features?.find(f => f.identifier === cell.row.original.identifier)
@@ -619,6 +634,15 @@ const FeatureFlagsPage: React.FC = () => {
             }}
           />
         </Container>
+      )}
+      {shouldShowGovernanceEvaluation && (
+        <EvaluationModal
+          accountId={accountIdentifier}
+          key={governanceMetadata?.id}
+          module={'cf'}
+          metadata={governanceMetadata}
+          headingErrorMessage={getString('cf.policyEvaluations.failedToSave')}
+        />
       )}
 
       {!loading && emptyFeatureFlags && (
