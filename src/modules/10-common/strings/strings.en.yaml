@@ -807,3 +807,6 @@ and: and
 payload: Payload
 andCaps: AND
 orCaps: OR
+resourceGroupPlaceholder: 'Select Resource Group'
+subscriptionPlaceholder: 'Select Subscription'
+
