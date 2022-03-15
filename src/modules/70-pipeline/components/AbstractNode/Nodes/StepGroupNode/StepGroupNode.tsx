@@ -41,6 +41,7 @@ export function StepGroupNode(props: any): JSX.Element {
           <div
             onMouseOver={() => allowAdd && setVisibilityOfAdd(true)}
             onMouseLeave={() => allowAdd && setVisibilityOfAdd(false)}
+            onDragLeave={() => allowAdd && setVisibilityOfAdd(false)}
             className={classnames(
               css.stepGroup,
               { [css.firstnode]: !props?.isParallelNode },
@@ -142,8 +143,8 @@ export function StepGroupNode(props: any): JSX.Element {
               )}
               onMouseOver={() => allowAdd && setVisibilityOfAdd(true)}
               onMouseLeave={() => allowAdd && setVisibilityOfAdd(false)}
-              onDragOver={() => allowAdd && setVisibilityOfAdd(true)}
-              onDragLeave={() => allowAdd && setVisibilityOfAdd(false)}
+              // onDragOver={() => allowAdd && setVisibilityOfAdd(true)}
+              // onDragLeave={() => allowAdd && setVisibilityOfAdd(false)}
               onDrop={(event: any) => {
                 props?.fireEvent({
                   type: Event.DropNodeEvent,
