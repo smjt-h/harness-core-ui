@@ -446,17 +446,26 @@ function ExecutionGraphRef<T extends StageElementConfig>(
           const isRemove = removeStepOrGroup(state, event, skipFlattenIfSameParallel)
           if (isRemove) {
             if (current.node) {
-              if (current.parent && (current.node.step || current.node.stepGroup)) {
+              if (
+                event?.entityType === DiagramType.CreateNew &&
+                event?.destination?.isInsideStepGroup &&
+                current.node.stepGroup
+              ) {
+                current.node.stepGroup.steps.push(dropNode)
+              } else if (current.parent && (current.node.step || current.node.stepGroup)) {
                 const index = current.parent?.indexOf(current.node) ?? -1
                 if (index > -1) {
                   // Remove current Stage also and make it parallel
                   current.parent?.splice(index, 1, { parallel: [current.node, dropNode] })
-                  updateStageWithNewData(state)
+                  // updateStageWithNewData(state)
                 }
+              } else if (current.node.stepGroup && current.node.stepGroup?.steps?.length === 0) {
+                current.node.stepGroup.steps.push(dropNode)
               } else if (current.node.parallel && (current.node.parallel?.length || 0) > 0) {
                 current.node.parallel?.push?.(dropNode)
-                updateStageWithNewData(state)
+                // updateStageWithNewData(state)
               }
+              updateStageWithNewData(state)
             } else {
               addStepOrGroup(
                 { ...eventTemp, node: { ...eventTemp?.destination } },
@@ -949,6 +958,12 @@ function ExecutionGraphRef<T extends StageElementConfig>(
   }
   diagram.registerListeners(listerners)
 
+  const stepsData = React.useMemo(() => {
+    return state?.isRollback
+      ? getPipelineGraphData(stage?.stage?.spec?.execution?.rollbackSteps)
+      : getPipelineGraphData(stage?.stage?.spec?.execution?.steps)
+  }, [stage, state?.isRollback])
+
   return (
     <div
       className={css.container}
@@ -1021,14 +1036,7 @@ function ExecutionGraphRef<T extends StageElementConfig>(
         )}
         {localStorage.getItem('IS_NEW_PIP_STUDIO_ACTIVE') === 'true' ? (
           <>
-            <CDPipelineStudioNew
-              selectedNodeId={selectedStepId}
-              data={
-                state?.isRollback
-                  ? getPipelineGraphData(stage?.stage?.spec?.execution?.rollbackSteps)
-                  : getPipelineGraphData(stage?.stage?.spec?.execution?.steps)
-              }
-            />
+            <CDPipelineStudioNew selectedNodeId={selectedStepId} data={stepsData} />
             {hasRollback && (
               <RollbackToggleSwitch
                 style={{ top: 62, ...rollBackPropsStyle }}

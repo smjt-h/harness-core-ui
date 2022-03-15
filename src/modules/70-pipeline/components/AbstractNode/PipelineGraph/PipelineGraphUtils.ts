@@ -100,7 +100,7 @@ const getFinalSVGArrowPath = (id1 = '', id2 = '', options?: DrawSVGPathOptions):
         L${node2.right + 10},${node2VerticalMid}
         Q${node2.right + 25},${node2VerticalMid} ${node2.right + 25},${node2VerticalMid - 20}
         L${node2.right + 25},${node1VerticalMid + 20}
-        Q${node2.right + 25},${node1VerticalMid} ${node2.right - 40},${node1VerticalMid}`
+        Q${node2.right + 25},${node1VerticalMid} ${node2.right + 40},${node1VerticalMid}`
       }
       finalSVGPath = firstCurve + secondCurve
     } else {
