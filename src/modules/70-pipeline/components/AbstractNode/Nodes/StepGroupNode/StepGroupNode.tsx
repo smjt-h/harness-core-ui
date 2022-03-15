@@ -70,18 +70,7 @@ export function StepGroupNode(props: any): JSX.Element {
               </Layout.Horizontal>
             </div>
             <div className={css.stepGroupBody}>
-              <StepGroupGraph
-                getDefaultNode={props?.getDefaultNode}
-                id={props?.id}
-                identifier={props?.identifier}
-                prevNodeIdentifier={props?.prevNodeIdentifier}
-                data={props?.data?.stepGroup?.steps}
-                fireEvent={props?.fireEvent}
-                getNode={props?.getNode}
-                updateSVGLinks={props.updateSVGLinks}
-                isNodeCollapsed={isNodeCollapsed}
-                updateGraphLinks={props?.updateGraphLinks}
-              />
+              <StepGroupGraph {...props} data={props?.data?.stepGroup?.steps} isNodeCollapsed={isNodeCollapsed} />
             </div>
             <Button
               className={classnames(css.closeNode, { [defaultCss.readonly]: props.readonly })}
@@ -153,6 +142,8 @@ export function StepGroupNode(props: any): JSX.Element {
               )}
               onMouseOver={() => allowAdd && setVisibilityOfAdd(true)}
               onMouseLeave={() => allowAdd && setVisibilityOfAdd(false)}
+              onDragOver={() => allowAdd && setVisibilityOfAdd(true)}
+              onDragLeave={() => allowAdd && setVisibilityOfAdd(false)}
               onDrop={(event: any) => {
                 props?.fireEvent({
                   type: Event.DropNodeEvent,
