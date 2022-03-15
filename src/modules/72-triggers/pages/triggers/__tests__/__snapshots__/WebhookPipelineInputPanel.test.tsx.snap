@@ -123,6 +123,7 @@ exports[`WebhookPipelineInputPanel Triggers tests Renders/snapshots Initial Rend
     class="OverlaySpinner--overlaySpinner"
   >
     <form
+      action="#"
       class="FormikForm--main"
     >
       <div>
