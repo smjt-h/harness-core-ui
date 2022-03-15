@@ -736,10 +736,6 @@ function RunPipelineFormBasic({
     throw runPipelineFormErrors
   }
 
-  if (shouldShowPageSpinner()) {
-    return <PageSpinner />
-  }
-
   const getFormikInitialValues = () => {
     if (isEmpty(yamlTemplate)) {
       return {}
@@ -810,43 +806,51 @@ function RunPipelineFormBasic({
                   updateExpressionValue={updateExpressionValue}
                   expressions={template?.data?.replacedExpressions}
                 />
-                {selectedView === SelectedView.VISUAL ? (
-                  <VisualView
-                    executionView={executionView}
-                    selectedInputSets={selectedInputSets}
-                    existingProvide={existingProvide}
-                    setExistingProvide={setExistingProvide}
-                    executionInputSetTemplateYaml={executionInputSetTemplateYaml}
-                    pipelineIdentifier={pipelineIdentifier}
-                    template={template}
-                    pipeline={pipeline}
-                    currentPipeline={currentPipeline}
-                    getTemplateError={getTemplateError}
-                    resolvedPipeline={resolvedPipeline}
-                    submitForm={submitForm}
-                    setRunClicked={setRunClicked}
-                    inputSets={inputSets}
-                    setSelectedInputSets={setSelectedInputSets}
-                    loading={loadingMergeInputSetUpdate || loadingInputSetUpdate}
-                    loadingMergeInputSetUpdate={loadingMergeInputSetUpdate}
-                  />
-                ) : (
-                  <div className={css.editor}>
-                    <Layout.Vertical className={css.content} padding="xlarge">
-                      <YamlBuilderMemo
-                        {...yamlBuilderReadOnlyModeProps}
-                        existingJSON={{ pipeline: values }}
-                        bind={setYamlHandler}
-                        schema={{}}
-                        invocationMap={factory.getInvocationMap()}
-                        height="55vh"
-                        width="100%"
-                        showSnippetSection={false}
-                        isEditModeSupported={canEdit}
-                      />
-                    </Layout.Vertical>
-                  </div>
-                )}
+                <Layout.Vertical style={{ minHeight: '30vh' }}>
+                  {shouldShowPageSpinner() ? (
+                    <PageSpinner />
+                  ) : (
+                    <>
+                      {selectedView === SelectedView.VISUAL ? (
+                        <VisualView
+                          executionView={executionView}
+                          selectedInputSets={selectedInputSets}
+                          existingProvide={existingProvide}
+                          setExistingProvide={setExistingProvide}
+                          executionInputSetTemplateYaml={executionInputSetTemplateYaml}
+                          pipelineIdentifier={pipelineIdentifier}
+                          template={template}
+                          pipeline={pipeline}
+                          currentPipeline={currentPipeline}
+                          getTemplateError={getTemplateError}
+                          resolvedPipeline={resolvedPipeline}
+                          submitForm={submitForm}
+                          setRunClicked={setRunClicked}
+                          inputSets={inputSets}
+                          setSelectedInputSets={setSelectedInputSets}
+                          loading={loadingMergeInputSetUpdate || loadingInputSetUpdate}
+                          loadingMergeInputSetUpdate={loadingMergeInputSetUpdate}
+                        />
+                      ) : (
+                        <div className={css.editor}>
+                          <Layout.Vertical className={css.content} padding="xlarge">
+                            <YamlBuilderMemo
+                              {...yamlBuilderReadOnlyModeProps}
+                              existingJSON={{ pipeline: values }}
+                              bind={setYamlHandler}
+                              schema={{}}
+                              invocationMap={factory.getInvocationMap()}
+                              height="55vh"
+                              width="100%"
+                              showSnippetSection={false}
+                              isEditModeSupported={canEdit}
+                            />
+                          </Layout.Vertical>
+                        </div>
+                      )}
+                    </>
+                  )}
+                </Layout.Vertical>
                 <CheckBoxActions
                   executionView={executionView}
                   notifyOnlyMe={notifyOnlyMe}
