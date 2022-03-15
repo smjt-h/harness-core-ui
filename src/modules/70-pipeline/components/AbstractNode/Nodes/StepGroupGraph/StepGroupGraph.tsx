@@ -121,6 +121,7 @@ function StepGroupGraph(props: StepGroupGraphProps): React.ReactElement {
         CreateNode && (
           <CreateNode
             identifier={props?.identifier}
+            isInsideStepGroup={true}
             fireEvent={props.fireEvent}
             graphType={PipelineGraphType.STEP_GRAPH}
             onClick={(event: any) => {
