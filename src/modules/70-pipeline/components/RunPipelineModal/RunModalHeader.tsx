@@ -5,7 +5,7 @@
  * https://polyformproject.org/wp-content/uploads/2020/06/PolyForm-Shield-1.0.0.txt.
  */
 
-import React, { Dispatch, SetStateAction, useCallback, useMemo, useRef } from 'react'
+import React, { Dispatch, SetStateAction, useCallback, useRef } from 'react'
 import cx from 'classnames'
 import { parse } from 'yaml'
 import {
@@ -23,11 +23,10 @@ import type { FormikErrors } from 'formik'
 import { GitSyncStoreProvider } from 'framework/GitRepoStore/GitSyncStoreContext'
 import { useStrings } from 'framework/strings'
 import { useAppStore } from 'framework/AppStore/AppStoreContext'
-import {
+import type {
   ResponseInputSetTemplateWithReplacedExpressionsResponse,
-  ResponsePMSPipelineResponseDTO,
-  StageExecutionResponse,
-  useGetStagesExecutionList
+  ResponseListStageExecutionResponse,
+  ResponsePMSPipelineResponseDTO
 } from 'services/pipeline-ng'
 import {
   ALL_STAGE_VALUE,
@@ -47,16 +46,9 @@ import css from './RunPipelineForm.module.scss'
 
 export interface RunModalHeaderProps {
   pipelineExecutionId?: string
-  accountId: string
-  orgIdentifier: string
-  projectIdentifier: string
-  pipelineIdentifier: string
-  branch?: string
-  repoIdentifier?: string
   selectedStageData: StageSelectionData
   setSelectedStageData: Dispatch<SetStateAction<StageSelectionData>>
   setSkipPreFlightCheck: Dispatch<SetStateAction<boolean>>
-  stagesExecuted?: string[]
   selectedView: SelectedView
   setSelectedView: Dispatch<SetStateAction<SelectedView>>
   setCurrentPipeline: Dispatch<
@@ -75,19 +67,14 @@ export interface RunModalHeaderProps {
   template: ResponseInputSetTemplateWithReplacedExpressionsResponse | null
   formRefDom: React.MutableRefObject<HTMLElement | undefined>
   formErrors: FormikErrors<InputSetDTO>
+  stageExecutionData: ResponseListStageExecutionResponse | null
+  executionStageList: SelectOption[]
 }
 
 export default function RunModalHeader(props: RunModalHeaderProps): React.ReactElement | null {
   const {
     pipelineExecutionId,
-    accountId,
-    orgIdentifier,
-    projectIdentifier,
-    pipelineIdentifier,
-    branch,
-    repoIdentifier,
     selectedStageData,
-    stagesExecuted,
     setSelectedStageData,
     setSkipPreFlightCheck,
     setSelectedView,
@@ -100,61 +87,13 @@ export default function RunModalHeader(props: RunModalHeaderProps): React.ReactE
     getTemplateFromPipeline,
     template,
     formRefDom,
-    formErrors
+    formErrors,
+    stageExecutionData,
+    executionStageList
   } = props
   const { isGitSyncEnabled } = useAppStore()
   const { getString } = useStrings()
   const stageSelectionRef = useRef(false)
-
-  const { data: stageExecutionData } = useGetStagesExecutionList({
-    queryParams: {
-      accountIdentifier: accountId,
-      orgIdentifier,
-      projectIdentifier,
-      pipelineIdentifier,
-      branch,
-      repoIdentifier
-    }
-  })
-
-  const executionStageList = useMemo((): SelectOption[] => {
-    const executionStages: SelectOption[] =
-      stageExecutionData?.data?.map((execStage: StageExecutionResponse) => {
-        return {
-          label: defaultTo(execStage?.stageName, ''),
-          value: defaultTo(execStage?.stageIdentifier, '')
-        }
-      }) || []
-    executionStages.unshift(getAllStageItem(getString))
-
-    if (stagesExecuted?.length) {
-      const updatedSelectedStageList: SelectedStageData[] = []
-      const updatedSelectedItems: SelectOption[] = []
-      stagesExecuted.forEach(stageExecuted => {
-        const selectedStage = stageExecutionData?.data?.find(stageData => stageData.stageIdentifier === stageExecuted)
-        selectedStage && updatedSelectedStageList.push(selectedStage)
-        selectedStage &&
-          updatedSelectedItems.push({
-            label: selectedStage?.stageName as string,
-            value: selectedStage?.stageIdentifier as string
-          })
-      })
-
-      setSelectedStageData({
-        selectedStages: updatedSelectedStageList,
-        selectedStageItems: updatedSelectedItems,
-        allStagesSelected: false
-      })
-      setSkipPreFlightCheck(true)
-    } else {
-      setSelectedStageData({
-        selectedStages: [getAllStageData(getString)],
-        selectedStageItems: [getAllStageItem(getString)],
-        allStagesSelected: true
-      })
-    }
-    return executionStages
-  }, [stageExecutionData?.data])
 
   const handleModeSwitch = useCallback(
     (view: SelectedView) => {

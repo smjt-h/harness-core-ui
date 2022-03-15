@@ -16,7 +16,8 @@ import {
   ButtonVariation,
   PageSpinner,
   VisualYamlSelectedView as SelectedView,
-  getErrorInfoFromErrorObject
+  getErrorInfoFromErrorObject,
+  SelectOption
 } from '@wings-software/uicore'
 import { useModalHook } from '@harness/use-modal'
 import cx from 'classnames'
@@ -35,7 +36,8 @@ import {
   useRePostPipelineExecuteWithInputSetYaml,
   StageExecutionResponse,
   useRunStagesWithRuntimeInputYaml,
-  useRerunStagesWithRuntimeInputYaml
+  useRerunStagesWithRuntimeInputYaml,
+  useGetStagesExecutionList
 } from 'services/pipeline-ng'
 import { useToaster } from '@common/exports'
 import routes from '@common/RouteDefinitions'
@@ -351,6 +353,56 @@ function RunPipelineFormBasic({
           : {})
       }
     })
+
+  const { data: stageExecutionData } = useGetStagesExecutionList({
+    queryParams: {
+      accountIdentifier: accountId,
+      orgIdentifier,
+      projectIdentifier,
+      pipelineIdentifier,
+      branch,
+      repoIdentifier
+    }
+  })
+
+  const executionStageList = useMemo((): SelectOption[] => {
+    const executionStages: SelectOption[] =
+      stageExecutionData?.data?.map((execStage: StageExecutionResponse) => {
+        return {
+          label: defaultTo(execStage?.stageName, ''),
+          value: defaultTo(execStage?.stageIdentifier, '')
+        }
+      }) || []
+    executionStages.unshift(getAllStageItem(getString))
+
+    if (stagesExecuted?.length) {
+      const updatedSelectedStageList: SelectedStageData[] = []
+      const updatedSelectedItems: SelectOption[] = []
+      stagesExecuted.forEach(stageExecuted => {
+        const selectedStage = stageExecutionData?.data?.find(stageData => stageData.stageIdentifier === stageExecuted)
+        selectedStage && updatedSelectedStageList.push(selectedStage)
+        selectedStage &&
+          updatedSelectedItems.push({
+            label: selectedStage?.stageName as string,
+            value: selectedStage?.stageIdentifier as string
+          })
+      })
+
+      setSelectedStageData({
+        selectedStages: updatedSelectedStageList,
+        selectedStageItems: updatedSelectedItems,
+        allStagesSelected: false
+      })
+      setSkipPreFlightCheck(true)
+    } else {
+      setSelectedStageData({
+        selectedStages: [getAllStageData(getString)],
+        selectedStageItems: [getAllStageItem(getString)],
+        allStagesSelected: true
+      })
+    }
+    return executionStages
+  }, [stageExecutionData?.data])
 
   const inputSets = inputSetResponse?.data?.content
 
@@ -776,17 +828,10 @@ function RunPipelineFormBasic({
                 }}
               >
                 <RunModalHeader
-                  accountId={accountId}
-                  orgIdentifier={orgIdentifier}
-                  projectIdentifier={projectIdentifier}
-                  pipelineIdentifier={pipelineIdentifier}
                   pipelineExecutionId={pipelineExecutionId}
-                  branch={branch}
-                  repoIdentifier={repoIdentifier}
                   selectedStageData={selectedStageData}
                   setSelectedStageData={setSelectedStageData}
                   setSkipPreFlightCheck={setSkipPreFlightCheck}
-                  stagesExecuted={stagesExecuted}
                   setSelectedView={setSelectedView}
                   setCurrentPipeline={setCurrentPipeline}
                   runClicked={runClicked}
@@ -798,6 +843,8 @@ function RunPipelineFormBasic({
                   template={template}
                   formRefDom={formRefDom}
                   formErrors={formErrors}
+                  stageExecutionData={stageExecutionData}
+                  executionStageList={executionStageList}
                 />
                 <RequiredStagesInfo
                   selectedStageData={selectedStageData}
