@@ -30,9 +30,9 @@
         
             
             <div class='fl pad1y space-right2'>
-                <span class="strong">54.37% </span>
+                <span class="strong">58.06% </span>
                 <span class="quiet">Branches</span>
-                <span class='fraction'>56/103</span>
+                <span class='fraction'>54/93</span>
             </div>
         
             
@@ -44,9 +44,9 @@
         
             
             <div class='fl pad1y space-right2'>
-                <span class="strong">80.33% </span>
+                <span class="strong">81.36% </span>
                 <span class="quiet">Lines</span>
-                <span class='fraction'>49/61</span>
+                <span class='fraction'>48/59</span>
             </div>
         
             
@@ -285,15 +285,7 @@
 <a name='L226'></a><a href='#L226'>226</a>
 <a name='L227'></a><a href='#L227'>227</a>
 <a name='L228'></a><a href='#L228'>228</a>
-<a name='L229'></a><a href='#L229'>229</a>
-<a name='L230'></a><a href='#L230'>230</a>
-<a name='L231'></a><a href='#L231'>231</a>
-<a name='L232'></a><a href='#L232'>232</a>
-<a name='L233'></a><a href='#L233'>233</a>
-<a name='L234'></a><a href='#L234'>234</a>
-<a name='L235'></a><a href='#L235'>235</a>
-<a name='L236'></a><a href='#L236'>236</a>
-<a name='L237'></a><a href='#L237'>237</a></td><td class="line-coverage quiet"><span class="cline-any cline-neutral">&nbsp;</span>
+<a name='L229'></a><a href='#L229'>229</a></td><td class="line-coverage quiet"><span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
@@ -344,16 +336,12 @@
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-yes">102x</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-yes">102x</span>
-<span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
@@ -438,11 +426,7 @@
 <span class="cline-any cline-yes">35x</span>
 <span class="cline-any cline-yes">15x</span>
 <span class="cline-any cline-yes">15x</span>
-<span class="cline-any cline-yes">15x</span>
 <span class="cline-any cline-yes">17x</span>
-<span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-no">&nbsp;</span>
-<span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-yes">15x</span>
@@ -571,8 +555,6 @@ interface MultiTypeListConfigureOptionsProps
 export interface MultiTypeListProps {
   name: string
   placeholder?: string
-  withObjectStructure?: boolean
-  keyName?: string
   multiTypeFieldSelectorProps: Omit&lt;MultiTypeFieldSelectorProps, 'name' | 'defaultValueToReset' | 'children'&gt;
   multiTextInputProps?: Omit&lt;MultiTextInputProps, 'name'&gt;
   enableConfigureOptions?: boolean
@@ -591,8 +573,6 @@ export const MultiTypeListInputSet = (props: MultiTypeListProps): React.ReactEle
   const {
     name,
     placeholder,
-    withObjectStructure,
-    keyName,
     multiTypeFieldSelectorProps,
     multiTextInputProps = {},
     enableConfigureOptions = true,
@@ -611,7 +591,7 @@ export const MultiTypeListInputSet = (props: MultiTypeListProps): React.ReactEle
     }
     const initialValueInCorrectFormat = (initialValue || []).map(<span class="fstat-no" title="function not covered" >(i</span>tem: string | { [key: string]: string }) =&gt; (<span class="cstat-no" title="statement not covered" >{</span>
       id: uuid('', nameSpace()),
-      value: withObjectStructure &amp;&amp; keyName ? ((item as { [key: string]: string })[keyName] as string) : item
+      value: item
     })) as ListUIType
 &nbsp;
     // Adding a default value
@@ -659,7 +639,7 @@ export const MultiTypeListInputSet = (props: MultiTypeListProps): React.ReactEle
     if (isEmpty(valueWithoutEmptyItems) &amp;&amp; initialValue) {
       const initialValueInCorrectFormat = initialValue.map(<span class="fstat-no" title="function not covered" >(i</span>tem: string | { [key: string]: string }) =&gt; (<span class="cstat-no" title="statement not covered" >{</span>
         id: uuid('', nameSpace()),
-        value: withObjectStructure &amp;&amp; keyName ? (item as { [key: string]: string })[keyName] : item
+        value: typeof item === 'string' ? item : ''
       })) as ListUIType
 &nbsp;
       // Adding a default value
@@ -674,11 +654,7 @@ export const MultiTypeListInputSet = (props: MultiTypeListProps): React.ReactEle
   React.useEffect(() =&gt; {
     let valueInCorrectFormat: ListType = []
     <span class="missing-if-branch" title="else path not taken" >E</span>if (Array.isArray(value)) {
-      valueInCorrectFormat = value
-        .filter(item =&gt; !!item.value &amp;&amp; <span class="branch-1 cbranch-no" title="branch not covered" >typeof item.value === 'string')</span>
-        .map(<span class="fstat-no" title="function not covered" >item </span>=&gt; {
-<span class="cstat-no" title="statement not covered" >          return withObjectStructure &amp;&amp; keyName ? { [keyName]: item.value } : item.value</span>
-        }) as ListType
+      valueInCorrectFormat = value.filter(item =&gt; !!item.value).map(<span class="fstat-no" title="function not covered" >item </span>=&gt; <span class="cstat-no" title="statement not covered" >item?.value)</span> as ListType
     }
 &nbsp;
     <span class="missing-if-branch" title="else path not taken" >E</span>if (get(formik<span class="branch-0 cbranch-no" title="branch not covered" >?.v</span>alues, name, '') !== RUNTIME_INPUT_VALUE) {
@@ -703,7 +679,7 @@ export const MultiTypeListInputSet = (props: MultiTypeListProps): React.ReactEle
           {value.map(({ id, value: valueValue }, index: number) =&gt; {
             // const valueError = get(error, `[${index}].value`)
 &nbsp;
-            return typeof valueValue === 'string' ? (
+            return (
               &lt;div className={css.group} key={id}&gt;
                 &lt;div style={{ flexGrow: 1 }}&gt;
                   &lt;MultiTextInput
@@ -730,7 +706,7 @@ export const MultiTypeListInputSet = (props: MultiTypeListProps): React.ReactEle
                   /&gt;
                 )}
               &lt;/div&gt;
-            ) : <span class="branch-1 cbranch-no" title="branch not covered" >null</span>
+            )
           })}
 &nbsp;
           {!disabled &amp;&amp; (
@@ -772,7 +748,7 @@ export default connect(MultiTypeListInputSet)
             <div class='footer quiet pad2 space-top1 center small'>
                 Code coverage generated by
                 <a href="https://istanbul.js.org/" target="_blank">istanbul</a>
-                at Mon Mar 14 2022 16:22:14 GMT+0000 (Greenwich Mean Time)
+                at Tue Mar 15 2022 03:40:22 GMT+0000 (Greenwich Mean Time)
             </div>
         </div>
         <script src="../../../../prettify.js"></script>
