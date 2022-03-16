@@ -23,16 +23,16 @@
         <div class='clearfix'>
             
             <div class='fl pad1y space-right2'>
-                <span class="strong">91.53% </span>
+                <span class="strong">91.67% </span>
                 <span class="quiet">Statements</span>
-                <span class='fraction'>54/59</span>
+                <span class='fraction'>55/60</span>
             </div>
         
             
             <div class='fl pad1y space-right2'>
-                <span class="strong">80% </span>
+                <span class="strong">79.17% </span>
                 <span class="quiet">Branches</span>
-                <span class='fraction'>48/60</span>
+                <span class='fraction'>57/72</span>
             </div>
         
             
@@ -44,9 +44,9 @@
         
             
             <div class='fl pad1y space-right2'>
-                <span class="strong">91.38% </span>
+                <span class="strong">91.53% </span>
                 <span class="quiet">Lines</span>
-                <span class='fraction'>53/58</span>
+                <span class='fraction'>54/59</span>
             </div>
         
             
@@ -338,7 +338,10 @@
 <a name='L279'></a><a href='#L279'>279</a>
 <a name='L280'></a><a href='#L280'>280</a>
 <a name='L281'></a><a href='#L281'>281</a>
-<a name='L282'></a><a href='#L282'>282</a></td><td class="line-coverage quiet"><span class="cline-any cline-neutral">&nbsp;</span>
+<a name='L282'></a><a href='#L282'>282</a>
+<a name='L283'></a><a href='#L283'>283</a>
+<a name='L284'></a><a href='#L284'>284</a>
+<a name='L285'></a><a href='#L285'>285</a></td><td class="line-coverage quiet"><span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
@@ -384,11 +387,14 @@
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-yes">8x</span>
 <span class="cline-any cline-yes">5x</span>
+<span class="cline-any cline-yes">5x</span>
 <span class="cline-any cline-yes">1x</span>
 <span class="cline-any cline-yes">4x</span>
 <span class="cline-any cline-yes">2x</span>
 <span class="cline-any cline-yes">2x</span>
 <span class="cline-any cline-yes">2x</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-yes">2x</span>
 <span class="cline-any cline-yes">2x</span>
@@ -627,7 +633,7 @@
  */
 &nbsp;
 import React from 'react'
-import { defaultTo as _defaultTo, isEmpty as _isEmpty } from 'lodash-es'
+import { defaultTo as _defaultTo } from 'lodash-es'
 import moment from 'moment'
 import { getColorValue } from '@common/components/HeatMap/ColorUtils'
 import {
@@ -664,16 +670,19 @@ const getGcpInstanceDetailsLink = (zone: string, name: string) =&gt; {
 }
 &nbsp;
 export function getInstancesLink(service: Service, resources: AllResourcesOfAccountResponse): string {
-  if (!_isEmpty(resources.response) &amp;&amp; resources.response<span class="branch-0 cbranch-no" title="branch not covered" >?.[0</span>].provider_type === PROVIDER_TYPES.AZURE) {
+  const resource = resources.response<span class="branch-0 cbranch-no" title="branch not covered" >?.[0</span>]
+  if (resource<span class="branch-0 cbranch-no" title="branch not covered" >?.p</span>rovider_type === PROVIDER_TYPES.AZURE) {
     return getAzureInstancesLink()
-  } else if (resources.response<span class="branch-0 cbranch-no" title="branch not covered" >?.[0</span>].provider_type === PROVIDER_TYPES.GCP) {
-    const zone = _defaultTo(resources.response<span class="branch-0 cbranch-no" title="branch not covered" >?.[0</span>]<span class="branch-0 cbranch-no" title="branch not covered" >?.a</span>vailability_zone, '')
-    const name = _defaultTo(resources.response<span class="branch-0 cbranch-no" title="branch not covered" >?.[0</span>]<span class="branch-0 cbranch-no" title="branch not covered" >?.n</span>ame, '')
-    return resources.response.length &gt; 1 ? getGcpInstancesLink() : getGcpInstanceDetailsLink(zone, name)
+  } else if (resource<span class="branch-0 cbranch-no" title="branch not covered" >?.p</span>rovider_type === PROVIDER_TYPES.GCP) {
+    const zone = _defaultTo(resource<span class="branch-0 cbranch-no" title="branch not covered" >?.a</span>vailability_zone, '')
+    const name = _defaultTo(resource<span class="branch-0 cbranch-no" title="branch not covered" >?.n</span>ame, '')
+    return resources<span class="branch-0 cbranch-no" title="branch not covered" >?.r</span>esponse<span class="branch-0 cbranch-no" title="branch not covered" >?.l</span>ength &amp;&amp; resources<span class="branch-0 cbranch-no" title="branch not covered" >?.r</span>esponse<span class="branch-0 cbranch-no" title="branch not covered" >?.l</span>ength &gt; 1
+      ? getGcpInstancesLink()
+      : getGcpInstanceDetailsLink(zone, name)
   } else {
-    const region = resources.response<span class="branch-0 cbranch-no" title="branch not covered" >?.l</span>ength ? resources.response[0].region : <span class="branch-1 cbranch-no" title="branch not covered" >''</span>
+    const region = resource<span class="branch-0 cbranch-no" title="branch not covered" >?.r</span>egion || <span class="branch-1 cbranch-no" title="branch not covered" >''</span>
     if (service.kind === GatewayKindType.DATABASE) {
-      return getAwsConsoleDatabaseLink(_defaultTo(region, ''), _defaultTo(resources.response<span class="branch-0 cbranch-no" title="branch not covered" >?.[0</span>].id, ''))
+      return getAwsConsoleDatabaseLink(_defaultTo(region, ''), _defaultTo(resource<span class="branch-0 cbranch-no" title="branch not covered" >?.i</span>d, ''))
     } else {
       const instanceIDs = _defaultTo(
         resources.response<span class="branch-0 cbranch-no" title="branch not covered" >?.m</span>ap(x =&gt; x.id),
@@ -907,7 +916,7 @@ export function roundToPrecision(n: number): number {
             <div class='footer quiet pad2 space-top1 center small'>
                 Code coverage generated by
                 <a href="https://istanbul.js.org/" target="_blank">istanbul</a>
-                at Wed Mar 16 2022 08:11:35 GMT+0000 (Greenwich Mean Time)
+                at Wed Mar 16 2022 11:00:15 GMT+0000 (Greenwich Mean Time)
             </div>
         </div>
         <script src="../../../../prettify.js"></script>
