@@ -10,6 +10,9 @@ import { useParams } from 'react-router-dom'
 import { Container, FlexExpander, Heading, Layout, Text, PageError, useToaster } from '@wings-software/uicore'
 import type { HeadingProps } from '@wings-software/uicore/dist/components/Heading/Heading'
 import { useStrings } from 'framework/strings'
+import type { GovernanceMetadata } from 'services/pipeline-ng'
+import { EvaluationModal } from '@governance/EvaluationModal'
+import { useFeatureFlags } from '@common/hooks/useFeatureFlag'
 import {
   GitSyncErrorResponse,
   SegmentFlag,
@@ -48,6 +51,10 @@ export const FlagsUseSegment = ({ gitSync }: FlagsUseSegmentProps): ReactElement
     segmentIdentifier
   } = useParams<Record<string, string>>()
   const { activeEnvironment: environmentIdentifier } = useActiveEnvironment()
+  const { OPA_FF_GOVERNANCE } = useFeatureFlags()
+  const [governanceMetadata, setGovernanceMetadata] = useState<GovernanceMetadata>()
+  const shouldShowGovernanceEvaluation =
+    OPA_FF_GOVERNANCE && (governanceMetadata?.status === 'error' || governanceMetadata?.status === 'warning')
 
   const queryParams = {
     accountIdentifier,
@@ -105,7 +112,11 @@ export const FlagsUseSegment = ({ gitSync }: FlagsUseSegmentProps): ReactElement
         if (e.status === GIT_SYNC_ERROR_CODE) {
           gitSync.handleError(e.data as GitSyncErrorResponse)
         } else {
-          showError(getErrorMessage(e), undefined, 'cf.path.feature.error')
+          if (e?.data?.details?.governanceMetadata) {
+            setGovernanceMetadata(e?.data?.details?.governanceMetadata)
+          } else {
+            showError(getErrorMessage(e), undefined, 'cf.path.feature.error')
+          }
         }
       })
   }
@@ -196,6 +207,15 @@ export const FlagsUseSegment = ({ gitSync }: FlagsUseSegmentProps): ReactElement
         {error && <PageError message={getErrorMessage(error)} onClick={() => refetchFlags()} />}
         {!error && !loading && <FlagsList flags={flags} gitSync={gitSync} onRemoveRule={removeRules} />}
         {loading && <ContainerSpinner />}
+        {shouldShowGovernanceEvaluation && (
+          <EvaluationModal
+            accountId={accountIdentifier}
+            key={governanceMetadata?.id}
+            module={'cf'}
+            metadata={governanceMetadata}
+            headingErrorMessage={getString('cf.policyEvaluations.failedToSave')}
+          />
+        )}
       </Container>
     </Container>
   )
