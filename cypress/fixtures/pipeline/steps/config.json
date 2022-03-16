@@ -1,0 +1,25 @@
+{
+  "BG Swap Services": { "resourceName": [] },
+  "Stage Deployment": { "resourceName": [] },
+  "Apply": {
+    "resourceName": [{ "type": "resource", "name": "spec.filePaths[0].value", "value": "resource" }],
+    "warningCheck": true
+  },
+  "Delete": {
+    "resourceName": [
+      { "type": "resource", "name": "spec.deleteResources.spec.resourceNames[0].value", "value": "resource" }
+    ]
+  },
+  "Canary Delete": { "resourceName": [] },
+  "Rolling Deployment": { "resourceName": [] },
+  "Rolling Rollback": { "resourceName": [] },
+  "Shell Script": {
+    "resourceName": [{ "type": "className", "name": ".monaco-editor textarea:first", "value": "echo 1" }]
+  },
+  "HTTP": {
+    "resourceName": [
+      { "type": "resource", "name": "spec.url", "value": "https://abc.com" },
+      { "type": "resource", "name": "spec.requestBody", "value": "resource" }
+    ]
+  }
+}
