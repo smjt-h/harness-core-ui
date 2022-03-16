@@ -46,7 +46,34 @@ interface TokenModalData {
 interface TokenFormData extends TokenDTO {
   expiryDate?: string
 }
-
+interface SubmitOrCloseBtn {
+  onClose: (() => void) | undefined
+  saving: boolean
+  updating: boolean
+  isEdit: boolean | undefined
+  token: string | undefined
+}
+const SubmitOrCloseBtn: React.FC<SubmitOrCloseBtn> = ({
+  onClose,
+  saving,
+  updating,
+  isEdit,
+  token
+}: SubmitOrCloseBtn) => {
+  const { getString } = useStrings()
+  if (token) {
+    return <Button text={getString('close')} onClick={onClose} variation={ButtonVariation.TERTIARY} />
+  } else {
+    return (
+      <Button
+        variation={ButtonVariation.PRIMARY}
+        text={isEdit ? getString('save') : getString('rbac.generateToken')}
+        type="submit"
+        disabled={saving || updating}
+      />
+    )
+  }
+}
 const TokenForm: React.FC<TokenModalData> = props => {
   const { data: tokenData, onSubmit, onClose, isEdit, apiKeyIdentifier, apiKeyType, parentIdentifier } = props
   const { accountId, orgIdentifier, projectIdentifier, serviceAccountIdentifier } = useParams<
@@ -88,20 +115,7 @@ const TokenForm: React.FC<TokenModalData> = props => {
       modalErrorHandler?.showDanger(defaultTo(e.data?.message, e.message))
     }
   }
-  const submitOrCloseBtn = () => {
-    if (token) {
-      return <Button text={getString('close')} onClick={onClose} variation={ButtonVariation.TERTIARY} />
-    } else {
-      return (
-        <Button
-          variation={ButtonVariation.PRIMARY}
-          text={isEdit ? getString('save') : getString('rbac.generateToken')}
-          type="submit"
-          disabled={saving || updating}
-        />
-      )
-    }
-  }
+
   return (
     <Layout.Vertical padding={{ bottom: 'xxxlarge', right: 'xxxlarge', left: 'xxxlarge' }}>
       <Layout.Vertical spacing="large">
@@ -157,7 +171,13 @@ const TokenForm: React.FC<TokenModalData> = props => {
                   </Layout.Vertical>
                 </Container>
                 <Layout.Horizontal spacing="small">
-                  {submitOrCloseBtn()}
+                  <SubmitOrCloseBtn
+                    onClose={onClose}
+                    saving={saving}
+                    updating={updating}
+                    isEdit={isEdit}
+                    token={token}
+                  />
                   <Button text={getString('cancel')} onClick={onClose} variation={ButtonVariation.TERTIARY} />
                 </Layout.Horizontal>
               </Form>
