@@ -56,11 +56,12 @@ const TokenForm: React.FC<TokenModalData> = props => {
   const { getString } = useStrings()
   const { showSuccess } = useToaster()
   const [modalErrorHandler, setModalErrorHandler] = useState<ModalErrorHandlerBinding>()
-  const { mutate: createToken, loading: saving } = useCreateToken({})
+  const { mutate: createToken, loading: saving } = useCreateToken({ queryParams: { accountIdentifier: accountId } })
   const [token, setToken] = useState<string>()
 
   const { mutate: editToken, loading: updating } = useUpdateToken({
-    identifier: encodeURIComponent(tokenData?.identifier || '')
+    identifier: encodeURIComponent(tokenData?.identifier || ''),
+    queryParams: { accountIdentifier: accountId }
   })
 
   const handleSubmit = async (values: TokenFormData): Promise<void> => {
@@ -68,14 +69,14 @@ const TokenForm: React.FC<TokenModalData> = props => {
     if (expiry && values['expiryDate']) dataToSubmit['validTo'] = Date.parse(values['expiryDate'])
     try {
       if (isEdit) {
-        const updated = await editToken(dataToSubmit)
+        const updated = await editToken(dataToSubmit, { queryParams: { accountIdentifier: accountId } })
         /* istanbul ignore else */ if (updated) {
           showSuccess(getString('rbac.token.form.editSuccess', { name: values.name }))
           onSubmit?.()
           onClose?.()
         }
       } else {
-        const created = await createToken(dataToSubmit)
+        const created = await createToken(dataToSubmit, { queryParams: { accountIdentifier: accountId } })
         /* istanbul ignore else */ if (created) {
           showSuccess(getString('rbac.token.form.createSuccess', { name: values.name }))
           onSubmit?.()

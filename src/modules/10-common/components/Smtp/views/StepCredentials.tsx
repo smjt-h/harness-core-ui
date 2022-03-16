@@ -42,15 +42,25 @@ const StepCredentials: React.FC<StepProps<NgSmtpDTO> & SmtpSharedObj & CreateSmt
   const { accountId } = useParams<ProjectPathProps>()
 
   const [modalErrorHandler, setModalErrorHandler] = React.useState<ModalErrorHandlerBinding>()
-  const { loading: saveSmtpLoading, mutate: createSmtpConfig } = useCreateSmtpConfig({})
-  const { loading: updateSmtpLoading, mutate: updateSmtp } = useUpdateSmtp({})
+  const { loading: saveSmtpLoading, mutate: createSmtpConfig } = useCreateSmtpConfig({
+    queryParams: { accountIdentifier: accountId }
+  })
+  const { loading: updateSmtpLoading, mutate: updateSmtp } = useUpdateSmtp({
+    queryParams: { accountIdentifier: accountId }
+  })
   const save = async (data: NgSmtpDTO): Promise<void> => {
     try {
       const uuid = detailsData?.uuid || prevStepData?.uuid
       const returnValue =
         uuid || isEdit
-          ? await updateSmtp({ ...data, uuid, accountId }, { headers: { 'content-type': 'application/json' } })
-          : await createSmtpConfig({ ...data, accountId }, { headers: { 'content-type': 'application/json' } })
+          ? await updateSmtp(
+              { ...data, uuid, accountId },
+              { headers: { 'content-type': 'application/json' }, queryParams: { accountIdentifier: accountId } }
+            )
+          : await createSmtpConfig(
+              { ...data, accountId },
+              { headers: { 'content-type': 'application/json' }, queryParams: { accountIdentifier: accountId } }
+            )
 
       if (returnValue.status === 'SUCCESS') {
         nextStep?.({ ...data, uuid: returnValue.data?.uuid })
