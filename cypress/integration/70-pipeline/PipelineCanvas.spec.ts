@@ -127,6 +127,9 @@ describe('GIT SYNC DISABLED', () => {
       })
 
       cy.contains('span', 'Apply Changes').click()
+      cy.wait(500)
+      cy.get('span[icon="cross"]').click({ multiple: true, force: true })
+      cy.wait(500)
     }
 
     const stepLibrarySelection = function (
