@@ -119,7 +119,7 @@ describe('GIT SYNC DISABLED', () => {
             break
           }
           case 'className': {
-            cy.get(resource.name).type('{ctrl}f').focused().type(resource.value)
+            cy.get(resource.name).type(resource.value)
             break
           }
           default:
@@ -127,9 +127,9 @@ describe('GIT SYNC DISABLED', () => {
       })
 
       cy.contains('span', 'Apply Changes').click()
-      cy.wait(500)
+      cy.wait(1000)
       cy.get('span[icon="cross"]').click({ multiple: true, force: true })
-      cy.wait(500)
+      cy.wait(1000)
     }
 
     const stepLibrarySelection = function (
