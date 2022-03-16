@@ -784,9 +784,9 @@ function RunPipelineFormBasic({
   const handleValidation = async (values: Values): Promise<void> => {
     // Sanitize any empty objects
     const latestPipeline = sanitize(
-      mergeWith(currentPipeline, { pipeline: values as PipelineInfoConfig }, ori => {
+      mergeWith(currentPipeline, { pipeline: values as PipelineInfoConfig }, currentValue => {
         // Return empty object if there exists no key in the current pipeline that matches the one in the values passed.
-        if (ori === undefined) {
+        if (currentValue === undefined) {
           return {}
         } else {
           return undefined
