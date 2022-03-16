@@ -22,7 +22,7 @@ import {
 } from '@wings-software/uicore'
 import * as Yup from 'yup'
 import moment from 'moment'
-import { omit } from 'lodash-es'
+import { defaultTo, omit } from 'lodash-es'
 import { useParams } from 'react-router-dom'
 import { useToaster } from '@common/components'
 import { useStrings } from 'framework/strings'
@@ -60,7 +60,7 @@ const TokenForm: React.FC<TokenModalData> = props => {
   const [token, setToken] = useState<string>()
 
   const { mutate: editToken, loading: updating } = useUpdateToken({
-    identifier: encodeURIComponent(tokenData?.identifier || ''),
+    identifier: encodeURIComponent(defaultTo(tokenData?.identifier, '')),
     queryParams: { accountIdentifier: accountId }
   })
 
@@ -85,7 +85,21 @@ const TokenForm: React.FC<TokenModalData> = props => {
       }
     } catch (e) {
       /* istanbul ignore next */
-      modalErrorHandler?.showDanger(e.data?.message || e.message)
+      modalErrorHandler?.showDanger(defaultTo(e.data?.message, e.message))
+    }
+  }
+  const submitOrCloseBtn = () => {
+    if (token) {
+      return <Button text={getString('close')} onClick={onClose} variation={ButtonVariation.TERTIARY} />
+    } else {
+      return (
+        <Button
+          variation={ButtonVariation.PRIMARY}
+          text={isEdit ? getString('save') : getString('rbac.generateToken')}
+          type="submit"
+          disabled={saving || updating}
+        />
+      )
     }
   }
   return (
@@ -104,8 +118,8 @@ const TokenForm: React.FC<TokenModalData> = props => {
             orgIdentifier,
             projectIdentifier,
             apiKeyIdentifier,
-            parentIdentifier: parentIdentifier || serviceAccountIdentifier,
-            apiKeyType: apiKeyType || 'SERVICE_ACCOUNT',
+            parentIdentifier: defaultTo(parentIdentifier, serviceAccountIdentifier),
+            apiKeyType: defaultTo(apiKeyType, 'SERVICE_ACCOUNT'),
             expiryDate: tokenData?.validTo ? moment(tokenData.validTo).format('MM/DD/YYYY') : '',
             ...tokenData
           }}
@@ -143,16 +157,7 @@ const TokenForm: React.FC<TokenModalData> = props => {
                   </Layout.Vertical>
                 </Container>
                 <Layout.Horizontal spacing="small">
-                  {token ? (
-                    <Button text={getString('close')} onClick={onClose} variation={ButtonVariation.TERTIARY} />
-                  ) : (
-                    <Button
-                      variation={ButtonVariation.PRIMARY}
-                      text={isEdit ? getString('save') : getString('rbac.generateToken')}
-                      type="submit"
-                      disabled={saving || updating}
-                    />
-                  )}
+                  {submitOrCloseBtn()}
                   <Button text={getString('cancel')} onClick={onClose} variation={ButtonVariation.TERTIARY} />
                 </Layout.Horizontal>
               </Form>
