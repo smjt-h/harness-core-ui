@@ -84,8 +84,13 @@ describe('DatadogMetricsHealthSource unit tests', () => {
       data: { data: ['active_metric_1', 'active_metric_2', 'active_metric_3'] },
       refetch: jest.fn() as unknown
     } as any)
-    jest.spyOn(cvService, 'useGetDatadogMetricTagsList').mockReturnValue({
-      data: { data: ['metric_tag_1:test', 'metric_tag_2:test', 'metric_tag_3:test'] },
+    jest.spyOn(cvService, 'useGetDatadogMetricTags').mockReturnValue({
+      data: {
+        data: {
+          tagKeys: ['metric_tag_1', 'metric_tag_2', 'metric_tag_3'],
+          metricTags: ['metric_tag_1:test', 'metric_tag_2:test', 'metric_tag_3:test']
+        }
+      },
       refetch: jest.fn() as unknown
     } as any)
   })

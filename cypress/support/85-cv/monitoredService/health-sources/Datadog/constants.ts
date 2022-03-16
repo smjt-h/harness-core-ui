@@ -170,11 +170,20 @@ export const metricTags = {
   }
 }
 
+export const getActiveMetricWithFilter = (filter: string): string =>
+  `/cv/api/datadog-metrics/active-metrics?routingId=${accountId}&projectIdentifier=${projectIdentifier}&orgIdentifier=${orgIdentifier}&accountId=${accountId}&connectorIdentifier=${connectorIdentifier}&tracingId=*filter=${filter}`
+
 export const activeMetrics = {
   getActiveMetrics: `/cv/api/datadog-metrics/active-metrics?routingId=${accountId}&projectIdentifier=${projectIdentifier}&orgIdentifier=${orgIdentifier}&accountId=${accountId}&connectorIdentifier=${connectorIdentifier}&tracingId=*`,
   getActiveMetricsResponse: {
     status: 'SUCCESS',
     data: [configuredMetric],
+    metaData: null,
+    correlationId: 'eb9d6780-8db5-4f51-b476-aac2f63a00d0'
+  },
+  getActiveMetricsFilteredResponse: {
+    status: 'SUCCESS',
+    data: [configuredMetric, 'docker.cpu.usage'],
     metaData: null,
     correlationId: 'eb9d6780-8db5-4f51-b476-aac2f63a00d0'
   }
