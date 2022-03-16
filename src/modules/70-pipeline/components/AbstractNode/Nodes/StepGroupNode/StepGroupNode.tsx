@@ -74,7 +74,7 @@ export function StepGroupNode(props: any): JSX.Element {
               <StepGroupGraph {...props} data={props?.data?.stepGroup?.steps} isNodeCollapsed={isNodeCollapsed} />
             </div>
             <Button
-              className={classnames(css.closeNode, { [defaultCss.readonly]: props.readonly })}
+              className={classnames(css.closeNode, { [css.readonly]: props.readonly })}
               minimal
               icon="cross"
               variation={ButtonVariation.PRIMARY}
@@ -90,7 +90,7 @@ export function StepGroupNode(props: any): JSX.Element {
               withoutCurrentColor={true}
             />
           </div>
-          {!props.isParallelNode && (
+          {!props.isParallelNode && !props.readonly && (
             <div
               data-linkid={props?.identifier}
               onMouseOver={event => event.stopPropagation()}
@@ -133,7 +133,7 @@ export function StepGroupNode(props: any): JSX.Element {
               <Icon name="plus" color={Color.WHITE} />
             </div>
           )}
-          {allowAdd && CreateNode && (
+          {allowAdd && !props.readonly && CreateNode && (
             <CreateNode
               className={classnames(
                 defaultCss.addNode,

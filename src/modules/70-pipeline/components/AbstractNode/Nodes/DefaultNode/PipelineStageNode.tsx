@@ -10,6 +10,9 @@ import cx from 'classnames'
 import type { IconName } from '@wings-software/uicore'
 import { Icon, Text, Color, Button, ButtonVariation } from '@wings-software/uicore'
 import { DiagramDrag, DiagramType, Event } from '@pipeline/components/Diagram'
+import { ExecutionStatusIconMap as IconMap, getStageType } from '@pipeline/utils/executionUtils'
+import type { ExecutionStatus } from '@pipeline/utils/statusHelpers'
+import { RunningIcon } from '@pipeline/components/ExecutionCard/MiniExecutionGraph/StageNode'
 import SVGMarker from '../SVGMarker'
 import { NodeType } from '../../Node'
 // import CreateNode from '../CreateNode/CreateNodeStage'
@@ -22,6 +25,7 @@ function PipelineStageNode(props: any): JSX.Element {
   const [showAddNode, setVisibilityOfAdd] = React.useState(false)
   const [showAddLink, setShowAddLink] = React.useState(false)
   const CreateNode: React.FC<any> | undefined = props?.getNode(NodeType.CreateNode)?.component
+
   return (
     <div
       className={cx(css.defaultNode, 'default-node', { draggable: !props.readonly })}
@@ -100,7 +104,16 @@ function PipelineStageNode(props: any): JSX.Element {
       >
         <div className="execution-running-animation" />
         {props.icon && <Icon size={28} name={props.icon} inverse={props?.isSelected} />}
-        {SECONDARY_ICON && <Icon className={css.secondaryIcon} size={8} name={SECONDARY_ICON} />}
+        {props?.data?.status === 'Running' ? (
+          <RunningIcon />
+        ) : (
+          <Icon
+            name={IconMap[props?.data?.status as ExecutionStatus] || IconMap.NotStarted}
+            size={13}
+            className={css.secondaryIcon}
+          />
+        )}
+        {SECONDARY_ICON && <Icon className={css.codeIcon} size={8} name={SECONDARY_ICON} />}
         <Button
           className={cx(css.closeNode, { [css.readonly]: props.readonly })}
           minimal

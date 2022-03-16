@@ -10,11 +10,13 @@ declare const styles: {
   readonly addNode: string
   readonly addNodeIcon: string
   readonly closeNode: string
+  readonly codeIcon: string
   readonly conditional: string
   readonly defaultCard: string
   readonly defaultNode: string
   readonly draggable: string
   readonly hoverName: string
+  readonly icon: string
   readonly iconGroup: string
   readonly inComplete: string
   readonly left: string

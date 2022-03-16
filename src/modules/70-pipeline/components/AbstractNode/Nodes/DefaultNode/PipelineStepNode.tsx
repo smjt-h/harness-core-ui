@@ -7,10 +7,12 @@
 
 import React from 'react'
 import cx from 'classnames'
-import type { IconName } from '@wings-software/uicore'
-import { Icon, Text, Color, Button, ButtonVariation } from '@wings-software/uicore'
+import { Icon, Text, Color, Button, ButtonVariation, IconName, Utils } from '@wings-software/uicore'
 import { DiagramDrag, DiagramType, Event } from '@pipeline/components/Diagram'
+import { ExecutionStatusIconMap as IconMap, getStageType } from '@pipeline/utils/executionUtils'
+import type { ExecutionStatus } from '@pipeline/utils/statusHelpers'
 import stepsfactory from '@pipeline/components/PipelineSteps/PipelineStepFactory'
+import { RunningIcon } from '@pipeline/components/ExecutionCard/MiniExecutionGraph/StageNode'
 import SVGMarker from '../SVGMarker'
 import { NodeType } from '../../Node'
 import css from './DefaultNode.module.scss'
@@ -22,8 +24,11 @@ function PipelineStepNode(props: any): JSX.Element {
   const [showAddNode, setVisibilityOfAdd] = React.useState(false)
   const [showAddLink, setShowAddLink] = React.useState(false)
   const stepData = stepsfactory.getStepData(props.type)
+  let stepIconColor = stepsfactory.getStepIconColor(props.type || '')
+  if (stepIconColor && Object.values(Color).includes(stepIconColor)) {
+    stepIconColor = Utils.getRealCSSColor(stepIconColor)
+  }
   const CreateNode: React.FC<any> | undefined = props?.getNode(NodeType.CreateNode)?.component
-
   return (
     <div
       className={cx(css.defaultNode, 'default-node', { draggable: !props.readOnly })}
@@ -102,8 +107,25 @@ function PipelineStepNode(props: any): JSX.Element {
         }}
       >
         <div className="execution-running-animation" />
-        {stepData?.icon && <Icon size={28} name={stepData?.icon || 'cross'} inverse={props?.isSelected} />}
-        {SECONDARY_ICON && <Icon className={css.secondaryIcon} size={8} name={SECONDARY_ICON} />}
+        {(stepData?.icon || props?.data?.icon) && (
+          <Icon
+            size={28}
+            name={stepData?.icon || props?.data?.icon || 'cross'}
+            inverse={props?.isSelected}
+            color={props.isSelected ? Utils.getRealCSSColor(Color.WHITE) : stepIconColor}
+          />
+        )}
+        {props?.data?.status === 'Running' ? (
+          <RunningIcon />
+        ) : (
+          <Icon
+            name={IconMap[props?.data?.status as ExecutionStatus] || IconMap.NotStarted}
+            size={13}
+            className={css.secondaryIcon}
+          />
+        )}
+        {SECONDARY_ICON && <Icon className={css.codeIcon} size={8} name={SECONDARY_ICON} />}
+
         <Button
           className={cx(css.closeNode, { [css.readonly]: props.readonly })}
           minimal
@@ -136,7 +158,7 @@ function PipelineStepNode(props: any): JSX.Element {
           {props.name}
         </Text>
       )}
-      {allowAdd && CreateNode && (
+      {allowAdd && CreateNode && !props.readonly && (
         <CreateNode
           onMouseOver={() => allowAdd && setVisibilityOfAdd(true)}
           onMouseLeave={() => allowAdd && setVisibilityOfAdd(false)}
@@ -155,7 +177,7 @@ function PipelineStepNode(props: any): JSX.Element {
           data-nodeid="add-parallel"
         />
       )}
-      {!props.isParallelNode && (
+      {!props.isParallelNode && !props.readonly && (
         <div
           data-linkid={props?.identifier}
           onMouseOver={event => event.stopPropagation()}
@@ -200,7 +222,7 @@ function PipelineStepNode(props: any): JSX.Element {
           <Icon name="plus" color={Color.WHITE} />
         </div>
       )}
-      {!props?.nextNode && props?.parentIdentifier && !props.isParallelNode && (
+      {!props?.nextNode && props?.parentIdentifier && !props.readonly && !props.isParallelNode && (
         <div
           data-linkid={props?.identifier}
           onMouseOver={event => event.stopPropagation()}
