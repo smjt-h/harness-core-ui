@@ -18,6 +18,9 @@ import {
   PageError,
   Pagination
 } from '@wings-software/uicore'
+import type { GovernanceMetadata } from 'services/pipeline-ng'
+import { EvaluationModal } from '@governance/EvaluationModal'
+import { useFeatureFlags } from '@common/hooks/useFeatureFlag'
 import { useStrings } from 'framework/strings'
 import { Feature, GitDetails, GitSyncErrorResponse, Target, useGetAllFeatures, Variation } from 'services/cf'
 import { ItemContainer } from '@cf/components/ItemContainer/ItemContainer'
@@ -74,6 +77,10 @@ export const FlagSettings: React.FC<FlagSettingsProps> = ({ target, gitSync }) =
     projectIdentifier,
     environmentIdentifier
   }
+  const { OPA_FF_GOVERNANCE } = useFeatureFlags()
+  const [governanceMetadata, setGovernanceMetadata] = useState<GovernanceMetadata>()
+  const shouldShowGovernanceEvaluation =
+    OPA_FF_GOVERNANCE && (governanceMetadata?.status === 'error' || governanceMetadata?.status === 'warning')
 
   const [pageNumber, setPageNumber] = useState(0)
   const [queryString, setQueryString] = useState('')
@@ -202,6 +209,7 @@ export const FlagSettings: React.FC<FlagSettingsProps> = ({ target, gitSync }) =
                   patchParams={patchParams}
                   key={feature.identifier}
                   gitSync={gitSync}
+                  setGovernanceMetadata={setGovernanceMetadata}
                 />
               ))}
             </Layout.Vertical>
@@ -223,6 +231,15 @@ export const FlagSettings: React.FC<FlagSettingsProps> = ({ target, gitSync }) =
 
         {loading && <ContainerSpinner />}
         {!loading && error && <PageError message={getErrorMessage(error)} onClick={() => refetch()} />}
+        {shouldShowGovernanceEvaluation && (
+          <EvaluationModal
+            accountId={accountIdentifier}
+            key={governanceMetadata?.id}
+            module={'cf'}
+            metadata={governanceMetadata}
+            headingErrorMessage={getString('cf.policyEvaluations.failedToSave')}
+          />
+        )}
       </Container>
     </Container>
   )
@@ -234,7 +251,8 @@ const FlagSettingsRow: React.FC<{
   feature: Feature
   patchParams: FlagPatchParams
   gitSync: UseGitSync
-}> = ({ feature, index, patchParams, target, gitSync }) => {
+  setGovernanceMetadata: (data: any) => void
+}> = ({ feature, index, patchParams, target, gitSync, setGovernanceMetadata }) => {
   const { withActiveEnvironment } = useActiveEnvironment()
 
   return (
@@ -297,6 +315,7 @@ const FlagSettingsRow: React.FC<{
             feature={feature}
             gitSync={gitSync}
             target={target}
+            setGovernanceMetadata={setGovernanceMetadata}
           />
         </Container>
       </Layout.Horizontal>
@@ -312,6 +331,7 @@ export interface VariationSelectProps {
   feature: Feature
   target: Target
   gitSync: UseGitSync
+  setGovernanceMetadata: (data: any) => void
 }
 
 export const VariationSelect: React.FC<VariationSelectProps> = ({
@@ -321,7 +341,8 @@ export const VariationSelect: React.FC<VariationSelectProps> = ({
   target,
   feature,
   patchParams,
-  gitSync
+  gitSync,
+  setGovernanceMetadata
 }) => {
   const { getString } = useStrings()
   const [index, setIndex] = useState<number>(variations.findIndex(v => v.identifier === selectedIdentifier))
@@ -395,7 +416,11 @@ export const VariationSelect: React.FC<VariationSelectProps> = ({
       if (e.status === GIT_SYNC_ERROR_CODE) {
         gitSync.handleError(e.data as GitSyncErrorResponse)
       } else {
-        showError(getErrorMessage(e), 0, 'cf.serve.flag.variant.error')
+        if (e?.data?.details?.governanceMetadata) {
+          setGovernanceMetadata(e?.data?.details?.governanceMetadata)
+        } else {
+          showError(getErrorMessage(e), 0, 'cf.serve.flag.variant.error')
+        }
       }
       setIndex(previousSelectedIdentifier.current)
     } finally {
