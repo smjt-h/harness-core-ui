@@ -68,6 +68,7 @@ import { useMutateAsGet, useQueryParams } from '@common/hooks'
 import { yamlStringify } from '@common/utils/YamlHelperMethods'
 import { PipelineActions } from '@common/constants/TrackingConstants'
 import { useTelemetry } from '@common/hooks/useTelemetry'
+import { sanitize } from '@common/utils/JSONUtils'
 import type { InputSetDTO } from '@pipeline/utils/types'
 import { useDeepCompareEffect } from '@common/hooks/useDeepCompareEffect'
 import { useGetYamlWithTemplateRefsResolved } from 'services/template-ng'
@@ -781,7 +782,19 @@ function RunPipelineFormBasic({
 
   const formRefDom = React.useRef<HTMLElement | undefined>()
   const handleValidation = async (values: Values): Promise<void> => {
-    const latestPipeline = { ...currentPipeline, pipeline: values as PipelineInfoConfig }
+    // Sanitize any empty objects
+    const latestPipeline = sanitize(
+      mergeWith(currentPipeline, { pipeline: values as PipelineInfoConfig }, ori => {
+        // Return empty object if there exists no key in the current pipeline that matches the one in the values passed.
+        if (ori === undefined) return {}
+      }),
+      {
+        removeEmptyArray: false,
+        removeEmptyString: false
+      }
+    ) as {
+      pipeline: PipelineInfoConfig
+    }
     setCurrentPipeline(latestPipeline)
     const runPipelineFormErrors = await getFormErrors(latestPipeline, yamlTemplate, pipeline)
     // https://github.com/formium/formik/issues/1392
