@@ -23,16 +23,16 @@
         <div class='clearfix'>
             
             <div class='fl pad1y space-right2'>
-                <span class="strong">81% </span>
+                <span class="strong">81.37% </span>
                 <span class="quiet">Statements</span>
-                <span class='fraction'>81/100</span>
+                <span class='fraction'>83/102</span>
             </div>
         
             
             <div class='fl pad1y space-right2'>
-                <span class="strong">62.74% </span>
+                <span class="strong">62.25% </span>
                 <span class="quiet">Branches</span>
-                <span class='fraction'>133/212</span>
+                <span class='fraction'>127/204</span>
             </div>
         
             
@@ -44,9 +44,9 @@
         
             
             <div class='fl pad1y space-right2'>
-                <span class="strong">80.81% </span>
+                <span class="strong">81.19% </span>
                 <span class="quiet">Lines</span>
-                <span class='fraction'>80/99</span>
+                <span class='fraction'>82/101</span>
             </div>
         
             
@@ -517,7 +517,9 @@
 <a name='L458'></a><a href='#L458'>458</a>
 <a name='L459'></a><a href='#L459'>459</a>
 <a name='L460'></a><a href='#L460'>460</a>
-<a name='L461'></a><a href='#L461'>461</a></td><td class="line-coverage quiet"><span class="cline-any cline-neutral">&nbsp;</span>
+<a name='L461'></a><a href='#L461'>461</a>
+<a name='L462'></a><a href='#L462'>462</a>
+<a name='L463'></a><a href='#L463'>463</a></td><td class="line-coverage quiet"><span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
@@ -546,7 +548,6 @@
 <span class="cline-any cline-yes">7x</span>
 <span class="cline-any cline-yes">7x</span>
 <span class="cline-any cline-yes">7x</span>
-<span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-yes">7x</span>
 <span class="cline-any cline-yes">7x</span>
 <span class="cline-any cline-yes">7x</span>
@@ -826,6 +827,9 @@
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">2x</span>
+<span class="cline-any cline-yes">2x</span>
 <span class="cline-any cline-yes">2x</span>
 <span class="cline-any cline-yes">2x</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
@@ -1006,7 +1010,6 @@ import * as Yup from 'yup'
 import { noop, pick, defaultTo } from 'lodash-es'
 import { useToaster, StringUtils } from '@common/exports'
 import { usePostGitSync, GitSyncConfig, ConnectorInfoDTO } from 'services/cd-ng'
-&nbsp;
 import { StringKeys, useStrings } from 'framework/strings'
 import { Connectors } from '@connectors/constants'
 import { getConnectorDisplayName, GitUrlType } from '@connectors/pages/connectors/utils/ConnectorUtils'
@@ -1286,13 +1289,16 @@ const GitSyncRepoForm: React.FC&lt;ModalConfigureProps &amp; GitSyncRepoFormProp
                           live: value<span class="branch-0 cbranch-no" title="branch not covered" >?.s</span>tatus<span class="branch-0 cbranch-no" title="branch not covered" >?.s</span>tatus === 'SUCCESS',
                           connector: value
                         })
+&nbsp;
+                        let repoValue = ''
                         <span class="missing-if-branch" title="else path not taken" >E</span>if (value<span class="branch-0 cbranch-no" title="branch not covered" >?.s</span>pec<span class="branch-0 cbranch-no" title="branch not covered" >?.t</span>ype === GitUrlType.REPO) {
+                          repoValue = value<span class="branch-0 cbranch-no" title="branch not covered" >?.s</span>pec<span class="branch-0 cbranch-no" title="branch not covered" >?.u</span>rl
                           setConnectorIdentifierRef(
                             getConnectorIdentifierWithScope(getScopeFromDTO(value), value.identifier)
                           )
-                          setRepositoryURL(value<span class="branch-0 cbranch-no" title="branch not covered" >?.s</span>pec<span class="branch-0 cbranch-no" title="branch not covered" >?.u</span>rl)
+                          setRepositoryURL(repoValue)
                         }
-                        setFieldValue('repo', value<span class="branch-0 cbranch-no" title="branch not covered" >?.s</span>pec<span class="branch-0 cbranch-no" title="branch not covered" >?.u</span>rl)
+                        setFieldValue('repo', repoValue)
                         setTestStatus(TestStatus.NOT_INITIATED)
                       }}
                     /&gt;
@@ -1444,7 +1450,7 @@ export default GitSyncRepoForm
             <div class='footer quiet pad2 space-top1 center small'>
                 Code coverage generated by
                 <a href="https://istanbul.js.org/" target="_blank">istanbul</a>
-                at Wed Mar 16 2022 15:54:45 GMT+0000 (Greenwich Mean Time)
+                at Wed Mar 16 2022 18:04:30 GMT+0000 (Greenwich Mean Time)
             </div>
         </div>
         <script src="../../../../prettify.js"></script>
