@@ -786,7 +786,11 @@ function RunPipelineFormBasic({
     const latestPipeline = sanitize(
       mergeWith(currentPipeline, { pipeline: values as PipelineInfoConfig }, ori => {
         // Return empty object if there exists no key in the current pipeline that matches the one in the values passed.
-        if (ori === undefined) return {}
+        if (ori === undefined) {
+          return {}
+        } else {
+          return undefined
+        }
       }),
       {
         removeEmptyArray: false,
