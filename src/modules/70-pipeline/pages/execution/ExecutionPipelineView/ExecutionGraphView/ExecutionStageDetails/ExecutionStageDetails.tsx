@@ -5,7 +5,7 @@
  * https://polyformproject.org/wp-content/uploads/2020/06/PolyForm-Shield-1.0.0.txt.
  */
 
-import React, { useMemo } from 'react'
+import React from 'react'
 import { isEmpty, debounce } from 'lodash-es'
 import { useParams } from 'react-router-dom'
 import {
@@ -15,7 +15,7 @@ import {
   useGetResourceConstraintsExecutionInfo
 } from 'services/pipeline-ng'
 import { PageSpinner } from '@common/components'
-import { processExecutionData, processExecutionDataV1 } from '@pipeline/utils/executionUtils'
+import { NodeType, processExecutionData } from '@pipeline/utils/executionUtils'
 import { useExecutionContext } from '@pipeline/context/ExecutionContext'
 import { useExecutionLayoutContext } from '@pipeline/components/ExecutionLayout/ExecutionLayoutContext'
 import ExecutionStageDiagram from '@pipeline/components/ExecutionStageDiagram/ExecutionStageDiagram'
@@ -29,8 +29,20 @@ import type { ExecutionPathProps } from '@common/interfaces/RouteInterfaces'
 import { StepMode as Modes } from '@pipeline/utils/stepUtils'
 import type { ExecutionLayoutState } from '@pipeline/components/ExecutionLayout/ExecutionLayoutContext'
 import ConditionalExecutionTooltipWrapper from '@pipeline/components/ConditionalExecutionToolTip/ConditionalExecutionTooltipWrapper'
-import BarrierStepTooltip from './components/BarrierStepTooltip'
+import { processExecutionDataV1 } from '@pipeline/utils/execUtils'
+import {
+  DiagramFactory,
+  DiagramNodes,
+  NodeType as DiagramNodeType
+} from '@pipeline/components/AbstractNode/DiagramFactory'
+import { DiamondNodeWidget } from '@pipeline/components/AbstractNode/Nodes/DiamondNode/DiamondNode'
+import PipelineStepNode from '@pipeline/components/AbstractNode/Nodes/DefaultNode/PipelineStepNode'
+import { IconNode } from '@pipeline/components/AbstractNode/Nodes/IconNode/IconNode'
+import CreateNodeStep from '@pipeline/components/AbstractNode/Nodes/CreateNode/CreateNodeStep'
+import EndNodeStep from '@pipeline/components/AbstractNode/Nodes/EndNode/EndNodeStep'
+import StartNodeStep from '@pipeline/components/AbstractNode/Nodes/StartNode/StartNodeStep'
 import ResourceConstraintTooltip from './components/ResourceConstraints/ResourceConstraints'
+import BarrierStepTooltip from './components/BarrierStepTooltip'
 import css from './ExecutionStageDetails.module.scss'
 
 export interface ExecutionStageDetailsProps {
@@ -40,6 +52,21 @@ export interface ExecutionStageDetailsProps {
 }
 
 const NEW_PIP_STUDIO = localStorage.getItem('IS_NEW_PIP_STUDIO_ACTIVE') === 'true'
+
+const diagram = new DiagramFactory('graph')
+
+diagram.registerNode('ShellScript', PipelineStepNode, true)
+diagram.registerNode(DiagramNodeType.CreateNode, CreateNodeStep)
+diagram.registerNode(DiagramNodeType.EndNode, EndNodeStep)
+diagram.registerNode(DiagramNodeType.StartNode, StartNodeStep)
+diagram.registerNode('STEP_GROUP', DiagramNodes[DiagramNodeType.StepGroupNode])
+diagram.registerNode('Approval', DiamondNodeWidget)
+diagram.registerNode('JiraApproval', DiamondNodeWidget)
+diagram.registerNode('HarnessApproval', DiamondNodeWidget)
+diagram.registerNode('default-diamond', DiamondNodeWidget)
+diagram.registerNode('Barrier', IconNode)
+
+export const CDPipelineStudioNew = diagram.render()
 export default function ExecutionStageDetails(props: ExecutionStageDetailsProps): React.ReactElement {
   const {
     pipelineExecutionDetail,
@@ -75,8 +102,10 @@ export default function ExecutionStageDetails(props: ExecutionStageDetailsProps)
   } = useGetResourceConstraintsExecutionInfo({
     lazy: true
   })
-  const data: ExecutionPipeline<ExecutionNode> = {
-    items: processExecutionData(pipelineExecutionDetail?.executionGraph),
+  const data: any = {
+    items: NEW_PIP_STUDIO
+      ? processExecutionDataV1(pipelineExecutionDetail?.executionGraph)
+      : processExecutionData(pipelineExecutionDetail?.executionGraph),
     identifier: `${executionIdentifier}-${pipelineExecutionDetail?.executionGraph?.rootNodeId}`,
     status: stage?.status as any,
     allNodes: Object.keys(allNodeMap)
@@ -171,44 +200,48 @@ export default function ExecutionStageDetails(props: ExecutionStageDetailsProps)
 
   // NOTE: check if we show stop node when stage has paused status
   const showEndNode = !(isExecutionRunning(stage?.status) || isExecutionPaused(stage?.status))
-  console.clear()
+
   console.log({ data: processExecutionDataV1(pipelineExecutionDetail?.executionGraph) })
   return (
     <div className={css.main} data-layout={props.layout}>
-      {!isEmpty(selectedStageId) && data.items?.length > 0 && (
-        <ExecutionStageDiagram
-          selectedIdentifier={selectedStepId}
-          itemClickHandler={e => props.onStepSelect(e.stage.identifier)}
-          data={data}
-          showEndNode={showEndNode}
-          disableCollapseButton={isExecutionRunning(stage?.status)}
-          isWhiteBackground
-          nodeStyle={{
-            width: 64,
-            height: 64
-          }}
-          loading={loading}
-          gridStyle={{
-            startX: 50,
-            startY: 150
-          }}
-          graphConfiguration={{
-            NODE_HAS_BORDER: false
-          }}
-          itemMouseEnter={onMouseEnter}
-          itemMouseLeave={() => {
-            dynamicPopoverHandler?.hide()
-            setBarrierSetupId(undefined)
-          }}
-          mouseEnterStepGroupTitle={onMouseEnter}
-          mouseLeaveStepGroupTitle={() => {
-            dynamicPopoverHandler?.hide()
-          }}
-          canvasBtnsClass={css.canvasBtns}
-          setGraphCanvasState={state => setStepsGraphCanvasState?.(state)}
-          graphCanvasState={stepsGraphCanvasState}
-        />
-      )}
+      {!isEmpty(selectedStageId) &&
+        data.items?.length > 0 &&
+        (!NEW_PIP_STUDIO ? (
+          <ExecutionStageDiagram
+            selectedIdentifier={selectedStepId}
+            itemClickHandler={e => props.onStepSelect(e.stage.identifier)}
+            data={data}
+            showEndNode={showEndNode}
+            disableCollapseButton={isExecutionRunning(stage?.status)}
+            isWhiteBackground
+            nodeStyle={{
+              width: 64,
+              height: 64
+            }}
+            loading={loading}
+            gridStyle={{
+              startX: 50,
+              startY: 150
+            }}
+            graphConfiguration={{
+              NODE_HAS_BORDER: false
+            }}
+            itemMouseEnter={onMouseEnter}
+            itemMouseLeave={() => {
+              dynamicPopoverHandler?.hide()
+              setBarrierSetupId(undefined)
+            }}
+            mouseEnterStepGroupTitle={onMouseEnter}
+            mouseLeaveStepGroupTitle={() => {
+              dynamicPopoverHandler?.hide()
+            }}
+            canvasBtnsClass={css.canvasBtns}
+            setGraphCanvasState={state => setStepsGraphCanvasState?.(state)}
+            graphCanvasState={stepsGraphCanvasState}
+          />
+        ) : (
+          <CDPipelineStudioNew readonly data={data.items} />
+        ))}
       {loading && !isDataLoadedForSelectedStage && pipelineExecutionDetail && <PageSpinner fixed={false} />}
       <DynamicPopover
         className={css.popoverHeight}
