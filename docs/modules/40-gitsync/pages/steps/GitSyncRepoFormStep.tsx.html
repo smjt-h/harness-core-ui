@@ -30,9 +30,9 @@
         
             
             <div class='fl pad1y space-right2'>
-                <span class="strong">46.15% </span>
+                <span class="strong">52.63% </span>
                 <span class="quiet">Branches</span>
-                <span class='fraction'>6/13</span>
+                <span class='fraction'>10/19</span>
             </div>
         
             
@@ -100,7 +100,18 @@
 <a name='L41'></a><a href='#L41'>41</a>
 <a name='L42'></a><a href='#L42'>42</a>
 <a name='L43'></a><a href='#L43'>43</a>
-<a name='L44'></a><a href='#L44'>44</a></td><td class="line-coverage quiet"><span class="cline-any cline-neutral">&nbsp;</span>
+<a name='L44'></a><a href='#L44'>44</a>
+<a name='L45'></a><a href='#L45'>45</a>
+<a name='L46'></a><a href='#L46'>46</a>
+<a name='L47'></a><a href='#L47'>47</a>
+<a name='L48'></a><a href='#L48'>48</a>
+<a name='L49'></a><a href='#L49'>49</a>
+<a name='L50'></a><a href='#L50'>50</a>
+<a name='L51'></a><a href='#L51'>51</a>
+<a name='L52'></a><a href='#L52'>52</a>
+<a name='L53'></a><a href='#L53'>53</a>
+<a name='L54'></a><a href='#L54'>54</a>
+<a name='L55'></a><a href='#L55'>55</a></td><td class="line-coverage quiet"><span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
@@ -117,6 +128,14 @@
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-yes">6x</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
@@ -125,8 +144,11 @@
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-yes">6x</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-yes">6x</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
@@ -153,22 +175,32 @@
 import React from 'react'
 &nbsp;
 import type { StepProps } from '@wings-software/uicore'
-import GitSyncRepoForm, { GitSyncRepoFormProps } from '@gitsync/components/gitSyncRepoForm/GitSyncRepoForm'
+import GitSyncRepoForm, {
+  gitSyncFormDefaultInitialData,
+  GitSyncFormInterface,
+  GitSyncRepoFormProps
+} from '@gitsync/components/gitSyncRepoForm/GitSyncRepoForm'
 import type { GitSyncConfig } from 'services/cd-ng'
 &nbsp;
 interface GitSyncRepoFormStepProps extends GitSyncRepoFormProps {
   onClose?: () =&gt; void
 }
 &nbsp;
-const GitSyncRepoFormStep: React.FC&lt;StepProps&lt;unknown&gt; &amp; GitSyncRepoFormStepProps&gt; = props =&gt; {
+interface StepData {
+  formData: GitSyncFormInterface
+}
+&nbsp;
+const GitSyncRepoFormStep: React.FC&lt;StepProps&lt;unknown &amp; StepData&gt; &amp; GitSyncRepoFormStepProps&gt; = props =&gt; {
   const {
     nextStep,
     accountId = <span class="branch-0 cbranch-no" title="branch not covered" >'',</span>
     orgIdentifier = <span class="branch-0 cbranch-no" title="branch not covered" >'',</span>
     projectIdentifier = <span class="branch-0 cbranch-no" title="branch not covered" >'',</span>
     isEditMode = <span class="branch-0 cbranch-no" title="branch not covered" >false,</span>
-    isNewUser = <span class="branch-0 cbranch-no" title="branch not covered" >false</span>
+    isNewUser = <span class="branch-0 cbranch-no" title="branch not covered" >false,</span>
+    prevStepData
   } = props
+&nbsp;
   return (
     &lt;GitSyncRepoForm
       accountId={accountId}
@@ -177,8 +209,9 @@ const GitSyncRepoFormStep: React.FC&lt;StepProps&lt;unknown&gt; &amp; GitSyncRep
       isEditMode={isEditMode}
       isNewUser={isNewUser}
       gitSyncRepoInfo={undefined}
-      onSuccess={(data?: GitSyncConfig) =&gt; {
-        nextStep<span class="branch-0 cbranch-no" title="branch not covered" >?.({</span> ...props, ...data })
+      initialData={<span class="branch-1 cbranch-no" title="branch not covered" >prevStepData?.formData}</span>
+      onSuccess={(data?: GitSyncConfig, formData?: GitSyncFormInterface) =&gt; {
+        nextStep<span class="branch-0 cbranch-no" title="branch not covered" >?.({</span> ...props, ...data, formData: formData || <span class="branch-1 cbranch-no" title="branch not covered" >gitSyncFormDefaultInitialData </span>})
       }}
       onClose={() =&gt; props.onClose<span class="branch-0 cbranch-no" title="branch not covered" >?.()}</span>
     /&gt;
@@ -193,7 +226,7 @@ export default GitSyncRepoFormStep
             <div class='footer quiet pad2 space-top1 center small'>
                 Code coverage generated by
                 <a href="https://istanbul.js.org/" target="_blank">istanbul</a>
-                at Wed Mar 16 2022 07:14:46 GMT+0000 (Greenwich Mean Time)
+                at Wed Mar 16 2022 08:11:35 GMT+0000 (Greenwich Mean Time)
             </div>
         </div>
         <script src="../../../../prettify.js"></script>
