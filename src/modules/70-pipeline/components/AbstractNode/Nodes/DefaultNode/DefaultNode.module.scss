@@ -41,7 +41,7 @@
     &:hover .closeNode {
       opacity: 1;
       &.readonly {
-        opacity: 0;
+        opacity: 0 !important;
       }
       pointer-events: initial;
     }
@@ -53,7 +53,7 @@
     }
   }
 
-  .secondaryIcon {
+  .codeIcon {
     position: absolute;
     bottom: 2px;
     right: 2px;
@@ -238,4 +238,14 @@
   overflow-wrap: normal;
   word-break: keep-all;
   height: 46px;
+}
+
+.icon {
+  color: var(--icon-color) !important;
+}
+
+.secondaryIcon {
+  position: absolute;
+  top: -5px;
+  right: -5px;
 }

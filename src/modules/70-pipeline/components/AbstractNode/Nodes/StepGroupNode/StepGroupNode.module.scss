@@ -16,7 +16,7 @@
   &:hover .closeNode {
     opacity: 1;
     &.readonly {
-      opacity: 0;
+      opacity: 0 !important;
     }
     pointer-events: initial;
   }

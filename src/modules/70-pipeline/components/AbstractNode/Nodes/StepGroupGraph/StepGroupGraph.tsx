@@ -33,6 +33,7 @@ interface StepGroupGraphProps {
   identifier?: string
   isNodeCollapsed: boolean
   updateGraphLinks: () => void
+  readonly?: boolean
 }
 
 interface LayoutStyles {
@@ -118,7 +119,8 @@ function StepGroupGraph(props: StepGroupGraphProps): React.ReactElement {
           startEndNodeNeeded={false}
         />
       ) : (
-        CreateNode && (
+        CreateNode &&
+        !props.readonly && (
           <CreateNode
             {...props}
             isInsideStepGroup={true}
