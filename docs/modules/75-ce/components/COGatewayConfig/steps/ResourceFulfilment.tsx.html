@@ -23,30 +23,30 @@
         <div class='clearfix'>
             
             <div class='fl pad1y space-right2'>
-                <span class="strong">86.25% </span>
+                <span class="strong">86.67% </span>
                 <span class="quiet">Statements</span>
-                <span class='fraction'>69/80</span>
+                <span class='fraction'>65/75</span>
             </div>
         
             
             <div class='fl pad1y space-right2'>
-                <span class="strong">69.43% </span>
+                <span class="strong">74.19% </span>
                 <span class="quiet">Branches</span>
-                <span class='fraction'>159/229</span>
+                <span class='fraction'>161/217</span>
             </div>
         
             
             <div class='fl pad1y space-right2'>
-                <span class="strong">73.91% </span>
+                <span class="strong">72.73% </span>
                 <span class="quiet">Functions</span>
-                <span class='fraction'>17/23</span>
+                <span class='fraction'>16/22</span>
             </div>
         
             
             <div class='fl pad1y space-right2'>
-                <span class="strong">86.25% </span>
+                <span class="strong">86.67% </span>
                 <span class="quiet">Lines</span>
-                <span class='fraction'>69/80</span>
+                <span class='fraction'>65/75</span>
             </div>
         
             
@@ -386,13 +386,7 @@
 <a name='L327'></a><a href='#L327'>327</a>
 <a name='L328'></a><a href='#L328'>328</a>
 <a name='L329'></a><a href='#L329'>329</a>
-<a name='L330'></a><a href='#L330'>330</a>
-<a name='L331'></a><a href='#L331'>331</a>
-<a name='L332'></a><a href='#L332'>332</a>
-<a name='L333'></a><a href='#L333'>333</a>
-<a name='L334'></a><a href='#L334'>334</a>
-<a name='L335'></a><a href='#L335'>335</a>
-<a name='L336'></a><a href='#L336'>336</a></td><td class="line-coverage quiet"><span class="cline-any cline-neutral">&nbsp;</span>
+<a name='L330'></a><a href='#L330'>330</a></td><td class="line-coverage quiet"><span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
@@ -405,6 +399,8 @@
 <span class="cline-any cline-yes">4x</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">4x</span>
 <span class="cline-any cline-yes">4x</span>
 <span class="cline-any cline-yes">4x</span>
 <span class="cline-any cline-yes">4x</span>
@@ -448,6 +444,7 @@
 <span class="cline-any cline-yes">4x</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-yes">4x</span>
+<span class="cline-any cline-yes">18x</span>
 <span class="cline-any cline-yes">18x</span>
 <span class="cline-any cline-yes">18x</span>
 <span class="cline-any cline-yes">18x</span>
@@ -537,25 +534,15 @@
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-yes">18x</span>
-<span class="cline-any cline-yes">14x</span>
-<span class="cline-any cline-yes">14x</span>
-<span class="cline-any cline-yes">1x</span>
-<span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-yes">14x</span>
-<span class="cline-any cline-no">&nbsp;</span>
-<span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-yes">14x</span>
-<span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-yes">18x</span>
-<span class="cline-any cline-yes">14x</span>
-<span class="cline-any cline-yes">14x</span>
-<span class="cline-any cline-yes">1x</span>
-<span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-yes">14x</span>
 <span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-yes">18x</span>
+<span class="cline-any cline-yes">4x</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-yes">14x</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">18x</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-yes">18x</span>
@@ -596,6 +583,7 @@
 <span class="cline-any cline-yes">26x</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-yes">26x</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
@@ -739,6 +727,7 @@ import { get as _get, defaultTo as _defaultTo, debounce as _debounce, isEmpty as
 import * as Yup from 'yup'
 import { CardSelect, Container, Formik, FormikForm, FormInput, Layout, Text } from '@wings-software/uicore'
 import type { FormikContext } from 'formik'
+import type { StringsMap } from 'stringTypes'
 import type { GatewayDetails } from '@ce/components/COCreateGateway/models'
 import { CONFIG_STEP_IDS, RESOURCES } from '@ce/constants'
 import { useTelemetry } from '@common/hooks/useTelemetry'
@@ -746,6 +735,7 @@ import { useStrings } from 'framework/strings'
 import { Utils } from '@ce/common/Utils'
 import { useToaster } from '@common/exports'
 import COGatewayConfigStep from '../COGatewayConfigStep'
+import { getSubTitle, getTitle } from '../helper'
 import odIcon from '../images/ondemandIcon.svg'
 import spotIcon from '../images/spotIcon.svg'
 import css from '../COGatewayConfig.module.scss'
@@ -786,6 +776,7 @@ const ResourceFulfilment: React.FC&lt;ResourceFulfilmentProps&gt; = props =&gt; 
   const { getString } = useStrings()
   const { trackEvent } = useTelemetry()
   const { showError } = useToaster()
+  const isGcpProvider = Utils.isProviderGcp(props.gatewayDetails.provider)
 &nbsp;
   const [selectedInstanceType, setSelectedInstanceType] = useState&lt;CardData | null&gt;(
     _defaultTo(
@@ -871,38 +862,28 @@ const ResourceFulfilment: React.FC&lt;ResourceFulfilmentProps&gt; = props =&gt; 
     [props.gatewayDetails.routing.container_svc]
   )
 &nbsp;
-  const getTitle = () =&gt; {
-    let title = getString('ce.co.autoStoppingRule.configuration.step3.title')
-    if (props.selectedResource === RESOURCES.ASG) {
-      title = getString('ce.co.autoStoppingRule.configuration.step3.asgTitle')
+  const shouldHide = () =&gt; {
+    let flag
+    <span class="missing-if-branch" title="if path not taken" >I</span>if (isGcpProvider &amp;&amp; <span class="branch-1 cbranch-no" title="branch not covered" >props.selectedResource === RESOURCES.INSTANCES)</span> {
+<span class="cstat-no" title="statement not covered" >      flag = true</span>
+    } else if (props.selectedResource &amp;&amp; allowedResources.indexOf(props.selectedResource) === -1) {
+      flag = true
+    } else {
+      flag = false
     }
-    <span class="missing-if-branch" title="if path not taken" >I</span>if (props.selectedResource === RESOURCES.ECS) {
-<span class="cstat-no" title="statement not covered" >      title = getString('ce.co.autoStoppingRule.configuration.step3.desiredTaskCount')</span>
-    }
-    return title
+    return flag
   }
 &nbsp;
-  const getSubTitle = () =&gt; {
-    let subStr = getString('ce.co.autoStoppingRule.configuration.step3.subTitle')
-    if (props.selectedResource === RESOURCES.ASG) {
-      subStr = getString('ce.co.autoStoppingRule.configuration.step3.asgSubTitle')
-    }
-    <span class="missing-if-branch" title="if path not taken" >I</span>if (props.selectedResource === RESOURCES.ECS) {
-<span class="cstat-no" title="statement not covered" >      subStr = getString('ce.co.autoStoppingRule.configuration.step3.ecsSubTitle')</span>
-    }
-    return subStr
-  }
-&nbsp;
-  if (props.selectedResource &amp;&amp; !(allowedResources.indexOf(props.selectedResource) &gt; -1)) {
+  if (shouldHide()) {
     return null
   }
 &nbsp;
   return (
     &lt;COGatewayConfigStep
       count={3}
-      title={getTitle()}
+      title={getString(getTitle(props.selectedResource) as keyof StringsMap)}
       onInfoIconClick={<span class="fstat-no" title="function not covered" >() =</span>&gt; <span class="cstat-no" title="statement not covered" >props.setDrawerOpen(true)}</span>
-      subTitle={getSubTitle()}
+      subTitle={getString(getSubTitle(props.selectedResource) as keyof StringsMap)}
       totalStepsCount={props.totalStepsCount}
       id={CONFIG_STEP_IDS[2]}
     &gt;
@@ -916,7 +897,7 @@ const ResourceFulfilment: React.FC&lt;ResourceFulfilmentProps&gt; = props =&gt; 
             onChange={item =&gt; {
               setSelectedInstanceType(item)
               props.setGatewayDetails({ ...props.gatewayDetails, fullfilment: (item as CardData).value })
-              trackEvent('SelectedInstanceType', { value: item<span class="branch-0 cbranch-no" title="branch not covered" >?.v</span>alue || <span class="branch-1 cbranch-no" title="branch not covered" >'' </span>})
+              trackEvent('SelectedInstanceType', { value: _defaultTo(item<span class="branch-0 cbranch-no" title="branch not covered" >?.v</span>alue, '') })
             }}
             renderItem={(item, _) =&gt; (
               &lt;Layout.Vertical spacing="large"&gt;
@@ -946,8 +927,8 @@ const ResourceFulfilment: React.FC&lt;ResourceFulfilmentProps&gt; = props =&gt; 
               &lt;span&gt;Desired capacity: &lt;/span&gt;
               &lt;span&gt;
                 {props.gatewayDetails.routing<span class="branch-0 cbranch-no" title="branch not covered" >?.i</span>nstance<span class="branch-0 cbranch-no" title="branch not covered" >?.s</span>cale_group<span class="branch-0 cbranch-no" title="branch not covered" >?.d</span>esired ||
-                  (props.gatewayDetails.routing.instance.scale_group<span class="branch-0 cbranch-no" title="branch not covered" >?.o</span>n_demand || <span class="branch-1 cbranch-no" title="branch not covered" >0)</span> +
-                    (props.gatewayDetails.routing.instance.scale_group<span class="branch-0 cbranch-no" title="branch not covered" >?.s</span>pot || 0)}
+                  _defaultTo(props.gatewayDetails.routing.instance.scale_group<span class="branch-0 cbranch-no" title="branch not covered" >?.o</span>n_demand, 0) +
+                    _defaultTo(props.gatewayDetails.routing.instance.scale_group<span class="branch-0 cbranch-no" title="branch not covered" >?.s</span>pot, 0)}
               &lt;/span&gt;
             &lt;/Text&gt;
             &lt;Text className={css.asgDetailRow}&gt;
@@ -962,9 +943,10 @@ const ResourceFulfilment: React.FC&lt;ResourceFulfilmentProps&gt; = props =&gt; 
           &lt;div className={css.asgInstanceFormContainer}&gt;
             &lt;Formik
               initialValues={{
-                odInstance:
-                  props.gatewayDetails.routing.instance.scale_group<span class="branch-0 cbranch-no" title="branch not covered" >?.o</span>n_demand ||
-<span class="branch-1 cbranch-no" title="branch not covered" >                  props.gatewayDetails.routing?.instance?.scale_group?.desired,</span>
+                odInstance: _defaultTo(
+                  props.gatewayDetails.routing.instance.scale_group<span class="branch-0 cbranch-no" title="branch not covered" >?.o</span>n_demand,
+                  props.gatewayDetails.routing<span class="branch-0 cbranch-no" title="branch not covered" >?.i</span>nstance<span class="branch-0 cbranch-no" title="branch not covered" >?.s</span>cale_group<span class="branch-0 cbranch-no" title="branch not covered" >?.d</span>esired
+                ),
                 spotInstance: _get(props.gatewayDetails.routing.instance.scale_group, 'spot', 0)
               }}
               formName="odInstance"
@@ -1031,7 +1013,7 @@ const ResourceFulfilment: React.FC&lt;ResourceFulfilmentProps&gt; = props =&gt; 
 <span class="branch-1 cbranch-no" title="branch not covered" >        &lt;Container&gt;</span>
           &lt;Formik
             initialValues={{
-              taskCount: props.gatewayDetails.routing.container_svc?.task_count || 1
+              taskCount: _defaultTo(props.gatewayDetails.routing.container_svc?.task_count, 1)
             }}
             enableReinitialize
             formName=""
@@ -1069,7 +1051,7 @@ export default ResourceFulfilment
             <div class='footer quiet pad2 space-top1 center small'>
                 Code coverage generated by
                 <a href="https://istanbul.js.org/" target="_blank">istanbul</a>
-                at Thu Mar 17 2022 11:38:10 GMT+0000 (Greenwich Mean Time)
+                at Thu Mar 17 2022 12:46:59 GMT+0000 (Greenwich Mean Time)
             </div>
         </div>
         <script src="../../../../../prettify.js"></script>
