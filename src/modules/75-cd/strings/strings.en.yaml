@@ -206,3 +206,4 @@ serviceList:
 artifactRepoTooltip: Enter the name of the repository where the artifact source is located.
 serverlessDeployCommandOptions: Serverless Deploy Command Options
 serverlessCommandFlagOperations: serverless command flag operations
+parsingYamlError: 'Error while parsing the yaml'
