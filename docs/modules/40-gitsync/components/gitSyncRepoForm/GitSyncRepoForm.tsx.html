@@ -23,30 +23,30 @@
         <div class='clearfix'>
             
             <div class='fl pad1y space-right2'>
-                <span class="strong">81.37% </span>
+                <span class="strong">81.31% </span>
                 <span class="quiet">Statements</span>
-                <span class='fraction'>83/102</span>
+                <span class='fraction'>87/107</span>
             </div>
         
             
             <div class='fl pad1y space-right2'>
-                <span class="strong">62.25% </span>
+                <span class="strong">61.21% </span>
                 <span class="quiet">Branches</span>
-                <span class='fraction'>127/204</span>
+                <span class='fraction'>131/214</span>
             </div>
         
             
             <div class='fl pad1y space-right2'>
-                <span class="strong">83.33% </span>
+                <span class="strong">85.71% </span>
                 <span class="quiet">Functions</span>
-                <span class='fraction'>15/18</span>
+                <span class='fraction'>18/21</span>
             </div>
         
             
             <div class='fl pad1y space-right2'>
-                <span class="strong">81.19% </span>
+                <span class="strong">80.95% </span>
                 <span class="quiet">Lines</span>
-                <span class='fraction'>82/101</span>
+                <span class='fraction'>85/105</span>
             </div>
         
             
@@ -519,7 +519,20 @@
 <a name='L460'></a><a href='#L460'>460</a>
 <a name='L461'></a><a href='#L461'>461</a>
 <a name='L462'></a><a href='#L462'>462</a>
-<a name='L463'></a><a href='#L463'>463</a></td><td class="line-coverage quiet"><span class="cline-any cline-neutral">&nbsp;</span>
+<a name='L463'></a><a href='#L463'>463</a>
+<a name='L464'></a><a href='#L464'>464</a>
+<a name='L465'></a><a href='#L465'>465</a>
+<a name='L466'></a><a href='#L466'>466</a>
+<a name='L467'></a><a href='#L467'>467</a>
+<a name='L468'></a><a href='#L468'>468</a>
+<a name='L469'></a><a href='#L469'>469</a>
+<a name='L470'></a><a href='#L470'>470</a>
+<a name='L471'></a><a href='#L471'>471</a>
+<a name='L472'></a><a href='#L472'>472</a>
+<a name='L473'></a><a href='#L473'>473</a>
+<a name='L474'></a><a href='#L474'>474</a>
+<a name='L475'></a><a href='#L475'>475</a>
+<a name='L476'></a><a href='#L476'>476</a></td><td class="line-coverage quiet"><span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
@@ -528,6 +541,7 @@
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-yes">7x</span>
 <span class="cline-any cline-yes">7x</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
@@ -614,6 +628,10 @@
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-yes">7x</span>
 <span class="cline-any cline-yes">53x</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">7x</span>
+<span class="cline-any cline-yes">53x</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-yes">7x</span>
 <span class="cline-any cline-yes">53x</span>
@@ -849,7 +867,6 @@
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-no">&nbsp;</span>
 <span class="cline-any cline-no">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
@@ -862,6 +879,9 @@
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
@@ -914,6 +934,12 @@
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">4x</span>
+<span class="cline-any cline-no">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
@@ -1003,7 +1029,8 @@ import {
   FormInput,
   IconName,
   Card,
-  FontVariation
+  FontVariation,
+  SelectOption
 } from '@wings-software/uicore'
 import cx from 'classnames'
 import * as Yup from 'yup'
@@ -1079,6 +1106,10 @@ const getConnectorTypeIcon = (isSelected: boolean, icon: ConnectorCardInterface[
 &nbsp;
 const getSubmitButtonText = (isNewUser: boolean): StringKeys =&gt; {
   return isNewUser ? 'continue' : 'save'
+}
+&nbsp;
+const getSourceCodeTextColor = (isSelected: boolean) =&gt; {
+  return isSelected ? Color.BLUE_500 : <span class="branch-1 cbranch-no" title="branch not covered" >Color.GREY_500</span>
 }
 &nbsp;
 export const gitSyncFormDefaultInitialData = {
@@ -1244,7 +1275,7 @@ const GitSyncRepoForm: React.FC&lt;ModalConfigureProps &amp; GitSyncRepoFormProp
                             /&gt;
                           &lt;/Card&gt;
 &nbsp;
-                          &lt;Text inline={false} color={isSelected ? Color.BLUE_500 : <span class="branch-1 cbranch-no" title="branch not covered" >Color.GREY_500}</span>&gt;
+                          &lt;Text inline={false} color={getSourceCodeTextColor(isSelected)}&gt;
                             {getConnectorDisplayName(cardData.type)}
                           &lt;/Text&gt;
                         &lt;/Layout.Vertical&gt;
@@ -1309,22 +1340,24 @@ const GitSyncRepoForm: React.FC&lt;ModalConfigureProps &amp; GitSyncRepoFormProp
                             [css.noSpacing]: formValues.gitConnector?.connector?.spec?.type !== GitUrlType.REPO
                           })}
                           name="repo"
+                          inputGroup={{
+                            onBlur: <span class="fstat-no" title="function not covered" >e </span>=&gt; {
+                              const connectorId = <span class="cstat-no" title="statement not covered" >formValues.gitConnector?.connector?.identifier</span>
+                              const connectorScope = <span class="cstat-no" title="statement not covered" >getScopeFromDTO(</span>
+                                formValues?.gitConnector?.connector as ScopedObjectDTO
+                              )
+<span class="cstat-no" title="statement not covered" >                              setConnectorIdentifierRef(</span>
+                                getConnectorIdentifierWithScope(connectorScope, defaultTo(connectorId, ''))
+                              )
+<span class="cstat-no" title="statement not covered" >                              setRepositoryURL(</span>
+                                getRepoUrlForConnectorType(formValues, (e.target as HTMLInputElement)?.value)
+                              )
+&nbsp;
+<span class="cstat-no" title="statement not covered" >                              setTestStatus(TestStatus.NOT_INITIATED)</span>
+                            }
+                          }}
                           label={getString('common.repositoryName')}
                           disabled={formValues.gitConnector?.connector?.spec?.type === GitUrlType.REPO}
-                          onChange={<span class="fstat-no" title="function not covered" >e </span>=&gt; {
-                            const connectorId = <span class="cstat-no" title="statement not covered" >formValues.gitConnector?.connector?.identifier</span>
-                            const connectorScope = <span class="cstat-no" title="statement not covered" >getScopeFromDTO(</span>
-                              formValues?.gitConnector?.connector as ScopedObjectDTO
-                            )
-<span class="cstat-no" title="statement not covered" >                            setConnectorIdentifierRef(</span>
-                              getConnectorIdentifierWithScope(connectorScope, defaultTo(connectorId, ''))
-                            )
-<span class="cstat-no" title="statement not covered" >                            setRepositoryURL(</span>
-                              getRepoUrlForConnectorType(formValues, (e.target as HTMLInputElement)?.value)
-                            )
-&nbsp;
-<span class="cstat-no" title="statement not covered" >                            setTestStatus(TestStatus.NOT_INITIATED)</span>
-                          }}
                         /&gt;
                         {formValues.gitConnector?.connector?.spec?.type !== GitUrlType.REPO ? (
                           &lt;Text
@@ -1379,6 +1412,12 @@ const GitSyncRepoForm: React.FC&lt;ModalConfigureProps &amp; GitSyncRepoFormProp
                       connectorIdentifierRef={connectorIdentifierRef}
                       repoURL={repositoryURL}
                       modalErrorHandler={modalErrorHandler}
+                      onChange={(selected: SelectOption, options?: SelectOption[]) =&gt; {
+                        <span class="missing-if-branch" title="if path not taken" >I</span>if (!options<span class="branch-0 cbranch-no" title="branch not covered" >?.f</span>ind(branch =&gt; branch.value === selected.value)) {
+<span class="cstat-no" title="statement not covered" >                          setFieldValue?.('branch', '')</span>
+                        }
+                      }}
+                      selectedValue={formValues.branch}
                     /&gt;
                   &lt;/Layout.Vertical&gt;
                 &lt;/Container&gt;
@@ -1450,7 +1489,7 @@ export default GitSyncRepoForm
             <div class='footer quiet pad2 space-top1 center small'>
                 Code coverage generated by
                 <a href="https://istanbul.js.org/" target="_blank">istanbul</a>
-                at Thu Mar 17 2022 07:56:32 GMT+0000 (Greenwich Mean Time)
+                at Thu Mar 17 2022 09:24:32 GMT+0000 (Greenwich Mean Time)
             </div>
         </div>
         <script src="../../../../prettify.js"></script>
