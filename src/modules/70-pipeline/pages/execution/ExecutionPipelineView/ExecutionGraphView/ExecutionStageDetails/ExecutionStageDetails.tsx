@@ -15,7 +15,7 @@ import {
   useGetResourceConstraintsExecutionInfo
 } from 'services/pipeline-ng'
 import { PageSpinner } from '@common/components'
-import { processExecutionData } from '@pipeline/utils/executionUtils'
+import { processExecutionData, processExecutionDataV1 } from '@pipeline/utils/executionUtils'
 import { useExecutionContext } from '@pipeline/context/ExecutionContext'
 import { useExecutionLayoutContext } from '@pipeline/components/ExecutionLayout/ExecutionLayoutContext'
 import ExecutionStageDiagram from '@pipeline/components/ExecutionStageDiagram/ExecutionStageDiagram'
@@ -41,6 +41,7 @@ export interface ExecutionStageDetailsProps {
   onStageSelect(step: string): void
 }
 
+const NEW_PIP_STUDIO = localStorage.getItem('IS_NEW_PIP_STUDIO_ACTIVE') === 'true'
 export default function ExecutionStageDetails(props: ExecutionStageDetailsProps): React.ReactElement {
   const {
     pipelineExecutionDetail,
@@ -181,7 +182,8 @@ export default function ExecutionStageDetails(props: ExecutionStageDetailsProps)
 
   // NOTE: check if we show stop node when stage has paused status
   const showEndNode = !(isExecutionRunning(stage?.status) || isExecutionPaused(stage?.status))
-
+  console.clear()
+  console.log({ data: processExecutionDataV1(pipelineExecutionDetail?.executionGraph) })
   return (
     <div className={css.main} data-layout={props.layout}>
       {!isEmpty(selectedStageId) && data.items?.length > 0 && (
