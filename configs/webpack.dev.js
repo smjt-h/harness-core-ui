@@ -50,7 +50,7 @@ const config = {
     historyApiFallback: true,
     port: 8181,
     client: {
-      overlay: !(isCypress || isCypressCoverage)
+      overlay: false
     },
     server: {
       type: 'https',

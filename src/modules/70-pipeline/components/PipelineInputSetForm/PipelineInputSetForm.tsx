@@ -28,7 +28,6 @@ import type { AccountPathProps } from '@common/interfaces/RouteInterfaces'
 import { useDeepCompareEffect } from '@common/hooks'
 import { TEMPLATE_INPUT_PATH } from '@pipeline/utils/templateUtils'
 import { StageInputSetForm } from './StageInputSetForm'
-import { StageAdvancedInputSetForm } from './StageAdvancedInputSetForm'
 import { CICodebaseInputSetForm } from './CICodebaseInputSetForm'
 import { StepWidget } from '../AbstractSteps/StepWidget'
 import factory from '../PipelineSteps/PipelineStepFactory'
@@ -39,6 +38,7 @@ import type {
 import type { AbstractStepFactory } from '../AbstractSteps/AbstractStepFactory'
 import { StepType } from '../PipelineSteps/PipelineStepInterface'
 import { getStageFromPipeline } from '../PipelineStudio/StepUtil'
+import { PipelineVariablesContextProvider } from '../PipelineVariablesContext/PipelineVariablesContext'
 import { useVariablesExpression } from '../PipelineStudio/PiplineHooks/useVariablesExpression'
 import css from './PipelineInputSetForm.module.scss'
 import stepCss from '@pipeline/components/PipelineSteps/Steps/Steps.module.scss'
@@ -115,7 +115,7 @@ export function StageFormInternal({
       )}
       {template?.stage?.spec && (
         <StageInputSetForm
-          stageIdentifier={allValues?.stage?.identifier}
+          stageIdentifier={template?.stage?.identifier}
           path={`${path}.spec`}
           deploymentStageTemplate={template?.stage?.spec as DeploymentStageConfig}
           deploymentStage={allValues?.stage?.spec as DeploymentStageConfig}
@@ -295,6 +295,38 @@ export function PipelineInputSetFormInternal(props: PipelineInputSetFormProps): 
           <>
             <Layout.Horizontal spacing="small" padding={{ top: 'medium', left: 'large', right: 0, bottom: 0 }}>
               <Text
+                color={Color.BLACK_100}
+                font={{ weight: 'semi-bold' }}
+                icon={'pipeline-variables'}
+                iconProps={{ size: 18, color: Color.PRIMARY_7 }}
+              >
+                {getString('customVariables.pipelineVariablesTitle')}
+              </Text>
+            </Layout.Horizontal>
+            <StepWidget<CustomVariablesData, CustomVariableInputSetExtraProps>
+              factory={factory as unknown as AbstractStepFactory}
+              initialValues={{
+                variables: (originalPipeline.variables || []) as AllNGVariables[],
+                canAddVariable: true
+              }}
+              allowableTypes={allowableTypes}
+              readonly={readonly}
+              type={StepType.CustomVariable}
+              stepViewType={viewType}
+              customStepProps={{
+                template: { variables: (template?.variables || []) as AllNGVariables[] },
+                path,
+                allValues: { variables: (originalPipeline?.variables || []) as AllNGVariables[] }
+              }}
+            />
+          </>
+        )}
+      {isCloneCodebaseEnabledAtLeastAtOneStage &&
+        getMultiTypeFromValue(template?.properties?.ci?.codebase?.build as unknown as string) ===
+          MultiTypeInputType.RUNTIME && (
+          <>
+            <Layout.Horizontal spacing="small" padding={{ top: 'medium', left: 'large', right: 0, bottom: 0 }}>
+              <Text
                 data-name="ci-codebase-title"
                 color={Color.BLACK_100}
                 font={{ weight: 'semi-bold' }}
@@ -375,6 +407,9 @@ export function PipelineInputSetForm(props: PipelineInputSetFormProps): React.Re
       })
     }
   }, [props?.template])
-
-  return <PipelineInputSetFormInternal {...props} template={template} />
+  return (
+    <PipelineVariablesContextProvider pipeline={props.originalPipeline}>
+      <PipelineInputSetFormInternal {...props} template={template} />
+    </PipelineVariablesContextProvider>
+  )
 }
