@@ -146,6 +146,8 @@ import manifestSourceBaseFactory from './factory/ManifestSourceFactory/ManifestS
 import { DeployServiceWidget } from './components/PipelineSteps/DeployServiceStep/DeployServiceStep'
 import { DeployEnvironmentWidget } from './components/PipelineSteps/DeployEnvStep/DeployEnvStep'
 import type { GitOpsCustomMicroFrontendProps } from './interfaces/GitOps.types'
+import { SimpleEnvironmentWidget } from './components/PipelineSteps/DeployEnvStep/SimpleEnvWidget'
+import { SimpleServiceWidget } from './components/PipelineSteps/DeployServiceStep/SimpleServiceWidget'
 
 // eslint-disable-next-line import/no-unresolved
 const GitOpsServersList = React.lazy(() => import('gitopsui/MicroFrontendApp'))
@@ -418,7 +420,12 @@ const GitOpsPage = (): React.ReactElement | null => {
     return (
       <ChildAppMounter<GitOpsCustomMicroFrontendProps>
         ChildApp={GitOpsServersList}
-        customComponents={{ DeployEnvironmentWidget, DeployServiceWidget }}
+        customComponents={{
+          DeployEnvironmentWidget,
+          DeployServiceWidget,
+          SimpleEnvironmentWidget,
+          SimpleServiceWidget
+        }}
       />
     )
   }

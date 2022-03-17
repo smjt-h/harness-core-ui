@@ -63,11 +63,17 @@ export function getConnectorSchema(getString: UseStringsReturn['getString']): Yu
 export function getServiceRefSchema(getString: UseStringsReturn['getString']): Yup.StringSchema<string | undefined> {
   return Yup.string().trim().required(getString('cd.pipelineSteps.serviceTab.serviceIsRequired'))
 }
+export function getServiceSchema(): Yup.StringSchema<string | undefined> {
+  return Yup.string().trim()
+}
 
 export function getEnvironmentRefSchema(
   getString: UseStringsReturn['getString']
 ): Yup.StringSchema<string | undefined> {
   return Yup.string().trim().required(getString('cd.pipelineSteps.environmentTab.environmentIsRequired'))
+}
+export function getEnvironmentSchema(): Yup.StringSchema<string | undefined> {
+  return Yup.string().trim()
 }
 
 export function getServiceDeploymentTypeSchema(

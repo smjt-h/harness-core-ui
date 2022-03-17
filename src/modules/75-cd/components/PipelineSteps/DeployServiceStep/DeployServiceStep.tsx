@@ -60,6 +60,7 @@ import css from './DeployServiceStep.module.scss'
 const logger = loggerFor(ModuleName.CD)
 export interface DeployServiceData extends Omit<ServiceConfig, 'serviceRef'> {
   serviceRef?: string
+  serviceVal?: string
 }
 
 interface NewEditServiceModalProps {
@@ -191,14 +192,14 @@ export interface DeployServiceProps {
   serviceLabel?: string
 }
 
-interface DeployServiceState {
+export interface DeployServiceState {
   isEdit: boolean
   data?: ServiceResponseDTO
   isService: boolean
   formik?: FormikProps<DeployServiceData>
 }
 
-function isEditService(data: DeployServiceData): boolean {
+export function isEditService(data: DeployServiceData): boolean {
   if (getMultiTypeFromValue(data.serviceRef) !== MultiTypeInputType.RUNTIME) {
     if (typeof data.serviceRef === 'object') {
       const serviceRef = (data.serviceRef as SelectOption).value as string

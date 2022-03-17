@@ -64,6 +64,7 @@ import css from './DeployEnvStep.module.scss'
 
 const logger = loggerFor(ModuleName.CD)
 export interface DeployEnvData extends Omit<PipelineInfrastructure, 'environmentRef'> {
+  environmentVal?: string
   environmentRef?: string
 }
 
@@ -207,14 +208,14 @@ export interface DeployEnvironmentProps {
   environmentLabel?: string
 }
 
-interface DeployEnvironmentState {
+export interface DeployEnvironmentState {
   isEdit: boolean
   isEnvironment: boolean
   formik?: FormikProps<DeployEnvData>
   data?: EnvironmentResponseDTO
 }
 
-function isEditEnvironment(data: DeployEnvData): boolean {
+export function isEditEnvironment(data: DeployEnvData): boolean {
   if (getMultiTypeFromValue(data.environmentRef) !== MultiTypeInputType.RUNTIME && !isEmpty(data.environmentRef)) {
     return true
   } else if (data.environment && !isEmpty(data.environment.identifier)) {
@@ -438,7 +439,9 @@ export const DeployEnvironmentWidget: React.FC<DeployEnvironmentProps> = ({
               >
                 <FormInput.MultiTypeInput
                   label={
-                    environmentLabel ? environmentLabel : getString('cd.pipelineSteps.serviceTab.specifyYourService')
+                    environmentLabel
+                      ? environmentLabel
+                      : getString('cd.pipelineSteps.environmentTab.specifyYourEnvironment')
                   }
                   tooltipProps={{ dataTooltipId: 'specifyYourEnvironment' }}
                   name="environmentRef"
