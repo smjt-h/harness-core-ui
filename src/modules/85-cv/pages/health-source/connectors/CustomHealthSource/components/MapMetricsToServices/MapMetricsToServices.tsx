@@ -11,7 +11,7 @@ import type { CustomHealthMetricDefinition } from 'services/cv'
 import { useStrings } from 'framework/strings'
 import { NameId } from '@common/components/NameIdDescriptionTags/NameIdDescriptionTags'
 import { SetupSourceTabsContext } from '@cv/components/CVSetupSourcesView/SetupSourceTabs/SetupSourceTabs'
-import GroupName from '@cv/components/GroupName/GroupName'
+import { GroupName } from '@cv/pages/health-source/common/GroupName/GroupName'
 import { initializeGroupNames } from '@cv/pages/health-source/common/GroupName/GroupName.utils'
 import { CustomHealthSourceFieldNames } from '../../CustomHealthSource.constants'
 import type { MapMetricsToServicesInterface } from './MapMetricsToServices.types'
@@ -28,7 +28,7 @@ export default function MapMetricsToServices({
     sourceData: { existingMetricDetails }
   } = useContext(SetupSourceTabsContext)
 
-  const [groupNames, setPrometheusGroupName] = useState<SelectOption[]>(initializeGroupNames(mappedMetrics, getString))
+  const [groupNames, setGroupName] = useState<SelectOption[]>(initializeGroupNames(mappedMetrics, getString))
 
   const metricDefinitions = existingMetricDetails?.spec?.metricDefinitions
   const currentSelectedMetricDetail = metricDefinitions?.find(
@@ -46,15 +46,7 @@ export default function MapMetricsToServices({
           isIdentifierEditable: Boolean(!currentSelectedMetricDetail?.identifier)
         }}
       />
-      <GroupName
-        groupNames={groupNames}
-        onChange={onChange}
-        item={formValue?.groupName}
-        setGroupNames={setPrometheusGroupName}
-        label={getString('cv.monitoringSources.prometheus.groupName')}
-        title={getString('cv.customHealthSource.addGroupNameTitle')}
-        fieldName={CustomHealthSourceFieldNames.GROUP_NAME}
-      />
+      <GroupName groupNames={groupNames} onChange={onChange} item={formValue?.groupName} setGroupNames={setGroupName} />
     </Container>
   )
 }

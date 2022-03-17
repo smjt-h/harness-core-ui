@@ -144,6 +144,8 @@ export const getConnectorDisplaySummary = (connector: ConnectorInfoDTO): JSX.Ele
       return getConnectorDisplaySummaryLabel('UrlLabel', linkRenderer(connector?.spec?.splunkUrl))
     case Connectors.AWS_SECRET_MANAGER:
       return getAWSSecretManagerSummary(connector)
+    case Connectors.DYNATRACE:
+      return getConnectorDisplaySummaryLabel('UrlLabel', linkRenderer(connector?.spec?.url))
     default:
       return ''
   }
