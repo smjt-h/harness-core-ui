@@ -23,30 +23,30 @@
         <div class='clearfix'>
             
             <div class='fl pad1y space-right2'>
-                <span class="strong">98.31% </span>
+                <span class="strong">98.18% </span>
                 <span class="quiet">Statements</span>
-                <span class='fraction'>58/59</span>
+                <span class='fraction'>54/55</span>
             </div>
         
             
             <div class='fl pad1y space-right2'>
-                <span class="strong">79.65% </span>
+                <span class="strong">78.9% </span>
                 <span class="quiet">Branches</span>
-                <span class='fraction'>90/113</span>
+                <span class='fraction'>86/109</span>
             </div>
         
             
             <div class='fl pad1y space-right2'>
-                <span class="strong">90.91% </span>
+                <span class="strong">90% </span>
                 <span class="quiet">Functions</span>
-                <span class='fraction'>10/11</span>
+                <span class='fraction'>9/10</span>
             </div>
         
             
             <div class='fl pad1y space-right2'>
-                <span class="strong">98.28% </span>
+                <span class="strong">98.15% </span>
                 <span class="quiet">Lines</span>
-                <span class='fraction'>57/58</span>
+                <span class='fraction'>53/54</span>
             </div>
         
             
@@ -216,12 +216,7 @@
 <a name='L157'></a><a href='#L157'>157</a>
 <a name='L158'></a><a href='#L158'>158</a>
 <a name='L159'></a><a href='#L159'>159</a>
-<a name='L160'></a><a href='#L160'>160</a>
-<a name='L161'></a><a href='#L161'>161</a>
-<a name='L162'></a><a href='#L162'>162</a>
-<a name='L163'></a><a href='#L163'>163</a>
-<a name='L164'></a><a href='#L164'>164</a>
-<a name='L165'></a><a href='#L165'>165</a></td><td class="line-coverage quiet"><span class="cline-any cline-neutral">&nbsp;</span>
+<a name='L160'></a><a href='#L160'>160</a></td><td class="line-coverage quiet"><span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
@@ -237,6 +232,7 @@
 <span class="cline-any cline-yes">85x</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">85x</span>
 <span class="cline-any cline-yes">85x</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-yes">85x</span>
@@ -351,15 +347,9 @@
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-yes">14x</span>
-<span class="cline-any cline-yes">14x</span>
-<span class="cline-any cline-yes">2x</span>
-<span class="cline-any cline-yes">2x</span>
-<span class="cline-any cline-yes">2x</span>
-<span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-yes">12x</span>
-<span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-yes">14x</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
@@ -402,6 +392,7 @@ import { usePipelineContext } from '@pipeline/components/PipelineStudio/Pipeline
 &nbsp;
 import type { PipelineType } from '@common/interfaces/RouteInterfaces'
 import { getIdentifierFromValue, getScopeFromValue } from '@common/components/EntityReference/EntityReference'
+import { getDeploymentType, isServerlessDeploymentType } from '@pipeline/utils/stageHelpers'
 &nbsp;
 import { useStrings } from 'framework/strings'
 import type { Scope } from '@common/interfaces/SecretsInterface'
@@ -514,14 +505,7 @@ export default function ManifestSelection({
     }
   }
 &nbsp;
-  const getDeploymentType = (): string =&gt; {
-    if (isPropagating) {
-      const parentStageId = get(stage, 'stage.spec.serviceConfig.useFromStage.stage', null)
-      const parentStage = getStageFromPipeline&lt;DeploymentStageElementConfig&gt;(parentStageId || '')
-      return get(parentStage, 'stage.stage.spec.serviceConfig.serviceDefinition.type', null)
-    }
-    return get(stage, 'stage.spec.serviceConfig.serviceDefinition.type', null)
-  }
+  const deploymentType = getDeploymentType(stage, getStageFromPipeline, isPropagating)
 &nbsp;
   return (
     &lt;Layout.Vertical&gt;
@@ -543,8 +527,9 @@ export default function ManifestSelection({
         refetchConnectors={refetchConnectorList}
         listOfManifests={listOfManifests}
         isReadonly={isReadonly}
-        deploymentType={getDeploymentType()}
+        deploymentType={deploymentType}
         allowableTypes={allowableTypes}
+        allowOnlyOne={isServerlessDeploymentType(deploymentType)}
       /&gt;
     &lt;/Layout.Vertical&gt;
   )
@@ -556,7 +541,7 @@ export default function ManifestSelection({
             <div class='footer quiet pad2 space-top1 center small'>
                 Code coverage generated by
                 <a href="https://istanbul.js.org/" target="_blank">istanbul</a>
-                at Thu Mar 17 2022 12:46:59 GMT+0000 (Greenwich Mean Time)
+                at Thu Mar 17 2022 15:52:48 GMT+0000 (Greenwich Mean Time)
             </div>
         </div>
         <script src="../../../../prettify.js"></script>

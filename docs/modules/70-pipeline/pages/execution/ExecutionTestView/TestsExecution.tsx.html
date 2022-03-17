@@ -23,16 +23,16 @@
         <div class='clearfix'>
             
             <div class='fl pad1y space-right2'>
-                <span class="strong">73.63% </span>
+                <span class="strong">73.91% </span>
                 <span class="quiet">Statements</span>
-                <span class='fraction'>67/91</span>
+                <span class='fraction'>68/92</span>
             </div>
         
             
             <div class='fl pad1y space-right2'>
-                <span class="strong">67.11% </span>
+                <span class="strong">67.32% </span>
                 <span class="quiet">Branches</span>
-                <span class='fraction'>204/304</span>
+                <span class='fraction'>206/306</span>
             </div>
         
             
@@ -44,9 +44,9 @@
         
             
             <div class='fl pad1y space-right2'>
-                <span class="strong">74.16% </span>
+                <span class="strong">74.44% </span>
                 <span class="quiet">Lines</span>
-                <span class='fraction'>66/89</span>
+                <span class='fraction'>67/90</span>
             </div>
         
             
@@ -591,7 +591,15 @@
 <a name='L532'></a><a href='#L532'>532</a>
 <a name='L533'></a><a href='#L533'>533</a>
 <a name='L534'></a><a href='#L534'>534</a>
-<a name='L535'></a><a href='#L535'>535</a></td><td class="line-coverage quiet"><span class="cline-any cline-neutral">&nbsp;</span>
+<a name='L535'></a><a href='#L535'>535</a>
+<a name='L536'></a><a href='#L536'>536</a>
+<a name='L537'></a><a href='#L537'>537</a>
+<a name='L538'></a><a href='#L538'>538</a>
+<a name='L539'></a><a href='#L539'>539</a>
+<a name='L540'></a><a href='#L540'>540</a>
+<a name='L541'></a><a href='#L541'>541</a>
+<a name='L542'></a><a href='#L542'>542</a>
+<a name='L543'></a><a href='#L543'>543</a></td><td class="line-coverage quiet"><span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
@@ -627,10 +635,17 @@
 <span class="cline-any cline-yes">1x</span>
 <span class="cline-any cline-yes">1x</span>
 <span class="cline-any cline-yes">1x</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-yes">1x</span>
 <span class="cline-any cline-yes">1x</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-yes">1x</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
@@ -653,6 +668,7 @@
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-yes">8x</span>
 <span class="cline-any cline-yes">8x</span>
 <span class="cline-any cline-yes">8x</span>
@@ -670,7 +686,7 @@
 <span class="cline-any cline-yes">8x</span>
 <span class="cline-any cline-yes">5x</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">5x</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
@@ -1160,7 +1176,13 @@ import { useExecutionContext } from '@pipeline/context/ExecutionContext'
 import { TestSuiteSummaryQueryParams, useTestSuiteSummary, useVgSearch, TestSuite } from 'services/ti-service'
 import { CallGraphAPIResponse, TestsCallgraph } from './TestsCallgraph'
 import { TestsExecutionItem } from './TestsExecutionItem'
-import { SortByKey, CALL_GRAPH_WIDTH, CALL_GRAPH_HEIGHT, CALL_GRAPH_API_LIMIT } from './TestsUtils'
+import {
+  SortByKey,
+  CALL_GRAPH_WIDTH,
+  CALL_GRAPH_HEIGHT,
+  CALL_GRAPH_API_LIMIT,
+  getOptionalQueryParamKeys
+} from './TestsUtils'
 import testsCallgraphErrorIllustration from './TestsCallgraphErrorIllustration.svg'
 import css from './BuildTests.module.scss'
 &nbsp;
@@ -1171,6 +1193,7 @@ interface TestsExecutionProps {
   stepId: string
   serviceToken: string
   showCallGraph?: boolean
+  isAggregatedReports?: boolean
 }
 &nbsp;
 const getEntireExecutionSummary = (executionSummaryContent: TestSuite[]): any =&gt;
@@ -1185,7 +1208,8 @@ export function TestsExecution({
   stageId,
   stepId,
   serviceToken,
-  showCallGraph
+  showCallGraph,
+  isAggregatedReports
 }: TestsExecutionProps): React.ReactElement | null {
   const context = useExecutionContext()
   const { getString } = useStrings()
@@ -1201,8 +1225,10 @@ export function TestsExecution({
   }&gt;()
   const [sortBy, setSortBy] = useState&lt;SortByKey&gt;(SortByKey.FAILURE_RATE)
   const [pageIndex, setPageIndex] = useState(0)
-  const queryParams = useMemo(
-    () =&gt; ({
+  const queryParams = useMemo(() =&gt; {
+    const optionalKeys = getOptionalQueryParamKeys({ stageId, stepId })
+&nbsp;
+    return {
       accountId,
       orgId: orgIdentifier,
       projectId: projectIdentifier,
@@ -1213,21 +1239,19 @@ export function TestsExecution({
       sort: sortBy,
       pageSize: PAGE_SIZE,
       order: 'DESC' as const,
-      stageId,
-      stepId
-    }),
-    [
-      stageId,
-      stepId,
-      accountId,
-      orgIdentifier,
-      projectIdentifier,
-      context<span class="branch-0 cbranch-no" title="branch not covered" >?.p</span>ipelineExecutionDetail<span class="branch-0 cbranch-no" title="branch not covered" >?.p</span>ipelineExecutionSummary<span class="branch-0 cbranch-no" title="branch not covered" >?.p</span>ipelineIdentifier,
-      context<span class="branch-0 cbranch-no" title="branch not covered" >?.p</span>ipelineExecutionDetail<span class="branch-0 cbranch-no" title="branch not covered" >?.p</span>ipelineExecutionSummary<span class="branch-0 cbranch-no" title="branch not covered" >?.r</span>unSequence,
-      pageIndex,
-      sortBy
-    ]
-  )
+      ...optionalKeys
+    }
+  }, [
+    stageId,
+    stepId,
+    accountId,
+    orgIdentifier,
+    projectIdentifier,
+    context<span class="branch-0 cbranch-no" title="branch not covered" >?.p</span>ipelineExecutionDetail<span class="branch-0 cbranch-no" title="branch not covered" >?.p</span>ipelineExecutionSummary<span class="branch-0 cbranch-no" title="branch not covered" >?.p</span>ipelineIdentifier,
+    context<span class="branch-0 cbranch-no" title="branch not covered" >?.p</span>ipelineExecutionDetail<span class="branch-0 cbranch-no" title="branch not covered" >?.p</span>ipelineExecutionSummary<span class="branch-0 cbranch-no" title="branch not covered" >?.r</span>unSequence,
+    pageIndex,
+    sortBy
+  ])
   const {
     data: executionSummary,
     error,
@@ -1299,7 +1323,7 @@ export function TestsExecution({
   }, [callGraphData])
   const onClassSelected = useCallback(
     (selectedClassName: string) =&gt; {
-      if (selectedClassName !== selectedCallGraphClass) {
+      if (selectedClassName !== selectedCallGraphClass &amp;&amp; !isAggregatedReports) {
         setSelectedCallGraphClass(selectedClassName)
         fetchCallGraph({
           queryParams: Object.assign({}, omit(queryParams, ['report', 'pageIndex', 'sort', 'pageSize', 'order']), {
@@ -1666,7 +1690,7 @@ export function TestsExecution({
             <div class='footer quiet pad2 space-top1 center small'>
                 Code coverage generated by
                 <a href="https://istanbul.js.org/" target="_blank">istanbul</a>
-                at Thu Mar 17 2022 12:46:59 GMT+0000 (Greenwich Mean Time)
+                at Thu Mar 17 2022 15:52:48 GMT+0000 (Greenwich Mean Time)
             </div>
         </div>
         <script src="../../../../../prettify.js"></script>
