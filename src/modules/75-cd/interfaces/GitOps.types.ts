@@ -5,15 +5,11 @@
  * https://polyformproject.org/wp-content/uploads/2020/06/PolyForm-Shield-1.0.0.txt.
  */
 
-import type { DeployServiceProps } from '@cd/components/PipelineSteps/DeployServiceStep/DeployServiceStep'
-import type { DeployEnvironmentProps } from '@cd/components/PipelineSteps/DeployEnvStep/DeployEnvStep'
 import type { SimpleServiceProps } from '@cd/components/PipelineSteps/DeployServiceStep/SimpleServiceWidget'
 import type { SimpleEnvironmentProps } from '@cd/components/PipelineSteps/DeployEnvStep/SimpleEnvWidget'
 
 export interface GitOpsCustomMicroFrontendProps {
   customComponents: {
-    DeployServiceWidget: React.ComponentType<DeployServiceProps>
-    DeployEnvironmentWidget: React.ComponentType<DeployEnvironmentProps>
     SimpleServiceWidget: React.ComponentType<SimpleServiceProps>
     SimpleEnvironmentWidget: React.ComponentType<SimpleEnvironmentProps>
   }

@@ -143,8 +143,6 @@ import artifactSourceBaseFactory from './factory/ArtifactSourceFactory/ArtifactS
 import { KubernetesArtifacts } from './components/PipelineSteps/K8sServiceSpec/KubernetesArtifacts/KubernetesArtifacts'
 import { KubernetesManifests } from './components/PipelineSteps/K8sServiceSpec/KubernetesManifests/KubernetesManifests'
 import manifestSourceBaseFactory from './factory/ManifestSourceFactory/ManifestSourceBaseFactory'
-import { DeployServiceWidget } from './components/PipelineSteps/DeployServiceStep/DeployServiceStep'
-import { DeployEnvironmentWidget } from './components/PipelineSteps/DeployEnvStep/DeployEnvStep'
 import type { GitOpsCustomMicroFrontendProps } from './interfaces/GitOps.types'
 import { SimpleEnvironmentWidget } from './components/PipelineSteps/DeployEnvStep/SimpleEnvWidget'
 import { SimpleServiceWidget } from './components/PipelineSteps/DeployServiceStep/SimpleServiceWidget'
@@ -421,8 +419,6 @@ const GitOpsPage = (): React.ReactElement | null => {
       <ChildAppMounter<GitOpsCustomMicroFrontendProps>
         ChildApp={GitOpsServersList}
         customComponents={{
-          DeployEnvironmentWidget,
-          DeployServiceWidget,
           SimpleEnvironmentWidget,
           SimpleServiceWidget
         }}
