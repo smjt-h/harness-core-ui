@@ -23,7 +23,7 @@ import { defaultTo, isEmpty, isNil, noop, omit } from 'lodash-es'
 import { useParams } from 'react-router-dom'
 import type { FormikProps } from 'formik'
 
-import { ServiceRequestDTO, ServiceYaml, useGetServiceList } from 'services/cd-ng'
+import { ServiceConfig, ServiceRequestDTO, ServiceResponseDTO, ServiceYaml, useGetServiceList } from 'services/cd-ng'
 import { useStrings } from 'framework/strings'
 
 import type { PipelineType } from '@common/interfaces/RouteInterfaces'
@@ -36,16 +36,26 @@ import { StageErrorContext } from '@pipeline/context/StageErrorContext'
 import { DeployTabs } from '@cd/components/PipelineStudio/DeployStageSetupShell/DeployStageSetupShellUtils'
 import { getServiceRefSchema, getServiceSchema } from '@cd/components/PipelineSteps/PipelineStepsUtil'
 import type { StepViewType } from '@pipeline/components/AbstractSteps/Step'
-import { DeployServiceData, DeployServiceState, isEditService, NewEditServiceModal } from './DeployServiceStep'
+import { isEditService, NewEditServiceModal } from './DeployServiceStep'
 import css from './DeployServiceStep.module.scss'
 
+export interface SimpleServiceData extends Omit<ServiceConfig, 'serviceRef'> {
+  serviceVal?: string
+}
+export interface SimpleServiceState {
+  isEdit: boolean
+  data?: ServiceResponseDTO
+  isService: boolean
+  formik?: FormikProps<SimpleServiceData>
+}
+
 export interface SimpleServiceProps {
-  initialValues: DeployServiceData
-  onUpdate?: (data: DeployServiceData) => void
+  initialValues: SimpleServiceData
+  onUpdate?: (data: SimpleServiceData) => void
   stepViewType?: StepViewType
   readonly: boolean
   inputSetData?: {
-    template?: DeployServiceData
+    template?: SimpleServiceData
     path?: string
     readonly?: boolean
   }
@@ -88,7 +98,7 @@ export const SimpleServiceWidget: React.FC<SimpleServiceProps> = ({
   const [services, setService] = React.useState<ServiceYaml[]>()
   const [selectOptions, setSelectOptions] = React.useState<SelectOption[]>()
 
-  const [state, setState] = React.useState<DeployServiceState>({ isEdit: false, isService: false })
+  const [state, setState] = React.useState<SimpleServiceState>({ isEdit: false, isService: false })
 
   const updateServicesList = (value: ServiceRequestDTO) => {
     formikRef.current?.setValues({ serviceVal: value.identifier, ...(state.isService && { service: {} }) })
@@ -231,7 +241,7 @@ export const SimpleServiceWidget: React.FC<SimpleServiceProps> = ({
 
   return (
     <>
-      <Formik<DeployServiceData>
+      <Formik<SimpleServiceData>
         formName="deployServiceStepForm"
         onSubmit={noop}
         validate={values => {

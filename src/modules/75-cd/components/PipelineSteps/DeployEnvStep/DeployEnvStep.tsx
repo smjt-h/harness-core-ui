@@ -64,7 +64,6 @@ import css from './DeployEnvStep.module.scss'
 
 const logger = loggerFor(ModuleName.CD)
 export interface DeployEnvData extends Omit<PipelineInfrastructure, 'environmentRef'> {
-  environmentVal?: string
   environmentRef?: string
 }
 

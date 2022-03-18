@@ -60,7 +60,6 @@ import css from './DeployServiceStep.module.scss'
 const logger = loggerFor(ModuleName.CD)
 export interface DeployServiceData extends Omit<ServiceConfig, 'serviceRef'> {
   serviceRef?: string
-  serviceVal?: string
 }
 
 interface NewEditServiceModalProps {

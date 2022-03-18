@@ -24,7 +24,13 @@ import { useParams } from 'react-router-dom'
 
 import type { FormikProps } from 'formik'
 
-import { EnvironmentRequestDTO, EnvironmentYaml, useGetEnvironmentList } from 'services/cd-ng'
+import {
+  EnvironmentRequestDTO,
+  EnvironmentResponseDTO,
+  EnvironmentYaml,
+  PipelineInfrastructure,
+  useGetEnvironmentList
+} from 'services/cd-ng'
 
 import { useStrings } from 'framework/strings'
 import type { StepViewType } from '@pipeline/components/AbstractSteps/Step'
@@ -36,16 +42,25 @@ import { PermissionIdentifier } from '@rbac/interfaces/PermissionIdentifier'
 import { StageErrorContext } from '@pipeline/context/StageErrorContext'
 import { DeployTabs } from '@cd/components/PipelineStudio/DeployStageSetupShell/DeployStageSetupShellUtils'
 import { getEnvironmentRefSchema, getEnvironmentSchema } from '@cd/components/PipelineSteps/PipelineStepsUtil'
-import { DeployEnvData, DeployEnvironmentState, isEditEnvironment, NewEditEnvironmentModal } from './DeployEnvStep'
+import { isEditEnvironment, NewEditEnvironmentModal } from './DeployEnvStep'
 import css from './DeployEnvStep.module.scss'
 
+export interface SimpleEnvData extends Omit<PipelineInfrastructure, 'environmentRef'> {
+  environmentVal?: string
+}
+export interface SimpleEnvironmentState {
+  isEdit: boolean
+  isEnvironment: boolean
+  formik?: FormikProps<SimpleEnvData>
+  data?: EnvironmentResponseDTO
+}
 export interface SimpleEnvironmentProps {
-  initialValues: DeployEnvData
-  onUpdate?: (data: DeployEnvData) => void
+  initialValues: SimpleEnvData
+  onUpdate?: (data: SimpleEnvData) => void
   stepViewType?: StepViewType
   readonly: boolean
   inputSetData?: {
-    template?: DeployEnvData
+    template?: SimpleEnvData
     path?: string
     readonly?: boolean
   }
@@ -88,7 +103,7 @@ export const SimpleEnvironmentWidget: React.FC<SimpleEnvironmentProps> = ({
   const [environments, setEnvironments] = React.useState<EnvironmentYaml[]>()
   const [selectOptions, setSelectOptions] = React.useState<SelectOption[]>()
 
-  const [state, setState] = React.useState<DeployEnvironmentState>({
+  const [state, setState] = React.useState<SimpleEnvironmentState>({
     isEdit: false,
     isEnvironment: false,
     data: { name: '', identifier: '' }
@@ -237,7 +252,7 @@ export const SimpleEnvironmentWidget: React.FC<SimpleEnvironmentProps> = ({
 
   return (
     <>
-      <Formik<DeployEnvData>
+      <Formik<SimpleEnvData>
         formName="deployEnvStepForm"
         onSubmit={noop}
         validate={values => {
