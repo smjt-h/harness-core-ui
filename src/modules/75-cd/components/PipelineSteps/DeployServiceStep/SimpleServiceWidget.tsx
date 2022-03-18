@@ -32,7 +32,6 @@ import { useToaster } from '@common/exports'
 import { usePermission } from '@rbac/hooks/usePermission'
 import { ResourceType } from '@rbac/interfaces/ResourceType'
 import { PermissionIdentifier } from '@rbac/interfaces/PermissionIdentifier'
-import { StageErrorContext } from '@pipeline/context/StageErrorContext'
 import { DeployTabs } from '@cd/components/PipelineStudio/DeployStageSetupShell/DeployStageSetupShellUtils'
 import { getServiceRefSchema, getServiceSchema } from '@cd/components/PipelineSteps/PipelineStepsUtil'
 import type { StepViewType } from '@pipeline/components/AbstractSteps/Step'
@@ -226,16 +225,18 @@ export const SimpleServiceWidget: React.FC<SimpleServiceProps> = ({
     },
     permissions: [PermissionIdentifier.EDIT_SERVICE]
   })
-
-  const { subscribeForm, unSubscribeForm } = React.useContext(StageErrorContext)
+  // TODO: Revisit this part if needed
+  // Don't need this since it's not currently in the pipeline page but in gitops
+  // const { subscribeForm, unSubscribeForm } = React.useContext(StageErrorContext)
 
   const formikRef = React.useRef<FormikProps<unknown> | null>(null)
-
-  React.useEffect(() => {
-    subscribeForm({ tab: DeployTabs.SERVICE, form: formikRef })
-    return () => unSubscribeForm({ tab: DeployTabs.SERVICE, form: formikRef })
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [])
+  // TODO: Revisit this part if needed
+  // Don't need this since it's not currently in the pipeline page but in gitops
+  // React.useEffect(() => {
+  //   subscribeForm({ tab: DeployTabs.SERVICE, form: formikRef })
+  //   return () => unSubscribeForm({ tab: DeployTabs.SERVICE, form: formikRef })
+  //   // eslint-disable-next-line react-hooks/exhaustive-deps
+  // }, [])
 
   const serviceVal = initialValues?.service?.identifier || initialValues?.serviceVal
 

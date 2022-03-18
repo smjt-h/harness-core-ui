@@ -39,7 +39,6 @@ import { useToaster } from '@common/exports'
 import { usePermission } from '@rbac/hooks/usePermission'
 import { ResourceType } from '@rbac/interfaces/ResourceType'
 import { PermissionIdentifier } from '@rbac/interfaces/PermissionIdentifier'
-import { StageErrorContext } from '@pipeline/context/StageErrorContext'
 import { DeployTabs } from '@cd/components/PipelineStudio/DeployStageSetupShell/DeployStageSetupShellUtils'
 import { getEnvironmentRefSchema, getEnvironmentSchema } from '@cd/components/PipelineSteps/PipelineStepsUtil'
 import { isEditEnvironment, NewEditEnvironmentModal } from './DeployEnvStep'
@@ -238,15 +237,18 @@ export const SimpleEnvironmentWidget: React.FC<SimpleEnvironmentProps> = ({
     },
     permissions: [PermissionIdentifier.EDIT_ENVIRONMENT]
   })
-
-  const { subscribeForm, unSubscribeForm } = React.useContext(StageErrorContext)
+  // TODO: Revisit this part if needed
+  // Don't need this since it's not currently in the pipeline page but in gitops
+  //   const { subscribeForm, unSubscribeForm } = React.useContext(StageErrorContext)
 
   const formikRef = React.useRef<FormikProps<unknown> | null>(null)
 
-  React.useEffect(() => {
-    subscribeForm({ tab: DeployTabs.INFRASTRUCTURE, form: formikRef })
-    return () => unSubscribeForm({ tab: DeployTabs.INFRASTRUCTURE, form: formikRef })
-  }, [])
+  // TODO: Revisit this part if needed
+  // Don't need this since it's not currently in the pipeline page but in gitops
+  //   React.useEffect(() => {
+  //     subscribeForm({ tab: DeployTabs.INFRASTRUCTURE, form: formikRef })
+  //     return () => unSubscribeForm({ tab: DeployTabs.INFRASTRUCTURE, form: formikRef })
+  //   }, [])
 
   const environmentVal = initialValues?.environment?.identifier || initialValues?.environmentVal
 
