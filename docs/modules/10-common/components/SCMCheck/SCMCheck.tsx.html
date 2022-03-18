@@ -25,14 +25,14 @@
             <div class='fl pad1y space-right2'>
                 <span class="strong">100% </span>
                 <span class="quiet">Statements</span>
-                <span class='fraction'>24/24</span>
+                <span class='fraction'>26/26</span>
             </div>
         
             
             <div class='fl pad1y space-right2'>
-                <span class="strong">89.47% </span>
+                <span class="strong">87.5% </span>
                 <span class="quiet">Branches</span>
-                <span class='fraction'>34/38</span>
+                <span class='fraction'>42/48</span>
             </div>
         
             
@@ -46,7 +46,7 @@
             <div class='fl pad1y space-right2'>
                 <span class="strong">100% </span>
                 <span class="quiet">Lines</span>
-                <span class='fraction'>24/24</span>
+                <span class='fraction'>26/26</span>
             </div>
         
             
@@ -147,7 +147,10 @@
 <a name='L88'></a><a href='#L88'>88</a>
 <a name='L89'></a><a href='#L89'>89</a>
 <a name='L90'></a><a href='#L90'>90</a>
-<a name='L91'></a><a href='#L91'>91</a></td><td class="line-coverage quiet"><span class="cline-any cline-neutral">&nbsp;</span>
+<a name='L91'></a><a href='#L91'>91</a>
+<a name='L92'></a><a href='#L92'>92</a>
+<a name='L93'></a><a href='#L93'>93</a>
+<a name='L94'></a><a href='#L94'>94</a></td><td class="line-coverage quiet"><span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
@@ -162,6 +165,8 @@
 <span class="cline-any cline-yes">10x</span>
 <span class="cline-any cline-yes">10x</span>
 <span class="cline-any cline-yes">10x</span>
+<span class="cline-any cline-yes">10x</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-yes">10x</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
@@ -173,17 +178,18 @@
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-yes">10x</span>
-<span class="cline-any cline-yes">41x</span>
-<span class="cline-any cline-yes">41x</span>
-<span class="cline-any cline-yes">41x</span>
-<span class="cline-any cline-yes">41x</span>
-<span class="cline-any cline-yes">41x</span>
+<span class="cline-any cline-yes">45x</span>
+<span class="cline-any cline-yes">45x</span>
+<span class="cline-any cline-yes">45x</span>
+<span class="cline-any cline-yes">45x</span>
+<span class="cline-any cline-yes">45x</span>
+<span class="cline-any cline-yes">45x</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-yes">41x</span>
-<span class="cline-any cline-yes">38x</span>
+<span class="cline-any cline-yes">45x</span>
+<span class="cline-any cline-yes">46x</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-yes">41x</span>
+<span class="cline-any cline-yes">45x</span>
 <span class="cline-any cline-yes">20x</span>
 <span class="cline-any cline-yes">20x</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
@@ -192,7 +198,7 @@
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-yes">41x</span>
+<span class="cline-any cline-yes">45x</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
@@ -249,10 +255,12 @@ import { Link, useParams } from 'react-router-dom'
 import { Avatar, Color, Container, FontVariation, Icon, Layout, Text } from '@harness/uicore'
 import { noop, defaultTo } from 'lodash-es'
 import cx from 'classnames'
+import { useAppStore } from 'framework/AppStore/AppStoreContext'
 import { useGitSyncStore } from 'framework/GitRepoStore/GitSyncStoreContext'
 import paths from '@common/RouteDefinitions'
 import { useStrings } from 'framework/strings/String'
 import type { AccountPathProps } from '@common/interfaces/RouteInterfaces'
+import type { UserInfo } from 'services/cd-ng'
 import css from './SCMCheck.module.scss'
 &nbsp;
 export interface SCMCheckProps {
@@ -263,14 +271,15 @@ export interface SCMCheckProps {
 }
 &nbsp;
 const SCMCheck: React.FC&lt;SCMCheckProps&gt; = props =&gt; {
+  const { currentUserInfo: currentLoggedInUser } = useAppStore()
   const { codeManagers, loadingCodeManagers } = useGitSyncStore()
   const { accountId } = useParams&lt;AccountPathProps&gt;()
   const [currentUserInfo, setCurrentUserInfo] = React.useState('')
   const { getString } = useStrings()
   const { validateSCM = <span class="branch-0 cbranch-no" title="branch not covered" >noop,</span> profileLinkClickHandler = noop, className = '', title } = props
 &nbsp;
-  const getUserDisplayName = (user?: string): string =&gt; {
-    return defaultTo(user, getString('na'))
+  const getUserDisplayName = (userInfo: UserInfo): string =&gt; {
+    return defaultTo(userInfo<span class="branch-0 cbranch-no" title="branch not covered" >?.n</span>ame, userInfo<span class="branch-0 cbranch-no" title="branch not covered" >?.e</span>mail) || getString('na')
   }
 &nbsp;
   useEffect(() =&gt; {
@@ -288,12 +297,12 @@ const SCMCheck: React.FC&lt;SCMCheckProps&gt; = props =&gt; {
         &lt;Layout.Horizontal className={css.userInfo} flex={{ alignItems: 'center' }}&gt;
           &lt;Avatar
             size="small"
-            name={getUserDisplayName(currentUserInfo)}
+            name={getUserDisplayName(currentLoggedInUser)}
             backgroundColor={Color.PRIMARY_7}
             hoverCard={false}
           /&gt;
           &lt;Text color={Color.GREY_700}&gt;
-            {getString('common.git.currentUserLabel', { user: getUserDisplayName(currentUserInfo) })}
+            {getString('common.git.currentUserLabel', { user: getUserDisplayName(currentLoggedInUser) })}
           &lt;/Text&gt;
         &lt;/Layout.Horizontal&gt;
       ) : (
@@ -334,7 +343,7 @@ export default SCMCheck
             <div class='footer quiet pad2 space-top1 center small'>
                 Code coverage generated by
                 <a href="https://istanbul.js.org/" target="_blank">istanbul</a>
-                at Thu Mar 17 2022 23:22:45 GMT+0000 (Greenwich Mean Time)
+                at Fri Mar 18 2022 05:42:19 GMT+0000 (Greenwich Mean Time)
             </div>
         </div>
         <script src="../../../../prettify.js"></script>
