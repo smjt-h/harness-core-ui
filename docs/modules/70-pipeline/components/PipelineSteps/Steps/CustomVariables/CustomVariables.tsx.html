@@ -23,30 +23,30 @@
         <div class='clearfix'>
             
             <div class='fl pad1y space-right2'>
-                <span class="strong">87.3% </span>
+                <span class="strong">92.06% </span>
                 <span class="quiet">Statements</span>
-                <span class='fraction'>55/63</span>
+                <span class='fraction'>58/63</span>
             </div>
         
             
             <div class='fl pad1y space-right2'>
-                <span class="strong">45.87% </span>
+                <span class="strong">48.62% </span>
                 <span class="quiet">Branches</span>
-                <span class='fraction'>100/218</span>
+                <span class='fraction'>106/218</span>
             </div>
         
             
             <div class='fl pad1y space-right2'>
-                <span class="strong">60% </span>
+                <span class="strong">80% </span>
                 <span class="quiet">Functions</span>
-                <span class='fraction'>9/15</span>
+                <span class='fraction'>12/15</span>
             </div>
         
             
             <div class='fl pad1y space-right2'>
-                <span class="strong">87.3% </span>
+                <span class="strong">92.06% </span>
                 <span class="quiet">Lines</span>
-                <span class='fraction'>55/63</span>
+                <span class='fraction'>58/63</span>
             </div>
         
             
@@ -309,9 +309,9 @@
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-yes">146x</span>
+<span class="cline-any cline-yes">151x</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-yes">146x</span>
+<span class="cline-any cline-yes">151x</span>
 <span class="cline-any cline-yes">106x</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
@@ -324,7 +324,7 @@
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-yes">40x</span>
+<span class="cline-any cline-yes">45x</span>
 <span class="cline-any cline-yes">28x</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
@@ -338,10 +338,10 @@
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-yes">12x</span>
+<span class="cline-any cline-yes">17x</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-yes">1x</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
@@ -439,9 +439,9 @@
 <span class="cline-any cline-yes">107x</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-yes">1x</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-yes">1x</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
@@ -541,7 +541,7 @@ export class CustomVariables extends Step&lt;CustomVariablesData&gt; {
     return (
       &lt;CustomVariableEditable
         initialValues={initialValues}
-        onUpdate={<span class="fstat-no" title="function not covered" >data </span>=&gt; <span class="cstat-no" title="statement not covered" >onUpdate?.(this.processFormData(data))}</span>
+        onUpdate={data =&gt; onUpdate<span class="branch-0 cbranch-no" title="branch not covered" >?.(t</span>his.processFormData(data))}
         stepViewType={stepViewType}
         readonly={readonly}
         allowableTypes={allowableTypes}
@@ -638,20 +638,20 @@ export class CustomVariables extends Step&lt;CustomVariablesData&gt; {
   &gt; = new Map()
   protected defaultValues: CustomVariablesData = { variables: [] }
 &nbsp;
-<span class="fstat-no" title="function not covered" >  processFormData(</span>data: CustomVariablesData): CustomVariablesData {
-<span class="cstat-no" title="statement not covered" >    return {</span>
+  processFormData(data: CustomVariablesData): CustomVariablesData {
+    return {
       ...data,
-      variables: data.variables.map(<span class="fstat-no" title="function not covered" >row </span>=&gt; (<span class="cstat-no" title="statement not covered" >{</span>
+      variables: data.variables.map(row =&gt; ({
         name: row.name,
         type: row.type,
         ...(!isNil(row.default)
-          ? { default: row.type === 'Number' ? parseFloat(row.default as unknown as string) : row.default }
+          ? <span class="branch-0 cbranch-no" title="branch not covered" >{ default: row.type === 'Number' ? parseFloat(row.default as unknown as string) : row.default }</span>
           : {}),
         value:
           row.type === 'Number' &amp;&amp;
-          getMultiTypeFromValue(row.value as unknown as string) === MultiTypeInputType.FIXED &amp;&amp;
-          row.value
-            ? parseFloat(row.value as unknown as string)
+<span class="branch-1 cbranch-no" title="branch not covered" >          getMultiTypeFromValue(row.value as unknown as string) === MultiTypeInputType.FIXED </span>&amp;&amp;
+<span class="branch-2 cbranch-no" title="branch not covered" >          row.value</span>
+            ? <span class="branch-0 cbranch-no" title="branch not covered" >parseFloat(row.value as unknown as string)</span>
             : row.value
       })) as AllNGVariables[]
     }
@@ -664,7 +664,7 @@ export class CustomVariables extends Step&lt;CustomVariablesData&gt; {
             <div class='footer quiet pad2 space-top1 center small'>
                 Code coverage generated by
                 <a href="https://istanbul.js.org/" target="_blank">istanbul</a>
-                at Sat Mar 19 2022 04:59:37 GMT+0000 (Greenwich Mean Time)
+                at Sun Mar 20 2022 06:22:40 GMT+0000 (Greenwich Mean Time)
             </div>
         </div>
         <script src="../../../../../../prettify.js"></script>

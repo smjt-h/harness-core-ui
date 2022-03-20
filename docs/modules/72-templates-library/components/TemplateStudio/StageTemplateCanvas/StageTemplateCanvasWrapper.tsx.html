@@ -23,30 +23,30 @@
         <div class='clearfix'>
             
             <div class='fl pad1y space-right2'>
-                <span class="strong">78.79% </span>
+                <span class="strong">70.97% </span>
                 <span class="quiet">Statements</span>
-                <span class='fraction'>26/33</span>
+                <span class='fraction'>22/31</span>
             </div>
         
             
             <div class='fl pad1y space-right2'>
-                <span class="strong">62.5% </span>
+                <span class="strong">50% </span>
                 <span class="quiet">Branches</span>
-                <span class='fraction'>5/8</span>
+                <span class='fraction'>2/4</span>
             </div>
         
             
             <div class='fl pad1y space-right2'>
-                <span class="strong">80% </span>
+                <span class="strong">75% </span>
                 <span class="quiet">Functions</span>
-                <span class='fraction'>4/5</span>
+                <span class='fraction'>3/4</span>
             </div>
         
             
             <div class='fl pad1y space-right2'>
-                <span class="strong">78.79% </span>
+                <span class="strong">70.97% </span>
                 <span class="quiet">Lines</span>
-                <span class='fraction'>26/33</span>
+                <span class='fraction'>22/31</span>
             </div>
         
             
@@ -128,13 +128,7 @@
 <a name='L69'></a><a href='#L69'>69</a>
 <a name='L70'></a><a href='#L70'>70</a>
 <a name='L71'></a><a href='#L71'>71</a>
-<a name='L72'></a><a href='#L72'>72</a>
-<a name='L73'></a><a href='#L73'>73</a>
-<a name='L74'></a><a href='#L74'>74</a>
-<a name='L75'></a><a href='#L75'>75</a>
-<a name='L76'></a><a href='#L76'>76</a>
-<a name='L77'></a><a href='#L77'>77</a>
-<a name='L78'></a><a href='#L78'>78</a></td><td class="line-coverage quiet"><span class="cline-any cline-neutral">&nbsp;</span>
+<a name='L72'></a><a href='#L72'>72</a></td><td class="line-coverage quiet"><span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
@@ -164,29 +158,23 @@
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-yes">2x</span>
-<span class="cline-any cline-yes">2x</span>
-<span class="cline-any cline-yes">2x</span>
-<span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-yes">2x</span>
-<span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-yes">3x</span>
-<span class="cline-any cline-yes">3x</span>
-<span class="cline-any cline-no">&nbsp;</span>
-<span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-yes">2x</span>
-<span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-yes">2x</span>
+<span class="cline-any cline-yes">1x</span>
 <span class="cline-any cline-yes">1x</span>
 <span class="cline-any cline-yes">1x</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">1x</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">1x</span>
+<span class="cline-any cline-yes">1x</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-yes">2x</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">1x</span>
 <span class="cline-any cline-no">&nbsp;</span>
 <span class="cline-any cline-no">&nbsp;</span>
 <span class="cline-any cline-no">&nbsp;</span>
@@ -194,8 +182,8 @@
 <span class="cline-any cline-no">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-yes">2x</span>
-<span class="cline-any cline-yes">2x</span>
+<span class="cline-any cline-yes">1x</span>
+<span class="cline-any cline-yes">1x</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
@@ -219,7 +207,7 @@
  */
 &nbsp;
 import produce from 'immer'
-import { get, isEmpty, isUndefined, omit, omitBy, set } from 'lodash-es'
+import { cloneDeep, get, isEmpty, omit, set } from 'lodash-es'
 import React from 'react'
 import { useParams } from 'react-router-dom'
 import {
@@ -238,33 +226,27 @@ import { useQueryParams } from '@common/hooks'
 &nbsp;
 const StageTemplateCanvasWrapper = (_props: unknown, formikRef: TemplateFormRef) =&gt; {
   const {
-    state: { template, isLoading, isUpdated },
+    state: { template },
     updateTemplate,
     isReadonly
   } = React.useContext(TemplateContext)
   const { accountId, projectIdentifier, orgIdentifier } = useParams&lt;ProjectPathProps&gt;()
   const { branch, repoIdentifier } = useQueryParams&lt;GitQueryParams&gt;()
 &nbsp;
-  const createPipelineFromTemplate = React.useCallback(
+  const pipeline = React.useMemo(
     () =&gt;
       produce({ ...DefaultPipeline }, draft =&gt; {
         <span class="missing-if-branch" title="if path not taken" >I</span>if (!isEmpty(template.spec)) {
-<span class="cstat-no" title="statement not covered" >          set(draft, 'stages[0].stage', { ...template.spec, name: DefaultNewStageName, identifier: DefaultNewStageId })</span>
+<span class="cstat-no" title="statement not covered" >          set(draft, 'stages[0].stage', cloneDeep(template.spec))</span>
+<span class="cstat-no" title="statement not covered" >          set(draft, 'stages[0].stage.name', DefaultNewStageName)</span>
+<span class="cstat-no" title="statement not covered" >          set(draft, 'stages[0].stage.identifier', DefaultNewStageId)</span>
         }
       }),
     [template.spec]
   )
 &nbsp;
-  const [pipeline, setPipeline] = React.useState&lt;PipelineInfoConfig&gt;(createPipelineFromTemplate())
-&nbsp;
-  React.useEffect(() =&gt; {
-    <span class="missing-if-branch" title="else path not taken" >E</span>if (!isLoading &amp;&amp; !isUpdated) {
-      setPipeline(createPipelineFromTemplate())
-    }
-  }, [isLoading, isUpdated])
-&nbsp;
   const onUpdatePipeline = <span class="fstat-no" title="function not covered" >async </span>(pipelineConfig: PipelineInfoConfig) =&gt; {
-    const stage = <span class="cstat-no" title="statement not covered" >omitBy(omitBy(get(pipelineConfig, 'stages[0].stage'), isUndefined), isEmpty)</span>
+    const stage = <span class="cstat-no" title="statement not covered" >get(pipelineConfig, 'stages[0].stage')</span>
     const processNode = <span class="cstat-no" title="statement not covered" >omit(stage, 'name', 'identifier', 'description', 'tags')</span>
 <span class="cstat-no" title="statement not covered" >    sanitize(processNode, { removeEmptyArray: false, removeEmptyObject: false, removeEmptyString: false })</span>
 <span class="cstat-no" title="statement not covered" >    set(template, 'spec', processNode)</span>
@@ -295,7 +277,7 @@ export const StageTemplateCanvasWrapperWithRef = React.forwardRef(StageTemplateC
             <div class='footer quiet pad2 space-top1 center small'>
                 Code coverage generated by
                 <a href="https://istanbul.js.org/" target="_blank">istanbul</a>
-                at Sat Mar 19 2022 04:59:37 GMT+0000 (Greenwich Mean Time)
+                at Sun Mar 20 2022 06:22:40 GMT+0000 (Greenwich Mean Time)
             </div>
         </div>
         <script src="../../../../../prettify.js"></script>
