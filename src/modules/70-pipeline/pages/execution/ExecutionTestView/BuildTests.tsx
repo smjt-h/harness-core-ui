@@ -334,6 +334,9 @@ function BuildTests({ reportSummaryMock, testOverviewMock }: BuildTestsProps): R
             label: `Step: ${step}`,
             value: step
           })
+          if (!uniqueStepIdOptionsFromStageKeyMap[stage].includes(AllStepsOption)) {
+            uniqueStepIdOptionsFromStageKeyMap[stage].unshift(AllStepsOption)
+          }
         } else if (stage && step) {
           uniqueStepIdOptionsFromStageKeyMap[stage] = [
             {
@@ -361,7 +364,6 @@ function BuildTests({ reportSummaryMock, testOverviewMock }: BuildTestsProps): R
         uniqueStepIdOptionsFromStageKeyMap[uniqueStageIdOptions[selectedStageIndex].value as string]
 
       if (selectedStepOptions.length > 1) {
-        selectedStepOptions.unshift(AllStepsOption)
         setSelectedStepId(selectedStepOptions[1])
       } else {
         setSelectedStepId(selectedStepOptions[0])
