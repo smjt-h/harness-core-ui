@@ -23,30 +23,30 @@
         <div class='clearfix'>
             
             <div class='fl pad1y space-right2'>
-                <span class="strong">35.71% </span>
+                <span class="strong">100% </span>
                 <span class="quiet">Statements</span>
-                <span class='fraction'>5/14</span>
+                <span class='fraction'>14/14</span>
             </div>
         
             
             <div class='fl pad1y space-right2'>
-                <span class="strong">0% </span>
+                <span class="strong">88.89% </span>
                 <span class="quiet">Branches</span>
-                <span class='fraction'>0/18</span>
+                <span class='fraction'>16/18</span>
             </div>
         
             
             <div class='fl pad1y space-right2'>
-                <span class="strong">0% </span>
+                <span class="strong">100% </span>
                 <span class="quiet">Functions</span>
-                <span class='fraction'>0/3</span>
+                <span class='fraction'>3/3</span>
             </div>
         
             
             <div class='fl pad1y space-right2'>
-                <span class="strong">35.71% </span>
+                <span class="strong">100% </span>
                 <span class="quiet">Lines</span>
-                <span class='fraction'>5/14</span>
+                <span class='fraction'>14/14</span>
             </div>
         
             
@@ -55,7 +55,7 @@
             Press <em>n</em> or <em>j</em> to go to the next uncovered block, <em>b</em>, <em>p</em> or <em>k</em> for the previous block.
         </p>
     </div>
-    <div class='status-line low'></div>
+    <div class='status-line high'></div>
     <pre><table class="coverage">
 <tr><td class="line-count quiet"><a name='L1'></a><a href='#L1'>1</a>
 <a name='L2'></a><a href='#L2'>2</a>
@@ -124,23 +124,23 @@
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-yes">83x</span>
-<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-yes">2x</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-yes">2x</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-no">&nbsp;</span>
-<span class="cline-any cline-no">&nbsp;</span>
-<span class="cline-any cline-no">&nbsp;</span>
-<span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-no">&nbsp;</span>
-<span class="cline-any cline-no">&nbsp;</span>
-<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-yes">2x</span>
+<span class="cline-any cline-yes">1x</span>
+<span class="cline-any cline-yes">1x</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-yes">2x</span>
+<span class="cline-any cline-yes">1x</span>
+<span class="cline-any cline-yes">1x</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">2x</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
@@ -169,29 +169,29 @@ export interface HttpStepVariablesViewProps {
   originalData: HttpStepData
 }
 &nbsp;
-export function <span class="fstat-no" title="function not covered" >HttpStepVariablesView(</span>props: HttpStepVariablesViewProps): React.ReactElement {
-  const { variablesData = <span class="branch-0 cbranch-no" title="branch not covered" >{} as HttpStepData,</span> originalData = <span class="branch-0 cbranch-no" title="branch not covered" >{} as HttpStepData,</span> metadataMap } = <span class="cstat-no" title="statement not covered" >props</span>
+export function HttpStepVariablesView(props: HttpStepVariablesViewProps): React.ReactElement {
+  const { variablesData = {} as HttpStepData, originalData = <span class="branch-0 cbranch-no" title="branch not covered" >{} as HttpStepData,</span> metadataMap } = props
 &nbsp;
-  const data: Record&lt;string, string&gt; = <span class="cstat-no" title="statement not covered" >pick(variablesData.spec, ['method', 'url', 'requestBody', 'assertion'])</span>
+  const data: Record&lt;string, string&gt; = pick(variablesData.spec, ['method', 'url', 'requestBody', 'assertion'])
 &nbsp;
-<span class="cstat-no" title="statement not covered" >  if (Array.isArray(variablesData.spec?.headers)) {</span>
-<span class="cstat-no" title="statement not covered" >    variablesData.spec.headers.forEach(<span class="fstat-no" title="function not covered" >(r</span>ow, i) =&gt; {</span>
-<span class="cstat-no" title="statement not covered" >      data[`headers[${i}].value`] = row.value as string</span>
+  if (Array.isArray(variablesData.spec?.headers)) {
+    variablesData.spec.headers.forEach((row, i) =&gt; {
+      data[`headers[${i}].value`] = row.value as string
     })
   }
 &nbsp;
-<span class="cstat-no" title="statement not covered" >  if (Array.isArray(variablesData.spec?.outputVariables)) {</span>
-<span class="cstat-no" title="statement not covered" >    variablesData.spec.outputVariables.forEach(<span class="fstat-no" title="function not covered" >(r</span>ow, i) =&gt; {</span>
-<span class="cstat-no" title="statement not covered" >      data[`outputVariables[${i}].value`] = row.value as string</span>
+  if (Array.isArray(variablesData.spec?.outputVariables)) {
+    variablesData.spec.outputVariables.forEach((row, i) =&gt; {
+      data[`outputVariables[${i}].value`] = row.value as string
     })
   }
 &nbsp;
-<span class="cstat-no" title="statement not covered" >  return (</span>
+  return (
     &lt;VariablesListTable
       className={pipelineVariableCss.variablePaddingL3}
       metadataMap={metadataMap}
       data={data}
-      originalData={originalData?.spec}
+      originalData={originalData<span class="branch-0 cbranch-no" title="branch not covered" >?.s</span>pec}
     /&gt;
   )
 }
@@ -202,7 +202,7 @@ export function <span class="fstat-no" title="function not covered" >HttpStepVar
             <div class='footer quiet pad2 space-top1 center small'>
                 Code coverage generated by
                 <a href="https://istanbul.js.org/" target="_blank">istanbul</a>
-                at Mon Mar 21 2022 04:10:50 GMT+0000 (Greenwich Mean Time)
+                at Mon Mar 21 2022 06:41:00 GMT+0000 (Greenwich Mean Time)
             </div>
         </div>
         <script src="../../../../../prettify.js"></script>

@@ -23,30 +23,30 @@
         <div class='clearfix'>
             
             <div class='fl pad1y space-right2'>
-                <span class="strong">82.61% </span>
+                <span class="strong">100% </span>
                 <span class="quiet">Statements</span>
-                <span class='fraction'>19/23</span>
+                <span class='fraction'>23/23</span>
             </div>
         
             
             <div class='fl pad1y space-right2'>
-                <span class="strong">66.67% </span>
+                <span class="strong">85.56% </span>
                 <span class="quiet">Branches</span>
-                <span class='fraction'>60/90</span>
+                <span class='fraction'>77/90</span>
             </div>
         
             
             <div class='fl pad1y space-right2'>
-                <span class="strong">20% </span>
+                <span class="strong">100% </span>
                 <span class="quiet">Functions</span>
-                <span class='fraction'>1/5</span>
+                <span class='fraction'>5/5</span>
             </div>
         
             
             <div class='fl pad1y space-right2'>
-                <span class="strong">82.61% </span>
+                <span class="strong">100% </span>
                 <span class="quiet">Lines</span>
-                <span class='fraction'>19/23</span>
+                <span class='fraction'>23/23</span>
             </div>
         
             
@@ -290,10 +290,10 @@
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-yes">83x</span>
+<span class="cline-any cline-yes">4x</span>
 <span class="cline-any cline-yes">3x</span>
 <span class="cline-any cline-yes">3x</span>
 <span class="cline-any cline-yes">3x</span>
-<span class="cline-any cline-yes">3x</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-yes">3x</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
@@ -382,21 +382,14 @@
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-yes">1x</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-no">&nbsp;</span>
-<span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">1x</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
@@ -420,7 +413,6 @@
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-no">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
@@ -428,7 +420,15 @@
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-yes">1x</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">1x</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
@@ -569,8 +569,8 @@ export default function HttpInputSetStep(props: HttpInputSetStepProps): React.Re
           /&gt;
         &lt;/div&gt;
       ) : null}
-      {isArray(template<span class="branch-0 cbranch-no" title="branch not covered" >?.s</span>pec?.headers) &amp;&amp; <span class="branch-1 cbranch-no" title="branch not covered" >template?.spec?.headers </span>? (
-<span class="branch-0 cbranch-no" title="branch not covered" >        &lt;div className={stepCss.formGroup}&gt;</span>
+      {isArray(template<span class="branch-0 cbranch-no" title="branch not covered" >?.s</span>pec?.headers) &amp;&amp; template<span class="branch-0 cbranch-no" title="branch not covered" >?.s</span>pec<span class="branch-0 cbranch-no" title="branch not covered" >?.h</span>eaders ? (
+        &lt;div className={stepCss.formGroup}&gt;
           &lt;MultiTypeFieldSelector
             name={`${prefix}spec.headers`}
             label={getString('common.headers')}
@@ -579,15 +579,15 @@ export default function HttpInputSetStep(props: HttpInputSetStepProps): React.Re
           &gt;
             &lt;FieldArray
               name="spec.headers"
-              render={<span class="fstat-no" title="function not covered" >() =</span>&gt; {
-<span class="cstat-no" title="statement not covered" >                return (</span>
+              render={() =&gt; {
+                return (
                   &lt;div className={css.panel}&gt;
                     &lt;div className={css.headerRow}&gt;
                       &lt;span className={css.label}&gt;Key&lt;/span&gt;
                       &lt;span className={css.label}&gt;Value&lt;/span&gt;
                     &lt;/div&gt;
-                    {template.spec.headers.map(<span class="fstat-no" title="function not covered" >({</span> key }: HttpStepHeaderConfig, i: number) =&gt; (
-<span class="cstat-no" title="statement not covered" >                      &lt;div className={css.headerRow} key={key}&gt;</span>
+                    {template.spec.headers.map(({ key }: HttpStepHeaderConfig, i: number) =&gt; (
+                      &lt;div className={css.headerRow} key={key}&gt;
                         &lt;FormInput.Text name={`${prefix}spec.headers[${i}].key`} disabled={true} /&gt;
                         &lt;FormInput.MultiTextInput
                           name={`${prefix}spec.headers[${i}].value`}
@@ -608,8 +608,8 @@ export default function HttpInputSetStep(props: HttpInputSetStepProps): React.Re
           &lt;/MultiTypeFieldSelector&gt;
         &lt;/div&gt;
       ) : null}
-      {isArray(template<span class="branch-0 cbranch-no" title="branch not covered" >?.s</span>pec?.outputVariables) &amp;&amp; <span class="branch-1 cbranch-no" title="branch not covered" >template?.spec?.outputVariables </span>? (
-<span class="branch-0 cbranch-no" title="branch not covered" >        &lt;div className={stepCss.formGroup}&gt;</span>
+      {isArray(template<span class="branch-0 cbranch-no" title="branch not covered" >?.s</span>pec?.outputVariables) &amp;&amp; template<span class="branch-0 cbranch-no" title="branch not covered" >?.s</span>pec<span class="branch-0 cbranch-no" title="branch not covered" >?.o</span>utputVariables ? (
+        &lt;div className={stepCss.formGroup}&gt;
           &lt;MultiTypeFieldSelector
             name={`${prefix}spec.outputVariables`}
             label={getString('outputLabel')}
@@ -617,16 +617,16 @@ export default function HttpInputSetStep(props: HttpInputSetStepProps): React.Re
           &gt;
             &lt;FieldArray
               name={`${prefix}spec.outputVariables`}
-              render={<span class="fstat-no" title="function not covered" >() =</span>&gt; {
-<span class="cstat-no" title="statement not covered" >                return (</span>
+              render={() =&gt; {
+                return (
                   &lt;div className={css.panel}&gt;
                     &lt;div className={css.responseMappingRow}&gt;
                       &lt;span className={css.label}&gt;Variable Name&lt;/span&gt;
                       &lt;span className={css.label}&gt;Value&lt;/span&gt;
                     &lt;/div&gt;
-                    {((template.spec.outputVariables as HttpStepOutputVariable[]) || []).map(
-<span class="fstat-no" title="function not covered" >                      ({</span> id }: HttpStepOutputVariable, i: number) =&gt; (
-<span class="cstat-no" title="statement not covered" >                        &lt;div className={css.responseMappingRow} key={id}&gt;</span>
+                    {((template.spec.outputVariables as HttpStepOutputVariable[]) || <span class="branch-1 cbranch-no" title="branch not covered" >[])</span>.map(
+                      ({ id }: HttpStepOutputVariable, i: number) =&gt; (
+                        &lt;div className={css.responseMappingRow} key={id}&gt;
                           &lt;FormInput.Text name={`${prefix}spec.outputVariables[${i}].name`} disabled={true} /&gt;
                           &lt;FormInput.MultiTextInput
                             name={`${prefix}spec.outputVariables[${i}].value`}
@@ -658,7 +658,7 @@ export default function HttpInputSetStep(props: HttpInputSetStepProps): React.Re
             <div class='footer quiet pad2 space-top1 center small'>
                 Code coverage generated by
                 <a href="https://istanbul.js.org/" target="_blank">istanbul</a>
-                at Mon Mar 21 2022 04:10:50 GMT+0000 (Greenwich Mean Time)
+                at Mon Mar 21 2022 06:41:00 GMT+0000 (Greenwich Mean Time)
             </div>
         </div>
         <script src="../../../../../prettify.js"></script>
