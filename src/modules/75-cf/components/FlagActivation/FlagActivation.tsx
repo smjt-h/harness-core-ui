@@ -10,6 +10,9 @@ import { useHistory, useParams } from 'react-router-dom'
 import { v4 as uuid } from 'uuid'
 import type { FormikActions } from 'formik'
 import { cloneDeep, get, isEqual } from 'lodash-es'
+import type { GovernanceMetadata } from 'services/pipeline-ng'
+import { EvaluationModal } from '@governance/EvaluationModal'
+import { useFeatureFlags } from '@common/hooks/useFeatureFlag'
 import {
   Layout,
   Container,
@@ -126,6 +129,10 @@ const FlagActivation: React.FC<FlagActivationProps> = props => {
       }
     }
   })
+  const { OPA_FF_GOVERNANCE } = useFeatureFlags()
+  const [governanceMetadata, setGovernanceMetadata] = useState<GovernanceMetadata>()
+  const shouldShowGovernanceEvaluation =
+    OPA_FF_GOVERNANCE && (governanceMetadata?.status === 'error' || governanceMetadata?.status === 'warning')
 
   const FFM_1513 = useFeatureFlag(FeatureFlag.FFM_1513)
 
@@ -334,7 +341,11 @@ const FlagActivation: React.FC<FlagActivationProps> = props => {
               if (err.status === GIT_SYNC_ERROR_CODE) {
                 gitSync.handleError(err.data as GitSyncErrorResponse)
               } else {
-                showError(get(err, 'data.message', err?.message), 0)
+                if (err?.data?.details?.governanceMetadata) {
+                  setGovernanceMetadata(err?.data?.details?.governanceMetadata)
+                } else {
+                  showError(get(err, 'data.message', err?.message), 0)
+                }
               }
             })
             .finally(() => {
@@ -457,115 +468,126 @@ const FlagActivation: React.FC<FlagActivationProps> = props => {
   }
 
   return (
-    <Formik
-      enableReinitialize={true}
-      validateOnChange={false}
-      validateOnBlur={false}
-      formName="flagActivation"
-      initialValues={initialValues}
-      validate={validateForm}
-      validationSchema={yup.object().shape({
-        gitDetails: gitSyncValidationSchema
-      })}
-      onSubmit={onSaveChanges}
-    >
-      {formikProps => {
-        return (
-          <FormikForm>
-            <Container className={css.formContainer}>
-              <Layout.Horizontal className={css.environmentHeaderContainer} flex={{ alignItems: 'center' }}>
-                <FlexExpander />
-                <CFEnvironmentSelect component={<EnvironmentSelect />} />
-              </Layout.Horizontal>
+    <>
+      <Formik
+        enableReinitialize={true}
+        validateOnChange={false}
+        validateOnBlur={false}
+        formName="flagActivation"
+        initialValues={initialValues}
+        validate={validateForm}
+        validationSchema={yup.object().shape({
+          gitDetails: gitSyncValidationSchema
+        })}
+        onSubmit={onSaveChanges}
+      >
+        {formikProps => {
+          return (
+            <FormikForm>
+              <Container className={css.formContainer}>
+                <Layout.Horizontal className={css.environmentHeaderContainer} flex={{ alignItems: 'center' }}>
+                  <FlexExpander />
+                  <CFEnvironmentSelect component={<EnvironmentSelect />} />
+                </Layout.Horizontal>
 
-              <Container className={css.tabContainer}>
-                {flagData && (
-                  <>
-                    <Tabs
-                      id="editFlag"
-                      defaultSelectedTabId={activeTabId}
-                      onChange={(tabId: string) => setActiveTabId(tabId)}
-                    >
-                      <Tab
-                        id={FFDetailPageTab.TARGETING}
-                        title={<Text className={css.tabTitle}>{getString('cf.featureFlags.targeting')}</Text>}
-                        panel={
-                          <>
-                            {FFM_1513 ? (
-                              <TargetingRulesTab
-                                featureFlagData={flagData}
-                                refetchFlag={refetchFlag}
-                                refetchFlagLoading={refetchFlagLoading}
-                              />
-                            ) : (
-                              <TabTargeting
-                                formikProps={formikProps}
-                                editing={editing}
-                                projectIdentifier={projectIdentifier}
-                                environmentIdentifier={environmentIdentifier}
-                                setEditing={setEditing}
-                                feature={flagData}
-                                orgIdentifier={orgIdentifier}
-                                accountIdentifier={accountIdentifier}
-                              />
-                            )}
-                          </>
-                        }
-                      />
-                      <Tab
-                        id={FFDetailPageTab.METRICS}
-                        title={<Text className={css.tabTitle}>{getString('cf.featureFlags.metrics.title')}</Text>}
-                        panel={<MetricsView flagData={flagData} />}
-                      />
+                <Container className={css.tabContainer}>
+                  {flagData && (
+                    <>
+                      <Tabs
+                        id="editFlag"
+                        defaultSelectedTabId={activeTabId}
+                        onChange={(tabId: string) => setActiveTabId(tabId)}
+                      >
+                        <Tab
+                          id={FFDetailPageTab.TARGETING}
+                          title={<Text className={css.tabTitle}>{getString('cf.featureFlags.targeting')}</Text>}
+                          panel={
+                            <>
+                              {FFM_1513 ? (
+                                <TargetingRulesTab
+                                  featureFlagData={flagData}
+                                  refetchFlag={refetchFlag}
+                                  refetchFlagLoading={refetchFlagLoading}
+                                />
+                              ) : (
+                                <TabTargeting
+                                  formikProps={formikProps}
+                                  editing={editing}
+                                  projectIdentifier={projectIdentifier}
+                                  environmentIdentifier={environmentIdentifier}
+                                  setEditing={setEditing}
+                                  feature={flagData}
+                                  orgIdentifier={orgIdentifier}
+                                  accountIdentifier={accountIdentifier}
+                                />
+                              )}
+                            </>
+                          }
+                        />
+                        <Tab
+                          id={FFDetailPageTab.METRICS}
+                          title={<Text className={css.tabTitle}>{getString('cf.featureFlags.metrics.title')}</Text>}
+                          panel={<MetricsView flagData={flagData} />}
+                        />
 
-                      <Tab
-                        id={FFDetailPageTab.ACTIVITY}
-                        title={<Text className={css.tabTitle}>{getString('cf.featureFlags.activity')}</Text>}
-                        panel={<TabActivity flagData={flagData} />}
+                        <Tab
+                          id={FFDetailPageTab.ACTIVITY}
+                          title={<Text className={css.tabTitle}>{getString('cf.featureFlags.activity')}</Text>}
+                          panel={<TabActivity flagData={flagData} />}
+                        />
+                      </Tabs>
+                    </>
+                  )}
+                </Container>
+                {(editing || formikProps.values.state !== flagData.envProperties?.state) &&
+                  activeTabId === FFDetailPageTab.TARGETING && (
+                    <Layout.Horizontal className={css.actionButtons} padding="medium" spacing="small">
+                      <Button
+                        type="submit"
+                        intent="primary"
+                        text={getString('save')}
+                        onClick={event => {
+                          if (gitSync?.isGitSyncEnabled && !gitSync?.isAutoCommitEnabled) {
+                            event.preventDefault()
+                            setIsGitSyncModalOpen(true)
+                          }
+                        }}
                       />
-                    </Tabs>
-                  </>
-                )}
+                      <Button
+                        minimal
+                        text={getString('cancel')}
+                        onClick={(e: MouseEvent) => {
+                          e.preventDefault()
+                          onCancelEditHandler()
+                          formikProps.handleReset()
+                        }}
+                      />
+                    </Layout.Horizontal>
+                  )}
               </Container>
-              {(editing || formikProps.values.state !== flagData.envProperties?.state) &&
-                activeTabId === FFDetailPageTab.TARGETING && (
-                  <Layout.Horizontal className={css.actionButtons} padding="medium" spacing="small">
-                    <Button
-                      type="submit"
-                      intent="primary"
-                      text={getString('save')}
-                      onClick={event => {
-                        if (gitSync?.isGitSyncEnabled && !gitSync?.isAutoCommitEnabled) {
-                          event.preventDefault()
-                          setIsGitSyncModalOpen(true)
-                        }
-                      }}
-                    />
-                    <Button
-                      minimal
-                      text={getString('cancel')}
-                      onClick={(e: MouseEvent) => {
-                        e.preventDefault()
-                        onCancelEditHandler()
-                        formikProps.handleReset()
-                      }}
-                    />
-                  </Layout.Horizontal>
-                )}
-            </Container>
-            {isGitSyncOpenModal && (
-              <SaveFlagToGitSubFormModal
-                title={getString('cf.gitSync.saveFlagToGit', {
-                  flagName: flagData.name
-                })}
-                onSubmit={formikProps.submitForm}
-                onClose={() => setIsGitSyncModalOpen(false)}
-              />
-            )}
-          </FormikForm>
-        )
-      }}
-    </Formik>
+              {isGitSyncOpenModal && (
+                <SaveFlagToGitSubFormModal
+                  title={getString('cf.gitSync.saveFlagToGit', {
+                    flagName: flagData.name
+                  })}
+                  onSubmit={formikProps.submitForm}
+                  onClose={() => setIsGitSyncModalOpen(false)}
+                />
+              )}
+            </FormikForm>
+          )
+        }}
+      </Formik>
+      {shouldShowGovernanceEvaluation && (
+        <EvaluationModal
+          accountId={accountIdentifier}
+          key={governanceMetadata?.id}
+          module={'cf'}
+          metadata={governanceMetadata}
+          headingErrorMessage={getString('cf.policyEvaluations.failedToSave')}
+        />
+      )}
+    </>
   )
 }
 

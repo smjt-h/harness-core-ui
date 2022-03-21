@@ -8,6 +8,9 @@
 import React, { useMemo, useState } from 'react'
 import { useParams } from 'react-router-dom'
 import { flatMap, get, isEqual } from 'lodash-es'
+import type { GovernanceMetadata } from 'services/pipeline-ng'
+import { EvaluationModal } from '@governance/EvaluationModal'
+import { useFeatureFlags } from '@common/hooks/useFeatureFlag'
 import * as yup from 'yup'
 import {
   Button,
@@ -81,6 +84,10 @@ export const FlagPrerequisites: React.FC<FlagPrerequisitesProps> = props => {
     environmentIdentifier
   } = useParams<Record<string, string>>()
   const [searchTerm, setSearchTerm] = useState<string>()
+  const { OPA_FF_GOVERNANCE } = useFeatureFlags()
+  const [governanceMetadata, setGovernanceMetadata] = useState<GovernanceMetadata>()
+  const shouldShowGovernanceEvaluation =
+    OPA_FF_GOVERNANCE && (governanceMetadata?.status === 'error' || governanceMetadata?.status === 'warning')
 
   const gitSyncFormMeta = gitSync?.getGitSyncFormMeta(AUTO_COMMIT_MESSAGES.UPDATES_FLAG_PREREQS)
   const PAGE_SIZE = 500
@@ -213,7 +220,11 @@ export const FlagPrerequisites: React.FC<FlagPrerequisitesProps> = props => {
               if (err.status === GIT_SYNC_ERROR_CODE) {
                 gitSync.handleError(err.data as GitSyncErrorResponse)
               } else {
-                showError(get(err, 'data.message', err?.message), undefined, 'cf.patch.req.error')
+                if (err?.data?.details?.governanceMetadata) {
+                  setGovernanceMetadata(err?.data?.details?.governanceMetadata)
+                } else {
+                  showError(get(err, 'data.message', err?.message), undefined, 'cf.patch.req.error')
+                }
               }
             })
             .finally(() => {
@@ -442,6 +453,15 @@ export const FlagPrerequisites: React.FC<FlagPrerequisitesProps> = props => {
           />
         </Layout.Vertical>
       </Collapse>
+      {shouldShowGovernanceEvaluation && (
+        <EvaluationModal
+          accountId={accountIdentifier}
+          key={governanceMetadata?.id}
+          module={'cf'}
+          metadata={governanceMetadata}
+          headingErrorMessage={getString('cf.policyEvaluations.failedToSave')}
+        />
+      )}
     </Container>
   )
 }
