@@ -23,30 +23,30 @@
         <div class='clearfix'>
             
             <div class='fl pad1y space-right2'>
-                <span class="strong">92.13% </span>
+                <span class="strong">91.4% </span>
                 <span class="quiet">Statements</span>
-                <span class='fraction'>82/89</span>
+                <span class='fraction'>85/93</span>
             </div>
         
             
             <div class='fl pad1y space-right2'>
-                <span class="strong">63.41% </span>
+                <span class="strong">57.66% </span>
                 <span class="quiet">Branches</span>
-                <span class='fraction'>78/123</span>
+                <span class='fraction'>79/137</span>
             </div>
         
             
             <div class='fl pad1y space-right2'>
-                <span class="strong">80% </span>
+                <span class="strong">80.77% </span>
                 <span class="quiet">Functions</span>
-                <span class='fraction'>20/25</span>
+                <span class='fraction'>21/26</span>
             </div>
         
             
             <div class='fl pad1y space-right2'>
-                <span class="strong">93.18% </span>
+                <span class="strong">92.39% </span>
                 <span class="quiet">Lines</span>
-                <span class='fraction'>82/88</span>
+                <span class='fraction'>85/92</span>
             </div>
         
             
@@ -456,7 +456,14 @@
 <a name='L397'></a><a href='#L397'>397</a>
 <a name='L398'></a><a href='#L398'>398</a>
 <a name='L399'></a><a href='#L399'>399</a>
-<a name='L400'></a><a href='#L400'>400</a></td><td class="line-coverage quiet"><span class="cline-any cline-neutral">&nbsp;</span>
+<a name='L400'></a><a href='#L400'>400</a>
+<a name='L401'></a><a href='#L401'>401</a>
+<a name='L402'></a><a href='#L402'>402</a>
+<a name='L403'></a><a href='#L403'>403</a>
+<a name='L404'></a><a href='#L404'>404</a>
+<a name='L405'></a><a href='#L405'>405</a>
+<a name='L406'></a><a href='#L406'>406</a>
+<a name='L407'></a><a href='#L407'>407</a></td><td class="line-coverage quiet"><span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
@@ -480,7 +487,7 @@
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">5x</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-yes">5x</span>
@@ -526,6 +533,7 @@
 <span class="cline-any cline-yes">12x</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-yes">12x</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
@@ -592,6 +600,12 @@
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">12x</span>
+<span class="cline-any cline-yes">4x</span>
+<span class="cline-any cline-no">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
@@ -867,7 +881,6 @@ import { useParams } from 'react-router-dom'
 import { isEmpty as _isEmpty, defaultTo as _defaultTo } from 'lodash-es'
 import {
   Button,
-  Color,
   Container,
   ExpandingSearchInput,
   Icon,
@@ -880,6 +893,7 @@ import {
   TableV2
 } from '@wings-software/uicore'
 import type { CellProps } from 'react-table'
+import { Color } from '@harness/design-system'
 import type { SelectOption } from '@wings-software/uicore'
 import type { AccountPathProps } from '@common/interfaces/RouteInterfaces'
 import {
@@ -935,7 +949,8 @@ const COEcsSelector: React.FC&lt;COEcsSelectorProps&gt; = props =&gt; {
   const {
     data: containers,
     refetch: fetchContainers,
-    loading: loadingContainers
+    loading: loadingContainers,
+    error: fetchContainersError
   } = useGetContainerClustersOfRegion({
     account_id: accountId,
     lazy: true
@@ -993,6 +1008,12 @@ const COEcsSelector: React.FC&lt;COEcsSelectorProps&gt; = props =&gt; {
       })
     }
   }, [selectedRegion])
+&nbsp;
+  useEffect(() =&gt; {
+    <span class="missing-if-branch" title="if path not taken" >I</span>if (!_isEmpty(fetchContainersError)) {
+<span class="cstat-no" title="statement not covered" >      showError((fetchContainersError?.data as any)?.errors?.join('\n'), 8000)</span>
+    }
+  }, [fetchContainersError])
 &nbsp;
   useEffect(() =&gt; {
     setAllClusterServicesForRegion()
@@ -1261,7 +1282,7 @@ export default COEcsSelector
             <div class='footer quiet pad2 space-top1 center small'>
                 Code coverage generated by
                 <a href="https://istanbul.js.org/" target="_blank">istanbul</a>
-                at Mon Mar 21 2022 10:56:26 GMT+0000 (Greenwich Mean Time)
+                at Mon Mar 21 2022 15:55:05 GMT+0000 (Greenwich Mean Time)
             </div>
         </div>
         <script src="../../../../prettify.js"></script>

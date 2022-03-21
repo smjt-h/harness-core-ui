@@ -23,16 +23,16 @@
         <div class='clearfix'>
             
             <div class='fl pad1y space-right2'>
-                <span class="strong">75.51% </span>
+                <span class="strong">77.36% </span>
                 <span class="quiet">Statements</span>
-                <span class='fraction'>37/49</span>
+                <span class='fraction'>41/53</span>
             </div>
         
             
             <div class='fl pad1y space-right2'>
-                <span class="strong">58.43% </span>
+                <span class="strong">59.76% </span>
                 <span class="quiet">Branches</span>
-                <span class='fraction'>52/89</span>
+                <span class='fraction'>49/82</span>
             </div>
         
             
@@ -44,9 +44,9 @@
         
             
             <div class='fl pad1y space-right2'>
-                <span class="strong">78.72% </span>
+                <span class="strong">80.39% </span>
                 <span class="quiet">Lines</span>
-                <span class='fraction'>37/47</span>
+                <span class='fraction'>41/51</span>
             </div>
         
             
@@ -516,15 +516,7 @@
 <a name='L457'></a><a href='#L457'>457</a>
 <a name='L458'></a><a href='#L458'>458</a>
 <a name='L459'></a><a href='#L459'>459</a>
-<a name='L460'></a><a href='#L460'>460</a>
-<a name='L461'></a><a href='#L461'>461</a>
-<a name='L462'></a><a href='#L462'>462</a>
-<a name='L463'></a><a href='#L463'>463</a>
-<a name='L464'></a><a href='#L464'>464</a>
-<a name='L465'></a><a href='#L465'>465</a>
-<a name='L466'></a><a href='#L466'>466</a>
-<a name='L467'></a><a href='#L467'>467</a>
-<a name='L468'></a><a href='#L468'>468</a></td><td class="line-coverage quiet"><span class="cline-any cline-neutral">&nbsp;</span>
+<a name='L460'></a><a href='#L460'>460</a></td><td class="line-coverage quiet"><span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
@@ -533,6 +525,7 @@
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-yes">3x</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">3x</span>
 <span class="cline-any cline-yes">3x</span>
 <span class="cline-any cline-yes">3x</span>
 <span class="cline-any cline-yes">3x</span>
@@ -549,6 +542,7 @@
 <span class="cline-any cline-yes">3x</span>
 <span class="cline-any cline-yes">3x</span>
 <span class="cline-any cline-yes">3x</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
@@ -610,6 +604,9 @@
 <span class="cline-any cline-yes">1x</span>
 <span class="cline-any cline-yes">1x</span>
 <span class="cline-any cline-yes">1x</span>
+<span class="cline-any cline-yes">1x</span>
+<span class="cline-any cline-yes">1x</span>
+<span class="cline-any cline-yes">1x</span>
 <span class="cline-any cline-no">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-yes">1x</span>
@@ -930,19 +927,6 @@
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-no">&nbsp;</span>
-<span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
@@ -1002,8 +986,9 @@ import React, { useEffect, useMemo } from 'react'
 import type { CellProps } from 'react-table'
 import cx from 'classnames'
 import { isEmpty as _isEmpty, defaultTo as _defaultTo } from 'lodash-es'
-import { Heading, Container, Layout, Text, Table, Color, Icon, IconName } from '@wings-software/uicore'
-import type { ConnectionMetadata, GatewayDetails, InstanceDetails } from '@ce/components/COCreateGateway/models'
+import { Heading, Container, Layout, Text, Table, Icon, IconName } from '@wings-software/uicore'
+import { Color } from '@harness/design-system'
+import type { GatewayDetails, InstanceDetails } from '@ce/components/COCreateGateway/models'
 import { Utils } from '@ce/common/Utils'
 import type { ContainerSvc, HealthCheck, PortConfig, RDSDatabase, Service } from 'services/lw'
 import FixedSchedeulesList from '@ce/common/FixedSchedulesList/FixedSchedulesList'
@@ -1021,6 +1006,7 @@ interface COGatewayReviewProps {
   gatewayDetails: GatewayDetails
   onEdit: (tabDetails: { id: string; metaData?: { activeStepCount?: number; activeStepTabId?: string } }) =&gt; void
   allServices: Service[]
+  serverNames: string[]
 }
 &nbsp;
 interface DependencyView {
@@ -1074,6 +1060,9 @@ const COGatewayReview: React.FC&lt;COGatewayReviewProps&gt; = props =&gt; {
   const isK8sRule = Utils.isK8sRule(props.gatewayDetails)
   const filteredSchedules = props.gatewayDetails.schedules<span class="branch-1 cbranch-no" title="branch not covered" >?.filter(<span class="fstat-no" title="function not covered" >s </span>=&gt; <span class="cstat-no" title="statement not covered" >!s.isDeleted)</span></span>
   const hasSelectedInstances = !_isEmpty(props.gatewayDetails.selectedInstances)
+  const allCustomDomains = Utils.getAllCustomDomains(props.serverNames, props.gatewayDetails.customDomains)
+  const hasCustomDomains = !_isEmpty(allCustomDomains)
+  const hasHostName = !_isEmpty(props.gatewayDetails.hostName)
   const serviceIdToNameMap = useMemo(() =&gt; {
     const map: Record&lt;number, string&gt; = {}
     props.allServices<span class="branch-1 cbranch-no" title="branch not covered" >?.forEach(<span class="fstat-no" title="function not covered" >s </span>=&gt; {</span>
@@ -1395,34 +1384,21 @@ const COGatewayReview: React.FC&lt;COGatewayReviewProps&gt; = props =&gt; {
                 /&gt;
               &lt;/ReviewDetailsSection&gt;
             )}
-          {_isEmpty(props.gatewayDetails.routing.database) &amp;&amp; (
+          {_isEmpty(props.gatewayDetails.routing.database) &amp;&amp; (hasCustomDomains || hasHostName) &amp;&amp; (
             &lt;ReviewDetailsSection isEditable onEdit={<span class="fstat-no" title="function not covered" >() =</span>&gt; <span class="cstat-no" title="statement not covered" >props.onEdit({ id: 'setupAccess' })}</span>&gt;
               &lt;Heading level={2}&gt;DNS Link mapping&lt;/Heading&gt;
               &lt;Layout.Vertical style={{ marginTop: 'var(--spacing-large)' }}&gt;
-                {!_isEmpty(props.gatewayDetails.customDomains) &amp;&amp; (
+                {hasCustomDomains &amp;&amp; (
 <span class="branch-1 cbranch-no" title="branch not covered" >                  &lt;Layout.Horizontal</span>
                     spacing={'large'}
                     padding={{ bottom: 'medium' }}
                     className={cx(css.equalSpacing, css.borderSpacing)}
                   &gt;
                     &lt;Text&gt;Custom domain&lt;/Text&gt;
-                    &lt;Text&gt;{props.gatewayDetails.customDomains?.join(',')}&lt;/Text&gt;
+                    &lt;Text&gt;{allCustomDomains.join(',')}&lt;/Text&gt;
                   &lt;/Layout.Horizontal&gt;
                 )}
-                {_isEmpty(props.gatewayDetails.routing.container_svc) &amp;&amp;
-                  _isEmpty(props.gatewayDetails.routing.database) &amp;&amp; (
-                    &lt;Layout.Horizontal
-                      spacing={'large'}
-                      padding={{ bottom: 'medium' }}
-                      className={cx(css.equalSpacing, css.borderSpacing)}
-                    &gt;
-                      &lt;Text&gt;Is it publicly accessible?&lt;/Text&gt;
-                      &lt;Text&gt;
-                        {(props.gatewayDetails.opts.access_details as ConnectionMetadata).dnsLink.public || 'Yes'}
-                      &lt;/Text&gt;
-                    &lt;/Layout.Horizontal&gt;
-                  )}
-                {_isEmpty(props.gatewayDetails.customDomains) &amp;&amp; props.gatewayDetails.hostName &amp;&amp; (
+                {_isEmpty(props.gatewayDetails.customDomains) &amp;&amp; hasHostName &amp;&amp; (
                   &lt;Layout.Horizontal
                     spacing={'large'}
                     padding={{ bottom: 'medium' }}
@@ -1465,7 +1441,7 @@ export default COGatewayReview
             <div class='footer quiet pad2 space-top1 center small'>
                 Code coverage generated by
                 <a href="https://istanbul.js.org/" target="_blank">istanbul</a>
-                at Mon Mar 21 2022 10:56:26 GMT+0000 (Greenwich Mean Time)
+                at Mon Mar 21 2022 15:55:05 GMT+0000 (Greenwich Mean Time)
             </div>
         </div>
         <script src="../../../../prettify.js"></script>

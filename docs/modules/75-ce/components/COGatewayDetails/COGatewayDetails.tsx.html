@@ -23,9 +23,9 @@
         <div class='clearfix'>
             
             <div class='fl pad1y space-right2'>
-                <span class="strong">67.92% </span>
+                <span class="strong">68.22% </span>
                 <span class="quiet">Statements</span>
-                <span class='fraction'>72/106</span>
+                <span class='fraction'>73/107</span>
             </div>
         
             
@@ -44,9 +44,9 @@
         
             
             <div class='fl pad1y space-right2'>
-                <span class="strong">67.65% </span>
+                <span class="strong">67.96% </span>
                 <span class="quiet">Lines</span>
-                <span class='fraction'>69/102</span>
+                <span class='fraction'>70/103</span>
             </div>
         
             
@@ -372,7 +372,14 @@
 <a name='L313'></a><a href='#L313'>313</a>
 <a name='L314'></a><a href='#L314'>314</a>
 <a name='L315'></a><a href='#L315'>315</a>
-<a name='L316'></a><a href='#L316'>316</a></td><td class="line-coverage quiet"><span class="cline-any cline-neutral">&nbsp;</span>
+<a name='L316'></a><a href='#L316'>316</a>
+<a name='L317'></a><a href='#L317'>317</a>
+<a name='L318'></a><a href='#L318'>318</a>
+<a name='L319'></a><a href='#L319'>319</a>
+<a name='L320'></a><a href='#L320'>320</a>
+<a name='L321'></a><a href='#L321'>321</a>
+<a name='L322'></a><a href='#L322'>322</a>
+<a name='L323'></a><a href='#L323'>323</a></td><td class="line-coverage quiet"><span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
@@ -411,11 +418,16 @@
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-yes">3x</span>
 <span class="cline-any cline-yes">18x</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-yes">17x</span>
 <span class="cline-any cline-yes">17x</span>
 <span class="cline-any cline-yes">17x</span>
 <span class="cline-any cline-yes">17x</span>
 <span class="cline-any cline-yes">17x</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-yes">17x</span>
 <span class="cline-any cline-yes">17x</span>
 <span class="cline-any cline-yes">17x</span>
@@ -423,9 +435,7 @@
 <span class="cline-any cline-yes">17x</span>
 <span class="cline-any cline-yes">17x</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">17x</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-yes">17x</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
@@ -529,6 +539,7 @@
 <span class="cline-any cline-no">&nbsp;</span>
 <span class="cline-any cline-no">&nbsp;</span>
 <span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
@@ -588,6 +599,9 @@
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-yes">17x</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
@@ -725,22 +739,25 @@ interface COGatewayDetailsProps {
   isEditFlow: boolean
 }
 const COGatewayDetails: React.FC&lt;COGatewayDetailsProps&gt; = props =&gt; {
-  const history = useHistory()
-  const { getString } = useStrings()
-  const { showError, showSuccess } = useToaster()
-  const { trackEvent } = useTelemetry()
-  const { currentUserInfo } = useAppStore()
-  const [selectedTabId, setSelectedTabId] = useState&lt;string&gt;(props.activeTab ?? ASRuleTabs.CONFIGURATION)
-  const [validConfig, setValidConfig] = useState&lt;boolean&gt;(false)
-  const [validAccessSetup, setValidAccessSetup] = useState&lt;boolean&gt;(false)
-  const [saveInProgress, setSaveInProgress] = useState&lt;boolean&gt;(false)
-  const [activeConfigStep, setActiveConfigStep] = useState&lt;{ count?: number; tabId?: string } | null&gt;(null)
-  const tabs = [ASRuleTabs.CONFIGURATION, ASRuleTabs.SETUP_ACCESS, ASRuleTabs.REVIEW]
   const { accountId, orgIdentifier, projectIdentifier } = useParams&lt;{
     accountId: string
     orgIdentifier: string
     projectIdentifier: string
   }&gt;()
+  const history = useHistory()
+  const { getString } = useStrings()
+  const { showError, showSuccess } = useToaster()
+  const { trackEvent } = useTelemetry()
+  const { currentUserInfo } = useAppStore()
+&nbsp;
+  const [selectedTabId, setSelectedTabId] = useState&lt;string&gt;(props.activeTab ?? ASRuleTabs.CONFIGURATION)
+  const [validConfig, setValidConfig] = useState&lt;boolean&gt;(false)
+  const [validAccessSetup, setValidAccessSetup] = useState&lt;boolean&gt;(false)
+  const [saveInProgress, setSaveInProgress] = useState&lt;boolean&gt;(false)
+  const [activeConfigStep, setActiveConfigStep] = useState&lt;{ count?: number; tabId?: string } | null&gt;(null)
+  const [serverNames, setServerNames] = useState&lt;string[]&gt;([])
+&nbsp;
+  const tabs = [ASRuleTabs.CONFIGURATION, ASRuleTabs.SETUP_ACCESS, ASRuleTabs.REVIEW]
 &nbsp;
   const { data: servicesData, error } = useGetServices({
     account_id: accountId,
@@ -847,7 +864,8 @@ const COGatewayDetails: React.FC&lt;COGatewayDetailsProps&gt; = props =&gt; {
         props.gatewayDetails,
         orgIdentifier,
         projectIdentifier,
-        accountId
+        accountId,
+        serverNames
       )
       const result = <span class="cstat-no" title="statement not covered" >await saveGateway({ service: gateway, deps: props.gatewayDetails.deps, apply_now: false }) </span>// eslint-disable-line
       // Rule creation is halted until the access point creation takes place successfully.
@@ -947,6 +965,8 @@ const COGatewayDetails: React.FC&lt;COGatewayDetailsProps&gt; = props =&gt; {
                   setGatewayDetails={props.setGatewayDetails}
                   activeStepDetails={activeConfigStep}
                   allServices={servicesData?.response as Service[]}
+                  serverNames={serverNames}
+                  setServerNames={setServerNames}
                 /&gt;
               }
             /&gt;
@@ -959,6 +979,7 @@ const COGatewayDetails: React.FC&lt;COGatewayDetailsProps&gt; = props =&gt; {
                   gatewayDetails={props.gatewayDetails}
                   onEdit={handleReviewDetailsEdit}
                   allServices={servicesData?.response as Service[]}
+                  serverNames={serverNames}
                 /&gt;
               }
             /&gt;
@@ -1009,7 +1030,7 @@ export default COGatewayDetails
             <div class='footer quiet pad2 space-top1 center small'>
                 Code coverage generated by
                 <a href="https://istanbul.js.org/" target="_blank">istanbul</a>
-                at Mon Mar 21 2022 10:56:26 GMT+0000 (Greenwich Mean Time)
+                at Mon Mar 21 2022 15:55:05 GMT+0000 (Greenwich Mean Time)
             </div>
         </div>
         <script src="../../../../prettify.js"></script>
