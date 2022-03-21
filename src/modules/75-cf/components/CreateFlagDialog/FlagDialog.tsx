@@ -7,7 +7,7 @@
 
 import React, { useState } from 'react'
 import { Dialog } from '@blueprintjs/core'
-import { Color, Button, Container, Text, Icon } from '@wings-software/uicore'
+import { Button, Color, Container, Icon, Text } from '@wings-software/uicore'
 import { useModalHook } from '@harness/use-modal'
 import { useStrings } from 'framework/strings'
 import { FlagTypeVariations } from './FlagDialogUtils'

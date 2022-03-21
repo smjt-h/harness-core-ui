@@ -7,13 +7,13 @@
 
 .modal {
   position: relative;
-  width: 1000px;
+  width: 1000px !important;
   min-height: 600px;
   height: fit-content;
   background: var(--primary-7) !important;
   border-left: 0 !important;
   overflow: hidden;
-  padding-bottom: 0;
+  padding-bottom: 0 !important;
   .close-icon {
     position: absolute;
     right: var(--spacing-small);
