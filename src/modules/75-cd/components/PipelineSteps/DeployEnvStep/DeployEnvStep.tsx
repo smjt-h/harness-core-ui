@@ -438,7 +438,9 @@ export const DeployEnvironmentWidget: React.FC<DeployEnvironmentProps> = ({
               >
                 <FormInput.MultiTypeInput
                   label={
-                    environmentLabel ? environmentLabel : getString('cd.pipelineSteps.serviceTab.specifyYourService')
+                    environmentLabel
+                      ? environmentLabel
+                      : getString('cd.pipelineSteps.environmentTab.specifyYourEnvironment')
                   }
                   tooltipProps={{ dataTooltipId: 'specifyYourEnvironment' }}
                   name="environmentRef"
