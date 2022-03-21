@@ -170,9 +170,11 @@ export function Reports({
   stageId,
   stepId,
   serviceToken,
-  testsCountDiff
+  testsCountDiff,
+  hasTIStep
 }: {
   header: JSX.Element
+  hasTIStep: boolean
   reportSummaryData?: TestReportSummary | null
   stageId?: string
   stepId?: string
@@ -209,7 +211,7 @@ export function Reports({
               skippedTests={reportSummaryData.skipped_tests}
             />
           )}
-        {NG_LICENSES_ENABLED && <TICallToAction />}
+        {NG_LICENSES_ENABLED && !hasTIStep && <TICallToAction />}
       </Layout.Horizontal>
       <Layout.Horizontal spacing="large">
         {/* <TestsCoverage /> */}
@@ -239,6 +241,8 @@ function BuildTests({ reportSummaryMock, testOverviewMock }: BuildTestsProps): R
   } = useGetToken({
     queryParams: { accountId }
   })
+
+  const [hasTIStep, setHasTIStep] = useState<boolean>(false)
 
   const [stageIdOptions, setStageIdOptions] = useState<SelectOption[]>([])
   const [selectedStageId, setSelectedStageId] = useState<SelectOption>()
@@ -369,6 +373,10 @@ function BuildTests({ reportSummaryMock, testOverviewMock }: BuildTestsProps): R
 
       setStageIdOptions(uniqueStageIdOptions)
       setStepIdOptions(selectedStepOptions)
+
+      if (testInfoData.length > 0) {
+        setHasTIStep(true)
+      }
     }
   }, [reportInfoData, testInfoData])
 
@@ -613,6 +621,7 @@ function BuildTests({ reportSummaryMock, testOverviewMock }: BuildTestsProps): R
       ui = (
         <Reports
           header={header}
+          hasTIStep={hasTIStep}
           reportSummaryData={reportSummaryData}
           stageId={stageId}
           stepId={stepId}
