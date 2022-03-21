@@ -13,8 +13,10 @@ import { BarrierStep } from './Steps/Barrier/Barrier'
 import { HarnessApproval } from './Steps/Approval/HarnessApproval'
 import { JiraApproval } from './Steps/JiraApproval/JiraApproval'
 import { ServiceNowApproval } from './Steps/ServiceNowApproval/ServiceNowApproval'
+import { ServiceNowCreate } from './Steps/ServiceNowCreate/ServiceNowCreate'
 import { JiraCreate } from './Steps/JiraCreate/JiraCreate'
 import { JiraUpdate } from './Steps/JiraUpdate/JiraUpdate'
+import { ServiceNowUpdate } from '@pipeline/components/PipelineSteps/Steps/ServiceNowUpdate/ServiceNowUpdate'
 
 class PipelineStepFactory extends AbstractStepFactory {
   protected type = 'pipeline-factory'
@@ -31,6 +33,7 @@ factory.registerStep(new JiraApproval())
 factory.registerStep(new JiraCreate())
 factory.registerStep(new JiraUpdate())
 factory.registerStep(new ServiceNowApproval())
-
+factory.registerStep(new ServiceNowCreate())
+factory.registerStep(new ServiceNowUpdate())
 // build steps
 export default factory

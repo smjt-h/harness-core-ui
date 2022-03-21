@@ -205,6 +205,16 @@ serviceNowApprovalStep:
     connectorRef: ServiceNow Connector is required
     ticketType: Ticket Type is required
     issueNumber: Ticket Number is required
+serviceNowCreateStep:
+  fieldType:
+    configureFields: Configure Fields
+    createFromTemplate: Create From Template
+  selectFieldListHelp: Select the issue type to list available fields to choose from.
+  addFields: Add ServiceNow Fields
+serviceNowUpdateStep:
+  fieldType:
+    applyFromTemplate: Apply standard change from template
+    updateFields: Update Fields
 manifestType:
   manifestTyperequired: Manifest Type is required
   gitConnectorLabel: 'Git'

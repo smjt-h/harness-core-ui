@@ -2833,6 +2833,12 @@ export interface StringsMap {
   'pipeline.serviceNowApprovalStep.validations.connectorRef': string
   'pipeline.serviceNowApprovalStep.validations.issueNumber': string
   'pipeline.serviceNowApprovalStep.validations.ticketType': string
+  'pipeline.serviceNowCreateStep.addFields': string
+  'pipeline.serviceNowCreateStep.fieldType.configureFields': string
+  'pipeline.serviceNowCreateStep.fieldType.createFromTemplate': string
+  'pipeline.serviceNowCreateStep.selectFieldListHelp': string
+  'pipeline.serviceNowUpdateStep.fieldType.applyFromTemplate': string
+  'pipeline.serviceNowUpdateStep.fieldType.updateFields': string
   'pipeline.singleStageExecution': string
   'pipeline.sslVerify': string
   'pipeline.stageDependencyError': string
