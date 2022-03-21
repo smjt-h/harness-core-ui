@@ -25,28 +25,28 @@
             <div class='fl pad1y space-right2'>
                 <span class="strong">100% </span>
                 <span class="quiet">Statements</span>
-                <span class='fraction'>23/23</span>
+                <span class='fraction'>25/25</span>
             </div>
         
             
             <div class='fl pad1y space-right2'>
-                <span class="strong">83.33% </span>
+                <span class="strong">82.35% </span>
                 <span class="quiet">Branches</span>
-                <span class='fraction'>25/30</span>
+                <span class='fraction'>28/34</span>
             </div>
         
             
             <div class='fl pad1y space-right2'>
                 <span class="strong">100% </span>
                 <span class="quiet">Functions</span>
-                <span class='fraction'>3/3</span>
+                <span class='fraction'>4/4</span>
             </div>
         
             
             <div class='fl pad1y space-right2'>
                 <span class="strong">100% </span>
                 <span class="quiet">Lines</span>
-                <span class='fraction'>23/23</span>
+                <span class='fraction'>25/25</span>
             </div>
         
             
@@ -134,7 +134,11 @@
 <a name='L75'></a><a href='#L75'>75</a>
 <a name='L76'></a><a href='#L76'>76</a>
 <a name='L77'></a><a href='#L77'>77</a>
-<a name='L78'></a><a href='#L78'>78</a></td><td class="line-coverage quiet"><span class="cline-any cline-neutral">&nbsp;</span>
+<a name='L78'></a><a href='#L78'>78</a>
+<a name='L79'></a><a href='#L79'>79</a>
+<a name='L80'></a><a href='#L80'>80</a>
+<a name='L81'></a><a href='#L81'>81</a>
+<a name='L82'></a><a href='#L82'>82</a></td><td class="line-coverage quiet"><span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
@@ -162,6 +166,16 @@
 <span class="cline-any cline-yes">18x</span>
 <span class="cline-any cline-yes">18x</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">18x</span>
+<span class="cline-any cline-yes">11x</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
@@ -172,9 +186,8 @@
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">18x</span>
+<span class="cline-any cline-yes">11x</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
@@ -183,11 +196,6 @@
 <span class="cline-any cline-yes">1x</span>
 <span class="cline-any cline-yes">1x</span>
 <span class="cline-any cline-yes">1x</span>
-<span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-yes">18x</span>
-<span class="cline-any cline-yes">11x</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
@@ -218,7 +226,7 @@
  * https://polyformproject.org/wp-content/uploads/2020/06/PolyForm-Shield-1.0.0.txt.
  */
 &nbsp;
-import React, { useEffect, useState } from 'react'
+import React, { useEffect, useState, useMemo } from 'react'
 import { useParams } from 'react-router-dom'
 import { isEmpty } from 'lodash-es'
 import { Container, Text } from '@wings-software/uicore'
@@ -239,6 +247,16 @@ export default function HealthScoreChart(props: HealthScoreChartProps): JSX.Elem
   const { orgIdentifier, projectIdentifier, accountId } = useParams&lt;ProjectPathProps&gt;()
   const [seriesData, setSeriesData] = useState&lt;ColumnData[]&gt;([])
 &nbsp;
+  const queryParams = useMemo(() =&gt; {
+    return {
+      accountId,
+      projectIdentifier,
+      orgIdentifier,
+      duration: duration<span class="branch-0 cbranch-no" title="branch not covered" >?.v</span>alue as TimePeriodEnum,
+      endTime: endTime || Date.now()
+    }
+  }, [duration<span class="branch-0 cbranch-no" title="branch not covered" >?.v</span>alue, endTime])
+&nbsp;
   const {
     data: healthScoreDataWithMSIdentifier,
     refetch: fetchHealthScoreWithMSIdentifier,
@@ -246,14 +264,13 @@ export default function HealthScoreChart(props: HealthScoreChartProps): JSX.Elem
     error: healthScoreDataWithMSIdentifierError
   } = useGetMonitoredServiceOverAllHealthScore({
     identifier: monitoredServiceIdentifier,
-    queryParams: {
-      accountId,
-      orgIdentifier,
-      projectIdentifier,
-      duration: duration<span class="branch-0 cbranch-no" title="branch not covered" >?.v</span>alue as TimePeriodEnum,
-      endTime: endTime || Date.now()
-    }
+    queryParams
   })
+&nbsp;
+  useEffect(() =&gt; {
+    handleHealthScoreData(healthScoreDataWithMSIdentifier)
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [healthScoreDataWithMSIdentifier])
 &nbsp;
   const handleHealthScoreData = (healthScoreData: ResponseHistoricalTrend | null): void =&gt; {
     if (healthScoreData<span class="branch-0 cbranch-no" title="branch not covered" >?.d</span>ata?.healthScores &amp;&amp; !isEmpty(healthScoreData<span class="branch-0 cbranch-no" title="branch not covered" >?.d</span>ata<span class="branch-0 cbranch-no" title="branch not covered" >?.h</span>ealthScores)) {
@@ -262,11 +279,6 @@ export default function HealthScoreChart(props: HealthScoreChartProps): JSX.Elem
       setHealthScoreData<span class="branch-0 cbranch-no" title="branch not covered" >?.(h</span>ealthScoreData.data.healthScores)
     }
   }
-&nbsp;
-  useEffect(() =&gt; {
-    handleHealthScoreData(healthScoreDataWithMSIdentifier)
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [healthScoreDataWithMSIdentifier])
 &nbsp;
   return (
     &lt;Container className={css.main}&gt;
@@ -295,7 +307,7 @@ export default function HealthScoreChart(props: HealthScoreChartProps): JSX.Elem
             <div class='footer quiet pad2 space-top1 center small'>
                 Code coverage generated by
                 <a href="https://istanbul.js.org/" target="_blank">istanbul</a>
-                at Mon Mar 21 2022 06:41:00 GMT+0000 (Greenwich Mean Time)
+                at Mon Mar 21 2022 10:56:26 GMT+0000 (Greenwich Mean Time)
             </div>
         </div>
         <script src="../../../../../../../../prettify.js"></script>
