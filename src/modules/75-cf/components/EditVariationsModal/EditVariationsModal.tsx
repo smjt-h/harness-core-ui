@@ -26,6 +26,9 @@ import {
   Icon
 } from '@wings-software/uicore'
 import { useModalHook } from '@harness/use-modal'
+import type { GovernanceMetadata } from 'services/pipeline-ng'
+import { EvaluationModal } from '@governance/EvaluationModal'
+import { useFeatureFlags } from '@common/hooks/useFeatureFlag'
 import { getErrorMessage, useValidateVariationValues } from '@cf/utils/CFUtils'
 import { useStrings } from 'framework/strings'
 import { useToaster } from '@common/exports'
@@ -77,6 +80,10 @@ export const EditVariationsModal: React.FC<EditVariationsModalProps> = ({
     const { getString } = useStrings()
     const validateVariationValues = useValidateVariationValues()
     const { showError, clear } = useToaster()
+    const { OPA_FF_GOVERNANCE } = useFeatureFlags()
+    const [governanceMetadata, setGovernanceMetadata] = useState<GovernanceMetadata>()
+    const shouldShowGovernanceEvaluation =
+      OPA_FF_GOVERNANCE && (governanceMetadata?.status === 'error' || governanceMetadata?.status === 'warning')
 
     const { mutate: submitPatch, loading: patchLoading } = usePatchFeature({
       identifier: feature.identifier as string,
@@ -182,7 +189,11 @@ export const EditVariationsModal: React.FC<EditVariationsModalProps> = ({
           if (error.status === GIT_SYNC_ERROR_CODE) {
             gitSync.handleError(error.data as GitSyncErrorResponse)
           } else {
-            showError(getErrorMessage(error), 0, 'cf.submit.patch.error')
+            if (error?.data?.details?.governanceMetadata) {
+              setGovernanceMetadata(error?.data?.details?.governanceMetadata)
+            } else {
+              showError(getErrorMessage(error), 0, 'cf.submit.patch.error')
+            }
             patch.feature.reset()
           }
         }
@@ -367,6 +378,15 @@ export const EditVariationsModal: React.FC<EditVariationsModalProps> = ({
             </Form>
           )}
         </Formik>
+        {shouldShowGovernanceEvaluation && (
+          <EvaluationModal
+            accountId={accountIdentifier}
+            key={governanceMetadata?.id}
+            module={'cf'}
+            metadata={governanceMetadata}
+            headingErrorMessage={getString('cf.policyEvaluations.failedToSave')}
+          />
+        )}
       </Dialog>
     )
   }
