@@ -270,6 +270,8 @@ export const stepsData = {
   },
   'Canary Delete': { resourceName: [] },
   'Rolling Deployment': { resourceName: [] },
+  'Canary Deployment': { resourceName: [] },
+  Scale: { resourceName: [{ type: 'resource', name: 'spec.workload', value: 'resource' }] },
   'Rolling Rollback': { resourceName: [] },
   'Shell Script': {
     resourceName: [{ type: 'className', name: '.monaco-editor textarea:first', value: 'echo 1' }]
