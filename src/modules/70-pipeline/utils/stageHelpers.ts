@@ -22,7 +22,8 @@ export enum StageType {
   PIPELINE = 'Pipeline',
   APPROVAL = 'Approval',
   CUSTOM = 'Custom',
-  Template = 'Template'
+  Template = 'Template',
+  SECURITY = 'Security'
 }
 
 export enum ServiceDeploymentType {

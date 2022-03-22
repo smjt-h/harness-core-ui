@@ -6,8 +6,9 @@
  */
 
 import React, { useCallback, useEffect, useState } from 'react'
-import { Color, StepWizard, useToaster } from '@wings-software/uicore'
+import { StepWizard, useToaster } from '@wings-software/uicore'
 import { useModalHook } from '@harness/use-modal'
+import { Color } from '@harness/design-system'
 import cx from 'classnames'
 import { useParams } from 'react-router-dom'
 

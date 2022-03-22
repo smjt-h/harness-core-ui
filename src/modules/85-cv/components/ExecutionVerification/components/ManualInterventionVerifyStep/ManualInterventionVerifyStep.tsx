@@ -7,7 +7,8 @@
 
 import React, { useEffect } from 'react'
 import { useParams } from 'react-router-dom'
-import { Container, Text, SelectOption, useToaster, Color, Select } from '@wings-software/uicore'
+import { Container, Text, SelectOption, useToaster, Select } from '@wings-software/uicore'
+import { Color } from '@harness/design-system'
 import cx from 'classnames'
 import {
   useHandleManualInterventionInterrupt,

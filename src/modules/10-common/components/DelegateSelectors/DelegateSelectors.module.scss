@@ -8,6 +8,8 @@
 .wrapper {
   position: relative;
   flex-shrink: 1 !important;
+  width: 200px;
+  margin-right: var(--spacing-small);
 
   .loader {
     display: flex;
