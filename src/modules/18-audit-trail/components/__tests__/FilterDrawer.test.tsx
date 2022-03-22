@@ -55,7 +55,7 @@ describe('<FilterDrawer />', () => {
     expect(filterDrawer).toMatchSnapshot()
   })
 
-  test('apply filter', async done => {
+  test('apply filter', async () => {
     const applyFilter = jest.fn()
     render(
       <TestWrapper path={routes.toAuditTrail({ ...accountPathProps })} pathParams={{ accountId: 'testAcc' }}>
@@ -75,12 +75,11 @@ describe('<FilterDrawer />', () => {
     )
     const applyBtn = getByText(document.body, 'filters.apply')
     fireEvent.click(applyBtn)
-    setTimeout(() => {
+    await setTimeout(() => {
       expect(applyFilter).toBeCalled()
-      done()
     })
   })
-  test('apply filter', async done => {
+  test('apply filter', async () => {
     const selectFilter = jest.fn()
     render(
       <TestWrapper path={routes.toAuditTrail({ ...accountPathProps })} pathParams={{ accountId: 'testAcc' }}>
@@ -97,17 +96,16 @@ describe('<FilterDrawer />', () => {
     )
     const clearAllBtn = getByText(document.body, 'filters.clearAll')
     fireEvent.click(clearAllBtn)
-    setTimeout(() => {
+    await setTimeout(() => {
       expect(selectFilter).toBeCalledWith({
         name: UNSAVED_FILTER,
         identifier: StringUtils.getIdentifierFromName(UNSAVED_FILTER),
         filterProperties: {}
       })
-      done()
     })
   })
 
-  test('select filter', async done => {
+  test('select filter', async () => {
     const selectFilter = jest.fn()
     render(
       <TestWrapper path={routes.toAuditTrail({ ...accountPathProps })} pathParams={{ accountId: 'testAcc' }}>
@@ -125,7 +123,7 @@ describe('<FilterDrawer />', () => {
     const filters = document.getElementsByClassName('filters')
     const firstItem = filters[0].firstChild
     firstItem && fireEvent.click(firstItem)
-    setTimeout(() => {
+    await setTimeout(() => {
       expect(selectFilter).toBeCalledWith({
         filterProperties: {
           actions: ['CREATE'],
@@ -145,7 +143,6 @@ describe('<FilterDrawer />', () => {
         orgIdentifier: null,
         projectIdentifier: null
       })
-      done()
     })
   })
 })
