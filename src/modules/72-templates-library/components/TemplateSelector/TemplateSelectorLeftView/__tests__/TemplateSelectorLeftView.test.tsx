@@ -187,7 +187,7 @@ describe('<TemplateSelectorLeftView> tests', () => {
 
     expect(container).toMatchSnapshot()
 
-    waitFor(() => getByText(container, 'Retry'))
+    await waitFor(() => getByText(container, 'Retry'))
 
     act(() => {
       fireEvent.click(getByText(container, 'Retry'))

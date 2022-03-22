@@ -60,7 +60,7 @@ jest.mock('services/lw', () => ({
 
 describe('AWS Access Point Configuration screen first', () => {
   // eslint-disable-next-line jest/no-disabled-tests
-  test('render and fill form', () => {
+  test('render and fill form', async () => {
     const { container } = render(
       <TestWrapper pathParams={params}>
         <LBFormStepFirst
@@ -78,14 +78,14 @@ describe('AWS Access Point Configuration screen first', () => {
 
     const nameInput = container.querySelector('input[name="lbName"]') as HTMLInputElement
     expect(nameInput).toBeDefined()
-    waitFor(() => {
+    await waitFor(() => {
       fireEvent.change(nameInput, { target: { value: 'AWS AP' } })
     })
     expect(nameInput.value).toBe('AWS AP')
 
     const customDomainInput = container.querySelector('input[name="customDomainPrefix"]') as HTMLInputElement
     expect(customDomainInput).toBeDefined()
-    waitFor(() => {
+    await waitFor(() => {
       fireEvent.change(customDomainInput, { target: { value: 'test.lwtest.com' } })
     })
     expect(customDomainInput.value).toBe('test.lwtest.com')

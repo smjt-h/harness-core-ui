@@ -30,19 +30,19 @@ jest.mock('resize-observer-polyfill', () => {
 })
 
 describe('Test Diagram App', () => {
-  test('should test basic snapshot', () => {
+  test('should test basic snapshot', async () => {
     const { container } = render(
       <TestWrapper>
         <DiagramDemo />
       </TestWrapper>
     )
-    waitFor(() => expect(container.querySelector('.bp3-active [data-icon="execution"]')))
+    await waitFor(() => expect(container.querySelector('.bp3-active [data-icon="execution"]')))
     expect(container).toMatchSnapshot()
     const rollbackBtn = container.querySelector('[data-icon="rollback-execution"]')
     fireEvent.click(rollbackBtn!)
-    waitFor(() => expect(container.querySelector('.bp3-active [data-icon="rollback-execution"]')))
+    await waitFor(() => expect(container.querySelector('.bp3-active [data-icon="rollback-execution"]')))
     const executionBtn = container.querySelector('[data-icon="execution"]')
     fireEvent.click(executionBtn!)
-    waitFor(() => expect(container.querySelector('.bp3-active [data-icon="execution"]')))
+    await waitFor(() => expect(container.querySelector('.bp3-active [data-icon="execution"]')))
   })
 })

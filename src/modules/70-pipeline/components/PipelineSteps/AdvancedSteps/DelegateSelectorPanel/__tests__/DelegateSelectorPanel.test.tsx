@@ -58,7 +58,7 @@ describe('<DelegateSelectorPanel /> test', () => {
     expect(container).toMatchSnapshot()
   })
 
-  test('should be able to select multiple tags from delegate selector', () => {
+  test('should be able to select multiple tags from delegate selector', async () => {
     const { container } = render(
       <WrapperComponent initialValues={{ delegateSelectors: ['harness-sample-k8s-delegate'] }} />
     )
@@ -70,6 +70,6 @@ describe('<DelegateSelectorPanel /> test', () => {
     expect(overlay).not.toBeUndefined()
     const option = getByText(container, 'Create "new-tag"')
     expect(container).toMatchSnapshot()
-    waitFor(() => fireEvent.click(option))
+    await waitFor(() => fireEvent.click(option))
   })
 })

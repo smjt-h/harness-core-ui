@@ -91,7 +91,7 @@ describe('FlagActivation', () => {
     expect(document.getElementsByName('onVariation')[0]).toBeInTheDocument()
 
     userEvent.click(document.getElementsByName('onVariation')[0])
-    userEvent.click(screen.getByText('False'))
+    await waitFor(() => userEvent.click(screen.getByText('False')))
 
     expect(document.getElementsByName('onVariation')[0]).toHaveValue('False')
     expect(screen.getByText('save')).toBeInTheDocument()

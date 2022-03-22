@@ -7,7 +7,7 @@
 
 import React from 'react'
 import { get } from 'lodash-es'
-import { render, RenderResult, screen } from '@testing-library/react'
+import { render, RenderResult, screen, waitFor } from '@testing-library/react'
 import userEvent from '@testing-library/user-event'
 import { Formik } from '@wings-software/uicore'
 import { TestWrapper } from '@common/utils/testUtils'
@@ -61,7 +61,7 @@ describe('SetFlagSwitch', () => {
     expect(input).not.toHaveValue()
 
     userEvent.click(input)
-    userEvent.click(screen.getByText('common.ON'))
+    await waitFor(() => userEvent.click(screen.getByText('common.ON')))
 
     expect(get(formValues, prefixInstructionField('spec.state'))).toBe('on')
 

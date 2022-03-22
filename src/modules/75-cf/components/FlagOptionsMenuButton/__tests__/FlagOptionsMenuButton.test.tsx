@@ -58,7 +58,7 @@ describe('FlagOptionsButton', () => {
     renderComponent()
 
     userEvent.click(document.querySelector('[data-icon="Options"]') as HTMLButtonElement)
-    userEvent.click(document.querySelector('[data-icon="trash"]') as HTMLButtonElement)
+    await waitFor(() => userEvent.click(document.querySelector('[data-icon="trash"]') as HTMLButtonElement))
 
     expect(screen.getByText('cf.featureFlags.deleteFlag')).toBeInTheDocument()
     expect(screen.getByText('cf.featureFlags.deleteFlagMessage')).toBeInTheDocument()
@@ -87,7 +87,7 @@ describe('FlagOptionsButton', () => {
     renderComponent({ deleteFlag: deleteFlagMock })
 
     userEvent.click(document.querySelector('[data-icon="Options"]') as HTMLButtonElement)
-    userEvent.click(document.querySelector('[data-icon="trash"]') as HTMLButtonElement)
+    await waitFor(() => userEvent.click(document.querySelector('[data-icon="trash"]') as HTMLButtonElement))
 
     expect(screen.getByRole('button', { name: 'delete' })).toBeInTheDocument()
 
@@ -110,7 +110,7 @@ describe('FlagOptionsButton', () => {
     renderComponent({ deleteFlag: deleteFlagMock, gitSync: mockGitSync })
 
     userEvent.click(document.querySelector('[data-icon="Options"]') as HTMLButtonElement)
-    userEvent.click(document.querySelector('[data-icon="trash"]') as HTMLButtonElement)
+    await waitFor(() => userEvent.click(document.querySelector('[data-icon="trash"]') as HTMLButtonElement))
 
     expect(screen.getByRole('button', { name: 'delete' })).toBeInTheDocument()
 
@@ -125,7 +125,7 @@ describe('FlagOptionsButton', () => {
     renderComponent({ deleteFlag: deleteFlagMock, gitSync: mockGitSync })
 
     userEvent.click(document.querySelector('[data-icon="Options"]') as HTMLButtonElement)
-    userEvent.click(document.querySelector('[data-icon="trash"]') as HTMLButtonElement)
+    await waitFor(() => userEvent.click(document.querySelector('[data-icon="trash"]') as HTMLButtonElement))
 
     expect(screen.getByRole('button', { name: 'delete' })).toBeInTheDocument()
 
@@ -146,7 +146,7 @@ describe('FlagOptionsButton', () => {
     })
 
     userEvent.click(document.querySelector('[data-icon="Options"]') as HTMLButtonElement)
-    userEvent.click(document.querySelector('[data-icon="trash"]') as HTMLButtonElement)
+    await waitFor(() => userEvent.click(document.querySelector('[data-icon="trash"]') as HTMLButtonElement))
 
     expect(screen.getByRole('button', { name: 'delete' })).toBeInTheDocument()
 
@@ -169,7 +169,7 @@ describe('FlagOptionsButton', () => {
     renderComponent({ deleteFlag: deleteFlagMock, gitSync: mockGitSync })
 
     userEvent.click(document.querySelector('[data-icon="Options"]') as HTMLButtonElement)
-    userEvent.click(document.querySelector('[data-icon="trash"]') as HTMLButtonElement)
+    await waitFor(() => userEvent.click(document.querySelector('[data-icon="trash"]') as HTMLButtonElement))
 
     expect(screen.getByRole('button', { name: 'delete' })).toBeInTheDocument()
 
@@ -202,7 +202,7 @@ describe('FlagOptionsButton', () => {
     renderComponent({ deleteFlag: deleteFlagMock, gitSync: mockGitSync })
 
     userEvent.click(document.querySelector('[data-icon="Options"]') as HTMLButtonElement)
-    userEvent.click(document.querySelector('[data-icon="trash"]') as HTMLButtonElement)
+    await waitFor(() => userEvent.click(document.querySelector('[data-icon="trash"]') as HTMLButtonElement))
 
     expect(screen.getByRole('button', { name: 'delete' })).toBeInTheDocument()
 
@@ -236,7 +236,7 @@ describe('FlagOptionsButton', () => {
     renderComponent({ deleteFlag: deleteFlagMock, gitSync: { ...mockGitSync, handleAutoCommit: handleAutoCommitMock } })
 
     userEvent.click(document.querySelector('[data-icon="Options"]') as HTMLButtonElement)
-    userEvent.click(document.querySelector('[data-icon="trash"]') as HTMLButtonElement)
+    await waitFor(() => userEvent.click(document.querySelector('[data-icon="trash"]') as HTMLButtonElement))
 
     expect(screen.getByRole('button', { name: 'delete' })).toBeInTheDocument()
 

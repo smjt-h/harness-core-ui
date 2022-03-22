@@ -55,7 +55,7 @@ describe('SLOCardHeader', () => {
 
     expect(document.querySelector('[icon="edit"]')).toBeInTheDocument()
 
-    userEvent.click(document.querySelector('[icon="edit"]')!)
+    await waitFor(() => userEvent.click(document.querySelector('[icon="edit"]')!))
 
     expect(
       screen.getByText(
@@ -64,14 +64,14 @@ describe('SLOCardHeader', () => {
     ).toBeInTheDocument()
   })
 
-  test('it should have monitored service identifier query param when edit from MS details page', () => {
+  test('it should have monitored service identifier query param when edit from MS details page', async () => {
     const { container } = render(<ComponentWrapper monitoredServiceIdentifier="monitored_service_identifier" />)
 
     userEvent.click(container.querySelector('[data-icon="Options"]')!)
 
     expect(document.querySelector('[icon="edit"]')).toBeInTheDocument()
 
-    userEvent.click(document.querySelector('[icon="edit"]')!)
+    await waitFor(() => userEvent.click(document.querySelector('[icon="edit"]')!))
 
     expect(
       screen.getByText(
@@ -92,7 +92,7 @@ describe('SLOCardHeader', () => {
 
     expect(getByText(popover!, 'delete')).toBeInTheDocument()
 
-    userEvent.click(getByText(popover!, 'delete'))
+    await waitFor(() => userEvent.click(getByText(popover!, 'delete')))
 
     const dialogContainer = findDialogContainer()
 
@@ -147,7 +147,7 @@ describe('SLOCardHeader', () => {
 
     expect(getByText(popover!, 'cv.resetErrorBudget')).toBeInTheDocument()
 
-    userEvent.click(getByText(popover!, 'cv.resetErrorBudget'))
+    await waitFor(() => userEvent.click(getByText(popover!, 'cv.resetErrorBudget')))
 
     const dialogContainer = findDialogContainer()
 

@@ -137,7 +137,7 @@ describe('Unit tests for ErrorTrackingAnalysisContainer', () => {
     await waitFor(() => expect(getAllByText('Unknown')).toHaveLength(unknownClusterTypeMockedData.length))
   })
 
-  test('it should not pass field clusterTypes to BE for event type All', () => {
+  test('it should not pass field clusterTypes to BE for event type All', async () => {
     let useGetAllLogsClusterDataQueryParams: cvServices.GetAllLogsClusterDataQueryParams | undefined
     let useGetAllLogsDataQueryParams: cvServices.GetAllLogsDataQueryParams | undefined
 
@@ -170,7 +170,7 @@ describe('Unit tests for ErrorTrackingAnalysisContainer', () => {
     expect(useGetAllLogsDataQueryParams?.clusterTypes).toEqual([ErrorTrackingEvents.UNKNOWN])
 
     userEvent.click(clusterTypeFilterDropdown)
-    userEvent.click(screen.getByText('pipeline.verification.logs.allEvents'))
+    await waitFor(() => userEvent.click(screen.getByText('pipeline.verification.logs.allEvents')))
 
     expect(clusterTypeFilterDropdown.value).toBe('pipeline.verification.logs.allEvents')
     expect(useGetAllLogsClusterDataQueryParams).not.toHaveProperty('clusterTypes')

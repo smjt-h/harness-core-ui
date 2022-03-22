@@ -6,7 +6,7 @@
  */
 
 import React from 'react'
-import { render, screen } from '@testing-library/react'
+import { render, screen, waitFor } from '@testing-library/react'
 import userEvent from '@testing-library/user-event'
 import { TestWrapper } from '@common/utils/testUtils'
 import GitSyncActions, { GitSyncActionsProps } from '../GitSyncActions'
@@ -102,7 +102,7 @@ describe('GitSyncActions', () => {
     renderComponent({ handleToggleAutoCommit: handleAutoCommitMock })
 
     userEvent.click(screen.getByText('test branch'))
-    userEvent.click(screen.getByTestId('auto-commit-switch'))
+    await waitFor(() => userEvent.click(screen.getByTestId('auto-commit-switch')))
 
     expect(handleAutoCommitMock).toBeCalledWith(true)
   })
@@ -113,7 +113,7 @@ describe('GitSyncActions', () => {
     renderComponent({ handleToggleAutoCommit: handleAutoCommitMock, isAutoCommitEnabled: true })
 
     userEvent.click(screen.getByText('test branch'))
-    userEvent.click(screen.getByTestId('auto-commit-switch'))
+    await waitFor(() => userEvent.click(screen.getByTestId('auto-commit-switch')))
 
     expect(handleAutoCommitMock).toBeCalledWith(false)
   })
@@ -124,7 +124,7 @@ describe('GitSyncActions', () => {
     renderComponent({ handleGitPause: handleGitPauseMock, isGitSyncPaused: true })
 
     userEvent.click(screen.getByText('test branch'))
-    userEvent.click(screen.getByTestId('toggle-git-sync-pause-switch'))
+    await waitFor(() => userEvent.click(screen.getByTestId('toggle-git-sync-pause-switch')))
 
     expect(handleGitPauseMock).toBeCalledWith(true)
   })
@@ -135,7 +135,7 @@ describe('GitSyncActions', () => {
     renderComponent({ handleGitPause: handleGitPauseMock, isGitSyncPaused: false })
 
     userEvent.click(screen.getByText('test branch'))
-    userEvent.click(screen.getByTestId('toggle-git-sync-pause-switch'))
+    await waitFor(() => userEvent.click(screen.getByTestId('toggle-git-sync-pause-switch')))
 
     expect(handleGitPauseMock).toBeCalledWith(false)
   })

@@ -221,7 +221,7 @@ describe('FlagChangesForm', () => {
     expect(screen.queryByTestId('flagChanges-servePercentageRollout')).not.toBeInTheDocument()
 
     userEvent.click(getByRole(setFlagSwitchSubSection, 'button'))
-    userEvent.click(screen.getByText('cf.pipeline.flagConfiguration.servePercentageRollout'))
+    await waitFor(() => userEvent.click(screen.getByText('cf.pipeline.flagConfiguration.servePercentageRollout')))
 
     await waitFor(() => {
       expect(setFlagSwitchSubSection).not.toBeInTheDocument()
