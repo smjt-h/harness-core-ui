@@ -39,7 +39,8 @@ import type {
   PipelineType,
   GitQueryParams,
   PipelineStudioQueryParams,
-  RunPipelineQueryParams
+  RunPipelineQueryParams,
+  UseTemplateQueryParams
 } from '@common/interfaces/RouteInterfaces'
 import RbacButton from '@rbac/components/Button/Button'
 import { ResourceType } from '@rbac/interfaces/ResourceType'
@@ -69,17 +70,23 @@ import NoEntityFound from '@pipeline/pages/utils/NoEntityFound/NoEntityFound'
 import { getFeaturePropsForRunPipelineButton } from '@pipeline/utils/runPipelineUtils'
 import { RunPipelineForm } from '@pipeline/components/RunPipelineModal/RunPipelineForm'
 import { EvaluationModal } from '@governance/EvaluationModal'
-import { createTemplate } from '@pipeline/utils/templateUtils'
+import { createTemplate, getScopeBasedTemplateRef } from '@pipeline/utils/templateUtils'
 import { getStepFromStage, validateCICodebaseConfiguration } from '@pipeline/components/PipelineStudio/StepUtil'
 import { updateStepWithinStage } from '@pipeline/components/PipelineStudio/RightDrawer/RightDrawer'
 import type { TemplateSummaryResponse } from 'services/template-ng'
+import StageBuilder from '@pipeline/components/PipelineStudio/StageBuilder/StageBuilder'
+import { TemplatePipelineBuilder } from '@pipeline/components/PipelineStudio/PipelineTemplateBuilder/TemplatePipelineBuilder/TemplatePipelineBuilder'
 import { savePipeline, usePipelineContext } from '../PipelineContext/PipelineContext'
 import CreatePipelines from '../CreateModal/PipelineCreate'
 import PipelineErrors from './PipelineErrors/PipelineErrors'
-import { DefaultNewPipelineId, DrawerTypes, SplitViewTypes } from '../PipelineContext/PipelineActions'
+import {
+  DefaultNewPipelineId,
+  DrawerTypes,
+  SplitViewTypes,
+  TemplateDrawerTypes
+} from '../PipelineContext/PipelineActions'
 import PipelineYamlView from '../PipelineYamlView/PipelineYamlView'
 import { RightBar } from '../RightBar/RightBar'
-import StageBuilder from '../StageBuilder/StageBuilder'
 import { usePipelineSchema } from '../PipelineSchema/PipelineSchemaContext'
 import StudioGitPopover from '../StudioGitPopover'
 import css from './PipelineCanvas.module.scss'
@@ -138,7 +145,8 @@ export function PipelineCanvas({
     state: {
       selectionState: { selectedStageId },
       templateTypes,
-      pipelineView: { drawerData }
+      pipelineView: { drawerData },
+      templateView: { isTemplateDrawerOpened }
     },
     updatePipeline,
     updateGitDetails,
@@ -150,6 +158,7 @@ export function PipelineCanvas({
     isReadonly,
     updateStage,
     updatePipelineView,
+    updateTemplateView,
     setSelectedStageId,
     setSelectedSectionId,
     getStageFromPipeline,
@@ -166,8 +175,9 @@ export function PipelineCanvas({
     inputSetLabel,
     inputSetRepoIdentifier,
     inputSetBranch,
-    stagesExecuted
-  } = useQueryParams<GitQueryParams & RunPipelineQueryParams>()
+    stagesExecuted,
+    useTemplate
+  } = useQueryParams<GitQueryParams & RunPipelineQueryParams & UseTemplateQueryParams>()
   const { updateQueryParams, replaceQueryParams } = useUpdateQueryParams<PipelineStudioQueryParams>()
   const { trackEvent } = useTelemetry()
   const [updatePipelineAPIResponse, setUpdatePipelineAPIResponse] = React.useState<any>()
@@ -582,6 +592,8 @@ export function PipelineCanvas({
     yamlHandler
   ])
 
+  const [selectedPipelineTemplate, setSelectedTemplate] = React.useState<TemplateSummaryResponse>()
+
   const [showModal, hideModal] = useModalHook(() => {
     if (getOtherModal) {
       pipeline.identifier = ''
@@ -618,12 +630,35 @@ export function PipelineCanvas({
               })}
               closeModal={onCloseCreate}
               gitDetails={gitDetails as IGitContextFormProps}
+              template={selectedPipelineTemplate}
             />
           </Dialog>
         </PipelineVariablesContextProvider>
       )
     }
-  }, [pipeline?.identifier, pipeline])
+  }, [pipeline?.identifier, pipeline, selectedPipelineTemplate])
+
+  const openTemplateSelector = React.useCallback(() => {
+    updateTemplateView({
+      isTemplateDrawerOpened: true,
+      templateDrawerData: {
+        type: TemplateDrawerTypes.UseTemplate,
+        data: {
+          selectorData: {
+            templateType: 'Pipeline',
+            onUseTemplate: (newTemplate: TemplateSummaryResponse, _isCopied?: boolean) => {
+              updateTemplateView({
+                isTemplateDrawerOpened: false,
+                templateDrawerData: { type: TemplateDrawerTypes.UseTemplate }
+              })
+              setSelectedTemplate(newTemplate)
+              showModal()
+            }
+          }
+        }
+      }
+    })
+  }, [updateTemplateView])
 
   React.useEffect(() => {
     // for new pipeline always use UI as default view
@@ -648,7 +683,13 @@ export function PipelineCanvas({
   React.useEffect(() => {
     if (isInitialized) {
       if (pipeline?.identifier === DefaultNewPipelineId) {
-        showModal()
+        if (useTemplate) {
+          if (!isTemplateDrawerOpened && !selectedPipelineTemplate) {
+            openTemplateSelector()
+          }
+        } else {
+          showModal()
+        }
       }
       if (isBEPipelineUpdated && !discardBEUpdateDialog) {
         openConfirmBEUpdateError()
@@ -662,6 +703,7 @@ export function PipelineCanvas({
     // eslint-disable-next-line react-hooks/exhaustive-deps
     pipeline?.identifier,
     showModal,
+    openTemplateSelector,
     isInitialized,
     isBEPipelineUpdated,
     openConfirmBEUpdateError,
@@ -700,14 +742,16 @@ export function PipelineCanvas({
   ])
 
   const onSubmit = React.useCallback(
-    (data: PipelineInfoConfig, updatedGitDetails?: EntityGitDetails) => {
+    (data: PipelineInfoConfig, updatedGitDetails?: EntityGitDetails, pipelineTemplate?: TemplateSummaryResponse) => {
       pipeline.name = data.name
       pipeline.description = data.description
-      pipeline.timeout = data.timeout
       pipeline.identifier = data.identifier
       pipeline.tags = data.tags ?? {}
-      if (isEmpty(pipeline.timeout)) {
-        delete pipeline.timeout
+      if (pipelineTemplate) {
+        set(pipeline, 'template.templateRef', getScopeBasedTemplateRef(pipelineTemplate))
+        if (pipelineTemplate.versionLabel) {
+          set(pipeline, 'template.versionLabel', pipelineTemplate.versionLabel)
+        }
       }
       delete (pipeline as PipelineWithGitContextFormProps).repo
       delete (pipeline as PipelineWithGitContextFormProps).branch
@@ -1092,7 +1136,7 @@ export function PipelineCanvas({
             </div>
           </div>
         </div>
-        {isYaml ? <PipelineYamlView /> : <StageBuilder />}
+        {isYaml ? <PipelineYamlView /> : pipeline.template ? <TemplatePipelineBuilder /> : <StageBuilder />}
         {shouldShowGovernanceEvaluation && (
           <EvaluationModal
             accountId={accountId}
