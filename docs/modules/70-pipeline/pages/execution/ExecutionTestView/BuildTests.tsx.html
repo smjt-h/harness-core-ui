@@ -23,16 +23,16 @@
         <div class='clearfix'>
             
             <div class='fl pad1y space-right2'>
-                <span class="strong">73.25% </span>
+                <span class="strong">72.5% </span>
                 <span class="quiet">Statements</span>
-                <span class='fraction'>115/157</span>
+                <span class='fraction'>116/160</span>
             </div>
         
             
             <div class='fl pad1y space-right2'>
-                <span class="strong">75.88% </span>
+                <span class="strong">75.46% </span>
                 <span class="quiet">Branches</span>
-                <span class='fraction'>368/485</span>
+                <span class='fraction'>372/493</span>
             </div>
         
             
@@ -44,9 +44,9 @@
         
             
             <div class='fl pad1y space-right2'>
-                <span class="strong">74.19% </span>
+                <span class="strong">73.42% </span>
                 <span class="quiet">Lines</span>
-                <span class='fraction'>115/155</span>
+                <span class='fraction'>116/158</span>
             </div>
         
             
@@ -689,7 +689,13 @@
 <a name='L630'></a><a href='#L630'>630</a>
 <a name='L631'></a><a href='#L631'>631</a>
 <a name='L632'></a><a href='#L632'>632</a>
-<a name='L633'></a><a href='#L633'>633</a></td><td class="line-coverage quiet"><span class="cline-any cline-neutral">&nbsp;</span>
+<a name='L633'></a><a href='#L633'>633</a>
+<a name='L634'></a><a href='#L634'>634</a>
+<a name='L635'></a><a href='#L635'>635</a>
+<a name='L636'></a><a href='#L636'>636</a>
+<a name='L637'></a><a href='#L637'>637</a>
+<a name='L638'></a><a href='#L638'>638</a>
+<a name='L639'></a><a href='#L639'>639</a></td><td class="line-coverage quiet"><span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
@@ -1006,6 +1012,10 @@
 <span class="cline-any cline-yes">7x</span>
 <span class="cline-any cline-yes">7x</span>
 <span class="cline-any cline-yes">7x</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">7x</span>
 <span class="cline-any cline-yes">7x</span>
 <span class="cline-any cline-yes">7x</span>
 <span class="cline-any cline-yes">7x</span>
@@ -1025,6 +1035,9 @@
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-yes">7x</span>
 <span class="cline-any cline-yes">7x</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
@@ -1052,7 +1065,6 @@
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-yes">7x</span>
-<span class="cline-any cline-no">&nbsp;</span>
 <span class="cline-any cline-no">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-yes">7x</span>
@@ -1637,6 +1649,10 @@ function BuildTests({ reportSummaryMock, testOverviewMock }: BuildTestsProps): R
   useEffect(() =&gt; {
     <span class="missing-if-branch" title="else path not taken" >E</span>if (reportInfoData &amp;&amp; testInfoData) {
       const uniqItems = uniqWith([...reportInfoData, ...testInfoData], isEqual)
+      <span class="missing-if-branch" title="if path not taken" >I</span>if (uniqItems<span class="branch-0 cbranch-no" title="branch not covered" >?.l</span>ength &lt; 1) {
+<span class="cstat-no" title="statement not covered" >        return </span>// no test results
+      }
+&nbsp;
       let uniqueStageIdOptions: SelectOption[] | any = [] // any includes additionally index for ordering below
       const uniqueStepIdOptionsFromStageKeyMap: { [key: string]: SelectOption[] | any } = {}
       const pipelineOrderedStagesMap: { [key: string]: number } = {}
@@ -1657,6 +1673,9 @@ function BuildTests({ reportSummaryMock, testOverviewMock }: BuildTestsProps): R
             label: `Step: ${step}`,
             value: step
           })
+<span class="cstat-no" title="statement not covered" >          if (!uniqueStepIdOptionsFromStageKeyMap[stage].includes(AllStepsOption)) {</span>
+<span class="cstat-no" title="statement not covered" >            uniqueStepIdOptionsFromStageKeyMap[stage].unshift(AllStepsOption)</span>
+          }
         } else <span class="missing-if-branch" title="else path not taken" >E</span>if (stage &amp;&amp; step) {
           uniqueStepIdOptionsFromStageKeyMap[stage] = [
             {
@@ -1684,7 +1703,6 @@ function BuildTests({ reportSummaryMock, testOverviewMock }: BuildTestsProps): R
         uniqueStepIdOptionsFromStageKeyMap[uniqueStageIdOptions[selectedStageIndex].value as string]
 &nbsp;
       <span class="missing-if-branch" title="if path not taken" >I</span>if (selectedStepOptions.length &gt; 1) {
-<span class="cstat-no" title="statement not covered" >        selectedStepOptions.unshift(AllStepsOption)</span>
 <span class="cstat-no" title="statement not covered" >        setSelectedStepId(selectedStepOptions[1])</span>
       } else {
         setSelectedStepId(selectedStepOptions[0])
@@ -1960,7 +1978,7 @@ export default BuildTests
             <div class='footer quiet pad2 space-top1 center small'>
                 Code coverage generated by
                 <a href="https://istanbul.js.org/" target="_blank">istanbul</a>
-                at Mon Mar 21 2022 22:32:02 GMT+0000 (Greenwich Mean Time)
+                at Tue Mar 22 2022 01:59:22 GMT+0000 (Greenwich Mean Time)
             </div>
         </div>
         <script src="../../../../../prettify.js"></script>
