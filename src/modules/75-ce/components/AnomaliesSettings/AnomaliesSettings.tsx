@@ -6,28 +6,22 @@
  */
 
 import React, { useState } from 'react'
-import {
-  Button,
-  ButtonVariation,
-  Color,
-  Container,
-  Icon,
-  Layout,
-  TableV2,
-  Text,
-  TextInput,
-  Label
-} from '@harness/uicore'
+import { Button, ButtonVariation, Color, Container, Icon, Layout, TableV2, Text } from '@harness/uicore'
 
 import cx from 'classnames'
+import { useStrings } from 'framework/strings'
+import useAnomaliesAlertDialog from '../AnomaliesAlert/AnomaliesAlertDialog'
 import css from './AnomaliesSettings.module.scss'
 
 const AlertsSection = () => {
+  const { getString } = useStrings()
+  const { openAnomaliesAlertModal } = useAnomaliesAlertDialog()
+
   const actionCell = () => {
     return (
       <Layout.Horizontal spacing="medium">
         <Icon name="Edit" size={16} color={Color.PRIMARY_6} />
-        <Icon name="main-delete" size={16} color={Color.PRIMARY_6} />
+        <Icon name="bin-main" size={16} color={Color.PRIMARY_6} />
       </Layout.Horizontal>
     )
   }
@@ -40,22 +34,29 @@ const AlertsSection = () => {
         border={{ bottom: true, color: Color.GREY_200 }}
         padding={{ bottom: 'medium' }}
       >
-        {'Alerts and notifications'}
+        {getString('ce.anomalyDetection.settings.heading')}
       </Text>
       <Text color={Color.PRIMARY_10} font={{ size: 'small' }} padding={{ bottom: 'large', top: 'medium' }}>
-        {'You can set up alerts for anomalies in perspectives or resources.'}
+        {getString('ce.anomalyDetection.settings.subtext')}
       </Text>
-      <Button text="Create New Alert" icon="plus" variation={ButtonVariation.PRIMARY} />
+      <Button
+        text={getString('ce.anomalyDetection.settings.newAlertBtn')}
+        icon="plus"
+        onClick={() => openAnomaliesAlertModal()}
+        variation={ButtonVariation.PRIMARY}
+      />
       <TableV2
         className={css.tableView}
+        minimal={true}
+        // Need to replace with useMemo
         columns={[
           {
-            Header: 'Perspective',
+            Header: getString('ce.anomalyDetection.settings.perspectiveNameColumn'),
             accessor: 'name',
-            width: '30%'
+            width: '45%'
           },
           {
-            Header: 'Anomaly Alerts to',
+            Header: getString('ce.anomalyDetection.tableHeaders.details'),
             accessor: 'age',
             width: '50%'
           },
@@ -83,76 +84,6 @@ const AlertsSection = () => {
             name: 'User 4'
           }
         ]}
-        onRowClick={function noRefCheck() {
-          // console.log("hello")
-        }}
-      />
-    </Container>
-  )
-}
-
-const WhitelistSection = () => {
-  const actionCell = () => {
-    return (
-      <Layout.Horizontal spacing="medium">
-        <a href="">{'Remove'}</a>
-      </Layout.Horizontal>
-    )
-  }
-
-  return (
-    <Container className={css.settingsContent} padding="large">
-      <Text
-        color={Color.PRIMARY_10}
-        font={{ size: 'normal', weight: 'semi-bold' }}
-        border={{ bottom: true, color: Color.GREY_200 }}
-        padding={{ bottom: 'medium' }}
-      >
-        {'Allowlist'}
-      </Text>
-      <Text color={Color.PRIMARY_10} font={{ size: 'small' }} padding={{ bottom: 'large', top: 'medium' }}>
-        {
-          'Allowlisting resouces exempts them from anomaly detection. You can add resources which might show known anomalies to this list.'
-        }
-      </Text>
-      <Layout.Horizontal className={css.resourceSearchWrapper} spacing="small">
-        <Layout.Vertical className={css.resourceSearchInput}>
-          <Label>{'Specify resource'}</Label>
-          <TextInput defaultValue="" />
-        </Layout.Vertical>
-        <Button text="Add to Allowlist" icon="plus" variation={ButtonVariation.PRIMARY} margin={{ top: 'small' }} />
-      </Layout.Horizontal>
-      <TableV2
-        className={css.tableView}
-        columns={[
-          {
-            Header: 'Allowlist',
-            accessor: 'name',
-            width: '75%'
-          },
-          {
-            Header: ' ',
-            Cell: actionCell,
-            width: '5%'
-          }
-        ]}
-        data={[
-          {
-            name: 'cluster/workload1'
-          },
-          {
-            name: 'project/product/SKU1'
-          },
-          {
-            name: 'cluster/workload2'
-          },
-          {
-            name: 'cluster/workload3'
-          }
-        ]}
-        onRowClick={function noRefCheck() {
-          // console.log("hello")
-        }}
       />
     </Container>
   )
@@ -164,14 +95,12 @@ interface settingsDrawerProps {
 
 const AnomaliesSettings: React.FC<settingsDrawerProps> = ({ hideDrawer }) => {
   const [activePanelId, setActivePanelId] = useState(1)
+  const { getString } = useStrings()
 
   const getActivePanel = (id: number) => {
     switch (id) {
       case 1:
         return <AlertsSection />
-
-      case 2:
-        return <WhitelistSection />
 
       default:
         return <AlertsSection />
@@ -193,7 +122,7 @@ const AnomaliesSettings: React.FC<settingsDrawerProps> = ({ hideDrawer }) => {
             icon="nav-settings"
             padding="large"
           >
-            {'Settings'}
+            {getString('ce.anomalyDetection.settings.options.header')}
           </Text>
           <Icon name="cross" size={16} color={Color.WHITE} onClick={() => hideDrawer()} />
         </Layout.Horizontal>
@@ -204,16 +133,7 @@ const AnomaliesSettings: React.FC<settingsDrawerProps> = ({ hideDrawer }) => {
               className={css.tabContent}
               onClick={() => updateActivePanel(1)}
             >
-              {'Alerts and notifications'}
-            </Text>
-          </li>
-          <li className={cx(css.listOptionItem, activePanelId === 2 && css.listOptionItemSelected)}>
-            <Text
-              font={{ size: 'normal', weight: 'semi-bold' }}
-              className={css.tabContent}
-              onClick={() => updateActivePanel(2)}
-            >
-              {'Allowlist'}
+              {getString('ce.anomalyDetection.settings.heading')}
             </Text>
           </li>
         </ul>

@@ -3354,11 +3354,28 @@ export interface StringsMap {
   'cd.workloadRequired': string
   'ce.allClusters': string
   'ce.allRegions': string
+  'ce.anomalyDetection.addAnoamlyAlertDesc': string
+  'ce.anomalyDetection.addNewAnomalyAlert': string
+  'ce.anomalyDetection.createNewAnomalyAlert': string
   'ce.anomalyDetection.filters.groupByCloudProvidersPlaceholder': string
   'ce.anomalyDetection.filters.groupByNoneLabel': string
   'ce.anomalyDetection.filters.groupByNonePlaceholder': string
   'ce.anomalyDetection.filters.groupByNoneValue': string
   'ce.anomalyDetection.filters.groupByPerspectivePlaceholder': string
+  'ce.anomalyDetection.notificationAlerts.addChannelBtn': string
+  'ce.anomalyDetection.notificationAlerts.alertChannelHeading': string
+  'ce.anomalyDetection.notificationAlerts.heading': string
+  'ce.anomalyDetection.notificationAlerts.notificationStep': string
+  'ce.anomalyDetection.notificationAlerts.notificationStepSubtext': string
+  'ce.anomalyDetection.notificationAlerts.overviewStep': string
+  'ce.anomalyDetection.notificationAlerts.selectPerspective': string
+  'ce.anomalyDetection.notificationAlerts.selectPerspectiveLabel': string
+  'ce.anomalyDetection.perspectiveCreateAnomalyAlertTitle': string
+  'ce.anomalyDetection.settings.heading': string
+  'ce.anomalyDetection.settings.newAlertBtn': string
+  'ce.anomalyDetection.settings.options.header': string
+  'ce.anomalyDetection.settings.perspectiveNameColumn': string
+  'ce.anomalyDetection.settings.subtext': string
   'ce.anomalyDetection.settingsBtn': string
   'ce.anomalyDetection.sideNavText': string
   'ce.anomalyDetection.summary.cloudProvidersWise': string

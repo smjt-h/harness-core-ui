@@ -42,10 +42,13 @@ import formatCost from '@ce/utils/formatCost'
 
 import { useTelemetry } from '@common/hooks/useTelemetry'
 import { USER_JOURNEY_EVENTS } from '@ce/TrackingEventsConstants'
+import { useFeatureFlag } from '@common/hooks/useFeatureFlag'
+import { FeatureFlag } from '@common/featureFlags'
 import Table from './Table'
 import PerspectiveBuilderPreview from '../PerspectiveBuilderPreview/PerspectiveBuilderPreview'
 import useCreateReportModal from './PerspectiveCreateReport'
 import useBudgetModal from './PerspectiveCreateBudget'
+import useAnomaliesAlertDialog from '../AnomaliesAlert/AnomaliesAlertDialog'
 import css from './PerspectiveReportsAndBudgets.module.scss'
 
 interface ListProps {
@@ -100,6 +103,7 @@ const ReportsAndBudgets: React.FC<ReportsAndBudgetsProps> = ({ values, onPrevBut
       })
     )
   }
+  const isDevFeature = useFeatureFlag(FeatureFlag.CCM_DEV_TEST)
 
   return (
     <Container className={css.mainContainer}>
@@ -117,6 +121,7 @@ const ReportsAndBudgets: React.FC<ReportsAndBudgetsProps> = ({ values, onPrevBut
         >
           <ScheduledReports />
           <Budgets perspectiveName={values?.name || ''} />
+          {isDevFeature ? <AnomalyAlerts /> : null}
           <FlexExpander />
           <Layout.Horizontal padding={{ top: 'medium' }} spacing="large">
             <Button icon="chevron-left" text={getString('previous')} onClick={onPrevButtonClick} />
@@ -455,6 +460,55 @@ const Budgets = ({ perspectiveName }: { perspectiveName: string }): JSX.Element 
           loading={loading}
           onButtonClick={openCreateNewBudgetModal}
           buttonText={getString('ce.perspectives.budgets.createNew')}
+          hasData={false}
+          showCreateButton={true}
+        />
+      ) : null}
+    </Container>
+  )
+}
+
+const AnomalyAlerts = () => {
+  const { getString } = useStrings()
+  const { openAnomaliesAlertModal } = useAnomaliesAlertDialog()
+  const alertList = []
+  const loading = false
+
+  return (
+    <Container>
+      <Layout.Horizontal>
+        <Text color={Color.GREY_800} font={{ variation: FontVariation.H4 }}>
+          {getString('ce.anomalyDetection.perspectiveCreateAnomalyAlertTitle', {
+            count: alertList.length || 0
+          })}
+        </Text>
+        <FlexExpander />
+        {alertList.length ? (
+          <Link
+            size={ButtonSize.SMALL}
+            padding="none"
+            margin="none"
+            font={FontVariation.SMALL}
+            variation={ButtonVariation.LINK}
+            icon="plus"
+            iconProps={{
+              size: 10
+            }}
+            onClick={openAnomaliesAlertModal}
+          >
+            {getString('ce.anomalyDetection.addNewAnomalyAlert')}
+          </Link>
+        ) : null}
+      </Layout.Horizontal>
+      <Text padding={{ top: 'large', bottom: 'large' }} color={Color.GREY_800} font="small">
+        {getString('ce.anomalyDetection.addAnoamlyAlertDesc')}
+      </Text>
+      {!alertList.length ? (
+        <List
+          grid={null}
+          loading={loading}
+          onButtonClick={openAnomaliesAlertModal}
+          buttonText={getString('ce.anomalyDetection.createNewAnomalyAlert')}
           hasData={false}
           showCreateButton={true}
         />

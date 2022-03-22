@@ -87,7 +87,7 @@ const AnomaliesOverviewPage: React.FC = () => {
     hasBackdrop: true,
     position: Position.RIGHT,
     usePortal: true,
-    size: '40%',
+    size: '54%',
     isCloseButtonShown: true
   }
 

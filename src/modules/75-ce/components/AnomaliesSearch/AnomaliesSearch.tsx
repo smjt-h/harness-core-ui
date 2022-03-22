@@ -14,9 +14,10 @@ import css from '../../pages/anomalies-overview/AnomaliesOverviewPage.module.scs
 
 interface SearchProps {
   onChange: React.Dispatch<React.SetStateAction<string>>
+  showModal: any
 }
 
-const AnomaliesSearch: React.FC<SearchProps> = ({ onChange }) => {
+const AnomaliesSearch: React.FC<SearchProps> = ({ onChange, showModal }) => {
   const { getString } = useStrings()
   const isDevFeature = useFeatureFlag(FeatureFlag.CCM_DEV_TEST)
 
@@ -32,6 +33,7 @@ const AnomaliesSearch: React.FC<SearchProps> = ({ onChange }) => {
         <Button
           text={getString('ce.anomalyDetection.settingsBtn')}
           icon="nav-settings"
+          onClick={showModal}
           variation={ButtonVariation.SECONDARY}
           size={ButtonSize.MEDIUM}
         />
