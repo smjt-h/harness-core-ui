@@ -6,7 +6,7 @@
  */
 
 process.env.TZ = 'GMT'
-const { pathsToModuleNameMapper } = require('ts-jest/utils')
+const { pathsToModuleNameMapper } = require('ts-jest')
 const { compilerOptions } = require('./tsconfig')
 
 module.exports = {
@@ -76,5 +76,6 @@ module.exports = {
     }
   },
   transformIgnorePatterns: ['node_modules/(?!(date-fns|lodash-es|p-debounce)/)'],
-  testPathIgnorePatterns: ['<rootDir>/dist']
+  testPathIgnorePatterns: ['<rootDir>/dist'],
+  testEnvironment: 'jsdom'
 }
