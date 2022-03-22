@@ -9,44 +9,15 @@ import { Card, Container, Formik, FormikForm, Layout } from '@harness/uicore'
 import React, { ReactElement } from 'react'
 import { useParams } from 'react-router-dom'
 import FlagToggleSwitch from '@cf/components/EditFlagTabs/FlagToggleSwitch'
-import {
-  Feature,
-  GetAllSegmentsQueryParams,
-  GetAllTargetsQueryParams,
-  TargetMap,
-  useGetAllSegments,
-  useGetAllTargets
-} from 'services/cf'
+import { GetAllSegmentsQueryParams, GetAllTargetsQueryParams, useGetAllSegments, useGetAllTargets } from 'services/cf'
 import { FeatureFlagActivationStatus } from '@cf/utils/CFUtils'
 import useActiveEnvironment from '@cf/hooks/useActiveEnvironment'
 import usePatchFeatureFlag from './hooks/usePatchFeatureFlag'
 import TargetingRulesTabFooter from './components/tab-targeting-footer/TargetingRulesTabFooter'
 
 import FlagEnabledRulesCard from './components/flag-enabled-rules-card/FlagEnabledRulesCard'
+import type { FormVariationMap, TargetGroup, TargetingRulesFormValues, TargetingRulesTabProps } from './Types'
 import css from './TargetingRulesTab.module.scss'
-
-export interface TargetingRulesFormValues {
-  state: string
-  onVariation: string
-  formVariationMap: FormVariationMap[]
-}
-export interface TargetGroup {
-  identifier: string
-  ruleId: string
-  name: string
-}
-export interface FormVariationMap {
-  variationIdentifier: string
-  variationName: string
-  targetGroups: TargetGroup[]
-  targets: TargetMap[]
-  isVisible: boolean
-}
-export interface TargetingRulesTabProps {
-  featureFlagData: Feature
-  refetchFlag: () => Promise<unknown>
-  refetchFlagLoading: boolean
-}
 
 const TargetingRulesTab = ({
   featureFlagData,
@@ -81,12 +52,12 @@ const TargetingRulesTab = ({
 
   // convert variations/targets/target groups into a more UI friendly structure
   const formVariationMap: FormVariationMap[] = featureFlagData.variations.map(variation => {
-    const formTargets =
+    const variationTargets =
       featureFlagData.envProperties?.variationMap?.find(
         variationMapItem => variation.identifier === variationMapItem.variation
       )?.targets || []
 
-    const formTargetGroups =
+    const variationTargetGroups =
       featureFlagData.envProperties?.rules
         ?.filter(rule => rule.serve.variation === variation.identifier)
         .map(targetGroupRule => ({
@@ -98,22 +69,36 @@ const TargetingRulesTab = ({
     return {
       variationIdentifier: variation.identifier,
       variationName: variation.name as string,
-      targets: formTargets,
-      targetGroups: formTargetGroups,
-      isVisible: formTargets.length > 0 || formTargetGroups.length > 0
+      targets: variationTargets,
+      targetGroups: variationTargetGroups,
+      isVisible: variationTargets.length > 0 || variationTargetGroups.length > 0
     }
   })
 
-  const initialValues = {
-    state: featureFlagData.envProperties?.state as string,
-    onVariation: featureFlagData.envProperties?.defaultServe.variation
-      ? featureFlagData.envProperties?.defaultServe.variation
-      : featureFlagData.defaultOnVariation,
-    formVariationMap: formVariationMap
+  const variationPercentageRollout = featureFlagData.envProperties?.rules?.find(rule => rule.serve.distribution)
+
+  const initialValues = (): TargetingRulesFormValues => {
+    const intialValues: TargetingRulesFormValues = {
+      state: featureFlagData.envProperties?.state as string,
+      onVariation: featureFlagData.envProperties?.defaultServe.variation
+        ? featureFlagData.envProperties?.defaultServe.variation
+        : featureFlagData.defaultOnVariation,
+      formVariationMap
+    }
+
+    if (variationPercentageRollout) {
+      intialValues.variationPercentageRollout = {
+        variations: variationPercentageRollout.serve.distribution?.variations || [],
+        bucketBy: variationPercentageRollout.serve.distribution?.bucketBy as string,
+        clauses: variationPercentageRollout.clauses
+      }
+    }
+
+    return intialValues
   }
 
   const { saveChanges, loading: patchFeatureLoading } = usePatchFeatureFlag({
-    initialValues,
+    initialValues: initialValues(),
     featureFlagIdentifier: featureFlagData.identifier,
     refetchFlag
   })
@@ -126,7 +111,7 @@ const TargetingRulesTab = ({
       validateOnChange={false}
       validateOnBlur={false}
       formName="targeting-rules-form"
-      initialValues={initialValues}
+      initialValues={initialValues()}
       onSubmit={values => {
         saveChanges(values)
       }}
@@ -135,7 +120,11 @@ const TargetingRulesTab = ({
         return (
           <FormikForm data-testid="targeting-rules-tab-form">
             <Container className={css.tabContainer}>
-              <Layout.Vertical spacing="small" padding={{ left: 'xlarge', right: 'xlarge' }}>
+              <Layout.Vertical
+                spacing="small"
+                padding={{ left: 'xlarge', right: 'xlarge' }}
+                style={{ overflowY: 'auto' }}
+              >
                 <Card elevation={0}>
                   <FlagToggleSwitch
                     disabled={isLoading}
@@ -157,6 +146,7 @@ const TargetingRulesTab = ({
                   targets={targets}
                   segments={segments}
                   featureFlagVariations={featureFlagData.variations}
+                  variationPercentageRollout={formikProps.values.variationPercentageRollout}
                   isLoading={isLoading}
                   updateTargetGroups={(index: number, newTargetGroups: TargetGroup[]) =>
                     formikProps.setFieldValue(`formVariationMap[${index}].targetGroups`, newTargetGroups)

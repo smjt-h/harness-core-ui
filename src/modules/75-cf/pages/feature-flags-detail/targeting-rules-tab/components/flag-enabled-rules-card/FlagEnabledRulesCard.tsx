@@ -11,15 +11,17 @@ import React, { ReactElement } from 'react'
 import { PopoverPosition } from '@blueprintjs/core'
 import { useStrings } from 'framework/strings'
 import type { Segment, Target, TargetMap, Variation } from 'services/cf'
+import PercentageRollout from '@cf/components/PercentageRollout/PercentageRollout'
 import DefaultRules from '../default-rules/DefaultRules'
 import SpecificTargetingItem from '../specific-targeting-item.tsx/SpecificTargetingItem'
-import type { FormVariationMap, TargetGroup } from '../../TargetingRulesTab'
+import type { FormVariationMap, TargetGroup } from '../../Types'
 
 export interface FlagEnabledRulesCardProps {
   targets: Target[]
   segments: Segment[]
   formVariationMap: FormVariationMap[]
   featureFlagVariations: Variation[]
+  variationPercentageRollout: any //todo
   isLoading: boolean
   updateTargetGroups: (index: number, newTargetGroups: TargetGroup[]) => void
   updateTargets: (index: number, newTargetGroups: TargetMap[]) => void
@@ -33,6 +35,7 @@ const FlagEnabledRulesCard = (props: FlagEnabledRulesCardProps): ReactElement =>
     segments,
     formVariationMap,
     featureFlagVariations,
+    variationPercentageRollout,
     updateTargetGroups,
     updateTargets,
     addVariation,
@@ -71,6 +74,20 @@ const FlagEnabledRulesCard = (props: FlagEnabledRulesCardProps): ReactElement =>
               )}
             </>
           ))}
+          <Heading level={4} font={{ variation: FontVariation.BODY2 }} margin={{ top: 'medium' }}>
+            {/* {getString('cf.featureFlags.rules.specificTargeting')}
+             */}
+            Percentage Rollout
+          </Heading>
+          <div data-testid={`_percentage_rollout`}>
+            <PercentageRollout
+              targetGroups={segments}
+              bucketByAttributes={[variationPercentageRollout.bucketBy as string]}
+              variations={featureFlagVariations}
+              fieldValues={variationPercentageRollout}
+              prefix={(fieldName: string) => `variationPercentageRollout.${fieldName}`}
+            />
+          </div>
           {addTargetingDropdownVariations.length > 0 && (
             <Button
               icon="plus"
@@ -79,7 +96,7 @@ const FlagEnabledRulesCard = (props: FlagEnabledRulesCardProps): ReactElement =>
               text="Add Targeting"
               tooltipProps={{
                 fill: true,
-                interactionKind: 'click',
+                interactionKind: 'click-target',
                 minimal: true,
                 position: PopoverPosition.BOTTOM_LEFT
               }}
