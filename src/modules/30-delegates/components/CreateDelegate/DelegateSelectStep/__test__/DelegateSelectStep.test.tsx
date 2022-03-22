@@ -6,7 +6,7 @@
  */
 
 import React from 'react'
-import { fireEvent, render, wait } from '@testing-library/react'
+import { fireEvent, render, waitFor } from '@testing-library/react'
 import { TestWrapper } from '@common/utils/testUtils'
 import { DelegateTypes } from '@delegates/constants'
 import DelegateSelectStep from '../DelegateSelectStep'
@@ -41,14 +41,14 @@ describe('Delgate Select StepWizard', () => {
     expect(container).toMatchSnapshot()
   })
   test('Click continue button', async () => {
-    const { container } = render(
+    const { container, getByText } = render(
       <TestWrapper>
         <DelegateSelectStep type={DelegateTypes.KUBERNETES_CLUSTER} name={'Step 1'} onClick={mockFn} />
       </TestWrapper>
     )
     const step1ContinueButton = container?.querySelector('#step1ContinueButton')
     fireEvent.click(step1ContinueButton!)
-    await wait()
+    await waitFor(() => getByText('kubernetesText'))
     expect(container).toMatchSnapshot()
   })
 })

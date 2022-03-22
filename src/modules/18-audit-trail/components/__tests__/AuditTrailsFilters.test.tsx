@@ -87,7 +87,7 @@ describe('Audit trail filters', () => {
     expect(applyFilter).toBeCalledWith({})
   })
 
-  test('apply filters', async done => {
+  test('apply filters', async () => {
     const applyFilter = jest.fn()
 
     const { container, getByText } = render(
@@ -100,9 +100,8 @@ describe('Audit trail filters', () => {
     fireEvent.click(filterButton)
     const applyBtn = getByText('filters.apply')
     fireEvent.click(applyBtn)
-    setTimeout(() => {
+    await setTimeout(() => {
       expect(applyFilter).toBeCalled()
-      done()
     })
   })
 })
