@@ -6,7 +6,7 @@
  */
 
 import React from 'react'
-import { act, findByText, fireEvent, render } from '@testing-library/react'
+import { waitFor, findByText, fireEvent, render } from '@testing-library/react'
 import { fillAtForm, InputTypes } from '@common/utils/JestFormHelper'
 import { TestWrapper } from '@common/utils/testUtils'
 import * as lwServices from 'services/lw'
@@ -79,13 +79,12 @@ describe('GCP AP form', () => {
     const regionsCaret = container
       .querySelector(`input[name="region"] + [class*="bp3-input-action"]`)
       ?.querySelector('[data-icon="chevron-down"]')
-    await act(() => {
-      fireEvent.click(regionsCaret!)
-    })
+    await waitFor(() => fireEvent.click(regionsCaret!))
+
     const regionToSelect = await findByText(container, mockedRegion.label)
-    act(() => {
-      fireEvent.click(regionToSelect)
-    })
+
+    await waitFor(() => fireEvent.click(regionToSelect))
+
     expect(regionsDropdown.value).toBe(mockedRegion.label)
 
     fillAtForm([
@@ -118,11 +117,11 @@ describe('GCP AP form', () => {
     const target = container.querySelectorAll('button[type="button"]')?.[1]
     expect(target).toBeDefined()
     if (target) {
-      fireEvent.click(target)
+      await waitFor(() => fireEvent.click(target))
     }
   })
 
-  test('form in edit mode', () => {
+  test('form in edit mode', async () => {
     const { container } = render(
       <TestWrapper pathParams={params}>
         <GCPAccessPointForm
@@ -150,9 +149,7 @@ describe('GCP AP form', () => {
     const target = container.querySelector('button[type="button"]')
     expect(target).toBeDefined()
     if (target) {
-      act(() => {
-        fireEvent.click(target)
-      })
+      await waitFor(() => fireEvent.click(target))
     }
   })
 

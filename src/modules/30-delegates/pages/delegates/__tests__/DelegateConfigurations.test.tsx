@@ -122,10 +122,10 @@ describe('Delegates Configurations Page', () => {
       </TestWrapper>
     )
 
-    let filterOpenBtn: HTMLElement
-    await waitFor(() => {
-      filterOpenBtn = container.getElementsByTagName('button')[1]
-    })
+    let filterOpenBtn: HTMLElement | any = []
+
+    await waitFor(() => container.getElementsByTagName('button')[1])
+    filterOpenBtn = container.getElementsByTagName('button')[1]
 
     act(() => {
       fireEvent.click(filterOpenBtn!)

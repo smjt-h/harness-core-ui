@@ -182,7 +182,7 @@ describe('CVCreateSLO', () => {
     expect(screen.getByText('cv.slos.slis.ratioMetricType.goodRequestsMetrics')).toBeInTheDocument()
 
     userEvent.click(container.querySelector('input[name="eventType"]')!)
-    userEvent.click(screen.getByText('cv.bad'))
+    await waitFor(() => userEvent.click(screen.getByText('cv.bad')))
 
     expect(screen.getByText('cv.slos.slis.ratioMetricType.badRequestsMetrics')).toBeInTheDocument()
 

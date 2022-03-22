@@ -113,7 +113,7 @@ describe('Unit tests for LogAnalysisContainer', () => {
     await waitFor(() => expect(getAllByText('Unknown')).toHaveLength(unknownClusterTypeMockedData.length))
   })
 
-  test('it should not pass field clusterTypes to BE for event type All', () => {
+  test('it should not pass field clusterTypes to BE for event type All', async () => {
     render(<WrapperComponent {...props} />)
 
     const clusterTypeFilterDropdown = screen.getByPlaceholderText(
@@ -125,7 +125,8 @@ describe('Unit tests for LogAnalysisContainer', () => {
     expect(useGetAllLogsDataQueryParams?.clusterTypes).toEqual([LogEvents.UNKNOWN])
 
     userEvent.click(clusterTypeFilterDropdown)
-    userEvent.click(screen.getByText('auditTrail.allEvents'))
+
+    await waitFor(() => userEvent.click(screen.getByText('auditTrail.allEvents')))
 
     expect(clusterTypeFilterDropdown.value).toBe('auditTrail.allEvents')
     expect(useGetAllLogsClusterDataQueryParams).not.toHaveProperty('clusterTypes')

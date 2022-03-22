@@ -6,7 +6,7 @@
  */
 
 import React, { FC } from 'react'
-import { render, RenderResult, screen } from '@testing-library/react'
+import { render, RenderResult, screen, waitFor } from '@testing-library/react'
 import userEvent from '@testing-library/user-event'
 import { TestWrapper } from '@common/utils/testUtils'
 import SubSectionSelector, { SubSectionSelectorProps } from '../SubSectionSelector'
@@ -63,7 +63,7 @@ describe('SubSectionSelector', () => {
     const btn = screen.getByRole('button')
     userEvent.click(btn)
 
-    userEvent.click(screen.getByText(subSectionNameMap.get(newSubSection)))
+    await waitFor(() => userEvent.click(screen.getByText(subSectionNameMap.get(newSubSection))))
 
     expect(onSubSectionChange).toHaveBeenCalledWith(newSubSection)
   })

@@ -54,7 +54,7 @@ describe('SaveFlagRepoDialogForm', () => {
     renderComponent({ onSubmit: onSubmitMock })
 
     userEvent.click(document.getElementsByName('rootFolder')[0])
-    userEvent.click(screen.getByText('/.testFolder/'))
+    await waitFor(() => userEvent.click(screen.getByText('/.testFolder/')))
 
     userEvent.click(screen.getByText('save'))
 

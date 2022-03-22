@@ -70,7 +70,7 @@ describe('Unit tests for ManualInterventionVerifyStep', () => {
 
     userEvent.click(permissibleActionDropdown)
 
-    userEvent.click(screen.getByText(strategy))
+    await waitFor(() => userEvent.click(screen.getByText(strategy)))
 
     await waitFor(() => {
       expect(mutate).toHaveBeenLastCalledWith(undefined, {

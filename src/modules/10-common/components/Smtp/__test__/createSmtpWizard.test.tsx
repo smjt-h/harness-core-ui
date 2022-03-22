@@ -109,7 +109,7 @@ describe('smtp details', () => {
   test('smtp name test', async () => {
     const { container, getByText } = setup()
 
-    waitFor(() => {
+    await (() => {
       return expect(getByText('continue')).toBeTruthy()
     })
     fireEvent.change(container.querySelector('input[name="name"]')!, { target: { value: '$##test' } })
@@ -124,7 +124,7 @@ describe('smtp details', () => {
   test('create smtp details and test', async () => {
     const { container, getByText } = setup()
 
-    waitFor(() => {
+    await waitFor(() => {
       return expect(getByText('continue')).toBeTruthy()
     })
     fireEvent.change(container.querySelector('input[name="name"]')!, { target: { value: 'test' } })
@@ -152,7 +152,7 @@ describe('smtp details', () => {
   test('fail to create smtp details', async () => {
     validateNameCalled = false
     const { container, getByText } = setup()
-    waitFor(() => {
+    await waitFor(() => {
       return expect(getByText('continue')).toBeTruthy()
     })
     fireEvent.change(container.querySelector('input[name="host"]')!, { target: { value: 'host' } })

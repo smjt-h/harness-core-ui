@@ -42,7 +42,7 @@ describe('FlagItemOptionsMenuButtonProps', () => {
     renderComponent({ onClick: onClickMock })
 
     userEvent.click(document.querySelector('[data-icon="Options"]') as HTMLButtonElement)
-    userEvent.click(screen.getByText('cf.segmentDetail.removeFomFlag'))
+    await waitFor(() => userEvent.click(screen.getByText('cf.segmentDetail.removeFomFlag')))
 
     expect(onClickMock).toBeCalled()
   })

@@ -60,7 +60,7 @@ const setDefaultVariations = (): void => {
 }
 
 describe('FlagElemMultivariate', () => {
-  test('it should render flag type options and handle change correctly', () => {
+  test('it should render flag type options and handle change correctly', async () => {
     const flagToggleMock = jest.fn()
     renderComponent({ toggleFlagType: flagToggleMock })
 
@@ -72,12 +72,12 @@ describe('FlagElemMultivariate', () => {
     expect(screen.getByText('boolean')).toBeInTheDocument()
     expect(screen.getByText('multivariate')).toBeInTheDocument()
 
-    userEvent.click(screen.getByText('boolean'))
+    await waitFor(() => userEvent.click(screen.getByText('boolean')))
 
     expect(flagToggleMock).toHaveBeenCalled()
   })
 
-  test('it should render data type options and handle change correctly', () => {
+  test('it should render data type options and handle change correctly', async () => {
     renderComponent()
 
     const dataTypeDropdown = document.getElementsByName('dataTypes')[0]
@@ -89,7 +89,7 @@ describe('FlagElemMultivariate', () => {
     expect(screen.getByText('cf.creationModal.jsonType')).toBeInTheDocument()
     expect(screen.getByText('number')).toBeInTheDocument()
 
-    userEvent.click(screen.getByText('number'))
+    await waitFor(() => userEvent.click(screen.getByText('number')))
 
     expect(dataTypeDropdown).toHaveValue('number')
   })
@@ -134,7 +134,7 @@ describe('FlagElemMultivariate', () => {
     expect(newVariationOption).not.toBeInTheDocument()
   })
 
-  test('it should populate default ON rules dropdown with variation values', () => {
+  test('it should populate default ON rules dropdown with variation values', async () => {
     renderComponent()
 
     setDefaultVariations()
@@ -142,12 +142,12 @@ describe('FlagElemMultivariate', () => {
     // assert
     const defaultOnVariationDropdown = document.getElementsByName('defaultOnVariation')[0]
     userEvent.click(defaultOnVariationDropdown)
-    userEvent.click(screen.getByText('variation one'))
+    await waitFor(() => userEvent.click(screen.getByText('variation one')))
 
     expect(defaultOnVariationDropdown).toHaveValue('variation one')
   })
 
-  test('it should populate default OFF rules dropdown with variation values', () => {
+  test('it should populate default OFF rules dropdown with variation values', async () => {
     renderComponent()
 
     setDefaultVariations()
@@ -155,7 +155,7 @@ describe('FlagElemMultivariate', () => {
     // assert
     const defaultOffVariationDropdown = document.getElementsByName('defaultOffVariation')[0]
     userEvent.click(defaultOffVariationDropdown)
-    userEvent.click(screen.getByText('variation two'))
+    await waitFor(() => userEvent.click(screen.getByText('variation two')))
 
     expect(defaultOffVariationDropdown).toHaveValue('variation two')
   })
@@ -187,11 +187,11 @@ describe('FlagElemMultivariate', () => {
     // select default rules
     const defaultOnVariationDropdown = document.getElementsByName('defaultOnVariation')[0]
     userEvent.click(defaultOnVariationDropdown)
-    userEvent.click(screen.getAllByText('variation one')[0])
+    await waitFor(() => userEvent.click(screen.getAllByText('variation one')[0]))
 
     const defaultOffVariationDropdown = document.getElementsByName('defaultOffVariation')[0]
     userEvent.click(defaultOffVariationDropdown)
-    userEvent.click(screen.getAllByText('variation one')[1])
+    await waitFor(() => userEvent.click(screen.getAllByText('variation one')[1]))
 
     const nextButton = screen.getByText('cf.creationModal.saveAndClose')
     expect(nextButton).toBeInTheDocument()

@@ -156,7 +156,7 @@ describe('Test Step 2', () => {
     fireEvent.change(externalIdInput, { target: { value: mockexID } })
     fireEvent.change(roleARNInput, { target: { value: mockARN } })
 
-    waitFor(() => {
+    await waitFor(() => {
       expect(externalIdInput.value).toBe(mockexID)
     })
     expect(roleARNInput.value).toBe(mockARN)

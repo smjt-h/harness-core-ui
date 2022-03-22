@@ -86,7 +86,7 @@ describe('Delegates Listing With Groups', () => {
     act(() => {
       fireEvent.click(modalDeleteBtn!)
     })
-    waitFor(() => {
+    await waitFor(() => {
       expect(document.body.innerHTML).not.toContain('useConfirmationDialog')
     })
   })

@@ -98,7 +98,7 @@ describe('TargetingRulesTab', () => {
     const onVariationDropdownOptions = document.querySelectorAll('li')
     expect(onVariationDropdownOptions).toHaveLength(2)
 
-    userEvent.click(onVariationDropdownOptions[1])
+    await waitFor(() => userEvent.click(onVariationDropdownOptions[1]))
     expect(onVariationDropdown).toHaveValue('False')
   })
 
@@ -281,7 +281,7 @@ describe('TargetingRulesTab', () => {
 
     const variationOptionTrue = screen.getByTestId('variation_option_true')
     expect(variationOptionTrue).toBeInTheDocument()
-    userEvent.click(variationOptionTrue)
+    await waitFor(() => userEvent.click(variationOptionTrue))
 
     expect(screen.getByTestId('true_target_groups')).toBeInTheDocument()
     expect(screen.getByTestId('true_targets')).toBeInTheDocument()
@@ -314,12 +314,12 @@ describe('TargetingRulesTab', () => {
     const onVariationDropdown = document.querySelector('input[name="onVariation"]') as HTMLSelectElement
     userEvent.click(onVariationDropdown)
     const trueVariationOption = document.querySelector('li') as HTMLElement
-    userEvent.click(trueVariationOption)
+    await waitFor(() => userEvent.click(trueVariationOption))
     expect(onVariationDropdown).toHaveValue('True')
 
     // add true variation with targets/target groups
     userEvent.click(screen.getByText('Add Targeting'))
-    userEvent.click(screen.getByTestId('variation_option_true'))
+    await waitFor(() => userEvent.click(screen.getByTestId('variation_option_true')))
 
     await waitFor(() => expect(screen.getByTestId('true-target-groups-input')).toBeInTheDocument())
     userEvent.click(screen.getByTestId('true-target-groups-input'))

@@ -46,7 +46,7 @@ const renderComponent = (props: Partial<FlagElemBooleanProps> = {}): void => {
 }
 
 describe('FlagElemBoolean', () => {
-  test('it should render flag type options and handle change correctly', () => {
+  test('it should render flag type options and handle change correctly', async () => {
     const flagToggleMock = jest.fn()
     renderComponent({ toggleFlagType: flagToggleMock })
 
@@ -58,7 +58,7 @@ describe('FlagElemBoolean', () => {
     expect(screen.getByText('boolean')).toBeInTheDocument()
     expect(screen.getByText('multivariate')).toBeInTheDocument()
 
-    userEvent.click(screen.getByText('boolean'))
+    await waitFor(() => userEvent.click(screen.getByText('boolean')))
 
     expect(flagToggleMock).toHaveBeenCalled()
   })
