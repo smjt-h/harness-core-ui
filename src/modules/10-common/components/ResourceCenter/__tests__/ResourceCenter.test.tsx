@@ -10,6 +10,15 @@ import React from 'react'
 import { TestWrapper } from '@common/utils/testUtils'
 import { Editions } from '@common/constants/SubscriptionTypes'
 import { ResourceCenter } from '../ResourceCenter'
+
+jest.mock('refiner-js', () => {
+  return jest.fn().mockImplementation((param, callback) => {
+    if (param === 'onComplete') {
+      callback()
+    }
+  })
+})
+
 describe('ResourceCenter', () => {
   test('Should render resource center properly', () => {
     const { container } = render(
@@ -29,6 +38,28 @@ describe('ResourceCenter', () => {
     fireEvent.click(getByTestId('question'))
     await waitFor(() => {
       expect(getByText('common.resourceCenter.title')).toBeInTheDocument()
+    })
+  })
+
+  test('should render feedback when click on icon', async () => {
+    const featureFlags = {
+      SHOW_NG_REFINER_FEEDBACK: true
+    }
+
+    const defaultAppStoreValues = {
+      featureFlags
+    }
+
+    const { getByTestId, getByText } = render(
+      <TestWrapper defaultAppStoreValues={defaultAppStoreValues}>
+        <ResourceCenter />
+      </TestWrapper>
+    )
+
+    fireEvent.click(getByTestId('question'))
+    fireEvent.click(getByTestId('feedback'))
+    await waitFor(() => {
+      expect(getByText('common.resourceCenter.feedback.submit')).toBeInTheDocument()
     })
   })
 

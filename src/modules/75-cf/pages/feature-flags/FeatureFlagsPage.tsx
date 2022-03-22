@@ -9,7 +9,6 @@ import React, { useEffect, useMemo, useRef, useState, useCallback, ReactElement 
 import { useHistory, useParams } from 'react-router-dom'
 import {
   Button,
-  Color,
   Container,
   ExpandingSearchInput,
   Heading,
@@ -20,6 +19,7 @@ import {
   TableV2
 } from '@wings-software/uicore'
 import { noop } from 'lodash-es'
+import { Color } from '@harness/design-system'
 import { Classes, Position, Switch } from '@blueprintjs/core'
 import type { Cell, CellProps, Column, Renderer } from 'react-table'
 import type { MutateMethod } from 'restful-react'

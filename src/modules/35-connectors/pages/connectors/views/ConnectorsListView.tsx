@@ -9,7 +9,6 @@ import React, { useState, useMemo } from 'react'
 import {
   Text,
   Layout,
-  Color,
   Icon,
   Button,
   Popover,
@@ -17,9 +16,9 @@ import {
   useToaster,
   TagsPopover,
   TableV2,
-  FontVariation,
   useConfirmationDialog
 } from '@wings-software/uicore'
+import { FontVariation, Color } from '@harness/design-system'
 import type { CellProps, Renderer, Column } from 'react-table'
 import { Menu, Classes, Position, Intent, TextArea, Tooltip } from '@blueprintjs/core'
 import { useParams, useHistory } from 'react-router-dom'

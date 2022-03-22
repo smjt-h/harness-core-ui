@@ -6,11 +6,11 @@
  */
 
 import React from 'react'
-import { render } from '@testing-library/react'
+import { act, fireEvent, render } from '@testing-library/react'
 import { MultiTypeInputType, VisualYamlSelectedView as SelectedView } from '@wings-software/uicore'
 
 import produce from 'immer'
-import { set } from 'lodash-es'
+import { cloneDeep, get, set } from 'lodash-es'
 import { TestWrapper } from '@common/utils/testUtils'
 import * as cdng from 'services/cd-ng'
 import { PipelineVariablesContext } from '@pipeline/components/PipelineVariablesContext/PipelineVariablesContext'
@@ -84,6 +84,14 @@ jest.spyOn(cdng, 'useListGitSync').mockImplementation((): any => {
 jest.spyOn(cdng, 'useGetSourceCodeManagers').mockImplementation((): any => {
   return { data: sourceCodeManagers, refetch: jest.fn(), loading: false }
 })
+
+jest.mock('lodash-es', () => ({
+  ...(jest.requireActual('lodash-es') as Record<string, any>),
+  debounce: jest.fn(fn => {
+    fn.cancel = jest.fn()
+    return fn
+  })
+}))
 
 describe('<PipelineVariables /> tests', () => {
   beforeAll(() => {
@@ -182,6 +190,41 @@ describe('<PipelineVariables /> tests', () => {
       }),
       expect.anything()
     )
+  })
+
+  test('should call update stage with unresolved stage', async () => {
+    const { getByTestId } = render(
+      <TestWrapper>
+        <PipelineContext.Provider value={stageTemplateContextMock}>
+          <PipelineVariablesContext.Provider
+            value={
+              {
+                originalPipeline: resolvedPipeline,
+                variablesPipeline: variablesWithStageTemplate,
+                loading: false,
+                initLoading: false,
+                error: null,
+                metadataMap: metadataMapWithStageTemplate
+              } as any
+            }
+          >
+            <PipelineVariables />
+          </PipelineVariablesContext.Provider>
+        </PipelineContext.Provider>
+      </TestWrapper>
+    )
+
+    act(() => {
+      fireEvent.change(
+        getByTestId('pipeline.Stage_2.variables-panel').querySelector(
+          'input[name="variables[0].value"]'
+        ) as HTMLElement,
+        { target: { value: 'val2' } }
+      )
+    })
+    const updatedSecondStage = cloneDeep(get(stageTemplateContextMock, 'state.pipeline.stages[1].stage'))
+    set(updatedSecondStage, 'variables[0].value', 'val2')
+    expect(stageTemplateContextMock.updateStage).toBeCalledWith(updatedSecondStage)
   })
 
   test('renders loader', () => {

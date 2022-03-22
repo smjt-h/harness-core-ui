@@ -67,3 +67,39 @@ export const isExecutionComplete = (status: string) => {
 export const CALL_GRAPH_WIDTH = 360
 export const CALL_GRAPH_HEIGHT = 360
 export const CALL_GRAPH_API_LIMIT = 75
+
+export const AllOption = { label: 'All', value: 'AGGREGATE_ALL_TEST_REPORTS' }
+
+export const AllStagesOption = {
+  label: `${AllOption.label} Stages`,
+  value: AllOption.value
+}
+
+export const AllStepsOption = {
+  label: `${AllOption.label} Steps`,
+  value: AllOption.value
+}
+
+interface OptionalQueryParamKeys {
+  stageId?: string
+  stepId?: string
+}
+
+export const getOptionalQueryParamKeys = ({
+  stageId,
+  stepId
+}: {
+  stageId?: string
+  stepId?: string
+}): OptionalQueryParamKeys => {
+  const optionalKeys: OptionalQueryParamKeys = {}
+
+  if (stageId !== AllOption.value && stageId) {
+    optionalKeys.stageId = stageId
+  }
+
+  if (stepId !== AllOption.value && stepId) {
+    optionalKeys.stepId = stepId
+  }
+  return optionalKeys
+}

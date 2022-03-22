@@ -7,30 +7,44 @@
 
 import React, { useState, useEffect } from 'react'
 import {
-  Color,
+  Dialog,
   FormInput,
   getErrorInfoFromErrorObject,
   Icon,
   Layout,
   ModalErrorHandlerBinding,
   SelectOption,
-  Text
+  Text,
+  useToggleOpen
 } from '@harness/uicore'
+import { Color } from '@harness/design-system'
 import { useParams } from 'react-router-dom'
 import { defaultTo, isEmpty } from 'lodash-es'
 import { useStrings } from 'framework/strings'
-import { useGetListOfBranchesByConnector } from 'services/cd-ng'
+import { Error, useGetListOfBranchesByConnector } from 'services/cd-ng'
 import type { ProjectPathProps } from '@common/interfaces/RouteInterfaces'
+import { ErrorHandler } from '@common/components/ErrorHandler/ErrorHandler'
 import css from './GitSyncRepoForm.module.scss'
 
 export interface RepoBranchSelectProps {
   modalErrorHandler?: ModalErrorHandlerBinding
   connectorIdentifierRef?: string
   repoURL?: string
+  selectedValue?: string
+  onChange?: (selected: SelectOption, options?: SelectOption[]) => void
+}
+
+const getBranchSelectOptions = (data: string[] = []) => {
+  return data.map((branch: string) => {
+    return {
+      label: defaultTo(branch, ''),
+      value: defaultTo(branch, '')
+    }
+  })
 }
 
 const RepoBranchSelect: React.FC<RepoBranchSelectProps> = props => {
-  const { modalErrorHandler, connectorIdentifierRef, repoURL } = props
+  const { modalErrorHandler, connectorIdentifierRef, repoURL, selectedValue } = props
   const { getString } = useStrings()
   const { accountId, projectIdentifier, orgIdentifier } = useParams<ProjectPathProps>()
   const [branchSelectOptions, setBranchSelectOptions] = useState<SelectOption[]>([])
@@ -52,6 +66,8 @@ const RepoBranchSelect: React.FC<RepoBranchSelectProps> = props => {
     lazy: true
   })
 
+  const { isOpen, open, close } = useToggleOpen()
+
   useEffect(() => {
     if (connectorIdentifierRef && repoURL) {
       refetch()
@@ -66,36 +82,33 @@ const RepoBranchSelect: React.FC<RepoBranchSelectProps> = props => {
   }
 
   useEffect(() => {
-    if (!loading) {
-      modalErrorHandler?.hide()
+    if (loading) {
+      return
+    }
+    modalErrorHandler?.hide()
 
-      if (error) {
-        handleError(getErrorInfoFromErrorObject(error))
-        return
-      }
-
-      if (response?.status !== 'SUCCESS') {
-        response && handleError(getErrorInfoFromErrorObject(response))
+    if (error) {
+      if ((error?.data as Error)?.responseMessages?.length) {
+        open()
       } else {
-        if (!isEmpty(response?.data)) {
-          setBranchSelectOptions(
-            response.data?.length
-              ? response.data.map((branch: string) => {
-                  return {
-                    label: defaultTo(branch, ''),
-                    value: defaultTo(branch, '')
-                  }
-                })
-              : []
-          )
-        } else {
-          modalErrorHandler?.showDanger(getString('common.git.noBranchesFound'))
-        }
+        handleError(getErrorInfoFromErrorObject(error))
+      }
+      return
+    }
+
+    if (response?.status !== 'SUCCESS') {
+      response && handleError(getErrorInfoFromErrorObject(response))
+    } else {
+      if (!isEmpty(response?.data)) {
+        setBranchSelectOptions(getBranchSelectOptions(response.data))
+      } else {
+        modalErrorHandler?.showDanger(getString('common.git.noBranchesFound'))
       }
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [loading])
 
+  const responseMessages = (error?.data as Error)?.responseMessages
   return (
     <Layout.Horizontal>
       <FormInput.Select
@@ -103,6 +116,8 @@ const RepoBranchSelect: React.FC<RepoBranchSelectProps> = props => {
         disabled={loading}
         items={branchSelectOptions}
         label={getString('gitsync.selectDefaultBranch')}
+        value={{ label: selectedValue || '', value: selectedValue || '' }}
+        onChange={selected => props.onChange?.(selected, branchSelectOptions)}
         selectProps={{ usePortal: true, popoverClassName: css.gitBranchSelectorPopover }}
       />
       {loading ? (
@@ -111,6 +126,9 @@ const RepoBranchSelect: React.FC<RepoBranchSelectProps> = props => {
           <Text>{getString('gitsync.fetchingBranches').concat('...')}</Text>
         </Layout.Horizontal>
       ) : null}
+      <Dialog isOpen={isOpen} enforceFocus={false} title={getString('gitsync.branchFetchFailed')} onClose={close}>
+        {responseMessages ? <ErrorHandler responseMessages={responseMessages} /> : undefined}
+      </Dialog>
     </Layout.Horizontal>
   )
 }

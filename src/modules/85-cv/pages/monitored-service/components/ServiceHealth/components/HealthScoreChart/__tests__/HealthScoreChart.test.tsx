@@ -28,13 +28,12 @@ const fetchHealthScore = jest.fn()
 
 describe('Unit tests for HealthScoreChart', () => {
   test('Verify if all the fields are rendered correctly inside HealthScoreChart', async () => {
-    jest.spyOn(cvService, 'useGetMonitoredServiceOverAllHealthScoreWithServiceAndEnv').mockReturnValue({
+    jest.spyOn(cvService, 'useGetMonitoredServiceOverAllHealthScore').mockReturnValue({
       data: mockedHealthScoreData,
       refetch: fetchHealthScore as unknown
     } as UseGetReturn<any, any, any, any>)
     const props = {
-      envIdentifier: '1234_env',
-      serviceIdentifier: '1234_service',
+      monitoredServiceIdentifier: 'monitored_service_identifier',
       duration: { value: TimePeriodEnum.TWENTY_FOUR_HOURS, label: 'twenty_four_hours' }
     }
     const { container } = render(<WrapperComponent {...props} />)
@@ -42,43 +41,39 @@ describe('Unit tests for HealthScoreChart', () => {
   })
 
   test('Ensure that api is called with endtime', async () => {
-    jest.spyOn(cvService, 'useGetMonitoredServiceOverAllHealthScoreWithServiceAndEnv').mockReturnValue({
+    jest.spyOn(cvService, 'useGetMonitoredServiceOverAllHealthScore').mockReturnValue({
       data: mockedHealthScoreData,
       refetch: fetchHealthScore as unknown
     } as UseGetReturn<any, any, any, any>)
     render(
       <WrapperComponent
-        envIdentifier="1234_env"
-        serviceIdentifier="1234_service"
+        monitoredServiceIdentifier="monitored_service_identifier"
         duration={{ value: TimePeriodEnum.TWENTY_FOUR_HOURS, label: 'twenty_four_hours' }}
         endTime={23234}
       />
     )
 
     await waitFor(() =>
-      expect(cvService.useGetMonitoredServiceOverAllHealthScoreWithServiceAndEnv).toHaveBeenLastCalledWith({
-        lazy: true,
+      expect(cvService.useGetMonitoredServiceOverAllHealthScore).toHaveBeenLastCalledWith({
+        identifier: 'monitored_service_identifier',
         queryParams: {
           accountId: undefined,
           duration: 'TWENTY_FOUR_HOURS',
           endTime: 23234,
-          environmentIdentifier: '1234_env',
           orgIdentifier: undefined,
-          projectIdentifier: undefined,
-          serviceIdentifier: '1234_service'
+          projectIdentifier: undefined
         }
       })
     )
   })
 
   test('Verify hasTimelineIntegration flag set to true', async () => {
-    jest.spyOn(cvService, 'useGetMonitoredServiceOverAllHealthScoreWithServiceAndEnv').mockReturnValue({
+    jest.spyOn(cvService, 'useGetMonitoredServiceOverAllHealthScore').mockReturnValue({
       data: {},
       refetch: fetchHealthScore as unknown
     } as UseGetReturn<any, any, any, any>)
     const propsWithTimelineIntegration = {
-      envIdentifier: '1234_env',
-      serviceIdentifier: '1234_service',
+      monitoredServiceIdentifier: 'monitored_service_identifier',
       hasTimelineIntegration: true,
       duration: { value: TimePeriodEnum.TWENTY_FOUR_HOURS, label: 'twenty_four_hours' }
     }
@@ -94,14 +89,13 @@ describe('Unit tests for HealthScoreChart', () => {
   })
 
   test('Verify hasTimelineIntegration flag set to false', async () => {
-    jest.spyOn(cvService, 'useGetMonitoredServiceOverAllHealthScoreWithServiceAndEnv').mockReturnValue({
+    jest.spyOn(cvService, 'useGetMonitoredServiceOverAllHealthScore').mockReturnValue({
       data: {},
       refetch: fetchHealthScore as unknown
     } as UseGetReturn<any, any, any, any>)
 
     const propsWithOutTimelineIntegration = {
-      envIdentifier: '1234_env',
-      serviceIdentifier: '1234_service',
+      monitoredServiceIdentifier: 'monitored_service_identifier',
       hasTimelineIntegration: false,
       duration: { value: TimePeriodEnum.TWENTY_FOUR_HOURS, label: 'twenty_four_hours' }
     }
@@ -133,7 +127,6 @@ describe('Unit tests for HealthScoreChart', () => {
 
     await waitFor(() =>
       expect(cvService.useGetMonitoredServiceOverAllHealthScore).toHaveBeenLastCalledWith({
-        lazy: true,
         identifier: 'monitored_service_identifier',
         queryParams: {
           accountId: undefined,

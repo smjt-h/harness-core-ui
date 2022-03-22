@@ -16,11 +16,10 @@ exports[`Test SLOTargetAndBudgetPolicy component should render SLOTargetAndBudge
         class="bp3-card bp3-elevation-0 Card--card card"
       >
         <div
-          class="Layout--horizontal StyledProps--main StyledProps--flex StyledProps--flex-justifyContent-flex-start StyledProps--flex-alignItems-flex-start"
+          class="Layout--horizontal StyledProps--main StyledProps--flex StyledProps--flex-justifyContent-flex-start StyledProps--flex-alignItems-stretch"
         >
           <div
-            class="StyledProps--font StyledProps--main StyledProps--border StyledProps--border-right"
-            style="width: 50%;"
+            class="StyledProps--font StyledProps--main StyledProps--padding-right-large"
           >
             <div
               class="Layout--vertical StyledProps--main"
@@ -255,8 +254,7 @@ exports[`Test SLOTargetAndBudgetPolicy component should render SLOTargetAndBudge
             </div>
           </div>
           <div
-            class="StyledProps--font StyledProps--main contextualHelp StyledProps--padding-left-large StyledProps--padding-right-large"
-            style="width: 50%;"
+            class="StyledProps--font StyledProps--main contextualHelp StyledProps--padding-left-large StyledProps--padding-right-large StyledProps--border StyledProps--border-left"
           >
             <p
               class="StyledProps--font StyledProps--main title"

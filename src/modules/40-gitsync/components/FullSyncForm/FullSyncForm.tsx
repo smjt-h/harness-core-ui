@@ -6,11 +6,9 @@
  */
 
 import React, { useEffect, useRef, useState } from 'react'
-import { Popover, Position } from '@blueprintjs/core'
 import {
   Container,
   Text,
-  Color,
   Layout,
   Formik,
   FormikForm,
@@ -22,10 +20,10 @@ import {
   ModalErrorHandler,
   ModalErrorHandlerBinding,
   PageSpinner,
-  FontVariation,
   useToaster,
   ButtonVariation
 } from '@harness/uicore'
+import { FontVariation, Color } from '@harness/design-system'
 import * as Yup from 'yup'
 import cx from 'classnames'
 import { debounce, defaultTo } from 'lodash-es'
@@ -220,20 +218,6 @@ const FullSyncForm: React.FC<ModalConfigureProps & FullSyncFormProps> = props =>
               setDisableBranchSelection(!creatingPR)
             }}
           />
-          {disableCreatePR ? (
-            <Popover
-              position={Position.TOP}
-              content={
-                <Text padding="medium" color={Color.RED_400}>
-                  {getString('common.git.onlyDefaultBranchFound')}
-                </Text>
-              }
-              isOpen={disableCreatePR}
-              popoverClassName={css.tooltip}
-            >
-              <Container margin={{ bottom: 'xlarge' }}></Container>
-            </Popover>
-          ) : null}
           <FormInput.Select
             name="targetBranch"
             items={defaultTo(branches, [])}

@@ -6,7 +6,9 @@
  */
 
 import React from 'react'
-import { Color, Layout, TagsPopover, Text, Container } from '@harness/uicore'
+
+import { Layout, TagsPopover, Text } from '@harness/uicore'
+import { Color } from '@harness/design-system'
 import { defaultTo, isEmpty } from 'lodash-es'
 import { useConfirmAction } from '@common/hooks/useConfirmAction'
 import { useStrings } from 'framework/strings'

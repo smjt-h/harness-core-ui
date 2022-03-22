@@ -9,17 +9,16 @@ import React, { useMemo } from 'react'
 import { useParams, useHistory } from 'react-router-dom'
 import {
   Heading,
-  FontVariation,
   Card,
   FormInput,
   SelectOption,
   Layout,
   Container,
   Text,
-  Color,
   ButtonVariation
 } from '@wings-software/uicore'
 import type { RadioButtonProps } from '@wings-software/uicore/dist/components/RadioButton/RadioButton'
+import { FontVariation, Color } from '@harness/design-system'
 import { useStrings } from 'framework/strings'
 import { useQueryParams } from '@common/hooks'
 import type { ProjectPathProps } from '@common/interfaces/RouteInterfaces'

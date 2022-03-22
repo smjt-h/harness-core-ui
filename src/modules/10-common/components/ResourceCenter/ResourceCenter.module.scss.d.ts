@@ -7,6 +7,7 @@
  **/
 // this is an auto-generated file, do not update this manually
 declare const styles: {
+  readonly bottomBorder: string
   readonly bottombutton: string
   readonly communityPopover: string
   readonly communityTooltip: string
@@ -15,7 +16,6 @@ declare const styles: {
   readonly marginTop: string
   readonly middleregion: string
   readonly resourceCenter: string
-  readonly submitTicket: string
   readonly title: string
   readonly txtAlignCenter: string
   readonly university: string

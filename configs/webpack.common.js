@@ -161,7 +161,15 @@ const config = {
   },
   optimization: {
     splitChunks: {
-      chunks: 'all'
+      chunks: 'all',
+      cacheGroups: {
+        styles: {
+          name: 'styles',
+          type: 'css/mini-extract',
+          chunks: 'all',
+          enforce: true
+        }
+      }
     }
   },
   plugins: [

@@ -464,7 +464,7 @@ exports[`Edit rule page render edit rule page successfully 1`] = `
                           <span
                             class="bp3-control-indicator"
                           />
-                          EC2 VM(s)
+                          ce.co.autoStoppingRule.helpText.step2.description.resourceList.ec2Vms
                         </label>
                         <label
                           class="bp3-control bp3-radio"
@@ -477,7 +477,7 @@ exports[`Edit rule page render edit rule page successfully 1`] = `
                           <span
                             class="bp3-control-indicator"
                           />
-                          Auto scaling groups
+                          ce.co.autoStoppingRule.helpText.step2.description.resourceList.asg
                         </label>
                         <label
                           class="bp3-control bp3-radio"
@@ -490,7 +490,7 @@ exports[`Edit rule page render edit rule page successfully 1`] = `
                           <span
                             class="bp3-control-indicator"
                           />
-                          ECS Service
+                          ce.co.autoStoppingRule.helpText.step2.description.resourceList.ecsService
                         </label>
                         <label
                           class="bp3-control bp3-radio"
@@ -503,7 +503,7 @@ exports[`Edit rule page render edit rule page successfully 1`] = `
                           <span
                             class="bp3-control-indicator"
                           />
-                          RDS instances
+                          ce.co.autoStoppingRule.helpText.step2.description.resourceList.rdsInstances
                         </label>
                       </div>
                       <div

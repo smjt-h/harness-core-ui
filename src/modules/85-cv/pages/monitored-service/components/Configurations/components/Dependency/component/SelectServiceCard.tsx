@@ -6,7 +6,8 @@
  */
 
 import React, { useMemo } from 'react'
-import { Text, Color, Container, Card, Checkbox } from '@wings-software/uicore'
+import { Text, Container, Card, Checkbox } from '@wings-software/uicore'
+import { Color } from '@harness/design-system'
 import { useStrings } from 'framework/strings'
 import type { ServiceCardInterfaceProps, InfrastructureDependencyMetaData } from './SelectServiceCard.types'
 import MonitoredServiceCategory from './components/MonitoredServiceCategory/MonitoredServiceCategory'

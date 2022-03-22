@@ -10,7 +10,8 @@ import { noop } from 'lodash-es'
 import type { IDrawerProps } from '@blueprintjs/core'
 import { useParams, Link } from 'react-router-dom'
 import type { Column } from 'react-table'
-import { Text, Icon, Color, Container, NoDataCard, PageError, TableV2 } from '@wings-software/uicore'
+import { Text, Icon, Container, NoDataCard, PageError, TableV2 } from '@wings-software/uicore'
+import { Color } from '@harness/design-system'
 import Card from '@cv/components/Card/Card'
 import { useStrings } from 'framework/strings'
 import { useChangeEventList } from 'services/cv'
@@ -50,13 +51,7 @@ export default function ChangesTable({
   } as IDrawerProps
   const { showDrawer } = useDrawer({
     // eslint-disable-next-line react/display-name
-    createDrawerContent: props => (
-      <ChangeEventCard
-        activityId={props.id}
-        serviceIdentifier={Array.isArray(serviceIdentifier) ? serviceIdentifier[0] : serviceIdentifier}
-        environmentIdentifier={Array.isArray(environmentIdentifier) ? environmentIdentifier[0] : environmentIdentifier}
-      />
-    ),
+    createDrawerContent: props => <ChangeEventCard activityId={props.id} />,
     drawerOptions
   })
 

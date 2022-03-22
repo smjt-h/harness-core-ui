@@ -6,11 +6,14 @@
  */
 
 import React from 'react'
-import { Button, ButtonVariation, Color, FontVariation, Icon, IconName, Layout, Text } from '@wings-software/uicore'
+import { Button, ButtonVariation, Icon, IconName, Layout, Text } from '@wings-software/uicore'
+import { Color, FontVariation } from '@harness/design-system'
 import { PopoverInteractionKind, Classes, Position } from '@blueprintjs/core'
 import cx from 'classnames'
+import { useFeatureFlags } from '@common/hooks/useFeatureFlag'
 import { useCommunity } from 'framework/LicenseStore/useCommunity'
 import { useStrings } from 'framework/strings'
+import Feedback from './Feedback'
 import css from './ResourceCenter.module.scss'
 
 export const getButton = (
@@ -137,19 +140,20 @@ export const CommunitySubmitTicket = (): React.ReactElement => {
     </Layout.Horizontal>
   )
 }
-
-export const MenuItems = (): React.ReactElement => {
+export const MenuItems: React.FC = (): React.ReactElement => {
   const { getString } = useStrings()
   const isCommunity = useCommunity()
+  const { SHOW_NG_REFINER_FEEDBACK } = useFeatureFlags()
 
   return isCommunity ? (
     <CommunitySubmitTicket />
   ) : (
     <Layout.Vertical padding={'xlarge'} className={css.middleregion}>
+      {SHOW_NG_REFINER_FEEDBACK && <Feedback label={getString('common.resourceCenter.feedback.submit')} />}
       <Layout.Horizontal
-        padding={{ bottom: 'medium' }}
+        padding={SHOW_NG_REFINER_FEEDBACK ? { top: 'medium', bottom: 'medium' } : { bottom: 'medium' }}
         flex={{ justifyContent: 'space-between' }}
-        className={css.submitTicket}
+        className={css.bottomBorder}
       >
         {menuItems(
           getString('common.resourceCenter.ticketmenu.submit'),

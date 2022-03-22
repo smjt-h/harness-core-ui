@@ -6,10 +6,10 @@
  */
 
 import React from 'react'
-import produce from 'immer'
-import { Color, FontVariation, MultiTypeInputType, NestedAccordionPanel, Text } from '@wings-software/uicore'
-import { get, set } from 'lodash-es'
-import type { DeploymentStageConfig, StageElementConfig } from 'services/cd-ng'
+import { MultiTypeInputType, NestedAccordionPanel, Text } from '@wings-software/uicore'
+import { Color, FontVariation } from '@harness/design-system'
+import { get } from 'lodash-es'
+import type { DeploymentStageConfig, ExecutionElementConfig, Infrastructure, StageElementConfig } from 'services/cd-ng'
 import { useStrings } from 'framework/strings'
 import { VariablesListTable } from '@pipeline/components/VariablesListTable/VariablesListTable'
 import { InfrastructureCardPanel } from '@pipeline/components/PipelineStudio/PipelineVariables/Cards/InfrastructureCard'
@@ -27,11 +27,22 @@ export interface EnvironmentCardProps {
   readonly?: boolean
   allowableTypes: MultiTypeInputType[]
   stepsFactory: AbstractStepFactory
-  updateStage: (stage: StageElementConfig) => Promise<void>
+  onUpdateInfrastructure: (data: Infrastructure) => void
+  onUpdateInfrastructureProvisioner: (data: ExecutionElementConfig) => void
 }
 
 function EnvironmentCard(props: EnvironmentCardProps) {
-  const { stage, originalStage, metadataMap, readonly, path, allowableTypes, stepsFactory, updateStage } = props
+  const {
+    stage,
+    originalStage,
+    metadataMap,
+    readonly,
+    path,
+    allowableTypes,
+    stepsFactory,
+    onUpdateInfrastructure,
+    onUpdateInfrastructureProvisioner
+  } = props
   const stageSpec = stage.spec as DeploymentStageConfig
   const originalSpec = originalStage.spec as DeploymentStageConfig
 
@@ -54,20 +65,8 @@ function EnvironmentCard(props: EnvironmentCardProps) {
           readonly={readonly}
           allowableTypes={allowableTypes}
           path={`${path}.${originalStage.identifier}.Infrastructure`}
-          onUpdateInfrastructure={infrastructure => {
-            updateStage(
-              produce(originalStage, draft => {
-                set(draft, 'spec.infrastructure', infrastructure)
-              })
-            )
-          }}
-          onUpdateInfrastructureProvisioner={provisioner => {
-            updateStage(
-              produce(originalStage, draft => {
-                set(draft, 'spec.infrastructure.infrastructureDefinition.provisioner', provisioner)
-              })
-            )
-          }}
+          onUpdateInfrastructure={onUpdateInfrastructure}
+          onUpdateInfrastructureProvisioner={onUpdateInfrastructureProvisioner}
           stepsFactory={stepsFactory}
         />
       ) : /* istanbul ignore next */ null}

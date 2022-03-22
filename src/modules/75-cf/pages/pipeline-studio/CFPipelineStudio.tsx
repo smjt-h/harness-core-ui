@@ -26,6 +26,7 @@ import { useQueryParams } from '@common/hooks'
 import { useFeatureFlag } from '@common/hooks/useFeatureFlag'
 import { useLicenseStore } from 'framework/LicenseStore/LicenseStoreContext'
 import { FeatureFlag } from '@common/featureFlags'
+import { TemplateDrawer } from '@templates-library/components/TemplateDrawer/TemplateDrawer'
 import css from './CFPipelineStudio.module.scss'
 
 const CIPipelineStudio: React.FC = (): JSX.Element => {
@@ -82,6 +83,7 @@ const CIPipelineStudio: React.FC = (): JSX.Element => {
         routePipelineProject={routes.toDeployments}
         routePipelineList={routes.toPipelines}
       />
+      <TemplateDrawer />
     </PipelineProvider>
   )
 }

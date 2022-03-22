@@ -20,7 +20,8 @@ import {
   activeMetrics,
   dashboardDetails,
   selectedDashboardName,
-  datadogLogsMonitoredService
+  datadogLogsMonitoredService,
+  getActiveMetricWithFilter
 } from '../../../support/85-cv/monitoredService/health-sources/Datadog/constants'
 import { errorResponse } from '../../../support/85-cv/slos/constants'
 import { Connectors } from '../../../utils/connctors-utils'
@@ -232,6 +233,7 @@ describe('Configure Datadog health source', () => {
   })
 
   it('should be able to edit an existing Data dog health source', () => {
+    const searchTerm = 'docker'
     cy.intercept('GET', '/cv/api/monitored-service/service1_env1?*', dataDogMonitoredService)
     cy.wait(1000)
 
@@ -240,14 +242,21 @@ describe('Configure Datadog health source', () => {
     cy.contains('div', 'DD new').click()
 
     //intercepting calls
+    const filterURL = getActiveMetricWithFilter(searchTerm)
     cy.intercept('GET', dashboards.dashboardsAPI, dashboards.dashboardsResponse).as('dashboardsResponse')
     cy.intercept('GET', metricTags.getMetricsTags, metricTags.getMetricsTagsResponse).as('getMetricsTags')
+    cy.intercept('GET', filterURL, activeMetrics.getActiveMetricsFilteredResponse).as('getMetricsTagsFiltered')
 
     cy.findByRole('button', { name: /Next/i }).click()
 
     cy.wait('@dashboardsResponse')
     cy.findAllByRole('button', { name: /Next/i }).last().click()
     cy.wait('@getMetricsTags')
+
+    // search is triggered on typing
+    cy.get('input[name="metric"]').type(searchTerm)
+    cy.wait('@getMetricsTagsFiltered')
+    cy.contains('p', 'docker.cpu.usage').click()
 
     //updating metric name and triggering submit
     cy.fillField('metricName', 'Datadog Metric updated')

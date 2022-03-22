@@ -18,13 +18,13 @@ import {
   Pagination,
   useIsMounted,
   Icon,
-  Color,
   Button,
   FlexExpander,
   TextInput,
   PageError,
   HarnessDocTooltip
 } from '@wings-software/uicore'
+import { Color } from '@harness/design-system'
 import { useModalHook } from '@harness/use-modal'
 import { get, noop, omit, debounce } from 'lodash-es'
 import cx from 'classnames'
@@ -33,7 +33,13 @@ import { useExecutionContext } from '@pipeline/context/ExecutionContext'
 import { TestSuiteSummaryQueryParams, useTestSuiteSummary, useVgSearch, TestSuite } from 'services/ti-service'
 import { CallGraphAPIResponse, TestsCallgraph } from './TestsCallgraph'
 import { TestsExecutionItem } from './TestsExecutionItem'
-import { SortByKey, CALL_GRAPH_WIDTH, CALL_GRAPH_HEIGHT, CALL_GRAPH_API_LIMIT } from './TestsUtils'
+import {
+  SortByKey,
+  CALL_GRAPH_WIDTH,
+  CALL_GRAPH_HEIGHT,
+  CALL_GRAPH_API_LIMIT,
+  getOptionalQueryParamKeys
+} from './TestsUtils'
 import testsCallgraphErrorIllustration from './TestsCallgraphErrorIllustration.svg'
 import css from './BuildTests.module.scss'
 
@@ -44,6 +50,7 @@ interface TestsExecutionProps {
   stepId: string
   serviceToken: string
   showCallGraph?: boolean
+  isAggregatedReports?: boolean
 }
 
 const getEntireExecutionSummary = (executionSummaryContent: TestSuite[]): any =>
@@ -58,7 +65,8 @@ export function TestsExecution({
   stageId,
   stepId,
   serviceToken,
-  showCallGraph
+  showCallGraph,
+  isAggregatedReports
 }: TestsExecutionProps): React.ReactElement | null {
   const context = useExecutionContext()
   const { getString } = useStrings()
@@ -74,8 +82,10 @@ export function TestsExecution({
   }>()
   const [sortBy, setSortBy] = useState<SortByKey>(SortByKey.FAILURE_RATE)
   const [pageIndex, setPageIndex] = useState(0)
-  const queryParams = useMemo(
-    () => ({
+  const queryParams = useMemo(() => {
+    const optionalKeys = getOptionalQueryParamKeys({ stageId, stepId })
+
+    return {
       accountId,
       orgId: orgIdentifier,
       projectId: projectIdentifier,
@@ -86,21 +96,19 @@ export function TestsExecution({
       sort: sortBy,
       pageSize: PAGE_SIZE,
       order: 'DESC' as const,
-      stageId,
-      stepId
-    }),
-    [
-      stageId,
-      stepId,
-      accountId,
-      orgIdentifier,
-      projectIdentifier,
-      context?.pipelineExecutionDetail?.pipelineExecutionSummary?.pipelineIdentifier,
-      context?.pipelineExecutionDetail?.pipelineExecutionSummary?.runSequence,
-      pageIndex,
-      sortBy
-    ]
-  )
+      ...optionalKeys
+    }
+  }, [
+    stageId,
+    stepId,
+    accountId,
+    orgIdentifier,
+    projectIdentifier,
+    context?.pipelineExecutionDetail?.pipelineExecutionSummary?.pipelineIdentifier,
+    context?.pipelineExecutionDetail?.pipelineExecutionSummary?.runSequence,
+    pageIndex,
+    sortBy
+  ])
   const {
     data: executionSummary,
     error,
@@ -172,7 +180,7 @@ export function TestsExecution({
   }, [callGraphData])
   const onClassSelected = useCallback(
     (selectedClassName: string) => {
-      if (selectedClassName !== selectedCallGraphClass) {
+      if (selectedClassName !== selectedCallGraphClass && !isAggregatedReports) {
         setSelectedCallGraphClass(selectedClassName)
         fetchCallGraph({
           queryParams: Object.assign({}, omit(queryParams, ['report', 'pageIndex', 'sort', 'pageSize', 'order']), {

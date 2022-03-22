@@ -16,7 +16,6 @@ import {
   Text,
   Card,
   Accordion,
-  FontVariation,
   ThumbnailSelect,
   IconName,
   Container,
@@ -24,6 +23,7 @@ import {
 } from '@wings-software/uicore'
 import { isEmpty, isUndefined, set, uniqBy } from 'lodash-es'
 import { useParams } from 'react-router-dom'
+import { FontVariation } from '@harness/design-system'
 import cx from 'classnames'
 import { produce } from 'immer'
 import type { FormikProps } from 'formik'
@@ -172,7 +172,7 @@ export default function BuildInfraSpecifications({ children }: React.PropsWithCh
 
   const buildInfraTypes: BuildInfraTypeItem[] = [
     {
-      label: getString('serviceDeploymentTypes.kubernetes'),
+      label: getString('pipeline.serviceDeploymentTypes.kubernetes'),
       icon: 'service-kubernetes',
       value: 'KubernetesDirect'
     },

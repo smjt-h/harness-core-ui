@@ -85,6 +85,7 @@ describe('Create SLO', () => {
     cy.contains('p', 'number_of_slow_calls').click({ force: true })
 
     // selecting Metric for Good requests
+    cy.wait(1000)
     cy.get('input[name="validRequestMetric"]').click()
     cy.contains('p', 'https_errors_per_min').click({ force: true })
 

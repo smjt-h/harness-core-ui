@@ -53,3 +53,4 @@ resyncFailToaster: Resync trigger failed
 resyncButtonText: Resync
 editConfigButtonText: Edit config
 configSaveToaster: Full sync config is saved
+branchFetchFailed: Branch fetch failed

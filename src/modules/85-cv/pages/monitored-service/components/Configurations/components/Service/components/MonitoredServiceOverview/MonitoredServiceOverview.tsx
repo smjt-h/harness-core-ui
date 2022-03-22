@@ -6,7 +6,8 @@
  */
 
 import React, { useCallback, useMemo, useState } from 'react'
-import { Layout, FormInput, Utils, Intent, useConfirmationDialog } from '@wings-software/uicore'
+import { Layout, FormInput, Utils, useConfirmationDialog } from '@wings-software/uicore'
+import { Intent } from '@harness/design-system'
 import { NameIdDescriptionTags } from '@common/components'
 import { useStrings } from 'framework/strings'
 import type { MonitoredServiceDTO } from 'services/cv'

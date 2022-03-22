@@ -5,11 +5,12 @@
  * https://polyformproject.org/wp-content/uploads/2020/06/PolyForm-Shield-1.0.0.txt.
  */
 
-/* eslint-disable */
-// this is an auto-generated file
-declare const styles: {
-  readonly main: string
-  readonly kubernetesButton: string
-  readonly highlightOnHover: string
+import React from 'react'
+import { Text } from '@harness/uicore'
+import { PipelineStage } from '@pipeline/components/PipelineStages/PipelineStage'
+
+export class SecurityStage extends PipelineStage {
+  render(): JSX.Element {
+    return <Text>Coming Soon!</Text>
+  }
 }
-export default styles

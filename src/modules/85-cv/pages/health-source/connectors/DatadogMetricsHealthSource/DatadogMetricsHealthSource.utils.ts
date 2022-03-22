@@ -79,7 +79,7 @@ export function mapDatadogMetricHealthSourceToDatadogMetricSetupSource(sourceDat
       })
     }
     setupSource.metricDefinition.set(metricDefinition.metricPath || '', {
-      identifier: metricDefinition.identifier,
+      identifier: metricDefinition.identifier?.split(' ').join('_'),
       dashboardId: metricDefinition.dashboardId,
       metricPath: metricDefinition.metricPath,
       metricName: metricDefinition.metricName,
@@ -156,7 +156,7 @@ export function mapDatadogMetricSetupSourceToDatadogHealthSource(
 
     const spec: DatadogMetricHealthSourceSpec = (healthSource.spec as DatadogMetricHealthSourceSpec) || {}
     spec.metricDefinitions?.push({
-      identifier: metricInfo.identifier,
+      identifier: metricInfo.identifier?.split(' ').join('_'),
       dashboardName: metricInfo.groupName?.value as string,
       dashboardId: metricInfo.dashboardId,
       metricPath: metricInfo.metricPath,
@@ -354,7 +354,7 @@ export function mapSelectedWidgetDataToDatadogMetricInfo(
   )
   return {
     metricName: selectedWidgetMetricData.metricName,
-    identifier: selectedWidgetMetricData.metricName,
+    identifier: selectedWidgetMetricData.metricName.split(' ').join('_'),
     dashboardId: selectedWidgetMetricData.dashboardId,
     metric: queryExtractor.activeMetric,
     aggregator: queryExtractor.aggregation,

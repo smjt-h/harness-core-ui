@@ -782,20 +782,6 @@ exports[`Test GatewayDetails renders review screen 1`] = `
                   <p
                     class="StyledProps--font StyledProps--main"
                   >
-                    Is it publicly accessible?
-                  </p>
-                  <p
-                    class="StyledProps--font StyledProps--main"
-                  >
-                    Yes
-                  </p>
-                </div>
-                <div
-                  class="Layout--horizontal Layout--layout-spacing-large StyledProps--main equalSpacing borderSpacing StyledProps--padding-bottom-medium"
-                >
-                  <p
-                    class="StyledProps--font StyledProps--main"
-                  >
                     Auto generated URL
                   </p>
                   <p
@@ -1342,7 +1328,7 @@ exports[`Test GatewayDetails renders review screen 2`] = `
                           <span
                             class="bp3-control-indicator"
                           />
-                          EC2 VM(s)
+                          ce.co.autoStoppingRule.helpText.step2.description.resourceList.ec2Vms
                         </label>
                         <label
                           class="bp3-control bp3-radio"
@@ -1355,7 +1341,7 @@ exports[`Test GatewayDetails renders review screen 2`] = `
                           <span
                             class="bp3-control-indicator"
                           />
-                          Auto scaling groups
+                          ce.co.autoStoppingRule.helpText.step2.description.resourceList.asg
                         </label>
                         <label
                           class="bp3-control bp3-radio"
@@ -1368,7 +1354,7 @@ exports[`Test GatewayDetails renders review screen 2`] = `
                           <span
                             class="bp3-control-indicator"
                           />
-                          ECS Service
+                          ce.co.autoStoppingRule.helpText.step2.description.resourceList.ecsService
                         </label>
                         <label
                           class="bp3-control bp3-radio"
@@ -1381,7 +1367,7 @@ exports[`Test GatewayDetails renders review screen 2`] = `
                           <span
                             class="bp3-control-indicator"
                           />
-                          RDS instances
+                          ce.co.autoStoppingRule.helpText.step2.description.resourceList.rdsInstances
                         </label>
                       </div>
                       <div
@@ -3144,7 +3130,7 @@ exports[`Test GatewayDetails renders setup access screen and move to previous st
                           <span
                             class="bp3-control-indicator"
                           />
-                          EC2 VM(s)
+                          ce.co.autoStoppingRule.helpText.step2.description.resourceList.ec2Vms
                         </label>
                         <label
                           class="bp3-control bp3-radio"
@@ -3157,7 +3143,7 @@ exports[`Test GatewayDetails renders setup access screen and move to previous st
                           <span
                             class="bp3-control-indicator"
                           />
-                          Auto scaling groups
+                          ce.co.autoStoppingRule.helpText.step2.description.resourceList.asg
                         </label>
                         <label
                           class="bp3-control bp3-radio"
@@ -3170,7 +3156,7 @@ exports[`Test GatewayDetails renders setup access screen and move to previous st
                           <span
                             class="bp3-control-indicator"
                           />
-                          ECS Service
+                          ce.co.autoStoppingRule.helpText.step2.description.resourceList.ecsService
                         </label>
                         <label
                           class="bp3-control bp3-radio"
@@ -3183,7 +3169,7 @@ exports[`Test GatewayDetails renders setup access screen and move to previous st
                           <span
                             class="bp3-control-indicator"
                           />
-                          RDS instances
+                          ce.co.autoStoppingRule.helpText.step2.description.resourceList.rdsInstances
                         </label>
                       </div>
                       <div
@@ -4216,7 +4202,7 @@ exports[`Test GatewayDetails renders without crashing 1`] = `
                           <span
                             class="bp3-control-indicator"
                           />
-                          EC2 VM(s)
+                          ce.co.autoStoppingRule.helpText.step2.description.resourceList.ec2Vms
                         </label>
                         <label
                           class="bp3-control bp3-radio"
@@ -4229,7 +4215,7 @@ exports[`Test GatewayDetails renders without crashing 1`] = `
                           <span
                             class="bp3-control-indicator"
                           />
-                          Auto scaling groups
+                          ce.co.autoStoppingRule.helpText.step2.description.resourceList.asg
                         </label>
                         <label
                           class="bp3-control bp3-radio"
@@ -4242,7 +4228,7 @@ exports[`Test GatewayDetails renders without crashing 1`] = `
                           <span
                             class="bp3-control-indicator"
                           />
-                          ECS Service
+                          ce.co.autoStoppingRule.helpText.step2.description.resourceList.ecsService
                         </label>
                         <label
                           class="bp3-control bp3-radio"
@@ -4255,7 +4241,7 @@ exports[`Test GatewayDetails renders without crashing 1`] = `
                           <span
                             class="bp3-control-indicator"
                           />
-                          RDS instances
+                          ce.co.autoStoppingRule.helpText.step2.description.resourceList.rdsInstances
                         </label>
                       </div>
                       <div

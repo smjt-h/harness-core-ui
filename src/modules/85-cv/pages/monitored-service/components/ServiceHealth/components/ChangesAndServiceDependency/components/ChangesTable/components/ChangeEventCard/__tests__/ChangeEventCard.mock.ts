@@ -13,6 +13,7 @@ export const payload = {
     orgIdentifier: 'CVNG',
     projectIdentifier: 'DemoDataProject',
     serviceIdentifier: 'service1',
+    monitoredServiceIdentifier: 'monitored_service_identifier',
     serviceName: 'service1',
     envIdentifier: 'prod',
     environmentName: 'prod',

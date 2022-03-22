@@ -20,6 +20,8 @@ sed -i "s|<\!-- segmentToken -->|<script>window.segmentToken = '$SEGMENT_TOKEN'<
 sed -i "s|<\!-- bugsnagToken -->|<script>window.bugsnagToken = '$BUGSNAG_TOKEN'</script>|" index.html
 sed -i "s|<\!-- appDyEUMToken -->|<script>window.appDyEUMToken = '$APPDY_EUM_TOKEN'</script>|" index.html
 sed -i "s|<\!-- deploymentType -->|<script>window.deploymentType = '$DEPLOYMENT_TYPE'</script>|" index.html
+sed -i "s|<\!-- refinerProjectToken -->|<script>window.refinerProjectToken = '$REFINER_PROJECT_TOKEN'</script>|" index.html
+sed -i "s|<\!-- refinerFeedbackToken -->|<script>window.refinerFeedbackToken = '$REFINER_FEEDBACK_TOKEN'</script>|" index.html
 if [ "$HARNESS_ENABLE_CDN_PLACEHOLDER" = "true" ]
 then
   sed -i "s|\"static\/main\.\(.*\)\.js\"|\"//static.harness.io/ng-static/main.\1.js\"|" index.html

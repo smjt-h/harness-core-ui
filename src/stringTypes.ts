@@ -528,6 +528,7 @@ export interface StringsMap {
   'common.resourceCenter.bottomlayout.university': string
   'common.resourceCenter.communityLevelUp': string
   'common.resourceCenter.communitySlack': string
+  'common.resourceCenter.feedback.submit': string
   'common.resourceCenter.ticketmenu.submit': string
   'common.resourceCenter.ticketmenu.submitDesc': string
   'common.resourceCenter.ticketmenu.tickets': string
@@ -1786,8 +1787,6 @@ export interface StringsMap {
   'connectors.editConnector': string
   'connectors.encryptedAPIKeyLabel': string
   'connectors.encryptedAPIKeyValidation': string
-  'connectors.errorTracking.sidLabel': string
-  'connectors.errorTracking.sidValidation': string
   'connectors.errorTracking.urlValidation': string
   'connectors.gcpKms.credentialsFile': string
   'connectors.gcpKms.credentialsFileRequired': string
@@ -2047,6 +2046,7 @@ export interface StringsMap {
   'gitsync.addFolder': string
   'gitsync.addNewHarnessFolderLabel': string
   'gitsync.baseBranch': string
+  'gitsync.branchFetchFailed': string
   'gitsync.branchToSync': string
   'gitsync.configSaveToaster': string
   'gitsync.configureHarnessFolder': string
@@ -2303,6 +2303,8 @@ export interface StringsMap {
   'pipeline.approvalStep.validation.minimumCountRequired': string
   'pipeline.approvalStep.validation.userGroups': string
   'pipeline.approvalTypeRequired': string
+  'pipeline.artifactPathDependencyRequired': string
+  'pipeline.artifactPathFilterLabel': string
   'pipeline.artifactPathLabel': string
   'pipeline.artifactTriggerConfigPanel.artifact': string
   'pipeline.artifactTriggerConfigPanel.artifactReferenceUnique': string
@@ -2321,8 +2323,11 @@ export interface StringsMap {
   'pipeline.artifactTriggerConfigPanel.selectAManifest': string
   'pipeline.artifactTriggerConfigPanel.selectAnArtifact': string
   'pipeline.artifactsSelection.artifactDetails': string
+  'pipeline.artifactsSelection.artifactDirectory': string
+  'pipeline.artifactsSelection.artifactDirectoryPlaceholder': string
   'pipeline.artifactsSelection.artifactNamePlaceholder': string
   'pipeline.artifactsSelection.artifactTyperequired': string
+  'pipeline.artifactsSelection.errors.noRepositories': string
   'pipeline.artifactsSelection.existingDocker.enterTagRegex': string
   'pipeline.artifactsSelection.existingDocker.imageNamePlaceholder': string
   'pipeline.artifactsSelection.existingDocker.sidecarId': string
@@ -2331,7 +2336,9 @@ export interface StringsMap {
   'pipeline.artifactsSelection.repositoryPlaceholder': string
   'pipeline.artifactsSelection.repositoryPort': string
   'pipeline.artifactsSelection.repositoryPortPlaceholder': string
+  'pipeline.artifactsSelection.validation.artifactDirectory': string
   'pipeline.artifactsSelection.validation.artifactPath': string
+  'pipeline.artifactsSelection.validation.artifactPathFilter': string
   'pipeline.artifactsSelection.validation.imagePath': string
   'pipeline.artifactsSelection.validation.region': string
   'pipeline.artifactsSelection.validation.repositoryPort': string
@@ -2710,12 +2717,17 @@ export interface StringsMap {
   'pipeline.manifestType.selectManifestStore': string
   'pipeline.manifestType.specifyManifestRepoType': string
   'pipeline.manifestType.specifyManifestStore': string
+  'pipeline.manifestTypeLabels.AwsSAM': string
+  'pipeline.manifestTypeLabels.AzureFunctions': string
   'pipeline.manifestTypeLabels.HelmChartLabel': string
   'pipeline.manifestTypeLabels.K8sManifest': string
   'pipeline.manifestTypeLabels.KustomizeLabel': string
   'pipeline.manifestTypeLabels.KustomizePatches': string
   'pipeline.manifestTypeLabels.OpenshiftParam': string
   'pipeline.manifestTypeLabels.OpenshiftTemplate': string
+  'pipeline.manifestTypeLabels.ServerlessAwsLambda': string
+  'pipeline.manifestTypeLabels.ServerlessAzure': string
+  'pipeline.manifestTypeLabels.ServerlessGCP': string
   'pipeline.manifestTypeLabels.ValuesYaml': string
   'pipeline.moveStage.description': string
   'pipeline.moveStage.title': string
@@ -2809,6 +2821,20 @@ export interface StringsMap {
   'pipeline.selectStagePlaceholder': string
   'pipeline.serviceDependenciesText': string
   'pipeline.serviceDependencyText': string
+  'pipeline.serviceDeploymentTypes.amazonAmi': string
+  'pipeline.serviceDeploymentTypes.amazonEcs': string
+  'pipeline.serviceDeploymentTypes.awsCodeDeploy': string
+  'pipeline.serviceDeploymentTypes.awsLambda': string
+  'pipeline.serviceDeploymentTypes.awsSAM': string
+  'pipeline.serviceDeploymentTypes.azureFunctions': string
+  'pipeline.serviceDeploymentTypes.deployDifferentLabel': string
+  'pipeline.serviceDeploymentTypes.kubernetes': string
+  'pipeline.serviceDeploymentTypes.pcf': string
+  'pipeline.serviceDeploymentTypes.serverlessAwsLambda': string
+  'pipeline.serviceDeploymentTypes.serverlessAzureFunctions': string
+  'pipeline.serviceDeploymentTypes.serverlessGoogleFunctions': string
+  'pipeline.serviceDeploymentTypes.ssh': string
+  'pipeline.serviceDeploymentTypes.winrm': string
   'pipeline.serviceNowApprovalStep.connectToServiceNow': string
   'pipeline.serviceNowApprovalStep.connectorRef': string
   'pipeline.serviceNowApprovalStep.execution.conditions.equals': string
@@ -3563,7 +3589,11 @@ export interface StringsMap {
   'ce.co.autoStoppingRule.helpText.step1.title': string
   'ce.co.autoStoppingRule.helpText.step2.description.heading': string
   'ce.co.autoStoppingRule.helpText.step2.description.resourceList.asg': string
+  'ce.co.autoStoppingRule.helpText.step2.description.resourceList.ec2Vms': string
+  'ce.co.autoStoppingRule.helpText.step2.description.resourceList.ecsService': string
+  'ce.co.autoStoppingRule.helpText.step2.description.resourceList.gcpVms': string
   'ce.co.autoStoppingRule.helpText.step2.description.resourceList.kubernetes': string
+  'ce.co.autoStoppingRule.helpText.step2.description.resourceList.rdsInstances': string
   'ce.co.autoStoppingRule.helpText.step2.description.resourceList.vms': string
   'ce.co.autoStoppingRule.helpText.step2.title': string
   'ce.co.autoStoppingRule.helpText.step3.description.additionalInfo': string
@@ -3577,6 +3607,8 @@ export interface StringsMap {
   'ce.co.autoStoppingRule.setupAccess.autogeneratedHelpText': string
   'ce.co.autoStoppingRule.setupAccess.chooseLbText': string
   'ce.co.autoStoppingRule.setupAccess.customDomain.helpText': string
+  'ce.co.autoStoppingRule.setupAccess.customDomain.mappingHeader': string
+  'ce.co.autoStoppingRule.setupAccess.customDomain.mappingSubHeader': string
   'ce.co.autoStoppingRule.setupAccess.customDomain.noHostedZones': string
   'ce.co.autoStoppingRule.setupAccess.erroredAccessPointSelectionText': string
   'ce.co.autoStoppingRule.setupAccess.helpText.bgTasks.info': string
@@ -4716,7 +4748,8 @@ export interface StringsMap {
   'cv.customHealthSource.Querymapping.endTimeLabel': string
   'cv.customHealthSource.Querymapping.jsonPathTitle': string
   'cv.customHealthSource.Querymapping.label': string
-  'cv.customHealthSource.Querymapping.queryValueJsonPath': string
+  'cv.customHealthSource.Querymapping.logMessageJsonPath': string
+  'cv.customHealthSource.Querymapping.logMessageJsonPathPlaceholder': string
   'cv.customHealthSource.Querymapping.startAndEndTimeTitle': string
   'cv.customHealthSource.Querymapping.startTimeLabel': string
   'cv.customHealthSource.Querymapping.title': string
@@ -5330,6 +5363,7 @@ export interface StringsMap {
   'cv.windowEndsDay': string
   'cv.windowsEndIsRequired': string
   'cv.yourExistingErrorBudgetIs': string
+  'stoSteps.securityStage.description': string
   'stoSteps.stepDescription.ZeroNorth': string
   'stoSteps.zeroNorthImagePlaceholder': string
   /**
@@ -7595,6 +7629,10 @@ export interface StringsMap {
   /**
    * @deprecated migrate this string to module level file
    */
+  'pipelineSteps.deploy.errors.noArtifactPaths': string
+  /**
+   * @deprecated migrate this string to module level file
+   */
   'pipelineSteps.deploy.errors.notags': string
   /**
    * @deprecated migrate this string to module level file
@@ -8440,42 +8478,6 @@ export interface StringsMap {
    * @deprecated migrate this string to module level file
    */
   serviceAccount: string
-  /**
-   * @deprecated migrate this string to module level file
-   */
-  'serviceDeploymentTypes.amazonAmi': string
-  /**
-   * @deprecated migrate this string to module level file
-   */
-  'serviceDeploymentTypes.amazonEcs': string
-  /**
-   * @deprecated migrate this string to module level file
-   */
-  'serviceDeploymentTypes.awsCodeDeploy': string
-  /**
-   * @deprecated migrate this string to module level file
-   */
-  'serviceDeploymentTypes.awsLambda': string
-  /**
-   * @deprecated migrate this string to module level file
-   */
-  'serviceDeploymentTypes.deployDifferentLabel': string
-  /**
-   * @deprecated migrate this string to module level file
-   */
-  'serviceDeploymentTypes.kubernetes': string
-  /**
-   * @deprecated migrate this string to module level file
-   */
-  'serviceDeploymentTypes.pcf': string
-  /**
-   * @deprecated migrate this string to module level file
-   */
-  'serviceDeploymentTypes.ssh': string
-  /**
-   * @deprecated migrate this string to module level file
-   */
-  'serviceDeploymentTypes.winrm': string
   /**
    * @deprecated migrate this string to module level file
    */

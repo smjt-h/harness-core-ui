@@ -12,18 +12,18 @@ import {
   Formik,
   Layout,
   NestedAccordionProvider,
-  Color,
   ButtonVariation,
   PageSpinner,
   VisualYamlSelectedView as SelectedView,
   getErrorInfoFromErrorObject,
   SelectOption
 } from '@wings-software/uicore'
+import { Color } from '@harness/design-system'
 import { useModalHook } from '@harness/use-modal'
 import cx from 'classnames'
 import { useHistory } from 'react-router-dom'
 import { parse } from 'yaml'
-import { pick, mergeWith, isEmpty, isEqual, defaultTo, keyBy } from 'lodash-es'
+import { mergeWith, isEmpty, isEqual, defaultTo, keyBy } from 'lodash-es'
 import type { FormikErrors } from 'formik'
 import type { PipelineInfoConfig, ResponseJsonNode } from 'services/cd-ng'
 import {
@@ -31,8 +31,6 @@ import {
   usePostPipelineExecuteWithInputSetYaml,
   useGetTemplateFromPipeline,
   useGetMergeInputSetFromPipelineTemplateWithListInput,
-  getInputSetForPipelinePromise,
-  useGetInputSetsListForPipeline,
   useRePostPipelineExecuteWithInputSetYaml,
   StageExecutionResponse,
   useRunStagesWithRuntimeInputYaml,
@@ -157,12 +155,12 @@ function RunPipelineFormBasic({
     selectedStages: [getAllStageData(getString)],
     selectedStageItems: [getAllStageItem(getString)]
   })
-  const [loadingInputSetUpdate, setLoadingInputSetUpdate] = useState(false)
   const { setPipeline: updatePipelineInVaribalesContext } = usePipelineVariables()
+  const [existingProvide, setExistingProvide] = useState<'existing' | 'provide'>('existing')
 
   useEffect(() => {
-    getInputSetsList()
     getTemplateFromPipeline()
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [])
 
   const [canEdit] = usePermission(
@@ -180,14 +178,6 @@ function RunPipelineFormBasic({
     },
     [accountId, orgIdentifier, projectIdentifier, pipelineIdentifier]
   )
-
-  useEffect(() => {
-    if (inputSetYAML) {
-      const parsedYAML = parse(inputSetYAML)
-      setExistingProvide('provide')
-      setCurrentPipeline(parsedYAML)
-    }
-  }, [inputSetYAML])
 
   const stageIdentifiers = useMemo((): string[] => {
     let stageIds: string[] = []
@@ -315,27 +305,6 @@ function RunPipelineFormBasic({
     originalExecutionId: defaultTo(pipelineExecutionId, '')
   })
 
-  const {
-    refetch: getInputSetsList,
-    data: inputSetResponse,
-    loading: inputSetLoading
-  } = useGetInputSetsListForPipeline({
-    queryParams: {
-      accountIdentifier: accountId,
-      orgIdentifier,
-      projectIdentifier,
-      pipelineIdentifier,
-      ...(!isEmpty(repoIdentifier) && !isEmpty(branch)
-        ? {
-            repoIdentifier,
-            branch,
-            getDefaultFromOtherRepo: true
-          }
-        : {})
-    },
-    lazy: true
-  })
-
   const { mutate: mergeInputSet, loading: loadingMergeInputSetUpdate } =
     useGetMergeInputSetFromPipelineTemplateWithListInput({
       queryParams: {
@@ -405,8 +374,6 @@ function RunPipelineFormBasic({
     return executionStages
   }, [stageExecutionData?.data])
 
-  const inputSets = inputSetResponse?.data?.content
-
   const yamlTemplate = useMemo(() => {
     return parse(defaultTo(template?.data?.inputSetTemplateYaml, ''))?.pipeline
   }, [template?.data?.inputSetTemplateYaml])
@@ -425,17 +392,23 @@ function RunPipelineFormBasic({
   }, [inputSetSelected])
 
   useEffect(() => {
+    if (inputSetYAML) {
+      const parsedYAML = parse(inputSetYAML)
+      setExistingProvide('provide')
+      setCurrentPipeline(parsedYAML)
+    } else {
+      setExistingProvide(template?.data?.hasInputSets ? 'existing' : 'provide')
+    }
+  }, [inputSetYAML, template?.data?.hasInputSets])
+
+  useEffect(() => {
     if (getTemplateError) {
       showError(getTemplateError.message)
     }
   }, [getTemplateError])
 
   const shouldMakeMergeInputSetCall = useCallback(() => {
-    return (selectedInputSets && selectedInputSets?.length > 1) || selectedInputSets?.[0]?.type === 'OVERLAY_INPUT_SET'
-  }, [selectedInputSets])
-
-  const shouldMakeInputSetCall = useCallback(() => {
-    return selectedInputSets && selectedInputSets.length === 1
+    return !isEmpty(selectedInputSets)
   }, [selectedInputSets])
 
   const makeMergeInputSetCall = useCallback(
@@ -461,42 +434,11 @@ function RunPipelineFormBasic({
     [selectedInputSets]
   )
 
-  const makeInputSetGetCall = useCallback(
-    async (parsedTemplate: { pipeline: PipelineInfoConfig }) => {
-      setLoadingInputSetUpdate(true)
-      const firstInputSet = selectedInputSets?.[0]
-      const data = await getInputSetForPipelinePromise({
-        inputSetIdentifier: firstInputSet?.value as string,
-        queryParams: {
-          accountIdentifier: accountId,
-          projectIdentifier,
-          orgIdentifier,
-          pipelineIdentifier,
-          repoIdentifier: firstInputSet?.gitDetails?.repoIdentifier,
-          branch: firstInputSet?.gitDetails?.branch
-        }
-      })
-      setLoadingInputSetUpdate(false)
-      if (data?.data?.inputSetYaml) {
-        if (firstInputSet?.type === 'INPUT_SET') {
-          const inputSetPortion = pick(parse(data.data.inputSetYaml)?.inputSet, 'pipeline') as {
-            pipeline: PipelineInfoConfig
-          }
-          const toBeUpdated = mergeTemplateWithInputSetData(parsedTemplate, inputSetPortion)
-          setCurrentPipeline(toBeUpdated)
-        }
-      }
-    },
-    [selectedInputSets]
-  )
-
   useDeepCompareEffect(() => {
     if (template?.data?.inputSetTemplateYaml) {
       const parsedTemplate = parse(template?.data?.inputSetTemplateYaml) as { pipeline: PipelineInfoConfig }
       if (shouldMakeMergeInputSetCall()) {
         makeMergeInputSetCall(parsedTemplate)
-      } else if (shouldMakeInputSetCall()) {
-        makeInputSetGetCall(parsedTemplate)
       } else if (!selectedInputSets?.length && !inputSetYAML?.length) {
         setCurrentPipeline(parsedTemplate)
       }
@@ -649,14 +591,6 @@ function RunPipelineFormBasic({
     ]
   )
 
-  const [existingProvide, setExistingProvide] = useState<'existing' | 'provide'>('existing')
-
-  useEffect(() => {
-    if (inputSets && !(inputSets.length > 0)) {
-      setExistingProvide('provide')
-    }
-  }, [inputSets])
-
   const [yamlHandler, setYamlHandler] = useState<YamlBuilderHandlerBinding | undefined>()
   const [lastYaml, setLastYaml] = useState({})
 
@@ -774,7 +708,6 @@ function RunPipelineFormBasic({
       loadingTemplate ||
       runLoading ||
       runStageLoading ||
-      inputSetLoading ||
       reRunLoading ||
       reRunStagesLoading
     )
@@ -889,9 +822,9 @@ function RunPipelineFormBasic({
                     resolvedPipeline={resolvedPipeline}
                     submitForm={submitForm}
                     setRunClicked={setRunClicked}
-                    inputSets={inputSets}
+                    hasInputSets={!!template?.data?.hasInputSets}
                     setSelectedInputSets={setSelectedInputSets}
-                    loading={loadingMergeInputSetUpdate || loadingInputSetUpdate}
+                    loading={loadingMergeInputSetUpdate}
                     loadingMergeInputSetUpdate={loadingMergeInputSetUpdate}
                   />
                 ) : (
@@ -985,7 +918,7 @@ function RunPipelineFormBasic({
                       branch={branch}
                       isGitSyncEnabled={isGitSyncEnabled}
                       setFormErrors={setFormErrors}
-                      getInputSetsList={getInputSetsList}
+                      refetchParentData={getTemplateFromPipeline}
                     />
                   </Layout.Horizontal>
                 )}

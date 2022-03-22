@@ -102,9 +102,8 @@ allowpaths:
   - /monitored-service/{identifier}/health-monitoring-flag
   - /monitored-service/yaml-template
   - /monitored-service/{identifier}/overall-health-score
-  - /monitored-service/overall-health-score
   - /monitored-service/list
-  - /monitored-service/service-details
+  - /monitored-service/{monitoredServiceIdentifier}/service-details
   - /monitored-service/count-of-services
   - /log-dashboard/logs-data
   - /error-tracking-dashboard/data

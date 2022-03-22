@@ -6,9 +6,9 @@
  */
 
 import React from 'react'
-import { Color, Container, MultiTypeInputType } from '@wings-software/uicore'
+import { Container, MultiTypeInputType } from '@wings-software/uicore'
+import { Color } from '@harness/design-system'
 import { debounce, isEmpty, isEqual, set } from 'lodash-es'
-import { v4 as uuid } from 'uuid'
 import factory from '@pipeline/components/PipelineSteps/PipelineStepFactory'
 import {
   StepCommandsWithRef as StepCommands,
@@ -24,12 +24,11 @@ import css from './StepTemplateForm.module.scss'
 
 const StepTemplateForm = (_props: unknown, formikRef: TemplateFormRef): JSX.Element => {
   const {
-    state: { template, isLoading, isUpdated },
+    state: { template },
     updateTemplate,
     isReadonly
   } = React.useContext(TemplateContext)
   const stepFormikRef = React.useRef<StepFormikRef | null>(null)
-  const [key, setKey] = React.useState<string>(template.versionLabel)
 
   React.useImperativeHandle(formikRef, () => ({
     resetForm() {
@@ -55,14 +54,8 @@ const StepTemplateForm = (_props: unknown, formikRef: TemplateFormRef): JSX.Elem
     onSubmitStep(step)
   }, 500)
 
-  React.useEffect(() => {
-    if (!isUpdated && !isLoading) {
-      setKey(uuid())
-    }
-  }, [isLoading])
-
   return (
-    <Container background={Color.FORM_BG} key={key}>
+    <Container background={Color.FORM_BG}>
       {template && !isEmpty(template.spec) && !!(template.spec as StepElementConfig)?.type && (
         <StepCommands
           className={css.stepForm}

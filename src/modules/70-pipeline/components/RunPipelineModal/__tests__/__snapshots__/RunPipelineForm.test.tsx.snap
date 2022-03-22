@@ -527,7 +527,7 @@ exports[`STUDIO MODE invalid input sets should not be applied 1`] = `
                                 class="bp3-input"
                                 name="variables[0].value"
                                 type="text"
-                                value=""
+                                value="valuefrominputsetsmerge"
                               />
                             </div>
                             <span

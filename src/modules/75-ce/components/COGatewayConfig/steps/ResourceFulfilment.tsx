@@ -10,6 +10,7 @@ import { get as _get, defaultTo as _defaultTo, debounce as _debounce, isEmpty as
 import * as Yup from 'yup'
 import { CardSelect, Container, Formik, FormikForm, FormInput, Layout, Text } from '@wings-software/uicore'
 import type { FormikContext } from 'formik'
+import type { StringsMap } from 'stringTypes'
 import type { GatewayDetails } from '@ce/components/COCreateGateway/models'
 import { CONFIG_STEP_IDS, RESOURCES } from '@ce/constants'
 import { useTelemetry } from '@common/hooks/useTelemetry'
@@ -17,6 +18,7 @@ import { useStrings } from 'framework/strings'
 import { Utils } from '@ce/common/Utils'
 import { useToaster } from '@common/exports'
 import COGatewayConfigStep from '../COGatewayConfigStep'
+import { getSubTitle, getTitle } from '../helper'
 import odIcon from '../images/ondemandIcon.svg'
 import spotIcon from '../images/spotIcon.svg'
 import css from '../COGatewayConfig.module.scss'
@@ -57,6 +59,7 @@ const ResourceFulfilment: React.FC<ResourceFulfilmentProps> = props => {
   const { getString } = useStrings()
   const { trackEvent } = useTelemetry()
   const { showError } = useToaster()
+  const isGcpProvider = Utils.isProviderGcp(props.gatewayDetails.provider)
 
   const [selectedInstanceType, setSelectedInstanceType] = useState<CardData | null>(
     _defaultTo(
@@ -142,38 +145,28 @@ const ResourceFulfilment: React.FC<ResourceFulfilmentProps> = props => {
     [props.gatewayDetails.routing.container_svc]
   )
 
-  const getTitle = () => {
-    let title = getString('ce.co.autoStoppingRule.configuration.step3.title')
-    if (props.selectedResource === RESOURCES.ASG) {
-      title = getString('ce.co.autoStoppingRule.configuration.step3.asgTitle')
+  const shouldHide = () => {
+    let flag
+    if (isGcpProvider && props.selectedResource === RESOURCES.INSTANCES) {
+      flag = true
+    } else if (props.selectedResource && allowedResources.indexOf(props.selectedResource) === -1) {
+      flag = true
+    } else {
+      flag = false
     }
-    if (props.selectedResource === RESOURCES.ECS) {
-      title = getString('ce.co.autoStoppingRule.configuration.step3.desiredTaskCount')
-    }
-    return title
+    return flag
   }
 
-  const getSubTitle = () => {
-    let subStr = getString('ce.co.autoStoppingRule.configuration.step3.subTitle')
-    if (props.selectedResource === RESOURCES.ASG) {
-      subStr = getString('ce.co.autoStoppingRule.configuration.step3.asgSubTitle')
-    }
-    if (props.selectedResource === RESOURCES.ECS) {
-      subStr = getString('ce.co.autoStoppingRule.configuration.step3.ecsSubTitle')
-    }
-    return subStr
-  }
-
-  if (props.selectedResource && !(allowedResources.indexOf(props.selectedResource) > -1)) {
+  if (shouldHide()) {
     return null
   }
 
   return (
     <COGatewayConfigStep
       count={3}
-      title={getTitle()}
+      title={getString(getTitle(props.selectedResource) as keyof StringsMap)}
       onInfoIconClick={() => props.setDrawerOpen(true)}
-      subTitle={getSubTitle()}
+      subTitle={getString(getSubTitle(props.selectedResource) as keyof StringsMap)}
       totalStepsCount={props.totalStepsCount}
       id={CONFIG_STEP_IDS[2]}
     >
@@ -187,7 +180,7 @@ const ResourceFulfilment: React.FC<ResourceFulfilmentProps> = props => {
             onChange={item => {
               setSelectedInstanceType(item)
               props.setGatewayDetails({ ...props.gatewayDetails, fullfilment: (item as CardData).value })
-              trackEvent('SelectedInstanceType', { value: item?.value || '' })
+              trackEvent('SelectedInstanceType', { value: _defaultTo(item?.value, '') })
             }}
             renderItem={(item, _) => (
               <Layout.Vertical spacing="large">
@@ -217,8 +210,8 @@ const ResourceFulfilment: React.FC<ResourceFulfilmentProps> = props => {
               <span>Desired capacity: </span>
               <span>
                 {props.gatewayDetails.routing?.instance?.scale_group?.desired ||
-                  (props.gatewayDetails.routing.instance.scale_group?.on_demand || 0) +
-                    (props.gatewayDetails.routing.instance.scale_group?.spot || 0)}
+                  _defaultTo(props.gatewayDetails.routing.instance.scale_group?.on_demand, 0) +
+                    _defaultTo(props.gatewayDetails.routing.instance.scale_group?.spot, 0)}
               </span>
             </Text>
             <Text className={css.asgDetailRow}>
@@ -233,9 +226,10 @@ const ResourceFulfilment: React.FC<ResourceFulfilmentProps> = props => {
           <div className={css.asgInstanceFormContainer}>
             <Formik
               initialValues={{
-                odInstance:
-                  props.gatewayDetails.routing.instance.scale_group?.on_demand ||
-                  props.gatewayDetails.routing?.instance?.scale_group?.desired,
+                odInstance: _defaultTo(
+                  props.gatewayDetails.routing.instance.scale_group?.on_demand,
+                  props.gatewayDetails.routing?.instance?.scale_group?.desired
+                ),
                 spotInstance: _get(props.gatewayDetails.routing.instance.scale_group, 'spot', 0)
               }}
               formName="odInstance"
@@ -302,7 +296,7 @@ const ResourceFulfilment: React.FC<ResourceFulfilmentProps> = props => {
         <Container>
           <Formik
             initialValues={{
-              taskCount: props.gatewayDetails.routing.container_svc?.task_count || 1
+              taskCount: _defaultTo(props.gatewayDetails.routing.container_svc?.task_count, 1)
             }}
             enableReinitialize
             formName=""

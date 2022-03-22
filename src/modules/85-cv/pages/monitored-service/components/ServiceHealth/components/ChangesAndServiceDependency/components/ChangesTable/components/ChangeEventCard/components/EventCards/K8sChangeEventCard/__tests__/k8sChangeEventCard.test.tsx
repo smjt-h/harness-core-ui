@@ -22,7 +22,7 @@ jest.mock('@common/components/MonacoEditor/MonacoEditor', () => MonacoEditor)
 
 describe('Unit tests for K8sChangeEventCard', () => {
   test('Ensure data is properly rendered', async () => {
-    jest.spyOn(cv, 'useGetMonitoredServiceOverAllHealthScoreWithServiceAndEnv').mockReturnValue({
+    jest.spyOn(cv, 'useGetMonitoredServiceOverAllHealthScore').mockReturnValue({
       data: {},
       refetch: jest.fn() as unknown
     } as UseGetReturn<any, any, any, any>)

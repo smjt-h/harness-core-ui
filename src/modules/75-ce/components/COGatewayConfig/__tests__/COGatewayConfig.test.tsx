@@ -301,7 +301,7 @@ describe('Auto stopping Rule creation Tests', () => {
       </TestWrapper>
     )
 
-    const instanceRadio = getByLabelText('EC2 VM(s)')
+    const instanceRadio = getByLabelText('ce.co.autoStoppingRule.helpText.step2.description.resourceList.ec2Vms')
     expect(instanceRadio).toBeDefined()
     act(() => {
       fireEvent.click(instanceRadio)
@@ -345,7 +345,7 @@ describe('Auto stopping Rule creation Tests', () => {
       </TestWrapper>
     )
 
-    const asgRadio = getByLabelText('Auto scaling groups')
+    const asgRadio = getByLabelText('ce.co.autoStoppingRule.helpText.step2.description.resourceList.asg')
     expect(asgRadio).toBeDefined()
     act(() => {
       fireEvent.click(asgRadio)

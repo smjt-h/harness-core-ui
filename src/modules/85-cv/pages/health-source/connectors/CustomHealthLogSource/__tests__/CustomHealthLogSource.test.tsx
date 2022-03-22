@@ -9,10 +9,12 @@ import React from 'react'
 import { render, waitFor, fireEvent } from '@testing-library/react'
 import { cloneDeep } from 'lodash-es'
 import * as cvService from 'services/cv'
+import { InputTypes, setFieldValue } from '@common/utils/JestFormHelper'
 import { TestWrapper } from '@common/utils/testUtils'
 import { SetupSourceTabs } from '@cv/components/CVSetupSourcesView/SetupSourceTabs/SetupSourceTabs'
 import { sourceData } from './CustomHealthLogSource.mocks'
 import CustomHealthLogSource from '../CustomHealthLogSource'
+import { CustomHealthLogFieldNames } from '../CustomHealthLogSource.constants'
 
 jest.mock('@cv/components/MultiItemsSideNav/MultiItemsSideNav', () => ({
   ...(jest.requireActual('services/portal') as any),
@@ -81,6 +83,31 @@ describe('Unit tests for customhealthlogsource', () => {
     )
     fireEvent.click(container.querySelector('[class*="selectMetric"]')!)
     await waitFor(() => expect(container.querySelector('p[class*="isSelected"]')?.innerHTML).toEqual('customLog_2'))
+  })
+
+  test('Ensure that changing the queery name is done correctly', async () => {
+    const submitMock = jest.fn()
+    const { container, getByText } = render(
+      <TestWrapper>
+        <SetupSourceTabs data={{}} tabTitles={['MapMetrics']} determineMaxTab={() => 0}>
+          <CustomHealthLogSource data={cloneDeep(sourceData)} onSubmit={submitMock} />
+        </SetupSourceTabs>
+      </TestWrapper>
+    )
+    await waitFor(() =>
+      expect(getByText('cv.monitoringSources.prometheus.querySpecificationsAndMappings')).not.toBeNull()
+    )
+
+    const newQueryName = 'customLooooog'
+    await setFieldValue({
+      container,
+      type: InputTypes.TEXTFIELD,
+      fieldId: CustomHealthLogFieldNames.QUERY_NAME,
+      value: newQueryName
+    })
+
+    fireEvent.click(getByText('submit'))
+    await waitFor(() => expect(submitMock).toHaveBeenCalled())
   })
 
   test('ensure submit works correctly', async () => {

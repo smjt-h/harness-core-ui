@@ -28,13 +28,11 @@ export interface Activity {
     | 'IN_PROGRESS'
   changeSourceIdentifier?: string
   createdAt?: number
-  environmentIdentifier: string
   eventTime?: number
   lastUpdatedAt?: number
   monitoredServiceIdentifier?: string
   orgIdentifier: string
   projectIdentifier: string
-  serviceIdentifier?: string
   tags?: string[]
   type: 'DEPLOYMENT' | 'CONFIG' | 'KUBERNETES' | 'HARNESS_CD' | 'PAGER_DUTY' | 'HARNESS_CD_CURRENT_GEN'
   uuid?: string
@@ -44,30 +42,6 @@ export interface Activity {
   verificationJobRuntimeDetails?: VerificationJobRuntimeDetails[]
   verificationJobs?: VerificationJob[]
   verificationSummary?: ActivityVerificationSummary
-}
-
-export interface ActivityVerificationResultDTO {
-  activityId?: string
-  activityName?: string
-  activityStartTime?: number
-  activityType?: 'DEPLOYMENT' | 'CONFIG' | 'KUBERNETES' | 'HARNESS_CD' | 'PAGER_DUTY' | 'HARNESS_CD_CURRENT_GEN'
-  endTime?: number
-  environmentIdentifier?: string
-  environmentName?: string
-  overallRisk?: number
-  postActivityRisks?: CategoryRisk[]
-  preActivityRisks?: CategoryRisk[]
-  progressPercentage?: number
-  remainingTimeMs?: number
-  serviceIdentifier?: string
-  status?:
-    | 'IGNORED'
-    | 'NOT_STARTED'
-    | 'VERIFICATION_PASSED'
-    | 'VERIFICATION_FAILED'
-    | 'ERROR'
-    | 'ABORTED'
-    | 'IN_PROGRESS'
 }
 
 export interface ActivityVerificationSummary {
@@ -158,7 +132,7 @@ export interface AnalysisStateMachine {
   logLevel?: 'INFO' | 'WARN' | 'ERROR'
   nextAttemptTime?: number
   startTime?: number
-  stateMachineIgnoreMinutes?: number
+  stateMachineIgnoreMinutes: number
   status?: 'CREATED' | 'RUNNING' | 'SUCCESS' | 'RETRY' | 'TRANSITION' | 'IGNORED' | 'TIMEOUT' | 'FAILED' | 'COMPLETED'
   uuid?: string
   validUntil?: string
@@ -581,16 +555,11 @@ export interface CategoryCountDetails {
   countInPrecedingWindow?: number
 }
 
-export interface CategoryRisk {
-  category?: 'PERFORMANCE' | 'ERRORS' | 'INFRASTRUCTURE'
-  risk?: number
-}
-
 export interface ChangeEventDTO {
   accountId: string
   category?: 'Deployment' | 'Infrastructure' | 'Alert'
   changeSourceIdentifier?: string
-  envIdentifier: string
+  envIdentifier?: string
   environmentName?: string
   eventTime?: number
   id?: string
@@ -599,7 +568,7 @@ export interface ChangeEventDTO {
   name?: string
   orgIdentifier: string
   projectIdentifier: string
-  serviceIdentifier: string
+  serviceIdentifier?: string
   serviceName?: string
   type?: 'HarnessCDNextGen' | 'PagerDuty' | 'K8sCluster' | 'HarnessCD'
 }
@@ -951,24 +920,6 @@ export type DatadogMetricHealthSourceSpec = HealthSourceSpec & {
   metricDefinitions?: DatadogMetricHealthDefinition[]
 }
 
-export interface DatasourceTypeDTO {
-  dataSourceType?:
-    | 'APP_DYNAMICS'
-    | 'SPLUNK'
-    | 'STACKDRIVER'
-    | 'STACKDRIVER_LOG'
-    | 'KUBERNETES'
-    | 'NEW_RELIC'
-    | 'PROMETHEUS'
-    | 'DATADOG_METRICS'
-    | 'DATADOG_LOG'
-    | 'ERROR_TRACKING'
-    | 'DYNATRACE'
-    | 'CUSTOM_HEALTH_METRIC'
-    | 'CUSTOM_HEALTH_LOG'
-  verificationType?: 'TIME_SERIES' | 'LOG'
-}
-
 export interface DemoChangeEventDTO {
   changeSourceIdentifier?: string
   changeSourceType?: 'HarnessCDNextGen' | 'PagerDuty' | 'K8sCluster' | 'HarnessCD'
@@ -1012,6 +963,7 @@ export interface DeploymentVerificationJobInstanceSummary {
   environmentName?: string
   jobName?: string
   logsAnalysisSummary?: LogsAnalysisSummary
+  errorAnalysisSummary?: LogsAnalysisSummary
   progressPercentage?: number
   remainingTimeMs?: number
   risk?: 'NO_DATA' | 'NO_ANALYSIS' | 'HEALTHY' | 'OBSERVE' | 'NEED_ATTENTION' | 'UNHEALTHY'
@@ -1131,6 +1083,7 @@ export interface EnvironmentResponseDTO {
   }
   type?: 'PreProduction' | 'Production'
   version?: number
+  yaml?: string
 }
 
 export interface Error {
@@ -1456,7 +1409,6 @@ export interface ErrorMetadataDTO {
 export type ErrorTrackingConnectorDTO = ConnectorConfigDTO & {
   apiKeyRef: string
   delegateSelectors?: string[]
-  sid: string
   url: string
 }
 
@@ -2453,6 +2405,11 @@ export interface LogSampleRequestDTO {
 }
 
 export interface LogsAnalysisSummary {
+  anomalousClusterCount?: number
+  totalClusterCount?: number
+}
+
+export interface ErrorAnalysisSummary {
   anomalousClusterCount?: number
   totalClusterCount?: number
 }
@@ -3692,14 +3649,6 @@ export interface RestResponse {
   responseMessages?: ResponseMessage[]
 }
 
-export interface RestResponseActivityVerificationResultDTO {
-  metaData?: {
-    [key: string]: { [key: string]: any }
-  }
-  resource?: ActivityVerificationResultDTO
-  responseMessages?: ResponseMessage[]
-}
-
 export interface RestResponseAnomaliesSummaryDTO {
   metaData?: {
     [key: string]: { [key: string]: any }
@@ -3777,14 +3726,6 @@ export interface RestResponseLearningEngineTask {
     [key: string]: { [key: string]: any }
   }
   resource?: LearningEngineTask
-  responseMessages?: ResponseMessage[]
-}
-
-export interface RestResponseListActivityVerificationResultDTO {
-  metaData?: {
-    [key: string]: { [key: string]: any }
-  }
-  resource?: ActivityVerificationResultDTO[]
   responseMessages?: ResponseMessage[]
 }
 
@@ -4111,14 +4052,6 @@ export interface RestResponseServiceLevelObjectiveResponse {
     [key: string]: { [key: string]: any }
   }
   resource?: ServiceLevelObjectiveResponse
-  responseMessages?: ResponseMessage[]
-}
-
-export interface RestResponseSetDatasourceTypeDTO {
-  metaData?: {
-    [key: string]: { [key: string]: any }
-  }
-  resource?: DatasourceTypeDTO[]
   responseMessages?: ResponseMessage[]
 }
 
@@ -5490,155 +5423,6 @@ export const getChangeEventDetailPromise = (
     signal
   )
 
-export interface GetRecentActivityVerificationResultsQueryParams {
-  accountId: string
-  orgIdentifier: string
-  projectIdentifier: string
-  size?: number
-}
-
-export type GetRecentActivityVerificationResultsProps = Omit<
-  GetProps<
-    RestResponseListActivityVerificationResultDTO,
-    unknown,
-    GetRecentActivityVerificationResultsQueryParams,
-    void
-  >,
-  'path'
->
-
-/**
- * get a list of recent activity verification results
- */
-export const GetRecentActivityVerificationResults = (props: GetRecentActivityVerificationResultsProps) => (
-  <Get<RestResponseListActivityVerificationResultDTO, unknown, GetRecentActivityVerificationResultsQueryParams, void>
-    path={`/activity/recent-activity-verifications`}
-    base={getConfig('cv/api')}
-    {...props}
-  />
-)
-
-export type UseGetRecentActivityVerificationResultsProps = Omit<
-  UseGetProps<
-    RestResponseListActivityVerificationResultDTO,
-    unknown,
-    GetRecentActivityVerificationResultsQueryParams,
-    void
-  >,
-  'path'
->
-
-/**
- * get a list of recent activity verification results
- */
-export const useGetRecentActivityVerificationResults = (props: UseGetRecentActivityVerificationResultsProps) =>
-  useGet<RestResponseListActivityVerificationResultDTO, unknown, GetRecentActivityVerificationResultsQueryParams, void>(
-    `/activity/recent-activity-verifications`,
-    { base: getConfig('cv/api'), ...props }
-  )
-
-/**
- * get a list of recent activity verification results
- */
-export const getRecentActivityVerificationResultsPromise = (
-  props: GetUsingFetchProps<
-    RestResponseListActivityVerificationResultDTO,
-    unknown,
-    GetRecentActivityVerificationResultsQueryParams,
-    void
-  >,
-  signal?: RequestInit['signal']
-) =>
-  getUsingFetch<
-    RestResponseListActivityVerificationResultDTO,
-    unknown,
-    GetRecentActivityVerificationResultsQueryParams,
-    void
-  >(getConfig('cv/api'), `/activity/recent-activity-verifications`, props, signal)
-
-export interface GetActivityVerificationResultQueryParams {
-  accountId: string
-}
-
-export interface GetActivityVerificationResultPathParams {
-  activityId: string
-}
-
-export type GetActivityVerificationResultProps = Omit<
-  GetProps<
-    RestResponseActivityVerificationResultDTO,
-    unknown,
-    GetActivityVerificationResultQueryParams,
-    GetActivityVerificationResultPathParams
-  >,
-  'path'
-> &
-  GetActivityVerificationResultPathParams
-
-/**
- * get activity verification result
- */
-export const GetActivityVerificationResult = ({ activityId, ...props }: GetActivityVerificationResultProps) => (
-  <Get<
-    RestResponseActivityVerificationResultDTO,
-    unknown,
-    GetActivityVerificationResultQueryParams,
-    GetActivityVerificationResultPathParams
-  >
-    path={`/activity/${activityId}/activity-risks`}
-    base={getConfig('cv/api')}
-    {...props}
-  />
-)
-
-export type UseGetActivityVerificationResultProps = Omit<
-  UseGetProps<
-    RestResponseActivityVerificationResultDTO,
-    unknown,
-    GetActivityVerificationResultQueryParams,
-    GetActivityVerificationResultPathParams
-  >,
-  'path'
-> &
-  GetActivityVerificationResultPathParams
-
-/**
- * get activity verification result
- */
-export const useGetActivityVerificationResult = ({ activityId, ...props }: UseGetActivityVerificationResultProps) =>
-  useGet<
-    RestResponseActivityVerificationResultDTO,
-    unknown,
-    GetActivityVerificationResultQueryParams,
-    GetActivityVerificationResultPathParams
-  >((paramsInPath: GetActivityVerificationResultPathParams) => `/activity/${paramsInPath.activityId}/activity-risks`, {
-    base: getConfig('cv/api'),
-    pathParams: { activityId },
-    ...props
-  })
-
-/**
- * get activity verification result
- */
-export const getActivityVerificationResultPromise = (
-  {
-    activityId,
-    ...props
-  }: GetUsingFetchProps<
-    RestResponseActivityVerificationResultDTO,
-    unknown,
-    GetActivityVerificationResultQueryParams,
-    GetActivityVerificationResultPathParams
-  > & { activityId: string },
-  signal?: RequestInit['signal']
-) =>
-  getUsingFetch<
-    RestResponseActivityVerificationResultDTO,
-    unknown,
-    GetActivityVerificationResultQueryParams,
-    GetActivityVerificationResultPathParams
-  >(getConfig('cv/api'), `/activity/${activityId}/activity-risks`, props, signal)
-
 export interface GetDeploymentLogAnalysisClustersQueryParams {
   accountId: string
   hostName?: string
@@ -5730,151 +5514,6 @@ export const getDeploymentLogAnalysisClustersPromise = (
     GetDeploymentLogAnalysisClustersPathParams
   >(getConfig('cv/api'), `/activity/${activityId}/clusters`, props, signal)
 
-export interface GetDatasourceTypesQueryParams {
-  accountId: string
-}
-
-export interface GetDatasourceTypesPathParams {
-  activityId: string
-}
-
-export type GetDatasourceTypesProps = Omit<
-  GetProps<RestResponseSetDatasourceTypeDTO, unknown, GetDatasourceTypesQueryParams, GetDatasourceTypesPathParams>,
-  'path'
-> &
-  GetDatasourceTypesPathParams
-
-/**
- * get datasource types for an activity
- */
-export const GetDatasourceTypes = ({ activityId, ...props }: GetDatasourceTypesProps) => (
-  <Get<RestResponseSetDatasourceTypeDTO, unknown, GetDatasourceTypesQueryParams, GetDatasourceTypesPathParams>
-    path={`/activity/${activityId}/datasource-types`}
-    base={getConfig('cv/api')}
-    {...props}
-  />
-)
-
-export type UseGetDatasourceTypesProps = Omit<
-  UseGetProps<RestResponseSetDatasourceTypeDTO, unknown, GetDatasourceTypesQueryParams, GetDatasourceTypesPathParams>,
-  'path'
-> &
-  GetDatasourceTypesPathParams
-
-/**
- * get datasource types for an activity
- */
-export const useGetDatasourceTypes = ({ activityId, ...props }: UseGetDatasourceTypesProps) =>
-  useGet<RestResponseSetDatasourceTypeDTO, unknown, GetDatasourceTypesQueryParams, GetDatasourceTypesPathParams>(
-    (paramsInPath: GetDatasourceTypesPathParams) => `/activity/${paramsInPath.activityId}/datasource-types`,
-    { base: getConfig('cv/api'), pathParams: { activityId }, ...props }
-  )
-
-/**
- * get datasource types for an activity
- */
-export const getDatasourceTypesPromise = (
-  {
-    activityId,
-    ...props
-  }: GetUsingFetchProps<
-    RestResponseSetDatasourceTypeDTO,
-    unknown,
-    GetDatasourceTypesQueryParams,
-    GetDatasourceTypesPathParams
-  > & { activityId: string },
-  signal?: RequestInit['signal']
-) =>
-  getUsingFetch<RestResponseSetDatasourceTypeDTO, unknown, GetDatasourceTypesQueryParams, GetDatasourceTypesPathParams>(
-    getConfig('cv/api'),
-    `/activity/${activityId}/datasource-types`,
-    props,
-    signal
-  )
-
-export interface GetDeploymentActivitySummaryQueryParams {
-  accountId: string
-}
-
-export interface GetDeploymentActivitySummaryPathParams {
-  activityId: string
-}
-
-export type GetDeploymentActivitySummaryProps = Omit<
-  GetProps<
-    RestResponseDeploymentActivitySummaryDTO,
-    unknown,
-    GetDeploymentActivitySummaryQueryParams,
-    GetDeploymentActivitySummaryPathParams
-  >,
-  'path'
-> &
-  GetDeploymentActivitySummaryPathParams
-
-/**
- * get summary of deployment activity
- */
-export const GetDeploymentActivitySummary = ({ activityId, ...props }: GetDeploymentActivitySummaryProps) => (
-  <Get<
-    RestResponseDeploymentActivitySummaryDTO,
-    unknown,
-    GetDeploymentActivitySummaryQueryParams,
-    GetDeploymentActivitySummaryPathParams
-  >
-    path={`/activity/${activityId}/deployment-activity-summary`}
-    base={getConfig('cv/api')}
-    {...props}
-  />
-)
-
-export type UseGetDeploymentActivitySummaryProps = Omit<
-  UseGetProps<
-    RestResponseDeploymentActivitySummaryDTO,
-    unknown,
-    GetDeploymentActivitySummaryQueryParams,
-    GetDeploymentActivitySummaryPathParams
-  >,
-  'path'
-> &
-  GetDeploymentActivitySummaryPathParams
-
-/**
- * get summary of deployment activity
- */
-export const useGetDeploymentActivitySummary = ({ activityId, ...props }: UseGetDeploymentActivitySummaryProps) =>
-  useGet<
-    RestResponseDeploymentActivitySummaryDTO,
-    unknown,
-    GetDeploymentActivitySummaryQueryParams,
-    GetDeploymentActivitySummaryPathParams
-  >(
-    (paramsInPath: GetDeploymentActivitySummaryPathParams) =>
-      `/activity/${paramsInPath.activityId}/deployment-activity-summary`,
-    { base: getConfig('cv/api'), pathParams: { activityId }, ...props }
-  )
-
-/**
- * get summary of deployment activity
- */
-export const getDeploymentActivitySummaryPromise = (
-  {
-    activityId,
-    ...props
-  }: GetUsingFetchProps<
-    RestResponseDeploymentActivitySummaryDTO,
-    unknown,
-    GetDeploymentActivitySummaryQueryParams,
-    GetDeploymentActivitySummaryPathParams
-  > & { activityId: string },
-  signal?: RequestInit['signal']
-) =>
-  getUsingFetch<
-    RestResponseDeploymentActivitySummaryDTO,
-    unknown,
-    GetDeploymentActivitySummaryQueryParams,
-    GetDeploymentActivitySummaryPathParams
-  >(getConfig('cv/api'), `/activity/${activityId}/deployment-activity-summary`, props, signal)
-
 export interface GetDeploymentLogAnalysisResultQueryParams {
   accountId: string
   label?: number
@@ -5965,96 +5604,6 @@ export const getDeploymentLogAnalysisResultPromise = (
     GetDeploymentLogAnalysisResultQueryParams,
     GetDeploymentLogAnalysisResultPathParams
   >(getConfig('cv/api'), `/activity/${activityId}/deployment-log-analysis-data`, props, signal)
-
-export interface GetDeploymentMetricsQueryParams {
-  accountId: string
-  filter?: string
-  healthSources?: string[]
-  anomalousMetricsOnly?: boolean
-  hostNames?: string[]
-  transactionNames?: string[]
-  anomalousNodesOnly?: boolean
-  pageNumber?: number
-  pageSize?: number
-}
-
-export interface GetDeploymentMetricsPathParams {
-  activityId: string
-}
-
-export type GetDeploymentMetricsProps = Omit<
-  GetProps<
-    RestResponseTransactionMetricInfoSummaryPageDTO,
-    unknown,
-    GetDeploymentMetricsQueryParams,
-    GetDeploymentMetricsPathParams
-  >,
-  'path'
-> &
-  GetDeploymentMetricsPathParams
-
-/**
- * get metrics for given activity
- */
-export const GetDeploymentMetrics = ({ activityId, ...props }: GetDeploymentMetricsProps) => (
-  <Get<
-    RestResponseTransactionMetricInfoSummaryPageDTO,
-    unknown,
-    GetDeploymentMetricsQueryParams,
-    GetDeploymentMetricsPathParams
-  >
-    path={`/activity/${activityId}/deployment-timeseries-data`}
-    base={getConfig('cv/api')}
-    {...props}
-  />
-)
-
-export type UseGetDeploymentMetricsProps = Omit<
-  UseGetProps<
-    RestResponseTransactionMetricInfoSummaryPageDTO,
-    unknown,
-    GetDeploymentMetricsQueryParams,
-    GetDeploymentMetricsPathParams
-  >,
-  'path'
-> &
-  GetDeploymentMetricsPathParams
-
-/**
- * get metrics for given activity
- */
-export const useGetDeploymentMetrics = ({ activityId, ...props }: UseGetDeploymentMetricsProps) =>
-  useGet<
-    RestResponseTransactionMetricInfoSummaryPageDTO,
-    unknown,
-    GetDeploymentMetricsQueryParams,
-    GetDeploymentMetricsPathParams
-  >(
-    (paramsInPath: GetDeploymentMetricsPathParams) => `/activity/${paramsInPath.activityId}/deployment-timeseries-data`,
-    { base: getConfig('cv/api'), pathParams: { activityId }, ...props }
-  )
-
-/**
- * get metrics for given activity
- */
-export const getDeploymentMetricsPromise = (
-  {
-    activityId,
-    ...props
-  }: GetUsingFetchProps<
-    RestResponseTransactionMetricInfoSummaryPageDTO,
-    unknown,
-    GetDeploymentMetricsQueryParams,
-    GetDeploymentMetricsPathParams
-  > & { activityId: string },
-  signal?: RequestInit['signal']
-) =>
-  getUsingFetch<
-    RestResponseTransactionMetricInfoSummaryPageDTO,
-    unknown,
-    GetDeploymentMetricsQueryParams,
-    GetDeploymentMetricsPathParams
-  >(getConfig('cv/api'), `/activity/${activityId}/deployment-timeseries-data`, props, signal)
 
 export interface GetHealthSourcesQueryParams {
   accountId: string
@@ -6719,59 +6268,6 @@ export const fetchSampleDataPromise = (
     'POST',
     getConfig('cv/api'),
     `/custom-health/sample-data`,
-    props,
-    signal
-  )
-
-export interface GetDataSourcetypesQueryParams {
-  accountId: string
-  projectIdentifier: string
-  orgIdentifier: string
-  environmentIdentifier?: string
-  serviceIdentifier?: string
-  monitoringCategory?: 'PERFORMANCE' | 'ERRORS' | 'INFRASTRUCTURE'
-}
-
-export type GetDataSourcetypesProps = Omit<
-  GetProps<RestResponseSetDatasourceTypeDTO, unknown, GetDataSourcetypesQueryParams, void>,
-  'path'
->
-
-/**
- * gets a list of datasource types for this filter
- */
-export const GetDataSourcetypes = (props: GetDataSourcetypesProps) => (
-  <Get<RestResponseSetDatasourceTypeDTO, unknown, GetDataSourcetypesQueryParams, void>
-    path={`/cv-config/datasource-types`}
-    base={getConfig('cv/api')}
-    {...props}
-  />
-)
-
-export type UseGetDataSourcetypesProps = Omit<
-  UseGetProps<RestResponseSetDatasourceTypeDTO, unknown, GetDataSourcetypesQueryParams, void>,
-  'path'
->
-
-/**
- * gets a list of datasource types for this filter
- */
-export const useGetDataSourcetypes = (props: UseGetDataSourcetypesProps) =>
-  useGet<RestResponseSetDatasourceTypeDTO, unknown, GetDataSourcetypesQueryParams, void>(
-    `/cv-config/datasource-types`,
-    { base: getConfig('cv/api'), ...props }
-  )
-
-/**
- * gets a list of datasource types for this filter
- */
-export const getDataSourcetypesPromise = (
-  props: GetUsingFetchProps<RestResponseSetDatasourceTypeDTO, unknown, GetDataSourcetypesQueryParams, void>,
-  signal?: RequestInit['signal']
-) =>
-  getUsingFetch<RestResponseSetDatasourceTypeDTO, unknown, GetDataSourcetypesQueryParams, void>(
-    getConfig('cv/api'),
-    `/cv-config/datasource-types`,
     props,
     signal
   )
@@ -7751,6 +7247,133 @@ export const getDynatraceServicesPromise = (
     signal
   )
 
+export interface GetAllErrorTrackingClusterDataQueryParams {
+  accountId?: string
+  orgIdentifier: string
+  projectIdentifier: string
+  monitoredServiceIdentifier?: string
+  clusterTypes?: ('KNOWN' | 'UNEXPECTED' | 'UNKNOWN')[]
+  startTime: number
+  endTime: number
+  healthSources?: string[]
+}
+
+export type GetAllErrorTrackingClusterDataProps = Omit<
+  GetProps<
+    RestResponseListLiveMonitoringLogAnalysisClusterDTO,
+    unknown,
+    GetAllErrorTrackingClusterDataQueryParams,
+    void
+  >,
+  'path'
+>
+
+/**
+ * get all log cluster data for a time range
+ */
+export const GetAllErrorTrackingClusterData = (props: GetAllErrorTrackingClusterDataProps) => (
+  <Get<RestResponseListLiveMonitoringLogAnalysisClusterDTO, unknown, GetAllErrorTrackingClusterDataQueryParams, void>
+    path={`/error-tracking-dashboard/cluster`}
+    base={getConfig('cv/api')}
+    {...props}
+  />
+)
+
+export type UseGetAllErrorTrackingClusterDataProps = Omit<
+  UseGetProps<
+    RestResponseListLiveMonitoringLogAnalysisClusterDTO,
+    unknown,
+    GetAllErrorTrackingClusterDataQueryParams,
+    void
+  >,
+  'path'
+>
+
+/**
+ * get all log cluster data for a time range
+ */
+export const useGetAllErrorTrackingClusterData = (props: UseGetAllErrorTrackingClusterDataProps) =>
+  useGet<RestResponseListLiveMonitoringLogAnalysisClusterDTO, unknown, GetAllErrorTrackingClusterDataQueryParams, void>(
+    `/error-tracking-dashboard/cluster`,
+    { base: getConfig('cv/api'), ...props }
+  )
+
+/**
+ * get all log cluster data for a time range
+ */
+export const getAllErrorTrackingClusterDataPromise = (
+  props: GetUsingFetchProps<
+    RestResponseListLiveMonitoringLogAnalysisClusterDTO,
+    unknown,
+    GetAllErrorTrackingClusterDataQueryParams,
+    void
+  >,
+  signal?: RequestInit['signal']
+) =>
+  getUsingFetch<
+    RestResponseListLiveMonitoringLogAnalysisClusterDTO,
+    unknown,
+    GetAllErrorTrackingClusterDataQueryParams,
+    void
+  >(getConfig('cv/api'), `/error-tracking-dashboard/cluster`, props, signal)
+
+export interface GetAllErrorTrackingDataQueryParams {
+  accountId?: string
+  orgIdentifier: string
+  projectIdentifier: string
+  monitoredServiceIdentifier?: string
+  clusterTypes?: ('KNOWN' | 'UNEXPECTED' | 'UNKNOWN')[]
+  startTime: number
+  endTime: number
+  healthSources?: string[]
+  page?: number
+  size?: number
+}
+
+export type GetAllErrorTrackingDataProps = Omit<
+  GetProps<RestResponsePageAnalyzedLogDataDTO, unknown, GetAllErrorTrackingDataQueryParams, void>,
+  'path'
+>
+
+/**
+ * get all error tracking data for a time range
+ */
+export const GetAllErrorTrackingData = (props: GetAllErrorTrackingDataProps) => (
+  <Get<RestResponsePageAnalyzedLogDataDTO, unknown, GetAllErrorTrackingDataQueryParams, void>
+    path={`/error-tracking-dashboard/data`}
+    base={getConfig('cv/api')}
+    {...props}
+  />
+)
+
+export type UseGetAllErrorTrackingDataProps = Omit<
+  UseGetProps<RestResponsePageAnalyzedLogDataDTO, unknown, GetAllErrorTrackingDataQueryParams, void>,
+  'path'
+>
+
+/**
+ * get all error tracking data for a time range
+ */
+export const useGetAllErrorTrackingData = (props: UseGetAllErrorTrackingDataProps) =>
+  useGet<RestResponsePageAnalyzedLogDataDTO, unknown, GetAllErrorTrackingDataQueryParams, void>(
+    `/error-tracking-dashboard/data`,
+    { base: getConfig('cv/api'), ...props }
+  )
+
+/**
+ * get all error tracking data for a time range
+ */
+export const getAllErrorTrackingDataPromise = (
+  props: GetUsingFetchProps<RestResponsePageAnalyzedLogDataDTO, unknown, GetAllErrorTrackingDataQueryParams, void>,
+  signal?: RequestInit['signal']
+) =>
+  getUsingFetch<RestResponsePageAnalyzedLogDataDTO, unknown, GetAllErrorTrackingDataQueryParams, void>(
+    getConfig('cv/api'),
+    `/error-tracking-dashboard/data`,
+    props,
+    signal
+  )
+
 export interface GetNamespacesQueryParams {
   accountId: string
   orgIdentifier: string
@@ -7908,133 +7531,6 @@ export const getWorkloadsPromise = (
   getUsingFetch<ResponsePageString, Failure | Error, GetWorkloadsQueryParams, void>(
     getConfig('cv/api'),
     `/kubernetes/workloads`,
-    props,
-    signal
-  )
-
-export interface GetAllErrorTrackingClusterDataQueryParams {
-  accountId?: string
-  orgIdentifier: string
-  projectIdentifier: string
-  monitoredServiceIdentifier?: string
-  clusterTypes?: ('KNOWN' | 'UNEXPECTED' | 'UNKNOWN')[]
-  startTime: number
-  endTime: number
-  healthSources?: string[]
-}
-
-export type GetAllErrorTrackingClusterDataProps = Omit<
-  GetProps<
-    RestResponseListLiveMonitoringLogAnalysisClusterDTO,
-    unknown,
-    GetAllErrorTrackingClusterDataQueryParams,
-    void
-  >,
-  'path'
->
-
-/**
- * get all log cluster data for a time range
- */
-export const GetAllErrorTrackingClusterData = (props: GetAllErrorTrackingClusterDataProps) => (
-  <Get<RestResponseListLiveMonitoringLogAnalysisClusterDTO, unknown, GetAllErrorTrackingClusterDataQueryParams, void>
-    path={`/error-tracking-dashboard/cluster`}
-    base={getConfig('cv/api')}
-    {...props}
-  />
-)
-
-export type UseGetAllErrorTrackingClusterDataProps = Omit<
-  UseGetProps<
-    RestResponseListLiveMonitoringLogAnalysisClusterDTO,
-    unknown,
-    GetAllErrorTrackingClusterDataQueryParams,
-    void
-  >,
-  'path'
->
-
-/**
- * get all log cluster data for a time range
- */
-export const useGetAllErrorTrackingClusterData = (props: UseGetAllErrorTrackingClusterDataProps) =>
-  useGet<RestResponseListLiveMonitoringLogAnalysisClusterDTO, unknown, GetAllErrorTrackingClusterDataQueryParams, void>(
-    `/error-tracking-dashboard/cluster`,
-    { base: getConfig('cv/api'), ...props }
-  )
-
-/**
- * get all log cluster data for a time range
- */
-export const getAllErrorTrackingClusterDataPromise = (
-  props: GetUsingFetchProps<
-    RestResponseListLiveMonitoringLogAnalysisClusterDTO,
-    unknown,
-    GetAllErrorTrackingClusterDataQueryParams,
-    void
-  >,
-  signal?: RequestInit['signal']
-) =>
-  getUsingFetch<
-    RestResponseListLiveMonitoringLogAnalysisClusterDTO,
-    unknown,
-    GetAllErrorTrackingClusterDataQueryParams,
-    void
-  >(getConfig('cv/api'), `/error-tracking-dashboard/cluster`, props, signal)
-
-export interface GetAllErrorTrackingDataQueryParams {
-  accountId?: string
-  orgIdentifier: string
-  projectIdentifier: string
-  monitoredServiceIdentifier?: string
-  clusterTypes?: ('KNOWN' | 'UNEXPECTED' | 'UNKNOWN')[]
-  startTime: number
-  endTime: number
-  healthSources?: string[]
-  page?: number
-  size?: number
-}
-
-export type GetAllErrorTrackingDataProps = Omit<
-  GetProps<RestResponsePageAnalyzedLogDataDTO, unknown, GetAllErrorTrackingDataQueryParams, void>,
-  'path'
->
-
-/**
- * get all error tracking data for a time range
- */
-export const GetAllErrorTrackingData = (props: GetAllErrorTrackingDataProps) => (
-  <Get<RestResponsePageAnalyzedLogDataDTO, unknown, GetAllErrorTrackingDataQueryParams, void>
-    path={`/error-tracking-dashboard/data`}
-    base={getConfig('cv/api')}
-    {...props}
-  />
-)
-
-export type UseGetAllErrorTrackingDataProps = Omit<
-  UseGetProps<RestResponsePageAnalyzedLogDataDTO, unknown, GetAllErrorTrackingDataQueryParams, void>,
-  'path'
->
-
-/**
- * get all error tracking data for a time range
- */
-export const useGetAllErrorTrackingData = (props: UseGetAllErrorTrackingDataProps) =>
-  useGet<RestResponsePageAnalyzedLogDataDTO, unknown, GetAllErrorTrackingDataQueryParams, void>(
-    `/error-tracking-dashboard/data`,
-    { base: getConfig('cv/api'), ...props }
-  )
-
-/**
- * get all error tracking data for a time range
- */
-export const getAllErrorTrackingDataPromise = (
-  props: GetUsingFetchProps<RestResponsePageAnalyzedLogDataDTO, unknown, GetAllErrorTrackingDataQueryParams, void>,
-  signal?: RequestInit['signal']
-) =>
-  getUsingFetch<RestResponsePageAnalyzedLogDataDTO, unknown, GetAllErrorTrackingDataQueryParams, void>(
-    getConfig('cv/api'),
-    `/error-tracking-dashboard/data`,
     props,
     signal
   )
@@ -8713,126 +8209,6 @@ export const getMonitoredServiceListPromise = (
   getUsingFetch<ResponsePageMonitoredServiceResponse, unknown, GetMonitoredServiceListQueryParams, void>(
     getConfig('cv/api'),
     `/monitored-service/list`,
-    props,
-    signal
-  )
-
-export interface GetMonitoredServiceOverAllHealthScoreWithServiceAndEnvQueryParams {
-  accountId?: string
-  orgIdentifier?: string
-  projectIdentifier?: string
-  environmentIdentifier?: string
-  serviceIdentifier?: string
-  duration?: 'FOUR_HOURS' | 'TWENTY_FOUR_HOURS' | 'THREE_DAYS' | 'SEVEN_DAYS' | 'THIRTY_DAYS'
-  endTime?: number
-}
-
-export type GetMonitoredServiceOverAllHealthScoreWithServiceAndEnvProps = Omit<
-  GetProps<ResponseHistoricalTrend, unknown, GetMonitoredServiceOverAllHealthScoreWithServiceAndEnvQueryParams, void>,
-  'path'
->
-
-/**
- * get monitored service overall health score data using service and environment identifiers
- */
-export const GetMonitoredServiceOverAllHealthScoreWithServiceAndEnv = (
-  props: GetMonitoredServiceOverAllHealthScoreWithServiceAndEnvProps
-) => (
-  <Get<ResponseHistoricalTrend, unknown, GetMonitoredServiceOverAllHealthScoreWithServiceAndEnvQueryParams, void>
-    path={`/monitored-service/overall-health-score`}
-    base={getConfig('cv/api')}
-    {...props}
-  />
-)
-
-export type UseGetMonitoredServiceOverAllHealthScoreWithServiceAndEnvProps = Omit<
-  UseGetProps<
-    ResponseHistoricalTrend,
-    unknown,
-    GetMonitoredServiceOverAllHealthScoreWithServiceAndEnvQueryParams,
-    void
-  >,
-  'path'
->
-
-/**
- * get monitored service overall health score data using service and environment identifiers
- */
-export const useGetMonitoredServiceOverAllHealthScoreWithServiceAndEnv = (
-  props: UseGetMonitoredServiceOverAllHealthScoreWithServiceAndEnvProps
-) =>
-  useGet<ResponseHistoricalTrend, unknown, GetMonitoredServiceOverAllHealthScoreWithServiceAndEnvQueryParams, void>(
-    `/monitored-service/overall-health-score`,
-    { base: getConfig('cv/api'), ...props }
-  )
-
-/**
- * get monitored service overall health score data using service and environment identifiers
- */
-export const getMonitoredServiceOverAllHealthScoreWithServiceAndEnvPromise = (
-  props: GetUsingFetchProps<
-    ResponseHistoricalTrend,
-    unknown,
-    GetMonitoredServiceOverAllHealthScoreWithServiceAndEnvQueryParams,
-    void
-  >,
-  signal?: RequestInit['signal']
-) =>
-  getUsingFetch<
-    ResponseHistoricalTrend,
-    unknown,
-    GetMonitoredServiceOverAllHealthScoreWithServiceAndEnvQueryParams,
-    void
-  >(getConfig('cv/api'), `/monitored-service/overall-health-score`, props, signal)
-
-export interface GetMonitoredServiceDetailsQueryParams {
-  serviceIdentifier?: string
-  environmentIdentifier?: string
-  accountId: string
-  orgIdentifier: string
-  projectIdentifier: string
-}
-
-export type GetMonitoredServiceDetailsProps = Omit<
-  GetProps<MonitoredServiceListItemDTO, unknown, GetMonitoredServiceDetailsQueryParams, void>,
-  'path'
->
-
-/**
- * get details of a monitored service present in the Service Dependency Graph
- */
-export const GetMonitoredServiceDetails = (props: GetMonitoredServiceDetailsProps) => (
-  <Get<MonitoredServiceListItemDTO, unknown, GetMonitoredServiceDetailsQueryParams, void>
-    path={`/monitored-service/service-details`}
-    base={getConfig('cv/api')}
-    {...props}
-  />
-)
-
-export type UseGetMonitoredServiceDetailsProps = Omit<
-  UseGetProps<MonitoredServiceListItemDTO, unknown, GetMonitoredServiceDetailsQueryParams, void>,
-  'path'
->
-
-/**
- * get details of a monitored service present in the Service Dependency Graph
- */
-export const useGetMonitoredServiceDetails = (props: UseGetMonitoredServiceDetailsProps) =>
-  useGet<MonitoredServiceListItemDTO, unknown, GetMonitoredServiceDetailsQueryParams, void>(
-    `/monitored-service/service-details`,
-    { base: getConfig('cv/api'), ...props }
-  )
-
-/**
- * get details of a monitored service present in the Service Dependency Graph
- */
-export const getMonitoredServiceDetailsPromise = (
-  props: GetUsingFetchProps<MonitoredServiceListItemDTO, unknown, GetMonitoredServiceDetailsQueryParams, void>,
-  signal?: RequestInit['signal']
-) =>
-  getUsingFetch<MonitoredServiceListItemDTO, unknown, GetMonitoredServiceDetailsQueryParams, void>(
-    getConfig('cv/api'),
-    `/monitored-service/service-details`,
     props,
     signal
   )
@@ -9637,6 +9013,97 @@ export const getAllHealthSourcesForMonitoredServiceIdentifierPromise = (
     GetAllHealthSourcesForMonitoredServiceIdentifierQueryParams,
     GetAllHealthSourcesForMonitoredServiceIdentifierPathParams
   >(getConfig('cv/api'), `/monitored-service/${monitoredServiceIdentifier}/health-sources`, props, signal)
+
+export interface GetMonitoredServiceDetailsWithServiceIdQueryParams {
+  accountId: string
+  orgIdentifier: string
+  projectIdentifier: string
+}
+
+export interface GetMonitoredServiceDetailsWithServiceIdPathParams {
+  monitoredServiceIdentifier: string
+}
+
+export type GetMonitoredServiceDetailsWithServiceIdProps = Omit<
+  GetProps<
+    MonitoredServiceListItemDTO,
+    unknown,
+    GetMonitoredServiceDetailsWithServiceIdQueryParams,
+    GetMonitoredServiceDetailsWithServiceIdPathParams
+  >,
+  'path'
+> &
+  GetMonitoredServiceDetailsWithServiceIdPathParams
+
+/**
+ * get details of a monitored service present in the Service Dependency Graph
+ */
+export const GetMonitoredServiceDetailsWithServiceId = ({
+  monitoredServiceIdentifier,
+  ...props
+}: GetMonitoredServiceDetailsWithServiceIdProps) => (
+  <Get<
+    MonitoredServiceListItemDTO,
+    unknown,
+    GetMonitoredServiceDetailsWithServiceIdQueryParams,
+    GetMonitoredServiceDetailsWithServiceIdPathParams
+  >
+    path={`/monitored-service/${monitoredServiceIdentifier}/service-details`}
+    base={getConfig('cv/api')}
+    {...props}
+  />
+)
+
+export type UseGetMonitoredServiceDetailsWithServiceIdProps = Omit<
+  UseGetProps<
+    MonitoredServiceListItemDTO,
+    unknown,
+    GetMonitoredServiceDetailsWithServiceIdQueryParams,
+    GetMonitoredServiceDetailsWithServiceIdPathParams
+  >,
+  'path'
+> &
+  GetMonitoredServiceDetailsWithServiceIdPathParams
+
+/**
+ * get details of a monitored service present in the Service Dependency Graph
+ */
+export const useGetMonitoredServiceDetailsWithServiceId = ({
+  monitoredServiceIdentifier,
+  ...props
+}: UseGetMonitoredServiceDetailsWithServiceIdProps) =>
+  useGet<
+    MonitoredServiceListItemDTO,
+    unknown,
+    GetMonitoredServiceDetailsWithServiceIdQueryParams,
+    GetMonitoredServiceDetailsWithServiceIdPathParams
+  >(
+    (paramsInPath: GetMonitoredServiceDetailsWithServiceIdPathParams) =>
+      `/monitored-service/${paramsInPath.monitoredServiceIdentifier}/service-details`,
+    { base: getConfig('cv/api'), pathParams: { monitoredServiceIdentifier }, ...props }
+  )
+
+/**
+ * get details of a monitored service present in the Service Dependency Graph
+ */
+export const getMonitoredServiceDetailsWithServiceIdPromise = (
+  {
+    monitoredServiceIdentifier,
+    ...props
+  }: GetUsingFetchProps<
+    MonitoredServiceListItemDTO,
+    unknown,
+    GetMonitoredServiceDetailsWithServiceIdQueryParams,
+    GetMonitoredServiceDetailsWithServiceIdPathParams
+  > & { monitoredServiceIdentifier: string },
+  signal?: RequestInit['signal']
+) =>
+  getUsingFetch<
+    MonitoredServiceListItemDTO,
+    unknown,
+    GetMonitoredServiceDetailsWithServiceIdQueryParams,
+    GetMonitoredServiceDetailsWithServiceIdPathParams
+  >(getConfig('cv/api'), `/monitored-service/${monitoredServiceIdentifier}/service-details`, props, signal)
 
 export interface GetSliGraphQueryParams {
   accountId: string

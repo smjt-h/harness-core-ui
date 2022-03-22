@@ -186,6 +186,7 @@ const GitContextForm: React.FC<GitContextFormProps<Record<string, any> & GitCont
         <FormInput.Select
           name="branch"
           label={getString('common.gitSync.selectBranchLabel')}
+          key={formikProps.values.repo}
           items={branchSelectOptions}
           onQueryChange={(query: string) => setSearchTerm(query)}
           disabled={loadingBranchList || isEditing || gitDetails?.getDefaultFromOtherRepo}

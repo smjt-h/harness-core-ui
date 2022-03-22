@@ -775,6 +775,8 @@ resourceCenter:
     university: University
     apiDocs: API Docs
     changeLog: Change log
+  feedback:
+    submit: Give us feedback
   communityLevelUp: Customer Support is available in Team and Enterprise plans.
   communitySlack: Community Slack
 currentlyAvailable: Currently Available

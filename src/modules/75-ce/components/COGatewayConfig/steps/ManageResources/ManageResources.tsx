@@ -15,6 +15,7 @@ import { useStrings } from 'framework/strings'
 import { CONFIG_STEP_IDS, CONFIG_TOTAL_STEP_COUNTS, DEFAULT_ACCESS_DETAILS, RESOURCES } from '@ce/constants'
 import { FeatureFlag } from '@common/featureFlags'
 import type { GatewayDetails, InstanceDetails } from '@ce/components/COCreateGateway/models'
+import type { StringsMap } from 'stringTypes'
 import COK8sClusterSelector from '@ce/components/COK8sClusterSelector/COK8sClusterSelector'
 import { ConnectorInfoDTO, ConnectorResponse, useGetConnectorListV2 } from 'services/cd-ng'
 import { ASGMinimal, PortConfig, useAllResourcesOfAccount, useGetAllASGs, ContainerSvc, RDSDatabase } from 'services/lw'
@@ -29,6 +30,7 @@ import { Utils } from '@ce/common/Utils'
 import CORdsSelector from '@ce/components/CORdsSelector/CORdsSelector'
 import { useTelemetry } from '@common/hooks/useTelemetry'
 import { USER_JOURNEY_EVENTS } from '@ce/TrackingEventsConstants'
+import { useGatewayContext } from '@ce/context/GatewayContext'
 import COGatewayConfigStep from '../../COGatewayConfigStep'
 import { fromResourceToInstanceDetails, isFFEnabledForResource } from '../../helper'
 import ResourceSelectionModal from '../../ResourceSelectionModal'
@@ -50,16 +52,29 @@ interface ManageResourcesProps {
 }
 
 const managedResources = [
-  { label: 'EC2 VM(s)', value: RESOURCES.INSTANCES, providers: ['aws'] },
   {
-    label: 'VM(s)',
+    label: 'ce.co.autoStoppingRule.helpText.step2.description.resourceList.ec2Vms',
     value: RESOURCES.INSTANCES,
-    providers: ['azure', 'gcp'],
-    ffDependencies: [null, FeatureFlag.CE_AS_GCP_VM_SUPPORT]
+    providers: ['aws']
   },
-  { label: 'Auto scaling groups', value: RESOURCES.ASG, providers: ['aws'] },
   {
-    label: 'Kubernetes Cluster',
+    label: 'ce.co.autoStoppingRule.helpText.step2.description.resourceList.vms',
+    value: RESOURCES.INSTANCES,
+    providers: ['azure']
+  },
+  {
+    label: 'ce.co.autoStoppingRule.helpText.step2.description.resourceList.gcpVms',
+    value: RESOURCES.INSTANCES,
+    providers: ['gcp'],
+    ffDependencies: [FeatureFlag.CE_AS_GCP_VM_SUPPORT]
+  },
+  {
+    label: 'ce.co.autoStoppingRule.helpText.step2.description.resourceList.asg',
+    value: RESOURCES.ASG,
+    providers: ['aws']
+  },
+  {
+    label: 'ce.co.autoStoppingRule.helpText.step2.description.resourceList.kubernetes',
     value: RESOURCES.KUBERNETES,
     providers: ['aws', 'azure', 'gcp'],
     ffDependencies: [
@@ -68,8 +83,16 @@ const managedResources = [
       FeatureFlag.CE_AS_KUBERNETES_ENABLED
     ]
   },
-  { label: 'ECS Service', value: RESOURCES.ECS, providers: ['aws'] },
-  { label: 'RDS instances', value: RESOURCES.RDS, providers: ['aws'] }
+  {
+    label: 'ce.co.autoStoppingRule.helpText.step2.description.resourceList.ecsService',
+    value: RESOURCES.ECS,
+    providers: ['aws']
+  },
+  {
+    label: 'ce.co.autoStoppingRule.helpText.step2.description.resourceList.rdsInstances',
+    value: RESOURCES.RDS,
+    providers: ['aws']
+  }
 ]
 
 const ManageResources: React.FC<ManageResourcesProps> = props => {
@@ -93,6 +116,7 @@ const ManageResources: React.FC<ManageResourcesProps> = props => {
   const isAzureProvider = Utils.isProviderAzure(props.gatewayDetails.provider)
   const isGcpProvider = Utils.isProviderGcp(props.gatewayDetails.provider)
   const featureFlagsMap = useFeatureFlags()
+  const { isEditFlow } = useGatewayContext()
 
   const { mutate: getInstances, loading: loadingInstances } = useAllResourcesOfAccount({
     account_id: accountId, // eslint-disable-line
@@ -202,7 +226,9 @@ const ManageResources: React.FC<ManageResourcesProps> = props => {
     const resourceToFunctionalityMap: Record<string, () => void> = {
       [RESOURCES.INSTANCES]: () => {
         // set total no. of steps to default (4)
-        props.setTotalStepsCount(CONFIG_TOTAL_STEP_COUNTS.DEFAULT)
+        props.setTotalStepsCount(
+          Utils.getConditionalResult(isGcpProvider, CONFIG_TOTAL_STEP_COUNTS.MODIFIED, CONFIG_TOTAL_STEP_COUNTS.DEFAULT)
+        )
         // remove details related to AsG
         resetSelectedAsgDetails()
         resetKubernetesConnectorDetails()
@@ -395,10 +421,11 @@ const ManageResources: React.FC<ManageResourcesProps> = props => {
           onInstancesAddSuccess={onInstanceModalClose}
           loading={loadingInstances}
           refresh={refreshInstances}
+          isEditFlow={isEditFlow}
         />
       </ResourceSelectionModal>
     )
-  }, [allInstances, selectedInstances, loadingInstances, props.gatewayDetails])
+  }, [allInstances, selectedInstances, loadingInstances, props.gatewayDetails, isEditFlow])
 
   const [openEcsModal, closeEcsModal] = useModalHook(
     () => (
@@ -502,7 +529,13 @@ const ManageResources: React.FC<ManageResourcesProps> = props => {
         return providerIndex > -1 && isFFEnabledForResource(resource.ffDependencies?.[providerIndex], featureFlagsMap)
       })
       .map(resourceItem => {
-        return <Radio key={resourceItem.value} label={resourceItem.label} value={resourceItem.value} />
+        return (
+          <Radio
+            key={resourceItem.value}
+            label={getString(resourceItem.label as keyof StringsMap)}
+            value={resourceItem.value}
+          />
+        )
       })
   }
 

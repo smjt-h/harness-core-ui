@@ -18,8 +18,6 @@ import { useStrings } from 'framework/strings'
 import { useAppStore } from 'framework/AppStore/AppStoreContext'
 import { ModuleName } from 'framework/types/ModuleName'
 import ProjectSetupMenu from '@common/navigation/ProjectSetupMenu/ProjectSetupMenu'
-import { useFeatureFlag } from '@common/hooks/useFeatureFlag'
-import { FeatureFlag } from '@common/featureFlags'
 
 export default function CVSideNav(): React.ReactElement {
   const { accountId, projectIdentifier, orgIdentifier, pipelineIdentifier } = useParams<PipelinePathProps>()
@@ -27,7 +25,6 @@ export default function CVSideNav(): React.ReactElement {
   const { getString } = useStrings()
   const history = useHistory()
   const { updateAppStore } = useAppStore()
-  const isErrorTrackingEnabled = useFeatureFlag(FeatureFlag.ERROR_TRACKING_ENABLED)
 
   return (
     <Layout.Vertical spacing="small">
@@ -70,12 +67,6 @@ export default function CVSideNav(): React.ReactElement {
             label={getString('changes')}
             to={routes.toCVChanges({ accountId, projectIdentifier, orgIdentifier })}
           />
-          {isErrorTrackingEnabled && (
-            <SidebarLink
-              label="Error Tracking"
-              to={routes.toErrorTracking({ accountId, projectIdentifier, orgIdentifier })}
-            />
-          )}
           <ProjectSetupMenu module="cv" />
         </React.Fragment>
       ) : null}

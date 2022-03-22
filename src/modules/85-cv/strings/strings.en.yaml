@@ -799,7 +799,8 @@ customHealthSource:
     startAndEndTimeTitle: Start and End Time Placeholders
     startTimeLabel: Start time placeholder
     endTimeLabel: End time placeholder
-    queryValueJsonPath: Log Message JSON Path
+    logMessageJsonPath: Log Message JSON Path
+    logMessageJsonPathPlaceholder: Select path for log message
     validation:
       queryName: Query name is required
       body: Body is required.

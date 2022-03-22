@@ -21,6 +21,7 @@ import type {
 } from 'services/cv'
 import {
   Comparators,
+  PeriodLengthTypes,
   PeriodTypes,
   SLIEventTypes,
   SLIForm,
@@ -85,6 +86,16 @@ export const SLOResponse: RestResponseServiceLevelObjectiveResponse = {
   resource: {
     serviceLevelObjective: createSLORequestPayload(
       serviceLevelObjective,
+      pathParams.orgIdentifier,
+      pathParams.projectIdentifier
+    )
+  }
+}
+
+export const SLOResponseForCalenderType: RestResponseServiceLevelObjectiveResponse = {
+  resource: {
+    serviceLevelObjective: createSLORequestPayload(
+      { ...serviceLevelObjective, periodType: PeriodTypes.CALENDAR, periodLengthType: PeriodLengthTypes.QUARTERLY },
       pathParams.orgIdentifier,
       pathParams.projectIdentifier
     )

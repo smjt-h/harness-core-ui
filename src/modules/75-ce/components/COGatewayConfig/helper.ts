@@ -5,7 +5,7 @@
  * https://polyformproject.org/wp-content/uploads/2020/06/PolyForm-Shield-1.0.0.txt.
  */
 
-import { isEmpty as _isEmpty } from 'lodash-es'
+import { isEmpty as _isEmpty, defaultTo } from 'lodash-es'
 import type { Resource } from 'services/lw'
 import type { GatewayDetails, InstanceDetails } from '@ce/components/COCreateGateway/models'
 import { RESOURCES } from '@ce/constants'
@@ -86,10 +86,11 @@ class InstanceData implements InstanceDetails {
 }
 
 export const fromResourceToInstanceDetails = (item: Resource, resourceType: { isAzure: boolean; isGcp: boolean }) => {
+  const ip = resourceType.isGcp ? defaultTo(item.ipv4, item.private_ipv4)?.[0] : item.ipv4?.[0]
   const instanceDetails = new InstanceData()
     .setName(item.name as string)
     .setId(item.id as string)
-    .setIp(item.ipv4?.[0] as string)
+    .setIp(ip as string)
     .setRegion(item.region as string)
     .setType(item.type as string)
     .setLaunchTime(item.launch_time as string)
@@ -136,4 +137,26 @@ export const getSelectedResourceFromGatewayDetails = (gatewayDetails: GatewayDet
     : !_isEmpty(gatewayDetails.routing.database)
     ? RESOURCES.RDS
     : null
+}
+
+export const getTitle = (selectedResource?: RESOURCES | null) => {
+  let title = 'ce.co.autoStoppingRule.configuration.step3.title'
+  if (selectedResource === RESOURCES.ASG) {
+    title = 'ce.co.autoStoppingRule.configuration.step3.asgTitle'
+  }
+  if (selectedResource === RESOURCES.ECS) {
+    title = 'ce.co.autoStoppingRule.configuration.step3.desiredTaskCount'
+  }
+  return title
+}
+
+export const getSubTitle = (selectedResource?: RESOURCES | null) => {
+  let subStr = 'ce.co.autoStoppingRule.configuration.step3.subTitle'
+  if (selectedResource === RESOURCES.ASG) {
+    subStr = 'ce.co.autoStoppingRule.configuration.step3.asgSubTitle'
+  }
+  if (selectedResource === RESOURCES.ECS) {
+    subStr = 'ce.co.autoStoppingRule.configuration.step3.ecsSubTitle'
+  }
+  return subStr
 }

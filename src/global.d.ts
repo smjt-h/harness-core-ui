@@ -61,6 +61,8 @@ declare interface Window {
   TOUR_GUIDE_USER_ID: string
   deploymentType: 'SAAS' | 'ON_PREM' | 'COMMUNITY'
   resourceBasePath: string
+  refinerProjectToken: string
+  refinerFeedbackToken: string
 }
 
 declare interface WindowEventMap {
@@ -75,6 +77,8 @@ declare interface Document {
 declare const monaco: any
 
 declare module 'event-source-polyfill'
+
+declare module 'refiner-js'
 
 declare module 'gitopsui/MicroFrontendApp' {
   import type { ChildAppComponent } from './microfrontends'

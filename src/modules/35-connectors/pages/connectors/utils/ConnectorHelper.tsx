@@ -211,7 +211,7 @@ export const getConnectorIconByType = (type: string): IconName => {
     case Connectors.CUSTOM_HEALTH:
       return 'service-custom-connector'
     case Connectors.ERROR_TRACKING:
-      return 'placeholder'
+      return 'error-tracking'
     default:
       return 'placeholder'
   }
