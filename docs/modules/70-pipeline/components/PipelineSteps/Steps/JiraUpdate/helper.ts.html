@@ -23,30 +23,30 @@
         <div class='clearfix'>
             
             <div class='fl pad1y space-right2'>
-                <span class="strong">95.24% </span>
+                <span class="strong">100% </span>
                 <span class="quiet">Statements</span>
-                <span class='fraction'>20/21</span>
+                <span class='fraction'>21/21</span>
             </div>
         
             
             <div class='fl pad1y space-right2'>
-                <span class="strong">64.29% </span>
+                <span class="strong">83.93% </span>
                 <span class="quiet">Branches</span>
-                <span class='fraction'>36/56</span>
+                <span class='fraction'>47/56</span>
             </div>
         
             
             <div class='fl pad1y space-right2'>
-                <span class="strong">85.71% </span>
+                <span class="strong">100% </span>
                 <span class="quiet">Functions</span>
-                <span class='fraction'>6/7</span>
+                <span class='fraction'>7/7</span>
             </div>
         
             
             <div class='fl pad1y space-right2'>
-                <span class="strong">94.12% </span>
+                <span class="strong">100% </span>
                 <span class="quiet">Lines</span>
-                <span class='fraction'>16/17</span>
+                <span class='fraction'>17/17</span>
             </div>
         
             
@@ -153,31 +153,31 @@
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-yes">100x</span>
-<span class="cline-any cline-yes">17x</span>
-<span class="cline-any cline-yes">17x</span>
-<span class="cline-any cline-yes">3x</span>
+<span class="cline-any cline-yes">19x</span>
+<span class="cline-any cline-yes">19x</span>
+<span class="cline-any cline-yes">6x</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-yes">3x</span>
-<span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-yes">6x</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">2x</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-yes">3x</span>
-<span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-yes">17x</span>
-<span class="cline-any cline-yes">30x</span>
-<span class="cline-any cline-yes">21x</span>
-<span class="cline-any cline-yes">21x</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-yes">17x</span>
+<span class="cline-any cline-yes">6x</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">19x</span>
+<span class="cline-any cline-yes">34x</span>
+<span class="cline-any cline-yes">24x</span>
+<span class="cline-any cline-yes">23x</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">19x</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-yes">100x</span>
-<span class="cline-any cline-yes">17x</span>
+<span class="cline-any cline-yes">19x</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
@@ -241,19 +241,19 @@ export const processFieldsForSubmit = (values: JiraUpdateData): JiraCreateFieldT
   values.spec.selectedFields?.forEach((field: JiraFieldNGWithValue) =&gt; {
     const name = field.name
     const value =
-      typeof field.value === 'string' || <span class="branch-1 cbranch-no" title="branch not covered" >typeof field.value === 'number'</span>
+      typeof field.value === 'string' || typeof field.value === 'number'
         ? field.value
-        : <span class="branch-1 cbranch-no" title="branch not covered" >Array.isArray(field.value)</span>
-        ? (field.value as MultiSelectOption[]).map(<span class="fstat-no" title="function not covered" >opt </span>=&gt; <span class="cstat-no" title="statement not covered" >opt.value.toString())</span>.join(',')
+        : Array.isArray(field.value)
+        ? (field.value as MultiSelectOption[]).map(opt =&gt; opt.value.toString()).join(',')
         : typeof field.value === 'object'
-        ? (field.value as SelectOption).value?.toString()
-        : ''
+        ? (field.value as SelectOption).value<span class="branch-0 cbranch-no" title="branch not covered" >?.t</span>oString()
+        : <span class="branch-1 cbranch-no" title="branch not covered" >''</span>
     // The return value should be comma separated string or a number
     toReturn.push({ name, value })
   })
   values.spec.fields<span class="branch-0 cbranch-no" title="branch not covered" >?.f</span>orEach((kvField: JiraCreateFieldType) =&gt; {
     const alreadyPresent = toReturn.find(field =&gt; field.name === kvField.name)
-    <span class="missing-if-branch" title="else path not taken" >E</span>if (!alreadyPresent) {
+    if (!alreadyPresent) {
       toReturn.push(kvField)
     }
   })
@@ -267,7 +267,7 @@ export const processFormData = (values: JiraUpdateData): JiraUpdateData =&gt; {
       connectorRef:
         getMultiTypeFromValue(values.spec.connectorRef as SelectOption) === MultiTypeInputType.FIXED
           ? (values.spec.connectorRef as SelectOption)<span class="branch-0 cbranch-no" title="branch not covered" >?.v</span>alue<span class="branch-0 cbranch-no" title="branch not covered" >?.t</span>oString()
-          : <span class="branch-1 cbranch-no" title="branch not covered" >values.spec.connectorRef,</span>
+          : values.spec.connectorRef,
       issueKey: values.spec.issueKey,
       transitionTo:
         values.spec.transitionTo<span class="branch-0 cbranch-no" title="branch not covered" >?.t</span>ransitionName || values.spec.transitionTo<span class="branch-0 cbranch-no" title="branch not covered" >?.s</span>tatus
@@ -276,7 +276,7 @@ export const processFormData = (values: JiraUpdateData): JiraUpdateData =&gt; {
               status:
                 getMultiTypeFromValue(values.spec.transitionTo.status as SelectOption) === MultiTypeInputType.FIXED
                   ? (values.spec.transitionTo.status as SelectOption).value<span class="branch-0 cbranch-no" title="branch not covered" >?.t</span>oString()
-                  : <span class="branch-1 cbranch-no" title="branch not covered" >values.spec.transitionTo.status</span>
+                  : values.spec.transitionTo.status
             }
           : undefined,
       fields: processFieldsForSubmit(values),
@@ -316,7 +316,7 @@ export const processInitialValues = (values: JiraUpdateData): JiraUpdateData =&g
             <div class='footer quiet pad2 space-top1 center small'>
                 Code coverage generated by
                 <a href="https://istanbul.js.org/" target="_blank">istanbul</a>
-                at Tue Mar 22 2022 07:18:03 GMT+0000 (Greenwich Mean Time)
+                at Tue Mar 22 2022 12:22:59 GMT+0000 (Greenwich Mean Time)
             </div>
         </div>
         <script src="../../../../../../prettify.js"></script>

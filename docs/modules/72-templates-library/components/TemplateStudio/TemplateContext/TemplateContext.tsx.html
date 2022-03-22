@@ -23,9 +23,9 @@
         <div class='clearfix'>
             
             <div class='fl pad1y space-right2'>
-                <span class="strong">19.44% </span>
+                <span class="strong">19.23% </span>
                 <span class="quiet">Statements</span>
-                <span class='fraction'>35/180</span>
+                <span class='fraction'>35/182</span>
             </div>
         
             
@@ -44,9 +44,9 @@
         
             
             <div class='fl pad1y space-right2'>
-                <span class="strong">20.35% </span>
+                <span class="strong">20.11% </span>
                 <span class="quiet">Lines</span>
-                <span class='fraction'>35/172</span>
+                <span class='fraction'>35/174</span>
             </div>
         
             
@@ -755,7 +755,11 @@
 <a name='L696'></a><a href='#L696'>696</a>
 <a name='L697'></a><a href='#L697'>697</a>
 <a name='L698'></a><a href='#L698'>698</a>
-<a name='L699'></a><a href='#L699'>699</a></td><td class="line-coverage quiet"><span class="cline-any cline-neutral">&nbsp;</span>
+<a name='L699'></a><a href='#L699'>699</a>
+<a name='L700'></a><a href='#L700'>700</a>
+<a name='L701'></a><a href='#L701'>701</a>
+<a name='L702'></a><a href='#L702'>702</a>
+<a name='L703'></a><a href='#L703'>703</a></td><td class="line-coverage quiet"><span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
@@ -990,6 +994,7 @@
 <span class="cline-any cline-no">&nbsp;</span>
 <span class="cline-any cline-no">&nbsp;</span>
 <span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
@@ -1041,6 +1046,9 @@
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-no">&nbsp;</span>
@@ -1687,59 +1695,63 @@ const _fetchTemplate = <span class="fstat-no" title="function not covered" >asyn
 <span class="cstat-no" title="statement not covered" >    dispatch(TemplateContextActions.fetching())</span>
     let data: TemplatePayload = <span class="cstat-no" title="statement not covered" >await IdbTemplate.get(IdbTemplateStoreName, id)</span>
 <span class="cstat-no" title="statement not covered" >    if ((!data || forceFetch) &amp;&amp; templateIdentifier !== DefaultNewTemplateId) {</span>
-      const templatesList: TemplateSummaryResponse[] = <span class="cstat-no" title="statement not covered" >await getTemplatesByIdentifier(</span>
-        {
-          ...queryParams,
-          templateListType: TemplateListType.All,
-          ...(repoIdentifier &amp;&amp; branch ? { repoIdentifier, branch } : {})
-        },
-        templateIdentifier,
-        signal
-      )
-&nbsp;
-      const versions: string[] = <span class="cstat-no" title="statement not covered" >templatesList.map(<span class="fstat-no" title="function not covered" >item </span>=&gt; <span class="cstat-no" title="statement not covered" >defaultTo(item.versionLabel, ''))</span></span>
-      const defaultVersion = <span class="cstat-no" title="statement not covered" >defaultTo(templatesList.find(<span class="fstat-no" title="function not covered" >item </span>=&gt; <span class="cstat-no" title="statement not covered" >item.stableTemplate)</span>?.versionLabel, '')</span>
-      const selectedVersion = <span class="cstat-no" title="statement not covered" >versions.includes(versionLabel) ? versionLabel : defaultVersion</span>
-      const stableVersion = <span class="cstat-no" title="statement not covered" >templatesList.find(<span class="fstat-no" title="function not covered" >item </span>=&gt; <span class="cstat-no" title="statement not covered" >item.stableTemplate)</span>?.versionLabel</span>
-      const lastPublishedVersion = <span class="cstat-no" title="statement not covered" >maxBy(templatesList, 'createdAt')?.versionLabel</span>
-      const templateWithGitDetails = <span class="cstat-no" title="statement not covered" >templatesList.find(<span class="fstat-no" title="function not covered" >item </span>=&gt; <span class="cstat-no" title="statement not covered" >item.versionLabel === selectedVersion)</span></span>
-<span class="cstat-no" title="statement not covered" >      id = getId(</span>
-        queryParams.accountIdentifier,
-        defaultTo(queryParams.orgIdentifier, ''),
-        defaultTo(queryParams.projectIdentifier, ''),
-        templateIdentifier,
-        versionLabel,
-        defaultTo(gitDetails.repoIdentifier, templateWithGitDetails?.gitDetails?.repoIdentifier ?? ''),
-        defaultTo(gitDetails.branch, templateWithGitDetails?.gitDetails?.branch ?? '')
-      )
-<span class="cstat-no" title="statement not covered" >      data = await IdbTemplate.get(IdbTemplateStoreName, id)</span>
-      let template: NGTemplateInfoConfig
-      const templateYamlStr = <span class="cstat-no" title="statement not covered" >defaultTo(templateWithGitDetails?.yaml, '')</span>
 <span class="cstat-no" title="statement not covered" >      try {</span>
-<span class="cstat-no" title="statement not covered" >        template = defaultTo(parse(templateYamlStr)?.template, {})</span>
-      } catch (e) {
-        // It is assumed that execution will come here, if there are only syntatical errors in yaml string
-<span class="cstat-no" title="statement not covered" >        template = {</span>
-          name: defaultTo(templateWithGitDetails?.name, ''),
-          identifier: defaultTo(templateWithGitDetails?.identifier, ''),
-          type: defaultTo(templateWithGitDetails?.childType, 'Step') as 'Step' | 'Stage',
-          versionLabel: defaultTo(templateWithGitDetails?.versionLabel, ''),
-          spec: {}
-        }
-      }
+        const templatesList: TemplateSummaryResponse[] = <span class="cstat-no" title="statement not covered" >await getTemplatesByIdentifier(</span>
+          {
+            ...queryParams,
+            templateListType: TemplateListType.All,
+            ...(repoIdentifier &amp;&amp; branch ? { repoIdentifier, branch } : {})
+          },
+          templateIdentifier,
+          signal
+        )
 &nbsp;
-<span class="cstat-no" title="statement not covered" >      dispatchTemplateSuccess({</span>
-        dispatch,
-        data,
-        forceUpdate,
-        id,
-        stableVersion,
-        lastPublishedVersion,
-        template,
-        templateWithGitDetails,
-        templateYamlStr,
-        versions
-      })
+        const versions: string[] = <span class="cstat-no" title="statement not covered" >templatesList.map(<span class="fstat-no" title="function not covered" >item </span>=&gt; <span class="cstat-no" title="statement not covered" >defaultTo(item.versionLabel, ''))</span></span>
+        const defaultVersion = <span class="cstat-no" title="statement not covered" >defaultTo(templatesList.find(<span class="fstat-no" title="function not covered" >item </span>=&gt; <span class="cstat-no" title="statement not covered" >item.stableTemplate)</span>?.versionLabel, '')</span>
+        const selectedVersion = <span class="cstat-no" title="statement not covered" >versions.includes(versionLabel) ? versionLabel : defaultVersion</span>
+        const stableVersion = <span class="cstat-no" title="statement not covered" >templatesList.find(<span class="fstat-no" title="function not covered" >item </span>=&gt; <span class="cstat-no" title="statement not covered" >item.stableTemplate)</span>?.versionLabel</span>
+        const lastPublishedVersion = <span class="cstat-no" title="statement not covered" >maxBy(templatesList, 'createdAt')?.versionLabel</span>
+        const templateWithGitDetails = <span class="cstat-no" title="statement not covered" >templatesList.find(<span class="fstat-no" title="function not covered" >item </span>=&gt; <span class="cstat-no" title="statement not covered" >item.versionLabel === selectedVersion)</span></span>
+<span class="cstat-no" title="statement not covered" >        id = getId(</span>
+          queryParams.accountIdentifier,
+          defaultTo(queryParams.orgIdentifier, ''),
+          defaultTo(queryParams.projectIdentifier, ''),
+          templateIdentifier,
+          versionLabel,
+          defaultTo(gitDetails.repoIdentifier, templateWithGitDetails?.gitDetails?.repoIdentifier ?? ''),
+          defaultTo(gitDetails.branch, templateWithGitDetails?.gitDetails?.branch ?? '')
+        )
+<span class="cstat-no" title="statement not covered" >        data = await IdbTemplate.get(IdbTemplateStoreName, id)</span>
+        let template: NGTemplateInfoConfig
+        const templateYamlStr = <span class="cstat-no" title="statement not covered" >defaultTo(templateWithGitDetails?.yaml, '')</span>
+<span class="cstat-no" title="statement not covered" >        try {</span>
+<span class="cstat-no" title="statement not covered" >          template = defaultTo(parse(templateYamlStr)?.template, {})</span>
+        } catch (e) {
+          // It is assumed that execution will come here, if there are only syntatical errors in yaml string
+<span class="cstat-no" title="statement not covered" >          template = {</span>
+            name: defaultTo(templateWithGitDetails?.name, ''),
+            identifier: defaultTo(templateWithGitDetails?.identifier, ''),
+            type: defaultTo(templateWithGitDetails?.childType, 'Step') as 'Step' | 'Stage',
+            versionLabel: defaultTo(templateWithGitDetails?.versionLabel, ''),
+            spec: {}
+          }
+        }
+&nbsp;
+<span class="cstat-no" title="statement not covered" >        dispatchTemplateSuccess({</span>
+          dispatch,
+          data,
+          forceUpdate,
+          id,
+          stableVersion,
+          lastPublishedVersion,
+          template,
+          templateWithGitDetails,
+          templateYamlStr,
+          versions
+        })
+      } catch (_) {
+<span class="cstat-no" title="statement not covered" >        logger.info('Failed to fetch template list')</span>
+      }
     } else {
 <span class="cstat-no" title="statement not covered" >      dispatch(</span>
         TemplateContextActions.success({
@@ -2158,7 +2170,7 @@ export const TemplateProvider: React.FC&lt;{
             <div class='footer quiet pad2 space-top1 center small'>
                 Code coverage generated by
                 <a href="https://istanbul.js.org/" target="_blank">istanbul</a>
-                at Tue Mar 22 2022 07:18:03 GMT+0000 (Greenwich Mean Time)
+                at Tue Mar 22 2022 12:22:59 GMT+0000 (Greenwich Mean Time)
             </div>
         </div>
         <script src="../../../../../prettify.js"></script>
