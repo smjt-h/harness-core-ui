@@ -76,21 +76,6 @@ exports[`CITrialHomePage snapshot test should call button event when click 1`] =
 </div>
 `;
 
-exports[`CITrialHomePage snapshot test should call button event when click 2`] = `
-<div>
-  <div>
-    <h1>
-      Not Found
-    </h1>
-    <div
-      data-testid="location"
-    >
-      /account/undefined/ci/home?modal=TRIAL&&experience=TRIAL
-    </div>
-  </div>
-</div>
-`;
-
 exports[`CITrialHomePage snapshot test should render properly 1`] = `
 <div>
   <div

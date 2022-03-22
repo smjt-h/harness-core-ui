@@ -1080,7 +1080,7 @@ exports[`Instance Selector Modal should show data 1`] = `
             >
               <div
                 class="bp3-transition-container bp3-popover-exit bp3-popover-exit-active"
-                style="position: absolute; will-change: transform; top: 0px; left: 0px; transform: translate3d(NaNpx, NaNpx, 0);"
+                style="position: absolute; top: 0px; left: 0px; transform: translate3d(NaNpx, NaNpx, 0); will-change: transform;"
               >
                 <div
                   class="bp3-popover bp3-minimal bp3-select-popover"

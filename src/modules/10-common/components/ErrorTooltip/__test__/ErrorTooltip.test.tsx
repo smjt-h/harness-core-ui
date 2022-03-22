@@ -7,7 +7,7 @@
 
 import React from 'react'
 import { Icon } from '@wings-software/uicore'
-import { render } from '@testing-library/react'
+import { render, waitFor } from '@testing-library/react'
 import userEvent from '@testing-library/user-event'
 import { TestWrapper } from '@common/utils/testUtils'
 import ErrorTooltip from '../ErrorTooltip'
@@ -29,7 +29,7 @@ describe('ErrorTooltip', () => {
 
     expect(getByText('common.friendlyMessage: somethingWentWrong')).toBeInTheDocument()
 
-    userEvent.click(queryByText('retry')!)
+    await waitFor(() => userEvent.click(queryByText('retry')!))
 
     expect(onRetry).toBeCalledTimes(0)
   })
@@ -47,7 +47,7 @@ describe('ErrorTooltip', () => {
 
     expect(queryByText(`common.friendlyMessage: ${errorMessage}`)).toBeInTheDocument()
 
-    userEvent.click(queryByText('retry')!)
+    await waitFor(() => userEvent.click(queryByText('retry')!))
 
     expect(onRetry).toBeCalledTimes(1)
   })

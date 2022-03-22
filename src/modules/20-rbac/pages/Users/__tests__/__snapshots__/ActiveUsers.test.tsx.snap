@@ -769,8 +769,8 @@ exports[`UsersPage Test Invite a User 1`] = `
                   class="bp3-overlay bp3-overlay-open bp3-overlay-inline"
                 >
                   <div
-                    class="bp3-transition-container bp3-popover-enter bp3-popover-enter-active"
-                    style="position: absolute; will-change: transform; top: 0px; left: 0px; transform: translate3d(NaNpx, NaNpx, 0);"
+                    class="bp3-transition-container bp3-popover-appear bp3-popover-appear-active"
+                    style="position: absolute; top: 0px; left: 0px; transform: translate3d(NaNpx, NaNpx, 0); will-change: transform;"
                   >
                     <div
                       class="bp3-popover bp3-minimal bp3-multi-select-popover"

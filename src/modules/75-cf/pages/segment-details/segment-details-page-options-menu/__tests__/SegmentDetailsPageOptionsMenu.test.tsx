@@ -46,7 +46,7 @@ describe('SegmentDetailsPageOptionsMenu', () => {
 
     expect(screen.getByText('delete')).toBeInTheDocument()
 
-    userEvent.click(screen.getByText('delete') as HTMLButtonElement)
+    await waitFor(() => userEvent.click(screen.getByText('delete') as HTMLButtonElement))
 
     expect(deleteSegmentConfirmMock).toBeCalled()
   })
