@@ -23,30 +23,30 @@
         <div class='clearfix'>
             
             <div class='fl pad1y space-right2'>
-                <span class="strong">80.77% </span>
+                <span class="strong">96.15% </span>
                 <span class="quiet">Statements</span>
-                <span class='fraction'>21/26</span>
+                <span class='fraction'>25/26</span>
             </div>
         
             
             <div class='fl pad1y space-right2'>
-                <span class="strong">73.73% </span>
+                <span class="strong">93.22% </span>
                 <span class="quiet">Branches</span>
-                <span class='fraction'>87/118</span>
+                <span class='fraction'>110/118</span>
             </div>
         
             
             <div class='fl pad1y space-right2'>
-                <span class="strong">16.67% </span>
+                <span class="strong">83.33% </span>
                 <span class="quiet">Functions</span>
-                <span class='fraction'>1/6</span>
+                <span class='fraction'>5/6</span>
             </div>
         
             
             <div class='fl pad1y space-right2'>
-                <span class="strong">80.77% </span>
+                <span class="strong">96.15% </span>
                 <span class="quiet">Lines</span>
-                <span class='fraction'>21/26</span>
+                <span class='fraction'>25/26</span>
             </div>
         
             
@@ -394,7 +394,7 @@
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-yes">1x</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
@@ -402,15 +402,7 @@
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-no">&nbsp;</span>
-<span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">2x</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
@@ -442,7 +434,6 @@
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-no">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
@@ -450,7 +441,16 @@
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">1x</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">2x</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
@@ -571,7 +571,7 @@ export default function ShellScriptInputSetStep(props: ShellScriptInputSetStepPr
   return (
     &lt;FormikForm&gt;
       {getMultiTypeFromValue(template?.timeout) === MultiTypeInputType.RUNTIME &amp;&amp; (
-<span class="branch-1 cbranch-no" title="branch not covered" >        &lt;div className={cx(stepCss.formGroup, stepCss.sm)}&gt;</span>
+        &lt;div className={cx(stepCss.formGroup, stepCss.sm)}&gt;
           &lt;FormMultiTypeDurationField
             multiTypeDurationProps={{
               enableConfigureOptions: false,
@@ -617,8 +617,8 @@ export default function ShellScriptInputSetStep(props: ShellScriptInputSetStepPr
         &lt;/div&gt;
       ) : null}
 &nbsp;
-      {isArray(template?.spec?.environmentVariables) &amp;&amp; <span class="branch-1 cbranch-no" title="branch not covered" >template?.spec?.environmentVariables </span>? (
-<span class="branch-0 cbranch-no" title="branch not covered" >        &lt;div className={stepCss.formGroup}&gt;</span>
+      {isArray(template?.spec?.environmentVariables) &amp;&amp; template<span class="branch-0 cbranch-no" title="branch not covered" >?.s</span>pec<span class="branch-0 cbranch-no" title="branch not covered" >?.e</span>nvironmentVariables ? (
+        &lt;div className={stepCss.formGroup}&gt;
           &lt;MultiTypeFieldSelector
             name="spec.environmentVariables"
             label={getString('pipeline.scriptInputVariables')}
@@ -627,16 +627,16 @@ export default function ShellScriptInputSetStep(props: ShellScriptInputSetStepPr
           &gt;
             &lt;FieldArray
               name="spec.environmentVariables"
-              render={<span class="fstat-no" title="function not covered" >() =</span>&gt; {
-<span class="cstat-no" title="statement not covered" >                return (</span>
+              render={() =&gt; {
+                return (
                   &lt;div className={css.panel}&gt;
                     &lt;div className={css.environmentVarHeader}&gt;
                       &lt;span className={css.label}&gt;Name&lt;/span&gt;
                       &lt;span className={css.label}&gt;Type&lt;/span&gt;
                       &lt;span className={css.label}&gt;Value&lt;/span&gt;
                     &lt;/div&gt;
-                    {template.spec.environmentVariables?.map(<span class="fstat-no" title="function not covered" >(t</span>ype, i: number) =&gt; {
-<span class="cstat-no" title="statement not covered" >                      return (</span>
+                    {template.spec.environmentVariables<span class="branch-0 cbranch-no" title="branch not covered" >?.m</span>ap((type, i: number) =&gt; {
+                      return (
                         &lt;div className={css.environmentVarHeader} key={type.value}&gt;
                           &lt;FormInput.Text name={`${prefix}spec.environmentVariables[${i}].name`} disabled={true} /&gt;
                           &lt;FormInput.Select
@@ -665,8 +665,8 @@ export default function ShellScriptInputSetStep(props: ShellScriptInputSetStepPr
           &lt;/MultiTypeFieldSelector&gt;
         &lt;/div&gt;
       ) : null}
-      {isArray(template?.spec?.outputVariables) &amp;&amp; <span class="branch-1 cbranch-no" title="branch not covered" >template?.spec?.outputVariables </span>? (
-<span class="branch-0 cbranch-no" title="branch not covered" >        &lt;div className={stepCss.formGroup}&gt;</span>
+      {isArray(template?.spec?.outputVariables) &amp;&amp; template<span class="branch-0 cbranch-no" title="branch not covered" >?.s</span>pec<span class="branch-0 cbranch-no" title="branch not covered" >?.o</span>utputVariables ? (
+        &lt;div className={stepCss.formGroup}&gt;
           &lt;MultiTypeFieldSelector
             name="spec.outputVariables"
             label={getString('pipeline.scriptOutputVariables')}
@@ -675,16 +675,16 @@ export default function ShellScriptInputSetStep(props: ShellScriptInputSetStepPr
           &gt;
             &lt;FieldArray
               name="spec.outputVariables"
-              render={<span class="fstat-no" title="function not covered" >() =</span>&gt; {
-<span class="cstat-no" title="statement not covered" >                return (</span>
+              render={() =&gt; {
+                return (
                   &lt;div className={css.panel}&gt;
                     &lt;div className={css.outputVarHeader}&gt;
                       &lt;span className={css.label}&gt;Name&lt;/span&gt;
                       &lt;span className={css.label}&gt;Type&lt;/span&gt;
                       &lt;span className={css.label}&gt;Value&lt;/span&gt;
                     &lt;/div&gt;
-                    {template.spec.outputVariables?.map(<span class="fstat-no" title="function not covered" >(o</span>utput, i: number) =&gt; {
-<span class="cstat-no" title="statement not covered" >                      return (</span>
+                    {template.spec.outputVariables<span class="branch-0 cbranch-no" title="branch not covered" >?.m</span>ap((output, i: number) =&gt; {
+                      return (
                         &lt;div className={css.outputVarHeader} key={output.name}&gt;
                           &lt;FormInput.Text name={`${prefix}spec.outputVariables[${i}].name`} disabled={true} /&gt;
                           &lt;FormInput.Select
@@ -766,7 +766,7 @@ export default function ShellScriptInputSetStep(props: ShellScriptInputSetStepPr
             <div class='footer quiet pad2 space-top1 center small'>
                 Code coverage generated by
                 <a href="https://istanbul.js.org/" target="_blank">istanbul</a>
-                at Tue Mar 22 2022 05:54:43 GMT+0000 (Greenwich Mean Time)
+                at Tue Mar 22 2022 07:18:03 GMT+0000 (Greenwich Mean Time)
             </div>
         </div>
         <script src="../../../../../prettify.js"></script>
