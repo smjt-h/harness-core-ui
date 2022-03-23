@@ -23,8 +23,8 @@
 
 .settingsTab {
   flex-direction: row-reverse;
-  background-color: #00467b;
-  padding: 16px;
+  background-color: var(--primary-8);
+  padding: var(--spacing-medium);
 }
 
 .listingOptions {
@@ -34,16 +34,16 @@
 }
 
 .listOptionItem {
-  padding: 16px;
+  padding: var(--spacing-medium);
   cursor: pointer;
 }
 
 .listOptionItem:active {
-  background-color: #112143;
+  background-color: var(--primary-9);
 }
 
 .listOptionItemSelected {
-  background-color: #112143;
+  background-color: var(--primary-9);
 }
 
 .tableView {

@@ -88,7 +88,7 @@ const AlertOverview: React.FC<StepProps<StepData> & AlertsOverviewProps> = props
             items={allCloudProvidersList}
             className={css.perspectiveSelection}
             onChange={() => {
-              // TODO: Need to be implement
+              // TODO: Need to be implemented
             }}
           />
         </div>
@@ -118,7 +118,7 @@ const NotificationMethod: React.FC<StepProps<StepData> & NotificationChannelProp
           {getString('ce.anomalyDetection.notificationAlerts.notificationStepSubtext')}
         </Text>
       </Layout.Vertical>
-      <Layout.Vertical spacing="medium" style={{ marginTop: '34px' }}>
+      <Layout.Vertical spacing="medium" className={css.addChannelWrapper}>
         <Text color={Color.BLACK} font={{ variation: FontVariation.H6 }}>
           {getString('ce.anomalyDetection.notificationAlerts.alertChannelHeading')}
         </Text>
@@ -134,32 +134,29 @@ const NotificationMethod: React.FC<StepProps<StepData> & NotificationChannelProp
                     <DropDown
                       filterable={false}
                       onChange={() => {
-                        // TODO: Need to be implement
+                        // TODO: Need to be implemented
                       }}
                       addClearBtn={true}
                       value={notificationData.channelName}
-                      placeholder={'Select Channel'}
-                      items={[
-                        { label: 'Select Channel', value: '' },
-                        { label: 'Encrypted Text', value: 'ENCRYPTED_TEXT' }
-                      ]}
+                      placeholder={getString('ce.anomalyDetection.notificationAlerts.selectChannelPlaceholder')}
+                      items={[]}
                     />
                     <div className={css.channelUrlInputWrapper}>
                       <DropDown
                         filterable={false}
                         onChange={() => {
-                          // TODO: Need to be implement
+                          // TODO: Need to be implemented
                         }}
                         addClearBtn={true}
                         value={notificationData.channelUrl}
                         className={css.urlSelection}
-                        placeholder={'URL'}
-                        items={[
-                          { label: 'Select Channel', value: '' },
-                          { label: 'Encrypted Text', value: 'ENCRYPTED_TEXT' }
-                        ]}
+                        placeholder={getString('ce.anomalyDetection.notificationAlerts.selectMethod')}
+                        items={[]}
                       />
-                      <TextInput placeholder="Enter webhook url or user groups" wrapperClassName={css.urlInput} />
+                      <TextInput
+                        placeholder={getString('ce.anomalyDetection.notificationAlerts.urlInputPlaceholder')}
+                        wrapperClassName={css.urlInput}
+                      />
                     </div>
                   </Layout.Horizontal>
                 ))}
@@ -168,7 +165,7 @@ const NotificationMethod: React.FC<StepProps<StepData> & NotificationChannelProp
                   icon="plus"
                   onClick={() => arrayHelpers.push({ channelName: '', channelUrl: '' })}
                   variation={ButtonVariation.LINK}
-                  style={{ width: '127px', paddingLeft: '0' }}
+                  className={css.addChannelBtn}
                 />
               </div>
             )
