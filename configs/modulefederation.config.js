@@ -6,23 +6,10 @@
  */
 
 const packageJSON = require('../package.json')
-const { pick, omit, mapValues } = require('lodash')
+const { omit, pick, mapValues } = require('lodash')
 
-/**
- * These packages must be stricly shared with exact versions
- */
-const ExactSharedPackages = [
-  'formik',
-  'react-dom',
-  'react',
-  'react-router-dom',
-  '@harness/uicore',
-  '@harness/use-modal',
-  '@blueprintjs/core',
-  '@blueprintjs/select',
-  '@blueprintjs/datetime',
-  'restful-react'
-]
+const excludedDependencies = ['react-popper']
+const singletonDependencies = ['react', 'react-dom', 'react-router-dom']
 
 module.exports = ({ enableGitOpsUI, enableSTO }) => {
   const remotes = {}
@@ -40,22 +27,22 @@ module.exports = ({ enableGitOpsUI, enableSTO }) => {
   if (enableSTO) {
     remotes.sto = "sto@[window.getApiBaseUrl('sto/remoteEntry.js')]"
   }
-  
-  if(process.env.TARGET_LOCALHOST) {
-    remotes.errortracking = "errortracking@http://localhost:3091/remoteEntry.js";
-  }else{
-    remotes.errortracking = "errortracking@[window.getApiBaseUrl('et/remoteEntry.js')]";
+
+  if (process.env.TARGET_LOCALHOST) {
+    remotes.errortracking = 'errortracking@http://localhost:3091/remoteEntry.js'
+  } else {
+    remotes.errortracking = "errortracking@[window.getApiBaseUrl('et/remoteEntry.js')]"
   }
-  
+
   return {
     name: 'nextgenui',
     remotes,
-    shared: Object.assign(
-      {},
-      mapValues(pick(packageJSON.dependencies, ExactSharedPackages), version => ({
+    shared: {
+      ...omit(packageJSON.dependencies, excludedDependencies),
+      ...mapValues(pick(packageJSON.dependencies, singletonDependencies), version => ({
         singleton: true,
         requiredVersion: version
       }))
-    )
+    }
   }
 }
