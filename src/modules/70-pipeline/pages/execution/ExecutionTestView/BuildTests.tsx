@@ -138,6 +138,7 @@ export function TIAndReports({
             serviceToken={serviceToken}
             showCallGraph
             isAggregatedReports={isAggregatedReports}
+            reportSummaryData={reportSummaryData}
           />
         )}
       </Layout.Horizontal>
@@ -224,7 +225,12 @@ export function Reports({
         {/* <TestsCoverage /> */}
         {/* TI is above Reports which is 100% width */}
         {stageId && stepId && serviceToken && (
-          <TestsExecution stageId={stageId} stepId={stepId} serviceToken={serviceToken} />
+          <TestsExecution
+            stageId={stageId}
+            stepId={stepId}
+            serviceToken={serviceToken}
+            reportSummaryData={reportSummaryData}
+          />
         )}
       </Layout.Horizontal>
     </>
