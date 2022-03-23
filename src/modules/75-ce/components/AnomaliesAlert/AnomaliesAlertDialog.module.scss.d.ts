@@ -9,6 +9,8 @@
 declare const styles: {
   readonly actionBtn: string
   readonly addAlertChannel: string
+  readonly addChannelBtn: string
+  readonly addChannelWrapper: string
   readonly channelUrlInputWrapper: string
   readonly closeBtn: string
   readonly perspectiveSelection: string

@@ -3368,8 +3368,11 @@ export interface StringsMap {
   'ce.anomalyDetection.notificationAlerts.notificationStep': string
   'ce.anomalyDetection.notificationAlerts.notificationStepSubtext': string
   'ce.anomalyDetection.notificationAlerts.overviewStep': string
+  'ce.anomalyDetection.notificationAlerts.selectChannelPlaceholder': string
+  'ce.anomalyDetection.notificationAlerts.selectMethod': string
   'ce.anomalyDetection.notificationAlerts.selectPerspective': string
   'ce.anomalyDetection.notificationAlerts.selectPerspectiveLabel': string
+  'ce.anomalyDetection.notificationAlerts.urlInputPlaceholder': string
   'ce.anomalyDetection.perspectiveCreateAnomalyAlertTitle': string
   'ce.anomalyDetection.settings.heading': string
   'ce.anomalyDetection.settings.newAlertBtn': string

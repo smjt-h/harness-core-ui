@@ -12,7 +12,7 @@
 
 .actionBtn {
   position: absolute;
-  bottom: 24px;
+  bottom: var(--spacing-xlarge);
 }
 
 .perspectiveSelection {
@@ -21,15 +21,19 @@
 
 .closeBtn {
   position: absolute;
-  right: 16px;
-  top: 16px;
+  right: var(--spacing-medium);
+  top: var(--spacing-medium);
+}
+
+.addChannelWrapper {
+  margin-top: var(--spacing-xxlarge) !important;
 }
 
 .addAlertChannel {
   background-color: var(--grey-100);
   background-color: var(--grey-100) !important;
-  padding: 16px !important;
-  margin-bottom: 16px !important;
+  padding: var(--spacing-medium) !important;
+  margin-bottom: var(--spacing-medium) !important;
 }
 
 .channelUrlInputWrapper {
@@ -48,4 +52,9 @@
   border-bottom-left-radius: 0px;
   margin-bottom: 0px !important;
   width: 321px;
+}
+
+.addChannelBtn {
+  width: 127px;
+  padding-left: 0px !important;
 }
