@@ -171,6 +171,19 @@ const TargetingRulesTab = ({
                       isVisible: false
                     })
                   }}
+                  addPercentageRollout={() => {
+                    formikProps.setFieldValue(`variationPercentageRollout`, {
+                      bucketBy: 'identifier',
+                      clauses: [],
+                      variations: featureFlagData.variations.map(variation => ({
+                        variation: variation.name,
+                        weight: 0
+                      }))
+                    })
+                  }}
+                  removePercentageRollout={() => {
+                    formikProps.setFieldValue(`variationPercentageRollout`, undefined)
+                  }}
                 />
 
                 <Card>OFF rules section</Card>

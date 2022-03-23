@@ -102,6 +102,11 @@ const usePatchFeatureFlag = ({
         )
       }
 
+      // Handle adding/removing/updating of percentage rollout
+      // if(!initialValues.variationPercentageRollout && submittedValues.variationPercentageRollout) {
+
+      // }
+
       const intialTargetIds = formVariation.targets.map((target: TargetMap) => target.identifier)
       const submittedTargetIds =
         submittedValues.formVariationMap

@@ -27,6 +27,8 @@ export interface FlagEnabledRulesCardProps {
   updateTargets: (index: number, newTargetGroups: TargetMap[]) => void
   addVariation: (newVariation: FormVariationMap) => void
   removeVariation: (removedVariation: FormVariationMap) => void
+  addPercentageRollout: () => void
+  removePercentageRollout: () => void
 }
 
 const FlagEnabledRulesCard = (props: FlagEnabledRulesCardProps): ReactElement => {
@@ -40,6 +42,8 @@ const FlagEnabledRulesCard = (props: FlagEnabledRulesCardProps): ReactElement =>
     updateTargets,
     addVariation,
     removeVariation,
+    addPercentageRollout,
+    removePercentageRollout,
     isLoading
   } = props
 
@@ -74,21 +78,33 @@ const FlagEnabledRulesCard = (props: FlagEnabledRulesCardProps): ReactElement =>
               )}
             </>
           ))}
-          <Heading level={4} font={{ variation: FontVariation.BODY2 }} margin={{ top: 'medium' }}>
-            {/* {getString('cf.featureFlags.rules.specificTargeting')}
-             */}
-            Percentage Rollout
-          </Heading>
-          <div data-testid={`_percentage_rollout`}>
-            <PercentageRollout
-              targetGroups={segments}
-              bucketByAttributes={[variationPercentageRollout.bucketBy as string]}
-              variations={featureFlagVariations}
-              fieldValues={variationPercentageRollout}
-              prefix={(fieldName: string) => `variationPercentageRollout.${fieldName}`}
-            />
-          </div>
-          {addTargetingDropdownVariations.length > 0 && (
+
+          {variationPercentageRollout && (
+            <>
+              <Container flex={{ justifyContent: 'space-between' }}>
+                <Heading level={4} font={{ variation: FontVariation.BODY2 }} margin={{ top: 'medium' }}>
+                  {getString('cf.featureFlags.percentageRollout')}
+                </Heading>
+                <Button
+                  data-testid={`remove_percentage_rollout`}
+                  icon="trash"
+                  minimal
+                  withoutCurrentColor
+                  onClick={removePercentageRollout}
+                />
+              </Container>
+
+              <PercentageRollout
+                targetGroups={segments}
+                bucketByAttributes={[variationPercentageRollout.bucketBy as string]}
+                variations={featureFlagVariations}
+                fieldValues={variationPercentageRollout}
+                prefix={(fieldName: string) => `variationPercentageRollout.${fieldName}`}
+              />
+            </>
+          )}
+
+          {(addTargetingDropdownVariations.length > 0 || !variationPercentageRollout) && (
             <Button
               icon="plus"
               rightIcon="chevron-down"
@@ -114,6 +130,17 @@ const FlagEnabledRulesCard = (props: FlagEnabledRulesCardProps): ReactElement =>
                       {variation.variationName}
                     </Text>
                   ))}
+                  {!variationPercentageRollout && (
+                    <Text
+                      data-testid={`variation_option_percentage_rollout`}
+                      inline
+                      onClick={() => addPercentageRollout()}
+                      font={{ variation: FontVariation.BODY }}
+                      icon="percentage"
+                    >
+                      Percentage Rollout
+                    </Text>
+                  )}
                 </Layout.Vertical>
               }
             />
