@@ -103,7 +103,7 @@ exports[`test case for anomalies settings drawer should be able to render the se
             <p
               class="StyledProps--font StyledProps--main StyledProps--font-variation-table-headers"
             >
-              ce.anomalyDetection.settings.perspectiveDetailsColumn
+              ce.anomalyDetection.tableHeaders.details
             </p>
           </div>
           <div
