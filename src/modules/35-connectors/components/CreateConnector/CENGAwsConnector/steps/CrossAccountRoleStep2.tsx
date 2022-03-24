@@ -18,6 +18,7 @@ import {
   Layout,
   ModalErrorHandler,
   ModalErrorHandlerBinding,
+  getErrorInfoFromErrorObject,
   StepProps,
   Icon,
   Text
@@ -123,7 +124,7 @@ const CrossAccountRoleStep2: React.FC<StepProps<CEAwsConnectorDTO>> = props => {
         nextStep?.(prevStepData)
       }
     } catch (e) {
-      modalErrorHandler?.showDanger(e?.data?.message)
+      modalErrorHandler?.showDanger(getErrorInfoFromErrorObject(e))
     }
     setIsSubmitLoading(false)
   }
