@@ -1,5 +1,237 @@
 // Jest Snapshot v1, https://goo.gl/fbAQLP
 
+exports[`test case for Perspective anomaly alerts should be able to open create anomaly alert modal 1`] = `
+<div
+  class="bp3-dialog"
+  style="width: 1100px; position: relative; min-height: 600px; border-left: 0; padding-bottom: 0px; overflow: hidden;"
+>
+  <div
+    class="OverlaySpinner--overlaySpinner"
+  >
+    <form
+      class="FormikForm--main"
+    >
+      <div>
+        <div
+          class="StepWizard--main stepWizard StepWizard--navBar"
+        >
+          <div
+            class="StepWizard--navBarList"
+          >
+            <span
+              class="StepWizard--header"
+            >
+              <span
+                class="bp3-icon StyledProps--main StyledProps--color StyledProps--color-white"
+                data-icon="right-bar-notification"
+              >
+                <svg
+                  fill="none"
+                  height="34"
+                  viewBox="0 0 20 20"
+                  width="34"
+                  xmlns="http://www.w3.org/2000/svg"
+                >
+                  <path
+                    d="M4.167 10.05A5.833 5.833 0 0110 4.219v0-.885.885a5.833 5.833 0 015.833 5.833V15H8.765h2.445v1.666H8.765V15H4.166v-4.95z"
+                    stroke="currentColor"
+                    stroke-linecap="round"
+                    stroke-linejoin="round"
+                  />
+                  <path
+                    d="M10 5.833v0A4.167 4.167 0 005.833 10v.834"
+                    opacity="0.3"
+                    stroke="currentColor"
+                    stroke-linecap="round"
+                    stroke-linejoin="round"
+                  />
+                </svg>
+              </span>
+            </span>
+            <span
+              class="StepWizard--title StepWizard--header"
+            >
+              ce.anomalyDetection.notificationAlerts.heading
+            </span>
+            <div
+              class="StepWizard--navStep StepWizard--activeStep"
+            >
+              <span
+                class="StepWizard--number"
+              >
+                1
+              </span>
+              <p
+                class="StyledProps--font Text--lineclamp StyledProps--main StepWizard--stepName"
+                style="--text-line-clamp: 2; width: 200px;"
+              >
+                ce.anomalyDetection.notificationAlerts.overviewStep
+              </p>
+              <p
+                class="StyledProps--font Text--lineclamp StyledProps--main StepWizard--stepName"
+                style="--text-line-clamp: 2; width: 200px;"
+              >
+                
+              </p>
+            </div>
+            <div
+              class="StepWizard--navStep"
+            >
+              <span
+                class="StepWizard--number"
+              >
+                2
+              </span>
+              <p
+                class="StyledProps--font Text--lineclamp StyledProps--main StepWizard--stepName"
+                style="--text-line-clamp: 2; width: 200px;"
+              >
+                ce.anomalyDetection.notificationAlerts.notificationStep
+              </p>
+            </div>
+          </div>
+          <div
+            class="StepWizard--stepDetails"
+          >
+             
+            <span
+              class="bp3-icon bp3-icon-cross StyledProps--main closeBtn"
+              icon="cross"
+            >
+              <svg
+                data-icon="cross"
+                height="16"
+                viewBox="0 0 16 16"
+                width="16"
+              >
+                <desc>
+                  cross
+                </desc>
+                <path
+                  d="M9.41 8l3.29-3.29c.19-.18.3-.43.3-.71a1.003 1.003 0 00-1.71-.71L8 6.59l-3.29-3.3a1.003 1.003 0 00-1.42 1.42L6.59 8 3.3 11.29c-.19.18-.3.43-.3.71a1.003 1.003 0 001.71.71L8 9.41l3.29 3.29c.18.19.43.3.71.3a1.003 1.003 0 00.71-1.71L9.41 8z"
+                  fill-rule="evenodd"
+                />
+              </svg>
+            </span>
+            <div
+              class="Layout--vertical Layout--layout-spacing-xxlarge StyledProps--main"
+            >
+              <p
+                class="StyledProps--font StyledProps--main StyledProps--color StyledProps--color-black StyledProps--font-variation-h5"
+              >
+                ce.anomalyDetection.notificationAlerts.overviewStep
+              </p>
+              <div>
+                <p
+                  class="StyledProps--font StyledProps--main StyledProps--color StyledProps--color-grey500 StyledProps--font-variation-small StyledProps--margin-bottom-small"
+                >
+                  ce.anomalyDetection.notificationAlerts.selectPerspectiveLabel
+                </p>
+                <div
+                  class="bp3-popover-wrapper DropDown--main perspectiveSelection"
+                >
+                  <div
+                    class="bp3-popover-target"
+                  >
+                    <div
+                      class=""
+                    >
+                      <div
+                        class="Layout--horizontal StyledProps--main DropDown--dropdownButton DropDown--withBorder DropDown--minWidth StyledProps--flex"
+                        data-testid="dropdown-button"
+                        style="min-width: 130px;"
+                      >
+                        <div
+                          class="Layout--horizontal StyledProps--main DropDown--labelWrapper StyledProps--flex"
+                        >
+                          <p
+                            class="StyledProps--font Text--lineclamp StyledProps--main DropDown--label"
+                            data-testid="dropdown-value"
+                            style="--text-line-clamp: 1;"
+                          >
+                            ce.anomalyDetection.notificationAlerts.selectPerspective
+                          </p>
+                        </div>
+                        <div
+                          class="Layout--horizontal StyledProps--main DropDown--btnWrapper StyledProps--flex"
+                        >
+                          <span
+                            class="bp3-icon StyledProps--main StyledProps--color StyledProps--color-grey400"
+                            data-icon="main-chevron-down"
+                          >
+                            <svg
+                              height="8"
+                              viewBox="0 0 14 8"
+                              width="8"
+                              xmlns="http://www.w3.org/2000/svg"
+                            >
+                              <path
+                                d="M13 0c-.3 0-.5.1-.7.3L7 5.6 1.7.3C1.5.1 1.3 0 1 0 .4 0 0 .4 0 1c0 .3.1.5.3.7l6 6c.2.2.4.3.7.3s.5-.1.7-.3l6-6c.2-.2.3-.4.3-.7 0-.6-.4-1-1-1z"
+                                fill="#4d5969"
+                              />
+                            </svg>
+                          </span>
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+            <button
+              class="bp3-button Button--button StyledProps--font StyledProps--main actionBtn Button--with-current-color Button--withRightIcon Button--variation Button--variation-primary"
+              type="button"
+            >
+              <span
+                class="bp3-button-text"
+              >
+                saveAndContinue
+              </span>
+              <span
+                class="bp3-icon bp3-icon-chevron-right StyledProps--main"
+                icon="chevron-right"
+              >
+                <svg
+                  data-icon="chevron-right"
+                  height="16"
+                  viewBox="0 0 16 16"
+                  width="16"
+                >
+                  <desc>
+                    chevron-right
+                  </desc>
+                  <path
+                    d="M10.71 7.29l-4-4a1.003 1.003 0 00-1.42 1.42L8.59 8 5.3 11.29c-.19.18-.3.43-.3.71a1.003 1.003 0 001.71.71l4-4c.18-.18.29-.43.29-.71 0-.28-.11-.53-.29-.71z"
+                    fill-rule="evenodd"
+                  />
+                </svg>
+              </span>
+            </button>
+          </div>
+          <span
+            class="bp3-icon StyledProps--main StepWizard--harnessWatermark StyledProps--color StyledProps--color-grey50"
+            data-icon="harness-with-color"
+          >
+            <svg
+              height="346"
+              viewBox="0 0 25 25"
+              width="346"
+              xmlns="http://www.w3.org/2000/svg"
+            >
+              <path
+                d="M22.974 8.186L16.708 1.88a7.023 7.023 0 00-2.59-1.572C11.98-.409 9.858.154 8.135 1.88L1.868 8.186a7.081 7.081 0 00-1.562 2.606c-.713 2.153-.153 4.289 1.562 6.023l6.266 6.306a7.113 7.113 0 002.589 1.58 5.663 5.663 0 001.808.308c1.503 0 2.946-.64 4.177-1.88l6.266-6.305a7.08 7.08 0 001.562-2.606c.713-2.162.153-4.298-1.562-6.032zm-10.07-4.477c.706.213 1.232.7 1.274.735l1.851 1.862-3.608 3.631-3.608-3.63 1.859-1.872c.5-.496 1.197-1.034 2.233-.726zm-9.219 8.305c.212-.71.696-1.24.73-1.282l1.85-1.863 3.609 3.632-3.608 3.63-1.86-1.87c-.492-.504-1.027-1.214-.721-2.247zm8.252 9.279c-.705-.214-1.231-.701-1.273-.735l-1.851-1.863 3.608-3.631 3.608 3.631-1.86 1.871c-.5.496-1.205 1.034-2.232.726zm9.22-8.305c-.212.709-.696 1.239-.73 1.281l-1.851 1.863-3.608-3.631 3.608-3.632 1.86 1.872c.492.504 1.027 1.204.72 2.247z"
+                fill="currentColor"
+                fill-rule="evenodd"
+              />
+            </svg>
+          </span>
+        </div>
+      </div>
+    </form>
+  </div>
+</div>
+`;
+
 exports[`test cases for Perspective Create Budgets should be able to open create budget modal 1`] = `
 <div
   class="bp3-dialog bp3-dialog dialog"

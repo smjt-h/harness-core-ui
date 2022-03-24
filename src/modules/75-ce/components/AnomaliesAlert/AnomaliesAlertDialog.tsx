@@ -191,53 +191,62 @@ const NotificationMethod: React.FC<StepProps<StepData> & NotificationChannelProp
   )
 }
 
-const useAnomaliesAlertDialog = () => {
+interface AlertDialogProps {
+  hideAnomaliesAlertModal: any
+  handleSubmit: any
+}
+
+export const AnomalyAlertDialog: React.FC<AlertDialogProps> = ({ hideAnomaliesAlertModal, handleSubmit }) => {
   const { getString } = useStrings()
 
+  return (
+    <Dialog onClose={hideAnomaliesAlertModal} {...modalPropsLight} canOutsideClickClose={true}>
+      <Formik
+        onSubmit={handleSubmit}
+        formName={'createNotificationAlert'}
+        initialValues={{
+          perspective: '',
+          channelName: '',
+          channelUrl: '',
+          alertList: []
+        }}
+        render={formikProps => {
+          return (
+            <FormikForm>
+              <StepWizard
+                icon="right-bar-notification"
+                iconProps={{
+                  size: 34,
+                  color: 'white'
+                }}
+                className={css.stepWizard}
+                title={getString('ce.anomalyDetection.notificationAlerts.heading')}
+              >
+                <AlertOverview
+                  name={getString('ce.anomalyDetection.notificationAlerts.overviewStep')}
+                  onClose={hideAnomaliesAlertModal}
+                />
+                <NotificationMethod
+                  name={getString('ce.anomalyDetection.notificationAlerts.notificationStep')}
+                  onClose={hideAnomaliesAlertModal}
+                  formikProps={formikProps}
+                />
+              </StepWizard>
+            </FormikForm>
+          )
+        }}
+      />
+    </Dialog>
+  )
+}
+
+const useAnomaliesAlertDialog = () => {
   const handleSubmit = () => {
     // TODO: Need to implement the values handling
   }
 
   const [createAnomaliesAlertModal, hideAnomaliesAlertModal] = useModalHook(
-    () => (
-      <Dialog onClose={hideAnomaliesAlertModal} {...modalPropsLight} canOutsideClickClose={true}>
-        <Formik
-          onSubmit={handleSubmit}
-          formName={'createNotificationAlert'}
-          initialValues={{
-            perspective: '',
-            channelName: '',
-            channelUrl: '',
-            alertList: []
-          }}
-          render={formikProps => {
-            return (
-              <FormikForm>
-                <StepWizard
-                  icon="right-bar-notification"
-                  iconProps={{
-                    size: 34,
-                    color: 'white'
-                  }}
-                  className={css.stepWizard}
-                  title={getString('ce.anomalyDetection.notificationAlerts.heading')}
-                >
-                  <AlertOverview
-                    name={getString('ce.anomalyDetection.notificationAlerts.overviewStep')}
-                    onClose={hideAnomaliesAlertModal}
-                  />
-                  <NotificationMethod
-                    name={getString('ce.anomalyDetection.notificationAlerts.notificationStep')}
-                    onClose={hideAnomaliesAlertModal}
-                    formikProps={formikProps}
-                  />
-                </StepWizard>
-              </FormikForm>
-            )
-          }}
-        />
-      </Dialog>
-    ),
+    () => <AnomalyAlertDialog hideAnomaliesAlertModal={hideAnomaliesAlertModal} handleSubmit={handleSubmit} />,
     []
   )
   return {

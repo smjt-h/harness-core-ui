@@ -1,621 +1,233 @@
 // Jest Snapshot v1, https://goo.gl/fbAQLP
 
-exports[`test case for anomalies settings drawer should be able to render the settings drawer 1`] = `
-<div>
+exports[`test case for anomalies settings drawer should be able to open alert creation modal 1`] = `
+<div
+  class="bp3-dialog"
+  style="width: 1100px; position: relative; min-height: 600px; border-left: 0; padding-bottom: 0px; overflow: hidden;"
+>
   <div
-    class="Layout--horizontal StyledProps--main container"
+    class="OverlaySpinner--overlaySpinner"
   >
-    <div
-      class="StyledProps--font StyledProps--main settingsContent StyledProps--padding-large"
+    <form
+      class="FormikForm--main"
     >
-      <p
-        class="StyledProps--font StyledProps--main StyledProps--color StyledProps--color-primary10 StyledProps--font-size-normal StyledProps--font-weight-semi-bold StyledProps--border StyledProps--border-bottom StyledProps--border-color-grey200 StyledProps--padding-bottom-medium"
-      >
-        ce.anomalyDetection.settings.heading
-      </p>
-      <p
-        class="StyledProps--font StyledProps--main StyledProps--color StyledProps--color-primary10 StyledProps--font-size-small StyledProps--padding-bottom-large StyledProps--padding-top-medium"
-      >
-        ce.anomalyDetection.settings.subtext
-      </p>
-      <button
-        class="bp3-button bp3-disabled bp3-loading Button--button StyledProps--font StyledProps--main Button--with-current-color Button--withLeftIcon Button--variation Button--variation-primary"
-        disabled=""
-        tabindex="-1"
-        type="button"
-      >
+      <div>
         <div
-          class="bp3-spinner bp3-button-spinner"
+          class="StepWizard--main stepWizard StepWizard--navBar"
         >
           <div
-            class="bp3-spinner-animation"
+            class="StepWizard--navBarList"
           >
-            <svg
-              height="20"
-              stroke-width="16.00"
-              viewBox="-3.00 -3.00 106.00 106.00"
-              width="20"
+            <span
+              class="StepWizard--header"
             >
-              <path
-                class="bp3-spinner-track"
-                d="M 50,50 m 0,-45 a 45,45 0 1 1 0,90 a 45,45 0 1 1 0,-90"
-              />
-              <path
-                class="bp3-spinner-head"
-                d="M 50,50 m 0,-45 a 45,45 0 1 1 0,90 a 45,45 0 1 1 0,-90"
-                pathLength="280"
-                stroke-dasharray="280 280"
-                stroke-dashoffset="210"
-              />
-            </svg>
-          </div>
-        </div>
-        <span
-          class="bp3-icon bp3-icon-plus StyledProps--main StyledProps--padding-right-xsmall"
-          icon="plus"
-        >
-          <svg
-            data-icon="plus"
-            height="16"
-            viewBox="0 0 16 16"
-            width="16"
-          >
-            <desc>
-              plus
-            </desc>
-            <path
-              d="M13 7H9V3c0-.55-.45-1-1-1s-1 .45-1 1v4H3c-.55 0-1 .45-1 1s.45 1 1 1h4v4c0 .55.45 1 1 1s1-.45 1-1V9h4c.55 0 1-.45 1-1s-.45-1-1-1z"
-              fill-rule="evenodd"
-            />
-          </svg>
-        </span>
-        <span
-          class="bp3-button-text"
-        >
-          ce.anomalyDetection.settings.newAlertBtn
-        </span>
-      </button>
-      <div
-        class="TableV2--table tableView"
-      >
-        <div
-          class="TableV2--header TableV2--minimal"
-          role="row"
-        >
-          <div
-            class="TableV2--cell"
-            colspan="1"
-            role="columnheader"
-            style="width: 45%;"
-          >
-            <p
-              class="StyledProps--font StyledProps--main StyledProps--font-variation-table-headers"
-            >
-              ce.anomalyDetection.settings.perspectiveNameColumn
-            </p>
-          </div>
-          <div
-            class="TableV2--cell"
-            colspan="1"
-            role="columnheader"
-            style="width: 50%;"
-          >
-            <p
-              class="StyledProps--font StyledProps--main StyledProps--font-variation-table-headers"
-            >
-              ce.anomalyDetection.tableHeaders.details
-            </p>
-          </div>
-          <div
-            class="TableV2--cell"
-            colspan="1"
-            role="columnheader"
-            style="width: 5%;"
-          >
-            <p
-              class="StyledProps--font StyledProps--main StyledProps--font-variation-table-headers"
-            >
-               
-            </p>
-          </div>
-        </div>
-        <div
-          class="TableV2--body"
-        >
-          <div
-            class="TableV2--row TableV2--minimal"
-            role="row"
-          >
-            <div
-              class="TableV2--cell"
-              role="cell"
-              style="width: 45%;"
-            >
-              User 1
-            </div>
-            <div
-              class="TableV2--cell"
-              role="cell"
-              style="width: 50%;"
-            >
-              20
-            </div>
-            <div
-              class="TableV2--cell"
-              role="cell"
-              style="width: 5%;"
-            >
-              <div
-                class="Layout--horizontal Layout--layout-spacing-medium StyledProps--main"
+              <span
+                class="bp3-icon StyledProps--main StyledProps--color StyledProps--color-white"
+                data-icon="right-bar-notification"
               >
-                <span
-                  class="bp3-icon StyledProps--main StyledProps--color StyledProps--color-primary6"
-                  data-icon="Edit"
+                <svg
+                  fill="none"
+                  height="34"
+                  viewBox="0 0 20 20"
+                  width="34"
+                  xmlns="http://www.w3.org/2000/svg"
                 >
-                  <svg
-                    height="16"
-                    viewBox="0 0 16 16"
-                    width="16"
-                    xmlns="http://www.w3.org/2000/svg"
-                  >
-                    <path
-                      clip-rule="evenodd"
-                      d="M11.207.485a.5.5 0 01.354-.146 3.5 3.5 0 013.5 3.5.5.5 0 01-.146.353l-11 11a.5.5 0 01-.354.147h-3a.5.5 0 01-.5-.5v-3a.5.5 0 01.146-.354l11-11zm.553.862L1.061 12.046v2.293h2.293l10.7-10.7a2.5 2.5 0 00-2.294-2.292z"
-                      fill="currentColor"
-                      fill-rule="evenodd"
-                    />
-                    <path
-                      clip-rule="evenodd"
-                      d="M11.89 2.646a.5.5 0 010 .708L8.353 6.889a.5.5 0 01-.708-.707l3.536-3.536a.5.5 0 01.707 0z"
-                      fill="currentColor"
-                      fill-rule="evenodd"
-                      opacity="0.3"
-                    />
-                  </svg>
-                </span>
-                <span
-                  class="bp3-icon StyledProps--main StyledProps--color StyledProps--color-primary6"
-                  data-icon="bin-main"
+                  <path
+                    d="M4.167 10.05A5.833 5.833 0 0110 4.219v0-.885.885a5.833 5.833 0 015.833 5.833V15H8.765h2.445v1.666H8.765V15H4.166v-4.95z"
+                    stroke="currentColor"
+                    stroke-linecap="round"
+                    stroke-linejoin="round"
+                  />
+                  <path
+                    d="M10 5.833v0A4.167 4.167 0 005.833 10v.834"
+                    opacity="0.3"
+                    stroke="currentColor"
+                    stroke-linecap="round"
+                    stroke-linejoin="round"
+                  />
+                </svg>
+              </span>
+            </span>
+            <span
+              class="StepWizard--title StepWizard--header"
+            >
+              ce.anomalyDetection.notificationAlerts.heading
+            </span>
+            <div
+              class="StepWizard--navStep StepWizard--activeStep"
+            >
+              <span
+                class="StepWizard--number"
+              >
+                1
+              </span>
+              <p
+                class="StyledProps--font Text--lineclamp StyledProps--main StepWizard--stepName"
+                style="--text-line-clamp: 2; width: 200px;"
+              >
+                ce.anomalyDetection.notificationAlerts.overviewStep
+              </p>
+              <p
+                class="StyledProps--font Text--lineclamp StyledProps--main StepWizard--stepName"
+                style="--text-line-clamp: 2; width: 200px;"
+              >
+                
+              </p>
+            </div>
+            <div
+              class="StepWizard--navStep"
+            >
+              <span
+                class="StepWizard--number"
+              >
+                2
+              </span>
+              <p
+                class="StyledProps--font Text--lineclamp StyledProps--main StepWizard--stepName"
+                style="--text-line-clamp: 2; width: 200px;"
+              >
+                ce.anomalyDetection.notificationAlerts.notificationStep
+              </p>
+            </div>
+          </div>
+          <div
+            class="StepWizard--stepDetails"
+          >
+             
+            <span
+              class="bp3-icon bp3-icon-cross StyledProps--main closeBtn"
+              icon="cross"
+            >
+              <svg
+                data-icon="cross"
+                height="16"
+                viewBox="0 0 16 16"
+                width="16"
+              >
+                <desc>
+                  cross
+                </desc>
+                <path
+                  d="M9.41 8l3.29-3.29c.19-.18.3-.43.3-.71a1.003 1.003 0 00-1.71-.71L8 6.59l-3.29-3.3a1.003 1.003 0 00-1.42 1.42L6.59 8 3.3 11.29c-.19.18-.3.43-.3.71a1.003 1.003 0 001.71.71L8 9.41l3.29 3.29c.18.19.43.3.71.3a1.003 1.003 0 00.71-1.71L9.41 8z"
+                  fill-rule="evenodd"
+                />
+              </svg>
+            </span>
+            <div
+              class="Layout--vertical Layout--layout-spacing-xxlarge StyledProps--main"
+            >
+              <p
+                class="StyledProps--font StyledProps--main StyledProps--color StyledProps--color-black StyledProps--font-variation-h5"
+              >
+                ce.anomalyDetection.notificationAlerts.overviewStep
+              </p>
+              <div>
+                <p
+                  class="StyledProps--font StyledProps--main StyledProps--color StyledProps--color-grey500 StyledProps--font-variation-small StyledProps--margin-bottom-small"
                 >
-                  <svg
-                    fill="none"
-                    height="16"
-                    viewBox="0 0 22 22"
-                    width="16"
-                    xmlns="http://www.w3.org/2000/svg"
+                  ce.anomalyDetection.notificationAlerts.selectPerspectiveLabel
+                </p>
+                <div
+                  class="bp3-popover-wrapper DropDown--main perspectiveSelection"
+                >
+                  <div
+                    class="bp3-popover-target"
                   >
-                    <g
-                      opacity="0.6"
+                    <div
+                      class=""
                     >
-                      <mask
-                        fill="#fff"
-                        id="bin-main_svg__a"
+                      <div
+                        class="Layout--horizontal StyledProps--main DropDown--dropdownButton DropDown--withBorder DropDown--minWidth StyledProps--flex"
+                        data-testid="dropdown-button"
+                        style="min-width: 130px;"
                       >
-                        <path
-                          clip-rule="evenodd"
-                          d="M8.666 4.583a.5.5 0 01.5-.5h3.667a.5.5 0 01.5.5V5h2.25a.5.5 0 01.5.5v1.833a.5.5 0 01-.5.5H6.417a.5.5 0 01-.5-.5V5.5a.5.5 0 01.5-.5h2.25v-.417zm1 .5V5.5a.5.5 0 01-.5.5h-2.25v.833h8.167V6h-2.25a.5.5 0 01-.5-.5v-.417H9.666zm-3.75 4.083a.5.5 0 01.5-.5h9.167a.5.5 0 01.5.5v8.25a.5.5 0 01-.5.5H6.417a.5.5 0 01-.5-.5v-8.25zm1 .5v7.25h8.167v-7.25H6.916z"
-                          fill-rule="evenodd"
-                        />
-                      </mask>
-                      <path
-                        d="M13.333 5h-1a1 1 0 001 1V5zM8.666 5v1a1 1 0 001-1h-1zm1 .083v-1a1 1 0 00-1 1h1zM6.916 6V5a1 1 0 00-1 1h1zm0 .833h-1a1 1 0 001 1v-1zm8.167 0v1a1 1 0 001-1h-1zm0-.833h1a1 1 0 00-1-1v1zm-2.75-.917h1a1 1 0 00-1-1v1zM6.916 16.916h-1a1 1 0 001 1v-1zm0-7.25v-1a1 1 0 00-1 1h1zm8.167 7.25v1a1 1 0 001-1h-1zm0-7.25h1a1 1 0 00-1-1v1zM9.166 3.083a1.5 1.5 0 00-1.5 1.5h2a.5.5 0 01-.5.5v-2zm3.667 0H9.166v2h3.667v-2zm1.5 1.5a1.5 1.5 0 00-1.5-1.5v2a.5.5 0 01-.5-.5h2zm0 .417v-.417h-2V5h2zm1.25-1h-2.25v2h2.25V4zm1.5 1.5a1.5 1.5 0 00-1.5-1.5v2a.5.5 0 01-.5-.5h2zm0 1.833V5.5h-2v1.833h2zm-1.5 1.5a1.5 1.5 0 001.5-1.5h-2a.5.5 0 01.5-.5v2zm-9.166 0h9.166v-2H6.417v2zm-1.5-1.5a1.5 1.5 0 001.5 1.5v-2a.5.5 0 01.5.5h-2zm0-1.833v1.833h2V5.5h-2zm1.5-1.5a1.5 1.5 0 00-1.5 1.5h2a.5.5 0 01-.5.5V4zm2.25 0h-2.25v2h2.25V4zm-1 .583V5h2v-.417h-2zm3 .917v-.417h-2V5.5h2zM9.166 7a1.5 1.5 0 001.5-1.5h-2a.5.5 0 01.5-.5v2zm-2.25 0h2.25V5h-2.25v2zm1-.167V6h-2v.833h2zm7.166-1H6.917v2h8.166v-2zm-1 .167v.833h2V6h-2zm-1.25 1h2.25V5h-2.25v2zm-1.5-1.5a1.5 1.5 0 001.5 1.5V5a.5.5 0 01.5.5h-2zm0-.417V5.5h2v-.417h-2zm-1.667 1h2.667v-2H9.666v2zm-3.25 1.583a1.5 1.5 0 00-1.5 1.5h2a.5.5 0 01-.5.5v-2zm9.167 0H6.416v2h9.167v-2zm1.5 1.5a1.5 1.5 0 00-1.5-1.5v2a.5.5 0 01-.5-.5h2zm0 8.25v-8.25h-2v8.25h2zm-1.5 1.5a1.5 1.5 0 001.5-1.5h-2a.5.5 0 01.5-.5v2zm-9.166 0h9.166v-2H6.417v2zm-1.5-1.5a1.5 1.5 0 001.5 1.5v-2a.5.5 0 01.5.5h-2zm0-8.25v8.25h2v-8.25h-2zm3 7.75v-7.25h-2v7.25h2zm7.166-1H6.917v2h8.166v-2zm-1-6.25v7.25h2v-7.25h-2zm-7.167 1h8.167v-2H6.916v2z"
-                        fill="currentColor"
-                        mask="url(#bin-main_svg__a)"
-                      />
-                      <g
-                        opacity="0.3"
-                      >
-                        <mask
-                          fill="#fff"
-                          id="bin-main_svg__b"
+                        <div
+                          class="Layout--horizontal StyledProps--main DropDown--labelWrapper StyledProps--flex"
                         >
-                          <path
-                            clip-rule="evenodd"
-                            d="M9.625 10.755a.5.5 0 01.5.5v4.062a.5.5 0 01-1 0v-4.062a.5.5 0 01.5-.5zm2.75 0a.5.5 0 01.5.5v4.062a.5.5 0 01-1 0v-4.062a.5.5 0 01.5-.5z"
-                            fill-rule="evenodd"
-                          />
-                        </mask>
-                        <path
-                          d="M11.125 11.255a1.5 1.5 0 00-1.5-1.5v2a.5.5 0 01-.5-.5h2zm0 4.062v-4.062h-2v4.062h2zm-1.5 1.5a1.5 1.5 0 001.5-1.5h-2a.5.5 0 01.5-.5v2zm-1.5-1.5a1.5 1.5 0 001.5 1.5v-2a.5.5 0 01.5.5h-2zm0-4.062v4.062h2v-4.062h-2zm1.5-1.5a1.5 1.5 0 00-1.5 1.5h2a.5.5 0 01-.5.5v-2zm4.25 1.5a1.5 1.5 0 00-1.5-1.5v2a.5.5 0 01-.5-.5h2zm0 4.062v-4.062h-2v4.062h2zm-1.5 1.5a1.5 1.5 0 001.5-1.5h-2a.5.5 0 01.5-.5v2zm-1.5-1.5a1.5 1.5 0 001.5 1.5v-2a.5.5 0 01.5.5h-2zm0-4.062v4.062h2v-4.062h-2zm1.5-1.5a1.5 1.5 0 00-1.5 1.5h2a.5.5 0 01-.5.5v-2z"
-                          fill="currentColor"
-                          mask="url(#bin-main_svg__b)"
-                        />
-                      </g>
-                    </g>
-                  </svg>
-                </span>
+                          <p
+                            class="StyledProps--font Text--lineclamp StyledProps--main DropDown--label"
+                            data-testid="dropdown-value"
+                            style="--text-line-clamp: 1;"
+                          >
+                            ce.anomalyDetection.notificationAlerts.selectPerspective
+                          </p>
+                        </div>
+                        <div
+                          class="Layout--horizontal StyledProps--main DropDown--btnWrapper StyledProps--flex"
+                        >
+                          <span
+                            class="bp3-icon StyledProps--main StyledProps--color StyledProps--color-grey400"
+                            data-icon="main-chevron-down"
+                          >
+                            <svg
+                              height="8"
+                              viewBox="0 0 14 8"
+                              width="8"
+                              xmlns="http://www.w3.org/2000/svg"
+                            >
+                              <path
+                                d="M13 0c-.3 0-.5.1-.7.3L7 5.6 1.7.3C1.5.1 1.3 0 1 0 .4 0 0 .4 0 1c0 .3.1.5.3.7l6 6c.2.2.4.3.7.3s.5-.1.7-.3l6-6c.2-.2.3-.4.3-.7 0-.6-.4-1-1-1z"
+                                fill="#4d5969"
+                              />
+                            </svg>
+                          </span>
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+                </div>
               </div>
             </div>
-          </div>
-          <div
-            class="TableV2--row TableV2--minimal"
-            role="row"
-          >
-            <div
-              class="TableV2--cell"
-              role="cell"
-              style="width: 45%;"
+            <button
+              class="bp3-button Button--button StyledProps--font StyledProps--main actionBtn Button--with-current-color Button--withRightIcon Button--variation Button--variation-primary"
+              type="button"
             >
-              User 2
-            </div>
-            <div
-              class="TableV2--cell"
-              role="cell"
-              style="width: 50%;"
-            >
-              25
-            </div>
-            <div
-              class="TableV2--cell"
-              role="cell"
-              style="width: 5%;"
-            >
-              <div
-                class="Layout--horizontal Layout--layout-spacing-medium StyledProps--main"
+              <span
+                class="bp3-button-text"
               >
-                <span
-                  class="bp3-icon StyledProps--main StyledProps--color StyledProps--color-primary6"
-                  data-icon="Edit"
-                >
-                  <svg
-                    height="16"
-                    viewBox="0 0 16 16"
-                    width="16"
-                    xmlns="http://www.w3.org/2000/svg"
-                  >
-                    <path
-                      clip-rule="evenodd"
-                      d="M11.207.485a.5.5 0 01.354-.146 3.5 3.5 0 013.5 3.5.5.5 0 01-.146.353l-11 11a.5.5 0 01-.354.147h-3a.5.5 0 01-.5-.5v-3a.5.5 0 01.146-.354l11-11zm.553.862L1.061 12.046v2.293h2.293l10.7-10.7a2.5 2.5 0 00-2.294-2.292z"
-                      fill="currentColor"
-                      fill-rule="evenodd"
-                    />
-                    <path
-                      clip-rule="evenodd"
-                      d="M11.89 2.646a.5.5 0 010 .708L8.353 6.889a.5.5 0 01-.708-.707l3.536-3.536a.5.5 0 01.707 0z"
-                      fill="currentColor"
-                      fill-rule="evenodd"
-                      opacity="0.3"
-                    />
-                  </svg>
-                </span>
-                <span
-                  class="bp3-icon StyledProps--main StyledProps--color StyledProps--color-primary6"
-                  data-icon="bin-main"
-                >
-                  <svg
-                    fill="none"
-                    height="16"
-                    viewBox="0 0 22 22"
-                    width="16"
-                    xmlns="http://www.w3.org/2000/svg"
-                  >
-                    <g
-                      opacity="0.6"
-                    >
-                      <mask
-                        fill="#fff"
-                        id="bin-main_svg__a"
-                      >
-                        <path
-                          clip-rule="evenodd"
-                          d="M8.666 4.583a.5.5 0 01.5-.5h3.667a.5.5 0 01.5.5V5h2.25a.5.5 0 01.5.5v1.833a.5.5 0 01-.5.5H6.417a.5.5 0 01-.5-.5V5.5a.5.5 0 01.5-.5h2.25v-.417zm1 .5V5.5a.5.5 0 01-.5.5h-2.25v.833h8.167V6h-2.25a.5.5 0 01-.5-.5v-.417H9.666zm-3.75 4.083a.5.5 0 01.5-.5h9.167a.5.5 0 01.5.5v8.25a.5.5 0 01-.5.5H6.417a.5.5 0 01-.5-.5v-8.25zm1 .5v7.25h8.167v-7.25H6.916z"
-                          fill-rule="evenodd"
-                        />
-                      </mask>
-                      <path
-                        d="M13.333 5h-1a1 1 0 001 1V5zM8.666 5v1a1 1 0 001-1h-1zm1 .083v-1a1 1 0 00-1 1h1zM6.916 6V5a1 1 0 00-1 1h1zm0 .833h-1a1 1 0 001 1v-1zm8.167 0v1a1 1 0 001-1h-1zm0-.833h1a1 1 0 00-1-1v1zm-2.75-.917h1a1 1 0 00-1-1v1zM6.916 16.916h-1a1 1 0 001 1v-1zm0-7.25v-1a1 1 0 00-1 1h1zm8.167 7.25v1a1 1 0 001-1h-1zm0-7.25h1a1 1 0 00-1-1v1zM9.166 3.083a1.5 1.5 0 00-1.5 1.5h2a.5.5 0 01-.5.5v-2zm3.667 0H9.166v2h3.667v-2zm1.5 1.5a1.5 1.5 0 00-1.5-1.5v2a.5.5 0 01-.5-.5h2zm0 .417v-.417h-2V5h2zm1.25-1h-2.25v2h2.25V4zm1.5 1.5a1.5 1.5 0 00-1.5-1.5v2a.5.5 0 01-.5-.5h2zm0 1.833V5.5h-2v1.833h2zm-1.5 1.5a1.5 1.5 0 001.5-1.5h-2a.5.5 0 01.5-.5v2zm-9.166 0h9.166v-2H6.417v2zm-1.5-1.5a1.5 1.5 0 001.5 1.5v-2a.5.5 0 01.5.5h-2zm0-1.833v1.833h2V5.5h-2zm1.5-1.5a1.5 1.5 0 00-1.5 1.5h2a.5.5 0 01-.5.5V4zm2.25 0h-2.25v2h2.25V4zm-1 .583V5h2v-.417h-2zm3 .917v-.417h-2V5.5h2zM9.166 7a1.5 1.5 0 001.5-1.5h-2a.5.5 0 01.5-.5v2zm-2.25 0h2.25V5h-2.25v2zm1-.167V6h-2v.833h2zm7.166-1H6.917v2h8.166v-2zm-1 .167v.833h2V6h-2zm-1.25 1h2.25V5h-2.25v2zm-1.5-1.5a1.5 1.5 0 001.5 1.5V5a.5.5 0 01.5.5h-2zm0-.417V5.5h2v-.417h-2zm-1.667 1h2.667v-2H9.666v2zm-3.25 1.583a1.5 1.5 0 00-1.5 1.5h2a.5.5 0 01-.5.5v-2zm9.167 0H6.416v2h9.167v-2zm1.5 1.5a1.5 1.5 0 00-1.5-1.5v2a.5.5 0 01-.5-.5h2zm0 8.25v-8.25h-2v8.25h2zm-1.5 1.5a1.5 1.5 0 001.5-1.5h-2a.5.5 0 01.5-.5v2zm-9.166 0h9.166v-2H6.417v2zm-1.5-1.5a1.5 1.5 0 001.5 1.5v-2a.5.5 0 01.5.5h-2zm0-8.25v8.25h2v-8.25h-2zm3 7.75v-7.25h-2v7.25h2zm7.166-1H6.917v2h8.166v-2zm-1-6.25v7.25h2v-7.25h-2zm-7.167 1h8.167v-2H6.916v2z"
-                        fill="currentColor"
-                        mask="url(#bin-main_svg__a)"
-                      />
-                      <g
-                        opacity="0.3"
-                      >
-                        <mask
-                          fill="#fff"
-                          id="bin-main_svg__b"
-                        >
-                          <path
-                            clip-rule="evenodd"
-                            d="M9.625 10.755a.5.5 0 01.5.5v4.062a.5.5 0 01-1 0v-4.062a.5.5 0 01.5-.5zm2.75 0a.5.5 0 01.5.5v4.062a.5.5 0 01-1 0v-4.062a.5.5 0 01.5-.5z"
-                            fill-rule="evenodd"
-                          />
-                        </mask>
-                        <path
-                          d="M11.125 11.255a1.5 1.5 0 00-1.5-1.5v2a.5.5 0 01-.5-.5h2zm0 4.062v-4.062h-2v4.062h2zm-1.5 1.5a1.5 1.5 0 001.5-1.5h-2a.5.5 0 01.5-.5v2zm-1.5-1.5a1.5 1.5 0 001.5 1.5v-2a.5.5 0 01.5.5h-2zm0-4.062v4.062h2v-4.062h-2zm1.5-1.5a1.5 1.5 0 00-1.5 1.5h2a.5.5 0 01-.5.5v-2zm4.25 1.5a1.5 1.5 0 00-1.5-1.5v2a.5.5 0 01-.5-.5h2zm0 4.062v-4.062h-2v4.062h2zm-1.5 1.5a1.5 1.5 0 001.5-1.5h-2a.5.5 0 01.5-.5v2zm-1.5-1.5a1.5 1.5 0 001.5 1.5v-2a.5.5 0 01.5.5h-2zm0-4.062v4.062h2v-4.062h-2zm1.5-1.5a1.5 1.5 0 00-1.5 1.5h2a.5.5 0 01-.5.5v-2z"
-                          fill="currentColor"
-                          mask="url(#bin-main_svg__b)"
-                        />
-                      </g>
-                    </g>
-                  </svg>
-                </span>
-              </div>
-            </div>
-          </div>
-          <div
-            class="TableV2--row TableV2--minimal"
-            role="row"
-          >
-            <div
-              class="TableV2--cell"
-              role="cell"
-              style="width: 45%;"
-            >
-              User 3
-            </div>
-            <div
-              class="TableV2--cell"
-              role="cell"
-              style="width: 50%;"
-            >
-              25
-            </div>
-            <div
-              class="TableV2--cell"
-              role="cell"
-              style="width: 5%;"
-            >
-              <div
-                class="Layout--horizontal Layout--layout-spacing-medium StyledProps--main"
+                saveAndContinue
+              </span>
+              <span
+                class="bp3-icon bp3-icon-chevron-right StyledProps--main"
+                icon="chevron-right"
               >
-                <span
-                  class="bp3-icon StyledProps--main StyledProps--color StyledProps--color-primary6"
-                  data-icon="Edit"
+                <svg
+                  data-icon="chevron-right"
+                  height="16"
+                  viewBox="0 0 16 16"
+                  width="16"
                 >
-                  <svg
-                    height="16"
-                    viewBox="0 0 16 16"
-                    width="16"
-                    xmlns="http://www.w3.org/2000/svg"
-                  >
-                    <path
-                      clip-rule="evenodd"
-                      d="M11.207.485a.5.5 0 01.354-.146 3.5 3.5 0 013.5 3.5.5.5 0 01-.146.353l-11 11a.5.5 0 01-.354.147h-3a.5.5 0 01-.5-.5v-3a.5.5 0 01.146-.354l11-11zm.553.862L1.061 12.046v2.293h2.293l10.7-10.7a2.5 2.5 0 00-2.294-2.292z"
-                      fill="currentColor"
-                      fill-rule="evenodd"
-                    />
-                    <path
-                      clip-rule="evenodd"
-                      d="M11.89 2.646a.5.5 0 010 .708L8.353 6.889a.5.5 0 01-.708-.707l3.536-3.536a.5.5 0 01.707 0z"
-                      fill="currentColor"
-                      fill-rule="evenodd"
-                      opacity="0.3"
-                    />
-                  </svg>
-                </span>
-                <span
-                  class="bp3-icon StyledProps--main StyledProps--color StyledProps--color-primary6"
-                  data-icon="bin-main"
-                >
-                  <svg
-                    fill="none"
-                    height="16"
-                    viewBox="0 0 22 22"
-                    width="16"
-                    xmlns="http://www.w3.org/2000/svg"
-                  >
-                    <g
-                      opacity="0.6"
-                    >
-                      <mask
-                        fill="#fff"
-                        id="bin-main_svg__a"
-                      >
-                        <path
-                          clip-rule="evenodd"
-                          d="M8.666 4.583a.5.5 0 01.5-.5h3.667a.5.5 0 01.5.5V5h2.25a.5.5 0 01.5.5v1.833a.5.5 0 01-.5.5H6.417a.5.5 0 01-.5-.5V5.5a.5.5 0 01.5-.5h2.25v-.417zm1 .5V5.5a.5.5 0 01-.5.5h-2.25v.833h8.167V6h-2.25a.5.5 0 01-.5-.5v-.417H9.666zm-3.75 4.083a.5.5 0 01.5-.5h9.167a.5.5 0 01.5.5v8.25a.5.5 0 01-.5.5H6.417a.5.5 0 01-.5-.5v-8.25zm1 .5v7.25h8.167v-7.25H6.916z"
-                          fill-rule="evenodd"
-                        />
-                      </mask>
-                      <path
-                        d="M13.333 5h-1a1 1 0 001 1V5zM8.666 5v1a1 1 0 001-1h-1zm1 .083v-1a1 1 0 00-1 1h1zM6.916 6V5a1 1 0 00-1 1h1zm0 .833h-1a1 1 0 001 1v-1zm8.167 0v1a1 1 0 001-1h-1zm0-.833h1a1 1 0 00-1-1v1zm-2.75-.917h1a1 1 0 00-1-1v1zM6.916 16.916h-1a1 1 0 001 1v-1zm0-7.25v-1a1 1 0 00-1 1h1zm8.167 7.25v1a1 1 0 001-1h-1zm0-7.25h1a1 1 0 00-1-1v1zM9.166 3.083a1.5 1.5 0 00-1.5 1.5h2a.5.5 0 01-.5.5v-2zm3.667 0H9.166v2h3.667v-2zm1.5 1.5a1.5 1.5 0 00-1.5-1.5v2a.5.5 0 01-.5-.5h2zm0 .417v-.417h-2V5h2zm1.25-1h-2.25v2h2.25V4zm1.5 1.5a1.5 1.5 0 00-1.5-1.5v2a.5.5 0 01-.5-.5h2zm0 1.833V5.5h-2v1.833h2zm-1.5 1.5a1.5 1.5 0 001.5-1.5h-2a.5.5 0 01.5-.5v2zm-9.166 0h9.166v-2H6.417v2zm-1.5-1.5a1.5 1.5 0 001.5 1.5v-2a.5.5 0 01.5.5h-2zm0-1.833v1.833h2V5.5h-2zm1.5-1.5a1.5 1.5 0 00-1.5 1.5h2a.5.5 0 01-.5.5V4zm2.25 0h-2.25v2h2.25V4zm-1 .583V5h2v-.417h-2zm3 .917v-.417h-2V5.5h2zM9.166 7a1.5 1.5 0 001.5-1.5h-2a.5.5 0 01.5-.5v2zm-2.25 0h2.25V5h-2.25v2zm1-.167V6h-2v.833h2zm7.166-1H6.917v2h8.166v-2zm-1 .167v.833h2V6h-2zm-1.25 1h2.25V5h-2.25v2zm-1.5-1.5a1.5 1.5 0 001.5 1.5V5a.5.5 0 01.5.5h-2zm0-.417V5.5h2v-.417h-2zm-1.667 1h2.667v-2H9.666v2zm-3.25 1.583a1.5 1.5 0 00-1.5 1.5h2a.5.5 0 01-.5.5v-2zm9.167 0H6.416v2h9.167v-2zm1.5 1.5a1.5 1.5 0 00-1.5-1.5v2a.5.5 0 01-.5-.5h2zm0 8.25v-8.25h-2v8.25h2zm-1.5 1.5a1.5 1.5 0 001.5-1.5h-2a.5.5 0 01.5-.5v2zm-9.166 0h9.166v-2H6.417v2zm-1.5-1.5a1.5 1.5 0 001.5 1.5v-2a.5.5 0 01.5.5h-2zm0-8.25v8.25h2v-8.25h-2zm3 7.75v-7.25h-2v7.25h2zm7.166-1H6.917v2h8.166v-2zm-1-6.25v7.25h2v-7.25h-2zm-7.167 1h8.167v-2H6.916v2z"
-                        fill="currentColor"
-                        mask="url(#bin-main_svg__a)"
-                      />
-                      <g
-                        opacity="0.3"
-                      >
-                        <mask
-                          fill="#fff"
-                          id="bin-main_svg__b"
-                        >
-                          <path
-                            clip-rule="evenodd"
-                            d="M9.625 10.755a.5.5 0 01.5.5v4.062a.5.5 0 01-1 0v-4.062a.5.5 0 01.5-.5zm2.75 0a.5.5 0 01.5.5v4.062a.5.5 0 01-1 0v-4.062a.5.5 0 01.5-.5z"
-                            fill-rule="evenodd"
-                          />
-                        </mask>
-                        <path
-                          d="M11.125 11.255a1.5 1.5 0 00-1.5-1.5v2a.5.5 0 01-.5-.5h2zm0 4.062v-4.062h-2v4.062h2zm-1.5 1.5a1.5 1.5 0 001.5-1.5h-2a.5.5 0 01.5-.5v2zm-1.5-1.5a1.5 1.5 0 001.5 1.5v-2a.5.5 0 01.5.5h-2zm0-4.062v4.062h2v-4.062h-2zm1.5-1.5a1.5 1.5 0 00-1.5 1.5h2a.5.5 0 01-.5.5v-2zm4.25 1.5a1.5 1.5 0 00-1.5-1.5v2a.5.5 0 01-.5-.5h2zm0 4.062v-4.062h-2v4.062h2zm-1.5 1.5a1.5 1.5 0 001.5-1.5h-2a.5.5 0 01.5-.5v2zm-1.5-1.5a1.5 1.5 0 001.5 1.5v-2a.5.5 0 01.5.5h-2zm0-4.062v4.062h2v-4.062h-2zm1.5-1.5a1.5 1.5 0 00-1.5 1.5h2a.5.5 0 01-.5.5v-2z"
-                          fill="currentColor"
-                          mask="url(#bin-main_svg__b)"
-                        />
-                      </g>
-                    </g>
-                  </svg>
-                </span>
-              </div>
-            </div>
+                  <desc>
+                    chevron-right
+                  </desc>
+                  <path
+                    d="M10.71 7.29l-4-4a1.003 1.003 0 00-1.42 1.42L8.59 8 5.3 11.29c-.19.18-.3.43-.3.71a1.003 1.003 0 001.71.71l4-4c.18-.18.29-.43.29-.71 0-.28-.11-.53-.29-.71z"
+                    fill-rule="evenodd"
+                  />
+                </svg>
+              </span>
+            </button>
           </div>
-          <div
-            class="TableV2--row TableV2--minimal"
-            role="row"
-          >
-            <div
-              class="TableV2--cell"
-              role="cell"
-              style="width: 45%;"
-            >
-              User 4
-            </div>
-            <div
-              class="TableV2--cell"
-              role="cell"
-              style="width: 50%;"
-            >
-              25
-            </div>
-            <div
-              class="TableV2--cell"
-              role="cell"
-              style="width: 5%;"
-            >
-              <div
-                class="Layout--horizontal Layout--layout-spacing-medium StyledProps--main"
-              >
-                <span
-                  class="bp3-icon StyledProps--main StyledProps--color StyledProps--color-primary6"
-                  data-icon="Edit"
-                >
-                  <svg
-                    height="16"
-                    viewBox="0 0 16 16"
-                    width="16"
-                    xmlns="http://www.w3.org/2000/svg"
-                  >
-                    <path
-                      clip-rule="evenodd"
-                      d="M11.207.485a.5.5 0 01.354-.146 3.5 3.5 0 013.5 3.5.5.5 0 01-.146.353l-11 11a.5.5 0 01-.354.147h-3a.5.5 0 01-.5-.5v-3a.5.5 0 01.146-.354l11-11zm.553.862L1.061 12.046v2.293h2.293l10.7-10.7a2.5 2.5 0 00-2.294-2.292z"
-                      fill="currentColor"
-                      fill-rule="evenodd"
-                    />
-                    <path
-                      clip-rule="evenodd"
-                      d="M11.89 2.646a.5.5 0 010 .708L8.353 6.889a.5.5 0 01-.708-.707l3.536-3.536a.5.5 0 01.707 0z"
-                      fill="currentColor"
-                      fill-rule="evenodd"
-                      opacity="0.3"
-                    />
-                  </svg>
-                </span>
-                <span
-                  class="bp3-icon StyledProps--main StyledProps--color StyledProps--color-primary6"
-                  data-icon="bin-main"
-                >
-                  <svg
-                    fill="none"
-                    height="16"
-                    viewBox="0 0 22 22"
-                    width="16"
-                    xmlns="http://www.w3.org/2000/svg"
-                  >
-                    <g
-                      opacity="0.6"
-                    >
-                      <mask
-                        fill="#fff"
-                        id="bin-main_svg__a"
-                      >
-                        <path
-                          clip-rule="evenodd"
-                          d="M8.666 4.583a.5.5 0 01.5-.5h3.667a.5.5 0 01.5.5V5h2.25a.5.5 0 01.5.5v1.833a.5.5 0 01-.5.5H6.417a.5.5 0 01-.5-.5V5.5a.5.5 0 01.5-.5h2.25v-.417zm1 .5V5.5a.5.5 0 01-.5.5h-2.25v.833h8.167V6h-2.25a.5.5 0 01-.5-.5v-.417H9.666zm-3.75 4.083a.5.5 0 01.5-.5h9.167a.5.5 0 01.5.5v8.25a.5.5 0 01-.5.5H6.417a.5.5 0 01-.5-.5v-8.25zm1 .5v7.25h8.167v-7.25H6.916z"
-                          fill-rule="evenodd"
-                        />
-                      </mask>
-                      <path
-                        d="M13.333 5h-1a1 1 0 001 1V5zM8.666 5v1a1 1 0 001-1h-1zm1 .083v-1a1 1 0 00-1 1h1zM6.916 6V5a1 1 0 00-1 1h1zm0 .833h-1a1 1 0 001 1v-1zm8.167 0v1a1 1 0 001-1h-1zm0-.833h1a1 1 0 00-1-1v1zm-2.75-.917h1a1 1 0 00-1-1v1zM6.916 16.916h-1a1 1 0 001 1v-1zm0-7.25v-1a1 1 0 00-1 1h1zm8.167 7.25v1a1 1 0 001-1h-1zm0-7.25h1a1 1 0 00-1-1v1zM9.166 3.083a1.5 1.5 0 00-1.5 1.5h2a.5.5 0 01-.5.5v-2zm3.667 0H9.166v2h3.667v-2zm1.5 1.5a1.5 1.5 0 00-1.5-1.5v2a.5.5 0 01-.5-.5h2zm0 .417v-.417h-2V5h2zm1.25-1h-2.25v2h2.25V4zm1.5 1.5a1.5 1.5 0 00-1.5-1.5v2a.5.5 0 01-.5-.5h2zm0 1.833V5.5h-2v1.833h2zm-1.5 1.5a1.5 1.5 0 001.5-1.5h-2a.5.5 0 01.5-.5v2zm-9.166 0h9.166v-2H6.417v2zm-1.5-1.5a1.5 1.5 0 001.5 1.5v-2a.5.5 0 01.5.5h-2zm0-1.833v1.833h2V5.5h-2zm1.5-1.5a1.5 1.5 0 00-1.5 1.5h2a.5.5 0 01-.5.5V4zm2.25 0h-2.25v2h2.25V4zm-1 .583V5h2v-.417h-2zm3 .917v-.417h-2V5.5h2zM9.166 7a1.5 1.5 0 001.5-1.5h-2a.5.5 0 01.5-.5v2zm-2.25 0h2.25V5h-2.25v2zm1-.167V6h-2v.833h2zm7.166-1H6.917v2h8.166v-2zm-1 .167v.833h2V6h-2zm-1.25 1h2.25V5h-2.25v2zm-1.5-1.5a1.5 1.5 0 001.5 1.5V5a.5.5 0 01.5.5h-2zm0-.417V5.5h2v-.417h-2zm-1.667 1h2.667v-2H9.666v2zm-3.25 1.583a1.5 1.5 0 00-1.5 1.5h2a.5.5 0 01-.5.5v-2zm9.167 0H6.416v2h9.167v-2zm1.5 1.5a1.5 1.5 0 00-1.5-1.5v2a.5.5 0 01-.5-.5h2zm0 8.25v-8.25h-2v8.25h2zm-1.5 1.5a1.5 1.5 0 001.5-1.5h-2a.5.5 0 01.5-.5v2zm-9.166 0h9.166v-2H6.417v2zm-1.5-1.5a1.5 1.5 0 001.5 1.5v-2a.5.5 0 01.5.5h-2zm0-8.25v8.25h2v-8.25h-2zm3 7.75v-7.25h-2v7.25h2zm7.166-1H6.917v2h8.166v-2zm-1-6.25v7.25h2v-7.25h-2zm-7.167 1h8.167v-2H6.916v2z"
-                        fill="currentColor"
-                        mask="url(#bin-main_svg__a)"
-                      />
-                      <g
-                        opacity="0.3"
-                      >
-                        <mask
-                          fill="#fff"
-                          id="bin-main_svg__b"
-                        >
-                          <path
-                            clip-rule="evenodd"
-                            d="M9.625 10.755a.5.5 0 01.5.5v4.062a.5.5 0 01-1 0v-4.062a.5.5 0 01.5-.5zm2.75 0a.5.5 0 01.5.5v4.062a.5.5 0 01-1 0v-4.062a.5.5 0 01.5-.5z"
-                            fill-rule="evenodd"
-                          />
-                        </mask>
-                        <path
-                          d="M11.125 11.255a1.5 1.5 0 00-1.5-1.5v2a.5.5 0 01-.5-.5h2zm0 4.062v-4.062h-2v4.062h2zm-1.5 1.5a1.5 1.5 0 001.5-1.5h-2a.5.5 0 01.5-.5v2zm-1.5-1.5a1.5 1.5 0 001.5 1.5v-2a.5.5 0 01.5.5h-2zm0-4.062v4.062h2v-4.062h-2zm1.5-1.5a1.5 1.5 0 00-1.5 1.5h2a.5.5 0 01-.5.5v-2zm4.25 1.5a1.5 1.5 0 00-1.5-1.5v2a.5.5 0 01-.5-.5h2zm0 4.062v-4.062h-2v4.062h2zm-1.5 1.5a1.5 1.5 0 001.5-1.5h-2a.5.5 0 01.5-.5v2zm-1.5-1.5a1.5 1.5 0 001.5 1.5v-2a.5.5 0 01.5.5h-2zm0-4.062v4.062h2v-4.062h-2zm1.5-1.5a1.5 1.5 0 00-1.5 1.5h2a.5.5 0 01-.5.5v-2z"
-                          fill="currentColor"
-                          mask="url(#bin-main_svg__b)"
-                        />
-                      </g>
-                    </g>
-                  </svg>
-                </span>
-              </div>
-            </div>
-          </div>
-        </div>
-      </div>
-    </div>
-    <div
-      class="StyledProps--font StyledProps--main settingsDrawer StyledProps--background-primary8"
-    >
-      <div
-        class="Layout--horizontal StyledProps--main settingsLabelWarpper"
-      >
-        <p
-          class="StyledProps--font StyledProps--main tabContent StyledProps--font-size-normal StyledProps--font-weight-semi-bold StyledProps--padding-large"
-          style="display: flex; align-items: center;"
-        >
           <span
-            class="bp3-icon StyledProps--main Text--icon StyledProps--padding-right-xsmall"
-            data-icon="nav-settings"
+            class="bp3-icon StyledProps--main StepWizard--harnessWatermark StyledProps--color StyledProps--color-grey50"
+            data-icon="harness-with-color"
           >
             <svg
-              fill="none"
-              height="16"
-              viewBox="0 0 18 18"
-              width="16"
+              height="346"
+              viewBox="0 0 25 25"
+              width="346"
               xmlns="http://www.w3.org/2000/svg"
             >
               <path
-                clip-rule="evenodd"
-                d="M16.305 10.942l-1.147-.98a6.286 6.286 0 000-2.025l1.147-.981a.56.56 0 00.163-.617l-.016-.045a7.77 7.77 0 00-1.396-2.415l-.031-.037a.562.562 0 00-.615-.166l-1.424.506a6.172 6.172 0 00-1.745-1.009l-.275-1.488a.561.561 0 00-.452-.45l-.048-.009a7.912 7.912 0 00-2.784 0l-.047.009a.561.561 0 00-.452.45L6.906 3.18a6.16 6.16 0 00-1.734 1.006l-1.434-.51a.56.56 0 00-.614.166l-.032.037a7.809 7.809 0 00-1.396 2.415l-.015.045a.562.562 0 00.162.617l1.161.991a6.16 6.16 0 000 2l-1.16.991a.56.56 0 00-.163.617l.015.045a7.79 7.79 0 001.396 2.415l.032.037c.15.177.395.243.614.166l1.434-.51c.522.43 1.106.77 1.734 1.006l.277 1.495c.042.23.222.409.452.45l.047.01a7.869 7.869 0 002.784 0l.048-.01c.23-.041.41-.22.452-.45l.275-1.488a6.131 6.131 0 001.745-1.009l1.424.506a.56.56 0 00.615-.166l.031-.037a7.809 7.809 0 001.396-2.415l.016-.045a.559.559 0 00-.163-.613zm-2.39-2.8a4.951 4.951 0 010 1.615l-.116.702 1.309 1.12a6.474 6.474 0 01-.746 1.288l-1.626-.576-.55.452a4.896 4.896 0 01-1.388.802l-.667.25-.314 1.699a6.616 6.616 0 01-1.488 0l-.314-1.702-.662-.254a4.955 4.955 0 01-1.378-.8l-.55-.454-1.636.581a6.614 6.614 0 01-.746-1.289l1.323-1.13-.114-.7a5.04 5.04 0 01-.065-.796c0-.268.021-.536.065-.797l.114-.7-1.323-1.13c.198-.457.449-.888.746-1.29l1.636.582.55-.453c.415-.342.88-.612 1.378-.8l.664-.251.313-1.702a6.612 6.612 0 011.489 0l.313 1.698.668.25c.502.19.97.46 1.388.803l.55.452 1.625-.576c.298.4.547.833.746 1.288l-1.308 1.12.114.698z"
-                fill="#ccc"
-                fill-rule="evenodd"
-              />
-              <path
-                clip-rule="evenodd"
-                d="M9.076 5.693a3.082 3.082 0 100 6.165 3.082 3.082 0 000-6.165zm1.387 4.47c-.371.37-.863.574-1.387.574a1.955 1.955 0 01-1.387-.574 1.954 1.954 0 01-.574-1.387c0-.524.205-1.016.574-1.387a1.947 1.947 0 011.387-.575c.524 0 1.016.203 1.387.575.37.371.575.863.575 1.387 0 .523-.205 1.015-.575 1.387z"
-                fill="#ccc"
+                d="M22.974 8.186L16.708 1.88a7.023 7.023 0 00-2.59-1.572C11.98-.409 9.858.154 8.135 1.88L1.868 8.186a7.081 7.081 0 00-1.562 2.606c-.713 2.153-.153 4.289 1.562 6.023l6.266 6.306a7.113 7.113 0 002.589 1.58 5.663 5.663 0 001.808.308c1.503 0 2.946-.64 4.177-1.88l6.266-6.305a7.08 7.08 0 001.562-2.606c.713-2.162.153-4.298-1.562-6.032zm-10.07-4.477c.706.213 1.232.7 1.274.735l1.851 1.862-3.608 3.631-3.608-3.63 1.859-1.872c.5-.496 1.197-1.034 2.233-.726zm-9.219 8.305c.212-.71.696-1.24.73-1.282l1.85-1.863 3.609 3.632-3.608 3.63-1.86-1.87c-.492-.504-1.027-1.214-.721-2.247zm8.252 9.279c-.705-.214-1.231-.701-1.273-.735l-1.851-1.863 3.608-3.631 3.608 3.631-1.86 1.871c-.5.496-1.205 1.034-2.232.726zm9.22-8.305c-.212.709-.696 1.239-.73 1.281l-1.851 1.863-3.608-3.631 3.608-3.632 1.86 1.872c.492.504 1.027 1.204.72 2.247z"
+                fill="currentColor"
                 fill-rule="evenodd"
               />
             </svg>
           </span>
-          ce.anomalyDetection.settings.options.header
-        </p>
-        <span
-          class="bp3-icon bp3-icon-cross StyledProps--main StyledProps--color StyledProps--color-white"
-          icon="cross"
-        >
-          <svg
-            data-icon="cross"
-            height="16"
-            viewBox="0 0 16 16"
-            width="16"
-          >
-            <desc>
-              cross
-            </desc>
-            <path
-              d="M9.41 8l3.29-3.29c.19-.18.3-.43.3-.71a1.003 1.003 0 00-1.71-.71L8 6.59l-3.29-3.3a1.003 1.003 0 00-1.42 1.42L6.59 8 3.3 11.29c-.19.18-.3.43-.3.71a1.003 1.003 0 001.71.71L8 9.41l3.29 3.29c.18.19.43.3.71.3a1.003 1.003 0 00.71-1.71L9.41 8z"
-              fill-rule="evenodd"
-            />
-          </svg>
-        </span>
+        </div>
       </div>
-      <ul
-        class="listingOptions"
-      >
-        <li
-          class="listOptionItem listOptionItemSelected"
-        >
-          <p
-            class="StyledProps--font StyledProps--main tabContent StyledProps--font-size-normal StyledProps--font-weight-semi-bold"
-          >
-            ce.anomalyDetection.settings.heading
-          </p>
-        </li>
-      </ul>
-    </div>
+    </form>
   </div>
 </div>
 `;

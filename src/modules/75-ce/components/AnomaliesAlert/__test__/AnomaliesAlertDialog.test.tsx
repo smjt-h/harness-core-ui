@@ -5,29 +5,24 @@
  * https://polyformproject.org/wp-content/uploads/2020/06/PolyForm-Shield-1.0.0.txt.
  */
 
-import { Container } from '@harness/uicore'
+// import { Container, Dialog, Formik } from '@harness/uicore'
 import { render } from '@testing-library/react'
 import React from 'react'
 import { TestWrapper } from '@common/utils/testUtils'
-import useAnomaliesAlertDialog from '../AnomaliesAlertDialog'
-
-const CreateAnomaliesAlert = () => {
-  const { openAnomaliesAlertModal } = useAnomaliesAlertDialog()
-  return (
-    <Container>
-      <button onClick={() => openAnomaliesAlertModal()} />
-    </Container>
-  )
-}
+import { AnomalyAlertDialog } from '../AnomaliesAlertDialog'
 
 describe('Test case for anomalies new alert creation', () => {
-  test('Anomalies alert dialog should open', () => {
-    const { container } = render(
+  test('Anomalies alert dialog should open', async () => {
+    const hideAnomaliesAlertModal = jest.fn()
+    const handleSubmit = jest.fn()
+
+    const { container, getByText } = render(
       <TestWrapper>
-        <CreateAnomaliesAlert />
+        <AnomalyAlertDialog hideAnomaliesAlertModal={hideAnomaliesAlertModal} handleSubmit={handleSubmit} />
       </TestWrapper>
     )
 
+    expect(getByText('ce.anomalyDetection.notificationAlerts.selectPerspectiveLabel')).toBeDefined()
     expect(container).toMatchSnapshot()
   })
 })

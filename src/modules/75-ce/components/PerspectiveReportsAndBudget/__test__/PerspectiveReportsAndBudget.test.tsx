@@ -14,6 +14,7 @@ import type { DocumentNode } from 'graphql'
 import { setFieldValue, InputTypes, clickSubmit } from '@common/utils/JestFormHelper'
 import { findDialogContainer, TestWrapper } from '@common/utils/testUtils'
 import { FetchPerspectiveListDocument } from 'services/ce/services'
+import useAnomaliesAlertDialog from '@ce/components/AnomaliesAlert/AnomaliesAlertDialog'
 import PerspectiveReportsAndBudgets from '../PerspectiveReportsAndBudgets'
 import PerspectiveScheduledReportsResponse from './PerspectiveScheduledReportsResponse.json'
 import PerspectiveBudgetsResponse from './PerspectiveBudgetsResponse.json'
@@ -235,5 +236,39 @@ describe('test cases for Perspective Create Budgets', () => {
     expect(getByText('ce.perspectives.budgets.configureAlerts.subTitle')).toBeDefined()
     expect(getByText('ce.perspectives.budgets.configureAlerts.budgetAmount')).toBeDefined()
     expect(findDialogContainer()).toMatchSnapshot()
+  })
+})
+
+const CreateAnomalyAlertWrapper = () => {
+  const { openAnomaliesAlertModal } = useAnomaliesAlertDialog()
+  return (
+    <Container>
+      <button onClick={() => openAnomaliesAlertModal()} className="openModal" />
+    </Container>
+  )
+}
+
+describe('test case for Perspective anomaly alerts', () => {
+  test('should be able to open create anomaly alert modal', async () => {
+    const { container, getByText, getAllByText } = render(
+      <TestWrapper pathParams={params}>
+        <CreateAnomalyAlertWrapper />
+      </TestWrapper>
+    )
+
+    const openButton = container.querySelector('.openModal')
+    expect(openButton).toBeDefined()
+
+    fireEvent.click(openButton!)
+
+    const modal = findDialogContainer()
+    expect(modal).toBeDefined()
+
+    await waitFor(() => {
+      expect(getByText('ce.anomalyDetection.notificationAlerts.heading')).toBeDefined()
+      expect(getAllByText('ce.anomalyDetection.notificationAlerts.overviewStep')).toBeDefined()
+    })
+
+    expect(modal).toMatchSnapshot()
   })
 })

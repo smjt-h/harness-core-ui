@@ -5,9 +5,9 @@
  * https://polyformproject.org/wp-content/uploads/2020/06/PolyForm-Shield-1.0.0.txt.
  */
 
-import { act, fireEvent, queryByText, render } from '@testing-library/react'
+import { act, fireEvent, queryByText, render, waitFor } from '@testing-library/react'
 import React from 'react'
-import { TestWrapper } from '@common/utils/testUtils'
+import { findDialogContainer, TestWrapper } from '@common/utils/testUtils'
 import AnomaliesSettings from '../AnomaliesSettings'
 
 const params = {
@@ -15,11 +15,10 @@ const params = {
 }
 
 describe('test case for anomalies settings drawer', () => {
-  test('should be able to render the settings drawer', async () => {
-    // const openAnomaliesAlertModal = jest.fn()
+  test('should be able to open alert creation modal', async () => {
     const hideDrawer = jest.fn()
 
-    const { container } = render(
+    const { container, getByText, getAllByText } = render(
       <TestWrapper pathParams={params}>
         <AnomaliesSettings hideDrawer={hideDrawer} />
       </TestWrapper>
@@ -30,6 +29,14 @@ describe('test case for anomalies settings drawer', () => {
     act(() => {
       fireEvent.click(createNewAlert!)
     })
-    expect(container).toMatchSnapshot()
+    const modal = findDialogContainer()
+    expect(modal).toBeDefined()
+
+    await waitFor(() => {
+      expect(getByText('ce.anomalyDetection.notificationAlerts.heading')).toBeDefined()
+      expect(getAllByText('ce.anomalyDetection.notificationAlerts.overviewStep')).toBeDefined()
+    })
+
+    expect(modal).toMatchSnapshot()
   })
 })
