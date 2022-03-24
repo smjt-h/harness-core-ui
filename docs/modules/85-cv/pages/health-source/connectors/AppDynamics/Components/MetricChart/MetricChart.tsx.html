@@ -23,30 +23,30 @@
         <div class='clearfix'>
             
             <div class='fl pad1y space-right2'>
-                <span class="strong">93.33% </span>
+                <span class="strong">88.89% </span>
                 <span class="quiet">Statements</span>
-                <span class='fraction'>14/15</span>
+                <span class='fraction'>16/18</span>
             </div>
         
             
             <div class='fl pad1y space-right2'>
-                <span class="strong">45% </span>
+                <span class="strong">44.64% </span>
                 <span class="quiet">Branches</span>
-                <span class='fraction'>9/20</span>
+                <span class='fraction'>25/56</span>
             </div>
         
             
             <div class='fl pad1y space-right2'>
-                <span class="strong">66.67% </span>
+                <span class="strong">50% </span>
                 <span class="quiet">Functions</span>
-                <span class='fraction'>2/3</span>
+                <span class='fraction'>2/4</span>
             </div>
         
             
             <div class='fl pad1y space-right2'>
-                <span class="strong">93.33% </span>
+                <span class="strong">94.12% </span>
                 <span class="quiet">Lines</span>
-                <span class='fraction'>14/15</span>
+                <span class='fraction'>16/17</span>
             </div>
         
             
@@ -115,7 +115,17 @@
 <a name='L56'></a><a href='#L56'>56</a>
 <a name='L57'></a><a href='#L57'>57</a>
 <a name='L58'></a><a href='#L58'>58</a>
-<a name='L59'></a><a href='#L59'>59</a></td><td class="line-coverage quiet"><span class="cline-any cline-neutral">&nbsp;</span>
+<a name='L59'></a><a href='#L59'>59</a>
+<a name='L60'></a><a href='#L60'>60</a>
+<a name='L61'></a><a href='#L61'>61</a>
+<a name='L62'></a><a href='#L62'>62</a>
+<a name='L63'></a><a href='#L63'>63</a>
+<a name='L64'></a><a href='#L64'>64</a>
+<a name='L65'></a><a href='#L65'>65</a>
+<a name='L66'></a><a href='#L66'>66</a>
+<a name='L67'></a><a href='#L67'>67</a>
+<a name='L68'></a><a href='#L68'>68</a>
+<a name='L69'></a><a href='#L69'>69</a></td><td class="line-coverage quiet"><span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
@@ -131,6 +141,8 @@
 <span class="cline-any cline-yes">19x</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-yes">19x</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
@@ -148,6 +160,14 @@
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-yes">1x</span>
 <span class="cline-any cline-yes">1x</span>
+<span class="cline-any cline-yes">1x</span>
+<span class="cline-any cline-yes">1x</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
@@ -193,18 +213,22 @@ export default function MetricChart({
   appName,
   baseFolder,
   tier,
-  metricPath
+  metricPath,
+  fullPath
 }: {
   connectorIdentifier: string
   appName: string
   baseFolder: string
   tier: string
   metricPath: string
+  fullPath?: string
 }): JSX.Element {
   const { data, refetch, loading, error } = useGetAppdynamicsMetricDataByPath({ lazy: true })
   const { accountId, orgIdentifier, projectIdentifier } = useParams&lt;ProjectPathProps&gt;()
 &nbsp;
   useEffect(() =&gt; {
+    const pathToArray = <span class="branch-1 cbranch-no" title="branch not covered" >fullPath?.split('|').map(<span class="fstat-no" title="function not covered" >item </span>=&gt; <span class="cstat-no" title="statement not covered" >item.trim())</span></span>
+    const indexOfTierInPath = <span class="branch-1 cbranch-no" title="branch not covered" >pathToArray?.indexOf(tier?.trim())</span>
     refetch({
       queryParams: {
         accountId,
@@ -212,12 +236,18 @@ export default function MetricChart({
         projectIdentifier,
         connectorIdentifier,
         appName,
-        baseFolder,
         tier,
-        metricPath
+        baseFolder:
+<span class="branch-1 cbranch-no" title="branch not covered" >          fullPath?.length </span>&amp;&amp; <span class="branch-1 cbranch-no" title="branch not covered" >indexOfTierInPath</span>
+            ? (<span class="branch-0 cbranch-no" title="branch not covered" >pathToArray?.slice(0, indexOfTierInPath).join(' | ') as string)</span>
+            : baseFolder,
+        metricPath:
+<span class="branch-1 cbranch-no" title="branch not covered" >          fullPath?.length </span>&amp;&amp; <span class="branch-1 cbranch-no" title="branch not covered" >indexOfTierInPath</span>
+            ? (<span class="branch-0 cbranch-no" title="branch not covered" >pathToArray?.slice(indexOfTierInPath + 1).join(' | ') as string)</span>
+            : metricPath
       }
     })
-  }, [metricPath])
+  }, [metricPath, fullPath])
 &nbsp;
   const dataPoints = data<span class="branch-0 cbranch-no" title="branch not covered" >?.d</span>ata<span class="branch-1 cbranch-no" title="branch not covered" >?.dataPoints</span>
   const options: any[] = []
@@ -238,7 +268,7 @@ export default function MetricChart({
             <div class='footer quiet pad2 space-top1 center small'>
                 Code coverage generated by
                 <a href="https://istanbul.js.org/" target="_blank">istanbul</a>
-                at Thu Mar 24 2022 05:21:50 GMT+0000 (Greenwich Mean Time)
+                at Thu Mar 24 2022 05:49:51 GMT+0000 (Greenwich Mean Time)
             </div>
         </div>
         <script src="../../../../../../../../prettify.js"></script>
