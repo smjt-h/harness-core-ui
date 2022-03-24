@@ -14,6 +14,10 @@ import { TestWrapper } from '@common/utils/testUtils'
 import * as cfServicesMock from 'services/cf'
 import usePatchFeatureFlag, { UsePatchFeatureFlagProps } from '../usePatchFeatureFlag'
 import {
+  mockPercentageVariationRollout,
+  percentageRolloutAdded,
+  percentageRolloutRemoved,
+  percentageRolloutUpdated,
   targetAddedFixture,
   targetGroupsAddedFixture,
   targetGroupsRemovedFixture,
@@ -38,7 +42,12 @@ const renderHookUnderTest = (props: Partial<UsePatchFeatureFlagProps> = {}) => {
     () =>
       usePatchFeatureFlag({
         featureFlagIdentifier: '',
-        initialValues: { state: 'off', onVariation: 'False', formVariationMap: [] },
+        initialValues: {
+          state: 'off',
+          onVariation: 'False',
+          formVariationMap: [],
+          variationPercentageRollout: mockPercentageVariationRollout
+        },
         refetchFlag: jest.fn(),
         ...props
       }),
@@ -68,7 +77,12 @@ describe('usePatchFeatureFlag', () => {
 
       const { result } = renderHookUnderTest({ refetchFlag: refetchFlagMock.mockResolvedValueOnce({}) })
 
-      const newValues = { state: 'on', onVariation: 'True', formVariationMap: [] }
+      const newValues = {
+        state: 'on',
+        onVariation: 'True',
+        formVariationMap: [],
+        variationPercentageRollout: mockPercentageVariationRollout
+      }
       result.current.saveChanges(newValues)
 
       expect(mutateMock).toBeCalledWith({
@@ -97,7 +111,12 @@ describe('usePatchFeatureFlag', () => {
 
       const { result } = renderHookUnderTest({ refetchFlag: refetchFlagMock.mockResolvedValueOnce({}) })
 
-      const newValues = { state: 'off', onVariation: 'False', formVariationMap: [] }
+      const newValues = {
+        state: 'off',
+        onVariation: 'False',
+        variationPercentageRollout: mockPercentageVariationRollout,
+        formVariationMap: []
+      }
       result.current.saveChanges(newValues)
 
       expect(mutateMock).not.toBeCalledWith()
@@ -114,6 +133,7 @@ describe('usePatchFeatureFlag', () => {
         initialValues: {
           onVariation: 'true',
           state: 'on',
+          variationPercentageRollout: mockPercentageVariationRollout,
           formVariationMap: targetGroupsAddedFixture.initialFormVariationMap
         }
       })
@@ -121,6 +141,7 @@ describe('usePatchFeatureFlag', () => {
       const newValues = {
         state: 'on',
         onVariation: 'true',
+        variationPercentageRollout: mockPercentageVariationRollout,
         formVariationMap: targetGroupsAddedFixture.newFormVariationMap
       }
       result.current.saveChanges(newValues)
@@ -137,6 +158,7 @@ describe('usePatchFeatureFlag', () => {
         initialValues: {
           onVariation: 'true',
           state: 'on',
+          variationPercentageRollout: mockPercentageVariationRollout,
           formVariationMap: targetGroupsRemovedFixture.initialFormVariationMap
         }
       })
@@ -144,6 +166,7 @@ describe('usePatchFeatureFlag', () => {
       const newValues = {
         state: 'on',
         onVariation: 'true',
+        variationPercentageRollout: mockPercentageVariationRollout,
         formVariationMap: targetGroupsRemovedFixture.newFormVariationMap
       }
       result.current.saveChanges(newValues)
@@ -160,6 +183,7 @@ describe('usePatchFeatureFlag', () => {
         initialValues: {
           onVariation: 'true',
           state: 'on',
+          variationPercentageRollout: mockPercentageVariationRollout,
           formVariationMap: targetAddedFixture.initialFormVariationMap
         }
       })
@@ -167,6 +191,7 @@ describe('usePatchFeatureFlag', () => {
       const newValues = {
         state: 'on',
         onVariation: 'true',
+        variationPercentageRollout: mockPercentageVariationRollout,
         formVariationMap: targetAddedFixture.newFormVariationMap
       }
       result.current.saveChanges(newValues)
@@ -183,14 +208,95 @@ describe('usePatchFeatureFlag', () => {
         initialValues: {
           onVariation: 'true',
           state: 'on',
+          variationPercentageRollout: mockPercentageVariationRollout,
           formVariationMap: targetRemovedFixture.initialFormVariationMap
         }
       })
 
-      const newValues = { state: 'on', onVariation: 'true', formVariationMap: targetRemovedFixture.newFormVariationMap }
+      const newValues = {
+        state: 'on',
+        onVariation: 'true',
+        variationPercentageRollout: mockPercentageVariationRollout,
+        formVariationMap: targetRemovedFixture.newFormVariationMap
+      }
       result.current.saveChanges(newValues)
 
       expect(mutateMock).toBeCalledWith(targetRemovedFixture.expected)
+      await waitFor(() => expect(refetchFlagMock).toBeCalled())
+    })
+  })
+
+  describe('Percentage Rollout', () => {
+    test('it should send correct values when Percentage Rollout added', async () => {
+      const refetchFlagMock = jest.fn()
+
+      const { result } = renderHookUnderTest({
+        refetchFlag: refetchFlagMock.mockResolvedValueOnce({}),
+        initialValues: {
+          onVariation: 'true',
+          state: 'on',
+          variationPercentageRollout: percentageRolloutAdded.initialVariationPercentageRollout,
+          formVariationMap: []
+        }
+      })
+
+      const newValues = {
+        state: 'on',
+        onVariation: 'true',
+        variationPercentageRollout: percentageRolloutAdded.newPercentageRolloutAdded,
+        formVariationMap: []
+      }
+      result.current.saveChanges(newValues)
+
+      expect(mutateMock).toBeCalledWith(percentageRolloutAdded.expected)
+      await waitFor(() => expect(refetchFlagMock).toBeCalled())
+    })
+    test('it should send correct values when Percentage Rollout updated', async () => {
+      const refetchFlagMock = jest.fn()
+
+      const { result } = renderHookUnderTest({
+        refetchFlag: refetchFlagMock.mockResolvedValueOnce({}),
+        initialValues: {
+          onVariation: 'true',
+          state: 'on',
+          variationPercentageRollout: percentageRolloutUpdated.initialVariationPercentageRollout,
+          formVariationMap: []
+        }
+      })
+
+      const newValues = {
+        state: 'on',
+        onVariation: 'true',
+        variationPercentageRollout: percentageRolloutUpdated.newPercentageRolloutAdded,
+        formVariationMap: []
+      }
+      result.current.saveChanges(newValues)
+
+      expect(mutateMock).toBeCalledWith(percentageRolloutUpdated.expected)
+      await waitFor(() => expect(refetchFlagMock).toBeCalled())
+    })
+    test('it should send correct values when Percentage Rollout removed', async () => {
+      const refetchFlagMock = jest.fn()
+
+      const { result } = renderHookUnderTest({
+        refetchFlag: refetchFlagMock.mockResolvedValueOnce({}),
+        initialValues: {
+          onVariation: 'true',
+          state: 'on',
+          variationPercentageRollout: percentageRolloutRemoved.initialVariationPercentageRollout,
+          formVariationMap: []
+        }
+      })
+
+      const newValues = {
+        state: 'on',
+        onVariation: 'true',
+        variationPercentageRollout: percentageRolloutRemoved.newPercentageRolloutAdded,
+        formVariationMap: []
+      }
+      result.current.saveChanges(newValues)
+
+      expect(mutateMock).toBeCalledWith(percentageRolloutRemoved.expected)
       await waitFor(() => expect(refetchFlagMock).toBeCalled())
     })
   })
@@ -207,7 +313,12 @@ describe('usePatchFeatureFlag', () => {
 
       const { result } = renderHookUnderTest()
 
-      const newValues = { state: 'on', onVariation: 'True', formVariationMap: [] }
+      const newValues = {
+        state: 'on',
+        onVariation: 'True',
+        variationPercentageRollout: mockPercentageVariationRollout,
+        formVariationMap: []
+      }
       result.current.saveChanges(newValues)
 
       await waitFor(() => expect(screen.getByText('ERROR FROM MOCK')).toBeInTheDocument())

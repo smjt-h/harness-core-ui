@@ -5,6 +5,14 @@
  * https://polyformproject.org/wp-content/uploads/2020/06/PolyForm-Shield-1.0.0.txt.
  */
 
+const mockPercentageVariationRollout = {
+  bucketBy: '',
+  clauses: [],
+  ruleId: '',
+  isVisible: false,
+  variations: []
+}
+
 const targetGroupsAddedFixture = {
   initialFormVariationMap: [
     {
@@ -187,4 +195,186 @@ const targetRemovedFixture = {
   }
 }
 
-export { targetGroupsAddedFixture, targetGroupsRemovedFixture, targetAddedFixture, targetRemovedFixture }
+const percentageRolloutAdded = {
+  initialVariationPercentageRollout: {
+    bucketBy: 'identifier',
+    clauses: [],
+    isVisible: false,
+    ruleId: '',
+    variations: []
+  },
+  newPercentageRolloutAdded: {
+    bucketBy: 'identifier',
+    clauses: [
+      {
+        attribute: '',
+        id: '',
+        negate: false,
+        op: '',
+        values: ['target_group_1']
+      }
+    ],
+    variations: [
+      {
+        variation: 'true',
+        weight: 40
+      },
+      {
+        variation: 'false',
+        weight: 60
+      }
+    ],
+    ruleId: '5170032c-5100-42d2-b044-761ac91e50bb',
+    isVisible: true
+  },
+  expected: {
+    instructions: [
+      {
+        kind: 'addRule',
+        parameters: {
+          uuid: 'UUID',
+          priority: 102,
+          serve: {
+            distribution: {
+              bucketBy: 'identifier',
+              variations: [
+                { variation: 'true', weight: 40 },
+                { variation: 'false', weight: 60 }
+              ]
+            }
+          },
+          clauses: [{ op: 'segmentMatch', values: ['target_group_1'] }]
+        }
+      }
+    ]
+  }
+}
+
+const percentageRolloutUpdated = {
+  initialVariationPercentageRollout: {
+    variations: [
+      {
+        variation: 'true',
+        weight: 30
+      },
+      {
+        variation: 'false',
+        weight: 70
+      }
+    ],
+    bucketBy: 'identifier',
+    clauses: [
+      {
+        attribute: '',
+        id: 'e6512660-cb37-4986-9d9c-8d3030f3d53a',
+        negate: false,
+        op: 'segmentMatch',
+        values: ['target_group_1']
+      }
+    ],
+    ruleId: '006731d6-1f58-4877-8ff5-68cbb885b75c',
+    isVisible: true
+  },
+  newPercentageRolloutAdded: {
+    variations: [
+      {
+        variation: 'true',
+        weight: 90
+      },
+      {
+        variation: 'false',
+        weight: 10
+      }
+    ],
+    bucketBy: 'identifier',
+    clauses: [
+      {
+        attribute: '',
+        id: 'e6512660-cb37-4986-9d9c-8d3030f3d53a',
+        negate: false,
+        op: 'segmentMatch',
+        values: ['randomID']
+      }
+    ],
+    ruleId: '006731d6-1f58-4877-8ff5-68cbb885b75c',
+    isVisible: true
+  },
+  expected: {
+    instructions: [
+      {
+        kind: 'updateRule',
+        parameters: {
+          ruleID: '006731d6-1f58-4877-8ff5-68cbb885b75c',
+          bucketBy: 'identifier',
+          variations: [
+            { variation: 'true', weight: 90 },
+            { variation: 'false', weight: 10 }
+          ]
+        }
+      }
+    ]
+  }
+}
+
+const percentageRolloutRemoved = {
+  initialVariationPercentageRollout: {
+    variations: [
+      {
+        variation: 'true',
+        weight: 30
+      },
+      {
+        variation: 'false',
+        weight: 30
+      }
+    ],
+    bucketBy: 'identifier',
+    clauses: [
+      {
+        attribute: '',
+        id: 'e6512660-cb37-4986-9d9c-8d3030f3d53a',
+        negate: false,
+        op: 'segmentMatch',
+        values: ['target_group_1']
+      }
+    ],
+    ruleId: '006731d6-1f58-4877-8ff5-68cbb885b75c',
+    isVisible: true
+  },
+  newPercentageRolloutAdded: {
+    variations: [
+      {
+        variation: 'true',
+        weight: 90
+      },
+      {
+        variation: 'false',
+        weight: 10
+      }
+    ],
+    bucketBy: 'identifier',
+    clauses: [
+      {
+        attribute: '',
+        id: 'e6512660-cb37-4986-9d9c-8d3030f3d53a',
+        negate: false,
+        op: 'segmentMatch',
+        values: ['target_group_1']
+      }
+    ],
+    ruleId: '006731d6-1f58-4877-8ff5-68cbb885b75c',
+    isVisible: false
+  },
+  expected: { instructions: [{ kind: 'removeRule', parameters: { ruleID: '006731d6-1f58-4877-8ff5-68cbb885b75c' } }] }
+}
+
+export {
+  mockPercentageVariationRollout,
+  percentageRolloutAdded,
+  percentageRolloutUpdated,
+  percentageRolloutRemoved,
+  targetGroupsAddedFixture,
+  targetGroupsRemovedFixture,
+  targetAddedFixture,
+  targetRemovedFixture
+}

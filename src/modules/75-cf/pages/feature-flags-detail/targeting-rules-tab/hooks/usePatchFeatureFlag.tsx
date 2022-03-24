@@ -8,6 +8,7 @@
 import { useParams } from 'react-router-dom'
 import { getErrorInfoFromErrorObject, useToaster } from '@harness/uicore'
 import { v4 as uuid } from 'uuid'
+import { isEqual } from 'lodash-es'
 import patch from '@cf/utils/instructions'
 import { FeatureState, PatchFeatureQueryParams, TargetMap, usePatchFeature } from 'services/cf'
 import useActiveEnvironment from '@cf/hooks/useActiveEnvironment'
@@ -102,11 +103,6 @@ const usePatchFeatureFlag = ({
         )
       }
 
-      // Handle adding/removing/updating of percentage rollout
-      // if(!initialValues.variationPercentageRollout && submittedValues.variationPercentageRollout) {
-
-      // }
-
       const intialTargetIds = formVariation.targets.map((target: TargetMap) => target.identifier)
       const submittedTargetIds =
         submittedValues.formVariationMap
@@ -128,6 +124,41 @@ const usePatchFeatureFlag = ({
       }
     })
 
+    // Handle adding/removing/updating of percentage rollout
+    // percentage rollout added
+    if (!initialValues.variationPercentageRollout.isVisible && submittedValues.variationPercentageRollout.isVisible) {
+      patch.feature.addInstruction(
+        patch.creators.addRule({
+          uuid: uuid(),
+          priority: 102,
+          serve: {
+            distribution: {
+              bucketBy: submittedValues.variationPercentageRollout.bucketBy,
+              variations: submittedValues.variationPercentageRollout.variations
+            }
+          },
+          clauses: [
+            {
+              op: 'segmentMatch',
+              values: submittedValues.variationPercentageRollout.clauses[0].values
+            }
+          ]
+        })
+      )
+    } else if (
+      initialValues.variationPercentageRollout.isVisible &&
+      !submittedValues.variationPercentageRollout.isVisible
+    ) {
+      patch.feature.addInstruction(patch.creators.removeRule(submittedValues.variationPercentageRollout.ruleId))
+    } else if (!isEqual(initialValues.variationPercentageRollout, submittedValues.variationPercentageRollout)) {
+      patch.feature.addInstruction(
+        patch.creators.updateRuleVariation(submittedValues.variationPercentageRollout.ruleId, {
+          bucketBy: submittedValues.variationPercentageRollout.bucketBy,
+          variations: submittedValues.variationPercentageRollout.variations
+        })
+      )
+    }
+
     patch.feature.onPatchAvailable(async data => {
       try {
         await patchFeature(data)
@@ -135,6 +166,7 @@ const usePatchFeatureFlag = ({
         await refetchFlag()
         showToaster(getString('cf.messages.flagUpdated'))
       } catch (error: any) {
+        patch.feature.reset()
         showError(getErrorInfoFromErrorObject(error))
       }
     })

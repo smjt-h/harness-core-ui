@@ -14,14 +14,14 @@ import type { Segment, Target, TargetMap, Variation } from 'services/cf'
 import PercentageRollout from '@cf/components/PercentageRollout/PercentageRollout'
 import DefaultRules from '../default-rules/DefaultRules'
 import SpecificTargetingItem from '../specific-targeting-item.tsx/SpecificTargetingItem'
-import type { FormVariationMap, TargetGroup } from '../../Types'
+import type { FormVariationMap, VariationPercentageRollout, TargetGroup } from '../../Types'
 
 export interface FlagEnabledRulesCardProps {
   targets: Target[]
   segments: Segment[]
   formVariationMap: FormVariationMap[]
   featureFlagVariations: Variation[]
-  variationPercentageRollout: any //todo
+  variationPercentageRollout: VariationPercentageRollout
   isLoading: boolean
   updateTargetGroups: (index: number, newTargetGroups: TargetGroup[]) => void
   updateTargets: (index: number, newTargetGroups: TargetMap[]) => void
@@ -48,6 +48,17 @@ const FlagEnabledRulesCard = (props: FlagEnabledRulesCardProps): ReactElement =>
   } = props
 
   const { getString } = useStrings()
+
+  // const firstMount = useRef(true)
+  // useLayoutEffect(() => {
+  //   if (firstMount.current) {
+  //     firstMount.current = false
+  //     return
+  //   }
+
+  //   console.log('mounted')
+  //   updatePercentageRollout()
+  // }, [variationPercentageRollout.bucketBy, variationPercentageRollout.variations, variationPercentageRollout.clauses])
 
   const addTargetingDropdownVariations = formVariationMap.filter(variation => !variation.isVisible)
 
@@ -79,7 +90,7 @@ const FlagEnabledRulesCard = (props: FlagEnabledRulesCardProps): ReactElement =>
             </>
           ))}
 
-          {variationPercentageRollout && (
+          {variationPercentageRollout.isVisible && (
             <>
               <Container flex={{ justifyContent: 'space-between' }}>
                 <Heading level={4} font={{ variation: FontVariation.BODY2 }} margin={{ top: 'medium' }}>
@@ -104,7 +115,7 @@ const FlagEnabledRulesCard = (props: FlagEnabledRulesCardProps): ReactElement =>
             </>
           )}
 
-          {(addTargetingDropdownVariations.length > 0 || !variationPercentageRollout) && (
+          {(addTargetingDropdownVariations.length > 0 || !variationPercentageRollout.isVisible) && (
             <Button
               icon="plus"
               rightIcon="chevron-down"
@@ -130,7 +141,7 @@ const FlagEnabledRulesCard = (props: FlagEnabledRulesCardProps): ReactElement =>
                       {variation.variationName}
                     </Text>
                   ))}
-                  {!variationPercentageRollout && (
+                  {!variationPercentageRollout.isVisible && (
                     <Text
                       data-testid={`variation_option_percentage_rollout`}
                       inline
@@ -138,7 +149,7 @@ const FlagEnabledRulesCard = (props: FlagEnabledRulesCardProps): ReactElement =>
                       font={{ variation: FontVariation.BODY }}
                       icon="percentage"
                     >
-                      Percentage Rollout
+                      {getString('cf.featureFlags.percentageRollout')}
                     </Text>
                   )}
                 </Layout.Vertical>

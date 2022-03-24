@@ -8,16 +8,29 @@
 import { Card, Container, Formik, FormikForm, Layout } from '@harness/uicore'
 import React, { ReactElement } from 'react'
 import { useParams } from 'react-router-dom'
+import { v4 as uuid } from 'uuid'
 import FlagToggleSwitch from '@cf/components/EditFlagTabs/FlagToggleSwitch'
-import { GetAllSegmentsQueryParams, GetAllTargetsQueryParams, useGetAllSegments, useGetAllTargets } from 'services/cf'
+import {
+  Feature,
+  GetAllSegmentsQueryParams,
+  GetAllTargetsQueryParams,
+  useGetAllSegments,
+  useGetAllTargets
+} from 'services/cf'
 import { FeatureFlagActivationStatus } from '@cf/utils/CFUtils'
 import useActiveEnvironment from '@cf/hooks/useActiveEnvironment'
 import usePatchFeatureFlag from './hooks/usePatchFeatureFlag'
 import TargetingRulesTabFooter from './components/tab-targeting-footer/TargetingRulesTabFooter'
 
 import FlagEnabledRulesCard from './components/flag-enabled-rules-card/FlagEnabledRulesCard'
-import type { FormVariationMap, TargetGroup, TargetingRulesFormValues, TargetingRulesTabProps } from './Types'
+import type { FormVariationMap, VariationPercentageRollout, TargetGroup, TargetingRulesFormValues } from './Types'
 import css from './TargetingRulesTab.module.scss'
+
+export interface TargetingRulesTabProps {
+  featureFlagData: Feature
+  refetchFlag: () => Promise<unknown>
+  refetchFlagLoading: boolean
+}
 
 const TargetingRulesTab = ({
   featureFlagData,
@@ -77,28 +90,23 @@ const TargetingRulesTab = ({
 
   const variationPercentageRollout = featureFlagData.envProperties?.rules?.find(rule => rule.serve.distribution)
 
-  const initialValues = (): TargetingRulesFormValues => {
-    const intialValues: TargetingRulesFormValues = {
-      state: featureFlagData.envProperties?.state as string,
-      onVariation: featureFlagData.envProperties?.defaultServe.variation
-        ? featureFlagData.envProperties?.defaultServe.variation
-        : featureFlagData.defaultOnVariation,
-      formVariationMap
+  const initialValues: TargetingRulesFormValues = {
+    state: featureFlagData.envProperties?.state as string,
+    onVariation: featureFlagData.envProperties?.defaultServe.variation
+      ? featureFlagData.envProperties?.defaultServe.variation
+      : featureFlagData.defaultOnVariation,
+    formVariationMap,
+    variationPercentageRollout: {
+      variations: variationPercentageRollout?.serve.distribution?.variations || [],
+      bucketBy: variationPercentageRollout?.serve.distribution?.bucketBy as string,
+      clauses: variationPercentageRollout?.clauses || [],
+      ruleId: variationPercentageRollout?.ruleId || '',
+      isVisible: !!variationPercentageRollout
     }
-
-    if (variationPercentageRollout) {
-      intialValues.variationPercentageRollout = {
-        variations: variationPercentageRollout.serve.distribution?.variations || [],
-        bucketBy: variationPercentageRollout.serve.distribution?.bucketBy as string,
-        clauses: variationPercentageRollout.clauses
-      }
-    }
-
-    return intialValues
   }
 
   const { saveChanges, loading: patchFeatureLoading } = usePatchFeatureFlag({
-    initialValues: initialValues(),
+    initialValues: initialValues,
     featureFlagIdentifier: featureFlagData.identifier,
     refetchFlag
   })
@@ -111,7 +119,7 @@ const TargetingRulesTab = ({
       validateOnChange={false}
       validateOnBlur={false}
       formName="targeting-rules-form"
-      initialValues={initialValues()}
+      initialValues={initialValues}
       onSubmit={values => {
         saveChanges(values)
       }}
@@ -172,17 +180,31 @@ const TargetingRulesTab = ({
                     })
                   }}
                   addPercentageRollout={() => {
-                    formikProps.setFieldValue(`variationPercentageRollout`, {
+                    const percentageRollout: VariationPercentageRollout = {
                       bucketBy: 'identifier',
                       clauses: [],
                       variations: featureFlagData.variations.map(variation => ({
-                        variation: variation.name,
+                        variation: variation.identifier,
                         weight: 0
-                      }))
-                    })
+                      })),
+                      ruleId: uuid(),
+                      isVisible: true
+                    }
+                    formikProps.setFieldValue(`variationPercentageRollout`, percentageRollout)
                   }}
+                  // updatePercentageRollout={() => {
+                  //   const percentageRollout: VariationPercentageRollout = {
+                  //     ...(formikProps.values.variationPercentageRollout as VariationPercentageRollout),
+                  //     isVisible: true
+                  //   }
+                  //   formikProps.setFieldValue(`variationPercentageRollout`, percentageRollout)
+                  // }}
                   removePercentageRollout={() => {
-                    formikProps.setFieldValue(`variationPercentageRollout`, undefined)
+                    const percentageRollout: VariationPercentageRollout = {
+                      ...(formikProps.values.variationPercentageRollout as VariationPercentageRollout),
+                      isVisible: false
+                    }
+                    formikProps.setFieldValue(`variationPercentageRollout`, percentageRollout)
                   }}
                 />
 

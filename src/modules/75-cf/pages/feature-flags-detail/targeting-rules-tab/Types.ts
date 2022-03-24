@@ -6,13 +6,13 @@
  */
 
 import type { WeightedVariation, Clause } from 'services/cd-ng'
-import type { TargetMap, Feature } from 'services/cf'
+import type { TargetMap } from 'services/cf'
 
 export interface TargetingRulesFormValues {
   state: string
   onVariation: string
   formVariationMap: FormVariationMap[]
-  variationPercentageRollout?: PercentageRollout
+  variationPercentageRollout: VariationPercentageRollout
 }
 export interface TargetGroup {
   identifier: string
@@ -20,10 +20,12 @@ export interface TargetGroup {
   name: string
 }
 
-export interface PercentageRollout {
+export interface VariationPercentageRollout {
   variations: WeightedVariation[] | []
   bucketBy: string
   clauses: Clause[]
+  ruleId: string
+  isVisible: boolean
 }
 export interface FormVariationMap {
   variationIdentifier: string
@@ -31,9 +33,4 @@ export interface FormVariationMap {
   targetGroups: TargetGroup[] | []
   targets: TargetMap[] | []
   isVisible: boolean
-}
-export interface TargetingRulesTabProps {
-  featureFlagData: Feature
-  refetchFlag: () => Promise<unknown>
-  refetchFlagLoading: boolean
 }
