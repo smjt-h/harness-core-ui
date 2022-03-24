@@ -5,6 +5,8 @@ common:
   newBudget: 'New Budget'
   budget: 'Budget'
   spendTillDate: 'Spend Till Date'
+  and: '{{ $.common.andCaps }}'
+  or: '{{ $.common.orCaps }}'
 allRegions: 'All Regions'
 allClusters: 'All Clusters'
 enforcementMessage:
@@ -859,3 +861,30 @@ anomalyDetection:
   addNewAnomalyAlert: add Anomaly Alert
   addAnoamlyAlertDesc: You can recieve alerts whenever an anomaly occurs in the persepective. This can help you rectify any unfavourable cost spikes at the earliest.
   createNewAnomalyAlert: + create new Anomaly Alert
+businessMapping:
+  newButton: New Business Mapping
+  sideNavText: 'Business Mapping'
+  stepText: 'Step {{ current }} of {{ total }}'
+  form:
+    businessMappingPlaceholder: Enter Business Mapping Name
+    saveText: Save Business Mapping
+  errorMessages:
+    viewConditions: Need at least one element
+  manageUnallocatedCost:
+    title: Manage Unallocated Costs
+    defaultUnallocatedCostLabel: Show Unallocated Values as
+    ignoreCostLabel: Ignore Unallocated Values (Coming Soon)
+    shareCosts: Share Default Costs among Cost Buckets (Coming Soon)
+    otherPlaceholder: '{{ $.stepPalette.others }}'
+  costBucket:
+    title: 'Define Cost Buckets'
+    newButtonText: 'New Cost Bucket'
+    inputName: Cost Bucket Name
+  sharedCostBucket:
+    title: Define Shared Cost Buckets
+    newButtonText: New Shared Bucket
+    inputName: Shared Bucket Name
+    sharingStrategy:
+      equal: Equally Split between Cost Buckets
+      proportional: Proportionally split between Cost Buckets
+      fixed: Fixed percentage per Cost Bucket (Coming Soon)

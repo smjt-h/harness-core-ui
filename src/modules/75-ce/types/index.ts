@@ -7,6 +7,7 @@
 
 import type { CCM_CHART_TYPES } from '@ce/constants'
 import type { QlceViewTimeGroupType, QlceViewFilterInput, QlceViewFieldInputInput } from 'services/ce/services'
+import type { CostTarget, SharedCost } from 'services/ce'
 
 export interface ResourceDetails {
   cpu?: string
@@ -107,4 +108,19 @@ export interface DNSLinkSetupFormVal {
   publicallyAccessible: string
   dnsProvider: string
   route53Account: string | undefined
+}
+
+export enum CostBucketWidgetType {
+  CostBucket = 'CostBucket',
+  SharedCostBucket = 'ShareCostBucket'
+}
+
+export type CostTargetType = CostTarget & {
+  isOpen?: boolean
+  isViewerOpen?: boolean
+}
+
+export type SharedCostType = SharedCost & {
+  isOpen?: boolean
+  isViewerOpen?: boolean
 }

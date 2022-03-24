@@ -42,6 +42,7 @@ export interface StringsMap {
   'common.agent': string
   'common.allErrors': string
   'common.and': string
+  'common.andCaps': string
   'common.apiKeys': string
   'common.apiStatus': string
   'common.apikey': string
@@ -396,6 +397,7 @@ export interface StringsMap {
   'common.optionalLabel': string
   'common.options': string
   'common.or': string
+  'common.orCaps': string
   'common.org': string
   'common.orgSetup': string
   'common.orgViewer': string
@@ -3472,6 +3474,26 @@ export interface StringsMap {
   'ce.budgets.listPage.timePeriodRemaining': string
   'ce.budgets.listPage.title': string
   'ce.budgets.sideNavText': string
+  'ce.businessMapping.costBucket.inputName': string
+  'ce.businessMapping.costBucket.newButtonText': string
+  'ce.businessMapping.costBucket.title': string
+  'ce.businessMapping.errorMessages.viewConditions': string
+  'ce.businessMapping.form.businessMappingPlaceholder': string
+  'ce.businessMapping.form.saveText': string
+  'ce.businessMapping.manageUnallocatedCost.defaultUnallocatedCostLabel': string
+  'ce.businessMapping.manageUnallocatedCost.ignoreCostLabel': string
+  'ce.businessMapping.manageUnallocatedCost.otherPlaceholder': string
+  'ce.businessMapping.manageUnallocatedCost.shareCosts': string
+  'ce.businessMapping.manageUnallocatedCost.title': string
+  'ce.businessMapping.newButton': string
+  'ce.businessMapping.sharedCostBucket.inputName': string
+  'ce.businessMapping.sharedCostBucket.newButtonText': string
+  'ce.businessMapping.sharedCostBucket.sharingStrategy.equal': string
+  'ce.businessMapping.sharedCostBucket.sharingStrategy.fixed': string
+  'ce.businessMapping.sharedCostBucket.sharingStrategy.proportional': string
+  'ce.businessMapping.sharedCostBucket.title': string
+  'ce.businessMapping.sideNavText': string
+  'ce.businessMapping.stepText': string
   'ce.ceTrialHomePage.modal.description': string
   'ce.ceTrialHomePage.modal.title': string
   'ce.ceTrialHomePage.modal.welcome': string
@@ -3752,8 +3774,10 @@ export interface StringsMap {
   'ce.co.selectResourceGroupPlaceholder': string
   'ce.co.setupCloudProvider': string
   'ce.co.sshSetup': string
+  'ce.common.and': string
   'ce.common.budget': string
   'ce.common.newBudget': string
+  'ce.common.or': string
   'ce.common.spendTillDate': string
   'ce.connector.AWS.crossAccountRole.arn': string
   'ce.connector.AWS.crossAccountRole.externalID': string
@@ -5289,6 +5313,7 @@ export interface StringsMap {
   'cv.showYAMLChange': string
   'cv.sliMissingDataTypeIsRequired': string
   'cv.sloRecalculationInProgress': string
+  'cv.slos.backToSLI': string
   'cv.slos.configureSLIQueries': string
   'cv.slos.confirmDeleteSLO': string
   'cv.slos.contextualHelp.sli.availabilityDescription': string

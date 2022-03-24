@@ -21,7 +21,9 @@ import {
   servicesCallV2,
   servicesV2AccessResponse,
   stepsData,
-  StepResourceObject
+  StepResourceObject,
+  pipelineStudioRoute,
+  inputSetsRoute
 } from '../../support/70-pipeline/constants'
 import { getIdentifierFromName } from '../../utils/stringHelpers'
 
@@ -150,8 +152,10 @@ describe('Execution Stages', () => {
     cy.intercept('POST', stepLibrary, { fixture: 'ng/api/stepLibrary' }).as('stepLibrary')
     cy.intercept('POST', pipelineSaveCall, { fixture: 'pipeline/api/pipelines.postsuccess' })
     // Input Set APIs
-    cy.intercept('POST', inputSetsTemplateCall, { fixture: 'pipeline/api/inputSet/inputSetsTemplateCall' })
-    cy.intercept('GET', pipelineDetails, { fixture: 'pipeline/api/inputSet/pipelineDetails' })
+    cy.intercept('POST', inputSetsTemplateCall, { fixture: 'pipeline/api/inputSet/inputSetsTemplateCall' }).as(
+      'inputSetsTemplateCall'
+    )
+    cy.intercept('GET', pipelineDetails, { fixture: 'pipeline/api/inputSet/pipelineDetails' }).as('pipelineDetails')
     cy.intercept('POST', applyTemplatesCall, { fixture: 'pipeline/api/inputSet/applyTemplatesCall' })
     cy.intercept('GET', inputSetsCall, { fixture: 'pipeline/api/inputSet/emptyInputSetsList' }).as('emptyInputSetList')
   })
@@ -217,9 +221,13 @@ describe('Execution Stages', () => {
 
   Object.entries<ValidObject>(stepsData).forEach(([key, value]) => {
     it(`Stage Steps - ${key}`, () => {
-      cy.visit(
-        '#/account/accountId/cd/orgs/default/projects/project1/pipelines/testPipeline_Cypress/pipeline-studio/?stageId=j&sectionId=SERVICE'
-      ).wait(1000)
+      cy.visit(pipelineStudioRoute, { timeout: 30000 })
+      cy.wait('@inputSetsTemplateCall')
+      cy.wait('@pipelineDetails')
+      cy.wait(2000)
+      cy.get(`div[data-testid="pipeline-studio"]`, {
+        timeout: 5000
+      }).should('be.visible')
       cy.contains('p', 'testStage_Cypress').click()
       cy.contains('span', 'Execution').click()
       stepLibrarySelection(key, value?.resourceName, value?.warningCheck)
@@ -246,23 +254,19 @@ describe('Input Sets', () => {
       fixture: 'pipeline/api/inputSet/applyTemplates'
     }).as('applyTemplates')
     cy.intercept('GET', servicesCallV2, servicesV2AccessResponse).as('servicesCallV2')
-
-    cy.visit('#/account/accountId/cd/orgs/default/projects/project1/pipelines/testPipeline_Cypress/input-sets')
+    cy.visit(inputSetsRoute, {
+      timeout: 30000
+    })
+    cy.wait(2000)
   })
 
   it('Input Set Creation & Deletion', () => {
     cy.wait('@emptyInputSetList')
     cy.wait(1000)
     cy.contains('span', '+ New Input Set').should('be.visible')
-    cy.contains('span', '+ New Input Set')
-      .click()
-      .then(() => {
-        cy.contains('div', new RegExp('^Input Set$', 'g')).click()
-      })
-
-    cy.wait(1000)
+    cy.get('.NoDataCard--buttonContainer').contains('span', '+ New Input Set').click()
     // Input Flow - Service
-    cy.wait('@servicesCallV2')
+    cy.wait('@servicesCallV2').wait(1000)
     cy.fillField('name', 'testService')
     cy.findByText('Specify Service').should('exist')
     cy.get('input[name="pipeline.stages[0].stage.spec.serviceConfig.serviceRef"]').click()
