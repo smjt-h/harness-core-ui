@@ -18,18 +18,22 @@ export default function MetricChart({
   appName,
   baseFolder,
   tier,
-  metricPath
+  metricPath,
+  fullPath
 }: {
   connectorIdentifier: string
   appName: string
   baseFolder: string
   tier: string
   metricPath: string
+  fullPath?: string
 }): JSX.Element {
   const { data, refetch, loading, error } = useGetAppdynamicsMetricDataByPath({ lazy: true })
   const { accountId, orgIdentifier, projectIdentifier } = useParams<ProjectPathProps>()
 
   useEffect(() => {
+    const pathToArray = fullPath?.split('|').map(item => item.trim())
+    const indexOfTierInPath = pathToArray?.indexOf(tier?.trim())
     refetch({
       queryParams: {
         accountId,
@@ -37,12 +41,18 @@ export default function MetricChart({
         projectIdentifier,
         connectorIdentifier,
         appName,
-        baseFolder,
         tier,
-        metricPath
+        baseFolder:
+          fullPath?.length && indexOfTierInPath
+            ? (pathToArray?.slice(0, indexOfTierInPath).join(' | ') as string)
+            : baseFolder,
+        metricPath:
+          fullPath?.length && indexOfTierInPath
+            ? (pathToArray?.slice(indexOfTierInPath + 1).join(' | ') as string)
+            : metricPath
       }
     })
-  }, [metricPath])
+  }, [metricPath, fullPath])
 
   const dataPoints = data?.data?.dataPoints
   const options: any[] = []

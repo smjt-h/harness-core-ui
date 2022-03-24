@@ -4840,6 +4840,8 @@ export interface StringsMap {
   'cv.healthSource.connectors.AppDynamics.validation.fullPath': string
   'cv.healthSource.connectors.AppDynamics.validation.metricPath': string
   'cv.healthSource.connectors.AppDynamics.validation.metricPathWithoutLeafNode': string
+  'cv.healthSource.connectors.AppDynamics.validation.missingServiceInstanceMetricPath': string
+  'cv.healthSource.connectors.AppDynamics.validation.missingTierInFullPath': string
   'cv.healthSource.connectors.AppDynamics.validation.tier': string
   'cv.healthSource.connectors.Dynatrace.defaultMetricName': string
   'cv.healthSource.connectors.Dynatrace.keyRequestRequiredLabel': string

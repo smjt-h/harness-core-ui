@@ -6,7 +6,7 @@
  */
 
 import React, { useState, useMemo, useEffect, useContext } from 'react'
-import { Container, Accordion, SelectOption, FormInput, Text, Radio } from '@wings-software/uicore'
+import { Container, Accordion, SelectOption, FormInput, Text, Radio, useToaster } from '@wings-software/uicore'
 import { FontVariation, Color } from '@harness/design-system'
 import cx from 'classnames'
 import { useParams } from 'react-router-dom'
@@ -14,6 +14,7 @@ import type { ProjectPathProps } from '@common/interfaces/RouteInterfaces'
 import { SetupSourceTabsContext } from '@cv/components/CVSetupSourcesView/SetupSourceTabs/SetupSourceTabs'
 import SelectHealthSourceServices from '@cv/pages/health-source/common/SelectHealthSourceServices/SelectHealthSourceServices'
 import { GroupName } from '@cv/pages/health-source/common/GroupName/GroupName'
+import { getErrorMessage } from '@cv/utils/CommonUtils'
 import { SetupSourceCardHeader } from '@cv/components/CVSetupSourcesView/SetupSourceCardHeader/SetupSourceCardHeader'
 import { initializeGroupNames } from '@cv/pages/health-source/common/GroupName/GroupName.utils'
 import { NameId } from '@common/components/NameIdDescriptionTags/NameIdDescriptionTags'
@@ -33,13 +34,24 @@ import basePathStyle from '../BasePath/BasePath.module.scss'
 export default function AppDCustomMetricForm(props: AppDCustomMetricFormInterface) {
   const { formikValues, formikSetField, mappedMetrics, selectedMetric, connectorIdentifier } = props
   const { getString } = useStrings()
+  const { showError } = useToaster()
   const { accountId, orgIdentifier, projectIdentifier } = useParams<ProjectPathProps>()
 
   const metricPackResponse = useGetMetricPacks({
     queryParams: { projectIdentifier, orgIdentifier, accountId, dataSourceType: 'APP_DYNAMICS' }
   })
 
-  const { data: serviceInsanceData, refetch: refetchServiceInsance } = useGetServiceInstanceMetricPath({ lazy: true })
+  const {
+    data: serviceInsanceData,
+    refetch: refetchServiceInsance,
+    error: serviceInstanceError
+  } = useGetServiceInstanceMetricPath({ lazy: true })
+
+  useEffect(() => {
+    if (serviceInstanceError) {
+      showError(getErrorMessage(serviceInstanceError))
+    }
+  }, [serviceInstanceError])
 
   useEffect(() => {
     if (formikValues?.continuousVerification) {
@@ -65,7 +77,7 @@ export default function AppDCustomMetricForm(props: AppDCustomMetricFormInterfac
 
   useEffect(() => {
     setServiceIntance({ serviceInsanceData, formikValues, formikSetField })
-  }, [serviceInsanceData])
+  }, [serviceInsanceData, formikValues?.continuousVerification])
 
   const [appdGroupName, setAppdGroupName] = useState<SelectOption[]>(initializeGroupNames(mappedMetrics, getString))
   const basePathValue = getBasePathValue(formikValues?.basePath)
@@ -86,7 +98,7 @@ export default function AppDCustomMetricForm(props: AppDCustomMetricFormInterfac
   }, [formikValues.pathType, selectedMetric])
 
   const completeMetricPath = useMemo(
-    () => `${basePathValue}|${formikValues.appDTier}|${metricPathValue}`.split('|').join(' / '),
+    () => `${basePathValue}|${formikValues.appDTier}|${metricPathValue}`.split('|').join(' | '),
     [basePathValue, formikValues.appDTier, metricPathValue]
   )
 
@@ -185,6 +197,7 @@ export default function AppDCustomMetricForm(props: AppDCustomMetricFormInterfac
                   tier={formikValues.appDTier}
                   baseFolder={getBasePathValue(formikValues?.basePath)}
                   metricPath={getMetricPathValue(formikValues?.metricPath)}
+                  fullPath={formikValues?.pathType === PATHTYPE.FullPath ? formikValues.fullPath : undefined}
                 />
               </>
             }

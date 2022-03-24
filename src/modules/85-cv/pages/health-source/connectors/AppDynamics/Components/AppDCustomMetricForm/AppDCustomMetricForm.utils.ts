@@ -29,5 +29,7 @@ export const setServiceIntance = ({
     formikValues?.serviceInstanceMetricPath !== serviceInsanceData.data
   ) {
     formikSetField(AppDynamicsMonitoringSourceFieldNames.SERVICE_INSTANCE_METRIC_PATH, serviceInsanceData?.data)
+  } else if (!formikValues?.continuousVerification && formikValues.serviceInstanceMetricPath?.length) {
+    formikSetField(AppDynamicsMonitoringSourceFieldNames.SERVICE_INSTANCE_METRIC_PATH, '')
   }
 }

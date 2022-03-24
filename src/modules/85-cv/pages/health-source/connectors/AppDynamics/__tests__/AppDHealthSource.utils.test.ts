@@ -33,6 +33,7 @@ import {
   validateMappingWithErrors,
   validateMappingWithMetricPathError
 } from './AppDMonitoredSource.mock'
+import { PATHTYPE } from '../Components/AppDCustomMetricForm/AppDCustomMetricForm.constants'
 
 jest.mock('uuid')
 describe('Test Util funcitons', () => {
@@ -62,7 +63,8 @@ describe('Test Util funcitons', () => {
       metricName: 'cv.monitoringSources.metricNameValidation',
       metricPath: 'cv.healthSource.connectors.AppDynamics.validation.metricPath',
       riskCategory: 'cv.monitoringSources.gco.mapMetricsToServicesPage.validation.riskCategory',
-      metricIdentifier: 'cv.monitoringSources.prometheus.validation.metricIdentifierUnique'
+      metricIdentifier: 'cv.monitoringSources.prometheus.validation.metricIdentifierUnique',
+      continuousVerification: 'cv.healthSource.connectors.AppDynamics.validation.missingServiceInstanceMetricPath'
     })
     expect(
       validateMapping({
@@ -72,6 +74,18 @@ describe('Test Util funcitons', () => {
         getString: val => val
       })
     ).toEqual({ metricPath: 'cv.healthSource.connectors.AppDynamics.validation.metricPathWithoutLeafNode' })
+
+    const fullPathMissingTierInfo = Object.assign({}, validateMappingNoError) as any
+    fullPathMissingTierInfo['pathType'] = PATHTYPE.FullPath
+    fullPathMissingTierInfo['fullPath'] = 'Overall Application Performance | docker-tier | Calls per Minute'
+    expect(
+      validateMapping({
+        values: fullPathMissingTierInfo,
+        createdMetrics: ['appdMetric Two', 'appdMetric One Updated'],
+        selectedMetricIndex: 0,
+        getString: val => val
+      })
+    ).toEqual({ fullPath: 'cv.healthSource.connectors.AppDynamics.validation.missingTierInFullPath' })
   })
 
   test('should validate createAppDynamicsPayload', () => {

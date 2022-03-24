@@ -614,6 +614,8 @@ healthSource:
         metricPath: Please select metric path
         metricPathWithoutLeafNode: Please select metric in metric path
         fullPath: Please provide full metric path
+        missingTierInFullPath: Path should have Tier as well
+        missingServiceInstanceMetricPath: Service instance metric path is missing
       metricPathType:
         text: Specify a complete metric path
         dropdown: Select the path from the AppD metric
