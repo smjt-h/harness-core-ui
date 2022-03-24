@@ -5,14 +5,20 @@
  * https://polyformproject.org/wp-content/uploads/2020/06/PolyForm-Shield-1.0.0.txt.
  */
 
-import React from 'react'
-import type { IconName, MultiTypeInputType } from '@wings-software/uicore'
-import type { FormikErrors } from 'formik'
-import type { StepViewType, StepProps } from '@pipeline/components/AbstractSteps/Step'
+import React, { forwardRef } from 'react'
+import * as Yup from 'yup'
+import { isEmpty } from 'lodash-es'
+import { IconName, MultiTypeInputType, getMultiTypeFromValue } from '@harness/uicore'
+import { yupToFormErrors, FormikErrors } from 'formik'
+import { StepViewType, StepProps, ValidateInputSetProps } from '@pipeline/components/AbstractSteps/Step'
 import type { ExecutionElementConfig } from 'services/cd-ng'
 import { StepType } from '@pipeline/components/PipelineSteps/PipelineStepInterface'
 import { PipelineStep } from '@pipeline/components/PipelineSteps/PipelineStep'
+import { getDurationValidationSchema } from '@common/components/MultiTypeDuration/MultiTypeDuration'
+import {} from '../CloudFormationInterfaces'
 import { CloudFormationCreateStack } from './CloudFormationCreateStackRef'
+
+const CloudFormationCreateStackWithRef = forwardRef(CloudFormationCreateStack)
 
 export type ProvisionersOptions = 'CLOUD_FORMATION'
 export interface CloudFormationData {
@@ -22,17 +28,6 @@ export interface CloudFormationData {
   provisionerSnippetLoading?: boolean
   selectedProvisioner?: ProvisionersOptions
 }
-
-export interface CloudFormationDataUI extends Omit<CloudFormationData, 'provisioner'> {
-  provisioner: {
-    stage: {
-      spec: {
-        execution: ExecutionElementConfig
-      }
-    }
-  }
-}
-
 export interface CloudFormationProps {
   initialValues: CloudFormationData
   template?: CloudFormationData
@@ -52,30 +47,113 @@ export class CFCreateStack extends PipelineStep<any> {
   }
 
   protected type = StepType.CloudFormationCreateStack
-  protected defaultValues: any = {}
-
   protected stepIcon: IconName = 'cloudformation'
   protected stepName = 'Cloud Formation Create Stack'
 
-  validateInputSet(): FormikErrors<any> {
-    return {}
+  protected defaultValues = {
+    type: StepType.CloudFormationCreateStack,
+    name: '',
+    identifier: '',
+    timeout: '10m',
+    spec: {
+      provisionerIdentifier: '',
+      configuration: {
+        stackName: '',
+        awsConnectorRef: '',
+        awsRegion: '',
+        parameters: {},
+        templateFile: {
+          type: '',
+          spec: {}
+        }
+      }
+    }
   }
 
-  renderStep(props: StepProps<any>): JSX.Element {
-    window.console.log('props: ', props)
-    const { initialValues, onUpdate, onChange, allowableTypes, stepViewType, formikRef, isNewStep } = props
+  validateInputSet({ data, template, getString, viewType }: ValidateInputSetProps<any>): FormikErrors<any> {
+    /* istanbul ignore next */
+    const errors = {} as any
+    /* istanbul ignore next */
+    const isRequired = viewType === StepViewType.DeploymentForm || viewType === StepViewType.TriggerForm
+    /* istanbul ignore next */
+    if (getMultiTypeFromValue(template?.timeout) === MultiTypeInputType.RUNTIME) {
+      let timeoutSchema = getDurationValidationSchema({ minimum: '10s' })
+      /* istanbul ignore next */
+      if (isRequired) {
+        timeoutSchema = timeoutSchema.required(getString?.('validation.timeout10SecMinimum'))
+      }
+      const timeout = Yup.object().shape({
+        timeout: timeoutSchema
+      })
+      /* istanbul ignore next */
+      try {
+        timeout.validateSync(data)
+      } /* istanbul ignore next */ catch (e) {
+        if (e instanceof Yup.ValidationError) {
+          const err = yupToFormErrors(e)
+
+          Object.assign(errors, err)
+        }
+      }
+    }
+    /* istanbul ignore next */
+    if (isEmpty(errors.spec)) {
+      delete errors.spec
+    }
+    return errors
+  }
+
+  // private getInitialValues(data: any) {
+  //   return data
+  // }
+
+  processFormData(data: any) {
+    const awsConnRef = data.spec.configuration.awsConnectorRef.value
+    return {
+      ...data,
+      spec: {
+        ...data.spec,
+        configuration: {
+          ...data.spec.configuration,
+          awsConnectorRef: awsConnRef,
+          templateFile: {
+            ...data.spec.configuration.templateFile
+          }
+        }
+      }
+    }
+  }
+
+  renderStep(props: StepProps<any, unknown>): JSX.Element {
+    const { initialValues, onUpdate, onChange, allowableTypes, stepViewType, formikRef, isNewStep, readonly } = props
+
+    // if (stepViewType === StepViewType.InputSet || stepViewType === StepViewType.DeploymentForm) {
+    //   return (
+    //     <TerraformInputStep
+    //       initialValues={initialValues}
+    //       onUpdate={onUpdate}
+    //       allValues={inputSetData?.allValues}
+    //       stepViewType={stepViewType}
+    //       readonly={inputSetData?.readonly}
+    //       inputSetData={inputSetData}
+    //       path={inputSetData?.path}
+    //       allowableTypes={allowableTypes}
+    //     />
+    //   )
+    // } else if (stepViewType === StepViewType.InputVariable) {
+    //   return ()
+    // }
 
     return (
-      <CloudFormationCreateStack
+      <CloudFormationCreateStackWithRef
         initialValues={initialValues}
         onUpdate={(data: any) => onUpdate?.(this.processFormData(data))}
         onChange={(data: any) => onChange?.(this.processFormData(data))}
         allowableTypes={allowableTypes}
         isNewStep={isNewStep}
-        stepViewType={stepViewType}
         ref={formikRef}
-        stepType={StepType.TerraformPlan}
-        readonly={props.readonly}
+        readonly={readonly}
+        stepViewType={stepViewType}
       />
     )
   }

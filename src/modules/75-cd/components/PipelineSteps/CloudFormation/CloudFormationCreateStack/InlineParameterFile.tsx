@@ -6,57 +6,32 @@
  */
 
 import React from 'react'
-import {
-  Layout,
-  Button,
-  FormInput,
-  Formik,
-  MultiTypeInputType,
-  getMultiTypeFromValue,
-  FormikForm,
-  ButtonVariation
-} from '@harness/uicore'
-import cx from 'classnames'
-
+import * as Yup from 'yup'
+import { map, defaultTo } from 'lodash-es'
+import { Layout, Button, Formik, ButtonVariation, DropDown, FormInput, Icon } from '@harness/uicore'
+import { Form, FieldArray } from 'formik'
 import { Classes, Dialog } from '@blueprintjs/core'
-
 import { useStrings } from 'framework/strings'
-import { MultiTypeFieldSelector } from '@common/components/MultiTypeFieldSelector/MultiTypeFieldSelector'
-import { ConfigureOptions } from '@common/components/ConfigureOptions/ConfigureOptions'
-
-import { TFMonaco } from '../../Common/Terraform/Editview/TFMonacoEditor'
-
-import stepCss from '@pipeline/components/PipelineSteps/Steps/Steps.module.scss'
+import { onDragStart, onDragEnd, onDragLeave, onDragOver, onDrop } from '../DragHelper'
+import css from '../CloudFormation.module.scss'
 
 interface InlineParameterFileProps {
-  arrayHelpers: any
-  isEditMode: boolean
-  selectedVarIndex: number
-  showTfModal: boolean
-  selectedVar: any
   onClose: () => void
-  onSubmit: () => void
-  isReadonly?: boolean
-  allowableTypes: MultiTypeInputType[]
+  onSubmit: (values: any) => void
+  isOpen: boolean
+  initialValues: { value: string; name: string }[]
 }
 
-export const InlineParameterFile = (props: InlineParameterFileProps) => {
-  const {
-    arrayHelpers,
-    isEditMode,
-    selectedVarIndex,
-    onSubmit,
-    selectedVar,
-    onClose,
-    isReadonly = false,
-    allowableTypes
-  } = props
-
+export const InlineParameterFile = ({
+  initialValues,
+  onSubmit,
+  onClose,
+  isOpen
+}: InlineParameterFileProps): JSX.Element => {
   const { getString } = useStrings()
-
   return (
     <Dialog
-      isOpen={true}
+      isOpen={isOpen}
       enforceFocus={false}
       title={'Add Inline CloudFormation Parameter'}
       isCloseButtonShown
@@ -66,67 +41,88 @@ export const InlineParameterFile = (props: InlineParameterFileProps) => {
       <Layout.Vertical padding="medium">
         <Formik
           formName="inlineParameterFileForm"
-          initialValues={selectedVar}
-          onSubmit={(values: any) => {
-            if (!isEditMode) {
-              arrayHelpers && arrayHelpers.push(values)
-            } else {
-              arrayHelpers && arrayHelpers.replace(selectedVarIndex, values)
-            }
-            onSubmit()
+          initialValues={{
+            parameters: initialValues
           }}
-          validationSchema={{}}
+          onSubmit={onSubmit}
+          validationSchema={Yup.object().shape({
+            parameters: Yup.array().of(
+              Yup.object().shape({
+                name: Yup.string().min(1).required(getString('cd.cloudFormation.errors.name')),
+                value: Yup.string().min(1).required(getString('cd.cloudFormation.errors.value'))
+              })
+            )
+          })}
+          enableReinitialize
         >
-          {formikProps => {
-            const { values, setFieldValue } = formikProps
+          {({ values, setFieldValue }) => {
+            const params = defaultTo(values?.parameters, [{ name: '', value: '' }])
             return (
-              <FormikForm>
-                <div className={stepCss.formGroup}>
-                  <FormInput.Text name="parameterFile.identifier" label={getString('identifier')} />
-                </div>
-                <div className={cx(stepCss.formGroup)}>
-                  <MultiTypeFieldSelector
-                    name="parameterFile.spec.content"
-                    label={getString('pipelineSteps.content')}
-                    defaultValueToReset=""
-                    allowedTypes={allowableTypes}
-                    formik={formikProps}
-                    expressionRender={() => (
-                      <TFMonaco
-                        name="parameterFile.spec.content"
-                        formik={formikProps}
-                        title={getString('pipelineSteps.content')}
-                      />
-                    )}
-                    skipRenderValueInExpressionLabel
-                  >
-                    <TFMonaco
-                      name="parameterFile.spec.content"
-                      formik={formikProps}
-                      title={getString('pipelineSteps.content')}
-                    />
-                  </MultiTypeFieldSelector>
-                  {getMultiTypeFromValue(values.varFile?.spec?.content) === MultiTypeInputType.RUNTIME && (
-                    <ConfigureOptions
-                      style={{ marginTop: 7 }}
-                      value={values.varFile?.spec?.content as string}
-                      type="String"
-                      variableName="parameterFile.spec.content"
-                      showRequiredField={false}
-                      showDefaultField={false}
-                      showAdvanced={true}
-                      onChange={value => setFieldValue('parameterFile.spec.content', value)}
-                      isReadonly={isReadonly}
-                    />
+              <Form>
+                <FieldArray
+                  name="parameters"
+                  render={arrayHelpers => (
+                    <>
+                      {map(params, (item: any, index: number) => (
+                        <Layout.Horizontal
+                          key={`${item}-${index}`}
+                          flex={{ distribution: 'space-between' }}
+                          style={{ alignItems: 'end' }}
+                        >
+                          <Layout.Horizontal
+                            spacing="medium"
+                            style={{ alignItems: 'baseline' }}
+                            className={css.formContainer}
+                            key={`${item}-${index}`}
+                            draggable={true}
+                            onDragEnd={onDragEnd}
+                            onDragOver={onDragOver}
+                            onDragLeave={onDragLeave}
+                            onDragStart={event => onDragStart(event, index)}
+                            onDrop={event => onDrop(event, arrayHelpers, index)}
+                          >
+                            <Icon name="drag-handle-vertical" className={css.drag} />
+                            <DropDown
+                              buttonTestId={`inlineParamKeys[${index}]`}
+                              onChange={({ value }) => {
+                                setFieldValue(`parameters[${index}].name`, value)
+                              }}
+                              items={[{ label: 'test', value: 'test' }]}
+                              placeholder="Select key name"
+                              usePortal={true}
+                              filterable={false}
+                              value={item.name}
+                            />
+                            <FormInput.Text name={`parameters[${index}].value`} label="" placeholder="Value" />
+                            <Button
+                              minimal
+                              icon="main-trash"
+                              data-testid={`remove-header-`}
+                              onClick={() => arrayHelpers.remove(index)}
+                            />
+                          </Layout.Horizontal>
+                        </Layout.Horizontal>
+                      ))}
+                      <Button
+                        icon="plus"
+                        variation={ButtonVariation.LINK}
+                        data-testid="add-header"
+                        onClick={() => arrayHelpers.push({ name: '', value: '' })}
+                      >
+                        {getString('cd.addTFVarFileLabel')}
+                      </Button>
+                    </>
                   )}
-                </div>
-
+                />
                 <Layout.Horizontal spacing={'medium'} margin={{ top: 'huge' }}>
-                  <Button type="submit" variation={ButtonVariation.PRIMARY} data-testid="submit-inline-parameter">
-                    {getString('submit')}
-                  </Button>
+                  <Button
+                    type="submit"
+                    variation={ButtonVariation.PRIMARY}
+                    text={getString('submit')}
+                    rightIcon="chevron-right"
+                  />
                 </Layout.Horizontal>
-              </FormikForm>
+              </Form>
             )
           }}
         </Formik>

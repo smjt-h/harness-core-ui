@@ -5,10 +5,12 @@
  * https://polyformproject.org/wp-content/uploads/2020/06/PolyForm-Shield-1.0.0.txt.
  */
 import React from 'react'
+import { map, get } from 'lodash-es'
 import { Connectors, CONNECTOR_CREDENTIALS_STEP_IDENTIFIER } from '@connectors/constants'
 
 import type { ConnectorInfoDTO } from 'services/cd-ng'
 import type { StringKeys } from 'framework/strings'
+import type { StringsMap } from 'stringTypes'
 import {
   buildBitbucketPayload,
   buildGithubPayload,
@@ -152,4 +154,51 @@ export const GetNewConnector = (
       )
   }
   return null
+}
+
+const formatPaths = (paths: any) => map(paths, (item: string) => ({ path: item }))
+export const FormatFilePaths = (values: any, isParam: boolean) => {
+  if (isParam) {
+    const params = get(values, 'spec.configuration.parameters.parametersFile.spec.store.spec.paths')
+    return {
+      spec: {
+        configuration: {
+          parameters: {
+            parametersFile: {
+              spec: {
+                store: {
+                  spec: {
+                    paths: formatPaths(params || { path: '' })
+                  }
+                }
+              }
+            }
+          }
+        }
+      }
+    }
+  }
+  const templateFile = get(values, 'spec.configuration.templateFile.spec.store.spec.paths')
+  return {
+    spec: {
+      configuration: {
+        templateFile: {
+          spec: {
+            store: {
+              spec: {
+                paths: formatPaths(templateFile || '')
+              }
+            }
+          }
+        }
+      }
+    }
+  }
+}
+
+export const ConnectorStepTitle = (isParam: boolean): keyof StringsMap => {
+  if (isParam) {
+    return 'cd.cloudFormation.paramFileConnector'
+  }
+  return 'cd.cloudFormation.templateFileConnector'
 }

@@ -26,8 +26,10 @@ declare const styles: {
   readonly dragging: string
   readonly fieldBorder: string
   readonly formComponent: string
+  readonly formContainer: string
   readonly formContainerStepOne: string
   readonly headerContainer: string
+  readonly horizontalFlex: string
   readonly iconMargin: string
   readonly iconPosition: string
   readonly manifestIcon: string

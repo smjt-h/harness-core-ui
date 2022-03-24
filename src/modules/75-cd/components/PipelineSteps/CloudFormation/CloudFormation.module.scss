@@ -218,3 +218,13 @@
   .capabilitiesInput {
     width: 100% !important;
   }
+
+  .formContainer {
+    display: flex;
+    background: none !important;
+  }
+
+  .horizontalFlex {
+    justify-content: 'flex-start';
+    align-items: 'flex-start';
+  }

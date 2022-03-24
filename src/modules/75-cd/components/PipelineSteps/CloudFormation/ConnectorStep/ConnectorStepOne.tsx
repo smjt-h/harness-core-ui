@@ -22,6 +22,7 @@ import {
   StepProps,
   MultiTypeInputType
 } from '@harness/uicore'
+import * as Yup from 'yup'
 import { useStrings } from 'framework/strings'
 import type { ProjectPathProps } from '@common/interfaces/RouteInterfaces'
 import { FormMultiTypeConnectorField } from '@connectors/components/ConnectorReferenceField/FormMultiTypeConnectorField'
@@ -37,6 +38,9 @@ interface ConnectorStepOneProps {
   setShowNewConnector: (bool: boolean) => void
   selectedConnector: string
   setSelectedConnector: (type: string) => void
+  initialValues: any
+  onSubmit: (values: any) => void
+  isParam: boolean
 }
 
 const ConnectorStepOne: React.FC<StepProps<any> & ConnectorStepOneProps> = ({
@@ -46,36 +50,82 @@ const ConnectorStepOne: React.FC<StepProps<any> & ConnectorStepOneProps> = ({
   setShowNewConnector,
   showNewConnector,
   selectedConnector,
-  setSelectedConnector
-}: any) => {
+  setSelectedConnector,
+  initialValues,
+  onSubmit,
+  isParam
+}) => {
   const { getString } = useStrings()
   const { expressions } = useVariablesExpression()
   const { accountId, projectIdentifier, orgIdentifier } = useParams<ProjectPathProps>()
+  const title = isParam ? 'cd.cloudFormation.paramFileConnector' : 'cd.cloudFormation.templateFileConnector'
+
   const newConnectorLabel = `${getString('newLabel')} ${
     !!selectedConnector && getString(ConnectorLabelMap[selectedConnector as ConnectorTypes])
   } ${getString('connector')}`
 
   useEffect(() => {
     if (showNewConnector) {
+      setSelectedConnector('')
       nextStep?.()
     }
   }, [showNewConnector])
 
+  const errorMsg = Yup.string().required(getString('pipelineSteps.build.create.connectorRequiredError'))
+  const connectorSchema = {
+    spec: Yup.object().shape({
+      store: Yup.object().shape({
+        spec: Yup.object().shape({
+          connectorRef: errorMsg
+        })
+      })
+    })
+  }
+  const paramSchema = {
+    spec: Yup.object().shape({
+      configuration: Yup.object().shape({
+        parameters: Yup.object().shape({
+          parametersFile: Yup.object().shape({
+            ...connectorSchema
+          })
+        })
+      })
+    })
+  }
+  const templateSchema = {
+    spec: Yup.object().shape({
+      configuration: Yup.object().shape({
+        templateFile: Yup.object().shape({
+          ...connectorSchema
+        })
+      })
+    })
+  }
+  const validationSchema = isParam ? paramSchema : templateSchema
   return (
     <Layout.Vertical padding="small" className={css.awsForm}>
       <Heading level={2} style={{ color: Color.BLACK, fontSize: 24, fontWeight: 'bold' }} margin={{ bottom: 'xlarge' }}>
-        {getString('connectors.name_labels.AWS')}
+        {getString(title)}
       </Heading>
       <Formik
         formName="awsConnector"
         enableReinitialize={true}
-        onSubmit={values => {
-          window.console.log('values: ', values)
-          nextStep?.({ values })
+        onSubmit={data => {
+          onSubmit(data)
+          setSelectedConnector('')
+          nextStep?.()
         }}
-        initialValues={{}}
+        initialValues={initialValues}
+        validationSchema={validationSchema}
       >
         {() => {
+          let name: string
+          if (isParam) {
+            name = 'spec.configuration.parameters.parametersFile.spec.store.spec.connectorRef'
+          } else {
+            name = 'spec.configuration.templateFile.spec.store.spec.connectorRef'
+          }
+
           return (
             <>
               <Layout.Horizontal className={css.horizontalFlex} margin={{ top: 'xlarge', bottom: 'xlarge' }}>
@@ -84,7 +134,7 @@ const ConnectorStepOne: React.FC<StepProps<any> & ConnectorStepOneProps> = ({
                     <Card
                       className={css.connectorIcon}
                       selected={item === selectedConnector}
-                      data-testid={`varStore-${item}`}
+                      data-testid={`connector-${item}`}
                       onClick={() => setSelectedConnector(item as ConnectorTypes)}
                     >
                       <Icon name={ConnectorIcons[item]} size={26} />
@@ -110,13 +160,14 @@ const ConnectorStepOne: React.FC<StepProps<any> & ConnectorStepOneProps> = ({
                       }
                       type={ConnectorMap[selectedConnector]}
                       width={400}
-                      name={''}
+                      name={name}
                       placeholder={getString('select')}
                       accountIdentifier={accountId}
                       projectIdentifier={projectIdentifier}
                       orgIdentifier={orgIdentifier}
                       style={{ marginBottom: 10 }}
                       multiTypeProps={{ expressions, allowableTypes }}
+                      disabled={!selectedConnector}
                     />
                     {selectedConnector && (
                       <Button

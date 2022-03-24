@@ -16,9 +16,15 @@ import ConnectorDetailsStep from '@connectors/components/CreateConnector/commonS
 import VerifyOutOfClusterDelegate from '@connectors/common/VerifyOutOfClusterDelegate/VerifyOutOfClusterDelegate'
 import { Connectors } from '@connectors/constants'
 import DelegateSelectorStep from '@connectors/components/CreateConnector/commonSteps/DelegateSelectorStep/DelegateSelectorStep'
-import { ConnectorMap, getBuildPayload, ConnectorTypes, GetNewConnector } from '../CloudFormationHelper'
-
+import {
+  ConnectorMap,
+  getBuildPayload,
+  ConnectorTypes,
+  GetNewConnector,
+  ConnectorStepTitle
+} from '../CloudFormationHelper'
 import ConnectorStepOne from './ConnectorStepOne'
+import { CFFileStore } from './CFFileStorePath'
 import css from '../CloudFormation.module.scss'
 
 const DIALOG_PROPS = {
@@ -43,12 +49,29 @@ interface StepChangeData<SharedObject> {
   prevStepData: SharedObject
 }
 
-const AWSConnectorStep = ({ readonly, allowableTypes, showModal, setShowModal }: any) => {
+interface Path {
+  [key: string]: string
+}
+
+const CFRemoteWizard = ({
+  readonly,
+  allowableTypes,
+  showModal,
+  setShowModal,
+  onClose,
+  isParam = false,
+  initialValues,
+  setFieldValue
+}: any) => {
   const { getString } = useStrings()
   const { accountId, projectIdentifier, orgIdentifier } = useParams<ProjectPathProps>()
   const [isEditMode, setIsEditMode] = useState(false)
   const [showNewConnector, setShowNewConnector] = useState(false)
   const [selectedConnector, setSelectedConnector] = useState('')
+  const connectorStepTitle = getString(ConnectorStepTitle(isParam))
+  const fileStoreTitle = getString(
+    isParam ? 'cd.cloudFormation.parameterFileDetails' : 'cd.cloudFormation.templateFileStore'
+  )
   const onStepChange = (arg: StepChangeData<any>): void => {
     if (arg?.prevStep && arg?.nextStep && arg.prevStep > arg.nextStep && arg.nextStep <= 2) {
       setShowModal(false)
@@ -56,7 +79,7 @@ const AWSConnectorStep = ({ readonly, allowableTypes, showModal, setShowModal }:
   }
   const close = () => {
     setShowNewConnector(false)
-    setShowModal(false)
+    onClose()
   }
   const newConnector = () => {
     const connectorType = ConnectorMap[selectedConnector]
@@ -95,7 +118,35 @@ const AWSConnectorStep = ({ readonly, allowableTypes, showModal, setShowModal }:
       </StepWizard>
     )
   }
-
+  const addConnector = (values: any) => {
+    const config = values?.spec?.configuration
+    let fieldName
+    let connectorRef
+    if (isParam) {
+      fieldName = 'spec.configuration.parameters.parametersFile.spec.store.spec.connectorRef'
+      connectorRef = config?.parameters?.parametersFile?.spec?.store?.spec?.connectorRef
+    } else {
+      fieldName = 'spec.configuration.templateFile.spec.store.spec.connectorRef'
+      connectorRef = config?.templateFile?.spec?.store?.spec?.connectorRef
+    }
+    setFieldValue(fieldName, connectorRef)
+  }
+  const addPaths = (values: any) => {
+    let fieldName
+    let paths
+    if (isParam) {
+      fieldName = 'spec.configuration.parameters.parametersFile.spec.store.spec.paths'
+      paths = values?.spec?.configuration?.parameters?.parametersFile?.spec?.store?.spec?.paths
+    } else {
+      fieldName = 'spec.configuration.templateFile.spec.store.spec.paths'
+      paths = values?.spec?.configuration?.templateFile?.spec?.store?.spec?.paths
+    }
+    setFieldValue(
+      fieldName,
+      paths.map((filePath: Path) => filePath.path)
+    )
+    close()
+  }
   return (
     <Dialog
       {...(DIALOG_PROPS as IDialogProps)}
@@ -106,7 +157,7 @@ const AWSConnectorStep = ({ readonly, allowableTypes, showModal, setShowModal }:
     >
       <div className={css.createTfWizard}>
         <StepWizard
-          title={getString('pipelineSteps.awsConnectorLabel')}
+          title={fileStoreTitle}
           className={css.configWizard}
           onStepChange={onStepChange}
           icon="service-cloudformation"
@@ -117,13 +168,23 @@ const AWSConnectorStep = ({ readonly, allowableTypes, showModal, setShowModal }:
           <ConnectorStepOne
             isReadonly={readonly}
             allowableTypes={allowableTypes}
-            name={getString('pipelineSteps.awsConnectorLabel')}
+            name={connectorStepTitle}
             setShowNewConnector={setShowNewConnector}
             showNewConnector={showNewConnector}
             selectedConnector={selectedConnector}
             setSelectedConnector={setSelectedConnector}
+            initialValues={initialValues}
+            onSubmit={addConnector}
+            isParam={isParam}
           />
           {showNewConnector ? newConnector() : null}
+            <CFFileStore
+              name={fileStoreTitle}
+              allowableTypes={allowableTypes}
+              isParam={isParam}
+              initialValues={initialValues}
+              onSubmit={addPaths}
+            />
         </StepWizard>
       </div>
       <Button
@@ -137,4 +198,4 @@ const AWSConnectorStep = ({ readonly, allowableTypes, showModal, setShowModal }:
   )
 }
 
-export default AWSConnectorStep
+export default CFRemoteWizard
