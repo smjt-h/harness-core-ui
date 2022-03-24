@@ -13,34 +13,12 @@ import { useModalHook } from '@harness/use-modal'
 
 import { merge } from 'lodash-es'
 import { useStrings } from 'framework/strings'
-
+import { useFeatureFlag } from '@common/hooks/useFeatureFlag'
+import { FeatureFlag } from '@common/featureFlags'
 import { ProvisionerTypes } from '../Common/ProvisionerConstants'
 
 import css from './InfraProvisioning.module.scss'
 
-const provisionerTypes: { name: string; icon: IconName; iconColor?: string; enabled: boolean }[] = [
-  {
-    name: ProvisionerTypes.Terraform,
-    icon: 'terraform-apply-new',
-    iconColor: '#5C4EE5',
-    enabled: true
-  },
-  {
-    name: ProvisionerTypes.CloudFormation,
-    icon: 'cloudformation',
-    enabled: true
-  },
-  {
-    name: ProvisionerTypes.ARM,
-    icon: 'arm',
-    enabled: false
-  },
-  {
-    name: ProvisionerTypes.Script,
-    icon: 'script',
-    enabled: false
-  }
-]
 interface ProvDialogProps {
   onSubmit: any
   onClose: any
@@ -50,12 +28,36 @@ interface ProvDialogProps {
 
 const ProvDialog = ({ onClose, hideModal, provData, onSubmit }: ProvDialogProps) => {
   const { getString } = useStrings()
+  const isCloudFormationEnabled = useFeatureFlag(FeatureFlag.CLOUDFORMATION)
   const [provisioner, setProvisioner] = useState<string>(ProvisionerTypes.Terraform)
   const modalProps = {
     isOpen: true,
     canEscapeKeyClose: true,
     canOutsideClickClose: true
   }
+  const provisionerTypes: { name: string; icon: IconName; iconColor?: string; enabled: boolean }[] = [
+    {
+      name: ProvisionerTypes.Terraform,
+      icon: 'terraform-apply-new',
+      iconColor: '#5C4EE5',
+      enabled: true
+    },
+    {
+      name: ProvisionerTypes.CloudFormation,
+      icon: 'cloudformation',
+      enabled: isCloudFormationEnabled
+    },
+    {
+      name: ProvisionerTypes.ARM,
+      icon: 'arm',
+      enabled: false
+    },
+    {
+      name: ProvisionerTypes.Script,
+      icon: 'script',
+      enabled: false
+    }
+  ]
   return (
     <Dialog
       onClose={() => {

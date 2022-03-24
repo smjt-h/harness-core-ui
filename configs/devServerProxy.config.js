@@ -5,10 +5,15 @@
  * https://polyformproject.org/wp-content/uploads/2020/06/PolyForm-Shield-1.0.0.txt.
  */
 
+<<<<<<< HEAD
 const baseUrl = process.env.BASE_URL ?? 'https://qa.harness.io/gateway'
 const targetLocalHost = (process.env.TARGET_LOCALHOST && JSON.parse(process.env.TARGET_LOCALHOST)) ?? true // set to false to target baseUrl environment instead of localhost
 
 console.log('\nProxy env vars')
+=======
+const baseUrl = process.env.BASE_URL ?? 'https://pr.harness.io/cds-34216-v1'
+const targetLocalHost = (process.env.TARGET_LOCALHOST && JSON.parse(process.env.TARGET_LOCALHOST)) ?? false // set to false to target baseUrl environment instead of localhost
+>>>>>>> 4a6e18cb012e (request fix, for aws params)
 console.table({ baseUrl, targetLocalHost })
 
 module.exports = {

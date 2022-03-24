@@ -207,8 +207,22 @@ serviceList:
   noIdentifier: Selected service does not have any identifier associated with it.
 artifactRepoTooltip: Enter the name of the repository where the artifact source is located.
 cloudFormation:
+  cfTemplateFile: Cloud Formation Template File
   templateFile: Template File
   specifyTemplateFile: Specify Template File
-  stackName: Custom Stack Name
+  stackName: Stack Name
   specifyCapabilities: Specify Capabilities
-  cfParameterFiles: Cloud Formation Parameter Files
+  parameterFiles: Cloud Formation Parameter Files
+  parameterFileDetails: Parameter File Details
+  specifyParameterFiles: Specify Parameter Files...
+  inlineParameterFiles: CloudFormation Parameters Overrides
+  specifyInlineParameterFiles: Specify Inline Parameters...
+  continueStatus: Continue Based on Stack Statuses
+  paramFileConnector: Parameter File Connector
+  templateFileConnector: Template File Connector
+  templateFileStore: Template File Store
+  errors:
+    region: AWS Region is required
+    stackName: Stack Name is required
+    name: Name cannot be empty
+    value: Value cannot be empty
