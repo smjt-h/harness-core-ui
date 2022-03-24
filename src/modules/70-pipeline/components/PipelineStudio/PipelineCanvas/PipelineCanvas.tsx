@@ -5,7 +5,7 @@
  * https://polyformproject.org/wp-content/uploads/2020/06/PolyForm-Shield-1.0.0.txt.
  */
 
-import React, { useState } from 'react'
+import React, { useEffect, useState } from 'react'
 import { Classes, Dialog, IDialogProps, Intent } from '@blueprintjs/core'
 import cx from 'classnames'
 import {
@@ -223,12 +223,14 @@ export function PipelineCanvas({
         isCloseButtonShown
         className={cx('padded-dialog')}
       >
-        <PipelineErrors errors={updatePipelineAPIResponse.metadata.schemaErrors}/>
+        <PipelineErrors errors={updatePipelineAPIResponse?.metadata?.schemaErrors} />
       </Dialog>
     ),
     // Error {updatePipelineAPIResponse ? updatePipelineAPIResponse.metadata.schemaErrors.length : null}
     [updatePipelineAPIResponse]
   )
+
+  useEffect(showErrorModal, [])
 
   const [discardBEUpdateDialog, setDiscardBEUpdate] = React.useState(false)
   const { openDialog: openConfirmBEUpdateError } = useConfirmationDialog({

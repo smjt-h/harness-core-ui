@@ -256,17 +256,9 @@ pipeline:
                   execution:
                       steps:
                           - step:
-                                spec:
-                                    shell: Bash
-                                    onDelegate: true
-                                    source:
-                                        type: qwe
-                                        spec:
-                                            script: echo "Hi"
-                                    environmentVariables: []
-                                    outputVariables: []
-                                    executionTarget: {}
-                                timeout: 10md
+                                name: a1
+                                identifier: a2
+                                timeout: 10m
                       rollbackSteps: []
                   serviceDependencies: []
               failureStrategies:
@@ -300,5 +292,5 @@ pipeline:
                                 timeout: 10m
                   serviceDependencies: []
               tags: {}
-
+              
 `
