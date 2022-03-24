@@ -9,9 +9,34 @@ import React, { useState } from 'react'
 import { Button, ButtonVariation, Color, Container, Icon, Layout, TableV2, Text } from '@harness/uicore'
 
 import cx from 'classnames'
+import type { Column } from 'react-table'
 import { useStrings } from 'framework/strings'
 import useAnomaliesAlertDialog from '../AnomaliesAlert/AnomaliesAlertDialog'
 import css from './AnomaliesSettings.module.scss'
+
+interface AlertData {
+  age: number
+  name: string
+}
+
+const alertList = [
+  {
+    age: 20,
+    name: 'User 1'
+  },
+  {
+    age: 25,
+    name: 'User 2'
+  },
+  {
+    age: 25,
+    name: 'User 3'
+  },
+  {
+    age: 25,
+    name: 'User 4'
+  }
+]
 
 const AlertsSection = () => {
   const { getString } = useStrings()
@@ -25,6 +50,27 @@ const AlertsSection = () => {
       </Layout.Horizontal>
     )
   }
+
+  const columns: Column<AlertData>[] = React.useMemo(
+    () => [
+      {
+        Header: getString('ce.anomalyDetection.settings.perspectiveNameColumn'),
+        accessor: 'name',
+        width: '45%'
+      },
+      {
+        Header: getString('ce.anomalyDetection.tableHeaders.details'),
+        accessor: 'age',
+        width: '50%'
+      },
+      {
+        Header: ' ',
+        Cell: actionCell,
+        width: '5%'
+      }
+    ],
+    []
+  )
 
   return (
     <Container className={css.settingsContent} padding="large">
@@ -49,63 +95,20 @@ const AlertsSection = () => {
         className={css.tableView}
         minimal={true}
         // Need to replace with useMemo
-        columns={[
-          {
-            Header: getString('ce.anomalyDetection.settings.perspectiveNameColumn'),
-            accessor: 'name',
-            width: '45%'
-          },
-          {
-            Header: getString('ce.anomalyDetection.tableHeaders.details'),
-            accessor: 'age',
-            width: '50%'
-          },
-          {
-            Header: ' ',
-            Cell: actionCell,
-            width: '5%'
-          }
-        ]}
-        data={[
-          {
-            age: 20,
-            name: 'User 1'
-          },
-          {
-            age: 25,
-            name: 'User 2'
-          },
-          {
-            age: 25,
-            name: 'User 3'
-          },
-          {
-            age: 25,
-            name: 'User 4'
-          }
-        ]}
+        columns={columns}
+        data={alertList}
       />
     </Container>
   )
 }
 
-interface settingsDrawerProps {
+interface SettingsDrawerProps {
   hideDrawer: any
 }
 
-const AnomaliesSettings: React.FC<settingsDrawerProps> = ({ hideDrawer }) => {
+const AnomaliesSettings: React.FC<SettingsDrawerProps> = ({ hideDrawer }) => {
   const [activePanelId, setActivePanelId] = useState(1)
   const { getString } = useStrings()
-
-  const getActivePanel = (id: number) => {
-    switch (id) {
-      case 1:
-        return <AlertsSection />
-
-      default:
-        return <AlertsSection />
-    }
-  }
 
   const updateActivePanel = (id: number) => {
     setActivePanelId(id)
@@ -113,7 +116,7 @@ const AnomaliesSettings: React.FC<settingsDrawerProps> = ({ hideDrawer }) => {
 
   return (
     <Layout.Horizontal className={css.container}>
-      {getActivePanel(activePanelId)}
+      <AlertsSection />
       <Container className={css.settingsDrawer} background={Color.PRIMARY_8}>
         <Layout.Horizontal className={css.settingsLabelWarpper}>
           <Text
