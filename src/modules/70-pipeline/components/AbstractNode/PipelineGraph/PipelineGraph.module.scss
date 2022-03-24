@@ -37,22 +37,7 @@
   --execution-pipeline-color-orange: var(--orange-500);
   --execution-pipeline-color-orange2: var(--orange-700);
   --execution-pipeline-color-dark-grey2: var(--grey-400);
-  --pipeline-selected-node: linear-gradient(123.92deg, #0092e4 32.53%, #0778fc 112.21%);
-  --execution-pipeline-selected-running-bg: linear-gradient(
-    to top left,
-    transparent 33%,
-    rgba(100, 100, 100, 0.1) 50%,
-    transparent 66%
-  );
-  --pipeline-studio-bg: linear-gradient(90deg, #f6fcff 9px, transparent 1%) center,
-    linear-gradient(#f6fcff 9px, transparent 1%) center, #bbc1c4;
 
-  --execution-pipeline-selected-running-bg-selected: linear-gradient(
-    to top left,
-    transparent 33%,
-    rgba(255, 255, 255, 0.3) 50%,
-    transparent 66%
-  );
   position: relative;
   height: 100%;
   width: 100%;

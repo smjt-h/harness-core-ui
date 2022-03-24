@@ -113,7 +113,7 @@ export function IconNode(props: any): React.ReactElement {
       >
         <div>
           {props.isInComplete && <Icon className={css.inComplete} size={12} name={'warning-sign'} color="orange500" />}
-          {props.canDelete && !props.readonly && (
+          {!props.readonly && (
             <Button
               className={cx(cssDefault.closeNode)}
               variation={ButtonVariation.PRIMARY}

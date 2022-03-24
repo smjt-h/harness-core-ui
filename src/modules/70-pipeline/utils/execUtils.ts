@@ -469,7 +469,8 @@ export const getExecutionStageDiagramListeners = ({
     // eslint-disable-next-line @typescript-eslint/no-explicit-any
     [Event.MouseEnterNode]: (event: any) => {
       const stageData = allNodeMap[event?.data?.id]
-      if (stageData) onMouseEnter({ data: stageData, event })
+      const target = document.querySelector(`[data-nodeid=${event?.data?.id}]`)
+      if (stageData) onMouseEnter({ data: stageData, event: { ...event, target } })
     },
     // eslint-disable-next-line @typescript-eslint/no-explicit-any
     [Event.MouseLeaveNode]: () => {

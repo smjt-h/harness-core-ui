@@ -15,6 +15,7 @@ declare const styles: {
   readonly defaultCard: string
   readonly defaultNode: string
   readonly draggable: string
+  readonly fadeIn: string
   readonly failed: string
   readonly hoverName: string
   readonly icon: string
@@ -28,6 +29,7 @@ declare const styles: {
   readonly primaryIcon: string
   readonly readonly: string
   readonly right: string
+  readonly rotate: string
   readonly runningNode: string
   readonly secondaryIcon: string
   readonly selected: string

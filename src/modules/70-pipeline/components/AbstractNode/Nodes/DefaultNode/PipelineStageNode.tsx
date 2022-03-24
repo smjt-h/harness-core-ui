@@ -138,13 +138,7 @@ function PipelineStageNode(props: any): JSX.Element {
         }}
       >
         <div className="execution-running-animation" />
-        {props.icon && (
-          <Icon
-            size={28}
-            name={props.icon}
-            inverse={props?.isSelected || (stageStatus as string) === ExecutionStatusEnum.Failed}
-          />
-        )}
+        {props.icon && <Icon size={28} name={props.icon} inverse={props?.isSelected} />}
         {secondaryIcon && (
           <Icon
             name={secondaryIcon}

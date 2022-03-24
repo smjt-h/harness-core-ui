@@ -5,7 +5,53 @@
  * https://polyformproject.org/wp-content/uploads/2020/06/PolyForm-Shield-1.0.0.txt.
  */
 
+@keyframes fadeIn {
+  0% {
+    opacity: 0;
+  }
+
+  100% {
+    opacity: 1;
+  }
+}
+
+@keyframes shine {
+  0% {
+    transform: var(--node-running-transform-start, translate3d(-100%, -100%, 0));
+  }
+
+  100% {
+    transform: var(--node-running-transform-end, translate3d(100%, 100%, 0));
+  }
+}
+
+@keyframes rotate {
+  0% {
+    transform: rotate(0deg);
+  }
+
+  100% {
+    transform: rotate(360deg);
+  }
+}
+
 .defaultNode {
+  --pipeline-selected-node: linear-gradient(123.92deg, #0092e4 32.53%, #0778fc 112.21%);
+  --execution-pipeline-selected-running-bg: linear-gradient(
+    to top left,
+    transparent 33%,
+    rgba(100, 100, 100, 0.1) 50%,
+    transparent 66%
+  );
+  --pipeline-studio-bg: linear-gradient(90deg, #f6fcff 9px, transparent 1%) center,
+    linear-gradient(#f6fcff 9px, transparent 1%) center, #bbc1c4;
+
+  --execution-pipeline-selected-running-bg-selected: linear-gradient(
+    to top left,
+    transparent 33%,
+    rgba(255, 255, 255, 0.3) 50%,
+    transparent 66%
+  );
   display: block;
   width: fit-content;
   height: fit-content;
@@ -37,6 +83,10 @@
       border-color: var(--diagram-selected) !important;
       background: var(--pipeline-selected-node) !important;
       border-width: 2px;
+      &.failed {
+        background: var(--execution-pipeline-color-red) !important;
+        border: solid 2px var(--execution-pipeline-color-dark-red) !important;
+      }
     }
     &:hover .closeNode {
       opacity: 1;
@@ -273,10 +323,6 @@
       background-image: var(--execution-pipeline-selected-running-bg-selected) !important;
     }
   }
-}
-.failed {
-  background-color: var(--execution-pipeline-color-red) !important;
-  border: solid 2px var(--execution-pipeline-color-dark-red) !important;
 }
 
 .stepNameText {

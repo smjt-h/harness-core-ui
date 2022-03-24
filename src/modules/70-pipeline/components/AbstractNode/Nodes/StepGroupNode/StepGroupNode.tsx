@@ -7,7 +7,8 @@
 
 import * as React from 'react'
 import classnames from 'classnames'
-import { Icon, Layout, Text, Button, ButtonVariation, Color } from '@wings-software/uicore'
+import { Icon, Layout, Text, Button, ButtonVariation } from '@wings-software/uicore'
+import { Color } from '@harness/design-system'
 import { Event, DiagramDrag, DiagramType } from '@pipeline/components/Diagram'
 import StepGroupGraph from '../StepGroupGraph/StepGroupGraph'
 import { NodeType } from '../../Node'
@@ -25,6 +26,7 @@ export function StepGroupNode(props: any): JSX.Element {
   React.useEffect(() => {
     props?.updateGraphLinks?.()
   }, [isNodeCollapsed])
+
   return (
     <>
       {isNodeCollapsed && DefaultNode ? (
@@ -164,7 +166,7 @@ export function StepGroupNode(props: any): JSX.Element {
                   }
                 })
               }}
-              onClick={(event: any) => {
+              onClick={(event: any): void => {
                 event.stopPropagation()
                 props?.fireEvent({
                   type: Event.AddParallelNode,
