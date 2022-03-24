@@ -102,10 +102,10 @@ describe('Deploy service stage specifications', () => {
 
     await waitFor(() => fireEvent.click(propagateFromDropdownDiv))
 
+    // Click on Search/Select Stage dropdown
     await waitFor(() => getByPlaceholderText('- pipeline.selectStagePlaceholder -'))
     const propagateFromDropdown = getByPlaceholderText('- pipeline.selectStagePlaceholder -')
-
-    await waitFor(() => userEvent.selectOptions(propagateFromDropdown, 'st1'))
+    userEvent.click(propagateFromDropdown)
 
     //  Service 1 Option
     const service1Option = getByText('Stage [Stage 1] - Service [Service 1]')
