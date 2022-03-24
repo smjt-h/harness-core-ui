@@ -23,30 +23,30 @@
         <div class='clearfix'>
             
             <div class='fl pad1y space-right2'>
-                <span class="strong">80% </span>
+                <span class="strong">0% </span>
                 <span class="quiet">Statements</span>
-                <span class='fraction'>8/10</span>
+                <span class='fraction'>0/10</span>
             </div>
         
             
             <div class='fl pad1y space-right2'>
-                <span class="strong">50% </span>
+                <span class="strong">0% </span>
                 <span class="quiet">Branches</span>
-                <span class='fraction'>3/6</span>
+                <span class='fraction'>0/6</span>
             </div>
         
             
             <div class='fl pad1y space-right2'>
-                <span class="strong">66.67% </span>
+                <span class="strong">0% </span>
                 <span class="quiet">Functions</span>
-                <span class='fraction'>2/3</span>
+                <span class='fraction'>0/3</span>
             </div>
         
             
             <div class='fl pad1y space-right2'>
-                <span class="strong">80% </span>
+                <span class="strong">0% </span>
                 <span class="quiet">Lines</span>
-                <span class='fraction'>8/10</span>
+                <span class='fraction'>0/10</span>
             </div>
         
             
@@ -55,7 +55,7 @@
             Press <em>n</em> or <em>j</em> to go to the next uncovered block, <em>b</em>, <em>p</em> or <em>k</em> for the previous block.
         </p>
     </div>
-    <div class='status-line high'></div>
+    <div class='status-line low'></div>
     <pre><table class="coverage">
 <tr><td class="line-count quiet"><a name='L1'></a><a href='#L1'>1</a>
 <a name='L2'></a><a href='#L2'>2</a>
@@ -97,31 +97,31 @@
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-yes">26x</span>
-<span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-yes">26x</span>
-<span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-yes">26x</span>
-<span class="cline-any cline-yes">41x</span>
-<span class="cline-any cline-yes">41x</span>
-<span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-yes">1x</span>
 <span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-no">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-yes">1x</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-yes">41x</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span></td><td class="text"><pre class="prettyprint lang-js">/*
  * Copyright 2021 Harness Inc. All rights reserved.
@@ -130,20 +130,20 @@
  * https://polyformproject.org/wp-content/uploads/2020/06/PolyForm-Shield-1.0.0.txt.
  */
 &nbsp;
-import { useParams } from 'react-router-dom'
+<span class="cstat-no" title="statement not covered" >import { useParams } from 'react-router-dom'</span>
 import type { Experiences } from '@common/constants/Utils'
-import { useAppStore } from 'framework/AppStore/AppStoreContext'
+<span class="cstat-no" title="statement not covered" >import { useAppStore } from 'framework/AppStore/AppStoreContext'</span>
 import type { AccountPathProps } from '@common/interfaces/RouteInterfaces'
 &nbsp;
 interface UseUpdateLSDefaultExperienceReturn {
   updateLSDefaultExperience: (experience: Experiences) =&gt; void
 }
-export function useUpdateLSDefaultExperience(): UseUpdateLSDefaultExperienceReturn {
-  const { currentUserInfo } = useAppStore()
-  const { accountId } = useParams&lt;AccountPathProps&gt;()
+<span class="cstat-no" title="statement not covered" >export function <span class="fstat-no" title="function not covered" >u</span>seUpdateLSDefaultExperience(</span>): UseUpdateLSDefaultExperienceReturn {
+  const { currentUserInfo } = <span class="cstat-no" title="statement not covered" >useAppStore()</span>
+  const { accountId } = <span class="cstat-no" title="statement not covered" >useParams&lt;AccountPathProps&gt;()</span>
 &nbsp;
-  function updateLSDefaultExperience(experience: Experiences): void {
-    const defaultExperienceMap = currentUserInfo.accounts<span class="branch-1 cbranch-no" title="branch not covered" >?.reduce(<span class="fstat-no" title="function not covered" >(p</span>reviousValue, account) =&gt; {</span>
+  function <span class="fstat-no" title="function not covered" >updateLSDefaultExperience(</span>experience: Experiences): void {
+    const defaultExperienceMap = <span class="cstat-no" title="statement not covered" >currentUserInfo.accounts?.reduce(<span class="fstat-no" title="function not covered" >(p</span>reviousValue, account) =&gt; {</span>
       const newExperience = <span class="cstat-no" title="statement not covered" >account.uuid === accountId ? experience : account.defaultExperience</span>
 <span class="cstat-no" title="statement not covered" >      return {</span>
         ...previousValue,
@@ -151,10 +151,10 @@ export function useUpdateLSDefaultExperience(): UseUpdateLSDefaultExperienceRetu
       }
     }, {})
 &nbsp;
-    localStorage.setItem('defaultExperienceMap', JSON.stringify(defaultExperienceMap))
+<span class="cstat-no" title="statement not covered" >    localStorage.setItem('defaultExperienceMap', JSON.stringify(defaultExperienceMap))</span>
   }
 &nbsp;
-  return { updateLSDefaultExperience }
+<span class="cstat-no" title="statement not covered" >  return { updateLSDefaultExperience }</span>
 }
 &nbsp;</pre></td></tr></table></pre>
 
@@ -163,7 +163,7 @@ export function useUpdateLSDefaultExperience(): UseUpdateLSDefaultExperienceRetu
             <div class='footer quiet pad2 space-top1 center small'>
                 Code coverage generated by
                 <a href="https://istanbul.js.org/" target="_blank">istanbul</a>
-                at Thu Mar 24 2022 10:31:58 GMT+0000 (Greenwich Mean Time)
+                at Thu Mar 24 2022 18:50:07 GMT+0000 (Greenwich Mean Time)
             </div>
         </div>
         <script src="../../../prettify.js"></script>
