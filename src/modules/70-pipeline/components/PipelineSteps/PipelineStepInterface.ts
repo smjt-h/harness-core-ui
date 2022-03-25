@@ -25,6 +25,8 @@ export enum StepType {
   K8sRollingDeploy = 'K8sRollingDeploy',
   CustomVariable = 'CustomVariable',
   ServerlessAwsLambda = ' ServerlessAwsLambda',
+  ServerlessGCP = ' ServerlessGCP',
+  ServerlessAzure = ' ServerlessAzure',
   Dependency = 'Service',
   Plugin = 'Plugin',
   Run = 'Run',

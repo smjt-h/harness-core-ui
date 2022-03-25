@@ -18,6 +18,7 @@ import {
   K8sGcpInfrastructure,
   PipelineInfrastructure,
   ServerlessAwsLambdaInfrastructure,
+  ServerlessGCPInfrastructure,
   StageElementConfig
 } from 'services/cd-ng'
 import StringWithTooltip from '@common/components/StringWithTooltip/StringWithTooltip'
@@ -43,6 +44,8 @@ import {
 } from '@pipeline/utils/stageHelpers'
 import { InfraDeploymentType } from '@cd/components/PipelineSteps/PipelineStepsUtil'
 import type { ServerlessAwsLambdaSpec } from '@cd/components/PipelineSteps/ServerlessAWSLambda/ServerlessAwsLambdaSpec'
+import type { ServerlessGCPSpec } from '@cd/components/PipelineSteps/ServerlessGCP/ServerlessGCPSpec'
+import type { ServerlessAzureSpec } from '@cd/components/PipelineSteps/ServerlessAzure/ServerlessAzureSpec'
 import stageCss from '../DeployStageSetupShell/DeployStage.module.scss'
 
 const DEFAULT_RELEASE_NAME = 'release-<+INFRA_KEY>'
@@ -166,7 +169,11 @@ export default function DeployInfraSpecifications(props: React.PropsWithChildren
   }, [stage?.stage?.spec?.serviceConfig.serviceDefinition?.type])
 
   const onUpdateInfrastructureDefinition = (
-    extendedSpec: K8SDirectInfrastructure | K8sGcpInfrastructure | ServerlessAwsLambdaInfrastructure,
+    extendedSpec:
+      | K8SDirectInfrastructure
+      | K8sGcpInfrastructure
+      | ServerlessAwsLambdaInfrastructure
+      | ServerlessGCPInfrastructure,
     type: string
   ): void => {
     if (get(stageRef.current, 'stage.spec.infrastructure', null)) {
@@ -390,6 +397,52 @@ export default function DeployInfraSpecifications(props: React.PropsWithChildren
                   region: value.region
                 },
                 'ServerlessAwsLambda'
+              )
+            }
+          />
+        )
+      }
+      case 'ServerlessGCPLambda': {
+        return (
+          <StepWidget<ServerlessGCPSpec>
+            factory={factory}
+            key={stage?.stage?.identifier}
+            readonly={isReadonly}
+            initialValues={initialInfrastructureDefinitionValues as ServerlessGCPSpec}
+            type={StepType.ServerlessGCP}
+            stepViewType={StepViewType.Edit}
+            allowableTypes={allowableTypes}
+            onUpdate={value =>
+              onUpdateInfrastructureDefinition(
+                {
+                  connectorRef: value.connectorRef,
+                  cluster: value.cluster,
+                  stage: value.stage
+                },
+                'ServerlessGCPLambda'
+              )
+            }
+          />
+        )
+      }
+      case 'ServerlessAzureLambda': {
+        return (
+          <StepWidget<ServerlessAzureSpec>
+            factory={factory}
+            key={stage?.stage?.identifier}
+            readonly={isReadonly}
+            initialValues={initialInfrastructureDefinitionValues as ServerlessAzureSpec}
+            type={StepType.ServerlessAzure}
+            stepViewType={StepViewType.Edit}
+            allowableTypes={allowableTypes}
+            onUpdate={value =>
+              onUpdateInfrastructureDefinition(
+                {
+                  connectorRef: value.connectorRef,
+                  cluster: value.cluster,
+                  stage: value.stage
+                },
+                'ServerlessAzureLambda'
               )
             }
           />
