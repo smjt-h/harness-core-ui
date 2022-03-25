@@ -17,6 +17,7 @@ import {
   K8SDirectInfrastructure,
   K8sGcpInfrastructure,
   PipelineInfrastructure,
+  ServerlessAwsLambdaInfrastructure,
   StageElementConfig
 } from 'services/cd-ng'
 import StringWithTooltip from '@common/components/StringWithTooltip/StringWithTooltip'
@@ -34,10 +35,15 @@ import { useValidationErrors } from '@pipeline/components/PipelineStudio/Pipline
 import type { DeploymentStageElementConfig, StageElementWrapper } from '@pipeline/utils/pipelineTypes'
 import SelectDeploymentType from '@cd/components/PipelineStudio/DeployInfraSpecifications/SelectInfrastructureType/SelectInfrastructureType'
 import { Scope } from '@common/interfaces/SecretsInterface'
-import { getDeploymentType, StageType } from '@pipeline/utils/stageHelpers'
-import stageCss from '../DeployStageSetupShell/DeployStage.module.scss'
+import {
+  getDeploymentType,
+  isServerlessDeploymentType,
+  StageType,
+  detailsHeaderName
+} from '@pipeline/utils/stageHelpers'
 import { InfraDeploymentType } from '@cd/components/PipelineSteps/PipelineStepsUtil'
 import type { ServerlessAwsLambdaSpec } from '@cd/components/PipelineSteps/ServerlessAWSLambda/ServerlessAwsLambdaSpec'
+import stageCss from '../DeployStageSetupShell/DeployStage.module.scss'
 
 const DEFAULT_RELEASE_NAME = 'release-<+INFRA_KEY>'
 
@@ -148,13 +154,6 @@ export default function DeployInfraSpecifications(props: React.PropsWithChildren
     !!stage?.stage?.spec?.serviceConfig?.useFromStage?.stage
   )
 
-  // React.useEffect(() => {
-  //   const type = stage?.stage?.spec?.infrastructure?.infrastructureDefinition?.type
-  //   setSelectedDeploymentType(type)
-  //   const initialInfraDefValues = getInfrastructureDefaultValue(stage, type)
-  //   setInitialInfrastructureDefinitionValues(initialInfraDefValues)
-  // }, [stage])
-
   React.useEffect(() => {
     // const type = stage?.stage?.spec?.infrastructure?.infrastructureDefinition?.type
     const selectedType = stage?.stage?.spec?.serviceConfig.serviceDefinition?.type
@@ -167,7 +166,7 @@ export default function DeployInfraSpecifications(props: React.PropsWithChildren
   }, [stage?.stage?.spec?.serviceConfig.serviceDefinition?.type])
 
   const onUpdateInfrastructureDefinition = (
-    extendedSpec: K8SDirectInfrastructure | K8sGcpInfrastructure,
+    extendedSpec: K8SDirectInfrastructure | K8sGcpInfrastructure | ServerlessAwsLambdaInfrastructure,
     type: string
   ): void => {
     if (get(stageRef.current, 'stage.spec.infrastructure', null)) {
@@ -284,10 +283,10 @@ export default function DeployInfraSpecifications(props: React.PropsWithChildren
 
   const getInfrastructureDefaultValue = (
     stageData: StageElementWrapper | undefined,
-    deploymentType: string | undefined
+    newDeploymentType: string | undefined
   ): Infrastructure => {
     const infrastructure = get(stageData, 'stage.spec.infrastructure.infrastructureDefinition', null)
-    const type = infrastructure?.type || deploymentType
+    const type = infrastructure?.type || newDeploymentType
     const allowSimultaneousDeployments = get(stageData, 'stage.spec.infrastructure.allowSimultaneousDeployments', false)
     switch (type) {
       case 'KubernetesDirect': {
@@ -387,11 +386,10 @@ export default function DeployInfraSpecifications(props: React.PropsWithChildren
                 {
                   connectorRef: value.connectorRef,
                   cluster: value.cluster,
-                  namespace: value.namespace,
-                  releaseName: value.releaseName,
-                  allowSimultaneousDeployments: value.allowSimultaneousDeployments
+                  stage: value.stage,
+                  region: value.region
                 },
-                'KubernetesGcp'
+                'ServerlessAwsLambda'
               )
             }
           />
@@ -419,8 +417,6 @@ export default function DeployInfraSpecifications(props: React.PropsWithChildren
     },
     [stage, debounceUpdateStage, stage?.stage?.spec?.infrastructure?.infrastructureDefinition]
   )
-
-  console.log('selectedDeploymentType', selectedDeploymentType)
 
   return (
     <div className={stageCss.serviceOverrides} key="1">
@@ -464,13 +460,13 @@ export default function DeployInfraSpecifications(props: React.PropsWithChildren
             deploymentType={deploymentType}
             isReadonly={isReadonly}
             selectedInfrastructureType={selectedDeploymentType}
-            onChange={deploymentType => {
-              setSelectedDeploymentType(deploymentType)
-              resetInfrastructureDefinition(deploymentType)
+            onChange={newDeploymentType => {
+              setSelectedDeploymentType(newDeploymentType)
+              resetInfrastructureDefinition(newDeploymentType)
             }}
           />
         </Card>
-        {selectedDeploymentType ? (
+        {selectedDeploymentType && !isServerlessDeploymentType(deploymentType) ? (
           <Accordion className={stageCss.accordion} activeId="dynamicProvisioning">
             <Accordion.Panel
               id="dynamicProvisioning"
@@ -515,7 +511,7 @@ export default function DeployInfraSpecifications(props: React.PropsWithChildren
         {selectedDeploymentType && (
           <>
             <div className={stageCss.tabHeading} id="clusterDetails">
-              {getString('cd.steps.common.clusterDetails')}
+              {detailsHeaderName[selectedDeploymentType] || getString('cd.steps.common.clusterDetails')}
             </div>
             <Card className={stageCss.sectionCard}>{getClusterConfigurationStep(selectedDeploymentType)}</Card>
           </>

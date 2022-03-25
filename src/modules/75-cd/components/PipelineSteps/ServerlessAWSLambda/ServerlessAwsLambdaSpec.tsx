@@ -5,7 +5,7 @@
  * https://polyformproject.org/wp-content/uploads/2020/06/PolyForm-Shield-1.0.0.txt.
  */
 
-import React, { useEffect, useState } from 'react'
+import React from 'react'
 import { Menu } from '@blueprintjs/core'
 import {
   IconName,
@@ -17,13 +17,12 @@ import {
   getMultiTypeFromValue,
   MultiTypeInputType,
   Icon,
-  SelectOption,
-  Accordion
+  SelectOption
 } from '@wings-software/uicore'
 import cx from 'classnames'
 import * as Yup from 'yup'
 import { useParams } from 'react-router-dom'
-import { debounce, noop, isEmpty, get, memoize, set, defaultTo } from 'lodash-es'
+import { debounce, noop, isEmpty, get, memoize, defaultTo } from 'lodash-es'
 import { parse } from 'yaml'
 import { CompletionItemKind } from 'vscode-languageserver-types'
 import { FormikErrors, FormikProps, yupToFormErrors } from 'formik'
@@ -31,20 +30,10 @@ import { StepViewType, StepProps, ValidateInputSetProps } from '@pipeline/compon
 import { ConfigureOptions } from '@common/components/ConfigureOptions/ConfigureOptions'
 import { useVariablesExpression } from '@pipeline/components/PipelineStudio/PiplineHooks/useVariablesExpression'
 
-import {
-  getConnectorListV2Promise,
-  K8sGcpInfrastructure,
-  useGetClusterNamesForGcp,
-  getClusterNamesForGcpPromise,
-  ServerlessAwsLambdaInfrastructure
-} from 'services/cd-ng'
-import {
-  ConnectorReferenceDTO,
-  FormMultiTypeConnectorField
-} from '@connectors/components/ConnectorReferenceField/FormMultiTypeConnectorField'
+import { getConnectorListV2Promise, ServerlessAwsLambdaInfrastructure } from 'services/cd-ng'
+import { FormMultiTypeConnectorField } from '@connectors/components/ConnectorReferenceField/FormMultiTypeConnectorField'
 
 import { getIconByType } from '@connectors/pages/connectors/utils/ConnectorUtils'
-import { Scope } from '@common/interfaces/SecretsInterface'
 import type { VariableMergeServiceResponse } from 'services/pipeline-ng'
 
 import type { CompletionItemInterface } from '@common/interfaces/YAMLBuilderProps'
@@ -62,50 +51,60 @@ import { StageErrorContext } from '@pipeline/context/StageErrorContext'
 import { DeployTabs } from '@cd/components/PipelineStudio/DeployStageSetupShell/DeployStageSetupShellUtils'
 import { getConnectorName, getConnectorValue } from '@pipeline/components/PipelineSteps/Steps/StepsHelper'
 import { getConnectorSchema, getNameSpaceSchema, getReleaseNameSchema } from '../PipelineStepsUtil'
-import css from './ServerlessAwsLambda.modules.scss'
 import stepCss from '@pipeline/components/PipelineSteps/Steps/Steps.module.scss'
+import css from './ServerlessAwsLambda.module.scss'
 
 const logger = loggerFor(ModuleName.CD)
-type K8sGcpInfrastructureTemplate = { [key in keyof K8sGcpInfrastructure]: string }
+type ServerlessAwsLambdaInfrastructureTemplate = { [key in keyof ServerlessAwsLambdaInfrastructure]: string }
 
 function getValidationSchema(getString: UseStringsReturn['getString']): Yup.ObjectSchema {
   return Yup.object().shape({
     connectorRef: getConnectorSchema(getString),
-    cluster: Yup.lazy((value): Yup.Schema<unknown> => {
+    region: Yup.lazy((value): Yup.Schema<unknown> => {
       /* istanbul ignore else */ if (typeof value === 'string') {
-        return Yup.string().required(getString('common.cluster'))
+        return Yup.string().required(getString('common.region'))
       }
       return Yup.object().test({
         test(valueObj: SelectOption): boolean | Yup.ValidationError {
           if (isEmpty(valueObj) || isEmpty(valueObj.value)) {
-            return this.createError({ message: getString('fieldRequired', { field: getString('common.cluster') }) })
+            return this.createError({ message: getString('fieldRequired', { field: getString('common.region') }) })
           }
           return true
         }
       })
     }),
-
-    namespace: getNameSpaceSchema(getString),
-    releaseName: getReleaseNameSchema(getString)
+    stage: Yup.lazy((value): Yup.Schema<unknown> => {
+      /* istanbul ignore else */ if (typeof value === 'string') {
+        return Yup.string().required(getString('common.stage'))
+      }
+      return Yup.object().test({
+        test(valueObj: SelectOption): boolean | Yup.ValidationError {
+          if (isEmpty(valueObj) || isEmpty(valueObj.value)) {
+            return this.createError({ message: getString('fieldRequired', { field: getString('common.stage') }) })
+          }
+          return true
+        }
+      })
+    })
   })
 }
-interface GcpInfrastructureSpecEditableProps {
-  initialValues: K8sGcpInfrastructure
-  allValues?: K8sGcpInfrastructure
-  onUpdate?: (data: K8sGcpInfrastructure) => void
+interface ServerlessAwsLambdaSpecEditableProps {
+  initialValues: ServerlessAwsLambdaInfrastructure
+  allValues?: ServerlessAwsLambdaInfrastructure
+  onUpdate?: (data: ServerlessAwsLambdaInfrastructure) => void
   stepViewType?: StepViewType
   readonly?: boolean
-  template?: K8sGcpInfrastructureTemplate
+  template?: ServerlessAwsLambdaInfrastructureTemplate
   metadataMap: Required<VariableMergeServiceResponse>['metadataMap']
-  variablesData: K8sGcpInfrastructure
+  variablesData: ServerlessAwsLambdaInfrastructure
   allowableTypes: MultiTypeInputType[]
 }
 
-interface K8sGcpInfrastructureUI extends Omit<K8sGcpInfrastructure, 'cluster'> {
+interface ServerlessAwsLambdaInfrastructureUI extends Omit<ServerlessAwsLambdaInfrastructure, 'cluster'> {
   cluster?: { label?: string; value?: string } | string | any
 }
 
-const GcpInfrastructureSpecEditable: React.FC<GcpInfrastructureSpecEditableProps> = ({
+const ServerlessAwsLambdaSpecEditable: React.FC<ServerlessAwsLambdaSpecEditableProps> = ({
   initialValues,
   onUpdate,
   readonly,
@@ -117,61 +116,15 @@ const GcpInfrastructureSpecEditable: React.FC<GcpInfrastructureSpecEditableProps
     accountId: string
   }>()
   const { repoIdentifier, branch } = useQueryParams<GitQueryParams>()
-  const [clusterOptions, setClusterOptions] = useState<SelectOption[]>([])
   const delayedOnUpdate = React.useRef(debounce(onUpdate || noop, 300)).current
   const { expressions } = useVariablesExpression()
   const { getString } = useStrings()
 
-  const {
-    data: clusterNamesData,
-    refetch: refetchClusterNames,
-    loading: loadingClusterNames,
-    error: clusterError
-  } = useGetClusterNamesForGcp({
-    lazy: true,
-    debounce: 300
-  })
-
-  useEffect(() => {
-    const options =
-      clusterNamesData?.data?.clusterNames?.map(name => ({ label: name, value: name })) || /* istanbul ignore next */ []
-    setClusterOptions(options)
-  }, [clusterNamesData])
-
-  useEffect(() => {
-    if (initialValues.connectorRef && getMultiTypeFromValue(initialValues.connectorRef) === MultiTypeInputType.FIXED) {
-      refetchClusterNames({
-        queryParams: {
-          accountIdentifier: accountId,
-          projectIdentifier,
-          orgIdentifier,
-          connectorRef: initialValues.connectorRef
-        }
-      })
-    }
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [initialValues.connectorRef])
-
-  const itemRenderer = memoize((item: { label: string }, { handleClick }) => (
-    <div key={item.label.toString()}>
-      <Menu.Item text={item.label} disabled={loadingClusterNames} onClick={handleClick} />
-    </div>
-  ))
-
-  const getInitialValues = (): K8sGcpInfrastructureUI => {
-    const values: K8sGcpInfrastructureUI = {
+  const getInitialValues = (): ServerlessAwsLambdaInfrastructureUI => {
+    const values: ServerlessAwsLambdaInfrastructureUI = {
       ...initialValues
     }
-
-    if (getMultiTypeFromValue(initialValues.cluster) === MultiTypeInputType.FIXED) {
-      values.cluster = { label: initialValues.cluster, value: initialValues.cluster }
-    }
-
     return values
-  }
-
-  const getClusterValue = (cluster: { label?: string; value?: string } | string | any): string => {
-    return typeof cluster === 'string' ? (cluster as string) : cluster?.value
   }
 
   const { subscribeForm, unSubscribeForm } = React.useContext(StageErrorContext)
@@ -185,16 +138,14 @@ const GcpInfrastructureSpecEditable: React.FC<GcpInfrastructureSpecEditableProps
 
   return (
     <Layout.Vertical spacing="medium">
-      <Formik<K8sGcpInfrastructureUI>
-        formName="gcpInfra"
+      <Formik<ServerlessAwsLambdaInfrastructureUI>
+        formName="serverlessAWSInfra"
         initialValues={getInitialValues()}
         validate={value => {
-          const data: Partial<K8sGcpInfrastructure> = {
-            namespace: value.namespace === '' ? undefined : value.namespace,
-            releaseName: value.releaseName === '' ? undefined : value.releaseName,
+          const data: Partial<ServerlessAwsLambdaInfrastructure> = {
             connectorRef: undefined,
-            cluster: getClusterValue(value.cluster) === '' ? undefined : getClusterValue(value.cluster),
-            allowSimultaneousDeployments: value.allowSimultaneousDeployments
+            region: value.region === '' ? undefined : value.region,
+            stage: value.stage === '' ? undefined : value.stage
           }
           /* istanbul ignore else */ if (value.connectorRef) {
             data.connectorRef = (value.connectorRef as any)?.value || /* istanbul ignore next */ value.connectorRef
@@ -228,27 +179,6 @@ const GcpInfrastructureSpecEditable: React.FC<GcpInfrastructureSpecEditableProps
                   enableConfigureOptions={false}
                   style={{ marginBottom: 'var(--spacing-large)' }}
                   type={'Gcp'}
-                  onChange={(value: any, _valueType, type) => {
-                    if (type === MultiTypeInputType.FIXED && value.record) {
-                      const { record, scope } = value as unknown as { record: ConnectorReferenceDTO; scope: Scope }
-                      const connectorRef =
-                        scope === Scope.ORG || scope === Scope.ACCOUNT
-                          ? `${scope}.${record.identifier}`
-                          : record.identifier
-                      refetchClusterNames({
-                        queryParams: {
-                          accountIdentifier: accountId,
-                          projectIdentifier,
-                          orgIdentifier,
-                          connectorRef
-                        }
-                      })
-                    } else {
-                      setClusterOptions([])
-                    }
-
-                    formik.setFieldValue('cluster', '')
-                  }}
                   gitScope={{ repo: repoIdentifier || '', branch, getDefaultFromOtherRepo: true }}
                 />
                 {getMultiTypeFromValue(formik.values.connectorRef) === MultiTypeInputType.RUNTIME && !readonly && (
@@ -266,7 +196,6 @@ const GcpInfrastructureSpecEditable: React.FC<GcpInfrastructureSpecEditableProps
                     showAdvanced={true}
                     onChange={value => {
                       formik.setFieldValue('connectorRef', value)
-                      formik.setFieldValue('cluster', '')
                     }}
                     isReadonly={readonly}
                     className={css.marginTop}
@@ -274,133 +203,64 @@ const GcpInfrastructureSpecEditable: React.FC<GcpInfrastructureSpecEditableProps
                 )}
               </Layout.Horizontal>
               <Layout.Horizontal className={css.formRow} spacing="medium">
-                <FormInput.MultiTypeInput
-                  name="cluster"
+                <FormInput.MultiTextInput
+                  name="region"
                   tooltipProps={{
-                    dataTooltipId: 'gcpInfraCluster'
+                    dataTooltipId: 'awsRegion'
                   }}
                   className={css.inputWidth}
-                  selectItems={clusterOptions}
-                  disabled={loadingClusterNames || readonly}
-                  placeholder={
-                    loadingClusterNames
-                      ? /* istanbul ignore next */ getString('loading')
-                      : getString('cd.steps.common.selectOrEnterClusterPlaceholder')
-                  }
-                  multiTypeInputProps={{
+                  disabled={readonly}
+                  placeholder={getString('cd.steps.serverless.regionPlaceholder')}
+                  multiTextInputProps={{
                     expressions,
                     disabled: readonly,
-                    selectProps: {
-                      items: clusterOptions,
-                      itemRenderer: itemRenderer,
-                      allowCreatingNewItems: true,
-                      addClearBtn: !(loadingClusterNames || readonly),
-                      noResults: (
-                        <Text padding={'small'}>
-                          {get(clusterError, 'data.message', null) ||
-                            getString('cd.pipelineSteps.infraTab.clusterError')}
-                        </Text>
-                      )
-                    },
                     allowableTypes
                   }}
-                  label={getString('common.cluster')}
+                  label={getString('common.region')}
                 />
-                {getMultiTypeFromValue(getClusterValue(formik.values.cluster)) === MultiTypeInputType.RUNTIME &&
-                  !readonly && (
-                    <ConfigureOptions
-                      value={getClusterValue(formik.values.cluster)}
-                      type="String"
-                      variableName="cluster"
-                      showRequiredField={false}
-                      showDefaultField={false}
-                      showAdvanced={true}
-                      onChange={value => {
-                        formik.setFieldValue('cluster', value)
-                      }}
-                      isReadonly={readonly}
-                      className={css.marginTop}
-                    />
-                  )}
-              </Layout.Horizontal>
-              <Layout.Horizontal className={css.formRow} spacing="medium">
-                <FormInput.MultiTextInput
-                  name="namespace"
-                  tooltipProps={{
-                    dataTooltipId: 'gcpInfraNamespace'
-                  }}
-                  className={css.inputWidth}
-                  label={getString('common.namespace')}
-                  placeholder={getString('pipeline.infraSpecifications.namespacePlaceholder')}
-                  multiTextInputProps={{ expressions, textProps: { disabled: readonly }, allowableTypes }}
-                  disabled={readonly}
-                />
-                {getMultiTypeFromValue(formik.values.namespace) === MultiTypeInputType.RUNTIME && !readonly && (
+                {getMultiTypeFromValue(formik.values.region) === MultiTypeInputType.RUNTIME && !readonly && (
                   <ConfigureOptions
-                    value={formik.values.namespace as string}
+                    value={formik.values.region}
                     type="String"
-                    variableName="namespace"
+                    variableName="region"
                     showRequiredField={false}
                     showDefaultField={false}
                     showAdvanced={true}
                     onChange={value => {
-                      formik.setFieldValue('namespace', value)
+                      formik.setFieldValue('region', value)
                     }}
                     isReadonly={readonly}
                     className={css.marginTop}
                   />
                 )}
               </Layout.Horizontal>
-              <Accordion
-                panelClassName={css.accordionPanel}
-                detailsClassName={css.accordionDetails}
-                activeId={!isEmpty(formik.errors.releaseName) ? 'advanced' : ''}
-              >
-                <Accordion.Panel
-                  id="advanced"
-                  addDomId={true}
-                  summary={getString('common.advanced')}
-                  details={
-                    <Layout.Horizontal className={css.formRow} spacing="medium">
-                      <FormInput.MultiTextInput
-                        name="releaseName"
-                        tooltipProps={{
-                          dataTooltipId: 'gcpInfraReleasename'
-                        }}
-                        className={css.inputWidth}
-                        label={getString('common.releaseName')}
-                        placeholder={getString('cd.steps.common.releaseNamePlaceholder')}
-                        multiTextInputProps={{ expressions, textProps: { disabled: readonly }, allowableTypes }}
-                        disabled={readonly}
-                      />
-                      {getMultiTypeFromValue(formik.values.releaseName) === MultiTypeInputType.RUNTIME && !readonly && (
-                        <ConfigureOptions
-                          value={formik.values.releaseName as string}
-                          type="String"
-                          variableName="releaseName"
-                          showRequiredField={false}
-                          showDefaultField={false}
-                          showAdvanced={true}
-                          onChange={value => {
-                            formik.setFieldValue('releaseName', value)
-                          }}
-                          isReadonly={readonly}
-                        />
-                      )}
-                    </Layout.Horizontal>
-                  }
-                />
-              </Accordion>
-              <Layout.Horizontal spacing="medium" style={{ alignItems: 'center' }} className={css.lastRow}>
-                <FormInput.CheckBox
-                  className={css.simultaneousDeployment}
+              <Layout.Horizontal className={css.formRow} spacing="medium">
+                <FormInput.MultiTextInput
+                  name="stage"
                   tooltipProps={{
-                    dataTooltipId: 'gcpInfraAllowSimultaneousDeployments'
+                    dataTooltipId: 'awsStage'
                   }}
-                  name={'allowSimultaneousDeployments'}
-                  label={getString('cd.allowSimultaneousDeployments')}
+                  className={css.inputWidth}
+                  label={getString('common.stage')}
+                  placeholder={getString('cd.steps.serverless.stagePlaceholder')}
+                  multiTextInputProps={{ expressions, textProps: { disabled: readonly }, allowableTypes }}
                   disabled={readonly}
                 />
+                {getMultiTypeFromValue(formik.values.stage) === MultiTypeInputType.RUNTIME && !readonly && (
+                  <ConfigureOptions
+                    value={formik.values.stage as string}
+                    type="String"
+                    variableName="stage"
+                    showRequiredField={false}
+                    showDefaultField={false}
+                    showAdvanced={true}
+                    onChange={value => {
+                      formik.setFieldValue('stage', value)
+                    }}
+                    isReadonly={readonly}
+                    className={css.marginTop}
+                  />
+                )}
               </Layout.Horizontal>
             </FormikForm>
           )
@@ -410,14 +270,14 @@ const GcpInfrastructureSpecEditable: React.FC<GcpInfrastructureSpecEditableProps
   )
 }
 
-const GcpInfrastructureSpecInputForm: React.FC<GcpInfrastructureSpecEditableProps & { path: string }> = ({
+const ServerlessAwsLambdaSpecInputForm: React.FC<ServerlessAwsLambdaSpecEditableProps & { path: string }> = ({
   template,
-  initialValues,
+  //   initialValues,
   readonly = false,
   path,
-  onUpdate,
-  allowableTypes,
-  allValues
+  //   onUpdate,
+  allowableTypes
+  //   allValues
 }) => {
   const { accountId, projectIdentifier, orgIdentifier } = useParams<{
     projectIdentifier: string
@@ -425,55 +285,30 @@ const GcpInfrastructureSpecInputForm: React.FC<GcpInfrastructureSpecEditableProp
     accountId: string
   }>()
   const { repoIdentifier, branch } = useQueryParams<GitQueryParams>()
-  const [clusterOptions, setClusterOptions] = useState<SelectOption[]>([])
   const { expressions } = useVariablesExpression()
 
   const { getString } = useStrings()
 
-  const {
-    data: clusterNamesData,
-    refetch: refetchClusterNames,
-    loading: loadingClusterNames,
-    error: clusterError
-  } = useGetClusterNamesForGcp({
-    lazy: true,
-    debounce: 300
-  })
-
-  useEffect(() => {
-    const options = clusterNamesData?.data?.clusterNames?.map(name => ({ label: name, value: name }))
-    setClusterOptions(defaultTo(options, []))
-  }, [clusterNamesData])
-
-  useEffect(() => {
-    const connectorRef = defaultTo(initialValues.connectorRef, allValues?.connectorRef)
-    if (connectorRef && getMultiTypeFromValue(connectorRef) === MultiTypeInputType.FIXED) {
-      refetchClusterNames({
-        queryParams: {
-          accountIdentifier: accountId,
-          projectIdentifier,
-          orgIdentifier,
-          connectorRef
-        }
-      })
-
-      // reset cluster on connectorRef change
-      if (
-        getMultiTypeFromValue(template?.cluster) === MultiTypeInputType.RUNTIME &&
-        getMultiTypeFromValue(initialValues?.cluster) !== MultiTypeInputType.RUNTIME
-      ) {
-        set(initialValues, 'cluster', '')
-        onUpdate?.(initialValues)
-      }
-    } else {
-      setClusterOptions([])
-    }
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [initialValues.connectorRef, allValues?.connectorRef])
+  //   useEffect(() => {
+  //     const connectorRef = defaultTo(initialValues.connectorRef, allValues?.connectorRef)
+  //     if (connectorRef && getMultiTypeFromValue(connectorRef) === MultiTypeInputType.FIXED) {
+  //       // reset cluster on connectorRef change
+  //       if (
+  //         getMultiTypeFromValue(template?.cluster) === MultiTypeInputType.RUNTIME &&
+  //         getMultiTypeFromValue(initialValues?.cluster) !== MultiTypeInputType.RUNTIME
+  //       ) {
+  //         set(initialValues, 'cluster', '')
+  //         onUpdate?.(initialValues)
+  //       }
+  //     } else {
+  //       setClusterOptions([])
+  //     }
+  //     // eslint-disable-next-line react-hooks/exhaustive-deps
+  //   }, [initialValues.connectorRef, allValues?.connectorRef])
 
   const itemRenderer = memoize((item: { label: string }, { handleClick }) => (
     <div key={item.label.toString()}>
-      <Menu.Item text={item.label} disabled={loadingClusterNames} onClick={handleClick} />
+      <Menu.Item text={item.label} disabled={true} onClick={handleClick} />
     </div>
   ))
 
@@ -496,57 +331,27 @@ const GcpInfrastructureSpecInputForm: React.FC<GcpInfrastructureSpecEditableProp
             multiTypeProps={{ allowableTypes, expressions }}
             type={'Gcp'}
             setRefValue
-            onChange={(selected, _typeValue, type) => {
-              const item = selected as unknown as { record?: ConnectorReferenceDTO; scope: Scope }
-              if (type === MultiTypeInputType.FIXED) {
-                const connectorRefValue =
-                  item.scope === Scope.ORG || item.scope === Scope.ACCOUNT
-                    ? `${item.scope}.${item?.record?.identifier}`
-                    : item.record?.identifier
-                if (connectorRefValue) {
-                  refetchClusterNames({
-                    queryParams: {
-                      accountIdentifier: accountId,
-                      projectIdentifier,
-                      orgIdentifier,
-                      connectorRef: connectorRefValue
-                    }
-                  })
-                }
-              } else {
-                setClusterOptions([])
-              }
-            }}
             gitScope={{ repo: defaultTo(repoIdentifier, ''), branch, getDefaultFromOtherRepo: true }}
           />
         </div>
       )}
-      {getMultiTypeFromValue(template?.cluster) === MultiTypeInputType.RUNTIME && (
+      {getMultiTypeFromValue(template?.region) === MultiTypeInputType.RUNTIME && (
         <div className={cx(stepCss.formGroup, stepCss.md, css.clusterInputWrapper)}>
           <FormInput.MultiTypeInput
-            name={`${path}.cluster`}
-            disabled={loadingClusterNames || readonly}
-            placeholder={
-              loadingClusterNames
-                ? /* istanbul ignore next */ getString('loading')
-                : getString('cd.steps.serverless.regionPlaceholder')
-            }
+            name={`${path}.region`}
+            disabled={readonly}
+            placeholder={getString('cd.steps.serverless.regionPlaceholder')}
             useValue
-            selectItems={clusterOptions}
+            selectItems={[]}
             label={getString('common.region')}
             multiTypeInputProps={{
               selectProps: {
-                items: clusterOptions,
+                items: [],
                 itemRenderer: itemRenderer,
                 allowCreatingNewItems: true,
-                addClearBtn: !(loadingClusterNames || readonly),
+                addClearBtn: !readonly,
                 noResults: (
-                  <Text padding={'small'}>
-                    {defaultTo(
-                      get(clusterError, 'data.message', clusterError?.message),
-                      getString('cd.pipelineSteps.infraTab.regionError')
-                    )}
-                  </Text>
+                  <Text padding={'small'}>{defaultTo(null, getString('cd.pipelineSteps.infraTab.regionError'))}</Text>
                 )
               },
               expressions,
@@ -555,31 +360,17 @@ const GcpInfrastructureSpecInputForm: React.FC<GcpInfrastructureSpecEditableProp
           />
         </div>
       )}
-      {getMultiTypeFromValue(template?.namespace) === MultiTypeInputType.RUNTIME && (
+      {getMultiTypeFromValue(template?.stage) === MultiTypeInputType.RUNTIME && (
         <div className={cx(stepCss.formGroup, stepCss.md)}>
           <FormInput.MultiTextInput
-            name={`${path}.namespace`}
-            label={getString('common.namespace')}
-            disabled={readonly}
-            multiTextInputProps={{
-              allowableTypes,
-              expressions
-            }}
-            placeholder={getString('pipeline.infraSpecifications.namespacePlaceholder')}
-          />
-        </div>
-      )}
-      {getMultiTypeFromValue(template?.releaseName) === MultiTypeInputType.RUNTIME && (
-        <div className={cx(stepCss.formGroup, stepCss.md)}>
-          <FormInput.MultiTextInput
-            name={`${path}.releaseName`}
-            multiTextInputProps={{
-              allowableTypes,
-              expressions
-            }}
+            name={`${path}.stage`}
             label={getString('common.stage')}
             disabled={readonly}
-            placeholder={getString('cd.steps.common.stagePlaceholder')}
+            multiTextInputProps={{
+              allowableTypes,
+              expressions
+            }}
+            placeholder={getString('cd.steps.serverless.stagePlaceholder')}
           />
         </div>
       )}
@@ -587,7 +378,7 @@ const GcpInfrastructureSpecInputForm: React.FC<GcpInfrastructureSpecEditableProp
   )
 }
 
-const GcpInfrastructureSpecVariablesForm: React.FC<GcpInfrastructureSpecEditableProps> = ({
+const ServerlessAwsLambdaInfrastructureSpecVariablesForm: React.FC<ServerlessAwsLambdaSpecEditableProps> = ({
   metadataMap,
   variablesData,
   initialValues
@@ -602,17 +393,16 @@ const GcpInfrastructureSpecVariablesForm: React.FC<GcpInfrastructureSpecEditable
   ) : null
 }
 
-interface GcpInfrastructureSpecStep extends K8sGcpInfrastructure {
+interface ServerlessAwsLambdaInfrastructureSpecStep extends ServerlessAwsLambdaInfrastructure {
   name?: string
   identifier?: string
 }
 
 const ServerlessAwsConnectorRegex = /^.+infrastructure\.infrastructureDefinition\.spec\.connectorRef$/
-const ServerlessAwsClusterRegex = /^.+infrastructure\.infrastructureDefinition\.spec\.cluster$/
 const KubernetesGcpType = 'KubernetesGcp'
-export class ServerlessAwsLambdaSpec extends PipelineStep<GcpInfrastructureSpecStep> {
+export class ServerlessAwsLambdaSpec extends PipelineStep<ServerlessAwsLambdaInfrastructureSpecStep> {
   lastFetched: number
-  protected type = StepType.KubernetesGcp
+  protected type = StepType.ServerlessAwsLambda
   protected defaultValues: ServerlessAwsLambdaInfrastructure = { connectorRef: '', region: '', stage: '' }
 
   protected stepIcon: IconName = 'service-aws'
@@ -627,8 +417,6 @@ export class ServerlessAwsLambdaSpec extends PipelineStep<GcpInfrastructureSpecS
     super()
     this.lastFetched = new Date().getTime()
     this.invocationMap.set(ServerlessAwsConnectorRegex, this.getConnectorsListForYaml.bind(this))
-    this.invocationMap.set(ServerlessAwsClusterRegex, this.getClusterListForYaml.bind(this))
-
     this._hasStepVariables = true
   }
 
@@ -676,60 +464,13 @@ export class ServerlessAwsLambdaSpec extends PipelineStep<GcpInfrastructureSpecS
     })
   }
 
-  protected getClusterListForYaml(
-    path: string,
-    yaml: string,
-    params: Record<string, unknown>
-  ): Promise<CompletionItemInterface[]> {
-    let pipelineObj
-    try {
-      pipelineObj = parse(yaml)
-    } catch (err) {
-      /* istanbul ignore next */ logger.error('Error while parsing the yaml', err)
-    }
-    const { accountId, projectIdentifier, orgIdentifier } = params as {
-      accountId: string
-      orgIdentifier: string
-      projectIdentifier: string
-    }
-    if (pipelineObj) {
-      const obj = get(pipelineObj, path.replace('.spec.cluster', ''))
-      if (
-        obj?.type === KubernetesGcpType &&
-        obj?.spec?.connectorRef &&
-        getMultiTypeFromValue(obj.spec?.connectorRef) === MultiTypeInputType.FIXED
-      ) {
-        return getClusterNamesForGcpPromise({
-          queryParams: {
-            accountIdentifier: accountId,
-            orgIdentifier,
-            projectIdentifier,
-            connectorRef: obj.spec?.connectorRef
-          }
-        }).then(response => {
-          const data =
-            response?.data?.clusterNames?.map(clusterName => ({
-              label: clusterName,
-              insertText: clusterName,
-              kind: CompletionItemKind.Field
-            })) || /* istanbul ignore next */ []
-          return data
-        })
-      }
-    }
-
-    return new Promise(resolve => {
-      resolve([])
-    })
-  }
-
   validateInputSet({
     data,
     template,
     getString,
     viewType
-  }: ValidateInputSetProps<K8sGcpInfrastructure>): FormikErrors<K8sGcpInfrastructure> {
-    const errors: Partial<K8sGcpInfrastructureTemplate> = {}
+  }: ValidateInputSetProps<ServerlessAwsLambdaInfrastructure>): FormikErrors<ServerlessAwsLambdaInfrastructure> {
+    const errors: Partial<ServerlessAwsLambdaInfrastructureTemplate> = {}
     const isRequired = viewType === StepViewType.DeploymentForm || viewType === StepViewType.TriggerForm
     if (
       isEmpty(data.connectorRef) &&
@@ -786,12 +527,12 @@ export class ServerlessAwsLambdaSpec extends PipelineStep<GcpInfrastructureSpecS
     return errors
   }
 
-  renderStep(props: StepProps<K8sGcpInfrastructure>): JSX.Element {
+  renderStep(props: StepProps<ServerlessAwsLambdaInfrastructure>): JSX.Element {
     const { initialValues, onUpdate, stepViewType, inputSetData, customStepProps, readonly, allowableTypes } = props
     if (stepViewType === StepViewType.InputSet || stepViewType === StepViewType.DeploymentForm) {
       return (
-        <GcpInfrastructureSpecInputForm
-          {...(customStepProps as GcpInfrastructureSpecEditableProps)}
+        <ServerlessAwsLambdaSpecInputForm
+          {...(customStepProps as ServerlessAwsLambdaSpecEditableProps)}
           initialValues={initialValues}
           onUpdate={onUpdate}
           stepViewType={stepViewType}
@@ -804,22 +545,22 @@ export class ServerlessAwsLambdaSpec extends PipelineStep<GcpInfrastructureSpecS
       )
     } else if (stepViewType === StepViewType.InputVariable) {
       return (
-        <GcpInfrastructureSpecVariablesForm
+        <ServerlessAwsLambdaInfrastructureSpecVariablesForm
           onUpdate={onUpdate}
           stepViewType={stepViewType}
           template={inputSetData?.template}
-          {...(customStepProps as GcpInfrastructureSpecEditableProps)}
+          {...(customStepProps as ServerlessAwsLambdaSpecEditableProps)}
           initialValues={initialValues}
         />
       )
     }
 
     return (
-      <GcpInfrastructureSpecEditable
+      <ServerlessAwsLambdaSpecEditable
         onUpdate={onUpdate}
         readonly={readonly}
         stepViewType={stepViewType}
-        {...(customStepProps as GcpInfrastructureSpecEditableProps)}
+        {...(customStepProps as ServerlessAwsLambdaSpecEditableProps)}
         initialValues={initialValues}
         allowableTypes={allowableTypes}
       />

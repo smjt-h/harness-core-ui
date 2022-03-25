@@ -14,7 +14,6 @@ import { ManifestDataType } from '@pipeline/components/ManifestSelection/Manifes
 import type { ManifestTypes } from '@pipeline/components/ManifestSelection/ManifestInterface'
 import type { InputSetDTO } from './types'
 import type { DeploymentStageElementConfig, PipelineStageWrapper, StageElementWrapper } from './pipelineTypes'
-import { InfraDeploymentType } from '@cd/components/PipelineSteps/PipelineStepsUtil'
 
 export enum StageType {
   DEPLOY = 'Deployment',
@@ -165,6 +164,12 @@ export const isServerlessDeploymentType = (deploymentType: string): boolean => {
     deploymentType === ServiceDeploymentType.AmazonSAM ||
     deploymentType === ServiceDeploymentType.AzureFunctions
   )
+}
+
+export const detailsHeaderName: Record<string, string> = {
+  [ServiceDeploymentType.ServerlessAwsLambda]: 'Amazon Web Services Details',
+  [ServiceDeploymentType.ServerlessAzureFunctions]: 'Azure Details',
+  [ServiceDeploymentType.ServerlessGoogleFunctions]: 'GCP Details'
 }
 
 export const isServerlessManifestType = (selectedManifest: ManifestTypes | null): boolean => {

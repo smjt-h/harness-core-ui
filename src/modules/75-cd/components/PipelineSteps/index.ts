@@ -33,6 +33,7 @@ import { GcpInfrastructureSpec } from './GcpInfrastructureSpec/GcpInfrastructure
 import { PolicyStep } from './PolicyStep/PolicyStep'
 import { ServerlessAwsLambdaDeployStep } from './ServerlessDeployStep/ServerlessDeployStep'
 import { ServerlessAwsLambdaRollbackStep } from './ServerlessAwsLambdaRollback/ServerlessAwsLambdaRollback'
+import { ServerlessAwsLambdaSpec } from './ServerlessAWSLambda/ServerlessAwsLambdaSpec'
 
 factory.registerStep(new HttpStep())
 factory.registerStep(new K8RolloutDeployStep())
@@ -47,6 +48,7 @@ factory.registerStep(new K8sDeleteStep())
 factory.registerStep(new ShellScriptStep())
 factory.registerStep(new KubernetesInfraSpec())
 factory.registerStep(new GcpInfrastructureSpec())
+factory.registerStep(new ServerlessAwsLambdaSpec())
 factory.registerStep(new DeployEnvironmentStep())
 factory.registerStep(new DeployServiceStep())
 factory.registerStep(new KubernetesServiceSpec())

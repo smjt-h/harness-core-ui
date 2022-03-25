@@ -198,7 +198,6 @@ const GcpInfrastructureSpecEditable: React.FC<GcpInfrastructureSpecEditableProps
           /* istanbul ignore else */ if (value.connectorRef) {
             data.connectorRef = (value.connectorRef as any)?.value || /* istanbul ignore next */ value.connectorRef
           }
-
           delayedOnUpdate(data)
         }}
         validationSchema={getValidationSchema(getString)}
