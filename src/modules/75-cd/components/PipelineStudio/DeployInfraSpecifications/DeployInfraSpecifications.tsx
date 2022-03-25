@@ -296,7 +296,7 @@ export default function DeployInfraSpecifications(props: React.PropsWithChildren
     const type = infrastructure?.type || newDeploymentType
     const allowSimultaneousDeployments = get(stageData, 'stage.spec.infrastructure.allowSimultaneousDeployments', false)
     switch (type) {
-      case 'KubernetesDirect': {
+      case InfraDeploymentType.KubernetesDirect: {
         const connectorRef = infrastructure?.spec?.connectorRef
         const namespace = infrastructure?.spec?.namespace
         const releaseName = infrastructure?.spec?.releaseName ?? DEFAULT_RELEASE_NAME
@@ -307,7 +307,7 @@ export default function DeployInfraSpecifications(props: React.PropsWithChildren
           allowSimultaneousDeployments
         }
       }
-      case 'KubernetesGcp': {
+      case InfraDeploymentType.KubernetesGcp: {
         const connectorRef = infrastructure?.spec?.connectorRef
         const namespace = infrastructure?.spec?.namespace
         const releaseName = infrastructure?.spec?.releaseName ?? DEFAULT_RELEASE_NAME
@@ -319,6 +319,35 @@ export default function DeployInfraSpecifications(props: React.PropsWithChildren
           releaseName,
           cluster,
           allowSimultaneousDeployments
+        }
+      }
+      case InfraDeploymentType.ServerlessAwsLambda: {
+        const connectorRef = infrastructure?.spec?.connectorRef
+        const region = infrastructure?.spec?.region
+        const infraStage = infrastructure?.spec?.stage
+
+        return {
+          connectorRef,
+          region,
+          infraStage
+        }
+      }
+      case InfraDeploymentType.ServerlessAzureFunctions: {
+        const connectorRef = infrastructure?.spec?.connectorRef
+        const infraStage = infrastructure?.spec?.stage
+
+        return {
+          connectorRef,
+          infraStage
+        }
+      }
+      case InfraDeploymentType.ServerlessGoogleFunctions: {
+        const connectorRef = infrastructure?.spec?.connectorRef
+        const infraStage = infrastructure?.spec?.stage
+
+        return {
+          connectorRef,
+          infraStage
         }
       }
       default: {
@@ -503,12 +532,14 @@ export default function DeployInfraSpecifications(props: React.PropsWithChildren
           />
         </div>
         <Card className={stageCss.sectionCard}>
-          <Text margin={{ bottom: 'medium' }} className={stageCss.info}>
-            <StringWithTooltip
-              tooltipId="pipelineStep.infrastructureDefinitionMethod"
-              stringId="pipelineSteps.deploy.infrastructure.selectMethod"
-            />
-          </Text>
+          {!isServerlessDeploymentType(selectedDeploymentType) && (
+            <Text margin={{ bottom: 'medium' }} className={stageCss.info}>
+              <StringWithTooltip
+                tooltipId="pipelineStep.infrastructureDefinitionMethod"
+                stringId="pipelineSteps.deploy.infrastructure.selectMethod"
+              />
+            </Text>
+          )}
           <SelectDeploymentType
             deploymentType={selectedDeploymentType}
             isReadonly={isReadonly}

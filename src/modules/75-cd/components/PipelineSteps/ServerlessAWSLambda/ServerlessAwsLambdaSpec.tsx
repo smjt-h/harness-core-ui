@@ -49,7 +49,7 @@ import { useQueryParams } from '@common/hooks'
 import { StageErrorContext } from '@pipeline/context/StageErrorContext'
 import { DeployTabs } from '@cd/components/PipelineStudio/DeployStageSetupShell/DeployStageSetupShellUtils'
 import { getConnectorName, getConnectorValue } from '@pipeline/components/PipelineSteps/Steps/StepsHelper'
-import { getConnectorSchema, getNameSpaceSchema, getReleaseNameSchema } from '../PipelineStepsUtil'
+import { getConnectorSchema } from '../PipelineStepsUtil'
 import stepCss from '@pipeline/components/PipelineSteps/Steps/Steps.module.scss'
 import css from './ServerlessAwsLambda.module.scss'
 
@@ -69,7 +69,6 @@ function getValidationSchema(getString: UseStringsReturn['getString']): Yup.Obje
 }
 interface ServerlessAwsLambdaSpecEditableProps {
   initialValues: ServerlessAwsLambdaInfrastructure
-  allValues?: ServerlessAwsLambdaInfrastructure
   onUpdate?: (data: ServerlessAwsLambdaInfrastructure) => void
   stepViewType?: StepViewType
   readonly?: boolean
@@ -251,12 +250,9 @@ const ServerlessAwsLambdaSpecEditable: React.FC<ServerlessAwsLambdaSpecEditableP
 
 const ServerlessAwsLambdaSpecInputForm: React.FC<ServerlessAwsLambdaSpecEditableProps & { path: string }> = ({
   template,
-  //   initialValues,
   readonly = false,
   path,
-  //   onUpdate,
   allowableTypes
-  //   allValues
 }) => {
   const { accountId, projectIdentifier, orgIdentifier } = useParams<{
     projectIdentifier: string
@@ -265,26 +261,7 @@ const ServerlessAwsLambdaSpecInputForm: React.FC<ServerlessAwsLambdaSpecEditable
   }>()
   const { repoIdentifier, branch } = useQueryParams<GitQueryParams>()
   const { expressions } = useVariablesExpression()
-
   const { getString } = useStrings()
-
-  //   useEffect(() => {
-  //     const connectorRef = defaultTo(initialValues.connectorRef, allValues?.connectorRef)
-  //     if (connectorRef && getMultiTypeFromValue(connectorRef) === MultiTypeInputType.FIXED) {
-  //       // reset cluster on connectorRef change
-  //       if (
-  //         getMultiTypeFromValue(template?.cluster) === MultiTypeInputType.RUNTIME &&
-  //         getMultiTypeFromValue(initialValues?.cluster) !== MultiTypeInputType.RUNTIME
-  //       ) {
-  //         set(initialValues, 'cluster', '')
-  //         onUpdate?.(initialValues)
-  //       }
-  //     } else {
-  //       setClusterOptions([])
-  //     }
-  //     // eslint-disable-next-line react-hooks/exhaustive-deps
-  //   }, [initialValues.connectorRef, allValues?.connectorRef])
-
   const itemRenderer = memoize((item: { label: string }, { handleClick }) => (
     <div key={item.label.toString()}>
       <Menu.Item text={item.label} disabled={true} onClick={handleClick} />
@@ -425,7 +402,7 @@ export class ServerlessAwsLambdaSpec extends PipelineStep<ServerlessAwsLambdaInf
             projectIdentifier,
             includeAllConnectorsAvailableAtScope: true
           },
-          body: { types: ['Gcp'], filterType: 'Connector' }
+          body: { types: ['Aws'], filterType: 'Connector' }
         }).then(response => {
           const data =
             response?.data?.content?.map(connector => ({
@@ -458,23 +435,18 @@ export class ServerlessAwsLambdaSpec extends PipelineStep<ServerlessAwsLambdaInf
     ) {
       errors.connectorRef = getString?.('fieldRequired', { field: getString('connector') })
     }
-    if (
-      isEmpty(data.cluster) &&
-      isRequired &&
-      getMultiTypeFromValue(template?.cluster) === MultiTypeInputType.RUNTIME
-    ) {
-      errors.cluster = getString?.('fieldRequired', { field: getString('common.cluster') })
-    }
     /* istanbul ignore else */ if (
       getString &&
-      getMultiTypeFromValue(template?.namespace) === MultiTypeInputType.RUNTIME
+      getMultiTypeFromValue(template?.region) === MultiTypeInputType.RUNTIME
     ) {
-      const namespace = Yup.object().shape({
-        namespace: getNameSpaceSchema(getString, isRequired)
+      const region = Yup.object().shape({
+        region: Yup.lazy((): Yup.Schema<unknown> => {
+          return Yup.string().required(getString('common.region'))
+        })
       })
 
       try {
-        namespace.validateSync(data)
+        region.validateSync(data)
       } catch (e) {
         /* istanbul ignore else */
         if (e instanceof Yup.ValidationError) {
@@ -484,16 +456,15 @@ export class ServerlessAwsLambdaSpec extends PipelineStep<ServerlessAwsLambdaInf
         }
       }
     }
-    /* istanbul ignore else */ if (
-      getString &&
-      getMultiTypeFromValue(template?.releaseName) === MultiTypeInputType.RUNTIME
-    ) {
-      const releaseName = Yup.object().shape({
-        releaseName: getReleaseNameSchema(getString, isRequired)
+    /* istanbul ignore else */ if (getString && getMultiTypeFromValue(template?.stage) === MultiTypeInputType.RUNTIME) {
+      const stage = Yup.object().shape({
+        stage: Yup.lazy((): Yup.Schema<unknown> => {
+          return Yup.string().required(getString('common.stage'))
+        })
       })
 
       try {
-        releaseName.validateSync(data)
+        stage.validateSync(data)
       } catch (e) {
         /* istanbul ignore else */
         if (e instanceof Yup.ValidationError) {
@@ -517,7 +488,6 @@ export class ServerlessAwsLambdaSpec extends PipelineStep<ServerlessAwsLambdaInf
           stepViewType={stepViewType}
           readonly={inputSetData?.readonly}
           template={inputSetData?.template}
-          allValues={inputSetData?.allValues}
           path={inputSetData?.path || ''}
           allowableTypes={allowableTypes}
         />

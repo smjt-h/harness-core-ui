@@ -49,7 +49,7 @@ import { useQueryParams } from '@common/hooks'
 import { StageErrorContext } from '@pipeline/context/StageErrorContext'
 import { DeployTabs } from '@cd/components/PipelineStudio/DeployStageSetupShell/DeployStageSetupShellUtils'
 import { getConnectorName, getConnectorValue } from '@pipeline/components/PipelineSteps/Steps/StepsHelper'
-import { getConnectorSchema, getNameSpaceSchema, getReleaseNameSchema } from '../PipelineStepsUtil'
+import { getConnectorSchema } from '../PipelineStepsUtil'
 import stepCss from '@pipeline/components/PipelineSteps/Steps/Steps.module.scss'
 import css from './ServerlessGCP.module.scss'
 
@@ -225,12 +225,9 @@ const ServerlessGCPSpecEditable: React.FC<ServerlessGCPSpecEditableProps> = ({
 
 const ServerlessGCPSpecInputForm: React.FC<ServerlessGCPSpecEditableProps & { path: string }> = ({
   template,
-  //   initialValues,
   readonly = false,
   path,
-  //   onUpdate,
   allowableTypes
-  //   allValues
 }) => {
   const { accountId, projectIdentifier, orgIdentifier } = useParams<{
     projectIdentifier: string
@@ -239,25 +236,7 @@ const ServerlessGCPSpecInputForm: React.FC<ServerlessGCPSpecEditableProps & { pa
   }>()
   const { repoIdentifier, branch } = useQueryParams<GitQueryParams>()
   const { expressions } = useVariablesExpression()
-
   const { getString } = useStrings()
-
-  //   useEffect(() => {
-  //     const connectorRef = defaultTo(initialValues.connectorRef, allValues?.connectorRef)
-  //     if (connectorRef && getMultiTypeFromValue(connectorRef) === MultiTypeInputType.FIXED) {
-  //       // reset cluster on connectorRef change
-  //       if (
-  //         getMultiTypeFromValue(template?.cluster) === MultiTypeInputType.RUNTIME &&
-  //         getMultiTypeFromValue(initialValues?.cluster) !== MultiTypeInputType.RUNTIME
-  //       ) {
-  //         set(initialValues, 'cluster', '')
-  //         onUpdate?.(initialValues)
-  //       }
-  //     } else {
-  //       setClusterOptions([])
-  //     }
-  //     // eslint-disable-next-line react-hooks/exhaustive-deps
-  //   }, [initialValues.connectorRef, allValues?.connectorRef])
 
   return (
     <Layout.Vertical spacing="small">
@@ -401,42 +380,15 @@ export class ServerlessGCPSpec extends PipelineStep<ServerlessGCPInfrastructureS
     ) {
       errors.connectorRef = getString?.('fieldRequired', { field: getString('connector') })
     }
-    if (
-      isEmpty(data.cluster) &&
-      isRequired &&
-      getMultiTypeFromValue(template?.cluster) === MultiTypeInputType.RUNTIME
-    ) {
-      errors.cluster = getString?.('fieldRequired', { field: getString('common.cluster') })
-    }
-    /* istanbul ignore else */ if (
-      getString &&
-      getMultiTypeFromValue(template?.namespace) === MultiTypeInputType.RUNTIME
-    ) {
-      const namespace = Yup.object().shape({
-        namespace: getNameSpaceSchema(getString, isRequired)
+    /* istanbul ignore else */ if (getString && getMultiTypeFromValue(template?.stage) === MultiTypeInputType.RUNTIME) {
+      const stage = Yup.object().shape({
+        stage: Yup.lazy((): Yup.Schema<unknown> => {
+          return Yup.string().required(getString('common.stage'))
+        })
       })
 
       try {
-        namespace.validateSync(data)
-      } catch (e) {
-        /* istanbul ignore else */
-        if (e instanceof Yup.ValidationError) {
-          const err = yupToFormErrors(e)
-
-          Object.assign(errors, err)
-        }
-      }
-    }
-    /* istanbul ignore else */ if (
-      getString &&
-      getMultiTypeFromValue(template?.releaseName) === MultiTypeInputType.RUNTIME
-    ) {
-      const releaseName = Yup.object().shape({
-        releaseName: getReleaseNameSchema(getString, isRequired)
-      })
-
-      try {
-        releaseName.validateSync(data)
+        stage.validateSync(data)
       } catch (e) {
         /* istanbul ignore else */
         if (e instanceof Yup.ValidationError) {
