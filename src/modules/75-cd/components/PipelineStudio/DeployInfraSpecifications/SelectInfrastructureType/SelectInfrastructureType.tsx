@@ -14,8 +14,8 @@ import { useStrings, UseStringsReturn } from 'framework/strings'
 import { StageErrorContext } from '@pipeline/context/StageErrorContext'
 import { DeployTabs } from '@cd/components/PipelineStudio/DeployStageSetupShell/DeployStageSetupShellUtils'
 import { InfraDeploymentType } from '@cd/components/PipelineSteps/PipelineStepsUtil'
-import css from './SelectInfrastructureType.module.scss'
 import { isServerlessDeploymentType } from '@pipeline/utils/stageHelpers'
+import css from './SelectInfrastructureType.module.scss'
 
 export function getInfraDeploymentTypeSchema(
   getString: UseStringsReturn['getString']
@@ -35,6 +35,7 @@ interface InfrastructureItem {
 interface InfrastructureGroup {
   groupLabel: string
   items: InfrastructureItem[]
+  disabled?: boolean
 }
 
 interface SelectDeploymentTypeProps {
@@ -65,9 +66,10 @@ export default function SelectDeploymentType(props: SelectDeploymentTypeProps): 
             {
               label: getString('pipelineSteps.deploymentTypes.gcp'),
               icon: 'gcp',
-              value: InfraDeploymentType.ServerlessGCPLambda
+              value: InfraDeploymentType.ServerlessGoogleFunctions
             }
-          ]
+          ],
+          disabled: true
         },
         {
           groupLabel: '',
@@ -75,9 +77,10 @@ export default function SelectDeploymentType(props: SelectDeploymentTypeProps): 
             {
               label: getString('pipelineSteps.deploymentTypes.azure'),
               icon: 'service-azure',
-              value: InfraDeploymentType.ServerlessAzureLambda
+              value: InfraDeploymentType.ServerlessAzureFunctions
             }
-          ]
+          ],
+          disabled: true
         }
       ]
     : [
@@ -129,7 +132,7 @@ export default function SelectDeploymentType(props: SelectDeploymentTypeProps): 
             className={css.thumbnailSelect}
             name={'deploymentType'}
             onChange={onChange}
-            groups={infraGroups}
+            groups={infraGroups.filter(item => !item.disabled)}
             isReadonly={isReadonly}
           />
         )

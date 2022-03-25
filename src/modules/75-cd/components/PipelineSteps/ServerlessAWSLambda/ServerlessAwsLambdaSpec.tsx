@@ -16,8 +16,7 @@ import {
   FormInput,
   getMultiTypeFromValue,
   MultiTypeInputType,
-  Icon,
-  SelectOption
+  Icon
 } from '@wings-software/uicore'
 import cx from 'classnames'
 import * as Yup from 'yup'
@@ -60,31 +59,11 @@ type ServerlessAwsLambdaInfrastructureTemplate = { [key in keyof ServerlessAwsLa
 function getValidationSchema(getString: UseStringsReturn['getString']): Yup.ObjectSchema {
   return Yup.object().shape({
     connectorRef: getConnectorSchema(getString),
-    region: Yup.lazy((value): Yup.Schema<unknown> => {
-      /* istanbul ignore else */ if (typeof value === 'string') {
-        return Yup.string().required(getString('common.region'))
-      }
-      return Yup.object().test({
-        test(valueObj: SelectOption): boolean | Yup.ValidationError {
-          if (isEmpty(valueObj) || isEmpty(valueObj.value)) {
-            return this.createError({ message: getString('fieldRequired', { field: getString('common.region') }) })
-          }
-          return true
-        }
-      })
+    region: Yup.lazy((): Yup.Schema<unknown> => {
+      return Yup.string().required(getString('common.region'))
     }),
-    stage: Yup.lazy((value): Yup.Schema<unknown> => {
-      /* istanbul ignore else */ if (typeof value === 'string') {
-        return Yup.string().required(getString('common.stage'))
-      }
-      return Yup.object().test({
-        test(valueObj: SelectOption): boolean | Yup.ValidationError {
-          if (isEmpty(valueObj) || isEmpty(valueObj.value)) {
-            return this.createError({ message: getString('fieldRequired', { field: getString('common.stage') }) })
-          }
-          return true
-        }
-      })
+    stage: Yup.lazy((): Yup.Schema<unknown> => {
+      return Yup.string().required(getString('common.stage'))
     })
   })
 }

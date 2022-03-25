@@ -24,14 +24,14 @@ export enum InfraDeploymentType {
   KubernetesDirect = 'KubernetesDirect',
   KubernetesGcp = 'KubernetesGcp',
   ServerlessAwsLambda = 'ServerlessAwsLambda',
-  ServerlessGCPLambda = 'ServerlessGCPLambda',
-  ServerlessAzureLambda = 'ServerlessAzureLambda'
+  ServerlessGoogleFunctions = 'ServerlessGCPLambda',
+  ServerlessAzureFunctions = 'ServerlessAzureLambda'
 }
 
 export const deploymentTypeToInfraTypeMap = {
   [ServiceDeploymentType.ServerlessAwsLambda]: InfraDeploymentType.ServerlessAwsLambda,
-  [ServiceDeploymentType.ServerlessAzureFunctions]: InfraDeploymentType.ServerlessAzureLambda,
-  [ServiceDeploymentType.ServerlessGoogleFunctions]: InfraDeploymentType.ServerlessGCPLambda
+  [ServiceDeploymentType.ServerlessAzureFunctions]: InfraDeploymentType.ServerlessAzureFunctions,
+  [ServiceDeploymentType.ServerlessGoogleFunctions]: InfraDeploymentType.ServerlessGoogleFunctions
 }
 
 export function getNameSpaceSchema(

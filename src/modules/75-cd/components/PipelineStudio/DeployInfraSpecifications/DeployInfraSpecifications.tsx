@@ -53,16 +53,16 @@ const DEFAULT_RELEASE_NAME = 'release-<+INFRA_KEY>'
 export const deploymentTypeInfraTypeMap = {
   Kubernetes: InfraDeploymentType.KubernetesDirect,
   NativeHelm: InfraDeploymentType.KubernetesDirect,
-  amazonEcs: 'KubernetesDirect',
-  amazonAmi: 'KubernetesDirect',
-  awsCodeDeploy: 'KubernetesDirect',
-  winrm: 'KubernetesDirect',
-  awsLambda: 'KubernetesDirect',
-  pcf: 'KubernetesDirect',
-  Ssh: 'KubernetesDirect',
-  ServerlessAwsLambda: 'ServerlessAwsLambda',
-  ServerlessAzureFunctions: 'ServerlessAzureLambda',
-  ServerlessGoogleFunctions: 'ServerlessGCPLambda',
+  amazonEcs: InfraDeploymentType.KubernetesDirect,
+  amazonAmi: InfraDeploymentType.KubernetesDirect,
+  awsCodeDeploy: InfraDeploymentType.KubernetesDirect,
+  winrm: InfraDeploymentType.KubernetesDirect,
+  awsLambda: InfraDeploymentType.KubernetesDirect,
+  pcf: InfraDeploymentType.KubernetesDirect,
+  Ssh: InfraDeploymentType.KubernetesDirect,
+  ServerlessAwsLambda: InfraDeploymentType.ServerlessAwsLambda,
+  ServerlessAzureFunctions: InfraDeploymentType.ServerlessAzureFunctions,
+  ServerlessGoogleFunctions: InfraDeploymentType.ServerlessGoogleFunctions,
   AmazonSAM: 'AwsSAM',
   AzureFunctions: 'AzureFunctions'
 }
@@ -70,7 +70,7 @@ export const deploymentTypeInfraTypeMap = {
 export default function DeployInfraSpecifications(props: React.PropsWithChildren<unknown>): JSX.Element {
   const [initialInfrastructureDefinitionValues, setInitialInfrastructureDefinitionValues] =
     React.useState<Infrastructure>({})
-  const [selectedDeploymentType, setSelectedDeploymentType] = React.useState<string | undefined>()
+  const [selectedInfrastructureType, setselectedInfrastructureType] = React.useState<string | undefined>()
   const scrollRef = React.useRef<HTMLDivElement | null>(null)
   const { getString } = useStrings()
   const { submitFormsForTab } = React.useContext(StageErrorContext)
@@ -151,7 +151,7 @@ export default function DeployInfraSpecifications(props: React.PropsWithChildren
     return scope === Scope.PROJECT ? '' : RUNTIME_INPUT_VALUE
   }, [scope])
 
-  const deploymentType = getDeploymentType(
+  const selectedDeploymentType = getDeploymentType(
     stage,
     getStageFromPipeline,
     !!stage?.stage?.spec?.serviceConfig?.useFromStage?.stage
@@ -160,11 +160,11 @@ export default function DeployInfraSpecifications(props: React.PropsWithChildren
   React.useEffect(() => {
     // const type = stage?.stage?.spec?.infrastructure?.infrastructureDefinition?.type
     const selectedType = stage?.stage?.spec?.serviceConfig.serviceDefinition?.type
-    const selectedInfrastructureType = selectedType
+    const infrastructureType = selectedType
       ? deploymentTypeInfraTypeMap[selectedType]
       : InfraDeploymentType.KubernetesDirect
-    setSelectedDeploymentType(selectedInfrastructureType)
-    const initialInfraDefValues = getInfrastructureDefaultValue(stage, selectedInfrastructureType)
+    setselectedInfrastructureType(infrastructureType)
+    const initialInfraDefValues = getInfrastructureDefaultValue(stage, infrastructureType)
     setInitialInfrastructureDefinitionValues(initialInfraDefValues)
   }, [stage?.stage?.spec?.serviceConfig.serviceDefinition?.type])
 
@@ -510,16 +510,16 @@ export default function DeployInfraSpecifications(props: React.PropsWithChildren
             />
           </Text>
           <SelectDeploymentType
-            deploymentType={deploymentType}
+            deploymentType={selectedDeploymentType}
             isReadonly={isReadonly}
-            selectedInfrastructureType={selectedDeploymentType}
+            selectedInfrastructureType={selectedInfrastructureType}
             onChange={newDeploymentType => {
-              setSelectedDeploymentType(newDeploymentType)
+              setselectedInfrastructureType(newDeploymentType)
               resetInfrastructureDefinition(newDeploymentType)
             }}
           />
         </Card>
-        {selectedDeploymentType && !isServerlessDeploymentType(deploymentType) ? (
+        {selectedInfrastructureType && !isServerlessDeploymentType(selectedDeploymentType) ? (
           <Accordion className={stageCss.accordion} activeId="dynamicProvisioning">
             <Accordion.Panel
               id="dynamicProvisioning"
@@ -561,12 +561,12 @@ export default function DeployInfraSpecifications(props: React.PropsWithChildren
           </Accordion>
         ) : null}
 
-        {selectedDeploymentType && (
+        {selectedInfrastructureType && (
           <>
             <div className={stageCss.tabHeading} id="clusterDetails">
-              {detailsHeaderName[selectedDeploymentType] || getString('cd.steps.common.clusterDetails')}
+              {detailsHeaderName[selectedInfrastructureType] || getString('cd.steps.common.clusterDetails')}
             </div>
-            <Card className={stageCss.sectionCard}>{getClusterConfigurationStep(selectedDeploymentType)}</Card>
+            <Card className={stageCss.sectionCard}>{getClusterConfigurationStep(selectedInfrastructureType)}</Card>
           </>
         )}
 
