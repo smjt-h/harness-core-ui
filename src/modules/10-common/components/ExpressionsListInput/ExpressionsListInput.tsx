@@ -47,7 +47,10 @@ function ExpressionsListInputInternal(props: ExpressionsListInputProps) {
               disabled={readOnly}
               inputProps={{ className: inputClassName, placeholder: EXPRESSION_INPUT_PLACEHOLDER }}
               items={expressions}
-              onChange={val => formik?.setFieldValue(fieldName, val)}
+              onChange={val =>
+                /* istanbul ignore next */
+                formik?.setFieldValue(fieldName, val)
+              }
             />
           </FormGroup>
         )
