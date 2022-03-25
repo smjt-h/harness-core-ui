@@ -280,9 +280,10 @@ describe('<PipelineVariables /> tests', () => {
         { target: { value: 'val2' } }
       )
     })
-    const updatedSecondStage = cloneDeep(get(stageTemplateContextMock, 'state.pipeline.stages[1].stage'))
-    set(updatedSecondStage, 'variables[0].value', 'val2')
-    expect(stageTemplateContextMock.updateStage).toBeCalledWith(updatedSecondStage)
+
+    const updatedPipeline = cloneDeep(get(stageTemplateContextMock, 'state.pipeline'))
+    set(updatedPipeline, 'stages[1].stage.variables[0].value', 'val2')
+    expect(stageTemplateContextMock.updatePipeline).toBeCalledWith(updatedPipeline)
   })
 
   test('renders loader', async () => {
