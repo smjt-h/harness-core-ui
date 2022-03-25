@@ -8,17 +8,17 @@
 import React from 'react'
 import { connect, FormikContext } from 'formik'
 import {
-  DataTooltipInterface,
-  ExpressionAndRuntimeType,
-  ExpressionAndRuntimeTypeProps,
   FormikTooltipContext,
-  HarnessDocTooltip,
-  MultiTypeInputType
+  DataTooltipInterface,
+  MultiTypeInputType,
+  HarnessDocTooltip
 } from '@wings-software/uicore'
 import { get } from 'lodash-es'
 import { FormGroup, IFormGroupProps, Intent } from '@blueprintjs/core'
-
+import { useStrings } from 'framework/strings'
 import { errorCheck } from '@common/utils/formikHelpers'
+import MultiTypeFieldSelector from '@common/components/MultiTypeFieldSelector/MultiTypeFieldSelector'
+import { ExpressionsListInput } from '@common/components/ExpressionsListInput/ExpressionsListInput'
 import { DelegateSelectors, DelegateSelectorsProps } from '@common/components/DelegateSelectors/DelegateSelectors'
 
 import css from './MultiTypeDelegateSelector.module.scss'
@@ -38,10 +38,20 @@ export interface ConnectedMultiTypeDelegateSelectorProps extends MultiTypeDelega
 }
 
 export function MultiTypeDelegateSelector(props: ConnectedMultiTypeDelegateSelectorProps): React.ReactElement {
-  const { formik, label, name, expressions = [], inputProps, ...restProps } = props
+  const {
+    formik,
+    allowableTypes = [MultiTypeInputType.FIXED, MultiTypeInputType.RUNTIME, MultiTypeInputType.EXPRESSION],
+    label,
+    name,
+    expressions = [],
+    inputProps,
+    ...restProps
+  } = props
 
   const value = get(formik.values, name)
   const hasError = errorCheck(name, formik)
+
+  const { getString } = useStrings()
 
   const {
     intent = hasError ? Intent.DANGER : Intent.NONE,
@@ -50,9 +60,6 @@ export function MultiTypeDelegateSelector(props: ConnectedMultiTypeDelegateSelec
     ...rest
   } = restProps
 
-  const handleChange: ExpressionAndRuntimeTypeProps['onChange'] = val => {
-    formik.setFieldValue(name, val)
-  }
   const tooltipContext = React.useContext(FormikTooltipContext)
   const dataTooltipId =
     props.tooltipProps?.dataTooltipId || (tooltipContext?.formName ? `${tooltipContext?.formName}_${name}` : '')
@@ -65,23 +72,26 @@ export function MultiTypeDelegateSelector(props: ConnectedMultiTypeDelegateSelec
       intent={intent}
       helperText={helperText}
     >
-      <ExpressionAndRuntimeType
+      <MultiTypeFieldSelector
         name={name}
-        value={value}
-        disabled={disabled}
-        onChange={handleChange}
-        expressions={expressions}
-        style={{ flexGrow: 1 }}
-        fixedTypeComponentProps={{
-          ...inputProps,
-          wrapperClassName: css.wrapper,
-          selectedItems: value,
-          readonly: disabled
-        }}
-        fixedTypeComponent={DelegateSelectors as any}
-        defaultValueToReset={[]}
-        allowableTypes={props.allowableTypes}
-      />
+        label={getString('common.defineDelegateSelector')}
+        defaultValueToReset={['']}
+        skipRenderValueInExpressionLabel
+        allowedTypes={allowableTypes}
+        expressionRender={() => (
+          <ExpressionsListInput
+            name={name}
+            value={value}
+            readOnly={disabled}
+            expressions={expressions}
+            formikProps={formik}
+          />
+        )}
+        style={{ flexGrow: 1, marginBottom: 0 }}
+        disableTypeSelection={disabled}
+      >
+        <DelegateSelectors {...inputProps} wrapperClassName={css.wrapper} selectedItems={value} readonly={disabled} />
+      </MultiTypeFieldSelector>
     </FormGroup>
   )
 }

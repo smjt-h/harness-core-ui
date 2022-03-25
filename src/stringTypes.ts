@@ -167,6 +167,7 @@ export interface StringsMap {
   'common.datePickerShortcuts.Yesterday': string
   'common.default': string
   'common.defaultExperience': string
+  'common.defineDelegateSelector': string
   'common.delegateForTask': string
   'common.delegateTokenLabel': string
   'common.delete': string

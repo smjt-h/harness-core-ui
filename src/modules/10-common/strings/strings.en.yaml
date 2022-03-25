@@ -15,6 +15,7 @@ accountSetup: Account Setup
 projectSetup: Project Setup
 orgSetup: Org Setup
 delegateForTask: '{{delegate}} for {{taskName}}'
+defineDelegateSelector: 'Define Delegate Selector'
 noDelegateForTask: 'No delegate found for {{taskName}}'
 gitDetailsTitle: 'Git Details'
 lastConnected: 'Last Connected'
