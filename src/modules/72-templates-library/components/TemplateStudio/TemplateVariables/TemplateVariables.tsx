@@ -31,8 +31,8 @@ const TemplateVariables: React.FC = (): JSX.Element => {
   const { originalTemplate, variablesTemplate, metadataMap, error, initLoading } = useTemplateVariables()
 
   const onUpdate = useCallback(
-    async (stage: StageElementConfig | StepElementConfig) => {
-      const processNode = omit(stage, 'name', 'identifier', 'description', 'tags')
+    async (values: PipelineInfoConfig | StageElementConfig | StepElementConfig) => {
+      const processNode = omit(values, 'name', 'identifier', 'description', 'tags')
       sanitize(processNode, { removeEmptyArray: false, removeEmptyObject: false, removeEmptyString: false })
       set(originalTemplate, 'spec', processNode)
       await updateTemplate(originalTemplate)
@@ -58,14 +58,12 @@ const TemplateVariables: React.FC = (): JSX.Element => {
               {originalTemplate.type === TemplateType.Pipeline && (
                 <PipelineCardPanel
                   variablePipeline={variablesTemplate as PipelineInfoConfig}
-                  pipeline={{ ...template.spec, identifier: DefaultNewStageId } as PipelineInfoConfig}
-                  originalPipeline={{ ...originalTemplate.spec, identifier: DefaultNewStageId } as PipelineInfoConfig}
-                  readonly={true}
+                  pipeline={template.spec as PipelineInfoConfig}
+                  originalPipeline={originalTemplate.spec as PipelineInfoConfig}
                   metadataMap={metadataMap}
                   allowableTypes={allowableTypes}
                   stepsFactory={factory}
-                  updateStage={onUpdate}
-                  updatePipeline={noop}
+                  updatePipeline={onUpdate}
                 />
               )}
               {originalTemplate.type === TemplateType.Stage && (
@@ -89,7 +87,7 @@ const TemplateVariables: React.FC = (): JSX.Element => {
                   stepPath="template"
                   allowableTypes={allowableTypes}
                   stageIdentifier={DefaultNewStageId}
-                  onUpdateStep={onUpdate}
+                  onUpdateStep={noop}
                   stepsFactory={factory}
                 />
               )}

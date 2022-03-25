@@ -10,6 +10,5 @@ declare const styles: {
   readonly contentSection: string
   readonly error: string
   readonly inputsContainer: string
-  readonly serviceOverrides: string
 }
 export default styles

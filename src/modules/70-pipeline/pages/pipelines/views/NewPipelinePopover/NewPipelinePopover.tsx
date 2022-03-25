@@ -131,17 +131,5 @@ export function NewPipelinePopover({
         })}
       </Menu>
     </Popover>
-
-    // <TemplatesActionPopover
-    //   open={menuOpen}
-    //   minimal={true}
-    //   items={getMenu()}
-    //   position={Position.BOTTOM}
-    //   disabled={!canEdit}
-    //   setMenuOpen={setMenuOpen}
-    //   usePortal={false}
-    // >
-    //
-    // </TemplatesActionPopover>
   )
 }

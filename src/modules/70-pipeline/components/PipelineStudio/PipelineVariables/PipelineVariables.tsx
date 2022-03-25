@@ -7,7 +7,7 @@
 
 import React from 'react'
 import { NestedAccordionPanel, NestedAccordionProvider, PageError } from '@wings-software/uicore'
-import { get } from 'lodash-es'
+import { get, set } from 'lodash-es'
 
 import { PageSpinner } from '@common/components'
 import { useStrings } from 'framework/strings'
@@ -22,7 +22,7 @@ import PipelineCard, {
   PipelineCardProps
 } from '@pipeline/components/PipelineStudio/PipelineVariables/Cards/PipelineCard'
 import StageCard from '@pipeline/components/PipelineStudio/PipelineVariables/Cards/StageCard'
-import type { PipelineInfoConfig, StageElementConfig } from 'services/cd-ng'
+import type { PipelineInfoConfig, StageElementConfig, StageElementWrapperConfig } from 'services/cd-ng'
 import { usePipelineContext } from '../PipelineContext/PipelineContext'
 import VariableAccordionSummary from './VariableAccordionSummary'
 import css from './PipelineVariables.module.scss'
@@ -33,8 +33,7 @@ export function PipelineVariables(): React.ReactElement {
     updatePipeline,
     stepsFactory,
     isReadonly,
-    allowableTypes,
-    updateStage
+    allowableTypes
   } = usePipelineContext()
   const {
     originalPipeline,
@@ -88,7 +87,6 @@ export function PipelineVariables(): React.ReactElement {
                     pipeline={pipeline}
                     stepsFactory={stepsFactory}
                     updatePipeline={updatePipeline}
-                    updateStage={updateStage}
                     metadataMap={metadataMap}
                     readonly={isReadonly || !!pipeline.template}
                     allowableTypes={allowableTypes}
@@ -105,7 +103,6 @@ export function PipelineVariables(): React.ReactElement {
 
 export interface PipelineCardPanelProps extends PipelineCardProps {
   originalPipeline: PipelineInfoConfig
-  updateStage: (stage: StageElementConfig) => Promise<void>
 }
 
 export function PipelineCardPanel(props: PipelineCardPanelProps): React.ReactElement {
@@ -117,10 +114,36 @@ export function PipelineCardPanel(props: PipelineCardPanelProps): React.ReactEle
     metadataMap,
     allowableTypes,
     updatePipeline,
-    updateStage,
     readonly
   } = props
   const stagesCards: JSX.Element[] = []
+
+  const updateStages = React.useCallback(
+    (newStage: StageElementConfig, stages: StageElementWrapperConfig[]): StageElementWrapperConfig[] => {
+      return stages.map(node => {
+        if (node.stage?.identifier === newStage.identifier) {
+          return { stage: newStage }
+        } else if (node.parallel) {
+          return {
+            parallel: updateStages(newStage, node.parallel)
+          }
+        }
+        return node
+      })
+    },
+    []
+  )
+
+  const updateStage = React.useCallback(
+    async (values: StageElementConfig) => {
+      if (pipeline.stages) {
+        set(pipeline, 'stages', updateStages(values, pipeline.stages))
+        await updatePipeline(pipeline)
+      }
+    },
+    [pipeline, updatePipeline]
+  )
+
   /* istanbul ignore else */
   if (variablePipeline.stages && variablePipeline.stages?.length > 0) {
     variablePipeline.stages?.forEach((data, i) => {

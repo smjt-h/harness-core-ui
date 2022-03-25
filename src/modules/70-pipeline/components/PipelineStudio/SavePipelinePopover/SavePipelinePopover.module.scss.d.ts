@@ -7,6 +7,11 @@
  **/
 // this is an auto-generated file, do not update this manually
 declare const styles: {
-  readonly iconButton: string
+  readonly active: string
+  readonly disabled: string
+  readonly main: string
+  readonly menuItem: string
+  readonly popover: string
+  readonly saveButton: string
 }
 export default styles
