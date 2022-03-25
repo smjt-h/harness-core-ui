@@ -8,6 +8,7 @@
 import React, { useEffect, useState } from 'react'
 import { useParams } from 'react-router-dom'
 import cx from 'classnames'
+import { noop } from 'lodash-es'
 import { SimpleTagInput, Text, Icon } from '@wings-software/uicore'
 import { Color } from '@harness/design-system'
 import { useToaster } from '@common/exports'
@@ -38,11 +39,20 @@ export interface DelegateSelectorsProps
   placeholder?: string
   pollingInterval?: number
   wrapperClassName?: string
+  onTagInputChange?: (tags: string[]) => void
 }
 
 export const DelegateSelectors = (props: DelegateSelectorsProps): React.ReactElement | null => {
   const { accountId } = useParams<AccountPathProps>()
-  const { orgIdentifier, projectIdentifier, pollingInterval = null, wrapperClassName, placeholder, ...rest } = props
+  const {
+    orgIdentifier,
+    projectIdentifier,
+    pollingInterval = null,
+    onTagInputChange = noop,
+    wrapperClassName,
+    placeholder,
+    ...rest
+  } = props
 
   const { getString } = useStrings()
   const { showError } = useToaster()
@@ -97,6 +107,7 @@ export const DelegateSelectors = (props: DelegateSelectorsProps): React.ReactEle
             className: css.delegatePopover
           }}
           items={data?.resource || []}
+          onChange={onTagInputChange}
           {...rest}
           allowNewTag
           getTagProps={(value, _index, _selectedItems, createdItems, items) => {

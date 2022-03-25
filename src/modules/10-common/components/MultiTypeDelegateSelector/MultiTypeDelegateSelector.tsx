@@ -11,7 +11,8 @@ import {
   FormikTooltipContext,
   DataTooltipInterface,
   MultiTypeInputType,
-  HarnessDocTooltip
+  HarnessDocTooltip,
+  Container
 } from '@wings-software/uicore'
 import { get } from 'lodash-es'
 import { FormGroup, IFormGroupProps, Intent } from '@blueprintjs/core'
@@ -60,6 +61,10 @@ export function MultiTypeDelegateSelector(props: ConnectedMultiTypeDelegateSelec
     ...rest
   } = restProps
 
+  const handleDelegateSelectorFixedValueChange = React.useCallback((tags: string[]) => {
+    formik.setFieldValue(name, tags)
+  }, [])
+
   const tooltipContext = React.useContext(FormikTooltipContext)
   const dataTooltipId =
     props.tooltipProps?.dataTooltipId || (tooltipContext?.formName ? `${tooltipContext?.formName}_${name}` : '')
@@ -72,26 +77,34 @@ export function MultiTypeDelegateSelector(props: ConnectedMultiTypeDelegateSelec
       intent={intent}
       helperText={helperText}
     >
-      <MultiTypeFieldSelector
-        name={name}
-        label={getString('common.defineDelegateSelector')}
-        defaultValueToReset={['']}
-        skipRenderValueInExpressionLabel
-        allowedTypes={allowableTypes}
-        expressionRender={() => (
-          <ExpressionsListInput
-            name={name}
-            value={value}
-            readOnly={disabled}
-            expressions={expressions}
-            formikProps={formik}
+      <Container className={css.fieldSelectorContainer}>
+        <MultiTypeFieldSelector
+          name={name}
+          label={getString('common.defineDelegateSelector')}
+          defaultValueToReset={['']}
+          skipRenderValueInExpressionLabel
+          allowedTypes={allowableTypes}
+          disableMultiSelectBtn={disabled}
+          expressionRender={() => (
+            <ExpressionsListInput
+              name={name}
+              value={value}
+              readOnly={disabled}
+              expressions={expressions}
+              formikProps={formik}
+            />
+          )}
+          style={{ flexGrow: 1, marginBottom: 0 }}
+        >
+          <DelegateSelectors
+            {...inputProps}
+            wrapperClassName={css.wrapper}
+            selectedItems={value}
+            readonly={disabled}
+            onTagInputChange={handleDelegateSelectorFixedValueChange}
           />
-        )}
-        style={{ flexGrow: 1, marginBottom: 0 }}
-        disableTypeSelection={disabled}
-      >
-        <DelegateSelectors {...inputProps} wrapperClassName={css.wrapper} selectedItems={value} readonly={disabled} />
-      </MultiTypeFieldSelector>
+        </MultiTypeFieldSelector>
+      </Container>
     </FormGroup>
   )
 }
