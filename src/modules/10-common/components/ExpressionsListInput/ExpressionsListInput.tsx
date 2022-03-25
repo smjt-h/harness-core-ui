@@ -6,9 +6,12 @@
  */
 
 import React from 'react'
-import type { FormikProps } from 'formik'
+import { connect, FormikContext } from 'formik'
+import { get } from 'lodash-es'
+import { FormGroup, Intent } from '@blueprintjs/core'
 import { ExpressionInput, EXPRESSION_INPUT_PLACEHOLDER } from '@wings-software/uicore'
 import { ListInput } from '@common/components/ListInput/ListInput'
+import { errorCheck } from '@common/utils/formikHelpers'
 
 import css from './ExpressionsListInput.module.scss'
 
@@ -17,31 +20,40 @@ export interface ExpressionsListInputProps {
   value: string[]
   readOnly?: boolean
   expressions?: string[]
-  formikProps?: FormikProps<any>
   inputClassName?: string
+  formik?: FormikContext<any>
 }
 
-export function ExpressionsListInput(props: ExpressionsListInputProps) {
-  const { name, value, readOnly, expressions = [], formikProps, inputClassName } = props
+function ExpressionsListInputInternal(props: ExpressionsListInputProps) {
+  const { name, value, readOnly, expressions = [], formik, inputClassName } = props
 
   return (
     <ListInput
       name={name}
       elementList={value}
       readOnly={readOnly}
-      listItemRenderer={(str: string, index: number) => (
-        <ExpressionInput
-          name={`${name}.${index}`}
-          value={str}
-          disabled={readOnly}
-          inputProps={{ className: inputClassName, placeholder: EXPRESSION_INPUT_PLACEHOLDER }}
-          items={expressions}
-          onChange={val => formikProps?.setFieldValue(`${name}.${index}`, val)}
-          popoverProps={{
-            className: css.expressionsInput
-          }}
-        />
-      )}
+      listItemRenderer={(str: string, index: number) => {
+        const fieldName = `${name}.${index}`
+        const hasError = errorCheck(fieldName, formik)
+        return (
+          <FormGroup
+            helperText={hasError ? get(formik?.errors, fieldName) : null}
+            intent={hasError ? Intent.DANGER : Intent.NONE}
+            className={css.expressionsInputContainer}
+          >
+            <ExpressionInput
+              name={fieldName}
+              value={str}
+              disabled={readOnly}
+              inputProps={{ className: inputClassName, placeholder: EXPRESSION_INPUT_PLACEHOLDER }}
+              items={expressions}
+              onChange={val => formik?.setFieldValue(fieldName, val)}
+            />
+          </FormGroup>
+        )
+      }}
     />
   )
 }
+
+export const ExpressionsListInput = connect(ExpressionsListInputInternal)

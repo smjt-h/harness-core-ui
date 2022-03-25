@@ -14,7 +14,7 @@ import {
   HarnessDocTooltip,
   Container
 } from '@wings-software/uicore'
-import { get } from 'lodash-es'
+import { get, compact } from 'lodash-es'
 import { FormGroup, IFormGroupProps, Intent } from '@blueprintjs/core'
 import { useStrings } from 'framework/strings'
 import { errorCheck } from '@common/utils/formikHelpers'
@@ -62,7 +62,7 @@ export function MultiTypeDelegateSelector(props: ConnectedMultiTypeDelegateSelec
   } = restProps
 
   const handleDelegateSelectorFixedValueChange = React.useCallback((tags: string[]) => {
-    formik.setFieldValue(name, tags)
+    formik.setFieldValue(name, compact(tags))
   }, [])
 
   const tooltipContext = React.useContext(FormikTooltipContext)
@@ -86,13 +86,7 @@ export function MultiTypeDelegateSelector(props: ConnectedMultiTypeDelegateSelec
           allowedTypes={allowableTypes}
           disableMultiSelectBtn={disabled}
           expressionRender={() => (
-            <ExpressionsListInput
-              name={name}
-              value={value}
-              readOnly={disabled}
-              expressions={expressions}
-              formikProps={formik}
-            />
+            <ExpressionsListInput name={name} value={value} readOnly={disabled} expressions={expressions} />
           )}
           style={{ flexGrow: 1, marginBottom: 0 }}
         >
