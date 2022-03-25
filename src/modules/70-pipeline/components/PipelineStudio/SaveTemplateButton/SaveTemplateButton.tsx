@@ -18,12 +18,10 @@ import { FeatureIdentifier } from 'framework/featureStore/FeatureIdentifier'
 import { useSaveAsTemplate } from '@pipeline/components/PipelineStudio/SaveTemplateButton/useSaveAsTemplate'
 import css from './SaveTemplateButton.module.scss'
 
+type TemplateData = StepOrStepGroupOrTemplateStepData | StageElementConfig | PipelineInfoConfig
+
 export interface SaveTemplateButtonProps {
-  data:
-    | StepOrStepGroupOrTemplateStepData
-    | StageElementConfig
-    | PipelineInfoConfig
-    | (() => Promise<StepOrStepGroupOrTemplateStepData | StageElementConfig | PipelineInfoConfig>)
+  data: TemplateData | (() => Promise<TemplateData>)
   type: 'Step' | 'Stage' | 'Pipeline'
   buttonProps?: ButtonProps
 }

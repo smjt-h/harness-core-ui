@@ -128,8 +128,7 @@ export function SavePipelinePopover({
     templatesFeatureFlagEnabled &&
     canEdit &&
     window.location.origin !== 'https://app.harness.io' &&
-    !pipeline.template &&
-    false
+    !pipeline.template
 
   const { save } = useSaveAsTemplate({ data: pipeline, type: 'Pipeline' })
 

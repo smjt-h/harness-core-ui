@@ -52,7 +52,7 @@ export function NewPipelinePopover({
   })
 
   const goToPipeline = useCallback(
-    (useTemplate?: boolean) => {
+    (useTemplate = false) => {
       history.push(
         routes.toPipelineStudio({
           projectIdentifier,

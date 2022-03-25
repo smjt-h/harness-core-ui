@@ -412,7 +412,7 @@ export function PipelineCanvas({
         data: {
           selectorData: {
             templateType: 'Pipeline',
-            onUseTemplate: (newTemplate: TemplateSummaryResponse, _isCopied?: boolean) => {
+            onUseTemplate: (newTemplate: TemplateSummaryResponse, _isCopied = false) => {
               updateTemplateView({
                 isTemplateDrawerOpened: false,
                 templateDrawerData: { type: TemplateDrawerTypes.UseTemplate }
@@ -508,11 +508,11 @@ export function PipelineCanvas({
   ])
 
   const onSubmit = React.useCallback(
-    (data: PipelineInfoConfig, updatedGitDetails?: EntityGitDetails, pipelineTemplate?: TemplateSummaryResponse) => {
-      pipeline.name = data.name
-      pipeline.description = data.description
-      pipeline.identifier = data.identifier
-      pipeline.tags = data.tags ?? {}
+    (values: PipelineInfoConfig, updatedGitDetails?: EntityGitDetails, pipelineTemplate?: TemplateSummaryResponse) => {
+      pipeline.name = values.name
+      pipeline.description = values.description
+      pipeline.identifier = values.identifier
+      pipeline.tags = values.tags ?? {}
       if (pipelineTemplate) {
         set(pipeline, 'template.templateRef', getScopeBasedTemplateRef(pipelineTemplate))
         if (pipelineTemplate.versionLabel) {

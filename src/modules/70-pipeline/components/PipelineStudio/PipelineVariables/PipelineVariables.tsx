@@ -138,7 +138,7 @@ export function PipelineCardPanel(props: PipelineCardPanelProps): React.ReactEle
     async (values: StageElementConfig) => {
       if (pipeline.stages) {
         set(pipeline, 'stages', updateStages(values, pipeline.stages))
-        await updatePipeline(pipeline)
+        updatePipeline(pipeline)
       }
     },
     [pipeline, updatePipeline]
