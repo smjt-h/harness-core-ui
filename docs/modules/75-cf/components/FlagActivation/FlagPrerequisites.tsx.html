@@ -23,16 +23,16 @@
         <div class='clearfix'>
             
             <div class='fl pad1y space-right2'>
-                <span class="strong">47.2% </span>
+                <span class="strong">47.29% </span>
                 <span class="quiet">Statements</span>
-                <span class='fraction'>59/125</span>
+                <span class='fraction'>61/129</span>
             </div>
         
             
             <div class='fl pad1y space-right2'>
-                <span class="strong">28.72% </span>
+                <span class="strong">28.42% </span>
                 <span class="quiet">Branches</span>
-                <span class='fraction'>54/188</span>
+                <span class='fraction'>54/190</span>
             </div>
         
             
@@ -44,9 +44,9 @@
         
             
             <div class='fl pad1y space-right2'>
-                <span class="strong">51.33% </span>
+                <span class="strong">51.28% </span>
                 <span class="quiet">Lines</span>
-                <span class='fraction'>58/113</span>
+                <span class='fraction'>60/117</span>
             </div>
         
             
@@ -504,7 +504,12 @@
 <a name='L445'></a><a href='#L445'>445</a>
 <a name='L446'></a><a href='#L446'>446</a>
 <a name='L447'></a><a href='#L447'>447</a>
-<a name='L448'></a><a href='#L448'>448</a></td><td class="line-coverage quiet"><span class="cline-any cline-neutral">&nbsp;</span>
+<a name='L448'></a><a href='#L448'>448</a>
+<a name='L449'></a><a href='#L449'>449</a>
+<a name='L450'></a><a href='#L450'>450</a>
+<a name='L451'></a><a href='#L451'>451</a>
+<a name='L452'></a><a href='#L452'>452</a>
+<a name='L453'></a><a href='#L453'>453</a></td><td class="line-coverage quiet"><span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
@@ -550,6 +555,7 @@
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-yes">3x</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">3x</span>
 <span class="cline-any cline-yes">3x</span>
 <span class="cline-any cline-yes">3x</span>
 <span class="cline-any cline-yes">3x</span>
@@ -587,7 +593,7 @@
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-yes">7x</span>
 <span class="cline-any cline-yes">7x</span>
-<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">7x</span>
 <span class="cline-any cline-yes">7x</span>
 <span class="cline-any cline-yes">7x</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
@@ -720,6 +726,10 @@
 <span class="cline-any cline-no">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
@@ -998,6 +1008,7 @@ import {
 import { AUTO_COMMIT_MESSAGES } from '@cf/constants/GitSyncConstants'
 &nbsp;
 import { GIT_SYNC_ERROR_CODE, UseGitSync } from '@cf/hooks/useGitSync'
+import { useGovernance } from '@cf/hooks/useGovernance'
 import usePlanEnforcement from '@cf/hooks/usePlanEnforcement'
 import { FeatureIdentifier } from 'framework/featureStore/FeatureIdentifier'
 import patch from '../../utils/instructions'
@@ -1034,7 +1045,7 @@ export const FlagPrerequisites: React.FC&lt;FlagPrerequisitesProps&gt; = props =
     environmentIdentifier
   } = useParams&lt;Record&lt;string, string&gt;&gt;()
   const [searchTerm, setSearchTerm] = useState&lt;string&gt;()
-&nbsp;
+  const { handleError: handleGovernanceError, isGovernanceError } = useGovernance()
   const gitSyncFormMeta = gitSync<span class="branch-0 cbranch-no" title="branch not covered" >?.g</span>etGitSyncFormMeta(AUTO_COMMIT_MESSAGES.UPDATES_FLAG_PREREQS)
   const PAGE_SIZE = 500
 &nbsp;
@@ -1166,7 +1177,11 @@ export const FlagPrerequisites: React.FC&lt;FlagPrerequisitesProps&gt; = props =
 <span class="cstat-no" title="statement not covered" >              if (err.status === GIT_SYNC_ERROR_CODE) {</span>
 <span class="cstat-no" title="statement not covered" >                gitSync.handleError(err.data as GitSyncErrorResponse)</span>
               } else {
-<span class="cstat-no" title="statement not covered" >                showError(get(err, 'data.message', err?.message), undefined, 'cf.patch.req.error')</span>
+<span class="cstat-no" title="statement not covered" >                if (isGovernanceError(err)) {</span>
+<span class="cstat-no" title="statement not covered" >                  handleGovernanceError(err.data)</span>
+                } else {
+<span class="cstat-no" title="statement not covered" >                  showError(get(err, 'data.message', err?.message), undefined, 'cf.patch.req.error')</span>
+                }
               }
             })
             .finally(<span class="fstat-no" title="function not covered" >() =</span>&gt; {
@@ -1405,7 +1420,7 @@ export const FlagPrerequisites: React.FC&lt;FlagPrerequisitesProps&gt; = props =
             <div class='footer quiet pad2 space-top1 center small'>
                 Code coverage generated by
                 <a href="https://istanbul.js.org/" target="_blank">istanbul</a>
-                at Fri Mar 25 2022 09:11:10 GMT+0000 (Greenwich Mean Time)
+                at Fri Mar 25 2022 14:55:38 GMT+0000 (Greenwich Mean Time)
             </div>
         </div>
         <script src="../../../../prettify.js"></script>

@@ -23,16 +23,16 @@
         <div class='clearfix'>
             
             <div class='fl pad1y space-right2'>
-                <span class="strong">63.79% </span>
+                <span class="strong">62.9% </span>
                 <span class="quiet">Statements</span>
-                <span class='fraction'>37/58</span>
+                <span class='fraction'>39/62</span>
             </div>
         
             
             <div class='fl pad1y space-right2'>
-                <span class="strong">11.76% </span>
+                <span class="strong">11.11% </span>
                 <span class="quiet">Branches</span>
-                <span class='fraction'>4/34</span>
+                <span class='fraction'>4/36</span>
             </div>
         
             
@@ -44,9 +44,9 @@
         
             
             <div class='fl pad1y space-right2'>
-                <span class="strong">63.79% </span>
+                <span class="strong">62.9% </span>
                 <span class="quiet">Lines</span>
-                <span class='fraction'>37/58</span>
+                <span class='fraction'>39/62</span>
             </div>
         
             
@@ -218,7 +218,13 @@
 <a name='L159'></a><a href='#L159'>159</a>
 <a name='L160'></a><a href='#L160'>160</a>
 <a name='L161'></a><a href='#L161'>161</a>
-<a name='L162'></a><a href='#L162'>162</a></td><td class="line-coverage quiet"><span class="cline-any cline-neutral">&nbsp;</span>
+<a name='L162'></a><a href='#L162'>162</a>
+<a name='L163'></a><a href='#L163'>163</a>
+<a name='L164'></a><a href='#L164'>164</a>
+<a name='L165'></a><a href='#L165'>165</a>
+<a name='L166'></a><a href='#L166'>166</a>
+<a name='L167'></a><a href='#L167'>167</a>
+<a name='L168'></a><a href='#L168'>168</a></td><td class="line-coverage quiet"><span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
@@ -234,6 +240,7 @@
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">5x</span>
 <span class="cline-any cline-yes">5x</span>
 <span class="cline-any cline-yes">5x</span>
 <span class="cline-any cline-yes">5x</span>
@@ -276,6 +283,7 @@
 <span class="cline-any cline-yes">2x</span>
 <span class="cline-any cline-yes">2x</span>
 <span class="cline-any cline-yes">2x</span>
+<span class="cline-any cline-yes">2x</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-yes">2x</span>
@@ -335,6 +343,10 @@
 <span class="cline-any cline-no">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
@@ -404,6 +416,7 @@ import useActiveEnvironment from '@cf/hooks/useActiveEnvironment'
 import { useFeatureFlagTelemetry } from '@cf/hooks/useFeatureFlagTelemetry'
 import { PageSpinner } from '@common/components'
 import { GIT_SYNC_ERROR_CODE, useGitSync } from '@cf/hooks/useGitSync'
+import { useGovernance } from '@cf/hooks/useGovernance'
 import { AUTO_COMMIT_MESSAGES } from '@cf/constants/GitSyncConstants'
 import FlagElemAbout from './FlagElemAbout'
 import FlagElemBoolean from './FlagElemBoolean'
@@ -437,6 +450,7 @@ const FlagWizard: React.FC&lt;FlagWizardProps&gt; = props =&gt; {
   const { projectIdentifier, orgIdentifier, accountId: accountIdentifier } = useParams&lt;Record&lt;string, string&gt;&gt;()
   const history = useHistory()
   const { activeEnvironment, withActiveEnvironment } = useActiveEnvironment()
+  const { handleError: handleGovernanceError, isGovernanceError } = useGovernance()
 &nbsp;
   const { isAutoCommitEnabled, isGitSyncEnabled, gitSyncLoading, handleAutoCommit, getGitSyncFormMeta, handleError } =
     useGitSync()
@@ -495,7 +509,11 @@ const FlagWizard: React.FC&lt;FlagWizardProps&gt; = props =&gt; {
 <span class="cstat-no" title="statement not covered" >          if (error.status === GIT_SYNC_ERROR_CODE) {</span>
 <span class="cstat-no" title="statement not covered" >            handleError(error.data as GitSyncErrorResponse)</span>
           } else {
-<span class="cstat-no" title="statement not covered" >            showError(getErrorMessage(error), 0, 'cf.savegw.error')</span>
+<span class="cstat-no" title="statement not covered" >            if (isGovernanceError(error)) {</span>
+<span class="cstat-no" title="statement not covered" >              handleGovernanceError(error.data)</span>
+            } else {
+<span class="cstat-no" title="statement not covered" >              showError(getErrorMessage(error), 0, 'cf.savegw.error')</span>
+            }
           }
         })
     } else {
@@ -547,7 +565,7 @@ export default FlagWizard
             <div class='footer quiet pad2 space-top1 center small'>
                 Code coverage generated by
                 <a href="https://istanbul.js.org/" target="_blank">istanbul</a>
-                at Fri Mar 25 2022 09:11:10 GMT+0000 (Greenwich Mean Time)
+                at Fri Mar 25 2022 14:55:38 GMT+0000 (Greenwich Mean Time)
             </div>
         </div>
         <script src="../../../../prettify.js"></script>

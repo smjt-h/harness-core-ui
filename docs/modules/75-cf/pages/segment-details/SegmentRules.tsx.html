@@ -1437,7 +1437,7 @@ const AddTargetAvatar: React.FC&lt;{ onAdd: () =&gt; void }&gt; = <span class="f
 const InlineBold: React.FC&lt;{ children: string | string[] }&gt; = <span class="fstat-no" title="function not covered" >({</span> children }) =&gt; (
 <span class="cstat-no" title="statement not covered" >  &lt;span style={{ fontWeight: 'bold' }}&gt;{children}&lt;/span&gt;</span>
 )
-const safeJoin = <span class="fstat-no" title="function not covered" >(d</span>ata: any[], separator: string) =&gt; <span class="cstat-no" title="statement not covered" >data?.join(separator) || `[${data}]`</span>
+const safeJoin = <span class="fstat-no" title="function not covered" >(d</span>ata: any[], separator: string): string =&gt; <span class="cstat-no" title="statement not covered" >data?.join(separator) || `[${data}]`</span>
 interface ClauseProps {
   clause: Clause
   operators: {
@@ -1486,20 +1486,20 @@ const ClauseEditMode: React.FC&lt;ClauseEditProps&gt; = <span class="fstat-no" t
   onChange
 }) =&gt; {
   const valueOpts = <span class="cstat-no" title="statement not covered" >(values ?? []).map(toOption)</span>
-  const handleAttrChange = <span class="cstat-no" title="statement not covered" ><span class="fstat-no" title="function not covered" >(e</span>: React.ChangeEvent&lt;HTMLInputElement&gt;) =&gt;</span>
+  const handleAttrChange = <span class="cstat-no" title="statement not covered" ><span class="fstat-no" title="function not covered" >(e</span>: React.ChangeEvent&lt;HTMLInputElement&gt;): void =&gt;</span>
 <span class="cstat-no" title="statement not covered" >    onChange({ kind: 'attribute', payload: e.target.value })</span>
-  const handleOperatorChange = <span class="cstat-no" title="statement not covered" ><span class="fstat-no" title="function not covered" >(d</span>ata: SelectOption) =&gt; {</span>
+  const handleOperatorChange = <span class="cstat-no" title="statement not covered" ><span class="fstat-no" title="function not covered" >(d</span>ata: SelectOption): void =&gt; {</span>
 <span class="cstat-no" title="statement not covered" >    onChange({ kind: 'op', payload: data.value as string })</span>
 <span class="cstat-no" title="statement not covered" >    if (isSingleValued(data.value as string)) {</span>
 <span class="cstat-no" title="statement not covered" >      onChange({ kind: 'values', payload: [values[0]] })</span>
     }
   }
-  const handleValuesChange = <span class="cstat-no" title="statement not covered" ><span class="fstat-no" title="function not covered" >(d</span>ata: MultiSelectOption[]) =&gt;</span>
+  const handleValuesChange = <span class="cstat-no" title="statement not covered" ><span class="fstat-no" title="function not covered" >(d</span>ata: MultiSelectOption[]): void =&gt;</span>
 <span class="cstat-no" title="statement not covered" >    onChange({</span>
       kind: 'values',
       payload: data.map(<span class="fstat-no" title="function not covered" >x </span>=&gt; (<span class="cstat-no" title="statement not covered" >x.value as string).trim())</span>.filter(<span class="fstat-no" title="function not covered" >x </span>=&gt; <span class="cstat-no" title="statement not covered" >x.length)</span>
     })
-  const handleSingleValueChange = <span class="cstat-no" title="statement not covered" ><span class="fstat-no" title="function not covered" >(e</span>: React.ChangeEvent&lt;HTMLInputElement&gt;) =&gt;</span>
+  const handleSingleValueChange = <span class="cstat-no" title="statement not covered" ><span class="fstat-no" title="function not covered" >(e</span>: React.ChangeEvent&lt;HTMLInputElement&gt;): void =&gt;</span>
 <span class="cstat-no" title="statement not covered" >    handleValuesChange([toOption(e.target.value)])</span>
 &nbsp;
   const height = <span class="cstat-no" title="statement not covered" >'36px'</span>
@@ -1607,16 +1607,16 @@ const RulesTab: React.FC&lt;RulesTabProps&gt; = ({
   const [tempIncluded, setTempIncluded] = useState(included.map(toOption))
 &nbsp;
   const [openIncluded, hideIncluded] = useModalHook(<span class="fstat-no" title="function not covered" >() =</span>&gt; {
-    const handleTempIncludedChange = <span class="cstat-no" title="statement not covered" ><span class="fstat-no" title="function not covered" >(n</span>ewData: any) =&gt; {</span>
+    const handleTempIncludedChange = <span class="cstat-no" title="statement not covered" ><span class="fstat-no" title="function not covered" >(n</span>ewData: any): void =&gt; {</span>
 <span class="cstat-no" title="statement not covered" >      setTempIncluded(newData.map(<span class="fstat-no" title="function not covered" >(x</span>: any) =&gt; (<span class="cstat-no" title="statement not covered" >typeof x === 'string' ? toOption(x) : x)</span>))</span>
     }
 &nbsp;
-    const handleSaveTempIncluded = <span class="cstat-no" title="statement not covered" ><span class="fstat-no" title="function not covered" >() =</span>&gt; {</span>
+    const handleSaveTempIncluded = <span class="cstat-no" title="statement not covered" ><span class="fstat-no" title="function not covered" >(): void =</span>&gt; {</span>
 <span class="cstat-no" title="statement not covered" >      onChangeIncluded(tempIncluded.map(<span class="fstat-no" title="function not covered" >x </span>=&gt; <span class="cstat-no" title="statement not covered" >x.value)</span>)</span>
 <span class="cstat-no" title="statement not covered" >      hideIncluded()</span>
     }
 &nbsp;
-    const handleCancelIncluded = <span class="cstat-no" title="statement not covered" ><span class="fstat-no" title="function not covered" >() =</span>&gt; {</span>
+    const handleCancelIncluded = <span class="cstat-no" title="statement not covered" ><span class="fstat-no" title="function not covered" >(): void =</span>&gt; {</span>
 <span class="cstat-no" title="statement not covered" >      setTempIncluded(included.map(toOption))</span>
 <span class="cstat-no" title="statement not covered" >      hideIncluded()</span>
     }
@@ -1653,16 +1653,16 @@ const RulesTab: React.FC&lt;RulesTabProps&gt; = ({
 &nbsp;
   const [tempExcluded, setTempExcluded] = useState(excluded.map(toOption))
   const [openExcluded, hideExcluded] = useModalHook(<span class="fstat-no" title="function not covered" >() =</span>&gt; {
-    const handleTempExcludedChange = <span class="cstat-no" title="statement not covered" ><span class="fstat-no" title="function not covered" >(n</span>ewData: any) =&gt; {</span>
+    const handleTempExcludedChange = <span class="cstat-no" title="statement not covered" ><span class="fstat-no" title="function not covered" >(n</span>ewData: any): void =&gt; {</span>
 <span class="cstat-no" title="statement not covered" >      setTempExcluded(newData.map(<span class="fstat-no" title="function not covered" >(x</span>: any) =&gt; (<span class="cstat-no" title="statement not covered" >typeof x === 'string' ? toOption(x) : x)</span>))</span>
     }
 &nbsp;
-    const handleSaveTempExcluded = <span class="cstat-no" title="statement not covered" ><span class="fstat-no" title="function not covered" >() =</span>&gt; {</span>
+    const handleSaveTempExcluded = <span class="cstat-no" title="statement not covered" ><span class="fstat-no" title="function not covered" >(): void =</span>&gt; {</span>
 <span class="cstat-no" title="statement not covered" >      onChangeExcluded(tempExcluded.map(<span class="fstat-no" title="function not covered" >x </span>=&gt; <span class="cstat-no" title="statement not covered" >x.value)</span>)</span>
 <span class="cstat-no" title="statement not covered" >      hideExcluded()</span>
     }
 &nbsp;
-    const handleCancelExcluded = <span class="cstat-no" title="statement not covered" ><span class="fstat-no" title="function not covered" >() =</span>&gt; {</span>
+    const handleCancelExcluded = <span class="cstat-no" title="statement not covered" ><span class="fstat-no" title="function not covered" >(): void =</span>&gt; {</span>
 <span class="cstat-no" title="statement not covered" >      setTempExcluded(excluded.map(toOption))</span>
 <span class="cstat-no" title="statement not covered" >      hideExcluded()</span>
     }
@@ -1713,7 +1713,7 @@ const RulesTab: React.FC&lt;RulesTabProps&gt; = ({
 <span class="cstat-no" title="statement not covered" >      onChangeRules([...rules])</span>
     }
 &nbsp;
-  const handleNewClause = <span class="fstat-no" title="function not covered" >() =</span>&gt; {
+  const handleNewClause = <span class="fstat-no" title="function not covered" >(): void =</span>&gt; {
 <span class="cstat-no" title="statement not covered" >    onChangeRules([</span>
       ...rules,
       {
@@ -1949,7 +1949,7 @@ export const SegmentRules: React.FC&lt;{ segment: Segment; onUpdate: () =&gt; vo
     }
   }
 &nbsp;
-  const handleValid = <span class="fstat-no" title="function not covered" >() =</span>&gt; {
+  const handleValid = <span class="fstat-no" title="function not covered" >(): void =</span>&gt; {
     const instructions = <span class="cstat-no" title="statement not covered" >[]</span>
     const [addedToInc, removedFromInc] = <span class="cstat-no" title="statement not covered" >getDiff(toIdentifiers(segment.included), tempSegment.included)</span>
     const [addedToExc, removedFromExc] = <span class="cstat-no" title="statement not covered" >getDiff(toIdentifiers(segment.excluded), tempSegment.excluded)</span>
@@ -1967,13 +1967,13 @@ export const SegmentRules: React.FC&lt;{ segment: Segment; onUpdate: () =&gt; vo
     const newClauses = <span class="cstat-no" title="statement not covered" >tempSegment.rules.filter(<span class="fstat-no" title="function not covered" >c </span>=&gt; <span class="cstat-no" title="statement not covered" >c.id === '')</span></span>
 &nbsp;
 <span class="cstat-no" title="statement not covered" >    removedClauses.length &gt; 0 &amp;&amp;</span>
-      instructions.push(...removedClauses.map(<span class="fstat-no" title="function not covered" >cl </span>=&gt; <span class="cstat-no" title="statement not covered" >patch.creators.removeClauseOnSegment(cl.id))</span>)
+      instructions.push(...removedClauses.map(<span class="fstat-no" title="function not covered" >cl </span>=&gt; <span class="cstat-no" title="statement not covered" >patch.creators.removeClauseOnSegment(cl.id as string))</span>)
 <span class="cstat-no" title="statement not covered" >    updatedClauses.length &gt; 0 &amp;&amp;</span>
       instructions.push(
         ...updatedClauses.map(<span class="fstat-no" title="function not covered" >cl </span>=&gt;
 <span class="cstat-no" title="statement not covered" >          patch.creators.updateClauseOnSegment({</span>
             ...omit(cl, ['id', 'negate']),
-            clauseID: cl.id
+            clauseID: cl.id as string
           })
         )
       )
@@ -1996,7 +1996,7 @@ export const SegmentRules: React.FC&lt;{ segment: Segment; onUpdate: () =&gt; vo
       .onEmptyPatch(<span class="fstat-no" title="function not covered" >() =</span>&gt; <span class="cstat-no" title="statement not covered" >setEditing(false))</span>
   }
 &nbsp;
-  const handleCancel = <span class="fstat-no" title="function not covered" >() =</span>&gt; {
+  const handleCancel = <span class="fstat-no" title="function not covered" >(): void =</span>&gt; {
 <span class="cstat-no" title="statement not covered" >    patch.segment.reset()</span>
 <span class="cstat-no" title="statement not covered" >    dispatch(</span>
       setTempSegment({
@@ -2009,7 +2009,7 @@ export const SegmentRules: React.FC&lt;{ segment: Segment; onUpdate: () =&gt; vo
 <span class="cstat-no" title="statement not covered" >    setEditing(false)</span>
   }
 &nbsp;
-  const handleSave = <span class="fstat-no" title="function not covered" >() =</span>&gt; {
+  const handleSave = <span class="fstat-no" title="function not covered" >(): void =</span>&gt; {
     const [valid, newError] = <span class="cstat-no" title="statement not covered" >validateRules(tempSegment.rules)</span>
 <span class="cstat-no" title="statement not covered" >    if (valid) {</span>
 <span class="cstat-no" title="statement not covered" >      handleValid()</span>
@@ -2053,7 +2053,7 @@ export const SegmentRules: React.FC&lt;{ segment: Segment; onUpdate: () =&gt; vo
             <div class='footer quiet pad2 space-top1 center small'>
                 Code coverage generated by
                 <a href="https://istanbul.js.org/" target="_blank">istanbul</a>
-                at Fri Mar 25 2022 09:11:10 GMT+0000 (Greenwich Mean Time)
+                at Fri Mar 25 2022 14:55:38 GMT+0000 (Greenwich Mean Time)
             </div>
         </div>
         <script src="../../../../prettify.js"></script>

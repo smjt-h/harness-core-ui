@@ -23,16 +23,16 @@
         <div class='clearfix'>
             
             <div class='fl pad1y space-right2'>
-                <span class="strong">88.37% </span>
+                <span class="strong">85.11% </span>
                 <span class="quiet">Statements</span>
-                <span class='fraction'>38/43</span>
+                <span class='fraction'>40/47</span>
             </div>
         
             
             <div class='fl pad1y space-right2'>
-                <span class="strong">67.27% </span>
+                <span class="strong">64.91% </span>
                 <span class="quiet">Branches</span>
-                <span class='fraction'>37/55</span>
+                <span class='fraction'>37/57</span>
             </div>
         
             
@@ -44,9 +44,9 @@
         
             
             <div class='fl pad1y space-right2'>
-                <span class="strong">88.37% </span>
+                <span class="strong">85.11% </span>
                 <span class="quiet">Lines</span>
-                <span class='fraction'>38/43</span>
+                <span class='fraction'>40/47</span>
             </div>
         
             
@@ -211,7 +211,27 @@
 <a name='L152'></a><a href='#L152'>152</a>
 <a name='L153'></a><a href='#L153'>153</a>
 <a name='L154'></a><a href='#L154'>154</a>
-<a name='L155'></a><a href='#L155'>155</a></td><td class="line-coverage quiet"><span class="cline-any cline-yes">3x</span>
+<a name='L155'></a><a href='#L155'>155</a>
+<a name='L156'></a><a href='#L156'>156</a>
+<a name='L157'></a><a href='#L157'>157</a>
+<a name='L158'></a><a href='#L158'>158</a>
+<a name='L159'></a><a href='#L159'>159</a>
+<a name='L160'></a><a href='#L160'>160</a>
+<a name='L161'></a><a href='#L161'>161</a>
+<a name='L162'></a><a href='#L162'>162</a>
+<a name='L163'></a><a href='#L163'>163</a>
+<a name='L164'></a><a href='#L164'>164</a>
+<a name='L165'></a><a href='#L165'>165</a>
+<a name='L166'></a><a href='#L166'>166</a>
+<a name='L167'></a><a href='#L167'>167</a>
+<a name='L168'></a><a href='#L168'>168</a></td><td class="line-coverage quiet"><span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">3x</span>
 <span class="cline-any cline-yes">3x</span>
 <span class="cline-any cline-yes">3x</span>
 <span class="cline-any cline-yes">3x</span>
@@ -232,6 +252,7 @@
 <span class="cline-any cline-yes">3x</span>
 <span class="cline-any cline-yes">3x</span>
 <span class="cline-any cline-yes">3x</span>
+<span class="cline-any cline-yes">3x</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
@@ -246,6 +267,7 @@
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-yes">3x</span>
+<span class="cline-any cline-yes">53x</span>
 <span class="cline-any cline-yes">53x</span>
 <span class="cline-any cline-yes">53x</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
@@ -299,6 +321,10 @@
 <span class="cline-any cline-no">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
@@ -365,8 +391,15 @@
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-yes">3x</span>
-<span class="cline-any cline-neutral">&nbsp;</span></td><td class="text"><pre class="prettyprint lang-js">import React from 'react'
-import { Layout, Text, Button, Container, Formik, FormikForm as Form, FormInput } from '@wings-software/uicore'
+<span class="cline-any cline-neutral">&nbsp;</span></td><td class="text"><pre class="prettyprint lang-js">/*
+ * Copyright 2022 Harness Inc. All rights reserved.
+ * Use of this source code is governed by the PolyForm Shield 1.0.0 license
+ * that can be found in the licenses directory at the root of this repository, also available at
+ * https://polyformproject.org/wp-content/uploads/2020/06/PolyForm-Shield-1.0.0.txt.
+ */
+&nbsp;
+import React from 'react'
+import { Button, Container, Formik, FormikForm as Form, FormInput, Layout, Text } from '@wings-software/uicore'
 import { useModalHook } from '@harness/use-modal'
 import { Dialog, Divider } from '@blueprintjs/core'
 import * as yup from 'yup'
@@ -381,6 +414,7 @@ import type {
 import { showToaster } from '@cf/utils/CFUtils'
 &nbsp;
 import { GIT_SYNC_ERROR_CODE, UseGitSync } from '@cf/hooks/useGitSync'
+import { useGovernance } from '@cf/hooks/useGovernance'
 import { useStrings } from 'framework/strings'
 import { AUTO_COMMIT_MESSAGES } from '@cf/constants/GitSyncConstants'
 import patch from '../../../utils/instructions'
@@ -402,6 +436,7 @@ interface UseEditFlagDetailsModalReturn {
 const useEditFlagDetailsModal = (props: UseEditFlagDetailsModalProps): UseEditFlagDetailsModalReturn =&gt; {
   const { featureFlag, gitSync, refetchFlag, submitPatch } = props
   const { getString } = useStrings()
+  const { handleError: handleGovernanceError, isGovernanceError } = useGovernance()
 &nbsp;
   const [openEditDetailsModal, hideEditDetailsModal] = useModalHook(() =&gt; {
     const gitSyncFormMeta = gitSync<span class="branch-0 cbranch-no" title="branch not covered" >?.g</span>etGitSyncFormMeta(AUTO_COMMIT_MESSAGES.UPDATED_FLAG_VARIATIONS)
@@ -425,7 +460,7 @@ const useEditFlagDetailsModal = (props: UseEditFlagDetailsModalProps): UseEditFl
       }
 &nbsp;
       <span class="missing-if-branch" title="if path not taken" >I</span>if (permanent !== initialValues.permanent) {
-<span class="cstat-no" title="statement not covered" >        patch.feature.addInstruction(patch.creators.updatePermanent(permanent))</span>
+<span class="cstat-no" title="statement not covered" >        patch.feature.addInstruction(patch.creators.updatePermanent(!!permanent))</span>
       }
 &nbsp;
       patch.feature
@@ -452,7 +487,11 @@ const useEditFlagDetailsModal = (props: UseEditFlagDetailsModalProps): UseEditFl
 <span class="cstat-no" title="statement not covered" >              if (error.status === GIT_SYNC_ERROR_CODE) {</span>
 <span class="cstat-no" title="statement not covered" >                gitSync?.handleError(error.data as GitSyncErrorResponse)</span>
               } else {
-<span class="cstat-no" title="statement not covered" >                patch.feature.reset()</span>
+<span class="cstat-no" title="statement not covered" >                if (isGovernanceError(error)) {</span>
+<span class="cstat-no" title="statement not covered" >                  handleGovernanceError(error.data)</span>
+                } else {
+<span class="cstat-no" title="statement not covered" >                  patch.feature.reset()</span>
+                }
               }
             })
         })
@@ -526,7 +565,7 @@ export default useEditFlagDetailsModal
             <div class='footer quiet pad2 space-top1 center small'>
                 Code coverage generated by
                 <a href="https://istanbul.js.org/" target="_blank">istanbul</a>
-                at Fri Mar 25 2022 09:11:10 GMT+0000 (Greenwich Mean Time)
+                at Fri Mar 25 2022 14:55:38 GMT+0000 (Greenwich Mean Time)
             </div>
         </div>
         <script src="../../../../../prettify.js"></script>

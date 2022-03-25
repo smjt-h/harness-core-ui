@@ -23,16 +23,16 @@
         <div class='clearfix'>
             
             <div class='fl pad1y space-right2'>
-                <span class="strong">63.75% </span>
+                <span class="strong">63.1% </span>
                 <span class="quiet">Statements</span>
-                <span class='fraction'>51/80</span>
+                <span class='fraction'>53/84</span>
             </div>
         
             
             <div class='fl pad1y space-right2'>
-                <span class="strong">42.74% </span>
+                <span class="strong">42.02% </span>
                 <span class="quiet">Branches</span>
-                <span class='fraction'>50/117</span>
+                <span class='fraction'>50/119</span>
             </div>
         
             
@@ -44,9 +44,9 @@
         
             
             <div class='fl pad1y space-right2'>
-                <span class="strong">61.84% </span>
+                <span class="strong">61.25% </span>
                 <span class="quiet">Lines</span>
-                <span class='fraction'>47/76</span>
+                <span class='fraction'>49/80</span>
             </div>
         
             
@@ -427,7 +427,13 @@
 <a name='L368'></a><a href='#L368'>368</a>
 <a name='L369'></a><a href='#L369'>369</a>
 <a name='L370'></a><a href='#L370'>370</a>
-<a name='L371'></a><a href='#L371'>371</a></td><td class="line-coverage quiet"><span class="cline-any cline-neutral">&nbsp;</span>
+<a name='L371'></a><a href='#L371'>371</a>
+<a name='L372'></a><a href='#L372'>372</a>
+<a name='L373'></a><a href='#L373'>373</a>
+<a name='L374'></a><a href='#L374'>374</a>
+<a name='L375'></a><a href='#L375'>375</a>
+<a name='L376'></a><a href='#L376'>376</a>
+<a name='L377'></a><a href='#L377'>377</a></td><td class="line-coverage quiet"><span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
@@ -438,6 +444,7 @@
 <span class="cline-any cline-yes">2x</span>
 <span class="cline-any cline-yes">2x</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">2x</span>
 <span class="cline-any cline-yes">2x</span>
 <span class="cline-any cline-yes">2x</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
@@ -477,6 +484,7 @@
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-yes">5x</span>
 <span class="cline-any cline-yes">5x</span>
+<span class="cline-any cline-yes">5x</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-yes">5x</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
@@ -535,6 +543,10 @@
 <span class="cline-any cline-no">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
@@ -809,6 +821,7 @@ import { useParams } from 'react-router-dom'
 import { Container, FlexExpander, Heading, Layout, Text, PageError, useToaster } from '@wings-software/uicore'
 import type { HeadingProps } from '@wings-software/uicore/dist/components/Heading/Heading'
 import { useStrings } from 'framework/strings'
+import { useGovernance } from '@cf/hooks/useGovernance'
 import {
   GitSyncErrorResponse,
   SegmentFlag,
@@ -847,6 +860,7 @@ export const FlagsUseSegment = ({ gitSync }: FlagsUseSegmentProps): ReactElement
     segmentIdentifier
   } = useParams&lt;Record&lt;string, string&gt;&gt;()
   const { activeEnvironment: environmentIdentifier } = useActiveEnvironment()
+  const { handleError: handleGovernanceError, isGovernanceError } = useGovernance()
 &nbsp;
   const queryParams = {
     accountIdentifier,
@@ -904,7 +918,11 @@ export const FlagsUseSegment = ({ gitSync }: FlagsUseSegmentProps): ReactElement
 <span class="cstat-no" title="statement not covered" >        if (e.status === GIT_SYNC_ERROR_CODE) {</span>
 <span class="cstat-no" title="statement not covered" >          gitSync.handleError(e.data as GitSyncErrorResponse)</span>
         } else {
-<span class="cstat-no" title="statement not covered" >          showError(getErrorMessage(e), undefined, 'cf.path.feature.error')</span>
+<span class="cstat-no" title="statement not covered" >          if (isGovernanceError(e)) {</span>
+<span class="cstat-no" title="statement not covered" >            handleGovernanceError(e.data)</span>
+          } else {
+<span class="cstat-no" title="statement not covered" >            showError(getErrorMessage(e), undefined, 'cf.path.feature.error')</span>
+          }
         }
       })
   }
@@ -1174,7 +1192,7 @@ const FlagItem: React.FC&lt;FlagItemProps&gt; = ({
             <div class='footer quiet pad2 space-top1 center small'>
                 Code coverage generated by
                 <a href="https://istanbul.js.org/" target="_blank">istanbul</a>
-                at Fri Mar 25 2022 09:11:10 GMT+0000 (Greenwich Mean Time)
+                at Fri Mar 25 2022 14:55:38 GMT+0000 (Greenwich Mean Time)
             </div>
         </div>
         <script src="../../../../../prettify.js"></script>
