@@ -77,11 +77,12 @@ const OverviewStep: React.FC<StepProps<ConnectorConfigDTO> & OverviewStepProps> 
   const defaultQueryParams = useMemo(
     () => ({
       accountIdentifier: accountId,
+      orgIdentifier,
       searchTerm: '',
       pageIndex: 0,
       pageSize: 100
     }),
-    [accountId]
+    [accountId, orgIdentifier]
   )
 
   const { mutate: fetchConnectors, loading: connectorsLoading } = useGetConnectorListV2({
