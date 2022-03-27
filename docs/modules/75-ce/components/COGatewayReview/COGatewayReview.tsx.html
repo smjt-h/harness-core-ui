@@ -30,9 +30,9 @@
         
             
             <div class='fl pad1y space-right2'>
-                <span class="strong">59.76% </span>
+                <span class="strong">53.41% </span>
                 <span class="quiet">Branches</span>
-                <span class='fraction'>49/82</span>
+                <span class='fraction'>47/88</span>
             </div>
         
             
@@ -583,7 +583,7 @@
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-yes">3x</span>
-<span class="cline-any cline-yes">6x</span>
+<span class="cline-any cline-yes">5x</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
@@ -1090,16 +1090,16 @@ const COGatewayReview: React.FC&lt;COGatewayReviewProps&gt; = props =&gt; {
 &nbsp;
   return (
     &lt;Layout.Vertical padding="large" className={css.page}&gt;
-      &lt;Text className={css.reviewHeading}&gt;Cloud account details&lt;/Text&gt;
+      &lt;Text className={css.reviewHeading}&gt;{getString('ce.co.autoStoppingRule.review.cloudAccountDetails')}&lt;/Text&gt;
       &lt;ReviewDetailsSection&gt;
         &lt;Layout.Horizontal spacing={'large'} className={css.equalSpacing}&gt;
-          &lt;Text&gt;Selected cloud account&lt;/Text&gt;
+          &lt;Text&gt;{getString('ce.co.autoStoppingRule.review.selectedCloudAccount')}&lt;/Text&gt;
           &lt;Text&gt;
             &lt;Icon name={props.gatewayDetails.provider.icon as IconName} /&gt; {props.gatewayDetails.cloudAccount.name}
           &lt;/Text&gt;
         &lt;/Layout.Horizontal&gt;
       &lt;/ReviewDetailsSection&gt;
-      &lt;Text className={css.reviewHeading}&gt;Configuration details&lt;/Text&gt;
+      &lt;Text className={css.reviewHeading}&gt;{getString('ce.co.autoStoppingRule.review.configDetails')}&lt;/Text&gt;
       &lt;ReviewDetailsSection
         isEditable
         onEdit={() =&gt; props.onEdit({ id: 'configuration', metaData: { activeStepCount: 1 } })}
@@ -1110,11 +1110,11 @@ const COGatewayReview: React.FC&lt;COGatewayReviewProps&gt; = props =&gt; {
             padding={{ bottom: 'medium' }}
             className={cx(css.equalSpacing, css.borderSpacing)}
           &gt;
-            &lt;Text&gt;Name of the rule&lt;/Text&gt;
+            &lt;Text&gt;{getString('ce.co.autoStoppingRule.review.nameOfRule')}&lt;/Text&gt;
             &lt;Text&gt;{props.gatewayDetails.name}&lt;/Text&gt;
           &lt;/Layout.Horizontal&gt;
           &lt;Layout.Horizontal spacing={'large'} className={css.equalSpacing}&gt;
-            &lt;Text&gt;Idle time(mins)&lt;/Text&gt;
+            &lt;Text&gt;{getString('ce.co.autoStoppingRule.review.idleTimeMins')}&lt;/Text&gt;
             &lt;Text&gt;{props.gatewayDetails.idleTimeMins}&lt;/Text&gt;
           &lt;/Layout.Horizontal&gt;
         &lt;/Layout.Vertical&gt;
@@ -1126,8 +1126,8 @@ const COGatewayReview: React.FC&lt;COGatewayReviewProps&gt; = props =&gt; {
         &gt;
           {hasSelectedInstances &amp;&amp; (
             &lt;&gt;
-              &lt;Heading level={2}&gt;Instance details&lt;/Heading&gt;
-              &lt;Text style={{ margin: '20px 0 10px' }}&gt;Instances&lt;/Text&gt;
+              &lt;Heading level={2}&gt;{getString('ce.co.autoStoppingRule.review.instanceDetails')}&lt;/Heading&gt;
+              &lt;Text style={{ margin: '20px 0 10px' }}&gt;{getString('instanceFieldOptions.instances')}&lt;/Text&gt;
               &lt;Table&lt;InstanceDetails&gt;
                 data={props.gatewayDetails.selectedInstances}
                 bpTableProps={{}}
@@ -1182,23 +1182,23 @@ const COGatewayReview: React.FC&lt;COGatewayReviewProps&gt; = props =&gt; {
           )}
           {!_isEmpty(props.gatewayDetails.routing.container_svc) &amp;&amp; (
 <span class="branch-1 cbranch-no" title="branch not covered" >            &lt;Layout.Vertical spacing="xxlarge"&gt;</span>
-              &lt;Heading level={2}&gt;Service details&lt;/Heading&gt;
+              &lt;Heading level={2}&gt;{getString('ce.co.autoStoppingRule.review.serviceDetails')}&lt;/Heading&gt;
               &lt;DisplaySelectedEcsService data={[props.gatewayDetails.resourceMeta?.container_svc as ContainerSvc]} /&gt;
               &lt;Layout.Horizontal spacing={'large'} className={css.equalSpacing}&gt;
-                &lt;Text&gt;Desired Task Count&lt;/Text&gt;
+                &lt;Text&gt;{getString('ce.co.autoStoppingRule.configuration.step3.desiredTaskCount')}&lt;/Text&gt;
                 &lt;Text&gt;{props.gatewayDetails.routing.container_svc?.task_count}&lt;/Text&gt;
               &lt;/Layout.Horizontal&gt;
             &lt;/Layout.Vertical&gt;
           )}
           {!_isEmpty(props.gatewayDetails.routing.database) &amp;&amp; (
 <span class="branch-1 cbranch-no" title="branch not covered" >            &lt;&gt;</span>
-              &lt;Heading level={2}&gt;RDS details&lt;/Heading&gt;
+              &lt;Heading level={2}&gt;{getString('ce.co.autoStoppingRule.review.rdsDetails')}&lt;/Heading&gt;
               &lt;DisplaySelectedRdsDatabse data={[props.gatewayDetails.routing.database as RDSDatabase]} /&gt;
             &lt;/&gt;
           )}
           {hasSelectedInstances &amp;&amp; (
             &lt;Layout.Horizontal spacing={'large'} className={css.equalSpacing} style={{ marginTop: 20 }}&gt;
-              &lt;Text&gt;Instance fulfilment&lt;/Text&gt;
+              &lt;Text&gt;{getString('ce.co.autoStoppingRule.review.instanceFulfilment')}&lt;/Text&gt;
               &lt;Layout.Horizontal spacing={'small'}&gt;
                 &lt;img
                   className={css.fulFilmentIcon}
@@ -1212,22 +1212,22 @@ const COGatewayReview: React.FC&lt;COGatewayReviewProps&gt; = props =&gt; {
           )}
         &lt;/ReviewDetailsSection&gt;
       )}
-      {props.gatewayDetails.opts &amp;&amp; (
-        &lt;ReviewDetailsSection isEditable onEdit={handleAdvancedConfigEdit}&gt;
-          &lt;Heading level={2}&gt;Advanced configuration&lt;/Heading&gt;
+      {(isK8sRule || !_isEmpty(filteredSchedules) || !_isEmpty(filteredSchedules)) &amp;&amp; (
+<span class="branch-3 cbranch-no" title="branch not covered" >        &lt;ReviewDetailsSection isEditable onEdit={handleAdvancedConfigEdit}&gt;</span>
+          &lt;Heading level={2}&gt;{getString('ce.co.autoStoppingRule.configuration.step4.advancedConfiguration')}&lt;/Heading&gt;
           &lt;Layout.Vertical style={{ marginTop: 'var(--spacing-large)' }}&gt;
             {isK8sRule &amp;&amp; (
-<span class="branch-1 cbranch-no" title="branch not covered" >              &lt;Layout.Horizontal</span>
+              &lt;Layout.Horizontal
                 spacing={'large'}
                 padding={{ bottom: 'medium' }}
                 className={cx(css.equalSpacing, css.borderSpacing)}
               &gt;
-                &lt;Text&gt;Hide progress page&lt;/Text&gt;
-                &lt;Text&gt;{Utils.booleanToString(props.gatewayDetails.opts.hide_progress_page)}&lt;/Text&gt;
+                &lt;Text&gt;{getString('ce.co.autoStoppingRule.review.hideProgressPage')}&lt;/Text&gt;
+                &lt;Text&gt;{Utils.booleanToString(props.gatewayDetails.opts?.hide_progress_page)}&lt;/Text&gt;
               &lt;/Layout.Horizontal&gt;
             )}
             {!_isEmpty(filteredSchedules) &amp;&amp; (
-<span class="branch-1 cbranch-no" title="branch not covered" >              &lt;Container padding={{ top: 'medium' }}&gt;</span>
+              &lt;Container padding={{ top: 'medium' }}&gt;
                 &lt;Heading level={3}&gt;
                   {getString('ce.co.autoStoppingRule.configuration.step4.tabs.schedules.title')}
                 &lt;/Heading&gt;
@@ -1236,7 +1236,7 @@ const COGatewayReview: React.FC&lt;COGatewayReviewProps&gt; = props =&gt; {
             )}
           &lt;/Layout.Vertical&gt;
           {!_isEmpty(props.gatewayDetails.deps) &amp;&amp; (
-<span class="branch-1 cbranch-no" title="branch not covered" >            &lt;Table&lt;DependencyView&gt;</span>
+            &lt;Table&lt;DependencyView&gt;
               data={getViewDependencies()}
               className={css.instanceTable}
               bpTableProps={{}}
@@ -1249,7 +1249,7 @@ const COGatewayReview: React.FC&lt;COGatewayReviewProps&gt; = props =&gt; {
         &lt;/ReviewDetailsSection&gt;
       )}
       {_isEmpty(props.gatewayDetails.routing.database) &amp;&amp; (
-        &lt;Text className={css.reviewHeading}&gt;Setup Access details&lt;/Text&gt;
+        &lt;Text className={css.reviewHeading}&gt;{getString('ce.co.autoStoppingRule.review.setupAccessDetails')}&lt;/Text&gt;
       )}
       {isK8sRule &amp;&amp; (
 <span class="branch-1 cbranch-no" title="branch not covered" >        &lt;Layout.Vertical style={{ marginTop: 20 }}&gt;</span>
@@ -1269,7 +1269,7 @@ const COGatewayReview: React.FC&lt;COGatewayReviewProps&gt; = props =&gt; {
                 isEditable
                 onEdit={<span class="fstat-no" title="function not covered" >() =</span>&gt; <span class="cstat-no" title="statement not covered" >props.onEdit({ id: 'setupAccess', metaData: { activeStepTabId: 'routing' } })}</span>
               &gt;
-                &lt;Heading level={2}&gt;Routing&lt;/Heading&gt;
+                &lt;Heading level={2}&gt;{getString('ce.co.gatewayReview.routing')}&lt;/Heading&gt;
                 {!isK8sRule &amp;&amp; (
                   &lt;Table&lt;PortConfig&gt;
                     data={props.gatewayDetails.routing.ports}
@@ -1338,7 +1338,7 @@ const COGatewayReview: React.FC&lt;COGatewayReviewProps&gt; = props =&gt; {
                 isEditable
                 onEdit={<span class="fstat-no" title="function not covered" >() =</span>&gt; <span class="cstat-no" title="statement not covered" >props.onEdit({ id: 'setupAccess', metaData: { activeStepTabId: 'healthcheck' } })}</span>
               &gt;
-                &lt;Heading level={2}&gt;Health Check&lt;/Heading&gt;
+                &lt;Heading level={2}&gt;{getString('ce.co.gatewayConfig.healthCheck')}&lt;/Heading&gt;
                 &lt;Table&lt;HealthCheck&gt;
                   data={[props.gatewayDetails.healthCheck as HealthCheck]}
                   className={css.instanceTable}
@@ -1386,7 +1386,7 @@ const COGatewayReview: React.FC&lt;COGatewayReviewProps&gt; = props =&gt; {
             )}
           {_isEmpty(props.gatewayDetails.routing.database) &amp;&amp; (hasCustomDomains || hasHostName) &amp;&amp; (
             &lt;ReviewDetailsSection isEditable onEdit={<span class="fstat-no" title="function not covered" >() =</span>&gt; <span class="cstat-no" title="statement not covered" >props.onEdit({ id: 'setupAccess' })}</span>&gt;
-              &lt;Heading level={2}&gt;DNS Link mapping&lt;/Heading&gt;
+              &lt;Heading level={2}&gt;{getString('ce.co.autoStoppingRule.review.dnsLinkMapping')}&lt;/Heading&gt;
               &lt;Layout.Vertical style={{ marginTop: 'var(--spacing-large)' }}&gt;
                 {hasCustomDomains &amp;&amp; (
 <span class="branch-1 cbranch-no" title="branch not covered" >                  &lt;Layout.Horizontal</span>
@@ -1394,7 +1394,7 @@ const COGatewayReview: React.FC&lt;COGatewayReviewProps&gt; = props =&gt; {
                     padding={{ bottom: 'medium' }}
                     className={cx(css.equalSpacing, css.borderSpacing)}
                   &gt;
-                    &lt;Text&gt;Custom domain&lt;/Text&gt;
+                    &lt;Text&gt;{getString('ce.co.ruleDetailsHeader.customDomain')}&lt;/Text&gt;
                     &lt;Text&gt;{allCustomDomains.join(',')}&lt;/Text&gt;
                   &lt;/Layout.Horizontal&gt;
                 )}
@@ -1404,7 +1404,7 @@ const COGatewayReview: React.FC&lt;COGatewayReviewProps&gt; = props =&gt; {
                     padding={{ bottom: 'medium' }}
                     className={cx(css.equalSpacing, css.borderSpacing)}
                   &gt;
-                    &lt;Text&gt;Auto generated URL&lt;/Text&gt;
+                    &lt;Text&gt;{getString('ce.co.dnsSetup.autoURL')}&lt;/Text&gt;
                     &lt;Text&gt;{props.gatewayDetails.hostName}&lt;/Text&gt;
                   &lt;/Layout.Horizontal&gt;
                 )}
@@ -1441,7 +1441,7 @@ export default COGatewayReview
             <div class='footer quiet pad2 space-top1 center small'>
                 Code coverage generated by
                 <a href="https://istanbul.js.org/" target="_blank">istanbul</a>
-                at Fri Mar 25 2022 17:16:04 GMT+0000 (Greenwich Mean Time)
+                at Sun Mar 27 2022 05:07:05 GMT+0000 (Greenwich Mean Time)
             </div>
         </div>
         <script src="../../../../prettify.js"></script>

@@ -23,16 +23,16 @@
         <div class='clearfix'>
             
             <div class='fl pad1y space-right2'>
-                <span class="strong">93.55% </span>
+                <span class="strong">93.1% </span>
                 <span class="quiet">Statements</span>
-                <span class='fraction'>29/31</span>
+                <span class='fraction'>27/29</span>
             </div>
         
             
             <div class='fl pad1y space-right2'>
-                <span class="strong">92.31% </span>
+                <span class="strong">90.91% </span>
                 <span class="quiet">Branches</span>
-                <span class='fraction'>12/13</span>
+                <span class='fraction'>10/11</span>
             </div>
         
             
@@ -44,9 +44,9 @@
         
             
             <div class='fl pad1y space-right2'>
-                <span class="strong">92.86% </span>
+                <span class="strong">92% </span>
                 <span class="quiet">Lines</span>
-                <span class='fraction'>26/28</span>
+                <span class='fraction'>23/25</span>
             </div>
         
             
@@ -328,15 +328,7 @@
 <a name='L269'></a><a href='#L269'>269</a>
 <a name='L270'></a><a href='#L270'>270</a>
 <a name='L271'></a><a href='#L271'>271</a>
-<a name='L272'></a><a href='#L272'>272</a>
-<a name='L273'></a><a href='#L273'>273</a>
-<a name='L274'></a><a href='#L274'>274</a>
-<a name='L275'></a><a href='#L275'>275</a>
-<a name='L276'></a><a href='#L276'>276</a>
-<a name='L277'></a><a href='#L277'>277</a>
-<a name='L278'></a><a href='#L278'>278</a>
-<a name='L279'></a><a href='#L279'>279</a>
-<a name='L280'></a><a href='#L280'>280</a></td><td class="line-coverage quiet"><span class="cline-any cline-neutral">&nbsp;</span>
+<a name='L272'></a><a href='#L272'>272</a></td><td class="line-coverage quiet"><span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
@@ -370,14 +362,6 @@
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-yes">104x</span>
-<span class="cline-any cline-yes">8x</span>
-<span class="cline-any cline-yes">8x</span>
-<span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-yes">8x</span>
-<span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
@@ -385,8 +369,8 @@
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-yes">104x</span>
-<span class="cline-any cline-yes">45x</span>
-<span class="cline-any cline-yes">45x</span>
+<span class="cline-any cline-yes">42x</span>
+<span class="cline-any cline-yes">42x</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
@@ -628,7 +612,7 @@ import { Color } from '@harness/design-system'
 import cx from 'classnames'
 import { connect } from 'formik'
 import type { K8sDirectInfraYaml } from 'services/ci'
-import { useStrings } from 'framework/strings'
+import { useStrings, UseStringsReturn } from 'framework/strings'
 import { FormMultiTypeDurationField } from '@common/components/MultiTypeDuration/MultiTypeDuration'
 import { MultiTypeSelectField } from '@common/components/MultiTypeSelect/MultiTypeSelect'
 import { MultiTypeTextField } from '@common/components/MultiTypeText/MultiTypeText'
@@ -648,20 +632,12 @@ export const usePullOptions: () =&gt; PullOptions = <span class="fstat-no" title
   ]
 }
 &nbsp;
-export const GetShellOptions = (buildInfrastructureType?: K8sDirectInfraYaml['type']): SelectOption[] =&gt; {
-  const { getString } = useStrings()
-  const fixedOptions = [
-    { label: getString('common.bash'), value: 'Bash' },
-    { label: getString('common.shell'), value: 'Sh' }
-  ]
-  return buildInfrastructureType === 'VM'
-    ? [
-        ...fixedOptions,
-        { label: getString('common.powershell'), value: 'Powershell' },
-        { label: getString('common.pwsh'), value: 'Pwsh' }
-      ]
-    : fixedOptions
-}
+export const GetShellOptions = (getString: UseStringsReturn['getString']): SelectOption[] =&gt; [
+  { label: getString('common.bash'), value: 'Bash' },
+  { label: getString('common.powershell'), value: 'Powershell' },
+  { label: getString('common.pwsh'), value: 'Pwsh' },
+  { label: getString('common.sh'), value: 'Sh' }
+]
 &nbsp;
 export const GetImagePullPolicyOptions: () =&gt; SelectOption[] = () =&gt; {
   const { getString } = useStrings()
@@ -751,11 +727,11 @@ const StepCommonFields = ({
               &lt;/Layout.Horizontal&gt;
             }
             multiTypeInputProps={{
-              selectItems: GetImagePullPolicyOptions(),
+              selectItems: GetShellOptions(getString),
               placeholder: getString('select'),
               multiTypeInputProps: {
                 expressions,
-                selectProps: { addClearBtn: true, items: GetShellOptions(buildInfrastructureType) },
+                selectProps: { addClearBtn: true, items: GetShellOptions(getString) },
                 allowableTypes: [MultiTypeInputType.FIXED, MultiTypeInputType.EXPRESSION]
               },
               disabled
@@ -901,7 +877,7 @@ export default connect(StepCommonFields)
             <div class='footer quiet pad2 space-top1 center small'>
                 Code coverage generated by
                 <a href="https://istanbul.js.org/" target="_blank">istanbul</a>
-                at Fri Mar 25 2022 17:16:04 GMT+0000 (Greenwich Mean Time)
+                at Sun Mar 27 2022 05:07:05 GMT+0000 (Greenwich Mean Time)
             </div>
         </div>
         <script src="../../../../../prettify.js"></script>
