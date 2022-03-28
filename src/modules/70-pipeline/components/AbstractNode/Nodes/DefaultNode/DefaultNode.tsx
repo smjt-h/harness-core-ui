@@ -8,18 +8,25 @@
 import React from 'react'
 import cx from 'classnames'
 import { defaultTo } from 'lodash-es'
-import { Icon, Text, Button, ButtonVariation } from '@wings-software/uicore'
+import { Icon, Text, Button, ButtonVariation, IconName } from '@wings-software/uicore'
 import { Color } from '@harness/design-system'
 import { DiagramDrag, DiagramType, Event } from '@pipeline/components/Diagram'
 import SVGMarker from '../SVGMarker'
+import type { BaseReactComponentProps } from '../../types'
 import css from './DefaultNode.module.scss'
-
-function DefaultNode(props: any): JSX.Element {
+interface DefaultNodeProps extends BaseReactComponentProps {
+  disableClick?: boolean
+  draggable: any
+  dragging?: boolean
+}
+function DefaultNode(props: DefaultNodeProps): JSX.Element {
   const allowAdd = defaultTo(props.allowAdd, false)
   const nodeRef = React.useRef<HTMLDivElement>(null)
   const [showAdd, setVisibilityOfAdd] = React.useState(false)
   const setAddVisibility = (visibility: boolean): void => {
-    if (!allowAdd) return
+    if (!allowAdd) {
+      return
+    }
     setVisibilityOfAdd(visibility)
   }
 
@@ -60,9 +67,12 @@ function DefaultNode(props: any): JSX.Element {
         event.stopPropagation()
 
         props?.fireEvent({
-          ...props,
           type: Event.ClickNode,
-          entityType: DiagramType.Default
+          target: event.target,
+          data: {
+            entityType: DiagramType.Default,
+            ...props
+          }
         })
         props?.setSelectedNode(props?.identifier)
       }}
@@ -86,9 +96,12 @@ function DefaultNode(props: any): JSX.Element {
         event.stopPropagation()
         props?.fireEvent({
           type: Event.DropNodeEvent,
-          entityType: DiagramType.Default,
-          node: JSON.parse(event.dataTransfer.getData(DiagramDrag.NodeDrag)),
-          destination: props
+          target: event.target,
+          data: {
+            entityType: DiagramType.Default,
+            node: JSON.parse(event.dataTransfer.getData(DiagramDrag.NodeDrag)),
+            destination: props
+          }
         })
       }}
     >
@@ -125,7 +138,7 @@ function DefaultNode(props: any): JSX.Element {
         {props.icon ? (
           <Icon
             size={28}
-            name={props.icon}
+            name={props.icon as IconName}
             inverse={props?.isSelected}
             style={{ pointerEvents: 'none', ...props?.iconStyle }}
           />
@@ -140,8 +153,11 @@ function DefaultNode(props: any): JSX.Element {
             e.stopPropagation()
             props?.fireEvent({
               type: Event.RemoveNode,
-              identifier: props?.identifier,
-              node: props
+              target: e.target,
+              data: {
+                identifier: props?.identifier,
+                node: props
+              }
             })
           }}
           withoutCurrentColor={true}
@@ -168,11 +184,13 @@ function DefaultNode(props: any): JSX.Element {
             event.stopPropagation()
             props?.fireEvent({
               type: Event.AddParallelNode,
-              entityType: DiagramType.Default,
               target: event.target,
-              identifier: props?.identifier,
-              parentIdentifier: props?.parentIdentifier,
-              node: props
+              data: {
+                entityType: DiagramType.Default,
+                identifier: props?.identifier,
+                parentIdentifier: props?.parentIdentifier,
+                node: props
+              }
             })
           }}
           className={css.addNode}

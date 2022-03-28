@@ -9,7 +9,6 @@ import { v4 as uuid } from 'uuid'
 import PipelineGraph from './PipelineGraph/PipelineGraph'
 import GroupNode from './Nodes/GroupNode/GroupNode'
 import type {
-  NodeType,
   BaseReactComponentProps,
   BaseListener,
   NodeCollapsibleProps,
@@ -18,6 +17,7 @@ import type {
   NodeDetails,
   PipelineGraphState
 } from './types'
+import { NodeType } from './types'
 import { StepGroupNode } from './Nodes/StepGroupNode/StepGroupNode'
 import DefaultNode from './Nodes/DefaultNode/DefaultNode'
 

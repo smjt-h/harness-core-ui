@@ -5,42 +5,52 @@
  * https://polyformproject.org/wp-content/uploads/2020/06/PolyForm-Shield-1.0.0.txt.
  */
 
-import React from 'react'
+import React, { CSSProperties } from 'react'
 import cx from 'classnames'
 import { defaultTo } from 'lodash-es'
 import { Icon, Text } from '@wings-software/uicore'
 import { Color } from '@harness/design-system'
 import { DiagramDrag, DiagramType, Event } from '@pipeline/components/Diagram'
+import type { BaseReactComponentProps } from '../../types'
 import css from '../DefaultNode/DefaultNode.module.scss'
 
-function GroupNode(props: any): React.ReactElement {
+interface GroupNodeProps extends BaseReactComponentProps {
+  allowAdd: boolean
+  children: []
+  intersectingIndex: number
+  customNodeStyle?: CSSProperties
+  defaultSelected: any
+  parentIdentifier: string
+}
+const getDisplayValue = (showAdd: boolean): string => (showAdd ? 'flex' : 'none')
+
+function GroupNode(props: GroupNodeProps): React.ReactElement {
   const allowAdd = props.allowAdd ?? false
   const [showAdd, setVisibilityOfAdd] = React.useState(false)
   const nodeRef = React.useRef<HTMLDivElement>(null)
-
+  const setAddVisibility = (visibility: boolean): void => {
+    if (!allowAdd) {
+      return
+    }
+    setVisibilityOfAdd(visibility)
+  }
   React.useEffect(() => {
     const currentNode = nodeRef.current
     const onMouseOver = (_e: MouseEvent): void => {
-      if (allowAdd) {
-        setVisibilityOfAdd(true)
-      }
+      setAddVisibility(true)
     }
     const onMouseLeave = (_e: MouseEvent): void => {
-      if (allowAdd) {
-        setTimeout(() => {
-          setVisibilityOfAdd(false)
-        }, 100)
-      }
+      setTimeout(() => {
+        setAddVisibility(false)
+      }, 100)
     }
-    if (currentNode) {
-      currentNode.addEventListener('mouseover', onMouseOver)
-      currentNode.addEventListener('mouseleave', onMouseLeave)
-    }
+
+    currentNode?.addEventListener?.('mouseover', onMouseOver)
+    currentNode?.addEventListener?.('mouseleave', onMouseLeave)
+
     return () => {
-      if (currentNode) {
-        currentNode.removeEventListener('mouseover', onMouseOver)
-        currentNode.removeEventListener('mouseleave', onMouseLeave)
-      }
+      currentNode?.removeEventListener?.('mouseover', onMouseOver)
+      currentNode?.removeEventListener?.('mouseleave', onMouseLeave)
     }
   }, [nodeRef, allowAdd])
 
@@ -63,35 +73,37 @@ function GroupNode(props: any): React.ReactElement {
         event.stopPropagation()
         props?.fireEvent({
           type: Event.ClickNode,
-          entityType: DiagramType.GroupNode,
-          identifier: props?.identifier,
-          nodesInfo
+          target: event.target,
+          data: {
+            entityType: DiagramType.GroupNode,
+            identifier: props?.identifier,
+            nodesInfo
+          }
         })
         props?.setSelectedNode(props?.identifier)
       }}
       onDragOver={event => {
         if (event.dataTransfer.types.indexOf(DiagramDrag.AllowDropOnNode) !== -1) {
-          if (allowAdd) {
-            setVisibilityOfAdd(true)
-            event.preventDefault()
-          }
+          setAddVisibility(true)
+          event.preventDefault()
         }
       }}
       onDragLeave={event => {
         if (event.dataTransfer.types.indexOf(DiagramDrag.AllowDropOnNode) !== -1) {
-          if (allowAdd) {
-            setVisibilityOfAdd(false)
-          }
+          setAddVisibility(false)
         }
       }}
       onDrop={event => {
         event.stopPropagation()
         props?.fireEvent({
           type: Event.DropNodeEvent,
-          entityType: DiagramType.Default,
-          node: JSON.parse(event.dataTransfer.getData(DiagramDrag.NodeDrag)),
-          // last element of groupnode
-          destination: props?.children?.slice(-1)?.[0]
+          target: event.target,
+          data: {
+            entityType: DiagramType.Default as string,
+            node: JSON.parse(event.dataTransfer.getData(DiagramDrag.NodeDrag)),
+            // last element of groupnode
+            destination: props?.children?.slice(-1)?.[0]
+          }
         })
       }}
     >
@@ -99,8 +111,8 @@ function GroupNode(props: any): React.ReactElement {
         className={css.defaultCard}
         style={{
           position: 'absolute',
-          width: props.width || 90,
-          height: props.height || 40,
+          width: defaultTo(props.width, 90),
+          height: defaultTo(props.height, 40),
           marginTop: -8,
           marginLeft: 8
         }}
@@ -109,8 +121,8 @@ function GroupNode(props: any): React.ReactElement {
         className={css.defaultCard}
         style={{
           position: 'absolute',
-          width: props.width || 90,
-          height: props.height || 40,
+          width: defaultTo(props.width, 90),
+          height: defaultTo(props.height, 40),
           marginTop: -4,
           marginLeft: 4
         }}
@@ -121,9 +133,9 @@ function GroupNode(props: any): React.ReactElement {
         data-nodeid={props.id}
         className={cx(css.defaultCard, { [css.selected]: props?.isSelected })}
         style={{
-          width: props.width || 90,
-          height: props.height || 40,
-          marginTop: 32 - (props.height || 64) / 2,
+          width: defaultTo(props.width, 90),
+          height: defaultTo(props.height, 40),
+          marginTop: 32 - defaultTo(props.height, 64) / 2,
           ...props.customNodeStyle
         }}
       >
@@ -141,30 +153,32 @@ function GroupNode(props: any): React.ReactElement {
       >
         {getGroupNodeName()}
       </Text>
-      {allowAdd && (
+      {allowAdd ? (
         <div
           onClick={event => {
             event.stopPropagation()
             props?.fireEvent({
               type: Event.AddParallelNode,
-              identifier: props?.identifier,
-              parentIdentifier: props?.parentIdentifier,
-              entityType: DiagramType.Default,
-              node: props,
-              target: event.target
+              target: event.target,
+              data: {
+                identifier: props?.identifier,
+                parentIdentifier: props?.parentIdentifier,
+                entityType: DiagramType.Default,
+                node: props
+              }
             })
           }}
           className={css.addNode}
           data-nodeid="add-parallel"
           style={{
-            width: props.width || 90,
-            height: props.height || 40,
-            display: showAdd ? 'flex' : 'none'
+            width: defaultTo(props.width, 90),
+            height: defaultTo(props.height, 40),
+            display: getDisplayValue(showAdd)
           }}
         >
           <Icon name="plus" size={22} color={'var(--diagram-add-node-color)'} />
         </div>
-      )}
+      ) : null}
     </div>
   )
 }

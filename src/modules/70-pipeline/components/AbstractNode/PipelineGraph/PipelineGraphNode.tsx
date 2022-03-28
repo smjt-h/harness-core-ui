@@ -8,14 +8,15 @@
 import React, { useRef, useState, useLayoutEffect, ForwardedRef } from 'react'
 import { defaultTo } from 'lodash-es'
 import classNames from 'classnames'
-import { NodeType } from '../types'
+import { BaseReactComponentProps, NodeType } from '../types'
 import GroupNode from '../Nodes/GroupNode/GroupNode'
-import type { NodeCollapsibleProps, NodeDetails, NodeIds, PipelineGraphState } from '../types'
+import type { NodeCollapsibleProps, NodeDetails, NodeIds, PipelineGraphState, GetNodeMethod } from '../types'
 import { useNodeResizeObserver } from '../hooks/useResizeObserver'
+import { isFirstNodeAGroupNode, isNodeParallel, shouldAttachRef, shouldRenderGroupNode, showChildNode } from './utils'
 import css from './PipelineGraph.module.scss'
 export interface PipelineGraphRecursiveProps {
   nodes?: PipelineGraphState[]
-  getNode: (type?: string | undefined) => NodeDetails | undefined
+  getNode: GetNodeMethod
   getDefaultNode(): NodeDetails | null
   updateGraphLinks?: () => void
   fireEvent?: (event: any) => void
@@ -39,13 +40,13 @@ export function PipelineGraphRecursive({
   getDefaultNode,
   readonly = false
 }: PipelineGraphRecursiveProps): React.ReactElement {
-  const StartNode: React.FC<any> | undefined = getNode(NodeType.StartNode)?.component
-  const CreateNode: React.FC<any> | undefined = getNode(NodeType.CreateNode)?.component
-  const EndNode: React.FC<any> | undefined = getNode(NodeType.EndNode)?.component
+  const StartNode: React.FC<BaseReactComponentProps> | undefined = getNode(NodeType.StartNode)?.component
+  const CreateNode: React.FC<BaseReactComponentProps> | undefined = getNode(NodeType.CreateNode)?.component
+  const EndNode: React.FC<BaseReactComponentProps> | undefined = getNode(NodeType.EndNode)?.component
   return (
     <div id="tree-container" className={classNames(css.graphTree, css.common)}>
       {StartNode && startEndNodeNeeded && (
-        <StartNode id={uniqueNodeIds?.startNode} className={classNames(css.graphNode)} />
+        <StartNode id={uniqueNodeIds?.startNode as string} className={classNames(css.graphNode)} />
       )}
       {nodes?.map((node, index) => {
         return (
@@ -57,8 +58,8 @@ export function PipelineGraphRecursive({
             data={node}
             key={node?.identifier}
             getNode={getNode}
-            isNextNodeParallel={!!nodes?.[index + 1]?.children?.length}
-            isPrevNodeParallel={!!nodes?.[index - 1]?.children?.length}
+            isNextNodeParallel={isNodeParallel(nodes?.[index + 1])}
+            isPrevNodeParallel={isNodeParallel(nodes?.[index - 1])}
             prevNodeIdentifier={nodes?.[index - 1]?.identifier}
             nextNode={nodes?.[index + 1]}
             prevNode={nodes?.[index - 1]}
@@ -69,9 +70,17 @@ export function PipelineGraphRecursive({
         )
       })}
       {CreateNode && startEndNodeNeeded && !readonly && (
-        <CreateNode identifier={uniqueNodeIds?.createNode} name={'Add Stage'} fireEvent={fireEvent} getNode={getNode} />
+        <CreateNode
+          id={uniqueNodeIds?.createNode as string}
+          identifier={uniqueNodeIds?.createNode}
+          name={'Add Stage'}
+          fireEvent={fireEvent}
+          getNode={getNode}
+        />
       )}
-      {EndNode && startEndNodeNeeded && <EndNode id={uniqueNodeIds?.endNode} className={classNames(css.graphNode)} />}
+      {EndNode && startEndNodeNeeded && (
+        <EndNode id={uniqueNodeIds?.endNode as string} className={classNames(css.graphNode)} />
+      )}
       <div></div>
     </div>
   )
@@ -81,7 +90,7 @@ interface PipelineGraphNodeWithoutCollapseProps {
   className?: string
   data: PipelineGraphState
   fireEvent?: (event: any) => void
-  getNode?: (type?: string | undefined) => NodeDetails | undefined
+  getNode?: GetNodeMethod
   selectedNode: string
   setSelectedNode?: (nodeId: string) => void
   isParallelNode?: boolean
@@ -123,9 +132,17 @@ const PipelineGraphNodeWithoutCollapse = React.forwardRef(
     ref: ForwardedRef<HTMLDivElement>
   ): React.ReactElement | null => {
     const defaultNode = getDefaultNode()?.component
-    const NodeComponent: React.FC<any> | undefined = getNode?.(data?.type)?.component || defaultNode
+    const NodeComponent: React.FC<BaseReactComponentProps> | undefined = defaultTo(
+      getNode?.(data?.type)?.component,
+      defaultNode
+    )
 
     const readOnlyValue = readonly || data.readonly
+
+    const refValue = React.useMemo((): React.ForwardedRef<HTMLDivElement> | null => {
+      return intersectingIndex === 0 && data.children && collapseOnIntersect ? ref : null
+    }, [intersectingIndex, data.children, collapseOnIntersect, ref])
+
     return (
       <div
         className={classNames(
@@ -134,13 +151,8 @@ const PipelineGraphNodeWithoutCollapse = React.forwardRef(
         )}
       >
         <>
-          <div
-            id={`ref_${data?.identifier}`}
-            ref={intersectingIndex === 0 && data.children && collapseOnIntersect ? ref : null}
-            key={data?.identifier}
-            data-index={0}
-          >
-            {intersectingIndex == 0 && collapseOnIntersect ? (
+          <div id={`ref_${data?.identifier}`} ref={refValue} key={data?.identifier} data-index={0}>
+            {isFirstNodeAGroupNode(intersectingIndex, collapseOnIntersect) ? (
               <GroupNode
                 key={data?.identifier}
                 fireEvent={fireEvent}
@@ -156,40 +168,40 @@ const PipelineGraphNodeWithoutCollapse = React.forwardRef(
                 selectedNodeId={selectedNode}
                 {...data}
               />
-            ) : (
-              NodeComponent && (
-                <NodeComponent
-                  parentIdentifier={parentIdentifier}
-                  key={data?.identifier}
-                  getNode={getNode}
-                  fireEvent={fireEvent}
-                  getDefaultNode={getDefaultNode}
-                  className={classNames(css.graphNode, className)}
-                  isSelected={selectedNode === data?.identifier}
-                  isParallelNode={isParallelNode}
-                  allowAdd={(!data?.children?.length && !isParallelNode) || (isParallelNode && isLastChild)}
-                  isFirstParallelNode={true}
-                  prevNodeIdentifier={prevNodeIdentifier}
-                  prevNode={prevNode}
-                  nextNode={nextNode}
-                  updateGraphLinks={updateGraphLinks}
-                  readonly={readOnlyValue}
-                  selectedNodeId={selectedNode}
-                  {...data}
-                />
-              )
-            )}
+            ) : NodeComponent ? (
+              <NodeComponent
+                parentIdentifier={parentIdentifier}
+                key={data?.identifier}
+                getNode={getNode}
+                fireEvent={fireEvent}
+                getDefaultNode={getDefaultNode}
+                className={classNames(css.graphNode, className)}
+                isSelected={selectedNode === data?.identifier}
+                isParallelNode={isParallelNode}
+                allowAdd={(!data?.children?.length && !isParallelNode) || (isParallelNode && isLastChild)}
+                isFirstParallelNode={true}
+                prevNodeIdentifier={prevNodeIdentifier}
+                prevNode={prevNode}
+                nextNode={nextNode}
+                updateGraphLinks={updateGraphLinks}
+                readonly={readOnlyValue}
+                selectedNodeId={selectedNode}
+                {...data}
+              />
+            ) : null}
           </div>
+          {/* render child nodes */}
           {data?.children?.map((currentNodeData, index) => {
-            const ChildNodeComponent: React.FC<any> | undefined =
-              getNode?.(currentNodeData?.type)?.component || defaultNode
+            const ChildNodeComponent: React.FC<BaseReactComponentProps> | undefined = defaultTo(
+              getNode?.(currentNodeData?.type)?.component,
+              defaultNode
+            )
             const lastChildIndex = defaultTo(data.children?.length, 0) - 1
             const indexRelativeToParent = index + 1 // counting parent as 0 and children from 1
             const isCurrentChildLast = index === lastChildIndex
-            const attachRef =
-              intersectingIndex === -1 ? isCurrentChildLast : intersectingIndex === indexRelativeToParent
+            const attachRef = shouldAttachRef(intersectingIndex, isCurrentChildLast, indexRelativeToParent)
             return !collapseOnIntersect ? (
-              ChildNodeComponent && (
+              ChildNodeComponent ? (
                 <ChildNodeComponent
                   parentIdentifier={parentIdentifier}
                   {...currentNodeData}
@@ -209,7 +221,7 @@ const PipelineGraphNodeWithoutCollapse = React.forwardRef(
                   updateGraphLinks={updateGraphLinks}
                   selectedNodeId={selectedNode}
                 />
-              )
+              ) : null
             ) : (
               <div
                 ref={attachRef ? ref : null}
@@ -217,7 +229,7 @@ const PipelineGraphNodeWithoutCollapse = React.forwardRef(
                 id={`ref_${currentNodeData?.identifier}`}
                 key={currentNodeData?.identifier}
               >
-                {attachRef && !isCurrentChildLast ? (
+                {shouldRenderGroupNode(attachRef, isCurrentChildLast) ? (
                   <GroupNode
                     {...data}
                     fireEvent={fireEvent}
@@ -234,28 +246,26 @@ const PipelineGraphNodeWithoutCollapse = React.forwardRef(
                     selectedNodeId={selectedNode}
                     updateGraphLinks={updateGraphLinks}
                   />
-                ) : indexRelativeToParent > intersectingIndex && intersectingIndex !== -1 ? null : (
-                  ChildNodeComponent && (
-                    <ChildNodeComponent
-                      parentIdentifier={parentIdentifier}
-                      {...currentNodeData}
-                      getNode={getNode}
-                      fireEvent={fireEvent}
-                      getDefaultNode={getDefaultNode}
-                      className={classNames(css.graphNode, className)}
-                      isSelected={selectedNode === currentNodeData?.identifier}
-                      isParallelNode={true}
-                      key={currentNodeData?.identifier}
-                      allowAdd={index + 1 === data?.children?.length}
-                      prevNodeIdentifier={prevNodeIdentifier}
-                      prevNode={prevNode}
-                      nextNode={nextNode}
-                      readonly={readOnlyValue}
-                      updateGraphLinks={updateGraphLinks}
-                      selectedNodeId={selectedNode}
-                    />
-                  )
-                )}
+                ) : showChildNode(indexRelativeToParent, intersectingIndex) ? null : ChildNodeComponent ? (
+                  <ChildNodeComponent
+                    parentIdentifier={parentIdentifier}
+                    {...currentNodeData}
+                    getNode={getNode}
+                    fireEvent={fireEvent}
+                    getDefaultNode={getDefaultNode}
+                    className={classNames(css.graphNode, className)}
+                    isSelected={selectedNode === currentNodeData?.identifier}
+                    isParallelNode={true}
+                    key={currentNodeData?.identifier}
+                    allowAdd={index + 1 === data?.children?.length}
+                    prevNodeIdentifier={prevNodeIdentifier}
+                    prevNode={prevNode}
+                    nextNode={nextNode}
+                    readonly={readOnlyValue}
+                    updateGraphLinks={updateGraphLinks}
+                    selectedNodeId={selectedNode}
+                  />
+                ) : null}
               </div>
             )
           })}
@@ -276,14 +286,15 @@ function PipelineGraphNodeWithCollapse(
   const [intersectingIndex, setIntersectingIndex] = useState<number>(-1)
 
   useLayoutEffect(() => {
-    const element = (ref?.current || ref) as HTMLElement
+    const element = defaultTo(ref?.current, ref) as HTMLElement
     if (resizeState.shouldCollapse) {
-      const indexToGroupFrom = Number(element?.dataset.index || -1) as unknown as number
+      const indexToGroupFrom = Number(defaultTo(element?.dataset.index, -1))
       Number.isInteger(indexToGroupFrom) && indexToGroupFrom > 0 && setIntersectingIndex(indexToGroupFrom - 1)
     }
+
     if (resizeState.shouldExpand) {
       if (intersectingIndex < (props.data?.children?.length as number)) {
-        const indexToGroupFrom = Number(element?.dataset.index || -1) as unknown as number
+        const indexToGroupFrom = Number(defaultTo(element?.dataset.index, -1))
         Number.isInteger(indexToGroupFrom) &&
           indexToGroupFrom < (props.data.children as unknown as [])?.length &&
           setIntersectingIndex(indexToGroupFrom + 1)
@@ -304,8 +315,10 @@ function PipelineGraphNodeWithCollapse(
     />
   )
 }
-
-function PipelineGraphNodeBasic(props: any): React.ReactElement {
+interface PipelineGraphNodeBasicProps extends PipelineGraphNodeWithoutCollapseProps {
+  collapsibleProps?: NodeCollapsibleProps
+}
+function PipelineGraphNodeBasic(props: PipelineGraphNodeBasicProps): React.ReactElement {
   return props?.collapsibleProps ? (
     <PipelineGraphNodeWithCollapse {...props} />
   ) : (

@@ -16,44 +16,14 @@ import stepsfactory from '@pipeline/components/PipelineSteps/PipelineStepFactory
 import { getStatusProps } from '@pipeline/components/ExecutionStageDiagram/ExecutionStageDiagramUtils'
 import { ExecutionPipelineNodeType } from '@pipeline/components/ExecutionStageDiagram/ExecutionPipelineModel'
 import SVGMarker from '../../SVGMarker'
-import { NodeType } from '../../../types'
+import { BaseReactComponentProps, NodeType } from '../../../types'
 import AddLinkNode from '../AddLinkNode/AddLinkNode'
 import defaultCss from '../DefaultNode.module.scss'
 
 const CODE_ICON: IconName = 'command-echo'
 
-interface PipelineStepNodeProps {
-  getNode: (node: NodeType) => { component: React.FC<any> }
-  fireEvent(arg0: {
-    type: string
-    target: EventTarget
-    data: {
-      allowAdd?: boolean
-      entityType?: string
-      identifier?: string
-      parentIdentifier?: string
-      prevNodeIdentifier?: string
-      node?: PipelineStepNodeProps
-      destination?: PipelineStepNodeProps
-    }
-  }): void
+interface PipelineStepNodeProps extends BaseReactComponentProps {
   status: string
-  data: any
-  readonly: boolean
-  onClick: any
-  id: string
-  isSelected: boolean
-  icon: string
-  identifier: string
-  name: JSX.Element
-  defaultSelected: any
-  parentIdentifier?: string
-  isParallelNode: boolean
-  prevNodeIdentifier?: string
-  nextNode: any
-  allowAdd?: boolean
-  type: string
-  selectedNodeId?: string
 }
 function PipelineStepNode(props: PipelineStepNodeProps): JSX.Element {
   const allowAdd = defaultTo(props.allowAdd, false)
@@ -74,7 +44,9 @@ function PipelineStepNode(props: PipelineStepNodeProps): JSX.Element {
   const isNodeSelected = props.isSelected || props?.selectedNodeId === props?.id
 
   const setAddVisibility = (visibility: boolean): void => {
-    if (!allowAdd) return
+    if (!allowAdd) {
+      return
+    }
     setVisibilityOfAdd(visibility)
   }
   return (
@@ -87,7 +59,7 @@ function PipelineStepNode(props: PipelineStepNodeProps): JSX.Element {
       onClick={event => {
         event.stopPropagation()
         if (props?.onClick) {
-          props.onClick()
+          props.onClick(event)
           return
         }
         props?.fireEvent({
@@ -153,7 +125,6 @@ function PipelineStepNode(props: PipelineStepNodeProps): JSX.Element {
           // checking in onDragOver if this type (AllowDropOnLink/AllowDropOnNode) exist we allow drop
           event.dataTransfer.setData(DiagramDrag.AllowDropOnLink, '1')
           event.dataTransfer.setData(DiagramDrag.AllowDropOnNode, '1')
-          // if (options.allowDropOnNode) event.dataTransfer.setData(DiagramDrag.AllowDropOnNode, '1')
           event.dataTransfer.dropEffect = 'move'
         }}
         onDragEnd={event => {

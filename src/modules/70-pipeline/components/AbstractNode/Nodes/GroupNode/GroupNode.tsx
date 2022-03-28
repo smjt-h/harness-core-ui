@@ -35,7 +35,9 @@ function GroupNode(props: any): React.ReactElement {
   }
 
   const setAddVisibility = (visibility: boolean): void => {
-    if (!allowAdd) return
+    if (!allowAdd) {
+      return
+    }
     setVisibilityOfAdd(visibility)
   }
   return (

@@ -1,4 +1,5 @@
 import type { IconName } from '@harness/uicore'
+import type { CSSProperties } from 'react'
 
 export interface ListenerHandle {
   deregister: () => any
@@ -47,7 +48,7 @@ export interface SVGPathRecord {
 
 export type NodeBank = Map<string, NodeDetails>
 export interface NodeDetails {
-  component: React.FC
+  component: React.FC<BaseReactComponentProps>
   isDefault?: boolean
 }
 
@@ -96,36 +97,57 @@ export interface NodeInterface {
   selectedIconColour?: string
   unSelectedIconColour?: string
 }
-export interface BaseReactComponentProps {
-  getNode: (node: NodeType) => { component: React.FC<BaseReactComponentProps> }
-  fireEvent(arg0: {
-    type: string
-    target: EventTarget
-    data: {
-      allowAdd?: boolean
-      entityType?: string
-      identifier?: string
-      parentIdentifier?: string
-      prevNodeIdentifier?: string
-      node?: any
-      destination?: any
-    }
-  }): void
-  status: string
-  data: any
-  readonly: boolean
-  onClick: any
-  id: string
-  isSelected: boolean
+
+export type FireEventMethod = (arg0: {
+  type: string
+  target: EventTarget
+  data: {
+    allowAdd?: boolean
+    entityType?: string
+    identifier?: string
+    parentIdentifier?: string
+    prevNodeIdentifier?: string
+    node?: any
+    destination?: any
+    nodesInfo?: NodeInfo[]
+  }
+}) => void
+
+export interface NodeInfo {
+  name: string
   icon: string
   identifier: string
-  name: JSX.Element
-  defaultSelected: any
+  type: string
+}
+
+export type GetNodeMethod = (type?: string | undefined) => NodeDetails
+export interface BaseReactComponentProps {
+  getNode?: GetNodeMethod
+  fireEvent?: FireEventMethod
+  setSelectedNode?(identifier: string): void
+  getDefaultNode?(): NodeDetails | null
+  updateGraphLinks?(): void
+  isFirstParallelNode?: boolean
+  className?: string
+  name?: string
+  identifier?: string
+  id: string
+  icon?: string
+  iconStyle?: CSSProperties
+  readonly?: boolean
+  onClick?: (event: React.MouseEvent<HTMLDivElement, MouseEvent>) => void
+  isSelected?: boolean
+  defaultSelected?: any
   parentIdentifier?: string
-  isParallelNode: boolean
+  isParallelNode?: boolean
   prevNodeIdentifier?: string
-  nextNode: any
+  nextNode?: PipelineGraphState
   allowAdd?: boolean
+  prevNode?: PipelineGraphState
   type?: string
   selectedNodeId?: string
+  nodesInfo?: NodeInfo[]
+  width?: number
+  height?: number
+  data?: any
 }

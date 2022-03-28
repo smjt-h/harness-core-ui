@@ -16,25 +16,13 @@ import { getStatusProps } from '@pipeline/components/ExecutionStageDiagram/Execu
 import { ExecutionStatus, ExecutionStatusEnum } from '@pipeline/utils/statusHelpers'
 import SVGMarker from '../../SVGMarker'
 import AddLinkNode from '../AddLinkNode/AddLinkNode'
-import { NodeType } from '../../../types'
+import { FireEventMethod, NodeType } from '../../../types'
 import defaultCss from '../DefaultNode.module.scss'
 
 const CODE_ICON: IconName = 'command-echo'
 interface PipelineStageNodeProps {
   getNode: (node: NodeType) => { component: React.FC<any> }
-  fireEvent(arg0: {
-    type: string
-    target: EventTarget
-    data: {
-      allowAdd?: boolean
-      entityType?: string
-      identifier?: string
-      parentIdentifier?: string
-      prevNodeIdentifier?: string
-      node?: PipelineStageNodeProps
-      destination?: PipelineStageNodeProps
-    }
-  }): void
+  fireEvent: FireEventMethod
   status: string
   data: any
   readonly: boolean
