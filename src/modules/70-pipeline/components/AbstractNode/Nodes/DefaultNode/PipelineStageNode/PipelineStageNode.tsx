@@ -8,8 +8,7 @@
 import React from 'react'
 import cx from 'classnames'
 import { defaultTo } from 'lodash-es'
-import type { IconName } from '@wings-software/uicore'
-import { Icon, Text, Button, ButtonVariation } from '@wings-software/uicore'
+import { Icon, Text, Button, ButtonVariation, IconName } from '@wings-software/uicore'
 import { Color } from '@harness/design-system'
 import { DiagramDrag, DiagramType, Event } from '@pipeline/components/Diagram'
 import { ExecutionPipelineNodeType } from '@pipeline/components/ExecutionStageDiagram/ExecutionPipelineModel'
@@ -39,7 +38,7 @@ interface PipelineStageNodeProps {
   status: string
   data: any
   readonly: boolean
-  onClick: any
+  onClick: (event: React.MouseEvent<HTMLDivElement, MouseEvent>) => void
   id: string
   isSelected: boolean
   icon: string
@@ -63,7 +62,9 @@ function PipelineStageNode(props: PipelineStageNodeProps): JSX.Element {
     ExecutionPipelineNodeType.NORMAL
   )
   const setAddVisibility = (visibility: boolean): void => {
-    if (!allowAdd) return
+    if (!allowAdd) {
+      return
+    }
     setVisibilityOfAdd(visibility)
   }
   return (
@@ -76,7 +77,7 @@ function PipelineStageNode(props: PipelineStageNodeProps): JSX.Element {
       onClick={(event: React.MouseEvent<HTMLDivElement, MouseEvent>) => {
         event.stopPropagation()
         if (props?.onClick) {
-          props.onClick()
+          props.onClick(event)
           return
         }
         props?.fireEvent({
@@ -146,7 +147,6 @@ function PipelineStageNode(props: PipelineStageNodeProps): JSX.Element {
         onMouseLeave={(event: React.MouseEvent<HTMLDivElement, MouseEvent>) => {
           setAddVisibility(false)
           event.stopPropagation()
-          setVisibilityOfAdd(false)
           props?.fireEvent({
             type: Event.MouseLeaveNode,
             target: event.target,

@@ -6,10 +6,11 @@
  */
 import React from 'react'
 import { v4 as uuid } from 'uuid'
-import { NodeType, BaseReactComponentProps } from './types'
 import PipelineGraph from './PipelineGraph/PipelineGraph'
 import GroupNode from './Nodes/GroupNode/GroupNode'
 import type {
+  NodeType,
+  BaseReactComponentProps,
   BaseListener,
   NodeCollapsibleProps,
   ListenerHandle,

@@ -18,33 +18,40 @@ function DefaultNode(props: any): JSX.Element {
   const allowAdd = defaultTo(props.allowAdd, false)
   const nodeRef = React.useRef<HTMLDivElement>(null)
   const [showAdd, setVisibilityOfAdd] = React.useState(false)
+  const setAddVisibility = (visibility: boolean): void => {
+    if (!allowAdd) return
+    setVisibilityOfAdd(visibility)
+  }
 
   React.useEffect(() => {
     const currentNode = nodeRef.current
     const onMouseOver = (_e: MouseEvent): void => {
-      if (allowAdd) {
-        setVisibilityOfAdd(true)
-      }
+      setAddVisibility(true)
     }
     const onMouseLeave = (_e: MouseEvent): void => {
-      if (allowAdd) {
-        setTimeout(() => {
-          setVisibilityOfAdd(false)
-        }, 100)
-      }
+      setTimeout(() => {
+        setAddVisibility(false)
+      }, 100)
     }
-    if (currentNode) {
-      currentNode.addEventListener('mouseover', onMouseOver)
-      currentNode.addEventListener('mouseleave', onMouseLeave)
-    }
+
+    currentNode?.addEventListener?.('mouseover', onMouseOver)
+    currentNode?.addEventListener?.('mouseleave', onMouseLeave)
+
     return () => {
-      if (currentNode) {
-        currentNode.removeEventListener('mouseover', onMouseOver)
-        currentNode.removeEventListener('mouseleave', onMouseLeave)
-      }
+      currentNode?.removeEventListener?.('mouseover', onMouseOver)
+      currentNode?.removeEventListener?.('mouseleave', onMouseLeave)
     }
   }, [nodeRef, allowAdd])
 
+  const getCursorType = (): string => {
+    if (props.disableClick) {
+      return 'not-allowed'
+    } else if (props.draggable) {
+      return 'move'
+    } else {
+      return 'pointer'
+    }
+  }
   return (
     <div
       className={`${cx(css.defaultNode, 'default-node', { [css.marginBottom]: props.isParallelNode })} draggable`}
@@ -64,19 +71,15 @@ function DefaultNode(props: any): JSX.Element {
         event.stopPropagation()
 
         if (event.dataTransfer.types.indexOf(DiagramDrag.AllowDropOnNode) !== -1) {
-          if (allowAdd) {
-            setVisibilityOfAdd(true)
-            event.preventDefault()
-          }
+          setAddVisibility(true)
+          event.preventDefault()
         }
       }}
       onDragLeave={event => {
         event.stopPropagation()
 
         if (event.dataTransfer.types.indexOf(DiagramDrag.AllowDropOnNode) !== -1) {
-          if (allowAdd) {
-            setVisibilityOfAdd(false)
-          }
+          setAddVisibility(false)
         }
       }}
       onDrop={event => {
@@ -97,7 +100,7 @@ function DefaultNode(props: any): JSX.Element {
         style={{
           width: defaultTo(props.width, 90),
           height: defaultTo(props.height, 40),
-          cursor: props.disableClick ? 'not-allowed' : props.draggable ? 'move' : 'pointer',
+          cursor: getCursorType(),
           opacity: props.dragging ? 0.4 : 1
         }}
         onDragStart={event => {
@@ -119,14 +122,14 @@ function DefaultNode(props: any): JSX.Element {
           <SVGMarker />
         </div>
         <div className="execution-running-animation" />
-        {props.icon && (
+        {props.icon ? (
           <Icon
             size={28}
             name={props.icon}
             inverse={props?.isSelected}
             style={{ pointerEvents: 'none', ...props?.iconStyle }}
           />
-        )}
+        ) : null}
         <Button
           className={cx(css.closeNode, { [css.readonly]: props.readonly })}
           minimal
@@ -147,7 +150,7 @@ function DefaultNode(props: any): JSX.Element {
           <SVGMarker />
         </div>
       </div>
-      {props.name && (
+      {props.name ? (
         <Text
           width={defaultTo(props.width, 90)}
           font={{ size: 'normal', align: 'center' }}
@@ -158,8 +161,8 @@ function DefaultNode(props: any): JSX.Element {
         >
           {props.name}
         </Text>
-      )}
-      {allowAdd && (
+      ) : null}
+      {allowAdd ? (
         <div
           onClick={event => {
             event.stopPropagation()
@@ -182,7 +185,7 @@ function DefaultNode(props: any): JSX.Element {
         >
           <Icon name="plus" size={22} color={'var(--diagram-add-node-color)'} />
         </div>
-      )}
+      ) : null}
     </div>
   )
 }

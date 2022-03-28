@@ -6,26 +6,35 @@
  */
 
 import React from 'react'
-import { Text } from '@wings-software/uicore'
-import { Icon } from '@blueprintjs/core'
 import cx from 'classnames'
-import { isEmpty } from 'lodash-es'
+import { defaultTo } from 'lodash-es'
 import { DiagramDrag, DiagramType, Event } from '@pipeline/components/Diagram'
+import CreateNode from './CreateNode'
 import cssDefault from '../DefaultNode/DefaultNode.module.scss'
 import css from './CreateNode.module.scss'
-
-function CreateNodeStage(props: any): React.ReactElement {
+interface CreateNodeStageProps {
+  onMouseOver?: () => void
+  onMouseLeave?: () => void
+  onDrop?: (event: React.DragEvent<HTMLDivElement>) => void
+  fireEvent(arg0: {
+    type: string
+    target: EventTarget
+    data: { entityType?: string; node?: CreateNodeStageProps; destination?: CreateNodeStageProps; identifier: string }
+  }): void
+  onClick: (event: React.MouseEvent<HTMLDivElement, MouseEvent>) => void
+  identifier: string
+  name: string
+  disabled?: boolean
+  node: CreateNodeStageProps
+}
+function CreateNodeStage(props: CreateNodeStageProps): React.ReactElement {
   return (
     <div
       onMouseOver={() => {
-        if (props?.onMouseOver) {
-          props.onMouseOver()
-        }
+        props.onMouseOver?.()
       }}
       onMouseLeave={() => {
-        if (props?.onMouseLeave) {
-          props.onMouseLeave()
-        }
+        props.onMouseLeave?.()
       }}
       className={cssDefault.defaultNode}
       onDragOver={event => {
@@ -33,14 +42,16 @@ function CreateNodeStage(props: any): React.ReactElement {
         event.stopPropagation()
       }}
       onDrop={event => {
-        props?.onDrop && props?.onDrop(event)
+        props?.onDrop?.(event)
         event.stopPropagation()
         props?.fireEvent({
           type: Event.DropNodeEvent,
+          target: event.target,
           data: {
             entityType: DiagramType.CreateNew,
             node: JSON.parse(event.dataTransfer.getData(DiagramDrag.NodeDrag)),
-            destination: props
+            destination: props,
+            identifier: props.identifier
           }
         })
       }}
@@ -53,42 +64,25 @@ function CreateNodeStage(props: any): React.ReactElement {
         }
         props?.fireEvent({
           type: Event.AddLinkClicked,
+          target: event.target,
           data: {
             entityType: DiagramType.CreateNew,
-            identifier: props.identifier,
-            target: event.target
+            identifier: props.identifier
           }
         })
       }}
     >
-      <div
-        id={props.identifier}
-        data-linkid={props.identifier}
-        data-nodeid={props.identifier || props['data-nodeid']}
+      <CreateNode
+        identifier={props.identifier}
+        name={props.name}
         className={cx(
           cssDefault.defaultCard,
           css.createNode,
           css.stageAddIcon,
-          { [css.disabled]: props.disabled || false },
-          { [css.selected]: props?.node?.isSelected },
-          { [props.className]: props.className }
+          { [css.disabled]: defaultTo(props.disabled, false) },
+          { [css.selected]: (props?.node as any)?.isSelected }
         )}
-      >
-        <div>
-          <Icon icon="plus" iconSize={22} color={'var(--diagram-add-node-color)'} />
-        </div>
-      </div>
-      {!isEmpty(props.name) && (
-        <Text
-          data-name="node-name"
-          font={{ align: 'center' }}
-          padding={{ top: 'small' }}
-          lineClamp={2}
-          style={{ marginLeft: '-30px', marginRight: '-30px' }}
-        >
-          {props.name}
-        </Text>
-      )}
+      />
     </div>
   )
 }

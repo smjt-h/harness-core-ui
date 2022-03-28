@@ -16,7 +16,6 @@ import {
   getSVGLinksFromPipeline
 } from '../../PipelineGraph/PipelineGraphUtils'
 import type { NodeDetails, NodeIds, PipelineGraphState, SVGPathRecord } from '../../types'
-// import CreateNode from '../CreateNode/CreateNode'
 import { NodeType } from '../../types'
 import css from './StepGroupGraph.module.scss'
 interface StepGroupGraphProps {
@@ -83,7 +82,9 @@ function StepGroupGraph(props: StepGroupGraphProps): React.ReactElement {
   }
 
   useLayoutEffect(() => {
-    props?.data?.length && setState(getPipelineGraphData(props.data!))
+    if (props?.data?.length) {
+      setState(getPipelineGraphData(props.data))
+    }
   }, [treeRectangle, props.data])
 
   useLayoutEffect(() => {
