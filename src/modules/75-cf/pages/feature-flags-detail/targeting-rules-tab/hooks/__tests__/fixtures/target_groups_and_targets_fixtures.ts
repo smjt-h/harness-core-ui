@@ -302,14 +302,16 @@ const percentageRolloutUpdated = {
   expected: {
     instructions: [
       {
-        kind: 'updateRule',
+        kind: 'updateClause',
         parameters: {
-          ruleID: '006731d6-1f58-4877-8ff5-68cbb885b75c',
-          bucketBy: 'identifier',
-          variations: [
-            { variation: 'true', weight: 90 },
-            { variation: 'false', weight: 10 }
-          ]
+          clause: {
+            attribute: '',
+            negate: false,
+            op: 'segmentMatch',
+            values: ['randomID']
+          },
+          clauseID: 'e6512660-cb37-4986-9d9c-8d3030f3d53a',
+          ruleID: '006731d6-1f58-4877-8ff5-68cbb885b75c'
         }
       }
     ]

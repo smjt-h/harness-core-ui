@@ -99,7 +99,7 @@ const TargetingRulesTab = ({
     formVariationMap,
     variationPercentageRollout: {
       variations: variationPercentageRollout?.serve.distribution?.variations || [],
-      bucketBy: variationPercentageRollout?.serve.distribution?.bucketBy || '',
+      bucketBy: variationPercentageRollout?.serve.distribution?.bucketBy || 'identifier',
       clauses: variationPercentageRollout?.clauses || [
         {
           attribute: '',

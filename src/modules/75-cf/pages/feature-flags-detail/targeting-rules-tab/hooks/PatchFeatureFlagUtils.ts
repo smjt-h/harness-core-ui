@@ -12,7 +12,7 @@ import patch from '@cf/utils/instructions'
 import type { FormVariationMap, TargetGroup, TargetingRulesFormValues } from '../Types'
 
 // Utils class to help encapsulate the complexity around patch instruction creation and hide this from the components
-interface PatchFeatureFlagUtilsArgs {
+interface PatchFeatureFlagUtilsReturn {
   hasFlagStateChanged: () => boolean
   hasDefaultOnVariationChanged: () => boolean
   updateFlagState: () => void
@@ -36,7 +36,7 @@ interface PatchFeatureFlagUtilsArgs {
 export const PatchFeatureFlagUtils = (
   submittedValues: TargetingRulesFormValues,
   initialValues: TargetingRulesFormValues
-): PatchFeatureFlagUtilsArgs => {
+): PatchFeatureFlagUtilsReturn => {
   const hasFlagStateChanged = (): boolean => submittedValues.state !== initialValues.state
 
   const hasDefaultOnVariationChanged = (): boolean => submittedValues.onVariation !== initialValues.onVariation
@@ -50,10 +50,10 @@ export const PatchFeatureFlagUtils = (
   const addedTargetGroups = (formVariation: FormVariationMap): TargetGroup[] => {
     const intialTargetGroups: TargetGroup[] = formVariation.targetGroups
 
-    const submittedTargetGroups: TargetGroup[] =
-      submittedValues.formVariationMap.find(
-        variation => variation.variationIdentifier === formVariation.variationIdentifier
-      )?.targetGroups || []
+    // get the submitted target groups for the given formVariation
+    const submittedTargetGroups: TargetGroup[] = submittedValues.formVariationMap.filter(
+      variation => variation.variationIdentifier === formVariation.variationIdentifier
+    )[0].targetGroups
 
     return submittedTargetGroups.filter(
       submittedTargetGroup =>
@@ -64,10 +64,9 @@ export const PatchFeatureFlagUtils = (
   }
 
   const removedTargetGroups = (formVariation: FormVariationMap): TargetGroup[] => {
-    const submittedTargetGroups: TargetGroup[] =
-      submittedValues.formVariationMap.find(
-        variation => variation.variationIdentifier === formVariation.variationIdentifier
-      )?.targetGroups || []
+    const submittedTargetGroups: TargetGroup[] = submittedValues.formVariationMap.filter(
+      variation => variation.variationIdentifier === formVariation.variationIdentifier
+    )[0].targetGroups
 
     return formVariation.targetGroups.filter(
       targetGroup =>
@@ -79,20 +78,18 @@ export const PatchFeatureFlagUtils = (
 
   const addedTargets = (formVariation: FormVariationMap): string[] => {
     const intialTargetIds = formVariation.targets.map((target: TargetMap) => target.identifier)
-    const submittedTargetIds =
-      submittedValues.formVariationMap
-        .find(variation => variation.variationIdentifier === formVariation.variationIdentifier)
-        ?.targets.map((target: TargetMap) => target.identifier) || []
+    const submittedTargetIds = submittedValues.formVariationMap
+      .filter(variation => variation.variationIdentifier === formVariation.variationIdentifier)[0]
+      .targets.map((target: TargetMap) => target.identifier)
 
     return submittedTargetIds.filter(id => !intialTargetIds.includes(id))
   }
 
   const removedTargets = (formVariation: FormVariationMap): string[] => {
     const intialTargetIds = formVariation.targets.map((target: TargetMap) => target.identifier)
-    const submittedTargetIds =
-      submittedValues.formVariationMap
-        .find(variation => variation.variationIdentifier === formVariation.variationIdentifier)
-        ?.targets.map((target: TargetMap) => target.identifier) || []
+    const submittedTargetIds = submittedValues.formVariationMap
+      .filter(variation => variation.variationIdentifier === formVariation.variationIdentifier)[0]
+      .targets.map((target: TargetMap) => target.identifier)
 
     return intialTargetIds.filter(id => !submittedTargetIds.includes(id))
   }
@@ -164,10 +161,13 @@ export const PatchFeatureFlagUtils = (
   }
 
   const createUpdatePercentageRolloutInstructions = (): void => {
+    const { attribute, negate, op, id, values } = submittedValues.variationPercentageRollout.clauses[0]
     patch.feature.addInstruction(
-      patch.creators.updateRuleVariation(submittedValues.variationPercentageRollout.ruleId, {
-        bucketBy: submittedValues.variationPercentageRollout.bucketBy,
-        variations: submittedValues.variationPercentageRollout.variations
+      patch.creators.updateClause(submittedValues.variationPercentageRollout.ruleId, id as string, {
+        attribute,
+        negate,
+        op,
+        values
       })
     )
   }
