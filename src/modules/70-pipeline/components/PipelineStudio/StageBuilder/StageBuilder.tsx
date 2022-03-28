@@ -6,7 +6,8 @@
  */
 
 import React, { useMemo } from 'react'
-import { Intent, Layout, useToaster, useConfirmationDialog } from '@wings-software/uicore'
+import { Layout, useToaster, useConfirmationDialog } from '@wings-software/uicore'
+import { Intent } from '@harness/design-system'
 import cx from 'classnames'
 import { cloneDeep, debounce, isNil } from 'lodash-es'
 import type { NodeModelListener, LinkModelListener } from '@projectstorm/react-diagrams-core'
@@ -27,13 +28,14 @@ import type { StageElementWrapper } from '@pipeline/utils/pipelineTypes'
 import { StageType } from '@pipeline/utils/stageHelpers'
 import { useTemplateSelector } from '@pipeline/utils/useTemplateSelector'
 import { getPipelineGraphData } from '@pipeline/components/AbstractNode/PipelineGraph/PipelineGraphUtils'
-import PipelineStageNode from '@pipeline/components/AbstractNode/Nodes/DefaultNode/PipelineStageNode'
+import PipelineStageNode from '@pipeline/components/AbstractNode/Nodes/DefaultNode/PipelineStageNode/PipelineStageNode'
 import { DiamondNodeWidget } from '@pipeline/components/AbstractNode/Nodes/DiamondNode/DiamondNode'
 import { IconNode } from '@pipeline/components/AbstractNode/Nodes/IconNode/IconNode'
 import { DiagramFactory, NodeType } from '@pipeline/components/AbstractNode/DiagramFactory'
 import CreateNodeStage from '@pipeline/components/AbstractNode/Nodes/CreateNode/CreateNodeStage'
 import EndNodeStage from '@pipeline/components/AbstractNode/Nodes/EndNode/EndNodeStage'
 import StartNodeStage from '@pipeline/components/AbstractNode/Nodes/StartNode/StartNodeStage'
+import DiagramLoader from '@pipeline/components/DiagramLoader/DiagramLoader'
 import {
   CanvasWidget,
   createEngine,
@@ -65,8 +67,6 @@ import { SplitViewTypes } from '../PipelineContext/PipelineActions'
 import { usePipelineContext } from '../PipelineContext/PipelineContext'
 import { getLinkEventListenersOld, getLinkListernersOld } from './StageBuildOldUtils'
 import css from './StageBuilder.module.scss'
-
-// import { CDPipelineStudioNew } from '../PipelineStudio'
 
 const diagram = new DiagramFactory('graph')
 
@@ -810,6 +810,7 @@ function StageBuilder(): JSX.Element {
               <CDPipelineStudioNew
                 selectedNodeId={selectedStageId}
                 data={stageData}
+                loaderComponent={DiagramLoader}
                 collapsibleProps={{ parentSelector: '.Pane1', percentageNodeVisible: 0.8, bottomMarginInPixels: 80 }}
               />
               <DynamicPopover

@@ -8,10 +8,10 @@
 import React from 'react'
 import cx from 'classnames'
 import { defaultTo } from 'lodash-es'
-import { Icon, Text, Color } from '@wings-software/uicore'
+import { Icon, Text } from '@wings-software/uicore'
+import { Color } from '@harness/design-system'
 import { DiagramDrag, DiagramType, Event } from '@pipeline/components/Diagram'
-import { PipelineGraphType } from '../../types'
-import { NodeType } from '../../Node'
+import { PipelineGraphType, NodeType } from '../../types'
 import css from '../DefaultNode/DefaultNode.module.scss'
 
 function GroupNode(props: any): React.ReactElement {

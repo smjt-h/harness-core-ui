@@ -43,18 +43,18 @@ import { useExecutionContext } from '@pipeline/context/ExecutionContext'
 import type { PipelineGraphState } from '@pipeline/components/AbstractNode/types'
 import { DiagramFactory, NodeType as DiagramNodeType } from '@pipeline/components/AbstractNode/DiagramFactory'
 import { DiamondNodeWidget } from '@pipeline/components/AbstractNode/Nodes/DiamondNode/DiamondNode'
-import PipelineStageNode from '@pipeline/components/AbstractNode/Nodes/DefaultNode/PipelineStageNode'
+import PipelineStageNode from '@pipeline/components/AbstractNode/Nodes/DefaultNode/PipelineStageNode/PipelineStageNode'
 import CreateNodeStage from '@pipeline/components/AbstractNode/Nodes/CreateNode/CreateNodeStage'
 import EndNodeStage from '@pipeline/components/AbstractNode/Nodes/EndNode/EndNodeStage'
 import StartNodeStage from '@pipeline/components/AbstractNode/Nodes/StartNode/StartNodeStage'
 import { getExecutionStageDiagramListeners } from '@pipeline/utils/execUtils'
+import DiagramLoader from '@pipeline/components/DiagramLoader/DiagramLoader'
 import CDInfo from './components/CD/CDInfo/CDInfo'
 import css from './ExecutionGraph.module.scss'
 
 const NEW_PIP_STUDIO = localStorage.getItem('IS_NEW_PIP_STUDIO_ACTIVE') === 'true'
 const diagram = new DiagramFactory('graph')
-diagram.registerNode('Deployment', PipelineStageNode, true)
-diagram.registerNode('CI', PipelineStageNode, true)
+diagram.registerNode(['Deployment', 'CI'], PipelineStageNode, true)
 diagram.registerNode(DiagramNodeType.CreateNode, CreateNodeStage)
 diagram.registerNode(DiagramNodeType.EndNode, EndNodeStage)
 diagram.registerNode(DiagramNodeType.StartNode, StartNodeStage)
@@ -254,7 +254,12 @@ export default function ExecutionGraph(props: ExecutionGraphProps): React.ReactE
       {!isEmpty(pipelineExecutionDetail?.pipelineExecutionSummary?.pipelineIdentifier) && data.items?.length > 0 && (
         <>
           {NEW_PIP_STUDIO ? (
-            <CDPipelineStudioNew readonly data={data.items as PipelineGraphState[]} selectedNodeId={selectedStageId} />
+            <CDPipelineStudioNew
+              readonly
+              loaderComponent={DiagramLoader}
+              data={data.items as PipelineGraphState[]}
+              selectedNodeId={selectedStageId}
+            />
           ) : (
             <ExecutionStageDiagram
               itemMouseEnter={onMouseEnter}

@@ -26,7 +26,7 @@ import ConditionalExecutionTooltipWrapper from '@pipeline/components/Conditional
 import { getExecutionStageDiagramListeners, processExecutionDataV1 } from '@pipeline/utils/execUtils'
 import { DiagramFactory, DiagramNodes, NodeType } from '@pipeline/components/AbstractNode/DiagramFactory'
 import { DiamondNodeWidget } from '@pipeline/components/AbstractNode/Nodes/DiamondNode/DiamondNode'
-import PipelineStepNode from '@pipeline/components/AbstractNode/Nodes/DefaultNode/PipelineStepNode'
+import PipelineStepNode from '@pipeline/components/AbstractNode/Nodes/DefaultNode/PipelineStepNode/PipelineStepNode'
 import { IconNode } from '@pipeline/components/AbstractNode/Nodes/IconNode/IconNode'
 import CreateNodeStep from '@pipeline/components/AbstractNode/Nodes/CreateNode/CreateNodeStep'
 import EndNodeStep from '@pipeline/components/AbstractNode/Nodes/EndNode/EndNodeStep'

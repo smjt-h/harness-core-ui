@@ -59,3 +59,73 @@ export interface NodeCollapsibleProps {
   /** margin from child bottom to start expanding */
   bottomMarginInPixels?: number
 }
+
+export enum NodeStatus {
+  Loading = 'Loading',
+  Success = 'Success',
+  Failure = 'Failure'
+}
+
+export enum NodeType {
+  Default = 'default-node',
+  EmptyNode = 'empty-node',
+  CreateNode = 'create-node',
+  DiamondNode = 'default-diamond',
+  StartNode = 'start-node',
+  GroupNode = 'group-node',
+  IconNode = 'icon-node',
+  EndNode = 'end-node',
+  StepGroupNode = 'StepGroup'
+}
+
+export interface NodeProps<T> {
+  width: number
+  height: number
+  onUpdate?: (data: T) => void
+  onChange?: (data: T) => void
+}
+
+export interface NodeInterface {
+  identifier: string
+  type: NodeType
+  name: string
+  defaultIcon: IconName
+  secondaryIcon?: IconName
+  selectedColour?: string
+  unSelectedColour?: string
+  selectedIconColour?: string
+  unSelectedIconColour?: string
+}
+export interface BaseReactComponentProps {
+  getNode: (node: NodeType) => { component: React.FC<BaseReactComponentProps> }
+  fireEvent(arg0: {
+    type: string
+    target: EventTarget
+    data: {
+      allowAdd?: boolean | undefined
+      entityType?: string
+      identifier?: string
+      parentIdentifier?: string
+      prevNodeIdentifier?: string
+      node?: any
+      destination?: any
+    }
+  }): void
+  status: string
+  data: any
+  readonly: boolean
+  onClick: any
+  id: string | undefined
+  isSelected: boolean
+  icon: string
+  identifier: string
+  name: JSX.Element
+  defaultSelected: any
+  parentIdentifier?: string
+  isParallelNode: boolean
+  prevNodeIdentifier?: string
+  nextNode: any
+  allowAdd?: boolean
+  type?: string
+  selectedNodeId?: string
+}

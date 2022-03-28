@@ -34,13 +34,14 @@ import { FeatureFlag } from '@common/featureFlags'
 import { DiagramFactory, DiagramNodes, NodeType } from '@pipeline/components/AbstractNode/DiagramFactory'
 import { DiamondNodeWidget } from '@pipeline/components/AbstractNode/Nodes/DiamondNode/DiamondNode'
 import { getPipelineGraphData } from '@pipeline/components/AbstractNode/PipelineGraph/PipelineGraphUtils'
-import PipelineStepNode from '@pipeline/components/AbstractNode/Nodes/DefaultNode/PipelineStepNode'
+import PipelineStepNode from '@pipeline/components/AbstractNode/Nodes/DefaultNode/PipelineStepNode/PipelineStepNode'
 import { IconNode } from '@pipeline/components/AbstractNode/Nodes/IconNode/IconNode'
 import CreateNodeStep from '@pipeline/components/AbstractNode/Nodes/CreateNode/CreateNodeStep'
 import EndNodeStep from '@pipeline/components/AbstractNode/Nodes/EndNode/EndNodeStep'
 import StartNodeStep from '@pipeline/components/AbstractNode/Nodes/StartNode/StartNodeStep'
 import { StageType } from '@pipeline/utils/stageHelpers'
 import { CIDependencyNode } from '@pipeline/components/AbstractNode/Nodes/StepGroupNode/CIDependencyNode'
+import DiagramLoader from '@pipeline/components/DiagramLoader/DiagramLoader'
 import { ExecutionStepModel, GridStyleInterface } from './ExecutionStepModel'
 import { StepType as PipelineStepType } from '../../PipelineSteps/PipelineStepInterface'
 import {
@@ -98,6 +99,7 @@ diagram.registerNode('Barrier', IconNode)
 diagram.registerNode(STATIC_SERVICE_GROUP_NAME, CIDependencyNode)
 
 export const CDPipelineStudioNew = diagram.render()
+
 export interface ExecutionGraphRefObj {
   stepGroupUpdated: (stepOrGroup: ExecutionWrapper) => void
 }
@@ -1041,7 +1043,7 @@ function ExecutionGraphRef<T extends StageElementConfig>(
         )}
         {localStorage.getItem('IS_NEW_PIP_STUDIO_ACTIVE') === 'true' ? (
           <>
-            <CDPipelineStudioNew selectedNodeId={selectedStepId} data={stepsData} />
+            <CDPipelineStudioNew selectedNodeId={selectedStepId} loaderComponent={DiagramLoader} data={stepsData} />
             {hasRollback && (
               <RollbackToggleSwitch
                 style={{ top: 62, ...rollBackPropsStyle }}

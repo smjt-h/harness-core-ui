@@ -6,7 +6,7 @@
  */
 import React from 'react'
 import { v4 as uuid } from 'uuid'
-import { NodeType } from './Node'
+import { NodeType, BaseReactComponentProps } from './types'
 // import CreateNode from './Nodes/CreateNode/CreateNodeStage'
 import PipelineGraph from './PipelineGraph/PipelineGraph'
 import GroupNode from './Nodes/GroupNode/GroupNode'
@@ -43,7 +43,7 @@ export class DiagramFactory {
     return this.type
   }
 
-  registerNode(type: string | string[], Component: React.FC, isDefault = false): void {
+  registerNode(type: string | string[], Component: React.FC<BaseReactComponentProps>, isDefault = false): void {
     if (Array.isArray(type)) {
       type.forEach(nodeType => this.nodeBank.set(nodeType, { component: Component, isDefault }))
     } else {
@@ -130,6 +130,7 @@ export class DiagramFactory {
     collapsibleProps?: NodeCollapsibleProps
     selectedNodeId?: string
     readonly?: boolean
+    loaderComponent: React.FC
   }> {
     function PipelineStudioHOC(
       this: DiagramFactory,
@@ -138,6 +139,7 @@ export class DiagramFactory {
         collapsibleProps?: NodeCollapsibleProps
         selectedNodeId?: string
         readonly?: boolean
+        loaderComponent: React.FC
       }
     ): React.ReactElement {
       return (

@@ -39,6 +39,7 @@ export interface PipelineGraphProps {
   selectedNodeId?: string
   collapsibleProps?: NodeCollapsibleProps
   readonly?: boolean
+  loaderComponent: React.FC
 }
 
 function PipelineGraph({
@@ -48,9 +49,11 @@ function PipelineGraph({
   collapsibleProps,
   getDefaultNode,
   selectedNodeId = '',
-  readonly
+  readonly,
+  loaderComponent
 }: PipelineGraphProps): React.ReactElement {
   const [svgPath, setSvgPath] = useState<SVGPathRecord[]>([])
+  const [isLoading, setLoading] = useState<boolean>(false)
   const [treeRectangle, setTreeRectangle] = useState<DOMRect | void>()
   const [state, setState] = useState<PipelineGraphState[]>(data)
   const [graphScale, setGraphScale] = useState(INITIAL_ZOOM_LEVEL)
@@ -81,8 +84,23 @@ function PipelineGraph({
   }, [treeRectangle, data])
 
   useLayoutEffect(() => {
-    setSVGLinks()
+    redrawSVGLinks()
   }, [state])
+
+  const redrawSVGLinks = (): void => {
+    const lastGraphScaleValue = graphScale
+    if (lastGraphScaleValue === 1) {
+      setSVGLinks()
+    } else {
+      setLoading(true)
+      setGraphScale(1)
+      setTimeout(setSVGLinks, 200)
+      setTimeout(() => {
+        setGraphScale(lastGraphScaleValue)
+        setLoading(false)
+      }, 300)
+    }
+  }
 
   const setSVGLinks = (): void => {
     const lastNode = state?.[state?.length - 1]
@@ -116,36 +134,39 @@ function PipelineGraph({
   const handleScaleToFit = (): void => {
     setGraphScale(getScaleToFitValue(canvasRef.current as unknown as HTMLElement))
   }
-
+  const Loader = loaderComponent
   return (
-    <div id="draggable-parent" className={css.draggableParent} ref={draggableRef}>
-      <Draggable scale={graphScale} defaultPosition={DEFAULT_POSITION} offsetParent={document.body}>
-        <div
-          id="overlay"
-          onClick={() => {
-            fireEvent({ type: Event.CanvasClick })
-          }}
-          className={css.overlay}
-          ref={overlayRef}
-        >
-          <div className={css.graphMain} ref={canvasRef} style={{ transform: `scale(${graphScale})` }}>
-            <SVGComponent svgPath={svgPath} />
-            <PipelineGraphRecursive
-              fireEvent={fireEvent}
-              getNode={getNode}
-              nodes={state}
-              selectedNode={selectedNodeId}
-              uniqueNodeIds={uniqueNodeIds}
-              updateGraphLinks={setSVGLinks}
-              collapsibleProps={collapsibleProps}
-              getDefaultNode={getDefaultNode}
-              readonly={readonly}
-            />
+    <>
+      {isLoading && <Loader />}
+      <div id="draggable-parent" className={css.draggableParent} ref={draggableRef}>
+        <Draggable scale={graphScale} defaultPosition={DEFAULT_POSITION} offsetParent={document.body}>
+          <div
+            id="overlay"
+            onClick={() => {
+              fireEvent({ type: Event.CanvasClick })
+            }}
+            className={css.overlay}
+            ref={overlayRef}
+          >
+            <div className={css.graphMain} ref={canvasRef} style={{ transform: `scale(${graphScale})` }}>
+              <SVGComponent svgPath={svgPath} />
+              <PipelineGraphRecursive
+                fireEvent={fireEvent}
+                getNode={getNode}
+                nodes={state}
+                selectedNode={selectedNodeId}
+                uniqueNodeIds={uniqueNodeIds}
+                updateGraphLinks={redrawSVGLinks}
+                collapsibleProps={collapsibleProps}
+                getDefaultNode={getDefaultNode}
+                readonly={readonly}
+              />
+            </div>
           </div>
-        </div>
-      </Draggable>
-      <GraphActions setGraphScale={setGraphScale} graphScale={graphScale} handleScaleToFit={handleScaleToFit} />
-    </div>
+        </Draggable>
+        <GraphActions setGraphScale={setGraphScale} graphScale={graphScale} handleScaleToFit={handleScaleToFit} />
+      </div>
+    </>
   )
 }
 
@@ -164,7 +185,7 @@ export function SVGComponent({ svgPath, className }: SVGComponentProps): React.R
           <path
             markerStart="url(#link-port)"
             markerEnd="url(#link-port)"
-            className={classNames(css.svgArrow, className)}
+            className={classNames(css.svgArrow, className, css.pathExecute)}
             id={`${nodeId}-link`}
             key={idx}
             d={pathValue}

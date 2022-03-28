@@ -8,7 +8,7 @@
 import React, { useRef, useState, useLayoutEffect, ForwardedRef } from 'react'
 import { defaultTo } from 'lodash-es'
 import classNames from 'classnames'
-import { NodeType } from '../Node'
+import { NodeType } from '../types'
 import GroupNode from '../Nodes/GroupNode/GroupNode'
 import type { NodeCollapsibleProps, NodeDetails, NodeIds, PipelineGraphState } from '../types'
 import { useNodeResizeObserver } from '../hooks/useResizeObserver'

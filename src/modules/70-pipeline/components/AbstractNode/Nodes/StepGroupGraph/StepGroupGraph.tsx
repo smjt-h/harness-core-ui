@@ -17,7 +17,7 @@ import {
 } from '../../PipelineGraph/PipelineGraphUtils'
 import type { NodeDetails, NodeIds, PipelineGraphState, SVGPathRecord } from '../../types'
 // import CreateNode from '../CreateNode/CreateNode'
-import { NodeType } from '../../Node'
+import { NodeType } from '../../types'
 import css from './StepGroupGraph.module.scss'
 interface StepGroupGraphProps {
   id?: string

@@ -8,7 +8,7 @@
 import React from 'react'
 import { Icon, IconName } from '@wings-software/uicore'
 import cx from 'classnames'
-import { NodeType } from '../../Node'
+import { NodeType } from '../../types'
 import SVGMarker from '../SVGMarker'
 import css from '../Nodes.module.scss'
 

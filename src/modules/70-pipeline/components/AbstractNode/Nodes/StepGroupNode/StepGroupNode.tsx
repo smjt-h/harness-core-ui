@@ -11,7 +11,7 @@ import { Icon, Layout, Text, Button, ButtonVariation } from '@wings-software/uic
 import { Color } from '@harness/design-system'
 import { Event, DiagramDrag, DiagramType } from '@pipeline/components/Diagram'
 import StepGroupGraph from '../StepGroupGraph/StepGroupGraph'
-import { NodeType } from '../../Node'
+import { NodeType } from '../../types'
 import css from './StepGroupNode.module.scss'
 import defaultCss from '../DefaultNode/DefaultNode.module.scss'
 

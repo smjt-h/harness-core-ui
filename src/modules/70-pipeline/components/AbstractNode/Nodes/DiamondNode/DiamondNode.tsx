@@ -6,12 +6,12 @@
  */
 
 import React from 'react'
-import { Icon, Text, Button, ButtonVariation, Color } from '@wings-software/uicore'
+import { Icon, Text, Button, ButtonVariation } from '@wings-software/uicore'
+import { Color } from '@harness/design-system'
 import cx from 'classnames'
 import { useStrings } from 'framework/strings'
 import { DiagramDrag, DiagramType, Event } from '@pipeline/components/Diagram'
-import { PipelineGraphType } from '../../types'
-import { NodeType } from '../../Node'
+import { PipelineGraphType, NodeType } from '../../types'
 import cssDefault from '../DefaultNode/DefaultNode.module.scss'
 import css from './DiamondNode.module.scss'
 

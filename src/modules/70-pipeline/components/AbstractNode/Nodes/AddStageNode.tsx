@@ -6,7 +6,7 @@
  */
 
 import type { IconName } from '@wings-software/uicore'
-import { Node, NodeInterface, NodeType } from '../Node'
+import { Node, NodeInterface, NodeType } from '../types'
 
 export class AddStageNode extends Node {
   protected type = NodeType.CreateNode
