@@ -1788,6 +1788,8 @@ export const getConnectorDisplayName = (type: string) => {
       return 'Kubernetes'
     case Connectors.CE_GCP:
       return 'GCP'
+    case Connectors.AZURE:
+      return 'Azure'
     default:
       return ''
   }
