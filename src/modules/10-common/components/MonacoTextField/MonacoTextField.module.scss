@@ -9,7 +9,21 @@
   border: 1px solid var(--form-field-border);
   padding: var(--spacing-2);
   background: var(--white);
+  position: relative;
   &.disabled {
     background: var(--grey-100);
   }
+
+  .expandBtn {
+    position: absolute;
+    right: 14px;
+    top: 10px;
+    z-index: 1;
+    padding: 0 !important;
+    height: auto !important;
+  }
+}
+
+.monacoDialog {
+  width: 80vw !important;
 }

@@ -142,7 +142,6 @@ export const DelegateSelectors = (props: DelegateSelectorsProps): React.ReactEle
             return validTag && validExpression
           }}
           placeholder={placeholder || getString('delegate.Delegate_Selector_placeholder')}
-          className={css.delegateInput}
         />
       )}
     </div>

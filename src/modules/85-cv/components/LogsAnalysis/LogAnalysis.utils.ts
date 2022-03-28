@@ -13,7 +13,7 @@ import { LogAnalysisRowData, LogEvents } from './LogAnalysis.types'
 
 export const getClusterTypes = (getString: UseStringsReturn['getString']): SelectOption[] => {
   return [
-    { label: getString('pipeline.verification.logs.allEvents'), value: '' },
+    { label: getString('auditTrail.allEvents'), value: '' },
     { label: getString('pipeline.verification.logs.knownEvent'), value: LogEvents.KNOWN },
     { label: getString('pipeline.verification.logs.unknownEvent'), value: LogEvents.UNKNOWN },
     { label: getString('pipeline.verification.logs.unexpectedFrequency'), value: LogEvents.UNEXPECTED }

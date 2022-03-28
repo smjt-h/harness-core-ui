@@ -28,8 +28,8 @@ function populateQueryAndMapping() {
   cy.contains('span', 'Submit').click({ force: true })
   cy.contains('span', 'Query Type is required').should('be.visible')
   cy.contains('span', 'Request Method is required').should('be.visible')
-  cy.contains('span', 'Please select start time placeholder').should('be.visible')
-  cy.contains('span', 'Please select end time timestamp Format').scrollIntoView().should('be.visible')
+  cy.contains('span', 'Start time placeholder is required').should('be.visible')
+  cy.contains('span', 'End time placeholder is required.').scrollIntoView().should('be.visible')
 
   cy.get('input[value="SERVICE_BASED"]').scrollIntoView().click({ force: true })
   cy.get('input[value="GET"]').click({ force: true })
@@ -74,12 +74,13 @@ describe('Configure Datadog health source', () => {
     cy.visitChangeIntelligence()
   })
 
-  it.skip('Add new Custom HealthSource ', () => {
+  it('Add new Custom HealthSource ', () => {
     cy.intercept('GET', baseURLCall, baseURLResponse).as('BaseURLCall')
     cy.intercept('POST', fetchRecordsCall, fetchRecordsRespose).as('FetchRecordsCall')
 
     cy.addNewMonitoredServiceWithServiceAndEnv()
     cy.populateDefineHealthSource(Connectors.CUSTOM_HEALTH, 'customconnector', 'Custom Health Source')
+    cy.selectFeature('Custom Health Metrics')
     cy.contains('span', 'Next').click()
 
     populateGroupName('group 1')
@@ -98,12 +99,13 @@ describe('Configure Datadog health source', () => {
     cy.findByText('Monitored Service created').should('be.visible')
   })
 
-  it.skip('Add new Custom HealthSource with multiple metric', () => {
+  it('Add new Custom HealthSource with multiple metric', () => {
     cy.intercept('GET', baseURLCall, baseURLResponse).as('BaseURLCall')
     cy.intercept('POST', fetchRecordsCall, fetchRecordsRespose).as('FetchRecordsCall')
 
     cy.addNewMonitoredServiceWithServiceAndEnv()
     cy.populateDefineHealthSource(Connectors.CUSTOM_HEALTH, 'customconnector', 'Custom Health Source')
+    cy.selectFeature('Custom Health Metrics')
     cy.contains('span', 'Next').click()
 
     populateGroupName('group 1')
@@ -126,7 +128,7 @@ describe('Configure Datadog health source', () => {
     cy.contains('div', 'Custom Health Source')
   })
 
-  it.skip('Custom HealthSource loads in edit mode', () => {
+  it('Custom HealthSource loads in edit mode', () => {
     cy.intercept('GET', '/cv/api/monitored-service/service1_env1?*', monitoredServiceWithCustomHealthSource).as(
       'monitoredServiceCall'
     )
@@ -140,7 +142,14 @@ describe('Configure Datadog health source', () => {
 
     cy.wait('@monitoredServiceCall')
 
-    cy.contains('div', 'Custom Health Source').click({ force: true })
+    // clear any cached values
+    cy.get('body').then($body => {
+      if ($body.text().includes('Unsaved changes')) {
+        cy.contains('span', 'Discard').click()
+      }
+    })
+
+    cy.contains('div', 'CustomHealth Metric').click({ force: true })
     cy.contains('span', 'Next').click()
 
     cy.fillField('metricName', 'CustomHealth Metric updated')

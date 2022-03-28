@@ -6,8 +6,9 @@
  */
 
 import React from 'react'
-import { render } from '@testing-library/react'
+import { act, fireEvent, render } from '@testing-library/react'
 import { TestWrapper } from '@common/utils/testUtils'
+import type { ConnectedArgoGitOpsInfoDTO } from 'services/cd-ng'
 import TestConnection from '../TestConnection/TestConnection'
 
 global.fetch = jest.fn().mockImplementation(() =>
@@ -26,6 +27,14 @@ const currentUser = {
   ]
 }
 
+const props = {
+  identifier: 'demoID',
+  name: 'demoName',
+  spec: {
+    adapterUrl: 'https://34.136.244.5/'
+  } as ConnectedArgoGitOpsInfoDTO
+}
+
 describe('TestConnection snapshot test', () => {
   test('should render TestConnection', () => {
     const { container } = render(
@@ -33,6 +42,47 @@ describe('TestConnection snapshot test', () => {
         <TestConnection />
       </TestWrapper>
     )
+    expect(container).toMatchSnapshot()
+  })
+
+  test('should render on click finish', async () => {
+    const { container, getByText } = render(
+      <TestWrapper defaultAppStoreValues={{ currentUserInfo: currentUser }}>
+        <TestConnection prevStepData={props} />
+      </TestWrapper>
+    )
+    await act(async () => {
+      fireEvent.click(getByText('finish'))
+    })
+    expect(getByText('cd.launchArgo')).toBeTruthy()
+    await act(async () => {
+      fireEvent.click(getByText('cd.launchArgo'))
+    })
+
+    expect(container).toMatchSnapshot()
+  })
+
+  test('test for error on fetch', async () => {
+    global.fetch = jest.fn().mockImplementation(() => Promise.reject('URL is down'))
+    const { container, getByText } = render(
+      <TestWrapper defaultAppStoreValues={{ currentUserInfo: currentUser }}>
+        <TestConnection
+          prevStepData={{
+            ...props,
+            spec: {
+              adapterUrl: ''
+            } as ConnectedArgoGitOpsInfoDTO
+          }}
+        />
+      </TestWrapper>
+    )
+    await act(async () => {
+      fireEvent.click(getByText('finish'))
+    })
+    expect(getByText('back')).toBeTruthy()
+    await act(async () => {
+      fireEvent.click(getByText('back'))
+    })
     expect(container).toMatchSnapshot()
   })
 })

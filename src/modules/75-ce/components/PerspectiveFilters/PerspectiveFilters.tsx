@@ -16,7 +16,10 @@ import type { CEView } from 'services/ce/'
 import { QlceViewFieldIdentifierData, useFetchViewFieldsQuery, QlceViewFilterWrapperInput } from 'services/ce/services'
 import { useTelemetry } from '@common/hooks/useTelemetry'
 import { USER_JOURNEY_EVENTS } from '@ce/TrackingEventsConstants'
+import { perspectiveDefaultTimeRangeMapper } from '@ce/utils/perspectiveUtils'
+import { CE_DATE_FORMAT_INTERNAL, DATE_RANGE_SHORTCUTS } from '@ce/utils/momentUtils'
 import PerspectiveBuilderFilters from '../PerspectiveBuilderFilters/PerspectiveBuilderFilters'
+import type { PillData } from '../PerspectiveBuilderFilters/PerspectiveBuilderFilter'
 import css from './PerspectiveFilters.module.scss'
 
 interface PerspectiveFiltersProps {
@@ -35,6 +38,11 @@ const PerspectiveFiltersNew: React.FC<PerspectiveFiltersProps> = ({ formikProps 
   })
 
   const { data } = result
+
+  const dateRange =
+    (formikProps.values.viewTimeRange?.viewTimeRangeType &&
+      perspectiveDefaultTimeRangeMapper[formikProps.values.viewTimeRange?.viewTimeRangeType]) ||
+    DATE_RANGE_SHORTCUTS.LAST_7_DAYS
 
   return (
     <section className={css.filtersContainer}>
@@ -78,18 +86,30 @@ const PerspectiveFiltersNew: React.FC<PerspectiveFiltersProps> = ({ formikProps 
           const viewRules = formikProps?.values?.viewRules || []
           return (
             <div>
-              {viewRules.map((_, index) => {
+              {viewRules.map((viewRule, index) => {
+                const indexCopy = index
                 const removeRow: () => void = () => {
                   arrayHelper.remove(index)
                 }
+
+                const setField: (id: number, data: Omit<PillData, 'type'>) => void = (id, pillData) => {
+                  const setFieldValue = formikProps.setFieldValue
+                  setFieldValue(`viewRules[${indexCopy}].viewConditions[${id}]`, pillData)
+                }
+
                 return (
                   <div className={css.filterContainer} key={`multiline-filters-${index}`}>
                     <PerspectiveBuilderFilters
                       fieldValuesList={data?.perspectiveFields?.fieldIdentifierData as QlceViewFieldIdentifierData[]}
-                      showAndOperator={true}
-                      formikProps={formikProps}
+                      timeRange={{
+                        to: dateRange[1].format(CE_DATE_FORMAT_INTERNAL),
+                        from: dateRange[0].format(CE_DATE_FORMAT_INTERNAL)
+                      }}
                       index={index}
                       removeEntireRow={removeRow}
+                      filterValue={viewRule.viewConditions}
+                      setFieldValue={setField}
+                      fieldName={`viewRules[${index}].viewConditions`}
                     />
                     <Icon
                       name="trash"

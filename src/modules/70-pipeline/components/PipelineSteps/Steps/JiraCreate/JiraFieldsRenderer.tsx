@@ -8,7 +8,7 @@
 import React, { useCallback } from 'react'
 import cx from 'classnames'
 import { isEmpty } from 'lodash-es'
-import { Button, FormInput, Layout, MultiTypeInputType } from '@wings-software/uicore'
+import { Button, FormInput, Layout } from '@wings-software/uicore'
 import { useVariablesExpression } from '@pipeline/components/PipelineStudio/PiplineHooks/useVariablesExpression'
 import type { JiraFieldNG } from 'services/cd-ng'
 import { isApprovalStepFieldDisabled } from '../Common/ApprovalCommons'
@@ -19,8 +19,7 @@ import css from './JiraCreate.module.scss'
 export interface JiraFieldsRendererProps {
   selectedFields?: JiraFieldNGWithValue[]
   readonly?: boolean
-  onDelete?: (index: number, selectedField: JiraFieldNG) => void
-  jiraContextType?: string
+  onDelete: (index: number, selectedField: JiraFieldNG) => void
 }
 
 interface MappedComponentInterface {
@@ -28,27 +27,9 @@ interface MappedComponentInterface {
   props: JiraFieldsRendererProps
   expressions: string[]
   index: number
-  jiraContextType?: string
 }
 
-function GetMappedFieldComponent({
-  selectedField,
-  props,
-  expressions,
-  index,
-  jiraContextType
-}: MappedComponentInterface) {
-  const multiTypeInputTypeforFields =
-    jiraContextType === 'JiraCreateDeploymentMode'
-      ? {
-          allowableTypes: [MultiTypeInputType.FIXED, MultiTypeInputType.EXPRESSION],
-          expressions
-        }
-      : {
-          expressions
-        }
-  const className =
-    jiraContextType === 'JiraCreateDeploymentMode' ? css.deploymentViewMedium : cx(css.multiSelect, css.md)
+function GetMappedFieldComponent({ selectedField, props, expressions, index }: MappedComponentInterface) {
   const showTextField = useCallback(() => {
     if (
       selectedField.schema.type === 'string' ||
@@ -79,8 +60,10 @@ function GetMappedFieldComponent({
         disabled={isApprovalStepFieldDisabled(props.readonly)}
         name={`spec.selectedFields[${index}].value`}
         placeholder={selectedField.name}
-        className={className}
-        multiTextInputProps={multiTypeInputTypeforFields}
+        className={css.md}
+        multiTextInputProps={{
+          expressions
+        }}
       />
     )
   } else if (showMultiSelectField()) {
@@ -91,8 +74,10 @@ function GetMappedFieldComponent({
         disabled={isApprovalStepFieldDisabled(props.readonly)}
         name={`spec.selectedFields[${index}].value`}
         placeholder={selectedField.name}
-        className={className}
-        multiSelectTypeInputProps={multiTypeInputTypeforFields}
+        className={cx(css.multiSelect, css.md)}
+        multiSelectTypeInputProps={{
+          expressions
+        }}
       />
     )
   } else if (showMultiTypeField()) {
@@ -103,8 +88,8 @@ function GetMappedFieldComponent({
         name={`spec.selectedFields[${index}].value`}
         placeholder={selectedField.name}
         disabled={isApprovalStepFieldDisabled(props.readonly)}
-        className={className}
-        multiTypeInputProps={multiTypeInputTypeforFields}
+        className={cx(css.multiSelect, css.md)}
+        multiTypeInputProps={{ expressions }}
       />
     )
   }
@@ -113,7 +98,7 @@ function GetMappedFieldComponent({
 
 export function JiraFieldsRenderer(props: JiraFieldsRendererProps) {
   const { expressions } = useVariablesExpression()
-  const { readonly, selectedFields, onDelete, jiraContextType } = props
+  const { readonly, selectedFields, onDelete } = props
   return selectedFields ? (
     <>
       {selectedFields?.map((selectedField: JiraFieldNG, index: number) => (
@@ -123,17 +108,14 @@ export function JiraFieldsRenderer(props: JiraFieldsRendererProps) {
             props={props}
             expressions={expressions}
             index={index}
-            jiraContextType={jiraContextType}
           />
-          {jiraContextType !== 'JiraCreateDeploymentMode' ? (
-            <Button
-              minimal
-              icon="trash"
-              disabled={isApprovalStepFieldDisabled(readonly)}
-              data-testid={`remove-selectedField-${index}`}
-              onClick={() => onDelete?.(index, selectedField)}
-            />
-          ) : null}
+          <Button
+            minimal
+            icon="trash"
+            disabled={isApprovalStepFieldDisabled(readonly)}
+            data-testid={`remove-selectedField-${index}`}
+            onClick={() => onDelete(index, selectedField)}
+          />
         </Layout.Horizontal>
       ))}
     </>

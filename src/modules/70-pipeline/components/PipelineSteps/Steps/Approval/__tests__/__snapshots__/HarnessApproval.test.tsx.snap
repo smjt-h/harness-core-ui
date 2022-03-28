@@ -2071,6 +2071,12 @@ exports[`Harness Approval tests Edit stage - submit field values as expressions:
 </div>
 `;
 
+exports[`Harness Approval tests Minimum time cannot be less than 10s: Value must be greater than or equal to "10s" 1`] = `
+Object {
+  "timeout": "Value must be greater than or equal to \\"10s\\"",
+}
+`;
+
 exports[`Harness Approval tests MinimumCount should be greater than 1: minimum count as negative 1`] = `
 <div>
   <div

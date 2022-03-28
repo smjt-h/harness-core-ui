@@ -80,7 +80,8 @@ export default function CloudMetricsHealthSource<T>(props: CloudMetricsHealthSou
     continuousVerification = false,
     isManualQuery,
     isCustomCreatedMetric,
-    serviceInstance
+    serviceInstance,
+    riskCategory
   } = formikProps?.values
 
   return (
@@ -130,6 +131,7 @@ export default function CloudMetricsHealthSource<T>(props: CloudMetricsHealthSou
                     values={{
                       sli,
                       healthScore,
+                      riskCategory,
                       serviceInstance,
                       continuousVerification
                     }}

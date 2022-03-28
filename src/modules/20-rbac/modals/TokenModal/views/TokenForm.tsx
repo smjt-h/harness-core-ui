@@ -15,14 +15,11 @@ import {
   Layout,
   ModalErrorHandler,
   ModalErrorHandlerBinding,
-  Text,
   Checkbox,
   ButtonVariation
 } from '@wings-software/uicore'
-import { Color } from '@harness/design-system'
 import * as Yup from 'yup'
-import moment from 'moment'
-import { omit } from 'lodash-es'
+import { defaultTo, omit } from 'lodash-es'
 import { useParams } from 'react-router-dom'
 import { useToaster } from '@common/components'
 import { useStrings } from 'framework/strings'
@@ -30,6 +27,8 @@ import { TokenDTO, useCreateToken, useUpdateToken } from 'services/cd-ng'
 import type { ProjectPathProps, ServiceAccountPathProps } from '@common/interfaces/RouteInterfaces'
 import { NameSchema, IdentifierSchema } from '@common/utils/Validation'
 import { NameIdDescriptionTags } from '@common/components/NameIdDescriptionTags/NameIdDescriptionTags'
+import { getRBACErrorMessage } from '@rbac/utils/utils'
+import { getReadableDateTime } from '@common/utils/dateUtils'
 import { TokenValueRenderer } from './TokenValueRenderer'
 import css from '@rbac/modals/TokenModal/useTokenModal.module.scss'
 
@@ -48,11 +47,19 @@ interface TokenFormData extends TokenDTO {
 }
 
 const TokenForm: React.FC<TokenModalData> = props => {
-  const { data: tokenData, onSubmit, onClose, isEdit, apiKeyIdentifier, apiKeyType, parentIdentifier } = props
+  const {
+    data: tokenData,
+    onSubmit,
+    onClose,
+    isEdit,
+    apiKeyIdentifier,
+    apiKeyType = 'SERVICE_ACCOUNT',
+    parentIdentifier
+  } = props
   const { accountId, orgIdentifier, projectIdentifier, serviceAccountIdentifier } = useParams<
     ProjectPathProps & ServiceAccountPathProps
   >()
-  const [expiry, setExpiry] = useState<boolean>(tokenData?.validTo ? true : false)
+  const [expiry, setExpiry] = useState<boolean>(!!tokenData?.validTo)
   const { getString } = useStrings()
   const { showSuccess } = useToaster()
   const [modalErrorHandler, setModalErrorHandler] = useState<ModalErrorHandlerBinding>()
@@ -60,106 +67,104 @@ const TokenForm: React.FC<TokenModalData> = props => {
   const [token, setToken] = useState<string>()
 
   const { mutate: editToken, loading: updating } = useUpdateToken({
-    identifier: encodeURIComponent(tokenData?.identifier || '')
+    identifier: encodeURIComponent(defaultTo(tokenData?.identifier, ''))
   })
 
   const handleSubmit = async (values: TokenFormData): Promise<void> => {
     const dataToSubmit = Object.assign({}, omit(values, ['expiryDate']))
     if (expiry && values['expiryDate']) dataToSubmit['validTo'] = Date.parse(values['expiryDate'])
     try {
-      if (isEdit) {
-        const updated = await editToken(dataToSubmit)
-        /* istanbul ignore else */ if (updated) {
-          showSuccess(getString('rbac.token.form.editSuccess', { name: values.name }))
-          onSubmit?.()
-          onClose?.()
+      switch (isEdit) {
+        case true: {
+          const updated = await editToken(dataToSubmit)
+          /* istanbul ignore else */ if (updated) {
+            showSuccess(getString('rbac.token.form.editSuccess', { name: values.name }))
+            onSubmit?.()
+            onClose?.()
+          }
+          break
         }
-      } else {
-        const created = await createToken(dataToSubmit)
-        /* istanbul ignore else */ if (created) {
-          showSuccess(getString('rbac.token.form.createSuccess', { name: values.name }))
-          onSubmit?.()
-          setToken(created.data)
-        }
+        default:
+          {
+            const created = await createToken(dataToSubmit)
+            /* istanbul ignore else */ if (created) {
+              showSuccess(getString('rbac.token.form.createSuccess', { name: values.name }))
+              onSubmit?.()
+              setToken(created.data)
+            }
+          }
+          break
       }
     } catch (e) {
       /* istanbul ignore next */
-      modalErrorHandler?.showDanger(e.data?.message || e.message)
+      modalErrorHandler?.showDanger(getRBACErrorMessage(e))
     }
   }
   return (
-    <Layout.Vertical padding={{ bottom: 'xxxlarge', right: 'xxxlarge', left: 'xxxlarge' }}>
-      <Layout.Vertical spacing="large">
-        <Text color={Color.BLACK} font="medium">
-          {isEdit ? getString('rbac.token.editLabel') : getString('rbac.token.createLabel')}
-        </Text>
-        <Formik<TokenFormData>
-          initialValues={{
-            identifier: '',
-            name: '',
-            description: '',
-            tags: {},
-            accountIdentifier: accountId,
-            orgIdentifier,
-            projectIdentifier,
-            apiKeyIdentifier,
-            parentIdentifier: parentIdentifier || serviceAccountIdentifier,
-            apiKeyType: apiKeyType || 'SERVICE_ACCOUNT',
-            expiryDate: tokenData?.validTo ? moment(tokenData.validTo).format('MM/DD/YYYY') : '',
-            ...tokenData
-          }}
-          formName="tokenForm"
-          validationSchema={Yup.object().shape({
-            name: NameSchema(),
-            identifier: IdentifierSchema(),
-            ...(expiry && { expiryDate: Yup.date().min(new Date()).required() })
-          })}
-          onSubmit={values => {
-            modalErrorHandler?.hide()
-            handleSubmit(values)
-          }}
-        >
-          {formikProps => {
-            return (
-              <Form>
-                <Container className={css.form}>
-                  <ModalErrorHandler bind={setModalErrorHandler} />
-                  <NameIdDescriptionTags
-                    formikProps={formikProps}
-                    identifierProps={{ isIdentifierEditable: !isEdit }}
-                  />
-                  <Layout.Vertical padding={{ top: 'small' }} spacing="medium">
-                    <Checkbox
-                      label={getString('rbac.token.form.expiry')}
-                      checked={expiry}
-                      onClick={e => setExpiry(e.currentTarget.checked)}
-                    />
-                    {expiry && <FormInput.Text name="expiryDate" label={getString('rbac.token.form.expiryDate')} />}
-
-                    {token && (
-                      <TokenValueRenderer token={token} textInputClass={css.tokenValue} copyTextClass={css.copy} />
-                    )}
-                  </Layout.Vertical>
-                </Container>
-                <Layout.Horizontal spacing="small">
-                  {token ? (
-                    <Button text={getString('close')} onClick={onClose} variation={ButtonVariation.TERTIARY} />
-                  ) : (
-                    <Button
-                      variation={ButtonVariation.PRIMARY}
-                      text={isEdit ? getString('save') : getString('rbac.generateToken')}
-                      type="submit"
-                      disabled={saving || updating}
-                    />
-                  )}
-                  <Button text={getString('cancel')} onClick={onClose} variation={ButtonVariation.TERTIARY} />
-                </Layout.Horizontal>
-              </Form>
-            )
-          }}
-        </Formik>
-      </Layout.Vertical>
-    </Layout.Vertical>
+    <Formik<TokenFormData>
+      initialValues={{
+        identifier: '',
+        name: '',
+        description: '',
+        tags: {},
+        accountIdentifier: accountId,
+        orgIdentifier,
+        projectIdentifier,
+        apiKeyIdentifier,
+        parentIdentifier: parentIdentifier || serviceAccountIdentifier,
+        apiKeyType: apiKeyType,
+        expiryDate: getReadableDateTime(tokenData?.validTo, 'MM/DD/YYYY'),
+        ...tokenData
+      }}
+      formName="tokenForm"
+      validationSchema={Yup.object().shape({
+        name: NameSchema(),
+        identifier: IdentifierSchema(),
+        ...(expiry && { expiryDate: Yup.date().min(new Date()).required() })
+      })}
+      onSubmit={values => {
+        modalErrorHandler?.hide()
+        handleSubmit(values)
+      }}
+    >
+      {formikProps => {
+        return (
+          <Form>
+            <Container className={css.form}>
+              <ModalErrorHandler bind={setModalErrorHandler} />
+              <NameIdDescriptionTags
+                formikProps={formikProps}
+                identifierProps={{ isIdentifierEditable: !isEdit && !token }}
+              />
+              <Layout.Vertical padding={{ top: 'small' }} spacing="medium">
+                <Checkbox
+                  label={getString('rbac.token.form.expiry')}
+                  checked={expiry}
+                  onClick={e => setExpiry(e.currentTarget.checked)}
+                />
+                {expiry && <FormInput.Text name="expiryDate" label={getString('rbac.token.form.expiryDate')} />}
+              </Layout.Vertical>
+            </Container>
+            {token ? (
+              <Layout.Vertical spacing="medium">
+                <TokenValueRenderer token={token} textInputClass={css.tokenValue} copyTextClass={css.copy} />
+                <Button text={getString('close')} onClick={onClose} variation={ButtonVariation.TERTIARY} />
+              </Layout.Vertical>
+            ) : (
+              <Layout.Horizontal spacing="small">
+                <Button
+                  variation={ButtonVariation.PRIMARY}
+                  text={isEdit ? getString('save') : getString('rbac.generateToken')}
+                  type="submit"
+                  disabled={saving || updating}
+                />
+                <Button text={getString('cancel')} onClick={onClose} variation={ButtonVariation.TERTIARY} />
+              </Layout.Horizontal>
+            )}
+          </Form>
+        )
+      }}
+    </Formik>
   )
 }
 

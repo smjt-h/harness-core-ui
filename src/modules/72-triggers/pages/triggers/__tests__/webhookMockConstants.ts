@@ -239,5 +239,219 @@ export const getTriggerConfigDefaultProps = ({
 }: {
   isEdit?: boolean
 }): WebhookTriggerConfigPanelPropsInterface => ({
-  isEdit
+  isEdit,
+  formikProps: {
+    values: {
+      triggerType: 'Artifact',
+      identifier: 'sdf',
+      tags: {},
+      artifactType: 'DockerRegistry',
+      pipeline: {
+        identifier: 'SampleTestArtifactsArchit',
+        stages: [
+          {
+            stage: {
+              identifier: 's1',
+              type: 'Deployment',
+              spec: {
+                serviceConfig: {
+                  serviceDefinition: {
+                    type: 'Kubernetes',
+                    spec: {
+                      artifacts: {
+                        primary: {
+                          type: 'DockerRegistry',
+                          spec: {
+                            tag: '<+trigger.artifact.build>'
+                          }
+                        }
+                      }
+                    }
+                  }
+                },
+                infrastructure: {
+                  infrastructureDefinition: {
+                    type: 'KubernetesDirect',
+                    spec: {
+                      namespace: 'sdfsdf'
+                    }
+                  }
+                }
+              }
+            }
+          }
+        ]
+      },
+      originalPipeline: {
+        name: 'SampleTestArtifactsArchit',
+        identifier: 'SampleTestArtifactsArchit',
+        allowStageExecutions: false,
+        projectIdentifier: 'Kapil',
+        orgIdentifier: 'default',
+        tags: {},
+        stages: [
+          {
+            stage: {
+              name: 's1',
+              identifier: 's1',
+              description: '',
+              type: 'Deployment',
+              spec: {
+                serviceConfig: {
+                  serviceRef: 'architservice',
+                  serviceDefinition: {
+                    type: 'Kubernetes',
+                    spec: {
+                      variables: [],
+                      artifacts: {
+                        primary: {
+                          spec: {
+                            connectorRef: 'account.DockerAnonymous',
+                            imagePath: 'library/nginx',
+                            tag: '<+input>'
+                          },
+                          type: 'DockerRegistry'
+                        },
+                        sidecars: [
+                          {
+                            sidecar: {
+                              spec: {
+                                connectorRef: 'account.DockerAnonymous',
+                                imagePath: 'library/nginx',
+                                tag: 'latest'
+                              },
+                              identifier: 's1',
+                              type: 'DockerRegistry'
+                            }
+                          }
+                        ]
+                      }
+                    }
+                  }
+                },
+                infrastructure: {
+                  environmentRef: 'env9',
+                  infrastructureDefinition: {
+                    type: 'KubernetesDirect',
+                    spec: {
+                      connectorRef: 'pieplay',
+                      namespace: '<+input>',
+                      releaseName: 'release-<+INFRA_KEY>'
+                    }
+                  },
+                  allowSimultaneousDeployments: false
+                },
+                execution: {
+                  steps: [
+                    {
+                      step: {
+                        type: 'ShellScript',
+                        name: 'step1',
+                        identifier: 'step1',
+                        spec: {
+                          shell: 'Bash',
+                          onDelegate: true,
+                          source: {
+                            type: 'Inline',
+                            spec: {
+                              script:
+                                'echo <+serviceConfig.serviceDefinition.spec.artifacts.primary.spec.connectorRef>\necho <+serviceConfig.serviceDefinition.spec.artifacts.sidecars.s1.spec.connectorRef>'
+                            }
+                          },
+                          environmentVariables: [],
+                          outputVariables: [],
+                          executionTarget: {}
+                        },
+                        timeout: '10m'
+                      }
+                    }
+                  ],
+                  rollbackSteps: []
+                }
+              },
+              tags: {},
+              failureStrategies: [
+                {
+                  onFailure: {
+                    errors: ['AllErrors'],
+                    action: {
+                      type: 'StageRollback'
+                    }
+                  }
+                }
+              ]
+            }
+          }
+        ]
+      },
+      inputSetTemplateYamlObj: {
+        pipeline: {
+          identifier: 'SampleTestArtifactsArchit',
+          stages: [
+            {
+              stage: {
+                identifier: 's1',
+                type: 'Deployment',
+                spec: {
+                  serviceConfig: {
+                    serviceDefinition: {
+                      spec: {
+                        artifacts: {
+                          primary: {
+                            type: 'DockerRegistry',
+                            spec: {
+                              tag: '<+input>'
+                            }
+                          },
+                          sidecars: []
+                        }
+                      }
+                    }
+                  },
+                  infrastructure: {
+                    infrastructureDefinition: {
+                      type: 'KubernetesDirect',
+                      spec: {
+                        namespace: '<+input>'
+                      }
+                    }
+                  }
+                }
+              }
+            }
+          ]
+        }
+      },
+      selectedArtifact: {
+        type: 'DockerRegistry',
+        spec: {
+          tag: '<+trigger.artifact.build>'
+        }
+      },
+      name: 'sdf',
+      stageId: 's1',
+      stages: [
+        {
+          stage: {
+            spec: {
+              serviceConfig: {
+                serviceDefinition: {
+                  spec: {
+                    artifacts: {
+                      primary: {
+                        type: 'DockerRegistry',
+                        spec: {
+                          tag: '<+trigger.artifact.build>'
+                        }
+                      }
+                    }
+                  }
+                }
+              }
+            }
+          }
+        }
+      ]
+    }
+  }
 })

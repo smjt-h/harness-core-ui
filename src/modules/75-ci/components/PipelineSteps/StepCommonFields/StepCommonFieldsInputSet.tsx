@@ -50,11 +50,6 @@ function StepCommonFieldsInputSet<T>(props: StepCommonFieldsInputSetProps<T>): J
 
   const stepCss = stepViewType === StepViewType.DeploymentForm ? css.sm : css.lg
 
-  // If neither value is runtime then return null
-  if (!isLimitCPURuntime && !isTimeoutRuntime && !isRunAsUserRuntime) {
-    return null
-  }
-
   const renderMultiTypeTextField = ({
     name,
     tooltipId,
@@ -137,7 +132,7 @@ function StepCommonFieldsInputSet<T>(props: StepCommonFieldsInputSetProps<T>): J
               placeholder: getString('select'),
               multiTypeInputProps: {
                 expressions,
-                selectProps: { addClearBtn: true, items: GetShellOptions() },
+                selectProps: { addClearBtn: true, items: GetShellOptions(getString) },
                 allowableTypes: AllMultiTypeInputTypesForInputSet
               },
               disabled: readonly

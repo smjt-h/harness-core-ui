@@ -128,71 +128,6 @@ export const getJiraCreateDeploymentModeProps = (): JiraCreateDeploymentModeProp
   allowableTypes: [MultiTypeInputType.FIXED, MultiTypeInputType.EXPRESSION]
 })
 
-export const getJiraCreateDeploymentModeForFieldsProps = (): JiraCreateDeploymentModeProps => ({
-  stepViewType: StepViewType.InputSet,
-  initialValues: {
-    name: '',
-    identifier: '',
-    type: 'JiraCreate',
-    spec: {
-      connectorRef: 'cid1',
-      projectKey: 'pid1',
-      issueType: 'id1',
-      fields: [
-        {
-          name: 'Summary',
-          value: 'sid1'
-        },
-        {
-          name: 'Description',
-          value: 'did1'
-        },
-        {
-          name: 'f1',
-          value: ''
-        },
-        {
-          name: 'f2',
-          value: ''
-        },
-        {
-          name: 'f3',
-          value: ''
-        }
-      ]
-    }
-  },
-  inputSetData: {
-    path: '/ab/',
-    template: {
-      name: '',
-      identifier: '',
-      type: 'JiraCreate',
-      spec: {
-        connectorRef: '',
-        projectKey: '',
-        issueType: '',
-        fields: [
-          {
-            name: 'f1',
-            value: RUNTIME_INPUT_VALUE
-          },
-          {
-            name: 'f2',
-            value: RUNTIME_INPUT_VALUE
-          },
-          {
-            name: 'f3',
-            value: RUNTIME_INPUT_VALUE
-          }
-        ]
-      }
-    }
-  },
-  onUpdate: jest.fn(),
-  allowableTypes: [MultiTypeInputType.FIXED, MultiTypeInputType.EXPRESSION]
-})
-
 export const getJiraCreateInputVariableModeProps = () => ({
   initialValues: {
     spec: {}
@@ -397,7 +332,6 @@ export const mockProjectMetadataResponse: UseGetMockData<ResponseJiraIssueCreate
     }
   }
 }
-
 export const getJiraFieldRendererProps = (): JiraFieldsRendererProps => ({
   selectedFields: [
     {
@@ -425,6 +359,5 @@ export const getJiraFieldRendererProps = (): JiraFieldsRendererProps => ({
     }
   ],
   readonly: false,
-  onDelete: jest.fn(),
-  jiraContextType: 'JiraCreateDeploymentMode'
+  onDelete: jest.fn()
 })

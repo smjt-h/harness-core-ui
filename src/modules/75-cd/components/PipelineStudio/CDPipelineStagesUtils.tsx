@@ -11,15 +11,17 @@ import { PipelineStages, PipelineStagesProps } from '@pipeline/components/Pipeli
 import { stagesCollection } from '@pipeline/components/PipelineStudio/Stages/StagesCollection'
 import { StageType } from '@pipeline/utils/stageHelpers'
 
-export const getCDPipelineStages: (
-  args: Omit<PipelineStagesProps, 'children'>,
-  getString: UseStringsReturn['getString'],
-  isCIEnabled?: boolean,
-  isCDEnabled?: boolean,
-  isCFEnabled?: boolean,
-  isSTOEnabled?: boolean,
+interface GetCDPipelineStagesArgs {
+  args: Omit<PipelineStagesProps, 'children'>
+  getString: UseStringsReturn['getString']
+  isCIEnabled?: boolean
+  isCDEnabled?: boolean
+  isCFEnabled?: boolean
+  isSTOEnabled?: boolean
   isApprovalStageEnabled?: boolean
-) => React.ReactElement<PipelineStagesProps> = (
+}
+
+export const getCDPipelineStages: (args: GetCDPipelineStagesArgs) => React.ReactElement<PipelineStagesProps> = ({
   args,
   getString,
   isCIEnabled = false,
@@ -27,7 +29,7 @@ export const getCDPipelineStages: (
   isCFEnabled = false,
   isSTOEnabled = false,
   isApprovalStageEnabled = false
-) => {
+}) => {
   return (
     <PipelineStages {...args}>
       {stagesCollection.getStage(StageType.DEPLOY, isCDEnabled, getString)}

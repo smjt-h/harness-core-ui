@@ -6,8 +6,8 @@
  */
 
 import React from 'react'
-import { render } from '@testing-library/react'
-import { TestWrapper } from '@common/utils/testUtils'
+import { fireEvent, render, getByText } from '@testing-library/react'
+import { findDialogContainer, TestWrapper, findPopoverContainer } from '@common/utils/testUtils'
 import ProviderCard from '../ProviderCard/ProviderCard'
 
 const currentUser = {
@@ -26,7 +26,12 @@ const provider = {
   baseURL: 'https://34.136.244.5',
   status: 'Active',
   type: 'nativeArgo',
-  spec: {}
+  spec: {},
+  tags: {
+    demo: 'demo'
+  },
+  onDelete: jest.fn(),
+  onEdit: jest.fn()
 }
 
 describe('ProviderCard snapshot test', () => {
@@ -36,6 +41,52 @@ describe('ProviderCard snapshot test', () => {
         <ProviderCard provider={provider} />
       </TestWrapper>
     )
+    expect(container).toMatchSnapshot()
+  })
+
+  test('open dailog', async () => {
+    const { container, getByTestId } = render(
+      <TestWrapper defaultAppStoreValues={{ currentUserInfo: currentUser }}>
+        <ProviderCard provider={provider} />
+      </TestWrapper>
+    )
+    fireEvent.click(
+      container.querySelector(
+        '.bp3-card.bp3-interactive.bp3-elevation-0.Card--card.card.Card--interactive'
+      ) as HTMLElement
+    )
+    const dailog = findDialogContainer()
+    await expect(dailog).toBeTruthy()
+    expect(dailog).toMatchSnapshot()
+    expect(getByTestId('close-certi-upload-modal')).toBeDefined()
+  })
+
+  test('should open menu, edit and confirmation after delete', async () => {
+    const { container } = render(
+      <TestWrapper defaultAppStoreValues={{ currentUserInfo: currentUser }}>
+        <ProviderCard provider={provider} />
+      </TestWrapper>
+    )
+    fireEvent.click(container.querySelector("[data-icon='more']") as HTMLElement)
+    const popover = findPopoverContainer()
+    const fetching = (popover as HTMLElement, '[data-icon="more"]')
+    expect(fetching).toBeDefined()
+    expect(popover).toMatchSnapshot()
+    fireEvent.click(document.querySelector('[data-icon="edit"]') as HTMLElement)
+
+    fireEvent.click(document.querySelector('[data-icon="trash"]') as HTMLElement)
+    let form = findDialogContainer()
+    expect(form).toBeTruthy()
+    expect(form).toMatchSnapshot()
+    expect(getByText(document.body, 'delete')).toBeDefined()
+    fireEvent.click(getByText(document.body, 'delete') as HTMLButtonElement)
+
+    fireEvent.click(document.querySelector('[data-icon="trash"]') as HTMLElement)
+    form = findDialogContainer()
+    expect(form).toBeTruthy()
+    expect(getByText(document.body, 'cancel')).toBeDefined()
+    fireEvent.click(getByText(document.body, 'cancel') as HTMLButtonElement)
+    expect(findDialogContainer()).toBeFalsy()
     expect(container).toMatchSnapshot()
   })
 })

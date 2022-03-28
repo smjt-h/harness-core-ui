@@ -199,7 +199,7 @@ describe('utility methods', () => {
 
   test('Database link', () => {
     const dbLink =
-      'https://console.aws.amazon.com/rds/home?region=us-east-1#database:id=i-0241504568408224e;is-cluster=false'
+      'https://console.aws.amazon.com/rds/home?region=us-east-1#database:id=Lightwing Testing Infra;is-cluster=false'
     const link = getInstancesLink({ ...mockedService, kind: 'database' } as unknown as Service, {
       response: [mockedResource as unknown as Resource]
     })

@@ -209,30 +209,26 @@ const ConnectorDetailsPage: React.FC<ConnectorDetailsPageProps> = props => {
     [connectorData, branchSelectOptions, activeCategory, selectedBranch, loadingBranchList]
   )
 
+  const refetchhandler = (): Promise<void> =>
+    refetch({
+      queryParams: selectedBranch
+        ? {
+            ...defaultQueryParam,
+            repoIdentifier: connectorData?.data?.gitDetails?.repoIdentifier,
+            branch: selectedBranch
+          }
+        : defaultQueryParam
+    })
+
   const getPageBody = (): React.ReactElement => {
     if (loading) {
       return <PageSpinner />
     }
     if (error) {
       const errorMessage = (error.data as Error)?.message || error.message
-      return (
-        <PageError
-          message={errorMessage}
-          onClick={() =>
-            refetch({
-              queryParams: selectedBranch
-                ? {
-                    ...defaultQueryParam,
-                    repoIdentifier: connectorData?.data?.gitDetails?.repoIdentifier,
-                    branch: selectedBranch
-                  }
-                : defaultQueryParam
-            })
-          }
-        />
-      )
+      return <PageError message={errorMessage} onClick={refetchhandler} />
     }
-    return <RenderConnectorDetailsActiveTab activeCategory={activeCategory} data={data} refetch={refetch} />
+    return <RenderConnectorDetailsActiveTab activeCategory={activeCategory} data={data} refetch={refetchhandler} />
   }
 
   return (

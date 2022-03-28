@@ -50,9 +50,11 @@ export const validateConnectorRefAndImageDepdendency = (
 export const shouldRenderRunTimeInputView = (value: any): boolean => {
   if (value) {
     if (typeof value === 'object') {
-      return Object.keys(value).some(key => value[key] === RUNTIME_INPUT_VALUE)
+      return Object.keys(value).some(
+        key => typeof value[key] === 'string' && value[key].startsWith(RUNTIME_INPUT_VALUE)
+      )
     } else {
-      return value === RUNTIME_INPUT_VALUE
+      return typeof value === 'string' && value.startsWith(RUNTIME_INPUT_VALUE)
     }
   }
   return false

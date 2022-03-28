@@ -96,7 +96,8 @@ export function useSaveToGitDialog<T = Record<string, string>>(
         vars={{ name: resource.name, entity: getEntityNameFromType(resource.type) }}
       />
     ),
-    finalLabel: getErrorInfoFromErrorObject(error)
+    finalLabel: getErrorInfoFromErrorObject(error),
+    error: error?.data
   }
   const fromBranch = defaultTo(prMetaData?.branch, '')
   const toBranch = defaultTo(prMetaData?.targetBranch, '')

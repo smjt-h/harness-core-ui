@@ -9,6 +9,8 @@ import { renderHook } from '@testing-library/react-hooks'
 import React from 'react'
 import { TestWrapper } from '@common/utils/testUtils'
 import routes from '@common/RouteDefinitions'
+import type { ModuleLicenseDTO } from 'services/cd-ng'
+import { Editions, ModuleLicenseType } from '@common/constants/SubscriptionTypes'
 import { useTelemetry } from '../useTelemetry'
 
 const identifyMock = jest.fn()
@@ -45,12 +47,60 @@ describe('useTelemetry', () => {
     result.current.identifyUser(email)
     result.current.trackEvent('event1', {})
     expect(identifyMock).toHaveBeenCalledWith(email)
-    expect(trackMock).toHaveBeenCalledWith({ event: 'event1', properties: { groupId: undefined, userId: '' } })
+    expect(trackMock).toHaveBeenCalledWith({
+      event: 'event1',
+      properties: { groupId: undefined, userId: '' }
+    })
     expect(pageMock).toHaveBeenCalledWith({
       name: 'page',
       category: '',
       properties: {
         userId: ''
+      }
+    })
+  })
+
+  test('should include license properties if any', () => {
+    const defaultLicenseStoreValues = {
+      licenseInformation: {
+        CD: {
+          edition: Editions.ENTERPRISE,
+          licenseType: ModuleLicenseType.PAID as ModuleLicenseDTO['licenseType']
+        }
+      }
+    }
+    const email = 'test@harness.io'
+    const wrapper = ({ children }: React.PropsWithChildren<unknown>): React.ReactElement => (
+      <TestWrapper
+        path={routes.toCDHome({ accountId: 'dummy' })}
+        pathParams={{ accountId: 'dummy' }}
+        defaultLicenseStoreValues={defaultLicenseStoreValues}
+      >
+        {children}
+      </TestWrapper>
+    )
+    const { result } = renderHook(
+      () =>
+        useTelemetry({
+          pageName: 'page'
+        }),
+      { wrapper }
+    )
+    result.current.identifyUser(email)
+    result.current.trackEvent('event2', {})
+    expect(identifyMock).toHaveBeenCalledWith(email)
+    expect(trackMock).toHaveBeenCalledWith({
+      event: 'event2',
+      properties: { groupId: undefined, userId: '', licenseEdition: 'ENTERPRISE', licenseType: 'PAID', module: 'cd' }
+    })
+    expect(pageMock).toHaveBeenCalledWith({
+      name: 'page',
+      category: '',
+      properties: {
+        userId: '',
+        licenseEdition: 'ENTERPRISE',
+        licenseType: 'PAID',
+        module: 'cd'
       }
     })
   })

@@ -416,7 +416,7 @@ awsKms:
 delegate:
   configure: Configure what Delegates are allowed to connect to this Connector
   delegateSelectorAny: Connect via any available Delegate
-  delegateSelectorSelective: Connect only via Delegates which has all of the following tags
+  delegateSelectorSelective: Connect only via Delegates with all of the following tags
   hearbeat: heartbeat
   matchesSelectors: Matches
   testDelegateConnectivity: Test Delegate Connectivity
@@ -424,7 +424,7 @@ delegate:
   waitingForConnection: Waiting for connection
   noDelegates: You have no Delegates
   noMatchingDelegate: No eligible Delegates found. Install a new Delegate or continue to save.
-  delegateselectionPlaceholder: Select or Enter Delegate Selectors
+  delegateselectionPlaceholder: Select or Enter Delegates
   noMatchingDelegatesActive: None of the matching Delegates are in active state.
   couldNotFetch: Failed to update the Delegate list, Will try again in {{pollingInterval}}
   delegateSelectors: Delegate Selectors

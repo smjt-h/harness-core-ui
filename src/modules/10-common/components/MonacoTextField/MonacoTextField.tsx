@@ -8,9 +8,12 @@
 import React from 'react'
 import type { MonacoEditorBaseProps, MonacoEditorProps } from 'react-monaco-editor'
 import { FormikProps, connect } from 'formik'
-import { get } from 'lodash-es'
+import { defaultTo, get } from 'lodash-es'
 import cx from 'classnames'
+import { Dialog, Classes } from '@blueprintjs/core'
+import { Button, Container } from '@harness/uicore'
 import type { languages, IDisposable } from 'monaco-editor/esm/vs/editor/editor.api'
+import { useStrings } from 'framework/strings'
 import MonacoEditor from '@common/components/MonacoEditor/MonacoEditor'
 import { useDeepCompareEffect } from '@common/hooks'
 
@@ -24,6 +27,8 @@ export interface MonacoTextFieldProps {
   disabled?: boolean
   expressions?: string[]
   'data-testid'?: string
+  fullScreenAllowed?: boolean
+  fullScreenTitle?: string
 }
 
 export interface ConnectedMonacoTextFieldProps extends MonacoTextFieldProps {
@@ -34,7 +39,9 @@ const VAR_REGEX = /.*<\+.*?/
 const LANG_ID = 'plaintext'
 
 export function MonacoText(props: ConnectedMonacoTextFieldProps): React.ReactElement {
-  const { formik, name, disabled, expressions, height = 70 } = props
+  const { formik, name, disabled, expressions, height = 70, fullScreenAllowed, fullScreenTitle } = props
+  const [isFullScreen, setFullScreen] = React.useState(false)
+  const { getString } = useStrings()
   const value = get(formik.values, name) || ''
 
   useDeepCompareEffect(() => {
@@ -74,10 +81,10 @@ export function MonacoText(props: ConnectedMonacoTextFieldProps): React.ReactEle
     }
   }, [expressions])
 
-  return (
+  const editor = (
     <div className={cx(css.main, { [css.disabled]: disabled })}>
       <MonacoEditor
-        height={height}
+        height={fullScreenAllowed && isFullScreen ? '70vh' : height}
         value={value}
         language={LANG_ID}
         options={
@@ -106,7 +113,34 @@ export function MonacoText(props: ConnectedMonacoTextFieldProps): React.ReactEle
         onChange={txt => formik.setFieldValue(name, txt)}
         {...({ name: props.name, 'data-testid': props['data-testid'] } as any)} // this is required for test cases
       />
+      {fullScreenAllowed && !isFullScreen ? (
+        <Button
+          className={css.expandBtn}
+          icon="fullscreen"
+          small
+          onClick={() => setFullScreen(true)}
+          iconProps={{ size: 10 }}
+        />
+      ) : null}
     </div>
+  )
+
+  return (
+    <React.Fragment>
+      {fullScreenAllowed && isFullScreen ? <Container className={css.main} /> : editor}
+      <Dialog
+        lazy
+        enforceFocus={false}
+        isOpen={isFullScreen}
+        isCloseButtonShown
+        canOutsideClickClose={false}
+        onClose={() => setFullScreen(false)}
+        title={defaultTo(fullScreenTitle, getString('common.input'))}
+        className={css.monacoDialog}
+      >
+        <div className={Classes.DIALOG_BODY}>{editor}</div>
+      </Dialog>
+    </React.Fragment>
   )
 }
 

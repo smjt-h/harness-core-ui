@@ -60,6 +60,11 @@ type CustomColumn = Column<ConnectorResponse> & {
 
 export type ErrorMessage = ConnectorValidationResult & { useErrorHandler?: boolean }
 
+const connectorDetailsUrlWithGit = (url: string, gitInfo: EntityGitDetails = {}): string => {
+  const urlForGit = `${url}?repoIdentifier=${gitInfo.repoIdentifier}&branch=${gitInfo.branch}`
+  return gitInfo?.objectId ? urlForGit : url
+}
+
 export const RenderColumnConnector: Renderer<CellProps<ConnectorResponse>> = ({ row }) => {
   const data = row.original
   const tags = data.connector?.tags || {}
@@ -285,7 +290,8 @@ const RenderColumnMenu: Renderer<CellProps<ConnectorResponse>> = ({ row, column 
         gitDetails: row.original?.gitDetails
       })
     } else {
-      history.push(routes.toConnectorDetails({ ...params, connectorId: data.connector?.identifier }))
+      const url = routes.toConnectorDetails({ ...params, connectorId: data.connector?.identifier })
+      history.push(connectorDetailsUrlWithGit(url, row.original?.gitDetails))
     }
   }
 
@@ -396,9 +402,7 @@ const ConnectorsListView: React.FC<ConnectorListViewProps> = props => {
       name="ConnectorsListView"
       onRowClick={connector => {
         const url = routes.toConnectorDetails({ ...params, connectorId: connector.connector?.identifier })
-        const gitInfo: EntityGitDetails = connector.gitDetails ?? {}
-        const urlForGit = `${url}?repoIdentifier=${gitInfo.repoIdentifier}&branch=${gitInfo.branch}`
-        history.push(gitInfo?.objectId ? urlForGit : url)
+        history.push(connectorDetailsUrlWithGit(url, connector.gitDetails))
       }}
       pagination={{
         itemCount: data?.totalItems || 0,

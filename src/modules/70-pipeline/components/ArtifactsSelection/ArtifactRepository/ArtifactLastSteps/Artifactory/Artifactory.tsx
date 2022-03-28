@@ -70,6 +70,19 @@ function NoRepositoryResults({ error }: { error: GetDataError<Failure | Error> |
   )
 }
 
+const getRepositoryValue = (
+  formData: ImagePathTypes & { connectorId?: string },
+  isServerlessDeploymentTypeSelected = false
+): string => {
+  if (isServerlessDeploymentTypeSelected) {
+    if (formData?.repository?.value) {
+      return formData?.repository?.value
+    }
+    return formData?.repository
+  }
+  return formData?.repository
+}
+
 function Artifactory({
   context,
   handleSubmit,
@@ -250,7 +263,7 @@ function Artifactory({
       isServerlessDeploymentTypeSelected
     )
     merge(artifactObj.spec, {
-      repository: isServerlessDeploymentTypeSelected ? formData?.repository?.value : formData?.repository,
+      repository: getRepositoryValue(formData, isServerlessDeploymentTypeSelected),
       repositoryUrl: formData?.repositoryUrl,
       repositoryFormat: isServerlessDeploymentTypeSelected ? 'generic' : repositoryFormat
     })
