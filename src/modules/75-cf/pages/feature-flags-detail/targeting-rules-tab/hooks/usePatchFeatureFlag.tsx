@@ -7,14 +7,13 @@
 
 import { useParams } from 'react-router-dom'
 import { getErrorInfoFromErrorObject, useToaster } from '@harness/uicore'
-import { v4 as uuid } from 'uuid'
-import { isEqual } from 'lodash-es'
 import patch from '@cf/utils/instructions'
-import { FeatureState, PatchFeatureQueryParams, TargetMap, usePatchFeature } from 'services/cf'
+import { PatchFeatureQueryParams, usePatchFeature } from 'services/cf'
 import useActiveEnvironment from '@cf/hooks/useActiveEnvironment'
 import { showToaster } from '@cf/utils/CFUtils'
 import { useStrings } from 'framework/strings'
-import type { FormVariationMap, TargetGroup, TargetingRulesFormValues } from '../Types'
+import type { FormVariationMap, TargetingRulesFormValues } from '../Types'
+import { PatchFeatureFlagUtils } from './PatchFeatureFlagUtils'
 export interface UsePatchFeatureFlagProps {
   featureFlagIdentifier: string
   initialValues: TargetingRulesFormValues
@@ -47,118 +46,49 @@ const usePatchFeatureFlag = ({
   })
 
   const saveChanges = (submittedValues: TargetingRulesFormValues): void => {
-    if (submittedValues.state !== initialValues.state) {
-      patch.feature.addInstruction(patch.creators.setFeatureFlagState(submittedValues.state as FeatureState))
+    const patchFeatureUtils = PatchFeatureFlagUtils(submittedValues, initialValues)
+
+    if (patchFeatureUtils.hasFlagStateChanged()) {
+      patchFeatureUtils.updateFlagState()
     }
 
     if (submittedValues.onVariation !== initialValues.onVariation) {
-      patch.feature.addInstruction(patch.creators.updateDefaultServeByVariation(submittedValues.onVariation as string))
+      patchFeatureUtils.updateDefaultServe()
     }
 
     // for each variation, iterate and compare initial Targets/Target groups against the submitted Targets/Target groups and create instructions
     initialValues.formVariationMap.forEach((formVariation: FormVariationMap) => {
-      const intialTargetGroups: TargetGroup[] = formVariation.targetGroups
-
-      const submittedTargetGroups: TargetGroup[] =
-        submittedValues.formVariationMap.find(
-          variation => variation.variationIdentifier === formVariation.variationIdentifier
-        )?.targetGroups || []
-
-      const addedTargetGroups: TargetGroup[] = submittedTargetGroups.filter(
-        submittedTargetGroup =>
-          !intialTargetGroups
-            .map(intialTargetGroup => intialTargetGroup.identifier)
-            .includes(submittedTargetGroup.identifier)
-      )
-
+      const addedTargetGroups = patchFeatureUtils.addedTargetGroups(formVariation)
       if (addedTargetGroups.length) {
-        patch.feature.addAllInstructions(
-          addedTargetGroups.map(targetGroup =>
-            patch.creators.addRule({
-              uuid: uuid(),
-              priority: 100,
-              serve: {
-                variation: formVariation.variationIdentifier
-              },
-              clauses: [
-                {
-                  op: 'segmentMatch',
-                  values: [targetGroup.identifier]
-                }
-              ]
-            })
-          )
-        )
+        patchFeatureUtils.createAddTargetGroupInstructions(formVariation, addedTargetGroups)
       }
 
-      const removedTargetGroups: TargetGroup[] = intialTargetGroups.filter(
-        targetGroup =>
-          !submittedTargetGroups
-            .map(submittedTargetGroup => submittedTargetGroup.identifier)
-            .includes(targetGroup.identifier)
-      )
+      const removedTargetGroups = patchFeatureUtils.removedTargetGroups(formVariation)
       if (removedTargetGroups.length) {
-        patch.feature.addAllInstructions(
-          removedTargetGroups.map(targetGroup => patch.creators.removeRule(targetGroup.ruleId))
-        )
+        patchFeatureUtils.createRemoveTargetGroupsInstructions(removedTargetGroups)
       }
 
-      const intialTargetIds = formVariation.targets.map((target: TargetMap) => target.identifier)
-      const submittedTargetIds =
-        submittedValues.formVariationMap
-          .find(variation => variation.variationIdentifier === formVariation.variationIdentifier)
-          ?.targets.map((target: TargetMap) => target.identifier) || []
-
-      const addedTargetIds: string[] = submittedTargetIds.filter(id => !intialTargetIds.includes(id))
+      const addedTargetIds = patchFeatureUtils.addedTargets(formVariation)
       if (addedTargetIds.length) {
-        patch.feature.addInstruction(
-          patch.creators.addTargetsToVariationTargetMap(formVariation.variationIdentifier, addedTargetIds)
-        )
+        patchFeatureUtils.createAddTargetsInstructions(formVariation, addedTargetIds)
       }
 
-      const removedTargetIds: string[] = intialTargetIds.filter(id => !submittedTargetIds.includes(id))
+      const removedTargetIds = patchFeatureUtils.removedTargets(formVariation)
       if (removedTargetIds.length) {
-        patch.feature.addInstruction(
-          patch.creators.removeTargetsToVariationTargetMap(formVariation.variationIdentifier, removedTargetIds)
-        )
+        patchFeatureUtils.createRemoveTargetsInstructions(formVariation, removedTargetIds)
       }
     })
 
-    // Handle adding/removing/updating of percentage rollout
-    // percentage rollout added
-    if (!initialValues.variationPercentageRollout.isVisible && submittedValues.variationPercentageRollout.isVisible) {
-      patch.feature.addInstruction(
-        patch.creators.addRule({
-          uuid: uuid(),
-          priority: 102,
-          serve: {
-            distribution: {
-              bucketBy: submittedValues.variationPercentageRollout.bucketBy,
-              variations: submittedValues.variationPercentageRollout.variations
-            }
-          },
-          clauses: [
-            {
-              op: 'segmentMatch',
-              values: submittedValues.variationPercentageRollout.clauses[0].values
-            }
-          ]
-        })
-      )
-    } else if (
-      initialValues.variationPercentageRollout.isVisible &&
-      !submittedValues.variationPercentageRollout.isVisible
-    ) {
-      patch.feature.addInstruction(patch.creators.removeRule(submittedValues.variationPercentageRollout.ruleId))
-    } else if (!isEqual(initialValues.variationPercentageRollout, submittedValues.variationPercentageRollout)) {
-      patch.feature.addInstruction(
-        patch.creators.updateRuleVariation(submittedValues.variationPercentageRollout.ruleId, {
-          bucketBy: submittedValues.variationPercentageRollout.bucketBy,
-          variations: submittedValues.variationPercentageRollout.variations
-        })
-      )
+    // handle percentage rollout instructions
+    if (patchFeatureUtils.percentageRolloutAdded()) {
+      patchFeatureUtils.createAddPercentageRolloutInstructions()
+    } else if (patchFeatureUtils.percentageRolloutRemoved()) {
+      patchFeatureUtils.createRemovePercentageRolloutInstructions()
+    } else if (patchFeatureUtils.percentageRolloutUpdated()) {
+      patchFeatureUtils.createUpdatePercentageRolloutInstructions()
     }
 
+    // submit request
     patch.feature.onPatchAvailable(async data => {
       try {
         await patchFeature(data)

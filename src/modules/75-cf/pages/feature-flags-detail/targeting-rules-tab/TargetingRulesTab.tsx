@@ -9,6 +9,8 @@ import { Card, Container, Formik, FormikForm, Layout } from '@harness/uicore'
 import React, { ReactElement } from 'react'
 import { useParams } from 'react-router-dom'
 import { v4 as uuid } from 'uuid'
+import * as yup from 'yup'
+import { validateYupSchema, yupToFormErrors } from 'formik'
 import FlagToggleSwitch from '@cf/components/EditFlagTabs/FlagToggleSwitch'
 import {
   Feature,
@@ -25,7 +27,6 @@ import TargetingRulesTabFooter from './components/tab-targeting-footer/Targeting
 import FlagEnabledRulesCard from './components/flag-enabled-rules-card/FlagEnabledRulesCard'
 import type { FormVariationMap, VariationPercentageRollout, TargetGroup, TargetingRulesFormValues } from './Types'
 import css from './TargetingRulesTab.module.scss'
-
 export interface TargetingRulesTabProps {
   featureFlagData: Feature
   refetchFlag: () => Promise<unknown>
@@ -98,11 +99,53 @@ const TargetingRulesTab = ({
     formVariationMap,
     variationPercentageRollout: {
       variations: variationPercentageRollout?.serve.distribution?.variations || [],
-      bucketBy: variationPercentageRollout?.serve.distribution?.bucketBy as string,
+      bucketBy: variationPercentageRollout?.serve.distribution?.bucketBy || '',
       clauses: variationPercentageRollout?.clauses || [],
       ruleId: variationPercentageRollout?.ruleId || '',
       isVisible: !!variationPercentageRollout
     }
+  }
+
+  const validate = (values: TargetingRulesFormValues) => {
+    try {
+      validateYupSchema(
+        values,
+        yup.object().shape({
+          variationPercentageRollout: yup.object().shape({
+            clauses: yup.array().of(
+              yup.object().shape({
+                values: values.variationPercentageRollout.isVisible
+                  ? yup.array().of(yup.string().required('Please select a Target Group'))
+                  : yup.array().of(yup.string())
+              })
+            ),
+            variations: yup.array().of(
+              yup.object().shape({
+                weight: values.variationPercentageRollout.isVisible
+                  ? yup
+                      .number()
+                      .typeError('Value must be a number')
+                      .required('Please enter a value')
+                      .test('weight-sum-test', 'Values must add up to 100', () => {
+                        const totalWeight = values.variationPercentageRollout.variations
+                          .flatMap(x => x.weight)
+                          .reduce((previous, current) => previous + current, 0)
+
+                        return totalWeight == 100
+                      })
+                  : yup.number()
+              })
+            )
+          })
+        }),
+        true,
+        values
+      )
+    } catch (err) {
+      return yupToFormErrors(err) //for rendering validation errors
+    }
+
+    return {}
   }
 
   const { saveChanges, loading: patchFeatureLoading } = usePatchFeatureFlag({
@@ -120,6 +163,7 @@ const TargetingRulesTab = ({
       validateOnBlur={false}
       formName="targeting-rules-form"
       initialValues={initialValues}
+      validate={values => validate(values)}
       onSubmit={values => {
         saveChanges(values)
       }}
@@ -180,9 +224,18 @@ const TargetingRulesTab = ({
                     })
                   }}
                   addPercentageRollout={() => {
+                    // need to add with empty fields so the validation messages appear correctly
                     const percentageRollout: VariationPercentageRollout = {
                       bucketBy: 'identifier',
-                      clauses: [],
+                      clauses: [
+                        {
+                          attribute: '',
+                          id: '',
+                          negate: false,
+                          op: '',
+                          values: ['']
+                        }
+                      ],
                       variations: featureFlagData.variations.map(variation => ({
                         variation: variation.identifier,
                         weight: 0
@@ -192,13 +245,6 @@ const TargetingRulesTab = ({
                     }
                     formikProps.setFieldValue(`variationPercentageRollout`, percentageRollout)
                   }}
-                  // updatePercentageRollout={() => {
-                  //   const percentageRollout: VariationPercentageRollout = {
-                  //     ...(formikProps.values.variationPercentageRollout as VariationPercentageRollout),
-                  //     isVisible: true
-                  //   }
-                  //   formikProps.setFieldValue(`variationPercentageRollout`, percentageRollout)
-                  // }}
                   removePercentageRollout={() => {
                     const percentageRollout: VariationPercentageRollout = {
                       ...(formikProps.values.variationPercentageRollout as VariationPercentageRollout),

@@ -49,17 +49,6 @@ const FlagEnabledRulesCard = (props: FlagEnabledRulesCardProps): ReactElement =>
 
   const { getString } = useStrings()
 
-  // const firstMount = useRef(true)
-  // useLayoutEffect(() => {
-  //   if (firstMount.current) {
-  //     firstMount.current = false
-  //     return
-  //   }
-
-  //   console.log('mounted')
-  //   updatePercentageRollout()
-  // }, [variationPercentageRollout.bucketBy, variationPercentageRollout.variations, variationPercentageRollout.clauses])
-
   const addTargetingDropdownVariations = formVariationMap.filter(variation => !variation.isVisible)
 
   return (

@@ -322,7 +322,7 @@ describe('TargetingRulesTab', () => {
       expect(falseWeight).toHaveValue(55)
     })
 
-    test('it should render percentage rollout correctly when not present', async () => {
+    test('it should render percentage rollout correctly when added and not already present', async () => {
       renderComponent({
         featureFlagData: {
           ...mockFeature,
@@ -363,7 +363,7 @@ describe('TargetingRulesTab', () => {
       expect(screen.queryByText('cf.featureFlags.percentageRollout')).toBeInTheDocument()
     })
 
-    test('it should add percentage rollout correctly when not present', () => {
+    test('it should render percentage rollout correctly when not present', () => {
       renderComponent({
         featureFlagData: {
           ...mockFeature,
@@ -404,6 +404,59 @@ describe('TargetingRulesTab', () => {
       userEvent.click(screen.getByTestId('remove_percentage_rollout'))
 
       expect(screen.queryByText('cf.featureFlags.percentageRollout')).not.toBeInTheDocument()
+    })
+
+    test('it should not submit form if percentage rollout added but fields incorrect', async () => {
+      const saveChangesMock = jest.fn()
+
+      jest.spyOn(usePatchFeatureFlagMock, 'default').mockReturnValue({ saveChanges: saveChangesMock, loading: false })
+      renderComponent({
+        featureFlagData: {
+          ...mockFeature,
+          envProperties: {
+            defaultServe: { variation: 'false' },
+            environment: 'qatest',
+            modifiedAt: 1635333973373,
+            offVariation: 'false',
+            rules: [
+              {
+                clauses: [
+                  {
+                    attribute: '',
+                    id: 'd36b6624-c514-4b94-94c7-9f558324badf',
+                    negate: false,
+                    op: 'segmentMatch',
+                    values: ['randomID']
+                  }
+                ],
+                priority: 100,
+                ruleId: '9dec5abb-002e-45b3-b241-963ac5d9acde',
+                serve: { variation: 'false' }
+              }
+            ],
+            state: 'off',
+            variationMap: [],
+            version: 56
+          }
+        }
+      })
+
+      userEvent.click(screen.getByText('Add Targeting'))
+      const percentageRolloutOption = screen.getByTestId('variation_option_percentage_rollout')
+      await waitFor(() => expect(percentageRolloutOption).toBeInTheDocument())
+      userEvent.click(percentageRolloutOption)
+      expect(screen.queryByText('cf.featureFlags.percentageRollout')).toBeInTheDocument()
+
+      // click save
+      const saveButton = screen.getByText('save')
+      expect(saveButton).toBeInTheDocument()
+      userEvent.click(saveButton)
+
+      await waitFor(() => {
+        expect(screen.getAllByText('Values must add up to 100')).toHaveLength(2)
+        expect(screen.getByText('Please select a Target Group')).toBeInTheDocument()
+        expect(saveChangesMock).not.toBeCalled()
+      })
     })
   })
 
@@ -464,7 +517,6 @@ describe('TargetingRulesTab', () => {
       // click save
       const saveButton = screen.getByText('save')
       expect(saveButton).toBeInTheDocument()
-
       userEvent.click(saveButton)
       await waitFor(() => expect(saveChangesMock).toBeCalledWith(expectedFormValues))
     })

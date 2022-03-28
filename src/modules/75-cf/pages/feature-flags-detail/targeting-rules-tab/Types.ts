@@ -21,7 +21,7 @@ export interface TargetGroup {
 }
 
 export interface VariationPercentageRollout {
-  variations: WeightedVariation[] | []
+  variations: WeightedVariation[]
   bucketBy: string
   clauses: Clause[]
   ruleId: string
