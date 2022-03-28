@@ -45,7 +45,7 @@ export const PatchFeatureFlagUtils = (
     patch.feature.addInstruction(patch.creators.setFeatureFlagState(submittedValues.state as FeatureState))
 
   const createDefaultServeInstruction = (): void =>
-    patch.feature.addInstruction(patch.creators.updateDefaultServeByVariation(submittedValues.onVariation as string))
+    patch.feature.addInstruction(patch.creators.updateDefaultServeByVariation(submittedValues.onVariation))
 
   const addedTargetGroups = (formVariation: FormVariationMap): TargetGroup[] => {
     const intialTargetGroups: TargetGroup[] = formVariation.targetGroups
@@ -55,14 +55,12 @@ export const PatchFeatureFlagUtils = (
         variation => variation.variationIdentifier === formVariation.variationIdentifier
       )?.targetGroups || []
 
-    const added: TargetGroup[] = submittedTargetGroups.filter(
+    return submittedTargetGroups.filter(
       submittedTargetGroup =>
         !intialTargetGroups
           .map(intialTargetGroup => intialTargetGroup.identifier)
           .includes(submittedTargetGroup.identifier)
     )
-
-    return added
   }
 
   const removedTargetGroups = (formVariation: FormVariationMap): TargetGroup[] => {
@@ -86,9 +84,7 @@ export const PatchFeatureFlagUtils = (
         .find(variation => variation.variationIdentifier === formVariation.variationIdentifier)
         ?.targets.map((target: TargetMap) => target.identifier) || []
 
-    const addedTargetIds: string[] = submittedTargetIds.filter(id => !intialTargetIds.includes(id))
-
-    return addedTargetIds
+    return submittedTargetIds.filter(id => !intialTargetIds.includes(id))
   }
 
   const removedTargets = (formVariation: FormVariationMap): string[] => {
@@ -98,8 +94,7 @@ export const PatchFeatureFlagUtils = (
         .find(variation => variation.variationIdentifier === formVariation.variationIdentifier)
         ?.targets.map((target: TargetMap) => target.identifier) || []
 
-    const removedTargetIds: string[] = intialTargetIds.filter(id => !submittedTargetIds.includes(id))
-    return removedTargetIds
+    return intialTargetIds.filter(id => !submittedTargetIds.includes(id))
   }
 
   const percentageRolloutAdded = (): boolean =>

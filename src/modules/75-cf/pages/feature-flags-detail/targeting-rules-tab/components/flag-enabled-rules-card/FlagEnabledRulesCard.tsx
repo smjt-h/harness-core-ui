@@ -96,7 +96,7 @@ const FlagEnabledRulesCard = (props: FlagEnabledRulesCardProps): ReactElement =>
 
               <PercentageRollout
                 targetGroups={segments}
-                bucketByAttributes={[variationPercentageRollout.bucketBy as string]}
+                bucketByAttributes={[variationPercentageRollout.bucketBy]}
                 variations={featureFlagVariations}
                 fieldValues={variationPercentageRollout}
                 prefix={(fieldName: string) => `variationPercentageRollout.${fieldName}`}
