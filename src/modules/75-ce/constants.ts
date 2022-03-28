@@ -164,3 +164,21 @@ export const allCloudProvidersList = [
     value: 'gcp'
   }
 ]
+
+export const notificationChannelsList = [
+  {
+    label: 'Slack webhook url',
+    value: 'SLACK',
+    icon: { name: 'service-slack' }
+  },
+  {
+    label: 'Email',
+    value: 'EMAIL',
+    icon: { name: 'email-inline' }
+  },
+  {
+    label: 'Microsoft Teams',
+    value: 'MICROSOFT_TEAMS',
+    icon: { name: 'service-msteams' }
+  }
+]

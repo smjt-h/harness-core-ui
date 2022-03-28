@@ -5,68 +5,157 @@
  * https://polyformproject.org/wp-content/uploads/2020/06/PolyForm-Shield-1.0.0.txt.
  */
 
-import React, { useState } from 'react'
-import { Button, ButtonVariation, Color, Container, Icon, Layout, TableV2, Text } from '@harness/uicore'
+import React, { useEffect, useState } from 'react'
+import {
+  Button,
+  ButtonVariation,
+  Color,
+  Container,
+  getErrorInfoFromErrorObject,
+  Icon,
+  IconName,
+  Layout,
+  Text,
+  useToaster
+} from '@harness/uicore'
 
 import cx from 'classnames'
-import type { Column } from 'react-table'
+import type { Column, CellProps, Renderer } from 'react-table'
+import { useParams } from 'react-router-dom'
 import { useStrings } from 'framework/strings'
+import {
+  CCMNotificationSetting,
+  CCMPerspectiveNotificationChannelsDTO,
+  useDeleteNotificationSettings,
+  useListNotificationSettings
+} from 'services/ce'
+import type { AccountPathProps } from '@common/interfaces/RouteInterfaces'
 import useAnomaliesAlertDialog from '../AnomaliesAlert/AnomaliesAlertDialog'
+import Table from '../PerspectiveReportsAndBudget/Table'
 import css from './AnomaliesSettings.module.scss'
-
-interface AlertData {
-  age: number
-  name: string
-}
-
-const alertList = [
-  {
-    age: 20,
-    name: 'User 1'
-  },
-  {
-    age: 25,
-    name: 'User 2'
-  },
-  {
-    age: 25,
-    name: 'User 3'
-  },
-  {
-    age: 25,
-    name: 'User 4'
-  }
-]
 
 const AlertsSection = () => {
   const { getString } = useStrings()
-  const { openAnomaliesAlertModal } = useAnomaliesAlertDialog()
+  const { showError, showSuccess } = useToaster()
+  const { accountId } = useParams<AccountPathProps>()
+  const [isRefetching, setRefetchingState] = useState(false)
+  const [selectedAlert, setSelectedAlert] = useState(null)
+  const { openAnomaliesAlertModal } = useAnomaliesAlertDialog({
+    setRefetchingState: setRefetchingState,
+    selectedAlert: selectedAlert
+  })
 
-  const actionCell = () => {
+  const {
+    data: notificationsList,
+    loading,
+    refetch: fetchNotificationList
+  } = useListNotificationSettings({
+    queryParams: {
+      accountIdentifier: accountId
+    }
+  })
+
+  const { mutate: deleteNotificationAlert } = useDeleteNotificationSettings({
+    queryParams: {
+      accountIdentifier: accountId,
+      perspectiveId: ''
+    }
+  })
+
+  useEffect(() => {
+    if (isRefetching) {
+      fetchNotificationList()
+      setRefetchingState(false)
+    }
+  }, [fetchNotificationList, isRefetching])
+
+  useEffect(() => {
+    if (selectedAlert) {
+      openAnomaliesAlertModal()
+    }
+  }, [openAnomaliesAlertModal, selectedAlert])
+
+  const channelImgMap = {
+    SLACK: 'service-slack',
+    EMAIL: 'email-inline',
+    MICROSOFT_TEAMS: 'service-msteams',
+    DEFAULT: ''
+  }
+
+  const alertData = notificationsList?.data || []
+
+  const deleteNotification = async (perspectiveId: string) => {
+    try {
+      const response = await deleteNotificationAlert(void 0, {
+        queryParams: {
+          accountIdentifier: accountId,
+          perspectiveId: perspectiveId
+        },
+        headers: {
+          'content-type': 'application/json'
+        }
+      })
+      setRefetchingState(true)
+      response && showSuccess(getString('ce.anomalyDetection.notificationAlerts.deleteAlertSuccessMsg'))
+    } catch (error) {
+      showError(getErrorInfoFromErrorObject(error))
+    }
+  }
+
+  const onEdit = (notificationData: any) => {
+    setSelectedAlert(notificationData)
+  }
+
+  const actionCell: Renderer<CellProps<CCMNotificationSetting>> = ({ row }) => {
+    const perspectiveId = row.original.perspectiveId || ''
+
     return (
       <Layout.Horizontal spacing="medium">
-        <Icon name="Edit" size={16} color={Color.PRIMARY_6} />
-        <Icon name="bin-main" size={16} color={Color.PRIMARY_6} />
+        <Icon name="Edit" size={16} color={Color.PRIMARY_6} onClick={() => onEdit(row.original)} />
+        <Icon name="main-trash" size={16} color={Color.PRIMARY_6} onClick={() => deleteNotification(perspectiveId)} />
       </Layout.Horizontal>
     )
   }
 
-  const columns: Column<AlertData>[] = React.useMemo(
+  const ChannelsCell: Renderer<CellProps<CCMNotificationSetting>> = ({ row }) => {
+    const channelsList = row.original.channels || []
+
+    // TODO: Need the check the styling
+    return (
+      <Layout.Vertical spacing="medium">
+        {channelsList.map((channel, index) => {
+          const channelType = channel?.notificationChannelType || 'DEFAULT'
+          const channelCount = channel.channelUrls?.length || 0
+
+          return (
+            <Layout.Horizontal spacing="small" key={index}>
+              <Icon name={channelImgMap[channelType] as IconName} size={16} />
+              <Text>{channel?.channelUrls?.[0]}</Text>
+              {/* TODO: Need to implement the on hover implementation */}
+              {channelCount > 1 ? <Text>{`(+${channelCount - 1})`}</Text> : null}
+            </Layout.Horizontal>
+          )
+        })}
+      </Layout.Vertical>
+    )
+  }
+
+  const columns: Column<CCMPerspectiveNotificationChannelsDTO>[] = React.useMemo(
     () => [
       {
         Header: getString('ce.anomalyDetection.settings.perspectiveNameColumn'),
-        accessor: 'name',
-        width: '45%'
+        accessor: 'perspectiveName',
+        width: '42%'
       },
       {
         Header: getString('ce.anomalyDetection.tableHeaders.details'),
-        accessor: 'age',
-        width: '50%'
+        width: '50%',
+        Cell: ChannelsCell
       },
       {
         Header: ' ',
         Cell: actionCell,
-        width: '5%'
+        width: '8%'
       }
     ],
     []
@@ -91,13 +180,11 @@ const AlertsSection = () => {
         onClick={() => openAnomaliesAlertModal()}
         variation={ButtonVariation.PRIMARY}
       />
-      <TableV2
-        className={css.tableView}
-        minimal={true}
-        // Need to replace with useMemo
-        columns={columns}
-        data={alertList}
-      />
+      {!loading && alertData.length ? (
+        <Container className={css.tableView}>
+          <Table<CCMPerspectiveNotificationChannelsDTO> columns={columns} data={alertData} />
+        </Container>
+      ) : null}
     </Container>
   )
 }

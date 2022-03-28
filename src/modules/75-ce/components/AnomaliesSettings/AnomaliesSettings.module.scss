@@ -14,7 +14,7 @@
 }
 
 .settingsContent {
-  flex: 1.5;
+  flex: 2;
 }
 
 .tabContent {
@@ -47,11 +47,7 @@
 }
 
 .tableView {
-  width: 100%;
-  margin-top: var(--spacing-large);
-  border: 0.5px solid #d9dae6;
-  border-radius: 4px;
-  height: auto !important;
+  margin-top: var(--spacing-large) !important;
 }
 
 .resourceSearchWrapper {

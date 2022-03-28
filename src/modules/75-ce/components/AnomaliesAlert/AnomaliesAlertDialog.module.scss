@@ -35,20 +35,11 @@
   margin-bottom: var(--spacing-medium) !important;
 }
 
-.channelUrlInputWrapper {
-  display: flex;
-}
-
-.urlSelection {
-  width: 68px;
-  border-top-right-radius: 0px;
-  border-bottom-right-radius: 0px;
-  background-color: var(--primary-1);
+.channelSelection {
+  margin-bottom: 0px !important;
 }
 
 .urlInput {
-  border-top-left-radius: 0px;
-  border-bottom-left-radius: 0px;
   margin-bottom: 0px !important;
   width: 321px;
 }

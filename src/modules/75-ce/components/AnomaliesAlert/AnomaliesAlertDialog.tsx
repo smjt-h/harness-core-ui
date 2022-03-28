@@ -11,21 +11,27 @@ import {
   Layout,
   StepWizard,
   StepProps,
-  DropDown,
   Color,
   FontVariation,
   Text,
   ButtonVariation,
   Button,
   Icon,
-  TextInput,
   Formik,
-  FormikForm
+  FormikForm,
+  FormInput,
+  SelectOption,
+  useToaster,
+  getErrorInfoFromErrorObject
 } from '@harness/uicore'
 import { useModalHook } from '@harness/use-modal'
 import { FieldArray, FormikProps } from 'formik'
+import { useParams } from 'react-router-dom'
 import { useStrings } from 'framework/strings'
-import { allCloudProvidersList } from '@ce/constants'
+import { QlceView, useFetchPerspectiveListQuery } from 'services/ce/services'
+import { notificationChannelsList } from '@ce/constants'
+import type { AccountPathProps } from '@common/interfaces/RouteInterfaces'
+import { useCreateNotificationSetting, useUpdateNotificationSetting } from 'services/ce'
 import css from './AnomaliesAlertDialog.module.scss'
 
 const modalPropsLight: IDialogProps = {
@@ -59,6 +65,7 @@ interface StepData {
 interface AlertsOverviewProps {
   name: string | JSX.Element
   onClose: any
+  items: any
 }
 
 interface NotificationChannelProps {
@@ -78,18 +85,12 @@ const AlertOverview: React.FC<StepProps<StepData> & AlertsOverviewProps> = props
           {props.name}
         </Text>
         <div>
-          <Text color={Color.GREY_500} font={{ variation: FontVariation.SMALL }} margin={{ bottom: 'small' }}>
-            {getString('ce.anomalyDetection.notificationAlerts.selectPerspectiveLabel')}
-          </Text>
-          <DropDown
-            placeholder={getString('ce.anomalyDetection.notificationAlerts.selectPerspective')}
-            filterable={false}
-            addClearBtn={true}
-            items={allCloudProvidersList}
+          <FormInput.Select
+            items={props.items}
             className={css.perspectiveSelection}
-            onChange={() => {
-              // TODO: Need to be implemented
-            }}
+            name={'perspective'}
+            label={getString('ce.anomalyDetection.notificationAlerts.selectPerspectiveLabel')}
+            placeholder={getString('ce.anomalyDetection.notificationAlerts.selectPerspective')}
           />
         </div>
       </Layout.Vertical>
@@ -129,35 +130,21 @@ const NotificationMethod: React.FC<StepProps<StepData> & NotificationChannelProp
 
             return (
               <div>
-                {notificationList.map((notificationData, index) => (
+                {notificationList.map((_, index) => (
                   <Layout.Horizontal key={index} spacing="xlarge" className={css.addAlertChannel}>
-                    <DropDown
-                      filterable={false}
-                      onChange={() => {
-                        // TODO: Need to be implemented
-                      }}
-                      addClearBtn={true}
-                      value={notificationData.channelName}
+                    <FormInput.Select
+                      items={notificationChannelsList as SelectOption[]}
+                      key={`channelName_${index}`}
+                      name={`alertList.${index}.channelName`}
+                      className={css.channelSelection}
                       placeholder={getString('ce.anomalyDetection.notificationAlerts.selectChannelPlaceholder')}
-                      items={[]}
                     />
-                    <div className={css.channelUrlInputWrapper}>
-                      <DropDown
-                        filterable={false}
-                        onChange={() => {
-                          // TODO: Need to be implemented
-                        }}
-                        addClearBtn={true}
-                        value={notificationData.channelUrl}
-                        className={css.urlSelection}
-                        placeholder={getString('ce.anomalyDetection.notificationAlerts.selectMethod')}
-                        items={[]}
-                      />
-                      <TextInput
-                        placeholder={getString('ce.anomalyDetection.notificationAlerts.urlInputPlaceholder')}
-                        wrapperClassName={css.urlInput}
-                      />
-                    </div>
+                    <FormInput.Text
+                      name={`alertList.${index}.channelUrl`}
+                      key={`channelUrl_${index}`}
+                      placeholder={getString('ce.anomalyDetection.notificationAlerts.urlInputPlaceholder')}
+                      className={css.urlInput}
+                    />
                   </Layout.Horizontal>
                 ))}
                 <Button
@@ -194,21 +181,43 @@ const NotificationMethod: React.FC<StepProps<StepData> & NotificationChannelProp
 interface AlertDialogProps {
   hideAnomaliesAlertModal: any
   handleSubmit: any
+  notificationData: any
 }
 
-export const AnomalyAlertDialog: React.FC<AlertDialogProps> = ({ hideAnomaliesAlertModal, handleSubmit }) => {
+export const AnomalyAlertDialog: React.FC<AlertDialogProps> = ({
+  hideAnomaliesAlertModal,
+  handleSubmit,
+  notificationData
+}) => {
   const { getString } = useStrings()
+
+  const [{ data: perspectiveData }] = useFetchPerspectiveListQuery()
+
+  const perspectiveList = (perspectiveData?.perspectives?.customerViews || []) as QlceView[]
+
+  const items = perspectiveList.map(pName => ({
+    label: pName.name as string,
+    value: pName.id as string
+  }))
+
+  const channelsData =
+    notificationData?.channels.map((item: any) => {
+      return {
+        channelName: item.notificationChannelType,
+        channelUrl: item.channelUrls[0]
+      }
+    }) || []
 
   return (
     <Dialog onClose={hideAnomaliesAlertModal} {...modalPropsLight} canOutsideClickClose={true}>
       <Formik
-        onSubmit={handleSubmit}
+        onSubmit={data => handleSubmit(data)}
         formName={'createNotificationAlert'}
         initialValues={{
-          perspective: '',
+          perspective: notificationData?.perspectiveId || '',
           channelName: '',
           channelUrl: '',
-          alertList: []
+          alertList: channelsData || []
         }}
         render={formikProps => {
           return (
@@ -225,6 +234,7 @@ export const AnomalyAlertDialog: React.FC<AlertDialogProps> = ({ hideAnomaliesAl
                 <AlertOverview
                   name={getString('ce.anomalyDetection.notificationAlerts.overviewStep')}
                   onClose={hideAnomaliesAlertModal}
+                  items={items}
                 />
                 <NotificationMethod
                   name={getString('ce.anomalyDetection.notificationAlerts.notificationStep')}
@@ -240,14 +250,88 @@ export const AnomalyAlertDialog: React.FC<AlertDialogProps> = ({ hideAnomaliesAl
   )
 }
 
-const useAnomaliesAlertDialog = () => {
-  const handleSubmit = () => {
-    // TODO: Need to implement the values handling
+const mapping = {
+  SLACK: 'slackWebHookUrl',
+  EMAIL: 'emails',
+  MICROSOFT_TEAMS: 'microsoftTeamsUrl'
+}
+
+interface AnomalyAlertDialogProps {
+  setRefetchingState: React.Dispatch<React.SetStateAction<boolean>>
+  selectedAlert: any
+}
+
+const useAnomaliesAlertDialog = (props: AnomalyAlertDialogProps) => {
+  const { accountId } = useParams<AccountPathProps>()
+  const { showError, showSuccess } = useToaster()
+  const { getString } = useStrings()
+
+  const { mutate: createNotificationAlert } = useCreateNotificationSetting({
+    queryParams: {
+      accountIdentifier: accountId,
+      perspectiveId: ''
+    }
+  })
+
+  const { mutate: updateNotificationAlert } = useUpdateNotificationSetting({
+    queryParams: {
+      accountIdentifier: accountId,
+      perspectiveId: ''
+    }
+  })
+
+  const handleSubmit = async (data: any) => {
+    const payload = data.alertList.map((item: any) => {
+      const channel = item.channelName
+
+      if (channel === 'EMAIL') {
+        return {
+          type: channel,
+          [mapping[channel as keyof typeof mapping]]: [item.channelUrl]
+        }
+      }
+      return {
+        type: channel,
+        [mapping[channel as keyof typeof mapping]]: item.channelUrl
+      }
+    })
+
+    const queryParams = {
+      perspectiveId: data.perspective,
+      accountIdentifier: accountId
+    }
+
+    try {
+      let response
+      if (props.selectedAlert && props.selectedAlert.channels.length) {
+        response = await updateNotificationAlert({ channels: payload }, { queryParams })
+      } else {
+        response = await createNotificationAlert({ channels: payload }, { queryParams })
+      }
+
+      hideAnomaliesAlertModal()
+      props.setRefetchingState(true)
+      if (response) {
+        if (props.selectedAlert && props.selectedAlert.channels.length) {
+          showSuccess(getString('ce.anomalyDetection.notificationAlerts.updateAlertSuccessMsg'))
+        } else {
+          showSuccess(getString('ce.anomalyDetection.notificationAlerts.addAlertSuccessMsg'))
+        }
+      }
+    } catch (error) {
+      showError(getErrorInfoFromErrorObject(error))
+    }
   }
 
   const [createAnomaliesAlertModal, hideAnomaliesAlertModal] = useModalHook(
-    () => <AnomalyAlertDialog hideAnomaliesAlertModal={hideAnomaliesAlertModal} handleSubmit={handleSubmit} />,
-    []
+    () => (
+      <AnomalyAlertDialog
+        hideAnomaliesAlertModal={hideAnomaliesAlertModal}
+        handleSubmit={handleSubmit}
+        notificationData={props.selectedAlert}
+      />
+    ),
+    [props.selectedAlert]
   )
   return {
     openAnomaliesAlertModal: createAnomaliesAlertModal

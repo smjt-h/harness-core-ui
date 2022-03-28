@@ -3399,14 +3399,18 @@ export interface StringsMap {
   'ce.allRegions': string
   'ce.anomalyDetection.addAnoamlyAlertDesc': string
   'ce.anomalyDetection.addNewAnomalyAlert': string
+  'ce.anomalyDetection.alertReciepients': string
+  'ce.anomalyDetection.alertType': string
   'ce.anomalyDetection.createNewAnomalyAlert': string
   'ce.anomalyDetection.filters.groupByCloudProvidersPlaceholder': string
   'ce.anomalyDetection.filters.groupByNoneLabel': string
   'ce.anomalyDetection.filters.groupByNonePlaceholder': string
   'ce.anomalyDetection.filters.groupByNoneValue': string
   'ce.anomalyDetection.filters.groupByPerspectivePlaceholder': string
+  'ce.anomalyDetection.notificationAlerts.addAlertSuccessMsg': string
   'ce.anomalyDetection.notificationAlerts.addChannelBtn': string
   'ce.anomalyDetection.notificationAlerts.alertChannelHeading': string
+  'ce.anomalyDetection.notificationAlerts.deleteAlertSuccessMsg': string
   'ce.anomalyDetection.notificationAlerts.heading': string
   'ce.anomalyDetection.notificationAlerts.notificationStep': string
   'ce.anomalyDetection.notificationAlerts.notificationStepSubtext': string
@@ -3415,6 +3419,7 @@ export interface StringsMap {
   'ce.anomalyDetection.notificationAlerts.selectMethod': string
   'ce.anomalyDetection.notificationAlerts.selectPerspective': string
   'ce.anomalyDetection.notificationAlerts.selectPerspectiveLabel': string
+  'ce.anomalyDetection.notificationAlerts.updateAlertSuccessMsg': string
   'ce.anomalyDetection.notificationAlerts.urlInputPlaceholder': string
   'ce.anomalyDetection.perspectiveCreateAnomalyAlertTitle': string
   'ce.anomalyDetection.settings.heading': string

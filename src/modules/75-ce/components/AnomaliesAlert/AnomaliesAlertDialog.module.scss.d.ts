@@ -11,11 +11,10 @@ declare const styles: {
   readonly addAlertChannel: string
   readonly addChannelBtn: string
   readonly addChannelWrapper: string
-  readonly channelUrlInputWrapper: string
+  readonly channelSelection: string
   readonly closeBtn: string
   readonly perspectiveSelection: string
   readonly stepWizard: string
   readonly urlInput: string
-  readonly urlSelection: string
 }
 export default styles

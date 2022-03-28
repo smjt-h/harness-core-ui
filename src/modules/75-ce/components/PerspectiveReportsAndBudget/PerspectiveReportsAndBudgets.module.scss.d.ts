@@ -7,6 +7,8 @@
  **/
 // this is an auto-generated file, do not update this manually
 declare const styles: {
+  readonly anomalyAlertsActionBtn: string
+  readonly anomalyAlertsWrapper: string
   readonly createBtn: string
   readonly icon: string
   readonly innerContainer: string
