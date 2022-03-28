@@ -172,7 +172,7 @@ const TargetingRulesTab = ({
     <Formik
       enableReinitialize={true}
       validateOnChange={false}
-      validateOnBlur={true}
+      validateOnBlur={false}
       formName="targeting-rules-form"
       initialValues={initialValues}
       validate={values => validate(values)}
