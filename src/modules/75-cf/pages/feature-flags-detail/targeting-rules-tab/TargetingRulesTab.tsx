@@ -139,7 +139,7 @@ const TargetingRulesTab = ({
                           .flatMap(x => x.weight)
                           .reduce((previous, current) => previous + current, 0)
 
-                        return totalWeight == 100
+                        return totalWeight === 100
                       })
                   : yup.number()
               })
