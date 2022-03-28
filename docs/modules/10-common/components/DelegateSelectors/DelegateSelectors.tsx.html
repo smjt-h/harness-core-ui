@@ -23,16 +23,16 @@
         <div class='clearfix'>
             
             <div class='fl pad1y space-right2'>
-                <span class="strong">82.14% </span>
+                <span class="strong">82.46% </span>
                 <span class="quiet">Statements</span>
-                <span class='fraction'>46/56</span>
+                <span class='fraction'>47/57</span>
             </div>
         
             
             <div class='fl pad1y space-right2'>
-                <span class="strong">66.67% </span>
+                <span class="strong">67.44% </span>
                 <span class="quiet">Branches</span>
-                <span class='fraction'>28/42</span>
+                <span class='fraction'>29/43</span>
             </div>
         
             
@@ -44,9 +44,9 @@
         
             
             <div class='fl pad1y space-right2'>
-                <span class="strong">83.33% </span>
+                <span class="strong">83.64% </span>
                 <span class="quiet">Lines</span>
-                <span class='fraction'>45/54</span>
+                <span class='fraction'>46/55</span>
             </div>
         
             
@@ -208,13 +208,25 @@
 <a name='L149'></a><a href='#L149'>149</a>
 <a name='L150'></a><a href='#L150'>150</a>
 <a name='L151'></a><a href='#L151'>151</a>
-<a name='L152'></a><a href='#L152'>152</a></td><td class="line-coverage quiet"><span class="cline-any cline-neutral">&nbsp;</span>
+<a name='L152'></a><a href='#L152'>152</a>
+<a name='L153'></a><a href='#L153'>153</a>
+<a name='L154'></a><a href='#L154'>154</a>
+<a name='L155'></a><a href='#L155'>155</a>
+<a name='L156'></a><a href='#L156'>156</a>
+<a name='L157'></a><a href='#L157'>157</a>
+<a name='L158'></a><a href='#L158'>158</a>
+<a name='L159'></a><a href='#L159'>159</a>
+<a name='L160'></a><a href='#L160'>160</a>
+<a name='L161'></a><a href='#L161'>161</a>
+<a name='L162'></a><a href='#L162'>162</a>
+<a name='L163'></a><a href='#L163'>163</a></td><td class="line-coverage quiet"><span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">473x</span>
 <span class="cline-any cline-yes">473x</span>
 <span class="cline-any cline-yes">473x</span>
 <span class="cline-any cline-yes">473x</span>
@@ -240,6 +252,7 @@
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-yes">1x</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
@@ -252,6 +265,14 @@
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-yes">473x</span>
 <span class="cline-any cline-yes">46x</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-yes">46x</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-yes">46x</span>
@@ -291,6 +312,7 @@
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-yes">46x</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
@@ -369,6 +391,7 @@
 import React, { useEffect, useState } from 'react'
 import { useParams } from 'react-router-dom'
 import cx from 'classnames'
+import { noop } from 'lodash-es'
 import { SimpleTagInput, Text, Icon } from '@wings-software/uicore'
 import { Color } from '@harness/design-system'
 import { useToaster } from '@common/exports'
@@ -399,11 +422,20 @@ export interface DelegateSelectorsProps
   placeholder?: string
   pollingInterval?: number
   wrapperClassName?: string
+  onTagInputChange?: (tags: string[]) =&gt; void
 }
 &nbsp;
 export const DelegateSelectors = (props: DelegateSelectorsProps): React.ReactElement | null =&gt; {
   const { accountId } = useParams&lt;AccountPathProps&gt;()
-  const { orgIdentifier, projectIdentifier, pollingInterval = null, wrapperClassName, placeholder, ...rest } = props
+  const {
+    orgIdentifier,
+    projectIdentifier,
+    pollingInterval = null,
+    onTagInputChange = noop,
+    wrapperClassName,
+    placeholder,
+    ...rest
+  } = props
 &nbsp;
   const { getString } = useStrings()
   const { showError } = useToaster()
@@ -458,6 +490,7 @@ export const DelegateSelectors = (props: DelegateSelectorsProps): React.ReactEle
             className: css.delegatePopover
           }}
           items={data?.resource || []}
+          onChange={onTagInputChange}
           {...rest}
           allowNewTag
           getTagProps={(value, _index, _selectedItems, createdItems, items) =&gt; {
@@ -517,7 +550,7 @@ export default DelegateSelectors
             <div class='footer quiet pad2 space-top1 center small'>
                 Code coverage generated by
                 <a href="https://istanbul.js.org/" target="_blank">istanbul</a>
-                at Sun Mar 27 2022 05:07:05 GMT+0000 (Greenwich Mean Time)
+                at Mon Mar 28 2022 06:32:15 GMT+0000 (Greenwich Mean Time)
             </div>
         </div>
         <script src="../../../../prettify.js"></script>
