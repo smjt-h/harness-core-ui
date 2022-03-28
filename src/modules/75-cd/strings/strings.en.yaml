@@ -13,7 +13,7 @@ steps:
     releaseNamePlaceholder: Enter Release Name
   serverless:
     regionPlaceholder: Specify a region
-    stagePlaceholder: Specify a space
+    stagePlaceholder: Specify a stage
   kubernetesGcpStep:
     stepName: Specify your GCP Connector
 folderPath: Folder Path

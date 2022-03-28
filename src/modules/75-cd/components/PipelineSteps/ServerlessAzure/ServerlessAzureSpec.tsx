@@ -29,7 +29,7 @@ import { StepViewType, StepProps, ValidateInputSetProps } from '@pipeline/compon
 import { ConfigureOptions } from '@common/components/ConfigureOptions/ConfigureOptions'
 import { useVariablesExpression } from '@pipeline/components/PipelineStudio/PiplineHooks/useVariablesExpression'
 
-import { getConnectorListV2Promise, ServerlessAzureInfrastructure } from 'services/cd-ng'
+import { getConnectorListV2Promise } from 'services/cd-ng'
 import { FormMultiTypeConnectorField } from '@connectors/components/ConnectorReferenceField/FormMultiTypeConnectorField'
 
 import { getIconByType } from '@connectors/pages/connectors/utils/ConnectorUtils'
@@ -49,6 +49,7 @@ import { useQueryParams } from '@common/hooks'
 import { StageErrorContext } from '@pipeline/context/StageErrorContext'
 import { DeployTabs } from '@cd/components/PipelineStudio/DeployStageSetupShell/DeployStageSetupShellUtils'
 import { getConnectorName, getConnectorValue } from '@pipeline/components/PipelineSteps/Steps/StepsHelper'
+import type { ServerlessAzureInfrastructure } from '@pipeline/utils/stageHelpers'
 import { getConnectorSchema } from '../PipelineStepsUtil'
 import stepCss from '@pipeline/components/PipelineSteps/Steps/Steps.module.scss'
 import css from './ServerlessAzure.module.scss'

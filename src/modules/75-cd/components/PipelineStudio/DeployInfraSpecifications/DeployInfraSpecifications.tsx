@@ -18,7 +18,6 @@ import {
   K8sGcpInfrastructure,
   PipelineInfrastructure,
   ServerlessAwsLambdaInfrastructure,
-  ServerlessGCPInfrastructure,
   StageElementConfig
 } from 'services/cd-ng'
 import StringWithTooltip from '@common/components/StringWithTooltip/StringWithTooltip'
@@ -40,7 +39,8 @@ import {
   getDeploymentType,
   isServerlessDeploymentType,
   StageType,
-  detailsHeaderName
+  detailsHeaderName,
+  ServerlessGCPInfrastructure
 } from '@pipeline/utils/stageHelpers'
 import { InfraDeploymentType } from '@cd/components/PipelineSteps/PipelineStepsUtil'
 import type { ServerlessAwsLambdaSpec } from '@cd/components/PipelineSteps/ServerlessAWSLambda/ServerlessAwsLambdaSpec'
@@ -328,7 +328,7 @@ export default function DeployInfraSpecifications(props: React.PropsWithChildren
         return {
           connectorRef,
           region,
-          infraStage
+          stage: infraStage
         }
       }
       case InfraDeploymentType.ServerlessAzureFunctions: {
@@ -337,7 +337,7 @@ export default function DeployInfraSpecifications(props: React.PropsWithChildren
 
         return {
           connectorRef,
-          infraStage
+          stage: infraStage
         }
       }
       case InfraDeploymentType.ServerlessGoogleFunctions: {
@@ -346,7 +346,7 @@ export default function DeployInfraSpecifications(props: React.PropsWithChildren
 
         return {
           connectorRef,
-          infraStage
+          stage: infraStage
         }
       }
       default: {

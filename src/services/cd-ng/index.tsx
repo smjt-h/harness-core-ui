@@ -8199,18 +8199,6 @@ export type ServerlessAwsLambdaInfrastructure = Infrastructure & {
   stage: string
 }
 
-export type ServerlessGCPInfrastructure = Infrastructure & {
-  connectorRef: string
-  metadata?: string
-  stage: string
-}
-
-export type ServerlessAzureInfrastructure = Infrastructure & {
-  connectorRef: string
-  metadata?: string
-  stage: string
-}
-
 export type ServerlessAwsLambdaManifest = ManifestAttributes & {
   configOverridePath?: string
   metadata?: string

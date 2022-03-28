@@ -57,30 +57,20 @@ export default function SeelectInfrastructureType(props: SeelectInfrastructureTy
               label: getString('pipelineSteps.deploymentTypes.aws'),
               icon: 'service-aws',
               value: InfraDeploymentType.ServerlessAwsLambda
-            }
-          ]
-        },
-        {
-          groupLabel: '',
-          items: [
+            },
             {
               label: getString('pipelineSteps.deploymentTypes.gcp'),
               icon: 'gcp',
-              value: InfraDeploymentType.ServerlessGoogleFunctions
-            }
-          ],
-          disabled: true
-        },
-        {
-          groupLabel: '',
-          items: [
+              value: InfraDeploymentType.ServerlessGoogleFunctions,
+              disabled: true
+            },
             {
               label: getString('pipelineSteps.deploymentTypes.azure'),
               icon: 'service-azure',
-              value: InfraDeploymentType.ServerlessAzureFunctions
+              value: InfraDeploymentType.ServerlessAzureFunctions,
+              disabled: true
             }
-          ],
-          disabled: true
+          ]
         }
       ]
     : [

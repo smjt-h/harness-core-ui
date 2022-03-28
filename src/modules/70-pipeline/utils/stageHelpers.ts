@@ -9,7 +9,12 @@ import { defaultTo, get, isEmpty } from 'lodash-es'
 import { getMultiTypeFromValue, MultiTypeInputType } from '@wings-software/uicore'
 import type { GraphLayoutNode, PipelineExecutionSummary } from 'services/pipeline-ng'
 import type { StringKeys } from 'framework/strings'
-import type { GetExecutionStrategyYamlQueryParams, PipelineInfoConfig, StageElementConfig } from 'services/cd-ng'
+import type {
+  Infrastructure,
+  GetExecutionStrategyYamlQueryParams,
+  PipelineInfoConfig,
+  StageElementConfig
+} from 'services/cd-ng'
 import { ManifestDataType } from '@pipeline/components/ManifestSelection/Manifesthelper'
 import type { ManifestTypes } from '@pipeline/components/ManifestSelection/ManifestInterface'
 import type { InputSetDTO } from './types'
@@ -41,6 +46,18 @@ export enum ServiceDeploymentType {
   ServerlessGoogleFunctions = 'ServerlessGoogleFunctions',
   AmazonSAM = 'AwsSAM',
   AzureFunctions = 'AzureFunctions'
+}
+
+export type ServerlessGCPInfrastructure = Infrastructure & {
+  connectorRef: string
+  metadata?: string
+  stage: string
+}
+
+export type ServerlessAzureInfrastructure = Infrastructure & {
+  connectorRef: string
+  metadata?: string
+  stage: string
 }
 
 export const changeEmptyValuesToRunTimeInput = (inputset: any, propertyKey: string): InputSetDTO => {
