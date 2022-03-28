@@ -143,6 +143,7 @@ describe('PipelineCreate test', () => {
         name: 'pipeline'
       },
       undefined,
+      undefined,
       undefined
     )
     const closeBtn = getByText('cancel')
@@ -211,6 +212,7 @@ describe('PipelineCreate test', () => {
         repoIdentifier: 'identifier',
         branch: 'branch'
       },
+      undefined,
       undefined
     )
   })
