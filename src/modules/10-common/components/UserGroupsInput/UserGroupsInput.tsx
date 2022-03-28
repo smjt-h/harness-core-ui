@@ -80,9 +80,11 @@ const UserGroupsInput: React.FC<FormikUserGroupsInput> = props => {
   useEffect(() => {
     if (userGroupsReference && userGroupsReference.length) {
       setUserGroupsScopeAndIndentifier(
-        userGroupsReference.map(el => {
-          return { scope: getScopeFromValue(el), identifier: getIdentifierFromValue(el) }
-        })
+        userGroupsReference
+          .filter(userGroupStr => !!userGroupStr)
+          .map(el => {
+            return { scope: getScopeFromValue(el), identifier: getIdentifierFromValue(el) }
+          })
       )
     }
   }, [userGroupsReference])

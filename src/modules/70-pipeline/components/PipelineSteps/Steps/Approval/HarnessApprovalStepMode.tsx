@@ -7,7 +7,7 @@
 
 import React from 'react'
 import cx from 'classnames'
-import { isEmpty } from 'lodash-es'
+import { isEmpty, compact } from 'lodash-es'
 import * as Yup from 'yup'
 import { FieldArray, FormikProps } from 'formik'
 import {
@@ -266,7 +266,19 @@ function HarnessApprovalStepMode(
         spec: Yup.object().shape({
           approvalMessage: Yup.string().trim().required(getString('pipeline.approvalStep.validation.approvalMessage')),
           approvers: Yup.object().shape({
-            userGroups: Yup.string().required(getString('pipeline.approvalStep.validation.userGroups')),
+            userGroups: Yup.mixed()
+              .required(getString('pipeline.approvalStep.validation.userGroups'))
+              .test({
+                test(value: string | string[]) {
+                  if (Array.isArray(value) && isEmpty(compact(value))) {
+                    return this.createError({
+                      message: getString('pipeline.approvalStep.validation.userGroups')
+                    })
+                  }
+
+                  return true
+                }
+              }),
             minimumCount: Yup.string()
               .required(getString('pipeline.approvalStep.validation.minimumCountRequired'))
               .test({

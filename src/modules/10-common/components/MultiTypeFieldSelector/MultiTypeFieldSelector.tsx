@@ -38,6 +38,8 @@ export interface MultiTypeFieldSelectorProps extends Omit<IFormGroupProps, 'labe
   optionalLabel?: string
   tooltipProps?: DataTooltipInterface
   disableMultiSelectBtn?: boolean
+  hideError?: boolean
+  onTypeChange?: (newType: MultiTypeInputType) => void
 }
 
 export interface ConnectedMultiTypeFieldSelectorProps extends MultiTypeFieldSelectorProps {
@@ -57,15 +59,18 @@ export function MultiTypeFieldSelector(props: ConnectedMultiTypeFieldSelectorPro
     skipRenderValueInExpressionLabel,
     isOptional,
     disableMultiSelectBtn,
+    hideError,
+    onTypeChange,
     optionalLabel = '(optional)',
     ...restProps
   } = props
   const error = get(formik?.errors, name)
   const hasError = errorCheck(name, formik) && typeof error === 'string'
+  const showError = hasError && !hideError
   const labelText = !isOptional ? label : `${label} ${optionalLabel}`
   const {
-    intent = hasError ? Intent.DANGER : Intent.NONE,
-    helperText = hasError ? <FormError name={name} errorMessage={get(formik?.errors, name)} /> : null,
+    intent = showError ? Intent.DANGER : Intent.NONE,
+    helperText = showError ? <FormError name={name} errorMessage={get(formik?.errors, name)} /> : null,
     disabled,
     ...rest
   } = restProps
@@ -80,6 +85,7 @@ export function MultiTypeFieldSelector(props: ConnectedMultiTypeFieldSelectorPro
 
   function handleChange(newType: MultiTypeInputType): void {
     setType(newType)
+    onTypeChange?.(newType)
     if (newType === type) return
     formik.setFieldValue(name, newType === MultiTypeInputType.RUNTIME ? RUNTIME_INPUT_VALUE : defaultValueToReset)
   }

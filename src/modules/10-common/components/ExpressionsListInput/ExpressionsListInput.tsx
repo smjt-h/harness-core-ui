@@ -5,13 +5,12 @@
  * https://polyformproject.org/wp-content/uploads/2020/06/PolyForm-Shield-1.0.0.txt.
  */
 
-import React from 'react'
+import React, { useEffect } from 'react'
 import { connect, FormikContext } from 'formik'
-import { get } from 'lodash-es'
-import { FormGroup, Intent } from '@blueprintjs/core'
+import { isEmpty } from 'lodash-es'
+import { FormGroup } from '@blueprintjs/core'
 import { ExpressionInput, EXPRESSION_INPUT_PLACEHOLDER } from '@wings-software/uicore'
 import { ListInput } from '@common/components/ListInput/ListInput'
-import { errorCheck } from '@common/utils/formikHelpers'
 
 import css from './ExpressionsListInput.module.scss'
 
@@ -27,6 +26,13 @@ export interface ExpressionsListInputProps {
 function ExpressionsListInputInternal(props: ExpressionsListInputProps) {
   const { name, value, readOnly, expressions = [], formik, inputClassName } = props
 
+  // To initialize minimum one input row
+  useEffect(() => {
+    if (isEmpty(value)) {
+      formik?.setFieldValue(name, [''])
+    }
+  }, [])
+
   return (
     <ListInput
       name={name}
@@ -34,13 +40,8 @@ function ExpressionsListInputInternal(props: ExpressionsListInputProps) {
       readOnly={readOnly}
       listItemRenderer={(str: string, index: number) => {
         const fieldName = `${name}.${index}`
-        const hasError = errorCheck(fieldName, formik)
         return (
-          <FormGroup
-            helperText={hasError ? get(formik?.errors, fieldName) : null}
-            intent={hasError ? Intent.DANGER : Intent.NONE}
-            className={css.expressionsInputContainer}
-          >
+          <FormGroup className={css.expressionsInputContainer}>
             <ExpressionInput
               name={fieldName}
               value={str}

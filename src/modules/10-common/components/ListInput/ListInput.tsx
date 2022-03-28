@@ -28,10 +28,17 @@ export function ListInput(props: ListInputProps) {
   const { name, elementList, readOnly, deleteIconProps, deleteBtnClassName, addBtnClassName, listItemRenderer } = props
   const { getString } = useStrings()
   const addBtnLabel = defaultTo(props.addBtnLabel, getString('plusAdd'))
+  const [count, setCount] = React.useState(0)
+
+  const handleItemRemove = (index: number, removeCallback: (index: number) => void) => {
+    removeCallback(index)
+    setCount(prevCount => prevCount + 1)
+  }
 
   return (
     <FieldArray
       name={name}
+      key={`${name}-${count}`}
       render={({ push, remove }) => (
         <>
           {map(elementList, (value: string, index: number) => (
@@ -46,7 +53,7 @@ export function ListInput(props: ListInputProps) {
                 icon="main-trash"
                 iconProps={{ ...deleteIconProps, size: 22 }}
                 minimal
-                onClick={() => remove(index)}
+                onClick={() => handleItemRemove(index, remove)}
                 data-testid={`remove-${name}-[${index}]`}
                 disabled={readOnly}
                 className={deleteBtnClassName}

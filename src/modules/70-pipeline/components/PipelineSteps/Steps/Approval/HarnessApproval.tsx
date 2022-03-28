@@ -8,7 +8,7 @@
 import React from 'react'
 import * as Yup from 'yup'
 import { parse } from 'yaml'
-import { isEmpty, get } from 'lodash-es'
+import { isEmpty, get, compact } from 'lodash-es'
 import { CompletionItemKind } from 'vscode-languageserver-types'
 import { connect, FormikErrors, yupToFormErrors } from 'formik'
 import { getMultiTypeFromValue, IconName, MultiTypeInputType } from '@wings-software/uicore'
@@ -140,7 +140,7 @@ export class HarnessApproval extends PipelineStep<HarnessApprovalData> {
       typeof template?.spec?.approvers?.userGroups === 'string' &&
       isRequired &&
       getMultiTypeFromValue(template?.spec?.approvers.userGroups) === MultiTypeInputType.RUNTIME &&
-      isEmpty(data?.spec?.approvers.userGroups)
+      isEmpty(compact(data?.spec?.approvers.userGroups as string[]))
     ) {
       errors.spec = {
         ...errors.spec,

@@ -94,7 +94,7 @@ approvalStep:
     statusMsg: '{{ count }} of {{ total }} approvals complete'
   validation:
     approvalMessage: Approval message is required.
-    userGroups: 'Please provide user groups.'
+    userGroups: 'Atleast one user group is required'
     minimumCountOne: 'Minimum count cannot be less than one.'
     minimumCountRequired: 'Minimum count is required.'
   status:
