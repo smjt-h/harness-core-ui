@@ -23,16 +23,16 @@
         <div class='clearfix'>
             
             <div class='fl pad1y space-right2'>
-                <span class="strong">87.1% </span>
+                <span class="strong">87.88% </span>
                 <span class="quiet">Statements</span>
-                <span class='fraction'>27/31</span>
+                <span class='fraction'>29/33</span>
             </div>
         
             
             <div class='fl pad1y space-right2'>
-                <span class="strong">70% </span>
+                <span class="strong">78.57% </span>
                 <span class="quiet">Branches</span>
-                <span class='fraction'>7/10</span>
+                <span class='fraction'>11/14</span>
             </div>
         
             
@@ -44,9 +44,9 @@
         
             
             <div class='fl pad1y space-right2'>
-                <span class="strong">87.1% </span>
+                <span class="strong">87.88% </span>
                 <span class="quiet">Lines</span>
-                <span class='fraction'>27/31</span>
+                <span class='fraction'>29/33</span>
             </div>
         
             
@@ -147,7 +147,12 @@
 <a name='L88'></a><a href='#L88'>88</a>
 <a name='L89'></a><a href='#L89'>89</a>
 <a name='L90'></a><a href='#L90'>90</a>
-<a name='L91'></a><a href='#L91'>91</a></td><td class="line-coverage quiet"><span class="cline-any cline-neutral">&nbsp;</span>
+<a name='L91'></a><a href='#L91'>91</a>
+<a name='L92'></a><a href='#L92'>92</a>
+<a name='L93'></a><a href='#L93'>93</a>
+<a name='L94'></a><a href='#L94'>94</a>
+<a name='L95'></a><a href='#L95'>95</a>
+<a name='L96'></a><a href='#L96'>96</a></td><td class="line-coverage quiet"><span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
@@ -168,6 +173,7 @@
 <span class="cline-any cline-yes">1x</span>
 <span class="cline-any cline-yes">1x</span>
 <span class="cline-any cline-yes">1x</span>
+<span class="cline-any cline-yes">1x</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-yes">1x</span>
 <span class="cline-any cline-yes">1x</span>
@@ -177,6 +183,8 @@
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">1x</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-yes">1x</span>
 <span class="cline-any cline-yes">3x</span>
@@ -205,7 +213,9 @@
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-yes">1x</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
@@ -256,6 +266,7 @@ import { FeatureIdentifier } from 'framework/featureStore/FeatureIdentifier'
 import { useProjectModal } from '@projects-orgs/modals/ProjectModal/useProjectModal'
 import type { AccountPathProps } from '@common/interfaces/RouteInterfaces'
 import routes from '@common/RouteDefinitions'
+import { isCommunityPlan, isOnPrem } from '@common/utils/utils'
 import welcomeVideo from './images/welcome-anim.mp4'
 import css from './LandingDashboardPage.module.scss'
 &nbsp;
@@ -267,6 +278,8 @@ export enum View {
 interface WelcomeViewProps {
   setView: (val: View) =&gt; void
 }
+&nbsp;
+const hideBackButton = isCommunityPlan() || isOnPrem()
 &nbsp;
 const LandingDashboardWelcomeView: React.FC&lt;WelcomeViewProps&gt; = props =&gt; {
   const { accountId } = useParams&lt;AccountPathProps&gt;()
@@ -290,14 +303,16 @@ const LandingDashboardWelcomeView: React.FC&lt;WelcomeViewProps&gt; = props =&gt
     &lt;&gt;
       &lt;PageBody className={cx(css.getStartedMainContainer, className)}&gt;
         &lt;Layout.Vertical spacing="xxxlarge" flex&gt;
-          &lt;Button
-            icon="arrow-left"
-            text={getString('common.goBack')}
-            variation={ButtonVariation.LINK}
-            onClick={() =&gt; {
-              props.setView(View.Dashboard)
-            }}
-          /&gt;
+          {!hideBackButton &amp;&amp; (
+            &lt;Button
+              icon="arrow-left"
+              text={getString('common.goBack')}
+              variation={ButtonVariation.LINK}
+              onClick={() =&gt; {
+                props.setView(View.Dashboard)
+              }}
+            /&gt;
+          )}
           &lt;Layout.Vertical spacing="medium" flex&gt;
             &lt;video src={welcomeVideo} autoPlay={true} loop={true} muted={true} /&gt;
             &lt;Heading level={1} font={{ weight: 'bold' }} color={Color.BLACK}&gt;
@@ -334,7 +349,7 @@ export default LandingDashboardWelcomeView
             <div class='footer quiet pad2 space-top1 center small'>
                 Code coverage generated by
                 <a href="https://istanbul.js.org/" target="_blank">istanbul</a>
-                at Mon Mar 28 2022 07:46:51 GMT+0000 (Greenwich Mean Time)
+                at Mon Mar 28 2022 13:28:25 GMT+0000 (Greenwich Mean Time)
             </div>
         </div>
         <script src="../../../../prettify.js"></script>
