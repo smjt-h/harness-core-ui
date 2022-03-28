@@ -255,7 +255,11 @@ export const DelegateSelector: React.FC<DelegateSelectorProps> = props => {
 
   const CustomComponent = useMemo(() => {
     return (
-      <Layout.Horizontal flex={{ alignItems: 'center', justifyContent: 'flex-start' }} margin={{ bottom: 'medium' }}>
+      <Layout.Horizontal
+        flex={{ alignItems: 'center', justifyContent: 'flex-start' }}
+        spacing="small"
+        margin={{ bottom: 'medium' }}
+      >
         {DelegateSelectorsCustomComponent}
         {DelegateSelectorCountComponent}
       </Layout.Horizontal>

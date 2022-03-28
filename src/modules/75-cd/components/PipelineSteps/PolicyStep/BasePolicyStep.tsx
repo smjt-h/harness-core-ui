@@ -106,6 +106,8 @@ export default function BasePolicyStep(props: {
                     expressions={expressions}
                     height={300}
                     disabled={readonly}
+                    fullScreenAllowed
+                    fullScreenTitle={getString('common.payload')}
                   />
                 )
               }
@@ -116,6 +118,8 @@ export default function BasePolicyStep(props: {
               expressions={expressions}
               height={300}
               disabled={readonly}
+              fullScreenAllowed
+              fullScreenTitle={getString('common.payload')}
             />
           </MultiTypeFieldSelector>
         </div>

@@ -108,7 +108,8 @@ export const createAppDynamicsData = (sourceData: any): AppDynamicsData => {
         groupName: { label: metricDefinition.groupName || '', value: metricDefinition.groupName || '' },
         continuousVerification: metricDefinition?.analysis?.deploymentVerification?.enabled,
         healthScore: metricDefinition?.analysis?.liveMonitoring?.enabled,
-        sli: metricDefinition.sli?.enabled
+        sli: metricDefinition.sli?.enabled,
+        serviceInstanceMetricPath: metricDefinition.analysis?.deploymentVerification?.serviceInstanceMetricPath
       })
     }
   }
@@ -176,9 +177,15 @@ const validateCustomMetricFields = (
 
   if (values.pathType === PATHTYPE.FullPath) {
     const isfullPathEmpty = !values.fullPath.length
+    const fullPathContainsTierInfo = values.fullPath
+      .split('|')
+      .map((item: string) => item.trim())
+      .includes(values?.appDTier)
     const incorrectPairing = values.fullPath.split('|').filter((item: string) => !item.length).length
     if (incorrectPairing && isfullPathEmpty) {
       _error[PATHTYPE.FullPath] = getString('cv.healthSource.connectors.AppDynamics.validation.fullPath')
+    } else if (!fullPathContainsTierInfo) {
+      _error[PATHTYPE.FullPath] = getString('cv.healthSource.connectors.AppDynamics.validation.missingTierInFullPath')
     }
   }
 
@@ -302,6 +309,11 @@ const validateAssignComponent = (
           'cv.monitoringSources.prometheus.validation.deviation'
         )
       }
+      if (values.continuousVerification && !values.serviceInstanceMetricPath) {
+        _error[AppDynamicsMonitoringSourceFieldNames.CONTINUOUS_VERIFICATION] = getString(
+          'cv.healthSource.connectors.AppDynamics.validation.missingServiceInstanceMetricPath'
+        )
+      }
       if (!isRiskCategoryValid) {
         _error[AppDynamicsMonitoringSourceFieldNames.RISK_CATEGORY] = getString(
           'cv.monitoringSources.gco.mapMetricsToServicesPage.validation.riskCategory'
@@ -417,7 +429,7 @@ export const createAppDynamicsPayload = (formData: any): UpdatedHealthSource | n
     type: 'AppDynamics' as any,
     spec: {
       ...specPayload,
-      feature: formData.product?.value as string,
+      feature: 'Application Monitoring' as string,
       connectorRef: (formData?.connectorRef?.connector?.identifier as string) || (formData.connectorRef as string),
       metricPacks: Object.entries(formData?.metricData)
         .map(item => {
@@ -446,6 +458,7 @@ export const submitData = (
     [AppDynamicsMonitoringSourceFieldNames.APPDYNAMICS_TIER]: true,
     [AppDynamicsMonitoringSourceFieldNames.APPDYNAMICS_APPLICATION]: true,
     [AppDynamicsMonitoringSourceFieldNames.SLI]: true,
+    [AppDynamicsMonitoringSourceFieldNames.CONTINUOUS_VERIFICATION]: true,
     [AppDynamicsMonitoringSourceFieldNames.GROUP_NAME]: true,
     [AppDynamicsMonitoringSourceFieldNames.METRIC_NAME]: true,
     [AppDynamicsMonitoringSourceFieldNames.LOWER_BASELINE_DEVIATION]: true,

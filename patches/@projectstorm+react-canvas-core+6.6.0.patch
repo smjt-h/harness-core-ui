@@ -17,26 +17,16 @@ index 3bc5cb0..2064095 100644
              return this.getActionsForType(Action_1.InputType.KEY_UP);
          }
          else if (event.type === 'mousemove') {
-diff --git a/node_modules/@projectstorm/react-canvas-core/src/states/SelectionBoxState.ts b/node_modules/@projectstorm/react-canvas-core/src/states/SelectionBoxState.ts
-index 5fa86cb..b59889b 100644
---- a/node_modules/@projectstorm/react-canvas-core/src/states/SelectionBoxState.ts
-+++ b/node_modules/@projectstorm/react-canvas-core/src/states/SelectionBoxState.ts
-@@ -36,12 +36,12 @@ export class SelectionBoxState extends AbstractDisplacementState {
- 		}
- 
- 		return {
--			left: rel.x > this.initialXRelative ? this.initialXRelative : rel.x,
--			top: rel.y > this.initialYRelative ? this.initialYRelative : rel.y,
--			width: Math.abs(rel.x - this.initialXRelative),
--			height: Math.abs(rel.y - this.initialYRelative),
--			right: rel.x < this.initialXRelative ? this.initialXRelative : rel.x,
--			bottom: rel.y < this.initialYRelative ? this.initialYRelative : rel.y
-+			left: rel?.x > this.initialXRelative ? this.initialXRelative : rel?.x,
-+			top: rel?.y > this.initialYRelative ? this.initialYRelative : rel?.y,
-+			width: Math.abs(rel?.x - this.initialXRelative),
-+			height: Math.abs(rel?.y - this.initialYRelative),
-+			right: rel?.x < this.initialXRelative ? this.initialXRelative : rel?.x,
-+			bottom: rel?.y < this.initialYRelative ? this.initialYRelative : rel?.y
- 		};
- 	}
- 
+diff --git a/node_modules/@projectstorm/react-canvas-core/dist/states/SelectionBoxState.js b/node_modules/@projectstorm/react-canvas-core/dist/states/SelectionBoxState.js
+index 8fb8c5e..a923d7e 100644
+--- a/node_modules/@projectstorm/react-canvas-core/dist/states/SelectionBoxState.js
++++ b/node_modules/@projectstorm/react-canvas-core/dist/states/SelectionBoxState.js
+@@ -27,7 +27,7 @@ class SelectionBoxState extends AbstractDisplacementState_1.AbstractDisplacement
+         }
+         else if (event.event instanceof TouchEvent) {
+             const touch = event.event.touches[0];
+-            rel = this.engine.getRelativePoint(touch.clientX, touch.clientY);
++            rel = this.engine.getRelativePoint(touch.clientX, touch.clientY) || { x: 0, y: 0 };
+         }
+         return {
+             left: rel.x > this.initialXRelative ? this.initialXRelative : rel.x,

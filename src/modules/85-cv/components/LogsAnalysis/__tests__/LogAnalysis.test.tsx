@@ -125,9 +125,10 @@ describe('Unit tests for LogAnalysisContainer', () => {
     expect(useGetAllLogsDataQueryParams?.clusterTypes).toEqual([LogEvents.UNKNOWN])
 
     userEvent.click(clusterTypeFilterDropdown)
-    await waitFor(() => userEvent.click(screen.getByText('pipeline.verification.logs.allEvents')))
 
-    expect(clusterTypeFilterDropdown.value).toBe('pipeline.verification.logs.allEvents')
+    await waitFor(() => userEvent.click(screen.getByText('auditTrail.allEvents')))
+
+    expect(clusterTypeFilterDropdown.value).toBe('auditTrail.allEvents')
     expect(useGetAllLogsClusterDataQueryParams).not.toHaveProperty('clusterTypes')
     expect(useGetAllLogsDataQueryParams).not.toHaveProperty('clusterTypes')
   })

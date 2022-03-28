@@ -127,7 +127,8 @@ export class RunStep extends PipelineStep<RunStepData> {
     spec: {
       connectorRef: '',
       image: '',
-      command: ''
+      command: '',
+      shell: 'Sh'
     }
   }
 

@@ -193,7 +193,7 @@ exports[`Test GatewayDetails renders review screen 1`] = `
             <p
               class="StyledProps--font StyledProps--main reviewHeading"
             >
-              Cloud account details
+              ce.co.autoStoppingRule.review.cloudAccountDetails
             </p>
             <div
               class="StyledProps--font StyledProps--main reviewDetailsSection"
@@ -204,7 +204,7 @@ exports[`Test GatewayDetails renders review screen 1`] = `
                 <p
                   class="StyledProps--font StyledProps--main"
                 >
-                  Selected cloud account
+                  ce.co.autoStoppingRule.review.selectedCloudAccount
                 </p>
                 <p
                   class="StyledProps--font StyledProps--main"
@@ -243,7 +243,7 @@ exports[`Test GatewayDetails renders review screen 1`] = `
             <p
               class="StyledProps--font StyledProps--main reviewHeading"
             >
-              Configuration details
+              ce.co.autoStoppingRule.review.configDetails
             </p>
             <div
               class="StyledProps--font StyledProps--main reviewDetailsSection"
@@ -264,7 +264,7 @@ exports[`Test GatewayDetails renders review screen 1`] = `
                   <p
                     class="StyledProps--font StyledProps--main"
                   >
-                    Name of the rule
+                    ce.co.autoStoppingRule.review.nameOfRule
                   </p>
                   <p
                     class="StyledProps--font StyledProps--main"
@@ -278,7 +278,7 @@ exports[`Test GatewayDetails renders review screen 1`] = `
                   <p
                     class="StyledProps--font StyledProps--main"
                   >
-                    Idle time(mins)
+                    ce.co.autoStoppingRule.review.idleTimeMins
                   </p>
                   <p
                     class="StyledProps--font StyledProps--main"
@@ -302,13 +302,13 @@ exports[`Test GatewayDetails renders review screen 1`] = `
                 class="StyledProps--font StyledProps--font-h2 StyledProps--main"
                 level="2"
               >
-                Instance details
+                ce.co.autoStoppingRule.review.instanceDetails
               </h2>
               <p
                 class="StyledProps--font StyledProps--main"
                 style="margin: 20px 0px 10px;"
               >
-                Instances
+                instanceFieldOptions.instances
               </p>
               <table
                 class="bp3-html-table bp3-interactive instanceTable"
@@ -457,7 +457,7 @@ exports[`Test GatewayDetails renders review screen 1`] = `
                 <p
                   class="StyledProps--font StyledProps--main"
                 >
-                  Instance fulfilment
+                  ce.co.autoStoppingRule.review.instanceFulfilment
                 </p>
                 <div
                   class="Layout--horizontal Layout--layout-spacing-small StyledProps--main"
@@ -476,30 +476,10 @@ exports[`Test GatewayDetails renders review screen 1`] = `
                 </div>
               </div>
             </div>
-            <div
-              class="StyledProps--font StyledProps--main reviewDetailsSection"
-            >
-              <div
-                class="editCta"
-              >
-                <span>
-                  EDIT
-                </span>
-              </div>
-              <h2
-                class="StyledProps--font StyledProps--font-h2 StyledProps--main"
-                level="2"
-              >
-                Advanced configuration
-              </h2>
-              <div
-                class="Layout--vertical StyledProps--main"
-              />
-            </div>
             <p
               class="StyledProps--font StyledProps--main reviewHeading"
             >
-              Setup Access details
+              ce.co.autoStoppingRule.review.setupAccessDetails
             </p>
             <div
               class="StyledProps--font StyledProps--main reviewDetailsSection"
@@ -515,7 +495,7 @@ exports[`Test GatewayDetails renders review screen 1`] = `
                 class="StyledProps--font StyledProps--font-h2 StyledProps--main"
                 level="2"
               >
-                Routing
+                ce.co.gatewayReview.routing
               </h2>
               <table
                 class="bp3-html-table bp3-interactive instanceTable"
@@ -771,7 +751,7 @@ exports[`Test GatewayDetails renders review screen 1`] = `
                 class="StyledProps--font StyledProps--font-h2 StyledProps--main"
                 level="2"
               >
-                DNS Link mapping
+                ce.co.autoStoppingRule.review.dnsLinkMapping
               </h2>
               <div
                 class="Layout--vertical StyledProps--main"
@@ -782,7 +762,7 @@ exports[`Test GatewayDetails renders review screen 1`] = `
                   <p
                     class="StyledProps--font StyledProps--main"
                   >
-                    Auto generated URL
+                    ce.co.dnsSetup.autoURL
                   </p>
                   <p
                     class="StyledProps--font StyledProps--main"

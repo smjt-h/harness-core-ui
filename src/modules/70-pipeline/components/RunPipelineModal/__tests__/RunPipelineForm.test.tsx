@@ -439,6 +439,40 @@ describe('RERUN MODE', () => {
     })
   })
 
+  test('preflight api getting called if skipPreflight is unchecked', async () => {
+    const { container, getByText, queryByText } = render(
+      <TestWrapper>
+        <RunPipelineForm {...commonProps} />
+      </TestWrapper>
+    )
+
+    // Navigate to 'Provide Values'
+    fireEvent.click(getByText('pipeline.pipelineInputPanel.provide'))
+    await waitFor(() => expect(queryByText('customVariables.pipelineVariablesTitle')).toBeTruthy())
+
+    // Enter a value for the pipeline variable
+    const variableInputElement = container.querySelector('input[name="variables[0].value"]')
+    act(() => {
+      fireEvent.change(variableInputElement!, { target: { value: 'enteredvalue' } })
+    })
+
+    // Preflight check is not skipped
+    const skipPreflightButton = getByText('pre-flight-check.skipCheckBtn').querySelector(
+      '[type=checkbox]'
+    ) as HTMLInputElement
+    expect(skipPreflightButton.checked).toBeFalsy()
+
+    // Submit button click
+    const runButton = container.querySelector('button[type="submit"]')
+    await act(() => {
+      fireEvent.click(runButton!)
+    })
+
+    // Check preflight functions called
+    await waitFor(() => expect(useGetPreflightCheckResponse).toBeCalled())
+    await waitFor(() => expect(startPreflightCheckPromise).toBeCalled())
+  })
+
   test('should should have the values prefilled', async () => {
     const { container, queryByText, queryByDisplayValue } = render(
       <TestWrapper>

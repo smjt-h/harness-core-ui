@@ -22,7 +22,8 @@ import type {
   UserJourneyResponse,
   MonitoredServiceWithHealthSources,
   MetricDTO,
-  ServiceLevelIndicatorDTO
+  ServiceLevelIndicatorDTO,
+  MonitoredServiceDTO
 } from 'services/cv'
 import { initialValuesSLO } from './CVCreateSLO.constants'
 import {
@@ -239,22 +240,13 @@ export function getMonitoredServiceOptions(
   )
 }
 
-export function getHealthSourceOptions(
-  monitoredServiceWithHealthSources?: MonitoredServiceWithHealthSources[],
-  monitoredServiceRef?: string
-): SelectOption[] {
-  if (monitoredServiceWithHealthSources && monitoredServiceRef) {
-    return (
-      monitoredServiceWithHealthSources
-        .find(monitoredService => monitoredService.identifier === monitoredServiceRef)
-        ?.healthSources?.map(healthSource => ({
-          label: healthSource.name ?? '',
-          value: healthSource.identifier ?? ''
-        })) ?? []
-    )
-  }
-
-  return []
+export function getHealthSourceOptions(monitoredService?: MonitoredServiceDTO): SelectOption[] {
+  return (
+    monitoredService?.sources?.healthSources?.map(healthSource => ({
+      label: healthSource?.name ?? '',
+      value: healthSource?.identifier ?? ''
+    })) ?? []
+  )
 }
 
 // PickMetric

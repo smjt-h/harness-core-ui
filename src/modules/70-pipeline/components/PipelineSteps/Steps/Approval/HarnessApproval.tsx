@@ -92,7 +92,7 @@ export class HarnessApproval extends PipelineStep<HarnessApprovalData> {
     }
     if (pipelineObj) {
       const obj = get(pipelineObj, path.replace('.spec.approvers.userGroups', ''))
-      if (obj.type === StepType.HarnessApproval) {
+      if (obj?.type === StepType.HarnessApproval) {
         return getUserGroupListPromise({
           queryParams: {
             accountIdentifier: accountId,

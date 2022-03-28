@@ -15,7 +15,6 @@ import { TestStepWidget, factory } from '../../__tests__/StepTestUtil'
 import { JiraCreate } from '../JiraCreate'
 import {
   getJiraCreateDeploymentModeProps,
-  getJiraCreateDeploymentModeForFieldsProps,
   getJiraCreateEditModeProps,
   getJiraCreateEditModePropsWithValues,
   getJiraCreateInputVariableModeProps,
@@ -101,23 +100,6 @@ describe('Jira Create tests', () => {
     expect(container).toMatchSnapshot('jira-create-deploymentform')
   })
 
-  test('Basic snapshot - deploymentform mode with optional fields as runtime input', async () => {
-    const props = getJiraCreateDeploymentModeForFieldsProps()
-    const fieldProps = getJiraFieldRendererProps()
-    const { container } = render(
-      <TestWrapper>
-        <JiraFieldsRenderer {...fieldProps}></JiraFieldsRenderer>
-        <TestStepWidget
-          template={props.inputSetData?.template}
-          initialValues={props.initialValues}
-          type={StepType.JiraCreate}
-          stepViewType={StepViewType.DeploymentForm}
-          inputSetData={props.inputSetData}
-        />
-      </TestWrapper>
-    )
-    expect(container).toMatchSnapshot('jira-create-deploymentform-fields-runtime')
-  })
   test('Deploymentform readonly mode', async () => {
     const props = getJiraCreateDeploymentModeProps()
     const { container } = render(
@@ -129,6 +111,7 @@ describe('Jira Create tests', () => {
         inputSetData={{ ...props.inputSetData, path: props.inputSetData?.path || '', readonly: true }}
       />
     )
+
     expect(container).toMatchSnapshot('jira-create-deploymentform-readonly')
   })
 
@@ -322,5 +305,54 @@ describe('Jira Create tests', () => {
       },
       name: 'jira createe step'
     })
+  })
+
+  test('Jira Fields Renderer Test', () => {
+    const props = getJiraFieldRendererProps()
+    const { container } = render(
+      <TestWrapper>
+        <JiraFieldsRenderer {...props}></JiraFieldsRenderer>
+      </TestWrapper>
+    )
+    expect(container).toMatchSnapshot()
+  })
+
+  test('Minimum time cannot be less than 10s', () => {
+    const response = new JiraCreate().validateInputSet({
+      data: {
+        name: 'Test A',
+        identifier: 'Test A',
+        timeout: '1s',
+        type: 'JiraCreate',
+        spec: {
+          connectorRef: '',
+          projectKey: '',
+          issueType: '',
+          summary: '',
+          description: '',
+          fields: [],
+          selectedFields: [],
+          delegateSelectors: undefined
+        }
+      },
+      template: {
+        name: 'Test A',
+        identifier: 'Test A',
+        timeout: '<+input>',
+        type: 'JiraCreate',
+        spec: {
+          connectorRef: '',
+          projectKey: '',
+          issueType: '',
+          summary: '',
+          description: '',
+          fields: [],
+          selectedFields: [],
+          delegateSelectors: undefined
+        }
+      },
+      viewType: StepViewType.TriggerForm
+    })
+    expect(response).toMatchSnapshot('Value must be greater than or equal to "10s"')
   })
 })

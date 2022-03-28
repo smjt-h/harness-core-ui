@@ -82,6 +82,7 @@ performAction: Perform Action
 jexlExpression: JEXL Expression
 bash: Bash
 shell: Shell
+sh: Sh
 powershell: Powershell
 pwsh: Pwsh
 input: Input
@@ -799,3 +800,5 @@ request: Request
 whose: whose
 and: and
 payload: Payload
+andCaps: AND
+orCaps: OR

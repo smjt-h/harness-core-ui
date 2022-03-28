@@ -9,7 +9,6 @@
 declare const styles: {
   readonly copy: string
   readonly crossIcon: string
-  readonly dialog: string
   readonly form: string
   readonly tokenValue: string
 }

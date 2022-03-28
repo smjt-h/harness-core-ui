@@ -9,7 +9,7 @@ import React, { useState, useEffect } from 'react'
 import { useParams } from 'react-router-dom'
 import { Layout, Text, NestedAccordionProvider, HarnessDocTooltip, PageSpinner } from '@wings-software/uicore'
 import { parse } from 'yaml'
-import { pick, merge, cloneDeep, isEmpty } from 'lodash-es'
+import { pick, merge, cloneDeep, isEmpty, defaultTo } from 'lodash-es'
 import { InputSetSelector, InputSetSelectorProps } from '@pipeline/components/InputSetSelector/InputSetSelector'
 import type { PipelineInfoConfig } from 'services/cd-ng'
 import {
@@ -68,7 +68,10 @@ const applyArtifactToPipeline = (newPipelineObject: any, formikProps: any) => {
       }
     }
 
-    const filteredStageArtifacts = filteredStage.stage?.spec?.serviceConfig?.serviceDefinition?.spec?.artifacts
+    const filteredStageArtifacts = defaultTo(
+      filteredStage.stage?.spec?.serviceConfig?.serviceDefinition?.spec?.artifacts,
+      {}
+    )
     filteredStageArtifacts.primary = selectedArtifact
   }
   return newPipelineObject

@@ -240,7 +240,12 @@ export function GCOMetricsHealthSource(props: GCOMetricsHealthSourceProps): JSX.
       }}
     >
       {formikProps => {
-        const { sli = false, healthScore = false, continuousVerification = false } = formikProps?.values
+        const {
+          sli = false,
+          healthScore = false,
+          continuousVerification = false,
+          riskCategory = ''
+        } = formikProps?.values
 
         const currentSelectedMetricDetail = metricDefinitions?.find(
           (metricDefinition: StackdriverDefinition) =>
@@ -362,6 +367,7 @@ export function GCOMetricsHealthSource(props: GCOMetricsHealthSourceProps): JSX.
                   values={{
                     sli,
                     healthScore,
+                    riskCategory,
                     continuousVerification
                   }}
                   metricPackResponse={metricPackResponse}

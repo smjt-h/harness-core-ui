@@ -61,7 +61,8 @@ export enum NavigatedToPage {
 }
 
 export enum Category {
-  SIGNUP = 'SIGNUP'
+  SIGNUP = 'SIGNUP',
+  PROJECT = 'PROJECT'
 }
 
 export enum ManifestActions {
@@ -74,4 +75,9 @@ export enum ArtifactActions {
   UpdatePrimaryArtifactOnPipelinePage = 'Update Primary Artifact on Pipeline Page',
   SaveSidecarArtifactOnPipelinePage = 'Save Sidecar Artifact on Pipeline Page',
   UpdateSidecarArtifactOnPipelinePage = 'Update Sidecar Artifact on Pipeline Page'
+}
+
+export enum ProjectActions {
+  OpenCreateProjectModal = 'Open Create Project modal',
+  SaveCreateProject = 'Save Create project'
 }

@@ -19,13 +19,13 @@ import {
   Text,
   ButtonVariation
 } from '@wings-software/uicore'
-import { Color } from '@harness/design-system'
 import * as Yup from 'yup'
 import { useParams } from 'react-router-dom'
 import { useToaster } from '@common/components'
 import { useStrings } from 'framework/strings'
 import { TokenDTO, useRotateToken } from 'services/cd-ng'
 import type { ProjectPathProps, ServiceAccountPathProps } from '@common/interfaces/RouteInterfaces'
+import { getRBACErrorMessage } from '@rbac/utils/utils'
 import { TokenValueRenderer } from './TokenValueRenderer'
 import css from '@rbac/modals/TokenModal/useTokenModal.module.scss'
 
@@ -73,69 +73,60 @@ const RotateTokenForm: React.FC<TokenModalData> = props => {
       }
     } catch (e) {
       /* istanbul ignore next */
-      modalErrorHandler?.showDanger(e.data?.message || e.message)
+      modalErrorHandler?.showDanger(getRBACErrorMessage(e))
     }
   }
   return (
-    <Layout.Vertical padding={{ bottom: 'xxxlarge', right: 'xxxlarge', left: 'xxxlarge' }}>
-      <Layout.Vertical spacing="large">
-        <Text color={Color.BLACK} font="medium">
-          {getString('rbac.token.rotateLabel')}
-        </Text>
-        <Formik<RotateTokenFormData>
-          initialValues={{
-            name: tokenData?.name || '',
-            expiryDate: ''
-          }}
-          formName="RotateForm"
-          validationSchema={Yup.object().shape({
-            ...(expiry && { expiryDate: Yup.date().min(new Date()).required() })
-          })}
-          onSubmit={values => {
-            modalErrorHandler?.hide()
-            handleSubmit(values)
-          }}
-        >
-          {() => {
-            return (
-              <Form>
-                <Container className={css.form}>
-                  <ModalErrorHandler bind={setModalErrorHandler} />
-                  <Layout.Vertical padding={{ top: 'small' }} spacing="medium">
-                    <FormInput.Text name="name" disabled label={getString('rbac.token.forToken')} />
-                    <Checkbox
-                      label={getString('rbac.token.form.expiry')}
-                      checked={expiry}
-                      onClick={e => setExpiry(e.currentTarget.checked)}
-                    />
-                    {expiry ? (
-                      <FormInput.Text name="expiryDate" label={getString('rbac.token.form.expiryDate')} />
-                    ) : (
-                      <Text>{getString('rbac.token.form.rotateTokenExpiryMessage')}</Text>
-                    )}
-                    {token && (
-                      <TokenValueRenderer token={token} textInputClass={css.tokenValue} copyTextClass={css.copy} />
-                    )}
-                  </Layout.Vertical>
-                </Container>
-                <Layout.Horizontal>
-                  {token ? (
-                    <Button text={getString('close')} onClick={onClose} />
-                  ) : (
-                    <Button
-                      variation={ButtonVariation.PRIMARY}
-                      text={getString('rbac.token.rotateLabel')}
-                      type="submit"
-                      disabled={saving}
-                    />
-                  )}
-                </Layout.Horizontal>
-              </Form>
-            )
-          }}
-        </Formik>
-      </Layout.Vertical>
-    </Layout.Vertical>
+    <Formik<RotateTokenFormData>
+      initialValues={{
+        name: tokenData?.name || '',
+        expiryDate: ''
+      }}
+      formName="RotateForm"
+      validationSchema={Yup.object().shape({
+        ...(expiry && { expiryDate: Yup.date().min(new Date()).required() })
+      })}
+      onSubmit={values => {
+        modalErrorHandler?.hide()
+        handleSubmit(values)
+      }}
+    >
+      {() => {
+        return (
+          <Form>
+            <Container className={css.form}>
+              <ModalErrorHandler bind={setModalErrorHandler} />
+              <Layout.Vertical padding={{ top: 'small' }} spacing="medium">
+                <FormInput.Text name="name" disabled label={getString('rbac.token.forToken')} />
+                <Checkbox
+                  label={getString('rbac.token.form.expiry')}
+                  checked={expiry}
+                  onClick={e => setExpiry(e.currentTarget.checked)}
+                />
+                {expiry ? (
+                  <FormInput.Text name="expiryDate" label={getString('rbac.token.form.expiryDate')} />
+                ) : (
+                  <Text>{getString('rbac.token.form.rotateTokenExpiryMessage')}</Text>
+                )}
+                {token && <TokenValueRenderer token={token} textInputClass={css.tokenValue} copyTextClass={css.copy} />}
+              </Layout.Vertical>
+            </Container>
+            <Layout.Horizontal>
+              {token ? (
+                <Button text={getString('close')} onClick={onClose} />
+              ) : (
+                <Button
+                  variation={ButtonVariation.PRIMARY}
+                  text={getString('rbac.token.rotateLabel')}
+                  type="submit"
+                  disabled={saving}
+                />
+              )}
+            </Layout.Horizontal>
+          </Form>
+        )
+      }}
+    </Formik>
   )
 }
 

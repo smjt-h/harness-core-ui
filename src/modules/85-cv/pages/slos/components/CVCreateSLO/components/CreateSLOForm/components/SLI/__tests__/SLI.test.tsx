@@ -6,7 +6,7 @@
  */
 
 import React from 'react'
-import { render, screen } from '@testing-library/react'
+import { render, screen, waitFor } from '@testing-library/react'
 import { Formik } from 'formik'
 import { FormikForm } from '@wings-software/uicore'
 import userEvent from '@testing-library/user-event'
@@ -20,8 +20,9 @@ import {
   getMonitoredServiceOptions
 } from '@cv/pages/slos/components/CVCreateSLO/CVCreateSLO.utils'
 import { getSLIMetricOptions, getSLITypeOptions } from '@cv/pages/slos/components/CVCreateSLO/CVCreateSLO.constants'
+import type { MonitoredServiceDTO } from 'services/cv'
 import SLI from '../SLI'
-import { expectedHealthSourcesOptions, expectedMonitoredServiceOptions, mockedMonitoredServiceData } from './SLI.mock'
+import { expectedMonitoredServiceOptions, mockedMonitoredService, mockedMonitoredServiceData } from './SLI.mock'
 
 jest.mock('@cv/pages/slos/components/SLOTargetChart/SLOTargetChart', () => ({
   __esModule: true,
@@ -38,12 +39,7 @@ function WrapperComponent(props: { initialValues: any }): JSX.Element {
         {formikProps => {
           return (
             <FormikForm>
-              <SLI
-                formikProps={formikProps}
-                retryOnError={jest.fn()}
-                monitoredServicesLoading={false}
-                monitoredServicesData={{}}
-              >
+              <SLI formikProps={formikProps} retryOnError={jest.fn()}>
                 <></>
               </SLI>
             </FormikForm>
@@ -78,6 +74,7 @@ describe('Test SLI component', () => {
 
   test('should render SLI component', async () => {
     const { container } = render(<WrapperComponent initialValues={initialFormData} />)
+    await waitFor(() => screen.getByTestId('SLO-target-chart'))
     expect(screen.getByTestId('SLO-target-chart')).toBeInTheDocument()
     expect(container).toMatchSnapshot()
   })
@@ -88,8 +85,8 @@ describe('Test SLI component', () => {
   })
 
   test('verify healthSourcesOptions method', async () => {
-    const actualHealthSources = getHealthSourceOptions(mockedMonitoredServiceData.data, 'Service_102_QA')
-    expect(actualHealthSources).toEqual(expectedHealthSourcesOptions)
+    const actualHealthSources = getHealthSourceOptions(mockedMonitoredService as MonitoredServiceDTO)
+    expect(actualHealthSources).toEqual([{ label: 'NR-1', value: 'NR1' }])
   })
 
   test('verify getSliTypeOptions method', async () => {
@@ -112,7 +109,7 @@ describe('Test SLI component', () => {
     ])
   })
   describe('PickMetric', () => {
-    test('Event type and Good request metrics dropdowns should not be in the document for Threshold', () => {
+    test('Event type and Good request metrics dropdowns should not be in the document for Threshold', async () => {
       render(<WrapperComponent initialValues={initialFormData} />)
 
       const ratioMetricRadio = screen.getByRole('radio', {
@@ -121,6 +118,7 @@ describe('Test SLI component', () => {
       })
 
       expect(ratioMetricRadio).toBeChecked()
+      await waitFor(() => screen.queryByText('cv.slos.slis.ratioMetricType.eventType'))
       expect(screen.queryByText('cv.slos.slis.ratioMetricType.eventType')).toBeInTheDocument()
       expect(screen.queryByText('cv.slos.slis.ratioMetricType.goodRequestsMetrics')).toBeInTheDocument()
 
@@ -132,11 +130,12 @@ describe('Test SLI component', () => {
       userEvent.click(thresholdMetricRadio)
 
       expect(thresholdMetricRadio).toBeChecked()
+      await waitFor(() => screen.queryByText('cv.slos.slis.ratioMetricType.eventType'))
       expect(screen.queryByText('cv.slos.slis.ratioMetricType.eventType')).not.toBeInTheDocument()
       expect(screen.queryByText('cv.slos.slis.ratioMetricType.goodRequestsMetrics')).not.toBeInTheDocument()
     })
 
-    test('Suffix "than" should be in the document for operators < and >', () => {
+    test('Suffix "than" should be in the document for operators < and >', async () => {
       const { container } = render(<WrapperComponent initialValues={initialFormData} />)
 
       fillAtForm([
@@ -147,12 +146,13 @@ describe('Test SLI component', () => {
           value: Comparators.LESS
         }
       ])
+      await waitFor(() => screen.getByText('cv.thanObjectiveValue'))
 
       expect(screen.getByText('cv.thanObjectiveValue')).toBeInTheDocument()
       expect(screen.queryByText('cv.toObjectiveValue')).not.toBeInTheDocument()
     })
 
-    test('Suffix "to" should be in the document for operators <= and >=', () => {
+    test('Suffix "to" should be in the document for operators <= and >=', async () => {
       const { container } = render(<WrapperComponent initialValues={initialFormData} />)
 
       fillAtForm([
@@ -164,6 +164,7 @@ describe('Test SLI component', () => {
         }
       ])
 
+      await waitFor(() => screen.getByText('cv.toObjectiveValue'))
       expect(screen.getByText('cv.toObjectiveValue')).toBeInTheDocument()
       expect(screen.queryByText('cv.thanObjectiveValue')).not.toBeInTheDocument()
     })

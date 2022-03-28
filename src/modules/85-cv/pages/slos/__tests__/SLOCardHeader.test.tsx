@@ -16,6 +16,16 @@ import SLOCardHeader from '../SLOCard/SLOCardHeader'
 import type { SLOCardHeaderProps } from '../CVSLOsListingPage.types'
 import { testWrapperProps, pathParams, dashboardWidgetsContent } from './CVSLOsListingPage.mock'
 
+jest.mock('@cv/hooks/useLogContentHook/views/VerifyStepLog', () => ({
+  __esModule: true,
+  default: () => <div>Mock VerifyStepLog</div>
+}))
+
+jest.mock('@cv/hooks/useLogContentHook/views/SLOLog', () => ({
+  __esModule: true,
+  default: () => <div>Mock SLOLog</div>
+}))
+
 const ComponentWrapper: React.FC<Optional<SLOCardHeaderProps>> = ({
   serviceLevelObjective = dashboardWidgetsContent,
   onDelete = jest.fn(),
@@ -219,5 +229,25 @@ describe('SLOCardHeader', () => {
         remainingErrorBudgetAtReset: 60
       })
     })
+  })
+
+  test('should open the LogContent modal and render VerifyStepLog by clicking the Execution Logs button', async () => {
+    const { container } = render(<ComponentWrapper />)
+
+    userEvent.click(container.querySelector('[data-icon="Options"]')!)
+
+    const popover = findPopoverContainer()
+    expect(getByText(popover!, 'cv.executionLogs')).toBeInTheDocument()
+
+    userEvent.click(getByText(popover!, 'cv.executionLogs'))
+
+    const dialog = findDialogContainer()
+
+    await waitFor(() => {
+      expect(screen.getByText('Mock SLOLog')).toBeInTheDocument()
+      expect(screen.queryByText('Mock VerifyStepLog')).not.toBeInTheDocument()
+    })
+
+    userEvent.click(dialog?.querySelector('[data-icon="Stroke"]')!)
   })
 })

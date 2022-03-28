@@ -42,6 +42,7 @@ export interface StringsMap {
   'common.agent': string
   'common.allErrors': string
   'common.and': string
+  'common.andCaps': string
   'common.apiKeys': string
   'common.apiStatus': string
   'common.apikey': string
@@ -396,6 +397,7 @@ export interface StringsMap {
   'common.optionalLabel': string
   'common.options': string
   'common.or': string
+  'common.orCaps': string
   'common.org': string
   'common.orgSetup': string
   'common.orgViewer': string
@@ -564,6 +566,7 @@ export interface StringsMap {
   'common.setAsDefault': string
   'common.setAsStable': string
   'common.setup': string
+  'common.sh': string
   'common.shell': string
   'common.showLess': string
   'common.showMore': string
@@ -788,11 +791,14 @@ export interface StringsMap {
   'auditTrail.actions.revoke_token': string
   'auditTrail.actions.unsuccessfullLogin': string
   'auditTrail.actions.updated': string
+  'auditTrail.allEvents': string
   'auditTrail.auditLogAPI': string
   'auditTrail.emptyStateMessage': string
   'auditTrail.emptyStateMessageTitle': string
   'auditTrail.eventSource': string
   'auditTrail.eventSummary': string
+  'auditTrail.excludeLoginEvents': string
+  'auditTrail.excludeSystemEvents': string
   'auditTrail.externalDataText': string
   'auditTrail.http': string
   'auditTrail.noYamlDifference': string
@@ -2132,6 +2138,7 @@ export interface StringsMap {
   'dashboards.homePage.noTags': string
   'dashboards.homePage.removeTagFromFilter': string
   'dashboards.homePage.searchPlaceholder': string
+  'dashboards.modules.cgDeployments': string
   'dashboards.modules.harness': string
   'dashboards.resourceModal.folderDetail': string
   'dashboards.resourceModal.folders': string
@@ -2746,6 +2753,7 @@ export interface StringsMap {
   'pipeline.nodes': string
   'pipeline.nodesLabel': string
   'pipeline.onlyPositiveInteger': string
+  'pipeline.openInNewTab': string
   'pipeline.openTemplateInNewTabLabel': string
   'pipeline.operatorPlaceholder': string
   'pipeline.outOf': string
@@ -2907,6 +2915,8 @@ export interface StringsMap {
   'pipeline.stepDescription.SHELLSCRIPT': string
   'pipeline.stepDescription.SaveCacheGCS': string
   'pipeline.stepDescription.SaveCacheS3': string
+  'pipeline.stepDescription.ServerlessAwsLambdaDeploy': string
+  'pipeline.stepDescription.ServerlessAwsLambdaRollback': string
   'pipeline.stepDescription.ServiceNowApproval': string
   'pipeline.stepDescription.TerraformApply': string
   'pipeline.stepDescription.TerraformDestroy': string
@@ -3014,7 +3024,6 @@ export interface StringsMap {
   'pipeline.verification.loadMore': string
   'pipeline.verification.logClustersInViolation': string
   'pipeline.verification.logs.actions': string
-  'pipeline.verification.logs.allEvents': string
   'pipeline.verification.logs.clusterType': string
   'pipeline.verification.logs.copyURL': string
   'pipeline.verification.logs.filterByClusterType': string
@@ -3332,6 +3341,8 @@ export interface StringsMap {
   'cd.secretManagerRequired': string
   'cd.selectArtifact': string
   'cd.selectRepository': string
+  'cd.serverlessCommandFlagOperations': string
+  'cd.serverlessDeployCommandOptions': string
   'cd.serviceCreated': string
   'cd.serviceDashboard.6monthTrend': string
   'cd.serviceDashboard.activeServiceInstancesLabel': string
@@ -3447,6 +3458,26 @@ export interface StringsMap {
   'ce.budgets.listPage.timePeriodRemaining': string
   'ce.budgets.listPage.title': string
   'ce.budgets.sideNavText': string
+  'ce.businessMapping.costBucket.inputName': string
+  'ce.businessMapping.costBucket.newButtonText': string
+  'ce.businessMapping.costBucket.title': string
+  'ce.businessMapping.errorMessages.viewConditions': string
+  'ce.businessMapping.form.businessMappingPlaceholder': string
+  'ce.businessMapping.form.saveText': string
+  'ce.businessMapping.manageUnallocatedCost.defaultUnallocatedCostLabel': string
+  'ce.businessMapping.manageUnallocatedCost.ignoreCostLabel': string
+  'ce.businessMapping.manageUnallocatedCost.otherPlaceholder': string
+  'ce.businessMapping.manageUnallocatedCost.shareCosts': string
+  'ce.businessMapping.manageUnallocatedCost.title': string
+  'ce.businessMapping.newButton': string
+  'ce.businessMapping.sharedCostBucket.inputName': string
+  'ce.businessMapping.sharedCostBucket.newButtonText': string
+  'ce.businessMapping.sharedCostBucket.sharingStrategy.equal': string
+  'ce.businessMapping.sharedCostBucket.sharingStrategy.fixed': string
+  'ce.businessMapping.sharedCostBucket.sharingStrategy.proportional': string
+  'ce.businessMapping.sharedCostBucket.title': string
+  'ce.businessMapping.sideNavText': string
+  'ce.businessMapping.stepText': string
   'ce.ceTrialHomePage.modal.description': string
   'ce.ceTrialHomePage.modal.title': string
   'ce.ceTrialHomePage.modal.welcome': string
@@ -3543,12 +3574,18 @@ export interface StringsMap {
   'ce.co.autoStoppingRule.configuration.step2.title': string
   'ce.co.autoStoppingRule.configuration.step3.asgSubTitle': string
   'ce.co.autoStoppingRule.configuration.step3.asgTitle': string
+  'ce.co.autoStoppingRule.configuration.step3.desiredCapacity': string
   'ce.co.autoStoppingRule.configuration.step3.desiredTaskCount': string
   'ce.co.autoStoppingRule.configuration.step3.ecsSubTitle': string
   'ce.co.autoStoppingRule.configuration.step3.invalidValueErrorMsg': string
+  'ce.co.autoStoppingRule.configuration.step3.maxCapacity': string
+  'ce.co.autoStoppingRule.configuration.step3.minCapacity': string
   'ce.co.autoStoppingRule.configuration.step3.policyNotEnabled': string
   'ce.co.autoStoppingRule.configuration.step3.subTitle': string
   'ce.co.autoStoppingRule.configuration.step3.title': string
+  'ce.co.autoStoppingRule.configuration.step3.validation.minTaskCount': string
+  'ce.co.autoStoppingRule.configuration.step3.validation.taskCountInteger': string
+  'ce.co.autoStoppingRule.configuration.step3.validation.taskCountRequired': string
   'ce.co.autoStoppingRule.configuration.step4.advancedConfiguration': string
   'ce.co.autoStoppingRule.configuration.step4.setup': string
   'ce.co.autoStoppingRule.configuration.step4.tabs.deps.description': string
@@ -3599,7 +3636,18 @@ export interface StringsMap {
   'ce.co.autoStoppingRule.limitWarningMessage': string
   'ce.co.autoStoppingRule.providerSelector.description': string
   'ce.co.autoStoppingRule.providerSelector.helpText.selectProvider': string
+  'ce.co.autoStoppingRule.review.cloudAccountDetails': string
   'ce.co.autoStoppingRule.review.configDetails': string
+  'ce.co.autoStoppingRule.review.dnsLinkMapping': string
+  'ce.co.autoStoppingRule.review.hideProgressPage': string
+  'ce.co.autoStoppingRule.review.idleTimeMins': string
+  'ce.co.autoStoppingRule.review.instanceDetails': string
+  'ce.co.autoStoppingRule.review.instanceFulfilment': string
+  'ce.co.autoStoppingRule.review.nameOfRule': string
+  'ce.co.autoStoppingRule.review.rdsDetails': string
+  'ce.co.autoStoppingRule.review.selectedCloudAccount': string
+  'ce.co.autoStoppingRule.review.serviceDetails': string
+  'ce.co.autoStoppingRule.review.setupAccessDetails': string
   'ce.co.autoStoppingRule.save': string
   'ce.co.autoStoppingRule.setupAccess.autogeneratedHelpText': string
   'ce.co.autoStoppingRule.setupAccess.chooseLbText': string
@@ -3716,6 +3764,18 @@ export interface StringsMap {
   'ce.co.landingPageText': string
   'ce.co.newAutoStoppingRule': string
   'ce.co.noData': string
+  'ce.co.noOfInstances': string
+  'ce.co.noOfTasks': string
+  'ce.co.ruleDetailsHeader.computeType': string
+  'ce.co.ruleDetailsHeader.customDomain': string
+  'ce.co.ruleDetailsHeader.hostName': string
+  'ce.co.ruleDetailsHeader.idleTime': string
+  'ce.co.ruleDetailsHeader.resourcesManaged': string
+  'ce.co.ruleDrawer.dbInstances': string
+  'ce.co.ruleDrawer.dbInstancesPlural': string
+  'ce.co.ruleDrawer.logs': string
+  'ce.co.ruleDrawer.spendVsSavings': string
+  'ce.co.ruleDrawer.usageTime': string
   'ce.co.rulesTableHeaders.fulfilment': string
   'ce.co.rulesTableHeaders.idleTime': string
   'ce.co.rulesTableHeaders.lastActivity': string
@@ -3727,8 +3787,12 @@ export interface StringsMap {
   'ce.co.selectResourceGroupPlaceholder': string
   'ce.co.setupCloudProvider': string
   'ce.co.sshSetup': string
+  'ce.common.and': string
   'ce.common.budget': string
+  'ce.common.containerService': string
+  'ce.common.database': string
   'ce.common.newBudget': string
+  'ce.common.or': string
   'ce.common.spendTillDate': string
   'ce.connector.AWS.crossAccountRole.arn': string
   'ce.connector.AWS.crossAccountRole.externalID': string
@@ -4430,6 +4494,7 @@ export interface StringsMap {
   'cf.planEnforcement.teamEnterprisePlan.upgradeRequired': string
   'cf.planEnforcement.upgradeRequiredDev': string
   'cf.planEnforcement.upgradeRequiredMau': string
+  'cf.policyEvaluations.failedToSave': string
   'cf.rbac.category': string
   'cf.rbac.featureflag.delete': string
   'cf.rbac.featureflag.edit': string
@@ -4694,6 +4759,7 @@ export interface StringsMap {
   'cv.anomalous': string
   'cv.anomalousMetrics': string
   'cv.bad': string
+  'cv.bottom': string
   'cv.burnRatePerDay': string
   'cv.changeSource.HarnessCDCurrentGen.applicationId': string
   'cv.changeSource.HarnessCDCurrentGen.selectHarnessAppId': string
@@ -4783,12 +4849,15 @@ export interface StringsMap {
   'cv.days': string
   'cv.dependenciesHealthWithCount': string
   'cv.deploymentVerification.failed': string
+  'cv.displayOnlyErrors': string
+  'cv.download': string
   'cv.errorBudget': string
   'cv.errorBudgetBurnDown': string
   'cv.errorBudgetIsSuccessfullyReset': string
   'cv.errorBudgetRecalculationInProgress': string
   'cv.errorBudgetRemaining': string
   'cv.evaluationPeriod': string
+  'cv.executionLogs': string
   'cv.failures': string
   'cv.filter': string
   'cv.forConfigurationYouWillNeedAtLeastOneMonitoredServiceWithAHealthSourceAndAMetric': string
@@ -4815,6 +4884,8 @@ export interface StringsMap {
   'cv.healthSource.connectors.AppDynamics.validation.fullPath': string
   'cv.healthSource.connectors.AppDynamics.validation.metricPath': string
   'cv.healthSource.connectors.AppDynamics.validation.metricPathWithoutLeafNode': string
+  'cv.healthSource.connectors.AppDynamics.validation.missingServiceInstanceMetricPath': string
+  'cv.healthSource.connectors.AppDynamics.validation.missingTierInFullPath': string
   'cv.healthSource.connectors.AppDynamics.validation.tier': string
   'cv.healthSource.connectors.Dynatrace.defaultMetricName': string
   'cv.healthSource.connectors.Dynatrace.keyRequestRequiredLabel': string
@@ -4873,6 +4944,8 @@ export interface StringsMap {
   'cv.initiated': string
   'cv.jobNamePlaceholder': string
   'cv.known': string
+  'cv.last12Hours': string
+  'cv.lastOneHour': string
   'cv.lastSuccessfulRun': string
   'cv.learnMore': string
   'cv.left': string
@@ -5260,8 +5333,10 @@ export interface StringsMap {
   'cv.showLess': string
   'cv.showMore': string
   'cv.showYAMLChange': string
+  'cv.showingLogsFor': string
   'cv.sliMissingDataTypeIsRequired': string
   'cv.sloRecalculationInProgress': string
+  'cv.slos.backToSLI': string
   'cv.slos.configureSLIQueries': string
   'cv.slos.confirmDeleteSLO': string
   'cv.slos.contextualHelp.sli.availabilityDescription': string
@@ -5342,6 +5417,7 @@ export interface StringsMap {
   'cv.timeRemaining': string
   'cv.timeline': string
   'cv.toObjectiveValue': string
+  'cv.top': string
   'cv.trafficSplit': string
   'cv.trend': string
   'cv.tuesday': string

@@ -134,14 +134,17 @@ const ResourceFulfilment: React.FC<ResourceFulfilmentProps> = props => {
           ...props.gatewayDetails,
           routing: {
             ...props.gatewayDetails.routing,
-            container_svc: { ...props.gatewayDetails.routing.container_svc, task_count: +updatedCount }
+            container_svc: {
+              ...props.gatewayDetails.routing.container_svc,
+              task_count: +updatedCount
+            }
           }
         }
         props.setGatewayDetails(updatedGatewayDetails)
       } catch (e) {
         showError(getString('ce.co.autoStoppingRule.configuration.step3.invalidValueErrorMsg'))
       }
-    }, 700),
+    }, 500),
     [props.gatewayDetails.routing.container_svc]
   )
 
@@ -207,7 +210,7 @@ const ResourceFulfilment: React.FC<ResourceFulfilmentProps> = props => {
         <Layout.Horizontal className={css.asgInstanceSelectionContianer}>
           <div className={css.asgInstanceDetails}>
             <Text className={css.asgDetailRow}>
-              <span>Desired capacity: </span>
+              <span>{`${getString('ce.co.autoStoppingRule.configuration.step3.desiredCapacity')}: `}</span>
               <span>
                 {props.gatewayDetails.routing?.instance?.scale_group?.desired ||
                   _defaultTo(props.gatewayDetails.routing.instance.scale_group?.on_demand, 0) +
@@ -215,11 +218,11 @@ const ResourceFulfilment: React.FC<ResourceFulfilmentProps> = props => {
               </span>
             </Text>
             <Text className={css.asgDetailRow}>
-              <span>Min capacity: </span>
+              <span>{`${getString('ce.co.autoStoppingRule.configuration.step3.minCapacity')}: `}</span>
               <span>{props.gatewayDetails.routing?.instance?.scale_group?.min}</span>
             </Text>
             <Text className={css.asgDetailRow}>
-              <span>Max capacity: </span>
+              <span>{`${getString('ce.co.autoStoppingRule.configuration.step3.maxCapacity')}: `}</span>
               <span>{props.gatewayDetails.routing?.instance?.scale_group?.max}</span>
             </Text>
           </div>
@@ -304,16 +307,23 @@ const ResourceFulfilment: React.FC<ResourceFulfilmentProps> = props => {
               return
             }}
             validationSchema={Yup.object().shape({
-              taskCount: Yup.number().required().positive().min(1)
+              taskCount: Yup.number()
+                .integer(getString('ce.co.autoStoppingRule.configuration.step3.validation.taskCountInteger'))
+                .required(getString('ce.co.autoStoppingRule.configuration.step3.validation.taskCountRequired'))
+                .positive()
+                .min(1, getString('ce.co.autoStoppingRule.configuration.step3.validation.minTaskCount'))
             })}
           >
             {_formikProps => (
               <FormikForm>
                 <FormInput.Text
                   name={'taskCount'}
-                  inputGroup={{ type: 'number', pattern: '[0-9]*' }}
+                  inputGroup={{ type: 'number', pattern: '[0-9]*', min: 1 }}
                   label={<Text>{getString('ce.co.autoStoppingRule.configuration.step3.desiredTaskCount')}</Text>}
-                  onChange={(e: React.ChangeEvent<HTMLInputElement>) => handleEcsTaskCountUpdate(e.target.value)}
+                  onChange={(e: React.ChangeEvent<HTMLInputElement>) => {
+                    _formikProps.setFieldValue('taskCount', +e.target.value)
+                    handleEcsTaskCountUpdate(e.target.value)
+                  }}
                   style={{ maxWidth: 200 }}
                   disabled={_isEmpty(props.gatewayDetails.routing.container_svc)}
                 />

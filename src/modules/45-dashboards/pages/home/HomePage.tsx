@@ -91,7 +91,8 @@ const DEFAULT_FILTER: { [key: string]: boolean } = {
   CE: false,
   CD: false,
   CI: false,
-  CF: false
+  CF: false,
+  CG_CD: false
 }
 
 type CustomColumn<T extends Record<string, any>> = Column<T>
@@ -241,6 +242,9 @@ const TagsRenderer = (data: DashboardInterface) => {
         }
         if (tag === 'CF') {
           return <section className={moduleTagCss.cfTag}>{getString('common.purpose.cf.continuous')}</section>
+        }
+        if (tag === 'CG_CD') {
+          return <section className={moduleTagCss.cgCdTag}>{getString('dashboards.modules.cgDeployments')}</section>
         }
         return <></>
       })}

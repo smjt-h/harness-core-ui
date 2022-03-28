@@ -241,7 +241,7 @@ export const RunTestsStepBase = (
           buildToolOptions,
           languageOptions,
           imagePullPolicyOptions: GetImagePullPolicyOptions(),
-          shellOptions: buildInfrastructureType === 'VM' ? GetShellOptions(buildInfrastructureType) : []
+          shellOptions: GetShellOptions(getString)
         }
       )}
       formName="ciRunTests"

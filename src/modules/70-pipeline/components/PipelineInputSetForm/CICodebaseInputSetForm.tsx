@@ -120,8 +120,10 @@ function CICodebaseInputSetFormInternal({
   }, [loadingConnectorDetails, connectorDetails])
 
   useEffect(() => {
-    const type = get(formik?.values, codeBaseTypePath, '') as CodeBaseType
-    setCodeBaseType(type)
+    const type = get(formik?.values, codeBaseTypePath) as CodeBaseType
+    if (type) {
+      setCodeBaseType(type)
+    }
     const typeOfConnector = get(formik?.values, 'connectorRef.connector.type', '') as ConnectorInfoDTO['type']
     if (typeOfConnector) {
       setConnectorType(typeOfConnector)

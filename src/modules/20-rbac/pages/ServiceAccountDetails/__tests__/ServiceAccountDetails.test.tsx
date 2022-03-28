@@ -34,7 +34,7 @@ const deleteApiKeyMock = (): ResponseBoolean => {
   deleteApiKey()
   return mockResponse
 }
-
+jest.useFakeTimers()
 const deleteTokens = jest.fn()
 const deleteTokensMock = (): ResponseBoolean => {
   deleteTokens()
@@ -50,6 +50,12 @@ const createApiKeyMock = (): ResponseBoolean => {
 const createToken = jest.fn()
 const createTokenMock = (): ResponseBoolean => {
   createToken()
+  return mockResponse
+}
+
+const rotateToken = jest.fn()
+const rotateTokenMock = (): ResponseBoolean => {
+  rotateToken()
   return mockResponse
 }
 
@@ -80,7 +86,8 @@ jest.mock('services/cd-ng', () => ({
   useUpdateApiKey: jest.fn().mockImplementation(() => ({ mutate: updateApiKeyMock })),
   useDeleteToken: jest.fn().mockImplementation(() => ({ mutate: deleteTokensMock })),
   useCreateToken: jest.fn().mockImplementation(() => ({ mutate: createTokenMock })),
-  useUpdateToken: jest.fn().mockImplementation(() => ({ mutate: updateTokenMock }))
+  useUpdateToken: jest.fn().mockImplementation(() => ({ mutate: updateTokenMock })),
+  useRotateToken: jest.fn().mockImplementation(() => ({ mutate: rotateTokenMock }))
 }))
 
 describe('Service Account Details Page Test', () => {
@@ -104,79 +111,110 @@ describe('Service Account Details Page Test', () => {
   })
   test('render data', () => {
     expect(container).toMatchSnapshot()
-  }),
-    test('Create New API key', async () => {
-      createApiKey.mockReset()
-      const newAPIkey = getByTestId('createNewApiKey')
-      expect(newAPIkey).toBeTruthy()
-      act(() => {
-        fireEvent.click(newAPIkey)
-      })
-      let form = findDialogContainer()
-      expect(form).toBeTruthy()
-      fillAtForm([{ container: form!, type: InputTypes.TEXTFIELD, value: 'New Api Key', fieldId: 'name' }])
-      await act(async () => {
-        clickSubmit(form!)
-      })
-      expect(createApiKey).toBeCalled()
-      form = findDialogContainer()
-      expect(form).toBeFalsy()
-    }),
-    test('Edit API key', async () => {
-      updateApiKey.mockReset()
-      const menu = getByTestId('apiKey-menu-api_key')
-      fireEvent.click(menu)
-      const popover = findPopoverContainer()
-      const edit = queryAllByText(popover as HTMLElement, 'edit')[0]
-      act(() => {
-        fireEvent.click(edit)
-      })
-      let form = findDialogContainer()
-      expect(form).toBeTruthy()
-      fillAtForm([{ container: form!, type: InputTypes.TEXTFIELD, value: 'Edited Api Key', fieldId: 'name' }])
-      await act(async () => {
-        clickSubmit(form!)
-      })
-      expect(updateApiKey).toBeCalled()
-      form = findDialogContainer()
-      expect(form).toBeFalsy()
-    }),
-    test('Delete Api Key', async () => {
-      deleteApiKey.mockReset()
-      const menu = getByTestId('apiKey-menu-api_key')
-      fireEvent.click(menu!)
-      const popover = findPopoverContainer()
-      const deleteMenu = getByText(popover as HTMLElement, 'delete')
-      await act(async () => {
-        fireEvent.click(deleteMenu!)
-        await waitFor(() => getByText(document.body, 'rbac.apiKey.confirmDeleteTitle'))
-        const form = findDialogContainer()
-        expect(form).toBeTruthy()
-        const deleteBtn = queryByText(form as HTMLElement, 'delete')
-        fireEvent.click(deleteBtn!)
-        expect(deleteApiKey).toBeCalled()
-      })
-    }),
-    test('Create New token', async () => {
-      const tokens = getByTestId('tokens-api_key')
-      await act(async () => {
-        fireEvent.click(tokens!)
-      })
-      const newToken = getByTestId('new_token-api_key')
-      act(() => {
-        fireEvent.click(newToken!)
-      })
-      let form = findDialogContainer()
-      expect(form).toBeTruthy()
-      fillAtForm([{ container: form!, type: InputTypes.TEXTFIELD, value: 'New Api Key', fieldId: 'name' }])
-      await act(async () => {
-        clickSubmit(form!)
-      })
-      const close = getByText(form!, 'close')
-      act(() => {
-        fireEvent.click(close!)
-      })
-      form = findDialogContainer()
-      expect(form).toBeFalsy()
+  })
+  test('Create New API key', async () => {
+    createApiKey.mockReset()
+    const newAPIkey = getByTestId('createNewApiKey')
+    expect(newAPIkey).toBeTruthy()
+    act(() => {
+      fireEvent.click(newAPIkey)
     })
+    let form = findDialogContainer()
+    expect(form).toBeTruthy()
+    fillAtForm([{ container: form!, type: InputTypes.TEXTFIELD, value: 'New Api Key', fieldId: 'name' }])
+    await act(async () => {
+      clickSubmit(form!)
+    })
+    expect(createApiKey).toBeCalled()
+    form = findDialogContainer()
+    expect(form).toBeFalsy()
+  })
+  test('Edit API key', async () => {
+    updateApiKey.mockReset()
+    const menu = getByTestId('apiKey-menu-api_key')
+    fireEvent.click(menu)
+    const popover = findPopoverContainer()
+    const edit = queryAllByText(popover as HTMLElement, 'edit')[0]
+    act(() => {
+      fireEvent.click(edit)
+    })
+    let form = findDialogContainer()
+    expect(form).toBeTruthy()
+    fillAtForm([{ container: form!, type: InputTypes.TEXTFIELD, value: 'Edited Api Key', fieldId: 'name' }])
+    await act(async () => {
+      clickSubmit(form!)
+    })
+    expect(updateApiKey).toBeCalled()
+    form = findDialogContainer()
+    expect(form).toBeFalsy()
+  })
+  test('Delete Api Key', async () => {
+    deleteApiKey.mockReset()
+    const menu = getByTestId('apiKey-menu-api_key')
+    fireEvent.click(menu!)
+    const popover = findPopoverContainer()
+    const deleteMenu = getByText(popover as HTMLElement, 'delete')
+    await act(async () => {
+      fireEvent.click(deleteMenu!)
+      await waitFor(() => getByText(document.body, 'rbac.apiKey.confirmDeleteTitle'))
+      const form = findDialogContainer()
+      expect(form).toBeTruthy()
+      const deleteBtn = queryByText(form as HTMLElement, 'delete')
+      fireEvent.click(deleteBtn!)
+      expect(deleteApiKey).toBeCalled()
+    })
+  })
+  test('Create New token', async () => {
+    const tokens = getByTestId('tokens-api_key')
+    await act(async () => {
+      fireEvent.click(tokens!)
+    })
+    const newToken = getByTestId('new_token-api_key')
+    act(() => {
+      fireEvent.click(newToken!)
+    })
+    let form = findDialogContainer()
+    expect(form).toBeTruthy()
+    fillAtForm([{ container: form!, type: InputTypes.TEXTFIELD, value: 'New Api Key', fieldId: 'name' }])
+    await act(async () => {
+      clickSubmit(form!)
+    })
+    const close = getByText(form!, 'close')
+    act(() => {
+      fireEvent.click(close!)
+    })
+    form = findDialogContainer()
+    expect(form).toBeFalsy()
+  })
+  test('Rotate token', async () => {
+    const tokens = getByTestId('tokens-api_key')
+    await act(async () => {
+      fireEvent.click(tokens!)
+    })
+    expect(container).toMatchSnapshot()
+    const newToken = getByTestId('menu-new_token')
+    act(() => {
+      fireEvent.click(newToken!)
+    })
+    const popover = findPopoverContainer()
+    const rotate = getByText(popover as HTMLElement, 'rbac.token.rotateLabel')
+    act(() => {
+      fireEvent.click(rotate!)
+    })
+    let form = findDialogContainer()
+    expect(form).toBeTruthy()
+    act(() => {
+      fillAtForm([{ container: form!, type: InputTypes.TEXTFIELD, value: '02/02/3022', fieldId: 'expiryDate' }])
+    })
+    await act(async () => {
+      clickSubmit(form!)
+    })
+    expect(rotateToken).toHaveBeenCalled()
+    const close = getByText(form!, 'close')
+    act(() => {
+      fireEvent.click(close!)
+    })
+    form = findDialogContainer()
+    expect(form).toBeFalsy()
+  })
 })

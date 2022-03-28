@@ -102,6 +102,7 @@ export default function QueryMapping({
                 })
               }
             }}
+            value={formValue.queryType}
           />
         )}
       </Container>
@@ -122,7 +123,7 @@ export default function QueryMapping({
         )}
       </Container>
 
-      <HTTPRequestMethodOption />
+      <HTTPRequestMethodOption value={formValue.requestMethod} />
 
       <FormInput.Text
         className={css.baseUrl}

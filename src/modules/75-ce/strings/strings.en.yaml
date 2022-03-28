@@ -5,6 +5,10 @@ common:
   newBudget: 'New Budget'
   budget: 'Budget'
   spendTillDate: 'Spend Till Date'
+  and: '{{ $.common.andCaps }}'
+  or: '{{ $.common.orCaps }}'
+  containerService: 'ECS'
+  database: 'RDS'
 allRegions: 'All Regions'
 allClusters: 'All Clusters'
 enforcementMessage:
@@ -34,6 +38,8 @@ co:
   searchResultsText: 'Showing {{count}} search results for "{{text}}"'
   emptyResultText: 'No rules found for {{string}}'
   selectResourceGroupPlaceholder: '{{$.select}} Resource Groups'
+  noOfTasks: 'No. of tasks:'
+  noOfInstances: 'No. of instances:'
   landingPageText:
     '<b>AutoStopping Rules</b> dynamically make sure that your <i>non-production workloads</i> are <b>running (and costing you)
     only when you’re using them</b>, and never when they are idle. Additionally, run your workloads on fully
@@ -41,6 +47,12 @@ co:
   breadCrumb:
     rules: 'AutoStopping Rules'
   noData: 'No data available. Please check after sometime'
+  ruleDrawer:
+    usageTime: 'Usage Time'
+    logs: '{{ $.pipeline.verification.analysisTab.logs }}'
+    spendVsSavings: 'Spend vs savings'
+    dbInstances: 'DB Instance'
+    dbInstancesPlural: 'DB Instances'
   autoStoppingRule:
     limitWarningMessage: You have used {{count}} / {{limit}} free Autostopping rules included in your current plan. Consider upgrading for unlimited Autostopping rules.
     helpText:
@@ -58,7 +70,7 @@ co:
             gcpVms: 'GCE VM(s)'
             ec2Vms: 'EC2 VM(s)'
             ecsService: 'ECS Service'
-            rdsInstances: 'RDS Instances'
+            rdsInstances: 'RDS Instance'
       step3:
         title: 'Choose instance fulfilment'
         description:
@@ -88,13 +100,13 @@ co:
           asg: 'Add an ASG to be managed by the AutoStopping Rule. You can choose only one ASG to a single Rule'
           kubernetes: 'Add a cluster to be managed by the AutoStopping Rule.'
           ecs: 'Add an ECS Service to be managed by the AutoStopping Rule'
-          rds: 'Add the RDS instance(s) to be managed by this Autostopping Rule'
+          rds: 'Add the RDS instance to be managed by this Autostopping Rule'
         addResourceCta:
           instance: 'Add an instance'
           asg: 'Add a auto-scaling group'
           kubernetes: 'Add a cluster'
           ecs: 'Add an ECS Service'
-          rds: 'Add RDS instances'
+          rds: 'Add RDS instance'
       step3:
         title: 'Choose to convert the selected instance(s) to spot or remain on-demand. '
         asgTitle: 'Choose the on-demand vs spot ratio for your Auto Scaling group'
@@ -104,6 +116,13 @@ co:
         policyNotEnabled: 'Mixed instance policy is not enabled'
         invalidValueErrorMsg: 'Please enter valid input'
         desiredTaskCount: 'Desired Task Count'
+        desiredCapacity: 'Desired capacity'
+        minCapacity: 'Min capacity'
+        maxCapacity: 'Max capacity'
+        validation:
+          taskCountInteger: 'Desired task count should be a number'
+          taskCountRequired: 'Desired task count cannot be empty'
+          minTaskCount: 'Desired task count must be greater than or equal to 1'
       step4:
         setup: 'Set up'
         advancedConfiguration: 'Advanced Configuration'
@@ -148,6 +167,17 @@ co:
         emptyDescription: 'Select a Region to see all the databases.'
     review:
       configDetails: 'Configuration Details'
+      cloudAccountDetails: 'Cloud account details'
+      selectedCloudAccount: 'Selected cloud account'
+      nameOfRule: 'Name of the rule'
+      idleTimeMins: 'Idle time(mins)'
+      instanceDetails: 'Instance details'
+      serviceDetails: 'Service details'
+      rdsDetails: 'RDS details'
+      hideProgressPage: 'Hide progress page'
+      setupAccessDetails: 'Setup Access details'
+      dnsLinkMapping: 'DNS Link mapping'
+      instanceFulfilment: 'Instance fulfilment'
     setupAccess:
       pageName: 'Setup Access'
       noSetupRequired: No need to setup access for {{source}}. Please move to Review step.
@@ -373,9 +403,15 @@ co:
     idleTime: 'IDLE TIME'
     fulfilment: 'COMPUTE TYPE'
     mangedResources: 'RESOURCES MANAGED BY THE RULE'
-    savings: 'CUMULATIVE SAVINGS'
+    savings: 'Cumulative Savings'
     lastActivity: 'LAST ACTIVITY'
     status: 'RULE STATUS'
+  ruleDetailsHeader:
+    idleTime: 'Idle time'
+    resourcesManaged: 'Resources managed'
+    hostName: 'Host name'
+    computeType: 'Compute type'
+    customDomain: 'Custom domain'
 
 learnMore: Learn more about Cloud Cost Management
 ceTrialHomePage:
@@ -836,3 +872,30 @@ anomalyDetection:
     countText: '{{ count }} Anomalies'
     anomaliesRedirectionText: View anomalies
     filterText: Apply anomaly filters
+businessMapping:
+  newButton: New Business Mapping
+  sideNavText: 'Business Mapping'
+  stepText: 'Step {{ current }} of {{ total }}'
+  form:
+    businessMappingPlaceholder: Enter Business Mapping Name
+    saveText: Save Business Mapping
+  errorMessages:
+    viewConditions: Need at least one element
+  manageUnallocatedCost:
+    title: Manage Unallocated Costs
+    defaultUnallocatedCostLabel: Show Unallocated Values as
+    ignoreCostLabel: Ignore Unallocated Values (Coming Soon)
+    shareCosts: Share Default Costs among Cost Buckets (Coming Soon)
+    otherPlaceholder: '{{ $.stepPalette.others }}'
+  costBucket:
+    title: 'Define Cost Buckets'
+    newButtonText: 'New Cost Bucket'
+    inputName: Cost Bucket Name
+  sharedCostBucket:
+    title: Define Shared Cost Buckets
+    newButtonText: New Shared Bucket
+    inputName: Shared Bucket Name
+    sharingStrategy:
+      equal: Equally Split between Cost Buckets
+      proportional: Proportionally split between Cost Buckets
+      fixed: Fixed percentage per Cost Bucket (Coming Soon)

@@ -125,6 +125,7 @@ allowpaths:
   - /slo
   - /slo/create
   - /slo/{identifier}
+  - /slo/{identifier}/logs
   - /slo/{identifier}/resetErrorBudget
   - /slo/{identifier}/errorBudgetResetHistory
   - /slo-dashboard/widgets
@@ -138,6 +139,7 @@ allowpaths:
   - /verify-step/{verifyStepExecutionId}/all-node-names
   - /verify-step/{verifyStepExecutionId}/deployment-activity-summary
   - /verify-step/{verifyStepExecutionId}/healthSources
+  - /verify-step/{verifyStepExecutionId}/logs
   - /change-event/monitored-service-timeline
 operationIdOverrides:
   /appdynamics/applications.get: getAppDynamicsApplications
