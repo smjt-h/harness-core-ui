@@ -36,11 +36,17 @@ interface PipelineInfoConfigWithGitDetails extends PipelineInfoConfig {
   branch: string
 }
 export interface PipelineCreateProps {
-  afterSave?: (values: PipelineInfoConfig, gitDetails?: EntityGitDetails, template?: TemplateSummaryResponse) => void
+  afterSave?: (
+    values: PipelineInfoConfig,
+    gitDetails?: EntityGitDetails,
+    usingTemplate?: TemplateSummaryResponse,
+    copyingTemplate?: TemplateSummaryResponse
+  ) => void
   initialValues?: PipelineInfoConfigWithGitDetails
   closeModal?: () => void
   gitDetails?: IGitContextFormProps
-  template?: TemplateSummaryResponse
+  usingTemplate?: TemplateSummaryResponse
+  copyingTemplate?: TemplateSummaryResponse
 }
 
 export default function CreatePipelines({
@@ -48,7 +54,8 @@ export default function CreatePipelines({
   initialValues = { identifier: '', name: '', description: '', tags: {}, repo: '', branch: '' },
   closeModal,
   gitDetails,
-  template
+  usingTemplate,
+  copyingTemplate
 }: PipelineCreateProps): JSX.Element {
   const { getString } = useStrings()
   const { pipelineIdentifier } = useParams<{ pipelineIdentifier: string }>()
@@ -89,7 +96,7 @@ export default function CreatePipelines({
           values.repo && values.repo.trim().length > 0
             ? { repoIdentifier: values.repo, branch: values.branch }
             : undefined
-        afterSave && afterSave(omit(values, 'repo', 'branch'), formGitDetails, template)
+        afterSave && afterSave(omit(values, 'repo', 'branch'), formGitDetails, usingTemplate, copyingTemplate)
       }}
     >
       {formikProps => (
@@ -107,7 +114,7 @@ export default function CreatePipelines({
               <GitContextForm formikProps={formikProps} gitDetails={gitDetails} />
             </GitSyncStoreProvider>
           )}
-          {template && (
+          {usingTemplate && (
             <Text
               icon={'template-library'}
               margin={{ top: 'medium', bottom: 'medium' }}
@@ -115,7 +122,7 @@ export default function CreatePipelines({
               iconProps={{ size: 12, margin: { right: 'xsmall' } }}
               color={Color.BLACK}
             >
-              {`Using Template: ${getTemplateNameWithLabel(template)}`}
+              {`Using Template: ${getTemplateNameWithLabel(usingTemplate)}`}
             </Text>
           )}
           <Container padding={{ top: 'xlarge' }}>

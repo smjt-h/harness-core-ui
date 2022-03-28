@@ -358,7 +358,8 @@ export function PipelineCanvas({
     }
   }
 
-  const [selectedPipelineTemplate, setSelectedTemplate] = React.useState<TemplateSummaryResponse>()
+  const [usingTemplate, setUsingTemplate] = React.useState<TemplateSummaryResponse>()
+  const [copyingTemplate, setCopyingTemplate] = React.useState<TemplateSummaryResponse>()
 
   const [showModal, hideModal] = useModalHook(() => {
     if (getOtherModal) {
@@ -396,35 +397,42 @@ export function PipelineCanvas({
               })}
               closeModal={onCloseCreate}
               gitDetails={gitDetails as IGitContextFormProps}
-              template={selectedPipelineTemplate}
+              usingTemplate={usingTemplate}
+              copyingTemplate={copyingTemplate}
             />
           </Dialog>
         </PipelineVariablesContextProvider>
       )
     }
-  }, [pipeline?.identifier, pipeline, selectedPipelineTemplate])
+  }, [pipeline?.identifier, pipeline, usingTemplate, copyingTemplate])
 
-  const openTemplateSelector = React.useCallback(() => {
-    updateTemplateView({
-      isTemplateDrawerOpened: true,
-      templateDrawerData: {
-        type: TemplateDrawerTypes.UseTemplate,
-        data: {
-          selectorData: {
-            templateType: 'Pipeline',
-            onUseTemplate: (newTemplate: TemplateSummaryResponse, _isCopied = false) => {
-              updateTemplateView({
-                isTemplateDrawerOpened: false,
-                templateDrawerData: { type: TemplateDrawerTypes.UseTemplate }
-              })
-              setSelectedTemplate(newTemplate)
-              showModal()
+  const openTemplateSelector = () => {
+    if (!isTemplateDrawerOpened && !usingTemplate && !copyingTemplate) {
+      updateTemplateView({
+        isTemplateDrawerOpened: true,
+        templateDrawerData: {
+          type: TemplateDrawerTypes.UseTemplate,
+          data: {
+            selectorData: {
+              templateType: 'Pipeline',
+              onUseTemplate: (newTemplate: TemplateSummaryResponse, isCopied = false) => {
+                updateTemplateView({
+                  isTemplateDrawerOpened: false,
+                  templateDrawerData: { type: TemplateDrawerTypes.UseTemplate }
+                })
+                if (isCopied) {
+                  setCopyingTemplate(newTemplate)
+                } else {
+                  setUsingTemplate(newTemplate)
+                }
+                showModal()
+              }
             }
           }
         }
-      }
-    })
-  }, [updateTemplateView])
+      })
+    }
+  }
 
   React.useEffect(() => {
     // for new pipeline always use UI as default view
@@ -450,9 +458,7 @@ export function PipelineCanvas({
     if (isInitialized) {
       if (pipeline?.identifier === DefaultNewPipelineId) {
         if (useTemplate) {
-          if (!isTemplateDrawerOpened && !selectedPipelineTemplate) {
-            openTemplateSelector()
-          }
+          openTemplateSelector()
         } else {
           showModal()
         }
@@ -508,16 +514,23 @@ export function PipelineCanvas({
   ])
 
   const onSubmit = React.useCallback(
-    (values: PipelineInfoConfig, updatedGitDetails?: EntityGitDetails, pipelineTemplate?: TemplateSummaryResponse) => {
+    (
+      values: PipelineInfoConfig,
+      updatedGitDetails?: EntityGitDetails,
+      using?: TemplateSummaryResponse,
+      copying?: TemplateSummaryResponse
+    ) => {
       pipeline.name = values.name
       pipeline.description = values.description
       pipeline.identifier = values.identifier
       pipeline.tags = values.tags ?? {}
-      if (pipelineTemplate) {
-        set(pipeline, 'template.templateRef', getScopeBasedTemplateRef(pipelineTemplate))
-        if (pipelineTemplate.versionLabel) {
-          set(pipeline, 'template.versionLabel', pipelineTemplate.versionLabel)
+      if (using) {
+        set(pipeline, 'template.templateRef', getScopeBasedTemplateRef(using))
+        if (using.versionLabel) {
+          set(pipeline, 'template.versionLabel', using.versionLabel)
         }
+      } else if (copyingTemplate) {
+        merge(pipeline, parse(copying?.yaml || '')?.template.spec)
       }
       delete (pipeline as PipelineWithGitContextFormProps).repo
       delete (pipeline as PipelineWithGitContextFormProps).branch
@@ -537,6 +550,8 @@ export function PipelineCanvas({
       }
       hideModal()
       trackEvent(PipelineActions.StartedPipelineCreation, { module, data })
+      setUsingTemplate(undefined)
+      setCopyingTemplate(undefined)
     },
     // eslint-disable-next-line react-hooks/exhaustive-deps
     [hideModal, pipeline, updatePipeline]
