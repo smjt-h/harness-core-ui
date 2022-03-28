@@ -73,7 +73,11 @@ export const getInitialValueForSelectedField = (
 }
 
 export const processFormData = (values: ServiceNowCreateData): ServiceNowCreateData => {
-  return {
+  const test =
+    getMultiTypeFromValue(values.spec.ticketType as ServiceNowTicketTypeSelectOption) === MultiTypeInputType.FIXED
+  console.log(test)
+  console.log(`print this: ${(values.spec.ticketType as ServiceNowTicketTypeSelectOption)?.key?.toString()}`)
+  const value = {
     ...values,
     spec: {
       delegateSelectors: values.spec.delegateSelectors,
@@ -82,13 +86,11 @@ export const processFormData = (values: ServiceNowCreateData): ServiceNowCreateD
         getMultiTypeFromValue(values.spec.connectorRef as SelectOption) === MultiTypeInputType.FIXED
           ? (values.spec.connectorRef as SelectOption)?.value?.toString()
           : values.spec.connectorRef,
-      ticketType:
-        getMultiTypeFromValue(values.spec.ticketType as ServiceNowTicketTypeSelectOption) === MultiTypeInputType.FIXED
-          ? (values.spec.ticketType as ServiceNowTicketTypeSelectOption)?.key?.toString()
-          : values.spec.ticketType,
+      ticketType: values.spec.ticketType,
       fields: processFieldsForSubmit(values)
     }
   }
+  return value
 }
 
 export const getKVFields = (values: ServiceNowCreateData): ServiceNowCreateFieldType[] => {
@@ -102,14 +104,7 @@ export const processInitialValues = (values: ServiceNowCreateData): ServiceNowCr
       delegateSelectors: values.spec.delegateSelectors,
       connectorRef: values.spec.connectorRef,
       fieldType: values.spec.fieldType,
-      ticketType:
-        values.spec.ticketType && getMultiTypeFromValue(values.spec.ticketType) === MultiTypeInputType.FIXED
-          ? {
-              label: values.spec.ticketType.toString(),
-              value: values.spec.ticketType.toString(),
-              key: values.spec.ticketType.toString()
-            }
-          : values.spec.ticketType,
+      ticketType: values.spec.ticketType,
       fields: values.spec.fields
     }
   }

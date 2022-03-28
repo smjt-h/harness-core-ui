@@ -104,7 +104,7 @@ function SelectFieldList(props: ServiceNowDynamicFieldsSelectorContentInterface)
         }
       })
     }
-  })
+  },[serviceNowTicketTypesOptions, selectedTicketTypeKey])
   useEffect(() => {
     // If ticketType changes in form, set status and field list
     if (selectedTicketTypeKey) {

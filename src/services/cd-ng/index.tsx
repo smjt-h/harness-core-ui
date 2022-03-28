@@ -8318,7 +8318,9 @@ export type ServiceNowCreateStepInfo = StepSpecType & {
   connectorRef: string
   delegateSelectors?: string[]
   fields?: ServiceNowField[]
+  templateName?: string
   ticketType: string
+  useServiceNowTemplate?: boolean
 }
 
 export interface ServiceNowField {
@@ -8344,7 +8346,7 @@ export interface ServiceNowFieldNG {
 export interface ServiceNowFieldSchemaNG {
   array?: boolean
   customType?: string
-  type: 'glide_date_time' | 'integer' | 'boolean' | 'string'
+  type: 'glide_date_time' | 'integer' | 'boolean' | 'string' | 'option'
   typeStr: string
 }
 
@@ -8357,8 +8359,10 @@ export type ServiceNowUpdateStepInfo = StepSpecType & {
   connectorRef: string
   delegateSelectors?: string[]
   fields?: ServiceNowField[]
+  templateName?: string
   ticketNumber: string
   ticketType: string
+  useServiceNowTemplate?: boolean
 }
 
 export interface ServiceOverrides {
@@ -25919,8 +25923,7 @@ export const getServiceNowIssueCreateMetadataPromise = (
     props,
     signal
   )
-
-export interface GetServiceNowIssueFieldsQueryParams {
+export interface GetServiceNowIssueMetadataQueryParams {
   connectorRef: string
   accountIdentifier: string
   orgIdentifier?: string
@@ -25931,66 +25934,54 @@ export interface GetServiceNowIssueFieldsQueryParams {
   getDefaultFromOtherRepo?: boolean
 }
 
-export type GetServiceNowIssueFieldsProps = Omit<
-  GetProps<
-    ResponseMapStringListServiceNowFieldAllowedValueNG,
-    Failure | Error,
-    GetServiceNowIssueFieldsQueryParams,
-    void
-  >,
+export type GetServiceNowIssueMetadataProps = Omit<
+  GetProps<ResponseListServiceNowFieldNG, Failure | Error, GetServiceNowIssueMetadataQueryParams, void>,
   'path'
->
+  >
 
 /**
- * Get fields for an issue type
+ * Get ServiceNow metadata for ticketType
  */
-export const GetServiceNowIssueFields = (props: GetServiceNowIssueFieldsProps) => (
-  <Get<ResponseMapStringListServiceNowFieldAllowedValueNG, Failure | Error, GetServiceNowIssueFieldsQueryParams, void>
-    path={`/servicenow/issueFields`}
+export const GetServiceNowIssueMetadata = (props: GetServiceNowIssueMetadataProps) => (
+  <Get<ResponseListServiceNowFieldNG, Failure | Error, GetServiceNowIssueMetadataQueryParams, void>
+    path={`/servicenow/metadata`}
     base={getConfig('ng/api')}
     {...props}
   />
 )
 
-export type UseGetServiceNowIssueFieldsProps = Omit<
-  UseGetProps<
-    ResponseMapStringListServiceNowFieldAllowedValueNG,
-    Failure | Error,
-    GetServiceNowIssueFieldsQueryParams,
-    void
-  >,
+export type UseGetServiceNowIssueMetadataProps = Omit<
+  UseGetProps<ResponseListServiceNowFieldNG, Failure | Error, GetServiceNowIssueMetadataQueryParams, void>,
   'path'
->
+  >
 
 /**
- * Get fields for an issue type
+ * Get ServiceNow metadata for ticketType
  */
-export const useGetServiceNowIssueFields = (props: UseGetServiceNowIssueFieldsProps) =>
-  useGet<
-    ResponseMapStringListServiceNowFieldAllowedValueNG,
-    Failure | Error,
-    GetServiceNowIssueFieldsQueryParams,
-    void
-  >(`/servicenow/issueFields`, { base: getConfig('ng/api'), ...props })
+export const useGetServiceNowIssueMetadata = (props: UseGetServiceNowIssueMetadataProps) =>
+  useGet<ResponseListServiceNowFieldNG, Failure | Error, GetServiceNowIssueMetadataQueryParams, void>(
+    `/servicenow/metadata`,
+    { base: getConfig('ng/api'), ...props }
+  )
 
 /**
- * Get fields for an issue type
+ * Get ServiceNow metadata for ticketType
  */
-export const getServiceNowIssueFieldsPromise = (
+export const getServiceNowIssueMetadataPromise = (
   props: GetUsingFetchProps<
-    ResponseMapStringListServiceNowFieldAllowedValueNG,
+    ResponseListServiceNowFieldNG,
     Failure | Error,
-    GetServiceNowIssueFieldsQueryParams,
+    GetServiceNowIssueMetadataQueryParams,
     void
-  >,
+    >,
   signal?: RequestInit['signal']
 ) =>
-  getUsingFetch<
-    ResponseMapStringListServiceNowFieldAllowedValueNG,
-    Failure | Error,
-    GetServiceNowIssueFieldsQueryParams,
-    void
-  >(getConfig('ng/api'), `/servicenow/issueFields`, props, signal)
+  getUsingFetch<ResponseListServiceNowFieldNG, Failure | Error, GetServiceNowIssueMetadataQueryParams, void>(
+    getConfig('ng/api'),
+    `/servicenow/metadata`,
+    props,
+    signal
+  )
 
 export interface GetServiceNowTicketTypesQueryParams {
   connectorRef: string

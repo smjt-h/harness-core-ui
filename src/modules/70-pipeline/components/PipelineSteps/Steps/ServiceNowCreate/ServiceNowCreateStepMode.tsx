@@ -138,7 +138,7 @@ function FormContent({
         enforceFocus={false}
         isOpen
         onClose={hideDynamicFieldsModal}
-        title={getString('pipeline.jiraCreateStep.addFields')}
+        title={getString('pipeline.serviceNowCreateStep.addFields')}
       >
         <ServiceNowDynamicFieldsSelector
           connectorRef={connectorRefFixedValue || ''}
@@ -183,7 +183,7 @@ function FormContent({
         tooltipProps={{ dataTooltipId: 'serviceNowCreateAddFields' }}
         intent="primary"
       >
-        {getString('pipeline.serviceNowCreateStep.addFields')}
+        {getString('pipeline.jiraCreateStep.fieldSelectorAdd')}
       </Text>
     )
   }
@@ -332,7 +332,8 @@ function FormContent({
             },
             {
               label: getString('pipeline.serviceNowCreateStep.fieldType.createFromTemplate'),
-              value: FieldType.CreateFromTemplate
+              value: FieldType.CreateFromTemplate,
+              disabled: true
             }
           ]}
         />

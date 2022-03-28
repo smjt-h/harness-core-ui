@@ -7,7 +7,7 @@
 
 import React, { useCallback } from 'react'
 import cx from 'classnames'
-import { isEmpty } from 'lodash-es'
+import { isEmpty, isNull } from 'lodash-es'
 import { Button, FormInput, Layout, MultiTypeInputType } from '@wings-software/uicore'
 import { useVariablesExpression } from '@pipeline/components/PipelineStudio/PiplineHooks/useVariablesExpression'
 import type { ServiceNowFieldNG } from 'services/cd-ng'
@@ -39,25 +39,25 @@ function GetMappedFieldComponent({
   serviceNowContextType
 }: MappedComponentInterface) {
   const showTextField = useCallback(() => {
-    if (
+    if(isNull(selectedField.schema) ||
       selectedField.schema.type === 'string' ||
       selectedField.schema.type === 'glide_date_time' ||
       selectedField.schema.type === 'integer'
     ) {
       return true
     }
-    if (isEmpty(selectedField.allowedValues) && selectedField.schema.array) {
+    if (isEmpty(selectedField.allowedValues) && selectedField.schema.type === 'option' && selectedField.schema.array) {
       return true
     }
     return false
   }, [selectedField])
 
   const showMultiSelectField = useCallback(() => {
-    return selectedField.allowedValues && selectedField.schema.array
+    return selectedField.allowedValues && selectedField.schema.type === 'option' && selectedField.schema.array
   }, [selectedField])
 
   const showMultiTypeField = useCallback(() => {
-    return selectedField.allowedValues
+    return selectedField.allowedValues && selectedField.schema.type === 'option'
   }, [selectedField])
 
   if (showTextField()) {
