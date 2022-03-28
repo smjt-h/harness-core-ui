@@ -32,16 +32,18 @@ import type { AccountPathProps } from '@common/interfaces/RouteInterfaces'
 import { useGetCounts } from 'services/dashboard-service'
 import LandingDashboardSummaryWidget from '@projects-orgs/components/LandingDashboardSummaryWidget/LandingDashboardSummaryWidget'
 import TimeRangeSelect from '@projects-orgs/components/TimeRangeSelect/TimeRangeSelect'
+import { isCommunityPlan, isOnPrem } from '@common/utils/utils'
 import LandingDashboardWelcomeView, { View } from './LandingDashboardWelcomeView'
 import css from './LandingDashboardPage.module.scss'
 
 const modules: Array<ModuleName> = [ModuleName.CD]
+const defaultView = isCommunityPlan() || isOnPrem() ? View.Welcome : View.Dashboard
 
 const LandingDashboardPage: React.FC = () => {
   const { accountId } = useParams<AccountPathProps>()
   const { currentUserInfo } = useAppStore()
   const { getString } = useStrings()
-  const [view, setView] = useState<View>(View.Dashboard)
+  const [view, setView] = useState<View>(defaultView)
   const name = currentUserInfo.name || currentUserInfo.email
 
   const { selectedTimeRange } = useLandingDashboardContext()
