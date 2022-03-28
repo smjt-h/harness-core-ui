@@ -2,7 +2,7 @@ import React from 'react'
 
 import cx from 'classnames'
 
-import type { IconProps } from '@wings-software/uicore/dist/icons/Icon'
+import type { IconProps } from '@wings-software/uicore'
 import { Collapse, Pagination, PaginationProps } from '@wings-software/uicore'
 import type { Scope } from '@common/interfaces/SecretsInterface'
 

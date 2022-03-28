@@ -6,8 +6,7 @@
  */
 
 import { IPopoverProps, PopoverInteractionKind } from '@blueprintjs/core'
-import { Text, Popover, Icon, Container } from '@wings-software/uicore'
-import type { IconProps } from '@wings-software/uicore/dist/icons/Icon'
+import { Text, Popover, Icon, Container, IconProps } from '@wings-software/uicore'
 import React from 'react'
 import { useStrings } from 'framework/strings'
 import css from './DescriptionPopover.module.scss'
