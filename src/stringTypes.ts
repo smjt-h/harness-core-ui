@@ -1416,8 +1416,10 @@ export interface StringsMap {
   'connectors.azure.environments.usGov': string
   'connectors.azure.validation.certificate': string
   'connectors.azure.validation.clientId': string
+  'connectors.azure.validation.clientIdRegex': string
   'connectors.azure.validation.environment': string
   'connectors.azure.validation.secret': string
+  'connectors.azure.validation.tenantIdRegex': string
   'connectors.azureKeyVault.labels.fetchVault': string
   'connectors.azureKeyVault.labels.setupVault': string
   'connectors.azureKeyVault.labels.subscription': string

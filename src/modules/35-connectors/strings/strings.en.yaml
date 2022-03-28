@@ -270,6 +270,8 @@ azure:
   validation:
     environment: '{{ $.common.validation.environmentIsRequired }}'
     clientId: '{{ $.common.validation.clientIdIsRequired }}'
+    clientIdRegex: 'Client Id can not contain white space'
+    tenantIdRegex: 'Tenant Id can not contain white space'
     secret: 'Secret is required'
     certificate: 'Certificate is required'
   environments:

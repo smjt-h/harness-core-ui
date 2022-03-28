@@ -144,8 +144,14 @@ const AzureAuthentication: React.FC<StepProps<StepConfigureProps> & AzureAuthent
         validationSchema={Yup.object().shape({
           authType: Yup.string().required(getString('connectors.chooseMethodForAzureConnection')),
           azureEnvironmentType: Yup.string().required(getString('connectors.azure.validation.environment')),
-          clientId: Yup.string().required(getString('connectors.azure.validation.clientId')),
-          tenantId: Yup.string().required(getString('connectors.tenantIdRequired')),
+          clientId: Yup.string()
+            .trim()
+            .required(getString('connectors.azure.validation.clientId'))
+            .matches(/^(\w+\S+)$/, getString('connectors.azure.validation.clientIdRegex')),
+          tenantId: Yup.string()
+            .trim()
+            .required(getString('connectors.tenantIdRequired'))
+            .matches(/^(\w+\S+)$/, getString('connectors.azure.validation.tenantIdRegex')),
           secretType: Yup.string().required(getString('connectors.tenantIdRequired')),
           secretText: Yup.object().when(['authType', 'secretType'], {
             is: (authType, secretType) =>
