@@ -102,7 +102,7 @@ export interface BaseReactComponentProps {
     type: string
     target: EventTarget
     data: {
-      allowAdd?: boolean | undefined
+      allowAdd?: boolean
       entityType?: string
       identifier?: string
       parentIdentifier?: string
@@ -115,7 +115,7 @@ export interface BaseReactComponentProps {
   data: any
   readonly: boolean
   onClick: any
-  id: string | undefined
+  id: string
   isSelected: boolean
   icon: string
   identifier: string

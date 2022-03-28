@@ -19,16 +19,19 @@ export const useIntersectionObserver = (
   }, [ref])
 
   useEffect(() => {
-    if (!element) return
+    if (!element) {
+      return
+    }
     cleanOb()
-    const ob = (observer.current = new IntersectionObserver(
+    observer.current = new IntersectionObserver(
       ([entry]) => {
         const isElementIntersecting = typeof compareFn === 'function' ? compareFn(entry) : entry.isIntersecting
 
         setIsIntersecting(isElementIntersecting)
       },
       { ...options }
-    ))
+    )
+    const ob = observer.current
     ob.observe(element)
     return () => {
       cleanOb()

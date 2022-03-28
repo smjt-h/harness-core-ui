@@ -7,6 +7,7 @@
 
 import React from 'react'
 import cx from 'classnames'
+import { defaultTo } from 'lodash-es'
 import type { IconName } from '@wings-software/uicore'
 import { Icon, Text, Button, ButtonVariation } from '@wings-software/uicore'
 import { Color } from '@harness/design-system'
@@ -26,7 +27,7 @@ interface PipelineStageNodeProps {
     type: string
     target: EventTarget
     data: {
-      allowAdd?: boolean | undefined
+      allowAdd?: boolean
       entityType?: string
       identifier?: string
       parentIdentifier?: string
@@ -39,7 +40,7 @@ interface PipelineStageNodeProps {
   data: any
   readonly: boolean
   onClick: any
-  id: string | undefined
+  id: string
   isSelected: boolean
   icon: string
   identifier: string
@@ -52,24 +53,26 @@ interface PipelineStageNodeProps {
   allowAdd?: boolean
 }
 function PipelineStageNode(props: PipelineStageNodeProps): JSX.Element {
-  const allowAdd = props.allowAdd ?? false
+  const allowAdd = defaultTo(props.allowAdd, false)
   const [showAddNode, setVisibilityOfAdd] = React.useState(false)
-  const [showAddLink, setShowAddLink] = React.useState(false)
   const CreateNode: React.FC<any> | undefined = props?.getNode(NodeType.CreateNode)?.component
 
-  const stageStatus = props?.status || (props?.data?.step?.status as ExecutionStatus)
+  const stageStatus = defaultTo(props?.status, props?.data?.step?.status as ExecutionStatus)
   const { secondaryIconProps, secondaryIcon, secondaryIconStyle } = getStatusProps(
     stageStatus as ExecutionStatus,
     ExecutionPipelineNodeType.NORMAL
   )
-
+  const setAddVisibility = (visibility: boolean): void => {
+    if (!allowAdd) return
+    setVisibilityOfAdd(visibility)
+  }
   return (
     <div
       className={cx(defaultCss.defaultNode, 'default-node', {
         draggable: !props.readonly
       })}
-      onMouseOver={() => allowAdd && setVisibilityOfAdd(true)}
-      onMouseLeave={() => allowAdd && setVisibilityOfAdd(false)}
+      onMouseOver={() => setAddVisibility(true)}
+      onMouseLeave={() => setAddVisibility(false)}
       onClick={(event: React.MouseEvent<HTMLDivElement, MouseEvent>) => {
         event.stopPropagation()
         if (props?.onClick) {
@@ -90,19 +93,15 @@ function PipelineStageNode(props: PipelineStageNodeProps): JSX.Element {
         event.stopPropagation()
 
         if (event.dataTransfer.types.indexOf(DiagramDrag.AllowDropOnNode) !== -1) {
-          if (allowAdd) {
-            setVisibilityOfAdd(true)
-            event.preventDefault()
-          }
+          setAddVisibility(true)
+          event.preventDefault()
         }
       }}
       onDragLeave={event => {
         event.stopPropagation()
 
         if (event.dataTransfer.types.indexOf(DiagramDrag.AllowDropOnNode) !== -1) {
-          if (allowAdd) {
-            setVisibilityOfAdd(false)
-          }
+          setAddVisibility(false)
         }
       }}
       onDrop={event => {
@@ -134,7 +133,7 @@ function PipelineStageNode(props: PipelineStageNodeProps): JSX.Element {
           width: 90,
           height: 40
         }}
-        onMouseOver={() => allowAdd && setVisibilityOfAdd(true)}
+        onMouseOver={() => setAddVisibility(true)}
         onMouseEnter={(event: React.MouseEvent<HTMLDivElement, MouseEvent>) => {
           event.stopPropagation()
 
@@ -145,7 +144,7 @@ function PipelineStageNode(props: PipelineStageNodeProps): JSX.Element {
           })
         }}
         onMouseLeave={(event: React.MouseEvent<HTMLDivElement, MouseEvent>) => {
-          allowAdd && setVisibilityOfAdd(false)
+          setAddVisibility(false)
           event.stopPropagation()
           setVisibilityOfAdd(false)
           props?.fireEvent({
@@ -162,7 +161,6 @@ function PipelineStageNode(props: PipelineStageNodeProps): JSX.Element {
           // checking in onDragOver if this type (AllowDropOnLink/AllowDropOnNode) exist we allow drop
           event.dataTransfer.setData(DiagramDrag.AllowDropOnLink, '1')
           event.dataTransfer.setData(DiagramDrag.AllowDropOnNode, '1')
-          // if (options.allowDropOnNode) event.dataTransfer.setData(DiagramDrag.AllowDropOnNode, '1')
           event.dataTransfer.dropEffect = 'move'
         }}
         onDragEnd={(event: React.MouseEvent<HTMLDivElement, MouseEvent>) => {
@@ -223,8 +221,8 @@ function PipelineStageNode(props: PipelineStageNodeProps): JSX.Element {
       )}
       {allowAdd && CreateNode && !props.readonly && (
         <CreateNode
-          onMouseOver={() => allowAdd && setVisibilityOfAdd(true)}
-          onMouseLeave={() => allowAdd && setVisibilityOfAdd(false)}
+          onMouseOver={() => setAddVisibility(true)}
+          onMouseLeave={() => setAddVisibility(false)}
           onClick={(event: React.MouseEvent<HTMLDivElement, MouseEvent>) => {
             event.stopPropagation()
             props?.fireEvent({
@@ -251,12 +249,9 @@ function PipelineStageNode(props: PipelineStageNodeProps): JSX.Element {
           readonly={props.readonly}
           data={props}
           fireEvent={props.fireEvent}
-          showAddLink={showAddLink}
           identifier={props.identifier}
           prevNodeIdentifier={props.prevNodeIdentifier}
-          className={cx(defaultCss.addNodeIcon, defaultCss.left, defaultCss.stageAddIcon, {
-            [defaultCss.show]: showAddLink
-          })}
+          className={cx(defaultCss.addNodeIcon, defaultCss.left, defaultCss.stageAddIcon)}
         />
       )}
     </div>

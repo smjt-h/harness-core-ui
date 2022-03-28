@@ -182,16 +182,6 @@
   }
 }
 .addNode {
-  // background: var(--white);
-  // border: 2px dashed var(--grey-400);
-  // border-radius: 8px;
-  // display: flex;
-  // justify-content: center;
-  // align-items: center;
-  // cursor: pointer;
-  // margin: 0;
-  // box-shadow: -1px 4px 7px 0 rgba(135, 149, 159, 0.27);
-  // pointer-events: all;
   visibility: hidden;
   &.visible {
     visibility: visible;
@@ -207,7 +197,6 @@
   &.stepGroupAddNode {
     width: 84px;
     height: 84px;
-    // margin-top: 20px;
     border: 1px dashed var(--grey-400);
   }
 }

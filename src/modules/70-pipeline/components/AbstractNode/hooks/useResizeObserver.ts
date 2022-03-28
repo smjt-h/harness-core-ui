@@ -41,9 +41,12 @@ export const useNodeResizeObserver = (
   }, 100)
 
   useEffect(() => {
-    if (!parentSelector || !element || !refElement) return
+    if (!parentSelector || !element || !refElement) {
+      return
+    }
     cleanup()
-    const ob = (observer.current = new ResizeObserver(onResize))
+    observer.current = new ResizeObserver(onResize)
+    const ob = observer.current
     ob.observe(element as Element)
 
     return () => {
@@ -53,10 +56,6 @@ export const useNodeResizeObserver = (
 
   return state
 }
-
-// const checkIntersectionBottom = (entry: IntersectionObserverEntry): boolean => {
-//   return entry.boundingClientRect.bottom >= (entry.rootBounds as DOMRect)?.bottom
-// }
 
 const isIntersectingBottomWhenResize = (
   entry: ResizeObserverEntry,

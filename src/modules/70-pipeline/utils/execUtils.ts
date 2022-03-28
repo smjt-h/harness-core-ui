@@ -5,7 +5,6 @@
  * https://polyformproject.org/wp-content/uploads/2020/06/PolyForm-Shield-1.0.0.txt.
  */
 
-// import type { PipelineGraphState } from '@pipeline/components/AbstractNode/types'
 import type { IconName } from '@harness/uicore'
 import { isEmpty } from 'lodash-es'
 import type { PipelineGraphState } from '@pipeline/components/AbstractNode/types'
@@ -146,7 +145,9 @@ const processSingleItem = ({
   rootNodes
 }: ProcessSingleItemArgs): void => {
   const nodeData = nodeMap?.[id]
-  if (!nodeData) return
+  if (!nodeData) {
+    return
+  }
   const iconData = getIconDataBasedOnType(nodeData)
   const item = {
     name: nodeData?.name || /* istanbul ignore next */ '',
@@ -236,7 +237,9 @@ const processGroupItem = ({
 }: // isRollbackNext
 ProcessGroupItemArgs): void => {
   const nodeData = nodeMap?.[id]
-  if (!nodeData) return
+  if (!nodeData) {
+    return
+  }
 
   const iconData = getIconDataBasedOnType(nodeData)
 
@@ -470,7 +473,9 @@ export const getExecutionStageDiagramListeners = ({
     [Event.MouseEnterNode]: (event: any) => {
       const stageData = allNodeMap[event?.data?.id]
       const target = document.querySelector(`[data-nodeid=${event?.data?.id}]`)
-      if (stageData) onMouseEnter({ data: stageData, event: { ...event, target } })
+      if (stageData) {
+        onMouseEnter({ data: stageData, event: { ...event, target } })
+      }
     },
     // eslint-disable-next-line @typescript-eslint/no-explicit-any
     [Event.MouseLeaveNode]: () => {

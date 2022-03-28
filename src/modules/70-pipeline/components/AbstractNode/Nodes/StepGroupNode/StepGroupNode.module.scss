@@ -46,40 +46,39 @@
       }
     }
   }
-  // width: fit-content;
-  // margin: 0 auto;
+
   .horizontalBar {
     position: absolute;
     top: 46px;
     height: 64px;
     opacity: 0;
-    // width: 100%;
     left: 0;
     right: 0;
   }
+
   .svgLeftJointPoint {
     position: absolute;
     top: 46px;
     height: 40px;
     opacity: 0;
-    // width: 100%;
     left: 0;
   }
+
   .svgRightJointPoint {
     position: absolute;
     top: 46px;
     height: 40px;
     opacity: 0;
-    // width: 100%;
     right: 0;
   }
   background: rgba(244, 251, 255, 0.25);
-  // margin-bottom: 20px;
   border-radius: 8px;
   border: dashed 1px var(--primary-4);
+
   &.firstnode {
     top: -47px;
   }
+
   .stepGroupHeader {
     padding: var(--spacing-small) var(--spacing-small) 0 var(--spacing-small);
 
@@ -88,16 +87,20 @@
       cursor: pointer;
     }
   }
+
   .stepGroupBody {
     padding: var(--spacing-large) var(--spacing-xxxlarge);
   }
 }
+
 .createnodeci {
   margin-left: var(--spacing-small) !important;
 }
+
 .createnodecititle {
   width: 175px;
 }
+
 .createnodecimain {
   margin-bottom: var(--spacing-xlarge) !important;
 }

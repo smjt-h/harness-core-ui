@@ -23,11 +23,11 @@ interface AddLinkNodeProps<T> {
     }
   }): void
   prevNodeIdentifier: any
-  showAddLink?: boolean
   data: T
   className?: string
 }
 export default function AddLinkNode<T>(props: AddLinkNodeProps<T>): React.ReactElement | null {
+  const [showAddLink, setShowAddLink] = React.useState(false)
   return (
     <div
       data-linkid={props?.identifier}
@@ -48,9 +48,16 @@ export default function AddLinkNode<T>(props: AddLinkNodeProps<T>): React.ReactE
       onDragOver={(event: React.MouseEvent<HTMLDivElement, MouseEvent>) => {
         event.stopPropagation()
         event.preventDefault()
+        setShowAddLink(true)
+      }}
+      onDragLeave={(event: React.MouseEvent<HTMLDivElement, MouseEvent>) => {
+        event.stopPropagation()
+        event.preventDefault()
+        setShowAddLink(false)
       }}
       onDrop={event => {
         event.stopPropagation()
+        setShowAddLink(false)
         props?.fireEvent({
           type: Event.DropLinkEvent,
           target: event.target,
@@ -61,7 +68,9 @@ export default function AddLinkNode<T>(props: AddLinkNodeProps<T>): React.ReactE
           }
         })
       }}
-      className={props.className}
+      className={cx(props.className, {
+        [defaultCss.show]: showAddLink
+      })}
     >
       <Icon name="plus" color={Color.WHITE} />
     </div>

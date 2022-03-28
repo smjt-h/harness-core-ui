@@ -35,9 +35,6 @@ export function CIDependencyNode(props: any): JSX.Element {
       ) : (
         <div style={{ position: 'relative' }}>
           <div
-            // onMouseOver={() => allowAdd && setVisibilityOfAdd(true)}
-            // onMouseLeave={() => allowAdd && setVisibilityOfAdd(false)}
-            // onDragLeave={() => allowAdd && setVisibilityOfAdd(false)}
             className={classnames(
               css.stepGroup,
               { [css.firstnode]: !props?.isParallelNode },

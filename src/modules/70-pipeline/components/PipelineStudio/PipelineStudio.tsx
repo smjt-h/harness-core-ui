@@ -23,10 +23,6 @@ import { PipelineCanvas } from './PipelineCanvas/PipelineCanvas'
 import { PipelineContext } from './PipelineContext/PipelineContext'
 import { PipelineSchemaContextProvider } from './PipelineSchema/PipelineSchemaContext'
 import css from './PipelineStudio.module.scss'
-// import { DiagramFactory } from '../AbstractNode/DiagramFactory'
-// import PipelineStageNode from '../AbstractNode/Nodes/DefaultNode/PipelineStageNode'
-// import { DiamondNodeWidget } from '../AbstractNode/Nodes/DiamondNode/DiamondNode'
-// import { IconNode } from '../AbstractNode/Nodes/IconNode/IconNode'
 
 export interface PipelineStudioProps {
   className?: string

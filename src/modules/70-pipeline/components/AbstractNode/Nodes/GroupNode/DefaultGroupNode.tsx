@@ -8,7 +8,8 @@
 import React from 'react'
 import cx from 'classnames'
 import { defaultTo } from 'lodash-es'
-import { Icon, Text, Color } from '@wings-software/uicore'
+import { Icon, Text } from '@wings-software/uicore'
+import { Color } from '@harness/design-system'
 import { DiagramDrag, DiagramType, Event } from '@pipeline/components/Diagram'
 import css from '../DefaultNode/DefaultNode.module.scss'
 

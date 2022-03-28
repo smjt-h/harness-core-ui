@@ -43,7 +43,7 @@ export const LITE_ENGINE_TASK = 'liteEngineTask'
 export const STATIC_SERVICE_GROUP_NAME = 'static_service_group'
 export const RollbackIdentifier = 'Rollback'
 export const StepGroupRollbackIdentifier = '(Rollback)'
-
+export const BARRIER_WITH_OPEN_LINKS = 'barrier-open-with-links'
 export const RollbackContainerCss: React.CSSProperties = {
   borderColor: 'var(--red-450)'
 }
@@ -857,7 +857,7 @@ export const processExecutionDataForGraph = (stages?: PipelineGraphState[]): Pip
           name: currentStageData?.name || currentStageData?.nodeIdentifier || /* istanbul ignore next */ '',
           status: currentStageData?.status as any,
           barrierFound: currentStageData?.barrierFound,
-          tertiaryIcon: currentStageData?.barrierFound ? 'barrier-open-with-links' : undefined,
+          tertiaryIcon: currentStageData?.barrierFound ? BARRIER_WITH_OPEN_LINKS : undefined,
           type:
             currentStageData?.nodeType === StageType.APPROVAL
               ? ExecutionPipelineNodeType.DIAMOND
@@ -882,7 +882,7 @@ export const processExecutionDataForGraph = (stages?: PipelineGraphState[]): Pip
               name: node?.name || node?.nodeIdentifier || /* istanbul ignore next */ '',
               status: node?.status as never,
               barrierFound: node?.barrierFound,
-              tertiaryIcon: currentStageData?.barrierFound ? 'barrier-open-with-links' : undefined,
+              tertiaryIcon: currentStageData?.barrierFound ? BARRIER_WITH_OPEN_LINKS : undefined,
               type:
                 node?.nodeType === StageType.APPROVAL
                   ? ExecutionPipelineNodeType.DIAMOND
@@ -907,7 +907,7 @@ export const processExecutionDataForGraph = (stages?: PipelineGraphState[]): Pip
           name: stage?.name || stage?.nodeIdentifier || /* istanbul ignore next */ '',
           status: stage?.status as any,
           barrierFound: stage?.barrierFound,
-          tertiaryIcon: stage?.barrierFound ? 'barrier-open-with-links' : undefined,
+          tertiaryIcon: stage?.barrierFound ? BARRIER_WITH_OPEN_LINKS : undefined,
           type:
             stage?.nodeType === StageType.APPROVAL
               ? ExecutionPipelineNodeType.DIAMOND

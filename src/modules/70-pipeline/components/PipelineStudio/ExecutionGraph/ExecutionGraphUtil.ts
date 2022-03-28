@@ -8,7 +8,7 @@
 import type { NodeModelListener, LinkModelListener } from '@projectstorm/react-diagrams-core'
 import type { BaseModelListener } from '@projectstorm/react-canvas-core'
 import { v4 as nameSpace, v5 as uuid, version } from 'uuid'
-import { isNil } from 'lodash-es'
+import { defaultTo, isNil } from 'lodash-es'
 import type { IconName } from '@wings-software/uicore'
 import { IconNodeModel } from '@pipeline/components/Diagram/node/IconNode/IconNodeModel'
 import type {
@@ -154,9 +154,8 @@ export const getStepFromNode = (
   parentId?: string
 ): { node: ExecutionWrapper | undefined; parent: ExecutionWrapper[] } => {
   let data = stepData
-  // const layer = node.getParent()
   if (parentId) {
-    const group = getStepFromId(data, parentId || '', false).node
+    const group = getStepFromId(data, defaultTo(parentId, ''), false).node
     if (group) {
       data = group
     }
@@ -718,9 +717,6 @@ export const addStepOrGroupV2 = (
     const groupId = entity?.identifier
     const node = getStepFromId(data, groupId).node
     if (entity?.parentIdentifier) {
-      // const options = layer.getOptions() as StepGroupNodeLayerOptions
-      // const options = {}
-      // const isRollbackGroup = options?.rollBackProps?.active === StepsType.Rollback
       if (isExecutionElementConfig(node) && node?.steps) {
         node.steps.push(step)
       } else if (isExecutionElementConfig(node) && node) {
@@ -731,9 +727,13 @@ export const addStepOrGroupV2 = (
       }
     } else {
       if (isRollback) {
-        if (isExecutionElementConfig(data)) data.rollbackSteps?.push?.(step)
+        if (isExecutionElementConfig(data)) {
+          data.rollbackSteps?.push?.(step)
+        }
       } else {
-        if (isExecutionElementConfig(data)) data.steps.push(step)
+        if (isExecutionElementConfig(data)) {
+          data.steps.push(step)
+        }
       }
     }
   } else if (entity?.entityType === DiagramType.Default) {

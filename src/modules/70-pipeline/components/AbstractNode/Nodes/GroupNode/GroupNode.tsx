@@ -11,11 +11,11 @@ import { defaultTo } from 'lodash-es'
 import { Icon, Text } from '@wings-software/uicore'
 import { Color } from '@harness/design-system'
 import { DiagramDrag, DiagramType, Event } from '@pipeline/components/Diagram'
-import { PipelineGraphType, NodeType } from '../../types'
+import { NodeType } from '../../types'
 import css from '../DefaultNode/DefaultNode.module.scss'
 
 function GroupNode(props: any): React.ReactElement {
-  const allowAdd = props.allowAdd ?? false
+  const allowAdd = defaultTo(props.allowAdd, false)
   const [showAdd, setVisibilityOfAdd] = React.useState(false)
   const CreateNode: React.FC<any> | undefined = props?.getNode(NodeType.CreateNode)?.component
 
@@ -29,11 +29,15 @@ function GroupNode(props: any): React.ReactElement {
       type: node.type
     }))
   }, [props?.children, props.intersectingIndex])
-
+  const id = defaultTo(nodesInfo?.[0]?.id, props.id)
   const getGroupNodeName = (): string => {
     return `${defaultTo(nodesInfo?.[0]?.name, '')} +  ${nodesInfo.length - 1} more stages`
   }
 
+  const setAddVisibility = (visibility: boolean): void => {
+    if (!allowAdd) return
+    setVisibilityOfAdd(visibility)
+  }
   return (
     <div style={{ position: 'relative' }}>
       <div
@@ -48,25 +52,21 @@ function GroupNode(props: any): React.ReactElement {
               entityType: DiagramType.GroupNode,
               identifier: props?.identifier,
               nodesInfo,
-              id: nodesInfo?.[0]?.id || props.id
+              id: id
             }
           })
         }}
-        onMouseOver={() => allowAdd && setVisibilityOfAdd(true)}
-        onMouseLeave={() => allowAdd && setVisibilityOfAdd(false)}
+        onMouseOver={() => setAddVisibility(true)}
+        onMouseLeave={() => setAddVisibility(false)}
         onDragOver={event => {
           if (event.dataTransfer.types.indexOf(DiagramDrag.AllowDropOnNode) !== -1) {
-            if (allowAdd) {
-              setVisibilityOfAdd(true)
-              event.preventDefault()
-            }
+            setAddVisibility(true)
+            event.preventDefault()
           }
         }}
         onDragLeave={event => {
           if (event.dataTransfer.types.indexOf(DiagramDrag.AllowDropOnNode) !== -1) {
-            if (allowAdd) {
-              setVisibilityOfAdd(false)
-            }
+            setAddVisibility(false)
           }
         }}
         onDrop={event => {
@@ -78,21 +78,14 @@ function GroupNode(props: any): React.ReactElement {
             // last element of groupnode
             destination: props?.children?.slice(-1)?.[0]
           })
-          // if (event.dataTransfer.types.indexOf(DiagramDrag.AllowDropOnNode) !== -1) {
-          //   const dropData: { id: string; identifier: string } = JSON.parse(
-          //     event.dataTransfer.getData(DiagramDrag.NodeDrag)
-          //   )
-          //   props.node.setSelected(false)
-          //   props.node.fireEvent({ node: dropData }, Event.DropLinkEvent)
-          // }
         }}
       >
         <div
           className={css.defaultCard}
           style={{
             position: 'absolute',
-            width: props.width || 90,
-            height: props.height || 40,
+            width: defaultTo(props.width, 90),
+            height: defaultTo(props.height, 40),
             marginTop: -8,
             marginLeft: 8
           }}
@@ -101,21 +94,21 @@ function GroupNode(props: any): React.ReactElement {
           className={css.defaultCard}
           style={{
             position: 'absolute',
-            width: props.width || 90,
-            height: props.height || 40,
+            width: defaultTo(props.width, 90),
+            height: defaultTo(props.height, 40),
             marginTop: -4,
             marginLeft: 4
           }}
         ></div>
 
         <div
-          id={nodesInfo?.[0]?.id || props.id}
-          data-nodeid={nodesInfo?.[0]?.id || props.id}
+          id={id}
+          data-nodeid={id}
           className={cx(css.defaultCard, { [css.selected]: props?.isSelected })}
           style={{
-            width: props.width || 90,
-            height: props.height || 40,
-            marginTop: 32 - (props.height || 64) / 2,
+            width: defaultTo(props.width, 90),
+            height: defaultTo(props.height, 40),
+            marginTop: 32 - defaultTo(props.height, 64) / 2,
             ...props.customNodeStyle
           }}
         >
@@ -136,8 +129,8 @@ function GroupNode(props: any): React.ReactElement {
       </div>
       {allowAdd && CreateNode && (
         <CreateNode
-          onMouseOver={() => allowAdd && setVisibilityOfAdd(true)}
-          onMouseLeave={() => allowAdd && setVisibilityOfAdd(false)}
+          onMouseOver={() => setAddVisibility(true)}
+          onMouseLeave={() => setAddVisibility(false)}
           onClick={(event: MouseEvent) => {
             event.stopPropagation()
             props?.fireEvent({
@@ -149,16 +142,7 @@ function GroupNode(props: any): React.ReactElement {
               target: event.target
             })
           }}
-          className={cx(
-            css.addNode,
-            { [css.visible]: showAdd },
-            {
-              [css.stepAddNode]: props.graphType === PipelineGraphType.STEP_GRAPH
-            },
-            {
-              [css.stageAddNode]: props.graphType === PipelineGraphType.STAGE_GRAPH
-            }
-          )}
+          className={cx(css.addNode, { [css.visible]: showAdd }, css.stageAddNode)}
           data-nodeid="add-parallel"
         />
       )}

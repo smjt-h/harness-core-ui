@@ -171,7 +171,6 @@ export default function ExecutionStageDetails(props: ExecutionStageDetailsProps)
   const onStepSelect = (id: string): void => props.onStepSelect(id)
 
   const onMouseEnterV1 = ({ event, data: stageData }: { event: any; data: any }): void => {
-    // const currentStage = event.stage || event.group
     const isFinished = stageData?.endTs
     const hasStarted = stageData?.startTs
     const status = stageData?.status

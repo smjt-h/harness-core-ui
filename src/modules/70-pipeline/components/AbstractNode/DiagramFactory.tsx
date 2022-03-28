@@ -7,7 +7,6 @@
 import React from 'react'
 import { v4 as uuid } from 'uuid'
 import { NodeType, BaseReactComponentProps } from './types'
-// import CreateNode from './Nodes/CreateNode/CreateNodeStage'
 import PipelineGraph from './PipelineGraph/PipelineGraph'
 import GroupNode from './Nodes/GroupNode/GroupNode'
 import type {

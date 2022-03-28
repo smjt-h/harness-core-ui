@@ -34,6 +34,7 @@ import type { DefaultNodeModel } from '../Diagram'
 import { ExecutionPipelineNodeType } from './ExecutionPipelineModel'
 import { StepType } from '../PipelineSteps/PipelineStepInterface'
 import css from './ExecutionStageDiagram.module.scss'
+import { BARRIER_WITH_OPEN_LINKS } from '@pipeline/utils/executionUtils'
 
 export const containGroup = <T>(nodes: Array<ExecutionPipelineNode<T>>): boolean => {
   let contain = false
@@ -551,7 +552,7 @@ export const focusRunningNode = <T>(engine: DiagramEngine, data: ExecutionPipeli
 export const getTertiaryIconProps = <T>(stage: ExecutionPipelineItem<T>): { tertiaryIcon?: IconName } => {
   const tertiaryIconProps: { tertiaryIcon?: IconName } = {}
   if (stage?.barrierFound) {
-    tertiaryIconProps.tertiaryIcon = 'barrier-open-with-links'
+    tertiaryIconProps.tertiaryIcon = BARRIER_WITH_OPEN_LINKS
   }
   return tertiaryIconProps
 }

@@ -7,13 +7,15 @@
 
 import React from 'react'
 import cx from 'classnames'
-import { Icon, Text, Color, Button, ButtonVariation } from '@wings-software/uicore'
+import { defaultTo } from 'lodash-es'
+import { Icon, Text, Button, ButtonVariation } from '@wings-software/uicore'
+import { Color } from '@harness/design-system'
 import { DiagramDrag, DiagramType, Event } from '@pipeline/components/Diagram'
 import SVGMarker from '../SVGMarker'
 import css from './DefaultNode.module.scss'
 
 function DefaultNode(props: any): JSX.Element {
-  const allowAdd = props.allowAdd ?? false
+  const allowAdd = defaultTo(props.allowAdd, false)
   const nodeRef = React.useRef<HTMLDivElement>(null)
   const [showAdd, setVisibilityOfAdd] = React.useState(false)
 
@@ -93,8 +95,8 @@ function DefaultNode(props: any): JSX.Element {
         draggable={true}
         className={cx(css.defaultCard, { [css.selected]: props?.isSelected })}
         style={{
-          width: props.width || 90,
-          height: props.height || 40,
+          width: defaultTo(props.width, 90),
+          height: defaultTo(props.height, 40),
           cursor: props.disableClick ? 'not-allowed' : props.draggable ? 'move' : 'pointer',
           opacity: props.dragging ? 0.4 : 1
         }}
@@ -106,7 +108,6 @@ function DefaultNode(props: any): JSX.Element {
           // checking in onDragOver if this type (AllowDropOnLink/AllowDropOnNode) exist we allow drop
           event.dataTransfer.setData(DiagramDrag.AllowDropOnLink, '1')
           event.dataTransfer.setData(DiagramDrag.AllowDropOnNode, '1')
-          // if (options.allowDropOnNode) event.dataTransfer.setData(DiagramDrag.AllowDropOnNode, '1')
           event.dataTransfer.dropEffect = 'move'
         }}
         onDragEnd={event => {
@@ -148,7 +149,7 @@ function DefaultNode(props: any): JSX.Element {
       </div>
       {props.name && (
         <Text
-          width={props.width || 90}
+          width={defaultTo(props.width, 90)}
           font={{ size: 'normal', align: 'center' }}
           color={props.defaultSelected ? Color.GREY_900 : Color.GREY_600}
           className={css.nameText}
@@ -174,8 +175,8 @@ function DefaultNode(props: any): JSX.Element {
           className={css.addNode}
           data-nodeid="add-parallel"
           style={{
-            width: props.width || 90,
-            height: props.height || 40,
+            width: defaultTo(props.width, 90),
+            height: defaultTo(props.height, 40),
             visibility: showAdd ? 'visible' : 'hidden'
           }}
         >

@@ -82,7 +82,6 @@ import StageBuilder from '../StageBuilder/StageBuilder'
 import { usePipelineSchema } from '../PipelineSchema/PipelineSchemaContext'
 import StudioGitPopover from '../StudioGitPopover'
 import css from './PipelineCanvas.module.scss'
-// import type { DiagramFactory } from '@pipeline/components/AbstractNode/DiagramFactory'
 
 interface OtherModalProps {
   onSubmit?: (values: PipelineInfoConfig) => void
