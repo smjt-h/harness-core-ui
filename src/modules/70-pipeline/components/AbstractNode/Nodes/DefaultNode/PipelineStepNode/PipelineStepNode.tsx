@@ -17,6 +17,7 @@ import { ExecutionPipelineNodeType } from '@pipeline/components/ExecutionStageDi
 import SVGMarker from '../../SVGMarker'
 import { NodeType } from '../../../types'
 import defaultCss from '../DefaultNode.module.scss'
+import AddLinkNode from '../AddLinkNode/AddLinkNode'
 
 const CODE_ICON: IconName = 'command-echo'
 
@@ -258,7 +259,7 @@ function PipelineStepNode(props: PipelineStepNodeProps): JSX.Element {
           data-nodeid="add-parallel"
         />
       )}
-      {!props.isParallelNode && !props.readonly && (
+      {/* {!props.isParallelNode && !props.readonly && (
         <div
           data-linkid={props?.identifier}
           onMouseOver={event => event.stopPropagation()}
@@ -307,8 +308,40 @@ function PipelineStepNode(props: PipelineStepNodeProps): JSX.Element {
         >
           <Icon name="plus" color={Color.WHITE} />
         </div>
+      )} */}
+      {!props.isParallelNode && !props.readonly && (
+        <AddLinkNode<PipelineStepNodeProps>
+          nextNode={props?.nextNode}
+          parentIdentifier={props?.parentIdentifier}
+          isParallelNode={props.isParallelNode}
+          readonly={props.readonly}
+          data={props}
+          fireEvent={props.fireEvent}
+          showAddLink={showAddLink}
+          identifier={props.identifier}
+          prevNodeIdentifier={props.prevNodeIdentifier}
+          className={cx(defaultCss.addNodeIcon, defaultCss.left, defaultCss.stepAddIcon, {
+            [defaultCss.show]: showAddLink
+          })}
+        />
       )}
       {!props?.nextNode && props?.parentIdentifier && !props.readonly && !props.isParallelNode && (
+        <AddLinkNode<PipelineStepNodeProps>
+          nextNode={props?.nextNode}
+          parentIdentifier={props?.parentIdentifier}
+          isParallelNode={props.isParallelNode}
+          readonly={props.readonly}
+          data={props}
+          fireEvent={props.fireEvent}
+          showAddLink={showAddLink}
+          identifier={props.identifier}
+          prevNodeIdentifier={props.prevNodeIdentifier}
+          className={cx(defaultCss.addNodeIcon, defaultCss.right, defaultCss.stepAddIcon, {
+            [defaultCss.show]: showAddLink
+          })}
+        />
+      )}
+      {/* { (
         <div
           data-linkid={props?.identifier}
           onMouseOver={event => event.stopPropagation()}
@@ -350,7 +383,7 @@ function PipelineStepNode(props: PipelineStepNodeProps): JSX.Element {
         >
           <Icon name="plus" color={Color.WHITE} />
         </div>
-      )}
+      )} */}
     </div>
   )
 }

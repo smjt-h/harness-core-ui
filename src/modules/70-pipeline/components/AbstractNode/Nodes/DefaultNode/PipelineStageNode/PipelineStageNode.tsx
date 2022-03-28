@@ -15,6 +15,7 @@ import { ExecutionPipelineNodeType } from '@pipeline/components/ExecutionStageDi
 import { getStatusProps } from '@pipeline/components/ExecutionStageDiagram/ExecutionStageDiagramUtils'
 import { ExecutionStatus, ExecutionStatusEnum } from '@pipeline/utils/statusHelpers'
 import SVGMarker from '../../SVGMarker'
+import AddLinkNode from '../AddLinkNode/AddLinkNode'
 import { NodeType } from '../../../types'
 import defaultCss from '../DefaultNode.module.scss'
 
@@ -241,92 +242,22 @@ function PipelineStageNode(props: PipelineStageNodeProps): JSX.Element {
           data-nodeid="add-parallel"
         />
       )}
+
       {!props.isParallelNode && !props.readonly && (
-        <div
-          data-linkid={props?.identifier}
-          onClick={(event: React.MouseEvent<HTMLDivElement, MouseEvent>) => {
-            event.stopPropagation()
-            props?.fireEvent({
-              type: Event.AddLinkClicked,
-              target: event.target,
-              data: {
-                entityType: DiagramType.Link,
-                node: props,
-                prevNodeIdentifier: props?.prevNodeIdentifier,
-                parentIdentifier: props?.parentIdentifier,
-                identifier: props?.identifier
-              }
-            })
-          }}
-          onDragOver={(event: React.MouseEvent<HTMLDivElement, MouseEvent>) => {
-            event.stopPropagation()
-            event.preventDefault()
-            setShowAddLink(true)
-          }}
-          onDragLeave={(event: React.MouseEvent<HTMLDivElement, MouseEvent>) => {
-            event.stopPropagation()
-            event.preventDefault()
-            setShowAddLink(false)
-          }}
-          onDrop={event => {
-            event.stopPropagation()
-            setShowAddLink(false)
-            props?.fireEvent({
-              type: Event.DropLinkEvent,
-              target: event.target,
-              data: {
-                entityType: DiagramType.Link,
-                node: JSON.parse(event.dataTransfer.getData(DiagramDrag.NodeDrag)),
-                destination: props
-              }
-            })
-          }}
+        <AddLinkNode<PipelineStageNodeProps>
+          nextNode={props?.nextNode}
+          parentIdentifier={props?.parentIdentifier}
+          isParallelNode={props.isParallelNode}
+          readonly={props.readonly}
+          data={props}
+          fireEvent={props.fireEvent}
+          showAddLink={showAddLink}
+          identifier={props.identifier}
+          prevNodeIdentifier={props.prevNodeIdentifier}
           className={cx(defaultCss.addNodeIcon, defaultCss.left, defaultCss.stageAddIcon, {
             [defaultCss.show]: showAddLink
           })}
-        >
-          <Icon name="plus" color={Color.WHITE} />
-        </div>
-      )}
-      {!props?.nextNode && props?.parentIdentifier && !props.isParallelNode && !props.readonly && (
-        <div
-          data-linkid={props?.identifier}
-          onClick={(event: React.MouseEvent<HTMLDivElement, MouseEvent>) => {
-            event.stopPropagation()
-            props?.fireEvent({
-              type: Event.AddLinkClicked,
-              target: event.target,
-              data: {
-                prevNodeIdentifier: props?.prevNodeIdentifier,
-                parentIdentifier: props?.parentIdentifier,
-                entityType: DiagramType.Link,
-                identifier: props?.identifier,
-                node: props as PipelineStageNodeProps
-              }
-            })
-          }}
-          onDragOver={(event: React.MouseEvent<HTMLDivElement, MouseEvent>) => {
-            event.stopPropagation()
-            event.preventDefault()
-          }}
-          onDrop={event => {
-            event.stopPropagation()
-            props?.fireEvent({
-              type: Event.DropLinkEvent,
-              target: event.target,
-              data: {
-                entityType: DiagramType.Link,
-                node: JSON.parse(event.dataTransfer.getData(DiagramDrag.NodeDrag)),
-                destination: props
-              }
-            })
-          }}
-          className={cx(defaultCss.addNodeIcon, defaultCss.right, defaultCss.stageAddIcon, {
-            [defaultCss.show]: showAddLink
-          })}
-        >
-          <Icon name="plus" color={Color.WHITE} />
-        </div>
+        />
       )}
     </div>
   )
