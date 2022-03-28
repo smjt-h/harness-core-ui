@@ -134,15 +134,12 @@ export default function ArtifactsSelection({
         ENABLED_ARTIFACT_TYPES.ArtifactoryRegistry
       )
     }
-    if (NG_AZURE && !allowedArtifactTypes.includes(ENABLED_ARTIFACT_TYPES.Acr)) {
-      allowedArtifactTypes.push(ENABLED_ARTIFACT_TYPES.Acr)
-    }
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [])
-
-  useEffect(() => {
-    if (NG_AZURE && !allowedArtifactTypes.includes(ENABLED_ARTIFACT_TYPES.Acr)) {
-      allowedArtifactTypes.push(ENABLED_ARTIFACT_TYPES.Acr)
+    if (
+      NG_AZURE &&
+      !allowedArtifactTypes[deploymentType]?.includes(ENABLED_ARTIFACT_TYPES.Acr) &&
+      !isServerlessDeploymentType(deploymentType)
+    ) {
+      allowedArtifactTypes[deploymentType].push(ENABLED_ARTIFACT_TYPES.Acr)
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [])
