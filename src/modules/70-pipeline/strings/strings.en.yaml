@@ -692,6 +692,7 @@ verification:
     knownEvent: Known Event
     unknownEvent: Unknown Event
     unexpectedFrequency: Unexpected Frequency
+    allEvents: All Events
     noAnalysis: No analysis
     clusterType: CLUSTER TYPE
     sampleMessage: MESSAGE

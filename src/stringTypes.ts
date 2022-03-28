@@ -792,14 +792,11 @@ export interface StringsMap {
   'auditTrail.actions.revoke_token': string
   'auditTrail.actions.unsuccessfullLogin': string
   'auditTrail.actions.updated': string
-  'auditTrail.allEvents': string
   'auditTrail.auditLogAPI': string
   'auditTrail.emptyStateMessage': string
   'auditTrail.emptyStateMessageTitle': string
   'auditTrail.eventSource': string
   'auditTrail.eventSummary': string
-  'auditTrail.excludeLoginEvents': string
-  'auditTrail.excludeSystemEvents': string
   'auditTrail.externalDataText': string
   'auditTrail.http': string
   'auditTrail.noYamlDifference': string
@@ -3025,6 +3022,7 @@ export interface StringsMap {
   'pipeline.verification.loadMore': string
   'pipeline.verification.logClustersInViolation': string
   'pipeline.verification.logs.actions': string
+  'pipeline.verification.logs.allEvents': string
   'pipeline.verification.logs.clusterType': string
   'pipeline.verification.logs.copyURL': string
   'pipeline.verification.logs.filterByClusterType': string
