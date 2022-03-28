@@ -1,8 +1,8 @@
-name: master
+name: develop
 on:
   push:
     branches:
-      - master
+      - develop
 
 jobs:
   coverage:
