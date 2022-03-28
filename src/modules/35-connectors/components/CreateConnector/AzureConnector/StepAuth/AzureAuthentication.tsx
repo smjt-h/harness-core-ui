@@ -22,15 +22,14 @@ import {
 } from '@wings-software/uicore'
 import * as Yup from 'yup'
 import { useParams } from 'react-router-dom'
+import type { ConnectorConfigDTO, ConnectorInfoDTO } from 'services/cd-ng'
 import {
   DelegateTypes,
   DelegateCardInterface,
   setupAzureFormData,
   AzureSecretKeyType
 } from '@connectors/pages/connectors/utils/ConnectorUtils'
-import type { SecretReferenceInterface } from '@secrets/utils/SecretField'
-import type { ConnectorConfigDTO, ConnectorInfoDTO } from 'services/cd-ng'
-
+import type { AzureFormInterface } from '@connectors/pages/connectors/utils/ConnectorsInteface'
 import type { AccountPathProps } from '@common/interfaces/RouteInterfaces'
 import SecretInput from '@secrets/components/SecretInput/SecretInput'
 import { useStrings } from 'framework/strings'
@@ -51,15 +50,6 @@ interface StepConfigureProps {
   onSuccess?: () => void
 }
 
-interface AzureFormInterface {
-  authType: string | undefined
-  azureEnvironmentType: string | undefined
-  clientId: string | undefined
-  tenantId: string | undefined
-  secretType: string | undefined
-  secretText: SecretReferenceInterface | void
-  secretFile: SecretReferenceInterface | void
-}
 const AzureAuthentication: React.FC<StepProps<StepConfigureProps> & AzureAuthenticationProps> = props => {
   const { prevStepData, nextStep } = props
   const { accountId } = useParams<AccountPathProps>()

@@ -111,7 +111,8 @@ export const ConnectorInfoText = {
   AWS: 'AWS',
   NEXUS: 'Nexus',
   ARTIFACTORY: 'Artifactory',
-  DYNATRACE: 'Dynatrace'
+  DYNATRACE: 'Dynatrace',
+  Azure: 'Azure'
 }
 export const ConnectorStatus: ConnectorStatusType = {
   SUCCESS: 'SUCCESS',
