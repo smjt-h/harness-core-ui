@@ -1415,6 +1415,14 @@ export interface StringsMap {
   'connectors.awsKms.validation.selectDelegate': string
   'connectors.awsKms.validation.selectRegion': string
   'connectors.awsSecretManager.secretNamePrefix': string
+  'connectors.azureBlob.labels.connectionString': string
+  'connectors.azureBlob.labels.containerName': string
+  'connectors.azureBlob.labels.keyId': string
+  'connectors.azureBlob.labels.keyName': string
+  'connectors.azureBlob.validation.connectionStringIsRequired': string
+  'connectors.azureBlob.validation.containerNameIsRequired': string
+  'connectors.azureBlob.validation.keyIdIsRequired': string
+  'connectors.azureBlob.validation.keyNameIsRequired': string
   'connectors.azureKeyVault.labels.fetchVault': string
   'connectors.azureKeyVault.labels.setupVault': string
   'connectors.azureKeyVault.labels.subscription': string

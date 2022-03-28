@@ -33,6 +33,7 @@ const entitySubTypeToTagMap: {
   AppDynamics: 'appdynamics',
   Vault: 'vault',
   AzureKeyVault: 'azurekeyvault',
+  AzureBlob: 'azureblob',
   DockerRegistry: 'docker',
   Local: 'local',
   GcpKms: 'gcpkms',

@@ -1055,6 +1055,19 @@ export type AzureDevOpsSCMDTO = SourceCodeManagerDTO & {
   authentication?: GithubAuthentication
 }
 
+export type AzureBlobConnectorDTO = ConnectorConfigDTO & {
+  azureEnvironmentType?: 'AZURE' | 'AZURE_US_GOVERNMENT'
+  clientId: string
+  default?: boolean
+  delegateSelectors?: string[]
+  secretKey: string
+  subscription: string
+  connectionString: string
+  containerName: string
+  tenantId: string
+  vaultName: string
+}
+
 export type AzureKeyVaultConnectorDTO = ConnectorConfigDTO & {
   azureEnvironmentType?: 'AZURE' | 'AZURE_US_GOVERNMENT'
   clientId: string
@@ -1066,6 +1079,17 @@ export type AzureKeyVaultConnectorDTO = ConnectorConfigDTO & {
   vaultName: string
 }
 
+export type AzureBlobMetadataRequestSpecDTO = SecretManagerMetadataRequestSpecDTO & {
+  azureEnvironmentType?: 'AZURE' | 'AZURE_US_GOVERNMENT'
+  clientId: string
+  delegateSelectors?: string[]
+  secretKey: string
+  subscription: string
+  connectionString: string
+  containerName: string
+  tenantId: string
+}
+
 export type AzureKeyVaultMetadataRequestSpecDTO = SecretManagerMetadataRequestSpecDTO & {
   azureEnvironmentType?: 'AZURE' | 'AZURE_US_GOVERNMENT'
   clientId: string
@@ -1073,6 +1097,12 @@ export type AzureKeyVaultMetadataRequestSpecDTO = SecretManagerMetadataRequestSp
   secretKey: string
   subscription: string
   tenantId: string
+}
+
+export type AzureBlobMetadataSpecDTO = SecretManagerMetadataSpecDTO & {
+  vaultNames?: string[]
+  keyName: string
+  keyId: string
 }
 
 export type AzureKeyVaultMetadataSpecDTO = SecretManagerMetadataSpecDTO & {
@@ -1400,6 +1430,7 @@ export interface ConnectorCatalogueItem {
     | 'Dynatrace'
     | 'Vault'
     | 'AzureKeyVault'
+    | 'AzureBlob'
     | 'DockerRegistry'
     | 'Local'
     | 'AwsKms'
@@ -1474,6 +1505,7 @@ export type ConnectorFilterProperties = FilterProperties & {
     | 'Dynatrace'
     | 'Vault'
     | 'AzureKeyVault'
+    | 'AzureBlob'
     | 'DockerRegistry'
     | 'Local'
     | 'AwsKms'
@@ -1525,6 +1557,7 @@ export interface ConnectorInfoDTO {
     | 'Dynatrace'
     | 'Vault'
     | 'AzureKeyVault'
+    | 'AzureBlob'
     | 'DockerRegistry'
     | 'Local'
     | 'AwsKms'
@@ -1592,6 +1625,7 @@ export interface ConnectorTypeStatistics {
     | 'Dynatrace'
     | 'Vault'
     | 'AzureKeyVault'
+    | 'AzureBlob'
     | 'DockerRegistry'
     | 'Local'
     | 'AwsKms'
@@ -8491,6 +8525,7 @@ export interface SecretManagerMetadataDTO {
     | 'GCP_KMS'
     | 'AWS_SECRETS_MANAGER'
     | 'AZURE_VAULT'
+    | 'AZURE_BLOB'
     | 'CYBERARK'
     | 'VAULT'
     | 'GCP_SECRETS_MANAGER'
@@ -14834,6 +14869,7 @@ export interface GetConnectorListQueryParams {
     | 'Dynatrace'
     | 'Vault'
     | 'AzureKeyVault'
+    | 'AzureBlob'
     | 'DockerRegistry'
     | 'Local'
     | 'AwsKms'
@@ -15121,6 +15157,7 @@ export interface GetAllAllowedFieldValuesQueryParams {
     | 'Dynatrace'
     | 'Vault'
     | 'AzureKeyVault'
+    | 'AzureBlob'
     | 'DockerRegistry'
     | 'Local'
     | 'AwsKms'
@@ -34078,6 +34115,7 @@ export interface GetYamlSchemaQueryParams {
     | 'Dynatrace'
     | 'Vault'
     | 'AzureKeyVault'
+    | 'AzureBlob'
     | 'DockerRegistry'
     | 'Local'
     | 'AwsKms'
@@ -34178,6 +34216,7 @@ export interface GetYamlSnippetMetadataQueryParams {
     | 'appdynamics'
     | 'vault'
     | 'azurekeyvault'
+    | 'azureblob'
     | 'local'
     | 'gcpkms'
     | 'gcp'
