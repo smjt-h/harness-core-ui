@@ -5,8 +5,7 @@
  * https://polyformproject.org/wp-content/uploads/2020/06/PolyForm-Shield-1.0.0.txt.
  */
 
-import type { WeightedVariation, Clause } from 'services/cd-ng'
-import type { TargetMap } from 'services/cf'
+import type { Clause, TargetMap, WeightedVariation } from 'services/cf'
 
 export interface TargetingRulesFormValues {
   state: string

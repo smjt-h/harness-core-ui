@@ -100,7 +100,15 @@ const TargetingRulesTab = ({
     variationPercentageRollout: {
       variations: variationPercentageRollout?.serve.distribution?.variations || [],
       bucketBy: variationPercentageRollout?.serve.distribution?.bucketBy || '',
-      clauses: variationPercentageRollout?.clauses || [],
+      clauses: variationPercentageRollout?.clauses || [
+        {
+          attribute: '',
+          id: '',
+          negate: false,
+          op: '',
+          values: ['']
+        }
+      ],
       ruleId: variationPercentageRollout?.ruleId || '',
       isVisible: !!variationPercentageRollout
     }
