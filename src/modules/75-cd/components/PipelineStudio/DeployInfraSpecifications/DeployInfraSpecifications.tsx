@@ -63,8 +63,8 @@ export const deploymentTypeInfraTypeMap = {
   ServerlessAwsLambda: InfraDeploymentType.ServerlessAwsLambda,
   ServerlessAzureFunctions: InfraDeploymentType.ServerlessAzureFunctions,
   ServerlessGoogleFunctions: InfraDeploymentType.ServerlessGoogleFunctions,
-  AmazonSAM: 'AwsSAM',
-  AzureFunctions: 'AzureFunctions'
+  AmazonSAM: InfraDeploymentType.AmazonSAM,
+  AzureFunctions: InfraDeploymentType.AzureFunctions
 }
 
 export default function DeployInfraSpecifications(props: React.PropsWithChildren<unknown>): JSX.Element {
@@ -158,7 +158,6 @@ export default function DeployInfraSpecifications(props: React.PropsWithChildren
   )
 
   React.useEffect(() => {
-    // const type = stage?.stage?.spec?.infrastructure?.infrastructureDefinition?.type
     const selectedType = stage?.stage?.spec?.serviceConfig.serviceDefinition?.type
     const infrastructureType = selectedType
       ? deploymentTypeInfraTypeMap[selectedType]
@@ -431,7 +430,7 @@ export default function DeployInfraSpecifications(props: React.PropsWithChildren
           />
         )
       }
-      case 'ServerlessGCPLambda': {
+      case 'ServerlessGoogleFunctions': {
         return (
           <StepWidget<ServerlessGCPSpec>
             factory={factory}
@@ -448,13 +447,13 @@ export default function DeployInfraSpecifications(props: React.PropsWithChildren
                   cluster: value.cluster,
                   stage: value.stage
                 },
-                'ServerlessGCPLambda'
+                'ServerlessGoogleFunctions'
               )
             }
           />
         )
       }
-      case 'ServerlessAzureLambda': {
+      case 'ServerlessAzureFunctions': {
         return (
           <StepWidget<ServerlessAzureSpec>
             factory={factory}
@@ -471,7 +470,7 @@ export default function DeployInfraSpecifications(props: React.PropsWithChildren
                   cluster: value.cluster,
                   stage: value.stage
                 },
-                'ServerlessAzureLambda'
+                'ServerlessAzureFunctions'
               )
             }
           />

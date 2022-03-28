@@ -95,7 +95,7 @@ const getCGTypes = (
 
 const getServerlessDeploymentTypes = (
   getString: (key: keyof StringsMap, vars?: Record<string, any> | undefined) => string,
-  SERVERLESS_SUPPORT = true
+  SERVERLESS_SUPPORT = false
 ): DeploymentTypeItem[] => {
   if (SERVERLESS_SUPPORT) {
     return [

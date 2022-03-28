@@ -24,8 +24,10 @@ export enum InfraDeploymentType {
   KubernetesDirect = 'KubernetesDirect',
   KubernetesGcp = 'KubernetesGcp',
   ServerlessAwsLambda = 'ServerlessAwsLambda',
-  ServerlessGoogleFunctions = 'ServerlessGCPLambda',
-  ServerlessAzureFunctions = 'ServerlessAzureLambda'
+  ServerlessGoogleFunctions = 'ServerlessGoogleFunctions',
+  ServerlessAzureFunctions = 'ServerlessAzureFunctions',
+  AmazonSAM = 'AwsSAM',
+  AzureFunctions = 'AzureFunctions'
 }
 
 export const deploymentTypeToInfraTypeMap = {
