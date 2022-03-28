@@ -34,7 +34,7 @@ jest.spyOn(cdngServices, 'useDeleteConnector').mockImplementation(() => Promise.
 jest.spyOn(cdngServices, 'getListOfBranchesByGitConfigPromise').mockImplementation(() => fetchBranches())
 jest.useFakeTimers()
 
-describe('Connectors Page Test', () => {
+describe.skip('Connectors Page Test', () => {
   const props = {
     mockData: {
       data: connectorsData as any,
