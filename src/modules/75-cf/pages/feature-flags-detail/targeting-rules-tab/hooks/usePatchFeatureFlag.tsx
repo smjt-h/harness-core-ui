@@ -12,7 +12,7 @@ import { PatchFeatureQueryParams, usePatchFeature } from 'services/cf'
 import useActiveEnvironment from '@cf/hooks/useActiveEnvironment'
 import { showToaster } from '@cf/utils/CFUtils'
 import { useStrings } from 'framework/strings'
-import type { FormVariationMap, TargetingRulesFormValues } from '../Types'
+import type { FormVariationMap, TargetingRulesFormValues } from '../Types.types'
 import { PatchFeatureFlagUtils } from './PatchFeatureFlagUtils'
 export interface UsePatchFeatureFlagProps {
   featureFlagIdentifier: string

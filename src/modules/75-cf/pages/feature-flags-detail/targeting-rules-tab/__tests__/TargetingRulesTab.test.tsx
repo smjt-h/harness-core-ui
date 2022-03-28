@@ -453,8 +453,8 @@ describe('TargetingRulesTab', () => {
       userEvent.click(saveButton)
 
       await waitFor(() => {
-        expect(screen.getAllByText('Values must add up to 100')).toHaveLength(2)
-        expect(screen.getByText('Please select a Target Group')).toBeInTheDocument()
+        expect(screen.getAllByText('cf.featureFlags.rules.validation.valueMustAddTo100')).toHaveLength(2)
+        expect(screen.getByText('cf.featureFlags.rules.validation.selectTargetGroup')).toBeInTheDocument()
         expect(saveChangesMock).not.toBeCalled()
       })
     })

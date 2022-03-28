@@ -9,7 +9,7 @@ import { Button, Container, FontVariation, Label, SimpleTagInput, Text } from '@
 import React, { ReactElement } from 'react'
 import { useStrings } from 'framework/strings'
 import type { Segment, Target, TargetMap } from 'services/cf'
-import type { FormVariationMap, TargetGroup } from '../../Types'
+import type { FormVariationMap, TargetGroup } from '../../Types.types'
 import css from './SpecificTargetingItem.module.scss'
 
 export interface SpecificTargetingItemProps {

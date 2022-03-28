@@ -9,7 +9,7 @@ import { isEqual } from 'lodash-es'
 import { v4 as uuid } from 'uuid'
 import type { FeatureState, TargetMap } from 'services/cf'
 import patch from '@cf/utils/instructions'
-import type { FormVariationMap, TargetGroup, TargetingRulesFormValues } from '../Types'
+import type { FormVariationMap, TargetGroup, TargetingRulesFormValues } from '../Types.types'
 
 // Utils class to help encapsulate the complexity around patch instruction creation and hide this from the components
 interface PatchFeatureFlagUtilsReturn {

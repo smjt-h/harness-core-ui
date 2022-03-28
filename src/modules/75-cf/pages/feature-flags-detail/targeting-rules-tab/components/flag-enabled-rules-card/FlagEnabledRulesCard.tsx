@@ -14,7 +14,7 @@ import type { Segment, Target, TargetMap, Variation } from 'services/cf'
 import PercentageRollout from '@cf/components/PercentageRollout/PercentageRollout'
 import DefaultRules from '../default-rules/DefaultRules'
 import SpecificTargetingItem from '../specific-targeting-item.tsx/SpecificTargetingItem'
-import type { FormVariationMap, VariationPercentageRollout, TargetGroup } from '../../Types'
+import type { FormVariationMap, VariationPercentageRollout, TargetGroup } from '../../Types.types'
 
 export interface FlagEnabledRulesCardProps {
   targets: Target[]

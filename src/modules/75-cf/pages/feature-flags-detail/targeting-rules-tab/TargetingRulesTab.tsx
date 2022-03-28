@@ -21,11 +21,12 @@ import {
 } from 'services/cf'
 import { FeatureFlagActivationStatus } from '@cf/utils/CFUtils'
 import useActiveEnvironment from '@cf/hooks/useActiveEnvironment'
+import { useStrings } from 'framework/strings'
 import usePatchFeatureFlag from './hooks/usePatchFeatureFlag'
 import TargetingRulesTabFooter from './components/tab-targeting-footer/TargetingRulesTabFooter'
 
 import FlagEnabledRulesCard from './components/flag-enabled-rules-card/FlagEnabledRulesCard'
-import type { FormVariationMap, VariationPercentageRollout, TargetGroup, TargetingRulesFormValues } from './Types'
+import type { FormVariationMap, VariationPercentageRollout, TargetGroup, TargetingRulesFormValues } from './Types.types'
 import css from './TargetingRulesTab.module.scss'
 export interface TargetingRulesTabProps {
   featureFlagData: Feature
@@ -40,6 +41,7 @@ const TargetingRulesTab = ({
 }: TargetingRulesTabProps): ReactElement => {
   const { orgIdentifier, accountId: accountIdentifier, projectIdentifier } = useParams<Record<string, string>>()
   const { activeEnvironment: environmentIdentifier } = useActiveEnvironment()
+  const { getString } = useStrings()
 
   const { data: targetsData, loading: targetsLoading } = useGetAllTargets({
     queryParams: {
@@ -123,7 +125,9 @@ const TargetingRulesTab = ({
             clauses: yup.array().of(
               yup.object().shape({
                 values: values.variationPercentageRollout.isVisible
-                  ? yup.array().of(yup.string().required('Please select a Target Group'))
+                  ? yup
+                      .array()
+                      .of(yup.string().required(getString('cf.featureFlags.rules.validation.selectTargetGroup')))
                   : yup.array().of(yup.string())
               })
             ),
@@ -132,9 +136,9 @@ const TargetingRulesTab = ({
                 weight: values.variationPercentageRollout.isVisible
                   ? yup
                       .number()
-                      .typeError('Value must be a number')
-                      .required('Please enter a value')
-                      .test('weight-sum-test', 'Values must add up to 100', () => {
+                      .typeError(getString('cf.creationModal.mustBeNumber'))
+                      .required(getString('cf.featureFlags.rules.validation.valueRequired'))
+                      .test('weight-sum-test', getString('cf.featureFlags.rules.validation.valueMustAddTo100'), () => {
                         const totalWeight = values.variationPercentageRollout.variations
                           .flatMap(x => x.weight)
                           .reduce((previous, current) => previous + current, 0)
@@ -168,7 +172,7 @@ const TargetingRulesTab = ({
     <Formik
       enableReinitialize={true}
       validateOnChange={false}
-      validateOnBlur={false}
+      validateOnBlur={true}
       formName="targeting-rules-form"
       initialValues={initialValues}
       validate={values => validate(values)}
