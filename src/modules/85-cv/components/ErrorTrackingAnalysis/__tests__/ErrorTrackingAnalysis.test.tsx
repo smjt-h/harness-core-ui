@@ -170,7 +170,7 @@ describe('Unit tests for ErrorTrackingAnalysisContainer', () => {
     expect(useGetAllLogsDataQueryParams?.clusterTypes).toEqual([ErrorTrackingEvents.UNKNOWN])
 
     userEvent.click(clusterTypeFilterDropdown)
-    await waitFor(() => userEvent.click(screen.getByText('pipeline.verification.logs.allEvents')))
+    await waitFor(() => userEvent.click(screen.getByText('auditTrail.allEvents')))
 
     expect(clusterTypeFilterDropdown.value).toBe('auditTrail.allEvents')
     expect(useGetAllLogsClusterDataQueryParams).not.toHaveProperty('clusterTypes')

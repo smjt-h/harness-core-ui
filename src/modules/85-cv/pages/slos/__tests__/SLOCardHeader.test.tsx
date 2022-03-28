@@ -239,7 +239,9 @@ describe('SLOCardHeader', () => {
     const popover = findPopoverContainer()
     expect(getByText(popover!, 'cv.executionLogs')).toBeInTheDocument()
 
-    userEvent.click(getByText(popover!, 'cv.executionLogs'))
+    await waitFor(() => {
+      userEvent.click(getByText(popover!, 'cv.executionLogs'))
+    })
 
     const dialog = findDialogContainer()
 
