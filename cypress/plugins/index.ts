@@ -23,8 +23,34 @@
  * @type {Cypress.PluginConfig}
  */
 // eslint-disable-next-line no-unused-vars
+const fs = require('fs')
+const _ = require('lodash')
+
 const cypressTypeScriptPreprocessor = require('./cy-ts-preprocessor')
 module.exports = (on: Cypress.PluginEvents, config: Cypress.PluginConfigOptions) => {
+  // Deleting retried screenshots if test passes eventually
+  on('after:spec', (spec, results) => {
+    const deleteScrenshots = []
+    if (results && ((results as any)?.screenshots || []).length) {
+      // Checking for any success attempt and storing screenshot name
+      results.tests.forEach(test => {
+        if (_.some(test.attempts, { state: 'failed' }) && test.state === 'passed') {
+          const screenshotName = test.title.join(' -- ').replace('/', '') // cypress fileName creation
+          deleteScrenshots.push(screenshotName)
+        }
+      })
+    }
+    deleteScrenshots.forEach(file => {
+      ;(results as any)?.screenshots.forEach(screenshot => {
+        // Matching screenshot path with substring formed by spec+test name
+        if (screenshot.path.includes(file)) {
+          console.log('file deleted successfully: ', screenshot.path)
+          fs.unlinkSync(screenshot.path)
+        }
+      })
+    })
+  })
+
   if (process.env.CYPRESS_COVERAGE) {
     require('@cypress/code-coverage/task')(on, config)
   }
