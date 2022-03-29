@@ -53,30 +53,32 @@ const expectedFormValues: TargetingRulesFormValues = {
   ],
   onVariation: 'true',
   state: 'off',
-  variationPercentageRollout: {
-    bucketBy: 'name',
-    clauses: [
-      {
-        attribute: '',
-        id: '0023fcae-39ee-4cc5-ae6b-ea7ba20733dc',
-        negate: false,
-        op: 'segmentMatch',
-        values: ['targetGroup6']
-      }
-    ],
-    isVisible: true,
-    ruleId: '455c109e-c995-4a4c-adb0-086ddd22ca39',
-    variations: [
-      {
-        variation: 'true',
-        weight: 70
-      },
-      {
-        variation: 'false',
-        weight: 30
-      }
-    ]
-  }
+  variationPercentageRollouts: [
+    {
+      bucketBy: 'name',
+      clauses: [
+        {
+          attribute: '',
+          id: '0023fcae-39ee-4cc5-ae6b-ea7ba20733dc',
+          negate: false,
+          op: 'segmentMatch',
+          values: ['targetGroup6']
+        }
+      ],
+      isVisible: true,
+      ruleId: '455c109e-c995-4a4c-adb0-086ddd22ca39',
+      variations: [
+        {
+          variation: 'true',
+          weight: 70
+        },
+        {
+          variation: 'false',
+          weight: 30
+        }
+      ]
+    }
+  ]
 }
 
 export default expectedFormValues

@@ -21,14 +21,14 @@ export interface FlagEnabledRulesCardProps {
   segments: Segment[]
   formVariationMap: FormVariationMap[]
   featureFlagVariations: Variation[]
-  variationPercentageRollout: VariationPercentageRollout
+  variationPercentageRollouts: VariationPercentageRollout[]
   isLoading: boolean
   updateTargetGroups: (index: number, newTargetGroups: TargetGroup[]) => void
   updateTargets: (index: number, newTargetGroups: TargetMap[]) => void
   addVariation: (newVariation: FormVariationMap) => void
   removeVariation: (removedVariation: FormVariationMap) => void
   addPercentageRollout: () => void
-  removePercentageRollout: () => void
+  removePercentageRollout: (index: number) => void
 }
 
 const FlagEnabledRulesCard = (props: FlagEnabledRulesCardProps): ReactElement => {
@@ -37,7 +37,7 @@ const FlagEnabledRulesCard = (props: FlagEnabledRulesCardProps): ReactElement =>
     segments,
     formVariationMap,
     featureFlagVariations,
-    variationPercentageRollout,
+    variationPercentageRollouts,
     updateTargetGroups,
     updateTargets,
     addVariation,
@@ -79,7 +79,7 @@ const FlagEnabledRulesCard = (props: FlagEnabledRulesCardProps): ReactElement =>
             </>
           ))}
 
-          {variationPercentageRollout.isVisible && (
+          {variationPercentageRollouts.map((variationPercentageRollout, index) => (
             <>
               <Container flex={{ justifyContent: 'space-between' }}>
                 <Heading level={4} font={{ variation: FontVariation.BODY2 }} margin={{ top: 'medium' }}>
@@ -90,21 +90,27 @@ const FlagEnabledRulesCard = (props: FlagEnabledRulesCardProps): ReactElement =>
                   icon="trash"
                   minimal
                   withoutCurrentColor
-                  onClick={removePercentageRollout}
+                  onClick={() => removePercentageRollout(index)}
                 />
               </Container>
 
-              <PercentageRollout
-                targetGroups={segments}
-                bucketByAttributes={[variationPercentageRollout.bucketBy]}
-                variations={featureFlagVariations}
-                fieldValues={variationPercentageRollout}
-                prefix={(fieldName: string) => `variationPercentageRollout.${fieldName}`}
-              />
+              <Container
+                key={`percentage_rollout_item_${variationPercentageRollout.ruleId}`}
+                data-testid={`percentage_rollout_item_${index}`}
+              >
+                <PercentageRollout
+                  targetGroups={segments}
+                  bucketByAttributes={[variationPercentageRollout.bucketBy]}
+                  variations={featureFlagVariations}
+                  fieldValues={variationPercentageRollout}
+                  prefix={(fieldName: string) => `variationPercentageRollouts[${index}].${fieldName}`}
+                />
+              </Container>
+              <Container border={{ bottom: true }} />
             </>
-          )}
+          ))}
 
-          {(addTargetingDropdownVariations.length > 0 || !variationPercentageRollout.isVisible) && (
+          {(addTargetingDropdownVariations.length > 0 || variationPercentageRollouts.length > 0) && (
             <Button
               icon="plus"
               rightIcon="chevron-down"
@@ -112,7 +118,7 @@ const FlagEnabledRulesCard = (props: FlagEnabledRulesCardProps): ReactElement =>
               text="Add Targeting"
               tooltipProps={{
                 fill: true,
-                interactionKind: 'click-target',
+                interactionKind: 'click',
                 minimal: true,
                 position: PopoverPosition.BOTTOM_LEFT
               }}
@@ -130,17 +136,15 @@ const FlagEnabledRulesCard = (props: FlagEnabledRulesCardProps): ReactElement =>
                       {variation.variationName}
                     </Text>
                   ))}
-                  {!variationPercentageRollout.isVisible && (
-                    <Text
-                      data-testid={`variation_option_percentage_rollout`}
-                      inline
-                      onClick={() => addPercentageRollout()}
-                      font={{ variation: FontVariation.BODY }}
-                      icon="percentage"
-                    >
-                      {getString('cf.featureFlags.percentageRollout')}
-                    </Text>
-                  )}
+                  <Text
+                    data-testid="variation_option_percentage_rollout"
+                    inline
+                    onClick={() => addPercentageRollout()}
+                    font={{ variation: FontVariation.BODY }}
+                    icon="percentage"
+                  >
+                    {getString('cf.featureFlags.percentageRollout')}
+                  </Text>
                 </Layout.Vertical>
               }
             />

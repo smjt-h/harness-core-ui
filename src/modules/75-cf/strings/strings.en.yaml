@@ -188,7 +188,7 @@ featureFlags:
     following: to following
     serveToFollowing: 'serve to following:'
     onRequest: On Request
-    onRequestVariation: On Request, check for condition and serve variation'
+    onRequestVariation: On Request, check for condition and serve variation
     specificTargeting: Specific Targeting
     toTargetGroups: To Target Groups
     toTargets: To Targets

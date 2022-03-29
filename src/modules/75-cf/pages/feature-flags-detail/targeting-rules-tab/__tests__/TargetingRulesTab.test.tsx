@@ -294,7 +294,6 @@ describe('TargetingRulesTab', () => {
 
       expect(screen.getByTestId('true_target_groups')).toBeInTheDocument()
       expect(screen.getByTestId('true_targets')).toBeInTheDocument()
-      expect(screen.queryByText('Add Targeting')).not.toBeInTheDocument()
     })
 
     test('it should remove variation when "trash" icon/button clicked', async () => {
@@ -314,11 +313,11 @@ describe('TargetingRulesTab', () => {
       renderComponent()
 
       expect(screen.getByText('cf.featureFlags.percentageRollout')).toBeInTheDocument()
-      const targetGroup = document.querySelector('input[name="variationPercentageRollout.clauses[0].values[0]"]')
+      const targetGroup = document.querySelector('input[name="variationPercentageRollouts[0].clauses[0].values[0]"]')
       expect(targetGroup).toHaveValue('target_group_1')
-      const trueWeight = document.querySelector('input[name="variationPercentageRollout.variations[0].weight"]')
+      const trueWeight = document.querySelector('input[name="variationPercentageRollouts[0].variations[0].weight"]')
       expect(trueWeight).toHaveValue(45)
-      const falseWeight = document.querySelector('input[name="variationPercentageRollout.variations[1].weight"]')
+      const falseWeight = document.querySelector('input[name="variationPercentageRollouts[0].variations[1].weight"]')
       expect(falseWeight).toHaveValue(55)
     })
 
@@ -360,7 +359,7 @@ describe('TargetingRulesTab', () => {
       await waitFor(() => expect(percentageRolloutOption).toBeInTheDocument())
       userEvent.click(percentageRolloutOption)
 
-      expect(screen.queryByText('cf.featureFlags.percentageRollout')).toBeInTheDocument()
+      expect(screen.getByTestId('percentage_rollout_item_0')).toBeInTheDocument()
     })
 
     test('it should render percentage rollout correctly when not present', () => {
@@ -445,7 +444,7 @@ describe('TargetingRulesTab', () => {
       const percentageRolloutOption = screen.getByTestId('variation_option_percentage_rollout')
       await waitFor(() => expect(percentageRolloutOption).toBeInTheDocument())
       userEvent.click(percentageRolloutOption)
-      expect(screen.queryByText('cf.featureFlags.percentageRollout')).toBeInTheDocument()
+      expect(screen.getByTestId('percentage_rollout_item_0')).toBeInTheDocument()
 
       // click save
       const saveButton = screen.getByText('save')
@@ -495,7 +494,7 @@ describe('TargetingRulesTab', () => {
 
       // update percentage rollout target grourp
       const targetGroup = document.querySelector(
-        'input[name="variationPercentageRollout.clauses[0].values[0]"]'
+        'input[name="variationPercentageRollouts[0].clauses[0].values[0]"]'
       ) as HTMLElement
       userEvent.click(targetGroup)
       await waitFor(() => expect(screen.getByText('target_group_6')).toBeInTheDocument())
@@ -503,13 +502,13 @@ describe('TargetingRulesTab', () => {
 
       // update percentage rollout weights
       const trueWeight = document.querySelector(
-        'input[name="variationPercentageRollout.variations[0].weight"]'
+        'input[name="variationPercentageRollouts[0].variations[0].weight"]'
       ) as HTMLElement
       userEvent.clear(trueWeight)
       userEvent.type(trueWeight, '70')
 
       const falseWeight = document.querySelector(
-        'input[name="variationPercentageRollout.variations[1].weight"]'
+        'input[name="variationPercentageRollouts[0].variations[1].weight"]'
       ) as HTMLElement
       userEvent.clear(falseWeight)
       userEvent.type(falseWeight, '30')

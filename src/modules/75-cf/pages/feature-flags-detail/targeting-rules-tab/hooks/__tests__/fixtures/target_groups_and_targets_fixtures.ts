@@ -5,13 +5,17 @@
  * https://polyformproject.org/wp-content/uploads/2020/06/PolyForm-Shield-1.0.0.txt.
  */
 
-const mockPercentageVariationRollout = {
-  bucketBy: '',
-  clauses: [],
-  ruleId: '',
-  isVisible: false,
-  variations: []
-}
+import type { VariationPercentageRollout } from '../../../Types.types'
+
+const mockPercentageVariationRollout: VariationPercentageRollout[] = [
+  {
+    bucketBy: '',
+    clauses: [{ attribute: '', negate: false, op: 'segmentmatch', id: '', values: [''] }],
+    ruleId: '',
+    isVisible: false,
+    variations: []
+  }
+]
 
 const targetGroupsAddedFixture = {
   initialFormVariationMap: [
@@ -301,6 +305,23 @@ const percentageRolloutUpdated = {
   },
   expected: {
     instructions: [
+      {
+        kind: 'updateRule',
+        parameters: {
+          bucketBy: 'identifier',
+          ruleID: '006731d6-1f58-4877-8ff5-68cbb885b75c',
+          variations: [
+            {
+              variation: 'true',
+              weight: 90
+            },
+            {
+              variation: 'false',
+              weight: 10
+            }
+          ]
+        }
+      },
       {
         kind: 'updateClause',
         parameters: {

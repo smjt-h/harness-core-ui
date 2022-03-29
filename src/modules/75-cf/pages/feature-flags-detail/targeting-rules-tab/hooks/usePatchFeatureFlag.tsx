@@ -79,13 +79,18 @@ const usePatchFeatureFlag = ({
       }
     })
 
-    // handle percentage rollout instructions
-    if (patchFeatureUtils.percentageRolloutAdded()) {
-      patchFeatureUtils.createAddPercentageRolloutInstructions()
-    } else if (patchFeatureUtils.percentageRolloutRemoved()) {
-      patchFeatureUtils.createRemovePercentageRolloutInstructions()
-    } else if (patchFeatureUtils.percentageRolloutUpdated()) {
-      patchFeatureUtils.createUpdatePercentageRolloutInstructions()
+    const addedPercentageRollouts = patchFeatureUtils.addedPercentageRollouts()
+    const removedPercentageRollouts = patchFeatureUtils.removedPercentageRollouts()
+    const updatedPercentageRollouts = patchFeatureUtils.updatedPercentageRollouts()
+
+    if (addedPercentageRollouts.length) {
+      patchFeatureUtils.createAddPercentageRolloutInstructions(addedPercentageRollouts)
+    }
+    if (removedPercentageRollouts.length) {
+      patchFeatureUtils.createRemovePercentageRolloutInstructions(removedPercentageRollouts)
+    }
+    if (updatedPercentageRollouts.length) {
+      patchFeatureUtils.createUpdatePercentageRolloutInstructions(updatedPercentageRollouts)
     }
 
     // submit request

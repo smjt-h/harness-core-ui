@@ -11,7 +11,7 @@ export interface TargetingRulesFormValues {
   state: string
   onVariation: string
   formVariationMap: FormVariationMap[]
-  variationPercentageRollout: VariationPercentageRollout
+  variationPercentageRollouts: VariationPercentageRollout[]
 }
 export interface TargetGroup {
   identifier: string
@@ -29,7 +29,7 @@ export interface VariationPercentageRollout {
 export interface FormVariationMap {
   variationIdentifier: string
   variationName: string
-  targetGroups: TargetGroup[] | []
-  targets: TargetMap[] | []
+  targetGroups: TargetGroup[]
+  targets: TargetMap[]
   isVisible: boolean
 }

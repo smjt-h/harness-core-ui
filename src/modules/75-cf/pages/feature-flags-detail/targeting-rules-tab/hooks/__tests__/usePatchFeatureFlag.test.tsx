@@ -46,7 +46,7 @@ const renderHookUnderTest = (props: Partial<UsePatchFeatureFlagProps> = {}) => {
           state: 'off',
           onVariation: 'False',
           formVariationMap: [],
-          variationPercentageRollout: mockPercentageVariationRollout
+          variationPercentageRollouts: mockPercentageVariationRollout
         },
         refetchFlag: jest.fn(),
         ...props
@@ -81,7 +81,7 @@ describe('usePatchFeatureFlag', () => {
         state: 'on',
         onVariation: 'True',
         formVariationMap: [],
-        variationPercentageRollout: mockPercentageVariationRollout
+        variationPercentageRollouts: mockPercentageVariationRollout
       }
       result.current.saveChanges(newValues)
 
@@ -114,7 +114,7 @@ describe('usePatchFeatureFlag', () => {
       const newValues = {
         state: 'off',
         onVariation: 'False',
-        variationPercentageRollout: mockPercentageVariationRollout,
+        variationPercentageRollouts: mockPercentageVariationRollout,
         formVariationMap: []
       }
       result.current.saveChanges(newValues)
@@ -133,7 +133,7 @@ describe('usePatchFeatureFlag', () => {
         initialValues: {
           onVariation: 'true',
           state: 'on',
-          variationPercentageRollout: mockPercentageVariationRollout,
+          variationPercentageRollouts: mockPercentageVariationRollout,
           formVariationMap: targetGroupsAddedFixture.initialFormVariationMap
         }
       })
@@ -141,7 +141,7 @@ describe('usePatchFeatureFlag', () => {
       const newValues = {
         state: 'on',
         onVariation: 'true',
-        variationPercentageRollout: mockPercentageVariationRollout,
+        variationPercentageRollouts: mockPercentageVariationRollout,
         formVariationMap: targetGroupsAddedFixture.newFormVariationMap
       }
       result.current.saveChanges(newValues)
@@ -158,7 +158,7 @@ describe('usePatchFeatureFlag', () => {
         initialValues: {
           onVariation: 'true',
           state: 'on',
-          variationPercentageRollout: mockPercentageVariationRollout,
+          variationPercentageRollouts: mockPercentageVariationRollout,
           formVariationMap: targetGroupsRemovedFixture.initialFormVariationMap
         }
       })
@@ -166,7 +166,7 @@ describe('usePatchFeatureFlag', () => {
       const newValues = {
         state: 'on',
         onVariation: 'true',
-        variationPercentageRollout: mockPercentageVariationRollout,
+        variationPercentageRollouts: mockPercentageVariationRollout,
         formVariationMap: targetGroupsRemovedFixture.newFormVariationMap
       }
       result.current.saveChanges(newValues)
@@ -183,7 +183,7 @@ describe('usePatchFeatureFlag', () => {
         initialValues: {
           onVariation: 'true',
           state: 'on',
-          variationPercentageRollout: mockPercentageVariationRollout,
+          variationPercentageRollouts: mockPercentageVariationRollout,
           formVariationMap: targetAddedFixture.initialFormVariationMap
         }
       })
@@ -191,7 +191,7 @@ describe('usePatchFeatureFlag', () => {
       const newValues = {
         state: 'on',
         onVariation: 'true',
-        variationPercentageRollout: mockPercentageVariationRollout,
+        variationPercentageRollouts: mockPercentageVariationRollout,
         formVariationMap: targetAddedFixture.newFormVariationMap
       }
       result.current.saveChanges(newValues)
@@ -208,7 +208,7 @@ describe('usePatchFeatureFlag', () => {
         initialValues: {
           onVariation: 'true',
           state: 'on',
-          variationPercentageRollout: mockPercentageVariationRollout,
+          variationPercentageRollouts: mockPercentageVariationRollout,
           formVariationMap: targetRemovedFixture.initialFormVariationMap
         }
       })
@@ -216,7 +216,7 @@ describe('usePatchFeatureFlag', () => {
       const newValues = {
         state: 'on',
         onVariation: 'true',
-        variationPercentageRollout: mockPercentageVariationRollout,
+        variationPercentageRollouts: mockPercentageVariationRollout,
         formVariationMap: targetRemovedFixture.newFormVariationMap
       }
       result.current.saveChanges(newValues)
@@ -235,7 +235,7 @@ describe('usePatchFeatureFlag', () => {
         initialValues: {
           onVariation: 'true',
           state: 'on',
-          variationPercentageRollout: percentageRolloutAdded.initialVariationPercentageRollout,
+          variationPercentageRollouts: [],
           formVariationMap: []
         }
       })
@@ -243,7 +243,7 @@ describe('usePatchFeatureFlag', () => {
       const newValues = {
         state: 'on',
         onVariation: 'true',
-        variationPercentageRollout: percentageRolloutAdded.newPercentageRolloutAdded,
+        variationPercentageRollouts: [percentageRolloutAdded.newPercentageRolloutAdded],
         formVariationMap: []
       }
       result.current.saveChanges(newValues)
@@ -259,7 +259,7 @@ describe('usePatchFeatureFlag', () => {
         initialValues: {
           onVariation: 'true',
           state: 'on',
-          variationPercentageRollout: percentageRolloutUpdated.initialVariationPercentageRollout,
+          variationPercentageRollouts: [percentageRolloutUpdated.initialVariationPercentageRollout],
           formVariationMap: []
         }
       })
@@ -267,7 +267,7 @@ describe('usePatchFeatureFlag', () => {
       const newValues = {
         state: 'on',
         onVariation: 'true',
-        variationPercentageRollout: percentageRolloutUpdated.newPercentageRolloutAdded,
+        variationPercentageRollouts: [percentageRolloutUpdated.newPercentageRolloutAdded],
         formVariationMap: []
       }
       result.current.saveChanges(newValues)
@@ -283,7 +283,7 @@ describe('usePatchFeatureFlag', () => {
         initialValues: {
           onVariation: 'true',
           state: 'on',
-          variationPercentageRollout: percentageRolloutRemoved.initialVariationPercentageRollout,
+          variationPercentageRollouts: [percentageRolloutRemoved.initialVariationPercentageRollout],
           formVariationMap: []
         }
       })
@@ -291,7 +291,7 @@ describe('usePatchFeatureFlag', () => {
       const newValues = {
         state: 'on',
         onVariation: 'true',
-        variationPercentageRollout: percentageRolloutRemoved.newPercentageRolloutAdded,
+        variationPercentageRollouts: [],
         formVariationMap: []
       }
       result.current.saveChanges(newValues)
@@ -316,7 +316,7 @@ describe('usePatchFeatureFlag', () => {
       const newValues = {
         state: 'on',
         onVariation: 'True',
-        variationPercentageRollout: mockPercentageVariationRollout,
+        variationPercentageRollouts: mockPercentageVariationRollout,
         formVariationMap: []
       }
       result.current.saveChanges(newValues)
