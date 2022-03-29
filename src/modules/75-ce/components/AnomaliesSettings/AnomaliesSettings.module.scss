@@ -62,3 +62,14 @@
   align-items: center;
   justify-content: space-between;
 }
+
+.popoverContent {
+  font-size: var(--font-size-small);
+  padding: var(--spacing-small) var(--spacing-large);
+
+  ul {
+    margin: 0;
+    list-style: none;
+    padding-left: 0;
+  }
+}

@@ -127,6 +127,9 @@ const NotificationMethod: React.FC<StepProps<StepData> & NotificationChannelProp
           name="alertList"
           render={arrayHelpers => {
             const notificationList = props.formikProps?.values?.alertList || []
+            const removeRow = (index: number) => {
+              arrayHelpers.remove(index)
+            }
 
             return (
               <div>
@@ -145,6 +148,7 @@ const NotificationMethod: React.FC<StepProps<StepData> & NotificationChannelProp
                       placeholder={getString('ce.anomalyDetection.notificationAlerts.urlInputPlaceholder')}
                       className={css.urlInput}
                     />
+                    <Icon name="main-trash" size={16} onClick={() => removeRow(index)} />
                   </Layout.Horizontal>
                 ))}
                 <Button
@@ -285,9 +289,10 @@ const useAnomaliesAlertDialog = (props: AnomalyAlertDialogProps) => {
       const channel = item.channelName
 
       if (channel === 'EMAIL') {
+        const emailList = item.channelUrl.split(',')
         return {
           type: channel,
-          [mapping[channel as keyof typeof mapping]]: [item.channelUrl]
+          [mapping[channel as keyof typeof mapping]]: emailList
         }
       }
       return {

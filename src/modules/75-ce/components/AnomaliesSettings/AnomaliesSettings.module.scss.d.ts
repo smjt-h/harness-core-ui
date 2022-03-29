@@ -11,6 +11,7 @@ declare const styles: {
   readonly listOptionItem: string
   readonly listOptionItemSelected: string
   readonly listingOptions: string
+  readonly popoverContent: string
   readonly resourceSearchInput: string
   readonly resourceSearchWrapper: string
   readonly settingsContent: string

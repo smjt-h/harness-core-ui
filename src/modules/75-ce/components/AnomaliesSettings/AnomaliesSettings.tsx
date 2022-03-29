@@ -11,6 +11,7 @@ import {
   ButtonVariation,
   Color,
   Container,
+  FontVariation,
   getErrorInfoFromErrorObject,
   Icon,
   IconName,
@@ -21,7 +22,8 @@ import {
 
 import cx from 'classnames'
 import type { Column, CellProps, Renderer } from 'react-table'
-import { useParams } from 'react-router-dom'
+import { Link, useParams } from 'react-router-dom'
+import { Classes, Popover, PopoverInteractionKind, Position } from '@blueprintjs/core'
 import { useStrings } from 'framework/strings'
 import {
   CCMNotificationSetting,
@@ -30,6 +32,7 @@ import {
   useListNotificationSettings
 } from 'services/ce'
 import type { AccountPathProps } from '@common/interfaces/RouteInterfaces'
+import routes from '@common/RouteDefinitions'
 import useAnomaliesAlertDialog from '../AnomaliesAlert/AnomaliesAlertDialog'
 import Table from '../PerspectiveReportsAndBudget/Table'
 import css from './AnomaliesSettings.module.scss'
@@ -119,24 +122,70 @@ const AlertsSection = () => {
 
   const ChannelsCell: Renderer<CellProps<CCMNotificationSetting>> = ({ row }) => {
     const channelsList = row.original.channels || []
-
-    // TODO: Need the check the styling
     return (
       <Layout.Vertical spacing="medium">
         {channelsList.map((channel, index) => {
           const channelType = channel?.notificationChannelType || 'DEFAULT'
           const channelCount = channel.channelUrls?.length || 0
+          const url = channel?.channelUrls?.shift()
 
           return (
             <Layout.Horizontal spacing="small" key={index}>
               <Icon name={channelImgMap[channelType] as IconName} size={16} />
-              <Text>{channel?.channelUrls?.[0]}</Text>
-              {/* TODO: Need to implement the on hover implementation */}
-              {channelCount > 1 ? <Text>{`(+${channelCount - 1})`}</Text> : null}
+              <Text
+                font={{ variation: FontVariation.SMALL }}
+                color={Color.GREY_800}
+                lineClamp={1}
+                inline
+                style={{ maxWidth: 217 }}
+              >
+                {url}
+              </Text>
+              {channelCount > 1 ? (
+                <Popover
+                  popoverClassName={Classes.DARK}
+                  position={Position.BOTTOM}
+                  interactionKind={PopoverInteractionKind.HOVER}
+                  content={
+                    <div className={css.popoverContent}>
+                      <ul>
+                        {channel?.channelUrls?.map((email, idx) => (
+                          <li key={idx}>{email}</li>
+                        ))}
+                      </ul>
+                    </div>
+                  }
+                >
+                  <Text font={{ variation: FontVariation.SMALL }} color={Color.PRIMARY_7}>
+                    {`(+${channelCount - 1})`}
+                  </Text>
+                </Popover>
+              ) : null}
             </Layout.Horizontal>
           )
         })}
       </Layout.Vertical>
+    )
+  }
+
+  const PerspectiveNameCell: Renderer<CellProps<CCMPerspectiveNotificationChannelsDTO>> = ({ row }) => {
+    const perspectiveName = row.original.perspectiveName
+    const perspectiveId = row.original.perspectiveId
+
+    return (
+      <Link
+        to={{
+          pathname: routes.toPerspectiveDetails({
+            accountId: accountId,
+            perspectiveId: perspectiveId as string,
+            perspectiveName: perspectiveName as string
+          })
+        }}
+      >
+        <Text font={{ variation: FontVariation.SMALL }} inline color={Color.PRIMARY_7}>
+          {perspectiveName}
+        </Text>
+      </Link>
     )
   }
 
@@ -145,6 +194,7 @@ const AlertsSection = () => {
       {
         Header: getString('ce.anomalyDetection.settings.perspectiveNameColumn'),
         accessor: 'perspectiveName',
+        Cell: PerspectiveNameCell,
         width: '42%'
       },
       {
