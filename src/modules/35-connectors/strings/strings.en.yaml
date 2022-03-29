@@ -50,7 +50,6 @@ unableToUpdateConnector: Unable to update Connector
 encryptedAPIKeyLabel: Encrypted API Key
 encryptedAPIKeyValidation: Encrypted API Key is required.
 tenantId: Tenant Id
-subscription: Subscription
 tenantIdRequired: Tenant Id is required
 reportNameRequired: '{{ $.common.reportNameRequired }}'
 connectorAlreadyExist: Connector already exists for the cloud account
@@ -258,7 +257,7 @@ GCR:
   registryHostname: 'GCR Registry URL'
 ACR:
   name: ACR
-  subscription: '{{ $.connectors.subscription }}'
+  subscription: '{{ $.common.plans.subscription }}'
   subscriptionPlaceholder: '{{ $.common.subscriptionPlaceholder }}'
   registry: 'Registry'
   registryPlaceholder: 'Select or add Registry'

@@ -1936,7 +1936,6 @@ export interface StringsMap {
   'connectors.stackdriverMetricsLabel': string
   'connectors.stepFourName': string
   'connectors.stepThreeName': string
-  'connectors.subscription': string
   'connectors.successfullCreate': string
   'connectors.successfullUpdate': string
   'connectors.successfullyCreated': string
