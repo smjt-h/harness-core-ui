@@ -1,0 +1,28 @@
+{
+  "data": [
+    {
+      "perspectiveId": "ckdpZddDSSOoZmTYpl5Omg",
+      "perspectiveName": null,
+      "channels": [
+        {
+          "type": "SLACK",
+          "slackWebHookUrl": "webhook-url-here",
+          "notificationChannelType": "SLACK",
+          "channelUrls": ["webhook-url-here"]
+        },
+        {
+          "type": "EMAIL",
+          "emails": ["email1", "email2"],
+          "notificationChannelType": "EMAIL",
+          "channelUrls": ["email1", "email2"]
+        },
+        {
+          "type": "MICROSOFT_TEAMS",
+          "microsoftTeamsUrl": "teams-url-here",
+          "notificationChannelType": "MICROSOFT_TEAMS",
+          "channelUrls": ["teams-url-here"]
+        }
+      ]
+    }
+  ]
+}

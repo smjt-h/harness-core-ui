@@ -45,8 +45,6 @@ import formatCost from '@ce/utils/formatCost'
 
 import { useTelemetry } from '@common/hooks/useTelemetry'
 import { USER_JOURNEY_EVENTS } from '@ce/TrackingEventsConstants'
-import { useFeatureFlag } from '@common/hooks/useFeatureFlag'
-import { FeatureFlag } from '@common/featureFlags'
 import Table from './Table'
 import PerspectiveBuilderPreview from '../PerspectiveBuilderPreview/PerspectiveBuilderPreview'
 import useCreateReportModal from './PerspectiveCreateReport'
@@ -112,7 +110,6 @@ const ReportsAndBudgets: React.FC<ReportsAndBudgetsProps> = ({ values, onPrevBut
       })
     )
   }
-  const isDevFeature = useFeatureFlag(FeatureFlag.CCM_DEV_TEST)
 
   return (
     <Container className={css.mainContainer}>
@@ -130,7 +127,7 @@ const ReportsAndBudgets: React.FC<ReportsAndBudgetsProps> = ({ values, onPrevBut
         >
           <ScheduledReports />
           <Budgets perspectiveName={values?.name || ''} />
-          {isDevFeature ? <AnomalyAlerts /> : null}
+          <AnomalyAlerts />
           <FlexExpander />
           <Layout.Horizontal padding={{ top: 'medium' }} spacing="large">
             <Button icon="chevron-left" text={getString('previous')} onClick={onPrevButtonClick} />
@@ -474,7 +471,7 @@ const Budgets = ({ perspectiveName }: { perspectiveName: string }): JSX.Element 
   )
 }
 
-const AnomalyAlerts = () => {
+export const AnomalyAlerts = () => {
   const { getString } = useStrings()
   const { showError, showSuccess } = useToaster()
   const { perspectiveId, accountId } = useParams<UrlParams>()

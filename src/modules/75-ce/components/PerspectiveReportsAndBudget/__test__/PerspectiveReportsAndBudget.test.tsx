@@ -14,14 +14,14 @@ import type { DocumentNode } from 'graphql'
 import { setFieldValue, InputTypes, clickSubmit } from '@common/utils/JestFormHelper'
 import { findDialogContainer, TestWrapper } from '@common/utils/testUtils'
 import { FetchPerspectiveListDocument } from 'services/ce/services'
-import useAnomaliesAlertDialog from '@ce/components/AnomaliesAlert/AnomaliesAlertDialog'
-import PerspectiveReportsAndBudgets from '../PerspectiveReportsAndBudgets'
+import PerspectiveReportsAndBudgets, { AnomalyAlerts } from '../PerspectiveReportsAndBudgets'
 import PerspectiveScheduledReportsResponse from './PerspectiveScheduledReportsResponse.json'
 import PerspectiveBudgetsResponse from './PerspectiveBudgetsResponse.json'
 import PerspectiveResponse from './PerspectiveResponse.json'
 import useBudgetModal from '../PerspectiveCreateBudget'
 import useCreateReportModal from '../PerspectiveCreateReport'
 import PerspectiveList from './PerspectiveList.json'
+import AnomalyAlertList from './AnomalyAlertList.json'
 
 jest.mock('services/ce', () => ({
   useGetReportSetting: jest.fn().mockImplementation(() => {
@@ -138,7 +138,7 @@ jest.mock('services/ce', () => ({
     }
   })),
   useGetNotificationSettings: jest.fn().mockImplementation(() => ({
-    data: {},
+    data: AnomalyAlertList,
     refetch: jest.fn(),
     error: null,
     loading: false
@@ -269,21 +269,6 @@ describe('test cases for Perspective Create Budgets', () => {
   })
 })
 
-const CreateAnomalyAlertWrapper = () => {
-  const { openAnomaliesAlertModal } = useAnomaliesAlertDialog({
-    setRefetchingState: jest.fn(),
-    selectedAlert: {
-      perspectiveId: 'perspectiveId',
-      channels: []
-    }
-  })
-  return (
-    <Container>
-      <button onClick={() => openAnomaliesAlertModal()} className="openModal" />
-    </Container>
-  )
-}
-
 describe('test case for Perspective anomaly alerts', () => {
   test('should be able to open create anomaly alert modal', async () => {
     const responseState = {
@@ -294,15 +279,16 @@ describe('test case for Perspective anomaly alerts', () => {
       }
     }
 
-    const { container, getByText, getAllByText } = render(
+    const { getByText, getAllByText } = render(
       <Provider value={responseState as any}>
         <TestWrapper pathParams={params}>
-          <CreateAnomalyAlertWrapper />
+          <AnomalyAlerts />
         </TestWrapper>
       </Provider>
     )
 
-    const openButton = container.querySelector('.openModal')
+    const openButton = getByText('ce.anomalyDetection.addNewAnomalyAlert')
+
     expect(openButton).toBeDefined()
 
     fireEvent.click(openButton!)
@@ -313,6 +299,21 @@ describe('test case for Perspective anomaly alerts', () => {
     await waitFor(() => {
       expect(getByText('ce.anomalyDetection.notificationAlerts.heading')).toBeDefined()
       expect(getAllByText('ce.anomalyDetection.notificationAlerts.overviewStep')).toBeDefined()
+    })
+
+    await waitFor(() => Promise.resolve())
+
+    expect(getByText('ce.anomalyDetection.notificationAlerts.selectPerspectiveLabel')).toBeDefined()
+
+    await setFieldValue({
+      container: modal!,
+      type: InputTypes.SELECT,
+      fieldId: 'perspective',
+      value: 'e6V1JG61QWubhV89vAmUIg'
+    })
+
+    await act(async () => {
+      clickSubmit(modal!)
     })
 
     expect(modal).toMatchSnapshot()

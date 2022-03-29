@@ -8,8 +8,6 @@
 import React from 'react'
 import { Button, ButtonSize, ButtonVariation, Layout, ExpandingSearchInput } from '@wings-software/uicore'
 import { useStrings } from 'framework/strings'
-import { useFeatureFlag } from '@common/hooks/useFeatureFlag'
-import { FeatureFlag } from '@common/featureFlags'
 import css from '../../pages/anomalies-overview/AnomaliesOverviewPage.module.scss'
 
 interface SearchProps {
@@ -19,7 +17,6 @@ interface SearchProps {
 
 const AnomaliesSearch: React.FC<SearchProps> = ({ onChange, showModal }) => {
   const { getString } = useStrings()
-  const isDevFeature = useFeatureFlag(FeatureFlag.CCM_DEV_TEST)
 
   return (
     <Layout.Horizontal className={css.searchFilterWrapper}>
@@ -29,15 +26,13 @@ const AnomaliesSearch: React.FC<SearchProps> = ({ onChange, showModal }) => {
         alwaysExpanded={true}
         placeholder={getString('search')}
       />
-      {isDevFeature ? (
-        <Button
-          text={getString('ce.anomalyDetection.settingsBtn')}
-          icon="nav-settings"
-          onClick={showModal}
-          variation={ButtonVariation.SECONDARY}
-          size={ButtonSize.MEDIUM}
-        />
-      ) : /* istanbul ignore next */ null}
+      <Button
+        text={getString('ce.anomalyDetection.settingsBtn')}
+        icon="nav-settings"
+        onClick={showModal}
+        variation={ButtonVariation.SECONDARY}
+        size={ButtonSize.MEDIUM}
+      />
     </Layout.Horizontal>
   )
 }

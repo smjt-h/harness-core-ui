@@ -6,13 +6,14 @@
  */
 
 // import { Container, Dialog, Formik } from '@harness/uicore'
-import { render } from '@testing-library/react'
+import { act, render } from '@testing-library/react'
 import React from 'react'
 import { fromValue } from 'wonka'
 import type { DocumentNode } from 'graphql'
 import { Provider } from 'urql'
-import { TestWrapper } from '@common/utils/testUtils'
+import { findDialogContainer, TestWrapper } from '@common/utils/testUtils'
 import { FetchPerspectiveListDocument } from 'services/ce/services'
+import { clickSubmit, InputTypes, setFieldValue } from '@common/utils/JestFormHelper'
 import { AnomalyAlertDialog } from '../AnomaliesAlertDialog'
 import PerspectiveList from './PerspectiveList.json'
 
@@ -72,7 +73,21 @@ describe('Test case for anomalies new alert creation', () => {
       </TestWrapper>
     )
 
+    const modal = findDialogContainer()
+    expect(modal).toBeDefined()
+
     expect(getByText('ce.anomalyDetection.notificationAlerts.selectPerspectiveLabel')).toBeDefined()
+    await setFieldValue({
+      container: modal!,
+      type: InputTypes.SELECT,
+      fieldId: 'perspective',
+      value: 'e6V1JG61QWubhV89vAmUIg'
+    })
+
+    await act(async () => {
+      clickSubmit(modal!)
+    })
+
     expect(container).toMatchSnapshot()
   })
 })

@@ -14,6 +14,7 @@ import { findDialogContainer, TestWrapper } from '@common/utils/testUtils'
 import { FetchPerspectiveListDocument } from 'services/ce/services'
 import AnomaliesSettings from '../AnomaliesSettings'
 import PerspectiveList from './PerspectiveList.json'
+import AlertList from './AnomaliesAlertList.json'
 
 const params = {
   accountId: 'TEST_ACC'
@@ -22,32 +23,7 @@ const params = {
 jest.mock('services/ce', () => ({
   useListNotificationSettings: jest.fn().mockImplementation(() => {
     return {
-      data: [
-        {
-          perspectiveId: 'ckdpZddDSSOoZmTYpl5Omg',
-          perspectiveName: null,
-          channels: [
-            {
-              type: 'SLACK',
-              slackWebHookUrl: 'webhook-url-here',
-              notificationChannelType: 'SLACK',
-              channelUrls: ['webhook-url-here']
-            },
-            {
-              type: 'EMAIL',
-              emails: ['email1', 'email2'],
-              notificationChannelType: 'EMAIL',
-              channelUrls: ['email1', 'email2']
-            },
-            {
-              type: 'MICROSOFT_TEAMS',
-              microsoftTeamsUrl: 'teams-url-here',
-              notificationChannelType: 'MICROSOFT_TEAMS',
-              channelUrls: ['teams-url-here']
-            }
-          ]
-        }
-      ],
+      data: AlertList,
       refetch: jest.fn(),
       error: null,
       loading: false
@@ -113,5 +89,39 @@ describe('test case for anomalies settings drawer', () => {
     })
 
     expect(modal).toMatchSnapshot()
+  })
+
+  test('should be able to delete the anomaly alert from the list', async () => {
+    const hideDrawer = jest.fn()
+
+    const responseState = {
+      executeQuery: ({ query }: { query: DocumentNode }) => {
+        if (query === FetchPerspectiveListDocument) {
+          return fromValue(PerspectiveList)
+        } else {
+          return fromValue({})
+        }
+      }
+    }
+
+    const { container } = render(
+      <Provider value={responseState as any}>
+        <TestWrapper pathParams={params}>
+          <AnomaliesSettings hideDrawer={hideDrawer} />
+        </TestWrapper>
+      </Provider>
+    )
+
+    await waitFor(() => Promise.resolve())
+
+    const deleteIcon = container.querySelector('span[data-icon="main-trash"]')
+
+    act(() => {
+      fireEvent.click(deleteIcon!)
+    })
+    expect(container).toMatchSnapshot()
+    await waitFor(() => {
+      expect(queryByText(document.body, 'ce.anomalyDetection.notificationAlerts.deleteAlertSuccessMsg')).toBeDefined()
+    })
   })
 })
