@@ -120,6 +120,36 @@ jest.mock('services/ce', () => ({
     refetch: jest.fn(),
     error: null,
     loading: false
+  })),
+  useCreateNotificationSetting: jest.fn().mockImplementation(() => ({
+    mutate: async () => {
+      return {
+        status: 'SUCCESS',
+        data: {}
+      }
+    }
+  })),
+  useUpdateNotificationSetting: jest.fn().mockImplementation(() => ({
+    mutate: async () => {
+      return {
+        status: 'SUCCESS',
+        data: {}
+      }
+    }
+  })),
+  useGetNotificationSettings: jest.fn().mockImplementation(() => ({
+    data: {},
+    refetch: jest.fn(),
+    error: null,
+    loading: false
+  })),
+  useDeleteNotificationSettings: jest.fn().mockImplementation(() => ({
+    mutate: async () => {
+      return {
+        status: 'SUCCESS',
+        data: {}
+      }
+    }
   }))
 }))
 
@@ -240,7 +270,13 @@ describe('test cases for Perspective Create Budgets', () => {
 })
 
 const CreateAnomalyAlertWrapper = () => {
-  const { openAnomaliesAlertModal } = useAnomaliesAlertDialog()
+  const { openAnomaliesAlertModal } = useAnomaliesAlertDialog({
+    setRefetchingState: jest.fn(),
+    selectedAlert: {
+      perspectiveId: 'perspectiveId',
+      channels: []
+    }
+  })
   return (
     <Container>
       <button onClick={() => openAnomaliesAlertModal()} className="openModal" />
@@ -250,10 +286,20 @@ const CreateAnomalyAlertWrapper = () => {
 
 describe('test case for Perspective anomaly alerts', () => {
   test('should be able to open create anomaly alert modal', async () => {
+    const responseState = {
+      executeQuery: ({ query }: { query: DocumentNode }) => {
+        if (query === FetchPerspectiveListDocument) {
+          return fromValue(PerspectiveList)
+        }
+      }
+    }
+
     const { container, getByText, getAllByText } = render(
-      <TestWrapper pathParams={params}>
-        <CreateAnomalyAlertWrapper />
-      </TestWrapper>
+      <Provider value={responseState as any}>
+        <TestWrapper pathParams={params}>
+          <CreateAnomalyAlertWrapper />
+        </TestWrapper>
+      </Provider>
     )
 
     const openButton = container.querySelector('.openModal')

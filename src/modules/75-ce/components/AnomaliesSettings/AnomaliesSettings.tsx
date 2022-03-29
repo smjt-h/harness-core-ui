@@ -211,6 +211,14 @@ const AlertsSection = () => {
     []
   )
 
+  const renderLoader = (): JSX.Element => {
+    return (
+      <Container className={css.loader}>
+        <Icon name="spinner" color={Color.BLUE_500} size={30} />
+      </Container>
+    )
+  }
+
   return (
     <Container className={css.settingsContent} padding="large">
       <Text
@@ -230,6 +238,7 @@ const AlertsSection = () => {
         onClick={() => openAnomaliesAlertModal()}
         variation={ButtonVariation.PRIMARY}
       />
+      {loading && renderLoader()}
       {!loading && alertData.length ? (
         <Container className={css.tableView}>
           <Table<CCMPerspectiveNotificationChannelsDTO> columns={columns} data={alertData} />
