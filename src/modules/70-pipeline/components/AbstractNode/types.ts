@@ -127,6 +127,8 @@ export interface BaseReactComponentProps {
   setSelectedNode?(identifier: string): void
   getDefaultNode?(): NodeDetails | null
   updateGraphLinks?(): void
+  onMouseOver?(): void
+  onMouseLeave?(): void
   isFirstParallelNode?: boolean
   className?: string
   name?: string

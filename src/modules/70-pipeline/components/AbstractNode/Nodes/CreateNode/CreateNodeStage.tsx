@@ -26,10 +26,12 @@ interface CreateNodeStageProps {
   name: string
   disabled?: boolean
   node: CreateNodeStageProps
+  visible?: boolean
 }
-function CreateNodeStage(props: CreateNodeStageProps): React.ReactElement {
+function CreateNodeStage(props: CreateNodeStageProps): React.ReactElement | null {
   return (
     <div
+      data-nodeid="add-parallel"
       onMouseOver={() => {
         props.onMouseOver?.()
       }}

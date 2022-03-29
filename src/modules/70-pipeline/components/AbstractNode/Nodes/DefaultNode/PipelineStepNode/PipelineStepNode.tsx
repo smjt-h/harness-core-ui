@@ -34,7 +34,7 @@ function PipelineStepNode(props: PipelineStepNodeProps): JSX.Element {
   if (stepIconColor && Object.values(Color).includes(stepIconColor)) {
     stepIconColor = Utils.getRealCSSColor(stepIconColor)
   }
-  const CreateNode: React.FC<any> | undefined = props?.getNode(NodeType.CreateNode)?.component
+  const CreateNode: React.FC<any> | undefined = props?.getNode?.(NodeType.CreateNode)?.component
 
   const stepStatus = defaultTo(props?.status, props?.data?.step?.status as ExecutionStatus)
   const { secondaryIconProps, secondaryIcon, secondaryIconStyle } = getStatusProps(
@@ -62,7 +62,7 @@ function PipelineStepNode(props: PipelineStepNodeProps): JSX.Element {
           props.onClick(event)
           return
         }
-        props?.fireEvent({
+        props?.fireEvent?.({
           type: Event.ClickNode,
           target: event.target,
           data: {
@@ -90,7 +90,7 @@ function PipelineStepNode(props: PipelineStepNodeProps): JSX.Element {
       onDrop={event => {
         event.stopPropagation()
 
-        props?.fireEvent({
+        props?.fireEvent?.({
           type: Event.DropNodeEvent,
           target: event.target,
           data: {
@@ -134,7 +134,7 @@ function PipelineStepNode(props: PipelineStepNodeProps): JSX.Element {
         onMouseEnter={event => {
           event.stopPropagation()
 
-          props?.fireEvent({
+          props?.fireEvent?.({
             type: Event.MouseEnterNode,
             target: event.target,
             data: { ...props }
@@ -143,7 +143,7 @@ function PipelineStepNode(props: PipelineStepNodeProps): JSX.Element {
         onMouseLeave={event => {
           event.stopPropagation()
           setVisibilityOfAdd(false)
-          props?.fireEvent({
+          props?.fireEvent?.({
             type: Event.MouseLeaveNode,
             target: event.target,
             data: { ...props }
@@ -186,7 +186,7 @@ function PipelineStepNode(props: PipelineStepNodeProps): JSX.Element {
           iconProps={{ size: 10 }}
           onMouseDown={e => {
             e.stopPropagation()
-            props?.fireEvent({
+            props?.fireEvent?.({
               type: Event.RemoveNode,
               target: e.target,
               data: { identifier: props?.identifier, node: props }
@@ -216,7 +216,7 @@ function PipelineStepNode(props: PipelineStepNodeProps): JSX.Element {
           onMouseLeave={() => setAddVisibility(false)}
           onClick={(event: React.MouseEvent<HTMLDivElement, MouseEvent>) => {
             event.stopPropagation()
-            props?.fireEvent({
+            props?.fireEvent?.({
               type: Event.AddParallelNode,
               target: event.target,
               data: {
@@ -233,6 +233,7 @@ function PipelineStepNode(props: PipelineStepNodeProps): JSX.Element {
       )}
       {!props.isParallelNode && !props.readonly && (
         <AddLinkNode<PipelineStepNodeProps>
+          id={props.id}
           nextNode={props?.nextNode}
           parentIdentifier={props?.parentIdentifier}
           isParallelNode={props.isParallelNode}
@@ -246,6 +247,7 @@ function PipelineStepNode(props: PipelineStepNodeProps): JSX.Element {
       )}
       {!props?.nextNode && props?.parentIdentifier && !props.readonly && !props.isParallelNode && (
         <AddLinkNode<PipelineStepNodeProps>
+          id={props.id}
           nextNode={props?.nextNode}
           parentIdentifier={props?.parentIdentifier}
           isParallelNode={props.isParallelNode}

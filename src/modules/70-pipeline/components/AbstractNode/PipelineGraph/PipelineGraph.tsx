@@ -21,7 +21,14 @@ import {
 } from './PipelineGraphUtils'
 import GraphActions from '../GraphActions/GraphActions'
 import { PipelineGraphRecursive } from './PipelineGraphNode'
-import type { NodeCollapsibleProps, NodeDetails, NodeIds, PipelineGraphState, SVGPathRecord } from '../types'
+import type {
+  NodeCollapsibleProps,
+  NodeDetails,
+  NodeIds,
+  PipelineGraphState,
+  SVGPathRecord,
+  GetNodeMethod
+} from '../types'
 import css from './PipelineGraph.module.scss'
 
 interface ControlPosition {
@@ -33,7 +40,7 @@ const DEFAULT_POSITION: ControlPosition = { x: 30, y: 60 }
 export interface PipelineGraphProps {
   data: PipelineGraphState[]
   fireEvent: (event: any) => void
-  getNode: (type?: string | undefined) => NodeDetails | undefined
+  getNode: GetNodeMethod
   getDefaultNode(): NodeDetails | null
   selectedNodeId?: string
   collapsibleProps?: NodeCollapsibleProps
@@ -103,6 +110,7 @@ function PipelineGraph({
 
   const setSVGLinks = (): void => {
     const lastNode = state?.[state?.length - 1]
+
     const terminalNodeLinks: SVGPathRecord[] = getTerminalNodeLinks({
       startNodeId: uniqueNodeIds.startNode,
       endNodeId: uniqueNodeIds.endNode,
@@ -150,6 +158,7 @@ function PipelineGraph({
             <div className={css.graphMain} ref={canvasRef} style={{ transform: `scale(${graphScale})` }}>
               <SVGComponent svgPath={svgPath} />
               <PipelineGraphRecursive
+                key="PipelineGraphRecursive"
                 fireEvent={fireEvent}
                 getNode={getNode}
                 nodes={state}

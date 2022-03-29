@@ -73,7 +73,7 @@ function StepGroupGraph(props: StepGroupGraphProps): React.ReactElement {
   const [layoutStyles, setLayoutStyles] = useState<LayoutStyles>({ height: 'auto', width: 'auto' })
   const [state, setState] = useState<PipelineGraphState[]>([])
   const graphRef = useRef<HTMLDivElement>(null)
-  const CreateNode: React.FC<any> | undefined = props?.getNode(NodeType.CreateNode)?.component
+  const CreateNode: React.FC<any> | undefined = props?.getNode?.(NodeType.CreateNode)?.component
 
   const updateTreeRect = (): void => {
     const treeContainer = document.getElementById('tree-container')

@@ -20,7 +20,7 @@ export function StepGroupNode(props: any): JSX.Element {
   const [showAdd, setVisibilityOfAdd] = React.useState(false)
   const [showAddLink, setShowAddLink] = React.useState(false)
   const [isNodeCollapsed, setNodeCollapsed] = React.useState(false)
-  const CreateNode: React.FC<any> | undefined = props?.getNode(NodeType.CreateNode)?.component
+  const CreateNode: React.FC<any> | undefined = props?.getNode?.(NodeType.CreateNode)?.component
   const DefaultNode: React.FC<any> | undefined = props?.getDefaultNode()?.component
   const stepsData = props?.data?.stepGroup?.steps || props?.data?.step?.data?.stepGroup?.steps
   React.useEffect(() => {

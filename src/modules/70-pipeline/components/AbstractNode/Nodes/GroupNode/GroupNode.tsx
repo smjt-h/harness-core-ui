@@ -17,7 +17,7 @@ import css from '../DefaultNode/DefaultNode.module.scss'
 function GroupNode(props: any): React.ReactElement {
   const allowAdd = defaultTo(props.allowAdd, false)
   const [showAdd, setVisibilityOfAdd] = React.useState(false)
-  const CreateNode: React.FC<any> | undefined = props?.getNode(NodeType.CreateNode)?.component
+  const CreateNode: React.FC<any> | undefined = props?.getNode?.(NodeType.CreateNode)?.component
 
   const nodesInfo = React.useMemo(() => {
     const nodesArr = props.intersectingIndex < 1 ? props?.children : props?.children?.slice(props.intersectingIndex - 1)

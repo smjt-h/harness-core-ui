@@ -12,16 +12,25 @@ import { Text, IconName, Icon, Button, ButtonVariation } from '@wings-software/u
 import { Color } from '@harness/design-system'
 import { Position } from '@blueprintjs/core'
 import { DiagramDrag, DiagramType, Event } from '@pipeline/components/Diagram'
-// import CreateNode from '../CreateNode/CreateNodeStage'
-import { PipelineGraphType, NodeType } from '../../types'
+import { PipelineGraphType, NodeType, BaseReactComponentProps } from '../../types'
 import cssDefault from '../DefaultNode/DefaultNode.module.scss'
 import css from './IconNode.module.scss'
 
-export function IconNode(props: any): React.ReactElement {
+interface IconNodeProps extends BaseReactComponentProps {
+  isInComplete?: boolean
+  graphType?: PipelineGraphType
+}
+export function IconNode(props: IconNodeProps): React.ReactElement {
   const allowAdd = props.allowAdd ?? false
   const [showAdd, setVisibilityOfAdd] = React.useState(false)
-  const CreateNode: React.FC<any> | undefined = props?.getNode(NodeType.CreateNode)?.component
+  const CreateNode: React.FC<BaseReactComponentProps> | undefined = props?.getNode?.(NodeType.CreateNode)?.component
 
+  const setAddVisibility = (visibility: boolean): void => {
+    if (!allowAdd) {
+      return
+    }
+    setVisibilityOfAdd(visibility)
+  }
   return (
     <div
       className={cx(cssDefault.defaultNode, css.iconNodeContainer)}
@@ -30,25 +39,21 @@ export function IconNode(props: any): React.ReactElement {
         event.stopPropagation()
 
         if (event.dataTransfer.types.indexOf(DiagramDrag.AllowDropOnNode) !== -1) {
-          if (allowAdd) {
-            setVisibilityOfAdd(true)
-            event.preventDefault()
-          }
+          setAddVisibility(true)
+          event.preventDefault()
         }
       }}
       onDragLeave={event => {
         event.stopPropagation()
 
         if (event.dataTransfer.types.indexOf(DiagramDrag.AllowDropOnNode) !== -1) {
-          if (allowAdd) {
-            setVisibilityOfAdd(false)
-          }
+          setAddVisibility(false)
         }
       }}
       onClick={event => {
         event.stopPropagation()
         if (props?.onClick) {
-          props.onClick()
+          props.onClick?.(event)
           return
         }
         props?.fireEvent({
@@ -125,8 +130,11 @@ export function IconNode(props: any): React.ReactElement {
                 e.stopPropagation()
                 props?.fireEvent({
                   type: Event.RemoveNode,
-                  identifier: props?.identifier,
-                  node: props
+                  target: e.target,
+                  data: {
+                    identifier: props?.identifier,
+                    node: props
+                  }
                 })
               }}
             />
@@ -152,11 +160,11 @@ export function IconNode(props: any): React.ReactElement {
           {props.name}
         </Text>
       )}
-      {allowAdd && !props.readonly && CreateNode && (
+      {allowAdd && !props.readonly && CreateNode ? (
         <CreateNode
-          onMouseOver={() => allowAdd && setVisibilityOfAdd(true)}
-          onMouseLeave={() => allowAdd && setVisibilityOfAdd(false)}
-          onClick={(event: MouseEvent) => {
+          onMouseOver={() => setAddVisibility(true)}
+          onMouseLeave={() => setAddVisibility(false)}
+          onClick={(event: React.MouseEvent<HTMLDivElement, MouseEvent>) => {
             event.stopPropagation()
             props?.fireEvent({
               type: Event.AddParallelNode,
@@ -181,7 +189,7 @@ export function IconNode(props: any): React.ReactElement {
           )}
           data-nodeid="add-parallel"
         />
-      )}
+      ) : null}
       {!props.isParallelNode && !props.readonly && (
         <div
           data-linkid={props?.identifier}

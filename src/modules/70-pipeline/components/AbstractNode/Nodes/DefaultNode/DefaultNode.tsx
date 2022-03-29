@@ -74,7 +74,7 @@ function DefaultNode(props: DefaultNodeProps): JSX.Element {
             ...props
           }
         })
-        props?.setSelectedNode(props?.identifier)
+        props?.setSelectedNode?.(props?.identifier as string)
       }}
       onMouseDown={e => e.stopPropagation()}
       onDragOver={event => {

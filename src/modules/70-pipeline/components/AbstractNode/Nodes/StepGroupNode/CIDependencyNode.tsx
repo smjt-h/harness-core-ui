@@ -17,7 +17,7 @@ export function CIDependencyNode(props: any): JSX.Element {
   const [isNodeCollapsed, setNodeCollapsed] = React.useState(false)
   const DefaultNode: React.FC<any> | undefined = props?.getDefaultNode()?.component
 
-  const CreateNode: React.FC<any> | undefined = props?.getNode(NodeType.CreateNode)?.component
+  const CreateNode: React.FC<any> | undefined = props?.getNode?.(NodeType.CreateNode)?.component
   const stepsData = props?.data?.steps
   React.useEffect(() => {
     props?.updateGraphLinks?.()

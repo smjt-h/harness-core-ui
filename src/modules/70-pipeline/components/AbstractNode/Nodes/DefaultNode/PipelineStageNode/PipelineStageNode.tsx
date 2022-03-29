@@ -42,7 +42,7 @@ interface PipelineStageNodeProps {
 function PipelineStageNode(props: PipelineStageNodeProps): JSX.Element {
   const allowAdd = defaultTo(props.allowAdd, false)
   const [showAddNode, setVisibilityOfAdd] = React.useState(false)
-  const CreateNode: React.FC<any> | undefined = props?.getNode(NodeType.CreateNode)?.component
+  const CreateNode: React.FC<any> | undefined = props?.getNode?.(NodeType.CreateNode)?.component
 
   const stageStatus = defaultTo(props?.status, props?.data?.step?.status as ExecutionStatus)
   const { secondaryIconProps, secondaryIcon, secondaryIconStyle } = getStatusProps(
@@ -207,7 +207,7 @@ function PipelineStageNode(props: PipelineStageNodeProps): JSX.Element {
           {props.name}
         </Text>
       )}
-      {allowAdd && CreateNode && !props.readonly && (
+      {allowAdd && CreateNode && !props.readonly && showAddNode && (
         <CreateNode
           onMouseOver={() => setAddVisibility(true)}
           onMouseLeave={() => setAddVisibility(false)}
@@ -225,12 +225,12 @@ function PipelineStageNode(props: PipelineStageNodeProps): JSX.Element {
             })
           }}
           className={cx(defaultCss.addNode, defaultCss.stageAddNode, { [defaultCss.visible]: showAddNode })}
-          data-nodeid="add-parallel"
         />
       )}
 
       {!props.isParallelNode && !props.readonly && (
         <AddLinkNode<PipelineStageNodeProps>
+          id={props.id}
           nextNode={props?.nextNode}
           parentIdentifier={props?.parentIdentifier}
           isParallelNode={props.isParallelNode}
