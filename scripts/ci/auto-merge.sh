@@ -33,8 +33,8 @@ git fetch --unshallow
 
 #BT-988: Merge Pre-QA validated changes to merge to master
 if [ -z "${MANUAL_TRIGGER}" ] ; then
-  pre_qa_content=$(wget https://stress.harness.io/api/version -q -O -)
-  gitCommit=$(echo "$pre_qa_content" | jq -r '.resource.versionInfo.gitCommit')
+  pre_qa_content=$(wget https://stress.harness.io/ng/static/version.json -q -O -)
+  gitCommit=$(echo "$pre_qa_content" | jq -r '.gitCommit')
   git branch temp_branch $gitCommit
 else
   git checkout -b temp_branch develop
