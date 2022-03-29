@@ -5,6 +5,7 @@
  * https://polyformproject.org/wp-content/uploads/2020/06/PolyForm-Shield-1.0.0.txt.
  */
 
+import type { RUNTIME_INPUT_VALUE } from '@harness/uicore'
 import type { StepElementConfig, StepSpecType } from 'services/cd-ng'
 
 export enum PolicySetType {
@@ -23,7 +24,7 @@ export interface PolicyStepFormData extends StepElementConfig {
 
 type PolicyStepInfo = StepSpecType & {
   type: string
-  policySets?: string[]
+  policySets?: string[] | typeof RUNTIME_INPUT_VALUE
   policySpec?: PolicySpec
 }
 

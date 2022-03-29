@@ -9,6 +9,7 @@ common:
   or: '{{ $.common.orCaps }}'
   containerService: 'ECS'
   database: 'RDS'
+  totalCount: 'Total: {{ count }}'
 allRegions: 'All Regions'
 allClusters: 'All Clusters'
 enforcementMessage:
@@ -578,7 +579,6 @@ perspectives:
   allPerspectiveTxt: 'All ({{ count }})'
   recentPerspectiveTxt: 'Recent ({{ count }})'
   sideNavText: 'Perspectives'
-  perspectiveCount: 'Total: {{ count }}'
   confirmDeletePerspectiveTitle: Delete Perspective
   confirmDeletePerspectiveMsg: 'Are you sure you want to delete the Perspective {{ name }}?'
   perspectiveDeletedTxt: 'Perspective {{ name }} deleted'
@@ -876,6 +876,11 @@ businessMapping:
   newButton: New Business Mapping
   sideNavText: 'Business Mapping'
   stepText: 'Step {{ current }} of {{ total }}'
+  deleted: 'Business Mapping {{ name }} deleted'
+  created: 'Business Mapping {{ name }} created'
+  emptySubtitles: You have not created any Business Mappings yet.
+  confirmDialogHeading: 'Delete Business Mapping'
+  confirmDialogBody: 'Are you sure you want to delete the Business Mapping {{ name }}?'
   form:
     businessMappingPlaceholder: Enter Business Mapping Name
     saveText: Save Business Mapping
@@ -895,7 +900,13 @@ businessMapping:
     title: Define Shared Cost Buckets
     newButtonText: New Shared Bucket
     inputName: Shared Bucket Name
+    sharingStrategyLabel: Sharing Strategy
     sharingStrategy:
       equal: Equally Split between Cost Buckets
       proportional: Proportionally split between Cost Buckets
       fixed: Fixed percentage per Cost Bucket (Coming Soon)
+  tableHeadings:
+    costBuckets: Cost Buckets
+    sharedCosts: Shared Buckets
+    createdBy: Created By
+    lastEdit: Last Edit

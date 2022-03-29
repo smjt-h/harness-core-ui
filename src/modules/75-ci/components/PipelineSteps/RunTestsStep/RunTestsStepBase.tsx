@@ -53,7 +53,7 @@ import {
   validateConnectorRefAndImageDepdendency
 } from '../CIStep/StepUtils'
 import { CIStep } from '../CIStep/CIStep'
-import { AWSVMBuildInfraCommon } from '../CIStep/AWSVMBuildInfraCommon'
+import { ConnectorRefWithImage } from '../CIStep/ConnectorRefWithImage'
 import css from '@pipeline/components/PipelineSteps/Steps/Steps.module.scss'
 
 interface FieldRenderProps {
@@ -295,7 +295,7 @@ export const RunTestsStepBase = (
               }}
             />
             {buildInfrastructureType !== 'VM' ? (
-              <AWSVMBuildInfraCommon showOptionalSublabel={false} readonly={readonly} />
+              <ConnectorRefWithImage showOptionalSublabel={false} readonly={readonly} stepViewType={stepViewType} />
             ) : null}
             <Container className={cx(css.formGroup, css.lg, css.bottomMargin5)}>
               {renderMultiTypeSelectField({
@@ -408,7 +408,11 @@ gradle.projectsEvaluated {
                 details={
                   <Container margin={{ top: 'medium' }}>
                     {buildInfrastructureType === 'VM' ? (
-                      <AWSVMBuildInfraCommon showOptionalSublabel={true} readonly={readonly} />
+                      <ConnectorRefWithImage
+                        showOptionalSublabel={true}
+                        readonly={readonly}
+                        stepViewType={stepViewType}
+                      />
                     ) : null}
                     <Container className={cx(css.formGroup, css.sm, css.bottomMargin5)}>
                       <FormMultiTypeCheckboxField

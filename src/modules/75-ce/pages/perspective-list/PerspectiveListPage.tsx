@@ -631,7 +631,7 @@ const PerspectiveListPage: React.FC = () => {
               bottom: 'large'
             }}
           >
-            {getString('ce.perspectives.perspectiveCount', {
+            {getString('ce.common.totalCount', {
               count: filteredPerspectiveData.length
             })}
           </Text>

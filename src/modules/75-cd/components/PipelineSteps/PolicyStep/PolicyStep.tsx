@@ -77,7 +77,6 @@ export class PolicyStep extends PipelineStep<PolicyStepData> {
         initialValues={this.getInitialValues(initialValues)}
         onUpdate={data => onUpdate?.(this.processFormData(data))}
         onChange={data => onChange?.(this.processFormData(data))}
-        stepViewType={stepViewType}
         isNewStep={isNewStep}
         readonly={readonly}
         ref={formikRef}

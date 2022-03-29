@@ -353,12 +353,12 @@ const COGatewayAnalytics: React.FC<COGatewayAnalyticsProps> = props => {
         <Container className={css.analyticsHeader}>
           <Layout.Vertical spacing="medium">
             <Heading level={2} font={{ weight: 'bold' }}>
-              Advanced configuration
+              {getString('ce.co.autoStoppingRule.configuration.step4.advancedConfiguration')}
             </Heading>
             <FixedScheduleAccordion service={props.service?.data} />
           </Layout.Vertical>
         </Container>
-        {props.service?.data.fulfilment !== 'kubernetes' && (
+        {props.service?.data.fulfilment !== 'kubernetes' && !isEcsRule && (
           <Container className={css.analyticsHeader}>
             <Layout.Vertical spacing="medium">
               <Heading level={2} font={{ weight: 'bold' }} className={css.analyticsSubHeader}>

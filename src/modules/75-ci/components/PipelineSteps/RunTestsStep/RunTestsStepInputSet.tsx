@@ -18,12 +18,12 @@ import StepCommonFieldsInputSet from '@ci/components/PipelineSteps/StepCommonFie
 import MultiTypeFieldSelector from '@common/components/MultiTypeFieldSelector/MultiTypeFieldSelector'
 import { FormMultiTypeCheckboxField } from '@common/components'
 import { MultiTypeTextField } from '@common/components/MultiTypeText/MultiTypeText'
-import { Connectors } from '@connectors/constants'
 import { StepViewType } from '@pipeline/components/AbstractSteps/Step'
 import { useVariablesExpression } from '@pipeline/components/PipelineStudio/PiplineHooks/useVariablesExpression'
 import type { RunTestsStepProps } from './RunTestsStep'
 import { AllMultiTypeInputTypesForInputSet, shouldRenderRunTimeInputView } from '../CIStep/StepUtils'
 import { CIStep } from '../CIStep/CIStep'
+import { ConnectorRefWithImage } from '../CIStep/ConnectorRefWithImage'
 import { CIStepOptionalConfig, getOptionalSubLabel, renderMultiTypeListInputSet } from '../CIStep/CIStepOptionalConfig'
 import css from '@pipeline/components/PipelineSteps/Steps/Steps.module.scss'
 
@@ -97,35 +97,6 @@ export const RunTestsStepInputSetBasic: React.FC<RunTestsStepProps> = ({
         enableFields={{
           ...(getMultiTypeFromValue(template?.description) === MultiTypeInputType.RUNTIME && {
             description: {}
-          }),
-          ...(getMultiTypeFromValue(template?.spec?.connectorRef) === MultiTypeInputType.RUNTIME && {
-            'spec.connectorRef': {
-              label: (
-                <Text
-                  className={css.inpLabel}
-                  color={Color.GREY_600}
-                  font={{ size: 'small', weight: 'semi-bold' }}
-                  style={{ display: 'flex', alignItems: 'center' }}
-                  tooltipProps={{ dataTooltipId: 'connector' }}
-                >
-                  {getString('pipelineSteps.connectorLabel')}
-                </Text>
-              ),
-              type: [Connectors.GCP, Connectors.AWS, Connectors.DOCKER]
-            }
-          }),
-          ...(getMultiTypeFromValue(template?.spec?.image) === MultiTypeInputType.RUNTIME && {
-            'spec.image': {
-              tooltipId: 'pluginImageInfo',
-              multiTextInputProps: {
-                placeholder: getString('pluginImagePlaceholder'),
-                disabled: readonly,
-                multiTextInputProps: {
-                  expressions,
-                  allowableTypes
-                }
-              }
-            }
           })
         }}
         path={path || ''}
@@ -155,6 +126,13 @@ export const RunTestsStepInputSetBasic: React.FC<RunTestsStepProps> = ({
           />
         </Container>
       )}
+      <ConnectorRefWithImage
+        readonly={readonly}
+        showConnectorRef={getMultiTypeFromValue(template?.spec?.connectorRef) === MultiTypeInputType.RUNTIME}
+        showImage={getMultiTypeFromValue(template?.spec?.image) === MultiTypeInputType.RUNTIME}
+        stepViewType={stepViewType}
+        path={path || ''}
+      />
       {getMultiTypeFromValue(template?.spec?.packages) === MultiTypeInputType.RUNTIME && (
         <Container className={cx(css.formGroup, stepCss, css.bottomMargin5)}>
           <MultiTypeTextField
@@ -247,7 +225,9 @@ export const RunTestsStepInputSetBasic: React.FC<RunTestsStepProps> = ({
             expressions,
             getString,
             readonly,
-            formik
+            formik,
+            withObjectStructure: true,
+            keyName: 'name'
           })}
         </Container>
       )}

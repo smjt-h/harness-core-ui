@@ -471,7 +471,7 @@ ceK8:
 azureKeyVault:
   labels:
     tenantId: '{{ $.connectors.tenantId }}'
-    subscription: Subscription
+    subscription: '{{ $.common.plans.subscription }}'
     vaultName: Vault Name
     fetchVault: Fetch Vault
     setupVault: Setup Vault

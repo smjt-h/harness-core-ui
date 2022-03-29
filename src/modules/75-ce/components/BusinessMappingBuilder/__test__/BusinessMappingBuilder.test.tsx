@@ -22,7 +22,7 @@ describe('test cases for Business Mapping Builder', () => {
     const { container } = render(
       <TestWrapper>
         <Provider value={responseState as any}>
-          <BusinessMappingBuilder />
+          <BusinessMappingBuilder onSave={jest.fn()} selectedBM={{}} />
         </Provider>
       </TestWrapper>
     )

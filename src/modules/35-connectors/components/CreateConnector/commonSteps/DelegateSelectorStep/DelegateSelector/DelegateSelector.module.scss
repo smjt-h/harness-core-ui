@@ -8,7 +8,6 @@
 .delegateSelectorContainer {
   .formInput {
     min-width: 310px;
-    max-width: 620px !important;
     :global(.bp3-tag-input) {
       height: auto !important;
     }
@@ -25,7 +24,7 @@
   }
 
   :global(.bp3-tag) {
-    max-width: 590px;
+    max-width: 95%;
   }
 
   .delegateContentContainer {

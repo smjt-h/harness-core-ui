@@ -120,27 +120,18 @@ export default function ArtifactsSelection({
   const deploymentType = getSelectedDeploymentType(stage, getStageFromPipeline, isPropagating)
 
   useEffect(() => {
-    if (isServerlessDeploymentType(deploymentType)) {
-      allowedArtifactTypes.splice(0, allowedArtifactTypes.length)
-      allowedArtifactTypes.push(ENABLED_ARTIFACT_TYPES.ArtifactoryRegistry)
-    } else {
-      allowedArtifactTypes.splice(0, allowedArtifactTypes.length)
-      allowedArtifactTypes.push(
-        ENABLED_ARTIFACT_TYPES.DockerRegistry,
-        ENABLED_ARTIFACT_TYPES.Gcr,
-        ENABLED_ARTIFACT_TYPES.Ecr
+    if (
+      NG_NEXUS_ARTIFACTORY &&
+      !allowedArtifactTypes[deploymentType]?.includes(ENABLED_ARTIFACT_TYPES.Nexus3Registry) &&
+      !isServerlessDeploymentType(deploymentType)
+    ) {
+      allowedArtifactTypes[deploymentType].push(
+        ENABLED_ARTIFACT_TYPES.Nexus3Registry,
+        ENABLED_ARTIFACT_TYPES.ArtifactoryRegistry
       )
     }
-    if (NG_NEXUS_ARTIFACTORY && !isServerlessDeploymentType(deploymentType)) {
-      if (!allowedArtifactTypes.includes(ENABLED_ARTIFACT_TYPES.Nexus3Registry)) {
-        allowedArtifactTypes.push(ENABLED_ARTIFACT_TYPES.Nexus3Registry)
-      }
-      if (!allowedArtifactTypes.includes(ENABLED_ARTIFACT_TYPES.ArtifactoryRegistry)) {
-        allowedArtifactTypes.push(ENABLED_ARTIFACT_TYPES.ArtifactoryRegistry)
-      }
-    }
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [deploymentType])
+  }, [])
 
   const getPrimaryArtifactByIdentifier = (): PrimaryArtifact => {
     return artifacts
@@ -711,7 +702,7 @@ export default function ArtifactsSelection({
         <ArtifactWizard
           artifactInitialValue={getArtifactInitialValues()}
           iconsProps={getIconProps()}
-          types={allowedArtifactTypes}
+          types={allowedArtifactTypes[deploymentType]}
           expressions={expressions}
           allowableTypes={allowableTypes}
           lastSteps={getLastSteps()}

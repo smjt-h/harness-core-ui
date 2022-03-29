@@ -505,7 +505,7 @@ runPipelineForm:
 skipped: 'Step has been skipped.'
 skipCondition: 'Skip condition:'
 skipConditionValidation: 'Skip condition is required.'
-learnMore: Learn more
+learnMore: ' Learn more'
 clipboardCopySuccess: Successfully copied to clipboard
 clipboardCopyFail: Copy to clipboard has failed
 skipConditionsTitle: Skip Conditions

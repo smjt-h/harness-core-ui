@@ -9,8 +9,10 @@ import React from 'react'
 import { queryByText, render, fireEvent, act } from '@testing-library/react'
 import { Provider } from 'urql'
 import { fromValue } from 'wonka'
+import * as ceService from 'services/ce'
 import { TestWrapper } from '@common/utils/testUtils'
 import BusinessMapping from '../BusinessMapping'
+import ListData from './listData.json'
 
 const params = {
   accountId: 'TEST_ACC',
@@ -19,7 +21,8 @@ const params = {
 }
 
 jest.mock('services/ce', () => ({
-  useGetBusinessMappingList: jest.fn().mockImplementation(() => ({
+  useGetBusinessMappingList: jest.fn(() => ({ data: ListData, loading: false })),
+  useCreateBusinessMapping: jest.fn().mockImplementation(() => ({
     mutate: async () => {
       return {
         status: 'SUCCESS',
@@ -27,7 +30,15 @@ jest.mock('services/ce', () => ({
       }
     }
   })),
-  useCreateBusinessMapping: jest.fn().mockImplementation(() => ({
+  useUpdateBusinessMapping: jest.fn().mockImplementation(() => ({
+    mutate: async () => {
+      return {
+        status: 'SUCCESS',
+        data: {}
+      }
+    }
+  })),
+  useDeleteBusinessMapping: jest.fn().mockImplementation(() => ({
     mutate: async () => {
       return {
         status: 'SUCCESS',
@@ -68,5 +79,25 @@ describe('test cases for Business Mapping List Page', () => {
     })
 
     expect(queryByText(document.body, 'ce.businessMapping.costBucket.title')).toBeInTheDocument()
+  })
+
+  test('should be able to render empty list page', async () => {
+    jest.spyOn(ceService, 'useGetBusinessMappingList').mockImplementation((): any => {
+      return { data: {}, loading: false }
+    })
+    const responseState = {
+      executeQuery: () => {
+        return fromValue({})
+      }
+    }
+    const { container } = render(
+      <TestWrapper pathParams={params}>
+        <Provider value={responseState as any}>
+          <BusinessMapping />
+        </Provider>
+      </TestWrapper>
+    )
+
+    expect(queryByText(container, 'ce.businessMapping.emptySubtitles')).toBeInTheDocument()
   })
 })

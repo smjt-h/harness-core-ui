@@ -10,7 +10,7 @@ import type { IconName } from '@wings-software/uicore'
 import type { IOptionProps } from '@blueprintjs/core'
 import { IdentifierSchemaWithOutName } from '@common/utils/Validation'
 import { Connectors } from '@connectors/constants'
-import type { ConnectorInfoDTO } from 'services/cd-ng'
+import type { ConnectorInfoDTO, ServiceDefinition } from 'services/cd-ng'
 import type { StringKeys } from 'framework/strings'
 import { useStrings } from 'framework/strings'
 
@@ -60,11 +60,12 @@ export const ArtifactConnectorLabelMap: Record<string, string> = {
   ArtifactoryRegistry: 'Artifactory'
 }
 
-export const allowedArtifactTypes: Array<ArtifactType> = [
-  ENABLED_ARTIFACT_TYPES.DockerRegistry,
-  ENABLED_ARTIFACT_TYPES.Gcr,
-  ENABLED_ARTIFACT_TYPES.Ecr
-]
+export const allowedArtifactTypes: Record<ServiceDefinition['type'], Array<ArtifactType>> = {
+  Kubernetes: [ENABLED_ARTIFACT_TYPES.DockerRegistry, ENABLED_ARTIFACT_TYPES.Gcr, ENABLED_ARTIFACT_TYPES.Ecr],
+  NativeHelm: [ENABLED_ARTIFACT_TYPES.DockerRegistry, ENABLED_ARTIFACT_TYPES.Gcr, ENABLED_ARTIFACT_TYPES.Ecr],
+  ServerlessAwsLambda: [ENABLED_ARTIFACT_TYPES.ArtifactoryRegistry],
+  Ssh: []
+}
 
 export const tagOptions: IOptionProps[] = [
   {

@@ -2196,8 +2196,7 @@ exports[`Run Step InputSet View should render all fields 1`] = `
                 data-tooltip-id="stepTestUtilForm_spec.connectorRef"
               >
                 <div
-                  class="Text--withDocsTooltip"
-                  data-tooltip-id="connector"
+                  class="Layout--horizontal StyledProps--main StyledProps--flex StyledProps--flex-justifyContent-flex-start StyledProps--flex-alignItems-baseline"
                 >
                   <p
                     class="StyledProps--font StyledProps--main inpLabel StyledProps--color StyledProps--color-grey600 StyledProps--font-size-small StyledProps--font-weight-semi-bold"
@@ -2205,6 +2204,7 @@ exports[`Run Step InputSet View should render all fields 1`] = `
                   >
                     pipelineSteps.connectorLabel
                   </p>
+                   
                 </div>
               </span>
             </div>
@@ -2221,12 +2221,12 @@ exports[`Run Step InputSet View should render all fields 1`] = `
                 >
                   <div
                     class="Layout--horizontal StyledProps--main MultiTypeInput--main"
-                    style="width: 310px;"
+                    style="width: 385px;"
                   >
                     <button
                       class="bp3-button bp3-minimal Button--button StyledProps--font StyledProps--main container Button--iconOnly Button--without-shadow Button--withRightIcon"
                       data-testid="cr-field-spec.connectorRef"
-                      style="width: 310px;"
+                      style="width: 385px;"
                       type="button"
                     >
                       <span
@@ -2297,14 +2297,20 @@ exports[`Run Step InputSet View should render all fields 1`] = `
         >
           <div>
             <div
-              class="Text--withDocsTooltip"
-              data-tooltip-id="image"
+              class="Layout--horizontal StyledProps--main StyledProps--flex StyledProps--flex-justifyContent-flex-start StyledProps--flex-alignItems-baseline"
             >
-              <p
-                class="StyledProps--font StyledProps--main inpLabel StyledProps--color StyledProps--color-grey600 StyledProps--font-size-small StyledProps--font-weight-semi-bold"
+              <div
+                class="Text--withDocsTooltip"
+                data-tooltip-id="image"
               >
-                imageLabel
-              </p>
+                <p
+                  class="StyledProps--font StyledProps--main inpLabel StyledProps--color StyledProps--color-grey600 StyledProps--font-size-small StyledProps--font-weight-semi-bold"
+                  placeholder="imagePlaceholder"
+                >
+                  imageLabel
+                </p>
+              </div>
+               
             </div>
             <div
               style="display: flex; align-items: center;"
@@ -2328,7 +2334,6 @@ exports[`Run Step InputSet View should render all fields 1`] = `
                         autocomplete="off"
                         class="bp3-input"
                         name="spec.image"
-                        placeholder="imagePlaceholder"
                         type="text"
                         value=""
                       />

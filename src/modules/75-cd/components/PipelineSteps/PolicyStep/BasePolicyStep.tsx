@@ -21,7 +21,7 @@ import { useVariablesExpression } from '@pipeline/components/PipelineStudio/Pipl
 import { StepViewType } from '@pipeline/components/AbstractSteps/Step'
 
 import type { PolicyStepFormData } from './PolicyStepTypes'
-import PolicySetsFormField from './PolicySets/PolicySetsFormField/PolicySetsFormField'
+import { MultiTypePolicySetSelector } from './PolicySets/MultiTypePolicySetSelector/MultiTypePolicySetSelector'
 
 import stepCss from '@pipeline/components/PipelineSteps/Steps/Steps.module.scss'
 
@@ -34,14 +34,7 @@ export default function BasePolicyStep(props: {
   stepViewType?: StepViewType
   allowableTypes: MultiTypeInputType[]
 }): React.ReactElement {
-  const {
-    formik: { errors, touched },
-    formik,
-    isNewStep,
-    readonly,
-    stepViewType,
-    allowableTypes
-  } = props
+  const { isNewStep, readonly, stepViewType, allowableTypes } = props
 
   const [entityType, setEntityType] = useState<string | number | symbol>('Custom')
   const { getString } = useStrings()
@@ -80,14 +73,15 @@ export default function BasePolicyStep(props: {
           items={entityTypeOptions}
         />
       </div>
-      <PolicySetsFormField
-        name="spec.policySets"
-        disabled={readonly}
-        formikProps={formik}
-        error={errors?.spec?.policySets}
-        stepViewType={stepViewType}
-        touched={touched?.spec?.policySets}
-      />
+      <div className={cx(stepCss.formGroup, stepCss.alignStart)}>
+        <MultiTypePolicySetSelector
+          name="spec.policySets"
+          label={getString('common.policiesSets.policyset')}
+          expressions={expressions}
+          allowableTypes={allowableTypes}
+          disabled={readonly}
+        />
+      </div>
       {entityType === 'Custom' && (
         <div className={cx(stepCss.formGroup, stepCss.alignStart)}>
           <MultiTypeFieldSelector

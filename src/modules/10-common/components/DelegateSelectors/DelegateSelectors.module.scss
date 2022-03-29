@@ -7,7 +7,14 @@
 
 .wrapper {
   position: relative;
-  flex: 0 0 50%;
+  width: 50%;
+  max-width: 50%;
+
+  :global(.bp3-input.bp3-tag-input.bp3-multi-select) {
+    max-height: 116px !important;
+    overflow-y: scroll !important;
+    overflow-x: hidden;
+  }
 
   .loader {
     display: flex;

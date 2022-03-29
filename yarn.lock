@@ -1934,19 +1934,19 @@
     vscode-uri "^2.1.1"
 
 "@harness/ng-tooltip@^1.30.75":
-  version "1.30.75"
-  resolved "https://npm.pkg.github.com/download/@harness/ng-tooltip/1.30.75/91d7b27f8b6132b2f23a75ed96a946dcd768b8b0e7ed4aaf270971d5ff4434e5#f2adfb6f91ca8187acfafa6acd65c3e24cce5900"
-  integrity sha512-cMoNrIt26Lsyi9/i8061Lgr/ild6OMKjlxjXZroNPjUh/kmzmRb3w93sLs5tSdBNfJQ17dJQHKFBA+nPESzHIQ==
+  version "1.30.77"
+  resolved "https://npm.pkg.github.com/download/@harness/ng-tooltip/1.30.77/667dd7ab91fa94c2a0fb0c4e0dadbd498a4a4186a36af3ac5006a59f980244e9#f679975a45e145c5ff52753c7a651d99fef71dcc"
+  integrity sha512-3/TZwBKa8m/b+1KBOTqIxVf4XfSYCS77NjqCpCqEyxO9mKa9oXYsMSD49NzuI1P9eir6zvbOkSkvw8YXWWy05w==
 
 "@harness/telemetry@^1.0.37":
   version "1.0.37"
   resolved "https://npm.pkg.github.com/download/@harness/telemetry/1.0.37/fbc5025fb5969920627473304e041288420f44d63aa9cce82e1d06416bb2cf07#800efb2a98fc01bde907543f2509f7009573a1d7"
   integrity sha512-oUwcx7FSbKD0VTs/5Ng/mrYLEGj8FDtpsDhLniVgnsY02i15HszImvAEx6o32Pur3TcF1BKL/MRFu4W6lSKiPA==
 
-"@harness/uicore@2.46.0":
-  version "2.46.0"
-  resolved "https://npm.pkg.github.com/download/@harness/uicore/2.46.0/9e8a71c25de83d1d738596261b9abac6367b594e4f3b5bb5c64ef5060f25d993#3c9fc61f7887cca6def8dcf4113d749c640b5b0e"
-  integrity sha512-TaNHL5M4duLr5NPzudbluHLXb+jBVmnU9whyWos9hQyxaNLwJvg0v0yITf1IDn3ovrHrQZB1KIEU+ZN+sO8Ljw==
+"@harness/uicore@2.50.0":
+  version "2.50.0"
+  resolved "https://npm.pkg.github.com/download/@harness/uicore/2.50.0/18bddb5d9f06776747466e68612ba11ff63baade7efb993b2bde384002bc50c5#4219a01e630af660fbe2aa24ace40f841ed0dc3a"
+  integrity sha512-qBlCf/j5g9wQl2SoeXJRGcKKJpJvJXYPBJa8nRkGOKuxE6PmaNRzGCLhLomdTTucoqsSI4QF0pxOzr2IP3adKw==
 
 "@harness/use-modal@1.1.0":
   version "1.1.0"

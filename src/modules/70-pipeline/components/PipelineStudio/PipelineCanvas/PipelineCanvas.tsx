@@ -395,21 +395,27 @@ export function PipelineCanvas({
     const newPipelineId = latestPipeline?.identifier
 
     if (response && response.status === 'SUCCESS') {
-      setGovernanceMetadata(get(response, 'data.governanceMetadata'))
-      if (pipelineIdentifier === DefaultNewPipelineId) {
-        await deletePipelineCache(gitDetails)
+      const governanceData: GovernanceMetadata | undefined = get(response, 'data.governanceMetadata')
+      setGovernanceMetadata(governanceData)
 
-        showSuccess(getString('pipelines-studio.publishPipeline'))
+      // Handling cache and page navigation only when Governance is disabled, or Governance Evaluation is successful
+      // Otherwise, keep current pipeline editing states, and show Governance evaluation error
+      if (governanceData?.status !== 'error') {
+        if (pipelineIdentifier === DefaultNewPipelineId) {
+          await deletePipelineCache(gitDetails)
 
-        navigateToLocation(newPipelineId, updatedGitDetails)
-        // note: without setTimeout does not redirect properly after save
-        await fetchPipeline({ forceFetch: true, forceUpdate: true, newPipelineId })
-      } else {
-        await fetchPipeline({ forceFetch: true, forceUpdate: true })
-      }
-      if (updatedGitDetails?.isNewBranch) {
-        navigateToLocation(newPipelineId, updatedGitDetails)
-        location.reload()
+          showSuccess(getString('pipelines-studio.publishPipeline'))
+
+          navigateToLocation(newPipelineId, updatedGitDetails)
+          // note: without setTimeout does not redirect properly after save
+          await fetchPipeline({ forceFetch: true, forceUpdate: true, newPipelineId })
+        } else {
+          await fetchPipeline({ forceFetch: true, forceUpdate: true })
+        }
+        if (updatedGitDetails?.isNewBranch) {
+          navigateToLocation(newPipelineId, updatedGitDetails)
+          location.reload()
+        }
       }
       if (isEdit) {
         trackEvent(isYaml ? PipelineActions.PipelineUpdatedViaYAML : PipelineActions.PipelineUpdatedViaVisual, {})

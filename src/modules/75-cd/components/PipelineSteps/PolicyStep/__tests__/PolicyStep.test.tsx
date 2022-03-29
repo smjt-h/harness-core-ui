@@ -168,6 +168,7 @@ describe('Test Policy Step', () => {
           template: {
             timeout: RUNTIME_INPUT_VALUE,
             spec: {
+              policySets: RUNTIME_INPUT_VALUE,
               policySpec: {
                 payload: RUNTIME_INPUT_VALUE
               }
@@ -204,7 +205,7 @@ describe('Test Policy Step', () => {
       type: StepType.Policy,
       timeout: RUNTIME_INPUT_VALUE,
       spec: {
-        policySets: ['acc.pol1', 'org.pol2', 'pol3'],
+        policySets: RUNTIME_INPUT_VALUE,
         type: 'Custom',
         policySpec: {
           payload: RUNTIME_INPUT_VALUE
@@ -244,12 +245,13 @@ describe('validate policy step input sets', () => {
       template: {
         name: 'Policy Step',
         identifier: 'PolicyStep',
-        timeout: '<+input>',
+        timeout: RUNTIME_INPUT_VALUE,
         type: StepType.Policy,
         spec: {
           type: 'Custom',
+          policySets: RUNTIME_INPUT_VALUE,
           policySpec: {
-            payload: '<+input>'
+            payload: RUNTIME_INPUT_VALUE
           }
         }
       },
@@ -276,12 +278,13 @@ describe('validate policy step input sets', () => {
       template: {
         name: 'Policy Step',
         identifier: 'PolicyStep',
-        timeout: '<+input>',
+        timeout: RUNTIME_INPUT_VALUE,
         type: StepType.Policy,
         spec: {
           type: 'Custom',
+          policySets: RUNTIME_INPUT_VALUE,
           policySpec: {
-            payload: '<+input>'
+            payload: RUNTIME_INPUT_VALUE
           }
         }
       },

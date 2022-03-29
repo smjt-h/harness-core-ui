@@ -35,6 +35,8 @@ export const pipelineStudioRoute = `#/account/accountId/cd/orgs/default/projects
 export const inputSetsRoute = `#/account/accountId/cd/orgs/default/projects/${projectId}/pipelines/${pipelineIdentifier}/input-sets`
 export const environmentRoute = `#/account/${accountId}/cd/orgs/${orgIdentifier}/projects/${projectId}/environment`
 export const environmentsCall = `/ng/api/environments?routingId=${accountId}&accountId=${accountId}&orgIdentifier=${orgIdentifier}&projectIdentifier=${projectId}&page=0&size=10`
+export const servicesRoute = `#/account/${accountId}/cd/orgs/${orgIdentifier}/projects/${projectId}/services`
+export const servicesCall = `/ng/api/servicesV2?routingId=${accountId}&accountIdentifier=${accountId}&orgIdentifier=${orgIdentifier}&projectIdentifier=${projectId}&size=10&page=0`
 
 export interface ValidObject {
   resourceName: StepResourceObject[]

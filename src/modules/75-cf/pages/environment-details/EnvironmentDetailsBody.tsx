@@ -7,7 +7,6 @@
 
 import React, { useContext, useMemo, useState } from 'react'
 import {
-  Button,
   Container,
   Heading,
   Layout,
@@ -19,20 +18,22 @@ import {
   PageError,
   TableV2
 } from '@wings-software/uicore'
-import { get } from 'lodash-es'
 import type { Column } from 'react-table'
-import { FontVariation, Color } from '@harness/design-system'
+import { FontVariation, Color, Intent } from '@harness/design-system'
 import type { EnvironmentResponseDTO } from 'services/cd-ng'
 import { ApiKey, useDeleteAPIKey, useGetAllAPIKeys } from 'services/cf'
 import { useToaster } from '@common/exports'
 import { ContainerSpinner } from '@common/components/ContainerSpinner/ContainerSpinner'
 import { useEnvStrings } from '@cf/hooks/environment'
-import { CF_DEFAULT_PAGE_SIZE, EnvironmentSDKKeyType, getErrorMessage } from '@cf/utils/CFUtils'
+import { CF_DEFAULT_PAGE_SIZE, EnvironmentSDKKeyType, getErrorMessage, showToaster } from '@cf/utils/CFUtils'
 import { withTableData } from '@cf/utils/table-utils'
 import RbacButton from '@rbac/components/Button/Button'
 import { ResourceType } from '@rbac/interfaces/ResourceType'
 import { PermissionIdentifier } from '@rbac/interfaces/PermissionIdentifier'
+import { useConfirmAction } from '@common/hooks'
+import { String } from 'framework/strings'
 import AddKeyDialog from '../../components/AddKeyDialog/AddKeyDialog'
+
 import css from './EnvironmentDetails.module.scss'
 
 type CustomColumn<T extends Record<string, any>> = Column<T>
@@ -68,6 +69,15 @@ const ApiInfoCell = withApiKey(({ apiKey }) => {
       .then(() => showSuccess(getString('clipboardCopySuccess')))
       .catch(() => showError(getString('clipboardCopyFail'), undefined, 'cf.copy.text.error'))
   }
+
+  const deleteSDKKey = useConfirmAction({
+    intent: Intent.DANGER,
+    title: getEnvString('apiKeys.deleteTitle'),
+    message: <String stringID="cf.environments.apiKeys.deleteMessage" vars={{ keyName: apiKey.name }} />,
+    action: () => {
+      onDelete(apiKey.identifier, apiKey.name)
+    }
+  })
 
   return (
     <Layout.Horizontal flex={{ distribution: 'space-between' }}>
@@ -106,31 +116,7 @@ const ApiInfoCell = withApiKey(({ apiKey }) => {
             size: 16
           }}
           className={css.keyDeleteButton}
-          tooltip={
-            <Container width="350px" padding="medium">
-              <Heading level={2} font={{ weight: 'semi-bold' }} margin={{ bottom: 'small' }}>
-                {getEnvString('apiKeys.deleteTitle')}
-              </Heading>
-              <Text margin={{ bottom: 'medium' }}>
-                {getEnvString('apiKeys.deleteMessage', { keyName: apiKey.name })}
-              </Text>
-              <Container flex>
-                <span />
-                <Layout.Horizontal spacing="small">
-                  <Button text={getString('cancel')} className="bp3-popover-dismiss" />
-                  <Button
-                    intent="danger"
-                    text={getString('delete')}
-                    className="bp3-popover-dismiss"
-                    onClick={() => onDelete(apiKey.identifier, apiKey.name)}
-                  />
-                </Layout.Horizontal>
-              </Container>
-            </Container>
-          }
-          tooltipProps={{
-            interactionKind: 'click'
-          }}
+          onClick={deleteSDKKey}
           permission={{
             resource: { resourceType: ResourceType.ENVIRONMENT, resourceIdentifier: environmentIdentifier },
             permission: PermissionIdentifier.EDIT_ENVIRONMENT
@@ -142,7 +128,7 @@ const ApiInfoCell = withApiKey(({ apiKey }) => {
 })
 
 const EnvironmentSDKKeys: React.FC<{ environment: EnvironmentResponseDTO }> = ({ environment }) => {
-  const { showSuccess, showError } = useToaster()
+  const { showError } = useToaster()
   const { getString, getEnvString } = useEnvStrings()
   const [recents, setRecents] = useState<ApiKey[]>([])
   const [page, setPage] = useState<number>(0)
@@ -165,11 +151,9 @@ const EnvironmentSDKKeys: React.FC<{ environment: EnvironmentResponseDTO }> = ({
   const { mutate: deleteKey } = useDeleteAPIKey({ queryParams })
   const handleDelete = (id: string, keyName: string): void => {
     deleteKey(id)
-      .then(() => showSuccess(getString('cf.environments.apiKeys.deleteSuccess', { keyName })))
+      .then(() => showToaster(getString('cf.environments.apiKeys.deleteSuccess', { keyName })))
       .then(() => refetch())
-      .catch(deleteError =>
-        showError(get(deleteError, 'data.error', deleteError?.message), undefined, 'cf.delete.api.key.error')
-      )
+      .catch(deleteError => showError(getErrorMessage(deleteError), undefined, 'cf.delete.api.key.error'))
   }
 
   const { apiKeys, ...pagination } = data ?? {

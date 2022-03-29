@@ -409,7 +409,7 @@ exports[`test cases for Perspective details Page should be able to render and sw
       <p
         class="StyledProps--font StyledProps--main StyledProps--font-variation-h6 StyledProps--margin-left-small StyledProps--margin-bottom-large"
       >
-        ce.perspectives.perspectiveCount
+        ce.common.totalCount
       </p>
       <div
         class="StyledProps--font StyledProps--main StyledProps--margin-bottom-xxlarge"
@@ -2051,7 +2051,7 @@ exports[`test cases for Perspective details Page should be able to render the de
       <p
         class="StyledProps--font StyledProps--main StyledProps--font-variation-h6 StyledProps--margin-left-small StyledProps--margin-bottom-large"
       >
-        ce.perspectives.perspectiveCount
+        ce.common.totalCount
       </p>
       <div
         class="StyledProps--font StyledProps--main StyledProps--margin-bottom-xxlarge"

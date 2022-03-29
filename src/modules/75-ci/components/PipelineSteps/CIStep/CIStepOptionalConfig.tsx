@@ -57,6 +57,8 @@ export const renderMultiTypeListInputSet = ({
   tooltipId,
   labelKey,
   placeholderKey,
+  withObjectStructure,
+  keyName,
   allowedTypes,
   expressions,
   getString,
@@ -67,6 +69,8 @@ export const renderMultiTypeListInputSet = ({
   tooltipId: string
   labelKey: keyof StringsMap
   placeholderKey?: keyof StringsMap
+  withObjectStructure?: boolean
+  keyName?: string
   allowedTypes: MultiTypeInputType[]
   expressions: string[]
   getString: (key: keyof StringsMap, vars?: Record<string, any> | undefined) => string
@@ -99,6 +103,8 @@ export const renderMultiTypeListInputSet = ({
     placeholder={placeholderKey ? getString(placeholderKey) : ''}
     disabled={readonly}
     formik={formik}
+    withObjectStructure={withObjectStructure}
+    keyName={keyName}
   />
 )
 

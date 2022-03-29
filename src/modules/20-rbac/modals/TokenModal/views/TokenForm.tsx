@@ -19,6 +19,7 @@ import {
   ButtonVariation
 } from '@wings-software/uicore'
 import * as Yup from 'yup'
+import cx from 'classnames'
 import { defaultTo, omit } from 'lodash-es'
 import { useParams } from 'react-router-dom'
 import { useToaster } from '@common/components'
@@ -130,7 +131,7 @@ const TokenForm: React.FC<TokenModalData> = props => {
       {formikProps => {
         return (
           <Form>
-            <Container className={css.form}>
+            <Container className={cx(css.form, { [css.createTokenForm]: !!token })}>
               <ModalErrorHandler bind={setModalErrorHandler} />
               <NameIdDescriptionTags
                 formikProps={formikProps}

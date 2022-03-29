@@ -23,7 +23,13 @@ import { useParams } from 'react-router-dom'
 import { get } from 'lodash-es'
 import { useFetchViewFieldsQuery, QlceViewFieldIdentifierData } from 'services/ce/services'
 import { CostBucketWidgetType, CostTargetType, SharedCostType } from '@ce/types'
-import { useCreateBusinessMapping } from 'services/ce'
+import {
+  BusinessMapping,
+  CostTarget,
+  SharedCost,
+  useCreateBusinessMapping,
+  useUpdateBusinessMapping
+} from 'services/ce'
 import type { AccountPathProps } from '@common/interfaces/RouteInterfaces'
 import { useStrings } from 'framework/strings'
 import CostBucketStep from './CostBucketStep/CostBucketStep'
@@ -37,11 +43,18 @@ interface BusinessMappingForm {
   costTargetsKey?: number
   sharedCostsKey?: number
   accountId?: string
+  name: string
+  uuid?: string
 }
 
-const BusinessMappingBuilder: () => React.ReactElement = () => {
+interface BusinessMappingBuilderProps {
+  selectedBM: BusinessMapping
+  onSave: () => void
+}
+
+const BusinessMappingBuilder: (props: BusinessMappingBuilderProps) => React.ReactElement = ({ selectedBM, onSave }) => {
   const { accountId } = useParams<AccountPathProps>()
-  const { showError } = useToaster()
+  const { showSuccess, showError } = useToaster()
   const [{ data }] = useFetchViewFieldsQuery({
     variables: {
       filters: []
@@ -51,6 +64,12 @@ const BusinessMappingBuilder: () => React.ReactElement = () => {
   const { getString } = useStrings()
 
   const { mutate } = useCreateBusinessMapping({
+    queryParams: {
+      accountIdentifier: accountId
+    }
+  })
+
+  const { mutate: update } = useUpdateBusinessMapping({
     queryParams: {
       accountIdentifier: accountId
     }
@@ -88,29 +107,36 @@ const BusinessMappingBuilder: () => React.ReactElement = () => {
   })
 
   /* istanbul ignore next */
-  const handleSubmit: (values: BusinessMappingForm) => void = async values => {
-    delete values.costTargetsKey
-    delete values.sharedCostsKey
-
-    values.accountId = accountId
-
-    values.costTargets.forEach(costTarget => {
-      delete costTarget.isOpen
-      delete costTarget.isViewerOpen
-      delete (costTarget as SharedCostType).strategy
+  const handleSubmit: (values: BusinessMappingForm) => any = async values => {
+    const costTargetObj: CostTarget[] = values.costTargets.map(costTarget => {
+      return { name: costTarget.name, rules: costTarget.rules }
     })
 
-    values.sharedCosts.forEach(costTarget => {
-      delete costTarget.isOpen
-      delete costTarget.isViewerOpen
+    const sharedCostObj: SharedCost[] = values.sharedCosts.map(costTarget => {
+      return { name: costTarget.name, rules: costTarget.rules, strategy: costTarget.strategy }
     })
+
+    const formValues: BusinessMapping = {
+      accountId,
+      name: values.name,
+      costTargets: costTargetObj,
+      sharedCosts: sharedCostObj
+    }
+
+    if (selectedBM.uuid) {
+      formValues.uuid = selectedBM.uuid
+    }
 
     try {
-      await mutate(values, {
+      const mutateFn = selectedBM.uuid ? update : mutate
+      await mutateFn(formValues, {
         queryParams: {
           accountIdentifier: accountId
         }
       })
+
+      showSuccess(getString('ce.businessMapping.created', { name: name }))
+      onSave()
     } catch (e) {
       showError(getErrorInfoFromErrorObject(e))
     }
@@ -121,8 +147,9 @@ const BusinessMappingBuilder: () => React.ReactElement = () => {
       formName="createBusinessMapping"
       validationSchema={validationSchema}
       initialValues={{
-        costTargets: [],
-        sharedCosts: [],
+        costTargets: selectedBM.costTargets || [],
+        sharedCosts: selectedBM.sharedCosts || [],
+        name: selectedBM.name || '',
         costTargetsKey: 0,
         sharedCostsKey: 0
       }}
@@ -146,6 +173,7 @@ const BusinessMappingBuilder: () => React.ReactElement = () => {
               />
               <FlexExpander />
               <Button
+                loading={formikProps.isSubmitting}
                 icon="upload-box"
                 intent="primary"
                 text={getString('ce.businessMapping.form.saveText')}

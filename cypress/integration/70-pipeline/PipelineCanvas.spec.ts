@@ -51,7 +51,7 @@ describe('GIT SYNC DISABLED', () => {
   })
 
   it('should display the error returned by pipeline save API', () => {
-    cy.intercept('POST', pipelineSaveCall, { fixture: 'pipeline/api/pipelines.post' })
+    cy.intercept('POST', pipelineSaveCall, { fixture: 'pipeline/api/pipelines.post' }).as('pipelineSaveCall')
     cy.contains('span', 'New Service').click()
 
     cy.fillName('testService')
@@ -88,6 +88,8 @@ describe('GIT SYNC DISABLED', () => {
     // try to save the pipleine, the mock data has error
     cy.contains('span', 'Save').click({ force: true })
 
+    cy.wait('@pipelineSaveCall')
+    cy.wait(500)
     cy.contains(
       'span',
       'Invalid yaml: $.pipeline.stages[0].stage.spec.execution: is missing but it is required'
@@ -95,8 +97,10 @@ describe('GIT SYNC DISABLED', () => {
   })
 
   it('should display the success message if pipeline save is success', () => {
-    cy.intercept('POST', pipelineSaveCall, { fixture: 'pipeline/api/pipelines.postsuccess' })
+    cy.intercept('POST', pipelineSaveCall, { fixture: 'pipeline/api/pipelines.postsuccess' }).as('pipelineSaveCall')
     cy.contains('span', 'Save').click({ force: true })
+    cy.wait('@pipelineSaveCall')
+    cy.wait(500)
     cy.contains('span', 'Pipeline published successfully').should('be.visible')
   })
 })

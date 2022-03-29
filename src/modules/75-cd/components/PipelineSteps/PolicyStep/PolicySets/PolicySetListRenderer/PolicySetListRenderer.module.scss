@@ -10,6 +10,7 @@
   border: 1px solid var(--form-field-border) !important;
   border-radius: 4px;
   font-size: 14px;
+  gap: var(--spacing-3);
 }
 
 .styledPolicy {
@@ -17,9 +18,14 @@
   border-radius: 5px;
   color: var(--primary-7) !important;
   padding: var(--spacing-xsmall) var(--spacing-small) !important;
-  font-size: 12px !important;
+  font-size: var(--font-size-small) !important;
   margin-right: 2px !important;
+  line-height: 1.5em !important;
   max-width: 100px;
+
+  &.big {
+    max-width: 240px;
+  }
 }
 
 .renderer {

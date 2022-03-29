@@ -252,7 +252,7 @@ const CostBucketBuilder: (props: CostBucketBuilderProps) => React.ReactElement =
                       }}
                     >
                       <RadioButtonGroup
-                        label="Sharing Strategy"
+                        label={getString('ce.businessMapping.sharedCostBucket.sharingStrategyLabel')}
                         selectedValue={(value as SharedCost).strategy}
                         options={[
                           {

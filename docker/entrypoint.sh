@@ -6,9 +6,9 @@
 
 NGINX_CONFIG_FILE="/etc/nginx/nginx.conf"
 
-if [[ "$IPV4_ONLY" == "true" ]]
+if [[ "$ENABLE_IPV6" == "true" ]]
 then
-  NGINX_CONFIG_FILE="/etc/nginx/nginx-ipv4-only.conf"
+  NGINX_CONFIG_FILE="/etc/nginx/nginx-ipv6-only.conf"
 fi
 
 sed -i "s|<\!-- apiurl -->|<script>window.apiUrl = '$API_URL'</script>|" index.html

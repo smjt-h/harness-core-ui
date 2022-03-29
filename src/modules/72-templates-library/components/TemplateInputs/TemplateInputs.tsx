@@ -18,6 +18,7 @@ import {
 import { parse } from 'yaml'
 import { Color } from '@harness/design-system'
 import { defaultTo, noop } from 'lodash-es'
+import { useParams } from 'react-router-dom'
 import cx from 'classnames'
 import { TemplateSummaryResponse, useGetTemplateInputSetYaml } from 'services/template-ng'
 import type { StepType } from '@pipeline/components/PipelineSteps/PipelineStepInterface'
@@ -26,6 +27,8 @@ import { StepWidget } from '@pipeline/components/AbstractSteps/StepWidget'
 import factory from '@pipeline/components/PipelineSteps/PipelineStepFactory'
 import { PageSpinner, useToaster } from '@common/components'
 import type { StageElementConfig, StepElementConfig, StageElementWrapperConfig } from 'services/cd-ng'
+import type { NGTemplateInfoConfigWithGitDetails } from 'framework/Templates/TemplateConfigModal/TemplateConfigModal'
+import type { AccountPathProps } from '@common/interfaces/RouteInterfaces'
 import MultiTypeDelegateSelector from '@common/components/MultiTypeDelegateSelector/MultiTypeDelegateSelector'
 import { useStrings } from 'framework/strings'
 import { StageForm } from '@pipeline/components/PipelineInputSetForm/PipelineInputSetForm'
@@ -36,7 +39,7 @@ import css from './TemplateInputs.module.scss'
 import stepCss from '@pipeline/components/PipelineSteps/Steps/Steps.module.scss'
 
 export interface TemplateInputsProps {
-  template: TemplateSummaryResponse
+  template: TemplateSummaryResponse | NGTemplateInfoConfigWithGitDetails
 }
 
 export const TemplateInputs: React.FC<TemplateInputsProps> = props => {
@@ -45,7 +48,15 @@ export const TemplateInputs: React.FC<TemplateInputsProps> = props => {
   const [count, setCount] = React.useState<number>(0)
   const { showError } = useToaster()
   const { getString } = useStrings()
+  const { accountId } = useParams<AccountPathProps>()
   const allowableTypes = [MultiTypeInputType.FIXED, MultiTypeInputType.EXPRESSION, MultiTypeInputType.RUNTIME]
+  const templateEntityType =
+    (template as TemplateSummaryResponse).templateEntityType || (template as NGTemplateInfoConfigWithGitDetails).type
+  const repo =
+    (template as TemplateSummaryResponse).gitDetails?.repoIdentifier ||
+    (template as NGTemplateInfoConfigWithGitDetails).repo
+  const branch =
+    (template as TemplateSummaryResponse).gitDetails?.branch || (template as NGTemplateInfoConfigWithGitDetails).branch
 
   const {
     data: templateInputYaml,
@@ -55,12 +66,12 @@ export const TemplateInputs: React.FC<TemplateInputsProps> = props => {
   } = useGetTemplateInputSetYaml({
     templateIdentifier: defaultTo(template.identifier, ''),
     queryParams: {
-      accountIdentifier: defaultTo(template.accountId, ''),
+      accountIdentifier: accountId,
       orgIdentifier: template.orgIdentifier,
       projectIdentifier: template.projectIdentifier,
       versionLabel: defaultTo(template.versionLabel, ''),
-      repoIdentifier: template.gitDetails?.repoIdentifier,
-      branch: template.gitDetails?.branch,
+      repoIdentifier: repo,
+      branch: branch,
       getDefaultFromOtherRepo: true
     }
   })
@@ -112,7 +123,7 @@ export const TemplateInputs: React.FC<TemplateInputsProps> = props => {
               <Formik<StepElementConfig | StageElementWrapperConfig>
                 onSubmit={noop}
                 initialValues={
-                  template.templateEntityType === TemplateType.Step
+                  templateEntityType === TemplateType.Step
                     ? (inputSetTemplate as StepElementConfig)
                     : ({ stage: inputSetTemplate } as StageElementWrapperConfig)
                 }
@@ -122,7 +133,7 @@ export const TemplateInputs: React.FC<TemplateInputsProps> = props => {
                 {formikProps => {
                   return (
                     <>
-                      {template.templateEntityType === TemplateType.Stage && (
+                      {templateEntityType === TemplateType.Stage && (
                         <StageForm
                           template={formikProps.values as StageElementWrapperConfig}
                           allValues={formikProps.values as StageElementWrapperConfig}
@@ -134,7 +145,7 @@ export const TemplateInputs: React.FC<TemplateInputsProps> = props => {
                           stageClassName={css.stageCard}
                         />
                       )}
-                      {template.templateEntityType === TemplateType.Step && (
+                      {templateEntityType === TemplateType.Step && (
                         <Container
                           className={css.inputsCard}
                           background={Color.WHITE}
