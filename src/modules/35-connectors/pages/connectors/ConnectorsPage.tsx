@@ -110,6 +110,7 @@ interface ConnectorsListProps {
 }
 
 const ConnectorsPage: React.FC<ConnectorsListProps> = ({ catalogueMockData, statisticsMockData, filtersMockData }) => {
+  const isAzureBlobEnabled = useFeatureFlag(FeatureFlag.AZURE_BLOB_SM)
   const { getString } = useStrings()
   const { getRBACErrorMessage } = useRBACError()
   const { isGitSyncEnabled } = useAppStore()
@@ -306,7 +307,10 @@ const ConnectorsPage: React.FC<ConnectorsListProps> = ({ catalogueMockData, stat
     const originalData = catalogueData?.data?.catalogue || []
     originalData.forEach(value => {
       if (value.category === 'SECRET_MANAGER') {
-        value.connectors = ['Vault', 'AwsKms', 'AzureKeyVault', 'AwsSecretManager', 'GcpKms', 'AzureBlob']
+        value.connectors = ['Vault', 'AwsKms', 'AzureKeyVault', 'AwsSecretManager', 'GcpKms']
+        if (isAzureBlobEnabled) {
+          value.connectors.push('AzureBlob')
+        }
       }
     })
     const orderedCatalogue: ConnectorCatalogueItem[] | { category: string; connectors: string[] } = []
