@@ -74,7 +74,7 @@ interface NotificationChannelProps {
   formikProps: FormikProps<NotificationValues>
 }
 
-const AlertOverview: React.FC<StepProps<StepData> & AlertsOverviewProps> = props => {
+export const AlertOverview: React.FC<StepProps<StepData> & AlertsOverviewProps> = props => {
   const { getString } = useStrings()
 
   return (
@@ -105,7 +105,7 @@ const AlertOverview: React.FC<StepProps<StepData> & AlertsOverviewProps> = props
   )
 }
 
-const NotificationMethod: React.FC<StepProps<StepData> & NotificationChannelProps> = props => {
+export const NotificationMethod: React.FC<StepProps<StepData> & NotificationChannelProps> = props => {
   const { getString } = useStrings()
 
   return (

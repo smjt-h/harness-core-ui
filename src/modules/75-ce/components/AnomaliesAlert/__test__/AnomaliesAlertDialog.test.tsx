@@ -6,24 +6,44 @@
  */
 
 // import { Container, Dialog, Formik } from '@harness/uicore'
-import { act, render } from '@testing-library/react'
+import { act, fireEvent, render, waitFor } from '@testing-library/react'
 import React from 'react'
 import { fromValue } from 'wonka'
 import type { DocumentNode } from 'graphql'
 import { Provider } from 'urql'
+import { Dialog, StepWizard } from '@harness/uicore'
+import { Formik } from 'formik'
+import type { IDialogProps } from '@blueprintjs/core'
 import { findDialogContainer, TestWrapper } from '@common/utils/testUtils'
 import { FetchPerspectiveListDocument } from 'services/ce/services'
-import { clickSubmit, InputTypes, setFieldValue } from '@common/utils/JestFormHelper'
-import { AnomalyAlertDialog } from '../AnomaliesAlertDialog'
+import { AlertOverview, NotificationMethod } from '../AnomaliesAlertDialog'
 import PerspectiveList from './PerspectiveList.json'
 
 const selectedAlert = {
   perspetiveId: 'perspectiveId',
-  channels: []
+  channels: [
+    {
+      notificationChannelType: 'SLACK',
+      channelUrls: []
+    }
+  ]
 }
 
 const params = {
   accountId: 'TEST_ACC'
+}
+
+const modalPropsLight: IDialogProps = {
+  isOpen: true,
+  enforceFocus: false,
+  style: {
+    width: 1100,
+    position: 'relative',
+    minHeight: 600,
+    borderLeft: 0,
+    paddingBottom: 0,
+    overflow: 'hidden'
+  }
 }
 
 jest.mock('services/ce', () => {
@@ -52,6 +72,12 @@ describe('Test case for anomalies new alert creation', () => {
     const hideAnomaliesAlertModal = jest.fn()
     const handleSubmit = jest.fn()
 
+    const formikProps: any = {
+      values: {
+        alertList: []
+      }
+    }
+
     const responseState = {
       executeQuery: ({ query }: { query: DocumentNode }) => {
         if (query === FetchPerspectiveListDocument) {
@@ -61,14 +87,33 @@ describe('Test case for anomalies new alert creation', () => {
       }
     }
 
-    const { container, getByText } = render(
+    const channelsData =
+      selectedAlert.channels.map((item: any) => {
+        return {
+          channelName: item.notificationChannelType,
+          channelUrl: item.channelUrls[0]
+        }
+      }) || []
+
+    const { getByText } = render(
       <TestWrapper pathParams={params}>
         <Provider value={responseState as any}>
-          <AnomalyAlertDialog
-            hideAnomaliesAlertModal={hideAnomaliesAlertModal}
-            handleSubmit={handleSubmit}
-            notificationData={selectedAlert}
-          />
+          <Dialog {...modalPropsLight} onClose={hideAnomaliesAlertModal}>
+            <Formik
+              initialValues={{
+                perspective: 'perspectiveId',
+                channelName: '',
+                channelUrl: '',
+                alertList: channelsData
+              }}
+              onSubmit={data => handleSubmit(data)}
+            >
+              <StepWizard>
+                <AlertOverview name={''} onClose={hideAnomaliesAlertModal} items={[]} />
+                <NotificationMethod name={''} onClose={hideAnomaliesAlertModal} formikProps={formikProps} />
+              </StepWizard>
+            </Formik>
+          </Dialog>
         </Provider>
       </TestWrapper>
     )
@@ -77,17 +122,60 @@ describe('Test case for anomalies new alert creation', () => {
     expect(modal).toBeDefined()
 
     expect(getByText('ce.anomalyDetection.notificationAlerts.selectPerspectiveLabel')).toBeDefined()
-    await setFieldValue({
-      container: modal!,
-      type: InputTypes.SELECT,
-      fieldId: 'perspective',
-      value: 'e6V1JG61QWubhV89vAmUIg'
+  })
+
+  test('Should be able to close the dialog on close', async () => {
+    const hideAnomaliesAlertModal = jest.fn()
+    const handleSubmit = jest.fn()
+
+    const formikProps: any = {
+      values: {
+        alertList: []
+      }
+    }
+
+    const responseState = {
+      executeQuery: ({ query }: { query: DocumentNode }) => {
+        if (query === FetchPerspectiveListDocument) {
+          return fromValue(PerspectiveList)
+        }
+        return fromValue({})
+      }
+    }
+
+    render(
+      <TestWrapper pathParams={params}>
+        <Provider value={responseState as any}>
+          <Dialog {...modalPropsLight} onClose={hideAnomaliesAlertModal}>
+            <Formik
+              initialValues={{
+                perspective: 'perspectiveId',
+                channelName: '',
+                channelUrl: '',
+                alertList: []
+              }}
+              onSubmit={data => handleSubmit(data)}
+            >
+              <StepWizard>
+                <AlertOverview name={''} onClose={hideAnomaliesAlertModal} items={[]} />
+                <NotificationMethod name={''} onClose={hideAnomaliesAlertModal} formikProps={formikProps} />
+              </StepWizard>
+            </Formik>
+          </Dialog>
+        </Provider>
+      </TestWrapper>
+    )
+
+    const modal = findDialogContainer()
+    expect(modal).toBeDefined()
+
+    await waitFor(() => Promise.resolve())
+
+    const crossIcon = modal?.querySelector('.closeBtn')
+    act(() => {
+      fireEvent.click(crossIcon!)
     })
 
-    await act(async () => {
-      clickSubmit(modal!)
-    })
-
-    expect(container).toMatchSnapshot()
+    expect(hideAnomaliesAlertModal).toBeCalled()
   })
 })
