@@ -23,16 +23,16 @@
         <div class='clearfix'>
             
             <div class='fl pad1y space-right2'>
-                <span class="strong">50.15% </span>
+                <span class="strong">50.45% </span>
                 <span class="quiet">Statements</span>
-                <span class='fraction'>167/333</span>
+                <span class='fraction'>169/335</span>
             </div>
         
             
             <div class='fl pad1y space-right2'>
-                <span class="strong">36.18% </span>
+                <span class="strong">36.51% </span>
                 <span class="quiet">Branches</span>
-                <span class='fraction'>195/539</span>
+                <span class='fraction'>199/545</span>
             </div>
         
             
@@ -44,9 +44,9 @@
         
             
             <div class='fl pad1y space-right2'>
-                <span class="strong">50.45% </span>
+                <span class="strong">50.75% </span>
                 <span class="quiet">Lines</span>
-                <span class='fraction'>167/331</span>
+                <span class='fraction'>169/333</span>
             </div>
         
             
@@ -1104,7 +1104,13 @@
 <a name='L1045'></a><a href='#L1045'>1045</a>
 <a name='L1046'></a><a href='#L1046'>1046</a>
 <a name='L1047'></a><a href='#L1047'>1047</a>
-<a name='L1048'></a><a href='#L1048'>1048</a></td><td class="line-coverage quiet"><span class="cline-any cline-neutral">&nbsp;</span>
+<a name='L1048'></a><a href='#L1048'>1048</a>
+<a name='L1049'></a><a href='#L1049'>1049</a>
+<a name='L1050'></a><a href='#L1050'>1050</a>
+<a name='L1051'></a><a href='#L1051'>1051</a>
+<a name='L1052'></a><a href='#L1052'>1052</a>
+<a name='L1053'></a><a href='#L1053'>1053</a>
+<a name='L1054'></a><a href='#L1054'>1054</a></td><td class="line-coverage quiet"><span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
@@ -1501,6 +1507,11 @@
 <span class="cline-any cline-yes">5x</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-yes">5x</span>
+<span class="cline-any cline-yes">5x</span>
+<span class="cline-any cline-yes">5x</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-yes">5x</span>
 <span class="cline-any cline-yes">5x</span>
 <span class="cline-any cline-yes">2x</span>
@@ -1516,6 +1527,7 @@
 <span class="cline-any cline-yes">1x</span>
 <span class="cline-any cline-no">&nbsp;</span>
 <span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-yes">1x</span>
 <span class="cline-any cline-no">&nbsp;</span>
@@ -2548,21 +2560,27 @@ export function PipelineCanvas({
     const newPipelineId = latestPipeline<span class="branch-0 cbranch-no" title="branch not covered" >?.i</span>dentifier
 &nbsp;
     <span class="missing-if-branch" title="else path not taken" >E</span>if (response &amp;&amp; response.status === 'SUCCESS') {
-      setGovernanceMetadata(get(response, 'data.governanceMetadata'))
-      if (pipelineIdentifier === DefaultNewPipelineId) {
-        await deletePipelineCache(gitDetails)
+      const governanceData: GovernanceMetadata | undefined = get(response, 'data.governanceMetadata')
+      setGovernanceMetadata(governanceData)
 &nbsp;
-        showSuccess(getString('pipelines-studio.publishPipeline'))
+      // Handling cache and page navigation only when Governance is disabled, or Governance Evaluation is successful
+      // Otherwise, keep current pipeline editing states, and show Governance evaluation error
+      <span class="missing-if-branch" title="else path not taken" >E</span>if (<span class="branch-1 cbranch-no" title="branch not covered" >governanceData?.status </span>!== 'error') {
+        if (pipelineIdentifier === DefaultNewPipelineId) {
+          await deletePipelineCache(gitDetails)
 &nbsp;
-        navigateToLocation(newPipelineId, updatedGitDetails)
-        // note: without setTimeout does not redirect properly after save
-        await fetchPipeline({ forceFetch: true, forceUpdate: true, newPipelineId })
-      } else {
-        await fetchPipeline({ forceFetch: true, forceUpdate: true })
-      }
-      <span class="missing-if-branch" title="if path not taken" >I</span>if (<span class="branch-1 cbranch-no" title="branch not covered" >updatedGitDetails?.isNewBranch)</span> {
-<span class="cstat-no" title="statement not covered" >        navigateToLocation(newPipelineId, updatedGitDetails)</span>
-<span class="cstat-no" title="statement not covered" >        location.reload()</span>
+          showSuccess(getString('pipelines-studio.publishPipeline'))
+&nbsp;
+          navigateToLocation(newPipelineId, updatedGitDetails)
+          // note: without setTimeout does not redirect properly after save
+          await fetchPipeline({ forceFetch: true, forceUpdate: true, newPipelineId })
+        } else {
+          await fetchPipeline({ forceFetch: true, forceUpdate: true })
+        }
+        <span class="missing-if-branch" title="if path not taken" >I</span>if (<span class="branch-1 cbranch-no" title="branch not covered" >updatedGitDetails?.isNewBranch)</span> {
+<span class="cstat-no" title="statement not covered" >          navigateToLocation(newPipelineId, updatedGitDetails)</span>
+<span class="cstat-no" title="statement not covered" >          location.reload()</span>
+        }
       }
       <span class="missing-if-branch" title="if path not taken" >I</span>if (isEdit) {
 <span class="cstat-no" title="statement not covered" >        trackEvent(isYaml ? PipelineActions.PipelineUpdatedViaYAML : PipelineActions.PipelineUpdatedViaVisual, {})</span>
@@ -3205,7 +3223,7 @@ export function PipelineCanvas({
             <div class='footer quiet pad2 space-top1 center small'>
                 Code coverage generated by
                 <a href="https://istanbul.js.org/" target="_blank">istanbul</a>
-                at Tue Mar 29 2022 00:12:39 GMT+0000 (Greenwich Mean Time)
+                at Tue Mar 29 2022 02:17:59 GMT+0000 (Greenwich Mean Time)
             </div>
         </div>
         <script src="../../../../../prettify.js"></script>
