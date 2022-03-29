@@ -6,7 +6,7 @@
  */
 
 import React, { useCallback, useEffect, useState } from 'react'
-import { StepWizard, useToaster } from '@wings-software/uicore'
+import { StepWizard, useToaster, IconProps } from '@wings-software/uicore'
 import { useModalHook } from '@harness/use-modal'
 import { Color } from '@harness/design-system'
 import cx from 'classnames'
@@ -17,7 +17,6 @@ import get from 'lodash-es/get'
 import set from 'lodash-es/set'
 
 import { Dialog, IDialogProps, Classes } from '@blueprintjs/core'
-import type { IconProps } from '@wings-software/uicore'
 import { merge } from 'lodash-es'
 import {
   useGetConnectorListV2,

@@ -6,10 +6,9 @@
  */
 
 import React, { useState } from 'react'
-import { Card, Icon, CardBody, Container, Layout, Text, CardProps } from '@wings-software/uicore'
+import { Card, Icon, CardBody, Container, Layout, Text, CardProps, IconProps } from '@wings-software/uicore'
 import cx from 'classnames'
 import { Color } from '@harness/design-system'
-import type { IconProps } from '@wings-software/uicore'
 import css from './CVSelectionCard.module.scss'
 
 export interface CVSelectionCardProps {

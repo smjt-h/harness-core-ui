@@ -17,7 +17,8 @@ import {
   getMultiTypeFromValue,
   ButtonSize,
   ButtonVariation,
-  Container
+  Container,
+  IconProps
 } from '@wings-software/uicore'
 import { useModalHook } from '@harness/use-modal'
 import { FontVariation, Color } from '@harness/design-system'
@@ -25,8 +26,6 @@ import { useParams } from 'react-router-dom'
 import cx from 'classnames'
 import { Dialog, IDialogProps, Classes } from '@blueprintjs/core'
 import { get, set } from 'lodash-es'
-
-import type { IconProps } from '@wings-software/uicore'
 import produce from 'immer'
 import { useStrings } from 'framework/strings'
 
