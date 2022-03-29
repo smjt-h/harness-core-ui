@@ -8,6 +8,7 @@ const schemaErrorsMock = [{"message":"type: does not have a value in the enumera
 
 const isPipelineError = item => !item.stageInfo && !item.stepInfo
 const isStageError = item => item.stageInfo && !item.stepInfo
+const isStepError = item => item.stageInfo && item.stepInfo
 
 const addToErrorsByStage = (errorsByStage, item) =>
   isStageError(item)
@@ -33,34 +34,105 @@ var getAdaptErrors = schemaErrors =>
     { stageIds: [], errorsByStage: {}, pipelineErrors: [] }
   )
 
-const StageErrors = ({ errors }) => {
-  const stageName = errors[0].stageInfo.name
-  const renderError = error => {
-    const { stageInfo, stepInfo } = error
-    if (!stageInfo && !stepInfo) return null
-    if (stageInfo && !stepInfo) {
-      return <div>{`stage error: ${error.message}`}</div>
-    }
-    if (stageInfo && stepInfo) {
-      return <div>{`step error: ${error.message}`}</div>
-    }
+var getAdaptedErrorsForStep = (stageIds, errorsByStage) => {
+  const updatedErrorsByStage = {}
+  stageIds.forEach(stepId => {
+    updatedErrorsByStage[stepId] = errorsByStage[stepId].reduce(
+      (accum, item) => {
+        const { stageErrors, errorsByStep, stepIds } = accum
+        if (isStageError(item)) {
+          stageErrors.push(item)
+        } else if (isStepError(item)) {
+          if (errorsByStep[item.stepInfo.identifier]) {
+            // push
+            errorsByStep[item.stepInfo.identifier].push(item)
+          } else {
+            errorsByStep[item.stepInfo.identifier] = [item]
+            stepIds.push(item.stepInfo.identifier)
+          }
+        }
+        return accum
+      },
+      { stageErrors: [], errorsByStep: {}, stepIds: [] }
+    )
+  })
+  return updatedErrorsByStage
+}
+
+const renderStageErrors = errors => {
+  const msgs = errors.map((err, index) => (
+    <div>
+      {index + 1}: {err.message}
+    </div>
+  ))
+  return (
+    <div>
+      <div>
+        <b>stage errors section</b>
+      </div>
+      <div>{msgs}</div>
+      <br />
+    </div>
+  )
+}
+
+const renderStepErrors = (stepIds, errorsByStep) => {
+  if (stepIds.length === 0) return null
+  const renderStepErrors = stepId => {
+    const stepErrors = errorsByStep[stepId] || []
+    return (
+      <div>
+        <b>Step Name</b>: {stepErrors[0].stepInfo.identifier} - {stepErrors[0].stepInfo.name}
+        <div>
+          {stepErrors.map((err, index) => (
+            <div>
+              {index + 1}: {err.message}
+            </div>
+          ))}
+        </div>
+        <br />
+      </div>
+    )
   }
+  return <div>{stepIds.map(stepId => renderStepErrors(stepId))}</div>
+}
+
+const StageErrors = ({ errors }) => {
+  const stageName = errors.stageErrors[0].stageInfo.name
+  // const renderError = error => {
+  //   const { stageInfo, stepInfo } = error
+  //   if (!stageInfo && !stepInfo) return null
+  //   if (stageInfo && !stepInfo) {
+  //     return <div>{`stage error - ${stageInfo.identifier}: ${error.message}`}</div>
+  //   }
+  //   if (stageInfo && stepInfo) {
+  //     return <div>{`step error - ${stepInfo.identifier}: ${error.message}`}</div>
+  //   }
+  // }
   return (
     <div>
       <h1>Stage: {stageName}</h1>
-      {errors.map(renderError)}
+      {renderStageErrors(errors.stageErrors)}
+      {renderStepErrors(errors.stepIds, errors.errorsByStep)}
+      {/*{errors.map(renderError)}*/}
+      <br />
+      <br />
     </div>
   )
 }
 
 const PipelineError = ({ errors }) => {
   if (errors.length === 0) return null
-  const renderError = error => {
-    return <div>{`pipeline error: ${error.message}`}</div>
+  const renderError = (error, index) => {
+    return (
+      <div>
+        {index + 1}: {error.message}
+      </div>
+    )
   }
   return (
     <div>
-      <h1>Pipeline</h1>
+      <h1>Pipeline Errors</h1>
       {errors.map(renderError)}
     </div>
   )
@@ -72,11 +144,12 @@ const PipelineErrors: React.FC<PropsInterface> = ({ errors: schemaErrors }) => {
     return null
   }
   const { stageIds, errorsByStage, pipelineErrors } = getAdaptErrors(schemaErrors)
+  const updatedErrorsByStage = getAdaptedErrorsForStep(stageIds, errorsByStage)
   return (
     <>
       <PipelineError errors={pipelineErrors} />
       {stageIds.map(stageId => {
-        return <StageErrors key={stageId} errors={errorsByStage[stageId]} />
+        return <StageErrors key={stageId} errors={updatedErrorsByStage[stageId]} />
       })}
     </>
   )
