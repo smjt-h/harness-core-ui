@@ -54,18 +54,18 @@ export default function SeelectInfrastructureType(props: SeelectInfrastructureTy
           groupLabel: '',
           items: [
             {
-              label: getString('pipelineSteps.deploymentTypes.aws'),
+              label: getString('common.aws'),
               icon: 'service-aws',
               value: InfraDeploymentType.ServerlessAwsLambda
             },
             {
-              label: getString('pipelineSteps.deploymentTypes.gcp'),
+              label: getString('common.gcp'),
               icon: 'gcp',
               value: InfraDeploymentType.ServerlessGoogleFunctions,
               disabled: true
             },
             {
-              label: getString('pipelineSteps.deploymentTypes.azure'),
+              label: getString('common.azure'),
               icon: 'service-azure',
               value: InfraDeploymentType.ServerlessAzureFunctions,
               disabled: true

@@ -59,7 +59,7 @@ function getValidationSchema(getString: UseStringsReturn['getString']): Yup.Obje
   return Yup.object().shape({
     connectorRef: getConnectorSchema(getString),
     region: Yup.lazy((): Yup.Schema<unknown> => {
-      return Yup.string().required(getString('common.region'))
+      return Yup.string().required(getString('regionLabel'))
     }),
     stage: Yup.lazy((): Yup.Schema<unknown> => {
       return Yup.string().required(getString('common.stage'))
@@ -182,7 +182,7 @@ const ServerlessAwsLambdaSpecEditable: React.FC<ServerlessAwsLambdaSpecEditableP
                     disabled: readonly,
                     allowableTypes
                   }}
-                  label={getString('common.region')}
+                  label={getString('regionLabel')}
                 />
                 {getMultiTypeFromValue(formik.values.region) === MultiTypeInputType.RUNTIME && !readonly && (
                   <ConfigureOptions
@@ -280,7 +280,7 @@ const ServerlessAwsLambdaSpecInputForm: React.FC<ServerlessAwsLambdaSpecEditable
             name={`${path}.region`}
             disabled={readonly}
             placeholder={getString('cd.steps.serverless.regionPlaceholder')}
-            label={getString('common.region')}
+            label={getString('regionLabel')}
             multiTextInputProps={{
               expressions,
               allowableTypes
@@ -412,7 +412,7 @@ export class ServerlessAwsLambdaSpec extends PipelineStep<ServerlessAwsLambdaInf
     ) {
       const region = Yup.object().shape({
         region: Yup.lazy((): Yup.Schema<unknown> => {
-          return Yup.string().required(getString('common.region'))
+          return Yup.string().required(getString('regionLabel'))
         })
       })
 

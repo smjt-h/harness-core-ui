@@ -36,7 +36,7 @@ import type { DeploymentStageElementConfig, StageElementWrapper } from '@pipelin
 import SelectDeploymentType from '@cd/components/PipelineStudio/DeployInfraSpecifications/SelectInfrastructureType/SelectInfrastructureType'
 import { Scope } from '@common/interfaces/SecretsInterface'
 import {
-  getDeploymentType,
+  getSelectedDeploymentType,
   isServerlessDeploymentType,
   StageType,
   detailsHeaderName,
@@ -150,7 +150,7 @@ export default function DeployInfraSpecifications(props: React.PropsWithChildren
     return scope === Scope.PROJECT ? '' : RUNTIME_INPUT_VALUE
   }, [scope])
 
-  const selectedDeploymentType = getDeploymentType(
+  const selectedDeploymentType = getSelectedDeploymentType(
     stage,
     getStageFromPipeline,
     !!stage?.stage?.spec?.serviceConfig?.useFromStage?.stage
@@ -288,10 +288,10 @@ export default function DeployInfraSpecifications(props: React.PropsWithChildren
 
   const getInfrastructureDefaultValue = (
     stageData: StageElementWrapper | undefined,
-    newDeploymentType: string | undefined
+    deploymentType: string | undefined
   ): Infrastructure => {
     const infrastructure = get(stageData, 'stage.spec.infrastructure.infrastructureDefinition', null)
-    const type = infrastructure?.type || newDeploymentType
+    const type = infrastructure?.type || deploymentType
     const allowSimultaneousDeployments = get(stageData, 'stage.spec.infrastructure.allowSimultaneousDeployments', false)
     switch (type) {
       case InfraDeploymentType.KubernetesDirect: {

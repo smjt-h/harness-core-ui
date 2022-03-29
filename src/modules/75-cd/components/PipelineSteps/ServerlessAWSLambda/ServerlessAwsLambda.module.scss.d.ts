@@ -9,12 +9,12 @@
 declare const styles: {
   readonly accordionDetails: string
   readonly accordionPanel: string
-  readonly clusterInputWrapper: string
   readonly connectorRef: string
   readonly formRow: string
   readonly inputWidth: string
   readonly lastRow: string
   readonly marginTop: string
+  readonly regionInputWrapper: string
   readonly simultaneousDeployment: string
 }
 export default styles

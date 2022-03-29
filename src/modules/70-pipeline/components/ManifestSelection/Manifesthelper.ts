@@ -119,7 +119,7 @@ export const ManifestToConnectorLabelMap: Record<ManifestStores, StringKeys> = {
   Bitbucket: 'pipeline.manifestType.bitBucketLabel',
   Http: 'connectors.title.helmConnector',
   S3: 'pipeline.manifestToConnectorLabelMap.AWSLabel',
-  Gcs: 'pipeline.manifestToConnectorLabelMap.GCPLabel'
+  Gcs: 'common.gcp'
 }
 
 export enum GitRepoName {

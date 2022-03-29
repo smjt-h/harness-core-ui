@@ -234,6 +234,7 @@ export interface StringsMap {
   'common.firstGeneration': string
   'common.frequency': string
   'common.friendlyMessage': string
+  'common.gcp': string
   'common.genericErrors.inviteExpired': string
   'common.genericErrors.licenseCallFailed': string
   'common.genericErrors.unauthorized': string
@@ -507,7 +508,6 @@ export interface StringsMap {
   'common.references': string
   'common.refresh': string
   'common.refreshPage': string
-  'common.region': string
   'common.reject': string
   'common.releaseName': string
   'common.remove': string
@@ -2670,7 +2670,6 @@ export interface StringsMap {
   'pipeline.logs.retry': string
   'pipeline.logs.sectionName': string
   'pipeline.manifestToConnectorLabelMap.AWSLabel': string
-  'pipeline.manifestToConnectorLabelMap.GCPLabel': string
   'pipeline.manifestType.bitBucketLabel': string
   'pipeline.manifestType.branchPlaceholder': string
   'pipeline.manifestType.bucketName': string
@@ -3086,7 +3085,6 @@ export interface StringsMap {
   'templatesLibrary.setAsStableText': string
   'templatesLibrary.setAsStableTitle': string
   'templatesLibrary.stableVersion': string
-  'templatesLibrary.stageTemplate': string
   'templatesLibrary.templateHasBeenDeleted': string
   'templatesLibrary.templateInputs': string
   'templatesLibrary.templateScope': string
@@ -7766,18 +7764,6 @@ export interface StringsMap {
    * @deprecated migrate this string to module level file
    */
   'pipelineSteps.deploy.serviceSpecifications.useFromStageLabel': string
-  /**
-   * @deprecated migrate this string to module level file
-   */
-  'pipelineSteps.deploymentTypes.aws': string
-  /**
-   * @deprecated migrate this string to module level file
-   */
-  'pipelineSteps.deploymentTypes.azure': string
-  /**
-   * @deprecated migrate this string to module level file
-   */
-  'pipelineSteps.deploymentTypes.gcp': string
   /**
    * @deprecated migrate this string to module level file
    */

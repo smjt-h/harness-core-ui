@@ -120,7 +120,6 @@ configureOptions:
 namespace: Namespace
 cluster: Cluster
 releaseName: Release name
-region: Region
 stage: Stage
 seeDetails: See details
 errorCount: 'Error(s): {{count}}'
@@ -642,6 +641,7 @@ comingSoon2: Coming Soon!
 recommended: 'Recommended'
 azure: Azure
 aws: AWS
+gcp: GCP
 module:
   cd: CD
   ci: CI
