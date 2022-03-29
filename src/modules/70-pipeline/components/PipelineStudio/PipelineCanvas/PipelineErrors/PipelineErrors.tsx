@@ -67,7 +67,7 @@ const PipelineError = ({ errors }) => {
 }
 
 const PipelineErrors: React.FC<PropsInterface> = ({ errors: schemaErrors }) => {
-  schemaErrors = schemaErrorsMock
+  // schemaErrors = schemaErrorsMock
   if (!schemaErrors.length) {
     return null
   }

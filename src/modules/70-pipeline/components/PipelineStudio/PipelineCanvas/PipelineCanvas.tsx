@@ -230,7 +230,7 @@ export function PipelineCanvas({
     [updatePipelineAPIResponse]
   )
 
-  useEffect(showErrorModal, [])
+  // useEffect(showErrorModal, [])
 
   const [discardBEUpdateDialog, setDiscardBEUpdate] = React.useState(false)
   const { openDialog: openConfirmBEUpdateError } = useConfirmationDialog({
