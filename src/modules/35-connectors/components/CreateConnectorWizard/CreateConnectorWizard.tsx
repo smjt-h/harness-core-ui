@@ -12,6 +12,8 @@ import type { ConnectorRequestBody, ConnectorInfoDTO } from 'services/cd-ng'
 import type { IGitContextFormProps } from '@common/components/GitContextForm/GitContextForm'
 import type { ConnectivityModeType } from '@common/components/ConnectivityMode/ConnectivityMode'
 import { useFeatureFlags } from '@common/hooks/useFeatureFlag'
+import { useTelemetry } from '@common/hooks/useTelemetry'
+import { Category, ConnectorActions } from '@common/constants/TrackingConstants'
 import CreateGitConnector from '../CreateConnector/GitConnector/CreateGitConnector'
 import CreateGithubConnector from '../CreateConnector/GithubConnector/CreateGithubConnector'
 import CreateGitlabConnector from '../CreateConnector/GitlabConnector/CreateGitlabConnector'
@@ -64,7 +66,16 @@ interface CreateConnectorWizardProps {
 
 export const ConnectorWizard: React.FC<CreateConnectorWizardProps> = props => {
   const { type } = props
-  const commonProps = pick(props, [
+  const { trackEvent } = useTelemetry()
+  const onSuccessWithEventTracking = (data?: ConnectorRequestBody): void | Promise<void> => {
+    props.onSuccess(data)
+    trackEvent(ConnectorActions.SaveCreateConnector, {
+      category: Category.CONNECTOR,
+      data
+    })
+  }
+
+  let commonProps = pick(props, [
     'onSuccess',
     'onClose',
     'isEditMode',
@@ -77,7 +88,17 @@ export const ConnectorWizard: React.FC<CreateConnectorWizardProps> = props => {
     'connectivityMode',
     'setConnectivityMode'
   ])
+  commonProps = {
+    ...commonProps,
+    onSuccess: onSuccessWithEventTracking
+  }
   const { ERROR_TRACKING_ENABLED } = useFeatureFlags()
+  React.useEffect(() => {
+    trackEvent(ConnectorActions.StartCreateConnector, {
+      category: Category.CONNECTOR
+    })
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [])
   switch (type) {
     case Connectors.CUSTOM:
       return <CreateCustomHealthConnector {...commonProps} />

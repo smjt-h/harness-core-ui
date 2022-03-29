@@ -679,7 +679,7 @@ export function PipelineCanvas({
         })
       }
       hideModal()
-      trackEvent(PipelineActions.StartedPipelineCreation, { module })
+      trackEvent(PipelineActions.StartedPipelineCreation, { module, data })
     },
     // eslint-disable-next-line react-hooks/exhaustive-deps
     [hideModal, pipeline, updatePipeline]

@@ -13,6 +13,8 @@ import { useStrings } from 'framework/strings'
 
 import { DelegateTypes } from '@delegates/constants'
 import type { DelegateInfoDTO, DelegateConfigDTO } from '@delegates/DelegateInterface'
+import { useTelemetry } from '@common/hooks/useTelemetry'
+import { Category, DelegateActions } from '@common/constants/TrackingConstants'
 
 import Delegates4Ways from './Delegates4Ways/Delegates4Ways'
 import harnessDelegate from './images/harness-delegate.svg'
@@ -92,6 +94,14 @@ const DelegateSelectStep: React.FC<StepProps<DelegateInfoDTO> & DelegateSelectSt
     } else {
       setSelectedCard(selectCardData[0])
     }
+  }, [])
+
+  const { trackEvent } = useTelemetry()
+  useEffect(() => {
+    trackEvent(DelegateActions.StartCreateDelegate, {
+      category: Category.DELEGATE
+    })
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [])
 
   return (

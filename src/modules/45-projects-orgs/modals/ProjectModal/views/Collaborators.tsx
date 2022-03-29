@@ -44,6 +44,8 @@ import { isCDCommunity, useLicenseStore } from 'framework/LicenseStore/LicenseSt
 import { useMutateAsGet } from '@common/hooks'
 import UserItemRenderer from '@audit-trail/components/UserItemRenderer/UserItemRenderer'
 import UserTagRenderer from '@audit-trail/components/UserTagRenderer/UserTagRenderer'
+import { useTelemetry } from '@common/hooks/useTelemetry'
+import { Category, ProjectActions } from '@common/constants/TrackingConstants'
 import InviteListRenderer from './InviteListRenderer'
 import css from './Steps.module.scss'
 
@@ -326,6 +328,16 @@ export const ProjectCollaboratorsStep: React.FC<StepProps<Project> & Collaborato
   ...rest
 }) => {
   const { getString } = useStrings()
+
+  const { trackEvent } = useTelemetry()
+
+  useEffect(() => {
+    trackEvent(ProjectActions.LoadInviteCollaborators, {
+      category: Category.PROJECT
+    })
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [])
+
   return (
     <Layout.Vertical padding="xxxlarge">
       <Collaborators
@@ -337,13 +349,21 @@ export const ProjectCollaboratorsStep: React.FC<StepProps<Project> & Collaborato
       <Layout.Horizontal spacing="small">
         <Button
           variation={ButtonVariation.SECONDARY}
-          onClick={() => previousStep?.(prevStepData)}
+          onClick={() => {
+            trackEvent(ProjectActions.ClickBackToProject, {
+              category: Category.PROJECT
+            })
+            previousStep?.(prevStepData)
+          }}
           text={getString('back')}
         />
         <Button
           variation={ButtonVariation.PRIMARY}
           text={getString('saveAndContinue')}
           onClick={() => {
+            trackEvent(ProjectActions.SaveInviteCollaborators, {
+              category: Category.PROJECT
+            })
             /* istanbul ignore else */ if (prevStepData) {
               nextStep?.({ ...prevStepData })
             }

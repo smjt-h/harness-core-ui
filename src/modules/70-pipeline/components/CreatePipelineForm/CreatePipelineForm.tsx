@@ -18,6 +18,8 @@ import { useStrings } from 'framework/strings'
 import type { EntityGitDetails } from 'services/pipeline-ng'
 import GitContextForm from '@common/components/GitContextForm/GitContextForm'
 import { useAppStore } from 'framework/AppStore/AppStoreContext'
+import { useTelemetry } from '@common/hooks/useTelemetry'
+import { Category, PipelineActions } from '@common/constants/TrackingConstants'
 import { GitSyncStoreProvider } from 'framework/GitRepoStore/GitSyncStoreContext'
 import css from './CreatePipelineForm.module.scss'
 
@@ -31,6 +33,7 @@ export function CreatePipelineForm(props: CreatePipelineFormProps): React.ReactE
   const { getString } = useStrings()
   const { isGitSyncEnabled } = useAppStore()
   const { handleSubmit, closeModal, learnMoreUrl } = props
+  const { trackEvent } = useTelemetry()
   return (
     <Formik
       initialValues={{
@@ -58,6 +61,11 @@ export function CreatePipelineForm(props: CreatePipelineFormProps): React.ReactE
         handleSubmit(omit(values, 'repo', 'branch'), {
           branch: values.branch,
           repoIdentifier: values.repo
+        })
+
+        trackEvent(PipelineActions.StartedPipelineCreation, {
+          category: Category.PIPELINE,
+          ...values
         })
       }}
     >
@@ -89,7 +97,12 @@ export function CreatePipelineForm(props: CreatePipelineFormProps): React.ReactE
                 intent="none"
                 text={getString('pipeline.createPipeline.setupLater')}
                 type="reset"
-                onClick={() => closeModal?.()}
+                onClick={() => {
+                  trackEvent(PipelineActions.SetupLater, {
+                    category: Category.PIPELINE
+                  })
+                  closeModal?.()
+                }}
               />
             </Layout.Horizontal>
             <Layout.Horizontal padding={{ top: 'large' }}>

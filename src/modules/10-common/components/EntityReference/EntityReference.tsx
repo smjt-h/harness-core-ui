@@ -32,6 +32,8 @@ import { useStrings, UseStringsReturn } from 'framework/strings'
 import type { StringKeys } from 'framework/strings'
 import { useAppStore } from 'framework/AppStore/AppStoreContext'
 import type { AccountPathProps } from '@common/interfaces/RouteInterfaces'
+import { useTelemetry } from '@common/hooks/useTelemetry'
+import { Category, StageActions } from '@common/constants/TrackingConstants'
 import { CollapsableList } from '../CollapsableList/CollapsableList'
 import css from './EntityReference.module.scss'
 
@@ -326,6 +328,14 @@ export function EntityReference<T>(props: EntityReferenceProps<T>): JSX.Element 
     ) : null
   }
 
+  const { trackEvent } = useTelemetry()
+  useEffect(() => {
+    trackEvent(StageActions.LoadCreateOrSelectConnectorView, {
+      category: Category.STAGE
+    })
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [])
+
   return (
     <Container className={cx(css.container, className)}>
       <div className={css.tabsContainer}>
@@ -347,7 +357,14 @@ export function EntityReference<T>(props: EntityReferenceProps<T>): JSX.Element 
         <Button
           variation={ButtonVariation.PRIMARY}
           text={getString('entityReference.apply')}
-          onClick={() => props.onSelect(selectedRecord as T, selectedScope)}
+          onClick={() => {
+            props.onSelect(selectedRecord as T, selectedScope)
+            trackEvent(StageActions.LoadCreateOrSelectConnectorView, {
+              category: Category.STAGE,
+              selectedRecord,
+              selectedScope
+            })
+          }}
           disabled={!selectedRecord}
           className={cx(Classes.POPOVER_DISMISS)}
         />

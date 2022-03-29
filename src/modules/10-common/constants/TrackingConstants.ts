@@ -30,7 +30,27 @@ export enum PlanActions {
 export enum StageActions {
   SelectStage = 'Select a Stage',
   SetupStage = 'Setup Stage',
-  DeleteStage = 'Delete Stage'
+  DeleteStage = 'Delete Stage',
+  LoadSelectStageTypeView = 'Load Select Stage Type View',
+  LoadEditStageView = 'Load Edit Stage View',
+  LoadCreateOrSelectConnectorView = 'Load Create or Select a Connector View',
+  LoadSelectConnectorTypeView = 'Load Select Connector Type View',
+  SelectConnectorType = 'Select Connector Type'
+}
+
+export enum SecretActions {
+  StartCreateSecret = 'Start Create Secret',
+  SaveCreateSecret = 'Save Create Secret'
+}
+
+export enum ConnectorActions {
+  StartCreateConnector = 'Start Create Connector',
+  SaveCreateConnector = 'Save Create Connector'
+}
+
+export enum DelegateActions {
+  StartCreateDelegate = 'Start Create Delegate',
+  SaveCreateDelegate = 'Save Create Delegate'
 }
 
 export enum StepActions {
@@ -48,7 +68,10 @@ export enum PipelineActions {
   PipelineCreatedViaVisual = 'Save a pipeline using Visual Mode',
   PipelineCreatedViaYAML = 'Save a pipeline using YAML editor',
   PipelineUpdatedViaVisual = 'Update a pipeline using Visual Mode',
-  PipelineUpdatedViaYAML = 'Update a pipeline using YAML editor'
+  PipelineUpdatedViaYAML = 'Update a pipeline using YAML editor',
+  SetupLater = 'Click Setup later',
+  LoadCreateNewPipeline = 'Load Create new Pipeline',
+  CancelCreateNewPipeline = 'Cancel Create new Pipeline'
 }
 
 export enum NavigatedToPage {
@@ -61,8 +84,13 @@ export enum NavigatedToPage {
 }
 
 export enum Category {
-  SIGNUP = 'SIGNUP',
-  PROJECT = 'PROJECT'
+  SIGNUP = 'Signup',
+  PROJECT = 'Project',
+  PIPELINE = 'Pipeline',
+  STAGE = 'Stage',
+  SECRET = 'Secret',
+  CONNECTOR = 'Connector',
+  DELEGATE = 'Delegate'
 }
 
 export enum ManifestActions {
@@ -79,5 +107,8 @@ export enum ArtifactActions {
 
 export enum ProjectActions {
   OpenCreateProjectModal = 'Open Create Project modal',
-  SaveCreateProject = 'Save Create project'
+  SaveCreateProject = 'Save Create project',
+  LoadInviteCollaborators = 'Load Invite Collaborators',
+  SaveInviteCollaborators = 'Save Invite Collaborators',
+  ClickBackToProject = 'Click Back to Project'
 }

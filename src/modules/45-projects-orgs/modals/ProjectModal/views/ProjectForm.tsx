@@ -96,7 +96,8 @@ const ProjectForm: React.FC<StepProps<Project> & ProjectModalData> = props => {
       })}
       onSubmit={(values: AboutPageData) => {
         trackEvent(ProjectActions.SaveCreateProject, {
-          category: Category.PROJECT
+          category: Category.PROJECT,
+          ...values
         })
         onComplete(values)
       }}

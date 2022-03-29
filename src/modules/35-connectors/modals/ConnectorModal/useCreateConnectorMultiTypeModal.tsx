@@ -13,6 +13,8 @@ import type { ConnectorInfoDTO } from 'services/cd-ng'
 import { getConnectorIconByType, getConnectorTitleIdByType } from '@connectors/pages/connectors/utils/ConnectorHelper'
 import { useStrings } from 'framework/strings'
 import type { IGitContextFormProps } from '@common/components/GitContextForm/GitContextForm'
+import { useTelemetry } from '@common/hooks/useTelemetry'
+import { Category, StageActions } from '@common/constants/TrackingConstants'
 import useCreateConnectorModal, { ConnectorModaldata, UseCreateConnectorModalProps } from './useCreateConnectorModal'
 import wizardCss from '../../components/CreateConnectorWizard/CreateConnectorWizard.module.scss'
 import css from './useCreateConnectorMultiTypeModal.module.scss'
@@ -61,7 +63,18 @@ const useCreateConnectorMultiTypeModal = (
   const handleSelect = (type: ConnectorInfoDTO['type']): void => {
     hideModal()
     openConnectorModal(false, type, { gitDetails: gitDetails })
+    trackEvent(StageActions.SelectConnectorType, {
+      category: Category.STAGE,
+      type
+    })
   }
+  const { trackEvent } = useTelemetry()
+  React.useEffect(() => {
+    trackEvent(StageActions.LoadSelectConnectorTypeView, {
+      category: Category.STAGE
+    })
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [])
 
   const [showModal, hideModal] = useModalHook(
     () => (

@@ -49,13 +49,14 @@ describe('useTelemetry', () => {
     expect(identifyMock).toHaveBeenCalledWith(email)
     expect(trackMock).toHaveBeenCalledWith({
       event: 'event1',
-      properties: { groupId: undefined, userId: '' }
+      properties: { groupId: undefined, userId: '', source: 'NG UI' }
     })
     expect(pageMock).toHaveBeenCalledWith({
       name: 'page',
       category: '',
       properties: {
-        userId: ''
+        userId: '',
+        source: 'NG UI'
       }
     })
   })
@@ -91,12 +92,20 @@ describe('useTelemetry', () => {
     expect(identifyMock).toHaveBeenCalledWith(email)
     expect(trackMock).toHaveBeenCalledWith({
       event: 'event2',
-      properties: { groupId: undefined, userId: '', licenseEdition: 'ENTERPRISE', licenseType: 'PAID', module: 'cd' }
+      properties: {
+        source: 'NG UI',
+        groupId: undefined,
+        userId: '',
+        licenseEdition: 'ENTERPRISE',
+        licenseType: 'PAID',
+        module: 'cd'
+      }
     })
     expect(pageMock).toHaveBeenCalledWith({
       name: 'page',
       category: '',
       properties: {
+        source: 'NG UI',
         userId: '',
         licenseEdition: 'ENTERPRISE',
         licenseType: 'PAID',

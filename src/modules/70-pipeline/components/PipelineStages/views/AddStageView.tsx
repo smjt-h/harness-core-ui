@@ -5,20 +5,20 @@
  * https://polyformproject.org/wp-content/uploads/2020/06/PolyForm-Shield-1.0.0.txt.
  */
 
-import React from 'react'
+import React, { useEffect } from 'react'
 import { ButtonSize, ButtonVariation, Card, Icon, IconName, Layout, Heading } from '@wings-software/uicore'
 import cx from 'classnames'
 import { Color } from '@harness/design-system'
 import { useStrings } from 'framework/strings'
 import { ComingSoonIcon } from '@common/components/ComingSoonIcon/ComingSoonIcon'
 import { useTelemetry } from '@common/hooks/useTelemetry'
-import { StageActions } from '@common/constants/TrackingConstants'
 import { StageType } from '@pipeline/utils/stageHelpers'
 import { PipelineContextType } from '@pipeline/components/PipelineStudio/PipelineContext/PipelineContext'
 import { FeatureFlag } from '@common/featureFlags'
 import { useFeatureFlag } from '@common/hooks/useFeatureFlag'
 import RbacButton from '@rbac/components/Button/Button'
 import { FeatureIdentifier } from 'framework/featureStore/FeatureIdentifier'
+import { Category, StageActions } from '@common/constants/TrackingConstants'
 import type { PipelineStageProps } from '../PipelineStage'
 import EmptyStageView from './EmptyStageView'
 import StageHoverView from './StageHoverView'
@@ -53,6 +53,12 @@ export function AddStageView({
   const { trackEvent } = useTelemetry()
   const [selectedType, setSelectedType] = React.useState<SelectedAddStageTypeData | undefined>(undefined)
 
+  useEffect(() => {
+    trackEvent(StageActions.LoadSelectStageTypeView, {
+      category: Category.STAGE
+    })
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [])
   return (
     <div className={cx(css.createNewContent, { [css.parallel]: isParallel })}>
       <div className={css.stageTypeSection}>

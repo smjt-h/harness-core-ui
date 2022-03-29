@@ -36,6 +36,8 @@ import { Page } from '@common/exports'
 import ScopedTitle from '@common/components/Title/ScopedTitle'
 import { Scope } from '@common/interfaces/SecretsInterface'
 import { getLinkForAccountResources } from '@common/utils/BreadcrumbUtils'
+import { useTelemetry } from '@common/hooks/useTelemetry'
+import { Category, SecretActions } from '@common/constants/TrackingConstants'
 import SecretsList from './views/SecretsListView/SecretsList'
 
 import SecretEmptyState from './secrets-empty-state.png'
@@ -109,7 +111,14 @@ const SecretsPage: React.FC<SecretsPageProps> = ({ mock }) => {
       />
     )
   }
+  const { trackEvent } = useTelemetry()
   const CreateSecretBtnMenu: React.FC = () => {
+    React.useEffect(() => {
+      trackEvent(SecretActions.StartCreateSecret, {
+        category: Category.SECRET
+      })
+      // eslint-disable-next-line react-hooks/exhaustive-deps
+    }, [])
     return (
       <Menu large>
         <Menu.Item
