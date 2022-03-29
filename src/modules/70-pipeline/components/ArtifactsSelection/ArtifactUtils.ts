@@ -205,9 +205,6 @@ export const defaultArtifactInitialValues = (selectedArtifact: ArtifactType): Im
     case ENABLED_ARTIFACT_TYPES.Acr:
       return {
         identifier: '',
-        subscription: '',
-        registry: '',
-        repository: '',
         tag: RUNTIME_INPUT_VALUE,
         tagType: TagTypes.Value,
         tagRegex: RUNTIME_INPUT_VALUE

@@ -145,12 +145,7 @@ export class KubernetesServiceSpec extends Step<ServiceSpec> {
             includeAllConnectorsAvailableAtScope: true
           },
           body: {
-            types: [
-              ArtifactToConnectorMap.DockerRegistry,
-              ArtifactToConnectorMap.Gcr,
-              ArtifactToConnectorMap.Ecr,
-              ArtifactToConnectorMap.Acr
-            ],
+            types: [ArtifactToConnectorMap.DockerRegistry, ArtifactToConnectorMap.Gcr, ArtifactToConnectorMap.Ecr],
             filterType: 'Connector'
           }
         }).then(response => {
