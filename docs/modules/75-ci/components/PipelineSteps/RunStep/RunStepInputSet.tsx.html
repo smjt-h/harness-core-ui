@@ -30,9 +30,9 @@
         
             
             <div class='fl pad1y space-right2'>
-                <span class="strong">98.91% </span>
+                <span class="strong">98.89% </span>
                 <span class="quiet">Branches</span>
-                <span class='fraction'>91/92</span>
+                <span class='fraction'>89/90</span>
             </div>
         
             
@@ -223,27 +223,7 @@
 <a name='L164'></a><a href='#L164'>164</a>
 <a name='L165'></a><a href='#L165'>165</a>
 <a name='L166'></a><a href='#L166'>166</a>
-<a name='L167'></a><a href='#L167'>167</a>
-<a name='L168'></a><a href='#L168'>168</a>
-<a name='L169'></a><a href='#L169'>169</a>
-<a name='L170'></a><a href='#L170'>170</a>
-<a name='L171'></a><a href='#L171'>171</a>
-<a name='L172'></a><a href='#L172'>172</a>
-<a name='L173'></a><a href='#L173'>173</a>
-<a name='L174'></a><a href='#L174'>174</a>
-<a name='L175'></a><a href='#L175'>175</a>
-<a name='L176'></a><a href='#L176'>176</a>
-<a name='L177'></a><a href='#L177'>177</a>
-<a name='L178'></a><a href='#L178'>178</a>
-<a name='L179'></a><a href='#L179'>179</a>
-<a name='L180'></a><a href='#L180'>180</a>
-<a name='L181'></a><a href='#L181'>181</a>
-<a name='L182'></a><a href='#L182'>182</a>
-<a name='L183'></a><a href='#L183'>183</a>
-<a name='L184'></a><a href='#L184'>184</a>
-<a name='L185'></a><a href='#L185'>185</a>
-<a name='L186'></a><a href='#L186'>186</a>
-<a name='L187'></a><a href='#L187'>187</a></td><td class="line-coverage quiet"><span class="cline-any cline-neutral">&nbsp;</span>
+<a name='L167'></a><a href='#L167'>167</a></td><td class="line-coverage quiet"><span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
@@ -263,8 +243,8 @@
 <span class="cline-any cline-yes">85x</span>
 <span class="cline-any cline-yes">85x</span>
 <span class="cline-any cline-yes">85x</span>
-<span class="cline-any cline-yes">85x</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">85x</span>
 <span class="cline-any cline-yes">85x</span>
 <span class="cline-any cline-yes">85x</span>
 <span class="cline-any cline-yes">85x</span>
@@ -286,28 +266,6 @@
 <span class="cline-any cline-yes">8x</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-yes">8x</span>
-<span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
@@ -427,6 +385,8 @@
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-yes">85x</span>
 <span class="cline-any cline-yes">85x</span>
 <span class="cline-any cline-neutral">&nbsp;</span></td><td class="text"><pre class="prettyprint lang-js">/*
@@ -449,10 +409,10 @@ import { FormMultiTypeCheckboxField } from '@common/components/MultiTypeCheckbox
 import { useVariablesExpression } from '@pipeline/components/PipelineStudio/PiplineHooks/useVariablesExpression'
 import StepCommonFieldsInputSet from '@ci/components/PipelineSteps/StepCommonFields/StepCommonFieldsInputSet'
 import { StepViewType } from '@pipeline/components/AbstractSteps/Step'
-import { Connectors } from '@connectors/constants'
 import type { RunStepProps } from './RunStep'
 import { CIStep } from '../CIStep/CIStep'
 import { CIStepOptionalConfig, renderMultiTypeListInputSet } from '../CIStep/CIStepOptionalConfig'
+import { ConnectorRefWithImage } from '../CIStep/ConnectorRefWithImage'
 import { AllMultiTypeInputTypesForInputSet, shouldRenderRunTimeInputView } from '../CIStep/StepUtils'
 import css from '@pipeline/components/PipelineSteps/Steps/Steps.module.scss'
 &nbsp;
@@ -477,37 +437,15 @@ export const RunStepInputSetBasic: React.FC&lt;RunStepProps&gt; = ({
         readonly={readonly}
         stepViewType={stepViewType}
         enableFields={{
-          ...(getMultiTypeFromValue(template?.description) === MultiTypeInputType.RUNTIME &amp;&amp; { description: {} }),
-          ...(getMultiTypeFromValue(template?.spec?.connectorRef) === MultiTypeInputType.RUNTIME &amp;&amp; {
-            'spec.connectorRef': {
-              label: (
-                &lt;Text
-                  className={css.inpLabel}
-                  color={Color.GREY_600}
-                  font={{ size: 'small', weight: 'semi-bold' }}
-                  style={{ display: 'flex', alignItems: 'center' }}
-                  tooltipProps={{ dataTooltipId: 'connector' }}
-                &gt;
-                  {getString('pipelineSteps.connectorLabel')}
-                &lt;/Text&gt;
-              ),
-              type: [Connectors.GCP, Connectors.AWS, Connectors.DOCKER]
-            }
-          }),
-          ...(getMultiTypeFromValue(template?.spec?.image) === MultiTypeInputType.RUNTIME &amp;&amp; {
-            'spec.image': {
-              tooltipId: 'image',
-              multiTextInputProps: {
-                placeholder: getString('imagePlaceholder'),
-                disabled: readonly,
-                multiTextInputProps: {
-                  expressions,
-                  allowableTypes
-                }
-              }
-            }
-          })
+          ...(getMultiTypeFromValue(template?.description) === MultiTypeInputType.RUNTIME &amp;&amp; { description: {} })
         }}
+        path={path || ''}
+      /&gt;
+      &lt;ConnectorRefWithImage
+        readonly={readonly}
+        showConnectorRef={getMultiTypeFromValue(template?.spec?.connectorRef) === MultiTypeInputType.RUNTIME}
+        showImage={getMultiTypeFromValue(template?.spec?.image) === MultiTypeInputType.RUNTIME}
+        stepViewType={stepViewType}
         path={path || ''}
       /&gt;
       {getMultiTypeFromValue(template?.spec?.command) === MultiTypeInputType.RUNTIME &amp;&amp; (
@@ -592,7 +530,9 @@ export const RunStepInputSetBasic: React.FC&lt;RunStepProps&gt; = ({
             expressions,
             getString,
             readonly,
-            formik
+            formik,
+            withObjectStructure: true,
+            keyName: 'name'
           })}
         &lt;/Container&gt;
       )}
@@ -622,7 +562,7 @@ export { RunStepInputSet }
             <div class='footer quiet pad2 space-top1 center small'>
                 Code coverage generated by
                 <a href="https://istanbul.js.org/" target="_blank">istanbul</a>
-                at Mon Mar 28 2022 16:29:05 GMT+0000 (Greenwich Mean Time)
+                at Tue Mar 29 2022 00:12:39 GMT+0000 (Greenwich Mean Time)
             </div>
         </div>
         <script src="../../../../../prettify.js"></script>

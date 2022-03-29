@@ -30,9 +30,9 @@
         
             
             <div class='fl pad1y space-right2'>
-                <span class="strong">98.48% </span>
+                <span class="strong">98.46% </span>
                 <span class="quiet">Branches</span>
-                <span class='fraction'>130/132</span>
+                <span class='fraction'>128/130</span>
             </div>
         
             
@@ -309,27 +309,7 @@
 <a name='L250'></a><a href='#L250'>250</a>
 <a name='L251'></a><a href='#L251'>251</a>
 <a name='L252'></a><a href='#L252'>252</a>
-<a name='L253'></a><a href='#L253'>253</a>
-<a name='L254'></a><a href='#L254'>254</a>
-<a name='L255'></a><a href='#L255'>255</a>
-<a name='L256'></a><a href='#L256'>256</a>
-<a name='L257'></a><a href='#L257'>257</a>
-<a name='L258'></a><a href='#L258'>258</a>
-<a name='L259'></a><a href='#L259'>259</a>
-<a name='L260'></a><a href='#L260'>260</a>
-<a name='L261'></a><a href='#L261'>261</a>
-<a name='L262'></a><a href='#L262'>262</a>
-<a name='L263'></a><a href='#L263'>263</a>
-<a name='L264'></a><a href='#L264'>264</a>
-<a name='L265'></a><a href='#L265'>265</a>
-<a name='L266'></a><a href='#L266'>266</a>
-<a name='L267'></a><a href='#L267'>267</a>
-<a name='L268'></a><a href='#L268'>268</a>
-<a name='L269'></a><a href='#L269'>269</a>
-<a name='L270'></a><a href='#L270'>270</a>
-<a name='L271'></a><a href='#L271'>271</a>
-<a name='L272'></a><a href='#L272'>272</a>
-<a name='L273'></a><a href='#L273'>273</a></td><td class="line-coverage quiet"><span class="cline-any cline-neutral">&nbsp;</span>
+<a name='L253'></a><a href='#L253'>253</a></td><td class="line-coverage quiet"><span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
@@ -351,8 +331,8 @@
 <span class="cline-any cline-yes">85x</span>
 <span class="cline-any cline-yes">85x</span>
 <span class="cline-any cline-yes">85x</span>
-<span class="cline-any cline-yes">85x</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">85x</span>
 <span class="cline-any cline-yes">85x</span>
 <span class="cline-any cline-yes">85x</span>
 <span class="cline-any cline-yes">85x</span>
@@ -579,26 +559,6 @@
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-yes">85x</span>
 <span class="cline-any cline-yes">85x</span>
 <span class="cline-any cline-neutral">&nbsp;</span></td><td class="text"><pre class="prettyprint lang-js">/*
@@ -621,12 +581,12 @@ import StepCommonFieldsInputSet from '@ci/components/PipelineSteps/StepCommonFie
 import MultiTypeFieldSelector from '@common/components/MultiTypeFieldSelector/MultiTypeFieldSelector'
 import { FormMultiTypeCheckboxField } from '@common/components'
 import { MultiTypeTextField } from '@common/components/MultiTypeText/MultiTypeText'
-import { Connectors } from '@connectors/constants'
 import { StepViewType } from '@pipeline/components/AbstractSteps/Step'
 import { useVariablesExpression } from '@pipeline/components/PipelineStudio/PiplineHooks/useVariablesExpression'
 import type { RunTestsStepProps } from './RunTestsStep'
 import { AllMultiTypeInputTypesForInputSet, shouldRenderRunTimeInputView } from '../CIStep/StepUtils'
 import { CIStep } from '../CIStep/CIStep'
+import { ConnectorRefWithImage } from '../CIStep/ConnectorRefWithImage'
 import { CIStepOptionalConfig, getOptionalSubLabel, renderMultiTypeListInputSet } from '../CIStep/CIStepOptionalConfig'
 import css from '@pipeline/components/PipelineSteps/Steps/Steps.module.scss'
 &nbsp;
@@ -700,35 +660,6 @@ export const RunTestsStepInputSetBasic: React.FC&lt;RunTestsStepProps&gt; = ({
         enableFields={{
           ...(getMultiTypeFromValue(template?.description) === MultiTypeInputType.RUNTIME &amp;&amp; {
             description: {}
-          }),
-          ...(getMultiTypeFromValue(template?.spec?.connectorRef) === MultiTypeInputType.RUNTIME &amp;&amp; {
-            'spec.connectorRef': {
-              label: (
-                &lt;Text
-                  className={css.inpLabel}
-                  color={Color.GREY_600}
-                  font={{ size: 'small', weight: 'semi-bold' }}
-                  style={{ display: 'flex', alignItems: 'center' }}
-                  tooltipProps={{ dataTooltipId: 'connector' }}
-                &gt;
-                  {getString('pipelineSteps.connectorLabel')}
-                &lt;/Text&gt;
-              ),
-              type: [Connectors.GCP, Connectors.AWS, Connectors.DOCKER]
-            }
-          }),
-          ...(getMultiTypeFromValue(template?.spec?.image) === MultiTypeInputType.RUNTIME &amp;&amp; {
-            'spec.image': {
-              tooltipId: 'pluginImageInfo',
-              multiTextInputProps: {
-                placeholder: getString('pluginImagePlaceholder'),
-                disabled: readonly,
-                multiTextInputProps: {
-                  expressions,
-                  allowableTypes
-                }
-              }
-            }
           })
         }}
         path={path || ''}
@@ -758,6 +689,13 @@ export const RunTestsStepInputSetBasic: React.FC&lt;RunTestsStepProps&gt; = ({
           /&gt;
         &lt;/Container&gt;
       )}
+      &lt;ConnectorRefWithImage
+        readonly={readonly}
+        showConnectorRef={getMultiTypeFromValue(template?.spec?.connectorRef) === MultiTypeInputType.RUNTIME}
+        showImage={getMultiTypeFromValue(template?.spec?.image) === MultiTypeInputType.RUNTIME}
+        stepViewType={stepViewType}
+        path={path || ''}
+      /&gt;
       {getMultiTypeFromValue(template?.spec?.packages) === MultiTypeInputType.RUNTIME &amp;&amp; (
         &lt;Container className={cx(css.formGroup, stepCss, css.bottomMargin5)}&gt;
           &lt;MultiTypeTextField
@@ -850,7 +788,9 @@ export const RunTestsStepInputSetBasic: React.FC&lt;RunTestsStepProps&gt; = ({
             expressions,
             getString,
             readonly,
-            formik
+            formik,
+            withObjectStructure: true,
+            keyName: 'name'
           })}
         &lt;/Container&gt;
       )}
@@ -880,7 +820,7 @@ export { RunTestsStepInputSet }
             <div class='footer quiet pad2 space-top1 center small'>
                 Code coverage generated by
                 <a href="https://istanbul.js.org/" target="_blank">istanbul</a>
-                at Mon Mar 28 2022 16:29:05 GMT+0000 (Greenwich Mean Time)
+                at Tue Mar 29 2022 00:12:39 GMT+0000 (Greenwich Mean Time)
             </div>
         </div>
         <script src="../../../../../prettify.js"></script>
