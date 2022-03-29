@@ -134,7 +134,9 @@ const AzureAuthentication: React.FC<StepProps<StepConfigureProps> & AzureAuthent
     <PageSpinner />
   ) : (
     <Layout.Vertical spacing="medium" className={css.secondStep}>
-      <Text font={{ variation: FontVariation.H3 }}>{getString('details')}</Text>
+      <Text font={{ variation: FontVariation.H3 }} tooltipProps={{ dataTooltipId: 'azureConnectorDetails' }}>
+        {getString('details')}
+      </Text>
       <Formik
         initialValues={{
           ...initialValues,
@@ -178,16 +180,19 @@ const AzureAuthentication: React.FC<StepProps<StepConfigureProps> & AzureAuthent
               {DelegateTypes.DELEGATE_OUT_CLUSTER === formikProps.values.authType ? (
                 <Layout.Vertical>
                   <FormInput.Select
+                    tooltipProps={{ dataTooltipId: 'azureConnectorEnvironment' }}
                     name="azureEnvironmentType"
                     label={getString('environment')}
                     items={environmentOptions}
                   />
                   <FormInput.Text
+                    tooltipProps={{ dataTooltipId: 'azureConnectorClientId' }}
                     name={'clientId'}
                     placeholder={getString('connectors.azure.clientId')}
                     label={getString('connectors.azure.clientId')}
                   />
                   <FormInput.Text
+                    tooltipProps={{ dataTooltipId: 'azureConnectorTenantId' }}
                     name={'tenantId'}
                     placeholder={getString('connectors.tenantId')}
                     label={getString('connectors.tenantId')}
@@ -195,7 +200,7 @@ const AzureAuthentication: React.FC<StepProps<StepConfigureProps> & AzureAuthent
                   <Container className={css.authHeaderRow}>
                     <Text
                       font={{ variation: FontVariation.H6 }}
-                      tooltipProps={{ dataTooltipId: 'acrAuthTooltip' }}
+                      tooltipProps={{ dataTooltipId: 'azureConnectorAuth' }}
                       inline
                     >
                       {getString('authentication')}
@@ -208,10 +213,15 @@ const AzureAuthentication: React.FC<StepProps<StepConfigureProps> & AzureAuthent
                     />
                   </Container>
                   {formikProps.values.secretType === AzureSecretKeyType.SECRET && (
-                    <SecretInput name={'secretText'} label={getString('connectors.azure.auth.secret')} />
+                    <SecretInput
+                      name={'secretText'}
+                      tooltipProps={{ dataTooltipId: 'azureConnectorSecret' }}
+                      label={getString('connectors.azure.auth.secret')}
+                    />
                   )}
                   {formikProps.values.secretType === AzureSecretKeyType.CERT && (
                     <SecretInput
+                      tooltipProps={{ dataTooltipId: 'azureConnectorCertificate' }}
                       name={'secretFile'}
                       label={getString('connectors.azure.auth.certificate')}
                       type={'SecretFile'}

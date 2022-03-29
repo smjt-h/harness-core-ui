@@ -21,7 +21,7 @@
     .authHeaderRow {
       display: flex;
       justify-content: space-between;
-      & > [data-tooltip-id='acrAuthTooltip'] {
+      & > [data-tooltip-id='azureConnectorAuth'] {
         margin: 0 0 15px;
       }
       .authTitle {
