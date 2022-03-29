@@ -93,7 +93,6 @@ export default function DeployInfraSpecifications(props: React.PropsWithChildren
     getStageFromPipeline,
     updateStage
   } = usePipelineContext()
-
   // eslint-disable-next-line react-hooks/exhaustive-deps
   const debounceUpdateStage = React.useCallback(
     debounce(
@@ -420,7 +419,6 @@ export default function DeployInfraSpecifications(props: React.PropsWithChildren
               onUpdateInfrastructureDefinition(
                 {
                   connectorRef: value.connectorRef,
-                  cluster: value.cluster,
                   stage: value.stage,
                   region: value.region
                 },
@@ -444,7 +442,6 @@ export default function DeployInfraSpecifications(props: React.PropsWithChildren
               onUpdateInfrastructureDefinition(
                 {
                   connectorRef: value.connectorRef,
-                  cluster: value.cluster,
                   stage: value.stage
                 },
                 'ServerlessGoogleFunctions'
@@ -467,7 +464,6 @@ export default function DeployInfraSpecifications(props: React.PropsWithChildren
               onUpdateInfrastructureDefinition(
                 {
                   connectorRef: value.connectorRef,
-                  cluster: value.cluster,
                   stage: value.stage
                 },
                 'ServerlessAzureFunctions'

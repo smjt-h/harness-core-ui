@@ -87,10 +87,6 @@ interface ServerlessAzureSpecEditableProps {
   allowableTypes: MultiTypeInputType[]
 }
 
-interface ServerlessAzureInfrastructureUI extends Omit<ServerlessAzureInfrastructure, 'cluster'> {
-  cluster?: { label?: string; value?: string } | string | any
-}
-
 const ServerlessAzureSpecEditable: React.FC<ServerlessAzureSpecEditableProps> = ({
   initialValues,
   onUpdate,
@@ -107,13 +103,6 @@ const ServerlessAzureSpecEditable: React.FC<ServerlessAzureSpecEditableProps> = 
   const { expressions } = useVariablesExpression()
   const { getString } = useStrings()
 
-  const getInitialValues = (): ServerlessAzureInfrastructureUI => {
-    const values: ServerlessAzureInfrastructureUI = {
-      ...initialValues
-    }
-    return values
-  }
-
   const { subscribeForm, unSubscribeForm } = React.useContext(StageErrorContext)
 
   const formikRef = React.useRef<FormikProps<unknown> | null>(null)
@@ -125,9 +114,9 @@ const ServerlessAzureSpecEditable: React.FC<ServerlessAzureSpecEditableProps> = 
 
   return (
     <Layout.Vertical spacing="medium">
-      <Formik<ServerlessAzureInfrastructureUI>
+      <Formik<ServerlessAzureInfrastructure>
         formName="serverlessAWSInfra"
-        initialValues={getInitialValues()}
+        initialValues={initialValues}
         validate={value => {
           const data: Partial<ServerlessAzureInfrastructure> = {
             connectorRef: undefined,
@@ -155,7 +144,7 @@ const ServerlessAzureSpecEditable: React.FC<ServerlessAzureSpecEditableProps> = 
                   disabled={readonly}
                   accountIdentifier={accountId}
                   tooltipProps={{
-                    dataTooltipId: 'gcpInfraConnector'
+                    dataTooltipId: 'serverlessAzureConnector'
                   }}
                   multiTypeProps={{ expressions, allowableTypes }}
                   projectIdentifier={projectIdentifier}
@@ -248,7 +237,7 @@ const ServerlessAzureSpecInputForm: React.FC<ServerlessAzureSpecEditableProps & 
             projectIdentifier={projectIdentifier}
             orgIdentifier={orgIdentifier}
             tooltipProps={{
-              dataTooltipId: 'gcpInfraConnector'
+              dataTooltipId: 'serverlessAzureConnector'
             }}
             name={`${path}.connectorRef`}
             label={getString('connector')}
@@ -301,7 +290,6 @@ interface ServerlessAzureInfrastructureSpecStep extends ServerlessAzureInfrastru
 }
 
 const ServerlessAwsConnectorRegex = /^.+infrastructure\.infrastructureDefinition\.spec\.connectorRef$/
-const KubernetesGcpType = 'KubernetesGcp'
 export class ServerlessAzureSpec extends PipelineStep<ServerlessAzureInfrastructureSpecStep> {
   lastFetched: number
   protected type = StepType.ServerlessAzure
@@ -340,7 +328,7 @@ export class ServerlessAzureSpec extends PipelineStep<ServerlessAzureInfrastruct
     }
     if (pipelineObj) {
       const obj = get(pipelineObj, path.replace('.spec.connectorRef', ''))
-      if (obj?.type === KubernetesGcpType) {
+      if (obj?.type === 'ServerlessAzure') {
         return getConnectorListV2Promise({
           queryParams: {
             accountIdentifier: accountId,

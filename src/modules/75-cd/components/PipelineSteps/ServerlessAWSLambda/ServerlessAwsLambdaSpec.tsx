@@ -6,7 +6,6 @@
  */
 
 import React from 'react'
-import { Menu } from '@blueprintjs/core'
 import {
   IconName,
   Text,
@@ -21,7 +20,7 @@ import {
 import cx from 'classnames'
 import * as Yup from 'yup'
 import { useParams } from 'react-router-dom'
-import { debounce, noop, isEmpty, get, memoize, defaultTo } from 'lodash-es'
+import { debounce, noop, isEmpty, get, defaultTo } from 'lodash-es'
 import { parse } from 'yaml'
 import { CompletionItemKind } from 'vscode-languageserver-types'
 import { FormikErrors, FormikProps, yupToFormErrors } from 'formik'
@@ -78,10 +77,6 @@ interface ServerlessAwsLambdaSpecEditableProps {
   allowableTypes: MultiTypeInputType[]
 }
 
-interface ServerlessAwsLambdaInfrastructureUI extends Omit<ServerlessAwsLambdaInfrastructure, 'cluster'> {
-  cluster?: { label?: string; value?: string } | string | any
-}
-
 const ServerlessAwsLambdaSpecEditable: React.FC<ServerlessAwsLambdaSpecEditableProps> = ({
   initialValues,
   onUpdate,
@@ -98,13 +93,6 @@ const ServerlessAwsLambdaSpecEditable: React.FC<ServerlessAwsLambdaSpecEditableP
   const { expressions } = useVariablesExpression()
   const { getString } = useStrings()
 
-  const getInitialValues = (): ServerlessAwsLambdaInfrastructureUI => {
-    const values: ServerlessAwsLambdaInfrastructureUI = {
-      ...initialValues
-    }
-    return values
-  }
-
   const { subscribeForm, unSubscribeForm } = React.useContext(StageErrorContext)
 
   const formikRef = React.useRef<FormikProps<unknown> | null>(null)
@@ -116,17 +104,17 @@ const ServerlessAwsLambdaSpecEditable: React.FC<ServerlessAwsLambdaSpecEditableP
 
   return (
     <Layout.Vertical spacing="medium">
-      <Formik<ServerlessAwsLambdaInfrastructureUI>
+      <Formik<ServerlessAwsLambdaInfrastructure>
         formName="serverlessAWSInfra"
-        initialValues={getInitialValues()}
+        initialValues={initialValues}
         validate={value => {
           const data: Partial<ServerlessAwsLambdaInfrastructure> = {
             connectorRef: undefined,
             region: value.region === '' ? undefined : value.region,
             stage: value.stage === '' ? undefined : value.stage
           }
-          /* istanbul ignore else */ if (value.connectorRef) {
-            data.connectorRef = (value.connectorRef as any)?.value || /* istanbul ignore next */ value.connectorRef
+          if (value.connectorRef) {
+            data.connectorRef = (value.connectorRef as any)?.value || value.connectorRef
           }
 
           delayedOnUpdate(data)
@@ -147,7 +135,7 @@ const ServerlessAwsLambdaSpecEditable: React.FC<ServerlessAwsLambdaSpecEditableP
                   disabled={readonly}
                   accountIdentifier={accountId}
                   tooltipProps={{
-                    dataTooltipId: 'gcpInfraConnector'
+                    dataTooltipId: 'awsInfraConnector'
                   }}
                   multiTypeProps={{ expressions, allowableTypes }}
                   projectIdentifier={projectIdentifier}
@@ -156,7 +144,7 @@ const ServerlessAwsLambdaSpecEditable: React.FC<ServerlessAwsLambdaSpecEditableP
                   connectorLabelClass={css.connectorRef}
                   enableConfigureOptions={false}
                   style={{ marginBottom: 'var(--spacing-large)' }}
-                  type={'Gcp'}
+                  type={'Aws'}
                   gitScope={{ repo: repoIdentifier || '', branch, getDefaultFromOtherRepo: true }}
                 />
                 {getMultiTypeFromValue(formik.values.connectorRef) === MultiTypeInputType.RUNTIME && !readonly && (
@@ -164,8 +152,8 @@ const ServerlessAwsLambdaSpecEditable: React.FC<ServerlessAwsLambdaSpecEditableP
                     value={formik.values.connectorRef as string}
                     type={
                       <Layout.Horizontal spacing="medium" style={{ alignItems: 'center' }}>
-                        <Icon name={getIconByType('Gcp')}></Icon>
-                        <Text>{getString('pipelineSteps.gcpConnectorLabel')}</Text>
+                        <Icon name={getIconByType('Aws')}></Icon>
+                        <Text>{getString('pipelineSteps.awsConnectorLabel')}</Text>
                       </Layout.Horizontal>
                     }
                     variableName="connectorRef"
@@ -262,11 +250,6 @@ const ServerlessAwsLambdaSpecInputForm: React.FC<ServerlessAwsLambdaSpecEditable
   const { repoIdentifier, branch } = useQueryParams<GitQueryParams>()
   const { expressions } = useVariablesExpression()
   const { getString } = useStrings()
-  const itemRenderer = memoize((item: { label: string }, { handleClick }) => (
-    <div key={item.label.toString()}>
-      <Menu.Item text={item.label} disabled={true} onClick={handleClick} />
-    </div>
-  ))
 
   return (
     <Layout.Vertical spacing="small">
@@ -277,7 +260,7 @@ const ServerlessAwsLambdaSpecInputForm: React.FC<ServerlessAwsLambdaSpecEditable
             projectIdentifier={projectIdentifier}
             orgIdentifier={orgIdentifier}
             tooltipProps={{
-              dataTooltipId: 'gcpInfraConnector'
+              dataTooltipId: 'awsInfraConnector'
             }}
             name={`${path}.connectorRef`}
             label={getString('connector')}
@@ -285,31 +268,20 @@ const ServerlessAwsLambdaSpecInputForm: React.FC<ServerlessAwsLambdaSpecEditable
             placeholder={getString('connectors.selectConnector')}
             disabled={readonly}
             multiTypeProps={{ allowableTypes, expressions }}
-            type={'Gcp'}
+            type={'Aws'}
             setRefValue
             gitScope={{ repo: defaultTo(repoIdentifier, ''), branch, getDefaultFromOtherRepo: true }}
           />
         </div>
       )}
       {getMultiTypeFromValue(template?.region) === MultiTypeInputType.RUNTIME && (
-        <div className={cx(stepCss.formGroup, stepCss.md, css.clusterInputWrapper)}>
-          <FormInput.MultiTypeInput
+        <div className={cx(stepCss.formGroup, stepCss.md, css.regionInputWrapper)}>
+          <FormInput.MultiTextInput
             name={`${path}.region`}
             disabled={readonly}
             placeholder={getString('cd.steps.serverless.regionPlaceholder')}
-            useValue
-            selectItems={[]}
             label={getString('common.region')}
-            multiTypeInputProps={{
-              selectProps: {
-                items: [],
-                itemRenderer: itemRenderer,
-                allowCreatingNewItems: true,
-                addClearBtn: !readonly,
-                noResults: (
-                  <Text padding={'small'}>{defaultTo(null, getString('cd.pipelineSteps.infraTab.regionError'))}</Text>
-                )
-              },
+            multiTextInputProps={{
               expressions,
               allowableTypes
             }}
@@ -355,7 +327,6 @@ interface ServerlessAwsLambdaInfrastructureSpecStep extends ServerlessAwsLambdaI
 }
 
 const ServerlessAwsConnectorRegex = /^.+infrastructure\.infrastructureDefinition\.spec\.connectorRef$/
-const KubernetesGcpType = 'KubernetesGcp'
 export class ServerlessAwsLambdaSpec extends PipelineStep<ServerlessAwsLambdaInfrastructureSpecStep> {
   lastFetched: number
   protected type = StepType.ServerlessAwsLambda
@@ -394,7 +365,7 @@ export class ServerlessAwsLambdaSpec extends PipelineStep<ServerlessAwsLambdaInf
     }
     if (pipelineObj) {
       const obj = get(pipelineObj, path.replace('.spec.connectorRef', ''))
-      if (obj?.type === KubernetesGcpType) {
+      if (obj?.type === 'ServerlessAwsLambda') {
         return getConnectorListV2Promise({
           queryParams: {
             accountIdentifier: accountId,

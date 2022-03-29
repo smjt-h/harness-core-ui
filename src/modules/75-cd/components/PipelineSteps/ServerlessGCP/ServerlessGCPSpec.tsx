@@ -87,10 +87,6 @@ interface ServerlessGCPSpecEditableProps {
   allowableTypes: MultiTypeInputType[]
 }
 
-interface ServerlessGCPInfrastructureUI extends Omit<ServerlessGCPInfrastructure, 'cluster'> {
-  cluster?: { label?: string; value?: string } | string | any
-}
-
 const ServerlessGCPSpecEditable: React.FC<ServerlessGCPSpecEditableProps> = ({
   initialValues,
   onUpdate,
@@ -106,14 +102,6 @@ const ServerlessGCPSpecEditable: React.FC<ServerlessGCPSpecEditableProps> = ({
   const delayedOnUpdate = React.useRef(debounce(onUpdate || noop, 300)).current
   const { expressions } = useVariablesExpression()
   const { getString } = useStrings()
-
-  const getInitialValues = (): ServerlessGCPInfrastructureUI => {
-    const values: ServerlessGCPInfrastructureUI = {
-      ...initialValues
-    }
-    return values
-  }
-
   const { subscribeForm, unSubscribeForm } = React.useContext(StageErrorContext)
 
   const formikRef = React.useRef<FormikProps<unknown> | null>(null)
@@ -125,9 +113,9 @@ const ServerlessGCPSpecEditable: React.FC<ServerlessGCPSpecEditableProps> = ({
 
   return (
     <Layout.Vertical spacing="medium">
-      <Formik<ServerlessGCPInfrastructureUI>
+      <Formik<ServerlessGCPInfrastructure>
         formName="serverlessAWSInfra"
-        initialValues={getInitialValues()}
+        initialValues={initialValues}
         validate={value => {
           const data: Partial<ServerlessGCPInfrastructure> = {
             connectorRef: undefined,
@@ -155,7 +143,7 @@ const ServerlessGCPSpecEditable: React.FC<ServerlessGCPSpecEditableProps> = ({
                   disabled={readonly}
                   accountIdentifier={accountId}
                   tooltipProps={{
-                    dataTooltipId: 'gcpInfraConnector'
+                    dataTooltipId: 'serverlessGCPInfraConnector'
                   }}
                   multiTypeProps={{ expressions, allowableTypes }}
                   projectIdentifier={projectIdentifier}
@@ -248,7 +236,7 @@ const ServerlessGCPSpecInputForm: React.FC<ServerlessGCPSpecEditableProps & { pa
             projectIdentifier={projectIdentifier}
             orgIdentifier={orgIdentifier}
             tooltipProps={{
-              dataTooltipId: 'gcpInfraConnector'
+              dataTooltipId: 'serverlessGCPInfraConnector'
             }}
             name={`${path}.connectorRef`}
             label={getString('connector')}
@@ -301,7 +289,6 @@ interface ServerlessGCPInfrastructureSpecStep extends ServerlessGCPInfrastructur
 }
 
 const ServerlessAwsConnectorRegex = /^.+infrastructure\.infrastructureDefinition\.spec\.connectorRef$/
-const KubernetesGcpType = 'KubernetesGcp'
 export class ServerlessGCPSpec extends PipelineStep<ServerlessGCPInfrastructureSpecStep> {
   lastFetched: number
   protected type = StepType.ServerlessGCP
@@ -340,7 +327,7 @@ export class ServerlessGCPSpec extends PipelineStep<ServerlessGCPInfrastructureS
     }
     if (pipelineObj) {
       const obj = get(pipelineObj, path.replace('.spec.connectorRef', ''))
-      if (obj?.type === KubernetesGcpType) {
+      if (obj?.type === 'ServerlessGCP') {
         return getConnectorListV2Promise({
           queryParams: {
             accountIdentifier: accountId,
