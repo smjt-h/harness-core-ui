@@ -62,6 +62,82 @@ exports[`Deploy infra specifications test Should match snapshot 1`] = `
         </div>
       </div>
       <div
+        class="Accordion--accordion accordion"
+      >
+        <div
+          class="Accordion--panel"
+          data-open="true"
+          data-testid="dynamicProvisioning-panel"
+          id="dynamicProvisioning-panel"
+        >
+          <div
+            class="Accordion--summary"
+            data-testid="dynamicProvisioning-summary"
+          >
+            <div
+              class=""
+            >
+              <div
+                class="tabHeading"
+              >
+                cd.dynamicProvisioning
+              </div>
+            </div>
+            <div
+              class="Accordion--chevron"
+            />
+          </div>
+          <div
+            class="bp3-collapse Accordion--collapse"
+            style="height: auto; overflow-y: visible; transition: none;"
+          >
+            <div
+              aria-hidden="false"
+              class="bp3-collapse-body"
+              style="transform: translateY(0); transition: none;"
+            >
+              <div
+                class="Accordion--details"
+                data-testid="dynamicProvisioning-details"
+              >
+                <div
+                  class="bp3-card bp3-elevation-0 Card--card sectionCard"
+                >
+                  <div
+                    class="step-widget-mock"
+                  >
+                    <button
+                      name="updateStepWidget"
+                    >
+                      Step Widget button
+                    </button>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+      <div
+        class="tabHeading"
+        id="clusterDetails"
+      >
+        cd.steps.common.clusterDetails
+      </div>
+      <div
+        class="bp3-card bp3-elevation-0 Card--card sectionCard"
+      >
+        <div
+          class="step-widget-mock"
+        >
+          <button
+            name="updateStepWidget"
+          >
+            Step Widget button
+          </button>
+        </div>
+      </div>
+      <div
         class="StyledProps--font StyledProps--main StyledProps--margin-top-xxlarge"
       />
     </div>

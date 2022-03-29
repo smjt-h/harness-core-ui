@@ -157,14 +157,14 @@ export default function DeployInfraSpecifications(props: React.PropsWithChildren
   )
 
   React.useEffect(() => {
-    const selectedType = stage?.stage?.spec?.serviceConfig.serviceDefinition?.type
+    const selectedType = stage?.stage?.spec?.serviceConfig?.serviceDefinition?.type
     const infrastructureType = selectedType
       ? deploymentTypeInfraTypeMap[selectedType]
       : InfraDeploymentType.KubernetesDirect
     setselectedInfrastructureType(infrastructureType)
     const initialInfraDefValues = getInfrastructureDefaultValue(stage, infrastructureType)
     setInitialInfrastructureDefinitionValues(initialInfraDefValues)
-  }, [stage?.stage?.spec?.serviceConfig.serviceDefinition?.type])
+  }, [stage?.stage?.spec?.serviceConfig?.serviceDefinition?.type])
 
   const onUpdateInfrastructureDefinition = (
     extendedSpec:
