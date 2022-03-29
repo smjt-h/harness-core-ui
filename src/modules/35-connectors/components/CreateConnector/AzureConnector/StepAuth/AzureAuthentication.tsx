@@ -180,19 +180,16 @@ const AzureAuthentication: React.FC<StepProps<StepConfigureProps> & AzureAuthent
               {DelegateTypes.DELEGATE_OUT_CLUSTER === formikProps.values.authType ? (
                 <Layout.Vertical>
                   <FormInput.Select
-                    tooltipProps={{ dataTooltipId: 'azureConnectorEnvironment' }}
                     name="azureEnvironmentType"
                     label={getString('environment')}
                     items={environmentOptions}
                   />
                   <FormInput.Text
-                    tooltipProps={{ dataTooltipId: 'azureConnectorClientId' }}
                     name={'clientId'}
                     placeholder={getString('connectors.azure.clientId')}
                     label={getString('connectors.azure.clientId')}
                   />
                   <FormInput.Text
-                    tooltipProps={{ dataTooltipId: 'azureConnectorTenantId' }}
                     name={'tenantId'}
                     placeholder={getString('connectors.tenantId')}
                     label={getString('connectors.tenantId')}
