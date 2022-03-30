@@ -8,7 +8,7 @@
 import React, { useEffect, useState } from 'react'
 import YAML from 'yaml'
 import { Card, Accordion, Container, Text, RUNTIME_INPUT_VALUE } from '@wings-software/uicore'
-import { get, isEmpty, isNil, omit, debounce, set } from 'lodash-es'
+import { get, isEmpty, isNil, omit, debounce, set, defaultTo } from 'lodash-es'
 import produce from 'immer'
 import { StepViewType } from '@pipeline/components/AbstractSteps/Step'
 import {
@@ -47,8 +47,7 @@ import type { ServerlessAwsLambdaSpec } from '@cd/components/PipelineSteps/Serve
 import type { ServerlessGCPSpec } from '@cd/components/PipelineSteps/ServerlessGCP/ServerlessGCPSpec'
 import type { ServerlessAzureSpec } from '@cd/components/PipelineSteps/ServerlessAzure/ServerlessAzureSpec'
 import stageCss from '../DeployStageSetupShell/DeployStage.module.scss'
-
-const DEFAULT_RELEASE_NAME = 'release-<+INFRA_KEY>'
+import { cleanUpEmptyProvisioner, getInfrastructureDefaultValue } from './deployInfraHelper'
 
 export const deploymentTypeInfraTypeMap = {
   Kubernetes: InfraDeploymentType.KubernetesDirect,
@@ -201,7 +200,7 @@ export default function DeployInfraSpecifications(props: React.PropsWithChildren
     if (stage && isProvisionerEmpty(stage) && provisionerEnabled) {
       setProvisionerSnippetLoading(true)
       getProvisionerExecutionStrategyYamlPromise({ queryParams: { provisionerType: 'TERRAFORM' } }).then(res => {
-        const provisionerSnippet = YAML.parse(res?.data || '')
+        const provisionerSnippet = YAML.parse(defaultTo(res?.data, ''))
         if (stage && isProvisionerEmpty(stage) && provisionerSnippet) {
           const stageData = produce(stage, draft => {
             set(draft, 'stage.spec.infrastructure.infrastructureDefinition.provisioner', provisionerSnippet.provisioner)
@@ -217,37 +216,8 @@ export default function DeployInfraSpecifications(props: React.PropsWithChildren
     }
   }, [provisionerEnabled])
 
-  const cleanUpEmptyProvisioner = (
-    stageData: StageElementWrapper<DeploymentStageElementConfig> | undefined
-  ): boolean => {
-    const provisioner = stageData?.stage?.spec?.infrastructure?.infrastructureDefinition?.provisioner
-    let isChanged = false
-
-    if (!isNil(provisioner?.steps) && provisioner?.steps.length === 0) {
-      // eslint-disable-next-line @typescript-eslint/ban-ts-comment
-      // @ts-ignore
-      delete provisioner.steps
-      isChanged = true
-    }
-    if (!isNil(provisioner?.rollbackSteps) && provisioner?.rollbackSteps.length === 0) {
-      delete provisioner.rollbackSteps
-      isChanged = true
-    }
-
-    if (
-      !provisioner?.steps &&
-      !provisioner?.rollbackSteps &&
-      stageData?.stage?.spec?.infrastructure?.infrastructureDefinition?.provisioner
-    ) {
-      delete stageData.stage.spec.infrastructure.infrastructureDefinition.provisioner
-      isChanged = true
-    }
-
-    return isChanged
-  }
-
   useEffect(() => {
-    setProvisionerEnabled(!isProvisionerEmpty(stage || ({} as StageElementWrapper)))
+    setProvisionerEnabled(!isProvisionerEmpty(defaultTo(stage, {} as StageElementWrapper)))
 
     return () => {
       let isChanged
@@ -283,74 +253,6 @@ export default function DeployInfraSpecifications(props: React.PropsWithChildren
       provisionerEnabled,
       provisionerSnippetLoading,
       originalProvisioner: { ...originalProvisioner }
-    }
-  }
-
-  const getInfrastructureDefaultValue = (
-    stageData: StageElementWrapper | undefined,
-    deploymentType: string | undefined
-  ): Infrastructure => {
-    const infrastructure = get(stageData, 'stage.spec.infrastructure.infrastructureDefinition', null)
-    const type = infrastructure?.type || deploymentType
-    const allowSimultaneousDeployments = get(stageData, 'stage.spec.infrastructure.allowSimultaneousDeployments', false)
-    switch (type) {
-      case InfraDeploymentType.KubernetesDirect: {
-        const connectorRef = infrastructure?.spec?.connectorRef
-        const namespace = infrastructure?.spec?.namespace
-        const releaseName = infrastructure?.spec?.releaseName ?? DEFAULT_RELEASE_NAME
-        return {
-          connectorRef,
-          namespace,
-          releaseName,
-          allowSimultaneousDeployments
-        }
-      }
-      case InfraDeploymentType.KubernetesGcp: {
-        const connectorRef = infrastructure?.spec?.connectorRef
-        const namespace = infrastructure?.spec?.namespace
-        const releaseName = infrastructure?.spec?.releaseName ?? DEFAULT_RELEASE_NAME
-        const cluster = infrastructure?.spec?.cluster
-
-        return {
-          connectorRef,
-          namespace,
-          releaseName,
-          cluster,
-          allowSimultaneousDeployments
-        }
-      }
-      case InfraDeploymentType.ServerlessAwsLambda: {
-        const connectorRef = infrastructure?.spec?.connectorRef
-        const region = infrastructure?.spec?.region
-        const infraStage = infrastructure?.spec?.stage
-
-        return {
-          connectorRef,
-          region,
-          stage: infraStage
-        }
-      }
-      case InfraDeploymentType.ServerlessAzureFunctions: {
-        const connectorRef = infrastructure?.spec?.connectorRef
-        const infraStage = infrastructure?.spec?.stage
-
-        return {
-          connectorRef,
-          stage: infraStage
-        }
-      }
-      case InfraDeploymentType.ServerlessGoogleFunctions: {
-        const connectorRef = infrastructure?.spec?.connectorRef
-        const infraStage = infrastructure?.spec?.stage
-
-        return {
-          connectorRef,
-          stage: infraStage
-        }
-      }
-      default: {
-        return {}
-      }
     }
   }
 
@@ -558,7 +460,7 @@ export default function DeployInfraSpecifications(props: React.PropsWithChildren
                     allowableTypes={allowableTypes}
                     readonly={isReadonly}
                     key={stage?.stage?.identifier}
-                    initialValues={getProvisionerData(stage || ({} as StageElementWrapper))}
+                    initialValues={getProvisionerData(defaultTo(stage, {} as StageElementWrapper))}
                     type={StepType.InfraProvisioning}
                     stepViewType={StepViewType.Edit}
                     onUpdate={(value: InfraProvisioningData) => {
@@ -590,7 +492,7 @@ export default function DeployInfraSpecifications(props: React.PropsWithChildren
         {selectedInfrastructureType && (
           <>
             <div className={stageCss.tabHeading} id="clusterDetails">
-              {detailsHeaderName[selectedInfrastructureType] || getString('cd.steps.common.clusterDetails')}
+              {defaultTo(detailsHeaderName[selectedInfrastructureType], getString('cd.steps.common.clusterDetails'))}
             </div>
             <Card className={stageCss.sectionCard}>{getClusterConfigurationStep(selectedInfrastructureType)}</Card>
           </>
