@@ -291,7 +291,19 @@
 <a name='L232'></a><a href='#L232'>232</a>
 <a name='L233'></a><a href='#L233'>233</a>
 <a name='L234'></a><a href='#L234'>234</a>
-<a name='L235'></a><a href='#L235'>235</a></td><td class="line-coverage quiet"><span class="cline-any cline-neutral">&nbsp;</span>
+<a name='L235'></a><a href='#L235'>235</a>
+<a name='L236'></a><a href='#L236'>236</a>
+<a name='L237'></a><a href='#L237'>237</a>
+<a name='L238'></a><a href='#L238'>238</a>
+<a name='L239'></a><a href='#L239'>239</a>
+<a name='L240'></a><a href='#L240'>240</a>
+<a name='L241'></a><a href='#L241'>241</a>
+<a name='L242'></a><a href='#L242'>242</a>
+<a name='L243'></a><a href='#L243'>243</a>
+<a name='L244'></a><a href='#L244'>244</a>
+<a name='L245'></a><a href='#L245'>245</a>
+<a name='L246'></a><a href='#L246'>246</a>
+<a name='L247'></a><a href='#L247'>247</a></td><td class="line-coverage quiet"><span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
@@ -442,6 +454,11 @@
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-yes">1x</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
@@ -451,6 +468,13 @@
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-yes">2x</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
@@ -638,7 +662,11 @@ export default function ShellScriptInputSetStep(props: ShellScriptInputSetStepPr
                     {template.spec.environmentVariables<span class="branch-0 cbranch-no" title="branch not covered" >?.m</span>ap((type, i: number) =&gt; {
                       return (
                         &lt;div className={css.environmentVarHeader} key={type.value}&gt;
-                          &lt;FormInput.Text name={`${prefix}spec.environmentVariables[${i}].name`} disabled={true} /&gt;
+                          &lt;FormInput.Text
+                            name={`${prefix}spec.environmentVariables[${i}].name`}
+                            placeholder={getString('name')}
+                            disabled={true}
+                          /&gt;
                           &lt;FormInput.Select
                             items={scriptInputType}
                             name={`${prefix}spec.environmentVariables[${i}].type`}
@@ -654,6 +682,7 @@ export default function ShellScriptInputSetStep(props: ShellScriptInputSetStepPr
                             }}
                             label=""
                             disabled={readonly}
+                            placeholder={getString('valueLabel')}
                           /&gt;
                         &lt;/div&gt;
                       )
@@ -686,7 +715,11 @@ export default function ShellScriptInputSetStep(props: ShellScriptInputSetStepPr
                     {template.spec.outputVariables<span class="branch-0 cbranch-no" title="branch not covered" >?.m</span>ap((output, i: number) =&gt; {
                       return (
                         &lt;div className={css.outputVarHeader} key={output.name}&gt;
-                          &lt;FormInput.Text name={`${prefix}spec.outputVariables[${i}].name`} disabled={true} /&gt;
+                          &lt;FormInput.Text
+                            name={`${prefix}spec.outputVariables[${i}].name`}
+                            placeholder={getString('name')}
+                            disabled={true}
+                          /&gt;
                           &lt;FormInput.Select
                             items={scriptOutputType}
                             name={`${prefix}spec.outputVariables[${i}].type`}
@@ -703,6 +736,7 @@ export default function ShellScriptInputSetStep(props: ShellScriptInputSetStepPr
                             }}
                             label=""
                             disabled={readonly}
+                            placeholder={getString('valueLabel')}
                           /&gt;
                         &lt;/div&gt;
                       )
@@ -717,6 +751,7 @@ export default function ShellScriptInputSetStep(props: ShellScriptInputSetStepPr
       {getMultiTypeFromValue(template?.spec?.executionTarget?.host) === MultiTypeInputType.RUNTIME ? (
         &lt;div className={cx(stepCss.formGroup, stepCss.md)}&gt;
           &lt;FormInput.MultiTextInput
+            placeholder={getString('cd.specifyTargetHost')}
             label={getString('targetHost')}
             multiTextInputProps={{
               expressions,
@@ -746,6 +781,7 @@ export default function ShellScriptInputSetStep(props: ShellScriptInputSetStepPr
         &lt;div className={cx(stepCss.formGroup, stepCss.md)}&gt;
           &lt;FormInput.MultiTextInput
             disabled={readonly}
+            placeholder={getString('cd.enterWorkDirectory')}
             label={getString('workingDirectory')}
             multiTextInputProps={{
               expressions,
@@ -766,7 +802,7 @@ export default function ShellScriptInputSetStep(props: ShellScriptInputSetStepPr
             <div class='footer quiet pad2 space-top1 center small'>
                 Code coverage generated by
                 <a href="https://istanbul.js.org/" target="_blank">istanbul</a>
-                at Wed Mar 30 2022 04:49:11 GMT+0000 (Greenwich Mean Time)
+                at Wed Mar 30 2022 08:32:35 GMT+0000 (Greenwich Mean Time)
             </div>
         </div>
         <script src="../../../../../prettify.js"></script>

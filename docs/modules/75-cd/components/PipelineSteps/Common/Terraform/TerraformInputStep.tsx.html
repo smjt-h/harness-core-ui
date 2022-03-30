@@ -23,30 +23,30 @@
         <div class='clearfix'>
             
             <div class='fl pad1y space-right2'>
-                <span class="strong">74.07% </span>
+                <span class="strong">100% </span>
                 <span class="quiet">Statements</span>
-                <span class='fraction'>20/27</span>
+                <span class='fraction'>23/23</span>
             </div>
         
             
             <div class='fl pad1y space-right2'>
-                <span class="strong">58.24% </span>
+                <span class="strong">82.18% </span>
                 <span class="quiet">Branches</span>
-                <span class='fraction'>106/182</span>
+                <span class='fraction'>143/174</span>
             </div>
         
             
             <div class='fl pad1y space-right2'>
-                <span class="strong">25% </span>
+                <span class="strong">100% </span>
                 <span class="quiet">Functions</span>
-                <span class='fraction'>1/4</span>
+                <span class='fraction'>2/2</span>
             </div>
         
             
             <div class='fl pad1y space-right2'>
-                <span class="strong">74.07% </span>
+                <span class="strong">100% </span>
                 <span class="quiet">Lines</span>
-                <span class='fraction'>20/27</span>
+                <span class='fraction'>23/23</span>
             </div>
         
             
@@ -199,7 +199,10 @@
 <a name='L140'></a><a href='#L140'>140</a>
 <a name='L141'></a><a href='#L141'>141</a>
 <a name='L142'></a><a href='#L142'>142</a>
-<a name='L143'></a><a href='#L143'>143</a></td><td class="line-coverage quiet"><span class="cline-any cline-neutral">&nbsp;</span>
+<a name='L143'></a><a href='#L143'>143</a>
+<a name='L144'></a><a href='#L144'>144</a>
+<a name='L145'></a><a href='#L145'>145</a>
+<a name='L146'></a><a href='#L146'>146</a></td><td class="line-coverage quiet"><span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
@@ -236,13 +239,16 @@
 <span class="cline-any cline-yes">4x</span>
 <span class="cline-any cline-yes">3x</span>
 <span class="cline-any cline-yes">3x</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-yes">3x</span>
-<span class="cline-any cline-no">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-yes">3x</span>
-<span class="cline-any cline-no">&nbsp;</span>
-<span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-yes">3x</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
@@ -280,8 +286,8 @@
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-no">&nbsp;</span>
-<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-yes">3x</span>
+<span class="cline-any cline-yes">1x</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
@@ -302,8 +308,8 @@
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-no">&nbsp;</span>
-<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-yes">2x</span>
+<span class="cline-any cline-yes">1x</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
@@ -313,7 +319,7 @@
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-yes">1x</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
@@ -378,11 +384,13 @@ export default function TerraformInputStep&lt;T extends TerraformData = Terrafor
   const { getString } = useStrings()
   const { inputSetData, readonly, path, allowableTypes, onUpdate, onChange } = props
   const { expressions } = useVariablesExpression()
-  const onUpdateRef = <span class="fstat-no" title="function not covered" >(a</span>rg: TerraformData): void =&gt; {
-<span class="cstat-no" title="statement not covered" >    onUpdate?.(arg as T)</span>
+  /* istanbul ignore next */
+  const onUpdateRef = (arg: TerraformData): void =&gt; {
+    onUpdate?.(arg as T)
   }
-  const onChangeRef = <span class="fstat-no" title="function not covered" >(a</span>rg: TerraformData): void =&gt; {
-<span class="cstat-no" title="statement not covered" >    onChange?.(arg as T)</span>
+  /* istanbul ignore next */
+  const onChangeRef = (arg: TerraformData): void =&gt; {
+    onChange?.(arg as T)
   }
   return (
     &lt;FormikForm&gt;
@@ -391,6 +399,7 @@ export default function TerraformInputStep&lt;T extends TerraformData = Terrafor
         &lt;div className={cx(stepCss.formGroup, stepCss.md)}&gt;
           &lt;FormInput.MultiTextInput
             name={`${path}.spec.provisionerIdentifier`}
+            placeholder={getString('pipeline.terraformStep.provisionerIdentifier')}
             label={getString('pipelineSteps.provisionerIdentifier')}
             disabled={readonly}
             multiTextInputProps={{
@@ -416,21 +425,21 @@ export default function TerraformInputStep&lt;T extends TerraformData = Terrafor
         &lt;/div&gt;
       )}
       &lt;ConfigInputs {...props} onUpdate={onUpdateRef} onChange={onChangeRef} /&gt;
-      {inputSetData<span class="branch-0 cbranch-no" title="branch not covered" >?.t</span>emplate<span class="branch-0 cbranch-no" title="branch not covered" >?.s</span>pec<span class="branch-0 cbranch-no" title="branch not covered" >?.c</span>onfiguration<span class="branch-0 cbranch-no" title="branch not covered" >?.s</span>pec?.varFiles<span class="branch-1 cbranch-no" title="branch not covered" >?.length </span>&amp;&amp; (
-<span class="branch-1 cbranch-no" title="branch not covered" >        &lt;Label style={{ color: Color.GREY_900, paddingBottom: 'var(--spacing-medium)' }}&gt;</span>
+      {inputSetData<span class="branch-0 cbranch-no" title="branch not covered" >?.t</span>emplate<span class="branch-0 cbranch-no" title="branch not covered" >?.s</span>pec<span class="branch-0 cbranch-no" title="branch not covered" >?.c</span>onfiguration<span class="branch-0 cbranch-no" title="branch not covered" >?.s</span>pec?.varFiles?.length &amp;&amp; (
+        &lt;Label style={{ color: Color.GREY_900, paddingBottom: 'var(--spacing-medium)' }}&gt;
           {getString('cd.terraformVarFiles')}
         &lt;/Label&gt;
       )}
-      {inputSetData<span class="branch-0 cbranch-no" title="branch not covered" >?.t</span>emplate<span class="branch-0 cbranch-no" title="branch not covered" >?.s</span>pec<span class="branch-0 cbranch-no" title="branch not covered" >?.c</span>onfiguration<span class="branch-0 cbranch-no" title="branch not covered" >?.s</span>pec?.varFiles?.<span class="branch-1 cbranch-no" title="branch not covered" >map(<span class="fstat-no" title="function not covered" >(v</span>arFile: any, index) =&gt; {</span>
-<span class="cstat-no" title="statement not covered" >        if (varFile?.varFile?.type === TerraformStoreTypes.Inline) {</span>
-<span class="cstat-no" title="statement not covered" >          return (</span>
+      {inputSetData<span class="branch-0 cbranch-no" title="branch not covered" >?.t</span>emplate<span class="branch-0 cbranch-no" title="branch not covered" >?.s</span>pec<span class="branch-0 cbranch-no" title="branch not covered" >?.c</span>onfiguration<span class="branch-0 cbranch-no" title="branch not covered" >?.s</span>pec?.varFiles?.map((varFile: any, index) =&gt; {
+        if (varFile<span class="branch-0 cbranch-no" title="branch not covered" >?.v</span>arFile<span class="branch-0 cbranch-no" title="branch not covered" >?.t</span>ype === TerraformStoreTypes.Inline) {
+          return (
             &lt;React.Fragment key={`${path}.spec.configuration.spec.varFiles[${index}]`}&gt;
               &lt;Container flex width={120} padding={{ bottom: 'small' }}&gt;
                 &lt;Text font={{ weight: 'bold' }}&gt;{getString('cd.varFile')}:&lt;/Text&gt;
-                {varFile?.varFile?.identifier}
+                {varFile<span class="branch-0 cbranch-no" title="branch not covered" >?.v</span>arFile<span class="branch-0 cbranch-no" title="branch not covered" >?.i</span>dentifier}
               &lt;/Container&gt;
 &nbsp;
-              {getMultiTypeFromValue(varFile?.varFile?.spec?.content) === MultiTypeInputType.RUNTIME &amp;&amp; (
+              {getMultiTypeFromValue(varFile<span class="branch-0 cbranch-no" title="branch not covered" >?.v</span>arFile<span class="branch-0 cbranch-no" title="branch not covered" >?.s</span>pec<span class="branch-0 cbranch-no" title="branch not covered" >?.c</span>ontent) === MultiTypeInputType.RUNTIME &amp;&amp; (
                 &lt;div className={cx(stepCss.formGroup, stepCss.md)}&gt;
                   &lt;FormInput.MultiTextInput
                     name={`${path}.spec.configuration.spec.varFiles[${index}].varFile.spec.content`}
@@ -444,8 +453,8 @@ export default function TerraformInputStep&lt;T extends TerraformData = Terrafor
               )}
             &lt;/React.Fragment&gt;
           )
-        } else <span class="cstat-no" title="statement not covered" >if (varFile.varFile?.type === TerraformStoreTypes.Remote) {</span>
-<span class="cstat-no" title="statement not covered" >          return (</span>
+        } else if (varFile.varFile<span class="branch-0 cbranch-no" title="branch not covered" >?.t</span>ype === TerraformStoreTypes.Remote) {
+          return (
             &lt;TFRemoteSection
               remoteVar={varFile}
               index={index}
@@ -455,12 +464,12 @@ export default function TerraformInputStep&lt;T extends TerraformData = Terrafor
             /&gt;
           )
         }
-<span class="cstat-no" title="statement not covered" >        return &lt;&gt;&lt;/&gt;</span>
+        return &lt;&gt;&lt;/&gt;
       })}
 &nbsp;
-      {getMultiTypeFromValue(inputSetData<span class="branch-0 cbranch-no" title="branch not covered" >?.t</span>emplate<span class="branch-0 cbranch-no" title="branch not covered" >?.s</span>pec<span class="branch-0 cbranch-no" title="branch not covered" >?.c</span>onfiguration<span class="branch-0 cbranch-no" title="branch not covered" >?.s</span>pec?.backendConfig<span class="branch-1 cbranch-no" title="branch not covered" >?.spec<span class="branch-1 cbranch-no" title="branch not covered" >?</span>.content)</span> ===
+      {getMultiTypeFromValue(inputSetData<span class="branch-0 cbranch-no" title="branch not covered" >?.t</span>emplate<span class="branch-0 cbranch-no" title="branch not covered" >?.s</span>pec<span class="branch-0 cbranch-no" title="branch not covered" >?.c</span>onfiguration<span class="branch-0 cbranch-no" title="branch not covered" >?.s</span>pec?.backendConfig?.spec?.content) ===
         MultiTypeInputType.RUNTIME &amp;&amp; (
-<span class="branch-1 cbranch-no" title="branch not covered" >        &lt;div className={cx(stepCss.formGroup, stepCss.md)}&gt;</span>
+        &lt;div className={cx(stepCss.formGroup, stepCss.md)}&gt;
           &lt;FormInput.TextArea
             name={`${path}.spec.configuration.spec.backendConfig.spec.content`}
             label={getString('cd.backEndConfig')}
@@ -469,7 +478,7 @@ export default function TerraformInputStep&lt;T extends TerraformData = Terrafor
       )}
       {getMultiTypeFromValue(inputSetData<span class="branch-0 cbranch-no" title="branch not covered" >?.t</span>emplate<span class="branch-0 cbranch-no" title="branch not covered" >?.s</span>pec<span class="branch-0 cbranch-no" title="branch not covered" >?.c</span>onfiguration<span class="branch-0 cbranch-no" title="branch not covered" >?.s</span>pec?.targets as string) ===
         MultiTypeInputType.RUNTIME &amp;&amp; (
-<span class="branch-1 cbranch-no" title="branch not covered" >        &lt;div className={cx(stepCss.formGroup, stepCss.md)}&gt;</span>
+        &lt;div className={cx(stepCss.formGroup, stepCss.md)}&gt;
           &lt;List
             name={`${path}.spec.configuration.spec.targets`}
             label={&lt;Text style={{ display: 'flex', alignItems: 'center' }}&gt;{getString('pipeline.targets.title')}&lt;/Text&gt;}
@@ -490,7 +499,7 @@ export default function TerraformInputStep&lt;T extends TerraformData = Terrafor
             <div class='footer quiet pad2 space-top1 center small'>
                 Code coverage generated by
                 <a href="https://istanbul.js.org/" target="_blank">istanbul</a>
-                at Wed Mar 30 2022 04:49:11 GMT+0000 (Greenwich Mean Time)
+                at Wed Mar 30 2022 08:32:35 GMT+0000 (Greenwich Mean Time)
             </div>
         </div>
         <script src="../../../../../../prettify.js"></script>
