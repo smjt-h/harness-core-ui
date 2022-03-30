@@ -23,9 +23,9 @@
         <div class='clearfix'>
             
             <div class='fl pad1y space-right2'>
-                <span class="strong">71.6% </span>
+                <span class="strong">72.22% </span>
                 <span class="quiet">Statements</span>
-                <span class='fraction'>58/81</span>
+                <span class='fraction'>65/90</span>
             </div>
         
             
@@ -37,16 +37,16 @@
         
             
             <div class='fl pad1y space-right2'>
-                <span class="strong">100% </span>
+                <span class="strong">75% </span>
                 <span class="quiet">Functions</span>
-                <span class='fraction'>2/2</span>
+                <span class='fraction'>3/4</span>
             </div>
         
             
             <div class='fl pad1y space-right2'>
-                <span class="strong">70.89% </span>
+                <span class="strong">71.59% </span>
                 <span class="quiet">Lines</span>
-                <span class='fraction'>56/79</span>
+                <span class='fraction'>63/88</span>
             </div>
         
             
@@ -216,7 +216,28 @@
 <a name='L157'></a><a href='#L157'>157</a>
 <a name='L158'></a><a href='#L158'>158</a>
 <a name='L159'></a><a href='#L159'>159</a>
-<a name='L160'></a><a href='#L160'>160</a></td><td class="line-coverage quiet"><span class="cline-any cline-neutral">&nbsp;</span>
+<a name='L160'></a><a href='#L160'>160</a>
+<a name='L161'></a><a href='#L161'>161</a>
+<a name='L162'></a><a href='#L162'>162</a>
+<a name='L163'></a><a href='#L163'>163</a>
+<a name='L164'></a><a href='#L164'>164</a>
+<a name='L165'></a><a href='#L165'>165</a>
+<a name='L166'></a><a href='#L166'>166</a>
+<a name='L167'></a><a href='#L167'>167</a>
+<a name='L168'></a><a href='#L168'>168</a>
+<a name='L169'></a><a href='#L169'>169</a>
+<a name='L170'></a><a href='#L170'>170</a>
+<a name='L171'></a><a href='#L171'>171</a>
+<a name='L172'></a><a href='#L172'>172</a>
+<a name='L173'></a><a href='#L173'>173</a>
+<a name='L174'></a><a href='#L174'>174</a>
+<a name='L175'></a><a href='#L175'>175</a>
+<a name='L176'></a><a href='#L176'>176</a>
+<a name='L177'></a><a href='#L177'>177</a>
+<a name='L178'></a><a href='#L178'>178</a>
+<a name='L179'></a><a href='#L179'>179</a>
+<a name='L180'></a><a href='#L180'>180</a>
+<a name='L181'></a><a href='#L181'>181</a></td><td class="line-coverage quiet"><span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
@@ -229,6 +250,8 @@
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">208x</span>
+<span class="cline-any cline-yes">208x</span>
 <span class="cline-any cline-yes">208x</span>
 <span class="cline-any cline-yes">208x</span>
 <span class="cline-any cline-yes">208x</span>
@@ -283,6 +306,15 @@
 <span class="cline-any cline-yes">208x</span>
 <span class="cline-any cline-yes">20x</span>
 <span class="cline-any cline-yes">18x</span>
+<span class="cline-any cline-yes">18x</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">18x</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
@@ -296,6 +328,16 @@
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-yes">18x</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">18x</span>
+<span class="cline-any cline-yes">18x</span>
+<span class="cline-any cline-yes">14x</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-yes">18x</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-no">&nbsp;</span>
@@ -389,6 +431,8 @@ import type { ConnectorRequestBody, ConnectorInfoDTO } from 'services/cd-ng'
 import type { IGitContextFormProps } from '@common/components/GitContextForm/GitContextForm'
 import type { ConnectivityModeType } from '@common/components/ConnectivityMode/ConnectivityMode'
 import { useFeatureFlags } from '@common/hooks/useFeatureFlag'
+import { useTelemetry } from '@common/hooks/useTelemetry'
+import { Category, ConnectorActions } from '@common/constants/TrackingConstants'
 import CreateGitConnector from '../CreateConnector/GitConnector/CreateGitConnector'
 import CreateGithubConnector from '../CreateConnector/GithubConnector/CreateGithubConnector'
 import CreateGitlabConnector from '../CreateConnector/GitlabConnector/CreateGitlabConnector'
@@ -441,7 +485,16 @@ interface CreateConnectorWizardProps {
 &nbsp;
 export const ConnectorWizard: React.FC&lt;CreateConnectorWizardProps&gt; = props =&gt; {
   const { type } = props
-  const commonProps = pick(props, [
+  const { trackEvent } = useTelemetry()
+  const onSuccessWithEventTracking = <span class="fstat-no" title="function not covered" >(d</span>ata?: ConnectorRequestBody): void | Promise&lt;void&gt; =&gt; {
+<span class="cstat-no" title="statement not covered" >    props.onSuccess(data)</span>
+<span class="cstat-no" title="statement not covered" >    trackEvent(ConnectorActions.SaveCreateConnector, {</span>
+      category: Category.CONNECTOR,
+      data
+    })
+  }
+&nbsp;
+  let commonProps = pick(props, [
     'onSuccess',
     'onClose',
     'isEditMode',
@@ -454,7 +507,17 @@ export const ConnectorWizard: React.FC&lt;CreateConnectorWizardProps&gt; = props
     'connectivityMode',
     'setConnectivityMode'
   ])
+  commonProps = {
+    ...commonProps,
+    onSuccess: onSuccessWithEventTracking
+  }
   const { ERROR_TRACKING_ENABLED } = useFeatureFlags()
+  React.useEffect(() =&gt; {
+    trackEvent(ConnectorActions.StartCreateConnector, {
+      category: Category.CONNECTOR
+    })
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [])
   switch (type) {
 <span class="branch-0 cbranch-no" title="branch not covered" >    case Connectors.CUSTOM:</span>
 <span class="cstat-no" title="statement not covered" >      return &lt;CreateCustomHealthConnector {...commonProps} /&gt;</span>
@@ -541,7 +604,7 @@ export const CreateConnectorWizard: React.FC&lt;CreateConnectorWizardProps&gt; =
             <div class='footer quiet pad2 space-top1 center small'>
                 Code coverage generated by
                 <a href="https://istanbul.js.org/" target="_blank">istanbul</a>
-                at Tue Mar 29 2022 15:15:53 GMT+0000 (Greenwich Mean Time)
+                at Wed Mar 30 2022 04:49:11 GMT+0000 (Greenwich Mean Time)
             </div>
         </div>
         <script src="../../../../prettify.js"></script>

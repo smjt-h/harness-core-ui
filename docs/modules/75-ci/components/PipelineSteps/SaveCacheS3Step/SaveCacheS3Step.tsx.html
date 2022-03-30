@@ -23,30 +23,30 @@
         <div class='clearfix'>
             
             <div class='fl pad1y space-right2'>
-                <span class="strong">83.33% </span>
+                <span class="strong">93.33% </span>
                 <span class="quiet">Statements</span>
-                <span class='fraction'>25/30</span>
+                <span class='fraction'>28/30</span>
             </div>
         
             
             <div class='fl pad1y space-right2'>
-                <span class="strong">69.23% </span>
+                <span class="strong">76.92% </span>
                 <span class="quiet">Branches</span>
-                <span class='fraction'>18/26</span>
+                <span class='fraction'>20/26</span>
             </div>
         
             
             <div class='fl pad1y space-right2'>
-                <span class="strong">50% </span>
+                <span class="strong">75% </span>
                 <span class="quiet">Functions</span>
-                <span class='fraction'>2/4</span>
+                <span class='fraction'>3/4</span>
             </div>
         
             
             <div class='fl pad1y space-right2'>
-                <span class="strong">83.33% </span>
+                <span class="strong">93.33% </span>
                 <span class="quiet">Lines</span>
-                <span class='fraction'>25/30</span>
+                <span class='fraction'>28/30</span>
             </div>
         
             
@@ -228,7 +228,8 @@
 <a name='L169'></a><a href='#L169'>169</a>
 <a name='L170'></a><a href='#L170'>170</a>
 <a name='L171'></a><a href='#L171'>171</a>
-<a name='L172'></a><a href='#L172'>172</a></td><td class="line-coverage quiet"><span class="cline-any cline-neutral">&nbsp;</span>
+<a name='L172'></a><a href='#L172'>172</a>
+<a name='L173'></a><a href='#L173'>173</a></td><td class="line-coverage quiet"><span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
@@ -257,6 +258,7 @@
 <span class="cline-any cline-yes">84x</span>
 <span class="cline-any cline-yes">84x</span>
 <span class="cline-any cline-yes">84x</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
@@ -340,9 +342,9 @@
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-no">&nbsp;</span>
-<span class="cline-any cline-no">&nbsp;</span>
-<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-yes">1x</span>
+<span class="cline-any cline-yes">1x</span>
+<span class="cline-any cline-yes">1x</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-no">&nbsp;</span>
@@ -360,10 +362,10 @@
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-yes">6x</span>
+<span class="cline-any cline-yes">8x</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-yes">6x</span>
-<span class="cline-any cline-yes">2x</span>
+<span class="cline-any cline-yes">8x</span>
+<span class="cline-any cline-yes">4x</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
@@ -476,6 +478,7 @@ export interface SaveCacheS3StepProps {
   onUpdate?: (data: SaveCacheS3StepData) =&gt; void
   onChange?: (data: SaveCacheS3StepData) =&gt; void
   allowableTypes: MultiTypeInputType[]
+  formik?: any
 }
 export class SaveCacheS3Step extends PipelineStep&lt;SaveCacheS3StepData&gt; {
   constructor() {
@@ -505,15 +508,15 @@ export class SaveCacheS3Step extends PipelineStep&lt;SaveCacheS3StepData&gt; {
 <span class="cstat-no" title="statement not covered" >    return getFormValuesInCorrectFormat&lt;T, SaveCacheS3StepData&gt;(data, transformValuesFieldsConfig)</span>
   }
 &nbsp;
-<span class="fstat-no" title="function not covered" >  validateInputSet(</span>{
+  validateInputSet({
     data,
     template,
     getString,
     viewType
   }: ValidateInputSetProps&lt;SaveCacheS3StepData&gt;): FormikErrors&lt;SaveCacheS3StepData&gt; {
-    const isRequired = <span class="cstat-no" title="statement not covered" >viewType === StepViewType.DeploymentForm || viewType === StepViewType.TriggerForm</span>
-<span class="cstat-no" title="statement not covered" >    if (getString) {</span>
-<span class="cstat-no" title="statement not covered" >      return validateInputSet(data, template, getInputSetViewValidateFieldsConfig(isRequired), { getString }, viewType)</span>
+    const isRequired = viewType === StepViewType.DeploymentForm || <span class="branch-1 cbranch-no" title="branch not covered" >viewType === StepViewType.TriggerForm</span>
+    <span class="missing-if-branch" title="else path not taken" >E</span>if (getString) {
+      return validateInputSet(data, template, getInputSetViewValidateFieldsConfig(isRequired), { getString }, viewType)
     }
 &nbsp;
 <span class="cstat-no" title="statement not covered" >    return {}</span>
@@ -577,7 +580,7 @@ export class SaveCacheS3Step extends PipelineStep&lt;SaveCacheS3StepData&gt; {
             <div class='footer quiet pad2 space-top1 center small'>
                 Code coverage generated by
                 <a href="https://istanbul.js.org/" target="_blank">istanbul</a>
-                at Tue Mar 29 2022 15:15:53 GMT+0000 (Greenwich Mean Time)
+                at Wed Mar 30 2022 04:49:11 GMT+0000 (Greenwich Mean Time)
             </div>
         </div>
         <script src="../../../../../prettify.js"></script>
