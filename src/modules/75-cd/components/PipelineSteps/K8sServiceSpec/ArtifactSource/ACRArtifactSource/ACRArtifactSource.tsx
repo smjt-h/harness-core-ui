@@ -6,7 +6,7 @@
  */
 
 import React, { useEffect } from 'react'
-import { defaultTo, get } from 'lodash-es'
+import { defaultTo, forIn, get } from 'lodash-es'
 
 import {
   FormInput,
@@ -19,8 +19,13 @@ import {
 import { ArtifactSourceBase, ArtifactSourceRenderProps } from '@cd/factory/ArtifactSourceFactory/ArtifactSourceBase'
 import { yamlStringify } from '@common/utils/YamlHelperMethods'
 import { useMutateAsGet } from '@common/hooks'
-import { SidecarArtifact, useGetBuildDetailsForAcrWithYaml } from 'services/cd-ng'
-import { useListAzureRegistries, useListAzureRepositories, useListAzureSubscriptions } from 'services/portal'
+import {
+  SidecarArtifact,
+  useGetBuildDetailsForAcrWithYaml,
+  useListAzureRegistries,
+  useListAzureRepositories,
+  useListAzureSubscriptions
+} from 'services/cd-ng'
 import { ArtifactToConnectorMap, ENABLED_ARTIFACT_TYPES } from '@pipeline/components/ArtifactsSelection/ArtifactHelper'
 import { TriggerDefaultFieldList } from '@triggers/pages/triggers/utils/TriggersWizardPageUtils'
 import { useStrings } from 'framework/strings'
@@ -111,16 +116,21 @@ const Content = (props: ACRRenderContent): JSX.Element => {
 
   const { data } = useListAzureSubscriptions({
     queryParams: {
-      accountId
+      connectorRef: artifact?.spec?.connectorRef,
+      accountIdentifier: accountId,
+      orgIdentifier,
+      projectIdentifier
     }
   })
+
   useEffect(() => {
-    const subscriptionValues = defaultTo(data?.resource, []).map(subsciption => ({
-      value: subsciption.value,
-      label: subsciption.value
-    }))
+    const subscriptionValues = [] as SelectOption[]
+    forIn(defaultTo(data?.data, {}), (key: string, value: string) => {
+      subscriptionValues.push({ label: value, value: key })
+    })
+
     setSubscriptions(subscriptionValues as SelectOption[])
-  }, [data?.resource])
+  }, [data])
 
   const {
     data: registiresData,
@@ -128,6 +138,15 @@ const Content = (props: ACRRenderContent): JSX.Element => {
     loading: loadingRegistries,
     error: registriesError
   } = useListAzureRegistries({
+    queryParams: {
+      connectorRef: artifact?.spec?.connectorRef,
+      accountIdentifier: accountId,
+      orgIdentifier,
+      projectIdentifier
+    },
+    pathParams: {
+      subscription: artifact?.spec?.subscription
+    },
     lazy: true,
     debounce: 300
   })
@@ -139,8 +158,13 @@ const Content = (props: ACRRenderContent): JSX.Element => {
     ) {
       refetchRegistries({
         queryParams: {
-          accountId,
-          subscription: formik.values?.subscription
+          connectorRef: artifact?.spec?.connectorRef,
+          accountIdentifier: accountId,
+          orgIdentifier,
+          projectIdentifier
+        },
+        pathParams: {
+          subscriptions: artifact?.spec?.subscription
         }
       })
     }
@@ -149,7 +173,7 @@ const Content = (props: ACRRenderContent): JSX.Element => {
 
   useEffect(() => {
     const options =
-      defaultTo(registiresData?.resource, []).map(registry => ({ label: registry.value, value: registry.value })) ||
+      defaultTo(registiresData?.data, []).map(registry => ({ label: registry, value: registry })) ||
       /* istanbul ignore next */ []
     setRegistries(options)
   }, [registiresData])
@@ -160,6 +184,16 @@ const Content = (props: ACRRenderContent): JSX.Element => {
     loading: loadingRepositories,
     error: repositoriesError
   } = useListAzureRepositories({
+    queryParams: {
+      connectorRef: artifact?.spec?.connectorRef,
+      accountIdentifier: accountId,
+      orgIdentifier,
+      projectIdentifier
+    },
+    pathParams: {
+      subscription: artifact?.spec?.subscription,
+      registry: artifact?.spec?.registry
+    },
     lazy: true,
     debounce: 300
   })
@@ -172,9 +206,14 @@ const Content = (props: ACRRenderContent): JSX.Element => {
     ) {
       refetchRepositories({
         queryParams: {
-          accountId,
-          subscription: formik.values.subscription,
-          registry: formik.values.registry
+          connectorRef: artifact?.spec?.connectorRef,
+          accountIdentifier: accountId,
+          orgIdentifier,
+          projectIdentifier
+        },
+        pathParams: {
+          subscription: artifact?.spec?.subscription,
+          registry: artifact?.spec?.registry
         }
       })
     }
@@ -183,8 +222,7 @@ const Content = (props: ACRRenderContent): JSX.Element => {
 
   useEffect(() => {
     const options =
-      defaultTo(repositoriesData?.resource, []).map(repo => ({ label: repo.value, value: repo.value })) ||
-      /* istanbul ignore next */ []
+      defaultTo(repositoriesData?.data, []).map(repo => ({ label: repo, value: repo })) || /* istanbul ignore next */ []
     setRepositories(options)
   }, [repositoriesData])
 

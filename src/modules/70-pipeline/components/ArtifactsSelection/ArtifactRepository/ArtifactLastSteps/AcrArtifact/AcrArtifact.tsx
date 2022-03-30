@@ -21,9 +21,15 @@ import { FontVariation } from '@harness/design-system'
 import { Form, FormikContext } from 'formik'
 import { useParams } from 'react-router-dom'
 import * as Yup from 'yup'
-import { defaultTo, get, isNil, merge } from 'lodash-es'
-import { useListAzureSubscriptions, useListAzureRegistries, useListAzureRepositories } from 'services/portal'
-import { AcrBuildDetailsDTO, ConnectorConfigDTO, useGetBuildDetailsForAcr } from 'services/cd-ng'
+import { defaultTo, forIn, get, isNil, merge } from 'lodash-es'
+import {
+  AcrBuildDetailsDTO,
+  ConnectorConfigDTO,
+  useGetBuildDetailsForAcr,
+  useListAzureSubscriptions,
+  useListAzureRegistries,
+  useListAzureRepositories
+} from 'services/cd-ng'
 import { useStrings } from 'framework/strings'
 import { EXPRESSION_STRING } from '@pipeline/utils/constants'
 import { getHelpeTextForTags } from '@pipeline/utils/stageHelpers'
@@ -146,16 +152,20 @@ export function AcrArtifact({
 
   const { data } = useListAzureSubscriptions({
     queryParams: {
-      accountId
+      connectorRef: getConnectorRefQueryData(),
+      accountIdentifier: accountId,
+      orgIdentifier,
+      projectIdentifier
     }
   })
   useEffect(() => {
-    const subscriptionValues = defaultTo(data?.resource, []).map(subsciption => ({
-      value: subsciption.value,
-      label: subsciption.value
-    }))
+    const subscriptionValues = [] as SelectOption[]
+    forIn(defaultTo(data?.data, {}), (key: string, value: string) => {
+      subscriptionValues.push({ label: value, value: key })
+    })
+
     setSubscriptions(subscriptionValues as SelectOption[])
-  }, [data?.resource])
+  }, [data])
 
   const {
     data: registiresData,
@@ -163,6 +173,15 @@ export function AcrArtifact({
     loading: loadingRegistries,
     error: registriesError
   } = useListAzureRegistries({
+    queryParams: {
+      connectorRef: getConnectorRefQueryData(),
+      accountIdentifier: accountId,
+      orgIdentifier,
+      projectIdentifier
+    },
+    pathParams: {
+      subscription: initialValues?.subscription
+    },
     lazy: true,
     debounce: 300
   })
@@ -177,8 +196,13 @@ export function AcrArtifact({
     ) {
       refetchRegistries({
         queryParams: {
-          accountId,
-          subscription: formikRef.current?.values?.subscription
+          connectorRef: getConnectorRefQueryData(),
+          accountIdentifier: accountId,
+          orgIdentifier,
+          projectIdentifier
+        },
+        pathParams: {
+          subscriptions: formikRef.current?.values.subscription
         }
       })
     }
@@ -187,9 +211,9 @@ export function AcrArtifact({
 
   useEffect(() => {
     const options =
-      defaultTo(registiresData?.resource, []).map(registry => ({
-        label: registry.value,
-        value: registry.value
+      defaultTo(registiresData?.data, []).map(registry => ({
+        label: registry,
+        value: registry
       })) || /* istanbul ignore next */ []
 
     setRegistries(options)
@@ -201,6 +225,16 @@ export function AcrArtifact({
     loading: loadingRepositories,
     error: repositoriesError
   } = useListAzureRepositories({
+    queryParams: {
+      connectorRef: getConnectorRefQueryData(),
+      accountIdentifier: accountId,
+      orgIdentifier,
+      projectIdentifier
+    },
+    pathParams: {
+      subscription: initialValues?.subscription,
+      registry: initialValues?.registry
+    },
     lazy: true,
     debounce: 300
   })
@@ -217,7 +251,12 @@ export function AcrArtifact({
     ) {
       refetchRepositories({
         queryParams: {
-          accountId,
+          connectorRef: getConnectorRefQueryData(),
+          accountIdentifier: accountId,
+          orgIdentifier,
+          projectIdentifier
+        },
+        pathParams: {
           subscription: formikRef.current?.values?.subscription,
           registry: formikRef.current?.values?.registry
         }
@@ -228,9 +267,9 @@ export function AcrArtifact({
 
   useEffect(() => {
     const options =
-      defaultTo(repositoriesData?.resource, []).map(repository => ({
-        label: repository.value,
-        value: repository.value
+      defaultTo(repositoriesData?.data, []).map(repository => ({
+        label: repository,
+        value: repository
       })) || /* istanbul ignore next */ []
     setRepositories(options)
   }, [repositoriesData])
@@ -300,6 +339,17 @@ export function AcrArtifact({
     ? /* istanbul ignore next */ [{ label: 'Loading Tags...', value: 'Loading Tags...' }]
     : getSelectItems()
 
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
+  const resetTagList = (formik: any): void => {
+    tagList.length && setTagList([])
+    resetTag(formik)
+  }
+
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
+  const findSelectOption = (value: string, list: SelectOption[]): any => {
+    return list.filter(item => item.value === value) || { label: value, value: value }
+  }
+
   useEffect(() => {
     /* istanbul ignore else */
     if (!isNil(formikRef?.current?.values?.tag)) {
@@ -341,12 +391,12 @@ export function AcrArtifact({
                     name="subscription"
                     selectItems={subscriptions}
                     multiTypeInputProps={{
-                      onChange: /* istanbul ignore next */ () => {
-                        tagList.length && setTagList([])
-                        resetTag(formik)
+                      onChange: /* istanbul ignore next */ selectOption => {
+                        formik.setFieldValue('subscription', (selectOption as SelectOption)?.value)
+                        resetTagList(formik)
                       },
                       selectProps: {
-                        defaultSelectedItem: formik.values.subscription,
+                        defaultSelectedItem: findSelectOption(formik.values.subscription, subscriptions),
                         items: subscriptions,
                         allowCreatingNewItems: true
                       }
@@ -364,11 +414,6 @@ export function AcrArtifact({
                         showRequiredField={false}
                         showDefaultField={false}
                         showAdvanced={true}
-                        onChange={
-                          /* istanbul ignore next */ value => {
-                            formik.setFieldValue('subscription', value)
-                          }
-                        }
                         isReadonly={isReadonly}
                       />
                     </div>
@@ -385,14 +430,14 @@ export function AcrArtifact({
                         : getString('connectors.ACR.registryPlaceholder')
                     }
                     multiTypeInputProps={{
-                      onChange: /* istanbul ignore next */ () => {
-                        tagList.length && setTagList([])
-                        resetTag(formik)
+                      onChange: /* istanbul ignore next */ selectOption => {
+                        formik.setFieldValue('registry', (selectOption as SelectOption)?.value)
+                        resetTagList(formik)
                       },
                       expressions,
                       disabled: isReadonly,
                       selectProps: {
-                        defaultSelectedItem: formik.values.registry,
+                        defaultSelectedItem: findSelectOption(formik.values.registry, subscriptions),
                         items: registries,
                         allowCreatingNewItems: true,
                         addClearBtn: !(loadingRegistries || isReadonly),
@@ -414,11 +459,6 @@ export function AcrArtifact({
                       showRequiredField={false}
                       showDefaultField={false}
                       showAdvanced={true}
-                      onChange={
-                        /* istanbul ignore next */ value => {
-                          formik.setFieldValue('registry', value)
-                        }
-                      }
                       isReadonly={isReadonly}
                     />
                   )}
@@ -434,16 +474,16 @@ export function AcrArtifact({
                         : getString('connectors.ACR.repositoryPlaceholder')
                     }
                     multiTypeInputProps={{
-                      onChange: /* istanbul ignore next */ () => {
-                        tagList.length && setTagList([])
-                        resetTag(formik)
+                      onChange: /* istanbul ignore next */ selectOption => {
+                        formik.setFieldValue('repository', (selectOption as SelectOption)?.value)
+                        resetTagList(formik)
                       },
                       expressions,
                       disabled: isReadonly,
                       selectProps: {
                         items: repositories,
                         allowCreatingNewItems: true,
-                        defaultSelectedItem: formik.values.repository,
+                        defaultSelectedItem: findSelectOption(formik.values.repository, subscriptions),
                         addClearBtn: !(loadingRepositories || isReadonly),
                         noResults: (
                           <Text padding={'small'}>
@@ -464,11 +504,6 @@ export function AcrArtifact({
                       showRequiredField={false}
                       showDefaultField={false}
                       showAdvanced={true}
-                      onChange={
-                        /* istanbul ignore next */ value => {
-                          formik.setFieldValue('repository', value)
-                        }
-                      }
                       isReadonly={isReadonly}
                     />
                   )}

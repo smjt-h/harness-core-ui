@@ -160,27 +160,15 @@ export const templateWithValues = {
 }
 
 export const mockSubscriptions = {
-  resource: [
-    { value: 'sub1', label: 'Subscription 1' },
-    { value: 'sub2', label: 'Subscription 2' },
-    { value: 'sub3', label: 'Subscription 3' }
-  ]
+  data: { sub1: 'Subscription 1', sub2: 'Subscription 2', sub3: 'Subscription 3' }
 }
 
 export const mockRegistries = {
-  resource: [
-    { value: 'reg1', label: 'Region 1' },
-    { value: 'reg2', label: 'Region 2' },
-    { value: 'reg3', label: 'Region 3' }
-  ]
+  data: ['reg1', 'reg2', 'reg3']
 }
 
 export const mockRepositories = {
-  resource: [
-    { value: 'rep1', label: 'Repository 1' },
-    { value: 'rep2', label: 'Repository 2' },
-    { value: 'rep3', label: 'Repository 3' }
-  ]
+  data: ['rep1', 'rep2', 'rep3']
 }
 
 export const path = 'stages[0].stage.spec.serviceConfig.serviceDefinition.spec'

@@ -26,7 +26,11 @@ const props = {
   selectedDeploymentType: ServiceDeploymentType.Kubernetes
 }
 
-jest.mock('services/portal', () => ({
+jest.mock('services/cd-ng', () => ({
+  ...jest.requireActual('services/cd-ng'),
+  useGetBuildDetailsForAcr: jest.fn().mockImplementation(() => {
+    return { data: mockRepositories, refetch: jest.fn(), error: null, loading: false }
+  }),
   useListAzureSubscriptions: jest.fn().mockImplementation(() => {
     return {
       data: mockSubscriptions,
@@ -40,13 +44,6 @@ jest.mock('services/portal', () => ({
   }),
   useListAzureRepositories: jest.fn().mockImplementation(() => {
     return { data: mockRepositories, refetch: jest.fn().mockReturnValue(mockRepositories), error: null, loading: false }
-  })
-}))
-
-jest.mock('services/cd-ng', () => ({
-  ...jest.requireActual('services/cd-ng'),
-  useGetBuildDetailsForAcr: jest.fn().mockImplementation(() => {
-    return { data: mockRepositories, refetch: jest.fn(), error: null, loading: false }
   })
 }))
 

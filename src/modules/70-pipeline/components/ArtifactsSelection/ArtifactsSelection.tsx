@@ -121,7 +121,7 @@ export default function ArtifactsSelection({
   const { NG_NEXUS_ARTIFACTORY } = useFeatureFlags()
   const { stage } = getStageFromPipeline<DeploymentStageElementConfig>(selectedStageId || '')
   const deploymentType = getSelectedDeploymentType(stage, getStageFromPipeline, isPropagating)
-  const { NG_AZURE } = useFeatureFlags()
+  // const { NG_AZURE } = useFeatureFlags()
 
   useEffect(() => {
     if (
@@ -134,13 +134,13 @@ export default function ArtifactsSelection({
         ENABLED_ARTIFACT_TYPES.ArtifactoryRegistry
       )
     }
-    if (
-      NG_AZURE &&
-      !allowedArtifactTypes[deploymentType]?.includes(ENABLED_ARTIFACT_TYPES.Acr) &&
-      !isServerlessDeploymentType(deploymentType)
-    ) {
-      allowedArtifactTypes[deploymentType].push(ENABLED_ARTIFACT_TYPES.Acr)
-    }
+    // if (
+    //   NG_AZURE &&
+    //   !allowedArtifactTypes[deploymentType]?.includes(ENABLED_ARTIFACT_TYPES.Acr) &&
+    //   !isServerlessDeploymentType(deploymentType)
+    // ) {
+    allowedArtifactTypes[deploymentType].push(ENABLED_ARTIFACT_TYPES.Acr)
+    // }
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [])
 

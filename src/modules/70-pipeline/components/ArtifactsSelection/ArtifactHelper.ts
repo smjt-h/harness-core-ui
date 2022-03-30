@@ -53,7 +53,7 @@ export const ArtifactToConnectorMap: Record<string, ConnectorInfoDTO['type']> = 
   Ecr: Connectors.AWS,
   Nexus3Registry: Connectors.NEXUS,
   ArtifactoryRegistry: Connectors.ARTIFACTORY,
-  Acr: Connectors.AZURE
+  Acr: Connectors.AWS
 }
 
 export const ArtifactConnectorLabelMap: Record<string, string> = {

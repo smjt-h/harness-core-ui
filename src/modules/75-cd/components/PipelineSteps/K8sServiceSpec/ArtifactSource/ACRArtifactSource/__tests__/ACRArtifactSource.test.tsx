@@ -14,7 +14,6 @@ import { StepViewType } from '@pipeline/components/AbstractSteps/Step'
 
 import { ArtifactSourceBaseFactory } from '@cd/factory/ArtifactSourceFactory/ArtifactSourceBaseFactory'
 import type { ArtifactListConfig, ServiceSpec } from 'services/cd-ng'
-import * as cdng from 'services/cd-ng'
 import * as artifactSourceUtils from '../../artifactSourceUtils'
 import { KubernetesPrimaryArtifacts } from '../../../KubernetesArtifacts/KubernetesPrimaryArtifacts/KubernetesPrimaryArtifacts'
 import { KubernetesSidecarArtifacts } from '../../../KubernetesArtifacts/KubernetesSidecarArtifacts/KubernetesSidecarArtifacts'
@@ -32,7 +31,8 @@ import {
   path
 } from './mocks'
 
-jest.mock('services/portal', () => ({
+jest.mock('services/cd-ng', () => ({
+  ...jest.requireActual('services/cd-ng'),
   useListAzureSubscriptions: jest.fn().mockImplementation(() => {
     return { data: mockSubscriptions, refetch: jest.fn(), error: null, loading: false }
   }),
@@ -47,7 +47,6 @@ jest.mock('services/portal', () => ({
 jest.spyOn(artifactSourceUtils, 'fromPipelineInputTriggerTab')
 jest.spyOn(artifactSourceUtils, 'isFieldfromTriggerTabDisabled')
 jest.spyOn(artifactSourceUtils, 'resetTags').mockImplementation(() => jest.fn())
-jest.spyOn(cdng, 'useGetBuildDetailsForAcrWithYaml')
 
 jest.mock('@connectors/components/ConnectorReferenceField/FormMultiTypeConnectorField', () => ({
   ...(jest.requireActual('@connectors/components/ConnectorReferenceField/FormMultiTypeConnectorField') as any),
@@ -160,7 +159,6 @@ describe('Acr Artifact Source tests', () => {
     expect(await waitFor(() => findByText('tagLabel'))).toBeInTheDocument()
     expect(await waitFor(() => artifactSourceUtils.fromPipelineInputTriggerTab)).toBeCalled()
     expect(await waitFor(() => artifactSourceUtils.isFieldfromTriggerTabDisabled)).toBeCalled()
-    expect(await waitFor(() => cdng.useGetBuildDetailsForAcrWithYaml)).toBeCalled()
 
     const connector = await waitFor(() => findByText('Form Multi Type Connector Field button'))
     act(() => {
@@ -192,7 +190,6 @@ describe('Acr Artifact Source tests', () => {
     expect(container).toMatchSnapshot()
     expect(await waitFor(() => artifactSourceUtils.fromPipelineInputTriggerTab)).toBeCalled()
     expect(await waitFor(() => artifactSourceUtils.isFieldfromTriggerTabDisabled)).toBeCalled()
-    expect(await waitFor(() => cdng.useGetBuildDetailsForAcrWithYaml)).toBeCalled()
 
     expect(container).toMatchSnapshot()
   })

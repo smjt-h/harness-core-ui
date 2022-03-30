@@ -6,13 +6,13 @@
  */
 
 export const mockSubscriptions = {
-  resource: [{ value: 'sub1' }, { value: 'sub2' }, { value: 'sub3' }]
+  data: [{ sub1: 'subscription1' }, { sub2: 'subscription2' }, { sub3: 'subscription3' }]
 }
 
 export const mockRegistries = {
-  resource: [{ value: 'reg1' }, { value: 'reg2' }, { value: 'reg3' }]
+  data: ['reg1', 'reg2', 'reg3']
 }
 
 export const mockRepositories = {
-  resource: [{ value: 'rep1' }, { value: 'rep2' }, { value: 'rep3' }]
+  data: ['rep1', 'rep2', 'rep3']
 }

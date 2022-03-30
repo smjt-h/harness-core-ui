@@ -6310,6 +6310,22 @@ export interface ResponseAcrBuildDetailsDTO {
   status?: 'SUCCESS' | 'FAILURE' | 'ERROR'
 }
 
+export interface RestResponseAcrSubscriptions {
+  metaData?: {
+    [key: string]: { [key: string]: any }
+  }
+  data?: object
+  responseMessages?: ResponseMessage[]
+}
+
+export interface RestResponseAcrOthers {
+  metaData?: {
+    [key: string]: { [key: string]: any }
+  }
+  data?: string[]
+  responseMessages?: ResponseMessage[]
+}
+
 export interface ResponseEnvBuildIdAndInstanceCountInfoList {
   correlationId?: string
   data?: EnvBuildIdAndInstanceCountInfoList
@@ -13867,6 +13883,168 @@ export const validateArtifactImageForAcrPromise = (
   getUsingFetch<ResponseBoolean, Failure | Error, ValidateArtifactImageForAcrQueryParams, void>(
     getConfig('ng/api'),
     `/artifacts/acr/validateArtifactSource`,
+    props,
+    signal
+  )
+
+export interface ListAzureSubscriptionsQueryParams {
+  connectorRef?: string
+  accountIdentifier?: string
+  orgIdentifier?: string
+  projectIdentifier?: string
+}
+
+export type ListAzureSubscriptionsProps = Omit<
+  GetProps<RestResponseAcrSubscriptions, unknown, ListAzureSubscriptionsQueryParams, void>,
+  'path'
+>
+
+export const ListAzureSubscriptions = (props: ListAzureSubscriptionsProps) => (
+  <Get<RestResponseAcrSubscriptions, unknown, ListAzureSubscriptionsQueryParams, void>
+    path={`/artifacts/acr/subscriptions`}
+    base={getConfig('ng/api')}
+    {...props}
+  />
+)
+
+export type UseListAzureSubscriptionsProps = Omit<
+  UseGetProps<RestResponseAcrSubscriptions, unknown, ListAzureSubscriptionsQueryParams, void>,
+  'path'
+>
+
+export const useListAzureSubscriptions = (props: UseListAzureSubscriptionsProps) =>
+  useGet<RestResponseAcrSubscriptions, unknown, ListAzureSubscriptionsQueryParams, void>(
+    `/artifacts/acr/subscriptions`,
+    {
+      base: getConfig('ng/api'),
+      ...props
+    }
+  )
+
+export const listAzureSubscriptionsPromise = (
+  props: GetUsingFetchProps<RestResponseAcrSubscriptions, unknown, ListAzureSubscriptionsQueryParams, void>,
+  signal?: RequestInit['signal']
+) =>
+  getUsingFetch<RestResponseAcrSubscriptions, unknown, ListAzureSubscriptionsQueryParams, void>(
+    getConfig('ng/api'),
+    `/artifacts/acr/subscriptions`,
+    props,
+    signal
+  )
+
+export interface ListAzureRegistriesQueryParams {
+  connectorRef?: string
+  accountIdentifier?: string
+  orgIdentifier?: string
+  projectIdentifier?: string
+}
+
+export interface ListAzureRegistriesPathParams {
+  subscription?: string
+}
+
+export type ListAzureRegistriesProps = Omit<
+  GetProps<RestResponseAcrOthers, unknown, ListAzureRegistriesQueryParams, ListAzureRegistriesPathParams>,
+  'path'
+> &
+  ListAzureRegistriesPathParams
+
+export const ListAzureRegistries = ({ subscription, ...props }: ListAzureRegistriesProps) => (
+  <Get<RestResponseAcrOthers, unknown, ListAzureRegistriesQueryParams, ListAzureRegistriesPathParams>
+    path={`/artifacts/acr/subscriptions/${subscription}/container-registries`}
+    base={getConfig('ng/api')}
+    {...props}
+  />
+)
+
+export type UseListAzureRegistriesProps = Omit<
+  UseGetProps<RestResponseAcrOthers, unknown, ListAzureRegistriesQueryParams, ListAzureRegistriesPathParams>,
+  'path'
+> &
+  ListAzureRegistriesPathParams
+
+export const useListAzureRegistries = ({ subscription, ...props }: UseListAzureRegistriesProps) =>
+  useGet<RestResponseAcrOthers, unknown, ListAzureRegistriesQueryParams, ListAzureRegistriesPathParams>(
+    `/artifacts/acr/subscriptions/${subscription}/container-registries`,
+    {
+      base: getConfig('ng/api'),
+      ...props
+    }
+  )
+
+export const listAzureRegistriesPromise = (
+  {
+    subscription,
+    ...props
+  }: GetUsingFetchProps<RestResponseAcrOthers, unknown, ListAzureRegistriesQueryParams, ListAzureRegistriesPathParams> &
+    ListAzureRegistriesPathParams,
+  signal?: RequestInit['signal']
+) =>
+  getUsingFetch<RestResponseAcrOthers, unknown, ListAzureRegistriesQueryParams, ListAzureRegistriesPathParams>(
+    getConfig('ng/api'),
+    `/artifacts/acr/subscriptions/${subscription}/container-registries`,
+    props,
+    signal
+  )
+
+export interface ListAzureRepositoriesQueryParams {
+  connectorRef?: string
+  accountIdentifier?: string
+  orgIdentifier?: string
+  projectIdentifier?: string
+}
+
+export interface ListAzureRepositoriesPathParams {
+  subscription?: string
+  registry?: string
+}
+
+export type ListAzureRepositoriesProps = Omit<
+  GetProps<RestResponseAcrOthers, unknown, ListAzureRepositoriesQueryParams, ListAzureRepositoriesPathParams>,
+  'path'
+> &
+  ListAzureRepositoriesPathParams
+
+export const ListAzureRepositories = ({ subscription, registry, ...props }: ListAzureRepositoriesProps) => (
+  <Get<RestResponseAcrOthers, unknown, ListAzureRepositoriesQueryParams, ListAzureRepositoriesPathParams>
+    path={`/artifacts/acr/subscriptions/${subscription}/container-registries/${registry}/repositories`}
+    base={getConfig('ng/api')}
+    {...props}
+  />
+)
+
+export type UseListAzureRepositoriesProps = Omit<
+  UseGetProps<RestResponseAcrOthers, unknown, ListAzureRepositoriesQueryParams, ListAzureRepositoriesPathParams>,
+  'path'
+> &
+  ListAzureRepositoriesPathParams
+
+export const useListAzureRepositories = ({ subscription, registry, ...props }: UseListAzureRepositoriesProps) =>
+  useGet<RestResponseAcrOthers, unknown, ListAzureRepositoriesQueryParams, ListAzureRepositoriesPathParams>(
+    `/artifacts/acr/subscriptions/${subscription}/container-registries/${registry}/repositories`,
+    {
+      base: getConfig('ng/api'),
+      ...props
+    }
+  )
+
+export const listAzureRepositoriesPromise = (
+  {
+    subscription,
+    registry,
+    ...props
+  }: GetUsingFetchProps<
+    RestResponseAcrOthers,
+    unknown,
+    ListAzureRepositoriesQueryParams,
+    ListAzureRepositoriesPathParams
+  > &
+    ListAzureRepositoriesPathParams,
+  signal?: RequestInit['signal']
+) =>
+  getUsingFetch<RestResponseAcrOthers, unknown, ListAzureRepositoriesQueryParams, ListAzureRepositoriesPathParams>(
+    getConfig('ng/api'),
+    `/artifacts/acr/subscriptions/${subscription}/container-registries/${registry}/repositories`,
     props,
     signal
   )
