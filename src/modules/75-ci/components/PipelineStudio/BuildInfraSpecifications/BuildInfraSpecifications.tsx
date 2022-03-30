@@ -46,8 +46,15 @@ import {
 } from '@pipeline/components/PipelineStudio/StageBuilder/StageBuilderUtil'
 import { MultiTypeTextField } from '@common/components/MultiTypeText/MultiTypeText'
 import { FormMultiTypeCheckboxField, Separator } from '@common/components'
-import type { MultiTypeMapType, MultiTypeMapUIType, MapType } from '@pipeline/components/PipelineSteps/Steps/StepsTypes'
+import type {
+  MultiTypeMapType,
+  MultiTypeMapUIType,
+  MapType,
+  MultiTypeListType,
+  MultiTypeListUIType
+} from '@pipeline/components/PipelineSteps/Steps/StepsTypes'
 import { useGitScope } from '@pipeline/utils/CIUtils'
+import { MultiTypeList } from '@common/components/MultiTypeList/MultiTypeList'
 import { FormMultiTypeConnectorField } from '@connectors/components/ConnectorReferenceField/FormMultiTypeConnectorField'
 import type { BuildStageElementConfig } from '@pipeline/utils/pipelineTypes'
 import type { K8sDirectInfraYaml, UseFromStageInfraYaml, VmInfraYaml, VmPoolYaml } from 'services/ci'
@@ -56,7 +63,6 @@ import { k8sLabelRegex, k8sAnnotationRegex } from '@common/utils/StringUtils'
 import ErrorsStripBinded from '@pipeline/components/ErrorsStrip/ErrorsStripBinded'
 import { BuildTabs } from '../CIPipelineStagesUtils'
 import css from './BuildInfraSpecifications.module.scss'
-import { MultiTypeList } from '@common/components/MultiTypeList/MultiTypeList'
 
 const logger = loggerFor(ModuleName.CD)
 const k8sClusterKeyRef = 'connectors.title.k8sCluster'
@@ -79,8 +85,24 @@ interface KubernetesBuildInfraFormValues {
   useFromStage?: string
   annotations?: MultiTypeMapUIType
   labels?: MultiTypeMapUIType
+  priorityClass?: string
+  automountServiceAccountToken?: boolean
+  privileged?: boolean
+  allowPrivilegeEscalation?: boolean
+  addCapabilities?: MultiTypeListUIType
+  dropCapabilities?: MultiTypeListUIType
+  runAsNonRoot?: boolean
+  readOnlyRootFilesystem?: boolean
 }
 
+interface ContainerSecurityContext {
+  privileged?: boolean
+  allowPrivilegeEscalation?: boolean
+  capabilities?: { add?: string[]; drop?: string[] }
+  runAsNonRoot?: boolean
+  readOnlyRootFilesystem?: boolean
+  runAsUser?: number
+}
 interface AWSVMInfraFormValues {
   poolId?: string
 }
@@ -108,6 +130,16 @@ const getInitialMapValues: (value: MultiTypeMapType) => MultiTypeMapUIType = val
 
   return map
 }
+
+const getInitialListValues: (value: MultiTypeListType) => MultiTypeListUIType = value =>
+  typeof value === 'string'
+    ? value
+    : value
+        ?.filter((path: string) => !!path)
+        ?.map((_value: string) => ({
+          id: uuid('', nameSpace()),
+          value: _value
+        })) || []
 
 const getMapValues: (value: MultiTypeMapUIType) => MultiTypeMapType = value => {
   const map: MapType = {}
@@ -267,13 +299,36 @@ export default function BuildInfraSpecifications({ children }: React.PropsWithCh
     return {
       namespace: (stage?.stage?.spec?.infrastructure as K8sDirectInfraYaml)?.spec?.namespace,
       serviceAccountName: (stage?.stage?.spec?.infrastructure as K8sDirectInfraYaml)?.spec?.serviceAccountName,
-      runAsUser: (stage?.stage?.spec?.infrastructure as K8sDirectInfraYaml)?.spec?.runAsUser as unknown as string,
+      runAsUser:
+        ((stage?.stage?.spec?.infrastructure as K8sDirectInfraYaml)?.spec?.containerSecurityContext
+          ?.runAsUser as unknown as string) ||
+        ((stage?.stage?.spec?.infrastructure as K8sDirectInfraYaml)?.spec?.runAsUser as unknown as string), // migrate deprecated runAsUser
       initTimeout: (stage?.stage?.spec?.infrastructure as K8sDirectInfraYaml)?.spec?.initTimeout,
       annotations: getInitialMapValues(
         (stage?.stage?.spec?.infrastructure as K8sDirectInfraYaml)?.spec?.annotations || {}
       ),
       labels: getInitialMapValues((stage?.stage?.spec?.infrastructure as K8sDirectInfraYaml)?.spec?.labels || {}),
-      buildInfraType: 'KubernetesDirect'
+      buildInfraType: 'KubernetesDirect',
+      priorityClass: (stage?.stage?.spec?.infrastructure as K8sDirectInfraYaml)?.spec
+        ?.priorityClass as unknown as string,
+      automountServiceAccountToken: (stage?.stage?.spec?.infrastructure as K8sDirectInfraYaml)?.spec
+        ?.automountServiceAccountToken,
+      privileged: (stage?.stage?.spec?.infrastructure as K8sDirectInfraYaml)?.spec?.containerSecurityContext
+        ?.privileged,
+      allowPrivilegeEscalation: (stage?.stage?.spec?.infrastructure as K8sDirectInfraYaml)?.spec
+        ?.containerSecurityContext?.allowPrivilegeEscalation,
+      addCapabilities: getInitialListValues(
+        (stage?.stage?.spec?.infrastructure as K8sDirectInfraYaml)?.spec?.containerSecurityContext?.capabilities?.add ||
+          []
+      ),
+      dropCapabilities: getInitialListValues(
+        (stage?.stage?.spec?.infrastructure as K8sDirectInfraYaml)?.spec?.containerSecurityContext?.capabilities
+          ?.drop || []
+      ),
+      runAsNonRoot: (stage?.stage?.spec?.infrastructure as K8sDirectInfraYaml)?.spec?.containerSecurityContext
+        ?.runAsNonRoot,
+      readOnlyRootFilesystem: (stage?.stage?.spec?.infrastructure as K8sDirectInfraYaml)?.spec?.containerSecurityContext
+        ?.readOnlyRootFilesystem
     }
   }, [stage])
 
@@ -361,6 +416,54 @@ export default function BuildInfraSpecifications({ children }: React.PropsWithCh
           } catch (e) {
             errors.initTimeout = e.message
           }
+          const additionalKubernetesFields: { containerSecurityContext?: ContainerSecurityContext } = {}
+          if (buildInfraType === 'KubernetesDirect') {
+            const containerSecurityContext: ContainerSecurityContext = {
+              capabilities: {}
+            }
+            if (typeof values.privileged !== 'undefined') {
+              containerSecurityContext.privileged = values.privileged
+            }
+
+            if (typeof values.allowPrivilegeEscalation !== 'undefined') {
+              containerSecurityContext.allowPrivilegeEscalation = values.allowPrivilegeEscalation
+            }
+
+            if (typeof values.runAsNonRoot !== 'undefined') {
+              containerSecurityContext.runAsNonRoot = values.runAsNonRoot
+            }
+
+            if (typeof values.readOnlyRootFilesystem !== 'undefined') {
+              containerSecurityContext.readOnlyRootFilesystem = values.readOnlyRootFilesystem
+            }
+
+            if (typeof values.runAsUser !== 'undefined') {
+              containerSecurityContext.runAsUser = values.runAsUser
+            }
+
+            if (containerSecurityContext?.capabilities && values.addCapabilities && values.addCapabilities.length > 0) {
+              containerSecurityContext.capabilities.add =
+                typeof values.addCapabilities === 'string'
+                  ? values.addCapabilities
+                  : values.addCapabilities.map((listValue: { id: string; value: string }) => listValue.value)
+            }
+            if (
+              containerSecurityContext?.capabilities &&
+              values.dropCapabilities &&
+              values.dropCapabilities.length > 0
+            ) {
+              containerSecurityContext.capabilities.drop =
+                typeof values.dropCapabilities === 'string'
+                  ? values.dropCapabilities
+                  : values.dropCapabilities.map((listValue: { id: string; value: string }) => listValue.value)
+            }
+            if (containerSecurityContext.capabilities && isEmpty(containerSecurityContext.capabilities)) {
+              delete containerSecurityContext.capabilities
+            }
+            if (!isEmpty(containerSecurityContext)) {
+              additionalKubernetesFields.containerSecurityContext = containerSecurityContext
+            }
+          }
           set(
             draft,
             'stage.spec.infrastructure',
@@ -377,7 +480,10 @@ export default function BuildInfraSpecifications({ children }: React.PropsWithCh
                     runAsUser: values.runAsUser,
                     initTimeout: errors.initTimeout ? undefined : values.initTimeout,
                     annotations: getMapValues(values.annotations),
-                    labels: !isEmpty(filteredLabels) ? filteredLabels : undefined
+                    labels: !isEmpty(filteredLabels) ? filteredLabels : undefined,
+                    automountServiceAccountToken: values.automountServiceAccountToken,
+                    priorityClass: values.priorityClass,
+                    ...additionalKubernetesFields
                   }
                 }
               : buildInfraType === 'VM'
@@ -483,36 +589,39 @@ export default function BuildInfraSpecifications({ children }: React.PropsWithCh
     []
   )
 
-  const renderKubernetesBuildInfraAdvancedSection = React.useCallback((showCardView = false): React.ReactElement => {
-    return (
-      <Container padding={{ bottom: 'medium' }}>
-        <Accordion activeId={''}>
-          <Accordion.Panel
-            id="advanced"
-            addDomId={true}
-            summary={
-              <div
-                className={css.tabHeading}
-                id="advanced"
-                style={{ paddingLeft: 'var(--spacing-small)', marginBottom: 0 }}
-              >
-                {getString('advancedTitle')}
-              </div>
-            }
-            details={
-              showCardView ? (
-                <Card disabled={isReadonly} className={css.sectionCard}>
-                  {renderAccordianDetailSection()}
-                </Card>
-              ) : (
-                renderAccordianDetailSection()
-              )
-            }
-          />
-        </Accordion>
-      </Container>
-    )
-  }, [])
+  const renderKubernetesBuildInfraAdvancedSection = React.useCallback(
+    ({ showCardView = false, formik }: { formik: any; showCardView?: boolean }): React.ReactElement => {
+      return (
+        <Container padding={{ bottom: 'medium' }}>
+          <Accordion activeId={''}>
+            <Accordion.Panel
+              id="advanced"
+              addDomId={true}
+              summary={
+                <div
+                  className={css.tabHeading}
+                  id="advanced"
+                  style={{ paddingLeft: 'var(--spacing-small)', marginBottom: 0 }}
+                >
+                  {getString('advancedTitle')}
+                </div>
+              }
+              details={
+                showCardView ? (
+                  <Card disabled={isReadonly} className={css.sectionCard}>
+                    {renderAccordianDetailSection({ formik })}
+                  </Card>
+                ) : (
+                  renderAccordianDetailSection({ formik })
+                )
+              }
+            />
+          </Accordion>
+        </Container>
+      )
+    },
+    []
+  )
 
   const renderBuildInfraMainSection = React.useCallback((): React.ReactElement => {
     return buildInfraType === 'KubernetesDirect' ? (
@@ -590,7 +699,7 @@ export default function BuildInfraSpecifications({ children }: React.PropsWithCh
     )
   }, [])
 
-  const renderAccordianDetailSection = React.useCallback((): React.ReactElement => {
+  const renderAccordianDetailSection = React.useCallback(({ formik }: { formik: any }): React.ReactElement => {
     return (
       <>
         <Container className={css.bottomMargin7}>
@@ -617,7 +726,7 @@ export default function BuildInfraSpecifications({ children }: React.PropsWithCh
         <Container className={css.bottomMargin7}>{renderMultiTypeMap('labels', 'ci.labels')}</Container>
         <Container width={300}>
           <FormMultiTypeCheckboxField
-            name="autoMountServiceToken"
+            name="automountServiceAccountToken"
             label="Automount Service Account Token"
             // label={getString(labelKey).concat(` (${startCase(getString('common.optionalLabel'))})`)}
             multiTypeTextbox={{
@@ -625,7 +734,7 @@ export default function BuildInfraSpecifications({ children }: React.PropsWithCh
               allowableTypes,
               disabled: isReadonly
             }}
-            tooltipProps={{ dataTooltipId: 'autoMountServiceToken' }}
+            tooltipProps={{ dataTooltipId: 'automountServiceAccountToken' }}
             disabled={isReadonly}
           />
         </Container>
@@ -653,6 +762,34 @@ export default function BuildInfraSpecifications({ children }: React.PropsWithCh
           Container Security Context
           {/* {getString('pipelineSteps.build.stageSpecifications.sharedPaths')} */}
         </div>
+        <Container width={300}>
+          <FormMultiTypeCheckboxField
+            name="privileged"
+            label="Privileged"
+            // label={getString(labelKey).concat(` (${startCase(getString('common.optionalLabel'))})`)}
+            multiTypeTextbox={{
+              expressions,
+              allowableTypes,
+              disabled: isReadonly
+            }}
+            tooltipProps={{ dataTooltipId: 'privileged' }}
+            disabled={isReadonly}
+          />
+        </Container>
+        <Container width={300}>
+          <FormMultiTypeCheckboxField
+            name="allowPrivilegeEscalation"
+            label="Allow Privilege Escalation"
+            // label={getString(labelKey).concat(` (${startCase(getString('common.optionalLabel'))})`)}
+            multiTypeTextbox={{
+              expressions,
+              allowableTypes,
+              disabled: isReadonly
+            }}
+            tooltipProps={{ dataTooltipId: 'allowPrivilegeEscalation' }}
+            disabled={isReadonly}
+          />
+        </Container>
         <Container className={css.bottomMargin7}>
           <MultiTypeList
             name="addCapabilities"
@@ -660,6 +797,7 @@ export default function BuildInfraSpecifications({ children }: React.PropsWithCh
               expressions,
               allowableTypes: [MultiTypeInputType.FIXED, MultiTypeInputType.EXPRESSION]
             }}
+            formik={formik}
             multiTypeFieldSelectorProps={{
               label: (
                 <Text tooltipProps={{ dataTooltipId: 'addCapabilities' }}>
@@ -679,6 +817,7 @@ export default function BuildInfraSpecifications({ children }: React.PropsWithCh
               expressions,
               allowableTypes: [MultiTypeInputType.FIXED, MultiTypeInputType.EXPRESSION]
             }}
+            formik={formik}
             multiTypeFieldSelectorProps={{
               label: (
                 <Text tooltipProps={{ dataTooltipId: 'dropCapabilities' }}>
@@ -805,7 +944,29 @@ export default function BuildInfraSpecifications({ children }: React.PropsWithCh
             ),
             labels: yup.lazy(
               (value: FieldValueType) => getFieldSchema(value, k8sLabelRegex) as yup.Schema<FieldValueType>
-            )
+            ),
+            addCapabilities: yup.lazy(value => {
+              if (Array.isArray(value)) {
+                return yup.array().test('valuesShouldBeUnique', getString('validation.uniqueValues'), list => {
+                  if (!list) return true
+
+                  return uniqBy(list, 'value').length === list.length
+                })
+              } else {
+                return yup.string()
+              }
+            }),
+            dropCapabilities: yup.lazy(value => {
+              if (Array.isArray(value)) {
+                return yup.array().test('valuesShouldBeUnique', getString('validation.uniqueValues'), list => {
+                  if (!list) return true
+
+                  return uniqBy(list, 'value').length === list.length
+                })
+              } else {
+                return yup.string()
+              }
+            })
           })
         : buildInfraType === 'VM'
         ? yup.object().shape({
@@ -1180,7 +1341,7 @@ export default function BuildInfraSpecifications({ children }: React.PropsWithCh
                                   {CI_VM_INFRASTRUCTURE ? null : (
                                     <>
                                       {renderKubernetesBuildInfraForm()}
-                                      {renderKubernetesBuildInfraAdvancedSection()}
+                                      {renderKubernetesBuildInfraAdvancedSection({ formik })}
                                     </>
                                   )}
                                 </>
@@ -1196,7 +1357,7 @@ export default function BuildInfraSpecifications({ children }: React.PropsWithCh
                           {CI_VM_INFRASTRUCTURE &&
                           currentMode === Modes.NewConfiguration &&
                           buildInfraType === 'KubernetesDirect'
-                            ? renderKubernetesBuildInfraAdvancedSection(true)
+                            ? renderKubernetesBuildInfraAdvancedSection({ showCardView: true, formik })
                             : null}
                         </>
                       ) : (
@@ -1231,7 +1392,7 @@ export default function BuildInfraSpecifications({ children }: React.PropsWithCh
                             </Layout.Vertical>
                           </Card>
                           {buildInfraType === 'KubernetesDirect'
-                            ? renderKubernetesBuildInfraAdvancedSection(true)
+                            ? renderKubernetesBuildInfraAdvancedSection({ showCardView: true, formik })
                             : null}
                         </>
                       )}
