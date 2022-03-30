@@ -2352,6 +2352,7 @@ export interface StringsMap {
   'pipeline.artifactsSelection.artifactDetails': string
   'pipeline.artifactsSelection.artifactNamePlaceholder': string
   'pipeline.artifactsSelection.artifactTyperequired': string
+  'pipeline.artifactsSelection.errors.noRepositories': string
   'pipeline.artifactsSelection.existingDocker.enterTagRegex': string
   'pipeline.artifactsSelection.existingDocker.imageNamePlaceholder': string
   'pipeline.artifactsSelection.existingDocker.sidecarId': string
@@ -2360,7 +2361,9 @@ export interface StringsMap {
   'pipeline.artifactsSelection.repositoryPlaceholder': string
   'pipeline.artifactsSelection.repositoryPort': string
   'pipeline.artifactsSelection.repositoryPortPlaceholder': string
+  'pipeline.artifactsSelection.validation.artifactDirectory': string
   'pipeline.artifactsSelection.validation.artifactPath': string
+  'pipeline.artifactsSelection.validation.artifactPathFilter': string
   'pipeline.artifactsSelection.validation.imagePath': string
   'pipeline.artifactsSelection.validation.region': string
   'pipeline.artifactsSelection.validation.registry': string
