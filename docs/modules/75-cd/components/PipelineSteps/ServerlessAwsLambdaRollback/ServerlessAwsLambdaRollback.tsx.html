@@ -353,11 +353,7 @@
 <a name='L294'></a><a href='#L294'>294</a>
 <a name='L295'></a><a href='#L295'>295</a>
 <a name='L296'></a><a href='#L296'>296</a>
-<a name='L297'></a><a href='#L297'>297</a>
-<a name='L298'></a><a href='#L298'>298</a>
-<a name='L299'></a><a href='#L299'>299</a>
-<a name='L300'></a><a href='#L300'>300</a>
-<a name='L301'></a><a href='#L301'>301</a></td><td class="line-coverage quiet"><span class="cline-any cline-neutral">&nbsp;</span>
+<a name='L297'></a><a href='#L297'>297</a></td><td class="line-coverage quiet"><span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
@@ -397,10 +393,6 @@
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-yes">83x</span>
 <span class="cline-any cline-yes">83x</span>
-<span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
@@ -678,7 +670,7 @@ import {
   setFormikRef,
   StepFormikFowardRef
 } from '@pipeline/components/AbstractSteps/Step'
-import type { StepElementConfig, ServerlessAwsLambdaRollbackStepInfo } from 'services/cd-ng'
+import type { StepElementConfig } from 'services/cd-ng'
 import type { VariableMergeServiceResponse } from 'services/pipeline-ng'
 import { VariablesListTable } from '@pipeline/components/VariablesListTable/VariablesListTable'
 import { ConfigureOptions } from '@common/components/ConfigureOptions/ConfigureOptions'
@@ -698,28 +690,24 @@ import type { StringsMap } from 'stringTypes'
 import { getNameAndIdentifierSchema } from '@pipeline/components/PipelineSteps/Steps/StepsValidateUtils'
 import stepCss from '@pipeline/components/PipelineSteps/Steps/Steps.module.scss'
 &nbsp;
-interface ServerlessAwsLambdaRollbackData extends StepElementConfig {
-  spec: Omit&lt;ServerlessAwsLambdaRollbackStepInfo, 'skipDryRun'&gt; &amp; { skipDryRun: boolean }
-}
-&nbsp;
 export interface ServerlessAwsLambdaRollbackVariableStepProps {
-  initialValues: ServerlessAwsLambdaRollbackData
+  initialValues: StepElementConfig
   stageIdentifier: string
-  onUpdate?(data: ServerlessAwsLambdaRollbackData): void
+  onUpdate?(data: StepElementConfig): void
   metadataMap: Required&lt;VariableMergeServiceResponse&gt;['metadataMap']
-  variablesData: ServerlessAwsLambdaRollbackData
+  variablesData: StepElementConfig
 }
 &nbsp;
 interface ServerlessAwsLambdaRollbackProps {
-  initialValues: ServerlessAwsLambdaRollbackData
-  onUpdate?: (data: ServerlessAwsLambdaRollbackData) =&gt; void
-  onChange?: (data: ServerlessAwsLambdaRollbackData) =&gt; void
+  initialValues: StepElementConfig
+  onUpdate?: (data: StepElementConfig) =&gt; void
+  onChange?: (data: StepElementConfig) =&gt; void
   allowableTypes: MultiTypeInputType[]
   readonly?: boolean
   stepViewType?: StepViewType
   isNewStep?: boolean
   inputSetData?: {
-    template?: ServerlessAwsLambdaRollbackData
+    template?: StepElementConfig
     path?: string
     readonly?: boolean
   }
@@ -727,15 +715,15 @@ interface ServerlessAwsLambdaRollbackProps {
 &nbsp;
 function <span class="fstat-no" title="function not covered" >ServerlessAwsLambdaRollbackWidget(</span>
   props: ServerlessAwsLambdaRollbackProps,
-  formikRef: StepFormikFowardRef&lt;ServerlessAwsLambdaRollbackData&gt;
+  formikRef: StepFormikFowardRef&lt;StepElementConfig&gt;
 ): React.ReactElement {
   const { initialValues, onUpdate, isNewStep = <span class="branch-0 cbranch-no" title="branch not covered" >true,</span> readonly, allowableTypes, onChange, stepViewType } = <span class="cstat-no" title="statement not covered" >props</span>
   const { getString } = <span class="cstat-no" title="statement not covered" >useStrings()</span>
   const { expressions } = <span class="cstat-no" title="statement not covered" >useVariablesExpression()</span>
 <span class="cstat-no" title="statement not covered" >  return (</span>
     &lt;&gt;
-      &lt;Formik&lt;ServerlessAwsLambdaRollbackData&gt;
-        onSubmit={<span class="fstat-no" title="function not covered" >(v</span>alues: ServerlessAwsLambdaRollbackData) =&gt; {
+      &lt;Formik&lt;StepElementConfig&gt;
+        onSubmit={<span class="fstat-no" title="function not covered" >(v</span>alues: StepElementConfig) =&gt; {
 <span class="cstat-no" title="statement not covered" >          onUpdate?.({ ...values, spec: { skipDryRun: false } })</span>
         }}
         formName="ServerlessAwsLambdaRB"
@@ -748,7 +736,7 @@ function <span class="fstat-no" title="function not covered" >ServerlessAwsLambd
           timeout: getDurationValidationSchema({ minimum: '10s' }).required(getString('validation.timeout10SecMinimum'))
         })}
       &gt;
-        {<span class="fstat-no" title="function not covered" >(f</span>ormik: FormikProps&lt;ServerlessAwsLambdaRollbackData&gt;) =&gt; {
+        {<span class="fstat-no" title="function not covered" >(f</span>ormik: FormikProps&lt;StepElementConfig&gt;) =&gt; {
           const { values, setFieldValue } = <span class="cstat-no" title="statement not covered" >formik</span>
 <span class="cstat-no" title="statement not covered" >          setFormikRef(formikRef, formik)</span>
 &nbsp;
@@ -854,14 +842,14 @@ const ServerlessAwsLambdaRollbackVariableStep: React.FC&lt;ServerlessAwsLambdaRo
 &nbsp;
 const ServerlessAwsLambdaRollbackWidgetWithRef = React.forwardRef(ServerlessAwsLambdaRollbackWidget)
 &nbsp;
-export class ServerlessAwsLambdaRollbackStep extends PipelineStep&lt;ServerlessAwsLambdaRollbackData&gt; {
+export class ServerlessAwsLambdaRollbackStep extends PipelineStep&lt;StepElementConfig&gt; {
   constructor() {
     super()
     this._hasStepVariables = true
     this._hasDelegateSelectionVisible = true
   }
 &nbsp;
-<span class="fstat-no" title="function not covered" >  renderStep(</span>props: StepProps&lt;ServerlessAwsLambdaRollbackData&gt;): JSX.Element {
+<span class="fstat-no" title="function not covered" >  renderStep(</span>props: StepProps&lt;StepElementConfig&gt;): JSX.Element {
     const {
       initialValues,
       onUpdate,
@@ -911,7 +899,7 @@ export class ServerlessAwsLambdaRollbackStep extends PipelineStep&lt;ServerlessA
     template,
     getString,
     viewType
-  }: ValidateInputSetProps&lt;ServerlessAwsLambdaRollbackData&gt;): FormikErrors&lt;ServerlessAwsLambdaRollbackData&gt; {
+  }: ValidateInputSetProps&lt;StepElementConfig&gt;): FormikErrors&lt;StepElementConfig&gt; {
     const isRequired = <span class="cstat-no" title="statement not covered" >viewType === StepViewType.DeploymentForm || viewType === StepViewType.TriggerForm</span>
     // eslint-disable-next-line @typescript-eslint/no-explicit-any
     const errors = <span class="cstat-no" title="statement not covered" >{ spec: {} } as any</span>
@@ -947,7 +935,7 @@ export class ServerlessAwsLambdaRollbackStep extends PipelineStep&lt;ServerlessA
   protected stepIcon: IconName = 'main-rollback'
   protected stepDescription: keyof StringsMap = 'pipeline.stepDescription.ServerlessAwsLambdaRollback'
 &nbsp;
-  protected defaultValues: ServerlessAwsLambdaRollbackData = {
+  protected defaultValues: StepElementConfig = {
     identifier: '',
     name: '',
     type: StepType.ServerlessAwsLambdaRollback,
@@ -964,7 +952,7 @@ export class ServerlessAwsLambdaRollbackStep extends PipelineStep&lt;ServerlessA
             <div class='footer quiet pad2 space-top1 center small'>
                 Code coverage generated by
                 <a href="https://istanbul.js.org/" target="_blank">istanbul</a>
-                at Wed Mar 30 2022 08:32:35 GMT+0000 (Greenwich Mean Time)
+                at Wed Mar 30 2022 11:10:16 GMT+0000 (Greenwich Mean Time)
             </div>
         </div>
         <script src="../../../../../prettify.js"></script>

@@ -23,30 +23,30 @@
         <div class='clearfix'>
             
             <div class='fl pad1y space-right2'>
-                <span class="strong">72.83% </span>
+                <span class="strong">72.78% </span>
                 <span class="quiet">Statements</span>
-                <span class='fraction'>134/184</span>
+                <span class='fraction'>131/180</span>
             </div>
         
             
             <div class='fl pad1y space-right2'>
-                <span class="strong">68.27% </span>
+                <span class="strong">68.3% </span>
                 <span class="quiet">Branches</span>
-                <span class='fraction'>241/353</span>
+                <span class='fraction'>237/347</span>
             </div>
         
             
             <div class='fl pad1y space-right2'>
-                <span class="strong">61.76% </span>
+                <span class="strong">60.61% </span>
                 <span class="quiet">Functions</span>
-                <span class='fraction'>21/34</span>
+                <span class='fraction'>20/33</span>
             </div>
         
             
             <div class='fl pad1y space-right2'>
-                <span class="strong">73.22% </span>
+                <span class="strong">73.18% </span>
                 <span class="quiet">Lines</span>
-                <span class='fraction'>134/183</span>
+                <span class='fraction'>131/179</span>
             </div>
         
             
@@ -822,20 +822,7 @@
 <a name='L763'></a><a href='#L763'>763</a>
 <a name='L764'></a><a href='#L764'>764</a>
 <a name='L765'></a><a href='#L765'>765</a>
-<a name='L766'></a><a href='#L766'>766</a>
-<a name='L767'></a><a href='#L767'>767</a>
-<a name='L768'></a><a href='#L768'>768</a>
-<a name='L769'></a><a href='#L769'>769</a>
-<a name='L770'></a><a href='#L770'>770</a>
-<a name='L771'></a><a href='#L771'>771</a>
-<a name='L772'></a><a href='#L772'>772</a>
-<a name='L773'></a><a href='#L773'>773</a>
-<a name='L774'></a><a href='#L774'>774</a>
-<a name='L775'></a><a href='#L775'>775</a>
-<a name='L776'></a><a href='#L776'>776</a>
-<a name='L777'></a><a href='#L777'>777</a>
-<a name='L778'></a><a href='#L778'>778</a>
-<a name='L779'></a><a href='#L779'>779</a></td><td class="line-coverage quiet"><span class="cline-any cline-neutral">&nbsp;</span>
+<a name='L766'></a><a href='#L766'>766</a></td><td class="line-coverage quiet"><span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
@@ -932,19 +919,6 @@
 <span class="cline-any cline-yes">87x</span>
 <span class="cline-any cline-yes">87x</span>
 <span class="cline-any cline-yes">87x</span>
-<span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-yes">87x</span>
-<span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-yes">29x</span>
-<span class="cline-any cline-no">&nbsp;</span>
-<span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-yes">29x</span>
-<span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
@@ -1711,18 +1685,6 @@ import OpenShiftParamWithGit from './ManifestWizardSteps/OpenShiftParam/OSWithGi
 import KustomizePatchDetails from './ManifestWizardSteps/KustomizePatchesDetails/KustomizePatchesDetails'
 import css from './ManifestSelection.module.scss'
 &nbsp;
-const showAddManifestBtn = (
-  isReadonly: boolean,
-  allowOnlyOne: boolean,
-  listOfManifests: Array&lt;any&gt;,
-  overrideSetIdentifier?: string
-): boolean =&gt; {
-  <span class="missing-if-branch" title="if path not taken" >I</span>if (allowOnlyOne &amp;&amp; <span class="branch-1 cbranch-no" title="branch not covered" >listOfManifests.length === 1)</span> {
-<span class="cstat-no" title="statement not covered" >    return false</span>
-  }
-  return !overrideSetIdentifier?.length &amp;&amp; !isReadonly
-}
-&nbsp;
 function ManifestListView({
   updateStage,
   identifierName,
@@ -1735,8 +1697,7 @@ function ManifestListView({
   listOfManifests,
   deploymentType,
   isReadonly,
-  allowableTypes,
-  allowOnlyOne = false
+  allowableTypes
 }: ManifestListViewProps): JSX.Element {
   const [selectedManifest, setSelectedManifest] = useState&lt;ManifestTypes | null&gt;(null)
   const [connectorView, setConnectorView] = useState(false)
@@ -2374,7 +2335,7 @@ function ManifestListView({
         &lt;/Layout.Vertical&gt;
       &lt;/Layout.Vertical&gt;
       &lt;Layout.Vertical spacing={'medium'} flex={{ alignItems: 'flex-start' }}&gt;
-        {showAddManifestBtn(isReadonly, allowOnlyOne, listOfManifests, overrideSetIdentifier) &amp;&amp; (
+        {!overrideSetIdentifier?.length &amp;&amp; !isReadonly &amp;&amp; (
           &lt;Button
             className={css.addManifest}
             id="add-manifest"
@@ -2398,7 +2359,7 @@ export default ManifestListView
             <div class='footer quiet pad2 space-top1 center small'>
                 Code coverage generated by
                 <a href="https://istanbul.js.org/" target="_blank">istanbul</a>
-                at Wed Mar 30 2022 08:32:35 GMT+0000 (Greenwich Mean Time)
+                at Wed Mar 30 2022 11:10:16 GMT+0000 (Greenwich Mean Time)
             </div>
         </div>
         <script src="../../../../prettify.js"></script>

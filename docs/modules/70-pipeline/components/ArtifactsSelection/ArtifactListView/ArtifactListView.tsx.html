@@ -23,30 +23,30 @@
         <div class='clearfix'>
             
             <div class='fl pad1y space-right2'>
-                <span class="strong">87.5% </span>
+                <span class="strong">86.36% </span>
                 <span class="quiet">Statements</span>
-                <span class='fraction'>21/24</span>
+                <span class='fraction'>19/22</span>
             </div>
         
             
             <div class='fl pad1y space-right2'>
-                <span class="strong">81.98% </span>
+                <span class="strong">81.33% </span>
                 <span class="quiet">Branches</span>
-                <span class='fraction'>141/172</span>
+                <span class='fraction'>135/166</span>
             </div>
         
             
             <div class='fl pad1y space-right2'>
-                <span class="strong">62.5% </span>
+                <span class="strong">57.14% </span>
                 <span class="quiet">Functions</span>
-                <span class='fraction'>5/8</span>
+                <span class='fraction'>4/7</span>
             </div>
         
             
             <div class='fl pad1y space-right2'>
-                <span class="strong">87.5% </span>
+                <span class="strong">86.36% </span>
                 <span class="quiet">Lines</span>
-                <span class='fraction'>21/24</span>
+                <span class='fraction'>19/22</span>
             </div>
         
             
@@ -289,10 +289,7 @@
 <a name='L230'></a><a href='#L230'>230</a>
 <a name='L231'></a><a href='#L231'>231</a>
 <a name='L232'></a><a href='#L232'>232</a>
-<a name='L233'></a><a href='#L233'>233</a>
-<a name='L234'></a><a href='#L234'>234</a>
-<a name='L235'></a><a href='#L235'>235</a>
-<a name='L236'></a><a href='#L236'>236</a></td><td class="line-coverage quiet"><span class="cline-any cline-neutral">&nbsp;</span>
+<a name='L233'></a><a href='#L233'>233</a></td><td class="line-coverage quiet"><span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
@@ -319,11 +316,6 @@
 <span class="cline-any cline-yes">87x</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-yes">87x</span>
-<span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-yes">87x</span>
-<span class="cline-any cline-yes">17x</span>
-<span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
@@ -346,6 +338,8 @@
 <span class="cline-any cline-yes">20x</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-yes">20x</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
@@ -550,14 +544,10 @@ import cx from 'classnames'
 import { Color, FontVariation } from '@harness/design-system'
 import { useStrings } from 'framework/strings'
 import { getConnectorNameFromValue, getStatus } from '@pipeline/components/PipelineStudio/StageBuilder/StageBuilderUtil'
-import type { PrimaryArtifact, SidecarArtifactWrapper } from 'services/cd-ng'
+import type { SidecarArtifactWrapper } from 'services/cd-ng'
 import { ArtifactIconByType, ModalViewFor } from '../ArtifactHelper'
 import type { ArtifactListViewProps, ArtifactType } from '../ArtifactInterface'
 import css from '../ArtifactsSelection.module.scss'
-&nbsp;
-const getPrimaryArtifactLocation = (primaryArtifact: PrimaryArtifact): string =&gt; {
-  return primaryArtifact.spec.imagePath ?? primaryArtifact.spec.artifactPath ?? primaryArtifact.spec.artifactPathFilter
-}
 &nbsp;
 function ArtifactListView({
   accountId,
@@ -569,8 +559,7 @@ function ArtifactListView({
   overrideSetIdentifier,
   removePrimary,
   removeSidecar,
-  addNewArtifact,
-  allowSidecar = true
+  addNewArtifact
 }: ArtifactListViewProps): React.ReactElement {
   const { getString } = useStrings()
   const { color: primaryConnectorColor } = getStatus(
@@ -630,7 +619,9 @@ function ArtifactListView({
                 &lt;/div&gt;
                 &lt;div&gt;
                   &lt;Text width={340} lineClamp={1} style={{ color: Color.GREY_500 }}&gt;
-                    &lt;span className={css.noWrap}&gt;{getPrimaryArtifactLocation(primaryArtifact)}&lt;/span&gt;
+                    &lt;span className={css.noWrap}&gt;
+                      {primaryArtifact.spec.imagePath ?? primaryArtifact.spec.artifactPath}
+                    &lt;/span&gt;
                   &lt;/Text&gt;
                 &lt;/div&gt;
                 {overrideSetIdentifier?.length === 0 &amp;&amp; !isReadonly &amp;&amp; (
@@ -746,7 +737,7 @@ function ArtifactListView({
             text={getString('pipelineSteps.serviceTab.artifactList.addPrimary')}
           /&gt;
         )}
-        {!overrideSetIdentifier?.length &amp;&amp; !isReadonly &amp;&amp; allowSidecar &amp;&amp; (
+        {!overrideSetIdentifier?.length &amp;&amp; !isReadonly &amp;&amp; (
           &lt;Button
             className={css.addArtifact}
             id="add-artifact"
@@ -769,7 +760,7 @@ export default ArtifactListView
             <div class='footer quiet pad2 space-top1 center small'>
                 Code coverage generated by
                 <a href="https://istanbul.js.org/" target="_blank">istanbul</a>
-                at Wed Mar 30 2022 08:32:35 GMT+0000 (Greenwich Mean Time)
+                at Wed Mar 30 2022 11:10:16 GMT+0000 (Greenwich Mean Time)
             </div>
         </div>
         <script src="../../../../../prettify.js"></script>
