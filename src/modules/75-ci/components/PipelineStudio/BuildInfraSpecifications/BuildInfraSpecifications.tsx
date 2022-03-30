@@ -19,7 +19,8 @@ import {
   ThumbnailSelect,
   IconName,
   Container,
-  Icon
+  Icon,
+  MultiTypeInputType
 } from '@wings-software/uicore'
 import { isEmpty, isUndefined, set, uniqBy } from 'lodash-es'
 import { useParams } from 'react-router-dom'
@@ -44,7 +45,7 @@ import {
   getFlattenedStages
 } from '@pipeline/components/PipelineStudio/StageBuilder/StageBuilderUtil'
 import { MultiTypeTextField } from '@common/components/MultiTypeText/MultiTypeText'
-import { Separator } from '@common/components'
+import { FormMultiTypeCheckboxField, Separator } from '@common/components'
 import type { MultiTypeMapType, MultiTypeMapUIType, MapType } from '@pipeline/components/PipelineSteps/Steps/StepsTypes'
 import { useGitScope } from '@pipeline/utils/CIUtils'
 import { FormMultiTypeConnectorField } from '@connectors/components/ConnectorReferenceField/FormMultiTypeConnectorField'
@@ -55,6 +56,7 @@ import { k8sLabelRegex, k8sAnnotationRegex } from '@common/utils/StringUtils'
 import ErrorsStripBinded from '@pipeline/components/ErrorsStrip/ErrorsStripBinded'
 import { BuildTabs } from '../CIPipelineStagesUtils'
 import css from './BuildInfraSpecifications.module.scss'
+import { MultiTypeList } from '@common/components/MultiTypeList/MultiTypeList'
 
 const logger = loggerFor(ModuleName.CD)
 const k8sClusterKeyRef = 'connectors.title.k8sCluster'
@@ -417,7 +419,7 @@ export default function BuildInfraSpecifications({ children }: React.PropsWithCh
   const renderUserAndTimeOutFields = React.useCallback((): React.ReactElement => {
     return (
       <>
-        <Container className={css.bottomMargin7}>
+        {/* <Container className={css.bottomMargin7}>
           <MultiTypeTextField
             label={
               <Text
@@ -436,7 +438,7 @@ export default function BuildInfraSpecifications({ children }: React.PropsWithCh
               placeholder: '1000'
             }}
           />
-        </Container>
+        </Container> */}
         <Container className={css.bottomMargin7}>
           <FormMultiTypeDurationField
             name="initTimeout"
@@ -613,6 +615,130 @@ export default function BuildInfraSpecifications({ children }: React.PropsWithCh
         {renderUserAndTimeOutFields()}
         <Container className={css.bottomMargin7}>{renderMultiTypeMap('annotations', 'ci.annotations')}</Container>
         <Container className={css.bottomMargin7}>{renderMultiTypeMap('labels', 'ci.labels')}</Container>
+        <Container width={300}>
+          <FormMultiTypeCheckboxField
+            name="autoMountServiceToken"
+            label="Automount Service Account Token"
+            // label={getString(labelKey).concat(` (${startCase(getString('common.optionalLabel'))})`)}
+            multiTypeTextbox={{
+              expressions,
+              allowableTypes,
+              disabled: isReadonly
+            }}
+            tooltipProps={{ dataTooltipId: 'autoMountServiceToken' }}
+            disabled={isReadonly}
+          />
+        </Container>
+        <Container className={css.bottomMargin7}>
+          <MultiTypeTextField
+            label={
+              <Text
+                font={{ variation: FontVariation.FORM_LABEL }}
+                margin={{ bottom: 'xsmall' }}
+                tooltipProps={{ dataTooltipId: 'priorityClass' }}
+              >
+                Priority Class
+                {/* {getString('pipeline.stepCommonFields.runAsUser')} */}
+              </Text>
+            }
+            name="priorityClass"
+            style={{ width: 300, marginBottom: 'var(--spacing-xsmall)' }}
+            multiTextInputProps={{
+              multiTextInputProps: { expressions, allowableTypes },
+              disabled: isReadonly
+            }}
+          />
+        </Container>
+        <div className={css.tabSubHeading} id="containerSecurityContext">
+          Container Security Context
+          {/* {getString('pipelineSteps.build.stageSpecifications.sharedPaths')} */}
+        </div>
+        <Container className={css.bottomMargin7}>
+          <MultiTypeList
+            name="addCapabilities"
+            multiTextInputProps={{
+              expressions,
+              allowableTypes: [MultiTypeInputType.FIXED, MultiTypeInputType.EXPRESSION]
+            }}
+            multiTypeFieldSelectorProps={{
+              label: (
+                <Text tooltipProps={{ dataTooltipId: 'addCapabilities' }}>
+                  ADD Capabilities
+                  {/* {getString('pipelineSteps.build.stageSpecifications.sharedPaths')} */}
+                </Text>
+              ),
+              allowedTypes: [MultiTypeInputType.FIXED, MultiTypeInputType.EXPRESSION, MultiTypeInputType.RUNTIME]
+            }}
+            disabled={isReadonly}
+          />
+        </Container>
+        <Container className={css.bottomMargin7}>
+          <MultiTypeList
+            name="dropCapabilities"
+            multiTextInputProps={{
+              expressions,
+              allowableTypes: [MultiTypeInputType.FIXED, MultiTypeInputType.EXPRESSION]
+            }}
+            multiTypeFieldSelectorProps={{
+              label: (
+                <Text tooltipProps={{ dataTooltipId: 'dropCapabilities' }}>
+                  DROP Capbilities
+                  {/* {getString('pipelineSteps.build.stageSpecifications.sharedPaths')} */}
+                </Text>
+              ),
+              allowedTypes: [MultiTypeInputType.FIXED, MultiTypeInputType.EXPRESSION, MultiTypeInputType.RUNTIME]
+            }}
+            disabled={isReadonly}
+          />
+        </Container>
+        <Container width={300}>
+          <FormMultiTypeCheckboxField
+            name="runAsNonRoot"
+            label="Run as Non Root"
+            // label={getString(labelKey).concat(` (${startCase(getString('common.optionalLabel'))})`)}
+            multiTypeTextbox={{
+              expressions,
+              allowableTypes,
+              disabled: isReadonly
+            }}
+            tooltipProps={{ dataTooltipId: 'autoMountServiceToken' }}
+            disabled={isReadonly}
+          />
+        </Container>
+        <Container width={300}>
+          <FormMultiTypeCheckboxField
+            name="readOnlyRootFilesystem"
+            label="Read-only Root Filesystem"
+            // label={getString(labelKey).concat(` (${startCase(getString('common.optionalLabel'))})`)}
+            multiTypeTextbox={{
+              expressions,
+              allowableTypes,
+              disabled: isReadonly
+            }}
+            tooltipProps={{ dataTooltipId: 'autoMountServiceToken' }}
+            disabled={isReadonly}
+          />
+        </Container>
+        <Container className={css.bottomMargin7}>
+          <MultiTypeTextField
+            label={
+              <Text
+                font={{ variation: FontVariation.FORM_LABEL }}
+                margin={{ bottom: 'xsmall' }}
+                tooltipProps={{ dataTooltipId: 'runAsUser' }}
+              >
+                {getString('pipeline.stepCommonFields.runAsUser')}
+              </Text>
+            }
+            name="runAsUser"
+            style={{ width: 300, marginBottom: 'var(--spacing-xsmall)' }}
+            multiTextInputProps={{
+              multiTextInputProps: { expressions, allowableTypes },
+              disabled: isReadonly,
+              placeholder: '1000'
+            }}
+          />
+        </Container>
       </>
     )
   }, [])
