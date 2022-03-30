@@ -56,7 +56,5 @@ export enum StepType {
   FlagConfiguration = 'FlagConfiguration',
   Template = 'Template',
   Policy = 'Policy',
-  ZeroNorth = 'Security',
-  ServerlessAwsLambdaDeploy = 'ServerlessAwsLambdaDeploy',
-  ServerlessAwsLambdaRollback = 'ServerlessAwsLambdaRollback'
+  ZeroNorth = 'Security'
 }

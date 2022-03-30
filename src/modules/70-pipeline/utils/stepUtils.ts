@@ -71,9 +71,6 @@ export function getStepPaletteModuleInfosFromStage(
     case 'NativeHelm':
       category = 'Helm'
       break
-    case 'ServerlessAwsLambda':
-      category = 'ServerlessAwsLambda'
-      break
   }
   switch (stageType) {
     case StageType.BUILD:

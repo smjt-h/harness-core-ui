@@ -714,7 +714,10 @@ function RunPipelineFormBasic({
   }
 
   const formRefDom = React.useRef<HTMLElement | undefined>()
-  const handleValidation = async (values: Values): Promise<void> => {
+  const handleValidation = async (values: any): Promise<void> => {
+    if (values.pipeline) {
+      values = values.pipeline
+    }
     const latestPipeline = { ...currentPipeline, pipeline: values as PipelineInfoConfig }
     setCurrentPipeline(latestPipeline)
     const runPipelineFormErrors = await getFormErrors(latestPipeline, yamlTemplate, pipeline)

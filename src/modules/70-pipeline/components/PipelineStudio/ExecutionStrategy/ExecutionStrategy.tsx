@@ -22,8 +22,7 @@ import {
   useGetExecutionStrategyYaml
 } from 'services/cd-ng'
 import { useStrings } from 'framework/strings'
-import type { DeploymentStageElementConfig, StageElementWrapper } from '@pipeline/utils/pipelineTypes'
-import { getSelectedDeploymentType } from '@pipeline/utils/stageHelpers'
+import type { DeploymentStageElementConfig } from '@pipeline/utils/pipelineTypes'
 import { usePipelineContext } from '../PipelineContext/PipelineContext'
 import { DrawerTypes } from '../PipelineContext/PipelineActions'
 import Default from './resources/BlankCanvas.png'
@@ -95,11 +94,12 @@ function ExecutionStrategyRef(
 
   const serviceDefinitionType = useCallback((): GetExecutionStrategyYamlQueryParams['serviceDefinitionType'] => {
     const isPropagating = get(selectedStage, 'stage.spec.serviceConfig.useFromStage', null)
-    return getSelectedDeploymentType(
-      selectedStage as StageElementWrapper<DeploymentStageElementConfig>,
-      getStageFromPipeline,
-      isPropagating
-    )
+    if (isPropagating) {
+      const parentStageId = isPropagating.stage
+      const parentStage = getStageFromPipeline<DeploymentStageElementConfig>(parentStageId || '')
+      return get(parentStage, 'stage.stage.spec.serviceConfig.serviceDefinition.type', null)
+    }
+    return get(selectedStage, 'stage.spec.serviceConfig.serviceDefinition.type', null)
   }, [getStageFromPipeline, selectedStage])
 
   const [selectedStrategy, setSelectedStrategy] = useState<StrategyType>('Rolling')
@@ -325,7 +325,7 @@ function ExecutionStrategyRef(
             text={getString('pipeline.executionStrategy.useStrategy')}
             onClick={() => {
               const newStage = produce(selectedStage, draft => {
-                const jsonFromYaml = YAML.parse(defaultTo(yamlSnippet?.data, '')) as StageElementConfig
+                const jsonFromYaml = YAML.parse(yamlSnippet?.data || '') as StageElementConfig
                 if (draft.stage && draft.stage.spec) {
                   draft.stage.failureStrategies = jsonFromYaml?.failureStrategies
                   ;(draft.stage.spec as DeploymentStageConfig).execution = (jsonFromYaml?.spec as DeploymentStageConfig)
