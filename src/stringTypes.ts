@@ -4314,6 +4314,7 @@ export interface StringsMap {
   'cf.featureFlags.prerequisitesDesc': string
   'cf.featureFlags.results': string
   'cf.featureFlags.rules.add': string
+  'cf.featureFlags.rules.addTargeting': string
   'cf.featureFlags.rules.customRules': string
   'cf.featureFlags.rules.defaultRule': string
   'cf.featureFlags.rules.defaultRules': string

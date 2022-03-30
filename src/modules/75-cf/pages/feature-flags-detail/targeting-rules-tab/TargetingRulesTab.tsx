@@ -105,8 +105,7 @@ const TargetingRulesTab = ({
           variations: percentageRollout.serve.distribution?.variations || [],
           bucketBy: percentageRollout.serve.distribution?.bucketBy || 'identifier',
           clauses: percentageRollout.clauses,
-          ruleId: percentageRollout.ruleId as string,
-          isVisible: !!variationPercentageRollouts
+          ruleId: percentageRollout.ruleId as string
         }))
       : []
   }
@@ -253,8 +252,7 @@ const TargetingRulesTab = ({
                         variation: variation.identifier,
                         weight: 0
                       })),
-                      ruleId: uuid(),
-                      isVisible: true
+                      ruleId: uuid()
                     }
                     const percentageRollouts = [...formikProps.values.variationPercentageRollouts, newPercentageRollout]
                     formikProps.setFieldValue(`variationPercentageRollouts`, percentageRollouts)

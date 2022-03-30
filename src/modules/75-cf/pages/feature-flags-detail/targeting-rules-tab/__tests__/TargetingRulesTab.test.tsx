@@ -279,12 +279,12 @@ describe('TargetingRulesTab', () => {
 
     test('it should show "Add Targeting" button when more targets available', async () => {
       renderComponent()
-      expect(screen.getByText('Add Targeting')).toBeInTheDocument()
+      expect(screen.getByText('cf.featureFlags.rules.addTargeting')).toBeInTheDocument()
     })
 
     test('it should add variation when "Add Targeting" option selected', async () => {
       renderComponent()
-      const addTargetingButton = screen.getByText('Add Targeting')
+      const addTargetingButton = screen.getByText('cf.featureFlags.rules.addTargeting')
       expect(addTargetingButton).toBeInTheDocument()
       userEvent.click(addTargetingButton)
 
@@ -298,7 +298,7 @@ describe('TargetingRulesTab', () => {
 
     test('it should remove variation when "trash" icon/button clicked', async () => {
       renderComponent()
-      userEvent.click(screen.getByText('Add Targeting'))
+      userEvent.click(screen.getByText('cf.featureFlags.rules.addTargeting'))
 
       expect(screen.getByTestId('remove_variation_false')).toBeInTheDocument()
       userEvent.click(screen.getByTestId('remove_variation_false'))
@@ -354,7 +354,7 @@ describe('TargetingRulesTab', () => {
       })
       expect(screen.queryByText('cf.featureFlags.percentageRollout')).not.toBeInTheDocument()
 
-      userEvent.click(screen.getByText('Add Targeting'))
+      userEvent.click(screen.getByText('cf.featureFlags.rules.addTargeting'))
       const percentageRolloutOption = screen.getByTestId('variation_option_percentage_rollout')
       await waitFor(() => expect(percentageRolloutOption).toBeInTheDocument())
       userEvent.click(percentageRolloutOption)
@@ -400,7 +400,7 @@ describe('TargetingRulesTab', () => {
     test('it should remove percentage rollout correctly', () => {
       renderComponent()
 
-      userEvent.click(screen.getByTestId('remove_percentage_rollout'))
+      userEvent.click(screen.getByTestId('remove_percentage_rollout_0'))
 
       expect(screen.queryByText('cf.featureFlags.percentageRollout')).not.toBeInTheDocument()
     })
@@ -440,7 +440,7 @@ describe('TargetingRulesTab', () => {
         }
       })
 
-      userEvent.click(screen.getByText('Add Targeting'))
+      userEvent.click(screen.getByText('cf.featureFlags.rules.addTargeting'))
       const percentageRolloutOption = screen.getByTestId('variation_option_percentage_rollout')
       await waitFor(() => expect(percentageRolloutOption).toBeInTheDocument())
       userEvent.click(percentageRolloutOption)
@@ -479,7 +479,7 @@ describe('TargetingRulesTab', () => {
       expect(onVariationDropdown).toHaveValue('True')
 
       // add true variation with targets/target groups
-      userEvent.click(screen.getByText('Add Targeting'))
+      userEvent.click(screen.getByText('cf.featureFlags.rules.addTargeting'))
       userEvent.click(screen.getByTestId('variation_option_true'))
 
       await waitFor(() => expect(screen.getByTestId('true-target-groups-input')).toBeInTheDocument())

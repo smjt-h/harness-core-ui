@@ -24,7 +24,6 @@ export interface VariationPercentageRollout {
   bucketBy: string
   clauses: Clause[]
   ruleId: string
-  isVisible: boolean
 }
 export interface FormVariationMap {
   variationIdentifier: string

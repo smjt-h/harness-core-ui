@@ -65,7 +65,6 @@ const expectedFormValues: TargetingRulesFormValues = {
           values: ['targetGroup6']
         }
       ],
-      isVisible: true,
       ruleId: '455c109e-c995-4a4c-adb0-086ddd22ca39',
       variations: [
         {

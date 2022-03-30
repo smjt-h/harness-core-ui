@@ -5,16 +5,16 @@
  * https://polyformproject.org/wp-content/uploads/2020/06/PolyForm-Shield-1.0.0.txt.
  */
 
-import { Button, ButtonVariation, Card, Container, FontVariation, Heading, Layout, Text } from '@harness/uicore'
+import { Card, Container, FontVariation, Heading, Layout } from '@harness/uicore'
 import React, { ReactElement } from 'react'
 
-import { PopoverPosition } from '@blueprintjs/core'
 import { useStrings } from 'framework/strings'
 import type { Segment, Target, TargetMap, Variation } from 'services/cf'
-import PercentageRollout from '@cf/components/PercentageRollout/PercentageRollout'
 import DefaultRules from '../default-rules/DefaultRules'
 import SpecificTargetingItem from '../specific-targeting-item.tsx/SpecificTargetingItem'
 import type { FormVariationMap, VariationPercentageRollout, TargetGroup } from '../../Types.types'
+import PercentageRolloutItem from '../percentage-rollout-item/PercentageRolloutItem'
+import AddTargetingButton from '../add-targeting-button/AddTargetingButton'
 
 export interface FlagEnabledRulesCardProps {
   targets: Target[]
@@ -80,73 +80,21 @@ const FlagEnabledRulesCard = (props: FlagEnabledRulesCardProps): ReactElement =>
           ))}
 
           {variationPercentageRollouts.map((variationPercentageRollout, index) => (
-            <>
-              <Container flex={{ justifyContent: 'space-between' }}>
-                <Heading level={4} font={{ variation: FontVariation.BODY2 }} margin={{ top: 'medium' }}>
-                  {getString('cf.featureFlags.percentageRollout')}
-                </Heading>
-                <Button
-                  data-testid={`remove_percentage_rollout`}
-                  icon="trash"
-                  minimal
-                  withoutCurrentColor
-                  onClick={() => removePercentageRollout(index)}
-                />
-              </Container>
-
-              <Container
-                key={`percentage_rollout_item_${variationPercentageRollout.ruleId}`}
-                data-testid={`percentage_rollout_item_${index}`}
-              >
-                <PercentageRollout
-                  targetGroups={segments}
-                  bucketByAttributes={[variationPercentageRollout.bucketBy]}
-                  variations={featureFlagVariations}
-                  fieldValues={variationPercentageRollout}
-                  prefix={(fieldName: string) => `variationPercentageRollouts[${index}].${fieldName}`}
-                />
-              </Container>
-              <Container border={{ bottom: true }} />
-            </>
+            <PercentageRolloutItem
+              key={variationPercentageRollout.ruleId}
+              index={index}
+              featureFlagVariations={featureFlagVariations}
+              removePercentageRollout={removePercentageRollout}
+              segments={segments}
+              variationPercentageRollout={variationPercentageRollout}
+            />
           ))}
 
           {(addTargetingDropdownVariations.length > 0 || variationPercentageRollouts.length > 0) && (
-            <Button
-              icon="plus"
-              rightIcon="chevron-down"
-              variation={ButtonVariation.SECONDARY}
-              text="Add Targeting"
-              tooltipProps={{
-                fill: true,
-                interactionKind: 'click',
-                minimal: true,
-                position: PopoverPosition.BOTTOM_LEFT
-              }}
-              tooltip={
-                <Layout.Vertical padding="small" spacing="small">
-                  {addTargetingDropdownVariations.map(variation => (
-                    <Text
-                      data-testid={`variation_option_${variation.variationIdentifier}`}
-                      inline
-                      onClick={() => addVariation(variation)}
-                      key={variation.variationIdentifier}
-                      font={{ variation: FontVariation.BODY }}
-                      icon="full-circle"
-                    >
-                      {variation.variationName}
-                    </Text>
-                  ))}
-                  <Text
-                    data-testid="variation_option_percentage_rollout"
-                    inline
-                    onClick={() => addPercentageRollout()}
-                    font={{ variation: FontVariation.BODY }}
-                    icon="percentage"
-                  >
-                    {getString('cf.featureFlags.percentageRollout')}
-                  </Text>
-                </Layout.Vertical>
-              }
+            <AddTargetingButton
+              addPercentageRollout={addPercentageRollout}
+              addTargetingDropdownVariations={addTargetingDropdownVariations}
+              addVariation={addVariation}
             />
           )}
         </Layout.Vertical>

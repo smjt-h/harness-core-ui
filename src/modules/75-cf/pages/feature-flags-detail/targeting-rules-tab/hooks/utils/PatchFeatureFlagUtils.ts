@@ -14,7 +14,7 @@ import type {
   TargetGroup,
   TargetingRulesFormValues,
   VariationPercentageRollout
-} from '../Types.types'
+} from '../../Types.types'
 
 // Utils class to help encapsulate the complexity around patch instruction creation and hide this from the components
 interface PatchFeatureFlagUtilsReturn {
@@ -56,9 +56,10 @@ export const PatchFeatureFlagUtils = (
     const intialTargetGroups: TargetGroup[] = formVariation.targetGroups
 
     // get the submitted target groups for the given formVariation
-    const submittedTargetGroups: TargetGroup[] = submittedValues.formVariationMap.filter(
-      variation => variation.variationIdentifier === formVariation.variationIdentifier
-    )[0].targetGroups
+    const submittedTargetGroups: TargetGroup[] =
+      submittedValues.formVariationMap.find(
+        variation => variation.variationIdentifier === formVariation.variationIdentifier
+      )?.targetGroups || []
 
     return submittedTargetGroups.filter(
       submittedTargetGroup =>
@@ -67,9 +68,10 @@ export const PatchFeatureFlagUtils = (
   }
 
   const removedTargetGroups = (formVariation: FormVariationMap): TargetGroup[] => {
-    const submittedTargetGroups: TargetGroup[] = submittedValues.formVariationMap.filter(
-      variation => variation.variationIdentifier === formVariation.variationIdentifier
-    )[0].targetGroups
+    const submittedTargetGroups: TargetGroup[] =
+      submittedValues.formVariationMap.find(
+        variation => variation.variationIdentifier === formVariation.variationIdentifier
+      )?.targetGroups || []
 
     return formVariation.targetGroups.filter(
       targetGroup => !submittedTargetGroups.map(({ identifier }) => identifier).includes(targetGroup.identifier)
