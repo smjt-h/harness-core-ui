@@ -318,4 +318,65 @@ describe('test case for Perspective anomaly alerts', () => {
 
     expect(modal).toMatchSnapshot()
   })
+
+  test('should be able to delete the anomaly alert', async () => {
+    const responseState = {
+      executeQuery: ({ query }: { query: DocumentNode }) => {
+        if (query === FetchPerspectiveListDocument) {
+          return fromValue(PerspectiveList)
+        } else {
+          return fromValue({})
+        }
+      }
+    }
+
+    const { container, getByText } = render(
+      <Provider value={responseState as any}>
+        <TestWrapper pathParams={params}>
+          <AnomalyAlerts />
+        </TestWrapper>
+      </Provider>
+    )
+
+    await waitFor(() => Promise.resolve())
+
+    const deleteIcon = container.querySelector('[data-testid="deleteIcon"]')
+    act(() => {
+      fireEvent.click(deleteIcon!)
+    })
+
+    await waitFor(() => {
+      expect(getByText('ce.anomalyDetection.notificationAlerts.deleteAlertSuccessMsg')).toBeDefined()
+    })
+  })
+
+  test('Should be able to open anomaly modal on click of edit icon', async () => {
+    const responseState = {
+      executeQuery: ({ query }: { query: DocumentNode }) => {
+        if (query === FetchPerspectiveListDocument) {
+          return fromValue(PerspectiveList)
+        } else {
+          return fromValue({})
+        }
+      }
+    }
+
+    const { container } = render(
+      <Provider value={responseState as any}>
+        <TestWrapper pathParams={params}>
+          <AnomalyAlerts />
+        </TestWrapper>
+      </Provider>
+    )
+
+    await waitFor(() => Promise.resolve())
+
+    const editIcon = container.querySelector('[data-testid="editIcon"]')
+    act(() => {
+      fireEvent.click(editIcon!)
+    })
+
+    const modal = findDialogContainer()
+    expect(modal).toBeDefined()
+  })
 })

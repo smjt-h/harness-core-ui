@@ -1246,6 +1246,7 @@ exports[`test cases for Perspective Reports and Budget page should be able to re
                         <span
                           class="bp3-icon StyledProps--main icon StyledProps--color StyledProps--color-primary7"
                           data-icon="Edit"
+                          data-testid="editIcon"
                         >
                           <svg
                             height="14"
@@ -1270,6 +1271,7 @@ exports[`test cases for Perspective Reports and Budget page should be able to re
                         </span>
                         <span
                           class="bp3-icon bp3-icon-trash StyledProps--main icon StyledProps--color StyledProps--color-primary7"
+                          data-testid="deleteIcon"
                           icon="trash"
                         >
                           <svg
@@ -1342,6 +1344,7 @@ exports[`test cases for Perspective Reports and Budget page should be able to re
                         <span
                           class="bp3-icon StyledProps--main icon StyledProps--color StyledProps--color-primary7"
                           data-icon="Edit"
+                          data-testid="editIcon"
                         >
                           <svg
                             height="14"
@@ -1366,6 +1369,7 @@ exports[`test cases for Perspective Reports and Budget page should be able to re
                         </span>
                         <span
                           class="bp3-icon bp3-icon-trash StyledProps--main icon StyledProps--color StyledProps--color-primary7"
+                          data-testid="deleteIcon"
                           icon="trash"
                         >
                           <svg
@@ -1438,6 +1442,7 @@ exports[`test cases for Perspective Reports and Budget page should be able to re
                         <span
                           class="bp3-icon StyledProps--main icon StyledProps--color StyledProps--color-primary7"
                           data-icon="Edit"
+                          data-testid="editIcon"
                         >
                           <svg
                             height="14"
@@ -1462,6 +1467,7 @@ exports[`test cases for Perspective Reports and Budget page should be able to re
                         </span>
                         <span
                           class="bp3-icon bp3-icon-trash StyledProps--main icon StyledProps--color StyledProps--color-primary7"
+                          data-testid="deleteIcon"
                           icon="trash"
                         >
                           <svg
@@ -1534,6 +1540,7 @@ exports[`test cases for Perspective Reports and Budget page should be able to re
                         <span
                           class="bp3-icon StyledProps--main icon StyledProps--color StyledProps--color-primary7"
                           data-icon="Edit"
+                          data-testid="editIcon"
                         >
                           <svg
                             height="14"
@@ -1558,6 +1565,7 @@ exports[`test cases for Perspective Reports and Budget page should be able to re
                         </span>
                         <span
                           class="bp3-icon bp3-icon-trash StyledProps--main icon StyledProps--color StyledProps--color-primary7"
+                          data-testid="deleteIcon"
                           icon="trash"
                         >
                           <svg
@@ -1616,6 +1624,7 @@ exports[`test cases for Perspective Reports and Budget page should be able to re
                         <span
                           class="bp3-icon StyledProps--main icon StyledProps--color StyledProps--color-primary7"
                           data-icon="Edit"
+                          data-testid="editIcon"
                         >
                           <svg
                             height="14"
@@ -1640,6 +1649,7 @@ exports[`test cases for Perspective Reports and Budget page should be able to re
                         </span>
                         <span
                           class="bp3-icon bp3-icon-trash StyledProps--main icon StyledProps--color StyledProps--color-primary7"
+                          data-testid="deleteIcon"
                           icon="trash"
                         >
                           <svg
@@ -1698,6 +1708,7 @@ exports[`test cases for Perspective Reports and Budget page should be able to re
                         <span
                           class="bp3-icon StyledProps--main icon StyledProps--color StyledProps--color-primary7"
                           data-icon="Edit"
+                          data-testid="editIcon"
                         >
                           <svg
                             height="14"
@@ -1722,6 +1733,7 @@ exports[`test cases for Perspective Reports and Budget page should be able to re
                         </span>
                         <span
                           class="bp3-icon bp3-icon-trash StyledProps--main icon StyledProps--color StyledProps--color-primary7"
+                          data-testid="deleteIcon"
                           icon="trash"
                         >
                           <svg
@@ -1780,6 +1792,7 @@ exports[`test cases for Perspective Reports and Budget page should be able to re
                         <span
                           class="bp3-icon StyledProps--main icon StyledProps--color StyledProps--color-primary7"
                           data-icon="Edit"
+                          data-testid="editIcon"
                         >
                           <svg
                             height="14"
@@ -1804,6 +1817,7 @@ exports[`test cases for Perspective Reports and Budget page should be able to re
                         </span>
                         <span
                           class="bp3-icon bp3-icon-trash StyledProps--main icon StyledProps--color StyledProps--color-primary7"
+                          data-testid="deleteIcon"
                           icon="trash"
                         >
                           <svg
@@ -1912,6 +1926,7 @@ exports[`test cases for Perspective Reports and Budget page should be able to re
                     <span
                       class="bp3-icon StyledProps--main icon StyledProps--color StyledProps--color-primary7"
                       data-icon="Edit"
+                      data-testid="editIcon"
                     >
                       <svg
                         height="14"
@@ -1936,6 +1951,7 @@ exports[`test cases for Perspective Reports and Budget page should be able to re
                     </span>
                     <span
                       class="bp3-icon bp3-icon-trash StyledProps--main icon StyledProps--color StyledProps--color-primary7"
+                      data-testid="deleteIcon"
                       icon="trash"
                     >
                       <svg
@@ -2086,6 +2102,7 @@ exports[`test cases for Perspective Reports and Budget page should be able to re
               <span
                 class="bp3-icon StyledProps--main icon StyledProps--color StyledProps--color-primary7"
                 data-icon="Edit"
+                data-testid="editIcon"
               >
                 <svg
                   height="14"
@@ -2110,6 +2127,7 @@ exports[`test cases for Perspective Reports and Budget page should be able to re
               </span>
               <span
                 class="bp3-icon bp3-icon-trash StyledProps--main icon StyledProps--color StyledProps--color-primary7"
+                data-testid="deleteIcon"
                 icon="trash"
               >
                 <svg

@@ -16,6 +16,7 @@ import { Formik } from 'formik'
 import type { IDialogProps } from '@blueprintjs/core'
 import { findDialogContainer, TestWrapper } from '@common/utils/testUtils'
 import { FetchPerspectiveListDocument } from 'services/ce/services'
+import { clickSubmit } from '@common/utils/JestFormHelper'
 import { AlertOverview, NotificationMethod } from '../AnomaliesAlertDialog'
 import PerspectiveList from './PerspectiveList.json'
 
@@ -107,12 +108,15 @@ describe('Test case for anomalies new alert creation', () => {
                 alertList: channelsData
               }}
               onSubmit={data => handleSubmit(data)}
-            >
-              <StepWizard>
-                <AlertOverview name={''} onClose={hideAnomaliesAlertModal} items={[]} />
-                <NotificationMethod name={''} onClose={hideAnomaliesAlertModal} formikProps={formikProps} />
-              </StepWizard>
-            </Formik>
+              render={() => {
+                return (
+                  <StepWizard>
+                    <AlertOverview name={''} onClose={hideAnomaliesAlertModal} items={[]} />
+                    <NotificationMethod name={''} onClose={hideAnomaliesAlertModal} formikProps={formikProps} />
+                  </StepWizard>
+                )
+              }}
+            ></Formik>
           </Dialog>
         </Provider>
       </TestWrapper>
@@ -122,17 +126,24 @@ describe('Test case for anomalies new alert creation', () => {
     expect(modal).toBeDefined()
 
     expect(getByText('ce.anomalyDetection.notificationAlerts.selectPerspectiveLabel')).toBeDefined()
+
+    const saveAndContinueBtn = getByText('saveAndContinue')
+    act(() => {
+      fireEvent.click(saveAndContinueBtn!)
+    })
+
+    expect(getByText('ce.anomalyDetection.notificationAlerts.notificationStepSubtext')).toBeDefined()
+
+    await act(async () => {
+      clickSubmit(modal!)
+    })
+
+    expect(modal).toMatchSnapshot()
   })
 
   test('Should be able to close the dialog on close', async () => {
     const hideAnomaliesAlertModal = jest.fn()
     const handleSubmit = jest.fn()
-
-    const formikProps: any = {
-      values: {
-        alertList: []
-      }
-    }
 
     const responseState = {
       executeQuery: ({ query }: { query: DocumentNode }) => {
@@ -155,12 +166,15 @@ describe('Test case for anomalies new alert creation', () => {
                 alertList: []
               }}
               onSubmit={data => handleSubmit(data)}
-            >
-              <StepWizard>
-                <AlertOverview name={''} onClose={hideAnomaliesAlertModal} items={[]} />
-                <NotificationMethod name={''} onClose={hideAnomaliesAlertModal} formikProps={formikProps} />
-              </StepWizard>
-            </Formik>
+              render={formikProps => {
+                return (
+                  <StepWizard>
+                    <AlertOverview name={''} onClose={hideAnomaliesAlertModal} items={[]} />
+                    <NotificationMethod name={''} onClose={hideAnomaliesAlertModal} formikProps={formikProps} />
+                  </StepWizard>
+                )
+              }}
+            ></Formik>
           </Dialog>
         </Provider>
       </TestWrapper>

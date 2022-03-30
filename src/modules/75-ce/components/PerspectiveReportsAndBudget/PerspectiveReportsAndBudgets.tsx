@@ -578,7 +578,7 @@ export const AnomalyAlerts = () => {
             iconProps={{
               size: 10
             }}
-            onClick={openAnomaliesAlertModal}
+            onClick={() => onEdit()}
           >
             {getString('ce.anomalyDetection.addNewAnomalyAlert')}
           </Link>
@@ -720,8 +720,22 @@ const RenderEditDeleteActions = (props: TableActionsProps): JSX.Element => {
       }}
       className={className}
     >
-      <Icon size={14} name={'Edit'} color="primary7" onClick={onClickEdit} className={css.icon} />
-      <Icon size={14} name={'trash'} color="primary7" onClick={onClickDelete} className={css.icon} />
+      <Icon
+        size={14}
+        name={'Edit'}
+        color="primary7"
+        onClick={onClickEdit}
+        className={css.icon}
+        data-testid="editIcon"
+      />
+      <Icon
+        size={14}
+        name={'trash'}
+        color="primary7"
+        onClick={onClickDelete}
+        className={css.icon}
+        data-testid="deleteIcon"
+      />
     </Layout.Horizontal>
   )
 }
