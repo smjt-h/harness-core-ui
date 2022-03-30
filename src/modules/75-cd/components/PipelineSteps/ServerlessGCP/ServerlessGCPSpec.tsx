@@ -36,8 +36,7 @@ import { getIconByType } from '@connectors/pages/connectors/utils/ConnectorUtils
 import type { VariableMergeServiceResponse } from 'services/pipeline-ng'
 
 import type { CompletionItemInterface } from '@common/interfaces/YAMLBuilderProps'
-import { useStrings } from 'framework/strings'
-import type { UseStringsReturn } from 'framework/strings'
+import { useStrings, UseStringsReturn } from 'framework/strings'
 import { loggerFor } from 'framework/logging/logging'
 import { ModuleName } from 'framework/types/ModuleName'
 import { VariablesListTable } from '@pipeline/components/VariablesListTable/VariablesListTable'
@@ -52,7 +51,7 @@ import { getConnectorName, getConnectorValue } from '@pipeline/components/Pipeli
 import type { ServerlessGCPInfrastructure } from '@pipeline/utils/stageHelpers'
 import { getConnectorSchema } from '../PipelineStepsUtil'
 import stepCss from '@pipeline/components/PipelineSteps/Steps/Steps.module.scss'
-import css from './ServerlessGCP.module.scss'
+import css from '../ServerlessAWSLambda/ServerlessStep.module.scss'
 
 const logger = loggerFor(ModuleName.CD)
 type ServerlessGCPInfrastructureTemplate = { [key in keyof ServerlessGCPInfrastructure]: string }
@@ -337,20 +336,18 @@ export class ServerlessGCPSpec extends PipelineStep<ServerlessGCPInfrastructureS
           },
           body: { types: ['Gcp'], filterType: 'Connector' }
         }).then(response => {
-          const data =
+          return (
             response?.data?.content?.map(connector => ({
               label: getConnectorName(connector),
               insertText: getConnectorValue(connector),
               kind: CompletionItemKind.Field
             })) || /* istanbul ignore next */ []
-          return data
+          )
         })
       }
     }
 
-    return new Promise(resolve => {
-      resolve([])
-    })
+    return Promise.resolve([])
   }
 
   validateInputSet({
