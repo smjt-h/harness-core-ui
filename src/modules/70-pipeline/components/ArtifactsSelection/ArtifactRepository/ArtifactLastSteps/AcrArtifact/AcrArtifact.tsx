@@ -305,17 +305,24 @@ export function AcrArtifact({
 
     /* istanbul ignore else */
     if (getMultiTypeFromValue(initialValues?.subscription) === MultiTypeInputType.FIXED) {
-      values.subscription = subscriptions.find(
-        subscription => subscription.value === initialValues?.subscription
-      )?.value
+      values.subscription = subscriptions.find(subscription => subscription.value === initialValues?.subscription) || {
+        label: values.subscription,
+        value: values.subscription
+      }
     }
     /* istanbul ignore else */
     if (getMultiTypeFromValue(initialValues?.registry) === MultiTypeInputType.FIXED) {
-      values.registry = registries.find(registry => registry.value === initialValues?.registry)?.value
+      values.registry = registries.find(registry => registry.value === initialValues?.registry) || {
+        label: values.registry,
+        value: values.registry
+      }
     }
     /* istanbul ignore else */
     if (getMultiTypeFromValue(initialValues?.repository) === MultiTypeInputType.FIXED) {
-      values.repository = repositories.find(repository => repository.value === initialValues?.repository)?.value
+      values.repository = repositories.find(repository => repository.value === initialValues?.repository) || {
+        label: values.repository,
+        value: values.repository
+      }
     }
 
     return { ...values, ...initialValues }
@@ -345,11 +352,6 @@ export function AcrArtifact({
     resetTag(formik)
   }
 
-  // eslint-disable-next-line @typescript-eslint/no-explicit-any
-  const findSelectOption = (value: string, list: SelectOption[]): any => {
-    return list.filter(item => item.value === value) || { label: value, value: value }
-  }
-
   useEffect(() => {
     /* istanbul ignore else */
     if (!isNil(formikRef?.current?.values?.tag)) {
@@ -361,6 +363,11 @@ export function AcrArtifact({
       }
     }
   }, [formikRef?.current?.values?.tag])
+
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
+  const getValue = (item: { label?: string; value?: string } | string | any): string => {
+    return typeof item === 'string' ? (item as string) : item?.value
+  }
 
   return (
     <Layout.Vertical spacing="medium" className={css.firstep}>
@@ -375,7 +382,10 @@ export function AcrArtifact({
           submitFormData({
             ...prevStepData,
             ...formData,
-            connectorId: getConnectorIdValue(prevStepData)
+            connectorId: getConnectorIdValue(prevStepData),
+            subscription: getValue(formData.subscription),
+            registry: getValue(formData.registry),
+            repository: getValue(formData.repository)
           })
         }}
         enableReinitialize={true}
@@ -391,12 +401,8 @@ export function AcrArtifact({
                     name="subscription"
                     selectItems={subscriptions}
                     multiTypeInputProps={{
-                      onChange: /* istanbul ignore next */ selectOption => {
-                        formik.setFieldValue('subscription', (selectOption as SelectOption)?.value)
-                        resetTagList(formik)
-                      },
                       selectProps: {
-                        defaultSelectedItem: findSelectOption(formik.values.subscription, subscriptions),
+                        defaultSelectedItem: formik.values.subscription,
                         items: subscriptions,
                         allowCreatingNewItems: true
                       }
@@ -405,16 +411,22 @@ export function AcrArtifact({
                     placeholder={getString('connectors.ACR.subscriptionPlaceholder')}
                   />
 
-                  {getMultiTypeFromValue(formik.values.subscription) === MultiTypeInputType.RUNTIME && (
+                  {getMultiTypeFromValue(getValue(formik.values.subscription)) === MultiTypeInputType.RUNTIME && (
                     <div className={css.configureOptions}>
                       <ConfigureOptions
-                        value={formik.values?.subscription as string}
+                        value={formik.values?.subscription}
                         type="String"
                         variableName="subscription"
                         showRequiredField={false}
                         showDefaultField={false}
                         showAdvanced={true}
                         isReadonly={isReadonly}
+                        onChange={value => {
+                          formik.setFieldValue('subscription', value)
+                          formik.setFieldValue('registry', '')
+                          formik.setFieldValue('repository', '')
+                          resetTagList(formik)
+                        }}
                       />
                     </div>
                   )}
@@ -430,14 +442,10 @@ export function AcrArtifact({
                         : getString('connectors.ACR.registryPlaceholder')
                     }
                     multiTypeInputProps={{
-                      onChange: /* istanbul ignore next */ selectOption => {
-                        formik.setFieldValue('registry', (selectOption as SelectOption)?.value)
-                        resetTagList(formik)
-                      },
                       expressions,
                       disabled: isReadonly,
                       selectProps: {
-                        defaultSelectedItem: findSelectOption(formik.values.registry, subscriptions),
+                        defaultSelectedItem: formik.values.registry,
                         items: registries,
                         allowCreatingNewItems: true,
                         addClearBtn: !(loadingRegistries || isReadonly),
@@ -451,15 +459,20 @@ export function AcrArtifact({
                     }}
                     label={getString('connectors.ACR.registry')}
                   />
-                  {getMultiTypeFromValue(formik.values.registry) === MultiTypeInputType.RUNTIME && (
+                  {getMultiTypeFromValue(getValue(formik.values.registry)) === MultiTypeInputType.RUNTIME && (
                     <ConfigureOptions
-                      value={formik.values.registry || /* istanbul ignore next */ ''}
+                      value={formik.values.registry}
                       type="String"
                       variableName="registry"
                       showRequiredField={false}
                       showDefaultField={false}
                       showAdvanced={true}
                       isReadonly={isReadonly}
+                      onChange={value => {
+                        formik.setFieldValue('registry', value)
+                        formik.setFieldValue('repository', '')
+                        resetTagList(formik)
+                      }}
                     />
                   )}
                 </div>
@@ -474,16 +487,12 @@ export function AcrArtifact({
                         : getString('connectors.ACR.repositoryPlaceholder')
                     }
                     multiTypeInputProps={{
-                      onChange: /* istanbul ignore next */ selectOption => {
-                        formik.setFieldValue('repository', (selectOption as SelectOption)?.value)
-                        resetTagList(formik)
-                      },
                       expressions,
                       disabled: isReadonly,
                       selectProps: {
                         items: repositories,
                         allowCreatingNewItems: true,
-                        defaultSelectedItem: findSelectOption(formik.values.repository, subscriptions),
+                        defaultSelectedItem: formik.values.repository,
                         addClearBtn: !(loadingRepositories || isReadonly),
                         noResults: (
                           <Text padding={'small'}>
@@ -496,15 +505,19 @@ export function AcrArtifact({
                     }}
                     label={getString('repository')}
                   />
-                  {getMultiTypeFromValue(formik.values.repository) === MultiTypeInputType.RUNTIME && (
+                  {getMultiTypeFromValue(getValue(formik.values.repository)) === MultiTypeInputType.RUNTIME && (
                     <ConfigureOptions
-                      value={formik.values.repository || /* istanbul ignore next */ ''}
+                      value={formik.values.repository}
                       type="String"
                       variableName="repository"
                       showRequiredField={false}
                       showDefaultField={false}
                       showAdvanced={true}
                       isReadonly={isReadonly}
+                      onChange={value => {
+                        formik.setFieldValue('repository', value)
+                        resetTagList(formik)
+                      }}
                     />
                   )}
                 </div>
