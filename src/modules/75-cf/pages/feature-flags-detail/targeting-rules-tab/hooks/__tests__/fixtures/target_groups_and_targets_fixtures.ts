@@ -12,7 +12,6 @@ const mockPercentageVariationRollout: VariationPercentageRollout[] = [
     bucketBy: '',
     clauses: [{ attribute: '', negate: false, op: 'segmentmatch', id: '', values: [''] }],
     ruleId: '',
-    isVisible: false,
     variations: []
   }
 ]
