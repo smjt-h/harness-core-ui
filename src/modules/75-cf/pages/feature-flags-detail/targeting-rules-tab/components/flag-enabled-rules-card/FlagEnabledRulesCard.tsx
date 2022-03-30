@@ -22,7 +22,7 @@ export interface FlagEnabledRulesCardProps {
   formVariationMap: FormVariationMap[]
   featureFlagVariations: Variation[]
   variationPercentageRollouts: VariationPercentageRollout[]
-  isLoading: boolean
+  disabled: boolean
   updateTargetGroups: (index: number, newTargetGroups: TargetGroup[]) => void
   updateTargets: (index: number, newTargetGroups: TargetMap[]) => void
   addVariation: (newVariation: FormVariationMap) => void
@@ -44,7 +44,7 @@ const FlagEnabledRulesCard = (props: FlagEnabledRulesCardProps): ReactElement =>
     removeVariation,
     addPercentageRollout,
     removePercentageRollout,
-    isLoading
+    disabled
   } = props
 
   const { getString } = useStrings()
@@ -54,7 +54,7 @@ const FlagEnabledRulesCard = (props: FlagEnabledRulesCardProps): ReactElement =>
   return (
     <Card data-testid="flag-enabled-rules-card">
       <Container border={{ bottom: true }} padding={{ bottom: 'medium' }}>
-        <DefaultRules featureFlagVariations={featureFlagVariations} isLoading={isLoading} />
+        <DefaultRules featureFlagVariations={featureFlagVariations} />
       </Container>
       <Container padding={{ bottom: 'medium' }}>
         <Layout.Vertical spacing="medium">
@@ -67,7 +67,7 @@ const FlagEnabledRulesCard = (props: FlagEnabledRulesCardProps): ReactElement =>
                 <SpecificTargetingItem
                   key={`${formVariationMapItem.variationIdentifier}_${index}`}
                   index={index}
-                  isLoading={isLoading}
+                  disabled={disabled}
                   targets={targets}
                   segments={segments}
                   formVariationMapItem={formVariationMapItem}
@@ -95,6 +95,7 @@ const FlagEnabledRulesCard = (props: FlagEnabledRulesCardProps): ReactElement =>
               addPercentageRollout={addPercentageRollout}
               addTargetingDropdownVariations={addTargetingDropdownVariations}
               addVariation={addVariation}
+              disabled={disabled}
             />
           )}
         </Layout.Vertical>

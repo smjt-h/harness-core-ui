@@ -11,56 +11,64 @@ import { ButtonVariation, Layout, Button, Text } from '@harness/uicore'
 import React, { ReactElement } from 'react'
 import { useStrings } from 'framework/strings'
 import type { FormVariationMap } from '../../Types.types'
+import { DisabledFeatureTooltipContent } from '../disabled-feature-tooltip/DisabledFeatureTooltip'
 
 interface AddTargetingButtonProps {
   addTargetingDropdownVariations: FormVariationMap[]
   addVariation: (newVariation: FormVariationMap) => void
   addPercentageRollout: () => void
+  disabled: boolean
 }
 
 const AddTargetingButton = ({
   addTargetingDropdownVariations,
   addVariation,
-  addPercentageRollout
+  addPercentageRollout,
+  disabled
 }: AddTargetingButtonProps): ReactElement => {
   const { getString } = useStrings()
 
   return (
     <Button
+      disabled={disabled}
       icon="plus"
       rightIcon="chevron-down"
       variation={ButtonVariation.SECONDARY}
       text={getString('cf.featureFlags.rules.addTargeting')}
       tooltipProps={{
-        fill: true,
-        interactionKind: 'click',
-        minimal: true,
+        fill: disabled ? false : true,
+        interactionKind: disabled ? 'hover' : 'click',
+        minimal: disabled ? false : true,
         position: PopoverPosition.BOTTOM_LEFT
       }}
       tooltip={
-        <Layout.Vertical padding="small" spacing="small">
-          {addTargetingDropdownVariations.map(variation => (
+        disabled ? (
+          <DisabledFeatureTooltipContent />
+        ) : (
+          <Layout.Vertical padding="small" spacing="small">
+            {addTargetingDropdownVariations.map(variation => (
+              <Text
+                data-testid={`variation_option_${variation.variationIdentifier}`}
+                inline
+                onClick={() => addVariation(variation)}
+                key={variation.variationIdentifier}
+                font={{ variation: FontVariation.BODY }}
+                icon="full-circle"
+              >
+                {variation.variationName}
+              </Text>
+            ))}
             <Text
-              data-testid={`variation_option_${variation.variationIdentifier}`}
+              data-testid="variation_option_percentage_rollout"
               inline
-              onClick={() => addVariation(variation)}
-              key={variation.variationIdentifier}
+              onClick={() => addPercentageRollout()}
               font={{ variation: FontVariation.BODY }}
-              icon="full-circle"
+              icon="percentage"
             >
-              {variation.variationName}
+              {getString('cf.featureFlags.percentageRollout')}
             </Text>
-          ))}
-          <Text
-            data-testid="variation_option_percentage_rollout"
-            inline
-            onClick={() => addPercentageRollout()}
-            font={{ variation: FontVariation.BODY }}
-            icon="percentage"
-          >
-            {getString('cf.featureFlags.percentageRollout')}
-          </Text>
-        </Layout.Vertical>
+          </Layout.Vertical>
+        )
       }
     />
   )
