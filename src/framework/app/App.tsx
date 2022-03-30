@@ -7,7 +7,7 @@
 
 import React, { useEffect, useState } from 'react'
 
-import { useHistory, useParams } from 'react-router-dom'
+import { useHistory, useParams, useLocation } from 'react-router-dom'
 import { RestfulProvider } from 'restful-react'
 import { FocusStyleManager } from '@blueprintjs/core'
 import { TooltipContextProvider } from '@wings-software/uicore'
@@ -68,6 +68,11 @@ export function AppWithAuthentication(props: AppProps): React.ReactElement {
   // if user lands on /, they'll first get redirected to a path with accountId
   const { accountId } = useParams<AccountPathProps>()
   const history = useHistory()
+  const location = useLocation()
+
+  useEffect(() => {
+    window.Userpilot?.reload()
+  }, [location])
 
   const getQueryParams = React.useCallback(() => {
     return {

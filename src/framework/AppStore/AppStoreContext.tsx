@@ -119,6 +119,12 @@ export function AppStoreProvider(props: React.PropsWithChildren<unknown>): React
     if (userInfo?.data?.email && telemetry.initialized) {
       telemetry.identify(userInfo?.data?.email)
     }
+    if (userInfo?.data) {
+      window.Userpilot?.identify(userInfo.data.uuid, {
+        name: userInfo.data.name || '',
+        email: userInfo.data.email
+      })
+    }
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [userInfo?.data?.email, telemetry])
 
