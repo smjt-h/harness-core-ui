@@ -888,6 +888,15 @@ runPipeline:
   ciCodebaseConfig: CI Codebase Configuration is missing. Codebase is required when the pipeline contains a CI stage that is set to clone codebase.
 buildInfra:
   poolId: Pool Id
+  automountServiceAccountToken: Automount Service Account Token
+  priorityClass: Priority Class
+  containerSecurityContext: Container Security Context
+  allowPrivilegeEscalation: Allow Privilege Escalation
+  addCapabilities: ADD Capabilities
+  dropCapabilities: DROP Capabilities
+  runAsNonRoot: Run as Non Root
+  readOnlyRootFilesystem: Read-only Root Filesystem
+  privileged: Privileged
 ci:
   validations:
     port: Port can only contain digits

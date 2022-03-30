@@ -2610,7 +2610,7 @@ exports[`Dependency InputSet View should render all fields 1`] = `
                   <span
                     class="bp3-control-indicator"
                   />
-                  ci.privileged (Common Optional Label)
+                  pipeline.buildInfra.privileged (Common Optional Label)
                 </label>
                 <span
                   class="bp3-popover-wrapper MultiTypeInput--wrapper"

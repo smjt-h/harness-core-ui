@@ -34,12 +34,12 @@ export const validateConnectorRefAndImageDepdendency = (
 ): FormikErrors<any> => {
   const errors: FormikErrors<any> = {}
   if (connectorRef && !image) {
-    errors['spec.image'] = getString('ci.buildInfa.awsVM.isRequiredWhen', {
+    errors['spec.image'] = getString('ci.buildInfra.awsVM.isRequiredWhen', {
       field1: getString('imageLabel'),
       field2: getString('pipelineSteps.connectorLabel')
     })
   } else if (!connectorRef && image) {
-    errors['spec.connectorRef'] = getString('ci.buildInfa.awsVM.isRequiredWhen', {
+    errors['spec.connectorRef'] = getString('ci.buildInfra.awsVM.isRequiredWhen', {
       field2: getString('imageLabel'),
       field1: getString('pipelineSteps.connectorLabel')
     })

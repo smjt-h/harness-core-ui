@@ -2356,7 +2356,16 @@ export interface StringsMap {
   'pipeline.barriers.tooltips.barrierWaiting': string
   'pipeline.barriers.tooltips.timeout': string
   'pipeline.barriers.validation.barrierNamerequired': string
+  'pipeline.buildInfra.addCapabilities': string
+  'pipeline.buildInfra.allowPrivilegeEscalation': string
+  'pipeline.buildInfra.automountServiceAccountToken': string
+  'pipeline.buildInfra.containerSecurityContext': string
+  'pipeline.buildInfra.dropCapabilities': string
   'pipeline.buildInfra.poolId': string
+  'pipeline.buildInfra.priorityClass': string
+  'pipeline.buildInfra.privileged': string
+  'pipeline.buildInfra.readOnlyRootFilesystem': string
+  'pipeline.buildInfra.runAsNonRoot': string
   'pipeline.buildRepo': string
   'pipeline.changeTemplate': string
   'pipeline.changeTemplateLabel': string
@@ -4656,18 +4665,18 @@ export interface StringsMap {
   'ci.advancedLabel': string
   'ci.annotations': string
   'ci.artifactoryConnectorLabel': string
-  'ci.buildInfa.awsHelpText': string
-  'ci.buildInfa.awsVM.architecture': string
-  'ci.buildInfa.awsVM.isRequiredWhen': string
-  'ci.buildInfa.awsVM.os': string
-  'ci.buildInfa.awsVMs': string
-  'ci.buildInfa.infrastructureTypesLabel': string
-  'ci.buildInfa.k8sLabel': string
-  'ci.buildInfa.kubernetesHelpText': string
-  'ci.buildInfa.label': string
-  'ci.buildInfa.selectInfra': string
-  'ci.buildInfa.useNewInfra': string
-  'ci.buildInfa.vmLabel': string
+  'ci.buildInfra.awsHelpText': string
+  'ci.buildInfra.awsVM.architecture': string
+  'ci.buildInfra.awsVM.isRequiredWhen': string
+  'ci.buildInfra.awsVM.os': string
+  'ci.buildInfra.awsVMs': string
+  'ci.buildInfra.infrastructureTypesLabel': string
+  'ci.buildInfra.k8sLabel': string
+  'ci.buildInfra.kubernetesHelpText': string
+  'ci.buildInfra.label': string
+  'ci.buildInfra.selectInfra': string
+  'ci.buildInfra.useNewInfra': string
+  'ci.buildInfra.vmLabel': string
   'ci.ciTrialHomePage.startTrial.description': string
   'ci.ciTrialHomePage.startTrial.startBtn.description': string
   'ci.clipboardCopyFail': string
@@ -4756,7 +4765,6 @@ export interface StringsMap {
   'ci.prTitle': string
   'ci.preCommandLabel': string
   'ci.previous': string
-  'ci.privileged': string
   'ci.remoteCacheImage.dockerInfo': string
   'ci.remoteCacheImage.label': string
   'ci.remoteCacheRepository.label': string

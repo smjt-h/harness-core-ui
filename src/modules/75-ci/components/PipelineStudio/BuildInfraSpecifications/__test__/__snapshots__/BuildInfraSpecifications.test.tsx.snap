@@ -39,7 +39,7 @@ exports[`BuildInfraSpecifications snapshot tests for AWS Build Infra Render AWS 
                       <p
                         class="StyledProps--font StyledProps--main StyledProps--font-variation-form-help StyledProps--padding-bottom-medium"
                       >
-                        ci.buildInfa.selectInfra
+                        ci.buildInfra.selectInfra
                       </p>
                       <div
                         class="bp3-form-group ThumbnailSelect--mainContainer"
@@ -110,7 +110,7 @@ exports[`BuildInfraSpecifications snapshot tests for AWS Build Infra Render AWS 
                               <p
                                 class="StyledProps--font StyledProps--main Thumbnail--label StyledProps--font-weight-semi-bold StyledProps--color StyledProps--color-grey600 StyledProps--margin-top-small"
                               >
-                                ci.buildInfa.awsVMs
+                                ci.buildInfra.awsVMs
                               </p>
                               <input
                                 name="buildInfraType"
@@ -252,18 +252,18 @@ exports[`BuildInfraSpecifications snapshot tests for AWS Build Infra Render AWS 
                     <p
                       class="StyledProps--font StyledProps--main StyledProps--font-variation-h5"
                     >
-                      ci.buildInfa.infrastructureTypesLabel
+                      ci.buildInfra.infrastructureTypesLabel
                     </p>
                   </div>
                   <p
                     class="StyledProps--font StyledProps--main StyledProps--font-variation-body2 StyledProps--padding-top-xlarge StyledProps--padding-bottom-xsmall"
                   >
-                    ci.buildInfa.k8sLabel
+                    ci.buildInfra.k8sLabel
                   </p>
                   <p
                     class="StyledProps--font StyledProps--main StyledProps--font-variation-small"
                   >
-                    ci.buildInfa.kubernetesHelpText
+                    ci.buildInfra.kubernetesHelpText
                   </p>
                   <div>
                     <div
@@ -279,12 +279,12 @@ exports[`BuildInfraSpecifications snapshot tests for AWS Build Infra Render AWS 
                   <p
                     class="StyledProps--font StyledProps--main StyledProps--font-variation-body2 StyledProps--padding-bottom-xsmall"
                   >
-                    ci.buildInfa.vmLabel
+                    ci.buildInfra.vmLabel
                   </p>
                   <p
                     class="StyledProps--font StyledProps--main StyledProps--font-variation-small"
                   >
-                    ci.buildInfa.awsHelpText
+                    ci.buildInfra.awsHelpText
                   </p>
                 </div>
               </div>
@@ -336,7 +336,7 @@ exports[`BuildInfraSpecifications snapshot tests for AWS Build Infra initializes
                       <p
                         class="StyledProps--font StyledProps--main StyledProps--font-variation-form-help StyledProps--padding-bottom-medium"
                       >
-                        ci.buildInfa.selectInfra
+                        ci.buildInfra.selectInfra
                       </p>
                       <div
                         class="bp3-form-group ThumbnailSelect--mainContainer"
@@ -426,7 +426,7 @@ exports[`BuildInfraSpecifications snapshot tests for AWS Build Infra initializes
                               <p
                                 class="StyledProps--font StyledProps--main Thumbnail--label StyledProps--font-weight-semi-bold StyledProps--color StyledProps--color-grey600 StyledProps--margin-top-small"
                               >
-                                ci.buildInfa.awsVMs
+                                ci.buildInfra.awsVMs
                               </p>
                               <input
                                 name="buildInfraType"
@@ -478,18 +478,18 @@ exports[`BuildInfraSpecifications snapshot tests for AWS Build Infra initializes
                     <p
                       class="StyledProps--font StyledProps--main StyledProps--font-variation-h5"
                     >
-                      ci.buildInfa.infrastructureTypesLabel
+                      ci.buildInfra.infrastructureTypesLabel
                     </p>
                   </div>
                   <p
                     class="StyledProps--font StyledProps--main StyledProps--font-variation-body2 StyledProps--padding-top-xlarge StyledProps--padding-bottom-xsmall"
                   >
-                    ci.buildInfa.k8sLabel
+                    ci.buildInfra.k8sLabel
                   </p>
                   <p
                     class="StyledProps--font StyledProps--main StyledProps--font-variation-small"
                   >
-                    ci.buildInfa.kubernetesHelpText
+                    ci.buildInfra.kubernetesHelpText
                   </p>
                   <div>
                     <div
@@ -505,12 +505,12 @@ exports[`BuildInfraSpecifications snapshot tests for AWS Build Infra initializes
                   <p
                     class="StyledProps--font StyledProps--main StyledProps--font-variation-body2 StyledProps--padding-bottom-xsmall"
                   >
-                    ci.buildInfa.vmLabel
+                    ci.buildInfra.vmLabel
                   </p>
                   <p
                     class="StyledProps--font StyledProps--main StyledProps--font-variation-small"
                   >
-                    ci.buildInfa.awsHelpText
+                    ci.buildInfra.awsHelpText
                   </p>
                 </div>
               </div>

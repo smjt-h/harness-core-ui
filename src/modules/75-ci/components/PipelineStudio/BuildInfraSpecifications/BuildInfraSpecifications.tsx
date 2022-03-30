@@ -211,7 +211,7 @@ export default function BuildInfraSpecifications({ children }: React.PropsWithCh
       value: 'KubernetesDirect'
     },
     {
-      label: getString('ci.buildInfa.awsVMs'),
+      label: getString('ci.buildInfra.awsVMs'),
       icon: 'service-aws',
       value: 'VM'
     }
@@ -727,7 +727,7 @@ export default function BuildInfraSpecifications({ children }: React.PropsWithCh
         <Container width={300}>
           <FormMultiTypeCheckboxField
             name="automountServiceAccountToken"
-            label="Automount Service Account Token"
+            label={getString('pipeline.buildInfra.automountServiceAccountToken')}
             // label={getString(labelKey).concat(` (${startCase(getString('common.optionalLabel'))})`)}
             multiTypeTextbox={{
               expressions,
@@ -746,7 +746,7 @@ export default function BuildInfraSpecifications({ children }: React.PropsWithCh
                 margin={{ bottom: 'xsmall' }}
                 tooltipProps={{ dataTooltipId: 'priorityClass' }}
               >
-                Priority Class
+                {getString('pipeline.buildInfra.priorityClass')}
                 {/* {getString('pipeline.stepCommonFields.runAsUser')} */}
               </Text>
             }
@@ -759,13 +759,12 @@ export default function BuildInfraSpecifications({ children }: React.PropsWithCh
           />
         </Container>
         <div className={css.tabSubHeading} id="containerSecurityContext">
-          Container Security Context
-          {/* {getString('pipelineSteps.build.stageSpecifications.sharedPaths')} */}
+          {getString('pipeline.buildInfra.containerSecurityContext')}
         </div>
         <Container width={300}>
           <FormMultiTypeCheckboxField
             name="privileged"
-            label="Privileged"
+            label={getString('pipeline.buildInfra.privileged')}
             // label={getString(labelKey).concat(` (${startCase(getString('common.optionalLabel'))})`)}
             multiTypeTextbox={{
               expressions,
@@ -779,7 +778,7 @@ export default function BuildInfraSpecifications({ children }: React.PropsWithCh
         <Container width={300}>
           <FormMultiTypeCheckboxField
             name="allowPrivilegeEscalation"
-            label="Allow Privilege Escalation"
+            label={getString('pipeline.buildInfra.allowPrivilegeEscalation')}
             // label={getString(labelKey).concat(` (${startCase(getString('common.optionalLabel'))})`)}
             multiTypeTextbox={{
               expressions,
@@ -801,8 +800,7 @@ export default function BuildInfraSpecifications({ children }: React.PropsWithCh
             multiTypeFieldSelectorProps={{
               label: (
                 <Text tooltipProps={{ dataTooltipId: 'addCapabilities' }}>
-                  ADD Capabilities
-                  {/* {getString('pipelineSteps.build.stageSpecifications.sharedPaths')} */}
+                  {getString('pipeline.buildInfra.addCapabilities')}
                 </Text>
               ),
               allowedTypes: [MultiTypeInputType.FIXED, MultiTypeInputType.EXPRESSION, MultiTypeInputType.RUNTIME]
@@ -821,8 +819,7 @@ export default function BuildInfraSpecifications({ children }: React.PropsWithCh
             multiTypeFieldSelectorProps={{
               label: (
                 <Text tooltipProps={{ dataTooltipId: 'dropCapabilities' }}>
-                  DROP Capbilities
-                  {/* {getString('pipelineSteps.build.stageSpecifications.sharedPaths')} */}
+                  {getString('pipeline.buildInfra.dropCapabilities')}
                 </Text>
               ),
               allowedTypes: [MultiTypeInputType.FIXED, MultiTypeInputType.EXPRESSION, MultiTypeInputType.RUNTIME]
@@ -833,8 +830,7 @@ export default function BuildInfraSpecifications({ children }: React.PropsWithCh
         <Container width={300}>
           <FormMultiTypeCheckboxField
             name="runAsNonRoot"
-            label="Run as Non Root"
-            // label={getString(labelKey).concat(` (${startCase(getString('common.optionalLabel'))})`)}
+            label={getString('pipeline.buildInfra.runAsNonRoot')}
             multiTypeTextbox={{
               expressions,
               allowableTypes,
@@ -847,7 +843,7 @@ export default function BuildInfraSpecifications({ children }: React.PropsWithCh
         <Container width={300}>
           <FormMultiTypeCheckboxField
             name="readOnlyRootFilesystem"
-            label="Read-only Root Filesystem"
+            label={getString('pipeline.buildInfra.readOnlyRootFilesystem')}
             // label={getString(labelKey).concat(` (${startCase(getString('common.optionalLabel'))})`)}
             multiTypeTextbox={{
               expressions,
@@ -1003,7 +999,7 @@ export default function BuildInfraSpecifications({ children }: React.PropsWithCh
               .nullable()
               .test(
                 'buildInfraType required only when Propagate from an existing stage',
-                getString('ci.buildInfa.label') || '',
+                getString('ci.buildInfra.label') || '',
                 function (buildInfra) {
                   return !isEmpty(buildInfra)
                 }
@@ -1320,7 +1316,7 @@ export default function BuildInfraSpecifications({ children }: React.PropsWithCh
                                   {CI_VM_INFRASTRUCTURE ? (
                                     <>
                                       <Text className={css.cardTitle} color="black" margin={{ bottom: 'large' }}>
-                                        {getString('ci.buildInfa.useNewInfra')}
+                                        {getString('ci.buildInfra.useNewInfra')}
                                       </Text>
                                       <ThumbnailSelect
                                         name={'buildInfraType'}
@@ -1367,7 +1363,7 @@ export default function BuildInfraSpecifications({ children }: React.PropsWithCh
                               {CI_VM_INFRASTRUCTURE ? (
                                 <>
                                   <Text font={{ variation: FontVariation.FORM_HELP }} padding={{ bottom: 'medium' }}>
-                                    {getString('ci.buildInfa.selectInfra')}
+                                    {getString('ci.buildInfra.selectInfra')}
                                   </Text>
                                   <ThumbnailSelect
                                     name={'buildInfraType'}
@@ -1402,23 +1398,25 @@ export default function BuildInfraSpecifications({ children }: React.PropsWithCh
                         <Layout.Horizontal spacing="xsmall" flex={{ justifyContent: 'start' }}>
                           <Icon name="info-messaging" size={20} />
                           <Text font={{ variation: FontVariation.H5 }}>
-                            {getString('ci.buildInfa.infrastructureTypesLabel')}
+                            {getString('ci.buildInfra.infrastructureTypesLabel')}
                           </Text>
                         </Layout.Horizontal>
                         <>
                           <Text font={{ variation: FontVariation.BODY2 }} padding={{ top: 'xlarge', bottom: 'xsmall' }}>
-                            {getString('ci.buildInfa.k8sLabel')}
+                            {getString('ci.buildInfra.k8sLabel')}
                           </Text>
                           <Text font={{ variation: FontVariation.SMALL }}>
-                            {getString('ci.buildInfa.kubernetesHelpText')}
+                            {getString('ci.buildInfra.kubernetesHelpText')}
                           </Text>
                         </>
                         <Separator />
                         <>
                           <Text font={{ variation: FontVariation.BODY2 }} padding={{ bottom: 'xsmall' }}>
-                            {getString('ci.buildInfa.vmLabel')}
+                            {getString('ci.buildInfra.vmLabel')}
                           </Text>
-                          <Text font={{ variation: FontVariation.SMALL }}>{getString('ci.buildInfa.awsHelpText')}</Text>
+                          <Text font={{ variation: FontVariation.SMALL }}>
+                            {getString('ci.buildInfra.awsHelpText')}
+                          </Text>
                         </>
                         {/* <Container padding={{ top: 'medium' }}>
                           <Link to="/">{getString('learnMore')}</Link>

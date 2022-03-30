@@ -34,7 +34,6 @@ noData: 'No data found. Click the button below to create a new item.'
 welcome: 'Welcome to Continuous Integration'
 description: Build, test and push artifacts to repositories.
 createPipeline: '{{ $.common.createPipeline }}'
-privileged: Privileged
 annotations: Annotations
 labels: '{{ $.pipelineSteps.labelsLabel }}'
 optimize: Optimize
@@ -90,7 +89,7 @@ commitsTab:
   youHaveNoCommits: You have no commits
   youWillSeeYourCommitsHere: You will see your commits here
 artifactoryConnectorLabel: Artifactory Connector
-buildInfa:
+buildInfra:
   label: Build Infrastructure is required
   awsVMs: AWS VMs
   selectInfra: Select the infrastructure where you want your builds to run

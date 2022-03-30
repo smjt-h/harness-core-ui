@@ -103,7 +103,9 @@ export const RunStepInputSetBasic: React.FC<RunStepProps> = ({
         <div className={cx(css.formGroup, css.sm, css.topMargin4, css.bottomMargin5)}>
           <FormMultiTypeCheckboxField
             name={`${prefix}spec.privileged`}
-            label={getString('ci.privileged').concat(` (${startCase(getString('common.optionalLabel'))})`)}
+            label={getString('pipeline.buildInfra.privileged').concat(
+              ` (${startCase(getString('common.optionalLabel'))})`
+            )}
             disabled={readonly}
             multiTypeTextbox={{
               expressions,
