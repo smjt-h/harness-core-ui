@@ -5,7 +5,7 @@
  * https://polyformproject.org/wp-content/uploads/2020/06/PolyForm-Shield-1.0.0.txt.
  */
 
-import React from 'react'
+import React, { useRef } from 'react'
 import { PageError, Tag } from '@wings-software/uicore'
 import { defaultTo, get } from 'lodash-es'
 import { useParams } from 'react-router-dom'
@@ -19,13 +19,11 @@ import { usePipelineContext } from '@pipeline/components/PipelineStudio/Pipeline
 import { useStrings } from 'framework/strings'
 import { useValidationErrors } from '@pipeline/components/PipelineStudio/PiplineHooks/useValidationErrors'
 import { CanvasButtons } from '@pipeline/components/CanvasButtons/CanvasButtons'
-import {
-  getIdentifierFromValue,
-  getScopeBasedProjectPathParams,
-  getScopeFromValue
-} from '@common/components/EntityReference/EntityReference'
+import { getScopeBasedProjectPathParams, getScopeFromValue } from '@common/components/EntityReference/EntityReference'
 import type { ProjectPathProps } from '@common/interfaces/RouteInterfaces'
-import { useGetTemplate } from 'services/template-ng'
+import { useGetYamlWithTemplateRefsResolved } from 'services/template-ng'
+import { useMutateAsGet } from '@common/hooks'
+import { yamlStringify } from '@common/utils/YamlHelperMethods'
 import css from './TemplatePipelineCanvas.module.scss'
 
 export function TemplatePipelineCanvas(): React.ReactElement {
@@ -37,9 +35,9 @@ export function TemplatePipelineCanvas(): React.ReactElement {
   const { getString } = useStrings()
   const { errorMap } = useValidationErrors()
   const [resolvedPipeline, setResolvedPipeline] = React.useState<PipelineInfoConfig>()
-  const templateRef = getIdentifierFromValue(defaultTo(pipeline.template?.templateRef, ''))
   const scope = getScopeFromValue(defaultTo(pipeline.template?.templateRef, ''))
   const queryParams = useParams<ProjectPathProps>()
+  const dummyPipeline = useRef(pipeline)
 
   const model = React.useMemo(() => new StageBuilderModel(), [])
   const engine = React.useMemo(() => createEngine({}), [])
@@ -68,34 +66,40 @@ export function TemplatePipelineCanvas(): React.ReactElement {
   useStageBuilderCanvasState(engine, [])
 
   const {
-    data: templateResponse,
-    error: templateError,
-    refetch: refetchTemplate,
-    loading: templateLoading
-  } = useGetTemplate({
-    templateIdentifier: templateRef,
+    data: pipelineResponse,
+    error: pipelineError,
+    refetch: refetchPipeline,
+    loading: pipelineLoading
+  } = useMutateAsGet(useGetYamlWithTemplateRefsResolved, {
     queryParams: {
       ...getScopeBasedProjectPathParams(queryParams, scope),
-      versionLabel: defaultTo(pipeline.template?.versionLabel, ''),
+      pipelineIdentifier: pipeline.identifier,
       repoIdentifier: gitDetails.repoIdentifier,
       branch: gitDetails.branch,
       getDefaultFromOtherRepo: true
+    },
+    body: {
+      originalEntityYaml: yamlStringify(dummyPipeline.current)
     }
   })
 
   React.useEffect(() => {
-    if (templateResponse?.data?.yaml) {
-      setResolvedPipeline(parse(templateResponse?.data?.yaml)?.template.spec)
+    if (pipelineResponse?.data?.mergedPipelineYaml) {
+      setResolvedPipeline(parse(pipelineResponse?.data?.mergedPipelineYaml))
     }
-  }, [templateResponse?.data?.yaml])
+  }, [pipelineResponse?.data?.mergedPipelineYaml])
+
+  React.useEffect(() => {
+    dummyPipeline.current = pipeline
+  }, [pipeline.template?.templateRef, pipeline.template?.versionLabel])
 
   return (
     <div className={css.canvas} ref={canvasRef}>
-      {templateLoading && <PageSpinner />}
-      {!templateLoading && templateError && (
+      {pipelineLoading && <PageSpinner />}
+      {!pipelineLoading && pipelineError && (
         <PageError
-          message={get(templateError, 'data.error', get(templateError, 'data.message', templateError?.message))}
-          onClick={() => refetchTemplate()}
+          message={get(pipelineError, 'data.error', get(pipelineError, 'data.message', pipelineError?.message))}
+          onClick={() => refetchPipeline()}
         />
       )}
       <Tag className={css.readOnlyTag}>READ ONLY</Tag>

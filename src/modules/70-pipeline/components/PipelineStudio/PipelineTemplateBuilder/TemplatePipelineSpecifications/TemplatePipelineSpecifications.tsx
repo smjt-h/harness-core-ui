@@ -7,7 +7,7 @@
 
 import { cloneDeep, debounce, defaultTo, isEqual, merge, noop, set } from 'lodash-es'
 import { useParams } from 'react-router-dom'
-import React from 'react'
+import React, { useRef } from 'react'
 import { parse } from 'yaml'
 import { Container, Formik, FormikForm, Heading, Layout, PageError } from '@wings-software/uicore'
 import { Color } from '@wings-software/design-system'
@@ -15,7 +15,7 @@ import type { FormikProps, FormikErrors } from 'formik'
 import { useToaster } from '@common/exports'
 import { setTemplateInputs, TEMPLATE_INPUT_PATH } from '@pipeline/utils/templateUtils'
 import type { ProjectPathProps } from '@common/interfaces/RouteInterfaces'
-import { useGetTemplate, useGetTemplateInputSetYaml } from 'services/template-ng'
+import { useGetTemplateInputSetYaml, useGetYamlWithTemplateRefsResolved } from 'services/template-ng'
 import {
   getIdentifierFromValue,
   getScopeBasedProjectPathParams,
@@ -29,6 +29,8 @@ import type { Error, PipelineInfoConfig } from 'services/cd-ng'
 import { useStrings } from 'framework/strings'
 import { validatePipeline } from '@pipeline/components/PipelineStudio/StepUtil'
 import { ErrorsStrip } from '@pipeline/components/ErrorsStrip/ErrorsStrip'
+import { useMutateAsGet } from '@common/hooks'
+import { yamlStringify } from '@common/utils/YamlHelperMethods'
 import css from './TemplatePipelineSpecifications.module.scss'
 
 export function TemplatePipelineSpecifications(): JSX.Element {
@@ -50,6 +52,7 @@ export function TemplatePipelineSpecifications(): JSX.Element {
   const [initialValues, setInitialValues] = React.useState<PipelineInfoConfig>()
   const [formikErrors, setFormikErrors] = React.useState<FormikErrors<PipelineInfoConfig>>()
   const [showFormError, setShowFormError] = React.useState<boolean>()
+  const dummyPipeline = useRef(pipeline)
 
   const onChange = React.useCallback(
     debounce(async (values: PipelineInfoConfig): Promise<void> => {
@@ -59,18 +62,20 @@ export function TemplatePipelineSpecifications(): JSX.Element {
   )
 
   const {
-    data: templateResponse,
-    error: templateError,
-    refetch: refetchTemplate,
-    loading: templateLoading
-  } = useGetTemplate({
-    templateIdentifier: templateRef,
+    data: pipelineResponse,
+    error: pipelineError,
+    refetch: refetchPipeline,
+    loading: pipelineLoading
+  } = useMutateAsGet(useGetYamlWithTemplateRefsResolved, {
     queryParams: {
       ...getScopeBasedProjectPathParams(queryParams, scope),
-      versionLabel: defaultTo(pipeline.template?.versionLabel, ''),
+      pipelineIdentifier: pipeline.identifier,
       repoIdentifier: gitDetails.repoIdentifier,
       branch: gitDetails.branch,
       getDefaultFromOtherRepo: true
+    },
+    body: {
+      originalEntityYaml: yamlStringify(dummyPipeline.current)
     }
   })
 
@@ -101,10 +106,10 @@ export function TemplatePipelineSpecifications(): JSX.Element {
   }, [templateInputSetYaml?.data])
 
   React.useEffect(() => {
-    if (templateResponse?.data?.yaml) {
-      setAllValues(parse(templateResponse?.data?.yaml)?.template.spec)
+    if (pipelineResponse?.data?.mergedPipelineYaml) {
+      setAllValues(parse(pipelineResponse?.data?.mergedPipelineYaml))
     }
-  }, [templateResponse?.data?.yaml])
+  }, [pipelineResponse?.data?.mergedPipelineYaml])
 
   React.useEffect(() => {
     try {
@@ -116,6 +121,10 @@ export function TemplatePipelineSpecifications(): JSX.Element {
       showError(error.message, undefined, 'template.parse.inputSet.error')
     }
   }, [inputsTemplate])
+
+  React.useEffect(() => {
+    dummyPipeline.current = pipeline
+  }, [pipeline.template?.templateRef, pipeline.template?.versionLabel])
 
   React.useEffect(() => {
     if (schemaErrors) {
@@ -148,25 +157,25 @@ export function TemplatePipelineSpecifications(): JSX.Element {
   }
 
   const refetch = () => {
-    refetchTemplate()
+    refetchPipeline()
     refetchTemplateInputSet()
   }
 
   return (
     <Container className={css.contentSection} height={'100%'} background={Color.FORM_BG}>
-      {(templateLoading || templateInputSetLoading) && <PageSpinner />}
-      {!templateLoading && !templateInputSetLoading && (templateError || templateInputSetError) && (
+      {(pipelineLoading || templateInputSetLoading) && <PageSpinner />}
+      {!pipelineLoading && !templateInputSetLoading && (pipelineError || templateInputSetError) && (
         <PageError
           message={
-            defaultTo((templateError?.data as Error)?.message, templateError?.message) ||
+            defaultTo((pipelineError?.data as Error)?.message, pipelineError?.message) ||
             defaultTo((templateInputSetError?.data as Error)?.message, templateInputSetError?.message)
           }
           onClick={() => refetch()}
         />
       )}
-      {!templateLoading &&
+      {!pipelineLoading &&
         !templateInputSetLoading &&
-        !templateError &&
+        !pipelineError &&
         !templateInputSetError &&
         inputsTemplate &&
         allValues &&
