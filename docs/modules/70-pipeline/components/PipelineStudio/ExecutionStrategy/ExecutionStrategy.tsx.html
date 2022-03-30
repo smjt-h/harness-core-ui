@@ -23,16 +23,16 @@
         <div class='clearfix'>
             
             <div class='fl pad1y space-right2'>
-                <span class="strong">90.91% </span>
+                <span class="strong">88.24% </span>
                 <span class="quiet">Statements</span>
-                <span class='fraction'>90/99</span>
+                <span class='fraction'>90/102</span>
             </div>
         
             
             <div class='fl pad1y space-right2'>
-                <span class="strong">75.23% </span>
+                <span class="strong">73.04% </span>
                 <span class="quiet">Branches</span>
-                <span class='fraction'>82/109</span>
+                <span class='fraction'>84/115</span>
             </div>
         
             
@@ -44,9 +44,9 @@
         
             
             <div class='fl pad1y space-right2'>
-                <span class="strong">92.71% </span>
+                <span class="strong">89.9% </span>
                 <span class="quiet">Lines</span>
-                <span class='fraction'>89/96</span>
+                <span class='fraction'>89/99</span>
             </div>
         
             
@@ -444,7 +444,6 @@
 <span class="cline-any cline-yes">15x</span>
 <span class="cline-any cline-yes">15x</span>
 <span class="cline-any cline-yes">15x</span>
-<span class="cline-any cline-yes">15x</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
@@ -505,10 +504,11 @@
 <span class="cline-any cline-yes">13x</span>
 <span class="cline-any cline-yes">38x</span>
 <span class="cline-any cline-yes">38x</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">38x</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-yes">13x</span>
@@ -781,8 +781,7 @@ import {
   useGetExecutionStrategyYaml
 } from 'services/cd-ng'
 import { useStrings } from 'framework/strings'
-import type { DeploymentStageElementConfig, StageElementWrapper } from '@pipeline/utils/pipelineTypes'
-import { getSelectedDeploymentType } from '@pipeline/utils/stageHelpers'
+import type { DeploymentStageElementConfig } from '@pipeline/utils/pipelineTypes'
 import { usePipelineContext } from '../PipelineContext/PipelineContext'
 import { DrawerTypes } from '../PipelineContext/PipelineActions'
 import Default from './resources/BlankCanvas.png'
@@ -854,11 +853,12 @@ function ExecutionStrategyRef(
 &nbsp;
   const serviceDefinitionType = useCallback((): GetExecutionStrategyYamlQueryParams['serviceDefinitionType'] =&gt; {
     const isPropagating = get(selectedStage, 'stage.spec.serviceConfig.useFromStage', null)
-    return getSelectedDeploymentType(
-      selectedStage as StageElementWrapper&lt;DeploymentStageElementConfig&gt;,
-      getStageFromPipeline,
-      isPropagating
-    )
+    <span class="missing-if-branch" title="if path not taken" >I</span>if (isPropagating) {
+      const parentStageId = <span class="cstat-no" title="statement not covered" >isPropagating.stage</span>
+      const parentStage = <span class="cstat-no" title="statement not covered" >getStageFromPipeline&lt;DeploymentStageElementConfig&gt;(parentStageId || '')</span>
+<span class="cstat-no" title="statement not covered" >      return get(parentStage, 'stage.stage.spec.serviceConfig.serviceDefinition.type', null)</span>
+    }
+    return get(selectedStage, 'stage.spec.serviceConfig.serviceDefinition.type', null)
   }, [getStageFromPipeline, selectedStage])
 &nbsp;
   const [selectedStrategy, setSelectedStrategy] = useState&lt;StrategyType&gt;('Rolling')
@@ -1084,7 +1084,7 @@ function ExecutionStrategyRef(
             text={getString('pipeline.executionStrategy.useStrategy')}
             onClick={() =&gt; {
               const newStage = produce(selectedStage, draft =&gt; {
-                const jsonFromYaml = YAML.parse(defaultTo(yamlSnippet<span class="branch-0 cbranch-no" title="branch not covered" >?.d</span>ata, '')) as StageElementConfig
+                const jsonFromYaml = YAML.parse(yamlSnippet<span class="branch-0 cbranch-no" title="branch not covered" >?.d</span>ata || <span class="branch-1 cbranch-no" title="branch not covered" >'')</span> as StageElementConfig
                 <span class="missing-if-branch" title="else path not taken" >E</span>if (draft.stage &amp;&amp; draft.stage.spec) {
                   draft.stage.failureStrategies = jsonFromYaml<span class="branch-0 cbranch-no" title="branch not covered" >?.f</span>ailureStrategies
                   ;(draft.stage.spec as DeploymentStageConfig).execution = (jsonFromYaml<span class="branch-0 cbranch-no" title="branch not covered" >?.s</span>pec as DeploymentStageConfig)
@@ -1114,7 +1114,7 @@ export const ExecutionStrategy = React.forwardRef(ExecutionStrategyRef)
             <div class='footer quiet pad2 space-top1 center small'>
                 Code coverage generated by
                 <a href="https://istanbul.js.org/" target="_blank">istanbul</a>
-                at Wed Mar 30 2022 11:10:16 GMT+0000 (Greenwich Mean Time)
+                at Wed Mar 30 2022 15:17:33 GMT+0000 (Greenwich Mean Time)
             </div>
         </div>
         <script src="../../../../../prettify.js"></script>
