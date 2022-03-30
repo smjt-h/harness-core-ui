@@ -131,7 +131,7 @@ export interface Clause {
   /**
    * The unique ID for the clause
    */
-  id: string
+  id?: string
   /**
    * Is the operation negated?
    */
@@ -201,6 +201,10 @@ export interface Error {
    */
   code: string
   /**
+   * Additional details about the error
+   */
+  details?: { [key: string]: any }
+  /**
    * The reason the request failed
    */
   message: string
@@ -213,7 +217,7 @@ export interface Feature {
   /**
    * Indicates if the flag has been archived and is no longer used
    */
-  archived: boolean
+  archived?: boolean
   /**
    * The date the flag was created in milliseconds
    */
@@ -242,7 +246,7 @@ export interface Feature {
     /**
      * The last time the flag was modified in this environment
      */
-    modifiedAt: number
+    modifiedAt?: number
     /**
      * The variation to serve for this flag in this environment when the flag is off
      */
@@ -280,7 +284,7 @@ export interface Feature {
   /**
    * The date the flag was last modified in milliseconds
    */
-  modifiedAt: number
+  modifiedAt?: number
   /**
    * The name of the Feature Flag
    */
@@ -292,7 +296,7 @@ export interface Feature {
   /**
    * Indicates if this is a permanent flag, or one that should expire
    */
-  permanent: boolean
+  permanent?: boolean
   prerequisites?: Prerequisite[]
   /**
    * The project this Feature belongs to
@@ -767,7 +771,7 @@ export interface ServingRule {
   /**
    * The unique identifier for this rule
    */
-  ruleId: string
+  ruleId?: string
   serve: Serve
 }
 
@@ -1052,7 +1056,7 @@ export interface ProjectRequestRequestBody {
   tags?: Tag[]
 }
 
-export type SegmentPatchRequestRequestBody = PatchOperation
+export type SegmentPatchRequestRequestBody = GitSyncPatchOperation
 
 export interface SegmentRequestRequestBody {
   environment: string
@@ -2584,6 +2588,10 @@ export interface GetAllFeaturesQueryParams {
    * Comma separated identifiers for multiple Features
    */
   featureIdentifiers?: string
+  /**
+   * Comma separated identifiers to exclude from the response
+   */
+  excludedFeatures?: string
 }
 
 export type GetAllFeaturesProps = Omit<

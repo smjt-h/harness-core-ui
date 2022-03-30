@@ -52,7 +52,7 @@ const AddTargetAvatar: React.FC<{ onAdd: () => void }> = ({ onAdd }) => (
 const InlineBold: React.FC<{ children: string | string[] }> = ({ children }) => (
   <span style={{ fontWeight: 'bold' }}>{children}</span>
 )
-const safeJoin = (data: any[], separator: string) => data?.join(separator) || `[${data}]`
+const safeJoin = (data: any[], separator: string): string => data?.join(separator) || `[${data}]`
 interface ClauseProps {
   clause: Clause
   operators: {
@@ -101,20 +101,20 @@ const ClauseEditMode: React.FC<ClauseEditProps> = ({
   onChange
 }) => {
   const valueOpts = (values ?? []).map(toOption)
-  const handleAttrChange = (e: React.ChangeEvent<HTMLInputElement>) =>
+  const handleAttrChange = (e: React.ChangeEvent<HTMLInputElement>): void =>
     onChange({ kind: 'attribute', payload: e.target.value })
-  const handleOperatorChange = (data: SelectOption) => {
+  const handleOperatorChange = (data: SelectOption): void => {
     onChange({ kind: 'op', payload: data.value as string })
     if (isSingleValued(data.value as string)) {
       onChange({ kind: 'values', payload: [values[0]] })
     }
   }
-  const handleValuesChange = (data: MultiSelectOption[]) =>
+  const handleValuesChange = (data: MultiSelectOption[]): void =>
     onChange({
       kind: 'values',
       payload: data.map(x => (x.value as string).trim()).filter(x => x.length)
     })
-  const handleSingleValueChange = (e: React.ChangeEvent<HTMLInputElement>) =>
+  const handleSingleValueChange = (e: React.ChangeEvent<HTMLInputElement>): void =>
     handleValuesChange([toOption(e.target.value)])
 
   const height = '36px'
@@ -222,16 +222,16 @@ const RulesTab: React.FC<RulesTabProps> = ({
   const [tempIncluded, setTempIncluded] = useState(included.map(toOption))
 
   const [openIncluded, hideIncluded] = useModalHook(() => {
-    const handleTempIncludedChange = (newData: any) => {
+    const handleTempIncludedChange = (newData: any): void => {
       setTempIncluded(newData.map((x: any) => (typeof x === 'string' ? toOption(x) : x)))
     }
 
-    const handleSaveTempIncluded = () => {
+    const handleSaveTempIncluded = (): void => {
       onChangeIncluded(tempIncluded.map(x => x.value))
       hideIncluded()
     }
 
-    const handleCancelIncluded = () => {
+    const handleCancelIncluded = (): void => {
       setTempIncluded(included.map(toOption))
       hideIncluded()
     }
@@ -268,16 +268,16 @@ const RulesTab: React.FC<RulesTabProps> = ({
 
   const [tempExcluded, setTempExcluded] = useState(excluded.map(toOption))
   const [openExcluded, hideExcluded] = useModalHook(() => {
-    const handleTempExcludedChange = (newData: any) => {
+    const handleTempExcludedChange = (newData: any): void => {
       setTempExcluded(newData.map((x: any) => (typeof x === 'string' ? toOption(x) : x)))
     }
 
-    const handleSaveTempExcluded = () => {
+    const handleSaveTempExcluded = (): void => {
       onChangeExcluded(tempExcluded.map(x => x.value))
       hideExcluded()
     }
 
-    const handleCancelExcluded = () => {
+    const handleCancelExcluded = (): void => {
       setTempExcluded(excluded.map(toOption))
       hideExcluded()
     }
@@ -328,7 +328,7 @@ const RulesTab: React.FC<RulesTabProps> = ({
       onChangeRules([...rules])
     }
 
-  const handleNewClause = () => {
+  const handleNewClause = (): void => {
     onChangeRules([
       ...rules,
       {
@@ -564,7 +564,7 @@ export const SegmentRules: React.FC<{ segment: Segment; onUpdate: () => void }> 
     }
   }
 
-  const handleValid = () => {
+  const handleValid = (): void => {
     const instructions = []
     const [addedToInc, removedFromInc] = getDiff(toIdentifiers(segment.included), tempSegment.included)
     const [addedToExc, removedFromExc] = getDiff(toIdentifiers(segment.excluded), tempSegment.excluded)
@@ -582,13 +582,13 @@ export const SegmentRules: React.FC<{ segment: Segment; onUpdate: () => void }> 
     const newClauses = tempSegment.rules.filter(c => c.id === '')
 
     removedClauses.length > 0 &&
-      instructions.push(...removedClauses.map(cl => patch.creators.removeClauseOnSegment(cl.id)))
+      instructions.push(...removedClauses.map(cl => patch.creators.removeClauseOnSegment(cl.id as string)))
     updatedClauses.length > 0 &&
       instructions.push(
         ...updatedClauses.map(cl =>
           patch.creators.updateClauseOnSegment({
             ...omit(cl, ['id', 'negate']),
-            clauseID: cl.id
+            clauseID: cl.id as string
           })
         )
       )
@@ -611,7 +611,7 @@ export const SegmentRules: React.FC<{ segment: Segment; onUpdate: () => void }> 
       .onEmptyPatch(() => setEditing(false))
   }
 
-  const handleCancel = () => {
+  const handleCancel = (): void => {
     patch.segment.reset()
     dispatch(
       setTempSegment({
@@ -624,7 +624,7 @@ export const SegmentRules: React.FC<{ segment: Segment; onUpdate: () => void }> 
     setEditing(false)
   }
 
-  const handleSave = () => {
+  const handleSave = (): void => {
     const [valid, newError] = validateRules(tempSegment.rules)
     if (valid) {
       handleValid()

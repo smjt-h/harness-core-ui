@@ -10,8 +10,9 @@ import { capitalize, isUndefined, startCase } from 'lodash-es'
 import { Button, Container, Icon, Layout, Text } from '@wings-software/uicore'
 import { Color } from '@harness/design-system'
 import { useStrings } from 'framework/strings'
-import type { ResponseBoolean } from 'services/cd-ng'
+import type { Failure, Error, ResponseBoolean } from 'services/cd-ng'
 
+import { ErrorHandler } from '@common/components/ErrorHandler/ErrorHandler'
 import css from './ProgressOverlay.module.scss'
 
 export type StepStatus = ResponseBoolean['status'] | 'IN_PROGRESS' | 'ABORTED'
@@ -23,6 +24,7 @@ export interface Stage {
   status: StepStatus
   intermediateLabel: string | React.ReactElement
   finalLabel?: string
+  error?: Failure | Error
 }
 
 interface ProgressOverlay {
@@ -31,6 +33,19 @@ interface ProgressOverlay {
   postFirstStage?: Stage
   secondStage?: Stage
   onClose: () => void
+}
+
+const shouldCloseModal = (firstStage: Stage, secondStage?: Stage): boolean => {
+  let shouldClose = false
+  /* This logic will wait for first and second stage (if present) to run to completion */
+  if (firstStage.status === 'SUCCESS') {
+    if (!isUndefined(secondStage)) {
+      shouldClose = secondStage.status === 'SUCCESS'
+    } else {
+      shouldClose = true
+    }
+  }
+  return shouldClose
 }
 
 export const ProgressOverlay: React.FC<ProgressOverlay> = ({
@@ -74,6 +89,8 @@ export const ProgressOverlay: React.FC<ProgressOverlay> = ({
   }
 
   const getOverallSummary = (): JSX.Element => {
+    // error can be proper formatted BE error or any unhandled failure
+    const responseMessages = (firstStage?.error as Error)?.responseMessages
     if (opnInProgress) {
       return (
         <Layout.Vertical spacing="small" flex>
@@ -84,7 +101,9 @@ export const ProgressOverlay: React.FC<ProgressOverlay> = ({
         </Layout.Vertical>
       )
     } else if (!opnInProgress && firstStage.status !== 'SUCCESS') {
-      return (
+      return responseMessages?.length ? (
+        <ErrorHandler responseMessages={responseMessages} />
+      ) : (
         <Layout.Vertical spacing="small" flex>
           <Icon name="circle-cross" size={40} color={Color.RED_450} />
           <Text font="medium" color={Color.BLACK} style={{ fontWeight: 'bold' }} className={css.finalLabel}>
@@ -120,19 +139,9 @@ export const ProgressOverlay: React.FC<ProgressOverlay> = ({
   const opnIsSuccessful = firstStage.status === 'SUCCESS' || (secondStage && secondStage.status === 'SUCCESS')
 
   React.useEffect(() => {
-    let shouldClose = false
     let id: NodeJS.Timeout
 
-    /* This logic will wait for first and second stage(if present) to run to completion */
-    if (firstStage.status === 'SUCCESS') {
-      if (!isUndefined(secondStage)) {
-        shouldClose = secondStage.status === 'SUCCESS'
-      } else {
-        shouldClose = true
-      }
-    }
-
-    if (shouldClose) {
+    if (shouldCloseModal(firstStage, secondStage)) {
       id = setTimeout(() => onClose(), !isUndefined(secondStage) ? LONG_DURATION : SHORT_DURATION)
     }
     return () => {

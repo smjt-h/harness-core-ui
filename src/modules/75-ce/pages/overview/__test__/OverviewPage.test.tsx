@@ -20,7 +20,6 @@ import {
   RecommendationsDocument
 } from 'services/ce/services'
 // import { useGetPerspective } from 'services/ce'
-import { useGetLicensesAndSummary, useExtendTrialLicense, useSaveFeedback } from 'services/cd-ng'
 import OverviewPage from '../OverviewPage'
 
 import SummaryResponse from './SummaryResponse.json'
@@ -36,45 +35,6 @@ jest.mock('services/ce', () => ({
 
 jest.mock('@ce/components/CEChart/CEChart', () => 'mock')
 
-jest.mock('services/cd-ng')
-const useGetModuleLicenseInfoMock = useGetLicensesAndSummary as jest.MockedFunction<any>
-const useExtendTrialLicenseMock = useExtendTrialLicense as jest.MockedFunction<any>
-useExtendTrialLicenseMock.mockImplementation(() => {
-  return {
-    mutate: jest.fn()
-  }
-})
-const useSaveFeedbackMock = useSaveFeedback as jest.MockedFunction<any>
-useSaveFeedbackMock.mockImplementation(() => {
-  return {
-    mutate: jest.fn()
-  }
-})
-
-jest.mock('@common/hooks/useGetUsageAndLimit', () => ({
-  useGetUsageAndLimit: () => {
-    return {
-      limitData: {
-        limit: {
-          ccm: {
-            totalSpendLimit: 250000
-          }
-        }
-      },
-      usageData: {
-        usage: {
-          ccm: {
-            activeSpend: {
-              count: 200000,
-              displayName: ''
-            }
-          }
-        }
-      }
-    }
-  }
-}))
-
 const params = {
   accountId: 'TEST_ACC',
   perspetiveId: 'perspectiveId',
@@ -83,18 +43,6 @@ const params = {
 
 describe('test cases for Overview Page', () => {
   test('should be able to render the overview dashboard', async () => {
-    useGetModuleLicenseInfoMock.mockImplementation(() => {
-      return {
-        data: {
-          data: {},
-          status: 'SUCCESS'
-        },
-
-        error: null,
-        refetch: jest.fn()
-      }
-    })
-
     const responseState = {
       executeQuery: ({ query }: { query: DocumentNode }) => {
         if (query === FetchCcmMetaDataDocument) {
@@ -130,17 +78,6 @@ describe('test cases for Overview Page', () => {
   })
 
   test('should render NoData page when cluster and cloud data are not present', async () => {
-    useGetModuleLicenseInfoMock.mockImplementation(() => {
-      return {
-        data: {
-          data: {},
-          status: 'SUCCESS'
-        },
-        error: null,
-        refetch: jest.fn()
-      }
-    })
-
     const responseState = {
       executeQuery: ({ query }: { query: DocumentNode }) => {
         if (query === FetchCcmMetaDataDocument) {

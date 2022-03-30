@@ -18,6 +18,7 @@ import {
   PageError,
   Pagination
 } from '@wings-software/uicore'
+import { useGovernance } from '@cf/hooks/useGovernance'
 import { useStrings } from 'framework/strings'
 import { Feature, GitDetails, GitSyncErrorResponse, Target, useGetAllFeatures, Variation } from 'services/cf'
 import { ItemContainer } from '@cf/components/ItemContainer/ItemContainer'
@@ -339,6 +340,7 @@ export const VariationSelect: React.FC<VariationSelectProps> = ({
         }
       : undefined
   const { activeEnvironment } = useActiveEnvironment()
+  const { handleError: handleGovernanceError, isGovernanceError } = useGovernance()
   const [canEdit] = usePermission({
     resource: { resourceType: ResourceType.ENVIRONMENT, resourceIdentifier: activeEnvironment },
     permissions: [PermissionIdentifier.EDIT_FF_FEATUREFLAG]
@@ -395,7 +397,11 @@ export const VariationSelect: React.FC<VariationSelectProps> = ({
       if (e.status === GIT_SYNC_ERROR_CODE) {
         gitSync.handleError(e.data as GitSyncErrorResponse)
       } else {
-        showError(getErrorMessage(e), 0, 'cf.serve.flag.variant.error')
+        if (isGovernanceError(e)) {
+          handleGovernanceError(e.data)
+        } else {
+          showError(getErrorMessage(e), 0, 'cf.serve.flag.variant.error')
+        }
       }
       setIndex(previousSelectedIdentifier.current)
     } finally {

@@ -67,7 +67,7 @@ export interface DeployEnvData extends Omit<PipelineInfrastructure, 'environment
   environmentRef?: string
 }
 
-interface NewEditEnvironmentModalProps {
+export interface NewEditEnvironmentModalProps {
   isEdit: boolean
   isEnvironment: boolean
   data: EnvironmentResponseDTO

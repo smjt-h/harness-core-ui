@@ -480,67 +480,68 @@ export const monitoredServiceWithCustomHealthSource = {
       sources: {
         healthSources: [
           {
-            name: 'Custom Health Source',
-            identifier: 'Custom Health Source',
-            type: 'CustomHealth',
+            name: 'CustomHealth Metric',
+            identifier: 'CustomHealth_Metric',
+            type: 'CustomHealthMetric',
             spec: {
-              connectorRef: 'customconnector',
+              connectorRef: 'account.customconnector1',
               metricDefinitions: [
                 {
-                  identifier: 'metric1',
-                  metricName: 'metric1',
-                  riskProfile: { category: 'Errors', metricType: 'ERROR', thresholdTypes: ['ACT_WHEN_HIGHER'] },
+                  identifier: 'CustomHealth_Metric_101',
+                  metricName: 'CustomHealth Metric 101',
+                  riskProfile: {
+                    category: 'Errors',
+                    metricType: 'ERROR',
+                    thresholdTypes: ['ACT_WHEN_HIGHER', 'ACT_WHEN_LOWER']
+                  },
                   analysis: {
-                    liveMonitoring: { enabled: true },
+                    liveMonitoring: {
+                      enabled: true
+                    },
                     deploymentVerification: {
-                      enabled: true,
+                      enabled: false,
                       serviceInstanceFieldName: null,
                       serviceInstanceMetricPath: null
                     },
-                    riskProfile: { category: 'Errors', metricType: 'ERROR', thresholdTypes: ['ACT_WHEN_HIGHER'] }
+                    riskProfile: {
+                      category: 'Errors',
+                      metricType: 'ERROR',
+                      thresholdTypes: ['ACT_WHEN_HIGHER', 'ACT_WHEN_LOWER']
+                    }
                   },
-                  sli: { enabled: true },
-                  groupName: 'group1',
+                  sli: {
+                    enabled: false
+                  },
+                  requestDefinition: {
+                    urlPath:
+                      'query?query=avg:system.disk.free{*}.rollup(avg, 60)&from=start_time_seconds&to=end_time_seconds&pod_name=harness-datadog-dummy-pipeline-deployment-canary-76586cb6fvjsfp',
+                    requestBody: '',
+                    method: 'GET',
+                    startTimeInfo: {
+                      placeholder: 'start_time_seconds',
+                      timestampFormat: 'SECONDS',
+                      customTimestampFormat: ''
+                    },
+                    endTimeInfo: {
+                      placeholder: 'end_time_seconds',
+                      timestampFormat: 'SECONDS',
+                      customTimestampFormat: ''
+                    }
+                  },
                   queryType: 'SERVICE_BASED',
-                  urlPath:
-                    'rest/applications/cv-app/metric-data?metric-path=Overall%20Application%20Performance%7Cpython-tier%7CAverage%20Response%20Time%20%28ms%29&time-range-type=BETWEEN_TIMES&start-time=start_time&end-time=end_time&output=JSON&rollup=false',
-                  method: 'GET',
-                  requestBody: '',
-                  startTime: { placeholder: 'start_time', timestampFormat: 'MILLISECONDS', customTimestampFormat: '' },
-                  endTime: { placeholder: 'end_time', timestampFormat: 'MILLISECONDS', customTimestampFormat: '' },
                   metricResponseMapping: {
-                    metricValueJsonPath: '$.[*].metricValues.[*].count',
-                    timestampJsonPath: '$.[*].metricValues.[*].startTimeInMillis',
-                    serviceInstanceJsonPath: '',
+                    metricValueJsonPath: '$.series.[*].metric',
+                    timestampJsonPath: '$.series.[*].start',
+                    serviceInstanceJsonPath: null,
                     timestampFormat: ''
-                  }
+                  },
+                  groupName: 'Group 1'
                 }
               ]
             }
           }
         ],
-        changeSources: [
-          {
-            name: 'harness cd',
-            identifier: 'harness_cd',
-            type: 'HarnessCD',
-            enabled: true,
-            spec: {
-              harnessApplicationId: '8Xb3Jf6QSWaN9mTFaADqqw',
-              harnessServiceId: 'j1Ub7cGRQYSRYKxjo7Mi2A',
-              harnessEnvironmentId: 'Wd8OOrfETjGbpCakw3kJXw'
-            },
-            category: 'Deployment'
-          },
-          {
-            name: 'Harness CD Next Gen',
-            identifier: 'harness_cd_next_gen',
-            type: 'HarnessCDNextGen',
-            enabled: true,
-            spec: {},
-            category: 'Deployment'
-          }
-        ]
+        changeSources: []
       },
       dependencies: []
     }

@@ -31,6 +31,10 @@ export const transformValuesFieldsConfig = [
     type: TransformValuesTypes.Text
   },
   {
+    name: 'spec.shell',
+    type: TransformValuesTypes.Shell
+  },
+  {
     name: 'spec.command',
     type: TransformValuesTypes.Text
   },
@@ -53,10 +57,6 @@ export const transformValuesFieldsConfig = [
   {
     name: 'spec.imagePullPolicy',
     type: TransformValuesTypes.ImagePullPolicy
-  },
-  {
-    name: 'spec.shell',
-    type: TransformValuesTypes.Shell
   },
   {
     name: 'spec.runAsUser',
@@ -100,6 +100,12 @@ export const getEditViewValidateFieldsConfig = (buildInfrastructureType: K8sDire
     type: ValidationFieldTypes.Text,
     label: 'imageLabel',
     isRequired: buildInfrastructureType !== 'VM'
+  },
+  {
+    name: 'spec.shell',
+    type: ValidationFieldTypes.Text,
+    label: 'common.shell',
+    isRequired: true
   },
   {
     name: 'spec.command',
@@ -160,6 +166,10 @@ export function getInputSetViewValidateFieldsConfig(
       isRequired
     },
     {
+      name: 'spec.shell',
+      type: ValidationFieldTypes.Shell
+    },
+    {
       name: 'spec.command',
       type: ValidationFieldTypes.Text,
       label: 'commandLabel',
@@ -181,10 +191,7 @@ export function getInputSetViewValidateFieldsConfig(
       name: 'spec.imagePullPolicy',
       type: ValidationFieldTypes.ImagePullPolicy
     },
-    {
-      name: 'spec.shell',
-      type: ValidationFieldTypes.Shell
-    },
+
     {
       name: 'spec.runAsUser',
       type: ValidationFieldTypes.Numeric

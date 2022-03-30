@@ -38,8 +38,8 @@ export interface TargetGroup {
 export interface FormVariationMap {
   variationIdentifier: string
   variationName: string
-  targetGroups: TargetGroup[] | []
-  targets: TargetMap[] | []
+  targetGroups: TargetGroup[]
+  targets: TargetMap[]
   isVisible: boolean
 }
 export interface TargetingRulesTabProps {
@@ -91,7 +91,7 @@ const TargetingRulesTab = ({
         ?.filter(rule => rule.serve.variation === variation.identifier)
         .map(targetGroupRule => ({
           identifier: targetGroupRule.clauses[0].values[0],
-          ruleId: targetGroupRule.ruleId,
+          ruleId: targetGroupRule.ruleId as string,
           name: segments.find(segment => segment.identifier === targetGroupRule.clauses[0].values[0])?.name as string
         })) || []
 

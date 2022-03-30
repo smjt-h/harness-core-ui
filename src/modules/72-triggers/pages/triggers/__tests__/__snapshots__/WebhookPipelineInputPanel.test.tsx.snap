@@ -76,6 +76,44 @@ exports[`WebhookPipelineInputPanel Triggers tests Renders/snapshots Initial Rend
 </div>
 `;
 
+exports[`WebhookPipelineInputPanel Triggers tests Renders/snapshots Initial Render - Pipeline Input Panel with pipeline artifact runtime inputs 1`] = `
+<div>
+  <div
+    class="OverlaySpinner--overlaySpinner"
+  >
+    <form
+      class="FormikForm--main"
+    >
+      <div>
+        <div
+          class="Layout--vertical Layout--layout-spacing-large StyledProps--main webhookPipelineInputContainer StyledProps--padding-none"
+        >
+          <div
+            class="Layout--vertical Layout--layout-spacing-large StyledProps--main StyledProps--margin-large"
+          >
+            <span
+              class="StyledProps--font StyledProps--main formContentTitle StyledProps--inline"
+              data-tooltip-id="pipelineInputLabel"
+            >
+              triggers.pipelineInputLabel
+            </span>
+            <div
+              class="Layout--vertical StyledProps--main formContent"
+            >
+              <p
+                class="StyledProps--font StyledProps--main"
+              >
+                pipeline.pipelineInputPanel.noRuntimeInputs
+              </p>
+            </div>
+          </div>
+        </div>
+      </div>
+    </form>
+  </div>
+</div>
+`;
+
 exports[`WebhookPipelineInputPanel Triggers tests Renders/snapshots Initial Render - Pipeline Input Panel with pipeline variable runtime inputs 1`] = `
 <div>
   <div

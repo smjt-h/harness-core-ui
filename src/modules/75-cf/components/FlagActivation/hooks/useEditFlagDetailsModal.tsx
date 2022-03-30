@@ -1,5 +1,12 @@
+/*
+ * Copyright 2022 Harness Inc. All rights reserved.
+ * Use of this source code is governed by the PolyForm Shield 1.0.0 license
+ * that can be found in the licenses directory at the root of this repository, also available at
+ * https://polyformproject.org/wp-content/uploads/2020/06/PolyForm-Shield-1.0.0.txt.
+ */
+
 import React from 'react'
-import { Layout, Text, Button, Container, Formik, FormikForm as Form, FormInput } from '@wings-software/uicore'
+import { Button, Container, Formik, FormikForm as Form, FormInput, Layout, Text } from '@wings-software/uicore'
 import { useModalHook } from '@harness/use-modal'
 import { Dialog, Divider } from '@blueprintjs/core'
 import * as yup from 'yup'
@@ -14,6 +21,7 @@ import type {
 import { showToaster } from '@cf/utils/CFUtils'
 
 import { GIT_SYNC_ERROR_CODE, UseGitSync } from '@cf/hooks/useGitSync'
+import { useGovernance } from '@cf/hooks/useGovernance'
 import { useStrings } from 'framework/strings'
 import { AUTO_COMMIT_MESSAGES } from '@cf/constants/GitSyncConstants'
 import patch from '../../../utils/instructions'
@@ -35,6 +43,7 @@ interface UseEditFlagDetailsModalReturn {
 const useEditFlagDetailsModal = (props: UseEditFlagDetailsModalProps): UseEditFlagDetailsModalReturn => {
   const { featureFlag, gitSync, refetchFlag, submitPatch } = props
   const { getString } = useStrings()
+  const { handleError: handleGovernanceError, isGovernanceError } = useGovernance()
 
   const [openEditDetailsModal, hideEditDetailsModal] = useModalHook(() => {
     const gitSyncFormMeta = gitSync?.getGitSyncFormMeta(AUTO_COMMIT_MESSAGES.UPDATED_FLAG_VARIATIONS)
@@ -58,7 +67,7 @@ const useEditFlagDetailsModal = (props: UseEditFlagDetailsModalProps): UseEditFl
       }
 
       if (permanent !== initialValues.permanent) {
-        patch.feature.addInstruction(patch.creators.updatePermanent(permanent))
+        patch.feature.addInstruction(patch.creators.updatePermanent(!!permanent))
       }
 
       patch.feature
@@ -85,7 +94,11 @@ const useEditFlagDetailsModal = (props: UseEditFlagDetailsModalProps): UseEditFl
               if (error.status === GIT_SYNC_ERROR_CODE) {
                 gitSync?.handleError(error.data as GitSyncErrorResponse)
               } else {
-                patch.feature.reset()
+                if (isGovernanceError(error)) {
+                  handleGovernanceError(error.data)
+                } else {
+                  patch.feature.reset()
+                }
               }
             })
         })

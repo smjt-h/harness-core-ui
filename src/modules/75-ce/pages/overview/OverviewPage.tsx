@@ -8,7 +8,6 @@
 import React, { useEffect, useState } from 'react'
 import cx from 'classnames'
 import { Container, Text, Page } from '@wings-software/uicore'
-import { get } from 'lodash-es'
 import {
   CcmMetaData,
   StatsInfo,
@@ -35,14 +34,6 @@ import OverviewAddCluster from '@ce/components/OverviewPage/OverviewAddCluster'
 import { Utils } from '@ce/common/Utils'
 import { useCreateConnectorMinimal } from '@ce/components/CreateConnector/CreateConnector'
 import NoData from '@ce/components/OverviewPage/OverviewNoData'
-import { ModuleName } from 'framework/types/ModuleName'
-import { useGetUsageAndLimit } from '@common/hooks/useGetUsageAndLimit'
-import { FeatureIdentifier } from 'framework/featureStore/FeatureIdentifier'
-import FeatureWarningUpgradeBanner from '@common/components/FeatureWarning/FeatureWarningUpgradeBanner'
-import { ENFORCEMENT_USAGE_THRESHOLD } from '@ce/constants'
-import formatCost from '@ce/utils/formatCost'
-import { useFeatureFlag } from '@common/hooks/useFeatureFlag'
-import { FeatureFlag } from '@common/featureFlags'
 import bgImage from './images/CD/overviewBg.png'
 import css from './Overview.module.scss'
 
@@ -91,8 +82,6 @@ const OverviewPage: React.FC = () => {
     to: DATE_RANGE_SHORTCUTS.LAST_30_DAYS[1].format(CE_DATE_FORMAT_INTERNAL),
     from: DATE_RANGE_SHORTCUTS.LAST_30_DAYS[0].format(CE_DATE_FORMAT_INTERNAL)
   })
-
-  const featureEnforced = useFeatureFlag(FeatureFlag.FEATURE_ENFORCEMENT_ENABLED)
 
   const [summaryResult] = useFetchPerspectiveDetailsSummaryQuery({
     variables: {
@@ -144,7 +133,6 @@ const OverviewPage: React.FC = () => {
         content={<PerspectiveTimeRangePicker timeRange={timeRange} setTimeRange={setTimeRange} />}
       />
       <Page.Body>
-        {featureEnforced ? <CEUsageInfo /> : null}
         <Container padding={{ top: 'medium', right: 'xlarge', bottom: 'medium', left: 'xlarge' }}>
           <div className={css.mainContainer}>
             <div className={css.columnOne}>
@@ -198,44 +186,6 @@ const OverviewPage: React.FC = () => {
         </Container>
       </Page.Body>
     </Container>
-  )
-}
-
-// enable this when useGetUsageAndLimit is implemented by the GTM Team
-// calculate the percentage utilisation
-// Just confirm if we need to show the banner only if the utilisation
-// reaches above certain threshold.
-//
-// Also, there are certain TODOs in this component, complete them
-// for full functionality
-
-const CEUsageInfo = () => {
-  const { limitData, usageData } = useGetUsageAndLimit(ModuleName.CE)
-  const isLoading = limitData.loadingLimit || usageData.loadingUsage
-  if (isLoading) {
-    return null
-  }
-
-  const { usage } = usageData
-  const { limit } = limitData
-
-  const usageCost = get(usage, 'ccm.activeSpend.count', 0)
-  const limitCost = get(limit, 'ccm.totalSpendLimit', 1)
-
-  const usagePercentage = (usageCost / limitCost) * 100
-  if (usagePercentage < ENFORCEMENT_USAGE_THRESHOLD) {
-    return null
-  }
-
-  return (
-    <FeatureWarningUpgradeBanner
-      featureName={FeatureIdentifier.PERSPECTIVES}
-      message={`You have used ${formatCost(Number(usageCost), {
-        shortFormat: true
-      })} / ${formatCost(Number(limitCost), {
-        shortFormat: true
-      })} free cloud spend incuded in your current plan. Consider upgrading to manage higher cloud spend.`}
-    />
   )
 }
 

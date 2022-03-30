@@ -505,7 +505,7 @@ runPipelineForm:
 skipped: 'Step has been skipped.'
 skipCondition: 'Skip condition:'
 skipConditionValidation: 'Skip condition is required.'
-learnMore: Learn more
+learnMore: ' Learn more'
 clipboardCopySuccess: Successfully copied to clipboard
 clipboardCopyFail: Copy to clipboard has failed
 skipConditionsTitle: Skip Conditions
@@ -693,7 +693,7 @@ delegate:
   stepOneWizard: 'Create Delegate'
   reviewScript:
     configProxySettings: 'Configure Proxy Settings (optional)'
-    descriptionProxySettings: 'If the Delegate will connect to Harness using a proxy, configure the proxy settings PROXY_HOST, PROXY_USER, and PROXY_PASSWORD in harness-delegate.yaml.'
+    descriptionProxySettings: 'If the Delegate will connect to Harness using a proxy, configure the proxy settings PROXY_HOST, PROXY_USER, and PROXY_PASSWORD in harness-delegate.yml.'
   successVerification:
     applyYAMLTitle: ' Apply YAML and verify connection'
     description1: 'Copy the downloaded YAML to a machine with kubectl installed and access to your Kubernetes cluster.'

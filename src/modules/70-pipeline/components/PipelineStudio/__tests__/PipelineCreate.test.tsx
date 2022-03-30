@@ -208,7 +208,7 @@ describe('PipelineCreate test', () => {
       },
       {
         repoIdentifier: 'identifier',
-        branch: 'master'
+        branch: 'branch'
       }
     )
   })

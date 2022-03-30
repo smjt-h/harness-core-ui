@@ -37,6 +37,7 @@ export interface MultiTypeFieldSelectorProps extends Omit<IFormGroupProps, 'labe
   isOptional?: boolean
   optionalLabel?: string
   tooltipProps?: DataTooltipInterface
+  disableMultiSelectBtn?: boolean
 }
 
 export interface ConnectedMultiTypeFieldSelectorProps extends MultiTypeFieldSelectorProps {
@@ -55,6 +56,7 @@ export function MultiTypeFieldSelector(props: ConnectedMultiTypeFieldSelectorPro
     expressionRender,
     skipRenderValueInExpressionLabel,
     isOptional,
+    disableMultiSelectBtn,
     optionalLabel = '(optional)',
     ...restProps
   } = props
@@ -96,7 +98,12 @@ export function MultiTypeFieldSelector(props: ConnectedMultiTypeFieldSelectorPro
         <div className={css.formLabel}>
           <HarnessDocTooltip tooltipId={dataTooltipId} labelText={labelText} />
           {disableTypeSelection ? null : (
-            <MultiTypeSelectorButton allowedTypes={allowedTypes} type={type} onChange={handleChange} />
+            <MultiTypeSelectorButton
+              allowedTypes={allowedTypes}
+              type={type}
+              onChange={handleChange}
+              disabled={disableMultiSelectBtn}
+            />
           )}
         </div>
       }

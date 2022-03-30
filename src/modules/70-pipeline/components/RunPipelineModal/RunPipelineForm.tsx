@@ -66,7 +66,6 @@ import { useMutateAsGet, useQueryParams } from '@common/hooks'
 import { yamlStringify } from '@common/utils/YamlHelperMethods'
 import { PipelineActions } from '@common/constants/TrackingConstants'
 import { useTelemetry } from '@common/hooks/useTelemetry'
-import { sanitize } from '@common/utils/JSONUtils'
 import type { InputSetDTO } from '@pipeline/utils/types'
 import { useDeepCompareEffect } from '@common/hooks/useDeepCompareEffect'
 import { useGetYamlWithTemplateRefsResolved } from 'services/template-ng'
@@ -628,6 +627,7 @@ function RunPipelineFormBasic({
           if (!isEqual(lastYaml, parsedYaml)) {
             setCurrentPipeline(parsedYaml as { pipeline: PipelineInfoConfig })
             setLastYaml(parsedYaml)
+            handleValidation(parsedYaml)
           }
         }, POLL_INTERVAL)
         return () => {
@@ -715,23 +715,7 @@ function RunPipelineFormBasic({
 
   const formRefDom = React.useRef<HTMLElement | undefined>()
   const handleValidation = async (values: Values): Promise<void> => {
-    // Sanitize any empty objects
-    const latestPipeline = sanitize(
-      mergeWith(currentPipeline, { pipeline: values as PipelineInfoConfig }, currentValue => {
-        // Return empty object if there exists no key in the current pipeline that matches the one in the values passed.
-        if (currentValue === undefined) {
-          return {}
-        } else {
-          return undefined
-        }
-      }),
-      {
-        removeEmptyArray: false,
-        removeEmptyString: false
-      }
-    ) as {
-      pipeline: PipelineInfoConfig
-    }
+    const latestPipeline = { ...currentPipeline, pipeline: values as PipelineInfoConfig }
     setCurrentPipeline(latestPipeline)
     const runPipelineFormErrors = await getFormErrors(latestPipeline, yamlTemplate, pipeline)
     // https://github.com/formium/formik/issues/1392
@@ -766,7 +750,9 @@ function RunPipelineFormBasic({
         <Formik<Values>
           initialValues={getFormikInitialValues() as Values}
           formName="runPipeline"
-          onSubmit={handleRunPipeline as any}
+          onSubmit={values => {
+            handleRunPipeline(values as PipelineInfoConfig)
+          }}
           enableReinitialize
           validate={handleValidation}
         >

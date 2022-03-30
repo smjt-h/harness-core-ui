@@ -112,7 +112,7 @@ const GitContextForm: React.FC<GitContextFormProps<Record<string, any> & GitCont
   React.useEffect(() => {
     if (!loadingBranchList && branchList?.data?.branches?.content?.length) {
       const defaultBranch = branchList.data.defaultBranch?.branchName as string
-      if (isEmpty(gitDetails?.branch)) {
+      if (isEmpty(gitDetails?.branch) && !formikProps.values.branch) {
         formikProps.setFieldValue('branch', defaultBranch)
       }
 

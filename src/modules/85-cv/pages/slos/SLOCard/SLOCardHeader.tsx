@@ -30,6 +30,7 @@ import { PermissionIdentifier } from '@rbac/interfaces/PermissionIdentifier'
 import RbacMenuItem from '@rbac/components/MenuItem/MenuItem'
 import ReviewChangeSVG from '@cv/assets/sloReviewChange.svg'
 import { useErrorBudgetRestHook } from '@cv/hooks/useErrorBudgetRestHook/useErrorBudgetRestHook'
+import { useLogContentHook } from '@cv/hooks/useLogContentHook/useLogContentHook'
 import { PeriodTypes } from '../components/CVCreateSLO/CVCreateSLO.types'
 import type { SLOCardHeaderProps } from '../CVSLOsListingPage.types'
 import css from '../CVSLOsListingPage.module.scss'
@@ -112,6 +113,12 @@ const SLOCardHeader: React.FC<SLOCardHeaderProps> = ({
     }
   })
 
+  const { openLogContentHook } = useLogContentHook({
+    sloIdentifier: serviceLevelObjective.sloIdentifier,
+    serviceName: serviceLevelObjective.serviceName,
+    envName: serviceLevelObjective.environmentName
+  })
+
   return (
     <>
       <Container flex margin={{ bottom: 'medium' }}>
@@ -150,6 +157,18 @@ const SLOCardHeader: React.FC<SLOCardHeaderProps> = ({
                   }}
                 />
               )}
+              <RbacMenuItem
+                icon="document-open"
+                text={getString('cv.executionLogs')}
+                onClick={openLogContentHook}
+                permission={{
+                  permission: PermissionIdentifier.VIEW_SLO_SERVICE,
+                  resource: {
+                    resourceType: ResourceType.SLO,
+                    resourceIdentifier: projectIdentifier
+                  }
+                }}
+              />
               <RbacMenuItem
                 icon="trash"
                 text={getString('delete')}

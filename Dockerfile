@@ -6,7 +6,7 @@ RUN apk add --upgrade libxml2 libxslt
 COPY dist /opt/nextgenui
 COPY docker/entrypoint.sh /opt/
 COPY docker/nginx.conf /etc/nginx/
-COPY docker/nginx-ipv4-only.conf /etc/nginx/
+COPY docker/nginx-ipv6-only.conf /etc/nginx/
 WORKDIR /opt/nextgenui
 
 # for on-prem

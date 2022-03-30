@@ -62,7 +62,7 @@ src/modules/85-sto-steps @harness/ui-sto
 src/modules/75-ci @harness/ui-ci
 src/modules/75-ci/modals/CITrial @harness/ui-plg
 src/modules/75-ci/pages/home @harness/ui-plg
-src/modules/72-triggers @harness/ui-ci
+src/modules/72-triggers @harness/ui-triggers
 src/modules/70-pipeline/pages/execution/ExecutionTestView @harness/ui-ci
 src/modules/70-pipeline/pages/execution/ExecutionArtifactsView @harness/ui-ci
 src/modules/75-ce/modals/CETrialModal @harness/ui-plg

@@ -62,7 +62,7 @@ export interface DeployServiceData extends Omit<ServiceConfig, 'serviceRef'> {
   serviceRef?: string
 }
 
-interface NewEditServiceModalProps {
+export interface NewEditServiceModalProps {
   isEdit: boolean
   isService: boolean
   data: ServiceResponseDTO

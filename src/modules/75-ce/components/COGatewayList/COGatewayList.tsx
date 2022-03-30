@@ -57,14 +57,11 @@ import type { FeatureDetail } from 'framework/featureStore/featureStoreUtil'
 import { NGBreadcrumbs } from '@common/components/NGBreadcrumbs/NGBreadcrumbs'
 import COGatewayAnalytics from './COGatewayAnalytics'
 import COGatewayCumulativeAnalytics from './COGatewayCumulativeAnalytics'
-import odIcon from './images/ondemandIcon.svg'
-import spotIcon from './images/spotIcon.svg'
+import ComputeType from './components/ComputeType'
 import { getInstancesLink, getRelativeTime, getStateTag, getRiskGaugeChartOptions } from './Utils'
 import useToggleRuleState from './useToggleRuleState'
 import TextWithToolTip, { textWithToolTipStatus } from '../TextWithTooltip/TextWithToolTip'
 import landingPageSVG from './images/AutostoppingRuleIllustration.svg'
-import spotDisableIcon from './images/spotDisabled.svg'
-import onDemandDisableIcon from './images/onDemandDisabled.svg'
 import refreshIcon from './images/refresh.svg'
 import NoDataImage from './images/NoData.svg'
 import css from './COGatewayList.module.scss'
@@ -89,28 +86,7 @@ interface EmptyListPageProps {
 }
 
 function IconCell(tableProps: CellProps<Service>): JSX.Element {
-  const isK8sRule = tableProps.row.original.kind === 'k8s'
-  const getIcon = () => {
-    return tableProps.value === 'spot'
-      ? tableProps.row.original.disabled
-        ? spotDisableIcon
-        : spotIcon
-      : tableProps.row.original.disabled
-      ? onDemandDisableIcon
-      : odIcon
-  }
-  return (
-    <Layout.Horizontal spacing="medium">
-      {isK8sRule ? (
-        <Icon name="app-kubernetes" size={21} />
-      ) : (
-        <img className={css.fulFilmentIcon} src={getIcon()} alt="" width={'20px'} height={'19px'} aria-hidden />
-      )}
-      <Text lineClamp={3} color={tableProps.row.original.disabled ? textColor.disable : Color.GREY_500}>
-        {tableProps.value}
-      </Text>
-    </Layout.Horizontal>
-  )
+  return <ComputeType data={tableProps.row.original} />
 }
 function TimeCell(tableProps: CellProps<Service>): JSX.Element {
   return (
@@ -195,6 +171,7 @@ function ActivityCell(tableProps: CellProps<Service>): JSX.Element {
 }
 function ResourcesCell(tableProps: CellProps<Service>): JSX.Element {
   const { accountId } = useParams<AccountPathProps>()
+  const { getString } = useStrings()
   const isK8sRule = tableProps.row.original.kind === 'k8s'
   const { data, loading: healthLoading } = useHealthOfService({
     account_id: accountId,
@@ -258,7 +235,7 @@ function ResourcesCell(tableProps: CellProps<Service>): JSX.Element {
                   marginRight: 5
                 }}
               >
-                No. of instances:
+                {getString('ce.co.noOfInstances')}
               </Text>
               {!resourcesLoading && resources?.response ? (
                 <Link
@@ -290,6 +267,23 @@ function ResourcesCell(tableProps: CellProps<Service>): JSX.Element {
               ) : (
                 <Icon name="spinner" size={12} color="blue500" />
               )}
+            </>
+          )}
+          {isEcsRule && (
+            <>
+              <Text
+                style={{
+                  alignSelf: 'center',
+                  color: tableProps.row.original.disabled ? textColor.disable : 'inherit',
+                  marginRight: 5
+                }}
+              >
+                {`${getString('ce.co.noOfTasks')} ${_defaultTo(
+                  tableProps.row.original.routing?.container_svc?.task_count,
+                  0
+                )}`}
+              </Text>
+              {getStateTag(tableProps.row.original.routing?.container_svc?.task_count ? 'active' : 'down')}
             </>
           )}
         </Layout.Horizontal>
@@ -481,6 +475,7 @@ const RulesTableContainer: React.FC<RulesTableContainerProps> = ({
   const history = useHistory()
   const location = useLocation()
 
+  /* istanbul ignore next */
   const onSearchChange = async (val: string) => {
     val = val.trim()
     const hasSearchText = !_isEmpty(val)
@@ -584,7 +579,7 @@ const RulesTableContainer: React.FC<RulesTableContainerProps> = ({
                   Cell: ResourcesCell
                 },
                 {
-                  Header: getString('ce.co.rulesTableHeaders.savings'),
+                  Header: getString('ce.co.rulesTableHeaders.savings').toUpperCase(),
                   width: '15%',
                   Cell: SavingsCell,
                   disableSortBy: true
@@ -690,6 +685,7 @@ const COGatewayList: React.FC = () => {
     showError(errMessage, undefined, 'ce.get.svc.error')
   }
 
+  /* istanbul ignore next */
   const onServiceStateToggle = (type: 'SUCCESS' | 'FAILURE', data: Service | any, index?: number) => {
     if (type === 'SUCCESS') {
       const currTableData: Service[] = [...tableData]
@@ -704,6 +700,7 @@ const COGatewayList: React.FC = () => {
     }
   }
 
+  /* istanbul ignore next */
   const onServiceDeletion = (type: 'SUCCESS' | 'FAILURE', data: Service | any) => {
     if (type === 'SUCCESS') {
       showSuccess(`Rule ${data.name} deleted successfully`)
