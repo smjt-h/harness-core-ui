@@ -182,3 +182,16 @@ export const notificationChannelsList = [
     icon: { name: 'service-msteams' }
   }
 ]
+
+export const channelNameUrlMapping = {
+  SLACK: 'slackWebHookUrl',
+  EMAIL: 'emails',
+  MICROSOFT_TEAMS: 'microsoftTeamsUrl'
+}
+
+export const channelImgMap = {
+  SLACK: 'service-slack',
+  EMAIL: 'email-inline',
+  MICROSOFT_TEAMS: 'service-msteams',
+  DEFAULT: ''
+}

@@ -89,6 +89,6 @@
 
 .anomalyAlertsActionBtn {
   position: absolute;
-  top: 16px;
-  right: 24px;
+  top: var(--spacing-medium);
+  right: var(--spacing-xlarge);
 }

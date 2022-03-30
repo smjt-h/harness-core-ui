@@ -132,7 +132,9 @@ exports[`Test case for anomalies new alert creation Anomalies alert dialog shoul
           >
             ce.anomalyDetection.notificationAlerts.alertChannelHeading
           </p>
-          <div>
+          <div
+            class="alertChannelWrapper"
+          >
             <button
               class="bp3-button Button--button StyledProps--font StyledProps--main addChannelBtn Button--with-current-color Button--withLeftIcon Button--variation Button--variation-link"
               type="button"

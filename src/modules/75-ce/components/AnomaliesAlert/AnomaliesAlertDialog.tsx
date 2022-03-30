@@ -29,7 +29,7 @@ import { FieldArray, FormikProps } from 'formik'
 import { useParams } from 'react-router-dom'
 import { useStrings } from 'framework/strings'
 import { QlceView, useFetchPerspectiveListQuery } from 'services/ce/services'
-import { notificationChannelsList } from '@ce/constants'
+import { channelNameUrlMapping, notificationChannelsList } from '@ce/constants'
 import type { AccountPathProps } from '@common/interfaces/RouteInterfaces'
 import { useCreateNotificationSetting, useUpdateNotificationSetting } from 'services/ce'
 import css from './AnomaliesAlertDialog.module.scss'
@@ -59,18 +59,29 @@ interface NotificationValues {
 }
 
 interface StepData {
-  name: string | JSX.Element
+  name: string
+}
+
+interface AlertDialogProps {
+  hideAnomaliesAlertModal: any
+  handleSubmit: any
+  notificationData: any
 }
 
 interface AlertsOverviewProps {
-  name: string | JSX.Element
-  onClose: any
-  items: any
+  name: string
+  onClose: () => void
+  items: SelectOption[]
+}
+
+interface AnomalyAlertDialogProps {
+  setRefetchingState: React.Dispatch<React.SetStateAction<boolean>>
+  selectedAlert: Record<string, any> | null
 }
 
 interface NotificationChannelProps {
-  name: string | JSX.Element
-  onClose: any
+  name: string
+  onClose: () => void
   formikProps: FormikProps<NotificationValues>
 }
 
@@ -84,15 +95,13 @@ export const AlertOverview: React.FC<StepProps<StepData> & AlertsOverviewProps> 
         <Text color={Color.BLACK} font={{ variation: FontVariation.H5 }}>
           {props.name}
         </Text>
-        <div>
-          <FormInput.Select
-            items={props.items}
-            className={css.perspectiveSelection}
-            name={'perspective'}
-            label={getString('ce.anomalyDetection.notificationAlerts.selectPerspectiveLabel')}
-            placeholder={getString('ce.anomalyDetection.notificationAlerts.selectPerspective')}
-          />
-        </div>
+        <FormInput.Select
+          items={props.items}
+          className={css.perspectiveSelection}
+          name={'perspective'}
+          label={getString('ce.anomalyDetection.notificationAlerts.selectPerspectiveLabel')}
+          placeholder={getString('ce.anomalyDetection.notificationAlerts.selectPerspective')}
+        />
       </Layout.Vertical>
       <Button
         className={css.actionBtn}
@@ -132,7 +141,7 @@ export const NotificationMethod: React.FC<StepProps<StepData> & NotificationChan
             }
 
             return (
-              <div>
+              <div className={css.alertChannelWrapper}>
                 {notificationList.map((_, index) => (
                   <Layout.Horizontal key={index} spacing="xlarge" className={css.addAlertChannel}>
                     <FormInput.Select
@@ -182,13 +191,7 @@ export const NotificationMethod: React.FC<StepProps<StepData> & NotificationChan
   )
 }
 
-interface AlertDialogProps {
-  hideAnomaliesAlertModal: any
-  handleSubmit: any
-  notificationData: any
-}
-
-export const AnomalyAlertDialog: React.FC<AlertDialogProps> = ({
+const AnomalyAlertDialog: React.FC<AlertDialogProps> = ({
   hideAnomaliesAlertModal,
   handleSubmit,
   notificationData
@@ -254,17 +257,6 @@ export const AnomalyAlertDialog: React.FC<AlertDialogProps> = ({
   )
 }
 
-const mapping = {
-  SLACK: 'slackWebHookUrl',
-  EMAIL: 'emails',
-  MICROSOFT_TEAMS: 'microsoftTeamsUrl'
-}
-
-interface AnomalyAlertDialogProps {
-  setRefetchingState: React.Dispatch<React.SetStateAction<boolean>>
-  selectedAlert: any
-}
-
 const useAnomaliesAlertDialog = (props: AnomalyAlertDialogProps) => {
   const { accountId } = useParams<AccountPathProps>()
   const { showError, showSuccess } = useToaster()
@@ -292,12 +284,12 @@ const useAnomaliesAlertDialog = (props: AnomalyAlertDialogProps) => {
         const emailList = item.channelUrl.split(',')
         return {
           type: channel,
-          [mapping[channel as keyof typeof mapping]]: emailList
+          [channelNameUrlMapping[channel as keyof typeof channelNameUrlMapping]]: emailList
         }
       }
       return {
         type: channel,
-        [mapping[channel as keyof typeof mapping]]: item.channelUrl
+        [channelNameUrlMapping[channel as keyof typeof channelNameUrlMapping]]: item.channelUrl
       }
     })
 

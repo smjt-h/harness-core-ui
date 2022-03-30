@@ -33,9 +33,14 @@ import {
 } from 'services/ce'
 import type { AccountPathProps } from '@common/interfaces/RouteInterfaces'
 import routes from '@common/RouteDefinitions'
+import { channelImgMap } from '@ce/constants'
 import useAnomaliesAlertDialog from '../AnomaliesAlert/AnomaliesAlertDialog'
 import Table from '../PerspectiveReportsAndBudget/Table'
 import css from './AnomaliesSettings.module.scss'
+
+interface SettingsDrawerProps {
+  hideDrawer: () => void
+}
 
 const AlertsSection = () => {
   const { getString } = useStrings()
@@ -77,13 +82,6 @@ const AlertsSection = () => {
       openAnomaliesAlertModal()
     }
   }, [openAnomaliesAlertModal, selectedAlert])
-
-  const channelImgMap = {
-    SLACK: 'service-slack',
-    EMAIL: 'email-inline',
-    MICROSOFT_TEAMS: 'service-msteams',
-    DEFAULT: ''
-  }
 
   const alertData = notificationsList?.data || []
 
@@ -246,10 +244,6 @@ const AlertsSection = () => {
       ) : null}
     </Container>
   )
-}
-
-interface SettingsDrawerProps {
-  hideDrawer: any
 }
 
 const AnomaliesSettings: React.FC<SettingsDrawerProps> = ({ hideDrawer }) => {

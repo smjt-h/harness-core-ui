@@ -38,14 +38,19 @@
 
 .channelSelection {
   margin-bottom: 0px !important;
+  flex: 1;
 }
 
 .urlInput {
   margin-bottom: 0px !important;
-  width: 321px;
+  flex: 2;
 }
 
 .addChannelBtn {
-  width: 127px;
   padding-left: 0px !important;
+}
+
+.alertChannelWrapper {
+  overflow: scroll;
+  height: 340px;
 }
