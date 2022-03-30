@@ -10,7 +10,6 @@ import { act, fireEvent, render, waitFor } from '@testing-library/react'
 import { MultiTypeInputType } from '@wings-software/uicore'
 import { TestWrapper } from '@common/utils/testUtils'
 import { ArtifactType, TagTypes } from '@pipeline/components/ArtifactsSelection/ArtifactInterface'
-import { ServiceDeploymentType } from '@pipeline/utils/stageHelpers'
 import { ModalViewFor } from '@pipeline/components/ArtifactsSelection/ArtifactHelper'
 import { mockSubscriptions, mockRegistries, mockRepositories } from './mocks'
 import { AcrArtifact } from '../AcrArtifact'
@@ -23,7 +22,7 @@ const props = {
   handleSubmit: jest.fn(),
   artifactIdentifiers: [],
   selectedArtifact: 'Acr' as ArtifactType,
-  selectedDeploymentType: ServiceDeploymentType.Kubernetes
+  selectedDeploymentType: 'Kubernetes'
 }
 
 jest.mock('services/portal', () => ({

@@ -1397,13 +1397,15 @@ exports[`Create Azure connector Wizard Should match snapshot 4`] = `
                             class="bp3-popover-target"
                           >
                             <div
-                              class="bp3-editable-text bp3-editable-text-placeholder InputWithIdentifier--idValue"
+                              class="bp3-editable-text InputWithIdentifier--idValue"
                               tabindex="0"
                             >
                               <span
                                 class="bp3-editable-text-content"
                                 style="height: 1px; line-height: 1px; min-width: 0;"
-                              />
+                              >
+                                dummy_name
+                              </span>
                             </div>
                           </span>
                         </span>
@@ -1465,7 +1467,7 @@ exports[`Create Azure connector Wizard Should match snapshot 4`] = `
                               name="name"
                               placeholder="common.namePlaceholder"
                               type="text"
-                              value=""
+                              value="dummy name"
                             />
                           </div>
                         </div>
