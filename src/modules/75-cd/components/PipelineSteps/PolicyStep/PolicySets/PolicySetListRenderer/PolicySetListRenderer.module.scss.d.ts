@@ -7,6 +7,7 @@
  **/
 // this is an auto-generated file, do not update this manually
 declare const styles: {
+  readonly big: string
   readonly policySetHolder: string
   readonly policySetRows: string
   readonly renderer: string

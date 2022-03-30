@@ -134,7 +134,7 @@ export const TemplateInputs: React.FC<TemplateInputsProps> = props => {
   })
 
   const originalValues = React.useMemo(() => {
-    const templateSpec = parse(resolvedTemplateResponse?.data?.mergedPipelineYaml || '')?.template.spec
+    const templateSpec = parse(resolvedTemplateResponse?.data?.mergedPipelineYaml || '')?.spec
     if (templateEntityType === TemplateType.Stage) {
       return { stage: templateSpec }
     } else {
