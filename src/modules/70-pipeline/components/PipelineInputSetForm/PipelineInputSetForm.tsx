@@ -289,7 +289,7 @@ export function PipelineInputSetFormInternal(props: PipelineInputSetFormProps): 
             </Layout.Horizontal>
             <div className={css.topAccordion}>
               <div className={css.accordionSummary}>
-                <div className={css.nestedAccordions} style={{ width: '50%' }}>
+                <div className={css.nestedAccordions}>
                   <CICodebaseInputSetForm
                     path={finalPath}
                     readonly={readonly}

@@ -9,7 +9,7 @@ import React, { useCallback } from 'react'
 import { Menu, Position } from '@blueprintjs/core'
 import { Button, ButtonVariation, Icon, IconName, Popover, Text } from '@wings-software/uicore'
 import { useHistory, useParams } from 'react-router-dom'
-import { noop } from 'lodash-es'
+import { defaultTo, noop } from 'lodash-es'
 import cx from 'classnames'
 import type { PopoverProps } from '@wings-software/uicore/dist/components/Popover/Popover'
 import { useStrings } from 'framework/strings'
@@ -22,6 +22,7 @@ import RBACTooltip from '@rbac/components/RBACTooltip/RBACTooltip'
 import css from './NewPipelinePopover.module.scss'
 
 export interface NewPipelinePopoverProps extends PopoverProps {
+  text?: string
   className?: string
 }
 
@@ -33,6 +34,7 @@ export interface NewPipelineMenuItem {
 }
 
 export function NewPipelinePopover({
+  text,
   className = '',
   portalClassName,
   ...popoverProps
@@ -107,7 +109,7 @@ export function NewPipelinePopover({
         variation={ButtonVariation.PRIMARY}
         icon="plus"
         rightIcon="chevron-down"
-        text={getString('pipeline.newPipelineText')}
+        text={defaultTo(text, getString('pipeline.newPipelineText'))}
         onClick={noop}
         disabled={!canEdit}
         tooltip={tooltipBtn()}

@@ -767,23 +767,7 @@ function PipelinesPage({ mockData }: CDPipelinesPageProps): React.ReactElement {
                 <Text className={css.aboutPipeline} margin={{ top: 'xsmall', bottom: 'xlarge' }}>
                   {getString('pipeline-list.aboutPipeline')}
                 </Text>
-
-                <RbacButton
-                  variation={ButtonVariation.PRIMARY}
-                  onClick={() => goToPipeline()}
-                  text={getString('common.createPipeline')}
-                  permission={{
-                    permission: PermissionIdentifier.EDIT_PIPELINE,
-                    resource: {
-                      resourceType: ResourceType.PIPELINE
-                    },
-                    resourceScope: {
-                      accountIdentifier: accountId,
-                      orgIdentifier,
-                      projectIdentifier
-                    }
-                  }}
-                />
+                <NewPipelinePopover text={'common.createPipeline'} />
               </Layout.Vertical>
             )}
           </div>

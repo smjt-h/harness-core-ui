@@ -149,6 +149,7 @@ function CICodebaseInputSetFormInternal({
   }, [codeBaseType])
 
   const handleTypeChange = (newType: CodeBaseType): void => {
+    formik?.setFieldValue(`${formattedPath}properties.ci.codebase.build`, '')
     formik?.setFieldValue(codeBaseTypePath, newType)
 
     if (!isInputTouched && triggerIdentifier) {
@@ -179,7 +180,7 @@ function CICodebaseInputSetFormInternal({
   return (
     <Layout.Vertical spacing="small">
       {loadingConnectorDetails ? (
-        <Container flex={{ justifyContent: 'end' }}>
+        <Container flex={{ justifyContent: 'center' }}>
           <Icon name="steps-spinner" size={25} />
         </Container>
       ) : (
@@ -217,9 +218,11 @@ function CICodebaseInputSetFormInternal({
               />
             ) : null}
           </Layout.Horizontal>
-          {codeBaseType === 'branch' ? renderCodeBaseTypeInput('branch') : null}
-          {codeBaseType === 'tag' ? renderCodeBaseTypeInput('tag') : null}
-          {codeBaseType === 'PR' ? renderCodeBaseTypeInput('PR') : null}
+          <Container width={'50%'}>
+            {codeBaseType === 'branch' ? renderCodeBaseTypeInput('branch') : null}
+            {codeBaseType === 'tag' ? renderCodeBaseTypeInput('tag') : null}
+            {codeBaseType === 'PR' ? renderCodeBaseTypeInput('PR') : null}
+          </Container>
         </>
       )}
     </Layout.Vertical>
