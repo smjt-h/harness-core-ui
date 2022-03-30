@@ -1,0 +1,108 @@
+[
+  {
+    "message": "type: is missing but it is required",
+    "stageInfo": {
+      "identifier": "deploy_stage1",
+      "type": "Deployment",
+      "name": "deployStage",
+      "fqn": "$.pipeline.stages[0].stage"
+    },
+    "stepInfo": {
+      "identifier": "a2",
+      "type": null,
+      "name": "a1",
+      "fqn": "$.pipeline.stages[0].stage.spec.execution.steps[0].step"
+    },
+    "fqn": "$.pipeline.stages[0].stage.spec.execution.steps[0].step",
+    "hintMessage": null
+  },
+  {
+    "message": "allowStageExecutions: integer found, boolean expected",
+    "stageInfo": null,
+    "stepInfo": null,
+    "fqn": "$.pipeline.allowStageExecutions",
+    "hintMessage": null
+  },
+  {
+    "message": "type: does not have a value in the enumeration [Deployment, CI, Approval, FeatureFlag]",
+    "stageInfo": {
+      "identifier": "approval",
+      "type": "Approval123",
+      "name": "approval",
+      "fqn": "$.pipeline.stages[1].stage"
+    },
+    "stepInfo": null,
+    "fqn": "$.pipeline.stages[1].stage.type",
+    "hintMessage": null
+  },
+  {
+    "message": "type: does not have a value in the enumeration [Kubernetes, NativeHelm, Ssh]",
+    "stageInfo": {
+      "identifier": "deploy_stage1",
+      "type": "Deployment",
+      "name": "deployStage",
+      "fqn": "$.pipeline.stages[0].stage"
+    },
+    "stepInfo": null,
+    "fqn": "$.pipeline.stages[0].stage.spec.serviceConfig.serviceDefinition.type",
+    "hintMessage": null
+  },
+  {
+    "message": "template: is missing but it is required",
+    "stageInfo": {
+      "identifier": "deploy_stage1",
+      "type": "Deployment",
+      "name": "deployStage",
+      "fqn": "$.pipeline.stages[0].stage"
+    },
+    "stepInfo": {
+      "identifier": "a3",
+      "type": null,
+      "name": "a3",
+      "fqn": "$.pipeline.stages[0].stage.spec.execution.steps[1].step"
+    },
+    "fqn": "$.pipeline.stages[0].stage.spec.execution.steps[1].step",
+    "hintMessage": null
+  },
+  {
+    "message": "name: does not match the regex pattern ^[a-zA-Z_][-0-9a-zA-Z_\\s]{0,63}$",
+    "stageInfo": null,
+    "stepInfo": null,
+    "fqn": "$.pipeline.name",
+    "hintMessage": null
+  },
+  {
+    "message": "template: is missing but it is required",
+    "stageInfo": {
+      "identifier": "deploy_stage1",
+      "type": "Deployment",
+      "name": "deployStage",
+      "fqn": "$.pipeline.stages[0].stage"
+    },
+    "stepInfo": {
+      "identifier": "a2",
+      "type": null,
+      "name": "a1",
+      "fqn": "$.pipeline.stages[0].stage.spec.execution.steps[0].step"
+    },
+    "fqn": "$.pipeline.stages[0].stage.spec.execution.steps[0].step",
+    "hintMessage": null
+  },
+  {
+    "message": "type: is missing but it is required",
+    "stageInfo": {
+      "identifier": "deploy_stage1",
+      "type": "Deployment",
+      "name": "deployStage",
+      "fqn": "$.pipeline.stages[0].stage"
+    },
+    "stepInfo": {
+      "identifier": "a3",
+      "type": null,
+      "name": "a3",
+      "fqn": "$.pipeline.stages[0].stage.spec.execution.steps[1].step"
+    },
+    "fqn": "$.pipeline.stages[0].stage.spec.execution.steps[1].step",
+    "hintMessage": null
+  }
+]

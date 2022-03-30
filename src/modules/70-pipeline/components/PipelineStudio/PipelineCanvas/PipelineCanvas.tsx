@@ -5,7 +5,7 @@
  * https://polyformproject.org/wp-content/uploads/2020/06/PolyForm-Shield-1.0.0.txt.
  */
 
-import React, { useEffect, useState } from 'react'
+import React, { useState, useEffect } from 'react'
 import { Classes, Dialog, IDialogProps, Intent } from '@blueprintjs/core'
 import cx from 'classnames'
 import {
@@ -230,7 +230,7 @@ export function PipelineCanvas({
     [updatePipelineAPIResponse]
   )
 
-  // useEffect(showErrorModal, [])
+  useEffect(showErrorModal, [])
 
   const [discardBEUpdateDialog, setDiscardBEUpdate] = React.useState(false)
   const { openDialog: openConfirmBEUpdateError } = useConfirmationDialog({
