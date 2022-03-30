@@ -9,5 +9,8 @@
 declare const styles: {
   readonly cardWithIcon: string
   readonly fixButton: string
+  readonly list: string
+  readonly pipelineErrorList: string
+  readonly tooltipbg: string
 }
 export default styles

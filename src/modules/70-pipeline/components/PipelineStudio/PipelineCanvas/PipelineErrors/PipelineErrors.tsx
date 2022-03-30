@@ -1,9 +1,12 @@
 import React from 'react'
-
+import { get } from 'lodash-es'
+import { Text } from '@harness/uicore'
+import { Color } from '@harness/design-system'
+import { useStrings } from 'framework/strings'
 import stepFactory from '@pipeline/components/PipelineSteps/PipelineStepFactory'
 import { stageTypeToIconMap } from '@pipeline/components/PipelineInputSetForm/PipelineInputSetForm'
 import PipelineErrorCardBasic from './PipelineErrorList'
-import { get } from 'lodash-es'
+import css from './PipelineErrors.module.scss'
 
 export interface PropsInterface {
   errors: any
@@ -157,7 +160,7 @@ function StepErrorCard({ stepIds, errorsByStep }: { stepIds: string[]; errorsByS
   if (stepIds.length === 0) return null
   const renderStepError = (stepId: string): React.ReactElement => {
     const stepErrors = errorsByStep[stepId] || []
-    const stepTitle = `Step Name: ${stepErrors[0].stepInfo.identifier} - ${stepErrors[0].stepInfo.name}`
+    const stepTitle = `Step: ${stepErrors[0].stepInfo.identifier} - ${stepErrors[0].stepInfo.name}`
     return stepErrors.map((err: { message: string; type: string }, index: number) => {
       const icon = stepFactory.getStepIcon(get(err, 'stepInfo.type', ''))
       return (
@@ -178,6 +181,7 @@ function StepErrorCard({ stepIds, errorsByStep }: { stepIds: string[]; errorsByS
 }
 
 function StageErrors({ errors }: PropsInterface): React.ReactElement {
+  const { getString } = useStrings()
   const stageName = errors.stageErrors[0].stageInfo.name
   const { stepIds, errorsByStep, stageErrors } = errors
   // const renderError = error => {
@@ -192,6 +196,9 @@ function StageErrors({ errors }: PropsInterface): React.ReactElement {
   // }
   return (
     <>
+      <Text color={Color.BLACK} font={{ weight: 'semi-bold', size: 'normal' }} margin={{ bottom: 'medium' }}>
+        {getString('pipeline.execution.stepTitlePrefix')} {stageName}
+      </Text>
       <StageErrorCard errors={stageErrors} stageName={stageName} />
       <StepErrorCard errorsByStep={errorsByStep} stepIds={stepIds} />
     </>
@@ -199,6 +206,7 @@ function StageErrors({ errors }: PropsInterface): React.ReactElement {
 }
 
 function PipelineError({ errors }: PropsInterface): React.ReactElement | null {
+  const { getString } = useStrings()
   if (errors.length === 0) return null
   const renderError = (error: { message: string }, index: number): React.ReactElement => {
     return (
@@ -207,11 +215,17 @@ function PipelineError({ errors }: PropsInterface): React.ReactElement | null {
       </div>
     )
   }
+
   return (
-    <div>
-      <h1>Pipeline Errors</h1>
-      {errors.map(renderError)}
-    </div>
+    <PipelineErrorCardBasic
+      title={getString('common.pipeline')}
+      errorText={errors.map((e: { message: string }) => e.message)}
+      icon="pipeline"
+      onClick={() => {
+        //
+      }}
+      buttonText={'Fix Errors'}
+    />
   )
 }
 
@@ -223,12 +237,12 @@ function PipelineErrors({ errors: schemaErrors }: PropsInterface): React.ReactEl
   const { stageIds, errorsByStage, pipelineErrors } = getAdaptErrors(schemaErrors)
   const updatedErrorsByStage = getAdaptedErrorsForStep(stageIds, errorsByStage)
   return (
-    <>
+    <div className={css.pipelineErrorList}>
       <PipelineError errors={pipelineErrors} />
       {stageIds.map((stageId: string) => {
         return <StageErrors key={stageId} errors={updatedErrorsByStage[stageId]} />
       })}
-    </>
+    </div>
   )
 }
 

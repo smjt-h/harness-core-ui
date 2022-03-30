@@ -16,3 +16,20 @@
 .fix-button {
   width: 88px;
 }
+.pipelineErrorList {
+  height: 400px;
+  overflow: auto;
+}
+
+.tooltipbg {
+  :global(.bp3-popover) {
+    backgorund: var(--primary-9-dark) !important;
+  }
+}
+
+.list {
+  background: var(--primary-9-dark) !important;
+  margin: 0;
+  padding: var(--spacing-xlarge);
+  border-radius: 4px;
+}
