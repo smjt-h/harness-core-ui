@@ -10,6 +10,8 @@ import { getMultiTypeFromValue, MultiTypeInputType } from '@wings-software/uicor
 import type { GraphLayoutNode, PipelineExecutionSummary } from 'services/pipeline-ng'
 import type { StringKeys } from 'framework/strings'
 import type { GetExecutionStrategyYamlQueryParams, PipelineInfoConfig, StageElementConfig } from 'services/cd-ng'
+import { ManifestDataType } from '@pipeline/components/ManifestSelection/Manifesthelper'
+import type { ManifestTypes } from '@pipeline/components/ManifestSelection/ManifestInterface'
 import type { InputSetDTO } from './types'
 import type { DeploymentStageElementConfig, PipelineStageWrapper, StageElementWrapper } from './pipelineTypes'
 
@@ -22,6 +24,23 @@ export enum StageType {
   CUSTOM = 'Custom',
   Template = 'Template',
   SECURITY = 'Security'
+}
+
+export enum ServiceDeploymentType {
+  Kubernetes = 'Kubernetes',
+  NativeHelm = 'NativeHelm',
+  amazonEcs = 'amazonEcs',
+  amazonAmi = 'amazonAmi',
+  awsCodeDeploy = 'awsCodeDeploy',
+  winrm = 'winrm',
+  awsLambda = 'awsLambda',
+  pcf = 'pcf',
+  ssh = 'ssh',
+  ServerlessAwsLambda = 'ServerlessAwsLambda',
+  ServerlessAzureFunction = 'ServerlessAzureFunctions',
+  ServerlessGoogleFunctions = 'ServerlessGoogleFunctions',
+  AmazonSAM = 'AwsSAM',
+  AzureFunctions = 'AzureFunctions'
 }
 
 export const changeEmptyValuesToRunTimeInput = (inputset: any, propertyKey: string): InputSetDTO => {
@@ -53,6 +72,20 @@ export function hasCIStage(pipelineExecution?: PipelineExecutionSummary): boolea
   return pipelineExecution?.modules?.includes('ci') || !isEmpty(pipelineExecution?.moduleInfo?.ci)
 }
 
+export const getHelperTextString = (
+  invalidFields: string[],
+  getString: (key: StringKeys) => string,
+  isServerlessDeploymentTypeSelected = false
+): string => {
+  return `${invalidFields.length > 1 ? invalidFields.join(', ') : invalidFields[0]} ${
+    invalidFields.length > 1 ? ' are ' : ' is '
+  } ${
+    isServerlessDeploymentTypeSelected
+      ? getString('pipeline.artifactPathDependencyRequired')
+      : getString('pipeline.tagDependencyRequired')
+  }`
+}
+
 export const getHelpeTextForTags = (
   fields: {
     imagePath?: string
@@ -62,12 +95,22 @@ export const getHelpeTextForTags = (
     registryHostname?: string
     repository?: string
     repositoryPort?: number
+    artifactDirectory?: string
   },
-
-  getString: (key: StringKeys) => string
+  getString: (key: StringKeys) => string,
+  isServerlessDeploymentTypeSelected = false
 ): string => {
-  const { connectorRef, region, imagePath, artifactPath, registryHostname, repository, repositoryPort } = fields
-  const invalidFields = []
+  const {
+    connectorRef,
+    region,
+    imagePath,
+    artifactPath,
+    registryHostname,
+    repository,
+    repositoryPort,
+    artifactDirectory
+  } = fields
+  const invalidFields: string[] = []
   if (!connectorRef || getMultiTypeFromValue(connectorRef) === MultiTypeInputType.RUNTIME) {
     invalidFields.push(getString('connector'))
   }
@@ -80,10 +123,16 @@ export const getHelpeTextForTags = (
   ) {
     invalidFields.push(getString('connectors.GCR.registryHostname'))
   }
-  if (!imagePath || getMultiTypeFromValue(imagePath) === MultiTypeInputType.RUNTIME) {
+  if (
+    !isServerlessDeploymentTypeSelected &&
+    (!imagePath || getMultiTypeFromValue(imagePath) === MultiTypeInputType.RUNTIME)
+  ) {
     invalidFields.push(getString('pipeline.imagePathLabel'))
   }
-  if (!imagePath || getMultiTypeFromValue(artifactPath) === MultiTypeInputType.RUNTIME) {
+  if (
+    !isServerlessDeploymentTypeSelected &&
+    (!imagePath || getMultiTypeFromValue(artifactPath) === MultiTypeInputType.RUNTIME)
+  ) {
     invalidFields.push(getString('pipeline.artifactPathLabel'))
   }
   if (repository !== undefined && (!repository || getMultiTypeFromValue(repository) === MultiTypeInputType.RUNTIME)) {
@@ -95,11 +144,30 @@ export const getHelpeTextForTags = (
   ) {
     invalidFields.push(getString('pipeline.artifactsSelection.repositoryPort'))
   }
+  if (
+    isServerlessDeploymentTypeSelected &&
+    (!artifactDirectory || getMultiTypeFromValue(artifactDirectory) === MultiTypeInputType.RUNTIME)
+  ) {
+    invalidFields.push(getString('pipeline.artifactsSelection.artifactDirectory'))
+  }
 
-  const helpText = `${invalidFields.length > 1 ? invalidFields.join(', ') : invalidFields[0]} ${
-    invalidFields.length > 1 ? ' are ' : ' is '
-  } ${getString('pipeline.tagDependencyRequired')}`
+  const helpText = getHelperTextString(invalidFields, getString, isServerlessDeploymentTypeSelected)
+
   return invalidFields.length > 0 ? helpText : ''
+}
+
+export const isServerlessDeploymentType = (deploymentType: string): boolean => {
+  return (
+    deploymentType === ServiceDeploymentType.ServerlessAwsLambda ||
+    deploymentType === ServiceDeploymentType.ServerlessAzureFunction ||
+    deploymentType === ServiceDeploymentType.ServerlessGoogleFunctions ||
+    deploymentType === ServiceDeploymentType.AmazonSAM ||
+    deploymentType === ServiceDeploymentType.AzureFunctions
+  )
+}
+
+export const isServerlessManifestType = (selectedManifest: ManifestTypes | null): boolean => {
+  return selectedManifest === ManifestDataType.ServerlessAwsLambda
 }
 
 export const getSelectedDeploymentType = (

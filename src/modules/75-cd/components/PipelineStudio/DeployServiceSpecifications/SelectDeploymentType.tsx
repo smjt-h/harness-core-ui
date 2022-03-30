@@ -18,9 +18,10 @@ import cx from 'classnames'
 import { useStrings, UseStringsReturn } from 'framework/strings'
 import { isCDCommunity, useLicenseStore } from 'framework/LicenseStore/LicenseStoreContext'
 import { StageErrorContext } from '@pipeline/context/StageErrorContext'
+import { isServerlessDeploymentType, ServiceDeploymentType } from '@pipeline/utils/stageHelpers'
 import { DeployTabs } from '@cd/components/PipelineStudio/DeployStageSetupShell/DeployStageSetupShellUtils'
 import { useFeatureFlags } from '@common/hooks/useFeatureFlag'
-import { ServiceDeploymentType } from '@cd/components/PipelineSteps/PipelineStepsUtil'
+import type { StringsMap } from 'framework/strings/StringsContext'
 import { CDFirstGenTrial } from './CDFirstGenTrial'
 import type { DeploymentTypeItem } from './DeploymentInterface'
 import stageCss from '../DeployStageSetupShell/DeployStage.module.scss'
@@ -77,19 +78,76 @@ const CardList = ({ items, isReadonly, selectedValue, onChange, allowDisabledIte
   )
 }
 
+const getCGTypes = (
+  cgSupportedDeploymentTypes: DeploymentTypeItem[],
+  nativeHelmFF = false,
+  serverlessFF = false
+): DeploymentTypeItem[] => {
+  let cgTypes = cgSupportedDeploymentTypes
+  if (nativeHelmFF) {
+    cgTypes = cgTypes.filter(deploymentType => deploymentType.value !== 'NativeHelm')
+  }
+  if (serverlessFF) {
+    cgTypes = cgTypes.filter(deploymentType => !isServerlessDeploymentType(deploymentType.value))
+  }
+  return cgTypes
+}
+
+const getServerlessDeploymentTypes = (
+  getString: (key: keyof StringsMap, vars?: Record<string, any> | undefined) => string,
+  SERVERLESS_SUPPORT = false
+): DeploymentTypeItem[] => {
+  if (SERVERLESS_SUPPORT) {
+    return [
+      {
+        label: getString('pipeline.serviceDeploymentTypes.serverlessAwsLambda'),
+        icon: 'service-serverless-aws',
+        value: ServiceDeploymentType.ServerlessAwsLambda
+      }
+      // Keeping these for now. If we do not support these in near future, we will remove these.
+      //
+      // {
+      //   label: getString('pipeline.serviceDeploymentTypes.serverlessAzureFunctions'),
+      //   icon: 'service-serverless-azure',
+      //   value: ServiceDeploymentType.ServerlessAzureFunction,
+      //   disabled: true
+      // },
+      // {
+      //   label: getString('pipeline.serviceDeploymentTypes.serverlessGoogleFunctions'),
+      //   icon: 'service-serverless-gcp',
+      //   value: ServiceDeploymentType.ServerlessGoogleFunctions,
+      //   disabled: true
+      // },
+      // {
+      //   label: getString('pipeline.serviceDeploymentTypes.awsSAM'),
+      //   icon: 'service-aws-sam',
+      //   value: ServiceDeploymentType.AmazonSAM,
+      //   disabled: true
+      // },
+      // {
+      //   label: getString('pipeline.serviceDeploymentTypes.azureFunctions'),
+      //   icon: 'service-azure-functions',
+      //   value: ServiceDeploymentType.AzureFunctions,
+      //   disabled: true
+      // }
+    ]
+  }
+  return []
+}
+
 export default function SelectDeploymentType(props: SelectServiceDeploymentTypeProps): JSX.Element {
   const { selectedDeploymentType, isReadonly } = props
   const { getString } = useStrings()
   const formikRef = React.useRef<FormikProps<unknown> | null>(null)
   const { subscribeForm, unSubscribeForm } = React.useContext(StageErrorContext)
   const { licenseInformation } = useLicenseStore()
-  const { NG_NATIVE_HELM } = useFeatureFlags()
+  const { NG_NATIVE_HELM, SERVERLESS_SUPPORT } = useFeatureFlags()
   const { accountId } = useParams<{
     accountId: string
   }>()
   const [selectedDeploymentTypeInCG, setSelectedDeploymentTypeInCG] = React.useState('')
 
-  // Supported in NG
+  // Supported in NG (Next Gen - The one for which you are coding right now)
   const ngSupportedDeploymentTypes: DeploymentTypeItem[] = React.useMemo(
     () => [
       {
@@ -101,7 +159,7 @@ export default function SelectDeploymentType(props: SelectServiceDeploymentTypeP
     [getString]
   )
 
-  // Suppported in CG
+  // Suppported in CG (First Gen - Old Version of Harness App)
   const cgSupportedDeploymentTypes: DeploymentTypeItem[] = React.useMemo(
     () => [
       {
@@ -143,7 +201,8 @@ export default function SelectDeploymentType(props: SelectServiceDeploymentTypeP
         label: getString('pipeline.serviceDeploymentTypes.ssh'),
         icon: 'secret-ssh',
         value: ServiceDeploymentType.ssh
-      }
+      },
+      ...getServerlessDeploymentTypes(getString, SERVERLESS_SUPPORT)
     ],
     [getString]
   )
@@ -190,10 +249,14 @@ export default function SelectDeploymentType(props: SelectServiceDeploymentTypeP
           ...ngSupportedDeploymentTypes,
           ...cgSupportedDeploymentTypes.filter(deploymentType => deploymentType.value === 'NativeHelm')
         ])
+      } else if (SERVERLESS_SUPPORT) {
+        // If FF enabled - Native Helm will be in NG - left section
+        setNgDeploymentTypes([
+          ...ngSupportedDeploymentTypes,
+          ...cgSupportedDeploymentTypes.filter(deploymentType => isServerlessDeploymentType(deploymentType.value))
+        ])
       }
-      const cgTypes = NG_NATIVE_HELM
-        ? cgSupportedDeploymentTypes.filter(deploymentType => deploymentType.value !== 'NativeHelm')
-        : cgSupportedDeploymentTypes
+      const cgTypes = getCGTypes(cgSupportedDeploymentTypes, NG_NATIVE_HELM, SERVERLESS_SUPPORT)
       cgTypes.forEach(deploymentType => {
         deploymentType['disabled'] = true
         deploymentType['tooltip'] = (
