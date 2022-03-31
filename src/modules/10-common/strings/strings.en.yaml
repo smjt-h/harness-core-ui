@@ -803,3 +803,11 @@ and: and
 payload: Payload
 andCaps: AND
 orCaps: OR
+environmentGroup: Environment Group
+environmentGroups:
+  title: Environment Groups
+  newEnvironmentGroup: New Environment Group
+  createNewEnvironmentGroup: Create new Environment Group
+  noEnvironmentGroups:
+    title: No Environment Groups Available
+    message: Create a new environment group to start configuring the deployment

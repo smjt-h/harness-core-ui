@@ -687,9 +687,14 @@ const routes = {
     ({ orgIdentifier, projectIdentifier, serviceId, module }: PipelineType<ProjectPathProps & ServicePathProps>) =>
       `/${module}/orgs/${orgIdentifier}/projects/${projectIdentifier}/services/${serviceId}`
   ),
-  toEnvironment: withAccountId(
+  toEnvironments: withAccountId(
     ({ orgIdentifier, projectIdentifier, module }: PipelineType<ProjectPathProps>) =>
-      `/${module}/orgs/${orgIdentifier}/projects/${projectIdentifier}/environment`
+      `/${module}/orgs/${orgIdentifier}/projects/${projectIdentifier}/environments`
+  ),
+  toEnvironmentGroups: withAccountId(
+    ({ orgIdentifier, projectIdentifier, module }: PipelineType<ProjectPathProps>) =>
+      // VIVEK: Should this be environments/groups
+      `/${module}/orgs/${orgIdentifier}/projects/${projectIdentifier}/environmentGroups`
   ),
   toPipelineDetail: withAccountId(
     ({ orgIdentifier, projectIdentifier, pipelineIdentifier, module }: PipelineType<PipelinePathProps>) =>

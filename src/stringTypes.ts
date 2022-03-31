@@ -192,6 +192,12 @@ export interface StringsMap {
   'common.entityReferenceTitle': string
   'common.entityType': string
   'common.environmentCreated': string
+  'common.environmentGroup': string
+  'common.environmentGroups.createNewEnvironmentGroup': string
+  'common.environmentGroups.newEnvironmentGroup': string
+  'common.environmentGroups.noEnvironmentGroups.message': string
+  'common.environmentGroups.noEnvironmentGroups.title': string
+  'common.environmentGroups.title': string
   'common.environmentUpdated': string
   'common.errorCount': string
   'common.errorHandler.issueCouldBe': string

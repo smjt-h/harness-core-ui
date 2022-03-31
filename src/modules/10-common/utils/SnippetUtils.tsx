@@ -40,6 +40,7 @@ const entitySubTypeToTagMap: {
   Aws: 'aws',
   AwsKms: 'awskms',
   Artifactory: 'artifactory',
+  Azure: 'azurekeyvault',
   Jira: 'jira',
   // eslint-disable-next-line
   // @ts-ignore

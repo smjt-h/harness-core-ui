@@ -130,6 +130,8 @@ import TemplatesPage from '@templates-library/pages/TemplatesPage/TemplatesPage'
 import { GovernanceRouteDestinations } from '@governance/RouteDestinations'
 import GitSyncConfigTab from '@gitsync/pages/config/GitSyncConfigTab'
 import FullPageLogView from '@pipeline/pages/full-page-log-view/FullPageLogView'
+import EnvironmentWrapper from './components/EnvironmentGroups/EnvironmentWrapper'
+import EnvironmentGroups from './components/EnvironmentGroups/EnvironmentGroups'
 import { Environments } from './components/Environments/Environments'
 import CDTrialHomePage from './pages/home/CDTrialHomePage'
 
@@ -560,9 +562,20 @@ export default (
       exact
       licenseRedirectData={licenseRedirectData}
       sidebarProps={CDSideNavProps}
-      path={routes.toEnvironment({ ...accountPathProps, ...projectPathProps, ...pipelineModuleParams })}
+      path={routes.toEnvironmentGroups({ ...projectPathProps, ...pipelineModuleParams })}
     >
-      <Environments />
+      <EnvironmentWrapper pageTitle="common.environmentGroups.title">
+        <EnvironmentGroups />
+      </EnvironmentWrapper>
+    </RouteWithLayout>
+    <RouteWithLayout
+      licenseRedirectData={licenseRedirectData}
+      sidebarProps={CDSideNavProps}
+      path={routes.toEnvironments({ ...projectPathProps, ...pipelineModuleParams })}
+    >
+      <EnvironmentWrapper pageTitle="environments">
+        <Environments />
+      </EnvironmentWrapper>
     </RouteWithLayout>
 
     <RouteWithLayout
