@@ -306,6 +306,9 @@ const ConnectorsPage: React.FC<ConnectorsListProps> = ({ catalogueMockData, stat
       if (value.category === 'SECRET_MANAGER') {
         value.connectors = ['Vault', 'AwsKms', 'AzureKeyVault', 'AwsSecretManager', 'GcpKms']
       }
+      if (value.category === 'CLOUD_PROVIDER') {
+        value.connectors = ['K8sCluster', 'Gcp', 'Aws', 'Pdc']
+      }
     })
     const orderedCatalogue: ConnectorCatalogueItem[] | { category: string; connectors: string[] } = []
     connectorCatalogueOrder.forEach(catalogueItem => {

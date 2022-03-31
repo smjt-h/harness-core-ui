@@ -1887,6 +1887,13 @@ export interface StringsMap {
   'connectors.nexus.nexusServerUrl': string
   'connectors.pagerDutyConnectorDetails': string
   'connectors.parameters': string
+  'connectors.pdc.hosts': string
+  'connectors.pdc.hostsRule': string
+  'connectors.pdc.hostsUpload': string
+  'connectors.pdc.or': string
+  'connectors.pdc.testConnection.step1': string
+  'connectors.pdc.testConnection.step2': string
+  'connectors.pdc.testConnection.step3': string
   'connectors.prometheus.urlValidation': string
   'connectors.prometheusConnectorDetails': string
   'connectors.prometheusLabel': string
@@ -1986,6 +1993,7 @@ export interface StringsMap {
   'connectors.title.jira': string
   'connectors.title.k8sCluster': string
   'connectors.title.nexus': string
+  'connectors.title.pdcConnector': string
   'connectors.title.secretManager': string
   'connectors.title.serviceNow': string
   'connectors.title.splunk': string

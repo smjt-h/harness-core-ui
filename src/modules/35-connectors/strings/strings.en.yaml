@@ -82,6 +82,7 @@ connectivityMode:
 title:
   k8sCluster: 'Kubernetes Cluster'
   gcpConnector: 'Google Cloud Provider'
+  pdcConnector: 'Physical Data Center'
   helmConnector: 'HTTP Helm Repo'
   gitConnector: 'Git Connector'
   githubConnector: 'GitHub Connector'
@@ -786,3 +787,12 @@ ceGcp:
     heading: '{{ $.common.labelTestConnection }}'
     step1: 'Verifying GCP connector setup'
     error: 'Could not verify connectivity'
+pdc:
+  hosts: 'Hosts'
+  hostsRule: 'Enter JSON or comma separated list here'
+  hostsUpload: 'Drop JSON file here or click to upload'
+  or: 'OR'
+  testConnection:
+    step1: 'Checking for eligible delegates for connectivity with Kubernetes Connector'
+    step2: 'Validating the GitHub Connector authentication and permissions'
+    step3: 'Validating the API authentication and permissions'

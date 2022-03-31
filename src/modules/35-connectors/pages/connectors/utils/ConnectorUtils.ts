@@ -972,6 +972,34 @@ export const buildHelmPayload = (formData: FormData) => {
   return { connector: savedData }
 }
 
+export const buildPdcPayload = (formData: FormData) => {
+  const savedData = {
+    name: formData.name,
+    description: formData.description,
+    projectIdentifier: formData.projectIdentifier,
+    identifier: formData.identifier,
+    orgIdentifier: formData.orgIdentifier,
+    tags: formData.tags,
+    type: Connectors.PDC,
+    spec: {
+      ...(formData?.delegateSelectors ? { delegateSelectors: formData.delegateSelectors } : {}),
+      credential: {
+        type: formData?.delegateType,
+        spec:
+          formData?.delegateType === DelegateTypes.DELEGATE_OUT_CLUSTER
+            ? {
+                secretKeyRef: formData.password.referenceString
+              }
+            : null
+      },
+      hosts: formData.hosts,
+      sshKeyRef: formData.sshKeyRef
+    }
+  }
+
+  return { connector: savedData }
+}
+
 export const buildGcpPayload = (formData: FormData) => {
   const savedData = {
     name: formData.name,

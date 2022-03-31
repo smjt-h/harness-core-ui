@@ -1,0 +1,104 @@
+/*
+ * Copyright 2021 Harness Inc. All rights reserved.
+ * Use of this source code is governed by the PolyForm Shield 1.0.0 license
+ * that can be found in the licenses directory at the root of this repository, also available at
+ * https://polyformproject.org/wp-content/uploads/2020/06/PolyForm-Shield-1.0.0.txt.
+ */
+
+.secondStep {
+  height: 100%;
+  > div:last-child {
+    display: flex;
+    height: 100%;
+    flex-direction: column;
+    justify-content: space-between;
+  }
+  .headingStepTwo {
+    font-size: var(--font-size-medium);
+    letter-spacing: 0;
+    color: var(--grey-800);
+  }
+
+  .clusterWrapper {
+    padding: var(--spacing-xsmall) !important;
+    overflow: auto;
+
+    .cardRow {
+      display: flex;
+      margin-bottom: var(--spacing-large);
+      .card {
+        display: flex;
+        justify-content: space-between;
+        border-radius: inherit;
+        width: 100%;
+        height: 80px;
+
+        .textInfo {
+          margin: var(--spacing-small) var(--spacing-small) var(--spacing-small) var(--spacing-large);
+        }
+      }
+
+      .selectedCard {
+        background-color: #dceeff;
+      }
+
+      :global {
+        .bp3-card {
+          width: 42%;
+          display: flex;
+          justify-content: space-between;
+          padding: 0;
+          margin-right: 4%;
+          border-radius: 8px;
+          background-color: var(--white);
+        }
+      }
+    }
+
+    :global {
+      .bp3-button,
+      .bp3-checkbox {
+        width: 42%;
+        height: 36px;
+      }
+    }
+  }
+
+  .hostContainer {
+    display: flex;
+    min-height: 200px;
+    align-items: center;
+  }
+  .manualHostContainer {
+    flex: 1;
+    flex-direction: column;
+    display: flex;
+    .textInput {
+      margin-top: var(--spacing-xsmall);
+      min-height: 200px;
+      flex: 1;
+    }
+  }
+}
+
+.hostTable {
+  border: 1px solid var(--grey-200);
+  border-radius: 8px;
+  margin-top: var(--spacing-large);
+  background-color: white;
+  tr {
+    height: 40px;
+    th {
+      color: var(--grey-400);
+      vertical-align: middle;
+    }
+    td {
+      vertical-align: middle;
+    }
+  }
+}
+
+.testConnectionContentContainer {
+  flex: 1;
+  overflow-y: scroll;
+}

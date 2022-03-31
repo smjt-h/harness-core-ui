@@ -1,0 +1,16 @@
+.uploadComponent {
+  border: 1px dashed var(--grey-300);
+  flex: 1;
+  height: 200px;
+  padding: var(--spacing-large);
+  align-items: center;
+  justify-content: center;
+  display: flex;
+  flex-direction: column;
+  margin-top: 20px;
+  box-sizing: border-box;
+}
+
+.highlightedDrop {
+  border: 2px dashed var(--grey-600);
+}
