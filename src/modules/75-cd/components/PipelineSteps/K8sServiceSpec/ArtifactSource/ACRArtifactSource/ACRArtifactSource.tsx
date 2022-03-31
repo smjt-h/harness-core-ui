@@ -6,7 +6,7 @@
  */
 
 import React, { useEffect } from 'react'
-import { defaultTo, forIn, get } from 'lodash-es'
+import { defaultTo, get } from 'lodash-es'
 
 import {
   FormInput,
@@ -88,30 +88,36 @@ const Content = (props: ACRRenderContent): JSX.Element => {
         'content-type': 'application/json'
       }
     },
-    queryParams: /* istanbul ignore next */ {
+    queryParams: {
       accountIdentifier: accountId,
       projectIdentifier,
       orgIdentifier,
       repoIdentifier,
       branch,
+
+      /* istanbul ignore next */
       connectorRef:
         getMultiTypeFromValue(artifact?.spec?.connectorRef) !== MultiTypeInputType.RUNTIME
           ? artifact?.spec?.connectorRef
           : get(initialValues?.artifacts, `${artifactPath}.spec.connectorRef`, ''),
+
+      /* istanbul ignore next */
       subscription:
         getMultiTypeFromValue(artifact?.spec?.subscription) !== MultiTypeInputType.RUNTIME
           ? artifact?.spec?.subscription
           : get(initialValues, `artifacts.${artifactPath}.spec.subscription`, ''),
+      /* istanbul ignore next */
       registry:
         getMultiTypeFromValue(artifact?.spec?.registry) !== MultiTypeInputType.RUNTIME
           ? artifact?.spec?.registry
           : get(initialValues, `artifacts.${artifactPath}.spec.registry`, ''),
+      /* istanbul ignore next */
       repository:
         getMultiTypeFromValue(artifact?.spec?.repository) !== MultiTypeInputType.RUNTIME
           ? artifact?.spec?.repository
           : get(initialValues, `artifacts.${artifactPath}.spec.repository`, ''),
       pipelineIdentifier: defaultTo(pipelineIdentifier, formik?.values?.identifier),
-      fqnPath: isPropagatedStage
+      fqnPath: /* istanbul ignore next */ isPropagatedStage
         ? `pipeline.stages.${stageIdentifier}.spec.serviceConfig.stageOverrides.artifacts.${artifactPath}.spec.tag`
         : `pipeline.stages.${stageIdentifier}.spec.serviceConfig.serviceDefinition.spec.artifacts.${artifactPath}.spec.tag`
     },
@@ -150,9 +156,9 @@ const Content = (props: ACRRenderContent): JSX.Element => {
 
   useEffect(() => {
     const subscriptionValues = [] as SelectOption[]
-    forIn(defaultTo(subscriptionsData?.data, {}), (value: string, key: string) => {
-      subscriptionValues.push({ label: `${value}: ${key}`, value: key })
-    })
+    defaultTo(subscriptionsData?.data?.subscriptions, []).map(sub =>
+      subscriptionValues.push({ label: `${sub.subscriptionName}: ${sub.subscriptionId}`, value: sub.subscriptionId })
+    )
 
     setSubscriptions(subscriptionValues as SelectOption[])
   }, [subscriptionsData])
@@ -168,7 +174,7 @@ const Content = (props: ACRRenderContent): JSX.Element => {
       accountIdentifier: accountId,
       orgIdentifier,
       projectIdentifier,
-      subscription: artifact?.spec?.subscription
+      subscriptionId: artifact?.spec?.subscription
     },
     lazy: true,
     debounce: 300
@@ -185,7 +191,7 @@ const Content = (props: ACRRenderContent): JSX.Element => {
           accountIdentifier: accountId,
           orgIdentifier,
           projectIdentifier,
-          subscription: artifact?.spec?.subscription
+          subscriptionId: artifact?.spec?.subscription
         }
       })
     }
@@ -194,8 +200,10 @@ const Content = (props: ACRRenderContent): JSX.Element => {
 
   useEffect(() => {
     const options =
-      defaultTo(registiresData?.data, []).map(registry => ({ label: registry, value: registry })) ||
-      /* istanbul ignore next */ []
+      defaultTo(registiresData?.data?.registries, []).map(registry => ({
+        label: registry.registry,
+        value: registry.registry
+      })) || /* istanbul ignore next */ []
     setRegistries(options)
   }, [registiresData])
 
@@ -210,7 +218,7 @@ const Content = (props: ACRRenderContent): JSX.Element => {
       accountIdentifier: accountId,
       orgIdentifier,
       projectIdentifier,
-      subscription: artifact?.spec?.subscription
+      subscriptionId: artifact?.spec?.subscription
     },
     registry: artifact?.spec?.registry,
     lazy: true,
@@ -229,7 +237,7 @@ const Content = (props: ACRRenderContent): JSX.Element => {
           accountIdentifier: accountId,
           orgIdentifier,
           projectIdentifier,
-          subscription: artifact?.spec?.subscription
+          subscriptionId: artifact?.spec?.subscription
         },
         pathParams: {
           registry: artifact?.spec?.registry
@@ -241,7 +249,10 @@ const Content = (props: ACRRenderContent): JSX.Element => {
 
   useEffect(() => {
     const options =
-      defaultTo(repositoriesData?.data, []).map(repo => ({ label: repo, value: repo })) || /* istanbul ignore next */ []
+      defaultTo(repositoriesData?.data?.repositories, []).map(repo => ({
+        label: repo.repository,
+        value: repo.repository
+      })) || /* istanbul ignore next */ []
     setRepositories(options)
   }, [repositoriesData])
 
@@ -338,7 +349,7 @@ const Content = (props: ACRRenderContent): JSX.Element => {
                         accountIdentifier: accountId,
                         orgIdentifier,
                         projectIdentifier,
-                        subscription: getValue(value)
+                        subscriptionId: getValue(value)
                       }
                     })
                   } else {
@@ -390,7 +401,7 @@ const Content = (props: ACRRenderContent): JSX.Element => {
                         accountIdentifier: accountId,
                         orgIdentifier,
                         projectIdentifier,
-                        subscription: get(formik.values, `${path}.artifacts.${artifactPath}.spec.subscription`)
+                        subscriptionId: get(formik.values, `${path}.artifacts.${artifactPath}.spec.subscription`)
                       },
                       pathParams: {
                         registry: getValue(value)

@@ -22,7 +22,7 @@ import { FontVariation } from '@harness/design-system'
 import { Form, FormikContext, FormikProps } from 'formik'
 import { useParams } from 'react-router-dom'
 import * as Yup from 'yup'
-import { defaultTo, forIn, get, isEmpty, isNil, merge } from 'lodash-es'
+import { defaultTo, get, isEmpty, isNil, merge } from 'lodash-es'
 import {
   AcrBuildDetailsDTO,
   ConnectorConfigDTO,
@@ -175,7 +175,7 @@ export function ACRArtifact({
     error: acrTagError
   } = useGetBuildDetailsForACRRepository({
     queryParams: {
-      subscription: getValue(lastQueryData?.subscription),
+      subscriptionId: getValue(lastQueryData?.subscription),
       registry: getValue(lastQueryData?.registry),
       repository: getValue(lastQueryData?.repository),
       connectorRef: getConnectorRefQueryData(),
@@ -220,9 +220,9 @@ export function ACRArtifact({
     /* istanbul ignore else */
     if (!loadingSubscriptions) {
       const subscriptionValues = [] as SelectOption[]
-      forIn(defaultTo(subscriptionsData?.data, {}), (value: string, key: string) => {
-        subscriptionValues.push({ label: `${value}: ${key}`, value: key })
-      })
+      defaultTo(subscriptionsData?.data?.subscriptions, []).map(sub =>
+        subscriptionValues.push({ label: `${sub.subscriptionName}: ${sub.subscriptionId}`, value: sub.subscriptionId })
+      )
 
       setSubscriptions(subscriptionValues as SelectOption[])
       formikRef?.current?.setFieldValue('subscription', getSubscription(initialValues))
@@ -241,7 +241,7 @@ export function ACRArtifact({
       accountIdentifier: accountId,
       orgIdentifier,
       projectIdentifier,
-      subscription: initialValues?.subscription
+      subscriptionId: initialValues?.subscription
     },
     lazy: true,
     debounce: 300
@@ -261,7 +261,7 @@ export function ACRArtifact({
           accountIdentifier: accountId,
           orgIdentifier,
           projectIdentifier,
-          subscription: getValue(initialValues.subscription)
+          subscriptionId: getValue(initialValues.subscription)
         }
       })
     }
@@ -270,9 +270,9 @@ export function ACRArtifact({
 
   useEffect(() => {
     const options =
-      defaultTo(registiresData?.data, []).map(registry => ({
-        label: registry,
-        value: registry
+      defaultTo(registiresData?.data?.registries, []).map(registry => ({
+        label: registry.registry,
+        value: registry.registry
       })) || /* istanbul ignore next */ []
 
     setRegistries(options)
@@ -289,7 +289,7 @@ export function ACRArtifact({
       accountIdentifier: accountId,
       orgIdentifier,
       projectIdentifier,
-      subscription: initialValues?.subscription
+      subscriptionId: initialValues?.subscription
     },
     registry: initialValues?.registry,
     lazy: true,
@@ -312,7 +312,7 @@ export function ACRArtifact({
           accountIdentifier: accountId,
           orgIdentifier,
           projectIdentifier,
-          subscription: getValue(initialValues.subscription)
+          subscriptionId: getValue(initialValues.subscription)
         },
         pathParams: {
           registry: getValue(initialValues.registry)
@@ -324,9 +324,9 @@ export function ACRArtifact({
 
   useEffect(() => {
     const options =
-      defaultTo(repositoriesData?.data, []).map(repository => ({
-        label: repository,
-        value: repository
+      defaultTo(repositoriesData?.data?.repositories, []).map(repo => ({
+        label: repo.repository,
+        value: repo.repository
       })) || /* istanbul ignore next */ []
 
     setRepositories(options)
@@ -472,7 +472,7 @@ export function ACRArtifact({
                               accountIdentifier: accountId,
                               orgIdentifier,
                               projectIdentifier,
-                              subscription: getValue(value)
+                              subscriptionId: getValue(value)
                             }
                           })
                         } else {
@@ -544,7 +544,7 @@ export function ACRArtifact({
                               accountIdentifier: accountId,
                               orgIdentifier,
                               projectIdentifier,
-                              subscription: getValue(formik.values.subscription)
+                              subscriptionId: getValue(formik.values.subscription)
                             },
                             pathParams: {
                               registry: getValue(value)
