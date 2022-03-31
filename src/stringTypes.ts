@@ -549,6 +549,7 @@ export interface StringsMap {
   'common.scope': string
   'common.searchPlaceholder': string
   'common.seconds': string
+  'common.secret': string
   'common.secretKey': string
   'common.secrets': string
   'common.seeDetails': string
@@ -694,6 +695,7 @@ export interface StringsMap {
   'common.validation.email.format': string
   'common.validation.email.required': string
   'common.validation.entityIdIsRequired': string
+  'common.validation.environmentIsRequired': string
   'common.validation.fieldCannotbeLongerThanN': string
   'common.validation.fieldIsRequired': string
   'common.validation.fieldMustBeAlphanumeric': string
@@ -1395,6 +1397,22 @@ export interface StringsMap {
   'connectors.awsKms.validation.selectDelegate': string
   'connectors.awsKms.validation.selectRegion': string
   'connectors.awsSecretManager.secretNamePrefix': string
+  'connectors.azure.applicationId': string
+  'connectors.azure.auth.certificate': string
+  'connectors.azure.auth.secret': string
+  'connectors.azure.clientId': string
+  'connectors.azure.delegateInClusterInfo': string
+  'connectors.azure.environments.azureGlobal': string
+  'connectors.azure.environments.usGov': string
+  'connectors.azure.managedIdentities.systemAssigned': string
+  'connectors.azure.managedIdentities.userAssigned': string
+  'connectors.azure.validation.applicationId': string
+  'connectors.azure.validation.applicationIdRegex': string
+  'connectors.azure.validation.certificate': string
+  'connectors.azure.validation.clientId': string
+  'connectors.azure.validation.environment': string
+  'connectors.azure.validation.managedIdentity': string
+  'connectors.azure.validation.secret': string
   'connectors.azureKeyVault.labels.fetchVault': string
   'connectors.azureKeyVault.labels.setupVault': string
   'connectors.azureKeyVault.labels.subscription': string
@@ -1728,6 +1746,7 @@ export interface StringsMap {
   'connectors.ceK8.secretCreationStep.step3': string
   'connectors.ceK8.secretCreationStep.step4': string
   'connectors.ceK8.selectConnectorLabel': string
+  'connectors.chooseMethodForAzureConnection': string
   'connectors.chooseMethodForGCPConnection': string
   'connectors.chooseMethodForK8sConnection': string
   'connectors.click': string
@@ -1974,6 +1993,7 @@ export interface StringsMap {
   'connectors.title.awsCodeCommit': string
   'connectors.title.awsKms': string
   'connectors.title.awsSecretManager': string
+  'connectors.title.azure': string
   'connectors.title.azureKeyVault': string
   'connectors.title.bitbucketConnector': string
   'connectors.title.ceAws': string

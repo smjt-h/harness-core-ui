@@ -112,6 +112,7 @@ export const ConnectorInfoText = {
   ARTIFACTORY: 'Artifactory',
   DYNATRACE: 'Dynatrace'
 }
+
 export const ConnectorStatus: ConnectorStatusType = {
   SUCCESS: 'SUCCESS',
   FAILURE: 'FAILURE'
