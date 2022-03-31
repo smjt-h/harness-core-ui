@@ -8,6 +8,7 @@
 // this is an auto-generated file, do not update this manually
 declare const styles: {
   readonly container: string
+  readonly icon: string
   readonly listOptionItem: string
   readonly listOptionItemSelected: string
   readonly listingOptions: string

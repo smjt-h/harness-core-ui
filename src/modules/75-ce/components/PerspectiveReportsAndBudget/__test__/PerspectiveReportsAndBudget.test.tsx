@@ -303,7 +303,7 @@ describe('test case for Perspective anomaly alerts', () => {
 
     await waitFor(() => Promise.resolve())
 
-    expect(getByText('ce.anomalyDetection.notificationAlerts.selectPerspectiveLabel')).toBeDefined()
+    expect(getByText('ce.anomalyDetection.notificationAlerts.selectPerspective')).toBeDefined()
 
     await setFieldValue({
       container: modal!,

@@ -265,7 +265,7 @@ const ScheduledReports: React.FC = () => {
           </Link>
         ) : null}
       </Layout.Horizontal>
-      <Text padding={{ top: 'large', bottom: 'large' }} color={Color.GREY_800} font="small">
+      <Text padding={{ top: 'large', bottom: 'large' }} color={Color.GREY_800} className={css.subtext}>
         {`${getString('ce.perspectives.reports.desc')} ${
           !reports.length ? getString('ce.perspectives.reports.msg') : ''
         }`}
@@ -440,7 +440,7 @@ const Budgets = ({ perspectiveName }: { perspectiveName: string }): JSX.Element 
           </Link>
         ) : null}
       </Layout.Horizontal>
-      <Text padding={{ top: 'large', bottom: 'large' }} color={Color.GREY_800} font="small">
+      <Text padding={{ top: 'large', bottom: 'large' }} color={Color.GREY_800} className={css.subtext}>
         {getString('ce.perspectives.budgets.desc')}
       </Text>
       {budgets.map((budget, idx) => {
@@ -584,7 +584,7 @@ export const AnomalyAlerts = () => {
           </Link>
         ) : null}
       </Layout.Horizontal>
-      <Text padding={{ top: 'large', bottom: 'large' }} color={Color.GREY_800} font="small">
+      <Text padding={{ top: 'large', bottom: 'large' }} color={Color.GREY_800} className={css.subtext}>
         {getString('ce.anomalyDetection.addAnoamlyAlertDesc')}
       </Text>
       <Container className={css.anomalyAlertsWrapper}>

@@ -45,7 +45,7 @@ const PerspectiveSelection: React.FC<StepProps<StepData> & AlertsOverviewProps> 
           items={props.items}
           className={css.perspectiveSelection}
           name={'perspective'}
-          label={getString('ce.anomalyDetection.notificationAlerts.selectPerspectiveLabel')}
+          label={getString('ce.anomalyDetection.notificationAlerts.selectPerspective')}
           placeholder={getString('ce.anomalyDetection.notificationAlerts.selectPerspective')}
         />
       </Layout.Vertical>

@@ -854,7 +854,7 @@ anomalyDetection:
   summary:
     totalCountText: Anomalies Detected
     costImpacted: Total Cost Impact
-    perspectiveWise: Top 3 perspectives by anomalies
+    perspectiveWise: Top 3 Anomalies
     cloudProvidersWise: Anomalies by Cloud Providers
     statusWise: Anomalies by Status
   tableHeaders:
@@ -874,7 +874,7 @@ anomalyDetection:
     filterText: Apply anomaly filters
   settings:
     heading: Alerts and notifications
-    subtext: You can set up alerts for anomalies in perspectives or resources.
+    subtext: You can set up alerts for anomalies in Perspectives.
     newAlertBtn: Create New Alert
     perspectiveNameColumn: Alert name / Perspective
     options:
@@ -882,10 +882,9 @@ anomalyDetection:
   notificationAlerts:
     heading: Anomaly Alerts
     overviewStep: '{{ $.overview }}'
-    selectPerspective: Select perspective
-    selectPerspectiveLabel: On Perspective
+    selectPerspective: '{{$.ce.perspectives.budgets.defineTarget.selectPerspective}}'
     notificationStep: '{{$.notificationMethod}}'
-    notificationStepSubtext: You can set up channels to recieve alerts whenever an anomaly is observed on a persepctive via slack, email or microsoft teams
+    notificationStepSubtext: You can set up channels to recieve alerts whenever an anomaly is observed on a Persepctive via Slack, Email or Microsoft Teams
     alertChannelHeading: Anomaly alert channels
     addChannelBtn: add Channel
     selectChannelPlaceholder: Select Channel

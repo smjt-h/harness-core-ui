@@ -48,7 +48,7 @@
 
 .anomaliesWrapper .anomaliesTooltip {
   visibility: hidden;
-  width: 180px;
+  width: 211px;
   background-color: var(--black);
   color: var(--white);
   border-radius: 6px;
@@ -78,7 +78,7 @@
 .anomaliesCount {
   font-style: normal;
   font-weight: 500;
-  font-size: var(--font-size-xsmall);
+  font-size: var(--font-size-small);
   line-height: 12px;
   color: var(--grey-50);
   margin-bottom: var(--spacing-xsmall);
@@ -87,18 +87,18 @@
 .anomaliesCost {
   font-style: normal;
   font-weight: 600;
-  font-size: var(--font-size-normal);
-  line-height: 24px;
+  font-size: 24px;
+  line-height: 32px;
 }
 
 .anomaliesNav {
   font-style: normal;
   font-weight: bold;
-  font-size: var(--font-size-xsmall);
-  line-height: 15px;
+  font-size: 13px;
+  line-height: 20px;
   display: block;
   color: var(--primary-5);
-  margin-top: var(--spacing-small);
+  margin-top: var(--spacing-large);
 }
 
 .costWrapper {
@@ -107,14 +107,15 @@
 }
 
 .differenceCostPos {
-  font-size: var(--font-size-xsmall);
+  font-size: 13px;
   line-height: 15px;
   color: var(--red-400);
   margin-left: 12px;
+  font-weight: 500;
 }
 
 .differenceCostNeg {
-  font-size: var(--font-size-xsmall);
+  font-size: 13px;
   line-height: 15px;
   color: var(--green-500);
   margin-left: 12px;

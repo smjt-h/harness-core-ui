@@ -112,8 +112,14 @@ const AlertsSection = () => {
 
     return (
       <Layout.Horizontal spacing="medium">
-        <Icon name="Edit" size={16} color={Color.PRIMARY_6} onClick={() => onEdit(row.original)} />
-        <Icon name="main-trash" size={16} color={Color.PRIMARY_6} onClick={() => deleteNotification(perspectiveId)} />
+        <Icon name="Edit" size={16} color={Color.PRIMARY_6} onClick={() => onEdit(row.original)} className={css.icon} />
+        <Icon
+          name="main-trash"
+          size={16}
+          color={Color.PRIMARY_6}
+          onClick={() => deleteNotification(perspectiveId)}
+          className={css.icon}
+        />
       </Layout.Horizontal>
     )
   }

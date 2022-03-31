@@ -257,7 +257,7 @@ exports[`test case for anomalies settings drawer should be able to delete the an
                     class="Layout--horizontal Layout--layout-spacing-medium StyledProps--main"
                   >
                     <span
-                      class="bp3-icon StyledProps--main StyledProps--color StyledProps--color-primary6"
+                      class="bp3-icon StyledProps--main icon StyledProps--color StyledProps--color-primary6"
                       data-icon="Edit"
                     >
                       <svg
@@ -282,7 +282,7 @@ exports[`test case for anomalies settings drawer should be able to delete the an
                       </svg>
                     </span>
                     <span
-                      class="bp3-icon StyledProps--main StyledProps--color StyledProps--color-primary6"
+                      class="bp3-icon StyledProps--main icon StyledProps--color StyledProps--color-primary6"
                       data-icon="main-trash"
                     >
                       <svg
@@ -522,7 +522,7 @@ exports[`test case for anomalies settings drawer should be able to open alert cr
                     class="Tooltip--acenter"
                     data-tooltip-id="createNotificationAlert_perspective"
                   >
-                    ce.anomalyDetection.notificationAlerts.selectPerspectiveLabel
+                    ce.anomalyDetection.notificationAlerts.selectPerspective
                   </span>
                    
                   <span

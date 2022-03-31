@@ -15,6 +15,7 @@ declare const styles: {
   readonly loader: string
   readonly mainContainer: string
   readonly popoverContent: string
+  readonly subtext: string
   readonly tableCtn: string
 }
 export default styles

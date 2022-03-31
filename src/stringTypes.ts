@@ -3423,7 +3423,6 @@ export interface StringsMap {
   'ce.anomalyDetection.notificationAlerts.selectChannelPlaceholder': string
   'ce.anomalyDetection.notificationAlerts.selectMethod': string
   'ce.anomalyDetection.notificationAlerts.selectPerspective': string
-  'ce.anomalyDetection.notificationAlerts.selectPerspectiveLabel': string
   'ce.anomalyDetection.notificationAlerts.updateAlertSuccessMsg': string
   'ce.anomalyDetection.notificationAlerts.urlInputPlaceholder': string
   'ce.anomalyDetection.perspectiveCreateAnomalyAlertTitle': string

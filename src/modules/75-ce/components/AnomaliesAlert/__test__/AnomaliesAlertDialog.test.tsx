@@ -140,7 +140,7 @@ describe('Test case for anomalies alert dialog', () => {
     const modal = findDialogContainer()
     expect(modal).toBeDefined()
 
-    expect(getAllByText('ce.anomalyDetection.notificationAlerts.selectPerspectiveLabel')).toBeDefined()
+    expect(getAllByText('ce.anomalyDetection.notificationAlerts.selectPerspective')).toBeDefined()
 
     const saveAndContinueBtn = getAllByText('saveAndContinue')[0]
     act(() => {
