@@ -5,7 +5,8 @@
  * https://polyformproject.org/wp-content/uploads/2020/06/PolyForm-Shield-1.0.0.txt.
  */
 
-import React, { useEffect } from 'react'
+// uncomment when APIs are in place
+import React from 'react'
 import { defaultTo, get } from 'lodash-es'
 
 import {
@@ -17,10 +18,9 @@ import {
   Text
 } from '@wings-software/uicore'
 import { ArtifactSourceBase, ArtifactSourceRenderProps } from '@cd/factory/ArtifactSourceFactory/ArtifactSourceBase'
-import { yamlStringify } from '@common/utils/YamlHelperMethods'
-import { useMutateAsGet } from '@common/hooks'
-import { SidecarArtifact, useGetBuildDetailsForAcrWithYaml } from 'services/cd-ng'
-import { useListAzureRegistries, useListAzureRepositories, useListAzureSubscriptions } from 'services/portal'
+// import { yamlStringify } from '@common/utils/YamlHelperMethods'
+// import { useMutateAsGet } from '@common/hooks'
+import type { SidecarArtifact } from 'services/cd-ng'
 import { ArtifactToConnectorMap, ENABLED_ARTIFACT_TYPES } from '@pipeline/components/ArtifactsSelection/ArtifactHelper'
 import { TriggerDefaultFieldList } from '@triggers/pages/triggers/utils/TriggersWizardPageUtils'
 import { useStrings } from 'framework/strings'
@@ -28,8 +28,8 @@ import { useVariablesExpression } from '@pipeline/components/PipelineStudio/Pipl
 import { FormMultiTypeConnectorField } from '@connectors/components/ConnectorReferenceField/FormMultiTypeConnectorField'
 import ExperimentalInput from '../../K8sServiceSpecForms/ExperimentalInput'
 import { isFieldRuntime } from '../../K8sServiceSpecHelper'
-import { getYamlData, isArtifactSourceRuntime, isFieldfromTriggerTabDisabled, resetTags } from '../artifactSourceUtils'
-import ArtifactTagRuntimeField from '../ArtifactSourceRuntimeFields/ArtifactTagRuntimeField'
+import { isArtifactSourceRuntime, isFieldfromTriggerTabDisabled, resetTags } from '../artifactSourceUtils'
+// import ArtifactTagRuntimeField from '../ArtifactSourceRuntimeFields/ArtifactTagRuntimeField'
 import css from '../../K8sServiceSpec.module.scss'
 
 interface ACRRenderContent extends ArtifactSourceRenderProps {
@@ -49,7 +49,7 @@ const Content = (props: ACRRenderContent): JSX.Element => {
     orgIdentifier,
     readonly,
     repoIdentifier,
-    pipelineIdentifier,
+    // pipelineIdentifier,
     branch,
     stageIdentifier,
     isTagsSelectionDisabled,
@@ -61,132 +61,137 @@ const Content = (props: ACRRenderContent): JSX.Element => {
   } = props
 
   const { getString } = useStrings()
-  const isPropagatedStage = path?.includes('serviceConfig.stageOverrides')
+  // const isPropagatedStage = path?.includes('serviceConfig.stageOverrides')
   const { expressions } = useVariablesExpression()
   const [subscriptions, setSubscriptions] = React.useState<SelectOption[]>([])
   const [registries, setRegistries] = React.useState<SelectOption[]>([])
   const [repositories, setRepositories] = React.useState<SelectOption[]>([])
 
-  const {
-    data: acrTagsData,
-    loading: fetchingTags,
-    refetch: fetchTags,
-    error: fetchTagsError
-  } = useMutateAsGet(useGetBuildDetailsForAcrWithYaml, {
-    body: yamlStringify(getYamlData(formik?.values)),
-    requestOptions: {
-      headers: {
-        'content-type': 'application/json'
-      }
-    },
-    queryParams: {
-      accountIdentifier: accountId,
-      projectIdentifier,
-      orgIdentifier,
-      repoIdentifier,
-      branch,
-      connectorRef:
-        getMultiTypeFromValue(artifact?.spec?.connectorRef) !== MultiTypeInputType.RUNTIME
-          ? artifact?.spec?.connectorRef
-          : get(initialValues?.artifacts, `${artifactPath}.spec.connectorRef`, ''),
-      subscription:
-        getMultiTypeFromValue(artifact?.spec?.subscription) !== MultiTypeInputType.RUNTIME
-          ? artifact?.spec?.subscription
-          : get(initialValues, `artifacts.${artifactPath}.spec.subscription`, ''),
-      registry:
-        getMultiTypeFromValue(artifact?.spec?.registry) !== MultiTypeInputType.RUNTIME
-          ? artifact?.spec?.registry
-          : get(initialValues, `artifacts.${artifactPath}.spec.registry`, ''),
-      repository:
-        getMultiTypeFromValue(artifact?.spec?.repository) !== MultiTypeInputType.RUNTIME
-          ? artifact?.spec?.repository
-          : get(initialValues, `artifacts.${artifactPath}.spec.repository`, ''),
-      pipelineIdentifier: defaultTo(pipelineIdentifier, formik?.values?.identifier),
-      fqnPath: isPropagatedStage
-        ? `pipeline.stages.${stageIdentifier}.spec.serviceConfig.stageOverrides.artifacts.${artifactPath}.spec.tag`
-        : `pipeline.stages.${stageIdentifier}.spec.serviceConfig.serviceDefinition.spec.artifacts.${artifactPath}.spec.tag`
-    },
-    lazy: true
-  })
+  React.useEffect(() => {
+    setSubscriptions([])
+    setRegistries([])
+    setRepositories([])
+  }, [])
+  // const {
+  //   data: acrTagsData,
+  //   loading: fetchingTags,
+  //   refetch: fetchTags,
+  //   error: fetchTagsError
+  // } = useMutateAsGet(useGetBuildDetailsForAcrWithYaml, {
+  //   body: yamlStringify(getYamlData(formik?.values)),
+  //   requestOptions: {
+  //     headers: {
+  //       'content-type': 'application/json'
+  //     }
+  //   },
+  //   queryParams: {
+  //     accountIdentifier: accountId,
+  //     projectIdentifier,
+  //     orgIdentifier,
+  //     repoIdentifier,
+  //     branch,
+  //     connectorRef:
+  //       getMultiTypeFromValue(artifact?.spec?.connectorRef) !== MultiTypeInputType.RUNTIME
+  //         ? artifact?.spec?.connectorRef
+  //         : get(initialValues?.artifacts, `${artifactPath}.spec.connectorRef`, ''),
+  //     subscription:
+  //       getMultiTypeFromValue(artifact?.spec?.subscription) !== MultiTypeInputType.RUNTIME
+  //         ? artifact?.spec?.subscription
+  //         : get(initialValues, `artifacts.${artifactPath}.spec.subscription`, ''),
+  //     registry:
+  //       getMultiTypeFromValue(artifact?.spec?.registry) !== MultiTypeInputType.RUNTIME
+  //         ? artifact?.spec?.registry
+  //         : get(initialValues, `artifacts.${artifactPath}.spec.registry`, ''),
+  //     repository:
+  //       getMultiTypeFromValue(artifact?.spec?.repository) !== MultiTypeInputType.RUNTIME
+  //         ? artifact?.spec?.repository
+  //         : get(initialValues, `artifacts.${artifactPath}.spec.repository`, ''),
+  //     pipelineIdentifier: defaultTo(pipelineIdentifier, formik?.values?.identifier),
+  //     fqnPath: isPropagatedStage
+  //       ? `pipeline.stages.${stageIdentifier}.spec.serviceConfig.stageOverrides.artifacts.${artifactPath}.spec.tag`
+  //       : `pipeline.stages.${stageIdentifier}.spec.serviceConfig.serviceDefinition.spec.artifacts.${artifactPath}.spec.tag`
+  //   },
+  //   lazy: true
+  // })
 
-  const { data } = useListAzureSubscriptions({
-    queryParams: {
-      accountId
-    }
-  })
-  useEffect(() => {
-    const subscriptionValues = defaultTo(data?.resource, []).map(subsciption => ({
-      value: subsciption.value,
-      label: subsciption.value
-    }))
-    setSubscriptions(subscriptionValues as SelectOption[])
-  }, [data?.resource])
+  // const { data } = useListAzureSubscriptions({
+  //   queryParams: {
+  //     accountId
+  //   }
+  // })
+  // useEffect(() => {
+  //   const subscriptionValues = defaultTo(data?.resource, []).map(subsciption => ({
+  //     value: subsciption,
+  //     label: subsciption
+  //   }))
+  //   setSubscriptions(subscriptionValues as SelectOption[])
+  // }, [data?.resource])
 
-  const {
-    data: registiresData,
-    refetch: refetchRegistries,
-    loading: loadingRegistries,
-    error: registriesError
-  } = useListAzureRegistries({
-    lazy: true,
-    debounce: 300
-  })
+  // const {
+  //   data: registiresData,
+  //   refetch: refetchRegistries,
+  //   loading: loadingRegistries,
+  //   error: registriesError
+  // } = useListAzureRegistries({
+  //   lazy: true,
+  //   debounce: 300
+  // })
 
-  useEffect(() => {
-    if (
-      getMultiTypeFromValue(artifact?.spec?.subscription) === MultiTypeInputType.FIXED &&
-      getMultiTypeFromValue(artifact?.spec?.registry) === MultiTypeInputType.FIXED
-    ) {
-      refetchRegistries({
-        queryParams: {
-          accountId,
-          subscription: formik.values?.subscription
-        }
-      })
-    }
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [artifact?.spec?.subscription, artifact?.spec?.registry])
+  // useEffect(() => {
+  //   if (
+  //     getMultiTypeFromValue(artifact?.spec?.subscription) === MultiTypeInputType.FIXED &&
+  //     getMultiTypeFromValue(artifact?.spec?.registry) === MultiTypeInputType.FIXED
+  //   ) {
+  //     refetchRegistries({
+  //       queryParams: {
+  //         accountId,
+  //         subscription: formik.values?.subscription
+  //       }
+  //     })
+  //   }
+  //   // eslint-disable-next-line react-hooks/exhaustive-deps
+  // }, [artifact?.spec?.subscription, artifact?.spec?.registry])
 
-  useEffect(() => {
-    const options =
-      defaultTo(registiresData?.resource, []).map(registry => ({ label: registry.value, value: registry.value })) ||
-      /* istanbul ignore next */ []
-    setRegistries(options)
-  }, [registiresData])
+  // useEffect(() => {
+  //   const options =
+  //     defaultTo(registiresData?.resource, []).map(registry => ({ label: registry.value, value: registry.value })) ||
+  //     /* istanbul ignore next */ []
+  //   setRegistries(options)
+  // }, [registiresData])
 
-  const {
-    data: repositoriesData,
-    refetch: refetchRepositories,
-    loading: loadingRepositories,
-    error: repositoriesError
-  } = useListAzureRepositories({
-    lazy: true,
-    debounce: 300
-  })
+  // const {
+  //   data: repositoriesData,
+  //   refetch: refetchRepositories,
+  //   loading: loadingRepositories,
+  //   error: repositoriesError
+  // } = useListAzureRepositories({
+  //   lazy: true,
+  //   debounce: 300
+  // })
 
-  useEffect(() => {
-    if (
-      getMultiTypeFromValue(artifact?.spec?.subscription) === MultiTypeInputType.FIXED &&
-      getMultiTypeFromValue(artifact?.spec?.registry) === MultiTypeInputType.FIXED &&
-      getMultiTypeFromValue(artifact?.spec?.repository) === MultiTypeInputType.FIXED
-    ) {
-      refetchRepositories({
-        queryParams: {
-          accountId,
-          subscription: formik.values.subscription,
-          registry: formik.values.registry
-        }
-      })
-    }
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [artifact?.spec?.subscription, artifact?.spec?.registry, artifact?.spec?.repository])
+  // useEffect(() => {
+  //   if (
+  //     getMultiTypeFromValue(artifact?.spec?.subscription) === MultiTypeInputType.FIXED &&
+  //     getMultiTypeFromValue(artifact?.spec?.registry) === MultiTypeInputType.FIXED &&
+  //     getMultiTypeFromValue(artifact?.spec?.repository) === MultiTypeInputType.FIXED
+  //   ) {
+  //     refetchRepositories({
+  //       queryParams: {
+  //         accountId,
+  //         subscription: formik.values.subscription,
+  //         registry: formik.values.registry
+  //       }
+  //     })
+  //   }
+  //   // eslint-disable-next-line react-hooks/exhaustive-deps
+  // }, [artifact?.spec?.subscription, artifact?.spec?.registry, artifact?.spec?.repository])
 
-  useEffect(() => {
-    const options =
-      defaultTo(repositoriesData?.resource, []).map(repo => ({ label: repo.value, value: repo.value })) ||
-      /* istanbul ignore next */ []
-    setRepositories(options)
-  }, [repositoriesData])
+  // useEffect(() => {
+  //   const options =
+  //     defaultTo(repositoriesData?.resource, []).map(repo => ({ label: repo.value, value: repo.value })) ||
+  //     /* istanbul ignore next */ []
+  //   setRepositories(options)
+  // }, [repositoriesData])
 
   const isFieldDisabled = (fieldName: string, isTag = false): boolean => {
     if (
@@ -266,10 +271,11 @@ const Content = (props: ACRRenderContent): JSX.Element => {
                 onChange: () => resetTags(formik, `${path}.artifacts.${artifactPath}.spec.tag`),
                 selectProps: {
                   usePortal: true,
-                  addClearBtn: !(loadingRegistries || readonly),
+                  // addClearBtn: !(loadingRegistries || readonly),
                   noResults: (
                     <Text padding={'small'}>
-                      {get(registriesError, 'data.message', null) || getString('connectors.ACR.registryError')}
+                      {/* {get(registriesError, 'data.message', null) || getString('connectors.ACR.registryError')} */}
+                      {getString('connectors.ACR.registryError')}
                     </Text>
                   )
                 },
@@ -291,11 +297,12 @@ const Content = (props: ACRRenderContent): JSX.Element => {
                 onChange: () => resetTags(formik, `${path}.artifacts.${artifactPath}.spec.tag`),
                 selectProps: {
                   usePortal: true,
-                  addClearBtn: !(loadingRepositories || readonly),
+                  // addClearBtn: !(loadingRepositories || readonly),
                   items: repositories,
                   noResults: (
                     <Text padding={'small'}>
-                      {get(repositoriesError, 'data.message', null) || getString('connectors.ACR.repositoryError')}
+                      {/* {get(repositoriesError, 'data.message', null) || getString('connectors.ACR.repositoryError')} */}
+                      {getString('connectors.ACR.repositoryError')}
                     </Text>
                   )
                 },
@@ -322,7 +329,7 @@ const Content = (props: ACRRenderContent): JSX.Element => {
             />
           )}
 
-          {!fromTrigger && isFieldRuntime(`artifacts.${artifactPath}.spec.tag`, template) && (
+          {/* {!fromTrigger && isFieldRuntime(`artifacts.${artifactPath}.spec.tag`, template) && (
             <ArtifactTagRuntimeField
               {...props}
               isFieldDisabled={() => isFieldDisabled(`artifacts.${artifactPath}.spec.tag`, true)}
@@ -333,7 +340,7 @@ const Content = (props: ACRRenderContent): JSX.Element => {
               expressions={expressions}
               stageIdentifier={stageIdentifier}
             />
-          )}
+          )} */}
 
           {isFieldRuntime(`artifacts.${artifactPath}.spec.tagRegex`, template) && (
             <FormInput.MultiTextInput

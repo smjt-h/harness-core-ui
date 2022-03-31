@@ -5,7 +5,8 @@
  * https://polyformproject.org/wp-content/uploads/2020/06/PolyForm-Shield-1.0.0.txt.
  */
 
-import React, { useEffect, useState } from 'react'
+// uncomment when APIs are in place
+import React, { useState } from 'react'
 import {
   IconName,
   Text,
@@ -22,7 +23,7 @@ import {
 import cx from 'classnames'
 import * as Yup from 'yup'
 import { useParams } from 'react-router-dom'
-import { debounce, noop, isEmpty, get, set, defaultTo } from 'lodash-es'
+import { debounce, noop, isEmpty, get, defaultTo } from 'lodash-es'
 import { parse } from 'yaml'
 import { CompletionItemKind } from 'vscode-languageserver-types'
 import { FormikErrors, FormikProps, yupToFormErrors } from 'formik'
@@ -30,30 +31,21 @@ import { StepViewType, StepProps, ValidateInputSetProps } from '@pipeline/compon
 import { ConfigureOptions } from '@common/components/ConfigureOptions/ConfigureOptions'
 import { useVariablesExpression } from '@pipeline/components/PipelineStudio/PiplineHooks/useVariablesExpression'
 
+import { getConnectorListV2Promise } from 'services/cd-ng'
 import {
-  getConnectorListV2Promise,
-  AzureInfrastructure,
-  useGetSubscriptionsForAzure,
-  useGetResourceGroupsForAzure,
-  useGetClustersForAzure,
-  getSubscriptionsForAzurePromise,
-  getResourceGroupsForAzurePromise,
-  getClustersForAzurePromise
-} from 'services/cd-ng'
-import {
-  ConnectorReferenceDTO,
+  // ConnectorReferenceDTO,
   FormMultiTypeConnectorField
 } from '@connectors/components/ConnectorReferenceField/FormMultiTypeConnectorField'
 
 import { getIconByType } from '@connectors/pages/connectors/utils/ConnectorUtils'
-import { Scope } from '@common/interfaces/SecretsInterface'
+// import { Scope } from '@common/interfaces/SecretsInterface'
 import type { VariableMergeServiceResponse } from 'services/pipeline-ng'
 
 import type { CompletionItemInterface } from '@common/interfaces/YAMLBuilderProps'
 import { useStrings, UseStringsReturn } from 'framework/strings'
 import { loggerFor } from 'framework/logging/logging'
 import { ModuleName } from 'framework/types/ModuleName'
-import { VariablesListTable } from '@pipeline/components/VariablesListTable/VariablesListTable'
+// import { VariablesListTable } from '@pipeline/components/VariablesListTable/VariablesListTable'
 import { StepType } from '@pipeline/components/PipelineSteps/PipelineStepInterface'
 import { PipelineStep } from '@pipeline/components/PipelineSteps/PipelineStep'
 
@@ -73,7 +65,7 @@ type AzureInfrastructureTemplate = { [key in keyof AzureInfrastructure]: string 
 const subscriptionLabel = 'connectors.ACR.subscription'
 const resourceGroupLabel = 'common.resourceGroupLabel'
 const clusterLabel = 'common.cluster'
-const errorMessage = 'data.message'
+// const errorMessage = 'data.message'
 const yamlErrorMessage = 'cd.parsingYamlError'
 
 function getValidationSchema(getString: UseStringsReturn['getString']): Yup.ObjectSchema {
@@ -104,6 +96,16 @@ interface AzureInfrastructureUI extends Omit<AzureInfrastructure, 'subscription'
   resourceGroup?: any
 }
 
+export type AzureInfrastructure = {
+  connectorRef: string
+  subscription: string
+  cluster: string
+  resourceGroup: string
+  namespace: string
+  releaseName: string
+  metadata?: string
+}
+
 const AzureInfrastructureSpecEditable: React.FC<AzureInfrastructureSpecEditableProps> = ({
   initialValues,
   onUpdate,
@@ -123,109 +125,115 @@ const AzureInfrastructureSpecEditable: React.FC<AzureInfrastructureSpecEditableP
   const { expressions } = useVariablesExpression()
   const { getString } = useStrings()
 
-  const {
-    data: subscriptionsData,
-    refetch: refetchSubscriptionsData,
-    loading: loadingSubscriptionsData,
-    error: subscriptionsError
-  } = useGetSubscriptionsForAzure({
-    lazy: true,
-    debounce: 300
-  })
+  React.useEffect(() => {
+    setSubscriptions([])
+    setResourceGroups([])
+    setClusters([])
+  }, [])
 
-  useEffect(() => {
-    const options =
-      subscriptionsData?.data?.map(name => ({ label: name, value: name })) || /* istanbul ignore next */ []
-    setSubscriptions(options)
-  }, [subscriptionsData])
+  // const {
+  //   data: subscriptionsData,
+  //   refetch: refetchSubscriptionsData,
+  //   loading: loadingSubscriptionsData,
+  //   error: subscriptionsError
+  // } = useGetSubscriptionsForAzure({
+  //   lazy: true,
+  //   debounce: 300
+  // })
 
-  useEffect(() => {
-    if (initialValues.connectorRef && getMultiTypeFromValue(initialValues.connectorRef) === MultiTypeInputType.FIXED) {
-      refetchSubscriptionsData({
-        queryParams: {
-          accountIdentifier: accountId,
-          projectIdentifier,
-          orgIdentifier,
-          connectorRef: initialValues.connectorRef
-        }
-      })
-    }
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [initialValues.connectorRef])
+  // useEffect(() => {
+  //   const options =
+  //     subscriptionsData?.data?.map(name => ({ label: name, value: name })) || /* istanbul ignore next */ []
+  //   setSubscriptions(options)
+  // }, [subscriptionsData])
 
-  const {
-    data: resourceGroupData,
-    refetch: refetchResourceGroups,
-    loading: loadingResourceGroupsData,
-    error: resourceGroupsError
-  } = useGetResourceGroupsForAzure({
-    lazy: true,
-    debounce: 300
-  })
+  // useEffect(() => {
+  //   if (initialValues.connectorRef && getMultiTypeFromValue(initialValues.connectorRef) === MultiTypeInputType.FIXED) {
+  //     refetchSubscriptionsData({
+  //       queryParams: {
+  //         accountIdentifier: accountId,
+  //         projectIdentifier,
+  //         orgIdentifier,
+  //         connectorRef: initialValues.connectorRef
+  //       }
+  //     })
+  //   }
+  //   // eslint-disable-next-line react-hooks/exhaustive-deps
+  // }, [initialValues.connectorRef])
 
-  useEffect(() => {
-    const options =
-      resourceGroupData?.data?.map(name => ({ label: name, value: name })) || /* istanbul ignore next */ []
-    setResourceGroups(options)
-  }, [resourceGroupData])
+  // const {
+  //   data: resourceGroupData,
+  //   refetch: refetchResourceGroups,
+  //   loading: loadingResourceGroupsData,
+  //   error: resourceGroupsError
+  // } = useGetResourceGroupsForAzure({
+  //   lazy: true,
+  //   debounce: 300
+  // })
 
-  useEffect(() => {
-    if (
-      initialValues.connectorRef &&
-      getMultiTypeFromValue(initialValues.connectorRef) === MultiTypeInputType.FIXED &&
-      initialValues.subscription &&
-      getMultiTypeFromValue(initialValues.subscription) === MultiTypeInputType.FIXED
-    ) {
-      refetchResourceGroups({
-        queryParams: {
-          accountIdentifier: accountId,
-          projectIdentifier,
-          orgIdentifier,
-          connectorRef: initialValues.connectorRef,
-          subscription: initialValues.subscription
-        }
-      })
-    }
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [initialValues.connectorRef, initialValues.subscription])
+  // useEffect(() => {
+  //   const options =
+  //     resourceGroupData?.data?.map(name => ({ label: name, value: name })) || /* istanbul ignore next */ []
+  //   setResourceGroups(options)
+  // }, [resourceGroupData])
 
-  const {
-    data: clustersData,
-    refetch: refetchClustersData,
-    loading: loadingClustersData,
-    error: clustersError
-  } = useGetClustersForAzure({
-    lazy: true,
-    debounce: 300
-  })
+  // useEffect(() => {
+  //   if (
+  //     initialValues.connectorRef &&
+  //     getMultiTypeFromValue(initialValues.connectorRef) === MultiTypeInputType.FIXED &&
+  //     initialValues.subscription &&
+  //     getMultiTypeFromValue(initialValues.subscription) === MultiTypeInputType.FIXED
+  //   ) {
+  //     refetchResourceGroups({
+  //       queryParams: {
+  //         accountIdentifier: accountId,
+  //         projectIdentifier,
+  //         orgIdentifier,
+  //         connectorRef: initialValues.connectorRef,
+  //         subscription: initialValues.subscription
+  //       }
+  //     })
+  //   }
+  //   // eslint-disable-next-line react-hooks/exhaustive-deps
+  // }, [initialValues.connectorRef, initialValues.subscription])
 
-  useEffect(() => {
-    const options = clustersData?.data?.map(name => ({ label: name, value: name })) || /* istanbul ignore next */ []
-    setClusters(options)
-  }, [clustersData])
+  // const {
+  //   data: clustersData,
+  //   refetch: refetchClustersData,
+  //   loading: loadingClustersData,
+  //   error: clustersError
+  // } = useGetClustersForAzure({
+  //   lazy: true,
+  //   debounce: 300
+  // })
 
-  useEffect(() => {
-    if (
-      initialValues.connectorRef &&
-      getMultiTypeFromValue(initialValues.connectorRef) === MultiTypeInputType.FIXED &&
-      initialValues.subscription &&
-      getMultiTypeFromValue(initialValues.subscription) === MultiTypeInputType.FIXED &&
-      initialValues.resourceGroup &&
-      getMultiTypeFromValue(initialValues.resourceGroup) === MultiTypeInputType.FIXED
-    ) {
-      refetchClustersData({
-        queryParams: {
-          accountIdentifier: accountId,
-          projectIdentifier,
-          orgIdentifier,
-          connectorRef: initialValues.connectorRef,
-          subscription: initialValues.subscription,
-          resourceGroup: initialValues.resourceGroup
-        }
-      })
-    }
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [initialValues.connectorRef, initialValues.subscription, initialValues.resourceGroup])
+  // useEffect(() => {
+  //   const options = clustersData?.data?.map(name => ({ label: name, value: name })) || /* istanbul ignore next */ []
+  //   setClusters(options)
+  // }, [clustersData])
+
+  // useEffect(() => {
+  //   if (
+  //     initialValues.connectorRef &&
+  //     getMultiTypeFromValue(initialValues.connectorRef) === MultiTypeInputType.FIXED &&
+  //     initialValues.subscription &&
+  //     getMultiTypeFromValue(initialValues.subscription) === MultiTypeInputType.FIXED &&
+  //     initialValues.resourceGroup &&
+  //     getMultiTypeFromValue(initialValues.resourceGroup) === MultiTypeInputType.FIXED
+  //   ) {
+  //     refetchClustersData({
+  //       queryParams: {
+  //         accountIdentifier: accountId,
+  //         projectIdentifier,
+  //         orgIdentifier,
+  //         connectorRef: initialValues.connectorRef,
+  //         subscription: initialValues.subscription,
+  //         resourceGroup: initialValues.resourceGroup
+  //       }
+  //     })
+  //   }
+  //   // eslint-disable-next-line react-hooks/exhaustive-deps
+  // }, [initialValues.connectorRef, initialValues.subscription, initialValues.resourceGroup])
 
   const getValue = (value: { label?: string; value?: string } | string | any): string => {
     return typeof value === 'string' ? value : value?.value
@@ -276,12 +284,12 @@ const AzureInfrastructureSpecEditable: React.FC<AzureInfrastructureSpecEditableP
             resourceGroup:
               getValue(value.resourceGroup) === ''
                 ? /* istanbul ignore next */ undefined
-                : getValue(value.resourceGroup),
-            cluster: getValue(value.cluster) === '' ? /* istanbul ignore next */ undefined : getValue(value.cluser),
-            allowSimultaneousDeployments: value.allowSimultaneousDeployments
+                : getValue(value.resourceGroup)
+            // cluster: getValue(value.cluster) === '' ? /* istanbul ignore next */ undefined : getValue(value.cluser),
+            // allowSimultaneousDeployments: value.allowSimultaneousDeployments
           }
           /* istanbul ignore else */ if (value.connectorRef) {
-            data.connectorRef = value.connectorRef?.value || /* istanbul ignore next */ value.connectorRef
+            // data.connectorRef = value.connectorRef?.value || /* istanbul ignore next */ value.connectorRef
           }
 
           delayedOnUpdate(data)
@@ -309,24 +317,24 @@ const AzureInfrastructureSpecEditable: React.FC<AzureInfrastructureSpecEditableP
                   enableConfigureOptions={false}
                   style={{ marginBottom: 'var(--spacing-large)' }}
                   type={Connectors.AZURE}
-                  onChange={(value: any, _valueType, type) => {
-                    /* istanbul ignore next */
-                    if (type === MultiTypeInputType.FIXED && value.record) {
-                      const { record, scope } = value as unknown as { record: ConnectorReferenceDTO; scope: Scope }
-                      const connectorRef =
-                        scope === Scope.ORG || scope === Scope.ACCOUNT
-                          ? `${scope}.${record.identifier}`
-                          : record.identifier
-                      refetchSubscriptionsData({
-                        queryParams: {
-                          accountIdentifier: accountId,
-                          projectIdentifier,
-                          orgIdentifier,
-                          connectorRef
-                        }
-                      })
-                    }
-                  }}
+                  // onChange={(value: any, _valueType, type) => {
+                  //   /* istanbul ignore next */
+                  //   if (type === MultiTypeInputType.FIXED && value.record) {
+                  //     const { record, scope } = value as unknown as { record: ConnectorReferenceDTO; scope: Scope }
+                  //     const connectorRef =
+                  //       scope === Scope.ORG || scope === Scope.ACCOUNT
+                  //         ? `${scope}.${record.identifier}`
+                  //         : record.identifier
+                  // refetchSubscriptionsData({
+                  //   queryParams: {
+                  //     accountIdentifier: accountId,
+                  //     projectIdentifier,
+                  //     orgIdentifier,
+                  //     connectorRef
+                  //   }
+                  // })
+                  //   }
+                  // }}
                   gitScope={{ repo: repoIdentifier || '', branch, getDefaultFromOtherRepo: true }}
                 />
                 {getMultiTypeFromValue(formik.values.connectorRef) === MultiTypeInputType.RUNTIME && !readonly && (
@@ -355,11 +363,11 @@ const AzureInfrastructureSpecEditable: React.FC<AzureInfrastructureSpecEditableP
                   name="subscription"
                   className={css.inputWidth}
                   selectItems={subscriptions}
-                  disabled={loadingSubscriptionsData || readonly}
+                  // disabled={loadingSubscriptionsData || readonly}
                   placeholder={
-                    loadingSubscriptionsData
-                      ? /* istanbul ignore next */ getString('loading')
-                      : getString('cd.steps.azureInfraStep.subscriptionPlaceholder')
+                    // loadingSubscriptionsData
+                    //   ? /* istanbul ignore next */ getString('loading') :
+                    getString('cd.steps.azureInfraStep.subscriptionPlaceholder')
                   }
                   multiTypeInputProps={{
                     expressions,
@@ -367,11 +375,12 @@ const AzureInfrastructureSpecEditable: React.FC<AzureInfrastructureSpecEditableP
                     selectProps: {
                       items: subscriptions,
                       allowCreatingNewItems: true,
-                      addClearBtn: !(loadingSubscriptionsData || readonly),
+                      // addClearBtn: !(loadingSubscriptionsData || readonly),
                       noResults: (
                         <Text padding={'small'}>
-                          {get(subscriptionsError, errorMessage, null) ||
-                            getString('cd.pipelineSteps.infraTab.subscriptionError')}
+                          {/* {get(subscriptionsError, errorMessage, null) ||
+                            getString('cd.pipelineSteps.infraTab.subscriptionError')} */}
+                          {getString('cd.pipelineSteps.infraTab.subscriptionError')}
                         </Text>
                       )
                     },
@@ -401,11 +410,11 @@ const AzureInfrastructureSpecEditable: React.FC<AzureInfrastructureSpecEditableP
                   name="resourceGroup"
                   className={css.inputWidth}
                   selectItems={resourceGroups}
-                  disabled={loadingResourceGroupsData || readonly}
+                  // disabled={loadingResourceGroupsData || readonly}
                   placeholder={
-                    loadingResourceGroupsData
-                      ? /* istanbul ignore next */ getString('loading')
-                      : getString('cd.steps.azureInfraStep.resourceGroupPlaceholder')
+                    // loadingResourceGroupsData
+                    //   ? /* istanbul ignore next */ getString('loading') :
+                    getString('cd.steps.azureInfraStep.resourceGroupPlaceholder')
                   }
                   multiTypeInputProps={{
                     expressions,
@@ -413,11 +422,12 @@ const AzureInfrastructureSpecEditable: React.FC<AzureInfrastructureSpecEditableP
                     selectProps: {
                       items: resourceGroups,
                       allowCreatingNewItems: true,
-                      addClearBtn: !(loadingResourceGroupsData || readonly),
+                      // addClearBtn: !(loadingResourceGroupsData || readonly),
                       noResults: (
                         <Text padding={'small'}>
-                          {get(resourceGroupsError, errorMessage, null) ||
-                            getString('cd.pipelineSteps.infraTab.resourceGroupError')}
+                          {/* {get(resourceGroupsError, errorMessage, null) ||
+                            getString('cd.pipelineSteps.infraTab.resourceGroupError')} */}
+                          {getString('cd.pipelineSteps.infraTab.resourceGroupError')}
                         </Text>
                       )
                     },
@@ -447,11 +457,11 @@ const AzureInfrastructureSpecEditable: React.FC<AzureInfrastructureSpecEditableP
                   name="cluster"
                   className={css.inputWidth}
                   selectItems={clusters}
-                  disabled={loadingClustersData || readonly}
+                  // disabled={loadingClustersData || readonly}
                   placeholder={
-                    loadingClustersData
-                      ? /* istanbul ignore next */ getString('loading')
-                      : getString('cd.steps.common.selectOrEnterClusterPlaceholder')
+                    // loadingClustersData
+                    //   ? /* istanbul ignore next */ getString('loading') :
+                    getString('cd.steps.common.selectOrEnterClusterPlaceholder')
                   }
                   multiTypeInputProps={{
                     expressions,
@@ -459,11 +469,12 @@ const AzureInfrastructureSpecEditable: React.FC<AzureInfrastructureSpecEditableP
                     selectProps: {
                       items: clusters,
                       allowCreatingNewItems: true,
-                      addClearBtn: !(loadingClustersData || readonly),
+                      // addClearBtn: !(loadingClustersData || readonly),
                       noResults: (
                         <Text padding={'small'}>
-                          {get(clustersError, errorMessage, null) ||
-                            getString('cd.pipelineSteps.infraTab.clusterErrorAzure')}
+                          {/* {get(clustersError, errorMessage, null) ||
+                            getString('cd.pipelineSteps.infraTab.clusterErrorAzure')} */}
+                          {getString('cd.pipelineSteps.infraTab.clusterErrorAzure')}
                         </Text>
                       )
                     },
@@ -571,12 +582,12 @@ const AzureInfrastructureSpecEditable: React.FC<AzureInfrastructureSpecEditableP
 
 const AzureInfrastructureSpecInputForm: React.FC<AzureInfrastructureSpecEditableProps & { path: string }> = ({
   template,
-  initialValues,
+  // initialValues,
   readonly = false,
   path,
-  onUpdate,
-  allowableTypes,
-  allValues
+  // onUpdate,
+  allowableTypes
+  // allValues
 }) => {
   const { accountId, projectIdentifier, orgIdentifier } = useParams<{
     projectIdentifier: string
@@ -591,145 +602,151 @@ const AzureInfrastructureSpecInputForm: React.FC<AzureInfrastructureSpecEditable
 
   const { getString } = useStrings()
 
-  const {
-    data: subscriptionsData,
-    refetch: refetchSubscriptionsData,
-    loading: loadingSubscriptionsData,
-    error: subscriptionsError
-  } = useGetSubscriptionsForAzure({
-    lazy: true,
-    debounce: 300
-  })
+  React.useEffect(() => {
+    setSubscriptions([])
+    setResourceGroups([])
+    setClusters([])
+  }, [])
 
-  useEffect(() => {
-    const options =
-      subscriptionsData?.data?.map(name => ({ label: name, value: name })) || /* istanbul ignore next */ []
-    setSubscriptions(options)
-  }, [subscriptionsData])
+  // const {
+  //   data: subscriptionsData,
+  //   refetch: refetchSubscriptionsData,
+  //   loading: loadingSubscriptionsData,
+  //   error: subscriptionsError
+  // } = useGetSubscriptionsForAzure({
+  //   lazy: true,
+  //   debounce: 300
+  // })
 
-  useEffect(() => {
-    const connectorRef = defaultTo(initialValues.connectorRef, allValues?.connectorRef)
-    if (connectorRef && getMultiTypeFromValue(connectorRef) === MultiTypeInputType.FIXED) {
-      refetchSubscriptionsData({
-        queryParams: {
-          accountIdentifier: accountId,
-          projectIdentifier,
-          orgIdentifier,
-          connectorRef: initialValues.connectorRef
-        }
-      })
-    }
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [initialValues.connectorRef, allValues?.connectorRef])
+  // useEffect(() => {
+  //   const options =
+  //     subscriptionsData?.data?.map(name => ({ label: name, value: name })) || /* istanbul ignore next */ []
+  //   setSubscriptions(options)
+  // }, [subscriptionsData])
 
-  const {
-    data: resourceGroupData,
-    refetch: refetchResourceGroups,
-    loading: loadingResourceGroupsData,
-    error: resourceGroupsError
-  } = useGetResourceGroupsForAzure({
-    lazy: true,
-    debounce: 300
-  })
+  // useEffect(() => {
+  //   const connectorRef = defaultTo(initialValues.connectorRef, allValues?.connectorRef)
+  //   if (connectorRef && getMultiTypeFromValue(connectorRef) === MultiTypeInputType.FIXED) {
+  //     refetchSubscriptionsData({
+  //       queryParams: {
+  //         accountIdentifier: accountId,
+  //         projectIdentifier,
+  //         orgIdentifier,
+  //         connectorRef: initialValues.connectorRef
+  //       }
+  //     })
+  //   }
+  //   // eslint-disable-next-line react-hooks/exhaustive-deps
+  // }, [initialValues.connectorRef, allValues?.connectorRef])
 
-  useEffect(() => {
-    const options =
-      resourceGroupData?.data?.map(name => ({ label: name, value: name })) || /* istanbul ignore next */ []
-    setResourceGroups(options)
-  }, [resourceGroupData])
+  // const {
+  //   data: resourceGroupData,
+  //   refetch: refetchResourceGroups,
+  //   loading: loadingResourceGroupsData,
+  //   error: resourceGroupsError
+  // } = useGetResourceGroupsForAzure({
+  //   lazy: true,
+  //   debounce: 300
+  // })
 
-  useEffect(() => {
-    const connectorRef = defaultTo(initialValues.connectorRef, allValues?.connectorRef)
-    const subscription = defaultTo(initialValues.subscription, allValues?.subscription)
-    if (
-      connectorRef &&
-      getMultiTypeFromValue(connectorRef) === MultiTypeInputType.FIXED &&
-      subscription &&
-      getMultiTypeFromValue(subscription) === MultiTypeInputType.FIXED
-    ) {
-      refetchResourceGroups({
-        queryParams: {
-          accountIdentifier: accountId,
-          projectIdentifier,
-          orgIdentifier,
-          connectorRef,
-          subscription
-        }
-      })
-      /* istanbul ignore else */
-      if (
-        getMultiTypeFromValue(template?.resourceGroup) === MultiTypeInputType.RUNTIME &&
-        getMultiTypeFromValue(initialValues?.resourceGroup) !== MultiTypeInputType.RUNTIME
-      ) {
-        set(initialValues, 'resourceGroup', '')
-        onUpdate?.(initialValues)
-      }
-    } else {
-      setResourceGroups([])
-    }
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [initialValues.connectorRef, initialValues.subscription, allValues?.connectorRef, allValues?.subscription])
+  // useEffect(() => {
+  //   const options =
+  //     resourceGroupData?.data?.map(name => ({ label: name, value: name })) || /* istanbul ignore next */ []
+  //   setResourceGroups(options)
+  // }, [resourceGroupData])
 
-  const {
-    data: clustersData,
-    refetch: refetchClusterNames,
-    loading: loadingClusterNames,
-    error: clustersError
-  } = useGetClustersForAzure({
-    lazy: true,
-    debounce: 300
-  })
+  // useEffect(() => {
+  //   const connectorRef = defaultTo(initialValues.connectorRef, allValues?.connectorRef)
+  //   const subscription = defaultTo(initialValues.subscription, allValues?.subscription)
+  //   if (
+  //     connectorRef &&
+  //     getMultiTypeFromValue(connectorRef) === MultiTypeInputType.FIXED &&
+  //     subscription &&
+  //     getMultiTypeFromValue(subscription) === MultiTypeInputType.FIXED
+  //   ) {
+  //     refetchResourceGroups({
+  //       queryParams: {
+  //         accountIdentifier: accountId,
+  //         projectIdentifier,
+  //         orgIdentifier,
+  //         connectorRef,
+  //         subscription
+  //       }
+  //     })
+  //     /* istanbul ignore else */
+  //     if (
+  //       getMultiTypeFromValue(template?.resourceGroup) === MultiTypeInputType.RUNTIME &&
+  //       getMultiTypeFromValue(initialValues?.resourceGroup) !== MultiTypeInputType.RUNTIME
+  //     ) {
+  //       set(initialValues, 'resourceGroup', '')
+  //       onUpdate?.(initialValues)
+  //     }
+  //   } else {
+  //     setResourceGroups([])
+  //   }
+  //   // eslint-disable-next-line react-hooks/exhaustive-deps
+  // }, [initialValues.connectorRef, initialValues.subscription, allValues?.connectorRef, allValues?.subscription])
 
-  useEffect(() => {
-    const options = clustersData?.data?.map(name => ({ label: name, value: name }))
-    setClusters(defaultTo(options, []))
-  }, [clustersData])
+  // const {
+  //   data: clustersData,
+  //   refetch: refetchClusterNames,
+  //   loading: loadingClusterNames,
+  //   error: clustersError
+  // } = useGetClustersForAzure({
+  //   lazy: true,
+  //   debounce: 300
+  // })
 
-  useEffect(() => {
-    const connectorRef = defaultTo(initialValues.connectorRef, allValues?.connectorRef)
-    const subscription = defaultTo(initialValues.subscription, allValues?.subscription)
-    const resourceGroup = defaultTo(initialValues.resourceGroup, allValues?.resourceGroup)
+  // useEffect(() => {
+  //   const options = clustersData?.data?.map(name => ({ label: name, value: name }))
+  //   setClusters(defaultTo(options, []))
+  // }, [clustersData])
 
-    /* istanbul ignore else */
-    if (
-      connectorRef &&
-      getMultiTypeFromValue(connectorRef) === MultiTypeInputType.FIXED &&
-      subscription &&
-      getMultiTypeFromValue(subscription) === MultiTypeInputType.FIXED &&
-      resourceGroup &&
-      getMultiTypeFromValue(resourceGroup) === MultiTypeInputType.FIXED
-    ) {
-      refetchClusterNames({
-        queryParams: {
-          accountIdentifier: accountId,
-          projectIdentifier,
-          orgIdentifier,
-          connectorRef,
-          subscription,
-          resourceGroup
-        }
-      })
+  // useEffect(() => {
+  //   const connectorRef = defaultTo(initialValues.connectorRef, allValues?.connectorRef)
+  //   const subscription = defaultTo(initialValues.subscription, allValues?.subscription)
+  //   const resourceGroup = defaultTo(initialValues.resourceGroup, allValues?.resourceGroup)
 
-      /* istanbul ignore else */
-      if (
-        getMultiTypeFromValue(template?.cluster) === MultiTypeInputType.RUNTIME &&
-        getMultiTypeFromValue(initialValues?.cluster) !== MultiTypeInputType.RUNTIME
-      ) {
-        set(initialValues, 'cluster', '')
-        onUpdate?.(initialValues)
-      }
-    } else {
-      setClusters([])
-    }
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [
-    initialValues.connectorRef,
-    initialValues.subscription,
-    allValues?.connectorRef,
-    allValues?.subscription,
-    initialValues.resourceGroup,
-    allValues?.resourceGroup
-  ])
+  //   /* istanbul ignore else */
+  //   if (
+  //     connectorRef &&
+  //     getMultiTypeFromValue(connectorRef) === MultiTypeInputType.FIXED &&
+  //     subscription &&
+  //     getMultiTypeFromValue(subscription) === MultiTypeInputType.FIXED &&
+  //     resourceGroup &&
+  //     getMultiTypeFromValue(resourceGroup) === MultiTypeInputType.FIXED
+  //   ) {
+  //     refetchClusterNames({
+  //       queryParams: {
+  //         accountIdentifier: accountId,
+  //         projectIdentifier,
+  //         orgIdentifier,
+  //         connectorRef,
+  //         subscription,
+  //         resourceGroup
+  //       }
+  //     })
+
+  //     /* istanbul ignore else */
+  //     if (
+  //       getMultiTypeFromValue(template?.cluster) === MultiTypeInputType.RUNTIME &&
+  //       getMultiTypeFromValue(initialValues?.cluster) !== MultiTypeInputType.RUNTIME
+  //     ) {
+  //       set(initialValues, 'cluster', '')
+  //       onUpdate?.(initialValues)
+  //     }
+  //   } else {
+  //     setClusters([])
+  //   }
+  //   // eslint-disable-next-line react-hooks/exhaustive-deps
+  // }, [
+  //   initialValues.connectorRef,
+  //   initialValues.subscription,
+  //   allValues?.connectorRef,
+  //   allValues?.subscription,
+  //   initialValues.resourceGroup,
+  //   allValues?.resourceGroup
+  // ])
 
   return (
     <Layout.Vertical padding="medium" spacing="small">
@@ -747,27 +764,27 @@ const AzureInfrastructureSpecInputForm: React.FC<AzureInfrastructureSpecEditable
             multiTypeProps={{ allowableTypes, expressions }}
             type={Connectors.AZURE}
             setRefValue
-            onChange={(selected, _typeValue, type) => {
-              const item = selected as unknown as { record?: ConnectorReferenceDTO; scope: Scope }
-              if (type === MultiTypeInputType.FIXED) {
-                const connectorRefValue =
-                  item.scope === Scope.ORG || item.scope === Scope.ACCOUNT
-                    ? `${item.scope}.${item?.record?.identifier}`
-                    : item.record?.identifier
-                if (connectorRefValue) {
-                  refetchSubscriptionsData({
-                    queryParams: {
-                      accountIdentifier: accountId,
-                      projectIdentifier,
-                      orgIdentifier,
-                      connectorRef: connectorRefValue
-                    }
-                  })
-                }
-              } else {
-                setSubscriptions([])
-              }
-            }}
+            // onChange={(selected, _typeValue, type) => {
+            //   const item = selected as unknown as { record?: ConnectorReferenceDTO; scope: Scope }
+            //   if (type === MultiTypeInputType.FIXED) {
+            //     const connectorRefValue =
+            //       item.scope === Scope.ORG || item.scope === Scope.ACCOUNT
+            //         ? `${item.scope}.${item?.record?.identifier}`
+            //         : item.record?.identifier
+            //     if (connectorRefValue) {
+            //       refetchSubscriptionsData({
+            //         queryParams: {
+            //           accountIdentifier: accountId,
+            //           projectIdentifier,
+            //           orgIdentifier,
+            //           connectorRef: connectorRefValue
+            //         }
+            //       })
+            //     }
+            //   } else {
+            //     setSubscriptions([])
+            //   }
+            // }}
             gitScope={{ repo: defaultTo(repoIdentifier, ''), branch, getDefaultFromOtherRepo: true }}
           />
         </div>
@@ -776,11 +793,11 @@ const AzureInfrastructureSpecInputForm: React.FC<AzureInfrastructureSpecEditable
         <div className={cx(stepCss.formGroup, stepCss.md, css.clusterInputWrapper)}>
           <FormInput.MultiTypeInput
             name={`${path}.subscription`}
-            disabled={loadingSubscriptionsData || readonly}
+            // disabled={loadingSubscriptionsData || readonly}
             placeholder={
-              loadingSubscriptionsData
-                ? /* istanbul ignore next */ getString('loading')
-                : getString('cd.steps.azureInfraStep.subscriptionPlaceholder')
+              // loadingSubscriptionsData
+              //   ? /* istanbul ignore next */ getString('loading') :
+              getString('cd.steps.azureInfraStep.subscriptionPlaceholder')
             }
             useValue
             selectItems={subscriptions}
@@ -789,13 +806,14 @@ const AzureInfrastructureSpecInputForm: React.FC<AzureInfrastructureSpecEditable
               selectProps: {
                 items: subscriptions,
                 allowCreatingNewItems: true,
-                addClearBtn: !(loadingSubscriptionsData || readonly),
+                // addClearBtn: !(loadingSubscriptionsData || readonly),
                 noResults: (
                   <Text padding={'small'}>
-                    {defaultTo(
+                    {/* {defaultTo(
                       get(subscriptionsError, errorMessage, subscriptionsError?.message),
                       getString('cd.pipelineSteps.infraTab.subscriptionError')
-                    )}
+                    )} */}
+                    {getString('cd.pipelineSteps.infraTab.subscriptionError')}
                   </Text>
                 )
               },
@@ -809,11 +827,11 @@ const AzureInfrastructureSpecInputForm: React.FC<AzureInfrastructureSpecEditable
         <div className={cx(stepCss.formGroup, stepCss.md, css.clusterInputWrapper)}>
           <FormInput.MultiTypeInput
             name={`${path}.resourceGroup`}
-            disabled={loadingResourceGroupsData || readonly}
+            // disabled={loadingResourceGroupsData || readonly}
             placeholder={
-              loadingResourceGroupsData
-                ? /* istanbul ignore next */ getString('loading')
-                : getString('cd.steps.azureInfraStep.resourceGroupPlaceholder')
+              // loadingResourceGroupsData
+              //   ? /* istanbul ignore next */ getString('loading') :
+              getString('cd.steps.azureInfraStep.resourceGroupPlaceholder')
             }
             useValue
             selectItems={resourceGroups}
@@ -822,13 +840,14 @@ const AzureInfrastructureSpecInputForm: React.FC<AzureInfrastructureSpecEditable
               selectProps: {
                 items: resourceGroups,
                 allowCreatingNewItems: true,
-                addClearBtn: !(loadingResourceGroupsData || readonly),
+                // addClearBtn: !(loadingResourceGroupsData || readonly),
                 noResults: (
                   <Text padding={'small'}>
-                    {defaultTo(
+                    {/* {defaultTo(
                       get(resourceGroupsError, errorMessage, resourceGroupsError?.message),
                       getString('cd.pipelineSteps.infraTab.resourceGroupError')
-                    )}
+                    )} */}
+                    {getString('cd.pipelineSteps.infraTab.resourceGroupError')}
                   </Text>
                 )
               },
@@ -842,11 +861,11 @@ const AzureInfrastructureSpecInputForm: React.FC<AzureInfrastructureSpecEditable
         <div className={cx(stepCss.formGroup, stepCss.md, css.clusterInputWrapper)}>
           <FormInput.MultiTypeInput
             name={`${path}.cluster`}
-            disabled={loadingClusterNames || readonly}
+            // disabled={loadingClusterNames || readonly}
             placeholder={
-              loadingClusterNames
-                ? /* istanbul ignore next */ getString('loading')
-                : getString('cd.steps.common.selectOrEnterClusterPlaceholder')
+              // loadingClusterNames
+              //   ? /* istanbul ignore next */ getString('loading') :
+              getString('cd.steps.common.selectOrEnterClusterPlaceholder')
             }
             useValue
             selectItems={clusters}
@@ -855,13 +874,14 @@ const AzureInfrastructureSpecInputForm: React.FC<AzureInfrastructureSpecEditable
               selectProps: {
                 items: clusters,
                 allowCreatingNewItems: true,
-                addClearBtn: !(loadingClusterNames || readonly),
+                // addClearBtn: !(loadingClusterNames || readonly),
                 noResults: (
                   <Text padding={'small'}>
-                    {defaultTo(
+                    {/* {defaultTo(
                       get(clustersError, errorMessage, clustersError?.message),
                       getString('cd.pipelineSteps.infraTab.clusterErrorAzure')
-                    )}
+                    )} */}
+                    {getString('cd.pipelineSteps.infraTab.clusterErrorAzure')}
                   </Text>
                 )
               },
@@ -903,20 +923,20 @@ const AzureInfrastructureSpecInputForm: React.FC<AzureInfrastructureSpecEditable
   )
 }
 
-const AzureInfrastructureSpecVariablesForm: React.FC<AzureInfrastructureSpecEditableProps> = ({
-  metadataMap,
-  variablesData,
-  initialValues
-}) => {
-  const infraVariables = variablesData?.infrastructureDefinition?.spec
-  return infraVariables ? (
-    /* istanbul ignore next */ <VariablesListTable
-      data={infraVariables}
-      originalData={initialValues?.infrastructureDefinition?.spec || initialValues}
-      metadataMap={metadataMap}
-    />
-  ) : null
-}
+// const AzureInfrastructureSpecVariablesForm: React.FC<AzureInfrastructureSpecEditableProps> = ({
+//   metadataMap,
+//   variablesData,
+//   initialValues
+// }) => {
+//   const infraVariables = variablesData?.infrastructureDefinition?.spec
+//   return infraVariables ? (
+//     /* istanbul ignore next */ <VariablesListTable
+//       data={infraVariables}
+//       originalData={initialValues?.infrastructureDefinition?.spec || initialValues}
+//       metadataMap={metadataMap}
+//     />
+//   ) : null
+// }
 
 interface AzureInfrastructureSpecStep extends AzureInfrastructure {
   name?: string
@@ -1001,146 +1021,143 @@ export class AzureInfrastructureSpec extends PipelineStep<AzureInfrastructureSpe
     return Promise.resolve([])
   }
 
-  protected getSubscriptionListForYaml(
-    path: string,
-    yaml: string,
-    params: Record<string, unknown>
-  ): Promise<CompletionItemInterface[]> {
-    let pipelineObj
-    try {
-      pipelineObj = parse(yaml)
-    } catch (err: any) {
-      /* istanbul ignore next */ logger.error(yamlErrorMessage, err)
-    }
-    const { accountId, projectIdentifier, orgIdentifier } = params as {
-      accountId: string
-      orgIdentifier: string
-      projectIdentifier: string
-    }
+  protected getSubscriptionListForYaml(): // path: string,
+  // yaml: string,
+  // params: Record<string, unknown>
+  Promise<CompletionItemInterface[]> {
+    // let pipelineObj
+    // try {
+    //   pipelineObj = parse(yaml)
+    // } catch (err: any) {
+    //   /* istanbul ignore next */ logger.error(yamlErrorMessage, err)
+    // }
+    // const { accountId, projectIdentifier, orgIdentifier } = params as {
+    //   accountId: string
+    //   orgIdentifier: string
+    //   projectIdentifier: string
+    // }
     /* istanbul ignore else */
-    if (pipelineObj) {
-      const obj = get(pipelineObj, path.replace('.spec.subscription', ''))
-      if (
-        obj?.type === AzureType &&
-        obj?.spec?.connectorRef &&
-        getMultiTypeFromValue(obj.spec?.connectorRef) === MultiTypeInputType.FIXED
-      ) {
-        return getSubscriptionsForAzurePromise({
-          queryParams: {
-            accountIdentifier: accountId,
-            orgIdentifier,
-            projectIdentifier,
-            connectorRef: obj.spec?.connectorRef
-          }
-        }).then(
-          response =>
-            response?.data?.map(subscription => ({
-              label: subscription,
-              insertText: subscription,
-              kind: CompletionItemKind.Field
-            })) || /* istanbul ignore next */ []
-        )
-      }
-    }
+    // if (pipelineObj) {
+    //   const obj = get(pipelineObj, path.replace('.spec.subscription', ''))
+    //   if (
+    //     obj?.type === AzureType &&
+    //     obj?.spec?.connectorRef &&
+    //     getMultiTypeFromValue(obj.spec?.connectorRef) === MultiTypeInputType.FIXED
+    //   ) {
+    //     return getSubscriptionsForAzurePromise({
+    //       queryParams: {
+    //         accountIdentifier: accountId,
+    //         orgIdentifier,
+    //         projectIdentifier,
+    //         connectorRef: obj.spec?.connectorRef
+    //       }
+    //     }).then(
+    //       response =>
+    //         response?.data?.map(subscription => ({
+    //           label: subscription,
+    //           insertText: subscription,
+    //           kind: CompletionItemKind.Field
+    //         })) || /* istanbul ignore next */ []
+    //     )
+    //   }
+    // }
 
     return Promise.resolve([])
   }
 
-  protected getResourceGroupListForYaml(
-    path: string,
-    yaml: string,
-    params: Record<string, unknown>
-  ): Promise<CompletionItemInterface[]> {
-    let pipelineObj
-    try {
-      pipelineObj = parse(yaml)
-    } catch (err: any) {
-      /* istanbul ignore next */ logger.error(yamlErrorMessage, err)
-    }
-    const { accountId, projectIdentifier, orgIdentifier } = params as {
-      accountId: string
-      orgIdentifier: string
-      projectIdentifier: string
-    }
-    /* istanbul ignore else */
-    if (pipelineObj) {
-      const obj = get(pipelineObj, path.replace('.spec.resourceGroup', ''))
-      if (
-        obj?.type === AzureType &&
-        obj?.spec?.connectorRef &&
-        getMultiTypeFromValue(obj.spec?.connectorRef) === MultiTypeInputType.FIXED &&
-        obj?.spec?.subscription &&
-        getMultiTypeFromValue(obj.spec?.subscription) === MultiTypeInputType.FIXED
-      ) {
-        return getResourceGroupsForAzurePromise({
-          queryParams: {
-            accountIdentifier: accountId,
-            orgIdentifier,
-            projectIdentifier,
-            connectorRef: obj.spec?.connectorRef,
-            subscription: obj.spec?.subscription
-          }
-        }).then(
-          response =>
-            response?.data?.map(resourceGroup => ({
-              label: resourceGroup,
-              insertText: resourceGroup,
-              kind: CompletionItemKind.Field
-            })) || /* istanbul ignore next */ []
-        )
-      }
-    }
+  protected getResourceGroupListForYaml(): // path: string,
+  // yaml: string,
+  // params: Record<string, unknown>
+  Promise<CompletionItemInterface[]> {
+    // let pipelineObj
+    // try {
+    //   pipelineObj = parse(yaml)
+    // } catch (err: any) {
+    //   /* istanbul ignore next */ logger.error(yamlErrorMessage, err)
+    // }
+    // const { accountId, projectIdentifier, orgIdentifier } = params as {
+    //   accountId: string
+    //   orgIdentifier: string
+    //   projectIdentifier: string
+    // }
+    // /* istanbul ignore else */
+    // if (pipelineObj) {
+    //   const obj = get(pipelineObj, path.replace('.spec.resourceGroup', ''))
+    //   if (
+    //     obj?.type === AzureType &&
+    //     obj?.spec?.connectorRef &&
+    //     getMultiTypeFromValue(obj.spec?.connectorRef) === MultiTypeInputType.FIXED &&
+    //     obj?.spec?.subscription &&
+    //     getMultiTypeFromValue(obj.spec?.subscription) === MultiTypeInputType.FIXED
+    //   ) {
+    //     return getResourceGroupsForAzurePromise({
+    //       queryParams: {
+    //         accountIdentifier: accountId,
+    //         orgIdentifier,
+    //         projectIdentifier,
+    //         connectorRef: obj.spec?.connectorRef,
+    //         subscription: obj.spec?.subscription
+    //       }
+    //     }).then(
+    //       response =>
+    //         response?.data?.map(resourceGroup => ({
+    //           label: resourceGroup,
+    //           insertText: resourceGroup,
+    //           kind: CompletionItemKind.Field
+    //         })) || /* istanbul ignore next */ []
+    //     )
+    //   }
+    // }
 
     return Promise.resolve([])
   }
 
-  protected getClusterListForYaml(
-    path: string,
-    yaml: string,
-    params: Record<string, unknown>
-  ): Promise<CompletionItemInterface[]> {
-    let pipelineObj
-    try {
-      pipelineObj = parse(yaml)
-    } catch (err: any) {
-      /* istanbul ignore next */ logger.error(yamlErrorMessage, err)
-    }
-    const { accountId, projectIdentifier, orgIdentifier } = params as {
-      accountId: string
-      orgIdentifier: string
-      projectIdentifier: string
-    }
-    /* istanbul ignore else */
-    if (pipelineObj) {
-      const obj = get(pipelineObj, path.replace('.spec.cluster', ''))
-      if (
-        obj?.type === AzureType &&
-        obj?.spec?.connectorRef &&
-        getMultiTypeFromValue(obj.spec?.connectorRef) === MultiTypeInputType.FIXED &&
-        obj?.spec?.subscription &&
-        getMultiTypeFromValue(obj.spec?.subscription) === MultiTypeInputType.FIXED &&
-        obj?.spec?.resourceGroup &&
-        getMultiTypeFromValue(obj.spec?.resourceGroup) === MultiTypeInputType.FIXED
-      ) {
-        return getClustersForAzurePromise({
-          queryParams: {
-            accountIdentifier: accountId,
-            orgIdentifier,
-            projectIdentifier,
-            connectorRef: obj.spec?.connectorRef,
-            subscription: obj.spec?.subscription,
-            resourceGroup: obj.spec?.resourceGroup
-          }
-        }).then(
-          response =>
-            response?.data?.map(cluster => ({
-              label: cluster,
-              insertText: cluster,
-              kind: CompletionItemKind.Field
-            })) || /* istanbul ignore next */ []
-        )
-      }
-    }
+  protected getClusterListForYaml(): // path: string,
+  // yaml: string,
+  // params: Record<string, unknown>
+  Promise<CompletionItemInterface[]> {
+    // let pipelineObj
+    // try {
+    //   pipelineObj = parse(yaml)
+    // } catch (err: any) {
+    //   /* istanbul ignore next */ logger.error(yamlErrorMessage, err)
+    // }
+    // const { accountId, projectIdentifier, orgIdentifier } = params as {
+    //   accountId: string
+    //   orgIdentifier: string
+    //   projectIdentifier: string
+    // }
+    // /* istanbul ignore else */
+    // if (pipelineObj) {
+    //   const obj = get(pipelineObj, path.replace('.spec.cluster', ''))
+    //   if (
+    //     obj?.type === AzureType &&
+    //     obj?.spec?.connectorRef &&
+    //     getMultiTypeFromValue(obj.spec?.connectorRef) === MultiTypeInputType.FIXED &&
+    //     obj?.spec?.subscription &&
+    //     getMultiTypeFromValue(obj.spec?.subscription) === MultiTypeInputType.FIXED &&
+    //     obj?.spec?.resourceGroup &&
+    //     getMultiTypeFromValue(obj.spec?.resourceGroup) === MultiTypeInputType.FIXED
+    //   ) {
+    //     return getClustersForAzurePromise({
+    //       queryParams: {
+    //         accountIdentifier: accountId,
+    //         orgIdentifier,
+    //         projectIdentifier,
+    //         connectorRef: obj.spec?.connectorRef,
+    //         subscription: obj.spec?.subscription,
+    //         resourceGroup: obj.spec?.resourceGroup
+    //       }
+    //     }).then(
+    //       response =>
+    //         response?.data?.map(cluster => ({
+    //           label: cluster,
+    //           insertText: cluster,
+    //           kind: CompletionItemKind.Field
+    //         })) || /* istanbul ignore next */ []
+    //     )
+    //   }
+    // }
 
     return Promise.resolve([])
   }
@@ -1239,15 +1256,16 @@ export class AzureInfrastructureSpec extends PipelineStep<AzureInfrastructureSpe
         />
       )
     } else if (stepViewType === StepViewType.InputVariable) {
-      return (
-        <AzureInfrastructureSpecVariablesForm
-          onUpdate={onUpdate}
-          stepViewType={stepViewType}
-          template={inputSetData?.template}
-          {...(customStepProps as AzureInfrastructureSpecEditableProps)}
-          initialValues={initialValues}
-        />
-      )
+      return <div></div>
+      // (
+      //   <AzureInfrastructureSpecVariablesForm
+      //     onUpdate={onUpdate}
+      //     stepViewType={stepViewType}
+      //     template={inputSetData?.template}
+      //     {...(customStepProps as AzureInfrastructureSpecEditableProps)}
+      //     initialValues={initialValues}
+      //   />
+      // )
     }
 
     return (
