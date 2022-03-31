@@ -168,6 +168,7 @@ export interface AccessControlCheckError {
     | 'VAULT_OPERATION_ERROR'
     | 'AWS_SECRETS_MANAGER_OPERATION_ERROR'
     | 'AZURE_KEY_VAULT_OPERATION_ERROR'
+    | 'AZURE_BLOB_OPERATION_ERROR'
     | 'CYBERARK_OPERATION_ERROR'
     | 'UNSUPPORTED_OPERATION_EXCEPTION'
     | 'FEATURE_UNAVAILABLE'
@@ -1028,6 +1029,34 @@ export interface AzureAuthDTO {
   type: 'Secret' | 'Certificate'
 }
 
+export type AzureBlobConnectorDTO = ConnectorConfigDTO & {
+  azureEnvironmentType?: 'AZURE' | 'AZURE_US_GOVERNMENT'
+  clientId: string
+  connectionString: string
+  containerName: string
+  default?: boolean
+  delegateSelectors?: string[]
+  keyId: string
+  keyName: string
+  secretKey: string
+  subscription: string
+  tenantId: string
+  vaultName: string
+}
+
+export type AzureBlobMetadataRequestSpecDTO = SecretManagerMetadataRequestSpecDTO & {
+  azureEnvironmentType?: 'AZURE' | 'AZURE_US_GOVERNMENT'
+  clientId: string
+  delegateSelectors?: string[]
+  secretKey: string
+  subscription: string
+  tenantId: string
+}
+
+export type AzureBlobMetadataSpecDTO = SecretManagerMetadataSpecDTO & {
+  vaultNames?: string[]
+}
+
 export type AzureClientKeyCertDTO = AzureAuthCredentialDTO & {
   certificateRef: string
 }
@@ -1055,19 +1084,6 @@ export type AzureDevOpsSCMDTO = SourceCodeManagerDTO & {
   authentication?: GithubAuthentication
 }
 
-export type AzureBlobConnectorDTO = ConnectorConfigDTO & {
-  azureEnvironmentType?: 'AZURE' | 'AZURE_US_GOVERNMENT'
-  clientId: string
-  default?: boolean
-  delegateSelectors?: string[]
-  secretKey: string
-  subscription: string
-  connectionString: string
-  containerName: string
-  tenantId: string
-  vaultName: string
-}
-
 export type AzureKeyVaultConnectorDTO = ConnectorConfigDTO & {
   azureEnvironmentType?: 'AZURE' | 'AZURE_US_GOVERNMENT'
   clientId: string
@@ -1079,17 +1095,6 @@ export type AzureKeyVaultConnectorDTO = ConnectorConfigDTO & {
   vaultName: string
 }
 
-export type AzureBlobMetadataRequestSpecDTO = SecretManagerMetadataRequestSpecDTO & {
-  azureEnvironmentType?: 'AZURE' | 'AZURE_US_GOVERNMENT'
-  clientId: string
-  delegateSelectors?: string[]
-  secretKey: string
-  subscription: string
-  connectionString: string
-  containerName: string
-  tenantId: string
-}
-
 export type AzureKeyVaultMetadataRequestSpecDTO = SecretManagerMetadataRequestSpecDTO & {
   azureEnvironmentType?: 'AZURE' | 'AZURE_US_GOVERNMENT'
   clientId: string
@@ -1097,12 +1102,6 @@ export type AzureKeyVaultMetadataRequestSpecDTO = SecretManagerMetadataRequestSp
   secretKey: string
   subscription: string
   tenantId: string
-}
-
-export type AzureBlobMetadataSpecDTO = SecretManagerMetadataSpecDTO & {
-  vaultNames?: string[]
-  keyName: string
-  keyId: string
 }
 
 export type AzureKeyVaultMetadataSpecDTO = SecretManagerMetadataSpecDTO & {
@@ -2650,6 +2649,7 @@ export interface Error {
     | 'VAULT_OPERATION_ERROR'
     | 'AWS_SECRETS_MANAGER_OPERATION_ERROR'
     | 'AZURE_KEY_VAULT_OPERATION_ERROR'
+    | 'AZURE_BLOB_OPERATION_ERROR'
     | 'CYBERARK_OPERATION_ERROR'
     | 'UNSUPPORTED_OPERATION_EXCEPTION'
     | 'FEATURE_UNAVAILABLE'
@@ -3037,6 +3037,7 @@ export interface Failure {
     | 'VAULT_OPERATION_ERROR'
     | 'AWS_SECRETS_MANAGER_OPERATION_ERROR'
     | 'AZURE_KEY_VAULT_OPERATION_ERROR'
+    | 'AZURE_BLOB_OPERATION_ERROR'
     | 'CYBERARK_OPERATION_ERROR'
     | 'UNSUPPORTED_OPERATION_EXCEPTION'
     | 'FEATURE_UNAVAILABLE'
@@ -7228,6 +7229,7 @@ export interface ResponseMessage {
     | 'VAULT_OPERATION_ERROR'
     | 'AWS_SECRETS_MANAGER_OPERATION_ERROR'
     | 'AZURE_KEY_VAULT_OPERATION_ERROR'
+    | 'AZURE_BLOB_OPERATION_ERROR'
     | 'CYBERARK_OPERATION_ERROR'
     | 'UNSUPPORTED_OPERATION_EXCEPTION'
     | 'FEATURE_UNAVAILABLE'
@@ -8541,6 +8543,7 @@ export interface SecretManagerMetadataRequestDTO {
     | 'GCP_KMS'
     | 'AWS_SECRETS_MANAGER'
     | 'AZURE_VAULT'
+    | 'AZURE_BLOB'
     | 'CYBERARK'
     | 'VAULT'
     | 'GCP_SECRETS_MANAGER'
