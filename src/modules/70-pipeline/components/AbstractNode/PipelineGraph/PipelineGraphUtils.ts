@@ -5,7 +5,7 @@
  * https://polyformproject.org/wp-content/uploads/2020/06/PolyForm-Shield-1.0.0.txt.
  */
 
-import { defaultTo, get } from 'lodash-es'
+import { debounce, defaultTo, get, throttle } from 'lodash-es'
 import type { IconName } from '@harness/uicore'
 import { v4 as uuid } from 'uuid'
 import type { ExecutionWrapperConfig, StageElementWrapperConfig } from 'services/cd-ng'
@@ -184,9 +184,10 @@ const setupDragEventListeners = (draggableParent: HTMLElement, overlay: HTMLElem
       overlay.style.transform = `translate(${newX}px,${newY}px)`
     }
 
-    function onMouseMove(e: MouseEvent): void {
+    const onMouseMove = throttle((e: MouseEvent): void => {
       moveAt(e.pageX, e.pageY)
-    }
+    }, 200)
+
     draggableParent.addEventListener('mousemove', onMouseMove)
     draggableParent.onmouseup = function () {
       draggableParent.removeEventListener('mousemove', onMouseMove)

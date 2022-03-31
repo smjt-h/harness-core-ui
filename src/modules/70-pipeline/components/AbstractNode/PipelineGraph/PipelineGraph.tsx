@@ -94,11 +94,11 @@ function PipelineGraph({
   }, [state])
 
   const redrawSVGLinks = (): void => {
+    setLoading(true)
     const lastGraphScaleValue = graphScale
     if (lastGraphScaleValue === 1) {
       setSVGLinks()
     } else {
-      setLoading(true)
       setGraphScale(1)
       setTimeout(setSVGLinks, 200)
       setTimeout(() => {
@@ -106,11 +106,11 @@ function PipelineGraph({
         setLoading(false)
       }, 300)
     }
+    setLoading(false)
   }
 
   const setSVGLinks = (): void => {
     const lastNode = state?.[state?.length - 1]
-
     const terminalNodeLinks: SVGPathRecord[] = getTerminalNodeLinks({
       startNodeId: uniqueNodeIds.startNode,
       endNodeId: uniqueNodeIds.endNode,

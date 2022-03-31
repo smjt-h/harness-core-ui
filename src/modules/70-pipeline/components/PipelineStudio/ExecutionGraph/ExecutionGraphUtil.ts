@@ -145,6 +145,14 @@ export const getDependencyFromNode = (
   return { node: _service, parent: servicesData }
 }
 
+export const getDependencyFromNodeV1 = (
+  servicesData: DependencyElement[] | undefined,
+  nodeId: string
+): { node: DependencyElement | undefined; parent: DependencyElement[] | undefined } => {
+  const _service = servicesData?.find((service: DependenciesWrapper) => nodeId === service.identifier)
+  return { node: _service, parent: servicesData }
+}
+
 export const getStepFromNode = (
   stepData: ExecutionWrapper | undefined,
   node?: DefaultNodeModel,

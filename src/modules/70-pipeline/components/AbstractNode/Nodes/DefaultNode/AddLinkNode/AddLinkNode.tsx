@@ -2,28 +2,19 @@ import React from 'react'
 import { Color } from '@harness/design-system'
 import { Icon } from '@harness/uicore'
 import { DiagramDrag, DiagramType, Event } from '@pipeline/components/Diagram'
+import type { FireEventMethod } from '@pipeline/components/AbstractNode/types'
 interface AddLinkNodeProps<T> {
   nextNode: any
   parentIdentifier?: string
   isParallelNode?: boolean
-  readonly: boolean
-  identifier: string
-  fireEvent(arg0: {
-    type: any
-    target: EventTarget
-    data: {
-      prevNodeIdentifier?: any
-      parentIdentifier?: any
-      entityType: any
-      identifier?: any
-      node: any
-      destination?: any
-    }
-  }): void
+  readonly?: boolean
+  identifier?: string
+  fireEvent?: FireEventMethod
   prevNodeIdentifier: any
   showAddLink?: boolean
   data: T
   className?: string
+  id?: string
 }
 export default function AddLinkNode<T>(props: AddLinkNodeProps<T>): React.ReactElement | null {
   return (
@@ -31,7 +22,7 @@ export default function AddLinkNode<T>(props: AddLinkNodeProps<T>): React.ReactE
       data-linkid={props?.identifier}
       onClick={(event: React.MouseEvent<HTMLDivElement, MouseEvent>) => {
         event.stopPropagation()
-        props?.fireEvent({
+        props?.fireEvent?.({
           type: Event.AddLinkClicked,
           target: event.target,
           data: {
@@ -49,7 +40,7 @@ export default function AddLinkNode<T>(props: AddLinkNodeProps<T>): React.ReactE
       }}
       onDrop={event => {
         event.stopPropagation()
-        props?.fireEvent({
+        props?.fireEvent?.({
           type: Event.DropLinkEvent,
           target: event.target,
           data: {

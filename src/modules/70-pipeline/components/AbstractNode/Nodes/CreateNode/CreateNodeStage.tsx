@@ -27,6 +27,7 @@ interface CreateNodeStageProps {
   disabled?: boolean
   node: CreateNodeStageProps
   visible?: boolean
+  className?: string
 }
 function CreateNodeStage(props: CreateNodeStageProps): React.ReactElement | null {
   return (
@@ -78,6 +79,7 @@ function CreateNodeStage(props: CreateNodeStageProps): React.ReactElement | null
         identifier={props.identifier}
         name={props.name}
         className={cx(
+          props?.className,
           cssDefault.defaultCard,
           css.createNode,
           css.stageAddIcon,

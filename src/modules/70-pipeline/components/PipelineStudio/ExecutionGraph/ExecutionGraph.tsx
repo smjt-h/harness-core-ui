@@ -64,7 +64,8 @@ import {
   updateDependenciesState,
   applyExistingStates,
   ExecutionWrapper,
-  STATIC_SERVICE_GROUP_NAME
+  STATIC_SERVICE_GROUP_NAME,
+  getDependencyFromNodeV1
 } from './ExecutionGraphUtil'
 import { EmptyStageName } from '../PipelineConstants'
 import {
@@ -647,7 +648,7 @@ function ExecutionGraphRef<T extends StageElementConfig>(
             event?.parentIdentifier
           ).node
         } else if (stepState?.stepType === StepType.SERVICE) {
-          node = getDependencyFromNode(state.dependenciesData, event?.entity).node
+          node = getDependencyFromNodeV1(state.dependenciesData, event?.identifier).node
         }
         /* istanbul ignore else */ if (node) {
           editStep({

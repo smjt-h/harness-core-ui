@@ -230,7 +230,7 @@ const PipelineGraphNodeWithoutCollapse = React.forwardRef(
                 id={`ref_${currentNodeData?.identifier}`}
                 key={currentNodeData?.identifier}
               >
-                {shouldRenderGroupNode(attachRef, isCurrentChildLast) ? (
+                {shouldRenderGroupNode(attachRef, isCurrentChildLast) || index > 5 ? (
                   <GroupNode
                     {...data}
                     fireEvent={fireEvent}
@@ -330,34 +330,44 @@ const PipelineGraphNode = React.memo(PipelineGraphNodeBasic)
 
 function PipelineGraphNodeObserved(props: PipelineGraphNodeBasicProps & { index: number }): React.ReactElement {
   const [ref, setRef] = useState<HTMLDivElement | null>(null)
-
+  const [visible, setVisible] = useState(true)
+  const updateVisibleState = debounce(setVisible, 300)
+  const [elementRect, setElementRect] = useState<DOMRect | null>(null)
   React.useEffect(() => {
     let observer: IntersectionObserver
     if (ref) {
       const rootElement = document.getElementsByClassName('Pane1')[0]
       observer = new IntersectionObserver(
         (entries, _observer) => {
-          entries.forEach(entry => {
-            console.log(entry)
-            // if (entry.intersectionRatio != 1) {
-            //   console.log('not visible', (entry.target as HTMLDivElement).dataset)
-            // } else {
-            //   console.log(' visible', (entry.target as HTMLDivElement).dataset)
-            // }
+          entries.forEach((entry: IntersectionObserverEntry) => {
+            if (entry.isIntersecting) {
+              updateVisibleState(true)
+            } else {
+              updateVisibleState(false)
+            }
           })
         },
-        { threshold: 0, root: rootElement }
+        { threshold: 0.5, root: rootElement }
       )
+
       observer.observe(ref as HTMLDivElement)
     }
     return () => {
       if (observer && ref) observer.unobserve(ref as HTMLDivElement)
     }
+  }, [ref, elementRect])
+
+  React.useEffect(() => {
+    if (!elementRect && ref !== null) {
+      const elementDOMRect = ref?.getBoundingClientRect() as DOMRect
+      setElementRect(elementDOMRect)
+    }
   }, [ref])
 
   return (
     <div data-graph-node={props.index} ref={setRef}>
-      <PipelineGraphNode {...props} />
+      <div style={{ width: elementRect?.width, visibility: 'hidden' }} />
+      {visible ? <PipelineGraphNode {...props} /> : null}
     </div>
   )
 }

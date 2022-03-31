@@ -42,7 +42,7 @@ function PipelineStepNode(props: PipelineStepNodeProps): JSX.Element {
     ExecutionPipelineNodeType.NORMAL
   )
   const isNodeSelected = props.isSelected || props?.selectedNodeId === props?.id
-
+  const isServiceStep = stepType === 'Service'
   const setAddVisibility = (visibility: boolean): void => {
     if (!allowAdd) {
       return
@@ -210,7 +210,7 @@ function PipelineStepNode(props: PipelineStepNodeProps): JSX.Element {
           {props.name}
         </Text>
       )}
-      {allowAdd && CreateNode && !props.readonly && (
+      {allowAdd && CreateNode && !props.readonly && !isServiceStep && (
         <CreateNode
           onMouseOver={() => setAddVisibility(true)}
           onMouseLeave={() => setAddVisibility(false)}
@@ -231,7 +231,7 @@ function PipelineStepNode(props: PipelineStepNodeProps): JSX.Element {
           data-nodeid="add-parallel"
         />
       )}
-      {!props.isParallelNode && !props.readonly && (
+      {!props.isParallelNode && !isServiceStep && !props.readonly && (
         <AddLinkNode<PipelineStepNodeProps>
           id={props.id}
           nextNode={props?.nextNode}
@@ -245,7 +245,7 @@ function PipelineStepNode(props: PipelineStepNodeProps): JSX.Element {
           className={cx(defaultCss.addNodeIcon, defaultCss.left, defaultCss.stepAddIcon)}
         />
       )}
-      {!props?.nextNode && props?.parentIdentifier && !props.readonly && !props.isParallelNode && (
+      {!props?.nextNode && !isServiceStep && props?.parentIdentifier && !props.readonly && !props.isParallelNode && (
         <AddLinkNode<PipelineStepNodeProps>
           id={props.id}
           nextNode={props?.nextNode}
