@@ -25,14 +25,14 @@
             <div class='fl pad1y space-right2'>
                 <span class="strong">100% </span>
                 <span class="quiet">Statements</span>
-                <span class='fraction'>13/13</span>
+                <span class='fraction'>10/10</span>
             </div>
         
             
             <div class='fl pad1y space-right2'>
-                <span class="strong">75% </span>
+                <span class="strong">100% </span>
                 <span class="quiet">Branches</span>
-                <span class='fraction'>12/16</span>
+                <span class='fraction'>4/4</span>
             </div>
         
             
@@ -46,7 +46,7 @@
             <div class='fl pad1y space-right2'>
                 <span class="strong">100% </span>
                 <span class="quiet">Lines</span>
-                <span class='fraction'>12/12</span>
+                <span class='fraction'>9/9</span>
             </div>
         
             
@@ -134,26 +134,7 @@
 <a name='L75'></a><a href='#L75'>75</a>
 <a name='L76'></a><a href='#L76'>76</a>
 <a name='L77'></a><a href='#L77'>77</a>
-<a name='L78'></a><a href='#L78'>78</a>
-<a name='L79'></a><a href='#L79'>79</a>
-<a name='L80'></a><a href='#L80'>80</a>
-<a name='L81'></a><a href='#L81'>81</a>
-<a name='L82'></a><a href='#L82'>82</a>
-<a name='L83'></a><a href='#L83'>83</a>
-<a name='L84'></a><a href='#L84'>84</a>
-<a name='L85'></a><a href='#L85'>85</a>
-<a name='L86'></a><a href='#L86'>86</a>
-<a name='L87'></a><a href='#L87'>87</a>
-<a name='L88'></a><a href='#L88'>88</a>
-<a name='L89'></a><a href='#L89'>89</a>
-<a name='L90'></a><a href='#L90'>90</a>
-<a name='L91'></a><a href='#L91'>91</a>
-<a name='L92'></a><a href='#L92'>92</a>
-<a name='L93'></a><a href='#L93'>93</a>
-<a name='L94'></a><a href='#L94'>94</a>
-<a name='L95'></a><a href='#L95'>95</a>
-<a name='L96'></a><a href='#L96'>96</a>
-<a name='L97'></a><a href='#L97'>97</a></td><td class="line-coverage quiet"><span class="cline-any cline-neutral">&nbsp;</span>
+<a name='L78'></a><a href='#L78'>78</a></td><td class="line-coverage quiet"><span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
@@ -165,9 +146,7 @@
 <span class="cline-any cline-yes">3x</span>
 <span class="cline-any cline-yes">3x</span>
 <span class="cline-any cline-yes">3x</span>
-<span class="cline-any cline-yes">3x</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-yes">3x</span>
 <span class="cline-any cline-yes">3x</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
@@ -189,24 +168,6 @@
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-yes">3x</span>
-<span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-yes">16x</span>
-<span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-yes">16x</span>
-<span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
@@ -228,6 +189,7 @@
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">16x</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
@@ -257,14 +219,12 @@
  */
 &nbsp;
 import React from 'react'
-import { Container, Layout, Text, IconName, Icon } from '@wings-software/uicore'
+import { Container, Layout, Text, IconName } from '@harness/uicore'
 import { Color } from '@harness/design-system'
-import { TagsViewer } from '@common/components/TagsViewer/TagsViewer'
 import { IdentifierText } from '@cf/components/IdentifierText/IdentifierText'
 import { NGBreadcrumbs } from '@common/components/NGBreadcrumbs/NGBreadcrumbs'
 &nbsp;
-const HEADER_HEIGHT = 145
-const HEADER_HEIGHT_NO_TAGS = 120
+const HEADER_HEIGHT = 120
 &nbsp;
 interface DetailPageTemplateBreadcrumbLink {
   title: string
@@ -287,19 +247,15 @@ export interface DetailPageTemplateProps {
 export const DetailPageTemplate: React.FC&lt;DetailPageTemplateProps&gt; = ({
   breadcrumbs,
   title,
-  titleIcon,
   subTitle,
-  tags,
   identifier,
   headerExtras,
   children
 }) =&gt; {
-  const headerHeight = <span class="branch-1 cbranch-no" title="branch not covered" >tags?.length </span>? <span class="branch-0 cbranch-no" title="branch not covered" >HEADER_HEIGHT </span>: HEADER_HEIGHT_NO_TAGS
-&nbsp;
   return (
     &lt;&gt;
       &lt;Container
-        height={headerHeight}
+        height={HEADER_HEIGHT}
         padding={{ top: 'large', right: 'xlarge', bottom: 'large', left: 'xlarge' }}
         style={{
           background: 'rgba(219, 241, 255, .46)',
@@ -312,34 +268,21 @@ export const DetailPageTemplate: React.FC&lt;DetailPageTemplateProps&gt; = ({
             customPathParams={{ module: 'cf' }}
             links={breadcrumbs.map(({ title: label, url }) =&gt; ({ label, url }))}
           /&gt;
-&nbsp;
-          &lt;Layout.Horizontal spacing="small" style={{ marginLeft: '-5px' }}&gt;
-            &lt;Container style={{ borderRadius: '50%', overflow: 'hidden' }}&gt;
-              {typeof titleIcon === 'string' &amp;&amp; <span class="branch-1 cbranch-no" title="branch not covered" >&lt;Icon name={titleIcon as IconName} size={40} /&gt;}</span>
-              {typeof titleIcon !== 'string' &amp;&amp; &lt;&gt;{titleIcon}&lt;/&gt;}
-            &lt;/Container&gt;
-            &lt;Container&gt;
-              &lt;Layout.Horizontal spacing="medium"&gt;
-                &lt;Text style={{ fontSize: '20px', color: 'var(--black)' }}&gt;{title}&lt;/Text&gt;
-                {identifier &amp;&amp; &lt;IdentifierText identifier={identifier} allowCopy style={{ marginBottom: 0 }} /&gt;}
-              &lt;/Layout.Horizontal&gt;
-              {subTitle &amp;&amp; (
-                &lt;Text color={Color.GREY_400} padding={{ top: 'xsmall' }}&gt;
-                  {subTitle}
-                &lt;/Text&gt;
-              )}
-            &lt;/Container&gt;
-          &lt;/Layout.Horizontal&gt;
-&nbsp;
-          {tags &amp;&amp; (
-<span class="branch-1 cbranch-no" title="branch not covered" >            &lt;Container&gt;</span>
-              &lt;TagsViewer tags={tags} style={{ background: '#CDF4FE' }} /&gt;
-            &lt;/Container&gt;
-          )}
+          &lt;Container&gt;
+            &lt;Layout.Horizontal spacing="medium"&gt;
+              &lt;Text style={{ fontSize: '20px', color: 'var(--black)' }}&gt;{title}&lt;/Text&gt;
+              {identifier &amp;&amp; &lt;IdentifierText identifier={identifier} allowCopy style={{ marginBottom: 0 }} /&gt;}
+            &lt;/Layout.Horizontal&gt;
+            {subTitle &amp;&amp; (
+              &lt;Text color={Color.GREY_400} padding={{ top: 'xsmall' }}&gt;
+                {subTitle}
+              &lt;/Text&gt;
+            )}
+          &lt;/Container&gt;
         &lt;/Layout.Vertical&gt;
         {headerExtras}
       &lt;/Container&gt;
-      &lt;Container style={{ height: `calc(100% - ${headerHeight}px)`, overflow: 'auto', background: '#e4ebf433' }}&gt;
+      &lt;Container style={{ height: `calc(100% - ${HEADER_HEIGHT}px)`, overflow: 'auto', background: '#e4ebf433' }}&gt;
         {children}
       &lt;/Container&gt;
     &lt;/&gt;
@@ -352,7 +295,7 @@ export const DetailPageTemplate: React.FC&lt;DetailPageTemplateProps&gt; = ({
             <div class='footer quiet pad2 space-top1 center small'>
                 Code coverage generated by
                 <a href="https://istanbul.js.org/" target="_blank">istanbul</a>
-                at Thu Mar 31 2022 08:10:36 GMT+0000 (Greenwich Mean Time)
+                at Thu Mar 31 2022 11:29:23 GMT+0000 (Greenwich Mean Time)
             </div>
         </div>
         <script src="../../../../prettify.js"></script>
