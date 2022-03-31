@@ -83,6 +83,13 @@ export const helperTextData = (
         connectorRef: connectorIdValue,
         artifactDirectory: formik.values?.artifactDirectory
       }
+    case ENABLED_ARTIFACT_TYPES.Acr:
+      return {
+        subscription: formik.values?.subscription,
+        registry: formik.values?.registry,
+        repository: formik.values?.repository,
+        connectorRef: connectorIdValue
+      }
     default:
       return {} as ArtifactTagHelperText
   }
@@ -246,6 +253,13 @@ export const defaultArtifactInitialValues = (selectedArtifact: ArtifactType): an
       return {
         identifier: '',
         version: RUNTIME_INPUT_VALUE
+      }
+    case ENABLED_ARTIFACT_TYPES.Acr:
+      return {
+        identifier: '',
+        tag: RUNTIME_INPUT_VALUE,
+        tagType: TagTypes.Value,
+        tagRegex: RUNTIME_INPUT_VALUE
       }
     case ENABLED_ARTIFACT_TYPES.DockerRegistry:
     case ENABLED_ARTIFACT_TYPES.Gcr:

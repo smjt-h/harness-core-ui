@@ -747,7 +747,9 @@ export interface StringsMap {
   'common.validation.namePatternIsNotValid': string
   'common.validation.provisionerIdentifierIsRequired': string
   'common.validation.provisionerIdentifierPatternIsNotValid': string
+  'common.validation.repository': string
   'common.validation.repositoryName': string
+  'common.validation.subscription': string
   'common.validation.testRepoIsRequired': string
   'common.validation.typeIsRequired': string
   'common.validation.urlIsRequired': string
@@ -2356,8 +2358,17 @@ export interface StringsMap {
   'projectsOrgs.whyCreateProject': string
   'projectsOrgs.youHaveNoProjects': string
   'pipeline.ACR.name': string
+  'pipeline.ACR.registry': string
+  'pipeline.ACR.registryError': string
+  'pipeline.ACR.registryPlaceholder': string
+  'pipeline.ACR.repositoryError': string
+  'pipeline.ACR.repositoryPlaceholder': string
+  'pipeline.ACR.subscription': string
+  'pipeline.ACR.subscriptionPlaceholder': string
+  'pipeline.ACR.validation.registry': string
+  'pipeline.ACR.validation.repository': string
+  'pipeline.ACR.validation.subscription': string
   'pipeline.aboutYourStage.stageNamePlaceholder': string
-  'pipeline.acrArtifact': string
   'pipeline.addStage.description': string
   'pipeline.addStage.title': string
   'pipeline.advancedOptions': string

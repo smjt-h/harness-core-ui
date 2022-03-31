@@ -491,7 +491,7 @@ azureKeyVault:
     setupVault: Setup Vault
   validation:
     tenantId: '{{ $.connectors.tenantIdRequired }}'
-    subscription: Subscription is required
+    subscription: '{{ $.common.validation.subscription }}'
     vaultName: Vault Name is required
 ceAws:
   steps:
