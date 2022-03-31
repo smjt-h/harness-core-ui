@@ -64,8 +64,9 @@ const entitySubTypeToTagMap: {
   CustomHealth: 'customhealth',
   ErrorTracking: 'errortracking',
   Pdc: 'pdc',
-  Azure: 'azure',
-  AzureRepo: 'azurerepo'
+  Azure: 'azure'
+  // uncomment when new swagger.json for cd-ng is added
+  // AzureRepo: 'azurerepo'
 }
 
 export const getSnippetTags = (
