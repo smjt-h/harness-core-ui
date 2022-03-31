@@ -23,16 +23,16 @@
         <div class='clearfix'>
             
             <div class='fl pad1y space-right2'>
-                <span class="strong">29.63% </span>
+                <span class="strong">29.03% </span>
                 <span class="quiet">Statements</span>
-                <span class='fraction'>8/27</span>
+                <span class='fraction'>9/31</span>
             </div>
         
             
             <div class='fl pad1y space-right2'>
                 <span class="strong">0% </span>
                 <span class="quiet">Branches</span>
-                <span class='fraction'>0/32</span>
+                <span class='fraction'>0/34</span>
             </div>
         
             
@@ -44,9 +44,9 @@
         
             
             <div class='fl pad1y space-right2'>
-                <span class="strong">26.92% </span>
+                <span class="strong">26.67% </span>
                 <span class="quiet">Lines</span>
-                <span class='fraction'>7/26</span>
+                <span class='fraction'>8/30</span>
             </div>
         
             
@@ -177,7 +177,13 @@
 <a name='L118'></a><a href='#L118'>118</a>
 <a name='L119'></a><a href='#L119'>119</a>
 <a name='L120'></a><a href='#L120'>120</a>
-<a name='L121'></a><a href='#L121'>121</a></td><td class="line-coverage quiet"><span class="cline-any cline-neutral">&nbsp;</span>
+<a name='L121'></a><a href='#L121'>121</a>
+<a name='L122'></a><a href='#L122'>122</a>
+<a name='L123'></a><a href='#L123'>123</a>
+<a name='L124'></a><a href='#L124'>124</a>
+<a name='L125'></a><a href='#L125'>125</a>
+<a name='L126'></a><a href='#L126'>126</a>
+<a name='L127'></a><a href='#L127'>127</a></td><td class="line-coverage quiet"><span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
@@ -195,6 +201,7 @@
 <span class="cline-any cline-yes">2x</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-yes">2x</span>
+<span class="cline-any cline-yes">2x</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
@@ -234,6 +241,7 @@
 <span class="cline-any cline-no">&nbsp;</span>
 <span class="cline-any cline-no">&nbsp;</span>
 <span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-no">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
@@ -253,6 +261,10 @@
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
@@ -315,6 +327,7 @@ import { DrawerTypes } from '@pipeline/components/PipelineStudio/PipelineContext
 import { usePipelineContext } from '@pipeline/components/PipelineStudio/PipelineContext/PipelineContext'
 &nbsp;
 import { AdvancedPanels } from '@pipeline/components/PipelineStudio/StepCommands/StepCommandTypes'
+import { useAddStepTemplate } from '@pipeline/hooks/useAddStepTemplate'
 &nbsp;
 export interface RolloutStrategyProps {
   selectedStageId: string
@@ -354,6 +367,7 @@ export const RolloutStrategy: React.FC&lt;RolloutStrategyProps&gt; = <span class
   const selectedStage = <span class="cstat-no" title="statement not covered" >getStageFromPipeline(selectedStageId).stage</span>
   const originalStage = <span class="cstat-no" title="statement not covered" >getStageFromPipeline(selectedStageId, originalPipeline).stage</span>
   const executionRef = <span class="cstat-no" title="statement not covered" >React.useRef&lt;ExecutionGraphRefObj | null&gt;(null)</span>
+  const { addTemplate } = <span class="cstat-no" title="statement not covered" >useAddStepTemplate({ executionRef: executionRef.current })</span>
 &nbsp;
 <span class="cstat-no" title="statement not covered" >  return (</span>
     &lt;ExecutionGraph
@@ -372,24 +386,28 @@ export const RolloutStrategy: React.FC&lt;RolloutStrategyProps&gt; = <span class
       pathToStage={`${stagePath}.stage.spec.execution`}
       templateTypes={templateTypes}
       onAddStep={<span class="fstat-no" title="function not covered" >(e</span>vent: ExecutionGraphAddStepEvent) =&gt; {
-<span class="cstat-no" title="statement not covered" >        updatePipelineView({</span>
-          ...pipelineView,
-          isDrawerOpened: true,
-          drawerData: {
-            type: DrawerTypes.AddStep,
-            data: {
-              paletteData: {
-                entity: event.entity,
-                stepsMap: event.stepsMap,
-                onUpdate: executionRef.current?.stepGroupUpdated,
-                // isAddStepOverride: true,
-                isRollback: event.isRollback,
-                isParallelNodeClicked: event.isParallel,
-                hiddenAdvancedPanels: [AdvancedPanels.PreRequisites, AdvancedPanels.DelegateSelectors]
+<span class="cstat-no" title="statement not covered" >        if (event.isTemplate) {</span>
+<span class="cstat-no" title="statement not covered" >          addTemplate(event)</span>
+        } else {
+<span class="cstat-no" title="statement not covered" >          updatePipelineView({</span>
+            ...pipelineView,
+            isDrawerOpened: true,
+            drawerData: {
+              type: DrawerTypes.AddStep,
+              data: {
+                paletteData: {
+                  entity: event.entity,
+                  stepsMap: event.stepsMap,
+                  onUpdate: executionRef.current?.stepGroupUpdated,
+                  // isAddStepOverride: true,
+                  isRollback: event.isRollback,
+                  isParallelNodeClicked: event.isParallel,
+                  hiddenAdvancedPanels: [AdvancedPanels.PreRequisites, AdvancedPanels.DelegateSelectors]
+                }
               }
             }
-          }
-        })
+          })
+        }
       }}
       onEditStep={<span class="fstat-no" title="function not covered" >(e</span>vent: ExecutionGraphEditStepEvent) =&gt; {
 <span class="cstat-no" title="statement not covered" >        updatePipelineView({</span>
@@ -424,7 +442,7 @@ export const RolloutStrategy: React.FC&lt;RolloutStrategyProps&gt; = <span class
             <div class='footer quiet pad2 space-top1 center small'>
                 Code coverage generated by
                 <a href="https://istanbul.js.org/" target="_blank">istanbul</a>
-                at Wed Mar 30 2022 16:46:58 GMT+0000 (Greenwich Mean Time)
+                at Thu Mar 31 2022 05:05:18 GMT+0000 (Greenwich Mean Time)
             </div>
         </div>
         <script src="../../../../../../prettify.js"></script>

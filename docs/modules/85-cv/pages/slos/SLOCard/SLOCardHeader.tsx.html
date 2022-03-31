@@ -321,7 +321,26 @@
 <a name='L262'></a><a href='#L262'>262</a>
 <a name='L263'></a><a href='#L263'>263</a>
 <a name='L264'></a><a href='#L264'>264</a>
-<a name='L265'></a><a href='#L265'>265</a></td><td class="line-coverage quiet"><span class="cline-any cline-neutral">&nbsp;</span>
+<a name='L265'></a><a href='#L265'>265</a>
+<a name='L266'></a><a href='#L266'>266</a>
+<a name='L267'></a><a href='#L267'>267</a>
+<a name='L268'></a><a href='#L268'>268</a>
+<a name='L269'></a><a href='#L269'>269</a>
+<a name='L270'></a><a href='#L270'>270</a>
+<a name='L271'></a><a href='#L271'>271</a>
+<a name='L272'></a><a href='#L272'>272</a>
+<a name='L273'></a><a href='#L273'>273</a>
+<a name='L274'></a><a href='#L274'>274</a>
+<a name='L275'></a><a href='#L275'>275</a>
+<a name='L276'></a><a href='#L276'>276</a>
+<a name='L277'></a><a href='#L277'>277</a>
+<a name='L278'></a><a href='#L278'>278</a>
+<a name='L279'></a><a href='#L279'>279</a>
+<a name='L280'></a><a href='#L280'>280</a>
+<a name='L281'></a><a href='#L281'>281</a>
+<a name='L282'></a><a href='#L282'>282</a>
+<a name='L283'></a><a href='#L283'>283</a>
+<a name='L284'></a><a href='#L284'>284</a></td><td class="line-coverage quiet"><span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
@@ -471,6 +490,25 @@
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-yes">1x</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
@@ -777,7 +815,12 @@ const SLOCardHeader: React.FC&lt;SLOCardHeaderProps&gt; = ({
       &lt;Container flex={{ alignItems: 'flex-start' }}&gt;
         &lt;Layout.Vertical height={130} spacing="xsmall"&gt;
           &lt;Layout.Horizontal spacing="xsmall"&gt;
-            &lt;Text width={100} font={{ variation: FontVariation.SMALL }} color={Color.GREY_400}&gt;
+            &lt;Text
+              width={100}
+              font={{ variation: FontVariation.SMALL }}
+              color={Color.GREY_400}
+              tooltipProps={{ dataTooltipId: 'slosMonitoredService' }}
+            &gt;
               {getString('connectors.cdng.monitoredService.label')}:
             &lt;/Text&gt;
             &lt;Link to={monitoredServicePathname}&gt;
@@ -790,7 +833,12 @@ const SLOCardHeader: React.FC&lt;SLOCardHeaderProps&gt; = ({
             &lt;/Link&gt;
           &lt;/Layout.Horizontal&gt;
           &lt;Layout.Horizontal spacing="xsmall"&gt;
-            &lt;Text width={100} font={{ variation: FontVariation.SMALL }} color={Color.GREY_400}&gt;
+            &lt;Text
+              width={100}
+              font={{ variation: FontVariation.SMALL }}
+              color={Color.GREY_400}
+              tooltipProps={{ dataTooltipId: 'sliType' }}
+            &gt;
               {getString('cv.slos.sliType')}:
             &lt;/Text&gt;
             &lt;Text font={{ variation: FontVariation.SMALL_BOLD }} color={Color.GREY_700}&gt;
@@ -798,7 +846,12 @@ const SLOCardHeader: React.FC&lt;SLOCardHeaderProps&gt; = ({
             &lt;/Text&gt;
           &lt;/Layout.Horizontal&gt;
           &lt;Layout.Horizontal spacing="xsmall"&gt;
-            &lt;Text width={100} font={{ variation: FontVariation.SMALL }} color={Color.GREY_400}&gt;
+            &lt;Text
+              width={100}
+              font={{ variation: FontVariation.SMALL }}
+              color={Color.GREY_400}
+              tooltipProps={{ dataTooltipId: 'slosHealthSource' }}
+            &gt;
               {getString('cv.slos.healthSource')}:
             &lt;/Text&gt;
             &lt;Text font={{ variation: FontVariation.SMALL_BOLD }} color={Color.GREY_700}&gt;
@@ -828,13 +881,17 @@ const SLOCardHeader: React.FC&lt;SLOCardHeaderProps&gt; = ({
 &nbsp;
         &lt;Layout.Horizontal spacing="medium"&gt;
           &lt;Container width={120} background={Color.GREY_100} padding="small" className={css.sloGlanceCard}&gt;
-            &lt;Text font={{ variation: FontVariation.FORM_LABEL }}&gt;{getString('cv.burnRatePerDay')}&lt;/Text&gt;
+            &lt;Text font={{ variation: FontVariation.FORM_LABEL }} tooltipProps={{ dataTooltipId: 'burnRatePerDay' }}&gt;
+              {getString('cv.burnRatePerDay')}
+            &lt;/Text&gt;
             &lt;Heading level={2} color={Color.GREY_800} font={{ variation: FontVariation.H4 }}&gt;
               {(Number(serviceLevelObjective.burnRate.currentRatePercentage) || <span class="branch-1 cbranch-no" title="branch not covered" >0)</span>.toFixed(2)}%
             &lt;/Heading&gt;
           &lt;/Container&gt;
           &lt;Container width={120} background={Color.GREY_100} padding="small" className={css.sloGlanceCard}&gt;
-            &lt;Text font={{ variation: FontVariation.FORM_LABEL }}&gt;{getString('cv.timeRemaining')}&lt;/Text&gt;
+            &lt;Text font={{ variation: FontVariation.FORM_LABEL }} tooltipProps={{ dataTooltipId: 'timeRemaining' }}&gt;
+              {getString('cv.timeRemaining')}
+            &lt;/Text&gt;
             &lt;Heading inline level={2} color={Color.GREY_800} font={{ variation: FontVariation.H4 }}&gt;
               {serviceLevelObjective.timeRemainingDays}
             &lt;/Heading&gt;
@@ -856,7 +913,7 @@ export default SLOCardHeader
             <div class='footer quiet pad2 space-top1 center small'>
                 Code coverage generated by
                 <a href="https://istanbul.js.org/" target="_blank">istanbul</a>
-                at Wed Mar 30 2022 16:46:58 GMT+0000 (Greenwich Mean Time)
+                at Thu Mar 31 2022 05:05:18 GMT+0000 (Greenwich Mean Time)
             </div>
         </div>
         <script src="../../../../../prettify.js"></script>
