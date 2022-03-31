@@ -202,7 +202,7 @@ export function AcrArtifact({
           projectIdentifier
         },
         pathParams: {
-          subscriptions: formikRef.current?.values.subscription
+          subscription: getValue(formikRef.current?.values.subscription)
         }
       })
     }
@@ -257,8 +257,8 @@ export function AcrArtifact({
           projectIdentifier
         },
         pathParams: {
-          subscription: formikRef.current?.values?.subscription,
-          registry: formikRef.current?.values?.registry
+          subscription: getValue(formikRef.current?.values?.subscription),
+          registry: getValue(formikRef.current?.values?.registry)
         }
       })
     }
@@ -401,6 +401,22 @@ export function AcrArtifact({
                     name="subscription"
                     selectItems={subscriptions}
                     multiTypeInputProps={{
+                      onChange: value => {
+                        refetchRegistries({
+                          queryParams: {
+                            connectorRef: getConnectorRefQueryData(),
+                            accountIdentifier: accountId,
+                            orgIdentifier,
+                            projectIdentifier
+                          },
+                          pathParams: {
+                            subscription: getValue(value)
+                          }
+                        })
+                        formik.setFieldValue('registry', '')
+                        formik.setFieldValue('repository', '')
+                        resetTagList(formik)
+                      },
                       selectProps: {
                         defaultSelectedItem: formik.values.subscription,
                         items: subscriptions,
@@ -423,9 +439,6 @@ export function AcrArtifact({
                         isReadonly={isReadonly}
                         onChange={value => {
                           formik.setFieldValue('subscription', value)
-                          formik.setFieldValue('registry', '')
-                          formik.setFieldValue('repository', '')
-                          resetTagList(formik)
                         }}
                       />
                     </div>
@@ -444,6 +457,22 @@ export function AcrArtifact({
                     multiTypeInputProps={{
                       expressions,
                       disabled: isReadonly,
+                      onChange: value => {
+                        refetchRepositories({
+                          queryParams: {
+                            connectorRef: getConnectorRefQueryData(),
+                            accountIdentifier: accountId,
+                            orgIdentifier,
+                            projectIdentifier
+                          },
+                          pathParams: {
+                            subscription: getValue(formik.values.subscription),
+                            registry: getValue(value)
+                          }
+                        })
+                        formik.setFieldValue('repository', '')
+                        resetTagList(formik)
+                      },
                       selectProps: {
                         defaultSelectedItem: formik.values.registry,
                         items: registries,
@@ -470,8 +499,6 @@ export function AcrArtifact({
                       isReadonly={isReadonly}
                       onChange={value => {
                         formik.setFieldValue('registry', value)
-                        formik.setFieldValue('repository', '')
-                        resetTagList(formik)
                       }}
                     />
                   )}
@@ -489,6 +516,7 @@ export function AcrArtifact({
                     multiTypeInputProps={{
                       expressions,
                       disabled: isReadonly,
+                      onChange: () => resetTagList(formik),
                       selectProps: {
                         items: repositories,
                         allowCreatingNewItems: true,
@@ -516,7 +544,6 @@ export function AcrArtifact({
                       isReadonly={isReadonly}
                       onChange={value => {
                         formik.setFieldValue('repository', value)
-                        resetTagList(formik)
                       }}
                     />
                   )}
