@@ -161,6 +161,9 @@ const processNodeImpl = (
     if (item.delegateSelectors && item.tab === TabTypes.Advanced) {
       set(node, 'spec.delegateSelectors', item.delegateSelectors)
     }
+    if ((item as StepElementConfig)?.spec?.commandOptions && item.tab !== TabTypes.Advanced) {
+      set(node, 'spec.commandOptions', (item as StepElementConfig)?.spec?.commandOptions)
+    }
 
     // Delete values if they were already added and now removed
     if (node.timeout && !(item as StepElementConfig).timeout && item.tab !== TabTypes.Advanced) delete node.timeout
@@ -175,6 +178,16 @@ const processNodeImpl = (
     ) {
       delete node.spec.delegateSelectors
     }
+    if (
+      node.spec?.commandOptions &&
+      (!(item as StepElementConfig)?.spec?.commandOptions ||
+        (item as StepElementConfig)?.spec?.commandOptions?.length === 0) &&
+      item.tab !== TabTypes.Advanced
+    ) {
+      delete (item as StepElementConfig)?.spec?.commandOptions
+      delete node.spec.commandOptions
+    }
+
     if (item.template) {
       node.template = item.template
     }
