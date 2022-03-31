@@ -75,6 +75,7 @@ export default function KubernetesChangeSource(props: ChangeSourceProps): JSX.El
             {getString('connectors.selectConnector')}
           </Text>
         }
+        tooltipProps={{ dataTooltipId: 'selectKubeConnector' }}
       />
       <ValidationStatus
         validationStatus={validationResult.status}

@@ -7,14 +7,14 @@
 
 import React from 'react'
 import { useHistory, useParams } from 'react-router-dom'
-import { Avatar, Container, Layout, Text, PageError } from '@wings-software/uicore'
+import { Container, Layout, PageError } from '@wings-software/uicore'
 import { Intent } from '@harness/design-system'
-import { useStrings } from 'framework/strings'
+import { useStrings, String } from 'framework/strings'
 import { DeleteTargetQueryParams, GetTargetQueryParams, useDeleteTarget, useGetTarget } from 'services/cf'
 import routes from '@common/RouteDefinitions'
 import { ContainerSpinner } from '@common/components/ContainerSpinner/ContainerSpinner'
 import { PageSpinner, useToaster } from '@common/components'
-import { DISABLE_AVATAR_PROPS, formatDate, formatTime, getErrorMessage, showToaster } from '@cf/utils/CFUtils'
+import { formatDate, formatTime, getErrorMessage, showToaster } from '@cf/utils/CFUtils'
 import { useConfirmAction } from '@common/hooks'
 import { useDocumentTitle } from '@common/hooks/useDocumentTitle'
 import { useGetEnvironment } from 'services/cd-ng'
@@ -27,7 +27,6 @@ import TargetManagementToolbar from '@cf/components/TargetManagementToolbar/Targ
 import { useGitSync } from '@cf/hooks/useGitSync'
 import { TargetSettings } from './target-settings/TargetSettings'
 import { FlagSettings } from './flag-settings/FlagSettings'
-import css from './TargetDetailPage.module.scss'
 
 export const fullSizeContentStyle: React.CSSProperties = {
   position: 'fixed',
@@ -93,15 +92,7 @@ export const TargetDetailPage: React.FC = () => {
   })
   const deleteTargetConfirm = useConfirmAction({
     title: getString('cf.targets.deleteTarget'),
-    message: (
-      <Text>
-        <span
-          dangerouslySetInnerHTML={{
-            __html: getString('cf.targets.deleteTargetMessage', { name: target?.name })
-          }}
-        />
-      </Text>
-    ),
+    message: <String stringID="cf.targets.deleteTargetMessage" vars={{ name: target?.name }} />,
     intent: Intent.DANGER,
     action: async () => {
       clear()
@@ -166,7 +157,6 @@ export const TargetDetailPage: React.FC = () => {
     <DetailPageTemplate
       breadcrumbs={breadcrumbs}
       title={target?.name}
-      titleIcon={<Avatar name={target?.name} size="medium" {...DISABLE_AVATAR_PROPS} className={css.avatar} />}
       subTitle={getString('cf.targetDetail.createdOnDate', {
         date: formatDate(target?.createdAt as number),
         time: formatTime(target?.createdAt as number)
@@ -189,15 +179,12 @@ export const TargetDetailPage: React.FC = () => {
               ]}
             />
           </Container>
-          <Text style={{ position: 'absolute', top: '76px', right: '30px' }}>
-            <span
-              dangerouslySetInnerHTML={{
-                __html: getString('cf.targetDetail.environmentLine', {
-                  name: environment?.data?.name || target?.environment
-                })
-              }}
-            />
-          </Text>
+          <String
+            style={{ position: 'absolute', top: '76px', right: '30px' }}
+            useRichText
+            stringID="cf.targetDetail.environmentLine"
+            vars={{ name: environment?.data?.name || target?.environment }}
+          />
         </>
       }
     >

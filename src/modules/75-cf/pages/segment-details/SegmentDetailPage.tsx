@@ -7,14 +7,14 @@
 
 import React from 'react'
 import { useHistory, useParams } from 'react-router-dom'
-import { Avatar, Container, Layout, Text, PageError } from '@wings-software/uicore'
+import { Container, Layout, PageError } from '@wings-software/uicore'
 import { Intent } from '@harness/design-system'
-import { useStrings } from 'framework/strings'
+import { useStrings, String } from 'framework/strings'
 import { DeleteSegmentQueryParams, GetSegmentQueryParams, useDeleteSegment, useGetSegment } from 'services/cf'
 import routes from '@common/RouteDefinitions'
 import { ContainerSpinner } from '@common/components/ContainerSpinner/ContainerSpinner'
 import { PageSpinner, useToaster } from '@common/components'
-import { DISABLE_AVATAR_PROPS, formatDate, formatTime, getErrorMessage, showToaster } from '@cf/utils/CFUtils'
+import { formatDate, formatTime, getErrorMessage, showToaster } from '@cf/utils/CFUtils'
 import { useSyncedEnvironment } from '@cf/hooks/useSyncedEnvironment'
 import { useConfirmAction } from '@common/hooks'
 import { useDocumentTitle } from '@common/hooks/useDocumentTitle'
@@ -25,7 +25,6 @@ import { useGitSync } from '@cf/hooks/useGitSync'
 import { FlagsUseSegment } from './flags-use-segment/FlagsUseSegment'
 import { SegmentSettings } from './segment-settings/SegmentSettings'
 import SegmentDetailsPageOptionsMenu from './segment-details-page-options-menu/SegmentDetailsPageOptionsMenu'
-import css from './SegmentDetailPage.module.scss'
 
 export const fullSizeContentStyle: React.CSSProperties = {
   position: 'fixed',
@@ -94,15 +93,7 @@ export const SegmentDetailPage: React.FC = () => {
   })
   const deleteSegmentConfirm = useConfirmAction({
     title: getString('cf.segments.delete.title'),
-    message: (
-      <Text>
-        <span
-          dangerouslySetInnerHTML={{
-            __html: getString('cf.segments.delete.message', { segmentName: segment?.name })
-          }}
-        />
-      </Text>
-    ),
+    message: <String useRichText stringID="cf.segments.delete.message" vars={{ name: segment?.name }} />,
     intent: Intent.DANGER,
     action: async () => {
       clear()
@@ -169,7 +160,6 @@ export const SegmentDetailPage: React.FC = () => {
     <DetailPageTemplate
       breadcrumbs={breadcrumbs}
       title={segment?.name}
-      titleIcon={<Avatar name={segment?.name} size="medium" {...DISABLE_AVATAR_PROPS} className={css.avatar} />}
       subTitle={getString('cf.targetDetail.createdOnDate', {
         date: formatDate(segment?.createdAt as number),
         time: formatTime(segment?.createdAt as number)
@@ -183,13 +173,12 @@ export const SegmentDetailPage: React.FC = () => {
               activeEnvironment={environmentIdentifier}
             />
           </Container>
-          <Text style={{ position: 'absolute', top: '76px', right: '30px' }}>
-            <span
-              dangerouslySetInnerHTML={{
-                __html: getString('cf.targetDetail.environmentLine', { name: envData?.data?.name })
-              }}
-            />
-          </Text>
+          <String
+            style={{ position: 'absolute', top: '76px', right: '30px' }}
+            useRichText
+            stringID="cf.targetDetail.environmentLine"
+            vars={{ name: envData?.data?.name }}
+          />
         </>
       }
     >

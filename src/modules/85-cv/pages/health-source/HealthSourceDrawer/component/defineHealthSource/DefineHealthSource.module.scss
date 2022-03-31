@@ -65,4 +65,8 @@
   min-height: calc(100% - 120px);
   position: relative;
   overflow-y: scroll;
+
+  :global(.Text--withDocsTooltip) {
+    align-items: baseline !important;
+  }
 }

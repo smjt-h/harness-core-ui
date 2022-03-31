@@ -128,91 +128,61 @@ exports[`TargetDetailPage TargetDetailPage should render data correctly 1`] = `
         </div>
       </div>
       <div
-        class="Layout--horizontal Layout--layout-spacing-small StyledProps--main"
-        style="margin-left: -5px;"
+        class="StyledProps--font StyledProps--main"
       >
         <div
-          class="StyledProps--font StyledProps--main"
-          style="border-radius: 50%; overflow: hidden;"
+          class="Layout--horizontal Layout--layout-spacing-medium StyledProps--main"
         >
+          <p
+            class="StyledProps--font StyledProps--main"
+            style="font-size: 20px;"
+          >
+            t1
+          </p>
           <div
-            class="avatar Avatar--Avatar Avatar--contentStyle"
-            style="cursor: default;"
+            class="StyledProps--font StyledProps--main identifierContainer"
           >
             <span
-              class="bp3-popover-wrapper Avatar--avatarPopOver"
+              class="StyledProps--font StyledProps--main StyledProps--inline StyledProps--font-variation-small StyledProps--margin-right-xsmall"
             >
-              <span
-                class="bp3-popover-target"
-              >
-                <div
-                  class="Avatar--AvatarInner"
-                  style="border-radius: 100%; line-height: 42px; width: 48px; height: 48px; font-size: 18px;"
-                  tabindex="0"
-                >
-                  T
-                </div>
-              </span>
+              idLabel
             </span>
-          </div>
-        </div>
-        <div
-          class="StyledProps--font StyledProps--main"
-        >
-          <div
-            class="Layout--horizontal Layout--layout-spacing-medium StyledProps--main"
-          >
-            <p
-              class="StyledProps--font StyledProps--main"
-              style="font-size: 20px;"
+            <span
+              class="StyledProps--font StyledProps--main StyledProps--inline StyledProps--font-variation-small"
             >
               t1
-            </p>
-            <div
-              class="StyledProps--font StyledProps--main identifierContainer"
+            </span>
+            <button
+              class="copyButton"
+              title="clickToCopy"
             >
               <span
-                class="StyledProps--font StyledProps--main StyledProps--inline StyledProps--font-variation-small StyledProps--margin-right-xsmall"
+                class="bp3-icon bp3-icon-duplicate StyledProps--main StyledProps--color StyledProps--color-grey350"
+                icon="duplicate"
               >
-                idLabel
-              </span>
-              <span
-                class="StyledProps--font StyledProps--main StyledProps--inline StyledProps--font-variation-small"
-              >
-                t1
-              </span>
-              <button
-                class="copyButton"
-                title="clickToCopy"
-              >
-                <span
-                  class="bp3-icon bp3-icon-duplicate StyledProps--main StyledProps--color StyledProps--color-grey350"
-                  icon="duplicate"
+                <svg
+                  data-icon="duplicate"
+                  height="12"
+                  viewBox="0 0 16 16"
+                  width="12"
                 >
-                  <svg
-                    data-icon="duplicate"
-                    height="12"
-                    viewBox="0 0 16 16"
-                    width="12"
-                  >
-                    <desc>
-                      duplicate
-                    </desc>
-                    <path
-                      d="M15 0H5c-.55 0-1 .45-1 1v2h2V2h8v7h-1v2h2c.55 0 1-.45 1-1V1c0-.55-.45-1-1-1zm-4 4H1c-.55 0-1 .45-1 1v10c0 .55.45 1 1 1h10c.55 0 1-.45 1-1V5c0-.55-.45-1-1-1zm-1 10H2V6h8v8z"
-                      fill-rule="evenodd"
-                    />
-                  </svg>
-                </span>
-              </button>
-            </div>
+                  <desc>
+                    duplicate
+                  </desc>
+                  <path
+                    d="M15 0H5c-.55 0-1 .45-1 1v2h2V2h8v7h-1v2h2c.55 0 1-.45 1-1V1c0-.55-.45-1-1-1zm-4 4H1c-.55 0-1 .45-1 1v10c0 .55.45 1 1 1h10c.55 0 1-.45 1-1V5c0-.55-.45-1-1-1zm-1 10H2V6h8v8z"
+                    fill-rule="evenodd"
+                  />
+                </svg>
+              </span>
+            </button>
           </div>
-          <p
-            class="StyledProps--font StyledProps--main StyledProps--color StyledProps--color-grey400 StyledProps--padding-top-xsmall"
-          >
-            cf.targetDetail.createdOnDate
-          </p>
         </div>
+        <p
+          class="StyledProps--font StyledProps--main StyledProps--color StyledProps--color-grey400 StyledProps--padding-top-xsmall"
+        >
+          cf.targetDetail.createdOnDate
+        </p>
       </div>
     </div>
     <div
@@ -252,14 +222,11 @@ exports[`TargetDetailPage TargetDetailPage should render data correctly 1`] = `
         </span>
       </span>
     </div>
-    <p
-      class="StyledProps--font StyledProps--main"
+    <span
       style="position: absolute; top: 76px; right: 30px;"
     >
-      <span>
-        cf.targetDetail.environmentLine
-      </span>
-    </p>
+      cf.targetDetail.environmentLine
+    </span>
   </div>
   <div
     class="StyledProps--font StyledProps--main"
@@ -723,91 +690,61 @@ exports[`TargetDetailPage TargetDetailPage should render its segments 1`] = `
         </div>
       </div>
       <div
-        class="Layout--horizontal Layout--layout-spacing-small StyledProps--main"
-        style="margin-left: -5px;"
+        class="StyledProps--font StyledProps--main"
       >
         <div
-          class="StyledProps--font StyledProps--main"
-          style="border-radius: 50%; overflow: hidden;"
+          class="Layout--horizontal Layout--layout-spacing-medium StyledProps--main"
         >
+          <p
+            class="StyledProps--font StyledProps--main"
+            style="font-size: 20px;"
+          >
+            t1
+          </p>
           <div
-            class="avatar Avatar--Avatar Avatar--contentStyle"
-            style="cursor: default;"
+            class="StyledProps--font StyledProps--main identifierContainer"
           >
             <span
-              class="bp3-popover-wrapper Avatar--avatarPopOver"
+              class="StyledProps--font StyledProps--main StyledProps--inline StyledProps--font-variation-small StyledProps--margin-right-xsmall"
             >
-              <span
-                class="bp3-popover-target"
-              >
-                <div
-                  class="Avatar--AvatarInner"
-                  style="border-radius: 100%; line-height: 42px; width: 48px; height: 48px; font-size: 18px;"
-                  tabindex="0"
-                >
-                  T
-                </div>
-              </span>
+              idLabel
             </span>
-          </div>
-        </div>
-        <div
-          class="StyledProps--font StyledProps--main"
-        >
-          <div
-            class="Layout--horizontal Layout--layout-spacing-medium StyledProps--main"
-          >
-            <p
-              class="StyledProps--font StyledProps--main"
-              style="font-size: 20px;"
+            <span
+              class="StyledProps--font StyledProps--main StyledProps--inline StyledProps--font-variation-small"
             >
               t1
-            </p>
-            <div
-              class="StyledProps--font StyledProps--main identifierContainer"
+            </span>
+            <button
+              class="copyButton"
+              title="clickToCopy"
             >
               <span
-                class="StyledProps--font StyledProps--main StyledProps--inline StyledProps--font-variation-small StyledProps--margin-right-xsmall"
+                class="bp3-icon bp3-icon-duplicate StyledProps--main StyledProps--color StyledProps--color-grey350"
+                icon="duplicate"
               >
-                idLabel
-              </span>
-              <span
-                class="StyledProps--font StyledProps--main StyledProps--inline StyledProps--font-variation-small"
-              >
-                t1
-              </span>
-              <button
-                class="copyButton"
-                title="clickToCopy"
-              >
-                <span
-                  class="bp3-icon bp3-icon-duplicate StyledProps--main StyledProps--color StyledProps--color-grey350"
-                  icon="duplicate"
+                <svg
+                  data-icon="duplicate"
+                  height="12"
+                  viewBox="0 0 16 16"
+                  width="12"
                 >
-                  <svg
-                    data-icon="duplicate"
-                    height="12"
-                    viewBox="0 0 16 16"
-                    width="12"
-                  >
-                    <desc>
-                      duplicate
-                    </desc>
-                    <path
-                      d="M15 0H5c-.55 0-1 .45-1 1v2h2V2h8v7h-1v2h2c.55 0 1-.45 1-1V1c0-.55-.45-1-1-1zm-4 4H1c-.55 0-1 .45-1 1v10c0 .55.45 1 1 1h10c.55 0 1-.45 1-1V5c0-.55-.45-1-1-1zm-1 10H2V6h8v8z"
-                      fill-rule="evenodd"
-                    />
-                  </svg>
-                </span>
-              </button>
-            </div>
+                  <desc>
+                    duplicate
+                  </desc>
+                  <path
+                    d="M15 0H5c-.55 0-1 .45-1 1v2h2V2h8v7h-1v2h2c.55 0 1-.45 1-1V1c0-.55-.45-1-1-1zm-4 4H1c-.55 0-1 .45-1 1v10c0 .55.45 1 1 1h10c.55 0 1-.45 1-1V5c0-.55-.45-1-1-1zm-1 10H2V6h8v8z"
+                    fill-rule="evenodd"
+                  />
+                </svg>
+              </span>
+            </button>
           </div>
-          <p
-            class="StyledProps--font StyledProps--main StyledProps--color StyledProps--color-grey400 StyledProps--padding-top-xsmall"
-          >
-            cf.targetDetail.createdOnDate
-          </p>
         </div>
+        <p
+          class="StyledProps--font StyledProps--main StyledProps--color StyledProps--color-grey400 StyledProps--padding-top-xsmall"
+        >
+          cf.targetDetail.createdOnDate
+        </p>
       </div>
     </div>
     <div
@@ -847,14 +784,11 @@ exports[`TargetDetailPage TargetDetailPage should render its segments 1`] = `
         </span>
       </span>
     </div>
-    <p
-      class="StyledProps--font StyledProps--main"
+    <span
       style="position: absolute; top: 76px; right: 30px;"
     >
-      <span>
-        cf.targetDetail.environmentLine
-      </span>
-    </p>
+      cf.targetDetail.environmentLine
+    </span>
   </div>
   <div
     class="StyledProps--font StyledProps--main"

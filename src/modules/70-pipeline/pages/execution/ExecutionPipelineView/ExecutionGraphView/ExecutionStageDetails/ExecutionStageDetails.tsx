@@ -6,7 +6,7 @@
  */
 
 import React from 'react'
-import { isEmpty, debounce } from 'lodash-es'
+import { isEmpty, debounce, defaultTo } from 'lodash-es'
 import { useParams } from 'react-router-dom'
 import {
   ExecutionNode,
@@ -89,7 +89,7 @@ export default function ExecutionStageDetails(props: ExecutionStageDetailsProps)
     if (barrierSetupId) {
       refetchBarrierInfoRef({
         queryParams: {
-          barrierSetupId: barrierSetupId || '',
+          barrierSetupId: defaultTo(barrierSetupId, ''),
           planExecutionId: executionIdentifier
         }
       })
@@ -214,6 +214,7 @@ export default function ExecutionStageDetails(props: ExecutionStageDetailsProps)
             dynamicPopoverHandler?.hide()
           }}
           canvasBtnsClass={css.canvasBtns}
+          isStepView={true}
           setGraphCanvasState={state => setStepsGraphCanvasState?.(state)}
           graphCanvasState={stepsGraphCanvasState}
         />

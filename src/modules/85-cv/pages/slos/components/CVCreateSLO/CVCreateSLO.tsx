@@ -191,7 +191,14 @@ const CVCreateSLO: React.FC = () => {
 
   return (
     <>
-      <Page.Header breadcrumbs={<NGBreadcrumbs links={links} />} title={title} />
+      <Page.Header
+        breadcrumbs={<NGBreadcrumbs links={links} />}
+        title={
+          <Heading level={3} font={{ variation: FontVariation.H4 }} data-tooltip-id={'createSLO'}>
+            {title}
+          </Heading>
+        }
+      />
       <Formik<SLOForm>
         initialValues={getSLOInitialFormData(
           SLODataResponse?.resource?.serviceLevelObjective,

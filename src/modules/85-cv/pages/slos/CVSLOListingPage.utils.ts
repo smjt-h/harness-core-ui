@@ -70,7 +70,6 @@ export const getSLORiskTypeFilter = (
     ...riskType,
     displayColor: getRiskColorValue(riskType.identifier as RiskTypes, false)
   }))
-
   return [totalCountDetail as SLORiskFilter, ...riskTypesCardData]
 }
 

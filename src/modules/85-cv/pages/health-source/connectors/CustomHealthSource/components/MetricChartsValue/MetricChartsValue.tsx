@@ -82,6 +82,7 @@ export default function MetricChartsValue({
           'cv.healthSource.connectors.NewRelic.metricFields.metricValueJsonPath.recordsModalHeader'
         )}
         showExactJsonPath={true}
+        dataTooltipId={'customhealthMetricValueJsonPath'}
       />
       <InputWithDynamicModalForJson
         onChange={formikSetFieldValue}
@@ -96,6 +97,7 @@ export default function MetricChartsValue({
           'cv.healthSource.connectors.NewRelic.metricFields.timestampJsonPath.recordsModalHeader'
         )}
         showExactJsonPath={true}
+        dataTooltipId={'customhealthTimestampJsonPath'}
       />
       {formikValues?.queryType === QueryType.HOST_BASED ? (
         <InputWithDynamicModalForJson
@@ -108,6 +110,7 @@ export default function MetricChartsValue({
           inputLabel={getString('cv.customHealthSource.ServiceInstance.pathLabel')}
           recordsModalHeader={getString('cv.customHealthSource.ServiceInstance.pathModalHeader')}
           showExactJsonPath={true}
+          dataTooltipId={'customhealthServiceInstance'}
         />
       ) : null}
       <FormInput.Text

@@ -84,19 +84,19 @@ describe('ConfigureNotifications', () => {
       </TestWrapper>
     )
 
-    const msTeamKey = container.querySelector('[data-id*="msTeamKeys-0"] input')
+    const msTeamKey = container.querySelector('[name="msTeamKeys.0"]')
     if (!msTeamKey) {
       throw Error('Microsoft team keys was not rendered.')
     }
 
-    fireEvent.change(msTeamKey, { target: { value: 'test' } })
-    await waitFor(() => expect(container.querySelector('[data-id*="msTeamKeys-0"] input')).not.toBeNull())
+    fireEvent.change(msTeamKey, { target: { value: 'https://www.google.com/' } })
+    await waitFor(() => expect(container.querySelector('[name="msTeamKeys.0"]')).not.toBeNull())
     await act(() => {
       fireEvent.click(getByText('test'))
       expect(testNotificationMock).toHaveBeenCalledWith({
         accountId: 'dummy',
         notificationId: 'MSTeams',
-        recipient: '',
+        recipient: 'https://www.google.com/',
         type: 'MSTEAMS'
       })
     })

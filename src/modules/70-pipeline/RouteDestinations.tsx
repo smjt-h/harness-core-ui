@@ -32,6 +32,7 @@ import routes from '@common/RouteDefinitions'
 import type { Module } from '@common/interfaces/RouteInterfaces'
 import PipelineResourceRenderer from './components/RbacResourceModals/PipelineResourceRenderer/PipelineResourceRenderer'
 import { ModuleName } from '../../framework/types/ModuleName'
+import { JiraCreateUpdateView } from './components/execution/StepDetails/views/JiraCreateUpdateView/JiraCreateUpdateView'
 /**
  * Register RBAC resources
  */
@@ -81,6 +82,14 @@ RbacFactory.registerResourceTypeHandler(ResourceType.ENVIRONMENT, {
  */
 ExecFactory.registerStepDetails(StepType.HarnessApproval, {
   component: HarnessApprovalView
+})
+
+ExecFactory.registerStepDetails(StepType.JiraCreate, {
+  component: JiraCreateUpdateView
+})
+
+ExecFactory.registerStepDetails(StepType.JiraUpdate, {
+  component: JiraCreateUpdateView
 })
 
 ExecFactory.registerStepDetails(StepType.JiraApproval, {

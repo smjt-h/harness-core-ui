@@ -16,5 +16,6 @@ declare const styles: {
   readonly red: string
   readonly statusIcon: string
   readonly title: string
+  readonly urlInput: string
 }
 export default styles

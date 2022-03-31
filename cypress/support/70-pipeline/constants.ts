@@ -9,6 +9,8 @@ const projectId = 'project1'
 const accountId = 'accountId'
 const orgIdentifier = 'default'
 const pipelineIdentifier = 'testPipeline_Cypress'
+const executionId = 'executionId'
+const stageNodeId = 'nodeId'
 
 export const pipelineListAPI = `/pipeline/api/pipelines/list?routingId=${accountId}&accountIdentifier=${accountId}&projectIdentifier=${projectId}&module=cd&orgIdentifier=${orgIdentifier}&searchTerm=&page=0&sort=lastUpdatedAt%2CDESC&size=20`
 export const pipelineSummaryAPI = `/pipeline/api/pipelines/summary/appdtest?routingId=${accountId}&accountIdentifier=${accountId}&orgIdentifier=${orgIdentifier}&projectIdentifier=${projectId}`
@@ -37,7 +39,10 @@ export const environmentRoute = `#/account/${accountId}/cd/orgs/${orgIdentifier}
 export const environmentsCall = `/ng/api/environments?routingId=${accountId}&accountId=${accountId}&orgIdentifier=${orgIdentifier}&projectIdentifier=${projectId}&page=0&size=10`
 export const servicesRoute = `#/account/${accountId}/cd/orgs/${orgIdentifier}/projects/${projectId}/services`
 export const servicesCall = `/ng/api/servicesV2?routingId=${accountId}&accountIdentifier=${accountId}&orgIdentifier=${orgIdentifier}&projectIdentifier=${projectId}&size=10&page=0`
-
+export const pipelinesRoute = `#/account/${accountId}/cd/orgs/${orgIdentifier}/projects/${projectId}/pipelines`
+export const executePipeline = `/pipeline/api/pipeline/execute/${pipelineIdentifier}?routingId=${accountId}&accountIdentifier=${accountId}&projectIdentifier=${projectId}&orgIdentifier=${orgIdentifier}&moduleType=cd`
+export const serviceStepAPI = `/pipeline/api/pipelines/execution/${executionId}?routingId=${accountId}&orgIdentifier=${orgIdentifier}&projectIdentifier=${projectId}&accountIdentifier=${accountId}`
+export const serviceStepStageID = `/pipeline/api/pipelines/execution/${executionId}?routingId=${accountId}&orgIdentifier=${orgIdentifier}&projectIdentifier=${projectId}&accountIdentifier=${accountId}&stageNodeId=${stageNodeId}`
 export interface ValidObject {
   resourceName: StepResourceObject[]
   warningCheck?: boolean

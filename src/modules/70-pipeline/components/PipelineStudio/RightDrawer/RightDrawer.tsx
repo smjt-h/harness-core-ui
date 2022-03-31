@@ -21,7 +21,7 @@ import type {
 } from 'services/cd-ng'
 import { useTelemetry } from '@common/hooks/useTelemetry'
 import { StepActions } from '@common/constants/TrackingConstants'
-import { StageType } from '@pipeline/utils/stageHelpers'
+import type { StageType } from '@pipeline/utils/stageHelpers'
 import type {
   BuildStageElementConfig,
   DeploymentStageElementConfig,
@@ -244,8 +244,6 @@ const onSubmitStep = async (
   selectedStage: StageElementWrapper<StageElementConfig> | undefined,
   updatePipelineView: (data: PipelineViewData) => void,
   updateStage: (stage: StageElementConfig) => Promise<void>,
-  stageType: string | undefined,
-  setSelectedStepId: (selectedStepId: string | undefined) => void,
   pipelineView: PipelineViewData
 ): Promise<void> => {
   if (data?.stepConfig?.node) {
@@ -262,17 +260,6 @@ const onSubmitStep = async (
         pipelineView
       )
     }
-  }
-
-  // TODO: temporary fix for FF
-  // can be removed once the unified solution across modules is implemented
-  if (stageType === StageType.FEATURE) {
-    updatePipelineView({
-      ...pipelineView,
-      isDrawerOpened: false,
-      drawerData: { type: DrawerTypes.StepConfig }
-    })
-    setSelectedStepId(undefined)
   }
 }
 
@@ -720,8 +707,6 @@ export function RightDrawer(): React.ReactElement {
               selectedStage,
               updatePipelineView,
               updateStage,
-              stageType,
-              setSelectedStepId,
               pipelineView
             )
           }
@@ -882,8 +867,6 @@ export function RightDrawer(): React.ReactElement {
               selectedStage,
               updatePipelineView,
               updateStage,
-              stageType,
-              setSelectedStepId,
               pipelineView
             )
           }

@@ -200,10 +200,17 @@ export default function MetricsDashboardList<T>(props: MetricsDashboardListProps
                   {
                     Header: (
                       <Container className={css.columnContainer}>
-                        <Text intent="primary" onClick={() => setIsModalOpen(true)} className={css.manualQueryLink}>
+                        <Text
+                          intent="primary"
+                          onClick={() => setIsModalOpen(true)}
+                          className={css.manualQueryLink}
+                          tooltipProps={{ dataTooltipId: 'addManualInputQuery' }}
+                        >
                           {getString('cv.monitoringSources.gco.addManualInputQuery')}
                         </Text>
-                        <Text color={Color.BLACK}>{getString(props.tableTitle)}</Text>
+                        <Text color={Color.BLACK} tooltipProps={{ dataTooltipId: 'dashboardTableTitle' }}>
+                          {getString(props.tableTitle)}
+                        </Text>
                       </Container>
                     ),
                     accessor: 'dashboard',

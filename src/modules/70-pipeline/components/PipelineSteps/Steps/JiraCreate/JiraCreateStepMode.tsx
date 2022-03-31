@@ -166,7 +166,7 @@ function FormContent({
           if (savedValueForThisField) {
             formikSelectedFields.push({ ...field, value: savedValueForThisField })
           } else if (field.required) {
-            formikSelectedFields.push({ ...field, value: '' })
+            formikSelectedFields.push({ ...field, value: !isEmpty(field.allowedValues) ? [] : '' })
           }
         }
       })

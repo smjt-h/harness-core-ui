@@ -175,6 +175,7 @@ export default function NewRelicCustomMetricForm(props: NewRelicCustomFormInterf
                   error={error}
                   query={query}
                   fetchEntityName={getString('cv.response')}
+                  dataTooltipId={'newRelicQuery'}
                 />
               </>
             }
@@ -195,6 +196,7 @@ export default function NewRelicCustomMetricForm(props: NewRelicCustomFormInterf
                   recordsModalHeader={getString(
                     'cv.healthSource.connectors.NewRelic.metricFields.metricValueJsonPath.recordsModalHeader'
                   )}
+                  dataTooltipId={'metricValueJsonPath'}
                   showExactJsonPath={true}
                 />
                 <InputWithDynamicModalForJson
@@ -208,6 +210,7 @@ export default function NewRelicCustomMetricForm(props: NewRelicCustomFormInterf
                   recordsModalHeader={getString(
                     'cv.healthSource.connectors.NewRelic.metricFields.timestampJsonPath.recordsModalHeader'
                   )}
+                  dataTooltipId={'timestampJsonPath'}
                   showExactJsonPath={true}
                 />
                 <Button

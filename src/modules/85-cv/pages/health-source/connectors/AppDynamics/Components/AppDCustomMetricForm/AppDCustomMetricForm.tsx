@@ -141,6 +141,7 @@ export default function AppDCustomMetricForm(props: AppDCustomMetricFormInterfac
                 <FormInput.Text
                   className={css.fullPath}
                   name={PATHTYPE.FullPath}
+                  tooltipProps={{ dataTooltipId: 'appDynamicsCompletePath' }}
                   disabled={formikValues?.pathType !== PATHTYPE.FullPath}
                 />
                 <Radio
@@ -153,7 +154,9 @@ export default function AppDCustomMetricForm(props: AppDCustomMetricFormInterfac
                   padding={{ left: 'large' }}
                   className={cx({ [css.disabled]: formikValues?.pathType !== PATHTYPE.DropdownPath })}
                 >
-                  <Text padding={{ bottom: 'medium' }}>{getString('cv.monitoringSources.appD.appdPathDetail')}</Text>
+                  <Text padding={{ bottom: 'medium' }} tooltipProps={{ dataTooltipId: 'appDynamicsBasePath' }}>
+                    {getString('cv.monitoringSources.appD.appdPathDetail')}
+                  </Text>
                   <BasePath
                     basePathValue={formikValues?.basePath || BasePathInitValue}
                     onChange={formikSetField}

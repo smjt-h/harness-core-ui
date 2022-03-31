@@ -146,6 +146,7 @@ export default function MapQueriesToHarnessServiceLayout(props: MapQueriesToHarn
                 }
               }}
               staleRecordsWarning={staleRecordsWarningMessage}
+              dataTooltipId={'splunkQuery'}
             />
           </div>
         </Layout.Horizontal>

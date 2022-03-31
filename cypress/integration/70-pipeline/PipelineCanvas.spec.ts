@@ -270,6 +270,7 @@ describe('Input Sets', () => {
     cy.contains('span', '+ New Input Set').should('be.visible')
     cy.get('.NoDataCard--buttonContainer').contains('span', '+ New Input Set').click()
     // Input Flow - Service
+    cy.wait(1000)
     cy.wait('@servicesCallV2').wait(1000)
     cy.fillField('name', 'testService')
     cy.findByText('Specify Service').should('exist')

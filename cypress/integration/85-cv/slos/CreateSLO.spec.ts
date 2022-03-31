@@ -195,7 +195,7 @@ describe('Create SLO', () => {
     cy.contains('p', 'SLOs').click()
     cy.contains('span', 'Create SLO').click()
 
-    cy.contains('h2', 'Create SLO').should('be.visible')
+    cy.contains('h3', 'Create SLO').should('be.visible')
 
     cy.contains('span', 'Continue').click({ force: true })
 

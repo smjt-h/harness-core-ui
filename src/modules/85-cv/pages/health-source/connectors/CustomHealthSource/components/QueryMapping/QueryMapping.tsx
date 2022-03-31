@@ -175,6 +175,7 @@ export default function QueryMapping({
             error={sampleDataError}
             query={formValue.query}
             fetchEntityName={getString('cv.response')}
+            dataTooltipId={'customHealthSourceQuery'}
           />
         ) : (
           <>

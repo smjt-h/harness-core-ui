@@ -69,6 +69,7 @@ export const useNotificationModal = ({
           icon="new-notification"
           iconProps={{ color: 'white', size: 50 }}
           title={isNil(index) ? getString('newNotification') : getString('editNotification')}
+          stepClassName={css.stepWizardContainer}
         >
           <Overview
             name={getString('overview')}

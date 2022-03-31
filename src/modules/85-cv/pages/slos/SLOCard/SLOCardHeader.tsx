@@ -190,7 +190,12 @@ const SLOCardHeader: React.FC<SLOCardHeaderProps> = ({
       <Container flex={{ alignItems: 'flex-start' }}>
         <Layout.Vertical height={130} spacing="xsmall">
           <Layout.Horizontal spacing="xsmall">
-            <Text width={100} font={{ variation: FontVariation.SMALL }} color={Color.GREY_400}>
+            <Text
+              width={100}
+              font={{ variation: FontVariation.SMALL }}
+              color={Color.GREY_400}
+              tooltipProps={{ dataTooltipId: 'slosMonitoredService' }}
+            >
               {getString('connectors.cdng.monitoredService.label')}:
             </Text>
             <Link to={monitoredServicePathname}>
@@ -203,7 +208,12 @@ const SLOCardHeader: React.FC<SLOCardHeaderProps> = ({
             </Link>
           </Layout.Horizontal>
           <Layout.Horizontal spacing="xsmall">
-            <Text width={100} font={{ variation: FontVariation.SMALL }} color={Color.GREY_400}>
+            <Text
+              width={100}
+              font={{ variation: FontVariation.SMALL }}
+              color={Color.GREY_400}
+              tooltipProps={{ dataTooltipId: 'sliType' }}
+            >
               {getString('cv.slos.sliType')}:
             </Text>
             <Text font={{ variation: FontVariation.SMALL_BOLD }} color={Color.GREY_700}>
@@ -211,7 +221,12 @@ const SLOCardHeader: React.FC<SLOCardHeaderProps> = ({
             </Text>
           </Layout.Horizontal>
           <Layout.Horizontal spacing="xsmall">
-            <Text width={100} font={{ variation: FontVariation.SMALL }} color={Color.GREY_400}>
+            <Text
+              width={100}
+              font={{ variation: FontVariation.SMALL }}
+              color={Color.GREY_400}
+              tooltipProps={{ dataTooltipId: 'slosHealthSource' }}
+            >
               {getString('cv.slos.healthSource')}:
             </Text>
             <Text font={{ variation: FontVariation.SMALL_BOLD }} color={Color.GREY_700}>
@@ -241,13 +256,17 @@ const SLOCardHeader: React.FC<SLOCardHeaderProps> = ({
 
         <Layout.Horizontal spacing="medium">
           <Container width={120} background={Color.GREY_100} padding="small" className={css.sloGlanceCard}>
-            <Text font={{ variation: FontVariation.FORM_LABEL }}>{getString('cv.burnRatePerDay')}</Text>
+            <Text font={{ variation: FontVariation.FORM_LABEL }} tooltipProps={{ dataTooltipId: 'burnRatePerDay' }}>
+              {getString('cv.burnRatePerDay')}
+            </Text>
             <Heading level={2} color={Color.GREY_800} font={{ variation: FontVariation.H4 }}>
               {(Number(serviceLevelObjective.burnRate.currentRatePercentage) || 0).toFixed(2)}%
             </Heading>
           </Container>
           <Container width={120} background={Color.GREY_100} padding="small" className={css.sloGlanceCard}>
-            <Text font={{ variation: FontVariation.FORM_LABEL }}>{getString('cv.timeRemaining')}</Text>
+            <Text font={{ variation: FontVariation.FORM_LABEL }} tooltipProps={{ dataTooltipId: 'timeRemaining' }}>
+              {getString('cv.timeRemaining')}
+            </Text>
             <Heading inline level={2} color={Color.GREY_800} font={{ variation: FontVariation.H4 }}>
               {serviceLevelObjective.timeRemainingDays}
             </Heading>

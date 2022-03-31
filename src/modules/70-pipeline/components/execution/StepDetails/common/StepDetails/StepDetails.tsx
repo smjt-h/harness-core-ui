@@ -21,12 +21,17 @@ import { ExecutionStatusEnum, isExecutionCompletedWithBadState } from '@pipeline
 import { encodeURIWithReservedChars } from './utils'
 import css from './StepDetails.module.scss'
 
+export interface StepLabels {
+  label: string
+  value: React.ReactNode
+}
 export interface StepDetailsProps {
   step: ExecutionNode
+  labels?: StepLabels[]
 }
 
 export function StepDetails(props: StepDetailsProps): React.ReactElement {
-  const { step } = props
+  const { step, labels = [] } = props
   const { getString } = useStrings()
   const { accountId, projectIdentifier, orgIdentifier } = useParams<ProjectPathProps & AccountPathProps>()
   //TODO - types will modified when the backend swagger docs are updated
@@ -76,6 +81,12 @@ export function StepDetails(props: StepDetailsProps): React.ReactElement {
             <td>{timeout}</td>
           </tr>
         )}
+        {labels.map((label, index) => (
+          <tr key={index}>
+            <th>{label.label}</th>
+            <td>{label.value}</td>
+          </tr>
+        ))}
         {step.delegateInfoList && step.delegateInfoList.length > 0 ? (
           <tr className={css.delegateRow}>
             <th>{getString('delegate.DelegateName')}</th>

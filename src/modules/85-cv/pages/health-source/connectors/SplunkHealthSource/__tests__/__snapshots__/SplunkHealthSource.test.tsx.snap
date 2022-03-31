@@ -218,12 +218,12 @@ exports[`test splunkHealthsource check snapshot 1`] = `
                                     <div
                                       class="Layout--vertical Layout--layout-spacing-small StyledProps--main"
                                     >
-                                      <label
-                                        class="Label--main"
+                                      <p
+                                        class="StyledProps--font StyledProps--main"
                                         style="font-size: 13px; font-weight: normal;"
                                       >
                                         cv.monitoringSources.gcoLogs.serviceInstance
-                                      </label>
+                                      </p>
                                       <button
                                         class="bp3-button bp3-disabled bp3-minimal Button--button StyledProps--font StyledProps--main container Button--iconOnly Button--without-shadow Button--withRightIcon"
                                         disabled=""
@@ -338,11 +338,16 @@ exports[`test splunkHealthsource check snapshot 1`] = `
                       <div
                         class="StyledProps--font StyledProps--main main validationContainer"
                       >
-                        <p
-                          class="StyledProps--font StyledProps--main labelText"
+                        <div
+                          class="Text--withDocsTooltip"
+                          data-tooltip-id="splunkQuery"
                         >
-                          cv.query
-                        </p>
+                          <p
+                            class="StyledProps--font StyledProps--main labelText"
+                          >
+                            cv.query
+                          </p>
+                        </div>
                         <div
                           class="StyledProps--font StyledProps--main queryContainer"
                         >

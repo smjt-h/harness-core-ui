@@ -140,6 +140,7 @@ export default function DatadogLogsMapToService(props: DatadogLogsMapToServicePr
             loading={loading}
             error={error}
             query={formikProps?.values?.query || ''}
+            dataTooltipId={'datadogQuery'}
           />
         </Layout.Horizontal>
       </Card>

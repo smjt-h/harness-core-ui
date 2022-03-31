@@ -16,7 +16,6 @@ import {
   GridListToggle,
   Views,
   SelectOption,
-  HarnessDocTooltip,
   Heading
 } from '@wings-software/uicore'
 import { FontVariation } from '@harness/design-system'
@@ -113,9 +112,8 @@ const MonitoredService: React.FC = () => {
       <Page.Header
         breadcrumbs={<NGBreadcrumbs />}
         title={
-          <Heading level={3} font={{ variation: FontVariation.H4 }} data-tooltip-id={'gcpInfraCluster'}>
+          <Heading level={3} font={{ variation: FontVariation.H4 }} data-tooltip-id={'monitoredServicesTitle'}>
             {getString('cv.monitoredServices.title')}
-            <HarnessDocTooltip tooltipId={'gcpInfraCluster'} useStandAlone />
           </Heading>
         }
       />

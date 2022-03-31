@@ -127,7 +127,12 @@ export function ChangeSourceDrawer({
                 width="300px"
               >
                 <div className={style.alignHorizontal}>
-                  <Text color={Color.BLACK} font={'small'} margin={{ bottom: 'small' }}>
+                  <Text
+                    color={Color.BLACK}
+                    font={'small'}
+                    margin={{ bottom: 'small' }}
+                    tooltipProps={{ dataTooltipId: 'changeSourceProviderType' }}
+                  >
                     {getString('connectors.docker.dockerProvideType')}
                   </Text>
                   <FormInput.Select

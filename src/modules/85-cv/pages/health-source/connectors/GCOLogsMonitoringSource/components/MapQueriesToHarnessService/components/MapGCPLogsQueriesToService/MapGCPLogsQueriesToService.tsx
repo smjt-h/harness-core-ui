@@ -32,6 +32,7 @@ export function MapGCPLogsQueriesToService(props: MapGCPLogsQueriesToServiceProp
         isDisabled={isAddingIdentifiersDisabled}
         sampleRecord={sampleRecord}
         inputName={MapGCPLogsToServiceFieldNames.SERVICE_INSTANCE}
+        dataTooltipId={'GCOLogsServiceInstance'}
         inputLabel={getString('cv.monitoringSources.gcoLogs.serviceInstance')}
         noRecordModalHeader={getString('cv.monitoringSources.gcoLogs.newGCOLogsServiceInstance')}
         noRecordInputLabel={getString('cv.monitoringSources.gcoLogs.gcoLogsServiceInstance')}
@@ -44,6 +45,7 @@ export function MapGCPLogsQueriesToService(props: MapGCPLogsQueriesToServiceProp
         isQueryExecuted={isQueryExecuted}
         sampleRecord={sampleRecord}
         inputName={MapGCPLogsToServiceFieldNames.MESSAGE_IDENTIFIER}
+        dataTooltipId={'GCOLogsMessageIdentifier'}
         inputLabel={getString('cv.monitoringSources.gcoLogs.messageIdentifier')}
         noRecordModalHeader={getString('cv.monitoringSources.gcoLogs.newGCOLogsMessageIdentifier')}
         noRecordInputLabel={getString('cv.monitoringSources.gcoLogs.gcoLogsMessageIdentifer')}

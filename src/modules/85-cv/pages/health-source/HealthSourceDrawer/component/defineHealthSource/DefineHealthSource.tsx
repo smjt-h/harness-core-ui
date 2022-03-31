@@ -106,7 +106,12 @@ function DefineHealthSource(props: DefineHealthSourceProps): JSX.Element {
             <FormikForm className={css.formFullheight}>
               <CardWithOuterTitle title={getString('cv.healthSource.defineHealthSource')}>
                 <>
-                  <Text color={Color.BLACK} font={'small'} margin={{ bottom: 'large' }}>
+                  <Text
+                    color={Color.BLACK}
+                    font={'small'}
+                    margin={{ bottom: 'large' }}
+                    tooltipProps={{ dataTooltipId: 'selectHealthSourceType' }}
+                  >
                     {getString('cv.healthSource.selectHealthSource')}
                   </Text>
                   <FormInput.CustomRender
@@ -205,11 +210,17 @@ function DefineHealthSource(props: DefineHealthSourceProps): JSX.Element {
                             {getString('connectors.selectConnector')}
                           </Text>
                         }
+                        tooltipProps={{ dataTooltipId: 'selectHealthSourceConnector' }}
                       />
                     </div>
                   </Container>
                   <Container margin={{ bottom: 'large' }} width={'400px'}>
-                    <Text color={Color.BLACK} font={'small'} margin={{ bottom: 'small' }}>
+                    <Text
+                      color={Color.BLACK}
+                      font={'small'}
+                      margin={{ bottom: 'small' }}
+                      tooltipProps={{ dataTooltipId: 'selectFeature' }}
+                    >
                       {featureOption.length === 1
                         ? getString('common.purpose.cf.feature')
                         : getString('cv.healthSource.featureLabel')}

@@ -91,7 +91,8 @@ export function QueryViewer(props: QueryViewerProps): JSX.Element {
     queryContentMandatoryProps,
     queryLabel,
     recordsClassName,
-    fetchEntityName
+    fetchEntityName,
+    dataTooltipId
   } = props
   const { getString } = useStrings()
   const [isDialogOpen, setIsDialogOpen] = useState(false)
@@ -114,7 +115,9 @@ export function QueryViewer(props: QueryViewerProps): JSX.Element {
 
   return (
     <Container className={cx(css.main, className)}>
-      <Text className={css.labelText}>{queryLabel ?? getString('cv.query')}</Text>
+      <Text className={css.labelText} tooltipProps={{ dataTooltipId }}>
+        {queryLabel ?? getString('cv.query')}
+      </Text>
       <QueryContent
         onClickExpand={setIsDialogOpen}
         query={query}

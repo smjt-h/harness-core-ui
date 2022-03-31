@@ -9,11 +9,16 @@ exports[`Metric Path should render 1`] = `
       class="bp3-form-content"
     >
       <div>
-        <p
-          class="StyledProps--font StyledProps--main StyledProps--padding-bottom-medium StyledProps--padding-top-medium"
+        <div
+          class="Text--withDocsTooltip"
+          data-tooltip-id="appDynamicsMetricPath"
         >
-          cv.monitoringSources.appD.appdMetricDetail
-        </p>
+          <p
+            class="StyledProps--font StyledProps--main StyledProps--padding-bottom-medium StyledProps--padding-top-medium"
+          >
+            cv.monitoringSources.appD.appdMetricDetail
+          </p>
+        </div>
         <div>
           <div
             class="bp3-form-group metricPathDropdown"

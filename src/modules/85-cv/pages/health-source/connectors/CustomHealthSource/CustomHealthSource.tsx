@@ -58,7 +58,7 @@ export function CustomHealthSource(props: CustomHealthSourceProps): JSX.Element 
 
   return (
     <Formik<MapCustomHealthToService>
-      formName="mapPrometheus"
+      formName="mapCustomhealth"
       initialValues={mappedMetrics.get(selectedMetric || '') as MapCustomHealthToService}
       isInitialValid={(args: any) =>
         Object.keys(

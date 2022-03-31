@@ -220,6 +220,7 @@ purpose:
     moduleSelectionSubHeading: Take your software build verification  process to the next level usng our Change Intelligence
 
   ci:
+    continuousLabel: Continuous
     integration: Integration
     subtitle: Commit, build, and test your code at a whole new level.
     continuous: Continuous Integration

@@ -292,15 +292,19 @@ describe('CVSLOsListingPage', () => {
     expect(screen.getAllByTestId('slo-card-header')).toHaveLength(1)
     expect(screen.getAllByTestId('slo-card-content')).toHaveLength(1)
 
-    expect(screen.getByText('Healthy').parentElement).not.toHaveClass('Card--selected')
+    expect(container.querySelector('div[data-tooltip-id="Healthy_tooltip"]')?.parentElement).not.toHaveClass(
+      'Card--selected'
+    )
 
     userEvent.click(screen.getByText('Healthy'))
-
-    expect(screen.getByText('Healthy').parentElement).toHaveClass('Card--selected')
+    expect(container.querySelector('div[data-tooltip-id="Healthy_tooltip"]')?.parentElement).toHaveClass(
+      'Card--selected'
+    )
 
     userEvent.click(screen.getByText('Healthy'))
-
-    expect(screen.getByText('Healthy').parentElement).not.toHaveClass('Card--selected')
+    expect(container.querySelector('div[data-tooltip-id="Healthy_tooltip"]')?.parentElement).not.toHaveClass(
+      'Card--selected'
+    )
   })
 
   test('deleting a widget', async () => {

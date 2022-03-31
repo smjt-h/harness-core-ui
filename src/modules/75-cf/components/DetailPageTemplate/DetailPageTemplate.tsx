@@ -6,14 +6,12 @@
  */
 
 import React from 'react'
-import { Container, Layout, Text, IconName, Icon } from '@wings-software/uicore'
+import { Container, Layout, Text, IconName } from '@harness/uicore'
 import { Color } from '@harness/design-system'
-import { TagsViewer } from '@common/components/TagsViewer/TagsViewer'
 import { IdentifierText } from '@cf/components/IdentifierText/IdentifierText'
 import { NGBreadcrumbs } from '@common/components/NGBreadcrumbs/NGBreadcrumbs'
 
-const HEADER_HEIGHT = 145
-const HEADER_HEIGHT_NO_TAGS = 120
+const HEADER_HEIGHT = 120
 
 interface DetailPageTemplateBreadcrumbLink {
   title: string
@@ -36,19 +34,15 @@ export interface DetailPageTemplateProps {
 export const DetailPageTemplate: React.FC<DetailPageTemplateProps> = ({
   breadcrumbs,
   title,
-  titleIcon,
   subTitle,
-  tags,
   identifier,
   headerExtras,
   children
 }) => {
-  const headerHeight = tags?.length ? HEADER_HEIGHT : HEADER_HEIGHT_NO_TAGS
-
   return (
     <>
       <Container
-        height={headerHeight}
+        height={HEADER_HEIGHT}
         padding={{ top: 'large', right: 'xlarge', bottom: 'large', left: 'xlarge' }}
         style={{
           background: 'rgba(219, 241, 255, .46)',
@@ -61,34 +55,21 @@ export const DetailPageTemplate: React.FC<DetailPageTemplateProps> = ({
             customPathParams={{ module: 'cf' }}
             links={breadcrumbs.map(({ title: label, url }) => ({ label, url }))}
           />
-
-          <Layout.Horizontal spacing="small" style={{ marginLeft: '-5px' }}>
-            <Container style={{ borderRadius: '50%', overflow: 'hidden' }}>
-              {typeof titleIcon === 'string' && <Icon name={titleIcon as IconName} size={40} />}
-              {typeof titleIcon !== 'string' && <>{titleIcon}</>}
-            </Container>
-            <Container>
-              <Layout.Horizontal spacing="medium">
-                <Text style={{ fontSize: '20px', color: 'var(--black)' }}>{title}</Text>
-                {identifier && <IdentifierText identifier={identifier} allowCopy style={{ marginBottom: 0 }} />}
-              </Layout.Horizontal>
-              {subTitle && (
-                <Text color={Color.GREY_400} padding={{ top: 'xsmall' }}>
-                  {subTitle}
-                </Text>
-              )}
-            </Container>
-          </Layout.Horizontal>
-
-          {tags && (
-            <Container>
-              <TagsViewer tags={tags} style={{ background: '#CDF4FE' }} />
-            </Container>
-          )}
+          <Container>
+            <Layout.Horizontal spacing="medium">
+              <Text style={{ fontSize: '20px', color: 'var(--black)' }}>{title}</Text>
+              {identifier && <IdentifierText identifier={identifier} allowCopy style={{ marginBottom: 0 }} />}
+            </Layout.Horizontal>
+            {subTitle && (
+              <Text color={Color.GREY_400} padding={{ top: 'xsmall' }}>
+                {subTitle}
+              </Text>
+            )}
+          </Container>
         </Layout.Vertical>
         {headerExtras}
       </Container>
-      <Container style={{ height: `calc(100% - ${headerHeight}px)`, overflow: 'auto', background: '#e4ebf433' }}>
+      <Container style={{ height: `calc(100% - ${HEADER_HEIGHT}px)`, overflow: 'auto', background: '#e4ebf433' }}>
         {children}
       </Container>
     </>

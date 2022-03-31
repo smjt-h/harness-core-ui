@@ -82,7 +82,7 @@ const SLOCardContent: React.FC<SLOCardContentProps> = ({ serviceLevelObjective }
         {toggle === SLOCardToggleViews.SLO && (
           <>
             <Container flex>
-              <Heading level={2} font={{ variation: FontVariation.FORM_HELP }}>
+              <Heading level={2} font={{ variation: FontVariation.FORM_HELP }} data-tooltip-id={'SLOPerformanceTrend'}>
                 {getString('cv.SLOPerformanceTrend')}
               </Heading>
               {serviceLevelObjective.recalculatingSLI && (
@@ -92,13 +92,17 @@ const SLOCardContent: React.FC<SLOCardContentProps> = ({ serviceLevelObjective }
             <Layout.Horizontal spacing="medium">
               <Layout.Vertical spacing="medium" margin={{ top: 'large' }}>
                 <Container width={120} background={Color.GREY_100} padding="small" className={css.sloGlanceCard}>
-                  <Text font={{ variation: FontVariation.FORM_LABEL }}>{getString('cv.SLO')}</Text>
+                  <Text font={{ variation: FontVariation.FORM_LABEL }} tooltipProps={{ dataTooltipId: 'SLO' }}>
+                    {getString('cv.SLO')}
+                  </Text>
                   <Heading level={2} color={Color.GREY_800} font={{ variation: FontVariation.H4 }}>
                     {(Number(sloTargetPercentage) || 0).toFixed(2)}%
                   </Heading>
                 </Container>
                 <Container width={120} background={Color.GREY_100} padding="small" className={css.sloGlanceCard}>
-                  <Text font={{ variation: FontVariation.FORM_LABEL }}>{getString('cv.slos.sli')}</Text>
+                  <Text font={{ variation: FontVariation.FORM_LABEL }} tooltipProps={{ dataTooltipId: 'SLI' }}>
+                    {getString('cv.slos.sli')}
+                  </Text>
                   <Heading inline level={2} color={Color.GREY_800} font={{ variation: FontVariation.H4 }}>
                     {sloPerformanceTrend[sloPerformanceTrend.length - 1]?.value?.toFixed(2) ?? 0}%
                   </Heading>
@@ -128,7 +132,9 @@ const SLOCardContent: React.FC<SLOCardContentProps> = ({ serviceLevelObjective }
               />
             )}
             <Container width={185} height={200} className={css.errorBudgetGaugeContainer}>
-              <Heading font={{ variation: FontVariation.FORM_HELP }}>{getString('cv.errorBudgetRemaining')}</Heading>
+              <Heading font={{ variation: FontVariation.FORM_HELP }} data-tooltip-id={'errorBudgetRemaining'}>
+                {getString('cv.errorBudgetRemaining')}
+              </Heading>
               <ErrorBudgetGauge customChartOptions={getErrorBudgetGaugeOptions(serviceLevelObjective)} />
               <Text font={{ variation: FontVariation.SMALL }} className={css.errorBudgetRemaining} width={175}>
                 {serviceLevelObjective.errorBudgetRemaining}
@@ -136,7 +142,9 @@ const SLOCardContent: React.FC<SLOCardContentProps> = ({ serviceLevelObjective }
               </Text>
             </Container>
             <Container className={css.flexGrowOne}>
-              <Heading font={{ variation: FontVariation.FORM_HELP }}>{getString('cv.errorBudgetBurnDown')}</Heading>
+              <Heading font={{ variation: FontVariation.FORM_HELP }} data-tooltip-id={'errorBudgetBurnDown'}>
+                {getString('cv.errorBudgetBurnDown')}
+              </Heading>
               <SLOTargetChart
                 dataPoints={errorBudgetBurndownData.dataPoints}
                 customChartOptions={getSLOAndErrorBudgetGraphOptions({
