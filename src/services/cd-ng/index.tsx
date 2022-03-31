@@ -9461,8 +9461,6 @@ export type GetBuildDetailsForEcrWithYamlBodyRequestBody = string
 
 export type SubscribeBodyRequestBody = string[]
 
-export type GetBuildDetailsForAcrWithYamlBodyRequestBody = string
-
 export type UpdateWhitelistedDomainsBodyRequestBody = string[]
 
 export type UploadSamlMetaDataRequestBody = void
@@ -14130,7 +14128,6 @@ export interface GetConnectorListQueryParams {
     | 'CustomHealth'
     | 'ServiceNow'
     | 'ErrorTracking'
-
   category?:
     | 'CLOUD_PROVIDER'
     | 'SECRET_MANAGER'
