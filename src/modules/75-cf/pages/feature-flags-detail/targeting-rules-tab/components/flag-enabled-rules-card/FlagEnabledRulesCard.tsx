@@ -96,6 +96,7 @@ const FlagEnabledRulesCard = (props: FlagEnabledRulesCardProps): ReactElement =>
               addTargetingDropdownVariations={addTargetingDropdownVariations}
               addVariation={addVariation}
               disabled={disabled}
+              // featureDisabled={}
             />
           )}
         </Layout.Vertical>

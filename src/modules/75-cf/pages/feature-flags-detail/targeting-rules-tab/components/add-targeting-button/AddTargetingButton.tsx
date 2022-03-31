@@ -8,65 +8,83 @@
 import { PopoverPosition } from '@blueprintjs/core'
 import { FontVariation } from '@harness/design-system'
 import { ButtonVariation, Layout, Button, Text } from '@harness/uicore'
-import React, { ReactElement } from 'react'
+import React, { ReactElement, useState } from 'react'
 import { useStrings } from 'framework/strings'
 import type { FormVariationMap } from '../../Types.types'
 import { DisabledFeatureTooltipContent } from '../disabled-feature-tooltip/DisabledFeatureTooltip'
+import css from './AddTargetingButton.module.scss'
 
 interface AddTargetingButtonProps {
   addTargetingDropdownVariations: FormVariationMap[]
   addVariation: (newVariation: FormVariationMap) => void
   addPercentageRollout: () => void
-  disabled: boolean
+  featureDisabled?: boolean
+  disabled?: boolean
 }
 
 const AddTargetingButton = ({
   addTargetingDropdownVariations,
   addVariation,
   addPercentageRollout,
+  featureDisabled,
   disabled
 }: AddTargetingButtonProps): ReactElement => {
   const { getString } = useStrings()
+  const [isOpen, setIsOpen] = useState(false)
 
   return (
     <Button
-      disabled={disabled}
+      disabled={featureDisabled || disabled}
       icon="plus"
       rightIcon="chevron-down"
       variation={ButtonVariation.SECONDARY}
       text={getString('cf.featureFlags.rules.addTargeting')}
+      onClick={e => {
+        e.preventDefault()
+        setIsOpen(true)
+      }}
       tooltipProps={{
-        fill: disabled ? false : true,
-        interactionKind: disabled ? 'hover' : 'click',
-        minimal: disabled ? false : true,
-        position: PopoverPosition.BOTTOM_LEFT
+        fill: featureDisabled ? false : true,
+        interactionKind: featureDisabled ? 'hover' : 'click',
+        minimal: featureDisabled ? false : true,
+        position: PopoverPosition.BOTTOM_LEFT,
+        isOpen,
+        openOnTargetFocus: true,
+        onInteraction: nextOpenState => setIsOpen(nextOpenState)
       }}
       tooltip={
-        disabled ? (
+        featureDisabled ? (
           <DisabledFeatureTooltipContent />
         ) : (
-          <Layout.Vertical padding="small" spacing="small">
+          // <Layout.Vertical padding="small" spacing="small">
+          <Layout.Vertical>
             {addTargetingDropdownVariations.map(variation => (
-              <Text
+              <Button
+                className={css.addTargetingMenuItem}
                 data-testid={`variation_option_${variation.variationIdentifier}`}
-                inline
-                onClick={() => addVariation(variation)}
+                onClick={() => {
+                  setIsOpen(false)
+                  addVariation(variation)
+                }}
                 key={variation.variationIdentifier}
                 font={{ variation: FontVariation.BODY }}
                 icon="full-circle"
               >
-                {variation.variationName}
-              </Text>
+                <Text font={{ variation: FontVariation.BODY }}> {variation.variationName}</Text>
+              </Button>
             ))}
-            <Text
+            <Button
               data-testid="variation_option_percentage_rollout"
-              inline
-              onClick={() => addPercentageRollout()}
+              className={css.addTargetingMenuItem}
+              onClick={() => {
+                setIsOpen(false)
+                addPercentageRollout()
+              }}
               font={{ variation: FontVariation.BODY }}
               icon="percentage"
             >
-              {getString('cf.featureFlags.percentageRollout')}
-            </Text>
+              <Text font={{ variation: FontVariation.BODY }}> {getString('cf.featureFlags.percentageRollout')}</Text>
+            </Button>
           </Layout.Vertical>
         )
       }
