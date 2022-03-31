@@ -334,7 +334,6 @@ export interface AccessControlCheckError {
     | 'INVALID_AZURE_CONTAINER_REGISTRY_REQUEST'
     | 'AZURE_AUTHENTICATION_ERROR'
     | 'AZURE_CONFIG_ERROR'
-    | 'DATA_PROCESSING_ERROR'
   correlationId?: string
   detailedMessage?: string
   failedPermissionChecks?: PermissionCheck[]
@@ -1057,6 +1056,10 @@ export type AzureDevOpsSCMDTO = SourceCodeManagerDTO & {
   authentication?: GithubAuthentication
 }
 
+export type AzureInheritFromDelegateDetails = AzureCredentialSpec & {
+  auth: AzureMSIAuth
+}
+
 export type AzureKeyVaultConnectorDTO = ConnectorConfigDTO & {
   azureEnvironmentType?: 'AZURE' | 'AZURE_US_GOVERNMENT'
   clientId: string
@@ -1079,6 +1082,10 @@ export type AzureKeyVaultMetadataRequestSpecDTO = SecretManagerMetadataRequestSp
 
 export type AzureKeyVaultMetadataSpecDTO = SecretManagerMetadataSpecDTO & {
   vaultNames?: string[]
+}
+
+export interface AzureMSIAuth {
+  [key: string]: any
 }
 
 export type AzureManualDetails = AzureCredentialSpec & {
@@ -1135,6 +1142,12 @@ export type AzureRepoUsernameToken = AzureRepoHttpCredentialsSpecDTO & {
   tokenRef: string
   username?: string
   usernameRef?: string
+}
+
+export type AzureSystemAssignedMSIAuth = AzureAuthCredentialDTO & { [key: string]: any }
+
+export type AzureUserAssignedMSIAuth = AzureAuthCredentialDTO & {
+  clientId: string
 }
 
 export interface BarrierInfoConfig {
@@ -2780,7 +2793,6 @@ export interface Error {
     | 'INVALID_AZURE_CONTAINER_REGISTRY_REQUEST'
     | 'AZURE_AUTHENTICATION_ERROR'
     | 'AZURE_CONFIG_ERROR'
-    | 'DATA_PROCESSING_ERROR'
   correlationId?: string
   detailedMessage?: string
   message?: string
@@ -3168,7 +3180,6 @@ export interface Failure {
     | 'INVALID_AZURE_CONTAINER_REGISTRY_REQUEST'
     | 'AZURE_AUTHENTICATION_ERROR'
     | 'AZURE_CONFIG_ERROR'
-    | 'DATA_PROCESSING_ERROR'
   correlationId?: string
   errors?: ValidationError[]
   message?: string
@@ -5477,9 +5488,10 @@ export type NumberNGVariable = NGVariable & {
   value: number
 }
 
-export type OAuthSettings = NGAuthSettings & {
+export interface OAuthSettings {
   allowedProviders?: ('AZURE' | 'BITBUCKET' | 'GITHUB' | 'GITLAB' | 'GOOGLE' | 'LINKEDIN')[]
   filter?: string
+  settingsType?: 'USER_PASSWORD' | 'SAML' | 'LDAP' | 'OAUTH'
 }
 
 export interface OAuthSignupDTO {
@@ -7382,7 +7394,6 @@ export interface ResponseMessage {
     | 'INVALID_AZURE_CONTAINER_REGISTRY_REQUEST'
     | 'AZURE_AUTHENTICATION_ERROR'
     | 'AZURE_CONFIG_ERROR'
-    | 'DATA_PROCESSING_ERROR'
   exception?: Throwable
   failureTypes?: (
     | 'EXPIRED'
@@ -9108,7 +9119,6 @@ export interface StackTraceElement {
 }
 
 export interface StageElementConfig {
-  delegateSelectors?: string[]
   description?: string
   failureStrategies?: FailureStrategyConfig[]
   identifier: string
@@ -9987,7 +9997,7 @@ export type YamlSchemaDetailsWrapperRequestBody = YamlSchemaDetailsWrapper
 
 export type GetBuildDetailsForAcrArtifactWithYamlBodyRequestBody = string
 
-export type SubscribeBodyRequestBody = string[]
+export type UnsubscribeBodyRequestBody = string[]
 
 export type UpdateEnvironmentGroupBodyRequestBody = string
 
@@ -14794,6 +14804,217 @@ export const updateWhitelistedDomainsPromise = (
     void
   >('PUT', getConfig('ng/api'), `/authentication-settings/whitelisted-domains`, props, signal)
 
+export interface GetAzureSubscriptionsQueryParams {
+  connectorRef: string
+  accountIdentifier: string
+  orgIdentifier: string
+  projectIdentifier: string
+}
+
+export type GetAzureSubscriptionsProps = Omit<
+  GetProps<ResponseMapStringString, Failure | Error, GetAzureSubscriptionsQueryParams, void>,
+  'path'
+>
+
+/**
+ * Gets azure subscriptions
+ */
+export const GetAzureSubscriptions = (props: GetAzureSubscriptionsProps) => (
+  <Get<ResponseMapStringString, Failure | Error, GetAzureSubscriptionsQueryParams, void>
+    path={`/azure/subscriptions`}
+    base={getConfig('ng/api')}
+    {...props}
+  />
+)
+
+export type UseGetAzureSubscriptionsProps = Omit<
+  UseGetProps<ResponseMapStringString, Failure | Error, GetAzureSubscriptionsQueryParams, void>,
+  'path'
+>
+
+/**
+ * Gets azure subscriptions
+ */
+export const useGetAzureSubscriptions = (props: UseGetAzureSubscriptionsProps) =>
+  useGet<ResponseMapStringString, Failure | Error, GetAzureSubscriptionsQueryParams, void>(`/azure/subscriptions`, {
+    base: getConfig('ng/api'),
+    ...props
+  })
+
+/**
+ * Gets azure subscriptions
+ */
+export const getAzureSubscriptionsPromise = (
+  props: GetUsingFetchProps<ResponseMapStringString, Failure | Error, GetAzureSubscriptionsQueryParams, void>,
+  signal?: RequestInit['signal']
+) =>
+  getUsingFetch<ResponseMapStringString, Failure | Error, GetAzureSubscriptionsQueryParams, void>(
+    getConfig('ng/api'),
+    `/azure/subscriptions`,
+    props,
+    signal
+  )
+
+export interface GetAzureResourceGroupsBySubscriptionQueryParams {
+  connectorRef: string
+  accountIdentifier: string
+  orgIdentifier: string
+  projectIdentifier: string
+}
+
+export interface GetAzureResourceGroupsBySubscriptionPathParams {
+  subscription: string
+}
+
+export type GetAzureResourceGroupsBySubscriptionProps = Omit<
+  GetProps<
+    ResponseListString,
+    Failure | Error,
+    GetAzureResourceGroupsBySubscriptionQueryParams,
+    GetAzureResourceGroupsBySubscriptionPathParams
+  >,
+  'path'
+> &
+  GetAzureResourceGroupsBySubscriptionPathParams
+
+/**
+ * Gets azure resource groups by subscription
+ */
+export const GetAzureResourceGroupsBySubscription = ({
+  subscription,
+  ...props
+}: GetAzureResourceGroupsBySubscriptionProps) => (
+  <Get<
+    ResponseListString,
+    Failure | Error,
+    GetAzureResourceGroupsBySubscriptionQueryParams,
+    GetAzureResourceGroupsBySubscriptionPathParams
+  >
+    path={`/azure/subscriptions/${subscription}/resourceGroups`}
+    base={getConfig('ng/api')}
+    {...props}
+  />
+)
+
+export type UseGetAzureResourceGroupsBySubscriptionProps = Omit<
+  UseGetProps<
+    ResponseListString,
+    Failure | Error,
+    GetAzureResourceGroupsBySubscriptionQueryParams,
+    GetAzureResourceGroupsBySubscriptionPathParams
+  >,
+  'path'
+> &
+  GetAzureResourceGroupsBySubscriptionPathParams
+
+/**
+ * Gets azure resource groups by subscription
+ */
+export const useGetAzureResourceGroupsBySubscription = ({
+  subscription,
+  ...props
+}: UseGetAzureResourceGroupsBySubscriptionProps) =>
+  useGet<
+    ResponseListString,
+    Failure | Error,
+    GetAzureResourceGroupsBySubscriptionQueryParams,
+    GetAzureResourceGroupsBySubscriptionPathParams
+  >(
+    (paramsInPath: GetAzureResourceGroupsBySubscriptionPathParams) =>
+      `/azure/subscriptions/${paramsInPath.subscription}/resourceGroups`,
+    { base: getConfig('ng/api'), pathParams: { subscription }, ...props }
+  )
+
+/**
+ * Gets azure resource groups by subscription
+ */
+export const getAzureResourceGroupsBySubscriptionPromise = (
+  {
+    subscription,
+    ...props
+  }: GetUsingFetchProps<
+    ResponseListString,
+    Failure | Error,
+    GetAzureResourceGroupsBySubscriptionQueryParams,
+    GetAzureResourceGroupsBySubscriptionPathParams
+  > & { subscription: string },
+  signal?: RequestInit['signal']
+) =>
+  getUsingFetch<
+    ResponseListString,
+    Failure | Error,
+    GetAzureResourceGroupsBySubscriptionQueryParams,
+    GetAzureResourceGroupsBySubscriptionPathParams
+  >(getConfig('ng/api'), `/azure/subscriptions/${subscription}/resourceGroups`, props, signal)
+
+export interface GetAzureClustersQueryParams {
+  connectorRef: string
+  accountIdentifier: string
+  orgIdentifier: string
+  projectIdentifier: string
+}
+
+export interface GetAzureClustersPathParams {
+  subscription: string
+  resourceGroup: string
+}
+
+export type GetAzureClustersProps = Omit<
+  GetProps<ResponseListString, Failure | Error, GetAzureClustersQueryParams, GetAzureClustersPathParams>,
+  'path'
+> &
+  GetAzureClustersPathParams
+
+/**
+ * Gets azure k8s clusters by subscription
+ */
+export const GetAzureClusters = ({ subscription, resourceGroup, ...props }: GetAzureClustersProps) => (
+  <Get<ResponseListString, Failure | Error, GetAzureClustersQueryParams, GetAzureClustersPathParams>
+    path={`/azure/subscriptions/${subscription}/resourceGroups/${resourceGroup}/clusters`}
+    base={getConfig('ng/api')}
+    {...props}
+  />
+)
+
+export type UseGetAzureClustersProps = Omit<
+  UseGetProps<ResponseListString, Failure | Error, GetAzureClustersQueryParams, GetAzureClustersPathParams>,
+  'path'
+> &
+  GetAzureClustersPathParams
+
+/**
+ * Gets azure k8s clusters by subscription
+ */
+export const useGetAzureClusters = ({ subscription, resourceGroup, ...props }: UseGetAzureClustersProps) =>
+  useGet<ResponseListString, Failure | Error, GetAzureClustersQueryParams, GetAzureClustersPathParams>(
+    (paramsInPath: GetAzureClustersPathParams) =>
+      `/azure/subscriptions/${paramsInPath.subscription}/resourceGroups/${paramsInPath.resourceGroup}/clusters`,
+    { base: getConfig('ng/api'), pathParams: { subscription, resourceGroup }, ...props }
+  )
+
+/**
+ * Gets azure k8s clusters by subscription
+ */
+export const getAzureClustersPromise = (
+  {
+    subscription,
+    resourceGroup,
+    ...props
+  }: GetUsingFetchProps<
+    ResponseListString,
+    Failure | Error,
+    GetAzureClustersQueryParams,
+    GetAzureClustersPathParams
+  > & { subscription: string; resourceGroup: string },
+  signal?: RequestInit['signal']
+) =>
+  getUsingFetch<ResponseListString, Failure | Error, GetAzureClustersQueryParams, GetAzureClustersPathParams>(
+    getConfig('ng/api'),
+    `/azure/subscriptions/${subscription}/resourceGroups/${resourceGroup}/clusters`,
+    props,
+    signal
+  )
+
 export interface GetGCSBucketListQueryParams {
   connectorRef?: string
   accountIdentifier: string
@@ -18666,10 +18887,9 @@ export interface GetEnvironmentGroupListQueryParams {
   orgIdentifier: string
   projectIdentifier: string
   searchTerm?: string
-  page?: number
-  size?: number
-  sort?: string[]
-  filterIdentifier?: string
+  pageIndex?: number
+  pageSize?: number
+  sortOrders?: string[]
   branch?: string
   repoIdentifier?: string
   getDefaultFromOtherRepo?: boolean
@@ -25412,7 +25632,7 @@ export type ProcessPollingResultNgProps = Omit<
     void,
     Failure | Error,
     ProcessPollingResultNgQueryParams,
-    SubscribeBodyRequestBody,
+    UnsubscribeBodyRequestBody,
     ProcessPollingResultNgPathParams
   >,
   'path' | 'verb'
@@ -25424,7 +25644,7 @@ export const ProcessPollingResultNg = ({ perpetualTaskId, ...props }: ProcessPol
     void,
     Failure | Error,
     ProcessPollingResultNgQueryParams,
-    SubscribeBodyRequestBody,
+    UnsubscribeBodyRequestBody,
     ProcessPollingResultNgPathParams
   >
     verb="POST"
@@ -25439,7 +25659,7 @@ export type UseProcessPollingResultNgProps = Omit<
     void,
     Failure | Error,
     ProcessPollingResultNgQueryParams,
-    SubscribeBodyRequestBody,
+    UnsubscribeBodyRequestBody,
     ProcessPollingResultNgPathParams
   >,
   'path' | 'verb'
@@ -25451,7 +25671,7 @@ export const useProcessPollingResultNg = ({ perpetualTaskId, ...props }: UseProc
     void,
     Failure | Error,
     ProcessPollingResultNgQueryParams,
-    SubscribeBodyRequestBody,
+    UnsubscribeBodyRequestBody,
     ProcessPollingResultNgPathParams
   >(
     'POST',
@@ -25467,7 +25687,7 @@ export const processPollingResultNgPromise = (
     void,
     Failure | Error,
     ProcessPollingResultNgQueryParams,
-    SubscribeBodyRequestBody,
+    UnsubscribeBodyRequestBody,
     ProcessPollingResultNgPathParams
   > & { perpetualTaskId: string },
   signal?: RequestInit['signal']
@@ -25476,17 +25696,17 @@ export const processPollingResultNgPromise = (
     void,
     Failure | Error,
     ProcessPollingResultNgQueryParams,
-    SubscribeBodyRequestBody,
+    UnsubscribeBodyRequestBody,
     ProcessPollingResultNgPathParams
   >('POST', getConfig('ng/api'), `/polling/delegate-response/${perpetualTaskId}`, props, signal)
 
 export type SubscribeProps = Omit<
-  MutateProps<ResponsePollingResponseDTO, Failure | Error, void, SubscribeBodyRequestBody, void>,
+  MutateProps<ResponsePollingResponseDTO, Failure | Error, void, UnsubscribeBodyRequestBody, void>,
   'path' | 'verb'
 >
 
 export const Subscribe = (props: SubscribeProps) => (
-  <Mutate<ResponsePollingResponseDTO, Failure | Error, void, SubscribeBodyRequestBody, void>
+  <Mutate<ResponsePollingResponseDTO, Failure | Error, void, UnsubscribeBodyRequestBody, void>
     verb="POST"
     path={`/polling/subscribe`}
     base={getConfig('ng/api')}
@@ -25495,22 +25715,22 @@ export const Subscribe = (props: SubscribeProps) => (
 )
 
 export type UseSubscribeProps = Omit<
-  UseMutateProps<ResponsePollingResponseDTO, Failure | Error, void, SubscribeBodyRequestBody, void>,
+  UseMutateProps<ResponsePollingResponseDTO, Failure | Error, void, UnsubscribeBodyRequestBody, void>,
   'path' | 'verb'
 >
 
 export const useSubscribe = (props: UseSubscribeProps) =>
-  useMutate<ResponsePollingResponseDTO, Failure | Error, void, SubscribeBodyRequestBody, void>(
+  useMutate<ResponsePollingResponseDTO, Failure | Error, void, UnsubscribeBodyRequestBody, void>(
     'POST',
     `/polling/subscribe`,
     { base: getConfig('ng/api'), ...props }
   )
 
 export const subscribePromise = (
-  props: MutateUsingFetchProps<ResponsePollingResponseDTO, Failure | Error, void, SubscribeBodyRequestBody, void>,
+  props: MutateUsingFetchProps<ResponsePollingResponseDTO, Failure | Error, void, UnsubscribeBodyRequestBody, void>,
   signal?: RequestInit['signal']
 ) =>
-  mutateUsingFetch<ResponsePollingResponseDTO, Failure | Error, void, SubscribeBodyRequestBody, void>(
+  mutateUsingFetch<ResponsePollingResponseDTO, Failure | Error, void, UnsubscribeBodyRequestBody, void>(
     'POST',
     getConfig('ng/api'),
     `/polling/subscribe`,
@@ -25519,12 +25739,12 @@ export const subscribePromise = (
   )
 
 export type UnsubscribeProps = Omit<
-  MutateProps<boolean, Failure | Error, void, SubscribeBodyRequestBody, void>,
+  MutateProps<boolean, Failure | Error, void, UnsubscribeBodyRequestBody, void>,
   'path' | 'verb'
 >
 
 export const Unsubscribe = (props: UnsubscribeProps) => (
-  <Mutate<boolean, Failure | Error, void, SubscribeBodyRequestBody, void>
+  <Mutate<boolean, Failure | Error, void, UnsubscribeBodyRequestBody, void>
     verb="POST"
     path={`/polling/unsubscribe`}
     base={getConfig('ng/api')}
@@ -25533,21 +25753,21 @@ export const Unsubscribe = (props: UnsubscribeProps) => (
 )
 
 export type UseUnsubscribeProps = Omit<
-  UseMutateProps<boolean, Failure | Error, void, SubscribeBodyRequestBody, void>,
+  UseMutateProps<boolean, Failure | Error, void, UnsubscribeBodyRequestBody, void>,
   'path' | 'verb'
 >
 
 export const useUnsubscribe = (props: UseUnsubscribeProps) =>
-  useMutate<boolean, Failure | Error, void, SubscribeBodyRequestBody, void>('POST', `/polling/unsubscribe`, {
+  useMutate<boolean, Failure | Error, void, UnsubscribeBodyRequestBody, void>('POST', `/polling/unsubscribe`, {
     base: getConfig('ng/api'),
     ...props
   })
 
 export const unsubscribePromise = (
-  props: MutateUsingFetchProps<boolean, Failure | Error, void, SubscribeBodyRequestBody, void>,
+  props: MutateUsingFetchProps<boolean, Failure | Error, void, UnsubscribeBodyRequestBody, void>,
   signal?: RequestInit['signal']
 ) =>
-  mutateUsingFetch<boolean, Failure | Error, void, SubscribeBodyRequestBody, void>(
+  mutateUsingFetch<boolean, Failure | Error, void, UnsubscribeBodyRequestBody, void>(
     'POST',
     getConfig('ng/api'),
     `/polling/unsubscribe`,
