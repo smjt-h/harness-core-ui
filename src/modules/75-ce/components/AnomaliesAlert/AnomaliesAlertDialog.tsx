@@ -157,7 +157,7 @@ export const NotificationMethod: React.FC<StepProps<StepData> & NotificationChan
                       placeholder={getString('ce.anomalyDetection.notificationAlerts.urlInputPlaceholder')}
                       className={css.urlInput}
                     />
-                    <Icon name="main-trash" size={16} onClick={() => removeRow(index)} />
+                    <Icon name="main-trash" size={16} onClick={() => removeRow(index)} data-testid="deleteChannel" />
                   </Layout.Horizontal>
                 ))}
                 <Button
@@ -191,7 +191,7 @@ export const NotificationMethod: React.FC<StepProps<StepData> & NotificationChan
   )
 }
 
-const AnomalyAlertDialog: React.FC<AlertDialogProps> = ({
+export const AnomalyAlertDialog: React.FC<AlertDialogProps> = ({
   hideAnomaliesAlertModal,
   handleSubmit,
   notificationData

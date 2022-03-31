@@ -353,6 +353,7 @@ exports[`test case for anomalies settings drawer should be able to delete the an
         </p>
         <span
           class="bp3-icon bp3-icon-cross StyledProps--main StyledProps--color StyledProps--color-white"
+          data-testid="closeDrawerIcon"
           icon="cross"
         >
           <svg

@@ -119,9 +119,71 @@ describe('test case for anomalies settings drawer', () => {
     act(() => {
       fireEvent.click(deleteIcon!)
     })
+
     expect(container).toMatchSnapshot()
     await waitFor(() => {
       expect(queryByText(document.body, 'ce.anomalyDetection.notificationAlerts.deleteAlertSuccessMsg')).toBeDefined()
     })
+  })
+
+  test('should be able to pre filled data on click of edit', async () => {
+    const hideDrawer = jest.fn()
+
+    const responseState = {
+      executeQuery: ({ query }: { query: DocumentNode }) => {
+        if (query === FetchPerspectiveListDocument) {
+          return fromValue(PerspectiveList)
+        } else {
+          return fromValue({})
+        }
+      }
+    }
+
+    const { container } = render(
+      <Provider value={responseState as any}>
+        <TestWrapper pathParams={params}>
+          <AnomaliesSettings hideDrawer={hideDrawer} />
+        </TestWrapper>
+      </Provider>
+    )
+
+    await waitFor(() => Promise.resolve())
+
+    const editIcon = container.querySelector('span[data-icon="Edit"]')
+
+    act(() => {
+      fireEvent.click(editIcon!)
+    })
+    const modal = findDialogContainer()
+    expect(modal).toBeDefined()
+  })
+
+  test('Should be able to hide the drawer on close', async () => {
+    const hideDrawer = jest.fn()
+
+    const responseState = {
+      executeQuery: ({ query }: { query: DocumentNode }) => {
+        if (query === FetchPerspectiveListDocument) {
+          return fromValue(PerspectiveList)
+        } else {
+          return fromValue({})
+        }
+      }
+    }
+
+    const { container } = render(
+      <Provider value={responseState as any}>
+        <TestWrapper pathParams={params}>
+          <AnomaliesSettings hideDrawer={hideDrawer} />
+        </TestWrapper>
+      </Provider>
+    )
+
+    const crossIcon = container.querySelector('[data-testid="closeDrawerIcon"]')
+    act(() => {
+      fireEvent.click(crossIcon!)
+    })
+
+    expect(hideDrawer).toBeCalledTimes(1)
   })
 })

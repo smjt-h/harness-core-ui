@@ -10,12 +10,12 @@ import React from 'react'
 import { fromValue } from 'wonka'
 import type { DocumentNode } from 'graphql'
 import { Provider } from 'urql'
-import { Dialog, StepWizard } from '@harness/uicore'
-import { Formik } from 'formik'
+import { Dialog, Formik, FormikForm, StepWizard } from '@harness/uicore'
 import type { IDialogProps } from '@blueprintjs/core'
 import { findDialogContainer, TestWrapper } from '@common/utils/testUtils'
 import { FetchPerspectiveListDocument } from 'services/ce/services'
 import { clickSubmit } from '@common/utils/JestFormHelper'
+import { useCreateNotificationSetting } from 'services/ce'
 import { AlertOverview, NotificationMethod } from '../AnomaliesAlertDialog'
 import PerspectiveList from './PerspectiveList.json'
 
@@ -70,11 +70,31 @@ jest.mock('services/ce', () => {
 describe('Test case for anomalies new alert creation', () => {
   test('Anomalies alert dialog should open', async () => {
     const hideAnomaliesAlertModal = jest.fn()
-    const handleSubmit = jest.fn()
-
+    const { mutate: createNotificationAlert } = useCreateNotificationSetting({
+      queryParams: {
+        accountIdentifier: 'accountId',
+        perspectiveId: ''
+      }
+    })
+    const queryParams = {
+      perspectiveId: 'perspective',
+      accountIdentifier: 'accountId'
+    }
+    const handleSubmit = jest.fn().mockImplementation(async () => {
+      try {
+        await createNotificationAlert({ channels: [] }, { queryParams })
+      } catch (err) {
+        expect(err).toBeTruthy()
+      }
+    })
     const formikProps: any = {
       values: {
-        alertList: []
+        alertList: [
+          {
+            channelName: '',
+            channelUrl: ''
+          }
+        ]
       }
     }
 
@@ -94,7 +114,6 @@ describe('Test case for anomalies new alert creation', () => {
           channelUrl: item.channelUrls[0]
         }
       }) || []
-
     const { getByText } = render(
       <TestWrapper pathParams={params}>
         <Provider value={responseState as any}>
@@ -106,13 +125,16 @@ describe('Test case for anomalies new alert creation', () => {
                 channelUrl: '',
                 alertList: channelsData
               }}
+              formName={'createNotificationAlert'}
               onSubmit={data => handleSubmit(data)}
               render={() => {
                 return (
-                  <StepWizard>
-                    <AlertOverview name={''} onClose={hideAnomaliesAlertModal} items={[]} />
-                    <NotificationMethod name={''} onClose={hideAnomaliesAlertModal} formikProps={formikProps} />
-                  </StepWizard>
+                  <FormikForm>
+                    <StepWizard>
+                      <AlertOverview name={''} onClose={hideAnomaliesAlertModal} items={[]} />
+                      <NotificationMethod name={''} onClose={hideAnomaliesAlertModal} formikProps={formikProps} />
+                    </StepWizard>
+                  </FormikForm>
                 )
               }}
             ></Formik>
@@ -123,19 +145,30 @@ describe('Test case for anomalies new alert creation', () => {
 
     const modal = findDialogContainer()
     expect(modal).toBeDefined()
-
     expect(getByText('ce.anomalyDetection.notificationAlerts.selectPerspectiveLabel')).toBeDefined()
 
     const saveAndContinueBtn = getByText('saveAndContinue')
     act(() => {
       fireEvent.click(saveAndContinueBtn!)
     })
-
     expect(getByText('ce.anomalyDetection.notificationAlerts.notificationStepSubtext')).toBeDefined()
+
+    const addChannelBtn = getByText('ce.anomalyDetection.notificationAlerts.addChannelBtn')
+    expect(addChannelBtn).toBeDefined()
+    act(() => {
+      fireEvent.click(addChannelBtn!)
+    })
+
+    const deleteChannelIcon = modal?.querySelector('[data-testid="deleteChannel"]')
+    expect(deleteChannelIcon).toBeDefined()
+    act(() => {
+      fireEvent.click(deleteChannelIcon!)
+    })
 
     await act(async () => {
       clickSubmit(modal!)
     })
+    expect(handleSubmit).toBeCalled()
 
     expect(modal).toMatchSnapshot()
   })
@@ -164,6 +197,7 @@ describe('Test case for anomalies new alert creation', () => {
                 channelUrl: '',
                 alertList: []
               }}
+              formName={'createNotificationAlert'}
               onSubmit={data => handleSubmit(data)}
               render={formikProps => {
                 return (

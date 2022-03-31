@@ -211,7 +211,7 @@ const AlertsSection = () => {
 
   const renderLoader = (): JSX.Element => {
     return (
-      <Container className={css.loader}>
+      <Container className={css.loader} data-testid="loader">
         <Icon name="spinner" color={Color.BLUE_500} size={30} />
       </Container>
     )
@@ -267,7 +267,7 @@ const AnomaliesSettings: React.FC<SettingsDrawerProps> = ({ hideDrawer }) => {
           >
             {getString('ce.anomalyDetection.settings.options.header')}
           </Text>
-          <Icon name="cross" size={16} color={Color.WHITE} onClick={() => hideDrawer()} />
+          <Icon name="cross" size={16} color={Color.WHITE} onClick={() => hideDrawer()} data-testid="closeDrawerIcon" />
         </Layout.Horizontal>
         <ul className={css.listingOptions}>
           <li className={cx(css.listOptionItem, activePanelId === 1 && css.listOptionItemSelected)}>
