@@ -905,3 +905,4 @@ serviceDeploymentTypes:
   pcf: TAS
   ssh: Secure Shell
   deployDifferentLabel: Deploy different service
+acrArtifact: ACR

@@ -135,6 +135,25 @@ const AzureAuthentication: React.FC<StepProps<StepConfigureProps> & AzureAuthent
     nextStep?.({ ...props.connectorInfo, ...prevStepData, ...formData } as StepConfigureProps)
   }
 
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
+  const resetSecretType = (formik: any, value: string): void => {
+    switch (value) {
+      case AzureSecretKeyType.SECRET:
+        formik.setFieldValue('secretText', undefined)
+        return
+      case AzureSecretKeyType.CERT:
+        formik.setFieldValue('secretFile', undefined)
+        return
+    }
+  }
+
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
+  const resetManagedIdenity = (formik: any, value: string): void => {
+    if (value === AzureManagedIdentityTypes.SYSTEM_MANAGED) {
+      formik.setFieldValue('clientId', '')
+    }
+  }
+
   return loadingConnectorSecrets ? (
     <PageSpinner />
   ) : (
@@ -149,12 +168,22 @@ const AzureAuthentication: React.FC<StepProps<StepConfigureProps> & AzureAuthent
         validationSchema={Yup.object().shape({
           authType: Yup.string().required(getString('connectors.chooseMethodForAzureConnection')),
           azureEnvironmentType: Yup.string().required(getString('connectors.azure.validation.environment')),
-          applicationId: Yup.string()
-            .trim()
-            .required(getString('connectors.azure.validation.applicationId'))
-            .matches(/^(\w+\S+)$/, getString('connectors.azure.validation.applicationIdRegex')),
-          tenantId: Yup.string().required(getString('connectors.tenantIdRequired')),
-          secretType: Yup.string().required(getString('connectors.tenantIdRequired')),
+          applicationId: Yup.string().when('authType', {
+            is: DelegateTypes.DELEGATE_OUT_CLUSTER,
+            then: Yup.string()
+              .required(getString('connectors.azure.validation.applicationId'))
+              .matches(/^(\w+\S+)$/, getString('connectors.azure.validation.applicationIdRegex'))
+          }),
+          tenantId: Yup.string().when('authType', {
+            is: DelegateTypes.DELEGATE_OUT_CLUSTER,
+            then: Yup.string()
+              .required(getString('connectors.tenantIdRequired'))
+              .matches(/^(\w+\S+)$/, getString('connectors.azure.validation.tenantIdRegex'))
+          }),
+          secretType: Yup.string().when('authType', {
+            is: DelegateTypes.DELEGATE_OUT_CLUSTER,
+            then: Yup.string().required(getString('connectors.tenantIdRequired'))
+          }),
           secretText: Yup.object().when(['authType', 'secretType'], {
             is: (authType, secretType) =>
               authType === DelegateTypes.DELEGATE_OUT_CLUSTER && secretType === AzureSecretKeyType.SECRET,
@@ -165,10 +194,17 @@ const AzureAuthentication: React.FC<StepProps<StepConfigureProps> & AzureAuthent
               authType === DelegateTypes.DELEGATE_OUT_CLUSTER && secretType === AzureSecretKeyType.CERT,
             then: Yup.object().required(getString('connectors.azure.validation.certificate'))
           }),
-          managedIdentity: Yup.string().required('connectors.azure.validation.managedIdentity'),
-          clientId: Yup.string().when('managedIdentity', {
-            is: AzureManagedIdentityTypes.USER_MANAGED,
-            then: Yup.string().required(getString('connectors.azure.validation.clientId'))
+          managedIdentity: Yup.string().when('authType', {
+            is: DelegateTypes.DELEGATE_IN_CLUSTER,
+            then: Yup.string().required('connectors.azure.validation.managedIdentity')
+          }),
+          clientId: Yup.string().when(['authType', 'managedIdentity'], {
+            is: (authType, managedIdentity) =>
+              authType === DelegateTypes.DELEGATE_IN_CLUSTER &&
+              managedIdentity === AzureManagedIdentityTypes.USER_MANAGED,
+            then: Yup.string()
+              .required(getString('connectors.azure.validation.clientId'))
+              .matches(/^(\w+\S+)$/, getString('connectors.azure.validation.clientIdRegex'))
           })
         })}
         onSubmit={handleSubmit}
@@ -215,6 +251,7 @@ const AzureAuthentication: React.FC<StepProps<StepConfigureProps> & AzureAuthent
                       items={secretKeyOptions}
                       disabled={false}
                       className={commonStyles.authTypeSelect}
+                      onChange={({ value }) => resetSecretType(formikProps, value as string)}
                     />
                   </Container>
                   {formikProps.values.secretType === AzureSecretKeyType.SECRET && (
@@ -249,6 +286,7 @@ const AzureAuthentication: React.FC<StepProps<StepConfigureProps> & AzureAuthent
                       items={managedIdentityOptions}
                       disabled={false}
                       className={cx(commonStyles.authTypeSelect, css.authSelect)}
+                      onChange={({ value }) => resetManagedIdenity(formikProps, value as string)}
                     />
                   </Container>
                   {formikProps.values.managedIdentity === AzureManagedIdentityTypes.USER_MANAGED && (

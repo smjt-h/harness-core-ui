@@ -267,6 +267,8 @@ azure:
     clientId: '{{ $.common.validation.clientIdIsRequired }}'
     applicationId: 'Application Id is required'
     applicationIdRegex: 'Application Id can not contain white space'
+    clientIdRegex: 'Client Id can not contain white space'
+    tenantIdRegex: 'Tenant Id can not contain white space'
     managedIdentity: 'Managed Identity is required'
     secret: 'Secret is required'
     certificate: 'Certificate is required'

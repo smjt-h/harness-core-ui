@@ -103,6 +103,7 @@ export const ConnectorWizard: React.FC<CreateConnectorWizardProps> = props => {
     })
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [])
+
   switch (type) {
     case Connectors.CUSTOM:
       return <CreateCustomHealthConnector {...commonProps} />
