@@ -7,31 +7,16 @@
 
 import React from 'react'
 import { Dialog, IDialogProps } from '@blueprintjs/core'
-import {
-  Layout,
-  StepWizard,
-  StepProps,
-  Color,
-  FontVariation,
-  Text,
-  ButtonVariation,
-  Button,
-  Icon,
-  Formik,
-  FormikForm,
-  FormInput,
-  SelectOption,
-  useToaster,
-  getErrorInfoFromErrorObject
-} from '@harness/uicore'
+import { StepWizard, Formik, FormikForm, useToaster, getErrorInfoFromErrorObject } from '@harness/uicore'
 import { useModalHook } from '@harness/use-modal'
-import { FieldArray, FormikProps } from 'formik'
 import { useParams } from 'react-router-dom'
 import { useStrings } from 'framework/strings'
 import { QlceView, useFetchPerspectiveListQuery } from 'services/ce/services'
-import { channelNameUrlMapping, notificationChannelsList } from '@ce/constants'
+import { channelNameUrlMapping } from '@ce/constants'
 import type { AccountPathProps } from '@common/interfaces/RouteInterfaces'
 import { useCreateNotificationSetting, useUpdateNotificationSetting } from 'services/ce'
+import PerspectiveSelection from './PerspectiveSelection'
+import NotificationMethod from './NotificationMethod'
 import css from './AnomaliesAlertDialog.module.scss'
 
 const modalPropsLight: IDialogProps = {
@@ -47,148 +32,14 @@ const modalPropsLight: IDialogProps = {
   }
 }
 
-interface Alerts {
-  perspective: string
-  channelName: string
-  channelUrl: string
-  alertList: Alerts[]
-}
-
-interface NotificationValues {
-  alertList: Alerts[]
-}
-
-interface StepData {
-  name: string
-}
-
 interface AlertDialogProps {
   hideAnomaliesAlertModal: any
   handleSubmit: any
   notificationData: any
 }
-
-interface AlertsOverviewProps {
-  name: string
-  onClose: () => void
-  items: SelectOption[]
-}
-
 interface AnomalyAlertDialogProps {
   setRefetchingState: React.Dispatch<React.SetStateAction<boolean>>
   selectedAlert: Record<string, any> | null
-}
-
-interface NotificationChannelProps {
-  name: string
-  onClose: () => void
-  formikProps: FormikProps<NotificationValues>
-}
-
-export const AlertOverview: React.FC<StepProps<StepData> & AlertsOverviewProps> = props => {
-  const { getString } = useStrings()
-
-  return (
-    <React.Fragment>
-      <Icon name="cross" size={16} onClick={() => props.onClose()} className={css.closeBtn} />
-      <Layout.Vertical spacing="xxlarge">
-        <Text color={Color.BLACK} font={{ variation: FontVariation.H5 }}>
-          {props.name}
-        </Text>
-        <FormInput.Select
-          items={props.items}
-          className={css.perspectiveSelection}
-          name={'perspective'}
-          label={getString('ce.anomalyDetection.notificationAlerts.selectPerspectiveLabel')}
-          placeholder={getString('ce.anomalyDetection.notificationAlerts.selectPerspective')}
-        />
-      </Layout.Vertical>
-      <Button
-        className={css.actionBtn}
-        rightIcon="chevron-right"
-        variation={ButtonVariation.PRIMARY}
-        onClick={() => props.nextStep?.({ name: props.name || '' })}
-        text={getString('saveAndContinue')}
-      />
-    </React.Fragment>
-  )
-}
-
-export const NotificationMethod: React.FC<StepProps<StepData> & NotificationChannelProps> = props => {
-  const { getString } = useStrings()
-
-  return (
-    <React.Fragment>
-      <Icon name="cross" size={16} onClick={() => props.onClose()} className={css.closeBtn} />
-      <Layout.Vertical spacing="large">
-        <Text color={Color.BLACK} font={{ variation: FontVariation.H5 }}>
-          {props.name}
-        </Text>
-        <Text color={Color.GREY_500} font={{ variation: FontVariation.SMALL }}>
-          {getString('ce.anomalyDetection.notificationAlerts.notificationStepSubtext')}
-        </Text>
-      </Layout.Vertical>
-      <Layout.Vertical spacing="medium" className={css.addChannelWrapper}>
-        <Text color={Color.BLACK} font={{ variation: FontVariation.H6 }}>
-          {getString('ce.anomalyDetection.notificationAlerts.alertChannelHeading')}
-        </Text>
-        <FieldArray
-          name="alertList"
-          render={arrayHelpers => {
-            const notificationList = props.formikProps?.values?.alertList || []
-            const removeRow = (index: number) => {
-              arrayHelpers.remove(index)
-            }
-
-            return (
-              <div className={css.alertChannelWrapper}>
-                {notificationList.map((_, index) => (
-                  <Layout.Horizontal key={index} spacing="xlarge" className={css.addAlertChannel}>
-                    <FormInput.Select
-                      items={notificationChannelsList as SelectOption[]}
-                      key={`channelName_${index}`}
-                      name={`alertList.${index}.channelName`}
-                      className={css.channelSelection}
-                      placeholder={getString('ce.anomalyDetection.notificationAlerts.selectChannelPlaceholder')}
-                    />
-                    <FormInput.Text
-                      name={`alertList.${index}.channelUrl`}
-                      key={`channelUrl_${index}`}
-                      placeholder={getString('ce.anomalyDetection.notificationAlerts.urlInputPlaceholder')}
-                      className={css.urlInput}
-                    />
-                    <Icon name="main-trash" size={16} onClick={() => removeRow(index)} data-testid="deleteChannel" />
-                  </Layout.Horizontal>
-                ))}
-                <Button
-                  text={getString('ce.anomalyDetection.notificationAlerts.addChannelBtn')}
-                  icon="plus"
-                  onClick={() => arrayHelpers.push({ channelName: '', channelUrl: '' })}
-                  variation={ButtonVariation.LINK}
-                  className={css.addChannelBtn}
-                />
-              </div>
-            )
-          }}
-        />
-      </Layout.Vertical>
-      <Layout.Horizontal className={css.actionBtn} spacing="medium">
-        <Button
-          onClick={() => props.previousStep?.({ name: props.name || '' })}
-          text="Back"
-          icon="chevron-left"
-          variation={ButtonVariation.TERTIARY}
-        />
-        <Button
-          type="submit"
-          variation={ButtonVariation.PRIMARY}
-          rightIcon="chevron-right"
-          onClick={() => props.nextStep?.({ name: props.name || '' })}
-          text={getString('saveAndContinue')}
-        />
-      </Layout.Horizontal>
-    </React.Fragment>
-  )
 }
 
 export const AnomalyAlertDialog: React.FC<AlertDialogProps> = ({
@@ -238,7 +89,7 @@ export const AnomalyAlertDialog: React.FC<AlertDialogProps> = ({
                 className={css.stepWizard}
                 title={getString('ce.anomalyDetection.notificationAlerts.heading')}
               >
-                <AlertOverview
+                <PerspectiveSelection
                   name={getString('ce.anomalyDetection.notificationAlerts.overviewStep')}
                   onClose={hideAnomaliesAlertModal}
                   items={items}

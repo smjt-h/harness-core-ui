@@ -12,6 +12,7 @@ import { Provider } from 'urql'
 import { fromValue } from 'wonka'
 import { findDialogContainer, TestWrapper } from '@common/utils/testUtils'
 import { FetchPerspectiveListDocument } from 'services/ce/services'
+import * as ceServices from 'services/ce'
 import AnomaliesSettings from '../AnomaliesSettings'
 import PerspectiveList from './PerspectiveList.json'
 import AlertList from './AnomaliesAlertList.json'
@@ -115,11 +116,9 @@ describe('test case for anomalies settings drawer', () => {
     await waitFor(() => Promise.resolve())
 
     const deleteIcon = container.querySelector('span[data-icon="main-trash"]')
-
     act(() => {
       fireEvent.click(deleteIcon!)
     })
-
     expect(container).toMatchSnapshot()
     await waitFor(() => {
       expect(queryByText(document.body, 'ce.anomalyDetection.notificationAlerts.deleteAlertSuccessMsg')).toBeDefined()
@@ -150,7 +149,6 @@ describe('test case for anomalies settings drawer', () => {
     await waitFor(() => Promise.resolve())
 
     const editIcon = container.querySelector('span[data-icon="Edit"]')
-
     act(() => {
       fireEvent.click(editIcon!)
     })
@@ -183,7 +181,67 @@ describe('test case for anomalies settings drawer', () => {
     act(() => {
       fireEvent.click(crossIcon!)
     })
-
     expect(hideDrawer).toBeCalledTimes(1)
+  })
+
+  test('Should show loader while loading the anomalies list', async () => {
+    const hideDrawer = jest.fn()
+    jest
+      .spyOn(ceServices, 'useListNotificationSettings')
+      .mockImplementation(() => ({ data: AlertList, loading: true, refetch: jest.fn, error: true } as any))
+
+    const responseState = {
+      executeQuery: ({ query }: { query: DocumentNode }) => {
+        if (query === FetchPerspectiveListDocument) {
+          return fromValue(PerspectiveList)
+        } else {
+          return fromValue({})
+        }
+      }
+    }
+
+    const { container } = render(
+      <Provider value={responseState as any}>
+        <TestWrapper pathParams={params}>
+          <AnomaliesSettings hideDrawer={hideDrawer} />
+        </TestWrapper>
+      </Provider>
+    )
+
+    const spinner = container.querySelector('[data-testid="loader"]')
+    expect(spinner).toBeTruthy()
+  })
+
+  test('Should update the active tab on tabs click', async () => {
+    const hideDrawer = jest.fn()
+    // const updateActivePanel = jest.fn()
+
+    const responseState = {
+      executeQuery: ({ query }: { query: DocumentNode }) => {
+        if (query === FetchPerspectiveListDocument) {
+          return fromValue(PerspectiveList)
+        } else {
+          return fromValue({})
+        }
+      }
+    }
+
+    const { container } = render(
+      <Provider value={responseState as any}>
+        <TestWrapper pathParams={params}>
+          <AnomaliesSettings hideDrawer={hideDrawer} />
+        </TestWrapper>
+      </Provider>
+    )
+
+    const tab = container.querySelector('.tabContent')
+    expect(tab).toBeDefined()
+    act(() => {
+      fireEvent.click(tab!)
+    })
+
+    // await waitFor(() => {
+    //   expect(updateActivePanel).toBeCalledWith(1)
+    // })
   })
 })
