@@ -63,6 +63,7 @@ function PipelineGraph({
   const [treeRectangle, setTreeRectangle] = useState<DOMRect | void>()
   const [state, setState] = useState<PipelineGraphState[]>(data)
   const [graphScale, setGraphScale] = useState(INITIAL_ZOOM_LEVEL)
+  const [isDragging, setDragging] = useState(false)
   const canvasRef = useRef<HTMLDivElement>(null)
   const draggableRef = useRef<HTMLDivElement>(null)
   const overlayRef = useRef<HTMLDivElement>(null)
@@ -90,7 +91,7 @@ function PipelineGraph({
   }, [treeRectangle, data])
 
   useLayoutEffect(() => {
-    redrawSVGLinks()
+    !isDragging && redrawSVGLinks()
   }, [state])
 
   const redrawSVGLinks = (): void => {
@@ -146,7 +147,13 @@ function PipelineGraph({
     <>
       {isLoading && <Loader />}
       <div id="draggable-parent" className={css.draggableParent} ref={draggableRef}>
-        <Draggable scale={graphScale} defaultPosition={DEFAULT_POSITION} offsetParent={document.body}>
+        <Draggable
+          scale={graphScale}
+          defaultPosition={DEFAULT_POSITION}
+          onStart={() => setDragging(true)}
+          onStop={() => setDragging(false)}
+          offsetParent={document.body}
+        >
           <div
             id="overlay"
             onClick={() => {
@@ -168,6 +175,7 @@ function PipelineGraph({
                 collapsibleProps={collapsibleProps}
                 getDefaultNode={getDefaultNode}
                 readonly={readonly}
+                isDragging={isDragging}
               />
             </div>
           </div>

@@ -26,6 +26,7 @@ export interface PipelineGraphRecursiveProps {
   parentIdentifier?: string
   collapsibleProps?: NodeCollapsibleProps
   readonly?: boolean
+  isDragging?: boolean
 }
 export function PipelineGraphRecursive({
   nodes,
@@ -38,7 +39,8 @@ export function PipelineGraphRecursive({
   updateGraphLinks,
   collapsibleProps,
   getDefaultNode,
-  readonly = false
+  readonly = false,
+  isDragging
 }: PipelineGraphRecursiveProps): React.ReactElement {
   const StartNode: React.FC<BaseReactComponentProps> | undefined = getNode(NodeType.StartNode)?.component
   const CreateNode: React.FC<BaseReactComponentProps> | undefined = getNode(NodeType.CreateNode)?.component
@@ -68,6 +70,7 @@ export function PipelineGraphRecursive({
             updateGraphLinks={updateGraphLinks}
             collapsibleProps={collapsibleProps}
             readonly={readonly}
+            isDragging={isDragging}
           />
         )
       })}
@@ -328,7 +331,9 @@ function PipelineGraphNodeBasic(props: PipelineGraphNodeBasicProps): React.React
 }
 const PipelineGraphNode = React.memo(PipelineGraphNodeBasic)
 
-function PipelineGraphNodeObserved(props: PipelineGraphNodeBasicProps & { index: number }): React.ReactElement {
+function PipelineGraphNodeObserved(
+  props: PipelineGraphNodeBasicProps & { index: number; isDragging?: boolean }
+): React.ReactElement {
   const [ref, setRef] = useState<HTMLDivElement | null>(null)
   const [visible, setVisible] = useState(true)
   const updateVisibleState = debounce(setVisible, 300)
@@ -336,20 +341,26 @@ function PipelineGraphNodeObserved(props: PipelineGraphNodeBasicProps & { index:
   React.useEffect(() => {
     let observer: IntersectionObserver
     if (ref) {
-      const rootElement = document.getElementsByClassName('Pane1')[0]
+      const rootElement = document.querySelector(props.collapsibleProps?.parentSelector as string)
+
       observer = new IntersectionObserver(
         (entries, _observer) => {
           entries.forEach((entry: IntersectionObserverEntry) => {
-            if (entry.isIntersecting) {
-              updateVisibleState(true)
-            } else {
-              updateVisibleState(false)
+            if (
+              (entry.rootBounds?.left === entry.intersectionRect.left ||
+                entry.rootBounds?.right === entry.intersectionRect.right) &&
+              !props.isDragging
+            ) {
+              if (entry.isIntersecting) {
+                updateVisibleState(true)
+              } else {
+                updateVisibleState(false)
+              }
             }
           })
         },
         { threshold: 0.5, root: rootElement }
       )
-
       observer.observe(ref as HTMLDivElement)
     }
     return () => {
