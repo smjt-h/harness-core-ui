@@ -19,6 +19,7 @@ import {
   SelectOption
 } from '@harness/uicore'
 import { FieldArray, FormikProps } from 'formik'
+import { defaultTo } from 'lodash-es'
 import { useStrings } from 'framework/strings'
 import { notificationChannelsList } from '@ce/constants'
 import css from './AnomaliesAlertDialog.module.scss'
@@ -46,6 +47,7 @@ interface NotificationValues {
 
 const NotificationMethod: React.FC<StepProps<StepData> & NotificationChannelProps> = props => {
   const { getString } = useStrings()
+  const notificationList = defaultTo(props.formikProps?.values?.alertList, [])
 
   return (
     <React.Fragment>
@@ -65,7 +67,6 @@ const NotificationMethod: React.FC<StepProps<StepData> & NotificationChannelProp
         <FieldArray
           name="alertList"
           render={arrayHelpers => {
-            const notificationList = props.formikProps?.values?.alertList || []
             const removeRow = (index: number) => {
               arrayHelpers.remove(index)
             }
@@ -80,6 +81,7 @@ const NotificationMethod: React.FC<StepProps<StepData> & NotificationChannelProp
                       name={`alertList.${index}.channelName`}
                       className={css.channelSelection}
                       placeholder={getString('ce.anomalyDetection.notificationAlerts.selectChannelPlaceholder')}
+                      data-testid={`notification-channel-${index}`}
                     />
                     <FormInput.Text
                       name={`alertList.${index}.channelUrl`}
@@ -115,6 +117,7 @@ const NotificationMethod: React.FC<StepProps<StepData> & NotificationChannelProp
           rightIcon="chevron-right"
           onClick={() => props.nextStep?.({ name: props.name || '' })}
           text={getString('saveAndContinue')}
+          data-testid="submitForm"
         />
       </Layout.Horizontal>
     </React.Fragment>

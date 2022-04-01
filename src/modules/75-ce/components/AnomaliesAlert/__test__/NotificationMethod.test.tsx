@@ -8,17 +8,15 @@
 import React from 'react'
 import { fireEvent, render, waitFor } from '@testing-library/react'
 import { act } from '@testing-library/react-hooks'
+import { Formik, FormikForm } from '@harness/uicore'
+import { defaultTo, noop } from 'lodash-es'
+import { FieldArray } from 'formik'
 import { TestWrapper } from '@common/utils/testUtils'
 import NotificationMethod from '../NotificationMethod'
 
 const params = {
   accountId: 'TEST_ACC'
 }
-
-// const arrayHelpers = {
-//   push: jest.fn(),
-//   remove: jest.fn()
-// }
 
 const props: any = {
   name: '',
@@ -40,9 +38,21 @@ const props: any = {
 
 describe('Test case for Anomalies alert notification method selection', () => {
   test('Should be able to load alert method selection screen', async () => {
+    const notificationList = defaultTo(props.formikProps?.values?.alertList, [])
     const { container } = render(
       <TestWrapper pathParams={params}>
-        <NotificationMethod {...props} />
+        <FieldArray
+          {...props}
+          render={() => {
+            return (
+              <div>
+                {notificationList.map((item: any, index: number) => (
+                  <input key={index} type="text" name={item.channelUrl} />
+                ))}
+              </div>
+            )
+          }}
+        />
       </TestWrapper>
     )
 
@@ -50,32 +60,34 @@ describe('Test case for Anomalies alert notification method selection', () => {
   })
 
   test('Should be able to add new channel', async () => {
-    const { getByText } = render(
+    const { container, getByText, findByTestId } = render(
       <TestWrapper pathParams={params}>
-        <NotificationMethod {...props} />
+        <Formik onSubmit={noop} formName={''} initialValues={{}}>
+          <FormikForm>
+            <NotificationMethod {...props} />
+          </FormikForm>
+        </Formik>
       </TestWrapper>
     )
 
     const addChannelBtn = getByText('ce.anomalyDetection.notificationAlerts.addChannelBtn')
-    expect(addChannelBtn).toBeDefined()
+    expect(addChannelBtn).toBeTruthy()
+    act(() => {
+      fireEvent.click(addChannelBtn)
+    })
+    await waitFor(() => expect(findByTestId('notification-channel-0')).toBeTruthy())
 
-    // act(() => {
-    //   fireEvent.click(addChannelBtn!)
-    // })
-
-    // await waitFor(() => {
-    //   expect(arrayHelpers.push).toBeCalled()
-    // })
+    expect(container).toMatchSnapshot()
   })
 
   test('Should be able to render 1st screen on back click', async () => {
-    const { getByText } = render(
+    const { container, getAllByText } = render(
       <TestWrapper pathParams={params}>
         <NotificationMethod {...props} />
       </TestWrapper>
     )
 
-    const backBtn = getByText('back')
+    const backBtn = getAllByText('back')[0]
     expect(backBtn).toBeDefined()
     act(() => {
       fireEvent.click(backBtn!)
@@ -84,26 +96,28 @@ describe('Test case for Anomalies alert notification method selection', () => {
     await waitFor(() => {
       expect(props.previousStep).toBeCalledWith({ name: props.name })
     })
+
+    expect(container).toMatchSnapshot()
   })
 
   test('Should be able to delete row on delete icon click', async () => {
-    // const removeRow = jest.fn()
-    const { container } = render(
+    const { container, getByTestId } = render(
       <TestWrapper pathParams={params}>
-        <NotificationMethod {...props} />
+        <Formik onSubmit={noop} formName={''} initialValues={{}}>
+          <FormikForm>
+            <NotificationMethod {...props} />
+          </FormikForm>
+        </Formik>
       </TestWrapper>
     )
 
     const deleteIcon = container.querySelector('[data-testid="deleteChannel"]')
     expect(deleteIcon).toBeDefined()
-
-    // act(() => {
-    //   fireEvent.click(deleteIcon!)
-    // })
-
-    // await waitFor(() => {
-    //   expect(removeRow).toBeCalled()
-    // })
+    act(() => {
+      fireEvent.click(deleteIcon!)
+    })
+    expect(() => getByTestId('notification-channel-0')).toThrow()
+    expect(container).toMatchSnapshot()
   })
 
   test('Should be able to close the modal on click of close button', async () => {

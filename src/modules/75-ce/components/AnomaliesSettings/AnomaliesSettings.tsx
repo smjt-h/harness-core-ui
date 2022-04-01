@@ -83,8 +83,6 @@ const AlertsSection = () => {
     }
   }, [openAnomaliesAlertModal, selectedAlert])
 
-  const alertData = notificationsList?.data || []
-
   const deleteNotification = async (perspectiveId: string) => {
     try {
       const response = await deleteNotificationAlert(void 0, {
@@ -243,9 +241,9 @@ const AlertsSection = () => {
         variation={ButtonVariation.PRIMARY}
       />
       {loading && renderLoader()}
-      {!loading && alertData.length ? (
+      {!loading && notificationsList?.data?.length ? (
         <Container className={css.tableView}>
-          <Table<CCMPerspectiveNotificationChannelsDTO> columns={columns} data={alertData} />
+          <Table<CCMPerspectiveNotificationChannelsDTO> columns={columns} data={notificationsList?.data} />
         </Container>
       ) : null}
     </Container>

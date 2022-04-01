@@ -14,7 +14,6 @@ import { Dialog, Formik, StepWizard } from '@harness/uicore'
 import type { IDialogProps } from '@blueprintjs/core'
 import { findDialogContainer, TestWrapper } from '@common/utils/testUtils'
 import { FetchPerspectiveListDocument } from 'services/ce/services'
-import { clickSubmit } from '@common/utils/JestFormHelper'
 import PerspectiveList from './PerspectiveList.json'
 import PerspectiveSelection from '../PerspectiveSelection'
 import NotificationMethod from '../NotificationMethod'
@@ -148,8 +147,10 @@ describe('Test case for anomalies alert dialog', () => {
     })
     expect(getByText('ce.anomalyDetection.notificationAlerts.notificationStepSubtext')).toBeDefined()
 
-    await act(async () => {
-      clickSubmit(modal!)
+    const submitFormBtn = modal?.querySelector('[data-testid="submitForm"]')
+    expect(submitFormBtn).toBeDefined()
+    act(() => {
+      fireEvent.click(submitFormBtn!)
     })
 
     expect(modal).toMatchSnapshot()

@@ -127,6 +127,7 @@ const useAnomaliesAlertDialog = (props: AnomalyAlertDialogProps) => {
     }
   })
 
+  /* istanbul ignore next */
   const handleSubmit = async (data: any) => {
     const payload = data.alertList.map((item: any) => {
       const channel = item.channelName

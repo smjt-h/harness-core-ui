@@ -64,6 +64,8 @@ describe('test case for anomalies settings drawer', () => {
       executeQuery: ({ query }: { query: DocumentNode }) => {
         if (query === FetchPerspectiveListDocument) {
           return fromValue(PerspectiveList)
+        } else {
+          return fromValue({})
         }
       }
     }
@@ -75,7 +77,6 @@ describe('test case for anomalies settings drawer', () => {
         </TestWrapper>
       </Provider>
     )
-
     const createNewAlert = queryByText(container, 'ce.anomalyDetection.settings.newAlertBtn')
 
     act(() => {
@@ -214,7 +215,6 @@ describe('test case for anomalies settings drawer', () => {
 
   test('Should update the active tab on tabs click', async () => {
     const hideDrawer = jest.fn()
-    // const updateActivePanel = jest.fn()
 
     const responseState = {
       executeQuery: ({ query }: { query: DocumentNode }) => {
@@ -239,9 +239,5 @@ describe('test case for anomalies settings drawer', () => {
     act(() => {
       fireEvent.click(tab!)
     })
-
-    // await waitFor(() => {
-    //   expect(updateActivePanel).toBeCalledWith(1)
-    // })
   })
 })
