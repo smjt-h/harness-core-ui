@@ -1,0 +1,13 @@
+
+.infocard {
+  width: 216px;
+  height: 96px;
+
+  .overuse {
+    background-color: var(--yellow-900);
+  }
+
+  .recommended {
+    background-color: var(--primary-2);
+  }
+}
