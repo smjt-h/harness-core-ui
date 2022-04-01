@@ -8,9 +8,10 @@
 import React from 'react'
 import produce from 'immer'
 import { defaultTo, isEmpty, lowerCase, set } from 'lodash-es'
-import { Text, Color, NestedAccordionPanel, FontVariation, MultiTypeInputType } from '@wings-software/uicore'
+import { Text, NestedAccordionPanel, MultiTypeInputType } from '@wings-software/uicore'
+import { FontVariation, Color } from '@harness/design-system'
 import cx from 'classnames'
-import type { DeploymentStageConfig, StageElementConfig } from 'services/cd-ng'
+import type { DeploymentStageConfig, ServiceSpec, StageElementConfig } from 'services/cd-ng'
 import type {
   CustomVariablesData,
   CustomVariableEditableExtraProps
@@ -34,6 +35,7 @@ import css from '../PipelineVariables.module.scss'
 export interface StageCardProps {
   stage: StageElementConfig
   originalStage: StageElementConfig
+  unresolvedStage: StageElementConfig
   metadataMap: PipelineVariablesData['metadataMap']
   readonly?: boolean
   path?: string
@@ -43,10 +45,79 @@ export interface StageCardProps {
 }
 
 export default function StageCard(props: StageCardProps): React.ReactElement {
-  const { stage, originalStage, metadataMap, readonly, path, allowableTypes, updateStage, stepsFactory } = props
+  const {
+    stage,
+    originalStage,
+    unresolvedStage,
+    metadataMap,
+    readonly,
+    path,
+    allowableTypes,
+    updateStage,
+    stepsFactory
+  } = props
   const { getString } = useStrings()
   const stageSpec = stage.spec as DeploymentStageConfig
   const originalSpec = originalStage.spec as DeploymentStageConfig
+
+  const onUpdateVariables = React.useCallback(
+    ({ variables }: CustomVariablesData) => {
+      updateStage({ ...unresolvedStage, variables })
+    },
+    [updateStage, unresolvedStage]
+  )
+
+  const onUpdateServiceConfig = React.useCallback(
+    (serviceSpec: ServiceSpec) => {
+      updateStage(
+        produce(unresolvedStage, draft => {
+          if (serviceSpec.artifacts) {
+            set(draft, 'spec.serviceConfig.serviceDefinition.spec.artifacts', serviceSpec.artifacts)
+          }
+          if (serviceSpec.manifests) {
+            set(draft, 'spec.serviceConfig.serviceDefinition.spec.manifest', serviceSpec.manifests)
+          }
+          if (serviceSpec.variables) {
+            set(draft, 'spec.serviceConfig.serviceDefinition.spec.variables', serviceSpec.variables)
+          }
+        })
+      )
+    },
+    [updateStage, unresolvedStage]
+  )
+
+  const onUpdateInfrastructure = React.useCallback(
+    infrastructure => {
+      updateStage(
+        produce(unresolvedStage, draft => {
+          set(draft, 'spec.infrastructure', infrastructure)
+        })
+      )
+    },
+    [updateStage, unresolvedStage]
+  )
+
+  const onUpdateInfrastructureProvisioner = React.useCallback(
+    provisioner => {
+      updateStage(
+        produce(unresolvedStage, draft => {
+          set(draft, 'spec.infrastructure.infrastructureDefinition.provisioner', provisioner)
+        })
+      )
+    },
+    [updateStage, unresolvedStage]
+  )
+
+  const onUpdateExecution = React.useCallback(
+    execution => {
+      updateStage(
+        produce(unresolvedStage, draft => {
+          set(draft, 'spec.execution', execution)
+        })
+      )
+    },
+    [updateStage, unresolvedStage]
+  )
 
   const content = (
     <div className={css.variableCard}>
@@ -95,9 +166,7 @@ export default function StageCard(props: StageCardProps): React.ReactElement {
                 readonly={readonly}
                 type={StepType.CustomVariable}
                 stepViewType={StepViewType.InputVariable}
-                onUpdate={({ variables }: CustomVariablesData) => {
-                  updateStage({ ...originalStage, variables })
-                }}
+                onUpdate={onUpdateVariables}
                 customStepProps={{
                   formName: 'addEditStageCustomVariableForm',
                   variableNamePrefix: `${originalStage.identifier}.variables.`,
@@ -126,7 +195,7 @@ export default function StageCard(props: StageCardProps): React.ReactElement {
                   stageIdentifier={originalStage.identifier}
                   path={`${path}.${originalStage.identifier}`}
                   allowableTypes={allowableTypes}
-                  updateStage={updateStage}
+                  onUpdateServiceConfig={onUpdateServiceConfig}
                   stepsFactory={stepsFactory}
                   originalStage={originalStage}
                 />
@@ -139,7 +208,8 @@ export default function StageCard(props: StageCardProps): React.ReactElement {
                 allowableTypes={allowableTypes}
                 path={path}
                 stepsFactory={stepsFactory}
-                updateStage={updateStage}
+                onUpdateInfrastructure={onUpdateInfrastructure}
+                onUpdateInfrastructureProvisioner={onUpdateInfrastructureProvisioner}
               />
               {stageSpec.execution && originalSpec.execution ? (
                 <ExecutionCardPanel
@@ -152,13 +222,7 @@ export default function StageCard(props: StageCardProps): React.ReactElement {
                   allowableTypes={allowableTypes}
                   readonly={readonly}
                   path={`${path}.${originalStage.identifier}.Execution`}
-                  onUpdateExecution={execution => {
-                    updateStage(
-                      produce(originalStage, draft => {
-                        set(draft, 'spec.execution', execution)
-                      })
-                    )
-                  }}
+                  onUpdateExecution={onUpdateExecution}
                   stepsFactory={stepsFactory}
                 />
               ) : /* istanbul ignore next */ null}

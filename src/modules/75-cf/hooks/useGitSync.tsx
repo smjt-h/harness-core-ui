@@ -33,7 +33,6 @@ interface GitSyncFormMeta {
   gitSyncInitialValues: GitSyncFormValues
   gitSyncValidationSchema: ObjectSchema<Record<string, unknown> | undefined>
 }
-
 export interface UseGitSync {
   gitRepoDetails?: GitRepo
   isAutoCommitEnabled: boolean

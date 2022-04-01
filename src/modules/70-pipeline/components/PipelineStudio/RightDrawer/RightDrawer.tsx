@@ -21,7 +21,7 @@ import type {
 } from 'services/cd-ng'
 import { useTelemetry } from '@common/hooks/useTelemetry'
 import { StepActions } from '@common/constants/TrackingConstants'
-import { StageType } from '@pipeline/utils/stageHelpers'
+import type { StageType } from '@pipeline/utils/stageHelpers'
 import type {
   BuildStageElementConfig,
   DeploymentStageElementConfig,
@@ -216,10 +216,21 @@ const updateWithNodeIdentifier = async (
     data?.stepConfig?.onUpdate?.(processNode)
   } else if (drawerType === DrawerTypes.ProvisionerStepConfig && provisioner) {
     const processingNodeIdentifier = data?.stepConfig?.node?.identifier
-    updateStepWithinStage(provisioner, processingNodeIdentifier, processNode)
-
-    if (selectedStage?.stage) {
-      await updateStage(selectedStage.stage)
+    const stageData = produce(selectedStage, draft => {
+      const provisionerInternal = (draft?.stage as DeploymentStageElementConfig)?.spec?.infrastructure
+        ?.infrastructureDefinition?.provisioner
+      if (provisionerInternal) {
+        updateStepWithinStage(provisionerInternal, processingNodeIdentifier, processNode)
+      }
+    })
+    // update view data before updating pipeline because its async
+    updatePipelineView(
+      produce(pipelineView, draft => {
+        set(draft, 'drawerData.data.stepConfig.node', processNode)
+      })
+    )
+    if (stageData?.stage) {
+      await updateStage(stageData.stage)
     }
     data?.stepConfig?.onUpdate?.(processNode)
   }
@@ -233,8 +244,6 @@ const onSubmitStep = async (
   selectedStage: StageElementWrapper<StageElementConfig> | undefined,
   updatePipelineView: (data: PipelineViewData) => void,
   updateStage: (stage: StageElementConfig) => Promise<void>,
-  stageType: string | undefined,
-  setSelectedStepId: (selectedStepId: string | undefined) => void,
   pipelineView: PipelineViewData
 ): Promise<void> => {
   if (data?.stepConfig?.node) {
@@ -251,17 +260,6 @@ const onSubmitStep = async (
         pipelineView
       )
     }
-  }
-
-  // TODO: temporary fix for FF
-  // can be removed once the unified solution across modules is implemented
-  if (stageType === StageType.FEATURE) {
-    updatePipelineView({
-      ...pipelineView,
-      isDrawerOpened: false,
-      drawerData: { type: DrawerTypes.StepConfig }
-    })
-    setSelectedStepId(undefined)
   }
 }
 
@@ -709,8 +707,6 @@ export function RightDrawer(): React.ReactElement {
               selectedStage,
               updatePipelineView,
               updateStage,
-              stageType,
-              setSelectedStepId,
               pipelineView
             )
           }
@@ -854,7 +850,6 @@ export function RightDrawer(): React.ReactElement {
       )}
       {type === DrawerTypes.ProvisionerStepConfig && data?.stepConfig?.node && (
         <StepCommands
-          key={`step-form-${data.stepConfig.node.identifier}`}
           step={data.stepConfig.node as StepElementConfig}
           ref={formikRef}
           isReadonly={isReadonly}
@@ -872,8 +867,6 @@ export function RightDrawer(): React.ReactElement {
               selectedStage,
               updatePipelineView,
               updateStage,
-              stageType,
-              setSelectedStepId,
               pipelineView
             )
           }

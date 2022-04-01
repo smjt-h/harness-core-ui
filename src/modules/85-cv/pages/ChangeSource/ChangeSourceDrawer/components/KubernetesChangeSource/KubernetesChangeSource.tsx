@@ -7,7 +7,8 @@
 
 import React, { useEffect, useMemo } from 'react'
 import { useParams } from 'react-router-dom'
-import { Text, Color, Container, Utils } from '@wings-software/uicore'
+import { Text, Container, Utils } from '@wings-software/uicore'
+import { Color } from '@harness/design-system'
 import { useValidateK8sConnectivity } from 'services/cv'
 import { FormConnectorReferenceField } from '@connectors/components/ConnectorReferenceField/FormConnectorReferenceField'
 import type { ConnectorReferenceFieldProps } from '@connectors/components/ConnectorReferenceField/ConnectorReferenceField'
@@ -74,6 +75,7 @@ export default function KubernetesChangeSource(props: ChangeSourceProps): JSX.El
             {getString('connectors.selectConnector')}
           </Text>
         }
+        tooltipProps={{ dataTooltipId: 'selectKubeConnector' }}
       />
       <ValidationStatus
         validationStatus={validationResult.status}

@@ -26,7 +26,9 @@ const onToggleService = jest.fn()
 const onDeleteService = jest.fn()
 
 jest.mock('services/cv', () => ({
-  useGetMonitoredServiceDetails: jest.fn().mockImplementation(() => ({ data: monitoredService, refetch: jest.fn() }))
+  useGetMonitoredServiceDetailsWithServiceId: jest
+    .fn()
+    .mockImplementation(() => ({ data: monitoredService, refetch: jest.fn() }))
 }))
 
 describe('Monitored Service Summary Card', () => {
@@ -92,7 +94,9 @@ describe('Monitored Service Summary Card', () => {
   })
 
   test('Loading', () => {
-    jest.spyOn(cvService, 'useGetMonitoredServiceDetails').mockReturnValue({ loading: true, refetch: jest.fn() } as any)
+    jest
+      .spyOn(cvService, 'useGetMonitoredServiceDetailsWithServiceId')
+      .mockReturnValue({ loading: true, refetch: jest.fn() } as any)
 
     const { container } = render(
       <TestWrapper {...testWrapperProps}>
@@ -105,7 +109,7 @@ describe('Monitored Service Summary Card', () => {
 
   test('Error', async () => {
     jest
-      .spyOn(cvService, 'useGetMonitoredServiceDetails')
+      .spyOn(cvService, 'useGetMonitoredServiceDetailsWithServiceId')
       .mockReturnValue({ error: { message: errorMessage }, refetch: jest.fn() } as any)
 
     render(
@@ -118,15 +122,10 @@ describe('Monitored Service Summary Card', () => {
 
     userEvent.click(screen.getByText('Retry'))
 
-    const { serviceRef, environmentRef } = servicePoint
-
     await waitFor(() =>
-      expect(cvService.useGetMonitoredServiceDetails).toHaveBeenLastCalledWith({
-        queryParams: {
-          ...pathParams,
-          serviceIdentifier: serviceRef,
-          environmentIdentifier: environmentRef
-        }
+      expect(cvService.useGetMonitoredServiceDetailsWithServiceId).toHaveBeenLastCalledWith({
+        monitoredServiceIdentifier: servicePoint.monitoredServiceIdentifier,
+        queryParams: pathParams
       })
     )
   })

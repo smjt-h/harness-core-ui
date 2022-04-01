@@ -10,7 +10,8 @@ import isEmpty from 'lodash/isEmpty'
 import { useParams } from 'react-router-dom'
 import cx from 'classnames'
 import type { FormikProps } from 'formik'
-import { FormInput, Text, Container, Color, MultiTypeInputType } from '@wings-software/uicore'
+import { FormInput, Text, Container, MultiTypeInputType } from '@wings-software/uicore'
+import { Color } from '@harness/design-system'
 import { MultiTypeTextField, MultiTypeTextProps } from '@common/components/MultiTypeText/MultiTypeText'
 import MultiTypeList from '@common/components/MultiTypeList/MultiTypeList'
 import { FormMultiTypeTextAreaField } from '@common/components'
@@ -22,6 +23,7 @@ import { FormMultiTypeConnectorField } from '@connectors/components/ConnectorRef
 import { useStrings } from 'framework/strings'
 import type { StringsMap } from 'stringTypes'
 import { AllMultiTypeInputTypesForInputSet, AllMultiTypeInputTypesForStep } from './StepUtils'
+import { renderMultiTypeListInputSet } from './CIStepOptionalConfig'
 import css from '@pipeline/components/PipelineSteps/Steps/Steps.module.scss'
 
 interface CIStepProps {
@@ -39,7 +41,7 @@ interface CIStepProps {
 }
 
 export const CIStep: React.FC<CIStepProps> = props => {
-  const { isNewStep, readonly, stepLabel, enableFields, stepViewType, path, isInputSetView } = props
+  const { isNewStep, readonly, stepLabel, enableFields, stepViewType, path, isInputSetView, formik } = props
   const { accountId, projectIdentifier, orgIdentifier } = useParams<{
     projectIdentifier: string
     orgIdentifier: string
@@ -302,13 +304,28 @@ export const CIStep: React.FC<CIStepProps> = props => {
         </Container>
       ) : null}
       {Object.prototype.hasOwnProperty.call(enableFields, 'spec.sourcePaths') ? (
-        <Container className={cx(css.formGroup, stepCss, css.bottomMargin5)}>
-          {renderMultiTypeList({
-            name: `${prefix}spec.sourcePaths`,
-            labelKey: 'pipelineSteps.sourcePathsLabel',
-            allowableTypes: isInputSetView ? AllMultiTypeInputTypesForInputSet : AllMultiTypeInputTypesForStep
-          })}
-        </Container>
+        isInputSetView ? (
+          <Container className={cx(css.formGroup, stepCss, css.bottomMargin5)}>
+            {renderMultiTypeListInputSet({
+              name: `${prefix}spec.sourcePaths`,
+              tooltipId: 'sourcePaths',
+              labelKey: 'pipelineSteps.sourcePathsLabel',
+              allowedTypes: AllMultiTypeInputTypesForInputSet,
+              expressions,
+              getString,
+              readonly,
+              formik
+            })}
+          </Container>
+        ) : (
+          <Container className={cx(css.formGroup, stepCss, css.bottomMargin5)}>
+            {renderMultiTypeList({
+              name: `${prefix}spec.sourcePaths`,
+              labelKey: 'pipelineSteps.sourcePathsLabel',
+              allowableTypes: isInputSetView ? AllMultiTypeInputTypesForInputSet : AllMultiTypeInputTypesForStep
+            })}
+          </Container>
+        )
       ) : null}
       {Object.prototype.hasOwnProperty.call(enableFields, 'spec.sourcePath') ? (
         <Container className={cx(css.formGroup, stepCss, css.bottomMargin5)}>

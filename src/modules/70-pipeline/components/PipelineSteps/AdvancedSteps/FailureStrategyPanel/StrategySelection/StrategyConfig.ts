@@ -46,7 +46,6 @@ export const allowedStrategiesAsPerStep: (domain: StageType) => Record<Modes, St
           Strategy.ManualIntervention,
           Strategy.StageRollback,
           Strategy.Ignore,
-          Strategy.StepGroupRollback,
           Strategy.Retry,
           Strategy.MarkAsSuccess,
           Strategy.Abort
@@ -88,6 +87,7 @@ export const errorTypesForStages: Record<StageType, FailureErrorType[]> = {
     ErrorType.PolicyEvaluationFailure
   ],
   [StageType.FEATURE]: [],
+  [StageType.SECURITY]: [],
   [StageType.PIPELINE]: [],
   [StageType.CUSTOM]: [],
   [StageType.Template]: []

@@ -43,6 +43,7 @@ export default function TfPlanInputStep(props: TerraformPlanProps): React.ReactE
         <div className={cx(stepCss.formGroup, stepCss.md)}>
           <FormInput.MultiTextInput
             name={`${isEmpty(inputSetData?.path) ? '' : `${inputSetData?.path}.`}spec.provisionerIdentifier`}
+            placeholder={getString('pipeline.terraformStep.provisionerIdentifier')}
             label={getString('pipelineSteps.provisionerIdentifier')}
             disabled={readonly}
             multiTextInputProps={{
@@ -77,7 +78,7 @@ export default function TfPlanInputStep(props: TerraformPlanProps): React.ReactE
             selected={get(initialValues, 'spec.configuration.secretManagerRef', '')}
             projectIdentifier={projectIdentifier}
             orgIdentifier={orgIdentifier}
-            width={445}
+            width={400}
             multiTypeProps={{ allowableTypes, expressions }}
             category={'SECRET_MANAGER'}
             name={`${isEmpty(inputSetData?.path) ? '' : `${inputSetData?.path}.`}spec.configuration.secretManagerRef`}

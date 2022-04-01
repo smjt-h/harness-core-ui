@@ -14,9 +14,9 @@ import {
   MultiTypeInputType,
   FormikForm,
   Accordion,
-  Color,
   Container
 } from '@wings-software/uicore'
+import { Color } from '@harness/design-system'
 import type { FormikProps } from 'formik'
 import get from 'lodash/get'
 import type { K8sDirectInfraYaml } from 'services/ci'
@@ -31,6 +31,7 @@ import StepCommonFields, {
   GetShellOptions
 } from '@ci/components/PipelineSteps/StepCommonFields/StepCommonFields'
 import { useVariablesExpression } from '@pipeline/components/PipelineStudio/PiplineHooks/useVariablesExpression'
+import { MultiTypeSelectField } from '@common/components/MultiTypeSelect/MultiTypeSelect'
 import {
   getInitialValuesInCorrectFormat,
   getFormValuesInCorrectFormat
@@ -45,7 +46,7 @@ import {
   validateConnectorRefAndImageDepdendency
 } from '../CIStep/StepUtils'
 import { CIStep } from '../CIStep/CIStep'
-import { AWSVMBuildInfraCommon } from '../CIStep/AWSVMBuildInfraCommon'
+import { ConnectorRefWithImage } from '../CIStep/ConnectorRefWithImage'
 import css from '@pipeline/components/PipelineSteps/Steps/Steps.module.scss'
 
 export const RunStepBase = (
@@ -70,7 +71,7 @@ export const RunStepBase = (
       initialValues={getInitialValuesInCorrectFormat<RunStepData, RunStepDataUI>(
         initialValues,
         transformValuesFieldsConfig,
-        { imagePullPolicyOptions: GetImagePullPolicyOptions(), shellOptions: GetShellOptions(buildInfrastructureType) }
+        { imagePullPolicyOptions: GetImagePullPolicyOptions(), shellOptions: GetShellOptions(getString) }
       )}
       formName="ciRunStep"
       validate={valuesToValidate => {
@@ -125,8 +126,35 @@ export const RunStepBase = (
               }}
             />
             {buildInfrastructureType !== 'VM' ? (
-              <AWSVMBuildInfraCommon showOptionalSublabel={false} readonly={readonly} />
+              <ConnectorRefWithImage showOptionalSublabel={false} readonly={readonly} stepViewType={stepViewType} />
             ) : null}
+            <Container className={cx(css.formGroup, css.lg, css.bottomMargin5)}>
+              <MultiTypeSelectField
+                name="spec.shell"
+                label={
+                  <Text
+                    tooltipProps={{ dataTooltipId: 'run_shell' }}
+                    className={css.inpLabel}
+                    color={Color.GREY_600}
+                    font={{ size: 'small', weight: 'semi-bold' }}
+                  >
+                    {getString('common.shell')}
+                  </Text>
+                }
+                multiTypeInputProps={{
+                  selectItems: GetShellOptions(getString),
+                  placeholder: getString('select'),
+                  multiTypeInputProps: {
+                    expressions,
+                    selectProps: { items: GetShellOptions(getString) },
+                    allowableTypes: [MultiTypeInputType.FIXED, MultiTypeInputType.EXPRESSION]
+                  },
+                  disabled: readonly
+                }}
+                disabled={readonly}
+                configureOptionsProps={{ variableName: 'spec.shell' }}
+              />
+            </Container>
             <div className={cx(css.fieldsGroup, css.withoutSpacing, css.topPadding3, css.bottomPadding3)}>
               <MultiTypeFieldSelector
                 name="spec.command"
@@ -186,7 +214,11 @@ export const RunStepBase = (
                 details={
                   <Container margin={{ top: 'medium' }}>
                     {buildInfrastructureType === 'VM' ? (
-                      <AWSVMBuildInfraCommon showOptionalSublabel={true} readonly={readonly} />
+                      <ConnectorRefWithImage
+                        showOptionalSublabel={true}
+                        readonly={readonly}
+                        stepViewType={stepViewType}
+                      />
                     ) : null}
                     <CIStepOptionalConfig
                       stepViewType={stepViewType}
@@ -199,7 +231,7 @@ export const RunStepBase = (
                       }}
                     />
                     <StepCommonFields
-                      enableFields={['spec.imagePullPolicy', 'spec.shell']}
+                      enableFields={['spec.imagePullPolicy']}
                       disabled={readonly}
                       buildInfrastructureType={buildInfrastructureType}
                     />

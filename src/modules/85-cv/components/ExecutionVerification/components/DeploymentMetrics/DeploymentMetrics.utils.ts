@@ -10,7 +10,7 @@ import { get } from 'lodash-es'
 import type { MultiSelectOption } from '@harness/uicore'
 import type { GetDataError } from 'restful-react'
 import type { ExecutionNode } from 'services/pipeline-ng'
-import type { DatasourceTypeDTO, RestResponseTransactionMetricInfoSummaryPageDTO } from 'services/cv'
+import type { RestResponseTransactionMetricInfoSummaryPageDTO } from 'services/cv'
 import type {
   HostControlTestData,
   HostTestData
@@ -73,25 +73,6 @@ export function transformMetricData(
   }
 
   return graphData
-}
-
-export function dataSourceTypeToLabel(dataSourceType: DatasourceTypeDTO['dataSourceType']): string {
-  switch (dataSourceType) {
-    case 'APP_DYNAMICS':
-      return 'AppDynamics'
-    case 'SPLUNK':
-      return 'Splunk'
-    case 'STACKDRIVER':
-      return 'Google Cloud Operations (Metrics)'
-    case 'STACKDRIVER_LOG':
-      return 'Google Cloud Operations (Logs)'
-    case 'NEW_RELIC':
-      return 'New Relic'
-    case 'PROMETHEUS':
-      return 'Prometheus'
-    default:
-      return ''
-  }
 }
 
 export function getErrorMessage(errorObj?: any): string | undefined {

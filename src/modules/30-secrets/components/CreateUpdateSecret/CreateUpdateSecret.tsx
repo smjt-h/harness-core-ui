@@ -44,6 +44,8 @@ import type { UseGetMockData } from '@common/utils/testUtils'
 import type { ProjectPathProps } from '@common/interfaces/RouteInterfaces'
 import { useStrings } from 'framework/strings'
 import { getRBACErrorMessage } from '@rbac/utils/utils'
+import { useTelemetry } from '@common/hooks/useTelemetry'
+import { Category, SecretActions } from '@common/constants/TrackingConstants'
 import VaultFormFields from './views/VaultFormFields'
 import LocalFormFields from './views/LocalFormFields'
 
@@ -218,6 +220,8 @@ const CreateUpdateSecret: React.FC<CreateUpdateSecretProps> = props => {
     }
   }
 
+  const { trackEvent } = useTelemetry()
+
   const handleSubmit = async (data: SecretFormData): Promise<void> => {
     try {
       if (editing) {
@@ -229,6 +233,11 @@ const CreateUpdateSecret: React.FC<CreateUpdateSecretProps> = props => {
         }
         showSuccess(`Secret '${data.name}' updated successfully`)
       } else {
+        trackEvent(SecretActions.SaveCreateSecret, {
+          category: Category.SECRET,
+          type,
+          data
+        })
         if (type === 'SecretText') {
           await createSecretText(createSecretTextData(data))
         }

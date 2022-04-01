@@ -6,20 +6,12 @@
  */
 
 import React from 'react'
-import type { RenderResult } from '@testing-library/react'
-import { render, screen, waitFor } from '@testing-library/react'
+import { RenderResult, render, screen, waitFor } from '@testing-library/react'
 import userEvent from '@testing-library/user-event'
 import { TestWrapper } from '@common/utils/testUtils'
 import EnvironmentDetailsBody from '@cf/pages/environment-details/EnvironmentDetailsBody'
 import * as cfServices from 'services/cf'
 import type { ApiKey } from 'services/cf'
-
-jest.mock('@common/exports', () => ({
-  useToaster: () => ({
-    showSuccess: jest.fn(),
-    showError: jest.fn()
-  })
-}))
 
 const getMockResponseData = (keys: ApiKey[] = []) => ({
   loading: false,
@@ -67,6 +59,21 @@ jest.spyOn(cfServices, 'useAddAPIKey').mockReturnValue({
   mutate: mutateMock
 })
 
+const deleteMutate = jest.fn()
+jest.spyOn(cfServices, 'useDeleteAPIKey').mockReturnValue({
+  cancel: jest.fn(),
+  error: null,
+  loading: false,
+  mutate: deleteMutate
+})
+
+const existingKey: ApiKey = {
+  name: 'EXISTING KEY NAME',
+  identifier: 'EXISTING KEY IDENTIFIER',
+  apiKey: 'existing-api-key',
+  type: 'server'
+}
+
 describe('EnvironmentDetailsBody', () => {
   const addNewAPIKey = (newKey: ApiKey): void => {
     mutateMock.mockResolvedValue({ ...newKey })
@@ -112,13 +119,6 @@ describe('EnvironmentDetailsBody', () => {
   })
 
   test('it should not show the copy button and redaction warning when displaying existing keys', async () => {
-    const existingKey: ApiKey = {
-      name: 'EXISTING KEY NAME',
-      identifier: 'EXISTING KEY IDENTIFIER',
-      apiKey: 'existing-api-key',
-      type: 'server'
-    }
-
     useGetAllAPIKeysMock.mockReturnValue(getMockResponseData([existingKey]))
     renderComponent()
 
@@ -129,5 +129,60 @@ describe('EnvironmentDetailsBody', () => {
     expect(apiKeyEl.querySelector('svg')).not.toBeInTheDocument()
 
     expect(screen.queryByText('cf.environments.apiKeys.redactionWarning')).not.toBeInTheDocument()
+  })
+
+  test('it should show Delete SDK key confirmation modal when trash icon is clicked', async () => {
+    deleteMutate.mockResolvedValue({ data: {} })
+
+    useGetAllAPIKeysMock.mockReturnValue(getMockResponseData([existingKey]))
+    renderComponent()
+
+    userEvent.click(screen.getByRole('button', { name: 'trash' }))
+
+    await waitFor(() => {
+      expect(screen.queryByText('cf.environments.apiKeys.deleteTitle')).toBeInTheDocument()
+    })
+
+    userEvent.click(screen.getByRole('button', { name: 'confirm' }))
+    await waitFor(() => {
+      expect(deleteMutate).toBeCalledWith(existingKey.identifier)
+      expect(screen.queryByText('cf.environments.apiKeys.deleteTitle')).not.toBeInTheDocument()
+      expect(screen.queryByText('cf.environments.apiKeys.deleteSuccess')).toBeInTheDocument()
+    })
+  })
+
+  test('it should close confirmation modal when cancel button is clicked', async () => {
+    useGetAllAPIKeysMock.mockReturnValue(getMockResponseData([existingKey]))
+    renderComponent()
+
+    userEvent.click(screen.getByRole('button', { name: 'trash' }))
+
+    await waitFor(() => {
+      expect(screen.queryByText('cf.environments.apiKeys.deleteTitle')).toBeInTheDocument()
+    })
+
+    userEvent.click(screen.getByRole('button', { name: 'cancel' }))
+
+    await waitFor(() => {
+      expect(screen.queryByText('cf.environments.apiKeys.deleteTitle')).not.toBeInTheDocument()
+    })
+  })
+
+  test('it should show error message when API Key failed to delete', async () => {
+    useGetAllAPIKeysMock.mockReturnValue(getMockResponseData([existingKey]))
+    deleteMutate.mockRejectedValueOnce({ data: { message: 'FAILED TO FETCH' } })
+
+    renderComponent()
+
+    userEvent.click(screen.getByRole('button', { name: 'trash' }))
+
+    await waitFor(() => {
+      expect(screen.queryByText('cf.environments.apiKeys.deleteTitle')).toBeInTheDocument()
+    })
+
+    userEvent.click(screen.getByRole('button', { name: 'confirm' }))
+    await waitFor(() => {
+      expect(screen.queryByText('FAILED TO FETCH')).toBeInTheDocument()
+    })
   })
 })

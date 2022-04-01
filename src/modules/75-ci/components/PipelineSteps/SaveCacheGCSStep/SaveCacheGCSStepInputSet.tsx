@@ -6,7 +6,9 @@
  */
 
 import React from 'react'
-import { Text, getMultiTypeFromValue, MultiTypeInputType, FormikForm, Color } from '@wings-software/uicore'
+import { connect } from 'formik'
+import { Text, getMultiTypeFromValue, MultiTypeInputType, FormikForm } from '@wings-software/uicore'
+import { Color } from '@harness/design-system'
 import { useStrings } from 'framework/strings'
 import StepCommonFieldsInputSet from '@ci/components/PipelineSteps/StepCommonFields/StepCommonFieldsInputSet'
 import { Connectors } from '@connectors/constants'
@@ -15,11 +17,12 @@ import { CIStep } from '../CIStep/CIStep'
 import { CIStepOptionalConfig } from '../CIStep/CIStepOptionalConfig'
 import css from '@pipeline/components/PipelineSteps/Steps/Steps.module.scss'
 
-export const SaveCacheGCSStepInputSet: React.FC<SaveCacheGCSStepProps> = ({
+export const SaveCacheGCSStepInputSetBasic: React.FC<SaveCacheGCSStepProps> = ({
   template,
   path,
   readonly,
-  stepViewType
+  stepViewType,
+  formik
 }) => {
   const { getString } = useStrings()
 
@@ -51,11 +54,13 @@ export const SaveCacheGCSStepInputSet: React.FC<SaveCacheGCSStepProps> = ({
           ...(getMultiTypeFromValue(template?.spec?.key as string) === MultiTypeInputType.RUNTIME && {
             'spec.key': { tooltipId: 'saveCacheKey' }
           }),
-          ...(getMultiTypeFromValue(template?.spec?.sourcePaths as string) === MultiTypeInputType.RUNTIME && {
+          ...(getMultiTypeFromValue(template?.spec?.sourcePaths) === MultiTypeInputType.RUNTIME && {
             'spec.sourcePaths': {}
           })
         }}
         path={path || ''}
+        isInputSetView={true}
+        formik={formik}
       />
       <CIStepOptionalConfig
         stepViewType={stepViewType}
@@ -72,3 +77,6 @@ export const SaveCacheGCSStepInputSet: React.FC<SaveCacheGCSStepProps> = ({
     </FormikForm>
   )
 }
+
+const SaveCacheGCSStepInputSet = connect(SaveCacheGCSStepInputSetBasic)
+export { SaveCacheGCSStepInputSet }

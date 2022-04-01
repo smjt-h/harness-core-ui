@@ -9,9 +9,7 @@ import type { ColumnChartProps } from '@cv/components/ColumnChart/ColumnChart.ty
 import type { SelectOption } from '@pipeline/components/PipelineSteps/Steps/StepsTypes'
 import type { RiskData } from 'services/cv'
 export interface HealthScoreChartProps {
-  serviceIdentifier?: string
-  envIdentifier?: string
-  monitoredServiceIdentifier?: string
+  monitoredServiceIdentifier: string
   duration: SelectOption
   setHealthScoreData?: (healthScoreData: RiskData[]) => void
   timeFormat?: string

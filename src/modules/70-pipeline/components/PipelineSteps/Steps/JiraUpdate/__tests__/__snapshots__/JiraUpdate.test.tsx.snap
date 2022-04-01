@@ -961,6 +961,7 @@ exports[`Jira Update tests Edit stage - readony view: editstage-readonly 1`] = `
                     class="bp3-input"
                     disabled=""
                     name="name"
+                    placeholder="pipeline.stepNamePlaceholder"
                     type="text"
                     value=""
                   />
@@ -1286,6 +1287,12 @@ exports[`Jira Update tests Edit stage - readony view: editstage-readonly 1`] = `
     </form>
   </div>
 </div>
+`;
+
+exports[`Jira Update tests Minimum time cannot be less than 10s: Value must be greater than or equal to "10s" 1`] = `
+Object {
+  "timeout": "Value must be greater than or equal to \\"10s\\"",
+}
 `;
 
 exports[`Jira Update tests deploymentform readonly mode: jira-update-deploymentform-readonly 1`] = `

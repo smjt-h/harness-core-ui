@@ -242,3 +242,26 @@ export const mockUserGroupsResponse: UseGetMockData<ResponsePageUserGroupDTO> = 
     }
   }
 }
+
+export const getYaml = () => `pipeline:
+    stages:
+      - stage:
+            spec:
+                execution:
+                    steps:
+                        - step:
+                              name: Harness Approval
+                              identifier: harnessApproval
+                              type: HarnessApproval
+                              timeout: 1d
+                              spec:
+                                  approvers:
+                                      userGroups: account.userGroup1`
+
+export const getParams = () => ({
+  accountId: 'accountId',
+  module: 'cd',
+  orgIdentifier: 'default',
+  pipelineIdentifier: '-1',
+  projectIdentifier: 'projectIdentifier'
+})

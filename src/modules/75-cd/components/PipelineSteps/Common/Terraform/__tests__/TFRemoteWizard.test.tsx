@@ -18,6 +18,38 @@ const props = {
   isEditMode: false,
   allowableTypes: [MultiTypeInputType.FIXED, MultiTypeInputType.EXPRESSION, MultiTypeInputType.RUNTIME]
 }
+
+const testProps = {
+  name: 'Terraform Var File Details',
+  onSubmitCallBack: jest.fn(),
+  isEditMode: true,
+  previousStep: jest.fn(),
+  prevStepData: {
+    varFile: {
+      identifier: 'test',
+      spec: {
+        store: {
+          spec: {
+            gitFetchType: 'pipelineSteps.commitIdValue',
+            branch: 'test-path',
+            paths: ['path1', 'path2'],
+            repoName: 'test',
+            commitId: 'testCommitID',
+            connectorRef: {
+              connector: {
+                spec: {
+                  connectionType: 'Account'
+                }
+              }
+            }
+          }
+        }
+      }
+    }
+  },
+  allowableTypes: [MultiTypeInputType.FIXED, MultiTypeInputType.EXPRESSION, MultiTypeInputType.RUNTIME]
+}
+
 describe('Terraform Remote Form tests', () => {
   test('initial rendering', () => {
     const { container } = render(
@@ -40,7 +72,16 @@ describe('Terraform Remote Form tests', () => {
               spec: {
                 gitFetchType: 'pipelineSteps.deploy.inputSet.branch',
                 branch: 'test-path',
-                paths: ['path1', 'path2']
+                paths: ['path1', 'path2'],
+                repoName: 'test',
+                commitId: 'testCommitID',
+                connectorRef: {
+                  connector: {
+                    spec: {
+                      type: 'Account'
+                    }
+                  }
+                }
               }
             }
           }
@@ -48,11 +89,12 @@ describe('Terraform Remote Form tests', () => {
       },
       allowableTypes: [MultiTypeInputType.FIXED, MultiTypeInputType.EXPRESSION, MultiTypeInputType.RUNTIME]
     }
-    const { container } = render(
+    const { container, getByText } = render(
       <TestWrapper>
         <TFRemoteWizard {...defaultProps} />
       </TestWrapper>
     )
+    fireEvent.click(getByText('back'))
     expect(container).toMatchSnapshot()
   })
 
@@ -107,11 +149,12 @@ describe('Terraform Remote Form tests', () => {
       },
       allowableTypes: [MultiTypeInputType.FIXED, MultiTypeInputType.EXPRESSION, MultiTypeInputType.RUNTIME]
     }
-    const { container } = render(
+    const { container, getByText } = render(
       <TestWrapper>
         <TFRemoteWizard {...defaultProps} />
       </TestWrapper>
     )
+    fireEvent.click(getByText('submit'))
     expect(container).toMatchSnapshot()
   })
 
@@ -141,6 +184,20 @@ describe('Terraform Remote Form tests', () => {
         <TFRemoteWizard {...defaultProps} />
       </TestWrapper>
     )
+    expect(container).toMatchSnapshot()
+  })
+
+  test('render with more data', async () => {
+    const { container, getByText } = render(
+      <TestWrapper>
+        <TFRemoteWizard {...testProps} />
+      </TestWrapper>
+    )
+    //remove path and submit
+    const deleteQueries = container.querySelectorAll('[data-icon="main-trash"]')
+    fireEvent.click(deleteQueries[0])
+
+    fireEvent.click(getByText('submit'))
     expect(container).toMatchSnapshot()
   })
 })

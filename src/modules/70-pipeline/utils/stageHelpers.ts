@@ -5,11 +5,13 @@
  * https://polyformproject.org/wp-content/uploads/2020/06/PolyForm-Shield-1.0.0.txt.
  */
 
-import { isEmpty } from 'lodash-es'
+import { defaultTo, get, isEmpty } from 'lodash-es'
 import { getMultiTypeFromValue, MultiTypeInputType } from '@wings-software/uicore'
 import type { GraphLayoutNode, PipelineExecutionSummary } from 'services/pipeline-ng'
 import type { StringKeys } from 'framework/strings'
+import type { GetExecutionStrategyYamlQueryParams, PipelineInfoConfig, StageElementConfig } from 'services/cd-ng'
 import type { InputSetDTO } from './types'
+import type { DeploymentStageElementConfig, PipelineStageWrapper, StageElementWrapper } from './pipelineTypes'
 
 export enum StageType {
   DEPLOY = 'Deployment',
@@ -18,7 +20,8 @@ export enum StageType {
   PIPELINE = 'Pipeline',
   APPROVAL = 'Approval',
   CUSTOM = 'Custom',
-  Template = 'Template'
+  Template = 'Template',
+  SECURITY = 'Security'
 }
 
 export const changeEmptyValuesToRunTimeInput = (inputset: any, propertyKey: string): InputSetDTO => {
@@ -97,4 +100,20 @@ export const getHelpeTextForTags = (
     invalidFields.length > 1 ? ' are ' : ' is '
   } ${getString('pipeline.tagDependencyRequired')}`
   return invalidFields.length > 0 ? helpText : ''
+}
+
+export const getSelectedDeploymentType = (
+  stage: StageElementWrapper<DeploymentStageElementConfig> | undefined,
+  getStageFromPipeline: <T extends StageElementConfig = StageElementConfig>(
+    stageId: string,
+    pipeline?: PipelineInfoConfig | undefined
+  ) => PipelineStageWrapper<T>,
+  isPropagating = false
+): GetExecutionStrategyYamlQueryParams['serviceDefinitionType'] => {
+  if (isPropagating) {
+    const parentStageId = get(stage, 'stage.spec.serviceConfig.useFromStage.stage', null)
+    const parentStage = getStageFromPipeline<DeploymentStageElementConfig>(defaultTo(parentStageId, ''))
+    return get(parentStage, 'stage.stage.spec.serviceConfig.serviceDefinition.type', null)
+  }
+  return get(stage, 'stage.spec.serviceConfig.serviceDefinition.type', null)
 }

@@ -15,7 +15,7 @@ import ChangeEventServiceHealth from '../ChangeEventServiceHealth'
 
 describe('Unit tests for ChangeEventServiceHealth', () => {
   beforeAll(() => {
-    jest.spyOn(cv, 'useGetMonitoredServiceOverAllHealthScoreWithServiceAndEnv').mockReturnValue({
+    jest.spyOn(cv, 'useGetMonitoredServiceOverAllHealthScore').mockReturnValue({
       data: { data: { healthScores: mockRiskValue } },
       refetch: jest.fn() as unknown
     } as UseGetReturn<any, any, any, any>)
@@ -25,8 +25,7 @@ describe('Unit tests for ChangeEventServiceHealth', () => {
       <TestWrapper>
         <ChangeEventServiceHealth
           eventType="K8sCluster"
-          envIdentifier="1234_iden"
-          serviceIdentifier="1234_service"
+          monitoredServiceIdentifier="monitored_service_identifier"
           startTime={123123}
         />
       </TestWrapper>

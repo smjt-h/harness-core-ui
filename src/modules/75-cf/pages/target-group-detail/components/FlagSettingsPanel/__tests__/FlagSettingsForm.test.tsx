@@ -11,8 +11,8 @@ import { getByRole, render, RenderResult, screen, waitFor } from '@testing-libra
 import userEvent from '@testing-library/user-event'
 import { TestWrapper } from '@common/utils/testUtils'
 import * as cfServices from 'services/cf'
-import { mockTargetGroup, mockTargetGroupFlagsMap } from './mocks'
-import type { TargetGroupFlagsMap } from '../FlagSettingsPanel.types'
+import type { TargetGroupFlagsMap } from '../../../TargetGroupDetailPage.types'
+import { mockTargetGroup, mockTargetGroupFlagsMap } from '../../../__tests__/mocks'
 import FlagSettingsForm, { FlagSettingsFormProps } from '../FlagSettingsForm'
 
 const renderComponent = (props: Partial<FlagSettingsFormProps> = {}): RenderResult =>
@@ -30,7 +30,8 @@ const renderComponent = (props: Partial<FlagSettingsFormProps> = {}): RenderResu
       <FlagSettingsForm
         targetGroup={mockTargetGroup}
         targetGroupFlagsMap={mockTargetGroupFlagsMap}
-        refresh={jest.fn()}
+        onChange={jest.fn()}
+        openAddFlagDialog={jest.fn()}
         {...props}
       />
     </TestWrapper>
@@ -202,17 +203,17 @@ describe('FlagSettingsForm', () => {
     await waitFor(() => expect(screen.getByText('cf.noResultMatch')).toBeInTheDocument())
   })
 
-  test('it should send a patch and refresh when the form is submitted', async () => {
-    const refreshMock = jest.fn()
+  test('it should send a patch and call the onChange callback when the form is submitted', async () => {
+    const onChangeMock = jest.fn()
     const mutateMock = jest.fn().mockResolvedValue(undefined)
     usePatchSegmentMock.mockReturnValue({
       mutate: mutateMock
     } as any)
 
-    renderComponent({ refresh: refreshMock })
+    renderComponent({ onChange: onChangeMock })
 
     expect(mutateMock).not.toHaveBeenCalled()
-    expect(refreshMock).not.toHaveBeenCalled()
+    expect(onChangeMock).not.toHaveBeenCalled()
 
     userEvent.click(screen.getAllByRole('button', { name: 'cf.segmentDetail.removeRule' })[0])
 
@@ -222,22 +223,22 @@ describe('FlagSettingsForm', () => {
 
     await waitFor(() => {
       expect(mutateMock).toHaveBeenCalled()
-      expect(refreshMock).toHaveBeenCalled()
+      expect(onChangeMock).toHaveBeenCalled()
     })
   })
 
   test('it should display an error when the mutate fails', async () => {
     const message = 'ERROR!'
-    const refreshMock = jest.fn()
+    const onChangeMock = jest.fn()
     const mutateMock = jest.fn().mockRejectedValue({ message })
     usePatchSegmentMock.mockReturnValue({
       mutate: mutateMock
     } as any)
 
-    renderComponent({ refresh: refreshMock })
+    renderComponent({ onChange: onChangeMock })
 
     expect(mutateMock).not.toHaveBeenCalled()
-    expect(refreshMock).not.toHaveBeenCalled()
+    expect(onChangeMock).not.toHaveBeenCalled()
 
     userEvent.click(screen.getAllByRole('button', { name: 'cf.segmentDetail.removeRule' })[0])
 
@@ -247,7 +248,19 @@ describe('FlagSettingsForm', () => {
 
     await waitFor(() => {
       expect(screen.getByText(message)).toBeInTheDocument()
-      expect(refreshMock).not.toHaveBeenCalled()
+      expect(onChangeMock).not.toHaveBeenCalled()
     })
+  })
+
+  test('it should call the openAddFlagDialog callback when the Add Flag button is pressed', async () => {
+    const openAddFlagDialogMock = jest.fn()
+
+    renderComponent({ openAddFlagDialog: openAddFlagDialogMock })
+
+    expect(openAddFlagDialogMock).not.toHaveBeenCalled()
+
+    userEvent.click(screen.getByRole('button', { name: 'cf.segmentDetail.addFlag' }))
+
+    await waitFor(() => expect(openAddFlagDialogMock).toHaveBeenCalled())
   })
 })

@@ -88,6 +88,7 @@ export default function MapQueriesToHarnessServiceLayout(props: MapQueriesToHarn
           loading={loading}
           error={error}
           query={query}
+          dataTooltipId={'gcoLogsQuery'}
         />
       </Layout.Horizontal>
     </Card>

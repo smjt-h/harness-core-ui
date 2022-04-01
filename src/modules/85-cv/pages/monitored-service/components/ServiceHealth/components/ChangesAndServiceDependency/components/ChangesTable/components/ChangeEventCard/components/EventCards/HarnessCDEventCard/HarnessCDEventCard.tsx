@@ -7,7 +7,8 @@
 
 import React, { useMemo } from 'react'
 import { Divider } from '@blueprintjs/core'
-import { Card, Color, Container, Text } from '@wings-software/uicore'
+import { Card, Container, Text } from '@wings-software/uicore'
+import { Color } from '@harness/design-system'
 import type { ChangeEventDTO } from 'services/cv'
 import { useStrings } from 'framework/strings'
 import ChangeEventServiceHealth from '@cv/pages/monitored-service/components/ServiceHealth/components/ChangesAndServiceDependency/components/ChangesTable/components/ChangeCard/components/ChangeEventServiceHealth/ChangeEventServiceHealth'
@@ -18,15 +19,7 @@ import ChangeTitle from '../../ChangeTitle/ChangeTitle'
 import DeploymentTimeDuration from '../../DeploymentTimeDuration/DeploymentTimeDuration'
 import css from '../../../ChangeEventCard.module.scss'
 
-export default function HarnessCDEventCard({
-  data,
-  serviceIdentifier,
-  environmentIdentifier
-}: {
-  data: ChangeEventDTO
-  serviceIdentifier?: string
-  environmentIdentifier?: string
-}): JSX.Element {
+export default function HarnessCDEventCard({ data }: { data: ChangeEventDTO }): JSX.Element {
   const { getString } = useStrings()
   const changeTitleData: ChangeTitleData = useMemo(() => createChangeTitleData(data), [])
   const changeDetailsData: ChangeDetailsDataInterface = useMemo(() => createChangeDetailsData(data), [])
@@ -51,10 +44,9 @@ export default function HarnessCDEventCard({
         />
       </Container>
       <Divider className={css.divider} />
-      {data?.eventTime && data.serviceIdentifier && data.envIdentifier && (
+      {data?.eventTime && data.monitoredServiceIdentifier && (
         <ChangeEventServiceHealth
-          serviceIdentifier={serviceIdentifier ?? data.serviceIdentifier}
-          envIdentifier={environmentIdentifier ?? data.envIdentifier}
+          monitoredServiceIdentifier={data.monitoredServiceIdentifier}
           startTime={data.eventTime}
           eventType={data.type}
         />

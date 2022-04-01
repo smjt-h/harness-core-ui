@@ -107,6 +107,10 @@ describe('STUDIO MODE', () => {
     })
   })
 
+  afterEach(() => {
+    jest.clearAllMocks()
+  })
+
   test('should toggle visual and yaml mode', async () => {
     const { container, getByText, queryByText } = render(
       <TestWrapper>
@@ -309,7 +313,13 @@ describe('STUDIO MODE', () => {
     })
 
     // Expect the merge APi to be called
-    await waitFor(() => expect(mockMergeInputSetResponse.mutate).toBeCalled())
+    await waitFor(() =>
+      expect(mockMergeInputSetResponse.mutate).toBeCalledWith(
+        expect.objectContaining({
+          inputSetReferences: ['inputset2', 'inputset3']
+        })
+      )
+    )
 
     // Save the snapshot - value is present from merge input set API
     expect(container).toMatchSnapshot('after applying input sets')
@@ -365,8 +375,14 @@ describe('STUDIO MODE', () => {
       fireEvent.click(getByText('pipeline.inputSets.applyInputSet'))
     })
 
-    // Expect the merge APi not to be called
-    await waitFor(() => expect(mockMergeInputSetResponse.mutate).toBeCalled())
+    // Expect the merge APi to be called
+    await waitFor(() =>
+      expect(mockMergeInputSetResponse.mutate).toBeCalledWith(
+        expect.objectContaining({
+          inputSetReferences: ['inputset3']
+        })
+      )
+    )
 
     // Save the snapshot - value is present from merge input set API
     expect(container).toMatchSnapshot()
@@ -421,6 +437,40 @@ describe('RERUN MODE', () => {
         return mockPipelineTemplateYamlForRerun
       }
     })
+  })
+
+  test('preflight api getting called if skipPreflight is unchecked', async () => {
+    const { container, getByText, queryByText } = render(
+      <TestWrapper>
+        <RunPipelineForm {...commonProps} />
+      </TestWrapper>
+    )
+
+    // Navigate to 'Provide Values'
+    fireEvent.click(getByText('pipeline.pipelineInputPanel.provide'))
+    await waitFor(() => expect(queryByText('customVariables.pipelineVariablesTitle')).toBeTruthy())
+
+    // Enter a value for the pipeline variable
+    const variableInputElement = container.querySelector('input[name="variables[0].value"]')
+    act(() => {
+      fireEvent.change(variableInputElement!, { target: { value: 'enteredvalue' } })
+    })
+
+    // Preflight check is not skipped
+    const skipPreflightButton = getByText('pre-flight-check.skipCheckBtn').querySelector(
+      '[type=checkbox]'
+    ) as HTMLInputElement
+    expect(skipPreflightButton.checked).toBeFalsy()
+
+    // Submit button click
+    const runButton = container.querySelector('button[type="submit"]')
+    await act(() => {
+      fireEvent.click(runButton!)
+    })
+
+    // Check preflight functions called
+    await waitFor(() => expect(useGetPreflightCheckResponse).toBeCalled())
+    await waitFor(() => expect(startPreflightCheckPromise).toBeCalled())
   })
 
   test('should should have the values prefilled', async () => {

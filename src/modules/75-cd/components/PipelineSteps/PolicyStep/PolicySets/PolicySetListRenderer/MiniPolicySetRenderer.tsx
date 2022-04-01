@@ -9,8 +9,9 @@ import React from 'react'
 import { useParams } from 'react-router-dom'
 import { defaultTo } from 'lodash-es'
 import { Spinner } from '@blueprintjs/core'
+import cx from 'classnames'
 
-import { Color, Layout, Text, useToaster } from '@harness/uicore'
+import { Button, Color, Layout, Text } from '@harness/uicore'
 import { LinkedPolicy, useGetPolicySet } from 'services/pm'
 
 import type { ProjectPathProps } from '@common/interfaces/RouteInterfaces'
@@ -22,11 +23,11 @@ import css from './PolicySetListRenderer.module.scss'
 
 interface MiniPolicySetRendererProps {
   policySetId: string
+  deletePolicySet: (policySetId: string) => void
 }
 
-export function MiniPolicySetRenderer({ policySetId }: MiniPolicySetRendererProps) {
+export function MiniPolicySetRenderer({ policySetId, deletePolicySet }: MiniPolicySetRendererProps) {
   const { accountId: accountIdentifier, projectIdentifier, orgIdentifier } = useParams<ProjectPathProps>()
-  const { showError } = useToaster()
 
   const policySetType = policySetId.includes('account.')
     ? PolicySetType.ACCOUNT
@@ -47,24 +48,38 @@ export function MiniPolicySetRenderer({ policySetId }: MiniPolicySetRendererProp
     policyset: policySetId
   })
 
-  if (error) {
-    showError(getErrorMessage(error))
-    return null
-  } else {
-    return (
+  const onDelete = () => {
+    deletePolicySet(policySetId)
+  }
+
+  return (
+    <Layout.Horizontal flex={{ justifyContent: 'flex-start', alignItems: 'center' }} margin={{ bottom: 'small' }}>
       <Layout.Horizontal
         className={css.policySetHolder}
+        height={'36px'}
+        width={'500px'}
         flex={{ justifyContent: 'space-between', alignItems: 'center' }}
+        padding={{
+          right: 'medium',
+          left: 'medium'
+        }}
+        margin={{
+          right: 'xsmall'
+        }}
       >
         {loading ? (
           <Spinner size={Spinner.SIZE_SMALL} />
+        ) : error ? (
+          <Text lineClamp={1} color={Color.RED_800}>
+            {getErrorMessage(error)}
+          </Text>
         ) : policySet ? (
           <>
             <Text lineClamp={1} color={Color.BLACK}>
               {policySet.name}
             </Text>
             <Layout.Horizontal flex={{ justifyContent: 'flex-end', alignItems: 'center' }}>
-              <MiniPoliciesRenderer policies={defaultTo(policySet.policies, [])} />
+              <MiniPoliciesRenderer policies={defaultTo(policySet.policies, [])} alignRight />
               <Text font={'small'} width={48}>
                 {policySetType}
               </Text>
@@ -72,15 +87,17 @@ export function MiniPolicySetRenderer({ policySetId }: MiniPolicySetRendererProp
           </>
         ) : null}
       </Layout.Horizontal>
-    )
-  }
+      <Button icon="main-trash" onClick={onDelete} minimal />
+    </Layout.Horizontal>
+  )
 }
 
 interface MiniPoliciesRendererProps {
   policies: LinkedPolicy[]
+  alignRight?: boolean
 }
 
-export function MiniPoliciesRenderer({ policies }: MiniPoliciesRendererProps) {
+export function MiniPoliciesRenderer({ policies, alignRight }: MiniPoliciesRendererProps) {
   const length = policies.length
   // istanbul ignore else
   if (length === 0) {
@@ -89,9 +106,18 @@ export function MiniPoliciesRenderer({ policies }: MiniPoliciesRendererProps) {
   const policyNames = policies.map(policy => policy.name)
 
   return (
-    <Layout.Horizontal flex={{ justifyContent: 'flex-start', alignItems: 'center' }} margin={{ right: 'small' }}>
-      {policyNames.slice(0, 2).map((policy, index) => (
-        <Text className={css.styledPolicy} key={index} lineClamp={1}>
+    <Layout.Horizontal
+      flex={{ justifyContent: alignRight ? 'flex-end' : 'flex-start', alignItems: 'center' }}
+      margin={{ right: 'small' }}
+    >
+      {policyNames.slice(0, 2).map(policy => (
+        <Text
+          className={cx(css.styledPolicy, {
+            [css.big]: length === 1
+          })}
+          key={policy}
+          lineClamp={1}
+        >
           {policy}
         </Text>
       ))}
@@ -102,13 +128,13 @@ export function MiniPoliciesRenderer({ policies }: MiniPoliciesRendererProps) {
           alwaysShowTooltip
           tooltip={
             <Layout.Vertical padding="medium">
-              {policyNames.splice(2).map((policy, index) => (
+              {policyNames.splice(2).map(policy => (
                 <Text
                   lineClamp={1}
                   color={Color.BLACK}
-                  margin={{ top: 'small', bottom: 'small' }}
+                  margin={length > 3 && { top: 'small', bottom: 'small' }}
                   style={{ maxWidth: '400px' }}
-                  key={index}
+                  key={policy}
                 >
                   {policy}
                 </Text>

@@ -412,9 +412,7 @@ exports[`<TemplateVariables /> tests snapshot test 1`] = `
                             >
                               <div />
                               <button
-                                class="bp3-button bp3-disabled Button--button StyledProps--font StyledProps--main add-variable Button--with-current-color Button--iconOnly Button--withLeftIcon Button--variation Button--variation-link Button--size Button--small"
-                                disabled=""
-                                tabindex="-1"
+                                class="bp3-button Button--button StyledProps--font StyledProps--main add-variable Button--with-current-color Button--iconOnly Button--withLeftIcon Button--variation Button--variation-link Button--size Button--small"
                                 type="button"
                               >
                                 <span

@@ -1,7 +1,6 @@
 {
   "name": "Random",
   "identifier": "Random",
-  "allowStageExecutions": false,
   "projectIdentifier": "Yogesh_Test",
   "orgIdentifier": "default",
   "tags": {},
@@ -12,8 +11,79 @@
         "identifier": "Stage_1",
         "template": {
           "templateRef": "Test_Stage_Template",
-          "versionLabel": "Version1"
+          "versionLabel": "Version2"
         }
+      }
+    },
+    {
+      "stage": {
+        "name": "Stage 2",
+        "identifier": "Stage_2",
+        "description": "",
+        "type": "Deployment",
+        "spec": {
+          "serviceConfig": {
+            "serviceRef": "Some_Service",
+            "serviceDefinition": {
+              "type": "Kubernetes",
+              "spec": {
+                "variables": []
+              }
+            }
+          },
+          "infrastructure": {
+            "environmentRef": "Some_Environment",
+            "infrastructureDefinition": {
+              "type": "KubernetesDirect",
+              "spec": {
+                "connectorRef": "account.arpit2929",
+                "namespace": "default",
+                "releaseName": "release-<+INFRA_KEY>"
+              }
+            },
+            "allowSimultaneousDeployments": false
+          },
+          "execution": {
+            "steps": [
+              {
+                "step": {
+                  "name": "Step 1",
+                  "identifier": "Step_1",
+                  "template": {
+                    "templateRef": "account.new_step_name",
+                    "versionLabel": "Version1",
+                    "templateInputs": {
+                      "type": "Http",
+                      "spec": {
+                        "url": "<+input>",
+                        "requestBody": "<+input>"
+                      }
+                    }
+                  }
+                }
+              }
+            ],
+            "rollbackSteps": []
+          }
+        },
+        "tags": {},
+        "failureStrategies": [
+          {
+            "onFailure": {
+              "errors": ["AllErrors"],
+              "action": {
+                "type": "StageRollback"
+              }
+            }
+          }
+        ],
+        "variables": [
+          {
+            "name": "var1",
+            "type": "String",
+            "value": "val1"
+          }
+        ]
       }
     }
   ]

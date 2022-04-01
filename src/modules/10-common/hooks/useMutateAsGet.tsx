@@ -76,8 +76,10 @@ async function _fetchData<TData, TError, TQueryParams, TRequestBody, TPathParams
       setError(null)
     }
   } catch (e) {
-    setData(null)
-    setError(e)
+    if (shouldShowError(e)) {
+      setData(null)
+      setError(e)
+    }
   }
 }
 

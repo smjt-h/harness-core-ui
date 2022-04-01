@@ -19,6 +19,7 @@ export interface InputWithDynamicModalForJsonProps {
   recordsModalHeader: string
   fieldValue: string
   showExactJsonPath?: boolean
+  dataTooltipId?: string
 }
 
 export const DialogProps: IDialogProps = {

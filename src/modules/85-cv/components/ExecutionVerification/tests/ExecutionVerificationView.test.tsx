@@ -6,8 +6,9 @@
  */
 
 import React from 'react'
-import { render, waitFor } from '@testing-library/react'
-import { TestWrapper } from '@common/utils/testUtils'
+import userEvent from '@testing-library/user-event'
+import { render, waitFor, screen } from '@testing-library/react'
+import { findDialogContainer, TestWrapper } from '@common/utils/testUtils'
 import type { ExecutionNode } from 'services/pipeline-ng'
 import { ExecutionVerificationView } from '../ExecutionVerificationView'
 import { getActivityId, getDefaultTabId } from '../ExecutionVerificationView.utils'
@@ -24,6 +25,16 @@ jest.mock('../components/ExecutionVerificationSummary/ExecutionVerificationSumma
 jest.mock('../components/LogAnalysisContainer/LogAnalysisView.container', () => ({
   __esModule: true,
   default: () => <div className="LogAnalysisContainer" />
+}))
+
+jest.mock('@cv/hooks/useLogContentHook/views/VerifyStepLog', () => ({
+  __esModule: true,
+  default: () => <div>Mock VerifyStepLog</div>
+}))
+
+jest.mock('@cv/hooks/useLogContentHook/views/SLOLog', () => ({
+  __esModule: true,
+  default: () => <div>Mock SLOLog</div>
 }))
 
 jest.mock('highcharts-react-official', () => () => <></>)
@@ -105,5 +116,26 @@ describe('Unit tests for ExecutionVerificationView unit tests', () => {
     expect(MetricsContainer.container.querySelector('.LogAnalysisContainer')).not.toBeInTheDocument()
     expect(MetricsContainer.container.querySelector('.deploymentMetrics')).toBeInTheDocument()
     expect(MetricsContainer.container).toMatchSnapshot()
+  })
+
+  test('should open the LogContent modal and render VerifyStepLog by clicking the Execution Logs button', async () => {
+    render(
+      <TestWrapper>
+        <ExecutionVerificationView step={{ progressData: { activityId: '1234_activityId' as any } }} />
+      </TestWrapper>
+    )
+
+    expect(screen.getByText('cv.executionLogs')).toBeInTheDocument()
+
+    userEvent.click(screen.getByText('cv.executionLogs'))
+
+    const dialog = findDialogContainer()
+
+    await waitFor(() => {
+      expect(screen.getByText('Mock VerifyStepLog')).toBeInTheDocument()
+      expect(screen.queryByText('Mock SLOLog')).not.toBeInTheDocument()
+    })
+
+    userEvent.click(dialog?.querySelector('[data-icon="Stroke"]')!)
   })
 })

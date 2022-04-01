@@ -7,7 +7,7 @@
 
 import React, { useCallback } from 'react'
 import { MultiTypeInputType, NestedAccordionProvider, PageError } from '@wings-software/uicore'
-import { omit, set } from 'lodash-es'
+import { isEmpty, omit, set } from 'lodash-es'
 import { useTemplateVariables } from '@pipeline/components/TemplateVariablesContext/TemplateVariablesContext'
 import { PageSpinner } from '@common/components'
 import StageCard from '@pipeline/components/PipelineStudio/PipelineVariables/Cards/StageCard'
@@ -23,7 +23,10 @@ import { TemplateType } from '@templates-library/utils/templatesUtils'
 import css from '@pipeline/components/PipelineStudio/PipelineVariables/PipelineVariables.module.scss'
 
 const TemplateVariables: React.FC = (): JSX.Element => {
-  const { updateTemplate } = React.useContext(TemplateContext)
+  const {
+    state: { template },
+    updateTemplate
+  } = React.useContext(TemplateContext)
   const { originalTemplate, variablesTemplate, metadataMap, error, initLoading } = useTemplateVariables()
 
   const onUpdate = useCallback(
@@ -40,11 +43,13 @@ const TemplateVariables: React.FC = (): JSX.Element => {
     return <PageSpinner />
   }
 
+  const allowableTypes = [MultiTypeInputType.FIXED, MultiTypeInputType.RUNTIME, MultiTypeInputType.EXPRESSION]
+
   return (
     <div className={css.pipelineVariables}>
       {error ? (
         <PageError message={(error?.data as Error)?.message || error?.message} />
-      ) : (
+      ) : !isEmpty(variablesTemplate) ? (
         <div className={css.content}>
           <VariablesHeader enableSearch={false} />
           <div className={css.variableList}>
@@ -52,11 +57,11 @@ const TemplateVariables: React.FC = (): JSX.Element => {
               {originalTemplate.type === TemplateType.Stage && (
                 <StageCard
                   stage={variablesTemplate as StageElementConfig}
+                  unresolvedStage={{ ...template.spec, identifier: DefaultNewStageId } as StageElementConfig}
                   originalStage={{ ...originalTemplate.spec, identifier: DefaultNewStageId } as StageElementConfig}
                   metadataMap={metadataMap}
-                  readonly={true}
                   path="template"
-                  allowableTypes={[MultiTypeInputType.FIXED, MultiTypeInputType.RUNTIME, MultiTypeInputType.EXPRESSION]}
+                  allowableTypes={allowableTypes}
                   stepsFactory={factory}
                   updateStage={onUpdate}
                 />
@@ -68,7 +73,7 @@ const TemplateVariables: React.FC = (): JSX.Element => {
                   metadataMap={metadataMap}
                   readonly={true}
                   stepPath="template"
-                  allowableTypes={[MultiTypeInputType.FIXED, MultiTypeInputType.RUNTIME, MultiTypeInputType.EXPRESSION]}
+                  allowableTypes={allowableTypes}
                   stageIdentifier={DefaultNewStageId}
                   onUpdateStep={onUpdate}
                   stepsFactory={factory}
@@ -77,7 +82,7 @@ const TemplateVariables: React.FC = (): JSX.Element => {
             </GitSyncStoreProvider>
           </div>
         </div>
-      )}
+      ) : null}
     </div>
   )
 }

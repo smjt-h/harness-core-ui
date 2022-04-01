@@ -6,9 +6,10 @@
  */
 
 import React, { useEffect, useMemo, useState } from 'react'
-import { Container, Icon, Color, Text, PageError } from '@wings-software/uicore'
+import { Container, Icon, Text, PageError } from '@wings-software/uicore'
 import { useParams } from 'react-router-dom'
 import cx from 'classnames'
+import { Color } from '@harness/design-system'
 import { useGetVerifyStepDeploymentActivitySummary } from 'services/cv'
 import type { ProjectPathProps } from '@common/interfaces/RouteInterfaces'
 import { allowedStrategiesAsPerStep } from '@pipeline/components/PipelineSteps/AdvancedSteps/FailureStrategyPanel/StrategySelection/StrategyConfig'
@@ -133,6 +134,10 @@ export function ExecutionVerificationSummary(props: VerifyExecutionProps): JSX.E
             deploymentVerificationJobInstanceSummary?.logsAnalysisSummary?.anomalousClusterCount || 0
           }
           totalLogClusters={deploymentVerificationJobInstanceSummary?.logsAnalysisSummary?.totalClusterCount || 0}
+          errorClustersInViolation={
+            deploymentVerificationJobInstanceSummary?.errorAnalysisSummary?.anomalousClusterCount || 0
+          }
+          totalErrorClusters={deploymentVerificationJobInstanceSummary?.errorAnalysisSummary?.totalClusterCount || 0}
         />
       )}
     </Container>

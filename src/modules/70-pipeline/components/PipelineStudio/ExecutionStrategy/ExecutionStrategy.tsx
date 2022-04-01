@@ -8,8 +8,9 @@
 import React, { useState, useEffect, useCallback } from 'react'
 import YAML from 'yaml'
 import { Classes, Switch } from '@blueprintjs/core'
-import { Text, Icon, Layout, Button, Card, IconName, Color, ButtonVariation, Container } from '@wings-software/uicore'
+import { Text, Icon, Layout, Button, Card, IconName, ButtonVariation, Container } from '@wings-software/uicore'
 import { defaultTo, get, isEmpty, set, startCase } from 'lodash-es'
+import { Color } from '@harness/design-system'
 import cx from 'classnames'
 import produce from 'immer'
 import {

@@ -59,6 +59,7 @@ export default function HttpInputSetStep(props: HttpInputSetStepProps): React.Re
         <div className={cx(stepCss.formGroup, stepCss.md)}>
           <FormInput.MultiTextInput
             label={getString('UrlLabel')}
+            placeholder={getString('pipeline.utilitiesStep.url')}
             name={`${prefix}spec.url`}
             multiTextInputProps={{
               expressions,
@@ -89,6 +90,7 @@ export default function HttpInputSetStep(props: HttpInputSetStepProps): React.Re
         <div className={cx(stepCss.formGroup, stepCss.md)}>
           <FormMultiTypeTextAreaField
             label={getString('requestBodyLabel')}
+            placeholder={getString('pipeline.utilitiesStep.requestBody')}
             name={`${prefix}spec.requestBody`}
             multiTypeTextArea={{
               enableConfigureOptions: false,
@@ -133,9 +135,14 @@ export default function HttpInputSetStep(props: HttpInputSetStepProps): React.Re
                     </div>
                     {template.spec.headers.map(({ key }: HttpStepHeaderConfig, i: number) => (
                       <div className={css.headerRow} key={key}>
-                        <FormInput.Text name={`${prefix}spec.headers[${i}].key`} disabled={true} />
+                        <FormInput.Text
+                          name={`${prefix}spec.headers[${i}].key`}
+                          placeholder={getString('pipeline.keyPlaceholder')}
+                          disabled={true}
+                        />
                         <FormInput.MultiTextInput
                           name={`${prefix}spec.headers[${i}].value`}
+                          placeholder={getString('common.valuePlaceholder')}
                           disabled={readonly}
                           multiTextInputProps={{
                             allowableTypes: allowableTypes,
@@ -172,9 +179,14 @@ export default function HttpInputSetStep(props: HttpInputSetStepProps): React.Re
                     {((template.spec.outputVariables as HttpStepOutputVariable[]) || []).map(
                       ({ id }: HttpStepOutputVariable, i: number) => (
                         <div className={css.responseMappingRow} key={id}>
-                          <FormInput.Text name={`${prefix}spec.outputVariables[${i}].name`} disabled={true} />
+                          <FormInput.Text
+                            name={`${prefix}spec.outputVariables[${i}].name`}
+                            placeholder={getString('name')}
+                            disabled={true}
+                          />
                           <FormInput.MultiTextInput
                             name={`${prefix}spec.outputVariables[${i}].value`}
+                            placeholder={getString('valueLabel')}
                             disabled={readonly}
                             multiTextInputProps={{
                               allowableTypes: allowableTypes,

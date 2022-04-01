@@ -8,7 +8,6 @@
 import React from 'react'
 import {
   Accordion,
-  Color,
   Formik,
   FormInput,
   getMultiTypeFromValue,
@@ -24,6 +23,7 @@ import {
   Icon
 } from '@wings-software/uicore'
 import { useParams } from 'react-router-dom'
+import { Color } from '@harness/design-system'
 import * as Yup from 'yup'
 import cx from 'classnames'
 import { cloneDeep, set, unset, isString } from 'lodash-es'
@@ -526,6 +526,7 @@ export default function TerraformEditView(
                                 allowableTypes: allowableTypes.filter(item => item !== MultiTypeInputType.RUNTIME)
                               }}
                               name="spec.configuration.spec.targets"
+                              placeholder={getString('cd.enterTragets')}
                               disabled={readonly}
                               multiTypeFieldSelectorProps={{
                                 label: (

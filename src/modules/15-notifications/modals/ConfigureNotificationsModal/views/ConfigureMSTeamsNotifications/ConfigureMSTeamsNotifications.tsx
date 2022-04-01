@@ -21,12 +21,15 @@ import {
 import { useParams } from 'react-router-dom'
 import * as Yup from 'yup'
 import cx from 'classnames'
-import { FormikErrors, yupToFormErrors } from 'formik'
+import { FormGroup } from '@blueprintjs/core'
+import { get, isEmpty } from 'lodash-es'
+import { connect, FormikContext, FormikErrors } from 'formik'
 import { useToaster } from '@common/exports'
 import type { AccountPathProps } from '@common/interfaces/RouteInterfaces'
 import { MSTeamsNotificationConfiguration, NotificationType, TestStatus } from '@notifications/interfaces/Notifications'
 import { useStrings } from 'framework/strings'
 import { MSTeamSettingDTO, useTestNotificationSetting } from 'services/notifications'
+import { ListInput } from '@common/components/ListInput/ListInput'
 import UserGroupsInput from '@common/components/UserGroupsInput/UserGroupsInput'
 
 import css from '@notifications/modals/ConfigureNotificationsModal/ConfigureNotificationsModal.module.scss'
@@ -100,6 +103,46 @@ export const TestMSTeamsNotifications: React.FC<{
   )
 }
 
+interface TeamsUrlListInputProps {
+  name: string
+  label: string
+  formik?: FormikContext<any>
+}
+
+function TeamsUrlListInputInternal(props: TeamsUrlListInputProps) {
+  const { name, label, formik } = props
+  const { getString } = useStrings()
+
+  const value = get(formik?.values, name)
+
+  React.useEffect(() => {
+    if (isEmpty(value)) {
+      formik?.setFieldValue(name, [''])
+    }
+  }, [])
+
+  return (
+    <FormGroup label={label} labelFor={name}>
+      <ListInput
+        name={name}
+        elementList={value}
+        deleteIconProps={{
+          size: 18
+        }}
+        listItemRenderer={(_, index: number) => (
+          <FormInput.Text
+            name={`${name}.${index}`}
+            placeholder={getString('notifications.enterMicrosoftTeamsUrl')}
+            className={css.urlInput}
+          />
+        )}
+      />
+    </FormGroup>
+  )
+}
+
+const TeamsUrlListInput = connect(TeamsUrlListInputInternal)
+
 const ConfigureMSTeamsNotifications: React.FC<ConfigureMSTeamsNotificationsProps> = props => {
   const { getString } = useStrings()
 
@@ -123,33 +166,11 @@ const ConfigureMSTeamsNotifications: React.FC<ConfigureMSTeamsNotificationsProps
           onSubmit={handleSubmit}
           formName="configureMSTeamsNotifications"
           validationSchema={Yup.object({
-            msTeamKeys: Yup.array().test({
-              test(value: string[]): boolean | Yup.ValidationError {
-                if (!value) {
-                  return this.createError({ message: getString('notifications.errors.msTeamUrlRequired') })
-                }
-
-                if (value.length === 0) {
-                  return this.createError({ message: getString('notifications.errors.msTeamUrlRequired') })
-                }
-                const stringUrlSchema = Yup.object({
-                  url: Yup.string().url(getString('notifications.errors.invalidUrl'))
-                })
-                try {
-                  value.forEach(url => {
-                    stringUrlSchema.validateSync({ url })
-                  })
-                } catch (e) {
-                  /* istanbul ignore else */
-                  if (e instanceof Yup.ValidationError) {
-                    const err = yupToFormErrors<{ url: string }>(e)
-                    return this.createError({ message: err.url })
-                  }
-                }
-
-                return true
-              }
-            })
+            msTeamKeys: Yup.array().of(
+              Yup.string()
+                .url(getString('notifications.errors.invalidUrl'))
+                .required(getString('notifications.errors.msTeamUrlRequired'))
+            )
           })}
           initialValues={{
             msTeamKeys: [],
@@ -161,18 +182,13 @@ const ConfigureMSTeamsNotifications: React.FC<ConfigureMSTeamsNotificationsProps
           {formik => {
             return (
               <FormikForm>
-                <FormInput.KVTagInput
-                  label={getString('notifications.labelMSTeam')}
-                  name={'msTeamKeys'}
-                  isArray={true}
-                  tagsProps={{ placeholder: getString('notifications.placeholderMSKeys') }}
-                />
+                <TeamsUrlListInput name={'msTeamKeys'} label={getString('notifications.labelMSTeam')} />
                 <Layout.Horizontal margin={{ bottom: 'xxlarge' }} style={{ alignItems: 'center' }}>
                   <TestMSTeamsNotifications data={formik.values} errors={formik.errors} />
                 </Layout.Horizontal>
                 <UserGroupsInput name="userGroups" label={getString('notifications.labelMSTeamsUserGroups')} />
                 {props.isStep ? (
-                  <Layout.Horizontal spacing="large" className={css.buttonGroupSlack}>
+                  <Layout.Horizontal spacing="large" margin={{ bottom: 'medium' }} className={css.buttonGroupSlack}>
                     <Button
                       text={getString('back')}
                       variation={ButtonVariation.SECONDARY}
@@ -187,7 +203,7 @@ const ConfigureMSTeamsNotifications: React.FC<ConfigureMSTeamsNotificationsProps
                     />
                   </Layout.Horizontal>
                 ) : (
-                  <Layout.Horizontal spacing={'medium'} margin={{ top: 'xxlarge' }}>
+                  <Layout.Horizontal spacing={'medium'} margin={{ top: 'xxlarge', bottom: 'medium' }}>
                     <Button
                       type={'submit'}
                       variation={ButtonVariation.PRIMARY}

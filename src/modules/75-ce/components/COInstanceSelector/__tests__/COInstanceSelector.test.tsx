@@ -121,6 +121,7 @@ describe('Instance Selector Modal', () => {
           gatewayDetails={initialGatewayDetails}
           onInstancesAddSuccess={jest.fn()}
           loading={true}
+          isEditFlow={false}
         />
       </TestWrapper>
     )
@@ -139,6 +140,7 @@ describe('Instance Selector Modal', () => {
           gatewayDetails={initialGatewayDetails}
           onInstancesAddSuccess={jest.fn()}
           loading={false}
+          isEditFlow={false}
         />
       </TestWrapper>
     )
@@ -162,6 +164,7 @@ describe('Instance Selector Modal', () => {
           gatewayDetails={initialGatewayDetails}
           onInstancesAddSuccess={jest.fn()}
           loading={false}
+          isEditFlow={false}
         />
       </TestWrapper>
     )
@@ -205,6 +208,7 @@ describe('Instance Selector Modal', () => {
           onInstancesAddSuccess={jest.fn()}
           loading={false}
           refresh={jest.fn()}
+          isEditFlow={false}
         />
       </TestWrapper>
     )
@@ -226,6 +230,7 @@ describe('Instance Selector Modal', () => {
           onInstancesAddSuccess={jest.fn()}
           loading={false}
           refresh={jest.fn()}
+          isEditFlow={false}
         />
       </TestWrapper>
     )

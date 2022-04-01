@@ -135,6 +135,17 @@ describe('Create empty monitored service', () => {
 
     cy.contains('span', 'Submit').click({ force: true })
 
+    // Open again
+    cy.contains('div', 'NewRelic HS').click({ force: true })
+    cy.wait(1000)
+    cy.contains('span', 'Next').click({ force: true })
+
+    // Delete all custom metric
+    cy.get('span[data-icon="main-delete"]').click({ multiple: true })
+    cy.findByRole('button', { name: /Add Metric/i }).should('be.visible')
+
+    cy.contains('span', 'Submit').click({ force: true })
+
     // Creating the monitored service.
     cy.findByRole('button', { name: /Save/i }).click()
     cy.findByText('Monitored Service created').should('be.visible')

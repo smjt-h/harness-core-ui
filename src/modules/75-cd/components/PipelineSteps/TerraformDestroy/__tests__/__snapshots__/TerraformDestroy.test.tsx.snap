@@ -758,6 +758,7 @@ exports[`Test TerraformDestroy add new terraform var file 1`] = `
                                     autocomplete="off"
                                     class="bp3-input"
                                     name="spec.configuration.spec.targets[0].value"
+                                    placeholder="cd.enterTragets"
                                     type="text"
                                     value=""
                                   />
@@ -1730,6 +1731,7 @@ exports[`Test TerraformDestroy expand backend Spec config 1`] = `
                                     autocomplete="off"
                                     class="bp3-input"
                                     name="spec.configuration.spec.targets[0].value"
+                                    placeholder="cd.enterTragets"
                                     type="text"
                                     value="test1"
                                   />
@@ -1818,6 +1820,7 @@ exports[`Test TerraformDestroy expand backend Spec config 1`] = `
                                     autocomplete="off"
                                     class="bp3-input"
                                     name="spec.configuration.spec.targets[1].value"
+                                    placeholder="cd.enterTragets"
                                     type="text"
                                     value="test2"
                                   />
@@ -2849,6 +2852,7 @@ exports[`Test TerraformDestroy should render edit view as edit step - Inline 1`]
                                     autocomplete="off"
                                     class="bp3-input"
                                     name="spec.configuration.spec.targets[0].value"
+                                    placeholder="cd.enterTragets"
                                     type="text"
                                     value=""
                                   />
@@ -4160,6 +4164,7 @@ exports[`Test TerraformDestroy should render inputSet View 1`] = `
                     autocomplete="off"
                     class="bp3-input"
                     name="test.spec.provisionerIdentifier"
+                    placeholder="pipeline.terraformStep.provisionerIdentifier"
                     type="text"
                     value=""
                   />

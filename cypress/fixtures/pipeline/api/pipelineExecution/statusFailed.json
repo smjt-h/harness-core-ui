@@ -1,0 +1,763 @@
+{
+  "status": "SUCCESS",
+  "data": {
+    "pipelineExecutionSummary": {
+      "pipelineIdentifier": "testPipeline_Cypressss",
+      "planExecutionId": "executionId",
+      "name": "testPipeline_Cypressss",
+      "status": "Failed",
+      "tags": [],
+      "executionTriggerInfo": {
+        "triggerType": "MANUAL",
+        "triggeredBy": {
+          "uuid": "qUaLKpHcTOS3ThJVG2bwIw",
+          "identifier": "Pratyush Garg",
+          "extraInfo": {
+            "email": "pratyush.garg@harness.io"
+          }
+        },
+        "isRerun": false
+      },
+      "executionErrorInfo": {
+        "message": "File \u0027src/\u0027 not found"
+      },
+      "governanceMetadata": {
+        "id": "0",
+        "deny": false,
+        "details": [],
+        "message": "",
+        "timestamp": "1648539257059",
+        "status": "pass",
+        "accountId": "zEaak-FLS425IEO7OLzMUg",
+        "orgId": "default",
+        "projectId": "Pratyush",
+        "entity": "accountIdentifier%3AzEaak-FLS425IEO7OLzMUg%2ForgIdentifier%3Adefault%2FprojectIdentifier%3APratyush%2FpipelineIdentifier%3AtestPipeline_Cypressss",
+        "type": "pipeline",
+        "action": "onrun",
+        "created": "1648539257047"
+      },
+      "moduleInfo": {
+        "cd": {
+          "__recast": "io.harness.cdng.pipeline.executions.beans.CDPipelineModuleInfo",
+          "envIdentifiers": ["testEnv"],
+          "environmentTypes": ["Production"],
+          "infrastructureTypes": ["KubernetesDirect"],
+          "serviceDefinitionTypes": ["Kubernetes"],
+          "serviceIdentifiers": ["testService"]
+        }
+      },
+      "layoutNodeMap": {
+        "nodeId": {
+          "nodeType": "Deployment",
+          "nodeGroup": "STAGE",
+          "nodeIdentifier": "testStage_Cypress",
+          "name": "testStage_Cypress",
+          "nodeUuid": "nodeId",
+          "status": "Failed",
+          "module": "cd",
+          "moduleInfo": {
+            "cd": {
+              "__recast": "io.harness.cdng.pipeline.executions.beans.CDStageModuleInfo",
+              "serviceInfo": {
+                "__recast": "io.harness.cdng.pipeline.executions.beans.ServiceExecutionSummary",
+                "identifier": "testService",
+                "displayName": "testService",
+                "deploymentType": "Kubernetes",
+                "artifacts": {
+                  "__recast": "io.harness.cdng.pipeline.executions.beans.ServiceExecutionSummary$ArtifactsSummary",
+                  "sidecars": []
+                }
+              },
+              "infraExecutionSummary": {
+                "__recast": "io.harness.cdng.pipeline.executions.beans.InfraExecutionSummary",
+                "identifier": "testEnv",
+                "name": "testEnv",
+                "type": "Production"
+              }
+            }
+          },
+          "startTs": 1648539257228,
+          "endTs": 1648539315326,
+          "edgeLayoutList": { "currentNodeChildren": [], "nextIds": [] },
+          "nodeRunInfo": {
+            "whenCondition": "\u003c+OnPipelineSuccess\u003e",
+            "evaluatedCondition": true,
+            "expressions": [
+              {
+                "expression": "OnPipelineSuccess",
+                "expressionValue": "true",
+                "count": 1
+              }
+            ]
+          },
+          "failureInfo": {
+            "message": "File \u0027src/\u0027 not found"
+          },
+          "failureInfoDTO": {
+            "message": "File 'src/' not found",
+            "failureTypeList": ["APPLICATION_ERROR"],
+            "responseMessages": [
+              {
+                "code": "KUBERNETES_API_TASK_EXCEPTION",
+                "level": "ERROR",
+                "message": "Failed while trying to fetch files from git connector: 'GitConn1' in manifest with identifier: ManifestIdentifier",
+                "exception": null,
+                "failureTypes": ["APPLICATION_ERROR"]
+              },
+              {
+                "code": "HINT",
+                "level": "INFO",
+                "message": "Please ensure that provided file path exists in git repository or in reference branch: master",
+                "exception": null,
+                "failureTypes": []
+              },
+              {
+                "code": "EXPLANATION",
+                "level": "INFO",
+                "message": "Provided file path doesn't exist",
+                "exception": null,
+                "failureTypes": []
+              },
+              {
+                "code": "GIT_OPERATION_ERROR",
+                "level": "ERROR",
+                "message": "File 'src/' not found",
+                "exception": null,
+                "failureTypes": ["APPLICATION_ERROR"]
+              }
+            ]
+          }
+        }
+      },
+      "modules": ["cd"],
+      "startingNodeId": "nodeId",
+      "startTs": 1648539257059,
+      "endTs": 1648539318021,
+      "createdAt": 1648539257094,
+      "canRetry": true,
+      "showRetryHistory": false,
+      "runSequence": 4,
+      "successfulStagesCount": 0,
+      "runningStagesCount": 0,
+      "failedStagesCount": 1,
+      "totalStagesCount": 1,
+      "allowStageExecutions": false,
+      "stagesExecution": false
+    },
+    "executionGraph": {
+      "rootNodeId": "fEXNUEFkTiqIFwUt0kBd4w",
+      "nodeMap": {
+        "O_daCoC_TwKvewwZo_yk7Q": {
+          "uuid": "O_daCoC_TwKvewwZo_yk7Q",
+          "setupId": "Le1bEHlaQvWYEOY8cUBVYA",
+          "name": "Rollout Deployment",
+          "identifier": "rolloutDeployment",
+          "baseFqn": "pipeline.stages.testStage_Cypress.spec.execution.steps.rolloutDeployment",
+          "outcomes": {},
+          "stepParameters": {
+            "uuid": null,
+            "identifier": "rolloutDeployment",
+            "name": "Rollout Deployment",
+            "description": null,
+            "timeout": "10m",
+            "failureStrategies": null,
+            "skipCondition": null,
+            "type": "K8sRollingDeploy",
+            "spec": { "skipDryRun": false, "delegateSelectors": null, "canaryStepFqn": null },
+            "delegateSelectors": null
+          },
+          "startTs": 1648539266019,
+          "endTs": 1648539302661,
+          "stepType": "K8sRollingDeploy",
+          "status": "Failed",
+          "failureInfo": {
+            "message": "File 'src/' not found",
+            "failureTypeList": ["APPLICATION_ERROR"],
+            "responseMessages": [
+              {
+                "code": "KUBERNETES_API_TASK_EXCEPTION",
+                "level": "ERROR",
+                "message": "Failed while trying to fetch files from git connector: 'GitConn1' in manifest with identifier: ManifestIdentifier",
+                "exception": null,
+                "failureTypes": ["APPLICATION_ERROR"]
+              },
+              {
+                "code": "HINT",
+                "level": "INFO",
+                "message": "Please ensure that provided file path exists in git repository or in reference branch: master",
+                "exception": null,
+                "failureTypes": []
+              },
+              {
+                "code": "EXPLANATION",
+                "level": "INFO",
+                "message": "Provided file path doesn't exist",
+                "exception": null,
+                "failureTypes": []
+              },
+              {
+                "code": "GIT_OPERATION_ERROR",
+                "level": "ERROR",
+                "message": "File 'src/' not found",
+                "exception": null,
+                "failureTypes": ["APPLICATION_ERROR"]
+              }
+            ]
+          },
+          "skipInfo": null,
+          "nodeRunInfo": {
+            "whenCondition": "\u003c+OnStageSuccess\u003e",
+            "evaluatedCondition": true,
+            "expressions": [
+              {
+                "expression": "OnStageSuccess",
+                "expressionValue": "true",
+                "count": 1
+              }
+            ]
+          },
+          "executableResponses": [
+            {
+              "taskChain": {
+                "taskId": "7qDtgyGoTKODKZOmnew9BA",
+                "taskCategory": "DELEGATE_TASK_V2",
+                "chainEnd": false,
+                "passThroughData": "eyJfX3JlY2FzdCI6ImlvLmhhcm5lc3MuY2RuZy5rOHMuSzhzU3RlcFBhc3NUaHJvdWdoRGF0YSIsIms4c01hbmlmZXN0T3V0Y29tZSI6eyJfX3JlY2FzdCI6ImlvLmhhcm5lc3MuY2RuZy5tYW5pZmVzdC55YW1sLks4c01hbmlmZXN0T3V0Y29tZSIsImlkZW50aWZpZXIiOiJNYW5pZmVzdElkZW50aWZpZXIiLCJ0eXBlIjoiSzhzTWFuaWZlc3QiLCJzdG9yZSI6eyJfX3JlY2FzdCI6ImlvLmhhcm5lc3MuY2RuZy5tYW5pZmVzdC55YW1sLkdpdFN0b3JlIiwiY29ubmVjdG9yUmVmIjp7Il9fcmVjYXN0IjoicGFyYW1ldGVyRmllbGQiLCJfX2VuY29kZWRWYWx1ZSI6eyJfX3JlY2FzdCI6ImlvLmhhcm5lc3MucG1zLnlhbWwuUGFyYW1ldGVyRG9jdW1lbnRGaWVsZCIsImV4cHJlc3Npb25WYWx1ZSI6bnVsbCwiZXhwcmVzc2lvbiI6ZmFsc2UsInZhbHVlRG9jIjp7Il9fcmVjYXN0IjoiaW8uaGFybmVzcy5wbXMueWFtbC5QYXJhbWV0ZXJGaWVsZFZhbHVlV3JhcHBlciIsInZhbHVlIjoiYWNjb3VudC5HaXRDb25uIn0sInZhbHVlQ2xhc3MiOiJqYXZhLmxhbmcuU3RyaW5nIiwidHlwZVN0cmluZyI6dHJ1ZSwic2tpcEF1dG9FdmFsdWF0aW9uIjpmYWxzZSwianNvblJlc3BvbnNlRmllbGQiOmZhbHNlLCJyZXNwb25zZUZpZWxkIjpudWxsfX0sImdpdEZldGNoVHlwZSI6IkJSQU5DSCIsImJyYW5jaCI6eyJfX3JlY2FzdCI6InBhcmFtZXRlckZpZWxkIiwiX19lbmNvZGVkVmFsdWUiOnsiX19yZWNhc3QiOiJpby5oYXJuZXNzLnBtcy55YW1sLlBhcmFtZXRlckRvY3VtZW50RmllbGQiLCJleHByZXNzaW9uVmFsdWUiOm51bGwsImV4cHJlc3Npb24iOmZhbHNlLCJ2YWx1ZURvYyI6eyJfX3JlY2FzdCI6ImlvLmhhcm5lc3MucG1zLnlhbWwuUGFyYW1ldGVyRmllbGRWYWx1ZVdyYXBwZXIiLCJ2YWx1ZSI6Im1hc3RlciJ9LCJ2YWx1ZUNsYXNzIjoiamF2YS5sYW5nLlN0cmluZyIsInR5cGVTdHJpbmciOnRydWUsInNraXBBdXRvRXZhbHVhdGlvbiI6ZmFsc2UsImpzb25SZXNwb25zZUZpZWxkIjpmYWxzZSwicmVzcG9uc2VGaWVsZCI6bnVsbH19LCJjb21taXRJZCI6eyJfX3JlY2FzdCI6InBhcmFtZXRlckZpZWxkIiwiX19lbmNvZGVkVmFsdWUiOnsiX19yZWNhc3QiOiJpby5oYXJuZXNzLnBtcy55YW1sLlBhcmFtZXRlckRvY3VtZW50RmllbGQiLCJleHByZXNzaW9uVmFsdWUiOm51bGwsImV4cHJlc3Npb24iOmZhbHNlLCJ2YWx1ZURvYyI6eyJfX3JlY2FzdCI6ImlvLmhhcm5lc3MucG1zLnlhbWwuUGFyYW1ldGVyRmllbGRWYWx1ZVdyYXBwZXIifSwidmFsdWVDbGFzcyI6ImphdmEubGFuZy5TdHJpbmciLCJ0eXBlU3RyaW5nIjpmYWxzZSwic2tpcEF1dG9FdmFsdWF0aW9uIjpmYWxzZSwianNvblJlc3BvbnNlRmllbGQiOmZhbHNlLCJyZXNwb25zZUZpZWxkIjpudWxsfX0sInBhdGhzIjp7Il9fcmVjYXN0IjoicGFyYW1ldGVyRmllbGQiLCJfX2VuY29kZWRWYWx1ZSI6eyJfX3JlY2FzdCI6ImlvLmhhcm5lc3MucG1zLnlhbWwuUGFyYW1ldGVyRG9jdW1lbnRGaWVsZCIsImV4cHJlc3Npb25WYWx1ZSI6bnVsbCwiZXhwcmVzc2lvbiI6ZmFsc2UsInZhbHVlRG9jIjp7Il9fcmVjYXN0IjoiaW8uaGFybmVzcy5wbXMueWFtbC5QYXJhbWV0ZXJGaWVsZFZhbHVlV3JhcHBlciIsInZhbHVlIjpbInNyYy8iXX0sInZhbHVlQ2xhc3MiOiJqYXZhLnV0aWwuTGlzdCIsInR5cGVTdHJpbmciOmZhbHNlLCJza2lwQXV0b0V2YWx1YXRpb24iOmZhbHNlLCJqc29uUmVzcG9uc2VGaWVsZCI6ZmFsc2UsInJlc3BvbnNlRmllbGQiOm51bGx9fSwiZm9sZGVyUGF0aCI6eyJfX3JlY2FzdCI6InBhcmFtZXRlckZpZWxkIiwiX19lbmNvZGVkVmFsdWUiOnsiX19yZWNhc3QiOiJpby5oYXJuZXNzLnBtcy55YW1sLlBhcmFtZXRlckRvY3VtZW50RmllbGQiLCJleHByZXNzaW9uVmFsdWUiOm51bGwsImV4cHJlc3Npb24iOmZhbHNlLCJ2YWx1ZURvYyI6eyJfX3JlY2FzdCI6ImlvLmhhcm5lc3MucG1zLnlhbWwuUGFyYW1ldGVyRmllbGRWYWx1ZVdyYXBwZXIifSwidmFsdWVDbGFzcyI6ImphdmEubGFuZy5TdHJpbmciLCJ0eXBlU3RyaW5nIjpmYWxzZSwic2tpcEF1dG9FdmFsdWF0aW9uIjpmYWxzZSwianNvblJlc3BvbnNlRmllbGQiOmZhbHNlLCJyZXNwb25zZUZpZWxkIjpudWxsfX0sInJlcG9OYW1lIjp7Il9fcmVjYXN0IjoicGFyYW1ldGVyRmllbGQiLCJfX2VuY29kZWRWYWx1ZSI6eyJfX3JlY2FzdCI6ImlvLmhhcm5lc3MucG1zLnlhbWwuUGFyYW1ldGVyRG9jdW1lbnRGaWVsZCIsImV4cHJlc3Npb25WYWx1ZSI6bnVsbCwiZXhwcmVzc2lvbiI6ZmFsc2UsInZhbHVlRG9jIjp7Il9fcmVjYXN0IjoiaW8uaGFybmVzcy5wbXMueWFtbC5QYXJhbWV0ZXJGaWVsZFZhbHVlV3JhcHBlciJ9LCJ2YWx1ZUNsYXNzIjoiamF2YS5sYW5nLlN0cmluZyIsInR5cGVTdHJpbmciOmZhbHNlLCJza2lwQXV0b0V2YWx1YXRpb24iOmZhbHNlLCJqc29uUmVzcG9uc2VGaWVsZCI6ZmFsc2UsInJlc3BvbnNlRmllbGQiOm51bGx9fSwibWV0YWRhdGEiOm51bGx9LCJza2lwUmVzb3VyY2VWZXJzaW9uaW5nIjp7Il9fcmVjYXN0IjoicGFyYW1ldGVyRmllbGQiLCJfX2VuY29kZWRWYWx1ZSI6eyJfX3JlY2FzdCI6ImlvLmhhcm5lc3MucG1zLnlhbWwuUGFyYW1ldGVyRG9jdW1lbnRGaWVsZCIsImV4cHJlc3Npb25WYWx1ZSI6bnVsbCwiZXhwcmVzc2lvbiI6ZmFsc2UsInZhbHVlRG9jIjp7Il9fcmVjYXN0IjoiaW8uaGFybmVzcy5wbXMueWFtbC5QYXJhbWV0ZXJGaWVsZFZhbHVlV3JhcHBlciIsInZhbHVlIjpmYWxzZX0sInZhbHVlQ2xhc3MiOiJqYXZhLmxhbmcuQm9vbGVhbiIsInR5cGVTdHJpbmciOmZhbHNlLCJza2lwQXV0b0V2YWx1YXRpb24iOmZhbHNlLCJqc29uUmVzcG9uc2VGaWVsZCI6ZmFsc2UsInJlc3BvbnNlRmllbGQiOm51bGx9fX0sInZhbHVlc01hbmlmZXN0T3V0Y29tZXMiOlt7Il9fcmVjYXN0IjoiaW8uaGFybmVzcy5jZG5nLm1hbmlmZXN0LnlhbWwuVmFsdWVzTWFuaWZlc3RPdXRjb21lIiwiaWRlbnRpZmllciI6Ik1hbmlmZXN0SWRlbnRpZmllciIsInR5cGUiOiJWYWx1ZXMiLCJzdG9yZSI6eyJfX3JlY2FzdCI6ImlvLmhhcm5lc3MuY2RuZy5tYW5pZmVzdC55YW1sLkdpdFN0b3JlIiwiY29ubmVjdG9yUmVmIjp7Il9fcmVjYXN0IjoicGFyYW1ldGVyRmllbGQiLCJfX2VuY29kZWRWYWx1ZSI6eyJfX3JlY2FzdCI6ImlvLmhhcm5lc3MucG1zLnlhbWwuUGFyYW1ldGVyRG9jdW1lbnRGaWVsZCIsImV4cHJlc3Npb25WYWx1ZSI6bnVsbCwiZXhwcmVzc2lvbiI6ZmFsc2UsInZhbHVlRG9jIjp7Il9fcmVjYXN0IjoiaW8uaGFybmVzcy5wbXMueWFtbC5QYXJhbWV0ZXJGaWVsZFZhbHVlV3JhcHBlciIsInZhbHVlIjoiYWNjb3VudC5HaXRDb25uIn0sInZhbHVlQ2xhc3MiOiJqYXZhLmxhbmcuU3RyaW5nIiwidHlwZVN0cmluZyI6dHJ1ZSwic2tpcEF1dG9FdmFsdWF0aW9uIjpmYWxzZSwianNvblJlc3BvbnNlRmllbGQiOmZhbHNlLCJyZXNwb25zZUZpZWxkIjpudWxsfX0sImdpdEZldGNoVHlwZSI6IkJSQU5DSCIsImJyYW5jaCI6eyJfX3JlY2FzdCI6InBhcmFtZXRlckZpZWxkIiwiX19lbmNvZGVkVmFsdWUiOnsiX19yZWNhc3QiOiJpby5oYXJuZXNzLnBtcy55YW1sLlBhcmFtZXRlckRvY3VtZW50RmllbGQiLCJleHByZXNzaW9uVmFsdWUiOm51bGwsImV4cHJlc3Npb24iOmZhbHNlLCJ2YWx1ZURvYyI6eyJfX3JlY2FzdCI6ImlvLmhhcm5lc3MucG1zLnlhbWwuUGFyYW1ldGVyRmllbGRWYWx1ZVdyYXBwZXIiLCJ2YWx1ZSI6Im1hc3RlciJ9LCJ2YWx1ZUNsYXNzIjoiamF2YS5sYW5nLlN0cmluZyIsInR5cGVTdHJpbmciOnRydWUsInNraXBBdXRvRXZhbHVhdGlvbiI6ZmFsc2UsImpzb25SZXNwb25zZUZpZWxkIjpmYWxzZSwicmVzcG9uc2VGaWVsZCI6bnVsbH19LCJjb21taXRJZCI6eyJfX3JlY2FzdCI6InBhcmFtZXRlckZpZWxkIiwiX19lbmNvZGVkVmFsdWUiOnsiX19yZWNhc3QiOiJpby5oYXJuZXNzLnBtcy55YW1sLlBhcmFtZXRlckRvY3VtZW50RmllbGQiLCJleHByZXNzaW9uVmFsdWUiOm51bGwsImV4cHJlc3Npb24iOmZhbHNlLCJ2YWx1ZURvYyI6eyJfX3JlY2FzdCI6ImlvLmhhcm5lc3MucG1zLnlhbWwuUGFyYW1ldGVyRmllbGRWYWx1ZVdyYXBwZXIifSwidmFsdWVDbGFzcyI6ImphdmEubGFuZy5TdHJpbmciLCJ0eXBlU3RyaW5nIjpmYWxzZSwic2tpcEF1dG9FdmFsdWF0aW9uIjpmYWxzZSwianNvblJlc3BvbnNlRmllbGQiOmZhbHNlLCJyZXNwb25zZUZpZWxkIjpudWxsfX0sInBhdGhzIjp7Il9fcmVjYXN0IjoicGFyYW1ldGVyRmllbGQiLCJfX2VuY29kZWRWYWx1ZSI6eyJfX3JlY2FzdCI6ImlvLmhhcm5lc3MucG1zLnlhbWwuUGFyYW1ldGVyRG9jdW1lbnRGaWVsZCIsImV4cHJlc3Npb25WYWx1ZSI6bnVsbCwiZXhwcmVzc2lvbiI6ZmFsc2UsInZhbHVlRG9jIjp7Il9fcmVjYXN0IjoiaW8uaGFybmVzcy5wbXMueWFtbC5QYXJhbWV0ZXJGaWVsZFZhbHVlV3JhcHBlciIsInZhbHVlIjpbInNyYy8iXX0sInZhbHVlQ2xhc3MiOiJqYXZhLnV0aWwuTGlzdCIsInR5cGVTdHJpbmciOmZhbHNlLCJza2lwQXV0b0V2YWx1YXRpb24iOmZhbHNlLCJqc29uUmVzcG9uc2VGaWVsZCI6ZmFsc2UsInJlc3BvbnNlRmllbGQiOm51bGx9fSwiZm9sZGVyUGF0aCI6eyJfX3JlY2FzdCI6InBhcmFtZXRlckZpZWxkIiwiX19lbmNvZGVkVmFsdWUiOnsiX19yZWNhc3QiOiJpby5oYXJuZXNzLnBtcy55YW1sLlBhcmFtZXRlckRvY3VtZW50RmllbGQiLCJleHByZXNzaW9uVmFsdWUiOm51bGwsImV4cHJlc3Npb24iOmZhbHNlLCJ2YWx1ZURvYyI6eyJfX3JlY2FzdCI6ImlvLmhhcm5lc3MucG1zLnlhbWwuUGFyYW1ldGVyRmllbGRWYWx1ZVdyYXBwZXIifSwidmFsdWVDbGFzcyI6ImphdmEubGFuZy5TdHJpbmciLCJ0eXBlU3RyaW5nIjpmYWxzZSwic2tpcEF1dG9FdmFsdWF0aW9uIjpmYWxzZSwianNvblJlc3BvbnNlRmllbGQiOmZhbHNlLCJyZXNwb25zZUZpZWxkIjpudWxsfX0sInJlcG9OYW1lIjp7Il9fcmVjYXN0IjoicGFyYW1ldGVyRmllbGQiLCJfX2VuY29kZWRWYWx1ZSI6eyJfX3JlY2FzdCI6ImlvLmhhcm5lc3MucG1zLnlhbWwuUGFyYW1ldGVyRG9jdW1lbnRGaWVsZCIsImV4cHJlc3Npb25WYWx1ZSI6bnVsbCwiZXhwcmVzc2lvbiI6ZmFsc2UsInZhbHVlRG9jIjp7Il9fcmVjYXN0IjoiaW8uaGFybmVzcy5wbXMueWFtbC5QYXJhbWV0ZXJGaWVsZFZhbHVlV3JhcHBlciJ9LCJ2YWx1ZUNsYXNzIjoiamF2YS5sYW5nLlN0cmluZyIsInR5cGVTdHJpbmciOmZhbHNlLCJza2lwQXV0b0V2YWx1YXRpb24iOmZhbHNlLCJqc29uUmVzcG9uc2VGaWVsZCI6ZmFsc2UsInJlc3BvbnNlRmllbGQiOm51bGx9fSwibWV0YWRhdGEiOm51bGx9LCJvcmRlciI6MH1dLCJvcGVuc2hpZnRQYXJhbU1hbmlmZXN0T3V0Y29tZXMiOltdLCJrdXN0b21pemVQYXRjaGVzTWFuaWZlc3RPdXRjb21lcyI6bnVsbCwiaW5mcmFzdHJ1Y3R1cmUiOnsiX19yZWNhc3QiOiJpby5oYXJuZXNzLmNkbmcuaW5mcmEuYmVhbnMuSzhzRGlyZWN0SW5mcmFzdHJ1Y3R1cmVPdXRjb21lIiwiY29ubmVjdG9yUmVmIjoiYWNjb3VudC5LOHN0ZXN0IiwibmFtZXNwYWNlIjoiZGVmYXVsdCIsInJlbGVhc2VOYW1lIjoicmVsZWFzZS08K0lORlJBX0tFWT4iLCJlbnZpcm9ubWVudCI6eyJfX3JlY2FzdCI6ImlvLmhhcm5lc3Muc3RlcHMuZW52aXJvbm1lbnQuRW52aXJvbm1lbnRPdXRjb21lIiwibmFtZSI6InRlc3RFbnYiLCJpZGVudGlmaWVyIjoidGVzdEVudiIsImRlc2NyaXB0aW9uIjoiIiwidHlwZSI6IlByb2R1Y3Rpb24iLCJ0YWdzIjp7fX0sImluZnJhc3RydWN0dXJlS2V5IjoiMmI2OGY2NmVjMTU0ZWViNWU0MThlYWIyNjgxMDJmZjhlMzFmNGE1MiJ9LCJoZWxtVmFsdWVzRmlsZUNvbnRlbnQiOm51bGx9",
+                "logKeys": [
+                  "accountId:zEaak-FLS425IEO7OLzMUg/orgId:default/projectId:Pratyush/pipelineId:testPipeline_Cypressss/runSequence:4/level0:pipeline/level1:stages/level2:testStage_Cypress/level3:spec/level4:execution/level5:steps/level6:rolloutDeployment-commandUnit:Fetch Files",
+                  "accountId:zEaak-FLS425IEO7OLzMUg/orgId:default/projectId:Pratyush/pipelineId:testPipeline_Cypressss/runSequence:4/level0:pipeline/level1:stages/level2:testStage_Cypress/level3:spec/level4:execution/level5:steps/level6:rolloutDeployment-commandUnit:Initialize",
+                  "accountId:zEaak-FLS425IEO7OLzMUg/orgId:default/projectId:Pratyush/pipelineId:testPipeline_Cypressss/runSequence:4/level0:pipeline/level1:stages/level2:testStage_Cypress/level3:spec/level4:execution/level5:steps/level6:rolloutDeployment-commandUnit:Prepare",
+                  "accountId:zEaak-FLS425IEO7OLzMUg/orgId:default/projectId:Pratyush/pipelineId:testPipeline_Cypressss/runSequence:4/level0:pipeline/level1:stages/level2:testStage_Cypress/level3:spec/level4:execution/level5:steps/level6:rolloutDeployment-commandUnit:Apply",
+                  "accountId:zEaak-FLS425IEO7OLzMUg/orgId:default/projectId:Pratyush/pipelineId:testPipeline_Cypressss/runSequence:4/level0:pipeline/level1:stages/level2:testStage_Cypress/level3:spec/level4:execution/level5:steps/level6:rolloutDeployment-commandUnit:Wait for Steady State",
+                  "accountId:zEaak-FLS425IEO7OLzMUg/orgId:default/projectId:Pratyush/pipelineId:testPipeline_Cypressss/runSequence:4/level0:pipeline/level1:stages/level2:testStage_Cypress/level3:spec/level4:execution/level5:steps/level6:rolloutDeployment-commandUnit:Wrap Up"
+                ],
+                "units": ["Fetch Files", "Initialize", "Prepare", "Apply", "Wait for Steady State", "Wrap Up"],
+                "taskName": "Git Fetch Files Task"
+              }
+            },
+            {
+              "taskChain": {
+                "taskId": "_6h053mSSTqmRVNwxqcCjw",
+                "taskCategory": "DELEGATE_TASK_V2",
+                "chainEnd": true,
+                "passThroughData": "eyJfX3JlY2FzdCI6ImlvLmhhcm5lc3MuY2RuZy5rOHMuYmVhbnMuSzhzRXhlY3V0aW9uUGFzc1Rocm91Z2hEYXRhIiwiaW5mcmFzdHJ1Y3R1cmUiOnsiX19yZWNhc3QiOiJpby5oYXJuZXNzLmNkbmcuaW5mcmEuYmVhbnMuSzhzRGlyZWN0SW5mcmFzdHJ1Y3R1cmVPdXRjb21lIiwiY29ubmVjdG9yUmVmIjoiYWNjb3VudC5LOHN0ZXN0IiwibmFtZXNwYWNlIjoiZGVmYXVsdCIsInJlbGVhc2VOYW1lIjoicmVsZWFzZS08K0lORlJBX0tFWT4iLCJlbnZpcm9ubWVudCI6eyJfX3JlY2FzdCI6ImlvLmhhcm5lc3Muc3RlcHMuZW52aXJvbm1lbnQuRW52aXJvbm1lbnRPdXRjb21lIiwibmFtZSI6InRlc3RFbnYiLCJpZGVudGlmaWVyIjoidGVzdEVudiIsImRlc2NyaXB0aW9uIjoiIiwidHlwZSI6IlByb2R1Y3Rpb24iLCJ0YWdzIjp7fX0sImluZnJhc3RydWN0dXJlS2V5IjoiMmI2OGY2NmVjMTU0ZWViNWU0MThlYWIyNjgxMDJmZjhlMzFmNGE1MiJ9LCJsYXN0QWN0aXZlVW5pdFByb2dyZXNzRGF0YSI6eyJfX3JlY2FzdCI6ImlvLmhhcm5lc3MuZGVsZWdhdGUuYmVhbnMubG9nc3RyZWFtaW5nLlVuaXRQcm9ncmVzc0RhdGEiLCJ1bml0UHJvZ3Jlc3NlcyI6W3siX19yZWNhc3QiOiJpby5oYXJuZXNzLmxvZ2dpbmcuVW5pdFByb2dyZXNzIiwiX19lbmNvZGVkVmFsdWUiOiJ7XG4gIFwidW5pdE5hbWVcIjogXCJGZXRjaCBGaWxlc1wiLFxuICBcInN0YXR1c1wiOiBcIlJVTk5JTkdcIixcbiAgXCJzdGFydFRpbWVcIjogXCIxNjQ4NTM5MjcwMTk1XCJcbn0ifV19fQ==",
+                "logKeys": [
+                  "accountId:zEaak-FLS425IEO7OLzMUg/orgId:default/projectId:Pratyush/pipelineId:testPipeline_Cypressss/runSequence:4/level0:pipeline/level1:stages/level2:testStage_Cypress/level3:spec/level4:execution/level5:steps/level6:rolloutDeployment-commandUnit:Fetch Files",
+                  "accountId:zEaak-FLS425IEO7OLzMUg/orgId:default/projectId:Pratyush/pipelineId:testPipeline_Cypressss/runSequence:4/level0:pipeline/level1:stages/level2:testStage_Cypress/level3:spec/level4:execution/level5:steps/level6:rolloutDeployment-commandUnit:Initialize",
+                  "accountId:zEaak-FLS425IEO7OLzMUg/orgId:default/projectId:Pratyush/pipelineId:testPipeline_Cypressss/runSequence:4/level0:pipeline/level1:stages/level2:testStage_Cypress/level3:spec/level4:execution/level5:steps/level6:rolloutDeployment-commandUnit:Prepare",
+                  "accountId:zEaak-FLS425IEO7OLzMUg/orgId:default/projectId:Pratyush/pipelineId:testPipeline_Cypressss/runSequence:4/level0:pipeline/level1:stages/level2:testStage_Cypress/level3:spec/level4:execution/level5:steps/level6:rolloutDeployment-commandUnit:Apply",
+                  "accountId:zEaak-FLS425IEO7OLzMUg/orgId:default/projectId:Pratyush/pipelineId:testPipeline_Cypressss/runSequence:4/level0:pipeline/level1:stages/level2:testStage_Cypress/level3:spec/level4:execution/level5:steps/level6:rolloutDeployment-commandUnit:Wait for Steady State",
+                  "accountId:zEaak-FLS425IEO7OLzMUg/orgId:default/projectId:Pratyush/pipelineId:testPipeline_Cypressss/runSequence:4/level0:pipeline/level1:stages/level2:testStage_Cypress/level3:spec/level4:execution/level5:steps/level6:rolloutDeployment-commandUnit:Wrap Up"
+                ],
+                "units": ["Fetch Files", "Initialize", "Prepare", "Apply", "Wait for Steady State", "Wrap Up"],
+                "taskName": "K8s Task : Rolling Deploy"
+              }
+            }
+          ],
+          "unitProgresses": [
+            {
+              "unitName": "Fetch Files",
+              "status": "FAILURE",
+              "startTime": "1648539270195",
+              "endTime": "1648539297482"
+            }
+          ],
+          "progressData": {
+            "unitProgresses": [
+              {
+                "unitName": "Fetch Files",
+                "status": "FAILURE",
+                "startTime": "1648539270195",
+                "endTime": "1648539297482"
+              }
+            ]
+          },
+          "delegateInfoList": [
+            { "id": null, "name": null, "taskId": "7qDtgyGoTKODKZOmnew9BA", "taskName": "Git Fetch Files Task" },
+            { "id": null, "name": null, "taskId": "_6h053mSSTqmRVNwxqcCjw", "taskName": "K8s Task : Rolling Deploy" }
+          ],
+          "interruptHistories": [],
+          "stepDetails": { "Release Name": { "releaseName": "release-2b68f66ec154eeb5e418eab268102ff8e31f4a52" } }
+        },
+        "A8VKN33_QF62o2JCeBy91w": {
+          "uuid": "A8VKN33_QF62o2JCeBy91w",
+          "setupId": "oiKoXMtOS8Khf0tKKmIQ_wsteps_combinedRollback",
+          "name": "Execution (Rollback)",
+          "identifier": "rollbackSteps",
+          "baseFqn": "pipeline.stages.testStage_Cypress.spec.execution",
+          "outcomes": {},
+          "stepParameters": {
+            "childNodes": [
+              {
+                "nodeId": "oiKoXMtOS8Khf0tKKmIQ_wrollbackSteps_rollbackSteps",
+                "dependentNodeIdentifier": "stages.testStage_Cypress.spec.execution",
+                "shouldAlwaysRun": false
+              }
+            ]
+          },
+          "startTs": 1648539302981,
+          "endTs": 1648539313001,
+          "stepType": "ROLLBACK_OPTIONAL_CHILD_CHAIN",
+          "status": "Success",
+          "failureInfo": { "message": "", "failureTypeList": [], "responseMessages": [] },
+          "skipInfo": null,
+          "nodeRunInfo": null,
+          "executableResponses": [
+            {
+              "childChain": {
+                "nextChildId": "oiKoXMtOS8Khf0tKKmIQ_wrollbackSteps_rollbackSteps",
+                "previousChildId": "",
+                "passThroughData": "kxkBAVNlY3Rpb25DaGFpblBhc3NUaHJvdWdoRGF0YS5jaGlsZEluZGX4AQAA",
+                "lastLink": true,
+                "suspend": false
+              }
+            }
+          ],
+          "unitProgresses": [],
+          "progressData": null,
+          "delegateInfoList": [],
+          "interruptHistories": [],
+          "stepDetails": null
+        },
+        "uMG5F55zQt6YWB3tPriGmA": {
+          "uuid": "uMG5F55zQt6YWB3tPriGmA",
+          "setupId": "wcE0KpaDTs6mEmqH-mExHg",
+          "name": "Service",
+          "identifier": "serviceConfig",
+          "baseFqn": "pipeline.stages.testStage_Cypress.spec.serviceConfig",
+          "outcomes": {
+            "output": {
+              "serviceResult": {
+                "identifier": "testService",
+                "name": "testService",
+                "description": "testService",
+                "type": "Kubernetes",
+                "tags": {}
+              },
+              "variablesResult": { "testVariable": "varvalue" },
+              "manifestResults": {
+                "ManifestIdentifier": {
+                  "identifier": "ManifestIdentifier",
+                  "type": "K8sManifest",
+                  "store": {
+                    "connectorRef": "account.GitConn",
+                    "gitFetchType": "BRANCH",
+                    "branch": "master",
+                    "commitId": null,
+                    "paths": ["src/"],
+                    "folderPath": null,
+                    "repoName": null,
+                    "metadata": null
+                  },
+                  "skipResourceVersioning": false
+                }
+              }
+            }
+          },
+          "stepParameters": { "serviceRef": "testService", "childNodeId": null },
+          "startTs": 1648539257414,
+          "endTs": 1648539262225,
+          "stepType": "SERVICE_CONFIG",
+          "status": "Success",
+          "failureInfo": { "message": "", "failureTypeList": [], "responseMessages": [] },
+          "skipInfo": null,
+          "nodeRunInfo": null,
+          "executableResponses": [
+            {
+              "child": {
+                "childNodeId": "service-wcE0KpaDTs6mEmqH-mExHg",
+                "logKeys": [
+                  "accountId:zEaak-FLS425IEO7OLzMUg/orgId:default/projectId:Pratyush/pipelineId:testPipeline_Cypressss/runSequence:4/level0:pipeline/level1:stages/level2:testStage_Cypress/level3:spec/level4:serviceConfig"
+                ],
+                "units": []
+              }
+            }
+          ],
+          "unitProgresses": [],
+          "progressData": null,
+          "delegateInfoList": [],
+          "interruptHistories": [],
+          "stepDetails": null
+        },
+        "fRWVsl2FS1KXkTgu-V38PA": {
+          "uuid": "fRWVsl2FS1KXkTgu-V38PA",
+          "setupId": "Io3CrVWDTy2bLoClTINrDQ",
+          "name": "Resource Constraint",
+          "identifier": "rc-NOEPvKfkTW2TJievdEHLzA",
+          "baseFqn": "pipeline.stages.testStage_Cypress.spec.rc-NOEPvKfkTW2TJievdEHLzA",
+          "outcomes": {
+            "ResourceConstraint": {
+              "name": "Queuing",
+              "capacity": 1,
+              "resourceUnit": "2b68f66ec154eeb5e418eab268102ff8e31f4a52",
+              "usage": 1,
+              "alreadyAcquiredPermits": 1
+            }
+          },
+          "stepParameters": {
+            "uuid": null,
+            "identifier": "rc-NOEPvKfkTW2TJievdEHLzA",
+            "name": "Resource Constraint",
+            "description": null,
+            "timeout": "1w",
+            "failureStrategies": null,
+            "skipCondition": null,
+            "type": "ResourceConstraint",
+            "spec": {
+              "name": "Queuing",
+              "resourceUnit": "2b68f66ec154eeb5e418eab268102ff8e31f4a52",
+              "acquireMode": "ENSURE",
+              "permits": 1,
+              "holdingScope": { "scope": "PLAN", "nodeSetupId": null }
+            },
+            "delegateSelectors": null
+          },
+          "startTs": 1648539265645,
+          "endTs": 1648539265891,
+          "stepType": "ResourceConstraint",
+          "status": "Success",
+          "failureInfo": { "message": "", "failureTypeList": [], "responseMessages": [] },
+          "skipInfo": null,
+          "nodeRunInfo": {
+            "whenCondition": "\u003c+OnStageSuccess\u003e",
+            "evaluatedCondition": true,
+            "expressions": [
+              {
+                "expression": "OnStageSuccess",
+                "expressionValue": "true",
+                "count": 1
+              }
+            ]
+          },
+          "executableResponses": [
+            {
+              "sync": {
+                "logKeys": [],
+                "units": []
+              }
+            }
+          ],
+          "unitProgresses": [],
+          "progressData": null,
+          "delegateInfoList": [],
+          "interruptHistories": [],
+          "stepDetails": null
+        },
+        "_JzAh3pbSXO11aPvibduKw": {
+          "uuid": "_JzAh3pbSXO11aPvibduKw",
+          "setupId": "4CYtDPm7TlOlzTisNSz0hQ",
+          "name": "Rollback Rollout Deployment",
+          "identifier": "rollbackRolloutDeployment",
+          "baseFqn": "pipeline.stages.testStage_Cypress.spec.execution.rollbackSteps.rollbackRolloutDeployment",
+          "outcomes": { "deploymentInfoOutcome": { "serverInstanceInfoList": [] } },
+          "stepParameters": {
+            "uuid": null,
+            "identifier": "rollbackRolloutDeployment",
+            "name": "Rollback Rollout Deployment",
+            "description": null,
+            "timeout": "10m",
+            "failureStrategies": null,
+            "skipCondition": null,
+            "type": "K8sRollingRollback",
+            "spec": {
+              "skipDryRun": null,
+              "delegateSelectors": null,
+              "rollingStepFqn": "pipeline.stages.testStage_Cypress.spec.execution.steps.rolloutDeployment"
+            },
+            "delegateSelectors": null
+          },
+          "startTs": 1648539303170,
+          "endTs": 1648539311740,
+          "stepType": "K8sRollingRollback",
+          "status": "Success",
+          "failureInfo": { "message": "", "failureTypeList": [], "responseMessages": [] },
+          "skipInfo": null,
+          "nodeRunInfo": {
+            "whenCondition": "\u003c+OnStageFailure\u003e",
+            "evaluatedCondition": true,
+            "expressions": [
+              {
+                "expression": "OnStageFailure",
+                "expressionValue": "true",
+                "count": 1
+              }
+            ]
+          },
+          "executableResponses": [
+            {
+              "task": {
+                "taskId": "2OBIABy2QkWPGTmDFZfEIg",
+                "taskCategory": "DELEGATE_TASK_V2",
+                "logKeys": [
+                  "accountId:zEaak-FLS425IEO7OLzMUg/orgId:default/projectId:Pratyush/pipelineId:testPipeline_Cypressss/runSequence:4/level0:pipeline/level1:stages/level2:testStage_Cypress/level3:spec/level4:execution/level5:rollbackSteps/level6:rollbackSteps/level7:rollbackSteps/level8:rollbackRolloutDeployment-commandUnit:Initialize",
+                  "accountId:zEaak-FLS425IEO7OLzMUg/orgId:default/projectId:Pratyush/pipelineId:testPipeline_Cypressss/runSequence:4/level0:pipeline/level1:stages/level2:testStage_Cypress/level3:spec/level4:execution/level5:rollbackSteps/level6:rollbackSteps/level7:rollbackSteps/level8:rollbackRolloutDeployment-commandUnit:Rollback",
+                  "accountId:zEaak-FLS425IEO7OLzMUg/orgId:default/projectId:Pratyush/pipelineId:testPipeline_Cypressss/runSequence:4/level0:pipeline/level1:stages/level2:testStage_Cypress/level3:spec/level4:execution/level5:rollbackSteps/level6:rollbackSteps/level7:rollbackSteps/level8:rollbackRolloutDeployment-commandUnit:Wait for Steady State"
+                ],
+                "units": ["Initialize", "Rollback", "Wait for Steady State"],
+                "taskName": "K8s Task : Rolling Deployment Rollback"
+              }
+            }
+          ],
+          "unitProgresses": [
+            {
+              "unitName": "Initialize",
+              "status": "SUCCESS",
+              "startTime": "1648539305513",
+              "endTime": "1648539305825"
+            },
+            {
+              "unitName": "Rollback",
+              "status": "SUCCESS",
+              "startTime": "1648539306687",
+              "endTime": "1648539306687"
+            },
+            {
+              "unitName": "Wait for Steady State",
+              "status": "SUCCESS",
+              "startTime": "1648539307656",
+              "endTime": "1648539307657"
+            }
+          ],
+          "progressData": {
+            "unitProgresses": [
+              {
+                "unitName": "Initialize",
+                "status": "SUCCESS",
+                "startTime": "1648539305513",
+                "endTime": "1648539305825"
+              },
+              { "unitName": "Rollback", "status": "RUNNING", "startTime": "1648539306687" }
+            ]
+          },
+          "delegateInfoList": [
+            {
+              "id": null,
+              "name": null,
+              "taskId": "2OBIABy2QkWPGTmDFZfEIg",
+              "taskName": "K8s Task : Rolling Deployment Rollback"
+            }
+          ],
+          "interruptHistories": [],
+          "stepDetails": null
+        },
+        "fEXNUEFkTiqIFwUt0kBd4w": {
+          "uuid": "fEXNUEFkTiqIFwUt0kBd4w",
+          "setupId": "nodeId",
+          "name": "testStage_Cypress",
+          "identifier": "testStage_Cypress",
+          "baseFqn": "pipeline.stages.testStage_Cypress",
+          "outcomes": {},
+          "stepParameters": {
+            "uuid": "nodeId",
+            "identifier": "testStage_Cypress",
+            "name": "testStage_Cypress",
+            "description": "",
+            "skipCondition": null,
+            "failureStrategies": [
+              { "onFailure": { "errors": ["ALL_ERRORS"], "action": { "type": "STAGE_ROLLBACK" } } }
+            ],
+            "variables": { "__recast": "java.util.LinkedHashMap" },
+            "tags": {},
+            "type": "Deployment",
+            "specConfig": { "childNodeID": null }
+          },
+          "startTs": 1648539257228,
+          "endTs": 1648539315326,
+          "stepType": "DEPLOYMENT_STAGE_STEP",
+          "status": "Failed",
+          "failureInfo": {
+            "message": "File 'src/' not found",
+            "failureTypeList": ["APPLICATION_ERROR"],
+            "responseMessages": [
+              {
+                "code": "KUBERNETES_API_TASK_EXCEPTION",
+                "level": "ERROR",
+                "message": "Failed while trying to fetch files from git connector: 'GitConn1' in manifest with identifier: ManifestIdentifier",
+                "exception": null,
+                "failureTypes": ["APPLICATION_ERROR"]
+              },
+              {
+                "code": "HINT",
+                "level": "INFO",
+                "message": "Please ensure that provided file path exists in git repository or in reference branch: master",
+                "exception": null,
+                "failureTypes": []
+              },
+              {
+                "code": "EXPLANATION",
+                "level": "INFO",
+                "message": "Provided file path doesn't exist",
+                "exception": null,
+                "failureTypes": []
+              },
+              {
+                "code": "GIT_OPERATION_ERROR",
+                "level": "ERROR",
+                "message": "File 'src/' not found",
+                "exception": null,
+                "failureTypes": ["APPLICATION_ERROR"]
+              }
+            ]
+          },
+          "skipInfo": null,
+          "nodeRunInfo": {
+            "whenCondition": "\u003c+OnPipelineSuccess\u003e",
+            "evaluatedCondition": true,
+            "expressions": [
+              {
+                "expression": "OnPipelineSuccess",
+                "expressionValue": "true",
+                "count": 1
+              }
+            ]
+          },
+          "executableResponses": [
+            {
+              "child": {
+                "childNodeId": "2YgNEtC2SEeuJ_ISD1edjw",
+                "logKeys": [],
+                "units": []
+              }
+            }
+          ],
+          "unitProgresses": [],
+          "progressData": null,
+          "delegateInfoList": [],
+          "interruptHistories": [],
+          "stepDetails": null
+        },
+        "33cvSiTdTKmMf1zAarJnHA": {
+          "uuid": "33cvSiTdTKmMf1zAarJnHA",
+          "setupId": "oiKoXMtOS8Khf0tKKmIQ_w",
+          "name": "Execution",
+          "identifier": "execution",
+          "baseFqn": "pipeline.stages.testStage_Cypress.spec.execution",
+          "outcomes": {},
+          "stepParameters": { "childNodeId": "oiKoXMtOS8Khf0tKKmIQ_wsteps", "logMessage": "Execution Element" },
+          "startTs": 1648539265899,
+          "endTs": 1648539314194,
+          "stepType": "NG_SECTION_WITH_ROLLBACK_INFO",
+          "status": "Failed",
+          "failureInfo": {
+            "message": "File 'src/' not found",
+            "failureTypeList": ["APPLICATION_ERROR"],
+            "responseMessages": [
+              {
+                "code": "KUBERNETES_API_TASK_EXCEPTION",
+                "level": "ERROR",
+                "message": "Failed while trying to fetch files from git connector: 'GitConn1' in manifest with identifier: ManifestIdentifier",
+                "exception": null,
+                "failureTypes": ["APPLICATION_ERROR"]
+              },
+              {
+                "code": "HINT",
+                "level": "INFO",
+                "message": "Please ensure that provided file path exists in git repository or in reference branch: master",
+                "exception": null,
+                "failureTypes": []
+              },
+              {
+                "code": "EXPLANATION",
+                "level": "INFO",
+                "message": "Provided file path doesn't exist",
+                "exception": null,
+                "failureTypes": []
+              },
+              {
+                "code": "GIT_OPERATION_ERROR",
+                "level": "ERROR",
+                "message": "File 'src/' not found",
+                "exception": null,
+                "failureTypes": ["APPLICATION_ERROR"]
+              }
+            ]
+          },
+          "skipInfo": null,
+          "nodeRunInfo": null,
+          "executableResponses": [
+            {
+              "child": {
+                "childNodeId": "oiKoXMtOS8Khf0tKKmIQ_wsteps",
+                "logKeys": [],
+                "units": []
+              }
+            }
+          ],
+          "unitProgresses": [],
+          "progressData": null,
+          "delegateInfoList": [],
+          "interruptHistories": [],
+          "stepDetails": null
+        },
+        "UXgkNwhWSd6d-YWlHKe_7Q": {
+          "uuid": "UXgkNwhWSd6d-YWlHKe_7Q",
+          "setupId": "3pRjW_wVQoKiW1v-sRr5Pw",
+          "name": "Infrastructure",
+          "identifier": "spec",
+          "baseFqn": "pipeline.stages.testStage_Cypress.spec.infrastructure.infrastructureDefinition.spec",
+          "outcomes": {
+            "output": {
+              "connectorRef": "account.K8stest",
+              "namespace": "default",
+              "releaseName": "release-<+INFRA_KEY>",
+              "environment": {
+                "name": "testEnv",
+                "identifier": "testEnv",
+                "description": "",
+                "type": "Production",
+                "tags": {}
+              },
+              "infrastructureKey": "2b68f66ec154eeb5e418eab268102ff8e31f4a52"
+            }
+          },
+          "stepParameters": {
+            "connectorRef": "account.K8stest",
+            "namespace": "default",
+            "releaseName": "release-<+INFRA_KEY>",
+            "metadata": null
+          },
+          "startTs": 1648539262376,
+          "endTs": 1648539264518,
+          "stepType": "INFRASTRUCTURE",
+          "status": "Success",
+          "failureInfo": { "message": "", "failureTypeList": [], "responseMessages": [] },
+          "skipInfo": null,
+          "nodeRunInfo": null,
+          "executableResponses": [
+            {
+              "sync": {
+                "logKeys": [],
+                "units": []
+              }
+            }
+          ],
+          "unitProgresses": [
+            {
+              "unitName": "Execute",
+              "status": "SUCCESS",
+              "startTime": "1648539262445",
+              "endTime": "1648539264490"
+            }
+          ],
+          "progressData": null,
+          "delegateInfoList": [],
+          "interruptHistories": [],
+          "stepDetails": null
+        }
+      },
+      "nodeAdjacencyListMap": {
+        "O_daCoC_TwKvewwZo_yk7Q": { "children": [], "nextIds": ["A8VKN33_QF62o2JCeBy91w"] },
+        "A8VKN33_QF62o2JCeBy91w": { "children": ["_JzAh3pbSXO11aPvibduKw"], "nextIds": [] },
+        "uMG5F55zQt6YWB3tPriGmA": { "children": [], "nextIds": ["UXgkNwhWSd6d-YWlHKe_7Q"] },
+        "fRWVsl2FS1KXkTgu-V38PA": { "children": [], "nextIds": ["33cvSiTdTKmMf1zAarJnHA"] },
+        "_JzAh3pbSXO11aPvibduKw": { "children": [], "nextIds": [] },
+        "fEXNUEFkTiqIFwUt0kBd4w": { "children": ["uMG5F55zQt6YWB3tPriGmA"], "nextIds": [] },
+        "33cvSiTdTKmMf1zAarJnHA": { "children": ["O_daCoC_TwKvewwZo_yk7Q"], "nextIds": [] },
+        "UXgkNwhWSd6d-YWlHKe_7Q": { "children": [], "nextIds": ["fRWVsl2FS1KXkTgu-V38PA"] }
+      },
+      "representationStrategy": "camelCase"
+    }
+  },
+  "metaData": null,
+  "correlationId": "7f2ce1c2-e9a1-4da2-882e-7ea4c11726a2"
+}

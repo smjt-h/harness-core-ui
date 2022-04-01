@@ -8,7 +8,6 @@
 import React, { useEffect, useState, useMemo } from 'react'
 import { useParams } from 'react-router-dom'
 import {
-  Color,
   Text,
   Container,
   Formik,
@@ -21,6 +20,7 @@ import {
   Button
 } from '@wings-software/uicore'
 import { PopoverInteractionKind } from '@blueprintjs/core'
+import { Color } from '@harness/design-system'
 import type { ProjectPathProps } from '@common/interfaces/RouteInterfaces'
 import { useGetNewRelicApplications, MetricPackDTO, MetricPackValidationResponse } from 'services/cv'
 import { Connectors } from '@connectors/constants'
@@ -93,7 +93,7 @@ export default function NewRelicHealthSource({
   } = useGroupedSideNaveHook({
     defaultCustomMetricName: defailtMetricName,
     initCustomMetricData: initNewRelicCustomFormValue(),
-    mappedServicesAndEnvs: newRelicData?.mappedServicesAndEnvs
+    mappedServicesAndEnvs: showCustomMetric ? newRelicData?.mappedServicesAndEnvs : new Map()
   })
 
   const [nonCustomFeilds, setNonCustomFeilds] = useState(initializeNonCustomFields(newRelicData))
@@ -143,6 +143,12 @@ export default function NewRelicHealthSource({
     // eslint-disable-next-line react-hooks/exhaustive-deps
     [applicationLoading]
   )
+
+  useEffect(() => {
+    if (!selectedMetric && !mappedMetrics.size) {
+      setShowCustomMetric(false)
+    }
+  }, [mappedMetrics, selectedMetric])
 
   useEffect(() => {
     if (
@@ -305,6 +311,7 @@ export default function NewRelicHealthSource({
                 tooptipMessage={getString('cv.monitoringSources.gcoLogs.addQueryTooltip')}
                 addFieldLabel={getString('cv.monitoringSources.addMetric')}
                 initCustomForm={initNewRelicCustomFormValue()}
+                shouldBeAbleToDeleteLastMetric
               >
                 <NewRelicCustomMetricForm
                   connectorIdentifier={connectorIdentifier}

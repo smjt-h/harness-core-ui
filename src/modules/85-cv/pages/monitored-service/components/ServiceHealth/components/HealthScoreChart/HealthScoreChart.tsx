@@ -5,16 +5,12 @@
  * https://polyformproject.org/wp-content/uploads/2020/06/PolyForm-Shield-1.0.0.txt.
  */
 
-import React, { useEffect, useState } from 'react'
+import React, { useEffect, useState, useMemo } from 'react'
 import { useParams } from 'react-router-dom'
 import { isEmpty } from 'lodash-es'
 import { Container, Text } from '@wings-software/uicore'
 import ColumnChart from '@cv/components/ColumnChart/ColumnChart'
-import {
-  useGetMonitoredServiceOverAllHealthScoreWithServiceAndEnv,
-  useGetMonitoredServiceOverAllHealthScore,
-  ResponseHistoricalTrend
-} from 'services/cv'
+import { useGetMonitoredServiceOverAllHealthScore, ResponseHistoricalTrend } from 'services/cv'
 import { useStrings } from 'framework/strings'
 import type { ProjectPathProps } from '@common/interfaces/RouteInterfaces'
 import type { ColumnData } from '@cv/components/ColumnChart/ColumnChart.types'
@@ -24,37 +20,21 @@ import type { TimePeriodEnum } from '../../ServiceHealth.constants'
 import css from './HealthScoreChart.module.scss'
 
 export default function HealthScoreChart(props: HealthScoreChartProps): JSX.Element {
-  const {
-    envIdentifier,
-    serviceIdentifier,
-    monitoredServiceIdentifier,
-    duration,
-    setHealthScoreData,
-    endTime,
-    columChartProps,
-    hasTimelineIntegration
-  } = props
+  const { monitoredServiceIdentifier, duration, setHealthScoreData, endTime, columChartProps, hasTimelineIntegration } =
+    props
   const { getString } = useStrings()
   const { orgIdentifier, projectIdentifier, accountId } = useParams<ProjectPathProps>()
   const [seriesData, setSeriesData] = useState<ColumnData[]>([])
 
-  const {
-    data: healthScoreDataWithServiceAndEnv,
-    refetch: fetchHealthScore,
-    loading,
-    error
-  } = useGetMonitoredServiceOverAllHealthScoreWithServiceAndEnv({
-    queryParams: {
-      environmentIdentifier: envIdentifier,
-      serviceIdentifier,
+  const queryParams = useMemo(() => {
+    return {
       accountId,
-      orgIdentifier,
       projectIdentifier,
+      orgIdentifier,
       duration: duration?.value as TimePeriodEnum,
       endTime: endTime || Date.now()
-    },
-    lazy: true
-  })
+    }
+  }, [duration?.value, endTime])
 
   const {
     data: healthScoreDataWithMSIdentifier,
@@ -62,28 +42,14 @@ export default function HealthScoreChart(props: HealthScoreChartProps): JSX.Elem
     loading: healthScoreDataWithMSIdentifierLoading,
     error: healthScoreDataWithMSIdentifierError
   } = useGetMonitoredServiceOverAllHealthScore({
-    identifier: monitoredServiceIdentifier ?? '',
-    queryParams: {
-      accountId,
-      orgIdentifier,
-      projectIdentifier,
-      duration: duration?.value as TimePeriodEnum,
-      endTime: endTime || Date.now()
-    },
-    lazy: true
+    identifier: monitoredServiceIdentifier,
+    queryParams
   })
 
   useEffect(() => {
-    if (monitoredServiceIdentifier) {
-      fetchHealthScoreWithMSIdentifier()
-      return
-    }
-
-    if (envIdentifier && serviceIdentifier) {
-      fetchHealthScore()
-    }
+    handleHealthScoreData(healthScoreDataWithMSIdentifier)
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [duration?.value, envIdentifier, serviceIdentifier, monitoredServiceIdentifier])
+  }, [healthScoreDataWithMSIdentifier])
 
   const handleHealthScoreData = (healthScoreData: ResponseHistoricalTrend | null): void => {
     if (healthScoreData?.data?.healthScores && !isEmpty(healthScoreData?.data?.healthScores)) {
@@ -92,15 +58,6 @@ export default function HealthScoreChart(props: HealthScoreChartProps): JSX.Elem
       setHealthScoreData?.(healthScoreData.data.healthScores)
     }
   }
-
-  useEffect(() => {
-    if (monitoredServiceIdentifier) {
-      handleHealthScoreData(healthScoreDataWithMSIdentifier)
-    } else {
-      handleHealthScoreData(healthScoreDataWithServiceAndEnv)
-    }
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [healthScoreDataWithServiceAndEnv, healthScoreDataWithMSIdentifier, monitoredServiceIdentifier])
 
   return (
     <Container className={css.main}>
@@ -114,9 +71,9 @@ export default function HealthScoreChart(props: HealthScoreChartProps): JSX.Elem
           duration={duration}
           leftOffset={90}
           {...columChartProps}
-          isLoading={loading || healthScoreDataWithMSIdentifierLoading}
-          error={error || healthScoreDataWithMSIdentifierError}
-          refetchOnError={fetchHealthScore}
+          isLoading={healthScoreDataWithMSIdentifierLoading}
+          error={healthScoreDataWithMSIdentifierError}
+          refetchOnError={fetchHealthScoreWithMSIdentifier}
         />
       </Container>
     </Container>

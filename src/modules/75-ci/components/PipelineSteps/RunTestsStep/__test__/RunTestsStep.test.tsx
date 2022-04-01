@@ -70,7 +70,7 @@ describe('RunTests Step', () => {
       })
 
       const dropdownSelects = container.querySelectorAll('[icon="chevron-down"]')
-      expect(dropdownSelects.length).toEqual(4)
+      expect(dropdownSelects.length).toEqual(5)
 
       await waitFor(() => {
         fireEvent.click(dropdownSelects[1])
@@ -81,7 +81,6 @@ describe('RunTests Step', () => {
       })
 
       try {
-        // Shell dropdown should not be visible for non AWS VMs Build Infra
         getByText('common.shell')
       } catch (err) {
         expect(err).toBeTruthy()

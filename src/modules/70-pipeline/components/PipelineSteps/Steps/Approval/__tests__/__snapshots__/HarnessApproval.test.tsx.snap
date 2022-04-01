@@ -78,16 +78,55 @@ exports[`Harness Approval tests Basic snapshot - deploymentform mode readonly: h
     >
       <div
         class="bp3-form-group"
+        style="flex-grow: 1; margin-bottom: 0px;"
       >
         <label
           class="bp3-label"
+          for="spec.approvers.userGroups"
         >
-          <span
-            class="Tooltip--acenter"
-            data-tooltip-id="harnessApprovalRuntime_userGroups"
+          <div
+            class="formLabel"
           >
-            common.userGroups
-          </span>
+            <span
+              class="Tooltip--acenter"
+              data-tooltip-id="stepTestUtilForm_spec.approvers.userGroups"
+            >
+              common.userGroups
+            </span>
+            <div
+              class="bp3-popover-wrapper typeSelectorWrapper"
+            >
+              <div
+                class="bp3-popover-target typeSelector"
+              >
+                <button
+                  class="bp3-button bp3-minimal Button--button StyledProps--font StyledProps--main btn Button--iconOnly Button--without-shadow"
+                  type="button"
+                >
+                  <span
+                    class="bp3-button-text"
+                  >
+                    <span
+                      class="bp3-icon StyledProps--main icon fixed"
+                      data-icon="fixed-input"
+                    >
+                      <svg
+                        height="12"
+                        viewBox="0 0 9 9"
+                        width="12"
+                        xmlns="http://www.w3.org/2000/svg"
+                      >
+                        <path
+                          d="M5.61 7.55c.62-.7.3-1.42.18-2.35a.32.32 0 01.1-.29l1.43-1.42a.76.76 0 01.28-.15c.39-.1 1 0 1.28-.29a.34.34 0 000-.51L6.46.12a.33.33 0 00-.52 0c-.28.29-.2.9-.28 1.3a.53.53 0 01-.13.23L4.09 3.12a.29.29 0 01-.28.09c-.89-.11-1.6-.49-2.27.11-.29.26-.29.43 0 .7l1.31 1.34.15.16-.15.15-2.7 2.69a.36.36 0 000 .54.36.36 0 00.54-.05l2.63-2.68.17-.17.17.16c.45.46.9.91 1.36 1.36.21.21.42.22.59.03z"
+                          fill="currentColor"
+                        />
+                      </svg>
+                    </span>
+                  </span>
+                </button>
+              </div>
+            </div>
+          </div>
            
           <span
             class="bp3-text-muted"
@@ -97,61 +136,29 @@ exports[`Harness Approval tests Basic snapshot - deploymentform mode readonly: h
           class="bp3-form-content"
         >
           <div
-            class="Layout--horizontal StyledProps--main multiTypeSupport"
+            class="bp3-form-group"
           >
             <div
-              class="bp3-form-group"
+              class="bp3-form-content"
             >
               <div
-                class="bp3-form-content"
+                class="Layout--vertical StyledProps--main"
               >
                 <div
-                  class="Layout--vertical StyledProps--main"
+                  class="StyledProps--font StyledProps--main bp3-input userGroupInputContainer StyledProps--border StyledProps--padding-xsmall"
                 >
                   <div
-                    class="StyledProps--font StyledProps--main bp3-input userGroupInputContainer StyledProps--border StyledProps--padding-xsmall"
+                    class="StyledProps--font StyledProps--main pointer"
                   >
-                    <div
-                      class="StyledProps--font StyledProps--main pointer"
+                    <p
+                      class="StyledProps--font StyledProps--main selectBtn StyledProps--color StyledProps--color-primary7 StyledProps--flex StyledProps--flex-alignItems-center StyledProps--flex-justifyContent-flex-start StyledProps--flex-inline StyledProps--padding-xsmall"
                     >
-                      <p
-                        class="StyledProps--font StyledProps--main selectBtn StyledProps--color StyledProps--color-primary7 StyledProps--flex StyledProps--flex-alignItems-center StyledProps--flex-justifyContent-flex-start StyledProps--flex-inline StyledProps--padding-xsmall"
-                      >
-                        common.selectUserGroups
-                      </p>
-                    </div>
+                      common.selectUserGroups
+                    </p>
                   </div>
                 </div>
               </div>
             </div>
-            <span
-              class="bp3-popover-wrapper MultiTypeInput--wrapper"
-            >
-              <span
-                class="bp3-popover-target"
-              >
-                <button
-                  class="MultiTypeInput--btn MultiTypeInput--FIXED"
-                >
-                  <span
-                    class="bp3-icon StyledProps--main"
-                    data-icon="fixed-input"
-                  >
-                    <svg
-                      height="12"
-                      viewBox="0 0 9 9"
-                      width="12"
-                      xmlns="http://www.w3.org/2000/svg"
-                    >
-                      <path
-                        d="M5.61 7.55c.62-.7.3-1.42.18-2.35a.32.32 0 01.1-.29l1.43-1.42a.76.76 0 01.28-.15c.39-.1 1 0 1.28-.29a.34.34 0 000-.51L6.46.12a.33.33 0 00-.52 0c-.28.29-.2.9-.28 1.3a.53.53 0 01-.13.23L4.09 3.12a.29.29 0 01-.28.09c-.89-.11-1.6-.49-2.27.11-.29.26-.29.43 0 .7l1.31 1.34.15.16-.15.15-2.7 2.69a.36.36 0 000 .54.36.36 0 00.54-.05l2.63-2.68.17-.17.17.16c.45.46.9.91 1.36 1.36.21.21.42.22.59.03z"
-                        fill="currentColor"
-                      />
-                    </svg>
-                  </span>
-                </button>
-              </span>
-            </span>
           </div>
         </div>
       </div>
@@ -322,16 +329,55 @@ exports[`Harness Approval tests Basic snapshot - deploymentform mode: harness-ap
     >
       <div
         class="bp3-form-group"
+        style="flex-grow: 1; margin-bottom: 0px;"
       >
         <label
           class="bp3-label"
+          for="spec.approvers.userGroups"
         >
-          <span
-            class="Tooltip--acenter"
-            data-tooltip-id="harnessApprovalRuntime_userGroups"
+          <div
+            class="formLabel"
           >
-            common.userGroups
-          </span>
+            <span
+              class="Tooltip--acenter"
+              data-tooltip-id="stepTestUtilForm_spec.approvers.userGroups"
+            >
+              common.userGroups
+            </span>
+            <div
+              class="bp3-popover-wrapper typeSelectorWrapper"
+            >
+              <div
+                class="bp3-popover-target typeSelector"
+              >
+                <button
+                  class="bp3-button bp3-minimal Button--button StyledProps--font StyledProps--main btn Button--iconOnly Button--without-shadow"
+                  type="button"
+                >
+                  <span
+                    class="bp3-button-text"
+                  >
+                    <span
+                      class="bp3-icon StyledProps--main icon fixed"
+                      data-icon="fixed-input"
+                    >
+                      <svg
+                        height="12"
+                        viewBox="0 0 9 9"
+                        width="12"
+                        xmlns="http://www.w3.org/2000/svg"
+                      >
+                        <path
+                          d="M5.61 7.55c.62-.7.3-1.42.18-2.35a.32.32 0 01.1-.29l1.43-1.42a.76.76 0 01.28-.15c.39-.1 1 0 1.28-.29a.34.34 0 000-.51L6.46.12a.33.33 0 00-.52 0c-.28.29-.2.9-.28 1.3a.53.53 0 01-.13.23L4.09 3.12a.29.29 0 01-.28.09c-.89-.11-1.6-.49-2.27.11-.29.26-.29.43 0 .7l1.31 1.34.15.16-.15.15-2.7 2.69a.36.36 0 000 .54.36.36 0 00.54-.05l2.63-2.68.17-.17.17.16c.45.46.9.91 1.36 1.36.21.21.42.22.59.03z"
+                          fill="currentColor"
+                        />
+                      </svg>
+                    </span>
+                  </span>
+                </button>
+              </div>
+            </div>
+          </div>
            
           <span
             class="bp3-text-muted"
@@ -341,61 +387,29 @@ exports[`Harness Approval tests Basic snapshot - deploymentform mode: harness-ap
           class="bp3-form-content"
         >
           <div
-            class="Layout--horizontal StyledProps--main multiTypeSupport"
+            class="bp3-form-group"
           >
             <div
-              class="bp3-form-group"
+              class="bp3-form-content"
             >
               <div
-                class="bp3-form-content"
+                class="Layout--vertical StyledProps--main"
               >
                 <div
-                  class="Layout--vertical StyledProps--main"
+                  class="StyledProps--font StyledProps--main bp3-input userGroupInputContainer StyledProps--border StyledProps--padding-xsmall"
                 >
                   <div
-                    class="StyledProps--font StyledProps--main bp3-input userGroupInputContainer StyledProps--border StyledProps--padding-xsmall"
+                    class="StyledProps--font StyledProps--main pointer"
                   >
-                    <div
-                      class="StyledProps--font StyledProps--main pointer"
+                    <p
+                      class="StyledProps--font StyledProps--main selectBtn StyledProps--color StyledProps--color-primary7 StyledProps--flex StyledProps--flex-alignItems-center StyledProps--flex-justifyContent-flex-start StyledProps--flex-inline StyledProps--padding-xsmall"
                     >
-                      <p
-                        class="StyledProps--font StyledProps--main selectBtn StyledProps--color StyledProps--color-primary7 StyledProps--flex StyledProps--flex-alignItems-center StyledProps--flex-justifyContent-flex-start StyledProps--flex-inline StyledProps--padding-xsmall"
-                      >
-                        common.selectUserGroups
-                      </p>
-                    </div>
+                      common.selectUserGroups
+                    </p>
                   </div>
                 </div>
               </div>
             </div>
-            <span
-              class="bp3-popover-wrapper MultiTypeInput--wrapper"
-            >
-              <span
-                class="bp3-popover-target"
-              >
-                <button
-                  class="MultiTypeInput--btn MultiTypeInput--FIXED"
-                >
-                  <span
-                    class="bp3-icon StyledProps--main"
-                    data-icon="fixed-input"
-                  >
-                    <svg
-                      height="12"
-                      viewBox="0 0 9 9"
-                      width="12"
-                      xmlns="http://www.w3.org/2000/svg"
-                    >
-                      <path
-                        d="M5.61 7.55c.62-.7.3-1.42.18-2.35a.32.32 0 01.1-.29l1.43-1.42a.76.76 0 01.28-.15c.39-.1 1 0 1.28-.29a.34.34 0 000-.51L6.46.12a.33.33 0 00-.52 0c-.28.29-.2.9-.28 1.3a.53.53 0 01-.13.23L4.09 3.12a.29.29 0 01-.28.09c-.89-.11-1.6-.49-2.27.11-.29.26-.29.43 0 .7l1.31 1.34.15.16-.15.15-2.7 2.69a.36.36 0 000 .54.36.36 0 00.54-.05l2.63-2.68.17-.17.17.16c.45.46.9.91 1.36 1.36.21.21.42.22.59.03z"
-                        fill="currentColor"
-                      />
-                    </svg>
-                  </span>
-                </button>
-              </span>
-            </span>
           </div>
         </div>
       </div>
@@ -765,16 +779,55 @@ exports[`Harness Approval tests Basic snapshot - inputset mode: input set with e
     >
       <div
         class="bp3-form-group"
+        style="flex-grow: 1; margin-bottom: 0px;"
       >
         <label
           class="bp3-label"
+          for="spec.approvers.userGroups"
         >
-          <span
-            class="Tooltip--acenter"
-            data-tooltip-id="harnessApprovalRuntime_userGroups"
+          <div
+            class="formLabel"
           >
-            common.userGroups
-          </span>
+            <span
+              class="Tooltip--acenter"
+              data-tooltip-id="stepTestUtilForm_spec.approvers.userGroups"
+            >
+              common.userGroups
+            </span>
+            <div
+              class="bp3-popover-wrapper typeSelectorWrapper"
+            >
+              <div
+                class="bp3-popover-target typeSelector"
+              >
+                <button
+                  class="bp3-button bp3-minimal Button--button StyledProps--font StyledProps--main btn Button--iconOnly Button--without-shadow"
+                  type="button"
+                >
+                  <span
+                    class="bp3-button-text"
+                  >
+                    <span
+                      class="bp3-icon StyledProps--main icon fixed"
+                      data-icon="fixed-input"
+                    >
+                      <svg
+                        height="12"
+                        viewBox="0 0 9 9"
+                        width="12"
+                        xmlns="http://www.w3.org/2000/svg"
+                      >
+                        <path
+                          d="M5.61 7.55c.62-.7.3-1.42.18-2.35a.32.32 0 01.1-.29l1.43-1.42a.76.76 0 01.28-.15c.39-.1 1 0 1.28-.29a.34.34 0 000-.51L6.46.12a.33.33 0 00-.52 0c-.28.29-.2.9-.28 1.3a.53.53 0 01-.13.23L4.09 3.12a.29.29 0 01-.28.09c-.89-.11-1.6-.49-2.27.11-.29.26-.29.43 0 .7l1.31 1.34.15.16-.15.15-2.7 2.69a.36.36 0 000 .54.36.36 0 00.54-.05l2.63-2.68.17-.17.17.16c.45.46.9.91 1.36 1.36.21.21.42.22.59.03z"
+                          fill="currentColor"
+                        />
+                      </svg>
+                    </span>
+                  </span>
+                </button>
+              </div>
+            </div>
+          </div>
            
           <span
             class="bp3-text-muted"
@@ -784,92 +837,60 @@ exports[`Harness Approval tests Basic snapshot - inputset mode: input set with e
           class="bp3-form-content"
         >
           <div
-            class="Layout--horizontal StyledProps--main multiTypeSupport"
+            class="bp3-form-group bp3-intent-danger"
           >
             <div
-              class="bp3-form-group bp3-intent-danger"
+              class="bp3-form-content"
             >
               <div
-                class="bp3-form-content"
+                class="Layout--vertical StyledProps--main"
               >
                 <div
-                  class="Layout--vertical StyledProps--main"
+                  class="StyledProps--font StyledProps--main bp3-input userGroupInputContainer StyledProps--border StyledProps--padding-xsmall"
                 >
                   <div
-                    class="StyledProps--font StyledProps--main bp3-input userGroupInputContainer StyledProps--border StyledProps--padding-xsmall"
+                    class="StyledProps--font StyledProps--main pointer"
                   >
-                    <div
-                      class="StyledProps--font StyledProps--main pointer"
+                    <p
+                      class="StyledProps--font StyledProps--main selectBtn StyledProps--color StyledProps--color-primary7 StyledProps--flex StyledProps--flex-alignItems-center StyledProps--flex-justifyContent-flex-start StyledProps--flex-inline StyledProps--padding-xsmall"
                     >
-                      <p
-                        class="StyledProps--font StyledProps--main selectBtn StyledProps--color StyledProps--color-primary7 StyledProps--flex StyledProps--flex-alignItems-center StyledProps--flex-justifyContent-flex-start StyledProps--flex-inline StyledProps--padding-xsmall"
-                      >
-                        common.selectUserGroups
-                      </p>
-                    </div>
-                  </div>
-                </div>
-                <div
-                  class="bp3-form-helper-text"
-                >
-                  <div
-                    class="FormError--errorDiv"
-                    data-name="spec.approvers.userGroups"
-                  >
-                    <span
-                      class="bp3-icon StyledProps--main FormError--errorTextIcon StyledProps--intent-danger"
-                      data-icon="circle-cross"
-                    >
-                      <svg
-                        height="12"
-                        viewBox="0 0 13 13"
-                        width="12"
-                        xmlns="http://www.w3.org/2000/svg"
-                      >
-                        <path
-                          clip-rule="evenodd"
-                          d="M.167 6.501a6.333 6.333 0 1012.666 0 6.333 6.333 0 00-12.666 0zm4.071-3.003l2.26 2.263 2.264-2.263c.495-.495 1.236.248.741.743L7.24 6.504l2.254 2.258c.495.495-.247 1.238-.742.743L6.497 7.246 4.238 9.505c-.495.495-1.236-.249-.741-.744l2.258-2.258-2.259-2.262c-.494-.495.248-1.238.742-.743z"
-                          fill-rule="evenodd"
-                        />
-                      </svg>
-                    </span>
-                    <span
-                      class="FormError--error"
-                    >
-                      pipeline.approvalStep.validation.userGroups
-                    </span>
+                      common.selectUserGroups
+                    </p>
                   </div>
                 </div>
               </div>
-            </div>
-            <span
-              class="bp3-popover-wrapper MultiTypeInput--wrapper"
-            >
-              <span
-                class="bp3-popover-target"
+              <div
+                class="bp3-form-helper-text"
               >
-                <button
-                  class="MultiTypeInput--btn MultiTypeInput--FIXED"
+                <div
+                  class="FormError--errorDiv"
+                  data-name="spec.approvers.userGroups"
                 >
                   <span
-                    class="bp3-icon StyledProps--main"
-                    data-icon="fixed-input"
+                    class="bp3-icon StyledProps--main FormError--errorTextIcon StyledProps--intent-danger"
+                    data-icon="circle-cross"
                   >
                     <svg
                       height="12"
-                      viewBox="0 0 9 9"
+                      viewBox="0 0 13 13"
                       width="12"
                       xmlns="http://www.w3.org/2000/svg"
                     >
                       <path
-                        d="M5.61 7.55c.62-.7.3-1.42.18-2.35a.32.32 0 01.1-.29l1.43-1.42a.76.76 0 01.28-.15c.39-.1 1 0 1.28-.29a.34.34 0 000-.51L6.46.12a.33.33 0 00-.52 0c-.28.29-.2.9-.28 1.3a.53.53 0 01-.13.23L4.09 3.12a.29.29 0 01-.28.09c-.89-.11-1.6-.49-2.27.11-.29.26-.29.43 0 .7l1.31 1.34.15.16-.15.15-2.7 2.69a.36.36 0 000 .54.36.36 0 00.54-.05l2.63-2.68.17-.17.17.16c.45.46.9.91 1.36 1.36.21.21.42.22.59.03z"
-                        fill="currentColor"
+                        clip-rule="evenodd"
+                        d="M.167 6.501a6.333 6.333 0 1012.666 0 6.333 6.333 0 00-12.666 0zm4.071-3.003l2.26 2.263 2.264-2.263c.495-.495 1.236.248.741.743L7.24 6.504l2.254 2.258c.495.495-.247 1.238-.742.743L6.497 7.246 4.238 9.505c-.495.495-1.236-.249-.741-.744l2.258-2.258-2.259-2.262c-.494-.495.248-1.238.742-.743z"
+                        fill-rule="evenodd"
                       />
                     </svg>
                   </span>
-                </button>
-              </span>
-            </span>
+                  <span
+                    class="FormError--error"
+                  >
+                    pipeline.approvalStep.validation.userGroups
+                  </span>
+                </div>
+              </div>
+            </div>
           </div>
         </div>
       </div>
@@ -1108,6 +1129,7 @@ exports[`Harness Approval tests Edit stage - readonly: edit stage readonly 1`] =
                     class="bp3-input"
                     disabled=""
                     name="name"
+                    placeholder="pipeline.stepNamePlaceholder"
                     type="text"
                     value=""
                   />
@@ -1288,17 +1310,58 @@ exports[`Harness Approval tests Edit stage - readonly: edit stage readonly 1`] =
         >
           <div
             class="bp3-form-group"
-            data-id="null-4"
+            data-id="spec.approvers.userGroups-4"
+            style="flex-grow: 1; margin-bottom: 0px;"
           >
             <label
               class="bp3-label"
+              for="spec.approvers.userGroups"
             >
-              <span
-                class="Tooltip--acenter"
-                data-tooltip-id="harnessApproval_spec.approvers.userGroups"
+              <div
+                class="formLabel"
               >
-                common.userGroups
-              </span>
+                <span
+                  class="Tooltip--acenter"
+                  data-tooltip-id="harnessApproval_spec.approvers.userGroups"
+                >
+                  common.userGroups
+                </span>
+                <div
+                  class="bp3-popover-wrapper typeSelectorWrapper"
+                >
+                  <div
+                    class="bp3-popover-target typeSelector"
+                  >
+                    <button
+                      class="bp3-button bp3-disabled bp3-minimal Button--button StyledProps--font StyledProps--main btn Button--iconOnly Button--without-shadow"
+                      disabled=""
+                      tabindex="-1"
+                      type="button"
+                    >
+                      <span
+                        class="bp3-button-text"
+                      >
+                        <span
+                          class="bp3-icon StyledProps--main icon fixed"
+                          data-icon="fixed-input"
+                        >
+                          <svg
+                            height="12"
+                            viewBox="0 0 9 9"
+                            width="12"
+                            xmlns="http://www.w3.org/2000/svg"
+                          >
+                            <path
+                              d="M5.61 7.55c.62-.7.3-1.42.18-2.35a.32.32 0 01.1-.29l1.43-1.42a.76.76 0 01.28-.15c.39-.1 1 0 1.28-.29a.34.34 0 000-.51L6.46.12a.33.33 0 00-.52 0c-.28.29-.2.9-.28 1.3a.53.53 0 01-.13.23L4.09 3.12a.29.29 0 01-.28.09c-.89-.11-1.6-.49-2.27.11-.29.26-.29.43 0 .7l1.31 1.34.15.16-.15.15-2.7 2.69a.36.36 0 000 .54.36.36 0 00.54-.05l2.63-2.68.17-.17.17.16c.45.46.9.91 1.36 1.36.21.21.42.22.59.03z"
+                              fill="currentColor"
+                            />
+                          </svg>
+                        </span>
+                      </span>
+                    </button>
+                  </div>
+                </div>
+              </div>
                
               <span
                 class="bp3-text-muted"
@@ -1308,55 +1371,30 @@ exports[`Harness Approval tests Edit stage - readonly: edit stage readonly 1`] =
               class="bp3-form-content"
             >
               <div
-                class="Layout--horizontal StyledProps--main multiTypeSupport"
+                class="bp3-form-group"
+                data-id="undefined-5"
               >
                 <div
-                  class="bp3-form-group"
-                  data-id="undefined-5"
+                  class="bp3-form-content"
                 >
                   <div
-                    class="bp3-form-content"
+                    class="Layout--vertical StyledProps--main"
                   >
                     <div
-                      class="Layout--vertical StyledProps--main"
+                      class="StyledProps--font StyledProps--main bp3-input bp3-disabled userGroupInputContainer StyledProps--border StyledProps--padding-xsmall"
                     >
                       <div
-                        class="StyledProps--font StyledProps--main bp3-input bp3-disabled userGroupInputContainer StyledProps--border StyledProps--padding-xsmall"
+                        class="StyledProps--font StyledProps--main pointer"
                       >
-                        <div
-                          class="StyledProps--font StyledProps--main pointer"
+                        <p
+                          class="StyledProps--font StyledProps--main selectBtn StyledProps--color StyledProps--color-primary7 StyledProps--flex StyledProps--flex-alignItems-center StyledProps--flex-justifyContent-flex-start StyledProps--flex-inline StyledProps--padding-xsmall"
                         >
-                          <p
-                            class="StyledProps--font StyledProps--main selectBtn StyledProps--color StyledProps--color-primary7 StyledProps--flex StyledProps--flex-alignItems-center StyledProps--flex-justifyContent-flex-start StyledProps--flex-inline StyledProps--padding-xsmall"
-                          >
-                            common.selectUserGroups
-                          </p>
-                        </div>
+                          common.selectUserGroups
+                        </p>
                       </div>
                     </div>
                   </div>
                 </div>
-                <button
-                  class="MultiTypeInput--btn MultiTypeInput--FIXED"
-                  disabled=""
-                >
-                  <span
-                    class="bp3-icon StyledProps--main"
-                    data-icon="fixed-input"
-                  >
-                    <svg
-                      height="12"
-                      viewBox="0 0 9 9"
-                      width="12"
-                      xmlns="http://www.w3.org/2000/svg"
-                    >
-                      <path
-                        d="M5.61 7.55c.62-.7.3-1.42.18-2.35a.32.32 0 01.1-.29l1.43-1.42a.76.76 0 01.28-.15c.39-.1 1 0 1.28-.29a.34.34 0 000-.51L6.46.12a.33.33 0 00-.52 0c-.28.29-.2.9-.28 1.3a.53.53 0 01-.13.23L4.09 3.12a.29.29 0 01-.28.09c-.89-.11-1.6-.49-2.27.11-.29.26-.29.43 0 .7l1.31 1.34.15.16-.15.15-2.7 2.69a.36.36 0 000 .54.36.36 0 00.54-.05l2.63-2.68.17-.17.17.16c.45.46.9.91 1.36 1.36.21.21.42.22.59.03z"
-                        fill="currentColor"
-                      />
-                    </svg>
-                  </span>
-                </button>
               </div>
             </div>
           </div>
@@ -1602,6 +1640,7 @@ exports[`Harness Approval tests Edit stage - submit field values as expressions:
                     autocomplete="off"
                     class="bp3-input"
                     name="name"
+                    placeholder="pipeline.stepNamePlaceholder"
                     type="text"
                     value="harness approval step"
                   />
@@ -1822,17 +1861,70 @@ exports[`Harness Approval tests Edit stage - submit field values as expressions:
         >
           <div
             class="bp3-form-group"
-            data-id="spec.approvers.userGroups-4"
+            data-id="spec.approvers.userGroups.0-4"
+            style="flex-grow: 1; margin-bottom: 0px;"
           >
             <label
               class="bp3-label"
+              for="spec.approvers.userGroups"
             >
-              <span
-                class="Tooltip--acenter"
-                data-tooltip-id="harnessApproval_spec.approvers.userGroups"
+              <div
+                class="formLabel"
               >
-                common.userGroups
-              </span>
+                <span
+                  class="Tooltip--acenter"
+                  data-tooltip-id="harnessApproval_spec.approvers.userGroups"
+                >
+                  common.userGroups
+                </span>
+                <div
+                  class="bp3-popover-wrapper typeSelectorWrapper"
+                >
+                  <div
+                    class="bp3-popover-target typeSelector"
+                  >
+                    <button
+                      class="bp3-button bp3-minimal Button--button StyledProps--font StyledProps--main btn Button--iconOnly Button--without-shadow"
+                      type="button"
+                    >
+                      <span
+                        class="bp3-button-text"
+                      >
+                        <span
+                          class="bp3-icon StyledProps--main icon expression"
+                          data-icon="expression-input"
+                        >
+                          <svg
+                            height="16"
+                            viewBox="0 0 16 16"
+                            width="16"
+                            xmlns="http://www.w3.org/2000/svg"
+                          >
+                            <path
+                              clip-rule="evenodd"
+                              d="M4.875 2.588C5.305 2.218 5.889 2 6.647 2a.5.5 0 110 1c-.556 0-.898.155-1.12.346-.228.197-.374.472-.462.784a3.18 3.18 0 00-.106.86h1.449a.5.5 0 010 1H4.992v5.505a.5.5 0 01-1 0V5.99h-.936a.5.5 0 010-1h.903a4.173 4.173 0 01.143-1.13c.123-.435.35-.907.773-1.27zm.111 2.823c0 .001 0 .001 0 0m0 0zm7.059 5.019c-.242.268-.455.59-.553.786-.17.341-.472.705-.766.994-.285.281-.635.565-.932.684a.5.5 0 11-.371-.929c.102-.04.335-.204.6-.467.258-.253.475-.528.575-.729.142-.283.407-.68.704-1.009.15-.165.32-.33.5-.456.168-.118.406-.248.68-.248a.5.5 0 01.013 1c-.004.002-.042.012-.118.066a2.152 2.152 0 00-.332.307z"
+                              fill="#CurrentColor"
+                              fill-rule="evenodd"
+                            />
+                            <path
+                              clip-rule="evenodd"
+                              d="M10.045 10.43c.242.268.455.59.553.786.17.341.473.705.766.994.285.281.635.565.932.684a.5.5 0 10.372-.929c-.103-.04-.335-.204-.602-.467-.257-.253-.473-.528-.574-.729a5.003 5.003 0 00-.704-1.009 3.08 3.08 0 00-.5-.456c-.168-.118-.406-.248-.68-.248a.5.5 0 00-.012 1c.003.002.041.012.118.066a2.1 2.1 0 01.33.307z"
+                              fill="#CurrentColor"
+                              fill-rule="evenodd"
+                            />
+                            <path
+                              clip-rule="evenodd"
+                              d="M8.367 7.805a.5.5 0 01.186.682c-.854 1.494-.652 3.467.013 4.797a.5.5 0 11-.895.447c-.771-1.543-1.049-3.881.013-5.74a.5.5 0 01.683-.186zm5.273 0a.5.5 0 01.683.186c1.062 1.859.784 4.197.013 5.74a.5.5 0 11-.895-.447c.665-1.33.867-3.303.013-4.797a.5.5 0 01.186-.682z"
+                              fill="currentColor"
+                              fill-rule="evenodd"
+                            />
+                          </svg>
+                        </span>
+                      </span>
+                    </button>
+                  </div>
+                </div>
+              </div>
                
               <span
                 class="bp3-text-muted"
@@ -1842,71 +1934,407 @@ exports[`Harness Approval tests Edit stage - submit field values as expressions:
               class="bp3-form-content"
             >
               <div
-                class="Layout--horizontal StyledProps--main multiTypeSupport"
+                class="Layout--horizontal Layout--layout-spacing-small StyledProps--main StyledProps--flex StyledProps--flex-alignItems-center StyledProps--padding-bottom-small"
               >
                 <div
-                  class="bp3-popover-wrapper MultiTypeInput--input"
+                  class="bp3-form-group expressionsInputContainer"
+                  data-id="spec.approvers.userGroups.0-5"
                 >
                   <div
-                    class="bp3-popover-target"
+                    class="bp3-form-content"
                   >
                     <div
-                      class="bp3-input-group"
+                      class="bp3-popover-wrapper"
                     >
-                      <input
-                        autocomplete="off"
-                        class="bp3-input"
-                        name="spec.approvers.userGroups"
-                        placeholder="<+expression>"
-                        type="text"
-                        value="<+abc>"
-                      />
+                      <div
+                        class="bp3-popover-target"
+                      >
+                        <div
+                          class="bp3-input-group"
+                        >
+                          <input
+                            autocomplete="off"
+                            class="bp3-input"
+                            name="spec.approvers.userGroups.0"
+                            placeholder="<+expression>"
+                            type="text"
+                            value="<"
+                          />
+                        </div>
+                      </div>
                     </div>
                   </div>
                 </div>
-                <span
-                  class="bp3-popover-wrapper MultiTypeInput--wrapper"
+                <button
+                  class="bp3-button bp3-minimal Button--button StyledProps--font StyledProps--main Button--with-current-color Button--iconOnly Button--without-shadow Button--withLeftIcon"
+                  data-testid="remove-spec.approvers.userGroups-[0]"
+                  style="align-self: flex-start;"
+                  type="button"
                 >
                   <span
-                    class="bp3-popover-target"
+                    class="bp3-icon StyledProps--main"
+                    data-icon="main-trash"
                   >
-                    <button
-                      class="MultiTypeInput--btn MultiTypeInput--EXPRESSION"
+                    <svg
+                      height="22"
+                      viewBox="0 0 16 20"
+                      width="22"
+                      xmlns="http://www.w3.org/2000/svg"
                     >
-                      <span
-                        class="bp3-icon StyledProps--main"
-                        data-icon="expression-input"
-                      >
-                        <svg
-                          height="16"
-                          viewBox="0 0 16 16"
-                          width="16"
-                          xmlns="http://www.w3.org/2000/svg"
-                        >
-                          <path
-                            clip-rule="evenodd"
-                            d="M4.875 2.588C5.305 2.218 5.889 2 6.647 2a.5.5 0 110 1c-.556 0-.898.155-1.12.346-.228.197-.374.472-.462.784a3.18 3.18 0 00-.106.86h1.449a.5.5 0 010 1H4.992v5.505a.5.5 0 01-1 0V5.99h-.936a.5.5 0 010-1h.903a4.173 4.173 0 01.143-1.13c.123-.435.35-.907.773-1.27zm.111 2.823c0 .001 0 .001 0 0m0 0zm7.059 5.019c-.242.268-.455.59-.553.786-.17.341-.472.705-.766.994-.285.281-.635.565-.932.684a.5.5 0 11-.371-.929c.102-.04.335-.204.6-.467.258-.253.475-.528.575-.729.142-.283.407-.68.704-1.009.15-.165.32-.33.5-.456.168-.118.406-.248.68-.248a.5.5 0 01.013 1c-.004.002-.042.012-.118.066a2.152 2.152 0 00-.332.307z"
-                            fill="#CurrentColor"
-                            fill-rule="evenodd"
-                          />
-                          <path
-                            clip-rule="evenodd"
-                            d="M10.045 10.43c.242.268.455.59.553.786.17.341.473.705.766.994.285.281.635.565.932.684a.5.5 0 10.372-.929c-.103-.04-.335-.204-.602-.467-.257-.253-.473-.528-.574-.729a5.003 5.003 0 00-.704-1.009 3.08 3.08 0 00-.5-.456c-.168-.118-.406-.248-.68-.248a.5.5 0 00-.012 1c.003.002.041.012.118.066a2.1 2.1 0 01.33.307z"
-                            fill="#CurrentColor"
-                            fill-rule="evenodd"
-                          />
-                          <path
-                            clip-rule="evenodd"
-                            d="M8.367 7.805a.5.5 0 01.186.682c-.854 1.494-.652 3.467.013 4.797a.5.5 0 11-.895.447c-.771-1.543-1.049-3.881.013-5.74a.5.5 0 01.683-.186zm5.273 0a.5.5 0 01.683.186c1.062 1.859.784 4.197.013 5.74a.5.5 0 11-.895-.447c.665-1.33.867-3.303.013-4.797a.5.5 0 01.186-.682z"
-                            fill="currentColor"
-                            fill-rule="evenodd"
-                          />
-                        </svg>
-                      </span>
-                    </button>
+                      <path
+                        clip-rule="evenodd"
+                        d="M1.143 8.48a1.2 1.2 0 011.189-1.36h10.649a1.2 1.2 0 011.194 1.321l-1.039 10.208a1.2 1.2 0 01-1.193 1.079H3.716a1.2 1.2 0 01-1.189-1.04L1.143 8.48zm11.837-.16H2.332l1.385 10.207h8.226L12.98 8.32zM5.916 1.594a.6.6 0 01.719-.452l4.224.965a.6.6 0 01.452.719L11 4.179l3.86.882a.6.6 0 01-.267 1.17L1.535 3.248a.6.6 0 11.267-1.17l3.805.87.309-1.354zm.86 1.62l3.056.698.175-.768-3.055-.698-.175.768z"
+                        fill="currentColor"
+                        fill-rule="evenodd"
+                      />
+                      <path
+                        clip-rule="evenodd"
+                        d="M8 10.808a.5.5 0 01.5.5v5a.5.5 0 01-1 0v-5a.5.5 0 01.5-.5zm-2.761.012a.5.5 0 01.541.454l.436 4.981a.5.5 0 11-.996.087l-.436-4.98a.5.5 0 01.455-.542zM10.762 10.82a.5.5 0 01.455.541l-.436 4.981a.5.5 0 11-.996-.087l.435-4.98a.5.5 0 01.542-.455z"
+                        fill="currentColor"
+                        fill-rule="evenodd"
+                        opacity="0.3"
+                      />
+                    </svg>
                   </span>
-                </span>
+                </button>
               </div>
+              <div
+                class="Layout--horizontal Layout--layout-spacing-small StyledProps--main StyledProps--flex StyledProps--flex-alignItems-center StyledProps--padding-bottom-small"
+              >
+                <div
+                  class="bp3-form-group expressionsInputContainer"
+                  data-id="spec.approvers.userGroups.1-6"
+                >
+                  <div
+                    class="bp3-form-content"
+                  >
+                    <div
+                      class="bp3-popover-wrapper"
+                    >
+                      <div
+                        class="bp3-popover-target"
+                      >
+                        <div
+                          class="bp3-input-group"
+                        >
+                          <input
+                            autocomplete="off"
+                            class="bp3-input"
+                            name="spec.approvers.userGroups.1"
+                            placeholder="<+expression>"
+                            type="text"
+                            value="+"
+                          />
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+                <button
+                  class="bp3-button bp3-minimal Button--button StyledProps--font StyledProps--main Button--with-current-color Button--iconOnly Button--without-shadow Button--withLeftIcon"
+                  data-testid="remove-spec.approvers.userGroups-[1]"
+                  style="align-self: flex-start;"
+                  type="button"
+                >
+                  <span
+                    class="bp3-icon StyledProps--main"
+                    data-icon="main-trash"
+                  >
+                    <svg
+                      height="22"
+                      viewBox="0 0 16 20"
+                      width="22"
+                      xmlns="http://www.w3.org/2000/svg"
+                    >
+                      <path
+                        clip-rule="evenodd"
+                        d="M1.143 8.48a1.2 1.2 0 011.189-1.36h10.649a1.2 1.2 0 011.194 1.321l-1.039 10.208a1.2 1.2 0 01-1.193 1.079H3.716a1.2 1.2 0 01-1.189-1.04L1.143 8.48zm11.837-.16H2.332l1.385 10.207h8.226L12.98 8.32zM5.916 1.594a.6.6 0 01.719-.452l4.224.965a.6.6 0 01.452.719L11 4.179l3.86.882a.6.6 0 01-.267 1.17L1.535 3.248a.6.6 0 11.267-1.17l3.805.87.309-1.354zm.86 1.62l3.056.698.175-.768-3.055-.698-.175.768z"
+                        fill="currentColor"
+                        fill-rule="evenodd"
+                      />
+                      <path
+                        clip-rule="evenodd"
+                        d="M8 10.808a.5.5 0 01.5.5v5a.5.5 0 01-1 0v-5a.5.5 0 01.5-.5zm-2.761.012a.5.5 0 01.541.454l.436 4.981a.5.5 0 11-.996.087l-.436-4.98a.5.5 0 01.455-.542zM10.762 10.82a.5.5 0 01.455.541l-.436 4.981a.5.5 0 11-.996-.087l.435-4.98a.5.5 0 01.542-.455z"
+                        fill="currentColor"
+                        fill-rule="evenodd"
+                        opacity="0.3"
+                      />
+                    </svg>
+                  </span>
+                </button>
+              </div>
+              <div
+                class="Layout--horizontal Layout--layout-spacing-small StyledProps--main StyledProps--flex StyledProps--flex-alignItems-center StyledProps--padding-bottom-small"
+              >
+                <div
+                  class="bp3-form-group expressionsInputContainer"
+                  data-id="spec.approvers.userGroups.2-7"
+                >
+                  <div
+                    class="bp3-form-content"
+                  >
+                    <div
+                      class="bp3-popover-wrapper"
+                    >
+                      <div
+                        class="bp3-popover-target"
+                      >
+                        <div
+                          class="bp3-input-group"
+                        >
+                          <input
+                            autocomplete="off"
+                            class="bp3-input"
+                            name="spec.approvers.userGroups.2"
+                            placeholder="<+expression>"
+                            type="text"
+                            value="a"
+                          />
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+                <button
+                  class="bp3-button bp3-minimal Button--button StyledProps--font StyledProps--main Button--with-current-color Button--iconOnly Button--without-shadow Button--withLeftIcon"
+                  data-testid="remove-spec.approvers.userGroups-[2]"
+                  style="align-self: flex-start;"
+                  type="button"
+                >
+                  <span
+                    class="bp3-icon StyledProps--main"
+                    data-icon="main-trash"
+                  >
+                    <svg
+                      height="22"
+                      viewBox="0 0 16 20"
+                      width="22"
+                      xmlns="http://www.w3.org/2000/svg"
+                    >
+                      <path
+                        clip-rule="evenodd"
+                        d="M1.143 8.48a1.2 1.2 0 011.189-1.36h10.649a1.2 1.2 0 011.194 1.321l-1.039 10.208a1.2 1.2 0 01-1.193 1.079H3.716a1.2 1.2 0 01-1.189-1.04L1.143 8.48zm11.837-.16H2.332l1.385 10.207h8.226L12.98 8.32zM5.916 1.594a.6.6 0 01.719-.452l4.224.965a.6.6 0 01.452.719L11 4.179l3.86.882a.6.6 0 01-.267 1.17L1.535 3.248a.6.6 0 11.267-1.17l3.805.87.309-1.354zm.86 1.62l3.056.698.175-.768-3.055-.698-.175.768z"
+                        fill="currentColor"
+                        fill-rule="evenodd"
+                      />
+                      <path
+                        clip-rule="evenodd"
+                        d="M8 10.808a.5.5 0 01.5.5v5a.5.5 0 01-1 0v-5a.5.5 0 01.5-.5zm-2.761.012a.5.5 0 01.541.454l.436 4.981a.5.5 0 11-.996.087l-.436-4.98a.5.5 0 01.455-.542zM10.762 10.82a.5.5 0 01.455.541l-.436 4.981a.5.5 0 11-.996-.087l.435-4.98a.5.5 0 01.542-.455z"
+                        fill="currentColor"
+                        fill-rule="evenodd"
+                        opacity="0.3"
+                      />
+                    </svg>
+                  </span>
+                </button>
+              </div>
+              <div
+                class="Layout--horizontal Layout--layout-spacing-small StyledProps--main StyledProps--flex StyledProps--flex-alignItems-center StyledProps--padding-bottom-small"
+              >
+                <div
+                  class="bp3-form-group expressionsInputContainer"
+                  data-id="spec.approvers.userGroups.3-8"
+                >
+                  <div
+                    class="bp3-form-content"
+                  >
+                    <div
+                      class="bp3-popover-wrapper"
+                    >
+                      <div
+                        class="bp3-popover-target"
+                      >
+                        <div
+                          class="bp3-input-group"
+                        >
+                          <input
+                            autocomplete="off"
+                            class="bp3-input"
+                            name="spec.approvers.userGroups.3"
+                            placeholder="<+expression>"
+                            type="text"
+                            value="b"
+                          />
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+                <button
+                  class="bp3-button bp3-minimal Button--button StyledProps--font StyledProps--main Button--with-current-color Button--iconOnly Button--without-shadow Button--withLeftIcon"
+                  data-testid="remove-spec.approvers.userGroups-[3]"
+                  style="align-self: flex-start;"
+                  type="button"
+                >
+                  <span
+                    class="bp3-icon StyledProps--main"
+                    data-icon="main-trash"
+                  >
+                    <svg
+                      height="22"
+                      viewBox="0 0 16 20"
+                      width="22"
+                      xmlns="http://www.w3.org/2000/svg"
+                    >
+                      <path
+                        clip-rule="evenodd"
+                        d="M1.143 8.48a1.2 1.2 0 011.189-1.36h10.649a1.2 1.2 0 011.194 1.321l-1.039 10.208a1.2 1.2 0 01-1.193 1.079H3.716a1.2 1.2 0 01-1.189-1.04L1.143 8.48zm11.837-.16H2.332l1.385 10.207h8.226L12.98 8.32zM5.916 1.594a.6.6 0 01.719-.452l4.224.965a.6.6 0 01.452.719L11 4.179l3.86.882a.6.6 0 01-.267 1.17L1.535 3.248a.6.6 0 11.267-1.17l3.805.87.309-1.354zm.86 1.62l3.056.698.175-.768-3.055-.698-.175.768z"
+                        fill="currentColor"
+                        fill-rule="evenodd"
+                      />
+                      <path
+                        clip-rule="evenodd"
+                        d="M8 10.808a.5.5 0 01.5.5v5a.5.5 0 01-1 0v-5a.5.5 0 01.5-.5zm-2.761.012a.5.5 0 01.541.454l.436 4.981a.5.5 0 11-.996.087l-.436-4.98a.5.5 0 01.455-.542zM10.762 10.82a.5.5 0 01.455.541l-.436 4.981a.5.5 0 11-.996-.087l.435-4.98a.5.5 0 01.542-.455z"
+                        fill="currentColor"
+                        fill-rule="evenodd"
+                        opacity="0.3"
+                      />
+                    </svg>
+                  </span>
+                </button>
+              </div>
+              <div
+                class="Layout--horizontal Layout--layout-spacing-small StyledProps--main StyledProps--flex StyledProps--flex-alignItems-center StyledProps--padding-bottom-small"
+              >
+                <div
+                  class="bp3-form-group expressionsInputContainer"
+                  data-id="spec.approvers.userGroups.4-9"
+                >
+                  <div
+                    class="bp3-form-content"
+                  >
+                    <div
+                      class="bp3-popover-wrapper"
+                    >
+                      <div
+                        class="bp3-popover-target"
+                      >
+                        <div
+                          class="bp3-input-group"
+                        >
+                          <input
+                            autocomplete="off"
+                            class="bp3-input"
+                            name="spec.approvers.userGroups.4"
+                            placeholder="<+expression>"
+                            type="text"
+                            value="c"
+                          />
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+                <button
+                  class="bp3-button bp3-minimal Button--button StyledProps--font StyledProps--main Button--with-current-color Button--iconOnly Button--without-shadow Button--withLeftIcon"
+                  data-testid="remove-spec.approvers.userGroups-[4]"
+                  style="align-self: flex-start;"
+                  type="button"
+                >
+                  <span
+                    class="bp3-icon StyledProps--main"
+                    data-icon="main-trash"
+                  >
+                    <svg
+                      height="22"
+                      viewBox="0 0 16 20"
+                      width="22"
+                      xmlns="http://www.w3.org/2000/svg"
+                    >
+                      <path
+                        clip-rule="evenodd"
+                        d="M1.143 8.48a1.2 1.2 0 011.189-1.36h10.649a1.2 1.2 0 011.194 1.321l-1.039 10.208a1.2 1.2 0 01-1.193 1.079H3.716a1.2 1.2 0 01-1.189-1.04L1.143 8.48zm11.837-.16H2.332l1.385 10.207h8.226L12.98 8.32zM5.916 1.594a.6.6 0 01.719-.452l4.224.965a.6.6 0 01.452.719L11 4.179l3.86.882a.6.6 0 01-.267 1.17L1.535 3.248a.6.6 0 11.267-1.17l3.805.87.309-1.354zm.86 1.62l3.056.698.175-.768-3.055-.698-.175.768z"
+                        fill="currentColor"
+                        fill-rule="evenodd"
+                      />
+                      <path
+                        clip-rule="evenodd"
+                        d="M8 10.808a.5.5 0 01.5.5v5a.5.5 0 01-1 0v-5a.5.5 0 01.5-.5zm-2.761.012a.5.5 0 01.541.454l.436 4.981a.5.5 0 11-.996.087l-.436-4.98a.5.5 0 01.455-.542zM10.762 10.82a.5.5 0 01.455.541l-.436 4.981a.5.5 0 11-.996-.087l.435-4.98a.5.5 0 01.542-.455z"
+                        fill="currentColor"
+                        fill-rule="evenodd"
+                        opacity="0.3"
+                      />
+                    </svg>
+                  </span>
+                </button>
+              </div>
+              <div
+                class="Layout--horizontal Layout--layout-spacing-small StyledProps--main StyledProps--flex StyledProps--flex-alignItems-center StyledProps--padding-bottom-small"
+              >
+                <div
+                  class="bp3-form-group expressionsInputContainer"
+                  data-id="spec.approvers.userGroups.5-10"
+                >
+                  <div
+                    class="bp3-form-content"
+                  >
+                    <div
+                      class="bp3-popover-wrapper"
+                    >
+                      <div
+                        class="bp3-popover-target"
+                      >
+                        <div
+                          class="bp3-input-group"
+                        >
+                          <input
+                            autocomplete="off"
+                            class="bp3-input"
+                            name="spec.approvers.userGroups.5"
+                            placeholder="<+expression>"
+                            type="text"
+                            value=">"
+                          />
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+                <button
+                  class="bp3-button bp3-minimal Button--button StyledProps--font StyledProps--main Button--with-current-color Button--iconOnly Button--without-shadow Button--withLeftIcon"
+                  data-testid="remove-spec.approvers.userGroups-[5]"
+                  style="align-self: flex-start;"
+                  type="button"
+                >
+                  <span
+                    class="bp3-icon StyledProps--main"
+                    data-icon="main-trash"
+                  >
+                    <svg
+                      height="22"
+                      viewBox="0 0 16 20"
+                      width="22"
+                      xmlns="http://www.w3.org/2000/svg"
+                    >
+                      <path
+                        clip-rule="evenodd"
+                        d="M1.143 8.48a1.2 1.2 0 011.189-1.36h10.649a1.2 1.2 0 011.194 1.321l-1.039 10.208a1.2 1.2 0 01-1.193 1.079H3.716a1.2 1.2 0 01-1.189-1.04L1.143 8.48zm11.837-.16H2.332l1.385 10.207h8.226L12.98 8.32zM5.916 1.594a.6.6 0 01.719-.452l4.224.965a.6.6 0 01.452.719L11 4.179l3.86.882a.6.6 0 01-.267 1.17L1.535 3.248a.6.6 0 11.267-1.17l3.805.87.309-1.354zm.86 1.62l3.056.698.175-.768-3.055-.698-.175.768z"
+                        fill="currentColor"
+                        fill-rule="evenodd"
+                      />
+                      <path
+                        clip-rule="evenodd"
+                        d="M8 10.808a.5.5 0 01.5.5v5a.5.5 0 01-1 0v-5a.5.5 0 01.5-.5zm-2.761.012a.5.5 0 01.541.454l.436 4.981a.5.5 0 11-.996.087l-.436-4.98a.5.5 0 01.455-.542zM10.762 10.82a.5.5 0 01.455.541l-.436 4.981a.5.5 0 11-.996-.087l.435-4.98a.5.5 0 01.542-.455z"
+                        fill="currentColor"
+                        fill-rule="evenodd"
+                        opacity="0.3"
+                      />
+                    </svg>
+                  </span>
+                </button>
+              </div>
+              <button
+                class="bp3-button bp3-minimal Button--button StyledProps--font StyledProps--main StyledProps--intent-primary Button--with-current-color Button--without-shadow"
+                data-testid="add-spec.approvers.userGroups"
+                style="padding: 0px;"
+                type="button"
+              >
+                <span
+                  class="bp3-button-text"
+                >
+                  plusAdd
+                </span>
+              </button>
             </div>
           </div>
         </div>
@@ -1915,7 +2343,7 @@ exports[`Harness Approval tests Edit stage - submit field values as expressions:
         >
           <div
             class="bp3-form-group"
-            data-id="spec.approvers.minimumCount-5"
+            data-id="spec.approvers.minimumCount-11"
           >
             <label
               class="bp3-label"
@@ -2006,7 +2434,7 @@ exports[`Harness Approval tests Edit stage - submit field values as expressions:
         </div>
         <div
           class="bp3-form-group"
-          data-id="spec.approvers.disallowPipelineExecutor-6"
+          data-id="spec.approvers.disallowPipelineExecutor-12"
         >
           <div
             class="bp3-form-content"
@@ -2069,6 +2497,12 @@ exports[`Harness Approval tests Edit stage - submit field values as expressions:
     </form>
   </div>
 </div>
+`;
+
+exports[`Harness Approval tests Minimum time cannot be less than 10s: Value must be greater than or equal to "10s" 1`] = `
+Object {
+  "timeout": "Value must be greater than or equal to \\"10s\\"",
+}
 `;
 
 exports[`Harness Approval tests MinimumCount should be greater than 1: minimum count as negative 1`] = `
@@ -2179,6 +2613,7 @@ exports[`Harness Approval tests MinimumCount should be greater than 1: minimum c
                     autocomplete="off"
                     class="bp3-input"
                     name="name"
+                    placeholder="pipeline.stepNamePlaceholder"
                     type="text"
                     value="harness approval step"
                   />
@@ -2399,17 +2834,70 @@ exports[`Harness Approval tests MinimumCount should be greater than 1: minimum c
         >
           <div
             class="bp3-form-group"
-            data-id="spec.approvers.userGroups-4"
+            data-id="spec.approvers.userGroups.0-4"
+            style="flex-grow: 1; margin-bottom: 0px;"
           >
             <label
               class="bp3-label"
+              for="spec.approvers.userGroups"
             >
-              <span
-                class="Tooltip--acenter"
-                data-tooltip-id="harnessApproval_spec.approvers.userGroups"
+              <div
+                class="formLabel"
               >
-                common.userGroups
-              </span>
+                <span
+                  class="Tooltip--acenter"
+                  data-tooltip-id="harnessApproval_spec.approvers.userGroups"
+                >
+                  common.userGroups
+                </span>
+                <div
+                  class="bp3-popover-wrapper typeSelectorWrapper"
+                >
+                  <div
+                    class="bp3-popover-target typeSelector"
+                  >
+                    <button
+                      class="bp3-button bp3-minimal Button--button StyledProps--font StyledProps--main btn Button--iconOnly Button--without-shadow"
+                      type="button"
+                    >
+                      <span
+                        class="bp3-button-text"
+                      >
+                        <span
+                          class="bp3-icon StyledProps--main icon expression"
+                          data-icon="expression-input"
+                        >
+                          <svg
+                            height="16"
+                            viewBox="0 0 16 16"
+                            width="16"
+                            xmlns="http://www.w3.org/2000/svg"
+                          >
+                            <path
+                              clip-rule="evenodd"
+                              d="M4.875 2.588C5.305 2.218 5.889 2 6.647 2a.5.5 0 110 1c-.556 0-.898.155-1.12.346-.228.197-.374.472-.462.784a3.18 3.18 0 00-.106.86h1.449a.5.5 0 010 1H4.992v5.505a.5.5 0 01-1 0V5.99h-.936a.5.5 0 010-1h.903a4.173 4.173 0 01.143-1.13c.123-.435.35-.907.773-1.27zm.111 2.823c0 .001 0 .001 0 0m0 0zm7.059 5.019c-.242.268-.455.59-.553.786-.17.341-.472.705-.766.994-.285.281-.635.565-.932.684a.5.5 0 11-.371-.929c.102-.04.335-.204.6-.467.258-.253.475-.528.575-.729.142-.283.407-.68.704-1.009.15-.165.32-.33.5-.456.168-.118.406-.248.68-.248a.5.5 0 01.013 1c-.004.002-.042.012-.118.066a2.152 2.152 0 00-.332.307z"
+                              fill="#CurrentColor"
+                              fill-rule="evenodd"
+                            />
+                            <path
+                              clip-rule="evenodd"
+                              d="M10.045 10.43c.242.268.455.59.553.786.17.341.473.705.766.994.285.281.635.565.932.684a.5.5 0 10.372-.929c-.103-.04-.335-.204-.602-.467-.257-.253-.473-.528-.574-.729a5.003 5.003 0 00-.704-1.009 3.08 3.08 0 00-.5-.456c-.168-.118-.406-.248-.68-.248a.5.5 0 00-.012 1c.003.002.041.012.118.066a2.1 2.1 0 01.33.307z"
+                              fill="#CurrentColor"
+                              fill-rule="evenodd"
+                            />
+                            <path
+                              clip-rule="evenodd"
+                              d="M8.367 7.805a.5.5 0 01.186.682c-.854 1.494-.652 3.467.013 4.797a.5.5 0 11-.895.447c-.771-1.543-1.049-3.881.013-5.74a.5.5 0 01.683-.186zm5.273 0a.5.5 0 01.683.186c1.062 1.859.784 4.197.013 5.74a.5.5 0 11-.895-.447c.665-1.33.867-3.303.013-4.797a.5.5 0 01.186-.682z"
+                              fill="currentColor"
+                              fill-rule="evenodd"
+                            />
+                          </svg>
+                        </span>
+                      </span>
+                    </button>
+                  </div>
+                </div>
+              </div>
                
               <span
                 class="bp3-text-muted"
@@ -2419,71 +2907,407 @@ exports[`Harness Approval tests MinimumCount should be greater than 1: minimum c
               class="bp3-form-content"
             >
               <div
-                class="Layout--horizontal StyledProps--main multiTypeSupport"
+                class="Layout--horizontal Layout--layout-spacing-small StyledProps--main StyledProps--flex StyledProps--flex-alignItems-center StyledProps--padding-bottom-small"
               >
                 <div
-                  class="bp3-popover-wrapper MultiTypeInput--input"
+                  class="bp3-form-group expressionsInputContainer"
+                  data-id="spec.approvers.userGroups.0-5"
                 >
                   <div
-                    class="bp3-popover-target"
+                    class="bp3-form-content"
                   >
                     <div
-                      class="bp3-input-group"
+                      class="bp3-popover-wrapper"
                     >
-                      <input
-                        autocomplete="off"
-                        class="bp3-input"
-                        name="spec.approvers.userGroups"
-                        placeholder="<+expression>"
-                        type="text"
-                        value="<+abc>"
-                      />
+                      <div
+                        class="bp3-popover-target"
+                      >
+                        <div
+                          class="bp3-input-group"
+                        >
+                          <input
+                            autocomplete="off"
+                            class="bp3-input"
+                            name="spec.approvers.userGroups.0"
+                            placeholder="<+expression>"
+                            type="text"
+                            value="<"
+                          />
+                        </div>
+                      </div>
                     </div>
                   </div>
                 </div>
-                <span
-                  class="bp3-popover-wrapper MultiTypeInput--wrapper"
+                <button
+                  class="bp3-button bp3-minimal Button--button StyledProps--font StyledProps--main Button--with-current-color Button--iconOnly Button--without-shadow Button--withLeftIcon"
+                  data-testid="remove-spec.approvers.userGroups-[0]"
+                  style="align-self: flex-start;"
+                  type="button"
                 >
                   <span
-                    class="bp3-popover-target"
+                    class="bp3-icon StyledProps--main"
+                    data-icon="main-trash"
                   >
-                    <button
-                      class="MultiTypeInput--btn MultiTypeInput--EXPRESSION"
+                    <svg
+                      height="22"
+                      viewBox="0 0 16 20"
+                      width="22"
+                      xmlns="http://www.w3.org/2000/svg"
                     >
-                      <span
-                        class="bp3-icon StyledProps--main"
-                        data-icon="expression-input"
-                      >
-                        <svg
-                          height="16"
-                          viewBox="0 0 16 16"
-                          width="16"
-                          xmlns="http://www.w3.org/2000/svg"
-                        >
-                          <path
-                            clip-rule="evenodd"
-                            d="M4.875 2.588C5.305 2.218 5.889 2 6.647 2a.5.5 0 110 1c-.556 0-.898.155-1.12.346-.228.197-.374.472-.462.784a3.18 3.18 0 00-.106.86h1.449a.5.5 0 010 1H4.992v5.505a.5.5 0 01-1 0V5.99h-.936a.5.5 0 010-1h.903a4.173 4.173 0 01.143-1.13c.123-.435.35-.907.773-1.27zm.111 2.823c0 .001 0 .001 0 0m0 0zm7.059 5.019c-.242.268-.455.59-.553.786-.17.341-.472.705-.766.994-.285.281-.635.565-.932.684a.5.5 0 11-.371-.929c.102-.04.335-.204.6-.467.258-.253.475-.528.575-.729.142-.283.407-.68.704-1.009.15-.165.32-.33.5-.456.168-.118.406-.248.68-.248a.5.5 0 01.013 1c-.004.002-.042.012-.118.066a2.152 2.152 0 00-.332.307z"
-                            fill="#CurrentColor"
-                            fill-rule="evenodd"
-                          />
-                          <path
-                            clip-rule="evenodd"
-                            d="M10.045 10.43c.242.268.455.59.553.786.17.341.473.705.766.994.285.281.635.565.932.684a.5.5 0 10.372-.929c-.103-.04-.335-.204-.602-.467-.257-.253-.473-.528-.574-.729a5.003 5.003 0 00-.704-1.009 3.08 3.08 0 00-.5-.456c-.168-.118-.406-.248-.68-.248a.5.5 0 00-.012 1c.003.002.041.012.118.066a2.1 2.1 0 01.33.307z"
-                            fill="#CurrentColor"
-                            fill-rule="evenodd"
-                          />
-                          <path
-                            clip-rule="evenodd"
-                            d="M8.367 7.805a.5.5 0 01.186.682c-.854 1.494-.652 3.467.013 4.797a.5.5 0 11-.895.447c-.771-1.543-1.049-3.881.013-5.74a.5.5 0 01.683-.186zm5.273 0a.5.5 0 01.683.186c1.062 1.859.784 4.197.013 5.74a.5.5 0 11-.895-.447c.665-1.33.867-3.303.013-4.797a.5.5 0 01.186-.682z"
-                            fill="currentColor"
-                            fill-rule="evenodd"
-                          />
-                        </svg>
-                      </span>
-                    </button>
+                      <path
+                        clip-rule="evenodd"
+                        d="M1.143 8.48a1.2 1.2 0 011.189-1.36h10.649a1.2 1.2 0 011.194 1.321l-1.039 10.208a1.2 1.2 0 01-1.193 1.079H3.716a1.2 1.2 0 01-1.189-1.04L1.143 8.48zm11.837-.16H2.332l1.385 10.207h8.226L12.98 8.32zM5.916 1.594a.6.6 0 01.719-.452l4.224.965a.6.6 0 01.452.719L11 4.179l3.86.882a.6.6 0 01-.267 1.17L1.535 3.248a.6.6 0 11.267-1.17l3.805.87.309-1.354zm.86 1.62l3.056.698.175-.768-3.055-.698-.175.768z"
+                        fill="currentColor"
+                        fill-rule="evenodd"
+                      />
+                      <path
+                        clip-rule="evenodd"
+                        d="M8 10.808a.5.5 0 01.5.5v5a.5.5 0 01-1 0v-5a.5.5 0 01.5-.5zm-2.761.012a.5.5 0 01.541.454l.436 4.981a.5.5 0 11-.996.087l-.436-4.98a.5.5 0 01.455-.542zM10.762 10.82a.5.5 0 01.455.541l-.436 4.981a.5.5 0 11-.996-.087l.435-4.98a.5.5 0 01.542-.455z"
+                        fill="currentColor"
+                        fill-rule="evenodd"
+                        opacity="0.3"
+                      />
+                    </svg>
                   </span>
-                </span>
+                </button>
               </div>
+              <div
+                class="Layout--horizontal Layout--layout-spacing-small StyledProps--main StyledProps--flex StyledProps--flex-alignItems-center StyledProps--padding-bottom-small"
+              >
+                <div
+                  class="bp3-form-group expressionsInputContainer"
+                  data-id="spec.approvers.userGroups.1-6"
+                >
+                  <div
+                    class="bp3-form-content"
+                  >
+                    <div
+                      class="bp3-popover-wrapper"
+                    >
+                      <div
+                        class="bp3-popover-target"
+                      >
+                        <div
+                          class="bp3-input-group"
+                        >
+                          <input
+                            autocomplete="off"
+                            class="bp3-input"
+                            name="spec.approvers.userGroups.1"
+                            placeholder="<+expression>"
+                            type="text"
+                            value="+"
+                          />
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+                <button
+                  class="bp3-button bp3-minimal Button--button StyledProps--font StyledProps--main Button--with-current-color Button--iconOnly Button--without-shadow Button--withLeftIcon"
+                  data-testid="remove-spec.approvers.userGroups-[1]"
+                  style="align-self: flex-start;"
+                  type="button"
+                >
+                  <span
+                    class="bp3-icon StyledProps--main"
+                    data-icon="main-trash"
+                  >
+                    <svg
+                      height="22"
+                      viewBox="0 0 16 20"
+                      width="22"
+                      xmlns="http://www.w3.org/2000/svg"
+                    >
+                      <path
+                        clip-rule="evenodd"
+                        d="M1.143 8.48a1.2 1.2 0 011.189-1.36h10.649a1.2 1.2 0 011.194 1.321l-1.039 10.208a1.2 1.2 0 01-1.193 1.079H3.716a1.2 1.2 0 01-1.189-1.04L1.143 8.48zm11.837-.16H2.332l1.385 10.207h8.226L12.98 8.32zM5.916 1.594a.6.6 0 01.719-.452l4.224.965a.6.6 0 01.452.719L11 4.179l3.86.882a.6.6 0 01-.267 1.17L1.535 3.248a.6.6 0 11.267-1.17l3.805.87.309-1.354zm.86 1.62l3.056.698.175-.768-3.055-.698-.175.768z"
+                        fill="currentColor"
+                        fill-rule="evenodd"
+                      />
+                      <path
+                        clip-rule="evenodd"
+                        d="M8 10.808a.5.5 0 01.5.5v5a.5.5 0 01-1 0v-5a.5.5 0 01.5-.5zm-2.761.012a.5.5 0 01.541.454l.436 4.981a.5.5 0 11-.996.087l-.436-4.98a.5.5 0 01.455-.542zM10.762 10.82a.5.5 0 01.455.541l-.436 4.981a.5.5 0 11-.996-.087l.435-4.98a.5.5 0 01.542-.455z"
+                        fill="currentColor"
+                        fill-rule="evenodd"
+                        opacity="0.3"
+                      />
+                    </svg>
+                  </span>
+                </button>
+              </div>
+              <div
+                class="Layout--horizontal Layout--layout-spacing-small StyledProps--main StyledProps--flex StyledProps--flex-alignItems-center StyledProps--padding-bottom-small"
+              >
+                <div
+                  class="bp3-form-group expressionsInputContainer"
+                  data-id="spec.approvers.userGroups.2-7"
+                >
+                  <div
+                    class="bp3-form-content"
+                  >
+                    <div
+                      class="bp3-popover-wrapper"
+                    >
+                      <div
+                        class="bp3-popover-target"
+                      >
+                        <div
+                          class="bp3-input-group"
+                        >
+                          <input
+                            autocomplete="off"
+                            class="bp3-input"
+                            name="spec.approvers.userGroups.2"
+                            placeholder="<+expression>"
+                            type="text"
+                            value="a"
+                          />
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+                <button
+                  class="bp3-button bp3-minimal Button--button StyledProps--font StyledProps--main Button--with-current-color Button--iconOnly Button--without-shadow Button--withLeftIcon"
+                  data-testid="remove-spec.approvers.userGroups-[2]"
+                  style="align-self: flex-start;"
+                  type="button"
+                >
+                  <span
+                    class="bp3-icon StyledProps--main"
+                    data-icon="main-trash"
+                  >
+                    <svg
+                      height="22"
+                      viewBox="0 0 16 20"
+                      width="22"
+                      xmlns="http://www.w3.org/2000/svg"
+                    >
+                      <path
+                        clip-rule="evenodd"
+                        d="M1.143 8.48a1.2 1.2 0 011.189-1.36h10.649a1.2 1.2 0 011.194 1.321l-1.039 10.208a1.2 1.2 0 01-1.193 1.079H3.716a1.2 1.2 0 01-1.189-1.04L1.143 8.48zm11.837-.16H2.332l1.385 10.207h8.226L12.98 8.32zM5.916 1.594a.6.6 0 01.719-.452l4.224.965a.6.6 0 01.452.719L11 4.179l3.86.882a.6.6 0 01-.267 1.17L1.535 3.248a.6.6 0 11.267-1.17l3.805.87.309-1.354zm.86 1.62l3.056.698.175-.768-3.055-.698-.175.768z"
+                        fill="currentColor"
+                        fill-rule="evenodd"
+                      />
+                      <path
+                        clip-rule="evenodd"
+                        d="M8 10.808a.5.5 0 01.5.5v5a.5.5 0 01-1 0v-5a.5.5 0 01.5-.5zm-2.761.012a.5.5 0 01.541.454l.436 4.981a.5.5 0 11-.996.087l-.436-4.98a.5.5 0 01.455-.542zM10.762 10.82a.5.5 0 01.455.541l-.436 4.981a.5.5 0 11-.996-.087l.435-4.98a.5.5 0 01.542-.455z"
+                        fill="currentColor"
+                        fill-rule="evenodd"
+                        opacity="0.3"
+                      />
+                    </svg>
+                  </span>
+                </button>
+              </div>
+              <div
+                class="Layout--horizontal Layout--layout-spacing-small StyledProps--main StyledProps--flex StyledProps--flex-alignItems-center StyledProps--padding-bottom-small"
+              >
+                <div
+                  class="bp3-form-group expressionsInputContainer"
+                  data-id="spec.approvers.userGroups.3-8"
+                >
+                  <div
+                    class="bp3-form-content"
+                  >
+                    <div
+                      class="bp3-popover-wrapper"
+                    >
+                      <div
+                        class="bp3-popover-target"
+                      >
+                        <div
+                          class="bp3-input-group"
+                        >
+                          <input
+                            autocomplete="off"
+                            class="bp3-input"
+                            name="spec.approvers.userGroups.3"
+                            placeholder="<+expression>"
+                            type="text"
+                            value="b"
+                          />
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+                <button
+                  class="bp3-button bp3-minimal Button--button StyledProps--font StyledProps--main Button--with-current-color Button--iconOnly Button--without-shadow Button--withLeftIcon"
+                  data-testid="remove-spec.approvers.userGroups-[3]"
+                  style="align-self: flex-start;"
+                  type="button"
+                >
+                  <span
+                    class="bp3-icon StyledProps--main"
+                    data-icon="main-trash"
+                  >
+                    <svg
+                      height="22"
+                      viewBox="0 0 16 20"
+                      width="22"
+                      xmlns="http://www.w3.org/2000/svg"
+                    >
+                      <path
+                        clip-rule="evenodd"
+                        d="M1.143 8.48a1.2 1.2 0 011.189-1.36h10.649a1.2 1.2 0 011.194 1.321l-1.039 10.208a1.2 1.2 0 01-1.193 1.079H3.716a1.2 1.2 0 01-1.189-1.04L1.143 8.48zm11.837-.16H2.332l1.385 10.207h8.226L12.98 8.32zM5.916 1.594a.6.6 0 01.719-.452l4.224.965a.6.6 0 01.452.719L11 4.179l3.86.882a.6.6 0 01-.267 1.17L1.535 3.248a.6.6 0 11.267-1.17l3.805.87.309-1.354zm.86 1.62l3.056.698.175-.768-3.055-.698-.175.768z"
+                        fill="currentColor"
+                        fill-rule="evenodd"
+                      />
+                      <path
+                        clip-rule="evenodd"
+                        d="M8 10.808a.5.5 0 01.5.5v5a.5.5 0 01-1 0v-5a.5.5 0 01.5-.5zm-2.761.012a.5.5 0 01.541.454l.436 4.981a.5.5 0 11-.996.087l-.436-4.98a.5.5 0 01.455-.542zM10.762 10.82a.5.5 0 01.455.541l-.436 4.981a.5.5 0 11-.996-.087l.435-4.98a.5.5 0 01.542-.455z"
+                        fill="currentColor"
+                        fill-rule="evenodd"
+                        opacity="0.3"
+                      />
+                    </svg>
+                  </span>
+                </button>
+              </div>
+              <div
+                class="Layout--horizontal Layout--layout-spacing-small StyledProps--main StyledProps--flex StyledProps--flex-alignItems-center StyledProps--padding-bottom-small"
+              >
+                <div
+                  class="bp3-form-group expressionsInputContainer"
+                  data-id="spec.approvers.userGroups.4-9"
+                >
+                  <div
+                    class="bp3-form-content"
+                  >
+                    <div
+                      class="bp3-popover-wrapper"
+                    >
+                      <div
+                        class="bp3-popover-target"
+                      >
+                        <div
+                          class="bp3-input-group"
+                        >
+                          <input
+                            autocomplete="off"
+                            class="bp3-input"
+                            name="spec.approvers.userGroups.4"
+                            placeholder="<+expression>"
+                            type="text"
+                            value="c"
+                          />
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+                <button
+                  class="bp3-button bp3-minimal Button--button StyledProps--font StyledProps--main Button--with-current-color Button--iconOnly Button--without-shadow Button--withLeftIcon"
+                  data-testid="remove-spec.approvers.userGroups-[4]"
+                  style="align-self: flex-start;"
+                  type="button"
+                >
+                  <span
+                    class="bp3-icon StyledProps--main"
+                    data-icon="main-trash"
+                  >
+                    <svg
+                      height="22"
+                      viewBox="0 0 16 20"
+                      width="22"
+                      xmlns="http://www.w3.org/2000/svg"
+                    >
+                      <path
+                        clip-rule="evenodd"
+                        d="M1.143 8.48a1.2 1.2 0 011.189-1.36h10.649a1.2 1.2 0 011.194 1.321l-1.039 10.208a1.2 1.2 0 01-1.193 1.079H3.716a1.2 1.2 0 01-1.189-1.04L1.143 8.48zm11.837-.16H2.332l1.385 10.207h8.226L12.98 8.32zM5.916 1.594a.6.6 0 01.719-.452l4.224.965a.6.6 0 01.452.719L11 4.179l3.86.882a.6.6 0 01-.267 1.17L1.535 3.248a.6.6 0 11.267-1.17l3.805.87.309-1.354zm.86 1.62l3.056.698.175-.768-3.055-.698-.175.768z"
+                        fill="currentColor"
+                        fill-rule="evenodd"
+                      />
+                      <path
+                        clip-rule="evenodd"
+                        d="M8 10.808a.5.5 0 01.5.5v5a.5.5 0 01-1 0v-5a.5.5 0 01.5-.5zm-2.761.012a.5.5 0 01.541.454l.436 4.981a.5.5 0 11-.996.087l-.436-4.98a.5.5 0 01.455-.542zM10.762 10.82a.5.5 0 01.455.541l-.436 4.981a.5.5 0 11-.996-.087l.435-4.98a.5.5 0 01.542-.455z"
+                        fill="currentColor"
+                        fill-rule="evenodd"
+                        opacity="0.3"
+                      />
+                    </svg>
+                  </span>
+                </button>
+              </div>
+              <div
+                class="Layout--horizontal Layout--layout-spacing-small StyledProps--main StyledProps--flex StyledProps--flex-alignItems-center StyledProps--padding-bottom-small"
+              >
+                <div
+                  class="bp3-form-group expressionsInputContainer"
+                  data-id="spec.approvers.userGroups.5-10"
+                >
+                  <div
+                    class="bp3-form-content"
+                  >
+                    <div
+                      class="bp3-popover-wrapper"
+                    >
+                      <div
+                        class="bp3-popover-target"
+                      >
+                        <div
+                          class="bp3-input-group"
+                        >
+                          <input
+                            autocomplete="off"
+                            class="bp3-input"
+                            name="spec.approvers.userGroups.5"
+                            placeholder="<+expression>"
+                            type="text"
+                            value=">"
+                          />
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+                <button
+                  class="bp3-button bp3-minimal Button--button StyledProps--font StyledProps--main Button--with-current-color Button--iconOnly Button--without-shadow Button--withLeftIcon"
+                  data-testid="remove-spec.approvers.userGroups-[5]"
+                  style="align-self: flex-start;"
+                  type="button"
+                >
+                  <span
+                    class="bp3-icon StyledProps--main"
+                    data-icon="main-trash"
+                  >
+                    <svg
+                      height="22"
+                      viewBox="0 0 16 20"
+                      width="22"
+                      xmlns="http://www.w3.org/2000/svg"
+                    >
+                      <path
+                        clip-rule="evenodd"
+                        d="M1.143 8.48a1.2 1.2 0 011.189-1.36h10.649a1.2 1.2 0 011.194 1.321l-1.039 10.208a1.2 1.2 0 01-1.193 1.079H3.716a1.2 1.2 0 01-1.189-1.04L1.143 8.48zm11.837-.16H2.332l1.385 10.207h8.226L12.98 8.32zM5.916 1.594a.6.6 0 01.719-.452l4.224.965a.6.6 0 01.452.719L11 4.179l3.86.882a.6.6 0 01-.267 1.17L1.535 3.248a.6.6 0 11.267-1.17l3.805.87.309-1.354zm.86 1.62l3.056.698.175-.768-3.055-.698-.175.768z"
+                        fill="currentColor"
+                        fill-rule="evenodd"
+                      />
+                      <path
+                        clip-rule="evenodd"
+                        d="M8 10.808a.5.5 0 01.5.5v5a.5.5 0 01-1 0v-5a.5.5 0 01.5-.5zm-2.761.012a.5.5 0 01.541.454l.436 4.981a.5.5 0 11-.996.087l-.436-4.98a.5.5 0 01.455-.542zM10.762 10.82a.5.5 0 01.455.541l-.436 4.981a.5.5 0 11-.996-.087l.435-4.98a.5.5 0 01.542-.455z"
+                        fill="currentColor"
+                        fill-rule="evenodd"
+                        opacity="0.3"
+                      />
+                    </svg>
+                  </span>
+                </button>
+              </div>
+              <button
+                class="bp3-button bp3-minimal Button--button StyledProps--font StyledProps--main StyledProps--intent-primary Button--with-current-color Button--without-shadow"
+                data-testid="add-spec.approvers.userGroups"
+                style="padding: 0px;"
+                type="button"
+              >
+                <span
+                  class="bp3-button-text"
+                >
+                  plusAdd
+                </span>
+              </button>
             </div>
           </div>
         </div>
@@ -2492,7 +3316,7 @@ exports[`Harness Approval tests MinimumCount should be greater than 1: minimum c
         >
           <div
             class="bp3-form-group"
-            data-id="spec.approvers.minimumCount-5"
+            data-id="spec.approvers.minimumCount-11"
           >
             <label
               class="bp3-label"
@@ -2560,7 +3384,7 @@ exports[`Harness Approval tests MinimumCount should be greater than 1: minimum c
         </div>
         <div
           class="bp3-form-group"
-          data-id="spec.approvers.disallowPipelineExecutor-6"
+          data-id="spec.approvers.disallowPipelineExecutor-12"
         >
           <div
             class="bp3-form-content"
@@ -2733,6 +3557,7 @@ exports[`Harness Approval tests On submit call: values populating on edit 1`] = 
                     autocomplete="off"
                     class="bp3-input"
                     name="name"
+                    placeholder="pipeline.stepNamePlaceholder"
                     type="text"
                     value="harness approval step"
                   />
@@ -2954,17 +3779,56 @@ exports[`Harness Approval tests On submit call: values populating on edit 1`] = 
         >
           <div
             class="bp3-form-group"
-            data-id="null-4"
+            data-id="spec.approvers.userGroups-4"
+            style="flex-grow: 1; margin-bottom: 0px;"
           >
             <label
               class="bp3-label"
+              for="spec.approvers.userGroups"
             >
-              <span
-                class="Tooltip--acenter"
-                data-tooltip-id="harnessApproval_spec.approvers.userGroups"
+              <div
+                class="formLabel"
               >
-                common.userGroups
-              </span>
+                <span
+                  class="Tooltip--acenter"
+                  data-tooltip-id="harnessApproval_spec.approvers.userGroups"
+                >
+                  common.userGroups
+                </span>
+                <div
+                  class="bp3-popover-wrapper typeSelectorWrapper"
+                >
+                  <div
+                    class="bp3-popover-target typeSelector"
+                  >
+                    <button
+                      class="bp3-button bp3-minimal Button--button StyledProps--font StyledProps--main btn Button--iconOnly Button--without-shadow"
+                      type="button"
+                    >
+                      <span
+                        class="bp3-button-text"
+                      >
+                        <span
+                          class="bp3-icon StyledProps--main icon fixed"
+                          data-icon="fixed-input"
+                        >
+                          <svg
+                            height="12"
+                            viewBox="0 0 9 9"
+                            width="12"
+                            xmlns="http://www.w3.org/2000/svg"
+                          >
+                            <path
+                              d="M5.61 7.55c.62-.7.3-1.42.18-2.35a.32.32 0 01.1-.29l1.43-1.42a.76.76 0 01.28-.15c.39-.1 1 0 1.28-.29a.34.34 0 000-.51L6.46.12a.33.33 0 00-.52 0c-.28.29-.2.9-.28 1.3a.53.53 0 01-.13.23L4.09 3.12a.29.29 0 01-.28.09c-.89-.11-1.6-.49-2.27.11-.29.26-.29.43 0 .7l1.31 1.34.15.16-.15.15-2.7 2.69a.36.36 0 000 .54.36.36 0 00.54-.05l2.63-2.68.17-.17.17.16c.45.46.9.91 1.36 1.36.21.21.42.22.59.03z"
+                              fill="currentColor"
+                            />
+                          </svg>
+                        </span>
+                      </span>
+                    </button>
+                  </div>
+                </div>
+              </div>
                
               <span
                 class="bp3-text-muted"
@@ -2974,138 +3838,106 @@ exports[`Harness Approval tests On submit call: values populating on edit 1`] = 
               class="bp3-form-content"
             >
               <div
-                class="Layout--horizontal StyledProps--main multiTypeSupport"
+                class="bp3-form-group"
+                data-id="undefined-5"
               >
                 <div
-                  class="bp3-form-group"
-                  data-id="undefined-5"
+                  class="bp3-form-content"
                 >
                   <div
-                    class="bp3-form-content"
+                    class="Layout--vertical StyledProps--main"
                   >
                     <div
-                      class="Layout--vertical StyledProps--main"
+                      class="StyledProps--font StyledProps--main bp3-input userGroupInputContainer StyledProps--border StyledProps--padding-xsmall"
                     >
                       <div
-                        class="StyledProps--font StyledProps--main bp3-input userGroupInputContainer StyledProps--border StyledProps--padding-xsmall"
+                        class="Layout--horizontal Layout--layout-spacing-xsmall StyledProps--main layoutHeight StyledProps--flex StyledProps--flex-alignItems-center StyledProps--flex-justifyContent-space-between"
                       >
                         <div
-                          class="Layout--horizontal Layout--layout-spacing-xsmall StyledProps--main layoutHeight StyledProps--flex StyledProps--flex-alignItems-center StyledProps--flex-justifyContent-space-between"
+                          class="Layout--horizontal Layout--layout-spacing-xsmall StyledProps--main StyledProps--flex StyledProps--flex-alignItems-center StyledProps--flex-justifyContent-flex-start"
+                          style="width: 95%;"
                         >
                           <div
-                            class="Layout--horizontal Layout--layout-spacing-xsmall StyledProps--main StyledProps--flex StyledProps--flex-alignItems-center StyledProps--flex-justifyContent-flex-start"
-                            style="width: 95%;"
+                            class="StyledProps--font StyledProps--main pointer StyledProps--padding-top-xsmall StyledProps--padding-right-small StyledProps--padding-bottom-xsmall StyledProps--padding-left-small StyledProps--background-primary2 StyledProps--border"
+                            style="width: 33%;"
                           >
                             <div
-                              class="StyledProps--font StyledProps--main pointer StyledProps--padding-top-xsmall StyledProps--padding-right-small StyledProps--padding-bottom-xsmall StyledProps--padding-left-small StyledProps--background-primary2 StyledProps--border"
-                              style="width: 33%;"
+                              class="Layout--horizontal StyledProps--main StyledProps--flex StyledProps--flex-justifyContent-space-between StyledProps--flex-alignItems-center"
                             >
-                              <div
-                                class="Layout--horizontal StyledProps--main StyledProps--flex StyledProps--flex-justifyContent-space-between StyledProps--flex-alignItems-center"
+                              <p
+                                class="StyledProps--font StyledProps--main StyledProps--font-size-small StyledProps--color StyledProps--color-black"
                               >
-                                <p
-                                  class="StyledProps--font StyledProps--main StyledProps--font-size-small StyledProps--color StyledProps--color-black"
-                                >
-                                  PROJECT
-                                </p>
-                                <p
-                                  class="StyledProps--font StyledProps--main StyledProps--font-size-small StyledProps--padding-left-xsmall StyledProps--padding-right-xsmall StyledProps--flex StyledProps--flex-align-center-center StyledProps--background-primary7 StyledProps--color StyledProps--color-white StyledProps--border"
-                                >
-                                  2
-                                </p>
-                              </div>
-                            </div>
-                            <div
-                              class="StyledProps--font StyledProps--main pointer StyledProps--padding-top-xsmall StyledProps--padding-right-small StyledProps--padding-bottom-xsmall StyledProps--padding-left-small StyledProps--background-primary2 StyledProps--border"
-                              style="width: 33%;"
-                            >
-                              <div
-                                class="Layout--horizontal StyledProps--main StyledProps--flex StyledProps--flex-justifyContent-space-between StyledProps--flex-alignItems-center"
+                                PROJECT
+                              </p>
+                              <p
+                                class="StyledProps--font StyledProps--main StyledProps--font-size-small StyledProps--padding-left-xsmall StyledProps--padding-right-xsmall StyledProps--flex StyledProps--flex-align-center-center StyledProps--background-primary7 StyledProps--color StyledProps--color-white StyledProps--border"
                               >
-                                <p
-                                  class="StyledProps--font StyledProps--main StyledProps--font-size-small StyledProps--color StyledProps--color-black"
-                                >
-                                  ORG
-                                </p>
-                                <p
-                                  class="StyledProps--font StyledProps--main StyledProps--font-size-small StyledProps--padding-left-xsmall StyledProps--padding-right-xsmall StyledProps--flex StyledProps--flex-align-center-center StyledProps--background-primary7 StyledProps--color StyledProps--color-white StyledProps--border"
-                                >
-                                  2
-                                </p>
-                              </div>
-                            </div>
-                            <div
-                              class="StyledProps--font StyledProps--main pointer StyledProps--padding-top-xsmall StyledProps--padding-right-small StyledProps--padding-bottom-xsmall StyledProps--padding-left-small StyledProps--background-primary2 StyledProps--border"
-                              style="width: 33%;"
-                            >
-                              <div
-                                class="Layout--horizontal StyledProps--main StyledProps--flex StyledProps--flex-justifyContent-space-between StyledProps--flex-alignItems-center"
-                              >
-                                <p
-                                  class="StyledProps--font StyledProps--main StyledProps--font-size-small StyledProps--color StyledProps--color-black"
-                                >
-                                  ACCOUNT
-                                </p>
-                                <p
-                                  class="StyledProps--font StyledProps--main StyledProps--font-size-small StyledProps--padding-left-xsmall StyledProps--padding-right-xsmall StyledProps--flex StyledProps--flex-align-center-center StyledProps--background-primary7 StyledProps--color StyledProps--color-white StyledProps--border"
-                                >
-                                  2
-                                </p>
-                              </div>
+                                2
+                              </p>
                             </div>
                           </div>
-                          <span
-                            class="bp3-icon bp3-icon-cross StyledProps--main pointer StyledProps--margin-left-medium StyledProps--color StyledProps--color-grey500"
-                            icon="cross"
+                          <div
+                            class="StyledProps--font StyledProps--main pointer StyledProps--padding-top-xsmall StyledProps--padding-right-small StyledProps--padding-bottom-xsmall StyledProps--padding-left-small StyledProps--background-primary2 StyledProps--border"
+                            style="width: 33%;"
                           >
-                            <svg
-                              data-icon="cross"
-                              height="14"
-                              viewBox="0 0 16 16"
-                              width="14"
+                            <div
+                              class="Layout--horizontal StyledProps--main StyledProps--flex StyledProps--flex-justifyContent-space-between StyledProps--flex-alignItems-center"
                             >
-                              <desc>
-                                cross
-                              </desc>
-                              <path
-                                d="M9.41 8l3.29-3.29c.19-.18.3-.43.3-.71a1.003 1.003 0 00-1.71-.71L8 6.59l-3.29-3.3a1.003 1.003 0 00-1.42 1.42L6.59 8 3.3 11.29c-.19.18-.3.43-.3.71a1.003 1.003 0 001.71.71L8 9.41l3.29 3.29c.18.19.43.3.71.3a1.003 1.003 0 00.71-1.71L9.41 8z"
-                                fill-rule="evenodd"
-                              />
-                            </svg>
-                          </span>
+                              <p
+                                class="StyledProps--font StyledProps--main StyledProps--font-size-small StyledProps--color StyledProps--color-black"
+                              >
+                                ORG
+                              </p>
+                              <p
+                                class="StyledProps--font StyledProps--main StyledProps--font-size-small StyledProps--padding-left-xsmall StyledProps--padding-right-xsmall StyledProps--flex StyledProps--flex-align-center-center StyledProps--background-primary7 StyledProps--color StyledProps--color-white StyledProps--border"
+                              >
+                                2
+                              </p>
+                            </div>
+                          </div>
+                          <div
+                            class="StyledProps--font StyledProps--main pointer StyledProps--padding-top-xsmall StyledProps--padding-right-small StyledProps--padding-bottom-xsmall StyledProps--padding-left-small StyledProps--background-primary2 StyledProps--border"
+                            style="width: 33%;"
+                          >
+                            <div
+                              class="Layout--horizontal StyledProps--main StyledProps--flex StyledProps--flex-justifyContent-space-between StyledProps--flex-alignItems-center"
+                            >
+                              <p
+                                class="StyledProps--font StyledProps--main StyledProps--font-size-small StyledProps--color StyledProps--color-black"
+                              >
+                                ACCOUNT
+                              </p>
+                              <p
+                                class="StyledProps--font StyledProps--main StyledProps--font-size-small StyledProps--padding-left-xsmall StyledProps--padding-right-xsmall StyledProps--flex StyledProps--flex-align-center-center StyledProps--background-primary7 StyledProps--color StyledProps--color-white StyledProps--border"
+                              >
+                                2
+                              </p>
+                            </div>
+                          </div>
                         </div>
+                        <span
+                          class="bp3-icon bp3-icon-cross StyledProps--main pointer StyledProps--margin-left-medium StyledProps--color StyledProps--color-grey500"
+                          icon="cross"
+                        >
+                          <svg
+                            data-icon="cross"
+                            height="14"
+                            viewBox="0 0 16 16"
+                            width="14"
+                          >
+                            <desc>
+                              cross
+                            </desc>
+                            <path
+                              d="M9.41 8l3.29-3.29c.19-.18.3-.43.3-.71a1.003 1.003 0 00-1.71-.71L8 6.59l-3.29-3.3a1.003 1.003 0 00-1.42 1.42L6.59 8 3.3 11.29c-.19.18-.3.43-.3.71a1.003 1.003 0 001.71.71L8 9.41l3.29 3.29c.18.19.43.3.71.3a1.003 1.003 0 00.71-1.71L9.41 8z"
+                              fill-rule="evenodd"
+                            />
+                          </svg>
+                        </span>
                       </div>
                     </div>
                   </div>
                 </div>
-                <span
-                  class="bp3-popover-wrapper MultiTypeInput--wrapper"
-                >
-                  <span
-                    class="bp3-popover-target"
-                  >
-                    <button
-                      class="MultiTypeInput--btn MultiTypeInput--FIXED"
-                    >
-                      <span
-                        class="bp3-icon StyledProps--main"
-                        data-icon="fixed-input"
-                      >
-                        <svg
-                          height="12"
-                          viewBox="0 0 9 9"
-                          width="12"
-                          xmlns="http://www.w3.org/2000/svg"
-                        >
-                          <path
-                            d="M5.61 7.55c.62-.7.3-1.42.18-2.35a.32.32 0 01.1-.29l1.43-1.42a.76.76 0 01.28-.15c.39-.1 1 0 1.28-.29a.34.34 0 000-.51L6.46.12a.33.33 0 00-.52 0c-.28.29-.2.9-.28 1.3a.53.53 0 01-.13.23L4.09 3.12a.29.29 0 01-.28.09c-.89-.11-1.6-.49-2.27.11-.29.26-.29.43 0 .7l1.31 1.34.15.16-.15.15-2.7 2.69a.36.36 0 000 .54.36.36 0 00.54-.05l2.63-2.68.17-.17.17.16c.45.46.9.91 1.36 1.36.21.21.42.22.59.03z"
-                            fill="currentColor"
-                          />
-                        </svg>
-                      </span>
-                    </button>
-                  </span>
-                </span>
               </div>
             </div>
           </div>

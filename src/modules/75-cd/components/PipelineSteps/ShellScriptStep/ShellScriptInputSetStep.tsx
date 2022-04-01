@@ -111,7 +111,11 @@ export default function ShellScriptInputSetStep(props: ShellScriptInputSetStepPr
                     {template.spec.environmentVariables?.map((type, i: number) => {
                       return (
                         <div className={css.environmentVarHeader} key={type.value}>
-                          <FormInput.Text name={`${prefix}spec.environmentVariables[${i}].name`} disabled={true} />
+                          <FormInput.Text
+                            name={`${prefix}spec.environmentVariables[${i}].name`}
+                            placeholder={getString('name')}
+                            disabled={true}
+                          />
                           <FormInput.Select
                             items={scriptInputType}
                             name={`${prefix}spec.environmentVariables[${i}].type`}
@@ -127,6 +131,7 @@ export default function ShellScriptInputSetStep(props: ShellScriptInputSetStepPr
                             }}
                             label=""
                             disabled={readonly}
+                            placeholder={getString('valueLabel')}
                           />
                         </div>
                       )
@@ -159,7 +164,11 @@ export default function ShellScriptInputSetStep(props: ShellScriptInputSetStepPr
                     {template.spec.outputVariables?.map((output, i: number) => {
                       return (
                         <div className={css.outputVarHeader} key={output.name}>
-                          <FormInput.Text name={`${prefix}spec.outputVariables[${i}].name`} disabled={true} />
+                          <FormInput.Text
+                            name={`${prefix}spec.outputVariables[${i}].name`}
+                            placeholder={getString('name')}
+                            disabled={true}
+                          />
                           <FormInput.Select
                             items={scriptOutputType}
                             name={`${prefix}spec.outputVariables[${i}].type`}
@@ -176,6 +185,7 @@ export default function ShellScriptInputSetStep(props: ShellScriptInputSetStepPr
                             }}
                             label=""
                             disabled={readonly}
+                            placeholder={getString('valueLabel')}
                           />
                         </div>
                       )
@@ -190,6 +200,7 @@ export default function ShellScriptInputSetStep(props: ShellScriptInputSetStepPr
       {getMultiTypeFromValue(template?.spec?.executionTarget?.host) === MultiTypeInputType.RUNTIME ? (
         <div className={cx(stepCss.formGroup, stepCss.md)}>
           <FormInput.MultiTextInput
+            placeholder={getString('cd.specifyTargetHost')}
             label={getString('targetHost')}
             multiTextInputProps={{
               expressions,
@@ -219,6 +230,7 @@ export default function ShellScriptInputSetStep(props: ShellScriptInputSetStepPr
         <div className={cx(stepCss.formGroup, stepCss.md)}>
           <FormInput.MultiTextInput
             disabled={readonly}
+            placeholder={getString('cd.enterWorkDirectory')}
             label={getString('workingDirectory')}
             multiTextInputProps={{
               expressions,

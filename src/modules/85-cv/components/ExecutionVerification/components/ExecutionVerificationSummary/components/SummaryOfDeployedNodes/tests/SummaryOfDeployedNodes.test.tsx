@@ -26,6 +26,8 @@ describe('Unit tests for SummaryOfDeployedNodes', () => {
           totalMetrics={20}
           logClustersInViolation={5}
           totalLogClusters={5}
+          errorClustersInViolation={7}
+          totalErrorClusters={11}
         />
       </TestWrapper>
     )

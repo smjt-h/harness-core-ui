@@ -9,6 +9,12 @@
   width: 200px !important;
 }
 
+// this will be deprecated once FFM-1513 is complete
+.tabContainerHeight {
+  height: calc(100% - 140px);
+  overflow-y: auto;
+}
+
 .tabContainer {
   :global {
     .bp3-tab-list {
@@ -53,11 +59,10 @@
   height: 100vh;
 
   .actionButtons {
-    position: absolute;
     bottom: 0;
     right: 0;
     width: 100% !important;
-    border-top: 1px solid #e4e4eb;
+    box-shadow: var(--elevation-2);
     padding-left: var(--spacing-huge) !important;
     padding-top: 22px !important;
     height: 80px;
@@ -69,11 +74,11 @@
   font-size: 14px !important;
   font-weight: 400 !important;
   line-height: 19px !important;
-  color: #333333 !important;
+  color: var(gray-900) !important;
   padding: var(--spacing-small) var(--spacing-xsmall) var(--spacing-xsmall) !important;
 }
 
 [aria-selected='true'] > .tabTitle {
   font-weight: 600 !important;
-  color: #22272d !important;
+  color: var(gray-900) !important;
 }

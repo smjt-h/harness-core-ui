@@ -9,9 +9,11 @@ import { useEffect } from 'react'
 import { useParams } from 'react-router-dom'
 import type { AccountPathProps } from '@common/interfaces/RouteInterfaces'
 import { useAppStore } from 'framework/AppStore/AppStoreContext'
+import { useModuleInfo } from '@common/hooks/useModuleInfo'
+import { useLicenseStore } from 'framework/LicenseStore/LicenseStoreContext'
 import { useTelemetryInstance } from './useTelemetryInstance'
 
-type TrackEvent = (eventName: string, properties: Record<string, string>) => void
+type TrackEvent = (eventName: string, properties: Record<string, unknown>) => void
 type TrackPage = (name: string, properties: Record<string, string>, category?: string) => void
 type IdentifyUser = (email: string | undefined) => void
 interface PageParams {
@@ -30,23 +32,42 @@ export function useTelemetry(pageParams: PageParams = {}): TelemetryReturnType {
   const { accountId: groupId } = useParams<AccountPathProps>()
   const telemetry = useTelemetryInstance()
   const userId = currentUserInfo.email || ''
+  const { module } = useModuleInfo()
+  const { licenseInformation } = useLicenseStore()
+  const moduleLicense = module && licenseInformation[module.toUpperCase()]
+  const SOURCE_UI = 'NG UI'
+
+  const licenseProperties = module
+    ? {
+        module,
+        licenseEdition: moduleLicense?.edition,
+        licenseType: moduleLicense?.licenseType
+      }
+    : null
 
   useEffect(() => {
     pageParams.pageName &&
       telemetry.page({
         name: pageParams.pageName,
         category: pageParams.category || '',
-        properties: { userId, groupId, ...pageParams.properties } || {}
+        properties: { source: SOURCE_UI, userId, groupId, ...licenseProperties, ...pageParams.properties } || {}
       })
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [pageParams.pageName, pageParams.category, pageParams.properties])
 
-  const trackEvent: TrackEvent = (eventName: string, properties: Record<string, string>) => {
-    telemetry.track({ event: eventName, properties: { userId, groupId, ...properties } })
+  const trackEvent: TrackEvent = (eventName: string, properties: Record<string, unknown>) => {
+    telemetry.track({
+      event: eventName,
+      properties: { source: SOURCE_UI, userId, groupId, ...licenseProperties, ...properties }
+    })
   }
 
   const trackPage: TrackPage = (name: string, properties: Record<string, string>, category?: string) => {
-    telemetry.page({ name: name, properties: properties, category: category })
+    telemetry.page({
+      name: name,
+      category: category,
+      properties: { source: SOURCE_UI, ...licenseProperties, ...properties }
+    })
   }
 
   const identifyUser: IdentifyUser = (email: string | undefined) => {

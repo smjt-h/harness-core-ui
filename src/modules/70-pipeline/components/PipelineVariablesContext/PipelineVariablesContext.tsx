@@ -120,7 +120,7 @@ export function PipelineVariablesContextProvider(
       }
     },
     queryParams: { accountIdentifier: accountId, orgIdentifier, projectIdentifier },
-    debounce: 800
+    debounce: 1300
   })
 
   const {

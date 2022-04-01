@@ -22,13 +22,13 @@ import { useStrings } from 'framework/strings'
 import { EXPRESSION_STRING } from '@pipeline/utils/constants'
 import { getHelpeTextForTags } from '@pipeline/utils/stageHelpers'
 
-import type { Failure, Error } from 'services/cd-ng'
+import type { Failure, Error, DockerBuildDetailsDTO } from 'services/cd-ng'
 import { tagOptions } from '../../../ArtifactHelper'
 import { helperTextData, resetTag } from '../../../ArtifactUtils'
 import type { ArtifactImagePathTagViewProps } from '../../../ArtifactInterface'
 import css from '../../ArtifactConnector.module.scss'
 
-function NoTagResults({ tagError }: { tagError: GetDataError<Failure | Error> | null }): JSX.Element {
+export function NoTagResults({ tagError }: { tagError: GetDataError<Failure | Error> | null }): JSX.Element {
   const { getString } = useStrings()
 
   return (
@@ -39,6 +39,11 @@ function NoTagResults({ tagError }: { tagError: GetDataError<Failure | Error> | 
     </span>
   )
 }
+
+export const selectItemsMapper = (tagList: DockerBuildDetailsDTO[] | undefined): SelectOption[] => {
+  return tagList?.map(tag => ({ label: tag.tag, value: tag.tag })) as SelectOption[]
+}
+
 function ArtifactImagePathTagView({
   selectedArtifact,
   formik,
@@ -56,9 +61,7 @@ function ArtifactImagePathTagView({
 }: ArtifactImagePathTagViewProps): React.ReactElement {
   const { getString } = useStrings()
 
-  const getSelectItems = useCallback(() => {
-    return tagList?.map(tag => ({ label: tag.tag, value: tag.tag })) as SelectOption[]
-  }, [tagList])
+  const getSelectItems = useCallback(selectItemsMapper.bind(null, tagList), [tagList])
 
   const tags = buildDetailsLoading ? [{ label: 'Loading Tags...', value: 'Loading Tags...' }] : getSelectItems()
 
@@ -174,7 +177,8 @@ function ArtifactImagePathTagView({
                 items: tags,
                 addClearBtn: true,
                 itemRenderer: itemRenderer,
-                allowCreatingNewItems: true
+                allowCreatingNewItems: true,
+                addTooltip: true
               },
               onFocus: (e: React.FocusEvent<HTMLInputElement>) => {
                 if (

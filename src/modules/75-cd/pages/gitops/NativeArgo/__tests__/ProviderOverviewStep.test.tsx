@@ -13,7 +13,24 @@ import { accountPathProps, orgPathProps, projectPathProps } from '@common/utils/
 import { TestWrapper } from '@common/utils/testUtils'
 import { gitConfigs, sourceCodeManagers, branchStatusMock } from '@connectors/mocks/mock'
 import { clickSubmit } from '@common/utils/JestFormHelper'
+import * as cdngServices from 'services/cd-ng'
 import ConnectorDetailsStep from '../ProviderOverviewStep/ProviderOverviewStep'
+import CreateArgoProvider from '../CreateProvider/CreateProvider'
+
+const props = {
+  isEditMode: false,
+  provider: {
+    name: 'Darwin Argo Dev Env',
+    identifier: 'DarwinArgoDevEnv',
+    baseURL: 'https://34.136.244.5',
+    status: 'Active',
+    type: 'nativeArgo',
+    spec: {},
+    tags: {
+      demo: 'demo'
+    }
+  }
+}
 
 jest.mock('services/cd-ng', () => ({
   validateProviderIdentifierIsUniquePromise: jest
@@ -148,5 +165,128 @@ describe('Connector details step', () => {
     )
     const gitContextForm = queryByTestId('GitContextForm')
     expect(gitContextForm).toBeFalsy()
+  })
+
+  test('Test for adding required fields and save', async () => {
+    const { container } = render(
+      <TestWrapper>
+        <ConnectorDetailsStep name="sample-name" {...props} />
+      </TestWrapper>
+    )
+    const nameInput = queryByAttribute('name', container, 'name')
+    expect(nameInput).toBeTruthy()
+    if (nameInput) fireEvent.change(nameInput, { target: { value: 'dummy name' } })
+    const adapterUrl = queryByAttribute('name', container, 'spec.adapterUrl')
+    expect(adapterUrl).toBeTruthy()
+    if (adapterUrl) fireEvent.change(adapterUrl, { target: { value: 'https://34.136.244.5' } })
+
+    await act(async () => {
+      clickSubmit(container)
+    })
+    expect(container).toMatchSnapshot()
+  })
+  test('test for opening in edit mode', async () => {
+    const { container } = render(
+      <TestWrapper>
+        <CreateArgoProvider isEditMode={true} provider={props.provider} />
+      </TestWrapper>
+    )
+    const adapterUrl = queryByAttribute('name', container, 'spec.adapterUrl')
+    expect(adapterUrl).toBeTruthy()
+    if (adapterUrl) fireEvent.change(adapterUrl, { target: { value: 'https://34.136.244.5' } })
+
+    await act(async () => {
+      clickSubmit(container)
+    })
+    expect(container).toMatchSnapshot()
+  })
+  test('test for error in response', async () => {
+    jest.spyOn(cdngServices, 'validateProviderIdentifierIsUniquePromise').mockImplementation(() => {
+      throw new Error('mock error')
+    })
+    const { container } = render(
+      <TestWrapper>
+        <ConnectorDetailsStep name="sample-name" {...props} />
+      </TestWrapper>
+    )
+    const nameInput = queryByAttribute('name', container, 'name')
+    expect(nameInput).toBeTruthy()
+    if (nameInput) fireEvent.change(nameInput, { target: { value: 'dummy name' } })
+    const adapterUrl = queryByAttribute('name', container, 'spec.adapterUrl')
+    expect(adapterUrl).toBeTruthy()
+    if (adapterUrl) fireEvent.change(adapterUrl, { target: { value: 'https://34.136.244.5' } })
+
+    await act(async () => {
+      clickSubmit(container)
+    })
+    expect(container).toMatchSnapshot()
+  })
+  test('Test for Failed response', async () => {
+    jest.spyOn(cdngServices, 'validateProviderIdentifierIsUniquePromise').mockImplementation(() => {
+      return { status: 'FAILED', data: false } as any
+    })
+    const { container } = render(
+      <TestWrapper>
+        <ConnectorDetailsStep name="sample-name" {...props} />
+      </TestWrapper>
+    )
+    const nameInput = queryByAttribute('name', container, 'name')
+    expect(nameInput).toBeTruthy()
+    if (nameInput) fireEvent.change(nameInput, { target: { value: 'dummy name' } })
+    const adapterUrl = queryByAttribute('name', container, 'spec.adapterUrl')
+    expect(adapterUrl).toBeTruthy()
+    if (adapterUrl) fireEvent.change(adapterUrl, { target: { value: 'https://34.136.244.5' } })
+
+    await act(async () => {
+      clickSubmit(container)
+    })
+    expect(container).toMatchSnapshot()
+  })
+  test('Test for data false', async () => {
+    jest.spyOn(cdngServices, 'validateProviderIdentifierIsUniquePromise').mockImplementation(() => {
+      return { status: 'SUCCESS', data: false } as any
+    })
+    const { container } = render(
+      <TestWrapper>
+        <ConnectorDetailsStep name="sample-name" {...props} />
+      </TestWrapper>
+    )
+    const nameInput = queryByAttribute('name', container, 'name')
+    expect(nameInput).toBeTruthy()
+    if (nameInput) fireEvent.change(nameInput, { target: { value: 'dummy name' } })
+    const adapterUrl = queryByAttribute('name', container, 'spec.adapterUrl')
+    expect(adapterUrl).toBeTruthy()
+    if (adapterUrl) fireEvent.change(adapterUrl, { target: { value: 'https://34.136.244.5' } })
+
+    await act(async () => {
+      clickSubmit(container)
+    })
+    expect(container).toMatchSnapshot()
+  })
+
+  test('Test for  loading state', async () => {
+    jest.spyOn(cdngServices, 'useCreateGitOpsProvider').mockImplementation(() => {
+      return { loading: true, data: {}, refetch: jest.fn() } as any
+    })
+    const { container } = render(
+      <TestWrapper>
+        <ConnectorDetailsStep name="sample-name" {...props} />
+      </TestWrapper>
+    )
+    expect(container).toMatchSnapshot()
+  })
+  test('Test for  updating state', async () => {
+    jest.spyOn(cdngServices, 'useCreateGitOpsProvider').mockImplementation(() => {
+      return { loading: false, data: {}, refetch: jest.fn() } as any
+    })
+    jest.spyOn(cdngServices, 'useUpdateGitOpsProvider').mockImplementation(() => {
+      return { loading: true, data: {}, refetch: jest.fn() } as any
+    })
+    const { container } = render(
+      <TestWrapper>
+        <ConnectorDetailsStep name="sample-name" {...props} />
+      </TestWrapper>
+    )
+    expect(container).toMatchSnapshot()
   })
 })

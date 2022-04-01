@@ -87,11 +87,16 @@ exports[`HealthSource table Should Render all the componetns in edit mode for cl
                   <div
                     class="bp3-card bp3-elevation-0 Card--card sectionCard shadow"
                   >
-                    <p
-                      class="StyledProps--font StyledProps--main StyledProps--color StyledProps--color-black StyledProps--font-small StyledProps--margin-bottom-large"
+                    <div
+                      class="Text--withDocsTooltip"
+                      data-tooltip-id="selectHealthSourceType"
                     >
-                      cv.healthSource.selectHealthSource
-                    </p>
+                      <p
+                        class="StyledProps--font StyledProps--main StyledProps--color StyledProps--color-black StyledProps--font-small StyledProps--margin-bottom-large"
+                      >
+                        cv.healthSource.selectHealthSource
+                      </p>
+                    </div>
                     <div
                       class="bp3-form-group"
                       data-id="undefined-0"
@@ -475,7 +480,7 @@ exports[`HealthSource table Should Render all the componetns in edit mode for cl
                           >
                             <span
                               class="Tooltip--acenter"
-                              data-tooltip-id="defineHealthsource_connectorRef"
+                              data-tooltip-id="selectHealthSourceConnector"
                             >
                               <p
                                 class="StyledProps--font StyledProps--main StyledProps--color StyledProps--color-black StyledProps--font-small StyledProps--margin-bottom-small"
@@ -534,11 +539,16 @@ exports[`HealthSource table Should Render all the componetns in edit mode for cl
                       class="StyledProps--font StyledProps--main StyledProps--margin-bottom-large"
                       style="width: 400px;"
                     >
-                      <p
-                        class="StyledProps--font StyledProps--main StyledProps--color StyledProps--color-black StyledProps--font-small StyledProps--margin-bottom-small"
+                      <div
+                        class="Text--withDocsTooltip"
+                        data-tooltip-id="selectFeature"
                       >
-                        cv.healthSource.featureLabel
-                      </p>
+                        <p
+                          class="StyledProps--font StyledProps--main StyledProps--color StyledProps--color-black StyledProps--font-small StyledProps--margin-bottom-small"
+                        >
+                          cv.healthSource.featureLabel
+                        </p>
+                      </div>
                       <div
                         class="bp3-form-group bp3-disabled"
                         data-id="product-3"
@@ -714,11 +724,16 @@ exports[`HealthSource table Should Render all the componetns in edit mode for lo
                   <div
                     class="bp3-card bp3-elevation-0 Card--card sectionCard shadow"
                   >
-                    <p
-                      class="StyledProps--font StyledProps--main StyledProps--color StyledProps--color-black StyledProps--font-small StyledProps--margin-bottom-large"
+                    <div
+                      class="Text--withDocsTooltip"
+                      data-tooltip-id="selectHealthSourceType"
                     >
-                      cv.healthSource.selectHealthSource
-                    </p>
+                      <p
+                        class="StyledProps--font StyledProps--main StyledProps--color StyledProps--color-black StyledProps--font-small StyledProps--margin-bottom-large"
+                      >
+                        cv.healthSource.selectHealthSource
+                      </p>
+                    </div>
                     <div
                       class="bp3-form-group"
                       data-id="undefined-0"
@@ -1102,7 +1117,7 @@ exports[`HealthSource table Should Render all the componetns in edit mode for lo
                           >
                             <span
                               class="Tooltip--acenter"
-                              data-tooltip-id="defineHealthsource_connectorRef"
+                              data-tooltip-id="selectHealthSourceConnector"
                             >
                               <p
                                 class="StyledProps--font StyledProps--main StyledProps--color StyledProps--color-black StyledProps--font-small StyledProps--margin-bottom-small"
@@ -1161,11 +1176,16 @@ exports[`HealthSource table Should Render all the componetns in edit mode for lo
                       class="StyledProps--font StyledProps--main StyledProps--margin-bottom-large"
                       style="width: 400px;"
                     >
-                      <p
-                        class="StyledProps--font StyledProps--main StyledProps--color StyledProps--color-black StyledProps--font-small StyledProps--margin-bottom-small"
+                      <div
+                        class="Text--withDocsTooltip"
+                        data-tooltip-id="selectFeature"
                       >
-                        common.purpose.cf.feature
-                      </p>
+                        <p
+                          class="StyledProps--font StyledProps--main StyledProps--color StyledProps--color-black StyledProps--font-small StyledProps--margin-bottom-small"
+                        >
+                          common.purpose.cf.feature
+                        </p>
+                      </div>
                       <div
                         class="bp3-form-group bp3-disabled"
                         data-id="product-3"
@@ -1340,11 +1360,16 @@ exports[`HealthSource table should matchsnapshot 1`] = `
                   <div
                     class="bp3-card bp3-elevation-0 Card--card sectionCard shadow"
                   >
-                    <p
-                      class="StyledProps--font StyledProps--main StyledProps--color StyledProps--color-black StyledProps--font-small StyledProps--margin-bottom-large"
+                    <div
+                      class="Text--withDocsTooltip"
+                      data-tooltip-id="selectHealthSourceType"
                     >
-                      cv.healthSource.selectHealthSource
-                    </p>
+                      <p
+                        class="StyledProps--font StyledProps--main StyledProps--color StyledProps--color-black StyledProps--font-small StyledProps--margin-bottom-large"
+                      >
+                        cv.healthSource.selectHealthSource
+                      </p>
+                    </div>
                     <div
                       class="bp3-form-group"
                       data-id="undefined-0"
@@ -1730,7 +1755,7 @@ exports[`HealthSource table should matchsnapshot 1`] = `
                           >
                             <span
                               class="Tooltip--acenter"
-                              data-tooltip-id="defineHealthsource_connectorRef"
+                              data-tooltip-id="selectHealthSourceConnector"
                             >
                               <p
                                 class="StyledProps--font StyledProps--main StyledProps--color StyledProps--color-black StyledProps--font-small StyledProps--margin-bottom-small"
@@ -1791,11 +1816,16 @@ exports[`HealthSource table should matchsnapshot 1`] = `
                       class="StyledProps--font StyledProps--main StyledProps--margin-bottom-large"
                       style="width: 400px;"
                     >
-                      <p
-                        class="StyledProps--font StyledProps--main StyledProps--color StyledProps--color-black StyledProps--font-small StyledProps--margin-bottom-small"
+                      <div
+                        class="Text--withDocsTooltip"
+                        data-tooltip-id="selectFeature"
                       >
-                        cv.healthSource.featureLabel
-                      </p>
+                        <p
+                          class="StyledProps--font StyledProps--main StyledProps--color StyledProps--color-black StyledProps--font-small StyledProps--margin-bottom-small"
+                        >
+                          cv.healthSource.featureLabel
+                        </p>
+                      </div>
                       <div
                         class="bp3-form-group"
                         data-id="product-3"

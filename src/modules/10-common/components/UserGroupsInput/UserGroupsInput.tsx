@@ -12,13 +12,12 @@ import {
   Layout,
   Container,
   Text,
-  Color,
   Icon,
   FormError,
   DataTooltipInterface,
-  FormikTooltipContext,
-  FontVariation
+  FormikTooltipContext
 } from '@wings-software/uicore'
+import { Color, FontVariation } from '@harness/design-system'
 
 import { get } from 'lodash-es'
 import { FormGroup, Intent } from '@blueprintjs/core'
@@ -81,9 +80,11 @@ const UserGroupsInput: React.FC<FormikUserGroupsInput> = props => {
   useEffect(() => {
     if (userGroupsReference && userGroupsReference.length) {
       setUserGroupsScopeAndIndentifier(
-        userGroupsReference.map(el => {
-          return { scope: getScopeFromValue(el), identifier: getIdentifierFromValue(el) }
-        })
+        userGroupsReference
+          .filter(userGroupStr => !!userGroupStr)
+          .map(el => {
+            return { scope: getScopeFromValue(el), identifier: getIdentifierFromValue(el) }
+          })
       )
     }
   }, [userGroupsReference])

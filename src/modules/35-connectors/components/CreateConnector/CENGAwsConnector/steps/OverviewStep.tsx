@@ -33,10 +33,10 @@ import {
   AwsCurAttributes
 } from 'services/cd-ng'
 import { Description, Tags } from '@common/components/NameIdDescriptionTags/NameIdDescriptionTags'
+import { IdentifierSchema, NameSchema } from '@common/utils/Validation'
 import { CE_AWS_CONNECTOR_CREATION_EVENTS } from '@connectors/trackingConstants'
 import { useStepLoadTelemetry } from '@connectors/common/useTrackStepLoad/useStepLoadTelemetry'
 import css from '../CreateCeAwsConnector.module.scss'
-
 interface OverviewDetails {
   name: string
   awsAccountId: string
@@ -186,6 +186,8 @@ const OverviewStep: React.FC<OverviewProps> = props => {
           formName="connectorsCeAwsOverViewForm"
           initialValues={getInitialValues() as OverviewDetails}
           validationSchema={Yup.object().shape({
+            name: NameSchema(),
+            identifier: IdentifierSchema(),
             awsAccountId: Yup.number()
               .typeError(getString('connectors.ceAws.overview.validation.numeric'))
               .positive(getString('connectors.ceAws.overview.validation.positive'))

@@ -213,6 +213,7 @@ describe('Test TerraformPlan', () => {
 
           spec: {
             provisionerIdentifier: 'test',
+            delegateSelectors: ['anyonefive'],
             configuration: {
               command: 'Apply',
               secretManagerRef: {
@@ -238,7 +239,7 @@ describe('Test TerraformPlan', () => {
                 }
               },
               targets: ['test-1'],
-              environmentVariables: [{ key: 'test', value: 'abc' }],
+              environmentVariables: [{ name: 'test', type: 'String', value: 'abc' }],
               varFiles: [
                 {
                   varFile: {
@@ -255,7 +256,52 @@ describe('Test TerraformPlan', () => {
       />
     )
     await act(() => ref.current?.submitForm())
-    expect(onUpdate).toHaveBeenCalled()
+    expect(onUpdate).toHaveBeenCalledWith({
+      type: 'TerraformPlan',
+      name: 'Test A',
+      identifier: 'Test_A',
+      timeout: '10m',
+
+      spec: {
+        provisionerIdentifier: 'test',
+        delegateSelectors: ['anyonefive'],
+        configuration: {
+          command: 'Apply',
+          secretManagerRef: {
+            label: 'secret-1',
+            value: 'sercet-1',
+            scope: 'account'
+          },
+          configFiles: {
+            store: {
+              spec: {
+                connectorRef: 'test',
+                gitFetchType: 'Branch'
+              },
+              type: 'Git'
+            }
+          },
+          backendConfig: {
+            spec: {
+              content: 'test-content'
+            },
+            type: 'Inline'
+          },
+          targets: ['test-1'],
+          environmentVariables: [{ name: 'test', type: 'String', value: 'abc' }],
+          varFiles: [
+            {
+              varFile: {
+                type: 'Inline',
+                spec: {
+                  content: 'test'
+                }
+              }
+            }
+          ]
+        }
+      }
+    })
     expect(container).toMatchSnapshot()
   })
   test('should render variable view', () => {

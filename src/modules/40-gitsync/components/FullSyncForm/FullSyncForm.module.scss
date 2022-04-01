@@ -110,14 +110,3 @@
 .prTitle {
   margin-left: 45px;
 }
-
-.tooltip {
-  :global {
-    .bp3-popover-arrow-fill {
-      fill: var(--red-100) !important;
-    }
-    .bp3-popover-content {
-      background-color: var(--red-100);
-    }
-  }
-}

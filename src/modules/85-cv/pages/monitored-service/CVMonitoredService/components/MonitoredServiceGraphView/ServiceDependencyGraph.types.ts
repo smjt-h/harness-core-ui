@@ -28,8 +28,7 @@ export interface ServicePoint {
   sticky?: {
     element: any
   }
-  serviceRef?: string
-  environmentRef?: string
+  monitoredServiceIdentifier: string
   destroySticky: () => void
 }
 

@@ -21,6 +21,15 @@ describe('<ExecutionStepInputOutputTab /> tests', () => {
     expect(container).toMatchSnapshot()
   })
 
+  test('output snapshot with no data', () => {
+    const { container } = render(
+      <TestWrapper>
+        <InputOutputTab data={{}} mode="output" baseFqn="basefqn" />
+      </TestWrapper>
+    )
+    expect(container).toMatchSnapshot()
+  })
+
   test('input snapshot test', () => {
     const { container } = render(
       <TestWrapper>

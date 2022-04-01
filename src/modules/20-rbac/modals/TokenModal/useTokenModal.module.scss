@@ -11,11 +11,6 @@
   top: var(--spacing-large);
 }
 
-.dialog {
-  position: relative;
-  padding-bottom: 0;
-}
-
 .form {
   min-height: 350px;
 
@@ -29,4 +24,8 @@
       padding: var(--spacing-xsmall) var(--spacing-medium);
     }
   }
+}
+
+.createTokenForm {
+  min-height: 200px;
 }

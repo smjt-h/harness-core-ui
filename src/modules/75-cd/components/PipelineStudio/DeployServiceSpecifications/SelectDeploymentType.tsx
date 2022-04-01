@@ -11,20 +11,9 @@ import { noop } from 'lodash-es'
 import { Classes, PopoverInteractionKind } from '@blueprintjs/core'
 import * as Yup from 'yup'
 import { useParams } from 'react-router-dom'
-import {
-  Card,
-  Color,
-  Dialog,
-  FontVariation,
-  HarnessDocTooltip,
-  Icon,
-  Layout,
-  Popover,
-  Text,
-  Thumbnail,
-  Utils
-} from '@wings-software/uicore'
+import { Card, Dialog, HarnessDocTooltip, Icon, Layout, Popover, Text, Thumbnail, Utils } from '@wings-software/uicore'
 import { useModalHook } from '@harness/use-modal'
+import { Color, FontVariation } from '@harness/design-system'
 import cx from 'classnames'
 import { useStrings, UseStringsReturn } from 'framework/strings'
 import { isCDCommunity, useLicenseStore } from 'framework/LicenseStore/LicenseStoreContext'
@@ -104,7 +93,7 @@ export default function SelectDeploymentType(props: SelectServiceDeploymentTypeP
   const ngSupportedDeploymentTypes: DeploymentTypeItem[] = React.useMemo(
     () => [
       {
-        label: getString('serviceDeploymentTypes.kubernetes'),
+        label: getString('pipeline.serviceDeploymentTypes.kubernetes'),
         icon: 'service-kubernetes',
         value: ServiceDeploymentType.Kubernetes
       }
@@ -121,37 +110,37 @@ export default function SelectDeploymentType(props: SelectServiceDeploymentTypeP
         value: ServiceDeploymentType.NativeHelm
       },
       {
-        label: getString('serviceDeploymentTypes.amazonEcs'),
+        label: getString('pipeline.serviceDeploymentTypes.amazonEcs'),
         icon: 'service-ecs',
         value: ServiceDeploymentType.amazonEcs
       },
       {
-        label: getString('serviceDeploymentTypes.amazonAmi'),
+        label: getString('pipeline.serviceDeploymentTypes.amazonAmi'),
         icon: 'main-service-ami',
         value: ServiceDeploymentType.amazonAmi
       },
       {
-        label: getString('serviceDeploymentTypes.awsCodeDeploy'),
+        label: getString('pipeline.serviceDeploymentTypes.awsCodeDeploy'),
         icon: 'app-aws-code-deploy',
         value: ServiceDeploymentType.awsCodeDeploy
       },
       {
-        label: getString('serviceDeploymentTypes.winrm'),
+        label: getString('pipeline.serviceDeploymentTypes.winrm'),
         icon: 'command-winrm',
         value: ServiceDeploymentType.winrm
       },
       {
-        label: getString('serviceDeploymentTypes.awsLambda'),
+        label: getString('pipeline.serviceDeploymentTypes.awsLambda'),
         icon: 'app-aws-lambda',
         value: ServiceDeploymentType.awsLambda
       },
       {
-        label: getString('serviceDeploymentTypes.pcf'),
+        label: getString('pipeline.serviceDeploymentTypes.pcf'),
         icon: 'service-pivotal',
         value: ServiceDeploymentType.pcf
       },
       {
-        label: getString('serviceDeploymentTypes.ssh'),
+        label: getString('pipeline.serviceDeploymentTypes.ssh'),
         icon: 'secret-ssh',
         value: ServiceDeploymentType.ssh
       }
@@ -256,7 +245,7 @@ export default function SelectDeploymentType(props: SelectServiceDeploymentTypeP
             </Text>
             <a
               className={deployServiceCsss.learnMore}
-              href="https://docs.harness.io/article/4o7oqwih6h-harness-key-concepts#cd_abstraction_model"
+              href="https://ngdocs.harness.io/article/1fjmm4by22"
               rel="noreferrer"
               target="_blank"
             >

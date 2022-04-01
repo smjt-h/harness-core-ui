@@ -94,7 +94,7 @@ approvalStep:
     statusMsg: '{{ count }} of {{ total }} approvals complete'
   validation:
     approvalMessage: Approval message is required.
-    userGroups: 'Please provide user groups.'
+    userGroups: 'Atleast one user group is required'
     minimumCountOne: 'Minimum count cannot be less than one.'
     minimumCountRequired: 'Minimum count is required.'
   status:
@@ -265,8 +265,8 @@ manifestTypeLabels:
   ValuesYaml: Values YAML
   HelmChartLabel: Helm Chart
   KustomizeLabel: Kustomize
-  OpenshiftTemplate: Openshift Template
-  OpenshiftParam: Openshift Param
+  OpenshiftTemplate: OpenShift Template
+  OpenshiftParam: OpenShift Param
   KustomizePatches: Kustomize Patches
 manifestToConnectorLabelMap:
   AWSLabel: '{{ $.common.aws }}'
@@ -289,7 +289,6 @@ failureStrategies:
     Abort: '{{ $.abort }}'
     Ignore: Ignore Failure
     StageRollback: Rollback Stage
-    StepGroupRollback: Rollback Step Group
     ManualIntervention: Manual Intervention
     MarkAsSuccess: Mark As Success
   errorTypeLabels:
@@ -438,7 +437,7 @@ conditionalExecution:
   belowExpression: below expression is true
 startTime: Start time
 duration: Duration
-and: AND
+and: '{{ $.common.andCaps }}'
 gitDetails: git details
 pipelineInputPanel:
   noRuntimeInputs: 'No Runtime Inputs'
@@ -578,6 +577,14 @@ inputSets:
   selectPlaceholder: Select Input Set(s)
   aboutInputSets: A Harness Input Set is a group of Pipeline settings and values. You create Input Sets and use them when you run a Pipeline. Input Sets let you use one Pipeline for many scenarios.
   overlayISHelperText: Selected inputs will be applied in the order listed. Drag to reorder the input sets.
+  invalidInputSet1: Your Input Set form contains invalid fields because they are no longer a pipeline runtime input. Would you like us to remove all invalid fields in your form?
+  invalidFields: Invalid Fields
+  removeInvalidFields: Remove Invalid Fields
+  editInYamlView: Edit in YAML view
+  invalidInputSet2: Your input set is not valid anymore because you do not have any pipeline runtime inputs. You may delete this input set, update your pipeline or go back to the Input Set list.
+  invalidInputSet: Invalid Input Set
+  deleteInputSet: Delete Input Set
+  goBackToInputSetList: Go back to Input Set list
 
 provisionerSteps: Provisioner Steps
 addStage:
@@ -810,6 +817,7 @@ gitPullRequestNumber: Git Pull Request Number
 expressionsEvaluation: Expressions Evaluation
 deploymentFrequency: 'Deployment Frequency'
 retryPipeline: Retry Failed Pipeline
+openInNewTab: Open in new tab
 stagetoRetryFrom: Select the stage that you would like to resume from
 runAllParallelstages: Run all parallel stages
 runFailedStages: Run only failed stages
@@ -887,3 +895,13 @@ ci:
 imageVersionDeprecated: Image version outdated
 unsupportedImagesWarning: 'You are using unsupported Harness CI images. Harness allows builds to use these images, but we cannot ensure that builds will not fail. Please update the versions of the following image(s) {{summary}}'
 invalidRequest: Invalid Request
+serviceDeploymentTypes:
+  kubernetes: '{{$.kubernetesText}}'
+  amazonEcs: '{{$.delegate.cardData.amazonECS.name}}'
+  amazonAmi: AWS AMI
+  awsCodeDeploy: CodeDeploy
+  winrm: WinRM
+  awsLambda: AWS Lambda
+  pcf: TAS
+  ssh: Secure Shell
+  deployDifferentLabel: Deploy different service

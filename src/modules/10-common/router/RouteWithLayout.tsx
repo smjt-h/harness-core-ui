@@ -15,27 +15,32 @@ import SidebarProvider, { SidebarContext } from '@common/navigation/SidebarProvi
 import { useLicenseStore } from 'framework/LicenseStore/LicenseStoreContext'
 import { LICENSE_STATE_VALUES } from 'framework/LicenseStore/licenseStoreUtil'
 import type { LicenseRedirectProps } from 'framework/LicenseStore/LicenseStoreContext'
+import type { PAGE_NAME } from '@common/pages/pageContext/PageName'
+import PageProvider from '@common/pages/pageContext/PageProvider'
 
 export interface RouteWithLayoutProps extends RouterRouteprops {
   layout: React.ComponentType
   sidebarProps?: SidebarContext
   licenseRedirectData?: LicenseRedirectProps
+  pageName?: PAGE_NAME
 }
 
 export function RouteWithLayout(props: React.PropsWithChildren<RouteWithLayoutProps>): React.ReactElement {
-  const { children, layout: Layout, sidebarProps, licenseRedirectData, ...rest } = props
+  const { children, layout: Layout, sidebarProps, licenseRedirectData, pageName, ...rest } = props
   const licenseStore = useLicenseStore()
 
   const childComponent = (
     <RouterRoute {...rest}>
       <ModalProvider>
-        {sidebarProps ? (
-          <SidebarProvider {...sidebarProps}>
+        <PageProvider pageName={pageName}>
+          {sidebarProps ? (
+            <SidebarProvider {...sidebarProps}>
+              <Layout>{children}</Layout>
+            </SidebarProvider>
+          ) : (
             <Layout>{children}</Layout>
-          </SidebarProvider>
-        ) : (
-          <Layout>{children}</Layout>
-        )}
+          )}
+        </PageProvider>
       </ModalProvider>
     </RouterRoute>
   )

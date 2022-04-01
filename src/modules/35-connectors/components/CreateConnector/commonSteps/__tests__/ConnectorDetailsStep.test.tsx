@@ -64,7 +64,21 @@ describe('Connector details step', () => {
     //step 2
     expect(container).toMatchSnapshot()
   })
-
+  test('with previous step data', async () => {
+    const { container, queryByDisplayValue } = render(
+      <TestWrapper>
+        <ConnectorDetailsStep
+          name="sample-name"
+          type="K8sCluster"
+          prevStepData={{ name: 'dummy name', type: 'K8sCluster', identifier: 'dummyid', spec: {} }}
+        />
+      </TestWrapper>
+    )
+    // fill step 1
+    const nameInput = queryByAttribute('name', container, 'name')
+    expect(nameInput).toBeTruthy()
+    expect(queryByDisplayValue('dummy name')).toBeTruthy()
+  })
   test('should not render git context form for account level connector', async () => {
     const { queryByTestId } = render(
       <TestWrapper

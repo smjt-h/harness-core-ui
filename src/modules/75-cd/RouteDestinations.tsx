@@ -143,8 +143,14 @@ import artifactSourceBaseFactory from './factory/ArtifactSourceFactory/ArtifactS
 import { KubernetesArtifacts } from './components/PipelineSteps/K8sServiceSpec/KubernetesArtifacts/KubernetesArtifacts'
 import { KubernetesManifests } from './components/PipelineSteps/K8sServiceSpec/KubernetesManifests/KubernetesManifests'
 import manifestSourceBaseFactory from './factory/ManifestSourceFactory/ManifestSourceBaseFactory'
-import { DeployServiceWidget } from './components/PipelineSteps/DeployServiceStep/DeployServiceStep'
-import { DeployEnvironmentWidget } from './components/PipelineSteps/DeployEnvStep/DeployEnvStep'
+import {
+  DeployServiceWidget,
+  NewEditServiceModal
+} from './components/PipelineSteps/DeployServiceStep/DeployServiceStep'
+import {
+  DeployEnvironmentWidget,
+  NewEditEnvironmentModal
+} from './components/PipelineSteps/DeployEnvStep/DeployEnvStep'
 import type { GitOpsCustomMicroFrontendProps } from './interfaces/GitOps.types'
 
 // eslint-disable-next-line import/no-unresolved
@@ -418,7 +424,12 @@ const GitOpsPage = (): React.ReactElement | null => {
     return (
       <ChildAppMounter<GitOpsCustomMicroFrontendProps>
         ChildApp={GitOpsServersList}
-        customComponents={{ DeployEnvironmentWidget, DeployServiceWidget }}
+        customComponents={{
+          DeployEnvironmentWidget,
+          DeployServiceWidget,
+          NewEditEnvironmentModal,
+          NewEditServiceModal
+        }}
       />
     )
   }

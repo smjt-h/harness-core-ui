@@ -91,8 +91,23 @@ export function LicenseStoreProvider(props: React.PropsWithChildren<unknown>): R
   // If the user is a CG user we will look at the NG_LICENSES_ENABLED feature flag to determine whether or not we should enforce licensing
   const shouldLicensesBeDisabled = __DEV__ || (!createdFromNG && !NG_LICENSES_ENABLED)
 
+  const defaultLicenses = {
+    CD: {
+      edition: Editions.FREE
+    },
+    CI: {
+      edition: Editions.FREE
+    },
+    CF: {
+      edition: Editions.FREE
+    },
+    CE: {
+      edition: Editions.FREE
+    }
+  }
+
   const [state, setState] = useState<Omit<LicenseStoreContextProps, 'updateLicenseStore' | 'strings'>>({
-    licenseInformation: {},
+    licenseInformation: shouldLicensesBeDisabled ? defaultLicenses : {},
     versionMap: {},
     CI_LICENSE_STATE: shouldLicensesBeDisabled ? LICENSE_STATE_VALUES.ACTIVE : LICENSE_STATE_VALUES.NOT_STARTED,
     FF_LICENSE_STATE: shouldLicensesBeDisabled ? LICENSE_STATE_VALUES.ACTIVE : LICENSE_STATE_VALUES.NOT_STARTED,
@@ -243,7 +258,7 @@ export function LicenseStoreProvider(props: React.PropsWithChildren<unknown>): R
 
     setState(prevState => ({
       ...prevState,
-      licenseInformation: licenses,
+      licenseInformation: shouldLicensesBeDisabled ? { ...defaultLicenses, ...licenses } : licenses,
       CI_LICENSE_STATE: shouldLicensesBeDisabled ? LICENSE_STATE_VALUES.ACTIVE : updatedCILicenseState,
       FF_LICENSE_STATE: shouldLicensesBeDisabled ? LICENSE_STATE_VALUES.ACTIVE : updatedFFLicenseState,
       CCM_LICENSE_STATE: shouldLicensesBeDisabled ? LICENSE_STATE_VALUES.ACTIVE : updatedCCMLicenseState,

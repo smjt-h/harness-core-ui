@@ -14,12 +14,17 @@ exports[`Validate MetricChartsValue conponent JSON path component is disabled wh
         <div
           class="Layout--vertical Layout--layout-spacing-small StyledProps--main"
         >
-          <label
-            class="Label--main"
-            style="font-size: 13px; font-weight: normal;"
+          <div
+            class="Text--withDocsTooltip"
+            data-tooltip-id="customhealthMetricValueJsonPath"
           >
-            cv.healthSource.connectors.NewRelic.metricFields.metricValueJsonPath.label
-          </label>
+            <p
+              class="StyledProps--font StyledProps--main"
+              style="font-size: 13px; font-weight: normal;"
+            >
+              cv.healthSource.connectors.NewRelic.metricFields.metricValueJsonPath.label
+            </p>
+          </div>
           <button
             class="bp3-button bp3-minimal Button--button StyledProps--font StyledProps--main container Button--iconOnly Button--without-shadow Button--withRightIcon"
             type="button"
@@ -61,12 +66,17 @@ exports[`Validate MetricChartsValue conponent JSON path component is disabled wh
         <div
           class="Layout--vertical Layout--layout-spacing-small StyledProps--main"
         >
-          <label
-            class="Label--main"
-            style="font-size: 13px; font-weight: normal;"
+          <div
+            class="Text--withDocsTooltip"
+            data-tooltip-id="customhealthTimestampJsonPath"
           >
-            cv.healthSource.connectors.NewRelic.metricFields.timestampJsonPath.label
-          </label>
+            <p
+              class="StyledProps--font StyledProps--main"
+              style="font-size: 13px; font-weight: normal;"
+            >
+              cv.healthSource.connectors.NewRelic.metricFields.timestampJsonPath.label
+            </p>
+          </div>
           <button
             class="bp3-button bp3-minimal Button--button StyledProps--font StyledProps--main container Button--iconOnly Button--without-shadow Button--withRightIcon"
             type="button"
@@ -188,12 +198,17 @@ exports[`Validate MetricChartsValue conponent should render MetricChartsValue 1`
         <div
           class="Layout--vertical Layout--layout-spacing-small StyledProps--main"
         >
-          <label
-            class="Label--main"
-            style="font-size: 13px; font-weight: normal;"
+          <div
+            class="Text--withDocsTooltip"
+            data-tooltip-id="customhealthMetricValueJsonPath"
           >
-            cv.healthSource.connectors.NewRelic.metricFields.metricValueJsonPath.label
-          </label>
+            <p
+              class="StyledProps--font StyledProps--main"
+              style="font-size: 13px; font-weight: normal;"
+            >
+              cv.healthSource.connectors.NewRelic.metricFields.metricValueJsonPath.label
+            </p>
+          </div>
           <button
             class="bp3-button bp3-minimal Button--button StyledProps--font StyledProps--main container Button--iconOnly Button--without-shadow Button--withRightIcon"
             type="button"
@@ -235,12 +250,17 @@ exports[`Validate MetricChartsValue conponent should render MetricChartsValue 1`
         <div
           class="Layout--vertical Layout--layout-spacing-small StyledProps--main"
         >
-          <label
-            class="Label--main"
-            style="font-size: 13px; font-weight: normal;"
+          <div
+            class="Text--withDocsTooltip"
+            data-tooltip-id="customhealthTimestampJsonPath"
           >
-            cv.healthSource.connectors.NewRelic.metricFields.timestampJsonPath.label
-          </label>
+            <p
+              class="StyledProps--font StyledProps--main"
+              style="font-size: 13px; font-weight: normal;"
+            >
+              cv.healthSource.connectors.NewRelic.metricFields.timestampJsonPath.label
+            </p>
+          </div>
           <button
             class="bp3-button bp3-minimal Button--button StyledProps--font StyledProps--main container Button--iconOnly Button--without-shadow Button--withRightIcon"
             type="button"

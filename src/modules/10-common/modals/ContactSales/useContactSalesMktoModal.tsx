@@ -5,12 +5,12 @@
  * https://polyformproject.org/wp-content/uploads/2020/06/PolyForm-Shield-1.0.0.txt.
  */
 
-import { useState } from 'react'
+import { useState, useEffect } from 'react'
 import cx from 'classnames'
+import { useToaster } from '@wings-software/uicore'
 import { useStrings } from 'framework/strings'
-import { useQueryParams } from '@common/hooks'
 import type { StringsMap } from 'stringTypes'
-import type { SubscriptionQueryParams } from '@common/interfaces/RouteInterfaces'
+import { useAppStore } from 'framework/AppStore/AppStoreContext'
 import css from './useContactSalesMktoModal.module.scss'
 
 interface UseContactSalesModalProps {
@@ -81,7 +81,19 @@ const overrideCss = (): void => {
 export const useContactSalesMktoModal = ({ onSubmit }: UseContactSalesModalProps): UseContactSalesModalPayload => {
   const { getString } = useStrings()
   const [loading, setLoading] = useState<boolean>(false)
-  const { moduleCard, tab } = useQueryParams<SubscriptionQueryParams>()
+  const { currentUserInfo } = useAppStore()
+  const { showSuccess } = useToaster()
+
+  useEffect(() => {
+    if (!window.MktoForms2) {
+      const script = document.createElement('script')
+
+      script.src = '//go.harness.io/js/forms2/js/forms2.min.js'
+      script.async = true
+
+      document.body.appendChild(script)
+    }
+  }, [])
 
   function openMarketoContactSales(): void {
     setLoading(true)
@@ -89,11 +101,7 @@ export const useContactSalesMktoModal = ({ onSubmit }: UseContactSalesModalProps
       window?.MktoForms2.lightbox(form).show()
       form.onSuccess(function () {
         onSubmit?.(form.values)
-        if (moduleCard || tab) {
-          window.location.href = `${window.location.href}&&contactSales=success`
-        } else {
-          window.location.href = `${window.location.href}?contactSales=success`
-        }
+        showSuccess(getString('common.banners.trial.contactSalesForm.success'))
         return false
       })
     })
@@ -103,6 +111,8 @@ export const useContactSalesMktoModal = ({ onSubmit }: UseContactSalesModalProps
       setPlaceHolders()
       removeUnneededElements()
       overrideCss()
+      // set default email
+      form.setValues({ Email: currentUserInfo.email })
       form.getFormElem()?.[0]?.setAttribute('data-mkto-ready', 'true')
       setLoading(false)
     })

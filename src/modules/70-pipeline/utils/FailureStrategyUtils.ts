@@ -15,7 +15,6 @@ export enum Strategy {
   Ignore = 'Ignore',
   Abort = 'Abort',
   StageRollback = 'StageRollback',
-  StepGroupRollback = 'StepGroupRollback',
   Retry = 'Retry',
   ManualIntervention = 'ManualIntervention',
   MarkAsSuccess = 'MarkAsSuccess'
@@ -38,7 +37,6 @@ export const strategyIconMap: Record<Strategy, IconName> = {
   [Strategy.Abort]: 'ban-circle',
   [Strategy.MarkAsSuccess]: 'tick',
   [Strategy.StageRollback]: 'repeat',
-  [Strategy.StepGroupRollback]: 'repeat',
   [Strategy.Retry]: 'refresh',
   [Strategy.ManualIntervention]: 'hand-up'
 }
@@ -48,7 +46,6 @@ export const stringsMap: Record<Strategy, StringKeys> = {
   [Strategy.Abort]: 'pipeline.failureStrategies.strategiesLabel.Abort',
   [Strategy.MarkAsSuccess]: 'pipeline.failureStrategies.strategiesLabel.MarkAsSuccess',
   [Strategy.StageRollback]: 'pipeline.failureStrategies.strategiesLabel.StageRollback',
-  [Strategy.StepGroupRollback]: 'pipeline.failureStrategies.strategiesLabel.StepGroupRollback',
   [Strategy.Retry]: 'pipeline.failureStrategies.strategiesLabel.Retry',
   [Strategy.ManualIntervention]: 'pipeline.failureStrategies.strategiesLabel.ManualIntervention'
 }

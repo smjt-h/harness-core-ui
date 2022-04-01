@@ -45,7 +45,6 @@ export function CustomHealthSource(props: CustomHealthSourceProps): JSX.Element 
     createdMetrics,
     mappedMetrics,
     selectedMetric,
-    selectedMetricIndex,
     groupedCreatedMetrics,
     groupedCreatedMetricsList,
     setMappedMetrics,
@@ -59,7 +58,7 @@ export function CustomHealthSource(props: CustomHealthSourceProps): JSX.Element 
 
   return (
     <Formik<MapCustomHealthToService>
-      formName="mapPrometheus"
+      formName="mapCustomhealth"
       initialValues={mappedMetrics.get(selectedMetric || '') as MapCustomHealthToService}
       isInitialValid={(args: any) =>
         Object.keys(
@@ -114,8 +113,8 @@ export function CustomHealthSource(props: CustomHealthSourceProps): JSX.Element 
               onPrevious={onPrevious}
               onNext={onSubmitCustomHealthSource({
                 formikProps,
-                createdMetrics,
-                selectedMetricIndex,
+                createdMetrics: groupedCreatedMetricsList,
+                selectedMetricIndex: groupedCreatedMetricsList.indexOf(selectedMetric),
                 mappedMetrics,
                 selectedMetric,
                 onSubmit,

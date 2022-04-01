@@ -224,7 +224,7 @@ export interface ReportSummaryQueryParams {
   /**
    * Stage ID
    */
-  stageId: string
+  stageId?: string
 }
 
 export type ReportSummaryProps = Omit<GetProps<TestReportSummary, Error, ReportSummaryQueryParams, void>, 'path'>
@@ -366,11 +366,11 @@ export interface TestSuiteSummaryQueryParams {
   /**
    * Step ID
    */
-  stepId: string
+  stepId?: string
   /**
    * Stage ID
    */
-  stageId: string
+  stageId?: string
   /**
    * Report type
    */
@@ -493,11 +493,11 @@ export interface TestOverviewQueryParams {
   /**
    * Step ID
    */
-  stepId: string
+  stepId?: string
   /**
    * Stage ID
    */
-  stageId: string
+  stageId?: string
 }
 
 export type TestOverviewProps = Omit<GetProps<SelectionOverview, Error, TestOverviewQueryParams, void>, 'path'>
@@ -576,11 +576,11 @@ export interface VgSearchQueryParams {
   /**
    * Step ID
    */
-  stepId: string
+  stepId?: string
   /**
    * Stage ID
    */
-  stageId: string
+  stageId?: string
   /**
    * Limit on number of nodes to show
    */

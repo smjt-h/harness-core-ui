@@ -5,7 +5,7 @@
  * https://polyformproject.org/wp-content/uploads/2020/06/PolyForm-Shield-1.0.0.txt.
  */
 
-import React from 'react'
+import React, { useEffect } from 'react'
 import { Container, Formik, FormikForm, Button, ButtonVariation } from '@wings-software/uicore'
 import * as Yup from 'yup'
 import { omit } from 'lodash-es'
@@ -21,6 +21,8 @@ import { useAppStore } from 'framework/AppStore/AppStoreContext'
 import { GitSyncStoreProvider } from 'framework/GitRepoStore/GitSyncStoreContext'
 import GitContextForm, { IGitContextFormProps } from '@common/components/GitContextForm/GitContextForm'
 import type { EntityGitDetails } from 'services/pipeline-ng'
+import { useTelemetry } from '@common/hooks/useTelemetry'
+import { Category, PipelineActions } from '@common/constants/TrackingConstants'
 import { DefaultNewPipelineId } from '../PipelineContext/PipelineActions'
 import css from './PipelineCreate.module.scss'
 
@@ -46,12 +48,22 @@ export default function CreatePipelines({
   const { getString } = useStrings()
   const { pipelineIdentifier } = useParams<{ pipelineIdentifier: string }>()
   const { isGitSyncEnabled } = useAppStore()
+  const { trackEvent } = useTelemetry()
 
   const identifier = initialValues?.identifier
   if (identifier === DefaultNewPipelineId) {
     initialValues.identifier = ''
   }
   const isEdit = (initialValues?.identifier?.length || '') > 0
+
+  useEffect(() => {
+    !isEdit &&
+      trackEvent(PipelineActions.LoadCreateNewPipeline, {
+        category: Category.PIPELINE
+      })
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [isEdit])
+
   return (
     <Formik<PipelineInfoConfigWithGitDetails>
       initialValues={initialValues}
@@ -98,7 +110,16 @@ export default function CreatePipelines({
               text={isEdit ? getString('save') : getString('start')}
             />
             &nbsp; &nbsp;
-            <Button variation={ButtonVariation.TERTIARY} text={getString('cancel')} onClick={closeModal} />
+            <Button
+              variation={ButtonVariation.TERTIARY}
+              text={getString('cancel')}
+              onClick={() => {
+                trackEvent(PipelineActions.CancelCreateNewPipeline, {
+                  category: Category.PIPELINE
+                })
+                closeModal?.()
+              }}
+            />
           </Container>
         </FormikForm>
       )}

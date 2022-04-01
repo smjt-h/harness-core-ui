@@ -166,7 +166,7 @@ function FormContent({
           if (savedValueForThisField) {
             formikSelectedFields.push({ ...field, value: savedValueForThisField })
           } else if (field.required) {
-            formikSelectedFields.push({ ...field, value: '' })
+            formikSelectedFields.push({ ...field, value: !isEmpty(field.allowedValues) ? [] : '' })
           }
         }
       })
@@ -268,7 +268,10 @@ function FormContent({
           <FormInput.InputWithIdentifier
             inputLabel={getString('name')}
             isIdentifierEditable={isNewStep}
-            inputGroupProps={{ disabled: isApprovalStepFieldDisabled(readonly) }}
+            inputGroupProps={{
+              placeholder: getString('pipeline.stepNamePlaceholder'),
+              disabled: isApprovalStepFieldDisabled(readonly)
+            }}
           />
         </div>
       )}

@@ -14,10 +14,10 @@ import {
   Layout,
   Text,
   getMultiTypeFromValue,
-  FontVariation,
   Container
 } from '@wings-software/uicore'
 import { connect } from 'formik'
+import { FontVariation } from '@harness/design-system'
 import { get, set, isEmpty, pickBy, identity, isNil } from 'lodash-es'
 import cx from 'classnames'
 import { useParams } from 'react-router-dom'
@@ -141,7 +141,7 @@ function StepFormInternal({
       />
       {getMultiTypeFromValue((template?.step as StepElementConfig)?.spec?.delegateSelectors) ===
         MultiTypeInputType.RUNTIME && (
-        <div className={cx(stepCss.formGroup, stepCss.sm)}>
+        <div className={cx(stepCss.formGroup, stepCss.md)}>
           <MultiTypeDelegateSelector
             expressions={expressions}
             inputProps={{ projectIdentifier, orgIdentifier }}
@@ -153,7 +153,7 @@ function StepFormInternal({
         </div>
       )}
       {getMultiTypeFromValue((template?.step as StepElementConfig)?.when?.condition) === MultiTypeInputType.RUNTIME && (
-        <Container padding={{ left: 'xlarge' }} className={cx(stepCss.formGroup, stepCss.sm)}>
+        <Container className={cx(stepCss.formGroup, stepCss.md)}>
           <ConditionalExecutionForm
             readonly={readonly}
             path={`${path}.when.condition`}

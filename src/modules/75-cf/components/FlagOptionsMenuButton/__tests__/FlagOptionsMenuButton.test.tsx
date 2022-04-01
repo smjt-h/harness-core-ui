@@ -67,6 +67,20 @@ describe('FlagOptionsButton', () => {
     expect(screen.getByRole('button', { name: 'cancel' })).toBeInTheDocument()
   })
 
+  test('it should close confirm modal when cancel option clicked', async () => {
+    renderComponent()
+
+    userEvent.click(document.querySelector('[data-icon="Options"]') as HTMLButtonElement)
+    userEvent.click(document.querySelector('[data-icon="trash"]') as HTMLButtonElement)
+
+    expect(screen.getByText('cf.featureFlags.deleteFlag')).toBeInTheDocument()
+    expect(screen.getByText('cf.featureFlags.deleteFlagMessage')).toBeInTheDocument()
+
+    userEvent.click(screen.getByRole('button', { name: 'cancel' }))
+
+    expect(screen.queryByText('cf.featureFlags.deleteFlag')).not.toBeInTheDocument()
+  })
+
   test('it should display plan enforcement popup when limits reached', async () => {
     jest
       .spyOn(useFeaturesMock, 'useGetFirstDisabledFeature')
@@ -83,8 +97,9 @@ describe('FlagOptionsButton', () => {
 
   test('it should call callback when confirm delete button clicked', async () => {
     const deleteFlagMock = jest.fn()
+    const refetchFlagMock = jest.fn()
 
-    renderComponent({ deleteFlag: deleteFlagMock })
+    renderComponent({ deleteFlag: deleteFlagMock, refetchFlags: refetchFlagMock })
 
     userEvent.click(document.querySelector('[data-icon="Options"]') as HTMLButtonElement)
     userEvent.click(document.querySelector('[data-icon="trash"]') as HTMLButtonElement)
@@ -100,6 +115,34 @@ describe('FlagOptionsButton', () => {
         orgIdentifier: 'test_org',
         projectIdentifier: 'test_project'
       }
+    })
+
+    //modal closes and success toaster appears
+    await waitFor(() => {
+      expect(screen.queryByText('cf.featureFlags.deleteFlag')).not.toBeInTheDocument()
+      expect(screen.queryByText('cf.messages.flagDeleted')).toBeInTheDocument()
+      expect(refetchFlagMock).toHaveBeenCalled()
+    })
+  })
+
+  test('it should show error toaster when callback fails', async () => {
+    const deleteFlagMock = jest.fn().mockRejectedValueOnce({ message: 'Failed to Fetch' })
+    const refetchFlagMock = jest.fn()
+
+    renderComponent({ deleteFlag: deleteFlagMock, refetchFlags: refetchFlagMock })
+
+    userEvent.click(document.querySelector('[data-icon="Options"]') as HTMLButtonElement)
+    userEvent.click(document.querySelector('[data-icon="trash"]') as HTMLButtonElement)
+
+    expect(screen.getByRole('button', { name: 'delete' })).toBeInTheDocument()
+
+    userEvent.click(screen.getByRole('button', { name: 'delete' }))
+
+    //modal closes and error toaster appears
+    await waitFor(() => {
+      expect(screen.queryByText('cf.featureFlags.deleteFlag')).not.toBeInTheDocument()
+      expect(screen.queryByText('Failed to Fetch')).toBeInTheDocument()
+      expect(refetchFlagMock).not.toBeCalled()
     })
   })
 

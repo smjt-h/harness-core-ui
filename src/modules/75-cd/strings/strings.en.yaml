@@ -56,6 +56,9 @@ gitFetchTypeRequired: Git Fetch Type Required
 contentRequired: Content is required
 specifyTfVarStore: Specify Terraform Var File Store
 addTFVarFileLabel: 'Add File Path'
+enterWorkDirectory: Enter Working Directory
+enterTragets: Enter Targets
+specifyTargetHost: Specify Target Host
 configurationFile: 'Configuration File Repository'
 terraformVarFiles: 'Terraform Var Files'
 secretManagerRequired: 'Secret Manager is required.'

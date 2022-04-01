@@ -6,7 +6,7 @@
  */
 
 import React from 'react'
-import { defaultTo as _defaultTo, isEmpty as _isEmpty } from 'lodash-es'
+import { defaultTo as _defaultTo } from 'lodash-es'
 import moment from 'moment'
 import { getColorValue } from '@common/components/HeatMap/ColorUtils'
 import {
@@ -42,20 +42,33 @@ const getGcpInstanceDetailsLink = (zone: string, name: string) => {
   return `https://console.cloud.google.com/compute/instancesDetail/zones/${zone}/instances/${name}`
 }
 
-export function getInstancesLink(service: Service, resources: AllResourcesOfAccountResponse): string {
-  if (!_isEmpty(resources.response) && resources.response?.[0].provider_type === PROVIDER_TYPES.AZURE) {
+const getEcsServicesLink = (region: string, cluster: string, serviceName: string) => {
+  return `https://console.aws.amazon.com/ecs/home?region=${region}#/clusters/${cluster}/services/${serviceName}/details`
+}
+
+export function getInstancesLink(service: Service, resources?: AllResourcesOfAccountResponse): string {
+  const resource = resources?.response?.[0]
+  if (resource?.provider_type === PROVIDER_TYPES.AZURE) {
     return getAzureInstancesLink()
-  } else if (resources.response?.[0].provider_type === PROVIDER_TYPES.GCP) {
-    const zone = _defaultTo(resources.response?.[0]?.availability_zone, '')
-    const name = _defaultTo(resources.response?.[0]?.name, '')
-    return resources.response.length > 1 ? getGcpInstancesLink() : getGcpInstanceDetailsLink(zone, name)
+  } else if (resource?.provider_type === PROVIDER_TYPES.GCP) {
+    const zone = _defaultTo(resource?.availability_zone, '')
+    const name = _defaultTo(resource?.name, '')
+    return resources?.response?.length && resources?.response?.length > 1
+      ? getGcpInstancesLink()
+      : getGcpInstanceDetailsLink(zone, name)
   } else {
-    const region = resources.response?.length ? resources.response[0].region : ''
+    const region = resource?.region || ''
     if (service.kind === GatewayKindType.DATABASE) {
-      return getAwsConsoleDatabaseLink(_defaultTo(region, ''), _defaultTo(resources.response?.[0].id, ''))
+      return getAwsConsoleDatabaseLink(_defaultTo(region, ''), _defaultTo(resource?.name, ''))
+    } else if (service.kind === GatewayKindType.CONTAINERS) {
+      return getEcsServicesLink(
+        _defaultTo(service.routing?.container_svc?.region, ''),
+        _defaultTo(service.routing?.container_svc?.cluster, ''),
+        _defaultTo(service.routing?.container_svc?.service, '')
+      )
     } else {
       const instanceIDs = _defaultTo(
-        resources.response?.map(x => x.id),
+        resources?.response?.map(x => x.id),
         []
       )
       return getAwsConsoleInstancesLink(_defaultTo(region, ''), instanceIDs?.join(','))

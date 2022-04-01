@@ -101,6 +101,8 @@ jest.mock('services/pipeline-ng', () => ({
   useCreateVariables: () => jest.fn(() => ({})),
   useGetMergeInputSetFromPipelineTemplateWithListInput: jest.fn(() => MergeInputSetResponse),
   useGetPipeline: jest.fn(() => PipelineResponse),
+  useSanitiseInputSet: jest.fn(() => PipelineResponse),
+  useDeleteInputSetForPipeline: jest.fn(() => ({ mutate: jest.fn() })),
   useGetTemplateFromPipeline: jest.fn(() => TemplateResponse),
   useGetStagesExecutionList: jest.fn(() => ({})),
   useGetOverlayInputSetForPipeline: jest.fn(() => GetOverlayInputSetEdit),

@@ -8,7 +8,8 @@
 import React, { useMemo, useContext, useEffect, useState } from 'react'
 import type { CellProps } from 'react-table'
 import { Classes } from '@blueprintjs/core'
-import { Color, Container, NoDataCard, PageError, Text, Utils } from '@wings-software/uicore'
+import { Container, NoDataCard, PageError, Text, Utils } from '@wings-software/uicore'
+import { Color } from '@harness/design-system'
 import { useParams } from 'react-router-dom'
 import { useStrings } from 'framework/strings'
 import { SetupSourceTabsContext } from '@cv/components/CVSetupSourcesView/SetupSourceTabs/SetupSourceTabs'
@@ -199,10 +200,17 @@ export default function MetricsDashboardList<T>(props: MetricsDashboardListProps
                   {
                     Header: (
                       <Container className={css.columnContainer}>
-                        <Text intent="primary" onClick={() => setIsModalOpen(true)} className={css.manualQueryLink}>
+                        <Text
+                          intent="primary"
+                          onClick={() => setIsModalOpen(true)}
+                          className={css.manualQueryLink}
+                          tooltipProps={{ dataTooltipId: 'addManualInputQuery' }}
+                        >
                           {getString('cv.monitoringSources.gco.addManualInputQuery')}
                         </Text>
-                        <Text color={Color.BLACK}>{getString(props.tableTitle)}</Text>
+                        <Text color={Color.BLACK} tooltipProps={{ dataTooltipId: 'dashboardTableTitle' }}>
+                          {getString(props.tableTitle)}
+                        </Text>
                       </Container>
                     ),
                     accessor: 'dashboard',

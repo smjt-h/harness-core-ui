@@ -395,7 +395,7 @@ exports[`Test COGatewayList clicking on a row should open info drawer 1`] = `
                 <p
                   class="StyledProps--font StyledProps--main StyledProps--font-variation-table-headers"
                 >
-                  ce.co.rulesTableHeaders.savings
+                  CE.CO.RULESTABLEHEADERS.SAVINGS
                 </p>
               </div>
               <div
@@ -473,7 +473,7 @@ exports[`Test COGatewayList clicking on a row should open info drawer 1`] = `
                   style="width: 12%;"
                 >
                   <div
-                    class="Layout--horizontal Layout--layout-spacing-medium StyledProps--main"
+                    class="Layout--horizontal Layout--layout-spacing-small StyledProps--main"
                   >
                     <span
                       class="bp3-icon StyledProps--main"
@@ -696,15 +696,12 @@ exports[`Test COGatewayList clicking on a row should open info drawer 1`] = `
                   style="width: 12%;"
                 >
                   <div
-                    class="Layout--horizontal Layout--layout-spacing-medium StyledProps--main"
+                    class="Layout--horizontal Layout--layout-spacing-small StyledProps--main"
                   >
                     <img
                       alt=""
                       aria-hidden="true"
-                      class="fulFilmentIcon"
-                      height="19px"
                       src="test-file-stub"
-                      width="20px"
                     />
                     <p
                       class="StyledProps--font Text--lineclamp StyledProps--main StyledProps--color StyledProps--color-grey500"
@@ -732,7 +729,7 @@ exports[`Test COGatewayList clicking on a row should open info drawer 1`] = `
                           class="StyledProps--font StyledProps--main"
                           style="align-self: center; margin-right: 5px;"
                         >
-                          No. of instances:
+                          ce.co.noOfInstances
                         </p>
                         <span
                           class="bp3-icon StyledProps--main StyledProps--color StyledProps--color-blue500"
@@ -929,21 +926,18 @@ exports[`Test COGatewayList clicking on a row should open info drawer 1`] = `
                   style="width: 12%;"
                 >
                   <div
-                    class="Layout--horizontal Layout--layout-spacing-medium StyledProps--main"
+                    class="Layout--horizontal Layout--layout-spacing-small StyledProps--main"
                   >
                     <img
                       alt=""
                       aria-hidden="true"
-                      class="fulFilmentIcon"
-                      height="19px"
                       src="test-file-stub"
-                      width="20px"
                     />
                     <p
-                      class="StyledProps--font Text--lineclamp StyledProps--main StyledProps--color"
+                      class="StyledProps--font Text--lineclamp StyledProps--main StyledProps--color StyledProps--color-grey500"
                       style="--text-line-clamp: 3;"
                     >
-                      ondemand
+                      spot
                     </p>
                   </div>
                 </div>
@@ -965,7 +959,7 @@ exports[`Test COGatewayList clicking on a row should open info drawer 1`] = `
                           class="StyledProps--font StyledProps--main"
                           style="align-self: center; color: rgb(107, 109, 133); margin-right: 5px;"
                         >
-                          No. of instances:
+                          ce.co.noOfInstances
                         </p>
                         <span
                           class="bp3-icon StyledProps--main StyledProps--color StyledProps--color-blue500"
@@ -1099,6 +1093,535 @@ exports[`Test COGatewayList clicking on a row should open info drawer 1`] = `
                   </div>
                 </div>
               </div>
+              <div
+                class="TableV2--row TableV2--card TableV2--clickable"
+                role="row"
+              >
+                <div
+                  class="TableV2--cell"
+                  role="cell"
+                  style="width: 18%;"
+                >
+                  <p
+                    class="StyledProps--font Text--lineclamp StyledProps--main StyledProps--color StyledProps--color-black"
+                    style="font-weight: 600; --text-line-clamp: 3;"
+                  >
+                    ecs-test-rule
+                  </p>
+                </div>
+                <div
+                  class="TableV2--cell"
+                  role="cell"
+                  style="width: 8%;"
+                >
+                  <p
+                    class="StyledProps--font Text--lineclamp StyledProps--main StyledProps--color StyledProps--color-grey500"
+                    style="--text-line-clamp: 3;"
+                  >
+                    15
+                     mins
+                  </p>
+                </div>
+                <div
+                  class="TableV2--cell"
+                  role="cell"
+                  style="width: 12%;"
+                >
+                  <div
+                    class="Layout--horizontal Layout--layout-spacing-small StyledProps--main"
+                  >
+                    <span
+                      class="bp3-icon StyledProps--main"
+                      data-icon="service-ecs"
+                    >
+                      <svg
+                        height="21"
+                        viewBox="0 0 14 14"
+                        width="21"
+                        xmlns="http://www.w3.org/2000/svg"
+                      >
+                        <path
+                          d="M.8 13l-.8-.4V1.3L.8.9l3 5.8zM3.1 11l1.1 1.6L9 10.3l-1.1-.2zM2.2 2.9l1.2-1.7L9 3.7l-1 .2z"
+                          fill="#9d5025"
+                        />
+                        <path
+                          d="M2.6 1.3L.9.9V13l1.7-.5z"
+                          fill="#f58536"
+                        />
+                        <path
+                          d="M1.7 13.5l.9.5 1.7-7.8L2.6 0l-.9.5zM7.9 4L9 3.8l1.1 3.1L9 10.4l-1.1-.2z"
+                          fill="#9d5025"
+                        />
+                        <g
+                          fill="#f58536"
+                        >
+                          <path
+                            d="M4.3.5L2.6 0v14l1.7-.5z"
+                          />
+                          <path
+                            d="M10.2 3.9L2.6 2.4V0l7.6 2.3zM10.4 10.1l-7.8 1.6V14l7.8-2.4z"
+                          />
+                          <path
+                            d="M9 12l1.2-.4V2.4L9 2z"
+                          />
+                        </g>
+                        <path
+                          d="M14 8.2L10.7 8l-1.1.1 3.3 3z"
+                          fill="#6b3a19"
+                        />
+                        <path
+                          d="M9.4 8.2l3.4.2v2.7l-3.4-.6z"
+                          fill="#9d5025"
+                        />
+                        <path
+                          d="M6.3 8.3L9.7 12l1.7-3.6-3.5-.2z"
+                          fill="#6b3a19"
+                        />
+                        <path
+                          d="M6.3 8.4l3.4.3v3.4l-3.4-.9zM9.6 5.8l4.4-.1-1.1-2.8-3.3.6z"
+                          fill="#9d5025"
+                        />
+                        <path
+                          d="M6.3 5.6l5.1-.1-1.7-3.6-3.4.9z"
+                          fill="#9d5025"
+                        />
+                        <path
+                          d="M6.3 5.7l3.4-.4 1.7.2-3.5.3zM14 5.8l-3.3.2-1.1-.1 3.3-.3z"
+                          fill="#fbbf93"
+                        />
+                        <g
+                          fill="#f58536"
+                        >
+                          <path
+                            d="M12.8 8.3l1.2-.1v2.5l-1.2.4zM11.4 8.5l-1.7.2v3.4l1.7-.5zM12.8 5.7l1.2.1V3.3l-1.2-.4zM11.4 5.5l-1.7-.2V1.9l1.7.5z"
+                          />
+                        </g>
+                      </svg>
+                    </span>
+                    <p
+                      class="StyledProps--font Text--lineclamp StyledProps--main StyledProps--color StyledProps--color-grey500"
+                      style="--text-line-clamp: 3;"
+                    >
+                      ce.common.containerService
+                    </p>
+                  </div>
+                </div>
+                <div
+                  class="TableV2--cell"
+                  role="cell"
+                  style="width: 22%;"
+                >
+                  <div
+                    class="StyledProps--font StyledProps--main resourceCell"
+                  >
+                    <div
+                      class="Layout--vertical Layout--layout-spacing-medium StyledProps--main"
+                    >
+                      <div
+                        class="Layout--horizontal StyledProps--main"
+                      >
+                        <p
+                          class="StyledProps--font StyledProps--main"
+                          style="align-self: center; margin-right: 5px;"
+                        >
+                          ce.co.noOfTasks 2
+                        </p>
+                        <div
+                          class="Layout--horizontal StyledProps--main instanceStatusIndicator"
+                        >
+                          <span
+                            class="bp3-icon bp3-icon-play StyledProps--main"
+                            icon="play"
+                          >
+                            <svg
+                              data-icon="play"
+                              height="16"
+                              viewBox="0 0 16 16"
+                              width="16"
+                            >
+                              <desc>
+                                play
+                              </desc>
+                              <path
+                                d="M12 8c0-.35-.19-.64-.46-.82l.01-.02-6-4-.01.02A.969.969 0 005 3c-.55 0-1 .45-1 1v8c0 .55.45 1 1 1 .21 0 .39-.08.54-.18l.01.02 6-4-.01-.02c.27-.18.46-.47.46-.82z"
+                                fill-rule="evenodd"
+                              />
+                            </svg>
+                          </span>
+                          <span
+                            style="color: rgb(66, 171, 69);"
+                          >
+                            Running
+                          </span>
+                        </div>
+                      </div>
+                      <div
+                        class="Layout--horizontal Layout--layout-spacing-small StyledProps--main"
+                      >
+                        <p
+                          class="StyledProps--font StyledProps--main link"
+                        >
+                          grateful-liger-c40gjtnsbqnjmr91f8n0.gateway.lightwing.io
+                        </p>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+                <div
+                  class="TableV2--cell"
+                  role="cell"
+                  style="width: 15%;"
+                >
+                  <div
+                    class="Layout--horizontal Layout--layout-spacing-large StyledProps--main"
+                  >
+                    <p
+                      class="StyledProps--font StyledProps--main savingsAmount"
+                    >
+                      $NaN
+                    </p>
+                  </div>
+                </div>
+                <div
+                  class="TableV2--cell"
+                  role="cell"
+                  style="width: 10%;"
+                >
+                  -
+                </div>
+                <div
+                  class="TableV2--cell"
+                  role="cell"
+                  style="width: 10%;"
+                >
+                  <span
+                    class="StyledProps--font StyledProps--main StyledProps--inline"
+                    style="display: inline-flex; align-items: center;"
+                  >
+                    <span
+                      class="bp3-icon bp3-icon-full-circle StyledProps--main Text--icon StyledProps--padding-right-xsmall StyledProps--color StyledProps--color-green500"
+                      icon="full-circle"
+                    >
+                      <svg
+                        data-icon="full-circle"
+                        height="6"
+                        viewBox="0 0 16 16"
+                        width="6"
+                      >
+                        <desc>
+                          full-circle
+                        </desc>
+                        <path
+                          d="M8 0a8 8 0 100 16A8 8 0 108 0z"
+                          fill-rule="evenodd"
+                        />
+                      </svg>
+                    </span>
+                    created
+                  </span>
+                </div>
+                <div
+                  class="TableV2--cell"
+                  role="cell"
+                  style="width: 5%;"
+                >
+                  <div
+                    class="Layout--horizontal StyledProps--main layout"
+                  >
+                    <span
+                      class="bp3-popover-wrapper bp3-dark"
+                    >
+                      <span
+                        class="bp3-popover-target"
+                      >
+                        <button
+                          class="bp3-button bp3-minimal Button--button StyledProps--font StyledProps--main Button--with-current-color Button--iconOnly Button--without-shadow Button--withLeftIcon"
+                          data-testid="menu-282"
+                          type="button"
+                        >
+                          <span
+                            class="bp3-icon StyledProps--main"
+                            data-icon="Options"
+                          >
+                            <svg
+                              fill="none"
+                              height="16"
+                              viewBox="0 0 4 16"
+                              width="16"
+                              xmlns="http://www.w3.org/2000/svg"
+                            >
+                              <path
+                                clip-rule="evenodd"
+                                d="M2 12.5a1 1 0 100 2 1 1 0 000-2zm-2 1a2 2 0 114 0 2 2 0 01-4 0zm2-12a1 1 0 100 2 1 1 0 000-2zm-2 1a2 2 0 114 0 2 2 0 01-4 0zM2 7a1 1 0 100 2 1 1 0 000-2zM0 8a2 2 0 114 0 2 2 0 01-4 0z"
+                                fill="currentColor"
+                                fill-rule="evenodd"
+                              />
+                            </svg>
+                          </span>
+                        </button>
+                      </span>
+                    </span>
+                  </div>
+                </div>
+              </div>
+              <div
+                class="TableV2--row TableV2--card TableV2--clickable"
+                role="row"
+              >
+                <div
+                  class="TableV2--cell"
+                  role="cell"
+                  style="width: 18%;"
+                >
+                  <p
+                    class="StyledProps--font Text--lineclamp StyledProps--main StyledProps--color StyledProps--color-black"
+                    style="font-weight: 600; --text-line-clamp: 3;"
+                  >
+                    rds-test-rule
+                  </p>
+                </div>
+                <div
+                  class="TableV2--cell"
+                  role="cell"
+                  style="width: 8%;"
+                >
+                  <p
+                    class="StyledProps--font Text--lineclamp StyledProps--main StyledProps--color StyledProps--color-grey500"
+                    style="--text-line-clamp: 3;"
+                  >
+                    15
+                     mins
+                  </p>
+                </div>
+                <div
+                  class="TableV2--cell"
+                  role="cell"
+                  style="width: 12%;"
+                >
+                  <div
+                    class="Layout--horizontal Layout--layout-spacing-small StyledProps--main"
+                  >
+                    <span
+                      class="bp3-icon StyledProps--main"
+                      data-icon="aws-rds"
+                    >
+                      <svg
+                        height="21"
+                        preserveAspectRatio="xMidYMid"
+                        viewBox="0 0 256 289"
+                        width="21"
+                        xmlns="http://www.w3.org/2000/svg"
+                      >
+                        <path
+                          d="M0 224.742l29.972 35.125 2.695-3.201V32l-2.695-3.395L0 63.717v161.025"
+                          fill="#1A476F"
+                        />
+                        <path
+                          d="M29.976 259.867l57.27 28.633 2.382-3.833L89.667 3l-2.381-3-57.31 28.541v231.326"
+                          fill="#1F5B98"
+                        />
+                        <path
+                          d="M256 63.717l-29.98-35.112-3.353 1.062.666 227.333 2.687 2.867L256 224.746V63.717"
+                          fill="#2D72B8"
+                        />
+                        <path
+                          d="M168.75 288.5l57.27-28.633V28.541L168.71 0 166 3.667l.039 280.666 2.711 4.167"
+                          fill="#5294CF"
+                        />
+                        <path
+                          d="M87.286 0h81.424v288.504H87.286V0z"
+                          fill="#2D72B8"
+                        />
+                      </svg>
+                    </span>
+                    <p
+                      class="StyledProps--font Text--lineclamp StyledProps--main StyledProps--color StyledProps--color-grey500"
+                      style="--text-line-clamp: 3;"
+                    >
+                      ce.common.database
+                    </p>
+                  </div>
+                </div>
+                <div
+                  class="TableV2--cell"
+                  role="cell"
+                  style="width: 22%;"
+                >
+                  <div
+                    class="StyledProps--font StyledProps--main resourceCell"
+                  >
+                    <div
+                      class="Layout--vertical Layout--layout-spacing-medium StyledProps--main"
+                    >
+                      <div
+                        class="Layout--horizontal StyledProps--main"
+                      >
+                        <p
+                          class="StyledProps--font StyledProps--main"
+                          style="align-self: center; margin-right: 5px;"
+                        >
+                          ce.co.noOfInstances
+                        </p>
+                        <span
+                          class="bp3-icon StyledProps--main StyledProps--color StyledProps--color-blue500"
+                          data-icon="spinner"
+                          style="margin-right: 5px;"
+                        >
+                          <svg
+                            fill="none"
+                            height="12"
+                            viewBox="0 0 36 36"
+                            width="12"
+                            xmlns="http://www.w3.org/2000/svg"
+                          >
+                            <path
+                              d="M18 2.084a15.915 15.915 0 010 31.831 15.915 15.915 0 010-31.83"
+                              stroke="currentColor"
+                              stroke-dasharray="75,100"
+                              stroke-linecap="round"
+                              stroke-width="2.8"
+                              style="animation: 1s linear infinite spinner-rotation; transform-origin: 50% 50%; transform-box: fill-box;"
+                            />
+                          </svg>
+                        </span>
+                        <div
+                          class="Layout--horizontal StyledProps--main instanceStatusIndicator"
+                        >
+                          <span
+                            class="bp3-icon bp3-icon-stop StyledProps--main"
+                            icon="stop"
+                          >
+                            <svg
+                              data-icon="stop"
+                              height="16"
+                              viewBox="0 0 16 16"
+                              width="16"
+                            >
+                              <desc>
+                                stop
+                              </desc>
+                              <path
+                                d="M12 3H4c-.55 0-1 .45-1 1v8c0 .55.45 1 1 1h8c.55 0 1-.45 1-1V4c0-.55-.45-1-1-1z"
+                                fill-rule="evenodd"
+                              />
+                            </svg>
+                          </span>
+                          <span
+                            style="color: rgb(218, 41, 29);"
+                          >
+                            Stopped
+                          </span>
+                        </div>
+                      </div>
+                      <div
+                        class="Layout--horizontal Layout--layout-spacing-small StyledProps--main"
+                      >
+                        <p
+                          class="StyledProps--font StyledProps--main link"
+                        >
+                          grateful-liger-c40gjtnsbqnjmr91f8n0.gateway.lightwing.io
+                        </p>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+                <div
+                  class="TableV2--cell"
+                  role="cell"
+                  style="width: 15%;"
+                >
+                  <div
+                    class="Layout--horizontal Layout--layout-spacing-large StyledProps--main"
+                  >
+                    <p
+                      class="StyledProps--font StyledProps--main savingsAmount"
+                    >
+                      $NaN
+                    </p>
+                  </div>
+                </div>
+                <div
+                  class="TableV2--cell"
+                  role="cell"
+                  style="width: 10%;"
+                >
+                  -
+                </div>
+                <div
+                  class="TableV2--cell"
+                  role="cell"
+                  style="width: 10%;"
+                >
+                  <span
+                    class="StyledProps--font StyledProps--main StyledProps--inline"
+                    style="display: inline-flex; align-items: center;"
+                  >
+                    <span
+                      class="bp3-icon bp3-icon-full-circle StyledProps--main Text--icon StyledProps--padding-right-xsmall StyledProps--color StyledProps--color-green500"
+                      icon="full-circle"
+                    >
+                      <svg
+                        data-icon="full-circle"
+                        height="6"
+                        viewBox="0 0 16 16"
+                        width="6"
+                      >
+                        <desc>
+                          full-circle
+                        </desc>
+                        <path
+                          d="M8 0a8 8 0 100 16A8 8 0 108 0z"
+                          fill-rule="evenodd"
+                        />
+                      </svg>
+                    </span>
+                    created
+                  </span>
+                </div>
+                <div
+                  class="TableV2--cell"
+                  role="cell"
+                  style="width: 5%;"
+                >
+                  <div
+                    class="Layout--horizontal StyledProps--main layout"
+                  >
+                    <span
+                      class="bp3-popover-wrapper bp3-dark"
+                    >
+                      <span
+                        class="bp3-popover-target"
+                      >
+                        <button
+                          class="bp3-button bp3-minimal Button--button StyledProps--font StyledProps--main Button--with-current-color Button--iconOnly Button--without-shadow Button--withLeftIcon"
+                          data-testid="menu-282"
+                          type="button"
+                        >
+                          <span
+                            class="bp3-icon StyledProps--main"
+                            data-icon="Options"
+                          >
+                            <svg
+                              fill="none"
+                              height="16"
+                              viewBox="0 0 4 16"
+                              width="16"
+                              xmlns="http://www.w3.org/2000/svg"
+                            >
+                              <path
+                                clip-rule="evenodd"
+                                d="M2 12.5a1 1 0 100 2 1 1 0 000-2zm-2 1a2 2 0 114 0 2 2 0 01-4 0zm2-12a1 1 0 100 2 1 1 0 000-2zm-2 1a2 2 0 114 0 2 2 0 01-4 0zM2 7a1 1 0 100 2 1 1 0 000-2zM0 8a2 2 0 114 0 2 2 0 01-4 0z"
+                                fill="currentColor"
+                                fill-rule="evenodd"
+                              />
+                            </svg>
+                          </span>
+                        </button>
+                      </span>
+                    </span>
+                  </div>
+                </div>
+              </div>
             </div>
             <div
               class="Layout--horizontal StyledProps--main TableV2--pagination Pagination--container StyledProps--padding-top-medium StyledProps--padding-bottom-medium StyledProps--flex StyledProps--flex-align-center-center StyledProps--flex-distribution-space-between"
@@ -1106,9 +1629,9 @@ exports[`Test COGatewayList clicking on a row should open info drawer 1`] = `
               <span
                 class="StyledProps--font StyledProps--main StyledProps--inline StyledProps--font-variation-small-semi"
               >
-                3
+                5
                  of 
-                3
+                5
               </span>
               <div
                 class="Layout--horizontal StyledProps--main"
@@ -1595,7 +2118,7 @@ exports[`Test COGatewayList clicking on refresh button refetch all rules 1`] = `
                 <p
                   class="StyledProps--font StyledProps--main StyledProps--font-variation-table-headers"
                 >
-                  ce.co.rulesTableHeaders.savings
+                  CE.CO.RULESTABLEHEADERS.SAVINGS
                 </p>
               </div>
               <div
@@ -1673,7 +2196,7 @@ exports[`Test COGatewayList clicking on refresh button refetch all rules 1`] = `
                   style="width: 12%;"
                 >
                   <div
-                    class="Layout--horizontal Layout--layout-spacing-medium StyledProps--main"
+                    class="Layout--horizontal Layout--layout-spacing-small StyledProps--main"
                   >
                     <span
                       class="bp3-icon StyledProps--main"
@@ -1896,15 +2419,12 @@ exports[`Test COGatewayList clicking on refresh button refetch all rules 1`] = `
                   style="width: 12%;"
                 >
                   <div
-                    class="Layout--horizontal Layout--layout-spacing-medium StyledProps--main"
+                    class="Layout--horizontal Layout--layout-spacing-small StyledProps--main"
                   >
                     <img
                       alt=""
                       aria-hidden="true"
-                      class="fulFilmentIcon"
-                      height="19px"
                       src="test-file-stub"
-                      width="20px"
                     />
                     <p
                       class="StyledProps--font Text--lineclamp StyledProps--main StyledProps--color StyledProps--color-grey500"
@@ -1932,7 +2452,7 @@ exports[`Test COGatewayList clicking on refresh button refetch all rules 1`] = `
                           class="StyledProps--font StyledProps--main"
                           style="align-self: center; margin-right: 5px;"
                         >
-                          No. of instances:
+                          ce.co.noOfInstances
                         </p>
                         <span
                           class="bp3-icon StyledProps--main StyledProps--color StyledProps--color-blue500"
@@ -2129,21 +2649,18 @@ exports[`Test COGatewayList clicking on refresh button refetch all rules 1`] = `
                   style="width: 12%;"
                 >
                   <div
-                    class="Layout--horizontal Layout--layout-spacing-medium StyledProps--main"
+                    class="Layout--horizontal Layout--layout-spacing-small StyledProps--main"
                   >
                     <img
                       alt=""
                       aria-hidden="true"
-                      class="fulFilmentIcon"
-                      height="19px"
                       src="test-file-stub"
-                      width="20px"
                     />
                     <p
-                      class="StyledProps--font Text--lineclamp StyledProps--main StyledProps--color"
+                      class="StyledProps--font Text--lineclamp StyledProps--main StyledProps--color StyledProps--color-grey500"
                       style="--text-line-clamp: 3;"
                     >
-                      ondemand
+                      spot
                     </p>
                   </div>
                 </div>
@@ -2165,7 +2682,7 @@ exports[`Test COGatewayList clicking on refresh button refetch all rules 1`] = `
                           class="StyledProps--font StyledProps--main"
                           style="align-self: center; color: rgb(107, 109, 133); margin-right: 5px;"
                         >
-                          No. of instances:
+                          ce.co.noOfInstances
                         </p>
                         <span
                           class="bp3-icon StyledProps--main StyledProps--color StyledProps--color-blue500"
@@ -2299,6 +2816,535 @@ exports[`Test COGatewayList clicking on refresh button refetch all rules 1`] = `
                   </div>
                 </div>
               </div>
+              <div
+                class="TableV2--row TableV2--card TableV2--clickable"
+                role="row"
+              >
+                <div
+                  class="TableV2--cell"
+                  role="cell"
+                  style="width: 18%;"
+                >
+                  <p
+                    class="StyledProps--font Text--lineclamp StyledProps--main StyledProps--color StyledProps--color-black"
+                    style="font-weight: 600; --text-line-clamp: 3;"
+                  >
+                    ecs-test-rule
+                  </p>
+                </div>
+                <div
+                  class="TableV2--cell"
+                  role="cell"
+                  style="width: 8%;"
+                >
+                  <p
+                    class="StyledProps--font Text--lineclamp StyledProps--main StyledProps--color StyledProps--color-grey500"
+                    style="--text-line-clamp: 3;"
+                  >
+                    15
+                     mins
+                  </p>
+                </div>
+                <div
+                  class="TableV2--cell"
+                  role="cell"
+                  style="width: 12%;"
+                >
+                  <div
+                    class="Layout--horizontal Layout--layout-spacing-small StyledProps--main"
+                  >
+                    <span
+                      class="bp3-icon StyledProps--main"
+                      data-icon="service-ecs"
+                    >
+                      <svg
+                        height="21"
+                        viewBox="0 0 14 14"
+                        width="21"
+                        xmlns="http://www.w3.org/2000/svg"
+                      >
+                        <path
+                          d="M.8 13l-.8-.4V1.3L.8.9l3 5.8zM3.1 11l1.1 1.6L9 10.3l-1.1-.2zM2.2 2.9l1.2-1.7L9 3.7l-1 .2z"
+                          fill="#9d5025"
+                        />
+                        <path
+                          d="M2.6 1.3L.9.9V13l1.7-.5z"
+                          fill="#f58536"
+                        />
+                        <path
+                          d="M1.7 13.5l.9.5 1.7-7.8L2.6 0l-.9.5zM7.9 4L9 3.8l1.1 3.1L9 10.4l-1.1-.2z"
+                          fill="#9d5025"
+                        />
+                        <g
+                          fill="#f58536"
+                        >
+                          <path
+                            d="M4.3.5L2.6 0v14l1.7-.5z"
+                          />
+                          <path
+                            d="M10.2 3.9L2.6 2.4V0l7.6 2.3zM10.4 10.1l-7.8 1.6V14l7.8-2.4z"
+                          />
+                          <path
+                            d="M9 12l1.2-.4V2.4L9 2z"
+                          />
+                        </g>
+                        <path
+                          d="M14 8.2L10.7 8l-1.1.1 3.3 3z"
+                          fill="#6b3a19"
+                        />
+                        <path
+                          d="M9.4 8.2l3.4.2v2.7l-3.4-.6z"
+                          fill="#9d5025"
+                        />
+                        <path
+                          d="M6.3 8.3L9.7 12l1.7-3.6-3.5-.2z"
+                          fill="#6b3a19"
+                        />
+                        <path
+                          d="M6.3 8.4l3.4.3v3.4l-3.4-.9zM9.6 5.8l4.4-.1-1.1-2.8-3.3.6z"
+                          fill="#9d5025"
+                        />
+                        <path
+                          d="M6.3 5.6l5.1-.1-1.7-3.6-3.4.9z"
+                          fill="#9d5025"
+                        />
+                        <path
+                          d="M6.3 5.7l3.4-.4 1.7.2-3.5.3zM14 5.8l-3.3.2-1.1-.1 3.3-.3z"
+                          fill="#fbbf93"
+                        />
+                        <g
+                          fill="#f58536"
+                        >
+                          <path
+                            d="M12.8 8.3l1.2-.1v2.5l-1.2.4zM11.4 8.5l-1.7.2v3.4l1.7-.5zM12.8 5.7l1.2.1V3.3l-1.2-.4zM11.4 5.5l-1.7-.2V1.9l1.7.5z"
+                          />
+                        </g>
+                      </svg>
+                    </span>
+                    <p
+                      class="StyledProps--font Text--lineclamp StyledProps--main StyledProps--color StyledProps--color-grey500"
+                      style="--text-line-clamp: 3;"
+                    >
+                      ce.common.containerService
+                    </p>
+                  </div>
+                </div>
+                <div
+                  class="TableV2--cell"
+                  role="cell"
+                  style="width: 22%;"
+                >
+                  <div
+                    class="StyledProps--font StyledProps--main resourceCell"
+                  >
+                    <div
+                      class="Layout--vertical Layout--layout-spacing-medium StyledProps--main"
+                    >
+                      <div
+                        class="Layout--horizontal StyledProps--main"
+                      >
+                        <p
+                          class="StyledProps--font StyledProps--main"
+                          style="align-self: center; margin-right: 5px;"
+                        >
+                          ce.co.noOfTasks 2
+                        </p>
+                        <div
+                          class="Layout--horizontal StyledProps--main instanceStatusIndicator"
+                        >
+                          <span
+                            class="bp3-icon bp3-icon-play StyledProps--main"
+                            icon="play"
+                          >
+                            <svg
+                              data-icon="play"
+                              height="16"
+                              viewBox="0 0 16 16"
+                              width="16"
+                            >
+                              <desc>
+                                play
+                              </desc>
+                              <path
+                                d="M12 8c0-.35-.19-.64-.46-.82l.01-.02-6-4-.01.02A.969.969 0 005 3c-.55 0-1 .45-1 1v8c0 .55.45 1 1 1 .21 0 .39-.08.54-.18l.01.02 6-4-.01-.02c.27-.18.46-.47.46-.82z"
+                                fill-rule="evenodd"
+                              />
+                            </svg>
+                          </span>
+                          <span
+                            style="color: rgb(66, 171, 69);"
+                          >
+                            Running
+                          </span>
+                        </div>
+                      </div>
+                      <div
+                        class="Layout--horizontal Layout--layout-spacing-small StyledProps--main"
+                      >
+                        <p
+                          class="StyledProps--font StyledProps--main link"
+                        >
+                          grateful-liger-c40gjtnsbqnjmr91f8n0.gateway.lightwing.io
+                        </p>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+                <div
+                  class="TableV2--cell"
+                  role="cell"
+                  style="width: 15%;"
+                >
+                  <div
+                    class="Layout--horizontal Layout--layout-spacing-large StyledProps--main"
+                  >
+                    <p
+                      class="StyledProps--font StyledProps--main savingsAmount"
+                    >
+                      $NaN
+                    </p>
+                  </div>
+                </div>
+                <div
+                  class="TableV2--cell"
+                  role="cell"
+                  style="width: 10%;"
+                >
+                  -
+                </div>
+                <div
+                  class="TableV2--cell"
+                  role="cell"
+                  style="width: 10%;"
+                >
+                  <span
+                    class="StyledProps--font StyledProps--main StyledProps--inline"
+                    style="display: inline-flex; align-items: center;"
+                  >
+                    <span
+                      class="bp3-icon bp3-icon-full-circle StyledProps--main Text--icon StyledProps--padding-right-xsmall StyledProps--color StyledProps--color-green500"
+                      icon="full-circle"
+                    >
+                      <svg
+                        data-icon="full-circle"
+                        height="6"
+                        viewBox="0 0 16 16"
+                        width="6"
+                      >
+                        <desc>
+                          full-circle
+                        </desc>
+                        <path
+                          d="M8 0a8 8 0 100 16A8 8 0 108 0z"
+                          fill-rule="evenodd"
+                        />
+                      </svg>
+                    </span>
+                    created
+                  </span>
+                </div>
+                <div
+                  class="TableV2--cell"
+                  role="cell"
+                  style="width: 5%;"
+                >
+                  <div
+                    class="Layout--horizontal StyledProps--main layout"
+                  >
+                    <span
+                      class="bp3-popover-wrapper bp3-dark"
+                    >
+                      <span
+                        class="bp3-popover-target"
+                      >
+                        <button
+                          class="bp3-button bp3-minimal Button--button StyledProps--font StyledProps--main Button--with-current-color Button--iconOnly Button--without-shadow Button--withLeftIcon"
+                          data-testid="menu-282"
+                          type="button"
+                        >
+                          <span
+                            class="bp3-icon StyledProps--main"
+                            data-icon="Options"
+                          >
+                            <svg
+                              fill="none"
+                              height="16"
+                              viewBox="0 0 4 16"
+                              width="16"
+                              xmlns="http://www.w3.org/2000/svg"
+                            >
+                              <path
+                                clip-rule="evenodd"
+                                d="M2 12.5a1 1 0 100 2 1 1 0 000-2zm-2 1a2 2 0 114 0 2 2 0 01-4 0zm2-12a1 1 0 100 2 1 1 0 000-2zm-2 1a2 2 0 114 0 2 2 0 01-4 0zM2 7a1 1 0 100 2 1 1 0 000-2zM0 8a2 2 0 114 0 2 2 0 01-4 0z"
+                                fill="currentColor"
+                                fill-rule="evenodd"
+                              />
+                            </svg>
+                          </span>
+                        </button>
+                      </span>
+                    </span>
+                  </div>
+                </div>
+              </div>
+              <div
+                class="TableV2--row TableV2--card TableV2--clickable"
+                role="row"
+              >
+                <div
+                  class="TableV2--cell"
+                  role="cell"
+                  style="width: 18%;"
+                >
+                  <p
+                    class="StyledProps--font Text--lineclamp StyledProps--main StyledProps--color StyledProps--color-black"
+                    style="font-weight: 600; --text-line-clamp: 3;"
+                  >
+                    rds-test-rule
+                  </p>
+                </div>
+                <div
+                  class="TableV2--cell"
+                  role="cell"
+                  style="width: 8%;"
+                >
+                  <p
+                    class="StyledProps--font Text--lineclamp StyledProps--main StyledProps--color StyledProps--color-grey500"
+                    style="--text-line-clamp: 3;"
+                  >
+                    15
+                     mins
+                  </p>
+                </div>
+                <div
+                  class="TableV2--cell"
+                  role="cell"
+                  style="width: 12%;"
+                >
+                  <div
+                    class="Layout--horizontal Layout--layout-spacing-small StyledProps--main"
+                  >
+                    <span
+                      class="bp3-icon StyledProps--main"
+                      data-icon="aws-rds"
+                    >
+                      <svg
+                        height="21"
+                        preserveAspectRatio="xMidYMid"
+                        viewBox="0 0 256 289"
+                        width="21"
+                        xmlns="http://www.w3.org/2000/svg"
+                      >
+                        <path
+                          d="M0 224.742l29.972 35.125 2.695-3.201V32l-2.695-3.395L0 63.717v161.025"
+                          fill="#1A476F"
+                        />
+                        <path
+                          d="M29.976 259.867l57.27 28.633 2.382-3.833L89.667 3l-2.381-3-57.31 28.541v231.326"
+                          fill="#1F5B98"
+                        />
+                        <path
+                          d="M256 63.717l-29.98-35.112-3.353 1.062.666 227.333 2.687 2.867L256 224.746V63.717"
+                          fill="#2D72B8"
+                        />
+                        <path
+                          d="M168.75 288.5l57.27-28.633V28.541L168.71 0 166 3.667l.039 280.666 2.711 4.167"
+                          fill="#5294CF"
+                        />
+                        <path
+                          d="M87.286 0h81.424v288.504H87.286V0z"
+                          fill="#2D72B8"
+                        />
+                      </svg>
+                    </span>
+                    <p
+                      class="StyledProps--font Text--lineclamp StyledProps--main StyledProps--color StyledProps--color-grey500"
+                      style="--text-line-clamp: 3;"
+                    >
+                      ce.common.database
+                    </p>
+                  </div>
+                </div>
+                <div
+                  class="TableV2--cell"
+                  role="cell"
+                  style="width: 22%;"
+                >
+                  <div
+                    class="StyledProps--font StyledProps--main resourceCell"
+                  >
+                    <div
+                      class="Layout--vertical Layout--layout-spacing-medium StyledProps--main"
+                    >
+                      <div
+                        class="Layout--horizontal StyledProps--main"
+                      >
+                        <p
+                          class="StyledProps--font StyledProps--main"
+                          style="align-self: center; margin-right: 5px;"
+                        >
+                          ce.co.noOfInstances
+                        </p>
+                        <span
+                          class="bp3-icon StyledProps--main StyledProps--color StyledProps--color-blue500"
+                          data-icon="spinner"
+                          style="margin-right: 5px;"
+                        >
+                          <svg
+                            fill="none"
+                            height="12"
+                            viewBox="0 0 36 36"
+                            width="12"
+                            xmlns="http://www.w3.org/2000/svg"
+                          >
+                            <path
+                              d="M18 2.084a15.915 15.915 0 010 31.831 15.915 15.915 0 010-31.83"
+                              stroke="currentColor"
+                              stroke-dasharray="75,100"
+                              stroke-linecap="round"
+                              stroke-width="2.8"
+                              style="animation: 1s linear infinite spinner-rotation; transform-origin: 50% 50%; transform-box: fill-box;"
+                            />
+                          </svg>
+                        </span>
+                        <div
+                          class="Layout--horizontal StyledProps--main instanceStatusIndicator"
+                        >
+                          <span
+                            class="bp3-icon bp3-icon-stop StyledProps--main"
+                            icon="stop"
+                          >
+                            <svg
+                              data-icon="stop"
+                              height="16"
+                              viewBox="0 0 16 16"
+                              width="16"
+                            >
+                              <desc>
+                                stop
+                              </desc>
+                              <path
+                                d="M12 3H4c-.55 0-1 .45-1 1v8c0 .55.45 1 1 1h8c.55 0 1-.45 1-1V4c0-.55-.45-1-1-1z"
+                                fill-rule="evenodd"
+                              />
+                            </svg>
+                          </span>
+                          <span
+                            style="color: rgb(218, 41, 29);"
+                          >
+                            Stopped
+                          </span>
+                        </div>
+                      </div>
+                      <div
+                        class="Layout--horizontal Layout--layout-spacing-small StyledProps--main"
+                      >
+                        <p
+                          class="StyledProps--font StyledProps--main link"
+                        >
+                          grateful-liger-c40gjtnsbqnjmr91f8n0.gateway.lightwing.io
+                        </p>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+                <div
+                  class="TableV2--cell"
+                  role="cell"
+                  style="width: 15%;"
+                >
+                  <div
+                    class="Layout--horizontal Layout--layout-spacing-large StyledProps--main"
+                  >
+                    <p
+                      class="StyledProps--font StyledProps--main savingsAmount"
+                    >
+                      $NaN
+                    </p>
+                  </div>
+                </div>
+                <div
+                  class="TableV2--cell"
+                  role="cell"
+                  style="width: 10%;"
+                >
+                  -
+                </div>
+                <div
+                  class="TableV2--cell"
+                  role="cell"
+                  style="width: 10%;"
+                >
+                  <span
+                    class="StyledProps--font StyledProps--main StyledProps--inline"
+                    style="display: inline-flex; align-items: center;"
+                  >
+                    <span
+                      class="bp3-icon bp3-icon-full-circle StyledProps--main Text--icon StyledProps--padding-right-xsmall StyledProps--color StyledProps--color-green500"
+                      icon="full-circle"
+                    >
+                      <svg
+                        data-icon="full-circle"
+                        height="6"
+                        viewBox="0 0 16 16"
+                        width="6"
+                      >
+                        <desc>
+                          full-circle
+                        </desc>
+                        <path
+                          d="M8 0a8 8 0 100 16A8 8 0 108 0z"
+                          fill-rule="evenodd"
+                        />
+                      </svg>
+                    </span>
+                    created
+                  </span>
+                </div>
+                <div
+                  class="TableV2--cell"
+                  role="cell"
+                  style="width: 5%;"
+                >
+                  <div
+                    class="Layout--horizontal StyledProps--main layout"
+                  >
+                    <span
+                      class="bp3-popover-wrapper bp3-dark"
+                    >
+                      <span
+                        class="bp3-popover-target"
+                      >
+                        <button
+                          class="bp3-button bp3-minimal Button--button StyledProps--font StyledProps--main Button--with-current-color Button--iconOnly Button--without-shadow Button--withLeftIcon"
+                          data-testid="menu-282"
+                          type="button"
+                        >
+                          <span
+                            class="bp3-icon StyledProps--main"
+                            data-icon="Options"
+                          >
+                            <svg
+                              fill="none"
+                              height="16"
+                              viewBox="0 0 4 16"
+                              width="16"
+                              xmlns="http://www.w3.org/2000/svg"
+                            >
+                              <path
+                                clip-rule="evenodd"
+                                d="M2 12.5a1 1 0 100 2 1 1 0 000-2zm-2 1a2 2 0 114 0 2 2 0 01-4 0zm2-12a1 1 0 100 2 1 1 0 000-2zm-2 1a2 2 0 114 0 2 2 0 01-4 0zM2 7a1 1 0 100 2 1 1 0 000-2zM0 8a2 2 0 114 0 2 2 0 01-4 0z"
+                                fill="currentColor"
+                                fill-rule="evenodd"
+                              />
+                            </svg>
+                          </span>
+                        </button>
+                      </span>
+                    </span>
+                  </div>
+                </div>
+              </div>
             </div>
             <div
               class="Layout--horizontal StyledProps--main TableV2--pagination Pagination--container StyledProps--padding-top-medium StyledProps--padding-bottom-medium StyledProps--flex StyledProps--flex-align-center-center StyledProps--flex-distribution-space-between"
@@ -2306,9 +3352,9 @@ exports[`Test COGatewayList clicking on refresh button refetch all rules 1`] = `
               <span
                 class="StyledProps--font StyledProps--main StyledProps--inline StyledProps--font-variation-small-semi"
               >
-                3
+                5
                  of 
-                3
+                5
               </span>
               <div
                 class="Layout--horizontal StyledProps--main"
@@ -3338,7 +4384,7 @@ exports[`Test COGatewayList renders without crashing 1`] = `
                 <p
                   class="StyledProps--font StyledProps--main StyledProps--font-variation-table-headers"
                 >
-                  ce.co.rulesTableHeaders.savings
+                  CE.CO.RULESTABLEHEADERS.SAVINGS
                 </p>
               </div>
               <div
@@ -3416,7 +4462,7 @@ exports[`Test COGatewayList renders without crashing 1`] = `
                   style="width: 12%;"
                 >
                   <div
-                    class="Layout--horizontal Layout--layout-spacing-medium StyledProps--main"
+                    class="Layout--horizontal Layout--layout-spacing-small StyledProps--main"
                   >
                     <span
                       class="bp3-icon StyledProps--main"
@@ -3639,15 +4685,12 @@ exports[`Test COGatewayList renders without crashing 1`] = `
                   style="width: 12%;"
                 >
                   <div
-                    class="Layout--horizontal Layout--layout-spacing-medium StyledProps--main"
+                    class="Layout--horizontal Layout--layout-spacing-small StyledProps--main"
                   >
                     <img
                       alt=""
                       aria-hidden="true"
-                      class="fulFilmentIcon"
-                      height="19px"
                       src="test-file-stub"
-                      width="20px"
                     />
                     <p
                       class="StyledProps--font Text--lineclamp StyledProps--main StyledProps--color StyledProps--color-grey500"
@@ -3675,7 +4718,7 @@ exports[`Test COGatewayList renders without crashing 1`] = `
                           class="StyledProps--font StyledProps--main"
                           style="align-self: center; margin-right: 5px;"
                         >
-                          No. of instances:
+                          ce.co.noOfInstances
                         </p>
                         <span
                           class="bp3-icon StyledProps--main StyledProps--color StyledProps--color-blue500"
@@ -3872,21 +4915,18 @@ exports[`Test COGatewayList renders without crashing 1`] = `
                   style="width: 12%;"
                 >
                   <div
-                    class="Layout--horizontal Layout--layout-spacing-medium StyledProps--main"
+                    class="Layout--horizontal Layout--layout-spacing-small StyledProps--main"
                   >
                     <img
                       alt=""
                       aria-hidden="true"
-                      class="fulFilmentIcon"
-                      height="19px"
                       src="test-file-stub"
-                      width="20px"
                     />
                     <p
-                      class="StyledProps--font Text--lineclamp StyledProps--main StyledProps--color"
+                      class="StyledProps--font Text--lineclamp StyledProps--main StyledProps--color StyledProps--color-grey500"
                       style="--text-line-clamp: 3;"
                     >
-                      ondemand
+                      spot
                     </p>
                   </div>
                 </div>
@@ -3908,7 +4948,7 @@ exports[`Test COGatewayList renders without crashing 1`] = `
                           class="StyledProps--font StyledProps--main"
                           style="align-self: center; color: rgb(107, 109, 133); margin-right: 5px;"
                         >
-                          No. of instances:
+                          ce.co.noOfInstances
                         </p>
                         <span
                           class="bp3-icon StyledProps--main StyledProps--color StyledProps--color-blue500"
@@ -4042,6 +5082,535 @@ exports[`Test COGatewayList renders without crashing 1`] = `
                   </div>
                 </div>
               </div>
+              <div
+                class="TableV2--row TableV2--card TableV2--clickable"
+                role="row"
+              >
+                <div
+                  class="TableV2--cell"
+                  role="cell"
+                  style="width: 18%;"
+                >
+                  <p
+                    class="StyledProps--font Text--lineclamp StyledProps--main StyledProps--color StyledProps--color-black"
+                    style="font-weight: 600; --text-line-clamp: 3;"
+                  >
+                    ecs-test-rule
+                  </p>
+                </div>
+                <div
+                  class="TableV2--cell"
+                  role="cell"
+                  style="width: 8%;"
+                >
+                  <p
+                    class="StyledProps--font Text--lineclamp StyledProps--main StyledProps--color StyledProps--color-grey500"
+                    style="--text-line-clamp: 3;"
+                  >
+                    15
+                     mins
+                  </p>
+                </div>
+                <div
+                  class="TableV2--cell"
+                  role="cell"
+                  style="width: 12%;"
+                >
+                  <div
+                    class="Layout--horizontal Layout--layout-spacing-small StyledProps--main"
+                  >
+                    <span
+                      class="bp3-icon StyledProps--main"
+                      data-icon="service-ecs"
+                    >
+                      <svg
+                        height="21"
+                        viewBox="0 0 14 14"
+                        width="21"
+                        xmlns="http://www.w3.org/2000/svg"
+                      >
+                        <path
+                          d="M.8 13l-.8-.4V1.3L.8.9l3 5.8zM3.1 11l1.1 1.6L9 10.3l-1.1-.2zM2.2 2.9l1.2-1.7L9 3.7l-1 .2z"
+                          fill="#9d5025"
+                        />
+                        <path
+                          d="M2.6 1.3L.9.9V13l1.7-.5z"
+                          fill="#f58536"
+                        />
+                        <path
+                          d="M1.7 13.5l.9.5 1.7-7.8L2.6 0l-.9.5zM7.9 4L9 3.8l1.1 3.1L9 10.4l-1.1-.2z"
+                          fill="#9d5025"
+                        />
+                        <g
+                          fill="#f58536"
+                        >
+                          <path
+                            d="M4.3.5L2.6 0v14l1.7-.5z"
+                          />
+                          <path
+                            d="M10.2 3.9L2.6 2.4V0l7.6 2.3zM10.4 10.1l-7.8 1.6V14l7.8-2.4z"
+                          />
+                          <path
+                            d="M9 12l1.2-.4V2.4L9 2z"
+                          />
+                        </g>
+                        <path
+                          d="M14 8.2L10.7 8l-1.1.1 3.3 3z"
+                          fill="#6b3a19"
+                        />
+                        <path
+                          d="M9.4 8.2l3.4.2v2.7l-3.4-.6z"
+                          fill="#9d5025"
+                        />
+                        <path
+                          d="M6.3 8.3L9.7 12l1.7-3.6-3.5-.2z"
+                          fill="#6b3a19"
+                        />
+                        <path
+                          d="M6.3 8.4l3.4.3v3.4l-3.4-.9zM9.6 5.8l4.4-.1-1.1-2.8-3.3.6z"
+                          fill="#9d5025"
+                        />
+                        <path
+                          d="M6.3 5.6l5.1-.1-1.7-3.6-3.4.9z"
+                          fill="#9d5025"
+                        />
+                        <path
+                          d="M6.3 5.7l3.4-.4 1.7.2-3.5.3zM14 5.8l-3.3.2-1.1-.1 3.3-.3z"
+                          fill="#fbbf93"
+                        />
+                        <g
+                          fill="#f58536"
+                        >
+                          <path
+                            d="M12.8 8.3l1.2-.1v2.5l-1.2.4zM11.4 8.5l-1.7.2v3.4l1.7-.5zM12.8 5.7l1.2.1V3.3l-1.2-.4zM11.4 5.5l-1.7-.2V1.9l1.7.5z"
+                          />
+                        </g>
+                      </svg>
+                    </span>
+                    <p
+                      class="StyledProps--font Text--lineclamp StyledProps--main StyledProps--color StyledProps--color-grey500"
+                      style="--text-line-clamp: 3;"
+                    >
+                      ce.common.containerService
+                    </p>
+                  </div>
+                </div>
+                <div
+                  class="TableV2--cell"
+                  role="cell"
+                  style="width: 22%;"
+                >
+                  <div
+                    class="StyledProps--font StyledProps--main resourceCell"
+                  >
+                    <div
+                      class="Layout--vertical Layout--layout-spacing-medium StyledProps--main"
+                    >
+                      <div
+                        class="Layout--horizontal StyledProps--main"
+                      >
+                        <p
+                          class="StyledProps--font StyledProps--main"
+                          style="align-self: center; margin-right: 5px;"
+                        >
+                          ce.co.noOfTasks 2
+                        </p>
+                        <div
+                          class="Layout--horizontal StyledProps--main instanceStatusIndicator"
+                        >
+                          <span
+                            class="bp3-icon bp3-icon-play StyledProps--main"
+                            icon="play"
+                          >
+                            <svg
+                              data-icon="play"
+                              height="16"
+                              viewBox="0 0 16 16"
+                              width="16"
+                            >
+                              <desc>
+                                play
+                              </desc>
+                              <path
+                                d="M12 8c0-.35-.19-.64-.46-.82l.01-.02-6-4-.01.02A.969.969 0 005 3c-.55 0-1 .45-1 1v8c0 .55.45 1 1 1 .21 0 .39-.08.54-.18l.01.02 6-4-.01-.02c.27-.18.46-.47.46-.82z"
+                                fill-rule="evenodd"
+                              />
+                            </svg>
+                          </span>
+                          <span
+                            style="color: rgb(66, 171, 69);"
+                          >
+                            Running
+                          </span>
+                        </div>
+                      </div>
+                      <div
+                        class="Layout--horizontal Layout--layout-spacing-small StyledProps--main"
+                      >
+                        <p
+                          class="StyledProps--font StyledProps--main link"
+                        >
+                          grateful-liger-c40gjtnsbqnjmr91f8n0.gateway.lightwing.io
+                        </p>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+                <div
+                  class="TableV2--cell"
+                  role="cell"
+                  style="width: 15%;"
+                >
+                  <div
+                    class="Layout--horizontal Layout--layout-spacing-large StyledProps--main"
+                  >
+                    <p
+                      class="StyledProps--font StyledProps--main savingsAmount"
+                    >
+                      $NaN
+                    </p>
+                  </div>
+                </div>
+                <div
+                  class="TableV2--cell"
+                  role="cell"
+                  style="width: 10%;"
+                >
+                  -
+                </div>
+                <div
+                  class="TableV2--cell"
+                  role="cell"
+                  style="width: 10%;"
+                >
+                  <span
+                    class="StyledProps--font StyledProps--main StyledProps--inline"
+                    style="display: inline-flex; align-items: center;"
+                  >
+                    <span
+                      class="bp3-icon bp3-icon-full-circle StyledProps--main Text--icon StyledProps--padding-right-xsmall StyledProps--color StyledProps--color-green500"
+                      icon="full-circle"
+                    >
+                      <svg
+                        data-icon="full-circle"
+                        height="6"
+                        viewBox="0 0 16 16"
+                        width="6"
+                      >
+                        <desc>
+                          full-circle
+                        </desc>
+                        <path
+                          d="M8 0a8 8 0 100 16A8 8 0 108 0z"
+                          fill-rule="evenodd"
+                        />
+                      </svg>
+                    </span>
+                    created
+                  </span>
+                </div>
+                <div
+                  class="TableV2--cell"
+                  role="cell"
+                  style="width: 5%;"
+                >
+                  <div
+                    class="Layout--horizontal StyledProps--main layout"
+                  >
+                    <span
+                      class="bp3-popover-wrapper bp3-dark"
+                    >
+                      <span
+                        class="bp3-popover-target"
+                      >
+                        <button
+                          class="bp3-button bp3-minimal Button--button StyledProps--font StyledProps--main Button--with-current-color Button--iconOnly Button--without-shadow Button--withLeftIcon"
+                          data-testid="menu-282"
+                          type="button"
+                        >
+                          <span
+                            class="bp3-icon StyledProps--main"
+                            data-icon="Options"
+                          >
+                            <svg
+                              fill="none"
+                              height="16"
+                              viewBox="0 0 4 16"
+                              width="16"
+                              xmlns="http://www.w3.org/2000/svg"
+                            >
+                              <path
+                                clip-rule="evenodd"
+                                d="M2 12.5a1 1 0 100 2 1 1 0 000-2zm-2 1a2 2 0 114 0 2 2 0 01-4 0zm2-12a1 1 0 100 2 1 1 0 000-2zm-2 1a2 2 0 114 0 2 2 0 01-4 0zM2 7a1 1 0 100 2 1 1 0 000-2zM0 8a2 2 0 114 0 2 2 0 01-4 0z"
+                                fill="currentColor"
+                                fill-rule="evenodd"
+                              />
+                            </svg>
+                          </span>
+                        </button>
+                      </span>
+                    </span>
+                  </div>
+                </div>
+              </div>
+              <div
+                class="TableV2--row TableV2--card TableV2--clickable"
+                role="row"
+              >
+                <div
+                  class="TableV2--cell"
+                  role="cell"
+                  style="width: 18%;"
+                >
+                  <p
+                    class="StyledProps--font Text--lineclamp StyledProps--main StyledProps--color StyledProps--color-black"
+                    style="font-weight: 600; --text-line-clamp: 3;"
+                  >
+                    rds-test-rule
+                  </p>
+                </div>
+                <div
+                  class="TableV2--cell"
+                  role="cell"
+                  style="width: 8%;"
+                >
+                  <p
+                    class="StyledProps--font Text--lineclamp StyledProps--main StyledProps--color StyledProps--color-grey500"
+                    style="--text-line-clamp: 3;"
+                  >
+                    15
+                     mins
+                  </p>
+                </div>
+                <div
+                  class="TableV2--cell"
+                  role="cell"
+                  style="width: 12%;"
+                >
+                  <div
+                    class="Layout--horizontal Layout--layout-spacing-small StyledProps--main"
+                  >
+                    <span
+                      class="bp3-icon StyledProps--main"
+                      data-icon="aws-rds"
+                    >
+                      <svg
+                        height="21"
+                        preserveAspectRatio="xMidYMid"
+                        viewBox="0 0 256 289"
+                        width="21"
+                        xmlns="http://www.w3.org/2000/svg"
+                      >
+                        <path
+                          d="M0 224.742l29.972 35.125 2.695-3.201V32l-2.695-3.395L0 63.717v161.025"
+                          fill="#1A476F"
+                        />
+                        <path
+                          d="M29.976 259.867l57.27 28.633 2.382-3.833L89.667 3l-2.381-3-57.31 28.541v231.326"
+                          fill="#1F5B98"
+                        />
+                        <path
+                          d="M256 63.717l-29.98-35.112-3.353 1.062.666 227.333 2.687 2.867L256 224.746V63.717"
+                          fill="#2D72B8"
+                        />
+                        <path
+                          d="M168.75 288.5l57.27-28.633V28.541L168.71 0 166 3.667l.039 280.666 2.711 4.167"
+                          fill="#5294CF"
+                        />
+                        <path
+                          d="M87.286 0h81.424v288.504H87.286V0z"
+                          fill="#2D72B8"
+                        />
+                      </svg>
+                    </span>
+                    <p
+                      class="StyledProps--font Text--lineclamp StyledProps--main StyledProps--color StyledProps--color-grey500"
+                      style="--text-line-clamp: 3;"
+                    >
+                      ce.common.database
+                    </p>
+                  </div>
+                </div>
+                <div
+                  class="TableV2--cell"
+                  role="cell"
+                  style="width: 22%;"
+                >
+                  <div
+                    class="StyledProps--font StyledProps--main resourceCell"
+                  >
+                    <div
+                      class="Layout--vertical Layout--layout-spacing-medium StyledProps--main"
+                    >
+                      <div
+                        class="Layout--horizontal StyledProps--main"
+                      >
+                        <p
+                          class="StyledProps--font StyledProps--main"
+                          style="align-self: center; margin-right: 5px;"
+                        >
+                          ce.co.noOfInstances
+                        </p>
+                        <span
+                          class="bp3-icon StyledProps--main StyledProps--color StyledProps--color-blue500"
+                          data-icon="spinner"
+                          style="margin-right: 5px;"
+                        >
+                          <svg
+                            fill="none"
+                            height="12"
+                            viewBox="0 0 36 36"
+                            width="12"
+                            xmlns="http://www.w3.org/2000/svg"
+                          >
+                            <path
+                              d="M18 2.084a15.915 15.915 0 010 31.831 15.915 15.915 0 010-31.83"
+                              stroke="currentColor"
+                              stroke-dasharray="75,100"
+                              stroke-linecap="round"
+                              stroke-width="2.8"
+                              style="animation: 1s linear infinite spinner-rotation; transform-origin: 50% 50%; transform-box: fill-box;"
+                            />
+                          </svg>
+                        </span>
+                        <div
+                          class="Layout--horizontal StyledProps--main instanceStatusIndicator"
+                        >
+                          <span
+                            class="bp3-icon bp3-icon-stop StyledProps--main"
+                            icon="stop"
+                          >
+                            <svg
+                              data-icon="stop"
+                              height="16"
+                              viewBox="0 0 16 16"
+                              width="16"
+                            >
+                              <desc>
+                                stop
+                              </desc>
+                              <path
+                                d="M12 3H4c-.55 0-1 .45-1 1v8c0 .55.45 1 1 1h8c.55 0 1-.45 1-1V4c0-.55-.45-1-1-1z"
+                                fill-rule="evenodd"
+                              />
+                            </svg>
+                          </span>
+                          <span
+                            style="color: rgb(218, 41, 29);"
+                          >
+                            Stopped
+                          </span>
+                        </div>
+                      </div>
+                      <div
+                        class="Layout--horizontal Layout--layout-spacing-small StyledProps--main"
+                      >
+                        <p
+                          class="StyledProps--font StyledProps--main link"
+                        >
+                          grateful-liger-c40gjtnsbqnjmr91f8n0.gateway.lightwing.io
+                        </p>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+                <div
+                  class="TableV2--cell"
+                  role="cell"
+                  style="width: 15%;"
+                >
+                  <div
+                    class="Layout--horizontal Layout--layout-spacing-large StyledProps--main"
+                  >
+                    <p
+                      class="StyledProps--font StyledProps--main savingsAmount"
+                    >
+                      $NaN
+                    </p>
+                  </div>
+                </div>
+                <div
+                  class="TableV2--cell"
+                  role="cell"
+                  style="width: 10%;"
+                >
+                  -
+                </div>
+                <div
+                  class="TableV2--cell"
+                  role="cell"
+                  style="width: 10%;"
+                >
+                  <span
+                    class="StyledProps--font StyledProps--main StyledProps--inline"
+                    style="display: inline-flex; align-items: center;"
+                  >
+                    <span
+                      class="bp3-icon bp3-icon-full-circle StyledProps--main Text--icon StyledProps--padding-right-xsmall StyledProps--color StyledProps--color-green500"
+                      icon="full-circle"
+                    >
+                      <svg
+                        data-icon="full-circle"
+                        height="6"
+                        viewBox="0 0 16 16"
+                        width="6"
+                      >
+                        <desc>
+                          full-circle
+                        </desc>
+                        <path
+                          d="M8 0a8 8 0 100 16A8 8 0 108 0z"
+                          fill-rule="evenodd"
+                        />
+                      </svg>
+                    </span>
+                    created
+                  </span>
+                </div>
+                <div
+                  class="TableV2--cell"
+                  role="cell"
+                  style="width: 5%;"
+                >
+                  <div
+                    class="Layout--horizontal StyledProps--main layout"
+                  >
+                    <span
+                      class="bp3-popover-wrapper bp3-dark"
+                    >
+                      <span
+                        class="bp3-popover-target"
+                      >
+                        <button
+                          class="bp3-button bp3-minimal Button--button StyledProps--font StyledProps--main Button--with-current-color Button--iconOnly Button--without-shadow Button--withLeftIcon"
+                          data-testid="menu-282"
+                          type="button"
+                        >
+                          <span
+                            class="bp3-icon StyledProps--main"
+                            data-icon="Options"
+                          >
+                            <svg
+                              fill="none"
+                              height="16"
+                              viewBox="0 0 4 16"
+                              width="16"
+                              xmlns="http://www.w3.org/2000/svg"
+                            >
+                              <path
+                                clip-rule="evenodd"
+                                d="M2 12.5a1 1 0 100 2 1 1 0 000-2zm-2 1a2 2 0 114 0 2 2 0 01-4 0zm2-12a1 1 0 100 2 1 1 0 000-2zm-2 1a2 2 0 114 0 2 2 0 01-4 0zM2 7a1 1 0 100 2 1 1 0 000-2zM0 8a2 2 0 114 0 2 2 0 01-4 0z"
+                                fill="currentColor"
+                                fill-rule="evenodd"
+                              />
+                            </svg>
+                          </span>
+                        </button>
+                      </span>
+                    </span>
+                  </div>
+                </div>
+              </div>
             </div>
             <div
               class="Layout--horizontal StyledProps--main TableV2--pagination Pagination--container StyledProps--padding-top-medium StyledProps--padding-bottom-medium StyledProps--flex StyledProps--flex-align-center-center StyledProps--flex-distribution-space-between"
@@ -4049,9 +5618,9 @@ exports[`Test COGatewayList renders without crashing 1`] = `
               <span
                 class="StyledProps--font StyledProps--main StyledProps--inline StyledProps--font-variation-small-semi"
               >
-                3
+                5
                  of 
-                3
+                5
               </span>
               <div
                 class="Layout--horizontal StyledProps--main"

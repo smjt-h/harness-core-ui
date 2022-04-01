@@ -6,12 +6,12 @@
  */
 
 import React from 'react'
-import { Text, Layout, Color, Icon } from '@wings-software/uicore'
-
+import { Text, Layout, Icon } from '@wings-software/uicore'
+import { Color } from '@harness/design-system'
 import { useParams, Link } from 'react-router-dom'
 import { Duration } from '@common/exports'
 import { useDelegateSelectionLogsModal } from '@common/components/DelegateSelectionLogs/DelegateSelectionLogs'
-import type { ExecutionNode, TaskExecutableResponse } from 'services/pipeline-ng'
+import type { ExecutableResponse, ExecutionNode } from 'services/pipeline-ng'
 import { String, useStrings } from 'framework/strings'
 import routes from '@common/RouteDefinitions'
 
@@ -21,12 +21,17 @@ import { ExecutionStatusEnum, isExecutionCompletedWithBadState } from '@pipeline
 import { encodeURIWithReservedChars } from './utils'
 import css from './StepDetails.module.scss'
 
+export interface StepLabels {
+  label: string
+  value: React.ReactNode
+}
 export interface StepDetailsProps {
   step: ExecutionNode
+  labels?: StepLabels[]
 }
 
 export function StepDetails(props: StepDetailsProps): React.ReactElement {
-  const { step } = props
+  const { step, labels = [] } = props
   const { getString } = useStrings()
   const { accountId, projectIdentifier, orgIdentifier } = useParams<ProjectPathProps & AccountPathProps>()
   //TODO - types will modified when the backend swagger docs are updated
@@ -36,13 +41,11 @@ export function StepDetails(props: StepDetailsProps): React.ReactElement {
   const estimatedRemainingTime = step?.progressData?.estimatedRemainingTime
   const progressPercentage = step?.progressData?.progressPercentage
   const timeout = step?.stepParameters?.timeout as any
-  const [taskList, setTaskList] = React.useState<Array<TaskExecutableResponse>>([])
+  const [taskList, setTaskList] = React.useState<Array<ExecutableResponse>>([])
   const { openDelegateSelectionLogsModal } = useDelegateSelectionLogsModal()
 
   React.useEffect(() => {
-    const tasks = step.executableResponses
-      ?.map(item => item.taskChain || (item.task as TaskExecutableResponse))
-      .filter(item => item !== undefined)
+    const tasks = step.executableResponses?.map(item => item.taskChain || item.task).filter(item => item !== undefined)
     if (tasks) {
       setTaskList(tasks)
     }
@@ -78,6 +81,12 @@ export function StepDetails(props: StepDetailsProps): React.ReactElement {
             <td>{timeout}</td>
           </tr>
         )}
+        {labels.map((label, index) => (
+          <tr key={index}>
+            <th>{label.label}</th>
+            <td>{label.value}</td>
+          </tr>
+        ))}
         {step.delegateInfoList && step.delegateInfoList.length > 0 ? (
           <tr className={css.delegateRow}>
             <th>{getString('delegate.DelegateName')}</th>

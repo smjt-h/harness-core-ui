@@ -6,7 +6,7 @@
  */
 
 import React from 'react'
-import { Container, Formik, FormikForm, FormInput, Layout, Text, Button, Label } from '@wings-software/uicore'
+import { Container, Formik, FormikForm, FormInput, Layout, Text, Button } from '@wings-software/uicore'
 import { useModalHook } from '@harness/use-modal'
 import { Dialog } from '@blueprintjs/core'
 import { useStrings } from 'framework/strings'
@@ -27,7 +27,8 @@ export function InputWithDynamicModalForJson(props: InputWithDynamicModalForJson
     noRecordInputLabel,
     recordsModalHeader,
     showExactJsonPath,
-    fieldValue
+    fieldValue,
+    dataTooltipId
   } = props
   const { getString } = useStrings()
 
@@ -96,7 +97,9 @@ export function InputWithDynamicModalForJson(props: InputWithDynamicModalForJson
       render={() => {
         return (
           <Layout.Vertical spacing={'small'} style={{ marginBottom: 'var(--spacing-medium)' }}>
-            <Label style={{ fontSize: 13, fontWeight: 'normal' }}>{inputLabel}</Label>
+            <Text style={{ fontSize: 13, fontWeight: 'normal' }} tooltipProps={{ dataTooltipId }}>
+              {inputLabel}
+            </Text>
             <Button
               minimal
               className={css.container}

@@ -5,9 +5,9 @@
  * https://polyformproject.org/wp-content/uploads/2020/06/PolyForm-Shield-1.0.0.txt.
  */
 
-import React from 'react'
+import React, { useEffect } from 'react'
 import * as Yup from 'yup'
-import { defaultTo, isEmpty, omit } from 'lodash-es'
+import { defaultTo, isEmpty, omit, isUndefined } from 'lodash-es'
 import {
   Button,
   Container,
@@ -178,6 +178,16 @@ export default function FormikInputSetForm(props: FormikInputSetFormProps): Reac
   const { repoIdentifier, branch } = useQueryParams<InputSetGitQueryParams>()
   const history = useHistory()
 
+  useEffect(() => {
+    if (!isUndefined(inputSet?.outdated) && yamlHandler?.setLatestYaml) {
+      yamlHandler.setLatestYaml({
+        inputSet: {
+          ...omit(inputSet, 'gitDetails', 'entityValidityDetails', 'inputSetReferences', 'repo', 'branch', 'outdated')
+        }
+      })
+    }
+  }, [inputSet?.outdated])
+
   const [isEditable] = usePermission(
     {
       resourceScope: {
@@ -215,7 +225,7 @@ export default function FormikInputSetForm(props: FormikInputSetFormProps): Reac
       >
         <Formik<InputSetDTO & GitContextProps>
           initialValues={{
-            ...omit(inputSet, 'gitDetails', 'entityValidityDetails'),
+            ...omit(inputSet, 'gitDetails', 'entityValidityDetails', 'outdated'),
             repo: defaultTo(repoIdentifier, ''),
             branch: defaultTo(branch, '')
           }}
@@ -306,7 +316,9 @@ export default function FormikInputSetForm(props: FormikInputSetFormProps): Reac
                     <Layout.Vertical className={css.content} padding="xlarge">
                       <YamlBuilderMemo
                         {...yamlBuilderReadOnlyModeProps}
-                        existingJSON={{ inputSet: omit(formikProps?.values, 'inputSetReferences', 'repo', 'branch') }}
+                        existingJSON={{
+                          inputSet: omit(formikProps?.values, 'inputSetReferences', 'repo', 'branch', 'outdated')
+                        }}
                         bind={setYamlHandler}
                         isReadOnlyMode={!isEditable}
                         invocationMap={factory.getInvocationMap()}

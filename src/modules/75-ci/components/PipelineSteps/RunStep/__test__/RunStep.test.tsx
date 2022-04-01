@@ -74,14 +74,14 @@ describe('Run Step', () => {
       expect(getByText('pipeline.stepCommonFields.runAsUser')).toBeTruthy()
       expect(getByText('ci.privileged (Common Optional Label)')).toBeTruthy()
       expect(getByText('common.shell')).toBeTruthy()
-      const shellOptionsDropdownSelect = container.querySelectorAll('[icon="chevron-down"]')?.[2]
+      const shellOptionsDropdownSelect = container.querySelector('[data-id="spec.shell-4"] [icon="chevron-down"]')!
       expect(shellOptionsDropdownSelect).toBeTruthy()
       await waitFor(() => {
         fireEvent.click(shellOptionsDropdownSelect)
         const menuItemLabels = container.querySelectorAll('[class*="menuItemLabel"]')
-        expect(menuItemLabels.length).toEqual(2)
+        expect(menuItemLabels.length).toEqual(4)
         expect(menuItemLabels[0].innerHTML).toEqual('common.bash')
-        expect(menuItemLabels[1].innerHTML).toEqual('common.shell')
+        expect(menuItemLabels[3].innerHTML).toEqual('common.sh')
       })
     })
 
@@ -111,7 +111,8 @@ describe('Run Step', () => {
               cpu: RUNTIME_INPUT_VALUE,
               memory: RUNTIME_INPUT_VALUE
             }
-          }
+          },
+          shell: 'Sh'
         }
       }
 
@@ -143,6 +144,7 @@ describe('Run Step', () => {
         spec: {
           connectorRef: 'account.connectorRef',
           image: 'image',
+          shell: 'Bash',
           command: 'command',
           privileged: false,
           reports: {

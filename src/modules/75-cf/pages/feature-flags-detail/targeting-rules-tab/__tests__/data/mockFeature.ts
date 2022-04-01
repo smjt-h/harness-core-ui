@@ -46,6 +46,34 @@ const mockFeature: Feature = {
         priority: 100,
         ruleId: '3ead64d0-3226-4726-8415-acce803fa34e',
         serve: { variation: 'false' }
+      },
+      {
+        clauses: [
+          {
+            attribute: '',
+            id: '0023fcae-39ee-4cc5-ae6b-ea7ba20733dc',
+            negate: false,
+            op: 'segmentMatch',
+            values: ['target_group_1']
+          }
+        ],
+        priority: 102,
+        ruleId: '455c109e-c995-4a4c-adb0-086ddd22ca39',
+        serve: {
+          distribution: {
+            bucketBy: 'name',
+            variations: [
+              {
+                variation: 'true',
+                weight: 45
+              },
+              {
+                variation: 'false',
+                weight: 55
+              }
+            ]
+          }
+        }
       }
     ],
     state: 'on',

@@ -91,7 +91,6 @@ exports[`GitContextForm test GitContextForm for create with deafault restriction
           >
             <div
               class="bp3-form-group bp3-disabled selectBranchInput"
-              data-id="branch-1"
             >
               <label
                 class="bp3-label"
@@ -158,6 +157,10 @@ exports[`GitContextForm test GitContextForm for create with deafault restriction
                 </div>
               </div>
             </div>
+            <div
+              class="StyledProps--font StyledProps--main"
+              style="width: 16px;"
+            />
           </div>
         </div>
       </div>
@@ -257,7 +260,6 @@ exports[`GitContextForm test GitContextForm for create without deafult restricti
           >
             <div
               class="bp3-form-group selectBranchInput"
-              data-id="branch-1"
             >
               <label
                 class="bp3-label"
@@ -323,6 +325,10 @@ exports[`GitContextForm test GitContextForm for create without deafult restricti
                 </div>
               </div>
             </div>
+            <div
+              class="StyledProps--font StyledProps--main"
+              style="width: 16px;"
+            />
           </div>
         </div>
       </div>
@@ -423,7 +429,6 @@ exports[`GitContextForm test GitContextForm for edit should have repo and branch
           >
             <div
               class="bp3-form-group bp3-disabled selectBranchInput"
-              data-id="branch-1"
             >
               <label
                 class="bp3-label"
@@ -490,6 +495,10 @@ exports[`GitContextForm test GitContextForm for edit should have repo and branch
                 </div>
               </div>
             </div>
+            <div
+              class="StyledProps--font StyledProps--main"
+              style="width: 16px;"
+            />
           </div>
         </div>
       </div>

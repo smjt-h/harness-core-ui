@@ -54,13 +54,18 @@ exports[`SLOCardHeader Render sample card 1`] = `
       <div
         class="Layout--horizontal Layout--layout-spacing-xsmall StyledProps--main"
       >
-        <p
-          class="StyledProps--font StyledProps--main StyledProps--font-variation-small StyledProps--color StyledProps--color-grey400"
-          style="width: 100px;"
+        <div
+          class="Text--withDocsTooltip"
+          data-tooltip-id="slosMonitoredService"
         >
-          connectors.cdng.monitoredService.label
-          :
-        </p>
+          <p
+            class="StyledProps--font StyledProps--main StyledProps--font-variation-small StyledProps--color StyledProps--color-grey400"
+            style="width: 100px;"
+          >
+            connectors.cdng.monitoredService.label
+            :
+          </p>
+        </div>
         <a
           href="/account/account_id/cv/orgs/org_identifier/projects/project_identifier/monitoringservices/edit/monitored_service_identifier"
         >
@@ -79,13 +84,18 @@ exports[`SLOCardHeader Render sample card 1`] = `
       <div
         class="Layout--horizontal Layout--layout-spacing-xsmall StyledProps--main"
       >
-        <p
-          class="StyledProps--font StyledProps--main StyledProps--font-variation-small StyledProps--color StyledProps--color-grey400"
-          style="width: 100px;"
+        <div
+          class="Text--withDocsTooltip"
+          data-tooltip-id="sliType"
         >
-          cv.slos.sliType
-          :
-        </p>
+          <p
+            class="StyledProps--font StyledProps--main StyledProps--font-variation-small StyledProps--color StyledProps--color-grey400"
+            style="width: 100px;"
+          >
+            cv.slos.sliType
+            :
+          </p>
+        </div>
         <p
           class="StyledProps--font StyledProps--main StyledProps--font-variation-small-bold StyledProps--color StyledProps--color-grey700"
         >
@@ -95,13 +105,18 @@ exports[`SLOCardHeader Render sample card 1`] = `
       <div
         class="Layout--horizontal Layout--layout-spacing-xsmall StyledProps--main"
       >
-        <p
-          class="StyledProps--font StyledProps--main StyledProps--font-variation-small StyledProps--color StyledProps--color-grey400"
-          style="width: 100px;"
+        <div
+          class="Text--withDocsTooltip"
+          data-tooltip-id="slosHealthSource"
         >
-          cv.slos.healthSource
-          :
-        </p>
+          <p
+            class="StyledProps--font StyledProps--main StyledProps--font-variation-small StyledProps--color StyledProps--color-grey400"
+            style="width: 100px;"
+          >
+            cv.slos.healthSource
+            :
+          </p>
+        </div>
         <p
           class="StyledProps--font StyledProps--main StyledProps--font-variation-small-bold StyledProps--color StyledProps--color-grey700"
         >
@@ -151,11 +166,16 @@ exports[`SLOCardHeader Render sample card 1`] = `
         class="StyledProps--font StyledProps--main sloGlanceCard StyledProps--background-grey100 StyledProps--padding-small"
         style="width: 120px;"
       >
-        <p
-          class="StyledProps--font StyledProps--main StyledProps--font-variation-form-label"
+        <div
+          class="Text--withDocsTooltip"
+          data-tooltip-id="burnRatePerDay"
         >
-          cv.burnRatePerDay
-        </p>
+          <p
+            class="StyledProps--font StyledProps--main StyledProps--font-variation-form-label"
+          >
+            cv.burnRatePerDay
+          </p>
+        </div>
         <h2
           class="StyledProps--font StyledProps--font-h2 StyledProps--main StyledProps--color StyledProps--color-grey800 StyledProps--font-variation-h4"
           level="2"
@@ -168,11 +188,16 @@ exports[`SLOCardHeader Render sample card 1`] = `
         class="StyledProps--font StyledProps--main sloGlanceCard StyledProps--background-grey100 StyledProps--padding-small"
         style="width: 120px;"
       >
-        <p
-          class="StyledProps--font StyledProps--main StyledProps--font-variation-form-label"
+        <div
+          class="Text--withDocsTooltip"
+          data-tooltip-id="timeRemaining"
         >
-          cv.timeRemaining
-        </p>
+          <p
+            class="StyledProps--font StyledProps--main StyledProps--font-variation-form-label"
+          >
+            cv.timeRemaining
+          </p>
+        </div>
         <h2
           class="StyledProps--font StyledProps--font-h2 StyledProps--main StyledProps--inline StyledProps--color StyledProps--color-grey800 StyledProps--font-variation-h4"
           level="2"

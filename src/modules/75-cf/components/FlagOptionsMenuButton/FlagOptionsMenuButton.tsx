@@ -7,14 +7,15 @@
 
 import React, { ReactElement } from 'react'
 import { useHistory, useParams } from 'react-router-dom'
-import { useToaster, Text } from '@wings-software/uicore'
+import { useToaster } from '@wings-software/uicore'
 import { useModalHook } from '@harness/use-modal'
+import { Intent } from '@harness/design-system'
 import type { MutateRequestOptions } from 'restful-react/dist/Mutate'
 import useActiveEnvironment from '@cf/hooks/useActiveEnvironment'
 import usePlanEnforcement from '@cf/hooks/usePlanEnforcement'
 import RbacOptionsMenuButton from '@rbac/components/RbacOptionsMenuButton/RbacOptionsMenuButton'
 import { FeatureIdentifier } from 'framework/featureStore/FeatureIdentifier'
-import { useStrings } from 'framework/strings'
+import { useStrings, String } from 'framework/strings'
 import routes from '@common/RouteDefinitions'
 import type { DeleteFeatureFlagQueryParams, Feature, GitSyncErrorResponse } from 'services/cf'
 import { ResourceType } from '@rbac/interfaces/ResourceType'
@@ -74,13 +75,8 @@ const FlagOptionsMenuButton = (props: FlagOptionsMenuButtonProps): ReactElement 
   const confirmDeleteFlag = useConfirmAction({
     title: getString('cf.featureFlags.deleteFlag'),
     confirmText: getString('delete'),
-    message: (
-      <Text>
-        <span
-          dangerouslySetInnerHTML={{ __html: getString('cf.featureFlags.deleteFlagMessage', { name: flagData.name }) }}
-        />
-      </Text>
-    ),
+    intent: Intent.DANGER,
+    message: <String useRichText stringID="cf.featureFlags.deleteFlagMessage" vars={{ name: flagData.name }} />,
     action: async () => {
       if (gitSync?.isGitSyncEnabled && !gitSync?.isAutoCommitEnabled) {
         showGitModal()

@@ -11,6 +11,7 @@ import { changeEmptyValuesToRunTimeInput } from './stageHelpers'
 import type { InputSetDTO } from './types'
 
 export interface InputSetSummaryResponseExtended extends InputSetSummaryResponse {
+  outdated?: boolean // BE sends isOutdated in list view and outdated in Details view
   action?: string
   lastUpdatedBy?: string
   createdBy?: string
@@ -28,6 +29,9 @@ export const isInputSetInvalid = (data: InputSetSummaryResponseExtended): boolea
     return true
   }
   if (data.overlaySetErrorDetails && Object.keys(data.overlaySetErrorDetails)?.length) {
+    return true
+  }
+  if (data.isOutdated || data.outdated) {
     return true
   }
   return false

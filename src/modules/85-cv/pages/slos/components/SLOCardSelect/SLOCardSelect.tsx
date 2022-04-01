@@ -5,8 +5,9 @@
  * https://polyformproject.org/wp-content/uploads/2020/06/PolyForm-Shield-1.0.0.txt.
  */
 
-import React from 'react'
-import { FontVariation, Text } from '@wings-software/uicore'
+import React, { useMemo } from 'react'
+import { Text } from '@wings-software/uicore'
+import { FontVariation } from '@harness/design-system'
 import type { RiskCount } from 'services/cv'
 
 interface SLOCardSelectProps extends RiskCount {
@@ -14,9 +15,12 @@ interface SLOCardSelectProps extends RiskCount {
 }
 
 const SLOCardSelect: React.FC<SLOCardSelectProps> = ({ displayName, count, displayColor }) => {
+  const dataTooltipId = useMemo(() => displayName?.replace(/ /g, '') + '_tooltip', [displayName])
   return (
     <>
-      <Text font={{ variation: FontVariation.FORM_HELP }}>{displayName}</Text>
+      <Text font={{ variation: FontVariation.FORM_HELP }} tooltipProps={{ dataTooltipId }}>
+        {displayName}
+      </Text>
       <Text color={displayColor} font={{ variation: FontVariation.H2 }}>
         {count}
       </Text>

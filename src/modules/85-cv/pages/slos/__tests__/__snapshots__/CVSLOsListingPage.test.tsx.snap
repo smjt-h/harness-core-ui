@@ -88,12 +88,13 @@ exports[`CVSLOsListingPage Risk filter select and deselect 1`] = `
           </div>
         </div>
       </div>
-      <h2
-        class="StyledProps--font StyledProps--font-h2 StyledProps--main StyledProps--color StyledProps--color-grey800 StyledProps--font-weight-bold"
-        level="2"
+      <h3
+        class="StyledProps--font StyledProps--font-h3 StyledProps--main StyledProps--font-variation-h4"
+        data-tooltip-id="createSLO"
+        level="3"
       >
         cv.slos.title
-      </h2>
+      </h3>
     </div>
   </div>
   <div
@@ -357,11 +358,16 @@ exports[`CVSLOsListingPage Risk filter select and deselect 1`] = `
           data-index="0"
           tabindex="0"
         >
-          <p
-            class="StyledProps--font StyledProps--main StyledProps--font-variation-form-help"
+          <div
+            class="Text--withDocsTooltip"
+            data-tooltip-id="cv.slos.totalServices_tooltip"
           >
-            cv.slos.totalServices
-          </p>
+            <p
+              class="StyledProps--font StyledProps--main StyledProps--font-variation-form-help"
+            >
+              cv.slos.totalServices
+            </p>
+          </div>
           <p
             class="StyledProps--font StyledProps--main StyledProps--color StyledProps--color-black StyledProps--font-variation-h2"
           >
@@ -373,11 +379,16 @@ exports[`CVSLOsListingPage Risk filter select and deselect 1`] = `
           data-index="1"
           tabindex="0"
         >
-          <p
-            class="StyledProps--font StyledProps--main StyledProps--font-variation-form-help"
+          <div
+            class="Text--withDocsTooltip"
+            data-tooltip-id="Healthy_tooltip"
           >
-            Healthy
-          </p>
+            <p
+              class="StyledProps--font StyledProps--main StyledProps--font-variation-form-help"
+            >
+              Healthy
+            </p>
+          </div>
           <p
             class="StyledProps--font StyledProps--main StyledProps--color StyledProps--color-green500 StyledProps--font-variation-h2"
           >

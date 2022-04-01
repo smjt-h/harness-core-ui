@@ -14,7 +14,7 @@
     grid-template-columns: repeat(2, minmax(10px, 1fr));
     padding: var(--spacing-small);
     border-bottom: solid 1px;
-    border-color: #d9dae599;
+    border-color: var(--grey-200);
     position: relative;
     height: 39px;
 
@@ -32,7 +32,7 @@
       bottom: -1px;
       content: '';
       border-bottom: solid 1px;
-      border-color: #d9dae599;
+      border-color: var(--grey-200);
       height: 1px;
       left: 100%;
     }
@@ -43,7 +43,7 @@
       bottom: -1px;
       content: '';
       border-bottom: solid 1px;
-      border-color: #d9dae599;
+      border-color: var(--grey-200);
       height: 1px;
       right: 100%;
     }
@@ -84,7 +84,7 @@
     bottom: -1px;
     content: '';
     border-bottom: solid 1px;
-    border-color: #d9dae599;
+    border-color: var(--grey-200);
     height: 1px;
     left: 100%;
   }
@@ -94,7 +94,7 @@
     bottom: -1px;
     content: '';
     border-bottom: solid 1px;
-    border-color: #d9dae599;
+    border-color: var(--grey-200);
     height: 1px;
     right: 0;
   }

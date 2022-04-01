@@ -9,8 +9,9 @@ import React, { useEffect, useState, useCallback, useMemo, useRef, SetStateActio
 import { Intent, ProgressBar } from '@blueprintjs/core'
 import { useParams } from 'react-router-dom'
 import { get, omit } from 'lodash-es'
-import { Button, Color, Icon, Container, Text, useIsMounted, Layout, TableV2 } from '@wings-software/uicore'
+import { Button, Icon, Container, Text, useIsMounted, Layout, TableV2 } from '@wings-software/uicore'
 import cx from 'classnames'
+import { Color } from '@harness/design-system'
 import type { CellProps, Column, Renderer } from 'react-table'
 import type { orderType, sortType, serverSortProps } from '@common/components/Table/react-table-config'
 import { TestSuite, useTestCaseSummary, TestCase, TestCaseSummaryQueryParams } from 'services/ti-service'
@@ -18,7 +19,7 @@ import { useStrings } from 'framework/strings'
 import { CopyText } from '@common/components/CopyText/CopyText'
 import { Duration } from '@common/exports'
 import useExpandErrorModal from '@pipeline/components/ExpandErrorModal/useExpandErrorModal'
-import { renderFailureRate } from './TestsUtils'
+import { getOptionalQueryParamKeys, renderFailureRate } from './TestsUtils'
 import { TestsFailedPopover } from './TestsFailedPopover'
 import css from './BuildTests.module.scss'
 
@@ -201,41 +202,40 @@ export function TestsExecutionItem({
   const [pageIndex, setPageIndex] = useState(0)
   const { openErrorModal } = useExpandErrorModal({})
 
-  const queryParams = useMemo(
-    () =>
-      Object.assign(
-        {
-          accountId,
-          orgId: orgIdentifier,
-          projectId: projectIdentifier,
-          buildId: buildIdentifier,
-          pipelineId: pipelineIdentifier,
-          report: 'junit' as const,
-          suite_name: executionSummary.name,
-          status,
-          sort: 'status',
-          order: 'ASC',
-          pageIndex,
-          pageSize: PAGE_SIZE,
-          stageId,
-          stepId
-        },
-        isUngroupedList ? { suite_name: executionSummary.name } : {}
-      ),
-    [
-      accountId,
-      orgIdentifier,
-      projectIdentifier,
-      buildIdentifier,
-      pipelineIdentifier,
-      executionSummary.name,
-      status,
-      pageIndex,
-      stageId,
-      stepId,
-      isUngroupedList
-    ]
-  ) as TestCaseSummaryQueryParams
+  const queryParams = useMemo(() => {
+    const optionalKeys = getOptionalQueryParamKeys({ stageId, stepId })
+
+    return Object.assign(
+      {
+        accountId,
+        orgId: orgIdentifier,
+        projectId: projectIdentifier,
+        buildId: buildIdentifier,
+        pipelineId: pipelineIdentifier,
+        report: 'junit' as const,
+        suite_name: executionSummary.name,
+        status,
+        sort: 'status',
+        order: 'ASC',
+        pageIndex,
+        pageSize: PAGE_SIZE
+      },
+      isUngroupedList ? { suite_name: executionSummary.name } : {},
+      optionalKeys
+    )
+  }, [
+    accountId,
+    orgIdentifier,
+    projectIdentifier,
+    buildIdentifier,
+    pipelineIdentifier,
+    executionSummary.name,
+    status,
+    pageIndex,
+    stageId,
+    stepId,
+    isUngroupedList
+  ]) as TestCaseSummaryQueryParams
 
   const { data, error, loading, refetch } = useTestCaseSummary({
     queryParams,

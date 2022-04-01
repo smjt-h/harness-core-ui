@@ -9,6 +9,5 @@
 declare const styles: {
   readonly alignRight: string
   readonly formLayout: string
-  readonly toolbar: string
 }
 export default styles

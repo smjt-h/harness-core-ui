@@ -6,7 +6,7 @@
  */
 
 import produce from 'immer'
-import { get, isEmpty, isUndefined, omit, omitBy, set } from 'lodash-es'
+import { cloneDeep, get, isEmpty, omit, set } from 'lodash-es'
 import React from 'react'
 import { useParams } from 'react-router-dom'
 import {
@@ -25,33 +25,27 @@ import { useQueryParams } from '@common/hooks'
 
 const StageTemplateCanvasWrapper = (_props: unknown, formikRef: TemplateFormRef) => {
   const {
-    state: { template, isLoading, isUpdated },
+    state: { template },
     updateTemplate,
     isReadonly
   } = React.useContext(TemplateContext)
   const { accountId, projectIdentifier, orgIdentifier } = useParams<ProjectPathProps>()
   const { branch, repoIdentifier } = useQueryParams<GitQueryParams>()
 
-  const createPipelineFromTemplate = React.useCallback(
+  const pipeline = React.useMemo(
     () =>
       produce({ ...DefaultPipeline }, draft => {
         if (!isEmpty(template.spec)) {
-          set(draft, 'stages[0].stage', { ...template.spec, name: DefaultNewStageName, identifier: DefaultNewStageId })
+          set(draft, 'stages[0].stage', cloneDeep(template.spec))
+          set(draft, 'stages[0].stage.name', DefaultNewStageName)
+          set(draft, 'stages[0].stage.identifier', DefaultNewStageId)
         }
       }),
     [template.spec]
   )
 
-  const [pipeline, setPipeline] = React.useState<PipelineInfoConfig>(createPipelineFromTemplate())
-
-  React.useEffect(() => {
-    if (!isLoading && !isUpdated) {
-      setPipeline(createPipelineFromTemplate())
-    }
-  }, [isLoading, isUpdated])
-
   const onUpdatePipeline = async (pipelineConfig: PipelineInfoConfig) => {
-    const stage = omitBy(omitBy(get(pipelineConfig, 'stages[0].stage'), isUndefined), isEmpty)
+    const stage = get(pipelineConfig, 'stages[0].stage')
     const processNode = omit(stage, 'name', 'identifier', 'description', 'tags')
     sanitize(processNode, { removeEmptyArray: false, removeEmptyObject: false, removeEmptyString: false })
     set(template, 'spec', processNode)

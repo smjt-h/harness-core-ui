@@ -29,7 +29,11 @@ export const sourceData = {
             },
             analysis: {
               liveMonitoring: { enabled: true },
-              deploymentVerification: { enabled: true, serviceInstanceFieldName: null, serviceInstanceMetricPath: '' },
+              deploymentVerification: {
+                enabled: true,
+                serviceInstanceFieldName: null,
+                serviceInstanceMetricPath: 'Individual Nodes|*|Errors per Minute'
+              },
               riskProfile: {
                 category: 'Errors',
                 metricType: 'ERROR',
@@ -409,6 +413,7 @@ export const appDMetricValue = {
   },
   riskCategory: 'Errors/ERROR',
   serviceInstance: null,
+  serviceInstanceMetricPath: 'Individual Nodes|*|Errors per Minute',
   sli: true
 }
 
@@ -452,7 +457,11 @@ export const onPreviousPayload = {
         metricDefinitions: [
           {
             analysis: {
-              deploymentVerification: { enabled: true, serviceInstanceFieldName: null, serviceInstanceMetricPath: '' },
+              deploymentVerification: {
+                enabled: true,
+                serviceInstanceFieldName: null,
+                serviceInstanceMetricPath: 'Individual Nodes|*|Errors per Minute'
+              },
               liveMonitoring: { enabled: true },
               riskProfile: {
                 category: 'Errors',
@@ -914,6 +923,7 @@ const appdMetricData = {
   },
   riskCategory: 'Errors/ERROR',
   serviceInstance: null,
+  serviceInstanceMetricPath: 'Individual Nodes|*|Errors per Minute',
   sli: true
 }
 
@@ -980,6 +990,7 @@ export const formikInitialData = {
   },
   riskCategory: 'Errors/ERROR',
   serviceInstance: null,
+  serviceInstanceMetricPath: 'Individual Nodes|*|Errors per Minute',
   showCustomMetric: true,
   sli: true,
   type: 'AppDynamics'

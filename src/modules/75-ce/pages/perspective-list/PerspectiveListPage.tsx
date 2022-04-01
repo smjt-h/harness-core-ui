@@ -17,11 +17,10 @@ import {
   FlexExpander,
   Page,
   Icon,
-  Color,
-  FontVariation,
   IconName,
   getErrorInfoFromErrorObject
 } from '@wings-software/uicore'
+import { Color, FontVariation } from '@harness/design-system'
 import { defaultTo, pick, sortBy } from 'lodash-es'
 import { useStrings } from 'framework/strings'
 import routes from '@common/RouteDefinitions'
@@ -632,7 +631,7 @@ const PerspectiveListPage: React.FC = () => {
               bottom: 'large'
             }}
           >
-            {getString('ce.perspectives.perspectiveCount', {
+            {getString('ce.common.totalCount', {
               count: filteredPerspectiveData.length
             })}
           </Text>

@@ -1,0 +1,61 @@
+// Jest Snapshot v1, https://goo.gl/fbAQLP
+
+exports[`HomePageTemplate should render 1`] = `
+<div>
+  <div
+    class="StyledProps--font StyledProps--main container"
+    style="background: transparent url() no-repeat;"
+  >
+    <div
+      class="Layout--vertical Layout--layout-spacing-medium StyledProps--main"
+    >
+      <h1
+        class="StyledProps--font StyledProps--font-h1 StyledProps--main StyledProps--font-weight-bold StyledProps--font-size-large StyledProps--color StyledProps--color-black100"
+      >
+        title
+      </h1>
+      <p
+        class="StyledProps--font StyledProps--main subTitle StyledProps--color"
+      >
+        subTitle
+      </p>
+      <a
+        class="bp3-button Button--button StyledProps--font StyledProps--main link StyledProps--color StyledProps--font StyledProps--font-size-normal Button--with-current-color Button--link"
+        href="https://ngdocs.harness.io/"
+        rel="noreferrer noopener"
+        role="button"
+        tabindex="0"
+        target="_blank"
+      >
+        <span
+          class="bp3-button-text"
+        >
+          documentText
+        </span>
+      </a>
+      <div
+        class="Layout--horizontal Layout--layout-spacing-large StyledProps--main StyledProps--flex"
+      >
+        <button
+          class="bp3-button bp3-large Button--button StyledProps--font StyledProps--main Button--with-current-color Button--iconOnly Button--variation Button--variation-primary"
+          type="button"
+        >
+          <span
+            class="bp3-button-text"
+          >
+            createProject
+          </span>
+        </button>
+        <p
+          class="StyledProps--font StyledProps--main StyledProps--font-size-medium StyledProps--color StyledProps--color-black"
+        >
+          orSelectExisting
+        </p>
+        <span
+          style="flex-grow: 1;"
+        />
+      </div>
+    </div>
+  </div>
+</div>
+`;

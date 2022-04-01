@@ -19,6 +19,7 @@ import { MonacoTextField } from '@common/components/MonacoTextField/MonacoTextFi
 import { useVariablesExpression } from '@pipeline/components/PipelineStudio/PiplineHooks/useVariablesExpression'
 
 import type { PolicyStepData } from './PolicyStepTypes'
+import { MultiTypePolicySetSelector } from './PolicySets/MultiTypePolicySetSelector/MultiTypePolicySetSelector'
 
 import stepCss from '@pipeline/components/PipelineSteps/Steps/Steps.module.scss'
 
@@ -50,6 +51,17 @@ export default function PolicyInputSetStep(props: {
           />
         </div>
       )}
+      {getMultiTypeFromValue(/* istanbul ignore next */ template?.spec?.policySets) === MultiTypeInputType.RUNTIME && (
+        <div className={cx(stepCss.formGroup, stepCss.alignStart)}>
+          <MultiTypePolicySetSelector
+            name={`${prefix}spec.policySets`}
+            label={getString('common.policiesSets.policyset')}
+            expressions={expressions}
+            allowableTypes={allowableTypes}
+            disabled={readonly}
+          />
+        </div>
+      )}
       {getMultiTypeFromValue(/* istanbul ignore next */ template?.spec?.policySpec?.payload) ===
         MultiTypeInputType.RUNTIME && (
         <div
@@ -69,15 +81,30 @@ export default function PolicyInputSetStep(props: {
             allowedTypes={allowableTypes}
             skipRenderValueInExpressionLabel
             disabled={readonly}
+            disableTypeSelection={readonly}
             expressionRender={
               /* istanbul ignore next */ () => {
                 return (
-                  <MonacoTextField name={`${prefix}spec.policySpec.payload`} expressions={expressions} height={300} />
+                  <MonacoTextField
+                    name={`${prefix}spec.policySpec.payload`}
+                    expressions={expressions}
+                    height={300}
+                    disabled={readonly}
+                    fullScreenAllowed
+                    fullScreenTitle={getString('common.payload')}
+                  />
                 )
               }
             }
           >
-            <MonacoTextField name={`${prefix}spec.policySpec.payload`} expressions={expressions} height={300} />
+            <MonacoTextField
+              name={`${prefix}spec.policySpec.payload`}
+              expressions={expressions}
+              height={300}
+              disabled={readonly}
+              fullScreenAllowed
+              fullScreenTitle={getString('common.payload')}
+            />
           </MultiTypeFieldSelector>
         </div>
       )}

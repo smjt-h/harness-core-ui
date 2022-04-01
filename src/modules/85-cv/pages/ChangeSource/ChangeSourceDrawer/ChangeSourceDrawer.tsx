@@ -6,7 +6,8 @@
  */
 
 import React, { useCallback, useMemo } from 'react'
-import { Text, Formik, FormInput, Container, Color, ThumbnailSelect } from '@wings-software/uicore'
+import { Text, Formik, FormInput, Container, ThumbnailSelect } from '@wings-software/uicore'
+import { Color } from '@harness/design-system'
 import type { FormikProps } from 'formik'
 import { useParams } from 'react-router-dom'
 import cx from 'classnames'
@@ -126,7 +127,12 @@ export function ChangeSourceDrawer({
                 width="300px"
               >
                 <div className={style.alignHorizontal}>
-                  <Text color={Color.BLACK} font={'small'} margin={{ bottom: 'small' }}>
+                  <Text
+                    color={Color.BLACK}
+                    font={'small'}
+                    margin={{ bottom: 'small' }}
+                    tooltipProps={{ dataTooltipId: 'changeSourceProviderType' }}
+                  >
                     {getString('connectors.docker.dockerProvideType')}
                   </Text>
                   <FormInput.Select

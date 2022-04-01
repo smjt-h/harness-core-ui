@@ -16,15 +16,14 @@ import {
   StepProps,
   SelectOption,
   Container,
-  Color,
   ModalErrorHandler,
   ModalErrorHandlerBinding,
   ButtonVariation,
   IconName,
-  FontVariation,
   Heading
 } from '@wings-software/uicore'
 import * as Yup from 'yup'
+import { FontVariation, Color } from '@harness/design-system'
 import { DescriptionTags } from '@common/components/NameIdDescriptionTags/NameIdDescriptionTags'
 import type { Project } from 'services/cd-ng'
 import ProjectCard from '@projects-orgs/components/ProjectCard/ProjectCard'
@@ -33,6 +32,8 @@ import { useStrings } from 'framework/strings'
 import ProjectsEmptyState from '@projects-orgs/pages/projects/projects-empty-state.png'
 import { NameSchema, IdentifierSchema } from '@common/utils/Validation'
 import { useAppStore } from 'framework/AppStore/AppStoreContext'
+import { useTelemetry } from '@common/hooks/useTelemetry'
+import { Category, ProjectActions } from '@common/constants/TrackingConstants'
 import css from './Steps.module.scss'
 
 interface ProjectModalData {
@@ -56,6 +57,7 @@ interface AboutPageData extends Project {
 }
 
 const ProjectForm: React.FC<StepProps<Project> & ProjectModalData> = props => {
+  const { trackEvent } = useTelemetry()
   const {
     data: projectData,
     title,
@@ -93,6 +95,10 @@ const ProjectForm: React.FC<StepProps<Project> & ProjectModalData> = props => {
         orgIdentifier: Yup.string().required(getString('validation.orgValidation'))
       })}
       onSubmit={(values: AboutPageData) => {
+        trackEvent(ProjectActions.SaveCreateProject, {
+          category: Category.PROJECT,
+          ...values
+        })
         onComplete(values)
       }}
     >

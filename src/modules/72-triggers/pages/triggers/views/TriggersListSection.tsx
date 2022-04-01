@@ -11,7 +11,6 @@ import { useParams } from 'react-router-dom'
 import type { CellProps, Renderer } from 'react-table'
 import {
   Button,
-  Color,
   Layout,
   Popover,
   Text,
@@ -25,6 +24,7 @@ import {
   useToaster,
   TableV2
 } from '@wings-software/uicore'
+import { Color } from '@harness/design-system'
 import copy from 'clipboard-copy'
 import { Classes, Intent, Menu, Position } from '@blueprintjs/core'
 import { isUndefined, isEmpty, sum } from 'lodash-es'
@@ -348,7 +348,7 @@ const RenderWebhookIcon = ({
   if (webhookSourceRepo?.toLowerCase() === GitSourceProviders.CUSTOM.value.toLowerCase()) {
     const curlCommand = `curl -X POST ${
       (webhookSecret && `-H 'X-Harness-Webhook-Token: ${webhookSecret}'`) || ''
-    } -H 'content-type: application/json' --url ${webhookUrl} -d '{"sample_key": "sample_value"}'`
+    } -H 'content-type: application/json' --url '${webhookUrl}' -d '{"sample_key": "sample_value"}'`
 
     return (
       <Popover

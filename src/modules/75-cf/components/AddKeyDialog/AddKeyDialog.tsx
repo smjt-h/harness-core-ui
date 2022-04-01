@@ -23,6 +23,7 @@ import { useModalHook } from '@harness/use-modal'
 import { AddAPIKeyQueryParams, ApiKey, useAddAPIKey } from 'services/cf/index'
 import { useEnvStrings } from '@cf/hooks/environment'
 import { useToaster } from '@common/exports'
+import { getIdentifierFromName } from '@common/utils/StringUtils'
 import { EnvironmentSDKKeyType, getErrorMessage } from '@cf/utils/CFUtils'
 import type { EnvironmentResponseDTO } from 'services/cd-ng'
 import RbacButton from '@rbac/components/Button/Button'
@@ -74,9 +75,9 @@ const AddKeyDialog: React.FC<Props> = ({ disabled, primary, environment, onCreat
 
   const getTypeOption = (value: string) => keyTypes.find(k => k.value === value) || keyTypes[0]
 
-  const handleSubmit = (values: KeyValues) => {
+  const handleSubmit = (values: KeyValues): void => {
     createKey({
-      identifier: values.name,
+      identifier: getIdentifierFromName(values.name),
       name: values.name,
       type: values.type === 'server' ? 'Server' : 'Client'
     })

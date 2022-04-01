@@ -16,9 +16,9 @@ import {
   FormikForm,
   Text,
   Container,
-  Color,
   Label
 } from '@wings-software/uicore'
+import { Color } from '@harness/design-system'
 import { useStrings } from 'framework/strings'
 import List from '@common/components/List/List'
 import { FormMultiTypeDurationField } from '@common/components/MultiTypeDuration/MultiTypeDuration'
@@ -35,9 +35,11 @@ export default function TerraformInputStep<T extends TerraformData = TerraformDa
   const { getString } = useStrings()
   const { inputSetData, readonly, path, allowableTypes, onUpdate, onChange } = props
   const { expressions } = useVariablesExpression()
+  /* istanbul ignore next */
   const onUpdateRef = (arg: TerraformData): void => {
     onUpdate?.(arg as T)
   }
+  /* istanbul ignore next */
   const onChangeRef = (arg: TerraformData): void => {
     onChange?.(arg as T)
   }
@@ -48,6 +50,7 @@ export default function TerraformInputStep<T extends TerraformData = TerraformDa
         <div className={cx(stepCss.formGroup, stepCss.md)}>
           <FormInput.MultiTextInput
             name={`${path}.spec.provisionerIdentifier`}
+            placeholder={getString('pipeline.terraformStep.provisionerIdentifier')}
             label={getString('pipelineSteps.provisionerIdentifier')}
             disabled={readonly}
             multiTextInputProps={{

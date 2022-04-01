@@ -6,17 +6,35 @@
  */
 
 /* eslint-disable react/display-name */
-import React from 'react'
+import React, { useEffect } from 'react'
 import { render, RenderResult, screen, waitFor } from '@testing-library/react'
 import userEvent from '@testing-library/user-event'
 import { TestWrapper } from '@common/utils/testUtils'
 import * as cfServices from 'services/cf'
 import FlagSettingsPanel, { FlagSettingsPanelProps } from '../FlagSettingsPanel'
-import { mockFeatures, mockSegmentFlags, mockTargetGroup } from './mocks'
+import type { FlagSettingsFormProps } from '../FlagSettingsForm'
+import { mockFeatures, mockSegmentFlags, mockTargetGroup } from '../../../__tests__/mocks'
+import type { AddFlagsToTargetGroupDialogProps } from '../AddFlagsToTargetGroupDialog/AddFlagsToTargetGroupDialog'
 
 jest.mock('../FlagSettingsForm', () => ({
   __esModule: true,
-  default: () => <span data-testid="flag-settings-form">Flag Settings Form</span>
+  default: ({ onChange, openAddFlagDialog }: Pick<FlagSettingsFormProps, 'onChange' | 'openAddFlagDialog'>) => (
+    <div data-testid="flag-settings-form">
+      <button onClick={() => onChange()}>Trigger onChange</button>
+      <button onClick={() => openAddFlagDialog()}>Trigger openAddFlagDialog</button>
+    </div>
+  )
+}))
+
+jest.mock('../AddFlagsToTargetGroupDialog/AddFlagsToTargetGroupDialog', () => ({
+  __esModule: true,
+  default: function AddFlagsToTargetGroupDialog({ onChange }: Pick<AddFlagsToTargetGroupDialogProps, 'onChange'>) {
+    useEffect(() => {
+      onChange()
+    }, [onChange])
+
+    return null
+  }
 }))
 
 jest.mock('@common/components/ContainerSpinner/ContainerSpinner', () => ({
@@ -105,5 +123,49 @@ describe('FlagSettingsPanel', () => {
 
     expect(screen.queryByTestId('flag-settings-form')).not.toBeInTheDocument()
     expect(screen.getByText('cf.segmentDetail.noFlags')).toBeInTheDocument()
+  })
+
+  test('it should display a success message and refetch target group flags when a new flag is added', async () => {
+    const refetchMock = jest.fn()
+    getSegmentFlagsMock.mockReturnValue({
+      data: mockSegmentFlags,
+      loading: false,
+      error: null,
+      refetch: refetchMock
+    } as any)
+
+    renderComponent()
+
+    expect(refetchMock).not.toHaveBeenCalled()
+    expect(screen.queryByText('cf.segmentDetail.flagsAddedSuccessfully')).not.toBeInTheDocument()
+
+    userEvent.click(screen.getByRole('button', { name: 'Trigger openAddFlagDialog' }))
+
+    await waitFor(() => {
+      expect(refetchMock).toHaveBeenCalled()
+      expect(screen.getByText('cf.segmentDetail.flagsAddedSuccessfully')).toBeInTheDocument()
+    })
+  })
+
+  test('it should display a success message and refetch target group flags when existing flags are updated', async () => {
+    const refetchMock = jest.fn()
+    getSegmentFlagsMock.mockReturnValue({
+      data: mockSegmentFlags,
+      loading: false,
+      error: null,
+      refetch: refetchMock
+    } as any)
+
+    renderComponent()
+
+    expect(refetchMock).not.toHaveBeenCalled()
+    expect(screen.queryByText('cf.segmentDetail.updateSuccessful')).not.toBeInTheDocument()
+
+    userEvent.click(screen.getByRole('button', { name: 'Trigger onChange' }))
+
+    await waitFor(() => {
+      expect(refetchMock).toHaveBeenCalled()
+      expect(screen.getByText('cf.segmentDetail.updateSuccessful')).toBeInTheDocument()
+    })
   })
 })

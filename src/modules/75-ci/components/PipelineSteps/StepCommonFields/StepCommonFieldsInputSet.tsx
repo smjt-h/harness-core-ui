@@ -6,7 +6,8 @@
  */
 
 import React from 'react'
-import { Text, getMultiTypeFromValue, MultiTypeInputType, Container, Color, Layout } from '@wings-software/uicore'
+import { Text, getMultiTypeFromValue, MultiTypeInputType, Container, Layout } from '@wings-software/uicore'
+import { Color } from '@harness/design-system'
 import cx from 'classnames'
 import { isEmpty } from 'lodash-es'
 import { connect } from 'formik'
@@ -48,11 +49,6 @@ function StepCommonFieldsInputSet<T>(props: StepCommonFieldsInputSetProps<T>): J
   const isTimeoutRuntime = getMultiTypeFromValue(template?.timeout) === MultiTypeInputType.RUNTIME
 
   const stepCss = stepViewType === StepViewType.DeploymentForm ? css.sm : css.lg
-
-  // If neither value is runtime then return null
-  if (!isLimitCPURuntime && !isTimeoutRuntime && !isRunAsUserRuntime) {
-    return null
-  }
 
   const renderMultiTypeTextField = ({
     name,
@@ -136,7 +132,7 @@ function StepCommonFieldsInputSet<T>(props: StepCommonFieldsInputSetProps<T>): J
               placeholder: getString('select'),
               multiTypeInputProps: {
                 expressions,
-                selectProps: { addClearBtn: true, items: GetShellOptions() },
+                selectProps: { addClearBtn: true, items: GetShellOptions(getString) },
                 allowableTypes: AllMultiTypeInputTypesForInputSet
               },
               disabled: readonly

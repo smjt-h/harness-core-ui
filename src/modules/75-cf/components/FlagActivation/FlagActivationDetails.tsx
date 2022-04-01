@@ -6,12 +6,13 @@
  */
 
 import React, { ReactElement } from 'react'
-import { useParams, Link } from 'react-router-dom'
+import { Link, useParams } from 'react-router-dom'
 import moment from 'moment'
-import { Color, Layout, Text, FlexExpander, Container, Heading, FontVariation } from '@harness/uicore'
+import { Container, FlexExpander, Heading, Layout, Text } from '@harness/uicore'
+import { Color, FontVariation } from '@harness/design-system'
 import routes from '@common/RouteDefinitions'
-import { useStrings } from 'framework/strings'
 import type { StringKeys } from 'framework/strings'
+import { useStrings } from 'framework/strings'
 import StringWithTooltip from '@common/components/StringWithTooltip/StringWithTooltip'
 import {
   DeleteFeatureFlagQueryParams,
@@ -209,7 +210,8 @@ const FlagActivationDetails: React.FC<FlagActivationDetailsProps> = props => {
 
         <Layout.Vertical margin={{ top: 'medium', bottom: 'xlarge' }}>
           {renderTime(featureFlag.createdAt, 'cf.featureFlags.createdDate')}
-          {renderTime(featureFlag.modifiedAt, 'cf.featureFlags.modifiedDate', { paddingTop: 'var(--spacing-xsmall)' })}
+          {featureFlag.modifiedAt &&
+            renderTime(featureFlag.modifiedAt, 'cf.featureFlags.modifiedDate', { paddingTop: 'var(--spacing-xsmall)' })}
         </Layout.Vertical>
 
         <VariationsList

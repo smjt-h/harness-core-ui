@@ -188,10 +188,15 @@ featureFlags:
     following: to following
     serveToFollowing: 'serve to following:'
     onRequest: On Request
-    onRequestVariation: 'On Request, check for condition and serve variation'
-    specificTargeting: 'Specific Targeting'
-    toTargetGroups: 'to Target Groups'
-    toTargets: 'to Targets'
+    onRequestVariation: On Request, check for condition and serve variation
+    addTargeting: Add Targeting
+    specificTargeting: Specific Targeting
+    toTargetGroups: To Target Groups
+    toTargets: To Targets
+    validation:
+      selectTargetGroup: Please select a Target Group
+      valueRequired: Please enter a value
+      valueMustAddTo100: Values must add up to 100
   flagFilters:
     environment: '{{ $.environment }}'
     envDefault: Production (Default)
@@ -472,6 +477,13 @@ segmentDetail:
   headingVariation: VARIATION
   selectVariation: select variation
   variationIsRequired: Variation is required
+  addFlagNameToTargetGroup: 'Add {{ flagName }} to Target Group'
+  addFlagToTargetGroup: Add Flag to Target Group
+  addFlags: 'Add {{ flagCount }} Flags'
+  addFlag: Add Flag
+  noFlagsAvailable: No flags available
+  updateSuccessful: Update successful
+  flagsAddedSuccessfully: Flag(s) added successfully
 selectFlagsModal:
   empty: No feature flags found.
   searchPlaceholder: Search for Flag by name or description
@@ -492,6 +504,8 @@ gitSync:
   tryAgain: Try Again
   goToGit: Go to Git to fix issue
   invalidYaml: 'We are unable to render your {{{ flagsYamlFilename }}} file because it is invalid. Fix the following issues on Git and try again.'
+policyEvaluations:
+  failedToSave: Flag cannot be saved due to the policy evaluation failures
 planEnforcement:
   upgradeRequiredDev: Total Developers managing feature flags has exceeded the Subscribed developer count.
   upgradeRequiredMau: 'Total Monthly Active Users (MAU) has reached the free plan limit. Upgrade to manage unlimited MAUs.'

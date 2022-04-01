@@ -29,21 +29,27 @@ import { Segment, usePatchSegment } from 'services/cf'
 import { CF_DEFAULT_PAGE_SIZE } from '@cf/utils/CFUtils'
 import { NoData } from '@cf/components/NoData/NoData'
 import imageUrl from '@cf/images/Feature_Flags_Teepee.svg'
-import FlagDetailsCell from './FlagDetailsCell'
-import VariationsCell from './VariationsCell'
+import type { FlagSettingsFormData, FlagSettingsFormRow, TargetGroupFlagsMap } from '../../TargetGroupDetailPage.types'
+import FlagDetailsCell from './FlagsListing/FlagDetailsCell'
+import VariationsCell from './FlagsListing/VariationsCell'
 import FlagSettingsFormButtons from './FlagSettingsFormButtons'
 import { getFlagSettingsInstructions } from './flagSettingsInstructions'
-import type { FlagSettingsFormData, FlagSettingsFormRow, TargetGroupFlagsMap } from './FlagSettingsPanel.types'
 
 import css from './FlagSettingsForm.module.scss'
 
 export interface FlagSettingsFormProps {
   targetGroup: Segment
   targetGroupFlagsMap: TargetGroupFlagsMap
-  refresh: () => void
+  onChange: () => void
+  openAddFlagDialog: () => void
 }
 
-const FlagSettingsForm: FC<FlagSettingsFormProps> = ({ targetGroup, targetGroupFlagsMap, refresh }) => {
+const FlagSettingsForm: FC<FlagSettingsFormProps> = ({
+  targetGroup,
+  targetGroupFlagsMap,
+  onChange,
+  openAddFlagDialog
+}) => {
   const { getString } = useStrings()
   const [pageIndex, setPageIndex] = useState<number>(0)
   const [searchTerm, setSearchTerm] = useState<string>('')
@@ -65,13 +71,13 @@ const FlagSettingsForm: FC<FlagSettingsFormProps> = ({ targetGroup, targetGroupF
   const onSubmit = useCallback(
     async (values: FlagSettingsFormData) => {
       if (!submitting) {
-        const instructions = getFlagSettingsInstructions(values.flags, targetGroupFlagsMap)
-
         setSubmitting(true)
+
+        const instructions = getFlagSettingsInstructions(values.flags, targetGroupFlagsMap)
 
         try {
           await patchTargetGroup({ instructions })
-          refresh()
+          onChange()
         } catch (e) {
           showError(getErrorInfoFromErrorObject(e))
         }
@@ -79,16 +85,16 @@ const FlagSettingsForm: FC<FlagSettingsFormProps> = ({ targetGroup, targetGroupF
         setSubmitting(false)
       }
     },
-    [patchTargetGroup, refresh, showError, submitting, targetGroupFlagsMap]
+    [patchTargetGroup, onChange, showError, submitting, targetGroupFlagsMap]
   )
 
   const initialValues = useMemo<FlagSettingsFormData>(
     () => ({
       flags: Object.values(targetGroupFlagsMap).reduce<FlagSettingsFormData['flags']>(
-        (rows, { identifier, variation }) => {
-          rows[identifier] = { identifier, variation }
-          return rows
-        },
+        (rows, { identifier, variation }) => ({
+          ...rows,
+          [identifier]: { identifier, variation }
+        }),
         {}
       )
     }),
@@ -97,18 +103,18 @@ const FlagSettingsForm: FC<FlagSettingsFormProps> = ({ targetGroup, targetGroupF
 
   const validationSchema = useMemo(
     () =>
-      yup.object().shape({
+      yup.object({
         flags: yup.lazy(obj =>
           yup
             .object()
             .shape(
               Object.keys(obj as FlagSettingsFormData['flags']).reduce<Record<string, ObjectSchema>>(
-                (objShape, key) => {
-                  objShape[key] = yup.object().shape({
+                (objShape, key) => ({
+                  ...objShape,
+                  [key]: yup.object({
                     variation: yup.string().trim().required(getString('cf.segmentDetail.variationIsRequired'))
                   })
-                  return objShape
-                },
+                }),
                 {}
               )
             )
@@ -133,14 +139,21 @@ const FlagSettingsForm: FC<FlagSettingsFormProps> = ({ targetGroup, targetGroupF
         const filteredFlags = !searchTerm
           ? Object.values(values.flags)
           : Object.values(values.flags).filter(flag =>
-              targetGroupFlagsMap[flag.identifier].flag.name
+              (targetGroupFlagsMap[flag.identifier].flag?.name ?? '')
                 .toLocaleLowerCase()
                 .includes(searchTerm.toLocaleLowerCase())
             )
 
+        const pagedFlags = filteredFlags.slice(startIndex, startIndex + CF_DEFAULT_PAGE_SIZE)
+
         return (
           <>
-            <Page.SubHeader className={css.toolbar}>
+            <Page.SubHeader>
+              <Button
+                variation={ButtonVariation.SECONDARY}
+                text={getString('cf.segmentDetail.addFlag')}
+                onClick={openAddFlagDialog}
+              />
               <ExpandingSearchInput alwaysExpanded name="flag-search" onChange={text => setSearchTerm(text)} />
             </Page.SubHeader>
 
@@ -148,14 +161,14 @@ const FlagSettingsForm: FC<FlagSettingsFormProps> = ({ targetGroup, targetGroupF
               {(!searchTerm || filteredFlags.length > 0) && (
                 <Container padding="xlarge">
                   <TableV2<FlagSettingsFormRow>
-                    data={filteredFlags.slice(startIndex, startIndex + CF_DEFAULT_PAGE_SIZE)}
+                    data={pagedFlags}
                     columns={[
                       {
                         Header: getString('cf.segmentDetail.headingFeatureFlag'),
                         id: 'flagDetails',
                         width: '60%',
                         Cell: ({ row }: Cell<FlagSettingsFormRow>) => (
-                          <FlagDetailsCell flag={targetGroupFlagsMap[row.original.identifier]} />
+                          <FlagDetailsCell flag={targetGroupFlagsMap[row.original.identifier].flag} />
                         )
                       },
                       {
@@ -164,7 +177,7 @@ const FlagSettingsForm: FC<FlagSettingsFormProps> = ({ targetGroup, targetGroupF
                         width: '35%',
                         Cell: ({ row }: Cell<FlagSettingsFormRow>) => (
                           <VariationsCell
-                            flag={targetGroupFlagsMap[row.original.identifier]}
+                            flag={targetGroupFlagsMap[row.original.identifier].flag}
                             fieldPrefix={`flags.${row.original.identifier}`}
                           />
                         )

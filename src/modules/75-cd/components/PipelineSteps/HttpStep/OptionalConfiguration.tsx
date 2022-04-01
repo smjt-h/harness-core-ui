@@ -77,9 +77,14 @@ export default function OptionalConfiguration(props: {
                   </div>
                   {formValues.spec.headers.map(({ id }: HttpStepHeaderConfig, i: number) => (
                     <div className={css.headerRow} key={id}>
-                      <FormInput.Text name={`spec.headers[${i}].key`} disabled={readonly} />
+                      <FormInput.Text
+                        name={`spec.headers[${i}].key`}
+                        placeholder={getString('pipeline.keyPlaceholder')}
+                        disabled={readonly}
+                      />
                       <FormInput.MultiTextInput
                         name={`spec.headers[${i}].value`}
+                        placeholder={getString('common.valuePlaceholder')}
                         disabled={readonly}
                         multiTextInputProps={{
                           allowableTypes: allowableTypes,
@@ -133,9 +138,14 @@ export default function OptionalConfiguration(props: {
                   {((formValues.spec.outputVariables as HttpStepOutputVariable[]) || []).map(
                     ({ id }: HttpStepOutputVariable, i: number) => (
                       <div className={css.responseMappingRow} key={id}>
-                        <FormInput.Text name={`spec.outputVariables[${i}].name`} disabled={readonly} />
+                        <FormInput.Text
+                          name={`spec.outputVariables[${i}].name`}
+                          placeholder={getString('name')}
+                          disabled={readonly}
+                        />
                         <FormInput.MultiTextInput
                           name={`spec.outputVariables[${i}].value`}
+                          placeholder={getString('valueLabel')}
                           disabled={readonly}
                           multiTextInputProps={{
                             allowableTypes: allowableTypes,

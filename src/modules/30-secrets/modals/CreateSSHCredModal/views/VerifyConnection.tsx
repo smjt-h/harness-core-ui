@@ -10,6 +10,8 @@ import * as Yup from 'yup'
 import { Button, Container, Formik, FormikForm, FormInput, Text } from '@wings-software/uicore'
 import type { SSHKeyValidationMetadata as ValidationMetadata } from 'services/cd-ng'
 import { useStrings } from 'framework/strings'
+import { useTelemetry } from '@common/hooks/useTelemetry'
+import { Category, SecretActions } from '@common/constants/TrackingConstants'
 import VerifySecret, { Status } from './VerifySecret'
 
 interface VerifyConnectionProps {
@@ -21,6 +23,7 @@ const VerifyConnection: React.FC<VerifyConnectionProps> = ({ identifier, closeMo
   const [validationMetadata, setValidationMetadata] = useState<ValidationMetadata>()
   const [finishStatus, setFinishStatus] = useState<Status | undefined>()
   const { getString } = useStrings()
+  const { trackEvent } = useTelemetry()
   return (
     <>
       <Container width={300}>
@@ -88,6 +91,11 @@ const VerifyConnection: React.FC<VerifyConnectionProps> = ({ identifier, closeMo
                 <Button
                   text={getString('finish').toUpperCase()}
                   onClick={() => {
+                    trackEvent(SecretActions.SaveCreateSecret, {
+                      category: Category.SECRET,
+                      finishStatus,
+                      validationMetadata
+                    })
                     closeModal?.()
                   }}
                 />

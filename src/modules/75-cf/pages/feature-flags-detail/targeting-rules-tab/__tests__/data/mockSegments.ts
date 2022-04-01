@@ -52,6 +52,15 @@ const mockSegment: Segment[] = [
     included: [],
     name: 'target_group_3',
     rules: []
+  },
+  {
+    createdAt: 1646810499477,
+    environment: '',
+    excluded: [],
+    identifier: 'targetGroup6',
+    included: [],
+    name: 'target_group_6',
+    rules: []
   }
 ]
 

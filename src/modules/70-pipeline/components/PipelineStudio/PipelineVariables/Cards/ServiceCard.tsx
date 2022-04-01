@@ -6,10 +6,9 @@
  */
 
 import React from 'react'
-import { Color, FontVariation, MultiTypeInputType, NestedAccordionPanel, Text } from '@wings-software/uicore'
-
-import { isEmpty, lowerCase, set } from 'lodash-es'
-import produce from 'immer'
+import { MultiTypeInputType, NestedAccordionPanel, Text } from '@wings-software/uicore'
+import { Color, FontVariation } from '@harness/design-system'
+import { isEmpty, lowerCase } from 'lodash-es'
 import type { ServiceConfig, ServiceSpec, StageElementConfig } from 'services/cd-ng'
 import { StepType } from '@pipeline/components/PipelineSteps/PipelineStepInterface'
 import { StepWidget } from '@pipeline/components/AbstractSteps/StepWidget'
@@ -38,9 +37,8 @@ export interface ServiceCardProps {
   stepsFactory: AbstractStepFactory
 }
 
-export interface ServiceCardPanelProps extends Omit<ServiceCardProps, 'onUpdateServiceConfig'> {
+export interface ServiceCardPanelProps extends ServiceCardProps {
   originalStage: StageElementConfig
-  updateStage: (stage: StageElementConfig) => Promise<void>
 }
 
 export function ServiceCard(props: ServiceCardProps): React.ReactElement {
@@ -93,26 +91,7 @@ export function ServiceCard(props: ServiceCardProps): React.ReactElement {
 
 export function ServiceCardPanel(props: ServiceCardPanelProps): React.ReactElement {
   const { getString } = useStrings()
-  const { updateStage, originalStage, ...rest } = props
-
-  const onUpdateServiceConfig = React.useCallback(
-    (serviceSpec: ServiceSpec) => {
-      updateStage(
-        produce(originalStage, draft => {
-          if (serviceSpec.artifacts) {
-            set(draft, 'spec.serviceConfig.serviceDefinition.spec.artifacts', serviceSpec.artifacts)
-          }
-          if (serviceSpec.manifests) {
-            set(draft, 'spec.serviceConfig.serviceDefinition.spec.manifest', serviceSpec.manifests)
-          }
-          if (serviceSpec.variables) {
-            set(draft, 'spec.serviceConfig.serviceDefinition.spec.variables', serviceSpec.variables)
-          }
-        })
-      )
-    },
-    [originalStage, updateStage]
-  )
+  const { onUpdateServiceConfig, originalStage, ...rest } = props
 
   return (
     <NestedAccordionPanel

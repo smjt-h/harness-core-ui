@@ -6,8 +6,9 @@
  */
 
 import React, { useEffect, useMemo } from 'react'
-import { Container, FormInput, Layout, SelectOption, Utils, Color, Text } from '@wings-software/uicore'
+import { Container, FormInput, Layout, SelectOption, Utils, Text } from '@wings-software/uicore'
 import { useParams } from 'react-router-dom'
+import { Color } from '@harness/design-system'
 import type { FormikProps } from 'formik'
 import { useStrings } from 'framework/strings'
 import { useGetServicesFromPagerDuty } from 'services/cv'
@@ -85,32 +86,23 @@ export default function PageDutyChangeSource({
             placeholder={getString('cv.healthSource.connectors.selectConnector', {
               sourceType: formik?.values?.type
             })}
-            label={
-              <Text color={Color.BLACK} font={'small'} margin={{ bottom: 'small' }}>
-                {getString('connectors.selectConnector')}
-              </Text>
-            }
+            label={getString('connectors.selectConnector')}
+            tooltipProps={{ dataTooltipId: 'selectPageDutyConnector' }}
           />
         </div>
       </Container>
       {formik?.values?.spec?.connectorRef && (
         <Container margin={{ bottom: 'large' }} width={'400px'}>
-          <Layout.Horizontal spacing={'medium'} className={style.pagerDutyServiceTitle}>
-            <Text color={Color.BLACK} font={'small'}>
-              {getString('cv.changeSource.PageDuty.pagerDutyService')}
-            </Text>
-            {/* <Tooltip content={'to be defined'}>
-              <Icon name={'info'} />
-            </Tooltip> */}
-          </Layout.Horizontal>
           <FormInput.Select
             disabled={isEdit}
             name="spec.pagerDutyServiceId"
+            label={getString('cv.changeSource.PageDuty.pagerDutyService')}
             placeholder={
               loadingPagerdutyServices
                 ? getString('loading')
                 : getString('cv.changeSource.PageDuty.selectPagerDutyService')
             }
+            tooltipProps={{ dataTooltipId: 'pagerDutyService' }}
             items={pagerDutyServiceOptions}
           />
           {!pagerDutyServiceOptions.length && !loadingPagerdutyServices && (
