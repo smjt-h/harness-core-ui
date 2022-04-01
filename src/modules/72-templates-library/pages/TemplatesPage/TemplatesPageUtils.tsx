@@ -129,23 +129,25 @@ export const getIconForTemplate = (
   getString: UseStringsReturn['getString'],
   template?: NGTemplateInfoConfigWithGitDetails | TemplateSummaryResponse
 ): IconName | undefined => {
-  const childType =
-    (template as TemplateSummaryResponse)?.childType || get(template as NGTemplateInfoConfigWithGitDetails, 'spec.type')
-  if (childType) {
-    const templateTye =
-      (template as TemplateSummaryResponse)?.templateEntityType ||
-      (template as NGTemplateInfoConfigWithGitDetails)?.type
-    switch (templateTye) {
-      case TemplateType.Step:
-        return factory.getStepIcon(childType)
-      case TemplateType.Stage:
-        return stagesCollection.getStageAttributes(childType, getString)?.icon
-      case TemplateType.Pipeline:
-        return 'pipeline'
-      default:
-        return undefined
-    }
+  const templateTye =
+    (template as TemplateSummaryResponse)?.templateEntityType || (template as NGTemplateInfoConfigWithGitDetails)?.type
+  if (templateTye === TemplateType.Pipeline) {
+    return 'pipeline'
   } else {
-    return undefined
+    const childType =
+      (template as TemplateSummaryResponse)?.childType ||
+      get(template as NGTemplateInfoConfigWithGitDetails, 'spec.type')
+    if (childType) {
+      switch (templateTye) {
+        case TemplateType.Step:
+          return factory.getStepIcon(childType)
+        case TemplateType.Stage:
+          return stagesCollection.getStageAttributes(childType, getString)?.icon
+        default:
+          return undefined
+      }
+    } else {
+      return undefined
+    }
   }
 }
