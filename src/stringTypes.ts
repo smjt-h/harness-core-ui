@@ -3812,6 +3812,7 @@ export interface StringsMap {
   'ce.co.autoStoppingRule.configuration.asgModal.title': string
   'ce.co.autoStoppingRule.configuration.asgSelectionInfoText': string
   'ce.co.autoStoppingRule.configuration.ecsModal.emptyDescription': string
+  'ce.co.autoStoppingRule.configuration.ecsModal.labels.selectCluster': string
   'ce.co.autoStoppingRule.configuration.ecsModal.title': string
   'ce.co.autoStoppingRule.configuration.igModal.gcpFiltersNotSelectedDescription': string
   'ce.co.autoStoppingRule.configuration.igModal.title': string
@@ -3819,8 +3820,17 @@ export interface StringsMap {
   'ce.co.autoStoppingRule.configuration.instanceModal.gcpEmptyInstancesDescription': string
   'ce.co.autoStoppingRule.configuration.instanceModal.gcpFiltersNotSelectedDescription': string
   'ce.co.autoStoppingRule.configuration.instanceModal.gcpZoneFilterNotSelectedDescription': string
+  'ce.co.autoStoppingRule.configuration.instanceModal.header': string
+  'ce.co.autoStoppingRule.configuration.instanceModal.labels.selectRegion': string
+  'ce.co.autoStoppingRule.configuration.instanceModal.labels.selectTagKey': string
+  'ce.co.autoStoppingRule.configuration.instanceModal.labels.selectTagVal': string
+  'ce.co.autoStoppingRule.configuration.instanceModal.labels.selectTags': string
   'ce.co.autoStoppingRule.configuration.instanceModal.rgEmptyDescription': string
   'ce.co.autoStoppingRule.configuration.instanceModal.rgEmptyInstancesDescription': string
+  'ce.co.autoStoppingRule.configuration.kubernetesModal.createNewConnectorBtn': string
+  'ce.co.autoStoppingRule.configuration.kubernetesModal.infoText1': string
+  'ce.co.autoStoppingRule.configuration.kubernetesModal.infoText2': string
+  'ce.co.autoStoppingRule.configuration.kubernetesModal.title': string
   'ce.co.autoStoppingRule.configuration.rdsModal.emptyDescription': string
   'ce.co.autoStoppingRule.configuration.rdsModal.title': string
   'ce.co.autoStoppingRule.configuration.step1.form.idleTime.label': string
@@ -4068,6 +4078,7 @@ export interface StringsMap {
   'ce.common.emissionUnitHTML': string
   'ce.common.newBudget': string
   'ce.common.or': string
+  'ce.common.refresh': string
   'ce.common.spendTillDate': string
   'ce.common.totalCount': string
   'ce.connector.AWS.crossAccountRole.arn': string

@@ -7,24 +7,10 @@
  **/
 // this is an auto-generated file, do not update this manually
 declare const styles: {
-  readonly borderBtn: string
-  readonly confirmText: string
-  readonly ctaContainer: string
-  readonly flex: string
-  readonly identifier: string
-  readonly infoSection: string
-  readonly layout: string
-  readonly link: string
-  readonly name: string
-  readonly radioSelector: string
+  readonly emptyLabel: string
+  readonly filterLabel: string
   readonly searchAndFilterWrapper: string
   readonly searchContainer: string
   readonly sectionSeparator: string
-  readonly table: string
-  readonly testBtn: string
-  readonly testConnectionPop: string
-  readonly tooltip: string
-  readonly viewDetails: string
-  readonly wrapper: string
 }
 export default styles

@@ -18,16 +18,17 @@ import {
   Button,
   Icon,
   TableV2,
-  Select,
-  SelectOption
+  SelectOption,
+  Select
 } from '@wings-software/uicore'
-import { Color } from '@harness/design-system'
+import { Color, FontVariation } from '@harness/design-system'
 import type { GatewayDetails } from '@ce/components/COCreateGateway/models'
 import { useStrings } from 'framework/strings'
 import { ASGMinimal, PortConfig, TargetGroupMinimal, useAllZones } from 'services/lw'
 import { Utils } from '@ce/common/Utils'
 import useRegionsForSelection from '@ce/common/hooks/useRegionsForSelection'
 import type { AccountPathProps } from '@common/interfaces/RouteInterfaces'
+import css from './COAsgSelector.module.scss'
 
 interface COAsgSelectorprops {
   scalingGroups: ASGMinimal[]
@@ -146,8 +147,8 @@ const COAsgSelector: React.FC<COAsgSelectorprops> = props => {
   return (
     <Container>
       <Layout.Vertical spacing="large">
-        <Container style={{ paddingBottom: 20, borderBottom: '1px solid #CDD3DD' }}>
-          <Text font={'large'}>
+        <Container>
+          <Text font={{ variation: FontVariation.H3 }}>
             {Utils.getConditionalResult(
               isGcpProvider,
               getString('ce.co.autoStoppingRule.configuration.igModal.title'),
@@ -155,35 +156,19 @@ const COAsgSelector: React.FC<COAsgSelectorprops> = props => {
             )}
           </Text>
         </Container>
-        <Layout.Vertical style={{ paddingBottom: 20, paddingTop: 20, borderBottom: '1px solid #CDD3DD' }}>
-          <Layout.Horizontal style={{ justifyContent: 'space-between' }}>
-            <Layout.Horizontal flex={{ alignItems: 'center' }}>
-              <Button
-                onClick={addAsg}
-                disabled={!isAsgSelected}
-                style={{
-                  backgroundColor: Utils.getConditionalResult(isAsgSelected, '#0278D5', 'inherit'),
-                  color: Utils.getConditionalResult(isAsgSelected, '#F3F3FA', 'inherit'),
-                  marginRight: 20
-                }}
-              >
-                {'Add selected'}
-              </Button>
-              <div onClick={handleRefresh}>
-                <Icon name="refresh" color="primary7" size={14} />
-                <span style={{ color: 'var(--primary-7)', margin: '0 5px', cursor: 'pointer' }}>Refresh</span>
-              </div>
-            </Layout.Horizontal>
-            <ExpandingSearchInput onChange={(text: string) => props.search(text)} />
-          </Layout.Horizontal>
-          <GroupsFilter
-            gatewayDetails={props.gatewayDetails}
-            isEditFlow={false}
-            onGcpFiltersChangeCallback={onGcpFiltersChange}
-          />
-        </Layout.Vertical>
-        <Container style={{ minHeight: 250 }}>
-          {loadingEnabled && (
+        <GroupsFilter
+          gatewayDetails={props.gatewayDetails}
+          isEditFlow={false}
+          onGcpFiltersChangeCallback={onGcpFiltersChange}
+        />
+        <div className={css.sectionSeparator} />
+        <ExpandingSearchInput
+          className={css.searchContainer}
+          onChange={(text: string) => props.search(text)}
+          alwaysExpanded
+        />
+        <Container>
+          {props.loading && (
             <Layout.Horizontal flex={{ justifyContent: 'center' }}>
               <Icon name="spinner" size={24} color="blue500" />
             </Layout.Horizontal>
@@ -225,7 +210,7 @@ const COAsgSelector: React.FC<COAsgSelectorprops> = props => {
                 },
                 {
                   accessor: 'desired',
-                  Header: 'Instances',
+                  Header: getString('instanceFieldOptions.instances'),
                   width: '10%',
                   Cell: TableCell,
                   disableSortBy: true
@@ -240,6 +225,27 @@ const COAsgSelector: React.FC<COAsgSelectorprops> = props => {
               ]}
             />
           )}
+          <Container style={{ marginTop: 'var(--spacing-medium)' }}>
+            <Layout.Horizontal flex={{ alignItems: 'center' }}>
+              <Button
+                onClick={addAsg}
+                disabled={!isAsgSelected}
+                style={{
+                  backgroundColor: isAsgSelected ? 'var(--primary-7)' : 'inherit',
+                  color: isAsgSelected ? 'var(--grey-100)' : 'inherit',
+                  marginRight: 20
+                }}
+              >
+                {getString('ce.co.autoStoppingRule.configuration.addSelectedBtnText')}
+              </Button>
+              <div onClick={handleRefresh}>
+                <Icon name="refresh" color="primary7" size={14} />
+                <span style={{ color: 'var(--primary-7)', margin: '0 5px', cursor: 'pointer' }}>
+                  {getString('ce.common.refresh')}
+                </span>
+              </div>
+            </Layout.Horizontal>
+          </Container>
         </Container>
       </Layout.Vertical>
     </Container>

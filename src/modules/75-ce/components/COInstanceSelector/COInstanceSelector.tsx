@@ -8,6 +8,7 @@
 import React, { useState, useEffect, ReactNode } from 'react'
 import { useParams } from 'react-router-dom'
 import type { CellProps } from 'react-table'
+import cx from 'classnames'
 import { isEmpty as _isEmpty, defaultTo as _defaultTo } from 'lodash-es'
 import {
   Text,
@@ -21,7 +22,7 @@ import {
   Select,
   SelectOption
 } from '@wings-software/uicore'
-import { Color } from '@harness/design-system'
+import { Color, FontVariation } from '@harness/design-system'
 import type { GatewayDetails, InstanceDetails } from '@ce/components/COCreateGateway/models'
 import { useTelemetry } from '@common/hooks/useTelemetry'
 import { ResourceGroup, useAllResourceGroups, useAllZones } from 'services/lw'
@@ -63,7 +64,7 @@ function NameCell(tableProps: CellProps<InstanceDetails>): JSX.Element {
   )
 }
 
-const TOTAL_ITEMS_PER_PAGE = 8
+const TOTAL_ITEMS_PER_PAGE = 5
 
 const COInstanceSelector: React.FC<COInstanceSelectorprops> = props => {
   const { trackEvent } = useTelemetry()
@@ -156,47 +157,18 @@ const COInstanceSelector: React.FC<COInstanceSelectorprops> = props => {
   return (
     <Container>
       <Layout.Vertical spacing="large">
-        <Container style={{ paddingBottom: 20, borderBottom: '1px solid #CDD3DD' }}>
-          <Text font={'large'}>Select Instances</Text>
-          <Text style={{ marginTop: 15 }}>
-            {getString('ce.co.autoStoppingRule.configuration.instanceModal.description')}
+        <Container>
+          <Text font={{ variation: FontVariation.H3 }}>
+            {getString('ce.co.autoStoppingRule.configuration.instanceModal.header')}
           </Text>
         </Container>
+        <div className={css.sectionSeparator} />
         <Layout.Vertical
           style={{
-            paddingBottom: 20,
-            paddingTop: 20,
-            borderBottom: '1px solid #CDD3DD'
+            paddingTop: 20
           }}
         >
-          <Layout.Horizontal
-            style={{
-              justifyContent: 'space-between'
-            }}
-          >
-            <Layout.Horizontal flex={{ alignItems: 'center' }}>
-              <Button
-                onClick={addInstances}
-                disabled={!hasSelectedInstances}
-                style={{
-                  backgroundColor: hasSelectedInstances ? '#0278d5' : 'inherit',
-                  color: hasSelectedInstances ? '#F3F3FA' : 'inherit',
-                  marginRight: 20
-                }}
-              >
-                {`Add selected ${Utils.getConditionalResult(
-                  hasSelectedInstances,
-                  `(${selectedInstances.length})`,
-                  ''
-                )}`}
-              </Button>
-              <div onClick={handleRefresh}>
-                <Icon name="refresh" color="primary7" size={14} />
-                <span style={{ color: 'var(--primary-7)', margin: '0 5px', cursor: 'pointer' }}>Refresh</span>
-              </div>
-            </Layout.Horizontal>
-            <ExpandingSearchInput className={css.search} onChange={handleSearch} />
-          </Layout.Horizontal>
+          <Text>{getString('ce.co.autoStoppingRule.configuration.instanceModal.description')}</Text>
           <InstancesFilter
             gatewayDetails={props.gatewayDetails}
             onResourceGroupSelectCallback={onResourceGroupSelect}
@@ -205,6 +177,7 @@ const COInstanceSelector: React.FC<COInstanceSelectorprops> = props => {
             isEditFlow={props.isEditFlow}
           />
         </Layout.Vertical>
+        <div className={css.sectionSeparator} />
         <InstanceSelectorBody
           isLoading={props.loading || isLoading}
           selectedResourceGroup={selectedResourceGroup}
@@ -212,14 +185,38 @@ const COInstanceSelector: React.FC<COInstanceSelectorprops> = props => {
           pageProps={{
             index: pageIndex,
             setIndex: setPageIndex,
-            totalCount: _defaultTo(props.instances.length, 0)
+            totalCount: _defaultTo(filteredInstances.length, 0)
           }}
           onCheckboxChange={onCheckboxChange}
           selectedInstances={selectedInstances}
           isAzureSelection={isAzureProvider}
           isGcpSelection={isGcpProvider}
           selectedGcpFilters={gcpFilters}
+          handleSearch={handleSearch}
         />
+        <Layout.Horizontal flex={{ alignItems: 'center' }} margin={{ top: 'var(--spacing-medium)' }}>
+          <Button
+            onClick={addInstances}
+            disabled={!hasSelectedInstances}
+            style={{
+              backgroundColor: hasSelectedInstances ? 'var(--primary-7)' : 'inherit',
+              color: hasSelectedInstances ? 'var(--grey-100)' : 'inherit',
+              marginRight: 20
+            }}
+          >
+            {`${getString('ce.co.autoStoppingRule.configuration.addSelectedBtnText')} ${Utils.getConditionalResult(
+              hasSelectedInstances,
+              `(${selectedInstances.length})`,
+              ''
+            )}`}
+          </Button>
+          <div onClick={handleRefresh}>
+            <Icon name="refresh" color="primary7" size={14} />
+            <span style={{ color: 'var(--primary-7)', margin: '0 5px', cursor: 'pointer' }}>
+              {getString('ce.common.refresh')}
+            </span>
+          </div>
+        </Layout.Horizontal>
       </Layout.Vertical>
     </Container>
   )
@@ -362,51 +359,87 @@ const InstancesFilter: React.FC<InstancesFilterProps> = ({
     setResourceGroupData(loaded)
   }
 
+  const tagsFilter = (
+    <Layout.Horizontal spacing={'small'}>
+      <div>
+        <Text font={{ variation: FontVariation.FORM_LABEL }} className={css.filterLabel}>
+          {getString('ce.co.autoStoppingRule.configuration.instanceModal.labels.selectTags')}
+        </Text>
+        <Select
+          items={[]}
+          inputProps={{
+            placeholder: getString('ce.co.autoStoppingRule.configuration.instanceModal.labels.selectTagKey')
+          }}
+        />
+      </div>
+      <div>
+        <Text font={{ variation: FontVariation.FORM_LABEL }} className={cx(css.filterLabel, css.emptyLabel)} />
+        <Select
+          items={[]}
+          inputProps={{
+            placeholder: getString('ce.co.autoStoppingRule.configuration.instanceModal.labels.selectTagVal')
+          }}
+        />
+      </div>
+    </Layout.Horizontal>
+  )
+
   if (isAzureProvider) {
     return (
-      <Layout.Horizontal flex={{ justifyContent: 'flex-start' }} spacing={'large'} style={{ maxWidth: '40%' }}>
-        <Select
-          disabled={resourceGroupsLoading}
-          items={resourceGroupData}
-          onChange={setSelectedResourceGroup}
-          value={selectedResourceGroup}
-          inputProps={{
-            placeholder: getString('ce.co.selectResourceGroupPlaceholder')
-          }}
-          name="resourceGroupSelector"
-        />
+      <Layout.Horizontal flex={{ justifyContent: 'flex-start' }} spacing={'large'}>
+        <div>
+          <Text font={{ variation: FontVariation.FORM_LABEL }} className={css.filterLabel}>
+            {getString('ce.co.selectResourceGroupPlaceholder')}
+          </Text>
+          <Select
+            disabled={resourceGroupsLoading}
+            items={resourceGroupData}
+            onChange={setSelectedResourceGroup}
+            value={selectedResourceGroup}
+            name="resourceGroupSelector"
+          />
+        </div>
+        {tagsFilter}
       </Layout.Horizontal>
     )
   }
 
   if (isGcpProvider) {
     return (
-      <Layout.Horizontal flex={{ justifyContent: 'flex-start' }} spacing={'large'} style={{ maxWidth: '40%' }}>
-        <Select
-          disabled={regionsLoading || isEditFlow}
-          items={regionsData}
-          onChange={setSelectedRegion}
-          value={selectedRegion}
-          inputProps={{
-            placeholder: 'Region'
-          }}
-          name="regionsSelector"
-        />
-        <Select
-          disabled={zonesLoading || isEditFlow}
-          items={zonesData}
-          onChange={setSelectedZone}
-          value={selectedZone}
-          inputProps={{
-            placeholder: 'Zone'
-          }}
-          name="zoneSelector"
-        />
+      <Layout.Horizontal flex={{ justifyContent: 'flex-start' }} spacing={'large'}>
+        <div>
+          <Text font={{ variation: FontVariation.FORM_LABEL }} className={css.filterLabel}>
+            {getString('ce.co.autoStoppingRule.configuration.instanceModal.labels.selectRegion')}
+          </Text>
+          <Select
+            disabled={regionsLoading || isEditFlow}
+            items={regionsData}
+            onChange={setSelectedRegion}
+            value={selectedRegion}
+            name="regionsSelector"
+          />
+        </div>
+        <div>
+          <Text font={{ variation: FontVariation.FORM_LABEL }} className={css.filterLabel}>
+            {getString('ce.co.accessPoint.select.zone')}
+          </Text>
+          <Select
+            disabled={zonesLoading || isEditFlow}
+            items={zonesData}
+            onChange={setSelectedZone}
+            value={selectedZone}
+            name="zoneSelector"
+          />
+        </div>
       </Layout.Horizontal>
     )
   }
 
-  return null
+  return (
+    <Layout.Horizontal flex={{ justifyContent: 'flex-start' }} spacing={'large'} style={{ maxWidth: '40%' }}>
+      {tagsFilter}
+    </Layout.Horizontal>
+  )
 }
 
 interface InstanceSelectorBodyProps {
@@ -419,6 +452,7 @@ interface InstanceSelectorBodyProps {
   isAzureSelection: boolean
   isGcpSelection: boolean
   selectedGcpFilters?: GCPFiltersProps
+  handleSearch: (text: string) => void
 }
 
 interface WarningMessageProps {
@@ -442,7 +476,8 @@ const InstanceSelectorBody: React.FC<InstanceSelectorBodyProps> = ({
   selectedInstances,
   isAzureSelection,
   isGcpSelection,
-  selectedGcpFilters
+  selectedGcpFilters,
+  handleSearch
 }) => {
   const { getString } = useStrings()
 
@@ -578,13 +613,18 @@ const InstanceSelectorBody: React.FC<InstanceSelectorBodyProps> = ({
   }
 
   return (
-    <Container style={{ minHeight: 250 }}>
+    <Container style={{ minHeight: 250, marginBottom: 'var(--spacing-medium)' }}>
       {isLoading ? (
         <Layout.Horizontal flex={{ justifyContent: 'center' }}>
           <Icon name="spinner" size={24} color="blue500" />
         </Layout.Horizontal>
       ) : (
-        renderBody()
+        <Layout.Vertical spacing={'medium'}>
+          <Layout.Horizontal className={css.searchAndFilterWrapper}>
+            <ExpandingSearchInput className={css.searchContainer} onChange={handleSearch} alwaysExpanded />
+          </Layout.Horizontal>
+          {renderBody()}
+        </Layout.Vertical>
       )}
     </Container>
   )
