@@ -1,0 +1,86 @@
+// Jest Snapshot v1, https://goo.gl/fbAQLP
+
+exports[`Acr Artifact Source tests snapshot test for Primary Acr artifact source 1`] = `<div />`;
+
+exports[`Acr Artifact Source tests snapshot test for Sidecar Acr artifact source 1`] = `
+<div>
+  <div
+    class="OverlaySpinner--overlaySpinner"
+  >
+    <div
+      class="nopadLeft accordionSummary"
+      id="Stage.stage-0.Service.Artifacts.Sidecars"
+    >
+      <p
+        class="StyledProps--font StyledProps--main inputheader"
+      >
+        sidecarArtifactText
+      </p>
+    </div>
+  </div>
+</div>
+`;
+
+exports[`Acr Artifact Source tests snapshot test for Sidecar Acr artifact source for readonly artifact 1`] = `
+<div>
+  <div
+    class="nopadLeft accordionSummary"
+    id="Stage.stage-0.Service.Artifacts.Sidecars"
+  >
+    <p
+      class="StyledProps--font StyledProps--main inputheader"
+    >
+      sidecarArtifactText
+    </p>
+  </div>
+</div>
+`;
+
+exports[`Acr Artifact Source tests snapshot test for Sidecar Acr artifact source from trigger 1`] = `
+<div>
+  <div
+    class="nopadLeft accordionSummary"
+    id="Stage.stage-0.Service.Artifacts.Sidecars"
+  >
+    <p
+      class="StyledProps--font StyledProps--main inputheader"
+    >
+      sidecarArtifactText
+    </p>
+  </div>
+</div>
+`;
+
+exports[`Acr Artifact Source tests snapshot test for Sidecar Acr artifact source with only tag as runtime input 1`] = `
+<div>
+  <div
+    class="OverlaySpinner--overlaySpinner"
+  >
+    <div
+      class="nopadLeft accordionSummary"
+      id="Stage.stage-0.Service.Artifacts.Sidecars"
+    >
+      <p
+        class="StyledProps--font StyledProps--main inputheader"
+      >
+        sidecarArtifactText
+      </p>
+    </div>
+  </div>
+</div>
+`;
+
+exports[`Acr Artifact Source tests snapshot test for Sidecar Acr artifact source with runtime tag regex 1`] = `
+<div>
+  <div
+    class="nopadLeft accordionSummary"
+    id="Stage.stage-0.Service.Artifacts.Sidecars"
+  >
+    <p
+      class="StyledProps--font StyledProps--main inputheader"
+    >
+      sidecarArtifactText
+    </p>
+  </div>
+</div>
+`;
