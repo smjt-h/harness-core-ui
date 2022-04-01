@@ -134,7 +134,7 @@ export const MultiTypeConnectorField = (props: MultiTypeConnectorFieldProps): Re
   const [multiType, setMultiType] = React.useState<MultiTypeInputType>(MultiTypeInputType.FIXED)
   const [connectorStatusCheckInProgress, setConnectorStatusCheckInProgress] = React.useState(false)
   const [connectorStatus, setConnectorStatus] = React.useState(typeof selected !== 'string' && selected?.live)
-  
+
   const [isConnectorEdited, setIsConnectorEdited] = useState(false)
   const getConnectorStatus = () => {
     setConnectorStatusCheckInProgress(true)
@@ -249,7 +249,6 @@ export const MultiTypeConnectorField = (props: MultiTypeConnectorFieldProps): Re
 
   function onConnectorCreateSuccess(data?: ConnectorConfigDTO): void {
     if (data) {
-
       setIsConnectorEdited(true)
       const scope = getScopeFromDTO<ConnectorConfigDTO>(data.connector)
       const val = {
@@ -376,8 +375,7 @@ export const MultiTypeConnectorField = (props: MultiTypeConnectorFieldProps): Re
             gotoPage: pageIndex => setPage(pageIndex)
           },
           isNewConnectorLabelVisible: canUpdate && isNewConnectorLabelVisible,
-          selectedRenderer: getSelectedRenderer(selectedValue,!!connectorStatus,
-            connectorStatusCheckInProgress),
+          selectedRenderer: getSelectedRenderer(selectedValue, !!connectorStatus, connectorStatusCheckInProgress),
           ...optionalReferenceSelectProps,
           disabled: isDisabled,
           hideModal: inlineSelection.selected && inlineSelection.inlineModalClosed,
