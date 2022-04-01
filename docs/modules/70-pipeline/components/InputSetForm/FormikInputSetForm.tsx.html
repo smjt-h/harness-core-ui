@@ -30,9 +30,9 @@
         
             
             <div class='fl pad1y space-right2'>
-                <span class="strong">83.57% </span>
+                <span class="strong">82.81% </span>
                 <span class="quiet">Branches</span>
-                <span class='fraction'>117/140</span>
+                <span class='fraction'>106/128</span>
             </div>
         
             
@@ -416,12 +416,7 @@
 <a name='L357'></a><a href='#L357'>357</a>
 <a name='L358'></a><a href='#L358'>358</a>
 <a name='L359'></a><a href='#L359'>359</a>
-<a name='L360'></a><a href='#L360'>360</a>
-<a name='L361'></a><a href='#L361'>361</a>
-<a name='L362'></a><a href='#L362'>362</a>
-<a name='L363'></a><a href='#L363'>363</a>
-<a name='L364'></a><a href='#L364'>364</a>
-<a name='L365'></a><a href='#L365'>365</a></td><td class="line-coverage quiet"><span class="cline-any cline-neutral">&nbsp;</span>
+<a name='L360'></a><a href='#L360'>360</a></td><td class="line-coverage quiet"><span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
@@ -460,7 +455,6 @@
 <span class="cline-any cline-yes">5x</span>
 <span class="cline-any cline-yes">5x</span>
 <span class="cline-any cline-yes">5x</span>
-<span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-yes">5x</span>
 <span class="cline-any cline-yes">5x</span>
@@ -475,8 +469,6 @@
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-yes">89x</span>
-<span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
@@ -715,8 +707,6 @@
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-yes">7x</span>
 <span class="cline-any cline-yes">7x</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
@@ -824,7 +814,6 @@ import { PermissionIdentifier } from '@rbac/interfaces/PermissionIdentifier'
 import { useQueryParams } from '@common/hooks'
 import GitContextForm, { GitContextProps } from '@common/components/GitContextForm/GitContextForm'
 import { IdentifierSchema, NameSchema } from '@common/utils/Validation'
-import type { ResponseTemplateMergeResponse } from 'services/template-ng'
 import type { InputSetDTO, InputSetType } from '@pipeline/utils/types'
 import { PipelineInputSetForm } from '../PipelineInputSetForm/PipelineInputSetForm'
 import { validatePipeline } from '../PipelineStudio/StepUtil'
@@ -835,13 +824,11 @@ import { StepViewType } from '../AbstractSteps/Step'
 import css from './InputSetForm.module.scss'
 &nbsp;
 export const showPipelineInputSetForm = (
-  templateRefsResolvedPipeline: ResponseTemplateMergeResponse | null,
+  resolvedTemplatesPipelineYaml: string | undefined,
   template: ResponseInputSetTemplateWithReplacedExpressionsResponse | null
 ): boolean =&gt; {
   return (
-    templateRefsResolvedPipeline?.data?.mergedPipelineYaml &amp;&amp;
-    template?.data?.inputSetTemplateYaml &amp;&amp;
-    parse(template.data.inputSetTemplateYaml)
+    resolvedTemplatesPipelineYaml &amp;&amp; template?.data?.inputSetTemplateYaml &amp;&amp; parse(template.data.inputSetTemplateYaml)
   )
 }
 &nbsp;
@@ -855,7 +842,7 @@ interface FormikInputSetFormProps {
   inputSet: InputSetDTO | InputSetType
   template: ResponseInputSetTemplateWithReplacedExpressionsResponse | null
   pipeline: ResponsePMSPipelineResponseDTO | null
-  templateRefsResolvedPipeline: ResponseTemplateMergeResponse | null
+  resolvedTemplatesPipelineYaml?: string
   handleSubmit: (inputSetObjWithGitInfo: InputSetDTO, gitDetails?: EntityGitDetails | undefined) =&gt; Promise&lt;void&gt;
   formErrors: Record&lt;string, unknown&gt;
   setFormErrors: React.Dispatch&lt;React.SetStateAction&lt;Record&lt;string, unknown&gt;&gt;&gt;
@@ -946,7 +933,7 @@ export default function FormikInputSetForm(props: FormikInputSetFormProps): Reac
     inputSet,
     template,
     pipeline,
-    templateRefsResolvedPipeline,
+    resolvedTemplatesPipelineYaml,
     handleSubmit,
     formErrors,
     setFormErrors,
@@ -1063,13 +1050,11 @@ export default function FormikInputSetForm(props: FormikInputSetFormProps): Reac
                                 /&gt;
                               &lt;/GitSyncStoreProvider&gt;
                             )}
-                            {showPipelineInputSetForm(templateRefsResolvedPipeline, template) &amp;&amp; (
+                            {showPipelineInputSetForm(resolvedTemplatesPipelineYaml, template) &amp;&amp; (
                               &lt;PipelineInputSetForm
                                 path="pipeline"
                                 readonly={!isEditable}
-                                originalPipeline={parse(
-                                  defaultTo(templateRefsResolvedPipeline<span class="branch-0 cbranch-no" title="branch not covered" >?.d</span>ata<span class="branch-0 cbranch-no" title="branch not covered" >?.m</span>ergedPipelineYaml, '')
-                                )}
+                                originalPipeline={parse(defaultTo(resolvedTemplatesPipelineYaml, ''))<span class="branch-0 cbranch-no" title="branch not covered" >?.p</span>ipeline}
                                 template={parse(defaultTo(template<span class="branch-0 cbranch-no" title="branch not covered" >?.d</span>ata<span class="branch-0 cbranch-no" title="branch not covered" >?.i</span>nputSetTemplateYaml, '')).pipeline}
                                 viewType={StepViewType.InputSet}
                               /&gt;
@@ -1156,7 +1141,7 @@ export default function FormikInputSetForm(props: FormikInputSetFormProps): Reac
             <div class='footer quiet pad2 space-top1 center small'>
                 Code coverage generated by
                 <a href="https://istanbul.js.org/" target="_blank">istanbul</a>
-                at Fri Apr 01 2022 13:10:43 GMT+0000 (Greenwich Mean Time)
+                at Fri Apr 01 2022 14:12:06 GMT+0000 (Greenwich Mean Time)
             </div>
         </div>
         <script src="../../../../prettify.js"></script>

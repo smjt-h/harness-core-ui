@@ -30,9 +30,9 @@
         
             
             <div class='fl pad1y space-right2'>
-                <span class="strong">65.54% </span>
+                <span class="strong">66.46% </span>
                 <span class="quiet">Branches</span>
-                <span class='fraction'>428/653</span>
+                <span class='fraction'>434/653</span>
             </div>
         
             
@@ -870,16 +870,16 @@
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-yes">11x</span>
-<span class="cline-any cline-yes">11x</span>
-<span class="cline-any cline-yes">11x</span>
+<span class="cline-any cline-yes">21x</span>
+<span class="cline-any cline-yes">21x</span>
+<span class="cline-any cline-yes">21x</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-yes">2x</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-yes">11x</span>
+<span class="cline-any cline-yes">21x</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
@@ -887,21 +887,21 @@
 <span class="cline-any cline-yes">2x</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-yes">11x</span>
+<span class="cline-any cline-yes">21x</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-yes">2x</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-yes">11x</span>
+<span class="cline-any cline-yes">21x</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-yes">2x</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-yes">11x</span>
+<span class="cline-any cline-yes">21x</span>
 <span class="cline-any cline-yes">3x</span>
 <span class="cline-any cline-yes">3x</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
@@ -957,7 +957,7 @@
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-yes">11x</span>
+<span class="cline-any cline-yes">21x</span>
 <span class="cline-any cline-yes">5x</span>
 <span class="cline-any cline-yes">5x</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
@@ -1017,7 +1017,7 @@
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-yes">11x</span>
+<span class="cline-any cline-yes">21x</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
@@ -1377,14 +1377,14 @@ export class KubernetesServiceSpec extends Step&lt;ServiceSpec&gt; {
     const errors: FormikErrors&lt;K8SDirectServiceStep&gt; = {}
     const isRequired = viewType === StepViewType.DeploymentForm || viewType === StepViewType.TriggerForm
     if (
-      isEmpty(data<span class="branch-0 cbranch-no" title="branch not covered" >?.a</span>rtifacts?.primary?.spec?.connectorRef) &amp;&amp;
+      isEmpty(data?.artifacts?.primary?.spec?.connectorRef) &amp;&amp;
       isRequired &amp;&amp;
       getMultiTypeFromValue(template<span class="branch-0 cbranch-no" title="branch not covered" >?.a</span>rtifacts?.primary?.spec?.connectorRef) === MultiTypeInputType.RUNTIME
     ) {
       set(errors, 'artifacts.primary.spec.connectorRef', getString<span class="branch-0 cbranch-no" title="branch not covered" >?.('</span>fieldRequired', { field: 'ConnectorRef' }))
     }
     if (
-      isEmpty(data<span class="branch-0 cbranch-no" title="branch not covered" >?.a</span>rtifacts?.primary?.spec?.imagePath) &amp;&amp;
+      isEmpty(data?.artifacts?.primary?.spec?.imagePath) &amp;&amp;
       isRequired &amp;&amp;
       getMultiTypeFromValue(template<span class="branch-0 cbranch-no" title="branch not covered" >?.a</span>rtifacts?.primary?.spec?.imagePath) === MultiTypeInputType.RUNTIME
     ) {
@@ -1392,20 +1392,20 @@ export class KubernetesServiceSpec extends Step&lt;ServiceSpec&gt; {
     }
 &nbsp;
     if (
-      !tagExists(data<span class="branch-0 cbranch-no" title="branch not covered" >?.a</span>rtifacts?.primary?.spec?.tag) &amp;&amp;
+      !tagExists(data?.artifacts?.primary?.spec?.tag) &amp;&amp;
       isRequired &amp;&amp;
       getMultiTypeFromValue(template<span class="branch-0 cbranch-no" title="branch not covered" >?.a</span>rtifacts?.primary?.spec?.tag) === MultiTypeInputType.RUNTIME
     ) {
       set(errors, 'artifacts.primary.spec.tag', getString<span class="branch-0 cbranch-no" title="branch not covered" >?.('</span>fieldRequired', { field: 'Tag' }))
     }
     if (
-      isEmpty(data<span class="branch-0 cbranch-no" title="branch not covered" >?.a</span>rtifacts?.primary?.spec?.tagRegex) &amp;&amp;
+      isEmpty(data?.artifacts?.primary?.spec?.tagRegex) &amp;&amp;
       isRequired &amp;&amp;
       getMultiTypeFromValue(template<span class="branch-0 cbranch-no" title="branch not covered" >?.a</span>rtifacts?.primary?.spec?.tagRegex) === MultiTypeInputType.RUNTIME
     ) {
       set(errors, 'artifacts.primary.spec.tagRegex', getString<span class="branch-0 cbranch-no" title="branch not covered" >?.('</span>fieldRequired', { field: 'Tag Regex' }))
     }
-    data<span class="branch-0 cbranch-no" title="branch not covered" >?.a</span>rtifacts?.sidecars?.forEach((sidecar, index) =&gt; {
+    data?.artifacts?.sidecars?.forEach((sidecar, index) =&gt; {
       const currentSidecarTemplate = get(template, `artifacts.sidecars[${index}].sidecar.spec`, '')
       if (
         isEmpty(sidecar<span class="branch-0 cbranch-no" title="branch not covered" >?.s</span>idecar<span class="branch-0 cbranch-no" title="branch not covered" >?.s</span>pec<span class="branch-0 cbranch-no" title="branch not covered" >?.c</span>onnectorRef) &amp;&amp;
@@ -1461,7 +1461,7 @@ export class KubernetesServiceSpec extends Step&lt;ServiceSpec&gt; {
       }
     })
 &nbsp;
-    data<span class="branch-0 cbranch-no" title="branch not covered" >?.m</span>anifests?.forEach((manifest, index) =&gt; {
+    data?.manifests?.forEach((manifest, index) =&gt; {
       const currentManifestTemplate = get(template, `manifests[${index}].manifest.spec.store.spec`, '')
       if (
         isEmpty(manifest<span class="branch-0 cbranch-no" title="branch not covered" >?.m</span>anifest<span class="branch-0 cbranch-no" title="branch not covered" >?.s</span>pec<span class="branch-0 cbranch-no" title="branch not covered" >?.s</span>tore<span class="branch-0 cbranch-no" title="branch not covered" >?.s</span>pec<span class="branch-0 cbranch-no" title="branch not covered" >?.c</span>onnectorRef) &amp;&amp;
@@ -1576,7 +1576,7 @@ export class KubernetesServiceSpec extends Step&lt;ServiceSpec&gt; {
             <div class='footer quiet pad2 space-top1 center small'>
                 Code coverage generated by
                 <a href="https://istanbul.js.org/" target="_blank">istanbul</a>
-                at Fri Apr 01 2022 13:10:43 GMT+0000 (Greenwich Mean Time)
+                at Fri Apr 01 2022 14:12:06 GMT+0000 (Greenwich Mean Time)
             </div>
         </div>
         <script src="../../../../../prettify.js"></script>

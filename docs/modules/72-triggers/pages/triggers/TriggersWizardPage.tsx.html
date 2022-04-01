@@ -23,16 +23,16 @@
         <div class='clearfix'>
             
             <div class='fl pad1y space-right2'>
-                <span class="strong">74.5% </span>
+                <span class="strong">74.55% </span>
                 <span class="quiet">Statements</span>
-                <span class='fraction'>374/502</span>
+                <span class='fraction'>375/503</span>
             </div>
         
             
             <div class='fl pad1y space-right2'>
-                <span class="strong">58.34% </span>
+                <span class="strong">58.43% </span>
                 <span class="quiet">Branches</span>
-                <span class='fraction'>878/1505</span>
+                <span class='fraction'>884/1513</span>
             </div>
         
             
@@ -44,9 +44,9 @@
         
             
             <div class='fl pad1y space-right2'>
-                <span class="strong">74.95% </span>
+                <span class="strong">75% </span>
                 <span class="quiet">Lines</span>
-                <span class='fraction'>371/495</span>
+                <span class='fraction'>372/496</span>
             </div>
         
             
@@ -1899,7 +1899,10 @@
 <a name='L1840'></a><a href='#L1840'>1840</a>
 <a name='L1841'></a><a href='#L1841'>1841</a>
 <a name='L1842'></a><a href='#L1842'>1842</a>
-<a name='L1843'></a><a href='#L1843'>1843</a></td><td class="line-coverage quiet"><span class="cline-any cline-neutral">&nbsp;</span>
+<a name='L1843'></a><a href='#L1843'>1843</a>
+<a name='L1844'></a><a href='#L1844'>1844</a>
+<a name='L1845'></a><a href='#L1845'>1845</a>
+<a name='L1846'></a><a href='#L1846'>1846</a></td><td class="line-coverage quiet"><span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
@@ -2381,9 +2384,12 @@
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-yes">133x</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">133x</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-yes">133x</span>
 <span class="cline-any cline-yes">21x</span>
@@ -4219,13 +4225,16 @@ const TriggersWizardPage: React.FC = (): JSX.Element =&gt; {
     queryParams: {
       accountIdentifier: accountId,
       orgIdentifier,
-      projectIdentifier
+      projectIdentifier,
+      getTemplatesResolvedPipeline: true
     }
   })
 &nbsp;
   const originalPipeline: PipelineInfoConfig | undefined = parse(
     (pipelineResponse<span class="branch-0 cbranch-no" title="branch not covered" >?.d</span>ata<span class="branch-0 cbranch-no" title="branch not covered" >?.y</span>amlPipeline as any) || <span class="branch-1 cbranch-no" title="branch not covered" >''</span>
   )<span class="branch-0 cbranch-no" title="branch not covered" >?.p</span>ipeline
+&nbsp;
+  const resolvedTemplatesPipelineYaml = defaultTo(pipelineResponse<span class="branch-0 cbranch-no" title="branch not covered" >?.d</span>ata<span class="branch-0 cbranch-no" title="branch not covered" >?.r</span>esolvedTemplatesPipelineYaml, '')
 &nbsp;
   useEffect(() =&gt; {
     if (triggerResponse<span class="branch-0 cbranch-no" title="branch not covered" >?.d</span>ata<span class="branch-0 cbranch-no" title="branch not covered" >?.y</span>aml &amp;&amp; triggerResponse.data.type === TriggerTypes.WEBHOOK) {
@@ -5451,7 +5460,7 @@ const TriggersWizardPage: React.FC = (): JSX.Element =&gt; {
       &gt;
         &lt;WebhookTriggerConfigPanel /&gt;
         &lt;WebhookConditionsPanel /&gt;
-        &lt;WebhookPipelineInputPanel /&gt;
+        &lt;WebhookPipelineInputPanel resolvedTemplatesPipelineYaml={resolvedTemplatesPipelineYaml} /&gt;
       &lt;/Wizard&gt;
     )
   }
@@ -5501,7 +5510,7 @@ const TriggersWizardPage: React.FC = (): JSX.Element =&gt; {
       &gt;
         &lt;ArtifactTriggerConfigPanel /&gt;
         &lt;ArtifactConditionsPanel /&gt;
-        &lt;WebhookPipelineInputPanel /&gt;
+        &lt;WebhookPipelineInputPanel resolvedTemplatesPipelineYaml={resolvedTemplatesPipelineYaml} /&gt;
       &lt;/Wizard&gt;
     )
   }
@@ -5548,7 +5557,7 @@ const TriggersWizardPage: React.FC = (): JSX.Element =&gt; {
       &gt;
         &lt;TriggerOverviewPanel /&gt;
         &lt;SchedulePanel /&gt;
-        &lt;WebhookPipelineInputPanel /&gt;
+        &lt;WebhookPipelineInputPanel resolvedTemplatesPipelineYaml={resolvedTemplatesPipelineYaml} /&gt;
       &lt;/Wizard&gt;
     )
   }
@@ -5590,7 +5599,7 @@ export default TriggersWizardPage
             <div class='footer quiet pad2 space-top1 center small'>
                 Code coverage generated by
                 <a href="https://istanbul.js.org/" target="_blank">istanbul</a>
-                at Fri Apr 01 2022 13:10:43 GMT+0000 (Greenwich Mean Time)
+                at Fri Apr 01 2022 14:12:06 GMT+0000 (Greenwich Mean Time)
             </div>
         </div>
         <script src="../../../../prettify.js"></script>
