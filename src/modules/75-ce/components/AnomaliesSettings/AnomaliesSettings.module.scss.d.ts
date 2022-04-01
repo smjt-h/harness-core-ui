@@ -7,15 +7,20 @@
  **/
 // this is an auto-generated file, do not update this manually
 declare const styles: {
-  readonly anomalyAlertsActionBtn: string
-  readonly anomalyAlertsWrapper: string
-  readonly createBtn: string
+  readonly container: string
   readonly icon: string
-  readonly innerContainer: string
+  readonly listOptionItem: string
+  readonly listOptionItemSelected: string
+  readonly listingOptions: string
   readonly loader: string
-  readonly mainContainer: string
   readonly popoverContent: string
-  readonly subtext: string
-  readonly tableCtn: string
+  readonly resourceSearchInput: string
+  readonly resourceSearchWrapper: string
+  readonly settingsContent: string
+  readonly settingsDrawer: string
+  readonly settingsLabelWarpper: string
+  readonly settingsTab: string
+  readonly tabContent: string
+  readonly tableView: string
 }
 export default styles

@@ -164,3 +164,35 @@ export const allCloudProvidersList = [
     value: 'gcp'
   }
 ]
+
+export const notificationChannelsList = [
+  {
+    label: 'Slack webhook url',
+    value: 'SLACK',
+    icon: { name: 'service-slack' }
+  },
+  {
+    label: 'Email',
+    value: 'EMAIL',
+    icon: { name: 'email-inline' }
+  },
+  {
+    label: 'Microsoft Teams',
+    value: 'MSTEAMS',
+    icon: { name: 'service-msteams' }
+  }
+]
+
+export const channelNameUrlMapping = {
+  SLACK: 'slackWebHookUrl',
+  EMAIL: 'emails',
+  MSTEAMS: 'microsoftTeamsUrl'
+}
+
+export const channelImgMap = {
+  SLACK: 'service-slack',
+  EMAIL: 'email-inline',
+  MSTEAMS: 'service-msteams',
+  DEFAULT: '',
+  PAGERDUTY: 'service-pagerduty'
+}

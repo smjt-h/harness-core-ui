@@ -7,15 +7,15 @@
  **/
 // this is an auto-generated file, do not update this manually
 declare const styles: {
-  readonly anomalyAlertsActionBtn: string
-  readonly anomalyAlertsWrapper: string
-  readonly createBtn: string
-  readonly icon: string
-  readonly innerContainer: string
-  readonly loader: string
-  readonly mainContainer: string
-  readonly popoverContent: string
-  readonly subtext: string
-  readonly tableCtn: string
+  readonly actionBtn: string
+  readonly addAlertChannel: string
+  readonly addChannelBtn: string
+  readonly addChannelWrapper: string
+  readonly alertChannelWrapper: string
+  readonly channelSelection: string
+  readonly closeBtn: string
+  readonly perspectiveSelection: string
+  readonly stepWizard: string
+  readonly urlInput: string
 }
 export default styles
