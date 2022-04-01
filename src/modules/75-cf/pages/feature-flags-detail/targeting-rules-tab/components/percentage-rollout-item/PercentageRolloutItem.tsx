@@ -33,7 +33,7 @@ const PercentageRolloutItem = ({
   return (
     <>
       <Container flex={{ justifyContent: 'space-between', alignItems: 'center' }}>
-        <Heading level={4} font={{ variation: FontVariation.BODY2 }} margin={{ top: 'medium' }}>
+        <Heading level={4} font={{ variation: FontVariation.BODY2 }}>
           {getString('cf.featureFlags.percentageRollout')}
         </Heading>
         <Button

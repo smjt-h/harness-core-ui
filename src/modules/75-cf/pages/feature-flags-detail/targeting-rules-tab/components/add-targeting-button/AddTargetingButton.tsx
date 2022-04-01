@@ -5,14 +5,17 @@
  * https://polyformproject.org/wp-content/uploads/2020/06/PolyForm-Shield-1.0.0.txt.
  */
 
-import { PopoverPosition } from '@blueprintjs/core'
-import { FontVariation } from '@harness/design-system'
-import { ButtonVariation, Layout, Button, Text } from '@harness/uicore'
-import React, { ReactElement, useState } from 'react'
+import { IconName, PopoverPosition } from '@blueprintjs/core'
+import { ButtonVariation } from '@harness/uicore'
+import React, { ReactElement } from 'react'
 import { useStrings } from 'framework/strings'
+import { FeatureIdentifier } from 'framework/featureStore/FeatureIdentifier'
+import RbacOptionsMenuButton from '@rbac/components/RbacOptionsMenuButton/RbacOptionsMenuButton'
+import { ResourceType } from '@rbac/interfaces/ResourceType'
+
+import { PermissionIdentifier } from '@rbac/interfaces/PermissionIdentifier'
+import { CFVariationColors } from '@cf/constants'
 import type { FormVariationMap } from '../../Types.types'
-import { DisabledFeatureTooltipContent } from '../disabled-feature-tooltip/DisabledFeatureTooltip'
-import css from './AddTargetingButton.module.scss'
 
 interface AddTargetingButtonProps {
   addTargetingDropdownVariations: FormVariationMap[]
@@ -25,69 +28,56 @@ interface AddTargetingButtonProps {
 const AddTargetingButton = ({
   addTargetingDropdownVariations,
   addVariation,
-  addPercentageRollout,
-  featureDisabled,
-  disabled
+  addPercentageRollout
 }: AddTargetingButtonProps): ReactElement => {
   const { getString } = useStrings()
-  const [isOpen, setIsOpen] = useState(false)
+
+  const items = [
+    ...addTargetingDropdownVariations.map((variation, index) => ({
+      onClick: () => addVariation(variation),
+      icon: 'full-circle' as IconName,
+      iconProps: {
+        color: CFVariationColors[index]
+      },
+      text: variation.variationName,
+      permission: {
+        resource: { resourceType: ResourceType.FEATUREFLAG },
+        permission: PermissionIdentifier.EDIT_FF_FEATUREFLAG
+      },
+      featuresProps: {
+        featuresRequest: {
+          featureNames: [FeatureIdentifier.MAUS]
+        }
+      }
+    })),
+    {
+      onClick: () => addPercentageRollout(),
+      icon: 'percentage' as IconName,
+      text: getString('cf.featureFlags.percentageRollout'),
+      permission: {
+        resource: { resourceType: ResourceType.FEATUREFLAG },
+        permission: PermissionIdentifier.EDIT_FF_FEATUREFLAG
+      },
+      featuresProps: {
+        featuresRequest: {
+          featureNames: [FeatureIdentifier.MAUS]
+        }
+      }
+    }
+  ]
 
   return (
-    <Button
-      disabled={featureDisabled || disabled}
+    <RbacOptionsMenuButton
       icon="plus"
       rightIcon="chevron-down"
       variation={ButtonVariation.SECONDARY}
       text={getString('cf.featureFlags.rules.addTargeting')}
-      onClick={e => {
-        e.preventDefault()
-        setIsOpen(true)
-      }}
+      items={items}
       tooltipProps={{
-        fill: featureDisabled ? false : true,
-        interactionKind: featureDisabled ? 'hover' : 'click',
-        minimal: featureDisabled ? false : true,
-        position: PopoverPosition.BOTTOM_LEFT,
-        isOpen,
-        openOnTargetFocus: true,
-        onInteraction: nextOpenState => setIsOpen(nextOpenState)
+        interactionKind: 'click',
+        minimal: true,
+        position: PopoverPosition.BOTTOM_LEFT
       }}
-      tooltip={
-        featureDisabled ? (
-          <DisabledFeatureTooltipContent />
-        ) : (
-          // <Layout.Vertical padding="small" spacing="small">
-          <Layout.Vertical>
-            {addTargetingDropdownVariations.map(variation => (
-              <Button
-                className={css.addTargetingMenuItem}
-                data-testid={`variation_option_${variation.variationIdentifier}`}
-                onClick={() => {
-                  setIsOpen(false)
-                  addVariation(variation)
-                }}
-                key={variation.variationIdentifier}
-                font={{ variation: FontVariation.BODY }}
-                icon="full-circle"
-              >
-                <Text font={{ variation: FontVariation.BODY }}> {variation.variationName}</Text>
-              </Button>
-            ))}
-            <Button
-              data-testid="variation_option_percentage_rollout"
-              className={css.addTargetingMenuItem}
-              onClick={() => {
-                setIsOpen(false)
-                addPercentageRollout()
-              }}
-              font={{ variation: FontVariation.BODY }}
-              icon="percentage"
-            >
-              <Text font={{ variation: FontVariation.BODY }}> {getString('cf.featureFlags.percentageRollout')}</Text>
-            </Button>
-          </Layout.Vertical>
-        )
-      }
     />
   )
 }
