@@ -116,6 +116,11 @@ export function ACRArtifact({
     return defaultTo(prevStepData?.connectorId?.value, prevStepData?.identifier)
   }
 
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
+  const getValue = (item: { label?: string; value?: string } | string | any): string => {
+    return typeof item === 'string' ? (item as string) : item?.value
+  }
+
   const {
     data: acrBuildData,
     loading: acrBuildDetailsLoading,
@@ -123,9 +128,9 @@ export function ACRArtifact({
     error: acrTagError
   } = useGetBuildDetailsForACRRepository({
     queryParams: {
-      subscription: lastQueryData?.subscription,
-      registry: lastQueryData?.registry,
-      repository: lastQueryData?.repository,
+      subscription: getValue(lastQueryData?.subscription),
+      registry: getValue(lastQueryData?.registry),
+      repository: getValue(lastQueryData?.repository),
       connectorRef: getConnectorRefQueryData(),
       accountIdentifier: accountId,
       orgIdentifier,
@@ -159,9 +164,10 @@ export function ACRArtifact({
       projectIdentifier
     }
   })
+
   useEffect(() => {
     const subscriptionValues = [] as SelectOption[]
-    forIn(defaultTo(data?.data, {}), (key: string, value: string) => {
+    forIn(defaultTo(data?.data, {}), (value: string, key: string) => {
       subscriptionValues.push({ label: value, value: key })
     })
 
@@ -201,7 +207,7 @@ export function ACRArtifact({
           projectIdentifier
         },
         pathParams: {
-          subscription: getValue(formikRef.current?.values.subscription)
+          subscription: getValue(initialValues.subscription)
         }
       })
     }
@@ -254,8 +260,8 @@ export function ACRArtifact({
           projectIdentifier
         },
         pathParams: {
-          subscription: getValue(formikRef.current?.values?.subscription),
-          registry: getValue(formikRef.current?.values?.registry)
+          subscription: getValue(initialValues.subscription),
+          registry: getValue(initialValues.registry)
         }
       })
     }
@@ -360,11 +366,6 @@ export function ACRArtifact({
       }
     }
   }, [formikRef?.current?.values?.tag])
-
-  // eslint-disable-next-line @typescript-eslint/no-explicit-any
-  const getValue = (item: { label?: string; value?: string } | string | any): string => {
-    return typeof item === 'string' ? (item as string) : item?.value
-  }
 
   return (
     <Layout.Vertical spacing="medium" className={css.firstep}>

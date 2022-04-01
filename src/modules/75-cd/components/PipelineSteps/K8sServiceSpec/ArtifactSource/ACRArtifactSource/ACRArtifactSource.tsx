@@ -30,7 +30,10 @@ import { ArtifactToConnectorMap, ENABLED_ARTIFACT_TYPES } from '@pipeline/compon
 import { TriggerDefaultFieldList } from '@triggers/pages/triggers/utils/TriggersWizardPageUtils'
 import { useStrings } from 'framework/strings'
 import { useVariablesExpression } from '@pipeline/components/PipelineStudio/PiplineHooks/useVariablesExpression'
-import { FormMultiTypeConnectorField } from '@connectors/components/ConnectorReferenceField/FormMultiTypeConnectorField'
+import {
+  ConnectorReferenceDTO,
+  FormMultiTypeConnectorField
+} from '@connectors/components/ConnectorReferenceField/FormMultiTypeConnectorField'
 import ExperimentalInput from '../../K8sServiceSpecForms/ExperimentalInput'
 import { isFieldRuntime } from '../../K8sServiceSpecHelper'
 import { getYamlData, isArtifactSourceRuntime, isFieldfromTriggerTabDisabled, resetTags } from '../artifactSourceUtils'
@@ -114,7 +117,12 @@ const Content = (props: ACRRenderContent): JSX.Element => {
     lazy: true
   })
 
-  const { data } = useGetAzureSubscriptions({
+  const {
+    data: subscriptionsData,
+    refetch: refetchSubscriptions,
+    loading: loadingSubscriptions,
+    error: subscriptionsError
+  } = useGetAzureSubscriptions({
     queryParams: {
       connectorRef: artifact?.spec?.connectorRef,
       accountIdentifier: accountId,
@@ -125,12 +133,12 @@ const Content = (props: ACRRenderContent): JSX.Element => {
 
   useEffect(() => {
     const subscriptionValues = [] as SelectOption[]
-    forIn(defaultTo(data?.data, {}), (key: string, value: string) => {
+    forIn(defaultTo(subscriptionsData?.data, {}), (value: string, key: string) => {
       subscriptionValues.push({ label: value, value: key })
     })
 
     setSubscriptions(subscriptionValues as SelectOption[])
-  }, [data])
+  }, [subscriptionsData])
 
   const {
     data: registiresData,
@@ -240,6 +248,12 @@ const Content = (props: ACRRenderContent): JSX.Element => {
     }
     return false
   }
+
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
+  const getValue = (item: { label?: string; value?: string } | string | any): string => {
+    return typeof item === 'string' ? (item as string) : item?.value
+  }
+
   const isRuntime = isArtifactSourceRuntime(isPrimaryArtifactsRuntime, isSidecarRuntime, isSidecar as boolean)
 
   return (
@@ -262,7 +276,22 @@ const Content = (props: ACRRenderContent): JSX.Element => {
                 allowableTypes,
                 expressions
               }}
-              onChange={() => resetTags(formik, `${path}.artifacts.${artifactPath}.spec.tag`)}
+              onChange={value => {
+                resetTags(formik, `${path}.artifacts.${artifactPath}.spec.tag`)
+                const { record } = value as unknown as { record: ConnectorReferenceDTO }
+                refetchSubscriptions({
+                  queryParams: {
+                    connectorRef: record?.identifier,
+                    accountIdentifier: accountId,
+                    orgIdentifier,
+                    projectIdentifier
+                  }
+                })
+
+                formik.setFieldValue(`${path}.artifacts.${artifactPath}.spec.subscription`, '')
+                formik.setFieldValue(`${path}.artifacts.${artifactPath}.spec.registry`, '')
+                formik.setFieldValue(`${path}.artifacts.${artifactPath}.spec.repository`, '')
+              }}
               className={css.connectorMargin}
               type={ArtifactToConnectorMap[defaultTo(artifact?.type, '')]}
               gitScope={{
@@ -276,10 +305,32 @@ const Content = (props: ACRRenderContent): JSX.Element => {
             <ExperimentalInput
               formik={formik}
               multiTypeInputProps={{
-                onChange: () => resetTags(formik, `${path}.artifacts.${artifactPath}.spec.tag`),
+                onChange: (value: SelectOption) => {
+                  resetTags(formik, `${path}.artifacts.${artifactPath}.spec.tag`)
+                  refetchRegistries({
+                    queryParams: {
+                      connectorRef: artifact?.spec?.connectorRef,
+                      accountIdentifier: accountId,
+                      orgIdentifier,
+                      projectIdentifier
+                    },
+                    pathParams: {
+                      subscriptions: getValue(value)
+                    }
+                  })
+
+                  formik.setFieldValue(`${path}.artifacts.${artifactPath}.spec.registry`, '')
+                  formik.setFieldValue(`${path}.artifacts.${artifactPath}.spec.repository`, '')
+                },
                 selectProps: {
                   usePortal: true,
-                  addClearBtn: !readonly,
+                  allowCreatingNewItems: true,
+                  addClearBtn: !(loadingSubscriptions || readonly),
+                  noResults: (
+                    <Text padding={'small'}>
+                      {get(subscriptionsError, 'data.message', null) || getString('pipeline.ACR.subscriptionError')}
+                    </Text>
+                  ),
                   items: subscriptions
                 },
                 expressions,
@@ -297,9 +348,27 @@ const Content = (props: ACRRenderContent): JSX.Element => {
             <ExperimentalInput
               formik={formik}
               multiTypeInputProps={{
-                onChange: () => resetTags(formik, `${path}.artifacts.${artifactPath}.spec.tag`),
+                onChange: (value: SelectOption) => {
+                  debugger
+                  resetTags(formik, `${path}.artifacts.${artifactPath}.spec.tag`)
+                  refetchRepositories({
+                    queryParams: {
+                      connectorRef: artifact?.spec?.connectorRef,
+                      accountIdentifier: accountId,
+                      orgIdentifier,
+                      projectIdentifier
+                    },
+                    pathParams: {
+                      subscription: artifact?.spec?.subscription,
+                      registry: getValue(value)
+                    }
+                  })
+
+                  formik.setFieldValue(`${path}.artifacts.${artifactPath}.spec.repository`, '')
+                },
                 selectProps: {
                   usePortal: true,
+                  allowCreatingNewItems: true,
                   addClearBtn: !(loadingRegistries || readonly),
                   noResults: (
                     <Text padding={'small'}>
@@ -325,6 +394,7 @@ const Content = (props: ACRRenderContent): JSX.Element => {
                 onChange: () => resetTags(formik, `${path}.artifacts.${artifactPath}.spec.tag`),
                 selectProps: {
                   usePortal: true,
+                  allowCreatingNewItems: true,
                   addClearBtn: !(loadingRepositories || readonly),
                   items: repositories,
                   noResults: (

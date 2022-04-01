@@ -2364,6 +2364,7 @@ export interface StringsMap {
   'pipeline.ACR.repositoryError': string
   'pipeline.ACR.repositoryPlaceholder': string
   'pipeline.ACR.subscription': string
+  'pipeline.ACR.subscriptionError': string
   'pipeline.ACR.subscriptionPlaceholder': string
   'pipeline.ACR.validation.registry': string
   'pipeline.ACR.validation.repository': string

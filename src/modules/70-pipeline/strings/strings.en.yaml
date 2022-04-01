@@ -1017,6 +1017,7 @@ ACR:
   name: ACR
   subscription: '{{ $.common.plans.subscription }}'
   subscriptionPlaceholder: 'Select or add Subscription'
+  subscriptionError: 'No subscription found with given Connector'
   registry: 'Registry'
   registryPlaceholder: 'Select or add Registry'
   registryError: 'No registry found with given Subscription'
