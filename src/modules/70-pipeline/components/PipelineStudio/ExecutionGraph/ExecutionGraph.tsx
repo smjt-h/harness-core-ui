@@ -762,13 +762,12 @@ function ExecutionGraphRef<T extends StageElementConfig>(
     },
     [Event.DropLinkEvent]: (event: any) => {
       event = { ...event, ...event?.data }
+      if (event.node?.identifier === event.destination?.identifier) {
+        return
+      }
       // event.stopPropagation()
       if (event.node?.identifier && event?.node?.data) {
-        if (
-          event?.node?.stepGroup &&
-          event?.node?.nextNode?.parentIdentifier &&
-          event?.node?.prevNode?.parentIdentifier
-        ) {
+        if (event?.node?.data?.stepGroup && event?.destination?.parentIdentifier) {
           showError(getString('stepGroupInAnotherStepGroup'), undefined, 'pipeline.setgroup.error')
         } else {
           const isRemove = removeStepOrGroup(state, event)

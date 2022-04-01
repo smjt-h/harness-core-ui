@@ -56,7 +56,9 @@ function CreateNodeStep(props: CreateNodeStepProps): React.ReactElement {
         props.onDragLeave?.()
       }}
       onDrop={event => {
-        props?.onDrop?.(event)
+        if (props.onDrop) {
+          props.onDrop(event)
+        }
         event.stopPropagation()
         props?.fireEvent({
           type: Event.DropNodeEvent,

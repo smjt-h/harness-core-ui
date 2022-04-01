@@ -10,11 +10,12 @@ interface AddLinkNodeProps<T> {
   readonly?: boolean
   identifier?: string
   fireEvent?: FireEventMethod
-  prevNodeIdentifier: any
+  prevNodeIdentifier: string
   showAddLink?: boolean
   data: T
   className?: string
   id?: string
+  isRightAddIcon?: boolean
 }
 export default function AddLinkNode<T>(props: AddLinkNodeProps<T>): React.ReactElement | null {
   return (
@@ -28,6 +29,7 @@ export default function AddLinkNode<T>(props: AddLinkNodeProps<T>): React.ReactE
           data: {
             prevNodeIdentifier: props?.prevNodeIdentifier,
             parentIdentifier: props?.parentIdentifier,
+            isRightAddIcon: props?.isRightAddIcon,
             entityType: DiagramType.Link,
             identifier: props?.identifier,
             node: { ...props, ...props?.data }
@@ -45,6 +47,7 @@ export default function AddLinkNode<T>(props: AddLinkNodeProps<T>): React.ReactE
           target: event.target,
           data: {
             entityType: DiagramType.Link,
+            isRightAddIcon: props?.isRightAddIcon,
             node: JSON.parse(event.dataTransfer.getData(DiagramDrag.NodeDrag)),
             destination: { ...props, ...props?.data }
           }

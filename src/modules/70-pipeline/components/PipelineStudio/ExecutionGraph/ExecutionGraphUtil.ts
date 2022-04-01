@@ -683,8 +683,8 @@ export const addStepOrGroupV2 = (
   isRollback: boolean
 ): void => {
   if (entity?.entityType === DiagramType.Link) {
-    const sourceNode = entity?.linkBeforeStepGroup ? entity?.node : entity?.node?.prevNode
-    const targetNode = entity?.linkBeforeStepGroup ? entity?.node?.nextNode : entity?.node
+    const sourceNode = entity?.isRightAddIcon ? entity?.node : entity?.node?.prevNode
+    const targetNode = entity?.isRightAddIcon ? entity?.node?.nextNode : entity?.node
     if (entity?.node?.parentIdentifier) {
       const node = getStepFromId(data, entity?.node?.parentIdentifier || '', false).node
       if (node) {
@@ -702,29 +702,12 @@ export const addStepOrGroupV2 = (
       if (index > -1) {
         response.parent.splice(index + next, 0, step)
       }
-    } else {
-      // parallel next parallel case
-      // let nodeId = sourceNode.getIdentifier().split(EmptyNodeSeparator)[1]
-      let nodeId = sourceNode?.identifier
-      response = getStepFromId(data, nodeId, true, true)
-      next = 1
-      if (!response.node) {
-        nodeId = targetNode?.identifier
-        response = getStepFromId(data, nodeId, true, true)
-        next = 0
-      }
-      if (response.node) {
-        const index = response.parent.indexOf(response.node)
-        if (index > -1) {
-          response.parent.splice(index + next, 0, step)
-        }
-      }
     }
   } else if (entity?.entityType === DiagramType.CreateNew) {
     // Steps if you are under step group
     const groupId = entity?.identifier
     const node = getStepFromId(data, groupId).node
-    if (entity?.parentIdentifier) {
+    if (entity?.node?.parentIdentifier) {
       if (isExecutionElementConfig(node) && node?.steps) {
         node.steps.push(step)
       } else if (isExecutionElementConfig(node) && node) {

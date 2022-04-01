@@ -233,7 +233,6 @@ function PipelineStepNode(props: PipelineStepNodeProps): JSX.Element {
       )}
       {!props.isParallelNode && !isServiceStep && !props.readonly && (
         <AddLinkNode<PipelineStepNodeProps>
-          id={props.id}
           nextNode={props?.nextNode}
           parentIdentifier={props?.parentIdentifier}
           isParallelNode={props.isParallelNode}
@@ -247,13 +246,13 @@ function PipelineStepNode(props: PipelineStepNodeProps): JSX.Element {
       )}
       {!props?.nextNode && !isServiceStep && props?.parentIdentifier && !props.readonly && !props.isParallelNode && (
         <AddLinkNode<PipelineStepNodeProps>
-          id={props.id}
           nextNode={props?.nextNode}
           parentIdentifier={props?.parentIdentifier}
           isParallelNode={props.isParallelNode}
           readonly={props.readonly}
           data={props}
           fireEvent={props.fireEvent}
+          isRightAddIcon={true}
           identifier={props.identifier}
           prevNodeIdentifier={props.prevNodeIdentifier}
           className={cx(defaultCss.addNodeIcon, defaultCss.right, defaultCss.stepAddIcon)}

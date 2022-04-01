@@ -110,6 +110,7 @@ export type FireEventMethod = (arg0: {
     node?: any
     destination?: any
     nodesInfo?: NodeInfo[]
+    isRightAddIcon?: boolean
   }
 }) => void
 

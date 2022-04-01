@@ -72,7 +72,12 @@ export function StepGroupNode(props: any): JSX.Element {
               </Layout.Horizontal>
             </div>
             <div className={css.stepGroupBody}>
-              <StepGroupGraph {...props} data={stepsData} isNodeCollapsed={isNodeCollapsed} />
+              <StepGroupGraph
+                {...props}
+                data={stepsData}
+                isNodeCollapsed={isNodeCollapsed}
+                parentIdentifier={props?.identifier}
+              />
             </div>
             {!props.readonly && (
               <Button
