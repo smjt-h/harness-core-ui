@@ -80,12 +80,6 @@ function DefineHealthSource(props: DefineHealthSourceProps): JSX.Element {
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [])
 
-  // useEffect(() => {
-  //   if (sourceData.selectedDashboards) {
-  //     sourceData.selectedDashboards = new Map()
-  //   }
-  // }, [sourceData?.connectorRef])
-
   return (
     <BGColorWrapper>
       <Formik
