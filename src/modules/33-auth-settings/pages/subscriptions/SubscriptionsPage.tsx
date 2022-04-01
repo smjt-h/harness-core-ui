@@ -10,7 +10,7 @@ import cx from 'classnames'
 
 import moment from 'moment'
 import { useParams, useHistory } from 'react-router-dom'
-import { Card, Container, Icon, IconName, Layout, Heading, PageError, useToaster } from '@wings-software/uicore'
+import { Card, Container, Icon, IconName, Layout, Heading, PageError } from '@wings-software/uicore'
 import { Color } from '@harness/design-system'
 import { useQueryParams } from '@common/hooks'
 import { Page } from '@common/exports'
@@ -69,7 +69,6 @@ const MODULE_SELECT_CARDS: ModuleSelectCard[] = [
 ]
 const SubscriptionsPage: React.FC = () => {
   const { getString } = useStrings()
-  const { showSuccess } = useToaster()
   const { accountId } = useParams<AccountPathProps>()
   const { moduleCard } = useQueryParams<{ moduleCard?: ModuleName }>()
   const { CDNG_ENABLED, CVNG_ENABLED, CING_ENABLED, CENG_ENABLED, CFNG_ENABLED } = useFeatureFlags()
@@ -133,8 +132,6 @@ const SubscriptionsPage: React.FC = () => {
 
   const latestModuleLicense = hasLicense ? licenseData?.data?.[licenseData.data.length - 1] : undefined
 
-  const { contactSales } = useQueryParams<{ contactSales?: string }>()
-
   useEffect(() => {
     handleUpdateLicenseStore(
       { ...licenseInformation },
@@ -144,16 +141,6 @@ const SubscriptionsPage: React.FC = () => {
     )
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [licenseData])
-
-  useEffect(
-    () => {
-      if (contactSales === 'success') {
-        showSuccess(getString('common.banners.trial.contactSalesForm.success'))
-      }
-    },
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-    [contactSales]
-  )
 
   if (accountError || licenseError) {
     const message =

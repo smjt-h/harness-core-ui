@@ -1422,6 +1422,14 @@ const routes = {
   toCEAnomalyDetection: withAccountId(() => `/ce/anomaly-detection`),
   toBusinessMapping: withAccountId(() => `/ce/business-mapping/`),
   /********************************************************************************************************************/
+  toSTO: withAccountId(() => `/sto`),
+  toSTOHome: withAccountId(() => `/sto/home`),
+  toSTOOverview: withAccountId(() => '/sto/overview'),
+  toSTOProjectOverview: withAccountId(
+    ({ orgIdentifier, projectIdentifier }: ProjectPathProps) =>
+      `/sto/orgs/${orgIdentifier}/projects/${projectIdentifier}/overview`
+  ),
+  /********************************************************************************************************************/
   toOldCustomDashboard: withAccountId(() => '/home/dashboards*'),
   toCustomDashboard: withAccountId(() => '/dashboards'),
   toCustomDashboardHome: withAccountId(

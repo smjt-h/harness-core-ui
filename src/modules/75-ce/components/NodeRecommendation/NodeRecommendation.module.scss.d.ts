@@ -8,6 +8,13 @@
 // this is an auto-generated file, do not update this manually
 declare const styles: {
   readonly blue: string
+  readonly borderBottomLeft: string
+  readonly borderBottomRight: string
+  readonly borderLeft: string
+  readonly borderRight: string
+  readonly borderTopLeft: string
+  readonly borderTopRight: string
+  readonly bufferSlider: string
   readonly card: string
   readonly cardCategory: string
   readonly cardInfo: string
@@ -16,16 +23,27 @@ declare const styles: {
   readonly cardLoadingContainer: string
   readonly cardOverlay: string
   readonly cards: string
+  readonly chartContainer: string
+  readonly chartLabel: string
   readonly comparisonCtn: string
   readonly input: string
+  readonly instaceFamilyInput: string
   readonly instructionPanel: string
   readonly leftAlign: string
   readonly line: string
+  readonly minNodeContainer: string
+  readonly minNodeInput: string
   readonly noBgColor: string
   readonly noShadow: string
+  readonly pointer: string
   readonly preferences: string
   readonly recommendationCategory: string
+  readonly resourceUtilizationCharts: string
+  readonly spaceBetween: string
   readonly title: string
+  readonly toaster: string
+  readonly tuneRecomInfoContainer: string
+  readonly tuneRecommendationCard: string
   readonly white: string
 }
 export default styles

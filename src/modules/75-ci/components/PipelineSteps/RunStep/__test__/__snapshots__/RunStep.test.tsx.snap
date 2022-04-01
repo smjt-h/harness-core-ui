@@ -441,11 +441,16 @@ exports[`Run Step Edit View edit mode works 1`] = `
           class="StyledProps--font StyledProps--main formGroup lg bottomMargin5"
         >
           <div>
-            <p
-              class="StyledProps--font StyledProps--main inpLabel StyledProps--color StyledProps--color-grey600 StyledProps--font-size-small StyledProps--font-weight-semi-bold"
+            <div
+              class="Text--withDocsTooltip"
+              data-tooltip-id="run_shell"
             >
-              common.shell
-            </p>
+              <p
+                class="StyledProps--font StyledProps--main inpLabel StyledProps--color StyledProps--color-grey600 StyledProps--font-size-small StyledProps--font-weight-semi-bold"
+              >
+                common.shell
+              </p>
+            </div>
             <div
               style="display: flex; align-items: center;"
             >
@@ -1171,11 +1176,16 @@ exports[`Run Step Edit View renders runtime inputs 1`] = `
           class="StyledProps--font StyledProps--main formGroup lg bottomMargin5"
         >
           <div>
-            <p
-              class="StyledProps--font StyledProps--main inpLabel StyledProps--color StyledProps--color-grey600 StyledProps--font-size-small StyledProps--font-weight-semi-bold"
+            <div
+              class="Text--withDocsTooltip"
+              data-tooltip-id="run_shell"
             >
-              common.shell
-            </p>
+              <p
+                class="StyledProps--font StyledProps--main inpLabel StyledProps--color StyledProps--color-grey600 StyledProps--font-size-small StyledProps--font-weight-semi-bold"
+              >
+                common.shell
+              </p>
+            </div>
             <div
               style="display: flex; align-items: center;"
             >
@@ -1821,11 +1831,16 @@ exports[`Run Step Edit View should render properly 1`] = `
           class="StyledProps--font StyledProps--main formGroup lg bottomMargin5"
         >
           <div>
-            <p
-              class="StyledProps--font StyledProps--main inpLabel StyledProps--color StyledProps--color-grey600 StyledProps--font-size-small StyledProps--font-weight-semi-bold"
+            <div
+              class="Text--withDocsTooltip"
+              data-tooltip-id="run_shell"
             >
-              common.shell
-            </p>
+              <p
+                class="StyledProps--font StyledProps--main inpLabel StyledProps--color StyledProps--color-grey600 StyledProps--font-size-small StyledProps--font-weight-semi-bold"
+              >
+                common.shell
+              </p>
+            </div>
             <div
               style="display: flex; align-items: center;"
             >

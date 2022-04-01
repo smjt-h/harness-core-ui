@@ -500,6 +500,7 @@ export interface StringsMap {
   'common.purpose.service': string
   'common.purpose.setup': string
   'common.purpose.startATrial': string
+  'common.purpose.sto.continuous': string
   'common.purpose.welcome': string
   'common.pwsh': string
   'common.readOnly': string
@@ -525,9 +526,9 @@ export interface StringsMap {
   'common.request': string
   'common.resolveConflict': string
   'common.resourceCenter.bottomlayout.apiDocs': string
-  'common.resourceCenter.bottomlayout.changeLog': string
   'common.resourceCenter.bottomlayout.desc': string
   'common.resourceCenter.bottomlayout.docs': string
+  'common.resourceCenter.bottomlayout.releaseNote': string
   'common.resourceCenter.bottomlayout.sitestatus': string
   'common.resourceCenter.bottomlayout.university': string
   'common.resourceCenter.communityLevelUp': string
@@ -3868,20 +3869,29 @@ export interface StringsMap {
   'ce.homepage.slogan': string
   'ce.learnMore': string
   'ce.noSavingsDataMessage': string
+  'ce.nodeRecommendation.addPreferredInstanceFamilies': string
   'ce.nodeRecommendation.aks': string
+  'ce.nodeRecommendation.applyPreferences': string
+  'ce.nodeRecommendation.autoScaling': string
+  'ce.nodeRecommendation.buffer': string
   'ce.nodeRecommendation.compare': string
   'ce.nodeRecommendation.costPerHour': string
+  'ce.nodeRecommendation.cpuAndMemeValWithBuffer': string
   'ce.nodeRecommendation.cpus': string
   'ce.nodeRecommendation.distribution': string
   'ce.nodeRecommendation.eks': string
   'ce.nodeRecommendation.estimatedSavings': string
+  'ce.nodeRecommendation.fetchRecommendationError': string
   'ce.nodeRecommendation.gke': string
   'ce.nodeRecommendation.howItWorks': string
+  'ce.nodeRecommendation.inconsistentResourceReq': string
+  'ce.nodeRecommendation.instaceFamiliesModalDesc': string
   'ce.nodeRecommendation.instanceFam': string
   'ce.nodeRecommendation.item1': string
   'ce.nodeRecommendation.item2': string
   'ce.nodeRecommendation.item3': string
   'ce.nodeRecommendation.item4': string
+  'ce.nodeRecommendation.largestWorkloadReq': string
   'ce.nodeRecommendation.listhead': string
   'ce.nodeRecommendation.maxNode': string
   'ce.nodeRecommendation.mem': string
@@ -3892,13 +3902,23 @@ export interface StringsMap {
   'ce.nodeRecommendation.nodepool': string
   'ce.nodeRecommendation.onDemand': string
   'ce.nodeRecommendation.poolDetails': string
+  'ce.nodeRecommendation.prefMinNodeCount': string
+  'ce.nodeRecommendation.prefResourceNeeds': string
+  'ce.nodeRecommendation.preferredInstanceFamilies': string
+  'ce.nodeRecommendation.ram': string
   'ce.nodeRecommendation.recommended': string
   'ce.nodeRecommendation.resourceNeed': string
+  'ce.nodeRecommendation.resourceUtilInLast': string
+  'ce.nodeRecommendation.savePreferences': string
+  'ce.nodeRecommendation.setInstancePreferences': string
   'ce.nodeRecommendation.spot': string
   'ce.nodeRecommendation.suitable.prod': string
   'ce.nodeRecommendation.suitable.qa': string
   'ce.nodeRecommendation.text1': string
   'ce.nodeRecommendation.text2': string
+  'ce.nodeRecommendation.tuneRecommendationsInfo1': string
+  'ce.nodeRecommendation.tuneRecommendationsInfo2': string
+  'ce.nodeRecommendation.updatePreferences': string
   'ce.overview.addClusterBtn': string
   'ce.overview.addClusterDesc': string
   'ce.overview.cardtitles.aws': string
@@ -4338,6 +4358,7 @@ export interface StringsMap {
   'cf.featureFlags.prerequisitesDesc': string
   'cf.featureFlags.results': string
   'cf.featureFlags.rules.add': string
+  'cf.featureFlags.rules.addTargeting': string
   'cf.featureFlags.rules.customRules': string
   'cf.featureFlags.rules.defaultRule': string
   'cf.featureFlags.rules.defaultRules': string
@@ -4353,6 +4374,9 @@ export interface StringsMap {
   'cf.featureFlags.rules.toTarget': string
   'cf.featureFlags.rules.toTargetGroups': string
   'cf.featureFlags.rules.toTargets': string
+  'cf.featureFlags.rules.validation.selectTargetGroup': string
+  'cf.featureFlags.rules.validation.valueMustAddTo100': string
+  'cf.featureFlags.rules.validation.valueRequired': string
   'cf.featureFlags.rules.whenFlagEnabled': string
   'cf.featureFlags.serve': string
   'cf.featureFlags.servePercentageRollout': string
@@ -4708,16 +4732,34 @@ export interface StringsMap {
   'ci.fileStore': string
   'ci.getStartedWithCI.buildPipeline': string
   'ci.getStartedWithCI.buildyourOwnPipeline': string
+  'ci.getStartedWithCI.carousel.helptext.complexPipelines': string
+  'ci.getStartedWithCI.carousel.helptext.connectToRepo': string
+  'ci.getStartedWithCI.carousel.helptext.containerizedSteps': string
+  'ci.getStartedWithCI.carousel.helptext.harnessCIFeatures': string
+  'ci.getStartedWithCI.carousel.helptext.pipelineStudio': string
+  'ci.getStartedWithCI.carousel.helptext.seamlessIntegration': string
+  'ci.getStartedWithCI.carousel.helptext.ti': string
+  'ci.getStartedWithCI.carousel.helptext.useCaching': string
+  'ci.getStartedWithCI.carousel.helptext.usePlugins': string
+  'ci.getStartedWithCI.carousel.labels.complexPipelines': string
+  'ci.getStartedWithCI.carousel.labels.containerizedSteps': string
+  'ci.getStartedWithCI.carousel.labels.harnessCIFeatures': string
+  'ci.getStartedWithCI.carousel.labels.integration': string
+  'ci.getStartedWithCI.carousel.labels.useCaching': string
+  'ci.getStartedWithCI.carousel.labels.usePlugins': string
   'ci.getStartedWithCI.chooseAnOption': string
+  'ci.getStartedWithCI.chooseDiffInfra': string
   'ci.getStartedWithCI.codebaseRepoLabel': string
   'ci.getStartedWithCI.configInfra': string
   'ci.getStartedWithCI.connectSCM': string
   'ci.getStartedWithCI.devFriendly': string
   'ci.getStartedWithCI.devFriendlyHelpText': string
+  'ci.getStartedWithCI.duration': string
   'ci.getStartedWithCI.firstPipeline': string
   'ci.getStartedWithCI.flexibleInfra': string
   'ci.getStartedWithCI.flexibleInfraHelpText': string
   'ci.getStartedWithCI.hostedByHarness': string
+  'ci.getStartedWithCI.infraProvisioningFailed': string
   'ci.getStartedWithCI.integratedCICD': string
   'ci.getStartedWithCI.integratedCICDHelpText': string
   'ci.getStartedWithCI.javaLabel': string
@@ -4727,6 +4769,7 @@ export interface StringsMap {
   'ci.getStartedWithCI.parallelizationHelpText': string
   'ci.getStartedWithCI.parameterization': string
   'ci.getStartedWithCI.parameterizationHelpText': string
+  'ci.getStartedWithCI.provisionSecureEnv': string
   'ci.getStartedWithCI.quicklyCreate': string
   'ci.getStartedWithCI.security': string
   'ci.getStartedWithCI.securityHelpText': string
@@ -4735,6 +4778,7 @@ export interface StringsMap {
   'ci.getStartedWithCI.takeToTheNextLevel': string
   'ci.getStartedWithCI.ti': string
   'ci.getStartedWithCI.tiHelpText': string
+  'ci.getStartedWithCI.troubleShootFailedProvisioning': string
   'ci.getStartedWithCI.tryASamplePipeline': string
   'ci.gradleNote1': string
   'ci.gradleNote2': string

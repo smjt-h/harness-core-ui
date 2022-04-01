@@ -132,7 +132,12 @@ export const RunStepBase = (
               <MultiTypeSelectField
                 name="spec.shell"
                 label={
-                  <Text className={css.inpLabel} color={Color.GREY_600} font={{ size: 'small', weight: 'semi-bold' }}>
+                  <Text
+                    tooltipProps={{ dataTooltipId: 'run_shell' }}
+                    className={css.inpLabel}
+                    color={Color.GREY_600}
+                    font={{ size: 'small', weight: 'semi-bold' }}
+                  >
                     {getString('common.shell')}
                   </Text>
                 }

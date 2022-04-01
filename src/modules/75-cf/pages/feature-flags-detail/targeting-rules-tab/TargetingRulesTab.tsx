@@ -8,40 +8,27 @@
 import { Card, Container, Formik, FormikForm, Layout } from '@harness/uicore'
 import React, { ReactElement } from 'react'
 import { useParams } from 'react-router-dom'
+import { v4 as uuid } from 'uuid'
+import * as yup from 'yup'
+import { validateYupSchema, yupToFormErrors } from 'formik'
 import FlagToggleSwitch from '@cf/components/EditFlagTabs/FlagToggleSwitch'
 import {
   Feature,
   GetAllSegmentsQueryParams,
   GetAllTargetsQueryParams,
-  TargetMap,
   useGetAllSegments,
-  useGetAllTargets
+  useGetAllTargets,
+  WeightedVariation
 } from 'services/cf'
 import { FeatureFlagActivationStatus } from '@cf/utils/CFUtils'
 import useActiveEnvironment from '@cf/hooks/useActiveEnvironment'
+import { useStrings } from 'framework/strings'
 import usePatchFeatureFlag from './hooks/usePatchFeatureFlag'
 import TargetingRulesTabFooter from './components/tab-targeting-footer/TargetingRulesTabFooter'
 
 import FlagEnabledRulesCard from './components/flag-enabled-rules-card/FlagEnabledRulesCard'
+import type { FormVariationMap, VariationPercentageRollout, TargetGroup, TargetingRulesFormValues } from './Types.types'
 import css from './TargetingRulesTab.module.scss'
-
-export interface TargetingRulesFormValues {
-  state: string
-  onVariation: string
-  formVariationMap: FormVariationMap[]
-}
-export interface TargetGroup {
-  identifier: string
-  ruleId: string
-  name: string
-}
-export interface FormVariationMap {
-  variationIdentifier: string
-  variationName: string
-  targetGroups: TargetGroup[]
-  targets: TargetMap[]
-  isVisible: boolean
-}
 export interface TargetingRulesTabProps {
   featureFlagData: Feature
   refetchFlag: () => Promise<unknown>
@@ -55,6 +42,7 @@ const TargetingRulesTab = ({
 }: TargetingRulesTabProps): ReactElement => {
   const { orgIdentifier, accountId: accountIdentifier, projectIdentifier } = useParams<Record<string, string>>()
   const { activeEnvironment: environmentIdentifier } = useActiveEnvironment()
+  const { getString } = useStrings()
 
   const { data: targetsData, loading: targetsLoading } = useGetAllTargets({
     queryParams: {
@@ -81,12 +69,12 @@ const TargetingRulesTab = ({
 
   // convert variations/targets/target groups into a more UI friendly structure
   const formVariationMap: FormVariationMap[] = featureFlagData.variations.map(variation => {
-    const formTargets =
+    const variationTargets =
       featureFlagData.envProperties?.variationMap?.find(
         variationMapItem => variation.identifier === variationMapItem.variation
       )?.targets || []
 
-    const formTargetGroups =
+    const variationTargetGroups =
       featureFlagData.envProperties?.rules
         ?.filter(rule => rule.serve.variation === variation.identifier)
         .map(targetGroupRule => ({
@@ -98,18 +86,82 @@ const TargetingRulesTab = ({
     return {
       variationIdentifier: variation.identifier,
       variationName: variation.name as string,
-      targets: formTargets,
-      targetGroups: formTargetGroups,
-      isVisible: formTargets.length > 0 || formTargetGroups.length > 0
+      targets: variationTargets,
+      targetGroups: variationTargetGroups,
+      isVisible: variationTargets.length > 0 || variationTargetGroups.length > 0
     }
   })
 
-  const initialValues = {
+  const variationPercentageRollouts = featureFlagData.envProperties?.rules?.filter(rule => rule.serve.distribution)
+
+  const initialValues: TargetingRulesFormValues = {
     state: featureFlagData.envProperties?.state as string,
     onVariation: featureFlagData.envProperties?.defaultServe.variation
       ? featureFlagData.envProperties?.defaultServe.variation
       : featureFlagData.defaultOnVariation,
-    formVariationMap: formVariationMap
+    formVariationMap,
+    variationPercentageRollouts: variationPercentageRollouts
+      ? variationPercentageRollouts.map(percentageRollout => ({
+          variations: percentageRollout.serve.distribution?.variations || [],
+          bucketBy: percentageRollout.serve.distribution?.bucketBy || 'identifier',
+          clauses: percentageRollout.clauses,
+          ruleId: percentageRollout.ruleId as string
+        }))
+      : []
+  }
+
+  const validate = (values: TargetingRulesFormValues) => {
+    try {
+      validateYupSchema(
+        values,
+        yup.object({
+          variationPercentageRollouts: yup.array().of(
+            yup.object({
+              clauses: yup.array().of(
+                yup.object({
+                  values:
+                    values.variationPercentageRollouts.length > 0
+                      ? yup
+                          .array()
+                          .of(yup.string().required(getString('cf.featureFlags.rules.validation.selectTargetGroup')))
+                      : yup.array().of(yup.string())
+                })
+              ),
+              variations: yup.lazy(value => {
+                return yup.array().of(
+                  yup.object({
+                    weight:
+                      values.variationPercentageRollouts.length > 0
+                        ? yup
+                            .number()
+                            .typeError(getString('cf.creationModal.mustBeNumber'))
+                            .required(getString('cf.featureFlags.rules.validation.valueRequired'))
+                            .test(
+                              'weight-sum-test',
+                              getString('cf.featureFlags.rules.validation.valueMustAddTo100'),
+                              () => {
+                                const totalWeight = (value as WeightedVariation[])
+                                  .map(x => x.weight)
+                                  .reduce((previous, current) => previous + current, 0)
+
+                                return totalWeight === 100
+                              }
+                            )
+                        : yup.number()
+                  })
+                )
+              })
+            })
+          )
+        }),
+        true,
+        values
+      )
+    } catch (err) {
+      return yupToFormErrors(err) //for rendering validation errors
+    }
+
+    return {}
   }
 
   const { saveChanges, loading: patchFeatureLoading } = usePatchFeatureFlag({
@@ -127,6 +179,7 @@ const TargetingRulesTab = ({
       validateOnBlur={false}
       formName="targeting-rules-form"
       initialValues={initialValues}
+      validate={values => validate(values)}
       onSubmit={values => {
         saveChanges(values)
       }}
@@ -157,6 +210,7 @@ const TargetingRulesTab = ({
                   targets={targets}
                   segments={segments}
                   featureFlagVariations={featureFlagData.variations}
+                  variationPercentageRollouts={formikProps.values.variationPercentageRollouts}
                   isLoading={isLoading}
                   updateTargetGroups={(index: number, newTargetGroups: TargetGroup[]) =>
                     formikProps.setFieldValue(`formVariationMap[${index}].targetGroups`, newTargetGroups)
@@ -180,6 +234,33 @@ const TargetingRulesTab = ({
                       targetGroups: [],
                       isVisible: false
                     })
+                  }}
+                  addPercentageRollout={() => {
+                    // need to add with empty fields so the validation messages appear correctly
+                    const newPercentageRollout: VariationPercentageRollout = {
+                      bucketBy: 'identifier',
+                      clauses: [
+                        {
+                          attribute: '',
+                          id: '',
+                          negate: false,
+                          op: '',
+                          values: ['']
+                        }
+                      ],
+                      variations: featureFlagData.variations.map(variation => ({
+                        variation: variation.identifier,
+                        weight: 0
+                      })),
+                      ruleId: uuid()
+                    }
+                    const percentageRollouts = [...formikProps.values.variationPercentageRollouts, newPercentageRollout]
+                    formikProps.setFieldValue(`variationPercentageRollouts`, percentageRollouts)
+                  }}
+                  removePercentageRollout={index => {
+                    const percentageRollouts = [...formikProps.values.variationPercentageRollouts]
+                    percentageRollouts.splice(index, 1)
+                    formikProps.setFieldValue(`variationPercentageRollouts`, percentageRollouts)
                   }}
                 />
 

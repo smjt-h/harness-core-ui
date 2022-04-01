@@ -140,3 +140,26 @@ getStartedWithCI:
   devFriendlyHelpText: Manage your pipelines the same way you manage your code - stored in git, located with your codebase, written in YAML (using built-in YAML editor, with auto-complete and schema validation), and handle changes using pull requests.
   securityHelpText: Avoid security issues and make sure your code and processes are always within compliance. CI Enterprise comes with full Audit capabilities, flexible and granular RBAC, allowing your team to create custom roles and OPA-backed policies that make sure all your pipelines are safe and secured.
   integratedCICDHelpText: Using one platform for both CI and CD streamline the delivery process, reduce manual steps and friction and help teams to move forward faster without learning and onboarding on multiple products.
+  provisionSecureEnv: Provisioning a secure environment for your Builds
+  duration: 'This can take up to {{count}} {{unit}}'
+  infraProvisioningFailed: Infrastructure Provisioning failed
+  troubleShootFailedProvisioning: We were unable to set up the hosted infrastructure. Click <b>Choose a different infrastructure</b> to use your own infrastructure or click <b>Contact Support</b> and we will resolve the issue.
+  chooseDiffInfra: Choose a different Infrastructure
+  carousel:
+    labels:
+      harnessCIFeatures: Harness CI
+      complexPipelines: Complex Pipelines
+      containerizedSteps: Containerized Steps
+      useCaching: Caching
+      usePlugins: Plugins
+      integration: Seamlessly Integrate
+    helptext:
+      connectToRepo: After we provision your build infrastructure, we’ll connect to your repo and codebase.
+      harnessCIFeatures: While you’re waiting, let’s talk about Harness CI features.
+      ti: Test Intelligence reduces test time significantly. It runs only the tests needed for the code changes that triggered the build.
+      pipelineStudio: Rapidly build your Pipeline and test your code using a visual editor or YAML. You can even sync your Pipeline with your Git provider and work entirely from Git.
+      complexPipelines: Create complex Pipelines by using Stages that include Steps for building, pushing, and testing your code.
+      containerizedSteps: Containerized Steps follow a Docker-based approach with dependency management in the ephemeral build node/runner container.
+      useCaching: Use Caching to ensure faster Step execution by reusing data from fetch operations in previous Steps.
+      usePlugins: Use Plugins to perform predefined tasks like building and publishing artifacts, sending events and metrics, and more.
+      seamlessIntegration: Harness CI seamlessly integrates with other Harness modules like Continuous Delivery, Cloud Cost Management, and Feature Flags.

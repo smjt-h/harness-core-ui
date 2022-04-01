@@ -5,26 +5,30 @@
  * https://polyformproject.org/wp-content/uploads/2020/06/PolyForm-Shield-1.0.0.txt.
  */
 
-import { Button, ButtonVariation, Card, Container, FontVariation, Heading, Layout, Text } from '@harness/uicore'
+import { Card, Container, FontVariation, Heading, Layout } from '@harness/uicore'
 import React, { ReactElement } from 'react'
 
-import { PopoverPosition } from '@blueprintjs/core'
 import { useStrings } from 'framework/strings'
 import type { Segment, Target, TargetMap, Variation } from 'services/cf'
 import DefaultRules from '../default-rules/DefaultRules'
 import SpecificTargetingItem from '../specific-targeting-item.tsx/SpecificTargetingItem'
-import type { FormVariationMap, TargetGroup } from '../../TargetingRulesTab'
+import type { FormVariationMap, VariationPercentageRollout, TargetGroup } from '../../Types.types'
+import PercentageRolloutItem from '../percentage-rollout-item/PercentageRolloutItem'
+import AddTargetingButton from '../add-targeting-button/AddTargetingButton'
 
 export interface FlagEnabledRulesCardProps {
   targets: Target[]
   segments: Segment[]
   formVariationMap: FormVariationMap[]
   featureFlagVariations: Variation[]
+  variationPercentageRollouts: VariationPercentageRollout[]
   isLoading: boolean
   updateTargetGroups: (index: number, newTargetGroups: TargetGroup[]) => void
   updateTargets: (index: number, newTargetGroups: TargetMap[]) => void
   addVariation: (newVariation: FormVariationMap) => void
   removeVariation: (removedVariation: FormVariationMap) => void
+  addPercentageRollout: () => void
+  removePercentageRollout: (index: number) => void
 }
 
 const FlagEnabledRulesCard = (props: FlagEnabledRulesCardProps): ReactElement => {
@@ -33,10 +37,13 @@ const FlagEnabledRulesCard = (props: FlagEnabledRulesCardProps): ReactElement =>
     segments,
     formVariationMap,
     featureFlagVariations,
+    variationPercentageRollouts,
     updateTargetGroups,
     updateTargets,
     addVariation,
     removeVariation,
+    addPercentageRollout,
+    removePercentageRollout,
     isLoading
   } = props
 
@@ -71,34 +78,23 @@ const FlagEnabledRulesCard = (props: FlagEnabledRulesCardProps): ReactElement =>
               )}
             </>
           ))}
-          {addTargetingDropdownVariations.length > 0 && (
-            <Button
-              icon="plus"
-              rightIcon="chevron-down"
-              variation={ButtonVariation.SECONDARY}
-              text="Add Targeting"
-              tooltipProps={{
-                fill: true,
-                interactionKind: 'click',
-                minimal: true,
-                position: PopoverPosition.BOTTOM_LEFT
-              }}
-              tooltip={
-                <Layout.Vertical padding="small" spacing="small">
-                  {addTargetingDropdownVariations.map(variation => (
-                    <Text
-                      data-testid={`variation_option_${variation.variationIdentifier}`}
-                      inline
-                      onClick={() => addVariation(variation)}
-                      key={variation.variationIdentifier}
-                      font={{ variation: FontVariation.BODY }}
-                      icon="full-circle"
-                    >
-                      {variation.variationName}
-                    </Text>
-                  ))}
-                </Layout.Vertical>
-              }
+
+          {variationPercentageRollouts.map((variationPercentageRollout, index) => (
+            <PercentageRolloutItem
+              key={variationPercentageRollout.ruleId}
+              index={index}
+              featureFlagVariations={featureFlagVariations}
+              removePercentageRollout={removePercentageRollout}
+              segments={segments}
+              variationPercentageRollout={variationPercentageRollout}
+            />
+          ))}
+
+          {(addTargetingDropdownVariations.length > 0 || variationPercentageRollouts.length > 0) && (
+            <AddTargetingButton
+              addPercentageRollout={addPercentageRollout}
+              addTargetingDropdownVariations={addTargetingDropdownVariations}
+              addVariation={addVariation}
             />
           )}
         </Layout.Vertical>

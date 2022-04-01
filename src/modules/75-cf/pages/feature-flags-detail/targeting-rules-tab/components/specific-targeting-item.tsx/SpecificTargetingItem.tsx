@@ -9,7 +9,8 @@ import { Button, Container, FontVariation, Label, SimpleTagInput, Text } from '@
 import React, { ReactElement } from 'react'
 import { useStrings } from 'framework/strings'
 import type { Segment, Target, TargetMap } from 'services/cf'
-import type { FormVariationMap, TargetGroup } from '../../TargetingRulesTab'
+import type { FormVariationMap, TargetGroup } from '../../Types.types'
+import css from './SpecificTargetingItem.module.scss'
 
 export interface SpecificTargetingItemProps {
   index: number
@@ -59,7 +60,7 @@ const SpecificTargetingItem = (props: SpecificTargetingItemProps): ReactElement 
         />
       </Container>
       <div data-testid={`${formVariationMapItem.variationIdentifier}_target_groups`}>
-        <Label>{getString('cf.featureFlags.rules.toTargetGroups')}</Label>
+        <Label className={css.tagInputLabel}>{getString('cf.featureFlags.rules.toTargetGroups')}</Label>
         <SimpleTagInput
           fill
           readonly={isLoading}
@@ -89,7 +90,7 @@ const SpecificTargetingItem = (props: SpecificTargetingItemProps): ReactElement 
         />
       </div>
       <div data-testid={`${formVariationMapItem.variationIdentifier}_targets`}>
-        <Label>{getString('cf.featureFlags.rules.toTargets')}</Label>
+        <Label className={css.tagInputLabel}>{getString('cf.featureFlags.rules.toTargets')}</Label>
         <SimpleTagInput
           fill
           readonly={isLoading}
@@ -118,6 +119,7 @@ const SpecificTargetingItem = (props: SpecificTargetingItemProps): ReactElement 
           }}
         />
       </div>
+
       <Container border={{ bottom: true }} />
     </>
   )

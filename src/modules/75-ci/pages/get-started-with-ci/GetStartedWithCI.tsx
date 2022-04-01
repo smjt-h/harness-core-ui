@@ -5,11 +5,12 @@
  * https://polyformproject.org/wp-content/uploads/2020/06/PolyForm-Shield-1.0.0.txt.
  */
 
-import React from 'react'
+import React, { useState } from 'react'
 import cx from 'classnames'
 import { Text, FontVariation, Icon, Layout, Button, ButtonVariation, IconName, Container } from '@harness/uicore'
 import { useStrings } from 'framework/strings'
 import type { StringsMap } from 'stringTypes'
+import { InfraProvisioningCarousel } from './InfraProvisioningCarousel/InfraProvisioningCarousel'
 
 import samplePipelineImg from '../../assets/images/sample-pipeline.svg'
 
@@ -19,6 +20,7 @@ const dummy_repo = 'github.com/harnesssampleapp'
 
 export default function GetStartedWithCI(): React.ReactElement {
   const { getString } = useStrings()
+  const [showDialog, setShowDialog] = useState<boolean>(false)
 
   const renderBuildPipelineStep = React.useCallback(
     ({ icon, label, isLastStep }: { icon: IconName; label: keyof StringsMap; isLastStep?: boolean }) => (
@@ -43,49 +45,49 @@ export default function GetStartedWithCI(): React.ReactElement {
     []
   )
 
-  const CI_CATALOGUE = [
+  const CI_CATALOGUE: { icon: IconName; label: keyof StringsMap; helptext: keyof StringsMap }[][] = [
     [
       {
-        icon: 'ci-ti' as IconName,
-        label: 'ci.getStartedWithCI.ti' as keyof StringsMap,
-        helptext: 'ci.getStartedWithCI.tiHelpText' as keyof StringsMap
+        icon: 'ci-ti',
+        label: 'ci.getStartedWithCI.ti',
+        helptext: 'ci.getStartedWithCI.tiHelpText'
       },
       {
-        icon: 'ci-language' as IconName,
-        label: 'ci.getStartedWithCI.languageAgnostic' as keyof StringsMap,
-        helptext: 'ci.getStartedWithCI.languageAgnosticHelpText' as keyof StringsMap
+        icon: 'ci-language',
+        label: 'ci.getStartedWithCI.languageAgnostic',
+        helptext: 'ci.getStartedWithCI.languageAgnosticHelpText'
       },
       {
-        icon: 'ci-parameterization' as IconName,
-        label: 'ci.getStartedWithCI.parameterization' as keyof StringsMap,
-        helptext: 'ci.getStartedWithCI.parameterizationHelpText' as keyof StringsMap
+        icon: 'ci-parameterization',
+        label: 'ci.getStartedWithCI.parameterization',
+        helptext: 'ci.getStartedWithCI.parameterizationHelpText'
       },
       {
-        icon: 'ci-execution' as IconName,
-        label: 'ci.getStartedWithCI.parallelization' as keyof StringsMap,
-        helptext: 'ci.getStartedWithCI.parallelizationHelpText' as keyof StringsMap
+        icon: 'ci-execution',
+        label: 'ci.getStartedWithCI.parallelization',
+        helptext: 'ci.getStartedWithCI.parallelizationHelpText'
       }
     ],
     [
       {
-        icon: 'ci-infra-support' as IconName,
-        label: 'ci.getStartedWithCI.flexibleInfra' as keyof StringsMap,
-        helptext: 'ci.getStartedWithCI.flexibleInfraHelpText' as keyof StringsMap
+        icon: 'ci-infra-support',
+        label: 'ci.getStartedWithCI.flexibleInfra',
+        helptext: 'ci.getStartedWithCI.flexibleInfraHelpText'
       },
       {
-        icon: 'ci-dev-exp' as IconName,
-        label: 'ci.getStartedWithCI.devFriendly' as keyof StringsMap,
-        helptext: 'ci.getStartedWithCI.devFriendlyHelpText' as keyof StringsMap
+        icon: 'ci-dev-exp',
+        label: 'ci.getStartedWithCI.devFriendly',
+        helptext: 'ci.getStartedWithCI.devFriendlyHelpText'
       },
       {
-        icon: 'ci-gov' as IconName,
-        label: 'ci.getStartedWithCI.security' as keyof StringsMap,
-        helptext: 'ci.getStartedWithCI.securityHelpText' as keyof StringsMap
+        icon: 'ci-gov',
+        label: 'ci.getStartedWithCI.security',
+        helptext: 'ci.getStartedWithCI.securityHelpText'
       },
       {
-        icon: 'ci-integrated' as IconName,
-        label: 'ci.getStartedWithCI.integratedCICD' as keyof StringsMap,
-        helptext: 'ci.getStartedWithCI.integratedCICDHelpText' as keyof StringsMap
+        icon: 'ci-integrated',
+        label: 'ci.getStartedWithCI.integratedCICD',
+        helptext: 'ci.getStartedWithCI.integratedCICDHelpText'
       }
     ]
   ]
@@ -158,7 +160,15 @@ export default function GetStartedWithCI(): React.ReactElement {
               icon="run-pipeline"
               intent="success"
               text={getString('runPipelineText')}
+              onClick={() => setShowDialog(true)}
             />
+            {showDialog ? (
+              <InfraProvisioningCarousel
+                show={showDialog}
+                onClose={() => setShowDialog(false)}
+                provisioningStatus="IN_PROGRESS"
+              />
+            ) : null}
           </Layout.Horizontal>
           <Layout.Horizontal padding={{ top: 'medium' }}>
             <Container padding={{ left: 'small', right: 'xxxlarge' }}>

@@ -28,6 +28,9 @@ describe('RUN PIPELINE MODAL', () => {
     '/ng/api/connectors?accountIdentifier=accountId&type=K8sCluster&searchTerm=&projectIdentifier=project1&orgIdentifier=default'
   const stagesExecutionListCall =
     '/pipeline/api/pipeline/execute/stagesExecutionList?routingId=px7xd_BFRCi-pfWPYXVjvw&accountIdentifier=px7xd_BFRCi-pfWPYXVjvw&orgIdentifier=default&projectIdentifier=Kapil&pipelineIdentifier=My_test_pipeline'
+  const yamlSnippetCall = '/pipeline/api/approvals/stage-yaml-snippet?routingId=accountId&approvalType=HarnessApproval'
+  const userGroupCall = 'ng/api/aggregate/acl/usergroups?accountIdentifier=accountId&orgIdentifier=default&searchTerm='
+  const stepsCall = 'pipeline/api/pipelines/v2/steps?routingId=accountId&accountId=accountId'
   beforeEach(() => {
     cy.on('uncaught:exception', () => {
       // returning false here prevents Cypress from
@@ -86,7 +89,7 @@ describe('RUN PIPELINE MODAL', () => {
       cy.contains('span', 'Pipeline published successfully').should('be.visible')
 
       cy.findByTestId('card-run-pipeline').click()
-      cy.contains('span', 'Run Pipeline').click()
+      cy.contains('span', 'Run').click({ force: true })
 
       cy.contains('span', 'Service is required').should('be.visible').should('have.class', 'FormError--error')
       cy.contains('span', 'ConnectorRef is a required field')
@@ -184,6 +187,80 @@ describe('RUN PIPELINE MODAL', () => {
         cy.get('#pipeline-panel').contains('span', 'namespace').should('be.visible')
         cy.get('#pipeline-panel').contains('span', 'cypress').should('be.visible')
       })
+    })
+  })
+  describe('For approval stage', () => {
+    beforeEach(() => {
+      cy.get('[icon="plus"]').click()
+      cy.findByTestId('stage-Approval').click()
+      cy.fillName('testStage')
+      cy.contains('p', 'Harness Approval').click({ multiple: true })
+      cy.clickSubmit()
+      cy.intercept('GET', yamlSnippetCall, { fixture: 'pipeline/api/approvals/stageYamlSnippet' })
+      cy.intercept('GET', userGroupCall, { fixture: 'pipeline/api/approvals/userGroup' })
+      cy.intercept('POST', stepsCall, { fixture: 'pipeline/api/approvals/steps' })
+    })
+
+    it('should display the delete pipeline stage modal', () => {
+      cy.intercept('GET', yamlSnippetCall, { fixture: 'pipeline/api/approvals/stageYamlSnippet' })
+      cy.wait(2000)
+      cy.get('[icon="play"]').click({ force: true, multiple: true })
+      cy.wait(2000)
+      cy.contains('p', 'testStage').trigger('mouseover')
+      cy.get('[icon="cross"]').click({ force: true })
+      cy.contains('p', 'Delete Pipeline Stage').should('be.visible')
+      cy.contains('span', 'Delete').click({ force: true })
+      cy.contains('span', 'Pipeline Stage Successfully removed.').should('be.visible')
+    })
+
+    it('adding step information ,apply changes without adding user groups', () => {
+      // Toggle to variable view
+      cy.intercept('GET', yamlSnippetCall, { fixture: 'pipeline/api/approvals/stageYamlSnippet' })
+      cy.wait(2000)
+      cy.contains('span', 'Advanced').click({ force: true })
+      cy.wait(1000)
+      cy.contains('span', 'Execution').click({ force: true })
+      cy.wait(4000)
+      cy.contains('p', 'Approval').click()
+      cy.wait(4000)
+      cy.contains('p', 'Select User Group(s)').should('be.visible')
+      cy.contains('span', 'Apply Changes').click({ force: true })
+      cy.contains('span', 'Atleast one user group is required').should('be.visible')
+    })
+    it('adding step information ,apply changes after adding groups', () => {
+      // Toggle to variable view
+      cy.intercept('GET', yamlSnippetCall, { fixture: 'pipeline/api/approvals/stageYamlSnippet' })
+      cy.intercept('GET', userGroupCall, { fixture: 'pipeline/api/approvals/userGroup' })
+      cy.wait(2000)
+      cy.contains('span', 'Advanced').click({ force: true })
+      cy.wait(1000)
+      cy.contains('span', 'Execution').click({ force: true })
+      cy.wait(4000)
+      cy.contains('p', 'Approval').click()
+      cy.wait(4000)
+      cy.contains('p', 'Select User Group(s)').should('be.visible')
+      cy.contains('p', 'Select User Group(s)').click()
+      cy.wait(2000)
+      cy.contains('div', 'Organization').click()
+      cy.findByTestId('Checkbox-test').click({ force: true })
+      cy.contains('span', 'Apply Selected').click()
+      cy.contains('span', 'Apply Changes').click({ force: true })
+    })
+
+    it('visual to variable view for stage configuration', () => {
+      // Toggle to variable view
+      cy.intercept('POST', pipelineVariablesCall, { fixture: 'pipeline/api/runpipeline/pipelines.variables' })
+      cy.intercept('POST', resolvedPipelineDetailsCall, { fixture: 'pipeline/api/approvals/getresolvedpipeline' })
+      cy.wait(2000)
+      cy.contains('span', 'Advanced').click({ force: true })
+      cy.wait(1000)
+      cy.contains('span', 'Execution').click({ force: true })
+      cy.wait(2000)
+      cy.contains('span', 'Variables').click()
+      cy.wait(4000)
+
+      cy.get('#pipeline-panel').contains('span', 'testPipeline_Cypress').should('be.visible')
+      cy.get('#pipeline-panel').contains('span', 'testStage').should('be.visible')
     })
   })
 })

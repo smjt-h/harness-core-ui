@@ -188,10 +188,15 @@ featureFlags:
     following: to following
     serveToFollowing: 'serve to following:'
     onRequest: On Request
-    onRequestVariation: 'On Request, check for condition and serve variation'
-    specificTargeting: 'Specific Targeting'
-    toTargetGroups: 'to Target Groups'
-    toTargets: 'to Targets'
+    onRequestVariation: On Request, check for condition and serve variation
+    addTargeting: Add Targeting
+    specificTargeting: Specific Targeting
+    toTargetGroups: To Target Groups
+    toTargets: To Targets
+    validation:
+      selectTargetGroup: Please select a Target Group
+      valueRequired: Please enter a value
+      valueMustAddTo100: Values must add up to 100
   flagFilters:
     environment: '{{ $.environment }}'
     envDefault: Production (Default)

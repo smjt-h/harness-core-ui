@@ -5,7 +5,7 @@
  * https://polyformproject.org/wp-content/uploads/2020/06/PolyForm-Shield-1.0.0.txt.
  */
 
-import React, { useEffect } from 'react'
+import React from 'react'
 import {
   ButtonVariation,
   Container,
@@ -17,8 +17,6 @@ import {
 } from '@wings-software/uicore'
 import { Color } from '@harness/design-system'
 import { useStrings } from 'framework/strings'
-import { useQueryParams } from '@common/hooks'
-import { useToaster } from '@common/exports'
 import { useProjectModal } from '@projects-orgs/modals/ProjectModal/useProjectModal'
 import type { Project } from 'services/cd-ng'
 import { useAppStore } from 'framework/AppStore/AppStoreContext'
@@ -64,17 +62,6 @@ export const HomePageTemplate: React.FC<HomePageTemplate> = ({
   })
 
   const { getString } = useStrings()
-  const { showSuccess } = useToaster()
-  const { contactSales } = useQueryParams<{ contactSales?: string }>()
-  useEffect(
-    () => {
-      if (contactSales === 'success') {
-        showSuccess(getString('common.banners.trial.contactSalesForm.success'))
-      }
-    },
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-    [contactSales]
-  )
 
   return (
     <>
