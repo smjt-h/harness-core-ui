@@ -234,6 +234,7 @@ export interface StringsMap {
   'common.firstGeneration': string
   'common.frequency': string
   'common.friendlyMessage': string
+  'common.gcp': string
   'common.genericErrors.inviteExpired': string
   'common.genericErrors.licenseCallFailed': string
   'common.genericErrors.unauthorized': string
@@ -605,6 +606,7 @@ export interface StringsMap {
   'common.specified': string
   'common.specify': string
   'common.stable': string
+  'common.stage': string
   'common.start14dayTrial': string
   'common.startFree': string
   'common.startFreePlan': string
@@ -2679,7 +2681,6 @@ export interface StringsMap {
   'pipeline.logs.retry': string
   'pipeline.logs.sectionName': string
   'pipeline.manifestToConnectorLabelMap.AWSLabel': string
-  'pipeline.manifestToConnectorLabelMap.GCPLabel': string
   'pipeline.manifestType.bitBucketLabel': string
   'pipeline.manifestType.branchPlaceholder': string
   'pipeline.manifestType.bucketName': string
@@ -3098,7 +3099,6 @@ export interface StringsMap {
   'templatesLibrary.setAsStableText': string
   'templatesLibrary.setAsStableTitle': string
   'templatesLibrary.stableVersion': string
-  'templatesLibrary.stageTemplate': string
   'templatesLibrary.templateHasBeenDeleted': string
   'templatesLibrary.templateInputs': string
   'templatesLibrary.templateScope': string
@@ -3336,6 +3336,7 @@ export interface StringsMap {
   'cd.pipelineSteps.executionTab.stepsCount': string
   'cd.pipelineSteps.infraTab.clusterError': string
   'cd.pipelineSteps.infraTab.deploymentType': string
+  'cd.pipelineSteps.infraTab.stageIsRequired': string
   'cd.pipelineSteps.serviceTab.aboutYourService': string
   'cd.pipelineSteps.serviceTab.deploymentTypeRequired': string
   'cd.pipelineSteps.serviceTab.differentService': string
@@ -3343,7 +3344,6 @@ export interface StringsMap {
   'cd.pipelineSteps.serviceTab.overrideChanges': string
   'cd.pipelineSteps.serviceTab.plusNewService': string
   'cd.pipelineSteps.serviceTab.propagateFrom': string
-  'cd.pipelineSteps.serviceTab.propagateStage': string
   'cd.pipelineSteps.serviceTab.selectService': string
   'cd.pipelineSteps.serviceTab.serviceIsRequired': string
   'cd.pipelineSteps.serviceTab.specifyYourService': string
@@ -3402,6 +3402,8 @@ export interface StringsMap {
   'cd.steps.common.releaseNamePlaceholder': string
   'cd.steps.common.selectOrEnterClusterPlaceholder': string
   'cd.steps.kubernetesGcpStep.stepName': string
+  'cd.steps.serverless.regionPlaceholder': string
+  'cd.steps.serverless.stagePlaceholder': string
   'cd.terraformVarFiles': string
   'cd.testConnectionStepName': string
   'cd.tfVarStore': string

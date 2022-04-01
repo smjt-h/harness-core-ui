@@ -59,7 +59,7 @@ export default function PropagateWidget(props: PropagateWidgetProps): JSX.Elemen
           is: setupMode.PROPAGATE,
           then: Yup.object().test(
             'selectedPropagatedState',
-            getString('cd.pipelineSteps.serviceTab.propagateStage'),
+            getString('cd.pipelineSteps.infraTab.stageIsRequired'),
             propagatedState => !isEmpty(propagatedState.value)
           )
         })

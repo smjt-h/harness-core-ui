@@ -277,7 +277,6 @@ manifestTypeLabels:
   AzureFunctions: Azure Functions Manifest
 manifestToConnectorLabelMap:
   AWSLabel: '{{ $.common.aws }}'
-  GCPLabel: GCP
 failureStrategies:
   performAction: '{{ $.common.performAction }}'
   title: Failure Strategy

@@ -46,7 +46,7 @@ export const getAllowedTemplateTypes = (getString: UseStringsReturn['getString']
     value: TemplateType.Step
   },
   {
-    label: getString('templatesLibrary.stageTemplate'),
+    label: getString('common.stage'),
     value: TemplateType.Stage
   },
   {

@@ -162,7 +162,7 @@ describe('Deploy infra specifications test', () => {
 
   test(`Should updateEnvStep be called upon StepWidget change`, async () => {
     const context = getOverrideContextValue()
-    const { findByText } = render(
+    const { findAllByText } = render(
       <TestWrapper>
         <PipelineContext.Provider value={context}>
           <DeployInfraSpecifications />
@@ -170,8 +170,8 @@ describe('Deploy infra specifications test', () => {
       </TestWrapper>
     )
 
-    const button = await waitFor(() => findByText('Step Widget button'))
-    fireEvent.click(button)
+    const button = await waitFor(() => findAllByText('Step Widget button'))
+    fireEvent.click(button[0])
 
     expect(context.updateStage).toBeCalled()
   })

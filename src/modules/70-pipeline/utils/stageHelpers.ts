@@ -9,7 +9,13 @@ import { defaultTo, get, isEmpty } from 'lodash-es'
 import { getMultiTypeFromValue, MultiTypeInputType } from '@wings-software/uicore'
 import type { GraphLayoutNode, PipelineExecutionSummary } from 'services/pipeline-ng'
 import type { StringKeys } from 'framework/strings'
-import type { GetExecutionStrategyYamlQueryParams, PipelineInfoConfig, StageElementConfig } from 'services/cd-ng'
+import type {
+  Infrastructure,
+  GetExecutionStrategyYamlQueryParams,
+  PipelineInfoConfig,
+  StageElementConfig,
+  ServerlessAwsLambdaInfrastructure
+} from 'services/cd-ng'
 import { ManifestDataType } from '@pipeline/components/ManifestSelection/Manifesthelper'
 import type { ManifestTypes } from '@pipeline/components/ManifestSelection/ManifestInterface'
 import type { InputSetDTO } from './types'
@@ -37,11 +43,27 @@ export enum ServiceDeploymentType {
   pcf = 'pcf',
   ssh = 'ssh',
   ServerlessAwsLambda = 'ServerlessAwsLambda',
-  ServerlessAzureFunction = 'ServerlessAzureFunctions',
+  ServerlessAzureFunctions = 'ServerlessAzureFunctions',
   ServerlessGoogleFunctions = 'ServerlessGoogleFunctions',
   AmazonSAM = 'AwsSAM',
   AzureFunctions = 'AzureFunctions'
 }
+
+export type ServerlessGCPInfrastructure = Infrastructure & {
+  connectorRef: string
+  metadata?: string
+  stage: string
+}
+
+export type ServerlessAzureInfrastructure = Infrastructure & {
+  connectorRef: string
+  metadata?: string
+  stage: string
+}
+export type ServessInfraTypes =
+  | ServerlessGCPInfrastructure
+  | ServerlessAzureInfrastructure
+  | ServerlessAwsLambdaInfrastructure
 
 export const changeEmptyValuesToRunTimeInput = (inputset: any, propertyKey: string): InputSetDTO => {
   if (inputset) {
@@ -159,11 +181,17 @@ export const getHelpeTextForTags = (
 export const isServerlessDeploymentType = (deploymentType: string): boolean => {
   return (
     deploymentType === ServiceDeploymentType.ServerlessAwsLambda ||
-    deploymentType === ServiceDeploymentType.ServerlessAzureFunction ||
+    deploymentType === ServiceDeploymentType.ServerlessAzureFunctions ||
     deploymentType === ServiceDeploymentType.ServerlessGoogleFunctions ||
     deploymentType === ServiceDeploymentType.AmazonSAM ||
     deploymentType === ServiceDeploymentType.AzureFunctions
   )
+}
+
+export const detailsHeaderName: Record<string, string> = {
+  [ServiceDeploymentType.ServerlessAwsLambda]: 'Amazon Web Services Details',
+  [ServiceDeploymentType.ServerlessAzureFunctions]: 'Azure Details',
+  [ServiceDeploymentType.ServerlessGoogleFunctions]: 'GCP Details'
 }
 
 export const isServerlessManifestType = (selectedManifest: ManifestTypes | null): boolean => {

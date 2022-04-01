@@ -109,7 +109,7 @@ const getServerlessDeploymentTypes = (
       // {
       //   label: getString('pipeline.serviceDeploymentTypes.serverlessAzureFunctions'),
       //   icon: 'service-serverless-azure',
-      //   value: ServiceDeploymentType.ServerlessAzureFunction,
+      //   value: ServiceDeploymentType.ServerlessAzureFunctions,
       //   disabled: true
       // },
       // {
