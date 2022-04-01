@@ -417,7 +417,8 @@ export function ACRArtifact({
                       selectProps: {
                         defaultSelectedItem: formik.values.subscription,
                         items: subscriptions,
-                        allowCreatingNewItems: true
+                        allowCreatingNewItems: true,
+                        addClearBtn: !isReadonly
                       }
                     }}
                     label={getString('pipeline.ACR.subscription')}

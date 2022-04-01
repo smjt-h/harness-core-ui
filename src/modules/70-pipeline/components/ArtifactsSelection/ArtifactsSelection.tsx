@@ -59,8 +59,8 @@ import type { DeploymentStageElementConfig, StageElementWrapper } from '@pipelin
 import { isServerlessDeploymentType } from '@pipeline/utils/stageHelpers'
 import StepNexusAuthentication from '@connectors/components/CreateConnector/NexusConnector/StepAuth/StepNexusAuthentication'
 import StepArtifactoryAuthentication from '@connectors/components/CreateConnector/ArtifactoryConnector/StepAuth/StepArtifactoryAuthentication'
-import { AzureAuthentication } from '@connectors/components/CreateConnector/CreateAzureConnector/StepAuth/AzureAuthentication'
 import { useFeatureFlags } from '@common/hooks/useFeatureFlag'
+import AzureAuthentication from '@connectors/components/CreateConnector/AzureConnector/StepAuth/AzureAuthentication'
 import { getStageIndexFromPipeline, getFlattenedStages } from '../PipelineStudio/StageBuilder/StageBuilderUtil'
 import ArtifactWizard from './ArtifactWizard/ArtifactWizard'
 import { DockerRegistryArtifact } from './ArtifactRepository/ArtifactLastSteps/DockerRegistryArtifact/DockerRegistryArtifact'
@@ -687,8 +687,7 @@ export default function ArtifactsSelection({
         return (
           <StepWizard title={stepWizardTitle}>
             <ConnectorDetailsStep type={ArtifactToConnectorMap[selectedArtifact]} {...connectorDetailStepProps} />
-            {/* <AzureAuthentication name={getString('details')} {...authenticationStepProps} /> */}
-            <AzureAuthentication />
+            <AzureAuthentication name={getString('details')} {...authenticationStepProps} />
             <DelegateSelectorStep buildPayload={buildAzurePayload} {...delegateStepProps} />
             <VerifyOutOfClusterDelegate
               type={ArtifactToConnectorMap[selectedArtifact]}
