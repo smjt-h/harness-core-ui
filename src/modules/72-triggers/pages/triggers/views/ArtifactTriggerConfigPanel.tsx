@@ -211,7 +211,7 @@ const ArtifactTriggerConfigPanel: React.FC<ArtifactTriggerConfigPanelPropsInterf
   formikProps,
   isEdit = false
 }) => {
-  const { artifactType, manifestType, stageId, inputSetTemplateYamlObj, resolvedPipeline, selectedArtifact } =
+  const { artifactType, manifestType, stageId, inputSetTemplateYamlObj, originalPipeline, selectedArtifact } =
     formikProps.values
   const [modalOpen, setModalOpen] = useState<boolean>(false)
   const [editModalOpen, setEditModalOpen] = useState<boolean>(false)
@@ -258,7 +258,7 @@ const ArtifactTriggerConfigPanel: React.FC<ArtifactTriggerConfigPanelPropsInterf
     if (!selectedArtifact) {
       setAppliedTableArtifact(undefined)
     }
-    if ((appliedArtifact || data) && resolvedPipeline) {
+    if ((appliedArtifact || data) && originalPipeline) {
       const { appliedTableArtifact: newAppliedTableArtifact, artifactTableData: newArtifactTableData } =
         getArtifactTableDataFromData({
           data,
@@ -267,7 +267,7 @@ const ArtifactTriggerConfigPanel: React.FC<ArtifactTriggerConfigPanelPropsInterf
           stageId,
           getString,
           artifactType,
-          pipeline: resolvedPipeline
+          pipeline: originalPipeline
         })
       if (newAppliedTableArtifact) {
         setAppliedTableArtifact(newAppliedTableArtifact)
@@ -275,7 +275,7 @@ const ArtifactTriggerConfigPanel: React.FC<ArtifactTriggerConfigPanelPropsInterf
         setArtifactTableData(newArtifactTableData)
       }
     }
-  }, [appliedArtifact, data, resolvedPipeline, selectedArtifact])
+  }, [appliedArtifact, data, originalPipeline, selectedArtifact])
 
   const loading = false
   const allowSelectArtifact = !!data?.length
