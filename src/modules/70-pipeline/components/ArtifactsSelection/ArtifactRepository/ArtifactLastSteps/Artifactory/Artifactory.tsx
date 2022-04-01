@@ -6,7 +6,6 @@
  */
 
 import React, { useCallback, useEffect, useState } from 'react'
-import { Menu } from '@blueprintjs/core'
 import {
   Formik,
   FormInput,
@@ -16,26 +15,18 @@ import {
   Button,
   StepProps,
   Text,
-  ButtonVariation,
-  SelectOption
+  ButtonVariation
 } from '@wings-software/uicore'
 import { FontVariation } from '@harness/design-system'
 import { Form } from 'formik'
 import * as Yup from 'yup'
-import { defaultTo, get, map, memoize, merge } from 'lodash-es'
+import { defaultTo, merge } from 'lodash-es'
 import { useParams } from 'react-router-dom'
-import type { GetDataError } from 'restful-react'
 import { useStrings } from 'framework/strings'
 import type { GitQueryParams, ProjectPathProps } from '@common/interfaces/RouteInterfaces'
 import { useQueryParams } from '@common/hooks'
 
-import {
-  ConnectorConfigDTO,
-  DockerBuildDetailsDTO,
-  Failure,
-  useGetBuildDetailsForArtifactoryArtifact,
-  useGetRepositoriesDetailsForArtifactory
-} from 'services/cd-ng'
+import { ConnectorConfigDTO, DockerBuildDetailsDTO, useGetBuildDetailsForArtifactoryArtifact } from 'services/cd-ng'
 import {
   checkIfQueryParamsisNotEmpty,
   getArtifactFormData,
@@ -52,23 +43,11 @@ import type {
   ImagePathProps,
   ImagePathTypes
 } from '@pipeline/components/ArtifactsSelection/ArtifactInterface'
-import { EXPRESSION_STRING } from '@pipeline/utils/constants'
 import { ArtifactIdentifierValidation, ModalViewFor } from '../../../ArtifactHelper'
 import ArtifactImagePathTagView from '../ArtifactImagePathTagView/ArtifactImagePathTagView'
 import SideCarArtifactIdentifier from '../SideCarArtifactIdentifier'
+import ServerlessArtifactoryRepository from './ServerlessArtifactoryRepository'
 import css from '../../ArtifactConnector.module.scss'
-
-function NoRepositoryResults({ error }: { error: GetDataError<Failure | Error> | null }): JSX.Element {
-  const { getString } = useStrings()
-
-  return (
-    <span className={css.padSmall}>
-      <Text lineClamp={1}>
-        {get(error, 'data.message', null) || getString('pipeline.artifactsSelection.errors.noRepositories')}
-      </Text>
-    </span>
-  )
-}
 
 const getRepositoryValue = (
   formData: ImagePathTypes & { connectorId?: string },
@@ -99,7 +78,6 @@ function Artifactory({
   const [lastQueryData, setLastQueryData] = useState({ artifactPath: '', repository: '' })
 
   const [tagList, setTagList] = useState<DockerBuildDetailsDTO[] | undefined>([])
-  const [connectorRepos, setConnectorRepos] = useState<SelectOption[]>([])
   const { accountId, projectIdentifier, orgIdentifier } = useParams<ProjectPathProps>()
   const { repoIdentifier, branch } = useQueryParams<GitQueryParams>()
   const isServerlessDeploymentTypeSelected = isServerlessDeploymentType(selectedDeploymentType)
@@ -150,41 +128,6 @@ function Artifactory({
   const getConnectorRefQueryData = (): string => {
     return defaultTo(prevStepData?.connectorId?.value, prevStepData?.identifier)
   }
-
-  const {
-    data: artifactRepoData,
-    loading: artifactRepoLoading,
-    refetch: getArtifactRepos,
-    error: artifactRepoError
-  } = useGetRepositoriesDetailsForArtifactory({
-    queryParams: {
-      connectorRef: prevStepData?.connectorId.value,
-      accountIdentifier: accountId,
-      orgIdentifier,
-      projectIdentifier,
-      repositoryType: 'generic'
-    },
-    lazy: true
-  })
-
-  useEffect(() => {
-    if (artifactRepoLoading) {
-      setConnectorRepos([{ label: 'Loading Repos...', value: 'Loading Repos...' }])
-    }
-    if ((artifactRepoError?.data as Failure)?.status === 'ERROR') {
-      const errorMessage = (artifactRepoError?.data as Failure)?.message as string
-      setConnectorRepos([{ label: errorMessage, value: errorMessage }])
-    }
-  }, [artifactRepoLoading, artifactRepoError])
-
-  useEffect(() => {
-    if (getMultiTypeFromValue(prevStepData?.connectorId.value) === MultiTypeInputType.FIXED && !artifactRepoData) {
-      getArtifactRepos()
-    }
-    if (artifactRepoData) {
-      setConnectorRepos(map(artifactRepoData.data?.repositories, repo => ({ label: repo, value: repo })))
-    }
-  }, [artifactRepoData, prevStepData?.connectorId.value])
 
   const {
     data,
@@ -269,20 +212,6 @@ function Artifactory({
     handleSubmit(artifactObj)
   }
 
-  const itemRenderer = memoize((item: { label: string }, { handleClick }) => (
-    <div key={item.label.toString()}>
-      <Menu.Item
-        text={
-          <Layout.Horizontal spacing="small">
-            <Text>{item.label}</Text>
-          </Layout.Horizontal>
-        }
-        disabled={artifactRepoLoading || (artifactRepoError?.data as Failure)?.status === 'ERROR'}
-        onClick={handleClick}
-      />
-    </div>
-  ))
-
   const getValidationSchema = useCallback(() => {
     if (context === ModalViewFor.SIDECAR) {
       return sidecarSchema
@@ -349,53 +278,14 @@ function Artifactory({
               )}
 
               {isServerlessDeploymentTypeSelected ? (
-                <div className={css.imagePathContainer}>
-                  <FormInput.MultiTypeInput
-                    className={css.tagInputButton}
-                    name={'repository'}
-                    label={getString('repository')}
-                    selectItems={connectorRepos}
-                    disabled={isReadonly}
-                    multiTypeInputProps={{
-                      expressions,
-                      allowableTypes,
-                      selectProps: {
-                        defaultSelectedItem: formik.values?.repository,
-                        noResults: <NoRepositoryResults error={artifactRepoError} />,
-                        items: connectorRepos,
-                        addClearBtn: true,
-                        itemRenderer: itemRenderer,
-                        allowCreatingNewItems: true
-                      },
-                      onFocus: (e: React.FocusEvent<HTMLInputElement>) => {
-                        if (
-                          e?.target?.type !== 'text' ||
-                          (e?.target?.type === 'text' && e?.target?.placeholder === EXPRESSION_STRING)
-                        ) {
-                          return
-                        }
-                        getArtifactRepos()
-                      }
-                    }}
-                  />
-
-                  {getMultiTypeFromValue(formik.values.repository) === MultiTypeInputType.RUNTIME && (
-                    <div className={css.configureOptions}>
-                      <ConfigureOptions
-                        value={formik.values.repository}
-                        type="String"
-                        variableName="repository"
-                        showRequiredField={false}
-                        showDefaultField={false}
-                        showAdvanced={true}
-                        onChange={value => {
-                          formik.setFieldValue('repository', value)
-                        }}
-                        isReadonly={isReadonly}
-                      />
-                    </div>
-                  )}
-                </div>
+                <ServerlessArtifactoryRepository
+                  connectorRef={prevStepData?.connectorId.value}
+                  isReadonly={isReadonly}
+                  expressions={expressions}
+                  allowableTypes={allowableTypes}
+                  formik={formik}
+                  fieldName={'repository'}
+                />
               ) : (
                 <div className={css.imagePathContainer}>
                   <FormInput.MultiTextInput
@@ -476,11 +366,7 @@ function Artifactory({
                 isReadonly={isReadonly}
                 connectorIdValue={getConnectorIdValue(prevStepData)}
                 fetchTags={artifactPath => {
-                  if (isServerlessDeploymentTypeSelected) {
-                    fetchTags(artifactPath, formik?.values?.repository.value)
-                  } else {
-                    fetchTags(artifactPath, formik?.values?.repository)
-                  }
+                  fetchTags(artifactPath, formik?.values?.repository)
                 }}
                 buildDetailsLoading={artifactoryBuildDetailsLoading}
                 tagError={artifactoryTagError}

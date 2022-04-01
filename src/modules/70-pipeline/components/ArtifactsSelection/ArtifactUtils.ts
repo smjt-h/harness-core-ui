@@ -188,9 +188,6 @@ const getTagValues = (specValues: any, isServerlessDeploymentTypeSelected = fals
       tag: specValues?.artifactPath,
       tagRegex: specValues?.artifactPathFilter
     }
-    if (specValues?.repository && getMultiTypeFromValue(specValues?.repository) === MultiTypeInputType.FIXED) {
-      artifactPathValues.repository = { label: specValues?.repository, value: specValues?.repository }
-    }
     if (specValues?.artifactPath && getMultiTypeFromValue(specValues?.artifactPath) === MultiTypeInputType.FIXED) {
       artifactPathValues.tag = { label: specValues?.artifactPath, value: specValues?.artifactPath }
     }

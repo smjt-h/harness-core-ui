@@ -253,6 +253,8 @@ manifestType:
   kustomizeFolderPathPlaceholder: Enter Kustomize Folder Path
   kustomizePluginPathPlaceholder: Enter Kustomize Plugin Path
   repoNamePlaceholder: Enter Repository Name
+  serverlessConfigFilePath: Serverless Config File Path
+  serverlessConfigFilePathPlaceholder: Enter Serverless Config File Path
   http:
     chartName: 'Chart Name'
     chartVersion: 'Chart Version'

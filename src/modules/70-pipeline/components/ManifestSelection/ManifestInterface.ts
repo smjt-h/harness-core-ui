@@ -67,6 +67,7 @@ export interface ManifestDetailDataType {
   paths: any
   skipResourceVersioning?: boolean
   repoName?: string
+  configOverridePath?: string
 }
 export interface ManifestLastStepProps {
   key: string

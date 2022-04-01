@@ -2730,6 +2730,8 @@ export interface StringsMap {
   'pipeline.manifestType.pluginPathHelperText': string
   'pipeline.manifestType.repoNamePlaceholder': string
   'pipeline.manifestType.selectManifestStore': string
+  'pipeline.manifestType.serverlessConfigFilePath': string
+  'pipeline.manifestType.serverlessConfigFilePathPlaceholder': string
   'pipeline.manifestType.specifyManifestRepoType': string
   'pipeline.manifestType.specifyManifestStore': string
   'pipeline.manifestTypeLabels.AwsSAM': string

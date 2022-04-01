@@ -140,8 +140,12 @@ function DragnDropPaths({
                               onDragLeave={onDragLeave}
                               onDrop={event => onDrop(event, arrayHelpers, index)}
                             >
-                              <Icon name="drag-handle-vertical" className={css.drag} />
-                              <Text width={12}>{`${index + 1}.`}</Text>
+                              {!allowOnlyOneFilePath && (
+                                <>
+                                  <Icon name="drag-handle-vertical" className={css.drag} />
+                                  <Text width={12}>{`${index + 1}.`}</Text>
+                                </>
+                              )}
                               <FormInput.MultiTextInput
                                 label={''}
                                 placeholder={
