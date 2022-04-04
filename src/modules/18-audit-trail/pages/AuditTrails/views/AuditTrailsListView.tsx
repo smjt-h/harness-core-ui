@@ -11,7 +11,7 @@ import { Color } from '@harness/design-system'
 import type { Column, Renderer, CellProps } from 'react-table'
 import { Link, useParams } from 'react-router-dom'
 import { PopoverInteractionKind, Position, Classes } from '@blueprintjs/core'
-import type { IconProps } from '@harness/uicore/dist/icons/Icon'
+import type { IconProps } from '@wings-software/uicore'
 import {
   actionToLabelMap,
   getModuleNameFromAuditModule,
