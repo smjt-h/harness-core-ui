@@ -643,7 +643,6 @@ exports[`Test GCOMetricsHealthSource Should show please Enter Query when ther is
                               class="bp3-control bp3-checkbox StyledProps--font Checkbox--checkbox StyledProps--main StyledProps--inline"
                             >
                               <input
-                                checked=""
                                 name="sli"
                                 type="checkbox"
                               />

@@ -31,7 +31,7 @@ export default function SelectHealthSourceServices({
         </Text>
         {!hideSLIAndHealthScore ? (
           <>
-            <FormInput.CheckBox label={getString('cv.slos.sli')} name={HealthSourceServices.SLI} defaultChecked />
+            <FormInput.CheckBox label={getString('cv.slos.sli')} name={HealthSourceServices.SLI} />
             <FormInput.CheckBox
               label={getString('cv.monitoredServices.monitoredServiceTabs.serviceHealth')}
               name={HealthSourceServices.HEALTHSCORE}
