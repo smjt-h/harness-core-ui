@@ -21,14 +21,7 @@ import {
 } from './PipelineGraphUtils'
 import GraphActions from '../GraphActions/GraphActions'
 import { PipelineGraphRecursive } from './PipelineGraphNode'
-import type {
-  NodeCollapsibleProps,
-  NodeDetails,
-  NodeIds,
-  PipelineGraphState,
-  SVGPathRecord,
-  GetNodeMethod
-} from '../types'
+import type { NodeCollapsibleProps, NodeIds, PipelineGraphState, SVGPathRecord, GetNodeMethod } from '../types'
 import css from './PipelineGraph.module.scss'
 
 interface ControlPosition {
@@ -41,13 +34,14 @@ export interface PipelineGraphProps {
   data: PipelineGraphState[]
   fireEvent: (event: any) => void
   getNode: GetNodeMethod
-  getDefaultNode(): NodeDetails | null
+  getDefaultNode(): GetNodeMethod
   selectedNodeId?: string
   collapsibleProps?: NodeCollapsibleProps
   readonly?: boolean
   loaderComponent: React.FC
   /** parent element selector to listen resize event on */
   parentSelector?: string
+  panZoom?: boolean
 }
 
 function PipelineGraph({
@@ -59,7 +53,8 @@ function PipelineGraph({
   selectedNodeId = '',
   readonly,
   loaderComponent,
-  parentSelector
+  parentSelector,
+  panZoom
 }: PipelineGraphProps): React.ReactElement {
   const [svgPath, setSvgPath] = useState<SVGPathRecord[]>([])
   const [isLoading, setLoading] = useState<boolean>(false)
@@ -100,21 +95,14 @@ function PipelineGraph({
   const redrawSVGLinks = (): void => {
     setLoading(true)
     const lastGraphScaleValue = graphScale
-    if (lastGraphScaleValue === 1) {
-      setGraphScale(1)
-      setTimeout(setSVGLinks, 200)
-      setTimeout(() => {
-        setGraphScale(lastGraphScaleValue)
-        setLoading(false)
-      }, 300)
-    } else {
-      setGraphScale(1)
-      setTimeout(setSVGLinks, 200)
-      setTimeout(() => {
-        setGraphScale(lastGraphScaleValue)
-        setLoading(false)
-      }, 300)
-    }
+
+    setGraphScale(1)
+    setTimeout(setSVGLinks, 200)
+    setTimeout(() => {
+      setGraphScale(lastGraphScaleValue)
+      setLoading(false)
+    }, 300)
+
     setLoading(false)
   }
 
@@ -141,7 +129,7 @@ function PipelineGraph({
     updateTreeRect()
     const draggableParent = draggableRef.current
     const overlay = overlayRef.current as HTMLElement
-    if (draggableParent && overlay) {
+    if (draggableParent && overlay && panZoom) {
       setupDragEventListeners(draggableParent, overlay)
       scrollZoom(overlay, 40, 0.01, updateGraphScale)
     }

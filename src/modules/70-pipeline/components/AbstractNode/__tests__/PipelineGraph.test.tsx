@@ -8,10 +8,9 @@
 import React from 'react'
 import { render } from '@testing-library/react'
 import { PageSpinner } from '@harness/uicore'
-import type { IconName } from '@blueprintjs/core'
 import { TestWrapper } from '@common/utils/testUtils'
 import { DiagramFactory } from '../DiagramFactory'
-import stageGraphData from './stageGraph.json'
+import nodeGraphData from './nodeGraphData.json'
 import type { PipelineGraphState } from '../types'
 
 // eslint-disable-next-line @typescript-eslint/explicit-function-return-type
@@ -23,18 +22,18 @@ const intersectionObserverMock = () => ({
 window.IntersectionObserver = jest.fn().mockImplementation(intersectionObserverMock)
 
 describe('Stage diagram test', () => {
-  test('Should render stages', () => {
+  test('Should render diagramnodes', () => {
     const diagram = new DiagramFactory('graph')
     const PipelineStudio = diagram.render()
     const { container } = render(
       <TestWrapper>
-        <PipelineStudio data={stageGraphData as PipelineGraphState[]} loaderComponent={PageSpinner} />
+        <PipelineStudio data={nodeGraphData as PipelineGraphState[]} loaderComponent={PageSpinner} />
       </TestWrapper>
     )
-    const testNode = container.querySelector(`[data-node-id="${stageGraphData[0].id}"]`)
+    const testNode = container.querySelector(`[data-node-id="${nodeGraphData[0].id}"]`)
     expect(testNode).toBeDefined()
     // find nodename
-    const nodeLabel = testNode?.querySelector(`[data-node-name="${stageGraphData[0].name}"]`)
+    const nodeLabel = testNode?.querySelector(`[data-node-name="${nodeGraphData[0].name}"]`)
     expect(nodeLabel).toBeDefined()
     expect(container).toMatchSnapshot()
   })

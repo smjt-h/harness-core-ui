@@ -96,12 +96,12 @@ const getFinalSVGArrowPath = (id1 = '', id2 = '', options?: DrawSVGPathOptions):
           return { [id1]: '' }
         }
         const childEl = document.getElementById(options.parentNode)
-        let maxRight = node2.right
-        childEl?.closest('.pipeline-graph-node')?.childNodes.forEach(child => {
-          const childDims = getComputedPosition(child as HTMLElement, options?.parentElement) as DOMRect
-          maxRight = Math.max(maxRight, childDims?.right)
-        })
-        console.log({ maxRight })
+        // let maxRight = node2.right
+        // childEl?.closest('.pipeline-graph-node')?.childNodes.forEach(child => {
+        //   const childDims = getComputedPosition(child as HTMLElement, options?.parentElement) as DOMRect
+        //   maxRight = Math.max(maxRight, childDims?.right)
+        // })
+        // console.log({ maxRight })
         const parentGraphNodeContainer = getComputedPosition(
           childEl?.closest('.pipeline-graph-node') as HTMLElement,
           options?.parentElement

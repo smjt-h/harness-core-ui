@@ -1048,6 +1048,7 @@ function ExecutionGraphRef<T extends StageElementConfig>(
               selectedNodeId={selectedStepId}
               loaderComponent={DiagramLoader}
               data={stepsData}
+              pan
             />
             {hasRollback && (
               <RollbackToggleSwitch

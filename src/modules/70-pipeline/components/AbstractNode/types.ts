@@ -124,7 +124,7 @@ export interface BaseReactComponentProps {
   getNode?: GetNodeMethod
   fireEvent?: FireEventMethod
   setSelectedNode?(identifier: string): void
-  getDefaultNode?(): NodeDetails | null
+  getDefaultNode?(): GetNodeMethod
   updateGraphLinks?(): void
   onMouseOver?(): void
   onMouseLeave?(): void

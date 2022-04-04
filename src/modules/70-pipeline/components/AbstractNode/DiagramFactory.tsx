@@ -132,6 +132,7 @@ export class DiagramFactory {
     readonly?: boolean
     loaderComponent: React.FC
     parentSelector?: string
+    panZoom?: boolean
   }> {
     function PipelineStudioHOC(
       this: DiagramFactory,
@@ -143,6 +144,7 @@ export class DiagramFactory {
         loaderComponent: React.FC
         /** parent element selector to apply node grouping  */
         parentSelector?: string
+        panZoom?: boolean
       }
     ): React.ReactElement {
       return (

@@ -6,7 +6,7 @@
  */
 
 import React, { useRef, useState, useLayoutEffect, ForwardedRef } from 'react'
-import { debounce, defaultTo } from 'lodash-es'
+import { debounce, defaultTo, throttle } from 'lodash-es'
 import classNames from 'classnames'
 import { BaseReactComponentProps, FireEventMethod, NodeType } from '../types'
 import GroupNode from '../Nodes/GroupNode/GroupNode'
@@ -17,7 +17,7 @@ import css from './PipelineGraph.module.scss'
 export interface PipelineGraphRecursiveProps {
   nodes?: PipelineGraphState[]
   getNode: GetNodeMethod
-  getDefaultNode(): NodeDetails | null
+  getDefaultNode(): GetNodeMethod
   updateGraphLinks?: () => void
   fireEvent?: FireEventMethod
   selectedNode: string
@@ -345,19 +345,19 @@ function PipelineGraphNodeObserved(
 ): React.ReactElement {
   const [ref, setRef] = useState<HTMLDivElement | null>(null)
   const [visible, setVisible] = useState(true)
-  const updateVisibleState = debounce(setVisible, 300)
+  const updateVisibleState = React.useCallback(throttle(setVisible, 200), [])
   const [elementRect, setElementRect] = useState<DOMRect | null>(null)
   React.useEffect(() => {
     let observer: IntersectionObserver
-    if (ref) {
+    if (ref && props?.parentSelector) {
       const rootElement = document.querySelector(props?.parentSelector as string)
 
       observer = new IntersectionObserver(
         (entries, _observer) => {
           entries.forEach((entry: IntersectionObserverEntry) => {
             if (
-              entry.rootBounds?.left === entry.intersectionRect.left ||
-              entry.rootBounds?.right === entry.intersectionRect.right
+              (entry.rootBounds as DOMRect)?.left >= entry.intersectionRect.left ||
+              (entry.rootBounds as DOMRect)?.right <= entry.intersectionRect.right
             ) {
               if (entry.isIntersecting) {
                 updateVisibleState(true)
@@ -377,7 +377,6 @@ function PipelineGraphNodeObserved(
   }, [ref, elementRect])
 
   React.useEffect(() => {
-    console.log(props.data)
     if (!elementRect && ref !== null) {
       const elementDOMRect = ref?.getBoundingClientRect() as DOMRect
       setElementRect(elementDOMRect)
