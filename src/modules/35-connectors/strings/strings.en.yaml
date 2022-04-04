@@ -793,6 +793,7 @@ pdc:
   hostsUpload1: 'Drop JSON file here'
   hostsUpload2: 'or click to upload'
   or: 'OR'
+  errorUploading: 'Uploading file error'
   testConnection:
     step1: 'Checking for eligible delegates for connectivity with Kubernetes Connector'
     step2: 'Validating the GitHub Connector authentication and permissions'

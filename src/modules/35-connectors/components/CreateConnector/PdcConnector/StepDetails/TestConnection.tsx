@@ -1,3 +1,10 @@
+/*
+ * Copyright 2022 Harness Inc. All rights reserved.
+ * Use of this source code is governed by the PolyForm Shield 1.0.0 license
+ * that can be found in the licenses directory at the root of this repository, also available at
+ * https://polyformproject.org/wp-content/uploads/2020/06/PolyForm-Shield-1.0.0.txt.
+ */
+
 import React, { useState, useEffect, useMemo } from 'react'
 import { useParams } from 'react-router-dom'
 import type { Renderer, CellProps } from 'react-table'
@@ -56,7 +63,7 @@ const TestConnection: React.FC<StepProps<TestConnectionProps> & WizardProps> = p
   const [currentStep, setCurrentStep] = useState<number>(1)
   const [modalErrorHandler, setModalErrorHandler] = useState<ModalErrorHandlerBinding | undefined>()
   const [validationHostData, setValidationHostData] = useState([] as HostValidationDTO[])
-  const [hostErrors, setHostErrors] = useState([])
+  const [hostErrors, setHostErrors] = useState([] as string[])
 
   const steps: string[] = useMemo(
     () => [
@@ -104,7 +111,7 @@ const TestConnection: React.FC<StepProps<TestConnectionProps> & WizardProps> = p
         status: hostStatus.FAILED
       }))
       setValidationHostData(validationPassed.concat(validationFailed))
-      setHostErrors(result?.data?.errors?.map?.(error => error.reason) || [])
+      setHostErrors(result?.data?.errors?.map?.(error => error.reason || '') || [])
       if (result.data?.status === 'SUCCESS') {
         setCurrentIntent(Intent.SUCCESS)
         setCurrentStatus(Status.DONE)
