@@ -23,9 +23,9 @@
         <div class='clearfix'>
             
             <div class='fl pad1y space-right2'>
-                <span class="strong">81.48% </span>
+                <span class="strong">80.53% </span>
                 <span class="quiet">Statements</span>
-                <span class='fraction'>88/108</span>
+                <span class='fraction'>91/113</span>
             </div>
         
             
@@ -37,16 +37,16 @@
         
             
             <div class='fl pad1y space-right2'>
-                <span class="strong">85.71% </span>
+                <span class="strong">82.61% </span>
                 <span class="quiet">Functions</span>
-                <span class='fraction'>18/21</span>
+                <span class='fraction'>19/23</span>
             </div>
         
             
             <div class='fl pad1y space-right2'>
-                <span class="strong">81.13% </span>
+                <span class="strong">80.18% </span>
                 <span class="quiet">Lines</span>
-                <span class='fraction'>86/106</span>
+                <span class='fraction'>89/111</span>
             </div>
         
             
@@ -531,7 +531,15 @@
 <a name='L472'></a><a href='#L472'>472</a>
 <a name='L473'></a><a href='#L473'>473</a>
 <a name='L474'></a><a href='#L474'>474</a>
-<a name='L475'></a><a href='#L475'>475</a></td><td class="line-coverage quiet"><span class="cline-any cline-neutral">&nbsp;</span>
+<a name='L475'></a><a href='#L475'>475</a>
+<a name='L476'></a><a href='#L476'>476</a>
+<a name='L477'></a><a href='#L477'>477</a>
+<a name='L478'></a><a href='#L478'>478</a>
+<a name='L479'></a><a href='#L479'>479</a>
+<a name='L480'></a><a href='#L480'>480</a>
+<a name='L481'></a><a href='#L481'>481</a>
+<a name='L482'></a><a href='#L482'>482</a>
+<a name='L483'></a><a href='#L483'>483</a></td><td class="line-coverage quiet"><span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
@@ -583,6 +591,7 @@
 <span class="cline-any cline-yes">7x</span>
 <span class="cline-any cline-yes">7x</span>
 <span class="cline-any cline-yes">7x</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-yes">7x</span>
 <span class="cline-any cline-yes">7x</span>
 <span class="cline-any cline-yes">7x</span>
@@ -636,6 +645,10 @@
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-yes">7x</span>
+<span class="cline-any cline-yes">41x</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">7x</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
@@ -668,6 +681,15 @@
 <span class="cline-any cline-yes">41x</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-yes">41x</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">41x</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-no">&nbsp;</span>
 <span class="cline-any cline-no">&nbsp;</span>
 <span class="cline-any cline-no">&nbsp;</span>
@@ -869,12 +891,6 @@
 <span class="cline-any cline-no">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-no">&nbsp;</span>
-<span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-no">&nbsp;</span>
-<span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-no">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
@@ -1057,6 +1073,7 @@ import SCMCheck from '@common/components/SCMCheck/SCMCheck'
 import { GitSyncStoreProvider } from 'framework/GitRepoStore/GitSyncStoreContext'
 import { FeatureFlag } from '@common/featureFlags'
 import { useFeatureFlag } from '@common/hooks/useFeatureFlag'
+import type { StringsMap } from 'framework/strings/StringsContext'
 import RepoBranchSelect from './RepoBranchSelect'
 import RepoTestConnection from './RepoTestConnection'
 import css from './GitSyncRepoForm.module.scss'
@@ -1105,8 +1122,12 @@ const getSubmitButtonText = (isNewUser: boolean): StringKeys =&gt; {
   return isNewUser ? 'continue' : 'save'
 }
 &nbsp;
-const getSourceCodeTextColor = (isSelected: boolean) =&gt; {
+const getSourceCodeTextColor = (isSelected: boolean): Color =&gt; {
   return isSelected ? Color.BLUE_500 : <span class="branch-1 cbranch-no" title="branch not covered" >Color.GREY_500</span>
+}
+&nbsp;
+const getmodalTitleId = (isNewUser: boolean): keyof StringsMap =&gt; {
+  return isNewUser ? 'enableGitExperience' : 'gitsync.configureHarnessFolder'
 }
 &nbsp;
 export const gitSyncFormDefaultInitialData = {
@@ -1129,7 +1150,7 @@ const GitSyncRepoForm: React.FC&lt;ModalConfigureProps &amp; GitSyncRepoFormProp
   const { getString } = useStrings()
   const { showSuccess } = useToaster()
   const [testStatus, setTestStatus] = useState&lt;TestStatus&gt;(TestStatus.NOT_INITIATED)
-  const modalTitle = isNewUser ? getString('enableGitExperience') : getString('gitsync.configureHarnessFolder')
+  const modalTitle = getString(getmodalTitleId(isNewUser))
 &nbsp;
   const defaultInitialFormData: GitSyncFormInterface = defaultTo(props.initialData, gitSyncFormDefaultInitialData)
 &nbsp;
@@ -1141,10 +1162,19 @@ const GitSyncRepoForm: React.FC&lt;ModalConfigureProps &amp; GitSyncRepoFormProp
 &nbsp;
   const [connectorType, setConnectorType] = useState(defaultInitialFormData.gitConnectorType)
 &nbsp;
-  const handleGitRepoChange = <span class="fstat-no" title="function not covered" >(c</span>onnector: ConnectorInfoDTO) =&gt; {
+  const handleGitRepoChange = <span class="fstat-no" title="function not covered" >(c</span>onnector: ConnectorInfoDTO): void =&gt; {
 <span class="cstat-no" title="statement not covered" >    if (connector?.spec?.type === GitUrlType.REPO) {</span>
 <span class="cstat-no" title="statement not covered" >      setConnectorIdentifierRef(getConnectorIdentifierWithScope(getScopeFromDTO(connector), connector.identifier))</span>
 <span class="cstat-no" title="statement not covered" >      setRepositoryURL(connector?.spec?.url)</span>
+    }
+  }
+&nbsp;
+  const handleGitRepoNameChange = <span class="fstat-no" title="function not covered" >(f</span>ormValues: GitSyncFormInterface): void =&gt; {
+    const connectorId = <span class="cstat-no" title="statement not covered" >formValues.gitConnector?.connector?.identifier</span>
+&nbsp;
+<span class="cstat-no" title="statement not covered" >    if (connectorId) {</span>
+      const connectorScope = <span class="cstat-no" title="statement not covered" >getScopeFromDTO(formValues?.gitConnector?.connector as ScopedObjectDTO)</span>
+<span class="cstat-no" title="statement not covered" >      setConnectorIdentifierRef(getConnectorIdentifierWithScope(connectorScope, defaultTo(connectorId, '')))</span>
     }
   }
 &nbsp;
@@ -1165,7 +1195,7 @@ const GitSyncRepoForm: React.FC&lt;ModalConfigureProps &amp; GitSyncRepoFormProp
       showSuccess(getString('gitsync.successfullCreate', { name: data.name }))
       props.onSuccess<span class="branch-0 cbranch-no" title="branch not covered" >?.(r</span>esponse, formData)
     } catch (e) {
-<span class="cstat-no" title="statement not covered" >      modalErrorHandler?.showDanger(e.data?.message || e.message)</span>
+<span class="cstat-no" title="statement not covered" >      modalErrorHandler?.showDanger(defaultTo(e.data?.message, e.message))</span>
     }
   }
 &nbsp;
@@ -1339,13 +1369,7 @@ const GitSyncRepoForm: React.FC&lt;ModalConfigureProps &amp; GitSyncRepoFormProp
                           name="repo"
                           inputGroup={{
                             onBlur: <span class="fstat-no" title="function not covered" >e </span>=&gt; {
-                              const connectorId = <span class="cstat-no" title="statement not covered" >formValues.gitConnector?.connector?.identifier</span>
-                              const connectorScope = <span class="cstat-no" title="statement not covered" >getScopeFromDTO(</span>
-                                formValues?.gitConnector?.connector as ScopedObjectDTO
-                              )
-<span class="cstat-no" title="statement not covered" >                              setConnectorIdentifierRef(</span>
-                                getConnectorIdentifierWithScope(connectorScope, defaultTo(connectorId, ''))
-                              )
+<span class="cstat-no" title="statement not covered" >                              handleGitRepoNameChange(formValues)</span>
 <span class="cstat-no" title="statement not covered" >                              setRepositoryURL(</span>
                                 getRepoUrlForConnectorType(formValues, (e.target as HTMLInputElement)?.value)
                               )
@@ -1486,7 +1510,7 @@ export default GitSyncRepoForm
             <div class='footer quiet pad2 space-top1 center small'>
                 Code coverage generated by
                 <a href="https://istanbul.js.org/" target="_blank">istanbul</a>
-                at Mon Apr 04 2022 06:19:44 GMT+0000 (Greenwich Mean Time)
+                at Mon Apr 04 2022 09:05:59 GMT+0000 (Greenwich Mean Time)
             </div>
         </div>
         <script src="../../../../prettify.js"></script>
