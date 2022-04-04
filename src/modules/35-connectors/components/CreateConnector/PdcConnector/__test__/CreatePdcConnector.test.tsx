@@ -81,8 +81,8 @@ describe('Create GCP connector Wizard', () => {
     await act(async () => {
       fireEvent.click(container.querySelector('button[type="submit"]')!)
     })
-    // step 2 - GCP auth step
-    expect(queryByText(container, 'connectors.GCP.delegateOutClusterInfo')).toBeTruthy()
+    // step 2 - PDC details step
+    expect(queryByText(container, 'connectors.pdc.hosts')).toBeTruthy()
     expect(container).toMatchSnapshot()
 
     await act(async () => {

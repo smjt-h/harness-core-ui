@@ -9,12 +9,12 @@ interface UploadJSONInterface {
 }
 
 const UploadJSON = ({ setJsonValue }: UploadJSONInterface) => {
-  const inputRef = useRef() as React.MutableRefObject<HTMLInputElement>
-  const [fileContent, setFileContent] = useState<string>('')
-  const [fileName, setFileName] = useState<string>('Drag and drop your file here or Browse')
-  const [dropHighlight, setDropHighlight] = useState(false)
   const { getString } = useStrings()
   const { showError } = useToaster()
+  const inputRef = useRef() as React.MutableRefObject<HTMLInputElement>
+  const [fileContent, setFileContent] = useState<string>('')
+  const [fileName, setFileName] = useState<string>('')
+  const [dropHighlight, setDropHighlight] = useState(false)
 
   useEffect(() => {
     setJsonValue(fileContent)
@@ -82,13 +82,14 @@ const UploadJSON = ({ setJsonValue }: UploadJSONInterface) => {
         ref={inputRef}
         onChange={event => handleFileUpload((event.target as any).files[0])}
       />
-      <Icon name="upload-box" size={24} />
+      <Icon name="upload-box" size={24} className={css.uploadIcon} />
       {fileName ? (
-        <div>
-          <Text>{fileName}</Text>
-        </div>
+        <Text>{fileName}</Text>
       ) : (
-        <div>{getString('connectors.pdc.hostsUpload')}</div>
+        <>
+          <Text key="uploadText1">{getString('connectors.pdc.hostsUpload1')}</Text>
+          <Text key="uploadText2">{getString('connectors.pdc.hostsUpload2')}</Text>
+        </>
       )}
     </div>
   )

@@ -9,5 +9,6 @@
 declare const styles: {
   readonly highlightedDrop: string
   readonly uploadComponent: string
+  readonly uploadIcon: string
 }
 export default styles

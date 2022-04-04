@@ -1,5 +1,6 @@
 import React, { useState, useEffect, useMemo } from 'react'
 import { useParams } from 'react-router-dom'
+import type { Renderer, CellProps } from 'react-table'
 import {
   Layout,
   Table,
@@ -19,17 +20,24 @@ import { useGetTestConnectionResult, useValidateSshHosts, HostValidationDTO } fr
 import type { ProjectPathProps } from '@common/interfaces/RouteInterfaces'
 import css from '../CreatePdcConnector.module.scss'
 
+const hostStatus = {
+  SUCCESS: 'SUCCESS',
+  FAILED: 'FAILED'
+}
 interface TestConnectionProps {
   name: string
   isStep: boolean
   isLastStep: boolean
   type: string
-  onClose: () => void
   previousStep: () => void
   stepIndex: number
   identifier: string
   sshKeyRef: string
   hosts: string
+}
+
+interface WizardProps {
+  onClose: () => void
 }
 
 enum Status {
@@ -38,7 +46,7 @@ enum Status {
   ERROR = 'ERROR'
 }
 
-const TestConnection: React.FC<StepProps<TestConnectionProps>> = props => {
+const TestConnection: React.FC<StepProps<TestConnectionProps> & WizardProps> = props => {
   const { getString } = useStrings()
 
   const { prevStepData } = props
@@ -89,14 +97,14 @@ const TestConnection: React.FC<StepProps<TestConnectionProps>> = props => {
       const { validationFailedHosts, validationPassedHosts } = result.data as any
       const validationPassed = validationPassedHosts.map((host: string) => ({
         host: host,
-        status: 'SUCCESS'
+        status: hostStatus.SUCCESS
       }))
       const validationFailed = validationFailedHosts.map((host: string) => ({
         host: host,
-        status: 'FAILED'
+        status: hostStatus.FAILED
       }))
       setValidationHostData(validationPassed.concat(validationFailed))
-      setHostErrors(result.data.errors.map(error => error.reason))
+      setHostErrors(result?.data?.errors?.map?.(error => error.reason) || [])
       if (result.data?.status === 'SUCCESS') {
         setCurrentIntent(Intent.SUCCESS)
         setCurrentStatus(Status.DONE)
@@ -111,7 +119,7 @@ const TestConnection: React.FC<StepProps<TestConnectionProps>> = props => {
     }
   }
 
-  const testHost = async host => {
+  const testHost = async (host: string) => {
     const testHostResponse = await validateSshHosts([host])
     const newData = [...validationHostData]
     newData.map(hostItem => {
@@ -126,6 +134,35 @@ const TestConnection: React.FC<StepProps<TestConnectionProps>> = props => {
   useEffect(() => {
     verifyTestConnection()
   }, [])
+
+  const noColumnRenderer: Renderer<CellProps<HostValidationDTO>> = useMemo(
+    () => data => <span>{data.row.index + 1}</span>,
+    []
+  )
+  const hostColumnRenderer: Renderer<CellProps<HostValidationDTO>> = useMemo(
+    () => data => <span>{data.row.original?.host || ''}</span>,
+    []
+  )
+  const statusColumnRenderer: Renderer<CellProps<HostValidationDTO>> = useMemo(
+    () => data =>
+      (
+        <Text color={data.row.original.status === hostStatus.SUCCESS ? Color.GREEN_900 : Color.RED_900}>
+          {data.row.original.status === hostStatus.SUCCESS ? getString('success') : getString('failed')}
+        </Text>
+      ),
+    []
+  )
+  const menuColumnRenderer: Renderer<CellProps<HostValidationDTO>> = useMemo(
+    () => data =>
+      data.row.original.status === hostStatus.SUCCESS ? (
+        <span />
+      ) : (
+        <Button variation={ButtonVariation.SECONDARY} onClick={() => testHost(data.row.original.host || '')}>
+          {getString('retry')}
+        </Button>
+      ),
+    []
+  )
 
   return (
     <Layout.Vertical spacing="medium" height="100%">
@@ -148,38 +185,27 @@ const TestConnection: React.FC<StepProps<TestConnectionProps>> = props => {
             {
               Header: 'NO.',
               width: '10%',
-              Cell: data => <span>{data.row.index + 1}</span>
+              Cell: noColumnRenderer
             },
             {
               accessor: 'host',
               Header: 'HOST',
               width: '30%',
-              Cell: data => <span>{data.row.original?.host || ''}</span>,
+              Cell: hostColumnRenderer,
               disableSortBy: true
             },
             {
               accessor: 'status',
               Header: 'STATUS',
               width: '30%',
-              Cell: data => (
-                <Text color={data.row.original.status === 'SUCCESS' ? Color.GREEN_900 : Color.RED_900}>
-                  {data.row.original.status === 'SUCCESS' ? getString('success') : getString('failed')}
-                </Text>
-              ),
+              Cell: statusColumnRenderer,
               disableSortBy: true
             },
             {
               Header: '',
               id: 'menu',
               width: '30%',
-              Cell: data =>
-                data.row.original.passed ? (
-                  <span />
-                ) : (
-                  <Button variation={ButtonVariation.SECONDARY} onClick={() => testHost(data.row.original.host)}>
-                    {getString('retry')}
-                  </Button>
-                )
+              Cell: menuColumnRenderer
             }
           ]}
         />
@@ -194,9 +220,7 @@ const TestConnection: React.FC<StepProps<TestConnectionProps>> = props => {
         />
         <Button
           type="submit"
-          onClick={() => {
-            props.onClose?.()
-          }}
+          onClick={props.onClose}
           variation={ButtonVariation.PRIMARY}
           text={getString('finish')}
           rightIcon="chevron-right"

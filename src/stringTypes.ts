@@ -1889,7 +1889,8 @@ export interface StringsMap {
   'connectors.parameters': string
   'connectors.pdc.hosts': string
   'connectors.pdc.hostsRule': string
-  'connectors.pdc.hostsUpload': string
+  'connectors.pdc.hostsUpload1': string
+  'connectors.pdc.hostsUpload2': string
   'connectors.pdc.or': string
   'connectors.pdc.testConnection.step1': string
   'connectors.pdc.testConnection.step2': string

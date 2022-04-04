@@ -790,7 +790,8 @@ ceGcp:
 pdc:
   hosts: 'Hosts'
   hostsRule: 'Enter JSON or comma separated list here'
-  hostsUpload: 'Drop JSON file here or click to upload'
+  hostsUpload1: 'Drop JSON file here'
+  hostsUpload2: 'or click to upload'
   or: 'OR'
   testConnection:
     step1: 'Checking for eligible delegates for connectivity with Kubernetes Connector'

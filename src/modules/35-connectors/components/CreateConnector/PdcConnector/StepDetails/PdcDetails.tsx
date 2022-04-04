@@ -19,13 +19,11 @@ import {
   HarnessDocTooltip
 } from '@wings-software/uicore'
 import * as Yup from 'yup'
-import type { SecretReferenceInterface } from '@secrets/utils/SecretField'
 import type { ConnectorConfigDTO, ConnectorInfoDTO } from 'services/cd-ng'
-
-import { setupGCPFormData, GitConnectionType } from '@connectors/pages/connectors/utils/ConnectorUtils'
-import SecretInput from '@secrets/components/SecretInput/SecretInput'
+import type { SecretReferenceInterface } from '@secrets/utils/SecretField'
+import SSHSecretInput from '@secrets/components/SSHSecretInput/SSHSecretInput'
+import { setupPDCFormData } from '@connectors/pages/connectors/utils/ConnectorUtils'
 import { useStrings } from 'framework/strings'
-
 import UploadJSON from '../components/UploadJSON'
 
 import css from '../CreatePdcConnector.module.scss'
@@ -74,7 +72,8 @@ const PdcDetails: React.FC<StepProps<StepConfigureProps> & PdcDetailsProps> = pr
     if (loadingConnectorSecrets) {
       if (props.isEditMode) {
         if (props.connectorInfo) {
-          setupGCPFormData(props.connectorInfo, accountId).then(data => {
+          setManualTypedHosts(props.connectorInfo?.spec?.hosts?.map?.((host: any) => host.hostname).join('\n'))
+          setupPDCFormData(props.connectorInfo, accountId).then(data => {
             setInitialValues(data as PDCFormInterface)
             setLoadingConnectorSecrets(false)
           })
@@ -113,13 +112,7 @@ const PdcDetails: React.FC<StepProps<StepConfigureProps> & PdcDetailsProps> = pr
         }}
         formName="pdcDetailsForm"
         validationSchema={Yup.object().shape({
-          sshKey: Yup.object()
-            .when('connectionType', {
-              is: val => val === GitConnectionType.SSH,
-              then: Yup.object().required(getString('validation.sshKey')),
-              otherwise: Yup.object().nullable()
-            })
-            .required()
+          sshKey: Yup.object().required(getString('validation.sshKey'))
         })}
         onSubmit={handleSubmit}
       >
@@ -142,12 +135,7 @@ const PdcDetails: React.FC<StepProps<StepConfigureProps> & PdcDetailsProps> = pr
               </Layout.Horizontal>
               <Layout.Vertical style={{ width: '54%' }} margin={{ top: 'large' }}>
                 <Text font={{ variation: FontVariation.H5 }}>{getString('authentication')}</Text>
-                <SecretInput
-                  name={'sshKey'}
-                  label={getString('secretType')}
-                  type={'SecretFile'}
-                  tooltipProps={{ dataTooltipId: 'pdcConnectorSecretKeyTooltip' }}
-                />
+                <SSHSecretInput name="sshKey" label={getString('SSH_KEY')} />
               </Layout.Vertical>
             </Container>
             <Layout.Horizontal padding={{ top: 'small' }} spacing="medium">

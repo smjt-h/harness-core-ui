@@ -467,6 +467,23 @@ export const setupKubFormData = async (connectorInfo: ConnectorInfoDTO, accountI
   return formData
 }
 
+export const setupPDCFormData = async (connectorInfo: ConnectorInfoDTO, accountId: string): Promise<FormData> => {
+  const scopeQueryParams: GetSecretV2QueryParams = {
+    accountIdentifier: accountId,
+    projectIdentifier: connectorInfo.projectIdentifier,
+    orgIdentifier: connectorInfo.orgIdentifier
+  }
+
+  const formData = {
+    sshKey: await setSecretField(
+      connectorInfo?.spec?.sshKeyRef || connectorInfo?.spec?.spec?.sshKeyRef, // for git, sshKeyRef looks to be nested in spec twice
+      scopeQueryParams
+    )
+  }
+
+  return formData
+}
+
 export const setupGCPFormData = async (connectorInfo: ConnectorInfoDTO, accountId: string): Promise<FormData> => {
   const scopeQueryParams: GetSecretV2QueryParams = {
     accountIdentifier: accountId,
