@@ -240,7 +240,7 @@ function PipelineStepNode(props: PipelineStepNodeProps): JSX.Element {
           data={props}
           fireEvent={props.fireEvent}
           identifier={props.identifier}
-          prevNodeIdentifier={props.prevNodeIdentifier}
+          prevNodeIdentifier={props.prevNodeIdentifier as string}
           className={cx(defaultCss.addNodeIcon, defaultCss.left, defaultCss.stepAddIcon)}
         />
       )}
@@ -254,7 +254,7 @@ function PipelineStepNode(props: PipelineStepNodeProps): JSX.Element {
           fireEvent={props.fireEvent}
           isRightAddIcon={true}
           identifier={props.identifier}
-          prevNodeIdentifier={props.prevNodeIdentifier}
+          prevNodeIdentifier={props.prevNodeIdentifier as string}
           className={cx(defaultCss.addNodeIcon, defaultCss.right, defaultCss.stepAddIcon)}
         />
       )}

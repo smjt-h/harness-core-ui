@@ -6,7 +6,7 @@
  */
 
 import React, { useRef, useState, useLayoutEffect, ForwardedRef } from 'react'
-import { debounce, defaultTo, get } from 'lodash-es'
+import { debounce, defaultTo } from 'lodash-es'
 import classNames from 'classnames'
 import { BaseReactComponentProps, FireEventMethod, NodeType } from '../types'
 import GroupNode from '../Nodes/GroupNode/GroupNode'
@@ -27,6 +27,8 @@ export interface PipelineGraphRecursiveProps {
   collapsibleProps?: NodeCollapsibleProps
   readonly?: boolean
   isDragging?: boolean
+  optimizeRender?: boolean
+  parentSelector?: string
 }
 export function PipelineGraphRecursive({
   nodes,
@@ -40,12 +42,14 @@ export function PipelineGraphRecursive({
   collapsibleProps,
   getDefaultNode,
   readonly = false,
-  isDragging
+  isDragging,
+  optimizeRender = true,
+  parentSelector
 }: PipelineGraphRecursiveProps): React.ReactElement {
   const StartNode: React.FC<BaseReactComponentProps> | undefined = getNode(NodeType.StartNode)?.component
   const CreateNode: React.FC<BaseReactComponentProps> | undefined = getNode(NodeType.CreateNode)?.component
   const EndNode: React.FC<BaseReactComponentProps> | undefined = getNode(NodeType.EndNode)?.component
-
+  const PipelineNodeComponent = optimizeRender ? PipelineGraphNodeObserved : PipelineGraphNodeBasic
   return (
     <div id="tree-container" className={classNames(css.graphTree, css.common)}>
       {StartNode && startEndNodeNeeded && (
@@ -53,7 +57,7 @@ export function PipelineGraphRecursive({
       )}
       {nodes?.map((node, index) => {
         return (
-          <PipelineGraphNodeObserved
+          <PipelineNodeComponent
             getDefaultNode={getDefaultNode}
             parentIdentifier={parentIdentifier}
             fireEvent={fireEvent}
@@ -71,6 +75,7 @@ export function PipelineGraphRecursive({
             collapsibleProps={collapsibleProps}
             readonly={readonly}
             isDragging={isDragging}
+            parentSelector={parentSelector}
           />
         )
       })}
@@ -111,6 +116,7 @@ interface PipelineGraphNodeWithoutCollapseProps {
   collapseOnIntersect?: boolean
   intersectingIndex?: number
   readonly?: boolean
+  parentSelector?: string
 }
 
 const PipelineGraphNodeWithoutCollapse = React.forwardRef(
@@ -133,7 +139,8 @@ const PipelineGraphNodeWithoutCollapse = React.forwardRef(
       collapseOnIntersect,
       getDefaultNode,
       intersectingIndex = -1,
-      readonly
+      readonly,
+      parentSelector
     }: PipelineGraphNodeWithoutCollapseProps,
     ref: ForwardedRef<HTMLDivElement>
   ): React.ReactElement | null => {
@@ -152,6 +159,7 @@ const PipelineGraphNodeWithoutCollapse = React.forwardRef(
     return (
       <div
         className={classNames(
+          'pipeline-graph-node',
           { [css.nodeRightPadding]: isNextNodeParallel, [css.nodeLeftPadding]: isPrevNodeParallel },
           css.node
         )}
@@ -283,10 +291,11 @@ PipelineGraphNodeWithoutCollapse.displayName = 'PipelineGraphNodeWithoutCollapse
 function PipelineGraphNodeWithCollapse(
   props: PipelineGraphNodeWithoutCollapseProps & {
     collapsibleProps?: NodeCollapsibleProps
+    parentSelector?: string
   }
 ): React.ReactElement {
   const ref = useRef<HTMLDivElement>(null)
-  const resizeState = useNodeResizeObserver(ref?.current, props.collapsibleProps)
+  const resizeState = useNodeResizeObserver(ref?.current, props.collapsibleProps, props.parentSelector)
   const [intersectingIndex, setIntersectingIndex] = useState<number>(-1)
 
   useLayoutEffect(() => {
@@ -341,20 +350,19 @@ function PipelineGraphNodeObserved(
   React.useEffect(() => {
     let observer: IntersectionObserver
     if (ref) {
-      const rootElement = document.querySelector(props.collapsibleProps?.parentSelector as string)
+      const rootElement = document.querySelector(props?.parentSelector as string)
 
       observer = new IntersectionObserver(
         (entries, _observer) => {
           entries.forEach((entry: IntersectionObserverEntry) => {
             if (
-              (entry.rootBounds?.left === entry.intersectionRect.left ||
-                entry.rootBounds?.right === entry.intersectionRect.right) &&
-              !props.isDragging
+              entry.rootBounds?.left === entry.intersectionRect.left ||
+              entry.rootBounds?.right === entry.intersectionRect.right
             ) {
               if (entry.isIntersecting) {
                 updateVisibleState(true)
               } else {
-                updateVisibleState(false)
+                !props.isDragging && updateVisibleState(false)
               }
             }
           })
@@ -369,6 +377,7 @@ function PipelineGraphNodeObserved(
   }, [ref, elementRect])
 
   React.useEffect(() => {
+    console.log(props.data)
     if (!elementRect && ref !== null) {
       const elementDOMRect = ref?.getBoundingClientRect() as DOMRect
       setElementRect(elementDOMRect)

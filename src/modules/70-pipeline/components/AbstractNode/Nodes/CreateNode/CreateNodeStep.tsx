@@ -9,6 +9,7 @@ import React from 'react'
 import cx from 'classnames'
 import { DiagramDrag, DiagramType, Event } from '@pipeline/components/Diagram'
 import CreateNode from './CreateNode'
+import type { FireEventMethod } from '../../types'
 import cssDefault from '../DefaultNode/DefaultNode.module.scss'
 import css from './CreateNode.module.scss'
 
@@ -18,11 +19,7 @@ interface CreateNodeStepProps {
   onDragLeave?: () => void
   onDragOver?: () => void
   onDrop?: (event: React.DragEvent<HTMLDivElement>) => void
-  fireEvent(arg0: {
-    type: string
-    target: EventTarget
-    data: { entityType?: string; node?: CreateNodeStepProps; destination?: CreateNodeStepProps; identifier: string }
-  }): void
+  fireEvent?: FireEventMethod
   onClick: (event: React.MouseEvent<HTMLDivElement, MouseEvent>) => void
   identifier: string
   name: string
@@ -60,7 +57,7 @@ function CreateNodeStep(props: CreateNodeStepProps): React.ReactElement {
           props.onDrop(event)
         }
         event.stopPropagation()
-        props?.fireEvent({
+        props?.fireEvent?.({
           type: Event.DropNodeEvent,
           target: event.target,
           data: {
@@ -78,7 +75,7 @@ function CreateNodeStep(props: CreateNodeStepProps): React.ReactElement {
           props?.onClick(event)
           return
         }
-        props?.fireEvent({
+        props?.fireEvent?.({
           type: Event.AddLinkClicked,
           target: event.target,
           data: {

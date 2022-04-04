@@ -6,7 +6,7 @@
  */
 
 import React, { useMemo } from 'react'
-import { Layout, useToaster, useConfirmationDialog } from '@wings-software/uicore'
+import { Layout, useToaster, useConfirmationDialog, PageSpinner } from '@wings-software/uicore'
 import { Intent } from '@harness/design-system'
 import cx from 'classnames'
 import { cloneDeep, debounce, isNil } from 'lodash-es'
@@ -810,8 +810,9 @@ function StageBuilder(): JSX.Element {
               <CDPipelineStudioNew
                 selectedNodeId={selectedStageId}
                 data={stageData}
-                loaderComponent={DiagramLoader}
-                collapsibleProps={{ parentSelector: '.Pane1', percentageNodeVisible: 0.8, bottomMarginInPixels: 80 }}
+                loaderComponent={PageSpinner}
+                parentSelector={'.Pane1'}
+                collapsibleProps={{ percentageNodeVisible: 0.8, bottomMarginInPixels: 80 }}
               />
               <DynamicPopover
                 darkMode={false}

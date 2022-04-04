@@ -47,7 +47,7 @@ function GroupNode(props: any): React.ReactElement {
         onClick={(event: any) => {
           event.preventDefault()
           event.stopPropagation()
-          props?.fireEvent({
+          props?.fireEvent?.({
             type: Event.ClickNode,
             target: event.target,
             data: {
@@ -73,7 +73,7 @@ function GroupNode(props: any): React.ReactElement {
         }}
         onDrop={event => {
           event.stopPropagation()
-          props?.fireEvent({
+          props?.fireEvent?.({
             type: Event.DropNodeEvent,
             entityType: DiagramType.Default,
             node: JSON.parse(event.dataTransfer.getData(DiagramDrag.NodeDrag)),
@@ -135,7 +135,7 @@ function GroupNode(props: any): React.ReactElement {
           onMouseLeave={() => setAddVisibility(false)}
           onClick={(event: MouseEvent) => {
             event.stopPropagation()
-            props?.fireEvent({
+            props?.fireEvent?.({
               type: Event.AddParallelNode,
               identifier: props?.identifier,
               parentIdentifier: props?.parentIdentifier,

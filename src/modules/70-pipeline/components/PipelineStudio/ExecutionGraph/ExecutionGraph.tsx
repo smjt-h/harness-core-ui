@@ -1043,7 +1043,12 @@ function ExecutionGraphRef<T extends StageElementConfig>(
         )}
         {localStorage.getItem('IS_NEW_PIP_STUDIO_ACTIVE') === 'true' ? (
           <>
-            <CDPipelineStudioNew selectedNodeId={selectedStepId} loaderComponent={DiagramLoader} data={stepsData} />
+            <CDPipelineStudioNew
+              parentSelector=".Pane2"
+              selectedNodeId={selectedStepId}
+              loaderComponent={DiagramLoader}
+              data={stepsData}
+            />
             {hasRollback && (
               <RollbackToggleSwitch
                 style={{ top: 62, ...rollBackPropsStyle }}

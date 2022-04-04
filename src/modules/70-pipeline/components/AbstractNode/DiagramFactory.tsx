@@ -31,9 +31,9 @@ export class DiagramFactory {
   nodeBank: NodeBank
   groupNode: React.FC = GroupNode
   listeners: { [id: string]: BaseListener }
-  constructor(diagramType: string) {
+  constructor(diagramType?: string) {
     this.nodeBank = new Map<string, NodeDetails>()
-    this.type = diagramType
+    this.type = diagramType || 'graph'
     this.registerNode(NodeType.Default, DefaultNode)
     this.registerNode(NodeType.StepGroupNode, StepGroupNode)
     this.listeners = {}
@@ -121,7 +121,7 @@ export class DiagramFactory {
     }
   }
 
-  fireEvent(event: any): void {
+  fireEvent?(event: any): void {
     this.getListenerHandle(event.type)?.listener?.(event)
   }
 
@@ -131,6 +131,7 @@ export class DiagramFactory {
     selectedNodeId?: string
     readonly?: boolean
     loaderComponent: React.FC
+    parentSelector?: string
   }> {
     function PipelineStudioHOC(
       this: DiagramFactory,
@@ -140,13 +141,15 @@ export class DiagramFactory {
         selectedNodeId?: string
         readonly?: boolean
         loaderComponent: React.FC
+        /** parent element selector to apply node grouping  */
+        parentSelector?: string
       }
     ): React.ReactElement {
       return (
         <PipelineGraph
           getDefaultNode={this.getDefaultNode.bind(this)}
           getNode={this.getNode.bind(this)}
-          fireEvent={this.fireEvent.bind(this)}
+          fireEvent={this.fireEvent?.bind(this)}
           {...props}
         />
       )

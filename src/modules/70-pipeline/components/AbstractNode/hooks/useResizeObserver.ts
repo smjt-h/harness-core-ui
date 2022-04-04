@@ -9,9 +9,10 @@ export interface ResizeObserverResult {
 }
 export const useNodeResizeObserver = (
   elementToCompare: Element | null,
-  options: NodeCollapsibleProps = {} as NodeCollapsibleProps
+  options: NodeCollapsibleProps = {} as NodeCollapsibleProps,
+  parentSelector = ''
 ): ResizeObserverResult => {
-  const { percentageNodeVisible = 0.8, bottomMarginInPixels = 120, parentSelector = '' } = options
+  const { percentageNodeVisible = 0.8, bottomMarginInPixels = 120 } = options
   const [element, setElement] = useState<Element | null>(null)
   const [refElement, setRefElement] = useState<Element | null>(null)
   const [state, setState] = useState<ResizeObserverResult>({ shouldCollapse: false, shouldExpand: false })

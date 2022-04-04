@@ -88,7 +88,7 @@ export function StepGroupNode(props: any): JSX.Element {
                 iconProps={{ size: 10 }}
                 onMouseDown={e => {
                   e.stopPropagation()
-                  props?.fireEvent({
+                  props?.fireEvent?.({
                     type: Event.RemoveNode,
                     data: {
                       identifier: props?.identifier,
@@ -106,7 +106,7 @@ export function StepGroupNode(props: any): JSX.Element {
               onMouseOver={event => event.stopPropagation()}
               onClick={event => {
                 event.stopPropagation()
-                props?.fireEvent({
+                props?.fireEvent?.({
                   type: Event.AddLinkClicked,
                   target: event.target,
                   data: {
@@ -131,7 +131,7 @@ export function StepGroupNode(props: any): JSX.Element {
               onDrop={event => {
                 event.stopPropagation()
                 setShowAddLink(false)
-                props?.fireEvent({
+                props?.fireEvent?.({
                   type: Event.DropLinkEvent,
                   target: event.target,
                   data: {
@@ -160,7 +160,7 @@ export function StepGroupNode(props: any): JSX.Element {
               onMouseOver={() => allowAdd && setVisibilityOfAdd(true)}
               onMouseLeave={() => allowAdd && setVisibilityOfAdd(false)}
               onDrop={(event: any) => {
-                props?.fireEvent({
+                props?.fireEvent?.({
                   type: Event.DropNodeEvent,
                   data: {
                     entityType: DiagramType.Default,
@@ -171,7 +171,7 @@ export function StepGroupNode(props: any): JSX.Element {
               }}
               onClick={(event: any): void => {
                 event.stopPropagation()
-                props?.fireEvent({
+                props?.fireEvent?.({
                   type: Event.AddParallelNode,
                   target: event.target,
                   data: {

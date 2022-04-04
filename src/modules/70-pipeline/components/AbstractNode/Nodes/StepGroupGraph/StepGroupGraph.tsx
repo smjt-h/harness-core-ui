@@ -15,13 +15,13 @@ import {
   getPipelineGraphData,
   getSVGLinksFromPipeline
 } from '../../PipelineGraph/PipelineGraphUtils'
-import type { NodeDetails, NodeIds, PipelineGraphState, SVGPathRecord } from '../../types'
+import type { GetNodeMethod, NodeDetails, NodeIds, PipelineGraphState, SVGPathRecord } from '../../types'
 import { NodeType } from '../../types'
 import css from './StepGroupGraph.module.scss'
 interface StepGroupGraphProps {
   id?: string
   data?: any[]
-  getNode: (type?: string | undefined) => NodeDetails | undefined
+  getNode: GetNodeMethod
   getDefaultNode(): NodeDetails | null
   selectedNodeId?: string
   uniqueNodeIds?: NodeIds
@@ -42,6 +42,7 @@ interface LayoutStyles {
   width: string
   marginLeft?: string
 }
+
 const getNestedStepGroupHeight = (steps?: any[]): number => {
   let maxParalellNodesCount = 0
   steps?.forEach(step => {
@@ -51,6 +52,7 @@ const getNestedStepGroupHeight = (steps?: any[]): number => {
   })
   return maxParalellNodesCount
 }
+
 const getCalculatedStyles = (data: PipelineGraphState[]): LayoutStyles => {
   let width = 0
   let maxChildLength = 0
@@ -60,6 +62,9 @@ const getCalculatedStyles = (data: PipelineGraphState[]): LayoutStyles => {
       const count = getNestedStepGroupHeight(childSteps)
       maxChildLength = Math.max(maxChildLength, count)
       width += childSteps.length * 170
+    }
+    if (node.children?.length) {
+      width += 40
     }
     width += 170
     maxChildLength = Math.max(maxChildLength, node?.children?.length || 0)
@@ -140,6 +145,7 @@ function StepGroupGraph(props: StepGroupGraphProps): React.ReactElement {
             selectedNode={defaultTo(props?.selectedNodeId, '')}
             startEndNodeNeeded={false}
             readonly={props.readonly}
+            optimizeRender={false}
           />
         </>
       ) : (
@@ -150,7 +156,7 @@ function StepGroupGraph(props: StepGroupGraphProps): React.ReactElement {
             {...props}
             isInsideStepGroup={true}
             onClick={(event: any) => {
-              props?.fireEvent({
+              props?.fireEvent?.({
                 type: Event.ClickNode,
                 target: event.target,
                 data: {

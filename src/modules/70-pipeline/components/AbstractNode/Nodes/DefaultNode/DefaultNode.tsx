@@ -66,7 +66,7 @@ function DefaultNode(props: DefaultNodeProps): JSX.Element {
       onClick={event => {
         event.stopPropagation()
 
-        props?.fireEvent({
+        props?.fireEvent?.({
           type: Event.ClickNode,
           target: event.target,
           data: {
@@ -94,7 +94,7 @@ function DefaultNode(props: DefaultNodeProps): JSX.Element {
       }}
       onDrop={event => {
         event.stopPropagation()
-        props?.fireEvent({
+        props?.fireEvent?.({
           type: Event.DropNodeEvent,
           target: event.target,
           data: {
@@ -151,7 +151,7 @@ function DefaultNode(props: DefaultNodeProps): JSX.Element {
           iconProps={{ size: 10 }}
           onMouseDown={e => {
             e.stopPropagation()
-            props?.fireEvent({
+            props?.fireEvent?.({
               type: Event.RemoveNode,
               target: e.target,
               data: {
@@ -174,6 +174,7 @@ function DefaultNode(props: DefaultNodeProps): JSX.Element {
           className={css.nameText}
           padding={'small'}
           lineClamp={2}
+          data-node-name={props.name}
         >
           {props.name}
         </Text>
@@ -182,7 +183,7 @@ function DefaultNode(props: DefaultNodeProps): JSX.Element {
         <div
           onClick={event => {
             event.stopPropagation()
-            props?.fireEvent({
+            props?.fireEvent?.({
               type: Event.AddParallelNode,
               target: event.target,
               data: {

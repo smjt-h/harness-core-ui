@@ -68,7 +68,7 @@ function PipelineStageNode(props: PipelineStageNodeProps): JSX.Element {
           props.onClick(event)
           return
         }
-        props?.fireEvent({
+        props?.fireEvent?.({
           type: Event.ClickNode,
           target: event.target,
           data: {
@@ -95,7 +95,7 @@ function PipelineStageNode(props: PipelineStageNodeProps): JSX.Element {
       }}
       onDrop={event => {
         event.stopPropagation()
-        props?.fireEvent({
+        props?.fireEvent?.({
           type: Event.DropNodeEvent,
           target: event.target,
           data: {
@@ -126,7 +126,7 @@ function PipelineStageNode(props: PipelineStageNodeProps): JSX.Element {
         onMouseEnter={(event: React.MouseEvent<HTMLDivElement, MouseEvent>) => {
           event.stopPropagation()
 
-          props?.fireEvent({
+          props?.fireEvent?.({
             type: Event.MouseEnterNode,
             target: event.target,
             data: { ...props }
@@ -135,7 +135,7 @@ function PipelineStageNode(props: PipelineStageNodeProps): JSX.Element {
         onMouseLeave={(event: React.MouseEvent<HTMLDivElement, MouseEvent>) => {
           setAddVisibility(false)
           event.stopPropagation()
-          props?.fireEvent({
+          props?.fireEvent?.({
             type: Event.MouseLeaveNode,
             target: event.target,
             data: { ...props }
@@ -179,7 +179,7 @@ function PipelineStageNode(props: PipelineStageNodeProps): JSX.Element {
           iconProps={{ size: 10 }}
           onMouseDown={e => {
             e.stopPropagation()
-            props?.fireEvent({
+            props?.fireEvent?.({
               type: Event.RemoveNode,
               target: e.target,
               data: {
@@ -203,6 +203,7 @@ function PipelineStageNode(props: PipelineStageNodeProps): JSX.Element {
           className={defaultCss.nameText}
           padding={'small'}
           lineClamp={2}
+          data-node-name={props.name}
         >
           {props.name}
         </Text>
@@ -213,7 +214,7 @@ function PipelineStageNode(props: PipelineStageNodeProps): JSX.Element {
           onMouseLeave={() => setAddVisibility(false)}
           onClick={(event: React.MouseEvent<HTMLDivElement, MouseEvent>) => {
             event.stopPropagation()
-            props?.fireEvent({
+            props?.fireEvent?.({
               type: Event.AddParallelNode,
               target: event.target,
               data: {

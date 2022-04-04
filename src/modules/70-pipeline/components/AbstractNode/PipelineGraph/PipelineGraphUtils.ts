@@ -5,7 +5,7 @@
  * https://polyformproject.org/wp-content/uploads/2020/06/PolyForm-Shield-1.0.0.txt.
  */
 
-import { debounce, defaultTo, get, throttle } from 'lodash-es'
+import { defaultTo, get, throttle } from 'lodash-es'
 import type { IconName } from '@harness/uicore'
 import { v4 as uuid } from 'uuid'
 import type { ExecutionWrapperConfig, StageElementWrapperConfig } from 'services/cd-ng'
@@ -95,7 +95,18 @@ const getFinalSVGArrowPath = (id1 = '', id2 = '', options?: DrawSVGPathOptions):
         if (!nextNode || !parentNode) {
           return { [id1]: '' }
         }
-        const newRight = parentNode?.right > node2.right ? parentNode?.right : node2.right
+        const childEl = document.getElementById(options.parentNode)
+        let maxRight = node2.right
+        childEl?.closest('.pipeline-graph-node')?.childNodes.forEach(child => {
+          const childDims = getComputedPosition(child as HTMLElement, options?.parentElement) as DOMRect
+          maxRight = Math.max(maxRight, childDims?.right)
+        })
+        console.log({ maxRight })
+        const parentGraphNodeContainer = getComputedPosition(
+          childEl?.closest('.pipeline-graph-node') as HTMLElement,
+          options?.parentElement
+        ) as DOMRect
+        const newRight = parentGraphNodeContainer?.right > node2.right ? parentGraphNodeContainer?.right : node2.right
         const nextNodeVerticalMid = nextNode.top + nextNode.height / 2
         secondCurve = `M${node2.right},${node2VerticalMid}
         L${newRight + 10},${node2VerticalMid}

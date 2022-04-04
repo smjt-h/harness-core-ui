@@ -71,7 +71,7 @@ function GroupNode(props: GroupNodeProps): React.ReactElement {
       onClick={(event: any) => {
         event.preventDefault()
         event.stopPropagation()
-        props?.fireEvent({
+        props?.fireEvent?.({
           type: Event.ClickNode,
           target: event.target,
           data: {
@@ -95,7 +95,7 @@ function GroupNode(props: GroupNodeProps): React.ReactElement {
       }}
       onDrop={event => {
         event.stopPropagation()
-        props?.fireEvent({
+        props?.fireEvent?.({
           type: Event.DropNodeEvent,
           target: event.target,
           data: {
@@ -157,7 +157,7 @@ function GroupNode(props: GroupNodeProps): React.ReactElement {
         <div
           onClick={event => {
             event.stopPropagation()
-            props?.fireEvent({
+            props?.fireEvent?.({
               type: Event.AddParallelNode,
               target: event.target,
               data: {

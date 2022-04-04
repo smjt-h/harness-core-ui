@@ -29,7 +29,7 @@ export function DiamondNodeWidget(props: any): JSX.Element {
           props.onClick()
           return
         }
-        props?.fireEvent({
+        props?.fireEvent?.({
           type: Event.ClickNode,
           entityType: DiagramType.Default,
           identifier: props?.identifier,
@@ -143,7 +143,7 @@ export function DiamondNodeWidget(props: any): JSX.Element {
             iconProps={{ size: 10 }}
             onMouseDown={e => {
               e.stopPropagation()
-              props?.fireEvent({
+              props?.fireEvent?.({
                 type: Event.RemoveNode,
                 identifier: props?.identifier,
                 node: props
@@ -170,7 +170,7 @@ export function DiamondNodeWidget(props: any): JSX.Element {
           data-linkid={props?.identifier}
           onClick={event => {
             event.stopPropagation()
-            props?.fireEvent({
+            props?.fireEvent?.({
               type: Event.AddLinkClicked,
               entityType: DiagramType.Link,
               node: props,
@@ -191,7 +191,7 @@ export function DiamondNodeWidget(props: any): JSX.Element {
           }}
           onDrop={event => {
             event.stopPropagation()
-            props?.fireEvent({
+            props?.fireEvent?.({
               type: Event.DropLinkEvent,
               linkBeforeStepGroup: false,
               entityType: DiagramType.Link,
@@ -222,7 +222,7 @@ export function DiamondNodeWidget(props: any): JSX.Element {
             data-linkid={props?.identifier}
             onClick={event => {
               event.stopPropagation()
-              props?.fireEvent({
+              props?.fireEvent?.({
                 type: Event.AddLinkClicked,
                 linkBeforeStepGroup: true,
                 prevNodeIdentifier: props?.prevNodeIdentifier,
@@ -238,7 +238,7 @@ export function DiamondNodeWidget(props: any): JSX.Element {
             }}
             onDrop={event => {
               event.stopPropagation()
-              props?.fireEvent({
+              props?.fireEvent?.({
                 type: Event.DropLinkEvent,
                 linkBeforeStepGroup: true,
                 entityType: DiagramType.Link,

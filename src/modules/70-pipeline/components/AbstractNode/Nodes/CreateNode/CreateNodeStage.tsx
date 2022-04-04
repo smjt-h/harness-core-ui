@@ -10,17 +10,14 @@ import cx from 'classnames'
 import { defaultTo } from 'lodash-es'
 import { DiagramDrag, DiagramType, Event } from '@pipeline/components/Diagram'
 import CreateNode from './CreateNode'
+import type { FireEventMethod } from '../../types'
 import cssDefault from '../DefaultNode/DefaultNode.module.scss'
 import css from './CreateNode.module.scss'
 interface CreateNodeStageProps {
   onMouseOver?: () => void
   onMouseLeave?: () => void
   onDrop?: (event: React.DragEvent<HTMLDivElement>) => void
-  fireEvent(arg0: {
-    type: string
-    target: EventTarget
-    data: { entityType?: string; node?: CreateNodeStageProps; destination?: CreateNodeStageProps; identifier: string }
-  }): void
+  fireEvent?: FireEventMethod
   onClick: (event: React.MouseEvent<HTMLDivElement, MouseEvent>) => void
   identifier: string
   name: string
@@ -47,7 +44,7 @@ function CreateNodeStage(props: CreateNodeStageProps): React.ReactElement | null
       onDrop={event => {
         props?.onDrop?.(event)
         event.stopPropagation()
-        props?.fireEvent({
+        props?.fireEvent?.({
           type: Event.DropNodeEvent,
           target: event.target,
           data: {
@@ -65,7 +62,7 @@ function CreateNodeStage(props: CreateNodeStageProps): React.ReactElement | null
           props?.onClick(event)
           return
         }
-        props?.fireEvent({
+        props?.fireEvent?.({
           type: Event.AddLinkClicked,
           target: event.target,
           data: {

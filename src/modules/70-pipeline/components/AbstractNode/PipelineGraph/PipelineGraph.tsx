@@ -46,6 +46,8 @@ export interface PipelineGraphProps {
   collapsibleProps?: NodeCollapsibleProps
   readonly?: boolean
   loaderComponent: React.FC
+  /** parent element selector to listen resize event on */
+  parentSelector?: string
 }
 
 function PipelineGraph({
@@ -56,7 +58,8 @@ function PipelineGraph({
   getDefaultNode,
   selectedNodeId = '',
   readonly,
-  loaderComponent
+  loaderComponent,
+  parentSelector
 }: PipelineGraphProps): React.ReactElement {
   const [svgPath, setSvgPath] = useState<SVGPathRecord[]>([])
   const [isLoading, setLoading] = useState<boolean>(false)
@@ -92,13 +95,18 @@ function PipelineGraph({
 
   useLayoutEffect(() => {
     !isDragging && redrawSVGLinks()
-  }, [state])
+  }, [state, isDragging])
 
   const redrawSVGLinks = (): void => {
     setLoading(true)
     const lastGraphScaleValue = graphScale
     if (lastGraphScaleValue === 1) {
-      setSVGLinks()
+      setGraphScale(1)
+      setTimeout(setSVGLinks, 200)
+      setTimeout(() => {
+        setGraphScale(lastGraphScaleValue)
+        setLoading(false)
+      }, 300)
     } else {
       setGraphScale(1)
       setTimeout(setSVGLinks, 200)
@@ -157,7 +165,7 @@ function PipelineGraph({
           <div
             id="overlay"
             onClick={() => {
-              fireEvent({ type: Event.CanvasClick })
+              fireEvent?.({ type: Event.CanvasClick })
             }}
             className={css.overlay}
             ref={overlayRef}
@@ -176,6 +184,7 @@ function PipelineGraph({
                 getDefaultNode={getDefaultNode}
                 readonly={readonly}
                 isDragging={isDragging}
+                parentSelector={parentSelector}
               />
             </div>
           </div>

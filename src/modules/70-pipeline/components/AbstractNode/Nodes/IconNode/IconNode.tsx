@@ -56,7 +56,7 @@ export function IconNode(props: IconNodeProps): React.ReactElement {
           props.onClick?.(event)
           return
         }
-        props?.fireEvent({
+        props?.fireEvent?.({
           type: Event.ClickNode,
           target: event.target,
           data: {
@@ -66,7 +66,7 @@ export function IconNode(props: IconNodeProps): React.ReactElement {
         })
       }}
       onDrop={event => {
-        props?.fireEvent({
+        props?.fireEvent?.({
           type: Event.DropNodeEvent,
           target: event.target,
           data: {
@@ -79,7 +79,7 @@ export function IconNode(props: IconNodeProps): React.ReactElement {
       onMouseEnter={event => {
         event.stopPropagation()
 
-        props?.fireEvent({
+        props?.fireEvent?.({
           type: Event.MouseEnterNode,
           target: event.target,
           data: { ...props }
@@ -88,7 +88,7 @@ export function IconNode(props: IconNodeProps): React.ReactElement {
       onMouseLeave={event => {
         event.stopPropagation()
 
-        props?.fireEvent({
+        props?.fireEvent?.({
           type: Event.MouseLeaveNode,
           target: event.target,
           data: { ...props }
@@ -128,7 +128,7 @@ export function IconNode(props: IconNodeProps): React.ReactElement {
               iconProps={{ size: 10 }}
               onMouseDown={e => {
                 e.stopPropagation()
-                props?.fireEvent({
+                props?.fireEvent?.({
                   type: Event.RemoveNode,
                   target: e.target,
                   data: {
@@ -166,7 +166,7 @@ export function IconNode(props: IconNodeProps): React.ReactElement {
           onMouseLeave={() => setAddVisibility(false)}
           onClick={(event: React.MouseEvent<HTMLDivElement, MouseEvent>) => {
             event.stopPropagation()
-            props?.fireEvent({
+            props?.fireEvent?.({
               type: Event.AddParallelNode,
               target: event.target,
               data: {
@@ -195,7 +195,7 @@ export function IconNode(props: IconNodeProps): React.ReactElement {
           data-linkid={props?.identifier}
           onClick={event => {
             event.stopPropagation()
-            props?.fireEvent({
+            props?.fireEvent?.({
               type: Event.AddLinkClicked,
               entityType: DiagramType.Link,
               node: props,
@@ -210,7 +210,7 @@ export function IconNode(props: IconNodeProps): React.ReactElement {
           }}
           onDrop={event => {
             event.stopPropagation()
-            props?.fireEvent({
+            props?.fireEvent?.({
               type: Event.DropLinkEvent,
               linkBeforeStepGroup: false,
               entityType: DiagramType.Link,
@@ -238,7 +238,7 @@ export function IconNode(props: IconNodeProps): React.ReactElement {
             data-linkid={props?.identifier}
             onClick={event => {
               event.stopPropagation()
-              props?.fireEvent({
+              props?.fireEvent?.({
                 type: Event.AddLinkClicked,
                 linkBeforeStepGroup: true,
                 prevNodeIdentifier: props?.prevNodeIdentifier,
@@ -254,7 +254,7 @@ export function IconNode(props: IconNodeProps): React.ReactElement {
             }}
             onDrop={event => {
               event.stopPropagation()
-              props?.fireEvent({
+              props?.fireEvent?.({
                 type: Event.DropLinkEvent,
                 linkBeforeStepGroup: true,
                 entityType: DiagramType.Link,
