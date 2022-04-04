@@ -1999,6 +1999,7 @@ exports[`Test TerraformPlan renders more than one var file 1`] = `
                                   autocomplete="off"
                                   class="bp3-input"
                                   name="spec.configuration.targets[0].value"
+                                  placeholder="cd.enterTragets"
                                   type="text"
                                   value=""
                                 />
@@ -4420,6 +4421,7 @@ exports[`Test TerraformPlan should render input set view 1`] = `
                     autocomplete="off"
                     class="bp3-input"
                     name="test.spec.provisionerIdentifier"
+                    placeholder="pipeline.terraformStep.provisionerIdentifier"
                     type="text"
                     value=""
                   />
@@ -4496,6 +4498,7 @@ exports[`Test TerraformPlan should render input set view 1`] = `
                     autocomplete="off"
                     class="bp3-input"
                     name="test.spec.configuration.workspace"
+                    placeholder="pipeline.terraformStep.workspace"
                     type="text"
                     value=""
                   />

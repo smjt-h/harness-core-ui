@@ -6,7 +6,8 @@
  */
 
 import React from 'react'
-import { Card, Color, FontVariation, FormInput, Heading, Icon, Layout, Text, Container } from '@wings-software/uicore'
+import { Card, FormInput, Heading, Icon, Layout, Text, Container } from '@wings-software/uicore'
+import { FontVariation, Color } from '@harness/design-system'
 import { useStrings } from 'framework/strings'
 import SLOTargetChartWrapper from '@cv/pages/slos/components/SLOTargetChart/SLOTargetChart'
 import {
@@ -41,8 +42,8 @@ const SLOTargetAndBudgetPolicy: React.FC<SLOTargetAndBudgetPolicyProps> = ({ chi
         {getString('cv.slos.sloTargetAndBudget.setSLOTarget')}
       </Heading>
       <Card className={css.card}>
-        <Layout.Horizontal flex={{ justifyContent: flexStart, alignItems: flexStart }}>
-          <Container width="50%" border={{ right: true }}>
+        <Layout.Horizontal flex={{ justifyContent: flexStart, alignItems: 'stretch' }}>
+          <Container padding={{ right: 'large' }}>
             <Layout.Vertical width="100%">
               <Heading
                 level={4}
@@ -137,7 +138,7 @@ const SLOTargetAndBudgetPolicy: React.FC<SLOTargetAndBudgetPolicyProps> = ({ chi
               </Layout.Horizontal>
             </Layout.Vertical>
           </Container>
-          <Container className={css.contextualHelp} width="50%" padding={{ left: 'large', right: 'large' }}>
+          <Container className={css.contextualHelp} padding={{ left: 'large', right: 'large' }} border={{ left: true }}>
             <SLOTargetContextualHelpText />
           </Container>
         </Layout.Horizontal>

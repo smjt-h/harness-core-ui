@@ -9,8 +9,9 @@ import type { Dispatch, SetStateAction } from 'react'
 import type QueryString from 'qs'
 import moment from 'moment'
 import type Highcharts from 'highcharts'
-import { Utils, Color, SelectOption } from '@wings-software/uicore'
+import { Utils, SelectOption } from '@wings-software/uicore'
 import type { GetDataError } from 'restful-react'
+import { Color } from '@harness/design-system'
 import type { UseStringsReturn } from 'framework/strings'
 import type { StringsMap } from 'stringTypes'
 import type {
@@ -69,7 +70,6 @@ export const getSLORiskTypeFilter = (
     ...riskType,
     displayColor: getRiskColorValue(riskType.identifier as RiskTypes, false)
   }))
-
   return [totalCountDetail as SLORiskFilter, ...riskTypesCardData]
 }
 

@@ -7,7 +7,8 @@
 
 import React from 'react'
 import { defaultTo, isEmpty, noop } from 'lodash-es'
-import { Card, Text, Color, Container, Tag, Layout, Icon } from '@wings-software/uicore'
+import { Card, Text, Container, Tag, Layout, Icon } from '@wings-software/uicore'
+import { Color } from '@harness/design-system'
 import cx from 'classnames'
 import { Position } from '@blueprintjs/core'
 import { TimeAgoPopover } from '@common/components'
@@ -52,6 +53,8 @@ export function TemplateCard(props: TemplateCardProps): JSX.Element {
     (template as TemplateSummaryResponse)?.gitDetails?.branch ||
     (template as NGTemplateInfoConfigWithGitDetails)?.branch
 
+  const templateIcon = getIconForTemplate(getString, template)
+
   return (
     <Container className={cx(css.container, { [css.bordered]: !!onSelect }, { [css.selected]: !!isSelected })}>
       <Card className={css.templateCard} onClick={() => onSelect?.(template)}>
@@ -70,7 +73,7 @@ export function TemplateCard(props: TemplateCardProps): JSX.Element {
         )}
         <Container margin={{ right: 'small' }}>
           <Layout.Horizontal spacing={'small'} margin={{ bottom: 'small' }} flex>
-            <Icon name={getIconForTemplate(template, getString)} size={24} />
+            {!!templateIcon && <Icon name={templateIcon} size={24} />}
             {(template as TemplateSummaryResponse).entityValidityDetails?.valid === false && (
               <Badge
                 text={'common.invalid'}

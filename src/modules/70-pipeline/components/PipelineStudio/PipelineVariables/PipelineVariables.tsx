@@ -56,14 +56,16 @@ export function PipelineVariables(): React.ReactElement {
       if (data.parallel && data.parallel.length > 0) {
         data.parallel.forEach((nodeP, j: number) => {
           if (nodeP.stage) {
-            const isTemplateStage = !!get(pipeline, `stages[${i}].parallel[${j}].stage.template`)
+            const stagePath = `stages[${i}].parallel[${j}].stage`
+            const unresolvedStage = get(pipeline, stagePath)
             stagesCards.push(
               <StageCard
-                originalStage={get(originalPipeline, `stages[${i}].parallel[${j}].stage`)}
+                originalStage={get(originalPipeline, stagePath)}
+                unresolvedStage={unresolvedStage}
                 key={nodeP.stage.identifier}
                 stage={nodeP.stage}
                 metadataMap={metadataMap}
-                readonly={isReadonly || isTemplateStage}
+                readonly={isReadonly || !!unresolvedStage.template}
                 path="pipeline"
                 allowableTypes={allowableTypes}
                 stepsFactory={stepsFactory}
@@ -73,14 +75,16 @@ export function PipelineVariables(): React.ReactElement {
           }
         })
       } /* istanbul ignore else */ else if (data.stage) {
-        const isTemplateStage = !!get(pipeline, `stages[${i}].stage.template`)
+        const stagePath = `stages[${i}].stage`
+        const unresolvedStage = get(pipeline, stagePath)
         stagesCards.push(
           <StageCard
             key={data.stage.identifier}
             stage={data.stage}
-            originalStage={get(originalPipeline, `stages[${i}].stage`)}
+            originalStage={get(originalPipeline, stagePath)}
+            unresolvedStage={unresolvedStage}
             metadataMap={metadataMap}
-            readonly={isReadonly || isTemplateStage}
+            readonly={isReadonly || !!unresolvedStage.template}
             path="pipeline"
             allowableTypes={allowableTypes}
             stepsFactory={stepsFactory}

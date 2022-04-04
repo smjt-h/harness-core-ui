@@ -13,5 +13,6 @@ declare const styles: {
   readonly formContent: string
   readonly formError: string
   readonly stagesMultiSelect: string
+  readonly stepWizardContainer: string
 }
 export default styles

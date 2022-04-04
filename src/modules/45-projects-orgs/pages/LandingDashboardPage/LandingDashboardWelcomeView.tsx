@@ -6,8 +6,9 @@
  */
 
 import React from 'react'
-import { Button, ButtonVariation, Color, Heading, Layout, PageBody } from '@wings-software/uicore'
+import { Button, ButtonVariation, Heading, Layout, PageBody } from '@wings-software/uicore'
 import cx from 'classnames'
+import { Color } from '@harness/design-system'
 import { useHistory, useParams } from 'react-router-dom'
 import { useStrings } from 'framework/strings'
 import { useAppStore } from 'framework/AppStore/AppStoreContext'
@@ -16,6 +17,7 @@ import { FeatureIdentifier } from 'framework/featureStore/FeatureIdentifier'
 import { useProjectModal } from '@projects-orgs/modals/ProjectModal/useProjectModal'
 import type { AccountPathProps } from '@common/interfaces/RouteInterfaces'
 import routes from '@common/RouteDefinitions'
+import { isCommunityPlan, isOnPrem } from '@common/utils/utils'
 import welcomeVideo from './images/welcome-anim.mp4'
 import css from './LandingDashboardPage.module.scss'
 
@@ -27,6 +29,8 @@ export enum View {
 interface WelcomeViewProps {
   setView: (val: View) => void
 }
+
+const hideBackButton = isCommunityPlan() || isOnPrem()
 
 const LandingDashboardWelcomeView: React.FC<WelcomeViewProps> = props => {
   const { accountId } = useParams<AccountPathProps>()
@@ -50,14 +54,16 @@ const LandingDashboardWelcomeView: React.FC<WelcomeViewProps> = props => {
     <>
       <PageBody className={cx(css.getStartedMainContainer, className)}>
         <Layout.Vertical spacing="xxxlarge" flex>
-          <Button
-            icon="arrow-left"
-            text={getString('common.goBack')}
-            variation={ButtonVariation.LINK}
-            onClick={() => {
-              props.setView(View.Dashboard)
-            }}
-          />
+          {!hideBackButton && (
+            <Button
+              icon="arrow-left"
+              text={getString('common.goBack')}
+              variation={ButtonVariation.LINK}
+              onClick={() => {
+                props.setView(View.Dashboard)
+              }}
+            />
+          )}
           <Layout.Vertical spacing="medium" flex>
             <video src={welcomeVideo} autoPlay={true} loop={true} muted={true} />
             <Heading level={1} font={{ weight: 'bold' }} color={Color.BLACK}>

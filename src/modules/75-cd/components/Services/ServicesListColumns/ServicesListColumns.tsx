@@ -7,7 +7,6 @@
 
 import React, { useState } from 'react'
 import {
-  Color,
   Dialog,
   Button,
   Layout,
@@ -17,6 +16,7 @@ import {
   useToaster,
   Container
 } from '@harness/uicore'
+import { Color } from '@harness/design-system'
 import cx from 'classnames'
 import { useHistory, useParams } from 'react-router-dom'
 import { defaultTo, isEmpty, pick } from 'lodash-es'
@@ -31,7 +31,7 @@ import { useStrings } from 'framework/strings'
 import { useDeleteServiceV2 } from 'services/cd-ng'
 
 import RbacMenuItem from '@rbac/components/MenuItem/MenuItem'
-import { NewEditServiceModalYaml } from '../ServicesListPage/ServiceModal'
+import { NewEditServiceModal } from '@cd/components/PipelineSteps/DeployServiceStep/DeployServiceStep'
 import css from './ServicesListColumns.module.scss'
 
 interface ServiceRow {
@@ -77,7 +77,7 @@ const ServiceMenu = (props: ServiceItemProps): React.ReactElement => {
         className={cx('padded-dialog', css.serviceDialogStyles)}
       >
         <Container>
-          <NewEditServiceModalYaml
+          <NewEditServiceModal
             data={
               {
                 ...pick(service, ['name', 'identifier', 'orgIdentifier', 'projectIdentifier', 'description', 'tags'])

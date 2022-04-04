@@ -24,6 +24,10 @@ serviceCreated: '{{ $.common.serviceCreated }}'
 serviceUpdated: '{{ $.common.serviceUpdated }}'
 environmentCreated: '{{ $.common.environmentCreated }}'
 environmentUpdated: '{{ $.common.environmentUpdated }}'
+preProduction: 'Pre Production'
+preProductionType: 'PreProduction'
+environmentDelete: '{{ $.common.deleteEnvironment.title }}'
+environmentDeleteMessage: 'Are you sure you want to delete environment <strong>{{name}}</strong>?'
 namespaceValidation: Namespace must consist of lower case alphanumeric characters or '-', and must start and end with an alphanumeric character (e.g. 'my-name',  or '123-abc')
 releaseNameValidation: Release name must consist of lowercase alphanumeric characters, '-' or '.', and must start and end with an alphanumeric character (e.g. http://example.com). Harness evaluates the release name using the regex [a-z0-9]([-a-z0-9]*[a-z0-9])?(\.[a-z0-9]([-a-z0-9]*[a-z0-9])?)*
 cdTrialHomePage:
@@ -56,6 +60,9 @@ gitFetchTypeRequired: Git Fetch Type Required
 contentRequired: Content is required
 specifyTfVarStore: Specify Terraform Var File Store
 addTFVarFileLabel: 'Add File Path'
+enterWorkDirectory: Enter Working Directory
+enterTragets: Enter Targets
+specifyTargetHost: Specify Target Host
 configurationFile: 'Configuration File Repository'
 terraformVarFiles: 'Terraform Var Files'
 secretManagerRequired: 'Secret Manager is required.'

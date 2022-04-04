@@ -1,16 +1,15 @@
 {
-  "name": "Cg5feCBTQ8a5f7MGrTIbwA",
+  "name": "E0LNCaKtR2u_I8c2-ULcCQ",
   "identifier": "Random",
-  "allowStageExecutions": "bpgW5jtwRwWme5iAcurHuw",
-  "projectIdentifier": "DWz2uRm6SzWjeX8VRlPgeg",
-  "orgIdentifier": "ES8BHTBcQJapFNn6A_DIpw",
+  "projectIdentifier": "bp6lT0twQTqdqBvreeY4Kw",
+  "orgIdentifier": "IEMV-aJvTXaqmksBTU0oUg",
   "tags": {
-    "__uuid": "vjAvN_c0Sj-zkSDc48OLPA"
+    "__uuid": "gN0TAlRlSValLl4SbOQwzQ"
   },
   "stages": [
     {
       "stage": {
-        "name": "sDIuZnmYReKvIJ9DKEVxHw",
+        "name": "ZPo3LTccQO6OWGYl1k2stQ",
         "identifier": "Stage_1",
         "type": "Deployment",
         "spec": {
@@ -19,27 +18,27 @@
               "type": "Kubernetes",
               "spec": {
                 "variables": [],
-                "__uuid": "tz1fOG0ER_mzSbOzDxZxwg"
+                "__uuid": "flYa96SPROWumIOmYfHEAw"
               },
-              "__uuid": "oQILI3FGSLSoD6Vg0JQivA"
+              "__uuid": "sRirf-r_TZybLYeQjzbPUQ"
             },
-            "serviceRef": "ydTHrpV6R62bJrz92DS7Bw",
-            "__uuid": "ldMcqTjtQUCf76SaggytJg"
+            "serviceRef": "qk_H_6KNQ0eiabu8s767AQ",
+            "__uuid": "HZdZ-pM1Ql66B1bJsjoEzg"
           },
           "infrastructure": {
+            "environmentRef": "ZffZTU_OQoGlgIf3xCc4hA",
             "infrastructureDefinition": {
               "type": "KubernetesDirect",
               "spec": {
-                "connectorRef": "AOX5By0RSSaEXtvsShcBBA",
-                "namespace": "tAeeXFqbQIKIRwQ29g-yBw",
-                "releaseName": "lBCPQZiNRcSfM3I1LQO0FQ",
-                "__uuid": "jsKXsHV5Qni4e_lL-np-Bg"
+                "connectorRef": "YzIDB2FBRmqwLC3ZoZnO9w",
+                "namespace": "OPpOzgqxS0adFoLbI6rKBA",
+                "releaseName": "BUPw8EueSgiFa2SaVu-Jtw",
+                "__uuid": "fSl5n5ZESdSlNae63vuprA"
               },
-              "__uuid": "RmZhQYJMQbuguFXLU2zV7w"
+              "__uuid": "AwIOJ6s3Srq8wOmhRHpKsQ"
             },
-            "allowSimultaneousDeployments": "sd79FdAAShm3EvxwpCox3g",
-            "environmentRef": "1CYevzdoRUCZGg2lmhHw9g",
-            "__uuid": "MOcVenH3T0y-XXqv9OIT8w"
+            "allowSimultaneousDeployments": "DYwc0VRQQciJOL4CwxpevA",
+            "__uuid": "b93i_P3tTIW_5Hx820VouQ"
           },
           "execution": {
             "steps": [
@@ -47,54 +46,129 @@
                 "step": {
                   "identifier": "Step_1",
                   "type": "ShellScript",
-                  "name": "qEQI-kgySQGri4_phdH5Hw",
+                  "name": "S_pWITZfTgSIQOYFJb7K3w",
                   "spec": {
-                    "shell": "5gBSpGoGRvm_Pi_8w03YVw",
-                    "onDelegate": "9csxbYLyQWm2nMaG4ktDCg",
+                    "shell": "q4H0NWteQVSGASuVKuTpeg",
+                    "onDelegate": "H_Cn_IQZRD-eYfEKU4B-pQ",
                     "source": {
                       "type": "Inline",
                       "spec": {
-                        "script": "m2-PKk27SjmTRdToXZv0vA",
-                        "__uuid": "e6yIezGWQmGNrLAkwR0sMQ"
+                        "script": "qL3MlI9BTjuM7zvMTFnVsQ",
+                        "__uuid": "AlqZBzZuQYWlvdegamCf_Q"
                       },
-                      "__uuid": "Yj_MCb3nSWidzY5iEnHtnA"
+                      "__uuid": "n8eeSMV0QWyptwoDxasGhw"
                     },
                     "environmentVariables": [],
                     "outputVariables": [],
                     "executionTarget": {
-                      "__uuid": "CrMP8tLKTguhYvi88lj01w"
+                      "__uuid": "qJCbf-WtQ7CV7nORHODGsA"
                     },
-                    "__uuid": "XBcp3Z_0Sw-Q4H8JvgKO6A"
+                    "__uuid": "4X0FoBzoR0ikOY60Sm0uug"
                   },
-                  "timeout": "CE-hpV8cR3ORASrPN4uuGA",
-                  "__uuid": "hC_mylChR56TdbblBbfkvQ"
+                  "timeout": "6R1vE7pdSl2p8PLQM4WA8Q",
+                  "__uuid": "iHzwJwCMTFCpK1xfjetWcQ"
                 },
-                "__uuid": "5ibyyG-jTPaWgA_MWdH_4Q"
+                "__uuid": "qodXAa13SJS9V1oTVw66bg"
               }
             ],
             "rollbackSteps": [],
-            "__uuid": "MomnIw-aQ6mfMRlf8sMrPQ"
+            "__uuid": "E8_uinzfRACzpnOzU2RMCw"
           },
           "serviceDependencies": [],
-          "__uuid": "AG6KlL72Q5iM5397n_2o7A"
+          "__uuid": "oPeErjGaSiqXivG5j9U3Mg"
+        },
+        "__uuid": "Wn558fFPS3ypynuyI1dKWg"
+      },
+      "__uuid": "J_83RKz-Qm6E4iRt42MCCA"
+    },
+    {
+      "stage": {
+        "name": "4_led2ulRVq1n8dyytJjpg",
+        "identifier": "Stage_2",
+        "description": "GgivDvykSb-pER2o1GGjrA",
+        "type": "Deployment",
+        "spec": {
+          "serviceConfig": {
+            "serviceRef": "qT3nAEzWRdmoIfqWOzsQFQ",
+            "serviceDefinition": {
+              "type": "Kubernetes",
+              "spec": {
+                "variables": [],
+                "__uuid": "5FpH_tgzQzW-gE0PvHNj3w"
+              },
+              "__uuid": "49OTpnhuQwqSEx7-65aTyA"
+            },
+            "__uuid": "mA2QJ68ySSG_DLO2ewk34g"
+          },
+          "infrastructure": {
+            "environmentRef": "74urCOQkQmektBvmGGWxcw",
+            "infrastructureDefinition": {
+              "type": "KubernetesDirect",
+              "spec": {
+                "connectorRef": "enqI5k16TtyJw0BrEh6F2g",
+                "namespace": "x8B-N7KqQmaG9ukpJ8c-Sw",
+                "releaseName": "iAMPEhYKRIaaKMX51DVnMw",
+                "__uuid": "Cr1b_AG4QcWzcYC9pbm4Wg"
+              },
+              "__uuid": "_raOKm_wTcyEQ8YnZ2FpRA"
+            },
+            "allowSimultaneousDeployments": "aurKSy29TwmAsRPJlcJQNw",
+            "__uuid": "YPfi6rWUQUqMzIyU9H4oMg"
+          },
+          "execution": {
+            "steps": [
+              {
+                "step": {
+                  "name": "fR-n03kQQy6nZvCT_9hAHg",
+                  "identifier": "Step_1",
+                  "type": "Http",
+                  "timeout": "ryNrf0bXQ5eB2OhK4UPohQ",
+                  "spec": {
+                    "url": "NmvJumcgQ4SH9m5Ql33KXA",
+                    "method": "pTSq16hoQnOXDzYdA2TXvA",
+                    "headers": [],
+                    "outputVariables": [],
+                    "requestBody": "WY97WWOZTTq3AcrYJwamnQ",
+                    "__uuid": "--Ukp5HjSfGWQH8FbSmF9A"
+                  },
+                  "__uuid": "WM6ZJsSaQu2yxYKCk4UQCw"
+                },
+                "__uuid": "aDn8ZCnDS1y3WJ9B-S8zJw"
+              }
+            ],
+            "rollbackSteps": [],
+            "__uuid": "Gmo-VWwEQJyA0eH9kvG0LA"
+          },
+          "__uuid": "J5uJ40BTStifd9KzY9DciQ"
+        },
+        "tags": {
+          "__uuid": "ASu_z49eS5S5dZVakrILaQ"
         },
         "failureStrategies": [
           {
             "onFailure": {
-              "errors": "XXWOgPtKQnm2SJZucnNlaw",
+              "errors": "F_AeS5t8T4mbK7kgPcEUiQ",
               "action": {
                 "type": "StageRollback",
-                "__uuid": "vPu_xnJiQ4SQt7YSzeRvQQ"
+                "__uuid": "T2yW41biRp-p57rF9Eqtog"
               },
-              "__uuid": "Or5yosTCQnm7DFr3kZHRmg"
+              "__uuid": "f7V6XJixRQ2x8luy5z4-tw"
             },
-            "__uuid": "MWwCpKyIQ-yNCMlcW1xAyw"
+            "__uuid": "6PQdtz1vRtm-l4sjW4xNbQ"
           }
         ],
-        "__uuid": "Ec4NnNc8RS26wSeoxg47Cg"
+        "variables": [
+          {
+            "name": "var1",
+            "type": "String",
+            "value": "L4Fs-8WQQJmhcnDXRNK8cg",
+            "__uuid": "a6Ck3V_oQl2pgB0So4RSCg"
+          }
+        ],
+        "__uuid": "S6mN307tSsiPYK8ySkad1Q"
       },
-      "__uuid": "LZJ00DqlRX-WBmrWz49qpA"
+      "__uuid": "m5w3HC2FTX-w2SzWQsF9tA"
     }
   ],
-  "__uuid": "RICvXPeRSSuPSDHNDaxTDQ"
+  "__uuid": "5EpUTuicTeC1HiEAD1xY7g"
 }

@@ -60,7 +60,43 @@ const template: any = {
               connectorRef: 'test'
             }
           }
-        }
+        },
+        backendConfig: {
+          type: 'Inline',
+          spec: {
+            content: RUNTIME_INPUT_VALUE
+          }
+        },
+        targets: RUNTIME_INPUT_VALUE,
+        varFiles: [
+          {
+            varFile: {
+              type: 'Inline',
+              identifier: 'file_id_1',
+              spec: {
+                type: 'inline_type_spec',
+                content: RUNTIME_INPUT_VALUE
+              }
+            }
+          },
+          {
+            varFile: {
+              type: 'Remote',
+              identifier: 'file_id_2',
+              spec: {
+                type: 'remote_type_spec'
+              }
+            }
+          },
+          {
+            varFile: {
+              identifier: 'file_id_3',
+              spec: {
+                type: 'remote_type_spec'
+              }
+            }
+          }
+        ]
       }
     },
 

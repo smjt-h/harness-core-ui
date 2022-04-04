@@ -19,6 +19,5 @@ declare const styles: {
   readonly prTitle: string
   readonly repoRootfolderSelect: string
   readonly spinner: string
-  readonly tooltip: string
 }
 export default styles

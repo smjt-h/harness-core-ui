@@ -15,10 +15,10 @@ import {
   Button,
   Switch,
   TextInput,
-  RUNTIME_INPUT_VALUE,
-  Color
+  RUNTIME_INPUT_VALUE
 } from '@wings-software/uicore'
 import * as Yup from 'yup'
+import { Color } from '@harness/design-system'
 import { defaultTo, isEmpty, set } from 'lodash-es'
 import { useParams } from 'react-router-dom'
 import type { FormikErrors } from 'formik'
@@ -50,6 +50,8 @@ import { useGitScope } from '@pipeline/utils/CIUtils'
 import type { BuildStageElementConfig, StageElementWrapper } from '@pipeline/utils/pipelineTypes'
 import type { TemplateSummaryResponse } from 'services/template-ng'
 import { createTemplate, getTemplateNameWithLabel } from '@pipeline/utils/templateUtils'
+import { useTelemetry } from '@common/hooks/useTelemetry'
+import { Category, StageActions } from '@common/constants/TrackingConstants'
 import css from './EditStageView.module.scss'
 
 export interface EditStageView {
@@ -214,6 +216,13 @@ export const EditStageView: React.FC<EditStageView> = ({ data, template, onSubmi
       }
     }
   }
+  const { trackEvent } = useTelemetry()
+  React.useEffect(() => {
+    trackEvent(StageActions.LoadEditStageView, {
+      category: Category.STAGE
+    })
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [])
 
   return (
     <div className={css.stageCreate}>

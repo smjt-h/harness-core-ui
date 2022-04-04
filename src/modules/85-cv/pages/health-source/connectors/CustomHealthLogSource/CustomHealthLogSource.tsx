@@ -71,7 +71,7 @@ export default function CustomHealthLogSource(props: any): JSX.Element {
                 <MultiItemsSideNav
                   defaultMetricName={selectedQuery}
                   tooptipMessage={getString('cv.monitoringSources.gcoLogs.addQueryTooltip')}
-                  addFieldLabel={getString('cv.monitoringSources.addMetric')}
+                  addFieldLabel={getString('cv.monitoringSources.addQuery')}
                   createdMetrics={createdQueries}
                   defaultSelectedMetric={selectedQuery}
                   renamedMetric={formikProps.values.queryName}
@@ -130,6 +130,23 @@ export default function CustomHealthLogSource(props: any): JSX.Element {
                               name={CustomHealthLogFieldNames.QUERY_NAME}
                               label={getString('cv.monitoringSources.queryName')}
                               className={css.customHealthLogFieldWidth}
+                              onChange={e => {
+                                const val = (e.target as any).value
+                                formikProps.setFieldValue('queryName', val)
+                                setCreatedQueries(oldQueries => {
+                                  const updatedQueries = [...oldQueries.createdQueries]
+                                  updatedQueries[oldQueries.selectedIndex] = val
+                                  return { selectedIndex: oldQueries.selectedIndex, createdQueries: updatedQueries }
+                                })
+
+                                setMappedQueries(oldObj => {
+                                  const newMap = new Map(oldObj.mappedQueries)
+                                  const oldValue = newMap.get(oldObj.selectedQuery)
+                                  newMap.delete(oldObj.selectedQuery)
+                                  newMap.set(val, oldValue as CustomHealthLogSetupSource)
+                                  return { selectedQuery: val, mappedQueries: newMap }
+                                })
+                              }}
                             />
                             <QueryMapping
                               onFieldChange={formikProps.setFieldValue}
@@ -174,7 +191,17 @@ export default function CustomHealthLogSource(props: any): JSX.Element {
             <DrawerFooter
               isSubmit
               onPrevious={onPrevious}
-              onNext={() => submitForm({ formikProps, onSubmit, sourceData, mappedQueries, getString, selectedIndex })}
+              onNext={() =>
+                submitForm({
+                  formikProps,
+                  onSubmit,
+                  sourceData,
+                  mappedQueries,
+                  getString,
+                  selectedIndex,
+                  createdQueries
+                })
+              }
             />
           </FormikForm>
         )

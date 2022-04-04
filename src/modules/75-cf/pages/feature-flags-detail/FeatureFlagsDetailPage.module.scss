@@ -10,6 +10,7 @@
   z-index: 1;
   height: 100%;
   width: 460px;
+
   background: var(--primary-bg) !important;
   box-shadow: var(--elevation-2);
   display: flex;
@@ -25,8 +26,9 @@
   height: 100%;
   display: grid;
   grid-template-columns: 460px 1fr;
+  overflow-y: hidden;
   section:nth-of-type(1) {
-    background-color: white;
+    background-color: var(--grey-0);
     z-index: 1;
   }
 }

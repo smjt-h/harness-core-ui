@@ -42,6 +42,7 @@ export interface QueryViewerProps {
   queryLabel?: string
   recordsClassName?: string
   fetchEntityName?: string
+  dataTooltipId?: string
 }
 
 export interface QueryViewDialogProps extends RecordsProps {

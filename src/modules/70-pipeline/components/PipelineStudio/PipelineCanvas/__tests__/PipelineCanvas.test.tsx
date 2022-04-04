@@ -164,6 +164,29 @@ describe('Pipeline Canvas - new pipeline', () => {
     expect(queryByText(/Loading, please wait\.\.\./)).toBeTruthy()
   })
 
+  test('pipeline call fail error screen', () => {
+    const props = getProps()
+    const contextValue = getDummyPipelineCanvasContextValue({ isLoading: false })
+    contextValue.state.templateError = {
+      status: 404,
+      data: {
+        message:
+          'Invalid request: Pipeline with the given ID: testPipeline_Cypressss does not exist or has been deleted'
+      },
+      message: 'INVALID_REQUEST'
+    }
+    const { queryByText, container } = render(
+      <TestWrapper>
+        <PipelineContext.Provider value={contextValue}>
+          <PipelineCanvas {...props} />
+        </PipelineContext.Provider>
+      </TestWrapper>
+    )
+    expect(queryByText('Invalid request:'))
+    expect(queryByText('Pipeline with the given ID: testPipeline_Cypressss does not exist or has been deleted'))
+    expect(container).toMatchSnapshot()
+  })
+
   test('with git sync enabled - new pipeline', async () => {
     const props = getProps()
     const contextValue = getDummyPipelineCanvasContextValue({

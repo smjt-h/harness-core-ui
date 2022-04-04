@@ -144,6 +144,10 @@ const YAMLBuilder: React.FC<YamlBuilderProps> = (props: YamlBuilderProps): JSX.E
     () =>
       ({
         getLatestYaml: () => yamlRef.current,
+        setLatestYaml: (json: Record<string, any>) => {
+          attempt(verifyIncomingJSON, json)
+          setCurrentJSON(json)
+        },
         getYAMLValidationErrorMap: () => yamlValidationErrorsRef.current
       } as YamlBuilderHandlerBinding),
     []

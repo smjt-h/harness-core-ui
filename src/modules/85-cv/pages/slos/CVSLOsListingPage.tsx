@@ -17,8 +17,10 @@ import {
   Pagination,
   Layout,
   FlexExpander,
-  Container
+  Container,
+  Heading
 } from '@wings-software/uicore'
+import { FontVariation } from '@harness/design-system'
 import noData from '@cv/assets/noData.svg'
 import slosEmptyState from '@cv/assets/slosEmptyState.svg'
 import { Page } from '@common/exports'
@@ -210,7 +212,14 @@ const CVSLOsListingPage: React.FC<CVSLOsListingPageProps> = ({ monitoredService 
     <>
       {!monitoredService?.identifier && !getIsDataEmpty(content?.length, riskCountResponse?.data?.riskCounts) && (
         <>
-          <Page.Header breadcrumbs={<NGBreadcrumbs />} title={getString('cv.slos.title')} />
+          <Page.Header
+            breadcrumbs={<NGBreadcrumbs />}
+            title={
+              <Heading level={3} font={{ variation: FontVariation.H4 }} data-tooltip-id={'createSLO'}>
+                {getString('cv.slos.title')}
+              </Heading>
+            }
+          />
           <Page.Header title={getAddSLOButton()} />
         </>
       )}

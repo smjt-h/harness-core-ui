@@ -211,7 +211,17 @@ describe('Terraform artifactory tests', () => {
     }
     props.isTerraformPlan = true
     props.isConfig = false
-    const { container } = renderForm(prevStepData)
+    const { container, getByText } = renderForm(prevStepData)
+    const plusButton = getByText('cd.addTFVarFileLabel')
+
+    //add, change value and submit
+    await fireEvent.click(plusButton)
+
+    fireEvent.change(container.querySelector('input[name="varFile.spec.store.spec.artifactPaths[1].path"]')!, {
+      target: { value: 'test' }
+    })
+    const submitButton = getByText('submit')
+    await fireEvent.click(submitButton)
     expect(container).toMatchSnapshot()
   })
 

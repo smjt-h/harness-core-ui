@@ -9,6 +9,7 @@ import React from 'react'
 import { render, act, fireEvent, queryByAttribute, waitFor } from '@testing-library/react'
 import { StepType } from '@pipeline/components/PipelineSteps/PipelineStepInterface'
 import { StepFormikRef, StepViewType } from '@pipeline/components/AbstractSteps/Step'
+import type { CompletionItemInterface } from '@common/interfaces/YAMLBuilderProps'
 import { TestStepWidget, factory } from '../../__tests__/StepTestUtil'
 import { HarnessApproval } from '../HarnessApproval'
 import {
@@ -18,13 +19,16 @@ import {
   getHarnessApprovalEditModeProps,
   getHarnessApprovalEditModePropsWithValues,
   getHarnessApprovalEditModePropsAsExpressions,
-  getHarnessApprovalEditModePropsMinimumCountNegative
+  getHarnessApprovalEditModePropsMinimumCountNegative,
+  getYaml,
+  getParams
 } from './HarnessApprovalTestHelper'
 
 jest.mock('@common/components/YAMLBuilder/YamlBuilder')
 
 jest.mock('services/cd-ng', () => ({
-  useGetUserGroupList: () => mockUserGroupsResponse
+  useGetUserGroupList: () => mockUserGroupsResponse,
+  getUserGroupListPromise: jest.fn(() => Promise.resolve(mockUserGroupsResponse.data))
 }))
 
 describe('Harness Approval tests', () => {
@@ -315,5 +319,65 @@ describe('Harness Approval tests', () => {
       },
       name: 'harness approval step'
     })
+  })
+
+  const userGroupsRefPath = 'pipeline.stages.0.stage.spec.execution.steps.0.step.spec.approvers.userGroups'
+  test('Test UserGroup autocomplete', async () => {
+    const step = new HarnessApproval() as any
+    let list: CompletionItemInterface[]
+    list = await step.getUgListForYaml(userGroupsRefPath, getYaml(), getParams())
+    expect(list).toHaveLength(3)
+    expect(list[0].insertText).toBe('ug1')
+    list = await step.getUgListForYaml('invalid path', getYaml(), getParams())
+    expect(list).toHaveLength(0)
+  })
+
+  test('Minimum time cannot be less than 10s', () => {
+    const response = new HarnessApproval().validateInputSet({
+      data: {
+        name: 'Test A',
+        identifier: 'Test A',
+        timeout: '1s',
+        type: 'HarnessApproval',
+        spec: {
+          approvalMessage: 'Please review the following information and approve the pipeline progression',
+          includePipelineExecutionHistory: true,
+          approvers: {
+            userGroups: [],
+            minimumCount: 1,
+            disallowPipelineExecutor: false
+          },
+          approverInputs: [
+            {
+              name: '',
+              defaultValue: ''
+            }
+          ]
+        }
+      },
+      template: {
+        name: 'Test A',
+        identifier: 'Test A',
+        timeout: '<+input>',
+        type: 'HarnessApproval',
+        spec: {
+          approvalMessage: 'Please review the following information and approve the pipeline progression',
+          includePipelineExecutionHistory: true,
+          approvers: {
+            userGroups: [],
+            minimumCount: 1,
+            disallowPipelineExecutor: false
+          },
+          approverInputs: [
+            {
+              name: '',
+              defaultValue: ''
+            }
+          ]
+        }
+      },
+      viewType: StepViewType.TriggerForm
+    })
+    expect(response).toMatchSnapshot('Value must be greater than or equal to "10s"')
   })
 })

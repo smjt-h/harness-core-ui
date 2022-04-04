@@ -1,0 +1,288 @@
+{
+  "status": "SUCCESS",
+  "data": {
+    "pipelineExecutionSummary": {
+      "pipelineIdentifier": "testPipeline_Cypressss",
+      "planExecutionId": "executionId",
+      "name": "testPipeline_Cypressss",
+      "status": "Running",
+      "tags": [],
+      "executionTriggerInfo": {
+        "triggerType": "MANUAL",
+        "triggeredBy": {
+          "uuid": "qUaLKpHcTOS3ThJVG2bwIw",
+          "identifier": "Pratyush Garg",
+          "extraInfo": {
+            "email": "pratyush.garg@harness.io"
+          }
+        },
+        "isRerun": false
+      },
+      "governanceMetadata": {
+        "id": "",
+        "deny": false,
+        "details": [],
+        "message": "FF: [OPA_PIPELINE_GOVERNANCE] is disabled for account: [px7xd_BFRCi-pfWPYXVjvw]",
+        "timestamp": "0",
+        "status": "",
+        "accountId": "",
+        "orgId": "",
+        "projectId": "",
+        "entity": "",
+        "type": "",
+        "action": "",
+        "created": "0"
+      },
+      "moduleInfo": {},
+      "layoutNodeMap": {
+        "nodeId": {
+          "nodeType": "Deployment",
+          "nodeGroup": "STAGE",
+          "nodeIdentifier": "testStage_Cypress",
+          "name": "testStage_Cypress",
+          "nodeUuid": "nodeId",
+          "status": "Running",
+          "module": "cd",
+          "moduleInfo": {
+            "cd": {}
+          },
+          "startTs": 1648618556380,
+          "edgeLayoutList": {
+            "currentNodeChildren": [],
+            "nextIds": []
+          },
+          "nodeRunInfo": {
+            "whenCondition": "<+OnPipelineSuccess>",
+            "evaluatedCondition": true,
+            "expressions": [
+              {
+                "expression": "OnPipelineSuccess",
+                "expressionValue": "true",
+                "count": 1
+              }
+            ]
+          }
+        }
+      },
+      "modules": ["cd"],
+      "startingNodeId": "nodeId",
+      "startTs": 1648618556244,
+      "createdAt": 1648618556266,
+      "canRetry": true,
+      "showRetryHistory": false,
+      "runSequence": 5,
+      "successfulStagesCount": 0,
+      "runningStagesCount": 1,
+      "failedStagesCount": 0,
+      "totalStagesCount": 1,
+      "allowStageExecutions": false,
+      "stagesExecution": false
+    },
+    "executionGraph": {
+      "rootNodeId": "w9j7RvIpSPSQTtLlJac6zg",
+      "nodeMap": {
+        "w9j7RvIpSPSQTtLlJac6zg": {
+          "uuid": "w9j7RvIpSPSQTtLlJac6zg",
+          "setupId": "CUR9XUdYRy-EfNxNU4ntIg",
+          "name": "testPipeline_Cypressss",
+          "identifier": "pipeline",
+          "baseFqn": "pipeline",
+          "outcomes": {},
+          "stepParameters": {
+            "childNodeID": "CUR9XUdYRy-EfNxNU4ntIgstages",
+            "name": "testPipeline_Cypressss",
+            "identifier": "testPipeline_Cypressss",
+            "description": "",
+            "tags": {},
+            "properties": {
+              "__recast": "java.util.LinkedHashMap"
+            },
+            "variables": {
+              "__recast": "java.util.LinkedHashMap"
+            },
+            "executionId": "executionId",
+            "sequenceId": 5
+          },
+          "startTs": 1648618556268,
+          "endTs": null,
+          "stepType": "PIPELINE_SECTION",
+          "status": "Running",
+          "failureInfo": null,
+          "skipInfo": null,
+          "nodeRunInfo": null,
+          "executableResponses": [
+            {
+              "child": {
+                "childNodeId": "CUR9XUdYRy-EfNxNU4ntIgstages",
+                "logKeys": [],
+                "units": []
+              }
+            }
+          ],
+          "unitProgresses": [],
+          "progressData": null,
+          "delegateInfoList": [],
+          "interruptHistories": [],
+          "stepDetails": null
+        },
+        "EVGNxoMZQmOsT1lYJa1kSA": {
+          "uuid": "EVGNxoMZQmOsT1lYJa1kSA",
+          "setupId": "pOUA8UHuTXy1eJr4shkmsQ",
+          "name": "Service",
+          "identifier": "serviceConfig",
+          "baseFqn": "pipeline.stages.testStage_Cypress.spec.serviceConfig",
+          "outcomes": {},
+          "stepParameters": {
+            "serviceRef": "testService",
+            "childNodeId": null
+          },
+          "startTs": 1648618556531,
+          "endTs": null,
+          "stepType": "SERVICE_CONFIG",
+          "status": "Running",
+          "failureInfo": null,
+          "skipInfo": null,
+          "nodeRunInfo": null,
+          "executableResponses": [
+            {
+              "child": {
+                "childNodeId": "service-pOUA8UHuTXy1eJr4shkmsQ",
+                "logKeys": [
+                  "accountId:px7xd_BFRCi-pfWPYXVjvw/orgId:default/projectId:project1/pipelineId:testPipeline_Cypressss/runSequence:5/level0:pipeline/level1:stages/level2:testStage_Cypress/level3:spec/level4:serviceConfig"
+                ],
+                "units": []
+              }
+            }
+          ],
+          "unitProgresses": [],
+          "progressData": null,
+          "delegateInfoList": [],
+          "interruptHistories": [],
+          "stepDetails": null
+        },
+        "Tk4irJKzQweCMMfF0XW2oQ": {
+          "uuid": "Tk4irJKzQweCMMfF0XW2oQ",
+          "setupId": "CUR9XUdYRy-EfNxNU4ntIgstages",
+          "name": "stages",
+          "identifier": "stages",
+          "baseFqn": "pipeline.stages",
+          "outcomes": {},
+          "stepParameters": {
+            "childNodeId": "nodeId",
+            "logMessage": "Stages"
+          },
+          "startTs": 1648618556323,
+          "endTs": null,
+          "stepType": "STAGES_STEP",
+          "status": "Running",
+          "failureInfo": null,
+          "skipInfo": null,
+          "nodeRunInfo": null,
+          "executableResponses": [
+            {
+              "child": {
+                "childNodeId": "nodeId",
+                "logKeys": [],
+                "units": []
+              }
+            }
+          ],
+          "unitProgresses": [],
+          "progressData": null,
+          "delegateInfoList": [],
+          "interruptHistories": [],
+          "stepDetails": null
+        },
+        "rwppPwg_QzGpgOMLfQOSGw": {
+          "uuid": "rwppPwg_QzGpgOMLfQOSGw",
+          "setupId": "nodeId",
+          "name": "testStage_Cypress",
+          "identifier": "testStage_Cypress",
+          "baseFqn": "pipeline.stages.testStage_Cypress",
+          "outcomes": {},
+          "stepParameters": {
+            "uuid": "nodeId",
+            "identifier": "testStage_Cypress",
+            "name": "testStage_Cypress",
+            "description": "",
+            "skipCondition": null,
+            "when": {
+              "pipelineStatus": "SUCCESS",
+              "condition": null
+            },
+            "failureStrategies": [
+              {
+                "onFailure": {
+                  "errors": ["ALL_ERRORS"],
+                  "action": {
+                    "type": "STAGE_ROLLBACK"
+                  }
+                }
+              }
+            ],
+            "variables": {
+              "__recast": "java.util.LinkedHashMap"
+            },
+            "tags": {},
+            "type": "Deployment",
+            "specConfig": {
+              "childNodeID": null
+            }
+          },
+          "startTs": 1648618556380,
+          "endTs": null,
+          "stepType": "DEPLOYMENT_STAGE_STEP",
+          "status": "Running",
+          "failureInfo": null,
+          "skipInfo": null,
+          "nodeRunInfo": {
+            "whenCondition": "<+OnPipelineSuccess>",
+            "evaluatedCondition": true,
+            "expressions": [
+              {
+                "expression": "OnPipelineSuccess",
+                "expressionValue": "true",
+                "count": 1
+              }
+            ]
+          },
+          "executableResponses": [
+            {
+              "child": {
+                "childNodeId": "egJWaxkQQFGFUkkIImmHVA",
+                "logKeys": [],
+                "units": []
+              }
+            }
+          ],
+          "unitProgresses": [],
+          "progressData": null,
+          "delegateInfoList": [],
+          "interruptHistories": [],
+          "stepDetails": null
+        }
+      },
+      "nodeAdjacencyListMap": {
+        "w9j7RvIpSPSQTtLlJac6zg": {
+          "children": ["Tk4irJKzQweCMMfF0XW2oQ"],
+          "nextIds": []
+        },
+        "EVGNxoMZQmOsT1lYJa1kSA": {
+          "children": [],
+          "nextIds": []
+        },
+        "Tk4irJKzQweCMMfF0XW2oQ": {
+          "children": ["rwppPwg_QzGpgOMLfQOSGw"],
+          "nextIds": []
+        },
+        "rwppPwg_QzGpgOMLfQOSGw": {
+          "children": ["EVGNxoMZQmOsT1lYJa1kSA"],
+          "nextIds": []
+        }
+      },
+      "representationStrategy": "camelCase"
+    }
+  },
+  "metaData": null,
+  "correlationId": "3e7008f5-c26a-4843-b20a-b9fabfcedd98"
+}

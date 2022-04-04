@@ -14,6 +14,8 @@ import { useCreateDelegateGroup } from 'services/portal'
 
 import { useToaster } from '@common/exports'
 import type { ProjectPathProps } from '@common/interfaces/RouteInterfaces'
+import { useTelemetry } from '@common/hooks/useTelemetry'
+import { Category, DelegateActions } from '@common/constants/TrackingConstants'
 import StepProcessing from '../../components/StepProcessing/StepProcessing'
 import type { DockerDelegateWizardData } from '../CreateDockerDelegate'
 
@@ -29,6 +31,7 @@ const Step3Verify: React.FC<StepProps<DockerDelegateWizardData> & StepSuccessVer
   const { previousStep, prevStepData } = props
   const { getString } = useStrings()
   const { showError } = useToaster()
+  const { trackEvent } = useTelemetry()
 
   const onClickBack = (): void => {
     if (previousStep) {
@@ -43,6 +46,10 @@ const Step3Verify: React.FC<StepProps<DockerDelegateWizardData> & StepSuccessVer
   })
 
   const onClickDone = async () => {
+    trackEvent(DelegateActions.SaveCreateDelegate, {
+      category: Category.DELEGATE,
+      ...prevStepData
+    })
     if (!isVerifiedSuccessfully) {
       const dockerData = {
         delegateType: 'DOCKER',

@@ -1,12 +1,13 @@
-import { cloneDeep, omit } from 'lodash-es'
+import { cloneDeep, omit, pick } from 'lodash-es'
 import {
-  getUpdatedFlags,
+  getAddFlagsInstruction,
   getFlagSettingsInstructions,
   getRemovedFlagIdentifiers,
   getRemoveFlagsInstruction,
+  getUpdatedFlags,
   getUpdateFlagsInstruction
 } from '../flagSettingsInstructions'
-import { mockFlagSettingsFormDataValues, mockTargetGroupFlagsMap } from './mocks'
+import { mockFlagSettingsFormDataValues, mockSegmentFlags, mockTargetGroupFlagsMap } from '../../../__tests__/mocks'
 
 describe('flagSettingsInstructions', () => {
   describe('getFlagSettingsInstructions', () => {
@@ -149,6 +150,50 @@ describe('flagSettingsInstructions', () => {
               identifier: flagsToUpdate[1].identifier,
               variation: flagsToUpdate[1].variation,
               ruleID: mockTargetGroupFlagsMap[flagsToUpdate[1].identifier].ruleId
+            }
+          ]
+        }
+      })
+    })
+  })
+
+  describe('getAddFlagsInstruction', () => {
+    test('it should return the appropriate instruction to add a single flag', async () => {
+      const flagToAdd = pick(mockSegmentFlags[0], 'identifier', 'variation')
+      flagToAdd.variation = 'v2'
+
+      expect(getAddFlagsInstruction([flagToAdd])).toEqual({
+        kind: 'addRule',
+        parameters: {
+          features: [
+            {
+              identifier: flagToAdd.identifier,
+              variation: flagToAdd.variation
+            }
+          ]
+        }
+      })
+    })
+
+    test('it should return the appropriate instruction to add multiple flags', async () => {
+      const flagsToAdd = [
+        pick(mockSegmentFlags[0], 'identifier', 'variation'),
+        pick(mockSegmentFlags[1], 'identifier', 'variation')
+      ]
+      flagsToAdd[0].variation = 'v2'
+      flagsToAdd[1].variation = 'v1'
+
+      expect(getAddFlagsInstruction(flagsToAdd)).toEqual({
+        kind: 'addRule',
+        parameters: {
+          features: [
+            {
+              identifier: flagsToAdd[0].identifier,
+              variation: flagsToAdd[0].variation
+            },
+            {
+              identifier: flagsToAdd[1].identifier,
+              variation: flagsToAdd[1].variation
             }
           ]
         }

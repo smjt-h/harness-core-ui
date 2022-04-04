@@ -6,8 +6,9 @@
  */
 
 import React from 'react'
-import { Text, Color, Link } from '@wings-software/uicore'
+import { Text, Link } from '@wings-software/uicore'
 import classNames from 'classnames'
+import { Color } from '@harness/design-system'
 import { Connectors } from '@connectors/constants'
 import type { ConnectorInfoDTO } from 'services/cd-ng'
 import { String, StringKeys } from 'framework/strings'
@@ -144,6 +145,8 @@ export const getConnectorDisplaySummary = (connector: ConnectorInfoDTO): JSX.Ele
       return getConnectorDisplaySummaryLabel('UrlLabel', linkRenderer(connector?.spec?.splunkUrl))
     case Connectors.AWS_SECRET_MANAGER:
       return getAWSSecretManagerSummary(connector)
+    case Connectors.DYNATRACE:
+      return getConnectorDisplaySummaryLabel('UrlLabel', linkRenderer(connector?.spec?.url))
     default:
       return ''
   }

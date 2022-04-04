@@ -24,7 +24,7 @@
 }
 .tabSubHeading {
   font-size: var(--font-size-normal);
-  color: var(--grey-700);
+  color: var(--grey-800);
   margin-bottom: var(--spacing-5);
   font-weight: 600;
 }
@@ -169,6 +169,10 @@
   margin-bottom: var(--spacing-3) !important;
 }
 
+.bottomMargin5 {
+  margin-bottom: var(--spacing-5) !important;
+}
+
 .bottomMargin7 {
   margin-bottom: var(--spacing-7) !important;
 }
@@ -183,5 +187,8 @@
 .formGroup {
   &.md {
     width: 55%;
+  }
+  &.sm {
+    width: 45%;
   }
 }

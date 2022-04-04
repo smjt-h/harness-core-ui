@@ -10,6 +10,7 @@ import { isEmpty as _isEmpty, defaultTo as _defaultTo } from 'lodash-es'
 import { Switch, Tab } from '@blueprintjs/core'
 import copy from 'copy-to-clipboard'
 import { Layout, Container, Text, Icon, Link, Tabs, Heading } from '@wings-software/uicore'
+import { Color } from '@harness/design-system'
 import Highcharts from 'highcharts'
 import HighchartsReact from 'highcharts-react-official'
 import { useParams } from 'react-router-dom'
@@ -29,8 +30,6 @@ import { Utils } from '@ce/common/Utils'
 import type { AccountPathProps } from '@common/interfaces/RouteInterfaces'
 import COGatewayLogs from './COGatewayLogs'
 import COGatewayUsageTime from './COGatewayUsageTime'
-import odIcon from './images/ondemandIcon.svg'
-import spotIcon from './images/spotIcon.svg'
 import {
   getInstancesLink,
   getRelativeTime,
@@ -43,6 +42,7 @@ import useToggleRuleState from './useToggleRuleState'
 // import SpotvsODChart from './SpotvsODChart'
 import DownloadCLI from '../DownloadCLI/DownloadCLI'
 import FixedScheduleAccordion from './components/FixedScheduleAccordion/FixedScheduleAccordion'
+import ComputeType from './components/ComputeType'
 import css from './COGatewayList.module.scss'
 
 interface COGatewayAnalyticsProps {
@@ -149,30 +149,11 @@ const COGatewayAnalytics: React.FC<COGatewayAnalyticsProps> = props => {
   const { accountId } = useParams<AccountPathProps>()
   const { getString } = useStrings()
   const { showError } = useToaster()
-  const [categories, setCategories] = useState<string[]>([])
-  const [savingsSeries, setSavingsSeries] = useState<number[]>([])
-  const [spendSeries, setSpendSeries] = useState<number[]>([])
-  const [idleHourSeries, setIdleHourSeries] = useState<number[]>([])
-  const [actualHoursSeries, setActualHoursSeries] = useState<number[]>([])
-  const isK8sRule = Utils.isK8sRule(props.service?.data as Service)
 
-  const { data, loading } = useSavingsOfService({
-    account_id: accountId,
-    rule_id: props.service?.data.id as number,
-    queryParams: {
-      accountIdentifier: accountId
-    }
-  })
-  const { data: graphData, loading: graphLoading } = useSavingsOfService({
-    account_id: accountId,
-    rule_id: props.service?.data.id as number,
-    queryParams: {
-      accountIdentifier: accountId,
-      from: moment(startOfDay(today().subtract(7, 'days'))).format(DATE_FORMAT),
-      to: moment(endOfDay(today())).format(DATE_FORMAT),
-      group_by: 'date' // eslint-disable-line
-    }
-  })
+  const isK8sRule = Utils.isK8sRule(props.service?.data as Service)
+  const isEcsRule = !_isEmpty(props.service?.data.routing?.container_svc)
+  const isRdsRule = !_isEmpty(props.service?.data.routing?.database)
+
   const { data: healthData, loading: healthDataLoading } = useHealthOfService({
     account_id: accountId,
     rule_id: props.service?.data.id as number,
@@ -189,7 +170,7 @@ const COGatewayAnalytics: React.FC<COGatewayAnalyticsProps> = props => {
     account_id: accountId,
     rule_id: props.service?.data.id as number, // eslint-disable-line
     debounce: 300,
-    lazy: isK8sRule
+    lazy: isK8sRule || isEcsRule
   })
 
   const { triggerToggle } = useToggleRuleState({
@@ -209,31 +190,6 @@ const COGatewayAnalytics: React.FC<COGatewayAnalyticsProps> = props => {
   if (resourceError) {
     showError(`could not load resources for rule`, undefined, 'ce.load.resource.error')
   }
-  useEffect(() => {
-    if (graphLoading) {
-      return
-    }
-    const newCategroies: string[] = []
-    const newSavings: number[] = []
-    const newSpends: number[] = []
-    const newIdleHours: number[] = []
-    const newActualHours: number[] = []
-    const savingsEntries: ServiceSavings[] = _defaultTo(graphData?.response as ServiceSavings[], [])
-    savingsEntries.forEach(element => {
-      newCategroies.push(getDay(element.usage_date as string, DATE_FORMAT))
-      newSavings.push(roundToPrecision(element.actual_savings as number))
-      newSpends.push(
-        roundToPrecision(element.potential_cost as number) - roundToPrecision(element.actual_savings as number)
-      )
-      newActualHours.push(roundToPrecision(element.actual_hours as number))
-      newIdleHours.push(roundToPrecision(element.idle_hours as number))
-    })
-    setCategories(newCategroies)
-    setSavingsSeries(newSavings)
-    setSpendSeries(newSpends)
-    setIdleHourSeries(newIdleHours)
-    setActualHoursSeries(newActualHours)
-  }, [graphData])
 
   const renderCustomDomainLink = (link: string, index = 0) => {
     const hrefLink = `http://${link}`
@@ -293,37 +249,59 @@ const COGatewayAnalytics: React.FC<COGatewayAnalyticsProps> = props => {
           </Heading>
           <Layout.Vertical spacing="medium" padding={{ top: 'medium', bottom: 'medium' }}>
             <Container className={css.serviceDetailsItemContainer}>
-              <Text className={css.detailItemHeader}>Idle time</Text>
+              <Text className={css.detailItemHeader}>{getString('ce.co.ruleDetailsHeader.idleTime')}</Text>
               <Text className={css.detailItemValue}>{`${props.service?.data.idle_time_mins} min`}</Text>
             </Container>
             {!isK8sRule && (
               <Container className={css.serviceDetailsItemContainer}>
-                <Text className={css.detailItemHeader}>Resources managed</Text>
+                <Text className={css.detailItemHeader}>{isEcsRule ? 'Tasks running' : 'Resources managed'}</Text>
                 <Layout.Horizontal spacing="medium" className={css.detailItemValue}>
-                  {!resourcesLoading && resources && props.service?.data ? (
-                    <Link
-                      href={getInstancesLink(
-                        props.service?.data as Service,
-                        resources as AllResourcesOfAccountResponse
-                      )}
-                      target="_blank"
-                      style={{ textOverflow: 'ellipsis', whiteSpace: 'nowrap' }}
-                    >
-                      {resources?.response?.length} Instances
-                    </Link>
+                  {isEcsRule ? (
+                    <>
+                      <Link
+                        href={getInstancesLink(props.service?.data as Service)}
+                        target="_blank"
+                        style={{ textOverflow: 'ellipsis', whiteSpace: 'nowrap' }}
+                      >
+                        {`${_defaultTo(props.service?.data?.routing?.container_svc?.task_count, 0)} tasks`}
+                      </Link>
+                      {getStateTag(props.service?.data?.routing?.container_svc?.task_count ? 'active' : 'down')}
+                    </>
                   ) : (
-                    <Icon name="spinner" size={12} color="blue500" />
+                    <>
+                      {!resourcesLoading && resources && props.service?.data ? (
+                        <Link
+                          href={getInstancesLink(
+                            props.service?.data as Service,
+                            resources as AllResourcesOfAccountResponse
+                          )}
+                          target="_blank"
+                        >
+                          <Text>{`${resources?.response?.length} ${
+                            isRdsRule
+                              ? Utils.getConditionalResult(
+                                  (resources?.response?.length as number) > 1,
+                                  getString('ce.co.ruleDrawer.dbInstancesPlural'),
+                                  getString('ce.co.ruleDrawer.dbInstances')
+                                )
+                              : getString('common.instanceLabel')
+                          }`}</Text>
+                        </Link>
+                      ) : (
+                        <Icon name="spinner" size={12} color="blue500" />
+                      )}
+                      {healthDataLoading ? (
+                        <Icon name="spinner" size={12} color="blue500" />
+                      ) : healthData?.response?.['state'] != null ? (
+                        getStateTag(healthData?.response?.['state'])
+                      ) : null}
+                    </>
                   )}
-                  {healthDataLoading ? (
-                    <Icon name="spinner" size={12} color="blue500" />
-                  ) : healthData?.response?.['state'] != null ? (
-                    getStateTag(healthData?.response?.['state'])
-                  ) : null}
                 </Layout.Horizontal>
               </Container>
             )}
             <Container className={css.serviceDetailsItemContainer}>
-              <Text className={css.detailItemHeader}>Host name</Text>
+              <Text className={css.detailItemHeader}>{getString('ce.co.ruleDetailsHeader.hostName')}</Text>
               <Layout.Horizontal spacing="small" className={css.detailItemValue}>
                 {isK8sRule ? (
                   <Text style={{ maxWidth: 350, textAlign: 'left' }}>{props.service?.data.host_name}</Text>
@@ -341,7 +319,7 @@ const COGatewayAnalytics: React.FC<COGatewayAnalyticsProps> = props => {
             </Container>
             {(!_isEmpty(props.service?.data.custom_domains) || props.service?.data?.routing?.k8s?.CustomDomain) && (
               <Container className={css.serviceDetailsItemContainer}>
-                <Text className={css.detailItemHeader}>Custom Domain</Text>
+                <Text className={css.detailItemHeader}>{getString('ce.co.ruleDetailsHeader.customDomain')}</Text>
                 <div className={css.detailItemValue}>
                   {props.service?.data?.routing?.k8s?.CustomDomain
                     ? renderCustomDomainLink(props.service?.data?.routing?.k8s?.CustomDomain)
@@ -350,15 +328,8 @@ const COGatewayAnalytics: React.FC<COGatewayAnalyticsProps> = props => {
               </Container>
             )}
             <Container className={css.serviceDetailsItemContainer}>
-              <Text className={css.detailItemHeader}>Compute type</Text>
-              <Layout.Horizontal spacing="xsmall" className={css.detailItemValue}>
-                {isK8sRule ? (
-                  <Icon name="app-kubernetes" size={18} />
-                ) : (
-                  <img src={props.service?.data.fulfilment === 'spot' ? spotIcon : odIcon} alt="" aria-hidden />
-                )}
-                <Text>{props.service?.data.fulfilment}</Text>
-              </Layout.Horizontal>
+              <Text className={css.detailItemHeader}>{getString('ce.co.ruleDetailsHeader.computeType')}</Text>
+              <ComputeType data={props.service?.data as Service} className={css.detailItemValue} />
             </Container>
             {/* <Layout.Vertical spacing="large" padding="medium">
             <Text>Connector</Text>
@@ -382,12 +353,12 @@ const COGatewayAnalytics: React.FC<COGatewayAnalyticsProps> = props => {
         <Container className={css.analyticsHeader}>
           <Layout.Vertical spacing="medium">
             <Heading level={2} font={{ weight: 'bold' }}>
-              Advanced configuration
+              {getString('ce.co.autoStoppingRule.configuration.step4.advancedConfiguration')}
             </Heading>
             <FixedScheduleAccordion service={props.service?.data} />
           </Layout.Vertical>
         </Container>
-        {props.service?.data.fulfilment !== 'kubernetes' && (
+        {props.service?.data.fulfilment !== 'kubernetes' && !isEcsRule && (
           <Container className={css.analyticsHeader}>
             <Layout.Vertical spacing="medium">
               <Heading level={2} font={{ weight: 'bold' }} className={css.analyticsSubHeader}>
@@ -397,69 +368,161 @@ const COGatewayAnalytics: React.FC<COGatewayAnalyticsProps> = props => {
             </Layout.Vertical>
           </Container>
         )}
-        <Container padding="medium" style={{ backgroundColor: '#f7fbfe' }}>
-          <Layout.Horizontal spacing="large">
-            {loading ? (
-              <Icon name="spinner" size={12} color="blue500" />
-            ) : (
-              <>
-                {/* <Layout.Horizontal spacing="medium">
-                  {props.service.fulfilment == 'spot' ? <SpotvsODChart spotPercent={76}></SpotvsODChart> : null} */}
-                <Layout.Horizontal spacing="medium">
-                  <div style={{ alignSelf: 'center' }}>
-                    <HighchartsReact
-                      highchart={Highcharts}
-                      options={
-                        data?.response != null
-                          ? getRiskGaugeChartOptions((data?.response as ServiceSavings).savings_percentage as number)
-                          : getRiskGaugeChartOptions(0)
-                      }
-                    />
-                  </div>
-                  <Layout.Vertical spacing="xsmall" padding="large">
-                    <Heading level={2}>
-                      $
-                      {data?.response != null
-                        ? Math.round(((data?.response as ServiceSavings).actual_savings as number) * 100) / 100
-                        : 0}
-                    </Heading>
-                    <Text>Cumulative Savings</Text>
-                  </Layout.Vertical>
-                </Layout.Horizontal>
-                {/* </Layout.Horizontal> */}
-              </>
-            )}
-          </Layout.Horizontal>
-        </Container>
+        <CumulativeSavingsSection service={props.service?.data} />
         <Layout.Horizontal spacing="small" style={{ alignSelf: 'center' }}>
           <Text>Showing data for Last 7 days</Text>
         </Layout.Horizontal>
-        <Heading level={3}>SPEND VS SAVINGS</Heading>
-        {graphLoading ? (
-          <Icon name="spinner" size={24} color="blue500" style={{ alignSelf: 'center' }} />
-        ) : categories.length ? (
-          <HighchartsReact
-            highchart={Highcharts}
-            options={getBarChartOptions(
-              '',
-              categories,
-              '',
-              savingsSeries,
-              spendSeries,
-              idleHourSeries,
-              actualHoursSeries
-            )}
-          />
-        ) : (
-          <Text style={{ alignSelf: 'center', fontSize: 'var(--font-size-medium)' }}>{getString('ce.co.noData')}</Text>
-        )}
-        <Heading level={3}>LOGS AND USAGE TIME</Heading>
-        <Tabs id="logsAndUsage">
-          <Tab id="name" title={'Usage Time'} panel={<COGatewayUsageTime service={props.service?.data} />}></Tab>
-          <Tab id="logs" title={'Logs'} panel={<COGatewayLogs service={props.service?.data} />}></Tab>
-        </Tabs>
+        <SpendVsSavingsGraph service={props.service?.data} />
+        <LogsAndUsage service={props.service?.data} />
       </Layout.Vertical>
     </Container>
+  )
+}
+
+const CumulativeSavingsSection = (props: { service?: Service }) => {
+  const { accountId } = useParams<AccountPathProps>()
+  const { getString } = useStrings()
+
+  const { data, loading } = useSavingsOfService({
+    account_id: accountId,
+    rule_id: props.service?.id as number,
+    queryParams: {
+      accountIdentifier: accountId
+    }
+  })
+
+  return (
+    <Container padding="medium" style={{ backgroundColor: 'var(--blue-50)' }}>
+      <Layout.Horizontal spacing="large">
+        {loading ? (
+          <Icon name="spinner" size={12} color={Color.BLUE_500} />
+        ) : (
+          <>
+            {/* <Layout.Horizontal spacing="medium">
+                  {props.service.fulfilment == 'spot' ? <SpotvsODChart spotPercent={76}></SpotvsODChart> : null} */}
+            <Layout.Horizontal spacing="medium">
+              <div style={{ alignSelf: 'center' }}>
+                <HighchartsReact
+                  highchart={Highcharts}
+                  options={
+                    data?.response != null
+                      ? getRiskGaugeChartOptions((data?.response as ServiceSavings).savings_percentage as number)
+                      : getRiskGaugeChartOptions(0)
+                  }
+                />
+              </div>
+              <Layout.Vertical spacing="xsmall" padding="large">
+                <Heading level={2}>
+                  $
+                  {data?.response != null
+                    ? Math.round(((data?.response as ServiceSavings).actual_savings as number) * 100) / 100
+                    : 0}
+                </Heading>
+                <Text>{getString('ce.co.rulesTableHeaders.savings')}</Text>
+              </Layout.Vertical>
+            </Layout.Horizontal>
+            {/* </Layout.Horizontal> */}
+          </>
+        )}
+      </Layout.Horizontal>
+    </Container>
+  )
+}
+
+const SpendVsSavingsGraph = (props: { service?: Service }) => {
+  const { accountId } = useParams<AccountPathProps>()
+  const { getString } = useStrings()
+
+  const [categories, setCategories] = useState<string[]>([])
+  const [savingsSeries, setSavingsSeries] = useState<number[]>([])
+  const [spendSeries, setSpendSeries] = useState<number[]>([])
+  const [idleHourSeries, setIdleHourSeries] = useState<number[]>([])
+  const [actualHoursSeries, setActualHoursSeries] = useState<number[]>([])
+
+  const { data: graphData, loading: graphLoading } = useSavingsOfService({
+    account_id: accountId,
+    rule_id: props.service?.id as number,
+    queryParams: {
+      accountIdentifier: accountId,
+      from: moment(startOfDay(today().subtract(7, 'days'))).format(DATE_FORMAT),
+      to: moment(endOfDay(today())).format(DATE_FORMAT),
+      group_by: 'date'
+    }
+  })
+
+  useEffect(() => {
+    if (graphLoading) {
+      return
+    }
+    const newCategroies: string[] = []
+    const newSavings: number[] = []
+    const newSpends: number[] = []
+    const newIdleHours: number[] = []
+    const newActualHours: number[] = []
+    const savingsEntries: ServiceSavings[] = _defaultTo(graphData?.response as ServiceSavings[], [])
+    savingsEntries.forEach(element => {
+      newCategroies.push(getDay(element.usage_date as string, DATE_FORMAT))
+      newSavings.push(roundToPrecision(element.actual_savings as number))
+      newSpends.push(
+        roundToPrecision(element.potential_cost as number) - roundToPrecision(element.actual_savings as number)
+      )
+      newActualHours.push(roundToPrecision(element.actual_hours as number))
+      newIdleHours.push(roundToPrecision(element.idle_hours as number))
+    })
+    setCategories(newCategroies)
+    setSavingsSeries(newSavings)
+    setSpendSeries(newSpends)
+    setIdleHourSeries(newIdleHours)
+    setActualHoursSeries(newActualHours)
+  }, [graphData])
+
+  return (
+    <>
+      <Heading level={3}>{getString('ce.co.ruleDrawer.spendVsSavings').toUpperCase()}</Heading>
+      {graphLoading ? (
+        <Icon name="spinner" size={24} color="blue500" style={{ alignSelf: 'center' }} />
+      ) : categories.length ? (
+        <HighchartsReact
+          highchart={Highcharts}
+          options={getBarChartOptions(
+            '',
+            categories,
+            '',
+            savingsSeries,
+            spendSeries,
+            idleHourSeries,
+            actualHoursSeries
+          )}
+        />
+      ) : (
+        <Text style={{ alignSelf: 'center', fontSize: 'var(--font-size-medium)' }}>{getString('ce.co.noData')}</Text>
+      )}
+    </>
+  )
+}
+
+const LogsAndUsage = (props: { service?: Service }) => {
+  const { getString } = useStrings()
+  return (
+    <>
+      <Heading level={3}>
+        {`${getString('ce.co.ruleDrawer.logs')} ${getString('and')} ${getString(
+          'ce.co.ruleDrawer.usageTime'
+        )}`.toUpperCase()}
+      </Heading>
+      <Tabs id="logsAndUsage">
+        <Tab
+          id="name"
+          title={getString('ce.co.ruleDrawer.usageTime')}
+          panel={<COGatewayUsageTime service={props.service} />}
+        ></Tab>
+        <Tab
+          id="logs"
+          title={getString('ce.co.ruleDrawer.logs')}
+          panel={<COGatewayLogs service={props.service} />}
+        ></Tab>
+      </Tabs>
+    </>
   )
 }
 

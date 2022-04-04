@@ -115,12 +115,14 @@ import ExecutionPolicyEvaluationsView from '@pipeline/pages/execution/ExecutionP
 import GitSyncConfigTab from '@gitsync/pages/config/GitSyncConfigTab'
 import ExecutionSecurityView from '@pipeline/pages/execution/ExecutionSecurityView/ExecutionSecurityView'
 import FullPageLogView from '@pipeline/pages/full-page-log-view/FullPageLogView'
+import { PAGE_NAME } from '@common/pages/pageContext/PageName'
 import CIHomePage from './pages/home/CIHomePage'
 import CIDashboardPage from './pages/dashboard/CIDashboardPage'
 import CIPipelineStudio from './pages/pipeline-studio/CIPipelineStudio'
 import CISideNav from './components/CISideNav/CISideNav'
 import BuildCommits from './pages/build/sections/commits/BuildCommits'
 import CITrialHomePage from './pages/home/CITrialHomePage'
+// import GetStartedWithCI from './pages/get-started-with-ci/GetStartedWithCI'
 import { CIExecutionCardSummary } from './components/CIExecutionCardSummary/CIExecutionCardSummary'
 import { CIExecutionSummary } from './components/CIExecutionSummary/CIExecutionSummary'
 import { CIStageDetails } from './components/CIStageDetails/CIStageDetails'
@@ -368,6 +370,7 @@ export default (
     <RouteWithLayout
       layout={MinimalLayout}
       path={routes.toModuleTrialHome({ ...accountPathProps, module: 'ci' })}
+      pageName={PAGE_NAME.CITrialHomePage}
       exact
     >
       <CITrialHomePage />
@@ -376,6 +379,7 @@ export default (
       licenseRedirectData={licenseRedirectData}
       sidebarProps={CISideNavProps}
       path={[routes.toCIHome({ ...accountPathProps })]}
+      pageName={PAGE_NAME.CIHomePage}
       exact
     >
       <CIHomePage />
@@ -425,6 +429,7 @@ export default (
       licenseRedirectData={licenseRedirectData}
       sidebarProps={CISideNavProps}
       path={routes.toConnectors({ ...accountPathProps, ...projectPathProps, ...pipelineModuleParams })}
+      pageName={PAGE_NAME.ConnectorsPage}
     >
       <ConnectorsPage />
     </RouteWithLayout>
@@ -433,6 +438,7 @@ export default (
       licenseRedirectData={licenseRedirectData}
       sidebarProps={CISideNavProps}
       path={routes.toCreateConnectorFromYaml({ ...accountPathProps, ...projectPathProps, ...pipelineModuleParams })}
+      pageName={PAGE_NAME.CreateConnectorFromYamlPage}
     >
       <CreateConnectorFromYamlPage />
     </RouteWithLayout>
@@ -449,6 +455,7 @@ export default (
       licenseRedirectData={licenseRedirectData}
       sidebarProps={CISideNavProps}
       path={routes.toGitSyncReposAdmin({ ...accountPathProps, ...pipelineModuleParams, ...projectPathProps })}
+      pageName={PAGE_NAME.GitSyncRepoTab}
     >
       <GitSyncPage>
         <GitSyncRepoTab />
@@ -459,6 +466,7 @@ export default (
       licenseRedirectData={licenseRedirectData}
       sidebarProps={CISideNavProps}
       path={routes.toGitSyncEntitiesAdmin({ ...accountPathProps, ...pipelineModuleParams, ...projectPathProps })}
+      pageName={PAGE_NAME.GitSyncEntityTab}
     >
       <GitSyncPage>
         <GitSyncEntityTab />
@@ -469,6 +477,7 @@ export default (
       licenseRedirectData={licenseRedirectData}
       sidebarProps={CISideNavProps}
       path={routes.toGitSyncErrors({ ...accountPathProps, ...pipelineModuleParams, ...projectPathProps })}
+      pageName={PAGE_NAME.GitSyncErrors}
     >
       <GitSyncPage>
         <GitSyncErrors />
@@ -479,6 +488,7 @@ export default (
       licenseRedirectData={licenseRedirectData}
       sidebarProps={CISideNavProps}
       path={routes.toGitSyncConfig({ ...accountPathProps, ...pipelineModuleParams, ...projectPathProps })}
+      pageName={PAGE_NAME.GitSyncConfigTab}
     >
       <GitSyncPage>
         <GitSyncConfigTab />
@@ -489,6 +499,7 @@ export default (
       licenseRedirectData={licenseRedirectData}
       sidebarProps={CISideNavProps}
       path={routes.toSecrets({ ...accountPathProps, ...projectPathProps, ...pipelineModuleParams })}
+      pageName={PAGE_NAME.SecretsPage}
     >
       <SecretsPage />
     </RouteWithLayout>
@@ -502,6 +513,7 @@ export default (
         ...orgPathProps,
         ...pipelineModuleParams
       })}
+      pageName={PAGE_NAME.CreateSecretFromYamlPage}
     >
       <CreateSecretFromYamlPage />
     </RouteWithLayout>
@@ -515,6 +527,7 @@ export default (
         ...connectorPathProps,
         ...pipelineModuleParams
       })}
+      pageName={PAGE_NAME.ConnectorDetailsPage}
     >
       <ConnectorDetailsPage />
     </RouteWithLayout>
@@ -541,6 +554,7 @@ export default (
         ...secretPathProps,
         ...pipelineModuleParams
       })}
+      pageName={PAGE_NAME.SecretDetails}
     >
       <SecretDetailsHomePage>
         <SecretDetails />
@@ -556,6 +570,7 @@ export default (
         ...secretPathProps,
         ...pipelineModuleParams
       })}
+      pageName={PAGE_NAME.SecretReferences}
     >
       <SecretDetailsHomePage>
         <SecretReferences />
@@ -582,6 +597,7 @@ export default (
         ...projectPathProps,
         ...pipelineModuleParams
       })}
+      pageName={PAGE_NAME.DelegateListing}
     >
       <DelegatesPage>
         <DelegateListing />
@@ -596,6 +612,7 @@ export default (
         ...projectPathProps,
         ...pipelineModuleParams
       })}
+      pageName={PAGE_NAME.DelegateConfigurations}
     >
       <DelegatesPage>
         <DelegateConfigurations />
@@ -611,6 +628,7 @@ export default (
         ...delegatePathProps,
         ...pipelineModuleParams
       })}
+      pageName={PAGE_NAME.DelegateDetails}
     >
       <DelegateDetails />
     </RouteWithLayout>
@@ -632,6 +650,7 @@ export default (
           ...pipelineModuleParams
         })
       ]}
+      pageName={PAGE_NAME.DelegateProfileDetails}
     >
       <DelegateProfileDetails />
     </RouteWithLayout>
@@ -646,6 +665,7 @@ export default (
           ...pipelineModuleParams
         })
       ]}
+      pageName={PAGE_NAME.DelegateTokens}
     >
       <DelegatesPage>
         <DelegateTokens />
@@ -656,6 +676,7 @@ export default (
       licenseRedirectData={licenseRedirectData}
       sidebarProps={CISideNavProps}
       path={routes.toPipelineStudio({ ...accountPathProps, ...pipelinePathProps, ...pipelineModuleParams })}
+      pageName={PAGE_NAME.CIPipelineStudio}
     >
       <PipelineDetails>
         <CIPipelineStudio />
@@ -673,6 +694,7 @@ export default (
         stageIdentifier: ':stageIdentifier',
         stepIndentifier: ':stepIndentifier'
       })}
+      pageName={PAGE_NAME.FullPageLogView}
     >
       <FullPageLogView />
     </RouteWithLayout>
@@ -681,6 +703,7 @@ export default (
       licenseRedirectData={licenseRedirectData}
       sidebarProps={CISideNavProps}
       path={routes.toPipelines({ ...accountPathProps, ...projectPathProps, ...pipelineModuleParams })}
+      pageName={PAGE_NAME.PipelinesPage}
     >
       <PipelinesPage />
     </RouteWithLayout>
@@ -689,6 +712,7 @@ export default (
       licenseRedirectData={licenseRedirectData}
       sidebarProps={CISideNavProps}
       path={routes.toInputSetList({ ...accountPathProps, ...pipelinePathProps, ...pipelineModuleParams })}
+      pageName={PAGE_NAME.InputSetList}
     >
       <PipelineDetails>
         <InputSetList />
@@ -699,14 +723,25 @@ export default (
       licenseRedirectData={licenseRedirectData}
       sidebarProps={CISideNavProps}
       path={routes.toDeployments({ ...accountPathProps, ...projectPathProps, ...pipelineModuleParams })}
+      pageName={PAGE_NAME.DeploymentsList}
     >
       <DeploymentsList />
     </RouteWithLayout>
+    {/* This is still WIP */}
+    {/* <RouteWithLayout
+      exact
+      licenseRedirectData={licenseRedirectData}
+      sidebarProps={CISideNavProps}
+      path={routes.toCIGetStarted({ ...accountPathProps, ...projectPathProps, ...pipelineModuleParams })}
+    >
+      <GetStartedWithCI />
+    </RouteWithLayout> */}
     <RouteWithLayout
       exact
       licenseRedirectData={licenseRedirectData}
       sidebarProps={CISideNavProps}
       path={routes.toInputSetForm({ ...accountPathProps, ...inputSetFormPathProps, ...pipelineModuleParams })}
+      pageName={PAGE_NAME.EnhancedInputSetForm}
     >
       <EnhancedInputSetForm />
     </RouteWithLayout>
@@ -715,6 +750,7 @@ export default (
       licenseRedirectData={licenseRedirectData}
       sidebarProps={CISideNavProps}
       path={routes.toTriggersPage({ ...accountPathProps, ...pipelinePathProps, ...pipelineModuleParams })}
+      pageName={PAGE_NAME.TriggersPage}
     >
       <PipelineDetails>
         <TriggersPage />
@@ -725,6 +761,7 @@ export default (
       licenseRedirectData={licenseRedirectData}
       sidebarProps={CISideNavProps}
       path={routes.toTriggersDetailPage({ ...accountPathProps, ...triggerPathProps, ...pipelineModuleParams })}
+      pageName={PAGE_NAME.TriggersDetailPage}
     >
       <TriggersDetailPage />
     </RouteWithLayout>
@@ -732,6 +769,7 @@ export default (
       licenseRedirectData={licenseRedirectData}
       sidebarProps={CISideNavProps}
       path={routes.toTriggersWizardPage({ ...accountPathProps, ...triggerPathProps, ...pipelineModuleParams })}
+      pageName={PAGE_NAME.TriggersWizardPage}
     >
       <TriggerDetails wizard={true}>
         <TriggersWizardPage />
@@ -750,6 +788,7 @@ export default (
       licenseRedirectData={licenseRedirectData}
       sidebarProps={CISideNavProps}
       path={routes.toExecutionPipelineView({ ...accountPathProps, ...executionPathProps, ...pipelineModuleParams })}
+      pageName={PAGE_NAME.ExecutionPipelineView}
     >
       <ExecutionLandingPage>
         <ExecutionPipelineView />
@@ -765,6 +804,7 @@ export default (
         ...executionPathProps,
         ...pipelineModuleParams
       })}
+      pageName={PAGE_NAME.ExecutionPolicyEvaluationsView}
     >
       <ExecutionLandingPage>
         <ExecutionPolicyEvaluationsView />
@@ -780,6 +820,7 @@ export default (
         ...executionPathProps,
         ...pipelineModuleParams
       })}
+      pageName={PAGE_NAME.ExecutionSecurityView}
     >
       <ExecutionLandingPage>
         <ExecutionSecurityView />
@@ -790,6 +831,7 @@ export default (
       licenseRedirectData={licenseRedirectData}
       sidebarProps={CISideNavProps}
       path={routes.toExecutionInputsView({ ...accountPathProps, ...executionPathProps, ...pipelineModuleParams })}
+      pageName={PAGE_NAME.ExecutionInputsView}
     >
       <ExecutionLandingPage>
         <ExecutionInputsView />
@@ -804,6 +846,7 @@ export default (
         ...executionPathProps,
         ...pipelineModuleParams
       })}
+      pageName={PAGE_NAME.ExecutionArtifactsView}
     >
       <ExecutionLandingPage>
         <ExecutionArtifactsView />
@@ -818,6 +861,7 @@ export default (
         ...executionPathProps,
         ...pipelineModuleParams
       })}
+      pageName={PAGE_NAME.BuildTests}
     >
       <ExecutionLandingPage>
         <BuildTests />
@@ -832,6 +876,7 @@ export default (
         ...executionPathProps,
         ...pipelineModuleParams
       })}
+      pageName={PAGE_NAME.BuildCommits}
     >
       <ExecutionLandingPage>
         <BuildCommits />
@@ -846,6 +891,7 @@ export default (
         ...pipelinePathProps,
         ...pipelineModuleParams
       })}
+      pageName={PAGE_NAME.CIPipelineDeploymentList}
     >
       <PipelineDetails>
         <CIPipelineDeploymentList />
@@ -867,6 +913,7 @@ export default (
         ...accountPathProps,
         ...pipelinePathProps
       })}
+      pageName={PAGE_NAME.CIPipelineDeploymentList}
     >
       <CIPipelineDeploymentList />
     </RouteWithLayout>
@@ -886,6 +933,7 @@ export default (
         ...accountPathProps,
         ...pipelinePathProps
       })}
+      pageName={PAGE_NAME.CIPipelineDeploymentList}
     >
       <CIPipelineDeploymentList />
     </RouteWithLayout>
@@ -902,6 +950,7 @@ export default (
       sidebarProps={CISideNavProps}
       path={[routes.toUsers({ ...projectPathProps, ...pipelineModuleParams })]}
       exact
+      pageName={PAGE_NAME.UsersPage}
     >
       <AccessControlPage>
         <UsersPage />
@@ -912,6 +961,7 @@ export default (
       licenseRedirectData={licenseRedirectData}
       sidebarProps={CISideNavProps}
       path={routes.toUserDetails({ ...projectPathProps, ...pipelineModuleParams, ...userPathProps })}
+      pageName={PAGE_NAME.UserDetails}
     >
       <UserDetails />
     </RouteWithLayout>
@@ -920,6 +970,7 @@ export default (
       licenseRedirectData={licenseRedirectData}
       sidebarProps={CISideNavProps}
       path={[routes.toUserGroups({ ...projectPathProps, ...pipelineModuleParams })]}
+      pageName={PAGE_NAME.UserGroups}
     >
       <AccessControlPage>
         <UserGroups />
@@ -930,6 +981,7 @@ export default (
       licenseRedirectData={licenseRedirectData}
       sidebarProps={CISideNavProps}
       path={routes.toUserGroupDetails({ ...projectPathProps, ...pipelineModuleParams, ...userGroupPathProps })}
+      pageName={PAGE_NAME.UserGroupDetails}
     >
       <UserGroupDetails />
     </RouteWithLayout>
@@ -937,6 +989,7 @@ export default (
       sidebarProps={CISideNavProps}
       path={routes.toServiceAccounts({ ...projectPathProps, ...pipelineModuleParams })}
       exact
+      pageName={PAGE_NAME.ServiceAccountsPage}
     >
       <AccessControlPage>
         <ServiceAccountsPage />
@@ -946,6 +999,7 @@ export default (
       sidebarProps={CISideNavProps}
       path={routes.toServiceAccountDetails({ ...projectPathProps, ...pipelineModuleParams, ...serviceAccountProps })}
       exact
+      pageName={PAGE_NAME.ServiceAccountDetails}
     >
       <ServiceAccountDetails />
     </RouteWithLayout>
@@ -954,6 +1008,7 @@ export default (
       licenseRedirectData={licenseRedirectData}
       sidebarProps={CISideNavProps}
       path={[routes.toResourceGroups({ ...projectPathProps, ...pipelineModuleParams })]}
+      pageName={PAGE_NAME.ResourceGroups}
     >
       <AccessControlPage>
         <ResourceGroups />
@@ -964,6 +1019,7 @@ export default (
       licenseRedirectData={licenseRedirectData}
       sidebarProps={CISideNavProps}
       path={[routes.toRoles({ ...projectPathProps, ...pipelineModuleParams })]}
+      pageName={PAGE_NAME.Roles}
     >
       <AccessControlPage>
         <Roles />
@@ -974,6 +1030,7 @@ export default (
       licenseRedirectData={licenseRedirectData}
       sidebarProps={CISideNavProps}
       path={[routes.toRoleDetails({ ...projectPathProps, ...pipelineModuleParams, ...rolePathProps })]}
+      pageName={PAGE_NAME.RoleDetails}
     >
       <RoleDetails />
     </RouteWithLayout>
@@ -984,6 +1041,7 @@ export default (
       path={[
         routes.toResourceGroupDetails({ ...projectPathProps, ...pipelineModuleParams, ...resourceGroupPathProps })
       ]}
+      pageName={PAGE_NAME.ResourceGroupDetails}
     >
       <ResourceGroupDetails />
     </RouteWithLayout>
@@ -992,6 +1050,7 @@ export default (
       licenseRedirectData={licenseRedirectData}
       sidebarProps={CISideNavProps}
       path={routes.toTemplates({ ...accountPathProps, ...projectPathProps, ...pipelineModuleParams })}
+      pageName={PAGE_NAME.TemplatesPage}
     >
       <TemplatesPage />
     </RouteWithLayout>
@@ -1000,6 +1059,7 @@ export default (
       licenseRedirectData={licenseRedirectData}
       sidebarProps={CISideNavProps}
       path={routes.toTemplateStudio({ ...accountPathProps, ...templatePathProps, ...templateModuleParams })}
+      pageName={PAGE_NAME.TemplateStudioWrapper}
     >
       <TemplateStudioWrapper />
     </RouteWithLayout>

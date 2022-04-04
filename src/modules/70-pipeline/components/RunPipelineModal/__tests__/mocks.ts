@@ -9,6 +9,7 @@ import type { UseGetMockDataWithMutateAndRefetch } from '@common/utils/testUtils
 import type {
   ResponseInputSetResponse,
   ResponseInputSetTemplateResponse,
+  ResponseInputSetTemplateWithReplacedExpressionsResponse,
   ResponseListStageExecutionResponse,
   ResponseMergeInputSetResponse,
   ResponsePageInputSetSummaryResponse,
@@ -33,20 +34,22 @@ export const mockCreateInputSetResponse: UseGetMockDataWithMutateAndRefetch<Resp
   }
 }
 
-export const mockPipelineTemplateYaml: UseGetMockDataWithMutateAndRefetch<ResponseInputSetTemplateResponse> = {
-  loading: false,
-  refetch: jest.fn(),
-  mutate: jest.fn(),
-  data: {
-    correlationId: '',
-    status: 'SUCCESS',
-    metaData: null as unknown as undefined,
+export const mockPipelineTemplateYaml: UseGetMockDataWithMutateAndRefetch<ResponseInputSetTemplateWithReplacedExpressionsResponse> =
+  {
+    loading: false,
+    refetch: jest.fn(),
+    mutate: jest.fn(),
     data: {
-      inputSetTemplateYaml:
-        'pipeline:\n  identifier: "First"\n  variables:\n  - name: "checkVariable1"\n    type: "String"\n    value: "<+input>"\n'
+      correlationId: '',
+      status: 'SUCCESS',
+      metaData: null as unknown as undefined,
+      data: {
+        hasInputSets: true,
+        inputSetTemplateYaml:
+          'pipeline:\n  identifier: "First"\n  variables:\n  - name: "checkVariable1"\n    type: "String"\n    value: "<+input>"\n'
+      }
     }
   }
-}
 
 export const mockPipelineTemplateYamlErrorResponse: UseGetMockDataWithMutateAndRefetch<ResponseInputSetTemplateResponse> =
   {
@@ -72,11 +75,12 @@ export const mockPipelineTemplateYamlForRerun: UseGetMockDataWithMutateAndRefetc
     status: 'SUCCESS',
     metaData: null as unknown as undefined,
     data: {
+      hasInputSets: true,
       inputSetTemplateYaml:
         'pipeline:\n  identifier: "First"\n  variables:\n  - name: "checkVariable1"\n    type: "String"\n    value: "<+input>"\n',
       inputSetYaml:
         'pipeline:\n  identifier: "First"\n  variables:\n  - name: "checkVariable1"\n    type: "String"\n    value: "variablevalue"\n'
-    }
+    } as any
   }
 }
 
@@ -103,6 +107,8 @@ export const mockGetPipeline: UseGetMockDataWithMutateAndRefetch<ResponsePMSPipe
     status: 'SUCCESS',
     metaData: null as unknown as undefined,
     data: {
+      resolvedTemplatesPipelineYaml:
+        'pipeline:\n    name: TestPipeline\nidentifier: First\ntags: {}\nstages:\n  - stage:\n      name: Stage1\n      identifier: Stage1\n      description: ""\n      type: Approval\n      spec:\n        execution:\n          steps:\n            - step:\n                name: Approval\n                identifier: approval\n                type: HarnessApproval\n                timeout: 1d\n                spec:\n                  includePipelineExecutionHistory: true\n                  approvers:\n                    disallowPipelineExecutor: false\n                    minimumCount: 2\n                    userGroups:\n                      - Chirag\n                  approverInputs: []\n                  approvalMessage: ABC\n      tags: {}\n      variables: []\nprojectIdentifier: Chirag\norgIdentifier: harness\nvariables:\n  - name: checkVariable1\n    type: String\n    value: <+input>\n',
       yamlPipeline:
         'pipeline:\n    name: TestPipeline\n    identifier: First\n    tags: {}\n    stages:\n        - stage:\n              name: Stage1\n              identifier: Stage1\n              description: ""\n              type: Approval\n              spec:\n                  execution:\n                      steps:\n                          - step:\n                                name: Approval\n                                identifier: approval\n                                type: HarnessApproval\n                                timeout: 1d\n                                spec:\n                                    includePipelineExecutionHistory: true\n                                    approvers:\n                                        disallowPipelineExecutor: false\n                                        minimumCount: 2\n                                        userGroups:\n                                            - Chirag\n                                    approverInputs: []\n                                    approvalMessage: ABC\n              tags: {}\n              variables: []\n    projectIdentifier: Chirag\n    orgIdentifier: harness\n    variables:\n        - name: checkVariable1\n          type: String\n          value: <+input>\n'
     }
@@ -119,7 +125,7 @@ export const mockGetResolvedPipeline: UseGetMockDataWithMutateAndRefetch<Respons
     metaData: null as unknown as undefined,
     data: {
       mergedPipelineYaml:
-        'name: TestPipeline\nidentifier: First\ntags: {}\nstages:\n  - stage:\n      name: Stage1\n      identifier: Stage1\n      description: ""\n      type: Approval\n      spec:\n        execution:\n          steps:\n            - step:\n                name: Approval\n                identifier: approval\n                type: HarnessApproval\n                timeout: 1d\n                spec:\n                  includePipelineExecutionHistory: true\n                  approvers:\n                    disallowPipelineExecutor: false\n                    minimumCount: 2\n                    userGroups:\n                      - Chirag\n                  approverInputs: []\n                  approvalMessage: ABC\n      tags: {}\n      variables: []\nprojectIdentifier: Chirag\norgIdentifier: harness\nvariables:\n  - name: checkVariable1\n    type: String\n    value: <+input>'
+        'name: TestPipeline\nidentifier: First\ntags: {}\nstages:\n  - stage:\n      name: Stage1\n      identifier: Stage1\n      description: ""\n      type: Approval\n      spec:\n        execution:\n          steps:\n            - step:\n                name: Approval\n                identifier: approval\n                type: HarnessApproval\n                timeout: 1d\n                spec:\n                  includePipelineExecutionHistory: true\n                  approvers:\n                    disallowPipelineExecutor: false\n                    minimumCount: 2\n                    userGroups:\n                      - Chirag\n                  approverInputs: []\n                  approvalMessage: ABC\n      tags: {}\n      variables: []\nprojectIdentifier: Chirag\norgIdentifier: harness\nvariables:\n  - name: checkVariable1\n    type: String\n    value: <+input>\n'
     }
   }
 }

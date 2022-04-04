@@ -104,9 +104,12 @@ export function PipelineStages<T = Record<string, unknown>>({
   const onOpenTemplateSelector = React.useCallback(() => {
     openTemplateSelector?.({
       templateType: 'Stage',
+      allChildTypes: [...stages.values()]
+        .filter(item => !item.isDisabled && !!item.isTemplateSupported)
+        .map(item => item.type),
       onUseTemplate
     })
-  }, [openTemplateSelector, onUseTemplate])
+  }, [openTemplateSelector, stages, onUseTemplate])
 
   const selectedStageIndex = selected?.index || 0
   const stage = React.Children.toArray(children)[selectedStageIndex] as React.ReactElement<PipelineStageProps>

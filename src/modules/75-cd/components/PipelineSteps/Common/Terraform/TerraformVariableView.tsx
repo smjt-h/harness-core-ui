@@ -76,6 +76,6 @@ export function TerraformVariableStep(props: TerraformVariableStepProps): React.
       </>
     )
   }
-
+  /* istanbul ignore next */
   return <div />
 }

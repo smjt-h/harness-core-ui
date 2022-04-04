@@ -5,7 +5,7 @@
  * https://polyformproject.org/wp-content/uploads/2020/05/PolyForm-Free-Trial-1.0.0.txt.
  */
 
-import React, { useState } from 'react'
+import React, { useEffect, useState } from 'react'
 import { useParams } from 'react-router-dom'
 import { StepProps, SelectOption, ModalErrorHandlerBinding, useToaster } from '@wings-software/uicore'
 import { pick } from 'lodash-es'
@@ -16,6 +16,8 @@ import type { OrgPathProps } from '@common/interfaces/RouteInterfaces'
 import { PageSpinner } from '@common/components'
 import { useQueryParams } from '@common/hooks'
 import { getRBACErrorMessage } from '@rbac/utils/utils'
+import { useTelemetry } from '@common/hooks/useTelemetry'
+import { Category, ProjectActions } from '@common/constants/TrackingConstants'
 import ProjectForm from './ProjectForm'
 
 interface CreateModalData {
@@ -29,6 +31,7 @@ const CreateProject: React.FC<StepProps<Project> & CreateModalData> = props => {
   const { nextStep, modules } = props
   const { getString } = useStrings()
   const { showSuccess } = useToaster()
+  const { trackEvent } = useTelemetry()
   const { mutate: createProject, loading: saving } = usePostProject({
     queryParams: {
       accountIdentifier: accountId,
@@ -81,6 +84,14 @@ const CreateProject: React.FC<StepProps<Project> & CreateModalData> = props => {
       modalErrorHandler?.showDanger(getRBACErrorMessage(e))
     }
   }
+
+  useEffect(() => {
+    trackEvent(ProjectActions.OpenCreateProjectModal, {
+      category: Category.PROJECT
+    })
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [])
+
   return (
     <>
       <ProjectForm

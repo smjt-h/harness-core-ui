@@ -31,6 +31,7 @@ import { NGBreadcrumbs } from '@common/components/NGBreadcrumbs/NGBreadcrumbs'
 import ExecutionCard from '@pipeline/components/ExecutionCard/ExecutionCard'
 import { CardVariant } from '@pipeline/utils/constants'
 import type { ExecutionTriggerInfo, PipelineExecutionSummary } from 'services/pipeline-ng'
+import { TitleWithToolTipId } from '@common/components/Title/TitleWithToolTipId'
 import styles from './CIDashboardPage.module.scss'
 
 function buildInfoToExecutionSummary(buildInfo: BuildActiveInfo | BuildFailureInfo): PipelineExecutionSummary {
@@ -101,7 +102,7 @@ export const CIDashboardPage: React.FC = () => {
   return (
     <>
       <PageHeader
-        title={getString('overview')}
+        title={<TitleWithToolTipId title={getString('overview')} toolTipId={'ciOverViewTitle'} />}
         breadcrumbs={<NGBreadcrumbs links={[]} />}
         toolbar={
           <>

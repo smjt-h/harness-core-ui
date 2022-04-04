@@ -1,3 +1,10 @@
+/*
+ * Copyright 2022 Harness Inc. All rights reserved.
+ * Use of this source code is governed by the PolyForm Shield 1.0.0 license
+ * that can be found in the licenses directory at the root of this repository, also available at
+ * https://polyformproject.org/wp-content/uploads/2020/06/PolyForm-Shield-1.0.0.txt.
+ */
+
 describe('PIPELINE NOTIFICATIONS FLOW', () => {
 
     const gitSyncCall =
@@ -23,7 +30,7 @@ describe('PIPELINE NOTIFICATIONS FLOW', () => {
         cy.clickSubmit()
     })
 
-    it('should be able to configure notifications and check in notification list view', () => {
+    it('should be able to configure notifications and check in notification list view', { scrollBehavior: false },() => {
 
         cy.intercept('GET', userGroupsCall, { fixture: 'ng/api/aggregate/usergroups' })
         cy.intercept('POST', pipelineVariablesCall, { fixture: 'pipeline/api/notifications/pipelines.variables' })
@@ -37,9 +44,9 @@ describe('PIPELINE NOTIFICATIONS FLOW', () => {
         cy.get('input[name="types.AllEvents"]').click({ force: true })
         cy.clickSubmit()
 
-        cy.contains('p', 'Notification Method').should('be.visible')
+        cy.get('.StepWizard--stepDetails').contains('p', 'Notification Method').should('be.visible')
 
-        cy.get('.bp3-dialog').find('input[placeholder="- Select -"]').click({ force: true })
+        cy.get('.StepWizard--stepDetails').find('input[placeholder="- Select -"]').click({ force: true })
         cy.contains('p', 'Email').click({ force: true })
 
         cy.wait(1000)

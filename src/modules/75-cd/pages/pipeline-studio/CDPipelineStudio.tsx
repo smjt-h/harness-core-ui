@@ -71,6 +71,7 @@ const CDPipelineStudio: React.FC = (): JSX.Element => {
   const isCFEnabled = useFeatureFlag(FeatureFlag.CFNG_ENABLED)
   const isCIEnabled = useFeatureFlag(FeatureFlag.CING_ENABLED)
   const isCDEnabled = useFeatureFlag(FeatureFlag.CDNG_ENABLED)
+  const isSTOEnabled = useFeatureFlag(FeatureFlag.SECURITY_STAGE)
   const { getString } = useStrings()
 
   return (
@@ -79,14 +80,15 @@ const CDPipelineStudio: React.FC = (): JSX.Element => {
       queryParams={{ accountIdentifier: accountId, orgIdentifier, projectIdentifier, repoIdentifier, branch }}
       pipelineIdentifier={pipelineIdentifier}
       renderPipelineStage={args =>
-        getCDPipelineStages(
+        getCDPipelineStages({
           args,
           getString,
-          licenseInformation['CI'] && isCIEnabled,
-          licenseInformation['CD'] && isCDEnabled,
-          licenseInformation['CF'] && isCFEnabled,
-          true
-        )
+          isCIEnabled: licenseInformation['CI'] && isCIEnabled,
+          isCDEnabled: licenseInformation['CD'] && isCDEnabled,
+          isCFEnabled: licenseInformation['CF'] && isCFEnabled,
+          isSTOEnabled,
+          isApprovalStageEnabled: true
+        })
       }
       stepsFactory={factory}
       runPipeline={handleRunPipeline}

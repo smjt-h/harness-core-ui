@@ -16,11 +16,11 @@ import {
   MultiTypeInputType,
   FormInput,
   Label,
-  Color,
   useToaster,
   SelectOption
 } from '@wings-software/uicore'
 import { connect, FormikContext } from 'formik'
+import { Color } from '@harness/design-system'
 import { useStrings } from 'framework/strings'
 import { useVariablesExpression } from '@pipeline/components/PipelineStudio/PiplineHooks/useVariablesExpression'
 import { useQueryParams } from '@common/hooks'
@@ -114,6 +114,7 @@ function ConfigSectionRef<T extends TerraformData = TerraformData>(
         <div className={cx(stepCss.formGroup, stepCss.md)}>
           <FormInput.MultiTextInput
             name={`${path}.spec.configuration.spec.workspace`}
+            placeholder={getString('pipeline.terraformStep.workspace')}
             label={getString('pipelineSteps.workspace')}
             disabled={readonly}
             multiTextInputProps={{
@@ -131,7 +132,7 @@ function ConfigSectionRef<T extends TerraformData = TerraformData>(
             projectIdentifier={projectIdentifier}
             orgIdentifier={orgIdentifier}
             multiTypeProps={{ allowableTypes, expressions }}
-            width={445}
+            width={400}
             type={
               store?.type === Connectors.ARTIFACTORY
                 ? [Connectors.ARTIFACTORY]

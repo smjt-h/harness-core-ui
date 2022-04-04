@@ -1436,7 +1436,7 @@ exports[`Git Sync - repo tab Repo type card should be enabled only for Github 1`
                 style="border-radius: 100%; line-height: 18px; width: 24px; height: 24px; font-size: 10px;"
                 tabindex="0"
               >
-                U
+                N
               </div>
             </span>
           </span>
@@ -2079,7 +2079,7 @@ exports[`Git Sync - repo tab rendering form to create gitSync repo 1`] = `
                 style="border-radius: 100%; line-height: 18px; width: 24px; height: 24px; font-size: 10px;"
                 tabindex="0"
               >
-                U
+                N
               </div>
             </span>
           </span>
@@ -2722,7 +2722,7 @@ exports[`Git Sync - repo tab rendering form to create gitSync repo 2`] = `
                 style="border-radius: 100%; line-height: 18px; width: 24px; height: 24px; font-size: 10px;"
                 tabindex="0"
               >
-                U
+                N
               </div>
             </span>
           </span>

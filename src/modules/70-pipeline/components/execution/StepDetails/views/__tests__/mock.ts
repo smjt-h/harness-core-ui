@@ -157,3 +157,64 @@ export const mockJiraApprovalDataError: UseGetMockDataWithMutateAndRefetch<Respo
     }
   }
 }
+
+export const mockServiceNowApprovalDataLoading: UseGetMockDataWithMutateAndRefetch<ResponseApprovalInstanceResponse> = {
+  refetch: jest.fn(),
+  mutate: jest.fn(),
+  loading: true,
+  data: {
+    correlationId: '',
+    status: 'SUCCESS',
+    metaData: null as unknown as undefined,
+    data: {
+      type: 'ServiceNowApproval',
+      id: 'approvalInstanceId',
+      status: 'WAITING',
+      details: {
+        someDetail: 'someDetail'
+      }
+    }
+  }
+}
+
+export const mockServiceNowApprovalData: UseGetMockDataWithMutateAndRefetch<ResponseApprovalInstanceResponse> = {
+  refetch: jest.fn(),
+  mutate: jest.fn(),
+  loading: false,
+  data: {
+    correlationId: '',
+    status: 'SUCCESS',
+    metaData: null as unknown as undefined,
+    data: {
+      type: 'ServiceNowApproval',
+      id: 'approvalInstanceId',
+      status: 'WAITING',
+      details: {
+        someDetail: 'someDetail',
+        issue: {
+          key: 'ServiceNowIssueKey'
+        }
+      }
+    }
+  }
+}
+
+export const mockServiceNowApprovalDataError: UseGetMockDataWithMutateAndRefetch<ResponseApprovalInstanceResponse> = {
+  refetch: jest.fn(),
+  mutate: jest.fn(),
+  loading: false,
+  // eslint-disable-next-line
+  // @ts-ignore
+  error: 'someerror',
+  data: {
+    correlationId: '',
+    status: 'ERROR',
+    metaData: null as unknown as undefined,
+    data: {
+      type: 'ServiceNowApproval',
+      id: 'approvalInstanceId',
+      status: 'FAILED',
+      details: {}
+    }
+  }
+}

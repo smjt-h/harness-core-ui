@@ -7,8 +7,9 @@
 
 import React, { useEffect, useState } from 'react'
 import { useParams } from 'react-router-dom'
-import { Button, Checkbox, Color, Layout, Popover, Text } from '@wings-software/uicore'
+import { Button, Checkbox, Layout, Popover, Text } from '@wings-software/uicore'
 import { Tabs, Tab } from '@blueprintjs/core'
+import { Color } from '@harness/design-system'
 import { useTelemetry } from '@common/hooks/useTelemetry'
 import routes from '@common/RouteDefinitions'
 import type { PipelinePathProps } from '@common/interfaces/RouteInterfaces'
@@ -133,6 +134,7 @@ const SideNavItems = () => {
   const { getString } = useStrings()
   const { trackEvent } = useTelemetry()
   const isAnomaliesEnabled = useFeatureFlag(FeatureFlag.CCM_ANOMALY_DETECTION_NG)
+  const isBusinessMappingEnabled = useFeatureFlag(FeatureFlag.BUSINESS_MAPPING)
 
   return (
     <Layout.Vertical spacing="small">
@@ -173,6 +175,12 @@ const SideNavItems = () => {
               label={getString('ce.co.accessPoint.loadbalancers')}
               to={routes.toCECOAccessPoints({ accountId })}
             />
+            {isBusinessMappingEnabled ? (
+              <SidebarLink
+                label={getString('ce.businessMapping.sideNavText')}
+                to={routes.toBusinessMapping({ accountId })}
+              />
+            ) : null}
           </Layout.Vertical>
         </NavExpandable>
       </React.Fragment>

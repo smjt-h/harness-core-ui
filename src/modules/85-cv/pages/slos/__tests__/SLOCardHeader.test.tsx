@@ -11,10 +11,25 @@ import { render, screen, getByText, waitFor, queryByText } from '@testing-librar
 import routes from '@common/RouteDefinitions'
 import { InputTypes, setFieldValue } from '@common/utils/JestFormHelper'
 import { findDialogContainer, findPopoverContainer, TestWrapper } from '@common/utils/testUtils'
+import {
+  LogTypes,
+  SLOLogContentProps,
+  VerifyStepLogContentProps
+} from '@cv/hooks/useLogContentHook/useLogContentHook.types'
 import { PeriodTypes } from '../components/CVCreateSLO/CVCreateSLO.types'
 import SLOCardHeader from '../SLOCard/SLOCardHeader'
 import type { SLOCardHeaderProps } from '../CVSLOsListingPage.types'
 import { testWrapperProps, pathParams, dashboardWidgetsContent } from './CVSLOsListingPage.mock'
+
+jest.mock('@cv/hooks/useLogContentHook/views/VerifyStepLogContent', () => ({
+  __esModule: true,
+  default: (props: VerifyStepLogContentProps) => <div>{props.logType}</div>
+}))
+
+jest.mock('@cv/hooks/useLogContentHook/views/SLOLogContent', () => ({
+  __esModule: true,
+  default: (props: SLOLogContentProps) => <div>{props.logType}</div>
+}))
 
 const ComponentWrapper: React.FC<Optional<SLOCardHeaderProps>> = ({
   serviceLevelObjective = dashboardWidgetsContent,
@@ -219,5 +234,45 @@ describe('SLOCardHeader', () => {
         remainingErrorBudgetAtReset: 60
       })
     })
+  })
+
+  test('should open the LogContent modal and render VerifyStepLog with type ExecutionLog by clicking the Execution Logs button', async () => {
+    const { container } = render(<ComponentWrapper />)
+
+    userEvent.click(container.querySelector('[data-icon="Options"]')!)
+
+    const popover = findPopoverContainer()
+    expect(getByText(popover!, 'cv.executionLogs')).toBeInTheDocument()
+
+    userEvent.click(getByText(popover!, 'cv.executionLogs'))
+
+    const dialog = findDialogContainer()
+
+    await waitFor(() => {
+      expect(screen.getByText(LogTypes.ExecutionLog)).toBeInTheDocument()
+      expect(screen.queryByText(LogTypes.ApiCallLog)).not.toBeInTheDocument()
+    })
+
+    userEvent.click(dialog?.querySelector('[data-icon="Stroke"]')!)
+  })
+
+  test('should open the LogContent modal and render VerifyStepLog with type ApiCallLog by clicking the Execution Logs button', async () => {
+    const { container } = render(<ComponentWrapper />)
+
+    userEvent.click(container.querySelector('[data-icon="Options"]')!)
+
+    const popover = findPopoverContainer()
+    expect(getByText(popover!, 'cv.externalAPICalls')).toBeInTheDocument()
+
+    userEvent.click(getByText(popover!, 'cv.externalAPICalls'))
+
+    const dialog = findDialogContainer()
+
+    await waitFor(() => {
+      expect(screen.getByText(LogTypes.ApiCallLog)).toBeInTheDocument()
+      expect(screen.queryByText(LogTypes.ExecutionLog)).not.toBeInTheDocument()
+    })
+
+    userEvent.click(dialog?.querySelector('[data-icon="Stroke"]')!)
   })
 })

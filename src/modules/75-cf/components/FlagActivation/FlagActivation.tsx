@@ -5,47 +5,48 @@
  * https://polyformproject.org/wp-content/uploads/2020/06/PolyForm-Shield-1.0.0.txt.
  */
 
-import React, { useEffect, useMemo, useState, useCallback, MouseEvent } from 'react'
+import React, { MouseEvent, useCallback, useEffect, useMemo, useState } from 'react'
 import { useHistory, useParams } from 'react-router-dom'
 import { v4 as uuid } from 'uuid'
 import type { FormikActions } from 'formik'
 import { cloneDeep, get, isEqual } from 'lodash-es'
 import {
-  Layout,
-  Container,
-  Text,
-  Tabs,
-  Tab,
   Button,
+  Container,
   FlexExpander,
   Formik,
   FormikForm,
-  PageError
+  Layout,
+  PageError,
+  Tab,
+  Tabs,
+  Text
 } from '@wings-software/uicore'
 import * as yup from 'yup'
+import cx from 'classnames'
 import {
+  Clause,
   Feature,
   FeatureState,
-  usePatchFeature,
-  ServingRule,
-  Clause,
-  Serve,
-  VariationMap,
-  TargetMap,
-  PatchFeatureQueryParams,
   GitDetails,
-  GitSyncErrorResponse
+  GitSyncErrorResponse,
+  PatchFeatureQueryParams,
+  Serve,
+  ServingRule,
+  TargetMap,
+  usePatchFeature,
+  VariationMap
 } from 'services/cf'
 import { useStrings } from 'framework/strings'
 import { extraOperatorReference } from '@cf/constants'
 import { useToaster } from '@common/exports'
 import { useQueryParams } from '@common/hooks'
 import { useEnvironmentSelectV2 } from '@cf/hooks/useEnvironmentSelectV2'
+import { useGovernance } from '@cf/hooks/useGovernance'
 import { FFDetailPageTab, getErrorMessage, rewriteCurrentLocationWithActiveEnvironment } from '@cf/utils/CFUtils'
 import routes from '@common/RouteDefinitions'
 import useActiveEnvironment from '@cf/hooks/useActiveEnvironment'
 import type { FeatureFlagPathProps, ProjectPathProps } from '@common/interfaces/RouteInterfaces'
-
 import { AUTO_COMMIT_MESSAGES } from '@cf/constants/GitSyncConstants'
 import { GIT_SYNC_ERROR_CODE, UseGitSync } from '@cf/hooks/useGitSync'
 import { useFeatureFlag } from '@common/hooks/useFeatureFlag'
@@ -126,6 +127,7 @@ const FlagActivation: React.FC<FlagActivationProps> = props => {
       }
     }
   })
+  const { handleError: handleGovernanceError, isGovernanceError } = useGovernance()
 
   const FFM_1513 = useFeatureFlag(FeatureFlag.FFM_1513)
 
@@ -199,7 +201,7 @@ const FlagActivation: React.FC<FlagActivationProps> = props => {
         patch.feature.addAllInstructions(
           initialValues.customRules
             .filter(rule => !values.customRules.find(r => r.ruleId === rule.ruleId))
-            .map(r => patch.creators.removeRule(r.ruleId))
+            .map(r => patch.creators.removeRule(r.ruleId as string))
         )
 
         const newRuleIds: string[] = []
@@ -211,12 +213,12 @@ const FlagActivation: React.FC<FlagActivationProps> = props => {
           }
           return rule
         })
-        const isNewRule = (id: string) => newRuleIds.includes(id)
+        const isNewRule = (id: string): boolean => newRuleIds.includes(id)
 
         // handle newly added custom rules
         patch.feature.addAllInstructions(
           values.customRules
-            .filter(rule => isNewRule(rule.ruleId))
+            .filter(rule => isNewRule(rule.ruleId as string))
             .map(rule =>
               patch.creators.addRule({
                 uuid: rule.ruleId,
@@ -229,19 +231,23 @@ const FlagActivation: React.FC<FlagActivationProps> = props => {
 
         // handle updates to existing rules
         values.customRules
-          .filter(rule => !isNewRule(rule.ruleId))
+          .filter(rule => !isNewRule(rule.ruleId as string))
           .map(rule => [initialValues.customRules.find(r => r.ruleId === rule.ruleId), rule])
           .filter(([initial, current]) => !isEqual(initial, current))
           .forEach(([initial, current]) => {
             // handle clause added to existing rule
             current?.clauses
               .filter(c => !c.id)
-              .forEach(c => patch.feature.addInstruction(patch.creators.addClause(current.ruleId, toClauseData(c))))
+              .forEach(c =>
+                patch.feature.addInstruction(patch.creators.addClause(current.ruleId as string, toClauseData(c)))
+              )
 
             // handle clause removed from existing rule
             initial?.clauses
               .filter(c => !current?.clauses.find(cl => cl.id === c.id))
-              .forEach(c => patch.feature.addInstruction(patch.creators.removeClause(initial.ruleId, c.id)))
+              .forEach(c =>
+                patch.feature.addInstruction(patch.creators.removeClause(initial.ruleId as string, c.id as string))
+              )
 
             // handle clause changed on existing rule
             initial?.clauses
@@ -253,17 +259,21 @@ const FlagActivation: React.FC<FlagActivationProps> = props => {
                 return acc
               }, [])
               .forEach(([c, updated]: [Clause, Clause]) =>
-                patch.feature.addInstruction(patch.creators.updateClause(initial.ruleId, c.id, toClauseData(updated)))
+                patch.feature.addInstruction(
+                  patch.creators.updateClause(initial.ruleId as string, c.id as string, toClauseData(updated))
+                )
               )
 
             // handle update to existing rule serve value (true/false)
             if (current?.serve?.variation && !isEqual(initial?.serve?.variation, current?.serve?.variation)) {
-              patch.feature.addInstruction(patch.creators.updateRuleVariation(current?.ruleId, current.serve.variation))
+              patch.feature.addInstruction(
+                patch.creators.updateRuleVariation(current?.ruleId as string, current.serve.variation)
+              )
             }
 
             if (current?.serve?.distribution && !isEqual(initial?.serve?.distribution, current.serve.distribution)) {
               patch.feature.addInstruction(
-                patch.creators.updateRuleVariation(current?.ruleId, current.serve.distribution)
+                patch.creators.updateRuleVariation(current?.ruleId as string, current.serve.distribution)
               )
             }
           })
@@ -306,7 +316,7 @@ const FlagActivation: React.FC<FlagActivationProps> = props => {
       const newOrder = values.customRules.map(x => x.ruleId)
       // handle reordered custom rules
       if (!isEqual(prevOrder, newOrder)) {
-        patch.feature.addInstruction(patch.creators.reorderRules(newOrder))
+        patch.feature.addInstruction(patch.creators.reorderRules(newOrder as string[]))
       }
 
       patch.feature
@@ -334,7 +344,11 @@ const FlagActivation: React.FC<FlagActivationProps> = props => {
               if (err.status === GIT_SYNC_ERROR_CODE) {
                 gitSync.handleError(err.data as GitSyncErrorResponse)
               } else {
-                showError(get(err, 'data.message', err?.message), 0)
+                if (isGovernanceError(err)) {
+                  handleGovernanceError(err.data)
+                } else {
+                  showError(get(err, 'data.message', err?.message), 0)
+                }
               }
             })
             .finally(() => {
@@ -478,7 +492,7 @@ const FlagActivation: React.FC<FlagActivationProps> = props => {
                 <CFEnvironmentSelect component={<EnvironmentSelect />} />
               </Layout.Horizontal>
 
-              <Container className={css.tabContainer}>
+              <Container className={FFM_1513 ? css.tabContainer : cx(css.tabContainer, css.tabContainerHeight)}>
                 {flagData && (
                   <>
                     <Tabs

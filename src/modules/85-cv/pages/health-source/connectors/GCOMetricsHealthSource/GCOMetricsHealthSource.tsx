@@ -7,7 +7,6 @@
 
 import React, { useCallback, useContext, useEffect, useMemo, useState } from 'react'
 import {
-  Color,
   Container,
   Formik,
   FormikForm,
@@ -21,6 +20,7 @@ import {
   NoDataCard
 } from '@wings-software/uicore'
 import cx from 'classnames'
+import { Color } from '@harness/design-system'
 import { useParams } from 'react-router-dom'
 import { noop } from 'lodash-es'
 import HighchartsReact from 'highcharts-react-official'
@@ -59,6 +59,7 @@ import DrawerFooter from '../../common/DrawerFooter/DrawerFooter'
 import type { GCOMetricInfo, GCOMetricsHealthSourceProps, ValidationChartProps } from './GCOMetricsHealthSource.type'
 import { OVERALL, FieldNames, DrawerOptions } from './GCOMetricsHealthSource.constants'
 import SelectHealthSourceServices from '../../common/SelectHealthSourceServices/SelectHealthSourceServices'
+import MetricErrorAndLoading from '../../common/MetricErrorAndLoading/MetricErrorAndLoading'
 import css from './GCOMetricsHealthSource.module.scss'
 
 const GroupByClause = 'groupByFields'
@@ -218,6 +219,8 @@ export function GCOMetricsHealthSource(props: GCOMetricsHealthSourceProps): JSX.
 
   const stackDriverDashBoardRequest = useGetStackdriverDashboardDetail({ lazy: true })
 
+  const { loading: loadingDashBoardData } = stackDriverDashBoardRequest
+
   const metricPackResponse = useGetMetricPacks({
     queryParams: { projectIdentifier, orgIdentifier, accountId, dataSourceType: 'STACKDRIVER' }
   })
@@ -240,7 +243,12 @@ export function GCOMetricsHealthSource(props: GCOMetricsHealthSourceProps): JSX.
       }}
     >
       {formikProps => {
-        const { sli = false, healthScore = false, continuousVerification = false } = formikProps?.values
+        const {
+          sli = false,
+          healthScore = false,
+          continuousVerification = false,
+          riskCategory = ''
+        } = formikProps?.values
 
         const currentSelectedMetricDetail = metricDefinitions?.find(
           (metricDefinition: StackdriverDefinition) =>
@@ -273,107 +281,113 @@ export function GCOMetricsHealthSource(props: GCOMetricsHealthSourceProps): JSX.
                 <Heading level={3} color={Color.BLACK} className={css.sectionHeading}>
                   {getString('cv.monitoringSources.gco.mapMetricsToServicesPage.querySpecifications')}
                 </Heading>
-                <Container className={css.nameAndMetricTagContainer}>
-                  <FormInput.KVTagInput
-                    label={getString('cv.monitoringSources.gco.mapMetricsToServicesPage.metricTagsLabel')}
-                    name={FieldNames.METRIC_TAGS}
-                    tagsProps={{
-                      addOnBlur: true,
-                      addOnPaste: true,
-                      onChange: values => {
-                        const newTagObj: { [key: string]: any } = {}
-                        ;(values as string[])?.forEach(val => {
-                          newTagObj[val as string] = ''
-                        })
-                        formikProps.setFieldValue(FieldNames.METRIC_TAGS, newTagObj)
-                      }
-                    }}
-                  />
-                  <FormError name="metricTags" errorMessage={formikProps.errors['metricTags']} />
-                  <NameId
-                    nameLabel={getString('cv.monitoringSources.metricNameLabel')}
-                    identifierProps={{
-                      inputName: FieldNames.METRIC_NAME,
-                      idName: FieldNames.IDENTIFIER,
-                      isIdentifierEditable: Boolean(!currentSelectedMetricDetail?.identifier)
-                    }}
-                  />
-                </Container>
 
-                <Container className={css.validationContainer}>
-                  <QueryContent
-                    handleFetchRecords={async () => {
-                      if (!shouldShowChart) {
-                        setShouldShowChart(true)
-                      }
-                      onQueryChange(formikProps.values.query)
-                    }}
-                    onClickExpand={setIsQueryExpanded}
-                    isDialogOpen={isQueryExpanded}
-                    query={formikProps.values.query}
-                    loading={loading}
-                    textAreaName={FieldNames.QUERY}
-                  />
-
-                  <ValidationChart
-                    loading={loading}
-                    error={error}
-                    sampleData={sampleData}
-                    queryValue={formikProps.values.query}
-                    setAsTooManyMetrics={isTooMany => {
-                      if (isTooMany) {
-                        formikProps.setFieldError('tooManyMetrics', 'invalid')
-                      } else {
-                        formikProps.setFieldError('tooManyMetrics', '')
-                      }
-                    }}
-                    isQueryExecuted={shouldShowChart}
-                    onRetry={async () => {
-                      if (!formikProps.values.query?.length) return
-                      onQueryChange(formikProps.values.query)
-                    }}
-                  />
-
-                  {isQueryExpanded && (
-                    <Drawer
-                      {...DrawerOptions}
-                      onClose={() => {
-                        setIsQueryExpanded(false)
-                      }}
-                    >
-                      <MonacoEditor
-                        language="javascript"
-                        value={formatJSON(formikProps.values.query)}
-                        data-testid="monaco-editor"
-                        onChange={val => formikProps.setFieldValue(FieldNames.QUERY, val)}
-                        options={
-                          {
-                            readOnly: false,
-                            wordBasedSuggestions: false,
-                            fontFamily: "'Roboto Mono', monospace",
-                            fontSize: 13
-                          } as any
-                        }
+                <MetricErrorAndLoading isEmpty={isEmpty(formInitialValues)} loading={loadingDashBoardData}>
+                  <>
+                    <Container className={css.nameAndMetricTagContainer}>
+                      <FormInput.KVTagInput
+                        label={getString('cv.monitoringSources.gco.mapMetricsToServicesPage.metricTagsLabel')}
+                        name={FieldNames.METRIC_TAGS}
+                        tagsProps={{
+                          addOnBlur: true,
+                          addOnPaste: true,
+                          onChange: values => {
+                            const newTagObj: { [key: string]: any } = {}
+                            ;(values as string[])?.forEach(val => {
+                              newTagObj[val as string] = ''
+                            })
+                            formikProps.setFieldValue(FieldNames.METRIC_TAGS, newTagObj)
+                          }
+                        }}
                       />
-                    </Drawer>
-                  )}
-                </Container>
-                <SelectHealthSourceServices
-                  values={{
-                    sli,
-                    healthScore,
-                    continuousVerification
-                  }}
-                  metricPackResponse={metricPackResponse}
-                  hideServiceIdentifier
-                />
-                {formikProps.values.continuousVerification && (
-                  <FormInput.Text
-                    name={FieldNames.SERVICE_INSTANCE_FIELD}
-                    label={getString('cv.monitoringSources.serviceInstanceIdentifier')}
-                  />
-                )}
-                <FormInput.Text name={OVERALL} className={css.hiddenField} />
+                      <FormError name="metricTags" errorMessage={formikProps.errors['metricTags']} />
+                      <NameId
+                        nameLabel={getString('cv.monitoringSources.metricNameLabel')}
+                        identifierProps={{
+                          inputName: FieldNames.METRIC_NAME,
+                          idName: FieldNames.IDENTIFIER,
+                          isIdentifierEditable: Boolean(!currentSelectedMetricDetail?.identifier)
+                        }}
+                      />
+                    </Container>
+
+                    <Container className={css.validationContainer}>
+                      <QueryContent
+                        handleFetchRecords={async () => {
+                          if (!shouldShowChart) {
+                            setShouldShowChart(true)
+                          }
+                          onQueryChange(formikProps.values.query)
+                        }}
+                        onClickExpand={setIsQueryExpanded}
+                        isDialogOpen={isQueryExpanded}
+                        query={formikProps.values.query}
+                        loading={loading}
+                        textAreaName={FieldNames.QUERY}
+                      />
+
+                      <ValidationChart
+                        loading={loading}
+                        error={error}
+                        sampleData={sampleData}
+                        queryValue={formikProps.values.query}
+                        setAsTooManyMetrics={isTooMany => {
+                          if (isTooMany) {
+                            formikProps.setFieldError('tooManyMetrics', 'invalid')
+                          } else {
+                            formikProps.setFieldError('tooManyMetrics', '')
+                          }
+                        }}
+                        isQueryExecuted={shouldShowChart}
+                        onRetry={async () => {
+                          if (!formikProps.values.query?.length) return
+                          onQueryChange(formikProps.values.query)
+                        }}
+                      />
+
+                      {isQueryExpanded && (
+                        <Drawer
+                          {...DrawerOptions}
+                          onClose={() => {
+                            setIsQueryExpanded(false)
+                          }}
+                        >
+                          <MonacoEditor
+                            language="javascript"
+                            value={formatJSON(formikProps.values.query)}
+                            data-testid="monaco-editor"
+                            onChange={val => formikProps.setFieldValue(FieldNames.QUERY, val)}
+                            options={
+                              {
+                                readOnly: false,
+                                wordBasedSuggestions: false,
+                                fontFamily: "'Roboto Mono', monospace",
+                                fontSize: 13
+                              } as any
+                            }
+                          />
+                        </Drawer>
+                      )}
+                    </Container>
+                    <SelectHealthSourceServices
+                      values={{
+                        sli,
+                        healthScore,
+                        riskCategory,
+                        continuousVerification
+                      }}
+                      metricPackResponse={metricPackResponse}
+                      hideServiceIdentifier
+                    />
+                    {formikProps.values.continuousVerification && (
+                      <FormInput.Text
+                        name={FieldNames.SERVICE_INSTANCE_FIELD}
+                        label={getString('cv.monitoringSources.serviceInstanceIdentifier')}
+                      />
+                    )}
+                    <FormInput.Text name={OVERALL} className={css.hiddenField} />
+                  </>
+                </MetricErrorAndLoading>
                 <DrawerFooter
                   onPrevious={onPrevious}
                   isSubmit

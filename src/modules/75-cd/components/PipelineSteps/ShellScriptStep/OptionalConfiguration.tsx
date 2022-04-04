@@ -84,7 +84,11 @@ export default function OptionalConfiguration(props: {
                     {formValues.spec.environmentVariables?.map(({ id }: ShellScriptStepVariable, i: number) => {
                       return (
                         <div className={css.environmentVarHeader} key={id}>
-                          <FormInput.Text name={`spec.environmentVariables[${i}].name`} disabled={readonly} />
+                          <FormInput.Text
+                            name={`spec.environmentVariables[${i}].name`}
+                            placeholder={getString('name')}
+                            disabled={readonly}
+                          />
                           <FormInput.Select
                             items={scriptInputType}
                             name={`spec.environmentVariables[${i}].type`}
@@ -93,6 +97,7 @@ export default function OptionalConfiguration(props: {
                           />
                           <FormInput.MultiTextInput
                             name={`spec.environmentVariables[${i}].value`}
+                            placeholder={getString('valueLabel')}
                             multiTextInputProps={{
                               allowableTypes,
                               expressions,
@@ -149,7 +154,11 @@ export default function OptionalConfiguration(props: {
                     {formValues.spec.outputVariables?.map(({ id }: ShellScriptOutputStepVariable, i: number) => {
                       return (
                         <div className={css.outputVarHeader} key={id}>
-                          <FormInput.Text name={`spec.outputVariables[${i}].name`} disabled={readonly} />
+                          <FormInput.Text
+                            name={`spec.outputVariables[${i}].name`}
+                            placeholder={getString('name')}
+                            disabled={readonly}
+                          />
                           <FormInput.Select
                             items={scriptOutputType}
                             name={`spec.outputVariables[${i}].type`}
@@ -159,6 +168,7 @@ export default function OptionalConfiguration(props: {
 
                           <FormInput.MultiTextInput
                             name={`spec.outputVariables[${i}].value`}
+                            placeholder={getString('valueLabel')}
                             multiTextInputProps={{
                               allowableTypes,
                               expressions,
@@ -204,6 +214,7 @@ export default function OptionalConfiguration(props: {
             <div className={cx(stepCss.formGroup, stepCss.md)}>
               <FormInput.MultiTextInput
                 name="spec.executionTarget.host"
+                placeholder={getString('cd.specifyTargetHost')}
                 label={getString('targetHost')}
                 style={{ marginTop: 'var(--spacing-small)' }}
                 multiTextInputProps={{ expressions, disabled: readonly, allowableTypes }}
@@ -255,6 +266,7 @@ export default function OptionalConfiguration(props: {
             <div className={cx(stepCss.formGroup, stepCss.md)}>
               <FormInput.MultiTextInput
                 name="spec.executionTarget.workingDirectory"
+                placeholder={getString('cd.enterWorkDirectory')}
                 label={getString('workingDirectory')}
                 style={{ marginTop: 'var(--spacing-medium)' }}
                 disabled={readonly}

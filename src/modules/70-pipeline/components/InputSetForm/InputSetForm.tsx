@@ -6,20 +6,22 @@
  */
 
 import React from 'react'
-import { defaultTo, omit } from 'lodash-es'
+import { defaultTo, omit, pick } from 'lodash-es'
 import {
   Layout,
   NestedAccordionProvider,
-  FontVariation,
   Text,
-  Color,
   PageHeader,
   PageBody,
   VisualYamlSelectedView as SelectedView,
   VisualYamlToggle,
-  getErrorInfoFromErrorObject
+  getErrorInfoFromErrorObject,
+  useConfirmationDialog,
+  ButtonVariation,
+  Button
 } from '@wings-software/uicore'
-import { useParams } from 'react-router-dom'
+import { FontVariation, Color, Intent } from '@harness/design-system'
+import { useHistory, useParams } from 'react-router-dom'
 import { parse } from 'yaml'
 import type { FormikProps } from 'formik'
 import type { PipelineInfoConfig } from 'services/cd-ng'
@@ -29,12 +31,18 @@ import {
   useCreateInputSetForPipeline,
   useGetInputSetForPipeline,
   useUpdateInputSetForPipeline,
+  useSanitiseInputSet,
   ResponseInputSetResponse,
   useGetMergeInputSetFromPipelineTemplateWithListInput,
   ResponsePMSPipelineResponseDTO,
-  ResponseInputSetTemplateWithReplacedExpressionsResponse
+  ResponseInputSetTemplateWithReplacedExpressionsResponse,
+  useDeleteInputSetForPipeline
 } from 'services/pipeline-ng'
 
+import RbacButton from '@rbac/components/Button/Button'
+import { usePermission } from '@rbac/hooks/usePermission'
+import { ResourceType } from '@rbac/interfaces/ResourceType'
+import { PermissionIdentifier } from '@rbac/interfaces/PermissionIdentifier'
 import { useToaster } from '@common/exports'
 import type { YamlBuilderHandlerBinding } from '@common/interfaces/YAMLBuilderProps'
 import type { InputSetGitQueryParams, InputSetPathProps, PipelineType } from '@common/interfaces/RouteInterfaces'
@@ -47,8 +55,8 @@ import { useMutateAsGet, useQueryParams } from '@common/hooks'
 import type { GitContextProps } from '@common/components/GitContextForm/GitContextForm'
 import { yamlStringify } from '@common/utils/YamlHelperMethods'
 import { NGBreadcrumbs } from '@common/components/NGBreadcrumbs/NGBreadcrumbs'
-import { useGetYamlWithTemplateRefsResolved } from 'services/template-ng'
 import type { InputSetDTO, InputSetType } from '@pipeline/utils/types'
+import { clearNullUndefined, isInputSetInvalid } from '@pipeline/utils/inputSetUtils'
 import { clearRuntimeInput } from '../PipelineStudio/StepUtil'
 import GitPopover from '../GitPopover/GitPopover'
 import FormikInputSetForm from './FormikInputSetForm'
@@ -106,7 +114,8 @@ const getInputSet = (
         projectIdentifier: parsedInputSetObj.inputSet.projectIdentifier,
         pipeline: clearRuntimeInput(parsedPipelineWithValues),
         gitDetails: defaultTo(inputSetObj.gitDetails, {}),
-        entityValidityDetails: defaultTo(inputSetObj.entityValidityDetails, {})
+        entityValidityDetails: defaultTo(inputSetObj.entityValidityDetails, {}),
+        outdated: inputSetObj.outdated
       }
     }
     return {
@@ -118,7 +127,8 @@ const getInputSet = (
       projectIdentifier,
       pipeline: clearRuntimeInput(parsedPipelineWithValues),
       gitDetails: defaultTo(inputSetObj.gitDetails, {}),
-      entityValidityDetails: defaultTo(inputSetObj.entityValidityDetails, {})
+      entityValidityDetails: defaultTo(inputSetObj.entityValidityDetails, {}),
+      outdated: inputSetObj.outdated
     }
   }
   return getDefaultInputSet(
@@ -131,12 +141,14 @@ const getInputSet = (
 export function InputSetForm(props: InputSetFormProps): React.ReactElement {
   const { executionView } = props
   const { getString } = useStrings()
+  const history = useHistory()
   const [isEdit, setIsEdit] = React.useState(false)
-  const { projectIdentifier, orgIdentifier, accountId, pipelineIdentifier, inputSetIdentifier } = useParams<
+  const { projectIdentifier, orgIdentifier, accountId, pipelineIdentifier, inputSetIdentifier, module } = useParams<
     PipelineType<InputSetPathProps> & { accountId: string }
   >()
   const { repoIdentifier, branch, inputSetRepoIdentifier, inputSetBranch } = useQueryParams<InputSetGitQueryParams>()
   const { isGitSyncEnabled } = React.useContext(AppStoreContext)
+  const [inputSetUpdateResponse, setInputSetUpdateResponse] = React.useState<ResponseInputSetResponse>()
   const {
     refetch: refetchTemplate,
     data: template,
@@ -178,6 +190,10 @@ export function InputSetForm(props: InputSetFormProps): React.ReactElement {
     lazy: true
   })
 
+  const { mutate: deleteInputSet, loading: loadingDeleteInputSet } = useDeleteInputSetForPipeline({
+    queryParams: { accountIdentifier: accountId, orgIdentifier, projectIdentifier, pipelineIdentifier }
+  })
+
   const [mergeTemplate, setMergeTemplate] = React.useState<string>()
   const { mutate: mergeInputSet, loading: loadingMerge } = useGetMergeInputSetFromPipelineTemplateWithListInput({
     queryParams: {
@@ -216,6 +232,19 @@ export function InputSetForm(props: InputSetFormProps): React.ReactElement {
     requestOptions: { headers: { 'content-type': 'application/yaml' } }
   })
 
+  const { mutate: sanitiseInputSet, loading: sanitiseInputSetLoading } = useSanitiseInputSet({
+    queryParams: {
+      accountIdentifier: accountId,
+      orgIdentifier,
+      pipelineIdentifier,
+      projectIdentifier,
+      pipelineRepoID: repoIdentifier,
+      pipelineBranch: branch
+    },
+    inputSetIdentifier: '',
+    requestOptions: { headers: { 'content-type': 'application/yaml' } }
+  })
+
   const {
     data: pipeline,
     loading: loadingPipeline,
@@ -228,40 +257,164 @@ export function InputSetForm(props: InputSetFormProps): React.ReactElement {
       orgIdentifier,
       projectIdentifier,
       repoIdentifier,
-      branch
+      branch,
+      getTemplatesResolvedPipeline: true
     }
   })
-
-  const { data: templateRefsResolvedPipeline, loading: loadingResolvedPipeline } = useMutateAsGet(
-    useGetYamlWithTemplateRefsResolved,
-    {
-      queryParams: {
-        accountIdentifier: accountId,
-        orgIdentifier,
-        pipelineIdentifier,
-        projectIdentifier,
-        repoIdentifier,
-        branch,
-        getDefaultFromOtherRepo: true
-      },
-      body: {
-        originalEntityYaml: yamlStringify(parse(defaultTo(pipeline?.data?.yamlPipeline, ''))?.pipeline)
-      }
-    }
-  )
 
   const { handleSubmit } = useSaveInputSet({ createInputSet, updateInputSet, inputSetResponse, isEdit, setFormErrors })
 
   const inputSet: InputSetDTO | InputSetType = React.useMemo(() => {
+    if (inputSetUpdateResponse) {
+      return getInputSet(
+        orgIdentifier,
+        projectIdentifier,
+        inputSetUpdateResponse,
+        template,
+        mergeTemplate,
+        isGitSyncEnabled
+      )
+    }
     return getInputSet(orgIdentifier, projectIdentifier, inputSetResponse, template, mergeTemplate, isGitSyncEnabled)
-  }, [mergeTemplate, inputSetResponse?.data, template?.data?.inputSetTemplateYaml, isGitSyncEnabled])
+  }, [
+    mergeTemplate,
+    inputSetResponse?.data,
+    template?.data?.inputSetTemplateYaml,
+    isGitSyncEnabled,
+    inputSetUpdateResponse
+  ])
 
   const [disableVisualView, setDisableVisualView] = React.useState(inputSet.entityValidityDetails?.valid === false)
 
   const formikRef = React.useRef<FormikProps<InputSetDTO & GitContextProps>>()
 
+  const [canUpdateInputSet] = usePermission(
+    {
+      resourceScope: {
+        accountIdentifier: accountId,
+        orgIdentifier,
+        projectIdentifier
+      },
+      resource: {
+        resourceType: ResourceType.PIPELINE,
+        resourceIdentifier: pipelineIdentifier
+      },
+      permissions: [PermissionIdentifier.EDIT_PIPELINE]
+    },
+    [accountId, orgIdentifier, projectIdentifier, pipelineIdentifier]
+  )
+
+  const goToInputSetList = () => {
+    const route = routes.toInputSetList({
+      orgIdentifier,
+      projectIdentifier,
+      accountId,
+      pipelineIdentifier,
+      module,
+      branch: pipeline?.data?.gitDetails?.branch,
+      repoIdentifier: pipeline?.data?.gitDetails?.repoIdentifier
+    })
+    history.push(route)
+  }
+
+  const { openDialog: openDeleteInputSetModal } = useConfirmationDialog({
+    contentText: getString('pipeline.inputSets.invalidInputSet2'),
+    titleText: getString('pipeline.inputSets.invalidInputSet'),
+    customButtons: (
+      <>
+        <RbacButton
+          text={getString('pipeline.inputSets.deleteInputSet')}
+          intent="danger"
+          disabled={!canUpdateInputSet}
+          onClick={async () => {
+            const gitParams = inputSet?.gitDetails?.objectId
+              ? {
+                  ...pick(inputSet?.gitDetails, ['branch', 'repoIdentifier', 'filePath', 'rootFolder']),
+                  lastObjectId: inputSet?.gitDetails?.objectId
+                }
+              : {}
+            await deleteInputSet(defaultTo(inputSet?.identifier, ''), {
+              queryParams: {
+                accountIdentifier: accountId,
+                orgIdentifier,
+                projectIdentifier,
+                pipelineIdentifier: defaultTo(inputSet?.pipeline?.identifier, ''),
+                ...gitParams
+              },
+              headers: { 'content-type': 'application/json' }
+            })
+            goToInputSetList()
+          }}
+        />
+        <Button
+          variation={ButtonVariation.TERTIARY}
+          text={getString('pipeline.inputSets.goBackToInputSetList')}
+          onClick={goToInputSetList}
+        />
+      </>
+    ),
+    intent: Intent.DANGER,
+    showCloseButton: false,
+    canEscapeKeyClose: false,
+    canOutsideClickClose: false
+  })
+
+  const { openDialog: openInvalidFieldsModal, closeDialog: closeInvalidFieldsModal } = useConfirmationDialog({
+    contentText: getString('pipeline.inputSets.invalidInputSet1'),
+    titleText: getString('pipeline.inputSets.invalidFields'),
+    customButtons: (
+      <>
+        <RbacButton
+          text={getString('pipeline.inputSets.removeInvalidFields')}
+          intent="danger"
+          disabled={!canUpdateInputSet}
+          onClick={async () => {
+            const inputSett = omit(inputSet, 'gitDetails', 'entityValidityDetails', 'outdated')
+            const gitParams = inputSet?.gitDetails?.objectId
+              ? {
+                  ...pick(inputSet?.gitDetails, ['branch', 'repoIdentifier', 'filePath', 'rootFolder']),
+                  lastObjectId: inputSet?.gitDetails?.objectId,
+                  pipelineRepoID: repoIdentifier,
+                  pipelineBranch: branch
+                }
+              : {}
+            const response = await sanitiseInputSet(yamlStringify({ inputSet: clearNullUndefined(inputSett) }), {
+              pathParams: {
+                inputSetIdentifier
+              },
+              queryParams: {
+                accountIdentifier: accountId,
+                orgIdentifier,
+                projectIdentifier,
+                pipelineIdentifier,
+                ...gitParams
+              }
+            })
+            closeInvalidFieldsModal()
+            if (response.data?.shouldDeleteInputSet) {
+              openDeleteInputSetModal()
+            } else {
+              setInputSetUpdateResponse({
+                data: {
+                  ...response?.data?.inputSetUpdateResponse,
+                  inputSetYaml: response?.data?.inputSetUpdateResponse?.inputSetYaml
+                }
+              })
+            }
+          }}
+        />
+        <Button
+          variation={ButtonVariation.TERTIARY}
+          text={getString('pipeline.inputSets.editInYamlView')}
+          onClick={() => closeInvalidFieldsModal()}
+        />
+      </>
+    ),
+    intent: Intent.DANGER
+  })
+
   React.useEffect(() => {
-    if (inputSet.entityValidityDetails?.valid === false || selectedView === SelectedView.YAML) {
+    if (isInputSetInvalid(inputSet) || selectedView === SelectedView.YAML) {
       setSelectedView(SelectedView.YAML)
     } else {
       setSelectedView(SelectedView.VISUAL)
@@ -282,6 +435,16 @@ export function InputSetForm(props: InputSetFormProps): React.ReactElement {
       refetch({ pathParams: { inputSetIdentifier: inputSetIdentifier } })
       refetchTemplate()
       refetchPipeline()
+    } else {
+      refetchTemplate()
+      refetchPipeline()
+
+      setIsEdit(false)
+    }
+  }, [inputSetIdentifier])
+  React.useEffect(() => {
+    if (!loadingInputSet && inputSetResponse && !isInputSetInvalid(inputSet)) {
+      // Merge only if inputset is valid
       mergeInputSet({ inputSetReferences: [inputSetIdentifier] })
         .then(response => {
           setMergeTemplate(response.data?.pipelineYaml)
@@ -290,13 +453,15 @@ export function InputSetForm(props: InputSetFormProps): React.ReactElement {
           setMergeTemplate(undefined)
           showError(getErrorInfoFromErrorObject(e), undefined, 'pipeline.get.template')
         })
-    } else {
-      refetchTemplate()
-      refetchPipeline()
-
-      setIsEdit(false)
     }
-  }, [inputSetIdentifier])
+  }, [inputSetIdentifier, loadingInputSet])
+
+  React.useEffect(() => {
+    // In inputset is invalid, show modal
+    if (!loadingInputSet && inputSetResponse && isInputSetInvalid(inputSet)) {
+      openInvalidFieldsModal()
+    }
+  }, [loadingInputSet])
 
   useDocumentTitle([
     defaultTo(parse(defaultTo(pipeline?.data?.yamlPipeline, ''))?.pipeline?.name, getString('pipelines')),
@@ -315,7 +480,7 @@ export function InputSetForm(props: InputSetFormProps): React.ReactElement {
           inputSet.pipeline = inputSetYamlVisual.pipeline
 
           formikRef.current?.setValues({
-            ...omit(inputSet, 'gitDetails', 'entityValidityDetails'),
+            ...omit(inputSet, 'gitDetails', 'entityValidityDetails', 'outdated'),
             repo: defaultTo(repoIdentifier, ''),
             branch: defaultTo(branch, '')
           })
@@ -332,7 +497,7 @@ export function InputSetForm(props: InputSetFormProps): React.ReactElement {
         inputSet={inputSet}
         template={template}
         pipeline={pipeline}
-        templateRefsResolvedPipeline={templateRefsResolvedPipeline}
+        resolvedTemplatesPipelineYaml={pipeline?.data?.resolvedTemplatesPipelineYaml}
         handleSubmit={handleSubmit}
         formErrors={formErrors}
         setFormErrors={setFormErrors}
@@ -349,7 +514,7 @@ export function InputSetForm(props: InputSetFormProps): React.ReactElement {
       inputSet,
       template,
       pipeline,
-      templateRefsResolvedPipeline,
+      pipeline?.data?.resolvedTemplatesPipelineYaml,
       handleSubmit,
       formErrors,
       setFormErrors,
@@ -359,7 +524,8 @@ export function InputSetForm(props: InputSetFormProps): React.ReactElement {
       selectedView,
       executionView,
       isEdit,
-      isGitSyncEnabled
+      isGitSyncEnabled,
+      sanitiseInputSetLoading
     ]
   )
 
@@ -370,8 +536,9 @@ export function InputSetForm(props: InputSetFormProps): React.ReactElement {
       loading={
         loadingInputSet ||
         loadingPipeline ||
-        loadingResolvedPipeline ||
         loadingTemplate ||
+        sanitiseInputSetLoading ||
+        loadingDeleteInputSet ||
         (!isGitSyncEnabled && (createInputSetLoading || updateInputSetLoading)) ||
         loadingMerge
       }

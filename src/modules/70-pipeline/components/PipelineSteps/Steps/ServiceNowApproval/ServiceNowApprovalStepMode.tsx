@@ -153,7 +153,10 @@ function FormContent({
           <FormInput.InputWithIdentifier
             inputLabel={getString('name')}
             isIdentifierEditable={isNewStep}
-            inputGroupProps={{ disabled: isApprovalStepFieldDisabled(readonly) }}
+            inputGroupProps={{
+              placeholder: getString('pipeline.stepNamePlaceholder'),
+              disabled: isApprovalStepFieldDisabled(readonly)
+            }}
           />
         </div>
       )}

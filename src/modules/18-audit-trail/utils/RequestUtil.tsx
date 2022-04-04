@@ -65,7 +65,8 @@ export const resourceTypeToLabelMapping: Record<ResourceDTO['type'], StringKeys>
   CONNECTOR: 'connector',
   API_KEY: 'common.apikey',
   TOKEN: 'token',
-  DELEGATE_TOKEN: 'common.delegateTokenLabel'
+  DELEGATE_TOKEN: 'common.delegateTokenLabel',
+  DELEGATE_GROUPS: 'auditTrail.delegateGroups'
 }
 
 export const getModuleNameFromAuditModule = (auditModule: AuditEventDTO['module']): Module | undefined => {
@@ -82,6 +83,13 @@ export const getModuleNameFromAuditModule = (auditModule: AuditEventDTO['module'
       return 'cv'
   }
   return undefined
+}
+
+export type ShowEventFilterType = Exclude<AuditFilterProperties['staticFilter'], undefined>
+
+export const showEventTypeMap: Record<ShowEventFilterType, StringKeys> = {
+  EXCLUDE_LOGIN_EVENTS: 'auditTrail.excludeLoginEvents',
+  EXCLUDE_SYSTEM_EVENTS: 'auditTrail.excludeSystemEvents'
 }
 
 export const getFilterPropertiesFromForm = (formData: AuditTrailFormType, accountId: string): AuditFilterProperties => {

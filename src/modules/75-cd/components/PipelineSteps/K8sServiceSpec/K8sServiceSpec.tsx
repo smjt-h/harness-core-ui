@@ -22,17 +22,14 @@ import {
   getBuildDetailsForGcrPromise,
   getBuildDetailsForEcrPromise
 } from 'services/cd-ng'
-import {
-  allowedArtifactTypes,
-  ArtifactToConnectorMap,
-  ENABLED_ARTIFACT_TYPES
-} from '@pipeline/components/ArtifactsSelection/ArtifactHelper'
+import { ArtifactToConnectorMap, ENABLED_ARTIFACT_TYPES } from '@pipeline/components/ArtifactsSelection/ArtifactHelper'
 
 import { loggerFor } from 'framework/logging/logging'
 import { ModuleName } from 'framework/types/ModuleName'
 import type { CompletionItemInterface } from '@common/interfaces/YAMLBuilderProps'
 import { StepType } from '@pipeline/components/PipelineSteps/PipelineStepInterface'
 import { getConnectorName, getConnectorValue } from '@triggers/pages/triggers/utils/TriggersWizardPageUtils'
+import type { ArtifactType } from '@pipeline/components/ArtifactsSelection/ArtifactInterface'
 import { K8sServiceSpecVariablesForm, K8sServiceSpecVariablesFormProps } from './K8sServiceSpecVariablesForm'
 import type { K8SDirectServiceStep } from './K8sServiceSpecInterface'
 import KubernetesServiceSpecEditable from './K8sServiceSpecForms/KubernetesServiceSpecEditable'
@@ -47,6 +44,12 @@ const ArtifactsSidecarRegex = /^.+.sidecar\.spec\.connectorRef$/
 const ArtifactsPrimaryRegex = /^.+artifacts\.primary\.spec\.connectorRef$/
 const ArtifactsSidecarTagRegex = /^.+.sidecar\.spec\.tag$/
 const ArtifactsPrimaryTagRegex = /^.+artifacts\.primary\.spec\.tag$/
+
+const allowedArtifactTypes: Array<ArtifactType> = [
+  ENABLED_ARTIFACT_TYPES.DockerRegistry,
+  ENABLED_ARTIFACT_TYPES.Gcr,
+  ENABLED_ARTIFACT_TYPES.Ecr
+]
 
 export class KubernetesServiceSpec extends Step<ServiceSpec> {
   protected type = StepType.K8sServiceSpec

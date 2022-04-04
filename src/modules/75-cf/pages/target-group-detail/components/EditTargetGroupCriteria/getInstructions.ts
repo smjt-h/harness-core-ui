@@ -1,3 +1,10 @@
+/*
+ * Copyright 2022 Harness Inc. All rights reserved.
+ * Use of this source code is governed by the PolyForm Shield 1.0.0 license
+ * that can be found in the licenses directory at the root of this repository, also available at
+ * https://polyformproject.org/wp-content/uploads/2020/06/PolyForm-Shield-1.0.0.txt.
+ */
+
 import { isEqual, omit } from 'lodash-es'
 import type { SelectOption } from '@wings-software/uicore'
 import type { Clause, Target } from 'services/cf'
@@ -40,10 +47,10 @@ export function getRulesInstructions(existing: Clause[], rules: Clause[]): Instr
   })
 
   return [
-    ...removedRules.map(({ id }) => patch.creators.removeClauseOnSegment(id)),
+    ...removedRules.map(({ id }) => patch.creators.removeClauseOnSegment(id as string)),
     ...newRules.map(rule => patch.creators.addClauseToSegment(omit(rule, ['id']))),
     ...editedRules.map(rule =>
-      patch.creators.updateClauseOnSegment({ ...omit(rule, ['id', 'negate']), clauseID: rule.id })
+      patch.creators.updateClauseOnSegment({ ...omit(rule, ['id', 'negate']), clauseID: rule.id as string })
     )
   ]
 }

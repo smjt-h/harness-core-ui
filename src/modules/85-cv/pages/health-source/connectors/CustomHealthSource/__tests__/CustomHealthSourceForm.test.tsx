@@ -175,7 +175,9 @@ describe('Verify CustomHealthSourceForm', () => {
     await waitFor(() => expect(container.querySelector('input[value="SERVICE_BASED"]')).toBeChecked())
 
     userEvent.click(getByText('cv.monitoringSources.assign'))
-    await waitFor(() => expect(getByText('cv.healthScore')).toBeInTheDocument())
+    await waitFor(() =>
+      expect(getByText('cv.monitoredServices.monitoredServiceTabs.serviceHealth')).toBeInTheDocument()
+    )
     await waitFor(() => expect(getByText('cv.slos.sli')).toBeInTheDocument())
 
     userEvent.click(container.querySelector('input[name="healthScore"]')!)

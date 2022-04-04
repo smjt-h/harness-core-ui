@@ -7,7 +7,8 @@
 
 import React from 'react'
 import { connect } from 'formik'
-import { Text, getMultiTypeFromValue, MultiTypeInputType, FormikForm, Color, Container } from '@wings-software/uicore'
+import { Text, getMultiTypeFromValue, MultiTypeInputType, FormikForm, Container } from '@wings-software/uicore'
+import { Color } from '@harness/design-system'
 import { isEmpty, startCase } from 'lodash-es'
 import cx from 'classnames'
 import { useStrings } from 'framework/strings'
@@ -17,10 +18,10 @@ import { FormMultiTypeCheckboxField } from '@common/components/MultiTypeCheckbox
 import { useVariablesExpression } from '@pipeline/components/PipelineStudio/PiplineHooks/useVariablesExpression'
 import StepCommonFieldsInputSet from '@ci/components/PipelineSteps/StepCommonFields/StepCommonFieldsInputSet'
 import { StepViewType } from '@pipeline/components/AbstractSteps/Step'
-import { Connectors } from '@connectors/constants'
 import type { RunStepProps } from './RunStep'
 import { CIStep } from '../CIStep/CIStep'
 import { CIStepOptionalConfig, renderMultiTypeListInputSet } from '../CIStep/CIStepOptionalConfig'
+import { ConnectorRefWithImage } from '../CIStep/ConnectorRefWithImage'
 import { AllMultiTypeInputTypesForInputSet, shouldRenderRunTimeInputView } from '../CIStep/StepUtils'
 import css from '@pipeline/components/PipelineSteps/Steps/Steps.module.scss'
 
@@ -45,37 +46,15 @@ export const RunStepInputSetBasic: React.FC<RunStepProps> = ({
         readonly={readonly}
         stepViewType={stepViewType}
         enableFields={{
-          ...(getMultiTypeFromValue(template?.description) === MultiTypeInputType.RUNTIME && { description: {} }),
-          ...(getMultiTypeFromValue(template?.spec?.connectorRef) === MultiTypeInputType.RUNTIME && {
-            'spec.connectorRef': {
-              label: (
-                <Text
-                  className={css.inpLabel}
-                  color={Color.GREY_600}
-                  font={{ size: 'small', weight: 'semi-bold' }}
-                  style={{ display: 'flex', alignItems: 'center' }}
-                  tooltipProps={{ dataTooltipId: 'connector' }}
-                >
-                  {getString('pipelineSteps.connectorLabel')}
-                </Text>
-              ),
-              type: [Connectors.GCP, Connectors.AWS, Connectors.DOCKER]
-            }
-          }),
-          ...(getMultiTypeFromValue(template?.spec?.image) === MultiTypeInputType.RUNTIME && {
-            'spec.image': {
-              tooltipId: 'image',
-              multiTextInputProps: {
-                placeholder: getString('imagePlaceholder'),
-                disabled: readonly,
-                multiTextInputProps: {
-                  expressions,
-                  allowableTypes
-                }
-              }
-            }
-          })
+          ...(getMultiTypeFromValue(template?.description) === MultiTypeInputType.RUNTIME && { description: {} })
         }}
+        path={path || ''}
+      />
+      <ConnectorRefWithImage
+        readonly={readonly}
+        showConnectorRef={getMultiTypeFromValue(template?.spec?.connectorRef) === MultiTypeInputType.RUNTIME}
+        showImage={getMultiTypeFromValue(template?.spec?.image) === MultiTypeInputType.RUNTIME}
+        stepViewType={stepViewType}
         path={path || ''}
       />
       {getMultiTypeFromValue(template?.spec?.command) === MultiTypeInputType.RUNTIME && (
@@ -124,7 +103,9 @@ export const RunStepInputSetBasic: React.FC<RunStepProps> = ({
         <div className={cx(css.formGroup, css.sm, css.topMargin4, css.bottomMargin5)}>
           <FormMultiTypeCheckboxField
             name={`${prefix}spec.privileged`}
-            label={getString('ci.privileged').concat(` (${startCase(getString('common.optionalLabel'))})`)}
+            label={getString('pipeline.buildInfra.privileged').concat(
+              ` (${startCase(getString('common.optionalLabel'))})`
+            )}
             disabled={readonly}
             multiTypeTextbox={{
               expressions,
@@ -160,7 +141,9 @@ export const RunStepInputSetBasic: React.FC<RunStepProps> = ({
             expressions,
             getString,
             readonly,
-            formik
+            formik,
+            withObjectStructure: true,
+            keyName: 'name'
           })}
         </Container>
       )}

@@ -7,13 +7,14 @@
 
 import { clone } from 'lodash-es'
 import type { IDrawerProps } from '@blueprintjs/core'
+import type { GetDataError } from 'restful-react'
 import type { EntityGitDetails, EntityValidityDetails, NGTemplateInfoConfig } from 'services/template-ng'
 import {
   ActionReturnType,
   DrawerTypes,
   TemplateActions
 } from '@templates-library/components/TemplateStudio/TemplateContext/TemplateActions'
-import type { StepElementConfig } from 'services/cd-ng'
+import type { Failure, StepElementConfig } from 'services/cd-ng'
 import type { YamlBuilderHandlerBinding } from '@common/interfaces/YAMLBuilderProps'
 import { DefaultNewTemplateId, DefaultNewVersionLabel, DefaultTemplate } from 'framework/Templates/templates'
 
@@ -49,6 +50,7 @@ export interface TemplateReducerState {
   gitDetails: EntityGitDetails
   entityValidityDetails: EntityValidityDetails
   templateYaml: string
+  templateError?: GetDataError<Failure | Error> | null
 }
 
 export const initialState: TemplateReducerState = {
@@ -72,7 +74,8 @@ export const initialState: TemplateReducerState = {
   isInitialized: false,
   gitDetails: {},
   entityValidityDetails: {},
-  templateYaml: ''
+  templateYaml: '',
+  templateError: null
 }
 
 export const TemplateReducer = (state: TemplateReducerState, data: ActionReturnType): TemplateReducerState => {

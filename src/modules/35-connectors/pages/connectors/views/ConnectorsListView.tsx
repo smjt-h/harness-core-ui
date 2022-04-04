@@ -9,7 +9,6 @@ import React, { useState, useMemo } from 'react'
 import {
   Text,
   Layout,
-  Color,
   Icon,
   Button,
   Popover,
@@ -17,15 +16,16 @@ import {
   useToaster,
   TagsPopover,
   TableV2,
-  FontVariation,
   useConfirmationDialog
 } from '@wings-software/uicore'
+import { FontVariation, Color } from '@harness/design-system'
 import type { CellProps, Renderer, Column } from 'react-table'
 import { Menu, Classes, Position, Intent, TextArea, Tooltip } from '@blueprintjs/core'
-import { useParams, useHistory } from 'react-router-dom'
+import { useParams, useHistory, Link } from 'react-router-dom'
 import ReactTimeago from 'react-timeago'
 import classNames from 'classnames'
 import { pick } from 'lodash-es'
+import defaultTo from 'lodash-es/defaultTo'
 import { useStrings } from 'framework/strings'
 import {
   ConnectorResponse,
@@ -46,6 +46,7 @@ import routes from '@common/RouteDefinitions'
 import { getIconByType, isSMConnector } from '../utils/ConnectorUtils'
 import { getConnectorDisplaySummary } from '../utils/ConnectorListViewUtils'
 import ConnectivityStatus from './connectivityStatus/ConnectivityStatus'
+import { ConnectorDetailsView } from '../utils/ConnectorHelper'
 import css from './ConnectorsListView.module.scss'
 
 interface ConnectorListViewProps {
@@ -60,6 +61,11 @@ type CustomColumn = Column<ConnectorResponse> & {
 }
 
 export type ErrorMessage = ConnectorValidationResult & { useErrorHandler?: boolean }
+
+const connectorDetailsUrlWithGit = (url: string, gitInfo: EntityGitDetails = {}): string => {
+  const urlForGit = `${url}?repoIdentifier=${gitInfo.repoIdentifier}&branch=${gitInfo.branch}`
+  return gitInfo?.objectId ? urlForGit : url
+}
 
 export const RenderColumnConnector: Renderer<CellProps<ConnectorResponse>> = ({ row }) => {
   const data = row.original
@@ -239,6 +245,39 @@ const RenderColumnMenu: Renderer<CellProps<ConnectorResponse>> = ({ row, column 
     )
   }
 
+  const { openDialog: openReferenceErrorDialog } = useConfirmationDialog({
+    contentText: (
+      <span>
+        <Text inline font={{ weight: 'bold' }}>
+          {`${data.connector?.name} `}
+        </Text>
+        {getString('connectors.connectorReferenceText')}
+        <Link
+          to={{
+            pathname: routes.toConnectorDetails({
+              ...params,
+              connectorId: data.connector?.identifier
+            }),
+            search: `?view=${ConnectorDetailsView.referencedBy}`
+          }}
+        >
+          {getString('clickHere')}
+        </Link>
+      </span>
+    ),
+    titleText: getString('connectors.cantDeleteConnector'),
+    cancelButtonText: getString('cancel'),
+    intent: Intent.DANGER
+  })
+
+  const handleConnectorDeleteError = (code: string, message: string) => {
+    if (code === 'ENTITY_REFERENCE_EXCEPTION') {
+      openReferenceErrorDialog()
+    } else {
+      showError(message)
+    }
+  }
+
   const { openDialog } = useConfirmationDialog({
     contentText: getConfirmationDialogContent(),
     titleText: getString('connectors.confirmDeleteTitle'),
@@ -258,7 +297,7 @@ const RenderColumnMenu: Renderer<CellProps<ConnectorResponse>> = ({ row, column 
           }
           ;(column as any).reload?.()
         } catch (err) {
-          showError(err?.data?.message || err?.message)
+          handleConnectorDeleteError(err?.data.code, defaultTo(err?.data?.message, err?.message))
         }
       }
     }
@@ -286,7 +325,8 @@ const RenderColumnMenu: Renderer<CellProps<ConnectorResponse>> = ({ row, column 
         gitDetails: row.original?.gitDetails
       })
     } else {
-      history.push(routes.toConnectorDetails({ ...params, connectorId: data.connector?.identifier }))
+      const url = routes.toConnectorDetails({ ...params, connectorId: data.connector?.identifier })
+      history.push(connectorDetailsUrlWithGit(url, row.original?.gitDetails))
     }
   }
 
@@ -397,9 +437,7 @@ const ConnectorsListView: React.FC<ConnectorListViewProps> = props => {
       name="ConnectorsListView"
       onRowClick={connector => {
         const url = routes.toConnectorDetails({ ...params, connectorId: connector.connector?.identifier })
-        const gitInfo: EntityGitDetails = connector.gitDetails ?? {}
-        const urlForGit = `${url}?repoIdentifier=${gitInfo.repoIdentifier}&branch=${gitInfo.branch}`
-        history.push(gitInfo?.objectId ? urlForGit : url)
+        history.push(connectorDetailsUrlWithGit(url, connector.gitDetails))
       }}
       pagination={{
         itemCount: data?.totalItems || 0,

@@ -183,6 +183,20 @@ export const GetUpdatedPipelineWithVariablesResponse: UseGetReturnData<ResponseP
   }
 }
 
+export const GetTemplateFromPipelineResponseArtifacts: UseGetReturnData<ResponseInputSetTemplateResponse> = {
+  loading: false,
+  refetch: jest.fn(),
+  error: null,
+  data: {
+    status: 'SUCCESS',
+    data: {
+      inputSetTemplateYaml:
+        'pipeline:\n  identifier: "SampleTestArtifactsArchit"\n  stages:\n  - stage:\n      identifier: "s1"\n      type: "Deployment"\n      spec:\n        serviceConfig:\n          serviceDefinition:\n            type: "Kubernetes"\n            spec:\n              artifacts:\n                primary:\n                  type: "DockerRegistry"\n                  spec:\n                    tag: "<+input>"\n        infrastructure:\n          infrastructureDefinition:\n            type: "KubernetesDirect"\n            spec:\n              namespace: "<+input>"\n'
+    },
+    correlationId: 'ddff4d3f-25f5-4a13-9820-c11dad9bc901'
+  }
+}
+
 export const GetTemplateFromPipelineResponse: UseGetReturnData<ResponseInputSetTemplateResponse> = {
   loading: false,
   refetch: jest.fn(),

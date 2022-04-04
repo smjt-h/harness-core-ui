@@ -5,22 +5,18 @@
  * https://polyformproject.org/wp-content/uploads/2020/06/PolyForm-Shield-1.0.0.txt.
  */
 
-import React, { useCallback, useState } from 'react'
-import { FormGroup, Intent } from '@blueprintjs/core'
+import React, { useState } from 'react'
 import { get } from 'lodash-es'
 import type { FormikContext } from 'formik'
 import {
   DataTooltipInterface,
-  ExpressionAndRuntimeType,
   ExpressionAndRuntimeTypeProps,
-  FormError,
   getMultiTypeFromValue,
-  HarnessDocTooltip,
-  MultiTypeInputType,
-  RUNTIME_INPUT_VALUE
+  MultiTypeInputType
 } from '@wings-software/uicore'
+import MultiTypeFieldSelector from '@common/components/MultiTypeFieldSelector/MultiTypeFieldSelector'
+import { ExpressionsListInput } from '@common/components/ExpressionsListInput/ExpressionsListInput'
 import UserGroupsInput, { FormikUserGroupsInput } from './UserGroupsInput'
-import css from './UserGroupsInput.module.scss'
 
 export interface FormMultiTypeUserGroupInputProps
   extends Omit<ExpressionAndRuntimeTypeProps, 'fixedTypeComponent' | 'fixedTypeComponentProps'> {
@@ -33,48 +29,31 @@ export interface FormMultiTypeUserGroupInputProps
 export type Extended = FormikUserGroupsInput & FormMultiTypeUserGroupInputProps
 
 export const FormMultiTypeUserGroupInput: React.FC<Extended> = props => {
-  const { disabled, children, label, tooltipProps, formik, name, expressions, ...rest } = props
+  const { disabled, children, label, tooltipProps, formik, name, expressions, allowableTypes } = props
 
   const value = get(formik?.values, name)
-  const fixedTypeComponent = useCallback(() => {
-    return (
+
+  // Don't show formError if type is fixed, as that is handled inside UserGroupInput.tsx
+  const [multiType, setMultiType] = useState<MultiTypeInputType>(getMultiTypeFromValue(value))
+
+  return (
+    <MultiTypeFieldSelector
+      name={name}
+      label={label}
+      defaultValueToReset={[]}
+      onTypeChange={setMultiType}
+      hideError={multiType === MultiTypeInputType.FIXED}
+      skipRenderValueInExpressionLabel
+      allowedTypes={allowableTypes}
+      disableMultiSelectBtn={disabled}
+      expressionRender={() => (
+        <ExpressionsListInput name={name} value={value} readOnly={disabled} expressions={expressions} />
+      )}
+      style={{ flexGrow: 1, marginBottom: 0 }}
+    >
       <UserGroupsInput label="" tooltipProps={tooltipProps} name={name} disabled={disabled}>
         {children}
       </UserGroupsInput>
-    )
-  }, [value])
-
-  const formError = get(formik?.errors, name)
-  const [multiType, setMultiType] = useState<MultiTypeInputType>(getMultiTypeFromValue(value))
-
-  // Don't show formError if type is fixed, as that is handled inside UserGroupInput.tsx
-  const showFormError = formError && multiType !== MultiTypeInputType.FIXED
-
-  return (
-    <FormGroup
-      helperText={showFormError ? <FormError name={name} errorMessage={formError} /> : null}
-      intent={showFormError ? Intent.DANGER : Intent.NONE}
-      label={<HarnessDocTooltip tooltipId={tooltipProps?.dataTooltipId} labelText={label} />}
-    >
-      <ExpressionAndRuntimeType
-        value={value as string}
-        name={name}
-        disabled={disabled}
-        {...rest}
-        fixedTypeComponent={fixedTypeComponent}
-        className={css.multiTypeSupport}
-        expressions={expressions}
-        onChange={(changedValue, _unusedValueType, changedMultiType: MultiTypeInputType) => {
-          setMultiType(changedMultiType)
-          if (changedMultiType === MultiTypeInputType.RUNTIME) {
-            formik.setFieldValue(name, RUNTIME_INPUT_VALUE)
-          } else if (changedMultiType === MultiTypeInputType.EXPRESSION) {
-            formik.setFieldValue(name, changedValue || '')
-          } else {
-            formik.setFieldValue(name, [])
-          }
-        }}
-      />
-    </FormGroup>
+    </MultiTypeFieldSelector>
   )
 }

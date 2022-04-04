@@ -8,7 +8,9 @@
 import React from 'react'
 import { render } from '@testing-library/react'
 
+import routes from '@common/RouteDefinitions'
 import { TestWrapper } from '@common/utils/testUtils'
+import { executionPathProps, modulePathProps } from '@common/utils/routeUtils'
 
 import { EvaluatedPolicy, PolicyEvaluationContent, PolicyInfo } from '../PolicyEvaluationContent'
 
@@ -18,10 +20,14 @@ describe('Policy Evaluation Content', () => {
   test('snapshot for no policy details', () => {
     const { container } = render(
       <TestWrapper
-        queryParams={{
-          accountIdentifier: 'acc',
+        path={routes.toExecutionPipelineView({ ...executionPathProps, ...modulePathProps })}
+        pathParams={{
+          accountId: 'acc',
           orgIdentifier: 'org',
-          projectIdentifier: 'project'
+          projectIdentifier: 'project',
+          pipelineIdentifier: 'pipeline',
+          executionIdentifier: 'execution',
+          module: 'cd'
         }}
       >
         <PolicyEvaluationContent
@@ -38,10 +44,14 @@ describe('Policy Evaluation Content', () => {
   test('snapshot for all policy set statuses and policy set headers', () => {
     const { container } = render(
       <TestWrapper
-        queryParams={{
-          accountIdentifier: 'acc',
+        path={routes.toExecutionPipelineView({ ...executionPathProps, ...modulePathProps })}
+        pathParams={{
+          accountId: 'acc',
           orgIdentifier: 'org',
-          projectIdentifier: 'project'
+          projectIdentifier: 'project',
+          pipelineIdentifier: 'pipeline',
+          executionIdentifier: 'execution',
+          module: 'cd'
         }}
       >
         <PolicyEvaluationContent step={StepProps as any} />
@@ -57,13 +67,17 @@ describe('Policy Info under Policy Evaluation Content', () => {
     const policy = StepProps.outcomes.output.policySetDetails['org.policySet1'].policyDetails['org.policy1']
     const { container } = render(
       <TestWrapper
-        queryParams={{
-          accountIdentifier: 'acc',
+        path={routes.toExecutionPipelineView({ ...executionPathProps, ...modulePathProps })}
+        pathParams={{
+          accountId: 'acc',
           orgIdentifier: 'org',
-          projectIdentifier: 'project'
+          projectIdentifier: 'project',
+          pipelineIdentifier: 'pipeline',
+          executionIdentifier: 'execution',
+          module: 'cd'
         }}
       >
-        <PolicyInfo policy={policy as EvaluatedPolicy} scope={'Organization'} numberInList={1} />
+        <PolicyInfo policy={policy as EvaluatedPolicy} numberInList={1} />
       </TestWrapper>
     )
 
@@ -74,13 +88,17 @@ describe('Policy Info under Policy Evaluation Content', () => {
     const policy = StepProps.outcomes.output.policySetDetails['account.policySet1'].policyDetails['account.policy1']
     const { container } = render(
       <TestWrapper
-        queryParams={{
-          accountIdentifier: 'acc',
+        path={routes.toExecutionPipelineView({ ...executionPathProps, ...modulePathProps })}
+        pathParams={{
+          accountId: 'acc',
           orgIdentifier: 'org',
-          projectIdentifier: 'project'
+          projectIdentifier: 'project',
+          pipelineIdentifier: 'pipeline',
+          executionIdentifier: 'execution',
+          module: 'cd'
         }}
       >
-        <PolicyInfo policy={policy as EvaluatedPolicy} scope={'Account'} numberInList={1} />
+        <PolicyInfo policy={policy as EvaluatedPolicy} numberInList={1} />
       </TestWrapper>
     )
 
@@ -91,13 +109,17 @@ describe('Policy Info under Policy Evaluation Content', () => {
     const policy = StepProps.outcomes.output.policySetDetails['account.policySet1'].policyDetails['account.policy2']
     const { container } = render(
       <TestWrapper
-        queryParams={{
-          accountIdentifier: 'acc',
+        path={routes.toExecutionPipelineView({ ...executionPathProps, ...modulePathProps })}
+        pathParams={{
+          accountId: 'acc',
           orgIdentifier: 'org',
-          projectIdentifier: 'project'
+          projectIdentifier: 'project',
+          pipelineIdentifier: 'pipeline',
+          executionIdentifier: 'execution',
+          module: 'cd'
         }}
       >
-        <PolicyInfo policy={policy as EvaluatedPolicy} scope={'Account'} numberInList={1} />
+        <PolicyInfo policy={policy as EvaluatedPolicy} numberInList={1} />
       </TestWrapper>
     )
 
@@ -108,13 +130,17 @@ describe('Policy Info under Policy Evaluation Content', () => {
     const policy = StepProps.outcomes.output.policySetDetails['account.policySet1'].policyDetails['account.policy3']
     const { container } = render(
       <TestWrapper
-        queryParams={{
-          accountIdentifier: 'acc',
+        path={routes.toExecutionPipelineView({ ...executionPathProps, ...modulePathProps })}
+        pathParams={{
+          accountId: 'acc',
           orgIdentifier: 'org',
-          projectIdentifier: 'project'
+          projectIdentifier: 'project',
+          pipelineIdentifier: 'pipeline',
+          executionIdentifier: 'execution',
+          module: 'cd'
         }}
       >
-        <PolicyInfo policy={policy as EvaluatedPolicy} scope={'Account'} numberInList={1} />
+        <PolicyInfo policy={policy as EvaluatedPolicy} numberInList={1} />
       </TestWrapper>
     )
 
@@ -125,13 +151,17 @@ describe('Policy Info under Policy Evaluation Content', () => {
     const policy = StepProps.outcomes.output.policySetDetails['policySet1'].policyDetails['policy1']
     const { container } = render(
       <TestWrapper
-        queryParams={{
-          accountIdentifier: 'acc',
+        path={routes.toExecutionPipelineView({ ...executionPathProps, ...modulePathProps })}
+        pathParams={{
+          accountId: 'acc',
           orgIdentifier: 'org',
-          projectIdentifier: 'project'
+          projectIdentifier: 'project',
+          pipelineIdentifier: 'pipeline',
+          executionIdentifier: 'execution',
+          module: 'cd'
         }}
       >
-        <PolicyInfo policy={policy as EvaluatedPolicy} scope={'Project'} numberInList={1} />
+        <PolicyInfo policy={policy as EvaluatedPolicy} numberInList={1} />
       </TestWrapper>
     )
 

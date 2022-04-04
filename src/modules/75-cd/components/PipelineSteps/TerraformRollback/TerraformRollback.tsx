@@ -189,6 +189,7 @@ const TerraformRollbackInputStep: React.FC<TerraformRollbackProps> = ({ inputSet
         <div className={cx(stepCss.formGroup, stepCss.md)}>
           <FormInput.Text
             name="spec.provisionerIdentifier"
+            placeholder={getString('pipeline.terraformStep.provisionerIdentifier')}
             label={getString('pipelineSteps.provisionerIdentifier')}
             disabled={readonly}
           />

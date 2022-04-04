@@ -12,11 +12,9 @@ const { pick, omit, mapValues } = require('lodash')
  * These packages must be stricly shared with exact versions
  */
 const ExactSharedPackages = [
-  'formik',
   'react-dom',
   'react',
   'react-router-dom',
-  '@harness/uicore',
   '@harness/use-modal',
   '@blueprintjs/core',
   '@blueprintjs/select',
@@ -40,22 +38,22 @@ module.exports = ({ enableGitOpsUI, enableSTO }) => {
   if (enableSTO) {
     remotes.sto = "sto@[window.getApiBaseUrl('sto/remoteEntry.js')]"
   }
-  
-  if(process.env.TARGET_LOCALHOST) {
-    remotes.errortracking = "errortracking@http://localhost:3091/remoteEntry.js";
-  }else{
-    remotes.errortracking = "errortracking@[window.getApiBaseUrl('et/remoteEntry.js')]";
+
+  if (process.env.TARGET_LOCALHOST) {
+    remotes.errortracking = 'errortracking@http://localhost:3091/remoteEntry.js'
+  } else {
+    remotes.errortracking = "errortracking@[window.getApiBaseUrl('et/remoteEntry.js')]"
   }
-  
+
   return {
     name: 'nextgenui',
     remotes,
-    shared: Object.assign(
-      {},
-      mapValues(pick(packageJSON.dependencies, ExactSharedPackages), version => ({
+    shared: {
+      '@harness/uicore': packageJSON.dependencies['@harness/uicore'],
+      ...mapValues(pick(packageJSON.dependencies, ExactSharedPackages), version => ({
         singleton: true,
         requiredVersion: version
       }))
-    )
+    }
   }
 }

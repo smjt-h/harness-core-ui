@@ -63,17 +63,16 @@ describe('Run Step view', () => {
       expect(getByText('imageLabel')).toBeTruthy()
 
       expect(getByText('common.shell')).toBeTruthy()
-      const shellOptionsDropdownSelect = container.querySelectorAll('[icon="chevron-down"]')?.[2]
+      const shellOptionsDropdownSelect = container.querySelector('[data-id="spec.shell-2"] [icon="chevron-down"]')!
       expect(shellOptionsDropdownSelect).toBeTruthy()
       await waitFor(() => {
         fireEvent.click(shellOptionsDropdownSelect)
         const menuItemLabels = container.querySelectorAll('[class*="menuItemLabel"]')
         expect(menuItemLabels.length).toEqual(4)
         expect(menuItemLabels[0].innerHTML).toEqual('common.bash')
-        expect(menuItemLabels[1].innerHTML).toEqual('common.shell')
-        // Powershell option should only be visible for AWS VMs Build Infra
-        expect(menuItemLabels[2].innerHTML).toEqual('common.powershell')
-        expect(menuItemLabels[3].innerHTML).toEqual('common.pwsh')
+        expect(menuItemLabels[1].innerHTML).toEqual('common.powershell')
+        expect(menuItemLabels[2].innerHTML).toEqual('common.pwsh')
+        expect(menuItemLabels[3].innerHTML).toEqual('common.sh')
       })
     })
   })

@@ -16,10 +16,10 @@ import {
   RadioButtonGroup,
   CodeBlock,
   Container,
-  Color,
   Layout,
   SelectOption
 } from '@wings-software/uicore'
+import { Color } from '@harness/design-system'
 import type { FormikProps } from 'formik'
 import get from 'lodash/get'
 import cx from 'classnames'
@@ -53,7 +53,7 @@ import {
   validateConnectorRefAndImageDepdendency
 } from '../CIStep/StepUtils'
 import { CIStep } from '../CIStep/CIStep'
-import { AWSVMBuildInfraCommon } from '../CIStep/AWSVMBuildInfraCommon'
+import { ConnectorRefWithImage } from '../CIStep/ConnectorRefWithImage'
 import css from '@pipeline/components/PipelineSteps/Steps/Steps.module.scss'
 
 interface FieldRenderProps {
@@ -241,7 +241,7 @@ export const RunTestsStepBase = (
           buildToolOptions,
           languageOptions,
           imagePullPolicyOptions: GetImagePullPolicyOptions(),
-          shellOptions: buildInfrastructureType === 'VM' ? GetShellOptions(buildInfrastructureType) : []
+          shellOptions: GetShellOptions(getString)
         }
       )}
       formName="ciRunTests"
@@ -295,7 +295,7 @@ export const RunTestsStepBase = (
               }}
             />
             {buildInfrastructureType !== 'VM' ? (
-              <AWSVMBuildInfraCommon showOptionalSublabel={false} readonly={readonly} />
+              <ConnectorRefWithImage showOptionalSublabel={false} readonly={readonly} stepViewType={stepViewType} />
             ) : null}
             <Container className={cx(css.formGroup, css.lg, css.bottomMargin5)}>
               {renderMultiTypeSelectField({
@@ -408,7 +408,11 @@ gradle.projectsEvaluated {
                 details={
                   <Container margin={{ top: 'medium' }}>
                     {buildInfrastructureType === 'VM' ? (
-                      <AWSVMBuildInfraCommon showOptionalSublabel={true} readonly={readonly} />
+                      <ConnectorRefWithImage
+                        showOptionalSublabel={true}
+                        readonly={readonly}
+                        stepViewType={stepViewType}
+                      />
                     ) : null}
                     <Container className={cx(css.formGroup, css.sm, css.bottomMargin5)}>
                       <FormMultiTypeCheckboxField
@@ -494,10 +498,7 @@ gradle.projectsEvaluated {
                       }}
                     />
                     <StepCommonFields
-                      enableFields={[
-                        ...(buildInfrastructureType === 'VM' ? ['spec.shell'] : []),
-                        'spec.imagePullPolicy'
-                      ]}
+                      enableFields={['spec.shell', 'spec.imagePullPolicy']}
                       disabled={readonly}
                       buildInfrastructureType={buildInfrastructureType}
                     />

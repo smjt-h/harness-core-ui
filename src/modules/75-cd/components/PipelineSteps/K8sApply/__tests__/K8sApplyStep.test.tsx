@@ -6,7 +6,7 @@
  */
 
 import React from 'react'
-import { act, render } from '@testing-library/react'
+import { act, render, fireEvent } from '@testing-library/react'
 import { RUNTIME_INPUT_VALUE } from '@wings-software/uicore'
 import { StepFormikRef, StepViewType } from '@pipeline/components/AbstractSteps/Step'
 import { StepType } from '@pipeline/components/PipelineSteps/PipelineStepInterface'
@@ -26,7 +26,7 @@ describe('Test K8sApplyStep', () => {
     expect(container).toMatchSnapshot()
   })
   test('should render edit view as edit step', () => {
-    const { container } = render(
+    const { container, getByText } = render(
       <TestStepWidget
         initialValues={{
           type: 'K8sApply',
@@ -44,6 +44,11 @@ describe('Test K8sApplyStep', () => {
         stepViewType={StepViewType.Edit}
       />
     )
+    //remove one
+    fireEvent.click(container.querySelector('[data-icon="main-trash"]') as HTMLElement)
+
+    //add new
+    fireEvent.click(getByText('addFileText'))
     expect(container).toMatchSnapshot()
   })
   test('should render edit view', () => {
@@ -65,11 +70,11 @@ describe('Test K8sApplyStep', () => {
           type: 'K8sApply',
           name: 'Test A',
           identifier: 'Test_A',
-          timeout: '10m',
+          timeout: RUNTIME_INPUT_VALUE,
 
           spec: {
             skipDryRun: RUNTIME_INPUT_VALUE,
-            skipSteadyStateCheck: false,
+            skipSteadyStateCheck: RUNTIME_INPUT_VALUE,
             filePaths: RUNTIME_INPUT_VALUE
           }
         }}
@@ -244,7 +249,7 @@ describe('Test K8sApplyStep', () => {
     })
   })
   test('Minimum time cannot be less than 10s', () => {
-    const response = new K8sApplyStep().validateInputSet({
+    const data = {
       data: {
         name: 'Test A',
         identifier: 'Test A',
@@ -268,7 +273,45 @@ describe('Test K8sApplyStep', () => {
         }
       },
       viewType: StepViewType.TriggerForm
-    })
+    }
+    const response = new K8sApplyStep().validateInputSet(data)
     expect(response).toMatchSnapshot()
+    const processFormResponse = new K8sApplyStep().processFormData(data.template)
+    expect(processFormResponse).toMatchSnapshot()
+  })
+
+  test('should render edit view with path and inputSet', () => {
+    const { container } = render(
+      <TestStepWidget
+        initialValues={{
+          type: 'K8sApply',
+          name: 'Test A',
+          identifier: 'Test_A',
+          timeout: '10m',
+
+          spec: {
+            skipDryRun: RUNTIME_INPUT_VALUE,
+            skipSteadyStateCheck: false,
+            filePaths: ['test-1', 'test-2']
+          }
+        }}
+        path={'/abc'}
+        template={{
+          type: 'K8sApply',
+          name: 'Test A',
+          identifier: 'Test_A',
+          timeout: RUNTIME_INPUT_VALUE,
+
+          spec: {
+            skipDryRun: RUNTIME_INPUT_VALUE,
+            skipSteadyStateCheck: RUNTIME_INPUT_VALUE,
+            filePaths: RUNTIME_INPUT_VALUE
+          }
+        }}
+        type={StepType.K8sApply}
+        stepViewType={StepViewType.InputSet}
+      />
+    )
+    expect(container).toMatchSnapshot()
   })
 })

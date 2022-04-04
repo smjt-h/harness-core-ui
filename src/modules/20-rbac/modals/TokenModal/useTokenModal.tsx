@@ -7,12 +7,11 @@
 
 import React, { useCallback, useState } from 'react'
 import { useModalHook } from '@harness/use-modal'
-import { Dialog, Classes } from '@blueprintjs/core'
-import cx from 'classnames'
+import { Dialog } from '@harness/uicore'
 import type { TokenDTO } from 'services/cd-ng'
+import { StringKeys, String } from 'framework/strings'
 import TokenForm from './views/TokenForm'
 import RotateTokenForm from './views/RotateTokenForm'
-import css from './useTokenModal.module.scss'
 
 export interface useTokenModalProps {
   onSuccess: () => void
@@ -30,15 +29,19 @@ export const useTokenModal = ({ onSuccess, apiKeyType, parentIdentifier }: useTo
   const [apiKeyIdentifier, setApiKeyIdentifier] = useState<string>('')
   const [isRotate, setIsRotate] = useState<boolean>()
   const [tokenData, setTokenData] = useState<TokenDTO>()
+
+  const getLabelKey = (): StringKeys => {
+    if (isRotate) {
+      return 'rbac.token.rotateLabel'
+    } else if (tokenData) {
+      return 'rbac.token.editLabel'
+    } else {
+      return 'rbac.token.createLabel'
+    }
+  }
   const [showModal, hideModal] = useModalHook(
     () => (
-      <Dialog
-        isOpen={true}
-        enforceFocus={false}
-        onClose={hideModal}
-        className={cx(css.dialog, Classes.DIALOG)}
-        title=""
-      >
+      <Dialog isOpen={true} enforceFocus={false} onClose={hideModal} title={<String stringID={getLabelKey()} />}>
         {isRotate ? (
           <RotateTokenForm
             data={tokenData}

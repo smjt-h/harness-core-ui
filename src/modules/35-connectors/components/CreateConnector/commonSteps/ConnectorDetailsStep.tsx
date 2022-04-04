@@ -16,9 +16,9 @@ import {
   FormikForm,
   Container,
   Text,
-  FontVariation,
   ButtonVariation
 } from '@wings-software/uicore'
+import { FontVariation } from '@harness/design-system'
 import { useParams } from 'react-router-dom'
 import * as Yup from 'yup'
 import { pick } from 'lodash-es'
@@ -123,6 +123,8 @@ const ConnectorDetailsStep: React.FC<StepProps<ConnectorConfigDTO> & ConnectorDe
   const getInitialValues = () => {
     if (isEdit) {
       return { ...pick(props.connectorInfo, ['name', 'identifier', 'description', 'tags']) }
+    } else if (prevStepData) {
+      return { ...pick(prevStepData, ['name', 'identifier', 'description', 'tags']) }
     } else {
       return {
         name: '',

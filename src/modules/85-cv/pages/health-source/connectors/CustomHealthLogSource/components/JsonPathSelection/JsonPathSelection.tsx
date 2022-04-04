@@ -40,10 +40,8 @@ export default function JsonPathSelection(props: JsonPathSelectionProps): JSX.El
         isDisabled={disableFields}
         sampleRecord={sampleRecord || null}
         inputName={CustomHealthLogFieldNames.QUERY_VALUE_JSON_PATH}
-        inputLabel={getString('cv.customHealthSource.Querymapping.queryValueJsonPath')}
-        recordsModalHeader={getString(
-          'cv.healthSource.connectors.NewRelic.metricFields.metricValueJsonPath.recordsModalHeader'
-        )}
+        inputLabel={getString('cv.customHealthSource.Querymapping.logMessageJsonPath')}
+        recordsModalHeader={getString('cv.customHealthSource.Querymapping.logMessageJsonPathPlaceholder')}
         showExactJsonPath={true}
       />
       <InputWithDynamicModalForJson

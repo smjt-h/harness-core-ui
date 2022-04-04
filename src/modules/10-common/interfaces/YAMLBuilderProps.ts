@@ -10,6 +10,7 @@ import type { YamlSnippetMetaData, GetYamlSchemaQueryParams } from 'services/cd-
 
 export interface YamlBuilderHandlerBinding {
   getLatestYaml: () => string
+  setLatestYaml?: (json: Record<string, any>) => void
   getYAMLValidationErrorMap: () => Map<number, string>
 }
 

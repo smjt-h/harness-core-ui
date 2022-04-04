@@ -22,7 +22,8 @@ import {
   GetMergeInputSetFromPipelineTemplateWithListInputResponse,
   ConnectorResponse,
   GetInputSetsResponse,
-  GetEnvironmentList
+  GetEnvironmentList,
+  GetTemplateFromPipelineResponseArtifacts
 } from './sharedMockResponses'
 import { getTriggerConfigDefaultProps, pipelineInputInitialValues } from './webhookMockConstants'
 import WebhookPipelineInputPanel from '../views/WebhookPipelineInputPanel'
@@ -78,7 +79,11 @@ function WrapperComponent(): JSX.Element {
                 } as any
               }
             >
-              <WebhookPipelineInputPanel {...defaultTriggerConfigDefaultProps} formikProps={formikProps} />
+              <WebhookPipelineInputPanel
+                {...defaultTriggerConfigDefaultProps}
+                formikProps={formikProps}
+                resolvedTemplatesPipelineYaml={''}
+              />
             </PipelineContext.Provider>
           </FormikForm>
         )}
@@ -100,6 +105,24 @@ describe('WebhookPipelineInputPanel Triggers tests', () => {
 
       const { container } = render(<WrapperComponent />)
       await waitFor(() => expect(result.current.getString('triggers.pipelineInputLabel')).toBeTruthy())
+      expect(container).toMatchSnapshot()
+    })
+
+    test('Initial Render - Pipeline Input Panel with pipeline artifact runtime inputs', async () => {
+      jest
+        .spyOn(pipelineNg, 'useGetTemplateFromPipeline')
+        .mockReturnValue(GetTemplateFromPipelineResponseArtifacts as any)
+
+      jest.spyOn(pipelineNg, 'useGetMergeInputSetFromPipelineTemplateWithListInput').mockReturnValue({
+        mutate: jest.fn().mockReturnValue(GetMergeInputSetFromPipelineTemplateWithListInputResponse) as unknown
+      } as UseMutateReturn<any, any, any, any, any>)
+
+      jest.spyOn(pipelineNg, 'useGetInputSetsListForPipeline').mockReturnValue(GetInputSetsResponse as any)
+      const { container } = render(<WrapperComponent />)
+      await waitFor(() => expect(result.current.getString('triggers.pipelineInputLabel')).toBeTruthy())
+      await waitFor(() =>
+        queryByAttribute('placeholder', container, 'pipeline.infraSpecifications.namespacePlaceholder')
+      )
       expect(container).toMatchSnapshot()
     })
 

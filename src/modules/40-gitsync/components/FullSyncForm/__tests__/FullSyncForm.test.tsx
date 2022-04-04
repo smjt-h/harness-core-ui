@@ -17,7 +17,7 @@ import mockFullSyncConfig from './mockData/mockConfig.json'
 
 const pathParams = { accountId: 'dummy', orgIdentifier: 'default', projectIdentifier: 'dummyProject' }
 
-const fetchBranches = jest.fn(() => Promise.resolve(['master', 'dev']))
+const fetchBranches = jest.fn(() => Promise.resolve({ status: 'SUCCESS', data: ['master', 'dev'] }))
 
 const fetchConfig = jest.fn(() => {
   Promise.resolve(mockFullSyncConfig)

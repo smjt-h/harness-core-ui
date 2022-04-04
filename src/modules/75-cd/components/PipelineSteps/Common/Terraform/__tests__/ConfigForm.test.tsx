@@ -7,9 +7,8 @@
 
 import React from 'react'
 import { render } from '@testing-library/react'
-import { MultiTypeInputType } from '@wings-software/uicore'
+import { MultiTypeInputType, RUNTIME_INPUT_VALUE } from '@wings-software/uicore'
 import { TestWrapper } from '@common/utils/testUtils'
-
 import TFPlanConfigForm from '../Editview/ConfigForm'
 
 const props = {
@@ -79,9 +78,50 @@ describe('TF Config Form tests', () => {
                 store: {
                   spec: {
                     connectorRef: 'Git5',
-                    gitFetchType: 'pipelineSteps.deploy.inputSet.branch',
+                    gitFetchType: 'pipelineSteps.commitIdValue',
                     branch: 'test-branch',
-                    folderPath: 'test-folder'
+                    folderPath: 'test-folder',
+                    commitId: RUNTIME_INPUT_VALUE
+                  }
+                }
+              }
+            }
+          }
+        }
+      },
+      onHide: () => jest.fn(),
+      allowableTypes: [MultiTypeInputType.FIXED, MultiTypeInputType.EXPRESSION, MultiTypeInputType.RUNTIME]
+    }
+
+    const { container } = render(
+      <TestWrapper>
+        <TFPlanConfigForm {...editProps} />
+      </TestWrapper>
+    )
+    expect(container).toMatchSnapshot()
+  })
+  test('should render runtime correctly', async () => {
+    const editProps = {
+      onClick: () => jest.fn(),
+
+      data: {
+        spec: {
+          configuration: {
+            spec: {
+              configFiles: {
+                store: {
+                  spec: {
+                    connectorRef: {
+                      connector: {
+                        spec: {
+                          connectionType: 'Account'
+                        }
+                      }
+                    },
+                    gitFetchType: 'pipelineSteps.deploy.inputSet.branch',
+                    branch: RUNTIME_INPUT_VALUE,
+                    folderPath: RUNTIME_INPUT_VALUE,
+                    repoName: RUNTIME_INPUT_VALUE
                   }
                 }
               }

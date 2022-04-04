@@ -26,6 +26,266 @@ import type { K8SDirectServiceStep } from '../K8sServiceSpecInterface'
 
 const fetchConnectors = (): Promise<unknown> => Promise.resolve({})
 jest.mock('@common/components/YAMLBuilder/YamlBuilder')
+const mockProps = {
+  initialValues: {
+    artifacts: {
+      metadata: 'artifactmetadata',
+      primary: {
+        type: 'DockerRegistry' as any,
+        spec: {
+          connectorRef: 'A',
+          tag: 'B',
+          imagePath: 'C',
+          registryHostname: 'D',
+          region: 'E',
+          tagRegex: 'F'
+        }
+      },
+      sidecars: [
+        {
+          sidecar: {
+            identifier: 'SidecarECR',
+            type: 'Ecr' as any,
+            spec: {
+              imagePath: '',
+              tag: '',
+              region: ''
+            }
+          }
+        },
+        {
+          sidecar: {
+            identifier: 'FLSDJF',
+            type: 'Ecr' as any,
+            spec: {
+              connectorRef: '',
+              imagePath: '',
+              tag: '',
+              region: ''
+            }
+          }
+        }
+      ]
+    },
+    manifests: [
+      {
+        manifest: {
+          identifier: 'K8sManifest',
+          type: 'K8sManifest' as any,
+          spec: {
+            store: {
+              type: 'K8sManifest',
+              spec: {
+                connectorRef: '<+input>'
+              }
+            },
+            chartName: '<+input>',
+            chartVersion: '<+input>',
+            skipResourceVersioning: '<+input>'
+          }
+        }
+      },
+      {
+        manifest: {
+          identifier: 'K8sManifest',
+          type: 'K8sManifest' as any,
+          spec: {
+            store: {
+              type: 'Git',
+              spec: {
+                connectorRef: '<+input>',
+                folderPath: '<+input>',
+                repoName: '<+input>',
+                branch: '<+input>'
+              }
+            }
+          }
+        }
+      }
+    ],
+    variables: [
+      {
+        type: 'String' as any,
+        description: 'k8sVariable'
+      }
+    ]
+  },
+  customStepProps: {
+    stageIdentifier: 'qaStage',
+    metadataMap: {
+      'step-name': {
+        yamlProperties: {
+          fqn: 'pipeline.stages.qaStage.execution.steps.K8sDelete.name',
+          localName: 'step.K8sDelete.name'
+        }
+      }
+    },
+    variablesData: {
+      manifests: [
+        {
+          manifest: {
+            identifier: 'K8sManifest',
+            type: 'K8sManifest',
+            spec: {
+              store: {
+                type: 'K8sManifest',
+                spec: {
+                  connectorRef: '<+input>'
+                }
+              },
+              chartName: '<+input>',
+              chartVersion: '<+input>',
+              skipResourceVersioning: '<+input>'
+            }
+          }
+        },
+        {
+          manifest: {
+            identifier: 'K8sManifest',
+            type: 'K8sManifest',
+            spec: {
+              store: {
+                type: 'Git',
+                spec: {
+                  connectorRef: '<+input>',
+                  folderPath: '<+input>',
+                  repoName: '<+input>',
+                  branch: '<+input>'
+                }
+              }
+            }
+          }
+        }
+      ],
+      artifacts: {
+        metadata: 'artifactmetadata',
+        primary: {
+          type: 'Gcr',
+          spec: {
+            connectorRef: 'A',
+            tag: 'B',
+            imagePath: 'C',
+            registryHostname: 'D',
+            region: 'E',
+            tagRegex: 'F'
+          }
+        },
+        sidecars: [
+          {
+            sidecar: {
+              identifier: 'Sidecar ECR',
+              type: 'Ecr',
+              spec: {
+                imagePath: '',
+                tag: '',
+                region: ''
+              }
+            }
+          },
+          {
+            sidecar: {
+              identifier: 'FLSDJF',
+              type: 'Ecr',
+              spec: {
+                connectorRef: '',
+                imagePath: '',
+                tag: '',
+                region: ''
+              }
+            }
+          }
+        ]
+      },
+      variables: [
+        {
+          type: 'String',
+          description: 'k8sVariable'
+        }
+      ]
+    }
+  },
+  template: {
+    artifacts: {
+      sidecars: [
+        {
+          sidecar: {
+            identifier: 'Sidecar',
+            type: 'Ecr' as any,
+            spec: {
+              imagePath: '<+input>',
+              tag: '<+input>',
+              region: '<+input>'
+            }
+          }
+        },
+        {
+          sidecar: {
+            identifier: 'FLSDJF',
+            type: 'DockerRegistry' as any,
+            spec: {
+              connectorRef: '<+input>',
+              imagePath: '<+input>',
+              tag: '<+input>',
+              region: '<+input>'
+            }
+          }
+        }
+      ],
+      primary: {
+        type: 'Gcr' as any,
+        spec: {
+          connectorRef: '<+input>',
+          imagePath: '<+input>',
+          tag: '<+input>',
+          registryHostname: '<+input>'
+        }
+      }
+    },
+    manifests: [
+      {
+        manifest: {
+          identifier: 'K8sManifest',
+          type: 'K8sManifest' as any,
+          spec: {
+            store: {
+              type: 'K8sManifest',
+              spec: {
+                connectorRef: '<+input>'
+              }
+            }
+          }
+        }
+      },
+      {
+        manifest: {
+          identifier: 'K8sManifest',
+          type: 'K8sManifest' as any,
+          spec: {
+            store: {
+              type: 'Git',
+              spec: {
+                connectorRef: '<+input>',
+                folderPath: '<+input>',
+                repoName: '<+input>',
+                branch: '<+input>'
+              }
+            }
+          }
+        }
+      }
+    ],
+    variables: [
+      {
+        type: 'String' as any,
+        description: 'k8sVariable'
+      },
+      {
+        type: 'String' as any,
+        description: 'k8sInput'
+      }
+    ]
+  }
+}
 
 export const ConnectorResponse: UseGetReturnData<ResponseConnectorResponse> = {
   loading: false,
@@ -140,6 +400,19 @@ jest.mock('services/cd-ng', () => ({
 jest.mock('services/pipeline-ng', () => ({
   useGetPipeline: jest.fn(() => PipelineResponse)
 }))
+jest.mock('@common/hooks', () => ({
+  ...(jest.requireActual('@common/hooks') as any),
+  useMutateAsGet: jest.fn().mockImplementation(() => {
+    return { data: {}, refetch: jest.fn(), error: null, loading: false }
+  })
+}))
+
+jest.mock('services/portal', () => ({
+  useListAwsRegions: jest.fn().mockImplementation(() => {
+    return { data: {} }
+  })
+}))
+
 const PipelineContextValue = {
   state: PipelineMock.state,
   stepsFactory: PipelineMock.stepsFactory,
@@ -316,6 +589,43 @@ describe('StepWidget tests', () => {
             (PipelineContextValue.state.pipeline.stages[0].stage.spec.serviceConfig.serviceDefinition.spec as any) || {}
           }
           template={TemplateMock as any}
+          type={StepType.K8sServiceSpec}
+          stepViewType={StepViewType.InputSet}
+        />
+      </TestWrapper>
+    )
+    expect(container).toMatchSnapshot()
+  })
+
+  test('variablesForm', () => {
+    const { container } = render(
+      <TestWrapper>
+        <StepWidget<K8SDirectServiceStep>
+          factory={factory}
+          readonly={false}
+          path={'test'}
+          allowableTypes={[MultiTypeInputType.FIXED, MultiTypeInputType.RUNTIME, MultiTypeInputType.EXPRESSION]}
+          initialValues={mockProps.initialValues}
+          customStepProps={mockProps.customStepProps}
+          type={StepType.K8sServiceSpec}
+          stepViewType={StepViewType.InputVariable}
+        />
+      </TestWrapper>
+    )
+    expect(container).toMatchSnapshot()
+  })
+  test('inputSetMode', () => {
+    const { container } = render(
+      <TestWrapper>
+        <StepWidget<K8SDirectServiceStep>
+          factory={factory}
+          readonly={false}
+          path={'test'}
+          template={mockProps.template}
+          allValues={mockProps.initialValues}
+          allowableTypes={[MultiTypeInputType.FIXED, MultiTypeInputType.RUNTIME, MultiTypeInputType.EXPRESSION]}
+          initialValues={mockProps.initialValues}
+          customStepProps={mockProps.customStepProps}
           type={StepType.K8sServiceSpec}
           stepViewType={StepViewType.InputSet}
         />

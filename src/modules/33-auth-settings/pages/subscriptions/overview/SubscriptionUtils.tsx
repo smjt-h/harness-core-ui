@@ -7,7 +7,8 @@
 
 import React from 'react'
 import { capitalize } from 'lodash-es'
-import { Color, Text, Layout, Icon } from '@wings-software/uicore'
+import { Text, Layout, Icon } from '@wings-software/uicore'
+import { Color } from '@harness/design-system'
 import type { StringsMap } from 'stringTypes'
 import { useStrings } from 'framework/strings'
 import { Editions, ModuleLicenseType, CD_LICENSE_TYPE } from '@common/constants/SubscriptionTypes'
@@ -195,11 +196,12 @@ function getLicenseCountByModule({
     case ModuleName.CD: {
       const cdModuleLicenseDTO = licenseData as CDModuleLicenseDTO
       const workloads = cdModuleLicenseDTO?.workloads?.toLocaleString()
+      const serviceInstances = cdModuleLicenseDTO?.serviceInstances?.toLocaleString()
       const cdLicenseType = cdModuleLicenseDTO?.cdLicenseType
       const serviceStr =
         cdLicenseType === CD_LICENSE_TYPE.SERVICES
           ? getString('common.subscriptions.cd.services', { workloads: workloads })
-          : getString('common.subscriptions.cd.serviceInstances', { workloads: workloads })
+          : getString('common.subscriptions.cd.serviceInstances', { workloads: serviceInstances })
 
       return (
         <Layout.Vertical spacing="medium">

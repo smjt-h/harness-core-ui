@@ -109,7 +109,9 @@ jest.mock('services/pipeline-ng', () => ({
   useUpdateOverlayInputSetForPipeline: jest.fn().mockImplementation(() => ({ mutate: errorResponse })),
   useCreateOverlayInputSetForPipeline: jest.fn(() => ({})),
   useGetInputSetsListForPipeline: jest.fn(() => GetInputSetsResponse),
-  useGetYamlSchema: jest.fn(() => ({}))
+  useGetYamlSchema: jest.fn(() => ({})),
+  useSanitiseInputSet: jest.fn(() => PipelineResponse),
+  useDeleteInputSetForPipeline: jest.fn(() => ({ mutate: jest.fn() }))
 }))
 
 const intersectionObserverMock = () => ({

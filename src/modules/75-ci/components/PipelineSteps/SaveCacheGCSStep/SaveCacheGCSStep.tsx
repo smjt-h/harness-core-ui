@@ -72,6 +72,7 @@ export interface SaveCacheGCSStepProps {
   onUpdate?: (data: SaveCacheGCSStepData) => void
   onChange?: (data: SaveCacheGCSStepData) => void
   allowableTypes: MultiTypeInputType[]
+  formik?: any
 }
 
 export class SaveCacheGCSStep extends PipelineStep<SaveCacheGCSStepData> {

@@ -11,6 +11,8 @@ import { Button, Layout, StepProps, Heading, Text, Container } from '@wings-soft
 
 import { useStrings } from 'framework/strings'
 import CopyToClipboard from '@common/components/CopyToClipBoard/CopyToClipBoard'
+import { useTelemetry } from '@common/hooks/useTelemetry'
+import { Category, DelegateActions } from '@common/constants/TrackingConstants'
 
 import type { K8sDelegateWizardData } from '../DelegateSetupStep/DelegateSetupStep'
 import StepProcessing from '../../components/StepProcessing/StepProcessing'
@@ -23,6 +25,7 @@ interface StepSuccessVerifcationProps {
 const StepSuccessVerification: React.FC<StepProps<K8sDelegateWizardData> & StepSuccessVerifcationProps> = props => {
   const { previousStep } = props
   const { getString } = useStrings()
+  const { trackEvent } = useTelemetry()
 
   const onClickBack = (): void => {
     if (previousStep) {
@@ -85,6 +88,10 @@ const StepSuccessVerification: React.FC<StepProps<K8sDelegateWizardData> & StepS
           intent="primary"
           padding="small"
           onClick={() => {
+            trackEvent(DelegateActions.SaveCreateDelegate, {
+              category: Category.DELEGATE,
+              ...props.prevStepData
+            })
             props?.onClose()
           }}
         />

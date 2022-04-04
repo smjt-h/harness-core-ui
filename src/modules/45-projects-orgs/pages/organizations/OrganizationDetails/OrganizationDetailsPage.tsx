@@ -6,8 +6,9 @@
  */
 
 import React from 'react'
-import { Card, Color, Heading, Icon, Layout, Text, Button, ButtonVariation } from '@wings-software/uicore'
+import { Card, Heading, Icon, Layout, Text, Button, ButtonVariation } from '@wings-software/uicore'
 import { useHistory, useParams } from 'react-router-dom'
+import { Color } from '@harness/design-system'
 import { Page } from '@common/exports'
 import routes from '@common/RouteDefinitions'
 import { Project, useGetOrganizationAggregateDTO } from 'services/cd-ng'
@@ -29,7 +30,7 @@ import css from './OrganizationDetailsPage.module.scss'
 
 const OrganizationDetailsPage: React.FC = () => {
   const { accountId, orgIdentifier } = useParams<OrgPathProps>()
-  const { OPA_PIPELINE_GOVERNANCE, AUDIT_TRAIL_WEB_INTERFACE } = useFeatureFlags()
+  const { OPA_PIPELINE_GOVERNANCE, OPA_FF_GOVERNANCE, AUDIT_TRAIL_WEB_INTERFACE } = useFeatureFlags()
   const history = useHistory()
   const { getString } = useStrings()
   const { data, refetch, loading, error } = useGetOrganizationAggregateDTO({
@@ -220,7 +221,7 @@ const OrganizationDetailsPage: React.FC = () => {
             </Heading>
             <ResourceCardList items={getResourceCardList()} />
           </Layout.Vertical>
-          {OPA_PIPELINE_GOVERNANCE && (
+          {(OPA_PIPELINE_GOVERNANCE || OPA_FF_GOVERNANCE) && (
             <Layout.Vertical spacing="medium" padding={{ top: 'large' }}>
               <Heading font={{ size: 'medium', weight: 'bold' }} color={Color.BLACK}>
                 {getString('projectsOrgs.orgGovernance')}

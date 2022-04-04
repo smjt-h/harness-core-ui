@@ -9,16 +9,17 @@ import React, { useState } from 'react'
 import { useHistory, useParams, Link } from 'react-router-dom'
 import {
   Container,
-  FontVariation,
-  Color,
   Heading,
   Text,
   Layout,
   Popover,
   Button,
   ButtonVariation,
-  useConfirmationDialog
+  useConfirmationDialog,
+  Icon
 } from '@wings-software/uicore'
+import { FontVariation, Color } from '@harness/design-system'
+
 import { Position, Menu, Intent } from '@blueprintjs/core'
 import type { SLOErrorBudgetResetDTO } from 'services/cv'
 import { useStrings } from 'framework/strings'
@@ -30,6 +31,8 @@ import { PermissionIdentifier } from '@rbac/interfaces/PermissionIdentifier'
 import RbacMenuItem from '@rbac/components/MenuItem/MenuItem'
 import ReviewChangeSVG from '@cv/assets/sloReviewChange.svg'
 import { useErrorBudgetRestHook } from '@cv/hooks/useErrorBudgetRestHook/useErrorBudgetRestHook'
+import { useLogContentHook } from '@cv/hooks/useLogContentHook/useLogContentHook'
+import { LogTypes } from '@cv/hooks/useLogContentHook/useLogContentHook.types'
 import { PeriodTypes } from '../components/CVCreateSLO/CVCreateSLO.types'
 import type { SLOCardHeaderProps } from '../CVSLOsListingPage.types'
 import css from '../CVSLOsListingPage.module.scss'
@@ -112,6 +115,12 @@ const SLOCardHeader: React.FC<SLOCardHeaderProps> = ({
     }
   })
 
+  const { openLogContentHook } = useLogContentHook({
+    sloIdentifier: serviceLevelObjective.sloIdentifier,
+    serviceName: serviceLevelObjective.serviceName,
+    envName: serviceLevelObjective.environmentName
+  })
+
   return (
     <>
       <Container flex margin={{ bottom: 'medium' }}>
@@ -151,6 +160,30 @@ const SLOCardHeader: React.FC<SLOCardHeaderProps> = ({
                 />
               )}
               <RbacMenuItem
+                icon={<Icon size={20} padding={{ right: 'xsmall' }} name="api-docs" color={Color.GREY_700} />}
+                text={getString('cv.externalAPICalls')}
+                onClick={() => openLogContentHook(LogTypes.ApiCallLog)}
+                permission={{
+                  permission: PermissionIdentifier.VIEW_SLO_SERVICE,
+                  resource: {
+                    resourceType: ResourceType.SLO,
+                    resourceIdentifier: projectIdentifier
+                  }
+                }}
+              />
+              <RbacMenuItem
+                icon={<Icon size={20} padding={{ right: 'xsmall' }} name="audit-trail" color={Color.GREY_700} />}
+                text={getString('cv.executionLogs')}
+                onClick={() => openLogContentHook(LogTypes.ExecutionLog)}
+                permission={{
+                  permission: PermissionIdentifier.VIEW_SLO_SERVICE,
+                  resource: {
+                    resourceType: ResourceType.SLO,
+                    resourceIdentifier: projectIdentifier
+                  }
+                }}
+              />
+              <RbacMenuItem
                 icon="trash"
                 text={getString('delete')}
                 onClick={openDialog}
@@ -171,7 +204,12 @@ const SLOCardHeader: React.FC<SLOCardHeaderProps> = ({
       <Container flex={{ alignItems: 'flex-start' }}>
         <Layout.Vertical height={130} spacing="xsmall">
           <Layout.Horizontal spacing="xsmall">
-            <Text width={100} font={{ variation: FontVariation.SMALL }} color={Color.GREY_400}>
+            <Text
+              width={100}
+              font={{ variation: FontVariation.SMALL }}
+              color={Color.GREY_400}
+              tooltipProps={{ dataTooltipId: 'slosMonitoredService' }}
+            >
               {getString('connectors.cdng.monitoredService.label')}:
             </Text>
             <Link to={monitoredServicePathname}>
@@ -184,7 +222,12 @@ const SLOCardHeader: React.FC<SLOCardHeaderProps> = ({
             </Link>
           </Layout.Horizontal>
           <Layout.Horizontal spacing="xsmall">
-            <Text width={100} font={{ variation: FontVariation.SMALL }} color={Color.GREY_400}>
+            <Text
+              width={100}
+              font={{ variation: FontVariation.SMALL }}
+              color={Color.GREY_400}
+              tooltipProps={{ dataTooltipId: 'sliType' }}
+            >
               {getString('cv.slos.sliType')}:
             </Text>
             <Text font={{ variation: FontVariation.SMALL_BOLD }} color={Color.GREY_700}>
@@ -192,7 +235,12 @@ const SLOCardHeader: React.FC<SLOCardHeaderProps> = ({
             </Text>
           </Layout.Horizontal>
           <Layout.Horizontal spacing="xsmall">
-            <Text width={100} font={{ variation: FontVariation.SMALL }} color={Color.GREY_400}>
+            <Text
+              width={100}
+              font={{ variation: FontVariation.SMALL }}
+              color={Color.GREY_400}
+              tooltipProps={{ dataTooltipId: 'slosHealthSource' }}
+            >
               {getString('cv.slos.healthSource')}:
             </Text>
             <Text font={{ variation: FontVariation.SMALL_BOLD }} color={Color.GREY_700}>
@@ -222,13 +270,17 @@ const SLOCardHeader: React.FC<SLOCardHeaderProps> = ({
 
         <Layout.Horizontal spacing="medium">
           <Container width={120} background={Color.GREY_100} padding="small" className={css.sloGlanceCard}>
-            <Text font={{ variation: FontVariation.FORM_LABEL }}>{getString('cv.burnRatePerDay')}</Text>
+            <Text font={{ variation: FontVariation.FORM_LABEL }} tooltipProps={{ dataTooltipId: 'burnRatePerDay' }}>
+              {getString('cv.burnRatePerDay')}
+            </Text>
             <Heading level={2} color={Color.GREY_800} font={{ variation: FontVariation.H4 }}>
               {(Number(serviceLevelObjective.burnRate.currentRatePercentage) || 0).toFixed(2)}%
             </Heading>
           </Container>
           <Container width={120} background={Color.GREY_100} padding="small" className={css.sloGlanceCard}>
-            <Text font={{ variation: FontVariation.FORM_LABEL }}>{getString('cv.timeRemaining')}</Text>
+            <Text font={{ variation: FontVariation.FORM_LABEL }} tooltipProps={{ dataTooltipId: 'timeRemaining' }}>
+              {getString('cv.timeRemaining')}
+            </Text>
             <Heading inline level={2} color={Color.GREY_800} font={{ variation: FontVariation.H4 }}>
               {serviceLevelObjective.timeRemainingDays}
             </Heading>

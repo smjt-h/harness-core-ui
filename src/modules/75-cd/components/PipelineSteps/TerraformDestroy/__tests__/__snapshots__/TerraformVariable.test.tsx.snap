@@ -889,6 +889,7 @@ exports[`Test TerraformDestroy with inline var file and expand the varfiles sect
                                     autocomplete="off"
                                     class="bp3-input"
                                     name="spec.configuration.spec.targets[0].value"
+                                    placeholder="cd.enterTragets"
                                     type="text"
                                     value=""
                                   />

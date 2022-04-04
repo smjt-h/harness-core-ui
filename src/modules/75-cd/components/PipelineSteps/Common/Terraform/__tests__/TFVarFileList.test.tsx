@@ -6,9 +6,9 @@
  */
 
 import React from 'react'
-import { render, screen, fireEvent } from '@testing-library/react'
+import { render, screen, fireEvent, waitFor } from '@testing-library/react'
 import { MultiTypeInputType } from '@wings-software/uicore'
-import { TestWrapper } from '@common/utils/testUtils'
+import { findDialogContainer, findPopoverContainer, TestWrapper } from '@common/utils/testUtils'
 import TfVarFileList from '../Editview/TFVarFileList'
 
 const varFiles: any[] = []
@@ -17,7 +17,38 @@ const formikValues = {
   values: {
     spec: {
       configuration: {
-        varFiles: varFiles
+        spec: {
+          varFiles: [
+            {
+              varFile: {
+                identifier: 'plan var id',
+                type: 'Remote',
+                spec: {
+                  type: 'Artifactory',
+                  spec: {
+                    repositoryName: '',
+                    connectorRef: '',
+                    artifactPaths: ''
+                  }
+                }
+              }
+            },
+            {
+              varFile: {
+                identifier: 'plan id',
+                type: 'Inline',
+                spec: {
+                  type: '',
+                  spec: {
+                    repositoryName: '',
+                    connectorRef: '',
+                    artifactPaths: ''
+                  }
+                }
+              }
+            }
+          ]
+        }
       }
     }
   }
@@ -106,5 +137,45 @@ describe('Test TfPlanVarFileList', () => {
     const addInlineButton = await screen.findByText('cd.addRemote')
     fireEvent.click(addInlineButton)
     expect(screen).toMatchSnapshot()
+  })
+
+  test(`renders with Artifactory connector`, async () => {
+    const props = {
+      formik: formikValues,
+      isReadonly: false,
+      getNewConnectorSteps: mockGetFunction,
+      setSelectedConnector: mockGetFunction,
+      allowableTypes: [MultiTypeInputType.FIXED, MultiTypeInputType.EXPRESSION, MultiTypeInputType.RUNTIME],
+      selectedConnector: 'Artifactory'
+    } as any
+    const { container, getByText } = render(
+      <TestWrapper>
+        <TfVarFileList {...props} />
+      </TestWrapper>
+    )
+    const editQueries = container.querySelectorAll('[data-icon="edit"]')
+    // remote edit
+    fireEvent.click(editQueries[0])
+    // inline edit
+    fireEvent.click(editQueries[1])
+
+    const addButton = await getByText('plusAdd')
+    fireEvent.click(addButton)
+    const popover = findPopoverContainer()
+    expect(popover).toMatchSnapshot()
+
+    expect(getByText('cd.addInline')).toBeTruthy()
+    fireEvent.click(getByText('cd.addInline'))
+
+    expect(getByText('cd.addRemote')).toBeTruthy()
+    fireEvent.click(getByText('cd.addRemote'))
+
+    const dailog = findDialogContainer()
+    expect(dailog).toMatchSnapshot()
+
+    //close
+    fireEvent.click(document.querySelector('[data-icon="cross"]') as HTMLElement)
+    waitFor(() => expect(dailog).toBeFalsy())
+    expect(container).toMatchSnapshot()
   })
 })

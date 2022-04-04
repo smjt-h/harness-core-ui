@@ -5,7 +5,7 @@
  * https://polyformproject.org/wp-content/uploads/2020/06/PolyForm-Shield-1.0.0.txt.
  */
 
-import React from 'react'
+import React, { useEffect } from 'react'
 
 import MainNav from '@common/navigation/MainNav'
 import SideNav from '@common/navigation/SideNav'
@@ -13,6 +13,8 @@ import SideNav from '@common/navigation/SideNav'
 import { useSidebar } from '@common/navigation/SidebarProvider'
 import { useModuleInfo } from '@common/hooks/useModuleInfo'
 import { TrialLicenseBanner } from '@common/layouts/TrialLicenseBanner'
+import { useTelemetry } from '@common/hooks/useTelemetry'
+import { usePage } from '@common/pages/pageContext/PageProvider'
 
 import FeatureBanner from './FeatureBanner'
 
@@ -20,7 +22,17 @@ import css from './layouts.module.scss'
 
 export function DefaultLayout(props: React.PropsWithChildren<unknown>): React.ReactElement {
   const { title, subtitle, icon, navComponent: NavComponent } = useSidebar()
+  const { pageName } = usePage()
   const { module } = useModuleInfo()
+  const { trackPage } = useTelemetry()
+
+  useEffect(() => {
+    if (pageName) {
+      trackPage(pageName, { module: module || '' })
+    }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [pageName])
+
   return (
     <div className={css.main} data-layout="default">
       <MainNav />

@@ -130,7 +130,9 @@ describe('ArtifactsSelection tests', () => {
   test(`renders add Artifact option without crashing`, async () => {
     const { container } = render(
       <TestWrapper>
-        <ArtifactsSelection isForOverrideSets={false} isForPredefinedSets={false} />
+        <PipelineContext.Provider value={getContextValue()}>
+          <ArtifactsSelection isForOverrideSets={false} isForPredefinedSets={false} />
+        </PipelineContext.Provider>
       </TestWrapper>
     )
     const addFileButton = await findByText(container, 'pipelineSteps.serviceTab.artifactList.addSidecar')
@@ -148,10 +150,12 @@ describe('ArtifactsSelection tests', () => {
   test(`renders Artifact Connector popover`, async () => {
     const { container } = render(
       <TestWrapper>
-        <ArtifactsSelection isForOverrideSets={false} isForPredefinedSets={false} />
+        <PipelineContext.Provider value={getContextValue()}>
+          <ArtifactsSelection isForOverrideSets={false} isForPredefinedSets={false} />
+        </PipelineContext.Provider>
       </TestWrapper>
     )
-    const addFileButton = await findByText(container, 'pipelineSteps.serviceTab.artifactList.addPrimary')
+    const addFileButton = await findByText(container, 'pipelineSteps.serviceTab.artifactList.addSidecar')
     expect(addFileButton).toBeDefined()
     fireEvent.click(addFileButton)
     const portal = document.getElementsByClassName('bp3-dialog')[0]

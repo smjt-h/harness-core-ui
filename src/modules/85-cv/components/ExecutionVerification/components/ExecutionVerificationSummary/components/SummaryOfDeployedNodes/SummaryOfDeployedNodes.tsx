@@ -6,7 +6,8 @@
  */
 
 import React from 'react'
-import { Color, Container, Text } from '@wings-software/uicore'
+import { Container, Text } from '@wings-software/uicore'
+import { Color } from '@harness/design-system'
 import { useStrings } from 'framework/strings'
 import { useUpdateQueryParams } from '@common/hooks'
 import type { ExecutionQueryParams } from '@pipeline/utils/executionUtils'
@@ -19,6 +20,8 @@ interface SummaryOfDeployedNodesProps {
   totalMetrics: number
   logClustersInViolation: number
   totalLogClusters: number
+  errorClustersInViolation: number
+  totalErrorClusters: number
   onClickViewDetails?: (isMetrics: boolean) => void
 }
 
@@ -62,6 +65,7 @@ function SummaryText(props: SummaryTextProps): JSX.Element {
 
 export function SummaryOfDeployedNodes(props: SummaryOfDeployedNodesProps): JSX.Element {
   const { metricsInViolation, totalMetrics, logClustersInViolation, totalLogClusters } = props
+  const { errorClustersInViolation, totalErrorClusters } = props
   const { getString } = useStrings()
   const isErrorTrackingEnabled = useFeatureFlag(FeatureFlag.ERROR_TRACKING_ENABLED)
 
@@ -84,8 +88,8 @@ export function SummaryOfDeployedNodes(props: SummaryOfDeployedNodesProps): JSX.
         />
         {isErrorTrackingEnabled && (
           <SummaryText
-            numerator={logClustersInViolation}
-            denominator={totalLogClusters}
+            numerator={errorClustersInViolation}
+            denominator={totalErrorClusters}
             titleText={getString('pipeline.verification.errorClustersInViolation')}
             tabId={getString('errors')}
           />

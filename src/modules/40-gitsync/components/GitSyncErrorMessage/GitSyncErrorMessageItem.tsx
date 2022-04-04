@@ -6,7 +6,9 @@
  */
 
 import React from 'react'
-import { Color, Icon, Layout, Text } from '@wings-software/uicore'
+import { Icon, Layout, Text } from '@wings-software/uicore'
+import { Color } from '@harness/design-system'
+import cx from 'classnames'
 import { useStrings } from 'framework/strings'
 import styles from '@gitsync/components/GitSyncErrorMessage/GitSyncErrorMessage.module.scss'
 
@@ -80,7 +82,13 @@ export const GitSyncErrorMessageItem: React.FC<GitSyncErrorMessageProps['items']
       flex={{ justifyContent: 'space-between' }}
       data-testid="gitSyncErrorMessageItem"
     >
-      <Layout.Vertical>
+      <Layout.Vertical
+        className={cx({
+          [styles.fixedError]: fixCommit,
+          [styles.hasDetails]: showDetails,
+          [styles.defaultErrorText]: !(fixCommit || showDetails)
+        })}
+      >
         {title ? (
           <Text
             font={{ size: 'small', weight: 'semi-bold' }}

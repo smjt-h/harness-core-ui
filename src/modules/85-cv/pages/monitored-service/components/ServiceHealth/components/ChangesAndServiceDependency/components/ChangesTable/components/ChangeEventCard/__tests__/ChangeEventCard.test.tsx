@@ -10,6 +10,7 @@ import { render, waitFor } from '@testing-library/react'
 import type { UseGetReturn } from 'restful-react'
 import * as cvService from 'services/cv'
 import { TestWrapper } from '@common/utils/testUtils'
+import { mockedHealthScoreData } from '@cv/pages/monitored-service/components/ServiceHealth/components/HealthScoreChart/__tests__/HealthScoreChart.mock'
 import ChangeEventCard from '../ChangeEventCard'
 import { HarnessCDMockData, HarnessNextGenMockData, payload } from './ChangeEventCard.mock'
 
@@ -30,8 +31,8 @@ describe('Validate ChangeCard', () => {
           loading: false
         } as any)
     )
-    jest.spyOn(cvService, 'useGetMonitoredServiceOverAllHealthScoreWithServiceAndEnv').mockReturnValue({
-      data: {},
+    jest.spyOn(cvService, 'useGetMonitoredServiceOverAllHealthScore').mockReturnValue({
+      data: mockedHealthScoreData,
       refetch: jest.fn() as unknown
     } as UseGetReturn<any, any, any, any>)
 
@@ -61,7 +62,7 @@ describe('Validate ChangeCard', () => {
           loading: false
         } as any)
     )
-    jest.spyOn(cvService, 'useGetMonitoredServiceOverAllHealthScoreWithServiceAndEnv').mockReturnValue({
+    jest.spyOn(cvService, 'useGetMonitoredServiceOverAllHealthScore').mockReturnValue({
       data: {},
       refetch: jest.fn() as unknown
     } as UseGetReturn<any, any, any, any>)
@@ -89,7 +90,7 @@ describe('Validate ChangeCard', () => {
           loading: false
         } as any)
     )
-    jest.spyOn(cvService, 'useGetMonitoredServiceOverAllHealthScoreWithServiceAndEnv').mockReturnValue({
+    jest.spyOn(cvService, 'useGetMonitoredServiceOverAllHealthScore').mockReturnValue({
       data: {},
       refetch: jest.fn() as unknown
     } as UseGetReturn<any, any, any, any>)

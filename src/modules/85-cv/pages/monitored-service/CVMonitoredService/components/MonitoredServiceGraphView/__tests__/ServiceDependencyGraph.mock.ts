@@ -45,7 +45,6 @@ export const serviceCountData: CountServiceDTO = {
 }
 
 export const servicePoint: ServicePoint = {
-  serviceRef: 'service_ref',
-  environmentRef: 'environment_ref',
+  monitoredServiceIdentifier: 'monitored_service_identifier',
   destroySticky: jest.fn()
 }

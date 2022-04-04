@@ -1,7 +1,6 @@
 {
   "name": "Random",
   "identifier": "Random",
-  "allowStageExecutions": false,
   "projectIdentifier": "Yogesh_Test",
   "orgIdentifier": "default",
   "tags": {},
@@ -22,16 +21,16 @@
             "serviceRef": "Some_Service"
           },
           "infrastructure": {
+            "environmentRef": "Some_Environment",
             "infrastructureDefinition": {
               "type": "KubernetesDirect",
               "spec": {
-                "connectorRef": "account.arpit2929",
+                "connectorRef": "account.test_k8",
                 "namespace": "default",
                 "releaseName": "release-<+INFRA_KEY>"
               }
             },
-            "allowSimultaneousDeployments": false,
-            "environmentRef": "Some_Environment"
+            "allowSimultaneousDeployments": false
           },
           "execution": {
             "steps": [
@@ -60,7 +59,59 @@
             "rollbackSteps": []
           },
           "serviceDependencies": []
+        }
+      }
+    },
+    {
+      "stage": {
+        "name": "Stage 2",
+        "identifier": "Stage_2",
+        "description": "",
+        "type": "Deployment",
+        "spec": {
+          "serviceConfig": {
+            "serviceRef": "Some_Service",
+            "serviceDefinition": {
+              "type": "Kubernetes",
+              "spec": {
+                "variables": []
+              }
+            }
+          },
+          "infrastructure": {
+            "environmentRef": "Some_Environment",
+            "infrastructureDefinition": {
+              "type": "KubernetesDirect",
+              "spec": {
+                "connectorRef": "account.arpit2929",
+                "namespace": "default",
+                "releaseName": "release-<+INFRA_KEY>"
+              }
+            },
+            "allowSimultaneousDeployments": false
+          },
+          "execution": {
+            "steps": [
+              {
+                "step": {
+                  "name": "Step 1",
+                  "identifier": "Step_1",
+                  "type": "Http",
+                  "timeout": "10s",
+                  "spec": {
+                    "url": "<+input>",
+                    "method": "GET",
+                    "headers": [],
+                    "outputVariables": [],
+                    "requestBody": "<+input>"
+                  }
+                }
+              }
+            ],
+            "rollbackSteps": []
+          }
         },
+        "tags": {},
         "failureStrategies": [
           {
             "onFailure": {
@@ -69,6 +120,13 @@
                 "type": "StageRollback"
               }
             }
+          }
+        ],
+        "variables": [
+          {
+            "name": "var1",
+            "type": "String",
+            "value": "val1"
           }
         ]
       }

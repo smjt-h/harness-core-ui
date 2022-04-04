@@ -699,6 +699,7 @@ exports[`Test TerraformApply expand backend Spec config 1`] = `
                                     autocomplete="off"
                                     class="bp3-input"
                                     name="spec.configuration.spec.targets[0].value"
+                                    placeholder="cd.enterTragets"
                                     type="text"
                                     value=""
                                   />
@@ -2177,6 +2178,7 @@ exports[`Test TerraformApply rendering more than one varfile 2`] = `
                                     autocomplete="off"
                                     class="bp3-input"
                                     name="spec.configuration.spec.targets[0].value"
+                                    placeholder="cd.enterTragets"
                                     type="text"
                                     value=""
                                   />
@@ -2494,6 +2496,7 @@ exports[`Test TerraformApply should render edit view 1`] = `
                     autocomplete="off"
                     class="bp3-input"
                     name="test.spec.provisionerIdentifier"
+                    placeholder="pipeline.terraformStep.provisionerIdentifier"
                     type="text"
                     value=""
                   />

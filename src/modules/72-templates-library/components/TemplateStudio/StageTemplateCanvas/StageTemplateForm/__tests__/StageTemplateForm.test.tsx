@@ -14,13 +14,22 @@ import routes from '@common/RouteDefinitions'
 import { accountPathProps, pipelineModuleParams, templatePathProps } from '@common/utils/routeUtils'
 import { PipelineContext } from '@pipeline/components/PipelineStudio/PipelineContext/PipelineContext'
 import pipelineContextMock from '@pipeline/components/PipelineStudio/RightDrawer/__tests__/stateMock'
+import { TemplateContext } from '@templates-library/components/TemplateStudio/TemplateContext/TemplateContext'
+import { getTemplateContextMock } from '@templates-library/components/TemplateStudio/__tests__/stateMock'
+import { TemplateType } from '@templates-library/utils/templatesUtils'
 import { StageTemplateFormWithRef } from '../StageTemplateForm'
 
+const pipelineContext = produce(pipelineContextMock, draft => {
+  set(draft, 'contextType', 'Template')
+})
+const templateContext = produce(getTemplateContextMock(TemplateType.Step), draft => {
+  set(draft, 'state.templateView.isDrawerOpened', true)
+})
+
 describe('<StageTemplateFormWithRef /> tests', () => {
-  const contextMock = produce(pipelineContextMock, draft => {
-    set(draft, 'contextType', 'Template')
-  })
-  test('snapshot test', async () => {
+  beforeEach(() => jest.clearAllMocks())
+
+  test('should call renderPipelineStage with correct arguments', async () => {
     const { container } = render(
       <TestWrapper
         path={routes.toTemplateStudio({ ...accountPathProps, ...templatePathProps, ...pipelineModuleParams })}
@@ -33,20 +42,42 @@ describe('<StageTemplateFormWithRef /> tests', () => {
           templateType: 'Stage'
         }}
       >
-        <PipelineContext.Provider value={contextMock}>
+        <PipelineContext.Provider value={pipelineContext}>
           <StageTemplateFormWithRef />
         </PipelineContext.Provider>
       </TestWrapper>
     )
     expect(container).toMatchSnapshot()
-    expect(contextMock.renderPipelineStage).toBeCalledWith({
+    expect(pipelineContext.renderPipelineStage).toBeCalledWith({
       stageType: 'CI',
       minimal: false,
       contextType: 'Template',
-      templateTypes: contextMock.state.templateTypes,
-      setTemplateTypes: contextMock.setTemplateTypes,
+      templateTypes: pipelineContext.state.templateTypes,
+      setTemplateTypes: pipelineContext.setTemplateTypes,
       openTemplateSelector: noop,
       closeTemplateSelector: noop
     })
+  })
+  test('should not call renderPipelineStage when template drawer is open', async () => {
+    render(
+      <TestWrapper
+        path={routes.toTemplateStudio({ ...accountPathProps, ...templatePathProps, ...pipelineModuleParams })}
+        pathParams={{
+          templateIdentifier: 'new_stage_name',
+          accountId: 'accountId',
+          orgIdentifier: 'default',
+          projectIdentifier: 'Yogesh_Test',
+          module: 'cd',
+          templateType: 'Stage'
+        }}
+      >
+        <PipelineContext.Provider value={pipelineContext}>
+          <TemplateContext.Provider value={templateContext}>
+            <StageTemplateFormWithRef />
+          </TemplateContext.Provider>
+        </PipelineContext.Provider>
+      </TestWrapper>
+    )
+    expect(pipelineContext.renderPipelineStage).not.toBeCalled()
   })
 })

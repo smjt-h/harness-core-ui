@@ -766,7 +766,7 @@ describe('Unit tests for Deployment metrics ', () => {
       }
     ]
 
-    jest.spyOn(cvService, 'useGetDeploymentMetrics').mockReturnValue({
+    jest.spyOn(cvService, 'useGetVerifyStepDeploymentMetrics').mockReturnValue({
       data: clonedResponse,
       refetch: refetchFn as unknown
     } as any)

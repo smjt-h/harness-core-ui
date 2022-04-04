@@ -64,6 +64,8 @@ import { PipelineVariablesContextProvider } from '@pipeline/components/PipelineV
 import { useTelemetry } from '@common/hooks/useTelemetry'
 import { PipelineActions } from '@common/constants/TrackingConstants'
 import { useFeatureFlags } from '@common/hooks/useFeatureFlag'
+import GenericErrorHandler from '@common/pages/GenericErrorHandler/GenericErrorHandler'
+import NoEntityFound from '@pipeline/pages/utils/NoEntityFound/NoEntityFound'
 import { getFeaturePropsForRunPipelineButton } from '@pipeline/utils/runPipelineUtils'
 import { RunPipelineForm } from '@pipeline/components/RunPipelineModal/RunPipelineForm'
 import { EvaluationModal } from '@governance/EvaluationModal'
@@ -178,7 +180,8 @@ export function PipelineCanvas({
     yamlHandler,
     isBEPipelineUpdated,
     gitDetails,
-    entityValidityDetails
+    entityValidityDetails,
+    templateError
   } = state
 
   const { getString } = useStrings()
@@ -395,21 +398,27 @@ export function PipelineCanvas({
     const newPipelineId = latestPipeline?.identifier
 
     if (response && response.status === 'SUCCESS') {
-      setGovernanceMetadata(get(response, 'data.governanceMetadata'))
-      if (pipelineIdentifier === DefaultNewPipelineId) {
-        await deletePipelineCache(gitDetails)
+      const governanceData: GovernanceMetadata | undefined = get(response, 'data.governanceMetadata')
+      setGovernanceMetadata(governanceData)
 
-        showSuccess(getString('pipelines-studio.publishPipeline'))
+      // Handling cache and page navigation only when Governance is disabled, or Governance Evaluation is successful
+      // Otherwise, keep current pipeline editing states, and show Governance evaluation error
+      if (governanceData?.status !== 'error') {
+        if (pipelineIdentifier === DefaultNewPipelineId) {
+          await deletePipelineCache(gitDetails)
 
-        navigateToLocation(newPipelineId, updatedGitDetails)
-        // note: without setTimeout does not redirect properly after save
-        await fetchPipeline({ forceFetch: true, forceUpdate: true, newPipelineId })
-      } else {
-        await fetchPipeline({ forceFetch: true, forceUpdate: true })
-      }
-      if (updatedGitDetails?.isNewBranch) {
-        navigateToLocation(newPipelineId, updatedGitDetails)
-        location.reload()
+          showSuccess(getString('pipelines-studio.publishPipeline'))
+
+          navigateToLocation(newPipelineId, updatedGitDetails)
+          // note: without setTimeout does not redirect properly after save
+          await fetchPipeline({ forceFetch: true, forceUpdate: true, newPipelineId })
+        } else {
+          await fetchPipeline({ forceFetch: true, forceUpdate: true })
+        }
+        if (updatedGitDetails?.isNewBranch) {
+          navigateToLocation(newPipelineId, updatedGitDetails)
+          location.reload()
+        }
       }
       if (isEdit) {
         trackEvent(isYaml ? PipelineActions.PipelineUpdatedViaYAML : PipelineActions.PipelineUpdatedViaVisual, {})
@@ -679,7 +688,7 @@ export function PipelineCanvas({
         })
       }
       hideModal()
-      trackEvent(PipelineActions.StartedPipelineCreation, { module })
+      trackEvent(PipelineActions.StartedPipelineCreation, { module, data })
     },
     // eslint-disable-next-line react-hooks/exhaustive-deps
     [hideModal, pipeline, updatePipeline]
@@ -862,6 +871,19 @@ export function PipelineCanvas({
       return 155
     }
     return 400
+  }
+
+  if (templateError?.data && !isGitSyncEnabled) {
+    return (
+      <GenericErrorHandler
+        errStatusCode={templateError?.status}
+        errorMessage={(templateError?.data as Error)?.message}
+      />
+    )
+  }
+
+  if (templateError?.data && isEmpty(pipeline) && isGitSyncEnabled) {
+    return <NoEntityFound identifier={pipelineIdentifier} entityType={'pipeline'} />
   }
 
   return (

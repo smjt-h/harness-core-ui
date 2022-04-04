@@ -15,11 +15,11 @@ import {
   MultiTypeInputType,
   FormInput,
   Label,
-  Color,
   SelectOption,
   useToaster
 } from '@wings-software/uicore'
 import { connect } from 'formik'
+import { Color } from '@harness/design-system'
 import { useQueryParams } from '@common/hooks'
 import type { GitQueryParams } from '@common/interfaces/RouteInterfaces'
 import { useStrings } from 'framework/strings'
@@ -111,6 +111,7 @@ function ConfigSectionRef(props: TerraformPlanProps & { formik?: any }): React.R
         <div className={cx(stepCss.formGroup, stepCss.md)}>
           <FormInput.MultiTextInput
             name={`${path}.spec.configuration.workspace`}
+            placeholder={getString('pipeline.terraformStep.workspace')}
             label={getString('pipelineSteps.workspace')}
             disabled={readonly}
             multiTextInputProps={{

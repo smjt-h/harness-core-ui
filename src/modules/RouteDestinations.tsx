@@ -24,6 +24,7 @@ import CIRoutes from '@ci/RouteDestinations'
 import CVRoutes from '@cv/RouteDestinations'
 import CFRoutes from '@cf/RouteDestinations'
 import CERoutes from '@ce/RouteDestinations'
+import STORoutes from '@sto-steps/RouteDestinations'
 import GovernanceRoutes from '@governance/RouteDestinations'
 import DASHBOARDRoutes from '@dashboards/RouteDestinations'
 import AccountSideNav from '@common/components/AccountSideNav/AccountSideNav'
@@ -69,7 +70,7 @@ RbacFactory.registerResourceTypeHandler(ResourceType.SLO, {
 })
 
 export default function RouteDestinations(): React.ReactElement {
-  const { CDNG_ENABLED, CVNG_ENABLED, CING_ENABLED, CENG_ENABLED, CFNG_ENABLED } = useFeatureFlags()
+  const { CDNG_ENABLED, CVNG_ENABLED, CING_ENABLED, CENG_ENABLED, CFNG_ENABLED, SECURITY } = useFeatureFlags()
 
   return (
     <Switch>
@@ -87,6 +88,7 @@ export default function RouteDestinations(): React.ReactElement {
       {CING_ENABLED ? CIRoutes.props.children : null}
       {CDNG_ENABLED ? CDRoutes.props.children : null}
       {CVNG_ENABLED ? CVRoutes.props.children : null}
+      {SECURITY && STORoutes.props.children}
       <Route path="/account/:accountId/settings">
         <AuthSettingsRoutes />
       </Route>

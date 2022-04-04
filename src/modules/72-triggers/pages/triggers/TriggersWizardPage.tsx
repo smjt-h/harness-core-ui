@@ -11,12 +11,12 @@ import { useHistory, useParams } from 'react-router-dom'
 import {
   Layout,
   SelectOption,
-  Color,
   Text,
   Switch,
   PageSpinner,
   VisualYamlSelectedView as SelectedView
 } from '@wings-software/uicore'
+import { Color } from '@harness/design-system'
 import { parse } from 'yaml'
 import { isEmpty, isUndefined, merge, cloneDeep, get, defaultTo, set } from 'lodash-es'
 import { CompletionItemKind } from 'vscode-languageserver-types'
@@ -476,13 +476,16 @@ const TriggersWizardPage: React.FC = (): JSX.Element => {
     queryParams: {
       accountIdentifier: accountId,
       orgIdentifier,
-      projectIdentifier
+      projectIdentifier,
+      getTemplatesResolvedPipeline: true
     }
   })
 
   const originalPipeline: PipelineInfoConfig | undefined = parse(
     (pipelineResponse?.data?.yamlPipeline as any) || ''
   )?.pipeline
+
+  const resolvedTemplatesPipelineYaml = defaultTo(pipelineResponse?.data?.resolvedTemplatesPipelineYaml, '')
 
   useEffect(() => {
     if (triggerResponse?.data?.yaml && triggerResponse.data.type === TriggerTypes.WEBHOOK) {
@@ -1708,7 +1711,7 @@ const TriggersWizardPage: React.FC = (): JSX.Element => {
       >
         <WebhookTriggerConfigPanel />
         <WebhookConditionsPanel />
-        <WebhookPipelineInputPanel />
+        <WebhookPipelineInputPanel resolvedTemplatesPipelineYaml={resolvedTemplatesPipelineYaml} />
       </Wizard>
     )
   }
@@ -1758,7 +1761,7 @@ const TriggersWizardPage: React.FC = (): JSX.Element => {
       >
         <ArtifactTriggerConfigPanel />
         <ArtifactConditionsPanel />
-        <WebhookPipelineInputPanel />
+        <WebhookPipelineInputPanel resolvedTemplatesPipelineYaml={resolvedTemplatesPipelineYaml} />
       </Wizard>
     )
   }
@@ -1805,12 +1808,16 @@ const TriggersWizardPage: React.FC = (): JSX.Element => {
       >
         <TriggerOverviewPanel />
         <SchedulePanel />
-        <WebhookPipelineInputPanel />
+        <WebhookPipelineInputPanel resolvedTemplatesPipelineYaml={resolvedTemplatesPipelineYaml} />
       </Wizard>
     )
   }
 
-  if (initialValues?.triggerType && !Object.values(TriggerTypes).includes(initialValues.triggerType)) {
+  if (
+    initialValues?.triggerType &&
+    !Object.values(TriggerTypes).includes(initialValues.triggerType) &&
+    !loadingGetTrigger
+  ) {
     return (
       <Layout.Vertical spacing="medium" padding="medium">
         <Page.Body>

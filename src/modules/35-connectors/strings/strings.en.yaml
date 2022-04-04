@@ -311,8 +311,6 @@ datadog:
   encryptedAPPKeyValidation: Encrypted APP Key is required.
 errorTracking:
   urlValidation: Error Tracking URL is required.
-  sidValidation: Error Tracking SID is required.
-  sidLabel: SID
 dynatrace:
   apiToken: API Token
   apiTokenValidation: API Token is required.
@@ -419,7 +417,7 @@ awsKms:
 delegate:
   configure: Configure what Delegates are allowed to connect to this Connector
   delegateSelectorAny: Connect via any available Delegate
-  delegateSelectorSelective: Connect only via Delegates which has all of the following tags
+  delegateSelectorSelective: Connect only via Delegates with all of the following tags
   hearbeat: heartbeat
   matchesSelectors: Matches
   testDelegateConnectivity: Test Delegate Connectivity
@@ -427,7 +425,7 @@ delegate:
   waitingForConnection: Waiting for connection
   noDelegates: You have no Delegates
   noMatchingDelegate: No eligible Delegates found. Install a new Delegate or continue to save.
-  delegateselectionPlaceholder: Select or Enter Delegate Selectors
+  delegateselectionPlaceholder: Select or Enter Delegates
   noMatchingDelegatesActive: None of the matching Delegates are in active state.
   couldNotFetch: Failed to update the Delegate list, Will try again in {{pollingInterval}}
   delegateSelectors: Delegate Selectors
@@ -474,7 +472,7 @@ ceK8:
 azureKeyVault:
   labels:
     tenantId: '{{ $.connectors.tenantId }}'
-    subscription: Subscription
+    subscription: '{{ $.common.plans.subscription }}'
     vaultName: Vault Name
     fetchVault: Fetch Vault
     setupVault: Setup Vault
@@ -798,3 +796,5 @@ pdc:
     step1: 'Checking for eligible delegates for connectivity with Kubernetes Connector'
     step2: 'Validating the GitHub Connector authentication and permissions'
     step3: 'Validating the API authentication and permissions'
+connectorReferenceText: "can't be deleted as it is being referenced by other entities. To see the list of entities referencing this connector,"
+cantDeleteConnector: "Can't Delete Connector"

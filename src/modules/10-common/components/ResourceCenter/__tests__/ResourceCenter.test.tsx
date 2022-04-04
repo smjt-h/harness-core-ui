@@ -10,6 +10,15 @@ import React from 'react'
 import { TestWrapper } from '@common/utils/testUtils'
 import { Editions } from '@common/constants/SubscriptionTypes'
 import { ResourceCenter } from '../ResourceCenter'
+
+jest.mock('refiner-js', () => {
+  return jest.fn().mockImplementation((param, callback) => {
+    if (param === 'onComplete') {
+      callback()
+    }
+  })
+})
+
 describe('ResourceCenter', () => {
   test('Should render resource center properly', () => {
     const { container } = render(
@@ -32,6 +41,28 @@ describe('ResourceCenter', () => {
     })
   })
 
+  test('should render feedback when click on icon', async () => {
+    const featureFlags = {
+      SHOW_NG_REFINER_FEEDBACK: true
+    }
+
+    const defaultAppStoreValues = {
+      featureFlags
+    }
+
+    const { getByTestId, getByText } = render(
+      <TestWrapper defaultAppStoreValues={defaultAppStoreValues}>
+        <ResourceCenter />
+      </TestWrapper>
+    )
+
+    fireEvent.click(getByTestId('question'))
+    fireEvent.click(getByTestId('feedback'))
+    await waitFor(() => {
+      expect(getByText('common.resourceCenter.feedback.submit')).toBeInTheDocument()
+    })
+  })
+
   test('should render community', async () => {
     const defaultLicenseStoreValues = {
       licenseInformation: {
@@ -49,6 +80,59 @@ describe('ResourceCenter', () => {
     await waitFor(() => {
       expect(getByText('common.resourceCenter.ticketmenu.submit')).toBeInTheDocument()
       expect(queryByText('common.resourceCenter.ticketmenu.tickets')).not.toBeInTheDocument()
+    })
+  })
+
+  describe('release note', () => {
+    test('release note for saas', async () => {
+      window.deploymentType = 'SAAS'
+      const { getByTestId, getByText } = render(
+        <TestWrapper>
+          <ResourceCenter />
+        </TestWrapper>
+      )
+      fireEvent.click(getByTestId('question'))
+      const releaseNote = getByText('common.resourceCenter.bottomlayout.releaseNote').closest('a')
+      await waitFor(() => {
+        expect(releaseNote).toHaveAttribute(
+          'href',
+          'https://ngdocs.harness.io/article/7zkchy5lhj-harness-saa-s-release-notes-2022'
+        )
+      })
+    })
+
+    test('release note for community', async () => {
+      window.deploymentType = 'COMMUNITY'
+      const { getByTestId, getByText } = render(
+        <TestWrapper>
+          <ResourceCenter />
+        </TestWrapper>
+      )
+      fireEvent.click(getByTestId('question'))
+      const releaseNote = getByText('common.resourceCenter.bottomlayout.releaseNote').closest('a')
+      await waitFor(() => {
+        expect(releaseNote).toHaveAttribute(
+          'href',
+          'https://ngdocs.harness.io/article/556wy85kbo-harness-on-prem-release-notes'
+        )
+      })
+    })
+
+    test('release note for on prem', async () => {
+      window.deploymentType = 'ON_PREM'
+      const { getByTestId, getByText } = render(
+        <TestWrapper>
+          <ResourceCenter />
+        </TestWrapper>
+      )
+      fireEvent.click(getByTestId('question'))
+      const releaseNote = getByText('common.resourceCenter.bottomlayout.releaseNote').closest('a')
+      await waitFor(() => {
+        expect(releaseNote).toHaveAttribute(
+          'href',
+          'https://ngdocs.harness.io/article/556wy85kbo-harness-on-prem-release-notes'
+        )
+      })
     })
   })
 })

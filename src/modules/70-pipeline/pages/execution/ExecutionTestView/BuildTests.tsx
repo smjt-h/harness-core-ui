@@ -5,21 +5,12 @@
  * https://polyformproject.org/wp-content/uploads/2020/06/PolyForm-Shield-1.0.0.txt.
  */
 
-import {
-  Layout,
-  Select,
-  Color,
-  Heading,
-  Container,
-  Text,
-  SelectOption,
-  PageError,
-  FontVariation
-} from '@wings-software/uicore'
-import React, { useState, useEffect, useMemo } from 'react'
+import { Layout, Select, Heading, Container, Text, SelectOption, PageError } from '@wings-software/uicore'
+import { Color, FontVariation } from '@harness/design-system'
+import React, { useState, useEffect, useMemo, SetStateAction, Dispatch } from 'react'
 import { useParams } from 'react-router-dom'
-import { get, uniqWith, isEqual } from 'lodash-es'
-import { useStrings } from 'framework/strings'
+import { get } from 'lodash-es'
+import { useStrings, UseStringsReturn } from 'framework/strings'
 import {
   useReportSummary,
   useGetToken,
@@ -38,17 +29,18 @@ import { TestsOverview } from './TestsOverview'
 import { TestsExecutionResult } from './TestsExecutionResult'
 import { TestsSelectionBreakdown } from './TestsSelectionBreakdown'
 import { TICallToAction } from './TICallToAction'
+import {
+  AllOption,
+  AllStepsOption,
+  getOptionalQueryParamKeys,
+  setInitialStageAndSteps,
+  getUIType,
+  getError,
+  UI
+} from './TestsUtils'
 // import { TestsCoverage } from './TestsCoverage'
 import css from './BuildTests.module.scss'
 
-/* eslint-disable @typescript-eslint/no-shadow */
-enum UI {
-  TIAndReports,
-  TI,
-  Reports,
-  ZeroState,
-  LoadingState
-}
 /* eslint-enable @typescript-eslint/no-shadow */
 
 interface BuildTestsProps {
@@ -82,6 +74,103 @@ const renderTestsOverview = ({
   return null
 }
 
+const renderHeader = ({
+  stageIdOptions,
+  selectedStageId,
+  getString,
+  setSelectedStageId,
+  stepIdOptions,
+  setStepIdOptions,
+  setSelectedStepId,
+  stepIdOptionsFromStageKeyMap,
+  selectedStepId,
+  testOverviewHasTests
+}: {
+  stageIdOptions: SelectOption[]
+  getString: UseStringsReturn['getString']
+  setSelectedStageId: Dispatch<SetStateAction<SelectOption | undefined>>
+  stepIdOptions: SelectOption[]
+  setStepIdOptions: Dispatch<SetStateAction<SelectOption[]>>
+  setSelectedStepId: Dispatch<SetStateAction<SelectOption | undefined>>
+  stepIdOptionsFromStageKeyMap: { [key: string]: SelectOption[] }
+  selectedStageId?: SelectOption
+  selectedStepId?: SelectOption
+  testOverviewHasTests: boolean
+}): JSX.Element => (
+  <Container
+    flex
+    padding={{ bottom: 'small' }}
+    margin={{ bottom: 'medium' }}
+    style={{ borderBottom: '1px solid #D9DAE6', justifyContent: 'space-between' }}
+  >
+    <Container flex style={{ justifyContent: 'initial' }}>
+      <Heading level={5} color={Color.BLACK} style={{ fontWeight: 600 }}>
+        {getString('pipeline.testsReports.testExecutions')}
+      </Heading>
+      {stageIdOptions && selectedStageId && (
+        <div style={{ width: '222px', marginLeft: 'var(--spacing-5)' }}>
+          <Select
+            fill
+            value={selectedStageId}
+            items={stageIdOptions}
+            onChange={option => {
+              setSelectedStageId(option)
+              if (option.value === AllOption.value) {
+                const newStepIdOptions = [...stepIdOptions]
+                // Add All Steps option if not present
+                if (!stepIdOptions.some(stepIdOption => stepIdOption.value === AllOption.value)) {
+                  newStepIdOptions.unshift(AllStepsOption)
+                  setStepIdOptions(newStepIdOptions)
+                }
+                setSelectedStepId(newStepIdOptions[0])
+              } else if (option.value) {
+                const stageStepIdOptions = stepIdOptionsFromStageKeyMap[option.value as string] || []
+                const newStepIdOptions = [...stageStepIdOptions].filter(
+                  stepIdOption => stepIdOption.value !== AllOption.value
+                )
+                // Remove All Steps option if only 1 option available
+                if (newStepIdOptions.length === 1) {
+                  setStepIdOptions(stageStepIdOptions)
+                  setSelectedStepId(stageStepIdOptions[0])
+                } else {
+                  setStepIdOptions(stageStepIdOptions)
+                  setSelectedStepId(stageStepIdOptions[1])
+                }
+              }
+            }}
+          />
+        </div>
+      )}
+      {stepIdOptions && selectedStepId && (
+        <div style={{ width: '222px', marginLeft: 'var(--spacing-5)' }}>
+          <Select
+            fill
+            value={selectedStepId}
+            items={stepIdOptions}
+            disabled={selectedStageId?.value === AllOption.value && selectedStepId.value === AllOption.value}
+            onChange={option => setSelectedStepId(option)}
+          />
+        </div>
+      )}
+    </Container>
+    {testOverviewHasTests && (
+      <Text
+        className={css.poweredByTi}
+        font={{ variation: FontVariation.TINY, weight: 'semi-bold' }}
+        icon="upgrade-bolt"
+        iconProps={{
+          intent: 'primary',
+          size: 16,
+          color: Color.PRIMARY_8
+        }}
+        color={Color.PRIMARY_8}
+      >
+        {getString('pipeline.testsReports.poweredByTI')}
+      </Text>
+    )}
+  </Container>
+)
+
 export function TIAndReports({
   header,
   testOverviewData,
@@ -89,7 +178,8 @@ export function TIAndReports({
   stageId,
   stepId,
   serviceToken,
-  testsCountDiff
+  testsCountDiff,
+  isAggregatedReports
 }: {
   header: JSX.Element
   testOverviewData?: SelectionOverview | null
@@ -98,6 +188,7 @@ export function TIAndReports({
   stepId?: string
   serviceToken?: string | null
   testsCountDiff?: number
+  isAggregatedReports?: boolean
 }): JSX.Element {
   return (
     <>
@@ -129,7 +220,14 @@ export function TIAndReports({
         {/* <TestsCoverage /> */}
         {/* TI is above Reports which is 100% width */}
         {stageId && stepId && serviceToken && (
-          <TestsExecution stageId={stageId} stepId={stepId} serviceToken={serviceToken} showCallGraph />
+          <TestsExecution
+            stageId={stageId}
+            stepId={stepId}
+            serviceToken={serviceToken}
+            showCallGraph
+            isAggregatedReports={isAggregatedReports}
+            reportSummaryData={reportSummaryData}
+          />
         )}
       </Layout.Horizontal>
     </>
@@ -170,9 +268,11 @@ export function Reports({
   stageId,
   stepId,
   serviceToken,
-  testsCountDiff
+  testsCountDiff,
+  hasTIStep
 }: {
   header: JSX.Element
+  hasTIStep: boolean
   reportSummaryData?: TestReportSummary | null
   stageId?: string
   stepId?: string
@@ -209,18 +309,24 @@ export function Reports({
               skippedTests={reportSummaryData.skipped_tests}
             />
           )}
-        {NG_LICENSES_ENABLED && <TICallToAction />}
+        {NG_LICENSES_ENABLED && !hasTIStep && <TICallToAction />}
       </Layout.Horizontal>
       <Layout.Horizontal spacing="large">
         {/* <TestsCoverage /> */}
         {/* TI is above Reports which is 100% width */}
         {stageId && stepId && serviceToken && (
-          <TestsExecution stageId={stageId} stepId={stepId} serviceToken={serviceToken} />
+          <TestsExecution
+            stageId={stageId}
+            stepId={stepId}
+            serviceToken={serviceToken}
+            reportSummaryData={reportSummaryData}
+          />
         )}
       </Layout.Horizontal>
     </>
   )
 }
+
 function BuildTests({ reportSummaryMock, testOverviewMock }: BuildTestsProps): React.ReactElement | null {
   const context = useExecutionContext()
   const { getString } = useStrings()
@@ -240,11 +346,24 @@ function BuildTests({ reportSummaryMock, testOverviewMock }: BuildTestsProps): R
     queryParams: { accountId }
   })
 
-  const [selectItems, setSelectItems] = useState<SelectOption[]>([])
-  const [selectValue, setSelectValue] = useState<SelectOption>()
+  const [hasTIStep, setHasTIStep] = useState<boolean>(false)
 
-  const [stageId, stepId] = (selectValue?.value as string)?.split('/') || []
+  const [stageIdOptions, setStageIdOptions] = useState<SelectOption[]>([])
+  const [selectedStageId, setSelectedStageId] = useState<SelectOption>()
 
+  const [stepIdOptionsFromStageKeyMap, setStepIdOptionsFromStageKeyMap] = useState<{ [key: string]: SelectOption[] }>(
+    {}
+  )
+  const [stepIdOptions, setStepIdOptions] = useState<SelectOption[]>([])
+  const [selectedStepId, setSelectedStepId] = useState<SelectOption>()
+  const stageId = selectedStageId?.value as string | undefined
+  const stepId = selectedStepId?.value as string | undefined
+
+  const isAggregatedStepsReport = stepId === AllOption.value
+  // Second condition is cannot be All Steps with only 1 stage option aka All Stages
+  const isAggregatedStageReports =
+    stageId === AllOption.value || (stepId === AllOption.value && stageIdOptions.length === 1)
+  const isAggregatedReports = isAggregatedStageReports || isAggregatedStepsReport
   const status = (context?.pipelineExecutionDetail?.pipelineExecutionSummary?.status || '').toUpperCase()
   const infoQueryParams = useMemo(
     () => ({
@@ -302,36 +421,43 @@ function BuildTests({ reportSummaryMock, testOverviewMock }: BuildTestsProps): R
 
   useEffect(() => {
     if (reportInfoData && testInfoData) {
-      const uniqItems = uniqWith([...reportInfoData, ...testInfoData], isEqual)
-      const readySelectItems = uniqItems.map(({ stage, step }) => ({
-        label: `Step: ${step} (Stage: ${stage})`,
-        value: `${stage}/${step}`
-      }))
-      setSelectItems(readySelectItems as SelectOption[])
-      setSelectValue(readySelectItems[0] as SelectOption)
+      setInitialStageAndSteps({
+        reportInfoData,
+        testInfoData,
+        context,
+        setStepIdOptionsFromStageKeyMap,
+        setSelectedStageId,
+        setSelectedStepId,
+        setStageIdOptions,
+        setStepIdOptions
+      })
+
+      if (testInfoData.length > 0) {
+        setHasTIStep(true)
+      }
     }
   }, [reportInfoData, testInfoData])
 
-  const queryParams = useMemo(
-    () => ({
+  const queryParams = useMemo(() => {
+    const optionalKeys = getOptionalQueryParamKeys({ stageId, stepId })
+
+    return {
       accountId,
       orgId: orgIdentifier,
       projectId: projectIdentifier,
       pipelineId: context?.pipelineExecutionDetail?.pipelineExecutionSummary?.pipelineIdentifier || '',
       buildId: String(context?.pipelineExecutionDetail?.pipelineExecutionSummary?.runSequence || ''),
-      stageId,
-      stepId
-    }),
-    [
-      accountId,
-      orgIdentifier,
-      projectIdentifier,
-      context?.pipelineExecutionDetail?.pipelineExecutionSummary?.pipelineIdentifier,
-      context?.pipelineExecutionDetail?.pipelineExecutionSummary?.runSequence,
-      stageId,
-      stepId
-    ]
-  )
+      ...optionalKeys
+    }
+  }, [
+    accountId,
+    orgIdentifier,
+    projectIdentifier,
+    context?.pipelineExecutionDetail?.pipelineExecutionSummary?.pipelineIdentifier,
+    context?.pipelineExecutionDetail?.pipelineExecutionSummary?.runSequence,
+    stageId,
+    stepId
+  ])
 
   const {
     data: reportSummaryData,
@@ -376,21 +502,16 @@ function BuildTests({ reportSummaryMock, testOverviewMock }: BuildTestsProps): R
   const reportSummaryHasTests = (reportSummaryData?.total_tests || 0) > 0
   const testOverviewHasTests = (testOverviewData?.total_tests || 0) > 0
 
-  const uiType =
-    reportSummaryHasTests && testOverviewHasTests
-      ? UI.TIAndReports
-      : !reportSummaryHasTests && testOverviewHasTests
-      ? UI.TI
-      : reportSummaryHasTests && !testOverviewHasTests
-      ? UI.Reports
-      : reportInfoLoading || testInfoLoading
-      ? UI.LoadingState
-      : UI.ZeroState
+  const uiType = getUIType({ reportSummaryHasTests, testOverviewHasTests, reportInfoLoading, testInfoLoading })
 
   useEffect(() => {
     if (status && stageId && stepId) {
       fetchReportSummary()
-      fetchTestOverview()
+      if (!isAggregatedReports) {
+        // do not need overview call for ti-related data when aggregated.
+        // summary call above will provide ui overview data
+        fetchTestOverview()
+      }
     }
   }, [stageId, stepId, status])
 
@@ -408,13 +529,15 @@ function BuildTests({ reportSummaryMock, testOverviewMock }: BuildTestsProps): R
     return null
   }
 
-  const error =
-    (reportInfoData && reportInfoData?.length > 0 && reportSummaryError) ||
-    serviceTokenError ||
-    (testInfoData && testInfoData?.length > 0 && testOverviewError) ||
-    reportInfoError ||
+  const error = getError({
+    reportInfoData,
+    reportSummaryError,
+    serviceTokenError,
+    testInfoData,
+    testOverviewError,
+    reportInfoError,
     testInfoError
-
+  })
   if (error) {
     return (
       <PageError
@@ -440,69 +563,93 @@ function BuildTests({ reportSummaryMock, testOverviewMock }: BuildTestsProps): R
     return <PageSpinner />
   }
 
-  const header = (
-    <Container
-      flex
-      padding={{ bottom: 'small' }}
-      margin={{ bottom: 'medium' }}
-      style={{ borderBottom: '1px solid #D9DAE6', justifyContent: 'space-between' }}
-    >
-      <Container flex style={{ justifyContent: 'initial' }}>
-        <Heading level={5} color={Color.BLACK} style={{ fontWeight: 600 }}>
-          {getString('pipeline.testsReports.testExecutions')}
-        </Heading>
-        {selectItems && selectValue && (
-          <div style={{ width: '375px', marginLeft: 'var(--spacing-5)' }}>
-            <Select fill value={selectValue} items={selectItems} onChange={value => setSelectValue(value as any)} />
-          </div>
-        )}
-      </Container>
-      {testOverviewHasTests && (
-        <Text
-          className={css.poweredByTi}
-          font={{ variation: FontVariation.TINY, weight: 'semi-bold' }}
-          icon="upgrade-bolt"
-          iconProps={{
-            intent: 'primary',
-            size: 16,
-            color: Color.PRIMARY_8
-          }}
-          color={Color.PRIMARY_8}
-        >
-          {getString('pipeline.testsReports.poweredByTI')}
-        </Text>
-      )}
-    </Container>
-  )
-
   let ui = null
   switch (uiType) {
     case UI.LoadingState:
       ui = <BuildZeroState isLoading={true} />
       break
     case UI.ZeroState:
-      ui = <BuildZeroState />
+      ui = (
+        <>
+          {stageIdOptions?.length > 1 || stepIdOptions?.length > 1
+            ? renderHeader({
+                stageIdOptions,
+                selectedStageId,
+                getString,
+                setSelectedStageId,
+                stepIdOptions,
+                setStepIdOptions,
+                setSelectedStepId,
+                stepIdOptionsFromStageKeyMap,
+                selectedStepId,
+                testOverviewHasTests
+              })
+            : null}
+          <BuildZeroState />
+        </>
+      )
       break
     case UI.TIAndReports:
       ui = (
         <TIAndReports
-          header={header}
+          header={renderHeader({
+            stageIdOptions,
+            selectedStageId,
+            getString,
+            setSelectedStageId,
+            stepIdOptions,
+            setStepIdOptions,
+            setSelectedStepId,
+            stepIdOptionsFromStageKeyMap,
+            selectedStepId,
+            testOverviewHasTests
+          })}
           testOverviewData={testOverviewData}
           reportSummaryData={reportSummaryData}
           stageId={stageId}
           stepId={stepId}
           serviceToken={serviceToken}
           testsCountDiff={testsCountDiff}
+          isAggregatedReports={isAggregatedReports}
         />
       )
       break
     case UI.TI:
-      ui = <TI header={header} testOverviewData={testOverviewData} testsCountDiff={testsCountDiff} />
+      ui = (
+        <TI
+          header={renderHeader({
+            stageIdOptions,
+            selectedStageId,
+            getString,
+            setSelectedStageId,
+            stepIdOptions,
+            setStepIdOptions,
+            setSelectedStepId,
+            stepIdOptionsFromStageKeyMap,
+            selectedStepId,
+            testOverviewHasTests
+          })}
+          testOverviewData={testOverviewData}
+          testsCountDiff={testsCountDiff}
+        />
+      )
       break
     case UI.Reports:
       ui = (
         <Reports
-          header={header}
+          header={renderHeader({
+            stageIdOptions,
+            selectedStageId,
+            getString,
+            setSelectedStageId,
+            stepIdOptions,
+            setStepIdOptions,
+            setSelectedStepId,
+            stepIdOptionsFromStageKeyMap,
+            selectedStepId,
+            testOverviewHasTests
+          })}
+          hasTIStep={hasTIStep}
           reportSummaryData={reportSummaryData}
           stageId={stageId}
           stepId={stepId}

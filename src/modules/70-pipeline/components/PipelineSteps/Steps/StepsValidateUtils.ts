@@ -116,19 +116,24 @@ function generateSchemaForList(
   { getString }: GenerateSchemaDependencies
 ): Lazy {
   if (isInputSet) {
-    let schema = yup.array().test('valuesShouldBeUnique', getString('validation.uniqueValues'), list => {
-      if (!list) return true
-      return uniq(list).length === list.length
+    return yup.lazy(value => {
+      if (value === RUNTIME_INPUT_VALUE) {
+        return yup.string()
+      }
+      let schema = yup.array().test('valuesShouldBeUnique', getString('validation.uniqueValues'), list => {
+        if (!list) return true
+        return uniq(list).length === list.length
+      })
+
+      if (isRequired && label) {
+        schema = schema
+          .ensure()
+          .compact()
+          .min(1, getString('fieldRequired', { field: getString(label as StringKeys) }))
+      }
+
+      return schema
     })
-
-    if (isRequired && label) {
-      schema = schema
-        .ensure()
-        .compact()
-        .min(1, getString('fieldRequired', { field: getString(label as StringKeys) }))
-    }
-
-    return schema
   } else {
     return yup.lazy(value => {
       if (Array.isArray(value)) {
@@ -269,22 +274,32 @@ function generateSchemaForOutputVariables(
   { getString }: GenerateSchemaDependencies
 ): ArraySchema<any> | Lazy {
   if (isInputSet) {
-    return yup
-      .array()
-      .of(
-        yup.lazy(val =>
-          getMultiTypeFromValue(val as string) === MultiTypeInputType.FIXED
-            ? yup.object().shape({
+    return yup.lazy(value => {
+      if (value === RUNTIME_INPUT_VALUE) {
+        return yup.string()
+      }
+      return yup
+        .array()
+        .of(
+          yup.lazy(val => {
+            if (
+              val &&
+              Object.prototype.hasOwnProperty.call(val, 'name') &&
+              getMultiTypeFromValue((val as { name: string })['name']) === MultiTypeInputType.FIXED
+            ) {
+              return yup.object().shape({
                 name: yup.string().matches(regexIdentifier, getString('validation.validOutputVariableRegex'))
               })
-            : yup.string()
+            } else {
+              return yup.string()
+            }
+          })
         )
-      )
-      .test('valuesShouldBeUnique', getString('validation.uniqueValues'), outputVariables => {
-        if (!outputVariables) return true
-
-        return uniqBy(outputVariables, 'name').length === outputVariables.length
-      })
+        .test('valuesShouldBeUnique', getString('validation.uniqueValues'), outputVariables => {
+          if (!outputVariables) return true
+          return uniqBy(outputVariables, 'name').length === outputVariables.length
+        })
+    })
   } else {
     return yup.lazy(value =>
       Array.isArray(value)

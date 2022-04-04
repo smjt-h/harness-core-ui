@@ -50,6 +50,8 @@ interface COGatewayAccessProps {
   setGatewayDetails: (gw: GatewayDetails) => void
   activeStepDetails?: { count?: number; tabId?: string } | null
   allServices: Service[]
+  serverNames: string[]
+  setServerNames: (val: string[]) => void
 }
 
 const COGatewayAccess: React.FC<COGatewayAccessProps> = props => {
@@ -221,6 +223,7 @@ const COGatewayAccess: React.FC<COGatewayAccessProps> = props => {
           activeSectionNames={selectedHelpTextSections}
           customDomain={props.gatewayDetails.customDomains?.join(',')}
           hostName={props.gatewayDetails.hostName}
+          showSshOption={shouldShowSshOption}
         />
       </Drawer>
       <Layout.Vertical spacing="large" padding="medium" style={{ marginLeft: '10px' }}>
@@ -304,6 +307,8 @@ const COGatewayAccess: React.FC<COGatewayAccessProps> = props => {
                       setGatewayDetails={props.setGatewayDetails}
                       onInfoIconClick={() => setDrawerOpen(true)}
                       activeStepDetails={props.activeStepDetails}
+                      serverNames={props.serverNames}
+                      setServerNames={props.setServerNames}
                     />
                   }
                 ></Tab>

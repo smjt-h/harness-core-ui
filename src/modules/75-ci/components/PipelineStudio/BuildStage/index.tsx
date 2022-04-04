@@ -32,6 +32,7 @@ const getStageEditorImplementation = (isEnabled: boolean, getString: UseStringsR
     isDisabled={false}
     isHidden={!isEnabled}
     isApproval={false}
+    isTemplateSupported={true}
   />
 )
 stagesCollection.registerStageFactory(StageType.BUILD, getStageAttributes, getStageEditorImplementation)

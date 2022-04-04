@@ -18,7 +18,7 @@ jobs:
           DOCKER_TAG="$BRANCH_SANITIZED-$SHA"
           echo "Branch is $BRANCH"
           echo "Docker tag is $DOCKER_TAG"
-          if [[ $BRANCH = 'master' ]]; then
+          if [[ $BRANCH = 'develop' ]]; then
             curl \
             --silent -o /dev/null \
               -H "Content-Type: application/json" \

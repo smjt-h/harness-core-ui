@@ -42,7 +42,7 @@
     left: 10px;
     width: 13px;
     height: 13px;
-    background: linear-gradient(147.14deg, #73dfe7 6.95%, #0063f7 93.05%);
+    background: linear-gradient(147.14deg, var(--teal-300) 6.95%, hsl(216, 100%, 48%) 93.05%);
     opacity: 0.6;
     border-radius: 100px;
   }
@@ -78,7 +78,7 @@
 
 .select-popover {
   position: absolute;
-  border: solid 1px #ccc;
+  border: solid 1px rgb(204, 204, 204);
   width: 400px;
   max-height: 200px;
   overflow: auto;

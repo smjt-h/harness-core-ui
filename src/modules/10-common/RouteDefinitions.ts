@@ -141,12 +141,22 @@ const routes = {
         path: `governance/policies/edit/${policyIdentifier}`
       })
   ),
-  toGovernancePolicySetsListing: withAccountId(({ orgIdentifier, projectIdentifier, module }: GovernancePathProps) =>
+  toGovernanceViewPolicy: withAccountId(
+    ({ orgIdentifier, projectIdentifier, policyIdentifier, module }: GovernancePathProps) =>
+      getScopeBasedRoute({
+        scope: {
+          orgIdentifier,
+          projectIdentifier,
+          module
+        },
+        path: `governance/policies/view/${policyIdentifier}`
+      })
+  ),
+  toGovernancePolicySetsListing: withAccountId(({ orgIdentifier, projectIdentifier }: ProjectPathProps) =>
     getScopeBasedRoute({
       scope: {
         orgIdentifier,
-        projectIdentifier,
-        module
+        projectIdentifier
       },
       path: 'governance/policy-sets'
     })
@@ -639,6 +649,11 @@ const routes = {
     ({ orgIdentifier, projectIdentifier, module }: PipelineType<ProjectPathProps>) =>
       `/${module}/orgs/${orgIdentifier}/projects/${projectIdentifier}/deployments`
   ),
+  /* This is still WIP */
+  // toCIGetStarted: withAccountId(
+  //   ({ orgIdentifier, projectIdentifier, module }: PipelineType<ProjectPathProps>) =>
+  //     `/${module}/orgs/${orgIdentifier}/projects/${projectIdentifier}/get-started`
+  // ),
   toPipelineStudio: withAccountId(
     ({
       orgIdentifier,
@@ -1400,6 +1415,15 @@ const routes = {
   toCEOverview: withAccountId(() => '/ce/overview'),
   toCEPerspectiveDashboard: withAccountId(() => `/ce/perspective`),
   toCEAnomalyDetection: withAccountId(() => `/ce/anomaly-detection`),
+  toBusinessMapping: withAccountId(() => `/ce/business-mapping/`),
+  /********************************************************************************************************************/
+  toSTO: withAccountId(() => `/sto`),
+  toSTOHome: withAccountId(() => `/sto/home`),
+  toSTOOverview: withAccountId(() => '/sto/overview'),
+  toSTOProjectOverview: withAccountId(
+    ({ orgIdentifier, projectIdentifier }: ProjectPathProps) =>
+      `/sto/orgs/${orgIdentifier}/projects/${projectIdentifier}/overview`
+  ),
   /********************************************************************************************************************/
   toOldCustomDashboard: withAccountId(() => '/home/dashboards*'),
   toCustomDashboard: withAccountId(() => '/dashboards'),

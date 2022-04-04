@@ -11,6 +11,7 @@ import { Expander } from '@blueprintjs/core'
 import cx from 'classnames'
 import type { FormikProps } from 'formik'
 import { isEmpty, noop, omit } from 'lodash-es'
+import { useParams } from 'react-router-dom'
 import { useStrings } from 'framework/strings'
 import { useFeatureFlag } from '@common/hooks/useFeatureFlag'
 import { FeatureFlag } from '@common/featureFlags'
@@ -26,6 +27,7 @@ import { SaveTemplateButton } from '@pipeline/components/PipelineStudio/SaveTemp
 import type { TemplateStepNode } from 'services/pipeline-ng'
 import { TemplateBar } from '@pipeline/components/PipelineStudio/TemplateBar/TemplateBar'
 import { getStepDataFromValues } from '@pipeline/utils/stepUtils'
+import type { ModulePathParams } from '@common/interfaces/RouteInterfaces'
 import { StepCommandsProps, StepCommandsViews, TabTypes, Values } from './StepCommandTypes'
 import css from './StepCommands.module.scss'
 
@@ -78,7 +80,7 @@ export function StepCommands(
   const stepRef = React.useRef<FormikProps<unknown> | null>(null)
   const advancedConfRef = React.useRef<FormikProps<unknown> | null>(null)
   const isTemplateStep = !!(step as TemplateStepNode)?.template
-
+  const { module } = useParams<ModulePathParams>()
   const { isModule } = useCurrentModule()
 
   async function handleTabChange(newTab: StepCommandTabs, prevTab: StepCommandTabs): Promise<void> {
@@ -214,6 +216,8 @@ export function StepCommands(
     }
   }
 
+  const showAdvancedTab = isModule(ModuleName.CF) ? false : stageType !== StageType.FEATURE
+
   return (
     <div className={cx(css.stepCommand, className)}>
       {stepType === StepType.Template && onUseTemplate && onRemoveTemplate ? (
@@ -233,7 +237,7 @@ export function StepCommands(
               title={isStepGroup ? getString('stepGroupConfiguration') : getString('stepConfiguration')}
               panel={getStepWidgetWithFormikRef()}
             />
-            {!isModule(ModuleName.CF) && (
+            {showAdvancedTab && (
               <Tab
                 id={StepCommandTabs.Advanced}
                 title={getString('advancedTitle')}
@@ -256,7 +260,11 @@ export function StepCommands(
               />
             )}
 
-            {templatesEnabled && !isStepGroup && viewType === StepCommandsViews.Pipeline ? (
+            {templatesEnabled &&
+            !isStepGroup &&
+            viewType === StepCommandsViews.Pipeline &&
+            module !== 'cf' &&
+            (step as StepElementConfig).type !== StepType.FlagConfiguration ? (
               <>
                 <Expander />
                 <SaveTemplateButton data={getStepDataForTemplate} type={'Step'} />

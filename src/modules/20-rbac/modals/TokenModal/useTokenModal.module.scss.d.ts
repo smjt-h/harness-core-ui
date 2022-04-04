@@ -8,8 +8,8 @@
 // this is an auto-generated file, do not update this manually
 declare const styles: {
   readonly copy: string
+  readonly createTokenForm: string
   readonly crossIcon: string
-  readonly dialog: string
   readonly form: string
   readonly tokenValue: string
 }

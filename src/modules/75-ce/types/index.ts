@@ -7,6 +7,7 @@
 
 import type { CCM_CHART_TYPES } from '@ce/constants'
 import type { QlceViewTimeGroupType, QlceViewFilterInput, QlceViewFieldInputInput } from 'services/ce/services'
+import type { CostTarget, SharedCost } from 'services/ce'
 
 export interface ResourceDetails {
   cpu?: string
@@ -58,6 +59,23 @@ export enum TimeRangeType {
   'LAST_30' = 'LAST_30'
 }
 
+export type NodepoolTimeRangeValue = {
+  label: NodepoolTimeRange
+  value: NodepoolTimeRangeType
+}
+
+export enum NodepoolTimeRange {
+  'LAST_DAY' = 'LAST DAY',
+  'LAST_7' = 'LAST 7 DAYS',
+  'LAST_30' = 'LAST 30 DAYS'
+}
+
+export enum NodepoolTimeRangeType {
+  'LAST_DAY' = 'LAST_DAY',
+  'LAST_7' = 'LAST_7',
+  'LAST_30' = 'LAST_30'
+}
+
 export enum CCM_PAGE_TYPE {
   Workload = 'WORKLOAD',
   Node = 'NODE'
@@ -99,4 +117,27 @@ export enum CloudProvider {
   GCP = 'GCP',
   AZURE = 'AZURE',
   CLUSTER = 'CLUSTER'
+}
+
+export interface DNSLinkSetupFormVal {
+  usingCustomDomain: string
+  customURL: string | undefined
+  publicallyAccessible: string
+  dnsProvider: string
+  route53Account: string | undefined
+}
+
+export enum CostBucketWidgetType {
+  CostBucket = 'CostBucket',
+  SharedCostBucket = 'ShareCostBucket'
+}
+
+export type CostTargetType = CostTarget & {
+  isOpen?: boolean
+  isViewerOpen?: boolean
+}
+
+export type SharedCostType = SharedCost & {
+  isOpen?: boolean
+  isViewerOpen?: boolean
 }

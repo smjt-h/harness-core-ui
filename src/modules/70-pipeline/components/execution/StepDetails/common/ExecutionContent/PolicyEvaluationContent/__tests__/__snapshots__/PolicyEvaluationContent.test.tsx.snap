@@ -128,7 +128,7 @@ exports[`Policy Evaluation Content snapshot for all policy set statuses and poli
                   style="--text-line-clamp: 1; width: 300px;"
                 >
                   <a
-                    href="/account/undefined/settings/governance/policy-sets"
+                    href="/account/acc/settings/organizations/org/setup/governance/policy-sets/org.policySet1"
                   >
                     pipeline.policyEvaluations.policySetName
                   </a>
@@ -222,7 +222,7 @@ exports[`Policy Evaluation Content snapshot for all policy set statuses and poli
                   style="--text-line-clamp: 1; width: 300px;"
                 >
                   <a
-                    href="/account/undefined/settings/governance/policy-sets"
+                    href="/account/acc/settings/governance/policy-sets/account.policySet1"
                   >
                     pipeline.policyEvaluations.policySetName
                   </a>
@@ -316,7 +316,7 @@ exports[`Policy Evaluation Content snapshot for all policy set statuses and poli
                   style="--text-line-clamp: 1; width: 300px;"
                 >
                   <a
-                    href="/account/undefined/settings/governance/policy-sets"
+                    href="/account/acc/cd/orgs/org/projects/project/setup/governance/policy-sets/policySet1"
                   >
                     pipeline.policyEvaluations.policySetName
                   </a>
@@ -405,7 +405,7 @@ exports[`Policy Info under Policy Evaluation Content snapshot renders for failed
         style="--text-line-clamp: 1; width: 400px;"
       >
         <a
-          href="/account/undefined/settings/governance/policies"
+          href="/account/acc/settings/governance/policies/view/account.policy2"
         >
           Policy 1: Account Policy 2
         </a>
@@ -423,6 +423,7 @@ exports[`Policy Info under Policy Evaluation Content snapshot renders for failed
           </p>
           <div
             class="StyledProps--font StyledProps--main StyledProps--padding-left-small"
+            style="width: 300px;"
           >
             <p
               class="StyledProps--font StyledProps--main StyledProps--color StyledProps--color-error"
@@ -490,7 +491,7 @@ exports[`Policy Info under Policy Evaluation Content snapshot renders for failed
         style="--text-line-clamp: 1; width: 400px;"
       >
         <a
-          href="/account/undefined/settings/governance/policies"
+          href="/account/acc/settings/governance/policies/view/account.policy1"
         >
           Policy 1: Account Policy 1
         </a>
@@ -508,6 +509,7 @@ exports[`Policy Info under Policy Evaluation Content snapshot renders for failed
           </p>
           <div
             class="StyledProps--font StyledProps--main StyledProps--padding-left-small"
+            style="width: 300px;"
           >
             <p
               class="StyledProps--font StyledProps--main StyledProps--color StyledProps--color-error"
@@ -563,7 +565,7 @@ exports[`Policy Info under Policy Evaluation Content snapshot renders for failed
         style="--text-line-clamp: 1; width: 400px;"
       >
         <a
-          href="/account/undefined/settings/governance/policies"
+          href="/account/acc/settings/governance/policies/view/account.policy3"
         >
           Policy 1: Account Policy 3
         </a>
@@ -581,9 +583,11 @@ exports[`Policy Info under Policy Evaluation Content snapshot renders for failed
           </p>
           <div
             class="StyledProps--font StyledProps--main StyledProps--padding-left-small"
+            style="width: 300px;"
           >
             <p
-              class="StyledProps--font StyledProps--main StyledProps--color StyledProps--color-error"
+              class="StyledProps--font Text--lineclamp StyledProps--main StyledProps--color StyledProps--color-error"
+              style="--text-line-clamp: 2;"
             >
               Error Message 1
             </p>
@@ -634,7 +638,7 @@ exports[`Policy Info under Policy Evaluation Content snapshot renders for passed
         style="--text-line-clamp: 1; width: 400px;"
       >
         <a
-          href="/account/undefined/settings/governance/policies"
+          href="/account/acc/settings/organizations/org/setup/governance/policies/view/org.policy1"
         >
           Policy 1: Org Policy 1
         </a>
@@ -688,7 +692,7 @@ exports[`Policy Info under Policy Evaluation Content snapshot renders for policy
         style="--text-line-clamp: 1; width: 400px;"
       >
         <a
-          href="/account/undefined/settings/governance/policies"
+          href="/account/acc/cd/orgs/org/projects/project/setup/governance/policies/view/policy1"
         >
           Policy 1: Policy 1
         </a>
@@ -706,6 +710,7 @@ exports[`Policy Info under Policy Evaluation Content snapshot renders for policy
           </p>
           <div
             class="StyledProps--font StyledProps--main StyledProps--padding-left-small"
+            style="width: 300px;"
           >
             <p
               class="StyledProps--font StyledProps--main StyledProps--color StyledProps--color-warning"

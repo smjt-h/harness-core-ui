@@ -25,7 +25,7 @@ exports[`Test GitFullSyncForm Should render GitFullSyncForm 1`] = `
                 style="border-radius: 100%; line-height: 18px; width: 24px; height: 24px; font-size: 10px;"
                 tabindex="0"
               >
-                D
+                N
               </div>
             </span>
           </span>

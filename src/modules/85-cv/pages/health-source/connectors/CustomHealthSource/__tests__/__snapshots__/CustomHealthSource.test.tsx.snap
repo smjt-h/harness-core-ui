@@ -262,7 +262,7 @@ exports[`Verify CustomHealthSource should render CustomHealthSource 1`] = `
                                 >
                                   <span
                                     class="Tooltip--acenter"
-                                    data-tooltip-id="mapPrometheus_groupName"
+                                    data-tooltip-id="mapCustomhealth_groupName"
                                   >
                                     cv.monitoringSources.prometheus.groupName
                                   </span>

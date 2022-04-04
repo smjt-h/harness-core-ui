@@ -40,7 +40,7 @@
 }
 
 .modal {
-  width: 750px;
+  width: 750px !important;
   padding: var(--spacing-medium);
 
   :global {

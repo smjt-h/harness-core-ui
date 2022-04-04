@@ -34,12 +34,12 @@ export const validateConnectorRefAndImageDepdendency = (
 ): FormikErrors<any> => {
   const errors: FormikErrors<any> = {}
   if (connectorRef && !image) {
-    errors['spec.image'] = getString('ci.buildInfa.awsVM.isRequiredWhen', {
+    errors['spec.image'] = getString('ci.buildInfra.awsVM.isRequiredWhen', {
       field1: getString('imageLabel'),
       field2: getString('pipelineSteps.connectorLabel')
     })
   } else if (!connectorRef && image) {
-    errors['spec.connectorRef'] = getString('ci.buildInfa.awsVM.isRequiredWhen', {
+    errors['spec.connectorRef'] = getString('ci.buildInfra.awsVM.isRequiredWhen', {
       field2: getString('imageLabel'),
       field1: getString('pipelineSteps.connectorLabel')
     })
@@ -50,9 +50,11 @@ export const validateConnectorRefAndImageDepdendency = (
 export const shouldRenderRunTimeInputView = (value: any): boolean => {
   if (value) {
     if (typeof value === 'object') {
-      return Object.keys(value).some(key => value[key] === RUNTIME_INPUT_VALUE)
+      return Object.keys(value).some(
+        key => typeof value[key] === 'string' && value[key].startsWith(RUNTIME_INPUT_VALUE)
+      )
     } else {
-      return value === RUNTIME_INPUT_VALUE
+      return typeof value === 'string' && value.startsWith(RUNTIME_INPUT_VALUE)
     }
   }
   return false

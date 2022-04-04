@@ -9,6 +9,8 @@ import React from 'react'
 import { StepWizard } from '@wings-software/uicore'
 import { useStrings } from 'framework/strings'
 import type { SecretDTOV2 } from 'services/cd-ng'
+import { useTelemetry } from '@common/hooks/useTelemetry'
+import { Category, SecretActions } from '@common/constants/TrackingConstants'
 import StepSSHDetails from './views/StepDetails'
 import StepAuthentication from './views/StepAuthentication'
 import StepVerify from './views/StepVerify'
@@ -30,7 +32,13 @@ export interface SSHCredSharedObj {
 const CreateSSHCredWizard: React.FC<CreateSSHCredWizardProps & SSHCredSharedObj> = props => {
   const { isEdit } = props
   const { getString } = useStrings()
-
+  const { trackEvent } = useTelemetry()
+  React.useEffect(() => {
+    trackEvent(SecretActions.StartCreateSecret, {
+      category: Category.PROJECT
+    })
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [])
   return (
     <StepWizard<SSHCredSharedObj> icon="secret-ssh" iconProps={{ size: 37 }} title={getString('ssh.sshCredential')}>
       <StepSSHDetails name={getString('secrets.createSSHCredWizard.titleDetails')} {...props} />

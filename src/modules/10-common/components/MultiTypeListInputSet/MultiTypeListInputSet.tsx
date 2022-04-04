@@ -10,13 +10,13 @@ import { v4 as nameSpace, v5 as uuid } from 'uuid'
 import cx from 'classnames'
 import {
   MultiTextInput,
-  Intent,
   Button,
   getMultiTypeFromValue,
   MultiTypeInputType,
   MultiTextInputProps,
   RUNTIME_INPUT_VALUE
 } from '@wings-software/uicore'
+import { Intent } from '@harness/design-system'
 import { connect, FormikContext } from 'formik'
 import { get, isEmpty } from 'lodash-es'
 import { ConfigureOptions, ConfigureOptionsProps } from '@common/components/ConfigureOptions/ConfigureOptions'
@@ -40,6 +40,8 @@ interface MultiTypeListConfigureOptionsProps
 export interface MultiTypeListProps {
   name: string
   placeholder?: string
+  withObjectStructure?: boolean
+  keyName?: string
   multiTypeFieldSelectorProps: Omit<MultiTypeFieldSelectorProps, 'name' | 'defaultValueToReset' | 'children'>
   multiTextInputProps?: Omit<MultiTextInputProps, 'name'>
   enableConfigureOptions?: boolean
@@ -58,6 +60,8 @@ export const MultiTypeListInputSet = (props: MultiTypeListProps): React.ReactEle
   const {
     name,
     placeholder,
+    withObjectStructure,
+    keyName,
     multiTypeFieldSelectorProps,
     multiTextInputProps = {},
     enableConfigureOptions = true,
@@ -69,14 +73,18 @@ export const MultiTypeListInputSet = (props: MultiTypeListProps): React.ReactEle
 
   const { getString } = useStrings()
 
+  const getStageFormikValues = React.useCallback(() => {
+    return get(formik?.values, name, '')
+  }, [formik?.values, name])
+
   const [value, setValue] = React.useState<ListUIType>(() => {
-    let initialValue = get(formik?.values, name, '')
+    let initialValue = getStageFormikValues()
     if (initialValue === RUNTIME_INPUT_VALUE) {
       initialValue = []
     }
     const initialValueInCorrectFormat = (initialValue || []).map((item: string | { [key: string]: string }) => ({
       id: uuid('', nameSpace()),
-      value: item
+      value: withObjectStructure && keyName ? ((item as { [key: string]: string })[keyName] as string) : item
     })) as ListUIType
 
     // Adding a default value
@@ -115,7 +123,7 @@ export const MultiTypeListInputSet = (props: MultiTypeListProps): React.ReactEle
   }
 
   React.useEffect(() => {
-    let initialValue = get(formik?.values, name, '')
+    let initialValue = getStageFormikValues()
     if (initialValue === RUNTIME_INPUT_VALUE) {
       initialValue = []
     }
@@ -124,7 +132,12 @@ export const MultiTypeListInputSet = (props: MultiTypeListProps): React.ReactEle
     if (isEmpty(valueWithoutEmptyItems) && initialValue) {
       const initialValueInCorrectFormat = initialValue.map((item: string | { [key: string]: string }) => ({
         id: uuid('', nameSpace()),
-        value: typeof item === 'string' ? item : ''
+        value:
+          withObjectStructure && keyName
+            ? (item as { [key: string]: string })[keyName]
+            : typeof item === 'string'
+            ? item
+            : item?.value
       })) as ListUIType
 
       // Adding a default value
@@ -139,7 +152,11 @@ export const MultiTypeListInputSet = (props: MultiTypeListProps): React.ReactEle
   React.useEffect(() => {
     let valueInCorrectFormat: ListType = []
     if (Array.isArray(value)) {
-      valueInCorrectFormat = value.filter(item => !!item.value).map(item => item?.value) as ListType
+      valueInCorrectFormat = value
+        .filter(item => !!item.value && typeof item.value === 'string')
+        .map(item => {
+          return withObjectStructure && keyName ? { [keyName]: item.value } : item.value
+        }) as ListType
     }
 
     if (get(formik?.values, name, '') !== RUNTIME_INPUT_VALUE) {

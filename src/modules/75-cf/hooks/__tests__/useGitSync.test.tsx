@@ -19,7 +19,6 @@ jest.mock('@common/hooks/useFeatureFlag')
 jest.mock('react-router-dom', () => ({
   useParams: () => jest.fn()
 }))
-
 const setUseGitRepoMock = (repoDetails: Partial<GitRepo> = {}, repoSet = false): void => {
   jest.spyOn(cfServiceMock, 'useGetGitRepo').mockReturnValue({
     loading: false,

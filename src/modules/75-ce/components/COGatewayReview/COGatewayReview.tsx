@@ -9,8 +9,9 @@ import React, { useEffect, useMemo } from 'react'
 import type { CellProps } from 'react-table'
 import cx from 'classnames'
 import { isEmpty as _isEmpty, defaultTo as _defaultTo } from 'lodash-es'
-import { Heading, Container, Layout, Text, Table, Color, Icon, IconName } from '@wings-software/uicore'
-import type { ConnectionMetadata, GatewayDetails, InstanceDetails } from '@ce/components/COCreateGateway/models'
+import { Heading, Container, Layout, Text, Table, Icon, IconName } from '@wings-software/uicore'
+import { Color } from '@harness/design-system'
+import type { GatewayDetails, InstanceDetails } from '@ce/components/COCreateGateway/models'
 import { Utils } from '@ce/common/Utils'
 import type { ContainerSvc, HealthCheck, PortConfig, RDSDatabase, Service } from 'services/lw'
 import FixedSchedeulesList from '@ce/common/FixedSchedulesList/FixedSchedulesList'
@@ -28,6 +29,7 @@ interface COGatewayReviewProps {
   gatewayDetails: GatewayDetails
   onEdit: (tabDetails: { id: string; metaData?: { activeStepCount?: number; activeStepTabId?: string } }) => void
   allServices: Service[]
+  serverNames: string[]
 }
 
 interface DependencyView {
@@ -81,6 +83,9 @@ const COGatewayReview: React.FC<COGatewayReviewProps> = props => {
   const isK8sRule = Utils.isK8sRule(props.gatewayDetails)
   const filteredSchedules = props.gatewayDetails.schedules?.filter(s => !s.isDeleted)
   const hasSelectedInstances = !_isEmpty(props.gatewayDetails.selectedInstances)
+  const allCustomDomains = Utils.getAllCustomDomains(props.serverNames, props.gatewayDetails.customDomains)
+  const hasCustomDomains = !_isEmpty(allCustomDomains)
+  const hasHostName = !_isEmpty(props.gatewayDetails.hostName)
   const serviceIdToNameMap = useMemo(() => {
     const map: Record<number, string> = {}
     props.allServices?.forEach(s => {
@@ -108,16 +113,16 @@ const COGatewayReview: React.FC<COGatewayReviewProps> = props => {
 
   return (
     <Layout.Vertical padding="large" className={css.page}>
-      <Text className={css.reviewHeading}>Cloud account details</Text>
+      <Text className={css.reviewHeading}>{getString('ce.co.autoStoppingRule.review.cloudAccountDetails')}</Text>
       <ReviewDetailsSection>
         <Layout.Horizontal spacing={'large'} className={css.equalSpacing}>
-          <Text>Selected cloud account</Text>
+          <Text>{getString('ce.co.autoStoppingRule.review.selectedCloudAccount')}</Text>
           <Text>
             <Icon name={props.gatewayDetails.provider.icon as IconName} /> {props.gatewayDetails.cloudAccount.name}
           </Text>
         </Layout.Horizontal>
       </ReviewDetailsSection>
-      <Text className={css.reviewHeading}>Configuration details</Text>
+      <Text className={css.reviewHeading}>{getString('ce.co.autoStoppingRule.review.configDetails')}</Text>
       <ReviewDetailsSection
         isEditable
         onEdit={() => props.onEdit({ id: 'configuration', metaData: { activeStepCount: 1 } })}
@@ -128,11 +133,11 @@ const COGatewayReview: React.FC<COGatewayReviewProps> = props => {
             padding={{ bottom: 'medium' }}
             className={cx(css.equalSpacing, css.borderSpacing)}
           >
-            <Text>Name of the rule</Text>
+            <Text>{getString('ce.co.autoStoppingRule.review.nameOfRule')}</Text>
             <Text>{props.gatewayDetails.name}</Text>
           </Layout.Horizontal>
           <Layout.Horizontal spacing={'large'} className={css.equalSpacing}>
-            <Text>Idle time(mins)</Text>
+            <Text>{getString('ce.co.autoStoppingRule.review.idleTimeMins')}</Text>
             <Text>{props.gatewayDetails.idleTimeMins}</Text>
           </Layout.Horizontal>
         </Layout.Vertical>
@@ -144,8 +149,8 @@ const COGatewayReview: React.FC<COGatewayReviewProps> = props => {
         >
           {hasSelectedInstances && (
             <>
-              <Heading level={2}>Instance details</Heading>
-              <Text style={{ margin: '20px 0 10px' }}>Instances</Text>
+              <Heading level={2}>{getString('ce.co.autoStoppingRule.review.instanceDetails')}</Heading>
+              <Text style={{ margin: '20px 0 10px' }}>{getString('instanceFieldOptions.instances')}</Text>
               <Table<InstanceDetails>
                 data={props.gatewayDetails.selectedInstances}
                 bpTableProps={{}}
@@ -200,23 +205,23 @@ const COGatewayReview: React.FC<COGatewayReviewProps> = props => {
           )}
           {!_isEmpty(props.gatewayDetails.routing.container_svc) && (
             <Layout.Vertical spacing="xxlarge">
-              <Heading level={2}>Service details</Heading>
+              <Heading level={2}>{getString('ce.co.autoStoppingRule.review.serviceDetails')}</Heading>
               <DisplaySelectedEcsService data={[props.gatewayDetails.resourceMeta?.container_svc as ContainerSvc]} />
               <Layout.Horizontal spacing={'large'} className={css.equalSpacing}>
-                <Text>Desired Task Count</Text>
+                <Text>{getString('ce.co.autoStoppingRule.configuration.step3.desiredTaskCount')}</Text>
                 <Text>{props.gatewayDetails.routing.container_svc?.task_count}</Text>
               </Layout.Horizontal>
             </Layout.Vertical>
           )}
           {!_isEmpty(props.gatewayDetails.routing.database) && (
             <>
-              <Heading level={2}>RDS details</Heading>
+              <Heading level={2}>{getString('ce.co.autoStoppingRule.review.rdsDetails')}</Heading>
               <DisplaySelectedRdsDatabse data={[props.gatewayDetails.routing.database as RDSDatabase]} />
             </>
           )}
           {hasSelectedInstances && (
             <Layout.Horizontal spacing={'large'} className={css.equalSpacing} style={{ marginTop: 20 }}>
-              <Text>Instance fulfilment</Text>
+              <Text>{getString('ce.co.autoStoppingRule.review.instanceFulfilment')}</Text>
               <Layout.Horizontal spacing={'small'}>
                 <img
                   className={css.fulFilmentIcon}
@@ -230,9 +235,9 @@ const COGatewayReview: React.FC<COGatewayReviewProps> = props => {
           )}
         </ReviewDetailsSection>
       )}
-      {props.gatewayDetails.opts && (
+      {(isK8sRule || !_isEmpty(filteredSchedules) || !_isEmpty(filteredSchedules)) && (
         <ReviewDetailsSection isEditable onEdit={handleAdvancedConfigEdit}>
-          <Heading level={2}>Advanced configuration</Heading>
+          <Heading level={2}>{getString('ce.co.autoStoppingRule.configuration.step4.advancedConfiguration')}</Heading>
           <Layout.Vertical style={{ marginTop: 'var(--spacing-large)' }}>
             {isK8sRule && (
               <Layout.Horizontal
@@ -240,8 +245,8 @@ const COGatewayReview: React.FC<COGatewayReviewProps> = props => {
                 padding={{ bottom: 'medium' }}
                 className={cx(css.equalSpacing, css.borderSpacing)}
               >
-                <Text>Hide progress page</Text>
-                <Text>{Utils.booleanToString(props.gatewayDetails.opts.hide_progress_page)}</Text>
+                <Text>{getString('ce.co.autoStoppingRule.review.hideProgressPage')}</Text>
+                <Text>{Utils.booleanToString(props.gatewayDetails.opts?.hide_progress_page)}</Text>
               </Layout.Horizontal>
             )}
             {!_isEmpty(filteredSchedules) && (
@@ -267,7 +272,7 @@ const COGatewayReview: React.FC<COGatewayReviewProps> = props => {
         </ReviewDetailsSection>
       )}
       {_isEmpty(props.gatewayDetails.routing.database) && (
-        <Text className={css.reviewHeading}>Setup Access details</Text>
+        <Text className={css.reviewHeading}>{getString('ce.co.autoStoppingRule.review.setupAccessDetails')}</Text>
       )}
       {isK8sRule && (
         <Layout.Vertical style={{ marginTop: 20 }}>
@@ -287,7 +292,7 @@ const COGatewayReview: React.FC<COGatewayReviewProps> = props => {
                 isEditable
                 onEdit={() => props.onEdit({ id: 'setupAccess', metaData: { activeStepTabId: 'routing' } })}
               >
-                <Heading level={2}>Routing</Heading>
+                <Heading level={2}>{getString('ce.co.gatewayReview.routing')}</Heading>
                 {!isK8sRule && (
                   <Table<PortConfig>
                     data={props.gatewayDetails.routing.ports}
@@ -356,7 +361,7 @@ const COGatewayReview: React.FC<COGatewayReviewProps> = props => {
                 isEditable
                 onEdit={() => props.onEdit({ id: 'setupAccess', metaData: { activeStepTabId: 'healthcheck' } })}
               >
-                <Heading level={2}>Health Check</Heading>
+                <Heading level={2}>{getString('ce.co.gatewayConfig.healthCheck')}</Heading>
                 <Table<HealthCheck>
                   data={[props.gatewayDetails.healthCheck as HealthCheck]}
                   className={css.instanceTable}
@@ -402,40 +407,27 @@ const COGatewayReview: React.FC<COGatewayReviewProps> = props => {
                 />
               </ReviewDetailsSection>
             )}
-          {_isEmpty(props.gatewayDetails.routing.database) && (
+          {_isEmpty(props.gatewayDetails.routing.database) && (hasCustomDomains || hasHostName) && (
             <ReviewDetailsSection isEditable onEdit={() => props.onEdit({ id: 'setupAccess' })}>
-              <Heading level={2}>DNS Link mapping</Heading>
+              <Heading level={2}>{getString('ce.co.autoStoppingRule.review.dnsLinkMapping')}</Heading>
               <Layout.Vertical style={{ marginTop: 'var(--spacing-large)' }}>
-                {!_isEmpty(props.gatewayDetails.customDomains) && (
+                {hasCustomDomains && (
                   <Layout.Horizontal
                     spacing={'large'}
                     padding={{ bottom: 'medium' }}
                     className={cx(css.equalSpacing, css.borderSpacing)}
                   >
-                    <Text>Custom domain</Text>
-                    <Text>{props.gatewayDetails.customDomains?.join(',')}</Text>
+                    <Text>{getString('ce.co.ruleDetailsHeader.customDomain')}</Text>
+                    <Text>{allCustomDomains.join(',')}</Text>
                   </Layout.Horizontal>
                 )}
-                {_isEmpty(props.gatewayDetails.routing.container_svc) &&
-                  _isEmpty(props.gatewayDetails.routing.database) && (
-                    <Layout.Horizontal
-                      spacing={'large'}
-                      padding={{ bottom: 'medium' }}
-                      className={cx(css.equalSpacing, css.borderSpacing)}
-                    >
-                      <Text>Is it publicly accessible?</Text>
-                      <Text>
-                        {(props.gatewayDetails.opts.access_details as ConnectionMetadata).dnsLink.public || 'Yes'}
-                      </Text>
-                    </Layout.Horizontal>
-                  )}
-                {_isEmpty(props.gatewayDetails.customDomains) && props.gatewayDetails.hostName && (
+                {_isEmpty(props.gatewayDetails.customDomains) && hasHostName && (
                   <Layout.Horizontal
                     spacing={'large'}
                     padding={{ bottom: 'medium' }}
                     className={cx(css.equalSpacing, css.borderSpacing)}
                   >
-                    <Text>Auto generated URL</Text>
+                    <Text>{getString('ce.co.dnsSetup.autoURL')}</Text>
                     <Text>{props.gatewayDetails.hostName}</Text>
                   </Layout.Horizontal>
                 )}

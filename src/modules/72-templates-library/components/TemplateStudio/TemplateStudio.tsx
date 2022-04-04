@@ -17,6 +17,7 @@ import {
   useToaster
 } from '@wings-software/uicore'
 import type { FormikProps } from 'formik'
+import { v4 as uuid } from 'uuid'
 import { useStrings } from 'framework/strings'
 import { NavigationCheck, Page } from '@common/exports'
 import { useDocumentTitle } from '@common/hooks/useDocumentTitle'
@@ -239,6 +240,14 @@ export function TemplateStudio(): React.ReactElement {
       : merge(pathParams, { ...accountPathProps })
   }, [projectIdentifier, orgIdentifier])
 
+  const [key, setKey] = React.useState<string>(uuid())
+
+  React.useEffect(() => {
+    if (!isLoading) {
+      setKey(uuid())
+    }
+  }, [isLoading])
+
   return (
     <TemplateVariablesContextProvider template={template}>
       <NavigationCheck
@@ -273,7 +282,7 @@ export function TemplateStudio(): React.ReactElement {
         size={'small'}
         title={<TemplateStudioHeader templateType={templateType as TemplateType} />}
       />
-      <Page.Body className={css.rightMargin}>
+      <Page.Body key={key} className={css.rightMargin}>
         {isLoading && <PageSpinner />}
         <Layout.Vertical height={'100%'}>
           {!isLoading && isEmpty(template) && !isGitSyncEnabled && <GenericErrorHandler />}

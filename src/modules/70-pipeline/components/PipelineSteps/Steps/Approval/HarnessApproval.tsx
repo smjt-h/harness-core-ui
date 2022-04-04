@@ -8,10 +8,11 @@
 import React from 'react'
 import * as Yup from 'yup'
 import { parse } from 'yaml'
-import { isEmpty, get } from 'lodash-es'
+import { isEmpty, get, compact } from 'lodash-es'
 import { CompletionItemKind } from 'vscode-languageserver-types'
 import { connect, FormikErrors, yupToFormErrors } from 'formik'
-import { getMultiTypeFromValue, IconName, MultiTypeInputType, Color } from '@wings-software/uicore'
+import { getMultiTypeFromValue, IconName, MultiTypeInputType } from '@wings-software/uicore'
+import { Color } from '@harness/design-system'
 import { StepProps, StepViewType, ValidateInputSetProps } from '@pipeline/components/AbstractSteps/Step'
 import { getUserGroupListPromise } from 'services/cd-ng'
 import { loggerFor } from 'framework/logging/logging'
@@ -91,7 +92,7 @@ export class HarnessApproval extends PipelineStep<HarnessApprovalData> {
     }
     if (pipelineObj) {
       const obj = get(pipelineObj, path.replace('.spec.approvers.userGroups', ''))
-      if (obj.type === StepType.HarnessApproval) {
+      if (obj?.type === StepType.HarnessApproval) {
         return getUserGroupListPromise({
           queryParams: {
             accountIdentifier: accountId,
@@ -139,7 +140,7 @@ export class HarnessApproval extends PipelineStep<HarnessApprovalData> {
       typeof template?.spec?.approvers?.userGroups === 'string' &&
       isRequired &&
       getMultiTypeFromValue(template?.spec?.approvers.userGroups) === MultiTypeInputType.RUNTIME &&
-      isEmpty(data?.spec?.approvers.userGroups)
+      isEmpty(compact(data?.spec?.approvers.userGroups as string[]))
     ) {
       errors.spec = {
         ...errors.spec,

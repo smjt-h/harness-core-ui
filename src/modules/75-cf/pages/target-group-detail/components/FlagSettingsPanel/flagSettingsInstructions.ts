@@ -6,7 +6,7 @@
  */
 
 import type { Instruction } from '@cf/utils/instructions'
-import type { FlagSettingsFormData, FlagSettingsFormRow, TargetGroupFlagsMap } from './FlagSettingsPanel.types'
+import type { FlagSettingsFormData, FlagSettingsFormRow, TargetGroupFlagsMap } from '../../TargetGroupDetailPage.types'
 
 export function getFlagSettingsInstructions(
   flags: FlagSettingsFormData['flags'],
@@ -67,6 +67,18 @@ export function getUpdateFlagsInstruction(
         identifier,
         variation,
         ruleID: targetGroupFlagsMap[identifier].ruleId as string
+      }))
+    }
+  } as any as Instruction
+}
+
+export function getAddFlagsInstruction(flags: FlagSettingsFormRow[]): Instruction {
+  return {
+    kind: 'addRule',
+    parameters: {
+      features: flags.map(({ identifier, variation }) => ({
+        identifier,
+        variation
       }))
     }
   } as any as Instruction

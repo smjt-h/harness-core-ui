@@ -7,7 +7,6 @@
 
 import React, { useEffect, useState } from 'react'
 import {
-  Color,
   Container,
   DropDown,
   ExpandingSearchInput,
@@ -19,7 +18,8 @@ import {
   Views,
   PageError
 } from '@wings-software/uicore'
-import { defaultTo } from 'lodash-es'
+import { Color } from '@harness/design-system'
+import { defaultTo, isEmpty } from 'lodash-es'
 import { useParams } from 'react-router-dom'
 import { Breadcrumbs } from '@common/components/Breadcrumbs/Breadcrumbs'
 import type { GitQueryParams, ModulePathParams, ProjectPathProps } from '@common/interfaces/RouteInterfaces'
@@ -35,8 +35,8 @@ import { useAppStore } from 'framework/AppStore/AppStoreContext'
 import NoResultsView from '@templates-library/pages/TemplatesPage/views/NoResultsView/NoResultsView'
 import { usePipelineContext } from '@pipeline/components/PipelineStudio/PipelineContext/PipelineContext'
 import { TemplateType } from '@templates-library/utils/templatesUtils'
-import { StageType } from '@pipeline/utils/stageHelpers'
 import factory from '@pipeline/components/PipelineSteps/PipelineStepFactory'
+import { stagesCollection } from '@pipeline/components/PipelineStudio/Stages/StagesCollection'
 import css from './TemplateSelectorLeftView.module.scss'
 
 export interface TemplateSelectorLeftViewProps {
@@ -51,7 +51,7 @@ export const TemplateSelectorLeftView: React.FC<TemplateSelectorLeftViewProps> =
       }
     }
   } = usePipelineContext()
-  const { templateType, selectedChildType, allChildTypes, selectedTemplateRef } = data?.selectorData || {}
+  const { templateType, selectedChildType, allChildTypes = [], selectedTemplateRef } = data?.selectorData || {}
   const [selectedTemplate, setSelectedTemplate] = useState<TemplateSummaryResponse | undefined>()
   const { getString } = useStrings()
   const [page, setPage] = useState(0)
@@ -130,39 +130,30 @@ export const TemplateSelectorLeftView: React.FC<TemplateSelectorLeftViewProps> =
     setChildType(selectedChildType)
   }, [searchParam, searchRef.current, selectedChildType])
 
-  const getDropDownItems = React.useCallback((): SelectOption[] => {
-    switch (templateType) {
-      case TemplateType.Stage:
-        return [
-          { label: getString('approvalStage.title'), value: StageType.APPROVAL },
-          { label: getString('buildText'), value: StageType.BUILD },
-          { label: getString('pipelineSteps.deploy.create.deployStageName'), value: StageType.DEPLOY }
-        ]
-      case TemplateType.Step:
-        if (childType) {
-          return [
-            {
-              label: defaultTo(factory.getStepName(childType), childType),
-              value: childType
-            }
-          ]
-        } else {
-          return defaultTo(
-            allChildTypes
-              ?.map(item => {
-                return {
-                  label: defaultTo(factory.getStepName(item), item),
-                  value: item
-                }
-              })
-              .sort((a, b) => a.label.localeCompare(b.label)),
-            []
-          )
-        }
-      default:
-        return []
-    }
-  }, [templateType])
+  const getName = React.useCallback(
+    (item: string): string => {
+      switch (templateType) {
+        case TemplateType.Stage:
+          return defaultTo(stagesCollection.getStageAttributes(item, getString)?.name, item)
+        case TemplateType.Step:
+          return defaultTo(factory.getStepName(item), item)
+        default:
+          return item
+      }
+    },
+    [templateType]
+  )
+
+  const dropdownItems = React.useMemo(
+    (): SelectOption[] =>
+      allChildTypes
+        .map(item => ({
+          label: getName(item),
+          value: item
+        }))
+        .sort((a, b) => a.label.localeCompare(b.label)),
+    [allChildTypes, getName]
+  )
 
   const {
     data: templateData,
@@ -172,7 +163,8 @@ export const TemplateSelectorLeftView: React.FC<TemplateSelectorLeftViewProps> =
   } = useMutateAsGet(useGetTemplateList, {
     body,
     queryParams,
-    queryParamStringifyOptions: { arrayFormat: 'comma' }
+    queryParamStringifyOptions: { arrayFormat: 'comma' },
+    debounce: true
   })
 
   useEffect(() => {
@@ -239,14 +231,13 @@ export const TemplateSelectorLeftView: React.FC<TemplateSelectorLeftViewProps> =
                 </Text>
                 <Container>
                   <Layout.Horizontal flex={{ alignItems: 'center' }} spacing={'medium'}>
-                    {getDropDownItems().length > 0 && (
+                    {!isEmpty(dropdownItems) && (
                       <DropDown
                         onChange={item => {
                           setChildType(item.value.toString())
                         }}
-                        items={getDropDownItems()}
+                        items={dropdownItems}
                         addClearBtn={true}
-                        disabled={!!selectedChildType}
                         filterable={false}
                         placeholder={`${getString('typeLabel')}: ${getString('all')}`}
                         value={childType}

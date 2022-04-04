@@ -70,8 +70,7 @@ export const getDependencyGraphOptions = (
 
               setPoint({
                 sticky: chart.sticky,
-                serviceRef: (this as any).serviceRef,
-                environmentRef: (this as any).environmentRef,
+                monitoredServiceIdentifier: (this as any).id,
                 destroySticky: () => destroySticky(chart)
               })
             }

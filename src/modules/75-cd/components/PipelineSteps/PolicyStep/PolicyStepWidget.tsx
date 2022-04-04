@@ -20,6 +20,7 @@ import { getNameAndIdentifierSchema } from '@pipeline/components/PipelineSteps/S
 
 import type { PolicyStepFormData } from './PolicyStepTypes'
 import BasePolicyStep from './BasePolicyStep'
+import { getPolicySetValidationSchema } from './utils'
 
 interface PolicyStepWidgetProps {
   initialValues: PolicyStepFormData
@@ -43,7 +44,10 @@ function PolicyStepWidget(
       type: Yup.string()
         .trim()
         .required(getString('fieldRequired', { field: 'Entity Type' })),
-      policySets: Yup.array().min(1).required(getString('common.policiesSets.policySetRequired')),
+      policySets: getPolicySetValidationSchema({
+        minimumErrorMessage: getString('common.policiesSets.policySetRequired'),
+        invalidErrorMessage: getString('invalidText') + getString('common.payload')
+      }),
       policySpec: Yup.object().shape({
         payload: Yup.string()
           .trim()

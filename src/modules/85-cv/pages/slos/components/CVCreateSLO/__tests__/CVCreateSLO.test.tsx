@@ -16,7 +16,7 @@ import { getCVMonitoringServicesSearchParam } from '@cv/utils/CommonUtils'
 import { MonitoredServiceEnum } from '@cv/pages/monitored-service/MonitoredServicePage.constants'
 import CVCreateSLO from '../CVCreateSLO'
 import { createSLORequestPayload } from '../CVCreateSLO.utils'
-import { Comparators, SLOFormFields } from '../CVCreateSLO.types'
+import { Comparators, PeriodLengthTypes, PeriodTypes, SLOFormFields } from '../CVCreateSLO.types'
 import {
   testWrapperProps,
   userJourneyResponse,
@@ -25,17 +25,17 @@ import {
   SLOResponse,
   serviceLevelObjective,
   pathParams,
-  testWrapperPropsForEdit
+  testWrapperPropsForEdit,
+  SLOResponseForCalenderType
 } from './CVCreateSLO.mock'
 
 const refetchServiceLevelObjective = jest.fn()
-const updateSLO = jest.fn()
 
 jest.mock('services/cv', () => ({
   useSaveSLOData: jest.fn().mockImplementation(() => ({ data: {}, loading: false, error: null, refetch: jest.fn() })),
   useUpdateSLOData: jest
     .fn()
-    .mockImplementation(() => ({ mutate: updateSLO, loading: false, error: null, refetch: jest.fn() })),
+    .mockImplementation(() => ({ mutate: jest.fn(), loading: false, error: null, refetch: jest.fn() })),
   useGetServiceLevelObjective: jest
     .fn()
     .mockImplementation(() => ({ data: {}, loading: false, error: null, refetch: jest.fn() } as any)),
@@ -51,7 +51,10 @@ jest.mock('services/cv', () => ({
   useGetSloMetrics: jest
     .fn()
     .mockImplementation(() => ({ data: listMetricDTOResponse, loading: false, error: null, refetch: jest.fn() })),
-  useGetSliGraph: jest.fn().mockImplementation(() => ({ data: {}, loading: false, error: null, refetch: jest.fn() }))
+  useGetSliGraph: jest.fn().mockImplementation(() => ({ data: {}, loading: false, error: null, refetch: jest.fn() })),
+  useGetMonitoredService: jest
+    .fn()
+    .mockImplementation(() => ({ data: {}, loading: false, error: null, refetch: jest.fn() }))
 }))
 
 const renderComponent = (): RenderResult => {
@@ -226,9 +229,13 @@ describe('CVCreateSLO - Edit', () => {
 
   test('it should render all steps and update the SLO', async () => {
     const fetchSLO = jest.fn()
+    const updateSLO = jest.fn()
     jest
       .spyOn(cvServices, 'useGetServiceLevelObjective')
       .mockImplementation(() => ({ data: SLOResponse, loading: false, error: null, refetch: fetchSLO } as any))
+    jest
+      .spyOn(cvServices, 'useUpdateSLOData')
+      .mockReturnValue({ mutate: updateSLO, loading: false, error: null } as any)
 
     renderEditComponent()
 
@@ -260,9 +267,13 @@ describe('CVCreateSLO - Edit', () => {
 
   test('it should update the SLO and redirect to the MS details page', async () => {
     const fetchSLO = jest.fn()
+    const updateSLO = jest.fn()
     jest
       .spyOn(cvServices, 'useGetServiceLevelObjective')
       .mockImplementation(() => ({ data: SLOResponse, loading: false, error: null, refetch: fetchSLO } as any))
+    jest
+      .spyOn(cvServices, 'useUpdateSLOData')
+      .mockReturnValue({ mutate: updateSLO, loading: false, error: null } as any)
 
     render(
       <TestWrapper
@@ -387,7 +398,7 @@ describe('CVCreateSLO - Edit', () => {
     )
   })
 
-  test('+ New Health Source should go to Configurations in monitored service details page', () => {
+  test('+ New Health Source should should open the drawer to add a new health source', () => {
     jest
       .spyOn(cvServices, 'useGetServiceLevelObjective')
       .mockImplementation(() => ({ data: SLOResponse, loading: false, error: null, refetch: jest.fn() } as any))
@@ -411,20 +422,10 @@ describe('CVCreateSLO - Edit', () => {
       })
     )
 
-    expect(
-      screen.getByText(
-        routes.toCVAddMonitoringServicesEdit({ ...pathParams, identifier: 'test1_env1' }) +
-          getCVMonitoringServicesSearchParam({
-            tab: MonitoredServiceEnum.Configurations,
-            redirectToSLO: true,
-            sloIdentifier: 'SLO5',
-            monitoredServiceIdentifier: 'monitored_service_identifier'
-          })
-      )
-    )
+    expect(screen.getByText('cv.healthSource.addHealthSource')).toBeInTheDocument()
   })
 
-  test('+ New Metric should go to Configurations in monitored service details page', () => {
+  test('+ New Metric should open the health source drawer in edit mode', () => {
     jest
       .spyOn(cvServices, 'useGetServiceLevelObjective')
       .mockImplementation(() => ({ data: SLOResponse, loading: false, error: null, refetch: jest.fn() } as any))
@@ -441,24 +442,7 @@ describe('CVCreateSLO - Edit', () => {
     )
 
     userEvent.click(screen.getByText('continue'))
-
-    userEvent.click(
-      screen.getAllByRole('button', {
-        name: /cv.newMetric/g
-      })[0]
-    )
-
-    expect(
-      screen.getByText(
-        routes.toCVAddMonitoringServicesEdit({ ...pathParams, identifier: 'test1_env1' }) +
-          getCVMonitoringServicesSearchParam({
-            tab: MonitoredServiceEnum.Configurations,
-            redirectToSLO: true,
-            sloIdentifier: 'SLO5',
-            monitoredServiceIdentifier: 'monitored_service_identifier'
-          })
-      )
-    )
+    expect(screen.getAllByText('cv.newMetric')[0]).toBeEnabled()
   })
 
   test('it should not render Event type and Good request metric dropdowns for Threshold based', () => {
@@ -539,5 +523,55 @@ describe('CVCreateSLO - Edit', () => {
 
     expect(screen.getByText('cv.periodLengthDays')).toBeInTheDocument()
     expect(screen.queryByText('cv.periodLength')).not.toBeInTheDocument()
+  })
+
+  test('it should render all steps and update the SLO for type Calender', async () => {
+    const fetchSLO = jest.fn()
+    const updateSLO = jest.fn()
+
+    jest
+      .spyOn(cvServices, 'useGetServiceLevelObjective')
+      .mockImplementation(
+        () => ({ data: SLOResponseForCalenderType, loading: false, error: null, refetch: fetchSLO } as any)
+      )
+
+    jest
+      .spyOn(cvServices, 'useUpdateSLOData')
+      .mockReturnValue({ mutate: updateSLO, loading: false, error: null } as any)
+
+    renderEditComponent()
+
+    expect(fetchSLO).toHaveBeenCalled()
+
+    expect(screen.getByText('name')).toHaveAttribute('aria-selected', 'true')
+
+    userEvent.click(screen.getByText('continue'))
+
+    await waitFor(() => expect(screen.getByText('cv.slos.sli')).toHaveAttribute('aria-selected', 'true'))
+
+    userEvent.click(screen.getByText('continue'))
+
+    await waitFor(() =>
+      expect(screen.getByText('cv.slos.sloTargetAndBudgetPolicy')).toHaveAttribute('aria-selected', 'true')
+    )
+
+    userEvent.click(screen.getByText('save'))
+
+    await waitFor(() => {
+      expect(updateSLO).toHaveBeenLastCalledWith(
+        createSLORequestPayload(
+          {
+            ...serviceLevelObjective,
+            periodType: PeriodTypes.CALENDAR,
+            periodLengthType: PeriodLengthTypes.QUARTERLY,
+            periodLength: undefined
+          },
+          pathParams.orgIdentifier,
+          pathParams.projectIdentifier
+        )
+      )
+    })
+
+    expect(screen.getByText(routes.toCVSLOs({ ...pathParams }))).toBeInTheDocument()
   })
 })

@@ -10,7 +10,6 @@ import {
   Button,
   Text,
   ButtonVariation,
-  Color,
   Formik,
   FormikForm,
   Heading,
@@ -22,6 +21,7 @@ import {
   VisualYamlToggle
 } from '@wings-software/uicore'
 import { useModalHook } from '@harness/use-modal'
+import { Color } from '@harness/design-system'
 import { useHistory, useParams } from 'react-router-dom'
 import cx from 'classnames'
 import { parse } from 'yaml'
@@ -61,10 +61,9 @@ import { usePermission } from '@rbac/hooks/usePermission'
 import { yamlStringify } from '@common/utils/YamlHelperMethods'
 import { useToaster } from '@common/exports'
 import routes from '@common/RouteDefinitions'
-import { useMutateAsGet, useQueryParams } from '@common/hooks'
+import { useQueryParams } from '@common/hooks'
 import { getFeaturePropsForRunPipelineButton, mergeTemplateWithInputSetData } from '@pipeline/utils/runPipelineUtils'
 import type { InputSetDTO } from '@pipeline/utils/types'
-import { useGetYamlWithTemplateRefsResolved } from 'services/template-ng'
 import { ErrorsStrip } from '../ErrorsStrip/ErrorsStrip'
 import GitPopover from '../GitPopover/GitPopover'
 import SelectStagetoRetry from './SelectStagetoRetry'
@@ -168,27 +167,10 @@ function RetryPipeline({
       orgIdentifier,
       projectIdentifier,
       repoIdentifier,
-      branch
+      branch,
+      getTemplatesResolvedPipeline: true
     }
   })
-
-  const { data: templateRefsResolvedPipeline, loading: loadingResolvedPipeline } = useMutateAsGet(
-    useGetYamlWithTemplateRefsResolved,
-    {
-      queryParams: {
-        accountIdentifier: accountId,
-        orgIdentifier,
-        pipelineIdentifier,
-        projectIdentifier,
-        repoIdentifier,
-        branch,
-        getDefaultFromOtherRepo: true
-      },
-      body: {
-        originalEntityYaml: yamlStringify(parse(pipelineResponse?.data?.yamlPipeline || '')?.pipeline)
-      }
-    }
-  )
 
   const { data: inputSetData, loading: loadingTemplate } = useGetInputsetYamlV2({
     planExecutionId: planExecutionIdentifier,
@@ -310,11 +292,11 @@ function RetryPipeline({
   const inputSets = inputSetResponse?.data?.content
 
   React.useEffect(() => {
-    const mergedPipelineYaml = templateRefsResolvedPipeline?.data?.mergedPipelineYaml
+    const mergedPipelineYaml = pipelineResponse?.data?.resolvedTemplatesPipelineYaml
     if (mergedPipelineYaml) {
-      setResolvedPipeline(parse(mergedPipelineYaml))
+      setResolvedPipeline(parse(mergedPipelineYaml)?.pipeline)
     }
-  }, [templateRefsResolvedPipeline?.data?.mergedPipelineYaml])
+  }, [pipelineResponse?.data?.resolvedTemplatesPipelineYaml])
 
   useEffect(() => {
     // Won't actually render out RunPipelineForm
@@ -595,7 +577,7 @@ function RetryPipeline({
 
   const formRefDom = React.useRef<HTMLElement | undefined>()
 
-  if (loadingPipeline || loadingResolvedPipeline || loadingTemplate || inputSetLoading || loadingRetry) {
+  if (loadingPipeline || loadingTemplate || inputSetLoading || loadingRetry) {
     return <PageSpinner />
   }
   return (
@@ -825,7 +807,7 @@ function RetryPipeline({
                 branch={branch}
                 isGitSyncEnabled={isGitSyncEnabled}
                 setFormErrors={setFormErrors}
-                getInputSetsList={getInputSetsList}
+                refetchParentData={getInputSetsList}
               />
             </Layout.Horizontal>
           </Layout.Vertical>

@@ -7,13 +7,16 @@
 
 import React, { useEffect } from 'react'
 import { Link, useParams } from 'react-router-dom'
-import { Avatar, Color, Container, FontVariation, Icon, Layout, Text } from '@harness/uicore'
+import { Avatar, Container, Icon, Layout, Text } from '@harness/uicore'
 import { noop, defaultTo } from 'lodash-es'
+import { FontVariation, Color } from '@harness/design-system'
 import cx from 'classnames'
+import { useAppStore } from 'framework/AppStore/AppStoreContext'
 import { useGitSyncStore } from 'framework/GitRepoStore/GitSyncStoreContext'
 import paths from '@common/RouteDefinitions'
 import { useStrings } from 'framework/strings/String'
 import type { AccountPathProps } from '@common/interfaces/RouteInterfaces'
+import type { UserInfo } from 'services/cd-ng'
 import css from './SCMCheck.module.scss'
 
 export interface SCMCheckProps {
@@ -24,14 +27,15 @@ export interface SCMCheckProps {
 }
 
 const SCMCheck: React.FC<SCMCheckProps> = props => {
+  const { currentUserInfo: currentLoggedInUser } = useAppStore()
   const { codeManagers, loadingCodeManagers } = useGitSyncStore()
   const { accountId } = useParams<AccountPathProps>()
   const [currentUserInfo, setCurrentUserInfo] = React.useState('')
   const { getString } = useStrings()
   const { validateSCM = noop, profileLinkClickHandler = noop, className = '', title } = props
 
-  const getUserDisplayName = (user?: string): string => {
-    return defaultTo(user, getString('na'))
+  const getUserDisplayName = (userInfo: UserInfo): string => {
+    return defaultTo(userInfo?.name, userInfo?.email) || getString('na')
   }
 
   useEffect(() => {
@@ -49,12 +53,12 @@ const SCMCheck: React.FC<SCMCheckProps> = props => {
         <Layout.Horizontal className={css.userInfo} flex={{ alignItems: 'center' }}>
           <Avatar
             size="small"
-            name={getUserDisplayName(currentUserInfo)}
+            name={getUserDisplayName(currentLoggedInUser)}
             backgroundColor={Color.PRIMARY_7}
             hoverCard={false}
           />
           <Text color={Color.GREY_700}>
-            {getString('common.git.currentUserLabel', { user: getUserDisplayName(currentUserInfo) })}
+            {getString('common.git.currentUserLabel', { user: getUserDisplayName(currentLoggedInUser) })}
           </Text>
         </Layout.Horizontal>
       ) : (

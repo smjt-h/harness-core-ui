@@ -33,6 +33,7 @@ const getStageEditorImplementation = (isEnabled: boolean, getString: UseStringsR
     isHidden={!isEnabled}
     isDisabled={false}
     isApproval={false}
+    isTemplateSupported={true}
   />
 )
 

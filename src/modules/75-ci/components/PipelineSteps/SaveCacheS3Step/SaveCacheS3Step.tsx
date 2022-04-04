@@ -75,6 +75,7 @@ export interface SaveCacheS3StepProps {
   onUpdate?: (data: SaveCacheS3StepData) => void
   onChange?: (data: SaveCacheS3StepData) => void
   allowableTypes: MultiTypeInputType[]
+  formik?: any
 }
 export class SaveCacheS3Step extends PipelineStep<SaveCacheS3StepData> {
   constructor() {

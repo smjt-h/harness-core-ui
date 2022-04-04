@@ -13,7 +13,7 @@ import { ErrorTrackingAnalysisRowData, ErrorTrackingEvents } from './ErrorTracki
 
 export const getClusterTypes = (getString: UseStringsReturn['getString']): SelectOption[] => {
   return [
-    { label: getString('pipeline.verification.logs.allEvents'), value: '' },
+    { label: getString('auditTrail.allEvents'), value: '' },
     { label: getString('pipeline.verification.logs.knownEvent'), value: ErrorTrackingEvents.KNOWN },
     { label: getString('pipeline.verification.logs.unknownEvent'), value: ErrorTrackingEvents.UNKNOWN },
     { label: getString('pipeline.verification.logs.unexpectedFrequency'), value: ErrorTrackingEvents.UNEXPECTED }

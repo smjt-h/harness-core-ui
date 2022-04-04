@@ -18,7 +18,7 @@ import { TWO_HOURS_IN_MILLISECONDS, COLUMN_CHART_PROPS } from './ChangeEventServ
 import css from './ChangeEventServiceHealth.module.scss'
 
 export default function ChangeEventServiceHealth(props: ChangeEventServiceHealthProps): JSX.Element {
-  const { serviceIdentifier, envIdentifier, startTime: propsStartTime, eventType } = props
+  const { monitoredServiceIdentifier, startTime: propsStartTime, eventType } = props
   const { getString } = useStrings()
   const [[startTime, endTime], setTimestamps] = useState<[number, number]>([0, 0])
   return (
@@ -27,8 +27,7 @@ export default function ChangeEventServiceHealth(props: ChangeEventServiceHealth
       <Text className={css.healthTrend}>{getString('cv.serviceHealthTrend')}</Text>
       <HealthScoreChart
         hasTimelineIntegration={false}
-        envIdentifier={envIdentifier}
-        serviceIdentifier={serviceIdentifier}
+        monitoredServiceIdentifier={monitoredServiceIdentifier}
         duration={{ value: TimePeriodEnum.FOUR_HOURS, label: getString('cv.monitoredServices.serviceHealth.last4Hrs') }}
         columChartProps={{
           ...COLUMN_CHART_PROPS,

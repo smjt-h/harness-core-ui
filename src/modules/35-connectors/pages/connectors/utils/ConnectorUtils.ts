@@ -24,7 +24,8 @@ import type {
   AwsSMCredentialSpecAssumeSTS,
   VaultConnectorDTO,
   AzureKeyVaultConnectorDTO,
-  GcpKmsConnectorDTO
+  GcpKmsConnectorDTO,
+  ErrorTrackingConnectorDTO
 } from 'services/cd-ng'
 import { FormData, CredTypeValues, HashiCorpVaultAccessTypes } from '@connectors/interfaces/ConnectorInterface'
 import type { SecretReferenceInterface } from '@secrets/utils/SecretField'
@@ -1410,7 +1411,7 @@ export const buildDatadogPayload = (formData: FormData) => {
   }
 }
 
-export const buildErrorTrackingPayload = (formData: FormData) => {
+export const buildErrorTrackingPayload = (formData: FormData): Connector => {
   const {
     name,
     identifier,
@@ -1418,7 +1419,6 @@ export const buildErrorTrackingPayload = (formData: FormData) => {
     orgIdentifier,
     delegateSelectors,
     url,
-    sid,
     apiKeyRef: { referenceString: apiReferenceKey },
     description,
     tags
@@ -1434,10 +1434,9 @@ export const buildErrorTrackingPayload = (formData: FormData) => {
       tags,
       spec: {
         url,
-        sid,
         apiKeyRef: apiReferenceKey,
         delegateSelectors: delegateSelectors || {}
-      }
+      } as ErrorTrackingConnectorDTO
     }
   }
 }
@@ -1694,6 +1693,8 @@ export const getIconByType = (type: ConnectorInfoDTO['type'] | undefined): IconN
       return 'service-servicenow'
     case Connectors.CUSTOM_HEALTH:
       return 'service-custom-connector'
+    case Connectors.ERROR_TRACKING:
+      return 'error-tracking'
     default:
       return 'cog'
   }

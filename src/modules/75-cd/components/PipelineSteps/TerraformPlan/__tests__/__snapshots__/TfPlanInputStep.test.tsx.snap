@@ -48,6 +48,7 @@ exports[`Test terraform input set should render edit view as new step 1`] = `
                         autocomplete="off"
                         class="bp3-input"
                         name="spec.provisionerIdentifier"
+                        placeholder="pipeline.terraformStep.provisionerIdentifier"
                         type="text"
                         value=""
                       />
@@ -196,6 +197,7 @@ exports[`Test terraform input set should render edit view as new step 1`] = `
                         autocomplete="off"
                         class="bp3-input"
                         name="test.spec.configuration.workspace"
+                        placeholder="pipeline.terraformStep.workspace"
                         type="text"
                         value=""
                       />

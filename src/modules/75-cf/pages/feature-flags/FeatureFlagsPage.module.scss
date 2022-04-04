@@ -32,7 +32,7 @@
 
   :global {
     .bp3-control.bp3-switch input:checked ~ .bp3-control-indicator {
-      background-color: #25a6f7;
+      background-color: var(--primary-4);
     }
   }
 }
@@ -68,4 +68,12 @@
   span {
     word-break: break-all;
   }
+}
+
+.tooltip {
+  background-color: var(--primary-9-dark) !important;
+  min-width: 200px !important;
+  max-width: 250px !important;
+  text-align: left;
+  border-radius: 4px;
 }

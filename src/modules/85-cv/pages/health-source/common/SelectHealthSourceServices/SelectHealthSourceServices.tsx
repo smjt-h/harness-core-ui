@@ -22,24 +22,27 @@ export default function SelectHealthSourceServices({
   hideSLIAndHealthScore
 }: SelectHealthSourceServicesProps): JSX.Element {
   const { getString } = useStrings()
-  const { continuousVerification, healthScore, serviceInstance } = values
+  const { continuousVerification, healthScore, serviceInstance, riskCategory } = values
   return (
     <Container className={css.main}>
       <Container className={css.checkBoxGroup}>
-        <Text className={css.groupLabel}>{getString('cv.monitoredServices.assignLabel')}</Text>
-
+        <Text tooltipProps={{ dataTooltipId: 'assignLabel' }} className={css.groupLabel}>
+          {getString('cv.monitoredServices.assignLabel')}
+        </Text>
+        {!hideSLIAndHealthScore ? (
+          <>
+            <FormInput.CheckBox label={getString('cv.slos.sli')} name={HealthSourceServices.SLI} />
+            <FormInput.CheckBox
+              label={getString('cv.monitoredServices.monitoredServiceTabs.serviceHealth')}
+              name={HealthSourceServices.HEALTHSCORE}
+            />
+          </>
+        ) : null}
         {!hideCV ? (
           <FormInput.CheckBox
             label={getString('cv.monitoredServices.continuousVerification')}
             name={HealthSourceServices.CONTINUOUS_VERIFICATION}
           />
-        ) : null}
-
-        {!hideSLIAndHealthScore ? (
-          <>
-            <FormInput.CheckBox label={getString('cv.healthScore')} name={HealthSourceServices.HEALTHSCORE} />
-            <FormInput.CheckBox label={getString('cv.slos.sli')} name={HealthSourceServices.SLI} />
-          </>
         ) : null}
       </Container>
       {(continuousVerification || healthScore) && (
@@ -48,6 +51,7 @@ export default function SelectHealthSourceServices({
           labelNamesResponse={labelNamesResponse}
           continuousVerificationEnabled={continuousVerification && !hideServiceIdentifier}
           serviceInstance={serviceInstance}
+          riskCategory={riskCategory}
         />
       )}
     </Container>

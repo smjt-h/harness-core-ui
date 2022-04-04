@@ -30,7 +30,10 @@ export default function MetricPath({
       render={() => {
         return (
           <div>
-            <Text padding={{ bottom: 'medium', top: 'medium' }}>
+            <Text
+              padding={{ bottom: 'medium', top: 'medium' }}
+              tooltipProps={{ dataTooltipId: 'appDynamicsMetricPath' }}
+            >
               {getString('cv.monitoringSources.appD.appdMetricDetail')}
             </Text>
             {Object.entries(metricPathValue)?.map((item, index) => {

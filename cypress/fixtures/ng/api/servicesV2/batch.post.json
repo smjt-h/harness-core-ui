@@ -12,10 +12,11 @@
           "identifier": "testService",
           "orgIdentifier": "default",
           "name": "testService",
-          "description": null,
+          "description": "Test Service Description",
           "deleted": false,
-          "tags": {},
-          "version": 0
+          "tags": { "serviceTag": "" },
+          "version": 0,
+          "yaml": "service:\n  name: \"testService\"\n  identifier: \"testService\"\n  orgIdentifier: \"default\"\n  projectIdentifier: \"project1\"\n  description: \"Test Service Description\"\n  tags:\n    serviceTag: \"\"\n"
         },
         "createdAt": 1631598821564,
         "lastModifiedAt": 1631598821564

@@ -195,7 +195,7 @@ export const createNewRelicFormData = (
     ...nonCustomFeilds,
     ...mappedMetrics.get(selectedMetric),
     metricName: selectedMetric,
-    metricIdentifier: selectedMetric.split(' ').join('_'),
+    metricIdentifier: selectedMetric?.split(' ').join('_'),
     showCustomMetric
   }
 }

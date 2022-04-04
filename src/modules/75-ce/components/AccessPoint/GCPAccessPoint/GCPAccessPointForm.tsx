@@ -218,7 +218,7 @@ const GCPAccessPointForm: React.FC<GCPAccessPointFormProps> = ({
             }),
             []
           ),
-          machine_type: loadBalancer.metadata?.machine_type,
+          machine_type: _defaultTo(loadBalancer.metadata?.machine_type, 'n1-standard-1'),
           subnet_name: loadBalancer.metadata?.subnet_name
         }}
         formName="lbFormSecond"

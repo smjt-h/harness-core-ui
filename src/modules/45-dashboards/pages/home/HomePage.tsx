@@ -9,7 +9,6 @@ import React, { useState } from 'react'
 import cx from 'classnames'
 
 import {
-  Color,
   Layout,
   Text,
   Container,
@@ -18,18 +17,17 @@ import {
   CardBody,
   Heading,
   Icon,
-  FontVariation,
-  FormInput,
   Formik,
   FormikForm as Form,
   ExpandingSearchInput,
   Pagination,
   SelectOption,
-  TableV2
+  TableV2,
+  FormInput
 } from '@wings-software/uicore'
 import { useModalHook } from '@harness/use-modal'
 import type { Breadcrumb } from '@harness/uicore'
-
+import { FontVariation, Color } from '@harness/design-system'
 import { Select } from '@blueprintjs/select'
 
 import { Classes, Menu, Dialog } from '@blueprintjs/core'
@@ -93,7 +91,8 @@ const DEFAULT_FILTER: { [key: string]: boolean } = {
   CE: false,
   CD: false,
   CI: false,
-  CF: false
+  CF: false,
+  CG_CD: false
 }
 
 type CustomColumn<T extends Record<string, any>> = Column<T>
@@ -243,6 +242,9 @@ const TagsRenderer = (data: DashboardInterface) => {
         }
         if (tag === 'CF') {
           return <section className={moduleTagCss.cfTag}>{getString('common.purpose.cf.continuous')}</section>
+        }
+        if (tag === 'CG_CD') {
+          return <section className={moduleTagCss.cgCdTag}>{getString('dashboards.modules.cgDeployments')}</section>
         }
         return <></>
       })}

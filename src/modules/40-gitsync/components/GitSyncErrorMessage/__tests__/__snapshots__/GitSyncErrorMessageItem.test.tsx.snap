@@ -7,7 +7,7 @@ exports[`GitSyncErrorMessageItem Fix commit and error reason should be rendered 
     data-testid="gitSyncErrorMessageItem"
   >
     <div
-      class="Layout--vertical StyledProps--main"
+      class="Layout--vertical StyledProps--main fixedError"
     >
       <p
         class="StyledProps--font Text--lineclamp StyledProps--main errorItemTitle StyledProps--font-size-small StyledProps--font-weight-semi-bold"
