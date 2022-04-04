@@ -7,15 +7,7 @@
  **/
 // this is an auto-generated file, do not update this manually
 declare const styles: {
-  readonly button: string
-  readonly buttonLink: string
-  readonly container: string
   readonly dialog: string
-  readonly footer: string
   readonly fullScreen: string
-  readonly main: string
-  readonly noLogs: string
-  readonly select: string
-  readonly text: string
 }
 export default styles

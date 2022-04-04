@@ -12,10 +12,10 @@ import * as cvService from 'services/cv'
 import { TestWrapper, TestWrapperProps } from '@common/utils/testUtils'
 import routes from '@common/RouteDefinitions'
 import { projectPathProps } from '@common/utils/routeUtils'
-import SLOLog from '../views/SLOLog'
-import { PAGE_SIZE } from '../views/ExecutionLog/ExecutionLog.constants'
+import SLOLogContent from '../views/SLOLogContent'
 import { LogTypes } from '../useLogContentHook.types'
 import { executionLogsResponse, pathParams } from './ExecutionLog.mock'
+import { PAGE_SIZE } from '../useLogContentHook.constants'
 
 const { accountId, orgIdentifier, projectIdentifier } = pathParams
 
@@ -45,11 +45,12 @@ jest.mock('moment', () => () => ({
   subtract: () => ({ add: () => ({ utc: () => ({ startOf: () => ({ toDate: () => new Date('2022') }) }) }) })
 }))
 
-describe('SLOLog', () => {
-  test('should render SLOLog component', () => {
+describe('SLOLogContent', () => {
+  test('should render SLOLogContent component of type Execution Log', () => {
     const { container } = render(
       <TestWrapper {...testWrapperProps}>
-        <SLOLog
+        <SLOLogContent
+          logType={LogTypes.ExecutionLog}
           identifier="SLO_IDENTIFIER"
           serviceName="SERVICE_NAME"
           envName="ENV_NAME"
@@ -63,10 +64,29 @@ describe('SLOLog', () => {
     expect(container).toMatchSnapshot()
   })
 
+  test('should render SLOLogContent component of type External API Call Log', () => {
+    const { container } = render(
+      <TestWrapper {...testWrapperProps}>
+        <SLOLogContent
+          logType={LogTypes.ApiCallLog}
+          identifier="SLO_IDENTIFIER"
+          serviceName="SERVICE_NAME"
+          envName="ENV_NAME"
+          isFullScreen={false}
+          setIsFullScreen={jest.fn()}
+        />
+      </TestWrapper>
+    )
+
+    expect(screen.getByText('cv.externalAPICalls')).toBeInTheDocument()
+    expect(container).toMatchSnapshot()
+  })
+
   test('should not call healthSource API for SLO', () => {
     render(
       <TestWrapper {...testWrapperProps}>
-        <SLOLog
+        <SLOLogContent
+          logType={LogTypes.ExecutionLog}
           identifier="SLO_IDENTIFIER"
           serviceName="SERVICE_NAME"
           envName="ENV_NAME"
@@ -79,10 +99,11 @@ describe('SLOLog', () => {
     expect(fetchHealthSources).not.toHaveBeenCalled()
   })
 
-  test('should handle the time range filter', async () => {
+  test('should handle the time range filter - Execution Logs', async () => {
     render(
       <TestWrapper {...testWrapperProps}>
-        <SLOLog
+        <SLOLogContent
+          logType={LogTypes.ExecutionLog}
           identifier="SLO_IDENTIFIER"
           serviceName="SERVICE_NAME"
           envName="ENV_NAME"
@@ -122,6 +143,47 @@ describe('SLOLog', () => {
           projectIdentifier,
           pageNumber: 0,
           logType: LogTypes.ExecutionLog,
+          pageSize: PAGE_SIZE,
+          errorLogsOnly: false,
+          startTime: 1640995200000,
+          endTime: 1640995200000
+        }
+      })
+    })
+  })
+
+  test('should handle the time range filter - External API Call Logs', async () => {
+    render(
+      <TestWrapper {...testWrapperProps}>
+        <SLOLogContent
+          logType={LogTypes.ApiCallLog}
+          identifier="SLO_IDENTIFIER"
+          serviceName="SERVICE_NAME"
+          envName="ENV_NAME"
+          isFullScreen={false}
+          setIsFullScreen={jest.fn()}
+        />
+      </TestWrapper>
+    )
+
+    expect(screen.getByText('cv.showingLogsFor cv.lastonehour from DUMMY_DATE to DUMMY_DATE.')).toBeInTheDocument()
+
+    userEvent.click(screen.getByPlaceholderText('- Select -'))
+    userEvent.click(screen.getByText('cv.monitoredServices.serviceHealth.last4Hrs'))
+
+    expect(
+      screen.getByText('cv.showingLogsFor cv.monitoredservices.servicehealth.last4hrs from DUMMY_DATE to DUMMY_DATE.')
+    ).toBeInTheDocument()
+
+    await waitFor(() => {
+      expect(cvService.useGetServiceLevelObjectiveLogs).toHaveBeenLastCalledWith({
+        identifier: 'SLO_IDENTIFIER',
+        queryParams: {
+          accountId,
+          orgIdentifier,
+          projectIdentifier,
+          pageNumber: 0,
+          logType: LogTypes.ApiCallLog,
           pageSize: PAGE_SIZE,
           errorLogsOnly: false,
           startTime: 1640995200000,

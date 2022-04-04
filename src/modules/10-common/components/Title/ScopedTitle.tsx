@@ -15,11 +15,13 @@ import { getScopeFromDTO, ScopedObjectDTO } from '@common/components/EntityRefer
 import type { ProjectPathProps } from '@common/interfaces/RouteInterfaces'
 import { Scope } from '@common/interfaces/SecretsInterface'
 import { useStrings } from 'framework/strings'
+import { TitleWithToolTipId } from './TitleWithToolTipId'
 import css from './ScopedTitle.module.scss'
 
 interface TitleProps {
   title: string | Record<Scope, string>
   overrideScope?: ScopedObjectDTO
+  toolTipId?: string
 }
 
 interface TitleInfo {
@@ -28,7 +30,7 @@ interface TitleInfo {
   title: string
 }
 
-const ScopedTitle: React.FC<TitleProps> = ({ title, overrideScope }) => {
+const ScopedTitle: React.FC<TitleProps> = ({ title, overrideScope, toolTipId }) => {
   const { selectedProject, selectedOrg } = useAppStore()
   const { getString } = useStrings()
   const { accountId, orgIdentifier, projectIdentifier } = useParams<ProjectPathProps>()
@@ -68,7 +70,7 @@ const ScopedTitle: React.FC<TitleProps> = ({ title, overrideScope }) => {
           &nbsp;
         </Text>
       )}
-      <Text font={{ variation: FontVariation.H4 }}>{`${titleInfo.label} ${titleInfo.title}`}</Text>
+      <TitleWithToolTipId title={`${titleInfo.label} ${titleInfo.title}`} toolTipId={toolTipId} />
     </Layout.Horizontal>
   )
 }

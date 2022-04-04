@@ -21,10 +21,11 @@ import {
 import { FontVariation, Color } from '@harness/design-system'
 import type { CellProps, Renderer, Column } from 'react-table'
 import { Menu, Classes, Position, Intent, TextArea, Tooltip } from '@blueprintjs/core'
-import { useParams, useHistory } from 'react-router-dom'
+import { useParams, useHistory, Link } from 'react-router-dom'
 import ReactTimeago from 'react-timeago'
 import classNames from 'classnames'
 import { pick } from 'lodash-es'
+import defaultTo from 'lodash-es/defaultTo'
 import { useStrings } from 'framework/strings'
 import {
   ConnectorResponse,
@@ -45,6 +46,7 @@ import routes from '@common/RouteDefinitions'
 import { getIconByType, isSMConnector } from '../utils/ConnectorUtils'
 import { getConnectorDisplaySummary } from '../utils/ConnectorListViewUtils'
 import ConnectivityStatus from './connectivityStatus/ConnectivityStatus'
+import { ConnectorDetailsView } from '../utils/ConnectorHelper'
 import css from './ConnectorsListView.module.scss'
 
 interface ConnectorListViewProps {
@@ -243,6 +245,39 @@ const RenderColumnMenu: Renderer<CellProps<ConnectorResponse>> = ({ row, column 
     )
   }
 
+  const { openDialog: openReferenceErrorDialog } = useConfirmationDialog({
+    contentText: (
+      <span>
+        <Text inline font={{ weight: 'bold' }}>
+          {`${data.connector?.name} `}
+        </Text>
+        {getString('connectors.connectorReferenceText')}
+        <Link
+          to={{
+            pathname: routes.toConnectorDetails({
+              ...params,
+              connectorId: data.connector?.identifier
+            }),
+            search: `?view=${ConnectorDetailsView.referencedBy}`
+          }}
+        >
+          {getString('clickHere')}
+        </Link>
+      </span>
+    ),
+    titleText: getString('connectors.cantDeleteConnector'),
+    cancelButtonText: getString('cancel'),
+    intent: Intent.DANGER
+  })
+
+  const handleConnectorDeleteError = (code: string, message: string) => {
+    if (code === 'ENTITY_REFERENCE_EXCEPTION') {
+      openReferenceErrorDialog()
+    } else {
+      showError(message)
+    }
+  }
+
   const { openDialog } = useConfirmationDialog({
     contentText: getConfirmationDialogContent(),
     titleText: getString('connectors.confirmDeleteTitle'),
@@ -262,7 +297,7 @@ const RenderColumnMenu: Renderer<CellProps<ConnectorResponse>> = ({ row, column 
           }
           ;(column as any).reload?.()
         } catch (err) {
-          showError(err?.data?.message || err?.message)
+          handleConnectorDeleteError(err?.data.code, defaultTo(err?.data?.message, err?.message))
         }
       }
     }

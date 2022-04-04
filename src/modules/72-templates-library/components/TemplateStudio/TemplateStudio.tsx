@@ -74,7 +74,7 @@ export function TemplateStudio(): React.ReactElement {
     gitDetails,
     entityValidityDetails
   } = state
-  const { isYamlEditable, isDrawerOpened } = templateView
+  const { isYamlEditable } = templateView
   const { getString } = useStrings()
   const [blockNavigation, setBlockNavigation] = React.useState(false)
   const [selectedBranch, setSelectedBranch] = React.useState(defaultTo(branch, ''))
@@ -247,12 +247,6 @@ export function TemplateStudio(): React.ReactElement {
       setKey(uuid())
     }
   }, [isLoading])
-
-  React.useEffect(() => {
-    if (!isDrawerOpened) {
-      setKey(uuid())
-    }
-  }, [isDrawerOpened])
 
   return (
     <TemplateVariablesContextProvider template={template}>

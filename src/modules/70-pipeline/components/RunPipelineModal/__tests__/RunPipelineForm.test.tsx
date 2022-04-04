@@ -387,6 +387,85 @@ describe('STUDIO MODE', () => {
     // Save the snapshot - value is present from merge input set API
     expect(container).toMatchSnapshot()
   })
+
+  test('Valid input set enables Run button if it was disabled due to errors', async () => {
+    // What to do -
+    // 1. Go to provide values and submit empty form
+    // 2. Expect errors in form and Run button to be disabled
+    // 3. Apply input set so that all fields are filled
+    // 4. Expect errors to go away and Run button to be enabled
+
+    const { container, getByText, queryByText } = render(
+      <TestWrapper>
+        <RunPipelineForm {...commonProps} />
+      </TestWrapper>
+    )
+
+    // Navigate to 'Provide Values'
+    act(() => {
+      fireEvent.click(getByText('pipeline.pipelineInputPanel.provide'))
+    })
+    await waitFor(() => expect(queryByText('customVariables.pipelineVariablesTitle')).toBeTruthy())
+
+    // Submit the incomplete form
+    const runButton = container.querySelector('button[type="submit"]')
+    act(() => {
+      fireEvent.click(runButton!)
+    })
+
+    // Verify the ErrorStrip is present and submit is disabled
+    await waitFor(() => expect(queryByText('common.errorCount')).toBeTruthy())
+    await waitFor(() => expect(queryByText('common.seeDetails')).toBeTruthy())
+    const buttonShouldBeDisabled = container.querySelector('.bp3-disabled')
+    expect(buttonShouldBeDisabled).toBeTruthy()
+
+    // Navigate to 'Existing'
+    act(() => {
+      fireEvent.click(getByText('pipeline.pipelineInputPanel.existing'))
+    })
+    await waitFor(() => expect(queryByText('pipeline.inputSets.selectPlaceholder')).toBeTruthy())
+
+    // Click on the Add input sets button
+    act(() => {
+      fireEvent.click(getByText('pipeline.inputSets.selectPlaceholder'))
+    })
+
+    await waitFor(() => expect(queryByText('is2')).toBeTruthy())
+
+    // Select the input sets - is2 and then is3
+    act(() => {
+      fireEvent.click(getByText('is2'))
+    })
+    act(() => {
+      fireEvent.click(getByText('is3'))
+    })
+
+    // Wait for button to be there
+    await waitFor(() => expect(queryByText('pipeline.inputSets.applyInputSets')).toBeTruthy())
+
+    // Apply the input sets
+    act(() => {
+      fireEvent.click(getByText('pipeline.inputSets.applyInputSets'))
+    })
+
+    // Expect the merge APi to be called (this calls validation internally)
+    await waitFor(() =>
+      expect(mockMergeInputSetResponse.mutate).toBeCalledWith(
+        expect.objectContaining({
+          inputSetReferences: ['inputset2', 'inputset3']
+        })
+      )
+    )
+
+    // Check errors to go away
+    await waitFor(() => expect(queryByText('common.errorCount')).toBeFalsy())
+
+    // Check Run button to be enabled now
+    await waitFor(() => expect(expect(runButton).not.toBeDisabled()))
+
+    // Save the snapshot - value is present from merge input set API
+    expect(container).toMatchSnapshot('after applying input sets')
+  })
 })
 
 describe('STUDIO MODE - template API error', () => {

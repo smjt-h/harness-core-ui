@@ -140,13 +140,13 @@ export default function DeployServiceSpecifications(props: React.PropsWithChildr
           currentStageType === item?.stage?.type &&
           !get(item.stage, `spec.serviceConfig.useFromStage.stage`)
         ) {
-          let serviceName = (item.stage as DeploymentStageElementConfig)?.spec?.serviceConfig.service?.name
+          let serviceName = (item.stage as DeploymentStageElementConfig)?.spec?.serviceConfig?.service?.name
           if (isEmpty(serviceName) && serviceIdNameMap) {
             serviceName =
-              serviceIdNameMap[(item.stage as DeploymentStageElementConfig)?.spec?.serviceConfig.serviceRef as string]
+              serviceIdNameMap[(item.stage as DeploymentStageElementConfig)?.spec?.serviceConfig?.serviceRef as string]
           }
           if (isEmpty(serviceName)) {
-            serviceName = (item.stage as DeploymentStageElementConfig)?.spec?.serviceConfig.serviceRef || ''
+            serviceName = (item.stage as DeploymentStageElementConfig)?.spec?.serviceConfig?.serviceRef || ''
           }
           newPreviousStageList.push({
             label: `Stage [${item.stage?.name}] - Service [${serviceName}]`,

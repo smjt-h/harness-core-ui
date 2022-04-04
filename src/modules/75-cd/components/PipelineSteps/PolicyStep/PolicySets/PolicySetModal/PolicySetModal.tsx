@@ -124,7 +124,11 @@ export function PolicySetModal({ name, formikProps, policySetIds, closeModal }: 
     refetch,
     response: policySetResponse
   } = useGetPolicySetList({
-    queryParams: reqQueryParams,
+    queryParams: {
+      ...reqQueryParams,
+      type: formikProps?.values?.spec?.type?.toLowerCase(),
+      action: 'onstep'
+    },
     debounce: 300
   })
 

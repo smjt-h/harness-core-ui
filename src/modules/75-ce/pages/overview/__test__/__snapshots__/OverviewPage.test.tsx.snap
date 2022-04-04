@@ -16,10 +16,9 @@ exports[`test cases for Overview Page should be able to render the overview dash
           data-tooltip-id="ccmOverviewTitle"
         >
           <p
-            class="StyledProps--font StyledProps--main StyledProps--color StyledProps--color-grey800"
-            style="font-size: 20px; font-weight: bold;"
+            class="StyledProps--font StyledProps--main StyledProps--font-variation-h4"
           >
-            Overview
+            overview
           </p>
         </div>
       </div>

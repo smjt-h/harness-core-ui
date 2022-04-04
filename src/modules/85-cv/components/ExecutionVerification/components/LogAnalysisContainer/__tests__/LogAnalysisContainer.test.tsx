@@ -106,6 +106,35 @@ describe('Unit tests for LogAnalysisContainer', () => {
     })
   })
 
+  test('Verify if apis for fetching logs data and cluster data are called again with new query params whenever activity Id is changed', async () => {
+    const newProps = {
+      ...initialProps,
+      step: {
+        progressData: {
+          activityId: 'activityId-2'
+        }
+      } as unknown as ExecutionNode
+    }
+    render(<WrapperComponent {...newProps} />)
+    await waitFor(() => {
+      expect(fetchLogsAnalysisData).toHaveBeenCalledWith({
+        queryParams: {
+          accountId: '1234_accountId',
+          pageNumber: 0,
+          pageSize: 10,
+          hostName: initialProps.hostName
+        }
+      })
+
+      expect(fetchChartsAnalysisData).toHaveBeenCalledWith({
+        queryParams: {
+          accountId: '1234_accountId',
+          hostName: initialProps.hostName
+        }
+      })
+    })
+  })
+
   test('Verify if Filtering by cluster type works correctly', async () => {
     const { container, getByText, getAllByText } = render(<WrapperComponent {...initialProps} />)
 

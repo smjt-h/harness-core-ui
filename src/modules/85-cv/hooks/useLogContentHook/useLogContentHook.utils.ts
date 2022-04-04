@@ -75,7 +75,7 @@ export const getTimeRangeInMilliseconds = (timeRange: TimeRangeTypes): [number, 
   }
 }
 
-const formatDate = (date: number): string => moment(new Date(date)).format('L, LT')
+export const formatDate = (date?: number): string => (date ? moment(new Date(date)).format('L, LT') : '')
 
 export const getInfoText = (getString: UseStringsReturn['getString'], timeRange?: SelectOption): string => {
   const [_startTime, _endTime] = getTimeRangeInMilliseconds(timeRange?.value as TimeRangeTypes)
@@ -84,4 +84,14 @@ export const getInfoText = (getString: UseStringsReturn['getString'], timeRange?
   const endTime = formatDate(_endTime)
 
   return `${getString('cv.showingLogsFor')} ${timeRange?.label?.toLowerCase()} from ${startTime} to ${endTime}.`
+}
+
+export const getStatusColor = (statusCode = '500'): 'success' | 'error' => {
+  const _code = Number(statusCode)
+
+  if (_code >= 200 && _code < 300) {
+    return 'success'
+  }
+
+  return 'error'
 }

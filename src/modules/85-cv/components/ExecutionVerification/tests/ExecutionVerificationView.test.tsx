@@ -10,6 +10,11 @@ import userEvent from '@testing-library/user-event'
 import { render, waitFor, screen } from '@testing-library/react'
 import { findDialogContainer, TestWrapper } from '@common/utils/testUtils'
 import type { ExecutionNode } from 'services/pipeline-ng'
+import {
+  LogTypes,
+  SLOLogContentProps,
+  VerifyStepLogContentProps
+} from '@cv/hooks/useLogContentHook/useLogContentHook.types'
 import { ExecutionVerificationView } from '../ExecutionVerificationView'
 import { getActivityId, getDefaultTabId } from '../ExecutionVerificationView.utils'
 
@@ -27,14 +32,14 @@ jest.mock('../components/LogAnalysisContainer/LogAnalysisView.container', () => 
   default: () => <div className="LogAnalysisContainer" />
 }))
 
-jest.mock('@cv/hooks/useLogContentHook/views/VerifyStepLog', () => ({
+jest.mock('@cv/hooks/useLogContentHook/views/VerifyStepLogContent', () => ({
   __esModule: true,
-  default: () => <div>Mock VerifyStepLog</div>
+  default: (props: VerifyStepLogContentProps) => <div>{props.logType}</div>
 }))
 
-jest.mock('@cv/hooks/useLogContentHook/views/SLOLog', () => ({
+jest.mock('@cv/hooks/useLogContentHook/views/SLOLogContent', () => ({
   __esModule: true,
-  default: () => <div>Mock SLOLog</div>
+  default: (props: SLOLogContentProps) => <div>{props.logType}</div>
 }))
 
 jest.mock('highcharts-react-official', () => () => <></>)
@@ -118,7 +123,7 @@ describe('Unit tests for ExecutionVerificationView unit tests', () => {
     expect(MetricsContainer.container).toMatchSnapshot()
   })
 
-  test('should open the LogContent modal and render VerifyStepLog by clicking the Execution Logs button', async () => {
+  test('should open the LogContent modal and render VerifyStepLog with type ExecutionLog by clicking the Execution Logs button', async () => {
     render(
       <TestWrapper>
         <ExecutionVerificationView step={{ progressData: { activityId: '1234_activityId' as any } }} />
@@ -132,8 +137,29 @@ describe('Unit tests for ExecutionVerificationView unit tests', () => {
     const dialog = findDialogContainer()
 
     await waitFor(() => {
-      expect(screen.getByText('Mock VerifyStepLog')).toBeInTheDocument()
-      expect(screen.queryByText('Mock SLOLog')).not.toBeInTheDocument()
+      expect(screen.getByText(LogTypes.ExecutionLog)).toBeInTheDocument()
+      expect(screen.queryByText(LogTypes.ApiCallLog)).not.toBeInTheDocument()
+    })
+
+    userEvent.click(dialog?.querySelector('[data-icon="Stroke"]')!)
+  })
+
+  test('should open the LogContent modal and render VerifyStepLog with typ ApiCallLog by clicking the Execution Logs button', async () => {
+    render(
+      <TestWrapper>
+        <ExecutionVerificationView step={{ progressData: { activityId: '1234_activityId' as any } }} />
+      </TestWrapper>
+    )
+
+    expect(screen.getByText('cv.externalAPICalls')).toBeInTheDocument()
+
+    userEvent.click(screen.getByText('cv.externalAPICalls'))
+
+    const dialog = findDialogContainer()
+
+    await waitFor(() => {
+      expect(screen.getByText(LogTypes.ApiCallLog)).toBeInTheDocument()
+      expect(screen.queryByText(LogTypes.ExecutionLog)).not.toBeInTheDocument()
     })
 
     userEvent.click(dialog?.querySelector('[data-icon="Stroke"]')!)

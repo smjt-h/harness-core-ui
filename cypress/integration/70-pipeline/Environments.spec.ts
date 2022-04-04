@@ -13,7 +13,7 @@ describe('Environment for Pipeline', () => {
     })
   })
 
-  it('Environment Addition & YAML/visual parity', () => {
+  it.skip('Environment Addition & YAML/visual parity', () => {
     cy.intercept('GET', environmentsCall, { fixture: 'ng/api/environments/environments.empty.json' }).as(
       'emptyEnvironments'
     )
@@ -50,7 +50,7 @@ describe('Environment for Pipeline', () => {
     cy.contains('span', 'Environment created successfully').should('be.visible')
   })
 
-  it('Environment Assertion and Deletion', () => {
+  it.skip('Environment Assertion and Deletion', () => {
     cy.intercept('GET', environmentsCall, { fixture: 'ng/api/environments/environmentsList.json' }).as(
       'environmentsList'
     )

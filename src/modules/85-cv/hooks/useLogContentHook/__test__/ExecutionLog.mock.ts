@@ -10,6 +10,7 @@ import { executionPathProps, pipelineModuleParams } from '@common/utils/routeUti
 import type { TestWrapperProps } from '@common/utils/testUtils'
 import { LogTypes } from '@cv/hooks/useLogContentHook/useLogContentHook.types'
 import type {
+  ApiCallLogDTO,
   ExecutionLogDTO,
   RestResponseDeploymentActivitySummaryDTO,
   RestResponsePageCVNGLogDTO,
@@ -107,6 +108,52 @@ export const deploymentActivitySummaryResponse: RestResponseDeploymentActivitySu
     serviceIdentifier: 'dynatrace',
     envName: 'prod',
     envIdentifier: 'prod'
+  },
+  responseMessages: []
+}
+
+export const externalAPICallLogsResponse: RestResponsePageCVNGLogDTO = {
+  metaData: {},
+  resource: {
+    totalPages: 1,
+    totalItems: 1,
+    pageItemCount: 1,
+    pageSize: 20,
+    content: [
+      {
+        accountId: 'zEaak-FLS425IEO7OLzMUg',
+        traceableId: 'UAlk7Un2Rcq0hS6SXWE6uA',
+        createdAt: 1647015342721,
+        startTime: 1647015120000,
+        endTime: 1647015180000,
+        traceableType: 'VERIFICATION_TASK',
+        requests: [
+          {
+            name: 'url',
+            value: 'https://qva35651.live.dynatrace.com/api/v2/metrics/query?entitySelector=type',
+            type: 'URL'
+          }
+        ],
+        responses: [
+          {
+            name: 'Status Code',
+            value: '200',
+            type: 'NUMBER'
+          },
+          {
+            name: 'Response Body',
+            value:
+              '{"totalCount":1.0,"nextPageKey":null,"resolution":"1m", "data":[{"dimensions":["SERVICE_METHOD-F3988BEE84FF7388"]}]}',
+            type: 'JSON'
+          }
+        ],
+        requestTime: 1647015341267,
+        responseTime: 1647015341484,
+        type: 'ApiCallLog'
+      } as ApiCallLogDTO
+    ],
+    pageIndex: 0,
+    empty: false
   },
   responseMessages: []
 }

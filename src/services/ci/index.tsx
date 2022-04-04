@@ -1314,6 +1314,16 @@ export interface K8sDirectInfraYamlSpec {
   namespace: string
   runAsUser?: number
   serviceAccountName?: string
+  automountServiceAccountToken?: boolean // hard coded for now
+  priorityClass?: string
+  containerSecurityContext?: {
+    privileged?: boolean
+    allowPrivilegeEscalation?: boolean
+    capabilities?: { add?: string[]; drop?: string[] }
+    runAsNonRoot?: boolean
+    readOnlyRootFilesystem?: boolean
+    runAsUser?: number
+  }
 }
 
 export type KeyValuesCriteriaSpec = CriteriaSpec & {

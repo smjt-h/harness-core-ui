@@ -11,7 +11,7 @@ import { render, screen, waitFor } from '@testing-library/react'
 import * as cvService from 'services/cv'
 import { TestWrapper } from '@common/utils/testUtils'
 import { LogTypes } from '@cv/hooks/useLogContentHook/useLogContentHook.types'
-import VerifyStepLog from '../views/VerifyStepLog'
+import VerifyStepLogContent from '../views/VerifyStepLogContent'
 import {
   testWrapperProps,
   pathParams,
@@ -19,8 +19,7 @@ import {
   executionLogsResponse,
   deploymentActivitySummaryResponse
 } from './ExecutionLog.mock'
-import { PAGE_SIZE } from '../views/ExecutionLog/ExecutionLog.constants'
-import ExecutionLogHeader from '../views/ExecutionLogHeader'
+import { PAGE_SIZE } from '../useLogContentHook.constants'
 
 const actions = {
   setExecutionLogs: jest.fn(),
@@ -59,7 +58,12 @@ describe('ExecutionLog - with mock actions', () => {
   test('should show No logs found message', () => {
     const { container } = render(
       <TestWrapper {...testWrapperProps}>
-        <VerifyStepLog verifyStepExecutionId="verifyStepExecutionId" isFullScreen={false} setIsFullScreen={jest.fn()} />
+        <VerifyStepLogContent
+          logType={LogTypes.ExecutionLog}
+          verifyStepExecutionId="verifyStepExecutionId"
+          isFullScreen={false}
+          setIsFullScreen={jest.fn()}
+        />
       </TestWrapper>
     )
 
@@ -68,10 +72,15 @@ describe('ExecutionLog - with mock actions', () => {
     expect(container.querySelector('[data-icon="arrow-down"]')).not.toBeInTheDocument()
   })
 
-  test('should clear the store data and fetch new data by changing a healthSource ', async () => {
+  test('should clear the store data and fetch new data by changing a healthSource - Execution Logs', async () => {
     render(
       <TestWrapper {...testWrapperProps}>
-        <VerifyStepLog verifyStepExecutionId="verifyStepExecutionId" isFullScreen={false} setIsFullScreen={jest.fn()} />
+        <VerifyStepLogContent
+          logType={LogTypes.ExecutionLog}
+          verifyStepExecutionId="verifyStepExecutionId"
+          isFullScreen={false}
+          setIsFullScreen={jest.fn()}
+        />
       </TestWrapper>
     )
 
@@ -103,10 +112,54 @@ describe('ExecutionLog - with mock actions', () => {
     })
   })
 
-  test('should clear the store data and fetch new data by enabling the display errors only ', async () => {
+  test('should fetch new data by changing a healthSource - External API Call Logs', async () => {
     render(
       <TestWrapper {...testWrapperProps}>
-        <VerifyStepLog verifyStepExecutionId="verifyStepExecutionId" isFullScreen={false} setIsFullScreen={jest.fn()} />
+        <VerifyStepLogContent
+          logType={LogTypes.ApiCallLog}
+          verifyStepExecutionId="verifyStepExecutionId"
+          isFullScreen={false}
+          setIsFullScreen={jest.fn()}
+        />
+      </TestWrapper>
+    )
+
+    expect(screen.getByPlaceholderText('- Select -')).toHaveValue('pipeline.verification.healthSourceLabel: all')
+
+    userEvent.click(screen.getByPlaceholderText('- Select -'))
+
+    await waitFor(() => {
+      expect(screen.getByText('dyna')).toBeInTheDocument()
+      userEvent.click(screen.getByText('dyna'))
+    })
+
+    await waitFor(() => {
+      expect(cvService.useGetVerifyStepLogs).toHaveBeenLastCalledWith({
+        verifyStepExecutionId: 'verifyStepExecutionId',
+        queryParams: {
+          accountId: pathParams.accountId,
+          pageSize: PAGE_SIZE,
+          logType: LogTypes.ApiCallLog,
+          pageNumber: 0,
+          errorLogsOnly: false,
+          healthSources: ['dynatrace_prod/dyna']
+        },
+        queryParamStringifyOptions: {
+          arrayFormat: 'repeat'
+        }
+      })
+    })
+  })
+
+  test('should clear the store data and fetch new data by enabling the display errors only - Execution Logs', async () => {
+    render(
+      <TestWrapper {...testWrapperProps}>
+        <VerifyStepLogContent
+          logType={LogTypes.ExecutionLog}
+          verifyStepExecutionId="verifyStepExecutionId"
+          isFullScreen={false}
+          setIsFullScreen={jest.fn()}
+        />
       </TestWrapper>
     )
 
@@ -130,10 +183,46 @@ describe('ExecutionLog - with mock actions', () => {
     })
   })
 
+  test('should clear the store data and fetch new data by enabling the display errors only - External API Call Logs', async () => {
+    render(
+      <TestWrapper {...testWrapperProps}>
+        <VerifyStepLogContent
+          logType={LogTypes.ApiCallLog}
+          verifyStepExecutionId="verifyStepExecutionId"
+          isFullScreen={false}
+          setIsFullScreen={jest.fn()}
+        />
+      </TestWrapper>
+    )
+
+    userEvent.click(screen.getByText('cv.displayOnlyErrors'))
+
+    await waitFor(() => {
+      expect(cvService.useGetVerifyStepLogs).toHaveBeenLastCalledWith({
+        verifyStepExecutionId: 'verifyStepExecutionId',
+        queryParams: {
+          accountId: pathParams.accountId,
+          pageSize: PAGE_SIZE,
+          logType: LogTypes.ApiCallLog,
+          pageNumber: 0,
+          errorLogsOnly: true
+        },
+        queryParamStringifyOptions: {
+          arrayFormat: 'repeat'
+        }
+      })
+    })
+  })
+
   test('should ensure search is calling proper actions', async () => {
     const { container } = render(
       <TestWrapper {...testWrapperProps}>
-        <VerifyStepLog verifyStepExecutionId="verifyStepExecutionId" isFullScreen={false} setIsFullScreen={jest.fn()} />
+        <VerifyStepLogContent
+          logType={LogTypes.ExecutionLog}
+          verifyStepExecutionId="verifyStepExecutionId"
+          isFullScreen={false}
+          setIsFullScreen={jest.fn()}
+        />
       </TestWrapper>
     )
 
@@ -154,7 +243,8 @@ describe('ExecutionLog - with mock actions', () => {
 
     const { container } = render(
       <TestWrapper {...testWrapperProps}>
-        <VerifyStepLog
+        <VerifyStepLogContent
+          logType={LogTypes.ExecutionLog}
           verifyStepExecutionId="verifyStepExecutionId"
           isFullScreen={false}
           setIsFullScreen={setIsFullScreen}
@@ -174,7 +264,8 @@ describe('ExecutionLog - with mock actions', () => {
 
     const { container } = render(
       <TestWrapper {...testWrapperProps}>
-        <VerifyStepLog
+        <VerifyStepLogContent
+          logType={LogTypes.ExecutionLog}
           verifyStepExecutionId="verifyStepExecutionId"
           isFullScreen={true}
           setIsFullScreen={setIsFullScreen}
@@ -187,21 +278,5 @@ describe('ExecutionLog - with mock actions', () => {
     userEvent.click(container.querySelector('[data-icon="full-screen-exit"]')!)
 
     await waitFor(() => expect(setIsFullScreen).toHaveBeenCalled())
-  })
-
-  test('should cover branch for ExecutionLogHeader with optional props', () => {
-    render(
-      <TestWrapper {...testWrapperProps}>
-        <ExecutionLogHeader
-          verifyStepExecutionId="verifyStepExecutionId"
-          errorLogsOnly={false}
-          setErrorLogsOnly={jest.fn()}
-          setPageNumber={jest.fn()}
-          actions={actions}
-        />
-      </TestWrapper>
-    )
-
-    expect(screen.getByText('cv.executionLogs')).toBeInTheDocument()
   })
 })

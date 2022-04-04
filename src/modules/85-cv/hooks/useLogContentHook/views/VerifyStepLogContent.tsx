@@ -12,11 +12,17 @@ import { useGetVerifyStepDeploymentActivitySummary, useGetVerifyStepLogs } from 
 import { useStrings } from 'framework/strings'
 import type { AccountPathProps } from '@common/interfaces/RouteInterfaces'
 import { getErrorMessage } from '@cv/utils/CommonUtils'
-import { PAGE_SIZE } from './ExecutionLog/ExecutionLog.constants'
-import { LogTypes, VerifyStepLogProps } from '../useLogContentHook.types'
+import { LogTypes, VerifyStepLogContentProps } from '../useLogContentHook.types'
 import ExecutionLog from './ExecutionLog/ExecutionLog'
+import ExternalAPICall from './ExternalAPICall/ExternalAPICall'
+import { PAGE_SIZE } from '../useLogContentHook.constants'
 
-const VerifyStepLog: React.FC<VerifyStepLogProps> = ({ isFullScreen, setIsFullScreen, verifyStepExecutionId }) => {
+const VerifyStepLogContent: React.FC<VerifyStepLogContentProps> = ({
+  logType,
+  isFullScreen,
+  setIsFullScreen,
+  verifyStepExecutionId
+}) => {
   const { getString } = useStrings()
   const { accountId } = useParams<AccountPathProps>()
   const [healthSource, setHealthSource] = React.useState<SelectOption>({ label: getString('all'), value: '' })
@@ -36,7 +42,7 @@ const VerifyStepLog: React.FC<VerifyStepLogProps> = ({ isFullScreen, setIsFullSc
     queryParams: {
       accountId,
       pageSize: PAGE_SIZE,
-      logType: LogTypes.ExecutionLog,
+      logType,
       pageNumber,
       errorLogsOnly,
       ...(healthSource.value ? { healthSources: [healthSource.value as string] } : {})
@@ -46,14 +52,35 @@ const VerifyStepLog: React.FC<VerifyStepLogProps> = ({ isFullScreen, setIsFullSc
     }
   })
 
-  return (
+  /* istanbul ignore next */
+  const resource = data?.resource
+
+  return logType === LogTypes.ExecutionLog ? (
     <ExecutionLog
       isFullScreen={isFullScreen}
       setIsFullScreen={setIsFullScreen}
       verifyStepExecutionId={verifyStepExecutionId}
       serviceName={serviceName}
       envName={envName}
-      resource={data?.resource}
+      resource={resource}
+      loading={loading}
+      errorMessage={getErrorMessage(error)}
+      refetchLogs={refetch}
+      healthSource={healthSource}
+      setHealthSource={setHealthSource}
+      errorLogsOnly={errorLogsOnly}
+      setErrorLogsOnly={setErrorLogsOnly}
+      pageNumber={pageNumber}
+      setPageNumber={setPageNumber}
+    />
+  ) : (
+    <ExternalAPICall
+      isFullScreen={isFullScreen}
+      setIsFullScreen={setIsFullScreen}
+      verifyStepExecutionId={verifyStepExecutionId}
+      serviceName={serviceName}
+      envName={envName}
+      resource={resource}
       loading={loading}
       errorMessage={getErrorMessage(error)}
       refetchLogs={refetch}
@@ -67,4 +94,4 @@ const VerifyStepLog: React.FC<VerifyStepLogProps> = ({ isFullScreen, setIsFullSc
   )
 }
 
-export default VerifyStepLog
+export default VerifyStepLogContent

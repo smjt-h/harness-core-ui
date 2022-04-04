@@ -79,7 +79,11 @@ function WrapperComponent(): JSX.Element {
                 } as any
               }
             >
-              <WebhookPipelineInputPanel {...defaultTriggerConfigDefaultProps} formikProps={formikProps} />
+              <WebhookPipelineInputPanel
+                {...defaultTriggerConfigDefaultProps}
+                formikProps={formikProps}
+                resolvedTemplatesPipelineYaml={''}
+              />
             </PipelineContext.Provider>
           </FormikForm>
         )}

@@ -142,17 +142,12 @@ const routes = {
       })
   ),
   toGovernanceViewPolicy: withAccountId(
-    ({
-      orgIdentifier,
-      projectIdentifier,
-      policyIdentifier
-    }: Partial<ProjectPathProps> & {
-      policyIdentifier: string
-    }) =>
+    ({ orgIdentifier, projectIdentifier, policyIdentifier, module }: GovernancePathProps) =>
       getScopeBasedRoute({
         scope: {
           orgIdentifier,
-          projectIdentifier
+          projectIdentifier,
+          module
         },
         path: `governance/policies/view/${policyIdentifier}`
       })

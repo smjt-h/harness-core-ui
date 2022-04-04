@@ -171,6 +171,7 @@ export interface StringsMap {
   'common.delegateForTask': string
   'common.delegateTokenLabel': string
   'common.delete': string
+  'common.deleteEnvironment.title': string
   'common.deleteService': string
   'common.deleteServiceConfirmation': string
   'common.deleteServiceFailure': string
@@ -797,11 +798,15 @@ export interface StringsMap {
   'auditTrail.actions.revoke_token': string
   'auditTrail.actions.unsuccessfullLogin': string
   'auditTrail.actions.updated': string
+  'auditTrail.allEvents': string
   'auditTrail.auditLogAPI': string
+  'auditTrail.delegateGroups': string
   'auditTrail.emptyStateMessage': string
   'auditTrail.emptyStateMessageTitle': string
   'auditTrail.eventSource': string
   'auditTrail.eventSummary': string
+  'auditTrail.excludeLoginEvents': string
+  'auditTrail.excludeSystemEvents': string
   'auditTrail.externalDataText': string
   'auditTrail.http': string
   'auditTrail.noYamlDifference': string
@@ -1407,6 +1412,7 @@ export interface StringsMap {
   'connectors.azureKeyVault.validation.tenantId': string
   'connectors.azureKeyVault.validation.vaultName': string
   'connectors.baseURL': string
+  'connectors.cantDeleteConnector': string
   'connectors.cdng.artifactTag': string
   'connectors.cdng.baseline': string
   'connectors.cdng.baselineDefaultLabel.lastSuccess': string
@@ -1746,6 +1752,7 @@ export interface StringsMap {
   'connectors.connectorDetailsHeader': string
   'connectors.connectorEmptyState': string
   'connectors.connectorNotFound': string
+  'connectors.connectorReferenceText': string
   'connectors.connectorsTitle': string
   'connectors.costVisibility': string
   'connectors.createConnector': string
@@ -2365,7 +2372,16 @@ export interface StringsMap {
   'pipeline.barriers.tooltips.barrierWaiting': string
   'pipeline.barriers.tooltips.timeout': string
   'pipeline.barriers.validation.barrierNamerequired': string
+  'pipeline.buildInfra.addCapabilities': string
+  'pipeline.buildInfra.allowPrivilegeEscalation': string
+  'pipeline.buildInfra.automountServiceAccountToken': string
+  'pipeline.buildInfra.containerSecurityContext': string
+  'pipeline.buildInfra.dropCapabilities': string
   'pipeline.buildInfra.poolId': string
+  'pipeline.buildInfra.priorityClass': string
+  'pipeline.buildInfra.privileged': string
+  'pipeline.buildInfra.readOnlyRootFilesystem': string
+  'pipeline.buildInfra.runAsNonRoot': string
   'pipeline.buildRepo': string
   'pipeline.changeTemplate': string
   'pipeline.changeTemplateLabel': string
@@ -3037,7 +3053,6 @@ export interface StringsMap {
   'pipeline.verification.loadMore': string
   'pipeline.verification.logClustersInViolation': string
   'pipeline.verification.logs.actions': string
-  'pipeline.verification.logs.allEvents': string
   'pipeline.verification.logs.clusterType': string
   'pipeline.verification.logs.copyURL': string
   'pipeline.verification.logs.filterByClusterType': string
@@ -3297,6 +3312,8 @@ export interface StringsMap {
   'cd.enterTragets': string
   'cd.enterWorkDirectory': string
   'cd.environmentCreated': string
+  'cd.environmentDelete': string
+  'cd.environmentDeleteMessage': string
   'cd.environmentUpdated': string
   'cd.featureRestriction.banners.deploymentsPerMonthLevelUp': string
   'cd.featureRestriction.banners.dpmWarningActive': string
@@ -3348,6 +3365,8 @@ export interface StringsMap {
   'cd.pipelineSteps.serviceTab.serviceIsRequired': string
   'cd.pipelineSteps.serviceTab.specifyYourService': string
   'cd.pipelineSteps.serviceTab.stageOverrides': string
+  'cd.preProduction': string
+  'cd.preProductionType': string
   'cd.releaseNameValidation': string
   'cd.requiredPermissions': string
   'cd.resourceCannotBeEmpty': string
@@ -4701,18 +4720,18 @@ export interface StringsMap {
   'ci.advancedLabel': string
   'ci.annotations': string
   'ci.artifactoryConnectorLabel': string
-  'ci.buildInfa.awsHelpText': string
-  'ci.buildInfa.awsVM.architecture': string
-  'ci.buildInfa.awsVM.isRequiredWhen': string
-  'ci.buildInfa.awsVM.os': string
-  'ci.buildInfa.awsVMs': string
-  'ci.buildInfa.infrastructureTypesLabel': string
-  'ci.buildInfa.k8sLabel': string
-  'ci.buildInfa.kubernetesHelpText': string
-  'ci.buildInfa.label': string
-  'ci.buildInfa.selectInfra': string
-  'ci.buildInfa.useNewInfra': string
-  'ci.buildInfa.vmLabel': string
+  'ci.buildInfra.awsHelpText': string
+  'ci.buildInfra.awsVM.architecture': string
+  'ci.buildInfra.awsVM.isRequiredWhen': string
+  'ci.buildInfra.awsVM.os': string
+  'ci.buildInfra.awsVMs': string
+  'ci.buildInfra.infrastructureTypesLabel': string
+  'ci.buildInfra.k8sLabel': string
+  'ci.buildInfra.kubernetesHelpText': string
+  'ci.buildInfra.label': string
+  'ci.buildInfra.selectInfra': string
+  'ci.buildInfra.useNewInfra': string
+  'ci.buildInfra.vmLabel': string
   'ci.ciTrialHomePage.startTrial.description': string
   'ci.ciTrialHomePage.startTrial.startBtn.description': string
   'ci.clipboardCopyFail': string
@@ -4801,7 +4820,6 @@ export interface StringsMap {
   'ci.prTitle': string
   'ci.preCommandLabel': string
   'ci.previous': string
-  'ci.privileged': string
   'ci.remoteCacheImage.dockerInfo': string
   'ci.remoteCacheImage.label': string
   'ci.remoteCacheRepository.label': string
@@ -4966,7 +4984,9 @@ export interface StringsMap {
   'cv.errorBudgetRemaining': string
   'cv.evaluationPeriod': string
   'cv.executionLogs': string
+  'cv.externalAPICalls': string
   'cv.failures': string
+  'cv.fetchingDataFrom': string
   'cv.filter': string
   'cv.forConfigurationYouWillNeedAtLeastOneMonitoredServiceWithAHealthSourceAndAMetric': string
   'cv.friday': string
@@ -5222,6 +5242,7 @@ export interface StringsMap {
   'cv.monitoringSources.gco.mapMetricsToServicesPage.validation.tooManyMetrics': string
   'cv.monitoringSources.gco.mapMetricsToServicesPage.validation.validJSON': string
   'cv.monitoringSources.gco.mapMetricsToServicesPage.viewQuery': string
+  'cv.monitoringSources.gco.noMetricData': string
   'cv.monitoringSources.gco.product.logs': string
   'cv.monitoringSources.gco.product.metrics': string
   'cv.monitoringSources.gco.productValidationText': string
@@ -5513,6 +5534,7 @@ export interface StringsMap {
   'cv.slos.validations.healthSourceRequired': string
   'cv.slos.validations.nameValidation': string
   'cv.slos.validations.userJourneyRequired': string
+  'cv.somethingWentWrongWhileParsingTheData': string
   'cv.statusCode': string
   'cv.sunday': string
   'cv.thanObjectiveValue': string

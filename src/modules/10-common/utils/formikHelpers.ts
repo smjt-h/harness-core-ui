@@ -8,7 +8,22 @@
 import type { FormikContext } from 'formik'
 import { get, isPlainObject } from 'lodash-es'
 
-export const errorCheck = (name: string, formik?: FormikContext<any>): boolean | '' | 0 | undefined =>
-  ((get(formik?.touched, name) || (formik?.submitCount && formik?.submitCount > 0)) &&
-    get(formik?.errors, name) &&
-    !isPlainObject(get(formik?.errors, name))) as boolean
+/* _formSubmitCount is custom state var used to track submitCount.
+ * enableReinitialize prop resets the submitCount, so error checks fail.
+ * So either remove the prop (which will cause input set issues)
+ * Or use this custom var for error checks.
+ */
+
+export const errorCheck = (name: string, formik?: FormikContext<any> | any): boolean => {
+  if (formik) {
+    const { touched, submitCount, errors, _formSubmitCount } = formik
+
+    return (
+      (get(touched, name) || (submitCount && submitCount > 0) || (_formSubmitCount && _formSubmitCount > 0)) &&
+      get(errors, name) &&
+      !isPlainObject(get(errors, name))
+    )
+  }
+
+  return false
+}

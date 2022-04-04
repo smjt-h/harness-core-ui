@@ -9,6 +9,7 @@
 declare const styles: {
   readonly active: string
   readonly bottomMargin3: string
+  readonly bottomMargin5: string
   readonly bottomMargin7: string
   readonly card: string
   readonly cardTitle: string
@@ -22,6 +23,7 @@ declare const styles: {
   readonly section: string
   readonly sectionCard: string
   readonly selected: string
+  readonly sm: string
   readonly specTabs: string
   readonly tabHeading: string
   readonly tabSubHeading: string

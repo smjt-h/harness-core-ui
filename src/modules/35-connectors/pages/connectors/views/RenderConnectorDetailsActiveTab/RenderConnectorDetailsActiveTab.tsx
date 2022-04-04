@@ -12,9 +12,10 @@ import type { ConnectorResponse } from 'services/cd-ng'
 import EntitySetupUsage from '@common/pages/entityUsage/EntityUsage'
 import ActivityHistory from '@connectors/components/activityHistory/ActivityHistory/ActivityHistory'
 import ConnectorView from '../../ConnectorView'
+import { ConnectorDetailsView } from '../../utils/ConnectorHelper'
 
 interface RenderConnectorDetailsActiveTabProps {
-  activeCategory: number
+  activeCategory: ConnectorDetailsView
   data: ConnectorResponse
   refetch: () => Promise<void>
 }
@@ -26,7 +27,7 @@ const RenderConnectorDetailsActiveTab: React.FC<RenderConnectorDetailsActiveTabP
 }) => {
   const { getString } = useStrings()
   switch (activeCategory) {
-    case 0:
+    case ConnectorDetailsView.overview:
       return data.connector?.type ? (
         <ConnectorView
           type={data.connector.type}
@@ -36,13 +37,13 @@ const RenderConnectorDetailsActiveTab: React.FC<RenderConnectorDetailsActiveTabP
       ) : (
         <NoDataCard message={getString('connectors.connectorNotFound')} icon="question" />
       )
-    case 1:
+    case ConnectorDetailsView.referencedBy:
       return data.connector?.identifier ? (
         <EntitySetupUsage entityType={'Connectors'} entityIdentifier={data.connector.identifier} />
       ) : (
         <></>
       )
-    case 2:
+    case ConnectorDetailsView.activityHistory:
       return <ActivityHistory referredEntityType="Connectors" entityIdentifier={data.connector?.identifier || ''} />
     default:
       return <></>

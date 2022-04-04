@@ -7,26 +7,25 @@
 
 import React from 'react'
 import { useParams } from 'react-router-dom'
-import { FontVariation, Heading, Layout, Container, Text, Color, Select, Checkbox, SelectOption } from '@harness/uicore'
+import { FontVariation, Heading, Layout, Container, Text, Color, Select, Checkbox } from '@harness/uicore'
 import { useStrings } from 'framework/strings'
 import { useGetVerifyStepHealthSources } from 'services/cv'
 import type { AccountPathProps } from '@common/interfaces/RouteInterfaces'
-import { getHealthSourceOptions, getTimeRangeOptions } from '../useLogContentHook.utils'
-import type { ExecutionLogHeaderProps } from '../useLogContentHook.types'
-import css from '../useLogContentHook.module.scss'
+import { getHealthSourceOptions, getTimeRangeOptions } from '../../useLogContentHook.utils'
+import { LogTypes } from '../../useLogContentHook.types'
+import type { LogContentHeaderProps } from './LogContentHeader.types'
 
-const ExecutionLogHeader: React.FC<ExecutionLogHeaderProps> = ({
+const LogContentHeader: React.FC<LogContentHeaderProps> = ({
+  logType,
   verifyStepExecutionId = '',
   serviceName,
   envName,
   healthSource,
-  setHealthSource,
+  handleHealthSource,
   timeRange,
-  setTimeRange,
+  handleTimeRange,
   errorLogsOnly,
-  setErrorLogsOnly,
-  actions,
-  setPageNumber
+  handleDisplayOnlyErrors
 }) => {
   const { getString } = useStrings()
   const { accountId } = useParams<AccountPathProps>()
@@ -47,26 +46,6 @@ const ExecutionLogHeader: React.FC<ExecutionLogHeaderProps> = ({
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [isVerifyStep])
 
-  const handleHealthSource = (_healthSource: SelectOption): void => {
-    if (_healthSource.value !== healthSource?.value) {
-      actions.resetExecutionLogs()
-      setPageNumber(0)
-      setHealthSource?.(_healthSource)
-    }
-  }
-
-  const handleDisplayOnlyErrors = (e: React.FormEvent<HTMLInputElement>): void => {
-    actions.resetExecutionLogs()
-    setPageNumber(0)
-    setErrorLogsOnly(e.currentTarget.checked)
-  }
-
-  const handleTimeRange = (_timeRange: SelectOption): void => {
-    actions.resetExecutionLogs()
-    setPageNumber(0)
-    setTimeRange?.(_timeRange)
-  }
-
   return (
     <div>
       <Heading
@@ -75,7 +54,7 @@ const ExecutionLogHeader: React.FC<ExecutionLogHeaderProps> = ({
         border={{ bottom: true }}
         padding={{ top: 'xlarge', right: 'xlarge', bottom: 'small', left: 'xlarge' }}
       >
-        {getString('cv.executionLogs')}
+        {logType === LogTypes.ExecutionLog ? getString('cv.executionLogs') : getString('cv.externalAPICalls')}
       </Heading>
       <Layout.Horizontal spacing="medium" padding={{ top: 'medium', right: 'xlarge', bottom: 'large', left: 'xlarge' }}>
         <Container>
@@ -103,28 +82,24 @@ const ExecutionLogHeader: React.FC<ExecutionLogHeaderProps> = ({
           </Layout.Horizontal>
         </Container>
         <Container border={{ left: true }} />
-        {isVerifyStep ? (
-          <Select
-            value={{
-              label: `${getString('pipeline.verification.healthSourceLabel')}: ${healthSource?.label}`,
-              value: healthSource?.value ?? ''
-            }}
-            items={getHealthSourceOptions(getString, data?.resource)}
-            onChange={handleHealthSource}
-            disabled={loading}
-            className={css.select}
-          />
-        ) : (
-          <Select
-            value={timeRange}
-            items={getTimeRangeOptions(getString)}
-            onChange={handleTimeRange}
-            className={css.select}
-          />
-        )}
+        <Container width={230}>
+          {isVerifyStep ? (
+            <Select
+              value={{
+                label: `${getString('pipeline.verification.healthSourceLabel')}: ${healthSource?.label}`,
+                value: healthSource?.value ?? ''
+              }}
+              items={getHealthSourceOptions(getString, data?.resource)}
+              onChange={handleHealthSource}
+              disabled={loading}
+            />
+          ) : (
+            <Select value={timeRange} items={getTimeRangeOptions(getString)} onChange={handleTimeRange} />
+          )}
+        </Container>
         <Checkbox
           checked={errorLogsOnly}
-          onChange={handleDisplayOnlyErrors}
+          onChange={e => handleDisplayOnlyErrors(e.currentTarget.checked)}
           label={getString('cv.displayOnlyErrors')}
           flex={{ align: 'center-center' }}
         />
@@ -133,4 +108,4 @@ const ExecutionLogHeader: React.FC<ExecutionLogHeaderProps> = ({
   )
 }
 
-export default ExecutionLogHeader
+export default LogContentHeader

@@ -17,14 +17,12 @@ import {
   getInputSetForPipelinePromise,
   useGetMergeInputSetFromPipelineTemplateWithListInput
 } from 'services/pipeline-ng'
-import { useGetYamlWithTemplateRefsResolved } from 'services/template-ng'
 import { PipelineInputSetForm } from '@pipeline/components/PipelineInputSetForm/PipelineInputSetForm'
 import { useStrings } from 'framework/strings'
 import { GitSyncStoreProvider } from 'framework/GitRepoStore/GitSyncStoreContext'
 import { clearRuntimeInput } from '@pipeline/components/PipelineStudio/StepUtil'
 import { StepViewType } from '@pipeline/components/AbstractSteps/Step'
 import { useMutateAsGet } from '@common/hooks'
-import { yamlStringify } from '@common/utils/YamlHelperMethods'
 import {
   ciCodebaseBuild,
   ciCodebaseBuildPullRequest,
@@ -37,6 +35,7 @@ import css from './WebhookPipelineInputPanel.module.scss'
 
 interface WebhookPipelineInputPanelPropsInterface {
   formikProps?: any
+  resolvedTemplatesPipelineYaml: string
 }
 
 const applyArtifactToPipeline = (newPipelineObject: any, formikProps: any) => {
@@ -121,7 +120,8 @@ const applySelectedArtifactToPipelineObject = (pipelineObj: any, formikProps: an
 }
 
 const WebhookPipelineInputPanelForm: React.FC<WebhookPipelineInputPanelPropsInterface> = ({
-  formikProps
+  formikProps,
+  resolvedTemplatesPipelineYaml
 }): JSX.Element => {
   const {
     values: { inputSetSelected, pipeline, originalPipeline },
@@ -152,28 +152,15 @@ const WebhookPipelineInputPanelForm: React.FC<WebhookPipelineInputPanelPropsInte
   let hasEverRendered = typeof ciCodebaseBuildValue === 'object' && !isEmpty(ciCodebaseBuildValue)
   const [pipelineWithoutRefs, setPipelineWithoutRefs] = useState<PipelineInfoConfig>(originalPipeline)
 
-  const { data: templateRefsResolvedPipeline } = useMutateAsGet(useGetYamlWithTemplateRefsResolved, {
-    queryParams: {
-      accountIdentifier: accountId,
-      orgIdentifier,
-      pipelineIdentifier,
-      projectIdentifier
-    },
-    body: {
-      originalEntityYaml: yamlStringify(originalPipeline || '')
-    }
-  })
-
   useEffect(() => {
     try {
-      const pipelineYamlWithoutRefAsString = templateRefsResolvedPipeline?.data?.mergedPipelineYaml
-      if (pipelineYamlWithoutRefAsString) {
-        setPipelineWithoutRefs(parse(pipelineYamlWithoutRefAsString))
+      if (resolvedTemplatesPipelineYaml) {
+        setPipelineWithoutRefs(parse(resolvedTemplatesPipelineYaml)?.pipeline)
       }
     } catch (e) {
       // ignore error
     }
-  }, [templateRefsResolvedPipeline?.data?.mergedPipelineYaml])
+  }, [resolvedTemplatesPipelineYaml])
 
   useEffect(() => {
     const shouldInjectCloneCodebase =

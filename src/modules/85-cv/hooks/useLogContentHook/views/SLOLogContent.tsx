@@ -12,12 +12,20 @@ import { useGetServiceLevelObjectiveLogs } from 'services/cv'
 import { useStrings } from 'framework/strings'
 import type { ProjectPathProps } from '@common/interfaces/RouteInterfaces'
 import { getErrorMessage } from '@cv/utils/CommonUtils'
-import { PAGE_SIZE } from './ExecutionLog/ExecutionLog.constants'
-import { LogTypes, TimeRangeTypes, SLOLogProps } from '../useLogContentHook.types'
+import { LogTypes, TimeRangeTypes, SLOLogContentProps } from '../useLogContentHook.types'
 import ExecutionLog from './ExecutionLog/ExecutionLog'
 import { getTimeRangeInMilliseconds, getTimeRangeOptions } from '../useLogContentHook.utils'
+import ExternalAPICall from './ExternalAPICall/ExternalAPICall'
+import { PAGE_SIZE } from '../useLogContentHook.constants'
 
-const SLOLog: React.FC<SLOLogProps> = ({ identifier, serviceName, envName, isFullScreen, setIsFullScreen }) => {
+const SLOLogContent: React.FC<SLOLogContentProps> = ({
+  logType,
+  identifier,
+  serviceName,
+  envName,
+  isFullScreen,
+  setIsFullScreen
+}) => {
   const { getString } = useStrings()
   const { accountId, orgIdentifier, projectIdentifier } = useParams<ProjectPathProps>()
   const [errorLogsOnly, setErrorLogsOnly] = React.useState<boolean>(false)
@@ -31,7 +39,7 @@ const SLOLog: React.FC<SLOLogProps> = ({ identifier, serviceName, envName, isFul
       accountId,
       orgIdentifier,
       projectIdentifier,
-      logType: LogTypes.ExecutionLog,
+      logType,
       errorLogsOnly,
       pageNumber,
       startTime,
@@ -43,8 +51,25 @@ const SLOLog: React.FC<SLOLogProps> = ({ identifier, serviceName, envName, isFul
   /* istanbul ignore next */
   const resource = data?.resource
 
-  return (
+  return logType === LogTypes.ExecutionLog ? (
     <ExecutionLog
+      isFullScreen={isFullScreen}
+      setIsFullScreen={setIsFullScreen}
+      serviceName={serviceName}
+      envName={envName}
+      resource={resource}
+      loading={loading}
+      errorMessage={getErrorMessage(error)}
+      refetchLogs={refetch}
+      timeRange={timeRange}
+      setTimeRange={setTimeRange}
+      errorLogsOnly={errorLogsOnly}
+      setErrorLogsOnly={setErrorLogsOnly}
+      pageNumber={pageNumber}
+      setPageNumber={setPageNumber}
+    />
+  ) : (
+    <ExternalAPICall
       isFullScreen={isFullScreen}
       setIsFullScreen={setIsFullScreen}
       serviceName={serviceName}
@@ -63,4 +88,4 @@ const SLOLog: React.FC<SLOLogProps> = ({ identifier, serviceName, envName, isFul
   )
 }
 
-export default SLOLog
+export default SLOLogContent

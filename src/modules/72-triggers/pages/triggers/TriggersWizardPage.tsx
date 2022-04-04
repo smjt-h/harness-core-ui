@@ -476,13 +476,16 @@ const TriggersWizardPage: React.FC = (): JSX.Element => {
     queryParams: {
       accountIdentifier: accountId,
       orgIdentifier,
-      projectIdentifier
+      projectIdentifier,
+      getTemplatesResolvedPipeline: true
     }
   })
 
   const originalPipeline: PipelineInfoConfig | undefined = parse(
     (pipelineResponse?.data?.yamlPipeline as any) || ''
   )?.pipeline
+
+  const resolvedTemplatesPipelineYaml = defaultTo(pipelineResponse?.data?.resolvedTemplatesPipelineYaml, '')
 
   useEffect(() => {
     if (triggerResponse?.data?.yaml && triggerResponse.data.type === TriggerTypes.WEBHOOK) {
@@ -1708,7 +1711,7 @@ const TriggersWizardPage: React.FC = (): JSX.Element => {
       >
         <WebhookTriggerConfigPanel />
         <WebhookConditionsPanel />
-        <WebhookPipelineInputPanel />
+        <WebhookPipelineInputPanel resolvedTemplatesPipelineYaml={resolvedTemplatesPipelineYaml} />
       </Wizard>
     )
   }
@@ -1758,7 +1761,7 @@ const TriggersWizardPage: React.FC = (): JSX.Element => {
       >
         <ArtifactTriggerConfigPanel />
         <ArtifactConditionsPanel />
-        <WebhookPipelineInputPanel />
+        <WebhookPipelineInputPanel resolvedTemplatesPipelineYaml={resolvedTemplatesPipelineYaml} />
       </Wizard>
     )
   }
@@ -1805,7 +1808,7 @@ const TriggersWizardPage: React.FC = (): JSX.Element => {
       >
         <TriggerOverviewPanel />
         <SchedulePanel />
-        <WebhookPipelineInputPanel />
+        <WebhookPipelineInputPanel resolvedTemplatesPipelineYaml={resolvedTemplatesPipelineYaml} />
       </Wizard>
     )
   }

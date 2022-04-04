@@ -29,7 +29,7 @@ describe('Validate SelectHealthSourceServices', () => {
         </Formik>
       </TestWrapper>
     )
-    expect(container.querySelector('input[name="sli"')).not.toBeChecked()
+    expect(container.querySelector('input[name="sli"')).toBeChecked()
     expect(container.querySelector('input[name="healthScore"')).toBeChecked()
     expect(container.querySelector('input[name="continuousVerification"')).toBeChecked()
     expect(getByText('cv.monitoringSources.riskCategoryLabel')).toBeInTheDocument()

@@ -36,6 +36,7 @@ import {
 } from '@common/components/TimeRangeSelector/TimeRangeSelector'
 import { DeploymentsTimeRangeContext } from '@cd/components/Services/common'
 
+import { TitleWithToolTipId } from '@common/components/Title/TitleWithToolTipId'
 import DeploymentsHealthCards from './DeploymentsHealthCards'
 import DeploymentExecutionsChart from './DeploymentExecutionsChart'
 import WorkloadCard from './DeploymentCards/WorkloadCard'
@@ -125,7 +126,7 @@ export const CDDashboardPage: React.FC = () => {
   return (
     <>
       <PageHeader
-        title={getString('overview')}
+        title={<TitleWithToolTipId title={getString('overview')} toolTipId={'cdOverViewTitle'} />}
         breadcrumbs={<NGBreadcrumbs links={[]} />}
         toolbar={
           <>

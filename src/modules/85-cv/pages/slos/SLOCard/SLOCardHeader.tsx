@@ -15,7 +15,8 @@ import {
   Popover,
   Button,
   ButtonVariation,
-  useConfirmationDialog
+  useConfirmationDialog,
+  Icon
 } from '@wings-software/uicore'
 import { FontVariation, Color } from '@harness/design-system'
 
@@ -31,6 +32,7 @@ import RbacMenuItem from '@rbac/components/MenuItem/MenuItem'
 import ReviewChangeSVG from '@cv/assets/sloReviewChange.svg'
 import { useErrorBudgetRestHook } from '@cv/hooks/useErrorBudgetRestHook/useErrorBudgetRestHook'
 import { useLogContentHook } from '@cv/hooks/useLogContentHook/useLogContentHook'
+import { LogTypes } from '@cv/hooks/useLogContentHook/useLogContentHook.types'
 import { PeriodTypes } from '../components/CVCreateSLO/CVCreateSLO.types'
 import type { SLOCardHeaderProps } from '../CVSLOsListingPage.types'
 import css from '../CVSLOsListingPage.module.scss'
@@ -158,9 +160,21 @@ const SLOCardHeader: React.FC<SLOCardHeaderProps> = ({
                 />
               )}
               <RbacMenuItem
-                icon="document-open"
+                icon={<Icon size={20} padding={{ right: 'xsmall' }} name="api-docs" color={Color.GREY_700} />}
+                text={getString('cv.externalAPICalls')}
+                onClick={() => openLogContentHook(LogTypes.ApiCallLog)}
+                permission={{
+                  permission: PermissionIdentifier.VIEW_SLO_SERVICE,
+                  resource: {
+                    resourceType: ResourceType.SLO,
+                    resourceIdentifier: projectIdentifier
+                  }
+                }}
+              />
+              <RbacMenuItem
+                icon={<Icon size={20} padding={{ right: 'xsmall' }} name="audit-trail" color={Color.GREY_700} />}
                 text={getString('cv.executionLogs')}
-                onClick={openLogContentHook}
+                onClick={() => openLogContentHook(LogTypes.ExecutionLog)}
                 permission={{
                   permission: PermissionIdentifier.VIEW_SLO_SERVICE,
                   resource: {

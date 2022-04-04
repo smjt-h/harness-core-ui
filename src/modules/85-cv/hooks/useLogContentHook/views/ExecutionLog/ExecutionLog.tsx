@@ -5,22 +5,24 @@
  * https://polyformproject.org/wp-content/uploads/2020/06/PolyForm-Shield-1.0.0.txt.
  */
 
-import React, { Reducer } from 'react'
+import React, { Reducer, useCallback } from 'react'
 import cx from 'classnames'
 import { GroupedVirtuosoHandle, Virtuoso, VirtuosoHandle } from 'react-virtuoso'
-import { Button, ButtonSize, ButtonVariation, Color, Container, Layout, Text } from '@harness/uicore'
+import { Button, ButtonSize, ButtonVariation, Color, Container, Layout, SelectOption, Text } from '@harness/uicore'
 import { useStrings, String as StrTemplate } from 'framework/strings'
 import { MultiLogLine } from '@pipeline/components/LogsContent/components/MultiLogLine/MultiLogLine'
-import ExecutionLogHeader from '../ExecutionLogHeader'
-import ExecutionLogToolbar from '../ExecutionLogToolbar'
+import LogContentHeader from '../LogContentHeader/LogContentHeader'
+import LogContentToolbar from '../LogContentToolbar/LogContentToolbar'
+import ExecutionLogSearch from './ExecutionLogSearch'
 import { reducer, useActionCreator } from './ExecutionLogState'
 import { defaultReducerState } from './ExecutionLog.constants'
 import { isPositiveNumber } from '../../useLogContentHook.utils'
+import { ExecutionAndAPICallLogProps, LogTypes } from '../../useLogContentHook.types'
 import { convertLogDataToLogLineData } from './ExecutionLog.utils'
-import type { State, Action, ActionType, ExecutionLogProps } from './ExecutionLog.types'
-import css from '../../useLogContentHook.module.scss'
+import type { State, Action, ActionType } from './ExecutionLog.types'
+import css from './ExecutionLog.module.scss'
 
-const ExecutionLog: React.FC<ExecutionLogProps> = ({
+const ExecutionLog: React.FC<ExecutionAndAPICallLogProps> = ({
   isFullScreen,
   setIsFullScreen,
   verifyStepExecutionId,
@@ -66,6 +68,29 @@ const ExecutionLog: React.FC<ExecutionLogProps> = ({
     }
   }, [currentIndex, linesWithResults])
 
+  const handleHealthSource = useCallback(
+    (_healthSource: SelectOption): void => {
+      if (_healthSource.value !== healthSource?.value) {
+        actions.resetExecutionLogs()
+        setPageNumber(0)
+        setHealthSource?.(_healthSource)
+      }
+    },
+    [healthSource, actions, setPageNumber, setHealthSource]
+  )
+
+  const handleTimeRange = (_timeRange: SelectOption): void => {
+    actions.resetExecutionLogs()
+    setPageNumber(0)
+    setTimeRange?.(_timeRange)
+  }
+
+  const handleDisplayOnlyErrors = (_errorLogsOnly: boolean): void => {
+    actions.resetExecutionLogs()
+    setPageNumber(0)
+    setErrorLogsOnly(_errorLogsOnly)
+  }
+
   const handleClick = (): void => {
     const handle = virtuosoRef.current
     /* istanbul ignore else */ if (handle) {
@@ -75,22 +100,22 @@ const ExecutionLog: React.FC<ExecutionLogProps> = ({
 
   return (
     <div>
-      <ExecutionLogHeader
+      <LogContentHeader
+        logType={LogTypes.ExecutionLog}
         verifyStepExecutionId={verifyStepExecutionId}
         serviceName={serviceName}
         envName={envName}
         healthSource={healthSource}
-        setHealthSource={setHealthSource}
+        handleHealthSource={handleHealthSource}
         timeRange={timeRange}
-        setTimeRange={setTimeRange}
+        handleTimeRange={handleTimeRange}
         errorLogsOnly={errorLogsOnly}
-        setErrorLogsOnly={setErrorLogsOnly}
-        setPageNumber={setPageNumber}
-        actions={actions}
+        handleDisplayOnlyErrors={handleDisplayOnlyErrors}
       />
-      <ExecutionLogToolbar
-        state={state}
-        actions={actions}
+      <LogContentToolbar
+        logType={LogTypes.ExecutionLog}
+        data={state.data.map(log => log.text)}
+        searchInput={<ExecutionLogSearch state={state} actions={actions} />}
         isFullScreen={isFullScreen}
         setIsFullScreen={setIsFullScreen}
         isVerifyStep={Boolean(verifyStepExecutionId)}

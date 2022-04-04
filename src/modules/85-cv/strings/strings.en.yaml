@@ -260,6 +260,7 @@ monitoringSources:
       tiers: Tiers
     searchTiersPlaceHolder: 'Search for Tiers'
   gco:
+    noMetricData: No data for current metric
     connectToMonitoringSource: Connect to your Google Cloud Platform
     defaultName: 'My Google Cloud Operations Monitoring Source'
     firstTimeSetupText: 'First time? You can setup a new Connector to Google Cloud Platform. It takes 2 minutes.'
@@ -695,7 +696,7 @@ slos:
       healthSource: A Health Source is a combination of a Harness Service and associated Environment that monitors changes in health trends of the service using logs or metrics collected from an Application Performance Management or logging tool.
       whatIsSli: What is an SLI?
       sliDefinition: An SLI (service level indicator), which measures the performance of the service. Also, an SLI measures compliance with an SLO (service level objective).
-      sliDefinition2: So, if your SLA (Service Level Agreement) specifies that your systems will be available 99.95% of the time, your SLO is likely 99.95% uptime and your SLI is the actual measurement of your uptime.
+      sliDefinition2: So, if your SLA (Service Level Agreement) specifies that your systems will be available 99.9% of the time, your SLO is likely 99.95% uptime and your SLI is the actual measurement of your uptime.
       availabilityDescription: Measures how available your service was to users or valid requests served successfully.
       latencyDescription: Measures how fast your service responded to users or how many valid request served faster than a defined thresholds.
       thresholdDescription: The number of valid requests is compared to the length of time.
@@ -831,3 +832,6 @@ download: Download
 lastOneHour: Last 1 hour
 last12Hours: Last 12 hours
 showingLogsFor: Showing logs for
+externalAPICalls: External API Calls
+somethingWentWrongWhileParsingTheData: Something went wrong while parsing the data
+fetchingDataFrom: Fetching data from

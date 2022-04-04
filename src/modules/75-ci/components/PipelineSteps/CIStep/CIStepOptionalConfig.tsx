@@ -342,7 +342,7 @@ export const CIStepOptionalConfig: React.FC<CIStepOptionalConfigProps> = props =
           {renderMultiTypeCheckboxField({
             name: `${prefix}spec.privileged`,
             tooltipId: 'privileged',
-            labelKey: 'ci.privileged',
+            labelKey: 'pipeline.buildInfra.privileged',
             allowableTypes: isInputSetView ? AllMultiTypeInputTypesForInputSet : AllMultiTypeInputTypesForStep
           })}
         </div>

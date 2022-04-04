@@ -316,7 +316,7 @@ environments:
   adminEnvironments: 'Admin: Environments'
   delete:
     message: 'Are you sure you want to delete environment <strong>{{name}}</strong>?'
-    title: 'Delete Environment'
+    title: '{{ $.common.deleteEnvironment.title }}'
   create:
     title: 'Create an Environment'
     description: 'An environment is the representation of your production or non-production infrastructure'

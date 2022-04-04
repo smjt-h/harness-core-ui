@@ -29,7 +29,7 @@ echo "STEP 2: Setting Git Username and Password"
 git config --global user.name "${BOT_USER}"
 git config --global user.email "${BOT_EMAIL}"
 
-git fetch --unshallow
+git fetch --depth=1000
 
 #BT-988: Merge Pre-QA validated changes to merge to master
 if [ -z "${MANUAL_TRIGGER}" ] ; then

@@ -31,7 +31,8 @@ exports[`Validate SelectHealthSourceServices should not render RiskProfile when 
               class="bp3-control bp3-checkbox StyledProps--font Checkbox--checkbox StyledProps--main StyledProps--inline"
             >
               <input
-                name="continuousVerification"
+                checked=""
+                name="sli"
                 type="checkbox"
               />
               <span
@@ -39,9 +40,9 @@ exports[`Validate SelectHealthSourceServices should not render RiskProfile when 
               />
               <span
                 class="Tooltip--acenter FormikForm--checkBoxDocTooltipLabel"
-                data-tooltip-id="runtimeInputsTest_continuousVerification"
+                data-tooltip-id="runtimeInputsTest_sli"
               >
-                cv.monitoredServices.continuousVerification
+                cv.slos.sli
               </span>
             </label>
           </div>
@@ -66,7 +67,7 @@ exports[`Validate SelectHealthSourceServices should not render RiskProfile when 
                 class="Tooltip--acenter FormikForm--checkBoxDocTooltipLabel"
                 data-tooltip-id="runtimeInputsTest_healthScore"
               >
-                cv.healthScore
+                cv.monitoredServices.monitoredServiceTabs.serviceHealth
               </span>
             </label>
           </div>
@@ -81,8 +82,7 @@ exports[`Validate SelectHealthSourceServices should not render RiskProfile when 
               class="bp3-control bp3-checkbox StyledProps--font Checkbox--checkbox StyledProps--main StyledProps--inline"
             >
               <input
-                checked=""
-                name="sli"
+                name="continuousVerification"
                 type="checkbox"
               />
               <span
@@ -90,9 +90,9 @@ exports[`Validate SelectHealthSourceServices should not render RiskProfile when 
               />
               <span
                 class="Tooltip--acenter FormikForm--checkBoxDocTooltipLabel"
-                data-tooltip-id="runtimeInputsTest_sli"
+                data-tooltip-id="runtimeInputsTest_continuousVerification"
               >
-                cv.slos.sli
+                cv.monitoredServices.continuousVerification
               </span>
             </label>
           </div>
@@ -135,7 +135,7 @@ exports[`Validate SelectHealthSourceServices should render RiskProfile when cont
             >
               <input
                 checked=""
-                name="continuousVerification"
+                name="sli"
                 type="checkbox"
               />
               <span
@@ -143,9 +143,9 @@ exports[`Validate SelectHealthSourceServices should render RiskProfile when cont
               />
               <span
                 class="Tooltip--acenter FormikForm--checkBoxDocTooltipLabel"
-                data-tooltip-id="runtimeInputsTest_continuousVerification"
+                data-tooltip-id="runtimeInputsTest_sli"
               >
-                cv.monitoredServices.continuousVerification
+                cv.slos.sli
               </span>
             </label>
           </div>
@@ -171,7 +171,7 @@ exports[`Validate SelectHealthSourceServices should render RiskProfile when cont
                 class="Tooltip--acenter FormikForm--checkBoxDocTooltipLabel"
                 data-tooltip-id="runtimeInputsTest_healthScore"
               >
-                cv.healthScore
+                cv.monitoredServices.monitoredServiceTabs.serviceHealth
               </span>
             </label>
           </div>
@@ -186,7 +186,8 @@ exports[`Validate SelectHealthSourceServices should render RiskProfile when cont
               class="bp3-control bp3-checkbox StyledProps--font Checkbox--checkbox StyledProps--main StyledProps--inline"
             >
               <input
-                name="sli"
+                checked=""
+                name="continuousVerification"
                 type="checkbox"
               />
               <span
@@ -194,9 +195,9 @@ exports[`Validate SelectHealthSourceServices should render RiskProfile when cont
               />
               <span
                 class="Tooltip--acenter FormikForm--checkBoxDocTooltipLabel"
-                data-tooltip-id="runtimeInputsTest_sli"
+                data-tooltip-id="runtimeInputsTest_continuousVerification"
               >
-                cv.slos.sli
+                cv.monitoredServices.continuousVerification
               </span>
             </label>
           </div>

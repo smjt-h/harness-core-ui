@@ -264,7 +264,7 @@ describe('Input Sets', () => {
     cy.wait(2000)
   })
 
-  it('Input Set Creation & Deletion', () => {
+  it.skip('Input Set Creation & Deletion', () => {
     cy.wait('@emptyInputSetList')
     cy.wait(1000)
     cy.contains('span', '+ New Input Set').should('be.visible')

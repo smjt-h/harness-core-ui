@@ -14,6 +14,15 @@
       overflow: hidden;
       padding-right: var(--spacing-small);
     }
+    .fixedError {
+      max-width: 80%;
+    }
+    .hasDetails {
+      max-width: 90%;
+    }
+    .defaultErrorText {
+      max-width: 100%;
+    }
     .titleDirection {
       direction: rtl;
     }

@@ -7,6 +7,7 @@
 
 import React, { useMemo, useState } from 'react'
 import { Container, Tabs, Tab, NoDataCard, Layout, FlexExpander, Button, ButtonVariation } from '@wings-software/uicore'
+import { Color } from '@harness/design-system'
 import { useStrings } from 'framework/strings'
 import { useQueryParams } from '@common/hooks'
 import type { ExecutionNode } from 'services/pipeline-ng'
@@ -14,6 +15,7 @@ import { Connectors } from '@connectors/constants'
 import { FeatureFlag } from '@common/featureFlags'
 import { useFeatureFlag } from '@common/hooks/useFeatureFlag'
 import { useLogContentHook } from '@cv/hooks/useLogContentHook/useLogContentHook'
+import { LogTypes } from '@cv/hooks/useLogContentHook/useLogContentHook.types'
 import { DeploymentMetrics } from './components/DeploymentMetrics/DeploymentMetrics'
 import { ExecutionVerificationSummary } from './components/ExecutionVerificationSummary/ExecutionVerificationSummary'
 import type { DeploymentNodeAnalysisResult } from './components/DeploymentProgressAndNodes/components/DeploymentNodes/DeploymentNodes.constants'
@@ -81,12 +83,20 @@ export function ExecutionVerificationView(props: ExecutionVerificationViewProps)
         <FlexExpander />
         <Layout.Horizontal>
           <Button
+            icon="api-docs"
+            withoutCurrentColor
+            iconProps={{ color: Color.BLACK, size: 20 }}
+            text={getString('cv.externalAPICalls')}
+            variation={ButtonVariation.LINK}
+            onClick={() => openLogContentHook(LogTypes.ApiCallLog)}
+          />
+          <Button
             icon="audit-trail"
             withoutCurrentColor
             iconProps={{ size: 20 }}
             text={getString('cv.executionLogs')}
             variation={ButtonVariation.LINK}
-            onClick={() => openLogContentHook()}
+            onClick={() => openLogContentHook(LogTypes.ExecutionLog)}
           />
         </Layout.Horizontal>
       </Tabs>

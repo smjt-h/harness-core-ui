@@ -8757,6 +8757,7 @@ export interface GetPipelineQueryParams {
   branch?: string
   repoIdentifier?: string
   getDefaultFromOtherRepo?: boolean
+  getTemplatesResolvedPipeline?: boolean
 }
 
 export interface GetPipelinePathParams {

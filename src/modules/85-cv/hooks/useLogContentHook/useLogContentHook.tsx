@@ -5,14 +5,14 @@
  * https://polyformproject.org/wp-content/uploads/2020/06/PolyForm-Shield-1.0.0.txt.
  */
 
-import React from 'react'
+import React, { useState } from 'react'
 import cx from 'classnames'
 import { useModalHook } from '@harness/use-modal'
 import { Classes } from '@blueprintjs/core'
 import { Dialog } from '@harness/uicore'
-import VerifyStepLog from './views/VerifyStepLog'
-import SLOLog from './views/SLOLog'
-import type { UseLogContentHookProps, UseLogContentHookReturn } from './useLogContentHook.types'
+import VerifyStepLogContent from './views/VerifyStepLogContent'
+import SLOLogContent from './views/SLOLogContent'
+import { LogTypes, UseLogContentHookProps, UseLogContentHookReturn } from './useLogContentHook.types'
 import css from './useLogContentHook.module.scss'
 
 export const useLogContentHook = ({
@@ -21,7 +21,8 @@ export const useLogContentHook = ({
   serviceName,
   envName
 }: UseLogContentHookProps): UseLogContentHookReturn => {
-  const [isFullScreen, setIsFullScreen] = React.useState(false)
+  const [isFullScreen, setIsFullScreen] = useState(false)
+  const [logType, setLogType] = useState<LogTypes>(LogTypes.ExecutionLog)
 
   const [showModal, hideModal] = useModalHook(
     () => (
@@ -36,14 +37,16 @@ export const useLogContentHook = ({
       >
         <div>
           {verifyStepExecutionId && (
-            <VerifyStepLog
+            <VerifyStepLogContent
+              logType={logType}
               isFullScreen={isFullScreen}
               setIsFullScreen={setIsFullScreen}
               verifyStepExecutionId={verifyStepExecutionId}
             />
           )}
           {!verifyStepExecutionId && sloIdentifier && (
-            <SLOLog
+            <SLOLogContent
+              logType={logType}
               identifier={sloIdentifier}
               serviceName={serviceName}
               envName={envName}
@@ -54,11 +57,16 @@ export const useLogContentHook = ({
         </div>
       </Dialog>
     ),
-    [isFullScreen, setIsFullScreen, verifyStepExecutionId]
+    [verifyStepExecutionId, sloIdentifier, serviceName, envName, isFullScreen, setIsFullScreen, logType]
   )
 
+  const open = (_logType: LogTypes): void => {
+    setLogType(_logType)
+    showModal()
+  }
+
   return {
-    openLogContentHook: showModal,
+    openLogContentHook: open,
     closeLogContentHook: hideModal
   }
 }

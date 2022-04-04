@@ -217,6 +217,12 @@ export const getConnectorIconByType = (type: string): IconName => {
   }
 }
 
+export enum ConnectorDetailsView {
+  'overview' = 'overview',
+  'referencedBy' = 'referencedBy',
+  'activityHistory' = 'activityHistory'
+}
+
 export const getConnectorIconPropsByType = (type: string): Omit<IconProps, 'name'> => {
   switch (type) {
     case Connectors.CUSTOM_HEALTH:

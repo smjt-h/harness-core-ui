@@ -29,19 +29,20 @@ export default function SelectHealthSourceServices({
         <Text tooltipProps={{ dataTooltipId: 'assignLabel' }} className={css.groupLabel}>
           {getString('cv.monitoredServices.assignLabel')}
         </Text>
-
+        {!hideSLIAndHealthScore ? (
+          <>
+            <FormInput.CheckBox label={getString('cv.slos.sli')} name={HealthSourceServices.SLI} defaultChecked />
+            <FormInput.CheckBox
+              label={getString('cv.monitoredServices.monitoredServiceTabs.serviceHealth')}
+              name={HealthSourceServices.HEALTHSCORE}
+            />
+          </>
+        ) : null}
         {!hideCV ? (
           <FormInput.CheckBox
             label={getString('cv.monitoredServices.continuousVerification')}
             name={HealthSourceServices.CONTINUOUS_VERIFICATION}
           />
-        ) : null}
-
-        {!hideSLIAndHealthScore ? (
-          <>
-            <FormInput.CheckBox label={getString('cv.healthScore')} name={HealthSourceServices.HEALTHSCORE} />
-            <FormInput.CheckBox label={getString('cv.slos.sli')} name={HealthSourceServices.SLI} />
-          </>
         ) : null}
       </Container>
       {(continuousVerification || healthScore) && (
